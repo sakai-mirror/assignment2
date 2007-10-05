@@ -30,7 +30,7 @@ package org.sakaiproject.assignment2.model;
 */
 public class AssignmentFeedbackAttachment {
 
-	private String assignAttachId;
+	private String feedbackAttachId;
 	private String submissionId;
 	private String attachmentId;
 	
@@ -40,18 +40,18 @@ public class AssignmentFeedbackAttachment {
 
 	/**
 	 * 
-	 * @return the assignAttachId 
+	 * @return the feedbackAttachId 
 	 */
-	public String getAssignAttachId() {
-		return assignAttachId;
+	public String getFeedbackAttachId() {
+		return feedbackAttachId;
 	}
 
 	/**
-	 * set the assignAttachId
-	 * @param assignAttachId
+	 * set the feedbackAttachId
+	 * @param feedbackAttachId
 	 */
-	public void setAssignAttachId(String assignAttachId) {
-		this.assignAttachId = assignAttachId;
+	public void setFeedbackAttachId(String feedbackAttachId) {
+		this.feedbackAttachId = feedbackAttachId;
 	}
 
 	/**

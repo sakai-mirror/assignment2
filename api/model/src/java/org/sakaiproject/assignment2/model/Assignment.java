@@ -33,7 +33,7 @@ public class Assignment {
     private String assignmentId;
     private Long gradableObjectId;
     private String siteId;
-    private Boolean draft;
+    private boolean draft;
     private int sortIndex;
     private Date openTime;
     private Date closeTime;
