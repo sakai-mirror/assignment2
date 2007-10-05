@@ -1,0 +1,121 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+
+   <title>Assignments</title>
+
+	<script type="text/javascript" language="JavaScript" src="/library/js/headscripts.js"></script>
+	<!-- vm/editor/FCKeditor/sakai_header.vm -->
+	<script type="text/javascript" src="/library/editor/FCKeditor/fckeditor.js"></script> 
+
+   <link href="tool_base.css" type="text/css" rel="stylesheet" media="all"/>   
+	<link href="tool.css" type="text/css" rel="stylesheet" media="all"/>
+	<link href="assignmentsv4.css" type="text/css" rel="stylesheet" media="all"/>
+
+</head>
+
+<body>
+
+<div class="portletBody">
+
+	<h3>Assignment Submission <span class="highlight">- In progress</span></h3>
+	<p class="instruction">Fill out the following form - be sure to click <span class="highlight">"Submit"</span>.</p>
+
+	<form name="" id="" action="" method="post">
+
+	<table class="itemSummary" cellspacing="0" summary="Assignment Details">
+		<tr>
+			<th>Title</th>
+			<td>Homework Example 1</td>
+		</tr>
+		<tr>
+			<th>Due Date</th>
+			<td>Oct 1, 2007 6:00 pm</td>
+		</tr>
+		<tr>
+			<th>Status</th>	
+			<td>In progress</td>
+		</tr>
+		<tr>
+			<th>Grade Scale</th>	
+			<td>[Pull from Gradebook]</td>
+		</tr>
+		<tr>
+			<th>Modified by instructor</th>	
+			<td>Oct 1, 2007 10:46 am</td>
+		</tr>
+	</table>
+
+	<h4>Instructions</h4>
+	<div class="textPanel"><p>Instructions would go here.</p></div>
+
+	<h4>Additional resources for assignment</h4>
+
+	<ul class="attachList indnt1">
+		<li><img src="page_white_word.png" width="16" height="16"/><a href="">ExampleAttachment.doc</a> (52 KB)</li>
+	</ul>
+
+	<hr class="itemSeparator" />
+
+	<h3>Assignment Submission</h3>
+
+	<fieldset>
+		<legend>Assignment Text</legend>
+		<ol>
+			<li>
+				<label class="block instruction">This assignment allows submissions using both the text box below and attached documents. Type your comments in the box below and use the Add Attachments button to include other documents. Save frequently while working.</label>
+				<textarea name="Assignment.view_submission_text" id="Assignment.view_submission_text" rows="30" wrap="virtual" cols="80"></textarea>		
+				<!-- vm/editor/FCKeditor/sakai_body.vm -->
+				<script type="text/javascript" language="JavaScript">
+				function chef_setupformattedtextarea(textarea_id)
+					{
+							var oFCKeditor = new FCKeditor(textarea_id);
+						oFCKeditor.BasePath = "/library/editor/FCKeditor/";
+		
+									 var courseId = "/group/fa4b5eb1-6845-4edd-00de-f42591fd3def/";
+		
+									 oFCKeditor.Config['ImageBrowserURL'] = oFCKeditor.BasePath + "editor/filemanager/browser/default/browser.html?Connector=/sakai-fck-connector/web/editor/filemanager/browser/default/connectors/jsp/connector&Type=Image&CurrentFolder=" + courseId;
+									 oFCKeditor.Config['LinkBrowserURL'] = oFCKeditor.BasePath + "editor/filemanager/browser/default/browser.html?Connector=/sakai-fck-connector/web/editor/filemanager/browser/default/connectors/jsp/connector&Type=Link&CurrentFolder=" + courseId;
+									 oFCKeditor.Config['FlashBrowserURL'] = oFCKeditor.BasePath + "editor/filemanager/browser/default/browser.html?Connector=/sakai-fck-connector/web/editor/filemanager/browser/default/connectors/jsp/connector&Type=Flash&CurrentFolder=" + courseId;
+									 oFCKeditor.Config['ImageUploadURL'] = oFCKeditor.BasePath + "/sakai-fck-connector/web/editor/filemanager/browser/default/connectors/jsp/connector?Type=Image&Command=QuickUpload&Type=Image&CurrentFolder=" + courseId;
+									 oFCKeditor.Config['FlashUploadURL'] = oFCKeditor.BasePath + "/sakai-fck-connector/web/editor/filemanager/browser/default/connectors/jsp/connector?Type=Flash&Command=QuickUpload&Type=Flash&CurrentFolder=" + courseId;
+									 oFCKeditor.Config['LinkUploadURL'] = oFCKeditor.BasePath + "/sakai-fck-connector/web/editor/filemanager/browser/default/connectors/jsp/connector?Type=File&Command=QuickUpload&Type=Link&CurrentFolder=" + courseId;
+						oFCKeditor.Width  = "600" ;
+						oFCKeditor.Height = "400" ;
+									 oFCKeditor.Config['CustomConfigurationsPath'] = "/library/editor/FCKeditor/config.js";
+							oFCKeditor.ReplaceTextarea() ;
+					}
+				</script>
+			<script type="text/javascript" defer="1">chef_setupformattedtextarea('Assignment.view_submission_text');</script>
+			</li>
+		</ol>
+	</fieldset>
+	<fieldset>
+		<legend>Attachments</legend>
+		<ol class="attachList indnt1">
+			<li>No attachments yet</li>
+			<li><input type="button" name="" value="Add Attachments" accesskey="a"/></li>
+		</ol>
+		<li>
+	</fieldset>
+
+	<fieldset class="submit">
+		<input accesskey="s" type="button" class="active" name="submit" value="Submit"/>
+		<input accesskey="v" type="button" name="preview" value="Preview"/>
+		<input accesskey="d" type="button" name="save" value="Save Draft"/>
+		<input accesskey="x" type="button" name="cancel" value="Cancel"/>
+
+		<input type="hidden" name="assignmentId" value=""/>
+		<input type="hidden" name="assignmentContentId" value=""/>
+		<input type="hidden" name="eventSubmit_doAssignment_form" value=""/>
+		<input type="hidden" name="option" id="option" value=""/>
+		<input type="hidden" name="view" id="view" value=""/>
+		<input type="hidden" name="new_assignment_order" id="new_assignment_order" value=""/>
+	</fieldset>													
+	</form>
+
+</div>
+</body>
+</html>

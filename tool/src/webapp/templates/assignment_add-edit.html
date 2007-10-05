@@ -1,0 +1,296 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+
+   <title>Assignments</title>
+
+	<script type="text/javascript" language="JavaScript" src="/library/js/headscripts.js"></script>
+	<!-- vm/editor/FCKeditor/sakai_header.vm -->
+	<script type="text/javascript" src="/library/editor/FCKeditor/fckeditor.js"></script> 
+
+   <link href="tool_base.css" type="text/css" rel="stylesheet" media="all"/>   
+	<link href="tool.css" type="text/css" rel="stylesheet" media="all"/>
+	<link href="assignmentsv4.css" type="text/css" rel="stylesheet" media="all"/>
+
+</head>
+
+<body>
+
+<div class="portletBody">
+	<ul class="navIntraTool">
+		<li>Add</li>
+		<li><a href="#" title="Assignment List">Assignment List</a></li>
+		<li><a href="#" title="Grade Report">Grade Report</a></li>
+		<li class="last"><a href="#" title="Permissions">Permissions</a></li>
+	</ul>
+	<div class="error">
+		<p>Are you sure you want to leave this page and disregard your changes? <input type="button" value="Exit without saving"/> <a href="#">Stay on this page</a></p>
+	</div>
+
+	<h3>Add Assignment</h3>
+	<p class="instruction">Complete the form and choose an action below. <span class="reqStar">*</span> Indicates required information.</p>
+
+	<form>
+	<fieldset>
+		<legend>Assignment Details</legend>
+		<ol>
+			<li>
+				<div class="error">
+				<label for=""><span class="reqStar">*</span> Title</label> <input type="text" value="" size="30" maxlength="100"/>
+				<p>This is an example error: Adding an assignment requires a title</p></div>
+			</li>
+			<li>
+				<label for=""><span class="reqStar">*</span> Open Date</label><input name="new_assignment_date" value="Current date mm/dd/yy"/><!--dhtml date picker --><img src="calendar.png" alt="Date picker" width="16" height="16" align="absmiddle" /> at
+				<select name="" id="">
+					<option value="1">1</option>
+					<option value="2">2</option>
+					<option value="3">3</option>
+					<option value="4">4</option>
+					<option value="5">5</option>
+					<option value="6">6</option>
+					<option value="7">7</option>
+					<option value="8">8</option>
+					<option value="9">9</option>
+					<option value="10">10</option>
+					<option value="11">11</option>
+					<option value="12" selected="selected">12</option>
+				</select>
+				<select name="" id="">
+					<option value="0" selected="selected">00</option>
+					<option value="5" >05</option>
+					<option value="10" >10</option>
+					<option value="15" >15</option>
+					<option value="20" >20</option>
+					<option value="25" >25</option>
+					<option value="30" >30</option>
+					<option value="35" >35</option>
+					<option value="40" >40</option>
+					<option value="45" >45</option>
+					<option value="50" >50</option>
+					<option value="55" >55</option>
+				</select>
+				<select name="" id="">
+					<option value="AM">AM</option>
+					<option value="PM" selected="selected">PM</option>
+				</select>
+				<p class="instruction">Students won't see this assignment until this open date.</p>
+			</li>
+			<li>
+				<label for=""><span class="reqStar">*</span> Due Date</label> <input name="" value="1wk from open date mm/dd/yy"/><!--dhtml date picker --><img src="calendar.png" alt="Date picker" width="16" height="16" align="absmiddle" /> at
+				<select name="" id="">
+					<option value="1">1</option>
+					<option value="2">2</option>
+					<option value="3">3</option>
+					<option value="4">4</option>
+					<option value="5" selected="selected">5</option>
+					<option value="6">6</option>
+					<option value="7">7</option>
+					<option value="8">8</option>
+					<option value="9">9</option>
+					<option value="10">10</option>
+					<option value="11">11</option>
+					<option value="12">12</option>
+				</select>
+				<select name="" id="">
+					<option value="0" selected="selected">00</option>
+					<option value="5" >05</option>
+					<option value="10" >10</option>
+					<option value="15" >15</option>
+					<option value="20" >20</option>
+					<option value="25" >25</option>
+					<option value="30" >30</option>
+					<option value="35" >35</option>
+					<option value="40" >40</option>
+					<option value="45" >45</option>
+					<option value="50" >50</option>
+					<option value="55" >55</option>
+				</select>
+				<select name="" id="">
+					<option value="AM">AM</option>
+					<option value="PM" selected="selected">PM</option>
+				</select>
+			</li>
+			<li>
+				<label for=""><span class="reqStar">*</span> Accept Until</label> <input name="" value="Match Due mm/dd/yy"/><!--dhtml date picker --><img src="calendar.png" alt="Date picker" width="16" height="16" align="absmiddle" /> at
+				<select name="" id="">
+					<option value="1">1</option>
+					<option value="2">2</option>
+					<option value="3">3</option>
+					<option value="4">4</option>
+					<option value="5" selected="selected">5</option>
+					<option value="6">6</option>
+					<option value="7">7</option>
+					<option value="8">8</option>
+					<option value="9">9</option>
+					<option value="10">10</option>
+					<option value="11">11</option>
+					<option value="12">12</option>
+				</select>
+				<select name="" id="">
+					<option value="0" selected="selected">00</option>
+					<option value="5" >05</option>
+					<option value="10" >10</option>
+					<option value="15" >15</option>
+					<option value="20" >20</option>
+					<option value="25" >25</option>
+					<option value="30" >30</option>
+					<option value="35" >35</option>
+					<option value="40" >40</option>
+					<option value="45" >45</option>
+					<option value="50" >50</option>
+					<option value="55" >55</option>
+				</select>
+				<select name="" id="">
+					<option value="AM">AM</option>
+					<option value="PM" selected="selected">PM</option>
+				</select>
+				<p class="instruction">No assignments can be submitted after this close date.</p>
+			</li>
+			<li>
+				<label for=""><span class="reqStar">*</span> Student Submissions</label>
+				<select name="" id="">
+					<option value="1">Inline only</option>
+					<option value="2">Attachments only</option>
+					<option value="3" selected="selected">Inline and Attachments</option>
+					<option value="4">Non-electronic</option>
+				</select>
+			</li>
+			<li>
+				<label for="" class="block">Assignment Instructions</label>
+				<textarea name="new_assignment_instructions" id="new_assignment_instructions" cols="80" rows="20" wrap="virtual"></textarea>
+				<!-- vm/editor/FCKeditor/sakai_body.vm -->
+				<script type="text/javascript" language="JavaScript">
+				function chef_setupformattedtextarea(textarea_id)
+				{
+						var oFCKeditor = new FCKeditor(textarea_id);
+					oFCKeditor.BasePath = "/library/editor/FCKeditor/";
+								 var courseId = "/group/fa4b5eb1-6845-4edd-00de-f42591fd3def/";
+								 oFCKeditor.Config['ImageBrowserURL'] = oFCKeditor.BasePath + "editor/filemanager/browser/default/browser.html?Connector=/sakai-fck-connector/web/editor/filemanager/browser/default/connectors/jsp/connector&Type=Image&CurrentFolder=" + courseId;
+								 oFCKeditor.Config['LinkBrowserURL'] = oFCKeditor.BasePath + "editor/filemanager/browser/default/browser.html?Connector=/sakai-fck-connector/web/editor/filemanager/browser/default/connectors/jsp/connector&Type=Link&CurrentFolder=" + courseId;
+								 oFCKeditor.Config['FlashBrowserURL'] = oFCKeditor.BasePath + "editor/filemanager/browser/default/browser.html?Connector=/sakai-fck-connector/web/editor/filemanager/browser/default/connectors/jsp/connector&Type=Flash&CurrentFolder=" + courseId;
+								 oFCKeditor.Config['ImageUploadURL'] = oFCKeditor.BasePath + "/sakai-fck-connector/web/editor/filemanager/browser/default/connectors/jsp/connector?Type=Image&Command=QuickUpload&Type=Image&CurrentFolder=" + courseId;
+								 oFCKeditor.Config['FlashUploadURL'] = oFCKeditor.BasePath + "/sakai-fck-connector/web/editor/filemanager/browser/default/connectors/jsp/connector?Type=Flash&Command=QuickUpload&Type=Flash&CurrentFolder=" + courseId;
+								 oFCKeditor.Config['LinkUploadURL'] = oFCKeditor.BasePath + "/sakai-fck-connector/web/editor/filemanager/browser/default/connectors/jsp/connector?Type=File&Command=QuickUpload&Type=Link&CurrentFolder=" + courseId;
+					oFCKeditor.Width  = "600" ;
+					oFCKeditor.Height = "400" ;
+								 oFCKeditor.Config['CustomConfigurationsPath'] = "/library/editor/FCKeditor/config.js";
+						oFCKeditor.ReplaceTextarea() ;
+				}
+				</script>
+				<script type="text/javascript" defer="defer">chef_setupformattedtextarea('new_assignment_instructions');</script>
+			</li>
+			<li>
+				<fieldset>
+					<ol>
+						<li><input id="" name="" type="checkbox" value=""/> <label for="">Add the due date to Calendar</label></li>
+						<li><input id="" name="" type="checkbox" value=""/> <label for="">Add an announcement about the open date to Announcements</label></li>
+						<li><input id="" name="" type="checkbox" value=""/> <label for="">Add honor pledge</label></li>
+					</ol>
+				</fieldset>
+			</li>
+			<li>
+				
+			</li>
+		</ol>
+	</fieldset>
+	<fieldset>
+		<legend>Attachments</legend>
+		<ol>
+			<li>
+				<p class="instruction">No attachments yet</p>
+				<input type="button" name="attach" value="Add Attachments" onclick="javascript:document.newAssignmentForm.onsubmit();document.getElementById('option').value='attach';document.newAssignmentForm.submit();return false;"/>
+			</li>
+		</ol>
+	</fieldset>
+	<fieldset>
+		<legend>Grading</legend>
+		<ol>
+			<li>
+				<fieldset>
+					<ol>
+						<li><input type="radio" name="" id="" value="graded" checked /> <label for="">This assignment is graded</label></li>
+						<li><input type="radio" name="" id="" value="ungraded" checked /> <label for="">This assignment is ungraded</label></li>
+						<li>
+							<fieldset>
+								<legend><label for="">Associate with an existing Gradebook item</label></legend>
+								<ol>
+									<li>
+										<select name="" >
+											<option value="">Select a Gradebook Item</option>
+											<option value="Final Exam">Final Exam</option>
+											<option value="Homework 2">Homework 1</option>
+											<option value="Homework 3">Homework 2</option>
+											<option value="Mid-Term">Mid-Term</option>
+											<option value="Quiz 1">Quiz 1</option>
+											<option value="Quiz 2">Quiz 2</option>
+										</select> <a href="#gradebookitemhelper">Create a new Gradebook Item</a></li>
+</li>
+								</ol>
+							</fieldset>
+					</ol>
+				</fieldset>
+			</li>
+		</ol>
+	</fieldset>
+	<fieldset>
+		<legend>Access</legend>
+		<ol>
+			<li>
+				<fieldset>
+					<ol>
+						<li><input type="radio" name="" id="" value="" checked="checked"/>Display to site</label></li>
+						<li><input type="radio" name="" id="" value=""/> <label for="">Display to selected groups</label></li>
+						<li><table id="groupTable" class="listHier lines" cellpadding="0" cellspacing="0" border="0">
+								<tr>
+									<th><input type="checkbox" name="" id="" title="Select all" onclick="javascript:toggleSelectAll(this, 'selectedGroups')"/></th>
+									<th>Title</th>
+									<th>Description</th>
+								</tr>
+								<tr>
+									<td>
+										<input type="checkbox" name="" id=""/>
+									</td>
+									<td>
+										<label for="">Blue Cohort</label>	
+									</td>
+									<td>Group Description</td>
+								</tr>
+							</table></li>
+					</ol>
+				</fieldset>
+			</li>
+		</ol>
+	</fieldset>
+	<fieldset>
+		<legend>Submission Notification Email Options</legend>
+		<ol>
+			<li>
+				<fieldset>
+					<ol>
+						<li><input type="radio" name="" id="" value="" checked="checked"/> <label for="">Do not send me notification emails for any student submissions</label></li>
+						<li><input type="radio" name="" id="" value=""/> <label for="">Send me a notification email for each student submission</label></li>
+						<li><input type="radio" name="" id="" value=""/> <label for="">Send me one email per day summarizing notifications for student submissions</label></li>
+					</ol>
+				</fieldset>
+			</li>
+		</ol>
+	</fieldset>
+	<fieldset class="submit">
+		<input accesskey="s" type="button" class="active" name="post" value="Post"/>
+		<input accesskey="v" type="button" name="preview" value="Preview"/>
+		<input accesskey="d" type="button" name="save" value="Save Draft"/>
+		<input accesskey="x" type="button" name="cancel" value="Cancel"/>
+
+		<input type="hidden" name="assignmentId" value=""/>
+		<input type="hidden" name="assignmentContentId" value=""/>
+		<input type="hidden" name="eventSubmit_doAssignment_form" value=""/>
+		<input type="hidden" name="option" id="option" value=""/>
+		<input type="hidden" name="view" id="view" value=""/>
+		<input type="hidden" name="new_assignment_order" id="new_assignment_order" value=""/>
+	</fieldset>													
+	</form>
+</div>
+</body>
+</html>

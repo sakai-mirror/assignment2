@@ -1,0 +1,135 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+
+   <title>Assignments</title>
+
+	<script type="text/javascript" language="JavaScript" src="/library/js/headscripts.js"></script>
+	<!-- vm/editor/FCKeditor/sakai_header.vm -->
+	<script type="text/javascript" src="/library/editor/FCKeditor/fckeditor.js"></script> 
+
+   <link href="tool_base.css" type="text/css" rel="stylesheet" media="all"/>   
+	<link href="tool.css" type="text/css" rel="stylesheet" media="all"/>
+	<link href="assignmentsv4.css" type="text/css" rel="stylesheet" media="all"/>
+
+</head>
+
+<body>
+
+<div class="portletBody">
+	<ul class="navIntraTool">
+		<li>Add</li>
+		<li><a href="#" title="Assignment List">Assignment List</a></li>
+		<li><a href="#" title="Grade Report">Grade Report</a></li>
+		<li class="last"><a href="#" title="Permissions">Permissions</a></li>
+	</ul>
+
+	<h3>[Assignment title] Preview</h3>
+
+	<form>
+		<table class="itemSummary" border="0" summary="Assignment settings.">  
+			<tr>
+				<th>Created by</th>
+				<td> Robert Alan (Oct 1, 2007 4:09 pm)</td>
+			</tr>
+			<tr>
+				<th>Modified</th>
+				<td>Oct 1, 2007 4:09 pm</td>
+			</tr>
+			<tr>
+				<th>Open</th>
+				<td>Jun 1, 2007 12:00 pm</td>
+			</tr>
+			<tr>
+				<th>Due</th>
+				<td>Jun 8, 2007 5:00 pm</td>
+			</tr>
+			<tr>
+				<th>Accept Until</th>
+				<td>Jun 8, 2007 5:00 pm</td>
+			</tr>
+			<tr>
+				<th>Student Submissions</th>
+				<td>Inline and Attachments</td>
+			</tr>
+			<tr>
+				<th>Graded?</th>
+				<td>Points (max 200.0)</td>
+			</tr>
+			<tr>
+				<th>Add due date to Calendar?</th>
+				<td>No</td>
+			</tr>
+			<tr>
+				<th>Announce the open date?</th>
+				<td>No</td>
+			</tr>
+			<tr>
+				<th>Honor pledge?</th>
+				<td>Not required</td>
+			</tr>
+			<tr>
+				<th>Linked to Gradebook Assignment?</th>
+				<td>Final</td>
+			</tr>
+		</table>
+
+		<h4>Assignment Instructions</h4>
+		<div class="textPanel">Testing linkage from assignments to gradebook.</div>
+
+
+
+		<p class="discTria"><a href="" title="Show student view"><img src="collapse.png" border="0" alt="Show student view" /></a> Student View</p>
+
+		<div class="inopPanel">
+		<h4>[Assignment title]</h4>
+
+		<table class="itemSummary" summary="Assignment settings.">
+			<tr>
+				<th>Due</th>
+				<td>Jun 8, 2007 5:00 pm</td>
+			</tr>
+			<tr>
+				<th>Status</th>
+				<td>Closed</td>
+			</tr>
+			<tr>
+				<th>Grade Scale</th>
+				<td>Points (max 200.0)</td>
+			</tr>
+		</table>
+
+		<h4>Assignment Instructions</h4>
+		<div class="textPanel">Testing linkage from assignments to gradebook.</div>
+
+		<h4>Start assignment</h4>
+		<p class="instruction">This assignment allows both typed in text and/or attached documents.Type in your comments in the box below, and use the Add Attachments button to include other documents as part of your submission. Save frequently while working.</p>
+
+		<textarea cols="80" rows="8" wrap="virtual" name="textarea" id="textarea" disabled="disabled">&nbsp;</textarea>						
+
+		<fieldset>
+			<legend>Attachments</legend>
+			<ol class="attachList indnt1">
+				<li>No attachments yet</li>
+				<li><input type="button" name="" value="Add Attachments" accesskey="a"/></li>
+			</ol>
+		</fieldset>
+
+
+	<fieldset class="submit">
+		<input accesskey="s" type="button" class="active" name="post" value="Post"/>
+		<input accesskey="d" type="button" name="save" value="Save Draft"/>
+		<input accesskey="x" type="button" name="edit" value="Edit"/>
+
+		<input type="hidden" name="assignmentId" value="" />
+		<input type="hidden" name="assignmentContentId" value="" />
+		<input type="hidden" name="new_assignment_order" id="new_assignment_order" value="0" />
+		<input type="hidden" name="eventSubmit_doAssignment_form" value="" />
+		<input type="hidden" name="option" id="option" value="" />
+	</fieldset>													
+	</form>
+</div>
+</body>
+</html>
