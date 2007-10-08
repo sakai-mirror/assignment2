@@ -199,7 +199,7 @@
 		<legend>Attachments</legend>
 		<ol>
 			<li>
-				<p class="instruction">No attachments yet</p>
+				<span class="instruction">No attachments yet</span>
 				<input type="button" name="attach" value="Add Attachments" onclick="javascript:document.newAssignmentForm.onsubmit();document.getElementById('option').value='attach';document.newAssignmentForm.submit();return false;"/>
 			</li>
 		</ol>
@@ -210,14 +210,7 @@
 			<li>
 				<fieldset>
 					<ol>
-						<li><input type="radio" name="" id="" value="graded" checked /> <label for="">This assignment is graded</label></li>
-						<li><input type="radio" name="" id="" value="ungraded" checked /> <label for="">This assignment is ungraded</label></li>
-						<li>
-							<fieldset>
-								<legend><label for="">Associate with an existing Gradebook item</label></legend>
-								<ol>
-									<li>
-										<select name="" >
+						<li><input type="radio" name="" id="" value="graded" checked /> <label for="">This assignment is graded</label> and is associated with a Gradebook Item: <select name="" >
 											<option value="">Select a Gradebook Item</option>
 											<option value="Final Exam">Final Exam</option>
 											<option value="Homework 2">Homework 1</option>
@@ -225,10 +218,8 @@
 											<option value="Mid-Term">Mid-Term</option>
 											<option value="Quiz 1">Quiz 1</option>
 											<option value="Quiz 2">Quiz 2</option>
-										</select> <a href="#gradebookitemhelper">Create a new Gradebook Item</a></li>
-</li>
-								</ol>
-							</fieldset>
+										</select> -or- <a href="#gradebookitemhelper">Create a new Gradebook Item</a></li>
+						<li><input type="radio" name="" id="" value="ungraded" checked /> <label for="">This assignment is ungraded</label></li>
 					</ol>
 				</fieldset>
 			</li>
