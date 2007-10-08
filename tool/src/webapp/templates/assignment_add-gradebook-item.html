@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+
+   <title>Assignments</title>
+
+	<script type="text/javascript" language="JavaScript" src="/library/js/headscripts.js"></script>
+	<!-- vm/editor/FCKeditor/sakai_header.vm -->
+	<script type="text/javascript" src="/library/editor/FCKeditor/fckeditor.js"></script> 
+
+   <link href="tool_base.css" type="text/css" rel="stylesheet" media="all"/>   
+	<link href="tool.css" type="text/css" rel="stylesheet" media="all"/>
+	<link href="assignmentsv4.css" type="text/css" rel="stylesheet" media="all"/>
+
+</head>
+
+<body>
+
+<div class="portletBody">
+
+	<h3>Add Gradebook Item via Assignments</h3>
+	<p class="instruction">Complete the form and choose an action below to return to your Assignment creation. <span class="reqStar">*</span> Indicates required information.</p>
+
+	<form>
+	<fieldset>
+		<legend>Gradebook Item Details</legend>
+		<ol>
+			<li>
+				<label for=""><span class="reqStar">*</span> Title</label> <input type="text" value="" size="30" maxlength="100"/>
+			</li>
+			<li>
+				<label for=""><span class="reqStar">*</span> Gradebook Item Point Value</label> <input type="text" value="" size="30" maxlength="100"/>
+			</li>
+			<li>
+				<label for=""><span class="reqStar">*</span> Due Date</label> <input name="" value="mm/dd/yy"/><!--dhtml date picker --><img src="calendar.png" alt="Date picker" width="16" height="16" align="absmiddle" />
+			</li>
+			<li>
+				<label for="">Category</label>
+				<select id="" name="" size="1">
+					<option value="unassigned">Unassigned</option>
+					<option value="">Homework</option>
+					<option value="">Quizzes</option>
+					<option value="">Exams</option>
+				</select>
+				<p class="instruction">Items not assigned to a category will not be counted toward the course grade calculation.</p>
+			</li>
+			<li>
+				<fieldset>
+					<ol>
+						<li><input id="" name="" type="checkbox" value=""/> <label for="">Release this item to Students</label></li>
+						<li class="indent"><input id="" name="" type="checkbox" value=""/> <label for="">Include this item in course grade calculations</label></li>
+					</ol>
+				</fieldset>
+			</li>
+		</ol>
+	</fieldset>
+	<fieldset class="submit">
+		<input accesskey="s" type="button" class="active" name="add" value="Add Item"/>
+		<input accesskey="x" type="button" name="cancel" value="Cancel"/>
+	</fieldset>													
+	</form>
+</div>
+</body>
+</html>
