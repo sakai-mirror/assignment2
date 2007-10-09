@@ -14,5 +14,6 @@
   <packaging>pom</packaging>
   <modules>
     <module>api/model</module>
+    <module>tool</module>
   </modules>
 </project>
