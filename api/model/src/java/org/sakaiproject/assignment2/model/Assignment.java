@@ -33,11 +33,14 @@ public class Assignment {
     private String assignmentId;
     private Long gradableObjectId;
     private String siteId;
+    private String title;
     private boolean draft;
     private int sortIndex;
     private Date openTime;
     private Date closeTime;
     private Date dropDeadTime;
+    private boolean ungraded;
+    private Date dueDateForUngraded;
     private boolean restrictedToGroups;
     private boolean groupSubmission;
     private boolean honorPledge;
@@ -108,6 +111,22 @@ public class Assignment {
      */
     public void setSiteId(String siteId) {
         this.siteId = siteId;
+    }
+    
+    /**
+     * 
+     * @return the assignment's title
+     */
+    public String getTitle() {
+    	return title;
+    }
+    
+    /**
+     * set the assignment title
+     * @param title
+     */
+    public void setTitle(String title) {
+    	this.title = title;
     }
     
     /**
@@ -183,6 +202,44 @@ public class Assignment {
      */
     public void setDropDeadTime(Date dropDeadTime) {
         this.dropDeadTime = dropDeadTime;
+    }
+    
+    /**
+     * All assignments will be linked to the gradebook and store grade
+     * information in the gradebook tables except ungraded assignments.  
+     * @return true if this assignment is ungraded
+     */
+    public boolean getUngraded() {
+    	return ungraded;
+    }
+    
+    /**
+     * All assignments will be linked to the gradebook and store grade
+     * information in the gradebook tables except ungraded assignments.  
+     * @param ungraded
+     */
+    public void setUngraded(boolean ungraded) {
+    	this.ungraded = ungraded;
+    }
+    
+    /**
+     * All assignments will be linked to the gradebook except ungraded 
+     * assignments.  This field is for storing the due date in this situation
+     * since all other assignment due dates will be stored on the gb side.
+     * @return due date
+     */
+    public Date getDueDateForUngraded() {
+    	return dueDateForUngraded;
+    }
+    
+    /**
+     * All assignments will be linked to the gradebook except ungraded 
+     * assignments.  This field is for storing the due date in this situation
+     * since all other assignment due dates will be stored on the gb side.
+     * @param dueDateForUngraded
+     */
+    public void setDueDateForUngraded(Date dueDateForUngraded) {
+    	this.dueDateForUngraded = dueDateForUngraded;
     }
     
     /**
