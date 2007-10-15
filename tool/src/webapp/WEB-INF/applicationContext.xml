@@ -20,4 +20,10 @@
       <property name="localeGetter" ref="requestLocaleProxy" />
    </bean>
 
+   <!-- Override the default style of user messages -->
+   <bean id="messageTemplateContributor" parent="templateContributorParent">
+      <property name="baseDirectory" value="component-templates/" />
+      <property name="templateNames" value="Navbar" />
+   </bean>
+
 </beans>

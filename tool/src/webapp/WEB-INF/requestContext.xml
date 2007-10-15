@@ -4,19 +4,45 @@
 
 <beans>
 
+	<!-- Renderers -->
+   <bean id="NavbarRenderer" class="org.sakaiproject.assignment2.tool.producers.NavBarRenderer">
+      <!-- <property name="externalLogic" ref="org.sakaiproject.blogwow.logic.ExternalLogic" /> -->
+      <!-- <property name="blogLogic" ref="org.sakaiproject.blogwow.logic.BlogLogic" /> -->
+   </bean>
+
    <!-- list the producer beans here -->
+   <bean class="org.sakaiproject.assignment2.tool.producers.AssignmentAddProducer">
+      <property name="navBarRenderer" ref="NavbarRenderer" />
+      <!--  <property name="richTextEvolver" ref="richTextEvolver" /> -->
+      <property name="messageLocator" ref="messageLocator" />
+   </bean>
+   
+   <bean class="org.sakaiproject.assignment2.tool.producers.AssignmentGradeReportProducer">
+      <property name="navBarRenderer" ref="NavbarRenderer" />
+      <!--  <property name="richTextEvolver" ref="richTextEvolver" /> -->
+      <property name="messageLocator" ref="messageLocator" />
+   </bean>
+   
+   
    <bean class="org.sakaiproject.assignment2.tool.producers.AssignmentListReorderProducer">
-      <!--  <property name="navBarRenderer" ref="NavbarRenderer" /> -->
+      <property name="navBarRenderer" ref="NavbarRenderer" />
       <!--  <property name="richTextEvolver" ref="richTextEvolver" /> -->
       <property name="messageLocator" ref="messageLocator" />
    </bean>
 
 
    <bean class="org.sakaiproject.assignment2.tool.producers.AssignmentListSortViewProducer">
-      <!--  <property name="navBarRenderer" ref="NavbarRenderer" /> -->
+      <property name="navBarRenderer" ref="NavbarRenderer" />
       <!--  <property name="richTextEvolver" ref="richTextEvolver" /> -->
       <property name="messageLocator" ref="messageLocator" />
    </bean>
+
+   <bean class="org.sakaiproject.assignment2.tool.producers.AssignmentPermissionsProducer">
+      <property name="navBarRenderer" ref="NavbarRenderer" />
+      <!--  <property name="richTextEvolver" ref="richTextEvolver" /> -->
+      <property name="messageLocator" ref="messageLocator" />
+   </bean>
+
    
    <bean id="assignment" class="org.sakaiproject.assignment2.tool.beans.AssignmentBean" />
 
