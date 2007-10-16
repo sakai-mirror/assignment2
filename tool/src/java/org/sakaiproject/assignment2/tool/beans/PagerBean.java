@@ -4,16 +4,8 @@ package org.sakaiproject.assignment2.tool.beans;
 public class PagerBean {
 	
 	private Integer currentStart = 0;
-	private Integer currentCount = 50;
+	private Integer currentCount = 5;
 	private Integer totalCount = 0;
-	
-	public PagerBean(){}
-	
-	public PagerBean(Integer currentStart, Integer currentSelect){
-		this.currentStart = currentStart;
-		this.currentCount = currentCount;
-	}
-
 	
 	public Integer getCurrentStart(){
 		return currentStart;
@@ -44,7 +36,7 @@ public class PagerBean {
 	}
 	
 	public String getViewingStart(){
-		return currentStart.toString();
+		return Integer.toString(currentStart + 1);
 	}
 	
 	public String getViewingEnd(){
@@ -55,6 +47,11 @@ public class PagerBean {
 		return totalCount.toString();
 	}
 	
+	
+	//Form Submit Methods
+	public void changePageSize(){
+		//do nothing
+	}
 	
 	public void goToFirstPage(){
 		currentStart = 0;

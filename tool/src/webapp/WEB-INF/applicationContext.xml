@@ -20,14 +20,22 @@
       <property name="localeGetter" ref="requestLocaleProxy" />
    </bean>
 
+   <!-- Define the bean roots from the request scope file that are accessible 
+    via incoming request URL -->
+   <bean parent="requestAddressibleParent">
+    <property name="value" value="PagerBean"/>
+  </bean>
+
    <!-- Override the default style of user messages -->
    <bean id="messageTemplateContributor" parent="templateContributorParent">
       <property name="baseDirectory" value="component-templates/" />
       <property name="templateNames" value="Navbar,Pager" />
    </bean>
    
-   <bean parent="requestAddressibleParent">
-    <property name="value" value="pagerBean"/>
-  </bean>
-
+   <!-- The beans listed here are session beans (they stick around) -->
+	<bean id="myBeanScope" parent="beanScopeParent">
+		<property name="copyPreservingBeans" value="PagerBean" />
+		<property name="exclusive" value="true" />
+	</bean>
+   
 </beans>
