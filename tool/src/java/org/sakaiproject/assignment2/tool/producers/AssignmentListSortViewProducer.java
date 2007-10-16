@@ -5,7 +5,9 @@ import java.util.List;
 
 import org.sakaiproject.assignment2.tool.producers.AssignmentListReorderProducer;
 import org.sakaiproject.assignment2.tool.producers.NavBarRenderer;
+import org.sakaiproject.assignment2.tool.producers.PagerRenderer;
 import org.sakaiproject.assignment2.tool.params.AssignmentListSortViewParams;
+import org.sakaiproject.assignment2.tool.beans.PagerBean;
 
 import uk.org.ponder.messageutil.MessageLocator;
 import uk.org.ponder.rsf.components.*;
@@ -52,30 +54,39 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
     public static final String DEFAULT_SORT_DIR = SORT_DIR_DESC;
     public static final String DEFAULT_SORT_BY = SORT_BY_DUE;
     
+    private String current_sort_by;
+    private String current_sort_dir;
+    private String opposite_sort_dir;
+    
     //images
     public static final String BULLET_UP_IMG_SRC = "/sakai-assignment2-tool/content/images/bullet_arrow_up.png";
     public static final String BULLET_DOWN_IMG_SRC = "/sakai-assignment2-tool/content/images/bullet_arrow_down.png";
+    public static final String ATTACH_IMG_SRC = "/sakai-assignment2-tool/content/images/attach.png";
     
     public String getViewID() {
         return VIEW_ID;
     }
 
     private NavBarRenderer navBarRenderer;
-    /**
-    private TextInputEvolver richTextEvolver;
-**/
+    private PagerRenderer pagerRenderer;
     private MessageLocator messageLocator;
+    private PagerBean pagerBean;
 
     public void fillComponents(UIContainer tofill, ViewParameters viewparams, ComponentChecker checker) {
 
     	//get parameters
     	AssignmentListSortViewParams params = (AssignmentListSortViewParams) viewparams;
-    	String current_sort_by = (params.sort_by == null ? DEFAULT_SORT_BY : params.sort_by);
-    	String current_sort_dir = (params.sort_dir == null ? DEFAULT_SORT_DIR : params.sort_dir);
-    	String opposite_sort_dir = (SORT_DIR_ASC.equals(current_sort_dir) ? SORT_DIR_DESC : SORT_DIR_ASC);
+    	current_sort_by = (params.sort_by == null ? DEFAULT_SORT_BY : params.sort_by);
+    	current_sort_dir = (params.sort_dir == null ? DEFAULT_SORT_DIR : params.sort_dir);
+    	opposite_sort_dir = (SORT_DIR_ASC.equals(current_sort_dir) ? SORT_DIR_DESC : SORT_DIR_ASC);
+    	
+    	//get paging data
+    	int total_count = 10;
+    	pagerBean.setTotalCount(total_count);
     	
         UIMessage.make(tofill, "page-title", "assignment2.assignment_list-sortview.title");
         navBarRenderer.makeNavBar(tofill, "navIntraTool:", VIEW_ID);
+        pagerRenderer.makePager(tofill, "pagerDiv:", VIEW_ID, viewparams);
         
         UIMessage.make(tofill, "heading", "assignment2.assignment_list-sortview.heading");
         //Links
@@ -92,72 +103,89 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
         			UIMessage.make("assignment2.assignment_list-sortview.tableheader.assignment"),
         		new AssignmentListSortViewParams(AssignmentListSortViewProducer.VIEW_ID, SORT_BY_ASSIGNMENT, (SORT_BY_ASSIGNMENT.equals(current_sort_by) ? opposite_sort_dir : SORT_DIR_ASC)));
         if (current_sort_by.equals(SORT_BY_ASSIGNMENT) && current_sort_dir.equals(SORT_DIR_ASC)){
-        	UILink.make(tofill, "assignment_arrowup", BULLET_UP_IMG_SRC);
+        	UILink.make(tofill, "assignment_arrow", BULLET_UP_IMG_SRC);
         } else if (current_sort_by.equals(SORT_BY_ASSIGNMENT) && current_sort_dir.equals(SORT_DIR_DESC)){
-        	UILink.make(tofill, "assignment_arrowdown", BULLET_DOWN_IMG_SRC);
+        	UILink.make(tofill, "assignment_arrow", BULLET_DOWN_IMG_SRC);
         }
         //For sorting Link
         UIInternalLink.make(tofill, "tableheader.for", 
     			UIMessage.make("assignment2.assignment_list-sortview.tableheader.for"),
     			new AssignmentListSortViewParams(AssignmentListSortViewProducer.VIEW_ID, SORT_BY_FOR, (SORT_BY_FOR.equals(current_sort_by) ? opposite_sort_dir : SORT_DIR_ASC)));
         if (current_sort_by.equals(SORT_BY_FOR) && current_sort_dir.equals(SORT_DIR_ASC)){
-        	UILink.make(tofill, "for_arrowup", BULLET_UP_IMG_SRC);
+        	UILink.make(tofill, "for_arrow", BULLET_UP_IMG_SRC);
         } else if (current_sort_by.equals(SORT_BY_FOR) && current_sort_dir.equals(SORT_DIR_DESC)){
-        	UILink.make(tofill, "for_arrowdown", BULLET_DOWN_IMG_SRC);
+        	UILink.make(tofill, "for_arrow", BULLET_DOWN_IMG_SRC);
         }
         //Status Sorting Link
         UIInternalLink.make(tofill, "tableheader.status", 
     			UIMessage.make("assignment2.assignment_list-sortview.tableheader.status"),
     			new AssignmentListSortViewParams(AssignmentListSortViewProducer.VIEW_ID, SORT_BY_STATUS, (SORT_BY_STATUS.equals(current_sort_by) ? opposite_sort_dir : SORT_DIR_ASC)));
         if (current_sort_by.equals(SORT_BY_STATUS) && current_sort_dir.equals(SORT_DIR_ASC)){
-        	UILink.make(tofill, "status_arrowup", BULLET_UP_IMG_SRC);
+        	UILink.make(tofill, "status_arrow", BULLET_UP_IMG_SRC);
         } else if (current_sort_by.equals(SORT_BY_STATUS) && current_sort_dir.equals(SORT_DIR_DESC)){
-        	UILink.make(tofill, "status_arrowdown", BULLET_DOWN_IMG_SRC);
+        	UILink.make(tofill, "status_arrow", BULLET_DOWN_IMG_SRC);
         }
         //Open Sorting Link
         UIInternalLink.make(tofill, "tableheader.open", 
     			UIMessage.make("assignment2.assignment_list-sortview.tableheader.open"),
     			new AssignmentListSortViewParams(AssignmentListSortViewProducer.VIEW_ID, SORT_BY_OPEN, (SORT_BY_OPEN.equals(current_sort_by) ? opposite_sort_dir : SORT_DIR_ASC)));
         if (current_sort_by.equals(SORT_BY_OPEN) && current_sort_dir.equals(SORT_DIR_ASC)){
-        	UILink.make(tofill, "open_arrowup", BULLET_UP_IMG_SRC);
+        	UILink.make(tofill, "open_arrow", BULLET_UP_IMG_SRC);
         } else if (current_sort_by.equals(SORT_BY_OPEN) && current_sort_dir.equals(SORT_DIR_DESC)){
-        	UILink.make(tofill, "open_arrowdown", BULLET_DOWN_IMG_SRC);
+        	UILink.make(tofill, "open_arrow", BULLET_DOWN_IMG_SRC);
         }
         //Due Sorting Link
         UIInternalLink.make(tofill, "tableheader.due", 
     			UIMessage.make("assignment2.assignment_list-sortview.tableheader.due"),
     			new AssignmentListSortViewParams(AssignmentListSortViewProducer.VIEW_ID, SORT_BY_DUE, (SORT_BY_DUE.equals(current_sort_by) ? opposite_sort_dir : SORT_DIR_ASC)));
         if (current_sort_by.equals(SORT_BY_DUE) && current_sort_dir.equals(SORT_DIR_ASC)){
-        	UILink.make(tofill, "due_arrowup", BULLET_UP_IMG_SRC);
+        	UILink.make(tofill, "due_arrow", BULLET_UP_IMG_SRC);
         } else if (current_sort_by.equals(SORT_BY_DUE) && current_sort_dir.equals(SORT_DIR_DESC)){
-        	UILink.make(tofill, "due_arrowdown", BULLET_DOWN_IMG_SRC);
+        	UILink.make(tofill, "due_arrow", BULLET_DOWN_IMG_SRC);
         }
         //IN Sorting Link
         UIInternalLink.make(tofill, "tableheader.in", 
     			UIMessage.make("assignment2.assignment_list-sortview.tableheader.in"),
     			new AssignmentListSortViewParams(AssignmentListSortViewProducer.VIEW_ID, SORT_BY_IN, (SORT_BY_IN.equals(current_sort_by) ? opposite_sort_dir : SORT_DIR_ASC)));
         if (current_sort_by.equals(SORT_BY_IN) && current_sort_dir.equals(SORT_DIR_ASC)){
-        	UILink.make(tofill, "in_arrowup", BULLET_UP_IMG_SRC);
+        	UILink.make(tofill, "in_arrow", BULLET_UP_IMG_SRC);
         } else if (current_sort_by.equals(SORT_BY_IN) && current_sort_dir.equals(SORT_DIR_DESC)){
-        	UILink.make(tofill, "in_arrowdown", BULLET_DOWN_IMG_SRC);
+        	UILink.make(tofill, "in_arrow", BULLET_DOWN_IMG_SRC);
         }
         //NEW Sorting Link
         UIInternalLink.make(tofill, "tableheader.new", 
     			UIMessage.make("assignment2.assignment_list-sortview.tableheader.new"),
     			new AssignmentListSortViewParams(AssignmentListSortViewProducer.VIEW_ID, SORT_BY_NEW, (SORT_BY_NEW.equals(current_sort_by) ? opposite_sort_dir : SORT_DIR_ASC)));
         if (current_sort_by.equals(SORT_BY_NEW) && current_sort_dir.equals(SORT_DIR_ASC)){
-        	UILink.make(tofill, "new_arrowup", BULLET_UP_IMG_SRC);
+        	UILink.make(tofill, "new_arrow", BULLET_UP_IMG_SRC);
         } else if (current_sort_by.equals(SORT_BY_NEW) && current_sort_dir.equals(SORT_DIR_DESC)){
-        	UILink.make(tofill, "new_arrowdown", BULLET_DOWN_IMG_SRC);
+        	UILink.make(tofill, "new_arrow", BULLET_DOWN_IMG_SRC);
         }
         //Scale Sorting Link
         UIInternalLink.make(tofill, "tableheader.scale", 
     			UIMessage.make("assignment2.assignment_list-sortview.tableheader.scale"),
     			new AssignmentListSortViewParams(AssignmentListSortViewProducer.VIEW_ID, SORT_BY_SCALE, (SORT_BY_SCALE.equals(current_sort_by) ? opposite_sort_dir : SORT_DIR_ASC)));
         if (current_sort_by.equals(SORT_BY_SCALE) && current_sort_dir.equals(SORT_DIR_ASC)){
-        	UILink.make(tofill, "scale_arrowup", BULLET_UP_IMG_SRC);
+        	UILink.make(tofill, "scale_arrow", BULLET_UP_IMG_SRC);
         } else if (current_sort_by.equals(SORT_BY_SCALE) && current_sort_dir.equals(SORT_DIR_DESC)){
-        	UILink.make(tofill, "scale_arrowdown", BULLET_DOWN_IMG_SRC);
+        	UILink.make(tofill, "scale_arrow", BULLET_DOWN_IMG_SRC);
+        }
+              
+        
+        //Fill out Table
+        for (int i=0; i < 4; i ++){
+        	UIBranchContainer row = UIBranchContainer.make(tofill, "assignment-row:");
+        	UIInternalLink.make(row, "assignment_row_link", "Homework Example 2", new SimpleViewParameters(AssignmentListReorderProducer.VIEW_ID));
+        	UIInternalLink.make(row, "assignment_row_edit", "Edit", new SimpleViewParameters(AssignmentListReorderProducer.VIEW_ID));
+        	UIInternalLink.make(row, "assignment_row_duplicate", "Duplicate", new SimpleViewParameters(AssignmentListReorderProducer.VIEW_ID));
+        	UIInternalLink.make(row, "assignment_row_grade", "Grade Assignment", new SimpleViewParameters(AssignmentListReorderProducer.VIEW_ID));
+        	
+        	UIOutput.make(row, "assignment_row_for", "Site");
+        	UIOutput.make(row, "assignment_row_status", "Open");
+        	UIOutput.make(row, "assignment_row_open", "Sep 24, 2007 11:00 am");
+        	UIOutput.make(row, "assignment_row_due", "Oct 1, 2007 6:00 pm");
+        	UIInternalLink.make(row, "assignment_row_in_new", "2/2", new SimpleViewParameters(AssignmentListReorderProducer.VIEW_ID));
+        	UIOutput.make(row, "assignment_row_scale", "0-100.0");
         }
         
 
@@ -174,9 +202,13 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
     public void setNavBarRenderer(NavBarRenderer navBarRenderer) {
         this.navBarRenderer = navBarRenderer;
     }
-    /***
-    public void setRichTextEvolver(TextInputEvolver richTextEvolver) {
-        this.richTextEvolver = richTextEvolver;
+    
+    public void setPagerRenderer(PagerRenderer pagerRenderer){
+    	this.pagerRenderer = pagerRenderer;
     }
-**/
+    
+    public void setPagerBean(PagerBean pagerBean){
+    	this.pagerBean = pagerBean;
+    }
+
 }

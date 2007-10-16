@@ -21,31 +21,11 @@
 
 <div class="portletBody">
 	<ul rsf:id="navIntraTool:" class="navIntraTool">
-		<li><a href="#" title="Assignment List">Add</a></li>
-		<li>Assignment List</li>
-		<li><a href="#" title="Grade Report">Grade Report</a></li>
-		<li class="last"><a href="#" title="Permissions">Permissions</a></li>
 	</ul>
 
 	<h3 rsf:id="heading">Assignment List</h3>
 
-	<div class="listNav">
-		<div  class="instruction">Viewing 1 - 2 of 2 items</div>
-		<form name="" class="inlineForm"><input type="submit" name="" value="|&lt;" disabled="disabled"/></form>
-		<form name="" class="inlineForm"><input type="submit" name="" value="&lt;" disabled="disabled" /></form>
-		<form name="" class="inlineForm" method="post" action="" value="">
-			<label for="" class="skip">Press Enter, then use alt + up and down arrows to scroll through menu</label>
-			<select id="" name="">
-				<option value="5" >Show 5 items</option>
-				<option value="10" >Show 10 items</option>
-				<option value="20" >Show 20 items</option>
-				<option value="50" >Show 50 items</option>
-				<option value="100" >Show 100 items</option>
-				<option value="200"  selected="selected" >Show 200 items</option>
-			</select>
-		</form>
-		<form name="" class="inlineForm"><input type="submit" name="" value="&gt;" disabled="disabled" /></form>
-		<form name="" class="inlineForm"><input type="submit" name="" value="&gt;|" disabled="disabled" /></form>
+	<div rsf:id="pagerDiv:" class="listNav">
 	</div>
 	Sort Order View | <a rsf:id="assignment_list-reorder-link" href="assignment_list-reorder.html">My Reorder View</a>
 
@@ -56,67 +36,59 @@
 				<th class="attach">&nbsp;</th>
 				<th>
 					<a rsf:id="tableheader.assignment" href="assignment_list-sortview.html" title="Sort by title">Assignment</a>
-					<img rsf:id="assignment_arrowdown" src="/sakai-assignment2-tool/content/images/bullet_arrow_down.png" alt="Sort order" width="16" height="16" align="absmiddle" />
-					<img rsf:id="assignment_arrowup" src="/sakai-assignment2-tool/content/images/bullet_arrow_up.png" alt="Sort order" width="16" height="16" align="absmiddle" />
+					<img rsf:id="assignment_arrow" src="/sakai-assignment2-tool/content/images/bullet_arrow_up.png" alt="Sort order" width="16" height="16" align="absmiddle" />
 				</th>
 				<th>
 					<a rsf:id="tableheader.for" href="assignment_list-sortview.html" title="Sort by audience">For</a>
-					<img rsf:id="for_arrowdown" src="/sakai-assignment2-tool/content/images/bullet_arrow_down.png" alt="Sort order" width="16" height="16" align="absmiddle" />
-					<img rsf:id="for_arrowup" src="/sakai-assignment2-tool/content/images/bullet_arrow_up.png" alt="Sort order" width="16" height="16" align="absmiddle" />
+					<img rsf:id="for_arrow" src="/sakai-assignment2-tool/content/images/bullet_arrow_up.png" alt="Sort order" width="16" height="16" align="absmiddle" />
 
 				</th>
 				<th>
 					<a rsf:id="tableheader.status" href="assignment_list-sortview.html" title="Sort by status">Status</a>
-					<img rsf:id="status_arrowdown" src="/sakai-assignment2-tool/content/images/bullet_arrow_down.png" alt="Sort order" width="16" height="16" align="absmiddle" />
-					<img rsf:id="status_arrowup" src="/sakai-assignment2-tool/content/images/bullet_arrow_up.png" alt="Sort order" width="16" height="16" align="absmiddle" />
+					<img rsf:id="status_arrow" src="/sakai-assignment2-tool/content/images/bullet_arrow_up.png" alt="Sort order" width="16" height="16" align="absmiddle" />
 
 				</th>
 				<th>
 					<a rsf:id="tableheader.open" href="assignment_list-sortview.html"  title="Sort by section">Open</a>
-					<img rsf:id="open_arrowdown" src="/sakai-assignment2-tool/content/images/bullet_arrow_down.png" alt="Sort order" width="16" height="16" align="absmiddle" />
-					<img rsf:id="open_arrowup" src="/sakai-assignment2-tool/content/images/bullet_arrow_up.png" alt="Sort order" width="16" height="16" align="absmiddle" />
+					<img rsf:id="open_arrow" src="/sakai-assignment2-tool/content/images/bullet_arrow_up.png" alt="Sort order" width="16" height="16" align="absmiddle" />
 
 				</th>
 				<th>
 					<a rsf:id="tableheader.due" href="assignment_list-sortview.html" title="Sort by due date">Due</a>
-					<img rsf:id="due_arrowdown" src="/sakai-assignment2-tool/content/images/bullet_arrow_down.png" alt="Sort order" width="16" height="16" align="absmiddle" />
-					<img rsf:id="due_arrowup" src="/sakai-assignment2-tool/content/images/bullet_arrow_up.png" alt="Sort order" width="16" height="16" align="absmiddle" />
+					<img rsf:id="due_arrow" src="/sakai-assignment2-tool/content/images/bullet_arrow_up.png" alt="Sort order" width="16" height="16" align="absmiddle" />
 				</th>
 				<th>
 					<a rsf:id="tableheader.in" href="assignment_list-sortview.html" title="Sort by number of total submissions">In</a>
-					<img rsf:id="in_arrowdown" src="/sakai-assignment2-tool/content/images/bullet_arrow_down.png" alt="Sort order" width="16" height="16" align="absmiddle" />
-					<img rsf:id="in_arrowup" src="/sakai-assignment2-tool/content/images/bullet_arrow_up.png" alt="Sort order" width="16" height="16" align="absmiddle" />
+					<img rsf:id="in_arrow" src="/sakai-assignment2-tool/content/images/bullet_arrow_up.png" alt="Sort order" width="16" height="16" align="absmiddle" />
 					/<a rsf:id="tableheader.new" href="#" title="Sort by number of ungraded submissions">New</a>
-					<img rsf:id="new_arrowdown" src="/sakai-assignment2-tool/content/images/bullet_arrow_down.png" alt="Sort order" width="16" height="16" align="absmiddle" />
-					<img rsf:id="new_arrowup" src="/sakai-assignment2-tool/content/images/bullet_arrow_up.png" alt="Sort order" width="16" height="16" align="absmiddle" />
+					<img rsf:id="new_arrow" src="/sakai-assignment2-tool/content/images/bullet_arrow_up.png" alt="Sort order" width="16" height="16" align="absmiddle" />
 				</th>
 				<th>
 					<a rsf:id="tableheader.scale" href="assignment_list-sortview.html" title="Sort by max grade available">Scale</a>
-					<img rsf:id="scale_arrowdown" src="/sakai-assignment2-tool/content/images/bullet_arrow_down.png" alt="Sort order" width="16" height="16" align="absmiddle" />
-					<img rsf:id="scale_arrowup" src="/sakai-assignment2-tool/content/images/bullet_arrow_up.png" alt="Sort order" width="16" height="16" align="absmiddle" />
+					<img rsf:id="scale_arrow" src="/sakai-assignment2-tool/content/images/bullet_arrow_down.png" alt="Sort order" width="16" height="16" align="absmiddle" />
 				</th>
 			</tr>
 
 
-			<tr> 
+			<tr rsf:id="assignment-row:"> 
 				<td>
 					<input type="checkbox" name="" value="" id="" /> <label for="" class="skip">Remove</label>
 				</td>
-				<td headers="attachments" class="attach"><img src="/sakai-assignment2-tool/content/images/attach.png" width="16" height="16" border="0" /></td>
+				<td headers="attachments" class="attach"><img rsf:id="assignment_row_attach_img" width="16" height="16" border="0" /></td>
 				<td headers="title">
-				<h4><a href="">Homework Example 2</a></h4>
+				<h4><a rsf:id="assignment_row_link">Homework Example 2</a></h4>
 					<ul class="itemAction">
-						<li><a href="">Edit</a></li>
-						<li><a href="">Duplicate</a></li>
-						<li class="last"><a href="">Grade Assignment</a></li>
+						<li><a rsf:id="assignment_row_edit">Edit</a></li>
+						<li><a rsf:id="assignment_row_duplicate">Duplicate</a></li>
+						<li class="last"><a rsf:id="assignment_row_grade">Grade Assignment</a></li>
 					</ul>
 				</td>
-				<td>Group 1, Group 2</td>
-				<td>Open</td>
-				<td>Sep 24, 2007 11:00 am</td>
-				<td>Oct 1, 2007 6:00 pm</td>
-				<td><a href="">2/2</a></td>
-				<td>0-100.0</td>
+				<td rsf:id="assignment_row_for">Group 1, Group 2</td>
+				<td rsf:id="assignment_row_status">Open</td>
+				<td rsf:id="assignment_row_open">Sep 24, 2007 11:00 am</td>
+				<td rsf:id="assignment_row_due">Oct 1, 2007 6:00 pm</td>
+				<td><a rsf:id="assignment_row_in_new">2/2</a></td>
+				<td rsf:id="assignment_row_scale">0-100.0</td>
 			</tr>
 
 

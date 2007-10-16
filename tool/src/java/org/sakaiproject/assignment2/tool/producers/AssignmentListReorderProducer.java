@@ -35,8 +35,8 @@ public class AssignmentListReorderProducer implements ViewComponentProducer {
         return VIEW_ID;
     }
 
-    /**
     private NavBarRenderer navBarRenderer;
+    /**
     private TextInputEvolver richTextEvolver;
     **/
     private MessageLocator messageLocator;
@@ -59,11 +59,11 @@ public class AssignmentListReorderProducer implements ViewComponentProducer {
         this.messageLocator = messageLocator;
     }
 
-    /**
+    
     public void setNavBarRenderer(NavBarRenderer navBarRenderer) {
         this.navBarRenderer = navBarRenderer;
     }
-
+    /**
     public void setRichTextEvolver(TextInputEvolver richTextEvolver) {
         this.richTextEvolver = richTextEvolver;
     }

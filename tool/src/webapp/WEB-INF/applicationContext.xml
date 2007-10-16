@@ -23,7 +23,11 @@
    <!-- Override the default style of user messages -->
    <bean id="messageTemplateContributor" parent="templateContributorParent">
       <property name="baseDirectory" value="component-templates/" />
-      <property name="templateNames" value="Navbar" />
+      <property name="templateNames" value="Navbar,Pager" />
    </bean>
+   
+   <bean parent="requestAddressibleParent">
+    <property name="value" value="pagerBean"/>
+  </bean>
 
 </beans>

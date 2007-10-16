@@ -9,6 +9,11 @@
       <!-- <property name="externalLogic" ref="org.sakaiproject.blogwow.logic.ExternalLogic" /> -->
       <!-- <property name="blogLogic" ref="org.sakaiproject.blogwow.logic.BlogLogic" /> -->
    </bean>
+   <bean id="PagerRenderer" class="org.sakaiproject.assignment2.tool.producers.PagerRenderer">
+	  <property name="pagerBean" ref="PagerBean" />
+      <!-- <property name="externalLogic" ref="org.sakaiproject.blogwow.logic.ExternalLogic" /> -->
+      <!-- <property name="blogLogic" ref="org.sakaiproject.blogwow.logic.BlogLogic" /> -->
+   </bean>
 
    <!-- list the producer beans here -->
    <bean class="org.sakaiproject.assignment2.tool.producers.AssignmentAddProducer">
@@ -33,8 +38,9 @@
 
    <bean class="org.sakaiproject.assignment2.tool.producers.AssignmentListSortViewProducer">
       <property name="navBarRenderer" ref="NavbarRenderer" />
-      <!--  <property name="richTextEvolver" ref="richTextEvolver" /> -->
+      <property name="pagerRenderer" ref="PagerRenderer" />
       <property name="messageLocator" ref="messageLocator" />
+      <property name="pagerBean" ref="PagerBean" />
    </bean>
 
    <bean class="org.sakaiproject.assignment2.tool.producers.AssignmentPermissionsProducer">
@@ -44,7 +50,7 @@
    </bean>
 
    
-   <bean id="assignment" class="org.sakaiproject.assignment2.tool.beans.AssignmentBean" />
+   <bean id="PagerBean" class="org.sakaiproject.assignment2.tool.beans.PagerBean" />
 
 
 </beans>
