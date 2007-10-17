@@ -23,6 +23,7 @@ import uk.org.ponder.rsf.components.UISelectChoice;
 import uk.org.ponder.rsf.components.UIVerbatim;
 import uk.org.ponder.rsf.components.decorators.DecoratorList;
 import uk.org.ponder.rsf.components.decorators.UILabelTargetDecorator;
+import uk.org.ponder.rsf.components.decorators.UIFreeAttributeDecorator;
 import uk.org.ponder.rsf.evolvers.TextInputEvolver;
 import uk.org.ponder.rsf.flow.ARIResult;
 import uk.org.ponder.rsf.flow.ActionResultInterceptor;
@@ -33,6 +34,8 @@ import uk.org.ponder.rsf.view.ViewComponentProducer;
 import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
 import uk.org.ponder.rsf.viewstate.ViewParameters;
 import uk.org.ponder.rsf.viewstate.ViewParamsReporter;
+import java.util.Map;
+import java.util.HashMap;
 
 public class AssignmentListReorderProducer implements ViewComponentProducer {
 
@@ -73,6 +76,9 @@ public class AssignmentListReorderProducer implements ViewComponentProducer {
         	
         	//Sorting LI
         	UIBranchContainer li = UIBranchContainer.make(tofill, "assignment_li:");
+        	Map attrmap = new HashMap();
+        	attrmap.put("id", "li_" + i);
+        	li.decorators = new DecoratorList(new UIFreeAttributeDecorator(attrmap));
         	
         	
         	//Table Row
