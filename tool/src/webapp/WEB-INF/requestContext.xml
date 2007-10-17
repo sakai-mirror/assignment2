@@ -31,7 +31,8 @@
    
    <bean class="org.sakaiproject.assignment2.tool.producers.AssignmentListReorderProducer">
       <property name="navBarRenderer" ref="NavbarRenderer" />
-      <!--  <property name="richTextEvolver" ref="richTextEvolver" /> -->
+	  <property name="pagerRenderer" ref="PagerRenderer" />
+	  <property name="pagerBean" ref="PagerBean" />
       <property name="messageLocator" ref="messageLocator" />
    </bean>
 

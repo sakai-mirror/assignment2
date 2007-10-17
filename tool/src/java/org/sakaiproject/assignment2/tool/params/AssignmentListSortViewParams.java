@@ -3,9 +3,8 @@
 package org.sakaiproject.assignment2.tool.params;
 
 import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
-import org.sakaiproject.assignment2.tool.params.PagerViewParams;
 
-public class AssignmentListSortViewParams extends PagerViewParams {
+public class AssignmentListSortViewParams extends SimpleViewParameters {
 
 	public String sort_by;
 	public String sort_dir;

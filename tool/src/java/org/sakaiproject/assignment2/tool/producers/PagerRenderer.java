@@ -1,7 +1,6 @@
 package org.sakaiproject.assignment2.tool.producers;
 
 import org.sakaiproject.assignment2.tool.producers.*;
-import org.sakaiproject.assignment2.tool.params.PagerViewParams;
 import org.sakaiproject.assignment2.tool.beans.PagerBean;
 
 import uk.org.ponder.rsf.components.ELReference;

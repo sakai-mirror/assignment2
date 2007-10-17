@@ -1,7 +1,6 @@
 $(document).ready(function(){
-	$("#reorder-table").Sortable({
-		accept: "sortable",
+	$("ul.sortable").Sortable({
+		accept: "sortableitem",
 		axis: "vertically"
 	});
-
 });
