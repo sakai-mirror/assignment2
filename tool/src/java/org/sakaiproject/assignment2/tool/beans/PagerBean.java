@@ -35,6 +35,10 @@ public class PagerBean {
 		return currentCount.toString();
 	}
 	
+	public void setCurrentSelect(String currentSelect){
+		this.currentCount = Integer.valueOf(currentSelect);
+	}
+	
 	public String getViewingStart(){
 		return Integer.toString(currentStart + 1);
 	}
