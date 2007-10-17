@@ -11,6 +11,7 @@ import org.sakaiproject.assignment2.tool.beans.PagerBean;
 import uk.org.ponder.messageutil.MessageLocator;
 import uk.org.ponder.rsf.components.UIBranchContainer;
 import uk.org.ponder.rsf.components.UICommand;
+import uk.org.ponder.rsf.components.UIComponent;
 import uk.org.ponder.rsf.components.UIContainer;
 import uk.org.ponder.rsf.components.UIForm;
 import uk.org.ponder.rsf.components.UIInput;
@@ -62,12 +63,30 @@ public class AssignmentListReorderProducer implements ViewComponentProducer {
 					UIMessage.make("assignment2.assignment_list-sortview.title"),
 				new SimpleViewParameters(AssignmentListSortViewProducer.VIEW_ID));
         
-        //Fill out UL
+        
+        //Fill out Table & UL
         for (int i=0; i < 4; i ++){
-        	UIBranchContainer row = UIBranchContainer.make(tofill, "assignment_li:");
-        	UIOutput.make(row, "assignment_title", "Homework Example 2");
-        	UIMessage.make(row, "assignment_due_on", "assignment2.assignment_list-reorder.due_on");
-        	UIOutput.make(row, "assignment_duedate", "Oct 1, 2007 6:00 pm");
+        	UIBranchContainer row = UIBranchContainer.make(tofill, "assignment-row:");
+        	if (i == 0){
+        		UIOutput cell = UIOutput.make(row, "reorder_cell");
+        	}
+        	
+        	//Sorting LI
+        	UIBranchContainer li = UIBranchContainer.make(tofill, "assignment_li:");
+        	
+        	
+        	//Table Row
+        	UIInternalLink.make(row, "assignment_row_link", "Homework Example " + i, new SimpleViewParameters(AssignmentListReorderProducer.VIEW_ID));
+        	UIInternalLink.make(row, "assignment_row_edit", "Edit", new SimpleViewParameters(AssignmentListReorderProducer.VIEW_ID));
+        	UIInternalLink.make(row, "assignment_row_duplicate", "Duplicate", new SimpleViewParameters(AssignmentListReorderProducer.VIEW_ID));
+        	UIInternalLink.make(row, "assignment_row_grade", "Grade Assignment", new SimpleViewParameters(AssignmentListReorderProducer.VIEW_ID));
+        	
+        	UIOutput.make(row, "assignment_row_for", "Site");
+        	UIOutput.make(row, "assignment_row_status", "Open");
+        	UIOutput.make(row, "assignment_row_open", "Sep 24, 2007 11:00 am");
+        	UIOutput.make(row, "assignment_row_due", "Oct 1, 2007 6:00 pm");
+        	UIInternalLink.make(row, "assignment_row_in_new", "2/2", new SimpleViewParameters(AssignmentListReorderProducer.VIEW_ID));
+        	UIOutput.make(row, "assignment_row_scale", "0-100.0");
         }
         
     }

@@ -16,6 +16,24 @@
     <script type="text/javascript" language="JavaScript" src="/library/js/headscripts.js"></script>
 	<link href="/sakai-assignment2-tool/content/css/assignmentsv4.css" type="text/css" rel="stylesheet" media="all" />
 
+<style type="text/css">
+    li.sortableitem, .hoverClass {
+      margin: 0;
+      margin-left: 20px;
+      padding: 0;
+      height: 32px;
+      width: 32px;
+   }
+   ul.sortable {
+      margin: 0;
+      padding: 0;
+   }
+   table#reorder-table td{
+      padding: 0;
+      margin: 0;
+   }
+</style>
+
 </head>
 
 <body>
@@ -30,15 +48,55 @@
 	</div>
 	
 	<a rsf:id="assignment_list-sortview-link" href="assignment_list-sortview">Sort Order View</a> | My Reorder View
+    <form name="" action="" method="post">
+	<table id="reorder-table" class="listHier lines">
+		<tr> 
+			<th>Reorder</th>
+			<th>Remove?</th>
+			<th class="attach">&nbsp;</th>
+			<th>Assignment</th>
+			<th>For</th>
+			<th>Status</th>
+			<th>Open</th>
+			<th>Due</th>
+			<th>In/New</th>
+			<th>Scale</th>
+		</tr>
+      <tr class="container">
+         <td rowspan="5">
+				<ul class="sortable">
+					<li rsf:id="assignment_li:" class="sortableitem">
+						<img src="/sakai-assignment2-tool/content/images/reorder.png" class="reorder_handle" alt="Reorder Handle" width="32" height="32" align="absmiddle" /></li>
+				</ul>		
+			</td>
+         <td colspan="9" class="skip"></td>
+      </tr>
+		<tr rsf:id="assignment-row:" class="datarow">
+			
+			<td>
+				<input type="checkbox" name="" value="" id="" /> <label for="" class="skip">Remove</label>
+			</td>
+			<td headers="attachments" class="attach"><img rsf:id="assignment_row_attach_img" width="16" height="16" border="0" /></td>
+			<td headers="title">
+			<h4><a rsf:id="assignment_row_link">Homework Example 2</a></h4>
+				<ul class="itemAction">
+					<li><a rsf:id="assignment_row_edit">Edit</a></li>
+					<li><a rsf:id="assignment_row_duplicate">Duplicate</a></li>
+					<li class="last"><a rsf:id="assignment_row_grade">Grade Assignment</a></li>
+				</ul>
+			</td>
+			<td rsf:id="assignment_row_for">Group 1, Group 2</td>
+			<td rsf:id="assignment_row_status">Open</td>
+			<td rsf:id="assignment_row_open">Sep 24, 2007 11:00 am</td>
+			<td rsf:id="assignment_row_due">Oct 1, 2007 6:00 pm</td>
+			<td><a rsf:id="assignment_row_in_new">2/2</a></td>
+			<td rsf:id="assignment_row_scale">0-100.0</td>
+		</tr>
+	</table>
 
-	<ul class="sortable">
-		<li rsf:id="assignment_li:" class="sortableitem">
-			<img src="/sakai-assignment2-tool/content/images/reorder.png" class="reorder_handle" alt="Reorder Handle" width="16" height="16" align="absmiddle" />
-			<span rsf:id="assignment_title">Assignment Title</span>
-			<span rsf:id="assignment_due_on">Due On:</span>
-			<span rsf:id="assignment_duedate">Assignment Due Date</span>
-		</li>
-	</ul>		
+	<input type="submit" class="active" name="eventSubmit_doDelete_confirm_assignment" value="Update" accesskey="s" />
+	<input type="hidden" name="source" value="0"/>			
+	</form>
 </div>
 </body>
 </html>
