@@ -30,7 +30,8 @@ public class NavBarRenderer {
         
         //Assignment List Link
         cell = UIBranchContainer.make(joint, "navigation-li:", "2");
-        if (currentViewID.equals(AssignmentListSortViewProducer.VIEW_ID)) {
+        if (currentViewID.equals(AssignmentListSortViewProducer.VIEW_ID) 
+        		|| currentViewID.equals(AssignmentListReorderProducer.VIEW_ID)) {
             UIMessage.make(cell, "navigation-text", "assignment2.navbar.assignment_list");
         } else {
             // user cannot create blog so no add entry link

@@ -3,10 +3,12 @@ package org.sakaiproject.assignment2.tool.producers;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.sakaiproject.assignment2.tool.producers.AssignmentGradeAssignmentProducer;
 import org.sakaiproject.assignment2.tool.producers.AssignmentListReorderProducer;
 import org.sakaiproject.assignment2.tool.producers.NavBarRenderer;
 import org.sakaiproject.assignment2.tool.producers.PagerRenderer;
 import org.sakaiproject.assignment2.tool.params.AssignmentListSortViewParams;
+import org.sakaiproject.assignment2.tool.params.SimpleAssignmentViewParams;
 import org.sakaiproject.assignment2.tool.beans.PagerBean;
 
 import uk.org.ponder.messageutil.MessageLocator;
@@ -181,7 +183,8 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
         	UIInternalLink.make(row, "assignment_row_link", "Homework Example 2", new SimpleViewParameters(AssignmentListReorderProducer.VIEW_ID));
         	UIInternalLink.make(row, "assignment_row_edit", "Edit", new SimpleViewParameters(AssignmentListReorderProducer.VIEW_ID));
         	UIInternalLink.make(row, "assignment_row_duplicate", "Duplicate", new SimpleViewParameters(AssignmentListReorderProducer.VIEW_ID));
-        	UIInternalLink.make(row, "assignment_row_grade", "Grade Assignment", new SimpleViewParameters(AssignmentListReorderProducer.VIEW_ID));
+        	UIInternalLink.make(row, "assignment_row_grade", "Grade Assignment", 
+        			new SimpleAssignmentViewParams(AssignmentGradeAssignmentProducer.VIEW_ID, "2")); //Pass AssignmentId
         	
         	UIOutput.make(row, "assignment_row_for", "Site");
         	UIOutput.make(row, "assignment_row_status", "Open");

@@ -1,5 +1,5 @@
 $(document).ready(function(){
-	$("ul.sortable").Sortable({
+	$("ul#sortable").Sortable({
 		accept: "sortableitem",
 		axis: "vertically",
       floats: false,
@@ -8,7 +8,7 @@ $(document).ready(function(){
 	});
    //match heights of <li> and <tr>
    $("table#reorder-table tr.datarow").each(function(i){
-      li = $("ul.sortable li").get(i);
+      li = $("ul#sortable li").get(i);
       this.id='trow_' + li.id.substring(3);
       if($(li).height() > $(this).height()){
          $(this).height($(li).height());
@@ -30,8 +30,9 @@ $(document).ready(function(){
 
 redrawTableY = function(){
    serial = $.SortSerialize('sortable');
-   alert(serial.hash);
-   $("ul.sortable > li").each(function(i){
+   $.get("ajax-callback?" + serial.hash.replace(/[\[\]]/g, ""));
+   
+   $("ul#sortable > li").each(function(i){
       $("#reorder-table > tbody").append($("#trow_" + this.id.substring(3)));
    });
 }
