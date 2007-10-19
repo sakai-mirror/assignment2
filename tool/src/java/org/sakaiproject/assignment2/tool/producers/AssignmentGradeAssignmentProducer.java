@@ -65,9 +65,9 @@ public class AssignmentGradeAssignmentProducer implements ViewComponentProducer,
     	pagerBean.setTotalCount(total_count);
     	
         UIMessage.make(tofill, "page-title", "assignment2.assignment_grade-assignment.title");
-        //navBarRenderer.makeNavBar(tofill, "navIntraTool:", VIEW_ID);
-        //pagerRenderer.makePager(tofill, "pagerDiv:", VIEW_ID);
-        //UIMessage.make(tofill, "heading", "assignment2.assignment_list-sortview.heading");
+        navBarRenderer.makeNavBar(tofill, "navIntraTool:", VIEW_ID);
+        pagerRenderer.makePager(tofill, "pagerDiv:", VIEW_ID, viewparams);
+        UIMessage.make(tofill, "heading", "assignment2.assignment_list-sortview.heading", new Object[] {"Homework Title"});
 
         //Links
         

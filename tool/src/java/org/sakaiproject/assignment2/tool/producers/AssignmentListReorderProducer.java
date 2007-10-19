@@ -58,7 +58,7 @@ public class AssignmentListReorderProducer implements ViewComponentProducer {
     	
         UIMessage.make(tofill, "page-title", "assignment2.assignment_list-reorder.title");
         navBarRenderer.makeNavBar(tofill, "navIntraTool:", VIEW_ID);
-        pagerRenderer.makePager(tofill, "pagerDiv:", VIEW_ID);
+        pagerRenderer.makePager(tofill, "pagerDiv:", VIEW_ID, viewparams);
         UIMessage.make(tofill, "heading", "assignment2.assignment_list-sortview.heading");
 
         //Links
@@ -79,7 +79,7 @@ public class AssignmentListReorderProducer implements ViewComponentProducer {
         	Map attrmap = new HashMap();
         	attrmap.put("id", "li_" + i);
         	li.decorators = new DecoratorList(new UIFreeAttributeDecorator(attrmap));
-        	
+        	UIOutput.make(li, "assignment_row_title", "Homework Example " + i);
         	
         	//Table Row
         	UIInternalLink.make(row, "assignment_row_link", "Homework Example " + i, new SimpleViewParameters(AssignmentListReorderProducer.VIEW_ID));

@@ -1,3 +1,4 @@
 <root>
   <value rsf:id=":">Value</value>
+  <value rsf:id="tag:">Value</value>
 </root>

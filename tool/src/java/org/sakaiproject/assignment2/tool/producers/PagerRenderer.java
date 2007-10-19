@@ -1,6 +1,6 @@
 package org.sakaiproject.assignment2.tool.producers;
 
-import org.sakaiproject.assignment2.tool.producers.*;
+import org.sakaiproject.assignment2.tool.params.PagerViewParams;
 import org.sakaiproject.assignment2.tool.beans.PagerBean;
 
 import uk.org.ponder.rsf.components.ELReference;
@@ -28,7 +28,8 @@ public class PagerRenderer {
 
 	private PagerBean pagerBean;
 	
-    public void makePager(UIContainer tofill, String divID, String currentViewID) {
+    public void makePager(UIContainer tofill, String divID, String currentViewID, ViewParameters viewparams) {
+    	PagerViewParams pagerparams = (PagerViewParams) viewparams;
     	
         UIJointContainer joint = new UIJointContainer(tofill, divID, "pagerDivContainer:", ""+1);
         
@@ -55,12 +56,16 @@ public class PagerRenderer {
 
 				
 		//Paging Buttons
+		//UIInternalLink first_page = UIInternalLink.make(form, "pager_first_page",
+		//		UIMessage.make("assignment2.pager.pager_first_page"), new PagerViewParams(currentViewID, pagerBean.goToFirstPage(), pagerparams.currentCount));
 		UICommand first_page = UICommand.make(form, "pager_first_page", 
 				UIMessage.make("assignment2.pager.pager_first_page"), "#{PagerBean.goToFirstPage}");
 		UICommand prev_page = UICommand.make(form, "pager_prev_page", 
 				UIMessage.make("assignment2.pager.pager_prev_page"), "#{PagerBean.goToPrevPage}");
 		UICommand next_page = UICommand.make(form, "pager_next_page", 
 				UIMessage.make("assignment2.pager.pager_next_page"), "#{PagerBean.goToNextPage}");
+		//UIInternalLink last_page = UIInternalLink.make(form, "pager_last_page",
+		//		UIMessage.make("assignment2.pager.pager_last_page"), new PagerViewParams(currentViewID, pagerBean.goToLastPage() , pagerparams.currentCount));
 		UICommand last_page = UICommand.make(form, "pager_last_page", 
 				UIMessage.make("assignment2.pager.pager_last_page"), "#{PagerBean.goToLastPage}");
 		

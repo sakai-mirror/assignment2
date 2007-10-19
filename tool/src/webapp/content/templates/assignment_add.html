@@ -34,7 +34,7 @@
 	<h3 rsf:id="heading">Add Assignment</h3>
 	<p class="instruction">Complete the form and choose an action below. <span class="reqStar">*</span> Indicates required information.</p>
 
-	<form>
+	<form rsf:id="assignment_form">
 	<fieldset>
 		<legend>Assignment Details</legend>
 		<ol>
@@ -164,7 +164,10 @@
 			</li>
 			<li>
 				<label for="" class="block">Assignment Instructions</label>
-				<textarea name="new_assignment_instructions" id="new_assignment_instructions" cols="80" rows="20" wrap="virtual"></textarea>
+				<div rsf:id="new_assignment_instructions:">
+					<textarea name="something" cols="80" rows="20" wrap="virtual"></textarea>
+					<!-- this should be the FCKEditor -->
+				</div>
 			</li>
 			<li>
 				<fieldset>

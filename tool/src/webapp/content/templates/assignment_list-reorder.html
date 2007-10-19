@@ -17,18 +17,26 @@
 	<link href="/sakai-assignment2-tool/content/css/assignmentsv4.css" type="text/css" rel="stylesheet" media="all" />
 
 <style type="text/css">
-    li.sortableitem, .hoverClass {
+    div.sortableitem {
+	   clear: left;
+    	float: left;
       margin: 0;
-      margin-left: 20px;
       padding: 0;
       height: 32px;
-      width: 32px;
+
    }
-   ul#sortable {
+   .helperclass {
+   	clear: left;
+   	float: left;
+   	padding: 0;
+   	width: 0px;
+   }
+   td#sortable {
       margin: 0;
       padding: 0;
    }
    table#reorder-table td{
+   	height: 32px;
       padding: 0;
       margin: 0;
    }
@@ -54,7 +62,7 @@
 			<th>Reorder</th>
 			<th>Remove?</th>
 			<th class="attach">&nbsp;</th>
-			<th>Assignment</th>
+			<!--  <th>Assignment</th> -->
 			<th>For</th>
 			<th>Status</th>
 			<th>Open</th>
@@ -63,11 +71,11 @@
 			<th>Scale</th>
 		</tr>
       <tr class="container">
-         <td rowspan="5">
-				<ul id="sortable">
-					<li rsf:id="assignment_li:" class="sortableitem">
-						<img src="/sakai-assignment2-tool/content/images/reorder.png" class="reorder_handle" alt="Reorder Handle" width="32" height="32" align="absmiddle" /></li>
-				</ul>		
+         <td rowspan="5" id="sortable">
+					<div rsf:id="assignment_li:" class="sortableitem">
+						<img src="/sakai-assignment2-tool/content/images/reorder.png" class="reorder_handle" alt="Reorder Handle" width="32" height="32" align="absmiddle" />
+						<span rsf:id="assignment_row_title">Homework Example</span>
+					</div>
 			</td>
          <td colspan="9" class="skip"></td>
       </tr>
@@ -77,6 +85,7 @@
 				<input type="checkbox" name="" value="" id="" /> <label for="" class="skip">Remove</label>
 			</td>
 			<td headers="attachments" class="attach"><img rsf:id="assignment_row_attach_img" width="16" height="16" border="0" /></td>
+			<!-- 
 			<td headers="title">
 			<h4><a rsf:id="assignment_row_link">Homework Example 2</a></h4>
 				<ul class="itemAction">
@@ -85,6 +94,7 @@
 					<li class="last"><a rsf:id="assignment_row_grade">Grade Assignment</a></li>
 				</ul>
 			</td>
+			-->
 			<td rsf:id="assignment_row_for">Group 1, Group 2</td>
 			<td rsf:id="assignment_row_status">Open</td>
 			<td rsf:id="assignment_row_open">Sep 24, 2007 11:00 am</td>

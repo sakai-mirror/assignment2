@@ -5,7 +5,9 @@ public class PagerBean {
 	
 	private Integer currentStart = 0;
 	private Integer currentCount = 5;
-	private Integer totalCount = 0;
+	private Integer totalCount = 16;
+	
+	private static final String PAGER_NAVIGATION = "pager_navigation";
 	
 	public Integer getCurrentStart(){
 		return currentStart;
@@ -59,6 +61,7 @@ public class PagerBean {
 	
 	public void goToFirstPage(){
 		currentStart = 0;
+		//return PAGER_NAVIGATION;
 	}
 	
 	public void goToPrevPage(){
@@ -77,5 +80,6 @@ public class PagerBean {
 		} else {
 			currentStart = 0;
 		}
+		//return PAGER_NAVIGATION; 
 	}
 }

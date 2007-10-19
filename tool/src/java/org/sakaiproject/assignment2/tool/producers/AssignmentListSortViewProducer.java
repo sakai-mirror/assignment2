@@ -13,17 +13,6 @@ import org.sakaiproject.assignment2.tool.beans.PagerBean;
 
 import uk.org.ponder.messageutil.MessageLocator;
 import uk.org.ponder.rsf.components.*;
-import uk.org.ponder.rsf.components.UICommand;
-import uk.org.ponder.rsf.components.UIContainer;
-import uk.org.ponder.rsf.components.UIForm;
-import uk.org.ponder.rsf.components.UIInput;
-import uk.org.ponder.rsf.components.UIInternalLink;
-import uk.org.ponder.rsf.components.UILink;
-import uk.org.ponder.rsf.components.UIMessage;
-import uk.org.ponder.rsf.components.UIOutput;
-import uk.org.ponder.rsf.components.UISelect;
-import uk.org.ponder.rsf.components.UISelectChoice;
-import uk.org.ponder.rsf.components.UIVerbatim;
 import uk.org.ponder.rsf.components.decorators.DecoratorList;
 import uk.org.ponder.rsf.components.decorators.UILabelTargetDecorator;
 import uk.org.ponder.rsf.evolvers.TextInputEvolver;
@@ -54,11 +43,12 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
     public static final String SORT_BY_NEW = "new";
     public static final String SORT_BY_SCALE = "scale";
     public static final String DEFAULT_SORT_DIR = SORT_DIR_DESC;
+    public static final String DEFAULT_OPPOSITE_SORT_DIR = SORT_DIR_ASC;
     public static final String DEFAULT_SORT_BY = SORT_BY_DUE;
     
-    private String current_sort_by;
-    private String current_sort_dir;
-    private String opposite_sort_dir;
+    private String current_sort_by = DEFAULT_SORT_BY;
+    private String current_sort_dir = DEFAULT_SORT_DIR;
+    private String opposite_sort_dir = DEFAULT_OPPOSITE_SORT_DIR;
     
     //images
     public static final String BULLET_UP_IMG_SRC = "/sakai-assignment2-tool/content/images/bullet_arrow_up.png";
@@ -84,11 +74,17 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
     	
     	//get paging data
     	int total_count = 17;
+    	/**if (params.currentCount != null){
+    		pagerBean.setCurrentCount(Integer.valueOf(params.currentCount));
+    	}
+    	if (params.currentStart != null){
+    		pagerBean.setCurrentStart(Integer.valueOf(params.currentStart));
+    	}**/
     	pagerBean.setTotalCount(total_count);
     	
         UIMessage.make(tofill, "page-title", "assignment2.assignment_list-sortview.title");
         navBarRenderer.makeNavBar(tofill, "navIntraTool:", VIEW_ID);
-        pagerRenderer.makePager(tofill, "pagerDiv:", VIEW_ID);
+        pagerRenderer.makePager(tofill, "pagerDiv:", VIEW_ID, viewparams);
         
         UIVerbatim.make(tofill, "debug_info", "Currently, you are sorting by: <strong>" + current_sort_by + " " + 
         			current_sort_dir + "</strong>,   starting from record: <strong>" + pagerBean.getCurrentStart() + "</strong> and paging: <strong>" + pagerBean.getCurrentCount() + "</strong> items.");
@@ -200,7 +196,7 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
     public ViewParameters getViewParameters(){
     	return new AssignmentListSortViewParams();
     }
-
+    
     public void setMessageLocator(MessageLocator messageLocator) {
         this.messageLocator = messageLocator;
     }

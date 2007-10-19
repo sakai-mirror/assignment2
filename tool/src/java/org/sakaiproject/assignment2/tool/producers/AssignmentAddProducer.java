@@ -10,6 +10,7 @@ import uk.org.ponder.rsf.components.UIForm;
 import uk.org.ponder.rsf.components.UIInput;
 import uk.org.ponder.rsf.components.UIInternalLink;
 import uk.org.ponder.rsf.components.UIMessage;
+import uk.org.ponder.rsf.components.UIOutput;
 import uk.org.ponder.rsf.components.UISelect;
 import uk.org.ponder.rsf.components.UISelectChoice;
 import uk.org.ponder.rsf.components.UIVerbatim;
@@ -28,24 +29,28 @@ import uk.org.ponder.rsf.viewstate.ViewParamsReporter;
 
 public class AssignmentAddProducer implements ViewComponentProducer {
 
-    public static final String VIEW_ID = "assignment_add-edit";
+    public static final String VIEW_ID = "assignment_add";
     public String getViewID() {
         return VIEW_ID;
     }
 
 
     private NavBarRenderer navBarRenderer;
-    /**
     private TextInputEvolver richTextEvolver;
-    **/
     private MessageLocator messageLocator;
 
 
     public void fillComponents(UIContainer tofill, ViewParameters viewparams, ComponentChecker checker) {
 
-        UIMessage.make(tofill, "page-title", "assignment2.assignment_add-edit.title");
+        UIMessage.make(tofill, "page-title", "assignment2.assignment_add.title");
         //navBarRenderer.makeNavBar(tofill, "navIntraTool:", VIEW_ID);
-        UIMessage.make(tofill, "heading", "assignment2.assignment_add-edit.heading");
+        UIMessage.make(tofill, "heading", "assignment2.assignment_add.heading");
+
+        UIForm form = UIForm.make(tofill, "assignment_form");
+                
+        //Rich Text Input
+        UIInput instructions = UIInput.make(form, "new_assignment_instructions:", "#{HelloBean.mes}");
+        richTextEvolver.evolveTextInput(instructions);
         
     }
 
@@ -57,10 +62,9 @@ public class AssignmentAddProducer implements ViewComponentProducer {
     public void setNavBarRenderer(NavBarRenderer navBarRenderer) {
         this.navBarRenderer = navBarRenderer;
     }
-    /**
+    
     public void setRichTextEvolver(TextInputEvolver richTextEvolver) {
         this.richTextEvolver = richTextEvolver;
     }
-
-	**/
+    
 }

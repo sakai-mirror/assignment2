@@ -4,7 +4,7 @@
 <head>
    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 
-   <title>Assignments</title>
+   <title rsf:id="page-title">Assignments</title>
 
 	<script type="text/javascript" language="JavaScript" src="/library/js/headscripts.js"></script>
 	<!-- vm/editor/FCKeditor/sakai_header.vm -->
@@ -19,34 +19,14 @@
 <body>
 
 <div class="portletBody">
-	<ul class="navIntraTool">
-		<li><a href="#" title="Add Assignment">Add</a></li>
-		<li><a href="#" title="Assignment List">Assignment List</a></li>
-		<li>Grade Report</li>
-		<li class="last"><a href="#" title="Permissions">Permissions</a></li>
+	<ul rsf:id="navIntraTool:" class="navIntraTool">
 	</ul>
 
-	<h3>Grade Report</h3>
+	<h3 rsf:id="heading">Grade Report</h3>
 	<ul class="navIntraTool">
 		<li class="last"><a href="#" title="Download Spreadsheet">Download Spreadsheet</a></li>
 	</ul>
-	<div class="listNav">
-		<div  class="instruction">Viewing 1 - 2 of 2 items</div>
-		<form name="" class="inlineForm"><input type="submit" name="" value="|&lt;" disabled="disabled"/></form>
-		<form name="" class="inlineForm"><input type="submit" name="" value="&lt;" disabled="disabled" /></form>
-		<form name="" class="inlineForm" method="post" action="" value="" />
-			<label for="" class="skip">Press Enter, then use alt + up and down arrows to scroll through menu</label>
-			<select id="" name="">
-				<option value="5" >Show 5 items</option>
-				<option value="10" >Show 10 items</option>
-				<option value="20" >Show 20 items</option>
-				<option value="50" >Show 50 items</option>
-				<option value="100" >Show 100 items</option>
-				<option value="200"  selected="selected" >Show 200 items</option>
-			</select>
-		</form>
-		<form name="" class="inlineForm"><input type="submit" name="" value="&gt;" disabled="disabled" /></form>
-		<form name="" class="inlineForm"><input type="submit" name="" value="&gt;|" disabled="disabled" /></form>
+	<div rsf:id="pagerDiv" class="listNav">
 	</div>
 
 	<form name="" action="" method="post">

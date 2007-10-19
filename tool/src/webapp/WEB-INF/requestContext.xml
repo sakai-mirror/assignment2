@@ -4,6 +4,11 @@
 
 <beans>
 
+   <!-- rich text evolver bean def -->
+   <bean id="richTextEvolver" class="org.springframework.beans.factory.config.BeanReferenceFactoryBean">
+      <property name="targetBeanName" value="sakaiFCKTextEvolver" />
+   </bean>
+
 	<!-- Renderers -->
    <bean id="NavbarRenderer" class="org.sakaiproject.assignment2.tool.producers.NavBarRenderer">
       <!-- <property name="externalLogic" ref="org.sakaiproject.blogwow.logic.ExternalLogic" /> -->
@@ -20,7 +25,17 @@
 
    <bean class="org.sakaiproject.assignment2.tool.producers.AssignmentAddProducer">
       <property name="navBarRenderer" ref="NavbarRenderer" />
-      <!--  <property name="richTextEvolver" ref="richTextEvolver" /> -->
+      <property name="richTextEvolver" ref="richTextEvolver" />
+      <property name="messageLocator" ref="messageLocator" />
+   </bean>
+
+   <bean class="org.sakaiproject.assignment2.tool.producers.AssignmentAddGradebookItemProducer">
+      <property name="navBarRenderer" ref="NavbarRenderer" />
+      <property name="messageLocator" ref="messageLocator" />
+   </bean>
+
+   <bean class="org.sakaiproject.assignment2.tool.producers.AssignmentAddPreviewProducer">
+      <property name="navBarRenderer" ref="NavbarRenderer" />
       <property name="messageLocator" ref="messageLocator" />
    </bean>
    
@@ -33,7 +48,7 @@
    
    <bean class="org.sakaiproject.assignment2.tool.producers.AssignmentGradeReportProducer">
       <property name="navBarRenderer" ref="NavbarRenderer" />
-      <!--  <property name="richTextEvolver" ref="richTextEvolver" /> -->
+      <property name="pagerBean" ref="PagerBean" />
       <property name="messageLocator" ref="messageLocator" />
    </bean>
    
@@ -59,6 +74,7 @@
 
    
    <bean id="PagerBean" class="org.sakaiproject.assignment2.tool.beans.PagerBean" />
+   <bean id="HelloBean" class="org.sakaiproject.assignment2.tool.beans.HelloBean" />
 
 
 </beans>
