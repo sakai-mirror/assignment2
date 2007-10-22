@@ -5,8 +5,8 @@ import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
 
 public class PagerViewParams extends SimpleViewParameters {
 
-	public String currentStart = "0";
-	public String currentCount = "5";
+	public String current_start = "0";
+	public String current_count = "5";
 	
 	public PagerViewParams() {}
 	
@@ -16,7 +16,12 @@ public class PagerViewParams extends SimpleViewParameters {
 
     public PagerViewParams(String viewId, String currentStart, String currentCount){
     		super(viewId);
-	        this.currentStart = currentStart;
-	        this.currentCount = currentCount;
+	        this.current_start = currentStart;
+	        this.current_count = currentCount;
     }
+    
+	public String getParseSpec() {
+		// include a comma delimited list of the public properties in this class
+		return super.getParseSpec() + ",current_start,current_count";
+	}
 }

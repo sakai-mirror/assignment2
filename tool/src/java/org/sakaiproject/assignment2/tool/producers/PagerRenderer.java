@@ -1,8 +1,14 @@
 package org.sakaiproject.assignment2.tool.producers;
 
 import org.sakaiproject.assignment2.tool.params.PagerViewParams;
+import org.sakaiproject.assignment2.tool.params.AssignmentListSortViewParams;
 import org.sakaiproject.assignment2.tool.beans.PagerBean;
 
+import org.sakaiproject.tool.cover.ToolManager;
+import org.sakaiproject.component.cover.ServerConfigurationService;
+import org.sakaiproject.entity.api.Entity;
+
+import uk.org.ponder.messageutil.MessageLocator;
 import uk.org.ponder.rsf.components.ELReference;
 import uk.org.ponder.rsf.components.UIBoundList;
 import uk.org.ponder.rsf.components.UIBranchContainer;
@@ -27,9 +33,18 @@ import java.util.Map;
 public class PagerRenderer {
 
 	private PagerBean pagerBean;
+	private MessageLocator messageLocator;
 	
-    public void makePager(UIContainer tofill, String divID, String currentViewID, ViewParameters viewparams) {
+	public void makePager(UIContainer tofill, String divID, String currentViewID, ViewParameters viewparams) {
     	PagerViewParams pagerparams = (PagerViewParams) viewparams;
+
+    	//set Beans
+    	try {
+    	pagerBean.setCurrentCount(Integer.parseInt(pagerparams.current_count));
+    	pagerBean.setCurrentStart(Integer.parseInt(pagerparams.current_start));
+    	} catch (NumberFormatException nfe){
+    		//do nothing
+    	}
     	
         UIJointContainer joint = new UIJointContainer(tofill, divID, "pagerDivContainer:", ""+1);
         
@@ -40,7 +55,23 @@ public class PagerRenderer {
         //Form
         UIForm form = UIForm.make(joint, "pager_form");
                 
-        //Select Box
+        
+
+
+		
+		//Paging Buttons
+		////////////////////
+		String href_params = "";
+		//If we are on the Assignment_list-sortview page... add in the view params to keep the sorting accurate
+		if (AssignmentListSortViewProducer.VIEW_ID.equals(currentViewID)){
+			AssignmentListSortViewParams sortparams = (AssignmentListSortViewParams) viewparams;
+			href_params = "sort_dir=" + sortparams.sort_dir + "&sort_by=" + sortparams.sort_by + "&";
+		}		
+		//build url
+		String url = ServerConfigurationService.getToolUrl() + Entity.SEPARATOR
+        	+ ToolManager.getCurrentPlacement().getId() + Entity.SEPARATOR + currentViewID;
+
+		//Select Box
         UISelect select_box = UISelect.make(form, "pager_select_box");
         select_box.selection = new UIInput();
         select_box.selection.valuebinding = new ELReference("#{PagerBean.currentSelect}");
@@ -51,29 +82,45 @@ public class PagerRenderer {
 		comboNames.setValue(new String[] {"Show 5 items", "Show 10 items", "Show 20 items", "Show 50 items", "Show 100 items", "Show 200 items"});
 		select_box.optionnames = comboNames;
 		Map attrmap = new HashMap(); 
-		attrmap.put("onchange", "this.form.submit();");
+		attrmap.put("onchange", "location.href=\"" + url + "?" + href_params + "current_start=" + 
+				pagerBean.getCurrentStart().toString() + "&current_count=\" + $(this).val()");
 		select_box.decorators = new DecoratorList(new UIFreeAttributeDecorator(attrmap)); 
-
-				
-		//Paging Buttons
-		//UIInternalLink first_page = UIInternalLink.make(form, "pager_first_page",
-		//		UIMessage.make("assignment2.pager.pager_first_page"), new PagerViewParams(currentViewID, pagerBean.goToFirstPage(), pagerparams.currentCount));
-		UICommand first_page = UICommand.make(form, "pager_first_page", 
-				UIMessage.make("assignment2.pager.pager_first_page"), "#{PagerBean.goToFirstPage}");
-		UICommand prev_page = UICommand.make(form, "pager_prev_page", 
-				UIMessage.make("assignment2.pager.pager_prev_page"), "#{PagerBean.goToPrevPage}");
-		UICommand next_page = UICommand.make(form, "pager_next_page", 
-				UIMessage.make("assignment2.pager.pager_next_page"), "#{PagerBean.goToNextPage}");
-		//UIInternalLink last_page = UIInternalLink.make(form, "pager_last_page",
-		//		UIMessage.make("assignment2.pager.pager_last_page"), new PagerViewParams(currentViewID, pagerBean.goToLastPage() , pagerparams.currentCount));
-		UICommand last_page = UICommand.make(form, "pager_last_page", 
-				UIMessage.make("assignment2.pager.pager_last_page"), "#{PagerBean.goToLastPage}");
 		
+		
+		//first page
+		UIInput first_page = UIInput.make(form, "pager_first_page", null, messageLocator.getMessage("assignment2.pager.pager_first_page"));
+		attrmap = new HashMap();
+		attrmap.put("onclick", "location.href=\"" + url + "?" + href_params + "current_start=" + 
+					pagerBean.goToFirstPage() + "&current_count=" + pagerBean.getCurrentSelect() + "\"");
+		first_page.decorators = new DecoratorList(new UIFreeAttributeDecorator(attrmap));
+				
+		//previous page
+		UIInput prev_page = UIInput.make(form, "pager_prev_page", null, messageLocator.getMessage("assignment2.pager.pager_prev_page"));
+		attrmap = new HashMap();
+		attrmap.put("onclick", "location.href=\"" + url + "?" + href_params + "current_start=" + 
+				pagerBean.goToPrevPage() + "&current_count=" + pagerBean.getCurrentSelect() + "\"");
+		prev_page.decorators = new DecoratorList(new UIFreeAttributeDecorator(attrmap));
+
+		//next page
+		UIInput next_page = UIInput.make(form, "pager_next_page", null, messageLocator.getMessage("assignment2.pager.pager_next_page"));
+		attrmap = new HashMap();
+		attrmap.put("onclick", "location.href=\"" + url + "?" + href_params + "current_start=" + 
+				pagerBean.goToNextPage() + "&current_count=" + pagerBean.getCurrentSelect() + "\"");
+		next_page.decorators = new DecoratorList(new UIFreeAttributeDecorator(attrmap));
+		
+		//last button
+		UIInput last_page = UIInput.make(form, "pager_last_page", null, messageLocator.getMessage("assignment2.pager.pager_last_page"));
+		attrmap = new HashMap();
+		attrmap.put("onclick", "location.href=\"" + url + "?" + href_params + "current_start=" + 
+				pagerBean.goToLastPage() + "&current_count=" + pagerBean.getCurrentSelect() + "\"");
+		last_page.decorators = new DecoratorList(new UIFreeAttributeDecorator(attrmap));
+		
+		
+		//Disable buttons not in use
 		Map disabledAttr = new HashMap();
 		disabledAttr.put("disabled", "disabled");
 		DecoratorList disabledDecoratorList = new DecoratorList(new UIFreeAttributeDecorator(disabledAttr));
 		
-		//Disable buttons not in use
 		if (pagerBean.getCurrentStart() == 0){
 			//disable if on first page
 			first_page.decorators = disabledDecoratorList;
@@ -89,5 +136,9 @@ public class PagerRenderer {
     
     public void setPagerBean(PagerBean pagerBean){
     	this.pagerBean = pagerBean;
+    }
+    
+    public void setMessageLocator(MessageLocator messageLocator) {
+        this.messageLocator = messageLocator;
     }
 }

@@ -3,6 +3,8 @@ package org.sakaiproject.assignment2.tool.producers;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.sakaiproject.assignment2.tool.params.AssignmentListSortViewParams;
+import org.sakaiproject.assignment2.tool.params.PagerViewParams;
 import org.sakaiproject.assignment2.tool.producers.AssignmentListSortViewProducer;
 import org.sakaiproject.assignment2.tool.producers.NavBarRenderer;
 import org.sakaiproject.assignment2.tool.producers.PagerRenderer;
@@ -37,7 +39,7 @@ import uk.org.ponder.rsf.viewstate.ViewParamsReporter;
 import java.util.Map;
 import java.util.HashMap;
 
-public class AssignmentListReorderProducer implements ViewComponentProducer {
+public class AssignmentListReorderProducer implements ViewComponentProducer, ViewParamsReporter {
 
     public static final String VIEW_ID = "assignment_list-reorder";
     public String getViewID() {
@@ -51,6 +53,7 @@ public class AssignmentListReorderProducer implements ViewComponentProducer {
 
 
     public void fillComponents(UIContainer tofill, ViewParameters viewparams, ComponentChecker checker) {
+    	PagerViewParams pagerparams = (PagerViewParams) viewparams;
 
     	//get paging data
     	int total_count = 17;
@@ -58,7 +61,7 @@ public class AssignmentListReorderProducer implements ViewComponentProducer {
     	
         UIMessage.make(tofill, "page-title", "assignment2.assignment_list-reorder.title");
         navBarRenderer.makeNavBar(tofill, "navIntraTool:", VIEW_ID);
-        pagerRenderer.makePager(tofill, "pagerDiv:", VIEW_ID, viewparams);
+        pagerRenderer.makePager(tofill, "pagerDiv:", VIEW_ID, pagerparams);
         UIMessage.make(tofill, "heading", "assignment2.assignment_list-sortview.heading");
 
         //Links
@@ -96,12 +99,14 @@ public class AssignmentListReorderProducer implements ViewComponentProducer {
         }
         
     }
+    public ViewParameters getViewParameters(){
+    	return new PagerViewParams();
+    }
 
     public void setMessageLocator(MessageLocator messageLocator) {
         this.messageLocator = messageLocator;
     }
 
-    
     public void setNavBarRenderer(NavBarRenderer navBarRenderer) {
         this.navBarRenderer = navBarRenderer;
     }

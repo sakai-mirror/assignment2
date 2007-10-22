@@ -59,27 +59,30 @@ public class PagerBean {
 		//do nothing
 	}
 	
-	public void goToFirstPage(){
-		currentStart = 0;
-		//return PAGER_NAVIGATION;
+	public String goToFirstPage(){
+		Integer newCurrentStart = 0;
+		return newCurrentStart.toString();
 	}
 	
-	public void goToPrevPage(){
-		currentStart = currentStart - currentCount;
-		if (currentStart < 0) this.goToFirstPage();
+	public String goToPrevPage(){
+		Integer newCurrentStart = currentStart - currentCount;
+		if (newCurrentStart < 0) return this.goToFirstPage();
+		return newCurrentStart.toString();
 	}
 	
-	public void goToNextPage(){
-		currentStart = currentStart + currentCount;
-		if (currentStart > currentCount) this.goToLastPage();
+	public String goToNextPage(){
+		Integer newCurrentStart = currentStart + currentCount;
+		if (newCurrentStart > totalCount) return this.goToLastPage();
+		return newCurrentStart.toString();
 	}
 	
-	public void goToLastPage(){
+	public String goToLastPage(){
+		Integer newCurrentStart = 0;
 		if (totalCount > currentCount){
-			currentStart = totalCount - (totalCount % currentCount);
+			newCurrentStart = totalCount - (totalCount % currentCount);
 		} else {
-			currentStart = 0;
+			newCurrentStart = 0;
 		}
-		//return PAGER_NAVIGATION; 
+		return newCurrentStart.toString(); 
 	}
 }

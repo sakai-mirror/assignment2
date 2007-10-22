@@ -68,8 +68,10 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
 
     	//get parameters
     	AssignmentListSortViewParams params = (AssignmentListSortViewParams) viewparams;
-    	current_sort_by = (params.sort_by == null ? DEFAULT_SORT_BY : params.sort_by);
-    	current_sort_dir = (params.sort_dir == null ? DEFAULT_SORT_DIR : params.sort_dir);
+    	if (params.sort_by == null) params.sort_by = DEFAULT_SORT_BY;
+    	if (params.sort_dir == null) params.sort_dir = DEFAULT_SORT_DIR;
+    	current_sort_by = params.sort_by;
+    	current_sort_dir = params.sort_dir;
     	opposite_sort_dir = (SORT_DIR_ASC.equals(current_sort_dir) ? SORT_DIR_DESC : SORT_DIR_ASC);
     	
     	//get paging data
@@ -87,7 +89,7 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
         pagerRenderer.makePager(tofill, "pagerDiv:", VIEW_ID, viewparams);
         
         UIVerbatim.make(tofill, "debug_info", "Currently, you are sorting by: <strong>" + current_sort_by + " " + 
-        			current_sort_dir + "</strong>,   starting from record: <strong>" + pagerBean.getCurrentStart() + "</strong> and paging: <strong>" + pagerBean.getCurrentCount() + "</strong> items.");
+        			current_sort_dir + "</strong>,   starting from record: <strong>" + params.current_start + "</strong> and paging: <strong>" + params.current_count + "</strong> items.");
         
         UIMessage.make(tofill, "heading", "assignment2.assignment_list-sortview.heading");
         //Links
@@ -102,7 +104,8 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
         //Assignment Sorting Link
         UIInternalLink.make(tofill, "tableheader.assignment", 
         			UIMessage.make("assignment2.assignment_list-sortview.tableheader.assignment"),
-        		new AssignmentListSortViewParams(AssignmentListSortViewProducer.VIEW_ID, SORT_BY_ASSIGNMENT, (SORT_BY_ASSIGNMENT.equals(current_sort_by) ? opposite_sort_dir : SORT_DIR_ASC)));
+        		new AssignmentListSortViewParams(AssignmentListSortViewProducer.VIEW_ID, SORT_BY_ASSIGNMENT, 
+        				(SORT_BY_ASSIGNMENT.equals(current_sort_by) ? opposite_sort_dir : SORT_DIR_ASC), params.current_start, params.current_count));
         if (current_sort_by.equals(SORT_BY_ASSIGNMENT) && current_sort_dir.equals(SORT_DIR_ASC)){
         	UILink.make(tofill, "assignment_arrow", BULLET_UP_IMG_SRC);
         } else if (current_sort_by.equals(SORT_BY_ASSIGNMENT) && current_sort_dir.equals(SORT_DIR_DESC)){
@@ -111,7 +114,8 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
         //For sorting Link
         UIInternalLink.make(tofill, "tableheader.for", 
     			UIMessage.make("assignment2.assignment_list-sortview.tableheader.for"),
-    			new AssignmentListSortViewParams(AssignmentListSortViewProducer.VIEW_ID, SORT_BY_FOR, (SORT_BY_FOR.equals(current_sort_by) ? opposite_sort_dir : SORT_DIR_ASC)));
+    			new AssignmentListSortViewParams(AssignmentListSortViewProducer.VIEW_ID, SORT_BY_FOR, 
+    					(SORT_BY_FOR.equals(current_sort_by) ? opposite_sort_dir : SORT_DIR_ASC), params.current_start, params.current_count));
         if (current_sort_by.equals(SORT_BY_FOR) && current_sort_dir.equals(SORT_DIR_ASC)){
         	UILink.make(tofill, "for_arrow", BULLET_UP_IMG_SRC);
         } else if (current_sort_by.equals(SORT_BY_FOR) && current_sort_dir.equals(SORT_DIR_DESC)){
@@ -120,7 +124,8 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
         //Status Sorting Link
         UIInternalLink.make(tofill, "tableheader.status", 
     			UIMessage.make("assignment2.assignment_list-sortview.tableheader.status"),
-    			new AssignmentListSortViewParams(AssignmentListSortViewProducer.VIEW_ID, SORT_BY_STATUS, (SORT_BY_STATUS.equals(current_sort_by) ? opposite_sort_dir : SORT_DIR_ASC)));
+    			new AssignmentListSortViewParams(AssignmentListSortViewProducer.VIEW_ID, SORT_BY_STATUS, 
+    					(SORT_BY_STATUS.equals(current_sort_by) ? opposite_sort_dir : SORT_DIR_ASC), params.current_start, params.current_count));
         if (current_sort_by.equals(SORT_BY_STATUS) && current_sort_dir.equals(SORT_DIR_ASC)){
         	UILink.make(tofill, "status_arrow", BULLET_UP_IMG_SRC);
         } else if (current_sort_by.equals(SORT_BY_STATUS) && current_sort_dir.equals(SORT_DIR_DESC)){
@@ -129,7 +134,8 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
         //Open Sorting Link
         UIInternalLink.make(tofill, "tableheader.open", 
     			UIMessage.make("assignment2.assignment_list-sortview.tableheader.open"),
-    			new AssignmentListSortViewParams(AssignmentListSortViewProducer.VIEW_ID, SORT_BY_OPEN, (SORT_BY_OPEN.equals(current_sort_by) ? opposite_sort_dir : SORT_DIR_ASC)));
+    			new AssignmentListSortViewParams(AssignmentListSortViewProducer.VIEW_ID, SORT_BY_OPEN, 
+    					(SORT_BY_OPEN.equals(current_sort_by) ? opposite_sort_dir : SORT_DIR_ASC), params.current_start, params.current_count));
         if (current_sort_by.equals(SORT_BY_OPEN) && current_sort_dir.equals(SORT_DIR_ASC)){
         	UILink.make(tofill, "open_arrow", BULLET_UP_IMG_SRC);
         } else if (current_sort_by.equals(SORT_BY_OPEN) && current_sort_dir.equals(SORT_DIR_DESC)){
@@ -138,7 +144,8 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
         //Due Sorting Link
         UIInternalLink.make(tofill, "tableheader.due", 
     			UIMessage.make("assignment2.assignment_list-sortview.tableheader.due"),
-    			new AssignmentListSortViewParams(AssignmentListSortViewProducer.VIEW_ID, SORT_BY_DUE, (SORT_BY_DUE.equals(current_sort_by) ? opposite_sort_dir : SORT_DIR_ASC)));
+    			new AssignmentListSortViewParams(AssignmentListSortViewProducer.VIEW_ID, SORT_BY_DUE, 
+    					(SORT_BY_DUE.equals(current_sort_by) ? opposite_sort_dir : SORT_DIR_ASC), params.current_start, params.current_count));
         if (current_sort_by.equals(SORT_BY_DUE) && current_sort_dir.equals(SORT_DIR_ASC)){
         	UILink.make(tofill, "due_arrow", BULLET_UP_IMG_SRC);
         } else if (current_sort_by.equals(SORT_BY_DUE) && current_sort_dir.equals(SORT_DIR_DESC)){

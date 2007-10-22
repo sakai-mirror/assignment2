@@ -27,4 +27,9 @@ public class AssignmentListSortViewParams extends PagerViewParams {
         this.sort_by = sort_by;
         this.sort_dir = sort_dir;
     }
+    
+	public String getParseSpec() {
+		// include a comma delimited list of the public properties in this class
+		return super.getParseSpec() + ",sort_by,sort_dir,currentStart,currentCount";
+	}
 }
