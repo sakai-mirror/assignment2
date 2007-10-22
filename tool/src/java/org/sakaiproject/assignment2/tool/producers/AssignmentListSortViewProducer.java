@@ -194,7 +194,7 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
         	UIOutput.make(row, "assignment_row_scale", "0-100.0");
         }
         
-        UICommand.make(tofill, "submit_update", UIMessage..make("assignment2.assignment_list-sortview.submit_update"));
+        UICommand.make(tofill, "submit_update", UIMessage.make("assignment2.assignment_list-sortview.submit_update"));
         
 
     }
