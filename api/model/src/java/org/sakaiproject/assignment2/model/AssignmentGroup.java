@@ -29,9 +29,10 @@ package org.sakaiproject.assignment2.model;
  */
 public class AssignmentGroup {
 
-	private String assignmentGroupId;
-	private String assignmentId;
+	private Long assignmentGroupId;
+	private Assignment2 assignment;
 	private String groupId;
+	private int version;
 	
 	public AssignmentGroup() {
 		
@@ -41,7 +42,7 @@ public class AssignmentGroup {
 	 * 
 	 * @return id
 	 */
-	public String getAssignmentGroupId() {
+	public Long getAssignmentGroupId() {
 		return assignmentGroupId;
 	}
 	
@@ -49,31 +50,29 @@ public class AssignmentGroup {
 	 * set the assignmentGroupId
 	 * @param assignmentGroupId
 	 */
-	public void setAssignmentGroupId(String assignmentGroupId) {
+	public void setAssignmentGroupId(Long assignmentGroupId) {
 		this.assignmentGroupId = assignmentGroupId;
 	}
 	
 	/**
 	 * 
-	 * @return the assignmentId of the assignment associated with this
-	 *  AssignmentGroup
+	 * @return the assignment that is restricted to this AssignmentGroup
 	 */
-	public String getAssignmentId() {
-		return assignmentId;
+	public Assignment2 getAssignment() {
+		return assignment;
 	}
 	
 	/**
-	 * set the assignmentId of the assignment associated with this 
-	 * AssigmentGroup.  This assignment has a group restriction.
-	 * @param assignmentId
+	 * the assignment that is restricted to this AssignmentGroup
+	 * @param assignment
 	 */
-	public void setAssignmentId(String assignmentId) {
-		this.assignmentId = assignmentId;
+	public void setAssignment(Assignment2 assignment) {
+		this.assignment = assignment;
 	}
 
 	/**
 	 * 
-	 * @return the AuthzGroup id for this group/section that is allowed
+	 * @return the realm id for this group/section that is allowed
 	 * access to the associated group-restricted assignment
 	 */
 	public String getGroupId() {
@@ -81,11 +80,19 @@ public class AssignmentGroup {
 	}
 
 	/**
-	 * access to the assignment will be allowed to this AuthzGroup
+	 * access to the assignment will be allowed for this realm id
 	 * @param groupId
 	 */
 	public void setGroupId(String groupId) {
 		this.groupId = groupId;
+	}
+	
+	public int getVersion() {
+		return version;
+	}
+	
+	public void setVersion(int version) {
+		this.version = version;
 	}
 	
 }

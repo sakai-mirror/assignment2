@@ -29,9 +29,9 @@ package org.sakaiproject.assignment2.model;
 */
 public class AssignmentSubmissionAttachment {
 
-	private String submissionAttachId;
-	private String submissionId;
-	private String attachmentId;
+	private Long submissionAttachId;
+	private AssignmentSubmissionVersion submissionVersion;
+	private String attachmentReference;
 	
 	public AssignmentSubmissionAttachment() {
 		
@@ -41,7 +41,7 @@ public class AssignmentSubmissionAttachment {
 	 * 
 	 * @return the submissionAttachId for this submission attachment
 	 */
-	public String getSubmissionAttachId() {
+	public Long getSubmissionAttachId() {
 		return submissionAttachId;
 	}
 
@@ -49,39 +49,40 @@ public class AssignmentSubmissionAttachment {
 	 * set the submissionAttachId for this submission attachment
 	 * @param submissionAttachId
 	 */
-	public void setSubmissionAttachId(String submissionAttachId) {
+	public void setSubmissionAttachId(Long submissionAttachId) {
 		this.submissionAttachId = submissionAttachId;
 	}
 
 	/**
 	 * 
-	 * @return the id of the submission associated with this attachment
+	 * @return the AssignmentSubmissionVersion rec associated with this attachment
 	 */
-	public String getSubmissionId() {
-		return submissionId;
+	public AssignmentSubmissionVersion getSubmissionVersion() {
+		return submissionVersion;
 	}
 
 	/**
-	 * set the id of the submission associated with this attachment
-	 * @param submissionId
+	 * set the AssignmentSubmissionVersion rec associated with this attachment
+	 * @param submissionVersion
 	 */
-	public void setSubmissionId(String submissionId) {
-		this.submissionId = submissionId;
+	public void setSubmissionVersion(AssignmentSubmissionVersion submissionVersion) {
+		this.submissionVersion = submissionVersion;
 	}
 
 	/**
 	 * 
 	 * @return the reference to this submission attachment
 	 */
-	public String getAttachmentId() {
-		return attachmentId;
+	public String getAttachmentReference() {
+		return attachmentReference;
 	}
 
 	/**
 	 * set the reference to this submission attachment
-	 * @param attachmentId
+	 * @param attachmentReference
 	 */
-	public void setAttachmentId(String attachmentId) {
-		this.attachmentId = attachmentId;
+	public void setAttachmentReference(String attachmentReference) {
+		this.attachmentReference = attachmentReference;
 	}
+
 }

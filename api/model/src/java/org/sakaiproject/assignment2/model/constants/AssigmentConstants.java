@@ -25,6 +25,18 @@ package org.sakaiproject.assignment2.model.constants;
 * @author <a href="mailto:wagnermr@iupui.edu">michelle wagner</a>
 */
 public class AssigmentConstants {
+	
+	/**
+	 * Used to indicate that the assignment may only be viewed, not graded by
+	 * the specified user
+	 */
+	public final static String VIEW = "view";
+	
+	/**
+	 * Used to indicate that the assignment may be viewed and graded by the
+	 * specified user
+	 */
+	public final static String GRADE = "grade";
 
 	// Notification Types
 	/**

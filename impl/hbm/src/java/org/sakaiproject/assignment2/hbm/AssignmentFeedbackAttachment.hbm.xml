@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+          "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+    <class name="org.sakaiproject.assignment2.model.AssignmentFeedbackAttachment" table="A2_FEEDBACK_ATTACH_T">
+       
+        <id name="feedbackAttachId" column="FEEDBACK_ATTACH_ID" type="long">
+					<generator class="native">
+						<param name="sequence">A2_FEEDBACK_ATTACH_S</param>
+					</generator>
+				</id>
+        
+        <!--  This maps to the A2_ASSIGN_SUBMISSION_T table -->
+        <many-to-one name="submissionVersion" column="SUBMISSION_VERSION_ID"
+        	class="org.sakaiproject.assignment2.model.AssignmentSubmissionVersion"
+        	not-null="true" />
+
+        <!-- The reference for the attachment -->
+        <property name="attachmentReference" type="java.lang.String">
+            <column name="ATTACHMENT_REFERENCE" not-null="true" length="255" />
+        </property>
+    </class>
+</hibernate-mapping>

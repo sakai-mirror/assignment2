@@ -29,9 +29,10 @@ package org.sakaiproject.assignment2.model;
 */
 public class AssignmentAttachment {
 
-	private String assignAttachId;
-	private String assignmentId;
-	private String attachmentId;
+	private Long assignAttachId;
+	private Assignment2 assignment;
+	private String attachmentReference;
+	private int version;
 	
 	public AssignmentAttachment() {
 	}
@@ -39,7 +40,7 @@ public class AssignmentAttachment {
 	/**
 	 * @return the assignAttachId
 	 */
-	public String getAssignAttachId() {
+	public Long getAssignAttachId() {
 		return assignAttachId;
 	}
 
@@ -47,41 +48,47 @@ public class AssignmentAttachment {
 	 * set the assignAttachId
 	 * @param assignAttachId
 	 */
-	public void setAssignAttachId(String assignAttachId) {
+	public void setAssignAttachId(Long assignAttachId) {
 		this.assignAttachId = assignAttachId;
 	}
 
 	/**
 	 * 
-	 * @return the assignmentId of the assignment that this attachment 
-	 * is associated with
+	 * @return the assignment that this attachment is associated with
 	 */
-	public String getAssignmentId() {
-		return assignmentId;
+	public Assignment2 getAssignment() {
+		return assignment;
 	}
 
 	/**
-	 * set the assignmentId of the assignment that this attachment is
-	 * associated with
-	 * @param assignmentId
+	 * set the assignment that this attachment is associated with
+	 * @param assignment
 	 */
-	public void setAssignmentId(String assignmentId) {
-		this.assignmentId = assignmentId;
+	public void setAssignment(Assignment2 assignment) {
+		this.assignment = assignment;
 	}
 
 	/**
 	 * 
 	 * @return the reference to this attachment
 	 */
-	public String getAttachmentId() {
-		return attachmentId;
+	public String getAttachmentReference() {
+		return attachmentReference;
 	}
 
 	/**
 	 * set the reference to this attachment
-	 * @param attachmentId
+	 * @param attachmentReference
 	 */
-	public void setAttachmentId(String attachmentId) {
-		this.attachmentId = attachmentId;
+	public void setAttachmentReference(String attachmentReference) {
+		this.attachmentReference = attachmentReference;
+	}
+	
+	public int getVersion() {
+		return version;
+	}
+	
+	public void setVersion(int version) {
+		this.version = version;
 	}
 }

@@ -30,9 +30,9 @@ package org.sakaiproject.assignment2.model;
 */
 public class AssignmentFeedbackAttachment {
 
-	private String feedbackAttachId;
-	private String submissionId;
-	private String attachmentId;
+	private Long feedbackAttachId;
+	private AssignmentSubmissionVersion submissionVersion;
+	private String attachmentReference;
 	
 	public AssignmentFeedbackAttachment() {
 		
@@ -42,7 +42,7 @@ public class AssignmentFeedbackAttachment {
 	 * 
 	 * @return the feedbackAttachId 
 	 */
-	public String getFeedbackAttachId() {
+	public Long getFeedbackAttachId() {
 		return feedbackAttachId;
 	}
 
@@ -50,43 +50,39 @@ public class AssignmentFeedbackAttachment {
 	 * set the feedbackAttachId
 	 * @param feedbackAttachId
 	 */
-	public void setFeedbackAttachId(String feedbackAttachId) {
+	public void setFeedbackAttachId(Long feedbackAttachId) {
 		this.feedbackAttachId = feedbackAttachId;
 	}
 
 	/**
 	 * 
-	 * @return the submissionId of the assignment submission that this
-	 * feedback attachment is associated with
+	 * @return the AssignmentSubmissionVersion rec that this feedback attachment is associated with
 	 */
-	public String getSubmissionId() {
-		return submissionId;
+	public AssignmentSubmissionVersion getSubmissionVersion() {
+		return submissionVersion;
 	}
 
 	/**
-	 * set the submissionId of the assignment submission that this
-	 * feedback attachment is associated with
-	 * @param submissionId
+	 * set the AssignmentSubmissionVersion that this feedback attachment is associated with
+	 * @param submissionVersion
 	 */
-	public void setSubmissionId(String submissionId) {
-		this.submissionId = submissionId;
+	public void setSubmissionVersion(AssignmentSubmissionVersion submissionVersion) {
+		this.submissionVersion = submissionVersion;
 	}
 
 	/**
 	 * 
 	 * @return the reference to this feedback attachment
 	 */
-	public String getAttachmentId() {
-		return attachmentId;
+	public String getAttachmentReference() {
+		return attachmentReference;
 	}
 
 	/**
 	 * set the reference to this feedback attachment
-	 * @param attachmentId
+	 * @param attachmentReference
 	 */
-	public void setAttachmentId(String attachmentId) {
-		this.attachmentId = attachmentId;
+	public void setAttachmentReference(String attachmentReference) {
+		this.attachmentReference = attachmentReference;
 	}
-	
-	
 }

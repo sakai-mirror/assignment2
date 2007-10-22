@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+          "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+    <class name="org.sakaiproject.assignment2.model.AssignmentSubmissionVersion" table="A2_SUBMISSION_VERSION_T">
+       
+        <id name="submissionVersionId" column="SUBMISSION_VERSION_ID" type="long">
+					<generator class="native">
+						<param name="sequence">A2_SUBMISSION_VERSION_S</param>
+					</generator>
+				</id>
+        
+        <!--  This maps to the A2_SUBMISSION_T table -->
+        <many-to-one name="assignmentSubmission" column="SUBMISSION_ID"
+        	class="org.sakaiproject.assignment2.model.AssignmentSubmission"
+        	not-null="true" />
+        <!-- the time of submission -->
+        <property name="submittedTime" type="java.util.Date">
+            <column name="SUBMITTED_TIME" not-null="false" />
+        </property>
+        <!-- the time this submission was returned to submitter -->
+        <property name="returnedTime" type="java.util.Date">
+            <column name="RETURNED_TIME" not-null="true" />
+        </property>
+        <!-- the inline text for this submission -->
+        <property name="submittedText" type="text">
+            <column name="SUBMITTED_TEXT" not-null="false" />
+        </property>
+        <!-- the grader's feedback text -->
+        <property name="feedbackText" type="text">
+            <column name="FEEDBACK_TEXT" not-null="false" />
+        </property>
+        <!-- the grader comment if ungraded (not integrated with gb)  -->
+        <property name="commentForUngraded" type="text">
+            <column name="COMMENT_FOR_UNGRADED" not-null="false" />
+        </property>
+        <!-- draft status for this submission -->
+        <property name="draft" type="boolean">
+            <column name="DRAFT" not-null="true" />
+        </property>
+        <!-- true if no grader action has been taken on this submission  -->
+        <property name="newSubmission" type="boolean">
+            <column name="NEW_SUBMISSION" not-null="true" />
+        </property>
+        <!-- true if allowed to resubmit this submission -->
+        <property name="allowResubmit" type="boolean">
+            <column name="ALLOW_RESUBMIT" not-null="true" />
+        </property>
+        <!-- Time after which the user can no longer resubmit -->
+        <property name="resubmitCloseTime" type="java.util.Date">
+            <column name="RESUBMIT_CLOSE_TIME" />
+        </property>
+        <!-- url for review service report url -->
+        <property name="reviewReportUrl" type="java.lang.String">
+            <column name="REVIEW_REPORT_URL" length="255" />
+        </property>
+        <!-- score from review service -->
+        <property name="reviewReportScore" type="int">
+            <column name="REVIEW_REPORT_SCORE" />
+        </property>
+        <!-- review report status -->
+        <property name="reviewStatus" type="java.lang.String">
+            <column name="REVIEW_STATUS" length="255" />
+        </property>
+        <!-- review report icon url -->
+        <property name="reviewIconUrl" type="java.lang.String">
+            <column name="REVIEW_ICON_URL" length="255" />
+        </property>
+        <!-- version created by -->
+        <property name="createdBy" type="java.lang.String">
+            <column name="CREATED_BY" length="99" not-null="true" />
+        </property>
+        <!-- version created time -->
+        <property name="createdTime" type="java.util.Date">
+            <column name="CREATED_TIME" not-null="true" />
+        </property>
+              
+    </class>
+</hibernate-mapping>

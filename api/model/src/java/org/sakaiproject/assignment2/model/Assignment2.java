@@ -28,9 +28,9 @@ import java.util.Date;
  * 
  * @author <a href="mailto:wagnermr@iupui.edu">michelle wagner</a>
  */
-public class Assignment {
+public class Assignment2 {
 
-    private String assignmentId;
+    private Long assignmentId;
     private Long gradableObjectId;
     private String siteId;
     private String title;
@@ -56,12 +56,14 @@ public class Assignment {
     private Date createTime;
     private String modifiedBy;
     private Date modifiedTime;
+    private boolean removed;
+    private int version;
 
 
     /**
      * Default constructor
      */
-    public Assignment() {
+    public Assignment2() {
     }
 
     /**
@@ -71,7 +73,7 @@ public class Assignment {
     /**
      * @return Returns the assignment id
      */
-    public String getAssignmentId() {
+    public Long getAssignmentId() {
         return assignmentId;
     }
     
@@ -79,7 +81,7 @@ public class Assignment {
      * set the assignment id
      * @param assignmentId
      */
-    public void setAssignmentId(String assignmentId) {
+    public void setAssignmentId(Long assignmentId) {
         this.assignmentId = assignmentId;
     }
     
@@ -132,7 +134,7 @@ public class Assignment {
     /**
      * @return Returns this assignment's draft status
      */
-    public boolean getDraft() {
+    public boolean isDraft() {
         return draft;
     }
     
@@ -209,7 +211,7 @@ public class Assignment {
      * information in the gradebook tables except ungraded assignments.  
      * @return true if this assignment is ungraded
      */
-    public boolean getUngraded() {
+    public boolean isUngraded() {
     	return ungraded;
     }
     
@@ -246,7 +248,7 @@ public class Assignment {
      * @return Returns true if viewing this assignment is restricted to members
      * of specific group(s)
      */
-    public boolean getRestrictedToGroups() {
+    public boolean isRestrictedToGroups() {
         return restrictedToGroups;
     }
     
@@ -263,7 +265,7 @@ public class Assignment {
      * @return Returns true if this assignment will be submitted by a "group", not the
      * individual students in the group
      */
-    public boolean getGroupSubmission() {
+    public boolean isGroupSubmission() {
         return groupSubmission;
     }
     
@@ -279,7 +281,7 @@ public class Assignment {
     /**
      * @return Returns true if this assignment requires an honor pledge
      */
-    public boolean getHonorPledge() {
+    public boolean isHonorPledge() {
         return honorPledge;
     }
     
@@ -382,7 +384,7 @@ public class Assignment {
      * @return If true, will allow students to resubmit an unlimited number of times
      * until the due date
      */
-    public boolean getAllowResubmitUntilDue() {
+    public boolean isAllowResubmitUntilDue() {
         return allowResubmitUntilDue;
     }
     
@@ -398,7 +400,7 @@ public class Assignment {
     /**
      * @return If true, this assignment allows a review service (ie TurnItIn)
      */
-    public boolean getAllowReviewService() {
+    public boolean isAllowReviewService() {
         return allowReviewService;
     }
 
@@ -413,7 +415,7 @@ public class Assignment {
     /**
      * @return If true, students are allowed to view the review service report
      */
-    public boolean getAllowStudentViewReport() {
+    public boolean isAllowStudentViewReport() {
         return allowStudentViewReport;
     }
 
@@ -421,7 +423,7 @@ public class Assignment {
      * If true, students are allowed to view the review service report
      * @param allowStudentViewReport
      */
-    public void setAllStudentViewReport(boolean allowStudentViewReport) {
+    public void setAllowStudentViewReport(boolean allowStudentViewReport) {
         this.allowStudentViewReport = allowStudentViewReport;
     }
     
@@ -483,5 +485,29 @@ public class Assignment {
      */
     public void setModifiedTime(Date modifiedTime) {
         this.modifiedTime = modifiedTime;
+    }
+    
+    /**
+     * 
+     * @return true if this assignment was deleted
+     */
+    public boolean isRemoved() {
+    	return removed;
+    }
+    
+    /**
+     * true if this assignment was deleted
+     * @param removed
+     */
+    public void setRemoved(boolean removed) {
+    	this.removed = removed;
+    }
+    
+    public int getVersion() {
+    	return version;
+    }
+    
+    public void setVersion(int version) {
+    	this.version = version;
     }
 }

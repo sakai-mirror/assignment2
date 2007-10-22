@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN"
+	"http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+
+   <!-- create a DAO bean, use the hibernate implementation -->
+   <bean id="org.sakaiproject.assignment2.dao.impl.AssignmentDaoTarget" class="org.sakaiproject.assignment2.dao.impl.AssignmentDaoImpl" init-method="init">
+      <property name="sessionFactory" ref="org.sakaiproject.springframework.orm.hibernate.GlobalSessionFactory" />
+      <property name="persistentClasses">
+         <list>
+            <value>org.sakaiproject.assignment2.model.Assignment2</value>
+            <value>org.sakaiproject.assignment2.model.AssignmentAttachment</value>
+            <value>org.sakaiproject.assignment2.model.AssignmentFeedbackAttachment</value>
+            <value>org.sakaiproject.assignment2.model.AssignmentGroup</value>
+            <value>org.sakaiproject.assignment2.model.AssignmentSubmission</value>
+            <value>org.sakaiproject.assignment2.model.AssignmentSubmissionVersion</value>
+            <value>org.sakaiproject.assignment2.model.AssignmentSubmissionAttachment</value>
+         </list>
+      </property>
+   </bean>
+
+   <!-- This wraps our DAO so that the transactions are managed -->
+   <bean id="org.sakaiproject.assignment2.dao.AssignmentDao" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+      <property name="transactionManager" ref="org.sakaiproject.springframework.orm.hibernate.GlobalTransactionManager" />
+      <property name="target" ref="org.sakaiproject.assignment2.dao.impl.AssignmentDaoTarget" />
+      <property name="transactionAttributes">
+         <props>
+            <prop key="*">PROPAGATION_REQUIRED</prop>
+         </props>
+      </property>
+   </bean>
+
+</beans>

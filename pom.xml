@@ -14,6 +14,11 @@
   <packaging>pom</packaging>
   <modules>
     <module>api/model</module>
+    <module>api/logic</module>
     <module>tool</module>
+    <module>impl/hbm</module>
+    <module>impl/pack</module>
+    <module>impl/dao</module>
+    <module>impl/logic</module>
   </modules>
 </project>

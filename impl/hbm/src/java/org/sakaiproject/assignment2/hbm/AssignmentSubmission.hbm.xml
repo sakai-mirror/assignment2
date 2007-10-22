@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+          "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+    <class name="org.sakaiproject.assignment2.model.AssignmentSubmission" table="A2_SUBMISSION_T">
+       
+        <id name="submissionId" column="SUBMISSION_ID" type="long">
+					<generator class="native">
+						<param name="sequence">A2_SUBMISSION_S</param>
+					</generator>
+				</id>
+        
+        <!--  This maps to the A2_ASSIGNMENT_T table -->
+        <many-to-one name="assignment" column="ASSIGNMENT_ID"
+        	class="org.sakaiproject.assignment2.model.Assignment2"
+        	not-null="true" unique-key="ASSIGN_ID_USER_ID" />
+
+        <!-- The userId of the user associated with this submission -->
+        <property name="userId" type="java.lang.String">
+            <column name="USER_ID" not-null="true" length="99" unique-key="ASSIGN_ID_USER_ID"/>
+        </property>
+        
+        <!-- the current submission version  -->
+        <many-to-one name="currentSubmissionVersion" 
+        	class="org.sakaiproject.assignment2.model.AssignmentSubmissionVersion" 
+        	not-null="true" column="SUBMISSION_VERSION_ID" />
+              
+    </class>
+</hibernate-mapping>
