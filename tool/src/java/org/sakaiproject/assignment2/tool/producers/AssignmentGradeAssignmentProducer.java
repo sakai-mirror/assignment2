@@ -3,6 +3,7 @@ package org.sakaiproject.assignment2.tool.producers;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.sakaiproject.assignment2.tool.params.AssignmentGradeAssignmentViewParams;
 import org.sakaiproject.assignment2.tool.params.SimpleAssignmentViewParams;
 import org.sakaiproject.assignment2.tool.producers.NavBarRenderer;
 import org.sakaiproject.assignment2.tool.producers.PagerRenderer;
@@ -52,13 +53,13 @@ public class AssignmentGradeAssignmentProducer implements ViewComponentProducer,
     private Long assignmentId;
     
     public void fillComponents(UIContainer tofill, ViewParameters viewparams, ComponentChecker checker) {
-    	SimpleAssignmentViewParams params = (SimpleAssignmentViewParams) viewparams;
+    	AssignmentGradeAssignmentViewParams params = (AssignmentGradeAssignmentViewParams) viewparams;
     	//make sure that we have an AssignmentID to work with
-    	if (params.assignmentId == null){
+    	if (params.assignment_id == null){
     		//ERROR SHOULD BE SET, OTHERWISE TAKE BACK TO ASSIGNMENT_LIST
     		return;
     	}
-    	assignmentId = Long.valueOf(params.assignmentId);
+    	assignmentId = Long.valueOf(params.assignment_id);
     	
     	//get paging data
     	int total_count = 17;
@@ -76,7 +77,7 @@ public class AssignmentGradeAssignmentProducer implements ViewComponentProducer,
     }
     
     public ViewParameters getViewParameters(){
-    	return new SimpleAssignmentViewParams();
+    	return new AssignmentGradeAssignmentViewParams();
     }
 
     public void setMessageLocator(MessageLocator messageLocator) {

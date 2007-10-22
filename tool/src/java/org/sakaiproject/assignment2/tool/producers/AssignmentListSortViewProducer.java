@@ -76,12 +76,6 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
     	
     	//get paging data
     	int total_count = 17;
-    	/**if (params.currentCount != null){
-    		pagerBean.setCurrentCount(Integer.valueOf(params.currentCount));
-    	}
-    	if (params.currentStart != null){
-    		pagerBean.setCurrentStart(Integer.valueOf(params.currentStart));
-    	}**/
     	pagerBean.setTotalCount(total_count);
     	
         UIMessage.make(tofill, "page-title", "assignment2.assignment_list-sortview.title");
@@ -96,6 +90,7 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
         UIInternalLink.make(tofill, "assignment_list-reorder-link",
 					UIMessage.make("assignment2.assignment_list-reorder.title"),
 				new SimpleViewParameters(AssignmentListReorderProducer.VIEW_ID));
+        UIMessage.make(tofill, "current_page", "assignment2.assignment_list-sortview.title");
         
         //table headers and sorting links
         UIMessage.make(tofill, "tableheader.remove", "assignment2.assignment_list-sortview.tableheader.remove");
@@ -183,6 +178,8 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
         //Fill out Table
         for (int i=0; i < 4; i ++){
         	UIBranchContainer row = UIBranchContainer.make(tofill, "assignment-row:");
+        	UIBoundBoolean.make(row, "assignment_row_remove");
+        	UIMessage.make(row, "assignment_row_remove_label", "assignment2.assignment_list-sortview.assignment_row_remove_label");
         	UIInternalLink.make(row, "assignment_row_link", "Homework Example 2", new SimpleViewParameters(AssignmentListReorderProducer.VIEW_ID));
         	UIInternalLink.make(row, "assignment_row_edit", "Edit", new SimpleViewParameters(AssignmentListReorderProducer.VIEW_ID));
         	UIInternalLink.make(row, "assignment_row_duplicate", "Duplicate", new SimpleViewParameters(AssignmentListReorderProducer.VIEW_ID));
@@ -196,6 +193,8 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
         	UIInternalLink.make(row, "assignment_row_in_new", "2/2", new SimpleViewParameters(AssignmentListReorderProducer.VIEW_ID));
         	UIOutput.make(row, "assignment_row_scale", "0-100.0");
         }
+        
+        UICommand.make(tofill, "submit_update", UIMessage..make("assignment2.assignment_list-sortview.submit_update"));
         
 
     }

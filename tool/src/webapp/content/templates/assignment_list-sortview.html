@@ -1,6 +1,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<html xmlns:rsf="http://ponder.org.uk/rsf" xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 
@@ -28,7 +28,7 @@
 
 	<div rsf:id="pagerDiv:" class="listNav">
 	</div>
-	Sort Order View | <a rsf:id="assignment_list-reorder-link" href="assignment_list-reorder.html">My Reorder View</a>
+	<span rsf:id="current_page">Sort Order View</span> | <a rsf:id="assignment_list-reorder-link" href="assignment_list-reorder.html">My Reorder View</a>
 
 	<p rsf:id="debug_info"></p>
 
@@ -75,7 +75,7 @@
 
 			<tr rsf:id="assignment-row:"> 
 				<td>
-					<input type="checkbox" name="" value="" id="" /> <label for="" class="skip">Remove</label>
+					<input rsf:id="assignment_row_remove" type="checkbox" /> <label rsf:id="assignment_row_remove_label" class="skip">Remove</label>
 				</td>
 				<td headers="attachments" class="attach"><img rsf:id="assignment_row_attach_img" width="16" height="16" border="0" /></td>
 				<td headers="title">
@@ -93,53 +93,9 @@
 				<td><a rsf:id="assignment_row_in_new">2/2</a></td>
 				<td rsf:id="assignment_row_scale">0-100.0</td>
 			</tr>
-
-
-			<tr> 
-				<td>
-					<input type="checkbox" name="" value="" id="" /> <label for="" class="skip">Remove</label>
-				</td>
-				<td headers="attachments" class="attach"></td>
-				<td headers="title">
-				<h4><a href=""><span class="highlight">Draft -</span> Homework Example 2 Copy</a></h4>
-					<ul class="itemAction">
-						<li><a href="">Edit</a></li>
-						<li><a href="">Duplicate</a></li>
-					</ul>
-				</td>
-				<td>Site</td>
-				<td><span class="highlight">Draft</span></td>
-				<td>Sep 24, 2007 11:00 am</td>
-				<td>Oct 1, 2007 6:00 pm</td>
-				<td><a href="">0/0</a></td>
-				<td>0-100.0</td>
-			</tr>
-
-
-			<tr> 
-				<td>
-					<input type="checkbox" name="" value="" id="" /> <label for="" class="skip">Remove</label>
-				</td>
-				<td headers="attachments" class="attach"></td>
-				<td headers="title">
-				<h4><a href="">Homework Example 1</a></h4>
-					<ul class="itemAction">
-						<li><a href="">Edit</a></li>
-						<li><a href="">Duplicate</a></li>
-						<li class="last"><a href="">Grade Assignment</a></li>
-					</ul>
-				</td>
-				<td>Site</td>
-				<td>Closed</td>
-				<td>Sep 24, 2007 11:00 am</td>
-				<td>Oct 1, 2007 6:00 pm</td>
-				<td><a href="">2/2</a></td>
-				<td>0-100.0</td>
-			</tr>
 		</table>
 
-		<input type="submit" class="active" name="eventSubmit_doDelete_confirm_assignment" value="Update" accesskey="s" />
-		<input type="hidden" name="source" value="0"/>			
+		<input rsf:id="submit_update" type="submit" class="active" name="eventSubmit_doDelete_confirm_assignment" value="Update" accesskey="s" />		
 		</form>
 	</div>
 </body>

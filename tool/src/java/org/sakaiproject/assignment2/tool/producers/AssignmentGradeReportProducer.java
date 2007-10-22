@@ -3,6 +3,7 @@ package org.sakaiproject.assignment2.tool.producers;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.sakaiproject.assignment2.tool.params.PagerViewParams;
 import org.sakaiproject.assignment2.tool.producers.NavBarRenderer;
 import org.sakaiproject.assignment2.tool.producers.PagerRenderer;
 
@@ -29,7 +30,7 @@ import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
 import uk.org.ponder.rsf.viewstate.ViewParameters;
 import uk.org.ponder.rsf.viewstate.ViewParamsReporter;
 
-public class AssignmentGradeReportProducer implements ViewComponentProducer {
+public class AssignmentGradeReportProducer implements ViewComponentProducer, ViewParamsReporter {
 
     public static final String VIEW_ID = "assignment_grade-report";
     public String getViewID() {
@@ -43,18 +44,22 @@ public class AssignmentGradeReportProducer implements ViewComponentProducer {
 
 
     public void fillComponents(UIContainer tofill, ViewParameters viewparams, ComponentChecker checker) {
-
+    	PagerViewParams pagerparams = (PagerViewParams) viewparams;
+    	
         UIMessage.make(tofill, "page-title", "assignment2.assignment_grade-report.title");
         navBarRenderer.makeNavBar(tofill, "navIntraTool:", VIEW_ID);
-        pagerRenderer.makePager(tofill, "pagerDiv:", VIEW_ID, viewparams);
+        pagerRenderer.makePager(tofill, "pagerDiv:", VIEW_ID, pagerparams);
         UIMessage.make(tofill, "heading", "assignment2.assignment_grade-report.heading");
         
     }
 
+    public ViewParameters getViewParameters(){
+    	return new PagerViewParams();
+    }
+    
     public void setMessageLocator(MessageLocator messageLocator) {
         this.messageLocator = messageLocator;
     }
-
 
     public void setNavBarRenderer(NavBarRenderer navBarRenderer) {
         this.navBarRenderer = navBarRenderer;

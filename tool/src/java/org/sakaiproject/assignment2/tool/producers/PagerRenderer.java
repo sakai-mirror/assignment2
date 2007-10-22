@@ -55,10 +55,6 @@ public class PagerRenderer {
         //Form
         UIForm form = UIForm.make(joint, "pager_form");
                 
-        
-
-
-		
 		//Paging Buttons
 		////////////////////
 		String href_params = "";
