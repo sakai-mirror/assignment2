@@ -16,7 +16,7 @@ public class AssignmentLocator implements BeanLocator {
     public static String NEW_1 = NEW_PREFIX + "1";
 
 	private AssignmentLogic assignmentLogic;
-    //private ExternalLogic externalLogic;
+    private ExternalLogic externalLogic;
 
 	private Map<String, Assignment2> delivered = new HashMap<String, Assignment2>();
 
@@ -52,9 +52,8 @@ public class AssignmentLocator implements BeanLocator {
 		this.assignmentLogic = assignmentLogic;
 	}
 
-	/**
     public void setExternalLogic(ExternalLogic externalLogic) {
         this.externalLogic = externalLogic;
     }
-    **/
+
 }

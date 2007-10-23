@@ -74,7 +74,7 @@
 
    <!-- OTP -->
    <bean id="AssignmentLocator" class="org.sakaiproject.assignment2.tool.otp.AssignmentLocator">
-      <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
+	  <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
       <property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
    </bean>
    
