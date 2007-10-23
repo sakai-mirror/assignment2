@@ -15,6 +15,7 @@
       <!-- <property name="blogLogic" ref="org.sakaiproject.blogwow.logic.BlogLogic" /> -->
    </bean>
    <bean id="PagerRenderer" class="org.sakaiproject.assignment2.tool.producers.PagerRenderer">
+      <property name="externalLogic" ref="org.sakaiproject.blogwow.logic.ExternalLogic" />
 	  <property name="pagerBean" ref="PagerBean" />
       <property name="messageLocator" ref="messageLocator" />
    </bean>

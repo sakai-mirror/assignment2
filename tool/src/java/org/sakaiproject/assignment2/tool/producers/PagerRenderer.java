@@ -1,12 +1,9 @@
 package org.sakaiproject.assignment2.tool.producers;
 
+import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.tool.params.PagerViewParams;
 import org.sakaiproject.assignment2.tool.params.AssignmentListSortViewParams;
 import org.sakaiproject.assignment2.tool.beans.PagerBean;
-
-import org.sakaiproject.tool.cover.ToolManager;
-import org.sakaiproject.component.cover.ServerConfigurationService;
-import org.sakaiproject.entity.api.Entity;
 
 import uk.org.ponder.messageutil.MessageLocator;
 import uk.org.ponder.rsf.components.ELReference;
@@ -34,6 +31,7 @@ public class PagerRenderer {
 
 	private PagerBean pagerBean;
 	private MessageLocator messageLocator;
+	private ExternalLogic externalLogic;
 	
 	public void makePager(UIContainer tofill, String divID, String currentViewID, ViewParameters viewparams) {
     	PagerViewParams pagerparams = (PagerViewParams) viewparams;
@@ -64,8 +62,7 @@ public class PagerRenderer {
 			href_params = "sort_dir=" + sortparams.sort_dir + "&sort_by=" + sortparams.sort_by + "&";
 		}		
 		//build url
-		String url = ServerConfigurationService.getToolUrl() + Entity.SEPARATOR
-        	+ ToolManager.getCurrentPlacement().getId() + Entity.SEPARATOR + currentViewID;
+		String url = externalLogic.getAssignmentViewUrl(currentViewID);
 
 		//Select Box
         UISelect select_box = UISelect.make(form, "pager_select_box");
@@ -136,5 +133,9 @@ public class PagerRenderer {
     
     public void setMessageLocator(MessageLocator messageLocator) {
         this.messageLocator = messageLocator;
+    }
+    
+    public void setExternalLogic(ExternalLogic externalLogic) {
+    	this.externalLogic = externalLogic;
     }
 }

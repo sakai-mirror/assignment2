@@ -85,6 +85,13 @@
     </dependency>    
    
     <dependency>
+        <groupId>org.sakaiproject</groupId>
+        <artifactId>sakai-assignment2-logic-api</artifactId>
+        <version>${sakai.version}</version>
+        <scope>provided</scope>
+    </dependency>
+   
+    <dependency>
       <groupId>org.sakaiproject</groupId>
       <artifactId>sakai-authz-api</artifactId>
       <version>${sakai.version}</version>
@@ -111,6 +118,14 @@
         <version>${sakai.version}</version>
         <scope>provided</scope>
     </dependency>
+  
+    <dependency>
+      <groupId>org.sakaiproject</groupId>
+      <artifactId>sakai-assignment2-model</artifactId>
+      <version>${sakai.version}</version>
+      <scope>provided</scope>
+    </dependency>
+  
   
     <dependency>
         <groupId>org.sakaiproject</groupId>
