@@ -39,5 +39,19 @@
 		<property name="exclusive" value="true" />
 	</bean>
 	-->
+	
+	<bean id="Assignment2Creator"
+		class="org.sakaiproject.assignment2.tool.beans.Assignment2Creator" />
+   
+   <bean id="Assignment2" parent="entityBeanLocatorParent">
+      <property name="newMethod" 
+      	value="Assignment2Creator.create" />
+      <property name="fetchMethod"
+      	value="org\.sakaiproject\.assignment2\.logic\.AssignmentLogic.getAssignmentById" />
+      <property name="saveMethod"
+        value="org\.sakaiproject\.assignment2\.logic\.AssignmentLogic.saveAssignment" />
+      <property name="removeMethod"
+        value="org\.sakaiproject\.assignment2\.logic\.AssignmentLogic.deleteAssignment" />
+   </bean>
    
 </beans>

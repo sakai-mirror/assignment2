@@ -15,7 +15,7 @@
     -->
   <context-param>
     <param-name>resourceurlbase</param-name>
-    <param-value>/sakai-assignmentcleaner/</param-value>
+    <param-value>/sakai-assignment2-tool/</param-value>
   </context-param>
 
  <!-- Configure standard Spring application contexts. Be sure to mention

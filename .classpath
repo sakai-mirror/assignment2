@@ -8,17 +8,16 @@
 	<classpathentry kind="src" path="impl/hbm/src/java"/>
 	<classpathentry kind="src" path="impl/pack/src/webapp/WEB-INF"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="var" path="M2_REPO/rsfutil/jars/rsfutil-0.7.2M3.jar"/>
-	<classpathentry kind="var" path="M2_REPO/j-servletutil/jars/j-servletutil-1.2.2M3.jar"/>
-	<classpathentry kind="var" path="M2_REPO/ponderutilcore/jars/ponderutilcore-1.2.2M3.jar"/>
-	<classpathentry kind="var" path="M2_REPO/sakairsf/jars/sakairsf-0.7.2M3-sakai_2.2.x.jar"/>
+	<classpathentry combineaccessrules="false" kind="var" path="M2_REPO/uk/org/ponder/rsfutil/rsfutil/0.7.2/rsfutil-0.7.2.jar"/>
+	<classpathentry combineaccessrules="false" kind="var" path="M2_REPO/uk/org/ponder/j-servletutil/1.2.2/j-servletutil-1.2.2.jar"/>
+	<classpathentry combineaccessrules="false" kind="var" path="M2_REPO/uk/org/ponder/ponderutilcore/1.2.2/ponderutilcore-1.2.2.jar"/>
+	<classpathentry combineaccessrules="false" kind="var" path="M2_REPO/uk/org/ponder/sakairsf/sakairsf/0.7.2-sakai_2.2.x/sakairsf-0.7.2-sakai_2.2.x.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/springframework/spring/2.0.6/spring-2.0.6.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/springframework/spring-mock/2.0.6/spring-mock-2.0.6.jar"/>
 	<classpathentry kind="var" path="M2_REPO/commons-lang/commons-lang/2.1/commons-lang-2.1.jar"/>
 	<classpathentry kind="var" path="M2_REPO/commons-logging/commons-logging-api/1.1/commons-logging-api-1.1.jar"/>
 	<classpathentry kind="src" path="tool/src/java"/>
-	<classpathentry kind="var" path="M2_REPO/uk/org/ponder/rsfutil/rsfutil/0.7.2/rsfutil-0.7.2.jar"/>
-	<classpathentry kind="var" path="M2_REPO/uk/org/ponder/ponderutilcore/1.2.2/ponderutilcore-1.2.2.jar"/>
+	<classpathentry combineaccessrules="false" kind="var" path="M2_REPO/uk/org/ponder/ponderutilcore/1.2.2/ponderutilcore-1.2.2.jar"/>
 	<classpathentry kind="src" path="/tool-api"/>
 	<classpathentry kind="src" path="/component-api"/>
 	<classpathentry kind="src" path="/entity-api"/>
@@ -29,5 +28,7 @@
 	<classpathentry kind="src" path="/site-api"/>
 	<classpathentry kind="src" path="/user-api"/>
 	<classpathentry kind="src" path="/util-util"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/entity-broker"/>
+	<classpathentry kind="var" path="M2_REPO/org/sakaiproject/entitybroker/entitybroker-api/1.2.0/entitybroker-api-1.2.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

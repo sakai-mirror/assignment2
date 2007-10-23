@@ -30,7 +30,13 @@
 	</div>
 	<span rsf:id="current_page">Sort Order View</span> | <a rsf:id="assignment_list-reorder-link" href="assignment_list-reorder.html">My Reorder View</a>
 
-	<p rsf:id="debug_info"></p>
+
+	<div rsf:id="message-for:*" class="debug_info">
+		<ul style="margin:0px;">
+			<li>Message for user here</li>
+		</ul>
+	</div>
+	
 
 	<form name="" action="" method="post">
 		<table class="listHier lines">
@@ -97,6 +103,7 @@
 
 		<input rsf:id="submit_update" type="submit" class="active" name="eventSubmit_doDelete_confirm_assignment" value="Update" accesskey="s" />		
 		</form>
+		<div rsf:id="assignment_empty">There are no Assignments yet</div>
 	</div>
 </body>
 </html>

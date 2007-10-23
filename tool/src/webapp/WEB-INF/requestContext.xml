@@ -15,7 +15,7 @@
       <!-- <property name="blogLogic" ref="org.sakaiproject.blogwow.logic.BlogLogic" /> -->
    </bean>
    <bean id="PagerRenderer" class="org.sakaiproject.assignment2.tool.producers.PagerRenderer">
-      <property name="externalLogic" ref="org.sakaiproject.blogwow.logic.ExternalLogic" />
+      <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
 	  <property name="pagerBean" ref="PagerBean" />
       <property name="messageLocator" ref="messageLocator" />
    </bean>
@@ -64,6 +64,8 @@
       <property name="pagerRenderer" ref="PagerRenderer" />
       <property name="messageLocator" ref="messageLocator" />
       <property name="pagerBean" ref="PagerBean" />
+      <property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
+      <property name="locale" ref="requestLocale" />
    </bean>
 
    <bean class="org.sakaiproject.assignment2.tool.producers.AssignmentPermissionsProducer">
@@ -80,7 +82,10 @@
    
    <!--  Beans -->
    <bean id="PagerBean" class="org.sakaiproject.assignment2.tool.beans.PagerBean" />
-   <bean id="HelloBean" class="org.sakaiproject.assignment2.tool.beans.HelloBean" />
-
+   <bean id="Assignment2Bean" class="org.sakaiproject.assignment2.tool.beans.Assignment2Bean">
+   	  <property name="logic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
+   	  <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
+   	  <property name="messages" ref="targettedMessageList"/>
+   </bean>
 
 </beans>
