@@ -21,6 +21,7 @@
 
 package org.sakaiproject.assignment2.logic;
 
+import java.util.List;
 import org.sakaiproject.assignment2.model.Assignment2;
 
 
@@ -51,5 +52,14 @@ public interface AssignmentLogic {
 	 * 			the Assignment to delete
 	 */	
 	public void deleteAssignment(Assignment2 assignment);
+	
+	/**
+	 * Returns list of Assignment objects that the given user has permission
+	 * to view or grade. Assignments that the user does not have permission 
+	 * to view or grade will not be returned.
+	 * @param userId
+	 * @return
+	 */
+	public List<Assignment2> getViewableAssignments(String userId);
 
 }

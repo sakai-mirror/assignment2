@@ -22,6 +22,7 @@
 package org.sakaiproject.assignment2.model;
 
 import java.util.Date;
+import java.util.Set;
 
 /**
  * The Assignment object
@@ -58,9 +59,10 @@ public class Assignment2 {
     private Date modifiedTime;
     private boolean removed;
     private int version;
+    private Set<AssignmentAttachment> attachmentSet;
+    private Set<AssignmentGroup> assignmentGroupSet;
 
-
-    /**
+	/**
      * Default constructor
      */
     public Assignment2() {
@@ -510,4 +512,38 @@ public class Assignment2 {
     public void setVersion(int version) {
     	this.version = version;
     }
+    
+    /**
+     * 
+     * @return Set of AssignmentAttachments associated with this assignment
+     */
+    public Set<AssignmentAttachment> getAttachmentSet() {
+		return attachmentSet;
+	}
+
+    /**
+     * 
+     * @param attachmentSet
+     * Set of AssignmentAttachments associated with this assignment
+     */
+	public void setAttachmentSet(Set<AssignmentAttachment> attachmentSet) {
+		this.attachmentSet = attachmentSet;
+	}
+
+	/**
+	 * 
+	 * @return the AssignmentGroups that this assignment is restricted to
+	 */
+	public Set<AssignmentGroup> getAssignmentGroupSet() {
+		return assignmentGroupSet;
+	}
+
+	/**
+	 * 
+	 * @param assignmentGroupSet
+	 * the AssignmentGroups that this assignment is restricted to
+	 */
+	public void setAssignmentGroupSet(Set<AssignmentGroup> assignmentGroupSet) {
+		this.assignmentGroupSet = assignmentGroupSet;
+	}
 }

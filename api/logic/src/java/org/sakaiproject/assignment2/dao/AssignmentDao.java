@@ -39,16 +39,6 @@ import org.sakaiproject.genericdao.api.CompleteGenericDao;
 public interface AssignmentDao extends CompleteGenericDao {
 	
 	/**
-	 * Returns list of Assignment objects mapped to a string value indicating
-	 * whether this user may only view or may view/grade each assignment.
-	 * Assignments that the user does not have permission to view or grade will
-	 * not be returned.
-	 * @param userId
-	 * @return
-	 */
-	//public Map<Assignment2, String> getAvailableAssignments(String userId);
-	
-	/**
 	 * 
 	 * @param assignment
 	 * @return the AssignmentAttachments associated with this assignment

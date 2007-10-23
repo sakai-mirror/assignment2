@@ -22,6 +22,7 @@
 package org.sakaiproject.assignment2.model;
 
 import java.util.Date;
+import java.util.Set;
 
 /**
  * The AssignmentSubmissionVersion object
@@ -47,6 +48,8 @@ public class AssignmentSubmissionVersion {
 	private String reviewIconUrl;
 	private String createdBy;
 	private Date createdTime;
+	private Set<AssignmentFeedbackAttachment> feedbackAttachSet;
+	private Set<AssignmentSubmissionAttachment> submissionAttachSet;
 	
 
 	public AssignmentSubmissionVersion() {
@@ -322,5 +325,45 @@ public class AssignmentSubmissionVersion {
 	public void setAssignmentSubmission(AssignmentSubmission assignmentSubmission) {
 		this.assignmentSubmission = assignmentSubmission;
 	}
+	
+	/**
+	 * 
+	 * @return the AssignmentFeedbackAttachments associated with this submission
+	 * version
+	 */
+	public Set<AssignmentFeedbackAttachment> getFeedbackAttachSet() {
+		return feedbackAttachSet;
+	}
+
+	/**
+	 * 
+	 * @param feedbackAttachSet
+	 * the AssignmentFeedbackAttachments associated with this submission version
+	 */
+	public void setFeedbackAttachSet(
+			Set<AssignmentFeedbackAttachment> feedbackAttachSet) {
+		this.feedbackAttachSet = feedbackAttachSet;
+	}
+	
+	/**
+	 * 
+	 * @return the AssignmentSubmissionAttachments associated with this
+	 * submission version
+	 */
+	public Set<AssignmentSubmissionAttachment> getSubmissionAttachSet() {
+		return submissionAttachSet;
+	}
+
+	/**
+	 * 
+	 * @param submissionAttachSet
+	 * the AssignmentSubmissionAttachments associated with this
+	 * submission version
+	 */
+	public void setSubmissionAttachSet(
+			Set<AssignmentSubmissionAttachment> submissionAttachSet) {
+		this.submissionAttachSet = submissionAttachSet;
+	}
+
 
 }
