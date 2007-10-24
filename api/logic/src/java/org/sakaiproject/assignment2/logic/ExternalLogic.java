@@ -9,10 +9,14 @@ public interface ExternalLogic {
 
     public final static String NO_LOCATION = "noLocationAvailable";
 
-    public final static String ANON_USER_PREFIX = "anon_";
-
     // permissions
     public final static String ASSIGNMENT2_CREATE = "assignment2.create";
+    public final static String ASSIGNMENT2_DELETE = "assignment2.delete";
+    public final static String ASSIGNMENT2_REVISE = "assignment2.revise";
+    public final static String ASSIGNMENT2_SUBMIT = "assignment2.submit";
+    public final static String ASSIGNMENT2_READ = "assignment2.read";
+    public final static String ASSIGNMENT2_RECEIVE_NOTIF = "assignment2.receive.notifications";
+    public final static String ASSIGNMENT2_ALL_GROUPS_UNGRADED = "assignment2.allGroups.ungraded";
 
     /**
      * @return the current sakai user id (not username)
@@ -43,17 +47,14 @@ public interface ExternalLogic {
     public boolean isUserAdmin(String userId);
 
     /**
-     * Check if a user has a specified permission within a context, primarily a convenience method and passthrough
+     * Check if the current user has a specified permission within the current
+     * site, primarily a convenience method and passthrough
      * 
-     * @param userId
-     *            the internal user id (not username)
      * @param permission
      *            a permission string constant
-     * @param locationId
-     *            a unique id which represents the current location of the user (entity reference)
      * @return true if allowed, false otherwise
      */
-    public boolean isUserAllowedInLocation(String userId, String permission, String locationId);
+    public boolean getCurrentUserHasPermission(String permission);
 
     /**
      * Cleans up the users submitted strings to protect us from XSS

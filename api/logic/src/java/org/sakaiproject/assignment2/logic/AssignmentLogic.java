@@ -40,16 +40,29 @@ public interface AssignmentLogic {
 	public Assignment2 getAssignmentById(Long assignmentId);
 	
 	/**
-	 * Create or update an Assignment
+	 * Create or update an assignment
 	 * @param assignment
-	 * 			the Assignment to create or update
+	 * the assignment to create or update
+	 * @throws SecurityException -
+	 * user must have "revise" permission to update or "create" permission if
+	 * assignment is new
+	 * @throws IllegalArgumentException -
+	 * if assignment is null
+	 * @throws ConflictingAssignmentNameException -
+	 * if it is a new assignment and the title already exists
 	 */
 	public void saveAssignment(Assignment2 assignment);
 	
 	/**
-	 * Delete an Assignment
+	 * Delete an Assignment 
+	 * note: no assignments are actually deleted; the "removed" property
+	 * will be set to true
 	 * @param assignment
 	 * 			the Assignment to delete
+	 * @throws SecurityException -
+	 * user must have "delete" permission
+	 * @throws IllegalArgumentException -
+	 * if assignment is null
 	 */	
 	public void deleteAssignment(Assignment2 assignment);
 	

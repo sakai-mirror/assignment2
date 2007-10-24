@@ -26,9 +26,11 @@
       <property name="target" ref="org.sakaiproject.assignment2.dao.impl.AssignmentDaoTarget" />
       <property name="transactionAttributes">
          <props>
-            <prop key="*">PROPAGATION_REQUIRED</prop>
-         </props>
-      </property>
+						<prop key="get*">PROPAGATION_REQUIRED,readOnly,+org.sakaiproject.assignment2.exception.AssignmentException</prop>
+						<prop key="is*">PROPAGATION_REQUIRED,readOnly,+org.sakaiproject.assignment2.exception.AssignmentException</prop>
+						<prop key="*">PROPAGATION_REQUIRED,+org.sakaiproject.assignment2.exception.AssignmentException</prop>
+					</props>
+				</property>
    </bean>
 
 </beans>

@@ -36,7 +36,7 @@ import org.sakaiproject.genericdao.api.CompleteGenericDao;
  * 
  * @author <a href="mailto:wagnermr@iupui.edu">michelle wagner</a>
  */
-public interface AssignmentDao extends CompleteGenericDao {
+public interface AssignmentSubmissionDao extends CompleteGenericDao {
 
 
 }

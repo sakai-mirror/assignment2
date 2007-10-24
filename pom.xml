@@ -20,5 +20,6 @@
     <module>impl/pack</module>
     <module>impl/dao</module>
     <module>impl/logic</module>
+    <module>impl/test</module>
   </modules>
 </project>

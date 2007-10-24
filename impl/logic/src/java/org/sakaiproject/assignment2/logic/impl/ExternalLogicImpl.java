@@ -69,6 +69,12 @@ public class ExternalLogicImpl implements ExternalLogic {
         log.debug("init");
         // register Sakai permissions for this tool
         functionManager.registerFunction(ASSIGNMENT2_CREATE);
+        functionManager.registerFunction(ASSIGNMENT2_DELETE);
+        functionManager.registerFunction(ASSIGNMENT2_REVISE);
+        functionManager.registerFunction(ASSIGNMENT2_SUBMIT);
+        functionManager.registerFunction(ASSIGNMENT2_READ);
+        functionManager.registerFunction(ASSIGNMENT2_RECEIVE_NOTIF);
+        functionManager.registerFunction(ASSIGNMENT2_ALL_GROUPS_UNGRADED);
     }
 
     public String getCurrentLocationId() {
@@ -81,18 +87,7 @@ public class ExternalLogicImpl implements ExternalLogic {
     }
 
     public String getCurrentUserId() {
-        String userId = sessionManager.getCurrentSessionUserId();
-        if (userId == null) {
-            // if no user found then fake like there is one for this session,
-            // we do not want to actually create a user though
-            Session session = sessionManager.getCurrentSession();
-            userId = (String) session.getAttribute(ANON_USER_ATTRIBUTE);
-            if (userId == null) {
-                userId = ANON_USER_PREFIX + new Date().getTime();
-                session.setAttribute(ANON_USER_ATTRIBUTE, userId);
-            }
-        }
-        return userId;
+        return sessionManager.getCurrentSessionUserId();
     }
 
     public String getUserDisplayName(String userId) {
@@ -102,9 +97,7 @@ public class ExternalLogicImpl implements ExternalLogic {
         } catch (UserNotDefinedException ex) {
             log.error("Could not get user from userId: " + userId, ex);
         }
-        if (userId.startsWith(ANON_USER_PREFIX)) {
-            return "Anonymous User";
-        }
+
         return "----------";
     }
 
@@ -112,8 +105,9 @@ public class ExternalLogicImpl implements ExternalLogic {
         return securityService.isSuperUser(userId);
     }
 
-    public boolean isUserAllowedInLocation(String userId, String permission, String locationId) {
-        if (securityService.unlock(userId, permission, locationId)) {
+    public boolean getCurrentUserHasPermission(String permission) {
+
+        if (securityService.unlock(getCurrentUserId(), permission, getCurrentLocationId())) {
             return true;
         }
         return false;
