@@ -42,32 +42,32 @@ public class AssigmentConstants {
 	/**
 	 * Do not send notification emails for any submissions
 	 */
-	public final static int NOTIFY_NONE = 1;
+	public final static int NOTIFY_NONE = 0;
 	/**
 	 * Send a notification email for each submission
 	 */
-	public final static int NOTIFY_FOR_EACH = 2;
+	public final static int NOTIFY_FOR_EACH = 1;
 	/**
 	 * Send me one email per day summarizing notifications for submissions
 	 */
-	public final static int NOTIFY_DAILY_SUMMARY = 3;
+	public final static int NOTIFY_DAILY_SUMMARY = 2;
 	
 	// Submission Types
 	/**
 	 * Submissions may only be inline
 	 */
-	public final static int SUBMIT_INLINE_ONLY = 1;
+	public final static int SUBMIT_INLINE_ONLY = 0;
 	/**
 	 * Submissions may only be attachments
 	 */
-	public final static int SUBMIT_ATTACH_ONLY = 2;
+	public final static int SUBMIT_ATTACH_ONLY = 1;
 	/**
 	 * Submissions may be inline and/or attachments
 	 */
-	public final static int SUBMIT_INLINE_AND_ATTACH = 3;
+	public final static int SUBMIT_INLINE_AND_ATTACH = 2;
 	/**
 	 * Submissions will be non-electronic
 	 */
-	public final static int SUBMIT_NON_ELECTRONIC = 4;
+	public final static int SUBMIT_NON_ELECTRONIC = 3;
 	
 }

@@ -35,39 +35,77 @@ public class Assignment2 {
     private Long gradableObjectId;
     private String siteId;
     private String title;
-    private boolean draft;
+    private Boolean draft;
     private int sortIndex;
     private Date openTime;
     private Date closeTime;
     private Date dropDeadTime;
-    private boolean ungraded;
+    private Boolean ungraded;
     private Date dueDateForUngraded;
-    private boolean restrictedToGroups;
-    private boolean groupSubmission;
-    private boolean honorPledge;
+    private Boolean restrictedToGroups;
+    private Boolean groupSubmission;
+    private Boolean honorPledge;
     private String instructions;
     private int submissionType;
     private int notificationType;
     private String announcementId;
     private String calendarEventId;
-    private boolean allowResubmitUntilDue;
-    private boolean allowReviewService;
-    private boolean allowStudentViewReport;
+    private Boolean allowResubmitUntilDue;
+    private Boolean allowReviewService;
+    private Boolean allowStudentViewReport;
     private String creator;
     private Date createTime;
     private String modifiedBy;
     private Date modifiedTime;
-    private boolean removed;
+    private Boolean removed;
     private int version;
     private Set<AssignmentAttachment> attachmentSet;
     private Set<AssignmentGroup> assignmentGroupSet;
+
+	public Assignment2(Long gradableObjectId, String siteId, String title,
+			Boolean draft, int sortIndex, Date openTime, Date closeTime,
+			Date dropDeadTime, Boolean ungraded, Date dueDateForUngraded,
+			Boolean restrictedToGroups, Boolean groupSubmission,
+			Boolean honorPledge, String instructions, int submissionType,
+			int notificationType, String announcementId,
+			String calendarEventId, Boolean allowResubmitUntilDue,
+			Boolean allowReviewService, Boolean allowStudentViewReport,
+			String creator, Date createTime, String modifiedBy,
+			Date modifiedTime) {
+
+		this.gradableObjectId = gradableObjectId;
+		this.siteId = siteId;
+		this.title = title;
+		this.draft = draft;
+		this.sortIndex = sortIndex;
+		this.openTime = openTime;
+		this.closeTime = closeTime;
+		this.dropDeadTime = dropDeadTime;
+		this.ungraded = ungraded;
+		this.dueDateForUngraded = dueDateForUngraded;
+		this.restrictedToGroups = restrictedToGroups;
+		this.groupSubmission = groupSubmission;
+		this.honorPledge = honorPledge;
+		this.instructions = instructions;
+		this.submissionType = submissionType;
+		this.notificationType = notificationType;
+		this.announcementId = announcementId;
+		this.calendarEventId = calendarEventId;
+		this.allowResubmitUntilDue = allowResubmitUntilDue;
+		this.allowReviewService = allowReviewService;
+		this.allowStudentViewReport = allowStudentViewReport;
+		this.creator = creator;
+		this.createTime = createTime;
+		this.modifiedBy = modifiedBy;
+		this.modifiedTime = modifiedTime;
+	}
 
 	/**
      * Default constructor
      */
     public Assignment2() {
     }
-
+    
     /**
      * Getters and Setters
      */
@@ -136,7 +174,7 @@ public class Assignment2 {
     /**
      * @return Returns this assignment's draft status
      */
-    public boolean isDraft() {
+    public Boolean isDraft() {
         return draft;
     }
     
@@ -144,7 +182,7 @@ public class Assignment2 {
      * draft status
      * @param draft
      */
-    public void setDraft(boolean draft) {
+    public void setDraft(Boolean draft) {
         this.draft = draft;
     }
     
@@ -213,7 +251,7 @@ public class Assignment2 {
      * information in the gradebook tables except ungraded assignments.  
      * @return true if this assignment is ungraded
      */
-    public boolean isUngraded() {
+    public Boolean isUngraded() {
     	return ungraded;
     }
     
@@ -222,7 +260,7 @@ public class Assignment2 {
      * information in the gradebook tables except ungraded assignments.  
      * @param ungraded
      */
-    public void setUngraded(boolean ungraded) {
+    public void setUngraded(Boolean ungraded) {
     	this.ungraded = ungraded;
     }
     
@@ -250,7 +288,7 @@ public class Assignment2 {
      * @return Returns true if viewing this assignment is restricted to members
      * of specific group(s)
      */
-    public boolean isRestrictedToGroups() {
+    public Boolean isRestrictedToGroups() {
         return restrictedToGroups;
     }
     
@@ -259,7 +297,7 @@ public class Assignment2 {
      * of specific group(s)
      * @param restrictedToGroups
      */
-    public void setRestrictedToGroups(boolean restrictedToGroups) {
+    public void setRestrictedToGroups(Boolean restrictedToGroups) {
         this.restrictedToGroups = restrictedToGroups;
     }
     
@@ -267,7 +305,7 @@ public class Assignment2 {
      * @return Returns true if this assignment will be submitted by a "group", not the
      * individual students in the group
      */
-    public boolean isGroupSubmission() {
+    public Boolean isGroupSubmission() {
         return groupSubmission;
     }
     
@@ -276,14 +314,14 @@ public class Assignment2 {
      * individual students in the group
      * @param groupSubmission
      */
-    public void setGroupSubmission(boolean groupSubmission) {
+    public void setGroupSubmission(Boolean groupSubmission) {
         this.groupSubmission = groupSubmission;
     }
     
     /**
      * @return Returns true if this assignment requires an honor pledge
      */
-    public boolean isHonorPledge() {
+    public Boolean isHonorPledge() {
         return honorPledge;
     }
     
@@ -291,7 +329,7 @@ public class Assignment2 {
      * true if this assignment requires an honor pledge
      * @param honorPledge
      */
-    public void setHonorPledge(boolean honorPledge) {
+    public void setHonorPledge(Boolean honorPledge) {
         this.honorPledge = honorPledge;
     }
     
@@ -386,7 +424,7 @@ public class Assignment2 {
      * @return If true, will allow students to resubmit an unlimited number of times
      * until the due date
      */
-    public boolean isAllowResubmitUntilDue() {
+    public Boolean isAllowResubmitUntilDue() {
         return allowResubmitUntilDue;
     }
     
@@ -395,14 +433,14 @@ public class Assignment2 {
      * until the due date
      * @param allowResubmitUntilDue
      */
-    public void setAllowResubmitUntilDue(boolean allowResubmitUntilDue) {
+    public void setAllowResubmitUntilDue(Boolean allowResubmitUntilDue) {
         this.allowResubmitUntilDue = allowResubmitUntilDue;
     }
     
     /**
      * @return If true, this assignment allows a review service (ie TurnItIn)
      */
-    public boolean isAllowReviewService() {
+    public Boolean isAllowReviewService() {
         return allowReviewService;
     }
 
@@ -410,14 +448,14 @@ public class Assignment2 {
      * If true, this assignment allows a review service (ie TurnItIn)
      * @param allowReviewService
      */
-    public void setAllowReviewService(boolean allowReviewService) {
+    public void setAllowReviewService(Boolean allowReviewService) {
         this.allowReviewService = allowReviewService;
     }
     
     /**
      * @return If true, students are allowed to view the review service report
      */
-    public boolean isAllowStudentViewReport() {
+    public Boolean isAllowStudentViewReport() {
         return allowStudentViewReport;
     }
 
@@ -425,7 +463,7 @@ public class Assignment2 {
      * If true, students are allowed to view the review service report
      * @param allowStudentViewReport
      */
-    public void setAllowStudentViewReport(boolean allowStudentViewReport) {
+    public void setAllowStudentViewReport(Boolean allowStudentViewReport) {
         this.allowStudentViewReport = allowStudentViewReport;
     }
     
@@ -493,7 +531,7 @@ public class Assignment2 {
      * 
      * @return true if this assignment was deleted
      */
-    public boolean isRemoved() {
+    public Boolean isRemoved() {
     	return removed;
     }
     
@@ -501,7 +539,7 @@ public class Assignment2 {
      * true if this assignment was deleted
      * @param removed
      */
-    public void setRemoved(boolean removed) {
+    public void setRemoved(Boolean removed) {
     	this.removed = removed;
     }
     

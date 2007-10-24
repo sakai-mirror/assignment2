@@ -38,9 +38,9 @@ public class AssignmentSubmissionVersion {
 	private String feedbackText;
 	private String commentForUngraded;
 	private String submittedText;
-	private boolean draft;
-	private boolean newSubmission;
-	private boolean allowResubmit;
+	private Boolean draft;
+	private Boolean newSubmission;
+	private Boolean allowResubmit;
 	private Date resubmitCloseTime;
 	private String reviewReportUrl;
 	private int reviewReportScore;
@@ -116,7 +116,7 @@ public class AssignmentSubmissionVersion {
 	 * @return true if the submitter has started working on the submission
 	 * but has not yet submitted it for review
 	 */
-	public boolean isDraft() {
+	public Boolean isDraft() {
 		return draft;
 	}
 
@@ -124,7 +124,7 @@ public class AssignmentSubmissionVersion {
 	 * set the draft status
 	 * @param draft
 	 */
-	public void setDraft(boolean draft) {
+	public void setDraft(Boolean draft) {
 		this.draft = draft;
 	}
 	
@@ -132,7 +132,7 @@ public class AssignmentSubmissionVersion {
 	 * 
 	 * @return true if no grader action has been taken on this submission 
 	 */
-	public boolean isNewSubmission() {
+	public Boolean isNewSubmission() {
 		return newSubmission;
 	}
 	
@@ -140,7 +140,7 @@ public class AssignmentSubmissionVersion {
 	 * true if no grader action has been taken on this submission
 	 * @param newSubmission
 	 */
-	public void setNewSubmission(boolean newSubmission) {
+	public void setNewSubmission(Boolean newSubmission) {
 		this.newSubmission = newSubmission;
 	}
 	
@@ -148,7 +148,7 @@ public class AssignmentSubmissionVersion {
 	 * 
 	 * @return true if the submitter is allowed to resubmit this assignment
 	 */
-	public boolean isAllowResubmit() {
+	public Boolean isAllowResubmit() {
 		return allowResubmit;
 	}
 
@@ -156,7 +156,7 @@ public class AssignmentSubmissionVersion {
 	 * set whether or not the submitter is allowed to resubmit this assignment
 	 * @param allowResubmit
 	 */
-	public void setAllowResubmit(boolean allowResubmit) {
+	public void setAllowResubmit(Boolean allowResubmit) {
 		this.allowResubmit = allowResubmit;
 	}
 	

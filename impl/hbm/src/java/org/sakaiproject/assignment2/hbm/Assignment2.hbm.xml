@@ -25,7 +25,7 @@
             <column name="TITLE" not-null="true" length="255" />
         </property>
         <!-- the draft status for this assignment -->
-        <property name="draft" type="boolean">
+        <property name="draft" type="java.lang.Boolean">
             <column name="DRAFT" not-null="true" />
         </property>
         <!-- the index used for ordering assignments in the UI -->
@@ -45,7 +45,7 @@
             <column name="DROP_DEAD_TIME" not-null="true" />
         </property>
         <!-- mark this assignment as ungraded and will not be linked to GB -->
-        <property name="ungraded" type="boolean">
+        <property name="ungraded" type="java.lang.Boolean">
             <column name="UNGRADED" not-null="true" />
         </property>
         <!-- stores due date for ungraded assign, only situation where not stored in gb -->
@@ -53,15 +53,15 @@
             <column name="DUE_DATE_FOR_UNGRADED" />
         </property>
         <!-- whether this assignment will be submitted as a group -->
-        <property name="groupSubmission" type="boolean">
-            <column name="GROUP_SUBMISSION" not-null="true" />
+        <property name="groupSubmission" type="java.lang.Boolean">
+            <column name="GROUP_SUBMISSION" />
         </property>
         <!-- true if viewing this assignment is restricted to members of specific group(s) -->
-        <property name="restrictedToGroups" type="boolean">
+        <property name="restrictedToGroups" type="java.lang.Boolean">
             <column name="RESTRICTED_TO_GROUPS" not-null="true" />
         </property>
         <!-- true if assignment requires student to agree to honor pledge -->
-        <property name="honorPledge" type="boolean">
+        <property name="honorPledge" type="java.lang.Boolean">
             <column name="HONOR_PLEDGE" not-null="true" />
         </property>
         <!-- assignment instructions -->
@@ -85,15 +85,15 @@
             <column name="CALENDAR_EVENT_ID" length="36" />
         </property>
         <!-- allow resubmissions until due date  -->
-        <property name="allowResubmitUntilDue" type="boolean" >
+        <property name="allowResubmitUntilDue" type="java.lang.Boolean" >
             <column name="ALLOW_RESUBMIT_UNTIL_DUE" not-null="true" />
         </property>
         <!-- allow a review service  -->
-        <property name="allowReviewService" type="boolean" >
+        <property name="allowReviewService" type="java.lang.Boolean" >
             <column name="ALLOW_REVIEW_SERVICE"  />
         </property>
         <!-- allow student to view the review report  -->
-        <property name="allowStudentViewReport" type="boolean" >
+        <property name="allowStudentViewReport" type="java.lang.Boolean" >
             <column name="ALLOW_STUDENT_VIEW_REPORT" />
         </property>
         <!-- assignment creator  -->
@@ -113,7 +113,7 @@
             <column name="MODIFIED_TIME" />
         </property>
         <!-- true if this assignment was deleted -->
-        <property name="removed" type="boolean" >
+        <property name="removed" type="java.lang.Boolean" >
         		<column name="REMOVED" />
         </property>
         

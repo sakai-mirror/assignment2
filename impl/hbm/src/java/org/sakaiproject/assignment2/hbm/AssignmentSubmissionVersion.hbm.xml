@@ -36,15 +36,15 @@
             <column name="COMMENT_FOR_UNGRADED" not-null="false" />
         </property>
         <!-- draft status for this submission -->
-        <property name="draft" type="boolean">
+        <property name="draft" type="java.lang.Boolean">
             <column name="DRAFT" not-null="true" />
         </property>
         <!-- true if no grader action has been taken on this submission  -->
-        <property name="newSubmission" type="boolean">
+        <property name="newSubmission" type="java.lang.Boolean">
             <column name="NEW_SUBMISSION" not-null="true" />
         </property>
         <!-- true if allowed to resubmit this submission -->
-        <property name="allowResubmit" type="boolean">
+        <property name="allowResubmit" type="java.lang.Boolean">
             <column name="ALLOW_RESUBMIT" not-null="true" />
         </property>
         <!-- Time after which the user can no longer resubmit -->
