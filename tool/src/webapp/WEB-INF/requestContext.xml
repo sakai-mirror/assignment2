@@ -74,12 +74,6 @@
       <!--  <property name="richTextEvolver" ref="richTextEvolver" /> -->
       <property name="messageLocator" ref="messageLocator" />
    </bean>
-
-   <!-- OTP -->
-   <bean id="AssignmentLocator" class="org.sakaiproject.assignment2.tool.otp.AssignmentLocator">
-	  <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
-      <property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
-   </bean>
    
    <!--  Beans -->
    <bean id="PagerBean" class="org.sakaiproject.assignment2.tool.beans.PagerBean" />
@@ -87,6 +81,10 @@
    	  <property name="logic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
    	  <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
    	  <property name="messages" ref="targettedMessageList"/>
+   	  <property name="entityBeanLocator" ref="Assignment2"/>
    </bean>
+	
+	<!-- Validators -->
+	<bean id="Assignment2Validator" class="org.sakaiproject.assignment2.tool.beans.Assignment2Validator" />
 
 </beans>

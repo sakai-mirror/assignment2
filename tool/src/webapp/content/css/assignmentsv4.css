@@ -134,7 +134,8 @@ li p.instruction {
 	border: 1px solid #ba0005;
 }
 
-.error p {
+.error p,
+.error div {
 	background: #ba0005 url("error-arrow.png") no-repeat .5em 0;
 	color: #fff;
 	display: block;

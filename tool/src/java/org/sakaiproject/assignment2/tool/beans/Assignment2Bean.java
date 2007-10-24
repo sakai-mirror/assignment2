@@ -3,11 +3,13 @@ package org.sakaiproject.assignment2.tool.beans;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
+import org.sakaiproject.assignment2.exception.ConflictingAssignmentNameException;
 
 import uk.org.ponder.beanutil.entity.EntityBeanLocator;
 import uk.org.ponder.messageutil.TargettedMessage;
 import uk.org.ponder.messageutil.TargettedMessageList;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -15,7 +17,8 @@ import java.util.Map;
 
 public class Assignment2Bean {
 	
-	private static final String DELETE_ITEMS = "delete-items";
+	private static final String REMOVE = "remove";
+	private static final String POST = "post";
 	
 	public Map selectedIds = new HashMap();
 	
@@ -29,9 +32,52 @@ public class Assignment2Bean {
 		this.logic = logic;
 	}
 	
+	private Map<String, Assignment2> OTPMap;
+	public void setEntityBeanLocator(EntityBeanLocator entityBeanLocator) {
+		this.OTPMap = entityBeanLocator.getDeliveredBeans();
+	}
+	
 	private ExternalLogic externalLogic;
 	public void setExternalLogic(ExternalLogic externalLogic) {
 		this.externalLogic = externalLogic;
+	}
+	
+	public String processActionPost() {
+		String currentUserId = externalLogic.getCurrentUserId();
+		for (String key : OTPMap.keySet()) {
+			Assignment2 assignment = OTPMap.get(key);
+
+			assignment.setDraft(Boolean.FALSE);
+			assignment.setCreateTime(new Date());
+			
+			//REMOVE THESE
+			assignment.setUngraded(Boolean.FALSE);
+			assignment.setGroupSubmission(Boolean.FALSE);
+			assignment.setRestrictedToGroups(Boolean.FALSE);
+			assignment.setHonorPledge(Boolean.FALSE);
+			assignment.setSubmissionType(0);
+			assignment.setNotificationType(0);
+			assignment.setAllowResubmitUntilDue(Boolean.FALSE);
+			
+			try {
+				logic.saveAssignment(assignment);
+			} catch( ConflictingAssignmentNameException e){
+				messages.addMessage(new TargettedMessage("assignment2.assignment_post.conflicting_assignment_name",
+						new Object[] { assignment.getTitle() }, TargettedMessage.SEVERITY_ERROR));
+				return "";
+			}
+			
+			//set Messages
+			if (key.startsWith(EntityBeanLocator.NEW_PREFIX)) {
+				messages.addMessage(new TargettedMessage("assignment2.assignment_post",
+						new Object[] { assignment.getTitle() }, TargettedMessage.SEVERITY_INFO));
+			}
+			else {
+				messages.addMessage(new TargettedMessage("assignment2.assignment_saved",
+						new Object[] { assignment.getTitle() }, TargettedMessage.SEVERITY_INFO));
+			}
+		}
+		return POST;
 	}
 	
 	public String processActionRemove() {
@@ -44,9 +90,9 @@ public class Assignment2Bean {
 				assignmentsRemoved++;
 			}
 		}
-		messages.addMessage( new TargettedMessage("assignments2.assignments_remove",
+		messages.addMessage( new TargettedMessage("assignment2.assignments_remove",
 				new Object[] { new Integer(assignmentsRemoved) },
 		        TargettedMessage.SEVERITY_INFO));
-		return DELETE_ITEMS;
+		return REMOVE;
 	}
 }

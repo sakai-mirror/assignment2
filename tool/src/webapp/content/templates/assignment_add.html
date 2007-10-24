@@ -21,14 +21,12 @@
 <body>
 
 <div class="portletBody">
-	<ul class="navIntraTool">
-		<li>Add</li>
-		<li><a href="#" title="Assignment List">Assignment List</a></li>
-		<li><a href="#" title="Grade Report">Grade Report</a></li>
-		<li class="last"><a href="#" title="Permissions">Permissions</a></li>
+	<ul rsf:id="navIntraTool:" class="navIntraTool">
 	</ul>
-	<div class="error">
-		<p>Are you sure you want to leave this page and disregard your changes? <input type="button" value="Exit without saving"/> <a href="#">Stay on this page</a></p>
+	<div rsf:id="message-for:*" class="error">
+		<ul style="margin:0px;">
+			<li>Message for user here</li>
+		</ul>
 	</div>
 
 	<h3 rsf:id="heading">Add Assignment</h3>
@@ -40,11 +38,11 @@
 		<ol>
 			<li>
 				<div class="error">
-				<label for=""><span class="reqStar">*</span> Title</label> <input type="text" value="" size="30" maxlength="100"/>
+				<label><span class="reqStar">*</span> Title</label> <input rsf:id="new_assignment_title" type="text" size="30" maxlength="100"/>
 				<p>This is an example error: Adding an assignment requires a title</p></div>
 			</li>
 			<li>
-				<label for=""><span class="reqStar">*</span> Open Date</label><input name="new_assignment_date" id="new_assignment_date" value="12/24/2007"/>
+				<label><span class="reqStar">*</span> Open Date</label><input rsf:id="new_assignment_open_date" id="new_assignment_date"  value="12/24/2007"/>
 					<!--dhtml date picker --><img src="/sakai-assignment2-tool/content/images/calendar.png" alt="Date picker" width="16" height="16" align="absmiddle" /> at
 				<select name="" id="">
 					<option value="1">1</option>
@@ -81,7 +79,7 @@
 				<p class="instruction">Students won't see this assignment until this open date.</p>
 			</li>
 			<li>
-				<label for=""><span class="reqStar">*</span> Due Date</label> <input name="assignment_due_date" id="assignment_due_date" value="12/31/2007"/>
+				<label><span class="reqStar">*</span> Due Date</label> <input rsf:id="new_assignment_due_date" id="assignment_due_date" value="12/31/2007"/>
 					<!--dhtml date picker --><img src="/sakai-assignment2-tool/content/images/calendar.png" alt="Date picker" width="16" height="16" align="absmiddle" /> at
 				<select name="" id="">
 					<option value="1">1</option>
@@ -117,7 +115,7 @@
 				</select>
 			</li>
 			<li>
-				<label for=""><span class="reqStar">*</span> Accept Until</label> <input name="accept_until" id="accept_until" value="12/31/2007"/>
+				<label><span class="reqStar">*</span> Accept Until</label> <input rsf:id="new_assignment_accept_until" id="accept_until" value="12/31/2007"/>
 					<!--dhtml date picker --><img src="/sakai-assignment2-tool/content/images/calendar.png" alt="Date picker" width="16" height="16" align="absmiddle" /> at
 				<select name="" id="">
 					<option value="1">1</option>
@@ -255,10 +253,10 @@
 		</ol>
 	</fieldset>
 	<fieldset class="submit">
-		<input accesskey="s" type="button" class="active" name="post" value="Post"/>
-		<input accesskey="v" type="button" name="preview" value="Preview"/>
-		<input accesskey="d" type="button" name="save" value="Save Draft"/>
-		<input accesskey="x" type="button" name="cancel" value="Cancel"/>
+		<input rsf:id="post_assignment" accesskey="s" type="submit" class="active" name="post" value="Post"/>
+		<input accesskey="v" type="submit" name="preview" value="Preview"/>
+		<input accesskey="d" type="submit" name="save" value="Save Draft"/>
+		<input accesskey="x" type="submit" name="cancel" value="Cancel"/>
 
 		<input type="hidden" name="assignmentId" value=""/>
 		<input type="hidden" name="assignmentContentId" value=""/>

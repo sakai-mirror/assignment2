@@ -2,6 +2,7 @@ package org.sakaiproject.assignment2.tool.producers;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -190,7 +191,7 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
         	UILink.make(tofill, "scale_arrow", BULLET_DOWN_IMG_SRC);
         }
               
-        
+        UIForm form = UIForm.make(tofill, "form");
         
         List<Assignment2> entries = new ArrayList<Assignment2>();
         entries = assignmentLogic.getViewableAssignments(currentUserId);
@@ -202,9 +203,9 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
         
         //Fill out Table
         for (Assignment2 assignment : entries){
-        	UIBranchContainer row = UIBranchContainer.make(tofill, "assignment-row:");
+        	UIBranchContainer row = UIBranchContainer.make(form, "assignment-row:");
         	UIBoundBoolean.make(row, "assignment_row_remove", 
-        			"assignment2Bean.selectedIds." + assignment.getAssignmentId().toString(),
+        			"Assignment2Bean.selectedIds." + assignment.getAssignmentId().toString(),
         			Boolean.FALSE);
         	UIMessage.make(row, "assignment_row_remove_label", "assignment2.assignment_list-sortview.assignment_row_remove_label");
         	UIInternalLink.make(row, "assignment_row_link", assignment.getTitle(), new SimpleViewParameters(AssignmentListReorderProducer.VIEW_ID));
@@ -221,13 +222,13 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
         	UIOutput.make(row, "assignment_row_for", "Site");
         	UIOutput.make(row, "assignment_row_status", "Open");
         	UIOutput.make(row, "assignment_row_open", df.format(assignment.getOpenTime()));
-        	UIOutput.make(row, "assignment_row_due", df.format(assignment.getDueDateForUngraded()));
+        	UIOutput.make(row, "assignment_row_due", df.format(new Date()));
         	UIInternalLink.make(row, "assignment_row_in_new", "2/2", new SimpleViewParameters(AssignmentListReorderProducer.VIEW_ID));
         	UIOutput.make(row, "assignment_row_scale", "0-100.0");
         }
         
-        UICommand.make(tofill, "submit_update", UIMessage.make("assignment2.assignment_list-sortview.submit_update"),
-        		"assignment2Bean.processActionRemove");
+        UICommand.make(form, "submit_update", UIMessage.make("assignment2.assignment_list-sortview.submit_update"),
+        		"Assignment2Bean.processActionRemove");
         
 
     }

@@ -23,13 +23,13 @@
    <!-- Define the bean roots from the request scope file that are accessible 
     via incoming request URL -->
    <bean parent="requestAddressibleParent">
-    <property name="value" value="PagerBean,HelloBean"/>
-  </bean>
+	  <property name="value" value="Assignment2,Assignment2Bean,HelloBean,PagerBean"/>
+   </bean>
 
    <!-- Override the default style of user messages -->
    <bean id="messageTemplateContributor" parent="templateContributorParent">
       <property name="baseDirectory" value="component-templates/" />
-      <property name="templateNames" value="Navbar,Pager" />
+      <property name="templateNames" value="Messages,Navbar,Pager" />
    </bean>
    
    <!-- The beans listed here are session beans (they stick around) -->
@@ -41,7 +41,9 @@
 	-->
 	
 	<bean id="Assignment2Creator"
-		class="org.sakaiproject.assignment2.tool.beans.Assignment2Creator" />
+		class="org.sakaiproject.assignment2.tool.beans.Assignment2Creator">
+		<property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
+	</bean>
    
    <bean id="Assignment2" parent="entityBeanLocatorParent">
       <property name="newMethod" 
@@ -53,5 +55,12 @@
       <property name="removeMethod"
         value="org\.sakaiproject\.assignment2\.logic\.AssignmentLogic.deleteAssignment" />
    </bean>
+
+  <!-- Use RSF's "BeanGuard" validation scheme to trap all write accesses to a
+    Assignment2 entity -->
+  <bean parent="writeGuardParent">
+    <property name="guardedPath" value="Assignment2.*" />
+    <property name="guardProperty" value="Assignment2Validator.assignment" />
+  </bean>
    
 </beans>
