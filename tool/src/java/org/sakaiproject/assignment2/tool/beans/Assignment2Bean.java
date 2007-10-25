@@ -3,6 +3,7 @@ package org.sakaiproject.assignment2.tool.beans;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
+import org.sakaiproject.assignment2.tool.beans.Assignment2Validator;
 import org.sakaiproject.assignment2.exception.ConflictingAssignmentNameException;
 
 import uk.org.ponder.beanutil.entity.EntityBeanLocator;
@@ -19,6 +20,7 @@ public class Assignment2Bean {
 	
 	private static final String REMOVE = "remove";
 	private static final String POST = "post";
+	private static final String FAILURE = "failure";
 	
 	public Map selectedIds = new HashMap();
 	
@@ -59,22 +61,30 @@ public class Assignment2Bean {
 			assignment.setNotificationType(0);
 			assignment.setAllowResubmitUntilDue(Boolean.FALSE);
 			
-			try {
-				logic.saveAssignment(assignment);
-			} catch( ConflictingAssignmentNameException e){
-				messages.addMessage(new TargettedMessage("assignment2.assignment_post.conflicting_assignment_name",
-						new Object[] { assignment.getTitle() }, TargettedMessage.SEVERITY_ERROR));
-				return "";
-			}
-			
-			//set Messages
-			if (key.startsWith(EntityBeanLocator.NEW_PREFIX)) {
-				messages.addMessage(new TargettedMessage("assignment2.assignment_post",
-						new Object[] { assignment.getTitle() }, TargettedMessage.SEVERITY_INFO));
-			}
-			else {
-				messages.addMessage(new TargettedMessage("assignment2.assignment_saved",
-						new Object[] { assignment.getTitle() }, TargettedMessage.SEVERITY_INFO));
+			//start the validator
+			Assignment2Validator validator = new Assignment2Validator();
+			if (validator.validate(assignment, messages)){
+				//Validation Passed!
+				try {
+					logic.saveAssignment(assignment);
+				} catch( ConflictingAssignmentNameException e){
+					messages.addMessage(new TargettedMessage("assignment2.assignment_post.conflicting_assignment_name",
+							new Object[] { assignment.getTitle() }, "Assignment2." + key + ".title"));
+					return FAILURE;
+				}
+				
+				//set Messages
+				if (key.startsWith(EntityBeanLocator.NEW_PREFIX)) {
+					messages.addMessage(new TargettedMessage("assignment2.assignment_post",
+							new Object[] { assignment.getTitle() }, TargettedMessage.SEVERITY_INFO));
+				}
+				else {
+					messages.addMessage(new TargettedMessage("assignment2.assignment_saved",
+							new Object[] { assignment.getTitle() }, TargettedMessage.SEVERITY_INFO));
+				}
+			} else {
+				messages.addMessage(new TargettedMessage("assignment2.assignment_post_error"));
+				return FAILURE;
 			}
 		}
 		return POST;

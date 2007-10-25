@@ -37,12 +37,13 @@
 		<legend>Assignment Details</legend>
 		<ol>
 			<li>
+				<label><span class="reqStar">*</span> Title</label> <input rsf:id="title" type="text" size="30" maxlength="100"/>
 				<div class="error">
-				<label><span class="reqStar">*</span> Title</label> <input rsf:id="new_assignment_title" type="text" size="30" maxlength="100"/>
-				<p>This is an example error: Adding an assignment requires a title</p></div>
+					<p rsf:id="message-for:title">This is an example error: Adding an assignment requires a title</p>
+				</div>
 			</li>
 			<li>
-				<label><span class="reqStar">*</span> Open Date</label><input rsf:id="new_assignment_open_date" id="new_assignment_date"  value="12/24/2007"/>
+				<label><span class="reqStar">*</span> Open Date</label><input rsf:id="open_date" id="open_date" value="12/24/2007"/>
 					<!--dhtml date picker --><img src="/sakai-assignment2-tool/content/images/calendar.png" alt="Date picker" width="16" height="16" align="absmiddle" /> at
 				<select name="" id="">
 					<option value="1">1</option>
@@ -76,10 +77,13 @@
 					<option value="AM">AM</option>
 					<option value="PM" selected="selected">PM</option>
 				</select>
+				<div class="error">
+					<p rsf:id="message-for:open_date"></p>
+				</div>
 				<p class="instruction">Students won't see this assignment until this open date.</p>
 			</li>
 			<li>
-				<label><span class="reqStar">*</span> Due Date</label> <input rsf:id="new_assignment_due_date" id="assignment_due_date" value="12/31/2007"/>
+				<label><span class="reqStar">*</span> Due Date</label> <input rsf:id="due_date" id="due_date" value="12/31/2007"/>
 					<!--dhtml date picker --><img src="/sakai-assignment2-tool/content/images/calendar.png" alt="Date picker" width="16" height="16" align="absmiddle" /> at
 				<select name="" id="">
 					<option value="1">1</option>
@@ -113,9 +117,12 @@
 					<option value="AM">AM</option>
 					<option value="PM" selected="selected">PM</option>
 				</select>
+				<div class="error">
+					<p rsf:id="message-for:due_date"></p>
+				</div>
 			</li>
 			<li>
-				<label><span class="reqStar">*</span> Accept Until</label> <input rsf:id="new_assignment_accept_until" id="accept_until" value="12/31/2007"/>
+				<label><span class="reqStar">*</span> Accept Until</label> <input rsf:id="accept_until" id="accept_until" value="12/31/2007"/>
 					<!--dhtml date picker --><img src="/sakai-assignment2-tool/content/images/calendar.png" alt="Date picker" width="16" height="16" align="absmiddle" /> at
 				<select name="" id="">
 					<option value="1">1</option>
@@ -149,30 +156,40 @@
 					<option value="AM">AM</option>
 					<option value="PM" selected="selected">PM</option>
 				</select>
+				<div class="error">
+					<p rsf:id="message-for:accept_until"></p>
+				</div>
 				<p class="instruction">No assignments can be submitted after this close date.</p>
 			</li>
 			<li>
 				<label for=""><span class="reqStar">*</span> Student Submissions</label>
-				<select name="" id="">
+				<select rsf:id="submission_type">
 					<option value="1">Inline only</option>
 					<option value="2">Attachments only</option>
 					<option value="3" selected="selected">Inline and Attachments</option>
 					<option value="4">Non-electronic</option>
 				</select>
+				<div class="error">
+					<p rsf:id="message-for:submission_type"></p>
+				</div>
 			</li>
 			<li>
 				<label for="" class="block">Assignment Instructions</label>
-				<div rsf:id="new_assignment_instructions:">
+				<div class="error">
+					<p rsf:id="message-for:instructions"></p>
+				</div>
+				<div rsf:id="instructions:">
 					<textarea name="something" cols="80" rows="20" wrap="virtual"></textarea>
 					<!-- this should be the FCKEditor -->
 				</div>
+				
 			</li>
 			<li>
 				<fieldset>
 					<ol>
-						<li><input id="" name="" type="checkbox" value=""/> <label for="">Add the due date to Calendar</label></li>
-						<li><input id="" name="" type="checkbox" value=""/> <label for="">Add an announcement about the open date to Announcements</label></li>
-						<li><input id="" name="" type="checkbox" value=""/> <label for="">Add honor pledge</label></li>
+						<li><input rsf:id="on_calendar" type="checkbox" /> <label for="">Add the due date to Calendar</label></li>
+						<li><input rsf:id="announcement" type="checkbox" /> <label for="">Add an announcement about the open date to Announcements</label></li>
+						<li><input rsf:id="honor_pledge" type="checkbox" /> <label for="">Add honor pledge</label></li>
 					</ol>
 				</fieldset>
 			</li>
@@ -186,7 +203,7 @@
 		<ol>
 			<li>
 				<span class="instruction">No attachments yet</span>
-				<input type="button" name="attach" value="Add Attachments" onclick="javascript:document.newAssignmentForm.onsubmit();document.getElementById('option').value='attach';document.newAssignmentForm.submit();return false;"/>
+				<input rsf:id="add_attachments" type="button" name="attach" value="Add Attachments" />
 			</li>
 		</ol>
 	</fieldset>
@@ -196,14 +213,14 @@
 			<li>
 				<fieldset>
 					<ol>
-						<li><input type="radio" name="" id="" value="graded" checked="checked" /> <label for="">This assignment is graded</label> and is associated with a Gradebook Item: <select name="" >
+						<li><input rsf:id="graded" type="radio" /> <label for="">This assignment is graded</label> and is associated with a Gradebook Item: <select name="" >
 											<option value="">Select a Gradebook Item</option>
 											<option value="Category: GB Item 1">Category: GB Item 1</option>
 											<option value="Category: GB Item 2">Category: GB Item 2</option>
 											<option value="Category: GB Item 3">Category: GB Item 3</option>
 											<option value="Category: GB Item 4">Category: GB Item 4</option>
 										</select> -or- <a href="#gradebookitemhelper">Create a new Gradebook Item</a></li>
-						<li><input type="radio" name="" id="" value="ungraded" checked="checked" /> <label for="">This assignment is ungraded</label></li>
+						<li><input rsf:id="ungraded" type="radio" /> <label for="">This assignment is ungraded</label></li>
 					</ol>
 				</fieldset>
 			</li>
@@ -215,17 +232,17 @@
 			<li>
 				<fieldset>
 					<ol>
-						<li><input type="radio" name="" id="" value="" checked="checked"/> <label for="">Display to site</label></li>
-						<li><input type="radio" name="" id="" value=""/> <label for="">Display to selected groups</label></li>
+						<li><input rsf:id="restricted_to_groups_false" type="radio" /> <label for="">Display to site</label></li>
+						<li><input rsf:id="restricted_to_groups_true" type="radio" /> <label for="">Display to selected groups</label></li>
 						<li><table id="groupTable" class="listHier lines" cellpadding="0" cellspacing="0" border="0">
 								<tr>
-									<th><input type="checkbox" name="" id="" title="Select all" onclick="javascript:toggleSelectAll(this, 'selectedGroups')"/></th>
+									<th><input type="checkbox" title="Select all" />Select All</th>
 									<th>Title</th>
 									<th>Description</th>
 								</tr>
 								<tr>
 									<td>
-										<input type="checkbox" name="" id=""/>
+										<input rsf:id="group_check:" type="checkbox" />
 									</td>
 									<td>
 										<label for="">Blue Cohort</label>	
@@ -244,9 +261,9 @@
 			<li>
 				<fieldset>
 					<ol>
-						<li><input type="radio" name="" id="" value="" checked="checked"/> <label for="">Do not send me notification emails for any student submissions</label></li>
-						<li><input type="radio" name="" id="" value=""/> <label for="">Send me a notification email for each student submission</label></li>
-						<li><input type="radio" name="" id="" value=""/> <label for="">Send me one email per day summarizing notifications for student submissions</label></li>
+						<li><input rsf:id="notifications_non" type="radio" checked="checked"/> <label for="">Do not send me notification emails for any student submissions</label></li>
+						<li><input rsf:id="notifications_every" type="radio" /> <label for="">Send me a notification email for each student submission</label></li>
+						<li><input rsf:id="notifications_digest" type="radio" /> <label for="">Send me one email per day summarizing notifications for student submissions</label></li>
 					</ol>
 				</fieldset>
 			</li>
@@ -257,33 +274,26 @@
 		<input accesskey="v" type="submit" name="preview" value="Preview"/>
 		<input accesskey="d" type="submit" name="save" value="Save Draft"/>
 		<input accesskey="x" type="submit" name="cancel" value="Cancel"/>
-
-		<input type="hidden" name="assignmentId" value=""/>
-		<input type="hidden" name="assignmentContentId" value=""/>
-		<input type="hidden" name="eventSubmit_doAssignment_form" value=""/>
-		<input type="hidden" name="option" id="option" value=""/>
-		<input type="hidden" name="view" id="view" value=""/>
-		<input type="hidden" name="new_assignment_order" id="new_assignment_order" value=""/>
 	</fieldset>													
 	</form>
 </div>
 <script type="text/javascript">
 	$(document).ready(function(){
 		if($("input#new_assignment_date")){
-			new_assignment_date = new calendar2($("input#new_assignment_date").get(0));
-			$("input#new_assignment_date").next("img").click(function(){
+			new_assignment_date = new calendar2($("input#open_date\\:\\:").get(0));
+			$("input#open_date\\:\\:").next("img").click(function(){
 				new_assignment_date.popup(null, "/library/calendar/html/");
 			});
 		}
 		if($("input#assignment_due_date")){
-			due_date = new calendar2($("input#assignment_due_date").get(0));
-			$("input#assignment_due_date").next("img").click(function(){
+			due_date = new calendar2($("input#due_date\\:\\:").get(0));
+			$("input#due_date\\:\\:").next("img").click(function(){
 				due_date.popup(null, "/library/calendar/html/");
 			});
 		}
 		if($("input#accept_until")){
-			accept_until = new calendar2($("input#accept_until").get(0));
-			$("input#accept_until").next("img").click(function(){
+			accept_until = new calendar2($("input#accept_until\\:\\:").get(0));
+			$("input#accept_until\\:\\:").next("img").click(function(){
 				accept_until.popup(null, "/library/calendar/html/");
 			});
 		}

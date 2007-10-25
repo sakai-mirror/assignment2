@@ -58,9 +58,10 @@
 
   <!-- Use RSF's "BeanGuard" validation scheme to trap all write accesses to a
     Assignment2 entity -->
+	<!-- 
   <bean parent="writeGuardParent">
     <property name="guardedPath" value="Assignment2.*" />
-    <property name="guardProperty" value="Assignment2Validator.assignment" />
+    <property name="guardMethod" value="Assignment2Validator.assignment" />
   </bean>
-   
+	-->
 </beans>

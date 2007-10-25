@@ -27,6 +27,7 @@
       <property name="navBarRenderer" ref="NavbarRenderer" />
       <property name="richTextEvolver" ref="richTextEvolver" />
       <property name="messageLocator" ref="messageLocator" />
+      <property name="dateEvolver" ref="fieldDateInputEvolver" />
    </bean>
 
    <bean class="org.sakaiproject.assignment2.tool.producers.AssignmentAddGradebookItemProducer">
@@ -77,6 +78,7 @@
    
    <!--  Beans -->
    <bean id="PagerBean" class="org.sakaiproject.assignment2.tool.beans.PagerBean" />
+   
    <bean id="Assignment2Bean" class="org.sakaiproject.assignment2.tool.beans.Assignment2Bean">
    	  <property name="logic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
    	  <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />

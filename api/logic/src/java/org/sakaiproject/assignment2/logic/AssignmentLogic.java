@@ -74,5 +74,7 @@ public interface AssignmentLogic {
 	 * @return
 	 */
 	public List<Assignment2> getViewableAssignments(String userId);
+	
+	public List<Assignment2> getViewableAssignments(String userId, String sortProperty, boolean ascending, int start, int limit);
 
 }

@@ -135,12 +135,16 @@ li p.instruction {
 }
 
 .error p,
-.error div {
-	background: #ba0005 url("error-arrow.png") no-repeat .5em 0;
+.error ul {
+	background: #ba0005 url("/sakai-assignment2-tool/content/images/error-arrow.png") no-repeat .5em 0;
 	color: #fff;
 	display: block;
 	margin: 0;
 	padding: .5em .5em .5em 2em;
+}
+
+.error ul {
+	list-style: none;
 }
 
 li .error p {

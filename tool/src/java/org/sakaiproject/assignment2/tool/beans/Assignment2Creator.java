@@ -15,6 +15,7 @@ public class Assignment2Creator {
     public Assignment2 create() {
   
     	Assignment2 togo = new Assignment2();
+    	togo.setTitle("");
     	togo.setSiteId(externalLogic.getCurrentLocationId());
     	togo.setCreator(externalLogic.getCurrentUserId());
     	togo.setRemoved(Boolean.FALSE);

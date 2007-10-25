@@ -149,6 +149,17 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 		return assignments;
 	}
 	
+	public List<Assignment2> getViewableAssignments(String userId, String sortProperty, boolean ascending, int start, int limit) {
+		
+		if (!ascending) {
+            sortProperty += ByPropsFinder.DESC;
+        }
+		List<Assignment2> assignments = 
+			dao.findByProperties(Assignment2.class, new String[] {"siteId", "removed"}, new Object[] {externalLogic.getCurrentLocationId(), Boolean.FALSE},
+					new int[] { ByPropsFinder.EQUALS, ByPropsFinder.EQUALS }, new String[] { sortProperty }, start, limit);
+		return assignments;
+	}
+	
 	/**
 	 * 
 	 * @param assignmentName

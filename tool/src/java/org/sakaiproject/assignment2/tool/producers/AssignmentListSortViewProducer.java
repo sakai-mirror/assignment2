@@ -12,6 +12,7 @@ import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.tool.beans.PagerBean;
 import org.sakaiproject.assignment2.tool.params.AssignmentListSortViewParams;
 import org.sakaiproject.assignment2.tool.params.SimpleAssignmentViewParams;
+import org.sakaiproject.assignment2.tool.params.AssignmentAddViewParams;
 import org.sakaiproject.assignment2.tool.producers.AssignmentAddProducer;
 import org.sakaiproject.assignment2.tool.producers.AssignmentGradeAssignmentProducer;
 import org.sakaiproject.assignment2.tool.producers.AssignmentListReorderProducer;
@@ -42,14 +43,14 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
     //sorting strings
     public static final String SORT_DIR_ASC = "asc";
     public static final String SORT_DIR_DESC = "desc";
-    public static final String SORT_BY_ASSIGNMENT = "assignment";
-    public static final String SORT_BY_FOR = "for";
-    public static final String SORT_BY_STATUS = "status";
-    public static final String SORT_BY_OPEN = "open";
-    public static final String SORT_BY_DUE = "due";
-    public static final String SORT_BY_IN = "in";
-    public static final String SORT_BY_NEW = "new";
-    public static final String SORT_BY_SCALE = "scale";
+    public static final String SORT_BY_ASSIGNMENT = "title";
+    public static final String SORT_BY_FOR = "restrictedToGroups";
+    public static final String SORT_BY_STATUS = "status";		//fix me
+    public static final String SORT_BY_OPEN = "opentTime";
+    public static final String SORT_BY_DUE = "closeTime";		//change me to due date
+    public static final String SORT_BY_IN = "in";				//fix me
+    public static final String SORT_BY_NEW = "new";				//fix me
+    public static final String SORT_BY_SCALE = "scale";			//fix me
     public static final String DEFAULT_SORT_DIR = SORT_DIR_DESC;
     public static final String DEFAULT_OPPOSITE_SORT_DIR = SORT_DIR_ASC;
     public static final String DEFAULT_SORT_BY = SORT_BY_DUE;
@@ -194,7 +195,8 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
         UIForm form = UIForm.make(tofill, "form");
         
         List<Assignment2> entries = new ArrayList<Assignment2>();
-        entries = assignmentLogic.getViewableAssignments(currentUserId);
+        entries = assignmentLogic.getViewableAssignments(currentUserId, current_sort_by, current_sort_dir.equals(SORT_DIR_ASC), 
+        		Integer.parseInt(params.current_start), Integer.parseInt(params.current_count));
         
         if (entries.size() <= 0) {
             UIMessage.make(tofill, "blog_empty", "assignment2.assignment_list-sortview.assignment_empty");
@@ -211,7 +213,7 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
         	UIInternalLink.make(row, "assignment_row_link", assignment.getTitle(), new SimpleViewParameters(AssignmentListReorderProducer.VIEW_ID));
         	UIInternalLink.make(row, "assignment_row_edit", 
         			UIMessage.make("assignment2.assignment_list-sortview.assignment_row_edit"), 
-        			new SimpleAssignmentViewParams(AssignmentAddProducer.VIEW_ID, assignment.getAssignmentId().toString()));
+        			new AssignmentAddViewParams(AssignmentAddProducer.VIEW_ID, assignment.getAssignmentId()));
         	UIInternalLink.make(row, "assignment_row_duplicate", 
         			UIMessage.make("assignment2.assignment_list-sortview.assignment_row_duplicate"), 
         			new SimpleViewParameters(AssignmentListReorderProducer.VIEW_ID));
