@@ -63,8 +63,8 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 	 */
 	public Assignment2 getAssignmentById(Long assignmentId)
 	{
-		return new Assignment2();
-	}
+		return (Assignment2) dao.findById(Assignment2.class, assignmentId);
+    }
 	
 	/*
 	 * (non-Javadoc)
