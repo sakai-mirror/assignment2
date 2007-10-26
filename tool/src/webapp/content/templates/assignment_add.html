@@ -43,8 +43,8 @@
 				</div>
 			</li>
 			<li>
-				<label><span class="reqStar">*</span> Open Date</label><input rsf:id="open_date" id="open_date" value="12/24/2007"/>
-					<!--dhtml date picker --><img src="/sakai-assignment2-tool/content/images/calendar.png" alt="Date picker" width="16" height="16" align="absmiddle" /> at
+				<label><span class="reqStar">*</span> Open Date</label><input rsf:id="open_date:"  />
+					<!--dhtml date picker <img src="/sakai-assignment2-tool/content/images/calendar.png" alt="Date picker" width="16" height="16" align="absmiddle" /> at
 				<select name="" id="">
 					<option value="1">1</option>
 					<option value="2">2</option>
@@ -77,14 +77,15 @@
 					<option value="AM">AM</option>
 					<option value="PM" selected="selected">PM</option>
 				</select>
+				-->
 				<div class="error">
 					<p rsf:id="message-for:open_date"></p>
 				</div>
 				<p class="instruction">Students won't see this assignment until this open date.</p>
 			</li>
 			<li>
-				<label><span class="reqStar">*</span> Due Date</label> <input rsf:id="due_date" id="due_date" value="12/31/2007"/>
-					<!--dhtml date picker --><img src="/sakai-assignment2-tool/content/images/calendar.png" alt="Date picker" width="16" height="16" align="absmiddle" /> at
+				<label><span class="reqStar">*</span> Due Date</label> <input rsf:id="due_date:" value="12/31/2007"/>
+					<!--dhtml date picker <img src="/sakai-assignment2-tool/content/images/calendar.png" alt="Date picker" width="16" height="16" align="absmiddle" /> at
 				<select name="" id="">
 					<option value="1">1</option>
 					<option value="2">2</option>
@@ -117,13 +118,14 @@
 					<option value="AM">AM</option>
 					<option value="PM" selected="selected">PM</option>
 				</select>
+				-->
 				<div class="error">
 					<p rsf:id="message-for:due_date"></p>
 				</div>
 			</li>
 			<li>
-				<label><span class="reqStar">*</span> Accept Until</label> <input rsf:id="accept_until" id="accept_until" value="12/31/2007"/>
-					<!--dhtml date picker --><img src="/sakai-assignment2-tool/content/images/calendar.png" alt="Date picker" width="16" height="16" align="absmiddle" /> at
+				<label><span class="reqStar">*</span> Accept Until</label> <input rsf:id="accept_until:" value="12/31/2007"/>
+					<!--dhtml date picker <img src="/sakai-assignment2-tool/content/images/calendar.png" alt="Date picker" width="16" height="16" align="absmiddle" /> at
 				<select name="" id="">
 					<option value="1">1</option>
 					<option value="2">2</option>
@@ -156,6 +158,7 @@
 					<option value="AM">AM</option>
 					<option value="PM" selected="selected">PM</option>
 				</select>
+				-->
 				<div class="error">
 					<p rsf:id="message-for:accept_until"></p>
 				</div>
@@ -277,27 +280,5 @@
 	</fieldset>													
 	</form>
 </div>
-<script type="text/javascript">
-	$(document).ready(function(){
-		if($("input#new_assignment_date")){
-			new_assignment_date = new calendar2($("input#open_date\\:\\:").get(0));
-			$("input#open_date\\:\\:").next("img").click(function(){
-				new_assignment_date.popup(null, "/library/calendar/html/");
-			});
-		}
-		if($("input#assignment_due_date")){
-			due_date = new calendar2($("input#due_date\\:\\:").get(0));
-			$("input#due_date\\:\\:").next("img").click(function(){
-				due_date.popup(null, "/library/calendar/html/");
-			});
-		}
-		if($("input#accept_until")){
-			accept_until = new calendar2($("input#accept_until\\:\\:").get(0));
-			$("input#accept_until\\:\\:").next("img").click(function(){
-				accept_until.popup(null, "/library/calendar/html/");
-			});
-		}
-	});
-</script>
 </body>
 </html>

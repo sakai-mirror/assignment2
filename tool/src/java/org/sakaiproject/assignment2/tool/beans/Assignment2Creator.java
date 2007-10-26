@@ -23,15 +23,16 @@ public class Assignment2Creator {
     	//Setting up Dates
     	Calendar now = Calendar.getInstance();
     	Calendar cal = Calendar.getInstance();
-    	cal.set(now.YEAR, now.MONTH, now.DATE, 12, 0);
+    	cal.set(Calendar.HOUR_OF_DAY, 12);
     	Date openDate = cal.getTime();
-    	cal.add(Calendar.DATE, 7);
-    	cal.set(Calendar.HOUR, 17);
+    	cal.add(Calendar.DAY_OF_YEAR, 7);
+    	cal.set(Calendar.HOUR_OF_DAY, 17);
     	Date closeDate = cal.getTime();
     	
     	togo.setOpenTime(openDate);
+    	togo.setDueDateForUngraded(closeDate);
     	togo.setCloseTime(closeDate);
-    	togo.setDropDeadTime(closeDate);
+    	togo.setDropDeadTime(new Date());
     	return togo;
   }
 

@@ -21,13 +21,17 @@
    </bean>
 
    <!-- list the producer beans here -->
+   <!-- 
    <bean class="org.sakaiproject.assignment2.tool.producers.AjaxCallbackProducer" />
+   -->
 
    <bean class="org.sakaiproject.assignment2.tool.producers.AssignmentAddProducer">
       <property name="navBarRenderer" ref="NavbarRenderer" />
       <property name="richTextEvolver" ref="richTextEvolver" />
       <property name="messageLocator" ref="messageLocator" />
       <property name="dateEvolver" ref="fieldDateInputEvolver" />
+      <property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
+      <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
    </bean>
 
    <bean class="org.sakaiproject.assignment2.tool.producers.AssignmentAddGradebookItemProducer">

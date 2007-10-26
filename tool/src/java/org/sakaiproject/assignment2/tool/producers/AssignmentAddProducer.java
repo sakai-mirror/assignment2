@@ -1,8 +1,13 @@
 package org.sakaiproject.assignment2.tool.producers;
 
+import org.sakaiproject.assignment2.tool.beans.Assignment2Creator;
 import org.sakaiproject.assignment2.tool.params.AssignmentAddViewParams;
+import org.sakaiproject.assignment2.logic.AssignmentLogic;
+import org.sakaiproject.assignment2.logic.ExternalLogic;
+import org.sakaiproject.assignment2.model.Assignment2;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,6 +52,9 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
     private NavBarRenderer navBarRenderer;
     private TextInputEvolver richTextEvolver;
     private MessageLocator messageLocator;
+    private AssignmentLogic assignmentLogic;
+    private ExternalLogic externalLogic;
+    
 	/*
 	 * You can change the date input to accept time as well by uncommenting the lines like this:
 	 * dateevolver.setStyle(FormatAwareDateInputEvolver.DATE_TIME_INPUT);
@@ -69,27 +77,42 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
         navBarRenderer.makeNavBar(tofill, "navIntraTool:", VIEW_ID);
         UIMessage.make(tofill, "heading", "assignment2.assignment_add.heading");
 
+        Date openTime = new Date();
+        Date dueDate = new Date();
+        Date acceptUntilDate = new Date();
         String assignment2OTP = "Assignment2.";
         if (assignmentId != null) {
         	assignment2OTP += assignmentId; 
+        	//get Dates
+        	Assignment2 assignment = assignmentLogic.getAssignmentById(assignmentId);
+        	openTime = assignment.getOpenTime();
+        	dueDate = assignment.getDueDateForUngraded();			//change here
+        	acceptUntilDate = assignment.getCloseTime();
         }else {
+        	Assignment2Creator creator = new Assignment2Creator();
+        	creator.setExternalLogic(externalLogic);
+        	Assignment2 assignment = creator.create();
+        	openTime = assignment.getOpenTime();
+        	dueDate = assignment.getDueDateForUngraded();			//change here
+        	acceptUntilDate = assignment.getCloseTime();
+        	
         	assignment2OTP += EntityBeanLocator.NEW_PREFIX + "1";
         }
         
         UIForm form = UIForm.make(tofill, "assignment_form");
         
         //set dateEvolver
-        dateEvolver.setStyle(FormatAwareDateInputEvolver.DATE_INPUT);
+        dateEvolver.setStyle(FormatAwareDateInputEvolver.DATE_TIME_INPUT);
         
         UIInput.make(form, "title", assignment2OTP + ".title");
-        UIInput field = UIInput.make(form, "open_date", assignment2OTP + ".openTime");
-		dateEvolver.evolveDateInput(field);
+        UIInput openDateField = UIInput.make(form, "open_date:", assignment2OTP + ".openTime");
+		dateEvolver.evolveDateInput(openDateField, openTime);
         
-		field = UIInput.make(form, "due_date", assignment2OTP + ".closeTime");
-		dateEvolver.evolveDateInput(field);
+		UIInput closeTimeField = UIInput.make(form, "due_date:", assignment2OTP + ".dueDateForUngraded");
+		dateEvolver.evolveDateInput(closeTimeField, dueDate);
 		
-        field = UIInput.make(form, "accept_until", assignment2OTP + ".dropDeadTime");
-        dateEvolver.evolveDateInput(field);
+        UIInput dropDeadTimeField = UIInput.make(form, "accept_until:", assignment2OTP + ".closeTime");
+        dateEvolver.evolveDateInput(dropDeadTimeField, acceptUntilDate);
         
         //Rich Text Input
         UIInput instructions = UIInput.make(form, "instructions:", assignment2OTP + ".instructions");
@@ -99,6 +122,7 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
         UICommand postCmd = UICommand.make(form, "post_assignment", UIMessage.make("assignment2.assignment_add.post"), "#{Assignment2Bean.processActionPost}");
         //postCmd.parameters.add(new UIELBinding("#{Assignment2.assignmentId}",
         //        assignmentId));
+
     }
 
     public List reportNavigationCases() {
@@ -123,5 +147,11 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
         this.richTextEvolver = richTextEvolver;
     }
     
+    public void setAssignmentLogic(AssignmentLogic assignmentLogic) {
+    	this.assignmentLogic = assignmentLogic;
+    }
     
+    public void setExternalLogic(ExternalLogic externalLogic) {
+    	this.externalLogic = externalLogic;
+    }
 }

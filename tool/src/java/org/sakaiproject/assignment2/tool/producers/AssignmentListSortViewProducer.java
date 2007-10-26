@@ -46,8 +46,8 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
     public static final String SORT_BY_ASSIGNMENT = "title";
     public static final String SORT_BY_FOR = "restrictedToGroups";
     public static final String SORT_BY_STATUS = "status";		//fix me
-    public static final String SORT_BY_OPEN = "opentTime";
-    public static final String SORT_BY_DUE = "closeTime";		//change me to due date
+    public static final String SORT_BY_OPEN = "openTime";
+    public static final String SORT_BY_DUE = "dueDateForUngraded";		//change me to due date
     public static final String SORT_BY_IN = "in";				//fix me
     public static final String SORT_BY_NEW = "new";				//fix me
     public static final String SORT_BY_SCALE = "scale";			//fix me
@@ -224,7 +224,7 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
         	UIOutput.make(row, "assignment_row_for", "Site");
         	UIOutput.make(row, "assignment_row_status", "Open");
         	UIOutput.make(row, "assignment_row_open", df.format(assignment.getOpenTime()));
-        	UIOutput.make(row, "assignment_row_due", df.format(new Date()));
+        	UIOutput.make(row, "assignment_row_due", df.format(assignment.getDueDateForUngraded()));
         	UIInternalLink.make(row, "assignment_row_in_new", "2/2", new SimpleViewParameters(AssignmentListReorderProducer.VIEW_ID));
         	UIOutput.make(row, "assignment_row_scale", "0-100.0");
         }

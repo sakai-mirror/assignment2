@@ -18,6 +18,9 @@ import java.util.Map;
 
 public class Assignment2Bean {
 	
+	public Assignment2 assignment = new Assignment2();
+	public Date openDate;
+	
 	private static final String REMOVE = "remove";
 	private static final String POST = "post";
 	private static final String FAILURE = "failure";
@@ -53,6 +56,7 @@ public class Assignment2Bean {
 			assignment.setCreateTime(new Date());
 			
 			//REMOVE THESE
+			assignment.setDropDeadTime(new Date());
 			assignment.setUngraded(Boolean.FALSE);
 			assignment.setGroupSubmission(Boolean.FALSE);
 			assignment.setRestrictedToGroups(Boolean.FALSE);
@@ -79,7 +83,7 @@ public class Assignment2Bean {
 							new Object[] { assignment.getTitle() }, TargettedMessage.SEVERITY_INFO));
 				}
 				else {
-					messages.addMessage(new TargettedMessage("assignment2.assignment_saved",
+					messages.addMessage(new TargettedMessage("assignment2.assignment_save",
 							new Object[] { assignment.getTitle() }, TargettedMessage.SEVERITY_INFO));
 				}
 			} else {
