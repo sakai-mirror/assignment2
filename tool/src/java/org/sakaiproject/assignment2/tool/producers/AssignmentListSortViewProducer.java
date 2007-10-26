@@ -45,7 +45,7 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
     public static final String SORT_DIR_DESC = "desc";
     public static final String SORT_BY_ASSIGNMENT = "title";
     public static final String SORT_BY_FOR = "restrictedToGroups";
-    public static final String SORT_BY_STATUS = "status";		//fix me
+    public static final String SORT_BY_STATUS = "draft";
     public static final String SORT_BY_OPEN = "openTime";
     public static final String SORT_BY_DUE = "dueDateForUngraded";		//change me to due date
     public static final String SORT_BY_IN = "in";				//fix me
@@ -222,7 +222,12 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
         			new SimpleAssignmentViewParams(AssignmentGradeAssignmentProducer.VIEW_ID, assignment.getAssignmentId().toString()));
         	
         	UIOutput.make(row, "assignment_row_for", "Site");
-        	UIOutput.make(row, "assignment_row_status", "Open");
+        	if (assignment.isDraft()){
+        		UIOutput.make(row, "assignment_row_draft_td");
+        		UIMessage.make(row, "assignment_row_draft", "assignment2.assignment_list-sortview.assignment_row_draft");
+        	} else {
+        	   	UIMessage.make(row, "assignment_row_open_text", "assignment2.assignment_list-sortview.assignment_row_open");
+        	}
         	UIOutput.make(row, "assignment_row_open", df.format(assignment.getOpenTime()));
         	UIOutput.make(row, "assignment_row_due", df.format(assignment.getDueDateForUngraded()));
         	UIInternalLink.make(row, "assignment_row_in_new", "2/2", new SimpleViewParameters(AssignmentListReorderProducer.VIEW_ID));

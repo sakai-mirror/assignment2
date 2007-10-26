@@ -119,15 +119,18 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
         richTextEvolver.evolveTextInput(instructions);
         
         //Post Buttons
-        UICommand postCmd = UICommand.make(form, "post_assignment", UIMessage.make("assignment2.assignment_add.post"), "#{Assignment2Bean.processActionPost}");
-        //postCmd.parameters.add(new UIELBinding("#{Assignment2.assignmentId}",
-        //        assignmentId));
-
+        UICommand.make(form, "post_assignment", UIMessage.make("assignment2.assignment_add.post"), "#{Assignment2Bean.processActionPost}");
+        UICommand.make(form, "save_draft", UIMessage.make("assignment2.assignment_add.save_draft"), "#{Assignment2Bean.processActionSaveDraft}");
+        
     }
 
-    public List reportNavigationCases() {
-        return ListUtil.instance(new NavigationCase("post", new SimpleViewParameters(
+	public List reportNavigationCases() {
+    	List<NavigationCase> nav= new ArrayList<NavigationCase>();
+        nav.add(new NavigationCase("post", new SimpleViewParameters(
             AssignmentListSortViewProducer.VIEW_ID)));
+        nav.add(new NavigationCase("save_draft", new SimpleViewParameters(
+        	AssignmentListSortViewProducer.VIEW_ID)));
+        return nav;
     }
     
     public ViewParameters getViewParameters() {

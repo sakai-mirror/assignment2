@@ -23,6 +23,7 @@ public class Assignment2Bean {
 	
 	private static final String REMOVE = "remove";
 	private static final String POST = "post";
+	private static final String SAVE_DRAFT = "save_draft";
 	private static final String FAILURE = "failure";
 	
 	public Map selectedIds = new HashMap();
@@ -92,6 +93,48 @@ public class Assignment2Bean {
 			}
 		}
 		return POST;
+	}
+	
+	public String processActionSaveDraft() {
+		String currentUserId = externalLogic.getCurrentUserId();
+		for (String key : OTPMap.keySet()) {
+			Assignment2 assignment = OTPMap.get(key);
+
+			assignment.setDraft(Boolean.TRUE);
+			assignment.setCreateTime(new Date());
+			
+			//REMOVE THESE
+			assignment.setDropDeadTime(new Date());
+			assignment.setUngraded(Boolean.FALSE);
+			assignment.setGroupSubmission(Boolean.FALSE);
+			assignment.setRestrictedToGroups(Boolean.FALSE);
+			assignment.setHonorPledge(Boolean.FALSE);
+			assignment.setSubmissionType(0);
+			assignment.setNotificationType(0);
+			assignment.setAllowResubmitUntilDue(Boolean.FALSE);
+			
+			//start the validator
+			Assignment2Validator validator = new Assignment2Validator();
+			if (validator.validate(assignment, messages)){
+				//Validation Passed!
+				try {
+					logic.saveAssignment(assignment);
+				} catch( ConflictingAssignmentNameException e){
+					messages.addMessage(new TargettedMessage("assignment2.assignment_save_draft.conflicting_assignment_name",
+							new Object[] { assignment.getTitle() }, "Assignment2." + key + ".title"));
+					return FAILURE;
+				}
+				
+				//set Messages
+				messages.addMessage(new TargettedMessage("assignment2.assignment_save_draft",
+					new Object[] { assignment.getTitle() }, TargettedMessage.SEVERITY_INFO));
+				
+			} else {
+				messages.addMessage(new TargettedMessage("assignment2.assignment_save_draft_error"));
+				return FAILURE;
+			}
+		}
+		return SAVE_DRAFT;
 	}
 	
 	public String processActionRemove() {

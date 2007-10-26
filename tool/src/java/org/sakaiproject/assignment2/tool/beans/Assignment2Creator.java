@@ -24,6 +24,7 @@ public class Assignment2Creator {
     	Calendar now = Calendar.getInstance();
     	Calendar cal = Calendar.getInstance();
     	cal.set(Calendar.HOUR_OF_DAY, 12);
+    	cal.set(Calendar.MINUTE, 0);
     	Date openDate = cal.getTime();
     	cal.add(Calendar.DAY_OF_YEAR, 7);
     	cal.set(Calendar.HOUR_OF_DAY, 17);
