@@ -14,6 +14,7 @@
     <script type="text/javascript" language="JavaScript" src="/library/js/headscripts.js"></script>
 	<link href="/sakai-assignment2-tool/content/css/assignmentsv4.css" type="text/css" rel="stylesheet" media="all" />
 	<script type="text/javascript" src="/library/calendar/js/calendar2.js"></script>
+	<script type="text/javascript" src="/sakai-assignment2-tool/content/js/assignment.js"></script>
 	
 
 </head>
@@ -230,27 +231,27 @@
 		</ol>
 	</fieldset>
 	<fieldset>
-		<legend>Access</legend>
+		<legend rsf:id="access_legend">Access</legend>
 		<ol>
 			<li>
+				<span rsf:id="access_select" />
 				<fieldset>
 					<ol>
-						<li><input rsf:id="restricted_to_groups_false" type="radio" /> <label for="">Display to site</label></li>
-						<li><input rsf:id="restricted_to_groups_true" type="radio" /> <label for="">Display to selected groups</label></li>
-						<li><table id="groupTable" class="listHier lines" cellpadding="0" cellspacing="0" border="0">
+						<li rsf:id="access_row:"><input rsf:id="access_choice" type="radio" /> <label rsf:id="access_label">Display to site</label></li>
+						<li rsf:id="groups_table_li" id="groups_table_li"><table id="groupTable" class="listHier lines" cellpadding="0" cellspacing="0" border="0">
 								<tr>
-									<th><input type="checkbox" title="Select all" />Select All</th>
+									<th><input type="checkbox" title="Select all" onclick="$('table#groupTable :checkbox').attr('checked', 'checked');" />Select All</th>
 									<th>Title</th>
 									<th>Description</th>
 								</tr>
-								<tr>
+								<tr rsf:id="groups_row:">
 									<td>
-										<input rsf:id="group_check:" type="checkbox" />
+										<input rsf:id="group_check" type="checkbox" />
 									</td>
 									<td>
-										<label for="">Blue Cohort</label>	
+										<label rsf:id="group_label">Blue Cohort</label>	
 									</td>
-									<td>Group Description</td>
+									<td rsf:id="group_description">Group Description</td>
 								</tr>
 							</table></li>
 					</ol>
@@ -259,24 +260,26 @@
 		</ol>
 	</fieldset>
 	<fieldset>
-		<legend>Submission Notification Email Options</legend>
+		<legend rsf:id="notification_legend">Submission Notification Email Options</legend>
 		<ol>
 			<li>
+				<span rsf:id="notifications_select"/>
 				<fieldset>
 					<ol>
-						<li><input rsf:id="notifications_non" type="radio" checked="checked"/> <label for="">Do not send me notification emails for any student submissions</label></li>
-						<li><input rsf:id="notifications_every" type="radio" /> <label for="">Send me a notification email for each student submission</label></li>
-						<li><input rsf:id="notifications_digest" type="radio" /> <label for="">Send me one email per day summarizing notifications for student submissions</label></li>
+						<li rsf:id="notification_row:">
+							<input rsf:id="notification_choice" type="radio" />
+							<label rsf:id="notification_label">Do not send me notification emails for any student submissions</label>
+						</li>
 					</ol>
 				</fieldset>
 			</li>
 		</ol>
 	</fieldset>
 	<fieldset class="submit">
-		<input rsf:id="post_assignment" accesskey="s" type="submit" class="active" name="post" value="Post"/>
-		<input accesskey="v" type="submit" name="preview" value="Preview"/>
-		<input rsf:id="save_draft" accesskey="d" type="submit" name="save" value="Save Draft"/>
-		<input accesskey="x" type="submit" name="cancel" value="Cancel"/>
+		<input rsf:id="post_assignment" accesskey="s" type="submit" class="active" value="Post"/>
+		<input accesskey="v" type="submit" value="Preview"/>
+		<input rsf:id="save_draft" accesskey="d" type="submit" value="Save Draft"/>
+		<input rsf:id="cancel_assignment" accesskey="x" type="submit" value="Cancel"/>
 	</fieldset>													
 	</form>
 </div>

@@ -1,7 +1,9 @@
 package org.sakaiproject.assignment2.logic.impl;
 
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Collection;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -121,6 +123,15 @@ public class ExternalLogicImpl implements ExternalLogic {
     public String getAssignmentViewUrl(String viewId) {
     	return ServerConfigurationService.getToolUrl() + Entity.SEPARATOR
     	+ toolManager.getCurrentPlacement().getId() + Entity.SEPARATOR + viewId;
+    }
+    
+    public Collection getSiteGroups() {
+    	try {
+	    	Site s = siteService.getSite(toolManager.getCurrentPlacement().getContext());
+	    	return s.getGroups();
+    	} catch (IdUnusedException e){
+    		return new ArrayList();
+    	}
     }
 
 }

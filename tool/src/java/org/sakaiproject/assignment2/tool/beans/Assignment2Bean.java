@@ -24,6 +24,7 @@ public class Assignment2Bean {
 	private static final String REMOVE = "remove";
 	private static final String POST = "post";
 	private static final String SAVE_DRAFT = "save_draft";
+	private static final String CANCEL = "cancel";
 	private static final String FAILURE = "failure";
 	
 	public Map selectedIds = new HashMap();
@@ -61,8 +62,6 @@ public class Assignment2Bean {
 			assignment.setUngraded(Boolean.FALSE);
 			assignment.setGroupSubmission(Boolean.FALSE);
 			assignment.setRestrictedToGroups(Boolean.FALSE);
-			assignment.setHonorPledge(Boolean.FALSE);
-			assignment.setSubmissionType(0);
 			assignment.setNotificationType(0);
 			assignment.setAllowResubmitUntilDue(Boolean.FALSE);
 			
@@ -108,8 +107,6 @@ public class Assignment2Bean {
 			assignment.setUngraded(Boolean.FALSE);
 			assignment.setGroupSubmission(Boolean.FALSE);
 			assignment.setRestrictedToGroups(Boolean.FALSE);
-			assignment.setHonorPledge(Boolean.FALSE);
-			assignment.setSubmissionType(0);
 			assignment.setNotificationType(0);
 			assignment.setAllowResubmitUntilDue(Boolean.FALSE);
 			
@@ -135,6 +132,10 @@ public class Assignment2Bean {
 			}
 		}
 		return SAVE_DRAFT;
+	}
+	
+	public String processActionCancel() {
+		return CANCEL;
 	}
 	
 	public String processActionRemove() {

@@ -1,5 +1,7 @@
 package org.sakaiproject.assignment2.logic;
 
+import java.util.Collection;
+
 /**
  * This is the interface for logic which is external to our app logic
  * 
@@ -71,4 +73,9 @@ public interface ExternalLogic {
      */
     public String getAssignmentViewUrl(String viewId);
 
+    /**
+     * Return a Collection of all Groups
+     * @return a collection
+     */
+    public Collection getSiteGroups();
 }

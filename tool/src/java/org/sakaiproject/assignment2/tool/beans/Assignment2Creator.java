@@ -19,9 +19,10 @@ public class Assignment2Creator {
     	togo.setSiteId(externalLogic.getCurrentLocationId());
     	togo.setCreator(externalLogic.getCurrentUserId());
     	togo.setRemoved(Boolean.FALSE);
+    	togo.setHonorPledge(Boolean.FALSE);
+    	togo.setRestrictedToGroups(Boolean.FALSE);
     	
     	//Setting up Dates
-    	Calendar now = Calendar.getInstance();
     	Calendar cal = Calendar.getInstance();
     	cal.set(Calendar.HOUR_OF_DAY, 12);
     	cal.set(Calendar.MINUTE, 0);
