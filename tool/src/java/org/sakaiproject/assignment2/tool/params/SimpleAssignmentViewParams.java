@@ -5,11 +5,11 @@ import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
 
 public class SimpleAssignmentViewParams extends SimpleViewParameters {
 
-	public String assignmentId;
+	public Long assignmentId;
 	
 	public SimpleAssignmentViewParams() {}
 
-    public SimpleAssignmentViewParams(String viewId, String assignmentId){
+    public SimpleAssignmentViewParams(String viewId, Long assignmentId){
     		super(viewId);
 	        this.assignmentId = assignmentId;
     }

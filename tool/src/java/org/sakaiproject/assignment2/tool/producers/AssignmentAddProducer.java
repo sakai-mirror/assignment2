@@ -2,6 +2,7 @@ package org.sakaiproject.assignment2.tool.producers;
 
 import org.sakaiproject.assignment2.tool.beans.Assignment2Creator;
 import org.sakaiproject.assignment2.tool.params.AssignmentAddViewParams;
+import org.sakaiproject.assignment2.tool.params.SimpleAssignmentViewParams;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
@@ -48,7 +49,7 @@ import uk.org.ponder.rsf.viewstate.ViewParameters;
 import uk.org.ponder.rsf.viewstate.ViewParamsReporter;
 import org.sakaiproject.site.api.Group;
 
-public class AssignmentAddProducer implements ViewComponentProducer, NavigationCaseReporter, ViewParamsReporter {
+public class AssignmentAddProducer implements ViewComponentProducer, NavigationCaseReporter, ViewParamsReporter, ActionResultInterceptor {
 
     public static final String VIEW_ID = "assignment_add";
     public String getViewID() {
@@ -213,6 +214,7 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
         
         //Post Buttons
         UICommand.make(form, "post_assignment", UIMessage.make("assignment2.assignment_add.post"), "#{Assignment2Bean.processActionPost}");
+        UICommand.make(form, "preview_assignment", UIMessage.make("assignment2.assignment_add.preview"), "#{Assignment2Bean.processActionPreview}");
         UICommand.make(form, "save_draft", UIMessage.make("assignment2.assignment_add.save_draft"), "#{Assignment2Bean.processActionSaveDraft}");
         UICommand.make(form, "cancel_assignment", UIMessage.make("assignment2.assignment_add.cancel_assignment"), "#{Assignment2Bean.processActionCancel}");
         
@@ -222,13 +224,23 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
     	List<NavigationCase> nav= new ArrayList<NavigationCase>();
         nav.add(new NavigationCase("post", new SimpleViewParameters(
             AssignmentListSortViewProducer.VIEW_ID)));
+        nav.add(new NavigationCase("preview", new SimpleAssignmentViewParams(
+        	AssignmentAddPreviewProducer.VIEW_ID, null)));
         nav.add(new NavigationCase("save_draft", new SimpleViewParameters(
         	AssignmentListSortViewProducer.VIEW_ID)));
         nav.add(new NavigationCase("cancel", new SimpleViewParameters(
         	AssignmentListSortViewProducer.VIEW_ID)));
         return nav;
     }
-    
+ 
+	public void interceptActionResult(ARIResult result, ViewParameters incoming, Object actionReturn) {
+		if (result.resultingView instanceof SimpleAssignmentViewParams) {
+			SimpleAssignmentViewParams outgoing = (SimpleAssignmentViewParams) result.resultingView;
+			AssignmentAddViewParams in = (AssignmentAddViewParams) incoming;
+			outgoing.assignmentId = in.assignmentId;
+		}
+	}
+	
     public ViewParameters getViewParameters() {
         return new AssignmentAddViewParams();
     }

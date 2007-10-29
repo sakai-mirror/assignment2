@@ -219,7 +219,7 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
         			new SimpleViewParameters(AssignmentListReorderProducer.VIEW_ID));
         	UIInternalLink.make(row, "assignment_row_grade", 
         			UIMessage.make("assignment2.assignment_list-sortview.assignment_row_grade"), 
-        			new SimpleAssignmentViewParams(AssignmentGradeAssignmentProducer.VIEW_ID, assignment.getAssignmentId().toString()));
+        			new SimpleAssignmentViewParams(AssignmentGradeAssignmentProducer.VIEW_ID, assignment.getAssignmentId()));
         	
         	UIOutput.make(row, "assignment_row_for", "Site");
         	if (assignment.isDraft()){

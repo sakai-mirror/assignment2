@@ -23,6 +23,7 @@ public class Assignment2Bean {
 	
 	private static final String REMOVE = "remove";
 	private static final String POST = "post";
+	private static final String PREVIEW = "preview";
 	private static final String SAVE_DRAFT = "save_draft";
 	private static final String CANCEL = "cancel";
 	private static final String FAILURE = "failure";
@@ -92,6 +93,10 @@ public class Assignment2Bean {
 			}
 		}
 		return POST;
+	}
+	
+	public String processActionPreview() {
+		return PREVIEW;
 	}
 	
 	public String processActionSaveDraft() {
