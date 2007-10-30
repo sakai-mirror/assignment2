@@ -21,6 +21,7 @@ public class Assignment2Creator {
     	togo.setRemoved(Boolean.FALSE);
     	togo.setHonorPledge(Boolean.FALSE);
     	togo.setRestrictedToGroups(Boolean.FALSE);
+    	togo.setUngraded(Boolean.FALSE);
     	
     	//Setting up Dates
     	Calendar cal = Calendar.getInstance();

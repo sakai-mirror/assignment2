@@ -26,106 +26,103 @@
 
 	<h3 rsf:id="heading">[Assignment Title] Preview</h3>
 
-	<form>
+	<form rsf:id="form">
 		<table class="itemSummary" border="0" summary="Assignment settings.">  
 			<tr>
-				<th>Created by</th>
-				<td> Robert Alan (Oct 1, 2007 4:09 pm)</td>
+				<th rsf:id="created_by_label">Created by</th>
+				<td rsf:id="created_by"> Robert Alan (Oct 1, 2007 4:09 pm)</td>
 			</tr>
 			<tr>
-				<th>Modified</th>
-				<td>Oct 1, 2007 4:09 pm</td>
+				<th rsf:id="modified_label">Modified</th>
+				<td rsf:id="modified">Oct 1, 2007 4:09 pm</td>
 			</tr>
 			<tr>
-				<th>Open</th>
-				<td>Jun 1, 2007 12:00 pm</td>
+				<th rsf:id="open_date_label">Open</th>
+				<td rsf:id="open_date">Jun 1, 2007 12:00 pm</td>
 			</tr>
 			<tr>
-				<th>Due</th>
-				<td>Jun 8, 2007 5:00 pm</td>
+				<th rsf:id="due_date_label">Due</th>
+				<td rsf:id="due_date">Jun 8, 2007 5:00 pm</td>
 			</tr>
 			<tr>
-				<th>Accept Until</th>
-				<td>Jun 8, 2007 5:00 pm</td>
+				<th rsf:id="accept_until_label">Accept Until</th>
+				<td rsf:id="accept_until">Jun 8, 2007 5:00 pm</td>
 			</tr>
 			<tr>
-				<th>Student Submissions</th>
-				<td>Inline and Attachments</td>
+				<th rsf:id="submission_type_label">Student Submissions</th>
+				<td rsf:id="submission_type">Inline and Attachments</td>
 			</tr>
 			<tr>
-				<th>Graded?</th>
-				<td>Points (max 200.0)</td>
+				<th rsf:id="graded_label">Graded?</th>
+				<td rsf:id="graded">Points (max 200.0)</td>
 			</tr>
 			<tr>
-				<th>Add due date to Calendar?</th>
-				<td>No</td>
+				<th rsf:id="calendar_label">Add due date to Calendar?</th>
+				<td rsf:id="calendar">No</td>
 			</tr>
 			<tr>
-				<th>Announce the open date?</th>
-				<td>No</td>
+				<th rsf:id="announcement_label">Announce the open date?</th>
+				<td rsf:id="announcement">No</td>
 			</tr>
 			<tr>
-				<th>Honor pledge?</th>
-				<td>Not required</td>
+				<th rsf:id="honor_pledge_label">Honor pledge?</th>
+				<td rsf:id="honor_pledge">Not required</td>
 			</tr>
 			<tr>
-				<th>Linked to Gradebook Assignment?</th>
-				<td>Final</td>
+				<th rsf:id="gradebook_label">Linked to Gradebook Assignment?</th>
+				<td rsf:id="gradebook">Final</td>
 			</tr>
 		</table>
 
-		<h4>Assignment Instructions</h4>
-		<div class="textPanel">Testing linkage from assignments to gradebook.</div>
+		<h4 rsf:id="assignment_instructions_heading">Assignment Instructions</h4>
+		<div rsf:id="instructions" class="textPanel">Testing linkage from assignments to gradebook.</div>
 
 
 
-		<p class="discTria"><a href="" title="Show student view"><img src="collapse.png" border="0" alt="Show student view" /></a> Student View</p>
+		<p class="discTria">
+			<img src="/sakai-assignment2-tool/content/images/collapse.png" border="0" alt="Show student view" class="pointer" />
+			<span rsf:id="student_view">Student View</span>
+		</p>
 
-		<!--  <div class="inopPanel"> -->
-		<h4>[Assignment title]</h4>
+		<div class="inopPanel">
+		<h4 rsf:id="student_view_title">[Assignment title]</h4>
 
 		<table class="itemSummary" summary="Assignment settings.">
 			<tr>
-				<th>Due</th>
-				<td>Jun 8, 2007 5:00 pm</td>
+				<th rsf:id="student_view_due_label">Due</th>
+				<td rsf:id="student_view_due_date">Jun 8, 2007 5:00 pm</td>
 			</tr>
 			<tr>
-				<th>Status</th>
-				<td>Closed</td>
+				<th rsf:id="student_view_status_label">Status</th>
+				<td rsf:id="student_view_status">Closed</td>
 			</tr>
 			<tr>
-				<th>Grade Scale</th>
-				<td>Points (max 200.0)</td>
+				<th rsf:id="student_view_grade_label">Grade Scale</th>
+				<td rsf:id="student_view_grade">Points (max 200.0)</td>
 			</tr>
 		</table>
 
-		<h4>Assignment Instructions</h4>
-		<div class="textPanel">Testing linkage from assignments to gradebook.</div>
+		<h4 rsf:id="student_view_instructions_label">Assignment Instructions</h4>
+		<div rsf:id="student_view_instructions" class="textPanel">Testing linkage from assignments to gradebook.</div>
 
-		<h4>Start assignment</h4>
-		<p class="instruction">This assignment allows both typed in text and/or attached documents.Type in your comments in the box below, and use the Add Attachments button to include other documents as part of your submission. Save frequently while working.</p>
+		<h4 rsf:id="student_view_start">Start assignment</h4>
+		<p rsf:id="student_view_start_instructions" class="instruction">This assignment allows both typed in text and/or attached documents.Type in your comments in the box below, and use the Add Attachments button to include other documents as part of your submission. Save frequently while working.</p>
 
 		<textarea cols="80" rows="8" wrap="virtual" name="textarea" id="textarea" disabled="disabled">&nbsp;</textarea>						
 
 		<fieldset>
-			<legend>Attachments</legend>
+			<legend rsf:id="student_view_attachments_legend">Attachments</legend>
 			<ol class="attachList indnt1">
-				<li>No attachments yet</li>
-				<li><input type="button" name="" value="Add Attachments" accesskey="a"/></li>
+				<li rsf:id="student_view_no_attachments">No attachments yet</li>
+				<li><input rsf:id="student_view_add_attachmetns" type="button" disabled="disabled" /></li>
 			</ol>
 		</fieldset>
-
+	</div>
 
 	<fieldset class="submit">
-		<input accesskey="s" type="button" class="active" name="post" value="Post"/>
-		<input accesskey="d" type="button" name="save" value="Save Draft"/>
-		<input accesskey="x" type="button" name="edit" value="Edit"/>
-
-		<input type="hidden" name="assignmentId" value="" />
-		<input type="hidden" name="assignmentContentId" value="" />
-		<input type="hidden" name="new_assignment_order" id="new_assignment_order" value="0" />
-		<input type="hidden" name="eventSubmit_doAssignment_form" value="" />
-		<input type="hidden" name="option" id="option" value="" />
+		<input rsf:id="post" accesskey="s" type="submit" class="active" value="Post"/>
+		<input rsf:id="save_draft" accesskey="d" type="submit" value="Save Draft"/>
+		<input rsf:id="edit" accesskey="x" type="submit" value="Edit"/>
 	</fieldset>													
 	</form>
 </div>

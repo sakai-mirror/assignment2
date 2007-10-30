@@ -33,12 +33,10 @@
    </bean>
    
    <!-- The beans listed here are session beans (they stick around) -->
-   <!-- 
 	<bean id="myBeanScope" parent="beanScopeParent">
-		<property name="copyPreservingBeans" value="PagerBean" />
+		<property name="copyPreservingBeans" value="PreviewAssignmentBean" />
 		<property name="exclusive" value="true" />
 	</bean>
-	-->
 	
 	<bean id="Assignment2Creator"
 		class="org.sakaiproject.assignment2.tool.beans.Assignment2Creator">

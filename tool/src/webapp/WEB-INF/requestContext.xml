@@ -32,6 +32,7 @@
       <property name="dateEvolver" ref="fieldDateInputEvolver" />
       <property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
       <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
+      <property name="previewAssignmentBean" ref="PreviewAssignmentBean" />
    </bean>
 
    <bean class="org.sakaiproject.assignment2.tool.producers.AssignmentAddGradebookItemProducer">
@@ -44,6 +45,8 @@
       <property name="messageLocator" ref="messageLocator" />
       <property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
       <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
+      <property name="previewAssignmentBean" ref="PreviewAssignmentBean" />
+      <property name="locale" ref="requestLocale" />
    </bean>
    
    <bean class="org.sakaiproject.assignment2.tool.producers.AssignmentGradeAssignmentProducer">
@@ -90,7 +93,10 @@
    	  <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
    	  <property name="messages" ref="targettedMessageList"/>
    	  <property name="entityBeanLocator" ref="Assignment2"/>
+   	  <property name="previewAssignmentBean" ref="PreviewAssignmentBean" />
    </bean>
+   
+   <bean id="PreviewAssignmentBean" class="org.sakaiproject.assignment2.tool.beans.PreviewAssignmentBean" />
 	
 	<!-- Validators -->
 	<bean id="Assignment2Validator" class="org.sakaiproject.assignment2.tool.beans.Assignment2Validator" />

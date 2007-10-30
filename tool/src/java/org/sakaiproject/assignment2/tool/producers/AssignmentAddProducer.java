@@ -1,6 +1,7 @@
 package org.sakaiproject.assignment2.tool.producers;
 
 import org.sakaiproject.assignment2.tool.beans.Assignment2Creator;
+import org.sakaiproject.assignment2.tool.beans.PreviewAssignmentBean;
 import org.sakaiproject.assignment2.tool.params.AssignmentAddViewParams;
 import org.sakaiproject.assignment2.tool.params.SimpleAssignmentViewParams;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
@@ -20,6 +21,7 @@ import uk.org.ponder.arrayutil.ListUtil;
 import uk.org.ponder.beanutil.entity.EntityBeanLocator;
 import uk.org.ponder.messageutil.MessageLocator;
 import uk.org.ponder.rsf.components.UIBoundBoolean;
+import uk.org.ponder.rsf.components.UIBoundString;
 import uk.org.ponder.rsf.components.UIBranchContainer;
 import uk.org.ponder.rsf.components.UICommand;
 import uk.org.ponder.rsf.components.UIContainer;
@@ -49,7 +51,7 @@ import uk.org.ponder.rsf.viewstate.ViewParameters;
 import uk.org.ponder.rsf.viewstate.ViewParamsReporter;
 import org.sakaiproject.site.api.Group;
 
-public class AssignmentAddProducer implements ViewComponentProducer, NavigationCaseReporter, ViewParamsReporter, ActionResultInterceptor {
+public class AssignmentAddProducer implements ViewComponentProducer, NavigationCaseReporter, ViewParamsReporter {
 
     public static final String VIEW_ID = "assignment_add";
     public String getViewID() {
@@ -62,6 +64,7 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
     private MessageLocator messageLocator;
     private AssignmentLogic assignmentLogic;
     private ExternalLogic externalLogic;
+    private PreviewAssignmentBean previewAssignmentBean;
     
 	/*
 	 * You can change the date input to accept time as well by uncommenting the lines like this:
@@ -95,7 +98,12 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
         	assignment2OTP += assignmentId; 
         	//get Dates
         	assignment = assignmentLogic.getAssignmentById(assignmentId);
-        }else {
+        } else if (params.fromPreview && previewAssignmentBean.getAssignment() != null) {
+        	//from Preview page
+        	assignment = previewAssignmentBean.getAssignment();
+        	assignment2OTP += EntityBeanLocator.NEW_PREFIX + "1";
+        } else {
+        	//create new
         	Assignment2Creator creator = new Assignment2Creator();
         	creator.setExternalLogic(externalLogic);
         	assignment = creator.create();
@@ -111,7 +119,7 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
         //set dateEvolver
         dateEvolver.setStyle(FormatAwareDateInputEvolver.DATE_TIME_INPUT);
         
-        UIInput.make(form, "title", assignment2OTP + ".title");
+        UIInput.make(form, "title", assignment2OTP + ".title", assignment.getTitle());
         UIInput openDateField = UIInput.make(form, "open_date:", assignment2OTP + ".openTime");
 		dateEvolver.evolveDateInput(openDateField, openTime);
         
@@ -129,22 +137,23 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
         		String.valueOf(AssignmentConstants.SUBMIT_NON_ELECTRONIC)
         };
         String[] submisison_type_labels = new String[] {
-        		"assignment2.assignment_add.submission_type.inline_only",
-        		"assignment2.assignment_add.submission_type.attach_only",
-        		"assignment2.assignment_add.submission_type.inline_attach",
-        		"assignment2.assignment_add.submission_type.non_electronic"
+        		"assignment2.submission_type." + String.valueOf(AssignmentConstants.SUBMIT_INLINE_ONLY),
+        		"assignment2.submission_type." + String.valueOf(AssignmentConstants.SUBMIT_ATTACH_ONLY),
+        		"assignment2.submission_type." + String.valueOf(AssignmentConstants.SUBMIT_INLINE_AND_ATTACH),
+        		"assignment2.submission_type." + String.valueOf(AssignmentConstants.SUBMIT_NON_ELECTRONIC)
         };
-        UISelect.make(form, "submission_type", submission_type_values,
+        UISelect select =UISelect.make(form, "submission_type", submission_type_values,
         		submisison_type_labels, assignment2OTP + ".submissionType").setMessageKeys();
+        ((UIBoundString) select.selection).setValue(String.valueOf(assignment.getSubmissionType()));
         
         //Rich Text Input
-        UIInput instructions = UIInput.make(form, "instructions:", assignment2OTP + ".instructions");
+        UIInput instructions = UIInput.make(form, "instructions:", assignment2OTP + ".instructions", assignment.getInstructions());
         richTextEvolver.evolveTextInput(instructions);
         
         
         //Calendar Due Date
         //Announcement
-        UIBoundBoolean.make(form, "honor_pledge", assignment2OTP + ".honorPledge");
+        UIBoundBoolean.make(form, "honor_pledge", assignment2OTP + ".honorPledge", assignment.isHonorPledge());
         
         //Access
         UIMessage.make(form, "access_legend", "assignment2.assignment_add.access_legend");
@@ -158,6 +167,8 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
         };
         UISelect access = UISelect.make(form, "access_select", access_values, access_labels,
         		assignment2OTP + ".restrictedToGroups").setMessageKeys();
+        ((UIBoundString) select.selection).setValue(assignment.isRestrictedToGroups().toString());
+        
         String accessId = access.getFullID();
         for (int i=0; i < access_values.length; i++) {
         	UIBranchContainer access_row = UIBranchContainer.make(form, "access_row:");
@@ -203,6 +214,7 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
         };
         UISelect notifications = UISelect.make(form, "notifications_select", notification_type_values,
         		notification_type_labels, assignment2OTP + ".notificationType").setMessageKeys();
+        ((UIBoundString) notifications.selection).setValue(String.valueOf(assignment.getNotificationType()));
         String notificationSelectId = notifications.getFullID();
         for (int i = 0; i < notification_type_values.length; i++){
         	UIBranchContainer notification_row = UIBranchContainer.make(form, "notification_row:");
@@ -232,14 +244,6 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
         	AssignmentListSortViewProducer.VIEW_ID)));
         return nav;
     }
- 
-	public void interceptActionResult(ARIResult result, ViewParameters incoming, Object actionReturn) {
-		if (result.resultingView instanceof SimpleAssignmentViewParams) {
-			SimpleAssignmentViewParams outgoing = (SimpleAssignmentViewParams) result.resultingView;
-			AssignmentAddViewParams in = (AssignmentAddViewParams) incoming;
-			outgoing.assignmentId = in.assignmentId;
-		}
-	}
 	
     public ViewParameters getViewParameters() {
         return new AssignmentAddViewParams();
@@ -264,5 +268,9 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
     
     public void setExternalLogic(ExternalLogic externalLogic) {
     	this.externalLogic = externalLogic;
+    }
+    
+    public void setPreviewAssignmentBean(PreviewAssignmentBean previewAssignmentBean) {
+    	this.previewAssignmentBean = previewAssignmentBean;
     }
 }

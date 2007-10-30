@@ -41,6 +41,7 @@ public class Assignment2Bean {
 	}
 	
 	private Map<String, Assignment2> OTPMap;
+	@SuppressWarnings("unchecked")
 	public void setEntityBeanLocator(EntityBeanLocator entityBeanLocator) {
 		this.OTPMap = entityBeanLocator.getDeliveredBeans();
 	}
@@ -50,52 +51,86 @@ public class Assignment2Bean {
 		this.externalLogic = externalLogic;
 	}
 	
+	private PreviewAssignmentBean previewAssignmentBean;
+	public void setPreviewAssignmentBean (PreviewAssignmentBean previewAssignmentBean) {
+		this.previewAssignmentBean = previewAssignmentBean;
+	}
+	
 	public String processActionPost() {
-		String currentUserId = externalLogic.getCurrentUserId();
 		for (String key : OTPMap.keySet()) {
 			Assignment2 assignment = OTPMap.get(key);
-
-			assignment.setDraft(Boolean.FALSE);
-			assignment.setCreateTime(new Date());
-			
-			//REMOVE THESE
-			assignment.setDropDeadTime(new Date());
-			assignment.setUngraded(Boolean.FALSE);
-			assignment.setGroupSubmission(Boolean.FALSE);
-			assignment.setRestrictedToGroups(Boolean.FALSE);
-			assignment.setNotificationType(0);
-			assignment.setAllowResubmitUntilDue(Boolean.FALSE);
-			
-			//start the validator
-			Assignment2Validator validator = new Assignment2Validator();
-			if (validator.validate(assignment, messages)){
-				//Validation Passed!
-				try {
-					logic.saveAssignment(assignment);
-				} catch( ConflictingAssignmentNameException e){
-					messages.addMessage(new TargettedMessage("assignment2.assignment_post.conflicting_assignment_name",
-							new Object[] { assignment.getTitle() }, "Assignment2." + key + ".title"));
-					return FAILURE;
-				}
-				
-				//set Messages
-				if (key.startsWith(EntityBeanLocator.NEW_PREFIX)) {
-					messages.addMessage(new TargettedMessage("assignment2.assignment_post",
-							new Object[] { assignment.getTitle() }, TargettedMessage.SEVERITY_INFO));
-				}
-				else {
-					messages.addMessage(new TargettedMessage("assignment2.assignment_save",
-							new Object[] { assignment.getTitle() }, TargettedMessage.SEVERITY_INFO));
-				}
-			} else {
-				messages.addMessage(new TargettedMessage("assignment2.assignment_post_error"));
-				return FAILURE;
-			}
+			 return internalProcessPost(assignment, key);
 		}
 		return POST;
 	}
 	
+	public String processActionPreviewPost(){
+		Assignment2 assignment = previewAssignmentBean.getAssignment();
+		String key = "";
+		if (assignment.getAssignmentId() != null){
+			key += assignment.getAssignmentId().toString();
+		} else {
+			key += EntityBeanLocator.NEW_PREFIX + "1";
+		}
+		
+		String result = internalProcessPost(assignment, key);
+		//clear session scoped assignment
+		if (result.equals(POST)){
+			previewAssignmentBean.setAssignment(null);
+		}
+		return result;
+	}
+	
+	private String internalProcessPost(Assignment2 assignment, String key){
+		assignment.setDraft(Boolean.FALSE);
+		assignment.setCreateTime(new Date());
+		assignment.setModifiedTime(new Date());
+		assignment.setModifiedBy(externalLogic.getCurrentUserId());
+		
+
+		
+		//REMOVE THESE
+		assignment.setDropDeadTime(new Date());
+		assignment.setUngraded(Boolean.FALSE);
+		assignment.setGroupSubmission(Boolean.FALSE);
+		assignment.setRestrictedToGroups(Boolean.FALSE);
+		assignment.setNotificationType(0);
+		assignment.setAllowResubmitUntilDue(Boolean.FALSE);
+		
+		//start the validator
+		Assignment2Validator validator = new Assignment2Validator();
+		if (validator.validate(assignment, messages)){
+			//Validation Passed!
+			try {
+				logic.saveAssignment(assignment);
+			} catch( ConflictingAssignmentNameException e){
+				messages.addMessage(new TargettedMessage("assignment2.assignment_post.conflicting_assignment_name",
+						new Object[] { assignment.getTitle() }, "Assignment2." + key + ".title"));
+				return FAILURE;
+			}
+			
+			//set Messages
+			if (key.startsWith(EntityBeanLocator.NEW_PREFIX)) {
+				messages.addMessage(new TargettedMessage("assignment2.assignment_post",
+						new Object[] { assignment.getTitle() }, TargettedMessage.SEVERITY_INFO));
+			}
+			else {
+				messages.addMessage(new TargettedMessage("assignment2.assignment_save",
+						new Object[] { assignment.getTitle() }, TargettedMessage.SEVERITY_INFO));
+			}
+		} else {
+			messages.addMessage(new TargettedMessage("assignment2.assignment_post_error"));
+			return FAILURE;
+		}
+		return POST;
+	}
+	
+	
 	public String processActionPreview() {
+		for (String key : OTPMap.keySet()) {
+			Assignment2 assignment = OTPMap.get(key);
+			previewAssignmentBean.setAssignment(assignment);
+		}
 		return PREVIEW;
 	}
 	
@@ -106,6 +141,8 @@ public class Assignment2Bean {
 
 			assignment.setDraft(Boolean.TRUE);
 			assignment.setCreateTime(new Date());
+			assignment.setModifiedTime(new Date());
+			assignment.setModifiedBy(externalLogic.getCurrentUserId());
 			
 			//REMOVE THESE
 			assignment.setDropDeadTime(new Date());
@@ -149,6 +186,8 @@ public class Assignment2Bean {
 		int assignmentsRemoved = 0;
 		for (Assignment2 assignment : entries) {
 			if (selectedIds.get(assignment.getAssignmentId().toString()) == Boolean.TRUE){
+				assignment.setModifiedTime(new Date());
+				assignment.setModifiedBy(externalLogic.getCurrentUserId());
 				logic.deleteAssignment(assignment);
 				assignmentsRemoved++;
 			}
