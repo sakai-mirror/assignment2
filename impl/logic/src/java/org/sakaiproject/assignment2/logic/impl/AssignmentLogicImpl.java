@@ -160,12 +160,25 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 		return assignments;
 	}
 	
+	public int getTotalCountViewableAssignments(String userId) {
+
+		int result = dao.countByProperties(Assignment2.class, new String[] {"siteId", "removed"}, 
+				new Object[] {externalLogic.getCurrentLocationId(), Boolean.FALSE});
+		return result;
+	}
+	
 	public void setAssignmentSortIndexes(Long[] assignmentIds)
 	{
+		//Assume array of longs is in correct order now
+		//so that the index of the array is the new 
+		//sort index
 		for (int i=0; i < assignmentIds.length; i++){
+			//get Assignment
     		Assignment2 assignment = getAssignmentById(assignmentIds[i]);
     		if (assignment != null){
+    			//check if we need to update
     			if (assignment.getSortIndex() != i){
+    				//update and save
 	    			assignment.setSortIndex(i);
 	    			saveAssignment(assignment);
     			}

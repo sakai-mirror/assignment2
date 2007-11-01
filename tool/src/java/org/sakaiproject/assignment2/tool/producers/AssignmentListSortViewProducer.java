@@ -94,7 +94,7 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
     	opposite_sort_dir = (SORT_DIR_ASC.equals(current_sort_dir) ? SORT_DIR_DESC : SORT_DIR_ASC);
     	
     	//get paging data
-    	int total_count = 17;
+    	int total_count = assignmentLogic.getTotalCountViewableAssignments(currentUserId);
     	pagerBean.setTotalCount(total_count);
     	
         UIMessage.make(tofill, "page-title", "assignment2.assignment_list-sortview.title");

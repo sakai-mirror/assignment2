@@ -6,7 +6,7 @@ import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
 public class PagerViewParams extends SimpleViewParameters {
 
 	public String current_start = "0";
-	public String current_count = "5";
+	public String current_count = "50";
 	
 	public PagerViewParams() {}
 	

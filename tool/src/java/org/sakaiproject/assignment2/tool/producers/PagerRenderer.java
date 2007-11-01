@@ -33,6 +33,7 @@ public class PagerRenderer {
 	private MessageLocator messageLocator;
 	private ExternalLogic externalLogic;
 	
+	@SuppressWarnings("unchecked")
 	public void makePager(UIContainer tofill, String divID, String currentViewID, ViewParameters viewparams) {
     	PagerViewParams pagerparams = (PagerViewParams) viewparams;
 

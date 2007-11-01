@@ -154,3 +154,7 @@ li .error p {
 .error a {
 	color: #fff;
 }
+
+.pointer {
+	cursor: pointer;
+}

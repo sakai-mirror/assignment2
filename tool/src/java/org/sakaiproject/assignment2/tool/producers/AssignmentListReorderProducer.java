@@ -66,12 +66,13 @@ public class AssignmentListReorderProducer implements ViewComponentProducer, Vie
     @SuppressWarnings("unchecked")
 	public void fillComponents(UIContainer tofill, ViewParameters viewparams, ComponentChecker checker) {
     	PagerViewParams pagerparams = (PagerViewParams) viewparams;
-
+    	String currentUserId = externalLogic.getCurrentUserId();
+    	
     	//use a date which is related to the current users locale
         DateFormat df = DateFormat.getDateInstance(DateFormat.MEDIUM, locale);
     	
     	//get paging data
-    	int total_count = 17;
+        int total_count = assignmentLogic.getTotalCountViewableAssignments(currentUserId);
     	pagerBean.setTotalCount(total_count);
     	
         UIMessage.make(tofill, "page-title", "assignment2.assignment_list-reorder.title");
@@ -86,7 +87,6 @@ public class AssignmentListReorderProducer implements ViewComponentProducer, Vie
         
         
         UIForm form = UIForm.make(tofill, "form");
-        String currentUserId = externalLogic.getCurrentUserId();
         
         List<Assignment2> entries = new ArrayList<Assignment2>();
         entries = assignmentLogic.getViewableAssignments(currentUserId, "sortIndex", true, 

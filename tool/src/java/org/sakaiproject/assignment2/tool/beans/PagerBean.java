@@ -4,7 +4,7 @@ package org.sakaiproject.assignment2.tool.beans;
 public class PagerBean {
 	
 	private Integer currentStart = 0;
-	private Integer currentCount = 5;
+	private Integer currentCount = 50;		//actually set in the pager view parameters :-)
 	private Integer totalCount = 16;
 	
 	private static final String PAGER_NAVIGATION = "pager_navigation";
