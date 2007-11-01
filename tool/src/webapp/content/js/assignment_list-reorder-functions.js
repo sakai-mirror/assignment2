@@ -31,8 +31,18 @@ $(document).ready(function(){
 redrawTableY = function(){
    serial = $.SortSerialize('sortable');
    $.get("ajax-callback?" + serial.hash.replace(/[\[\]]/g, ""));
-   
-   $("#sortable > div").each(function(i){
-      $("#reorder-table > tbody").append($("#trow_" + this.id.substring(3)));
-   });
+
+   $("table#reorder-table tr.datarow").each(function(i){
+   	$(this).animate({opacity: 0}, 10);
+   })
+
+	setTimeout(function(){
+		$("#sortable > div").each(function(i){
+			$("#reorder-table > tbody").append($("#trow_" + this.id.substring(3)));
+		});
+	
+		$("table#reorder-table tr.datarow").each(function(i){
+			$(this).animate({opacity: 0}, 100 * (i+1)).animate({opacity: 1}, 500);//timeout trick
+		})
+   }, 10);
 }

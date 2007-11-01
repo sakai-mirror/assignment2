@@ -1,16 +1,24 @@
 package org.sakaiproject.assignment2.tool.producers;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
+import org.sakaiproject.assignment2.model.Assignment2;
+import org.sakaiproject.assignment2.logic.AssignmentLogic;
+import org.sakaiproject.assignment2.logic.ExternalLogic;
+import org.sakaiproject.assignment2.tool.params.AssignmentAddViewParams;
 import org.sakaiproject.assignment2.tool.params.AssignmentListSortViewParams;
 import org.sakaiproject.assignment2.tool.params.PagerViewParams;
+import org.sakaiproject.assignment2.tool.params.SimpleAssignmentViewParams;
 import org.sakaiproject.assignment2.tool.producers.AssignmentListSortViewProducer;
 import org.sakaiproject.assignment2.tool.producers.NavBarRenderer;
 import org.sakaiproject.assignment2.tool.producers.PagerRenderer;
 import org.sakaiproject.assignment2.tool.beans.PagerBean;
 
 import uk.org.ponder.messageutil.MessageLocator;
+import uk.org.ponder.rsf.components.UIBoundBoolean;
 import uk.org.ponder.rsf.components.UIBranchContainer;
 import uk.org.ponder.rsf.components.UICommand;
 import uk.org.ponder.rsf.components.UIComponent;
@@ -50,11 +58,18 @@ public class AssignmentListReorderProducer implements ViewComponentProducer, Vie
     private PagerBean pagerBean;
     private PagerRenderer pagerRenderer;
     private MessageLocator messageLocator;
+    private AssignmentLogic assignmentLogic;
+    private ExternalLogic externalLogic;
+    private Locale locale;
 
 
-    public void fillComponents(UIContainer tofill, ViewParameters viewparams, ComponentChecker checker) {
+    @SuppressWarnings("unchecked")
+	public void fillComponents(UIContainer tofill, ViewParameters viewparams, ComponentChecker checker) {
     	PagerViewParams pagerparams = (PagerViewParams) viewparams;
 
+    	//use a date which is related to the current users locale
+        DateFormat df = DateFormat.getDateInstance(DateFormat.MEDIUM, locale);
+    	
     	//get paging data
     	int total_count = 17;
     	pagerBean.setTotalCount(total_count);
@@ -70,21 +85,41 @@ public class AssignmentListReorderProducer implements ViewComponentProducer, Vie
 				new SimpleViewParameters(AssignmentListSortViewProducer.VIEW_ID));
         
         
-        //Fill out Table & UL
-        for (int i=0; i < 4; i ++){
-        	UIBranchContainer row = UIBranchContainer.make(tofill, "assignment-row:");
+        UIForm form = UIForm.make(tofill, "form");
+        String currentUserId = externalLogic.getCurrentUserId();
+        
+        List<Assignment2> entries = new ArrayList<Assignment2>();
+        entries = assignmentLogic.getViewableAssignments(currentUserId, "sortIndex", true, 
+        		Integer.parseInt(pagerparams.current_start), Integer.parseInt(pagerparams.current_count));
+        
+        if (entries.size() <= 0) {
+            UIMessage.make(tofill, "blog_empty", "assignment2.assignment_list-reorder.assignment_empty");
+            return;
+        }
+        UIOutput td = UIOutput.make(tofill, "td_assignment_li_container");
+        Map td_rowspan = new HashMap();
+        td_rowspan.put("rowspan", Integer.toString(entries.size() + 1));
+        td_rowspan.put("id", "sortable");
+        td.decorators = new DecoratorList(new UIFreeAttributeDecorator(td_rowspan));
+        
+        //Fill out Table
+        int i=0;
+        for (Assignment2 assignment : entries){
+        	UIBranchContainer row = UIBranchContainer.make(form, "assignment-row:");
+        	/***
         	if (i == 0){
-        		UIOutput cell = UIOutput.make(row, "reorder_cell");
+        		UIOutput.make(row, "reorder_cell");
         	}
+        	**/
         	
         	//Sorting LI
         	UIBranchContainer li = UIBranchContainer.make(tofill, "assignment_li:");
         	Map attrmap = new HashMap();
-        	attrmap.put("id", "li_" + i);
+        	attrmap.put("id", "li_" + assignment.getAssignmentId().toString());
         	li.decorators = new DecoratorList(new UIFreeAttributeDecorator(attrmap));
-        	UIOutput.make(li, "assignment_row_title", "Homework Example " + i);
+        	UIOutput.make(li, "assignment_row_title", assignment.getTitle());
         	
-        	//Table Row
+        	// 	Table Row
         	UIInternalLink.make(row, "assignment_row_link", "Homework Example " + i, new SimpleViewParameters(AssignmentListReorderProducer.VIEW_ID));
         	UIInternalLink.make(row, "assignment_row_edit", "Edit", new SimpleViewParameters(AssignmentListReorderProducer.VIEW_ID));
         	UIInternalLink.make(row, "assignment_row_duplicate", "Duplicate", new SimpleViewParameters(AssignmentListReorderProducer.VIEW_ID));
@@ -96,6 +131,25 @@ public class AssignmentListReorderProducer implements ViewComponentProducer, Vie
         	UIOutput.make(row, "assignment_row_due", "Oct 1, 2007 6:00 pm");
         	UIInternalLink.make(row, "assignment_row_in_new", "2/2", new SimpleViewParameters(AssignmentListReorderProducer.VIEW_ID));
         	UIOutput.make(row, "assignment_row_scale", "0-100.0");
+        	
+        	UIBoundBoolean.make(row, "assignment_row_remove", 
+        			"Assignment2Bean.selectedIds." + assignment.getAssignmentId().toString(),
+        			Boolean.FALSE);
+        	UIMessage.make(row, "assignment_row_remove_label", "assignment2.assignment_list-sortview.assignment_row_remove_label");
+        	
+        	UIOutput.make(row, "assignment_row_for", "Site");
+        	if (assignment.isDraft()){
+        		UIOutput.make(row, "assignment_row_draft_td");
+        		UIMessage.make(row, "assignment_row_draft", "assignment2.assignment_list-sortview.assignment_row_draft");
+        	} else {
+        	   	UIMessage.make(row, "assignment_row_open_text", "assignment2.assignment_list-sortview.assignment_row_open");
+        	}
+        	UIOutput.make(row, "assignment_row_open", df.format(assignment.getOpenTime()));
+        	UIOutput.make(row, "assignment_row_due", df.format(assignment.getDueDateForUngraded()));
+        	UIInternalLink.make(row, "assignment_row_in_new", "2/2", new SimpleViewParameters(AssignmentListReorderProducer.VIEW_ID));
+        	UIOutput.make(row, "assignment_row_scale", "0-100.0");
+        	
+        	i++;
         }
         
     }
@@ -117,5 +171,17 @@ public class AssignmentListReorderProducer implements ViewComponentProducer, Vie
     
     public void setPagerRenderer(PagerRenderer pagerRenderer){
     	this.pagerRenderer = pagerRenderer;
+    }
+    
+    public void setAssignmentLogic(AssignmentLogic assignmentLogic) {
+    	this.assignmentLogic = assignmentLogic;
+    }
+    
+    public void setExternalLogic(ExternalLogic externalLogic) {
+    	this.externalLogic = externalLogic;
+    }
+    
+    public void setLocale(Locale locale) {
+    	this.locale = locale;
     }
 }

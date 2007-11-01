@@ -56,7 +56,7 @@
 	</div>
 	
 	<a rsf:id="assignment_list-sortview-link" href="assignment_list-sortview">Sort Order View</a> | My Reorder View
-    <form name="" action="" method="post">
+    <form rsf:id="form" method="post">
 	<table id="reorder-table" class="listHier lines">
 		<tr> 
 			<th>Reorder</th>
@@ -71,7 +71,7 @@
 			<th>Scale</th>
 		</tr>
       <tr class="container">
-         <td rowspan="5" id="sortable">
+         <td rsf:id="td_assignment_li_container" rowspan="5" id="sortable">
 					<div rsf:id="assignment_li:" class="sortableitem">
 						<img src="/sakai-assignment2-tool/content/images/reorder.png" class="reorder_handle" alt="Reorder Handle" width="32" height="32" align="absmiddle" />
 						<span rsf:id="assignment_row_title">Homework Example</span>
@@ -82,7 +82,7 @@
 		<tr rsf:id="assignment-row:" class="datarow">
 			
 			<td>
-				<input type="checkbox" name="" value="" id="" /> <label for="" class="skip">Remove</label>
+				<input rsf:id="assignment_row_remove" type="checkbox" /> <label rsf:id="assignment_row_remove_label" class="skip">Remove</label>
 			</td>
 			<td headers="attachments" class="attach"><img rsf:id="assignment_row_attach_img" width="16" height="16" border="0" /></td>
 			<!-- 

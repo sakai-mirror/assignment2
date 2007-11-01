@@ -43,6 +43,7 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
     //sorting strings
     public static final String SORT_DIR_ASC = "asc";
     public static final String SORT_DIR_DESC = "desc";
+    public static final String SORT_BY_SORT_INDEX = "sortIndex";
     public static final String SORT_BY_ASSIGNMENT = "title";
     public static final String SORT_BY_FOR = "restrictedToGroups";
     public static final String SORT_BY_STATUS = "draft";
@@ -51,9 +52,9 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
     public static final String SORT_BY_IN = "in";				//fix me
     public static final String SORT_BY_NEW = "new";				//fix me
     public static final String SORT_BY_SCALE = "scale";			//fix me
-    public static final String DEFAULT_SORT_DIR = SORT_DIR_DESC;
-    public static final String DEFAULT_OPPOSITE_SORT_DIR = SORT_DIR_ASC;
-    public static final String DEFAULT_SORT_BY = SORT_BY_DUE;
+    public static final String DEFAULT_SORT_DIR = SORT_DIR_ASC;
+    public static final String DEFAULT_OPPOSITE_SORT_DIR = SORT_DIR_DESC;
+    public static final String DEFAULT_SORT_BY = SORT_BY_SORT_INDEX;
     
     private String current_sort_by = DEFAULT_SORT_BY;
     private String current_sort_dir = DEFAULT_SORT_DIR;
