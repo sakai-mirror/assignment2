@@ -211,7 +211,8 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
         			"Assignment2Bean.selectedIds." + assignment.getAssignmentId().toString(),
         			Boolean.FALSE);
         	UIMessage.make(row, "assignment_row_remove_label", "assignment2.assignment_list-sortview.assignment_row_remove_label");
-        	UIInternalLink.make(row, "assignment_row_link", assignment.getTitle(), new SimpleViewParameters(AssignmentListReorderProducer.VIEW_ID));
+        	UIInternalLink.make(row, "assignment_row_link", assignment.getTitle(), 
+        			new AssignmentAddViewParams(AssignmentPreviewProducer.VIEW_ID, assignment.getAssignmentId(), AssignmentListSortViewProducer.VIEW_ID));
         	UIInternalLink.make(row, "assignment_row_edit", 
         			UIMessage.make("assignment2.assignment_list-sortview.assignment_row_edit"), 
         			new AssignmentAddViewParams(AssignmentAddProducer.VIEW_ID, assignment.getAssignmentId()));

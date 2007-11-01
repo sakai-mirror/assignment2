@@ -41,7 +41,7 @@
       <property name="messageLocator" ref="messageLocator" />
    </bean>
 
-   <bean class="org.sakaiproject.assignment2.tool.producers.AssignmentAddPreviewProducer">
+   <bean class="org.sakaiproject.assignment2.tool.producers.AssignmentPreviewProducer">
       <property name="navBarRenderer" ref="NavbarRenderer" />
       <property name="messageLocator" ref="messageLocator" />
       <property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />

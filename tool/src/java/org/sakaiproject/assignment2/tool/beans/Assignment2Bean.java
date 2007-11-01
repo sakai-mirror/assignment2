@@ -22,9 +22,11 @@ public class Assignment2Bean {
 	public Date openDate;
 	
 	private static final String REMOVE = "remove";
+	private static final String BACK_TO_LIST = "back_to_list";
 	private static final String POST = "post";
 	private static final String PREVIEW = "preview";
 	private static final String SAVE_DRAFT = "save_draft";
+	private static final String EDIT = "edit";
 	private static final String CANCEL = "cancel";
 	private static final String FAILURE = "failure";
 	
@@ -54,6 +56,10 @@ public class Assignment2Bean {
 	private PreviewAssignmentBean previewAssignmentBean;
 	public void setPreviewAssignmentBean (PreviewAssignmentBean previewAssignmentBean) {
 		this.previewAssignmentBean = previewAssignmentBean;
+	}
+	
+	public String processActionBackToList() {
+		return BACK_TO_LIST;
 	}
 	
 	public String processActionPost() {
@@ -132,6 +138,10 @@ public class Assignment2Bean {
 			previewAssignmentBean.setAssignment(assignment);
 		}
 		return PREVIEW;
+	}
+	
+	public String processActionEdit() {
+		return EDIT;
 	}
 	
 	public String processActionSaveDraft() {

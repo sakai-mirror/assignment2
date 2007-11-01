@@ -98,7 +98,7 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
         	assignment2OTP += assignmentId; 
         	//get Dates
         	assignment = assignmentLogic.getAssignmentById(assignmentId);
-        } else if (params.fromPreview && previewAssignmentBean.getAssignment() != null) {
+        } else if (params.fromViewId.equals(AssignmentPreviewProducer.VIEW_ID) && previewAssignmentBean.getAssignment() != null) {
         	//from Preview page
         	assignment = previewAssignmentBean.getAssignment();
         	assignment2OTP += EntityBeanLocator.NEW_PREFIX + "1";
@@ -236,8 +236,8 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
     	List<NavigationCase> nav= new ArrayList<NavigationCase>();
         nav.add(new NavigationCase("post", new SimpleViewParameters(
             AssignmentListSortViewProducer.VIEW_ID)));
-        nav.add(new NavigationCase("preview", new SimpleAssignmentViewParams(
-        	AssignmentAddPreviewProducer.VIEW_ID, null)));
+        nav.add(new NavigationCase("preview", new AssignmentAddViewParams(
+        	AssignmentPreviewProducer.VIEW_ID, null, AssignmentAddProducer.VIEW_ID)));
         nav.add(new NavigationCase("save_draft", new SimpleViewParameters(
         	AssignmentListSortViewProducer.VIEW_ID)));
         nav.add(new NavigationCase("cancel", new SimpleViewParameters(

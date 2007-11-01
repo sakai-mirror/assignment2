@@ -160,6 +160,19 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 		return assignments;
 	}
 	
+	public void setAssignmentSortIndexes(Long[] assignmentIds)
+	{
+		for (int i=0; i < assignmentIds.length; i++){
+    		Assignment2 assignment = getAssignmentById(assignmentIds[i]);
+    		if (assignment != null){
+    			if (assignment.getSortIndex() != i){
+	    			assignment.setSortIndex(i);
+	    			saveAssignment(assignment);
+    			}
+    		}
+    	}
+	}
+	
 	/**
 	 * 
 	 * @param assignmentName

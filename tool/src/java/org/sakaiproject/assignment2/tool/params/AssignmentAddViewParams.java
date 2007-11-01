@@ -6,7 +6,7 @@ import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
 public class AssignmentAddViewParams extends SimpleViewParameters {
 
 	public Long assignmentId;
-	public Boolean fromPreview = false;
+	public String fromViewId;
 	
 	public AssignmentAddViewParams() {}
 	
@@ -19,9 +19,9 @@ public class AssignmentAddViewParams extends SimpleViewParameters {
     		this.assignmentId = assignmentId;
     }
     
-    public AssignmentAddViewParams(String viewId, Long assignmentId, Boolean fromPreview) {
+    public AssignmentAddViewParams(String viewId, Long assignmentId, String fromViewId) {
 		super(viewId);
 		this.assignmentId = assignmentId;
-		this.fromPreview = fromPreview;
+		this.fromViewId = fromViewId;
     }
 }

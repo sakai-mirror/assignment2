@@ -31,20 +31,21 @@ public class AjaxCallbackProducer implements ViewComponentProducer, ViewParamsRe
     private AssignmentLogic assignmentLogic;
     
     public void fillComponents(UIContainer tofill, ViewParameters viewparams, ComponentChecker checker) {
-    	//UIOutput.make(tofill, "test", "TEST THIS");
-    	
     	AjaxCallbackViewParams params = (AjaxCallbackViewParams) viewparams;
     	
+    	//First check if we have parameters passed
     	if (params.sortable != null){
+    		//get String parameters
     		assignmentIdParam = (String[]) params.sortable;
-    	    	
-	    	for (int i=0; i < assignmentIdParam.length; i++){
-	    		Assignment2 assignment = assignmentLogic.getAssignmentById(Long.valueOf(assignmentIdParam[i].substring(3)));
-	    		if (assignment != null){
-	    			assignment.setSortIndex(i);
-	    			assignmentLogic.saveAssignment(assignment);
-	    		}
-	    	}
+    		// create an array of longs to hold the ids
+    		Long[] assignmentIds = new Long[assignmentIdParam.length]; 
+    	    for (int i=0; i < assignmentIdParam.length; i++){
+    	    	//now remember, the param ids are actually xhtml ids, and begin
+    	    	// with the string "li_", therefore we have to first get the
+    	    	// string after the li_, then convert it to a long
+    	    	assignmentIds[i] = Long.valueOf(assignmentIdParam[i].substring(3));
+    	    }
+	    	assignmentLogic.setAssignmentSortIndexes(assignmentIds);
 	    }
     }
     
