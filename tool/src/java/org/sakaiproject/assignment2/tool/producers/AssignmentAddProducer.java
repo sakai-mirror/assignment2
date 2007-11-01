@@ -98,7 +98,7 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
         	assignment2OTP += assignmentId; 
         	//get Dates
         	assignment = assignmentLogic.getAssignmentById(assignmentId);
-        } else if (params.fromViewId.equals(AssignmentPreviewProducer.VIEW_ID) && previewAssignmentBean.getAssignment() != null) {
+        } else if (params.fromViewId != null && params.fromViewId.equals(AssignmentPreviewProducer.VIEW_ID) && previewAssignmentBean.getAssignment() != null) {
         	//from Preview page
         	assignment = previewAssignmentBean.getAssignment();
         	assignment2OTP += EntityBeanLocator.NEW_PREFIX + "1";
