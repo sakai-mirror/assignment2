@@ -7,6 +7,7 @@ import org.sakaiproject.assignment2.tool.beans.Assignment2Validator;
 import org.sakaiproject.assignment2.exception.ConflictingAssignmentNameException;
 
 import uk.org.ponder.beanutil.entity.EntityBeanLocator;
+import uk.org.ponder.messageutil.MessageLocator;
 import uk.org.ponder.messageutil.TargettedMessage;
 import uk.org.ponder.messageutil.TargettedMessageList;
 
@@ -56,6 +57,11 @@ public class Assignment2Bean {
 	private PreviewAssignmentBean previewAssignmentBean;
 	public void setPreviewAssignmentBean (PreviewAssignmentBean previewAssignmentBean) {
 		this.previewAssignmentBean = previewAssignmentBean;
+	}
+	
+	private MessageLocator messageLocator;
+	public void setMessageLocator (MessageLocator messageLocator) {
+		this.messageLocator = messageLocator;
 	}
 	
 	public String processActionBackToList() {
@@ -204,5 +210,24 @@ public class Assignment2Bean {
 				new Object[] { new Integer(assignmentsRemoved) },
 		        TargettedMessage.SEVERITY_INFO));
 		return REMOVE;
+	}
+	
+	public void createDuplicate(Long assignmentId) {
+		Assignment2Creator creator = new Assignment2Creator();
+		creator.setExternalLogic(externalLogic);
+		creator.setMessageLocator(messageLocator);
+		Assignment2 duplicate = creator.createDuplicate(logic.getAssignmentById(assignmentId));
+		try {
+			logic.saveAssignment(duplicate);
+		} catch(ConflictingAssignmentNameException e){
+			messages.addMessage(new TargettedMessage("assignment2.assignment_post.duplicate_conflicting_assignment_name",
+					new Object[]{ duplicate.getTitle() }));
+			return;
+		} catch (SecurityException e) {
+			messages.addMessage(new TargettedMessage("assignment2.assignment_post.security_exception"));
+			return;
+		}
+		messages.addMessage(new TargettedMessage("assignment2.assignment_post.duplicate",
+			new Object[] {duplicate.getTitle() }));
 	}
 }

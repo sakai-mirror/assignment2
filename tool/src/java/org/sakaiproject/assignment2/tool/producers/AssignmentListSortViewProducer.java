@@ -6,9 +6,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import org.sakaiproject.assignment2.exception.ConflictingAssignmentNameException;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
+import org.sakaiproject.assignment2.tool.beans.Assignment2Bean;
 import org.sakaiproject.assignment2.tool.beans.Assignment2Creator;
 import org.sakaiproject.assignment2.tool.beans.PagerBean;
 import org.sakaiproject.assignment2.tool.params.AssignmentListSortViewParams;
@@ -22,6 +24,8 @@ import org.sakaiproject.assignment2.tool.producers.PagerRenderer;
 
 
 import uk.org.ponder.messageutil.MessageLocator;
+import uk.org.ponder.messageutil.TargettedMessage;
+import uk.org.ponder.messageutil.TargettedMessageList;
 import uk.org.ponder.rsf.components.*;
 import uk.org.ponder.rsf.components.decorators.DecoratorList;
 import uk.org.ponder.rsf.components.decorators.UILabelTargetDecorator;
@@ -77,7 +81,8 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
     private AssignmentLogic assignmentLogic;
     private ExternalLogic externalLogic;
     private Locale locale;
-
+    private Assignment2Bean assignment2Bean;
+    
     public void fillComponents(UIContainer tofill, ViewParameters viewparams, ComponentChecker checker) {
 
     	String assignmentLocator = "AssignmentLocator";
@@ -100,11 +105,8 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
     	
     	//check if we need to duplicate an assignment, params.assignmentIdToDuplicate is not null
     	if (params.assignmentIdToDuplicate != null){
-    		Assignment2Creator creator = new Assignment2Creator();
-    		creator.setExternalLogic(externalLogic);
-    		creator.setMessageLocator(messageLocator);
-    		Assignment2 duplicate = creator.createDuplicate(assignmentLogic.getAssignmentById(params.assignmentIdToDuplicate));
-    		assignmentLogic.saveAssignment(duplicate);
+    		assignment2Bean.createDuplicate(params.assignmentIdToDuplicate);
+    		params.assignmentIdToDuplicate = null;
     	}
     	
         UIMessage.make(tofill, "page-title", "assignment2.assignment_list-sortview.title");
@@ -284,5 +286,8 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
     public void setLocale(Locale locale) {
     	this.locale = locale;
     }
-
+    
+    public void setAssignment2Bean(Assignment2Bean assignment2Bean) {
+    	this.assignment2Bean = assignment2Bean;
+    }
 }

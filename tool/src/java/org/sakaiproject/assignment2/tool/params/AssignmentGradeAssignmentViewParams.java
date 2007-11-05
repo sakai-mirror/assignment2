@@ -7,7 +7,9 @@ import org.sakaiproject.assignment2.tool.params.PagerViewParams;
 
 public class AssignmentGradeAssignmentViewParams extends PagerViewParams {
 
-	public String assignment_id;
+	public Long assignmentId;
+	public String sort_by;
+	public String sort_dir;
 	
 	public AssignmentGradeAssignmentViewParams() {}
 
@@ -15,13 +17,25 @@ public class AssignmentGradeAssignmentViewParams extends PagerViewParams {
 		super(viewId);
 	}
 	
-    public AssignmentGradeAssignmentViewParams(String viewId, String assignment_id) {
+    public AssignmentGradeAssignmentViewParams(String viewId, Long assignment_id) {
     		super(viewId);
-	        this.assignment_id = assignment_id;
+	        this.assignmentId = assignment_id;
     }
     
-    public AssignmentGradeAssignmentViewParams(String viewId, String assignment_id, String currentStart, String currentCount) {
+    public AssignmentGradeAssignmentViewParams(String viewId, Long assignment_id, String currentStart, String currentCount) {
 		super(viewId, currentStart, currentCount);
-		this.assignment_id = assignment_id;
+		this.assignmentId = assignment_id;
     }
+    
+    public AssignmentGradeAssignmentViewParams(String viewId, Long assignment_id, String sortBy, String sortDir, String currentStart, String currentCount) {
+		super(viewId, currentStart, currentCount);
+		this.assignmentId = assignment_id;
+		this.sort_by = sortBy;
+		this.sort_dir = sortDir;
+    }
+    
+    public String getParseSpec() {
+		// include a comma delimited list of the public properties in this class
+		return super.getParseSpec() + ",assignmentId,sort_by,sort_dir,currentStart,currentCount";
+	}
 }

@@ -55,6 +55,10 @@
       <property name="pagerRenderer" ref="PagerRenderer" />
       <property name="messageLocator" ref="messageLocator" />
       <property name="pagerBean" ref="PagerBean" />
+      <property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
+      <property name="messages" ref="targettedMessageList" />
+      <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
+      <property name="locale" ref="requestLocale" />
    </bean>
    
    <bean class="org.sakaiproject.assignment2.tool.producers.AssignmentGradeReportProducer">
@@ -81,6 +85,7 @@
       <property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
       <property name="pagerRenderer" ref="PagerRenderer" />
       <property name="locale" ref="requestLocale" />
+      <property name="assignment2Bean" ref="Assignment2Bean" />
    </bean>
 
    <bean class="org.sakaiproject.assignment2.tool.producers.AssignmentPermissionsProducer">
@@ -98,6 +103,7 @@
    	  <property name="messages" ref="targettedMessageList"/>
    	  <property name="entityBeanLocator" ref="Assignment2"/>
    	  <property name="previewAssignmentBean" ref="PreviewAssignmentBean" />
+   	  <property name="messageLocator" ref="messageLocator" />
    </bean>
    
    <bean id="PreviewAssignmentBean" class="org.sakaiproject.assignment2.tool.beans.PreviewAssignmentBean" />
