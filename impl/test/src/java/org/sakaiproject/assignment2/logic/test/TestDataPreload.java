@@ -39,8 +39,7 @@ public class TestDataPreload {
         testAssignment.setCreator("admin");
         testAssignment.setDraft(Boolean.FALSE);
         testAssignment.setOpenTime(new Date());
-        testAssignment.setCloseTime(new Date());
-        testAssignment.setDropDeadTime(new Date());
+        testAssignment.setAcceptUntilTime(new Date());
         testAssignment.setGroupSubmission(Boolean.FALSE);
         testAssignment.setRestrictedToGroups(Boolean.FALSE);
         testAssignment.setHonorPledge(Boolean.FALSE);

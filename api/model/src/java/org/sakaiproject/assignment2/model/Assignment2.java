@@ -38,8 +38,7 @@ public class Assignment2 {
     private Boolean draft;
     private int sortIndex;
     private Date openTime;
-    private Date closeTime;
-    private Date dropDeadTime;
+    private Date acceptUntilTime;
     private Boolean ungraded;
     private Date dueDateForUngraded;
     private Boolean restrictedToGroups;
@@ -63,8 +62,8 @@ public class Assignment2 {
     private Set<AssignmentGroup> assignmentGroupSet;
 
 	public Assignment2(Long gradableObjectId, String siteId, String title,
-			Boolean draft, int sortIndex, Date openTime, Date closeTime,
-			Date dropDeadTime, Boolean ungraded, Date dueDateForUngraded,
+			Boolean draft, int sortIndex, Date openTime, 
+			Date acceptUntilTime, Boolean ungraded, Date dueDateForUngraded,
 			Boolean restrictedToGroups, Boolean groupSubmission,
 			Boolean honorPledge, String instructions, int submissionType,
 			int notificationType, String announcementId,
@@ -79,8 +78,7 @@ public class Assignment2 {
 		this.draft = draft;
 		this.sortIndex = sortIndex;
 		this.openTime = openTime;
-		this.closeTime = closeTime;
-		this.dropDeadTime = dropDeadTime;
+		this.acceptUntilTime = acceptUntilTime;
 		this.ungraded = ungraded;
 		this.dueDateForUngraded = dueDateForUngraded;
 		this.restrictedToGroups = restrictedToGroups;
@@ -217,33 +215,18 @@ public class Assignment2 {
     }
 
     /**
-     * @return The time after which the assignment is closed
-     */
-    public Date getCloseTime() {
-        return closeTime;
-    }
-    
-    /**
-     * The time after which the assignment is closed
-     * @param closeTime
-     */
-    public void setCloseTime(Date closeTime) {
-        this.closeTime = closeTime;
-    }
-    
-    /**
      * @return The time after which responses to this assignment are considered late
      */
-    public Date getDropDeadTime() {
-        return dropDeadTime;
+    public Date getAcceptUntilTime() {
+        return acceptUntilTime;
     }
     
     /**
      * The time after which responses to this assignment are considered late
-     * @param dropDeadTime
+     * @param acceptUntilTime
      */
-    public void setDropDeadTime(Date dropDeadTime) {
-        this.dropDeadTime = dropDeadTime;
+    public void setAcceptUntilTime(Date acceptUntilTime) {
+        this.acceptUntilTime = acceptUntilTime;
     }
     
     /**

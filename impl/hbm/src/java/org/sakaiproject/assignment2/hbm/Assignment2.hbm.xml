@@ -36,13 +36,9 @@
         <property name="openTime" type="java.util.Date">
             <column name="OPEN_TIME" not-null="true" />
         </property>
-        <!-- The time after which the assignment is closed -->
-        <property name="closeTime" type="java.util.Date">
-            <column name="CLOSE_TIME" not-null="true" />
-        </property>
         <!-- The time after which responses to this assignment are considered late -->
-        <property name="dropDeadTime" type="java.util.Date">
-            <column name="DROP_DEAD_TIME" not-null="true" />
+        <property name="acceptUntilTime" type="java.util.Date">
+            <column name="ACCEPT_UNTIL_TIME" not-null="true" />
         </property>
         <!-- mark this assignment as ungraded and will not be linked to GB -->
         <property name="ungraded" type="java.lang.Boolean">
@@ -117,12 +113,12 @@
         		<column name="REMOVED" />
         </property>
         
-        <set name="attachmentSet" lazy="true" order-by="created desc" cascade="all-delete-orphan">
+        <set name="attachmentSet" lazy="true" inverse="true">
 	        <key column="ASSIGNMENT_ID"/>                        
 	        <one-to-many class="org.sakaiproject.assignment2.model.AssignmentAttachment"/>            
     		</set>
               
-        <set name="assignmentGroupSet" lazy="true" order-by="created desc" cascade="all-delete-orphan">
+        <set name="assignmentGroupSet" lazy="true" inverse="true">
 	        <key column="ASSIGNMENT_ID"/>                        
 	        <one-to-many class="org.sakaiproject.assignment2.model.AssignmentGroup"/>            
     		</set>
