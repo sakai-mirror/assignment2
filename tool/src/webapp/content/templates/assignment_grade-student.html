@@ -136,7 +136,7 @@
 		<ol>
 			<li class="highlightPanel"><label for="grade">Grade:</label> <input type="text" name="grade_submission_grade" size="5" value="" id="grade" /> <span class="instruction">(out of 100.0)</span></li>
 			<li class="shorttext skip">
-				<label for="allowResubmitNumber">Number of resubmissions allowed</label> <select name="allow_resubmit_number" id="allowResubmitNumber" onchange="if (document.getElementById('allowResubmitNumber').value!=0 && document.getElementById('closeTime') !=null){document.getElementById('closeTime').style.display = 'block';}else {document.getElementById('closeTime').style.display = 'none';}">
+				<label for="allowResubmitNumber">Number of resubmissions allowed</label> <select name="allow_resubmit_number" id="allowResubmitNumber" onchange="if (document.getElementById('allowResubmitNumber').value!=0 && document.getElementById('acceptUntilTime') !=null){document.getElementById('acceptUntilTime').style.display = 'block';}else {document.getElementById('acceptUntilTime').style.display = 'none';}">
 					<option value="-1">Unlimited</option>
 					<option value="0" selected="selected">0</option>
 					<option value="1" >1</option>
@@ -154,10 +154,10 @@
 			<li>
 				<fieldset>
 					<ol>
-						<li><input type="checkbox" id="tempAllowResToggle" onclick="if(checked){document.getElementById('allowResubmitNumber').selectedIndex='2';document.getElementById('closeTime').style.display = 'block';
-						}else{document.getElementById('allowResubmitNumber').selectedIndex='1';document.getElementById('closeTime').style.display = 'none'}" /> <label for="tempAllowResToggle">Allow Resubmission</label></li>
+						<li><input type="checkbox" id="tempAllowResToggle" onclick="if(checked){document.getElementById('allowResubmitNumber').selectedIndex='2';document.getElementById('acceptUntilTime').style.display = 'block';
+						}else{document.getElementById('allowResubmitNumber').selectedIndex='1';document.getElementById('acceptUntilTime').style.display = 'none'}" /> <label for="tempAllowResToggle">Allow Resubmission</label></li>
 						<li>
-							<p class="shorttext" id="closeTime" style=display:none><label for="new_assignment_closemonth">Accept Until</label>
+							<p class="shorttext" id="acceptUntilTime" style=display:none><label for="new_assignment_closemonth">Accept Until</label>
 							<select name="allow_resubmit_closeMonth" id="allow_resubmit_closeMonth" onchange="blur()">
 								<option value="1">JAN</option>
 								<option value="2">FEB</option>

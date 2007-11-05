@@ -112,7 +112,7 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
         }
     	openTime = assignment.getOpenTime();
     	dueDate = assignment.getDueDateForUngraded();			//change here
-    	acceptUntilDate = assignment.getCloseTime();
+    	acceptUntilDate = assignment.getAcceptUntilTime();
         
         UIForm form = UIForm.make(tofill, "assignment_form");
         
@@ -123,11 +123,11 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
         UIInput openDateField = UIInput.make(form, "open_date:", assignment2OTP + ".openTime");
 		dateEvolver.evolveDateInput(openDateField, openTime);
         
-		UIInput closeTimeField = UIInput.make(form, "due_date:", assignment2OTP + ".dueDateForUngraded");
-		dateEvolver.evolveDateInput(closeTimeField, dueDate);
+		UIInput dueDateField = UIInput.make(form, "due_date:", assignment2OTP + ".dueDateForUngraded");
+		dateEvolver.evolveDateInput(dueDateField, dueDate);
 		
-        UIInput dropDeadTimeField = UIInput.make(form, "accept_until:", assignment2OTP + ".closeTime");
-        dateEvolver.evolveDateInput(dropDeadTimeField, acceptUntilDate);
+        UIInput acceptUntilTimeField = UIInput.make(form, "accept_until:", assignment2OTP + ".acceptUntilTime");
+        dateEvolver.evolveDateInput(acceptUntilTimeField, acceptUntilDate);
         
         //Submission Types
         String[] submission_type_values = new String[] {

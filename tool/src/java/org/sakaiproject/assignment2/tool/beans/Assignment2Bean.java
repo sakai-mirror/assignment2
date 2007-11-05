@@ -96,7 +96,7 @@ public class Assignment2Bean {
 
 		
 		//REMOVE THESE
-		assignment.setDropDeadTime(new Date());
+		assignment.setAcceptUntilTime(new Date());
 		assignment.setUngraded(Boolean.FALSE);
 		assignment.setGroupSubmission(Boolean.FALSE);
 		assignment.setRestrictedToGroups(Boolean.FALSE);
@@ -155,7 +155,7 @@ public class Assignment2Bean {
 			assignment.setModifiedBy(externalLogic.getCurrentUserId());
 			
 			//REMOVE THESE
-			assignment.setDropDeadTime(new Date());
+			assignment.setAcceptUntilTime(new Date());
 			assignment.setUngraded(Boolean.FALSE);
 			assignment.setGroupSubmission(Boolean.FALSE);
 			assignment.setRestrictedToGroups(Boolean.FALSE);

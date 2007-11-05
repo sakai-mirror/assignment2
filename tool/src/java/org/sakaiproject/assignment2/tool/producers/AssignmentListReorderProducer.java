@@ -120,29 +120,17 @@ public class AssignmentListReorderProducer implements ViewComponentProducer, Vie
         	UIOutput.make(li, "assignment_row_title", assignment.getTitle());
         	
         	// 	Table Row
-        	UIInternalLink.make(row, "assignment_row_link", "Homework Example " + i, new SimpleViewParameters(AssignmentListReorderProducer.VIEW_ID));
-        	UIInternalLink.make(row, "assignment_row_edit", "Edit", new SimpleViewParameters(AssignmentListReorderProducer.VIEW_ID));
-        	UIInternalLink.make(row, "assignment_row_duplicate", "Duplicate", new SimpleViewParameters(AssignmentListReorderProducer.VIEW_ID));
-        	UIInternalLink.make(row, "assignment_row_grade", "Grade Assignment", new SimpleViewParameters(AssignmentListReorderProducer.VIEW_ID));
-        	
-        	UIOutput.make(row, "assignment_row_for", "Site");
-        	UIOutput.make(row, "assignment_row_status", "Open");
-        	UIOutput.make(row, "assignment_row_open", "Sep 24, 2007 11:00 am");
-        	UIOutput.make(row, "assignment_row_due", "Oct 1, 2007 6:00 pm");
-        	UIInternalLink.make(row, "assignment_row_in_new", "2/2", new SimpleViewParameters(AssignmentListReorderProducer.VIEW_ID));
-        	UIOutput.make(row, "assignment_row_scale", "0-100.0");
-        	
         	UIBoundBoolean.make(row, "assignment_row_remove", 
         			"Assignment2Bean.selectedIds." + assignment.getAssignmentId().toString(),
         			Boolean.FALSE);
-        	UIMessage.make(row, "assignment_row_remove_label", "assignment2.assignment_list-sortview.assignment_row_remove_label");
+        	UIMessage.make(row, "assignment_row_remove_label", "assignment2.assignment_list-reorder.assignment_row_remove_label");
         	
         	UIOutput.make(row, "assignment_row_for", "Site");
         	if (assignment.isDraft()){
         		UIOutput.make(row, "assignment_row_draft_td");
-        		UIMessage.make(row, "assignment_row_draft", "assignment2.assignment_list-sortview.assignment_row_draft");
+        		UIMessage.make(row, "assignment_row_draft", "assignment2.assignment_list-reorder.assignment_row_draft");
         	} else {
-        	   	UIMessage.make(row, "assignment_row_open_text", "assignment2.assignment_list-sortview.assignment_row_open");
+        	   	UIMessage.make(row, "assignment_row_open_text", "assignment2.assignment_list-reorder.assignment_row_open");
         	}
         	UIOutput.make(row, "assignment_row_open", df.format(assignment.getOpenTime()));
         	UIOutput.make(row, "assignment_row_due", df.format(assignment.getDueDateForUngraded()));
@@ -151,6 +139,9 @@ public class AssignmentListReorderProducer implements ViewComponentProducer, Vie
         	
         	i++;
         }
+        
+        UICommand.make(form, "submit_remove", UIMessage.make("assignment2.assignment_list-reorder.submit_remove"),
+        		"Assignment2Bean.processActionRemove");
         
     }
     public ViewParameters getViewParameters(){

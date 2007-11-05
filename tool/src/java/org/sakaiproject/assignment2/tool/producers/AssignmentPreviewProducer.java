@@ -84,7 +84,7 @@ public class AssignmentPreviewProducer implements ViewComponentProducer, Navigat
     	UIMessage.make(tofill, "due_date_label", "assignment2.assignment_preview.due_date");
     	UIOutput.make(tofill, "due_date", df.format(assignment.getDueDateForUngraded()));
     	UIMessage.make(tofill, "accept_until_label", "assignment2.assignment_preview.accept_until");
-    	UIOutput.make(tofill, "accept_until", df.format(assignment.getCloseTime()));
+    	UIOutput.make(tofill, "accept_until", df.format(assignment.getAcceptUntilTime()));
     	UIMessage.make(tofill, "submission_type_label", "assignment2.assignment_preview.submission_type");
     	UIMessage.make(tofill, "submission_type", "assignment2.submission_type." + String.valueOf(assignment.getSubmissionType())); 
     	UIMessage.make(tofill, "graded_label", "assignment2.assignment_preview.graded");
@@ -113,7 +113,7 @@ public class AssignmentPreviewProducer implements ViewComponentProducer, Navigat
     	UIOutput.make(tofill, "student_view_due_date", df.format(assignment.getDueDateForUngraded()));
     	UIMessage.make(tofill, "student_view_status_label", "assignment2.assignment_preview.student_view.status");
     	Date now = new Date();
-    	if (now.after(assignment.getOpenTime()) && now.before(assignment.getCloseTime()) ) {
+    	if (now.after(assignment.getOpenTime()) && now.before(assignment.getAcceptUntilTime())) {
     		UIMessage.make(tofill, "student_view_status", "assignment2.assignment_preview.student_view.open");
     	} else {
     		UIMessage.make(tofill, "student_view_status", "assignment2.assignment_preview.student_view.closed");

@@ -34,8 +34,7 @@ public class Assignment2Creator {
     	
     	togo.setOpenTime(openDate);
     	togo.setDueDateForUngraded(closeDate);
-    	togo.setCloseTime(closeDate);
-    	togo.setDropDeadTime(new Date());
+    	togo.setAcceptUntilTime(new Date());
     	return togo;
   }
 
