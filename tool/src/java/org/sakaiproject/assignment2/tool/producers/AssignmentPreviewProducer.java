@@ -134,8 +134,10 @@ public class AssignmentPreviewProducer implements ViewComponentProducer, Navigat
     		UICommand.make(form, "back_to_list", UIMessage.make("assignment2.assignment_preview.back_to_list"), "#{Assignment2Bean.processActionBackToList}");
     	} else {
 	    	UICommand.make(form, "post", UIMessage.make("assignment2.assignment_add.post"), "#{Assignment2Bean.processActionPreviewPost}");
-	        UICommand.make(form, "save_draft", UIMessage.make("assignment2.assignment_add.save_draft"), "#{Assignment2Bean.processActionSaveDraft}");
-	        UICommand.make(tofill, "edit", UIMessage.make("assignment2.assignment_add.edit_assignment"), "#{Assignment2Bean.processActionEdit}");
+	    	if (assignment == null || assignment.getAssignmentId() == null || assignment.isDraft()){
+	    		UICommand.make(form, "save_draft", UIMessage.make("assignment2.assignment_add.save_draft"), "#{Assignment2Bean.processActionSaveDraft}");
+	    	}
+	        UICommand.make(tofill, "edit", UIMessage.make("assignment2.assignment_preview.edit"), "#{Assignment2Bean.processActionEdit}");
     	}
         
     }

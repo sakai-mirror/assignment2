@@ -41,6 +41,7 @@
 	<bean id="Assignment2Creator"
 		class="org.sakaiproject.assignment2.tool.beans.Assignment2Creator">
 		<property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
+		<property name="messageLocator" ref="messageLocator" />
 	</bean>
    
    <bean id="Assignment2" parent="entityBeanLocatorParent">

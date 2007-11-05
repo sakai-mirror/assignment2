@@ -3,6 +3,8 @@ package org.sakaiproject.assignment2.tool.beans;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 
+import uk.org.ponder.messageutil.MessageLocator;
+
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -10,8 +12,9 @@ import java.util.Locale;
 public class Assignment2Creator {
 
 	//public static final String DEFAULT_TITLE = "";
-	ExternalLogic externalLogic;
-
+	private ExternalLogic externalLogic;
+	private MessageLocator messageLocator;
+	
     public Assignment2 create() {
   
     	Assignment2 togo = new Assignment2();
@@ -34,11 +37,49 @@ public class Assignment2Creator {
     	
     	togo.setOpenTime(openDate);
     	togo.setDueDateForUngraded(closeDate);
-    	togo.setAcceptUntilTime(new Date());
+    	togo.setAcceptUntilTime(closeDate);
     	return togo;
-  }
+    }
+    
+    public Assignment2 createDuplicate(Assignment2 assignment) {
+    	Assignment2 dup = new Assignment2();
 
-  public void setExternalLogic(ExternalLogic externalLogic) {
-	  this.externalLogic = externalLogic;
-  }
+    	String newTitle = messageLocator.getMessage("Assignment2Creator.duplicate.title_prepend") +
+    			assignment.getTitle() +
+    			messageLocator.getMessage("Assignment2Creator.duplicate.title_append");
+    	
+    	dup.setGradableObjectId(assignment.getGradableObjectId());
+    	dup.setSiteId(assignment.getSiteId());
+    	dup.setTitle(newTitle);
+    	dup.setDraft(Boolean.TRUE);
+    	dup.setSortIndex(assignment.getSortIndex());
+    	dup.setOpenTime(assignment.getOpenTime());
+    	dup.setAcceptUntilTime(assignment.getAcceptUntilTime());
+    	dup.setUngraded(assignment.isUngraded());
+    	dup.setDueDateForUngraded(assignment.getDueDateForUngraded());
+    	dup.setRestrictedToGroups(assignment.isRestrictedToGroups());
+    	dup.setGroupSubmission(assignment.isGroupSubmission());
+    	dup.setHonorPledge(assignment.isHonorPledge());
+    	dup.setInstructions(assignment.getInstructions());
+    	dup.setSubmissionType(assignment.getSubmissionType());
+    	dup.setNotificationType(assignment.getNotificationType());
+		dup.setAnnouncementId(assignment.getAnnouncementId());
+		dup.setCalendarEventId(assignment.getCalendarEventId());
+		dup.setAllowResubmitUntilDue(assignment.isAllowResubmitUntilDue());
+		dup.setAllowReviewService(assignment.isAllowReviewService());
+		dup.setAllowStudentViewReport(assignment.isAllowStudentViewReport());
+		dup.setCreator(externalLogic.getCurrentUserId());
+		dup.setCreateTime(new Date());
+		dup.setRemoved(Boolean.FALSE);
+		
+    	return dup;
+    }
+
+    public void setExternalLogic(ExternalLogic externalLogic) {
+	    this.externalLogic = externalLogic;
+    }
+    
+    public void setMessageLocator (MessageLocator messageLocator) {
+    	this.messageLocator = messageLocator;
+    }
 }

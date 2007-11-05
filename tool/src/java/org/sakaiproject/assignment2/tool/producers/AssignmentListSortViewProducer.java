@@ -9,6 +9,7 @@ import java.util.Locale;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
+import org.sakaiproject.assignment2.tool.beans.Assignment2Creator;
 import org.sakaiproject.assignment2.tool.beans.PagerBean;
 import org.sakaiproject.assignment2.tool.params.AssignmentListSortViewParams;
 import org.sakaiproject.assignment2.tool.params.SimpleAssignmentViewParams;
@@ -96,6 +97,15 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
     	//get paging data
     	int total_count = assignmentLogic.getTotalCountViewableAssignments(currentUserId);
     	pagerBean.setTotalCount(total_count);
+    	
+    	//check if we need to duplicate an assignment, params.assignmentIdToDuplicate is not null
+    	if (params.assignmentIdToDuplicate != null){
+    		Assignment2Creator creator = new Assignment2Creator();
+    		creator.setExternalLogic(externalLogic);
+    		creator.setMessageLocator(messageLocator);
+    		Assignment2 duplicate = creator.createDuplicate(assignmentLogic.getAssignmentById(params.assignmentIdToDuplicate));
+    		assignmentLogic.saveAssignment(duplicate);
+    	}
     	
         UIMessage.make(tofill, "page-title", "assignment2.assignment_list-sortview.title");
         navBarRenderer.makeNavBar(tofill, "navIntraTool:", VIEW_ID);
@@ -218,7 +228,8 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
         			new AssignmentAddViewParams(AssignmentAddProducer.VIEW_ID, assignment.getAssignmentId()));
         	UIInternalLink.make(row, "assignment_row_duplicate", 
         			UIMessage.make("assignment2.assignment_list-sortview.assignment_row_duplicate"), 
-        			new SimpleViewParameters(AssignmentListReorderProducer.VIEW_ID));
+        			new AssignmentListSortViewParams(AssignmentListSortViewProducer.VIEW_ID, current_sort_by, current_sort_dir, 
+        					params.current_start, params.current_count, assignment.getAssignmentId()));
         	UIInternalLink.make(row, "assignment_row_grade", 
         			UIMessage.make("assignment2.assignment_list-sortview.assignment_row_grade"), 
         			new SimpleAssignmentViewParams(AssignmentGradeAssignmentProducer.VIEW_ID, assignment.getAssignmentId()));
