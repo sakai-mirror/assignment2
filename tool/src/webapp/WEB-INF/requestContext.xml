@@ -88,11 +88,12 @@
       <property name="assignment2Bean" ref="Assignment2Bean" />
    </bean>
 
-   <bean class="org.sakaiproject.assignment2.tool.producers.AssignmentPermissionsProducer">
-      <property name="navBarRenderer" ref="NavbarRenderer" />
-      <!--  <property name="richTextEvolver" ref="richTextEvolver" /> -->
+   <bean class="org.sakaiproject.assignment2.tool.producers.PermissionsProducer">
+	  <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
+      <property name="sessionManager" ref="org.sakaiproject.tool.api.SessionManager" />
       <property name="messageLocator" ref="messageLocator" />
    </bean>
+  
    
    <!--  Beans -->
    <bean id="PagerBean" class="org.sakaiproject.assignment2.tool.beans.PagerBean" />
