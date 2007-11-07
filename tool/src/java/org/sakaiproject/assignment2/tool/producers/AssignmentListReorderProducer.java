@@ -84,16 +84,26 @@ public class AssignmentListReorderProducer implements ViewComponentProducer, Vie
         UIInternalLink.make(tofill, "assignment_list-sortview-link",
 					UIMessage.make("assignment2.assignment_list-sortview.title"),
 				new SimpleViewParameters(AssignmentListSortViewProducer.VIEW_ID));
-        
+        UIMessage.make(tofill, "current_page", "assignment2.assignment_list-reorder.title");
         
         UIForm form = UIForm.make(tofill, "form");
+        
+        //Headers
+        UIMessage.make(form, "reorder_header", "assignment2.assignment_list-reorder.reorder");
+        UIMessage.make(form, "remove_header", "assignment2.assignment_list-reorder.remove");
+        UIMessage.make(form, "for_header", "assignment2.assignment_list-reorder.for");
+        UIMessage.make(form, "status_header", "assignment2.assignment_list-reorder.status");
+        UIMessage.make(form, "open_header", "assignment2.assignment_list-reorder.open");
+        UIMessage.make(form, "due_header", "assignment2.assignment_list-reorder.due");
+        UIMessage.make(form, "in_new_header", "assignment2.assignment_list-reorder.in_new");
+        UIMessage.make(form, "scale_header", "assignment2.assignment_list-reorder.scale");
         
         List<Assignment2> entries = new ArrayList<Assignment2>();
         entries = assignmentLogic.getViewableAssignments(currentUserId, "sortIndex", true, 
         		Integer.parseInt(pagerparams.current_start), Integer.parseInt(pagerparams.current_count));
         
         if (entries.size() <= 0) {
-            UIMessage.make(tofill, "blog_empty", "assignment2.assignment_list-reorder.assignment_empty");
+            UIMessage.make(tofill, "assignment_empty", "assignment2.assignment_list-reorder.assignment_empty");
             return;
         }
         UIOutput td = UIOutput.make(tofill, "td_assignment_li_container");

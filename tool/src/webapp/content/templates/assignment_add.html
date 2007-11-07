@@ -31,142 +31,40 @@
 	</div>
 
 	<h3 rsf:id="heading">Add Assignment</h3>
-	<p class="instruction">Complete the form and choose an action below. <span class="reqStar">*</span> Indicates required information.</p>
+	<p rsf:id="instructions" class="instruction">Complete the form and choose an action below. <span class="reqStar">*</span> Indicates required information.</p>
 
 	<form rsf:id="assignment_form">
 	<fieldset>
 		<legend>Assignment Details</legend>
 		<ol>
 			<li>
-				<label><span class="reqStar">*</span> Title</label> <input rsf:id="title" type="text" size="30" maxlength="100"/>
+				<label rsf:id="title_label"><span class="reqStar">*</span> Title</label> <input rsf:id="title" type="text" size="30" maxlength="100"/>
 				<div class="error">
 					<p rsf:id="message-for:title">This is an example error: Adding an assignment requires a title</p>
 				</div>
 			</li>
 			<li>
-				<label><span class="reqStar">*</span> Open Date</label><input rsf:id="open_date:"  />
-					<!--dhtml date picker <img src="/sakai-assignment2-tool/content/images/calendar.png" alt="Date picker" width="16" height="16" align="absmiddle" /> at
-				<select name="" id="">
-					<option value="1">1</option>
-					<option value="2">2</option>
-					<option value="3">3</option>
-					<option value="4">4</option>
-					<option value="5">5</option>
-					<option value="6">6</option>
-					<option value="7">7</option>
-					<option value="8">8</option>
-					<option value="9">9</option>
-					<option value="10">10</option>
-					<option value="11">11</option>
-					<option value="12" selected="selected">12</option>
-				</select>
-				<select name="" id="">
-					<option value="0" selected="selected">00</option>
-					<option value="5" >05</option>
-					<option value="10" >10</option>
-					<option value="15" >15</option>
-					<option value="20" >20</option>
-					<option value="25" >25</option>
-					<option value="30" >30</option>
-					<option value="35" >35</option>
-					<option value="40" >40</option>
-					<option value="45" >45</option>
-					<option value="50" >50</option>
-					<option value="55" >55</option>
-				</select>
-				<select name="" id="">
-					<option value="AM">AM</option>
-					<option value="PM" selected="selected">PM</option>
-				</select>
-				-->
+				<label rsf:id="open_date_label"><span class="reqStar">*</span> Open Date</label><input rsf:id="open_date:"  />
 				<div class="error">
 					<p rsf:id="message-for:open_date"></p>
 				</div>
-				<p class="instruction">Students won't see this assignment until this open date.</p>
+				<p rsf:id="open_date_instruction" class="instruction">Students won't see this assignment until this open date.</p>
 			</li>
 			<li>
-				<label><span class="reqStar">*</span> Due Date</label> <input rsf:id="due_date:" value="12/31/2007"/>
-					<!--dhtml date picker <img src="/sakai-assignment2-tool/content/images/calendar.png" alt="Date picker" width="16" height="16" align="absmiddle" /> at
-				<select name="" id="">
-					<option value="1">1</option>
-					<option value="2">2</option>
-					<option value="3">3</option>
-					<option value="4">4</option>
-					<option value="5" selected="selected">5</option>
-					<option value="6">6</option>
-					<option value="7">7</option>
-					<option value="8">8</option>
-					<option value="9">9</option>
-					<option value="10">10</option>
-					<option value="11">11</option>
-					<option value="12">12</option>
-				</select>
-				<select name="" id="">
-					<option value="0" selected="selected">00</option>
-					<option value="5" >05</option>
-					<option value="10" >10</option>
-					<option value="15" >15</option>
-					<option value="20" >20</option>
-					<option value="25" >25</option>
-					<option value="30" >30</option>
-					<option value="35" >35</option>
-					<option value="40" >40</option>
-					<option value="45" >45</option>
-					<option value="50" >50</option>
-					<option value="55" >55</option>
-				</select>
-				<select name="" id="">
-					<option value="AM">AM</option>
-					<option value="PM" selected="selected">PM</option>
-				</select>
-				-->
+				<label rsf:id="due_date_label"><span class="reqStar">*</span> Due Date</label> <input rsf:id="due_date:" value="12/31/2007"/>
 				<div class="error">
 					<p rsf:id="message-for:due_date"></p>
 				</div>
 			</li>
 			<li>
-				<label><span class="reqStar">*</span> Accept Until</label> <input rsf:id="accept_until:" value="12/31/2007"/>
-					<!--dhtml date picker <img src="/sakai-assignment2-tool/content/images/calendar.png" alt="Date picker" width="16" height="16" align="absmiddle" /> at
-				<select name="" id="">
-					<option value="1">1</option>
-					<option value="2">2</option>
-					<option value="3">3</option>
-					<option value="4">4</option>
-					<option value="5" selected="selected">5</option>
-					<option value="6">6</option>
-					<option value="7">7</option>
-					<option value="8">8</option>
-					<option value="9">9</option>
-					<option value="10">10</option>
-					<option value="11">11</option>
-					<option value="12">12</option>
-				</select>
-				<select name="" id="">
-					<option value="0" selected="selected">00</option>
-					<option value="5" >05</option>
-					<option value="10" >10</option>
-					<option value="15" >15</option>
-					<option value="20" >20</option>
-					<option value="25" >25</option>
-					<option value="30" >30</option>
-					<option value="35" >35</option>
-					<option value="40" >40</option>
-					<option value="45" >45</option>
-					<option value="50" >50</option>
-					<option value="55" >55</option>
-				</select>
-				<select name="" id="">
-					<option value="AM">AM</option>
-					<option value="PM" selected="selected">PM</option>
-				</select>
-				-->
+				<label rsf:id="accept_until_label"><span class="reqStar">*</span> Accept Until</label> <input rsf:id="accept_until:" value="12/31/2007"/>
 				<div class="error">
 					<p rsf:id="message-for:accept_until"></p>
 				</div>
-				<p class="instruction">No assignments can be submitted after this close date.</p>
+				<p rsf:id="accept_until_instruction" class="instruction">No assignments can be submitted after this close date.</p>
 			</li>
 			<li>
-				<label for=""><span class="reqStar">*</span> Student Submissions</label>
+				<label rsf:id="student_submissions_label"><span class="reqStar">*</span> Student Submissions</label>
 				<select rsf:id="submission_type">
 					<option value="1">Inline only</option>
 					<option value="2">Attachments only</option>
@@ -178,7 +76,7 @@
 				</div>
 			</li>
 			<li>
-				<label for="" class="block">Assignment Instructions</label>
+				<label rsf:id="assignment_instructions_label" class="block">Assignment Instructions</label>
 				<div class="error">
 					<p rsf:id="message-for:instructions"></p>
 				</div>
@@ -191,9 +89,9 @@
 			<li>
 				<fieldset>
 					<ol>
-						<li><input rsf:id="on_calendar" type="checkbox" /> <label for="">Add the due date to Calendar</label></li>
-						<li><input rsf:id="announcement" type="checkbox" /> <label for="">Add an announcement about the open date to Announcements</label></li>
-						<li><input rsf:id="honor_pledge" type="checkbox" /> <label for="">Add honor pledge</label></li>
+						<li><input rsf:id="on_calendar" type="checkbox" /> <label rsf:id="on_calendar_label">Add the due date to Calendar</label></li>
+						<li><input rsf:id="announcement" type="checkbox" /> <label rsf:id="announcement_label">Add an announcement about the open date to Announcements</label></li>
+						<li><input rsf:id="honor_pledge" type="checkbox" /> <label rsf:id="honor_pledge_label">Add honor pledge</label></li>
 					</ol>
 				</fieldset>
 			</li>
@@ -203,28 +101,32 @@
 		</ol>
 	</fieldset>
 	<fieldset>
-		<legend>Attachments</legend>
+		<legend rsf:id="attachments_legend">Attachments</legend>
 		<ol>
 			<li>
-				<span class="instruction">No attachments yet</span>
+				<span rsf:id="no_attachments_yet" class="instruction">No attachments yet</span>
 				<input rsf:id="add_attachments" type="button" name="attach" value="Add Attachments" />
 			</li>
 		</ol>
 	</fieldset>
 	<fieldset>
-		<legend>Grading</legend>
+		<legend rsf:id="grading_legend">Grading</legend>
 		<ol>
 			<li>
 				<fieldset>
 					<ol>
-						<li><input rsf:id="graded" type="radio" /> <label for="">This assignment is graded</label> and is associated with a Gradebook Item: <select name="" >
-											<option value="">Select a Gradebook Item</option>
-											<option value="Category: GB Item 1">Category: GB Item 1</option>
-											<option value="Category: GB Item 2">Category: GB Item 2</option>
-											<option value="Category: GB Item 3">Category: GB Item 3</option>
-											<option value="Category: GB Item 4">Category: GB Item 4</option>
-										</select> -or- <a href="#gradebookitemhelper">Create a new Gradebook Item</a></li>
-						<li><input rsf:id="ungraded" type="radio" /> <label for="">This assignment is ungraded</label></li>
+						<li><input rsf:id="graded" type="radio" /> <label rsf:id="graded_label">This assignment is graded</label>
+							<span rsf:id="gradebook_associated"> and is associated with a Gradebook Item:</span> 
+								<select name="" >
+									<option value="">Select a Gradebook Item</option>
+									<option value="Category: GB Item 1">Category: GB Item 1</option>
+									<option value="Category: GB Item 2">Category: GB Item 2</option>
+									<option value="Category: GB Item 3">Category: GB Item 3</option>
+									<option value="Category: GB Item 4">Category: GB Item 4</option>
+								</select>
+								<span rsf:id="gradebook_or"> -or- </span>
+								<a href="">Create a new Gradebook Item</a></li>
+						<li><input rsf:id="ungraded" type="radio" /> <label rsf:id="assignment_ungraded_label">This assignment is ungraded</label></li>
 					</ol>
 				</fieldset>
 			</li>

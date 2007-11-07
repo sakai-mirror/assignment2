@@ -58,20 +58,19 @@
 	<div rsf:id="pagerDiv:" class="listNav">
 	</div>
 	
-	<a rsf:id="assignment_list-sortview-link" href="assignment_list-sortview">Sort Order View</a> | My Reorder View
+	<a rsf:id="assignment_list-sortview-link" href="assignment_list-sortview">Sort Order View</a> | <span rsf:id="current_page">My Reorder View</span>
     <form rsf:id="form" method="post">
 	<table id="reorder-table" class="listHier lines">
 		<tr> 
-			<th>Reorder</th>
-			<th>Remove?</th>
+			<th rsf:id="reorder_header">Reorder</th>
+			<th rsf:id="remove_header">Remove?</th>
 			<th class="attach">&nbsp;</th>
-			<!--  <th>Assignment</th> -->
-			<th>For</th>
-			<th>Status</th>
-			<th>Open</th>
-			<th>Due</th>
-			<th>In/New</th>
-			<th>Scale</th>
+			<th rsf:id="for_header">For</th>
+			<th rsf:id="status_header">Status</th>
+			<th rsf:id="open_header">Open</th>
+			<th rsf:id="due_header">Due</th>
+			<th rsf:id="in_new_header">In/New</th>
+			<th rsf:id="scale_header">Scale</th>
 		</tr>
       <tr class="container">
          <td rsf:id="td_assignment_li_container" rowspan="5" id="sortable">
@@ -99,7 +98,8 @@
 			</td>
 			-->
 			<td rsf:id="assignment_row_for">Group 1, Group 2</td>
-			<td rsf:id="assignment_row_status">Open</td>
+			<td rsf:id="assignment_row_open_text">Open</td>
+			<td rsf:id="assignment_row_draft_td"><span rsf:id="assignment_row_draft" class="highlight"></span></td>
 			<td rsf:id="assignment_row_open">Sep 24, 2007 11:00 am</td>
 			<td rsf:id="assignment_row_due">Oct 1, 2007 6:00 pm</td>
 			<td><a rsf:id="assignment_row_in_new">2/2</a></td>
@@ -109,6 +109,7 @@
 
 	<input rsf:id="submit_remove" type="submit" class="active" value="Remove Selected" accesskey="s" />			
 	</form>
+	<div rsf:id="assignment_empty">There are no Assignments yet</div>
 </div>
 </body>
 </html>

@@ -58,6 +58,7 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
         return VIEW_ID;
     }
 
+    String reqStar = "<span class=\"reqStar\">*</span>";
 
     private NavBarRenderer navBarRenderer;
     private TextInputEvolver richTextEvolver;
@@ -88,6 +89,8 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
         UIMessage.make(tofill, "page-title", "assignment2.assignment_add.title");
         navBarRenderer.makeNavBar(tofill, "navIntraTool:", VIEW_ID);
         UIMessage.make(tofill, "heading", "assignment2.assignment_add.heading");
+        UIVerbatim.make(tofill, "instructions", messageLocator.getMessage("assignment2.assignment_add.instructions", 
+        		new Object[]{ reqStar }));
 
         Date openTime = new Date();
         Date dueDate = new Date();
@@ -119,16 +122,28 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
         //set dateEvolver
         dateEvolver.setStyle(FormatAwareDateInputEvolver.DATE_TIME_INPUT);
         
+        UIVerbatim.make(form, "title_label", messageLocator.getMessage("assignment2.assignment_add.assignment_title",
+        		new Object[]{ reqStar }));
         UIInput.make(form, "title", assignment2OTP + ".title", assignment.getTitle());
+        UIVerbatim.make(form, "open_date_label", messageLocator.getMessage("assignment2.assignment_add.open_date",
+        		new Object[]{ reqStar }));
         UIInput openDateField = UIInput.make(form, "open_date:", assignment2OTP + ".openTime");
 		dateEvolver.evolveDateInput(openDateField, openTime);
+		UIMessage.make(form, "open_date_instruction", "assignment2.assignment_add.open_date_instruction");
         
+		UIVerbatim.make(form, "due_date_label", messageLocator.getMessage("assignment2.assignment_add.due_date",
+        		new Object[]{ reqStar }));
 		UIInput dueDateField = UIInput.make(form, "due_date:", assignment2OTP + ".dueDateForUngraded");
 		dateEvolver.evolveDateInput(dueDateField, dueDate);
 		
+		UIVerbatim.make(form, "accept_until_label", messageLocator.getMessage("assignment2.assignment_add.accept_until",
+        		new Object[]{ reqStar }));
         UIInput acceptUntilTimeField = UIInput.make(form, "accept_until:", assignment2OTP + ".acceptUntilTime");
         dateEvolver.evolveDateInput(acceptUntilTimeField, acceptUntilDate);
+        UIMessage.make(form, "accept_until_instruction", "assignment2.assignment_add.accept_until_instruction");
         
+        UIVerbatim.make(form, "student_submissions_label", messageLocator.getMessage("assignment2.assignment_add.student_submissions",
+        		new Object[]{ reqStar }));
         //Submission Types
         String[] submission_type_values = new String[] {
         		String.valueOf(AssignmentConstants.SUBMIT_INLINE_ONLY),
@@ -147,13 +162,29 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
         ((UIBoundString) select.selection).setValue(String.valueOf(assignment.getSubmissionType()));
         
         //Rich Text Input
+        UIMessage.make(form, "assignment_instructions_label", "assignment2.assignment_add.assignment_instructions");
         UIInput instructions = UIInput.make(form, "instructions:", assignment2OTP + ".instructions", assignment.getInstructions());
         richTextEvolver.evolveTextInput(instructions);
         
         
         //Calendar Due Date
+        UIMessage.make(form, "on_calendar_label", "assignment2.assignment_add.on_calendar");
         //Announcement
+        UIMessage.make(form, "announcement_label", "assignment2.assignment_add.announcement");
+        //Honor Pledge
+        UIMessage.make(form, "honor_pledge_label", "assignment2.assignment_add.honor_pledge");
         UIBoundBoolean.make(form, "honor_pledge", assignment2OTP + ".honorPledge", assignment.isHonorPledge());
+        
+        //Attachments
+        UIMessage.make(form, "attachments_legend", "assignment2.assignment_add.attachments_legend");
+        UIMessage.make(form, "no_attachments_yet", "assignment2.assignment_add.no_attachments_yet");
+        
+        //Grading
+        UIMessage.make(form, "grading_legend", "assignment2.assignment_add.grading_legend");
+        UIMessage.make(form, "graded_label", "assignment2.assignment_add.assignment_graded");
+        UIMessage.make(form, "gradebook_associated", "assignment2.assignment_add.gradebook_associated");
+        UIMessage.make(form, "gradebook_or", "assignment2.assignment_add.gradebook_or");
+        UIMessage.make(form, "assignment_ungraded_label", "assignment2.assignment_add.assignment_ungraded");
         
         //Access
         UIMessage.make(form, "access_legend", "assignment2.assignment_add.access_legend");

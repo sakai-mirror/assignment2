@@ -212,7 +212,7 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
         		Integer.parseInt(params.current_start), Integer.parseInt(params.current_count));
         
         if (entries.size() <= 0) {
-            UIMessage.make(tofill, "blog_empty", "assignment2.assignment_list-sortview.assignment_empty");
+            UIMessage.make(tofill, "assignment_empty", "assignment2.assignment_list-sortview.assignment_empty");
             return;
         }
         
