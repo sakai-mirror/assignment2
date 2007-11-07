@@ -98,17 +98,17 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
     	current_sort_by = params.sort_by;
     	current_sort_dir = params.sort_dir;
     	opposite_sort_dir = (SORT_DIR_ASC.equals(current_sort_dir) ? SORT_DIR_DESC : SORT_DIR_ASC);
-    	
-    	//get paging data
-    	int total_count = assignmentLogic.getTotalCountViewableAssignments(currentUserId);
-    	pagerBean.setTotalCount(total_count);
-    	
+
     	//check if we need to duplicate an assignment, params.assignmentIdToDuplicate is not null
     	if (params.assignmentIdToDuplicate != null){
     		assignment2Bean.createDuplicate(params.assignmentIdToDuplicate);
     		params.assignmentIdToDuplicate = null;
     	}
     	
+    	//get paging data
+    	int total_count = assignmentLogic.getTotalCountViewableAssignments(currentUserId);
+    	pagerBean.setTotalCount(total_count);
+    		
         UIMessage.make(tofill, "page-title", "assignment2.assignment_list-sortview.title");
         navBarRenderer.makeNavBar(tofill, "navIntraTool:", VIEW_ID);
         pagerRenderer.makePager(tofill, "pagerDiv:", VIEW_ID, viewparams);

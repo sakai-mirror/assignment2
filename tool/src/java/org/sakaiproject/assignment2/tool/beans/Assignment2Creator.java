@@ -44,9 +44,7 @@ public class Assignment2Creator {
     public Assignment2 createDuplicate(Assignment2 assignment) {
     	Assignment2 dup = new Assignment2();
 
-    	String newTitle = messageLocator.getMessage("Assignment2Creator.duplicate.title_prepend") +
-    			assignment.getTitle() +
-    			messageLocator.getMessage("Assignment2Creator.duplicate.title_append");
+    	String newTitle = messageLocator.getMessage("Assignment2Creator.duplicate.title", assignment.getTitle());
     	
     	dup.setGradableObjectId(assignment.getGradableObjectId());
     	dup.setSiteId(assignment.getSiteId());

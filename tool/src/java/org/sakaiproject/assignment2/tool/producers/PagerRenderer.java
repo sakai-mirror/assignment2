@@ -120,7 +120,7 @@ public class PagerRenderer {
 			first_page.decorators = disabledDecoratorList;
 			prev_page.decorators = disabledDecoratorList;
 		}
-		if ((pagerBean.getCurrentStart() + pagerBean.getCurrentCount() ) > pagerBean.getTotalCount()){
+		if ((pagerBean.getCurrentStart() + pagerBean.getCurrentCount() ) >= pagerBean.getTotalCount()){
 			//disable if on last page
 			next_page.decorators = disabledDecoratorList;
 			last_page.decorators = disabledDecoratorList;
