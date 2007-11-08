@@ -38,5 +38,12 @@ import org.sakaiproject.genericdao.api.CompleteGenericDao;
  */
 public interface AssignmentDao extends CompleteGenericDao {
 
+	/**
+	 * Used to identify the next sort index for new assignments
+	 * @param siteId
+	 * @return the highest sort index for the existing assignments; null if
+	 * no assignments in site
+	 */
+	public Integer getHighestSortIndexInSite(String siteId);
 
 }

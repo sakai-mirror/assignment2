@@ -68,6 +68,11 @@
     </dependency>
     <dependency>
       <groupId>org.sakaiproject</groupId>
+      <artifactId>sakai-component</artifactId>
+      <version>${sakai.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.sakaiproject</groupId>
       <artifactId>sakai-util</artifactId>
       <version>${sakai.version}</version>
       <type>jar</type>
@@ -94,6 +99,12 @@
       <groupId>commons-logging</groupId>
       <artifactId>commons-logging</artifactId>
       <version>1.0.4</version>
+    </dependency>
+    <!-- GradebookService -->
+    <dependency>
+      <groupId>org.sakaiproject</groupId>
+      <artifactId>sakai-gradebook-service-api</artifactId>
+      <version>${sakai.version}</version>
     </dependency>
   </dependencies>
 </project>

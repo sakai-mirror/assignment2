@@ -60,6 +60,10 @@ public class Assignment2 {
     private int version;
     private Set<AssignmentAttachment> attachmentSet;
     private Set<AssignmentGroup> assignmentGroupSet;
+    
+    // fields that are manually retrieved from the gradebook
+    private Double pointsPossible;
+    private Date dueDate;
 
 	public Assignment2(Long gradableObjectId, String siteId, String title,
 			Boolean draft, int sortIndex, Date openTime, 
@@ -70,7 +74,7 @@ public class Assignment2 {
 			String calendarEventId, Boolean allowResubmitUntilDue,
 			Boolean allowReviewService, Boolean allowStudentViewReport,
 			String creator, Date createTime, String modifiedBy,
-			Date modifiedTime) {
+			Date modifiedTime, Double pointsPossible, Date dueDate) {
 
 		this.gradableObjectId = gradableObjectId;
 		this.siteId = siteId;
@@ -96,6 +100,10 @@ public class Assignment2 {
 		this.createTime = createTime;
 		this.modifiedBy = modifiedBy;
 		this.modifiedTime = modifiedTime;
+		
+		// gb fields
+		this.pointsPossible = pointsPossible;
+		this.dueDate = dueDate;
 	}
 
 	/**
@@ -566,5 +574,45 @@ public class Assignment2 {
 	 */
 	public void setAssignmentGroupSet(Set<AssignmentGroup> assignmentGroupSet) {
 		this.assignmentGroupSet = assignmentGroupSet;
+	}
+
+	// the following fields are populated using data from the gradebook
+	
+	/**
+	 * @return the points possible value for this assignment.  this value 
+	 * actually comes from the points possible value in the associated gb item.
+	 * null if this assignment is ungraded.
+	 */
+	public Double getPointsPossible() {
+		return pointsPossible;
+	}
+
+	/**
+	 * the points possible value for this assignment.  this value 
+	 * actually sets the points possible value in the associated gb item. null if
+	 * this assignment is ungraded
+	 * @param pointsPossible
+	 */
+	public void setPointsPossible(Double pointsPossible) {
+		this.pointsPossible = pointsPossible;
+	}
+
+	/**
+	 * 
+	 * @return the due date for this assignment.  actually returns the due
+	 * date of the associated gb item.  null if ungraded or
+	 * if there is no due date.
+	 */
+	public Date getDueDate() {
+		return dueDate;
+	}
+	
+	/**
+	 * set the due date for this assignment.  Actually updates the due date
+	 * for the associated gb item.  Null if ungraded or there is no due date.
+	 * @param dueDate
+	 */
+	public void setDueDate(Date dueDate) {
+		this.dueDate = dueDate;
 	}
 }

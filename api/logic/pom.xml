@@ -27,6 +27,13 @@
       <version>${sakai.generic-dao.version}</version>
       <scope>provided</scope>
     </dependency>
+    
+        <!-- GradebookService -->
+    <dependency>
+      <groupId>org.sakaiproject</groupId>
+      <artifactId>sakai-gradebook-service-api</artifactId>
+      <version>${sakai.version}</version>
+    </dependency>
   </dependencies>
   <build>
   

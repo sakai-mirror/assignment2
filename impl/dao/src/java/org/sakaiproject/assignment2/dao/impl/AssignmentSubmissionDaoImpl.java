@@ -31,7 +31,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Query;
 
-import org.sakaiproject.assignment2.dao.AssignmentDao;
+import org.sakaiproject.assignment2.dao.AssignmentSubmissionDao;
 import org.sakaiproject.genericdao.hibernate.HibernateCompleteGenericDao;
 
 /**
@@ -40,21 +40,11 @@ import org.sakaiproject.genericdao.hibernate.HibernateCompleteGenericDao;
  * 
  * @author <a href="mailto:wagnermr@iupui.edu">michelle wagner</a>
  */
-public class AssignmentDaoImpl extends HibernateCompleteGenericDao implements AssignmentDao {
+public class AssignmentSubmissionDaoImpl extends HibernateCompleteGenericDao implements AssignmentSubmissionDao {
 
-    private static Log log = LogFactory.getLog(AssignmentDaoImpl.class);
+    private static Log log = LogFactory.getLog(AssignmentSubmissionDaoImpl.class);
 
     public void init() {
         log.debug("init");
     }
-    
-    public Integer getHighestSortIndexInSite(String siteId) {
-    	String hql = "select max(assignment.sortIndex) from Assignment2 as assignment where assignment.siteId = :siteId and assignment.removed != true";
-    	
-    	Query query = getSession().createQuery(hql);
-    	query.setParameter("siteId", siteId);
-
-        return (Integer)query.uniqueResult();
-    }
-
 }

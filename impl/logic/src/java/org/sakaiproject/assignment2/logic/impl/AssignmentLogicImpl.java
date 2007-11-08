@@ -94,6 +94,14 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 	        	if (assignmentNameExists(assignment.getTitle())) {
 	        		throw new ConflictingAssignmentNameException("An assignment with the title " + assignment.getTitle() + " already exists");
 	        	}
+	        	// identify the next sort index to be used
+	        	Integer highestIndex = dao.getHighestSortIndexInSite(externalLogic.getCurrentLocationId());
+	        	if (highestIndex != null) {
+	        		assignment.setSortIndex(highestIndex + 1);
+	        	} else {
+	        		assignment.setSortIndex(0);
+	        	}
+	        	
 	        	dao.create(assignment);
 	            log.info("Created assignment: " + assignment.getTitle());
 	        } else {
@@ -143,8 +151,12 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 	 */
 	public List<Assignment2> getViewableAssignments(String userId)
 	{
+		
 		List<Assignment2> assignments = 
 			dao.findByProperties(Assignment2.class, new String[] {"siteId", "removed"}, new Object[] {externalLogic.getCurrentLocationId(), Boolean.FALSE});
+		
+		// first, we need to check if any of these assignments are associated with a gb item.
+		// if so, we need to filter out the returned assignments based upon grader perms
 		
 		return assignments;
 	}

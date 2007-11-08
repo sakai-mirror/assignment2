@@ -19,6 +19,10 @@
       <property name="toolManager" ref="org.sakaiproject.tool.api.ToolManager" />
       <property name="userDirectoryService" ref="org.sakaiproject.user.api.UserDirectoryService" />
    </bean>
+   
+   <bean id="org.sakaiproject.assignment2.logic.ExternalGradebookLogic" class="org.sakaiproject.assignment2.logic.impl.ExternalGradebookLogicImpl" init-method="init">
+     
+   </bean>
 
    <bean id="org.sakaiproject.assignment2.logic.AssignmentLogic" class="org.sakaiproject.assignment2.logic.impl.AssignmentLogicImpl" init-method="init">
       <property name="dao" ref="org.sakaiproject.assignment2.dao.AssignmentDao" />

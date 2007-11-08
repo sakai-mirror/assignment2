@@ -33,6 +33,10 @@ public class AssignmentSubmission {
 	private Assignment2 assignment;
 	private String userId;
 	private AssignmentSubmissionVersion currentSubmissionVersion;
+	
+	// fields populated with gradebook data
+	private String gradebookGrade;
+	private String gradebookComment;
 
 	public AssignmentSubmission() {
 	}
@@ -104,5 +108,46 @@ public class AssignmentSubmission {
 	public void setCurrentSubmissionVersion(AssignmentSubmissionVersion currentSubmissionVersion) {
 		this.currentSubmissionVersion = currentSubmissionVersion;
 	}
+
+	
+	// fields populated with data from the gradebook
+	
+	/**
+	 * 
+	 * @return the grade for this submission from the associated gb item. This
+	 * grade will be returned in converted form according to the gradebook's
+	 * grade entry type (ie letter grade, percentage, etc)
+	 */
+	public String getGradebookGrade() {
+		return gradebookGrade;
+	}
+	
+	/**
+	 * set the grade for this submission to be stored in the associated gb item.
+	 * This grade must be in the correct form according to the gradebook's
+	 * grade entry type (ie letter grade, percentage, etc)
+	 * @param gradebookGrade
+	 */
+	public void setGradebookGrade(String gradebookGrade) {
+		this.gradebookGrade = gradebookGrade;
+	}
+	
+	/**
+	 * 
+	 * @return the gradebook comment from the associated gb item for this student
+	 */
+	public String getGradebookComment() {
+		return gradebookComment;
+	}
+	
+	/**
+	 * set the comment to be stored in the gradebook
+	 * @param gradebookComment
+	 */
+	public void setGradebookComment(String gradebookComment) {
+		this.gradebookComment = gradebookComment;
+	}
+
+	
 	
 }
