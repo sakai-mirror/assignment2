@@ -56,7 +56,6 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
     	
         GradebookService gradebookService = (org.sakaiproject.service.gradebook.shared.GradebookService) 
         ComponentManager.get("org.sakaiproject.service.gradebook.GradebookService"); 
-        
     	
     	List<Assignment2> viewableAssignmentsWithGbData = new ArrayList();
     	if (gradedAssignments == null || gradedAssignments.isEmpty()) {
@@ -118,6 +117,30 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
         		log.info("Gradebook data being added to context " + contextId + " by Assignment2 tool");
         	frameworkService.addGradebook(contextId, contextId);
         }
+    }
+    
+    public Map getViewableGradableObjectIdTitleMap(String contextId) {
+    	GradebookService gradebookService = (org.sakaiproject.service.gradebook.shared.GradebookService) 
+        ComponentManager.get("org.sakaiproject.service.gradebook.GradebookService"); 
+    	
+    	List<org.sakaiproject.service.gradebook.shared.Assignment> viewableGbItems = 
+    		gradebookService.getViewableAssignmentsForCurrentUser(contextId);
+    	
+    	Map<Long, String> idTitleMap = new HashMap();
+    	if (viewableGbItems == null || viewableGbItems.isEmpty()) {
+    		return idTitleMap;
+    	}
+    	
+    	for (Iterator itemIter = viewableGbItems.iterator(); itemIter.hasNext();) {
+    		org.sakaiproject.service.gradebook.shared.Assignment assign =
+    			(org.sakaiproject.service.gradebook.shared.Assignment)itemIter.next();
+    		
+    		if (assign != null) {
+    			idTitleMap.put(assign.getId(), assign.getName());
+    		}
+    	}
+    	
+    	return idTitleMap;
     }
 
 }

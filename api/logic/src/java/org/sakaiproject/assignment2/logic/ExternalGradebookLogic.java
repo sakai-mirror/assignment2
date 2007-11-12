@@ -22,6 +22,7 @@
 package org.sakaiproject.assignment2.logic;
 
 import java.util.List;
+import java.util.Map;
 
 import org.sakaiproject.assignment2.model.Assignment2;
 
@@ -53,4 +54,12 @@ public interface ExternalGradebookLogic {
 	 * @param contextId
 	 */
 	public void createGradebookDataIfNecessary(String contextId);
+	
+	/**
+	 * 
+	 * @param contextId
+	 * @return a map of gradable object id to title for all of the gradebook
+	 * items that the current user may view or grade.
+	 */
+	public Map getViewableGradableObjectIdTitleMap(String contextId);
 }
