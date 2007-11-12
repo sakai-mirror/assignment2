@@ -24,9 +24,9 @@ import uk.org.ponder.rsf.viewstate.ViewParamsReporter;
 /* This producer is responsible for calling the Permissions helper from Sakai.
  * 
  */
-public class PermissionsProducer implements ViewComponentProducer, ViewParamsReporter, NavigationCaseReporter {
+public class GradebookAddItemProducer implements ViewComponentProducer, ViewParamsReporter, NavigationCaseReporter {
 
-    public static final String VIEW_ID = "Permissions";
+    public static final String VIEW_ID = "GradebookAddItem";
     public String getViewID() {
         return VIEW_ID;
     }
@@ -36,17 +36,11 @@ public class PermissionsProducer implements ViewComponentProducer, ViewParamsRep
     private ExternalLogic externalLogic;
     private MessageLocator messageLocator;
 
-    private final String HELPER = "sakai.permissions.helper"; //"sakai.gradebook.addItem";
+    private final String HELPER = "sakai.gradebook.addItem.helper";
 
     public void fillComponents(UIContainer tofill, ViewParameters viewparams, ComponentChecker checker) {
         String locationId = externalLogic.getCurrentLocationId();
         ToolSession session = sessionManager.getCurrentToolSession();
-
-        
-        session.setAttribute(PermissionsHelper.TARGET_REF, locationId);
-        session.setAttribute(PermissionsHelper.DESCRIPTION, 
-                messageLocator.getMessage("assignment2.permissions.header", "Title Here")); //externalLogic.getLocationTitle(locationId)) );
-        session.setAttribute(PermissionsHelper.PREFIX, "assignment2.");
 		
         UIOutput.make(tofill, HelperViewParameters.HELPER_ID, HELPER);
         UICommand.make(tofill, HelperViewParameters.POST_HELPER_BINDING, "", null);

@@ -4,15 +4,17 @@
 <head>
    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 
-   <title rsf:id="title">Assignments</title>
+   <title rsf:id="page-title">Assignments</title>
 
 	<script type="text/javascript" language="JavaScript" src="/library/js/headscripts.js"></script>
 	<!-- vm/editor/FCKeditor/sakai_header.vm -->
 	<script type="text/javascript" src="/library/editor/FCKeditor/fckeditor.js"></script> 
 
-   <link href="tool_base.css" type="text/css" rel="stylesheet" media="all"/>   
-	<link href="tool.css" type="text/css" rel="stylesheet" media="all"/>
-	<link href="assignmentsv4.css" type="text/css" rel="stylesheet" media="all"/>
+    <link href="/library/skin/tool_base.css" type="text/css" rel="stylesheet" media="all"/>
+    <link href="/library/skin/default/tool.css" type="text/css" rel="stylesheet" media="all"/>
+    <script type="text/javascript" language="JavaScript" src="/library/js/headscripts.js"></script>
+    <script type="text/javascript" language="JavaScript" src="/library/js/jquery.js"></script>
+	<link href="/sakai-assignment2-tool/content/css/assignmentsv4.css" type="text/css" rel="stylesheet" media="all" />
 
 </head>
 
@@ -21,44 +23,44 @@
 <div class="portletBody">
 
 	<h3 rsf:id="heading">Add Gradebook Item via Assignments</h3>
-	<p class="instruction">Complete the form and choose an action below to return to your Assignment creation. <span class="reqStar">*</span> Indicates required information.</p>
+	<p rsf:id="instructions" class="instruction">Complete the form and choose an action below to return to your Assignment creation. <span class="reqStar">*</span> Indicates required information.</p>
 
-	<form>
+	<form rsf:id="form">
 	<fieldset>
-		<legend>Gradebook Item Details</legend>
+		<legend rsf:id="gradebook_item_legend">Gradebook Item Details</legend>
 		<ol>
 			<li>
-				<label for=""><span class="reqStar">*</span> Title</label> <input type="text" value="" size="30" maxlength="100"/>
+				<label rsf:id="title_label"><span class="reqStar">*</span> Title</label> <input rsf:id="title" type="text" size="30" maxlength="100"/>
 			</li>
 			<li>
-				<label for=""><span class="reqStar">*</span> Gradebook Item Point Value</label> <input type="text" value="" size="30" maxlength="100"/>
+				<label rsf:id="point_label"><span class="reqStar">*</span> Gradebook Item Point Value</label> <input rsf:id="point" type="text" size="30" maxlength="100"/>
 			</li>
 			<li>
-				<label for=""><span class="reqStar">*</span> Due Date</label> <input name="" value="mm/dd/yy"/><!--dhtml date picker --><img src="calendar.png" alt="Date picker" width="16" height="16" align="absmiddle" />
+				<label rsf:id="due_date_label"><span class="reqStar">*</span> Due Date</label> <input rsf:id="due_date:" value="12/31/2007"/>
 			</li>
 			<li>
-				<label for="">Category</label>
-				<select id="" name="" size="1">
+				<label rsf:id="category_label">Category</label>
+				<select rsf:id="category" size="1">
 					<option value="unassigned">Unassigned</option>
 					<option value="">Homework</option>
 					<option value="">Quizzes</option>
 					<option value="">Exams</option>
 				</select>
-				<p class="instruction">Items not assigned to a category will not be counted toward the course grade calculation.</p>
+				<p rsf:id="category_instruction" class="instruction">Items not assigned to a category will not be counted toward the course grade calculation.</p>
 			</li>
 			<li>
 				<fieldset>
 					<ol>
-						<li><input id="" name="" type="checkbox" value=""/> <label for="">Release this item to Students</label></li>
-						<li class="indent"><input id="" name="" type="checkbox" value=""/> <label for="">Include this item in course grade calculations</label></li>
+						<li><input rsf:id="release" type="checkbox" /> <label rsf:id="release_label">Release this item to Students</label></li>
+						<li class="indent"><input rsf:id="course_grade" type="checkbox" /> <label rsf:id="course_grade_label">Include this item in course grade calculations</label></li>
 					</ol>
 				</fieldset>
 			</li>
 		</ol>
 	</fieldset>
 	<fieldset class="submit">
-		<input accesskey="s" type="button" class="active" name="add" value="Add Item"/>
-		<input accesskey="x" type="button" name="cancel" value="Cancel"/>
+		<input rsf:id="add_item" accesskey="s" type="button" class="active" value="Add Item"/>
+		<input rsf:id="cancel" accesskey="x" type="button" name="cancel" value="Cancel"/>
 	</fieldset>													
 	</form>
 </div>

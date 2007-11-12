@@ -5,11 +5,9 @@ package org.sakaiproject.assignment2.tool.params;
 import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
 import org.sakaiproject.assignment2.tool.params.PagerViewParams;
 
-public class AssignmentGradeAssignmentViewParams extends PagerViewParams {
+public class AssignmentGradeAssignmentViewParams extends SortPagerViewParams {
 
 	public Long assignmentId;
-	public String sort_by;
-	public String sort_dir;
 	
 	public AssignmentGradeAssignmentViewParams() {}
 
@@ -17,25 +15,21 @@ public class AssignmentGradeAssignmentViewParams extends PagerViewParams {
 		super(viewId);
 	}
 	
-    public AssignmentGradeAssignmentViewParams(String viewId, Long assignment_id) {
-    		super(viewId);
-	        this.assignmentId = assignment_id;
+    public AssignmentGradeAssignmentViewParams(String viewId, String sort_by, String sort_dir) {
+    		super(viewId, sort_by, sort_dir);
     }
     
-    public AssignmentGradeAssignmentViewParams(String viewId, Long assignment_id, String currentStart, String currentCount) {
-		super(viewId, currentStart, currentCount);
-		this.assignmentId = assignment_id;
+    public AssignmentGradeAssignmentViewParams(String viewId, String sort_by, String sort_dir, String currentStart, String currentCount) {
+		super(viewId, currentStart, currentCount, sort_by, sort_dir);
     }
     
-    public AssignmentGradeAssignmentViewParams(String viewId, Long assignment_id, String sortBy, String sortDir, String currentStart, String currentCount) {
-		super(viewId, currentStart, currentCount);
-		this.assignmentId = assignment_id;
-		this.sort_by = sortBy;
-		this.sort_dir = sortDir;
+    public AssignmentGradeAssignmentViewParams(String viewId, String sort_by, String sort_dir, String currentStart, String currentCount, Long assignmentId) {
+		super(viewId, currentStart, currentCount, sort_by, sort_dir);
+        this.assignmentId = assignmentId;
     }
     
-    public String getParseSpec() {
+	public String getParseSpec() {
 		// include a comma delimited list of the public properties in this class
-		return super.getParseSpec() + ",assignmentId,sort_by,sort_dir,currentStart,currentCount";
+		return super.getParseSpec() + ",assignmentId";
 	}
 }

@@ -19,6 +19,8 @@
 	  <property name="pagerBean" ref="PagerBean" />
       <property name="messageLocator" ref="messageLocator" />
    </bean>
+   <bean id="SortHeaderRenderer" class="org.sakaiproject.assignment2.tool.producers.SortHeaderRenderer" />
+   
 
    <!-- list the producer beans here -->
    <bean class="org.sakaiproject.assignment2.tool.producers.AjaxCallbackProducer">
@@ -39,6 +41,7 @@
    <bean class="org.sakaiproject.assignment2.tool.producers.AssignmentAddGradebookItemProducer">
       <property name="navBarRenderer" ref="NavbarRenderer" />
       <property name="messageLocator" ref="messageLocator" />
+      <property name="dateEvolver" ref="fieldDateInputEvolver" />
    </bean>
 
    <bean class="org.sakaiproject.assignment2.tool.producers.AssignmentPreviewProducer">
@@ -59,6 +62,7 @@
       <property name="messages" ref="targettedMessageList" />
       <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
       <property name="locale" ref="requestLocale" />
+      <property name="sortHeaderRenderer" ref="SortHeaderRenderer" />
    </bean>
    
    <bean class="org.sakaiproject.assignment2.tool.producers.AssignmentGradeReportProducer">
@@ -86,9 +90,16 @@
       <property name="pagerRenderer" ref="PagerRenderer" />
       <property name="locale" ref="requestLocale" />
       <property name="assignment2Bean" ref="Assignment2Bean" />
+      <property name="sortHeaderRenderer" ref="SortHeaderRenderer" />
    </bean>
 
    <bean class="org.sakaiproject.assignment2.tool.producers.PermissionsProducer">
+	  <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
+      <property name="sessionManager" ref="org.sakaiproject.tool.api.SessionManager" />
+      <property name="messageLocator" ref="messageLocator" />
+   </bean>
+
+   <bean class="org.sakaiproject.assignment2.tool.producers.GradebookAddItemProducer">
 	  <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
       <property name="sessionManager" ref="org.sakaiproject.tool.api.SessionManager" />
       <property name="messageLocator" ref="messageLocator" />
@@ -104,6 +115,13 @@
    	  <property name="messages" ref="targettedMessageList"/>
    	  <property name="entityBeanLocator" ref="Assignment2"/>
    	  <property name="previewAssignmentBean" ref="PreviewAssignmentBean" />
+   	  <property name="messageLocator" ref="messageLocator" />
+   </bean>
+   
+   <bean id="GradebookItemBean" class="org.sakaiproject.assignment2.tool.beans.GradebookItemBean">
+      <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
+      <property name="externalGradebookLogic" ref="org.sakaiproject.assignment2.logic.ExternalGradebookLogic" />
+   	  <property name="messages" ref="targettedMessageList"/>
    	  <property name="messageLocator" ref="messageLocator" />
    </bean>
    

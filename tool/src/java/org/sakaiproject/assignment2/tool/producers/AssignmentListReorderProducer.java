@@ -86,17 +86,15 @@ public class AssignmentListReorderProducer implements ViewComponentProducer, Vie
 				new SimpleViewParameters(AssignmentListSortViewProducer.VIEW_ID));
         UIMessage.make(tofill, "current_page", "assignment2.assignment_list-reorder.title");
         
-        UIForm form = UIForm.make(tofill, "form");
-        
         //Headers
-        UIMessage.make(form, "reorder_header", "assignment2.assignment_list-reorder.reorder");
-        UIMessage.make(form, "remove_header", "assignment2.assignment_list-reorder.remove");
-        UIMessage.make(form, "for_header", "assignment2.assignment_list-reorder.for");
-        UIMessage.make(form, "status_header", "assignment2.assignment_list-reorder.status");
-        UIMessage.make(form, "open_header", "assignment2.assignment_list-reorder.open");
-        UIMessage.make(form, "due_header", "assignment2.assignment_list-reorder.due");
-        UIMessage.make(form, "in_new_header", "assignment2.assignment_list-reorder.in_new");
-        UIMessage.make(form, "scale_header", "assignment2.assignment_list-reorder.scale");
+        UIMessage.make(tofill, "reorder_header", "assignment2.assignment_list-reorder.reorder");
+        UIMessage.make(tofill, "remove_header", "assignment2.assignment_list-reorder.remove");
+        UIMessage.make(tofill, "for_header", "assignment2.assignment_list-reorder.for");
+        UIMessage.make(tofill, "status_header", "assignment2.assignment_list-reorder.status");
+        UIMessage.make(tofill, "open_header", "assignment2.assignment_list-reorder.open");
+        UIMessage.make(tofill, "due_header", "assignment2.assignment_list-reorder.due");
+        UIMessage.make(tofill, "in_new_header", "assignment2.assignment_list-reorder.in_new");
+        UIMessage.make(tofill, "scale_header", "assignment2.assignment_list-reorder.scale");
         
         List<Assignment2> entries = new ArrayList<Assignment2>();
         entries = assignmentLogic.getViewableAssignments(currentUserId, "sortIndex", true, 
@@ -115,7 +113,7 @@ public class AssignmentListReorderProducer implements ViewComponentProducer, Vie
         //Fill out Table
         int i=0;
         for (Assignment2 assignment : entries){
-        	UIBranchContainer row = UIBranchContainer.make(form, "assignment-row:");
+        	UIBranchContainer row = UIBranchContainer.make(tofill, "assignment-row:");
         	/***
         	if (i == 0){
         		UIOutput.make(row, "reorder_cell");
@@ -130,11 +128,6 @@ public class AssignmentListReorderProducer implements ViewComponentProducer, Vie
         	UIOutput.make(li, "assignment_row_title", assignment.getTitle());
         	
         	// 	Table Row
-        	UIBoundBoolean.make(row, "assignment_row_remove", 
-        			"Assignment2Bean.selectedIds." + assignment.getAssignmentId().toString(),
-        			Boolean.FALSE);
-        	UIMessage.make(row, "assignment_row_remove_label", "assignment2.assignment_list-reorder.assignment_row_remove_label");
-        	
         	UIOutput.make(row, "assignment_row_for", "Site");
         	if (assignment.isDraft()){
         		UIOutput.make(row, "assignment_row_draft_td");
@@ -149,9 +142,6 @@ public class AssignmentListReorderProducer implements ViewComponentProducer, Vie
         	
         	i++;
         }
-        
-        UICommand.make(form, "submit_remove", UIMessage.make("assignment2.assignment_list-reorder.submit_remove"),
-        		"Assignment2Bean.processActionRemove");
         
     }
     public ViewParameters getViewParameters(){

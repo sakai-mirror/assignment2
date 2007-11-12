@@ -60,6 +60,15 @@ public class NavBarRenderer {
             UIInternalLink.make(cell, "navigation-link", UIMessage.make("assignment2.navbar.permissions"), 
                     new SimpleViewParameters(PermissionsProducer.VIEW_ID));               
         }
+        
+        //Temp Gradebook Helper
+        cell = UIBranchContainer.make(joint, "navigation-li:", "3");
+        if (currentViewID.equals(GradebookAddItemProducer.VIEW_ID)) {
+        	UIMessage.make(cell, "navigation-link", "Temp Add Item Link");
+        } else {
+        	UIInternalLink.make(cell, "navigation-link", UIOutput.make("Temp Add Item Link"),
+        			new SimpleViewParameters(GradebookAddItemProducer.VIEW_ID));
+        }
 
     }
 }

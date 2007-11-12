@@ -59,11 +59,9 @@
 	</div>
 	
 	<a rsf:id="assignment_list-sortview-link" href="assignment_list-sortview">Sort Order View</a> | <span rsf:id="current_page">My Reorder View</span>
-    <form rsf:id="form" method="post">
 	<table id="reorder-table" class="listHier lines">
 		<tr> 
 			<th rsf:id="reorder_header">Reorder</th>
-			<th rsf:id="remove_header">Remove?</th>
 			<th class="attach">&nbsp;</th>
 			<th rsf:id="for_header">For</th>
 			<th rsf:id="status_header">Status</th>
@@ -82,21 +80,7 @@
          <td colspan="9" class="skip"></td>
       </tr>
 		<tr rsf:id="assignment-row:" class="datarow">
-			
-			<td>
-				<input rsf:id="assignment_row_remove" type="checkbox" /> <label rsf:id="assignment_row_remove_label" class="skip">Remove</label>
-			</td>
 			<td headers="attachments" class="attach"><img rsf:id="assignment_row_attach_img" width="16" height="16" border="0" /></td>
-			<!-- 
-			<td headers="title">
-			<h4><a rsf:id="assignment_row_link">Homework Example 2</a></h4>
-				<ul class="itemAction">
-					<li><a rsf:id="assignment_row_edit">Edit</a></li>
-					<li><a rsf:id="assignment_row_duplicate">Duplicate</a></li>
-					<li class="last"><a rsf:id="assignment_row_grade">Grade Assignment</a></li>
-				</ul>
-			</td>
-			-->
 			<td rsf:id="assignment_row_for">Group 1, Group 2</td>
 			<td rsf:id="assignment_row_open_text">Open</td>
 			<td rsf:id="assignment_row_draft_td"><span rsf:id="assignment_row_draft" class="highlight"></span></td>
@@ -106,9 +90,6 @@
 			<td rsf:id="assignment_row_scale">0-100.0</td>
 		</tr>
 	</table>
-
-	<input rsf:id="submit_remove" type="submit" class="active" value="Remove Selected" accesskey="s" />			
-	</form>
 	<div rsf:id="assignment_empty">There are no Assignments yet</div>
 </div>
 </body>

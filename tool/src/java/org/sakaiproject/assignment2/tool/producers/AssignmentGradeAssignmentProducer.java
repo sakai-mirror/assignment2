@@ -8,6 +8,7 @@ import java.util.Locale;
 import org.sakaiproject.assignment2.tool.params.AssignmentGradeAssignmentViewParams;
 import org.sakaiproject.assignment2.tool.params.AssignmentListSortViewParams;
 import org.sakaiproject.assignment2.tool.params.SimpleAssignmentViewParams;
+import org.sakaiproject.assignment2.tool.params.SortPagerViewParams;
 import org.sakaiproject.assignment2.tool.producers.NavBarRenderer;
 import org.sakaiproject.assignment2.tool.producers.PagerRenderer;
 import org.sakaiproject.assignment2.tool.beans.PagerBean;
@@ -82,6 +83,7 @@ public class AssignmentGradeAssignmentProducer implements ViewComponentProducer,
     private TargettedMessageList messages;
     private ExternalLogic externalLogic;
     private Locale locale;
+    private SortHeaderRenderer sortHeaderRenderer;
     
     private Long assignmentId;
     
@@ -121,58 +123,17 @@ public class AssignmentGradeAssignmentProducer implements ViewComponentProducer,
         UICommand.make(assign_form, "assign_grade_submit", "");
         
         //Do Student Table
-        //Student sorting Link
-        UIInternalLink.make(tofill, "tableheader.student", 
-    			UIMessage.make("assignment2.assignment_grade-assignment.tableheader.student"),
-    			new AssignmentGradeAssignmentViewParams(AssignmentGradeAssignmentProducer.VIEW_ID, assignmentId, SORT_BY_STUDENT, 
-    					(SORT_BY_STUDENT.equals(current_sort_by) ? opposite_sort_dir : SORT_DIR_ASC), params.current_start, params.current_count));
-        if (current_sort_by.equals(SORT_BY_STUDENT) && current_sort_dir.equals(SORT_DIR_ASC)){
-        	UILink.make(tofill, "student_arrow", BULLET_UP_IMG_SRC);
-        } else if (current_sort_by.equals(SORT_BY_STUDENT) && current_sort_dir.equals(SORT_DIR_DESC)){
-        	UILink.make(tofill, "student_arrow", BULLET_DOWN_IMG_SRC);
-        }
-        //Submitted sorting Link
-        UIInternalLink.make(tofill, "tableheader.submitted", 
-    			UIMessage.make("assignment2.assignment_grade-assignment.tableheader.submitted"),
-    			new AssignmentGradeAssignmentViewParams(AssignmentGradeAssignmentProducer.VIEW_ID, assignmentId, SORT_BY_SUBMITTED, 
-    					(SORT_BY_SUBMITTED.equals(current_sort_by) ? opposite_sort_dir : SORT_DIR_ASC), params.current_start, params.current_count));
-        if (current_sort_by.equals(SORT_BY_SUBMITTED) && current_sort_dir.equals(SORT_DIR_ASC)){
-        	UILink.make(tofill, "submitted_arrow", BULLET_UP_IMG_SRC);
-        } else if (current_sort_by.equals(SORT_BY_SUBMITTED) && current_sort_dir.equals(SORT_DIR_DESC)){
-        	UILink.make(tofill, "submitted_arrow", BULLET_DOWN_IMG_SRC);
-        }
-        //Status sorting Link
-        UIInternalLink.make(tofill, "tableheader.status", 
-    			UIMessage.make("assignment2.assignment_grade-assignment.tableheader.status"),
-    			new AssignmentGradeAssignmentViewParams(AssignmentGradeAssignmentProducer.VIEW_ID, assignmentId, SORT_BY_STATUS, 
-    					(SORT_BY_STATUS.equals(current_sort_by) ? opposite_sort_dir : SORT_DIR_ASC), params.current_start, params.current_count));
-        if (current_sort_by.equals(SORT_BY_STATUS) && current_sort_dir.equals(SORT_DIR_ASC)){
-        	UILink.make(tofill, "status_arrow", BULLET_UP_IMG_SRC);
-        } else if (current_sort_by.equals(SORT_BY_STATUS) && current_sort_dir.equals(SORT_DIR_DESC)){
-        	UILink.make(tofill, "status_arrow", BULLET_DOWN_IMG_SRC);
-        }
-        //Grade sorting Link
-        UIInternalLink.make(tofill, "tableheader.rade", 
-    			UIMessage.make("assignment2.assignment_grade-assignment.tableheader.grade"),
-    			new AssignmentGradeAssignmentViewParams(AssignmentGradeAssignmentProducer.VIEW_ID, assignmentId, SORT_BY_GRADE, 
-    					(SORT_BY_GRADE.equals(current_sort_by) ? opposite_sort_dir : SORT_DIR_ASC), params.current_start, params.current_count));
-        if (current_sort_by.equals(SORT_BY_GRADE) && current_sort_dir.equals(SORT_DIR_ASC)){
-        	UILink.make(tofill, "grade_arrow", BULLET_UP_IMG_SRC);
-        } else if (current_sort_by.equals(SORT_BY_GRADE) && current_sort_dir.equals(SORT_DIR_DESC)){
-        	UILink.make(tofill, "grade_arrow", BULLET_DOWN_IMG_SRC);
-        }
-        //Submitted sorting Link
-        UIInternalLink.make(tofill, "tableheader.released", 
-    			UIMessage.make("assignment2.assignment_grade-assignment.tableheader.released"),
-    			new AssignmentGradeAssignmentViewParams(AssignmentGradeAssignmentProducer.VIEW_ID, assignmentId, SORT_BY_RELEASED, 
-    					(SORT_BY_RELEASED.equals(current_sort_by) ? opposite_sort_dir : SORT_DIR_ASC), params.current_start, params.current_count));
-        if (current_sort_by.equals(SORT_BY_RELEASED) && current_sort_dir.equals(SORT_DIR_ASC)){
-        	UILink.make(tofill, "released_arrow", BULLET_UP_IMG_SRC);
-        } else if (current_sort_by.equals(SORT_BY_RELEASED) && current_sort_dir.equals(SORT_DIR_DESC)){
-        	UILink.make(tofill, "released_arrow", BULLET_DOWN_IMG_SRC);
-        }
-        
-        
+        sortHeaderRenderer.makeSortingLink(tofill, "tableheader.student", viewparams, 
+        		SORT_BY_STUDENT, "assignment2.assignment_grade-assignment.tableheader.student");
+        sortHeaderRenderer.makeSortingLink(tofill, "tableheader.submitted", viewparams, 
+        		SORT_BY_SUBMITTED, "assignment2.assignment_grade-assignment.tableheader.submitted");
+        sortHeaderRenderer.makeSortingLink(tofill, "tableheader.status", viewparams, 
+        		SORT_BY_STATUS, "assignment2.assignment_grade-assignment.tableheader.status");
+        sortHeaderRenderer.makeSortingLink(tofill, "tableheader.grade", viewparams, 
+        		SORT_BY_GRADE, "assignment2.assignment_grade-assignment.tableheader.grade");
+        sortHeaderRenderer.makeSortingLink(tofill, "tableheader.released", viewparams, 
+        		SORT_BY_RELEASED, "assignment2.assignment_grade-assignment.tableheader.released");
+                
         //Do Table Data
         
 
@@ -210,7 +171,6 @@ public class AssignmentGradeAssignmentProducer implements ViewComponentProducer,
     public void setMessageLocator(MessageLocator messageLocator) {
         this.messageLocator = messageLocator;
     }
-
     
     public void setNavBarRenderer(NavBarRenderer navBarRenderer) {
         this.navBarRenderer = navBarRenderer;
@@ -238,5 +198,9 @@ public class AssignmentGradeAssignmentProducer implements ViewComponentProducer,
     
     public void setLocale(Locale locale) {
     	this.locale = locale;
+    }
+    
+    public void setSortHeaderRenderer(SortHeaderRenderer sortHeaderRenderer) {
+    	this.sortHeaderRenderer = sortHeaderRenderer;
     }
 }
