@@ -21,12 +21,29 @@
    </bean>
    
    <bean id="org.sakaiproject.assignment2.logic.ExternalGradebookLogic" class="org.sakaiproject.assignment2.logic.impl.ExternalGradebookLogicImpl" init-method="init">
-     
+   </bean>
+   
+   <bean id="org.sakaiproject.assignment2.logic.ExternalEventLogic" class="org.sakaiproject.assignment2.logic.impl.ExternalEventLogicImpl" init-method="init">
+     <property name="eventTrackingService" ref="org.sakaiproject.event.api.EventTrackingService" />
    </bean>
 
    <bean id="org.sakaiproject.assignment2.logic.AssignmentLogic" class="org.sakaiproject.assignment2.logic.impl.AssignmentLogicImpl" init-method="init">
       <property name="dao" ref="org.sakaiproject.assignment2.dao.AssignmentDao" />
       <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
+      <property name="externalGradebookLogic" ref="org.sakaiproject.assignment2.logic.ExternalGradebookLogic" />
    </bean>
+   
+   <!-- ContextObserver to take action when Assignment2 is added to or removed from a site -->
+	<bean id="org.sakaiproject.assignment2.logic.entity.AssignmentEntityProducer"
+		class="org.sakaiproject.assignment2.logic.entity.AssignmentEntityProducer"
+		init-method="init">
+		<property name="label" value="assignment2"/>
+		<property name="externalGradebookLogic" ref="org.sakaiproject.assignment2.logic.ExternalGradebookLogic" />
+		<property name="toolIds">
+		    <list>
+				<value>sakai.assignment2</value>
+			</list>
+		</property>
+	</bean>
 
 </beans>

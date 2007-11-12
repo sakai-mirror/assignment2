@@ -22,17 +22,21 @@
 package org.sakaiproject.assignment2.logic.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.component.cover.ComponentManager;
+import org.sakaiproject.service.gradebook.shared.GradebookFrameworkService;
 import org.sakaiproject.service.gradebook.shared.GradebookService;
-
+import org.sakaiproject.assignment2.model.Assignment2;
 
 /**
- * This is the implementation for logic which is interacting with the Sakai
+ * This is the implementation for logic to interact with the Sakai
  * Gradebook tool
  * 
  * @author <a href="mailto:wagnermr@iupui.edu">michelle wagner</a>
@@ -40,22 +44,80 @@ import org.sakaiproject.service.gradebook.shared.GradebookService;
 public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
 
     private static Log log = LogFactory.getLog(ExternalGradebookLogicImpl.class);
-    
-    GradebookService gradebookService = (org.sakaiproject.service.gradebook.shared.GradebookService) 
-    ComponentManager.get("org.sakaiproject.service.gradebook.GradebookService"); 
 
     public void init() {
     	log.debug("init");
     }
-
-    // Gradebook interaction
-    public List<org.sakaiproject.service.gradebook.shared.Assignment> getViewableGradebookAssignments(String siteContext) {
-    	if (siteContext == null) {
-    		throw new IllegalArgumentException("Null site context passed to getViewableGradebookAssignments");
+    
+    public List<Assignment2> getViewableAssignmentsWithGbData(List<Assignment2> gradedAssignments, String contextId) {
+    	if (contextId == null) {
+    		throw new IllegalArgumentException("contextId is null in getViewableAssignmentsWithGbData");
     	}
     	
-    	//return gradebookService.getViewableAssignmentsForCurrentUser(siteContext);
-    	return new ArrayList();
+        GradebookService gradebookService = (org.sakaiproject.service.gradebook.shared.GradebookService) 
+        ComponentManager.get("org.sakaiproject.service.gradebook.GradebookService"); 
+        
+    	
+    	List<Assignment2> viewableAssignmentsWithGbData = new ArrayList();
+    	if (gradedAssignments == null || gradedAssignments.isEmpty()) {
+    		return viewableAssignmentsWithGbData;
+    	}
+    	
+    	List<org.sakaiproject.service.gradebook.shared.Assignment> gbAssignments = 
+    		gradebookService.getViewableAssignmentsForCurrentUser(contextId);
+		
+		Map goIdGbAssignmentMap = new HashMap();
+		if (gbAssignments != null) {
+			for (Iterator gbIter = gbAssignments.iterator(); gbIter.hasNext();) {
+				org.sakaiproject.service.gradebook.shared.Assignment gbObject = 
+					(org.sakaiproject.service.gradebook.shared.Assignment) gbIter.next();
+				if (gbObject != null) {
+					goIdGbAssignmentMap.put(gbObject.getId(), gbObject);
+				}
+			}
+		}
+		
+		// there are 2 situations in which the gradable object associated with the assignment
+		// is not included in the list returned from the gradebook:
+		// 1) the user does not have permission to view that GO
+		// 2) the GO was deleted from the gb
+		
+		for (Iterator assignIter = gradedAssignments.iterator(); assignIter.hasNext();) {
+			Assignment2 gradedAssignment = (Assignment2) assignIter.next();
+			if (gradedAssignment != null) {
+				Long goId = gradedAssignment.getGradableObjectId();
+				if (goId != null) {
+					org.sakaiproject.service.gradebook.shared.Assignment gbItem =
+						(org.sakaiproject.service.gradebook.shared.Assignment)goIdGbAssignmentMap.get(goId);
+					if (gbItem != null) {
+						gradedAssignment.setDueDate(gbItem.getDueDate());
+						gradedAssignment.setPointsPossible(gbItem.getPoints());
+						viewableAssignmentsWithGbData.add(gradedAssignment);
+					} else {
+						// TODO we need to do something if this GO was deleted!
+						// check to see if this gradable object exists anymore
+						if (!gradebookService.isGradableObjectDefined(goId)) {
+							// then the GO was deleted!
+						}
+					}
+				}
+			}
+		}
+		
+		return viewableAssignmentsWithGbData;
+    }
+    
+    public void createGradebookDataIfNecessary(String contextId) {
+    	// we need to check if there is gradebook data defined for this site. if not,
+        // create it (but will not actually add the tool, just the backend)
+    	
+    	GradebookFrameworkService frameworkService = (org.sakaiproject.service.gradebook.shared.GradebookFrameworkService) 
+        ComponentManager.get("org.sakaiproject.service.gradebook.GradebookFrameworkService");
+        if (!frameworkService.isGradebookDefined(contextId)) {
+        	if (log.isInfoEnabled()) 
+        		log.info("Gradebook data being added to context " + contextId + " by Assignment2 tool");
+        	frameworkService.addGradebook(contextId, contextId);
+        }
     }
 
 }

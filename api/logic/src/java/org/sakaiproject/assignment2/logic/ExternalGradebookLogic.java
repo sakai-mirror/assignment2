@@ -23,6 +23,8 @@ package org.sakaiproject.assignment2.logic;
 
 import java.util.List;
 
+import org.sakaiproject.assignment2.model.Assignment2;
+
 /**
  * This is the interface for logic which is related to the integration
  * with the Gradebook tool
@@ -32,11 +34,23 @@ import java.util.List;
 public interface ExternalGradebookLogic {
 
     /**
-     * Retrieve the gradebook assignments (gradable objects) that the current
-     * user has permission to view/grade. Should not be used for retrieving
-     * assignments for the student view.
-     * @param siteContext
+     * Given a list of graded Assignment2 objects, filter out the objects
+     * that the user is not authorized to view according to the gradebook
+     * permissions and return a list of graded assignments that the user is
+     * authorized to view. Also populates the gb-specific fields for each
+     * Assignment2 object
+     * @param gradedAssignments
+     * @param contextId
      * @return
      */
-    public List<org.sakaiproject.service.gradebook.shared.Assignment> getViewableGradebookAssignments(String siteContext);
+	public List<Assignment2> getViewableAssignmentsWithGbData(List<Assignment2> gradedAssignments, String contextId);
+	
+	/**
+	 * The Assignment2 tool stores all grading information in the gradebook. Thus,
+	 * the gradebook backend must exist for the Assignment2 tool to work. This
+	 * method will check to see if the gradebook data exists and, if not, will
+	 * add it
+	 * @param contextId
+	 */
+	public void createGradebookDataIfNecessary(String contextId);
 }

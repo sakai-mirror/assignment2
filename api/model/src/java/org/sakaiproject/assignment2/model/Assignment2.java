@@ -33,7 +33,7 @@ public class Assignment2 {
 
     private Long assignmentId;
     private Long gradableObjectId;
-    private String siteId;
+    private String contextId;
     private String title;
     private Boolean draft;
     private int sortIndex;
@@ -65,7 +65,7 @@ public class Assignment2 {
     private Double pointsPossible;
     private Date dueDate;
 
-	public Assignment2(Long gradableObjectId, String siteId, String title,
+	public Assignment2(Long gradableObjectId, String contextId, String title,
 			Boolean draft, int sortIndex, Date openTime, 
 			Date acceptUntilTime, Boolean ungraded, Date dueDateForUngraded,
 			Boolean restrictedToGroups, Boolean groupSubmission,
@@ -77,7 +77,7 @@ public class Assignment2 {
 			Date modifiedTime, Double pointsPossible, Date dueDate) {
 
 		this.gradableObjectId = gradableObjectId;
-		this.siteId = siteId;
+		this.contextId = contextId;
 		this.title = title;
 		this.draft = draft;
 		this.sortIndex = sortIndex;
@@ -147,18 +147,18 @@ public class Assignment2 {
     }
     
     /**
-     * @return Returns the site id
+     * @return Returns the context id
      */
-    public String getSiteId() {
-        return siteId;
+    public String getContextId() {
+        return contextId;
     }
     
     /**
-     * set the siteId
-     * @param siteId
+     * set the contextId
+     * @param contextId
      */
-    public void setSiteId(String siteId) {
-        this.siteId = siteId;
+    public void setContextId(String contextId) {
+        this.contextId = contextId;
     }
     
     /**

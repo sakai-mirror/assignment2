@@ -19,7 +19,7 @@ public class Assignment2Creator {
   
     	Assignment2 togo = new Assignment2();
     	togo.setTitle("");
-    	togo.setSiteId(externalLogic.getCurrentLocationId());
+    	togo.setContextId(externalLogic.getCurrentContextId());
     	togo.setCreator(externalLogic.getCurrentUserId());
     	togo.setRemoved(Boolean.FALSE);
     	togo.setHonorPledge(Boolean.FALSE);
@@ -47,7 +47,7 @@ public class Assignment2Creator {
     	String newTitle = messageLocator.getMessage("Assignment2Creator.duplicate.title", assignment.getTitle());
     	
     	dup.setGradableObjectId(assignment.getGradableObjectId());
-    	dup.setSiteId(assignment.getSiteId());
+    	dup.setContextId(assignment.getContextId());
     	dup.setTitle(newTitle);
     	dup.setDraft(Boolean.TRUE);
     	dup.setSortIndex(assignment.getSortIndex());

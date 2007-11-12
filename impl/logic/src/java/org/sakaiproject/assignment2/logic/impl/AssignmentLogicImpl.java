@@ -21,17 +21,25 @@
 
 package org.sakaiproject.assignment2.logic.impl;
 
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.ArrayList;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment2.model.Assignment2;
+import org.sakaiproject.assignment2.model.AssignmentGroup;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
+import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.dao.AssignmentDao;
 import org.sakaiproject.assignment2.exception.ConflictingAssignmentNameException;
 import org.sakaiproject.genericdao.api.finders.ByPropsFinder;
+import org.sakaiproject.site.api.Group;
+
 
 
 /**
@@ -46,6 +54,11 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 	private ExternalLogic externalLogic;
     public void setExternalLogic(ExternalLogic externalLogic) {
         this.externalLogic = externalLogic;
+    }
+    
+    private ExternalGradebookLogic gradebookLogic;
+    public void setExternalGradebookLogic(ExternalGradebookLogic gradebookLogic) {
+        this.gradebookLogic = gradebookLogic;
     }
     
     private AssignmentDao dao;
@@ -65,6 +78,12 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 	{
 		return (Assignment2) dao.findById(Assignment2.class, assignmentId);
     }
+	
+	public Assignment2 getAssignmentByIdWithAssociatedData(Long assignmentId) {
+		//TODO populate the due date and points possible if this is 
+		// associated with a gb item
+		return (Assignment2) dao.getAssignmentByIdWithGroupsAndAttachments(assignmentId);
+	}
 	
 	/*
 	 * (non-Javadoc)
@@ -95,7 +114,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 	        		throw new ConflictingAssignmentNameException("An assignment with the title " + assignment.getTitle() + " already exists");
 	        	}
 	        	// identify the next sort index to be used
-	        	Integer highestIndex = dao.getHighestSortIndexInSite(externalLogic.getCurrentLocationId());
+	        	Integer highestIndex = dao.getHighestSortIndexInSite(externalLogic.getCurrentContextId());
 	        	if (highestIndex != null) {
 	        		assignment.setSortIndex(highestIndex + 1);
 	        	} else {
@@ -151,31 +170,80 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 	 */
 	public List<Assignment2> getViewableAssignments(String userId)
 	{
+		List viewableAssignments = new ArrayList();
 		
-		List<Assignment2> assignments = 
-			dao.findByProperties(Assignment2.class, new String[] {"siteId", "removed"}, new Object[] {externalLogic.getCurrentLocationId(), Boolean.FALSE});
+		if (!externalLogic.getCurrentUserHasPermission(ExternalLogic.ASSIGNMENT2_READ)) {
+			log.debug("No assignments returned b/c user does not have READ permission");
+			return viewableAssignments;
+		}
 		
-		// first, we need to check if any of these assignments are associated with a gb item.
-		// if so, we need to filter out the returned assignments based upon grader perms
+		List<Assignment2> allAssignments = dao.getAssignmentsWithGroups(externalLogic.getCurrentContextId());
 		
-		return assignments;
+		if (allAssignments == null || allAssignments.isEmpty()) {
+			return viewableAssignments;
+		}
+		
+		List<Assignment2> gradedAssignments = new ArrayList();
+		
+		boolean allowedToViewAllSectionsForUngraded = 
+			externalLogic.getCurrentUserHasPermission(ExternalLogic.ASSIGNMENT2_ALL_GROUPS_UNGRADED);
+		List<String> userGroupIds = externalLogic.getCurrentUserGroupIdList();	
+		
+		for (Iterator asnIter = allAssignments.iterator(); asnIter.hasNext();) {
+			Assignment2 assignment = (Assignment2) asnIter.next();
+			
+			if (assignment.isUngraded()) {
+				if (!assignment.isRestrictedToGroups()) {
+					viewableAssignments.add(assignment);
+				} else if (!allowedToViewAllSectionsForUngraded	&& userGroupIds != null) {
+					// we need to filter out the section-based assignments if not authorized for all
+					// check to see if user is a member of an associated section
+					Set<AssignmentGroup> groupRestrictions = assignment.getAssignmentGroupSet();
+					if (groupRestrictions != null) {
+						for (Iterator groupIter = groupRestrictions.iterator(); groupIter.hasNext();) {
+							AssignmentGroup group = (AssignmentGroup) groupIter.next();
+							if (group != null && userGroupIds.contains(group.getGroupId())) {
+								viewableAssignments.add(assignment);
+								break;
+							}
+						}
+					}	
+				} 
+				
+			} else {
+				gradedAssignments.add(assignment);
+			}
+		}
+		
+		if (gradedAssignments != null && !gradedAssignments.isEmpty()) {
+			// now, we need to filter the assignments that are associated with
+			// the gradebook according to grader permissions and populate the
+			// gradebook data
+			List viewableGbAssignments = gradebookLogic.getViewableAssignmentsWithGbData(gradedAssignments, externalLogic.getCurrentContextId());
+			if (viewableGbAssignments != null) {
+				viewableAssignments.addAll(viewableGbAssignments);
+			}
+		}
+		
+		return viewableAssignments;
 	}
 	
 	public List<Assignment2> getViewableAssignments(String userId, String sortProperty, boolean ascending, int start, int limit) {
-		
 		if (!ascending) {
             sortProperty += ByPropsFinder.DESC;
         }
+
 		List<Assignment2> assignments = 
-			dao.findByProperties(Assignment2.class, new String[] {"siteId", "removed"}, new Object[] {externalLogic.getCurrentLocationId(), Boolean.FALSE},
+			dao.findByProperties(Assignment2.class, new String[] {"contextId", "removed"}, new Object[] {externalLogic.getCurrentContextId(), Boolean.FALSE},
 					new int[] { ByPropsFinder.EQUALS, ByPropsFinder.EQUALS }, new String[] { sortProperty }, start, limit);
+		
 		return assignments;
 	}
 	
 	public int getTotalCountViewableAssignments(String userId) {
 
-		int result = dao.countByProperties(Assignment2.class, new String[] {"siteId", "removed"}, 
-				new Object[] {externalLogic.getCurrentLocationId(), Boolean.FALSE});
+		int result = dao.countByProperties(Assignment2.class, new String[] {"contextId", "removed"}, 
+				new Object[] {externalLogic.getCurrentContextId(), Boolean.FALSE});
 		return result;
 	}
 	
@@ -206,8 +274,8 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 	 */
 	private boolean assignmentNameExists(String assignmentName) {
 		int count = dao.countByProperties(Assignment2.class, 
-	               new String[] {"siteId", "title", "removed"}, 
-	               new Object[] {externalLogic.getCurrentLocationId(), assignmentName, Boolean.FALSE});
+	               new String[] {"contextId", "title", "removed"}, 
+	               new Object[] {externalLogic.getCurrentContextId(), assignmentName, Boolean.FALSE});
 		
 		return count > 0;
 	}

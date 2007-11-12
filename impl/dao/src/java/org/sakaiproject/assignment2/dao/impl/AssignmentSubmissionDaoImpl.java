@@ -32,6 +32,8 @@ import org.apache.commons.logging.LogFactory;
 import org.hibernate.Query;
 
 import org.sakaiproject.assignment2.dao.AssignmentSubmissionDao;
+import org.sakaiproject.assignment2.model.Assignment2;
+import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.genericdao.hibernate.HibernateCompleteGenericDao;
 
 /**
@@ -46,5 +48,15 @@ public class AssignmentSubmissionDaoImpl extends HibernateCompleteGenericDao imp
 
     public void init() {
         log.debug("init");
+    }
+    
+    public List<AssignmentSubmission> findCurrentSubmissionsForAssignment(Assignment2 assignment) {
+    	if (assignment == null) {
+    		throw new IllegalArgumentException("Null assignment passed to findCurrentSubmissionsForAssignment");
+    	}
+    	Query query = getSession().getNamedQuery("findCurrentSubmissionsForAssignment");
+    	query.setParameter("assignment", assignment);
+    	
+    	return (List)query.list();
     }
 }

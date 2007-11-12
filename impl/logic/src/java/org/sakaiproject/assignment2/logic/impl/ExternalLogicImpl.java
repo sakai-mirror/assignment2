@@ -2,8 +2,9 @@ package org.sakaiproject.assignment2.logic.impl;
 
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Collection;
+import java.util.List;
+import java.util.Iterator;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -13,15 +14,16 @@ import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.component.cover.ServerConfigurationService;
 import org.sakaiproject.entity.api.Entity;
 import org.sakaiproject.exception.IdUnusedException;
+import org.sakaiproject.site.api.Group;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.api.SiteService;
-import org.sakaiproject.tool.api.Session;
 import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.tool.api.ToolManager;
 import org.sakaiproject.user.api.User;
 import org.sakaiproject.user.api.UserDirectoryService;
 import org.sakaiproject.user.api.UserNotDefinedException;
 import org.sakaiproject.util.FormattedText;
+
 
 /**
  * This is the implementation for logic which is external to our app logic
@@ -61,7 +63,7 @@ public class ExternalLogicImpl implements ExternalLogic {
     public void setUserDirectoryService(UserDirectoryService userDirectoryService) {
         this.userDirectoryService = userDirectoryService;
     }
-
+    
     private static final String ANON_USER_ATTRIBUTE = "AnonUserAttribute";
 
     /**
@@ -86,6 +88,10 @@ public class ExternalLogicImpl implements ExternalLogic {
         } catch (IdUnusedException e) {
             return NO_LOCATION;
         }
+    }
+    
+    public String getCurrentContextId() {
+    	return toolManager.getCurrentPlacement().getContext();
     }
 
     public String getCurrentUserId() {
@@ -132,6 +138,30 @@ public class ExternalLogicImpl implements ExternalLogic {
     	} catch (IdUnusedException e){
     		return new ArrayList();
     	}
+    }
+    
+    public Collection getCurrentUserMemberships() {
+    	try {
+	    	Site s = siteService.getSite(toolManager.getCurrentPlacement().getContext());
+	    	return s.getGroupsWithMember(getCurrentUserId());
+    	} catch (IdUnusedException e){
+    		return new ArrayList();
+    	}
+    }
+    
+    public List getCurrentUserGroupIdList() {
+    	List memberships = new ArrayList(getCurrentUserMemberships());
+    	List groupIds = new ArrayList();
+    	if (memberships != null) {
+    		for (Iterator groupIter = memberships.iterator(); groupIter.hasNext();) {
+    			Group group = (Group) groupIter.next();
+    			if (group != null) {
+    				groupIds.add(group.getId());
+    			}
+    		}
+    	}
+    	
+    	return groupIds;
     }
 
 }

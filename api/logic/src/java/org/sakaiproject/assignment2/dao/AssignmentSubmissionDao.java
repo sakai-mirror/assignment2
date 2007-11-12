@@ -37,6 +37,13 @@ import org.sakaiproject.genericdao.api.CompleteGenericDao;
  * @author <a href="mailto:wagnermr@iupui.edu">michelle wagner</a>
  */
 public interface AssignmentSubmissionDao extends CompleteGenericDao {
-
+	
+	/**
+	 * Given an assignment, returns the associated AssignmentSubmission records 
+	 * with the current submission information populated
+	 * @param assignment
+	 * @return
+	 */
+	public List<AssignmentSubmission> findCurrentSubmissionsForAssignment(Assignment2 assignment);
 
 }

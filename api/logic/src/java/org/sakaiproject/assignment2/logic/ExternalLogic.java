@@ -1,6 +1,7 @@
 package org.sakaiproject.assignment2.logic;
 
 import java.util.Collection;
+import java.util.List;
 
 /**
  * This is the interface for logic which is external to our app logic
@@ -38,6 +39,12 @@ public interface ExternalLogic {
      * @return the current location id of the current user
      */
     public String getCurrentLocationId();
+    
+    /**
+     * 
+     * @return the current context for the current user
+     */
+    public String getCurrentContextId();
 
     /**
      * Check if this user has super admin access
@@ -78,4 +85,18 @@ public interface ExternalLogic {
      * @return a collection
      */
     public Collection getSiteGroups();
+    
+    /**
+     * 
+     * @return a collection of the groups that the current user is a member of
+     */
+    public Collection getCurrentUserMemberships();
+    
+    /**
+     * 
+     * @return list of the group ids of the groups that the current user is
+     * a member of
+     */
+    public List getCurrentUserGroupIdList();
+
 }

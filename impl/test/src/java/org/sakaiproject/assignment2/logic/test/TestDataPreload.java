@@ -44,7 +44,7 @@ public class TestDataPreload {
         testAssignment.setRestrictedToGroups(Boolean.FALSE);
         testAssignment.setHonorPledge(Boolean.FALSE);
         testAssignment.setUngraded(Boolean.TRUE);
-        testAssignment.setSiteId("location123");
+        testAssignment.setContextId("location123");
         testAssignment.setNotificationType(0);
         testAssignment.setSubmissionType(0);
         testAssignment.setTitle("Test Assignment");

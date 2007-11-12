@@ -32,6 +32,7 @@ import org.apache.commons.logging.LogFactory;
 import org.hibernate.Query;
 
 import org.sakaiproject.assignment2.dao.AssignmentDao;
+import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.genericdao.hibernate.HibernateCompleteGenericDao;
 
 /**
@@ -48,13 +49,33 @@ public class AssignmentDaoImpl extends HibernateCompleteGenericDao implements As
         log.debug("init");
     }
     
-    public Integer getHighestSortIndexInSite(String siteId) {
-    	String hql = "select max(assignment.sortIndex) from Assignment2 as assignment where assignment.siteId = :siteId and assignment.removed != true";
+    public Integer getHighestSortIndexInSite(String contextId) {
+    	String hql = "select max(assignment.sortIndex) from Assignment2 as assignment where assignment.contextId = :contextId and assignment.removed != true";
     	
     	Query query = getSession().createQuery(hql);
-    	query.setParameter("siteId", siteId);
+    	query.setParameter("contextId", contextId);
 
         return (Integer)query.uniqueResult();
+    }
+    
+    public List<Assignment2> getAssignmentsWithGroups(String contextId) {
+    	if (contextId == null) {
+    		throw new IllegalArgumentException("Null contextId passed to getAssignmentsWithGroups");
+    	}
+    	Query query = getSession().getNamedQuery("findAssignmentsWithGroups");
+    	query.setParameter("contextId", contextId);
+    	
+    	return (List)query.list();
+    }
+    
+    public Assignment2 getAssignmentByIdWithGroupsAndAttachments(Long assignmentId) {
+    	if (assignmentId == null) {
+    		throw new IllegalArgumentException("Null assignmentId passed to getAssignmentByIdWithGroupsAndAttachments");
+    	}
+    	Query query = getSession().getNamedQuery("getAssignmentWithGroupsAndAttachments");
+    	query.setParameter("assignmentId",assignmentId);
+    	
+    	return (Assignment2) query.uniqueResult();
     }
 
 }

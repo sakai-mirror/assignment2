@@ -80,5 +80,14 @@ public interface AssignmentLogic {
 	public int getTotalCountViewableAssignments(String userId);
 	
 	public void setAssignmentSortIndexes(Long[] assignmentIds);
+	
+	/**
+	 * retrieve the Assignment2 object with the given id and populate associated
+	 * data (ie attachments, groups, any gradebook data). Does not include
+	 * student submission information
+	 * @param assignmentId
+	 * @return
+	 */
+	public Assignment2 getAssignmentByIdWithAssociatedData(Long assignmentId);
 
 }
