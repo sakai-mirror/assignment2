@@ -30,6 +30,7 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
+import org.sakaiproject.assignment2.logic.GradebookItem;
 import org.sakaiproject.component.cover.ComponentManager;
 import org.sakaiproject.service.gradebook.shared.GradebookFrameworkService;
 import org.sakaiproject.service.gradebook.shared.GradebookService;
@@ -141,6 +142,37 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
     	}
     	
     	return idTitleMap;
+    }
+    
+    public List<GradebookItem> getViewableGradebookItems(String contextId) {
+    	if (contextId == null) {
+    		throw new IllegalArgumentException("null contextId passed to getViewableGradebookItems");
+    	}
+    	
+    	List<GradebookItem> gradebookItems = new ArrayList();
+    	
+    	GradebookService gradebookService = (org.sakaiproject.service.gradebook.shared.GradebookService) 
+        ComponentManager.get("org.sakaiproject.service.gradebook.GradebookService"); 
+    	
+    	List<org.sakaiproject.service.gradebook.shared.Assignment> viewableGbItems = 
+    		gradebookService.getViewableAssignmentsForCurrentUser(contextId);
+    	
+    	if (viewableGbItems == null || viewableGbItems.isEmpty()) {
+    		return gradebookItems;
+    	}
+    	
+    	for (Iterator itemIter = viewableGbItems.iterator(); itemIter.hasNext();) {
+    		org.sakaiproject.service.gradebook.shared.Assignment assign =
+    			(org.sakaiproject.service.gradebook.shared.Assignment)itemIter.next();
+    		
+    		if (assign != null) {
+    			GradebookItem item = 
+    				new GradebookItem(assign.getId(), assign.getName(), assign.getPoints(), assign.getDueDate());
+    			gradebookItems.add(item);
+    		}
+    	}
+    	
+    	return gradebookItems;
     }
 
 }
