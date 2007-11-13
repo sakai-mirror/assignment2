@@ -6,9 +6,12 @@ import org.sakaiproject.assignment2.tool.params.AssignmentAddViewParams;
 import org.sakaiproject.assignment2.tool.params.SimpleAssignmentViewParams;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
+import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
+import org.sakaiproject.assignment2.logic.GradebookItem;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -16,6 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.lang.String;
+import java.util.Locale;
 
 import uk.org.ponder.arrayutil.ListUtil;
 import uk.org.ponder.beanutil.entity.EntityBeanLocator;
@@ -65,7 +69,9 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
     private MessageLocator messageLocator;
     private AssignmentLogic assignmentLogic;
     private ExternalLogic externalLogic;
+    private ExternalGradebookLogic externalGradebookLogic;
     private PreviewAssignmentBean previewAssignmentBean;
+    private Locale locale;
     
 	/*
 	 * You can change the date input to accept time as well by uncommenting the lines like this:
@@ -82,9 +88,14 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
 
     @SuppressWarnings("unchecked")
 	public void fillComponents(UIContainer tofill, ViewParameters viewparams, ComponentChecker checker) {
+    	//Get View Params
     	AssignmentAddViewParams params = (AssignmentAddViewParams) viewparams;
     	
+    	//get Passed assignmentId to pull in for editing if any
     	Long assignmentId = params.assignmentId;
+    	
+    	// use a date which is related to the current users locale
+        DateFormat df = DateFormat.getDateInstance(DateFormat.MEDIUM, locale);
     	
         UIMessage.make(tofill, "page-title", "assignment2.assignment_add.title");
         navBarRenderer.makeNavBar(tofill, "navIntraTool:", VIEW_ID);
@@ -162,31 +173,76 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
         ((UIBoundString) select.selection).setValue(String.valueOf(assignment.getSubmissionType()));
         
         //Rich Text Input
-        UIMessage.make(form, "assignment_instructions_label", "assignment2.assignment_add.assignment_instructions");
         UIInput instructions = UIInput.make(form, "instructions:", assignment2OTP + ".instructions", assignment.getInstructions());
         richTextEvolver.evolveTextInput(instructions);
         
         
         //Calendar Due Date
-        UIMessage.make(form, "on_calendar_label", "assignment2.assignment_add.on_calendar");
         //Announcement
-        UIMessage.make(form, "announcement_label", "assignment2.assignment_add.announcement");
         //Honor Pledge
-        UIMessage.make(form, "honor_pledge_label", "assignment2.assignment_add.honor_pledge");
         UIBoundBoolean.make(form, "honor_pledge", assignment2OTP + ".honorPledge", assignment.isHonorPledge());
         
         //Attachments
-        UIMessage.make(form, "attachments_legend", "assignment2.assignment_add.attachments_legend");
-        UIMessage.make(form, "no_attachments_yet", "assignment2.assignment_add.no_attachments_yet");
         
-        //Grading
-        UIMessage.make(form, "grading_legend", "assignment2.assignment_add.grading_legend");
-        UIMessage.make(form, "graded_label", "assignment2.assignment_add.assignment_graded");
-        UIMessage.make(form, "gradebook_associated", "assignment2.assignment_add.gradebook_associated");
-        UIMessage.make(form, "gradebook_or", "assignment2.assignment_add.gradebook_or");
-        UIMessage.make(form, "assignment_ungraded_label", "assignment2.assignment_add.assignment_ungraded");
+        /********
+         *Grading
+         */  
+        //Get Gradebook Items
+        List<GradebookItem> gradebook_items = externalGradebookLogic.getViewableGradebookItems(externalLogic.getCurrentContextId());
+        //Get an Assignment for currently selected from the select box
+        // by default this the first item on the list returend from the externalGradebookLogic
+        // this will be overwritten if we have a pre-existing assignment with an assigned
+        // item
+        GradebookItem currentSelected = gradebook_items.get(0);
         
-        //Access
+        String[] gradebook_item_labels = new String[gradebook_items.size()];
+        String[] gradebook_item_values = new String[gradebook_items.size()];
+        for (int i=0; i < gradebook_items.size(); i++) {
+        	//Fill out select options
+        	gradebook_item_labels[i] = gradebook_items.get(i).getTitle();
+        	gradebook_item_values[i] = gradebook_items.get(i).getGradableObjectId().toString();
+        	
+        	//CHeck if currently selected
+        	if (gradebook_items.get(i).getGradableObjectId() == assignment.getGradableObjectId()) {
+        		currentSelected = gradebook_items.get(i);
+        	}
+        }
+        UISelect.make(form, "gradebook_item",gradebook_item_values, gradebook_item_labels, assignment2OTP + ".gradableObjectId"); 
+        
+        //Radio Buttons for Grading
+        UISelect grading_select = UISelect.make(form, "grading_select", 
+        		new String[]{Boolean.FALSE.toString(), Boolean.TRUE.toString()}, assignment2OTP + ".ungraded", assignment.isUngraded().toString());
+        String grading_select_id = grading_select.getFullID();
+        UISelectChoice graded = UISelectChoice.make(form, "graded", grading_select_id, 0);
+        UISelectChoice ungraded = UISelectChoice.make(form, "ungraded", grading_select_id, 1);
+        
+        //Check if gradebook item due date is not null, else output the formatted date
+        if (currentSelected.getDueDate() == null) {
+        	UIMessage.make(form, "gradebook_item_due_date", "assignment2.assignment_add.gradebook_item_no_due_date");
+        } else {
+        	UIOutput.make(form, "gradebook_item_due_date", df.format(currentSelected.getDueDate()));
+        }
+        UIInternalLink.make(form, "gradebook_item_edit_helper", 
+        		UIMessage.make("assignment2.assignmetn_add.gradebook_item_edit_helper"),
+        		new AssignmentAddViewParams(AssignmentAddProducer.VIEW_ID));
+        
+        //Java Scripting to hide due dates
+        Map selectattrmap = new HashMap();
+        selectattrmap.put("onclick", "if(this.checked){assignment_selected_gradebook_item(true)}else{assignment_selected_gradebook_item(false)}");
+        graded.decorators = new DecoratorList(new UIFreeAttributeDecorator(selectattrmap));
+        selectattrmap = new HashMap();
+        selectattrmap.put("onclick", "if(!this.checked){assignment_selected_gradebook_item(true)}else{assignment_selected_gradebook_item(false)}");
+        ungraded.decorators = new DecoratorList(new UIFreeAttributeDecorator(selectattrmap));
+        if (assignment.isUngraded()) {
+        	UIVerbatim.make(tofill, "due_date_init", "$('.gradebook_item_due_date').hide()");
+        } else {
+        	UIVerbatim.make(tofill, "due_date_init", "$('.due_date').hide()");
+        }
+        
+        
+        /******
+         * Access
+         */
         UIMessage.make(form, "access_legend", "assignment2.assignment_add.access_legend");
         String[] access_values = new String[] {
         		Boolean.FALSE.toString(),
@@ -303,7 +359,15 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
     	this.externalLogic = externalLogic;
     }
     
+    public void setExternalGradebookLogic(ExternalGradebookLogic externalGradebookLogic) {
+    	this.externalGradebookLogic = externalGradebookLogic;
+    }
+    
     public void setPreviewAssignmentBean(PreviewAssignmentBean previewAssignmentBean) {
     	this.previewAssignmentBean = previewAssignmentBean;
+    }
+    
+    public void setLocale(Locale locale) {
+    	this.locale = locale;
     }
 }

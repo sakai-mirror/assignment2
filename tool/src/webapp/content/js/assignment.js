@@ -26,3 +26,11 @@ if(sf3){x+=num(elem,'marginLeft')+num(elem,'borderLeftWidth');y+=num(elem,'margi
 function a2SetMainFrameHeight(id){
 	$("#" + id, parent.document).height($(document).height());
 }
+
+function assignment_selected_gradebook_item(boolean){
+	if(boolean){
+		$('.due_date').hide(); $('.gradebook_item_due_date').show();
+	} else {
+		$('.due_date').show(); $('.gradebook_item_due_date').hide();
+	}
+}

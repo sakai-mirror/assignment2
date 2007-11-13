@@ -35,6 +35,29 @@
 
 	<form rsf:id="assignment_form">
 	<fieldset>
+		<legend rsf:id="msg=assignment2.assignment_add.grading_legend">Grading</legend>
+		<ol>
+			<li><span rsf:id="grading_select" />
+				<fieldset>
+					<ol>
+						<li><input rsf:id="graded" name="graded" type="radio" /> <label rsf:id="msg=assignment2.assignment_add.assignment_graded">This assignment is graded</label>
+							<span rsf:id="msg=assignment2.assignment_add.gradebook_associated"> and is associated with a Gradebook Item:</span> 
+								<select rsf:id="gradebook_item" >
+									<option value="">Select a Gradebook Item</option>
+									<option value="Category: GB Item 1">Category: GB Item 1</option>
+									<option value="Category: GB Item 2">Category: GB Item 2</option>
+									<option value="Category: GB Item 3">Category: GB Item 3</option>
+									<option value="Category: GB Item 4">Category: GB Item 4</option>
+								</select>
+								<span rsf:id="msg=assignment2.assignment_add.gradebook_or"> -or- </span>
+								<a href="">Create a new Gradebook Item</a></li>
+						<li><input rsf:id="ungraded" name="graded" type="radio" /> <label rsf:id="msg=assignment2.assignment_add.assignment_ungraded">This assignment is ungraded</label></li>
+					</ol>
+				</fieldset>
+			</li>
+		</ol>
+	</fieldset>
+	<fieldset>
 		<legend>Assignment Details</legend>
 		<ol>
 			<li>
@@ -50,11 +73,19 @@
 				</div>
 				<p rsf:id="open_date_instruction" class="instruction">Students won't see this assignment until this open date.</p>
 			</li>
-			<li>
+			<li class="due_date">
 				<label rsf:id="due_date_label"><span class="reqStar">*</span> Due Date</label> <input rsf:id="due_date:" value="12/31/2007"/>
 				<div class="error">
 					<p rsf:id="message-for:due_date"></p>
 				</div>
+			</li>
+			<li class="gradebook_item_due_date">
+				<label rsf:id="msg=assignment2.assignment_add.gradebook_item_due_date">Gradebook Item Due Date</label>
+				<span rsf:id="gradebook_item_due_date">12/31/2007</span>
+				<p class="instruction">
+					<span rsf:id="msg=assignment2.assignment_add.gradebook_item_due_Date_instruction">The Due Date is set by the Gradebook Item.</span> 
+					<a rsf:id="gradebook_item_edit_helper">To Edit, click here</a>
+				</p>
 			</li>
 			<li>
 				<label rsf:id="accept_until_label"><span class="reqStar">*</span> Accept Until</label> <input rsf:id="accept_until:" value="12/31/2007"/>
@@ -76,7 +107,7 @@
 				</div>
 			</li>
 			<li>
-				<label rsf:id="assignment_instructions_label" class="block">Assignment Instructions</label>
+				<label rsf:id="msg=assignment2.assignment_add.assignment_instructions" class="block">Assignment Instructions</label>
 				<div class="error">
 					<p rsf:id="message-for:instructions"></p>
 				</div>
@@ -89,9 +120,9 @@
 			<li>
 				<fieldset>
 					<ol>
-						<li><input rsf:id="on_calendar" type="checkbox" /> <label rsf:id="on_calendar_label">Add the due date to Calendar</label></li>
-						<li><input rsf:id="announcement" type="checkbox" /> <label rsf:id="announcement_label">Add an announcement about the open date to Announcements</label></li>
-						<li><input rsf:id="honor_pledge" type="checkbox" /> <label rsf:id="honor_pledge_label">Add honor pledge</label></li>
+						<li><input rsf:id="on_calendar" type="checkbox" /> <label rsf:id="msg=assignment2.assignment_add.on_calendar">Add the due date to Calendar</label></li>
+						<li><input rsf:id="announcement" type="checkbox" /> <label rsf:id="msg=assignment2.assignment_add.announcement">Add an announcement about the open date to Announcements</label></li>
+						<li><input rsf:id="honor_pledge" type="checkbox" /> <label rsf:id="msg=assignment2.assignment_add.honor_pledge">Add honor pledge</label></li>
 					</ol>
 				</fieldset>
 			</li>
@@ -101,34 +132,11 @@
 		</ol>
 	</fieldset>
 	<fieldset>
-		<legend rsf:id="attachments_legend">Attachments</legend>
+		<legend rsf:id="msg=assignment2.assignment_add.attachments_legend">Attachments</legend>
 		<ol>
 			<li>
-				<span rsf:id="no_attachments_yet" class="instruction">No attachments yet</span>
+				<span rsf:id="msg=assignment2.assignment_add.no_attachments_yet" class="instruction">No attachments yet</span>
 				<input rsf:id="add_attachments" type="button" name="attach" value="Add Attachments" />
-			</li>
-		</ol>
-	</fieldset>
-	<fieldset>
-		<legend rsf:id="grading_legend">Grading</legend>
-		<ol>
-			<li>
-				<fieldset>
-					<ol>
-						<li><input rsf:id="graded" type="radio" /> <label rsf:id="graded_label">This assignment is graded</label>
-							<span rsf:id="gradebook_associated"> and is associated with a Gradebook Item:</span> 
-								<select name="" >
-									<option value="">Select a Gradebook Item</option>
-									<option value="Category: GB Item 1">Category: GB Item 1</option>
-									<option value="Category: GB Item 2">Category: GB Item 2</option>
-									<option value="Category: GB Item 3">Category: GB Item 3</option>
-									<option value="Category: GB Item 4">Category: GB Item 4</option>
-								</select>
-								<span rsf:id="gradebook_or"> -or- </span>
-								<a href="">Create a new Gradebook Item</a></li>
-						<li><input rsf:id="ungraded" type="radio" /> <label rsf:id="assignment_ungraded_label">This assignment is ungraded</label></li>
-					</ol>
-				</fieldset>
 			</li>
 		</ol>
 	</fieldset>
@@ -185,5 +193,8 @@
 	</fieldset>													
 	</form>
 </div>
+<script type="text/javascript" rsf:id="due_date_init">
+$(".gradebook_item_due_date").hide();
+</script>
 </body>
 </html>

@@ -99,10 +99,13 @@ public class Assignment2Bean {
 		assignment.setModifiedTime(new Date());
 		assignment.setModifiedBy(externalLogic.getCurrentUserId());
 		
-
+		//Since in the UI, the select box bound to the gradableObjectId is always present
+		// we need to manually remove this value if the assignment is ungraded
+		if (assignment.isUngraded()) {
+			assignment.setGradableObjectId(null);
+		}
 		
 		//REMOVE THESE
-		assignment.setUngraded(Boolean.FALSE);
 		assignment.setGroupSubmission(Boolean.FALSE);
 		assignment.setRestrictedToGroups(Boolean.FALSE);
 		assignment.setNotificationType(0);
