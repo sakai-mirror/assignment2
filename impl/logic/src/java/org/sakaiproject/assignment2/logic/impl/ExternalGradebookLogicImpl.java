@@ -174,5 +174,16 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
     	
     	return gradebookItems;
     }
+    
+    public Map<String, String> getViewableGroupIdToTitleMap(String contextId) {
+    	if (contextId == null) {
+    		throw new IllegalArgumentException("Null contextId passed to getViewableGroupIdToTitleMap");
+    	}
+    	
+    	GradebookService gradebookService = (org.sakaiproject.service.gradebook.shared.GradebookService) 
+        ComponentManager.get("org.sakaiproject.service.gradebook.GradebookService"); 
+    	
+    	return gradebookService.getViewableSectionUuidToNameMap(contextId);
+    }
 
 }

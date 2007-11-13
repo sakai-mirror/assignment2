@@ -70,4 +70,13 @@ public interface ExternalGradebookLogic {
 	 * @return
 	 */
 	public List<GradebookItem> getViewableGradebookItems(String contextId);
+	
+	/**
+	 * returns a map of the group id to name for
+	 * all of the groups/sections that the current user is authorized to view
+	 * according to the gradebook grader permissions
+	 * @param contextId
+	 * @return
+	 */
+	public Map<String, String> getViewableGroupIdToTitleMap(String contextId);
 }
