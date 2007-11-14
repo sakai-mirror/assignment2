@@ -70,10 +70,9 @@ public interface AssignmentLogic {
 	 * Returns list of Assignment objects that the given user has permission
 	 * to view or grade. Assignments that the user does not have permission 
 	 * to view or grade will not be returned.
-	 * @param userId
 	 * @return
 	 */
-	public List<Assignment2> getViewableAssignments(String userId);
+	public List<Assignment2> getViewableAssignments();
 	
 	public List<Assignment2> getViewableAssignments(String userId, String sortProperty, boolean ascending, int start, int limit);
 	

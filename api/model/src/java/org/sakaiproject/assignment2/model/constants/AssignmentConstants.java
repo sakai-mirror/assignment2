@@ -70,4 +70,30 @@ public class AssignmentConstants {
 	 */
 	public final static int SUBMIT_NON_ELECTRONIC = 3;
 	
+	// Assignment status
+	/**
+	 * This assignment is in draft status
+	 */
+	public final static Integer STATUS_DRAFT = 0;
+	/**
+	 * The assignment is not draft status but the current date is prior to
+	 * the open date
+	 */
+	public final static Integer STATUS_NOT_OPEN = 1;
+	/**
+	 * The assignment is not draft. The current date is after the open date
+	 * but prior to the "accept until" date and due date.
+	 */
+	public final static Integer STATUS_OPEN = 2;
+	/**
+	 * The assignment is not draft. The current date is after the "accept
+	 * until" date.
+	 */
+	public final static Integer STATUS_CLOSED = 3;
+	/**
+	 * The assignment is not draft. The current date is after the open and
+	 * due dates but before the "accept until" date.
+	 */
+	public final static Integer STATUS_DUE = 4;
+	
 }

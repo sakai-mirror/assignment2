@@ -33,6 +33,7 @@ import org.hibernate.Query;
 
 import org.sakaiproject.assignment2.dao.AssignmentDao;
 import org.sakaiproject.assignment2.model.Assignment2;
+import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.genericdao.hibernate.HibernateCompleteGenericDao;
 
 /**
@@ -76,6 +77,28 @@ public class AssignmentDaoImpl extends HibernateCompleteGenericDao implements As
     	query.setParameter("assignmentId",assignmentId);
     	
     	return (Assignment2) query.uniqueResult();
+    }
+    
+    public List<AssignmentSubmission> findCurrentSubmissionsForAssignment(Assignment2 assignment) {
+    	if (assignment == null) {
+    		throw new IllegalArgumentException("Null assignment passed to findCurrentSubmissionsForAssignment");
+    	}
+    	Query query = getSession().getNamedQuery("findCurrentSubmissionsForAssignment");
+    	query.setParameter("assignment", assignment);
+    	
+    	return (List)query.list();
+    }
+    
+    public AssignmentSubmission findSubmissionForAssignmentAndUserWithAttachments(Assignment2 assignment, String userId) {
+    	if (assignment == null || userId == null) {
+    		throw new IllegalArgumentException("null assignment or userId passed to findSubmissionForAssignmentAndUserWithAttachments");
+    	}
+    	
+    	Query query = getSession().getNamedQuery("findSubmissionForAssignmentAndUserWithAttachments");
+    	query.setParameter("assignment", assignment);
+    	query.setParameter("userId", userId);
+    	
+    	return (AssignmentSubmission) query.uniqueResult();
     }
 
 }

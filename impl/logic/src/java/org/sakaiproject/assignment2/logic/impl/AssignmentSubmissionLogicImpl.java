@@ -30,7 +30,7 @@ import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
-import org.sakaiproject.assignment2.dao.AssignmentSubmissionDao;
+import org.sakaiproject.assignment2.dao.AssignmentDao;
 import org.sakaiproject.assignment2.exception.ConflictingAssignmentNameException;
 import org.sakaiproject.genericdao.api.finders.ByPropsFinder;
 import org.sakaiproject.service.gradebook.shared.GradebookService;
@@ -50,8 +50,8 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
         this.externalLogic = externalLogic;
     }
     
-    private AssignmentSubmissionDao dao;
-    public void setDao(AssignmentSubmissionDao dao) {
+    private AssignmentDao dao;
+    public void setDao(AssignmentDao dao) {
         this.dao = dao;
     }
     

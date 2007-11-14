@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Iterator;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -162,6 +164,23 @@ public class ExternalLogicImpl implements ExternalLogic {
     	}
     	
     	return groupIds;
+    }
+    
+    public Map getGroupIdToNameMapForSite() {
+    	Collection siteGroups = getSiteGroups();
+    	
+    	Map groupIdToNameMap = new HashMap();
+    	if (siteGroups != null && !siteGroups.isEmpty()) {
+			for (Iterator siteGroupIter = siteGroups.iterator(); siteGroupIter.hasNext();) {
+				Group siteGroup = (Group) siteGroupIter.next();
+				if (siteGroup != null) {
+					groupIdToNameMap.put(siteGroup.getId(), siteGroup.getTitle());
+				}
+			}
+			
+		}
+    	
+    	return groupIdToNameMap;
     }
 
 }

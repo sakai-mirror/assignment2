@@ -61,5 +61,23 @@ public interface AssignmentDao extends CompleteGenericDao {
 	 * associated AssignmentGroup and AssignmentAttachment data populated
 	 */
 	public Assignment2 getAssignmentByIdWithGroupsAndAttachments(Long assignmentId);
+	
+	/**
+	 * Given an assignment, returns the associated AssignmentSubmission records 
+	 * with the current submission information populated
+	 * @param assignment
+	 * @return
+	 */
+	public List<AssignmentSubmission> findCurrentSubmissionsForAssignment(Assignment2 assignment);
+	
+	/**
+	 * Given an assignment and userId, returns the corresponding AssignmentSubmission
+	 * record.  Returns null if no record exists.
+	 * @param assignment
+	 * @param userId
+	 * @return
+	 */
+	public AssignmentSubmission findSubmissionForAssignmentAndUserWithAttachments(Assignment2 assignment, String userId);
+	
 
 }

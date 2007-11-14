@@ -64,6 +64,12 @@ public class Assignment2 {
     // fields that are manually retrieved from the gradebook
     private Double pointsPossible;
     private Date dueDate;
+    
+    // fields that are not persisted but needed for UI
+    private Integer numberOfTotalSubmissions;
+    private Integer numberOfNewSubmissions;
+    private Integer status;
+    private String groupRestrictionList;
 
 	public Assignment2(Long gradableObjectId, String contextId, String title,
 			Boolean draft, int sortIndex, Date openTime, 
@@ -614,5 +620,78 @@ public class Assignment2 {
 	 */
 	public void setDueDate(Date dueDate) {
 		this.dueDate = dueDate;
+	}
+	
+	// the following fields are not persisted but are used by the UI
+	
+	/**
+	 * @return the number of submissions to date for this assignment
+	 */
+	public Integer getNumberOfTotalSubmissions() {
+		return numberOfTotalSubmissions;
+	}
+
+	/**
+	 * set the number of submissions to date for this assignment
+	 * @param numberOfTotalSubmissions
+	 */
+	public void setNumberOfTotalSubmissions(Integer numberOfTotalSubmissions) {
+		this.numberOfTotalSubmissions = numberOfTotalSubmissions;
+	}
+
+	/**
+	 * 
+	 * @return the number of submissions for this assignments that have not had
+	 * any grading action taken on them (ie graded, returned, etc)
+	 */
+	public Integer getNumberOfNewSubmissions() {
+		return numberOfNewSubmissions;
+	}
+
+	/**
+	 * set the number of submissions for this assignments that have not had
+	 * any grading action taken on them (ie graded, returned, etc)
+	 * @param numberOfNewSubmissions
+	 */
+	public void setNumberOfNewSubmissions(Integer numberOfNewSubmissions) {
+		this.numberOfNewSubmissions = numberOfNewSubmissions;
+	}
+
+	/**
+	 * 
+	 * @return Integer representation of this assignment's status:
+	 * ie Draft, Not Open, Open, Closed, Due
+	 * see AssignmentConstants for the equivalency
+	 */
+	public Integer getStatus() {
+		return status;
+	}
+
+	/**
+	 * Set Integer representation of this assignment's status:
+	 * ie Draft, Not Open, Open, Closed, Due
+	 * see AssignmentConstants for the equivalency
+	 * @param assignmentStatus
+	 */
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+	
+	/**
+	 * 
+	 * @return a comma-delimited list of the names of the groups/sections
+	 * that this site is restricted to. null if not restricted
+	 */
+	public String getGroupRestrictionList() {
+		return groupRestrictionList;
+	}
+
+	/**
+	 * a comma-delimited list of the names of the groups/sections
+	 * that this site is restricted to. null if not restricted
+	 * @param groupRestrictionList
+	 */
+	public void setGroupRestrictionList(String groupRestrictionList) {
+		this.groupRestrictionList = groupRestrictionList;
 	}
 }

@@ -199,7 +199,7 @@ public class Assignment2Bean {
 	
 	public String processActionRemove() {
 		String currentUserId = externalLogic.getCurrentUserId();
-		List<Assignment2> entries = logic.getViewableAssignments(currentUserId);
+		List<Assignment2> entries = logic.getViewableAssignments();
 		int assignmentsRemoved = 0;
 		for (Assignment2 assignment : entries) {
 			if (selectedIds.get(assignment.getAssignmentId().toString()) == Boolean.TRUE){

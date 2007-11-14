@@ -21,6 +21,7 @@
 
 package org.sakaiproject.assignment2.logic.impl;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -30,6 +31,7 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentGroup;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
@@ -39,7 +41,6 @@ import org.sakaiproject.assignment2.dao.AssignmentDao;
 import org.sakaiproject.assignment2.exception.ConflictingAssignmentNameException;
 import org.sakaiproject.genericdao.api.finders.ByPropsFinder;
 import org.sakaiproject.site.api.Group;
-
 
 
 /**
@@ -168,7 +169,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 	 * (non-Javadoc)
 	 * @see org.sakaiproject.assignment2.logic.AssignmentLogic#getViewableAssignments(String)
 	 */
-	public List<Assignment2> getViewableAssignments(String userId)
+	public List<Assignment2> getViewableAssignments()
 	{
 		List viewableAssignments = new ArrayList();
 		
@@ -222,6 +223,24 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 			List viewableGbAssignments = gradebookLogic.getViewableAssignmentsWithGbData(gradedAssignments, externalLogic.getCurrentContextId());
 			if (viewableGbAssignments != null) {
 				viewableAssignments.addAll(viewableGbAssignments);
+			}
+		}
+		
+		// Now, iterate through the viewable assignments and set the not persisted fields 
+		// that aren't related to the gradebook
+		// create a map of group id to name for all of the groups in this site
+		Map groupIdToNameMap = externalLogic.getGroupIdToNameMapForSite();
+		
+		for (Iterator assignIter = viewableAssignments.iterator(); assignIter.hasNext();) {
+			Assignment2 assignment = (Assignment2) assignIter.next();
+			if (assignment != null) {
+				assignment.setStatus(getStatusForAssignment(assignment));
+				
+				if (assignment.isRestrictedToGroups()) {
+					String groupListAsString = 
+						getListOfGroupRestrictionsAsString(new ArrayList(assignment.getAssignmentGroupSet()), groupIdToNameMap);
+					assignment.setGroupRestrictionList(groupListAsString);
+				}
 			}
 		}
 		
@@ -279,5 +298,91 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 		
 		return count > 0;
 	}
+	
 
+	/**
+	 * 
+	 * @param assignment
+	 * @return the number of submissions to date for the given assignment
+	 */
+	private Integer getTotalNumSubmissionsForAssignment(Assignment2 assignment) {
+		return 0;
+	}
+	
+	/**
+	 * 
+	 * @param assignment
+	 * @return the number of "new" submissions for the given assignment.
+	 * new submissions are those that have not had any grader action taken on
+	 * them (ie not returned, not graded, etc). this is represented by the 
+	 * "newSubmission" field
+	 */
+	private Integer getNumNewSubmissionsForAssignment(Assignment2 assignment) {
+		return 0;
+	}
+	
+	private int getStatusForAssignment(Assignment2 assignment) {
+		if (assignment.isDraft())
+			return AssignmentConstants.STATUS_DRAFT;
+		
+		Date currDate = new Date();
+		
+		if (currDate.before(assignment.getOpenTime()))
+			return AssignmentConstants.STATUS_NOT_OPEN;
+		
+		if (currDate.after(assignment.getOpenTime()) && currDate.before(assignment.getAcceptUntilTime())) {
+			if (assignment.isUngraded()) {
+				if (currDate.after(assignment.getDueDateForUngraded()))
+					return AssignmentConstants.STATUS_DUE;
+			}
+			else if (assignment.getDueDate() != null) {
+				if (currDate.after(assignment.getDueDate()))
+					return AssignmentConstants.STATUS_DUE;				
+			}
+			
+			return AssignmentConstants.STATUS_OPEN;
+		}
+		
+		return AssignmentConstants.STATUS_CLOSED;
+		
+	}
+	
+	/**
+	 * 
+	 * @param groups
+	 * @return a comma-delimited String representation of the given list of
+	 * groups/section. will delete groups that have been deleted at the site
+	 * level
+	 */
+	private String getListOfGroupRestrictionsAsString(List<AssignmentGroup> restrictedGroups, Map<String, String> siteGroupIdNameMap) {
+		if (restrictedGroups == null || restrictedGroups.isEmpty())
+			return null;
+	
+		StringBuilder sb = new StringBuilder();
+		
+		for (int i=0; i<restrictedGroups.size(); i++) {
+			
+			AssignmentGroup group = (AssignmentGroup) restrictedGroups.get(i);
+			if (group != null) {
+				if (i != 0) {
+					sb.append(", ");
+				}
+				
+				if (siteGroupIdNameMap.containsKey(group.getGroupId())) {
+					String groupName = (String)siteGroupIdNameMap.get(group.getGroupId());
+					sb.append(groupName);
+				} else {
+					// this group has been deleted from the site, so we need
+					// to delete this AssignmentGroup object
+					log.info("AssignmentGroup associated with group id " 
+							+ group.getAssignmentGroupId() + "and assignment " 
+							+ group.getAssignment().getAssignmentId()
+							+ " deleted b/c associated site group was deleted");
+					dao.delete(AssignmentGroup.class, group.getAssignmentGroupId());
+				}
+			}
+		}
+		
+		return sb.toString();
+	}
 }

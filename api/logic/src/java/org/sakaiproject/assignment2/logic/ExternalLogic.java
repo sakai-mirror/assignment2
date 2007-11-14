@@ -2,6 +2,7 @@ package org.sakaiproject.assignment2.logic;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 /**
  * This is the interface for logic which is external to our app logic
@@ -98,5 +99,12 @@ public interface ExternalLogic {
      * a member of
      */
     public List getCurrentUserGroupIdList();
+    
+    /**
+     * 
+     * @return a map of group id to group name for all of the sections/groups
+     * associated with the current site
+     */
+    public Map getGroupIdToNameMapForSite();
 
 }
