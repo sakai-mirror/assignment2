@@ -95,6 +95,12 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 		if (assignment == null) {
 			throw new IllegalArgumentException("Null assignment passed to saveAssignment");
 		}
+		
+		if (!externalLogic.getCurrentUserHasPermission(ExternalLogic.ASSIGNMENT2_EDIT)) {
+			throw new SecurityException("Current user may not save assignment " + assignment.getTitle()
+                    + " because they do not have edit permission");
+		}
+		
 		boolean isNewAssignment = true;
 		Assignment2 existingAssignment = null;
 		
@@ -108,40 +114,29 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 		}
 		
 		if (isNewAssignment) {
-	        // the user must have the "create" permission
-	        if (externalLogic.getCurrentUserHasPermission(ExternalLogic.ASSIGNMENT2_CREATE)) {
-	        	// check to ensure it is not a duplicate title
-	        	if (assignmentNameExists(assignment.getTitle())) {
+        	// check to ensure it is not a duplicate title
+        	if (assignmentNameExists(assignment.getTitle())) {
+        		throw new ConflictingAssignmentNameException("An assignment with the title " + assignment.getTitle() + " already exists");
+        	}
+        	// identify the next sort index to be used
+        	Integer highestIndex = dao.getHighestSortIndexInSite(externalLogic.getCurrentContextId());
+        	if (highestIndex != null) {
+        		assignment.setSortIndex(highestIndex + 1);
+        	} else {
+        		assignment.setSortIndex(0);
+        	}
+        	
+        	dao.create(assignment);
+            log.debug("Created assignment: " + assignment.getTitle());
+		} else {
+			if (!assignment.getTitle().equals(existingAssignment.getTitle())) {
+				// check to see if this new title already exists
+				if (assignmentNameExists(assignment.getTitle())) {
 	        		throw new ConflictingAssignmentNameException("An assignment with the title " + assignment.getTitle() + " already exists");
 	        	}
-	        	// identify the next sort index to be used
-	        	Integer highestIndex = dao.getHighestSortIndexInSite(externalLogic.getCurrentContextId());
-	        	if (highestIndex != null) {
-	        		assignment.setSortIndex(highestIndex + 1);
-	        	} else {
-	        		assignment.setSortIndex(0);
-	        	}
-	        	
-	        	dao.create(assignment);
-	            log.info("Created assignment: " + assignment.getTitle());
-	        } else {
-	            throw new SecurityException("Current user may not create assignment " + assignment.getTitle()
-	                    + " because they do not have create permission");
-	        }
-		} else {
-			if (externalLogic.getCurrentUserHasPermission(ExternalLogic.ASSIGNMENT2_REVISE)) {
-				if (!assignment.getTitle().equals(existingAssignment.getTitle())) {
-					// check to see if this new title already exists
-					if (assignmentNameExists(assignment.getTitle())) {
-		        		throw new ConflictingAssignmentNameException("An assignment with the title " + assignment.getTitle() + " already exists");
-		        	}
-				}
-	        	dao.update(assignment);
-	            log.info("Updated assignment: " + assignment.getTitle() + "with id: " + assignment.getAssignmentId());
-	        } else {
-	            throw new SecurityException("Current user may not udpate assignment " + assignment.getTitle()
-	                    + " because they do not have revise permission");
-	        }
+			}
+        	dao.update(assignment);
+            log.debug("Updated assignment: " + assignment.getTitle() + "with id: " + assignment.getAssignmentId());
 		}
 	}
 	
@@ -155,14 +150,14 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 			throw new IllegalArgumentException("Null assignment passed to deleteAssignment");
 		}
 		
-		if (externalLogic.getCurrentUserHasPermission(ExternalLogic.ASSIGNMENT2_DELETE)) {
-        	assignment.setRemoved(true);
-        	dao.update(assignment);
-            log.info("Deleted assignment: " + assignment.getTitle() + " with id " + assignment.getAssignmentId());
-        } else {
-            throw new SecurityException("Current user may not delete assignment " + assignment.getTitle()
-                    + " because they do not have delete permission");
-        }
+		if (!externalLogic.getCurrentUserHasPermission(ExternalLogic.ASSIGNMENT2_EDIT)) {
+			throw new SecurityException("Current user may not delete assignment " + assignment.getTitle()
+                    + " because they do not have edit permission");
+		}
+		
+    	assignment.setRemoved(true);
+    	dao.update(assignment);
+        log.debug("Deleted assignment: " + assignment.getTitle() + " with id " + assignment.getAssignmentId());
 	}
 	
 	/*

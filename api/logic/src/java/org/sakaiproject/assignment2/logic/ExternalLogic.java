@@ -14,9 +14,7 @@ public interface ExternalLogic {
     public final static String NO_LOCATION = "noLocationAvailable";
 
     // permissions
-    public final static String ASSIGNMENT2_CREATE = "assignment2.create";
-    public final static String ASSIGNMENT2_DELETE = "assignment2.delete";
-    public final static String ASSIGNMENT2_REVISE = "assignment2.revise";
+    public final static String ASSIGNMENT2_EDIT = "assignment2.edit";
     public final static String ASSIGNMENT2_SUBMIT = "assignment2.submit";
     public final static String ASSIGNMENT2_READ = "assignment2.read";
     public final static String ASSIGNMENT2_RECEIVE_NOTIF = "assignment2.receive.notifications";

@@ -74,9 +74,7 @@ public class ExternalLogicImpl implements ExternalLogic {
     public void init() {
         log.debug("init");
         // register Sakai permissions for this tool
-        functionManager.registerFunction(ASSIGNMENT2_CREATE);
-        functionManager.registerFunction(ASSIGNMENT2_DELETE);
-        functionManager.registerFunction(ASSIGNMENT2_REVISE);
+        functionManager.registerFunction(ASSIGNMENT2_EDIT);
         functionManager.registerFunction(ASSIGNMENT2_SUBMIT);
         functionManager.registerFunction(ASSIGNMENT2_READ);
         functionManager.registerFunction(ASSIGNMENT2_RECEIVE_NOTIF);
