@@ -19,12 +19,12 @@ public class AssignmentListSortViewParams extends SortPagerViewParams {
     		super(viewId, sort_by, sort_dir);
     }
     
-    public AssignmentListSortViewParams(String viewId, String sort_by, String sort_dir, String currentStart, String currentCount) {
-		super(viewId, currentStart, currentCount, sort_by, sort_dir);
+    public AssignmentListSortViewParams(String viewId, String sort_by, String sort_dir, int currentStart, int currentCount) {
+		super(viewId, sort_by, sort_dir, currentStart, currentCount);
     }
     
-    public AssignmentListSortViewParams(String viewId, String sort_by, String sort_dir, String currentStart, String currentCount, Long assignmentIdToDuplicate) {
-		super(viewId, currentStart, currentCount, sort_by, sort_dir);
+    public AssignmentListSortViewParams(String viewId, String sort_by, String sort_dir, int currentStart, int currentCount, Long assignmentIdToDuplicate) {
+    	super(viewId, sort_by, sort_dir, currentStart, currentCount);
         this.assignmentIdToDuplicate = assignmentIdToDuplicate;
     }
     

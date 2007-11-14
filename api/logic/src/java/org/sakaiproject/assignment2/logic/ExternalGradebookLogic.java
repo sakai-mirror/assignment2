@@ -79,4 +79,6 @@ public interface ExternalGradebookLogic {
 	 * @return
 	 */
 	public Map<String, String> getViewableGroupIdToTitleMap(String contextId);
+	
+	public String getGradebookItemHelperUrl(String contextId);
 }

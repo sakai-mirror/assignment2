@@ -39,8 +39,8 @@ public class PagerRenderer {
 
     	//set Beans
     	try {
-    	pagerBean.setCurrentCount(Integer.parseInt(pagerparams.current_count));
-    	pagerBean.setCurrentStart(Integer.parseInt(pagerparams.current_start));
+    	pagerBean.setCurrentCount(pagerparams.current_count);
+    	pagerBean.setCurrentStart(pagerparams.current_start);
     	} catch (NumberFormatException nfe){
     		//do nothing
     	}

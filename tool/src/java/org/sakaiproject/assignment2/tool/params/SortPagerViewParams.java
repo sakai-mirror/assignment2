@@ -20,7 +20,7 @@ public class SortPagerViewParams extends PagerViewParams {
 	        this.sort_dir = sort_dir;
     }
     
-    public SortPagerViewParams(String viewId, String sort_by, String sort_dir, String currentStart, String currentCount) {
+    public SortPagerViewParams(String viewId, String sort_by, String sort_dir, int currentStart, int currentCount) {
 		super(viewId, currentStart, currentCount);
         this.sort_by = sort_by;
         this.sort_dir = sort_dir;

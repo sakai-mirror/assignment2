@@ -15,6 +15,8 @@
 	<link href="/sakai-assignment2-tool/content/css/assignmentsv4.css" type="text/css" rel="stylesheet" media="all" />
 	<script type="text/javascript" src="/library/calendar/js/calendar2.js"></script>
 	<script type="text/javascript" src="/sakai-assignment2-tool/content/js/assignment.js"></script>
+	<script type="text/javascript" language="JavaScript" src="/sakai-assignment2-tool/content/js/thickbox.js"></script>
+	<link href="/sakai-assignment2-tool/content/css/thickbox.css" type="text/css" rel="stylesheet" media="all" />
 	
 
 </head>
@@ -50,7 +52,7 @@
 									<option value="Category: GB Item 4">Category: GB Item 4</option>
 								</select>
 								<span rsf:id="msg=assignment2.assignment_add.gradebook_or"> -or- </span>
-								<a href="">Create a new Gradebook Item</a></li>
+								<a rsf:id="gradebook_item_new_helper" class="thickbox">Create a new Gradebook Item</a></li>
 						<li><input rsf:id="ungraded" name="graded" type="radio" /> <label rsf:id="msg=assignment2.assignment_add.assignment_ungraded">This assignment is ungraded</label></li>
 					</ol>
 				</fieldset>
@@ -84,7 +86,7 @@
 				<span rsf:id="gradebook_item_due_date">12/31/2007</span>
 				<p class="instruction">
 					<span rsf:id="msg=assignment2.assignment_add.gradebook_item_due_Date_instruction">The Due Date is set by the Gradebook Item.</span> 
-					<a rsf:id="gradebook_item_edit_helper">To Edit, click here</a>
+					<a rsf:id="gradebook_item_edit_helper" class="thickbox">To Edit, click here</a>
 				</p>
 			</li>
 			<li>

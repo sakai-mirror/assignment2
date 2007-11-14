@@ -19,12 +19,12 @@ public class AssignmentGradeAssignmentViewParams extends SortPagerViewParams {
     		super(viewId, sort_by, sort_dir);
     }
     
-    public AssignmentGradeAssignmentViewParams(String viewId, String sort_by, String sort_dir, String currentStart, String currentCount) {
-		super(viewId, currentStart, currentCount, sort_by, sort_dir);
+    public AssignmentGradeAssignmentViewParams(String viewId, String sort_by, String sort_dir, int currentStart, int currentCount) {
+    	super(viewId, sort_by, sort_dir, currentStart, currentCount);
     }
     
-    public AssignmentGradeAssignmentViewParams(String viewId, String sort_by, String sort_dir, String currentStart, String currentCount, Long assignmentId) {
-		super(viewId, currentStart, currentCount, sort_by, sort_dir);
+    public AssignmentGradeAssignmentViewParams(String viewId, String sort_by, String sort_dir, int currentStart, int currentCount, Long assignmentId) {
+    	super(viewId, sort_by, sort_dir, currentStart, currentCount);
         this.assignmentId = assignmentId;
     }
     

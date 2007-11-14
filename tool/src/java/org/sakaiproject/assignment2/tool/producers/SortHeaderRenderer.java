@@ -19,17 +19,17 @@ public class SortHeaderRenderer {
     public void makeSortingLink (UIContainer tofill, String divID, ViewParameters viewparams, String sort_by, String link_text){
     	SortPagerViewParams params = (SortPagerViewParams) viewparams;
     	UIJointContainer joint = new UIJointContainer(tofill, divID, "sortHeader:", ""+1);
-    	
-    	//Add Link
-    	params.sort_dir = (params.sort_by.equals(sort_by) ? (params.sort_dir.equals(SORT_DIR_ASC) ? SORT_DIR_DESC : SORT_DIR_ASC) : SORT_DIR_ASC);
-    	params.sort_by = sort_by;
-    	UIInternalLink.make(joint, "link", params);
 
     	//Link Text
     	UIMessage.make(joint, "text", link_text);
     	if (params.sort_by.equals(sort_by)){
     		UILink.make(joint, "arrow", (params.sort_dir.equals(SORT_DIR_ASC) ? BULLET_UP_IMG_SRC : BULLET_DOWN_IMG_SRC));
     	}
+
+    	//Add Link and modify params
+    	params.sort_dir = (params.sort_by.equals(sort_by) ? (params.sort_dir.equals(SORT_DIR_ASC) ? SORT_DIR_DESC : SORT_DIR_ASC) : SORT_DIR_ASC);
+    	params.sort_by = sort_by;
+    	UIInternalLink.make(joint, "link", params);
     }
 	
 }

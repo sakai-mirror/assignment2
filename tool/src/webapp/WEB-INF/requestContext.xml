@@ -10,10 +10,7 @@
    </bean>
 
 	<!-- Renderers -->
-   <bean id="NavbarRenderer" class="org.sakaiproject.assignment2.tool.producers.NavBarRenderer">
-      <!-- <property name="externalLogic" ref="org.sakaiproject.blogwow.logic.ExternalLogic" /> -->
-      <!-- <property name="blogLogic" ref="org.sakaiproject.blogwow.logic.BlogLogic" /> -->
-   </bean>
+   <bean id="NavbarRenderer" class="org.sakaiproject.assignment2.tool.producers.NavBarRenderer" />
    <bean id="PagerRenderer" class="org.sakaiproject.assignment2.tool.producers.PagerRenderer">
       <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
 	  <property name="pagerBean" ref="PagerBean" />

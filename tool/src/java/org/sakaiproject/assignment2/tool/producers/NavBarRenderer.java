@@ -1,18 +1,15 @@
 package org.sakaiproject.assignment2.tool.producers;
 
-import org.sakaiproject.assignment2.tool.producers.*;
-
 import uk.org.ponder.rsf.components.UIBranchContainer;
 import uk.org.ponder.rsf.components.UIContainer;
 import uk.org.ponder.rsf.components.UIInternalLink;
 import uk.org.ponder.rsf.components.UIJointContainer;
-import uk.org.ponder.rsf.components.UILink;
 import uk.org.ponder.rsf.components.UIMessage;
 import uk.org.ponder.rsf.components.UIOutput;
 import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
 
 public class NavBarRenderer {
-
+	
     public void makeNavBar(UIContainer tofill, String divID, String currentViewID) {
         UIJointContainer joint = new UIJointContainer(tofill, divID, "assignment_navigation:", ""+1);
         
@@ -23,7 +20,6 @@ public class NavBarRenderer {
         if (currentViewID.equals(AssignmentAddProducer.VIEW_ID)) {
             UIMessage.make(cell, "navigation-text", "assignment2.navbar.add");
         } else {
-            // user cannot create blog so no add entry link
             UIInternalLink.make(cell, "navigation-link", UIMessage.make("assignment2.navbar.add"), 
                     new SimpleViewParameters(AssignmentAddProducer.VIEW_ID));               
         }
@@ -35,7 +31,6 @@ public class NavBarRenderer {
         		|| currentViewID.equals(AssignmentListReorderProducer.VIEW_ID)) {
             UIMessage.make(cell, "navigation-text", "assignment2.navbar.assignment_list");
         } else {
-            // user cannot create blog so no add entry link
             UIInternalLink.make(cell, "navigation-link", UIMessage.make("assignment2.navbar.assignment_list"), 
                     new SimpleViewParameters(AssignmentListSortViewProducer.VIEW_ID));               
         }
@@ -46,7 +41,6 @@ public class NavBarRenderer {
         if (currentViewID.equals(AssignmentGradeReportProducer.VIEW_ID)) {
             UIMessage.make(cell, "navigation-text", "assignment2.navbar.grade_report");
         } else {
-            // user cannot create blog so no add entry link
             UIInternalLink.make(cell, "navigation-link", UIMessage.make("assignment2.navbar.grade_report"), 
                     new SimpleViewParameters(AssignmentGradeReportProducer.VIEW_ID));               
         }
@@ -61,14 +55,6 @@ public class NavBarRenderer {
                     new SimpleViewParameters(PermissionsProducer.VIEW_ID));               
         }
         
-        //Temp Gradebook Helper
-        cell = UIBranchContainer.make(joint, "navigation-li:", "3");
-        if (currentViewID.equals(GradebookAddItemProducer.VIEW_ID)) {
-        	UIMessage.make(cell, "navigation-link", "Temp Add Item Link");
-        } else {
-        	UIInternalLink.make(cell, "navigation-link", UIOutput.make("Temp Add Item Link"),
-        			new SimpleViewParameters(GradebookAddItemProducer.VIEW_ID));
-        }
-
     }
+   
 }

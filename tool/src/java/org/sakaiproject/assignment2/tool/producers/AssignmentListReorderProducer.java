@@ -98,7 +98,7 @@ public class AssignmentListReorderProducer implements ViewComponentProducer, Vie
         
         List<Assignment2> entries = new ArrayList<Assignment2>();
         entries = assignmentLogic.getViewableAssignments(currentUserId, "sortIndex", true, 
-        		Integer.parseInt(pagerparams.current_start), Integer.parseInt(pagerparams.current_count));
+        		pagerparams.current_start, pagerparams.current_count);
         
         if (entries.size() <= 0) {
             UIMessage.make(tofill, "assignment_empty", "assignment2.assignment_list-reorder.assignment_empty");

@@ -32,9 +32,15 @@ import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.GradebookItem;
 import org.sakaiproject.component.cover.ComponentManager;
+import org.sakaiproject.component.cover.ServerConfigurationService;
+import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.service.gradebook.shared.GradebookFrameworkService;
 import org.sakaiproject.service.gradebook.shared.GradebookService;
 import org.sakaiproject.assignment2.model.Assignment2;
+import org.sakaiproject.site.api.Site;
+import org.sakaiproject.site.api.ToolConfiguration;
+import org.sakaiproject.site.cover.SiteService;
+
 
 /**
  * This is the implementation for logic to interact with the Sakai
@@ -184,6 +190,23 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
         ComponentManager.get("org.sakaiproject.service.gradebook.GradebookService"); 
     	
     	return gradebookService.getViewableSectionUuidToNameMap(contextId);
+    }
+    
+    //This should only be a temporary method, replaced by a real helper tool in the gradebook
+    public String getGradebookItemHelperUrl(String contextId) {
+    	String url = "";
+    	try {
+	    	url = ServerConfigurationService.getPortalUrl() + "/tool/";
+	    	final Site site = SiteService.getSite(contextId);
+	    	
+	    	ToolConfiguration gbTool = site.getToolForCommonId("sakai.gradebook.tool");
+	    	url += gbTool.getId() + "/addAssignmentHelper.jsf";
+	    	
+    	}
+    	catch (IdUnusedException e) {
+    		
+    	}	
+    	return url;
     }
 
 }

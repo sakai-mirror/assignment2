@@ -33,6 +33,7 @@ import uk.org.ponder.rsf.components.UIELBinding;
 import uk.org.ponder.rsf.components.UIForm;
 import uk.org.ponder.rsf.components.UIInput;
 import uk.org.ponder.rsf.components.UIInternalLink;
+import uk.org.ponder.rsf.components.UILink;
 import uk.org.ponder.rsf.components.UIMessage;
 import uk.org.ponder.rsf.components.UIOutput;
 import uk.org.ponder.rsf.components.UISelect;
@@ -193,7 +194,10 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
         // by default this the first item on the list returend from the externalGradebookLogic
         // this will be overwritten if we have a pre-existing assignment with an assigned
         // item
-        GradebookItem currentSelected = gradebook_items.get(0);
+        GradebookItem currentSelected = new GradebookItem();
+        if (gradebook_items.size() > 0) {
+        	currentSelected = gradebook_items.get(0);
+        }
         
         String[] gradebook_item_labels = new String[gradebook_items.size()];
         String[] gradebook_item_values = new String[gradebook_items.size()];
@@ -217,14 +221,20 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
         UISelectChoice ungraded = UISelectChoice.make(form, "ungraded", grading_select_id, 1);
         
         //Check if gradebook item due date is not null, else output the formatted date
-        if (currentSelected.getDueDate() == null) {
+        if (currentSelected == null || currentSelected.getDueDate() == null) {
         	UIMessage.make(form, "gradebook_item_due_date", "assignment2.assignment_add.gradebook_item_no_due_date");
         } else {
         	UIOutput.make(form, "gradebook_item_due_date", df.format(currentSelected.getDueDate()));
         }
-        UIInternalLink.make(form, "gradebook_item_edit_helper", 
-        		UIMessage.make("assignment2.assignmetn_add.gradebook_item_edit_helper"),
-        		new AssignmentAddViewParams(AssignmentAddProducer.VIEW_ID));
+        String helper_url = externalGradebookLogic.getGradebookItemHelperUrl(externalLogic.getCurrentContextId()) + 
+        	"?KeepThis=true&TB_iframe=true&height=500&width=700";
+        UILink.make(form, "gradebook_item_new_helper",
+        		UIMessage.make("assignment2.assignment_add.gradebook_item_new_helper"),
+        		helper_url);
+        UILink.make(form, "gradebook_item_edit_helper",
+        		UIMessage.make("assignment2.assignment_add.gradebook_item_edit_helper"),
+        		helper_url);
+        
         
         //Java Scripting to hide due dates
         Map selectattrmap = new HashMap();

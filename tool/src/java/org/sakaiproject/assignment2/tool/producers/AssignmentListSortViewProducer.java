@@ -164,7 +164,7 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
         
         List<Assignment2> entries = new ArrayList<Assignment2>();
         entries = assignmentLogic.getViewableAssignments(currentUserId, current_sort_by, current_sort_dir.equals(SORT_DIR_ASC), 
-        		Integer.parseInt(params.current_start), Integer.parseInt(params.current_count));
+        		params.current_start, params.current_count);
         
         if (entries.size() <= 0) {
             UIMessage.make(tofill, "assignment_empty", "assignment2.assignment_list-sortview.assignment_empty");
