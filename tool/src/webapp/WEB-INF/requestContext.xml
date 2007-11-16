@@ -20,6 +20,10 @@
    
 
    <!-- list the producer beans here -->
+   <bean class="org.sakaiproject.assignment2.tool.producers.AddAttachmentHelperProducer">
+      <property name="sessionManager" ref="org.sakaiproject.tool.api.SessionManager" />
+   </bean>
+   
    <bean class="org.sakaiproject.assignment2.tool.producers.AjaxCallbackProducer">
 	  <property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
       <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
@@ -92,10 +96,7 @@
       <property name="sortHeaderRenderer" ref="SortHeaderRenderer" />
    </bean>
 
-   <bean class="org.sakaiproject.assignment2.tool.producers.PermissionsProducer">
-	  <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
-      <property name="sessionManager" ref="org.sakaiproject.tool.api.SessionManager" />
-      <property name="messageLocator" ref="messageLocator" />
+   <bean class="org.sakaiproject.assignment2.tool.producers.FinishedHelperProducer">
    </bean>
 
    <bean class="org.sakaiproject.assignment2.tool.producers.GradebookAddItemProducer">
@@ -103,6 +104,13 @@
       <property name="sessionManager" ref="org.sakaiproject.tool.api.SessionManager" />
       <property name="messageLocator" ref="messageLocator" />
    </bean>
+   
+   <bean class="org.sakaiproject.assignment2.tool.producers.PermissionsProducer">
+	  <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
+      <property name="sessionManager" ref="org.sakaiproject.tool.api.SessionManager" />
+      <property name="messageLocator" ref="messageLocator" />
+   </bean>
+
   
    
    <!--  Beans -->
@@ -125,6 +133,12 @@
    </bean>
    
    <bean id="PreviewAssignmentBean" class="org.sakaiproject.assignment2.tool.beans.PreviewAssignmentBean" />
+
+   <bean id="FilePickerBean" class="org.sakaiproject.assignment2.tool.beans.FilePickerBean">
+   	  <property name="contentHostingService" ref="org.sakaiproject.content.api.ContentHostingService" />
+      <property name="sessionManager" ref="org.sakaiproject.tool.api.SessionManager" />
+      <property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
+   </bean>
 	
 	<!-- Validators -->
 	<bean id="Assignment2Validator" class="org.sakaiproject.assignment2.tool.beans.Assignment2Validator" />

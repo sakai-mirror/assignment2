@@ -4,6 +4,7 @@ import org.sakaiproject.assignment2.tool.beans.Assignment2Creator;
 import org.sakaiproject.assignment2.tool.beans.PreviewAssignmentBean;
 import org.sakaiproject.assignment2.tool.params.AssignmentAddViewParams;
 import org.sakaiproject.assignment2.tool.params.SimpleAssignmentViewParams;
+import org.sakaiproject.assignment2.tool.params.FilePickerHelperViewParams;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
@@ -97,7 +98,11 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
     	
     	// use a date which is related to the current users locale
         DateFormat df = DateFormat.getDateInstance(DateFormat.MEDIUM, locale);
-    	
+        
+        //Gradebook Helper Url
+        String gradebook_helper_url = externalGradebookLogic.getGradebookItemHelperUrl(externalLogic.getCurrentContextId()) + 
+    	"?KeepThis=true&TB_iframe=true&height=500&width=700";
+            	
         UIMessage.make(tofill, "page-title", "assignment2.assignment_add.title");
         navBarRenderer.makeNavBar(tofill, "navIntraTool:", VIEW_ID);
         UIMessage.make(tofill, "heading", "assignment2.assignment_add.heading");
@@ -184,6 +189,11 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
         UIBoundBoolean.make(form, "honor_pledge", assignment2OTP + ".honorPledge", assignment.isHonorPledge());
         
         //Attachments
+        UIInternalLink.make(form, "add_attachments", UIMessage.make("assignment2.assignment_add.add_attachments"),
+        		new FilePickerHelperViewParams(AddAttachmentHelperProducer.VIEWID, Boolean.TRUE, 
+        				Boolean.TRUE, 500, 700, assignment.getAssignmentId()));
+        				
+        
         
         /********
          *Grading
@@ -226,14 +236,13 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
         } else {
         	UIOutput.make(form, "gradebook_item_due_date", df.format(currentSelected.getDueDate()));
         }
-        String helper_url = externalGradebookLogic.getGradebookItemHelperUrl(externalLogic.getCurrentContextId()) + 
-        	"?KeepThis=true&TB_iframe=true&height=500&width=700";
+
         UILink.make(form, "gradebook_item_new_helper",
         		UIMessage.make("assignment2.assignment_add.gradebook_item_new_helper"),
-        		helper_url);
+        		gradebook_helper_url);
         UILink.make(form, "gradebook_item_edit_helper",
         		UIMessage.make("assignment2.assignment_add.gradebook_item_edit_helper"),
-        		helper_url);
+        		gradebook_helper_url);
         
         
         //Java Scripting to hide due dates
