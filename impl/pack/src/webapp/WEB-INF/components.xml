@@ -23,6 +23,9 @@
    <bean id="org.sakaiproject.assignment2.logic.ExternalGradebookLogic" class="org.sakaiproject.assignment2.logic.impl.ExternalGradebookLogicImpl" init-method="init">
    </bean>
    
+   <bean id="org.sakaiproject.assignment2.logic.ExternalAnnouncementLogic" class="org.sakaiproject.assignment2.logic.impl.ExternalAnnouncementLogicImpl" init-method="init">
+   </bean>
+   
    <bean id="org.sakaiproject.assignment2.logic.ExternalEventLogic" class="org.sakaiproject.assignment2.logic.impl.ExternalEventLogicImpl" init-method="init">
      <property name="eventTrackingService" ref="org.sakaiproject.event.api.EventTrackingService" />
    </bean>
@@ -31,6 +34,7 @@
       <property name="dao" ref="org.sakaiproject.assignment2.dao.AssignmentDao" />
       <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
       <property name="externalGradebookLogic" ref="org.sakaiproject.assignment2.logic.ExternalGradebookLogic" />
+      <property name="externalAnnouncementLogic" ref="org.sakaiproject.assignment2.logic.ExternalAnnouncementLogic" />
    </bean>
    
    <!-- ContextObserver to take action when Assignment2 is added to or removed from a site -->

@@ -70,6 +70,7 @@ public class Assignment2 {
     private Integer numberOfNewSubmissions;
     private Integer status;
     private String groupRestrictionList;
+    private Boolean hasAnnouncement;
 
 	public Assignment2(Long gradableObjectId, String contextId, String title,
 			Boolean draft, int sortIndex, Date openTime, 
@@ -383,9 +384,30 @@ public class Assignment2 {
         this.notificationType = notificationType;
     }
     
+	/**
+	 * 
+	 * @return true if the user wants to add an announcement of the open
+	 * date. this field may be true and the announcementId field null if
+	 * the assignment is in draft status
+	 */
+	public Boolean getHasAnnouncement() {
+		return hasAnnouncement;
+	}
+
+	/**
+	 * true if the user wants to add an announcement of the open
+	 * date. this field may be true and the announcementId field null if
+	 * the assignment is in draft status
+	 * @param hasAnnouncement
+	 */
+	public void setHasAnnouncement(Boolean hasAnnouncement) {
+		this.hasAnnouncement = hasAnnouncement;
+	}
+    
     /**
      * @return Returns id of the announcement announcing the open date of this assignment.
-     * If null, the announcement option was not selected
+     * If null, the announcement no announcement exists for this event in the 
+     * announcements tool
      */
     public String getAnnouncementId() {
         return announcementId;
@@ -393,7 +415,8 @@ public class Assignment2 {
     
     /**
      * id of the announcement announcing the open date of this assignment.
-     * If null, the announcement option was not selected
+     * If null, the announcement no announcement exists for this event in the 
+     * announcements tool
      * @param announcementId
      */
     public void setAnnouncementId(String announcementId) {
@@ -694,4 +717,5 @@ public class Assignment2 {
 	public void setGroupRestrictionList(String groupRestrictionList) {
 		this.groupRestrictionList = groupRestrictionList;
 	}
+
 }

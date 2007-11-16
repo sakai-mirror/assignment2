@@ -78,6 +78,16 @@ public class AssignmentDaoImpl extends HibernateCompleteGenericDao implements As
     	
     	return (Assignment2) query.uniqueResult();
     }
+
+	public Assignment2 getAssignmentByIdWithGroups(Long assignmentId) {
+		if (assignmentId == null) {
+    		throw new IllegalArgumentException("Null assignmentId passed to getAssignmentByIdWithGroups");
+    	}
+    	Query query = getSession().getNamedQuery("findAssignmentByIdWithGroups");
+    	query.setParameter("assignmentId",assignmentId);
+    	
+    	return (Assignment2) query.uniqueResult();
+	}
     
     public List<AssignmentSubmission> findCurrentSubmissionsForAssignment(Assignment2 assignment) {
     	if (assignment == null) {

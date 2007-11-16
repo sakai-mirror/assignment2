@@ -184,7 +184,10 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
         
         
         //Calendar Due Date
-        //Announcement
+        //Announcement -  only display if site has the announcements tool
+        if (externalLogic.siteHasTool(externalLogic.getCurrentContextId(), ExternalLogic.TOOL_ID_ANNC)) {
+        	UIBoundBoolean.make(form, "announcement", assignment2OTP + ".hasAnnouncement", assignment.getHasAnnouncement());
+        }
         //Honor Pledge
         UIBoundBoolean.make(form, "honor_pledge", assignment2OTP + ".honorPledge", assignment.isHonorPledge());
         

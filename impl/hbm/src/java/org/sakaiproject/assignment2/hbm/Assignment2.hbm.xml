@@ -72,6 +72,9 @@
         <property name="notificationType" type="integer" >
             <column name="NOTIFICATION_TYPE" not-null="true"/>
         </property>
+        <property name="hasAnnouncement" type="java.lang.Boolean">
+        	<column name="HAS_ANNOUNCEMENT" not-null="true" />
+        </property>
         <!-- used if assignment open date is added as an announcement  -->
         <property name="announcementId" type="java.lang.String" >
             <column name="ANNOUNCEMENT_ID" length="99" />
@@ -135,7 +138,14 @@
     <![CDATA[from org.sakaiproject.assignment2.model.Assignment2 assignment
              left join fetch assignment.assignmentGroupSet
              left join fetch assignment.attachmentSet
-             where assignment.contextId = :contextId
+             where assignment.assignmentId = :assignmentId
+             and assignment.removed = false]]>
+  	</query>
+  	
+  	<query name="findAssignmentByIdWithGroups">
+    <![CDATA[from org.sakaiproject.assignment2.model.Assignment2 assignment
+             left join fetch assignment.assignmentGroupSet
+             where assignment.assignmentId = :assignmentId
              and assignment.removed = false]]>
   	</query>
 </hibernate-mapping>

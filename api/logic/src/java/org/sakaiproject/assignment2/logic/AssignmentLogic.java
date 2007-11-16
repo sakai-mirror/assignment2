@@ -44,8 +44,7 @@ public interface AssignmentLogic {
 	 * @param assignment
 	 * the assignment to create or update
 	 * @throws SecurityException -
-	 * user must have "revise" permission to update or "create" permission if
-	 * assignment is new
+	 * user must have "edit" permission to add or update an assignment
 	 * @throws IllegalArgumentException -
 	 * if assignment is null
 	 * @throws ConflictingAssignmentNameException -
@@ -88,5 +87,13 @@ public interface AssignmentLogic {
 	 * @return
 	 */
 	public Assignment2 getAssignmentByIdWithAssociatedData(Long assignmentId);
+	
+	/**
+	 * retrieve the Assignment2 object with the given id and populate the
+	 * associated AssignmentGroups
+	 * @param assignmentId
+	 * @return
+	 */
+	public Assignment2 getAssignmentByIdWithGroups(Long assignmentId);
 
 }

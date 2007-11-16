@@ -119,6 +119,7 @@
    <bean id="Assignment2Bean" class="org.sakaiproject.assignment2.tool.beans.Assignment2Bean">
    	  <property name="logic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
    	  <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
+   	  <property name="externalAnnouncementLogic" ref="org.sakaiproject.assignment2.logic.ExternalAnnouncementLogic" />
    	  <property name="messages" ref="targettedMessageList"/>
    	  <property name="entityBeanLocator" ref="Assignment2"/>
    	  <property name="previewAssignmentBean" ref="PreviewAssignmentBean" />

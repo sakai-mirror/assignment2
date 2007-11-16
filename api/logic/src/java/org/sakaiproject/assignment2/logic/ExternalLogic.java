@@ -19,6 +19,10 @@ public interface ExternalLogic {
     public final static String ASSIGNMENT2_READ = "assignment2.read";
     public final static String ASSIGNMENT2_RECEIVE_NOTIF = "assignment2.receive.notifications";
     public final static String ASSIGNMENT2_ALL_GROUPS_UNGRADED = "assignment2.allGroups.ungraded";
+    
+    //tool ids for external tools that we integrate with
+    public final static String TOOL_ID_SCHEDULE = "sakai.schedule";
+    public final static String TOOL_ID_ANNC = "sakai.announcements";
 
     /**
      * @return the current sakai user id (not username)
@@ -104,5 +108,12 @@ public interface ExternalLogic {
      * associated with the current site
      */
     public Map getGroupIdToNameMapForSite();
+    
+    /**
+     * @param contextId
+     * @param toolId
+     * @return true if tool with the given toolId exists in the site with the given siteId
+     */
+    public boolean siteHasTool(String contextId, String toolId);
 
 }

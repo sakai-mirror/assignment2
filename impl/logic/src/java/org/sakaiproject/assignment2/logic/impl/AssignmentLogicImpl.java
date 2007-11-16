@@ -35,6 +35,7 @@ import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentGroup;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
+import org.sakaiproject.assignment2.logic.ExternalAnnouncementLogic;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.dao.AssignmentDao;
@@ -62,6 +63,11 @@ public class AssignmentLogicImpl implements AssignmentLogic{
         this.gradebookLogic = gradebookLogic;
     }
     
+    private ExternalAnnouncementLogic announcementLogic;
+    public void setExternalAnnouncementLogic(ExternalAnnouncementLogic announcementLogic) {
+        this.announcementLogic = announcementLogic;
+    }
+    
     private AssignmentDao dao;
     public void setDao(AssignmentDao dao) {
         this.dao = dao;
@@ -84,6 +90,10 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 		//TODO populate the due date and points possible if this is 
 		// associated with a gb item
 		return (Assignment2) dao.getAssignmentByIdWithGroupsAndAttachments(assignmentId);
+	}
+	
+	public Assignment2 getAssignmentByIdWithGroups(Long assignmentId) {
+		return (Assignment2) dao.getAssignmentByIdWithGroups(assignmentId);
 	}
 	
 	/*
@@ -128,6 +138,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
         	
         	dao.create(assignment);
             log.debug("Created assignment: " + assignment.getTitle());
+            
 		} else {
 			if (!assignment.getTitle().equals(existingAssignment.getTitle())) {
 				// check to see if this new title already exists
@@ -135,6 +146,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 	        		throw new ConflictingAssignmentNameException("An assignment with the title " + assignment.getTitle() + " already exists");
 	        	}
 			}
+			
         	dao.update(assignment);
             log.debug("Updated assignment: " + assignment.getTitle() + "with id: " + assignment.getAssignmentId());
 		}

@@ -91,8 +91,13 @@ public class AssignmentPreviewProducer implements ViewComponentProducer, Navigat
     	UIMessage.make(tofill, "graded", (assignment.isUngraded() ? "assignment2.no" : "assignment2.yes")); 		//change here for more details
     	UIMessage.make(tofill, "calendar_label", "assignment2.assignment_preview.calendar");
     	UIMessage.make(tofill, "calendar", (assignment.getCalendarEventId() == null ? "assignment2.no" : "assignment2.yes"));
-    	UIMessage.make(tofill, "announcement_label", "assignment2.assignment_preview.announcement");
-    	UIMessage.make(tofill, "announcement", (assignment.getAnnouncementId() == null ? "assignment2.no" : "assignment2.yes"));
+    	
+    	// only display announcement option if the site has the Announcements tool
+    	if (externalLogic.siteHasTool(externalLogic.getCurrentContextId(), ExternalLogic.TOOL_ID_ANNC)) {
+	    	UIMessage.make(tofill, "announcement_label", "assignment2.assignment_preview.announcement");
+	    	UIMessage.make(tofill, "announcement", (assignment.getAnnouncementId() == null ? "assignment2.no" : "assignment2.yes"));
+    	}
+    	
     	UIMessage.make(tofill, "honor_pledge_label", "assignment2.assignment_preview.honor_pledge");
     	UIMessage.make(tofill, "honor_pledge", (assignment.isHonorPledge() ? "assignment2.required" : "assignment2.not_required"));
     	UIMessage.make(tofill, "gradebook_label", "assignment2.assignment_preview.gradebook");

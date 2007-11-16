@@ -25,6 +25,7 @@ public class Assignment2Creator {
     	togo.setHonorPledge(Boolean.FALSE);
     	togo.setRestrictedToGroups(Boolean.FALSE);
     	togo.setUngraded(Boolean.TRUE);
+    	togo.setHasAnnouncement(Boolean.FALSE);
     	
     	//Setting up Dates
     	Calendar cal = Calendar.getInstance();
@@ -61,7 +62,7 @@ public class Assignment2Creator {
     	dup.setInstructions(assignment.getInstructions());
     	dup.setSubmissionType(assignment.getSubmissionType());
     	dup.setNotificationType(assignment.getNotificationType());
-		dup.setAnnouncementId(assignment.getAnnouncementId());
+		dup.setHasAnnouncement(assignment.getHasAnnouncement());
 		dup.setCalendarEventId(assignment.getCalendarEventId());
 		dup.setAllowResubmitUntilDue(assignment.isAllowResubmitUntilDue());
 		dup.setAllowReviewService(assignment.isAllowReviewService());

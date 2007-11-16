@@ -180,5 +180,15 @@ public class ExternalLogicImpl implements ExternalLogic {
     	
     	return groupIdToNameMap;
     }
-
+    
+    public boolean siteHasTool(String contextId, String toolId) {
+    	try {
+    		Site currSite = siteService.getSite(contextId);
+    		if (currSite.getToolForCommonId(toolId) != null)
+    			return true;
+    	} catch (IdUnusedException ide) {
+    		log.debug("IdUnusedException caught in siteHasTool with contextId: " + contextId + " and toolId: " + toolId);
+    	}
+		return false;
+    }
 }
