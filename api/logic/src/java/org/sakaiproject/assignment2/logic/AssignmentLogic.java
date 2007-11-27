@@ -22,7 +22,10 @@
 package org.sakaiproject.assignment2.logic;
 
 import java.util.List;
+import java.util.Map;
+
 import org.sakaiproject.assignment2.model.Assignment2;
+import org.sakaiproject.assignment2.model.AssignmentGroup;
 
 
 /**
@@ -95,5 +98,21 @@ public interface AssignmentLogic {
 	 * @return
 	 */
 	public Assignment2 getAssignmentByIdWithGroups(Long assignmentId);
+	
+	/**
+	 * 
+	 * @param groups
+	 * @return a comma-delimited String representation of the given list of
+	 * groups/section. will delete groups that have been deleted at the site
+	 * level
+	 */
+	public String getListOfGroupRestrictionsAsString(List<AssignmentGroup> restrictedGroups, Map<String, String> siteGroupIdNameMap);
 
+	/**
+	 * Uses the open, due, and accept until dates to determine the current status
+	 * of the given assignment
+	 * @param assignment
+	 * @return an Integer constant equivalent to the assignment's status
+	 */
+	public Integer getStatusForAssignment(Assignment2 assignment);
 }

@@ -233,24 +233,6 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 			}
 		}
 		
-		// Now, iterate through the viewable assignments and set the not persisted fields 
-		// that aren't related to the gradebook
-		// create a map of group id to name for all of the groups in this site
-		Map groupIdToNameMap = externalLogic.getGroupIdToNameMapForSite();
-		
-		for (Iterator assignIter = viewableAssignments.iterator(); assignIter.hasNext();) {
-			Assignment2 assignment = (Assignment2) assignIter.next();
-			if (assignment != null) {
-				assignment.setStatus(getStatusForAssignment(assignment));
-				
-				if (assignment.isRestrictedToGroups()) {
-					String groupListAsString = 
-						getListOfGroupRestrictionsAsString(new ArrayList(assignment.getAssignmentGroupSet()), groupIdToNameMap);
-					assignment.setGroupRestrictionList(groupListAsString);
-				}
-			}
-		}
-		
 		return viewableAssignments;
 	}
 	
@@ -328,7 +310,10 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 		return 0;
 	}
 	
-	private int getStatusForAssignment(Assignment2 assignment) {
+	public Integer getStatusForAssignment(Assignment2 assignment) {
+		if (assignment == null){
+			throw new IllegalArgumentException("Null assignment passed to check status");
+		}
 		if (assignment.isDraft())
 			return AssignmentConstants.STATUS_DRAFT;
 		
@@ -361,7 +346,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 	 * groups/section. will delete groups that have been deleted at the site
 	 * level
 	 */
-	private String getListOfGroupRestrictionsAsString(List<AssignmentGroup> restrictedGroups, Map<String, String> siteGroupIdNameMap) {
+	public String getListOfGroupRestrictionsAsString(List<AssignmentGroup> restrictedGroups, Map<String, String> siteGroupIdNameMap) {
 		if (restrictedGroups == null || restrictedGroups.isEmpty())
 			return null;
 	

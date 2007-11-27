@@ -94,7 +94,7 @@ public class AssignmentListReorderProducer implements ViewComponentProducer, Vie
         UIMessage.make(tofill, "open_header", "assignment2.assignment_list-reorder.open");
         UIMessage.make(tofill, "due_header", "assignment2.assignment_list-reorder.due");
         UIMessage.make(tofill, "in_new_header", "assignment2.assignment_list-reorder.in_new");
-        UIMessage.make(tofill, "scale_header", "assignment2.assignment_list-reorder.scale");
+        //UIMessage.make(tofill, "scale_header", "assignment2.assignment_list-reorder.scale");
         
         List<Assignment2> entries = new ArrayList<Assignment2>();
         entries = assignmentLogic.getViewableAssignments(currentUserId, "sortIndex", true, 
@@ -138,7 +138,7 @@ public class AssignmentListReorderProducer implements ViewComponentProducer, Vie
         	UIOutput.make(row, "assignment_row_open", df.format(assignment.getOpenTime()));
         	UIOutput.make(row, "assignment_row_due", df.format(assignment.getDueDateForUngraded()));
         	UIInternalLink.make(row, "assignment_row_in_new", "2/2", new SimpleViewParameters(AssignmentListReorderProducer.VIEW_ID));
-        	UIOutput.make(row, "assignment_row_scale", "0-100.0");
+        	//UIOutput.make(row, "assignment_row_scale", "0-100.0");
         	
         	i++;
         }

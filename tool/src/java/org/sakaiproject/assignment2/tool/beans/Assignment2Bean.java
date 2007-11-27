@@ -13,6 +13,7 @@ import uk.org.ponder.messageutil.MessageLocator;
 import uk.org.ponder.messageutil.TargettedMessage;
 import uk.org.ponder.messageutil.TargettedMessageList;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -331,5 +332,47 @@ public class Assignment2Bean {
 				// don't need to re-save assignment b/c id already exists
 			}
 		}
+	}
+	
+	public void populateNonPersistedFieldsForAssignments(List<Assignment2> assignmentList) {
+		if (assignmentList == null || assignmentList.isEmpty())
+			return;
+		
+		// Now, iterate through the viewable assignments and set the not persisted fields 
+		// that aren't related to the gradebook
+		
+		// create a map of group id to name for all of the groups in this site
+		Map groupIdToNameMap = externalLogic.getGroupIdToNameMapForSite();
+		
+		for (Iterator assignIter = assignmentList.iterator(); assignIter.hasNext();) {
+			Assignment2 assign = (Assignment2) assignIter.next();
+			if (assign != null) {
+				
+				// first, populate the text for the "For" column based upon group restrictions
+				if (assign.isRestrictedToGroups()) {
+					String groupListAsString = logic.getListOfGroupRestrictionsAsString(
+							new ArrayList(assignment.getAssignmentGroupSet()), groupIdToNameMap);
+					assign.setRestrictedToText(groupListAsString);
+				} else {
+					assign.setRestrictedToText(messageLocator.getMessage("assignment2.assignment_restrict_to_site"));
+				}
+				
+				// set the status for this assignment: "Open, Due, etc"
+				Integer status = logic.getStatusForAssignment(assign);
+				assign.setStatus(messageLocator.getMessage("assignment2.status." + status));
+			}
+		}
+	}
+	
+	public List filterListForPaging(List myList, int begIndex, int numItemsToDisplay) {
+        if (myList == null || myList.isEmpty())
+        	return myList;
+        
+        int endIndex = begIndex + numItemsToDisplay;
+        if (endIndex > myList.size()) {
+        	endIndex = myList.size();
+        }
+
+		return myList.subList(begIndex, endIndex);
 	}
 }

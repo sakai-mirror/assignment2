@@ -153,8 +153,8 @@ public class AssignmentGradeAssignmentProducer implements ViewComponentProducer,
         UIOutput.make(tofill, "assignment_details.accept_until", df.format(assignment.getAcceptUntilTime()));
         UIMessage.make(tofill, "assignment_details.submissions_header", "assignment2.assignment_grade-assignment.assignment_details.submissions");
         UIMessage.make(tofill, "assignment_details.submissions", "assignment2.submission_type." + String.valueOf(assignment.getSubmissionType()));
-        UIMessage.make(tofill, "assignment_details.scale_header", "assignment2.assignment_grade-assignment.assignment_details.scale");
-        UIOutput.make(tofill, "assignment_details.scale", "Points (max100.0)");
+        //UIMessage.make(tofill, "assignment_details.scale_header", "assignment2.assignment_grade-assignment.assignment_details.scale");
+        //UIOutput.make(tofill, "assignment_details.scale", "Points (max100.0)");
         UIMessage.make(tofill, "assignment_details.honor_header", "assignment2.assignment_grade-assignment.assignment_details.honor");
         UIMessage.make(tofill, "assignment_details.honor", (assignment.isHonorPledge() ? "assignment2.yes" : "assignment2.no"));
         

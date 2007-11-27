@@ -57,7 +57,7 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
     public static final String SORT_BY_DUE = "dueDateForUngraded";		//change me to due date
     public static final String SORT_BY_IN = "in";				//fix me
     public static final String SORT_BY_NEW = "new";				//fix me
-    public static final String SORT_BY_SCALE = "scale";			//fix me
+    //public static final String SORT_BY_SCALE = "scale";			//fix me
     public static final String DEFAULT_SORT_DIR = SORT_DIR_ASC;
     public static final String DEFAULT_OPPOSITE_SORT_DIR = SORT_DIR_DESC;
     public static final String DEFAULT_SORT_BY = SORT_BY_SORT_INDEX;
@@ -137,8 +137,8 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
         		SORT_BY_OPEN, "assignment2.assignment_list-sortview.tableheader.open");
         sortHeaderRenderer.makeSortingLink(tofill, "tableheader.due", viewparams, 
         		SORT_BY_DUE, "assignment2.assignment_list-sortview.tableheader.due");
-        sortHeaderRenderer.makeSortingLink(tofill, "tableheader.scale", viewparams, 
-        		SORT_BY_SCALE, "assignment2.assignment_list-sortview.tableheader.scale");
+        /*sortHeaderRenderer.makeSortingLink(tofill, "tableheader.scale", viewparams, 
+        		SORT_BY_SCALE, "assignment2.assignment_list-sortview.tableheader.scale");*/
 
         //IN Sorting Link -- Complex Case
         UIInternalLink.make(tofill, "tableheader.in", 
@@ -163,8 +163,13 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
         UIForm form = UIForm.make(tofill, "form");
         
         List<Assignment2> entries = new ArrayList<Assignment2>();
-        entries = assignmentLogic.getViewableAssignments(currentUserId, current_sort_by, current_sort_dir.equals(SORT_DIR_ASC), 
-        		params.current_start, params.current_count);
+        /*entries = assignmentLogic.getViewableAssignments(currentUserId, current_sort_by, current_sort_dir.equals(SORT_DIR_ASC), 
+        		params.current_start, params.current_count);*/
+        
+        entries = assignmentLogic.getViewableAssignments();
+        
+        entries = assignment2Bean.filterListForPaging(entries, params.current_start, params.current_count);
+        assignment2Bean.populateNonPersistedFieldsForAssignments(entries);
         
         if (entries.size() <= 0) {
             UIMessage.make(tofill, "assignment_empty", "assignment2.assignment_list-sortview.assignment_empty");
@@ -191,17 +196,17 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
         			UIMessage.make("assignment2.assignment_list-sortview.assignment_row_grade"), 
         			new SimpleAssignmentViewParams(AssignmentGradeAssignmentProducer.VIEW_ID, assignment.getAssignmentId()));
         	
-        	UIOutput.make(row, "assignment_row_for", "Site");
+        	UIOutput.make(row, "assignment_row_for", assignment.getRestrictedToText());
         	if (assignment.isDraft()){
         		UIOutput.make(row, "assignment_row_draft_td");
-        		UIMessage.make(row, "assignment_row_draft", "assignment2.assignment_list-sortview.assignment_row_draft");
+        		UIOutput.make(row, "assignment_row_draft", assignment.getStatus());
         	} else {
-        	   	UIMessage.make(row, "assignment_row_open_text", "assignment2.assignment_list-sortview.assignment_row_open");
+        	   	UIOutput.make(row, "assignment_row_open_text", assignment.getStatus());
         	}
         	UIOutput.make(row, "assignment_row_open", df.format(assignment.getOpenTime()));
         	UIOutput.make(row, "assignment_row_due", df.format(assignment.getDueDateForUngraded()));
         	UIInternalLink.make(row, "assignment_row_in_new", "2/2", new SimpleViewParameters(AssignmentListReorderProducer.VIEW_ID));
-        	UIOutput.make(row, "assignment_row_scale", "0-100.0");
+        	//UIOutput.make(row, "assignment_row_scale", "0-100.0");
         }
         
         UICommand.make(form, "submit_remove", UIMessage.make("assignment2.assignment_list-sortview.submit_remove"),

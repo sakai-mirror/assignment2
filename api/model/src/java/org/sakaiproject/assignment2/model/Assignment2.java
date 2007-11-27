@@ -47,6 +47,7 @@ public class Assignment2 {
     private String instructions;
     private int submissionType;
     private int notificationType;
+    private Boolean hasAnnouncement;
     private String announcementId;
     private String calendarEventId;
     private Boolean allowResubmitUntilDue;
@@ -68,9 +69,9 @@ public class Assignment2 {
     // fields that are not persisted but needed for UI
     private Integer numberOfTotalSubmissions;
     private Integer numberOfNewSubmissions;
-    private Integer status;
-    private String groupRestrictionList;
-    private Boolean hasAnnouncement;
+    private String status;
+    private String restrictedToText;
+
 
 	public Assignment2(Long gradableObjectId, String contextId, String title,
 			Boolean draft, int sortIndex, Date openTime, 
@@ -682,40 +683,38 @@ public class Assignment2 {
 
 	/**
 	 * 
-	 * @return Integer representation of this assignment's status:
+	 * @return this assignment's status:
 	 * ie Draft, Not Open, Open, Closed, Due
-	 * see AssignmentConstants for the equivalency
 	 */
-	public Integer getStatus() {
+	public String getStatus() {
 		return status;
 	}
 
 	/**
-	 * Set Integer representation of this assignment's status:
+	 * Set this assignment's status:
 	 * ie Draft, Not Open, Open, Closed, Due
-	 * see AssignmentConstants for the equivalency
 	 * @param assignmentStatus
 	 */
-	public void setStatus(Integer status) {
+	public void setStatus(String status) {
 		this.status = status;
 	}
 	
 	/**
 	 * 
-	 * @return a comma-delimited list of the names of the groups/sections
-	 * that this site is restricted to. null if not restricted
+	 * @return a text representation of either the list of groups that this
+	 * assignment is restricted to or "Site"
 	 */
-	public String getGroupRestrictionList() {
-		return groupRestrictionList;
+	public String getRestrictedToText() {
+		return restrictedToText;
 	}
 
 	/**
-	 * a comma-delimited list of the names of the groups/sections
-	 * that this site is restricted to. null if not restricted
-	 * @param groupRestrictionList
+	 * a text representation of either the list of groups that this
+	 * assignment is restricted to or "Site"
+	 * @param restrictedToText
 	 */
-	public void setGroupRestrictionList(String groupRestrictionList) {
-		this.groupRestrictionList = groupRestrictionList;
+	public void setRestrictedToText(String restrictedToText) {
+		this.restrictedToText = restrictedToText;
 	}
 
 }
