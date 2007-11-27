@@ -204,7 +204,19 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
         	   	UIOutput.make(row, "assignment_row_open_text", assignment.getStatus());
         	}
         	UIOutput.make(row, "assignment_row_open", df.format(assignment.getOpenTime()));
-        	UIOutput.make(row, "assignment_row_due", df.format(assignment.getDueDateForUngraded()));
+        	if (assignment.isUngraded()) {
+        		if (assignment.getDueDateForUngraded() != null) {
+        			UIOutput.make(row, "assignment_row_due", df.format(assignment.getDueDateForUngraded()));
+        		} else {
+        			UIOutput.make(row, "assignment_row_due", messageLocator.getMessage("assignment2.assignment_list-sortview.no_due_date"));
+        		}
+        	} else {
+        		if (assignment.getDueDate() != null) {
+        			UIOutput.make(row, "assignment_row_due", df.format(assignment.getDueDate()));
+        		} else {
+        			UIOutput.make(row, "assignment_row_due", messageLocator.getMessage("assignment2.assignment_list-sortview.no_due_date"));	
+        		}
+        	}
         	UIInternalLink.make(row, "assignment_row_in_new", "2/2", new SimpleViewParameters(AssignmentListReorderProducer.VIEW_ID));
         	//UIOutput.make(row, "assignment_row_scale", "0-100.0");
         }

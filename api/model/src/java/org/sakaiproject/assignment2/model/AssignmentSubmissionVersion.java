@@ -34,12 +34,11 @@ public class AssignmentSubmissionVersion {
 	private Long submissionVersionId;
 	private AssignmentSubmission assignmentSubmission;
 	private Date submittedTime;
-	private Date returnedTime;
+	private Date releasedTimeForUngraded;
 	private String feedbackText;
 	private String commentForUngraded;
 	private String submittedText;
 	private Boolean draft;
-	private Boolean newSubmission;
 	private Boolean allowResubmit;
 	private Date resubmitCloseTime;
 	private String reviewReportUrl;
@@ -126,22 +125,6 @@ public class AssignmentSubmissionVersion {
 	 */
 	public void setDraft(Boolean draft) {
 		this.draft = draft;
-	}
-	
-	/**
-	 * 
-	 * @return true if no grader action has been taken on this submission 
-	 */
-	public Boolean isNewSubmission() {
-		return newSubmission;
-	}
-	
-	/**
-	 * true if no grader action has been taken on this submission
-	 * @param newSubmission
-	 */
-	public void setNewSubmission(Boolean newSubmission) {
-		this.newSubmission = newSubmission;
 	}
 	
 	/**
@@ -262,18 +245,22 @@ public class AssignmentSubmissionVersion {
 
 	/**
 	 * 
-	 * @return Date this submission was returned to the submitter
+	 * @return the Date this submission was released to the submitter. only
+	 * used for ungraded assignments. graded assignment release is set in
+	 * the gradebook
 	 */
-	public Date getReturnedTime() {
-		return returnedTime;
+	public Date getReleasedTimeForUngraded() {
+		return releasedTimeForUngraded;
 	}
 
 	/**
-	 * set the Date this submission was returned to the submitter
-	 * @param returnedTime
+	 * set the Date this submission was released to the submitter. only
+	 * used for ungraded assignments. graded assignment release is set in
+	 * the gradebook
+	 * @param releasedTimeForUngraded
 	 */
-	public void setReturnedTime(Date returnedTime) {
-		this.returnedTime = returnedTime;
+	public void setReleasedTimeForUngraded(Date releasedTimeForUngraded) {
+		this.releasedTimeForUngraded = releasedTimeForUngraded;
 	}
 
 	/**

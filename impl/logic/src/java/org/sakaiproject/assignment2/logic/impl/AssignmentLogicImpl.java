@@ -248,6 +248,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 		return assignments;
 	}
 	
+	//TODO this needs to consider permissions!
 	public int getTotalCountViewableAssignments(String userId) {
 
 		int result = dao.countByProperties(Assignment2.class, new String[] {"contextId", "removed"}, 
@@ -292,7 +293,9 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 	/**
 	 * 
 	 * @param assignment
-	 * @return the number of submissions to date for the given assignment
+	 * @return the number of submissions to date for the given assignment. this
+	 * will take permissions into account to return the number that the current
+	 * user is authorized to view 
 	 */
 	private Integer getTotalNumSubmissionsForAssignment(Assignment2 assignment) {
 		return 0;
@@ -301,12 +304,11 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 	/**
 	 * 
 	 * @param assignment
-	 * @return the number of "new" submissions for the given assignment.
-	 * new submissions are those that have not had any grader action taken on
-	 * them (ie not returned, not graded, etc). this is represented by the 
-	 * "newSubmission" field
+	 * @return the number of ungraded submissions for the given assignment.  this
+	 * will take permissions into account to return the number that the current
+	 * user is authorized to view 
 	 */
-	private Integer getNumNewSubmissionsForAssignment(Assignment2 assignment) {
+	private Integer getNumUngradedSubmissionsForAssignment(Assignment2 assignment) {
 		return 0;
 	}
 	
