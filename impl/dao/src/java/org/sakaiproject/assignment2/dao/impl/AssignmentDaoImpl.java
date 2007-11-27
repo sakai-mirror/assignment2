@@ -73,7 +73,7 @@ public class AssignmentDaoImpl extends HibernateCompleteGenericDao implements As
     	if (assignmentId == null) {
     		throw new IllegalArgumentException("Null assignmentId passed to getAssignmentByIdWithGroupsAndAttachments");
     	}
-    	Query query = getSession().getNamedQuery("getAssignmentWithGroupsAndAttachments");
+    	Query query = getSession().getNamedQuery("findAssignmentByIdWithGroupsAndAttachments");
     	query.setParameter("assignmentId",assignmentId);
     	
     	return (Assignment2) query.uniqueResult();

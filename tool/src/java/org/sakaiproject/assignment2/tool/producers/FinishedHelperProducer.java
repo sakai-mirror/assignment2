@@ -16,7 +16,7 @@ public class FinishedHelperProducer implements ViewComponentProducer
 	
 	  public void fillComponents(UIContainer tofill, ViewParameters viewparams, ComponentChecker checker) {
 		  
-		  //Really do nothing
+		  //Really do nothing, let the JS do it all, call thickbox close window and Ajax call
 	  }
 	
 }

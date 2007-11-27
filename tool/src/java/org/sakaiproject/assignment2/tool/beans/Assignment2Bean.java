@@ -4,8 +4,11 @@ import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.ExternalAnnouncementLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
+import org.sakaiproject.assignment2.model.AssignmentGroup;
+import org.sakaiproject.assignment2.model.AssignmentAttachment;
 import org.sakaiproject.assignment2.tool.beans.Assignment2Validator;
 import org.sakaiproject.assignment2.exception.ConflictingAssignmentNameException;
+import org.sakaiproject.site.api.Group;
 import org.sakaiproject.assignment2.exception.AnnouncementPermissionException;
 
 import uk.org.ponder.beanutil.entity.EntityBeanLocator;
@@ -13,12 +16,15 @@ import uk.org.ponder.messageutil.MessageLocator;
 import uk.org.ponder.messageutil.TargettedMessage;
 import uk.org.ponder.messageutil.TargettedMessageList;
 
+import java.util.Collection;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.HashSet;
 
 public class Assignment2Bean {
 	
@@ -29,6 +35,7 @@ public class Assignment2Bean {
 	private static final String BACK_TO_LIST = "back_to_list";
 	private static final String POST = "post";
 	private static final String PREVIEW = "preview";
+	private static final String REFRESH = "refresh";
 	private static final String SAVE_DRAFT = "save_draft";
 	private static final String EDIT = "edit";
 	private static final String CANCEL = "cancel";
@@ -48,10 +55,10 @@ public class Assignment2Bean {
 	
 	private Map<String, Assignment2> OTPMap;
 	@SuppressWarnings("unchecked")
-	public void setEntityBeanLocator(EntityBeanLocator entityBeanLocator) {
+	public void setAssignment2EntityBeanLocator(EntityBeanLocator entityBeanLocator) {
 		this.OTPMap = entityBeanLocator.getDeliveredBeans();
 	}
-	
+		
 	private ExternalLogic externalLogic;
 	public void setExternalLogic(ExternalLogic externalLogic) {
 		this.externalLogic = externalLogic;
@@ -77,11 +84,13 @@ public class Assignment2Bean {
 	}
 	
 	public String processActionPost() {
+		String result = POST;
 		for (String key : OTPMap.keySet()) {
 			Assignment2 assignment = OTPMap.get(key);
-			 return internalProcessPost(assignment, key);
+			 result = internalProcessPost(assignment, key);
 		}
-		return POST;
+		
+		return result;
 	}
 	
 	public String processActionPreviewPost(){
@@ -107,6 +116,13 @@ public class Assignment2Bean {
 		assignment.setModifiedTime(new Date());
 		assignment.setModifiedBy(externalLogic.getCurrentUserId());
 		
+		/**
+		Set set = new HashSet();
+		AssignmentAttachment aa = new AssignmentAttachment();
+		aa.setAttachmentReference("4");
+		set.add(aa);
+		assignment.setAttachmentSet(set);
+		**/
 		//Since in the UI, the select box bound to the gradableObjectId is always present
 		// we need to manually remove this value if the assignment is ungraded
 		if (assignment.isUngraded()) {
@@ -118,6 +134,21 @@ public class Assignment2Bean {
 		assignment.setRestrictedToGroups(Boolean.FALSE);
 		assignment.setNotificationType(0);
 		assignment.setAllowResubmitUntilDue(Boolean.FALSE);
+		
+		//do groups
+		Set<AssignmentGroup> newGroups = new HashSet();
+		Collection<Group> allGroups = externalLogic.getSiteGroups();
+		for (Group g : allGroups) {
+			if (selectedIds.get(g.getId().toString()) == Boolean.TRUE){
+				AssignmentGroup newGroup = new AssignmentGroup();
+				newGroup.setAssignment(assignment);
+				newGroup.setGroupId(g.getId());
+				newGroups.add(newGroup);
+			}
+		}
+		assignment.setAssignmentGroupSet(newGroups);
+		
+		
 		
 		//start the validator
 		Assignment2Validator validator = new Assignment2Validator();
@@ -163,6 +194,14 @@ public class Assignment2Bean {
 			previewAssignmentBean.setAssignment(assignment);
 		}
 		return PREVIEW;
+	}
+	
+	public String processActionRefresh() {
+		for (String key : OTPMap.keySet()) {
+			Assignment2 assignment = OTPMap.get(key);
+			previewAssignmentBean.setAssignment(assignment);
+		}
+		return REFRESH;
 	}
 	
 	public String processActionEdit() {

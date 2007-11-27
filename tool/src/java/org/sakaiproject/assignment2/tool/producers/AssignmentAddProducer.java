@@ -1,5 +1,6 @@
 package org.sakaiproject.assignment2.tool.producers;
 
+import org.sakaiproject.assignment2.tool.beans.Assignment2Bean;
 import org.sakaiproject.assignment2.tool.beans.Assignment2Creator;
 import org.sakaiproject.assignment2.tool.beans.PreviewAssignmentBean;
 import org.sakaiproject.assignment2.tool.params.AssignmentAddViewParams;
@@ -10,6 +11,7 @@ import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.GradebookItem;
 import org.sakaiproject.assignment2.model.Assignment2;
+import org.sakaiproject.assignment2.model.AssignmentGroup;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 
 import java.text.DateFormat;
@@ -18,9 +20,10 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.lang.String;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import java.lang.String;
 
 import uk.org.ponder.arrayutil.ListUtil;
 import uk.org.ponder.beanutil.entity.EntityBeanLocator;
@@ -74,6 +77,7 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
     private ExternalGradebookLogic externalGradebookLogic;
     private PreviewAssignmentBean previewAssignmentBean;
     private Locale locale;
+    private Assignment2Bean assignment2Bean;
     
 	/*
 	 * You can change the date input to accept time as well by uncommenting the lines like this:
@@ -113,27 +117,35 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
         Date dueDate = new Date();
         Date acceptUntilDate = new Date();
         String assignment2OTP = "Assignment2.";
+        String OTPKey = "";
         Assignment2 assignment;
         if (assignmentId != null) {
-        	assignment2OTP += assignmentId; 
+        	OTPKey = assignmentId.toString(); 
         	//get Dates
-        	assignment = assignmentLogic.getAssignmentById(assignmentId);
+        	assignment = assignmentLogic.getAssignmentByIdWithAssociatedData(assignmentId);
         } else if (params.fromViewId != null && params.fromViewId.equals(AssignmentPreviewProducer.VIEW_ID) && previewAssignmentBean.getAssignment() != null) {
         	//from Preview page
         	assignment = previewAssignmentBean.getAssignment();
-        	assignment2OTP += EntityBeanLocator.NEW_PREFIX + "1";
+        	OTPKey = EntityBeanLocator.NEW_PREFIX + "1";
+        } else if (params.fromViewId != null && params.fromViewId.equals(AssignmentAddProducer.VIEW_ID)){
+        	assignment = previewAssignmentBean.getAssignment();
+        	OTPKey = EntityBeanLocator.NEW_PREFIX + "1";
         } else {
         	//create new
         	Assignment2Creator creator = new Assignment2Creator();
         	creator.setExternalLogic(externalLogic);
         	assignment = creator.create();
         	
-        	assignment2OTP += EntityBeanLocator.NEW_PREFIX + "1";
+        	OTPKey = EntityBeanLocator.NEW_PREFIX + "1";
         }
+        assignment2OTP += OTPKey;
     	openTime = assignment.getOpenTime();
     	dueDate = assignment.getDueDateForUngraded();			//change here
     	acceptUntilDate = assignment.getAcceptUntilTime();
         
+    	//Initialize js otpkey
+    	UIVerbatim.make(tofill, "attachment-ajax-init", "otpkey=\"" + OTPKey + "\"");
+    	
         UIForm form = UIForm.make(tofill, "assignment_form");
         
         //set dateEvolver
@@ -194,7 +206,7 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
         //Attachments
         UIInternalLink.make(form, "add_attachments", UIMessage.make("assignment2.assignment_add.add_attachments"),
         		new FilePickerHelperViewParams(AddAttachmentHelperProducer.VIEWID, Boolean.TRUE, 
-        				Boolean.TRUE, 500, 700, assignment.getAssignmentId()));
+        				Boolean.TRUE, 500, 700, OTPKey));
         				
         
         
@@ -293,7 +305,12 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
         	UISelectLabel.make(access_row, "access_label", accessId, i);
         }
         
-        //Groups
+        /**
+         * Groups
+         */
+        //get Current groups
+        Set<AssignmentGroup> assignment_groups = assignment.getAssignmentGroupSet();
+       
         UIOutput groups_table_li = UIOutput.make(form, "groups_table_li");
         if (!assignment.isRestrictedToGroups()){
 	        Map attrmap = new HashMap(); 
@@ -302,12 +319,14 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
         }
         Collection<Group> groups = externalLogic.getSiteGroups();
         for (Group g : groups){
+        	//Update OTP
 	        UIBranchContainer groups_row = UIBranchContainer.make(form, "groups_row:");
-	        UIBoundBoolean.make(groups_row, "group_check");
+	        UIBoundBoolean.make(groups_row, "group_check",  
+	        		"Assignment2Bean.selectedIds." + g.getId().toString(), 
+	        		(assignment_groups == null || !assignment_groups.contains(g) ? Boolean.FALSE : Boolean.TRUE));
 	        UIOutput.make(groups_row, "group_label", g.getTitle());
 	        UIOutput.make(groups_row, "group_description", g.getDescription());
         }
-        
         
         //Notifications
         UIMessage.make(form, "notification_legend", "assignment2.assignment_add.notification_legend");
@@ -349,6 +368,8 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
             AssignmentListSortViewProducer.VIEW_ID)));
         nav.add(new NavigationCase("preview", new AssignmentAddViewParams(
         	AssignmentPreviewProducer.VIEW_ID, null, AssignmentAddProducer.VIEW_ID)));
+        nav.add(new NavigationCase("refresh", new AssignmentAddViewParams(
+        	AssignmentAddProducer.VIEW_ID, null, AssignmentAddProducer.VIEW_ID)));
         nav.add(new NavigationCase("save_draft", new SimpleViewParameters(
         	AssignmentListSortViewProducer.VIEW_ID)));
         nav.add(new NavigationCase("cancel", new SimpleViewParameters(
@@ -391,5 +412,9 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
     
     public void setLocale(Locale locale) {
     	this.locale = locale;
+    }
+    
+    public void setAssignment2Bean(Assignment2Bean assignment2Bean) {
+    	this.assignment2Bean = assignment2Bean;
     }
 }

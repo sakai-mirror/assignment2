@@ -48,7 +48,7 @@
       <property name="newMethod" 
       	value="Assignment2Creator.create" />
       <property name="fetchMethod"
-      	value="org\.sakaiproject\.assignment2\.logic\.AssignmentLogic.getAssignmentById" />
+      	value="org\.sakaiproject\.assignment2\.logic\.AssignmentLogic.getAssignmentByIdWithAssociatedData" />
       <property name="saveMethod"
         value="org\.sakaiproject\.assignment2\.logic\.AssignmentLogic.saveAssignment" />
       <property name="removeMethod"

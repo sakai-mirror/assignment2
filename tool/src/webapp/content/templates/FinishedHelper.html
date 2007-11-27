@@ -4,7 +4,8 @@
 <body>
 	<!--  close helper window -->
 	<script type="text/javascript">
-	alert('done, closing window');
+	if (parent.refresh_ajax()){parent.refresh_ajax();}
+	parent.tb_remove();
 	</script>
 </body>
 </html>

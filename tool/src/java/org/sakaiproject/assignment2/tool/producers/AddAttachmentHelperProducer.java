@@ -49,7 +49,7 @@ public class AddAttachmentHelperProducer implements ViewComponentProducer, ViewP
     UIOutput.make(tofill, HelperViewParameters.HELPER_ID, "sakai.filepicker");
     UICommand goattach = UICommand.make(tofill, HelperViewParameters.POST_HELPER_BINDING, "#{FilePickerBean.process}");
     goattach.parameters = new ParameterList();
-    goattach.parameters.add(new UIELBinding("FilePickerBean.assignment_id", params.assignmentId));
+    goattach.parameters.add(new UIELBinding("FilePickerBean.otpkey", params.otpkey));
   }
 
   public ViewParameters getViewParameters() {

@@ -111,6 +111,11 @@
       <property name="messageLocator" ref="messageLocator" />
    </bean>
 
+   <!--  AJAX Fragment Producers -->
+   <bean class="org.sakaiproject.assignment2.tool.producers.FragmentAttachmentsProducer">
+   	  <property name="assignment2EntityBeanLocator" ref="Assignment2"/>
+   	  <property name="contentHostingService" ref="org.sakaiproject.content.api.ContentHostingService" />
+   </bean>
   
    
    <!--  Beans -->
@@ -121,7 +126,7 @@
    	  <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
    	  <property name="externalAnnouncementLogic" ref="org.sakaiproject.assignment2.logic.ExternalAnnouncementLogic" />
    	  <property name="messages" ref="targettedMessageList"/>
-   	  <property name="entityBeanLocator" ref="Assignment2"/>
+   	  <property name="assignment2EntityBeanLocator" ref="Assignment2"/>
    	  <property name="previewAssignmentBean" ref="PreviewAssignmentBean" />
    	  <property name="messageLocator" ref="messageLocator" />
    </bean>
@@ -139,6 +144,7 @@
    	  <property name="contentHostingService" ref="org.sakaiproject.content.api.ContentHostingService" />
       <property name="sessionManager" ref="org.sakaiproject.tool.api.SessionManager" />
       <property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
+       <property name="assignment2EntityBeanLocator" ref="Assignment2"/>
    </bean>
 	
 	<!-- Validators -->
