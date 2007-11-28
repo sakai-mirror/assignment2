@@ -4,6 +4,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import org.sakaiproject.content.api.ContentResource;
+
 /**
  * This is the interface for logic which is external to our app logic
  * 
@@ -116,4 +118,10 @@ public interface ExternalLogic {
      */
     public boolean siteHasTool(String contextId, String toolId);
 
+    /**
+     * 
+     * @param contentReference
+     * @return String of path for <img> tag for resource image type icon
+     */
+    public String getContentTypeImagePath(ContentResource contentReference);
 }

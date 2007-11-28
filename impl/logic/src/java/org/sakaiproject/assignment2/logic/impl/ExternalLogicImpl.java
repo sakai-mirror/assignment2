@@ -14,6 +14,8 @@ import org.sakaiproject.authz.api.FunctionManager;
 import org.sakaiproject.authz.api.SecurityService;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.component.cover.ServerConfigurationService;
+import org.sakaiproject.content.api.ContentResource;
+import org.sakaiproject.content.api.ContentTypeImageService;
 import org.sakaiproject.entity.api.Entity;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.site.api.Group;
@@ -67,6 +69,7 @@ public class ExternalLogicImpl implements ExternalLogic {
     }
     
     private static final String ANON_USER_ATTRIBUTE = "AnonUserAttribute";
+    private static final String BASE_IMG_PATH= "/library/image/";
 
     /**
      * Place any code that should run when this class is initialized by spring here
@@ -190,5 +193,14 @@ public class ExternalLogicImpl implements ExternalLogic {
     		log.debug("IdUnusedException caught in siteHasTool with contextId: " + contextId + " and toolId: " + toolId);
     	}
 		return false;
+    }
+    
+    public String getContentTypeImagePath(ContentResource contentReference) {
+    	String image_path = BASE_IMG_PATH;
+    	ContentTypeImageService imageService = org.sakaiproject.content.cover.ContentTypeImageService.getInstance();
+    	image_path += imageService.getContentTypeImage(
+    			contentReference.getProperties().getProperty(
+    					contentReference.getProperties().getNamePropContentType()));
+    	return image_path;
     }
 }

@@ -34,8 +34,9 @@ public class NavBarRenderer {
             UIInternalLink.make(cell, "navigation-link", UIMessage.make("assignment2.navbar.assignment_list"), 
                     new SimpleViewParameters(AssignmentListSortViewProducer.VIEW_ID));               
         }
+        /**
         UIOutput.make(cell, "navigation-separator");
-        
+
         //Grade Report Link
         cell = UIBranchContainer.make(joint, "navigation-li:", "2");
         if (currentViewID.equals(AssignmentGradeReportProducer.VIEW_ID)) {
@@ -54,7 +55,7 @@ public class NavBarRenderer {
             UIInternalLink.make(cell, "navigation-link", UIMessage.make("assignment2.navbar.permissions"), 
                     new SimpleViewParameters(PermissionsProducer.VIEW_ID));               
         }
-        
+        **/
     }
    
 }

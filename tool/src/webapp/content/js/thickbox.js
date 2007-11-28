@@ -280,8 +280,9 @@ function tb_remove() {
 }
 
 function tb_position() {
+top = getPageScrollTop();
 $("#TB_window").css({marginLeft: '-' + parseInt((TB_WIDTH / 2),10) + 'px', width: TB_WIDTH + 'px'});
-$("#TB_window").css({top: (parent.document.body.scrollTop > 0 ? parent.document.body.scrollTop -100 : parent.document.body.scrollTop + 100) + 'px'});
+$("#TB_window").css({top: (top > 0 ? top -100 : top + 100) + 'px'});
 
 	//if ( !(jQuery.browser.msie && jQuery.browser.version < 7)) { // take away IE6
 	//	$("#TB_window").css({marginTop: '-' + parseInt((TB_HEIGHT / 2),10) + 'px'});
@@ -318,3 +319,14 @@ function tb_detectMacXFF() {
   }
 }
 
+function getPageScrollTop(){
+      var yScrolltop;
+      if (parent.pageYOffset) {
+         yScrolltop = parent.pageYOffset;
+      } else if (parent.document.documentElement && parent.document.documentElement.scrollTop){    // Explorer 6 Strict
+         yScrolltop = parent.document.documentElement.scrollTop;
+      } else if (parent.document.body) {// all other Explorers
+         yScrolltop = parent.document.body.scrollTop;
+      }
+      return yScrolltop;
+   }

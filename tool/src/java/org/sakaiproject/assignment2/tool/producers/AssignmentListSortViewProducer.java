@@ -55,6 +55,7 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
     public static final String SORT_BY_STATUS = "draft";
     public static final String SORT_BY_OPEN = "openTime";
     public static final String SORT_BY_DUE = "dueDateForUngraded";		//change me to due date
+    public static final String SORT_BY_UNGRADED = "in";		//fix me
     public static final String SORT_BY_IN = "in";				//fix me
     public static final String SORT_BY_NEW = "new";				//fix me
     //public static final String SORT_BY_SCALE = "scale";			//fix me
@@ -137,27 +138,8 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
         		SORT_BY_OPEN, "assignment2.assignment_list-sortview.tableheader.open");
         sortHeaderRenderer.makeSortingLink(tofill, "tableheader.due", viewparams, 
         		SORT_BY_DUE, "assignment2.assignment_list-sortview.tableheader.due");
-        /*sortHeaderRenderer.makeSortingLink(tofill, "tableheader.scale", viewparams, 
-        		SORT_BY_SCALE, "assignment2.assignment_list-sortview.tableheader.scale");*/
-
-        //IN Sorting Link -- Complex Case
-        UIInternalLink.make(tofill, "tableheader.in", 
-    			new AssignmentListSortViewParams(AssignmentListSortViewProducer.VIEW_ID, SORT_BY_IN, (SORT_BY_IN.equals(current_sort_by) ? opposite_sort_dir : SORT_DIR_ASC)));
-        UIMessage.make(tofill, "tableheader.in_text", "assignment2.assignment_list-sortview.tableheader.in");
-        if (current_sort_by.equals(SORT_BY_IN) && current_sort_dir.equals(SORT_DIR_ASC)){
-        	UILink.make(tofill, "in_arrow", BULLET_UP_IMG_SRC);
-        } else if (current_sort_by.equals(SORT_BY_IN) && current_sort_dir.equals(SORT_DIR_DESC)){
-        	UILink.make(tofill, "in_arrow", BULLET_DOWN_IMG_SRC);
-        }
-        //NEW Sorting Link -- Complex Case
-        UIInternalLink.make(tofill, "tableheader.new", 
-    			new AssignmentListSortViewParams(AssignmentListSortViewProducer.VIEW_ID, SORT_BY_NEW, (SORT_BY_NEW.equals(current_sort_by) ? opposite_sort_dir : SORT_DIR_ASC)));
-        UIMessage.make(tofill, "tableheader.new_text", "assignment2.assignment_list-sortview.tableheader.new");
-        if (current_sort_by.equals(SORT_BY_NEW) && current_sort_dir.equals(SORT_DIR_ASC)){
-        	UILink.make(tofill, "new_arrow", BULLET_UP_IMG_SRC);
-        } else if (current_sort_by.equals(SORT_BY_NEW) && current_sort_dir.equals(SORT_DIR_DESC)){
-        	UILink.make(tofill, "new_arrow", BULLET_DOWN_IMG_SRC);
-        }
+        sortHeaderRenderer.makeSortingLink(tofill, "tableheader.ungraded", viewparams, 
+        		SORT_BY_UNGRADED, "assignment2.assignment_list-sortview.tableheader.ungraded");
 
               
         UIForm form = UIForm.make(tofill, "form");
@@ -183,6 +165,11 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
         			"Assignment2Bean.selectedIds." + assignment.getAssignmentId().toString(),
         			Boolean.FALSE);
         	UIMessage.make(row, "assignment_row_remove_label", "assignment2.assignment_list-sortview.assignment_row_remove_label");
+        	/** FIX ME Because Assignment was not retrieved with attachments****
+        	if (assignment.getAttachmentSet() != null && !assignment.getAttachmentSet().isEmpty()){
+        		UILink.make(row, "assignment_row_attach_img", "/sakai-assignment2-tool/content/images/attach.png");
+        	}
+        	**/
         	UIInternalLink.make(row, "assignment_row_link", assignment.getTitle(), 
         			new AssignmentAddViewParams(AssignmentPreviewProducer.VIEW_ID, assignment.getAssignmentId(), AssignmentListSortViewProducer.VIEW_ID));
         	UIInternalLink.make(row, "assignment_row_edit", 
@@ -217,8 +204,7 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
         			UIOutput.make(row, "assignment_row_due", messageLocator.getMessage("assignment2.assignment_list-sortview.no_due_date"));	
         		}
         	}
-        	UIInternalLink.make(row, "assignment_row_in_new", "2/2", new SimpleViewParameters(AssignmentListReorderProducer.VIEW_ID));
-        	//UIOutput.make(row, "assignment_row_scale", "0-100.0");
+        	UIInternalLink.make(row, "assignment_row_in_new", "2/4", new SimpleViewParameters(AssignmentGradeAssignmentProducer.VIEW_ID));
         }
         
         UICommand.make(form, "submit_remove", UIMessage.make("assignment2.assignment_list-sortview.submit_remove"),

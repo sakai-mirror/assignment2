@@ -138,7 +138,6 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
         	
         	OTPKey = EntityBeanLocator.NEW_PREFIX + "1";
         }
-        previewAssignmentBean.setAssignment(assignment);
         assignment2OTP += OTPKey;
     	openTime = assignment.getOpenTime();
     	dueDate = assignment.getDueDateForUngraded();			//change here

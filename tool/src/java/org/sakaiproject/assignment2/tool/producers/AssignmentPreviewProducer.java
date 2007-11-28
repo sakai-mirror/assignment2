@@ -67,10 +67,19 @@ public class AssignmentPreviewProducer implements ViewComponentProducer, Navigat
         navBarRenderer.makeNavBar(tofill, "navIntraTool:", VIEW_ID);
 
         Assignment2 assignment;
+        String OTPKey = "";
         if (params.fromViewId != null && params.assignmentId != null && params.fromViewId.equals(AssignmentListSortViewProducer.VIEW_ID)) {
-        	assignment = assignmentLogic.getAssignmentById(params.assignmentId);
+        	//we are coming from the main page and are just viewing
+        	assignment = assignmentLogic.getAssignmentByIdWithAssociatedData(params.assignmentId);
+        	OTPKey = assignment.getAssignmentId().toString();
         } else {
+        	//we are coming from the add/edit assignment page
         	assignment = previewAssignmentBean.getAssignment();
+        	if (assignment.getAssignmentId() != null) {
+        		OTPKey = assignment.getAssignmentId().toString();
+        	} else {
+        		OTPKey = EntityBeanLocator.NEW_PREFIX + "1";
+        	}
         }
     	UIMessage.make(tofill, "heading", "assignment2.assignment_preview.heading", new Object[]{ assignment.getTitle() });
     	
@@ -130,8 +139,13 @@ public class AssignmentPreviewProducer implements ViewComponentProducer, Navigat
     	UIMessage.make(tofill, "student_view_start", "assignment2.assignment_preview.student_view.start");
     	UIMessage.make(tofill, "student_view_start_instructions", "assignment2.assignment_preview.student_view.start_instructions");
     	UIMessage.make(tofill, "student_view_attachments_legend", "assignment2.assignment_preview.student_view.attachments");
-    	UIMessage.make(tofill, "student_view_no_attachments", "assignment2.assignment_preview.student_view.no_attachments");
-    	UIMessage.make(tofill, "student_view_add_attachments", "assignment2.assignment_preview.student_view.add_attachments");
+    	if (assignment.getAttachmentSet() == null || assignment.getAttachmentSet().isEmpty()){
+    		UIMessage.make(tofill, "student_view_no_attachments", "assignment2.assignment_preview.student_view.no_attachments");
+    	}
+    	
+    	//Initialize js otpkey
+    	UIVerbatim.make(tofill, "attachment-ajax-init", "otpkey=\"" + OTPKey + "\"");
+
     	
     	//Post Buttons
     	UIForm form = UIForm.make(tofill, "form");
