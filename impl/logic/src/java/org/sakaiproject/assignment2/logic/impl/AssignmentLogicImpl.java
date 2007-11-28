@@ -138,18 +138,11 @@ public class AssignmentLogicImpl implements AssignmentLogic{
         		assignment.setSortIndex(0);
         	}
         	
-        	/////TESTING////
-        	//AssignmentAttachment attachment = new AssignmentAttachment();
-        	//attachment.setAttachmentReference("blah");
-        	//assignment.setAttachmentSet(new HashSet());
-        	//assignment.getAttachmentSet().add(attachment);
-        	///TESTING////
-        	
+        	// the attachment and group recs do not have assignmentId data yet,
+        	// so we need to handle it after we do the creation
         	Set<AssignmentAttachment> attachSet = assignment.getAttachmentSet();
         	Set<AssignmentGroup> assignGroupSet = assignment.getAssignmentGroupSet();
         	
-        	// the attachment and group recs do not have assignmentId data yet,
-        	// so we need to handle it after we do the creation
         	assignment.setAttachmentSet(new HashSet());
         	assignment.setAssignmentGroupSet(new HashSet());
         	
@@ -157,21 +150,11 @@ public class AssignmentLogicImpl implements AssignmentLogic{
             log.debug("Created assignment: " + assignment.getTitle());
             
             // now that we have an assignmentId, we can add the associated groups and attachments
-            boolean updateAssignment = false;
+            assignment.setAttachmentSet(attachSet);
+            updateAttachments(existingAssignment, assignment);     
             
-            // handle assignment attachments
-            if (attachSet != null && !attachSet.isEmpty()) {
-            	for (Iterator attachIter = attachSet.iterator(); attachIter.hasNext();) {
-            		AssignmentAttachment attach = (AssignmentAttachment) attachIter.next();
-            		if (attach != null) {
-            			attach.setAssignment(assignment);
-            			assignment.getAttachmentSet().add(attach);
-            			dao.save(attach);
-            			log.debug("New attachment created: " + attach.getAttachmentReference() + "with attach id " + attach.getAssignAttachId());
-            			updateAssignment = true;
-            		}
-            	}
-            }
+            assignment.setAssignmentGroupSet(assignGroupSet);
+            updateAssignmentGroups(existingAssignment, assignment);
             
             // handle assignment group restrictions
             if (assignGroupSet != null && !assignGroupSet.isEmpty()) {
@@ -182,13 +165,8 @@ public class AssignmentLogicImpl implements AssignmentLogic{
             			assignment.getAssignmentGroupSet().add(ag);
             			dao.save(ag);
             			log.debug("New group created: " + ag.getGroupId() + "with assignGroupId " + ag.getAssignmentGroupId());
-            			updateAssignment = true;
             		}
             	}
-            }
-            
-            if (updateAssignment) {
-            	dao.update(assignment);
             }
               
 		} else {
@@ -199,19 +177,8 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 	        	}
 			}
 			
-			if (assignment.getAttachmentSet() != null) {
-				for (Iterator attachIter = assignment.getAttachmentSet().iterator(); attachIter.hasNext();) {
-					AssignmentAttachment attach = (AssignmentAttachment) attachIter.next();
-					if (attach != null) {
-						if (attach.getAssignAttachId() == null) {
-							// this is a new attachment, so create
-							attach.setAssignment(assignment);
-							dao.create(attach);
-							log.debug("New attachment created: " + attach.getAttachmentReference() + "with id " + attach.getAssignAttachId());
-						}
-					}
-				}
-			}
+			updateAttachments(existingAssignment, assignment);
+			updateAssignmentGroups(existingAssignment, assignment);
 			
         	dao.update(assignment);
             log.debug("Updated assignment: " + assignment.getTitle() + "with id: " + assignment.getAssignmentId());
@@ -444,5 +411,97 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 		}
 		
 		return sb.toString();
+	}
+	
+	/**
+	 * add or delete AssignmentAttachments by comparing the existingAssignment
+	 * from db to the new version
+	 * @param existingAssignment
+	 * @param newAssignment
+	 * @throws IllegalArgumentException if the existingAssignment is null or newAssignment
+	 * is not already persisted in db
+	 */
+	private void updateAttachments(Assignment2 existingAssignment, Assignment2 newAssignment) {
+		if (newAssignment == null) {
+			throw new IllegalArgumentException("Null newAssignment passed to updateAttachments");
+		}
+		
+		if (newAssignment.getAssignmentId() == null) {
+			throw new IllegalArgumentException("newAssignment passed to updateAttachments is not currently defined in db");
+		}
+		
+		if (newAssignment.getAttachmentSet() != null && !newAssignment.getAttachmentSet().isEmpty()) {
+        	for (Iterator attachIter = newAssignment.getAttachmentSet().iterator(); attachIter.hasNext();) {
+        		AssignmentAttachment attach = (AssignmentAttachment) attachIter.next();
+        		if (attach != null && attach.getAssignAttachId() == null) {
+        			// this is a new attachment and needs to be created
+        			attach.setAssignment(newAssignment);
+        			newAssignment.getAttachmentSet().add(attach);
+        			dao.save(attach);
+        			log.debug("New attachment created: " + attach.getAttachmentReference() + "with attach id " + attach.getAssignAttachId());
+        		}
+        	}
+        }
+		
+		// now we need to handle the case in which existing attachments were removed
+		if (existingAssignment != null) {
+			for (Iterator existingIter = existingAssignment.getAttachmentSet().iterator(); existingIter.hasNext();) {
+				AssignmentAttachment attach = (AssignmentAttachment) existingIter.next();
+				if (attach != null) {
+					if (newAssignment.getAttachmentSet() == null ||
+							!newAssignment.getAttachmentSet().contains(attach)) {
+						// we need to delete this attachment
+						dao.delete(attach);
+						log.debug("Attachment deleted with id: " + attach.getAssignAttachId());
+					}
+				}
+			}
+		}
+	}
+	
+	/**
+	 * This method will add or delete AssignmentGroups by comparing the existingAssignment
+	 * from db to the new version
+	 * @param existingAssignment
+	 * @param newAssignment
+	 * @throws IllegalArgumentException if the existingAssignment is null or newAssignment
+	 * is not already persisted in db
+	 */
+	private void updateAssignmentGroups(Assignment2 existingAssignment, Assignment2 newAssignment) {
+		if (newAssignment == null) {
+			throw new IllegalArgumentException("Null newAssignment passed to updateAssignmentGroups");
+		}
+		
+		if (newAssignment.getAssignmentId() == null) {
+			throw new IllegalArgumentException("newAssignment passed to updateAssignmentGroups is not currently defined in db");
+		}
+		
+		if (newAssignment.getAssignmentGroupSet() != null && !newAssignment.getAssignmentGroupSet().isEmpty()) {
+        	for (Iterator groupIter = newAssignment.getAssignmentGroupSet().iterator(); groupIter.hasNext();) {
+        		AssignmentGroup group = (AssignmentGroup) groupIter.next();
+        		if (group != null && group.getAssignmentGroupId() == null) {
+        			// this is a new AssignmentGroup and needs to be created
+        			group.setAssignment(newAssignment);
+        			newAssignment.getAssignmentGroupSet().add(group);
+        			dao.save(group);
+        			log.debug("New AssignmentGroup created: " + group.getAssignmentGroupId() + "with id " + group.getAssignmentGroupId());
+        		}
+        	}
+        }
+		
+		// now we need to handle the case in which existing AssignmentGroups were removed
+		if (existingAssignment != null) {
+			for (Iterator existingIter = existingAssignment.getAssignmentGroupSet().iterator(); existingIter.hasNext();) {
+				AssignmentGroup group = (AssignmentGroup) existingIter.next();
+				if (group != null) {
+					if (newAssignment.getAssignmentGroupSet() == null ||
+							!newAssignment.getAssignmentGroupSet().contains(group)) {
+						// we need to delete this AssignmentGroup
+						dao.delete(group);
+						log.debug("AssignmentGroup deleted with id: " + group.getAssignmentGroupId());
+					}
+				}
+			}
+		}
 	}
 }
