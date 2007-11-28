@@ -1,14 +1,18 @@
 package org.sakaiproject.assignment2.tool.producers;
 
 import java.util.Set;
+import java.util.HashSet;
 
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentAttachment;
+import org.sakaiproject.assignment2.tool.beans.PreviewAssignmentBean;
 import org.sakaiproject.assignment2.tool.params.FragmentAttachmentsViewParams;
 import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.content.api.ContentResource;
 
 import org.sakaiproject.entity.api.Reference;
+import org.sakaiproject.tool.api.SessionManager;
+import org.sakaiproject.tool.api.ToolSession;
 
 import uk.org.ponder.beanutil.entity.EntityBeanLocator;
 import uk.org.ponder.rsf.components.UIBranchContainer;
@@ -40,6 +44,11 @@ public class FragmentAttachmentsProducer implements ViewComponentProducer, ViewP
 		this.contentHostingService = contentHostingService;
 	}
 	
+	private SessionManager sessionManager;
+	public void setSessionManager(SessionManager sessionManager) {
+		this.sessionManager = sessionManager;
+	}
+	
     public void fillComponents(UIContainer tofill, ViewParameters viewparams, ComponentChecker checker) {
     	FragmentAttachmentsViewParams params = (FragmentAttachmentsViewParams) viewparams;
     	
@@ -47,14 +56,27 @@ public class FragmentAttachmentsProducer implements ViewComponentProducer, ViewP
     		return;
     	}
     	
+    	Set<String> set = new HashSet();
+    	
     	Assignment2 assignment = (Assignment2) entityBeanLocator.locateBean(params.otpkey);
-    	Set<AssignmentAttachment> set = assignment.getAttachmentSet();
-    	for (AssignmentAttachment aa : set) {
+    	if (assignment.getAttachmentSet() != null) {
+	    	for (AssignmentAttachment aa : assignment.getAttachmentSet()) {
+	    		set.add(aa.getAttachmentReference());
+	    	}
+    	}
+    	
+    	//get New attachments from session set
+    	ToolSession session = sessionManager.getCurrentToolSession();
+    	if (session.getAttribute("attachmentRefs") != null) {
+    		set.addAll((Set)session.getAttribute("attachmentRefs"));
+    	}
+    	
+    	for (String ref : set) {
     		//create a new <ol> to loop
     		UIBranchContainer row = UIBranchContainer.make(tofill, "attachments:");
     		//get the attachment
     		try {
-	    		ContentResource cr = contentHostingService.getResource(aa.getAttachmentReference());
+	    		ContentResource cr = contentHostingService.getResource(ref);
 	    		UILink.make(row, "attachment_link", cr.getProperties().getProperty(cr.getProperties().getNamePropDisplayName()),
 	    				cr.getUrl());
     		} catch (Exception e) {

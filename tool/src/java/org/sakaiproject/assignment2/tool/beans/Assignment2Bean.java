@@ -9,6 +9,8 @@ import org.sakaiproject.assignment2.model.AssignmentAttachment;
 import org.sakaiproject.assignment2.tool.beans.Assignment2Validator;
 import org.sakaiproject.assignment2.exception.ConflictingAssignmentNameException;
 import org.sakaiproject.site.api.Group;
+import org.sakaiproject.tool.api.SessionManager;
+import org.sakaiproject.tool.api.ToolSession;
 import org.sakaiproject.assignment2.exception.AnnouncementPermissionException;
 
 import uk.org.ponder.beanutil.entity.EntityBeanLocator;
@@ -79,6 +81,11 @@ public class Assignment2Bean {
 		this.messageLocator = messageLocator;
 	}
 	
+	private SessionManager sessionManager;
+	public void setSessionManager(SessionManager sessionManager) {
+		this.sessionManager = sessionManager;
+	}
+	
 	public String processActionBackToList() {
 		return BACK_TO_LIST;
 	}
@@ -115,15 +122,25 @@ public class Assignment2Bean {
 		assignment.setCreateTime(new Date());
 		assignment.setModifiedTime(new Date());
 		assignment.setModifiedBy(externalLogic.getCurrentUserId());
+
+		Set<AssignmentAttachment> set = new HashSet();
+		if (assignment.getAttachmentSet() != null) {
+			set.addAll(assignment.getAttachmentSet());
+		}
 		
-		/**
-		Set set = new HashSet();
-		AssignmentAttachment aa = new AssignmentAttachment();
-		aa.setAttachmentReference("4");
-		set.add(aa);
-		assignment.setAttachmentSet(set);
-		**/
-		//Since in the UI, the select box bound to the gradableObjectId is always present
+    	//get New attachments from session set
+    	ToolSession session = sessionManager.getCurrentToolSession();
+    	if (session.getAttribute("attachmentRefs") != null) {
+    		for (String ref : (Set<String>)session.getAttribute("attachmentRefs")) {
+    			AssignmentAttachment aa = new AssignmentAttachment();
+    			aa.setAttachmentReference(ref);
+    			set.add(aa);
+    		}
+    	}
+    	session.removeAttribute("attachmentRefs");
+    	assignment.setAttachmentSet(set);
+
+    	//Since in the UI, the select box bound to the gradableObjectId is always present
 		// we need to manually remove this value if the assignment is ungraded
 		if (assignment.isUngraded()) {
 			assignment.setGradableObjectId(null);

@@ -77,6 +77,7 @@ public class FilePickerBean {
 	 * 			in ControlImportProducer (reportNavigationCases method)
 	 * @throws SecurityException 
 	 */
+	@SuppressWarnings("unchecked")
 	public String process() throws SecurityException {
 
 		    ToolSession session = sessionManager.getCurrentToolSession();
@@ -85,27 +86,17 @@ public class FilePickerBean {
 		    {
 		      List refs = (List)session.getAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS);
 		      Set set = new HashSet();
+
+	    	  //check if set already there, if so add on
+	    	  if (session.getAttribute("attachmentRefs") != null) {
+	    		  set.addAll((Set) session.getAttribute("attachmentRefs"));
+	    	  }
 		      
 		      for (int i = 0; i < refs.size(); i++) {
 		    	  Reference ref = (Reference) refs.get(i);
-		    	  AssignmentAttachment aa = new AssignmentAttachment();
-		    	  aa.setAttachmentReference(ref.getId());
-		    	  set.add(aa);
-		    	  
-		        /**
-		        AssignmentAttachment attach = new AssignmentAttachment();
-		        attach.setAssignment(assignment);
-		        attach.setAttachmentReference(ref.getId());
-		        assignmentLogic.saveAssignmentAttachment(attach);
-		        **/
-		      }
-		      Object object = entityBeanLocator.locateBean(otpkey);
-		      if (object == null) {
-		    	  return "processed";
-		      }
-		      if (object instanceof Assignment2) {
-		    	  Assignment2 assignment = (Assignment2) object;
-		    	  assignment.setAttachmentSet(set);
+		    	  set.add(ref.getId());
+
+		    	  session.setAttribute("attachmentRefs", set);
 		      }
 		      
 		    }

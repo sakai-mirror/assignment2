@@ -44,7 +44,7 @@ public class AddAttachmentHelperProducer implements ViewComponentProducer, ViewP
 	ToolSession toolSession = sessionManager.getCurrentToolSession();
 	toolSession.setAttribute(FilePickerHelper.FILE_PICKER_TITLE_TEXT, "XML File Data Import");
 	toolSession.setAttribute(FilePickerHelper.FILE_PICKER_INSTRUCTION_TEXT, "Please select an XML data file from which to read data.");
-	toolSession.setAttribute(FilePickerHelper.FILE_PICKER_MAX_ATTACHMENTS, FilePickerHelper.CARDINALITY_SINGLE);
+	toolSession.setAttribute(FilePickerHelper.FILE_PICKER_MAX_ATTACHMENTS, FilePickerHelper.CARDINALITY_MULTIPLE);
 	  
     UIOutput.make(tofill, HelperViewParameters.HELPER_ID, "sakai.filepicker");
     UICommand goattach = UICommand.make(tofill, HelperViewParameters.POST_HELPER_BINDING, "#{FilePickerBean.process}");
