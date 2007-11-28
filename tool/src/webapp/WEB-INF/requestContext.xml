@@ -27,6 +27,7 @@
    <bean class="org.sakaiproject.assignment2.tool.producers.AjaxCallbackProducer">
 	  <property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
       <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
+      <property name="sessionManager" ref="org.sakaiproject.tool.api.SessionManager" />
    </bean>	
 
    <bean class="org.sakaiproject.assignment2.tool.producers.AssignmentAddProducer">
@@ -39,6 +40,7 @@
       <property name="externalGradebookLogic" ref="org.sakaiproject.assignment2.logic.ExternalGradebookLogic" />
       <property name="previewAssignmentBean" ref="PreviewAssignmentBean" />
       <property name="locale" ref="requestLocale" />
+      <property name="sessionManager" ref="org.sakaiproject.tool.api.SessionManager" />
    </bean>
 
    <bean class="org.sakaiproject.assignment2.tool.producers.AssignmentAddGradebookItemProducer">
@@ -117,6 +119,7 @@
    	  <property name="contentHostingService" ref="org.sakaiproject.content.api.ContentHostingService" />
    	  <property name="sessionManager" ref="org.sakaiproject.tool.api.SessionManager" />
    	  <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
+   	  <property name="messageLocator" ref="messageLocator" />
    </bean>
   
    

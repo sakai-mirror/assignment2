@@ -2,11 +2,15 @@ package org.sakaiproject.assignment2.tool.producers;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.HashSet;
 
 import org.sakaiproject.assignment2.tool.params.AjaxCallbackViewParams;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
+import org.sakaiproject.tool.api.SessionManager;
+import org.sakaiproject.tool.api.ToolSession;
 
 import uk.org.ponder.messageutil.MessageLocator;
 import uk.org.ponder.rsf.components.UIContainer;
@@ -30,6 +34,11 @@ public class AjaxCallbackProducer implements ViewComponentProducer, ViewParamsRe
     private ExternalLogic externalLogic;
     private AssignmentLogic assignmentLogic;
     
+    private SessionManager sessionManager;
+	public void setSessionManager(SessionManager sessionManager) {
+		this.sessionManager = sessionManager;
+	}
+    
     public void fillComponents(UIContainer tofill, ViewParameters viewparams, ComponentChecker checker) {
     	AjaxCallbackViewParams params = (AjaxCallbackViewParams) viewparams;
     	
@@ -46,6 +55,16 @@ public class AjaxCallbackProducer implements ViewComponentProducer, ViewParamsRe
     	    	assignmentIds[i] = Long.valueOf(assignmentIdParam[i].substring(3));
     	    }
 	    	assignmentLogic.setAssignmentSortIndexes(assignmentIds);
+	    } else if (params.removeAttachment && params.refId != null && !params.refId.equals("")) {
+	    	Set<String> set = new HashSet();
+	    	ToolSession session = sessionManager.getCurrentToolSession();
+	    	if (session.getAttribute("removedAttachmentRefs") != null) {
+	    		set.addAll((Set)session.getAttribute("removedAttachmentRefs"));
+	    	}
+	  
+	    	//params.refId = org.sakaiproject.util.Web.unEscapeHtml(params.refId);
+	    	set.add(params.refId);
+	    	session.setAttribute("removedAttachmentRefs", set);
 	    }
     }
     

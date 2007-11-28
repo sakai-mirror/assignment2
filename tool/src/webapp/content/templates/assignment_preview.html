@@ -134,10 +134,12 @@
 // otpkey = some value
 </script>
 <script type="text/javascript">
+//<![CDATA[
 function refresh_ajax(){
-	$("#fragment-attachments-container").load("fragment-attachments?otpkey=" + otpkey);
+	$("#fragment-attachments-container").load("fragment-attachments?otpkey=" + otpkey + "&remove=false");
 }
 $(document).load(refresh_ajax());
+//]]>
 </script>
 </body>
 </html>

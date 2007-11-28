@@ -59,6 +59,8 @@ import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
 import uk.org.ponder.rsf.viewstate.ViewParameters;
 import uk.org.ponder.rsf.viewstate.ViewParamsReporter;
 import org.sakaiproject.site.api.Group;
+import org.sakaiproject.tool.api.SessionManager;
+import org.sakaiproject.tool.api.ToolSession;
 
 public class AssignmentAddProducer implements ViewComponentProducer, NavigationCaseReporter, ViewParamsReporter {
 
@@ -78,6 +80,8 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
     private PreviewAssignmentBean previewAssignmentBean;
     private Locale locale;
     private Assignment2Bean assignment2Bean;
+    private SessionManager sessionManager;
+
     
 	/*
 	 * You can change the date input to accept time as well by uncommenting the lines like this:
@@ -94,6 +98,10 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
 
     @SuppressWarnings("unchecked")
 	public void fillComponents(UIContainer tofill, ViewParameters viewparams, ComponentChecker checker) {
+    	//First clear all session vars
+    	ToolSession session = sessionManager.getCurrentToolSession();
+    	session.removeAttribute("attachmentRefs");
+    	
     	//Get View Params
     	AssignmentAddViewParams params = (AssignmentAddViewParams) viewparams;
     	
@@ -417,4 +425,8 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
     public void setAssignment2Bean(Assignment2Bean assignment2Bean) {
     	this.assignment2Bean = assignment2Bean;
     }
+    
+	public void setSessionManager(SessionManager sessionManager) {
+		this.sessionManager = sessionManager;
+	}
 }

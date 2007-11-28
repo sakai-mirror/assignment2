@@ -212,10 +212,12 @@ $(".gradebook_item_due_date").hide();
 // otpkey = some value
 </script>
 <script type="text/javascript">
+//<![CDATA[
 function refresh_ajax(){
-	$("#fragment-attachments-container").load("fragment-attachments?otpkey=" + otpkey);
+	$("#fragment-attachments-container").load("fragment-attachments?otpkey=" + otpkey + "&remove=true");
 }
 $(document).load(refresh_ajax());
+//]]>
 </script>
 </body>
 </html>

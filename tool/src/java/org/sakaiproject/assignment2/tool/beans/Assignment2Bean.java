@@ -138,6 +138,17 @@ public class Assignment2Bean {
     		}
     	}
     	session.removeAttribute("attachmentRefs");
+    	//Now check for attachments that have been removed
+    	if (session.getAttribute("removedAttachmentRefs") != null) {
+    		for (String ref : (Set<String>)session.getAttribute("removedAttachmentRefs")) {
+    			for (AssignmentAttachment aa : set) {
+    				if (ref.equals(aa.getAttachmentReference())) {
+    					set.remove(aa);
+    				}
+    			}
+    		}
+    	}
+    	session.removeAttribute("removedAttachmentRefs");
     	assignment.setAttachmentSet(set);
 
     	//Since in the UI, the select box bound to the gradableObjectId is always present
