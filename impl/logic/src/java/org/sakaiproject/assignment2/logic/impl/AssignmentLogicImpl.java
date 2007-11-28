@@ -23,6 +23,7 @@ package org.sakaiproject.assignment2.logic.impl;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +34,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.assignment2.model.Assignment2;
+import org.sakaiproject.assignment2.model.AssignmentAttachment;
 import org.sakaiproject.assignment2.model.AssignmentGroup;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.ExternalAnnouncementLogic;
@@ -136,15 +138,79 @@ public class AssignmentLogicImpl implements AssignmentLogic{
         		assignment.setSortIndex(0);
         	}
         	
+        	/////TESTING////
+        	//AssignmentAttachment attachment = new AssignmentAttachment();
+        	//attachment.setAttachmentReference("blah");
+        	//assignment.setAttachmentSet(new HashSet());
+        	//assignment.getAttachmentSet().add(attachment);
+        	///TESTING////
+        	
+        	Set<AssignmentAttachment> attachSet = assignment.getAttachmentSet();
+        	Set<AssignmentGroup> assignGroupSet = assignment.getAssignmentGroupSet();
+        	
+        	// the attachment and group recs do not have assignmentId data yet,
+        	// so we need to handle it after we do the creation
+        	assignment.setAttachmentSet(new HashSet());
+        	assignment.setAssignmentGroupSet(new HashSet());
+        	
         	dao.create(assignment);
             log.debug("Created assignment: " + assignment.getTitle());
             
+            // now that we have an assignmentId, we can add the associated groups and attachments
+            boolean updateAssignment = false;
+            
+            // handle assignment attachments
+            if (attachSet != null && !attachSet.isEmpty()) {
+            	for (Iterator attachIter = attachSet.iterator(); attachIter.hasNext();) {
+            		AssignmentAttachment attach = (AssignmentAttachment) attachIter.next();
+            		if (attach != null) {
+            			attach.setAssignment(assignment);
+            			assignment.getAttachmentSet().add(attach);
+            			dao.save(attach);
+            			log.debug("New attachment created: " + attach.getAttachmentReference() + "with attach id " + attach.getAssignAttachId());
+            			updateAssignment = true;
+            		}
+            	}
+            }
+            
+            // handle assignment group restrictions
+            if (assignGroupSet != null && !assignGroupSet.isEmpty()) {
+            	for (Iterator groupIter = assignGroupSet.iterator(); groupIter.hasNext();) {
+            		AssignmentGroup ag = (AssignmentGroup) groupIter.next();
+            		if (ag != null) {
+            			ag.setAssignment(assignment);
+            			assignment.getAssignmentGroupSet().add(ag);
+            			dao.save(ag);
+            			log.debug("New group created: " + ag.getGroupId() + "with assignGroupId " + ag.getAssignmentGroupId());
+            			updateAssignment = true;
+            		}
+            	}
+            }
+            
+            if (updateAssignment) {
+            	dao.update(assignment);
+            }
+              
 		} else {
 			if (!assignment.getTitle().equals(existingAssignment.getTitle())) {
 				// check to see if this new title already exists
 				if (assignmentNameExists(assignment.getTitle())) {
 	        		throw new ConflictingAssignmentNameException("An assignment with the title " + assignment.getTitle() + " already exists");
 	        	}
+			}
+			
+			if (assignment.getAttachmentSet() != null) {
+				for (Iterator attachIter = assignment.getAttachmentSet().iterator(); attachIter.hasNext();) {
+					AssignmentAttachment attach = (AssignmentAttachment) attachIter.next();
+					if (attach != null) {
+						if (attach.getAssignAttachId() == null) {
+							// this is a new attachment, so create
+							attach.setAssignment(assignment);
+							dao.create(attach);
+							log.debug("New attachment created: " + attach.getAttachmentReference() + "with id " + attach.getAssignAttachId());
+						}
+					}
+				}
 			}
 			
         	dao.update(assignment);

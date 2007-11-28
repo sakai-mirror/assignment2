@@ -36,6 +36,11 @@ public class AssignmentAttachment {
 	
 	public AssignmentAttachment() {
 	}
+	
+	public AssignmentAttachment(Assignment2 assignment, String attachmentReference) {
+		this.assignment = assignment;
+		this.attachmentReference = attachmentReference;
+	}
 
 	/**
 	 * @return the assignAttachId
