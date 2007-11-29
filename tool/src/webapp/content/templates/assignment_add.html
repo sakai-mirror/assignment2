@@ -42,6 +42,7 @@
 			<li><span rsf:id="grading_select" />
 				<fieldset>
 					<ol>
+						<li><input rsf:id="ungraded" name="graded" type="radio" /> <label rsf:id="msg=assignment2.assignment_add.assignment_ungraded">This assignment is ungraded</label></li>
 						<li><input rsf:id="graded" name="graded" type="radio" /> <label rsf:id="msg=assignment2.assignment_add.assignment_graded">This assignment is graded</label>
 							<span rsf:id="msg=assignment2.assignment_add.gradebook_associated"> and is associated with a Gradebook Item:</span> 
 								<select rsf:id="gradebook_item" >
@@ -53,7 +54,6 @@
 								</select>
 								<span rsf:id="msg=assignment2.assignment_add.gradebook_or"> -or- </span>
 								<a rsf:id="gradebook_item_new_helper" class="thickbox">Create a new Gradebook Item</a></li>
-						<li><input rsf:id="ungraded" name="graded" type="radio" /> <label rsf:id="msg=assignment2.assignment_add.assignment_ungraded">This assignment is ungraded</label></li>
 					</ol>
 				</fieldset>
 			</li>
@@ -97,16 +97,39 @@
 				<p rsf:id="accept_until_instruction" class="instruction">No assignments can be submitted after this close date.</p>
 			</li>
 			<li>
-				<label rsf:id="student_submissions_label"><span class="reqStar">*</span> Student Submissions</label>
-				<select rsf:id="submission_type">
+				<span rsf:id="submission_type"></span>
+				<label rsf:id="student_submissions_label"><span class="reqStar">*</span> Submission Method</label>
+				<fieldset>
+				<ol>
+					<li rsf:id="submission_type_row:">
+						<input type="radio" rsf:id="submission_type_radio" />
+						<label rsf:id="submission_type_label">Label</label>
+					</li>
+				</ol>
+				</fieldset>
+				<!-- 
+				<select rsf:id="submission_type_old">
 					<option value="1">Inline only</option>
 					<option value="2">Attachments only</option>
 					<option value="3" selected="selected">Inline and Attachments</option>
 					<option value="4">Non-electronic</option>
 				</select>
+				-->
 				<div class="error">
 					<p rsf:id="message-for:submission_type"></p>
 				</div>
+			</li>
+			<li>
+				<label rsf:id="msg=assignment2.assignment_add.misc_details_label">Miscellaneous Details</label>
+				<fieldset>
+					<ol>
+						<!-- 
+						<li><input rsf:id="on_calendar" type="checkbox" /> <label rsf:id="msg=assignment2.assignment_add.on_calendar">Add the due date to Calendar</label></li>
+						-->
+						<li><input rsf:id="announcement" type="checkbox" /> <label rsf:id="msg=assignment2.assignment_add.announcement">Add an announcement about the open date to Announcements</label></li>
+						<li><input rsf:id="honor_pledge" type="checkbox" /> <label rsf:id="msg=assignment2.assignment_add.honor_pledge">Add honor pledge</label></li>
+					</ol>
+				</fieldset>
 			</li>
 			<li>
 				<label rsf:id="msg=assignment2.assignment_add.assignment_instructions" class="block">Assignment Instructions</label>
@@ -118,17 +141,6 @@
 					<!-- this should be the FCKEditor -->
 				</div>
 				
-			</li>
-			<li>
-				<fieldset>
-					<ol>
-						<!-- 
-						<li><input rsf:id="on_calendar" type="checkbox" /> <label rsf:id="msg=assignment2.assignment_add.on_calendar">Add the due date to Calendar</label></li>
-						-->
-						<li><input rsf:id="announcement" type="checkbox" /> <label rsf:id="msg=assignment2.assignment_add.announcement">Add an announcement about the open date to Announcements</label></li>
-						<li><input rsf:id="honor_pledge" type="checkbox" /> <label rsf:id="msg=assignment2.assignment_add.honor_pledge">Add honor pledge</label></li>
-					</ol>
-				</fieldset>
 			</li>
 			<li>
 				

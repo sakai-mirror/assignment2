@@ -1,6 +1,7 @@
 package org.sakaiproject.assignment2.tool.beans;
 
 import org.sakaiproject.assignment2.model.Assignment2;
+import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 
 import uk.org.ponder.messageutil.MessageLocator;
@@ -26,6 +27,7 @@ public class Assignment2Creator {
     	togo.setRestrictedToGroups(Boolean.FALSE);
     	togo.setUngraded(Boolean.TRUE);
     	togo.setHasAnnouncement(Boolean.FALSE);
+    	togo.setSubmissionType(AssignmentConstants.SUBMIT_INLINE_ONLY);
     	
     	//Setting up Dates
     	Calendar cal = Calendar.getInstance();

@@ -88,6 +88,12 @@ public class FragmentAttachmentsProducer implements ViewComponentProducer, ViewP
     		set.addAll((Set)session.getAttribute("attachmentRefs"));
     	}
     	
+    	//Now remove ones from session
+    	if (session.getAttribute("removedAttachmentRefs") != null){
+    		set.removeAll((Set<String>)session.getAttribute("removedAttachmentRefs"));
+    	}
+    	
+    	
     	for (String ref : set) {
     		//create a new <ol> to loop
     		UIBranchContainer row = UIBranchContainer.make(tofill, "attachments:");

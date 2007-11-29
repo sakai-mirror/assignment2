@@ -12,6 +12,7 @@
     <link href="/library/skin/default/tool.css" type="text/css" rel="stylesheet" media="all"/>
     <script type="text/javascript" language="JavaScript" src="/library/js/jquery.js"></script>
     <script type="text/javascript" language="JavaScript" src="/library/js/headscripts.js"></script>
+    <script type="text/javascript" language="JavaScript" src="/sakai-assignment2-tool/content/js/assignment.js"></script>
 	<link href="/sakai-assignment2-tool/content/css/assignmentsv4.css" type="text/css" rel="stylesheet" media="all" />
 
 </head>
@@ -29,17 +30,76 @@
 	</div>
 
 	<h3 rsf:id="heading">Submissions for "[Homework title]"</h3>
+	<div rsf:id="pagerDiv:" class="listNav pagerDiv"></div>
 
-
+	<!--  Helper Goes Here, comment out for now
 	<div class="viewNav">
 		<form rsf:id="assign_form" class="inlineForm" method="post">
 			<label rsf:id="assign_grade">Assign this grade to all participants without submissions:</label> <input rsf:id="assign_grade_input" type="text" size="3" />
 			<input rsf:id="assign_grade_submit" type="submit" accesskey="a" class="active" value="Apply" />
 		</form>
 	</div>
-
-	<div rsf:id="pagerDiv:" class="listNav">
-	</div>
+	-->
+	<p class="discTria"><a title="Show student view">
+		<img src="/sakai-assignment2-tool/content/images/expand.png" border="0" alt="Show Assignment Details" style="cursor:pointer" 
+			onclick="$('#assignment_details').toggle();
+				if(this.src.match('collapse')){this.src=this.src.replace(/collapse/, 'expand');}
+				else{this.src=this.src.replace(/expand/, 'collapse');};
+				sizeFrame();" /></a>
+		<span rsf:id="assignment_details">Assignment Details</span>
+	</p>
+	<div id="assignment_details" style="display:none">
+		<table class="itemSummary" border="0" cellspacing="0" summary="The assignment infos">
+			<tr> 
+				<th rsf:id="assignment_details.title_header">Assignment title</th>
+				<td rsf:id="assignment_details.title">Rob's Homework</td>
+			</tr>
+			<tr>
+				<th rsf:id="assignment_details.created_by_header">Created by</th>
+				<td rsf:id="assignment_details.created_by">Kristol J Hancock (Sep 24, 2007 10:12 am)</td>
+			</tr>
+			<tr>
+				<th rsf:id="assignment_details.modified_header">Modified</th>
+				<td rsf:id="assignment_details.modified">Sep 28, 2007 1:40 pm</td>
+			</tr>
+			<tr> 
+				<th rsf:id="assignment_details.open_header">Open</th>
+				<td rsf:id="assignment_details.open">Sep 24, 2007 11:00 am</td>
+			</tr>
+			<tr> 
+				<th rsf:id="assignment_details.due_header">Due</th>
+				<td rsf:id="assignment_details.due">Oct 1, 2007 6:00 pm</td>
+			</tr>
+			<tr>
+				<th rsf:id="assignment_details.accept_until_header">Accept Until</th>
+				<td rsf:id="assignment_details.accept_until">Oct 1, 2007 6:00 pm</td>
+			</tr>
+			<tr> 
+				<th rsf:id="assignment_details.submissions_header">Student Submissions</th>
+				<td rsf:id="assignment_details.submissions">Inline and Attachments</td>
+			</tr>
+			<tr>
+				<th rsf:id="assignment_details.scale_header">Grade Scale</th>
+				<td rsf:id="assignment_details.scale">Points (max 100.0)</td>
+			</tr>
+			<tr> 
+				<th rsf:id="assignment_details.honor_header">Honor pledge:</th>
+				<td rsf:id="assignment_details.honor">No</td>
+			</tr>
+		</table>	
+	
+		<h4 rsf:id="assignment_details.instructions_header">Assignment Instructions</h4>
+		<div class="textPanel">
+			<p rsf:id="assignment_details.instructions">Assignment instructions would be placed here.</p>
+		</div>
+	
+		<h4 rsf:id="assignment_details.attachments_header">Attachments</h4>
+			<ul id="fragment-attachments-container" class="attachList indnt1">
+				<li>
+					<img src="/sakai-assignment2-tool/content/images/page_white_word.png" target="_blank" width="16" height="16"/> <a href="">ExampleAttachment.doc</a> (52 KB)
+				</li>
+			</ul>
+	</div> <!--  /#assignment_details -->
 
 	<table class="listHier lines nolines" cellpadding="0" cellspacing="0">
 		<tr> 
@@ -89,61 +149,22 @@
 		</tr>
 	</table>
 
-	<hr class="itemSeparator" />
-
-		<p class="discTria"><a title="Show student view"><img src="/sakai-assignment2-tool/content/images/collapse.png" border="0" alt="Show Assignment Details" /></a><span rsf:id="assignment_details">Assignment Details</span></p>
-
-	<table class="itemSummary" border="0" cellspacing="0" summary="The assignment infos">
-		<tr> 
-			<th rsf:id="assignment_details.title_header">Assignment title</th>
-			<td rsf:id="assignment_details.title">Rob's Homework</td>
-		</tr>
-		<tr>
-			<th rsf:id="assignment_details.created_by_header">Created by</th>
-			<td rsf:id="assignment_details.created_by">Kristol J Hancock (Sep 24, 2007 10:12 am)</td>
-		</tr>
-		<tr>
-			<th rsf:id="assignment_details.modified_header">Modified</th>
-			<td rsf:id="assignment_details.modified">Sep 28, 2007 1:40 pm</td>
-		</tr>
-		<tr> 
-			<th rsf:id="assignment_details.open_header">Open</th>
-			<td rsf:id="assignment_details.open">Sep 24, 2007 11:00 am</td>
-		</tr>
-		<tr> 
-			<th rsf:id="assignment_details.due_header">Due</th>
-			<td rsf:id="assignment_details.due">Oct 1, 2007 6:00 pm</td>
-		</tr>
-		<tr>
-			<th rsf:id="assignment_details.accept_until_header">Accept Until</th>
-			<td rsf:id="assignment_details.accept_until">Oct 1, 2007 6:00 pm</td>
-		</tr>
-		<tr> 
-			<th rsf:id="assignment_details.submissions_header">Student Submissions</th>
-			<td rsf:id="assignment_details.submissions">Inline and Attachments</td>
-		</tr>
-		<tr>
-			<th rsf:id="assignment_details.scale_header">Grade Scale</th>
-			<td rsf:id="assignment_details.scale">Points (max 100.0)</td>
-		</tr>
-		<tr> 
-			<th rsf:id="assignment_details.honor_header">Honor pledge:</th>
-			<td rsf:id="assignment_details.honor">No</td>
-		</tr>
-	</table>	
-
-	<h4 rsf:id="assignment_details.instructions_header">Assignment Instructions</h4>
-	<div class="textPanel">
-		<p rsf:id="assignment_details.instructions">Assignment instructions would be placed here.</p>
-	</div>
-
-	<h4 rsf:id="assignment_details.attachments_header">Attachments</h4>
-		<ul class="attachList indnt1">
-			<li>
-				<img src="/sakai-assignment2-tool/content/images/page_white_word.png" target="_blank" width="16" height="16"/> <a href="">ExampleAttachment.doc</a> (52 KB)
-			</li>
-		</ul>
-
 	</div>
 </body>
+<script type="text/javascript" rsf:id="sizeFrame">
+//set in producer
+//a2SetMainFrameHeight();
+</script>
+<script type="text/javascript" rsf:id="attachment-ajax-init">
+//done in producer
+// otpkey = some value
+</script>
+<script type="text/javascript">
+//<![CDATA[
+function refresh_ajax(){
+	$("#fragment-attachments-container").load("fragment-attachments?otpkey=" + otpkey + "&remove=false");
+}
+$(document).load(refresh_ajax());
+//]]>
+</script>
 </html>

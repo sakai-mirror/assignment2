@@ -191,9 +191,16 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
         		"assignment2.submission_type." + String.valueOf(AssignmentConstants.SUBMIT_INLINE_AND_ATTACH),
         		"assignment2.submission_type." + String.valueOf(AssignmentConstants.SUBMIT_NON_ELECTRONIC)
         };
-        UISelect select =UISelect.make(form, "submission_type", submission_type_values,
+        UISelect selectSubmission =UISelect.make(form, "submission_type", submission_type_values,
         		submisison_type_labels, assignment2OTP + ".submissionType").setMessageKeys();
-        ((UIBoundString) select.selection).setValue(String.valueOf(assignment.getSubmissionType()));
+        ((UIBoundString) selectSubmission.selection).setValue(String.valueOf(assignment.getSubmissionType()));
+        
+        String submissionSelectId = selectSubmission.getFullID();
+        for (int i=0; i<submission_type_values.length; i++){
+        	UIBranchContainer submission_type_row = UIBranchContainer.make(form, "submission_type_row:");
+        	UISelectChoice.make(submission_type_row, "submission_type_radio", submissionSelectId, i);
+        	UISelectLabel.make(submission_type_row, "submission_type_label", submissionSelectId, i);
+        }
         
         //Rich Text Input
         UIInput instructions = UIInput.make(form, "instructions:", assignment2OTP + ".instructions", assignment.getInstructions());
@@ -229,9 +236,10 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
         	currentSelected = gradebook_items.get(0);
         }
         
-        String[] gradebook_item_labels = new String[gradebook_items.size()];
-        String[] gradebook_item_values = new String[gradebook_items.size()];
-        for (int i=0; i < gradebook_items.size(); i++) {
+        String[] gradebook_item_labels = new String[gradebook_items.size()+1];
+        String[] gradebook_item_values = new String[gradebook_items.size()+1];
+        gradebook_item_labels[0] = messageLocator.getMessage("assignment2.assignment_add.gradebook_item_select");
+        for (int i=1; i <= gradebook_items.size(); i++) {
         	//Fill out select options
         	gradebook_item_labels[i] = gradebook_items.get(i).getTitle();
         	gradebook_item_values[i] = gradebook_items.get(i).getGradableObjectId().toString();
@@ -293,7 +301,7 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
         };
         UISelect access = UISelect.make(form, "access_select", access_values, access_labels,
         		assignment2OTP + ".restrictedToGroups").setMessageKeys();
-        ((UIBoundString) select.selection).setValue(assignment.isRestrictedToGroups().toString());
+        ((UIBoundString) access.selection).setValue(assignment.isRestrictedToGroups().toString());
         
         String accessId = access.getFullID();
         for (int i=0; i < access_values.length; i++) {

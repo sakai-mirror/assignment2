@@ -40,6 +40,16 @@ li.last {
 }
 
 
+.pagerDiv {
+	float: right;	
+	position: relative;
+	top: -4em;
+}
+
+h3 {
+	height: 2.5em;
+}
+
 
 /* Forms ========================================*/
 
