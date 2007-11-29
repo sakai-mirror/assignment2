@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.sakaiproject</groupId>
     <artifactId>sakai-assignment2-base</artifactId>
-    <version>M2</version>
+    <version>SNAPSHOT</version>
   </parent>
   <name>sakai-assignment2-test-impl</name>
   <groupId>org.sakaiproject</groupId>

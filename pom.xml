@@ -4,13 +4,13 @@
   <parent>
     <artifactId>master</artifactId>
     <groupId>org.sakaiproject</groupId>
-    <version>M2</version>
+    <version>SNAPSHOT</version>
     <relativePath>../master/pom.xml</relativePath>
   </parent>
   <name>Assignment2</name>
   <groupId>org.sakaiproject</groupId>
   <artifactId>sakai-assignment2-base</artifactId>
-  <version>M2</version>
+  <version>SNAPSHOT</version>
   <packaging>pom</packaging>
   <modules>
     <module>api/model</module>

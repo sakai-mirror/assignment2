@@ -119,7 +119,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 		// determine if this is a new assignment
 		if (assignment.getAssignmentId() != null) {
 			// check to see if assignment exists
-			existingAssignment = (Assignment2)dao.findById(Assignment2.class, assignment.getAssignmentId());	
+			existingAssignment = (Assignment2)dao.getAssignmentByIdWithGroupsAndAttachments(assignment.getAssignmentId());	
 			if (existingAssignment != null) {
 				isNewAssignment = false;
 			}
@@ -436,7 +436,6 @@ public class AssignmentLogicImpl implements AssignmentLogic{
         		if (attach != null && attach.getAssignAttachId() == null) {
         			// this is a new attachment and needs to be created
         			attach.setAssignment(newAssignment);
-        			newAssignment.getAttachmentSet().add(attach);
         			dao.save(attach);
         			log.debug("New attachment created: " + attach.getAttachmentReference() + "with attach id " + attach.getAssignAttachId());
         		}
@@ -482,7 +481,6 @@ public class AssignmentLogicImpl implements AssignmentLogic{
         		if (group != null && group.getAssignmentGroupId() == null) {
         			// this is a new AssignmentGroup and needs to be created
         			group.setAssignment(newAssignment);
-        			newAssignment.getAssignmentGroupSet().add(group);
         			dao.save(group);
         			log.debug("New AssignmentGroup created: " + group.getAssignmentGroupId() + "with id " + group.getAssignmentGroupId());
         		}
