@@ -98,10 +98,7 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
 
     @SuppressWarnings("unchecked")
 	public void fillComponents(UIContainer tofill, ViewParameters viewparams, ComponentChecker checker) {
-    	//First clear all session vars
-    	ToolSession session = sessionManager.getCurrentToolSession();
-    	session.removeAttribute("attachmentRefs");
-    	
+ 	
     	//Get View Params
     	AssignmentAddViewParams params = (AssignmentAddViewParams) viewparams;
     	

@@ -137,8 +137,20 @@ public class Assignment2Bean {
     			set.add(aa);
     		}
     	}
-    	session.removeAttribute("attachmentRefs");
+    	Set<AssignmentAttachment> final_set = new HashSet();
     	//Now check for attachments that have been removed
+    	if (session.getAttribute("removedAttachmentRefs") != null) {
+	    	for (AssignmentAttachment aa : set) {
+	    		//If this item in the set does not have a reference id that is 
+	    		// located in the removed attachment reference ids set
+	    		if (!((Set<String>) session.getAttribute("removedAttachmentRefs")).contains(aa.getAttachmentReference())){
+	    			final_set.add(aa);
+	    		}
+	    	}
+    	} else {
+    		final_set.addAll(set);
+    	}
+    	/**
     	if (session.getAttribute("removedAttachmentRefs") != null) {
     		for (String ref : (Set<String>)session.getAttribute("removedAttachmentRefs")) {
     			for (AssignmentAttachment aa : set) {
@@ -148,8 +160,8 @@ public class Assignment2Bean {
     			}
     		}
     	}
-    	session.removeAttribute("removedAttachmentRefs");
-    	assignment.setAttachmentSet(set);
+    	**/
+    	assignment.setAttachmentSet(final_set);
 
     	//Since in the UI, the select box bound to the gradableObjectId is always present
 		// we need to manually remove this value if the assignment is ungraded
@@ -212,6 +224,9 @@ public class Assignment2Bean {
 			messages.addMessage(new TargettedMessage("assignment2.assignment_post_error"));
 			return FAILURE;
 		}
+		//Clear out session attachment information if everything successful
+    	session.removeAttribute("attachmentRefs");
+    	session.removeAttribute("removedAttachmentRefs");
 		return POST;
 	}
 	
