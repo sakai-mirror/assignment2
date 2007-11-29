@@ -171,7 +171,7 @@ public class Assignment2Bean {
 		
 		//REMOVE THESE
 		assignment.setGroupSubmission(Boolean.FALSE);
-		assignment.setRestrictedToGroups(Boolean.FALSE);
+		//assignment.setRestrictedToGroups(Boolean.FALSE);
 		assignment.setNotificationType(0);
 		assignment.setAllowResubmitUntilDue(Boolean.FALSE);
 		

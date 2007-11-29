@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import org.sakaiproject.assignment2.tool.params.AssignmentAddViewParams;
 import org.sakaiproject.assignment2.tool.params.AssignmentGradeAssignmentViewParams;
 import org.sakaiproject.assignment2.tool.params.AssignmentListSortViewParams;
 import org.sakaiproject.assignment2.tool.params.SimpleAssignmentViewParams;
@@ -139,6 +140,7 @@ public class AssignmentGradeAssignmentProducer implements ViewComponentProducer,
 
         //Assignment Details
         UIMessage.make(tofill, "assignment_details", "assignment2.assignment_grade-assignment.assignment_details");
+        UIInternalLink.make(tofill, "assignment_details_edit", new AssignmentAddViewParams(AssignmentAddProducer.VIEW_ID, assignment.getAssignmentId()));
         UIMessage.make(tofill, "assignment_details.title_header", "assignment2.assignment_grade-assignment.assignment_details.title");
         UIOutput.make(tofill, "assignment_details.title", assignment.getTitle());
         UIMessage.make(tofill, "assignment_details.created_by_header", "assignment2.assignment_grade-assignment.assignment_details.created_by");
@@ -159,7 +161,7 @@ public class AssignmentGradeAssignmentProducer implements ViewComponentProducer,
         UIMessage.make(tofill, "assignment_details.honor", (assignment.isHonorPledge() ? "assignment2.yes" : "assignment2.no"));
         
         UIMessage.make(tofill, "assignment_details.instructions_header", "assignment2.assignment_grade-assignment.assignment_details.instructions");
-        UIOutput.make(tofill, "assignment_details.instructions", assignment.getInstructions());
+        UIVerbatim.make(tofill, "assignment_details.instructions", assignment.getInstructions());
         UIMessage.make(tofill, "assignment_details.attachments_header", "assignment2.assignment_grade-assignment.assignment_details.attachments");
         
         //Init JS

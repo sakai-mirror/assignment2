@@ -81,7 +81,7 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
     private Locale locale;
     private Assignment2Bean assignment2Bean;
     private SessionManager sessionManager;
-
+    private EntityBeanLocator assignment2BeanLocator;
     
 	/*
 	 * You can change the date input to accept time as well by uncommenting the lines like this:
@@ -108,41 +108,42 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
     	// use a date which is related to the current users locale
         DateFormat df = DateFormat.getDateInstance(DateFormat.MEDIUM, locale);
         
-        //Gradebook Helper Url
+        //Gradebook Helper Url -- TEMPORARY
         String gradebook_helper_url = externalGradebookLogic.getGradebookItemHelperUrl(externalLogic.getCurrentContextId()) + 
     	"?KeepThis=true&TB_iframe=true&height=500&width=700";
-            	
+
+        //Heading messages
         UIMessage.make(tofill, "page-title", "assignment2.assignment_add.title");
         navBarRenderer.makeNavBar(tofill, "navIntraTool:", VIEW_ID);
         UIMessage.make(tofill, "heading", "assignment2.assignment_add.heading");
         UIVerbatim.make(tofill, "instructions", messageLocator.getMessage("assignment2.assignment_add.instructions", 
         		new Object[]{ reqStar }));
 
+        //Date Variables
         Date openTime = new Date();
         Date dueDate = new Date();
         Date acceptUntilDate = new Date();
+        
         String assignment2OTP = "Assignment2.";
         String OTPKey = "";
         Assignment2 assignment;
         if (assignmentId != null) {
         	OTPKey = assignmentId.toString(); 
         	//get Dates
-        	assignment = assignmentLogic.getAssignmentByIdWithAssociatedData(assignmentId);
+        	//assignment = assignmentLogic.getAssignmentByIdWithAssociatedData(assignmentId);
         } else if (params.fromViewId != null && params.fromViewId.equals(AssignmentPreviewProducer.VIEW_ID) && previewAssignmentBean.getAssignment() != null) {
         	//from Preview page
-        	assignment = previewAssignmentBean.getAssignment();
-        	OTPKey = EntityBeanLocator.NEW_PREFIX + "1";
-        } else if (params.fromViewId != null && params.fromViewId.equals(AssignmentAddProducer.VIEW_ID)){
-        	assignment = previewAssignmentBean.getAssignment();
+        	//assignment = previewAssignmentBean.getAssignment();
         	OTPKey = EntityBeanLocator.NEW_PREFIX + "1";
         } else {
         	//create new
-        	Assignment2Creator creator = new Assignment2Creator();
-        	creator.setExternalLogic(externalLogic);
-        	assignment = creator.create();
+        	//Assignment2Creator creator = new Assignment2Creator();
+        	//creator.setExternalLogic(externalLogic);
+        	//assignment = creator.create();
         	
         	OTPKey = EntityBeanLocator.NEW_PREFIX + "1";
         }
+        assignment = (Assignment2)assignment2BeanLocator.locateBean(OTPKey);
         assignment2OTP += OTPKey;
     	openTime = assignment.getOpenTime();
     	dueDate = assignment.getDueDateForUngraded();			//change here
@@ -301,7 +302,7 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
         };
         UISelect access = UISelect.make(form, "access_select", access_values, access_labels,
         		assignment2OTP + ".restrictedToGroups").setMessageKeys();
-        ((UIBoundString) access.selection).setValue(assignment.isRestrictedToGroups().toString());
+        //((UIBoundString) access.selection).setValue(assignment.isRestrictedToGroups().toString());
         
         String accessId = access.getFullID();
         for (int i=0; i < access_values.length; i++) {
@@ -324,12 +325,15 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
         //get Current groups
         Set<AssignmentGroup> assignment_groups = assignment.getAssignmentGroupSet();
        
+        
         UIOutput groups_table_li = UIOutput.make(form, "groups_table_li");
+        /*** Can not get this to work due to error checking and refreshing **
         if (!assignment.isRestrictedToGroups()){
 	        Map attrmap = new HashMap(); 
 			attrmap.put("style", "display:none");
 	        groups_table_li.decorators = new DecoratorList(new UIFreeAttributeDecorator(attrmap));
         }
+        **/
         Collection<Group> groups = externalLogic.getSiteGroups();
         for (Group g : groups){
         	//Update OTP
@@ -433,5 +437,9 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
     
 	public void setSessionManager(SessionManager sessionManager) {
 		this.sessionManager = sessionManager;
+	}
+	
+	public void setAssignment2EntityBeanLocator(EntityBeanLocator entityBeanLocator) {
+		this.assignment2BeanLocator = entityBeanLocator;
 	}
 }
