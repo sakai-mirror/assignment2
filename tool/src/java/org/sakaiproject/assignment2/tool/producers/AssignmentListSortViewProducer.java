@@ -88,7 +88,6 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
     
     public void fillComponents(UIContainer tofill, ViewParameters viewparams, ComponentChecker checker) {
 
-    	String assignmentLocator = "AssignmentLocator";
     	String currentUserId = externalLogic.getCurrentUserId();
     	
     	// use a date which is related to the current users locale

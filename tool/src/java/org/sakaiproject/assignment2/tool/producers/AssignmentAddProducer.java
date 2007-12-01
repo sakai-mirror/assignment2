@@ -11,6 +11,7 @@ import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.GradebookItem;
 import org.sakaiproject.assignment2.model.Assignment2;
+import org.sakaiproject.assignment2.model.AssignmentAttachment;
 import org.sakaiproject.assignment2.model.AssignmentGroup;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -82,6 +84,7 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
     private Assignment2Bean assignment2Bean;
     private SessionManager sessionManager;
     private EntityBeanLocator assignment2BeanLocator;
+    private AttachmentListRenderer attachmentListRenderer;
     
 	/*
 	 * You can change the date input to accept time as well by uncommenting the lines like this:
@@ -217,6 +220,14 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
         UIBoundBoolean.make(form, "honor_pledge", assignment2OTP + ".honorPledge", assignment.isHonorPledge());
         
         //Attachments
+        if (assignment.getAttachmentSet() != null){
+        	Set<String> refSet = new HashSet();
+        	for(AssignmentAttachment aa : assignment.getAttachmentSet()){
+        		refSet.add(aa.getAttachmentReference());
+        	}
+        	attachmentListRenderer.makeAttachment(tofill, "attachment_list:", params.viewID, refSet, Boolean.TRUE);	
+        }
+        
         UIInternalLink.make(form, "add_attachments", UIMessage.make("assignment2.assignment_add.add_attachments"),
         		new FilePickerHelperViewParams(AddAttachmentHelperProducer.VIEWID, Boolean.TRUE, 
         				Boolean.TRUE, 500, 700, OTPKey));
@@ -441,5 +452,9 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
 	
 	public void setAssignment2EntityBeanLocator(EntityBeanLocator entityBeanLocator) {
 		this.assignment2BeanLocator = entityBeanLocator;
+	}
+	
+	public void setAttachmentListRenderer(AttachmentListRenderer attachmentListRenderer){
+		this.attachmentListRenderer = attachmentListRenderer;
 	}
 }

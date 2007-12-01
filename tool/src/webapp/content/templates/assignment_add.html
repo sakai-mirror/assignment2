@@ -149,7 +149,7 @@
 	</fieldset>
 	<fieldset>
 		<legend rsf:id="msg=assignment2.assignment_add.attachments_legend">Attachments</legend>
-		<ol id="fragment-attachments-container">
+		<ol class="fragment-attachments-container" rsf:id="attachment_list:">
 		
 		</ol>
 		<ol>
@@ -226,9 +226,8 @@ $(".gradebook_item_due_date").hide();
 <script type="text/javascript">
 //<![CDATA[
 function refresh_ajax(){
-	$("#fragment-attachments-container").load("fragment-attachments?otpkey=" + otpkey + "&remove=true");
+	$(".fragment-attachments-container").load("fragment-attachments?otpkey=" + otpkey + "&remove=true");
 }
-$(document).load(refresh_ajax());
 //]]>
 </script>
 </body>

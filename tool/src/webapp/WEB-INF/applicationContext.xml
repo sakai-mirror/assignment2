@@ -29,7 +29,7 @@
    <!-- Override the default style of user messages -->
    <bean id="messageTemplateContributor" parent="templateContributorParent">
       <property name="baseDirectory" value="component-templates/" />
-      <property name="templateNames" value="Messages,Navbar,Pager,SortHeader" />
+      <property name="templateNames" value="Messages,Navbar,Pager,SortHeader,AttachmentList" />
    </bean>
    
    <!-- The beans listed here are session beans (they stick around) -->
@@ -53,6 +53,22 @@
         value="org\.sakaiproject\.assignment2\.logic\.AssignmentLogic.saveAssignment" />
       <property name="removeMethod"
         value="org\.sakaiproject\.assignment2\.logic\.AssignmentLogic.deleteAssignment" />
+   </bean>
+   
+   <bean id="AssignmentSubmissionCreator"
+   	  class="org.sakaiproject.assignment2.tool.beans.AssignmentSubmissionCreator">
+   	  <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
+   </bean>
+   
+   <bean id="AssignmentSubmission" parent="entityBeanLocatorParent">
+      <property name="newMethod"
+      	value="AssignmentSubmissionCreator.create" />
+      <property name="fetchMethod"
+        value="org\.sakaiproject\.assignment2\.logic\.AssignmentSubmissionLogic.getAssignmentSubmissionById" />
+      <property name="saveMethod"
+      	value="org\.sakaiproject\.assignment2\.logic\.AssignmentSubmissionLogic.saveAssignmentSubmission" />
+      <property name="removeMethod"
+      	value="org\.sakaiproject\.assignment2\.logic\.AssignmentSubmissionLogic.deleteAssignmentSubmission" />   
    </bean>
 
   <!-- Use RSF's "BeanGuard" validation scheme to trap all write accesses to a

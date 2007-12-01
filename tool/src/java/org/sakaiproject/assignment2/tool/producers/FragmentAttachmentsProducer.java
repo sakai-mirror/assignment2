@@ -65,6 +65,10 @@ public class FragmentAttachmentsProducer implements ViewComponentProducer, ViewP
 		this.messageLocator = messageLocator;
 	}
     
+	private AttachmentListRenderer attachmentListRenderer;
+	public void setAttachmentListRenderer(AttachmentListRenderer attachmentListRenderer){
+		this.attachmentListRenderer = attachmentListRenderer;
+	}
 	
     public void fillComponents(UIContainer tofill, ViewParameters viewparams, ComponentChecker checker) {
     	FragmentAttachmentsViewParams params = (FragmentAttachmentsViewParams) viewparams;
@@ -93,11 +97,13 @@ public class FragmentAttachmentsProducer implements ViewComponentProducer, ViewP
     		set.removeAll((Set<String>)session.getAttribute("removedAttachmentRefs"));
     	}
     	
-    	
-    	for (String ref : set) {
+    	attachmentListRenderer.makeAttachment(tofill, "attachment_list:", params.viewID, set, params.remove);
+    	//for (String ref : set) {
     		//create a new <ol> to loop
-    		UIBranchContainer row = UIBranchContainer.make(tofill, "attachments:");
+    		//UIBranchContainer row = UIBranchContainer.make(tofill, "attachments:");
     		//get the attachment
+    		
+    		/***
     		try {
 	    		ContentResource cr = contentHostingService.getResource(ref);
 	    		UILink.make(row, "attachment_image", externalLogic.getContentTypeImagePath(cr));
@@ -120,7 +126,8 @@ public class FragmentAttachmentsProducer implements ViewComponentProducer, ViewP
     		} catch (Exception e) {
     			//do nothing
     		}
-    	}
+    		**/
+    	//}
     	
     }
     

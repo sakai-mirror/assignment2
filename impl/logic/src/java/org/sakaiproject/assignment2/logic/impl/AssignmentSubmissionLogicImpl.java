@@ -70,5 +70,9 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 	public void saveAssignmentSubmission(AssignmentSubmission assignmentSubmission) {
 		return;
 	}
+	
+	public void deleteAssignmentSubmission(AssignmentSubmission assignmentSubmission) {
+		return;
+	}
 
 }

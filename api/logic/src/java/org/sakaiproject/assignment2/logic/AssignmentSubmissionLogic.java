@@ -49,9 +49,16 @@ public interface AssignmentSubmissionLogic {
 	
 	/**
 	 * Create or update an AssignmentSubmission
-	 * @param assignment
+	 * @param assignmentSubmission
 	 * 			the AssignmentSubmission to create or update
 	 */
 	public void saveAssignmentSubmission(AssignmentSubmission assignmentSubmission);
+	
+	/**
+	 * Delete an AssignmentSubmisison
+	 * @param assignmentSubmission
+	 * 			the AssignmentSubmission to delete
+	 */	
+	public void deleteAssignmentSubmission(AssignmentSubmission assignmentSubmission);
 	
 }
