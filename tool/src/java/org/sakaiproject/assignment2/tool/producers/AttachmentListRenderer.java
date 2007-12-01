@@ -36,9 +36,10 @@ public class AttachmentListRenderer {
 
 	
     public void makeAttachment(UIContainer tofill, String divID, String currentViewID, Set<String> refSet, Boolean remove) {
-        UIJointContainer joint = new UIJointContainer(tofill, divID, "attachments:", ""+1);
         
+        int i = 0;
         for (String ref : refSet){
+        	UIJointContainer joint = new UIJointContainer(tofill, divID, "attachments:", ""+i);
 	        try {
 	    		ContentResource cr = contentHostingService.getResource(ref);
 	    		UILink.make(joint, "attachment_image", externalLogic.getContentTypeImagePath(cr));
@@ -61,7 +62,8 @@ public class AttachmentListRenderer {
 			} catch (Exception e) {
 				//do nothing
 			}
-        }
+			i++;
+        } //Ending for loop
     }
     
 	private String getReadableFileSize(int sizeVal){
