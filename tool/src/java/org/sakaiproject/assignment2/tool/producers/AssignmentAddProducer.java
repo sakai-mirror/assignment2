@@ -220,19 +220,10 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
         UIBoundBoolean.make(form, "honor_pledge", assignment2OTP + ".honorPledge", assignment.isHonorPledge());
         
         //Attachments
-        if (assignment.getAttachmentSet() != null){
-        	Set<String> refSet = new HashSet();
-        	for(AssignmentAttachment aa : assignment.getAttachmentSet()){
-        		refSet.add(aa.getAttachmentReference());
-        	}
-        	attachmentListRenderer.makeAttachment(tofill, "attachment_list:", params.viewID, refSet, Boolean.TRUE);	
-        }
-        
+        attachmentListRenderer.makeAttachmentFromAssignmentAttachmentSet(tofill, "attachment_list:", params.viewID, assignment.getAttachmentSet(), Boolean.TRUE);
         UIInternalLink.make(form, "add_attachments", UIMessage.make("assignment2.assignment_add.add_attachments"),
         		new FilePickerHelperViewParams(AddAttachmentHelperProducer.VIEWID, Boolean.TRUE, 
         				Boolean.TRUE, 500, 700, OTPKey));
-        				
-        
         
         /********
          *Grading

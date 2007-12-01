@@ -63,6 +63,7 @@
       <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
       <property name="previewAssignmentBean" ref="PreviewAssignmentBean" />
       <property name="locale" ref="requestLocale" />
+      <property name="attachmentListRenderer" ref="AttachmentListRenderer" />
    </bean>
    
    <bean class="org.sakaiproject.assignment2.tool.producers.AssignmentGradeAssignmentProducer">
@@ -75,6 +76,7 @@
       <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
       <property name="locale" ref="requestLocale" />
       <property name="sortHeaderRenderer" ref="SortHeaderRenderer" />
+      <property name="attachmentListRenderer" ref="AttachmentListRenderer" />
    </bean>
    
    <bean class="org.sakaiproject.assignment2.tool.producers.AssignmentGradeReportProducer">

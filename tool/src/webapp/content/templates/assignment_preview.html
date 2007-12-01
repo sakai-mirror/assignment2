@@ -112,11 +112,8 @@
 
 		<fieldset>
 			<legend rsf:id="student_view_attachments_legend">Attachments</legend>
-			<ol id="fragment-attachments-container">
-			</ol>
-			<ol class="attachList indnt1">
-				<li rsf:id="student_view_no_attachments">No attachments yet</li>
-				<li><input rsf:id="student_view_add_attachmetns" type="button" disabled="disabled" /></li>
+			<ol>
+				<li rsf:id="attachment_list:"></li>
 			</ol>
 		</fieldset>
 	</div>
@@ -129,17 +126,5 @@
 	</fieldset>													
 	</form>
 </div>
-<script type="text/javascript" rsf:id="attachment-ajax-init">
-//done in producer
-// otpkey = some value
-</script>
-<script type="text/javascript">
-//<![CDATA[
-function refresh_ajax(){
-	$("#fragment-attachments-container").load("fragment-attachments?otpkey=" + otpkey + "&remove=false");
-}
-$(document).load(refresh_ajax());
-//]]>
-</script>
 </body>
 </html>

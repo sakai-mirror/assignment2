@@ -1,6 +1,7 @@
 package org.sakaiproject.assignment2.tool.producers;
 
 import org.sakaiproject.assignment2.logic.ExternalLogic;
+import org.sakaiproject.assignment2.model.AssignmentAttachment;
 import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.content.api.ContentResource;
 
@@ -16,6 +17,9 @@ import uk.org.ponder.rsf.components.UIVerbatim;
 import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
 
 import java.util.Set;
+import java.util.HashSet;
+import java.util.List;
+import java.util.ArrayList;
 
 public class AttachmentListRenderer {
 	
@@ -33,11 +37,27 @@ public class AttachmentListRenderer {
 	public void setMessageLocator(MessageLocator messageLocator) {
 		this.messageLocator = messageLocator;
 	}
+	
+	public void makeAttachmentFromAssignmentAttachmentSet(UIContainer tofill, String divID, String currentViewID, Set<AssignmentAttachment> aaSet, Boolean remove) {
+		Set<String> refSet = new HashSet();
+		if (aaSet != null){
+			for (AssignmentAttachment aa : aaSet) {
+				refSet.add(aa.getAttachmentReference());
+			}
+		}
+		makeAttachment(tofill, divID, currentViewID, refSet, remove);
+	}
 
 	
     public void makeAttachment(UIContainer tofill, String divID, String currentViewID, Set<String> refSet, Boolean remove) {
         
-        int i = 0;
+    	if (refSet == null || refSet.size() == 0){
+        	UIJointContainer joint = new UIJointContainer(tofill, divID, "attachments:", ""+1);
+        	UIMessage.make(joint, "no_attachments_yet", "assignment2.no_attachments_yet");
+        	return;
+        }
+
+        int i = 1;
         for (String ref : refSet){
         	UIJointContainer joint = new UIJointContainer(tofill, divID, "attachments:", ""+i);
 	        try {
@@ -54,7 +74,7 @@ public class AttachmentListRenderer {
 	    					"<a href=\"#\" " +
 	    					"onclick=\"" +
 	    					"$.get('ajax-callback?removeAttachment=true&refId=" + org.sakaiproject.util.Web.escapeUrl(ref) + "');" +
-	    					"$(this).parent('span').parent('li').remove();" +
+	    					"if(refresh_ajax){refresh_ajax();}" + //"$(this).parent('span').parent('li').remove();" +
 	    					"\">" +
 	    					messageLocator.getMessage("assignment2.remove") +
 	    					"</a>");

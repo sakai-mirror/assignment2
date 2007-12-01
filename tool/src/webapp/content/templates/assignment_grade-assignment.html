@@ -95,8 +95,8 @@
 		</div>
 	
 		<h4 rsf:id="assignment_details.attachments_header">Attachments</h4>
-			<ul id="fragment-attachments-container" class="attachList indnt1">
-				<li>
+			<ul class="attachList indnt1">
+				<li rsf:id="attachment_list:">
 					<img src="/sakai-assignment2-tool/content/images/page_white_word.png" target="_blank" width="16" height="16"/> <a href="">ExampleAttachment.doc</a> (52 KB)
 				</li>
 			</ul>
@@ -155,17 +155,5 @@
 <script type="text/javascript" rsf:id="sizeFrame">
 //set in producer
 //a2SetMainFrameHeight();
-</script>
-<script type="text/javascript" rsf:id="attachment-ajax-init">
-//done in producer
-// otpkey = some value
-</script>
-<script type="text/javascript">
-//<![CDATA[
-function refresh_ajax(){
-	$("#fragment-attachments-container").load("fragment-attachments?otpkey=" + otpkey + "&remove=false");
-}
-$(document).load(refresh_ajax());
-//]]>
 </script>
 </html>

@@ -85,6 +85,7 @@ public class AssignmentGradeAssignmentProducer implements ViewComponentProducer,
     private ExternalLogic externalLogic;
     private Locale locale;
     private SortHeaderRenderer sortHeaderRenderer;
+    private AttachmentListRenderer attachmentListRenderer;
     
     private Long assignmentId;
     
@@ -97,7 +98,7 @@ public class AssignmentGradeAssignmentProducer implements ViewComponentProducer,
     		return;
     	}
     	assignmentId = params.assignmentId;
-    	Assignment2 assignment = assignmentLogic.getAssignmentById(assignmentId);
+    	Assignment2 assignment = assignmentLogic.getAssignmentByIdWithAssociatedData(assignmentId);
   
     	//use a date which is related to the current users locale
         DateFormat df = DateFormat.getDateInstance(DateFormat.MEDIUM, locale);
@@ -167,8 +168,9 @@ public class AssignmentGradeAssignmentProducer implements ViewComponentProducer,
         //Init JS
         String id = org.sakaiproject.util.Web.escapeJavascript("Main" + org.sakaiproject.tool.cover.ToolManager.getCurrentPlacement().getId());
         UIVerbatim.make(tofill, "sizeFrame", "function sizeFrame(){a2SetMainFrameHeight('" + id + "');}");
-    	//Initialize js otpkey
-    	UIVerbatim.make(tofill, "attachment-ajax-init", "otpkey=\"" + assignment.getAssignmentId() + "\"");
+    	
+        attachmentListRenderer.makeAttachmentFromAssignmentAttachmentSet(tofill, "attachment_list:", params.viewID, 
+        		assignment.getAttachmentSet(), Boolean.FALSE);
         
         
     }
@@ -212,4 +214,8 @@ public class AssignmentGradeAssignmentProducer implements ViewComponentProducer,
     public void setSortHeaderRenderer(SortHeaderRenderer sortHeaderRenderer) {
     	this.sortHeaderRenderer = sortHeaderRenderer;
     }
+    
+	public void setAttachmentListRenderer(AttachmentListRenderer attachmentListRenderer){
+		this.attachmentListRenderer = attachmentListRenderer;
+	}
 }

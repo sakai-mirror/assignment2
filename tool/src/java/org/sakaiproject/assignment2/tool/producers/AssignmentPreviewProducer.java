@@ -56,6 +56,7 @@ public class AssignmentPreviewProducer implements ViewComponentProducer, Navigat
     private ExternalLogic externalLogic;
 	private PreviewAssignmentBean previewAssignmentBean;
 	private Locale locale;
+	private AttachmentListRenderer attachmentListRenderer;
 
     public void fillComponents(UIContainer tofill, ViewParameters viewparams, ComponentChecker checker) {
     	AssignmentAddViewParams params = (AssignmentAddViewParams) viewparams;
@@ -143,8 +144,8 @@ public class AssignmentPreviewProducer implements ViewComponentProducer, Navigat
     		UIMessage.make(tofill, "student_view_no_attachments", "assignment2.assignment_preview.student_view.no_attachments");
     	}
     	
-    	//Initialize js otpkey
-    	UIVerbatim.make(tofill, "attachment-ajax-init", "otpkey=\"" + OTPKey + "\"");
+    	attachmentListRenderer.makeAttachmentFromAssignmentAttachmentSet(tofill, "attachment_list:", params.viewID, 
+    		assignment.getAttachmentSet(), Boolean.FALSE);
 
     	
     	//Post Buttons
@@ -213,4 +214,8 @@ public class AssignmentPreviewProducer implements ViewComponentProducer, Navigat
     public void setLocale(Locale locale) {
     	this.locale = locale;
     }
+    
+	public void setAttachmentListRenderer(AttachmentListRenderer attachmentListRenderer){
+		this.attachmentListRenderer = attachmentListRenderer;
+	}
 }

@@ -98,13 +98,9 @@ public class StudentSubmitProducer implements ViewComponentProducer, NavigationC
     	}
     	UIVerbatim.make(tofill, "instructions", assignment.getInstructions());
     	Set<String> refSet = new HashSet();
-    	if (assignment.getAttachmentSet() != null){
-    		for (AssignmentAttachment aa : assignment.getAttachmentSet()){
-    			refSet.add(aa.getAttachmentReference());
-    		}
-    	}
-    	attachmentListRenderer.makeAttachment(tofill, "attachment_list:", params.viewID, 
-				refSet, Boolean.FALSE);
+        attachmentListRenderer.makeAttachmentFromAssignmentAttachmentSet(tofill, "attachment_list:", params.viewID, 
+        	assignment.getAttachmentSet(), Boolean.FALSE);
+
     	
     	UIForm form = UIForm.make(tofill, "assignment_form");
     	UIOutput.make(form, "submission_instructions"); //Fill in with submission type specifc instructions

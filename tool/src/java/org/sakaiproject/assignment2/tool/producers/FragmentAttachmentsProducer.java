@@ -98,36 +98,6 @@ public class FragmentAttachmentsProducer implements ViewComponentProducer, ViewP
     	}
     	
     	attachmentListRenderer.makeAttachment(tofill, "attachment_list:", params.viewID, set, params.remove);
-    	//for (String ref : set) {
-    		//create a new <ol> to loop
-    		//UIBranchContainer row = UIBranchContainer.make(tofill, "attachments:");
-    		//get the attachment
-    		
-    		/***
-    		try {
-	    		ContentResource cr = contentHostingService.getResource(ref);
-	    		UILink.make(row, "attachment_image", externalLogic.getContentTypeImagePath(cr));
-	    		UILink.make(row, "attachment_link", cr.getProperties().getProperty(cr.getProperties().getNamePropDisplayName()),
-	    				cr.getUrl());
-	    		String file_size = getReadableFileSize(cr.getContentLength());
-	    		UIOutput.make(row, "attachment_size", file_size);
-	    		
-	    		//Add remove link
-	    		if (params.remove) {
-	    			UIVerbatim.make(row, "attachment_remove", 
-	    					"<a href=\"#\" " +
-	    					"onclick=\"" +
-	    					"$.get('ajax-callback?removeAttachment=true&refId=" + org.sakaiproject.util.Web.escapeUrl(ref) + "');" +
-	    					"$(this).parent('span').parent('li').remove();" +
-	    					"\">" +
-	    					messageLocator.getMessage("assignment2.remove") +
-	    					"</a>");
-	    		}
-    		} catch (Exception e) {
-    			//do nothing
-    		}
-    		**/
-    	//}
     	
     }
     
@@ -138,27 +108,4 @@ public class FragmentAttachmentsProducer implements ViewComponentProducer, ViewP
 	public String getContentType() {
 		return ContentTypeInfoRegistry.HTML_FRAGMENT;
 	}
-	
-	private String getReadableFileSize(int sizeVal){
-		double retVal = sizeVal;
-		String sizeSuffix = "bytes";
-		int GB = 1024 * 1024 * 1024;
-		int MB = 1024 * 1024;
-		int KB = 1024;
-		if (sizeVal > GB) {
-		retVal = sizeVal / GB;
-		sizeSuffix = "GB";
-		}
-		else if(sizeVal > MB) {
-		retVal = sizeVal / MB;
-		sizeSuffix = "MB";
-		}
-		else if (sizeVal > KB) {
-		retVal = sizeVal / KB;
-		sizeSuffix = "KB";
-		}
-		String finalVal = "(".concat(Double.toString(retVal).concat(" " + sizeSuffix.concat(")")));
-		return finalVal;
-	}
-
 }
