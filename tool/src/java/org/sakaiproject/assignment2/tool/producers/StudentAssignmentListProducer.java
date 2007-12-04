@@ -143,10 +143,10 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
 	}
 	
 	public ViewParameters getViewParameters() {
-    	return new SimpleViewParameters();
+    	return new AssignmentListSortViewParams();
     }
 	
-	public void setPagerRenderer(PagerRenderer pagerRendere) {
+	public void setPagerRenderer(PagerRenderer pagerRenderer) {
 		this.pagerRenderer = pagerRenderer;
 	}
 	

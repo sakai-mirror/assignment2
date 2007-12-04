@@ -42,7 +42,7 @@ import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
 import uk.org.ponder.rsf.viewstate.ViewParameters;
 import uk.org.ponder.rsf.viewstate.ViewParamsReporter;
 
-public class AssignmentListSortViewProducer implements ViewComponentProducer, ViewParamsReporter, DefaultView {
+public class AssignmentListSortViewProducer implements ViewComponentProducer, ViewParamsReporter {
 
     public static final String VIEW_ID = "assignment_list-sortview";
    

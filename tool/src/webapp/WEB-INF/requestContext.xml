@@ -4,6 +4,17 @@
 
 <beans>
 
+   <!--  Request Filtering for Permissions for DefaultView -->
+   <bean id="defaultViewParameters" factory-bean="Assignment2DefaultViewParameters" factory-method="getViewParameters" />
+
+	<bean id="Assignment2DefaultViewParameters" 
+		class="org.sakaiproject.assignment2.tool.params.Assignment2DefaultViewParameters">
+		<property name="user" ref="sakai-User" />
+		<property name="securityService"
+			ref="org.sakaiproject.authz.api.SecurityService" />
+		<property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
+	</bean>
+
    <!-- rich text evolver bean def -->
    <bean id="richTextEvolver" class="org.springframework.beans.factory.config.BeanReferenceFactoryBean">
       <property name="targetBeanName" value="sakaiFCKTextEvolver" />
@@ -122,7 +133,7 @@
       <property name="messageLocator" ref="messageLocator" />
    </bean>
    
-      <bean class="org.sakaiproject.tool.producers.StudentAssignmentListProducer">
+   <bean class="org.sakaiproject.assignment2.tool.producers.StudentAssignmentListProducer">
       <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
       <property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
       <property name="pagerRenderer" ref="PagerRenderer" />
