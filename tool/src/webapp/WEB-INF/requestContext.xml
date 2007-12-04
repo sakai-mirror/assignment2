@@ -6,14 +6,13 @@
 
    <!--  Request Filtering for Permissions for DefaultView -->
    <bean id="defaultViewParameters" factory-bean="Assignment2DefaultViewParameters" factory-method="getViewParameters" />
-
-	<bean id="Assignment2DefaultViewParameters" 
+   <bean id="Assignment2DefaultViewParameters" 
 		class="org.sakaiproject.assignment2.tool.params.Assignment2DefaultViewParameters">
 		<property name="user" ref="sakai-User" />
 		<property name="securityService"
 			ref="org.sakaiproject.authz.api.SecurityService" />
 		<property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
-	</bean>
+   </bean>
 
    <!-- rich text evolver bean def -->
    <bean id="richTextEvolver" class="org.springframework.beans.factory.config.BeanReferenceFactoryBean">

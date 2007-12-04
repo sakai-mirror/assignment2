@@ -23,15 +23,10 @@
 <div class="portletBody">
 
 	<h3 rsf:id="msg=assignment2.student-assignment-list.heading">Assignment List (Student View)</h3>
+	<div rsf:id="pagerDiv:" class="listNav"></div>
 	<p rsf:id="msg=assignment2.student-assignment-list.instructions" class="instruction">Select an assignment to view details, start working or edit your previous work.</p>
 
-	<div rsf:id="message-for:*" class="debug_info">
-		<ul style="margin:0px;">
-			<li>Message for user here</li>
-		</ul>
-	</div>
-
-	<div rsf:id="pagerDiv:" class="listNav"></div>
+	<div rsf:id="message-for:*" class="debug_info"></div>
 
 	<table class="listHier lines">
 		<tr> 
@@ -54,10 +49,10 @@
 			<td headers="title">
 			<h4><a rsf:id="assignment_link">Homework Example 2</a></h4>
 			</td>
-			<td rsf:id="for">Group 1, Group 2</td>
-			<td rsf:id="status">Not Started</td>
-			<td rsf:id="open">Sep 24, 2007 11:00 am</td>
-			<td rsf:id="due">Oct 1, 2007 6:00 pm</td>
+			<td rsf:id="assignment_row_for">Group 1, Group 2</td>
+			<td rsf:id="assignment_row_status">Not Started</td>
+			<td rsf:id="assignment_row_open">Sep 24, 2007 11:00 am</td>
+			<td rsf:id="assignment_row_due">Oct 1, 2007 6:00 pm</td>
 		</tr>
 	</table>
 	<div rsf:id="assignment_empty">There are no Assignments yet</div>

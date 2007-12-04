@@ -11,6 +11,7 @@ import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.tool.beans.Assignment2Bean;
 import org.sakaiproject.assignment2.tool.beans.PagerBean;
 import org.sakaiproject.assignment2.tool.params.AssignmentListSortViewParams;
+import org.sakaiproject.assignment2.tool.params.SimpleAssignmentViewParams;
 
 import uk.org.ponder.rsf.components.UIBranchContainer;
 import uk.org.ponder.rsf.components.UIContainer;
@@ -122,9 +123,9 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
         	
         	UILink.make(row, "attachments", ATTACH_IMG_SRC);
         	UIInternalLink.make(row, "assignment_link", assignment.getTitle(), 
-        			new SimpleViewParameters(StudentAssignmentListProducer.VIEW_ID));
+        			new SimpleAssignmentViewParams(StudentSubmitProducer.VIEW_ID, assignment.getAssignmentId()));
         	UIOutput.make(row, "assignment_row_for", assignment.getRestrictedToText());
-        	UIOutput.make(row, "status", "Not Started");
+        	UIOutput.make(row, "assignment_row_status", "Not Started");
         	UIOutput.make(row, "assignment_row_open", df.format(assignment.getOpenTime()));
         	if (assignment.isUngraded()) {
         		if (assignment.getDueDateForUngraded() != null) {

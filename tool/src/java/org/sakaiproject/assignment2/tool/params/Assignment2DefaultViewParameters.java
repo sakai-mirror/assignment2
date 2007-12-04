@@ -28,7 +28,7 @@ public class Assignment2DefaultViewParameters {
 	}
 
 	public ViewParameters getViewParameters() {
-		if (externalLogic.getCurrentUserHasPermission("assignment2.submit") && 
+		if (externalLogic.getCurrentUserHasPermission(ExternalLogic.ASSIGNMENT2_SUBMIT) && 
 				!externalLogic.isUserAdmin(externalLogic.getCurrentUserId())){
 			return new AssignmentListSortViewParams(StudentAssignmentListProducer.VIEW_ID);
 		}

@@ -360,7 +360,7 @@ public class Assignment2Bean {
 			return;
 		}
 		messages.addMessage(new TargettedMessage("assignment2.assignment_post.duplicate",
-			new Object[] {duplicate.getTitle() }));
+			new Object[] {duplicate.getTitle() }, TargettedMessage.SEVERITY_INFO));
 	}
 	
 	/**
