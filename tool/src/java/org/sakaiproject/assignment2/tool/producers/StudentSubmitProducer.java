@@ -89,7 +89,7 @@ public class StudentSubmitProducer implements ViewComponentProducer, NavigationC
     	
     	//Display Assignment Info
     	UIOutput.make(tofill, "header.title", assignment.getTitle());
-    	UIOutput.make(tofill, "header.due_date", df.format(assignment.getDueDate()));
+    	UIOutput.make(tofill, "header.due_date", (assignment.getDueDate() != null ? df.format(assignment.getDueDate()) : ""));
     	UIOutput.make(tofill, "header.status", "In Progress");		//HERE
     	UIOutput.make(tofill, "header.grade_scale", "Grade Scale from Gradebook");  //HERE
     	if (assignment.getModifiedTime() != null) {
@@ -166,6 +166,10 @@ public class StudentSubmitProducer implements ViewComponentProducer, NavigationC
 	
 	public void setAssignment2EntityBeanLocator(EntityBeanLocator entityBeanLocator) {
 		this.assignment2BeanLocator = entityBeanLocator;
+	}
+	
+	public void setAssignmentSubmissionBeanLocator(EntityBeanLocator entityBeanLocator) {
+		this.assignmentSubmissionBeanLocator = entityBeanLocator;
 	}
 	
 	public void setAttachmentListRenderer(AttachmentListRenderer attachmentListRenderer){
