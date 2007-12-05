@@ -6,6 +6,7 @@ import org.sakaiproject.assignment2.tool.beans.PreviewAssignmentBean;
 import org.sakaiproject.assignment2.tool.params.AssignmentAddViewParams;
 import org.sakaiproject.assignment2.tool.params.SimpleAssignmentViewParams;
 import org.sakaiproject.assignment2.tool.params.FilePickerHelperViewParams;
+import org.sakaiproject.assignment2.tool.params.ThickboxHelperViewParams;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
@@ -112,8 +113,8 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
         DateFormat df = DateFormat.getDateInstance(DateFormat.MEDIUM, locale);
         
         //Gradebook Helper Url -- TEMPORARY
-        String gradebook_helper_url = externalGradebookLogic.getGradebookItemHelperUrl(externalLogic.getCurrentContextId()) + 
-    	"?KeepThis=true&TB_iframe=true&height=500&width=700";
+        //String gradebook_helper_url = externalGradebookLogic.getGradebookItemHelperUrl(externalLogic.getCurrentContextId()) + 
+    	//"?KeepThis=true&TB_iframe=true&height=500&width=700";
 
         //Heading messages
         UIMessage.make(tofill, "page-title", "assignment2.assignment_add.title");
@@ -268,12 +269,21 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
         	UIOutput.make(form, "gradebook_item_due_date", df.format(currentSelected.getDueDate()));
         }
 
-        UILink.make(form, "gradebook_item_new_helper",
+        //UILink.make(form, "gradebook_item_new_helper",
+        //		UIMessage.make("assignment2.assignment_add.gradebook_item_new_helper"),
+        //		gradebook_helper_url);
+        //UILink.make(form, "gradebook_item_edit_helper",
+        //		UIMessage.make("assignment2.assignment_add.gradebook_item_edit_helper"),
+        //		gradebook_helper_url);
+        UIInternalLink.make(form, "gradebook_item_new_helper",
         		UIMessage.make("assignment2.assignment_add.gradebook_item_new_helper"),
-        		gradebook_helper_url);
-        UILink.make(form, "gradebook_item_edit_helper",
-        		UIMessage.make("assignment2.assignment_add.gradebook_item_edit_helper"),
-        		gradebook_helper_url);
+        		new ThickboxHelperViewParams(GradebookAddItemProducer.VIEW_ID,
+        				Boolean.TRUE, Boolean.TRUE, 500, 700));
+        		
+        UIInternalLink.make(form, "gradebook_item_edit_helper",
+        		UIMessage.make("assignment2.assignment_add.gradebook_item_new_helper"),
+        		new ThickboxHelperViewParams(GradebookAddItemProducer.VIEW_ID,
+        				Boolean.TRUE, Boolean.TRUE, 500, 700));
         
         
         //Java Scripting to hide due dates

@@ -36,7 +36,7 @@ public class GradebookAddItemProducer implements ViewComponentProducer, ViewPara
     private ExternalLogic externalLogic;
     private MessageLocator messageLocator;
 
-    private final String HELPER = "sakai.gradebook.addItem.helper";
+    private final String HELPER = "sakai.gradebook.item.helper";
 
     public void fillComponents(UIContainer tofill, ViewParameters viewparams, ComponentChecker checker) {
         String locationId = externalLogic.getCurrentLocationId();
