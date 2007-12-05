@@ -51,12 +51,20 @@ public class AssignmentDaoImpl extends HibernateCompleteGenericDao implements As
     }
     
     public Integer getHighestSortIndexInSite(String contextId) {
+    	if (contextId == null) {
+    		throw new IllegalArgumentException("contextId cannot be null");
+    	}
     	String hql = "select max(assignment.sortIndex) from Assignment2 as assignment where assignment.contextId = :contextId and assignment.removed != true";
     	
     	Query query = getSession().createQuery(hql);
     	query.setParameter("contextId", contextId);
+    	
+    	Integer highestIndex = (Integer)query.uniqueResult();
+    	if (highestIndex == null) {
+    		highestIndex = 0;
+    	}
 
-        return (Integer)query.uniqueResult();
+        return highestIndex; 
     }
     
     public List<Assignment2> getAssignmentsWithGroups(String contextId) {
@@ -96,7 +104,7 @@ public class AssignmentDaoImpl extends HibernateCompleteGenericDao implements As
     	Query query = getSession().getNamedQuery("findCurrentSubmissionsForAssignment");
     	query.setParameter("assignment", assignment);
     	
-    	return (List)query.list();
+    	return query.list();
     }
     
     public AssignmentSubmission findSubmissionForAssignmentAndUserWithAttachments(Assignment2 assignment, String userId) {
