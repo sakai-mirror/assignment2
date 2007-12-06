@@ -14,13 +14,6 @@ import org.sakaiproject.content.api.ContentResource;
 public interface ExternalLogic {
 
     public final static String NO_LOCATION = "noLocationAvailable";
-
-    // permissions
-    public final static String ASSIGNMENT2_EDIT = "assignment2.edit";
-    public final static String ASSIGNMENT2_SUBMIT = "assignment2.submit";
-    public final static String ASSIGNMENT2_READ = "assignment2.read";
-    public final static String ASSIGNMENT2_RECEIVE_NOTIF = "assignment2.receive.notifications";
-    public final static String ASSIGNMENT2_ALL_GROUPS_UNGRADED = "assignment2.allGroups.ungraded";
     
     //tool ids for external tools that we integrate with
     public final static String TOOL_ID_SCHEDULE = "sakai.schedule";
@@ -59,16 +52,6 @@ public interface ExternalLogic {
      * @return true if the user has admin access, false otherwise
      */
     public boolean isUserAdmin(String userId);
-
-    /**
-     * Check if the current user has a specified permission within the current
-     * site, primarily a convenience method and passthrough
-     * 
-     * @param permission
-     *            a permission string constant
-     * @return true if allowed, false otherwise
-     */
-    public boolean getCurrentUserHasPermission(String permission);
 
     /**
      * Cleans up the users submitted strings to protect us from XSS

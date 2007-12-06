@@ -80,5 +80,53 @@ public interface ExternalGradebookLogic {
 	 */
 	public Map<String, String> getViewableGroupIdToTitleMap(String contextId);
 	
+	/**
+	 * Using the grader permissions, returns a map of all of the student ids of 
+	 * the students that the current user is allowed to view or grade
+	 * to the actual function (grade/view)
+	 * @param contextId
+	 * @param gradableObjectId
+	 * @return
+	 */
+	public Map<String, String> getViewableStudentsForGradedItemMap(String contextId, Long gradableObjectId);
+	
+	/**
+	 * 
+	 * @param assignment
+	 * @return a list of studentIds that the current user is allowed to view for
+	 * the given ungraded assignment. If the user may grade all, all students
+	 * are returned.  If user may grade section, only students in his/her section(s)
+	 * will be returned.  Otherwise, the user is not authorized to view any
+	 * students.
+	 */
+	//public List getViewableStudentsForUngradedAssignment(Assignment2 assignment);
+	
+	/**
+	 * @param contextId
+	 * @return true if the current user is authorized to edit the gradebook
+	 */
+	public boolean isCurrentUserAbleToEdit(String contextId);
+	
+	/**
+	 * @param contextId
+	 * @return true if the current user is authorized to grade all in gradebook
+	 */
+	public boolean isCurrentUserAbleToGradeAll(String contextId);
+	
+	/**
+	 * @param contextId
+	 * @return true if the current user is authorized to grade in some 
+	 * capacity in the gradebook.  (ie they may grade all or grade
+	 * section)
+	 */
+	public boolean isCurrentUserAbleToGrade(String contextId);
+	
+	/**
+	 * @param contextId
+	 * @return true if current user is authorized to view their own
+	 * grades in the gradebook
+	 */
+	public boolean isCurrentUserAbleToViewOwnGrades(String contextId);
+	
 	public String getGradebookItemHelperUrl(String contextId);
 }

@@ -71,6 +71,10 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		return;
 	}
 	
+	public List<AssignmentSubmission> getViewableSubmissionsForAssignment(Assignment2 assignment) {
+		return new ArrayList();
+	}
+	
 	public void deleteAssignmentSubmission(AssignmentSubmission assignmentSubmission) {
 		return;
 	}

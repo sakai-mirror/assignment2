@@ -1,6 +1,7 @@
 package org.sakaiproject.assignment2.tool.params;
 
 import org.sakaiproject.assignment2.logic.ExternalLogic;
+import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.tool.producers.AssignmentListSortViewProducer;
 import org.sakaiproject.assignment2.tool.producers.StudentAssignmentListProducer;
 import org.sakaiproject.assignment2.tool.params.AssignmentListSortViewParams;
@@ -22,18 +23,25 @@ public class Assignment2DefaultViewParameters {
 		this.securityService = securityService;
 	}
 	
+	private ExternalGradebookLogic gradebookLogic;
+	public void setExternalGradebookLogic(ExternalGradebookLogic securityService) {
+		this.gradebookLogic = gradebookLogic;
+	}
+	
 	private ExternalLogic externalLogic;
 	public void setExternalLogic(ExternalLogic externalLogic) {
 		this.externalLogic = externalLogic;
 	}
 
 	public ViewParameters getViewParameters() {
-		if (externalLogic.getCurrentUserHasPermission(ExternalLogic.ASSIGNMENT2_SUBMIT) && 
-				!externalLogic.isUserAdmin(externalLogic.getCurrentUserId())){
-			return new AssignmentListSortViewParams(StudentAssignmentListProducer.VIEW_ID);
+		AssignmentListSortViewParams viewParams = new AssignmentListSortViewParams(StudentAssignmentListProducer.VIEW_ID);
+		String contextId = externalLogic.getCurrentContextId();
+		
+		if (gradebookLogic.isCurrentUserAbleToGrade(contextId)
+				|| gradebookLogic.isCurrentUserAbleToEdit(contextId)) {
+			viewParams = new AssignmentListSortViewParams(AssignmentListSortViewProducer.VIEW_ID);
 		}
-		else{
-			return new AssignmentListSortViewParams(AssignmentListSortViewProducer.VIEW_ID);
-		}
+		
+		return viewParams;
 	}
 }

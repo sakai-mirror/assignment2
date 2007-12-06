@@ -43,7 +43,6 @@ import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.dao.AssignmentDao;
 import org.sakaiproject.assignment2.exception.ConflictingAssignmentNameException;
 import org.sakaiproject.genericdao.api.finders.ByPropsFinder;
-import org.sakaiproject.site.api.Group;
 
 
 /**
@@ -108,7 +107,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 			throw new IllegalArgumentException("Null assignment passed to saveAssignment");
 		}
 		
-		if (!externalLogic.getCurrentUserHasPermission(ExternalLogic.ASSIGNMENT2_EDIT)) {
+		if (!gradebookLogic.isCurrentUserAbleToEdit(externalLogic.getCurrentContextId())) {
 			throw new SecurityException("Current user may not save assignment " + assignment.getTitle()
                     + " because they do not have edit permission");
 		}
@@ -195,7 +194,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 			throw new IllegalArgumentException("Null assignment passed to deleteAssignment");
 		}
 		
-		if (!externalLogic.getCurrentUserHasPermission(ExternalLogic.ASSIGNMENT2_EDIT)) {
+		if (!gradebookLogic.isCurrentUserAbleToEdit(externalLogic.getCurrentContextId())) {
 			throw new SecurityException("Current user may not delete assignment " + assignment.getTitle()
                     + " because they do not have edit permission");
 		}
@@ -213,7 +212,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 	{
 		List viewableAssignments = new ArrayList();
 		
-		if (!externalLogic.getCurrentUserHasPermission(ExternalLogic.ASSIGNMENT2_READ)) {
+		if (!gradebookLogic.isCurrentUserAbleToGrade(externalLogic.getCurrentContextId())) {
 			log.debug("No assignments returned b/c user does not have READ permission");
 			return viewableAssignments;
 		}
@@ -226,8 +225,9 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 		
 		List<Assignment2> gradedAssignments = new ArrayList();
 		
+		//TODO handle ungraded properly!!!!
 		boolean allowedToViewAllSectionsForUngraded = 
-			externalLogic.getCurrentUserHasPermission(ExternalLogic.ASSIGNMENT2_ALL_GROUPS_UNGRADED);
+			gradebookLogic.isCurrentUserAbleToGradeAll(externalLogic.getCurrentContextId());
 		List<String> userGroupIds = externalLogic.getCurrentUserGroupIdList();	
 		
 		for (Iterator asnIter = allAssignments.iterator(); asnIter.hasNext();) {

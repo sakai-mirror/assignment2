@@ -48,8 +48,6 @@ public interface AssignmentLogic {
 	 * the assignment to create or update
 	 * @throws SecurityException -
 	 * user must have "edit" permission to add or update an assignment
-	 * @throws IllegalArgumentException -
-	 * if assignment is null
 	 * @throws ConflictingAssignmentNameException -
 	 * if it is a new assignment and the title already exists
 	 */

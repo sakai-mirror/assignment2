@@ -41,8 +41,7 @@ public interface AssignmentDao extends CompleteGenericDao {
 	/**
 	 * Used to identify the next sort index for new assignments
 	 * @param contextId
-	 * @return the highest sort index for the existing assignments; null if
-	 * no assignments in context
+	 * @return the highest sort index for the existing assignments
 	 */
 	public Integer getHighestSortIndexInSite(String contextId);
 	

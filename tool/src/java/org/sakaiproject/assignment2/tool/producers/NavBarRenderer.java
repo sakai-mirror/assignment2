@@ -46,16 +46,6 @@ public class NavBarRenderer {
                     new SimpleViewParameters(AssignmentGradeReportProducer.VIEW_ID));               
         }
         ***/
-        UIOutput.make(cell, "navigation-separator");
-        
-        //Permissions Link
-        cell = UIBranchContainer.make(joint, "navigation-li:", "2");
-        if (currentViewID.equals(PermissionsProducer.VIEW_ID)) {
-            UIMessage.make(cell, "navigation-text", "assignment2.navbar.permissions");
-        } else {
-            UIInternalLink.make(cell, "navigation-link", UIMessage.make("assignment2.navbar.permissions"), 
-                    new SimpleViewParameters(PermissionsProducer.VIEW_ID));               
-        }
         
     }
    

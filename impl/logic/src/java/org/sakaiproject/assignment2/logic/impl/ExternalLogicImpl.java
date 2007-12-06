@@ -76,12 +76,6 @@ public class ExternalLogicImpl implements ExternalLogic {
      */
     public void init() {
         log.debug("init");
-        // register Sakai permissions for this tool
-        functionManager.registerFunction(ASSIGNMENT2_EDIT);
-        functionManager.registerFunction(ASSIGNMENT2_SUBMIT);
-        functionManager.registerFunction(ASSIGNMENT2_READ);
-        functionManager.registerFunction(ASSIGNMENT2_RECEIVE_NOTIF);
-        functionManager.registerFunction(ASSIGNMENT2_ALL_GROUPS_UNGRADED);
     }
 
     public String getCurrentLocationId() {
@@ -114,14 +108,6 @@ public class ExternalLogicImpl implements ExternalLogic {
 
     public boolean isUserAdmin(String userId) {
         return securityService.isSuperUser(userId);
-    }
-
-    public boolean getCurrentUserHasPermission(String permission) {
-
-        if (securityService.unlock(getCurrentUserId(), permission, getCurrentLocationId())) {
-            return true;
-        }
-        return false;
     }
 
     public String cleanupUserStrings(String userSubmittedString) {
@@ -187,8 +173,9 @@ public class ExternalLogicImpl implements ExternalLogic {
     public boolean siteHasTool(String contextId, String toolId) {
     	try {
     		Site currSite = siteService.getSite(contextId);
-    		if (currSite.getToolForCommonId(toolId) != null)
+    		if (currSite.getToolForCommonId(toolId) != null) {
     			return true;
+    		}
     	} catch (IdUnusedException ide) {
     		log.debug("IdUnusedException caught in siteHasTool with contextId: " + contextId + " and toolId: " + toolId);
     	}
