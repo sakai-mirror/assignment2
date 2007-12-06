@@ -194,7 +194,7 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
         		if (assignment.getDueDateForUngraded() != null) {
         			UIOutput.make(row, "assignment_row_due", df.format(assignment.getDueDateForUngraded()));
         		} else {
-        			UIOutput.make(row, "assignment_row_due", messageLocator.getMessage("assignment2.assignment_list-sortview.no_due_date"));
+        			UIMessage.make(row, "assignment_row_due", "assignment2.assignment_list-sortview.no_due_date");
         		}
         	} else {
         		if (assignment.getDueDate() != null) {

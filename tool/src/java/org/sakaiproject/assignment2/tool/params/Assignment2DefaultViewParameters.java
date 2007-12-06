@@ -24,7 +24,7 @@ public class Assignment2DefaultViewParameters {
 	}
 	
 	private ExternalGradebookLogic gradebookLogic;
-	public void setExternalGradebookLogic(ExternalGradebookLogic securityService) {
+	public void setGradebookLogic(ExternalGradebookLogic gradebookLogic) {
 		this.gradebookLogic = gradebookLogic;
 	}
 	

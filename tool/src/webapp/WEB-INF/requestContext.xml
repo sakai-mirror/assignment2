@@ -12,6 +12,7 @@
 		<property name="securityService"
 			ref="org.sakaiproject.authz.api.SecurityService" />
 		<property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
+		<property name="gradebookLogic" ref="org.sakaiproject.assignment2.logic.ExternalGradebookLogic" />
    </bean>
 
    <!-- rich text evolver bean def -->
