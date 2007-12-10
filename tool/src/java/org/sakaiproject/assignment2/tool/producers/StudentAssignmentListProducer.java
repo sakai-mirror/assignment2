@@ -9,7 +9,6 @@ import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.tool.beans.Assignment2Bean;
-import org.sakaiproject.assignment2.tool.beans.PagerBean;
 import org.sakaiproject.assignment2.tool.params.AssignmentListSortViewParams;
 import org.sakaiproject.assignment2.tool.params.SimpleAssignmentViewParams;
 
@@ -38,7 +37,6 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
     private Locale locale;
     private Assignment2Bean assignment2Bean;
     private SortHeaderRenderer sortHeaderRenderer;
-    private PagerBean pagerBean;
     
     //sorting strings
     public static final String SORT_DIR_ASC = "asc";
@@ -87,10 +85,9 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
     	
     	//get paging data
     	int total_count = assignmentLogic.getTotalCountViewableAssignments(currentUserId);
-    	pagerBean.setTotalCount(total_count);
     		
         UIMessage.make(tofill, "page-title", "assignment2.student-assignment-list.title");
-        pagerRenderer.makePager(tofill, "pagerDiv:", VIEW_ID, viewparams);
+        pagerRenderer.makePager(tofill, "pagerDiv:", VIEW_ID, viewparams, total_count);
         
         //table headers and sorting links
         sortHeaderRenderer.makeSortingLink(tofill, "tableheader.assignment", viewparams, 
@@ -169,9 +166,5 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
     
     public void setSortHeaderRenderer(SortHeaderRenderer sortHeaderRenderer) {
     	this.sortHeaderRenderer = sortHeaderRenderer;
-    }
-    
-    public void setPagerBean(PagerBean pagerBean) {
-    	this.pagerBean = pagerBean;
     }
 }

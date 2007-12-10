@@ -12,7 +12,6 @@ import org.sakaiproject.assignment2.tool.params.SimpleAssignmentViewParams;
 import org.sakaiproject.assignment2.tool.params.SortPagerViewParams;
 import org.sakaiproject.assignment2.tool.producers.NavBarRenderer;
 import org.sakaiproject.assignment2.tool.producers.PagerRenderer;
-import org.sakaiproject.assignment2.tool.beans.PagerBean;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
@@ -77,7 +76,6 @@ public class AssignmentGradeAssignmentProducer implements ViewComponentProducer,
     public static final String BULLET_DOWN_IMG_SRC = "/sakai-assignment2-tool/content/images/bullet_arrow_down.png";
 
     private NavBarRenderer navBarRenderer;
-    private PagerBean pagerBean;
     private PagerRenderer pagerRenderer;
     private MessageLocator messageLocator;
     private AssignmentLogic assignmentLogic;
@@ -112,11 +110,10 @@ public class AssignmentGradeAssignmentProducer implements ViewComponentProducer,
     	
     	//get paging data
     	int total_count = 17;
-    	pagerBean.setTotalCount(total_count);
     	
         UIMessage.make(tofill, "page-title", "assignment2.assignment_grade-assignment.title");
         navBarRenderer.makeNavBar(tofill, "navIntraTool:", VIEW_ID);
-        pagerRenderer.makePager(tofill, "pagerDiv:", VIEW_ID, viewparams);
+        pagerRenderer.makePager(tofill, "pagerDiv:", VIEW_ID, viewparams, total_count);
         UIMessage.make(tofill, "heading", "assignment2.assignment_grade-assignment.heading", new Object[] { assignment.getTitle() });
 
         UIForm assign_form = UIForm.make(tofill, "assign_form");
@@ -185,10 +182,6 @@ public class AssignmentGradeAssignmentProducer implements ViewComponentProducer,
     
     public void setNavBarRenderer(NavBarRenderer navBarRenderer) {
         this.navBarRenderer = navBarRenderer;
-    }
-    
-    public void setPagerBean(PagerBean pagerBean){
-    	this.pagerBean = pagerBean;
     }
     
     public void setPagerRenderer(PagerRenderer pagerRenderer){

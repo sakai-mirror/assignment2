@@ -12,7 +12,6 @@ import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.tool.beans.Assignment2Bean;
 import org.sakaiproject.assignment2.tool.beans.Assignment2Creator;
-import org.sakaiproject.assignment2.tool.beans.PagerBean;
 import org.sakaiproject.assignment2.tool.params.AssignmentListSortViewParams;
 import org.sakaiproject.assignment2.tool.params.SimpleAssignmentViewParams;
 import org.sakaiproject.assignment2.tool.params.AssignmentAddViewParams;
@@ -79,7 +78,6 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
     private NavBarRenderer navBarRenderer;
     private PagerRenderer pagerRenderer;
     private MessageLocator messageLocator;
-    private PagerBean pagerBean;
     private AssignmentLogic assignmentLogic;
     private ExternalLogic externalLogic;
     private Locale locale;
@@ -109,11 +107,10 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
     	
     	//get paging data
     	int total_count = assignmentLogic.getTotalCountViewableAssignments(currentUserId);
-    	pagerBean.setTotalCount(total_count);
     		
         UIMessage.make(tofill, "page-title", "assignment2.assignment_list-sortview.title");
         navBarRenderer.makeNavBar(tofill, "navIntraTool:", VIEW_ID);
-        pagerRenderer.makePager(tofill, "pagerDiv:", VIEW_ID, viewparams);
+        pagerRenderer.makePager(tofill, "pagerDiv:", VIEW_ID, viewparams, total_count);
         
         UIVerbatim.make(tofill, "debug_info", "Currently, you are sorting by: <strong>" + current_sort_by + " " + 
         			current_sort_dir + "</strong>,   starting from record: <strong>" + params.current_start + "</strong> and paging: <strong>" + params.current_count + "</strong> items.");
@@ -227,11 +224,7 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
     public void setPagerRenderer(PagerRenderer pagerRenderer) {
     	this.pagerRenderer = pagerRenderer;
     }
-    
-    public void setPagerBean(PagerBean pagerBean) {
-    	this.pagerBean = pagerBean;
-    }
-    
+      
     public void setAssignmentLogic (AssignmentLogic assignmentLogic) {
     	this.assignmentLogic = assignmentLogic;
     }

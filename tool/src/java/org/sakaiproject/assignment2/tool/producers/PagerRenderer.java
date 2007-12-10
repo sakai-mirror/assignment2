@@ -3,7 +3,6 @@ package org.sakaiproject.assignment2.tool.producers;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.tool.params.PagerViewParams;
 import org.sakaiproject.assignment2.tool.params.AssignmentListSortViewParams;
-import org.sakaiproject.assignment2.tool.beans.PagerBean;
 
 import uk.org.ponder.messageutil.MessageLocator;
 import uk.org.ponder.rsf.components.ELReference;
@@ -29,27 +28,27 @@ import java.util.Map;
 
 public class PagerRenderer {
 
-	private PagerBean pagerBean;
 	private MessageLocator messageLocator;
 	private ExternalLogic externalLogic;
 	
+	public Integer currentStart = 0;
+	public Integer currentCount = 50;		//actually set in the pager view parameters :-)
+	public Integer totalCount = 16;
+	
 	@SuppressWarnings("unchecked")
-	public void makePager(UIContainer tofill, String divID, String currentViewID, ViewParameters viewparams) {
+	public void makePager(UIContainer tofill, String divID, String currentViewID, ViewParameters viewparams, Integer totalCount) {
     	PagerViewParams pagerparams = (PagerViewParams) viewparams;
 
-    	//set Beans
-    	try {
-    	pagerBean.setCurrentCount(pagerparams.current_count);
-    	pagerBean.setCurrentStart(pagerparams.current_start);
-    	} catch (NumberFormatException nfe){
-    		//do nothing
-    	}
+    	//set vars
+    	this.currentCount = pagerparams.current_count;
+    	this.currentStart = pagerparams.current_start;
+    	this.totalCount = totalCount;
     	
         UIJointContainer joint = new UIJointContainer(tofill, divID, "pagerDivContainer:", ""+1);
         
         //Currently Viewing
         UIMessage.make(joint, "pager_viewing", "assignment2.pager.viewing", 
-        		new Object[] {pagerBean.getViewingStart(), pagerBean.getViewingEnd(), pagerBean.getViewingTotal()} );
+        		new Object[] {this.getViewingStart(), this.getViewingEnd(), this.getViewingTotal()} );
         
         //Form
         UIForm form = UIForm.make(joint, "pager_form");
@@ -67,8 +66,10 @@ public class PagerRenderer {
 
 		//Select Box
         UISelect select_box = UISelect.make(form, "pager_select_box");
-        select_box.selection = new UIInput();
-        select_box.selection.valuebinding = new ELReference("#{PagerBean.currentSelect}");
+        UIInput selection = new UIInput();
+        selection.setValue(this.getCurrentSelect());
+        select_box.selection = selection;
+        //select_box.selection.valuebinding = new ELReference("#{PagerBean.currentSelect}");
         UIBoundList comboValues = new UIBoundList();
         comboValues.setValue(new String[] {"5","10","20","50","100","200"});
         select_box.optionlist = comboValues;
@@ -77,7 +78,7 @@ public class PagerRenderer {
 		select_box.optionnames = comboNames;
 		Map attrmap = new HashMap(); 
 		attrmap.put("onchange", "location.href=\"" + url + "?" + href_params + "current_start=" + 
-				pagerBean.getCurrentStart().toString() + "&current_count=\" + $(this).val()");
+				currentStart.toString() + "&current_count=\" + $(this).val()");
 		select_box.decorators = new DecoratorList(new UIFreeAttributeDecorator(attrmap)); 
 		
 		
@@ -85,28 +86,28 @@ public class PagerRenderer {
 		UIInput first_page = UIInput.make(form, "pager_first_page", null, messageLocator.getMessage("assignment2.pager.pager_first_page"));
 		attrmap = new HashMap();
 		attrmap.put("onclick", "location.href=\"" + url + "?" + href_params + "current_start=" + 
-					pagerBean.goToFirstPage() + "&current_count=" + pagerBean.getCurrentSelect() + "\"");
+					this.goToFirstPage() + "&current_count=" + this.getCurrentSelect() + "\"");
 		first_page.decorators = new DecoratorList(new UIFreeAttributeDecorator(attrmap));
 				
 		//previous page
 		UIInput prev_page = UIInput.make(form, "pager_prev_page", null, messageLocator.getMessage("assignment2.pager.pager_prev_page"));
 		attrmap = new HashMap();
 		attrmap.put("onclick", "location.href=\"" + url + "?" + href_params + "current_start=" + 
-				pagerBean.goToPrevPage() + "&current_count=" + pagerBean.getCurrentSelect() + "\"");
+				this.goToPrevPage() + "&current_count=" + this.getCurrentSelect() + "\"");
 		prev_page.decorators = new DecoratorList(new UIFreeAttributeDecorator(attrmap));
 
 		//next page
 		UIInput next_page = UIInput.make(form, "pager_next_page", null, messageLocator.getMessage("assignment2.pager.pager_next_page"));
 		attrmap = new HashMap();
 		attrmap.put("onclick", "location.href=\"" + url + "?" + href_params + "current_start=" + 
-				pagerBean.goToNextPage() + "&current_count=" + pagerBean.getCurrentSelect() + "\"");
+				this.goToNextPage() + "&current_count=" + this.getCurrentSelect() + "\"");
 		next_page.decorators = new DecoratorList(new UIFreeAttributeDecorator(attrmap));
 		
 		//last button
 		UIInput last_page = UIInput.make(form, "pager_last_page", null, messageLocator.getMessage("assignment2.pager.pager_last_page"));
 		attrmap = new HashMap();
 		attrmap.put("onclick", "location.href=\"" + url + "?" + href_params + "current_start=" + 
-				pagerBean.goToLastPage() + "&current_count=" + pagerBean.getCurrentSelect() + "\"");
+				this.goToLastPage() + "&current_count=" + this.getCurrentSelect() + "\"");
 		last_page.decorators = new DecoratorList(new UIFreeAttributeDecorator(attrmap));
 		
 		
@@ -115,21 +116,17 @@ public class PagerRenderer {
 		disabledAttr.put("disabled", "disabled");
 		DecoratorList disabledDecoratorList = new DecoratorList(new UIFreeAttributeDecorator(disabledAttr));
 		
-		if (pagerBean.getCurrentStart() == 0){
+		if (currentStart == 0){
 			//disable if on first page
 			first_page.decorators = disabledDecoratorList;
 			prev_page.decorators = disabledDecoratorList;
 		}
-		if ((pagerBean.getCurrentStart() + pagerBean.getCurrentCount() ) >= pagerBean.getTotalCount()){
+		if ((currentStart + currentCount) >= totalCount){
 			//disable if on last page
 			next_page.decorators = disabledDecoratorList;
 			last_page.decorators = disabledDecoratorList;
 		}
         
-    }
-    
-    public void setPagerBean(PagerBean pagerBean){
-    	this.pagerBean = pagerBean;
     }
     
     public void setMessageLocator(MessageLocator messageLocator) {
@@ -139,4 +136,54 @@ public class PagerRenderer {
     public void setExternalLogic(ExternalLogic externalLogic) {
     	this.externalLogic = externalLogic;
     }
+    
+    
+    //Private Methods
+	private String getViewingStart(){
+		return Integer.toString(currentStart + 1);
+	}
+	
+	private String getViewingEnd(){
+		return Integer.toString((totalCount < (currentStart + currentCount)) ? totalCount : (currentStart + currentCount));
+	}
+	
+	private String getViewingTotal(){
+		return totalCount.toString();
+	}
+	
+	private String getCurrentSelect(){
+		return currentCount.toString();
+	}
+	
+	//Form Submit Methods
+	private void changePageSize(){
+		//do nothing
+	}
+	
+	private String goToFirstPage(){
+		Integer newCurrentStart = 0;
+		return newCurrentStart.toString();
+	}
+	
+	private String goToPrevPage(){
+		Integer newCurrentStart = currentStart - currentCount;
+		if (newCurrentStart < 0) return this.goToFirstPage();
+		return newCurrentStart.toString();
+	}
+	
+	private String goToNextPage(){
+		Integer newCurrentStart = currentStart + currentCount;
+		if (newCurrentStart > totalCount) return this.goToLastPage();
+		return newCurrentStart.toString();
+	}
+	
+	private String goToLastPage(){
+		Integer newCurrentStart = 0;
+		if (totalCount > currentCount){
+			newCurrentStart = totalCount - (totalCount % currentCount);
+		} else {
+			newCurrentStart = 0;
+		}
+		return newCurrentStart.toString(); 
+	}
 }

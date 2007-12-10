@@ -15,7 +15,6 @@ import org.sakaiproject.assignment2.tool.params.SimpleAssignmentViewParams;
 import org.sakaiproject.assignment2.tool.producers.AssignmentListSortViewProducer;
 import org.sakaiproject.assignment2.tool.producers.NavBarRenderer;
 import org.sakaiproject.assignment2.tool.producers.PagerRenderer;
-import org.sakaiproject.assignment2.tool.beans.PagerBean;
 
 import uk.org.ponder.messageutil.MessageLocator;
 import uk.org.ponder.rsf.components.UIBoundBoolean;
@@ -55,7 +54,6 @@ public class AssignmentListReorderProducer implements ViewComponentProducer, Vie
     }
 
     private NavBarRenderer navBarRenderer;
-    private PagerBean pagerBean;
     private PagerRenderer pagerRenderer;
     private MessageLocator messageLocator;
     private AssignmentLogic assignmentLogic;
@@ -73,11 +71,10 @@ public class AssignmentListReorderProducer implements ViewComponentProducer, Vie
     	
     	//get paging data
         int total_count = assignmentLogic.getTotalCountViewableAssignments(currentUserId);
-    	pagerBean.setTotalCount(total_count);
     	
         UIMessage.make(tofill, "page-title", "assignment2.assignment_list-reorder.title");
         navBarRenderer.makeNavBar(tofill, "navIntraTool:", VIEW_ID);
-        pagerRenderer.makePager(tofill, "pagerDiv:", VIEW_ID, pagerparams);
+        pagerRenderer.makePager(tofill, "pagerDiv:", VIEW_ID, pagerparams, total_count);
         UIMessage.make(tofill, "heading", "assignment2.assignment_list-sortview.heading");
 
         //Links
@@ -154,10 +151,6 @@ public class AssignmentListReorderProducer implements ViewComponentProducer, Vie
 
     public void setNavBarRenderer(NavBarRenderer navBarRenderer) {
         this.navBarRenderer = navBarRenderer;
-    }
-    
-    public void setPagerBean(PagerBean pagerBean){
-    	this.pagerBean = pagerBean;
     }
     
     public void setPagerRenderer(PagerRenderer pagerRenderer){

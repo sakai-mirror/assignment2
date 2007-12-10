@@ -26,8 +26,8 @@ function a2SetMainFrameHeight(id){
 	$("#" + id, parent.document).height($(document).height());
 }
 
-function assignment_selected_gradebook_item(boolean){
-	if(boolean){
+function assignment_selected_gradebook_item(bool){
+	if(bool){
 		$('.due_date').hide(); $('.gradebook_item_due_date').show();
 	} else {
 		$('.due_date').show(); $('.gradebook_item_due_date').hide();

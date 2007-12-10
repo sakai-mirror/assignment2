@@ -46,9 +46,11 @@ public class AssignmentGradeReportProducer implements ViewComponentProducer, Vie
     public void fillComponents(UIContainer tofill, ViewParameters viewparams, ComponentChecker checker) {
     	PagerViewParams pagerparams = (PagerViewParams) viewparams;
     	
+    	Integer total_count = 0;
+    	
         UIMessage.make(tofill, "page-title", "assignment2.assignment_grade-report.title");
         navBarRenderer.makeNavBar(tofill, "navIntraTool:", VIEW_ID);
-        pagerRenderer.makePager(tofill, "pagerDiv:", VIEW_ID, pagerparams);
+        pagerRenderer.makePager(tofill, "pagerDiv:", VIEW_ID, pagerparams, total_count);
         UIMessage.make(tofill, "heading", "assignment2.assignment_grade-report.heading");
         
     }
