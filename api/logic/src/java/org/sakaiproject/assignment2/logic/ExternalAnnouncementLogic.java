@@ -23,6 +23,7 @@ package org.sakaiproject.assignment2.logic;
 
 
 import org.sakaiproject.assignment2.model.Assignment2;
+import org.sakaiproject.assignment2.exception.AnnouncementPermissionException;
 
 /**
  * This is the interface for logic which is related to the integration
@@ -44,7 +45,7 @@ public interface ExternalAnnouncementLogic {
 	 * @return the id of the newly created announcement
 	 */
 	public String addOpenDateAnnouncement(Assignment2 assignment, String contextId, 
-			String announcementSubject, String announcementBody);
+			String announcementSubject, String announcementBody) throws AnnouncementPermissionException;
 	
 	/**
 	 * Update an announcement for the given assignment. Announcements must be
@@ -58,7 +59,8 @@ public interface ExternalAnnouncementLogic {
 	 * @return the id of the updated announcement
 	 */
 	public String updateOpenDateAnnouncement(Assignment2 assignment, String contextId,
-			String announcementSubject, String announcementBody);
+			String announcementSubject, String announcementBody) 
+		throws AnnouncementPermissionException;
 	
 	/**
 	 * Delete an existing announcement associated with the given assignment.
@@ -67,5 +69,6 @@ public interface ExternalAnnouncementLogic {
 	 * * @throws AnnouncementPermissionException
 	 * 		if the current user is not authorized to delete an announcement
 	 */
-	public void deleteOpenDateAnnouncement(Assignment2 assignment, String contextId);
+	public void deleteOpenDateAnnouncement(Assignment2 assignment, String contextId) 
+		throws AnnouncementPermissionException;
 }

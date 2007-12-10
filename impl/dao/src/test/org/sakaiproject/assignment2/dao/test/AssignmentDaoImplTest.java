@@ -19,8 +19,7 @@ public class AssignmentDaoImplTest extends
 	protected String[] getConfigLocations() {
 		// point to the needed spring config files, must be on the classpath
 		// (add component/src/webapp/WEB-INF to the build path in Eclipse),
-		// they also need to be referenced in the project.xml file
-		// TODO update this comment -MW
+		// they also need to be referenced in the pom.xml file
 		return new String[] { "hibernate-test.xml", "spring-hibernate.xml" };
 	}
 

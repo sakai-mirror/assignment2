@@ -26,6 +26,7 @@ import java.util.Map;
 
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentGroup;
+import org.sakaiproject.assignment2.exception.ConflictingAssignmentNameException;
 
 
 /**
@@ -51,7 +52,7 @@ public interface AssignmentLogic {
 	 * @throws ConflictingAssignmentNameException -
 	 * if it is a new assignment and the title already exists
 	 */
-	public void saveAssignment(Assignment2 assignment);
+	public void saveAssignment(Assignment2 assignment) throws ConflictingAssignmentNameException;
 	
 	/**
 	 * Delete an Assignment 
@@ -61,8 +62,6 @@ public interface AssignmentLogic {
 	 * 			the Assignment to delete
 	 * @throws SecurityException -
 	 * user must have "delete" permission
-	 * @throws IllegalArgumentException -
-	 * if assignment is null
 	 */	
 	public void deleteAssignment(Assignment2 assignment);
 	
