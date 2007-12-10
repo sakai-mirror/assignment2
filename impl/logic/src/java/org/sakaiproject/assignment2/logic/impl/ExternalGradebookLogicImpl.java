@@ -270,6 +270,18 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
         ComponentManager.get("org.sakaiproject.service.gradebook.GradebookService");
     	return gradebookService.currentUserHasViewOwnGradesPerm(contextId);
 	}
+	
+	public boolean isCurrentUserAStudentInGb(String contextId) {
+		boolean userIsAStudentInGb = false;
+		
+		if (isCurrentUserAbleToViewOwnGrades(contextId) &&
+				(!isCurrentUserAbleToGrade(contextId) &&
+						!isCurrentUserAbleToEdit(contextId))) {
+			userIsAStudentInGb = true;
+		}
+		
+		return userIsAStudentInGb;
+	}
     
     //This should only be a temporary method, replaced by a real helper tool in the gradebook
     public String getGradebookItemHelperUrl(String contextId) {

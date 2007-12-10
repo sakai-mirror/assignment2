@@ -21,6 +21,8 @@
 
 package org.sakaiproject.assignment2.model;
 
+import java.util.Set;
+
 
 /**
  * The AssignmentSubmission object
@@ -32,11 +34,15 @@ public class AssignmentSubmission {
 	private Long submissionId;
 	private Assignment2 assignment;
 	private String userId;
-	private AssignmentSubmissionVersion currentSubmissionVersion;
+	private Set submissionHistorySet;
 	
 	// fields populated with gradebook data
 	private String gradebookGrade;
 	private String gradebookComment;
+	
+	// the current submission version must be populated manually b/c we want
+	// to retrieve the version rec with the highest id
+	private AssignmentSubmissionVersion currentSubmissionVersion;
 
 	public AssignmentSubmission() {
 	}
@@ -91,22 +97,20 @@ public class AssignmentSubmission {
 	
 	/**
 	 * 
-	 * @return The current AssignmentSubmissionVersion for this submission. Each
-	 * modification to the submission will result in a new AssignmentSubmissionVersion
-	 * record so we maintain a history.
+	 * @return a set of AssignmentSubmissionVersion recs that represent
+	 * the submission history for this user
 	 */
-	public AssignmentSubmissionVersion getCurrentSubmissionVersion() {
-		return currentSubmissionVersion;
+	public Set getSubmissionHistorySet() {
+		return submissionHistorySet;
 	}
 
 	/**
-	 * Set the current AssignmentSubmissionVersion for this submission. Each
-	 * modification to the submission will result in a new AssignmentSubmissionVersion
-	 * record so we maintain a history.
-	 * @param currentSubmissionVersion
+	 * the set of AssignmentSubmissionVersion recs that represent
+	 * the submission history for this user
+	 * @param submissionHistorySet
 	 */
-	public void setCurrentSubmissionVersion(AssignmentSubmissionVersion currentSubmissionVersion) {
-		this.currentSubmissionVersion = currentSubmissionVersion;
+	public void setSubmissionHistorySet(Set submissionHistorySet) {
+		this.submissionHistorySet = submissionHistorySet;
 	}
 
 	
@@ -147,7 +151,29 @@ public class AssignmentSubmission {
 	public void setGradebookComment(String gradebookComment) {
 		this.gradebookComment = gradebookComment;
 	}
-
 	
+	/**
+	 * <b>Note</b> This is not a persisted field but must be handled specially
+	 * when you want to retrieve or update this information
+	 * @return The current AssignmentSubmissionVersion for this submission. Each
+	 * modification to the submission will result in a new AssignmentSubmissionVersion
+	 * record so we maintain a history.
+	 */
+	public AssignmentSubmissionVersion getCurrentSubmissionVersion() {
+		return currentSubmissionVersion;
+	}
+
+	/**
+	 * <b>Note</b> This is not a persisted field but must be handled specially
+	 * when you want to retrieve or update this information
+	 * 
+	 * Set the current AssignmentSubmissionVersion for this submission. Each
+	 * modification to the submission will result in a new AssignmentSubmissionVersion
+	 * record so we maintain a history.
+	 * @param currentSubmissionVersion
+	 */
+	public void setCurrentSubmissionVersion(AssignmentSubmissionVersion currentSubmissionVersion) {
+		this.currentSubmissionVersion = currentSubmissionVersion;
+	}
 	
 }

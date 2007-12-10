@@ -128,5 +128,13 @@ public interface ExternalGradebookLogic {
 	 */
 	public boolean isCurrentUserAbleToViewOwnGrades(String contextId);
 	
+	/**
+	 * 
+	 * @param contextId
+	 * @return true if the current user does not have grading or editing 
+	 * privileges in the gradebook but does have the view own grades perm
+	 */
+	public boolean isCurrentUserAStudentInGb(String contextId);
+	
 	public String getGradebookItemHelperUrl(String contextId);
 }

@@ -198,58 +198,75 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 	public List<Assignment2> getViewableAssignments()
 	{
 		List viewableAssignments = new ArrayList();
-		
-		if (!gradebookLogic.isCurrentUserAbleToGrade(externalLogic.getCurrentContextId())) {
-			log.debug("No assignments returned b/c user does not have READ permission");
-			return viewableAssignments;
-		}
-		
-		List<Assignment2> allAssignments = dao.getAssignmentsWithGroups(externalLogic.getCurrentContextId());
-		
-		if (allAssignments == null || allAssignments.isEmpty()) {
-			return viewableAssignments;
-		}
-		
-		List<Assignment2> gradedAssignments = new ArrayList();
-		
-		//TODO handle ungraded properly!!!!
-		boolean allowedToViewAllSectionsForUngraded = 
-			gradebookLogic.isCurrentUserAbleToGradeAll(externalLogic.getCurrentContextId());
-		List<String> userGroupIds = externalLogic.getCurrentUserGroupIdList();	
-		
-		for (Iterator asnIter = allAssignments.iterator(); asnIter.hasNext();) {
-			Assignment2 assignment = (Assignment2) asnIter.next();
-			
-			if (assignment.isUngraded()) {
-				if (!assignment.isRestrictedToGroups()) {
-					viewableAssignments.add(assignment);
-				} else if (!allowedToViewAllSectionsForUngraded	&& userGroupIds != null) {
-					// we need to filter out the section-based assignments if not authorized for all
-					// check to see if user is a member of an associated section
-					Set<AssignmentGroup> groupRestrictions = assignment.getAssignmentGroupSet();
-					if (groupRestrictions != null) {
-						for (Iterator groupIter = groupRestrictions.iterator(); groupIter.hasNext();) {
-							AssignmentGroup group = (AssignmentGroup) groupIter.next();
-							if (group != null && userGroupIds.contains(group.getGroupId())) {
-								viewableAssignments.add(assignment);
-								break;
+		String contextId = externalLogic.getCurrentContextId();
+
+		List<Assignment2> allAssignments = dao.getAssignmentsWithGroups(contextId);
+
+		if (allAssignments != null && !allAssignments.isEmpty()) {
+
+			List<Assignment2> gradedAssignments = new ArrayList();
+
+			// users may view ungraded items if:
+			//  a) it is not restricted to groups
+			//  b) it is restricted, but user has grade all perm
+			//  c) it is restricted, but user is a member of restricted group
+
+			List<String> userGroupIds = externalLogic.getCurrentUserGroupIdList();	
+
+			for (Iterator asnIter = allAssignments.iterator(); asnIter.hasNext();) {
+				Assignment2 assignment = (Assignment2) asnIter.next();
+
+				if (assignment.isUngraded()) {
+					if (!assignment.isRestrictedToGroups() || gradebookLogic.isCurrentUserAbleToGradeAll(contextId)) {
+						viewableAssignments.add(assignment);
+					} else if (userGroupIds != null && assignment.isRestrictedToGroups()) {
+						// we need to filter out the section-based assignments if not authorized for all
+						// check to see if user is a member of an associated section
+						Set<AssignmentGroup> groupRestrictions = assignment.getAssignmentGroupSet();
+						if (groupRestrictions != null) {
+							for (Iterator groupIter = groupRestrictions.iterator(); groupIter.hasNext();) {
+								AssignmentGroup group = (AssignmentGroup) groupIter.next();
+								if (group != null && userGroupIds.contains(group.getGroupId())) {
+									viewableAssignments.add(assignment);
+									break;
+								}
 							}
-						}
-					}	
-				} 
-				
-			} else {
-				gradedAssignments.add(assignment);
+						}	
+					} 
+
+				} else {
+					gradedAssignments.add(assignment);
+				}
 			}
-		}
-		
-		if (gradedAssignments != null && !gradedAssignments.isEmpty()) {
-			// now, we need to filter the assignments that are associated with
-			// the gradebook according to grader permissions and populate the
-			// gradebook data
-			List viewableGbAssignments = gradebookLogic.getViewableAssignmentsWithGbData(gradedAssignments, externalLogic.getCurrentContextId());
-			if (viewableGbAssignments != null) {
-				viewableAssignments.addAll(viewableGbAssignments);
+
+			if (gradedAssignments != null && !gradedAssignments.isEmpty()) {
+				// now, we need to filter the assignments that are associated with
+				// the gradebook according to grader permissions and populate the
+				// gradebook data
+				List viewableGbAssignments = gradebookLogic.getViewableAssignmentsWithGbData(gradedAssignments, externalLogic.getCurrentContextId());
+				if (viewableGbAssignments != null) {
+
+					for (Iterator gradedIter = viewableGbAssignments.iterator(); gradedIter.hasNext();) {
+						Assignment2 assignment = (Assignment2) gradedIter.next();
+						
+						// if user is a "student" in terms of the gb, we need to filter the view
+						// by AssignmentGroup restrictions.
+						if (assignment.isRestrictedToGroups() && gradebookLogic.isCurrentUserAStudentInGb(contextId)) {
+							Set<AssignmentGroup> groupRestrictions = assignment.getAssignmentGroupSet();
+							if (groupRestrictions != null) {
+								for (Iterator groupIter = groupRestrictions.iterator(); groupIter.hasNext();) {
+									AssignmentGroup group = (AssignmentGroup) groupIter.next();
+									if (group != null && userGroupIds.contains(group.getGroupId())) {
+										viewableAssignments.add(assignment);
+										break;
+									}
+								}
+							}	
+						} else {
+							viewableAssignments.add(assignment);
+						}
+					}
+				}
 			}
 		}
 		
