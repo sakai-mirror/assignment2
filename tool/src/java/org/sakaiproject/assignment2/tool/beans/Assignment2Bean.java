@@ -113,6 +113,7 @@ public class Assignment2Bean {
 		//clear session scoped assignment
 		if (result.equals(POST)){
 			previewAssignmentBean.setAssignment(null);
+			previewAssignmentBean.setOTPKey(EntityBeanLocator.NEW_PREFIX + "1");
 		}
 		return result;
 	}
@@ -235,6 +236,7 @@ public class Assignment2Bean {
 		for (String key : OTPMap.keySet()) {
 			Assignment2 assignment = OTPMap.get(key);
 			previewAssignmentBean.setAssignment(assignment);
+			previewAssignmentBean.setOTPKey(key);
 		}
 		return PREVIEW;
 	}

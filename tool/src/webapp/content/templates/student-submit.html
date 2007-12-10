@@ -15,6 +15,8 @@
     <script type="text/javascript" language="JavaScript" src="/library/js/headscripts.js"></script>
     <script type="text/javascript" language="JavaScript" src="/library/js/jquery.js"></script>
 	<link href="/sakai-assignment2-tool/content/css/assignmentsv4.css" type="text/css" rel="stylesheet" media="all" />
+	<script type="text/javascript" language="JavaScript" src="/sakai-assignment2-tool/content/js/thickbox.js"></script>
+	<link href="/sakai-assignment2-tool/content/css/thickbox.css" type="text/css" rel="stylesheet" media="all" />
 
 </head>
 <body>
@@ -71,7 +73,7 @@
 		<ol>
 			<li>
 				<label rsf:id="submission_instructions" class="block instruction">This assignment allows submissions using both the text box below and attached documents. Type your comments in the box below and use the Add Attachments button to include other documents. Save frequently while working.</label>
-				<div rsf:id="instructions:">
+				<div rsf:id="text:">
 					<textarea name="something" cols="80" rows="20" wrap="virtual"></textarea>
 					<!-- this should be the FCKEditor -->
 				</div>
@@ -80,20 +82,35 @@
 	</fieldset>
 	<fieldset>
 		<legend rsf:id="msg=assignment2.student-submit.attachments">Attachments</legend>
-		<ol class="attachList indnt1">
-			<li>No attachments yet</li>
-			<li><input type="button" name="" value="Add Attachments" accesskey="a"/></li>
+		<ol id="fragment-submission-attachments-container" class="attachList indnt1">
+			<li rsf:id="submission_attachment_list:"></li>
+		</ol>
+		<ol>
+			<li>
+				<a rsf:id="add_submission_attachments" class="thickbox">Add Attachments</a>
+			</li>
 		</ol>
 	</fieldset>
 
 	<fieldset class="submit">
-		<input rsf:id="submit_button" accesskey="s" type="button" class="active" value="Submit"/>
-		<input rsf:id="preview_button" accesskey="v" type="button" name="preview" value="Preview"/>
-		<input rsf:id="save_draft_button" accesskey="d" type="button" name="save" value="Save Draft"/>
-		<input rsf:id="cancel_button" accesskey="x" type="button" name="cancel" value="Cancel"/>
+		<input rsf:id="submit_button" accesskey="s" type="submit" class="active" value="Submit"/>
+		<input rsf:id="preview_button" accesskey="v" type="submit" name="preview" value="Preview"/>
+		<input rsf:id="save_draft_button" accesskey="d" type="submit" name="save" value="Save Draft"/>
+		<input rsf:id="cancel_button" accesskey="x" type="submit" name="cancel" value="Cancel"/>
 	</fieldset>													
 	</form>
 
 </div>
+<script type="text/javascript" rsf:id="attachment-ajax-init">
+//done in producer
+// otpkey = some value
+</script>
+<script type="text/javascript">
+//<![CDATA[
+function refresh_ajax(){
+	$("#fragment-submission-attachments-container").load("fragment-attachments?otpkey=" + otpkey + "&remove=true&attachmentSetType=1");
+}
+//]]>
+</script>
 </body>
 </html>

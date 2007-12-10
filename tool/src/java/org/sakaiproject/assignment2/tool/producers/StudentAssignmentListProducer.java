@@ -113,6 +113,8 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
             UIMessage.make(tofill, "assignment_empty", "assignment2.student-assignment-list.assignment_empty");
             return;
         }
+        //TEMP REMOVE
+        entries.add(assignmentLogic.getAssignmentById(((Integer)2).longValue()));
         
         //Fill out Table
         for (Assignment2 assignment : entries){

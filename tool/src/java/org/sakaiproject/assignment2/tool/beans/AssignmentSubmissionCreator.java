@@ -2,6 +2,7 @@ package org.sakaiproject.assignment2.tool.beans;
 
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
+import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 
 import uk.org.ponder.messageutil.MessageLocator;
 
@@ -19,6 +20,12 @@ public class AssignmentSubmissionCreator {
 	
 	public AssignmentSubmission create(){
 		AssignmentSubmission togo = new AssignmentSubmission();
+		
+		//create the AssignmentSubmissionVersion object
+		AssignmentSubmissionVersion currentSubmissionVersion = new AssignmentSubmissionVersion();
+		togo.setCurrentSubmissionVersion(currentSubmissionVersion);
+		
+		
 		return togo;
 	}
 }

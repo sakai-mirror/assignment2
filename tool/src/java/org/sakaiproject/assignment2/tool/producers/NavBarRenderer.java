@@ -15,15 +15,6 @@ public class NavBarRenderer {
         
         UIBranchContainer cell;
         
-        //Add Link
-        cell = UIBranchContainer.make(joint, "navigation-li:", "1");
-        if (currentViewID.equals(AssignmentAddProducer.VIEW_ID)) {
-            UIMessage.make(cell, "navigation-text", "assignment2.navbar.add");
-        } else {
-            UIInternalLink.make(cell, "navigation-link", UIMessage.make("assignment2.navbar.add"), 
-                    new SimpleViewParameters(AssignmentAddProducer.VIEW_ID));               
-        }
-        UIOutput.make(cell, "navigation-separator");
         
         //Assignment List Link
         cell = UIBranchContainer.make(joint, "navigation-li:", "2");
@@ -34,6 +25,17 @@ public class NavBarRenderer {
             UIInternalLink.make(cell, "navigation-link", UIMessage.make("assignment2.navbar.assignment_list"), 
                     new SimpleViewParameters(AssignmentListSortViewProducer.VIEW_ID));               
         }
+        UIOutput.make(cell, "navigation-separator");
+        
+        //Add Link
+        cell = UIBranchContainer.make(joint, "navigation-li:", "1");
+        if (currentViewID.equals(AssignmentAddProducer.VIEW_ID)) {
+            UIMessage.make(cell, "navigation-text", "assignment2.navbar.add");
+        } else {
+            UIInternalLink.make(cell, "navigation-link", UIMessage.make("assignment2.navbar.add"), 
+                    new SimpleViewParameters(AssignmentAddProducer.VIEW_ID));               
+        }
+
 /**        
         UIOutput.make(cell, "navigation-separator");
 

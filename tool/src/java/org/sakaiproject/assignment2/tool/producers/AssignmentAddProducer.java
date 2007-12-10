@@ -112,46 +112,30 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
     	// use a date which is related to the current users locale
         DateFormat df = DateFormat.getDateInstance(DateFormat.MEDIUM, locale);
         
-        //Gradebook Helper Url -- TEMPORARY
-        //String gradebook_helper_url = externalGradebookLogic.getGradebookItemHelperUrl(externalLogic.getCurrentContextId()) + 
-    	//"?KeepThis=true&TB_iframe=true&height=500&width=700";
-
         //Heading messages
         UIMessage.make(tofill, "page-title", "assignment2.assignment_add.title");
         navBarRenderer.makeNavBar(tofill, "navIntraTool:", VIEW_ID);
         UIMessage.make(tofill, "heading", "assignment2.assignment_add.heading");
         UIVerbatim.make(tofill, "instructions", messageLocator.getMessage("assignment2.assignment_add.instructions", 
         		new Object[]{ reqStar }));
-
-        //Date Variables
-        Date openTime = new Date();
-        Date dueDate = new Date();
-        Date acceptUntilDate = new Date();
         
         String assignment2OTP = "Assignment2.";
         String OTPKey = "";
         Assignment2 assignment;
         if (assignmentId != null) {
-        	OTPKey = assignmentId.toString(); 
-        	//get Dates
-        	//assignment = assignmentLogic.getAssignmentByIdWithAssociatedData(assignmentId);
+        	OTPKey = assignmentId.toString();
+        	assignment = (Assignment2)assignment2BeanLocator.locateBean(OTPKey);
         } else if (params.fromViewId != null && params.fromViewId.equals(AssignmentPreviewProducer.VIEW_ID) && previewAssignmentBean.getAssignment() != null) {
         	//from Preview page
-        	//assignment = previewAssignmentBean.getAssignment();
-        	OTPKey = EntityBeanLocator.NEW_PREFIX + "1";
+        	assignment = previewAssignmentBean.getAssignment();
+        	OTPKey = previewAssignmentBean.getOTPKey();
+        	//OTPKey = EntityBeanLocator.NEW_PREFIX + "1";
         } else {
         	//create new
-        	//Assignment2Creator creator = new Assignment2Creator();
-        	//creator.setExternalLogic(externalLogic);
-        	//assignment = creator.create();
-        	
         	OTPKey = EntityBeanLocator.NEW_PREFIX + "1";
+        	assignment = (Assignment2)assignment2BeanLocator.locateBean(OTPKey);
         }
-        assignment = (Assignment2)assignment2BeanLocator.locateBean(OTPKey);
         assignment2OTP += OTPKey;
-    	openTime = assignment.getOpenTime();
-    	dueDate = assignment.getDueDateForUngraded();			//change here
-    	acceptUntilDate = assignment.getAcceptUntilTime();
         
     	//Initialize js otpkey
     	UIVerbatim.make(tofill, "attachment-ajax-init", "otpkey=\"" + OTPKey + "\"");
@@ -167,18 +151,18 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
         UIVerbatim.make(form, "open_date_label", messageLocator.getMessage("assignment2.assignment_add.open_date",
         		new Object[]{ reqStar }));
         UIInput openDateField = UIInput.make(form, "open_date:", assignment2OTP + ".openTime");
-		dateEvolver.evolveDateInput(openDateField, openTime);
+		dateEvolver.evolveDateInput(openDateField, null);
 		UIMessage.make(form, "open_date_instruction", "assignment2.assignment_add.open_date_instruction");
         
 		UIVerbatim.make(form, "due_date_label", messageLocator.getMessage("assignment2.assignment_add.due_date",
         		new Object[]{ reqStar }));
 		UIInput dueDateField = UIInput.make(form, "due_date:", assignment2OTP + ".dueDateForUngraded");
-		dateEvolver.evolveDateInput(dueDateField, dueDate);
+		dateEvolver.evolveDateInput(dueDateField, null);
 		
 		UIVerbatim.make(form, "accept_until_label", messageLocator.getMessage("assignment2.assignment_add.accept_until",
         		new Object[]{ reqStar }));
         UIInput acceptUntilTimeField = UIInput.make(form, "accept_until:", assignment2OTP + ".acceptUntilTime");
-        dateEvolver.evolveDateInput(acceptUntilTimeField, acceptUntilDate);
+        dateEvolver.evolveDateInput(acceptUntilTimeField, null);
         UIMessage.make(form, "accept_until_instruction", "assignment2.assignment_add.accept_until_instruction");
         
         UIVerbatim.make(form, "student_submissions_label", messageLocator.getMessage("assignment2.assignment_add.student_submissions",
@@ -269,12 +253,7 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
         	UIOutput.make(form, "gradebook_item_due_date", df.format(currentSelected.getDueDate()));
         }
 
-        //UILink.make(form, "gradebook_item_new_helper",
-        //		UIMessage.make("assignment2.assignment_add.gradebook_item_new_helper"),
-        //		gradebook_helper_url);
-        //UILink.make(form, "gradebook_item_edit_helper",
-        //		UIMessage.make("assignment2.assignment_add.gradebook_item_edit_helper"),
-        //		gradebook_helper_url);
+        //Links to gradebook Helper
         UIInternalLink.make(form, "gradebook_item_new_helper",
         		UIMessage.make("assignment2.assignment_add.gradebook_item_new_helper"),
         		new ThickboxHelperViewParams(GradebookAddItemProducer.VIEW_ID,
@@ -340,6 +319,7 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
         
         UIOutput groups_table_li = UIOutput.make(form, "groups_table_li");
         /*** Can not get this to work due to error checking and refreshing **
+         * Probably need to set this in an JS init block
         if (!assignment.isRestrictedToGroups()){
 	        Map attrmap = new HashMap(); 
 			attrmap.put("style", "display:none");

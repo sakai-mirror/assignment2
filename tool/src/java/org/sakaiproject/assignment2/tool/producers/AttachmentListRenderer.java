@@ -2,6 +2,7 @@ package org.sakaiproject.assignment2.tool.producers;
 
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.AssignmentAttachment;
+import org.sakaiproject.assignment2.model.AssignmentSubmissionAttachment;
 import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.content.api.ContentResource;
 
@@ -43,6 +44,17 @@ public class AttachmentListRenderer {
 		if (aaSet != null){
 			for (AssignmentAttachment aa : aaSet) {
 				refSet.add(aa.getAttachmentReference());
+			}
+		}
+		makeAttachment(tofill, divID, currentViewID, refSet, remove);
+	}
+	
+	public void makeAttachmentFromAssignmentSubmissionAttachmentSet(UIContainer tofill, String divID, String currentViewID,
+			Set<AssignmentSubmissionAttachment> asaSet, Boolean remove) {
+		Set<String> refSet = new HashSet();
+		if (asaSet != null) {
+			for (AssignmentSubmissionAttachment asa : asaSet) {
+				refSet.add(asa.getAttachmentReference());
 			}
 		}
 		makeAttachment(tofill, divID, currentViewID, refSet, remove);

@@ -6,6 +6,9 @@ import java.util.HashSet;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentAttachment;
+import org.sakaiproject.assignment2.model.AssignmentSubmission;
+import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
+import org.sakaiproject.assignment2.model.AssignmentSubmissionAttachment;
 import org.sakaiproject.assignment2.tool.beans.PreviewAssignmentBean;
 import org.sakaiproject.assignment2.tool.params.FragmentAttachmentsViewParams;
 import org.sakaiproject.content.api.ContentHostingService;
@@ -39,10 +42,15 @@ public class FragmentAttachmentsProducer implements ViewComponentProducer, ViewP
         return VIEW_ID;
     }
     
-    private EntityBeanLocator entityBeanLocator;
+    private EntityBeanLocator assignment2EntityBeanLocator;
 	@SuppressWarnings("unchecked")
 	public void setAssignment2EntityBeanLocator(EntityBeanLocator entityBeanLocator) {
-		this.entityBeanLocator = entityBeanLocator;
+		this.assignment2EntityBeanLocator = entityBeanLocator;
+	}
+	
+	private EntityBeanLocator assignmentSubmissionEntityBeanLocator;
+	public void setAssignmentSubmissionEntityBeanLocator(EntityBeanLocator entityBeanLocator) {
+		this.assignmentSubmissionEntityBeanLocator = entityBeanLocator;
 	}
 	
 	private ContentHostingService contentHostingService;
@@ -79,11 +87,30 @@ public class FragmentAttachmentsProducer implements ViewComponentProducer, ViewP
     	
     	Set<String> set = new HashSet();
     	
-    	Assignment2 assignment = (Assignment2) entityBeanLocator.locateBean(params.otpkey);
-    	if (assignment.getAttachmentSet() != null) {
-	    	for (AssignmentAttachment aa : assignment.getAttachmentSet()) {
-	    		set.add(aa.getAttachmentReference());
+    	if (params.attachmentSetType == params.ASSIGNMENT_ATTACHMENT) {
+    		//This means we are dealing with AssignmentAttachments
+	    	Assignment2 assignment = (Assignment2) assignment2EntityBeanLocator.locateBean(params.otpkey);
+	    	if (assignment != null && assignment.getAttachmentSet() != null) {
+		    	for (AssignmentAttachment aa : assignment.getAttachmentSet()) {
+		    		set.add(aa.getAttachmentReference());
+		    	}
 	    	}
+    	} else if (params.attachmentSetType == params.ASSIGNMENT_SUBMISSION_ATTACHMENT) {
+    		//This means we are dealing with AssignmentSubmissionAttachments
+    		//First get the assignment submission
+    		AssignmentSubmission as = (AssignmentSubmission) assignmentSubmissionEntityBeanLocator.locateBean(params.otpkey);
+    		if (as != null) {
+    			//Next get the current assignment submission version
+    			AssignmentSubmissionVersion asv = (AssignmentSubmissionVersion) as.getCurrentSubmissionVersion();
+    			//Now get the attachment set
+    			if (asv != null && asv.getSubmissionAttachSet() != null) {
+    				for (AssignmentSubmissionAttachment asa : asv.getSubmissionAttachSet()) {
+    					set.add(asa.getAttachmentReference());
+    				}
+    			}
+    		}
+    	} else if (params.attachmentSetType == params.ASSIGNMENT_FEEDBACK_ATTACHMENT) {
+    		
     	}
     	
     	//get New attachments from session set

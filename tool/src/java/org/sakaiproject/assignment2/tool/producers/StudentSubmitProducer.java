@@ -12,17 +12,21 @@ import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.tool.beans.Assignment2Bean;
 import org.sakaiproject.assignment2.tool.beans.PreviewAssignmentBean;
+import org.sakaiproject.assignment2.tool.params.FilePickerHelperViewParams;
 import org.sakaiproject.assignment2.tool.params.SimpleAssignmentViewParams;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentAttachment;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
+import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.tool.api.SessionManager;
 
 import uk.org.ponder.beanutil.entity.EntityBeanLocator;
 import uk.org.ponder.messageutil.MessageLocator;
+import uk.org.ponder.rsf.components.UICommand;
 import uk.org.ponder.rsf.components.UIContainer;
 import uk.org.ponder.rsf.components.UIForm;
 import uk.org.ponder.rsf.components.UIInput;
+import uk.org.ponder.rsf.components.UIInternalLink;
 import uk.org.ponder.rsf.components.UIMessage;
 import uk.org.ponder.rsf.components.UIOutput;
 import uk.org.ponder.rsf.components.UIVerbatim;
@@ -75,10 +79,13 @@ public class StudentSubmitProducer implements ViewComponentProducer, NavigationC
     	}
     	
     	//Now do submission stuff
-    	String assignmentSubmissionOTP = "assignmentSubmission.";
+    	String assignmentSubmissionOTP = "AssignmentSubmission.";		//Base for AssignmentSubmission object
+    	String submissionVersionOTP = "currentSubmissionVersion";			//Base for the currentSubmissionVersion object
     	String ASOTPKey = EntityBeanLocator.NEW_PREFIX + "1";
-    	assignmentSubmissionOTP += ASOTPKey;
+    	assignmentSubmissionOTP += ASOTPKey;							//Full path to current object
+    	String versionOTP = assignmentSubmissionOTP + "." + submissionVersionOTP;			//Full path to current version object
     	AssignmentSubmission assignmentSubmission = (AssignmentSubmission) assignmentSubmissionBeanLocator.locateBean(ASOTPKey); 
+    	AssignmentSubmissionVersion submissionVersion = assignmentSubmission.getCurrentSubmissionVersion();
     	
     	
     	// use a date which is related to the current users locale
@@ -102,21 +109,43 @@ public class StudentSubmitProducer implements ViewComponentProducer, NavigationC
         	assignment.getAttachmentSet(), Boolean.FALSE);
 
     	
-    	UIForm form = UIForm.make(tofill, "assignment_form");
+    	UIForm form = UIForm.make(tofill, "form");
     	UIOutput.make(form, "submission_instructions"); //Fill in with submission type specifc instructions
     	UIVerbatim.make(form, "instructions", messageLocator.getMessage("assignment2.student-submit.instructions"));
     	
         //Rich Text Input
-        UIInput text = UIInput.make(form, "text:", assignmentSubmissionOTP + ".text", assignment.getInstructions());
+        UIInput text = UIInput.make(form, "text:", versionOTP + ".text", assignment.getInstructions());
         richTextEvolver.evolveTextInput(text);
+        
+    	//Initialize js otpkey
+    	UIVerbatim.make(tofill, "attachment-ajax-init", "otpkey=\"" + ASOTPKey + "\"");
+        
+        //Attachments
+    	attachmentListRenderer.makeAttachmentFromAssignmentSubmissionAttachmentSet(tofill, "submission_attachment_list:", params.viewID, 
+    			submissionVersion.getSubmissionAttachSet(), Boolean.TRUE);
+        UIInternalLink.make(form, "add_submission_attachments", UIMessage.make("assignment2.student-submit.add_attachments"),
+        		new FilePickerHelperViewParams(AddAttachmentHelperProducer.VIEWID, Boolean.TRUE, 
+        				Boolean.TRUE, 500, 700, ASOTPKey));
+        
+        
+        //Buttons
+	     UICommand.make(form, "submit_button", UIMessage.make("assignment2.student-submit.submit"), 
+	    		 "#{AssignmentSubmissionBean.processActionSubmit}");
+	     UICommand.make(form, "preview_button", UIMessage.make("assignment2.student-submit.preview"), 
+	    		 "#{AssignmentSubmissionBean.processActionPreview}");
+	     UICommand.make(form, "save_draft_button", UIMessage.make("assignment2.student-submit.save_draft"), 
+	    		 "#{AssignmentSubmissionBean.processActionSaveDraft}");
+	     UICommand.make(form, "cancel_button", UIMessage.make("assignment2.student-submit.cancel"), 
+	    		 "#{AssignmentSubmissionBean.processActionCancel}");
+    	
     }
 	
 	public List reportNavigationCases() {
     	List<NavigationCase> nav= new ArrayList<NavigationCase>();
-        nav.add(new NavigationCase("post", new SimpleViewParameters(
+        nav.add(new NavigationCase("submit", new SimpleViewParameters(
             StudentAssignmentListProducer.VIEW_ID)));
-        //nav.add(new NavigationCase("preview", new AssignmentAddViewParams(
-        //	AssignmentPreviewProducer.VIEW_ID, null, AssignmentAddProducer.VIEW_ID)));
+        nav.add(new NavigationCase("preview", new SimpleViewParameters(
+        	StudentPreviewProducer.VIEW_ID)));
         nav.add(new NavigationCase("save_draft", new SimpleViewParameters(
         	StudentAssignmentListProducer.VIEW_ID)));
         nav.add(new NavigationCase("cancel", new SimpleViewParameters(
