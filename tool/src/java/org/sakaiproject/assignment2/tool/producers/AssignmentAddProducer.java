@@ -245,12 +245,12 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
         gradebook_item_labels[0] = messageLocator.getMessage("assignment2.assignment_add.gradebook_item_select");
         for (int i=1; i <= gradebook_items.size(); i++) {
         	//Fill out select options
-        	gradebook_item_labels[i] = gradebook_items.get(i).getTitle();
-        	gradebook_item_values[i] = gradebook_items.get(i).getGradableObjectId().toString();
+        	gradebook_item_labels[i] = gradebook_items.get(i-1).getTitle();
+        	gradebook_item_values[i] = gradebook_items.get(i-1).getGradableObjectId().toString();
         	
         	//CHeck if currently selected
-        	if (gradebook_items.get(i).getGradableObjectId() == assignment.getGradableObjectId()) {
-        		currentSelected = gradebook_items.get(i);
+        	if (gradebook_items.get(i-1).getGradableObjectId() == assignment.getGradableObjectId()) {
+        		currentSelected = gradebook_items.get(i-1);
         	}
         }
         UISelect.make(form, "gradebook_item",gradebook_item_values, gradebook_item_labels, assignment2OTP + ".gradableObjectId"); 

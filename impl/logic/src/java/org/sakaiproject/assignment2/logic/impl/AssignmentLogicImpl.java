@@ -154,19 +154,6 @@ public class AssignmentLogicImpl implements AssignmentLogic{
             
             assignment.setAssignmentGroupSet(assignGroupSet);
             updateAssignmentGroups(existingAssignment, assignment);
-            
-            // handle assignment group restrictions
-            if (assignGroupSet != null && !assignGroupSet.isEmpty()) {
-            	for (Iterator groupIter = assignGroupSet.iterator(); groupIter.hasNext();) {
-            		AssignmentGroup ag = (AssignmentGroup) groupIter.next();
-            		if (ag != null) {
-            			ag.setAssignment(assignment);
-            			assignment.getAssignmentGroupSet().add(ag);
-            			dao.save(ag);
-            			log.debug("New group created: " + ag.getGroupId() + "with assignGroupId " + ag.getAssignmentGroupId());
-            		}
-            	}
-            }
               
 		} else {
 			if (!assignment.getTitle().equals(existingAssignment.getTitle())) {
@@ -430,6 +417,8 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 			throw new IllegalArgumentException("newAssignment passed to updateAttachments is not currently defined in db");
 		}
 		
+		Set<AssignmentAttachment> revisedAttachSet = new HashSet();
+		
 		if (newAssignment.getAttachmentSet() != null && !newAssignment.getAttachmentSet().isEmpty()) {
         	for (Iterator attachIter = newAssignment.getAttachmentSet().iterator(); attachIter.hasNext();) {
         		AssignmentAttachment attach = (AssignmentAttachment) attachIter.next();
@@ -438,6 +427,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
         			attach.setAssignment(newAssignment);
         			dao.save(attach);
         			log.debug("New attachment created: " + attach.getAttachmentReference() + "with attach id " + attach.getAssignAttachId());
+        			revisedAttachSet.add(attach);
         		}
         	}
         }
@@ -452,10 +442,15 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 						// we need to delete this attachment
 						dao.delete(attach);
 						log.debug("Attachment deleted with id: " + attach.getAssignAttachId());
+					} else if (newAssignment.getAttachmentSet() != null &&
+								newAssignment.getAttachmentSet().contains(attach)) {
+						revisedAttachSet.add(attach);
 					}
 				}
 			}
 		}
+		
+		newAssignment.setAttachmentSet(revisedAttachSet);
 	}
 	
 	/**
@@ -475,6 +470,8 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 			throw new IllegalArgumentException("newAssignment passed to updateAssignmentGroups is not currently defined in db");
 		}
 		
+		Set<AssignmentGroup> revisedGroupSet = new HashSet();
+		
 		if (newAssignment.getAssignmentGroupSet() != null && !newAssignment.getAssignmentGroupSet().isEmpty()) {
         	for (Iterator groupIter = newAssignment.getAssignmentGroupSet().iterator(); groupIter.hasNext();) {
         		AssignmentGroup group = (AssignmentGroup) groupIter.next();
@@ -483,6 +480,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
         			group.setAssignment(newAssignment);
         			dao.save(group);
         			log.debug("New AssignmentGroup created: " + group.getAssignmentGroupId() + "with id " + group.getAssignmentGroupId());
+        			revisedGroupSet.add(group);
         		}
         	}
         }
@@ -498,8 +496,13 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 						dao.delete(group);
 						log.debug("AssignmentGroup deleted with id: " + group.getAssignmentGroupId());
 					}
+				} else if (newAssignment.getAssignmentGroupSet() != null &&
+						newAssignment.getAssignmentGroupSet().contains(group)) {
+					revisedGroupSet.add(group);
 				}
 			}
-		}
+		} 
+		
+		newAssignment.setAssignmentGroupSet(revisedGroupSet);
 	}
 }

@@ -21,22 +21,23 @@
 
 package org.sakaiproject.assignment2.model;
 
+
 /**
-* The AssignmentAttachment object.  AssignmentAttachments are attachments
-* associated with the assignment.
-* 
-* @author <a href="mailto:wagnermr@iupui.edu">michelle wagner</a>
-*/
+ * The AssignmentAttachment object.  AssignmentAttachments are attachments
+ * associated with the assignment.
+ * 
+ * @author <a href="mailto:wagnermr@iupui.edu">michelle wagner</a>
+ */
 public class AssignmentAttachment {
 
 	private Long assignAttachId;
 	private Assignment2 assignment;
 	private String attachmentReference;
 	private int version;
-	
+
 	public AssignmentAttachment() {
 	}
-	
+
 	public AssignmentAttachment(Assignment2 assignment, String attachmentReference) {
 		this.assignment = assignment;
 		this.attachmentReference = attachmentReference;
@@ -88,12 +89,35 @@ public class AssignmentAttachment {
 	public void setAttachmentReference(String attachmentReference) {
 		this.attachmentReference = attachmentReference;
 	}
-	
+
 	public int getVersion() {
 		return version;
 	}
-	
+
 	public void setVersion(int version) {
 		this.version = version;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (null == obj) return false;
+		if (!(obj instanceof AssignmentAttachment)) return false;
+		else {
+			AssignmentAttachment compAttach = (AssignmentAttachment) obj;
+			if (this.assignAttachId == null || compAttach.assignAttachId == null) {
+				return false;
+			}
+			if (null == this.assignAttachId || null == compAttach.assignAttachId) return false;
+			else return (
+					this.assignAttachId.equals(compAttach.assignAttachId)
+			);
+		}
+	}
+
+	@Override
+	public int hashCode() {
+		if (null == this.assignAttachId) return super.hashCode();
+		String hashStr = this.getClass().getName() + ":" + this.assignAttachId.hashCode();
+		return hashStr.hashCode();
 	}
 }

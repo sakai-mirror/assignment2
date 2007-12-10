@@ -95,4 +95,27 @@ public class AssignmentGroup {
 		this.version = version;
 	}
 	
+	@Override
+	public boolean equals(Object obj) {
+		if (null == obj) return false;
+		if (!(obj instanceof AssignmentGroup)) return false;
+		else {
+			AssignmentGroup compGroup = (AssignmentGroup) obj;
+			if (this.assignmentGroupId == null || compGroup.assignmentGroupId == null) {
+				return false;
+			}
+			if (null == this.assignmentGroupId || null == compGroup.assignmentGroupId) return false;
+			else return (
+					this.assignmentGroupId.equals(compGroup.assignmentGroupId)
+			);
+		}
+	}
+	
+	@Override
+	public int hashCode() {
+		if (null == this.assignmentGroupId) return super.hashCode();
+		String hashStr = this.getClass().getName() + ":" + this.assignmentGroupId.hashCode();
+		return hashStr.hashCode();
+	}
+	
 }
