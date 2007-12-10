@@ -101,7 +101,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 	 * (non-Javadoc)
 	 * @see org.sakaiproject.assignment2.logic.AssignmentLogic#saveAssignment(org.sakaiproject.assignment2.model.Assignment2)
 	 */
-	public void saveAssignment(Assignment2 assignment) throws SecurityException, IllegalArgumentException, ConflictingAssignmentNameException
+	public void saveAssignment(Assignment2 assignment) throws SecurityException, ConflictingAssignmentNameException
 	{
 		if (assignment == null) {
 			throw new IllegalArgumentException("Null assignment passed to saveAssignment");
@@ -210,32 +210,35 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 			//  a) it is not restricted to groups
 			//  b) it is restricted, but user has grade all perm
 			//  c) it is restricted, but user is a member of restricted group
+			//  d) it is not draft or user has edit perm
 
 			List<String> userGroupIds = externalLogic.getCurrentUserGroupIdList();	
 
 			for (Iterator asnIter = allAssignments.iterator(); asnIter.hasNext();) {
 				Assignment2 assignment = (Assignment2) asnIter.next();
 
-				if (assignment.isUngraded()) {
-					if (!assignment.isRestrictedToGroups() || gradebookLogic.isCurrentUserAbleToGradeAll(contextId)) {
-						viewableAssignments.add(assignment);
-					} else if (userGroupIds != null && assignment.isRestrictedToGroups()) {
-						// we need to filter out the section-based assignments if not authorized for all
-						// check to see if user is a member of an associated section
-						Set<AssignmentGroup> groupRestrictions = assignment.getAssignmentGroupSet();
-						if (groupRestrictions != null) {
-							for (Iterator groupIter = groupRestrictions.iterator(); groupIter.hasNext();) {
-								AssignmentGroup group = (AssignmentGroup) groupIter.next();
-								if (group != null && userGroupIds.contains(group.getGroupId())) {
-									viewableAssignments.add(assignment);
-									break;
+				if (!assignment.isDraft() || gradebookLogic.isCurrentUserAbleToEdit(contextId)) {
+					if (assignment.isUngraded()) {
+						if (!assignment.isRestrictedToGroups() || gradebookLogic.isCurrentUserAbleToGradeAll(contextId)) {
+							viewableAssignments.add(assignment);
+						} else if (userGroupIds != null && assignment.isRestrictedToGroups()) {
+							// we need to filter out the section-based assignments if not authorized for all
+							// check to see if user is a member of an associated section
+							Set<AssignmentGroup> groupRestrictions = assignment.getAssignmentGroupSet();
+							if (groupRestrictions != null) {
+								for (Iterator groupIter = groupRestrictions.iterator(); groupIter.hasNext();) {
+									AssignmentGroup group = (AssignmentGroup) groupIter.next();
+									if (group != null && userGroupIds.contains(group.getGroupId())) {
+										viewableAssignments.add(assignment);
+										break;
+									}
 								}
-							}
-						}	
-					} 
+							}	
+						} 
 
-				} else {
-					gradedAssignments.add(assignment);
+					} else {
+						gradedAssignments.add(assignment);
+					}
 				}
 			}
 

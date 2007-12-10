@@ -275,8 +275,8 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
 		boolean userIsAStudentInGb = false;
 		
 		if (isCurrentUserAbleToViewOwnGrades(contextId) &&
-				(!isCurrentUserAbleToGrade(contextId) &&
-						!isCurrentUserAbleToEdit(contextId))) {
+				!isCurrentUserAbleToGrade(contextId) &&
+				!isCurrentUserAbleToEdit(contextId)) {
 			userIsAStudentInGb = true;
 		}
 		
