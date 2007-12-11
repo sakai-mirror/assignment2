@@ -310,10 +310,6 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
         /**
          * Groups
          */
-        //get Current groups
-        Set<AssignmentGroup> assignment_groups = assignment.getAssignmentGroupSet();
-       
-        
         UIOutput groups_table_li = UIOutput.make(form, "groups_table_li");
         /*** Can not get this to work due to error checking and refreshing **
          * Probably need to set this in an JS init block
@@ -324,12 +320,13 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
         }
         **/
         Collection<Group> groups = externalLogic.getSiteGroups();
+        List<String> currentGroups = assignment.getListOfAssociatedGroupReferences();
         for (Group g : groups){
         	//Update OTP
 	        UIBranchContainer groups_row = UIBranchContainer.make(form, "groups_row:");
-	        UIBoundBoolean.make(groups_row, "group_check",  
+	        UIBoundBoolean checkbox = UIBoundBoolean.make(groups_row, "group_check",  
 	        		"Assignment2Bean.selectedIds." + g.getId().toString(), 
-	        		(assignment_groups == null || !assignment_groups.contains(g) ? Boolean.FALSE : Boolean.TRUE));
+	        		(currentGroups == null || !currentGroups.contains(g.getId()) ? Boolean.FALSE : Boolean.TRUE));
 	        UIOutput.make(groups_row, "group_label", g.getTitle());
 	        UIOutput.make(groups_row, "group_description", g.getDescription());
         }

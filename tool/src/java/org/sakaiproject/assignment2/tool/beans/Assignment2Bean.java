@@ -148,17 +148,28 @@ public class Assignment2Bean {
 		
 		//do groups
 		Set<AssignmentGroup> newGroups = new HashSet();
-		Collection<Group> allGroups = externalLogic.getSiteGroups();
-		for (Group g : allGroups) {
-			if (selectedIds.get(g.getId().toString()) == Boolean.TRUE){
+		//now add any new groups
+		newGroups.addAll(assignment.getAssignmentGroupSet());
+		Set<AssignmentGroup> remGroups = new HashSet();
+		for (Iterator groupIter = selectedIds.keySet().iterator(); groupIter.hasNext();) {
+			String selectedId = (String)groupIter.next();
+			if (selectedIds.get(selectedId) == Boolean.TRUE) {
+				//Then add the group
 				AssignmentGroup newGroup = new AssignmentGroup();
 				newGroup.setAssignment(assignment);
-				newGroup.setGroupId(g.getId());
+				newGroup.setGroupId(selectedId);
 				newGroups.add(newGroup);
+			} else if (selectedIds.get(selectedId) == Boolean.FALSE) {
+				//then remove the group
+				for (AssignmentGroup ag : newGroups) {
+					if (ag.getGroupId().equals(selectedId)) {
+						remGroups.add(ag);
+					}
+				}
 			}
 		}
+		newGroups.removeAll(remGroups);
 		assignment.setAssignmentGroupSet(newGroups);
-		
 		
 		
 		//start the validator
