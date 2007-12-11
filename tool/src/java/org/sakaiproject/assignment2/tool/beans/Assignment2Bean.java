@@ -263,12 +263,13 @@ public class Assignment2Bean {
 			assignment.setModifiedTime(new Date());
 			assignment.setModifiedBy(externalLogic.getCurrentUserId());
 			
-			//REMOVE THESE
-			assignment.setUngraded(Boolean.FALSE);
-			assignment.setGroupSubmission(Boolean.FALSE);
-			assignment.setRestrictedToGroups(Boolean.FALSE);
+			//REMOVE THESE - TODO
+			//assignment.setUngraded(Boolean.FALSE);
+			//assignment.setGroupSubmission(Boolean.FALSE);
+			//assignment.setRestrictedToGroups(Boolean.FALSE);
 			assignment.setNotificationType(0);
 			assignment.setAllowResubmit(Boolean.FALSE);
+			//END REMOVE THESE
 			
 			//start the validator
 			Assignment2Validator validator = new Assignment2Validator();

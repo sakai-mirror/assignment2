@@ -125,11 +125,6 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
         if (assignmentId != null) {
         	OTPKey = assignmentId.toString();
         	assignment = (Assignment2)assignment2BeanLocator.locateBean(OTPKey);
-        } else if (params.fromViewId != null && params.fromViewId.equals(AssignmentPreviewProducer.VIEW_ID) && previewAssignmentBean.getAssignment() != null) {
-        	//from Preview page
-        	assignment = previewAssignmentBean.getAssignment();
-        	OTPKey = previewAssignmentBean.getOTPKey();
-        	//OTPKey = EntityBeanLocator.NEW_PREFIX + "1";
         } else {
         	//create new
         	OTPKey = EntityBeanLocator.NEW_PREFIX + "1";
@@ -201,6 +196,8 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
         if (externalLogic.siteHasTool(externalLogic.getCurrentContextId(), ExternalLogic.TOOL_ID_ANNC)) {
         	UIBoundBoolean.make(form, "announcement", assignment2OTP + ".hasAnnouncement", assignment.getHasAnnouncement());
         }
+        //Resubmit until until date
+        UIBoundBoolean.make(form, "accept_until_until", assignment2OTP + ".allowResubmit", assignment.isAllowResubmit());
         //Honor Pledge
         UIBoundBoolean.make(form, "honor_pledge", assignment2OTP + ".honorPledge", assignment.isHonorPledge());
         
@@ -216,7 +213,7 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
         //Get Gradebook Items
         List<GradebookItem> gradebook_items = externalGradebookLogic.getAllGradebookItems(externalLogic.getCurrentContextId());
         //Get an Assignment for currently selected from the select box
-        // by default this the first item on the list returend from the externalGradebookLogic
+        // by default this the first item on the list returned from the externalGradebookLogic
         // this will be overwritten if we have a pre-existing assignment with an assigned
         // item
         GradebookItem currentSelected = new GradebookItem();
@@ -240,11 +237,11 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
         UISelect.make(form, "gradebook_item",gradebook_item_values, gradebook_item_labels, assignment2OTP + ".gradableObjectId"); 
         
         //Radio Buttons for Grading
-        UISelect grading_select = UISelect.make(form, "grading_select", 
+        UISelect grading_select = UISelect.make(form, "ungraded", 
         		new String[]{Boolean.FALSE.toString(), Boolean.TRUE.toString()}, assignment2OTP + ".ungraded", assignment.isUngraded().toString());
         String grading_select_id = grading_select.getFullID();
-        UISelectChoice graded = UISelectChoice.make(form, "graded", grading_select_id, 0);
-        UISelectChoice ungraded = UISelectChoice.make(form, "ungraded", grading_select_id, 1);
+        UISelectChoice graded = UISelectChoice.make(form, "select_graded", grading_select_id, 0);
+        UISelectChoice ungraded = UISelectChoice.make(form, "select_ungraded", grading_select_id, 1);
         
         //Check if gradebook item due date is not null, else output the formatted date
         if (currentSelected == null || currentSelected.getDueDate() == null) {
@@ -363,7 +360,11 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
         
         //Post Buttons
         UICommand.make(form, "post_assignment", UIMessage.make("assignment2.assignment_add.post"), "#{Assignment2Bean.processActionPost}");
-        UICommand.make(form, "preview_assignment", UIMessage.make("assignment2.assignment_add.preview"), "#{Assignment2Bean.processActionPreview}");
+        UICommand previewButton = UICommand.make(form, "preview_assignment", UIMessage.make("assignment2.assignment_add.preview"), "#{Assignment2Bean.processActionPreview}");
+        //Map previewattrmap = new HashMap();
+        //previewattrmap.put("onclick", "");
+        //ungraded.decorators = new DecoratorList(new UIFreeAttributeDecorator(previewattrmap));
+        
         if (assignment == null || assignment.getAssignmentId() == null || assignment.isDraft()){
         	UICommand.make(form, "save_draft", UIMessage.make("assignment2.assignment_add.save_draft"), "#{Assignment2Bean.processActionSaveDraft}");
         }
@@ -376,7 +377,7 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
         nav.add(new NavigationCase("post", new SimpleViewParameters(
             AssignmentListSortViewProducer.VIEW_ID)));
         nav.add(new NavigationCase("preview", new AssignmentAddViewParams(
-        	AssignmentPreviewProducer.VIEW_ID, null, AssignmentAddProducer.VIEW_ID)));
+        	FragmentAssignmentPreviewProducer.VIEW_ID, null, AssignmentAddProducer.VIEW_ID)));
         nav.add(new NavigationCase("refresh", new AssignmentAddViewParams(
         	AssignmentAddProducer.VIEW_ID, null, AssignmentAddProducer.VIEW_ID)));
         nav.add(new NavigationCase("save_draft", new SimpleViewParameters(

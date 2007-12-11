@@ -155,8 +155,7 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
         		UILink.make(row, "assignment_row_attach_img", "/sakai-assignment2-tool/content/images/attach.png");
         	}
         	**/
-        	UIInternalLink.make(row, "assignment_row_link", assignment.getTitle(), 
-        			new AssignmentAddViewParams(AssignmentPreviewProducer.VIEW_ID, assignment.getAssignmentId(), AssignmentListSortViewProducer.VIEW_ID));
+        	UIOutput.make(row, "assignment_title", assignment.getTitle());
         	UIInternalLink.make(row, "assignment_row_edit", 
         			UIMessage.make("assignment2.assignment_list-sortview.assignment_row_edit"), 
         			new AssignmentAddViewParams(AssignmentAddProducer.VIEW_ID, assignment.getAssignmentId()));

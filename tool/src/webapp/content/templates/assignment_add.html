@@ -11,7 +11,7 @@
 
 	<script type="text/javascript" src="/library/editor/FCKeditor/fckeditor.js"></script> 
 
-    <script type="text/javascript" language="JavaScript" src="/library/js/jquery.js"></script>
+    <script type="text/javascript" language="JavaScript" src="/sakai-assignment2-tool/content/js/jquery-1.2.1.js"></script>
 	<link href="/sakai-assignment2-tool/content/css/assignmentsv4.css" type="text/css" rel="stylesheet" media="all" />
 	<script type="text/javascript" src="/library/calendar/js/calendar2.js"></script>
 	<script type="text/javascript" src="/sakai-assignment2-tool/content/js/assignment.js"></script>
@@ -30,7 +30,7 @@
 			<li>Message for user here</li>
 		</ul>
 	</div>
-
+	
 	<h3 rsf:id="heading">Add Assignment</h3>
 	<p rsf:id="instructions" class="instruction">Complete the form and choose an action below. <span class="reqStar">*</span> Indicates required information.</p>
 
@@ -38,11 +38,11 @@
 	<fieldset>
 		<legend rsf:id="msg=assignment2.assignment_add.grading_legend">Grading</legend>
 		<ol>
-			<li><span rsf:id="grading_select" />
+			<li><span rsf:id="ungraded" />
 				<fieldset>
 					<ol>
-						<li><input rsf:id="ungraded" name="graded" type="radio" /> <label rsf:id="msg=assignment2.assignment_add.assignment_ungraded">This assignment is ungraded</label></li>
-						<li><input rsf:id="graded" name="graded" type="radio" /> <label rsf:id="msg=assignment2.assignment_add.assignment_graded">This assignment is graded</label>
+						<li><input rsf:id="select_ungraded" name="graded" type="radio" /> <label rsf:id="msg=assignment2.assignment_add.assignment_ungraded">This assignment is ungraded</label></li>
+						<li><input rsf:id="select_graded" name="graded" type="radio" /> <label rsf:id="msg=assignment2.assignment_add.assignment_graded">This assignment is graded</label>
 							<span rsf:id="msg=assignment2.assignment_add.gradebook_associated"> and is associated with a Gradebook Item:</span> 
 								<select rsf:id="gradebook_item" >
 									<option value="">Select a Gradebook Item</option>
@@ -55,6 +55,7 @@
 								<a rsf:id="gradebook_item_new_helper" class="thickbox">Create a new Gradebook Item</a></li>
 					</ol>
 				</fieldset>
+				<p rsf:id="message-for:gradebook_item"></p>
 			</li>
 		</ol>
 	</fieldset>
@@ -116,6 +117,7 @@
 						<li><input rsf:id="on_calendar" type="checkbox" /> <label rsf:id="msg=assignment2.assignment_add.on_calendar">Add the due date to Calendar</label></li>
 						-->
 						<li><input rsf:id="announcement" type="checkbox" /> <label rsf:id="msg=assignment2.assignment_add.announcement">Add an announcement about the open date to Announcements</label></li>
+						<li><input rsf:id="accept_until_until" type="checkbox" /> <label rsf:id="msg=assignment2.assignment_add.accept_until_until">Allow resubmissions until "Accept Until" Date</label></li>
 						<li><input rsf:id="honor_pledge" type="checkbox" /> <label rsf:id="msg=assignment2.assignment_add.honor_pledge">Add honor pledge</label></li>
 					</ol>
 				</fieldset>
@@ -195,7 +197,7 @@
 	-->
 	<fieldset class="submit">
 		<input rsf:id="post_assignment" accesskey="s" type="submit" class="active" value="Post"/>
-		<input rsf:id="preview_assignment" accesskey="v" type="submit" value="Preview"/>
+		<input rsf:id="preview_assignment" title="Preview Assignment" accesskey="v" type="button" class="preview_button thickbox" value="Preview"/>
 		<input rsf:id="save_draft" accesskey="d" type="submit" value="Save Draft"/>
 		<input rsf:id="cancel_assignment" accesskey="x" type="submit" value="Cancel"/>
 	</fieldset>													

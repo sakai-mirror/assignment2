@@ -17,11 +17,22 @@ public class Assignment2Validator  {
 			key = assignment.getAssignmentId().toString();
 		}
 		
+		
+		//check for empty title
 		if (assignment.getTitle() == null || assignment.getTitle().equals("")) {
 			messages.addMessage(new TargettedMessage("assignment2.assignment_title_empty",
 					new Object[] { assignment.getTitle() }, "Assignment2." + key + ".title"));
 			valid = false;
 		}
+		
+		//check for graded but no gradable object id
+		if (!assignment.isUngraded() && (assignment.getGradableObjectId() == null || !assignment.getGradableObjectId().equals(""))) {
+			messages.addMessage(new TargettedMessage("assignment2.assignment_graded_no_gb_item", 
+					new Object[] {}, "Assignment2."+ key + ".gradableObjectId"));
+			valid = false;
+		}
+		
+		//check that the gradable object exists!
 		
 		return valid;
 	}

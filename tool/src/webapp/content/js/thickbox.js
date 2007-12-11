@@ -184,8 +184,8 @@ function tb_show(caption, url, imageGroup) {//function called when the user clic
 			var queryString = url.replace(/^[^\?]+\??/,'');
 			var params = tb_parseQuery( queryString );
 
-			TB_WIDTH = (params['width']*1) + 30 || 630; //defaults to 630 if no paramaters were added to URL
-			TB_HEIGHT = (params['height']*1) + 40 || 440; //defaults to 440 if no paramaters were added to URL
+			TB_WIDTH = (params['width']*1) + 30 || 650; //defaults to 630 if no paramaters were added to URL
+			TB_HEIGHT = (params['height']*1) + 40 || 840; //defaults to 440 if no paramaters were added to URL
 			ajaxContentW = TB_WIDTH - 30;
 			ajaxContentH = TB_HEIGHT - 45;
 			
@@ -231,12 +231,21 @@ function tb_show(caption, url, imageGroup) {//function called when the user clic
 						$("#TB_window").css({display:"block"});
 					}
 				}else{
+				
+					serial = $("form").serialize();
+					jQuery.ajax({type: "POST", url: "assignment_add", data: serial + "&" + $(".preview_button").get(0).name, 
+					success: function(data, textStatus){
+						$("#TB_ajaxContent").html(data);
+						$("TB_title").html("");
+
+					/** Hacked
 					$("#TB_ajaxContent").load(url += "&random=" + (new Date().getTime()),function(){//to do a post change this load method
+					**/
 						tb_position();
 						$("#TB_load").remove();
 						tb_init("#TB_ajaxContent a.thickbox");
 						$("#TB_window").css({display:"block"});
-					});
+					}});
 				}
 			
 		}
