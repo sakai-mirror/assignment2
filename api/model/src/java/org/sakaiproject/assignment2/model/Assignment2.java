@@ -21,8 +21,11 @@
 
 package org.sakaiproject.assignment2.model;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Date;
 import java.util.Set;
+import java.util.Iterator;
 
 /**
  * The Assignment object
@@ -740,6 +743,20 @@ public class Assignment2 {
 	 */
 	public void setNeedsUserAttention(boolean needsUserAttention) {
 		this.needsUserAttention = needsUserAttention;
+	}
+	
+	public List<String> getListOfAssociatedGroupReferences() {
+		List<String> groupReferences = new ArrayList();
+		if (assignmentGroupSet != null) {
+			for (Iterator groupIter = assignmentGroupSet.iterator(); groupIter.hasNext();) {
+				AssignmentGroup group = (AssignmentGroup) groupIter.next();
+				if (group != null) {
+					groupReferences.add(group.getGroupId());
+				}
+			}
+		}
+		
+		return groupReferences;
 	}
 
 }
