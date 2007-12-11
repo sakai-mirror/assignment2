@@ -31,6 +31,7 @@
    	  <property name="contentHostingService" ref="org.sakaiproject.content.api.ContentHostingService" />
    	  <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
    	  <property name="messageLocator" ref="messageLocator" />
+   	  <property name="assignment2EntityBeanLocator" ref="Assignment2"/>
    </bean>
    
 

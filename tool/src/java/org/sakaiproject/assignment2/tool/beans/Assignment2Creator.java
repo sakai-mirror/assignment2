@@ -28,6 +28,7 @@ public class Assignment2Creator {
     	togo.setUngraded(Boolean.TRUE);
     	togo.setHasAnnouncement(Boolean.FALSE);
     	togo.setSubmissionType(AssignmentConstants.SUBMIT_INLINE_ONLY);
+    	togo.setAllowResubmit(Boolean.FALSE);
     	
     	//Setting up Dates
     	Calendar cal = Calendar.getInstance();

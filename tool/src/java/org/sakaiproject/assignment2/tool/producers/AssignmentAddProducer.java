@@ -38,6 +38,7 @@ import uk.org.ponder.rsf.components.UICommand;
 import uk.org.ponder.rsf.components.UIContainer;
 import uk.org.ponder.rsf.components.UIELBinding;
 import uk.org.ponder.rsf.components.UIForm;
+import uk.org.ponder.rsf.components.UIInitBlock;
 import uk.org.ponder.rsf.components.UIInput;
 import uk.org.ponder.rsf.components.UIInternalLink;
 import uk.org.ponder.rsf.components.UILink;
@@ -121,16 +122,14 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
         
         String assignment2OTP = "Assignment2.";
         String OTPKey = "";
-        Assignment2 assignment;
         if (assignmentId != null) {
         	OTPKey = assignmentId.toString();
-        	assignment = (Assignment2)assignment2BeanLocator.locateBean(OTPKey);
         } else {
         	//create new
         	OTPKey = EntityBeanLocator.NEW_PREFIX + "1";
-        	assignment = (Assignment2)assignment2BeanLocator.locateBean(OTPKey);
         }
         assignment2OTP += OTPKey;
+        Assignment2 assignment = (Assignment2)assignment2BeanLocator.locateBean(OTPKey);
         
     	//Initialize js otpkey
     	UIVerbatim.make(tofill, "attachment-ajax-init", "otpkey=\"" + OTPKey + "\"");
@@ -142,7 +141,7 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
         
         UIVerbatim.make(form, "title_label", messageLocator.getMessage("assignment2.assignment_add.assignment_title",
         		new Object[]{ reqStar }));
-        UIInput.make(form, "title", assignment2OTP + ".title", assignment.getTitle());
+        UIInput.make(form, "title", assignment2OTP + ".title");
         UIVerbatim.make(form, "open_date_label", messageLocator.getMessage("assignment2.assignment_add.open_date",
         		new Object[]{ reqStar }));
         UIInput openDateField = UIInput.make(form, "open_date:", assignment2OTP + ".openTime");
@@ -177,7 +176,7 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
         };
         UISelect selectSubmission =UISelect.make(form, "submission_type", submission_type_values,
         		submisison_type_labels, assignment2OTP + ".submissionType").setMessageKeys();
-        ((UIBoundString) selectSubmission.selection).setValue(String.valueOf(assignment.getSubmissionType()));
+        //((UIBoundString) selectSubmission.selection).setValue(String.valueOf(assignment.getSubmissionType()));
         
         String submissionSelectId = selectSubmission.getFullID();
         for (int i=0; i<submission_type_values.length; i++){
@@ -187,22 +186,23 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
         }
         
         //Rich Text Input
-        UIInput instructions = UIInput.make(form, "instructions:", assignment2OTP + ".instructions", assignment.getInstructions());
+        UIInput instructions = UIInput.make(form, "instructions:", assignment2OTP + ".instructions");
         richTextEvolver.evolveTextInput(instructions);
         
         
         //Calendar Due Date
         //Announcement -  only display if site has the announcements tool
         if (externalLogic.siteHasTool(externalLogic.getCurrentContextId(), ExternalLogic.TOOL_ID_ANNC)) {
-        	UIBoundBoolean.make(form, "announcement", assignment2OTP + ".hasAnnouncement", assignment.getHasAnnouncement());
+        	UIBoundBoolean.make(form, "announcement", assignment2OTP + ".hasAnnouncement");
         }
         //Resubmit until until date
-        UIBoundBoolean.make(form, "accept_until_until", assignment2OTP + ".allowResubmit", assignment.isAllowResubmit());
+        UIBoundBoolean.make(form, "accept_until_until", assignment2OTP + ".allowResubmit");
         //Honor Pledge
-        UIBoundBoolean.make(form, "honor_pledge", assignment2OTP + ".honorPledge", assignment.isHonorPledge());
+        UIBoundBoolean.make(form, "honor_pledge", assignment2OTP + ".honorPledge");
         
         //Attachments
-        attachmentListRenderer.makeAttachmentFromAssignmentAttachmentSet(tofill, "attachment_list:", params.viewID, assignment.getAttachmentSet(), Boolean.TRUE);
+        attachmentListRenderer.makeAttachmentFromAssignment2OTPAttachmentSet(tofill, "attachment_list:", 
+        		params.viewID, OTPKey, Boolean.TRUE);
         UIInternalLink.make(form, "add_attachments", UIMessage.make("assignment2.assignment_add.add_attachments"),
         		new FilePickerHelperViewParams(AddAttachmentHelperProducer.VIEWID, Boolean.TRUE, 
         				Boolean.TRUE, 500, 700, OTPKey));
@@ -230,15 +230,15 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
         	gradebook_item_values[i] = gradebook_items.get(i-1).getGradableObjectId().toString();
         	
         	//CHeck if currently selected
-        	if (gradebook_items.get(i-1).getGradableObjectId() == assignment.getGradableObjectId()) {
-        		currentSelected = gradebook_items.get(i-1);
-        	}
+        	//if (gradebook_items.get(i-1).getGradableObjectId() == assignment.getGradableObjectId()) {
+        	//	currentSelected = gradebook_items.get(i-1);
+        	//}
         }
         UISelect.make(form, "gradebook_item",gradebook_item_values, gradebook_item_labels, assignment2OTP + ".gradableObjectId"); 
         
         //Radio Buttons for Grading
         UISelect grading_select = UISelect.make(form, "ungraded", 
-        		new String[]{Boolean.FALSE.toString(), Boolean.TRUE.toString()}, assignment2OTP + ".ungraded", assignment.isUngraded().toString());
+        		new String[]{Boolean.FALSE.toString(), Boolean.TRUE.toString()}, new String[]{"", ""}, assignment2OTP + ".ungraded");
         String grading_select_id = grading_select.getFullID();
         UISelectChoice graded = UISelectChoice.make(form, "select_graded", grading_select_id, 0);
         UISelectChoice ungraded = UISelectChoice.make(form, "select_ungraded", grading_select_id, 1);
@@ -348,7 +348,7 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
         };
         UISelect notifications = UISelect.make(form, "notifications_select", notification_type_values,
         		notification_type_labels, assignment2OTP + ".notificationType").setMessageKeys();
-        ((UIBoundString) notifications.selection).setValue(String.valueOf(assignment.getNotificationType()));
+        //((UIBoundString) notifications.selection).setValue(String.valueOf(assignment.getNotificationType()));
         String notificationSelectId = notifications.getFullID();
         for (int i = 0; i < notification_type_values.length; i++){
         	UIBranchContainer notification_row = UIBranchContainer.make(form, "notification_row:");

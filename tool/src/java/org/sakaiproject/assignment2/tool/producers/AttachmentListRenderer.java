@@ -1,11 +1,13 @@
 package org.sakaiproject.assignment2.tool.producers;
 
 import org.sakaiproject.assignment2.logic.ExternalLogic;
+import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentAttachment;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionAttachment;
 import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.content.api.ContentResource;
 
+import uk.org.ponder.beanutil.entity.EntityBeanLocator;
 import uk.org.ponder.messageutil.MessageLocator;
 import uk.org.ponder.rsf.components.UIBranchContainer;
 import uk.org.ponder.rsf.components.UIContainer;
@@ -39,10 +41,26 @@ public class AttachmentListRenderer {
 		this.messageLocator = messageLocator;
 	}
 	
+	private EntityBeanLocator assignment2EntityBeanLocator;
+	public void setAssignment2EntityBeanLocator(EntityBeanLocator assignment2EntityBeanLocator) {
+		this.assignment2EntityBeanLocator = assignment2EntityBeanLocator;
+	}
+	
 	public void makeAttachmentFromAssignmentAttachmentSet(UIContainer tofill, String divID, String currentViewID, Set<AssignmentAttachment> aaSet, Boolean remove) {
 		Set<String> refSet = new HashSet();
 		if (aaSet != null){
 			for (AssignmentAttachment aa : aaSet) {
+				refSet.add(aa.getAttachmentReference());
+			}
+		}
+		makeAttachment(tofill, divID, currentViewID, refSet, remove);
+	}
+	
+	public void makeAttachmentFromAssignment2OTPAttachmentSet(UIContainer tofill, String divID, String currentViewID, String a2OTPKey, Boolean remove) {
+		Assignment2 assignment = (Assignment2)assignment2EntityBeanLocator.locateBean(a2OTPKey);
+		Set<String> refSet = new HashSet();
+		if (assignment != null && assignment.getAttachmentSet() != null){
+			for (AssignmentAttachment aa : assignment.getAttachmentSet()) {
 				refSet.add(aa.getAttachmentReference());
 			}
 		}

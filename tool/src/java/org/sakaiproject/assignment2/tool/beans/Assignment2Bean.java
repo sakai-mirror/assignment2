@@ -100,24 +100,6 @@ public class Assignment2Bean {
 		return result;
 	}
 	
-	public String processActionPreviewPost(){
-		Assignment2 assignment = previewAssignmentBean.getAssignment();
-		String key = "";
-		if (assignment.getAssignmentId() != null){
-			key += assignment.getAssignmentId().toString();
-		} else {
-			key += EntityBeanLocator.NEW_PREFIX + "1";
-		}
-		
-		String result = internalProcessPost(assignment, key);
-		//clear session scoped assignment
-		if (result.equals(POST)){
-			previewAssignmentBean.setAssignment(null);
-			previewAssignmentBean.setOTPKey(EntityBeanLocator.NEW_PREFIX + "1");
-		}
-		return result;
-	}
-	
 	private String internalProcessPost(Assignment2 assignment, String key){
 		assignment.setDraft(Boolean.FALSE);
 		assignment.setCreateTime(new Date());
@@ -151,17 +133,6 @@ public class Assignment2Bean {
     	} else {
     		final_set.addAll(set);
     	}
-    	/**
-    	if (session.getAttribute("removedAttachmentRefs") != null) {
-    		for (String ref : (Set<String>)session.getAttribute("removedAttachmentRefs")) {
-    			for (AssignmentAttachment aa : set) {
-    				if (ref.equals(aa.getAttachmentReference())) {
-    					set.remove(aa);
-    				}
-    			}
-    		}
-    	}
-    	**/
     	assignment.setAttachmentSet(final_set);
 
     	//Since in the UI, the select box bound to the gradableObjectId is always present
@@ -170,11 +141,10 @@ public class Assignment2Bean {
 			assignment.setGradableObjectId(null);
 		}
 		
-		//REMOVE THESE
+		//REMOVE THESE - TODO
 		assignment.setGroupSubmission(Boolean.FALSE);
-		//assignment.setRestrictedToGroups(Boolean.FALSE);
 		assignment.setNotificationType(0);
-		assignment.setAllowResubmit(Boolean.FALSE);
+		//END REMOVE THESE 
 		
 		//do groups
 		Set<AssignmentGroup> newGroups = new HashSet();
@@ -241,14 +211,6 @@ public class Assignment2Bean {
 		return PREVIEW;
 	}
 	
-	public String processActionRefresh() {
-		for (String key : OTPMap.keySet()) {
-			Assignment2 assignment = OTPMap.get(key);
-			previewAssignmentBean.setAssignment(assignment);
-		}
-		return REFRESH;
-	}
-	
 	public String processActionEdit() {
 		return EDIT;
 	}
@@ -264,11 +226,7 @@ public class Assignment2Bean {
 			assignment.setModifiedBy(externalLogic.getCurrentUserId());
 			
 			//REMOVE THESE - TODO
-			//assignment.setUngraded(Boolean.FALSE);
-			//assignment.setGroupSubmission(Boolean.FALSE);
-			//assignment.setRestrictedToGroups(Boolean.FALSE);
 			assignment.setNotificationType(0);
-			assignment.setAllowResubmit(Boolean.FALSE);
 			//END REMOVE THESE
 			
 			//start the validator
