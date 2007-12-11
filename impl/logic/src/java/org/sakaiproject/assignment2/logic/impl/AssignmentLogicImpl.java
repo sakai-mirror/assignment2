@@ -229,12 +229,16 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 							// check to see if user is a member of an associated section
 							Set<AssignmentGroup> groupRestrictions = assignment.getAssignmentGroupSet();
 							if (groupRestrictions != null) {
+								boolean allowedToView = false;
 								for (Iterator groupIter = groupRestrictions.iterator(); groupIter.hasNext();) {
 									AssignmentGroup group = (AssignmentGroup) groupIter.next();
 									if (group != null && userGroupIds.contains(group.getGroupId())) {
-										viewableAssignments.add(assignment);
-										break;
+										allowedToView = true;
 									}
+								}
+								
+								if (allowedToView) {
+									viewableAssignments.add(assignment);
 								}
 							}	
 						} 
@@ -260,12 +264,16 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 						if (assignment.isRestrictedToGroups() && gradebookLogic.isCurrentUserAStudentInGb(contextId)) {
 							Set<AssignmentGroup> groupRestrictions = assignment.getAssignmentGroupSet();
 							if (groupRestrictions != null) {
+								boolean allowedToView = false;
 								for (Iterator groupIter = groupRestrictions.iterator(); groupIter.hasNext();) {
 									AssignmentGroup group = (AssignmentGroup) groupIter.next();
 									if (group != null && userGroupIds.contains(group.getGroupId())) {
-										viewableAssignments.add(assignment);
-										break;
+										allowedToView = true;
 									}
+								}
+								
+								if (allowedToView) {
+									viewableAssignments.add(assignment);
 								}
 							}	
 						} else {
