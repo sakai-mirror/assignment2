@@ -9,7 +9,7 @@
  * 
  *****************************************************************************/
 
-package org.sakaiproject.blogwow.logic.test;
+package org.sakaiproject.assignment2.logic.test;
 
 import java.util.Date;
 
@@ -34,7 +34,7 @@ public class TestDataPreload {
      */
     public void preloadTestData(GenericDao dao) {
         Assignment2 testAssignment = new Assignment2();
-        testAssignment.setAllowResubmitUntilDue(Boolean.FALSE);
+        testAssignment.setAllowResubmit(Boolean.FALSE);
         testAssignment.setCreateTime(new Date());
         testAssignment.setCreator("admin");
         testAssignment.setDraft(Boolean.FALSE);
