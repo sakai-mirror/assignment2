@@ -174,7 +174,7 @@ public class Assignment2Bean {
 		assignment.setGroupSubmission(Boolean.FALSE);
 		//assignment.setRestrictedToGroups(Boolean.FALSE);
 		assignment.setNotificationType(0);
-		assignment.setAllowResubmitUntilDue(Boolean.FALSE);
+		assignment.setAllowResubmit(Boolean.FALSE);
 		
 		//do groups
 		Set<AssignmentGroup> newGroups = new HashSet();
@@ -268,7 +268,7 @@ public class Assignment2Bean {
 			assignment.setGroupSubmission(Boolean.FALSE);
 			assignment.setRestrictedToGroups(Boolean.FALSE);
 			assignment.setNotificationType(0);
-			assignment.setAllowResubmitUntilDue(Boolean.FALSE);
+			assignment.setAllowResubmit(Boolean.FALSE);
 			
 			//start the validator
 			Assignment2Validator validator = new Assignment2Validator();

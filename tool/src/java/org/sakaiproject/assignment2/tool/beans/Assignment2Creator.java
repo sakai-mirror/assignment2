@@ -66,7 +66,7 @@ public class Assignment2Creator {
     	dup.setNotificationType(assignment.getNotificationType());
 		dup.setHasAnnouncement(assignment.getHasAnnouncement());
 		dup.setCalendarEventId(assignment.getCalendarEventId());
-		dup.setAllowResubmitUntilDue(assignment.isAllowResubmitUntilDue());
+		dup.setAllowResubmit(assignment.isAllowResubmit());
 		dup.setAllowReviewService(assignment.isAllowReviewService());
 		dup.setAllowStudentViewReport(assignment.isAllowStudentViewReport());
 		dup.setCreator(externalLogic.getCurrentUserId());

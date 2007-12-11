@@ -83,9 +83,9 @@
         <property name="calendarEventId" type="java.lang.String" >
             <column name="CALENDAR_EVENT_ID" length="36" />
         </property>
-        <!-- allow resubmissions until due date  -->
-        <property name="allowResubmitUntilDue" type="java.lang.Boolean" >
-            <column name="ALLOW_RESUBMIT_UNTIL_DUE" not-null="true" />
+        <!-- allow resubmissions until "accept until" date  -->
+        <property name="allowResubmit" type="java.lang.Boolean" >
+            <column name="ALLOW_RESUBMIT" not-null="true" />
         </property>
         <!-- allow a review service  -->
         <property name="allowReviewService" type="java.lang.Boolean" >

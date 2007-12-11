@@ -50,7 +50,7 @@ public class Assignment2 {
     private Boolean hasAnnouncement;
     private String announcementId;
     private String calendarEventId;
-    private Boolean allowResubmitUntilDue;
+    private Boolean allowResubmit;
     private Boolean allowReviewService;
     private Boolean allowStudentViewReport;
     private String creator;
@@ -79,7 +79,7 @@ public class Assignment2 {
 			Boolean restrictedToGroups, Boolean groupSubmission,
 			Boolean honorPledge, String instructions, int submissionType,
 			int notificationType, String announcementId,
-			String calendarEventId, Boolean allowResubmitUntilDue,
+			String calendarEventId, Boolean allowResubmit,
 			Boolean allowReviewService, Boolean allowStudentViewReport,
 			String creator, Date createTime, String modifiedBy,
 			Date modifiedTime, Double pointsPossible, Date dueDate) {
@@ -101,7 +101,7 @@ public class Assignment2 {
 		this.notificationType = notificationType;
 		this.announcementId = announcementId;
 		this.calendarEventId = calendarEventId;
-		this.allowResubmitUntilDue = allowResubmitUntilDue;
+		this.allowResubmit = allowResubmit;
 		this.allowReviewService = allowReviewService;
 		this.allowStudentViewReport = allowStudentViewReport;
 		this.creator = creator;
@@ -443,19 +443,19 @@ public class Assignment2 {
     
     /**
      * @return If true, will allow students to resubmit an unlimited number of times
-     * until the due date
+     * until the "accept until" date
      */
-    public Boolean isAllowResubmitUntilDue() {
-        return allowResubmitUntilDue;
+    public Boolean isAllowResubmit() {
+        return allowResubmit;
     }
     
     /**
      * If true, will allow students to resubmit an unlimited number of times
-     * until the due date
-     * @param allowResubmitUntilDue
+     * until the "accept until" date
+     * @param allowResubmit
      */
-    public void setAllowResubmitUntilDue(Boolean allowResubmitUntilDue) {
-        this.allowResubmitUntilDue = allowResubmitUntilDue;
+    public void setAllowResubmit(Boolean allowResubmit) {
+        this.allowResubmit = allowResubmit;
     }
     
     /**
