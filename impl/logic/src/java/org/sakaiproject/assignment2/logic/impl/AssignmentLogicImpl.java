@@ -21,6 +21,8 @@
 
 package org.sakaiproject.assignment2.logic.impl;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -43,6 +45,7 @@ import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.dao.AssignmentDao;
 import org.sakaiproject.assignment2.exception.ConflictingAssignmentNameException;
 import org.sakaiproject.genericdao.api.finders.ByPropsFinder;
+import org.sakaiproject.assignment2.logic.utils.ComparatorsUtils;
 
 
 /**
@@ -309,7 +312,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
     			if (assignment.getSortIndex() != i){
     				//update and save
 	    			assignment.setSortIndex(i);
-	    			saveAssignment(assignment);
+	    			dao.save(assignment);
     			}
     		}
     	}
@@ -525,4 +528,29 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 		
 		newAssignment.setAssignmentGroupSet(revisedGroupSet);
 	}
+	
+	public void sortAssignments(List<Assignment2> assignmentList, String sortBy, boolean ascending) {
+		Comparator<Assignment2> comp;
+		if(AssignmentLogic.SORT_BY_TITLE.equals(sortBy)) {
+			comp = new ComparatorsUtils.Assignment2TitleComparator();
+		} else if(AssignmentLogic.SORT_BY_DUE.equals(sortBy)) {
+			comp = new ComparatorsUtils.Assignment2DueDateComparator();
+		} else if(AssignmentLogic.SORT_BY_FOR.equals(sortBy)) {
+			comp = new ComparatorsUtils.Assignment2ForComparator();
+		}else if(AssignmentLogic.SORT_BY_NUM_UNGRADED.equals(sortBy)){
+			comp = new ComparatorsUtils.Assignment2NumUngradedComparator();
+		} else if(AssignmentLogic.SORT_BY_OPEN.equals(sortBy)){
+			comp = new ComparatorsUtils.Assignment2OpenDateComparator();
+		} else if(AssignmentLogic.SORT_BY_STATUS.equals(sortBy)){
+			comp = new ComparatorsUtils.Assignment2StatusComparator();
+		} else {
+			comp = new ComparatorsUtils.Assignment2SortIndexComparator();
+		}
+
+		Collections.sort(assignmentList, comp);
+		if(!ascending) {
+			Collections.reverse(assignmentList);
+		}
+	}
+	
 }

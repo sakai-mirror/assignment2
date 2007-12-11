@@ -27,9 +27,10 @@ public class SortHeaderRenderer {
     	}
 
     	//Add Link and modify params
-    	params.sort_dir = (params.sort_by.equals(sort_by) ? (params.sort_dir.equals(SORT_DIR_ASC) ? SORT_DIR_DESC : SORT_DIR_ASC) : SORT_DIR_ASC);
-    	params.sort_by = sort_by;
-    	UIInternalLink.make(joint, "link", params);
+    	String newSortDir = (params.sort_by.equals(sort_by) ? (params.sort_dir.equals(SORT_DIR_ASC) ? SORT_DIR_DESC : SORT_DIR_ASC) : SORT_DIR_ASC);
+    	SortPagerViewParams new_params = new SortPagerViewParams(params.viewID, sort_by, newSortDir, params.current_start, params.current_count);
+
+    	UIInternalLink.make(joint, "link", new_params);
     }
 	
 }

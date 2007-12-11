@@ -68,7 +68,7 @@ public class Assignment2 {
     
     // fields that are not persisted but needed for UI
     private Integer numberOfTotalSubmissions;
-    private Integer numberOfNewSubmissions;
+    private Integer numberOfUngradedSubmissions;
     private String status;
     private String restrictedToText;
     private boolean needsUserAttention; 
@@ -666,20 +666,20 @@ public class Assignment2 {
 
 	/**
 	 * 
-	 * @return the number of submissions for this assignments that have not had
-	 * any grading action taken on them (ie graded, returned, etc)
+	 * @return the number of submissions for this assignments that have not 
+	 * been graded (this is retrieved from the gradebook)
 	 */
-	public Integer getNumberOfNewSubmissions() {
-		return numberOfNewSubmissions;
+	public Integer getNumberOfUngradedSubmissions() {
+		return numberOfUngradedSubmissions;
 	}
 
 	/**
-	 * set the number of submissions for this assignments that have not had
-	 * any grading action taken on them (ie graded, returned, etc)
-	 * @param numberOfNewSubmissions
+	 * set the number of submissions for this assignments that have not 
+	 * been graded (this is retrieved from the gradebook)
+	 * @param numberOfUngradedSubmissions
 	 */
-	public void setNumberOfNewSubmissions(Integer numberOfNewSubmissions) {
-		this.numberOfNewSubmissions = numberOfNewSubmissions;
+	public void setNumberOfUngradedSubmissions(Integer numberOfUngradedSubmissions) {
+		this.numberOfUngradedSubmissions = numberOfUngradedSubmissions;
 	}
 
 	/**

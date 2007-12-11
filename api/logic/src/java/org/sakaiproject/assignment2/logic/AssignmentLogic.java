@@ -35,6 +35,17 @@ import org.sakaiproject.assignment2.exception.ConflictingAssignmentNameException
  * @author <a href="mailto:wagnermr@iupui.edu">michelle wagner</a>
  */
 public interface AssignmentLogic {
+	// sorting information
+    public static final String SORT_DIR_ASC = "asc";
+    public static final String SORT_DIR_DESC = "desc";
+    public static final String SORT_BY_INDEX = "sortIndex";
+    public static final String SORT_BY_TITLE = "title";
+    public static final String SORT_BY_FOR = "for";
+    public static final String SORT_BY_STATUS = "status";
+    public static final String SORT_BY_OPEN = "openTime";
+    public static final String SORT_BY_DUE = "dueDate";
+    public static final String SORT_BY_NUM_UNGRADED = "numUngraded";	
+
 	
 	/**
 	 * 
@@ -112,4 +123,13 @@ public interface AssignmentLogic {
 	 * @return an Integer constant equivalent to the assignment's status
 	 */
 	public Integer getStatusForAssignment(Assignment2 assignment);
+	
+	/**
+	 * We cannot rely on db sorting because we must sort by several properties that
+	 * are not persisted in the A2 tables (ie status, due date, for, etc)
+	 * @param assignmentList
+	 * @param sortBy
+	 * @param ascending
+	 */
+	public void sortAssignments(List<Assignment2> assignmentList, String sortBy, boolean ascending);
 }

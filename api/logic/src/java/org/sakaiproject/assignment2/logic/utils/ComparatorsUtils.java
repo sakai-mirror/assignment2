@@ -22,6 +22,7 @@
 package org.sakaiproject.assignment2.logic.utils;
 
 import java.util.Comparator;
+import java.util.Date;
 
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
@@ -39,7 +40,14 @@ public class ComparatorsUtils {
     */
    public static class Assignment2DueDateComparator implements Comparator<Assignment2>  {
       public int compare(Assignment2 assign1, Assignment2 assign2) {
-         return assign1.getDueDate().compareTo(assign2.getDueDate());
+    	 Date dueDate1 = assign1.isUngraded() ? assign1.getDueDateForUngraded() : assign1.getDueDate();
+    	 Date dueDate2 = assign2.isUngraded() ? assign2.getDueDateForUngraded() : assign2.getDueDate();
+    	 
+    	 int value = dueDate1.compareTo(dueDate2);
+    	 if (value == 0) {
+    		 value = assign1.getTitle().compareTo(assign2.getTitle());
+    	 }
+    	 return value;
       }
    }
 
@@ -57,7 +65,11 @@ public class ComparatorsUtils {
     */
    public static class Assignment2OpenDateComparator implements Comparator<Assignment2> {
       public int compare(Assignment2 assign1, Assignment2 assign2) {
-         return assign1.getOpenTime().compareTo(assign2.getOpenTime());
+    	 int value = assign1.getOpenTime().compareTo(assign2.getOpenTime());
+     	 if (value == 0) {
+     		 value = assign1.getTitle().compareTo(assign2.getTitle());
+     	 }
+     	 return value;
       }
    }
    
@@ -66,7 +78,63 @@ public class ComparatorsUtils {
     */
    public static class Assignment2StatusComparator implements Comparator<Assignment2> {
       public int compare(Assignment2 assign1, Assignment2 assign2) {
-         return assign1.getStatus().compareTo(assign2.getStatus());
+    	 int value = assign1.getStatus().compareTo(assign2.getStatus());
+      	 if (value == 0) {
+      		 value = assign1.getTitle().compareTo(assign2.getTitle());
+      	 }
+      	 return value;
+      }
+   }
+   
+   /**
+    * static class to sort Assignment2 objects by sort index
+    */
+   public static class Assignment2SortIndexComparator implements Comparator<Assignment2> {
+      public int compare(Assignment2 assign1, Assignment2 assign2) {
+    	 int value = 0;
+    	 
+    	 if (assign1.getSortIndex() > assign2.getSortIndex()) {
+    		 value = 1;
+    	 } else if (assign1.getSortIndex() < assign2.getSortIndex()) {
+    		 value = -1;
+    	 } else {
+    		 value = assign1.getTitle().compareTo(assign2.getTitle());
+    	 }
+    	 
+         return value;
+      }
+   }
+   
+   /**
+    * static class to sort Assignment2 objects by "for" column - this will be
+    * Site or a list of the group restrictions
+    */
+   public static class Assignment2ForComparator implements Comparator<Assignment2> {
+      public int compare(Assignment2 assign1, Assignment2 assign2) {
+    	 int value = assign1.getRestrictedToText().compareTo(assign2.getRestrictedToText());
+      	 if (value == 0) {
+      		 value = assign1.getTitle().compareTo(assign2.getTitle());
+      	 }
+      	 return value;
+      }
+   }
+   
+   /**
+    * static class to sort Assignment2 objects by num ungraded submissions
+    */
+   public static class Assignment2NumUngradedComparator implements Comparator<Assignment2> {
+      public int compare(Assignment2 assign1, Assignment2 assign2) {
+    	 int value = 0;
+     	 
+     	 if (assign1.getNumberOfUngradedSubmissions() > assign2.getNumberOfUngradedSubmissions()) {
+     		 value = 1;
+     	 } else if (assign1.getNumberOfUngradedSubmissions() < assign2.getNumberOfUngradedSubmissions()) {
+     		 value = -1;
+     	 } else {
+     		 value = assign1.getTitle().compareTo(assign2.getTitle());
+     	 }
+     	 
+          return value;
       }
    }
 
