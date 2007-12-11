@@ -393,9 +393,13 @@ public class Assignment2Bean {
 				
 				// first, populate the text for the "For" column based upon group restrictions
 				if (assign.isRestrictedToGroups()) {
-					String groupListAsString = logic.getListOfGroupRestrictionsAsString(
-							new ArrayList(assignment.getAssignmentGroupSet()), groupIdToNameMap);
-					assign.setRestrictedToText(groupListAsString);
+					if (assignment.getAssignmentGroupSet() != null) {
+						String groupListAsString = logic.getListOfGroupRestrictionsAsString(
+								new ArrayList(assignment.getAssignmentGroupSet()), groupIdToNameMap);
+						assign.setRestrictedToText(groupListAsString);
+					} else {
+						assign.setRestrictedToText("");
+					}
 				} else {
 					assign.setRestrictedToText(messageLocator.getMessage("assignment2.assignment_restrict_to_site"));
 				}
