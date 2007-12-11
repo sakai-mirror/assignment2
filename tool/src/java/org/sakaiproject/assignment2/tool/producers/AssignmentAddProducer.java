@@ -214,7 +214,7 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
          *Grading
          */  
         //Get Gradebook Items
-        List<GradebookItem> gradebook_items = externalGradebookLogic.getViewableGradebookItems(externalLogic.getCurrentContextId());
+        List<GradebookItem> gradebook_items = externalGradebookLogic.getAllGradebookItems(externalLogic.getCurrentContextId());
         //Get an Assignment for currently selected from the select box
         // by default this the first item on the list returend from the externalGradebookLogic
         // this will be overwritten if we have a pre-existing assignment with an assigned

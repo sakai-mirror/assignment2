@@ -71,6 +71,7 @@ public class Assignment2 {
     private Integer numberOfNewSubmissions;
     private String status;
     private String restrictedToText;
+    private boolean needsUserAttention; 
 
 
 	public Assignment2(Long gradableObjectId, String contextId, String title,
@@ -715,6 +716,30 @@ public class Assignment2 {
 	 */
 	public void setRestrictedToText(String restrictedToText) {
 		this.restrictedToText = restrictedToText;
+	}
+
+	/**
+	 * used to identify situation where some action has been taken outside
+	 * of the assignments tool that requires user action b/c it affects this
+	 * assignments (ie assignment is associated with a gb item that was deleted
+	 * from the gb or an associated AssignmentGroup's group was deleted from the
+	 * realm)
+	 * @return true if the user needs to address some issue with this assignment
+	 */
+	public boolean isNeedsUserAttention() {
+		return needsUserAttention;
+	}
+
+	/**
+	 * used to identify situation where some action has been taken outside
+	 * of the assignments tool that requires user action b/c it affects this
+	 * assignment (ie assignment is associated with a gb item that was deleted
+	 * from the gb or an associated AssignmentGroup's group was deleted from the
+	 * realm)
+	 * @param needsUserAttention
+	 */
+	public void setNeedsUserAttention(boolean needsUserAttention) {
+		this.needsUserAttention = needsUserAttention;
 	}
 
 }

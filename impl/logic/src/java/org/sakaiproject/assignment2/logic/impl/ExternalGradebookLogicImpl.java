@@ -105,11 +105,13 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
 						gradedAssignment.setPointsPossible(gbItem.getPoints());
 						viewableAssignmentsWithGbData.add(gradedAssignment);
 					} else {
-						// TODO we need to do something if this GO was deleted!
 						// check to see if this gradable object exists anymore
 						if (!gradebookService.isGradableObjectDefined(goId)) {
-							// then the GO was deleted!
+							// then the GO was deleted -- let the user know
+							gradedAssignment.setNeedsUserAttention(true);
+							viewableAssignmentsWithGbData.add(gradedAssignment);
 						}
+						// if it exists, then this user does not have perm to view it in the gb
 					}
 				}
 			}
@@ -165,36 +167,35 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
     
     /*
      * (non-Javadoc)
-     * @see org.sakaiproject.assignment2.logic.ExternalGradebookLogic#getViewableGradebookItems(java.lang.String)
+     * @see org.sakaiproject.assignment2.logic.ExternalGradebookLogic#getAllGradebookItems(java.lang.String)
      */
-    public List<GradebookItem> getViewableGradebookItems(String contextId) {
+    public List<GradebookItem> getAllGradebookItems(String contextId) {
     	if (contextId == null) {
-    		throw new IllegalArgumentException("null contextId passed to getViewableGradebookItems");
+    		throw new IllegalArgumentException("null contextId passed to getAllGradebookItems");
     	}
-    	
+
     	List<GradebookItem> gradebookItems = new ArrayList();
-    	
+
     	GradebookService gradebookService = (org.sakaiproject.service.gradebook.shared.GradebookService) 
-        ComponentManager.get("org.sakaiproject.service.gradebook.GradebookService"); 
-    	
-    	List<org.sakaiproject.service.gradebook.shared.Assignment> viewableGbItems = 
-    		gradebookService.getViewableAssignmentsForCurrentUser(contextId);
-    	
-    	if (viewableGbItems == null || viewableGbItems.isEmpty()) {
-    		return gradebookItems;
-    	}
-    	
-    	for (Iterator itemIter = viewableGbItems.iterator(); itemIter.hasNext();) {
-    		org.sakaiproject.service.gradebook.shared.Assignment assign =
-    			(org.sakaiproject.service.gradebook.shared.Assignment)itemIter.next();
-    		
-    		if (assign != null) {
-    			GradebookItem item = 
-    				new GradebookItem(assign.getId(), assign.getName(), assign.getPoints(), assign.getDueDate());
-    			gradebookItems.add(item);
+    	ComponentManager.get("org.sakaiproject.service.gradebook.GradebookService"); 
+
+    	List<org.sakaiproject.service.gradebook.shared.Assignment> allGbItems = 
+    		gradebookService.getAllGradebookItems(contextId);
+
+    	if (allGbItems != null) {
+
+    		for (Iterator itemIter = allGbItems.iterator(); itemIter.hasNext();) {
+    			org.sakaiproject.service.gradebook.shared.Assignment assign =
+    				(org.sakaiproject.service.gradebook.shared.Assignment)itemIter.next();
+
+    			if (assign != null) {
+    				GradebookItem item = 
+    					new GradebookItem(assign.getId(), assign.getName(), assign.getPoints(), assign.getDueDate());
+    				gradebookItems.add(item);
+    			}
     		}
     	}
-    	
+
     	return gradebookItems;
     }
     
