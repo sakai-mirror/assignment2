@@ -102,7 +102,11 @@ public class Assignment2Bean {
 	
 	private String internalProcessPost(Assignment2 assignment, String key){
 		assignment.setDraft(Boolean.FALSE);
-		assignment.setCreateTime(new Date());
+		
+		if (assignment.getCreateTime() == null) {
+			assignment.setCreateTime(new Date());
+		}
+		
 		assignment.setModifiedTime(new Date());
 		assignment.setModifiedBy(externalLogic.getCurrentUserId());
 
@@ -149,7 +153,10 @@ public class Assignment2Bean {
 		//do groups
 		Set<AssignmentGroup> newGroups = new HashSet();
 		//now add any new groups
-		newGroups.addAll(assignment.getAssignmentGroupSet());
+		if (assignment.getAssignmentGroupSet() != null) {
+			newGroups.addAll(assignment.getAssignmentGroupSet());
+		} 
+		
 		Set<AssignmentGroup> remGroups = new HashSet();
 		for (Iterator groupIter = selectedIds.keySet().iterator(); groupIter.hasNext();) {
 			String selectedId = (String)groupIter.next();
@@ -404,9 +411,9 @@ public class Assignment2Bean {
 				
 				// first, populate the text for the "For" column based upon group restrictions
 				if (assign.isRestrictedToGroups()) {
-					if (assignment.getAssignmentGroupSet() != null) {
+					if (assign.getAssignmentGroupSet() != null && !assign.getAssignmentGroupSet().isEmpty()) {
 						String groupListAsString = logic.getListOfGroupRestrictionsAsString(
-								new ArrayList(assignment.getAssignmentGroupSet()), groupIdToNameMap);
+								new ArrayList(assign.getAssignmentGroupSet()), groupIdToNameMap);
 						assign.setRestrictedToText(groupListAsString);
 					} else {
 						assign.setRestrictedToText("");
