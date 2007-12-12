@@ -57,6 +57,11 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
     	log.debug("init");
     }
     
+    private GradebookService gradebookService;
+    public void setGradebookService(GradebookService gradebookService) {
+    	this.gradebookService = gradebookService;
+    }
+    
     /*
      * (non-Javadoc)
      * @see org.sakaiproject.assignment2.logic.ExternalGradebookLogic#getViewableAssignmentsWithGbData(java.util.List, java.lang.String)
@@ -65,9 +70,6 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
     	if (contextId == null) {
     		throw new IllegalArgumentException("contextId is null in getViewableAssignmentsWithGbData");
     	}
-    	
-        GradebookService gradebookService = (org.sakaiproject.service.gradebook.shared.GradebookService) 
-        ComponentManager.get("org.sakaiproject.service.gradebook.GradebookService"); 
     	
     	List<Assignment2> viewableAssignmentsWithGbData = new ArrayList();
     	if (gradedAssignments == null || gradedAssignments.isEmpty()) {
@@ -142,9 +144,6 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
      * @see org.sakaiproject.assignment2.logic.ExternalGradebookLogic#getViewableGradableObjectIdTitleMap(java.lang.String)
      */
     public Map getViewableGradableObjectIdTitleMap(String contextId) {
-    	GradebookService gradebookService = (org.sakaiproject.service.gradebook.shared.GradebookService) 
-        ComponentManager.get("org.sakaiproject.service.gradebook.GradebookService"); 
-    	
     	List<org.sakaiproject.service.gradebook.shared.Assignment> viewableGbItems = 
     		gradebookService.getViewableAssignmentsForCurrentUser(contextId);
     	
@@ -176,9 +175,6 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
 
     	List<GradebookItem> gradebookItems = new ArrayList();
 
-    	GradebookService gradebookService = (org.sakaiproject.service.gradebook.shared.GradebookService) 
-    	ComponentManager.get("org.sakaiproject.service.gradebook.GradebookService"); 
-
     	List<org.sakaiproject.service.gradebook.shared.Assignment> allGbItems = 
     		gradebookService.getAllGradebookItems(contextId);
 
@@ -208,9 +204,6 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
     		throw new IllegalArgumentException("Null contextId passed to getViewableGroupIdToTitleMap");
     	}
     	
-    	GradebookService gradebookService = (org.sakaiproject.service.gradebook.shared.GradebookService) 
-        ComponentManager.get("org.sakaiproject.service.gradebook.GradebookService"); 
-    	
     	return gradebookService.getViewableSectionUuidToNameMap(contextId);
     }
     
@@ -222,9 +215,6 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
     	if (contextId == null) {
     		throw new IllegalArgumentException("Null contextId passed to getViewableGroupIdToTitleMap");
     	}
-    	
-    	GradebookService gradebookService = (org.sakaiproject.service.gradebook.shared.GradebookService) 
-        ComponentManager.get("org.sakaiproject.service.gradebook.GradebookService");
     	
     	Map<String, String> studentIdGbFunctionMap = gradebookService.getViewableStudentsForItemForCurrentUser(contextId, gradableObjectId);
     	Map<String, String> studentIdAssnFunctionMap = new HashMap();
@@ -249,26 +239,18 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
     }
     
     public boolean isCurrentUserAbleToEdit(String contextId) {
-    	GradebookService gradebookService = (org.sakaiproject.service.gradebook.shared.GradebookService) 
-        ComponentManager.get("org.sakaiproject.service.gradebook.GradebookService");
     	return gradebookService.currentUserHasEditPerm(contextId);
     }
 	
 	public boolean isCurrentUserAbleToGradeAll(String contextId) {
-		GradebookService gradebookService = (org.sakaiproject.service.gradebook.shared.GradebookService) 
-        ComponentManager.get("org.sakaiproject.service.gradebook.GradebookService");
     	return gradebookService.currentUserHasGradeAllPerm(contextId);
 	}
 	
 	public boolean isCurrentUserAbleToGrade(String contextId) {
-		GradebookService gradebookService = (org.sakaiproject.service.gradebook.shared.GradebookService) 
-        ComponentManager.get("org.sakaiproject.service.gradebook.GradebookService");
     	return gradebookService.currentUserHasGradingPerm(contextId);
 	}
 	
 	public boolean isCurrentUserAbleToViewOwnGrades(String contextId) {
-		GradebookService gradebookService = (org.sakaiproject.service.gradebook.shared.GradebookService) 
-        ComponentManager.get("org.sakaiproject.service.gradebook.GradebookService");
     	return gradebookService.currentUserHasViewOwnGradesPerm(contextId);
 	}
 	

@@ -21,7 +21,7 @@
             <column name="USER_ID" not-null="true" length="99" unique-key="ASSIGN_ID_USER_ID"/>
         </property>
         
-        <set name="submissionHistorySet" lazy="true" inverse="true" cascade="save-update">
+        <set name="submissionHistorySet" lazy="true" inverse="true" cascade="none">
 	        <key column="SUBMISSION_ID"/>                        
 	        <one-to-many class="org.sakaiproject.assignment2.model.AssignmentSubmissionVersion"/>            
     		</set>
