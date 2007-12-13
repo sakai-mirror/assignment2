@@ -148,30 +148,32 @@ public class Assignment2Bean {
 		
 		//do groups
 		Set<AssignmentGroup> newGroups = new HashSet();
-		//now add any new groups
-		if (assignment.getAssignmentGroupSet() != null) {
-			newGroups.addAll(assignment.getAssignmentGroupSet());
-		} 
-		
-		Set<AssignmentGroup> remGroups = new HashSet();
-		for (Iterator groupIter = selectedIds.keySet().iterator(); groupIter.hasNext();) {
-			String selectedId = (String)groupIter.next();
-			if (selectedIds.get(selectedId) == Boolean.TRUE) {
-				//Then add the group
-				AssignmentGroup newGroup = new AssignmentGroup();
-				newGroup.setAssignment(assignment);
-				newGroup.setGroupId(selectedId);
-				newGroups.add(newGroup);
-			} else if (selectedIds.get(selectedId) == Boolean.FALSE) {
-				//then remove the group
-				for (AssignmentGroup ag : newGroups) {
-					if (ag.getGroupId().equals(selectedId)) {
-						remGroups.add(ag);
+		if (assignment.isRestrictedToGroups()){
+			//now add any new groups
+			if (assignment.getAssignmentGroupSet() != null) {
+				newGroups.addAll(assignment.getAssignmentGroupSet());
+			} 
+			
+			Set<AssignmentGroup> remGroups = new HashSet();
+			for (Iterator groupIter = selectedIds.keySet().iterator(); groupIter.hasNext();) {
+				String selectedId = (String)groupIter.next();
+				if (selectedIds.get(selectedId) == Boolean.TRUE) {
+					//Then add the group
+					AssignmentGroup newGroup = new AssignmentGroup();
+					newGroup.setAssignment(assignment);
+					newGroup.setGroupId(selectedId);
+					newGroups.add(newGroup);
+				} else if (selectedIds.get(selectedId) == Boolean.FALSE) {
+					//then remove the group
+					for (AssignmentGroup ag : newGroups) {
+						if (ag.getGroupId().equals(selectedId)) {
+							remGroups.add(ag);
+						}
 					}
 				}
 			}
+			newGroups.removeAll(remGroups);
 		}
-		newGroups.removeAll(remGroups);
 		assignment.setAssignmentGroupSet(newGroups);
 		
 		

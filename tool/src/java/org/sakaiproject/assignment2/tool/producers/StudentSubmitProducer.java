@@ -115,11 +115,11 @@ public class StudentSubmitProducer implements ViewComponentProducer, NavigationC
     	UIVerbatim.make(form, "instructions", messageLocator.getMessage("assignment2.student-submit.instructions"));
     	
         //Rich Text Input
-        UIInput text = UIInput.make(form, "text:", versionOTP + ".text");
+        UIInput text = UIInput.make(form, "text:", versionOTP + ".submittedText");
         richTextEvolver.evolveTextInput(text);
         
     	//Initialize js otpkey
-    	UIVerbatim.make(tofill, "attachment-ajax-init", "otpkey=\"" + ASOTPKey + "\"");
+    	UIVerbatim.make(tofill, "attachment-ajax-init", "otpkey=\"" + org.sakaiproject.util.Web.escapeUrl(ASOTPKey) + "\"");
         
         //Attachments
     	attachmentListRenderer.makeAttachmentFromAssignmentSubmissionAttachmentSet(tofill, "submission_attachment_list:", params.viewID, 

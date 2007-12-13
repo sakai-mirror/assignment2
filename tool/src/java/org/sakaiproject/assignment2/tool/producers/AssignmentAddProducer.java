@@ -132,7 +132,7 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
         Assignment2 assignment = (Assignment2)assignment2BeanLocator.locateBean(OTPKey);
         
     	//Initialize js otpkey
-    	UIVerbatim.make(tofill, "attachment-ajax-init", "otpkey=\"" + OTPKey + "\"");
+    	UIVerbatim.make(tofill, "attachment-ajax-init", "otpkey=\"" + org.sakaiproject.util.Web.escapeUrl(OTPKey) + "\"");
     	
         UIForm form = UIForm.make(tofill, "assignment_form");
         

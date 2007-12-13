@@ -3,17 +3,25 @@ package org.sakaiproject.assignment2.tool.producers;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
+import org.sakaiproject.assignment2.model.AssignmentAttachment;
+import org.sakaiproject.assignment2.model.AssignmentSubmission;
+import org.sakaiproject.assignment2.model.AssignmentSubmissionAttachment;
+import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.tool.beans.Assignment2Creator;
 import org.sakaiproject.assignment2.tool.beans.Assignment2Bean;
 import org.sakaiproject.assignment2.tool.beans.PreviewAssignmentBean;
 import org.sakaiproject.assignment2.tool.params.AssignmentAddViewParams;
 import org.sakaiproject.assignment2.tool.params.SimpleAssignmentViewParams;
+import org.sakaiproject.tool.api.SessionManager;
+import org.sakaiproject.tool.api.ToolSession;
 
 import uk.org.ponder.beanutil.entity.EntityBeanLocator;
 import uk.org.ponder.messageutil.MessageLocator;
@@ -57,6 +65,7 @@ public class FragmentAssignmentPreviewProducer implements ViewComponentProducer,
 	private PreviewAssignmentBean previewAssignmentBean;
 	private Locale locale;
 	private AttachmentListRenderer attachmentListRenderer;
+	private SessionManager sessionManager;
 
     public void fillComponents(UIContainer tofill, ViewParameters viewparams, ComponentChecker checker) {
     	AssignmentAddViewParams params = (AssignmentAddViewParams) viewparams;
@@ -126,8 +135,26 @@ public class FragmentAssignmentPreviewProducer implements ViewComponentProducer,
     		UIMessage.make(tofill, "student_view_no_attachments", "assignment2.assignment_preview.student_view.no_attachments");
     	}
     	
-    	attachmentListRenderer.makeAttachmentFromAssignmentAttachmentSet(tofill, "attachment_list:", params.viewID, 
-    		assignment.getAttachmentSet(), Boolean.FALSE);
+    	//Handle Attachments
+    	Set<String> set = new HashSet();
+    	if (assignment != null && assignment.getAttachmentSet() != null) {
+	    	for (AssignmentAttachment aa : assignment.getAttachmentSet()) {
+	    		set.add(aa.getAttachmentReference());
+	    	}
+    	}
+
+    	//get New attachments from session set
+    	ToolSession session = sessionManager.getCurrentToolSession();
+    	if (session.getAttribute("attachmentRefs") != null) {
+    		set.addAll((Set)session.getAttribute("attachmentRefs"));
+    	}
+    	
+    	//Now remove ones from session
+    	if (session.getAttribute("removedAttachmentRefs") != null){
+    		set.removeAll((Set<String>)session.getAttribute("removedAttachmentRefs"));
+    	}
+    	
+    	attachmentListRenderer.makeAttachment(tofill, "attachment_list:", params.viewID, set, Boolean.FALSE);
 
         
     }
@@ -158,5 +185,9 @@ public class FragmentAssignmentPreviewProducer implements ViewComponentProducer,
     
 	public void setAttachmentListRenderer(AttachmentListRenderer attachmentListRenderer){
 		this.attachmentListRenderer = attachmentListRenderer;
+	}
+	
+	public void setSessionManager(SessionManager sessionManager) {
+		this.sessionManager = sessionManager;
 	}
 }
