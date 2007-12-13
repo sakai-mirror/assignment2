@@ -223,6 +223,7 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
         
         String[] gradebook_item_labels = new String[gradebook_items.size()+1];
         String[] gradebook_item_values = new String[gradebook_items.size()+1];
+        gradebook_item_values[0] = "";
         gradebook_item_labels[0] = messageLocator.getMessage("assignment2.assignment_add.gradebook_item_select");
         for (int i=1; i <= gradebook_items.size(); i++) {
         	//Fill out select options
