@@ -358,10 +358,7 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
         
         //Post Buttons
         UICommand.make(form, "post_assignment", UIMessage.make("assignment2.assignment_add.post"), "#{Assignment2Bean.processActionPost}");
-        UICommand previewButton = UICommand.make(form, "preview_assignment", UIMessage.make("assignment2.assignment_add.preview"), "#{Assignment2Bean.processActionPreview}");
-        //Map previewattrmap = new HashMap();
-        //previewattrmap.put("onclick", "");
-        //ungraded.decorators = new DecoratorList(new UIFreeAttributeDecorator(previewattrmap));
+        UICommand.make(form, "preview_assignment", UIMessage.make("assignment2.assignment_add.preview"), "#{Assignment2Bean.processActionPreview}");
         
         if (assignment == null || assignment.getAssignmentId() == null || assignment.isDraft()){
         	UICommand.make(form, "save_draft", UIMessage.make("assignment2.assignment_add.save_draft"), "#{Assignment2Bean.processActionSaveDraft}");

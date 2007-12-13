@@ -65,15 +65,7 @@
       <property name="messageLocator" ref="messageLocator" />
       <property name="dateEvolver" ref="fieldDateInputEvolver" />
    </bean>
-
-   <bean class="org.sakaiproject.assignment2.tool.producers.FragmentAssignmentPreviewProducer">
-      <property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
-      <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
-      <property name="previewAssignmentBean" ref="PreviewAssignmentBean" />
-      <property name="locale" ref="requestLocale" />
-      <property name="attachmentListRenderer" ref="AttachmentListRenderer" />
-   </bean>
-   
+      
    <bean class="org.sakaiproject.assignment2.tool.producers.AssignmentGradeAssignmentProducer">
       <property name="navBarRenderer" ref="NavbarRenderer" />
       <property name="pagerRenderer" ref="PagerRenderer" />
@@ -109,6 +101,7 @@
       <property name="locale" ref="requestLocale" />
       <property name="assignment2Bean" ref="Assignment2Bean" />
       <property name="sortHeaderRenderer" ref="SortHeaderRenderer" />
+      <property name="gradebookLogic" ref="org.sakaiproject.assignment2.logic.ExternalGradebookLogic" />
    </bean>
 
    <bean class="org.sakaiproject.assignment2.tool.producers.FinishedHelperProducer">
@@ -135,14 +128,6 @@
       <property name="sortHeaderRenderer" ref="SortHeaderRenderer" />
    </bean>
    
-   <bean class="org.sakaiproject.assignment2.tool.producers.StudentPreviewProducer">
-   	  <property name="previewAssignmentSubmissionBean" ref="PreviewAssignmentSubmissionBean" />
-   	  <property name="locale" ref="requestLocale" />
-   	  <property name="attachmentListRenderer" ref="AttachmentListRenderer" />
-   	  <property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
-      <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
-   </bean>
-   
    <bean class="org.sakaiproject.assignment2.tool.producers.StudentSubmitProducer">
       <property name="richTextEvolver" ref="richTextEvolver" />
       <property name="messageLocator" ref="messageLocator" />
@@ -157,7 +142,16 @@
       <property name="assignmentSubmissionBeanLocator" ref="AssignmentSubmission" />
    </bean>
 
+
    <!--  AJAX Fragment Producers -->
+   <bean class="org.sakaiproject.assignment2.tool.producers.FragmentAssignmentPreviewProducer">
+      <property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
+      <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
+      <property name="previewAssignmentBean" ref="PreviewAssignmentBean" />
+      <property name="locale" ref="requestLocale" />
+      <property name="attachmentListRenderer" ref="AttachmentListRenderer" />
+   </bean>
+   
    <bean class="org.sakaiproject.assignment2.tool.producers.FragmentAttachmentsProducer">
    	  <property name="assignment2EntityBeanLocator" ref="Assignment2"/>
    	  <property name="contentHostingService" ref="org.sakaiproject.content.api.ContentHostingService" />
@@ -166,6 +160,14 @@
    	  <property name="messageLocator" ref="messageLocator" />
    	  <property name="attachmentListRenderer" ref="AttachmentListRenderer" />
    	  <property name="assignmentSubmissionEntityBeanLocator" ref="AssignmentSubmission" />
+   </bean>
+      
+   <bean class="org.sakaiproject.assignment2.tool.producers.FragmentSubmissionPreviewProducer">
+   	  <property name="previewAssignmentSubmissionBean" ref="PreviewAssignmentSubmissionBean" />
+   	  <property name="locale" ref="requestLocale" />
+   	  <property name="attachmentListRenderer" ref="AttachmentListRenderer" />
+   	  <property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
+      <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
    </bean>
   
    

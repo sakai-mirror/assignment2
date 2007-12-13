@@ -234,7 +234,7 @@ function tb_show(caption, url, imageGroup) {//function called when the user clic
 				}else{
 				
 					serial = $("form").serialize();
-					jQuery.ajax({type: "POST", url: "assignment_add", data: serial + "&" + $(".preview_button").get(0).name, 
+					jQuery.ajax({type: "POST", url: (String(document.location).split("?"))[0], data: serial + "&" + $(".preview_button").get(0).name, 
 					success: function(data, textStatus){
 						$("#TB_ajaxContent").html(data);
 						$("TB_title").html("");

@@ -7,6 +7,7 @@ import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.ExternalAnnouncementLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
+import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.tool.api.SessionManager;
 
 import uk.org.ponder.beanutil.entity.EntityBeanLocator;
@@ -40,7 +41,7 @@ public class AssignmentSubmissionBean {
 		this.assignment2EntityBeanLocator = entityBeanLocator;
 	}
 	
-	private Map<String, Assignment2> OTPMap;
+	private Map<String, AssignmentSubmission> OTPMap;
 	@SuppressWarnings("unchecked")
 	public void setAssignmentSubmissionEntityBeanLocator(EntityBeanLocator entityBeanLocator) {
 		this.OTPMap = entityBeanLocator.getDeliveredBeans();
@@ -77,6 +78,10 @@ public class AssignmentSubmissionBean {
 	}
 	
 	public String processActionPreview(){
+		for (String key : OTPMap.keySet()) {
+			AssignmentSubmission assignmentSubmission = OTPMap.get(key);
+			previewAssignmentSubmissionBean.setAssignmentSubmission(assignmentSubmission);
+		}
 		return PREVIEW;
 	}
 	

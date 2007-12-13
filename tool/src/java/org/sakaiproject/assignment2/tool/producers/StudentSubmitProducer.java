@@ -93,6 +93,7 @@ public class StudentSubmitProducer implements ViewComponentProducer, NavigationC
 
         
     	UIOutput.make(tofill, "heading_status", " - In Progress");	//HERE
+    	UIVerbatim.make(tofill, "page_instructions", messageLocator.getMessage("assignment2.student-submit.instructions"));
     	
     	//Display Assignment Info
     	UIOutput.make(tofill, "header.title", assignment.getTitle());
@@ -114,7 +115,7 @@ public class StudentSubmitProducer implements ViewComponentProducer, NavigationC
     	UIVerbatim.make(form, "instructions", messageLocator.getMessage("assignment2.student-submit.instructions"));
     	
         //Rich Text Input
-        UIInput text = UIInput.make(form, "text:", versionOTP + ".text", assignment.getInstructions());
+        UIInput text = UIInput.make(form, "text:", versionOTP + ".text");
         richTextEvolver.evolveTextInput(text);
         
     	//Initialize js otpkey
@@ -145,7 +146,7 @@ public class StudentSubmitProducer implements ViewComponentProducer, NavigationC
         nav.add(new NavigationCase("submit", new SimpleViewParameters(
             StudentAssignmentListProducer.VIEW_ID)));
         nav.add(new NavigationCase("preview", new SimpleViewParameters(
-        	StudentPreviewProducer.VIEW_ID)));
+        	FragmentSubmissionPreviewProducer.VIEW_ID)));
         nav.add(new NavigationCase("save_draft", new SimpleViewParameters(
         	StudentAssignmentListProducer.VIEW_ID)));
         nav.add(new NavigationCase("cancel", new SimpleViewParameters(

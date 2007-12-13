@@ -22,6 +22,7 @@ public class Assignment2Creator {
     	togo.setTitle("");
     	togo.setContextId(externalLogic.getCurrentContextId());
     	togo.setCreator(externalLogic.getCurrentUserId());
+    	togo.setCreateTime(new Date());
     	togo.setRemoved(Boolean.FALSE);
     	togo.setHonorPledge(Boolean.FALSE);
     	togo.setRestrictedToGroups(Boolean.FALSE);
@@ -42,6 +43,7 @@ public class Assignment2Creator {
     	togo.setOpenTime(openDate);
     	togo.setDueDateForUngraded(closeDate);
     	togo.setAcceptUntilTime(closeDate);
+    	
     	return togo;
     }
     

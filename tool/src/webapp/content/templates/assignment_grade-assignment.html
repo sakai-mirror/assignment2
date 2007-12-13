@@ -40,13 +40,10 @@
 		</form>
 	</div>
 	-->
-	<p class="discTria"><a title="Show student view">
+	<p class="discTria">
 		<img src="/sakai-assignment2-tool/content/images/expand.png" border="0" alt="Show Assignment Details" style="cursor:pointer" 
-			onclick="$('#assignment_details').toggle();
-				if(this.src.match('collapse')){this.src=this.src.replace(/collapse/, 'expand');}
-				else{this.src=this.src.replace(/expand/, 'collapse');};
-				sizeFrame();" /></a>
-		<span rsf:id="assignment_details">Assignment Details</span> &ndash;
+			onclick="slide_details(this)" />
+		<span rsf:id="assignment_details" style="cursor:pointer" onclick="slide_details($(this).prev('img').get(0))">Assignment Details</span> &ndash;
 		<a rsf:id="assignment_details_edit">Edit</a>
 	</p>
 	<div id="assignment_details" style="display:none">
@@ -155,5 +152,17 @@
 <script type="text/javascript" rsf:id="sizeFrame">
 //set in producer
 //a2SetMainFrameHeight();
+</script>
+<script type="text/javascript">
+//<![CDATA[
+function slide_details(img){
+	$('#assignment_details').toggle('fast', function(){sizeFrame()});
+	if(img.src.match('collapse')){
+		img.src=img.src.replace(/collapse/, 'expand');
+	}else{
+		img.src=img.src.replace(/expand/, 'collapse');
+	}
+}
+//]]>
 </script>
 </html>

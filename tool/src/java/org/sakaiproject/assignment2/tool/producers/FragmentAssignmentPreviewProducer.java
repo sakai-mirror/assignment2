@@ -83,6 +83,7 @@ public class FragmentAssignmentPreviewProducer implements ViewComponentProducer,
         	}
         }
         UIMessage.make(tofill, "preview_heading", "assignment2.assignment_preview.heading", new Object[]{ assignment.getTitle() });
+        previewAssignmentBean.setAssignment(null); // release object from session memory
     	
     	//Assignment Settings Table
     	UIOutput.make(tofill, "preview_created_by", externalLogic.getUserDisplayName(assignment.getCreator()));

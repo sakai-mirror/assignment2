@@ -103,10 +103,6 @@ public class Assignment2Bean {
 	private String internalProcessPost(Assignment2 assignment, String key){
 		assignment.setDraft(Boolean.FALSE);
 		
-		if (assignment.getCreateTime() == null) {
-			assignment.setCreateTime(new Date());
-		}
-		
 		assignment.setModifiedTime(new Date());
 		assignment.setModifiedBy(externalLogic.getCurrentUserId());
 

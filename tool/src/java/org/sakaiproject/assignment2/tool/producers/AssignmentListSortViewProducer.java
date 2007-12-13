@@ -9,6 +9,7 @@ import java.util.Locale;
 import org.sakaiproject.assignment2.exception.ConflictingAssignmentNameException;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
+import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.tool.beans.Assignment2Bean;
 import org.sakaiproject.assignment2.tool.beans.Assignment2Creator;
@@ -68,6 +69,7 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
     private MessageLocator messageLocator;
     private AssignmentLogic assignmentLogic;
     private ExternalLogic externalLogic;
+    private ExternalGradebookLogic gradebookLogic;
     private Locale locale;
     private Assignment2Bean assignment2Bean;
     private SortHeaderRenderer sortHeaderRenderer;
@@ -143,6 +145,9 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
             return;
         }
         
+        //Edit Permission
+        Boolean edit_perm = gradebookLogic.isCurrentUserAbleToEdit(externalLogic.getCurrentUserId());
+        
         //Fill out Table
         for (Assignment2 assignment : entries){
         	UIBranchContainer row = UIBranchContainer.make(form, "assignment-row:");
@@ -150,19 +155,25 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
         			"Assignment2Bean.selectedIds." + assignment.getAssignmentId().toString(),
         			Boolean.FALSE);
         	UIMessage.make(row, "assignment_row_remove_label", "assignment2.assignment_list-sortview.assignment_row_remove_label");
-        	/** FIX ME Because Assignment was not retrieved with attachments****
+        	/** FIX ME - TODO Because Assignment was not retrieved with attachments****
         	if (assignment.getAttachmentSet() != null && !assignment.getAttachmentSet().isEmpty()){
         		UILink.make(row, "assignment_row_attach_img", "/sakai-assignment2-tool/content/images/attach.png");
         	}
         	**/
         	UIOutput.make(row, "assignment_title", assignment.getTitle());
-        	UIInternalLink.make(row, "assignment_row_edit", 
-        			UIMessage.make("assignment2.assignment_list-sortview.assignment_row_edit"), 
-        			new AssignmentAddViewParams(AssignmentAddProducer.VIEW_ID, assignment.getAssignmentId()));
-        	UIInternalLink.make(row, "assignment_row_duplicate", 
-        			UIMessage.make("assignment2.assignment_list-sortview.assignment_row_duplicate"), 
-        			new AssignmentListSortViewParams(AssignmentListSortViewProducer.VIEW_ID, current_sort_by, current_sort_dir, 
-        					params.current_start, params.current_count, assignment.getAssignmentId()));
+        	
+        	//If Current User has the ability to edit or duplicate the assignment
+        	if (edit_perm) {
+	        	UIInternalLink.make(row, "assignment_row_edit", 
+	        			UIMessage.make("assignment2.assignment_list-sortview.assignment_row_edit"), 
+	        			new AssignmentAddViewParams(AssignmentAddProducer.VIEW_ID, assignment.getAssignmentId()));
+	        	UIInternalLink.make(row, "assignment_row_duplicate", 
+	        			UIMessage.make("assignment2.assignment_list-sortview.assignment_row_duplicate"), 
+	        			new AssignmentListSortViewParams(AssignmentListSortViewProducer.VIEW_ID, current_sort_by, current_sort_dir, 
+	        					params.current_start, params.current_count, assignment.getAssignmentId()));
+        	}
+        	
+        	//Current user should always be able to grade, otherwise getViewableAssignments wouldn't have returned it... or at least it shouldn't ;-)
         	UIInternalLink.make(row, "assignment_row_grade", 
         			UIMessage.make("assignment2.assignment_list-sortview.assignment_row_grade"), 
         			new SimpleAssignmentViewParams(AssignmentGradeAssignmentProducer.VIEW_ID, assignment.getAssignmentId()));
@@ -232,4 +243,8 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
     public void setSortHeaderRenderer(SortHeaderRenderer sortHeaderRenderer) {
     	this.sortHeaderRenderer = sortHeaderRenderer;
     }
+
+	public void setGradebookLogic(ExternalGradebookLogic gradebookLogic) {
+		this.gradebookLogic = gradebookLogic;
+	}
 }
