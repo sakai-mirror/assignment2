@@ -203,7 +203,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 		List viewableAssignments = new ArrayList();
 		String contextId = externalLogic.getCurrentContextId();
 
-		List<Assignment2> allAssignments = dao.getAssignmentsWithGroups(contextId);
+		Set<Assignment2> allAssignments = dao.getAssignmentsWithGroupsAndAttachments(contextId);
 
 		if (allAssignments != null && !allAssignments.isEmpty()) {
 
@@ -334,8 +334,8 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 	 */
 	private boolean assignmentNameExists(String assignmentName) {
 		int count = dao.countByProperties(Assignment2.class, 
-	               new String[] {"contextId", "title", "removed"}, 
-	               new Object[] {externalLogic.getCurrentContextId(), assignmentName, Boolean.FALSE});
+	               new String[] {"contextId", "title", "removed", "draft"}, 
+	               new Object[] {externalLogic.getCurrentContextId(), assignmentName, Boolean.FALSE, Boolean.FALSE});
 		
 		return count > 0;
 	}
@@ -348,7 +348,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 	 * will take permissions into account to return the number that the current
 	 * user is authorized to view 
 	 */
-	private Integer getTotalNumSubmissionsForAssignment(Assignment2 assignment) {
+	public int getTotalNumSubmissionsForAssignment(Assignment2 assignment) {
 		return 0;
 	}
 	
@@ -359,11 +359,11 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 	 * will take permissions into account to return the number that the current
 	 * user is authorized to view 
 	 */
-	private Integer getNumUngradedSubmissionsForAssignment(Assignment2 assignment) {
+	public int getNumUngradedSubmissionsForAssignment(Assignment2 assignment) {
 		return 0;
 	}
 	
-	public Integer getStatusForAssignment(Assignment2 assignment) {
+	public int getStatusForAssignment(Assignment2 assignment) {
 		if (assignment == null){
 			throw new IllegalArgumentException("Null assignment passed to check status");
 		}

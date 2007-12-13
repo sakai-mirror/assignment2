@@ -129,38 +129,6 @@ public class AssignmentSubmissionVersion {
 	
 	/**
 	 * 
-	 * @return true if the submitter is allowed to resubmit this assignment
-	 */
-	public Boolean isAllowResubmit() {
-		return allowResubmit;
-	}
-
-	/**
-	 * set whether or not the submitter is allowed to resubmit this assignment
-	 * @param allowResubmit
-	 */
-	public void setAllowResubmit(Boolean allowResubmit) {
-		this.allowResubmit = allowResubmit;
-	}
-	
-	/**
-	 * 
-	 * @return time after which the submitter may no longer submit this assignment
-	 */
-	public Date getResubmitCloseTime() {
-		return resubmitCloseTime;
-	}
-
-	/**
-	 * set the time after which no more submissions will be accepted
-	 * @param resubmitCloseTime
-	 */
-	public void setResubmitCloseTime(Date resubmitCloseTime) {
-		this.resubmitCloseTime = resubmitCloseTime;
-	}
-	
-	/**
-	 * 
 	 * @return the URL of the content review report (ie from turnitin)
 	 */
 	public String getReviewReportUrl() {

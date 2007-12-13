@@ -21,6 +21,15 @@
             <column name="USER_ID" not-null="true" length="99" unique-key="ASSIGN_ID_USER_ID"/>
         </property>
         
+        <!-- true if allowed to resubmit this submission -->
+        <property name="allowResubmit" type="java.lang.Boolean">
+            <column name="ALLOW_RESUBMIT" not-null="true" />
+        </property>
+        <!-- Time after which the user can no longer resubmit -->
+        <property name="resubmitCloseTime" type="java.util.Date">
+            <column name="RESUBMIT_CLOSE_TIME" />
+        </property>
+        
         <set name="submissionHistorySet" lazy="true" inverse="true" cascade="none">
 	        <key column="SUBMISSION_ID"/>                        
 	        <one-to-many class="org.sakaiproject.assignment2.model.AssignmentSubmissionVersion"/>            

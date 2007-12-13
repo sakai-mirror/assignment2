@@ -39,14 +39,6 @@
         <property name="draft" type="java.lang.Boolean">
             <column name="DRAFT" not-null="true" />
         </property>
-        <!-- true if allowed to resubmit this submission -->
-        <property name="allowResubmit" type="java.lang.Boolean">
-            <column name="ALLOW_RESUBMIT" not-null="true" />
-        </property>
-        <!-- Time after which the user can no longer resubmit -->
-        <property name="resubmitCloseTime" type="java.util.Date">
-            <column name="RESUBMIT_CLOSE_TIME" />
-        </property>
         <!-- url for review service report url -->
         <property name="reviewReportUrl" type="java.lang.String">
             <column name="REVIEW_REPORT_URL" length="255" />

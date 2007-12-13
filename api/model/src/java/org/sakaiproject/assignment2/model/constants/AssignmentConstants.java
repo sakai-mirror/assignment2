@@ -74,26 +74,43 @@ public class AssignmentConstants {
 	/**
 	 * This assignment is in draft status
 	 */
-	public final static Integer STATUS_DRAFT = 0;
+	public final static int STATUS_DRAFT = 0;
 	/**
 	 * The assignment is not draft status but the current date is prior to
 	 * the open date
 	 */
-	public final static Integer STATUS_NOT_OPEN = 1;
+	public final static int STATUS_NOT_OPEN = 1;
 	/**
 	 * The assignment is not draft. The current date is after the open date
 	 * but prior to the "accept until" date and due date.
 	 */
-	public final static Integer STATUS_OPEN = 2;
+	public final static int STATUS_OPEN = 2;
 	/**
 	 * The assignment is not draft. The current date is after the "accept
 	 * until" date.
 	 */
-	public final static Integer STATUS_CLOSED = 3;
+	public final static int STATUS_CLOSED = 3;
 	/**
 	 * The assignment is not draft. The current date is after the open and
 	 * due dates but before the "accept until" date.
 	 */
-	public final static Integer STATUS_DUE = 4;
+	public final static int STATUS_DUE = 4;
+	
+	// Submission status
+	/**
+	 * Submission has not been started
+	 */
+	public final static int SUBMISSION_NOT_STARTED = 0;
+	
+	/**
+	 * Submission has been saved (draft) but not submitted
+	 */
+	public final static int SUBMISSION_IN_PROGRESS = 1;
+	
+	/**
+	 * Student has made a submission
+	 */
+	public final static int SUBMISSION_SUBMITTED = 2;
+	
 	
 }

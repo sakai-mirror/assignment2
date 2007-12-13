@@ -23,6 +23,7 @@ package org.sakaiproject.assignment2.dao;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentAttachment;
@@ -49,9 +50,9 @@ public interface AssignmentDao extends CompleteGenericDao {
 	 * 
 	 * @param contextId
 	 * @return all of the assignments in the given site with the associated
-	 * AssignmentGroup data populated
+	 * AssignmentGroup and AssignmentAttachment data populated
 	 */
-	public List<Assignment2> getAssignmentsWithGroups(String contextId);
+	public Set<Assignment2> getAssignmentsWithGroupsAndAttachments(String contextId);
 	
 	/**
 	 * 
@@ -70,21 +71,27 @@ public interface AssignmentDao extends CompleteGenericDao {
 	public Assignment2 getAssignmentByIdWithGroups(Long assignmentId);
 	
 	/**
-	 * Given an assignment, returns the associated AssignmentSubmission records 
-	 * with the current submission information populated
-	 * @param assignment
+	 * Given a list of submissionIds, will return the associated AssignmentSubmission 
+	 * records with the currentVersion information populated (including attachments)
+	 * @param submissionIdList
+	 * @param includeDraft
+	 * 		if true, will count drafts as the current version 
+	 * 		if false, will populate the current version with the most recent non-draft
+	 * 		submission info
 	 * @return
 	 */
-	public List<AssignmentSubmission> findCurrentSubmissionsForAssignment(Assignment2 assignment);
+	public List<AssignmentSubmission> getAssignmentSubmissionsWithCurrentVersionDataWithAttach(List<Long> submissionIdList, boolean includeDraft);
 	
 	/**
-	 * Given an assignment and userId, returns the corresponding AssignmentSubmission
-	 * record.  Returns null if no record exists.
-	 * @param assignment
-	 * @param userId
+	 * Given a list of submissionIds, will return the associated AssignmentSubmission 
+	 * records with the currentVersion information populated (but no attachments)
+	 * @param submissionIdList
+	 * @param includeDraft
+	 * 		if true, will count drafts as the current version.
+	 * 		if false, will populate the current version with the most recent non-draft
+	 * 		submission info
 	 * @return
 	 */
-	public AssignmentSubmission findSubmissionForAssignmentAndUserWithAttachments(Assignment2 assignment, String userId);
+	public List <AssignmentSubmission> getAssignmentSubmissionsWithCurrentVersionDataNoAttach(List<Long> submissionIdList, boolean includeDraft);
 	
-
 }

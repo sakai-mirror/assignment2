@@ -37,21 +37,10 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
     private Locale locale;
     private Assignment2Bean assignment2Bean;
     private SortHeaderRenderer sortHeaderRenderer;
-    
-    //sorting strings
-    public static final String SORT_DIR_ASC = "asc";
-    public static final String SORT_DIR_DESC = "desc";
-    public static final String SORT_BY_SORT_INDEX = "sortIndex";
-    public static final String SORT_BY_ASSIGNMENT = "title";
-    public static final String SORT_BY_FOR = "restrictedToGroups";
-    public static final String SORT_BY_STATUS = "draft";
-    public static final String SORT_BY_OPEN = "openTime";
-    public static final String SORT_BY_DUE = "dueDateForUngraded";		//change me to due date
 
-    //public static final String SORT_BY_SCALE = "scale";			//fix me
-    public static final String DEFAULT_SORT_DIR = SORT_DIR_ASC;
-    public static final String DEFAULT_OPPOSITE_SORT_DIR = SORT_DIR_DESC;
-    public static final String DEFAULT_SORT_BY = SORT_BY_SORT_INDEX;
+    public static final String DEFAULT_SORT_DIR = AssignmentLogic.SORT_DIR_ASC;
+    public static final String DEFAULT_OPPOSITE_SORT_DIR = AssignmentLogic.SORT_DIR_DESC;
+    public static final String DEFAULT_SORT_BY = AssignmentLogic.SORT_BY_INDEX;
     
     private String current_sort_by = DEFAULT_SORT_BY;
     private String current_sort_dir = DEFAULT_SORT_DIR;
@@ -75,7 +64,7 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
     	if (params.sort_dir == null) params.sort_dir = DEFAULT_SORT_DIR;
     	current_sort_by = params.sort_by;
     	current_sort_dir = params.sort_dir;
-    	opposite_sort_dir = (SORT_DIR_ASC.equals(current_sort_dir) ? SORT_DIR_DESC : SORT_DIR_ASC);
+    	opposite_sort_dir = (AssignmentLogic.SORT_DIR_ASC.equals(current_sort_dir) ? AssignmentLogic.SORT_DIR_DESC : AssignmentLogic.SORT_DIR_ASC);
 
     	//check if we need to duplicate an assignment, params.assignmentIdToDuplicate is not null
     	if (params.assignmentIdToDuplicate != null){
@@ -91,23 +80,23 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
         
         //table headers and sorting links
         sortHeaderRenderer.makeSortingLink(tofill, "tableheader.assignment", viewparams, 
-        		SORT_BY_ASSIGNMENT, "assignment2.student-assignment-list.tableheader.assignment");
+        		AssignmentLogic.SORT_BY_TITLE, "assignment2.student-assignment-list.tableheader.assignment");
         sortHeaderRenderer.makeSortingLink(tofill, "tableheader.for", viewparams, 
-        		SORT_BY_FOR, "assignment2.student-assignment-list.tableheader.for");
+        		AssignmentLogic.SORT_BY_FOR, "assignment2.student-assignment-list.tableheader.for");
         sortHeaderRenderer.makeSortingLink(tofill, "tableheader.status", viewparams, 
-        		SORT_BY_STATUS, "assignment2.student-assignment-list.tableheader.status");
+        		AssignmentLogic.SORT_BY_STATUS, "assignment2.student-assignment-list.tableheader.status");
         sortHeaderRenderer.makeSortingLink(tofill, "tableheader.open", viewparams, 
-        		SORT_BY_OPEN, "assignment2.student-assignment-list.tableheader.open");
+        		AssignmentLogic.SORT_BY_OPEN, "assignment2.student-assignment-list.tableheader.open");
         sortHeaderRenderer.makeSortingLink(tofill, "tableheader.due", viewparams, 
-        		SORT_BY_DUE, "assignment2.student-assignment-list.tableheader.due");
-
+        		AssignmentLogic.SORT_BY_DUE, "assignment2.student-assignment-list.tableheader.due");
         
         //Table TIME!!!! WOOHOO
         List<Assignment2> entries = new ArrayList<Assignment2>();
         entries = assignmentLogic.getViewableAssignments();
         
-        entries = assignment2Bean.filterListForPaging(entries, params.current_start, params.current_count);
-        assignment2Bean.populateNonPersistedFieldsForAssignments(entries);
+        assignment2Bean.filterPopulateAndSortAssignmentList(entries, params.current_start, params.current_count, 
+        		current_sort_by, current_sort_dir.equals(AssignmentLogic.SORT_DIR_ASC));
+        
         
         if (entries.size() <= 0) {
             UIMessage.make(tofill, "assignment_empty", "assignment2.student-assignment-list.assignment_empty");

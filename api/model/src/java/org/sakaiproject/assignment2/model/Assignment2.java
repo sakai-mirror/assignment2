@@ -72,10 +72,10 @@ public class Assignment2 {
     // fields that are not persisted but needed for UI
     private Integer numberOfTotalSubmissions;
     private Integer numberOfUngradedSubmissions;
-    private String status;
+    private String assignmentStatus;
     private String restrictedToText;
     private boolean needsUserAttention; 
-
+    private String submissionStatus;
 
 	public Assignment2(Long gradableObjectId, String contextId, String title,
 			Boolean draft, int sortIndex, Date openTime, 
@@ -690,8 +690,8 @@ public class Assignment2 {
 	 * @return this assignment's status:
 	 * ie Draft, Not Open, Open, Closed, Due
 	 */
-	public String getStatus() {
-		return status;
+	public String getAssignmentStatus() {
+		return assignmentStatus;
 	}
 
 	/**
@@ -699,8 +699,8 @@ public class Assignment2 {
 	 * ie Draft, Not Open, Open, Closed, Due
 	 * @param assignmentStatus
 	 */
-	public void setStatus(String status) {
-		this.status = status;
+	public void setAssignmentStatus(String assignmentStatus) {
+		this.assignmentStatus = assignmentStatus;
 	}
 	
 	/**
@@ -745,6 +745,32 @@ public class Assignment2 {
 		this.needsUserAttention = needsUserAttention;
 	}
 	
+	/**
+	 * 
+	 * @return when viewing an individual student, contains text representing
+	 * the current status of the student's submission
+	 * ie not started, submitted, etc
+	 */
+	public String getSubmissionStatus() {
+		return submissionStatus;
+	}
+
+	/**
+	 * when viewing an individual student, contains text representing
+	 * the current status of the student's submission
+	 * @param submissionStatus
+	 */
+	public void setSubmissionStatus(String submissionStatus) {
+		this.submissionStatus = submissionStatus;
+	}
+	
+	// Convenience methods
+	
+	/**
+	 * 
+	 * @return a list of the group references (realms) for the AssignmentGroup
+	 * objects associated with this assignment
+	 */
 	public List<String> getListOfAssociatedGroupReferences() {
 		List<String> groupReferences = new ArrayList();
 		if (assignmentGroupSet != null) {

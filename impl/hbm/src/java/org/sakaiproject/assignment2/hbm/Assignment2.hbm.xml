@@ -127,9 +127,10 @@
     		</set>
     </class>
     
-    <query name="findAssignmentsWithGroups">
+    <query name="findAssignmentsWithGroupsAndAttachments">
     <![CDATA[from org.sakaiproject.assignment2.model.Assignment2 assignment
              left join fetch assignment.assignmentGroupSet
+             left join fetch assignment.attachmentSet
              where assignment.contextId = :contextId
              and assignment.removed = false]]>
   	</query>

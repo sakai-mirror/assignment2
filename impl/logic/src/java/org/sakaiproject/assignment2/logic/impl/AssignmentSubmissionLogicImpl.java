@@ -75,8 +75,15 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		return new ArrayList();
 	}
 	
-	public void deleteAssignmentSubmission(AssignmentSubmission assignmentSubmission) {
-		return;
-	}
+	public List<AssignmentSubmission> getAllSubmissionsByAssignmentIdNoVersionData(Long assignmentId) {
+    	if (assignmentId == null) {
+    		throw new IllegalArgumentException("null assignmentId passed to getSubmissionsByAssignmentIdNoVersionData");
+    	}
+    	
+    	List<AssignmentSubmission> submissionList = dao.findByProperties(AssignmentSubmission.class, 
+    			new String[] {"assignmentId"}, new Object[] {assignmentId});
+    	
+    	return submissionList;
+    }
 
 }

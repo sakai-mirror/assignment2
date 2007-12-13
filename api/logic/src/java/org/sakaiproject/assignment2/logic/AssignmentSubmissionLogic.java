@@ -21,6 +21,8 @@
 
 package org.sakaiproject.assignment2.logic;
 
+import java.util.List;
+
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 
@@ -55,10 +57,11 @@ public interface AssignmentSubmissionLogic {
 	public void saveAssignmentSubmission(AssignmentSubmission assignmentSubmission);
 	
 	/**
-	 * Delete an AssignmentSubmisison
-	 * @param assignmentSubmission
-	 * 			the AssignmentSubmission to delete
-	 */	
-	public void deleteAssignmentSubmission(AssignmentSubmission assignmentSubmission);
+	 * Given an assignmentId, returns the associated AssignmentSubmission records 
+	 * without the current submission information populated
+	 * @param assignment
+	 * @return
+	 */
+	public List<AssignmentSubmission> getAllSubmissionsByAssignmentIdNoVersionData(Long assignmentId);
 	
 }

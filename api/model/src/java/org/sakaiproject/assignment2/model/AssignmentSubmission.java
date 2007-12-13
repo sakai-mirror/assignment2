@@ -22,7 +22,7 @@
 package org.sakaiproject.assignment2.model;
 
 import java.util.Set;
-
+import java.util.Date;
 
 /**
  * The AssignmentSubmission object
@@ -34,6 +34,8 @@ public class AssignmentSubmission {
 	private Long submissionId;
 	private Assignment2 assignment;
 	private String userId;
+	private Boolean allowResubmit;
+	private Date resubmitCloseTime;
 	private Set submissionHistorySet;
 	
 	// fields populated with gradebook data
@@ -152,6 +154,7 @@ public class AssignmentSubmission {
 		this.gradebookComment = gradebookComment;
 	}
 	
+	// not persisted but convenient here for UI
 	/**
 	 * <b>Note</b> This is not a persisted field but must be handled specially
 	 * when you want to retrieve or update this information
@@ -174,6 +177,38 @@ public class AssignmentSubmission {
 	 */
 	public void setCurrentSubmissionVersion(AssignmentSubmissionVersion currentSubmissionVersion) {
 		this.currentSubmissionVersion = currentSubmissionVersion;
+	}
+
+	/**
+	 * 
+	 * @return true if the submitter is allowed to resubmit this assignment
+	 */
+	public Boolean isAllowResubmit() {
+		return allowResubmit;
+	}
+
+	/**
+	 * set whether or not the submitter is allowed to resubmit this assignment
+	 * @param allowResubmit
+	 */
+	public void setAllowResubmit(Boolean allowResubmit) {
+		this.allowResubmit = allowResubmit;
+	}
+	
+	/**
+	 * 
+	 * @return time after which the submitter may no longer submit this assignment
+	 */
+	public Date getResubmitCloseTime() {
+		return resubmitCloseTime;
+	}
+
+	/**
+	 * set the time after which no more submissions will be accepted
+	 * @param resubmitCloseTime
+	 */
+	public void setResubmitCloseTime(Date resubmitCloseTime) {
+		this.resubmitCloseTime = resubmitCloseTime;
 	}
 	
 }

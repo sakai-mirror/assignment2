@@ -120,9 +120,9 @@ public interface AssignmentLogic {
 	 * Uses the open, due, and accept until dates to determine the current status
 	 * of the given assignment
 	 * @param assignment
-	 * @return an Integer constant equivalent to the assignment's status
+	 * @return a constant equivalent to the assignment's status
 	 */
-	public Integer getStatusForAssignment(Assignment2 assignment);
+	public int getStatusForAssignment(Assignment2 assignment);
 	
 	/**
 	 * We cannot rely on db sorting because we must sort by several properties that

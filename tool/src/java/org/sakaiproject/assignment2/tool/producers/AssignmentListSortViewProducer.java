@@ -136,9 +136,8 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
         
         entries = assignmentLogic.getViewableAssignments();
         
-        entries = assignment2Bean.filterListForPaging(entries, params.current_start, params.current_count);
-        assignment2Bean.populateNonPersistedFieldsForAssignments(entries);
-        assignmentLogic.sortAssignments(entries, current_sort_by, current_sort_dir.equals(AssignmentLogic.SORT_DIR_ASC));
+         assignment2Bean.filterPopulateAndSortAssignmentList(entries, params.current_start, params.current_count, 
+        		current_sort_by, current_sort_dir.equals(AssignmentLogic.SORT_DIR_ASC));
         
         if (entries.size() <= 0) {
             UIMessage.make(tofill, "assignment_empty", "assignment2.assignment_list-sortview.assignment_empty");
@@ -181,9 +180,9 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
         	UIOutput.make(row, "assignment_row_for", assignment.getRestrictedToText());
         	if (assignment.isDraft()){
         		UIOutput.make(row, "assignment_row_draft_td");
-        		UIOutput.make(row, "assignment_row_draft", assignment.getStatus());
+        		UIOutput.make(row, "assignment_row_draft", assignment.getAssignmentStatus());
         	} else {
-        	   	UIOutput.make(row, "assignment_row_open_text", assignment.getStatus());
+        	   	UIOutput.make(row, "assignment_row_open_text", assignment.getAssignmentStatus());
         	}
         	UIOutput.make(row, "assignment_row_open", df.format(assignment.getOpenTime()));
         	if (assignment.isUngraded()) {

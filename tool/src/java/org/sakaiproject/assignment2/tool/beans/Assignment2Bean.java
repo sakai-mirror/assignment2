@@ -419,8 +419,8 @@ public class Assignment2Bean {
 				}
 				
 				// set the status for this assignment: "Open, Due, etc"
-				Integer status = logic.getStatusForAssignment(assign);
-				assign.setStatus(messageLocator.getMessage("assignment2.status." + status));
+				int status = logic.getStatusForAssignment(assign);
+				assign.setAssignmentStatus(messageLocator.getMessage("assignment2.status." + status));
 			}
 		}
 	}
@@ -435,5 +435,21 @@ public class Assignment2Bean {
         }
 
 		return myList.subList(begIndex, endIndex);
+	}
+	
+	/**
+	 * Will apply paging and sorting to the given list and populate any non-persisted
+	 * fields that need to be populated from the UI (ie fields that require access
+	 * to the bundle)
+	 * @param assignmentList
+	 * @param currentStart
+	 * @param currentCount
+	 * @param sortBy
+	 * @param sortDir
+	 */
+	public void filterPopulateAndSortAssignmentList(List<Assignment2> assignmentList, int currentStart, int currentCount, String sortBy, boolean sortDir) {
+		assignmentList = filterListForPaging(assignmentList, currentStart, currentCount);
+        populateNonPersistedFieldsForAssignments(assignmentList);
+        logic.sortAssignments(assignmentList, sortBy, sortDir);
 	}
 }

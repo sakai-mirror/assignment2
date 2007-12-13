@@ -35,107 +35,115 @@ import org.sakaiproject.assignment2.model.AssignmentSubmission;
  */
 public class ComparatorsUtils {
 
-   /**
-    * static class to sort Assignment2 objects by due date
-    */
-   public static class Assignment2DueDateComparator implements Comparator<Assignment2>  {
-      public int compare(Assignment2 assign1, Assignment2 assign2) {
-    	 Date dueDate1 = assign1.isUngraded() ? assign1.getDueDateForUngraded() : assign1.getDueDate();
-    	 Date dueDate2 = assign2.isUngraded() ? assign2.getDueDateForUngraded() : assign2.getDueDate();
-    	 
-    	 int value = dueDate1.compareTo(dueDate2);
-    	 if (value == 0) {
-    		 value = assign1.getTitle().compareTo(assign2.getTitle());
-    	 }
-    	 return value;
-      }
-   }
+	/**
+	 * static class to sort Assignment2 objects by due date
+	 */
+	public static class Assignment2DueDateComparator implements Comparator<Assignment2>  {
+		public int compare(Assignment2 assign1, Assignment2 assign2) {
+			Date dueDate1 = assign1.isUngraded() ? assign1.getDueDateForUngraded() : assign1.getDueDate();
+			Date dueDate2 = assign2.isUngraded() ? assign2.getDueDateForUngraded() : assign2.getDueDate();
 
-   /**
-    * static class to sort Assignment2 objects by title
-    */
-   public static class Assignment2TitleComparator implements Comparator<Assignment2>  {
-      public int compare(Assignment2 assign1, Assignment2 assign2) {
-         return assign1.getTitle().compareTo(assign2.getTitle());
-      }
-   }
+			int value = dueDate1.compareTo(dueDate2);
+			if (value == 0) {
+				value = sortByTitle(assign1, assign2);
+			}
+			return value;
+		}
+	}
 
-   /**
-    * static class to sort Assignment2 objects by open date
-    */
-   public static class Assignment2OpenDateComparator implements Comparator<Assignment2> {
-      public int compare(Assignment2 assign1, Assignment2 assign2) {
-    	 int value = assign1.getOpenTime().compareTo(assign2.getOpenTime());
-     	 if (value == 0) {
-     		 value = assign1.getTitle().compareTo(assign2.getTitle());
-     	 }
-     	 return value;
-      }
-   }
-   
-   /**
-    * static class to sort Assignment2 objects by status
-    */
-   public static class Assignment2StatusComparator implements Comparator<Assignment2> {
-      public int compare(Assignment2 assign1, Assignment2 assign2) {
-    	 int value = assign1.getStatus().compareTo(assign2.getStatus());
-      	 if (value == 0) {
-      		 value = assign1.getTitle().compareTo(assign2.getTitle());
-      	 }
-      	 return value;
-      }
-   }
-   
-   /**
-    * static class to sort Assignment2 objects by sort index
-    */
-   public static class Assignment2SortIndexComparator implements Comparator<Assignment2> {
-      public int compare(Assignment2 assign1, Assignment2 assign2) {
-    	 int value = 0;
-    	 
-    	 if (assign1.getSortIndex() > assign2.getSortIndex()) {
-    		 value = 1;
-    	 } else if (assign1.getSortIndex() < assign2.getSortIndex()) {
-    		 value = -1;
-    	 } else {
-    		 value = assign1.getTitle().compareTo(assign2.getTitle());
-    	 }
-    	 
-         return value;
-      }
-   }
-   
-   /**
-    * static class to sort Assignment2 objects by "for" column - this will be
-    * Site or a list of the group restrictions
-    */
-   public static class Assignment2ForComparator implements Comparator<Assignment2> {
-      public int compare(Assignment2 assign1, Assignment2 assign2) {
-    	 int value = assign1.getRestrictedToText().compareTo(assign2.getRestrictedToText());
-      	 if (value == 0) {
-      		 value = assign1.getTitle().compareTo(assign2.getTitle());
-      	 }
-      	 return value;
-      }
-   }
-   
-   /**
-    * static class to sort Assignment2 objects by num ungraded submissions
-    */
-   public static class Assignment2NumUngradedComparator implements Comparator<Assignment2> {
-      public int compare(Assignment2 assign1, Assignment2 assign2) {
-    	 int value = 0;
-     	 
-     	 if (assign1.getNumberOfUngradedSubmissions() > assign2.getNumberOfUngradedSubmissions()) {
-     		 value = 1;
-     	 } else if (assign1.getNumberOfUngradedSubmissions() < assign2.getNumberOfUngradedSubmissions()) {
-     		 value = -1;
-     	 } else {
-     		 value = assign1.getTitle().compareTo(assign2.getTitle());
-     	 }
-     	 
-          return value;
-      }
-   }
+	/**
+	 * static class to sort Assignment2 objects by title
+	 */
+	public static class Assignment2TitleComparator implements Comparator<Assignment2>  {
+		public int compare(Assignment2 assign1, Assignment2 assign2) {
+			String title1 = assign1.getTitle() != null ? assign1.getTitle().toLowerCase() : null;
+			String title2 = assign2.getTitle() != null ? assign2.getTitle().toLowerCase() : null;
+			return title1.compareTo(title2);
+		}
+	}
+
+	/**
+	 * static class to sort Assignment2 objects by open date
+	 */
+	public static class Assignment2OpenDateComparator implements Comparator<Assignment2> {
+		public int compare(Assignment2 assign1, Assignment2 assign2) {
+			int value = assign1.getOpenTime().compareTo(assign2.getOpenTime());
+			if (value == 0) {
+				value = sortByTitle(assign1, assign2);
+			}
+			return value;
+		}
+	}
+
+	/**
+	 * static class to sort Assignment2 objects by status
+	 */
+	public static class Assignment2StatusComparator implements Comparator<Assignment2> {
+		public int compare(Assignment2 assign1, Assignment2 assign2) {
+			int value = assign1.getAssignmentStatus().compareTo(assign2.getAssignmentStatus());
+			if (value == 0) {
+				value = sortByTitle(assign1, assign2);
+			}
+			return value;
+		}
+	}
+
+	/**
+	 * static class to sort Assignment2 objects by sort index
+	 */
+	public static class Assignment2SortIndexComparator implements Comparator<Assignment2> {
+		public int compare(Assignment2 assign1, Assignment2 assign2) {
+			int value = 0;
+
+			if (assign1.getSortIndex() > assign2.getSortIndex()) {
+				value = 1;
+			} else if (assign1.getSortIndex() < assign2.getSortIndex()) {
+				value = -1;
+			} else {
+				value = sortByTitle(assign1, assign2);
+			}
+
+			return value;
+		}
+	}
+
+	/**
+	 * static class to sort Assignment2 objects by "for" column - this will be
+	 * Site or a list of the group restrictions
+	 */
+	public static class Assignment2ForComparator implements Comparator<Assignment2> {
+		public int compare(Assignment2 assign1, Assignment2 assign2) {
+			int value = assign1.getRestrictedToText().compareTo(assign2.getRestrictedToText());
+			if (value == 0) {
+				value = sortByTitle(assign1, assign2);
+			}
+			return value;
+		}
+	}
+
+	/**
+	 * static class to sort Assignment2 objects by num ungraded submissions
+	 */
+	public static class Assignment2NumUngradedComparator implements Comparator<Assignment2> {
+		public int compare(Assignment2 assign1, Assignment2 assign2) {
+			int value = 0;
+
+			if (assign1.getNumberOfUngradedSubmissions() > assign2.getNumberOfUngradedSubmissions()) {
+				value = 1;
+			} else if (assign1.getNumberOfUngradedSubmissions() < assign2.getNumberOfUngradedSubmissions()) {
+				value = -1;
+			} else {
+				value = sortByTitle(assign1, assign2);
+			}
+
+			return value;
+		}
+	}
+	
+	private static int sortByTitle(Assignment2 assign1, Assignment2 assign2) {
+		String title1 = assign1.getTitle() != null ? assign1.getTitle().toLowerCase() : null;
+		String title2 = assign2.getTitle() != null ? assign2.getTitle().toLowerCase() : null;
+		return title1.compareTo(title2);
+	}
 
 }

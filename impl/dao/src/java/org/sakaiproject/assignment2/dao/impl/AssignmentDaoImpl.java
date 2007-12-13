@@ -26,6 +26,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -45,6 +47,8 @@ import org.sakaiproject.genericdao.hibernate.HibernateCompleteGenericDao;
 public class AssignmentDaoImpl extends HibernateCompleteGenericDao implements AssignmentDao {
 
     private static Log log = LogFactory.getLog(AssignmentDaoImpl.class);
+    
+    public static final int MAX_NUMBER_OF_SQL_PARAMETERS_IN_LIST = 1000;
 
     public void init() {
         log.debug("init");
@@ -67,14 +71,22 @@ public class AssignmentDaoImpl extends HibernateCompleteGenericDao implements As
         return highestIndex; 
     }
     
-    public List<Assignment2> getAssignmentsWithGroups(String contextId) {
+    public Set<Assignment2> getAssignmentsWithGroupsAndAttachments(String contextId) {
     	if (contextId == null) {
-    		throw new IllegalArgumentException("Null contextId passed to getAssignmentsWithGroups");
+    		throw new IllegalArgumentException("Null contextId passed to getAssignmentsWithGroupsAndAttachments");
     	}
-    	Query query = getSession().getNamedQuery("findAssignmentsWithGroups");
+    	Query query = getSession().getNamedQuery("findAssignmentsWithGroupsAndAttachments");
     	query.setParameter("contextId", contextId);
     	
-    	return (List)query.list();
+    	List<Assignment2> assignmentList = query.list();
+    	
+    	Set<Assignment2> assignmentSet = new HashSet();
+    	
+    	if (assignmentList != null) {
+    		assignmentSet = new HashSet(assignmentList);
+    	}
+    	
+    	return assignmentSet;
     }
     
     public Assignment2 getAssignmentByIdWithGroupsAndAttachments(Long assignmentId) {
@@ -117,6 +129,40 @@ public class AssignmentDaoImpl extends HibernateCompleteGenericDao implements As
     	query.setParameter("userId", userId);
     	
     	return (AssignmentSubmission) query.uniqueResult();
+    }
+    
+    public List<AssignmentSubmission> getAssignmentSubmissionsWithCurrentVersionDataWithAttach(List<Long> submissionIdList, boolean includeDraft) {
+    	if (submissionIdList == null || submissionIdList.isEmpty()) {
+    		return new ArrayList();
+    	}
+    	
+    	List versionIdList = new ArrayList();
+    	
+    	String hqlGetVersionIdsNoDrafts = "select max(subVersion.submissionVersionId) " +
+    		"from AssignmentSubmissionVersion as subVersion " +
+    		"where subVersion.submissionId in :submissionIdList " +
+    		"and subVersion.draft = false group by subVersion.submissionId";
+    	
+    	String hqlGetVersionIdsWithDrafts = "select max(subVersion.submissionVersionId) " +
+	    	"from AssignmentSubmissionVersion as subVersion " +
+			"where subVersion.submissionId in :submissionIdList " +
+			"group by subVersion.submissionId";
+    	
+    	// if submissionId list is > than the max length allowed in sql, we need
+    	// to cycle through the list
+    	if (submissionIdList.size() > MAX_NUMBER_OF_SQL_PARAMETERS_IN_LIST) {
+    		
+    	} else {
+    		
+    	}
+    	
+    	return versionIdList;
+    	
+
+    }
+    
+    public List <AssignmentSubmission> getAssignmentSubmissionsWithCurrentVersionDataNoAttach(List<Long> submissionIdList, boolean includeDraft) {
+    	return null;
     }
 
 }
