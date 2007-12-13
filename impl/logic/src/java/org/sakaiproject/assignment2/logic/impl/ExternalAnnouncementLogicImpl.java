@@ -91,7 +91,7 @@ public class ExternalAnnouncementLogicImpl implements ExternalAnnouncementLogic 
 			header.setSubject(announcementSubject);
 			message.setBody(announcementBody);
 				
-			if (!assignment.isRestrictedToGroups()) {
+			if (assignment.getAssignmentGroupSet() == null || assignment.getAssignmentGroupSet().isEmpty()) {
 				//site announcement
 				header.clearGroupAccess();
 			} else {
@@ -134,7 +134,7 @@ public class ExternalAnnouncementLogicImpl implements ExternalAnnouncementLogic 
 			header.setSubject(announcementSubject);
 			message.setBody(announcementBody);
 				
-			if (!assignment.isRestrictedToGroups()) {
+			if (assignment.getAssignmentGroupSet() == null || assignment.getAssignmentGroupSet().isEmpty()) {
 				//site announcement
 				header.clearGroupAccess();
 			} else {

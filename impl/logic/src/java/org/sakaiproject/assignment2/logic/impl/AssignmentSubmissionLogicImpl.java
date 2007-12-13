@@ -59,7 +59,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		log.debug("init");
 	}
 	
-	public AssignmentSubmission getCurrentSubmissionById(Long submissionId) {
+	public AssignmentSubmission getAssignmentSubmissionById(Long submissionId) {
 		return null;
 	}
 	
@@ -67,8 +67,12 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		return null;
 	}
 
-	public void saveAssignmentSubmission(AssignmentSubmission assignmentSubmission) {
-		return;
+	public void saveStudentSubmission(AssignmentSubmission assignmentSubmission) {
+		if (assignmentSubmission == null) {
+			throw new IllegalArgumentException("null assignmentSubmission passed to saveAssignmentSubmission");
+		}
+		
+		// check to see if an AssignmentSubmission exists for this user yet
 	}
 	
 	public List<AssignmentSubmission> getViewableSubmissionsForAssignment(Assignment2 assignment) {

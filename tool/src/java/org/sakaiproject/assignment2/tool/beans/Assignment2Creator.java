@@ -25,7 +25,6 @@ public class Assignment2Creator {
     	togo.setCreateTime(new Date());
     	togo.setRemoved(Boolean.FALSE);
     	togo.setHonorPledge(Boolean.FALSE);
-    	togo.setRestrictedToGroups(Boolean.FALSE);
     	togo.setUngraded(Boolean.TRUE);
     	togo.setHasAnnouncement(Boolean.FALSE);
     	togo.setSubmissionType(AssignmentConstants.SUBMIT_INLINE_ONLY);
@@ -61,8 +60,6 @@ public class Assignment2Creator {
     	dup.setAcceptUntilTime(assignment.getAcceptUntilTime());
     	dup.setUngraded(assignment.isUngraded());
     	dup.setDueDateForUngraded(assignment.getDueDateForUngraded());
-    	dup.setRestrictedToGroups(assignment.isRestrictedToGroups());
-    	dup.setGroupSubmission(assignment.isGroupSubmission());
     	dup.setHonorPledge(assignment.isHonorPledge());
     	dup.setInstructions(assignment.getInstructions());
     	dup.setSubmissionType(assignment.getSubmissionType());

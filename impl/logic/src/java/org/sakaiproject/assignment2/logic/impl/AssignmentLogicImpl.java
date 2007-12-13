@@ -87,16 +87,35 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 	 */
 	public Assignment2 getAssignmentById(Long assignmentId)
 	{
+		if (assignmentId == null) {
+			throw new IllegalArgumentException("Null assignmentId passed to getAssignmentById");
+		}
+		
 		return (Assignment2) dao.findById(Assignment2.class, assignmentId);
     }
 	
 	public Assignment2 getAssignmentByIdWithAssociatedData(Long assignmentId) {
-		//TODO populate the due date and points possible if this is 
-		// associated with a gb item
-		return (Assignment2) dao.getAssignmentByIdWithGroupsAndAttachments(assignmentId);
+		if (assignmentId == null) {
+			throw new IllegalArgumentException("Null assignmentId passed to getAssignmentByIdWithAssociatedData");
+		}
+		// first, retrieve Assignment2 object
+		Assignment2 assign = (Assignment2) dao.getAssignmentByIdWithGroupsAndAttachments(assignmentId);
+		
+		if (assign != null) {
+			// populate any non-persisted fields that are applicable to this view
+			boolean restrictedToGroups = assign.getAssignmentGroupSet() != null &&
+				!assign.getAssignmentGroupSet().isEmpty();
+			assign.setRestrictedToGroups(restrictedToGroups);
+		}
+		
+		return assign;
 	}
 	
 	public Assignment2 getAssignmentByIdWithGroups(Long assignmentId) {
+		if (assignmentId == null) {
+			throw new IllegalArgumentException("Null assignmentId passed to getAssignmentByIdWithGroups");
+		}
+		
 		return (Assignment2) dao.getAssignmentByIdWithGroups(assignmentId);
 	}
 	
@@ -200,7 +219,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 	 */
 	public List<Assignment2> getViewableAssignments()
 	{
-		List viewableAssignments = new ArrayList();
+		List<Assignment2> viewableAssignments = new ArrayList();
 		String contextId = externalLogic.getCurrentContextId();
 
 		Set<Assignment2> allAssignments = dao.getAssignmentsWithGroupsAndAttachments(contextId);
@@ -219,12 +238,15 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 
 			for (Iterator asnIter = allAssignments.iterator(); asnIter.hasNext();) {
 				Assignment2 assignment = (Assignment2) asnIter.next();
+				
+				boolean restrictedToGroups = assignment.getAssignmentGroupSet() != null
+					&& !assignment.getAssignmentGroupSet().isEmpty();
 
 				if (!assignment.isDraft() || gradebookLogic.isCurrentUserAbleToEdit(contextId)) {
 					if (assignment.isUngraded()) {
-						if (!assignment.isRestrictedToGroups() || gradebookLogic.isCurrentUserAbleToGradeAll(contextId)) {
+						if (restrictedToGroups || gradebookLogic.isCurrentUserAbleToGradeAll(contextId)) {
 							viewableAssignments.add(assignment);
-						} else if (userGroupIds != null && assignment.isRestrictedToGroups()) {
+						} else if (userGroupIds != null && restrictedToGroups) {
 							// we need to filter out the section-based assignments if not authorized for all
 							// check to see if user is a member of an associated section
 							Set<AssignmentGroup> groupRestrictions = assignment.getAssignmentGroupSet();
@@ -259,9 +281,12 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 					for (Iterator gradedIter = viewableGbAssignments.iterator(); gradedIter.hasNext();) {
 						Assignment2 assignment = (Assignment2) gradedIter.next();
 						
+						boolean restrictedToGroups = assignment.getAssignmentGroupSet() != null
+						&& !assignment.getAssignmentGroupSet().isEmpty();
+						
 						// if user is a "student" in terms of the gb, we need to filter the view
 						// by AssignmentGroup restrictions.
-						if (assignment.isRestrictedToGroups() && gradebookLogic.isCurrentUserAStudentInGb(contextId)) {
+						if (restrictedToGroups && gradebookLogic.isCurrentUserAStudentInGb(contextId)) {
 							Set<AssignmentGroup> groupRestrictions = assignment.getAssignmentGroupSet();
 							if (groupRestrictions != null) {
 								boolean allowedToView = false;
@@ -309,21 +334,23 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 	
 	public void setAssignmentSortIndexes(Long[] assignmentIds)
 	{
-		//Assume array of longs is in correct order now
-		//so that the index of the array is the new 
-		//sort index
-		for (int i=0; i < assignmentIds.length; i++){
-			//get Assignment
-    		Assignment2 assignment = getAssignmentById(assignmentIds[i]);
-    		if (assignment != null){
-    			//check if we need to update
-    			if (assignment.getSortIndex() != i){
-    				//update and save
-	    			assignment.setSortIndex(i);
-	    			dao.save(assignment);
-    			}
-    		}
-    	}
+		if (assignmentIds != null) {
+			//Assume array of longs is in correct order now
+			//so that the index of the array is the new 
+			//sort index
+			for (int i=0; i < assignmentIds.length; i++){
+				//get Assignment
+	    		Assignment2 assignment = getAssignmentById(assignmentIds[i]);
+	    		if (assignment != null){
+	    			//check if we need to update
+	    			if (assignment.getSortIndex() != i){
+	    				//update and save
+		    			assignment.setSortIndex(i);
+		    			dao.save(assignment);
+	    			}
+	    		}
+	    	}
+		}
 	}
 	
 	/**
@@ -349,6 +376,9 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 	 * user is authorized to view 
 	 */
 	public int getTotalNumSubmissionsForAssignment(Assignment2 assignment) {
+		if (assignment == null) {
+			throw new IllegalArgumentException("null assignment passed to getTotalNumSubmissionsForAssignment");
+		}
 		return 0;
 	}
 	
@@ -360,6 +390,9 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 	 * user is authorized to view 
 	 */
 	public int getNumUngradedSubmissionsForAssignment(Assignment2 assignment) {
+		if (assignment == null) {
+			throw new IllegalArgumentException("null assignment passed to getNumUngradedSubmissionsForAssignment");
+		}
 		return 0;
 	}
 	

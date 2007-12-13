@@ -37,9 +37,10 @@ public interface AssignmentSubmissionLogic {
 	/**
 	 * 
 	 * @param submissionId
-	 * @return Returns the AssignmentSubmission based on its assignmentSubmissionId
+	 * @return Returns the AssignmentSubmission based on its assignmentSubmissionId.
+	 * Does not populate current version information.
 	 */
-	public AssignmentSubmission getCurrentSubmissionById(Long submissionId);
+	public AssignmentSubmission getAssignmentSubmissionById(Long submissionId);
 	
 	/**
 	 * 
@@ -54,7 +55,7 @@ public interface AssignmentSubmissionLogic {
 	 * @param assignmentSubmission
 	 * 			the AssignmentSubmission to create or update
 	 */
-	public void saveAssignmentSubmission(AssignmentSubmission assignmentSubmission);
+	public void saveStudentSubmission(AssignmentSubmission assignmentSubmission);
 	
 	/**
 	 * Given an assignmentId, returns the associated AssignmentSubmission records 

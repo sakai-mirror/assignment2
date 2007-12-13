@@ -40,8 +40,6 @@ public class TestDataPreload {
         testAssignment.setDraft(Boolean.FALSE);
         testAssignment.setOpenTime(new Date());
         testAssignment.setAcceptUntilTime(new Date());
-        testAssignment.setGroupSubmission(Boolean.FALSE);
-        testAssignment.setRestrictedToGroups(Boolean.FALSE);
         testAssignment.setHonorPledge(Boolean.FALSE);
         testAssignment.setUngraded(Boolean.TRUE);
         testAssignment.setContextId("location123");

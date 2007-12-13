@@ -48,14 +48,6 @@
         <property name="dueDateForUngraded" type="java.util.Date">
             <column name="DUE_DATE_FOR_UNGRADED" />
         </property>
-        <!-- whether this assignment will be submitted as a group -->
-        <property name="groupSubmission" type="java.lang.Boolean">
-            <column name="GROUP_SUBMISSION" />
-        </property>
-        <!-- true if viewing this assignment is restricted to members of specific group(s) -->
-        <property name="restrictedToGroups" type="java.lang.Boolean">
-            <column name="RESTRICTED_TO_GROUPS" not-null="true" />
-        </property>
         <!-- true if assignment requires student to agree to honor pledge -->
         <property name="honorPledge" type="java.lang.Boolean">
             <column name="HONOR_PLEDGE" not-null="true" />

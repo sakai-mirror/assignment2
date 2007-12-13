@@ -44,8 +44,6 @@ public class Assignment2 {
     private Date acceptUntilTime;
     private Boolean ungraded;
     private Date dueDateForUngraded;
-    private Boolean restrictedToGroups;
-    private Boolean groupSubmission;
     private Boolean honorPledge;
     private String instructions;
     private int submissionType;
@@ -73,6 +71,7 @@ public class Assignment2 {
     private Integer numberOfTotalSubmissions;
     private Integer numberOfUngradedSubmissions;
     private String assignmentStatus;
+    private boolean restrictedToGroups;
     private String restrictedToText;
     private boolean needsUserAttention; 
     private String submissionStatus;
@@ -80,7 +79,7 @@ public class Assignment2 {
 	public Assignment2(Long gradableObjectId, String contextId, String title,
 			Boolean draft, int sortIndex, Date openTime, 
 			Date acceptUntilTime, Boolean ungraded, Date dueDateForUngraded,
-			Boolean restrictedToGroups, Boolean groupSubmission,
+			Boolean groupSubmission,
 			Boolean honorPledge, String instructions, int submissionType,
 			int notificationType, String announcementId,
 			String calendarEventId, Boolean allowResubmit,
@@ -97,8 +96,6 @@ public class Assignment2 {
 		this.acceptUntilTime = acceptUntilTime;
 		this.ungraded = ungraded;
 		this.dueDateForUngraded = dueDateForUngraded;
-		this.restrictedToGroups = restrictedToGroups;
-		this.groupSubmission = groupSubmission;
 		this.honorPledge = honorPledge;
 		this.instructions = instructions;
 		this.submissionType = submissionType;
@@ -285,40 +282,6 @@ public class Assignment2 {
      */
     public void setDueDateForUngraded(Date dueDateForUngraded) {
     	this.dueDateForUngraded = dueDateForUngraded;
-    }
-    
-    /**
-     * @return Returns true if viewing this assignment is restricted to members
-     * of specific group(s)
-     */
-    public Boolean isRestrictedToGroups() {
-        return restrictedToGroups;
-    }
-    
-    /**
-     * true if viewing this assignment is restricted to members
-     * of specific group(s)
-     * @param restrictedToGroups
-     */
-    public void setRestrictedToGroups(Boolean restrictedToGroups) {
-        this.restrictedToGroups = restrictedToGroups;
-    }
-    
-    /**
-     * @return Returns true if this assignment will be submitted by a "group", not the
-     * individual students in the group
-     */
-    public Boolean isGroupSubmission() {
-        return groupSubmission;
-    }
-    
-    /**
-     * true if this assignment will be submitted by a "group", not the
-     * individual students in the group
-     * @param groupSubmission
-     */
-    public void setGroupSubmission(Boolean groupSubmission) {
-        this.groupSubmission = groupSubmission;
     }
     
     /**
@@ -764,6 +727,23 @@ public class Assignment2 {
 		this.submissionStatus = submissionStatus;
 	}
 	
+	/**
+	 * 
+	 * @return true if this assignment has group restrictions
+	 */
+	public boolean isRestrictedToGroups() {
+		return restrictedToGroups;
+	}
+
+	/**
+	 * set whether or not this assignment has group restrictions
+	 * @param restrictedToGroups
+	 */
+	public void setRestrictedToGroups(boolean restrictedToGroups) {
+		this.restrictedToGroups = restrictedToGroups;
+	}
+
+	
 	// Convenience methods
 	
 	/**
@@ -784,5 +764,4 @@ public class Assignment2 {
 		
 		return groupReferences;
 	}
-
 }

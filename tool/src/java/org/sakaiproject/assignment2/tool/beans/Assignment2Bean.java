@@ -142,7 +142,6 @@ public class Assignment2Bean {
 		}
 		
 		//REMOVE THESE - TODO
-		assignment.setGroupSubmission(Boolean.FALSE);
 		assignment.setNotificationType(0);
 		//END REMOVE THESE 
 		
@@ -406,20 +405,17 @@ public class Assignment2Bean {
 		for (Iterator assignIter = assignmentList.iterator(); assignIter.hasNext();) {
 			Assignment2 assign = (Assignment2) assignIter.next();
 			if (assign != null) {
-				
+
 				// first, populate the text for the "For" column based upon group restrictions
-				if (assign.isRestrictedToGroups()) {
-					if (assign.getAssignmentGroupSet() != null && !assign.getAssignmentGroupSet().isEmpty()) {
-						String groupListAsString = logic.getListOfGroupRestrictionsAsString(
-								new ArrayList(assign.getAssignmentGroupSet()), groupIdToNameMap);
-						assign.setRestrictedToText(groupListAsString);
-					} else {
-						assign.setRestrictedToText("");
-					}
-				} else {
+				if (assign.getAssignmentGroupSet() != null && !assign.getAssignmentGroupSet().isEmpty()) {
+					String groupListAsString = logic.getListOfGroupRestrictionsAsString(
+							new ArrayList(assign.getAssignmentGroupSet()), groupIdToNameMap);
+					assign.setRestrictedToText(groupListAsString);
+				} 
+				else {
 					assign.setRestrictedToText(messageLocator.getMessage("assignment2.assignment_restrict_to_site"));
 				}
-				
+
 				// set the status for this assignment: "Open, Due, etc"
 				int status = logic.getStatusForAssignment(assign);
 				assign.setAssignmentStatus(messageLocator.getMessage("assignment2.status." + status));
