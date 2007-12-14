@@ -21,6 +21,7 @@
 
 package org.sakaiproject.assignment2.logic.impl;
 
+import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -28,6 +29,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
+import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.dao.AssignmentDao;
@@ -60,7 +62,11 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 	}
 	
 	public AssignmentSubmission getAssignmentSubmissionById(Long submissionId) {
-		return null;
+		if (submissionId == null) {
+			throw new IllegalArgumentException("Null submissionId passed to getAssignmentSubmissionById");
+		}
+		
+		return (AssignmentSubmission)dao.findById(AssignmentSubmission.class, submissionId);
 	}
 	
 	public AssignmentSubmission getCurrentSubmissionByAssignmentAndUser(Assignment2 assignment, String userId) {
@@ -68,11 +74,38 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 	}
 
 	public void saveStudentSubmission(AssignmentSubmission assignmentSubmission) {
+		// TESTING
+		//Assignment2 assign = (Assignment2)dao.findById(Assignment2.class, new Long(1));
+		//assignmentSubmission = new AssignmentSubmission(assign, "43be6309-867a-40c4-8785-1fdf00109804");
+		//AssignmentSubmissionVersion version = new AssignmentSubmissionVersion();
+		//version.setAssignmentSubmission(assignmentSubmission);
+		//version.setDraft(false);
+		//version.setCreatedBy("43be6309-867a-40c4-8785-1fdf00109804");
+		//version.setCreatedTime(new Date());
+		//version.setSubmittedText("This is my first submission");
+		//version.setSubmittedTime(new Date());
+		//assignmentSubmission.setCurrentSubmissionVersion(version);
+		
+		
+		// END TESTING
 		if (assignmentSubmission == null) {
 			throw new IllegalArgumentException("null assignmentSubmission passed to saveAssignmentSubmission");
 		}
 		
-		// check to see if an AssignmentSubmission exists for this user yet
+		AssignmentSubmissionVersion newVersion = assignmentSubmission.getCurrentSubmissionVersion();
+		
+		if (newVersion == null) {
+			throw new IllegalArgumentException("null currentSubmissionVersion associated with the assignmentSubmission in saveStudentSubmission");
+		}
+		if (assignmentSubmission.getSubmissionId() == null) {
+			dao.create(assignmentSubmission);
+			log.debug("New student submission rec added for user " + assignmentSubmission.getUserId() + " for assignment " + assignmentSubmission.getAssignment().getTitle());
+			
+			newVersion.setAssignmentSubmission(assignmentSubmission);
+		}
+		
+		dao.save(newVersion);
+		log.debug("New student submission version added for user " + assignmentSubmission.getUserId() + " for assignment " + assignmentSubmission.getAssignment().getTitle());
 	}
 	
 	public List<AssignmentSubmission> getViewableSubmissionsForAssignment(Assignment2 assignment) {

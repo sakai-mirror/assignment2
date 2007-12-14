@@ -49,6 +49,11 @@ public class AssignmentSubmission {
 	public AssignmentSubmission() {
 	}
 	
+	public AssignmentSubmission(Assignment2 assignment, String userId) {
+		this.assignment = assignment;
+		this.userId = userId;
+	}
+	
 	/**
 	 * 
 	 * @return assignment submission id

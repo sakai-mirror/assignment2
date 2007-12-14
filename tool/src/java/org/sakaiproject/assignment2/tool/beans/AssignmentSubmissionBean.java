@@ -4,10 +4,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
+import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
 import org.sakaiproject.assignment2.logic.ExternalAnnouncementLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
+import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.tool.api.SessionManager;
 
 import uk.org.ponder.beanutil.entity.EntityBeanLocator;
@@ -30,9 +32,14 @@ public class AssignmentSubmissionBean {
     	this.messages = messages;
     }
 	
-	private AssignmentLogic logic;
-	public void setLogic(AssignmentLogic logic) {
-		this.logic = logic;
+	private AssignmentLogic assignmentLogic;
+	public void setAssignmentLogic(AssignmentLogic assignmentLogic) {
+		this.assignmentLogic = assignmentLogic;
+	}
+	
+	private AssignmentSubmissionLogic submissionLogic;
+	public void setSubmissionLogic(AssignmentSubmissionLogic submissionLogic) {
+		this.submissionLogic = submissionLogic;
 	}
 	
 	
@@ -74,6 +81,7 @@ public class AssignmentSubmissionBean {
 	
 	
 	public String processActionSubmit(){
+		submissionLogic.saveStudentSubmission(null);
 		return SUBMIT;
 	}
 	

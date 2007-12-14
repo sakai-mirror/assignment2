@@ -103,7 +103,7 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
             return;
         }
         //TEMP REMOVE
-        entries.add(assignmentLogic.getAssignmentById(((Integer)2).longValue()));
+        //entries.add(assignmentLogic.getAssignmentById(((Integer)2).longValue()));
         
         //Fill out Table
         for (Assignment2 assignment : entries){

@@ -39,8 +39,6 @@ public class AssignmentSubmissionVersion {
 	private String commentForUngraded;
 	private String submittedText;
 	private Boolean draft;
-	private Boolean allowResubmit;
-	private Date resubmitCloseTime;
 	private String reviewReportUrl;
 	private int reviewReportScore;
 	private String reviewStatus;

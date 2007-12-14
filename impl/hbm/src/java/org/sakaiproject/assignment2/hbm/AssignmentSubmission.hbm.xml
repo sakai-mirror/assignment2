@@ -23,7 +23,7 @@
         
         <!-- true if allowed to resubmit this submission -->
         <property name="allowResubmit" type="java.lang.Boolean">
-            <column name="ALLOW_RESUBMIT" not-null="true" />
+            <column name="ALLOW_RESUBMIT" />
         </property>
         <!-- Time after which the user can no longer resubmit -->
         <property name="resubmitCloseTime" type="java.util.Date">

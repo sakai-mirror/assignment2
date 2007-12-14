@@ -186,7 +186,8 @@
    </bean>
    
    <bean id="AssignmentSubmissionBean" class="org.sakaiproject.assignment2.tool.beans.AssignmentSubmissionBean">
-   	  <property name="logic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
+   	  <property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
+   	  <property name="submissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
    	  <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
    	  <property name="externalAnnouncementLogic" ref="org.sakaiproject.assignment2.logic.ExternalAnnouncementLogic" />
    	  <property name="messages" ref="targettedMessageList"/>
