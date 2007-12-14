@@ -244,7 +244,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 
 				if (!assignment.isDraft() || gradebookLogic.isCurrentUserAbleToEdit(contextId)) {
 					if (assignment.isUngraded()) {
-						if (restrictedToGroups || gradebookLogic.isCurrentUserAbleToGradeAll(contextId)) {
+						if (!restrictedToGroups || gradebookLogic.isCurrentUserAbleToGradeAll(contextId)) {
 							viewableAssignments.add(assignment);
 						} else if (userGroupIds != null && restrictedToGroups) {
 							// we need to filter out the section-based assignments if not authorized for all

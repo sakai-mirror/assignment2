@@ -81,7 +81,11 @@ public class AssignmentSubmissionBean {
 	
 	
 	public String processActionSubmit(){
-		submissionLogic.saveStudentSubmission(null);
+		for (String key : OTPMap.keySet()) {
+			AssignmentSubmission assignmentSubmission = OTPMap.get(key);
+			submissionLogic.saveStudentSubmission(assignmentSubmission);
+		}
+
 		return SUBMIT;
 	}
 	
