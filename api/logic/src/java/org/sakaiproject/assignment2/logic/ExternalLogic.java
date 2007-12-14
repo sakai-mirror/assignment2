@@ -76,23 +76,23 @@ public interface ExternalLogic {
     
     /**
      * 
-     * @return a collection of the groups that the current user is a member of
+     * @return a collection of the groups that the given user is a member of
      */
-    public Collection getCurrentUserMemberships();
+    public Collection getUserMemberships(String userId);
     
     /**
      * 
-     * @return list of the group ids of the groups that the current user is
+     * @return list of the group ids of the groups that the given user is
      * a member of
      */
-    public List getCurrentUserGroupIdList();
+    public List<String> getUserMembershipGroupIdList(String userId);
     
     /**
      * 
      * @return a map of group id to group name for all of the sections/groups
      * associated with the current site
      */
-    public Map getGroupIdToNameMapForSite();
+    public Map<String, String> getGroupIdToNameMapForSite();
     
     /**
      * @param contextId

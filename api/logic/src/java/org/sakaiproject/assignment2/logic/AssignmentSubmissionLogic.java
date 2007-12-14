@@ -44,11 +44,14 @@ public interface AssignmentSubmissionLogic {
 	
 	/**
 	 * 
-	 * @param assignment
+	 * @param assignmentId
 	 * @param userId
-	 * @return AssignmentSubmission associated with the given Assignment and userId
+	 * @param includeDraft
+	 * 		false if you want the most recent non-draft submission
+	 * @return AssignmentSubmission associated with the given Assignment and studentId
+	 * 		will return null if there is no submission info for this student yet
 	 */
-	public AssignmentSubmission getCurrentSubmissionByAssignmentAndUser(Assignment2 assignment, String userId);
+	public AssignmentSubmission getCurrentSubmissionByAssignmentIdAndStudentId(Long assignmentId, String studentId, boolean includeDraft);
 	
 	/**
 	 * Create or update an AssignmentSubmission
@@ -64,5 +67,16 @@ public interface AssignmentSubmissionLogic {
 	 * @return
 	 */
 	public List<AssignmentSubmission> getAllSubmissionsByAssignmentIdNoVersionData(Long assignmentId);
+	
+	/**
+	 * 
+	 * @param assignment
+	 * @param userId
+	 * @param includeDraft
+	 * 	if false, will retrieve the most recent submission and ignore any current
+	 * 		draft versions
+	 * @return AssignmentSubmission record with currentVersion
+	 */
+	public AssignmentSubmission getSubmissionVersionForUserIdAndAssignmentWithAttachments(Assignment2 assignment, String userId, boolean includeDraft);
 	
 }

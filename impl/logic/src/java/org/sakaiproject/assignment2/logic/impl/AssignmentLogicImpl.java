@@ -42,6 +42,7 @@ import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.ExternalAnnouncementLogic;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
+import org.sakaiproject.assignment2.logic.PermissionLogic;
 import org.sakaiproject.assignment2.dao.AssignmentDao;
 import org.sakaiproject.assignment2.exception.ConflictingAssignmentNameException;
 import org.sakaiproject.genericdao.api.finders.ByPropsFinder;
@@ -70,6 +71,11 @@ public class AssignmentLogicImpl implements AssignmentLogic{
     private ExternalAnnouncementLogic announcementLogic;
     public void setExternalAnnouncementLogic(ExternalAnnouncementLogic announcementLogic) {
         this.announcementLogic = announcementLogic;
+    }
+    
+    private PermissionLogic permissionLogic;
+    public void setPermissionLogic(PermissionLogic permissionLogic) {
+        this.permissionLogic = permissionLogic;
     }
     
     private AssignmentDao dao;
@@ -129,7 +135,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 			throw new IllegalArgumentException("Null assignment passed to saveAssignment");
 		}
 		
-		if (!gradebookLogic.isCurrentUserAbleToEdit(externalLogic.getCurrentContextId())) {
+		if (!permissionLogic.isCurrentUserAbleToEditAssignments(externalLogic.getCurrentContextId())) {
 			throw new SecurityException("Current user may not save assignment " + assignment.getTitle()
                     + " because they do not have edit permission");
 		}
@@ -203,7 +209,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 			throw new IllegalArgumentException("Null assignment passed to deleteAssignment");
 		}
 		
-		if (!gradebookLogic.isCurrentUserAbleToEdit(externalLogic.getCurrentContextId())) {
+		if (!permissionLogic.isCurrentUserAbleToEditAssignments(externalLogic.getCurrentContextId())) {
 			throw new SecurityException("Current user may not delete assignment " + assignment.getTitle()
                     + " because they do not have edit permission");
 		}
@@ -221,6 +227,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 	{
 		List<Assignment2> viewableAssignments = new ArrayList();
 		String contextId = externalLogic.getCurrentContextId();
+		String userId = externalLogic.getCurrentUserId();
 
 		Set<Assignment2> allAssignments = dao.getAssignmentsWithGroupsAndAttachments(contextId);
 
@@ -234,7 +241,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 			//  c) it is restricted, but user is a member of restricted group
 			//  d) it is not draft or user has edit perm
 
-			List<String> userGroupIds = externalLogic.getCurrentUserGroupIdList();	
+			List<String> userGroupIds = externalLogic.getUserMembershipGroupIdList(userId);	
 
 			for (Iterator asnIter = allAssignments.iterator(); asnIter.hasNext();) {
 				Assignment2 assignment = (Assignment2) asnIter.next();
@@ -242,27 +249,10 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 				boolean restrictedToGroups = assignment.getAssignmentGroupSet() != null
 					&& !assignment.getAssignmentGroupSet().isEmpty();
 
-				if (!assignment.isDraft() || gradebookLogic.isCurrentUserAbleToEdit(contextId)) {
+				if (!assignment.isDraft() || permissionLogic.isCurrentUserAbleToEditAssignments(contextId)) {
 					if (assignment.isUngraded()) {
-						if (!restrictedToGroups || gradebookLogic.isCurrentUserAbleToGradeAll(contextId)) {
+						if (permissionLogic.isUserAbleToViewUngradedAssignment(externalLogic.getCurrentUserId(), assignment)) {
 							viewableAssignments.add(assignment);
-						} else if (userGroupIds != null && restrictedToGroups) {
-							// we need to filter out the section-based assignments if not authorized for all
-							// check to see if user is a member of an associated section
-							Set<AssignmentGroup> groupRestrictions = assignment.getAssignmentGroupSet();
-							if (groupRestrictions != null) {
-								boolean allowedToView = false;
-								for (Iterator groupIter = groupRestrictions.iterator(); groupIter.hasNext();) {
-									AssignmentGroup group = (AssignmentGroup) groupIter.next();
-									if (group != null && userGroupIds.contains(group.getGroupId())) {
-										allowedToView = true;
-									}
-								}
-								
-								if (allowedToView) {
-									viewableAssignments.add(assignment);
-								}
-							}	
 						} 
 
 					} else {
@@ -287,20 +277,9 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 						// if user is a "student" in terms of the gb, we need to filter the view
 						// by AssignmentGroup restrictions.
 						if (restrictedToGroups && gradebookLogic.isCurrentUserAStudentInGb(contextId)) {
-							Set<AssignmentGroup> groupRestrictions = assignment.getAssignmentGroupSet();
-							if (groupRestrictions != null) {
-								boolean allowedToView = false;
-								for (Iterator groupIter = groupRestrictions.iterator(); groupIter.hasNext();) {
-									AssignmentGroup group = (AssignmentGroup) groupIter.next();
-									if (group != null && userGroupIds.contains(group.getGroupId())) {
-										allowedToView = true;
-									}
-								}
-								
-								if (allowedToView) {
-									viewableAssignments.add(assignment);
-								}
-							}	
+							if (permissionLogic.isUserAMemberOfARestrictedGroup(externalLogic.getCurrentUserId(), assignment.getAssignmentGroupSet())) {
+								viewableAssignments.add(assignment);
+							}
 						} else {
 							viewableAssignments.add(assignment);
 						}
@@ -429,36 +408,37 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 	 * 
 	 * @param groups
 	 * @return a comma-delimited String representation of the given list of
-	 * groups/section. will delete groups that have been deleted at the site
-	 * level
+	 * groups/section. 
 	 */
 	public String getListOfGroupRestrictionsAsString(List<AssignmentGroup> restrictedGroups, Map<String, String> siteGroupIdNameMap) {
-		if (restrictedGroups == null || restrictedGroups.isEmpty())
-			return null;
-	
 		StringBuilder sb = new StringBuilder();
 		
-		for (int i=0; i<restrictedGroups.size(); i++) {
+		if (restrictedGroups != null) {
+			List<String> groupNameList = new ArrayList();
 			
-			AssignmentGroup group = (AssignmentGroup) restrictedGroups.get(i);
-			if (group != null) {
-				if (i != 0) {
-					sb.append(", ");
-				}
-				
-				if (siteGroupIdNameMap.containsKey(group.getGroupId())) {
-					String groupName = (String)siteGroupIdNameMap.get(group.getGroupId());
-					sb.append(groupName);
-				} else {
-					// this group has been deleted from the site, so we need
-					// to delete this AssignmentGroup object
-					log.info("AssignmentGroup associated with group id " 
-							+ group.getAssignmentGroupId() + "and assignment " 
-							+ group.getAssignment().getAssignmentId()
-							+ " deleted b/c associated site group was deleted");
-					dao.delete(AssignmentGroup.class, group.getAssignmentGroupId());
+			for (Iterator groupIter = restrictedGroups.iterator(); groupIter.hasNext();) {
+				AssignmentGroup group = (AssignmentGroup) groupIter.next();
+				if (group != null) {
+					if (siteGroupIdNameMap.containsKey(group.getGroupId())) {
+						String groupName = (String)siteGroupIdNameMap.get(group.getGroupId());
+						groupNameList.add(groupName);
+					}
 				}
 			}
+			
+			Collections.sort(groupNameList);
+			
+			for (int i=0; i < groupNameList.size(); i++) {
+				
+				String groupName = (String) groupNameList.get(i);
+				if (groupName != null) {
+					if (i != 0) {
+						sb.append(", ");
+					}
+
+					sb.append(groupName);
+				}
+			}	
 		}
 		
 		return sb.toString();

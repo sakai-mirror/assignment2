@@ -119,10 +119,20 @@ public class AssignmentDaoImpl extends HibernateCompleteGenericDao implements As
     	return query.list();
     }
     
-    public AssignmentSubmission findSubmissionForAssignmentAndUserWithAttachments(Assignment2 assignment, String userId) {
+    public AssignmentSubmission getSubmissionVersionForUserIdAndAssignmentWithAttachments(Assignment2 assignment, String userId) {
     	if (assignment == null || userId == null) {
     		throw new IllegalArgumentException("null assignment or userId passed to findSubmissionForAssignmentAndUserWithAttachments");
     	}
+    	
+    	String hqlGetVersionNoDraft = "select max(subVersion.submissionVersionId) " +
+		"from AssignmentSubmissionVersion as subVersion " +
+		"where subVersion.submissionId in :submissionIdList " +
+		"and subVersion.draft = false group by subVersion.submissionId";
+	
+    	String hqlGetVersionWithDraft = "select max(subVersion.submissionVersionId) " +
+    	"from AssignmentSubmissionVersion as subVersion " +
+		"where subVersion.submissionId in :submissionIdList " +
+		"group by subVersion.submissionId";
     	
     	Query query = getSession().getNamedQuery("findSubmissionForAssignmentAndUserWithAttachments");
     	query.setParameter("assignment", assignment);

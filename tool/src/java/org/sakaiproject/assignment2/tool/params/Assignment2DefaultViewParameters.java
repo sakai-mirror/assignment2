@@ -1,7 +1,7 @@
 package org.sakaiproject.assignment2.tool.params;
 
 import org.sakaiproject.assignment2.logic.ExternalLogic;
-import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
+import org.sakaiproject.assignment2.logic.PermissionLogic;
 import org.sakaiproject.assignment2.tool.producers.AssignmentListSortViewProducer;
 import org.sakaiproject.assignment2.tool.producers.StudentAssignmentListProducer;
 import org.sakaiproject.assignment2.tool.params.AssignmentListSortViewParams;
@@ -23,9 +23,9 @@ public class Assignment2DefaultViewParameters {
 		this.securityService = securityService;
 	}
 	
-	private ExternalGradebookLogic gradebookLogic;
-	public void setGradebookLogic(ExternalGradebookLogic gradebookLogic) {
-		this.gradebookLogic = gradebookLogic;
+	private PermissionLogic permissionLogic;
+	public void setPermissionLogic(PermissionLogic permissionLogic) {
+		this.permissionLogic = permissionLogic;
 	}
 	
 	private ExternalLogic externalLogic;
@@ -37,8 +37,7 @@ public class Assignment2DefaultViewParameters {
 		AssignmentListSortViewParams viewParams = new AssignmentListSortViewParams(StudentAssignmentListProducer.VIEW_ID);
 		String contextId = externalLogic.getCurrentContextId();
 		
-		if (gradebookLogic.isCurrentUserAbleToGrade(contextId)
-				|| gradebookLogic.isCurrentUserAbleToEdit(contextId)) {
+		if (permissionLogic.isUserAbleToAccessInstructorView(contextId)) {
 			viewParams = new AssignmentListSortViewParams(AssignmentListSortViewProducer.VIEW_ID);
 		}
 		

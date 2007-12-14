@@ -10,6 +10,7 @@ import org.sakaiproject.assignment2.exception.ConflictingAssignmentNameException
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
+import org.sakaiproject.assignment2.logic.PermissionLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.tool.beans.Assignment2Bean;
 import org.sakaiproject.assignment2.tool.beans.Assignment2Creator;
@@ -70,6 +71,7 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
     private AssignmentLogic assignmentLogic;
     private ExternalLogic externalLogic;
     private ExternalGradebookLogic gradebookLogic;
+    private PermissionLogic permissionLogic;
     private Locale locale;
     private Assignment2Bean assignment2Bean;
     private SortHeaderRenderer sortHeaderRenderer;
@@ -145,7 +147,7 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
         }
         
         //Edit Permission
-        Boolean edit_perm = gradebookLogic.isCurrentUserAbleToEdit(externalLogic.getCurrentUserId());
+        Boolean edit_perm = permissionLogic.isCurrentUserAbleToEditAssignments(externalLogic.getCurrentContextId());
         
         //Fill out Table
         for (Assignment2 assignment : entries){
@@ -243,7 +245,11 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
     	this.sortHeaderRenderer = sortHeaderRenderer;
     }
 
-	public void setGradebookLogic(ExternalGradebookLogic gradebookLogic) {
+	public void setExternalGradebookLogic(ExternalGradebookLogic gradebookLogic) {
 		this.gradebookLogic = gradebookLogic;
+	}
+	
+	public void setPermissionLogic(PermissionLogic permissionLogic) {
+		this.permissionLogic = permissionLogic;
 	}
 }

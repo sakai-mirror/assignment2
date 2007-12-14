@@ -129,17 +129,23 @@ public class ExternalLogicImpl implements ExternalLogic {
     	}
     }
     
-    public Collection getCurrentUserMemberships() {
+    public Collection getUserMemberships(String userId) {
+    	if (userId == null) {
+    		throw new IllegalArgumentException("Null userId passed to getUserMemberships");
+    	}
     	try {
 	    	Site s = siteService.getSite(toolManager.getCurrentPlacement().getContext());
-	    	return s.getGroupsWithMember(getCurrentUserId());
+	    	return s.getGroupsWithMember(userId);
     	} catch (IdUnusedException e){
     		return new ArrayList();
     	}
     }
     
-    public List getCurrentUserGroupIdList() {
-    	List memberships = new ArrayList(getCurrentUserMemberships());
+    public List<String> getUserMembershipGroupIdList(String userId) {
+    	if (userId == null) {
+    		throw new IllegalArgumentException("Null userId passed to getUserMembershipGroupIdList");
+    	}
+    	List memberships = new ArrayList(getUserMemberships(userId));
     	List groupIds = new ArrayList();
     	if (memberships != null) {
     		for (Iterator groupIter = memberships.iterator(); groupIter.hasNext();) {
@@ -153,7 +159,7 @@ public class ExternalLogicImpl implements ExternalLogic {
     	return groupIds;
     }
     
-    public Map getGroupIdToNameMapForSite() {
+    public Map<String, String> getGroupIdToNameMapForSite() {
     	Collection siteGroups = getSiteGroups();
     	
     	Map groupIdToNameMap = new HashMap();

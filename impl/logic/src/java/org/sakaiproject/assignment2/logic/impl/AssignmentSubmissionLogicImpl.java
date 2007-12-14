@@ -31,12 +31,10 @@ import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
+import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
+import org.sakaiproject.assignment2.logic.PermissionLogic;
 import org.sakaiproject.assignment2.dao.AssignmentDao;
-import org.sakaiproject.assignment2.exception.ConflictingAssignmentNameException;
-import org.sakaiproject.genericdao.api.finders.ByPropsFinder;
-import org.sakaiproject.service.gradebook.shared.GradebookService;
-
 
 /**
  * This is the interface for interaction with the AssignmentSubmission object
@@ -57,6 +55,16 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
         this.dao = dao;
     }
     
+    private ExternalGradebookLogic gradebookLogic;
+    public void setExternalGradebookLogic(ExternalGradebookLogic gradebookLogic) {
+        this.gradebookLogic = gradebookLogic;
+    }
+    
+    private PermissionLogic permissionLogic;
+    public void setPermissionLogic(PermissionLogic permissionLogic) {
+        this.permissionLogic = permissionLogic;
+    }
+    
 	public void init(){
 		log.debug("init");
 	}
@@ -69,22 +77,37 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		return (AssignmentSubmission)dao.findById(AssignmentSubmission.class, submissionId);
 	}
 	
-	public AssignmentSubmission getCurrentSubmissionByAssignmentAndUser(Assignment2 assignment, String userId) {
-		return null;
+	public AssignmentSubmission getCurrentSubmissionByAssignmentIdAndStudentId(Long assignmentId, String studentId, boolean includeDraft) {
+		if (assignmentId == null || studentId == null) {
+			throw new IllegalArgumentException("Null assignmentId or userId passed to getCurrentSubmissionByAssignmentAndUser");
+		}
+		
+		AssignmentSubmission submission = null;
+		
+		Assignment2 assignment = dao.getAssignmentByIdWithGroups(assignmentId);
+		if (assignment != null) {
+			if (permissionLogic.isUserAbleToViewStudentSubmissionForAssignment(studentId, assignment)) {
+				throw new SecurityException("Current user is not allowed to view submission for " + studentId + " for assignment " + assignment.getAssignmentId());
+			}
+			
+			
+		}
+		
+		return submission;
 	}
 
 	public void saveStudentSubmission(AssignmentSubmission assignmentSubmission) {
 		// TESTING
-		//Assignment2 assign = (Assignment2)dao.findById(Assignment2.class, new Long(1));
-		//assignmentSubmission = new AssignmentSubmission(assign, "43be6309-867a-40c4-8785-1fdf00109804");
-		//AssignmentSubmissionVersion version = new AssignmentSubmissionVersion();
-		//version.setAssignmentSubmission(assignmentSubmission);
-		//version.setDraft(false);
-		//version.setCreatedBy("43be6309-867a-40c4-8785-1fdf00109804");
-		//version.setCreatedTime(new Date());
-		//version.setSubmittedText("This is my first submission");
-		//version.setSubmittedTime(new Date());
-		//assignmentSubmission.setCurrentSubmissionVersion(version);
+		/*Assignment2 assign = (Assignment2)dao.findById(Assignment2.class, new Long(1));
+		assignmentSubmission = new AssignmentSubmission(assign, "8c8d9fe3-dfc1-4fa7-be91-e420b865b20c");
+		AssignmentSubmissionVersion version = new AssignmentSubmissionVersion();
+		version.setAssignmentSubmission(assignmentSubmission);
+		version.setDraft(false);
+		version.setCreatedBy("8c8d9fe3-dfc1-4fa7-be91-e420b865b20c");
+		version.setCreatedTime(new Date());
+		version.setSubmittedText("This is my first submission");
+		version.setSubmittedTime(new Date());
+		assignmentSubmission.setCurrentSubmissionVersion(version);*/
 		
 		
 		// END TESTING
@@ -122,5 +145,9 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
     	
     	return submissionList;
     }
+	
+	public AssignmentSubmission getSubmissionVersionForUserIdAndAssignmentWithAttachments(Assignment2 assignment, String userId, boolean includeDraft) {
+		return null;
+	}
 
 }
