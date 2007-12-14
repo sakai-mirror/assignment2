@@ -279,6 +279,10 @@ public class Assignment2Bean {
 	}
 	
 	public String processActionCancel() {
+		//Clear out session attachment information if everything successful
+    	ToolSession session = sessionManager.getCurrentToolSession();
+    	session.removeAttribute("attachmentRefs");
+    	session.removeAttribute("removedAttachmentRefs");
 		return CANCEL;
 	}
 	

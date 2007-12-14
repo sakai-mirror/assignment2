@@ -29,6 +29,7 @@ public class Assignment2Creator {
     	togo.setHasAnnouncement(Boolean.FALSE);
     	togo.setSubmissionType(AssignmentConstants.SUBMIT_INLINE_ONLY);
     	togo.setAllowResubmit(Boolean.FALSE);
+    	togo.setRestrictedToGroups(Boolean.FALSE);
     	
     	//Setting up Dates
     	Calendar cal = Calendar.getInstance();

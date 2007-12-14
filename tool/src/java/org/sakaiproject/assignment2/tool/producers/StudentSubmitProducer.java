@@ -19,6 +19,7 @@ import org.sakaiproject.assignment2.model.AssignmentAttachment;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.tool.api.SessionManager;
+import org.sakaiproject.tool.api.ToolSession;
 
 import uk.org.ponder.beanutil.entity.EntityBeanLocator;
 import uk.org.ponder.messageutil.MessageLocator;
@@ -65,6 +66,10 @@ public class StudentSubmitProducer implements ViewComponentProducer, NavigationC
 	public void fillComponents(UIContainer tofill, ViewParameters viewparams, ComponentChecker checker) {
     	SimpleAssignmentViewParams params = (SimpleAssignmentViewParams) viewparams;
     		
+    	//Clear out session attachment information if everything successful
+    	ToolSession session = sessionManager.getCurrentToolSession();
+    	session.removeAttribute("attachmentRefs");
+    	session.removeAttribute("removedAttachmentRefs");
     	
     	//get Passed assignmentId to pull in for editing if any
     	Long assignmentId = params.assignmentId;
