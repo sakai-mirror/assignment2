@@ -94,4 +94,16 @@ public interface AssignmentDao extends CompleteGenericDao {
 	 */
 	public List <AssignmentSubmission> getAssignmentSubmissionsWithCurrentVersionDataNoAttach(List<Long> submissionIdList, boolean includeDraft);
 	
+	/**
+	 * returns the current submission version for the given assignmentSubmission and userId
+	 * @param submission
+	 * @param userId
+	 * @param ignoreDrafts
+	 * 		if true, will count drafts as the current version.
+	 * 		if false, will populate the current version with the most recent non-draft
+	 * 		submission info
+	 * @return
+	 */
+	public AssignmentSubmission getCurrentSubmissionVersionForUserIdWithAttachments(AssignmentSubmission submission, String userId, boolean ignoreDrafts);
+	
 }

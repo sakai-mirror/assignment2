@@ -108,6 +108,9 @@ public class AssignmentDaoImpl extends HibernateCompleteGenericDao implements As
     	
     	return (Assignment2) query.uniqueResult();
 	}
+	
+	
+	// Assignment Submissions DAO
     
     public List<AssignmentSubmission> findCurrentSubmissionsForAssignment(Assignment2 assignment) {
     	if (assignment == null) {
@@ -119,26 +122,26 @@ public class AssignmentDaoImpl extends HibernateCompleteGenericDao implements As
     	return query.list();
     }
     
-    public AssignmentSubmission getSubmissionVersionForUserIdAndAssignmentWithAttachments(Assignment2 assignment, String userId) {
-    	if (assignment == null || userId == null) {
-    		throw new IllegalArgumentException("null assignment or userId passed to findSubmissionForAssignmentAndUserWithAttachments");
+    public AssignmentSubmission getCurrentSubmissionVersionForUserIdWithAttachments(AssignmentSubmission submission, String userId, boolean ignoreDrafts) {
+    	if (submission == null || userId == null) {
+    		throw new IllegalArgumentException("null submission or userId passed to getSubmissionVersionForUserIdWithAttachments");
     	}
     	
     	String hqlGetVersionNoDraft = "select max(subVersion.submissionVersionId) " +
-		"from AssignmentSubmissionVersion as subVersion " +
-		"where subVersion.submissionId in :submissionIdList " +
-		"and subVersion.draft = false group by subVersion.submissionId";
+		"from AssignmentSubmissionVersion as submissionVersion " +
+		"where submissionVersion.assignmentSubmission = :submission " +
+		"and submissionVersion.draft = false";
 	
     	String hqlGetVersionWithDraft = "select max(subVersion.submissionVersionId) " +
-    	"from AssignmentSubmissionVersion as subVersion " +
-		"where subVersion.submissionId in :submissionIdList " +
-		"group by subVersion.submissionId";
+		"from AssignmentSubmissionVersion as submissionVersion " +
+		"where submissionVersion.assignmentSubmission = :submission";
     	
-    	Query query = getSession().getNamedQuery("findSubmissionForAssignmentAndUserWithAttachments");
+    	/*Query query = getSession().getNamedQuery("findSubmissionForAssignmentAndUserWithAttachments");
     	query.setParameter("assignment", assignment);
-    	query.setParameter("userId", userId);
+    	query.setParameter("userId", userId);*/
     	
-    	return (AssignmentSubmission) query.uniqueResult();
+    	//return (AssignmentSubmission) query.uniqueResult();
+    	return null;
     }
     
     public List<AssignmentSubmission> getAssignmentSubmissionsWithCurrentVersionDataWithAttach(List<Long> submissionIdList, boolean includeDraft) {
