@@ -15,6 +15,7 @@ import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentAttachment;
 import org.sakaiproject.assignment2.model.AssignmentGroup;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
+import org.sakaiproject.entitybroker.EntityBroker;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -87,6 +88,10 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
     private SessionManager sessionManager;
     private EntityBeanLocator assignment2BeanLocator;
     private AttachmentListRenderer attachmentListRenderer;
+    private EntityBroker entityBroker;
+    public void setEntityBroker(EntityBroker entityBroker) {
+       this.entityBroker = entityBroker;
+    }
     
 	/*
 	 * You can change the date input to accept time as well by uncommenting the lines like this:
@@ -256,16 +261,16 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
         	UIOutput.make(form, "gradebook_item_due_date", df.format(currentSelected.getDueDate()));
         }
 
+        
+        
         //Links to gradebook Helper
-        UIInternalLink.make(form, "gradebook_item_new_helper",
+        UILink.make(form, "gradebook_item_new_helper",
         		UIMessage.make("assignment2.assignment_add.gradebook_item_new_helper"),
-        		new ThickboxHelperViewParams(GradebookAddItemProducer.VIEW_ID,
-        				Boolean.TRUE, Boolean.TRUE, 500, 700));
+        		"http://localhost:8081/direct/grade-entry/1?TB_iframe=true&width=700&height=500&KeepThis=true");
         		
         UIInternalLink.make(form, "gradebook_item_edit_helper",
         		UIMessage.make("assignment2.assignment_add.gradebook_item_new_helper"),
-        		new ThickboxHelperViewParams(GradebookAddItemProducer.VIEW_ID,
-        				Boolean.TRUE, Boolean.TRUE, 500, 700));
+        		"http://localhost:8081/direct/grade-entry/1?TB_iframe=true&width=700&height=500&KeepThis=true");
         
         
         //Java Scripting to hide due dates
