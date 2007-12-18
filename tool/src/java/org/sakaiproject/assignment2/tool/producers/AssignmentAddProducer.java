@@ -31,6 +31,7 @@ import java.lang.String;
 
 import uk.org.ponder.arrayutil.ListUtil;
 import uk.org.ponder.beanutil.entity.EntityBeanLocator;
+import uk.org.ponder.htmlutil.HTMLUtil;
 import uk.org.ponder.messageutil.MessageLocator;
 import uk.org.ponder.rsf.components.UIBoundBoolean;
 import uk.org.ponder.rsf.components.UIBoundString;
@@ -144,6 +145,10 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
     	//Initialize js otpkey
     	UIVerbatim.make(tofill, "attachment-ajax-init", "otpkey=\"" + org.sakaiproject.util.Web.escapeUrl(OTPKey) + "\"");
     	
+    	//Initialize iframeId var
+        String frameId = org.sakaiproject.util.Web.escapeJavascript("Main" + org.sakaiproject.tool.cover.ToolManager.getCurrentPlacement().getId());
+        UIVerbatim.make(tofill, "iframeId_init", "var iframeId = \"" + frameId + "\";");
+    	
         UIForm form = UIForm.make(tofill, "assignment_form");
         
         //set dateEvolver
@@ -167,7 +172,6 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
         		new Object[]{ reqStar }));
         UIInput acceptUntilTimeField = UIInput.make(form, "accept_until:", assignment2OTP + ".acceptUntilTime");
         dateEvolver.evolveDateInput(acceptUntilTimeField, null);
-        UIMessage.make(form, "accept_until_instruction", "assignment2.assignment_add.accept_until_instruction");
         
         UIVerbatim.make(form, "student_submissions_label", messageLocator.getMessage("assignment2.assignment_add.student_submissions",
         		new Object[]{ reqStar }));
@@ -239,11 +243,6 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
         	//Fill out select options
         	gradebook_item_labels[i] = gradebook_items.get(i-1).getTitle();
         	gradebook_item_values[i] = gradebook_items.get(i-1).getGradableObjectId().toString();
-        	
-        	//CHeck if currently selected
-        	//if (gradebook_items.get(i-1).getGradableObjectId() == assignment.getGradableObjectId()) {
-        	//	currentSelected = gradebook_items.get(i-1);
-        	//}
         }
         UISelect.make(form, "gradebook_item",gradebook_item_values, gradebook_item_labels, assignment2OTP + ".gradableObjectId"); 
         
@@ -273,20 +272,6 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
         		"http://localhost:8081/direct/grade-entry/1?TB_iframe=true&width=700&height=500&KeepThis=true");
         
         
-        //Java Scripting to hide due dates
-        Map selectattrmap = new HashMap();
-        selectattrmap.put("onclick", "if(this.checked){assignment_selected_gradebook_item(true)}else{assignment_selected_gradebook_item(false)}");
-        graded.decorators = new DecoratorList(new UIFreeAttributeDecorator(selectattrmap));
-        selectattrmap = new HashMap();
-        selectattrmap.put("onclick", "if(!this.checked){assignment_selected_gradebook_item(true)}else{assignment_selected_gradebook_item(false)}");
-        ungraded.decorators = new DecoratorList(new UIFreeAttributeDecorator(selectattrmap));
-        if (assignment.isUngraded()) {
-        	UIVerbatim.make(tofill, "due_date_init", "$('.gradebook_item_due_date').hide()");
-        } else {
-        	UIVerbatim.make(tofill, "due_date_init", "$('.due_date').hide()");
-        }
-        
-        
         /******
          * Access
          */
@@ -304,32 +289,18 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
         //((UIBoundString) access.selection).setValue(assignment.isRestrictedToGroups().toString());
         
         String accessId = access.getFullID();
+        String displayToEntireSiteFullId = "";
+
         for (int i=0; i < access_values.length; i++) {
         	UIBranchContainer access_row = UIBranchContainer.make(form, "access_row:");
         	UISelectChoice checkbox = UISelectChoice.make(access_row, "access_choice", accessId, i);
         	Map attrmap = new HashMap();
-        	String id = org.sakaiproject.util.Web.escapeJavascript("Main" + org.sakaiproject.tool.cover.ToolManager.getCurrentPlacement().getId());
-        	if (access_values[i].equals(Boolean.FALSE.toString())) {
-        		attrmap.put("onclick", "$('li#groups_table_li').hide();a2SetMainFrameHeight('" + id + "');");
-        	} else {
-        		attrmap.put("onclick", "$('li#groups_table_li').show();a2SetMainFrameHeight('" + id + "');");
-        	}
-        	checkbox.decorators = new DecoratorList(new UIFreeAttributeDecorator(attrmap));
         	UISelectLabel.make(access_row, "access_label", accessId, i);
         }
         
         /**
          * Groups
          */
-        UIOutput groups_table_li = UIOutput.make(form, "groups_table_li");
-        /*** Can not get this to work due to error checking and refreshing **
-         * Probably need to set this in an JS init block
-        if (!assignment.isRestrictedToGroups()){
-	        Map attrmap = new HashMap(); 
-			attrmap.put("style", "display:none");
-	        groups_table_li.decorators = new DecoratorList(new UIFreeAttributeDecorator(attrmap));
-        }
-        **/
         Collection<Group> groups = externalLogic.getSiteGroups();
         List<String> currentGroups = assignment.getListOfAssociatedGroupReferences();
         for (Group g : groups){

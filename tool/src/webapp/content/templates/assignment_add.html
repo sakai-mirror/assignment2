@@ -70,6 +70,14 @@
 				<label rsf:id="open_date_label"><span class="reqStar">*</span> Open Date</label><input rsf:id="open_date:"  />
 				<p rsf:id="message-for:open_date"></p>
 				<p rsf:id="open_date_instruction" class="instruction">Students won't see this assignment until this open date.</p>
+				<fieldset class="indent">
+					<ol>
+						<li>
+							<input rsf:id="announcement" type="checkbox" /> 
+							<label rsf:id="msg=assignment2.assignment_add.announcement">Add an announcement about the open date to Announcements</label>
+						</li>
+					</ol>
+				</fieldset>
 			</li>
 			<li class="due_date">
 				<label rsf:id="due_date_label"><span class="reqStar">*</span> Due Date</label> <input rsf:id="due_date:" value="12/31/2007"/>
@@ -86,7 +94,14 @@
 			<li>
 				<label rsf:id="accept_until_label"><span class="reqStar">*</span> Accept Until</label> <input rsf:id="accept_until:" value="12/31/2007"/>
 				<p rsf:id="message-for:accept_until"></p>
-				<p rsf:id="accept_until_instruction" class="instruction">No assignments can be submitted after this close date.</p>
+				<fieldset class="indent">
+					<ol>
+						<li>
+							<input rsf:id="accept_until_until" type="checkbox" /> 
+							<label rsf:id="msg=assignment2.assignment_add.accept_until_until">Allow resubmissions until "Accept Until" Date</label>
+						</li>
+					</ol>
+				</fieldset>
 			</li>
 			<li>
 				<span rsf:id="submission_type"></span>
@@ -99,29 +114,18 @@
 					</li>
 				</ol>
 				</fieldset>
-				<!-- 
-				<select rsf:id="submission_type_old">
-					<option value="1">Inline only</option>
-					<option value="2">Attachments only</option>
-					<option value="3" selected="selected">Inline and Attachments</option>
-					<option value="4">Non-electronic</option>
-				</select>
-				-->
 				<p rsf:id="message-for:submission_type"></p>
 			</li>
+			<!-- 
 			<li>
 				<label rsf:id="msg=assignment2.assignment_add.misc_details_label">Miscellaneous Details</label>
 				<fieldset>
 					<ol>
-						<!-- 
 						<li><input rsf:id="on_calendar" type="checkbox" /> <label rsf:id="msg=assignment2.assignment_add.on_calendar">Add the due date to Calendar</label></li>
-						-->
-						<li><input rsf:id="announcement" type="checkbox" /> <label rsf:id="msg=assignment2.assignment_add.announcement">Add an announcement about the open date to Announcements</label></li>
-						<li><input rsf:id="accept_until_until" type="checkbox" /> <label rsf:id="msg=assignment2.assignment_add.accept_until_until">Allow resubmissions until "Accept Until" Date</label></li>
-						<li><input rsf:id="honor_pledge" type="checkbox" /> <label rsf:id="msg=assignment2.assignment_add.honor_pledge">Add honor pledge</label></li>
 					</ol>
 				</fieldset>
 			</li>
+			-->
 			<li>
 				<label rsf:id="msg=assignment2.assignment_add.assignment_instructions" class="block">Assignment Instructions</label>
 				<p rsf:id="message-for:instructions"></p>
@@ -129,7 +133,14 @@
 					<textarea name="something" cols="80" rows="20" wrap="virtual"></textarea>
 					<!-- this should be the FCKEditor -->
 				</div>
-				
+				<fieldset>
+					<ol>
+						<li>
+							<input rsf:id="honor_pledge" type="checkbox" />
+							<label rsf:id="msg=assignment2.assignment_add.honor_pledge">Add honor pledge</label>
+						</li>
+					</ol>
+				</fieldset>
 			</li>
 			<li>
 				
@@ -154,11 +165,14 @@
 				<span rsf:id="access_select" />
 				<fieldset>
 					<ol>
-						<li rsf:id="access_row:"><input rsf:id="access_choice" type="radio" /> <label rsf:id="access_label">Display to site</label></li>
-						<li rsf:id="groups_table_li" id="groups_table_li">
+						<li rsf:id="access_row:">
+							<input rsf:id="access_choice" id="access_choice" type="radio" />
+							<label rsf:id="access_label">Display to site</label>
+						</li>
+						<li id="groups_table_li" class="indent">
 							<table id="groupTable" class="listHier lines" cellpadding="0" cellspacing="0" border="0">
 								<tr>
-									<th><input type="checkbox" title="Select all" onclick="$('table#groupTable :checkbox').attr('checked', 'checked');" />Select All</th>
+									<th><input type="checkbox" title="Select all" onclick="toggle_group_checkboxes(this)" />Select All</th>
 									<th>Title</th>
 									<th>Description</th>
 								</tr>
@@ -203,8 +217,8 @@
 	</fieldset>													
 	</form>
 </div>
-<script type="text/javascript" rsf:id="due_date_init">
-$(".gradebook_item_due_date").hide();
+<script type="text/javascript" rsf:id="iframeId_init">
+// initialize iframeId var in producer
 </script>
 <script type="text/javascript" rsf:id="attachment-ajax-init">
 //done in producer
@@ -215,6 +229,22 @@ $(".gradebook_item_due_date").hide();
 function refresh_ajax(){
 	$("#fragment-attachments-container").load("fragment-attachments?otpkey=" + otpkey + "&remove=true");
 }
+//]]>
+</script>
+<script type="text/javascript">
+//<![CDATA[
+$(document).ready(function(){
+	//gradebook inits
+	$("input[type='radio'][name='ungraded-selection']").each(function(){
+	    this.onclick=gradebook_toggle;
+	});
+	gradebook_toggle();
+	//Groups init
+	$("input[type='radio'][name='access_select-selection']").each(function(){
+		this.onclick = groups_toggle;
+	});
+	groups_toggle();
+});
 //]]>
 </script>
 </body>

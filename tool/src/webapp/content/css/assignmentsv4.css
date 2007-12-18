@@ -2,7 +2,7 @@
 
 .reqStar{
 	float: none;
-	margin-left: 0;
+	margin-left: -6pt;
 }
 
 table.listHier{
@@ -101,6 +101,14 @@ fieldset fieldset {
 	border: none;
 	margin: 0;
 	padding: 0;
+}
+
+fieldset fieldset.indent {
+    margin-left: 14.5em;	
+}
+
+fieldset fieldset.indent li {
+	margin: 0 .5em .5em 0;
 }
 
 fieldset fieldset legend {
