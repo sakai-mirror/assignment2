@@ -31,8 +31,10 @@ public class PagerRenderer {
 	private MessageLocator messageLocator;
 	private ExternalLogic externalLogic;
 	
+	public static final int DEFAULT_START_COUNT = 50;
+	
 	public Integer currentStart = 0;
-	public Integer currentCount = 50;		//actually set in the pager view parameters :-)
+	public Integer currentCount = DEFAULT_START_COUNT;		//actually set in the pager view parameters :-)
 	public Integer totalCount = 16;
 	
 	@SuppressWarnings("unchecked")

@@ -71,6 +71,45 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		log.debug("init");
 	}
 	
+	public AssignmentSubmission getAssignmentSubmissionById(Long submissionId){
+		if (submissionId == null) {
+			throw new IllegalArgumentException("Null submissionId passed to getAssignmentSubmissionById");
+		}
+		//TODO -- Add Security stuff pllllz
+		AssignmentSubmission submission =  (AssignmentSubmission) dao.findById(AssignmentSubmission.class, submissionId);
+		Assignment2 assignment = submission.getAssignment();
+		// if the submission rec exists, we need to grab the most current version
+		if (submission != null) {
+			AssignmentSubmissionVersion currentVersion = dao.getCurrentSubmissionVersionWithAttachments(submission, Boolean.FALSE);
+			if (currentVersion != null) {
+				if (!submission.getUserId().equals(externalLogic.getCurrentUserId())) {
+					// if the current user is not the submitter, we don't want to display a draft version
+					// but want it flagged as in progress
+					if (!currentVersion.isDraft()) {
+						submission.setCurrentVersionIsDraft(Boolean.FALSE);
+					} else {
+						submission.setCurrentVersionIsDraft(Boolean.TRUE);
+						// we need to now retrieve the most recent non-draft version
+						currentVersion = dao.getCurrentSubmissionVersionWithAttachments(submission, Boolean.TRUE);
+					}
+					
+				}
+			}
+			
+			submission.setCurrentSubmissionVersion(currentVersion);
+			
+			//if (!assignment.isUngraded() && assignment.getGradableObjectId() != null) {
+				// retrieve the grade information for this submission
+			//	Double grade = gradebookLogic.getStudentGradeForItem(contextId, studentId, assignment.getGradableObjectId());
+			//	String comment = gradebookLogic.getStudentGradeCommentForItem(contextId, studentId, assignment.getGradableObjectId());
+			//	submission.setGradebookGrade(grade);
+			//	submission.setGradebookComment(comment);
+			//}
+		}
+		return submission;
+
+	}
+	
 	public AssignmentSubmission getCurrentSubmissionByAssignmentIdAndStudentId(Long assignmentId, String studentId, boolean includeDraft) {
 		if (assignmentId == null || studentId == null) {
 			throw new IllegalArgumentException("Null assignmentId or userId passed to getCurrentSubmissionByAssignmentAndUser");

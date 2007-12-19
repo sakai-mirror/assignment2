@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.HashSet;
 
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
+import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.tool.beans.Assignment2Bean;
@@ -18,6 +19,7 @@ import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentAttachment;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
+import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.tool.api.ToolSession;
 
@@ -54,6 +56,7 @@ public class StudentSubmitProducer implements ViewComponentProducer, NavigationC
     private MessageLocator messageLocator;
     private AssignmentLogic assignmentLogic;
     private ExternalLogic externalLogic;
+    private AssignmentSubmissionLogic submissionLogic;
     private ExternalGradebookLogic externalGradebookLogic;
     private PreviewAssignmentBean previewAssignmentBean;
     private Locale locale;
@@ -84,10 +87,17 @@ public class StudentSubmitProducer implements ViewComponentProducer, NavigationC
     		return;
     	}
     	
+    	AssignmentSubmission submission = submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(assignmentId, externalLogic.getCurrentUserId(), Boolean.TRUE);
+    	String ASOTPKey = "";
+    	if (submission == null) {
+    		ASOTPKey += EntityBeanLocator.NEW_PREFIX + "1";
+    	} else {
+    		ASOTPKey += submission.getSubmissionId();
+    	}
+    	
     	//Now do submission stuff
     	String assignmentSubmissionOTP = "AssignmentSubmission.";		//Base for AssignmentSubmission object
     	String submissionVersionOTP = "currentSubmissionVersion";			//Base for the currentSubmissionVersion object
-    	String ASOTPKey = EntityBeanLocator.NEW_PREFIX + "1";
     	assignmentSubmissionOTP += ASOTPKey;							//Full path to current object
     	String versionOTP = assignmentSubmissionOTP + "." + submissionVersionOTP;			//Full path to current version object
     	AssignmentSubmission assignmentSubmission = (AssignmentSubmission) assignmentSubmissionBeanLocator.locateBean(ASOTPKey); 
@@ -121,18 +131,29 @@ public class StudentSubmitProducer implements ViewComponentProducer, NavigationC
     	UIVerbatim.make(form, "instructions", messageLocator.getMessage("assignment2.student-submit.instructions"));
     	
         //Rich Text Input
-        UIInput text = UIInput.make(form, "text:", versionOTP + ".submittedText");
-        richTextEvolver.evolveTextInput(text);
+    	if (assignment.getSubmissionType() == AssignmentConstants.SUBMIT_INLINE_ONLY || 
+    			assignment.getSubmissionType() == AssignmentConstants.SUBMIT_INLINE_AND_ATTACH){
+    		
+    		UIOutput.make(form, "submit_text");
+	        UIInput text = UIInput.make(form, "text:", versionOTP + ".submittedText");
+	        richTextEvolver.evolveTextInput(text);
+    	}
         
-    	//Initialize js otpkey
-    	UIVerbatim.make(tofill, "attachment-ajax-init", "otpkey=\"" + org.sakaiproject.util.Web.escapeUrl(ASOTPKey) + "\"");
-        
-        //Attachments
-    	attachmentListRenderer.makeAttachmentFromAssignmentSubmissionAttachmentSet(tofill, "submission_attachment_list:", params.viewID, 
-    			submissionVersion.getSubmissionAttachSet(), Boolean.TRUE);
-        UIInternalLink.make(form, "add_submission_attachments", UIMessage.make("assignment2.student-submit.add_attachments"),
-        		new FilePickerHelperViewParams(AddAttachmentHelperProducer.VIEWID, Boolean.TRUE, 
-        				Boolean.TRUE, 500, 700, ASOTPKey));
+    	//Attachment Stuff
+    	if (assignment.getSubmissionType() == AssignmentConstants.SUBMIT_ATTACH_ONLY ||
+    			assignment.getSubmissionType() == AssignmentConstants.SUBMIT_INLINE_AND_ATTACH){
+    		UIOutput.make(form, "submit_attachments");
+    		
+	    	//Initialize js otpkey
+	    	UIVerbatim.make(tofill, "attachment-ajax-init", "otpkey=\"" + org.sakaiproject.util.Web.escapeUrl(ASOTPKey) + "\"");
+	        
+	        //Attachments
+	    	attachmentListRenderer.makeAttachmentFromAssignmentSubmissionAttachmentSet(tofill, "submission_attachment_list:", params.viewID, 
+	    			submissionVersion.getSubmissionAttachSet(), Boolean.TRUE);
+	        UIInternalLink.make(form, "add_submission_attachments", UIMessage.make("assignment2.student-submit.add_attachments"),
+	        		new FilePickerHelperViewParams(AddAttachmentHelperProducer.VIEWID, Boolean.TRUE, 
+	        				Boolean.TRUE, 500, 700, ASOTPKey));
+    	}
         
         form.parameters.add( new UIELBinding("#{AssignmentSubmissionBean.assignmentId}", assignmentId));
         
@@ -215,6 +236,10 @@ public class StudentSubmitProducer implements ViewComponentProducer, NavigationC
 	
 	public void setAssignmentSubmissionEntityBeanLocator(EntityBeanLocator entityBeanLocator) {
 		this.assignmentSubmissionBeanLocator = entityBeanLocator;
+	}
+
+	public void setSubmissionLogic(AssignmentSubmissionLogic submissionLogic) {
+		this.submissionLogic = submissionLogic;
 	}
 
 }

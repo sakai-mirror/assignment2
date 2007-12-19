@@ -135,6 +135,7 @@
       <property name="assignment2EntityBeanLocator" ref="Assignment2"/>
       <property name="attachmentListRenderer" ref="AttachmentListRenderer" />
       <property name="assignmentSubmissionBeanLocator" ref="AssignmentSubmission" />
+      <property name="submissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
    </bean>
 
 

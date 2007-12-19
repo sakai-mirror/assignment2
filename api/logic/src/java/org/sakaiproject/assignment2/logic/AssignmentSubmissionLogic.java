@@ -36,6 +36,15 @@ public interface AssignmentSubmissionLogic {
 	
 	/**
 	 * 
+	 * @param submissionId
+	 * @return Returns the AssignmentSubmission based on its assignmentSubmissionId.
+	 * Does not populate current version information.
+	 */
+	public AssignmentSubmission getAssignmentSubmissionById(Long submissionId);
+	
+	
+	/**
+	 * 
 	 * @param assignmentId
 	 * @param userId
 	 * @param includeDraft

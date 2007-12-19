@@ -36,6 +36,34 @@
 
 	<form rsf:id="assignment_form">
 	<fieldset>
+		<legend rsf:id="msg=assignment2.assignment_add.assignment_details_legend">Assignment Details</legend>
+		<ol>
+			<li>
+				<label rsf:id="title_label"><span class="reqStar">*</span> Title</label> <input rsf:id="title" type="text" size="30" maxlength="100"/>
+				<p rsf:id="message-for:title">This is an example error: Adding an assignment requires a title</p>
+			</li>
+			<li>
+				<label rsf:id="msg=assignment2.assignment_add.assignment_instructions" class="block">Assignment Instructions</label>
+				<p rsf:id="message-for:instructions"></p>
+				<div rsf:id="instructions:">
+					<textarea name="something" cols="80" rows="20" wrap="virtual"></textarea>
+					<!-- this should be the FCKEditor -->
+				</div>
+				<fieldset>
+					<ol>
+						<li>
+							<input rsf:id="honor_pledge" type="checkbox" />
+							<label rsf:id="msg=assignment2.assignment_add.honor_pledge">Add honor pledge</label>
+						</li>
+					</ol>
+				</fieldset>
+			</li>
+			<li>
+				
+			</li>
+		</ol>
+	</fieldset>
+	<fieldset>
 		<legend rsf:id="msg=assignment2.assignment_add.grading_legend">Grading</legend>
 		<ol>
 			<li><span rsf:id="ungraded" />
@@ -60,12 +88,8 @@
 		</ol>
 	</fieldset>
 	<fieldset>
-		<legend>Assignment Details</legend>
-		<ol>
-			<li>
-				<label rsf:id="title_label"><span class="reqStar">*</span> Title</label> <input rsf:id="title" type="text" size="30" maxlength="100"/>
-				<p rsf:id="message-for:title">This is an example error: Adding an assignment requires a title</p>
-			</li>
+		<legend rsf:id="msg=assignment2.assignment_add.other_legend">Other</legend>
+	    <ol>
 			<li>
 				<label rsf:id="open_date_label"><span class="reqStar">*</span> Open Date</label><input rsf:id="open_date:"  />
 				<p rsf:id="message-for:open_date"></p>
@@ -104,16 +128,9 @@
 				</fieldset>
 			</li>
 			<li>
-				<span rsf:id="submission_type"></span>
 				<label rsf:id="student_submissions_label"><span class="reqStar">*</span> Submission Method</label>
-				<fieldset>
-				<ol>
-					<li rsf:id="submission_type_row:">
-						<input type="radio" rsf:id="submission_type_radio" />
-						<label rsf:id="submission_type_label">Label</label>
-					</li>
-				</ol>
-				</fieldset>
+				<select rsf:id="submission_type">
+				</select>
 				<p rsf:id="message-for:submission_type"></p>
 			</li>
 			<!-- 
@@ -126,25 +143,6 @@
 				</fieldset>
 			</li>
 			-->
-			<li>
-				<label rsf:id="msg=assignment2.assignment_add.assignment_instructions" class="block">Assignment Instructions</label>
-				<p rsf:id="message-for:instructions"></p>
-				<div rsf:id="instructions:">
-					<textarea name="something" cols="80" rows="20" wrap="virtual"></textarea>
-					<!-- this should be the FCKEditor -->
-				</div>
-				<fieldset>
-					<ol>
-						<li>
-							<input rsf:id="honor_pledge" type="checkbox" />
-							<label rsf:id="msg=assignment2.assignment_add.honor_pledge">Add honor pledge</label>
-						</li>
-					</ol>
-				</fieldset>
-			</li>
-			<li>
-				
-			</li>
 		</ol>
 	</fieldset>
 	<fieldset>

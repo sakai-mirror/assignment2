@@ -27,7 +27,7 @@ public class Assignment2Creator {
     	togo.setHonorPledge(Boolean.FALSE);
     	togo.setUngraded(Boolean.TRUE);
     	togo.setHasAnnouncement(Boolean.FALSE);
-    	togo.setSubmissionType(AssignmentConstants.SUBMIT_INLINE_ONLY);
+    	togo.setSubmissionType(AssignmentConstants.SUBMIT_INLINE_AND_ATTACH);
     	togo.setAllowResubmit(Boolean.FALSE);
     	togo.setRestrictedToGroups(Boolean.FALSE);
     	

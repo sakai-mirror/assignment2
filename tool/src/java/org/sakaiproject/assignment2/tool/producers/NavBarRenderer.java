@@ -25,6 +25,7 @@ public class NavBarRenderer {
             UIInternalLink.make(cell, "navigation-link", UIMessage.make("assignment2.navbar.assignment_list"), 
                     new SimpleViewParameters(AssignmentListSortViewProducer.VIEW_ID));               
         }
+/**        
         UIOutput.make(cell, "navigation-separator");
         
         //Add Link
@@ -35,7 +36,7 @@ public class NavBarRenderer {
             UIInternalLink.make(cell, "navigation-link", UIMessage.make("assignment2.navbar.add"), 
                     new SimpleViewParameters(AssignmentAddProducer.VIEW_ID));               
         }
-
+**/
 /**        
         UIOutput.make(cell, "navigation-separator");
 

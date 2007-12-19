@@ -186,14 +186,6 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
         };
         UISelect selectSubmission =UISelect.make(form, "submission_type", submission_type_values,
         		submisison_type_labels, assignment2OTP + ".submissionType").setMessageKeys();
-        //((UIBoundString) selectSubmission.selection).setValue(String.valueOf(assignment.getSubmissionType()));
-        
-        String submissionSelectId = selectSubmission.getFullID();
-        for (int i=0; i<submission_type_values.length; i++){
-        	UIBranchContainer submission_type_row = UIBranchContainer.make(form, "submission_type_row:");
-        	UISelectChoice.make(submission_type_row, "submission_type_radio", submissionSelectId, i);
-        	UISelectLabel.make(submission_type_row, "submission_type_label", submissionSelectId, i);
-        }
         
         //Rich Text Input
         UIInput instructions = UIInput.make(form, "instructions:", assignment2OTP + ".instructions");

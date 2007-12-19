@@ -2,11 +2,12 @@
 package org.sakaiproject.assignment2.tool.params;
 
 import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
+import org.sakaiproject.assignment2.tool.producers.PagerRenderer;
 
 public class PagerViewParams extends SimpleViewParameters {
 
 	public int current_start = 0;
-	public int current_count = 50;
+	public int current_count = PagerRenderer.DEFAULT_START_COUNT;
 	
 	public PagerViewParams() {}
 	
