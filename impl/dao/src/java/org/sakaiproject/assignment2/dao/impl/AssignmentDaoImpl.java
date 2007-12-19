@@ -36,6 +36,7 @@ import org.hibernate.Query;
 import org.sakaiproject.assignment2.dao.AssignmentDao;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
+import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.genericdao.hibernate.HibernateCompleteGenericDao;
 
 /**
@@ -122,60 +123,84 @@ public class AssignmentDaoImpl extends HibernateCompleteGenericDao implements As
     	return query.list();
     }
     
-    public AssignmentSubmission getCurrentSubmissionVersionForUserIdWithAttachments(AssignmentSubmission submission, String userId, boolean ignoreDrafts) {
-    	if (submission == null || userId == null) {
-    		throw new IllegalArgumentException("null submission or userId passed to getSubmissionVersionForUserIdWithAttachments");
+    public AssignmentSubmissionVersion getCurrentSubmissionVersionWithAttachments(AssignmentSubmission submission, boolean ignoreDrafts) {
+    	if (submission == null) {
+    		throw new IllegalArgumentException("null submission passed to getSubmissionVersionForUserIdWithAttachments");
     	}
     	
-    	String hqlGetVersionNoDraft = "select max(subVersion.submissionVersionId) " +
+    	AssignmentSubmissionVersion currentVersion = null;
+    	
+    	String hqlGetVersionNoDraft = "select max(submissionVersion.submissionVersionId) " +
 		"from AssignmentSubmissionVersion as submissionVersion " +
 		"where submissionVersion.assignmentSubmission = :submission " +
 		"and submissionVersion.draft = false";
 	
-    	String hqlGetVersionWithDraft = "select max(subVersion.submissionVersionId) " +
+    	String hqlGetVersionWithDraft = "select max(submissionVersion.submissionVersionId) " +
 		"from AssignmentSubmissionVersion as submissionVersion " +
 		"where submissionVersion.assignmentSubmission = :submission";
     	
-    	/*Query query = getSession().getNamedQuery("findSubmissionForAssignmentAndUserWithAttachments");
-    	query.setParameter("assignment", assignment);
-    	query.setParameter("userId", userId);*/
+    	String queryToUse = ignoreDrafts ? hqlGetVersionNoDraft : hqlGetVersionWithDraft;
     	
-    	//return (AssignmentSubmission) query.uniqueResult();
-    	return null;
+    	Query query = getSession().createQuery(queryToUse);
+    	query.setParameter("submission", submission);
+    	
+    	Long submissionVersionId = (Long) query.uniqueResult();
+    	
+    	if (submissionVersionId != null) {
+    		currentVersion = getAssignmentSubmissionVersionByIdWithAttachments(submissionVersionId);
+    	}
+    	
+    	return currentVersion;
     }
     
-    public List<AssignmentSubmission> getAssignmentSubmissionsWithCurrentVersionDataWithAttach(List<Long> submissionIdList, boolean includeDraft) {
-    	if (submissionIdList == null || submissionIdList.isEmpty()) {
+    public List<AssignmentSubmission> getAssignmentSubmissionsWithCurrentVersionDataWithAttach(List<Long> submissionList, boolean ignoreDrafts) {
+    	if (submissionList == null || submissionList.isEmpty()) {
     		return new ArrayList();
     	}
     	
+    	List submissions = new ArrayList();
+    	
     	List versionIdList = new ArrayList();
     	
-    	String hqlGetVersionIdsNoDrafts = "select max(subVersion.submissionVersionId) " +
-    		"from AssignmentSubmissionVersion as subVersion " +
-    		"where subVersion.submissionId in :submissionIdList " +
-    		"and subVersion.draft = false group by subVersion.submissionId";
+    	String hqlGetVersionNoDraft = "select max(submissionVersion.submissionVersionId) " +
+		"from AssignmentSubmissionVersion as submissionVersion " +
+		"where submissionVersion.assignmentSubmission in :submissionList " +
+		"and submissionVersion.draft = false";
+	
+    	String hqlGetVersionWithDraft = "select max(submissionVersion.submissionVersionId) " +
+		"from AssignmentSubmissionVersion as submissionVersion " +
+		"where submissionVersion.assignmentSubmission in :submissionList";
     	
-    	String hqlGetVersionIdsWithDrafts = "select max(subVersion.submissionVersionId) " +
-	    	"from AssignmentSubmissionVersion as subVersion " +
-			"where subVersion.submissionId in :submissionIdList " +
-			"group by subVersion.submissionId";
-    	
-    	// if submissionId list is > than the max length allowed in sql, we need
+    	// TODO if submissionId list is > than the max length allowed in sql, we need
     	// to cycle through the list
-    	if (submissionIdList.size() > MAX_NUMBER_OF_SQL_PARAMETERS_IN_LIST) {
-    		
-    	} else {
+
+    	String queryToUse = ignoreDrafts ? hqlGetVersionNoDraft : hqlGetVersionWithDraft;
+    	
+    	Query query = getSession().createQuery(queryToUse);
+    	query.setParameter("submissionList", submissionList);
+    	
+    	versionIdList = query.list();
+    	
+    	if (versionIdList != null) {
     		
     	}
     	
-    	return versionIdList;
-    	
-
+    	return new ArrayList();
     }
     
     public List <AssignmentSubmission> getAssignmentSubmissionsWithCurrentVersionDataNoAttach(List<Long> submissionIdList, boolean includeDraft) {
     	return null;
+    }
+    
+    private AssignmentSubmissionVersion getAssignmentSubmissionVersionByIdWithAttachments(Long submissionVersionId) {
+    	if (submissionVersionId == null) {
+    		throw new IllegalArgumentException("Null submissionVersionId passed to getAssignmentSubmissionVersionByIdWithAttachments");
+    	}
+    	
+    	Query query = getSession().getNamedQuery("findSubmissionVersionByIdWithAttachments");
+    	query.setParameter("submissionVersionId", submissionVersionId);
+    	
+    	return (AssignmentSubmissionVersion) query.uniqueResult();
     }
 
 }

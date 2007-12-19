@@ -39,12 +39,14 @@ public class AssignmentSubmission {
 	private Set submissionHistorySet;
 	
 	// fields populated with gradebook data
-	private String gradebookGrade;
+	private Double gradebookGrade;
 	private String gradebookComment;
 	
 	// the current submission version must be populated manually b/c we want
 	// to retrieve the version rec with the highest id
 	private AssignmentSubmissionVersion currentSubmissionVersion;
+	
+	private boolean currentVersionIsDraft;
 
 	public AssignmentSubmission() {
 	}
@@ -129,7 +131,7 @@ public class AssignmentSubmission {
 	 * grade will be returned in converted form according to the gradebook's
 	 * grade entry type (ie letter grade, percentage, etc)
 	 */
-	public String getGradebookGrade() {
+	public Double getGradebookGrade() {
 		return gradebookGrade;
 	}
 	
@@ -139,7 +141,7 @@ public class AssignmentSubmission {
 	 * grade entry type (ie letter grade, percentage, etc)
 	 * @param gradebookGrade
 	 */
-	public void setGradebookGrade(String gradebookGrade) {
+	public void setGradebookGrade(Double gradebookGrade) {
 		this.gradebookGrade = gradebookGrade;
 	}
 	
@@ -157,31 +159,6 @@ public class AssignmentSubmission {
 	 */
 	public void setGradebookComment(String gradebookComment) {
 		this.gradebookComment = gradebookComment;
-	}
-	
-	// not persisted but convenient here for UI
-	/**
-	 * <b>Note</b> This is not a persisted field but must be handled specially
-	 * when you want to retrieve or update this information
-	 * @return The current AssignmentSubmissionVersion for this submission. Each
-	 * modification to the submission will result in a new AssignmentSubmissionVersion
-	 * record so we maintain a history.
-	 */
-	public AssignmentSubmissionVersion getCurrentSubmissionVersion() {
-		return currentSubmissionVersion;
-	}
-
-	/**
-	 * <b>Note</b> This is not a persisted field but must be handled specially
-	 * when you want to retrieve or update this information
-	 * 
-	 * Set the current AssignmentSubmissionVersion for this submission. Each
-	 * modification to the submission will result in a new AssignmentSubmissionVersion
-	 * record so we maintain a history.
-	 * @param currentSubmissionVersion
-	 */
-	public void setCurrentSubmissionVersion(AssignmentSubmissionVersion currentSubmissionVersion) {
-		this.currentSubmissionVersion = currentSubmissionVersion;
 	}
 
 	/**
@@ -215,5 +192,47 @@ public class AssignmentSubmission {
 	public void setResubmitCloseTime(Date resubmitCloseTime) {
 		this.resubmitCloseTime = resubmitCloseTime;
 	}
+
+	// non-persisted fields
 	
+	// not persisted but convenient here for UI
+	/**
+	 * <b>Note</b> This is not a persisted field but must be handled specially
+	 * when you want to retrieve or update this information
+	 * @return The current AssignmentSubmissionVersion for this submission. Each
+	 * modification to the submission will result in a new AssignmentSubmissionVersion
+	 * record so we maintain a history.
+	 */
+	public AssignmentSubmissionVersion getCurrentSubmissionVersion() {
+		return currentSubmissionVersion;
+	}
+
+	/**
+	 * <b>Note</b> This is not a persisted field but must be handled specially
+	 * when you want to retrieve or update this information
+	 * 
+	 * Set the current AssignmentSubmissionVersion for this submission. Each
+	 * modification to the submission will result in a new AssignmentSubmissionVersion
+	 * record so we maintain a history.
+	 * @param currentSubmissionVersion
+	 */
+	public void setCurrentSubmissionVersion(AssignmentSubmissionVersion currentSubmissionVersion) {
+		this.currentSubmissionVersion = currentSubmissionVersion;
+	}
+	
+	/**
+	 * 
+	 * @return true if the most recent submission version is in draft status
+	 */
+	public boolean isCurrentVersionIsDraft() {
+		return currentVersionIsDraft;
+	}
+	
+	/**
+	 * true if the most recent submission version is in draft status
+	 * @param currentVersionIsDraft
+	 */
+	public void setCurrentVersionIsDraft(boolean currentVersionIsDraft) {
+		this.currentVersionIsDraft = currentVersionIsDraft;
+	}
 }

@@ -41,6 +41,8 @@ import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.api.ToolConfiguration;
 import org.sakaiproject.site.cover.SiteService;
+import org.sakaiproject.service.gradebook.shared.AssessmentNotFoundException;
+import org.sakaiproject.service.gradebook.shared.CommentDefinition;
 
 
 /**
@@ -281,6 +283,64 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
     		
     	}	
     	return url;
+    }
+    
+    public String getGradeViewPermissionForCurrentUserForStudentForItem(String contextId, String studentId, Long gbItemId) {
+    	if (contextId == null || studentId == null || gbItemId == null) {
+    		throw new IllegalArgumentException("Null contextId or studentId or itemId passed to getGradeViewPermissionForCurrentUserForStudentForItem");
+    	}
+    	
+    	String viewOrGrade = null;
+    	
+    	String function =
+    		gradebookService.getGradeViewFunctionForUserForStudentForItem(contextId, gbItemId, studentId);
+    	
+    	if (function == null) {
+    		viewOrGrade = null;
+    	} else if (function.equals(GradebookService.gradePermission)) {
+    		viewOrGrade = AssignmentConstants.GRADE;
+    	} else if (function.equals(GradebookService.viewPermission)) {
+    		viewOrGrade = AssignmentConstants.VIEW;
+    	}
+    	
+    	return viewOrGrade;
+    }
+    
+    public Double getStudentGradeForItem(String contextId, String studentId, Long gbItemId) {
+    	if (contextId == null || studentId == null || gbItemId == null) {
+    		throw new IllegalArgumentException("Null contextId or studentId or gbItemId passed to getStudentGradeForItem");
+    	}
+    	
+    	Double grade = null;
+    	
+    	try {
+    		grade = gradebookService.getAssignmentScore(contextId, gbItemId, studentId);
+    	} catch (AssessmentNotFoundException anfe) {
+    		// this gradebook item no longer exists, so return a null grade
+    		grade = null;
+    	}
+    	
+    	return grade;
+    }
+    
+    public String getStudentGradeCommentForItem(String contextId, String studentId, Long gbItemId) {
+    	if (contextId == null || studentId == null || gbItemId == null) {
+    		throw new IllegalArgumentException("Null contextId or studentId or gbItemId passed to getStudentGradeCommentForItem");
+    	}
+    	
+    	String comment = null;
+    	
+    	try {
+    		CommentDefinition commentDef = gradebookService.getAssignmentScoreComment(contextId, gbItemId, studentId);
+    		if (commentDef != null) {
+    			comment = commentDef.getCommentText();
+    		}
+    	} catch (AssessmentNotFoundException anfe) {
+    		// this gradebook item no longer exists, so return a null comment
+    		comment = null;
+    	}
+    	
+    	return comment;
     }
 
 }

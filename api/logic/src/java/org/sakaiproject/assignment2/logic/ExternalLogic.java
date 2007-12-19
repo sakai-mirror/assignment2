@@ -107,4 +107,18 @@ public interface ExternalLogic {
      * @return String of path for <img> tag for resource image type icon
      */
     public String getContentTypeImagePath(ContentResource contentReference);
+    
+    /**
+     * 
+     * @param contextId
+     * @return a list of the student Ids of all of the students in the given site
+     */
+    public List<String> getStudentsInSite(String contextId);
+    
+    /**
+     * 
+     * @param sectionId
+     * @return a list of the student ids of students in the given section  
+     */
+    public List<String> getStudentsInSection(String sectionId);
 }

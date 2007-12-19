@@ -29,6 +29,7 @@
 	<classpathentry kind="src" path="/gradebook"/>
 	<classpathentry kind="src" path="/announcement-api"/>
 	<classpathentry kind="src" path="/message-api"/>
+	<classpathentry kind="src" path="/sections-api"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/import-api"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/event-api"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/entity-broker"/>

@@ -136,5 +136,36 @@ public interface ExternalGradebookLogic {
 	 */
 	public boolean isCurrentUserAStudentInGb(String contextId);
 	
+	/**
+	 * 
+	 * @param contextId
+	 * @param studentId
+	 * @param gbItemId
+	 * @return AssignmentConstants.GRADE if current user is able to grade this item for this student,
+	 * AssignmentConstants.VIEW if user is only able to view the grade, and null if
+	 * the user may not view this student for the given item at all
+	 */
+	public String getGradeViewPermissionForCurrentUserForStudentForItem(String contextId, String studentId, Long gbItemId);
+	
+	/**
+	 * 
+	 * @param contextId
+	 * @param studentId
+	 * @param gbItemId
+	 * @return the grade in the gb for the given gradable object id and student. null if no
+	 * grade or if the gb item does not exist
+	 */
+	public Double getStudentGradeForItem(String contextId, String studentId, Long gbItemId);
+	
+	/**
+	 * 
+	 * @param contextId
+	 * @param studentId
+	 * @param gbItemId
+	 * @return the grade comment in the gb for the given gradable object id and student. null if no
+	 * comment or if the gb item does not exist
+	 */
+	public String getStudentGradeCommentForItem(String contextId, String studentId, Long gbItemId);
+	
 	public String getGradebookItemHelperUrl(String contextId);
 }

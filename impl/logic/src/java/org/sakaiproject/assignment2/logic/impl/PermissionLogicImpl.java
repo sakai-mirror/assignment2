@@ -23,6 +23,7 @@ package org.sakaiproject.assignment2.logic.impl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -33,17 +34,9 @@ import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.logic.PermissionLogic;
-import org.sakaiproject.assignment2.logic.GradebookItem;
-import org.sakaiproject.component.cover.ComponentManager;
-import org.sakaiproject.component.cover.ServerConfigurationService;
-import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentGroup;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
-import org.sakaiproject.site.api.Site;
-import org.sakaiproject.site.api.ToolConfiguration;
-import org.sakaiproject.site.cover.SiteService;
-
 
 /**
  * This is the implementation for logic to answer common permissions questions
@@ -78,7 +71,7 @@ public class PermissionLogicImpl implements PermissionLogic {
     		throw new IllegalArgumentException("Null studentId or assignment passed to isUserAbleToViewStudentSubmissionForAssignment");
     	}
     	
-    	boolean viewable = true;
+    	boolean viewable = false;
     	
     	if (externalLogic.getCurrentUserId().equals(studentId)) {
     		viewable = true;
@@ -88,12 +81,19 @@ public class PermissionLogicImpl implements PermissionLogic {
     		if (assignment.isUngraded()) {
     			viewable = isUserAbleToViewSubmissionForUngradedAssignment(studentId, assignment);
     		} else {
-    			
+    			Long gbItemId = assignment.getGradableObjectId();
+    			if (gbItemId != null) {
+    				String function = gradebookLogic.getGradeViewPermissionForCurrentUserForStudentForItem(externalLogic.getCurrentContextId(), 
+    						studentId, gbItemId);
+    				if (function != null && (function.equals(AssignmentConstants.GRADE) ||
+    						function.equals(AssignmentConstants.VIEW))) {
+    					viewable = true;
+    				}
+    			}
     		}
     	}
     	
-    	return viewable;
-    	
+    	return viewable;	
     }
     
     public boolean isUserAbleToViewSubmissionForUngradedAssignment(String studentId, Assignment2 assignment) {
@@ -169,6 +169,39 @@ public class PermissionLogicImpl implements PermissionLogic {
 		return instructorView;
 	}
 	
+	public List<String> getViewableStudentsForUserForItem(Assignment2 assignment) {
+		if (assignment == null) {
+			throw new IllegalArgumentException("null assignment passed to getViewableStudentsForUserForItem");
+		}
+		
+		List<String> viewableStudents = new ArrayList();
+		
+		String contextId = externalLogic.getCurrentContextId();
+		
+		List<String> allStudentsInSite = externalLogic.getStudentsInSite(contextId);
+		
+		if (gradebookLogic.isCurrentUserAbleToGrade(contextId)) {
+			viewableStudents = allStudentsInSite;
+		} else if(gradebookLogic.isCurrentUserAbleToGrade(contextId)) {
+			if (assignment.isUngraded()) {
+				Set sharedStudents = getStudentsInCurrentUsersSections();
+				if (sharedStudents != null) {
+					viewableStudents.addAll(sharedStudents);
+				}
+			} else {
+				// we need to get the students that are viewable in the gb
+				if (assignment.getGradableObjectId() != null) {
+					Map studentIdFunctionMap = gradebookLogic.getViewableStudentsForGradedItemMap(contextId, assignment.getGradableObjectId());
+					if (studentIdFunctionMap != null) {
+						viewableStudents.addAll(studentIdFunctionMap.keySet());
+					}
+				}
+			}
+		}
+		
+		return viewableStudents;
+	}
+	
 	/**
 	 * Given 2 lists of group ids, will return true if any of the group ids overlap
 	 * @param user1GroupIds
@@ -186,6 +219,28 @@ public class PermissionLogicImpl implements PermissionLogic {
 		}
 		
 		return false;
+	}
+	
+	private Set<String> getStudentsInCurrentUsersSections() {
+		// get the user's memberships
+		List<String> groupMemberships = externalLogic.getUserMembershipGroupIdList(externalLogic.getCurrentUserId());
+		
+		// use a set to eliminate section overlap with duplicate students
+		Set<String> sharedStudents = new HashSet();
+		if (groupMemberships != null) {
+			for (Iterator groupIter = groupMemberships.iterator(); groupIter.hasNext();) {
+				String groupId = (String) groupIter.next();
+				if (groupId != null) {
+					List students = externalLogic.getStudentsInSection(groupId);
+					if (students != null) {
+						sharedStudents.addAll(students);
+					}
+				}
+			}
+
+		}
+		
+		return sharedStudents;
 	}
 
 }

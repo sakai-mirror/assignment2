@@ -36,20 +36,13 @@ public interface AssignmentSubmissionLogic {
 	
 	/**
 	 * 
-	 * @param submissionId
-	 * @return Returns the AssignmentSubmission based on its assignmentSubmissionId.
-	 * Does not populate current version information.
-	 */
-	public AssignmentSubmission getAssignmentSubmissionById(Long submissionId);
-	
-	/**
-	 * 
 	 * @param assignmentId
 	 * @param userId
 	 * @param includeDraft
 	 * 		false if you want the most recent non-draft submission
 	 * @return AssignmentSubmission associated with the given Assignment and studentId
 	 * 		will return null if there is no submission info for this student yet
+	 * @throws SecurityException if current user not allowed to view student's submission
 	 */
 	public AssignmentSubmission getCurrentSubmissionByAssignmentIdAndStudentId(Long assignmentId, String studentId, boolean includeDraft);
 	
@@ -61,22 +54,11 @@ public interface AssignmentSubmissionLogic {
 	public void saveStudentSubmission(AssignmentSubmission assignmentSubmission);
 	
 	/**
-	 * Given an assignmentId, returns the associated AssignmentSubmission records 
-	 * without the current submission information populated
-	 * @param assignment
-	 * @return
-	 */
-	public List<AssignmentSubmission> getAllSubmissionsByAssignmentIdNoVersionData(Long assignmentId);
-	
-	/**
 	 * 
-	 * @param assignment
-	 * @param userId
-	 * @param includeDraft
-	 * 	if false, will retrieve the most recent submission and ignore any current
-	 * 		draft versions
-	 * @return AssignmentSubmission record with currentVersion
+	 * @param assignmentId
+	 * @return all AssignmentSubmissions for this assignmentId that the current
+	 * user is allowed to view or grade.  populates currentVersion 
 	 */
-	public AssignmentSubmission getSubmissionVersionForUserIdAndAssignmentWithAttachments(Assignment2 assignment, String userId, boolean includeDraft);
+	public List<AssignmentSubmission> getViewableSubmissionsForAssignmentId(Long assignmentId);
 	
 }

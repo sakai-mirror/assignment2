@@ -30,6 +30,7 @@ import org.sakaiproject.assignment2.model.AssignmentAttachment;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentFeedbackAttachment;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionAttachment;
+import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.genericdao.api.CompleteGenericDao;
 
 /**
@@ -95,15 +96,14 @@ public interface AssignmentDao extends CompleteGenericDao {
 	public List <AssignmentSubmission> getAssignmentSubmissionsWithCurrentVersionDataNoAttach(List<Long> submissionIdList, boolean includeDraft);
 	
 	/**
-	 * returns the current submission version for the given assignmentSubmission and userId
+	 * returns the current submission version for the given AssignmentSubmission and userId
 	 * @param submission
-	 * @param userId
 	 * @param ignoreDrafts
 	 * 		if true, will count drafts as the current version.
 	 * 		if false, will populate the current version with the most recent non-draft
 	 * 		submission info
 	 * @return
 	 */
-	public AssignmentSubmission getCurrentSubmissionVersionForUserIdWithAttachments(AssignmentSubmission submission, String userId, boolean ignoreDrafts);
+	public AssignmentSubmissionVersion getCurrentSubmissionVersionWithAttachments(AssignmentSubmission submission, boolean ignoreDrafts);
 	
 }

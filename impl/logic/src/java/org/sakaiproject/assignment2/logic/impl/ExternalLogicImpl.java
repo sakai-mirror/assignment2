@@ -27,7 +27,9 @@ import org.sakaiproject.user.api.User;
 import org.sakaiproject.user.api.UserDirectoryService;
 import org.sakaiproject.user.api.UserNotDefinedException;
 import org.sakaiproject.util.FormattedText;
-
+import org.sakaiproject.section.api.SectionAwareness;
+import org.sakaiproject.section.api.facade.Role;
+import org.sakaiproject.section.api.coursemanagement.ParticipationRecord;
 
 /**
  * This is the implementation for logic which is external to our app logic
@@ -66,6 +68,11 @@ public class ExternalLogicImpl implements ExternalLogic {
     private UserDirectoryService userDirectoryService;
     public void setUserDirectoryService(UserDirectoryService userDirectoryService) {
         this.userDirectoryService = userDirectoryService;
+    }
+    
+    private SectionAwareness sectionAwareness;
+    public void setSectionAwareness(SectionAwareness sectionAwareness) {
+    	this.sectionAwareness = sectionAwareness;
     }
     
     private static final String ANON_USER_ATTRIBUTE = "AnonUserAttribute";
@@ -195,5 +202,45 @@ public class ExternalLogicImpl implements ExternalLogic {
     			contentReference.getProperties().getProperty(
     					contentReference.getProperties().getNamePropContentType()));
     	return image_path;
+    }
+    
+    public List<String> getStudentsInSite(String contextId) {
+    	if (contextId == null) {
+    		throw new IllegalArgumentException("Null contextId passed to getStudentsInSite");
+    	}
+    	List<String> studentsInSite = new ArrayList();
+    	
+    	List<ParticipationRecord> participants = sectionAwareness.getSiteMembersInRole(contextId, Role.STUDENT);
+    	if (participants != null) {
+    		for (Iterator pIter = participants.iterator(); pIter.hasNext();) {
+    			ParticipationRecord part = (ParticipationRecord) pIter.next();
+    			if (part != null) {
+    				String studentId = part.getUser().getUserUid();
+    				studentsInSite.add(studentId);
+    			}
+    		}
+    	}
+    	
+    	return studentsInSite;
+    }
+    
+    public List<String> getStudentsInSection(String sectionId) {
+    	if (sectionId == null) {
+    		throw new IllegalArgumentException("null sectionId passed to getStudentsInSection");
+    		
+    	}
+    	
+    	List<String> studentsInSection = new ArrayList();
+    	
+    	List<ParticipationRecord> participants = sectionAwareness.getSectionMembersInRole(sectionId, Role.STUDENT);
+    	for (Iterator pIter = participants.iterator(); pIter.hasNext();) {
+			ParticipationRecord part = (ParticipationRecord) pIter.next();
+			if (part != null) {
+				String studentId = part.getUser().getUserUid();
+				studentsInSection.add(studentId);
+			}
+		}
+    	
+    	return studentsInSection;
     }
 }

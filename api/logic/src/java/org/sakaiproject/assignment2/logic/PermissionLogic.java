@@ -76,4 +76,12 @@ public interface PermissionLogic {
 	 * the "instructor view" for the assignments tool. 
 	 */
 	public boolean isUserAbleToAccessInstructorView(String contextId);
+	
+	/**
+	 * 
+	 * @param assignment
+	 * @return a list of student ids that the current user is able to view
+	 * for the given assignment
+	 */
+	public List<String> getViewableStudentsForUserForItem(Assignment2 assignment);
 }

@@ -64,15 +64,22 @@
             <column name="CREATED_TIME" not-null="true" />
         </property>
         
-        <set name="submissionAttachSet" lazy="true" order-by="created desc">
+        <set name="submissionAttachSet" lazy="true">
 	        <key column="SUBMISSION_VERSION_ID"/>                        
 	        <one-to-many class="org.sakaiproject.assignment2.model.AssignmentSubmissionAttachment"/>            
     		</set>
     		
-    		<set name="feedbackAttachSet" lazy="true" order-by="created desc">
+    		<set name="feedbackAttachSet" lazy="true">
 	        <key column="SUBMISSION_VERSION_ID"/>                        
 	        <one-to-many class="org.sakaiproject.assignment2.model.AssignmentFeedbackAttachment"/>            
     		</set>
               
     </class>
+    
+    <query name="findSubmissionVersionByIdWithAttachments">
+    <![CDATA[from org.sakaiproject.assignment2.model.AssignmentSubmissionVersion submissionVersion
+             left join fetch submissionVersion.submissionAttachSet
+             left join fetch submissionVersion.feedbackAttachSet
+             where submissionVersion.submissionVersionId = :submissionVersionId]]>
+  	</query>
 </hibernate-mapping>
