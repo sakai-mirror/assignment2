@@ -25,6 +25,7 @@ import uk.org.ponder.beanutil.entity.EntityBeanLocator;
 import uk.org.ponder.messageutil.MessageLocator;
 import uk.org.ponder.rsf.components.UICommand;
 import uk.org.ponder.rsf.components.UIContainer;
+import uk.org.ponder.rsf.components.UIELBinding;
 import uk.org.ponder.rsf.components.UIForm;
 import uk.org.ponder.rsf.components.UIInput;
 import uk.org.ponder.rsf.components.UIInternalLink;
@@ -133,6 +134,7 @@ public class StudentSubmitProducer implements ViewComponentProducer, NavigationC
         		new FilePickerHelperViewParams(AddAttachmentHelperProducer.VIEWID, Boolean.TRUE, 
         				Boolean.TRUE, 500, 700, ASOTPKey));
         
+        form.parameters.add( new UIELBinding("#{AssignmentSubmissionBean.assignmentId}", assignmentId));
         
         //Buttons
 	     UICommand.make(form, "submit_button", UIMessage.make("assignment2.student-submit.submit"), 

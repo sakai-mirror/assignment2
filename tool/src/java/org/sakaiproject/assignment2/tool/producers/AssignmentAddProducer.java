@@ -163,14 +163,10 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
 		dateEvolver.evolveDateInput(openDateField, null);
 		UIMessage.make(form, "open_date_instruction", "assignment2.assignment_add.open_date_instruction");
         
-		UIVerbatim.make(form, "due_date_label", messageLocator.getMessage("assignment2.assignment_add.due_date",
-        		new Object[]{ reqStar }));
 		UIInput dueDateField = UIInput.make(form, "due_date:", assignment2OTP + ".dueDateForUngraded");
 		dateEvolver.evolveDateInput(dueDateField, null);
 		
-		UIVerbatim.make(form, "accept_until_label", messageLocator.getMessage("assignment2.assignment_add.accept_until",
-        		new Object[]{ reqStar }));
-        UIInput acceptUntilTimeField = UIInput.make(form, "accept_until:", assignment2OTP + ".acceptUntilTime");
+		UIInput acceptUntilTimeField = UIInput.make(form, "accept_until:", assignment2OTP + ".acceptUntilTime");
         dateEvolver.evolveDateInput(acceptUntilTimeField, null);
         
         UIVerbatim.make(form, "student_submissions_label", messageLocator.getMessage("assignment2.assignment_add.student_submissions",

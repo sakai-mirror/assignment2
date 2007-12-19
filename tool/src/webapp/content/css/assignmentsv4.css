@@ -2,7 +2,11 @@
 
 .reqStar{
 	float: none;
-	margin-left: -6pt;
+	margin-left: 0;
+}
+
+label .reqStar {
+	margin-left: -6pt;	
 }
 
 table.listHier{
@@ -43,7 +47,6 @@ li.last {
 .pagerDiv {
 	float: right;	
 	position: relative;
-	top: -4em;
 }
 
 h3 {

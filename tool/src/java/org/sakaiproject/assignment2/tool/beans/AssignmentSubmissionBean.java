@@ -1,5 +1,6 @@
 package org.sakaiproject.assignment2.tool.beans;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,6 +27,7 @@ public class AssignmentSubmissionBean {
 	private static final String FAILURE = "failure";
 	
 	public Map selectedIds = new HashMap();
+	public Long assignmentId;
 	
     private TargettedMessageList messages;
     public void setMessages(TargettedMessageList messages) {
@@ -83,6 +85,15 @@ public class AssignmentSubmissionBean {
 	public String processActionSubmit(){
 		for (String key : OTPMap.keySet()) {
 			AssignmentSubmission assignmentSubmission = OTPMap.get(key);
+			if (assignmentId == null){
+				return FAILURE;
+			}
+			Assignment2 assignment = assignmentLogic.getAssignmentById(assignmentId);
+			assignmentSubmission.setAssignment(assignment);
+			assignmentSubmission.getCurrentSubmissionVersion().setDraft(Boolean.FALSE);
+			assignmentSubmission.getCurrentSubmissionVersion().setSubmittedTime(new Date());
+			
+			
 			submissionLogic.saveStudentSubmission(assignmentSubmission);
 		}
 

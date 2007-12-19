@@ -109,10 +109,12 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
         
         UIMessage.make(tofill, "heading", "assignment2.assignment_list-sortview.heading");
         //Links
+        /**
         UIInternalLink.make(tofill, "assignment_list-reorder-link",
 					UIMessage.make("assignment2.assignment_list-reorder.title"),
 				new SimpleViewParameters(AssignmentListReorderProducer.VIEW_ID));
         UIMessage.make(tofill, "current_page", "assignment2.assignment_list-sortview.title");
+        **/
         
         //table headers and sorting links
         UIMessage.make(tofill, "tableheader.remove", "assignment2.assignment_list-sortview.tableheader.remove");
@@ -126,8 +128,8 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
         		AssignmentLogic.SORT_BY_OPEN, "assignment2.assignment_list-sortview.tableheader.open");
         sortHeaderRenderer.makeSortingLink(tofill, "tableheader.due", viewparams, 
         		AssignmentLogic.SORT_BY_DUE, "assignment2.assignment_list-sortview.tableheader.due");
-        sortHeaderRenderer.makeSortingLink(tofill, "tableheader.ungraded", viewparams, 
-        		AssignmentLogic.SORT_BY_NUM_UNGRADED, "assignment2.assignment_list-sortview.tableheader.ungraded");
+        //sortHeaderRenderer.makeSortingLink(tofill, "tableheader.ungraded", viewparams, 
+        //		AssignmentLogic.SORT_BY_NUM_UNGRADED, "assignment2.assignment_list-sortview.tableheader.ungraded");
 
               
         UIForm form = UIForm.make(tofill, "form");
@@ -200,7 +202,7 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
         			UIOutput.make(row, "assignment_row_due", messageLocator.getMessage("assignment2.assignment_list-sortview.no_due_date"));	
         		}
         	}
-        	UIInternalLink.make(row, "assignment_row_in_new", "2/4", new SimpleViewParameters(AssignmentGradeAssignmentProducer.VIEW_ID));
+        	//UIInternalLink.make(row, "assignment_row_in_new", "2/4", new SimpleViewParameters(AssignmentGradeAssignmentProducer.VIEW_ID));
         }
         
         UICommand.make(form, "submit_remove", UIMessage.make("assignment2.assignment_list-sortview.submit_remove"),

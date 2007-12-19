@@ -6,6 +6,8 @@ import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 
 import uk.org.ponder.messageutil.MessageLocator;
 
+import java.util.Date;
+
 public class AssignmentSubmissionCreator {
 	
 	private ExternalLogic externalLogic;
@@ -23,8 +25,11 @@ public class AssignmentSubmissionCreator {
 		
 		//create the AssignmentSubmissionVersion object
 		AssignmentSubmissionVersion currentSubmissionVersion = new AssignmentSubmissionVersion();
-		togo.setCurrentSubmissionVersion(currentSubmissionVersion);
+		currentSubmissionVersion.setCreatedBy(externalLogic.getCurrentUserId());
+		currentSubmissionVersion.setCreatedTime(new Date());
 		
+		togo.setCurrentSubmissionVersion(currentSubmissionVersion);
+		togo.setUserId(externalLogic.getCurrentUserId());
 		
 		return togo;
 	}
