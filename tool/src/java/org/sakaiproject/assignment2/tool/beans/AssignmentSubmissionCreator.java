@@ -26,7 +26,6 @@ public class AssignmentSubmissionCreator {
 		//create the AssignmentSubmissionVersion object
 		AssignmentSubmissionVersion currentSubmissionVersion = new AssignmentSubmissionVersion();
 		currentSubmissionVersion.setCreatedBy(externalLogic.getCurrentUserId());
-		currentSubmissionVersion.setCreatedTime(new Date());
 		
 		togo.setCurrentSubmissionVersion(currentSubmissionVersion);
 		togo.setUserId(externalLogic.getCurrentUserId());

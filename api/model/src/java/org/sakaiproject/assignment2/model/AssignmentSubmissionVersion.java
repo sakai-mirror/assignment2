@@ -44,7 +44,6 @@ public class AssignmentSubmissionVersion {
 	private String reviewStatus;
 	private String reviewIconUrl;
 	private String createdBy;
-	private Date createdTime;
 	private Set<AssignmentFeedbackAttachment> feedbackAttachSet;
 	private Set<AssignmentSubmissionAttachment> submissionAttachSet;
 	
@@ -245,22 +244,6 @@ public class AssignmentSubmissionVersion {
 	 */
 	public void setCreatedBy(String createdBy) {
 		this.createdBy = createdBy;
-	}
-
-	/**
-	 * 
-	 * @return the time this version was created
-	 */
-	public Date getCreatedTime() {
-		return createdTime;
-	}
-
-	/**
-	 * set the time this version was created
-	 * @param createdTime
-	 */
-	public void setCreatedTime(Date createdTime) {
-		this.createdTime = createdTime;
 	}
 
 	/**

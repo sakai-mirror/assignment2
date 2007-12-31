@@ -59,10 +59,6 @@
         <property name="createdBy" type="java.lang.String">
             <column name="CREATED_BY" length="99" not-null="true" />
         </property>
-        <!-- version created time -->
-        <property name="createdTime" type="java.util.Date">
-            <column name="CREATED_TIME" not-null="true" />
-        </property>
         
         <set name="submissionAttachSet" lazy="true">
 	        <key column="SUBMISSION_VERSION_ID"/>                        
