@@ -55,3 +55,17 @@ function toggle_group_checkboxes(check_all_box){
 		$('table#groupTable :checkbox').removeAttr('checked');
 	}
 }
+
+function update_due_date(){
+	id = $("select[name='gradebook_item-selection']").val();
+	id = id==""?null:id;
+	$("li.gradebook_item_due_date > span").html(gradebook_items_date[id]);
+	$("li.gradebook_item_due_date p.instruction a").each(function(){
+		if(id!=null){
+			$(this).show();
+			this.href = this.href.replace(/gradebook_item_id=[0-9]*/, "gradebook_item_id=" + id);
+		}else{
+			$(this).hide();
+		}
+	});
+}

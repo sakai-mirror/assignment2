@@ -72,7 +72,7 @@
 						<li><input rsf:id="select_ungraded" name="graded" type="radio" /> <label rsf:id="msg=assignment2.assignment_add.assignment_ungraded">This assignment is ungraded</label></li>
 						<li><input rsf:id="select_graded" name="graded" type="radio" /> <label rsf:id="msg=assignment2.assignment_add.assignment_graded">This assignment is graded</label>
 							<span rsf:id="msg=assignment2.assignment_add.gradebook_associated"> and is associated with a Gradebook Item:</span> 
-								<select rsf:id="gradebook_item" >
+								<select rsf:id="gradebook_item" onchange="update_due_date();">
 									<option value="">Select a Gradebook Item</option>
 									<option value="Category: GB Item 1">Category: GB Item 1</option>
 									<option value="Category: GB Item 2">Category: GB Item 2</option>
@@ -217,6 +217,9 @@
 </div>
 <script type="text/javascript" rsf:id="iframeId_init">
 // initialize iframeId var in producer
+</script>
+<script type="text/javascript" rsf:id="gradebook_items_data">
+
 </script>
 <script type="text/javascript" rsf:id="attachment-ajax-init">
 //done in producer

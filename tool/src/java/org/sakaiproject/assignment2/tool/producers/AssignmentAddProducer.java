@@ -219,20 +219,33 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
         // by default this the first item on the list returned from the externalGradebookLogic
         // this will be overwritten if we have a pre-existing assignment with an assigned
         // item
-        GradebookItem currentSelected = new GradebookItem();
-        if (gradebook_items.size() > 0) {
-        	currentSelected = gradebook_items.get(0);
+        GradebookItem currentSelected = null;
+        for (GradebookItem gi : gradebook_items){
+        	if (gi.getGradableObjectId().equals(assignment.getGradableObjectId())){
+        		currentSelected = gi;
+        	}
         }
         
         String[] gradebook_item_labels = new String[gradebook_items.size()+1];
         String[] gradebook_item_values = new String[gradebook_items.size()+1];
         gradebook_item_values[0] = "";
         gradebook_item_labels[0] = messageLocator.getMessage("assignment2.assignment_add.gradebook_item_select");
+        String js_gradebook_items_data = "var gradebook_items_date = {\n";
+        js_gradebook_items_data += "null: \"" + messageLocator.getMessage("assignment2.assignment_add.gradebook_item_not_selected") + "\"\n";
         for (int i=1; i <= gradebook_items.size(); i++) {
         	//Fill out select options
         	gradebook_item_labels[i] = gradebook_items.get(i-1).getTitle();
         	gradebook_item_values[i] = gradebook_items.get(i-1).getGradableObjectId().toString();
+        	
+        	//store js hash of id => due_date string
+        	js_gradebook_items_data += "," + gradebook_items.get(i-1).getGradableObjectId().toString();
+        	if(gradebook_items.get(i-1).getDueDate() != null){
+        		js_gradebook_items_data += ":\"" + df.format(gradebook_items.get(i-1).getDueDate()) + "\"\n";
+        	}else{
+        		js_gradebook_items_data += ":\"" + messageLocator.getMessage("assignment2.assignment_add.gradebook_item_no_due_date") + "\"\n";
+        	}
         }
+        js_gradebook_items_data += "}";
         UISelect.make(form, "gradebook_item",gradebook_item_values, gradebook_item_labels, assignment2OTP + ".gradableObjectId"); 
         
         //Radio Buttons for Grading
@@ -243,12 +256,18 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
         UISelectChoice ungraded = UISelectChoice.make(form, "select_ungraded", grading_select_id, 1);
         
         //Check if gradebook item due date is not null, else output the formatted date
-        if (currentSelected == null || currentSelected.getDueDate() == null) {
+        String selectedId = "";
+        if (currentSelected == null){
+        	UIMessage.make(form, "gradebook_item_due_date", "assignment2.assignment_add.gradebook_item_not_selected");
+        }else if(currentSelected.getDueDate() == null) {
         	UIMessage.make(form, "gradebook_item_due_date", "assignment2.assignment_add.gradebook_item_no_due_date");
         } else {
         	UIOutput.make(form, "gradebook_item_due_date", df.format(currentSelected.getDueDate()));
+        	selectedId = currentSelected.getGradableObjectId().toString();
         }
 
+        //Output the JS vars
+        UIVerbatim.make(tofill, "gradebook_items_data", js_gradebook_items_data);
         
         
         //Links to gradebook Helper
@@ -259,10 +278,14 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
         		UIMessage.make("assignment2.assignment_add.gradebook_item_new_helper"),
         		url + "?TB_iframe=true&width=700&height=500&KeepThis=true");
         		
-        UIInternalLink.make(form, "gradebook_item_edit_helper",
-        		UIMessage.make("assignment2.assignment_add.gradebook_item_new_helper"),
-        		url + "?TB_iframe=true&width=700&height=500&KeepThis=true");
-        
+        UILink helplink = UIInternalLink.make(form, "gradebook_item_edit_helper",
+        		UIMessage.make("assignment2.assignment_add.gradebook_item_edit_helper"),
+        		url + "?TB_iframe=true&width=700&height=500&KeepThis=true&gradebook_item_id=" + selectedId);
+        if (selectedId.equals("")){
+        	Map attrmap = new HashMap();
+        	attrmap.put("display", "none");
+        	helplink.decorators = new DecoratorList(new UIFreeAttributeDecorator(attrmap));
+        }
         
         /******
          * Access
