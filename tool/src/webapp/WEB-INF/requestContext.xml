@@ -61,12 +61,6 @@
       <property name="entityBroker" ref="org.sakaiproject.entitybroker.EntityBroker" />
    </bean>
 
-   <bean class="org.sakaiproject.assignment2.tool.producers.AssignmentAddGradebookItemProducer">
-      <property name="navBarRenderer" ref="NavbarRenderer" />
-      <property name="messageLocator" ref="messageLocator" />
-      <property name="dateEvolver" ref="fieldDateInputEvolver" />
-   </bean>
-      
    <bean class="org.sakaiproject.assignment2.tool.producers.AssignmentGradeAssignmentProducer">
       <property name="navBarRenderer" ref="NavbarRenderer" />
       <property name="pagerRenderer" ref="PagerRenderer" />
