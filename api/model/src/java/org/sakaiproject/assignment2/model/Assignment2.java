@@ -60,6 +60,7 @@ public class Assignment2 {
     private Date modifiedTime;
     private Boolean removed;
     private int version;
+    private Set<AssignmentSubmission> submissionsSet;
     private Set<AssignmentAttachment> attachmentSet;
     private Set<AssignmentGroup> assignmentGroupSet;
     
@@ -75,6 +76,7 @@ public class Assignment2 {
     private String restrictedToText;
     private boolean needsUserAttention; 
     private String submissionStatus;
+    private Integer submissionStatusConstant;
 
 	public Assignment2(Long gradableObjectId, String contextId, String title,
 			Boolean draft, int sortIndex, Date openTime, 
@@ -572,6 +574,22 @@ public class Assignment2 {
 	public void setAssignmentGroupSet(Set<AssignmentGroup> assignmentGroupSet) {
 		this.assignmentGroupSet = assignmentGroupSet;
 	}
+	
+	/**
+	 * 
+	 * @return the set of AssignmentSubmission recs associated with this assignment
+	 */
+	public Set<AssignmentSubmission> getSubmissionsSet() {
+		return submissionsSet;
+	}
+
+	/**
+	 * the set of AssignmentSubmission recs associated with this assignment
+	 * @param submissionsSet
+	 */
+	public void setSubmissionsSet(Set<AssignmentSubmission> submissionsSet) {
+		this.submissionsSet = submissionsSet;
+	}
 
 	// the following fields are populated using data from the gradebook
 	
@@ -725,6 +743,24 @@ public class Assignment2 {
 	 */
 	public void setSubmissionStatus(String submissionStatus) {
 		this.submissionStatus = submissionStatus;
+	}
+	
+	/**
+	 * 
+	 * @return the constant equivalent to this assignment's submission status for the
+	 * current user.  null if the user is not a student
+	 */
+	public Integer getSubmissionStatusConstant() {
+		return submissionStatusConstant;
+	}
+
+	/**
+	 * set the constant equivalent to this assignment's submission status for the
+	 * current user.  null if the user is not a student
+	 * @param submissionStatusConstant
+	 */
+	public void setSubmissionStatusConstant(Integer submissionStatusConstant) {
+		this.submissionStatusConstant = submissionStatusConstant;
 	}
 	
 	/**

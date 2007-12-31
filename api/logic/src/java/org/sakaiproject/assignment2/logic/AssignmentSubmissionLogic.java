@@ -70,4 +70,12 @@ public interface AssignmentSubmissionLogic {
 	 */
 	public List<AssignmentSubmission> getViewableSubmissionsForAssignmentId(Long assignmentId);
 	
+	/**
+	 * sets the submissionStatus for the given assignments
+	 * ie submitted, not started, draft, etc
+	 * @param assignments
+	 * @param studentId
+	 */
+	public void setSubmissionStatusForAssignments(List<Assignment2> assignments, String studentId);
+	
 }

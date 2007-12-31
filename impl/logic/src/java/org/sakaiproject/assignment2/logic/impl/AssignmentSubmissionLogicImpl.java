@@ -24,13 +24,16 @@ package org.sakaiproject.assignment2.logic.impl;
 import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
+import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
@@ -223,6 +226,49 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		}
 
 		return viewableSubmissions;
+	}
+	
+	public void setSubmissionStatusForAssignments(List<Assignment2> assignments, String studentId) {
+		if (studentId == null) {
+			throw new IllegalArgumentException("Null studentId passed to setSubmissionStatusForAssignments");
+		}
+		
+		if (assignments != null) {
+			// retrieve the associated submission recs with current version data populated
+			List<AssignmentSubmission> submissions = dao.getCurrentAssignmentSubmissionsForStudent(assignments, studentId);
+			Map<Long, AssignmentSubmission> assignmentIdToSubmissionMap = new HashMap();
+			if (submissions != null) {
+				for (Iterator subIter = submissions.iterator(); subIter.hasNext();) {
+					AssignmentSubmission submission = (AssignmentSubmission) subIter.next();
+					if (submission != null) {
+						Assignment2 assign = submission.getAssignment();
+						if (assign != null) {
+							assignmentIdToSubmissionMap.put(assign.getAssignmentId(), submission);
+						}
+					}
+				}
+			}
+			
+			for (Iterator assignIter = assignments.iterator(); assignIter.hasNext();) {
+				Assignment2 assign = (Assignment2)assignIter.next();
+
+				if (assign != null) {
+					AssignmentSubmission currSubmission = (AssignmentSubmission)assignmentIdToSubmissionMap.get(assign.getAssignmentId());
+					int status = AssignmentConstants.SUBMISSION_NOT_STARTED;
+					if (currSubmission == null) {
+						status = AssignmentConstants.SUBMISSION_NOT_STARTED;
+					} else if (currSubmission.getCurrentSubmissionVersion() == null) {
+						status = AssignmentConstants.SUBMISSION_NOT_STARTED;
+					} else if (currSubmission.getCurrentSubmissionVersion().isDraft()) {
+						status = AssignmentConstants.SUBMISSION_IN_PROGRESS;
+					} else if (currSubmission.getCurrentSubmissionVersion().getSubmittedTime() != null) {
+						status = AssignmentConstants.SUBMISSION_SUBMITTED;
+					}
+
+					assign.setSubmissionStatusConstant(new Integer(status));
+				}
+			}
+		}
 	}
 	
 	/**

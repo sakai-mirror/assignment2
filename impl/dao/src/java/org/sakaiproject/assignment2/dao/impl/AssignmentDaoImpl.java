@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.Iterator;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -153,43 +154,84 @@ public class AssignmentDaoImpl extends HibernateCompleteGenericDao implements As
     	return currentVersion;
     }
     
-    public List<AssignmentSubmission> getAssignmentSubmissionsWithCurrentVersionDataWithAttach(List<Long> submissionList, boolean ignoreDrafts) {
-    	if (submissionList == null || submissionList.isEmpty()) {
-    		return new ArrayList();
-    	}
-    	
-    	List submissions = new ArrayList();
-    	
-    	List versionIdList = new ArrayList();
-    	
-    	String hqlGetVersionNoDraft = "select max(submissionVersion.submissionVersionId) " +
-		"from AssignmentSubmissionVersion as submissionVersion " +
-		"where submissionVersion.assignmentSubmission in :submissionList " +
-		"and submissionVersion.draft = false";
-	
-    	String hqlGetVersionWithDraft = "select max(submissionVersion.submissionVersionId) " +
-		"from AssignmentSubmissionVersion as submissionVersion " +
-		"where submissionVersion.assignmentSubmission in :submissionList";
-    	
-    	// TODO if submissionId list is > than the max length allowed in sql, we need
-    	// to cycle through the list
+    private List<Long> getCurrentVersionIdsForSubmissions(List<AssignmentSubmission> submissionList, boolean ignoreDrafts) {    	
+    	List<Long> versionIdList = new ArrayList();
 
-    	String queryToUse = ignoreDrafts ? hqlGetVersionNoDraft : hqlGetVersionWithDraft;
-    	
-    	Query query = getSession().createQuery(queryToUse);
-    	query.setParameter("submissionList", submissionList);
-    	
-    	versionIdList = query.list();
-    	
-    	if (versionIdList != null) {
+    	if (submissionList != null && !submissionList.isEmpty()) {
     		
+    		Query query;
+    		if (ignoreDrafts) {
+    			query = getSession().getNamedQuery("findCurrentVersionIdsWithoutDrafts");
+    		} else {
+    			query = getSession().getNamedQuery("findCurrentVersionIdsWithoutDrafts");
+    		}
+
+    		// TODO if submission list is > than the max length allowed in sql, we need
+    		// to cycle through the list
+
+    		query.setParameterList("submissionList", submissionList);
+
+    		versionIdList = query.list();
     	}
-    	
-    	return new ArrayList();
+
+    	return versionIdList;
     }
     
     public List <AssignmentSubmission> getAssignmentSubmissionsWithCurrentVersionDataNoAttach(List<Long> submissionIdList, boolean includeDraft) {
     	return null;
+    }
+    
+    public List<AssignmentSubmission> getCurrentAssignmentSubmissionsForStudent(List<Assignment2> assignments, String studentId) {
+		if (studentId == null) {
+			throw new IllegalArgumentException("null studentId passed to getAllSubmissionRecsForStudentWithVersionData");
+		}
+		
+		List<AssignmentSubmission> submissions = new ArrayList();
+		
+		if (assignments != null && !assignments.isEmpty()) {
+			// retrieve the submissions
+			Query query = getSession().getNamedQuery("findSubmissionsForStudentForAssignments");
+	    	query.setParameter("studentId",studentId);
+	    	query.setParameterList("assignmentList", assignments);
+	    	
+	    	submissions = query.list();
+	    	
+	    	// now, populate the version information
+	    	
+			if (submissions != null && !submissions.isEmpty()) {
+				// then, we will populate the version data
+				
+				// first, retrieve the ids of the current versions
+				List<Long> versionIds = getCurrentVersionIdsForSubmissions(submissions, Boolean.FALSE);
+				
+				// now retrieve the associated AssignmentSubmissionVersion recs
+				List<AssignmentSubmissionVersion> currentVersions = getAssignmentSubmissionVersionsById(versionIds);
+				
+				if (currentVersions != null) {
+					Map submissionIdVersionMap = new HashMap();
+					for (Iterator versionIter = currentVersions.iterator(); versionIter.hasNext();) {
+						AssignmentSubmissionVersion version = (AssignmentSubmissionVersion) versionIter.next();
+						if (version != null) {
+							submissionIdVersionMap.put(version.getAssignmentSubmission().getSubmissionId(), version);
+						}
+					}
+					
+					for (Iterator submissionIter = submissions.iterator(); submissionIter.hasNext();) {
+						AssignmentSubmission submission = (AssignmentSubmission) submissionIter.next();
+						if (submission != null) {
+							AssignmentSubmissionVersion currVersion = 
+								(AssignmentSubmissionVersion)submissionIdVersionMap.get(submission.getSubmissionId());
+							if (currVersion != null) {
+								submission.setCurrentSubmissionVersion(currVersion);
+							}
+						}
+					}
+				}
+				
+			}
+		}
+		
+		return submissions;
     }
     
     private AssignmentSubmissionVersion getAssignmentSubmissionVersionByIdWithAttachments(Long submissionVersionId) {
@@ -201,6 +243,20 @@ public class AssignmentDaoImpl extends HibernateCompleteGenericDao implements As
     	query.setParameter("submissionVersionId", submissionVersionId);
     	
     	return (AssignmentSubmissionVersion) query.uniqueResult();
+    }
+    
+    private List<AssignmentSubmissionVersion> getAssignmentSubmissionVersionsById(List<Long> versionIds) {
+    	List<AssignmentSubmissionVersion> versions = new ArrayList();
+    	
+    	if (versionIds != null && !versionIds.isEmpty()) {
+    		String hql = "from AssignmentSubmissionVersion as version where version.submissionVersionId in (:versionIdList)";
+    		Query query = getSession().createQuery(hql);
+    		query.setParameterList("versionIdList", versionIds);
+    		
+    		versions = query.list();
+    	}
+    	
+    	return versions;
     }
 
 }

@@ -423,6 +423,10 @@ public class Assignment2Bean {
 				// set the status for this assignment: "Open, Due, etc"
 				int status = logic.getStatusForAssignment(assign);
 				assign.setAssignmentStatus(messageLocator.getMessage("assignment2.status." + status));
+				
+				if (assign.getSubmissionStatusConstant() != null) {
+					assign.setSubmissionStatus(messageLocator.getMessage("assignment2.submission_status." + assign.getSubmissionStatusConstant().intValue()));
+				}
 			}
 		}
 	}

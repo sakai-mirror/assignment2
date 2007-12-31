@@ -30,11 +30,19 @@
             <column name="RESUBMIT_CLOSE_TIME" />
         </property>
         
-        <set name="submissionHistorySet" lazy="true" inverse="true" cascade="none">
+        <set name="submissionHistorySet" lazy="true" inverse="true" cascade="none"
+        		order-by="SUBMISSION_ID desc">
 	        <key column="SUBMISSION_ID"/>                        
 	        <one-to-many class="org.sakaiproject.assignment2.model.AssignmentSubmissionVersion"/>            
     		</set>
               
     </class>
+    
+    <query name="findSubmissionsForStudentForAssignments">
+    <![CDATA[from org.sakaiproject.assignment2.model.AssignmentSubmission submission
+    				 left join fetch submission.assignment
+             where submission.userId = :studentId
+             and submission.assignment in (:assignmentList)]]>
+  	</query>
   	
 </hibernate-mapping>

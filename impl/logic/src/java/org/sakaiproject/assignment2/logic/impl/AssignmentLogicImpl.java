@@ -39,6 +39,7 @@ import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentAttachment;
 import org.sakaiproject.assignment2.model.AssignmentGroup;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
+import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
 import org.sakaiproject.assignment2.logic.ExternalAnnouncementLogic;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
@@ -76,6 +77,11 @@ public class AssignmentLogicImpl implements AssignmentLogic{
     private PermissionLogic permissionLogic;
     public void setPermissionLogic(PermissionLogic permissionLogic) {
         this.permissionLogic = permissionLogic;
+    }
+    
+    private AssignmentSubmissionLogic submissionLogic;
+    public void setAssignmentSubmissionLogic(AssignmentSubmissionLogic submissionLogic) {
+        this.submissionLogic = submissionLogic;
     }
     
     private AssignmentDao dao;
@@ -251,7 +257,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 
 				if (!assignment.isDraft() || permissionLogic.isCurrentUserAbleToEditAssignments(contextId)) {
 					if (assignment.isUngraded()) {
-						if (permissionLogic.isUserAbleToViewUngradedAssignment(externalLogic.getCurrentUserId(), assignment)) {
+						if (permissionLogic.isUserAbleToViewUngradedAssignment(userId, assignment)) {
 							viewableAssignments.add(assignment);
 						} 
 
@@ -277,7 +283,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 						// if user is a "student" in terms of the gb, we need to filter the view
 						// by AssignmentGroup restrictions.
 						if (restrictedToGroups && gradebookLogic.isCurrentUserAStudentInGb(contextId)) {
-							if (permissionLogic.isUserAMemberOfARestrictedGroup(externalLogic.getCurrentUserId(), assignment.getAssignmentGroupSet())) {
+							if (permissionLogic.isUserAMemberOfARestrictedGroup(userId, assignment.getAssignmentGroupSet())) {
 								viewableAssignments.add(assignment);
 							}
 						} else {
@@ -286,6 +292,11 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 					}
 				}
 			}
+		}
+		
+		if (gradebookLogic.isCurrentUserAStudentInGb(contextId)) {
+			// if this is a student, we need to populate the submissionStatus for each assignment
+			submissionLogic.setSubmissionStatusForAssignments(viewableAssignments, userId);
 		}
 		
 		return viewableAssignments;

@@ -113,7 +113,7 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
         	UIInternalLink.make(row, "assignment_link", assignment.getTitle(), 
         			new SimpleAssignmentViewParams(StudentSubmitProducer.VIEW_ID, assignment.getAssignmentId()));
         	UIOutput.make(row, "assignment_row_for", assignment.getRestrictedToText());
-        	UIOutput.make(row, "assignment_row_status", "Not Started");
+        	UIOutput.make(row, "assignment_row_status", assignment.getSubmissionStatus());
         	UIOutput.make(row, "assignment_row_open", df.format(assignment.getOpenTime()));
         	if (assignment.isUngraded()) {
         		if (assignment.getDueDateForUngraded() != null) {

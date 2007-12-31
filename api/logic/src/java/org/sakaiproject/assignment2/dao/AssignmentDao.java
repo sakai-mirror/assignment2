@@ -72,30 +72,6 @@ public interface AssignmentDao extends CompleteGenericDao {
 	public Assignment2 getAssignmentByIdWithGroups(Long assignmentId);
 	
 	/**
-	 * Given a list of submissionIds, will return the associated AssignmentSubmission 
-	 * records with the currentVersion information populated (including attachments)
-	 * @param submissionIdList
-	 * @param includeDraft
-	 * 		if true, will count drafts as the current version 
-	 * 		if false, will populate the current version with the most recent non-draft
-	 * 		submission info
-	 * @return
-	 */
-	public List<AssignmentSubmission> getAssignmentSubmissionsWithCurrentVersionDataWithAttach(List<Long> submissionIdList, boolean includeDraft);
-	
-	/**
-	 * Given a list of submissionIds, will return the associated AssignmentSubmission 
-	 * records with the currentVersion information populated (but no attachments)
-	 * @param submissionIdList
-	 * @param includeDraft
-	 * 		if true, will count drafts as the current version.
-	 * 		if false, will populate the current version with the most recent non-draft
-	 * 		submission info
-	 * @return
-	 */
-	public List <AssignmentSubmission> getAssignmentSubmissionsWithCurrentVersionDataNoAttach(List<Long> submissionIdList, boolean includeDraft);
-	
-	/**
 	 * returns the current submission version for the given AssignmentSubmission and userId
 	 * @param submission
 	 * @param ignoreDrafts
@@ -106,4 +82,13 @@ public interface AssignmentDao extends CompleteGenericDao {
 	 */
 	public AssignmentSubmissionVersion getCurrentSubmissionVersionWithAttachments(AssignmentSubmission submission, boolean ignoreDrafts);
 	
+	/**
+	 * 
+	 * @param assignments
+	 * @param studentId
+	 * @return all AssignmentSubmission records with the currentVersion populated for
+	 * the given student and assignments. if there is no submission for an assignment,
+	 * nothing is returned
+	 */
+	public List<AssignmentSubmission> getCurrentAssignmentSubmissionsForStudent(List<Assignment2> assignments, String studentId);
 }

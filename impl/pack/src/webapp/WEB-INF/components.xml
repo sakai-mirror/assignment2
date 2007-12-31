@@ -38,6 +38,7 @@
       <property name="permissionLogic" ref="org.sakaiproject.assignment2.logic.PermissionLogic" />
       <property name="externalGradebookLogic" ref="org.sakaiproject.assignment2.logic.ExternalGradebookLogic" />
       <property name="externalAnnouncementLogic" ref="org.sakaiproject.assignment2.logic.ExternalAnnouncementLogic" />
+      <property name="assignmentSubmissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
    </bean>
    
    <bean id="org.sakaiproject.assignment2.logic.PermissionLogic" class="org.sakaiproject.assignment2.logic.impl.PermissionLogicImpl" init-method="init">
