@@ -187,9 +187,15 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		if (newVersion == null) {
 			throw new IllegalArgumentException("null currentSubmissionVersion associated with the assignmentSubmission in saveStudentSubmission");
 		}
+		
+		// we always save a new AssignmentSubmissionVersion
+		if (newVersion.getSubmissionVersionId() != null) {
+			newVersion.setSubmissionVersionId(null);
+		}
+		
 		if (assignmentSubmission.getSubmissionId() == null) {
 			dao.create(assignmentSubmission);
-			log.debug("New student submission rec added for user " + assignmentSubmission.getUserId() + " for assignment " + assignmentSubmission.getAssignment().getTitle());
+			log.debug("New student submission rec added for user " + assignmentSubmission.getUserId() + " for assignment " + assignmentSubmission.getAssignment().getTitle() + " ID: " + assignmentSubmission.getAssignment().getAssignmentId());
 			
 			newVersion.setAssignmentSubmission(assignmentSubmission);
 			// wipe out any old feedback for this new version
@@ -197,8 +203,8 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			newVersion.setFeedbackAttachSet(null);
 		}
 		
-		dao.save(newVersion);
-		log.debug("New student submission version added for user " + assignmentSubmission.getUserId() + " for assignment " + assignmentSubmission.getAssignment().getTitle());
+		dao.create(newVersion);
+		log.debug("New student submission version added for user " + assignmentSubmission.getUserId() + " for assignment " + assignmentSubmission.getAssignment().getTitle()+ " ID: " + assignmentSubmission.getAssignment().getAssignmentId());
 	}
 	
 	public List<AssignmentSubmission> getViewableSubmissionsForAssignmentId(Long assignmentId) {
