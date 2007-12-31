@@ -102,9 +102,7 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
     		
         UIMessage.make(tofill, "page-title", "assignment2.assignment_list-sortview.title");
         navBarRenderer.makeNavBar(tofill, "navIntraTool:", VIEW_ID);
-        if (total_count > PagerRenderer.DEFAULT_START_COUNT){
-        	pagerRenderer.makePager(tofill, "pagerDiv:", VIEW_ID, viewparams, total_count);
-        }
+        pagerRenderer.makePager(tofill, "pagerDiv:", VIEW_ID, viewparams, total_count);
         
         UIVerbatim.make(tofill, "debug_info", "Currently, you are sorting by: <strong>" + current_sort_by + " " + 
         			current_sort_dir + "</strong>,   starting from record: <strong>" + params.current_start + "</strong> and paging: <strong>" + params.current_count + "</strong> items.");

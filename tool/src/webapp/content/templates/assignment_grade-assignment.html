@@ -149,14 +149,14 @@
 
 	</div>
 </body>
-<script type="text/javascript" rsf:id="sizeFrame">
+<script type="text/javascript" rsf:id="iframeId_init">
 //set in producer
-//a2SetMainFrameHeight();
 </script>
 <script type="text/javascript">
 //<![CDATA[
 function slide_details(img){
-	$('#assignment_details').toggle('fast', function(){sizeFrame()});
+	$('#assignment_details').toggle();
+	a2SetMainFrameHeight();
 	if(img.src.match('collapse')){
 		img.src=img.src.replace(/collapse/, 'expand');
 	}else{

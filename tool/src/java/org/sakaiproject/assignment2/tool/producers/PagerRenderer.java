@@ -41,6 +41,11 @@ public class PagerRenderer {
 	public void makePager(UIContainer tofill, String divID, String currentViewID, ViewParameters viewparams, Integer totalCount) {
     	PagerViewParams pagerparams = (PagerViewParams) viewparams;
 
+    	if (totalCount <= PagerRenderer.DEFAULT_START_COUNT){
+    		//Do not show
+    		return;
+    	}
+    	
     	//set vars
     	this.currentCount = pagerparams.current_count;
     	this.currentStart = pagerparams.current_start;

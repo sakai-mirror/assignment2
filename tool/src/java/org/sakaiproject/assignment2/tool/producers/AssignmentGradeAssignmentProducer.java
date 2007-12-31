@@ -163,8 +163,8 @@ public class AssignmentGradeAssignmentProducer implements ViewComponentProducer,
         UIMessage.make(tofill, "assignment_details.attachments_header", "assignment2.assignment_grade-assignment.assignment_details.attachments");
         
         //Init JS
-        String id = org.sakaiproject.util.Web.escapeJavascript("Main" + org.sakaiproject.tool.cover.ToolManager.getCurrentPlacement().getId());
-        UIVerbatim.make(tofill, "sizeFrame", "function sizeFrame(){a2SetMainFrameHeight('" + id + "');}");
+        String frameId = org.sakaiproject.util.Web.escapeJavascript("Main" + org.sakaiproject.tool.cover.ToolManager.getCurrentPlacement().getId());
+        UIVerbatim.make(tofill, "iframeId_init", "var iframeId = \"" + frameId + "\";");
     	
         attachmentListRenderer.makeAttachmentFromAssignmentAttachmentSet(tofill, "attachment_list:", params.viewID, 
         		assignment.getAttachmentSet(), Boolean.FALSE);
