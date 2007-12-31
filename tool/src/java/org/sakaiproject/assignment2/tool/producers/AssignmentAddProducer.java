@@ -16,6 +16,7 @@ import org.sakaiproject.assignment2.model.AssignmentAttachment;
 import org.sakaiproject.assignment2.model.AssignmentGroup;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.entitybroker.EntityBroker;
+import org.sakaiproject.entitybroker.IdEntityReference;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -251,13 +252,16 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
         
         
         //Links to gradebook Helper
+        String ref = new IdEntityReference("grade-entry", externalLogic.getCurrentContextId()).toString();
+        String url = entityBroker.getEntityURL(ref);
+        String contextId = externalLogic.getCurrentContextId();
         UILink.make(form, "gradebook_item_new_helper",
         		UIMessage.make("assignment2.assignment_add.gradebook_item_new_helper"),
-        		"http://localhost:8081/direct/grade-entry/1?TB_iframe=true&width=700&height=500&KeepThis=true");
+        		url + "?TB_iframe=true&width=700&height=500&KeepThis=true");
         		
         UIInternalLink.make(form, "gradebook_item_edit_helper",
         		UIMessage.make("assignment2.assignment_add.gradebook_item_new_helper"),
-        		"http://localhost:8081/direct/grade-entry/1?TB_iframe=true&width=700&height=500&KeepThis=true");
+        		url + "?TB_iframe=true&width=700&height=500&KeepThis=true");
         
         
         /******
