@@ -109,6 +109,19 @@ public class AssignmentSubmissionBean {
 	}
 	
 	public String processActionSaveDraft() {
+		for (String key : OTPMap.keySet()) {
+			AssignmentSubmission assignmentSubmission = OTPMap.get(key);
+			if (assignmentId == null){
+				return FAILURE;
+			}
+			Assignment2 assignment = assignmentLogic.getAssignmentById(assignmentId);
+			assignmentSubmission.setAssignment(assignment);
+			assignmentSubmission.getCurrentSubmissionVersion().setDraft(Boolean.TRUE);
+			assignmentSubmission.getCurrentSubmissionVersion().setSubmittedTime(new Date());
+			
+			
+			submissionLogic.saveStudentSubmission(assignmentSubmission);
+		}
 		return SAVE_DRAFT;
 	}
 	
