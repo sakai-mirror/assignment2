@@ -154,17 +154,12 @@ public class AssignmentDaoImpl extends HibernateCompleteGenericDao implements As
     	return currentVersion;
     }
     
-    private List<Long> getCurrentVersionIdsForSubmissions(List<AssignmentSubmission> submissionList, boolean ignoreDrafts) {    	
+    private List<Long> getCurrentVersionIdsForSubmissions(List<AssignmentSubmission> submissionList) {    	
     	List<Long> versionIdList = new ArrayList();
 
     	if (submissionList != null && !submissionList.isEmpty()) {
     		
-    		Query query;
-    		if (ignoreDrafts) {
-    			query = getSession().getNamedQuery("findCurrentVersionIdsWithoutDrafts");
-    		} else {
-    			query = getSession().getNamedQuery("findCurrentVersionIdsWithoutDrafts");
-    		}
+    		Query query = getSession().getNamedQuery("findCurrentVersionIdsWithDrafts");
 
     		// TODO if submission list is > than the max length allowed in sql, we need
     		// to cycle through the list
@@ -175,10 +170,6 @@ public class AssignmentDaoImpl extends HibernateCompleteGenericDao implements As
     	}
 
     	return versionIdList;
-    }
-    
-    public List <AssignmentSubmission> getAssignmentSubmissionsWithCurrentVersionDataNoAttach(List<Long> submissionIdList, boolean includeDraft) {
-    	return null;
     }
     
     public List<AssignmentSubmission> getCurrentAssignmentSubmissionsForStudent(List<Assignment2> assignments, String studentId) {
@@ -202,7 +193,7 @@ public class AssignmentDaoImpl extends HibernateCompleteGenericDao implements As
 				// then, we will populate the version data
 				
 				// first, retrieve the ids of the current versions
-				List<Long> versionIds = getCurrentVersionIdsForSubmissions(submissions, Boolean.FALSE);
+				List<Long> versionIds = getCurrentVersionIdsForSubmissions(submissions);
 				
 				// now retrieve the associated AssignmentSubmissionVersion recs
 				List<AssignmentSubmissionVersion> currentVersions = getAssignmentSubmissionVersionsById(versionIds);

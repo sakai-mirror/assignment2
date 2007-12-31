@@ -79,14 +79,6 @@
              where submissionVersion.submissionVersionId = :submissionVersionId]]>
   	</query>
   	
-  	<query name="findCurrentVersionIdsWithoutDrafts">
-    <![CDATA[select max(submissionVersion.submissionVersionId) 
-    				 from org.sakaiproject.assignment2.model.AssignmentSubmissionVersion submissionVersion
-             where submissionVersion.assignmentSubmission in (:submissionList)
-    				 and submissionVersion.draft = false
-    		     group by submissionVersion.assignmentSubmission]]>
-  	</query>
-  	
   	<query name="findCurrentVersionIdsWithDrafts">
     <![CDATA[select max(submissionVersion.submissionVersionId) 
     				 from org.sakaiproject.assignment2.model.AssignmentSubmissionVersion submissionVersion
