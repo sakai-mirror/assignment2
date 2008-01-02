@@ -37,12 +37,14 @@ import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.service.gradebook.shared.GradebookFrameworkService;
 import org.sakaiproject.service.gradebook.shared.GradebookService;
 import org.sakaiproject.assignment2.model.Assignment2;
+import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.api.ToolConfiguration;
 import org.sakaiproject.site.cover.SiteService;
 import org.sakaiproject.service.gradebook.shared.AssessmentNotFoundException;
 import org.sakaiproject.service.gradebook.shared.CommentDefinition;
+import org.sakaiproject.service.gradebook.shared.GradeDefinition;
 
 
 /**
@@ -341,6 +343,45 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
     	}
     	
     	return comment;
+    }
+    
+    public void populateGradesForSubmissions(List<AssignmentSubmission> submissionList, Assignment2 assignment) {
+    	if (assignment == null) {
+    		throw new IllegalArgumentException("null assignment passed to populateStudentGradeInformation");
+    	}
+    	
+    	if (!assignment.isUngraded() && assignment.getGradableObjectId() != null && 
+    			submissionList != null && !submissionList.isEmpty()) {
+    		Map<String, AssignmentSubmission> studentIdSubmissionMap = new HashMap();
+    		for (Iterator subIter = submissionList.iterator(); subIter.hasNext();) {
+    			AssignmentSubmission submission = (AssignmentSubmission) subIter.next();
+    			if (submission != null) {
+    				studentIdSubmissionMap.put(submission.getUserId(), submission);
+    			}
+    		}
+    		
+    		List<String> studentIdList = new ArrayList(studentIdSubmissionMap.keySet());
+    		List<GradeDefinition> gradeDefs =
+    			gradebookService.getGradesForStudentsForItem(assignment.getGradableObjectId(), studentIdList);
+    		
+    		if (gradeDefs != null) {
+    			for (Iterator gradeIter = gradeDefs.iterator(); gradeIter.hasNext();) {
+    				GradeDefinition gradeDef = (GradeDefinition) gradeIter.next();
+    				if (gradeDef != null) {
+    					StringBuilder sb = new StringBuilder();
+    					sb.append(gradeDef.getGrade());
+    					if (gradeDef.getGradeEntryType() == GradebookService.GRADE_TYPE_PERCENTAGE) {
+    						sb.append("%");
+    					}
+    					
+    					AssignmentSubmission thisSubmission = (AssignmentSubmission) studentIdSubmissionMap.get(gradeDef.getStudentUid());
+    					if (thisSubmission != null) {
+    						thisSubmission.setGradebookGrade(sb.toString());
+    					}
+    				}
+    			}
+    		}
+    	}
     }
 
 }

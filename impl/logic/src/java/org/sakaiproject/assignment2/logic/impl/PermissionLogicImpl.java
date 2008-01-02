@@ -180,7 +180,7 @@ public class PermissionLogicImpl implements PermissionLogic {
 		
 		List<String> allStudentsInSite = externalLogic.getStudentsInSite(contextId);
 		
-		if (gradebookLogic.isCurrentUserAbleToGrade(contextId)) {
+		if (gradebookLogic.isCurrentUserAbleToGradeAll(contextId)) {
 			viewableStudents = allStudentsInSite;
 		} else if(gradebookLogic.isCurrentUserAbleToGrade(contextId)) {
 			if (assignment.isUngraded()) {

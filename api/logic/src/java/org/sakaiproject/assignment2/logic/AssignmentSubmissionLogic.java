@@ -66,12 +66,14 @@ public interface AssignmentSubmissionLogic {
 	 * 
 	 * @param assignmentId
 	 * @return all AssignmentSubmissions for this assignmentId that the current
-	 * user is allowed to view or grade.  populates currentVersion 
+	 * user is allowed to view or grade with the currentVersion information. If
+	 * no submission exists yet, returns an empty AssigmentSubmission rec for the
+	 * student
 	 */
 	public List<AssignmentSubmission> getViewableSubmissionsForAssignmentId(Long assignmentId);
 	
 	/**
-	 * sets the submissionStatus for the given assignments
+	 * sets the submissionStatus (not persisted) for the given assignments
 	 * ie submitted, not started, draft, etc
 	 * @param assignments
 	 * @param studentId

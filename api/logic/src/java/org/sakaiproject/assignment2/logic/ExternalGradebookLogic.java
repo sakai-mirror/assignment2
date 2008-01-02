@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.sakaiproject.assignment2.model.Assignment2;
+import org.sakaiproject.assignment2.model.AssignmentSubmission;
 
 /**
  * This is the interface for logic which is related to the integration
@@ -166,6 +167,14 @@ public interface ExternalGradebookLogic {
 	 * comment or if the gb item does not exist
 	 */
 	public String getStudentGradeCommentForItem(String contextId, String studentId, Long gbItemId);
+	
+	/**
+	 * given a list of submissions and the parent assignment, populates the grade information
+	 * for each submission
+	 * @param submissionList
+	 * @param assignment
+	 */
+	public void populateGradesForSubmissions(List<AssignmentSubmission> submissionList, Assignment2 assignment);
 	
 	public String getGradebookItemHelperUrl(String contextId);
 }

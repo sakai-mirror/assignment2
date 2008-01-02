@@ -39,7 +39,7 @@ public class AssignmentSubmission {
 	private Set submissionHistorySet;
 	
 	// fields populated with gradebook data
-	private Double gradebookGrade;
+	private String gradebookGrade;
 	private String gradebookComment;
 	
 	// the current submission version must be populated manually b/c we want
@@ -131,7 +131,7 @@ public class AssignmentSubmission {
 	 * grade will be returned in converted form according to the gradebook's
 	 * grade entry type (ie letter grade, percentage, etc)
 	 */
-	public Double getGradebookGrade() {
+	public String getGradebookGrade() {
 		return gradebookGrade;
 	}
 	
@@ -141,7 +141,7 @@ public class AssignmentSubmission {
 	 * grade entry type (ie letter grade, percentage, etc)
 	 * @param gradebookGrade
 	 */
-	public void setGradebookGrade(Double gradebookGrade) {
+	public void setGradebookGrade(String gradebookGrade) {
 		this.gradebookGrade = gradebookGrade;
 	}
 	

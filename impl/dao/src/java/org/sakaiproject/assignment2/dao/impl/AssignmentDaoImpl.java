@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Iterator;
+import java.util.Collection;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -154,7 +155,7 @@ public class AssignmentDaoImpl extends HibernateCompleteGenericDao implements As
     	return currentVersion;
     }
     
-    private List<Long> getCurrentVersionIdsForSubmissions(List<AssignmentSubmission> submissionList) {    	
+    private List<Long> getCurrentVersionIdsForSubmissions(Collection<AssignmentSubmission> submissionList) {    	
     	List<Long> versionIdList = new ArrayList();
 
     	if (submissionList != null && !submissionList.isEmpty()) {
@@ -188,38 +189,7 @@ public class AssignmentDaoImpl extends HibernateCompleteGenericDao implements As
 	    	submissions = query.list();
 	    	
 	    	// now, populate the version information
-	    	
-			if (submissions != null && !submissions.isEmpty()) {
-				// then, we will populate the version data
-				
-				// first, retrieve the ids of the current versions
-				List<Long> versionIds = getCurrentVersionIdsForSubmissions(submissions);
-				
-				// now retrieve the associated AssignmentSubmissionVersion recs
-				List<AssignmentSubmissionVersion> currentVersions = getAssignmentSubmissionVersionsById(versionIds);
-				
-				if (currentVersions != null) {
-					Map submissionIdVersionMap = new HashMap();
-					for (Iterator versionIter = currentVersions.iterator(); versionIter.hasNext();) {
-						AssignmentSubmissionVersion version = (AssignmentSubmissionVersion) versionIter.next();
-						if (version != null) {
-							submissionIdVersionMap.put(version.getAssignmentSubmission().getSubmissionId(), version);
-						}
-					}
-					
-					for (Iterator submissionIter = submissions.iterator(); submissionIter.hasNext();) {
-						AssignmentSubmission submission = (AssignmentSubmission) submissionIter.next();
-						if (submission != null) {
-							AssignmentSubmissionVersion currVersion = 
-								(AssignmentSubmissionVersion)submissionIdVersionMap.get(submission.getSubmissionId());
-							if (currVersion != null) {
-								submission.setCurrentSubmissionVersion(currVersion);
-							}
-						}
-					}
-				}
-				
-			}
+    		populateCurrentVersion(submissions);
 		}
 		
 		return submissions;
@@ -248,6 +218,65 @@ public class AssignmentDaoImpl extends HibernateCompleteGenericDao implements As
     	}
     	
     	return versions;
+    }
+    
+    public Set<AssignmentSubmission> getCurrentSubmissionsForStudentsForAssignment(List<String> studentIds, Assignment2 assignment) {
+    	if (assignment == null) {
+    		throw new IllegalArgumentException("null assignment passed to getSubmissionsForStudentsForAssignment");    		
+    	}
+    	
+    	Set<AssignmentSubmission> submissionSet = new HashSet();
+    	
+    	if (studentIds != null && !studentIds.isEmpty()) {
+    		Query query = getSession().getNamedQuery("findSubmissionsForStudentsForAssignment");
+    		query.setParameter("assignment", assignment);
+    		query.setParameterList("studentIdList", studentIds);
+    		
+    		List<AssignmentSubmission> submissionList = query.list();
+    			
+    		if (submissionList != null) {
+    			submissionSet = new HashSet(submissionList);
+    			
+        		// now retrieve the current version information
+        		populateCurrentVersion(submissionSet);
+    		}
+    	}
+    	
+    	return submissionSet;
+    }
+    
+    private void populateCurrentVersion(Collection<AssignmentSubmission> submissions) {
+    	if (submissions != null && !submissions.isEmpty()) {
+			// then, we will populate the version data
+			
+			// first, retrieve the ids of the current versions
+			List<Long> versionIds = getCurrentVersionIdsForSubmissions(submissions);
+			
+			// now retrieve the associated AssignmentSubmissionVersion recs
+			List<AssignmentSubmissionVersion> currentVersions = getAssignmentSubmissionVersionsById(versionIds);
+			
+			if (currentVersions != null) {
+				Map submissionIdVersionMap = new HashMap();
+				for (Iterator versionIter = currentVersions.iterator(); versionIter.hasNext();) {
+					AssignmentSubmissionVersion version = (AssignmentSubmissionVersion) versionIter.next();
+					if (version != null) {
+						submissionIdVersionMap.put(version.getAssignmentSubmission().getSubmissionId(), version);
+					}
+				}
+				
+				for (Iterator submissionIter = submissions.iterator(); submissionIter.hasNext();) {
+					AssignmentSubmission submission = (AssignmentSubmission) submissionIter.next();
+					if (submission != null) {
+						AssignmentSubmissionVersion currVersion = 
+							(AssignmentSubmissionVersion)submissionIdVersionMap.get(submission.getSubmissionId());
+						if (currVersion != null) {
+							submission.setCurrentSubmissionVersion(currVersion);
+						}
+					}
+				}
+			}
+			
+		}
     }
 
 }

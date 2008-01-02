@@ -45,4 +45,11 @@
              and submission.assignment in (:assignmentList)]]>
   	</query>
   	
+  	<query name="findSubmissionsForStudentsForAssignment">
+    <![CDATA[from org.sakaiproject.assignment2.model.AssignmentSubmission submission
+    				 left join fetch submission.assignment
+             where submission.assignment = :assignment
+             and submission.userId in (:studentIdList)]]>
+  	</query>
+  	
 </hibernate-mapping>

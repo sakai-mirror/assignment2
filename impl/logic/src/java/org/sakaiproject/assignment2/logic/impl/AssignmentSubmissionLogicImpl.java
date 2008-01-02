@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -155,9 +156,10 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 				
 				if (!assignment.isUngraded() && assignment.getGradableObjectId() != null) {
 					// retrieve the grade information for this submission
+					// TODO - retrieve in the proper format!
 					Double grade = gradebookLogic.getStudentGradeForItem(contextId, studentId, assignment.getGradableObjectId());
 					String comment = gradebookLogic.getStudentGradeCommentForItem(contextId, studentId, assignment.getGradableObjectId());
-					submission.setGradebookGrade(grade);
+					submission.setGradebookGrade(grade.toString());
 					submission.setGradebookComment(comment);
 				}
 			}
@@ -167,20 +169,6 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 	}
 
 	public void saveStudentSubmission(AssignmentSubmission assignmentSubmission) {
-		// TESTING
-		/*Assignment2 assign = (Assignment2)dao.findById(Assignment2.class, new Long(1));
-		assignmentSubmission = new AssignmentSubmission(assign, "8c8d9fe3-dfc1-4fa7-be91-e420b865b20c");
-		AssignmentSubmissionVersion version = new AssignmentSubmissionVersion();
-		version.setAssignmentSubmission(assignmentSubmission);
-		version.setDraft(false);
-		version.setCreatedBy("8c8d9fe3-dfc1-4fa7-be91-e420b865b20c");
-		version.setCreatedTime(new Date());
-		version.setSubmittedText("This is my first submission");
-		version.setSubmittedTime(new Date());
-		assignmentSubmission.setCurrentSubmissionVersion(version);*/
-		
-		
-		// END TESTING
 		if (assignmentSubmission == null) {
 			throw new IllegalArgumentException("null assignmentSubmission passed to saveAssignmentSubmission");
 		}
@@ -220,9 +208,56 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		List<AssignmentSubmission> viewableSubmissions = new ArrayList();
 		
 		Assignment2 assignment = (Assignment2)dao.findById(Assignment2.class, assignmentId);
-		
+
 		if (assignment != null) {
+			// get a list of all the students that the current user may view for the given assignment
 			List<String> viewableStudents = permissionLogic.getViewableStudentsForUserForItem(assignment);
+
+			if (viewableStudents != null && !viewableStudents.isEmpty()) {
+
+				// get the submissions for these students
+				Set<AssignmentSubmission> existingSubmissions = dao.getCurrentSubmissionsForStudentsForAssignment(viewableStudents, assignment);
+
+				Map studentIdSubmissionMap = new HashMap();
+				if (existingSubmissions != null) {
+					for (Iterator subIter = existingSubmissions.iterator(); subIter.hasNext();) {
+						AssignmentSubmission submission = (AssignmentSubmission) subIter.next();
+						if (submission != null) {
+							studentIdSubmissionMap.put(submission.getUserId(), submission);
+						}
+					}
+				}
+
+				// now, iterate through the students and create empty AssignmentSubmission recs
+				// if no submission exists yet
+				for (Iterator studentIter = viewableStudents.iterator(); studentIter.hasNext();) {
+					String studentId = (String) studentIter.next();
+					if (studentId != null) {
+						AssignmentSubmission thisSubmission = 
+							(AssignmentSubmission)studentIdSubmissionMap.get(studentId);
+						
+						if (thisSubmission == null) {
+							// no submission exists for this student yet, so just
+							// add an empty rec to the returned list
+							thisSubmission = new AssignmentSubmission(assignment, studentId);
+						} else {
+							if (thisSubmission.getCurrentSubmissionVersion() != null &&
+									thisSubmission.getCurrentSubmissionVersion().isDraft()) {
+								thisSubmission.setCurrentVersionIsDraft(Boolean.TRUE);
+							} else {
+								thisSubmission.setCurrentVersionIsDraft(Boolean.FALSE);
+							}
+						}
+						
+						viewableSubmissions.add(thisSubmission);
+					}
+				}
+			}
+			
+			// if this assignment is graded, populate the grade information
+			if (!assignment.isUngraded() && assignment.getGradableObjectId() != null) {
+				gradebookLogic.populateGradesForSubmissions(viewableSubmissions, assignment);
+			}
 		}
 
 		return viewableSubmissions;

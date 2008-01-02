@@ -13,6 +13,7 @@ import org.sakaiproject.assignment2.tool.params.SortPagerViewParams;
 import org.sakaiproject.assignment2.tool.producers.NavBarRenderer;
 import org.sakaiproject.assignment2.tool.producers.PagerRenderer;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
+import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 
@@ -79,6 +80,7 @@ public class AssignmentGradeAssignmentProducer implements ViewComponentProducer,
     private PagerRenderer pagerRenderer;
     private MessageLocator messageLocator;
     private AssignmentLogic assignmentLogic;
+    private AssignmentSubmissionLogic submissionLogic;
     private TargettedMessageList messages;
     private ExternalLogic externalLogic;
     private Locale locale;
@@ -190,6 +192,10 @@ public class AssignmentGradeAssignmentProducer implements ViewComponentProducer,
     
     public void setAssignmentLogic(AssignmentLogic assignmentLogic) {
     	this.assignmentLogic = assignmentLogic;
+    }
+    
+    public void setAssignmentSubmissionLogic(AssignmentSubmissionLogic submissionLogic) {
+    	this.submissionLogic = submissionLogic;
     }
     
     public void setMessages(TargettedMessageList messages) {
