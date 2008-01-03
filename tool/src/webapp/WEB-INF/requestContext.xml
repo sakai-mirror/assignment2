@@ -87,6 +87,7 @@
       <property name="locale" ref="requestLocale" />
       <property name="sortHeaderRenderer" ref="SortHeaderRenderer" />
       <property name="attachmentListRenderer" ref="AttachmentListRenderer" />
+      <property name="assignmentSubmissionBean" ref="AssignmentSubmissionBean" />
    </bean>
    
    <bean class="org.sakaiproject.assignment2.tool.producers.AssignmentGradeReportProducer">

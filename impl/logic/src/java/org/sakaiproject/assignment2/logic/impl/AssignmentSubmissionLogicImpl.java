@@ -21,6 +21,8 @@
 
 package org.sakaiproject.assignment2.logic.impl;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
@@ -35,10 +37,12 @@ import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
+import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.logic.PermissionLogic;
+import org.sakaiproject.assignment2.logic.utils.ComparatorsUtils;
 import org.sakaiproject.assignment2.dao.AssignmentDao;
 
 
@@ -79,11 +83,15 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		if (submissionId == null) {
 			throw new IllegalArgumentException("Null submissionId passed to getAssignmentSubmissionById");
 		}
-		//TODO -- Add Security stuff pllllz
+
 		AssignmentSubmission submission =  (AssignmentSubmission) dao.findById(AssignmentSubmission.class, submissionId);
 		Assignment2 assignment = submission.getAssignment();
+
 		// if the submission rec exists, we need to grab the most current version
 		if (submission != null) {
+			if (!permissionLogic.isUserAbleToViewStudentSubmissionForAssignment(submission.getUserId(), assignment)) {
+				throw new SecurityException("user" + externalLogic.getCurrentUserId() + " attempted to view submission with id " + submissionId + " but is not authorized");
+			}
 			AssignmentSubmissionVersion currentVersion = dao.getCurrentSubmissionVersionWithAttachments(submission, Boolean.FALSE);
 			if (currentVersion != null) {
 				if (!submission.getUserId().equals(externalLogic.getCurrentUserId())) {
@@ -333,21 +341,24 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		return status;
 	}
 	
-	/**
-	 * Given an assignment, returns the associated AssignmentSubmission records 
-	 * without the current submission information populated
-	 * @param assignment
-	 * @return
-	 */
-	private List<AssignmentSubmission> getAllSubmissionsForAssignmentNoVersionData(Assignment2 assignment) {
-    	if (assignment == null) {
-    		throw new IllegalArgumentException("null assignmentId passed to getSubmissionsByAssignmentIdNoVersionData");
-    	}
-    	
-    	List<AssignmentSubmission> submissionList = dao.findByProperties(AssignmentSubmission.class, 
-    			new String[] {"assignment"}, new Object[] {assignment});
-    	
-    	return submissionList;
-    }
+	public void sortSubmissions(List<AssignmentSubmission> submissionList, String sortBy, boolean ascending) {
+		Comparator<AssignmentSubmission> comp;
+		if(AssignmentSubmissionLogic.SORT_BY_RELEASED.equals(sortBy)) {
+			comp = new ComparatorsUtils.SubmissionGradeReleasedComparator();
+		} else if(AssignmentSubmissionLogic.SORT_BY_SUBMIT_DATE.equals(sortBy)) {
+			comp = new ComparatorsUtils.SubmissionDateComparator();
+		} else if(AssignmentSubmissionLogic.SORT_BY_GRADE.equals(sortBy)) {
+			comp = new ComparatorsUtils.SubmissionGradeComparator();
+		}else if(AssignmentSubmissionLogic.SORT_BY_STATUS.equals(sortBy)){
+			comp = new ComparatorsUtils.SubmissionStatusComparator();
+		} else {
+			comp = new ComparatorsUtils.SubmissionNameComparator();
+		}
+
+		Collections.sort(submissionList, comp);
+		if(!ascending) {
+			Collections.reverse(submissionList);
+		}
+	}
 
 }

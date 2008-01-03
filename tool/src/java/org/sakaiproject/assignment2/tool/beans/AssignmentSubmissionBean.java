@@ -1,7 +1,10 @@
 package org.sakaiproject.assignment2.tool.beans;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
@@ -127,5 +130,51 @@ public class AssignmentSubmissionBean {
 	
 	public String processActionCancel() {
 		return CANCEL;
+	}
+	
+	public void populateNonPersistedFieldsForSubmissions(List<AssignmentSubmission> submissionList) {
+		if (submissionList == null || submissionList.isEmpty())
+			return;
+		
+		// Now, iterate through the viewable assignments and set the not persisted fields 
+		// that aren't related to the gradebook
+		
+		for (Iterator subIter = submissionList.iterator(); subIter.hasNext();) {
+			AssignmentSubmission submission = (AssignmentSubmission) subIter.next();
+			if (submission != null) {
+
+				// set the status for this submission: "In Progess, Submitted, etc"
+				int status = submissionLogic.getSubmissionStatus(submission);
+				submission.setSubmissionStatus(messageLocator.getMessage("assignment2.assignment_grade-assignment.submission_status." + status));
+			}
+		}
+	}
+	
+	public List filterListForPaging(List myList, int begIndex, int numItemsToDisplay) {
+        if (myList == null || myList.isEmpty())
+        	return myList;
+        
+        int endIndex = begIndex + numItemsToDisplay;
+        if (endIndex > myList.size()) {
+        	endIndex = myList.size();
+        }
+
+		return myList.subList(begIndex, endIndex);
+	}
+	
+	/**
+	 * Will apply paging and sorting to the given list and populate any non-persisted
+	 * fields that need to be populated from the UI (ie fields that require access
+	 * to the bundle)
+	 * @param submissionList
+	 * @param currentStart
+	 * @param currentCount
+	 * @param sortBy
+	 * @param sortDir
+	 */
+	public void filterPopulateAndSortSubmissionList(List<AssignmentSubmission> submissionList, int currentStart, int currentCount, String sortBy, boolean sortDir) {
+		submissionList = filterListForPaging(submissionList, currentStart, currentCount);
+        populateNonPersistedFieldsForSubmissions(submissionList);
+        submissionLogic.sortSubmissions(submissionList, sortBy, sortDir);
 	}
 }

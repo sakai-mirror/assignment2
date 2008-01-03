@@ -34,11 +34,20 @@ import org.sakaiproject.assignment2.model.AssignmentSubmission;
  */
 public interface AssignmentSubmissionLogic {
 	
+	// sorting information
+    public static final String SORT_BY_NAME = "name";
+    public static final String SORT_BY_SUBMIT_DATE = "submitDate";
+    public static final String SORT_BY_STATUS = "status";
+    public static final String SORT_BY_GRADE = "grade";
+    public static final String SORT_BY_RELEASED = "released";
+    
 	/**
 	 * 
 	 * @param submissionId
 	 * @return Returns the AssignmentSubmission based on its assignmentSubmissionId.
 	 * Does not populate current version information.
+	 * @throws SecurityException if current user is not allowed to view the
+	 * corresponding submission
 	 */
 	public AssignmentSubmission getAssignmentSubmissionById(Long submissionId);
 	
@@ -91,5 +100,22 @@ public interface AssignmentSubmissionLogic {
 	 * @param studentId
 	 */
 	public void setSubmissionStatusForAssignments(List<Assignment2> assignments, String studentId);
+	
+	/**
+	 * 
+	 * @param submission
+	 * @return the constant equivalent for the given submission's status 
+	 * ie In Progress, Submitted, etc
+	 */
+	public int getSubmissionStatus(AssignmentSubmission submission);
+	
+	/**
+	 * We cannot rely on db sorting because we must sort by several properties that
+	 * are not persisted in the A2 tables (ie status, grade, name, etc)
+	 * @param submissionList
+	 * @param sortBy
+	 * @param ascending
+	 */
+	public void sortSubmissions(List<AssignmentSubmission> submissionList, String sortBy, boolean ascending);
 	
 }

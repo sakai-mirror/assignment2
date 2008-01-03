@@ -4,7 +4,9 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Date;
 
+import org.sakaiproject.assignment2.tool.beans.AssignmentSubmissionBean;
 import org.sakaiproject.assignment2.tool.params.AssignmentAddViewParams;
 import org.sakaiproject.assignment2.tool.params.AssignmentGradeAssignmentViewParams;
 import org.sakaiproject.assignment2.tool.params.AssignmentListSortViewParams;
@@ -60,16 +62,9 @@ public class AssignmentViewSubmissionsProducer implements ViewComponentProducer,
     }
     
   //sorting strings
-    public static final String SORT_DIR_ASC = "asc";
-    public static final String SORT_DIR_DESC = "desc";
-    public static final String SORT_BY_STUDENT = "student";
-    public static final String SORT_BY_SUBMITTED = "submitted";
-    public static final String SORT_BY_STATUS = "status";
-    public static final String SORT_BY_GRADE = "grade";
-    public static final String SORT_BY_RELEASED = "released";
-    public static final String DEFAULT_SORT_DIR = SORT_DIR_ASC;
-    public static final String DEFAULT_OPPOSITE_SORT_DIR = SORT_DIR_DESC;
-    public static final String DEFAULT_SORT_BY = SORT_BY_STUDENT;
+    public static final String DEFAULT_SORT_DIR = AssignmentLogic.SORT_DIR_ASC;
+    public static final String DEFAULT_OPPOSITE_SORT_DIR = AssignmentLogic.SORT_DIR_DESC;
+    public static final String DEFAULT_SORT_BY = AssignmentSubmissionLogic.SORT_BY_NAME;
     
     private String current_sort_by = DEFAULT_SORT_BY;
     private String current_sort_dir = DEFAULT_SORT_DIR;
@@ -89,6 +84,7 @@ public class AssignmentViewSubmissionsProducer implements ViewComponentProducer,
     private Locale locale;
     private SortHeaderRenderer sortHeaderRenderer;
     private AttachmentListRenderer attachmentListRenderer;
+    private AssignmentSubmissionBean submissionBean;
     
     private Long assignmentId;
     
@@ -111,10 +107,13 @@ public class AssignmentViewSubmissionsProducer implements ViewComponentProducer,
     	if (params.sort_dir == null) params.sort_dir = DEFAULT_SORT_DIR;
     	current_sort_by = params.sort_by;
     	current_sort_dir = params.sort_dir;
-    	opposite_sort_dir = (SORT_DIR_ASC.equals(current_sort_dir) ? SORT_DIR_DESC : SORT_DIR_ASC);
+    	opposite_sort_dir = (AssignmentLogic.SORT_DIR_ASC.equals(current_sort_dir) 
+    			? AssignmentLogic.SORT_DIR_DESC : AssignmentLogic.SORT_DIR_ASC);
+    	
+    	List<AssignmentSubmission> submissions = submissionLogic.getViewableSubmissionsForAssignmentId(assignmentId);
     	
     	//get paging data
-    	int total_count = 17;
+    	int total_count = submissions != null ? submissions.size() : 0;
     	
         UIMessage.make(tofill, "page-title", "assignment2.assignment_grade-assignment.title");
         navBarRenderer.makeNavBar(tofill, "navIntraTool:", VIEW_ID);
@@ -129,18 +128,20 @@ public class AssignmentViewSubmissionsProducer implements ViewComponentProducer,
         
         //Do Student Table
         sortHeaderRenderer.makeSortingLink(tofill, "tableheader.student", viewparams, 
-        		SORT_BY_STUDENT, "assignment2.assignment_grade-assignment.tableheader.student");
+        		AssignmentSubmissionLogic.SORT_BY_NAME, "assignment2.assignment_grade-assignment.tableheader.student");
         sortHeaderRenderer.makeSortingLink(tofill, "tableheader.submitted", viewparams, 
-        		SORT_BY_SUBMITTED, "assignment2.assignment_grade-assignment.tableheader.submitted");
+        		AssignmentSubmissionLogic.SORT_BY_SUBMIT_DATE, "assignment2.assignment_grade-assignment.tableheader.submitted");
         sortHeaderRenderer.makeSortingLink(tofill, "tableheader.status", viewparams, 
-        		SORT_BY_STATUS, "assignment2.assignment_grade-assignment.tableheader.status");
+        		AssignmentSubmissionLogic.SORT_BY_STATUS, "assignment2.assignment_grade-assignment.tableheader.status");
         sortHeaderRenderer.makeSortingLink(tofill, "tableheader.grade", viewparams, 
-        		SORT_BY_GRADE, "assignment2.assignment_grade-assignment.tableheader.grade");
+        		AssignmentSubmissionLogic.SORT_BY_GRADE, "assignment2.assignment_grade-assignment.tableheader.grade");
         sortHeaderRenderer.makeSortingLink(tofill, "tableheader.released", viewparams, 
-	      		SORT_BY_RELEASED, "assignment2.assignment_grade-assignment.tableheader.released");
+	      		AssignmentSubmissionLogic.SORT_BY_RELEASED, "assignment2.assignment_grade-assignment.tableheader.released");
                 
         //Do Table Data
-        List<AssignmentSubmission> submissions = submissionLogic.getViewableSubmissionsForAssignmentId(assignmentId);
+        submissionBean.filterPopulateAndSortSubmissionList(submissions, params.current_start, params.current_count, 
+        		current_sort_by, current_sort_dir.equals(AssignmentLogic.SORT_DIR_ASC));
+        
         for (AssignmentSubmission as : submissions){
         	UIBranchContainer row = UIBranchContainer.make(tofill, "row:");
         	
@@ -154,13 +155,21 @@ public class AssignmentViewSubmissionsProducer implements ViewComponentProducer,
         		UIOutput.make(row, "row_submitted", "");
         	}
         	
-        	UIOutput.make(row, "row_status", "");
+        	UIOutput.make(row, "row_status", as.getSubmissionStatus());
         	
         	UIOutput.make(row, "row_grade", as.getGradebookGrade());
-        	if (Boolean.TRUE){
-        		UIOutput.make(row, "row_released");
+        	if (assignment.isUngraded()){
+        		if (as.getCurrentSubmissionVersion() != null)  {
+        			Date releasedTime = as.getCurrentSubmissionVersion().getReleasedTimeForUngraded();
+        			if (releasedTime != null && releasedTime.before(new Date())) {
+        				UIOutput.make(row, "row_released");
+        			}
+        		}
+        	} else {
+        		if (as.isGradebookGradeReleased()) {
+        			UIOutput.make(row, "row_released");
+        		}
         	}
-        	
         }
         
 
@@ -242,5 +251,9 @@ public class AssignmentViewSubmissionsProducer implements ViewComponentProducer,
     
 	public void setAttachmentListRenderer(AttachmentListRenderer attachmentListRenderer){
 		this.attachmentListRenderer = attachmentListRenderer;
+	}
+	
+	public void setAssignmentSubmissionBean(AssignmentSubmissionBean submissionBean){
+		this.submissionBean = submissionBean;
 	}
 }

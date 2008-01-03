@@ -43,6 +43,17 @@
 		<artifactId>sakai-content-api</artifactId>
 		<version>${sakai.version}</version>
 	</dependency>
+	    <dependency>
+      <groupId>org.sakaiproject</groupId>
+      <artifactId>sakai-user-api</artifactId>
+      <version>${sakai.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging</artifactId>
+      <version>1.0.4</version>
+    </dependency>
     
         <!-- GradebookService -->
     <dependency>
