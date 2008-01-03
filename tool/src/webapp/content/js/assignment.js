@@ -29,13 +29,14 @@ function a2SetMainFrameHeight(){
 
 gradebook_toggle = function(){
 	el = $("input[type='radio'][value='true'][name='ungraded-selection']").get(0);
+	if(el){
 	if (el && el.checked) {
 		$('.due_date').show(); $('.gradebook_item_due_date').hide();
 	} else {
 		$('.due_date').hide(); $('.gradebook_item_due_date').show();
 	}
 	a2SetMainFrameHeight();
-	
+	}
 }
 
 groups_toggle = function(){
@@ -72,12 +73,14 @@ function update_due_date(){
 
 function update_allow_resub(){
 	el = $("input:checkbox[@name='allow_resubmit']").get(0);
+	if (el){
 	if (el.checked) {
 		$(".allow_resubmit_toggle").show();
 	} else {
 		$(".allow_resubmit_toggle").hide();
 	}
 	a2SetMainFrameHeight();
+	}
 }
 
 $(document).ready(function(){

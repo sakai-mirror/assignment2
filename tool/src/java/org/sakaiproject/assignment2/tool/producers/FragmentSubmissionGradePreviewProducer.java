@@ -30,7 +30,7 @@ import uk.org.ponder.rsf.viewstate.ViewParamsReporter;
 
 public class FragmentSubmissionGradePreviewProducer implements ViewComponentProducer, ViewParamsReporter, ContentTypeReporter {
 
-    public static final String VIEW_ID = "fragment-assignment-grade_preview";
+    public static final String VIEW_ID = "fragment-submission-grade_preview";
     public String getViewID() {
         return VIEW_ID;
     }
@@ -57,7 +57,7 @@ public class FragmentSubmissionGradePreviewProducer implements ViewComponentProd
     	    	
     	
     	
-        UIMessage.make(tofill, "preview_heading", "assignment2.fragment-assignment-grade_preview.heading", new Object[]{ assignment.getTitle() });
+        UIMessage.make(tofill, "preview_heading", "assignment2.fragment-submission-grade_preview.heading", new Object[]{ assignment.getTitle() });
         //Free from memory - if that does what I think it will do :-\
         previewAssignmentSubmissionBean.setAssignmentSubmission(null);
     	
@@ -66,7 +66,7 @@ public class FragmentSubmissionGradePreviewProducer implements ViewComponentProd
         UIOutput.make(tofill, "status", as.getSubmissionStatus());
         UIVerbatim.make(tofill, "instructions", assignment.getInstructions());
         
-        if (as.isAllowResubmit()){
+        if (as.isAllowResubmit() != null && as.isAllowResubmit()){
         	UIMessage.make(tofill, "allow_resubmit", "assignment2.fragment-submission-grade_preview.number_resubmit", 
         		new Object[]{df.format(as.getResubmitCloseTime())});
         }
@@ -113,8 +113,8 @@ public class FragmentSubmissionGradePreviewProducer implements ViewComponentProd
     	this.externalLogic = externalLogic;
     }
         
-    public void setPreviewAssignmentBean(PreviewAssignmentSubmissionBean previewAssignmentBean) {
-    	this.previewAssignmentSubmissionBean = previewAssignmentBean;
+    public void setPreviewAssignmentSubmissionBean(PreviewAssignmentSubmissionBean previewAssignmentSubmissionBean) {
+    	this.previewAssignmentSubmissionBean = previewAssignmentSubmissionBean;
     }
     
     public void setLocale(Locale locale) {

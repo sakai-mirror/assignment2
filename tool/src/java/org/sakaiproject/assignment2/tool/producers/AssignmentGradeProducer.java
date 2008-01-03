@@ -13,6 +13,7 @@ import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.tool.beans.Assignment2Bean;
 import org.sakaiproject.assignment2.tool.beans.PreviewAssignmentBean;
+import org.sakaiproject.assignment2.tool.params.AssignmentGradeAssignmentViewParams;
 import org.sakaiproject.assignment2.tool.params.AssignmentGradeViewParams;
 import org.sakaiproject.assignment2.tool.params.FilePickerHelperViewParams;
 import org.sakaiproject.assignment2.tool.producers.FragmentSubmissionGradePreviewProducer;
@@ -38,6 +39,8 @@ import uk.org.ponder.rsf.evolvers.FormatAwareDateInputEvolver;
 import uk.org.ponder.rsf.evolvers.TextInputEvolver;
 import uk.org.ponder.rsf.flow.jsfnav.NavigationCase;
 import uk.org.ponder.rsf.flow.jsfnav.NavigationCaseReporter;
+import uk.org.ponder.rsf.flow.ActionResultInterceptor;
+import uk.org.ponder.rsf.flow.ARIResult;
 import uk.org.ponder.rsf.view.ComponentChecker;
 import uk.org.ponder.rsf.view.ViewComponentProducer;
 import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
@@ -45,7 +48,7 @@ import uk.org.ponder.rsf.viewstate.ViewParameters;
 import uk.org.ponder.rsf.viewstate.ViewParamsReporter;
 
 
-public class AssignmentGradeProducer implements ViewComponentProducer, NavigationCaseReporter, ViewParamsReporter {
+public class AssignmentGradeProducer implements ViewComponentProducer, NavigationCaseReporter, ViewParamsReporter, ActionResultInterceptor {
 
     public static final String VIEW_ID = "assignment_grade";
     public String getViewID() {
@@ -121,7 +124,7 @@ public class AssignmentGradeProducer implements ViewComponentProducer, Navigatio
         	OTPKey += EntityBeanLocator.NEW_PREFIX + "1";
         }
         asOTP += OTPKey;
-        String asvOTP = asOTP + ".currentVersion";
+        String asvOTP = asOTP + ".currentSubmissionVersion";
         
     	//Initialize js otpkey
     	UIVerbatim.make(tofill, "attachment-ajax-init", "otpkey=\"" + org.sakaiproject.util.Web.escapeUrl(OTPKey) + "\"");
@@ -182,8 +185,8 @@ public class AssignmentGradeProducer implements ViewComponentProducer, Navigatio
         UIInput acceptUntilTimeField = UIInput.make(form, "accept_until:", asOTP + ".resubmitCloseTime");
         dateEvolver.evolveDateInput(acceptUntilTimeField, null);
         
-        form.parameters.add(new UIELBinding("#{AssignmentSubmissionBean.assignmentId", assignmentId));
-        form.parameters.add(new UIELBinding("#{AssignmentSubmissionBean.userId", userId));
+        form.parameters.add(new UIELBinding("#{AssignmentSubmissionBean.assignmentId}", assignmentId));
+        form.parameters.add(new UIELBinding("#{AssignmentSubmissionBean.userId}", userId));
         
         UICommand.make(form, "submit", UIMessage.make("assignment2.assignment_grade.submit"), "#{AssignmentSubmissionBean.processActionGradeSubmit}");
         UICommand.make(form, "preview", UIMessage.make("assignment2.assignment_grade.preview"), "#{AssignmentSubmissionBean.processActionGradePreview}");
@@ -196,10 +199,18 @@ public class AssignmentGradeProducer implements ViewComponentProducer, Navigatio
                AssignmentViewSubmissionsProducer.VIEW_ID)));
         nav.add(new NavigationCase("preview", new SimpleViewParameters(
               FragmentSubmissionGradePreviewProducer.VIEW_ID)));
-        nav.add(new NavigationCase("cancel", new SimpleViewParameters(
+        nav.add(new NavigationCase("cancel", new AssignmentGradeAssignmentViewParams(
                 AssignmentViewSubmissionsProducer.VIEW_ID)));
         return nav;
     }
+	
+	public void interceptActionResult(ARIResult result, ViewParameters incoming, Object actionReturn) {
+		    if (result.resultingView instanceof AssignmentGradeAssignmentViewParams) {
+		    	AssignmentGradeAssignmentViewParams outgoing = (AssignmentGradeAssignmentViewParams) result.resultingView;
+		    	AssignmentGradeViewParams in = (AssignmentGradeViewParams) incoming;
+		    	outgoing.assignmentId = in.assignmentId;
+		    }
+	}
 	
     public ViewParameters getViewParameters() {
         return new AssignmentGradeViewParams();
