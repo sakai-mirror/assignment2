@@ -30,7 +30,6 @@
 	</div>
 
 	<h3 rsf:id="heading">Submissions for "[Homework title]"</h3>
-	<div rsf:id="pagerDiv:" class="listNav pagerDiv"></div>
 
 	<!--  Helper Goes Here, comment out for now
 	<div class="viewNav">
@@ -99,9 +98,9 @@
 			</ul>
 	</div> <!--  /#assignment_details -->
 
+	<div rsf:id="pagerDiv:" class="listNav pagerDiv"></div>
 	<table class="listHier lines nolines" cellpadding="0" cellspacing="0">
 		<tr> 
-			<th class="attach">&nbsp;</th>
 			<th rsf:id="tableheader.student:"></th>
 			<th rsf:id="tableheader.submitted:"></th>
 			<th rsf:id="tableheader.status:"></th>
@@ -109,42 +108,18 @@
 			<th rsf:id="tableheader.released:"></th>
 		</tr>
 
-		<tr> 
-			<td class="attach"></td>
-			<td>Janet Janderson
+		<tr rsf:id="row:"> 
+			<td><span rsf:id="row_name">Janet Janderson</span>
 				<ul class="itemAction">
-					<li class="last"><a href="">Grade Submission</a></li>
+					<li class="last"><a rsf:id="row_grade_link">Grade Submission</a></li>
 				</ul>
 			</td>
-			<td>&nbsp;</td>
-			<td>Ungraded</td>
-			<td>&nbsp;</td>
-			<td>&nbsp;</td>
+			<td rsf:id="row_submitted">&nbsp;</td>
+			<td rsf:id="row_status">Ungraded</td>
+			<td rsf:id="row_grade">&nbsp;</td>
+			<td><img rsf:id="row_released" src="/sakai-assignment2-tool/content/images/check.png" width="16" height="16" border="0" /></td>
 		</tr>
-		<tr> 
-			<td class="attach"></td>
-			<td>Rich Richardson
-				<ul class="itemAction">
-					<li class="last"><a href="">Grade Submission</a></li>
-				</ul>
-			</td>
-			<td>Sep 01, 2007 11:00 am</td>
-			<td>Released</td>
-			<td>100.0</td>
-			<td><img src="/sakai-assignment2-tool/content/images/check.png" width="16" height="16" border="0" /></td>
-		</tr>
-		<tr> 
-			<td class="attach"><img src="/sakai-assignment2-tool/content/images/attach.png" width="16" height="16" border="0" /></td>
-			<td>Bob Robertson
-				<ul class="itemAction">
-					<li class="last"><a href="">Grade Submission</a></li>
-				</ul>
-			</td>
-			<td>Sep 24, 2007 11:00 am</td>
-			<td>Graded</td>
-			<td>189.7</td>
-			<td>&nbsp;</td>
-		</tr>
+
 	</table>
 
 	</div>

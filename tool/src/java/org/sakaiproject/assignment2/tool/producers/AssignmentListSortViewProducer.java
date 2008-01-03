@@ -97,8 +97,14 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
     		params.assignmentIdToDuplicate = null;
     	}
     	
+        List<Assignment2> entries = new ArrayList<Assignment2>();
+        /*entries = assignmentLogic.getViewableAssignments(currentUserId, current_sort_by, current_sort_dir.equals(SORT_DIR_ASC), 
+        		params.current_start, params.current_count);*/
+        
+        entries = assignmentLogic.getViewableAssignments();
+    	
     	//get paging data
-    	int total_count = assignmentLogic.getTotalCountViewableAssignments(currentUserId);
+    	int total_count = (entries != null ? entries.size() : 0 );
     		
         UIMessage.make(tofill, "page-title", "assignment2.assignment_list-sortview.title");
         navBarRenderer.makeNavBar(tofill, "navIntraTool:", VIEW_ID);
@@ -135,13 +141,7 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
 
               
         UIForm form = UIForm.make(tofill, "form");
-        
-        List<Assignment2> entries = new ArrayList<Assignment2>();
-        /*entries = assignmentLogic.getViewableAssignments(currentUserId, current_sort_by, current_sort_dir.equals(SORT_DIR_ASC), 
-        		params.current_start, params.current_count);*/
-        
-        entries = assignmentLogic.getViewableAssignments();
-        
+                
          assignment2Bean.filterPopulateAndSortAssignmentList(entries, params.current_start, params.current_count, 
         		current_sort_by, current_sort_dir.equals(AssignmentLogic.SORT_DIR_ASC));
         

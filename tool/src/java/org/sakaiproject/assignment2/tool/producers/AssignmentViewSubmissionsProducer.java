@@ -10,12 +10,15 @@ import org.sakaiproject.assignment2.tool.params.AssignmentGradeAssignmentViewPar
 import org.sakaiproject.assignment2.tool.params.AssignmentListSortViewParams;
 import org.sakaiproject.assignment2.tool.params.SimpleAssignmentViewParams;
 import org.sakaiproject.assignment2.tool.params.SortPagerViewParams;
+import org.sakaiproject.assignment2.tool.params.AssignmentGradeViewParams;
 import org.sakaiproject.assignment2.tool.producers.NavBarRenderer;
 import org.sakaiproject.assignment2.tool.producers.PagerRenderer;
+import org.sakaiproject.assignment2.tool.producers.AssignmentGradeProducer;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
+import org.sakaiproject.assignment2.model.AssignmentSubmission;
 
 import uk.org.ponder.messageutil.MessageLocator;
 import uk.org.ponder.messageutil.TargettedMessage;
@@ -122,6 +125,7 @@ public class AssignmentViewSubmissionsProducer implements ViewComponentProducer,
         UIMessage.make(assign_form, "assign_grade", "assignment2.assignment_grade-assignment.assign_grade");
         UIInput.make(assign_form, "assign_grade_input", "");
         UICommand.make(assign_form, "assign_grade_submit", "");
+
         
         //Do Student Table
         sortHeaderRenderer.makeSortingLink(tofill, "tableheader.student", viewparams, 
@@ -133,9 +137,31 @@ public class AssignmentViewSubmissionsProducer implements ViewComponentProducer,
         sortHeaderRenderer.makeSortingLink(tofill, "tableheader.grade", viewparams, 
         		SORT_BY_GRADE, "assignment2.assignment_grade-assignment.tableheader.grade");
         sortHeaderRenderer.makeSortingLink(tofill, "tableheader.released", viewparams, 
-        		SORT_BY_RELEASED, "assignment2.assignment_grade-assignment.tableheader.released");
+	      		SORT_BY_RELEASED, "assignment2.assignment_grade-assignment.tableheader.released");
                 
         //Do Table Data
+        List<AssignmentSubmission> submissions = submissionLogic.getViewableSubmissionsForAssignmentId(assignmentId);
+        for (AssignmentSubmission as : submissions){
+        	UIBranchContainer row = UIBranchContainer.make(tofill, "row:");
+        	
+        	UIOutput.make(row, "row_name", externalLogic.getUserDisplayName(as.getUserId()));
+        	UIInternalLink.make(row, "row_grade_link", 
+        			new AssignmentGradeViewParams(AssignmentGradeProducer.VIEW_ID, as.getAssignment().getAssignmentId(), as.getUserId()));
+        	
+        	if (as.getCurrentSubmissionVersion() != null && as.getCurrentSubmissionVersion().getSubmittedTime() != null){
+        		UIOutput.make(row, "row_submitted", df.format(as.getCurrentSubmissionVersion().getSubmittedTime()));
+        	} else {
+        		UIOutput.make(row, "row_submitted", "");
+        	}
+        	
+        	UIOutput.make(row, "row_status", "");
+        	
+        	UIOutput.make(row, "row_grade", as.getGradebookGrade());
+        	if (Boolean.TRUE){
+        		UIOutput.make(row, "row_released");
+        	}
+        	
+        }
         
 
         //Assignment Details

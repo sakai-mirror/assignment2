@@ -1,0 +1,184 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns:rsf="http://ponder.org.uk/rsf" xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+
+   <title rsf:id="page-title">Assignments</title>
+
+	<script type="text/javascript" src="/library/editor/FCKeditor/fckeditor.js"></script> 
+
+	<link href="/library/skin/tool_base.css" type="text/css" rel="stylesheet" media="all"/>
+    <link href="/library/skin/default/tool.css" type="text/css" rel="stylesheet" media="all"/>
+    <script type="text/javascript" language="JavaScript" src="/library/js/jquery.js"></script>
+    <script type="text/javascript" language="JavaScript" src="/library/js/headscripts.js"></script>
+    <script type="text/javascript" language="JavaScript" src="/sakai-assignment2-tool/content/js/assignment.js"></script>
+	<link href="/sakai-assignment2-tool/content/css/assignmentsv4.css" type="text/css" rel="stylesheet" media="all" />
+	<script type="text/javascript" src="/sakai-assignment2-tool/content/js/assignment.js"></script>
+	<script type="text/javascript" language="JavaScript" src="/sakai-assignment2-tool/content/js/thickbox.js"></script>
+	<link href="/sakai-assignment2-tool/content/css/thickbox.css" type="text/css" rel="stylesheet" media="all" />
+
+</head>
+
+<body>
+
+<div class="portletBody">
+	<ul rsf:id="navIntraTool:" class="navIntraTool">
+	</ul>
+
+	<div rsf:id="message-for:*" class="debug_info">
+		<ul style="margin:0px;">
+			<li>Message for user here</li>
+		</ul>
+	</div>
+
+	<h3 rsf:id="heading">Grading "[Assignment title]"</h3>
+
+	<form rsf:id="form" method="post">
+
+	<table class="itemSummary" cellspacing="0" summary="Assignment Details">
+		<tr>
+			<th rsf:id="msg=assignment2.assignment_grade.details.student">Student</th>
+			<td rsf:id="details_student">Alan, Rob</td>
+		</tr>
+		<tr>
+			<th rsf:id="msg=assignment2.assignment_grade.details.submitted_date">Submitted Date</th>
+			<td rsf:id="details_submitted_date">Sep 04, 2007 11:00 am</td>
+		</tr>
+		<tr>
+			<th rsf:id="msg=assignment2.assignment_grade.details.status">Status</th>	
+			<td rsf:id="details_status">Ungraded</td>
+		</tr>
+	</table>
+
+	<p class="discTria">
+		<img src="/sakai-assignment2-tool/content/images/expand.png" border="0" alt="Open, click to close assignment instruction" style="cursor:pointer" 
+			onclick="slide_details(this)" /> 
+		<span rsf:id="msg=assignment2.assignment_grade.assignment_instructions" style="cursor:pointer" onclick="slide_details($(this).prev('img').get(0))">Assignment Instructions</span>
+	</p>	
+	<div id="assignment_instructions" style="display:none">
+		<div rsf:id="assignment_instructions" class="textPanel"></div>
+	</div>
+
+	<h4 rsf:id="assignment2.assignment_grade.additional_resources">Additional resources for assignment</h4>
+
+	<ul class="attachList indnt1">
+		<li rsf:id="assignment_attachment_list:">
+			<img src="/sakai-assignment2-tool/content/images/page_white_word.png" target="_blank" width="16" height="16"/> <a href="">ExampleAttachment.doc</a> (52 KB)
+		</li>
+	</ul>
+
+	<h3 rsf:id="msg=assignment2.assignment_grade.assignment_submission">Assignment Submission</h3>
+
+	<fieldset>
+		<legend rsf:id="msg=assignment2.assignment_grade.submitted_text">Submitted Text</legend>
+		<ol>
+			<li>
+				<label rsf:id="feedback_instructions" class="block instruction">Below is the submission from a student. You can insert comments into this text by clicking in the box, then type your comments. Comments surrounded by double curly braces, {{<span class="highlight">like this</span>}}, will appear red to the student.</label>
+				<div rsf:id="feedback_text:">
+					<textarea name="something" cols="80" rows="20" wrap="virtual"></textarea>
+					<!-- this should be the FCKEditor -->
+				</div>		
+			</li>
+		</ol>
+	</fieldset>
+	<fieldset>
+		<legend rsf:id="msg=assignment2.assignment_grade.submitted_attachments">Submitted Attachments</legend>
+		<ol class="attachList indnt1">
+			<li rsf:id="submitted_attachment_list:">
+				<img src="/sakai-assignment2-tool/content/images/page_white_word.png" target="_blank" width="16" height="16"/> <a href="">ExampleAttachment.doc</a> (52 KB)
+			</li>
+		</ol>
+	</fieldset>
+	<fieldset>
+		<legend rsf:id="msg=assignment2.assignment_grade.instructor_comments">Instructor Comments</legend>
+		<ol>
+			<li>
+				<label rsf:id="msg=assignment2.assignment_grade.comments_instructions" class="block instruction">Use the box below to enter additional summary comments about this submission.</label>
+				<div rsf:id="gradebook_comment:">
+					<textarea name="something" cols="80" rows="20" wrap="virtual"></textarea>
+					<!-- this should be the FCKEditor -->
+				</div>	
+			</li>
+		</ol>
+	</fieldset>
+	<fieldset>
+		<legend rsf:id="msg=assignment2.assignemnt_grade.attachments_to_return_with_grade">Attachments To Return With Grade</legend>
+		<ol id="fragment-attachments-container">
+			<li rsf:id="attachment_list:"></li>
+		</ol>
+		<ol>
+			<li>
+				<a rsf:id="add_attachments" class="thickbox">Add Attachments</a>
+			</li>
+		</ol>
+	</fieldset>
+	<fieldset>
+		<ol>
+			<li class="highlightPanel"><label for="grade">Grade:</label> <input type="text" name="grade_submission_grade" size="5" value="" id="grade" /> <span class="instruction">(out of 100.0)</span></li>
+			<li class="shorttext skip">
+				<label for="allowResubmitNumber">Number of resubmissions allowed</label> <select name="allow_resubmit_number" id="allowResubmitNumber">
+					<option value="-1">Unlimited</option>
+					<option value="0" selected="selected">0</option>
+					<option value="1" >1</option>
+					<option value="2" >2</option>
+					<option value="3" >3</option>
+					<option value="4" >4</option>
+					<option value="5" >5</option>
+					<option value="6" >6</option>
+					<option value="7" >7</option>
+					<option value="8" >8</option>
+					<option value="9" >9</option>
+					<option value="10" >10</option>
+				</select>
+			</li>
+			<li>
+				<fieldset>
+					<ol>
+						<li><input type="checkbox" /> <label for="tempAllowResToggle">Allow Resubmission</label></li>
+						<li>
+							<p class="shorttext" style="display:none"><label for="new_assignment_closemonth">Accept Until</label>
+								<input rsf:id="accept_until" />
+							</p>
+						</li>
+					</ol>
+				</fieldset>
+			</li>
+		</ol>
+	</fieldset>
+	<fieldset class="submit">
+		<input rsf:id="submit" accesskey="s" type="submit" class="active" name="save" value="Save"/>
+		<input rsf:id="preview" accesskey="v" type="submit" name="preview" value="Preview"/>
+		<input rsf:id="cancel" accesskey="x" type="submit" name="cancel" value="Cancel"/>
+	</fieldset>
+	</form>
+</div>
+<script type="text/javascript" rsf:id="iframeId_init">
+//set in producer
+</script>
+<script type="text/javascript">
+//<![CDATA[
+function slide_details(img){
+	$('#assignment_instructions').toggle();
+	a2SetMainFrameHeight();
+	if(img.src.match('collapse')){
+		img.src=img.src.replace(/collapse/, 'expand');
+	}else{
+		img.src=img.src.replace(/expand/, 'collapse');
+	}
+}
+//]]>
+</script>
+<script type="text/javascript" rsf:id="attachment-ajax-init">
+//done in producer
+// otpkey = some value
+</script>
+<script type="text/javascript">
+//<![CDATA[
+function refresh_ajax(){
+	$("#fragment-attachments-container").load("fragment-attachments?otpkey=" + otpkey + "&remove=true");
+}
+//]]>
+</script>
+</body>
+</html>
