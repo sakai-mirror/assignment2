@@ -14,7 +14,7 @@
         <!--  This maps to the A2_ASSIGNMENT_T table -->
         <many-to-one name="assignment" column="ASSIGNMENT_ID"
         	class="org.sakaiproject.assignment2.model.Assignment2"
-        	not-null="true" unique-key="ASSIGN_ID_USER_ID" />
+        	not-null="true" unique-key="ASSIGN_ID_USER_ID" lazy="false" />
 
         <!-- The userId of the user associated with this submission -->
         <property name="userId" type="java.lang.String">
@@ -50,6 +50,12 @@
     				 left join fetch submission.assignment
              where submission.assignment = :assignment
              and submission.userId in (:studentIdList)]]>
+  	</query>
+  	
+  	<query name="findSubmissionById">
+    <![CDATA[from org.sakaiproject.assignment2.model.AssignmentSubmission submission
+    				 left join fetch submission.assignment
+             where submission.submissionId = :submissionId]]>
   	</query>
   	
 </hibernate-mapping>
