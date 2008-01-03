@@ -69,3 +69,17 @@ function update_due_date(){
 		}
 	});
 }
+
+function update_allow_resub(){
+	el = $("input:checkbox[@name='allow_resubmit']").get(0);
+	if (el.checked) {
+		$(".allow_resubmit_toggle").show();
+	} else {
+		$(".allow_resubmit_toggle").hide();
+	}
+	a2SetMainFrameHeight();
+}
+
+$(document).ready(function(){
+	update_allow_resub();
+});

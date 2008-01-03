@@ -31,6 +31,7 @@ public class AssignmentSubmissionBean {
 	
 	public Map selectedIds = new HashMap();
 	public Long assignmentId;
+	public String userId;
 	
     private TargettedMessageList messages;
     public void setMessages(TargettedMessageList messages) {
@@ -85,6 +86,9 @@ public class AssignmentSubmissionBean {
 	}
 	
 	
+	/*
+	 * INSTRUCTOR FUNCTIONS
+	 */
 	public String processActionSubmit(){
 		for (String key : OTPMap.keySet()) {
 			AssignmentSubmission assignmentSubmission = OTPMap.get(key);
@@ -126,6 +130,33 @@ public class AssignmentSubmissionBean {
 			submissionLogic.saveStudentSubmission(assignmentSubmission);
 		}
 		return SAVE_DRAFT;
+	}
+	
+	/*
+	 * INSTRUCTOR FUNCTIONS
+	 */
+	public String processActionGradeSubmit(){
+		for (String key : OTPMap.keySet()){
+			AssignmentSubmission assignmentSubmission = OTPMap.get(key);
+			if (assignmentId == null || userId == null){
+				return FAILURE;
+			}
+			Assignment2 assignment = assignmentLogic.getAssignmentById(assignmentId);
+			assignmentSubmission.setAssignment(assignment);
+			assignmentSubmission.setUserId(userId);
+			
+			
+			//submissionLogic.saveStudentSubmission(assignmentSubmission);
+		}
+		return SUBMIT;
+	}
+	
+	public String processActionGradePreview(){
+		for (String key : OTPMap.keySet()){
+			AssignmentSubmission assignmentSubmission = OTPMap.get(key);
+			previewAssignmentSubmissionBean.setAssignmentSubmission(assignmentSubmission);
+		}
+		return PREVIEW;
 	}
 	
 	public String processActionCancel() {

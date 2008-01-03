@@ -1,10 +1,8 @@
 package org.sakaiproject.assignment2.tool.producers;
 
 import java.text.DateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
@@ -12,43 +10,20 @@ import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentAttachment;
-import org.sakaiproject.assignment2.model.AssignmentSubmission;
-import org.sakaiproject.assignment2.model.AssignmentSubmissionAttachment;
-import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
-import org.sakaiproject.assignment2.tool.beans.Assignment2Creator;
-import org.sakaiproject.assignment2.tool.beans.Assignment2Bean;
 import org.sakaiproject.assignment2.tool.beans.PreviewAssignmentBean;
 import org.sakaiproject.assignment2.tool.params.AssignmentAddViewParams;
-import org.sakaiproject.assignment2.tool.params.SimpleAssignmentViewParams;
 import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.tool.api.ToolSession;
 
 import uk.org.ponder.beanutil.entity.EntityBeanLocator;
-import uk.org.ponder.messageutil.MessageLocator;
-import uk.org.ponder.rsf.components.UIBoundString;
-import uk.org.ponder.rsf.components.UICommand;
 import uk.org.ponder.rsf.components.UIContainer;
-import uk.org.ponder.rsf.components.UIELBinding;
-import uk.org.ponder.rsf.components.UIForm;
-import uk.org.ponder.rsf.components.UIInput;
-import uk.org.ponder.rsf.components.UIInternalLink;
 import uk.org.ponder.rsf.components.UIMessage;
 import uk.org.ponder.rsf.components.UIOutput;
-import uk.org.ponder.rsf.components.UISelect;
-import uk.org.ponder.rsf.components.UISelectChoice;
 import uk.org.ponder.rsf.components.UIVerbatim;
-import uk.org.ponder.rsf.components.decorators.DecoratorList;
-import uk.org.ponder.rsf.components.decorators.UILabelTargetDecorator;
 import uk.org.ponder.rsf.content.ContentTypeReporter;
 import uk.org.ponder.rsf.content.ContentTypeInfoRegistry;
-import uk.org.ponder.rsf.evolvers.TextInputEvolver;
-import uk.org.ponder.rsf.flow.ARIResult;
-import uk.org.ponder.rsf.flow.ActionResultInterceptor;
-import uk.org.ponder.rsf.flow.jsfnav.NavigationCase;
-import uk.org.ponder.rsf.flow.jsfnav.NavigationCaseReporter;
 import uk.org.ponder.rsf.view.ComponentChecker;
 import uk.org.ponder.rsf.view.ViewComponentProducer;
-import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
 import uk.org.ponder.rsf.viewstate.ViewParameters;
 import uk.org.ponder.rsf.viewstate.ViewParamsReporter;
 

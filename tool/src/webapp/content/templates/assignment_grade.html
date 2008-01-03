@@ -90,6 +90,7 @@
 			</li>
 		</ol>
 	</fieldset>
+	<!--  This now goes in the helper
 	<fieldset>
 		<legend rsf:id="msg=assignment2.assignment_grade.instructor_comments">Instructor Comments</legend>
 		<ol>
@@ -97,11 +98,11 @@
 				<label rsf:id="msg=assignment2.assignment_grade.comments_instructions" class="block instruction">Use the box below to enter additional summary comments about this submission.</label>
 				<div rsf:id="gradebook_comment:">
 					<textarea name="something" cols="80" rows="20" wrap="virtual"></textarea>
-					<!-- this should be the FCKEditor -->
 				</div>	
 			</li>
 		</ol>
 	</fieldset>
+	-->
 	<fieldset>
 		<legend rsf:id="msg=assignment2.assignemnt_grade.attachments_to_return_with_grade">Attachments To Return With Grade</legend>
 		<ol id="fragment-attachments-container">
@@ -115,30 +116,16 @@
 	</fieldset>
 	<fieldset>
 		<ol>
-			<li class="highlightPanel"><label for="grade">Grade:</label> <input type="text" name="grade_submission_grade" size="5" value="" id="grade" /> <span class="instruction">(out of 100.0)</span></li>
-			<li class="shorttext skip">
-				<label for="allowResubmitNumber">Number of resubmissions allowed</label> <select name="allow_resubmit_number" id="allowResubmitNumber">
-					<option value="-1">Unlimited</option>
-					<option value="0" selected="selected">0</option>
-					<option value="1" >1</option>
-					<option value="2" >2</option>
-					<option value="3" >3</option>
-					<option value="4" >4</option>
-					<option value="5" >5</option>
-					<option value="6" >6</option>
-					<option value="7" >7</option>
-					<option value="8" >8</option>
-					<option value="9" >9</option>
-					<option value="10" >10</option>
-				</select>
+			<li class="highlightPanel">
+				<a rsf:id="gradebook_grading_helper">Grade Via the Gradebook</a>
 			</li>
 			<li>
 				<fieldset>
 					<ol>
-						<li><input type="checkbox" /> <label for="tempAllowResToggle">Allow Resubmission</label></li>
-						<li>
-							<p class="shorttext" style="display:none"><label for="new_assignment_closemonth">Accept Until</label>
-								<input rsf:id="accept_until" />
+						<li><input rsf:id="allow_resubmit" type="checkbox" onclick="update_allow_resub()" /> <label rsf:id="msg=assignment2.assignment_grade.allow_resubmission">Allow Resubmission</label></li>
+						<li class="allow_resubmit_toggle">
+							<p class="shorttext"><label rsf:id="msg=assignment2.assignment_grade.accept_until" for="new_assignment_closemonth">Accept Until</label>
+								<input rsf:id="accept_until:" />
 							</p>
 						</li>
 					</ol>
@@ -148,7 +135,7 @@
 	</fieldset>
 	<fieldset class="submit">
 		<input rsf:id="submit" accesskey="s" type="submit" class="active" name="save" value="Save"/>
-		<input rsf:id="preview" accesskey="v" type="submit" name="preview" value="Preview"/>
+		<input rsf:id="preview" accesskey="v" type="button" name="preview" value="Preview" class="preview_button thickbox" title="Preview" />
 		<input rsf:id="cancel" accesskey="x" type="submit" name="cancel" value="Cancel"/>
 	</fieldset>
 	</form>

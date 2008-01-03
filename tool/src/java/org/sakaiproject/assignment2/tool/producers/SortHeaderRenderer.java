@@ -30,7 +30,10 @@ public class SortHeaderRenderer {
     	String newSortDir = (params.sort_by.equals(sort_by) ? (params.sort_dir.equals(AssignmentLogic.SORT_DIR_ASC) 
     			? AssignmentLogic.SORT_DIR_DESC 
     			: AssignmentLogic.SORT_DIR_ASC) : AssignmentLogic.SORT_DIR_ASC);
-    	SortPagerViewParams new_params = new SortPagerViewParams(params.viewID, sort_by, newSortDir, params.current_start, params.current_count);
+    	
+    	ViewParameters new_params = viewparams.copyBase();
+    	((SortPagerViewParams)new_params).sort_by = sort_by;
+    	((SortPagerViewParams)new_params).sort_dir = newSortDir;
 
     	UIInternalLink.make(joint, "link", new_params);
     }

@@ -4,8 +4,6 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
-import java.util.HashSet;
 
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
@@ -17,14 +15,22 @@ import org.sakaiproject.assignment2.tool.beans.Assignment2Bean;
 import org.sakaiproject.assignment2.tool.beans.PreviewAssignmentBean;
 import org.sakaiproject.assignment2.tool.params.AssignmentGradeViewParams;
 import org.sakaiproject.assignment2.tool.params.FilePickerHelperViewParams;
+import org.sakaiproject.assignment2.tool.producers.FragmentSubmissionGradePreviewProducer;
+import org.sakaiproject.entitybroker.EntityBroker;
+import org.sakaiproject.entitybroker.IdEntityReference;
 import org.sakaiproject.tool.api.SessionManager;
+import org.sakaiproject.tool.api.ToolSession;
 
 import uk.org.ponder.beanutil.entity.EntityBeanLocator;
 import uk.org.ponder.messageutil.MessageLocator;
+import uk.org.ponder.rsf.components.UIBoundBoolean;
+import uk.org.ponder.rsf.components.UICommand;
 import uk.org.ponder.rsf.components.UIContainer;
+import uk.org.ponder.rsf.components.UIELBinding;
 import uk.org.ponder.rsf.components.UIForm;
 import uk.org.ponder.rsf.components.UIInput;
 import uk.org.ponder.rsf.components.UIInternalLink;
+import uk.org.ponder.rsf.components.UILink;
 import uk.org.ponder.rsf.components.UIMessage;
 import uk.org.ponder.rsf.components.UIOutput;
 import uk.org.ponder.rsf.components.UIVerbatim;
@@ -60,6 +66,7 @@ public class AssignmentGradeProducer implements ViewComponentProducer, Navigatio
     private EntityBeanLocator assignment2BeanLocator;
     private AttachmentListRenderer attachmentListRenderer;
     private AssignmentSubmissionLogic submissionLogic;
+    private EntityBroker entityBroker;
     
 	/*
 	 * You can change the date input to accept time as well by uncommenting the lines like this:
@@ -75,6 +82,13 @@ public class AssignmentGradeProducer implements ViewComponentProducer, Navigatio
 	}
     
     public void fillComponents(UIContainer tofill, ViewParameters viewparams, ComponentChecker checker) {
+    	
+    	//Clear out session attachment information if everything successful
+    	ToolSession session = sessionManager.getCurrentToolSession();
+    	session.removeAttribute("attachmentRefs");
+    	session.removeAttribute("removedAttachmentRefs");
+    	
+    	//Get Params
     	AssignmentGradeViewParams params = (AssignmentGradeViewParams) viewparams;
     	String userId = params.userId;
     	Long assignmentId = params.assignmentId;
@@ -112,6 +126,10 @@ public class AssignmentGradeProducer implements ViewComponentProducer, Navigatio
     	//Initialize js otpkey
     	UIVerbatim.make(tofill, "attachment-ajax-init", "otpkey=\"" + org.sakaiproject.util.Web.escapeUrl(OTPKey) + "\"");
         
+    	
+    	/**
+    	 * Begin the Form
+    	 */
         UIForm form = UIForm.make(tofill, "form");
         
         UIOutput.make(form, "details_student", externalLogic.getUserDisplayName(userId));
@@ -138,20 +156,48 @@ public class AssignmentGradeProducer implements ViewComponentProducer, Navigatio
         	UIMessage.make(tofill, "submitted_attachment_list:", "assignment2.assignment_grade.no_attachments_submitted");
         }
         
+        /** This now goes in the helper
         UIInput gradebook_comment = UIInput.make(form, "gradebook_comment:", asOTP + ".gradebookComment");
         richTextEvolver.evolveTextInput(gradebook_comment);
+        ***/
         
-      //Attachments
+        //Attachments
         attachmentListRenderer.makeAttachmentFromAssignment2OTPAttachmentSet(tofill, "attachment_list:", 
         		params.viewID, OTPKey, Boolean.TRUE);
         UIInternalLink.make(form, "add_attachments", UIMessage.make("assignment2.assignment_add.add_attachments"),
         		new FilePickerHelperViewParams(AddAttachmentHelperProducer.VIEWID, Boolean.TRUE, 
         				Boolean.TRUE, 500, 700, OTPKey));
         
+        
+        //Grading Helper Link
+        String ref = new IdEntityReference("grade-entry-grade", externalLogic.getCurrentContextId()).toString();
+        String url = entityBroker.getEntityURL(ref);
+        String contextId = externalLogic.getCurrentContextId();
+        UILink.make(form, "gradebook_grading_helper",
+        		UIMessage.make("assignment2.assignment_grade.gradebook_grade"),
+        		url + "?TB_iframe=true&width=700&height=500&KeepThis=true");
+     
+        
+        UIBoundBoolean.make(form, "allow_resubmit", asOTP + ".allowResubmit");
+        UIInput acceptUntilTimeField = UIInput.make(form, "accept_until:", asOTP + ".resubmitCloseTime");
+        dateEvolver.evolveDateInput(acceptUntilTimeField, null);
+        
+        form.parameters.add(new UIELBinding("#{AssignmentSubmissionBean.assignmentId", assignmentId));
+        form.parameters.add(new UIELBinding("#{AssignmentSubmissionBean.userId", userId));
+        
+        UICommand.make(form, "submit", UIMessage.make("assignment2.assignment_grade.submit"), "#{AssignmentSubmissionBean.processActionGradeSubmit}");
+        UICommand.make(form, "preview", UIMessage.make("assignment2.assignment_grade.preview"), "#{AssignmentSubmissionBean.processActionGradePreview}");
+        UICommand.make(form, "cancel", UIMessage.make("assignment2.assignment_grade.cancel"), "#{AssignmentSubmissionBean.processActionCancel}");
     }
     
 	public List reportNavigationCases() {
     	List<NavigationCase> nav= new ArrayList<NavigationCase>();
+    	nav.add(new NavigationCase("post", new SimpleViewParameters(
+               AssignmentViewSubmissionsProducer.VIEW_ID)));
+        nav.add(new NavigationCase("preview", new SimpleViewParameters(
+              FragmentSubmissionGradePreviewProducer.VIEW_ID)));
+        nav.add(new NavigationCase("cancel", new SimpleViewParameters(
+                AssignmentViewSubmissionsProducer.VIEW_ID)));
         return nav;
     }
 	
@@ -211,4 +257,8 @@ public class AssignmentGradeProducer implements ViewComponentProducer, Navigatio
 	public void setSubmissionLogic(AssignmentSubmissionLogic submissionLogic) {
 		this.submissionLogic = submissionLogic;
 	}
+	
+    public void setEntityBroker(EntityBroker entityBroker) {
+        this.entityBroker = entityBroker;
+    }
 }
