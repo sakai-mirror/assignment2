@@ -208,8 +208,9 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			log.debug("New student submission rec added for user " + assignmentSubmission.getUserId() + " for assignment " + assignmentSubmission.getAssignment().getTitle() + " ID: " + assignmentSubmission.getAssignment().getAssignmentId());
 			
 			newVersion.setAssignmentSubmission(assignmentSubmission);
-			// wipe out any old feedback for this new version
-			newVersion.setFeedbackText(null); 
+			// populate the feedback text with the student's submitted text
+			newVersion.setFeedbackText(newVersion.getSubmittedText()); 
+			// wipe out any old feedback attachments
 			newVersion.setFeedbackAttachSet(null);
 		}
 		
