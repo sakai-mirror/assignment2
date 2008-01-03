@@ -49,9 +49,9 @@ import uk.org.ponder.rsf.viewstate.ViewParamsReporter;
 import java.util.Map;
 import java.util.HashMap;
 
-public class AssignmentGradeAssignmentProducer implements ViewComponentProducer, ViewParamsReporter {
+public class AssignmentViewSubmissionsProducer implements ViewComponentProducer, ViewParamsReporter {
 
-    public static final String VIEW_ID = "assignment_grade-assignment";
+    public static final String VIEW_ID = "assignment_view-submissions";
     public String getViewID() {
         return VIEW_ID;
     }

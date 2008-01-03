@@ -18,7 +18,7 @@ import org.sakaiproject.assignment2.tool.params.AssignmentListSortViewParams;
 import org.sakaiproject.assignment2.tool.params.SimpleAssignmentViewParams;
 import org.sakaiproject.assignment2.tool.params.AssignmentAddViewParams;
 import org.sakaiproject.assignment2.tool.producers.AssignmentAddProducer;
-import org.sakaiproject.assignment2.tool.producers.AssignmentGradeAssignmentProducer;
+import org.sakaiproject.assignment2.tool.producers.AssignmentViewSubmissionsProducer;
 import org.sakaiproject.assignment2.tool.producers.AssignmentListReorderProducer;
 import org.sakaiproject.assignment2.tool.producers.NavBarRenderer;
 import org.sakaiproject.assignment2.tool.producers.PagerRenderer;
@@ -181,7 +181,7 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
         	//Current user should always be able to grade, otherwise getViewableAssignments wouldn't have returned it... or at least it shouldn't ;-)
         	UIInternalLink.make(row, "assignment_row_grade", 
         			UIMessage.make("assignment2.assignment_list-sortview.assignment_row_grade"), 
-        			new SimpleAssignmentViewParams(AssignmentGradeAssignmentProducer.VIEW_ID, assignment.getAssignmentId()));
+        			new SimpleAssignmentViewParams(AssignmentViewSubmissionsProducer.VIEW_ID, assignment.getAssignmentId()));
         	
         	UIOutput.make(row, "assignment_row_for", assignment.getRestrictedToText());
         	if (assignment.isDraft()){
