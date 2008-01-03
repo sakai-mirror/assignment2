@@ -69,6 +69,7 @@ public interface ExternalGradebookLogic {
 	 * the gradebook items currently defined in the gradebook tool
 	 * @param contextId
 	 * @return
+	 * @throws SecurityException if user does not have edit or grade perm
 	 */
 	public List<GradebookItem> getAllGradebookItems(String contextId);
 	

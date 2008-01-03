@@ -180,7 +180,7 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
     	List<GradebookItem> gradebookItems = new ArrayList();
 
     	List<org.sakaiproject.service.gradebook.shared.Assignment> allGbItems = 
-    		gradebookService.getAllGradebookItems(contextId);
+    		gradebookService.getAssignments(contextId);
 
     	if (allGbItems != null) {
 
