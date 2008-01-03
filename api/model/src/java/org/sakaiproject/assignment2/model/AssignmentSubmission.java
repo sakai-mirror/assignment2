@@ -41,12 +41,14 @@ public class AssignmentSubmission {
 	// fields populated with gradebook data
 	private String gradebookGrade;
 	private String gradebookComment;
+	private boolean gradebookGradeReleased;
 	
 	// the current submission version must be populated manually b/c we want
 	// to retrieve the version rec with the highest id
 	private AssignmentSubmissionVersion currentSubmissionVersion;
 	
 	private boolean currentVersionIsDraft;
+	private String submissionStatus;
 
 	public AssignmentSubmission() {
 	}
@@ -121,6 +123,38 @@ public class AssignmentSubmission {
 	public void setSubmissionHistorySet(Set submissionHistorySet) {
 		this.submissionHistorySet = submissionHistorySet;
 	}
+	
+	/**
+	 * 
+	 * @return true if the submitter is allowed to resubmit this assignment
+	 */
+	public Boolean isAllowResubmit() {
+		return allowResubmit;
+	}
+
+	/**
+	 * set whether or not the submitter is allowed to resubmit this assignment
+	 * @param allowResubmit
+	 */
+	public void setAllowResubmit(Boolean allowResubmit) {
+		this.allowResubmit = allowResubmit;
+	}
+	
+	/**
+	 * 
+	 * @return time after which the submitter may no longer submit this assignment
+	 */
+	public Date getResubmitCloseTime() {
+		return resubmitCloseTime;
+	}
+
+	/**
+	 * set the time after which no more submissions will be accepted
+	 * @param resubmitCloseTime
+	 */
+	public void setResubmitCloseTime(Date resubmitCloseTime) {
+		this.resubmitCloseTime = resubmitCloseTime;
+	}
 
 	
 	// fields populated with data from the gradebook
@@ -160,37 +194,21 @@ public class AssignmentSubmission {
 	public void setGradebookComment(String gradebookComment) {
 		this.gradebookComment = gradebookComment;
 	}
-
-	/**
-	 * 
-	 * @return true if the submitter is allowed to resubmit this assignment
-	 */
-	public Boolean isAllowResubmit() {
-		return allowResubmit;
-	}
-
-	/**
-	 * set whether or not the submitter is allowed to resubmit this assignment
-	 * @param allowResubmit
-	 */
-	public void setAllowResubmit(Boolean allowResubmit) {
-		this.allowResubmit = allowResubmit;
-	}
 	
 	/**
 	 * 
-	 * @return time after which the submitter may no longer submit this assignment
+	 * @return true if this grade has been released to the student
 	 */
-	public Date getResubmitCloseTime() {
-		return resubmitCloseTime;
+	public boolean isGradebookGradeReleased() {
+		return gradebookGradeReleased;
 	}
 
 	/**
-	 * set the time after which no more submissions will be accepted
-	 * @param resubmitCloseTime
+	 * true if this grade has been released to the student
+	 * @param gradebookGradeReleased
 	 */
-	public void setResubmitCloseTime(Date resubmitCloseTime) {
-		this.resubmitCloseTime = resubmitCloseTime;
+	public void setGradebookGradeReleased(boolean gradebookGradeReleased) {
+		this.gradebookGradeReleased = gradebookGradeReleased;
 	}
 
 	// non-persisted fields
@@ -234,5 +252,23 @@ public class AssignmentSubmission {
 	 */
 	public void setCurrentVersionIsDraft(boolean currentVersionIsDraft) {
 		this.currentVersionIsDraft = currentVersionIsDraft;
+	}
+
+	/**
+	 * 
+	 * @return String representation of this student's most current submission
+	 * status ie Submitted, In Progress, etc
+	 */
+	public String getSubmissionStatus() {
+		return submissionStatus;
+	}
+
+	/**
+	 * String representation of this student's most current submission
+	 * status ie Submitted, In Progress, etc
+	 * @param submissionStatus
+	 */
+	public void setSubmissionStatus(String submissionStatus) {
+		this.submissionStatus = submissionStatus;
 	}
 }

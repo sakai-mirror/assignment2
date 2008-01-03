@@ -114,7 +114,15 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 
 	}
 	
-	public AssignmentSubmission getCurrentSubmissionByAssignmentIdAndStudentId(Long assignmentId, String studentId, boolean includeDraft) {
+	public AssignmentSubmission getCurrentSubmissionByAssignmentIdAndStudentIdForInstructorView(Long assignmentId, String studentId) {
+		return getCurrentSubmissionByAssignmentIdAndStudentId(assignmentId, studentId, Boolean.TRUE);
+	}
+	
+	public AssignmentSubmission getCurrentSubmissionByAssignmentIdAndStudentIdForStudentView(Long assignmentId, String studentId) {
+		return getCurrentSubmissionByAssignmentIdAndStudentId(assignmentId, studentId, Boolean.FALSE);
+	}
+	
+	private AssignmentSubmission getCurrentSubmissionByAssignmentIdAndStudentId(Long assignmentId, String studentId, boolean instructorView) {
 		if (assignmentId == null || studentId == null) {
 			throw new IllegalArgumentException("Null assignmentId or userId passed to getCurrentSubmissionByAssignmentAndUser");
 		}
@@ -138,9 +146,10 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			if (submission != null) {
 				AssignmentSubmissionVersion currentVersion = dao.getCurrentSubmissionVersionWithAttachments(submission, Boolean.FALSE);
 				if (currentVersion != null) {
-					if (!submission.getUserId().equals(externalLogic.getCurrentUserId())) {
-						// if the current user is not the submitter, we don't want to display a draft version
-						// but want it flagged as in progress
+					if (instructorView) {
+						// if it is an instructor view, we don't want to display a draft version
+						// but want it flagged as in progress. we will return the most recent
+						// non-draft submission
 						if (!currentVersion.isDraft()) {
 							submission.setCurrentVersionIsDraft(Boolean.FALSE);
 						} else {
@@ -149,6 +158,8 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 							currentVersion = dao.getCurrentSubmissionVersionWithAttachments(submission, Boolean.TRUE);
 						}
 						
+					} else {
+						submission.setCurrentVersionIsDraft(currentVersion.isDraft());
 					}
 				}
 				
@@ -304,6 +315,22 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 				}
 			}
 		}
+	}
+	
+	public int getSubmissionStatus(AssignmentSubmission submission) {
+		int status = AssignmentConstants.SUBMISSION_NOT_STARTED;
+		
+		if (submission == null) {
+			status = AssignmentConstants.SUBMISSION_NOT_STARTED;
+		} else if (submission.getCurrentSubmissionVersion() == null) {
+			status = AssignmentConstants.SUBMISSION_NOT_STARTED;
+		} else if (submission.getCurrentSubmissionVersion().isDraft()) {
+			status = AssignmentConstants.SUBMISSION_IN_PROGRESS;
+		} else if (submission.getCurrentSubmissionVersion().getSubmittedTime() != null) {
+			status = AssignmentConstants.SUBMISSION_SUBMITTED;
+		}
+		
+		return status;
 	}
 	
 	/**

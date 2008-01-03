@@ -46,14 +46,26 @@ public interface AssignmentSubmissionLogic {
 	/**
 	 * 
 	 * @param assignmentId
-	 * @param userId
-	 * @param includeDraft
-	 * 		false if you want the most recent non-draft submission
-	 * @return AssignmentSubmission associated with the given Assignment and studentId
-	 * 		will return null if there is no submission info for this student yet
+	 * @param studentId
+	 * @return AssignmentSubmission associated with the given Assignment and studentId.
+	 * 		will return null if there is no submission info for this student yet. if the
+	 * 		most current submission is a draft, will flag the submission as "currentVersionIsDraft"
+	 * 		and return the most recent non-draft version as the currentVersion
 	 * @throws SecurityException if current user not allowed to view student's submission
 	 */
-	public AssignmentSubmission getCurrentSubmissionByAssignmentIdAndStudentId(Long assignmentId, String studentId, boolean includeDraft);
+	public AssignmentSubmission getCurrentSubmissionByAssignmentIdAndStudentIdForInstructorView(Long assignmentId, String studentId);
+	
+	/**
+	 * 
+	 * @param assignmentId
+	 * @param studentId
+	 * @return AssignmentSubmission associated with the given Assignment and studentId.
+	 * 		will return null if there is no submission info for this student yet. populates
+	 * 		currentVersion info
+	 * @throws SecurityException if current user not allowed to view student's submission
+	 */
+	public AssignmentSubmission getCurrentSubmissionByAssignmentIdAndStudentIdForStudentView(Long assignmentId, String studentId);
+	
 	
 	/**
 	 * Create or update an AssignmentSubmission
