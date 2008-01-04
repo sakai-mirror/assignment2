@@ -64,7 +64,7 @@ function update_due_date(){
 	$("li.gradebook_item_due_date p.instruction a").each(function(){
 		if(id!=null){
 			$(this).show();
-			this.href = this.href.replace(/gradebook_item_id=[0-9]*/, "gradebook_item_id=" + id);
+			this.href = this.href.replace(/gradebookItemId=[0-9]*/, "gradebookItemId=" + id);
 		}else{
 			$(this).hide();
 		}

@@ -280,7 +280,7 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
         		
         UILink helplink = UIInternalLink.make(form, "gradebook_item_edit_helper",
         		UIMessage.make("assignment2.assignment_add.gradebook_item_edit_helper"),
-        		url + "?TB_iframe=true&width=700&height=500&KeepThis=true&gradebook_item_id=" + selectedId);
+        		url + "/add-gradebook-item" + "?TB_iframe=true&width=700&height=500&KeepThis=true&gradebookItemId=" + selectedId + "&contextId=" + contextId);
         if (selectedId.equals("")){
         	Map attrmap = new HashMap();
         	attrmap.put("display", "none");

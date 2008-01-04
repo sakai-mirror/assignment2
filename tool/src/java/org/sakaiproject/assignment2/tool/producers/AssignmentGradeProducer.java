@@ -178,7 +178,8 @@ public class AssignmentGradeProducer implements ViewComponentProducer, Navigatio
         String contextId = externalLogic.getCurrentContextId();
         UILink.make(form, "gradebook_grading_helper",
         		UIMessage.make("assignment2.assignment_grade.gradebook_grade"),
-        		url + "?TB_iframe=true&width=700&height=500&KeepThis=true");
+        		url + "?TB_iframe=true&width=700&height=500&KeepThis=true" +
+        				"&contextId=" + contextId + "&userId=" + userId + "&assignmentId=" + assignment.getGradableObjectId());
      
         
         UIBoundBoolean.make(form, "allow_resubmit", asOTP + ".allowResubmit");
