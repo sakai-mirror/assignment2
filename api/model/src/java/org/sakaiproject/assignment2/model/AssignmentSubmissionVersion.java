@@ -44,10 +44,12 @@ public class AssignmentSubmissionVersion {
 	private String reviewStatus;
 	private String reviewIconUrl;
 	private String createdBy;
+	private Date createdTime;
+	private String lastFeedbackSubmittedBy;
+	private Date lastFeedbackTime;
 	private Set<AssignmentFeedbackAttachment> feedbackAttachSet;
 	private Set<AssignmentSubmissionAttachment> submissionAttachSet;
 	
-
 	public AssignmentSubmissionVersion() {
 	}
 	
@@ -245,6 +247,26 @@ public class AssignmentSubmissionVersion {
 	public void setCreatedBy(String createdBy) {
 		this.createdBy = createdBy;
 	}
+	
+	/**
+	 * 
+	 * @return the date this version was created. will be the same as the
+	 * submittedTime unless the instructor is giving feedback where there
+	 * was no submission
+	 */
+	public Date getCreatedTime() {
+		return createdTime;
+	}
+
+	/**
+	 * the date this version was created. will be the same as the
+	 * submittedTime unless the instructor is giving feedback where there
+	 * was no submission
+	 * @param createdTime
+	 */
+	public void setCreatedTime(Date createdTime) {
+		this.createdTime = createdTime;
+	}
 
 	/**
 	 * 
@@ -261,7 +283,39 @@ public class AssignmentSubmissionVersion {
 	public void setAssignmentSubmission(AssignmentSubmission assignmentSubmission) {
 		this.assignmentSubmission = assignmentSubmission;
 	}
-	
+
+	/**
+	 * 
+	 * @return the userid who last submitted feedback on this version
+	 */
+	public String getLastFeedbackSubmittedBy() {
+		return lastFeedbackSubmittedBy;
+	}
+
+	/**
+	 *  the userid who last submitted feedback on this version
+	 * @param lastFeedbackSubmittedBy
+	 */
+	public void setLastFeedbackSubmittedBy(String lastFeedbackSubmittedBy) {
+		this.lastFeedbackSubmittedBy = lastFeedbackSubmittedBy;
+	}
+
+	/**
+	 * 
+	 * @return the date that the feedback for this version was last updated
+	 */
+	public Date getLastFeedbackTime() {
+		return lastFeedbackTime;
+	}
+
+	/**
+	 * the date that the feedback for this version was last updated
+	 * @param lastFeedbackTime
+	 */
+	public void setLastFeedbackTime(Date lastFeedbackTime) {
+		this.lastFeedbackTime = lastFeedbackTime;
+	}
+
 	/**
 	 * 
 	 * @return the AssignmentFeedbackAttachments associated with this submission
@@ -300,6 +354,5 @@ public class AssignmentSubmissionVersion {
 			Set<AssignmentSubmissionAttachment> submissionAttachSet) {
 		this.submissionAttachSet = submissionAttachSet;
 	}
-
 
 }

@@ -187,7 +187,9 @@ public class Assignment2Bean {
 				}
 				
 				logic.saveAssignment(assignment);
-				handleAnnouncement(assignment, assignmentFromDb);
+				
+				Assignment2 updatedAssignment = logic.getAssignmentByIdWithGroups(assignment.getAssignmentId());
+				handleAnnouncement(updatedAssignment, assignmentFromDb);
 				
 			} catch( ConflictingAssignmentNameException e){
 				messages.addMessage(new TargettedMessage("assignment2.assignment_post.conflicting_assignment_name",
@@ -386,9 +388,10 @@ public class Assignment2Bean {
 			newAssignment.setAnnouncementId(null);
 			logic.saveAssignment(newAssignment);
 		} else if (newAssignment.getHasAnnouncement()){
-			// if title or open date was updated, we need to update the announcement
+			// if title, open date, or group restrictions were updated, we need to update the announcement
 			if (!oldAssignment.getTitle().equals(newAssignment.getTitle()) ||
-					!oldAssignment.getOpenTime().equals(newAssignment.getOpenTime())) {
+					!oldAssignment.getOpenTime().equals(newAssignment.getOpenTime()) ||
+					!oldAssignment.getAssignmentGroupSet().equals(newAssignment.getAssignmentGroupSet())) {
 				announcementLogic.updateOpenDateAnnouncement(newAssignment, 
 						externalLogic.getCurrentContextId(), revAnncSubject, revAnncBody);
 				// don't need to re-save assignment b/c id already exists

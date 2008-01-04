@@ -99,6 +99,7 @@ public class AssignmentSubmissionBean {
 			assignmentSubmission.setAssignment(assignment);
 			assignmentSubmission.getCurrentSubmissionVersion().setDraft(Boolean.FALSE);
 			assignmentSubmission.getCurrentSubmissionVersion().setSubmittedTime(new Date());
+			assignmentSubmission.getCurrentSubmissionVersion().setCreatedTime(new Date());
 			
 			
 			submissionLogic.saveStudentSubmission(assignmentSubmission);
