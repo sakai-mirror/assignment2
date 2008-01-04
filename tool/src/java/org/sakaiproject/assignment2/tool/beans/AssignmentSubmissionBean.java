@@ -146,7 +146,7 @@ public class AssignmentSubmissionBean {
 			assignmentSubmission.setUserId(userId);
 			
 			
-			//submissionLogic.saveStudentSubmission(assignmentSubmission);
+			submissionLogic.saveInstructorFeedback(assignmentSubmission);
 		}
 		return SUBMIT;
 	}
@@ -176,7 +176,7 @@ public class AssignmentSubmissionBean {
 			AssignmentSubmission submission = (AssignmentSubmission) subIter.next();
 			if (submission != null) {
 
-				// set the status for this submission: "In Progess, Submitted, etc"
+				// set the status for this submission: "In Progress, Submitted, etc"
 				int status = submissionLogic.getSubmissionStatus(submission);
 				submission.setSubmissionStatus(messageLocator.getMessage("assignment2.assignment_grade-assignment.submission_status." + status));
 			}

@@ -93,17 +93,6 @@ public interface ExternalGradebookLogic {
 	public Map<String, String> getViewableStudentsForGradedItemMap(String contextId, Long gradableObjectId);
 	
 	/**
-	 * 
-	 * @param assignment
-	 * @return a list of studentIds that the current user is allowed to view for
-	 * the given ungraded assignment. If the user may grade all, all students
-	 * are returned.  If user may grade section, only students in his/her section(s)
-	 * will be returned.  Otherwise, the user is not authorized to view any
-	 * students.
-	 */
-	//public List getViewableStudentsForUngradedAssignment(Assignment2 assignment);
-	
-	/**
 	 * @param contextId
 	 * @return true if the current user is authorized to edit the gradebook
 	 */
@@ -139,6 +128,15 @@ public interface ExternalGradebookLogic {
 	public boolean isCurrentUserAStudentInGb(String contextId);
 	
 	/**
+	 * @contextId
+	 * @param studentId
+	 * @param gradableObjectId
+	 * @return true if the current user is authorized to grade the given student
+	 * for the given gb item id
+	 */
+	public boolean isCurrentUserAbleToGradeStudentForItem(String contextId, String studentId, Long gradableObjectId);
+	
+	/**
 	 * 
 	 * @param contextId
 	 * @param studentId
@@ -157,7 +155,7 @@ public interface ExternalGradebookLogic {
 	 * @return the grade in the gb for the given gradable object id and student. null if no
 	 * grade or if the gb item does not exist
 	 */
-	public Double getStudentGradeForItem(String contextId, String studentId, Long gbItemId);
+	public String getStudentGradeForItem(String contextId, String studentId, Long gbItemId);
 	
 	/**
 	 * 
@@ -176,6 +174,14 @@ public interface ExternalGradebookLogic {
 	 * @param assignment
 	 */
 	public void populateGradesForSubmissions(List<AssignmentSubmission> submissionList, Assignment2 assignment);
+	
+	/**
+	 * will populate gradebook-related fields on the submission record 
+	 * ie grade, comment, released, etc
+	 * @param contextId
+	 * @param submission
+	 */
+	public void populateAllGradeInfoForSubmission(String contextId, AssignmentSubmission submission);
 	
 	public String getGradebookItemHelperUrl(String contextId);
 }

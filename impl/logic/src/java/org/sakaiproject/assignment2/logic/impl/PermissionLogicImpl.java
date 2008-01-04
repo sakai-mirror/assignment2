@@ -36,6 +36,7 @@ import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.logic.PermissionLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentGroup;
+import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 
 /**
@@ -94,6 +95,28 @@ public class PermissionLogicImpl implements PermissionLogic {
     	}
     	
     	return viewable;	
+    }
+    
+    public boolean isUserAbleToProvideFeedbackForSubmission(AssignmentSubmission submission) {
+    	if (submission == null) {
+    		throw new IllegalArgumentException("null submission passed to isUserAbleToProvideFeedbackForSubmission");
+    	}
+    	
+    	boolean allowed = false;
+    	
+    	Assignment2 assignment = submission.getAssignment();
+    	if (assignment != null) {
+    		if (assignment.isUngraded()) {
+    			allowed = isUserAbleToViewSubmissionForUngradedAssignment(submission.getUserId(), assignment);
+    		} else {
+    			if (assignment.getGradableObjectId() != null) {
+    				allowed = gradebookLogic.isCurrentUserAbleToGradeStudentForItem(externalLogic.getCurrentContextId(), 
+    					submission.getUserId(), assignment.getGradableObjectId());
+    			}
+    		}
+    	}
+    	
+    	return allowed;
     }
     
     public boolean isUserAbleToViewSubmissionForUngradedAssignment(String studentId, Assignment2 assignment) {

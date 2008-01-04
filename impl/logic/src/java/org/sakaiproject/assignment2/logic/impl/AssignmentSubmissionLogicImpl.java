@@ -1,6 +1,6 @@
 /**********************************************************************************
- * $URL: https://source.sakaiproject.org/contrib/assignment2/trunk/api/logic/src/java/org/sakaiproject/assignment2/dao/AssignmentDao.java $
- * $Id: AssignmentDao.java 12544 2006-05-03 15:06:26Z wagnermr@iupui.edu $
+ * $URL$
+ * $Id$
  ***********************************************************************************
  *
  * Copyright (c) 2007 The Sakai Foundation.
@@ -24,6 +24,7 @@ package org.sakaiproject.assignment2.logic.impl;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,6 +35,7 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment2.model.Assignment2;
+import org.sakaiproject.assignment2.model.AssignmentAttachment;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
@@ -175,11 +177,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 				
 				if (!assignment.isUngraded() && assignment.getGradableObjectId() != null) {
 					// retrieve the grade information for this submission
-					// TODO - retrieve in the proper format!
-					Double grade = gradebookLogic.getStudentGradeForItem(contextId, studentId, assignment.getGradableObjectId());
-					String comment = gradebookLogic.getStudentGradeCommentForItem(contextId, studentId, assignment.getGradableObjectId());
-					submission.setGradebookGrade(grade.toString());
-					submission.setGradebookComment(comment);
+					gradebookLogic.populateAllGradeInfoForSubmission(contextId, submission);
 				}
 			}
 		}
@@ -216,6 +214,49 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		
 		dao.create(newVersion);
 		log.debug("New student submission version added for user " + assignmentSubmission.getUserId() + " for assignment " + assignmentSubmission.getAssignment().getTitle()+ " ID: " + assignmentSubmission.getAssignment().getAssignmentId());
+	}
+	
+	public void saveInstructorFeedback(AssignmentSubmission submission) {
+		if (submission == null) {
+			throw new IllegalArgumentException("null submission passed to saveInstructorFeedback");
+		}
+		
+		if (submission.getAssignment() == null) {
+			throw new IllegalArgumentException("no assignment associated with the given submission");
+		}
+		
+		if (!permissionLogic.isUserAbleToProvideFeedbackForSubmission(submission)) {
+			throw new SecurityException("User " + externalLogic.getCurrentUserId() + " attempted to submit feedback for student " + submission.getUserId() + " without authorization");
+		}
+		
+		// the instructor is submitting feedback even though the student has
+		// not made a submission
+		if (submission.getSubmissionId() == null) {
+			dao.create(submission);
+			log.debug("New student submission rec added for user " + submission.getUserId() + " for assignment " + submission.getAssignment().getTitle() + " ID: " + submission.getAssignment().getAssignmentId()
+						+ " added by " + externalLogic.getCurrentUserId() + " via saveInstructorFeedback");
+		} else {
+			dao.update(submission);
+			log.debug("Submission updated for user " + submission.getUserId() + " for assignment " + submission.getAssignment().getTitle() + " ID: " + submission.getAssignment().getAssignmentId()
+					+ " by " + externalLogic.getCurrentUserId() + " via saveInstructorFeedback");
+		}
+		
+		// now we need to handle the currentVersion information
+		AssignmentSubmissionVersion currentVersion = submission.getCurrentSubmissionVersion();
+		// if there was no currentVersion passed, the instructor may be updating an
+		// AssignmentSubmission field that doesn't affect version info (such as resubmit info)
+		// no need to save new version 
+		if (currentVersion != null) {
+			if (currentVersion.getSubmissionVersionId() != null) {
+				// instructor is providing feedback on the student's current version
+				dao.update(currentVersion);
+			} else {
+				// instructor is providing feedback but the student did not
+				// have a submission yet
+				dao.create(currentVersion);
+			}
+		}
+		
 	}
 	
 	public List<AssignmentSubmission> getViewableSubmissionsForAssignmentId(Long assignmentId) {

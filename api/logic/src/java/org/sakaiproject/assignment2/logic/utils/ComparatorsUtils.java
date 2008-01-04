@@ -158,12 +158,22 @@ public class ComparatorsUtils {
 	 */
 	public static class SubmissionDateComparator implements Comparator<AssignmentSubmission>  {
 		public int compare(AssignmentSubmission submission1, AssignmentSubmission submission2) {
-			Date dueDate1 = submission1.getCurrentSubmissionVersion() != null 
+			Date subDate1 = submission1.getCurrentSubmissionVersion() != null 
 				? submission1.getCurrentSubmissionVersion().getSubmittedTime() : null;
-			Date dueDate2 = submission2.getCurrentSubmissionVersion() != null 
+			Date subDate2 = submission2.getCurrentSubmissionVersion() != null 
 				? submission2.getCurrentSubmissionVersion().getSubmittedTime() : null;
+			
+			int value;
+			if (subDate1 != null && subDate2 != null) {
+				value = subDate1.compareTo(subDate2);
+			} else if (subDate1 == null && subDate2 != null) {
+				value = -1;
+			} else if (subDate1 != null && subDate2 == null) {
+				value = 1;
+			} else {
+				value = 0;
+			}
 
-			int value = dueDate1.compareTo(dueDate2);
 			if (value == 0) {
 				value = sortByName(submission1, submission2);
 			}
@@ -176,7 +186,9 @@ public class ComparatorsUtils {
 	 */
 	public static class SubmissionStatusComparator implements Comparator<AssignmentSubmission>  {
 		public int compare(AssignmentSubmission submission1, AssignmentSubmission submission2) {
-			int value = submission1.getSubmissionStatus().compareTo(submission2.getSubmissionStatus());
+			String status1 = submission1.getSubmissionStatus() != null ? submission1.getSubmissionStatus() : "";
+			String status2 = submission2.getSubmissionStatus() != null ? submission2.getSubmissionStatus() : "";
+			int value = status1.compareTo(status2);
 			if (value == 0) {
 				value = sortByName(submission1, submission2);
 			}
@@ -189,7 +201,9 @@ public class ComparatorsUtils {
 	 */
 	public static class SubmissionGradeComparator implements Comparator<AssignmentSubmission>  {
 		public int compare(AssignmentSubmission submission1, AssignmentSubmission submission2) {
-			int value = submission1.getGradebookGrade().compareTo(submission2.getGradebookGrade());
+			String grade1 = submission1.getGradebookGrade() != null ? submission1.getGradebookGrade() : "";
+			String grade2 = submission2.getGradebookGrade() != null ? submission2.getGradebookGrade() : "";
+			int value = grade1.compareTo(grade2);
 			if (value == 0) {
 				value = sortByName(submission1, submission2);
 			}

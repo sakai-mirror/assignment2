@@ -43,6 +43,7 @@ import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.api.ToolConfiguration;
 import org.sakaiproject.site.cover.SiteService;
 import org.sakaiproject.service.gradebook.shared.AssessmentNotFoundException;
+import org.sakaiproject.service.gradebook.shared.Assignment;
 import org.sakaiproject.service.gradebook.shared.CommentDefinition;
 import org.sakaiproject.service.gradebook.shared.GradeDefinition;
 
@@ -65,11 +66,7 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
     public void setGradebookService(GradebookService gradebookService) {
     	this.gradebookService = gradebookService;
     }
-    
-    /*
-     * (non-Javadoc)
-     * @see org.sakaiproject.assignment2.logic.ExternalGradebookLogic#getViewableAssignmentsWithGbData(java.util.List, java.lang.String)
-     */
+
     public List<Assignment2> getViewableAssignmentsWithGbData(List<Assignment2> gradedAssignments, String contextId) {
     	if (contextId == null) {
     		throw new IllegalArgumentException("contextId is null in getViewableAssignmentsWithGbData");
@@ -80,14 +77,12 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
     		return viewableAssignmentsWithGbData;
     	}
     	
-    	List<org.sakaiproject.service.gradebook.shared.Assignment> gbAssignments = 
-    		gradebookService.getViewableAssignmentsForCurrentUser(contextId);
+    	List<Assignment> gbAssignments = gradebookService.getViewableAssignmentsForCurrentUser(contextId);
 		
 		Map goIdGbAssignmentMap = new HashMap();
 		if (gbAssignments != null) {
 			for (Iterator gbIter = gbAssignments.iterator(); gbIter.hasNext();) {
-				org.sakaiproject.service.gradebook.shared.Assignment gbObject = 
-					(org.sakaiproject.service.gradebook.shared.Assignment) gbIter.next();
+				Assignment gbObject = (Assignment) gbIter.next();
 				if (gbObject != null) {
 					goIdGbAssignmentMap.put(gbObject.getId(), gbObject);
 				}
@@ -104,8 +99,7 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
 			if (gradedAssignment != null) {
 				Long goId = gradedAssignment.getGradableObjectId();
 				if (goId != null) {
-					org.sakaiproject.service.gradebook.shared.Assignment gbItem =
-						(org.sakaiproject.service.gradebook.shared.Assignment)goIdGbAssignmentMap.get(goId);
+					Assignment gbItem =	(Assignment)goIdGbAssignmentMap.get(goId);
 					if (gbItem != null) {
 						gradedAssignment.setDueDate(gbItem.getDueDate());
 						gradedAssignment.setPointsPossible(gbItem.getPoints());
@@ -125,11 +119,7 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
 		
 		return viewableAssignmentsWithGbData;
     }
-    
-    /*
-     * (non-Javadoc)
-     * @see org.sakaiproject.assignment2.logic.ExternalGradebookLogic#createGradebookDataIfNecessary(java.lang.String)
-     */
+
     public void createGradebookDataIfNecessary(String contextId) {
     	// we need to check if there is gradebook data defined for this site. if not,
         // create it (but will not actually add the tool, just the backend)
@@ -142,14 +132,9 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
         	frameworkService.addGradebook(contextId, contextId);
         }
     }
-    
-    /*
-     * (non-Javadoc)
-     * @see org.sakaiproject.assignment2.logic.ExternalGradebookLogic#getViewableGradableObjectIdTitleMap(java.lang.String)
-     */
+
     public Map getViewableGradableObjectIdTitleMap(String contextId) {
-    	List<org.sakaiproject.service.gradebook.shared.Assignment> viewableGbItems = 
-    		gradebookService.getViewableAssignmentsForCurrentUser(contextId);
+    	List<Assignment> viewableGbItems = gradebookService.getViewableAssignmentsForCurrentUser(contextId);
     	
     	Map<Long, String> idTitleMap = new HashMap();
     	if (viewableGbItems == null || viewableGbItems.isEmpty()) {
@@ -157,8 +142,7 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
     	}
     	
     	for (Iterator itemIter = viewableGbItems.iterator(); itemIter.hasNext();) {
-    		org.sakaiproject.service.gradebook.shared.Assignment assign =
-    			(org.sakaiproject.service.gradebook.shared.Assignment)itemIter.next();
+    		Assignment assign =	(Assignment)itemIter.next();
     		
     		if (assign != null) {
     			idTitleMap.put(assign.getId(), assign.getName());
@@ -167,11 +151,7 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
     	
     	return idTitleMap;
     }
-    
-    /*
-     * (non-Javadoc)
-     * @see org.sakaiproject.assignment2.logic.ExternalGradebookLogic#getAllGradebookItems(java.lang.String)
-     */
+
     public List<GradebookItem> getAllGradebookItems(String contextId) {
     	if (contextId == null) {
     		throw new IllegalArgumentException("null contextId passed to getAllGradebookItems");
@@ -179,14 +159,12 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
 
     	List<GradebookItem> gradebookItems = new ArrayList();
 
-    	List<org.sakaiproject.service.gradebook.shared.Assignment> allGbItems = 
-    		gradebookService.getAssignments(contextId);
+    	List<Assignment> allGbItems = gradebookService.getAssignments(contextId);
 
     	if (allGbItems != null) {
 
     		for (Iterator itemIter = allGbItems.iterator(); itemIter.hasNext();) {
-    			org.sakaiproject.service.gradebook.shared.Assignment assign =
-    				(org.sakaiproject.service.gradebook.shared.Assignment)itemIter.next();
+    			Assignment assign =	(Assignment)itemIter.next();
 
     			if (assign != null) {
     				GradebookItem item = 
@@ -198,11 +176,7 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
 
     	return gradebookItems;
     }
-    
-    /*
-     * (non-Javadoc)
-     * @see org.sakaiproject.assignment2.logic.ExternalGradebookLogic#getViewableGroupIdToTitleMap(java.lang.String)
-     */
+
     public Map<String, String> getViewableGroupIdToTitleMap(String contextId) {
     	if (contextId == null) {
     		throw new IllegalArgumentException("Null contextId passed to getViewableGroupIdToTitleMap");
@@ -210,11 +184,7 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
     	
     	return gradebookService.getViewableSectionUuidToNameMap(contextId);
     }
-    
-    /*
-     * (non-Javadoc)
-     * @see org.sakaiproject.assignment2.logic.ExternalGradebookLogic#getViewableStudentsForGradedItemMap(java.lang.String, java.lang.Long)
-     */
+
     public Map<String, String> getViewableStudentsForGradedItemMap(String contextId, Long gradableObjectId) {
     	if (contextId == null) {
     		throw new IllegalArgumentException("Null contextId passed to getViewableGroupIdToTitleMap");
@@ -308,15 +278,18 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
     	return viewOrGrade;
     }
     
-    public Double getStudentGradeForItem(String contextId, String studentId, Long gbItemId) {
+    public String getStudentGradeForItem(String contextId, String studentId, Long gbItemId) {
     	if (contextId == null || studentId == null || gbItemId == null) {
     		throw new IllegalArgumentException("Null contextId or studentId or gbItemId passed to getStudentGradeForItem");
     	}
     	
-    	Double grade = null;
+    	String grade = null;
     	
     	try {
-    		grade = gradebookService.getAssignmentScore(contextId, gbItemId, studentId);
+    		GradeDefinition gradeDef = gradebookService.getGradeDefinitionForStudentForItem(contextId, gbItemId, studentId);
+    		if (gradeDef != null) {
+    			grade = gradeDef.getGrade();
+    		}
     	} catch (AssessmentNotFoundException anfe) {
     		// this gradebook item no longer exists, so return a null grade
     		grade = null;
@@ -379,6 +352,44 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
     						thisSubmission.setGradebookGrade(sb.toString());
     					}
     				}
+    			}
+    		}
+    	}
+    }
+    
+    public boolean isCurrentUserAbleToGradeStudentForItem(String contextId, String studentId, Long gradableObjectId) {
+    	if (studentId == null || gradableObjectId == null) {
+    		throw new IllegalArgumentException("null studentId or gradableObjectId passed to isCurrentUserAbleToGradeStudentForItem");
+    	}
+    	
+    	return gradebookService.isUserAbleToGradeItemForStudent(contextId, gradableObjectId, studentId);
+    }
+    
+    public void populateAllGradeInfoForSubmission(String contextId, AssignmentSubmission submission) {
+    	if (contextId == null) {
+    		throw new IllegalArgumentException("null contextId passed to populateAllGradeInfoForSubmission");
+    	}
+    	
+    	if (submission != null) {
+    		Assignment2 assignment = submission.getAssignment();
+    		if (assignment != null && !assignment.isUngraded() && assignment.getGradableObjectId() != null) {
+    			Long gbItemId = assignment.getGradableObjectId();
+    			
+    			try {
+    				GradeDefinition gradeDef = gradebookService.getGradeDefinitionForStudentForItem(contextId, gbItemId, submission.getUserId());
+    				CommentDefinition commentDef = gradebookService.getAssignmentScoreComment(contextId, gbItemId, submission.getUserId());
+    				
+    				if (gradeDef != null) {
+    					submission.setGradebookGrade(gradeDef.getGrade());
+        				submission.setGradebookGradeReleased(gradeDef.isGradeReleased());
+    				}
+    				if (commentDef != null) {
+    					submission.setGradebookComment(commentDef.getCommentText());
+    				}
+    				
+    			} catch (AssessmentNotFoundException anfe) {
+    				// this gb item no longer exists, so there is no information to populate
+    				log.debug("gb item with id " + gbItemId + " no longer exists, so returning null grade info");
     			}
     		}
     	}

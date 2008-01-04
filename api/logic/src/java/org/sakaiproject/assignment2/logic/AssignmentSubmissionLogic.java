@@ -84,6 +84,14 @@ public interface AssignmentSubmissionLogic {
 	public void saveStudentSubmission(AssignmentSubmission assignmentSubmission);
 	
 	/**
+	 * Save instructor feedback changes to the given submission rec
+	 * @param submission
+	 * @throws SecurityException if current user is not authorized to provide
+	 * feedback for the given submission
+	 */
+	public void saveInstructorFeedback(AssignmentSubmission submission);
+	
+	/**
 	 * 
 	 * @param assignmentId
 	 * @return all AssignmentSubmissions for this assignmentId that the current

@@ -27,6 +27,7 @@ import java.util.Set;
 
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentGroup;
+import org.sakaiproject.assignment2.model.AssignmentSubmission;
 
 /**
  * This is the interface for logic which is related to the permission 
@@ -51,6 +52,14 @@ public interface PermissionLogic {
 	 * submission for the given assignment
 	 */
 	public boolean isUserAbleToViewStudentSubmissionForAssignment(String studentId, Assignment2 assignment);
+	
+	/**
+	 * 
+	 * @param submission
+	 * @return true if the current user is allowed to provide feedback for the
+	 * given submission
+	 */
+	public boolean isUserAbleToProvideFeedbackForSubmission(AssignmentSubmission submission);
 	
 	/**
 	 * @param userId
