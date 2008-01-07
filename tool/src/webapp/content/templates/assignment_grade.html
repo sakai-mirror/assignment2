@@ -168,7 +168,7 @@ function refresh_ajax(){
 		$("#fragment-attachments-container").load(fragAttachPath + "?otpkey=" + otpkey + "&remove=true");
 	}
 	if(fragGBDetailsPath != ""){
-		$("#gradebook-details-container").load(fragGBDetailsPath + "?submissionId=" + otpkey, {}, 
+		$("#gradebook-details-container").load(fragGBDetailsPath + "?assignmentId=" + assignmentId + "&userId=" + userId, {}, 
 			function(){tb_init('a.thickbox, area.thickbox, input.thickbox');});
 	}
 }

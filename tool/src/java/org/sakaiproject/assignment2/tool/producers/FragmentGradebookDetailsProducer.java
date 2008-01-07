@@ -66,9 +66,9 @@ public class FragmentGradebookDetailsProducer implements ViewComponentProducer, 
     public void fillComponents(UIContainer tofill, ViewParameters viewparams, ComponentChecker checker) {
     	FragmentGradebookDetailsViewParams params = (FragmentGradebookDetailsViewParams) viewparams;
     	
-    	AssignmentSubmission as = assignmentSubmissionLogic.getAssignmentSubmissionById(params.submissionId);
-    	as = assignmentSubmissionLogic.getCurrentSubmissionByAssignmentIdAndStudentIdForInstructorView(as.getAssignment().getAssignmentId(), as.getUserId());
-    	gradebookDetailsRenderer.makeGradebookDetails(tofill, "gradebook_details", as, as.getAssignment().getAssignmentId(), as.getUserId());
+    	
+    	AssignmentSubmission as = assignmentSubmissionLogic.getCurrentSubmissionByAssignmentIdAndStudentIdForInstructorView(params.assignmentId, params.userId);
+    	gradebookDetailsRenderer.makeGradebookDetails(tofill, "gradebook_details", as, params.assignmentId, params.userId);
     	
     }
     	

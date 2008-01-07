@@ -4,12 +4,14 @@ import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
 
 public class FragmentGradebookDetailsViewParams extends SimpleViewParameters {
 	
-	public Long submissionId;
+	public Long assignmentId;
+	public String userId;
 	
 	public FragmentGradebookDetailsViewParams(){}
 	
-	public FragmentGradebookDetailsViewParams(String viewId, Long submissionId, String userId) {
+	public FragmentGradebookDetailsViewParams(String viewId, Long assignmentId, String userId) {
 		super(viewId);
-		this.submissionId = submissionId;
+		this.assignmentId = assignmentId;
+		this.userId = userId;
 	}
 }
