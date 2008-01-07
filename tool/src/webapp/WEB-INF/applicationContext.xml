@@ -38,7 +38,7 @@
    <!-- Override the default style of user messages -->
    <bean id="messageTemplateContributor" parent="templateContributorParent">
       <property name="baseDirectory" value="component-templates/" />
-      <property name="templateNames" value="Messages,Navbar,Pager,SortHeader,AttachmentList" />
+      <property name="templateNames" value="Messages,Navbar,Pager,SortHeader,AttachmentList,GradebookDetails" />
    </bean>
    
    <!-- The beans listed here are session beans (they stick around) -->

@@ -17,6 +17,7 @@ import org.sakaiproject.assignment2.tool.params.AssignmentGradeAssignmentViewPar
 import org.sakaiproject.assignment2.tool.params.AssignmentGradeViewParams;
 import org.sakaiproject.assignment2.tool.params.FilePickerHelperViewParams;
 import org.sakaiproject.assignment2.tool.producers.FragmentSubmissionGradePreviewProducer;
+import org.sakaiproject.assignment2.tool.producers.FragmentGradebookDetailsProducer;
 import org.sakaiproject.entitybroker.EntityBroker;
 import org.sakaiproject.entitybroker.IdEntityReference;
 import org.sakaiproject.tool.api.SessionManager;
@@ -70,7 +71,8 @@ public class AssignmentGradeProducer implements ViewComponentProducer, Navigatio
     private AttachmentListRenderer attachmentListRenderer;
     private AssignmentSubmissionLogic submissionLogic;
     private EntityBroker entityBroker;
-    
+    private GradebookDetailsRenderer gradebookDetailsRenderer;
+		
 	/*
 	 * You can change the date input to accept time as well by uncommenting the lines like this:
 	 * dateevolver.setStyle(FormatAwareDateInputEvolver.DATE_TIME_INPUT);
@@ -126,8 +128,12 @@ public class AssignmentGradeProducer implements ViewComponentProducer, Navigatio
         asOTP += OTPKey;
         String asvOTP = asOTP + ".currentSubmissionVersion";
         
-    	//Initialize js otpkey
-    	UIVerbatim.make(tofill, "attachment-ajax-init", "otpkey=\"" + org.sakaiproject.util.Web.escapeUrl(OTPKey) + "\"");
+      //Initialize js otpkey
+    	UIVerbatim.make(tofill, "attachment-ajax-init", "otpkey=\"" + org.sakaiproject.util.Web.escapeUrl(OTPKey) + "\";\n" +
+    			"userId=\"" + userId + "\";\n" +
+    			"assignmentId=\"" + assignmentId + "\";\n" +
+    			"fragAttachPath=\"" + externalLogic.getAssignmentViewUrl(FragmentAttachmentsProducer.VIEW_ID) + "\";\n" +
+    			"fragGBDetailsPath=\"" + externalLogic.getAssignmentViewUrl(FragmentGradebookDetailsProducer.VIEW_ID) + "\";");
         
     	
     	/**
@@ -172,22 +178,11 @@ public class AssignmentGradeProducer implements ViewComponentProducer, Navigatio
         				Boolean.TRUE, 500, 700, OTPKey));
         
         
-        //Grading Helper Link
-        String ref = new IdEntityReference("grade-entry-grade", externalLogic.getCurrentContextId()).toString();
-        String url = entityBroker.getEntityURL(ref);
-        String contextId = externalLogic.getCurrentContextId();
-        UILink.make(form, "gradebook_grading_helper",
-        		UIMessage.make("assignment2.assignment_grade.gradebook_grade"),
-        		url + "/grade-gradebook-item?TB_iframe=true&width=700&height=500&KeepThis=true" +
-        				"&contextId=" + contextId + "&userId=" + userId + "&assignmentId=" + assignment.getGradableObjectId());
-     
-        UIOutput.make(form, "gradebook_grade", (as!= null && as.getGradebookGrade() != null ? as.getGradebookGrade() : ""));
-        UIOutput.make(form, "gradebook_comment", (as != null && as.getGradebookComment() != null ? as.getGradebookComment() : ""));
-        
-        
         UIBoundBoolean.make(form, "allow_resubmit", asOTP + ".allowResubmit");
         UIInput acceptUntilTimeField = UIInput.make(form, "accept_until:", asOTP + ".resubmitCloseTime");
         dateEvolver.evolveDateInput(acceptUntilTimeField, null);
+        
+        gradebookDetailsRenderer.makeGradebookDetails(tofill, "gradebook_details", as, assignmentId, userId);
         
         form.parameters.add(new UIELBinding("#{AssignmentSubmissionBean.assignmentId}", assignmentId));
         form.parameters.add(new UIELBinding("#{AssignmentSubmissionBean.userId}", userId));
@@ -276,4 +271,8 @@ public class AssignmentGradeProducer implements ViewComponentProducer, Navigatio
     public void setEntityBroker(EntityBroker entityBroker) {
         this.entityBroker = entityBroker;
     }
+    
+    public void setGradebookDetailsRenderer(GradebookDetailsRenderer gradebookDetailsRenderer){
+		this.gradebookDetailsRenderer = gradebookDetailsRenderer;
+	}
 }

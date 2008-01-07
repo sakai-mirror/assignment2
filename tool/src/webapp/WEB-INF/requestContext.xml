@@ -33,6 +33,11 @@
    	  <property name="messageLocator" ref="messageLocator" />
    	  <property name="assignment2EntityBeanLocator" ref="Assignment2"/>
    </bean>
+   <bean id="GradebookDetailsRenderer" class="org.sakaiproject.assignment2.tool.producers.GradebookDetailsRenderer">
+      <property name="entityBroker" ref="org.sakaiproject.entitybroker.EntityBroker" />
+      <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
+      <property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
+   </bean>
    
 
    <!-- list the producer beans here -->
@@ -75,6 +80,7 @@
       <property name="attachmentListRenderer" ref="AttachmentListRenderer" />
       <property name="submissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
       <property name="entityBroker" ref="org.sakaiproject.entitybroker.EntityBroker" />
+      <property name="gradebookDetailsRenderer" ref="GradebookDetailsRenderer" />
    </bean>
 
    <bean class="org.sakaiproject.assignment2.tool.producers.AssignmentViewSubmissionsProducer">
@@ -186,6 +192,12 @@
    	  <property name="messageLocator" ref="messageLocator" />
    	  <property name="attachmentListRenderer" ref="AttachmentListRenderer" />
    	  <property name="assignmentSubmissionEntityBeanLocator" ref="AssignmentSubmission" />
+   </bean>
+   
+   <bean class="org.sakaiproject.assignment2.tool.producers.FragmentGradebookDetailsProducer">
+   	  <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
+   	  <property name="gradebookDetailsRenderer" ref="GradebookDetailsRenderer" />
+   	  <property name="assignmentSubmissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
    </bean>
       
    <bean class="org.sakaiproject.assignment2.tool.producers.FragmentSubmissionPreviewProducer">
