@@ -181,8 +181,8 @@ public class AssignmentGradeProducer implements ViewComponentProducer, Navigatio
         		url + "/grade-gradebook-item?TB_iframe=true&width=700&height=500&KeepThis=true" +
         				"&contextId=" + contextId + "&userId=" + userId + "&assignmentId=" + assignment.getGradableObjectId());
      
-        UIOutput.make(form, "gradebook_grade", as.getGradebookGrade());
-        UIOutput.make(form, "gradebook_comment", as.getGradebookComment());
+        UIOutput.make(form, "gradebook_grade", (as!= null && as.getGradebookGrade() != null ? as.getGradebookGrade() : ""));
+        UIOutput.make(form, "gradebook_comment", (as != null && as.getGradebookComment() != null ? as.getGradebookComment() : ""));
         
         
         UIBoundBoolean.make(form, "allow_resubmit", asOTP + ".allowResubmit");

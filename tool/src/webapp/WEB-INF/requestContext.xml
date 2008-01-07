@@ -171,6 +171,13 @@
       <property name="sessionManager" ref="org.sakaiproject.tool.api.SessionManager" />
    </bean>
    
+   <bean class="org.sakaiproject.assignment2.tool.producers.FragmentAssignment2SelectProducer">
+   	  <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
+   	  <property name="messageLocator" ref="messageLocator" />
+   	  <property name="externalGradebookLogic" ref="org.sakaiproject.assignment2.logic.ExternalGradebookLogic" />
+   	  <property name="locale" ref="requestLocale" />
+   </bean>
+   
    <bean class="org.sakaiproject.assignment2.tool.producers.FragmentAttachmentsProducer">
    	  <property name="assignment2EntityBeanLocator" ref="Assignment2"/>
    	  <property name="contentHostingService" ref="org.sakaiproject.content.api.ContentHostingService" />

@@ -224,11 +224,30 @@
 <script type="text/javascript" rsf:id="attachment-ajax-init">
 //done in producer
 // otpkey = some value
+// fragPath = some string
 </script>
 <script type="text/javascript">
 //<![CDATA[
 function refresh_ajax(){
-	$("#fragment-attachments-container").load("fragment-attachments?otpkey=" + otpkey + "&remove=true");
+	if(fragAttachPath != ""){
+		$("#fragment-attachments-container").load(fragAttachPath + "?otpkey=" + otpkey + "&remove=true");
+	}
+	if(fragGBPath != ""){
+		$.ajax({
+			type: "GET",
+			url: fragGBPath,
+			success: function(html){
+				$("select[name='gradebook_item-selection']").html(
+					html.substring(html.indexOf('<option'),
+						html.lastIndexOf('</option>') + 9));
+			    jQuery.globalEval(
+			    	html.substring(
+			    		html.indexOf('var gradebook'),
+			    		html.indexOf('</script')));
+			    $("select[name='gradebook_item-selection']").get(0).selectedIndex=0;
+			}
+		});
+	}
 }
 //]]>
 </script>
