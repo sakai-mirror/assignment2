@@ -57,7 +57,8 @@ public interface AssignmentSubmissionLogic {
 	 * @param assignmentId
 	 * @param studentId
 	 * @return AssignmentSubmission associated with the given Assignment and studentId.
-	 * 		will return null if there is no submission info for this student yet. if the
+	 * 		will return an empty record (with gb info populated, if appropriate)
+	 * 		if there is no submission info for this student yet. if the
 	 * 		most current submission is a draft, will flag the submission as "currentVersionIsDraft"
 	 * 		and return the most recent non-draft version as the currentVersion
 	 * @throws SecurityException if current user not allowed to view student's submission
@@ -69,7 +70,8 @@ public interface AssignmentSubmissionLogic {
 	 * @param assignmentId
 	 * @param studentId
 	 * @return AssignmentSubmission associated with the given Assignment and studentId.
-	 * 		will return null if there is no submission info for this student yet. populates
+	 * 		will return an empty record (with gb info populated, if appropriate) 
+	 * 		if there is no submission info for this student yet. populates
 	 * 		currentVersion info
 	 * @throws SecurityException if current user not allowed to view student's submission
 	 */

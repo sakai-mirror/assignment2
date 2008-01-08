@@ -177,10 +177,13 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 				
 				submission.setCurrentSubmissionVersion(currentVersion);
 				
-				if (!assignment.isUngraded() && assignment.getGradableObjectId() != null) {
-					// retrieve the grade information for this submission
-					gradebookLogic.populateAllGradeInfoForSubmission(contextId, submission);
-				}
+			} else {
+				submission = new AssignmentSubmission(assignment, studentId);
+			}
+			
+			if (!assignment.isUngraded() && assignment.getGradableObjectId() != null) {
+				// retrieve the grade information for this submission
+				gradebookLogic.populateAllGradeInfoForSubmission(contextId, submission);
 			}
 		}
 		
