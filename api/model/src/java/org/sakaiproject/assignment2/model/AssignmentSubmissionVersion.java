@@ -354,5 +354,30 @@ public class AssignmentSubmissionVersion {
 			Set<AssignmentSubmissionAttachment> submissionAttachSet) {
 		this.submissionAttachSet = submissionAttachSet;
 	}
+	
+	@Override
+	public AssignmentSubmissionVersion clone() {
+		AssignmentSubmissionVersion newVersion = new AssignmentSubmissionVersion();
+		newVersion.setAssignmentSubmission(assignmentSubmission);
+		newVersion.setCommentForUngraded(commentForUngraded);
+		newVersion.setCreatedBy(createdBy);
+		newVersion.setCreatedTime(createdTime);
+		newVersion.setDraft(draft);
+		newVersion.setFeedbackAttachSet(feedbackAttachSet);
+		newVersion.setFeedbackText(feedbackText);
+		newVersion.setLastFeedbackSubmittedBy(lastFeedbackSubmittedBy);
+		newVersion.setLastFeedbackTime(lastFeedbackTime);
+		newVersion.setReleasedTimeForUngraded(releasedTimeForUngraded);
+		newVersion.setReviewIconUrl(reviewIconUrl);
+		newVersion.setReviewReportScore(reviewReportScore);
+		newVersion.setReviewReportUrl(reviewReportUrl);
+		newVersion.setReviewReportScore(reviewReportScore);
+		newVersion.setReviewStatus(reviewStatus);
+		newVersion.setSubmissionAttachSet(submissionAttachSet);
+		newVersion.setSubmittedText(submittedText);
+		newVersion.setSubmittedTime(submittedTime);
+		
+		return newVersion;
+	}
 
 }

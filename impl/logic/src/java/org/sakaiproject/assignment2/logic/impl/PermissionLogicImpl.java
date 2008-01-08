@@ -125,7 +125,9 @@ public class PermissionLogicImpl implements PermissionLogic {
     	}
     	
     	boolean viewable = false;
-    	if (gradebookLogic.isCurrentUserAbleToGrade(assignment.getContextId())) {
+    	if (gradebookLogic.isCurrentUserAbleToGradeAll(assignment.getContextId())) {
+    		viewable = true;
+    	} else if (gradebookLogic.isCurrentUserAbleToGrade(assignment.getContextId())) {
     		List currentUserMemberships = externalLogic.getUserMembershipGroupIdList(externalLogic.getCurrentUserId());
     		List studentMemberships = externalLogic.getUserMembershipGroupIdList(studentId);
     		if (userMembershipsOverlap(currentUserMemberships, studentMemberships)) {

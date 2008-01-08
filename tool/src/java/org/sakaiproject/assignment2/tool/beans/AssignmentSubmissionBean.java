@@ -208,9 +208,18 @@ public class AssignmentSubmissionBean {
 			if (assignmentId == null || userId == null){
 				return FAILURE;
 			}
+			String currUserId = externalLogic.getCurrentUserId();
+			
 			Assignment2 assignment = assignmentLogic.getAssignmentById(assignmentId);
 			assignmentSubmission.setAssignment(assignment);
 			assignmentSubmission.setUserId(userId);
+			assignmentSubmission.getCurrentSubmissionVersion().setLastFeedbackSubmittedBy(currUserId);
+			assignmentSubmission.getCurrentSubmissionVersion().setLastFeedbackTime(new Date());
+			if (assignmentSubmission.getCurrentSubmissionVersion().getSubmissionVersionId() == null) {
+				assignmentSubmission.getCurrentSubmissionVersion().setCreatedBy(currUserId);
+				assignmentSubmission.getCurrentSubmissionVersion().setCreatedTime(new Date());
+				assignmentSubmission.getCurrentSubmissionVersion().setDraft(Boolean.FALSE);
+			}
 			
 			
 			submissionLogic.saveInstructorFeedback(assignmentSubmission);

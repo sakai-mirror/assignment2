@@ -89,7 +89,7 @@ public class StudentSubmitProducer implements ViewComponentProducer, NavigationC
     	
     	AssignmentSubmission submission = submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentIdForStudentView(assignmentId, externalLogic.getCurrentUserId());
     	String ASOTPKey = "";
-    	if (submission == null) {
+    	if (submission == null || submission.getSubmissionId() == null) {
     		ASOTPKey += EntityBeanLocator.NEW_PREFIX + "1";
     	} else {
     		ASOTPKey += submission.getSubmissionId();

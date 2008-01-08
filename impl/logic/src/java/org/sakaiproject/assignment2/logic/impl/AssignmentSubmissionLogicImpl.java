@@ -195,16 +195,16 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			throw new IllegalArgumentException("null assignmentSubmission passed to saveAssignmentSubmission");
 		}
 		
-		AssignmentSubmissionVersion newVersion = assignmentSubmission.getCurrentSubmissionVersion();
+		AssignmentSubmissionVersion currVersion = assignmentSubmission.getCurrentSubmissionVersion();
+		Set<AssignmentSubmissionAttachment> submissionAttachments = currVersion.getSubmissionAttachSet();
 		
-		if (newVersion == null) {
+		if (currVersion == null) {
 			throw new IllegalArgumentException("null currentSubmissionVersion associated with the assignmentSubmission in saveStudentSubmission");
 		}
 		
-		// we always save a new AssignmentSubmissionVersion
-		if (newVersion.getSubmissionVersionId() != null) {
-			newVersion.setSubmissionVersionId(null);
-		}
+		AssignmentSubmissionVersion newVersion = currVersion.clone();
+		// we need to add the attachments after we have a persistent version
+		newVersion.setSubmissionAttachSet(null);
 		
 		if (assignmentSubmission.getSubmissionId() == null) {
 			dao.create(assignmentSubmission);
@@ -222,6 +222,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		dao.create(newVersion);
 		log.debug("New student submission version added for user " + assignmentSubmission.getUserId() + " for assignment " + assignmentSubmission.getAssignment().getTitle()+ " ID: " + assignmentSubmission.getAssignment().getAssignmentId());
 		
+		newVersion.setSubmissionAttachSet(submissionAttachments);
 		updateStudentAttachments(newVersion);
 	}
 	
@@ -260,13 +261,22 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		// if there was no currentVersion passed, the instructor may be updating an
 		// AssignmentSubmission field that doesn't affect version info (such as resubmit info)
 		// no need to save new version 
+
 		if (currentVersion != null) {
 			if (currentVersion.getSubmissionVersionId() != null) {
+				// we need to handle attachments separately
+				Set<AssignmentFeedbackAttachment> feedbackAttachments =
+					currentVersion.getFeedbackAttachSet();
+				currentVersion.setFeedbackAttachSet(null);
+				
 				// instructor is providing feedback on the student's current version
 				dao.update(currentVersion);
+				
+				currentVersion.setFeedbackAttachSet(feedbackAttachments);
 			} else {
 				// instructor is providing feedback but the student did not
 				// have a submission yet
+				currentVersion.setAssignmentSubmission(submission);
 				dao.create(currentVersion);
 			}
 		}
