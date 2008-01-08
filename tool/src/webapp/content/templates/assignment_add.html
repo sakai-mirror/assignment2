@@ -16,6 +16,7 @@
 	<script type="text/javascript" src="/library/calendar/js/calendar2.js"></script>
 	<script type="text/javascript" src="/sakai-assignment2-tool/content/js/assignment.js"></script>
 	<script type="text/javascript" language="JavaScript" src="/sakai-assignment2-tool/content/js/thickbox.js"></script>
+	<script type="text/javascript" language="JavaScript" src="/sakai-assignment2-tool/content/js/jquery.color.js"></script>
 	<link href="/sakai-assignment2-tool/content/css/thickbox.css" type="text/css" rel="stylesheet" media="all" />
 	
 </head>
@@ -230,9 +231,14 @@
 //<![CDATA[
 function refresh_ajax(){
 	if(fragAttachPath != ""){
-		$("#fragment-attachments-container").load(fragAttachPath + "?otpkey=" + otpkey + "&remove=true");
+		old=$("#fragment-attachments-container").html();
+		$("#fragment-attachments-container").load(fragAttachPath + "?otpkey=" + otpkey + "&remove=true", function(){
+			if(old != $("#fragment-attachments-container").html())
+				highlight($("#fragment-attachments-container"));
+		});
 	}
 	if(fragGBPath != ""){
+		oldSelect=$("select[name='gradebook_item-selection']").get(0).selectedIndex;
 		$.ajax({
 			type: "GET",
 			url: fragGBPath,
@@ -244,7 +250,7 @@ function refresh_ajax(){
 			    	html.substring(
 			    		html.indexOf('var gradebook'),
 			    		html.indexOf('</script')));
-			    $("select[name='gradebook_item-selection']").get(0).selectedIndex=0;
+			    $("select[name='gradebook_item-selection']").get(0).selectedIndex=oldSelect;
 			}
 		});
 	}

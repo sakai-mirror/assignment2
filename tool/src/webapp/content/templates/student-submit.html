@@ -17,6 +17,7 @@
 	<link href="/sakai-assignment2-tool/content/css/assignmentsv4.css" type="text/css" rel="stylesheet" media="all" />
 	<script type="text/javascript" language="JavaScript" src="/sakai-assignment2-tool/content/js/assignment.js"></script>
 	<script type="text/javascript" language="JavaScript" src="/sakai-assignment2-tool/content/js/thickbox.js"></script>
+	<script type="text/javascript" language="JavaScript" src="/sakai-assignment2-tool/content/js/jquery.color.js"></script>
 	<link href="/sakai-assignment2-tool/content/css/thickbox.css" type="text/css" rel="stylesheet" media="all" />
 
 </head>
@@ -108,6 +109,9 @@
 	</form>
 
 </div>
+<script type="text/javascript" rsf:id="iframeId_init">
+//set in producer
+</script>
 <script type="text/javascript" rsf:id="attachment-ajax-init">
 //done in producer
 // otpkey = some value
@@ -115,7 +119,13 @@
 <script type="text/javascript">
 //<![CDATA[
 function refresh_ajax(){
-	$("#fragment-submission-attachments-container").load("fragment-attachments?otpkey=" + otpkey + "&remove=true&attachmentSetType=1");
+	if(fragAttachPath != ""){
+		old=$("#fragment-attachments-container").html();
+		$("#fragment-submission-attachments-container").load(fragAttachPath + "?otpkey=" + otpkey + "&remove=true", function(){
+			if(old != $("#fragment-submission-attachments-container").html())
+				highlight($("#fragment-submission-attachments-container"));
+		});
+	}
 }
 //]]>
 </script>

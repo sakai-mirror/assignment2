@@ -16,6 +16,7 @@
 	<link href="/sakai-assignment2-tool/content/css/assignmentsv4.css" type="text/css" rel="stylesheet" media="all" />
 	<script type="text/javascript" src="/sakai-assignment2-tool/content/js/assignment.js"></script>
 	<script type="text/javascript" language="JavaScript" src="/sakai-assignment2-tool/content/js/thickbox.js"></script>
+	<script type="text/javascript" language="JavaScript" src="/sakai-assignment2-tool/content/js/jquery.color.js"></script>
 	<link href="/sakai-assignment2-tool/content/css/thickbox.css" type="text/css" rel="stylesheet" media="all" />
 
 </head>
@@ -165,11 +166,20 @@ function slide_details(img){
 //<![CDATA[
 function refresh_ajax(){
 	if(fragAttachPath != ""){
-		$("#fragment-attachments-container").load(fragAttachPath + "?otpkey=" + otpkey + "&remove=true");
+		old=$("#fragment-attachments-container").html();
+		$("#fragment-attachments-container").load(fragAttachPath + "?otpkey=" + otpkey + "&remove=true", function(){
+			if(old != $("#fragment-attachments-container").html())
+				highlight($("#fragment-attachments-container"));
+		});
 	}
 	if(fragGBDetailsPath != ""){
+		old = $("#gradebook-details-container fieldset").html();
 		$("#gradebook-details-container").load(fragGBDetailsPath + "?assignmentId=" + assignmentId + "&userId=" + userId, {}, 
-			function(){tb_init('a.thickbox, area.thickbox, input.thickbox');});
+			function(){
+				tb_init('a.thickbox, area.thickbox, input.thickbox');
+				if (old != $("#gradebook-details-container fieldset").html())
+					highlight($("#gradebook-details-container fieldset"));
+			});
 	}
 }
 //]]>

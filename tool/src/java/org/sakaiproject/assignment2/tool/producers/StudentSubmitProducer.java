@@ -145,7 +145,12 @@ public class StudentSubmitProducer implements ViewComponentProducer, NavigationC
     		UIOutput.make(form, "submit_attachments");
     		
 	    	//Initialize js otpkey
-	    	UIVerbatim.make(tofill, "attachment-ajax-init", "otpkey=\"" + org.sakaiproject.util.Web.escapeUrl(ASOTPKey) + "\"");
+	    	UIVerbatim.make(tofill, "attachment-ajax-init", "otpkey=\"" + org.sakaiproject.util.Web.escapeUrl(ASOTPKey) + "\";\n" +
+	    			"fragAttachPath=\"" + externalLogic.getAssignmentViewUrl(FragmentAttachmentsProducer.VIEW_ID) + "\";\n");
+	    	
+	    	//Init JS
+	        String frameId = org.sakaiproject.util.Web.escapeJavascript("Main" + org.sakaiproject.tool.cover.ToolManager.getCurrentPlacement().getId());
+	        UIVerbatim.make(tofill, "iframeId_init", "var iframeId = \"" + frameId + "\";");
 	        
 	        //Attachments
 	    	attachmentListRenderer.makeAttachmentFromAssignmentSubmissionAttachmentSet(tofill, "submission_attachment_list:", params.viewID, 
