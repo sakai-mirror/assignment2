@@ -195,6 +195,13 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			throw new IllegalArgumentException("null assignmentSubmission passed to saveAssignmentSubmission");
 		}
 		
+		if (!permissionLogic.isUserAbleToMakeSubmissionForAssignment(externalLogic.getCurrentContextId(), assignmentSubmission.getAssignment())) {
+			log.warn("User " + externalLogic.getCurrentUserId() + " attempted to make a submission " +
+					"without authorization for assignment " + assignmentSubmission.getAssignment().getAssignmentId());
+			throw new SecurityException("User " + externalLogic.getCurrentUserId() + " attempted to make a submission " +
+					"without authorization for assignment " + assignmentSubmission.getAssignment().getAssignmentId());
+		}
+		
 		AssignmentSubmissionVersion currVersion = assignmentSubmission.getCurrentSubmissionVersion();
 		Set<AssignmentSubmissionAttachment> submissionAttachments = currVersion.getSubmissionAttachSet();
 		
@@ -500,6 +507,29 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		} 
 
 		// retrieve the submission history for this student for this assignment
+		AssignmentSubmission submission = dao.getSubmissionWithVersionHistoryForStudentAndAssignment(studentId, assignment);
+		
+		// we need to determine if this is the first submission for the student
+		boolean firstSubmission;
+		if (submission == null) {
+			firstSubmission = true;
+		} else if (submission.getCurrentSubmissionVersion() == null
+				|| submission.getSubmissionHistorySet() == null) {
+			firstSubmission = true;
+		} else {
+			// we need to look at the submission history to determine if there
+			// are any submission by the student (not drafts and not versions
+			// created by instructor feedback when no submission)
+			firstSubmission = true;
+			for (Iterator versionIter = submission.getSubmissionHistorySet().iterator(); versionIter.hasNext();) {
+				AssignmentSubmissionVersion version = (AssignmentSubmissionVersion) versionIter.next();
+				if (version != null) {
+					if (version.getSubmittedTime() != null) {
+						firstSubmission = false;
+					}
+				}
+			}
+		}
 		
 		// there are several factors into whether a student may make a submission or not
 		// 1) if student has not already made a submission:
@@ -511,11 +541,13 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		//   b) instructor has allowed resubmission for this student and the
 		//		resubmit until date has not passed
 		
+
+		
 		boolean studentAbleToSubmit = false;
-		AssignmentSubmission submission = dao.getSubmissionWithVersionHistoryForStudentAndAssignment(studentId, assignment);
-		boolean assignmentIsOpen = assignment.getOpenTime().before(new Date()) && assignment.getAcceptUntilTime().after(new Date());
-		if (submission == null || submission.getCurrentSubmissionVersion() == null) {
-			// this is a "first-time" submission
+		boolean assignmentIsOpen = assignment.getOpenTime().before(new Date()) && 
+					assignment.getAcceptUntilTime().after(new Date());
+		
+		if (firstSubmission) {
 			if (assignmentIsOpen) {
 				studentAbleToSubmit = true;
 			} 

@@ -194,6 +194,33 @@ public class PermissionLogicImpl implements PermissionLogic {
 		return instructorView;
 	}
 	
+	public boolean isUserAbleToMakeSubmissionForAssignment(String contextId, Assignment2 assignment) {
+		if (contextId == null || assignment == null) {
+			throw new IllegalArgumentException("null contextId or assignment passed to isUserAbleToMakeSubmission");
+		}
+		
+		boolean userAbleToSubmit = false;
+	
+		if (assignment.isUngraded()) {
+			// TODO right now, we don't have any checks for ungraded assignments...
+			userAbleToSubmit = true;
+		} else {
+			// we must obey the gradebook permissions
+			if (gradebookLogic.isCurrentUserAStudentInGb(contextId)) {
+				userAbleToSubmit = true;
+			}
+		}
+		
+		// check to make sure any group restrictions have been upheld
+		if (assignment.getAssignmentGroupSet() != null) {
+			if (!isUserAMemberOfARestrictedGroup(externalLogic.getCurrentUserId(), assignment.getAssignmentGroupSet())) {
+				userAbleToSubmit = false;
+			}
+		}
+		
+		return userAbleToSubmit;
+	}
+	
 	public List<String> getViewableStudentsForUserForItem(Assignment2 assignment) {
 		if (assignment == null) {
 			throw new IllegalArgumentException("null assignment passed to getViewableStudentsForUserForItem");

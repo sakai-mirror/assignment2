@@ -57,5 +57,11 @@
     				 left join fetch submission.assignment
              where submission.submissionId = :submissionId]]>
   	</query>
+  	<query name="findStudentSubmissionWithHistoryForAssignment">
+    <![CDATA[from org.sakaiproject.assignment2.model.AssignmentSubmission submission
+    				 left join fetch submission.submissionHistorySet
+             where submission.userId = :studentId and
+             		submission.assignment = :assignment]]>
+  	</query>
   	
 </hibernate-mapping>

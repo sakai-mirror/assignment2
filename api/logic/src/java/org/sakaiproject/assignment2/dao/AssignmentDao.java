@@ -101,4 +101,15 @@ public interface AssignmentDao extends CompleteGenericDao {
 	 * no submission exists for the student yet, no submission is returned
 	 */
 	Set<AssignmentSubmission> getCurrentSubmissionsForStudentsForAssignment(List<String> studentIds, Assignment2 assignment);
+	
+	/**
+	 * 
+	 * @param studentId
+	 * @param assignment
+	 * @return the AssignmentSubmission rec for the given student and assignment with the
+	 * submissionHistorySet populated with all of the AssignmentSubmissionVersions associated
+	 * with this submission. returns null if no submission has been made. will populate the
+	 * currentSubmissionVersion
+	 */
+	public AssignmentSubmission getSubmissionWithVersionHistoryForStudentAndAssignment(String studentId, Assignment2 assignment);
 }

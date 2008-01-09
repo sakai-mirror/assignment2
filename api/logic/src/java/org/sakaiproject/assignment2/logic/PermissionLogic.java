@@ -93,4 +93,13 @@ public interface PermissionLogic {
 	 * for the given assignment
 	 */
 	public List<String> getViewableStudentsForUserForItem(Assignment2 assignment);
+	
+	/**
+	 * 
+	 * @param contextId
+	 * @param assignment
+	 * @return true if the current user is allowed to make a submission for the
+	 * given assignment
+	 */
+	public boolean isUserAbleToMakeSubmissionForAssignment(String contextId, Assignment2 assignment);
 }
