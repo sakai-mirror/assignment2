@@ -232,6 +232,18 @@ function tb_show(caption, url, imageGroup) {//function called when the user clic
 						$("#TB_window").css({display:"block"});
 					}
 				}else{
+					//set FCKeditor
+					$("textarea").each(function(){
+						if (FCKeditorAPI != null){
+							editor = FCKeditorAPI.GetInstance(this.id);
+							if (editor != null) this.value=editor.GetXHTML(editor.FormatOutput);
+						}
+					});
+				
+					if($("#text\\:\\:input")){
+						editor = FCKeditorAPI.GetInstance('text::input');
+						if (editor != null ) $("#text\\:\\:input").get(0).value = editor.GetXHTML(editor.FormatOutput);
+					}
 				
 					serial = $("form").serialize();
 					jQuery.ajax({type: "POST", url: (String(document.location).split("?"))[0], data: serial + "&" + $(".preview_button").get(0).name, 

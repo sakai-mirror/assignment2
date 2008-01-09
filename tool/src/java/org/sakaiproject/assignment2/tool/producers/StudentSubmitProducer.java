@@ -132,7 +132,7 @@ public class StudentSubmitProducer implements ViewComponentProducer, NavigationC
 
     	
     	UIForm form = UIForm.make(tofill, "form");
-    	UIOutput.make(form, "submission_instructions"); //Fill in with submission type specifc instructions
+    	UIOutput.make(form, "submission_instructions"); //Fill in with submission type specific instructions
     	UIVerbatim.make(form, "instructions", messageLocator.getMessage("assignment2.student-submit.instructions"));
     	
         //Rich Text Input
