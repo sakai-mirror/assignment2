@@ -394,5 +394,22 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
     		}
     	}
     }
+    
+    public void populateGradebookItemDetailsForAssignment(String contextId, Assignment2 assignment) {
+    	if (contextId == null || assignment == null) {
+    		throw new IllegalArgumentException("null contextId or assignment passed to populateGradebookItemDetailsForAssignment");
+    	}
+    	
+    	if (!assignment.isUngraded() && assignment.getGradableObjectId() != null) {
+    		try {
+    			Assignment gbItem = gradebookService.getAssignment(contextId, assignment.getGradableObjectId());
+    			assignment.setDueDate(gbItem.getDueDate());
+    			assignment.setPointsPossible(gbItem.getPoints());
+    		} catch (AssessmentNotFoundException e) {
+    			log.debug("Gradebook item that assignment " + assignment.getAssignmentId() + " with associated with no longer exists");
+    			assignment.setNeedsUserAttention(true);
+    		}
+    	}
+    }
 
 }

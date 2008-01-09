@@ -183,5 +183,14 @@ public interface ExternalGradebookLogic {
 	 */
 	public void populateAllGradeInfoForSubmission(String contextId, AssignmentSubmission submission);
 	
+	/**
+	 * will populate the gradebook-related fields for the given assignment
+	 * ie due date, points possible. if the gradebook item doesn't exist any
+	 * more will set the needsUserAttention flag to true
+	 * @param contextId
+	 * @param assignment
+	 */
+	public void populateGradebookItemDetailsForAssignment(String contextId, Assignment2 assignment);
+	
 	public String getGradebookItemHelperUrl(String contextId);
 }

@@ -118,6 +118,10 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 			boolean restrictedToGroups = assign.getAssignmentGroupSet() != null &&
 				!assign.getAssignmentGroupSet().isEmpty();
 			assign.setRestrictedToGroups(restrictedToGroups);
+			
+			if (!assign.isUngraded()) {
+				gradebookLogic.populateGradebookItemDetailsForAssignment(externalLogic.getCurrentContextId(), assign);
+			}
 		}
 		
 		return assign;
