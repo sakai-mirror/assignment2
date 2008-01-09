@@ -212,11 +212,11 @@ public class PermissionLogicImpl implements PermissionLogic {
 		}
 		
 		// check to make sure any group restrictions have been upheld
-		if (assignment.getAssignmentGroupSet() != null) {
+		/*if (assignment.getAssignmentGroupSet() != null) {
 			if (!isUserAMemberOfARestrictedGroup(externalLogic.getCurrentUserId(), assignment.getAssignmentGroupSet())) {
 				userAbleToSubmit = false;
 			}
-		}
+		}*/
 		
 		return userAbleToSubmit;
 	}
