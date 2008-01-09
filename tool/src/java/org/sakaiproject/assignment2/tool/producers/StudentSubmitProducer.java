@@ -108,13 +108,18 @@ public class StudentSubmitProducer implements ViewComponentProducer, NavigationC
         DateFormat df = DateFormat.getDateInstance(DateFormat.MEDIUM, locale);
 
         
-    	UIOutput.make(tofill, "heading_status", " - In Progress");	//HERE
+    	UIMessage.make(tofill, "heading_status", "assignment2.student-submit.heading_status", 
+    			new Object[]{ assignmentSubmission.getSubmissionStatus() });
     	UIVerbatim.make(tofill, "page_instructions", messageLocator.getMessage("assignment2.student-submit.instructions"));
     	
     	//Display Assignment Info
     	UIOutput.make(tofill, "header.title", assignment.getTitle());
-    	UIOutput.make(tofill, "header.due_date", (assignment.getDueDate() != null ? df.format(assignment.getDueDate()) : ""));
-    	UIOutput.make(tofill, "header.status", "In Progress");		//HERE
+    	if (assignment.isUngraded()){
+    		UIOutput.make(tofill, "header.due_date", (assignment.getDueDate() != null ? df.format(assignment.getDueDate()) : ""));
+    	} else {
+    		UIOutput.make(tofill, "header.due_date", (assignment.getDueDateForUngraded() != null ? df.format(assignment.getDueDateForUngraded()) : ""));
+    	}
+    	UIOutput.make(tofill, "header.status", assignmentSubmission.getSubmissionStatus());
     	UIOutput.make(tofill, "header.grade_scale", "Grade Scale from Gradebook");  //HERE
     	if (assignment.getModifiedTime() != null) {
     		UIOutput.make(tofill, "modified_by_header_row");
