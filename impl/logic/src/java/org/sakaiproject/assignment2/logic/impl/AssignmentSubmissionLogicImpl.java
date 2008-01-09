@@ -261,18 +261,16 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		// if there was no currentVersion passed, the instructor may be updating an
 		// AssignmentSubmission field that doesn't affect version info (such as resubmit info)
 		// no need to save new version 
+		Set<AssignmentFeedbackAttachment> feedbackAttachments =
+			currentVersion.getFeedbackAttachSet();
 
 		if (currentVersion != null) {
+			// we need to handle attachments separately
+			currentVersion.setFeedbackAttachSet(null);
+			
 			if (currentVersion.getSubmissionVersionId() != null) {
-				// we need to handle attachments separately
-				Set<AssignmentFeedbackAttachment> feedbackAttachments =
-					currentVersion.getFeedbackAttachSet();
-				currentVersion.setFeedbackAttachSet(null);
-				
 				// instructor is providing feedback on the student's current version
 				dao.update(currentVersion);
-				
-				currentVersion.setFeedbackAttachSet(feedbackAttachments);
 			} else {
 				// instructor is providing feedback but the student did not
 				// have a submission yet
@@ -281,8 +279,8 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			}
 		}
 		
-		updateFeedbackAttachments(existingVersion, currentVersion);
-		
+		currentVersion.setFeedbackAttachSet(feedbackAttachments);
+		updateFeedbackAttachments(existingVersion, currentVersion);	
 	}
 	
 	public List<AssignmentSubmission> getViewableSubmissionsForAssignmentId(Long assignmentId) {
@@ -494,6 +492,44 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		}
 		
 		updatedVersion.setFeedbackAttachSet(revisedAttachSet);
+	}
+	
+	public boolean studentAbleToSubmit(String studentId, Assignment2 assignment) {
+		if (studentId == null || assignment == null) {
+			throw new IllegalArgumentException("null parameter passed to studentAbleToSubmit");
+		} 
+
+		// retrieve the submission history for this student for this assignment
+		
+		// there are several factors into whether a student may make a submission or not
+		// 1) if student has not already made a submission:
+		//   a) assignment is open AND if applicable, accept until date has not passed
+		// 2) student does have a submission
+		//	 a) assignment is open AND if applicable, accept until date has not passed
+		//		AND instructor has allowed resubmission until accept until date
+		//   OR
+		//   b) instructor has allowed resubmission for this student and the
+		//		resubmit until date has not passed
+		
+		boolean studentAbleToSubmit = false;
+		AssignmentSubmission submission = dao.getSubmissionWithVersionHistoryForStudentAndAssignment(studentId, assignment);
+		boolean assignmentIsOpen = assignment.getOpenTime().before(new Date()) && assignment.getAcceptUntilTime().after(new Date());
+		if (submission == null || submission.getCurrentSubmissionVersion() == null) {
+			// this is a "first-time" submission
+			if (assignmentIsOpen) {
+				studentAbleToSubmit = true;
+			} 
+		} else {
+			if (assignmentIsOpen && assignment.isAllowResubmit()) {
+				studentAbleToSubmit = true;
+			} else if (submission.isAllowResubmit()) {
+				if (submission.getResubmitCloseTime() != null && submission.getResubmitCloseTime().after(new Date())) {
+					studentAbleToSubmit = true;
+				}
+			}
+		}
+		
+		return studentAbleToSubmit;
 	}
 
 }
