@@ -18,6 +18,7 @@ import org.sakaiproject.assignment2.tool.params.SimpleAssignmentViewParams;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentAttachment;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
+import org.sakaiproject.assignment2.model.AssignmentSubmissionAttachment;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.tool.api.SessionManager;
@@ -158,8 +159,12 @@ public class StudentSubmitProducer implements ViewComponentProducer, NavigationC
 	        UIVerbatim.make(tofill, "iframeId_init", "var iframeId = \"" + frameId + "\";");
 	        
 	        //Attachments
+	        Set<AssignmentSubmissionAttachment> set = new HashSet();
+	        if (submissionVersion != null && submissionVersion.getSubmissionAttachSet() != null) {
+	        	set.addAll(submissionVersion.getSubmissionAttachSet());
+	        }
 	    	attachmentListRenderer.makeAttachmentFromAssignmentSubmissionAttachmentSet(tofill, "submission_attachment_list:", params.viewID, 
-	    			submissionVersion.getSubmissionAttachSet(), Boolean.TRUE);
+	    			set, Boolean.TRUE);
 	        UIInternalLink.make(form, "add_submission_attachments", UIMessage.make("assignment2.student-submit.add_attachments"),
 	        		new FilePickerHelperViewParams(AddAttachmentHelperProducer.VIEWID, Boolean.TRUE, 
 	        				Boolean.TRUE, 500, 700, ASOTPKey));

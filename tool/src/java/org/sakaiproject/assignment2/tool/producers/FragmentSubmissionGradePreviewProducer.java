@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
@@ -91,9 +93,8 @@ public class FragmentSubmissionGradePreviewProducer implements ViewComponentProd
     	}
     	
     	attachmentListRenderer.makeAttachment(tofill, "attachment_list:", params.viewID, set, Boolean.FALSE);
-
     	
-    	UIOutput.make(tofill, "feedbackText", as.getCurrentSubmissionVersion().getFeedbackText());
+    	UIVerbatim.make(tofill, "feedbackText", as.getCurrentSubmissionVersion().getFeedbackTextFormatted());
         
     }
     

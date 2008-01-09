@@ -23,6 +23,8 @@ package org.sakaiproject.assignment2.model;
 
 import java.util.Date;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * The AssignmentSubmissionVersion object
@@ -83,6 +85,21 @@ public class AssignmentSubmissionVersion {
 	 */
 	public String getFeedbackText() {
 		return feedbackText;
+	}
+	
+	/**
+	 * 
+	 * @return formated text composed of the submission with grader-added annotation
+	 */
+	public String getFeedbackTextFormatted() {		
+    	Pattern p = Pattern.compile("\\{\\{(.+)\\}\\}");
+    	Matcher m = p.matcher(feedbackText);
+    	StringBuffer sb = new StringBuffer();
+    	while(m.find()){
+    		m.appendReplacement(sb, "<span class=\"highlight\">$1</span>");
+    	}
+    	m.appendTail(sb);
+		return sb.toString();
 	}
 
 	/**
