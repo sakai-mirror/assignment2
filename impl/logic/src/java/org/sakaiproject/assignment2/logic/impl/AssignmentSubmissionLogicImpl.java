@@ -114,13 +114,10 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			
 			submission.setCurrentSubmissionVersion(currentVersion);
 			
-			//if (!assignment.isUngraded() && assignment.getGradableObjectId() != null) {
+			if (!assignment.isUngraded() && assignment.getGradableObjectId() != null) {
 				// retrieve the grade information for this submission
-			//	Double grade = gradebookLogic.getStudentGradeForItem(contextId, studentId, assignment.getGradableObjectId());
-			//	String comment = gradebookLogic.getStudentGradeCommentForItem(contextId, studentId, assignment.getGradableObjectId());
-			//	submission.setGradebookGrade(grade);
-			//	submission.setGradebookComment(comment);
-			//}
+				gradebookLogic.populateAllGradeInfoForSubmission(externalLogic.getCurrentContextId(), submission);
+			}
 		}
 		return submission;
 
@@ -381,17 +378,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 
 				if (assign != null) {
 					AssignmentSubmission currSubmission = (AssignmentSubmission)assignmentIdToSubmissionMap.get(assign.getAssignmentId());
-					int status = AssignmentConstants.SUBMISSION_NOT_STARTED;
-					if (currSubmission == null) {
-						status = AssignmentConstants.SUBMISSION_NOT_STARTED;
-					} else if (currSubmission.getCurrentSubmissionVersion() == null) {
-						status = AssignmentConstants.SUBMISSION_NOT_STARTED;
-					} else if (currSubmission.getCurrentSubmissionVersion().isDraft()) {
-						status = AssignmentConstants.SUBMISSION_IN_PROGRESS;
-					} else if (currSubmission.getCurrentSubmissionVersion().getSubmittedTime() != null) {
-						status = AssignmentConstants.SUBMISSION_SUBMITTED;
-					}
-
+					int status = getSubmissionStatus(currSubmission);
 					assign.setSubmissionStatusConstant(new Integer(status));
 				}
 			}
@@ -549,7 +536,15 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		if (firstSubmission) {
 			if (assignmentIsOpen) {
 				studentAbleToSubmit = true;
-			} 
+			} else if(submission != null && submission.isAllowResubmit() != null && submission.isAllowResubmit()){
+				// in this scenario, the instructor took some action on this student without there
+				// being a submission, such as adding feedback or allowing this student to resubmit.
+				// thus, there is a submission record, but the student hasn't submitted anything yet
+				// in this case, we need to check if the student is allowed to resubmit
+				if (submission.getResubmitCloseTime() != null && submission.getResubmitCloseTime().after(new Date())) {
+					studentAbleToSubmit = true;
+				}
+			}
 		} else {
 			if (assignmentIsOpen && assignment.isAllowResubmit()) {
 				studentAbleToSubmit = true;

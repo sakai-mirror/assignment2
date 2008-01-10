@@ -350,6 +350,7 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
     					AssignmentSubmission thisSubmission = (AssignmentSubmission) studentIdSubmissionMap.get(gradeDef.getStudentUid());
     					if (thisSubmission != null) {
     						thisSubmission.setGradebookGrade(sb.toString());
+    						thisSubmission.setGradebookGradeReleased(gradeDef.isGradeReleased());
     					}
     				}
     			}
