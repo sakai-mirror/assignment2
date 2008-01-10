@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Locale;
 
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
+import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.tool.beans.Assignment2Bean;
@@ -37,6 +38,7 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
     private Locale locale;
     private Assignment2Bean assignment2Bean;
     private SortHeaderRenderer sortHeaderRenderer;
+    private AssignmentSubmissionLogic submissionLogic;
 
     public static final String DEFAULT_SORT_DIR = AssignmentLogic.SORT_DIR_ASC;
     public static final String DEFAULT_OPPOSITE_SORT_DIR = AssignmentLogic.SORT_DIR_DESC;
@@ -158,4 +160,8 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
     public void setSortHeaderRenderer(SortHeaderRenderer sortHeaderRenderer) {
     	this.sortHeaderRenderer = sortHeaderRenderer;
     }
+
+	public void setSubmissionLogic(AssignmentSubmissionLogic submissionLogic) {
+		this.submissionLogic = submissionLogic;
+	}
 }

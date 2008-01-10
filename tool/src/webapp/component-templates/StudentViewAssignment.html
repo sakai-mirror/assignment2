@@ -1,28 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns:rsf="http://ponder.org.uk/rsf" xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
-<head>
-   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-
-   <title rsf:id="page-title">Assignments</title>
-
-	<script type="text/javascript" language="JavaScript" src="/library/js/headscripts.js"></script>
-	<!-- vm/editor/FCKeditor/sakai_header.vm -->
-	<script type="text/javascript" src="/library/editor/FCKeditor/fckeditor.js"></script> 
-
-    <link href="/library/skin/tool_base.css" type="text/css" rel="stylesheet" media="all"/>
-    <link href="/library/skin/default/tool.css" type="text/css" rel="stylesheet" media="all"/>
-    <script type="text/javascript" language="JavaScript" src="/library/js/headscripts.js"></script>
-    <script type="text/javascript" language="JavaScript" src="/sakai-assignment2-tool/content/js/jquery-1.2.1.js"></script>
-	<link href="/sakai-assignment2-tool/content/css/assignmentsv4.css" type="text/css" rel="stylesheet" media="all" />
-	<script type="text/javascript" language="JavaScript" src="/sakai-assignment2-tool/content/js/assignment.js"></script>
-	<script type="text/javascript" language="JavaScript" src="/sakai-assignment2-tool/content/js/thickbox.js"></script>
-	<script type="text/javascript" language="JavaScript" src="/sakai-assignment2-tool/content/js/jquery.color.js"></script>
-	<link href="/sakai-assignment2-tool/content/css/thickbox.css" type="text/css" rel="stylesheet" media="all" />
-
-</head>
-<body>
-
 <div rsf:id="portletBody:" class="portletBody">
 
 	<div rsf:id="message-for:*" class="error">
@@ -78,7 +53,7 @@
 			<li>
 				<label rsf:id="submission_instructions" class="block instruction">This assignment allows submissions using both the text box below and attached documents. Type your comments in the box below and use the Add Attachments button to include other documents. Save frequently while working.</label>
 				<div rsf:id="text:">
-					<textarea name="something" cols="80" rows="20" wrap="virtual"></textarea>
+					<textarea rsf:id="text_disabled" name="something" cols="80" rows="20" wrap="virtual"></textarea>
 					<!-- this should be the FCKEditor -->
 				</div>
 			</li>
@@ -105,25 +80,3 @@
 	</form>
 
 </div>
-<script type="text/javascript" rsf:id="iframeId_init">
-//set in producer
-</script>
-<script type="text/javascript" rsf:id="attachment-ajax-init">
-//done in producer
-// otpkey = some value
-</script>
-<script type="text/javascript">
-//<![CDATA[
-function refresh_ajax(){
-	if(fragAttachPath != ""){
-		old=$("#fragment-attachments-container").html();
-		$("#fragment-submission-attachments-container").load(fragAttachPath + "?otpkey=" + otpkey + "&remove=true", function(){
-			if(old != $("#fragment-submission-attachments-container").html())
-				highlight($("#fragment-submission-attachments-container"));
-		});
-	}
-}
-//]]>
-</script>
-</body>
-</html>

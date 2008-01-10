@@ -177,6 +177,9 @@ public class AssignmentGradeProducer implements ViewComponentProducer, Navigatio
         		new FilePickerHelperViewParams(AddAttachmentHelperProducer.VIEWID, Boolean.TRUE, 
         				Boolean.TRUE, 500, 700, OTPKey));
         
+        //set dateEvolver
+        dateEvolver.setStyle(FormatAwareDateInputEvolver.DATE_TIME_INPUT);
+        
         
         UIBoundBoolean.make(form, "allow_resubmit", asOTP + ".allowResubmit");
         UIInput acceptUntilTimeField = UIInput.make(form, "accept_until:", asOTP + ".resubmitCloseTime");

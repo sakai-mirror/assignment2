@@ -66,6 +66,7 @@ public class StudentSubmitProducer implements ViewComponentProducer, NavigationC
     private EntityBeanLocator assignment2BeanLocator;
     private AttachmentListRenderer attachmentListRenderer;
     private EntityBeanLocator assignmentSubmissionBeanLocator;
+    private StudentViewAssignmentRenderer studentViewAssignmentRenderer;
 
     @SuppressWarnings("unchecked")
 	public void fillComponents(UIContainer tofill, ViewParameters viewparams, ComponentChecker checker) {
@@ -99,92 +100,19 @@ public class StudentSubmitProducer implements ViewComponentProducer, NavigationC
     	
     	//Now do submission stuff
     	String assignmentSubmissionOTP = "AssignmentSubmission.";		//Base for AssignmentSubmission object
-    	String submissionVersionOTP = "currentSubmissionVersion";			//Base for the currentSubmissionVersion object
     	assignmentSubmissionOTP += ASOTPKey;							//Full path to current object
-    	String versionOTP = assignmentSubmissionOTP + "." + submissionVersionOTP;			//Full path to current version object
     	AssignmentSubmission assignmentSubmission = (AssignmentSubmission) assignmentSubmissionBeanLocator.locateBean(ASOTPKey); 
-    	AssignmentSubmissionVersion submissionVersion = assignmentSubmission.getCurrentSubmissionVersion();
+    	    	
+        // set the textual representation of the status
+        int status = submissionLogic.getSubmissionStatus(assignmentSubmission);
+        assignmentSubmission.setSubmissionStatus(messageLocator.getMessage("assignment2.student-submit.status." + status));
     	
-    	// set the textual representation of the status
-    	int status = submissionLogic.getSubmissionStatus(assignmentSubmission);
-    	assignmentSubmission.setSubmissionStatus(messageLocator.getMessage("assignment2.student-submit.status." + status));
-    	
-    	// use a date which is related to the current users locale
-        DateFormat df = DateFormat.getDateInstance(DateFormat.MEDIUM, locale);
-
+    	studentViewAssignmentRenderer.makeStudentView(tofill, "portletBody:", assignmentSubmission, assignment, params, ASOTPKey, Boolean.FALSE); 
         
-    	UIMessage.make(tofill, "heading_status", "assignment2.student-submit.heading_status", 
-    			new Object[]{ assignmentSubmission.getSubmissionStatus() });
-    	UIVerbatim.make(tofill, "page_instructions", messageLocator.getMessage("assignment2.student-submit.instructions"));
+    	//Initialize js otpkey
+    	UIVerbatim.make(tofill, "attachment-ajax-init", "otpkey=\"" + org.sakaiproject.util.Web.escapeUrl(ASOTPKey) + "\";\n" +
+    			"fragAttachPath=\"" + externalLogic.getAssignmentViewUrl(FragmentAttachmentsProducer.VIEW_ID) + "\";\n");
     	
-    	//Display Assignment Info
-    	UIOutput.make(tofill, "header.title", assignment.getTitle());
-    	if (assignment.isUngraded()){
-    		UIOutput.make(tofill, "header.due_date", (assignment.getDueDate() != null ? df.format(assignment.getDueDate()) : ""));
-    	} else {
-    		UIOutput.make(tofill, "header.due_date", (assignment.getDueDateForUngraded() != null ? df.format(assignment.getDueDateForUngraded()) : ""));
-    	}
-    	UIOutput.make(tofill, "header.status", assignmentSubmission.getSubmissionStatus());
-    	UIOutput.make(tofill, "header.grade_scale", "Grade Scale from Gradebook");  //HERE
-    	if (assignment.getModifiedTime() != null) {
-    		UIOutput.make(tofill, "modified_by_header_row");
-    		UIOutput.make(tofill, "header.modified_by", df.format(assignment.getModifiedTime()));
-    	}
-    	UIVerbatim.make(tofill, "instructions", assignment.getInstructions());
-    	Set<String> refSet = new HashSet();
-        attachmentListRenderer.makeAttachmentFromAssignmentAttachmentSet(tofill, "attachment_list:", params.viewID, 
-        	assignment.getAttachmentSet(), Boolean.FALSE);
-
-    	
-    	UIForm form = UIForm.make(tofill, "form");
-    	UIOutput.make(form, "submission_instructions"); //Fill in with submission type specific instructions
-    	UIVerbatim.make(form, "instructions", messageLocator.getMessage("assignment2.student-submit.instructions"));
-    	
-        //Rich Text Input
-    	if (assignment.getSubmissionType() == AssignmentConstants.SUBMIT_INLINE_ONLY || 
-    			assignment.getSubmissionType() == AssignmentConstants.SUBMIT_INLINE_AND_ATTACH){
-    		
-    		UIOutput.make(form, "submit_text");
-	        UIInput text = UIInput.make(form, "text:", versionOTP + ".submittedText");
-	        richTextEvolver.evolveTextInput(text);
-    	}
-        
-    	//Attachment Stuff
-    	if (assignment.getSubmissionType() == AssignmentConstants.SUBMIT_ATTACH_ONLY ||
-    			assignment.getSubmissionType() == AssignmentConstants.SUBMIT_INLINE_AND_ATTACH){
-    		UIOutput.make(form, "submit_attachments");
-    		
-	    	//Initialize js otpkey
-	    	UIVerbatim.make(tofill, "attachment-ajax-init", "otpkey=\"" + org.sakaiproject.util.Web.escapeUrl(ASOTPKey) + "\";\n" +
-	    			"fragAttachPath=\"" + externalLogic.getAssignmentViewUrl(FragmentAttachmentsProducer.VIEW_ID) + "\";\n");
-	    	
-	    	//Init JS
-	        String frameId = org.sakaiproject.util.Web.escapeJavascript("Main" + org.sakaiproject.tool.cover.ToolManager.getCurrentPlacement().getId());
-	        UIVerbatim.make(tofill, "iframeId_init", "var iframeId = \"" + frameId + "\";");
-	        
-	        //Attachments
-	        Set<AssignmentSubmissionAttachment> set = new HashSet();
-	        if (submissionVersion != null && submissionVersion.getSubmissionAttachSet() != null) {
-	        	set.addAll(submissionVersion.getSubmissionAttachSet());
-	        }
-	    	attachmentListRenderer.makeAttachmentFromAssignmentSubmissionAttachmentSet(tofill, "submission_attachment_list:", params.viewID, 
-	    			set, Boolean.TRUE);
-	        UIInternalLink.make(form, "add_submission_attachments", UIMessage.make("assignment2.student-submit.add_attachments"),
-	        		new FilePickerHelperViewParams(AddAttachmentHelperProducer.VIEWID, Boolean.TRUE, 
-	        				Boolean.TRUE, 500, 700, ASOTPKey));
-    	}
-        
-        form.parameters.add( new UIELBinding("#{AssignmentSubmissionBean.assignmentId}", assignmentId));
-        
-        //Buttons
-	     UICommand.make(form, "submit_button", UIMessage.make("assignment2.student-submit.submit"), 
-	    		 "#{AssignmentSubmissionBean.processActionSubmit}");
-	     UICommand.make(form, "preview_button", UIMessage.make("assignment2.student-submit.preview"), 
-	    		 "#{AssignmentSubmissionBean.processActionPreview}");
-	     UICommand.make(form, "save_draft_button", UIMessage.make("assignment2.student-submit.save_draft"), 
-	    		 "#{AssignmentSubmissionBean.processActionSaveDraft}");
-	     UICommand.make(form, "cancel_button", UIMessage.make("assignment2.student-submit.cancel"), 
-	    		 "#{AssignmentSubmissionBean.processActionCancel}");
     	
     }
 	
@@ -259,6 +187,11 @@ public class StudentSubmitProducer implements ViewComponentProducer, NavigationC
 
 	public void setSubmissionLogic(AssignmentSubmissionLogic submissionLogic) {
 		this.submissionLogic = submissionLogic;
+	}
+
+	public void setStudentViewAssignmentRenderer(
+			StudentViewAssignmentRenderer studentViewAssignmentRenderer) {
+		this.studentViewAssignmentRenderer = studentViewAssignmentRenderer;
 	}
 
 }

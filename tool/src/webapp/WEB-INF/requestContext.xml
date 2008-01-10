@@ -38,6 +38,14 @@
       <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
       <property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
    </bean>
+   <bean id="StudentViewAssignmentRenderer" class="org.sakaiproject.assignment2.tool.producers.StudentViewAssignmentRenderer">
+      <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
+      <property name="locale" ref="requestLocale" />
+      <property name="messageLocator" ref="messageLocator" />
+      <property name="attachmentListRenderer" ref="AttachmentListRenderer" />
+      <property name="richTextEvolver" ref="richTextEvolver" />
+      <property name="sessionManager" ref="org.sakaiproject.tool.api.SessionManager" />
+   </bean>
    
 
    <!-- list the producer beans here -->
@@ -155,17 +163,16 @@
       <property name="attachmentListRenderer" ref="AttachmentListRenderer" />
       <property name="assignmentSubmissionBeanLocator" ref="AssignmentSubmission" />
       <property name="submissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
+      <property name="studentViewAssignmentRenderer" ref="StudentViewAssignmentRenderer" />
    </bean>
 
 
    <!--  AJAX Fragment Producers -->
    <bean class="org.sakaiproject.assignment2.tool.producers.FragmentAssignmentPreviewProducer">
       <property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
-      <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
       <property name="previewAssignmentBean" ref="PreviewAssignmentBean" />
-      <property name="locale" ref="requestLocale" />
-      <property name="attachmentListRenderer" ref="AttachmentListRenderer" />
-      <property name="sessionManager" ref="org.sakaiproject.tool.api.SessionManager" />
+      <property name="studentViewAssignmentRenderer" ref="StudentViewAssignmentRenderer" />
+      <property name="messageLocator" ref="messageLocator" />
    </bean>
    
    <bean class="org.sakaiproject.assignment2.tool.producers.FragmentSubmissionGradePreviewProducer">

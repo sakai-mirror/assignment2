@@ -59,7 +59,6 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
     //images
     public static final String BULLET_UP_IMG_SRC = "/sakai-assignment2-tool/content/images/bullet_arrow_up.png";
     public static final String BULLET_DOWN_IMG_SRC = "/sakai-assignment2-tool/content/images/bullet_arrow_down.png";
-    public static final String ATTACH_IMG_SRC = "/sakai-assignment2-tool/content/images/attach.png";
     
     public String getViewID() {
         return VIEW_ID;
@@ -160,11 +159,6 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
         			"Assignment2Bean.selectedIds." + assignment.getAssignmentId().toString(),
         			Boolean.FALSE);
         	UIMessage.make(row, "assignment_row_remove_label", "assignment2.assignment_list-sortview.assignment_row_remove_label");
-        	/** FIX ME - TODO Because Assignment was not retrieved with attachments****
-        	if (assignment.getAttachmentSet() != null && !assignment.getAttachmentSet().isEmpty()){
-        		UILink.make(row, "assignment_row_attach_img", "/sakai-assignment2-tool/content/images/attach.png");
-        	}
-        	**/
         	UIOutput.make(row, "assignment_title", assignment.getTitle());
         	
         	//If Current User has the ability to edit or duplicate the assignment

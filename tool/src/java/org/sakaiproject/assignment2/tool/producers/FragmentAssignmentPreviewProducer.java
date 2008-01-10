@@ -10,12 +10,14 @@ import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentAttachment;
+import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.tool.beans.PreviewAssignmentBean;
 import org.sakaiproject.assignment2.tool.params.AssignmentAddViewParams;
 import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.tool.api.ToolSession;
 
 import uk.org.ponder.beanutil.entity.EntityBeanLocator;
+import uk.org.ponder.messageutil.MessageLocator;
 import uk.org.ponder.rsf.components.UIContainer;
 import uk.org.ponder.rsf.components.UIMessage;
 import uk.org.ponder.rsf.components.UIOutput;
@@ -36,20 +38,12 @@ public class FragmentAssignmentPreviewProducer implements ViewComponentProducer,
 
 
     private AssignmentLogic assignmentLogic;
-    private ExternalLogic externalLogic;
 	private PreviewAssignmentBean previewAssignmentBean;
-	private Locale locale;
-	private AttachmentListRenderer attachmentListRenderer;
-	private SessionManager sessionManager;
+	private StudentViewAssignmentRenderer studentViewAssignmentRenderer;
+	private MessageLocator messageLocator;
 
     public void fillComponents(UIContainer tofill, ViewParameters viewparams, ComponentChecker checker) {
     	AssignmentAddViewParams params = (AssignmentAddViewParams) viewparams;
-    	
-    	//use a date which is related to the current users locale
-        DateFormat df = DateFormat.getDateInstance(DateFormat.MEDIUM, locale);
-    	
-    	UIMessage.make(tofill, "page-title", "assignment2.assignment_preview.title");
-        //navBarRenderer.makeNavBar(tofill, "navIntraTool:", VIEW_ID);
 
         Assignment2 assignment;
         String OTPKey = "";
@@ -66,72 +60,13 @@ public class FragmentAssignmentPreviewProducer implements ViewComponentProducer,
         		OTPKey = EntityBeanLocator.NEW_PREFIX + "1";
         	}
         }
-        UIMessage.make(tofill, "preview_heading", "assignment2.assignment_preview.heading", new Object[]{ assignment.getTitle() });
-        previewAssignmentBean.setAssignment(null); // release object from session memory
-    	
-    	//Assignment Settings Table
-    	UIOutput.make(tofill, "preview_created_by", externalLogic.getUserDisplayName(assignment.getCreator()));
-    	UIOutput.make(tofill, "preview_modified", (assignment.getModifiedTime() != null ? df.format(assignment.getModifiedTime()) : ""));
-    	UIOutput.make(tofill, "preview_open_date", df.format(assignment.getOpenTime()));
-    	UIOutput.make(tofill, "preview_due_date", df.format(assignment.getDueDateForUngraded()));
-    	UIOutput.make(tofill, "preview_accept_until", df.format(assignment.getAcceptUntilTime()));
-    	UIMessage.make(tofill, "preview_submission_type", "assignment2.submission_type." + String.valueOf(assignment.getSubmissionType())); 
-    	UIMessage.make(tofill, "preview_graded", (assignment.isUngraded() ? "assignment2.no" : "assignment2.yes")); 		//change here for more details
-    	//UIMessage.make(tofill, "calendar", (assignment.getCalendarEventId() == null ? "assignment2.no" : "assignment2.yes"));
-    	
-    	// only display announcement option if the site has the Announcements tool
-    	if (externalLogic.siteHasTool(externalLogic.getCurrentContextId(), ExternalLogic.TOOL_ID_ANNC)) {
-	    	UIMessage.make(tofill, "announcement_label", "assignment2.assignment_preview.announcement");
-	    	UIMessage.make(tofill, "preview_announcement", (assignment.getHasAnnouncement() ? "assignment2.no" : "assignment2.yes"));
-    	}
-    	
-    	UIMessage.make(tofill, "preview_honor_pledge", (assignment.isHonorPledge() ? "assignment2.required" : "assignment2.not_required"));
-    	if (assignment.getGradableObjectId() != null){
-    		UIOutput.make(tofill, "preview_gradebook", "Gradebook Title Here");
-    	} else {
-    		UIMessage.make(tofill, "preview_gradebook", "assignment2.no");
-    	}
-    	
-    	//Assignment Instructions
-    	UIVerbatim.make(tofill, "preview_instructions", assignment.getInstructions());
-    	
-    	//Student View
-    	UIOutput.make(tofill, "student_view_title", assignment.getTitle());
-    	UIOutput.make(tofill, "student_view_due_date", df.format(assignment.getDueDateForUngraded()));
-    	Date now = new Date();
-    	if (now.after(assignment.getOpenTime()) && now.before(assignment.getAcceptUntilTime())) {
-    		UIMessage.make(tofill, "student_view_status", "assignment2.assignment_preview.student_view.open");
-    	} else {
-    		UIMessage.make(tofill, "student_view_status", "assignment2.assignment_preview.student_view.closed");
-    	}
-    	UIOutput.make(tofill, "student_view_grade", "Points");   ///fix here
-    	UIVerbatim.make(tofill, "student_view_instructions", assignment.getInstructions());
-    	if (assignment.getAttachmentSet() == null || assignment.getAttachmentSet().isEmpty()){
-    		UIMessage.make(tofill, "student_view_no_attachments", "assignment2.assignment_preview.student_view.no_attachments");
-    	}
-    	
-    	//Handle Attachments
-    	Set<String> set = new HashSet();
-    	if (assignment != null && assignment.getAttachmentSet() != null) {
-	    	for (AssignmentAttachment aa : assignment.getAttachmentSet()) {
-	    		set.add(aa.getAttachmentReference());
-	    	}
-    	}
-
-    	//get New attachments from session set
-    	ToolSession session = sessionManager.getCurrentToolSession();
-    	if (session.getAttribute("attachmentRefs") != null) {
-    		set.addAll((Set)session.getAttribute("attachmentRefs"));
-    	}
-    	
-    	//Now remove ones from session
-    	if (session.getAttribute("removedAttachmentRefs") != null){
-    		set.removeAll((Set<String>)session.getAttribute("removedAttachmentRefs"));
-    	}
-    	
-    	attachmentListRenderer.makeAttachment(tofill, "attachment_list:", params.viewID, set, Boolean.FALSE);
-
         
+        AssignmentSubmission assignmentSubmission = new AssignmentSubmission();
+        // set the textual representation of the status
+        assignmentSubmission.setSubmissionStatus(messageLocator.getMessage("assignment2.student-submit.status.0"));
+        String ASOTPKey = EntityBeanLocator.NEW_PREFIX + "1";
+        studentViewAssignmentRenderer.makeStudentView(tofill, "portletBody:", assignmentSubmission, assignment, params, ASOTPKey, Boolean.TRUE);
+
     }
     
     public ViewParameters getViewParameters() {
@@ -145,24 +80,17 @@ public class FragmentAssignmentPreviewProducer implements ViewComponentProducer,
     public void setAssignmentLogic(AssignmentLogic assignmentLogic) {
     	this.assignmentLogic = assignmentLogic;
     }
-    
-    public void setExternalLogic(ExternalLogic externalLogic) {
-    	this.externalLogic = externalLogic;
-    }
         
     public void setPreviewAssignmentBean(PreviewAssignmentBean previewAssignmentBean) {
     	this.previewAssignmentBean = previewAssignmentBean;
     }
-    
-    public void setLocale(Locale locale) {
-    	this.locale = locale;
-    }
-    
-	public void setAttachmentListRenderer(AttachmentListRenderer attachmentListRenderer){
-		this.attachmentListRenderer = attachmentListRenderer;
+
+	public void setStudentViewAssignmentRenderer(
+			StudentViewAssignmentRenderer studentViewAssignmentRenderer) {
+		this.studentViewAssignmentRenderer = studentViewAssignmentRenderer;
 	}
-	
-	public void setSessionManager(SessionManager sessionManager) {
-		this.sessionManager = sessionManager;
+
+	public void setMessageLocator(MessageLocator messageLocator) {
+		this.messageLocator = messageLocator;
 	}
 }
