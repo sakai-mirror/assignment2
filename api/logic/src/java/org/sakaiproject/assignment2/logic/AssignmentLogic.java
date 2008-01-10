@@ -84,10 +84,6 @@ public interface AssignmentLogic {
 	 */
 	public List<Assignment2> getViewableAssignments();
 	
-	public List<Assignment2> getViewableAssignments(String userId, String sortProperty, boolean ascending, int start, int limit);
-	
-	public int getTotalCountViewableAssignments(String userId);
-	
 	public void setAssignmentSortIndexes(Long[] assignmentIds);
 	
 	/**

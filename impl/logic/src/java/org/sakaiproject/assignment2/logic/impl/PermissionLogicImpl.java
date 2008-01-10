@@ -145,9 +145,9 @@ public class PermissionLogicImpl implements PermissionLogic {
     	return viewable;
     }
     
-    public boolean isUserAbleToViewUngradedAssignment(String userId, Assignment2 assignment) {
-    	if (assignment == null || userId == null) {
-    		throw new IllegalArgumentException("Null assignment or userId passed to isUserAbleToViewUngradedAssignment");
+    public boolean isUserAbleToViewUngradedAssignment(Assignment2 assignment, Collection<String> groupMembershipIds) {
+    	if (assignment == null) {
+    		throw new IllegalArgumentException("Null assignment passed to isUserAbleToViewUngradedAssignment");
     	}
     	
     	boolean viewable = false;
@@ -158,24 +158,19 @@ public class PermissionLogicImpl implements PermissionLogic {
     		viewable = true;
     	} else {
     		// the user must be a member of a restricted group to view assignment
-        	viewable = isUserAMemberOfARestrictedGroup(userId, assignment.getAssignmentGroupSet());
+        	viewable = isUserAMemberOfARestrictedGroup(groupMembershipIds, assignment.getAssignmentGroupSet());
     	}
     	
     	return viewable;
     }
     
-    public boolean isUserAMemberOfARestrictedGroup(String userId, Collection<AssignmentGroup> assignmentGroupSet) {
-    	if (userId == null) {
-    		throw new IllegalArgumentException("null userId passed to userId");
-    	}
-    	
+    public boolean isUserAMemberOfARestrictedGroup(Collection<String> groupMembershipIds, Collection<AssignmentGroup> assignmentGroupSet) {    	
     	if (assignmentGroupSet != null && !assignmentGroupSet.isEmpty()) {
-    		List<String> groupIdList = externalLogic.getUserMembershipGroupIdList(externalLogic.getCurrentUserId());
-        	if (groupIdList != null) {
+        	if (groupMembershipIds != null) {
 	        	for (Iterator aGroupIter = assignmentGroupSet.iterator(); aGroupIter.hasNext();) {
 	        		AssignmentGroup aGroup = (AssignmentGroup) aGroupIter.next();
 	        		if (aGroup != null) {
-	        			if (groupIdList.contains(aGroup.getGroupId())) {
+	        			if (groupMembershipIds.contains(aGroup.getGroupId())) {
 	        				return true;
 	        			}
 	        		}
@@ -222,8 +217,10 @@ public class PermissionLogicImpl implements PermissionLogic {
 		if (userAbleToSubmit) {
 			List<AssignmentGroup> assignGroupRestrictions = 
 				dao.findByProperties(AssignmentGroup.class, new String[] {"assignment"}, new Object[] {assignment});
+			
+			List<String> groupMembershipIds = externalLogic.getUserMembershipGroupIdList(externalLogic.getCurrentUserId());
 			if (assignGroupRestrictions != null && !assignGroupRestrictions.isEmpty()) {
-				if (!isUserAMemberOfARestrictedGroup(externalLogic.getCurrentUserId(), assignGroupRestrictions)) {
+				if (!isUserAMemberOfARestrictedGroup(groupMembershipIds, assignGroupRestrictions)) {
 					userAbleToSubmit = false;
 				}
 			}

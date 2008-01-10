@@ -75,7 +75,9 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
     	}
     	
     	//get paging data
-    	int total_count = assignmentLogic.getTotalCountViewableAssignments(currentUserId);
+        List<Assignment2> entries = new ArrayList<Assignment2>();
+        entries = assignmentLogic.getViewableAssignments();
+    	int total_count = entries != null ? entries.size() : 0;
     		
         UIMessage.make(tofill, "page-title", "assignment2.student-assignment-list.title");
         pagerRenderer.makePager(tofill, "pagerDiv:", VIEW_ID, viewparams, total_count);
@@ -93,9 +95,7 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
         		AssignmentLogic.SORT_BY_DUE, "assignment2.student-assignment-list.tableheader.due");
         
         //Table TIME!!!! WOOHOO
-        List<Assignment2> entries = new ArrayList<Assignment2>();
-        entries = assignmentLogic.getViewableAssignments();
-        
+
         assignment2Bean.filterPopulateAndSortAssignmentList(entries, params.current_start, params.current_count, 
         		current_sort_by, current_sort_dir.equals(AssignmentLogic.SORT_DIR_ASC));
         

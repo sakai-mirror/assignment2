@@ -63,21 +63,23 @@ public interface PermissionLogic {
 	public boolean isUserAbleToProvideFeedbackForSubmission(AssignmentSubmission submission);
 	
 	/**
-	 * @param userId
 	 * @param assignment
+	 * @param groupMembershipIds
+	 * 			a collection of the ids for all of the current user's group memberships for this site
 	 * @return true if the current user is allowed to view the given ungraded
 	 * assignment
 	 */
-	public boolean isUserAbleToViewUngradedAssignment(String userId, Assignment2 assignment);
+	public boolean isUserAbleToViewUngradedAssignment(Assignment2 assignment, Collection<String> groupMembershipIds);
 	
 	/**
 	 * 
-	 * @param userId
+	 * @param groupIdList
+	 * 		a list of the group ids for the user's membership
 	 * @param assignmentGroupSet
 	 * 		set of AssignmentGroups that the assignments is restricted to
 	 * @return true if the user is a member of one of the given AssignmentGroup restrictions
 	 */
-	public boolean isUserAMemberOfARestrictedGroup(String userId, Collection<AssignmentGroup> assignmentGroups);
+	public boolean isUserAMemberOfARestrictedGroup(Collection<String> groupIdList, Collection<AssignmentGroup> assignmentGroups);
 	
 	/**
 	 * 

@@ -69,8 +69,11 @@ public class AssignmentListReorderProducer implements ViewComponentProducer, Vie
     	//use a date which is related to the current users locale
         DateFormat df = DateFormat.getDateInstance(DateFormat.MEDIUM, locale);
     	
+        List<Assignment2> entries = new ArrayList<Assignment2>();
+        entries = assignmentLogic.getViewableAssignments();
+        
     	//get paging data
-        int total_count = assignmentLogic.getTotalCountViewableAssignments(currentUserId);
+        int total_count = entries != null ? entries.size() : 0;
     	
         UIMessage.make(tofill, "page-title", "assignment2.assignment_list-reorder.title");
         navBarRenderer.makeNavBar(tofill, "navIntraTool:", VIEW_ID);
@@ -93,9 +96,6 @@ public class AssignmentListReorderProducer implements ViewComponentProducer, Vie
         UIMessage.make(tofill, "in_new_header", "assignment2.assignment_list-reorder.in_new");
         //UIMessage.make(tofill, "scale_header", "assignment2.assignment_list-reorder.scale");
         
-        List<Assignment2> entries = new ArrayList<Assignment2>();
-        entries = assignmentLogic.getViewableAssignments(currentUserId, "sortIndex", true, 
-        		pagerparams.current_start, pagerparams.current_count);
         
         if (entries.size() <= 0) {
             UIMessage.make(tofill, "assignment_empty", "assignment2.assignment_list-reorder.assignment_empty");

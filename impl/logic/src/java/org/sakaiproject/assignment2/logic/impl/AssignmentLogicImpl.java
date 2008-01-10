@@ -252,22 +252,23 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 			//  d) it is not draft or user has edit perm
 
 			List<String> userGroupIds = externalLogic.getUserMembershipGroupIdList(userId);	
+			boolean isUserAbleToEdit = permissionLogic.isCurrentUserAbleToEditAssignments(contextId);
+			boolean isUserAStudent = gradebookLogic.isCurrentUserAStudentInGb(contextId);
 
 			for (Iterator asnIter = allAssignments.iterator(); asnIter.hasNext();) {
 				Assignment2 assignment = (Assignment2) asnIter.next();
-				
-				boolean restrictedToGroups = assignment.getAssignmentGroupSet() != null
-					&& !assignment.getAssignmentGroupSet().isEmpty();
 
-				if (!assignment.isDraft() || permissionLogic.isCurrentUserAbleToEditAssignments(contextId)) {
-					if (assignment.isUngraded()) {
-						if (permissionLogic.isUserAbleToViewUngradedAssignment(userId, assignment)) {
-							viewableAssignments.add(assignment);
-						} 
+				if (!assignment.isDraft() || isUserAbleToEdit) {
+					// students may not view if not open
+					if (!isUserAStudent || (isUserAStudent && assignment.getOpenTime().before(new Date()))) 
+						if (assignment.isUngraded()) {
+							if (permissionLogic.isUserAbleToViewUngradedAssignment(assignment, userGroupIds)) {
+								viewableAssignments.add(assignment);
+							} 
 
-					} else {
-						gradedAssignments.add(assignment);
-					}
+						} else {
+							gradedAssignments.add(assignment);
+						}
 				}
 			}
 
@@ -286,8 +287,8 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 						
 						// if user is a "student" in terms of the gb, we need to filter the view
 						// by AssignmentGroup restrictions.
-						if (restrictedToGroups && gradebookLogic.isCurrentUserAStudentInGb(contextId)) {
-							if (permissionLogic.isUserAMemberOfARestrictedGroup(userId, assignment.getAssignmentGroupSet())) {
+						if (restrictedToGroups && isUserAStudent) {
+							if (permissionLogic.isUserAMemberOfARestrictedGroup(userGroupIds, assignment.getAssignmentGroupSet())) {
 								viewableAssignments.add(assignment);
 							}
 						} else {
@@ -296,34 +297,16 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 					}
 				}
 			}
+			
+			if (isUserAStudent) {
+				// if this is a student, we need to populate the submissionStatus for each assignment
+				submissionLogic.setSubmissionStatusForAssignments(viewableAssignments, userId);
+			}
 		}
 		
-		if (gradebookLogic.isCurrentUserAStudentInGb(contextId)) {
-			// if this is a student, we need to populate the submissionStatus for each assignment
-			submissionLogic.setSubmissionStatusForAssignments(viewableAssignments, userId);
-		}
+		
 		
 		return viewableAssignments;
-	}
-	
-	public List<Assignment2> getViewableAssignments(String userId, String sortProperty, boolean ascending, int start, int limit) {
-		if (!ascending) {
-            sortProperty += ByPropsFinder.DESC;
-        }
-
-		List<Assignment2> assignments = 
-			dao.findByProperties(Assignment2.class, new String[] {"contextId", "removed"}, new Object[] {externalLogic.getCurrentContextId(), Boolean.FALSE},
-					new int[] { ByPropsFinder.EQUALS, ByPropsFinder.EQUALS }, new String[] { sortProperty }, start, limit);
-		
-		return assignments;
-	}
-	
-	//TODO this needs to consider permissions!
-	public int getTotalCountViewableAssignments(String userId) {
-
-		int result = dao.countByProperties(Assignment2.class, new String[] {"contextId", "removed"}, 
-				new Object[] {externalLogic.getCurrentContextId(), Boolean.FALSE});
-		return result;
 	}
 	
 	public void setAssignmentSortIndexes(Long[] assignmentIds)
