@@ -152,6 +152,10 @@ li p.instruction {
 	margin-left: 14.5em;
 }
 
+li fieldset ol li p.instruction {
+	margin-left: 0;	
+}
+
 
 
 /* Errors/Notifications ========================================*/

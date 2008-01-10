@@ -40,7 +40,8 @@
 		<legend rsf:id="msg=assignment2.assignment_add.assignment_details_legend">Assignment Details</legend>
 		<ol>
 			<li>
-				<label rsf:id="title_label"><span class="reqStar">*</span> Title</label> <input rsf:id="title" type="text" size="30" maxlength="100"/>
+				<label rsf:id="title_label" id="title_label"><span class="reqStar">*</span> Title</label> 
+				<input rsf:id="title" type="text" size="30" maxlength="100"/>
 				<p rsf:id="message-for:title">This is an example error: Adding an assignment requires a title</p>
 			</li>
 			<li>
@@ -50,14 +51,6 @@
 					<textarea name="something" cols="80" rows="20" wrap="virtual"></textarea>
 					<!-- this should be the FCKEditor -->
 				</div>
-				<fieldset>
-					<ol>
-						<li>
-							<input rsf:id="honor_pledge" type="checkbox" />
-							<label rsf:id="msg=assignment2.assignment_add.honor_pledge">Add honor pledge</label>
-						</li>
-					</ol>
-				</fieldset>
 			</li>
 			<li>
 				
@@ -70,8 +63,13 @@
 			<li><span rsf:id="ungraded" />
 				<fieldset>
 					<ol>
-						<li><input rsf:id="select_ungraded" name="graded" type="radio" /> <label rsf:id="msg=assignment2.assignment_add.assignment_ungraded">This assignment is ungraded</label></li>
-						<li><input rsf:id="select_graded" name="graded" type="radio" /> <label rsf:id="msg=assignment2.assignment_add.assignment_graded">This assignment is graded</label>
+						<li>
+							<input rsf:id="select_ungraded" id="select_ungraded" name="graded" type="radio" /> 
+							<label rsf:id="select_ungraded_label">This assignment is ungraded</label>
+						</li>
+						<li>
+							<input rsf:id="select_graded" id="select_graded" name="graded" type="radio" /> 
+							<label rsf:id="select_graded_label">This assignment is graded</label>
 							<span rsf:id="msg=assignment2.assignment_add.gradebook_associated"> and is associated with a Gradebook Item:</span> 
 								<select rsf:id="gradebook_item" onchange="update_due_date();">
 									<option value="">Select a Gradebook Item</option>
@@ -101,8 +99,8 @@
 				<fieldset class="indent">
 					<ol>
 						<li>
-							<input rsf:id="announcement" type="checkbox" /> 
-							<label rsf:id="msg=assignment2.assignment_add.announcement">Add an announcement about the open date to Announcements</label>
+							<input rsf:id="announcement" id="announcement" type="checkbox" /> 
+							<label rsf:id="announcement_label">Add an announcement about the open date to Announcements</label>
 						</li>
 					</ol>
 				</fieldset>
@@ -125,8 +123,8 @@
 				<fieldset class="indent">
 					<ol>
 						<li>
-							<input rsf:id="accept_until_until" type="checkbox" /> 
-							<label rsf:id="msg=assignment2.assignment_add.accept_until_until">Allow resubmissions until "Accept Until" Date</label>
+							<input rsf:id="accept_until_until" id="accept_until_until" type="checkbox" /> 
+							<label rsf:id="accept_until_until_label">Allow resubmissions until "Accept Until" Date</label>
 						</li>
 					</ol>
 				</fieldset>
@@ -136,6 +134,11 @@
 				<select rsf:id="submission_type">
 				</select>
 				<p rsf:id="message-for:submission_type"></p>
+			</li>
+			<li>
+				<label rsf:id="msg=assignment2.assignment_add.honor_pledge">Add honor pledge</label>
+				<select rsf:id="honor_pledge">
+				</select>
 			</li>
 			<!-- 
 			<li>

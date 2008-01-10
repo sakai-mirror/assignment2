@@ -157,9 +157,11 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
         //set dateEvolver
         dateEvolver.setStyle(FormatAwareDateInputEvolver.DATE_TIME_INPUT);
         
-        UIVerbatim.make(form, "title_label", messageLocator.getMessage("assignment2.assignment_add.assignment_title",
+        UIVerbatim title_label = UIVerbatim.make(form, "title_label", messageLocator.getMessage("assignment2.assignment_add.assignment_title",
         		new Object[]{ reqStar }));
-        UIInput.make(form, "title", assignment2OTP + ".title");
+        UIInput title = UIInput.make(form, "title", assignment2OTP + ".title");
+        UILabelTargetDecorator.targetLabel(title_label, title);
+        
         UIVerbatim.make(form, "open_date_label", messageLocator.getMessage("assignment2.assignment_add.open_date",
         		new Object[]{ reqStar }));
         UIInput openDateField = UIInput.make(form, "open_date:", assignment2OTP + ".openTime");
@@ -198,12 +200,26 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
         //Calendar Due Date
         //Announcement -  only display if site has the announcements tool
         if (externalLogic.siteHasTool(externalLogic.getCurrentContextId(), ExternalLogic.TOOL_ID_ANNC)) {
-        	UIBoundBoolean.make(form, "announcement", assignment2OTP + ".hasAnnouncement");
+        	UIMessage announcement_label = UIMessage.make(form, "announcement_label", "assignment2.assignment_add.announcement");
+        	UIBoundBoolean announcement = UIBoundBoolean.make(form, "announcement", assignment2OTP + ".hasAnnouncement");
+        	UILabelTargetDecorator.targetLabel(announcement_label, announcement);
         }
         //Resubmit until until date
-        UIBoundBoolean.make(form, "accept_until_until", assignment2OTP + ".allowResubmit");
+        UIMessage accept_label = UIMessage.make(form, "accept_until_until_label", "assignment2.assignment_add.accept_until_until");
+        UIBoundBoolean accept = UIBoundBoolean.make(form, "accept_until_until", assignment2OTP + ".allowResubmit");
+        UILabelTargetDecorator.targetLabel(accept_label, accept);
+        
+        
         //Honor Pledge
-        UIBoundBoolean.make(form, "honor_pledge", assignment2OTP + ".honorPledge");
+        String[] honor_pledge_labels = new String[]{
+        		"assignment2.no",
+        		"assignment2.yes"
+        };
+        String[] honor_pledge_values = new String[] {
+        		Boolean.FALSE.toString(),
+        		Boolean.TRUE.toString()
+        };
+        UISelect.make(form, "honor_pledge", honor_pledge_values, honor_pledge_labels, assignment2OTP + ".honorPledge").setMessageKeys();
         
         //Attachments
         attachmentListRenderer.makeAttachmentFromAssignment2OTPAttachmentSet(tofill, "attachment_list:", 
@@ -255,7 +271,12 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
         		new String[]{Boolean.FALSE.toString(), Boolean.TRUE.toString()}, new String[]{"", ""}, assignment2OTP + ".ungraded");
         String grading_select_id = grading_select.getFullID();
         UISelectChoice graded = UISelectChoice.make(form, "select_graded", grading_select_id, 0);
+        UIMessage graded_label = UIMessage.make(form, "select_graded_label", "assignment2.assignment_add.assignment_graded");
+        UILabelTargetDecorator.targetLabel(graded_label, graded);
+        
         UISelectChoice ungraded = UISelectChoice.make(form, "select_ungraded", grading_select_id, 1);
+        UIMessage ungraded_label = UIMessage.make(form, "select_ungraded_label", "assignment2.assignment_add.assignment_ungraded");
+        UILabelTargetDecorator.targetLabel(ungraded_label, ungraded);
         
         //Check if gradebook item due date is not null, else output the formatted date
         String selectedId = "";
@@ -310,9 +331,10 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
 
         for (int i=0; i < access_values.length; i++) {
         	UIBranchContainer access_row = UIBranchContainer.make(form, "access_row:");
-        	UISelectChoice checkbox = UISelectChoice.make(access_row, "access_choice", accessId, i);
+        	UISelectChoice radio = UISelectChoice.make(access_row, "access_choice", accessId, i);
         	Map attrmap = new HashMap();
-        	UISelectLabel.make(access_row, "access_label", accessId, i);
+        	UISelectLabel label = UISelectLabel.make(access_row, "access_label", accessId, i);
+        	UILabelTargetDecorator.targetLabel(label, radio);
         }
         
         /**

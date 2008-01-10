@@ -61,7 +61,7 @@
 		<div rsf:id="assignment_instructions" class="textPanel"></div>
 	</div>
 
-	<h4 rsf:id="assignment2.assignment_grade.additional_resources">Additional resources for assignment</h4>
+	<h4 rsf:id="msg=assignment2.assignment_grade.additional_resources">Additional resources for assignment</h4>
 
 	<ul class="attachList indnt1">
 		<li rsf:id="assignment_attachment_list:">
@@ -71,7 +71,7 @@
 
 	<h3 rsf:id="msg=assignment2.assignment_grade.assignment_submission">Assignment Submission</h3>
 
-	<fieldset>
+	<fieldset rsf:id="submitted_text_fieldset">
 		<legend rsf:id="msg=assignment2.assignment_grade.submitted_text">Submitted Text</legend>
 		<ol>
 			<li>
@@ -83,7 +83,7 @@
 			</li>
 		</ol>
 	</fieldset>
-	<fieldset>
+	<fieldset rsf:id="submitted_attachments_fieldset">
 		<legend rsf:id="msg=assignment2.assignment_grade.submitted_attachments">Submitted Attachments</legend>
 		<ol class="attachList indnt1">
 			<li rsf:id="submitted_attachment_list:">
@@ -91,19 +91,6 @@
 			</li>
 		</ol>
 	</fieldset>
-	<!--  This now goes in the helper
-	<fieldset>
-		<legend rsf:id="msg=assignment2.assignment_grade.instructor_comments">Instructor Comments</legend>
-		<ol>
-			<li>
-				<label rsf:id="msg=assignment2.assignment_grade.comments_instructions" class="block instruction">Use the box below to enter additional summary comments about this submission.</label>
-				<div rsf:id="gradebook_comment:">
-					<textarea name="something" cols="80" rows="20" wrap="virtual"></textarea>
-				</div>	
-			</li>
-		</ol>
-	</fieldset>
-	-->
 	<fieldset>
 		<legend rsf:id="msg=assignment2.assignemnt_grade.attachments_to_return_with_grade">Attachments To Return With Grade</legend>
 		<ol id="fragment-attachments-container">

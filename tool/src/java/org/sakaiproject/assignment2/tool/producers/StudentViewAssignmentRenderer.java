@@ -22,6 +22,7 @@ import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.tool.api.ToolSession;
 
 import uk.org.ponder.messageutil.MessageLocator;
+import uk.org.ponder.rsf.components.UIBoundBoolean;
 import uk.org.ponder.rsf.components.UICommand;
 import uk.org.ponder.rsf.components.UIContainer;
 import uk.org.ponder.rsf.components.UIELBinding;
@@ -29,6 +30,7 @@ import uk.org.ponder.rsf.components.UIForm;
 import uk.org.ponder.rsf.components.UIInput;
 import uk.org.ponder.rsf.components.UIInternalLink;
 import uk.org.ponder.rsf.components.UIJointContainer;
+import uk.org.ponder.rsf.components.decorators.UILabelTargetDecorator;
 import uk.org.ponder.rsf.components.UILink;
 import uk.org.ponder.rsf.components.UIMessage;
 import uk.org.ponder.rsf.components.UIOutput;
@@ -140,7 +142,7 @@ public class StudentViewAssignmentRenderer {
         		set.removeAll((Set<String>)session.getAttribute("removedAttachmentRefs"));
         	}
         	
-        	attachmentListRenderer.makeAttachment(tofill, "attachment_list:", params.viewID, set, Boolean.FALSE);
+        	attachmentListRenderer.makeAttachment(joint, "attachment_list:", params.viewID, set, Boolean.FALSE);
     	}
 
     	
@@ -170,25 +172,26 @@ public class StudentViewAssignmentRenderer {
     			assignment.getSubmissionType() == AssignmentConstants.SUBMIT_INLINE_AND_ATTACH){
     		UIOutput.make(form, "submit_attachments");
     		
-
-	    	
-	    	//Init JS
-	        String frameId = org.sakaiproject.util.Web.escapeJavascript("Main" + org.sakaiproject.tool.cover.ToolManager.getCurrentPlacement().getId());
-	        UIVerbatim.make(tofill, "iframeId_init", "var iframeId = \"" + frameId + "\";");
-	        
 	        //Attachments
 	        AssignmentSubmissionVersion submissionVersion = assignmentSubmission.getCurrentSubmissionVersion();
 	        Set<AssignmentSubmissionAttachment> set = new HashSet();
 	        if (submissionVersion != null && submissionVersion.getSubmissionAttachSet() != null) {
 	        	set.addAll(submissionVersion.getSubmissionAttachSet());
 	        }
-	    	attachmentListRenderer.makeAttachmentFromAssignmentSubmissionAttachmentSet(tofill, "submission_attachment_list:", params.viewID, 
+	    	attachmentListRenderer.makeAttachmentFromAssignmentSubmissionAttachmentSet(joint, "submission_attachment_list:", params.viewID, 
 	    			set, Boolean.TRUE);
 	    	if (!preview){
 	    		UILink add_attachments = UIInternalLink.make(form, "add_submission_attachments", UIMessage.make("assignment2.student-submit.add_attachments"),
 	        		new FilePickerHelperViewParams(AddAttachmentHelperProducer.VIEWID, Boolean.TRUE, 
 	        				Boolean.TRUE, 500, 700, ASOTPKey));
 	    	}
+    	}
+    	
+    	if (assignment.isHonorPledge()) {
+    		UIOutput.make(joint, "honor_pledge_fieldset");
+    		UIMessage honor_pledge_label = UIMessage.make(joint, "honor_pledge_label", "assignment2.student-submit.honor_pledge_text");
+    		UIBoundBoolean honor_pledge_checkbox = UIBoundBoolean.make(joint, "honor_pledge", "#{AssignmentSubmissionBean.honorPledge}");
+    		UILabelTargetDecorator.targetLabel(honor_pledge_label, honor_pledge_checkbox);
     	}
         
         form.parameters.add( new UIELBinding("#{AssignmentSubmissionBean.assignmentId}", assignment.getAssignmentId()));

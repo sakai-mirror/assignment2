@@ -22,6 +22,7 @@ import org.sakaiproject.tool.api.ToolSession;
 
 import uk.org.ponder.beanutil.entity.EntityBeanLocator;
 import uk.org.ponder.messageutil.MessageLocator;
+import uk.org.ponder.messageutil.TargettedMessage;
 import uk.org.ponder.messageutil.TargettedMessageList;
 
 public class AssignmentSubmissionBean {
@@ -89,6 +90,11 @@ public class AssignmentSubmissionBean {
 		this.sessionManager = sessionManager;
 	}
 	
+	private Boolean honorPledge;
+	public void setHonorPledge(Boolean honorPledge) {
+		this.honorPledge = honorPledge;
+	}
+	
 	
 	/*
 	 * STUDENT FUNCTIONS
@@ -137,7 +143,15 @@ public class AssignmentSubmissionBean {
 	    	assignmentSubmission.getCurrentSubmissionVersion().setSubmissionAttachSet(final_set);
 			//End Attachment stuff
 			
-			submissionLogic.saveStudentSubmission(assignmentSubmission);
+	    	//check whether honor pledge was added if required
+	    	if (assignment.isHonorPledge() && !this.honorPledge) {
+	    		messages.addMessage(new TargettedMessage("assignment2.student-submit.error.honor_pledge_required",
+						new Object[] { assignment.getTitle() }, TargettedMessage.SEVERITY_ERROR));
+	    	}else {
+	    		submissionLogic.saveStudentSubmission(assignmentSubmission);
+	    		messages.addMessage(new TargettedMessage("assignment2.student-submit.info.submission_submitted",
+						new Object[] { assignment.getTitle() }, TargettedMessage.SEVERITY_INFO));
+	    	}
 		}
 
 		return SUBMIT;
@@ -197,6 +211,8 @@ public class AssignmentSubmissionBean {
 			//End Attachment stuff
 			
 			submissionLogic.saveStudentSubmission(assignmentSubmission);
+			messages.addMessage(new TargettedMessage("assignment2.student-submit.info.submission_save_draft",
+					new Object[] { assignment.getTitle() }, TargettedMessage.SEVERITY_INFO));
 		}
 		return SAVE_DRAFT;
 	}
@@ -252,9 +268,7 @@ public class AssignmentSubmissionBean {
 	    		final_set.addAll(set);
 	    	}
 	    	assignmentSubmission.getCurrentSubmissionVersion().setFeedbackAttachSet(final_set);
-			//End Attachment stuff
-			
-			
+			//End Attachment stuff			
 			
 			submissionLogic.saveInstructorFeedback(assignmentSubmission);
 		}
