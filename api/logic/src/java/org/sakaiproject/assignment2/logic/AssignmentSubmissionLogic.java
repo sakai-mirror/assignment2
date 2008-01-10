@@ -128,4 +128,14 @@ public interface AssignmentSubmissionLogic {
 	 */
 	public void sortSubmissions(List<AssignmentSubmission> submissionList, String sortBy, boolean ascending);
 	
+	/**
+	 * 
+	 * @param studentId
+	 * @param assignment
+	 * @return true if the student is still able to make a submission for the given
+	 * assignment at this time.  checks to see if assignment is open, if resubmission allowed,
+	 * etc to determine if submission is still open
+	 */
+	public boolean submissionIsOpenForStudentForAssignment(String studentId, Assignment2 assignment);
+	
 }

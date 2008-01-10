@@ -403,7 +403,8 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		
 		if (submission == null) {
 			status = AssignmentConstants.SUBMISSION_NOT_STARTED;
-		} else if (submission.getCurrentSubmissionVersion() == null) {
+		} else if (submission.getCurrentSubmissionVersion() == null ||
+				submission.getCurrentSubmissionVersion().getSubmissionVersionId() == null) {
 			status = AssignmentConstants.SUBMISSION_NOT_STARTED;
 		} else if (submission.getCurrentSubmissionVersion().isDraft()) {
 			status = AssignmentConstants.SUBMISSION_IN_PROGRESS;
@@ -501,7 +502,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		updatedVersion.setFeedbackAttachSet(revisedAttachSet);
 	}
 	
-	public boolean studentAbleToSubmit(String studentId, Assignment2 assignment) {
+	public boolean submissionIsOpenForStudentForAssignment(String studentId, Assignment2 assignment) {
 		if (studentId == null || assignment == null) {
 			throw new IllegalArgumentException("null parameter passed to studentAbleToSubmit");
 		} 
@@ -541,8 +542,6 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		//   b) instructor has allowed resubmission for this student and the
 		//		resubmit until date has not passed
 		
-
-		
 		boolean studentAbleToSubmit = false;
 		boolean assignmentIsOpen = assignment.getOpenTime().before(new Date()) && 
 					assignment.getAcceptUntilTime().after(new Date());
@@ -554,7 +553,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		} else {
 			if (assignmentIsOpen && assignment.isAllowResubmit()) {
 				studentAbleToSubmit = true;
-			} else if (submission.isAllowResubmit()) {
+			} else if (submission.isAllowResubmit() != null && submission.isAllowResubmit()) {
 				if (submission.getResubmitCloseTime() != null && submission.getResubmitCloseTime().after(new Date())) {
 					studentAbleToSubmit = true;
 				}

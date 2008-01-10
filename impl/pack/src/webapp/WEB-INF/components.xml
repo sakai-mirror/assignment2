@@ -44,6 +44,7 @@
    <bean id="org.sakaiproject.assignment2.logic.PermissionLogic" class="org.sakaiproject.assignment2.logic.impl.PermissionLogicImpl" init-method="init">
       <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
       <property name="externalGradebookLogic" ref="org.sakaiproject.assignment2.logic.ExternalGradebookLogic" />
+      <property name="dao" ref="org.sakaiproject.assignment2.dao.AssignmentDao" />
    </bean>
    
    <bean id="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" class="org.sakaiproject.assignment2.logic.impl.AssignmentSubmissionLogicImpl" init-method="init">

@@ -28,9 +28,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Collection;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.assignment2.dao.AssignmentDao;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.logic.PermissionLogic;
@@ -50,6 +52,11 @@ public class PermissionLogicImpl implements PermissionLogic {
 
     public void init() {
     	log.debug("init");
+    }
+    
+    private AssignmentDao dao;
+    public void setDao(AssignmentDao dao) {
+        this.dao = dao;
     }
     
 	private ExternalLogic externalLogic;
@@ -157,12 +164,12 @@ public class PermissionLogicImpl implements PermissionLogic {
     	return viewable;
     }
     
-    public boolean isUserAMemberOfARestrictedGroup(String userId, Set<AssignmentGroup> assignmentGroupSet) {
+    public boolean isUserAMemberOfARestrictedGroup(String userId, Collection<AssignmentGroup> assignmentGroupSet) {
     	if (userId == null) {
     		throw new IllegalArgumentException("null userId passed to userId");
     	}
     	
-    	if (assignmentGroupSet != null) {
+    	if (assignmentGroupSet != null && !assignmentGroupSet.isEmpty()) {
     		List<String> groupIdList = externalLogic.getUserMembershipGroupIdList(externalLogic.getCurrentUserId());
         	if (groupIdList != null) {
 	        	for (Iterator aGroupIter = assignmentGroupSet.iterator(); aGroupIter.hasNext();) {
@@ -212,11 +219,15 @@ public class PermissionLogicImpl implements PermissionLogic {
 		}
 		
 		// check to make sure any group restrictions have been upheld
-		/*if (assignment.getAssignmentGroupSet() != null) {
-			if (!isUserAMemberOfARestrictedGroup(externalLogic.getCurrentUserId(), assignment.getAssignmentGroupSet())) {
-				userAbleToSubmit = false;
+		if (userAbleToSubmit) {
+			List<AssignmentGroup> assignGroupRestrictions = 
+				dao.findByProperties(AssignmentGroup.class, new String[] {"assignment"}, new Object[] {assignment});
+			if (assignGroupRestrictions != null && !assignGroupRestrictions.isEmpty()) {
+				if (!isUserAMemberOfARestrictedGroup(externalLogic.getCurrentUserId(), assignGroupRestrictions)) {
+					userAbleToSubmit = false;
+				}
 			}
-		}*/
+		}
 		
 		return userAbleToSubmit;
 	}

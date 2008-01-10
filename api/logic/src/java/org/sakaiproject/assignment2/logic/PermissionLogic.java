@@ -24,6 +24,7 @@ package org.sakaiproject.assignment2.logic;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Collection;
 
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentGroup;
@@ -76,7 +77,7 @@ public interface PermissionLogic {
 	 * 		set of AssignmentGroups that the assignments is restricted to
 	 * @return true if the user is a member of one of the given AssignmentGroup restrictions
 	 */
-	public boolean isUserAMemberOfARestrictedGroup(String userId, Set<AssignmentGroup> assignmentGroupSet);
+	public boolean isUserAMemberOfARestrictedGroup(String userId, Collection<AssignmentGroup> assignmentGroups);
 	
 	/**
 	 * 

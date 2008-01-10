@@ -161,7 +161,9 @@ public class AssignmentSubmissionBean {
 			Assignment2 assignment = assignmentLogic.getAssignmentById(assignmentId);
 			assignmentSubmission.setAssignment(assignment);
 			assignmentSubmission.getCurrentSubmissionVersion().setDraft(Boolean.TRUE);
-			assignmentSubmission.getCurrentSubmissionVersion().setSubmittedTime(new Date());
+
+			assignmentSubmission.getCurrentSubmissionVersion().setCreatedTime(new Date());
+			assignmentSubmission.getCurrentSubmissionVersion().setCreatedBy(externalLogic.getCurrentUserId());
 
 			//Start attachment stuff
 			Set<AssignmentSubmissionAttachment> set = new HashSet();

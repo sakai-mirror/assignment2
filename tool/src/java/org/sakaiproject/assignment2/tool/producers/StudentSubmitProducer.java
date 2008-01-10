@@ -89,6 +89,7 @@ public class StudentSubmitProducer implements ViewComponentProducer, NavigationC
     	}
     	
     	AssignmentSubmission submission = submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentIdForStudentView(assignmentId, externalLogic.getCurrentUserId());
+    	
     	String ASOTPKey = "";
     	if (submission == null || submission.getSubmissionId() == null) {
     		ASOTPKey += EntityBeanLocator.NEW_PREFIX + "1";
@@ -104,6 +105,9 @@ public class StudentSubmitProducer implements ViewComponentProducer, NavigationC
     	AssignmentSubmission assignmentSubmission = (AssignmentSubmission) assignmentSubmissionBeanLocator.locateBean(ASOTPKey); 
     	AssignmentSubmissionVersion submissionVersion = assignmentSubmission.getCurrentSubmissionVersion();
     	
+    	// set the textual representation of the status
+    	int status = submissionLogic.getSubmissionStatus(assignmentSubmission);
+    	assignmentSubmission.setSubmissionStatus(messageLocator.getMessage("assignment2.student-submit.status." + status));
     	
     	// use a date which is related to the current users locale
         DateFormat df = DateFormat.getDateInstance(DateFormat.MEDIUM, locale);
