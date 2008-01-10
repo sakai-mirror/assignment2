@@ -161,15 +161,15 @@ li fieldset ol li p.instruction {
 /* Errors/Notifications ========================================*/
 
 .messages {
-	background: url("/sakai-assignment2-tool/content/images/error-arrow.png") no-repeat .5em 0;
-	color: #fff;
+	xbackground: url("/sakai-assignment2-tool/content/images/error-arrow.png") no-repeat .5em 0;
+	xcolor: #fff;
 	display: block;
 	margin: 0;
 	xpadding: .5em .5em .5em 2em;
 }
 
 .messages li {
-	background: url("/sakai-assignment2-tool/content/images/error-arrow.png") no-repeat .5em 0;
+	xbackground: url("/sakai-assignment2-tool/content/images/error-arrow.png") no-repeat .5em 0;
 	padding: .5em .5em .5em 2em;
 }
 
@@ -179,6 +179,7 @@ li.error {
 
 li.info {
 	background-color: #00ba05;
+	color: #fff;
 }
 
 .error input[type="text"] {

@@ -11,7 +11,7 @@
          <ref bean="messageLocator" />
       </property>
       <property name="infoStyleClass" value="info" />
-      <property name="errorStyleClass" value="error" />
+      <property name="errorStyleClass" value="alertMessageInline" />
    </bean>
 
    <!-- handles configuration of internationalization messages -->
