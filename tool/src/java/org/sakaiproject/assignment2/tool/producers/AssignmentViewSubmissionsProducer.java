@@ -134,8 +134,10 @@ public class AssignmentViewSubmissionsProducer implements ViewComponentProducer,
         		AssignmentSubmissionLogic.SORT_BY_SUBMIT_DATE, "assignment2.assignment_grade-assignment.tableheader.submitted");
         sortHeaderRenderer.makeSortingLink(tofill, "tableheader.status", viewparams, 
         		AssignmentSubmissionLogic.SORT_BY_STATUS, "assignment2.assignment_grade-assignment.tableheader.status");
-        sortHeaderRenderer.makeSortingLink(tofill, "tableheader.grade", viewparams, 
-        		AssignmentSubmissionLogic.SORT_BY_GRADE, "assignment2.assignment_grade-assignment.tableheader.grade");
+        if (!assignment.isUngraded()) {
+	        sortHeaderRenderer.makeSortingLink(tofill, "tableheader.grade", viewparams, 
+	        		AssignmentSubmissionLogic.SORT_BY_GRADE, "assignment2.assignment_grade-assignment.tableheader.grade");
+        }
         sortHeaderRenderer.makeSortingLink(tofill, "tableheader.released", viewparams, 
 	      		AssignmentSubmissionLogic.SORT_BY_RELEASED, "assignment2.assignment_grade-assignment.tableheader.released");
                 
@@ -158,7 +160,10 @@ public class AssignmentViewSubmissionsProducer implements ViewComponentProducer,
         	
         	UIOutput.make(row, "row_status", as.getSubmissionStatus());
         	
-        	UIOutput.make(row, "row_grade", as.getGradebookGrade());
+        	if (!assignment.isUngraded()) {
+        		UIOutput.make(row, "row_grade", as.getGradebookGrade());
+        	}
+        	
         	if (assignment.isUngraded()){
         		if (as.getCurrentSubmissionVersion() != null)  {
         			Date releasedTime = as.getCurrentSubmissionVersion().getReleasedTimeForUngraded();
