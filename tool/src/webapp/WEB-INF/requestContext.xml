@@ -12,7 +12,7 @@
 		<property name="securityService"
 			ref="org.sakaiproject.authz.api.SecurityService" />
 		<property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
-		<property name="permissionLogic" ref="org.sakaiproject.assignment2.logic.PermissionLogic" />
+		<property name="permissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentPermissionLogic" />
    </bean>
 
    <!-- rich text evolver bean def -->
@@ -124,7 +124,7 @@
       <property name="messageLocator" ref="messageLocator" />
       <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
       <property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
-      <property name="permissionLogic" ref="org.sakaiproject.assignment2.logic.PermissionLogic" />
+      <property name="permissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentPermissionLogic" />
       <property name="pagerRenderer" ref="PagerRenderer" />
       <property name="locale" ref="requestLocale" />
       <property name="assignment2Bean" ref="Assignment2Bean" />

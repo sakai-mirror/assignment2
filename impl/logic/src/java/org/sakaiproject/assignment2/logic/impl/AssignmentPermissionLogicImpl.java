@@ -35,7 +35,7 @@ import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment2.dao.AssignmentDao;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
-import org.sakaiproject.assignment2.logic.PermissionLogic;
+import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentGroup;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
@@ -46,9 +46,9 @@ import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
  * 
  * @author <a href="mailto:wagnermr@iupui.edu">michelle wagner</a>
  */
-public class PermissionLogicImpl implements PermissionLogic {
+public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic {
 
-    private static Log log = LogFactory.getLog(PermissionLogicImpl.class);
+    private static Log log = LogFactory.getLog(AssignmentPermissionLogicImpl.class);
 
     public void init() {
     	log.debug("init");

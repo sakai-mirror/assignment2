@@ -1,7 +1,7 @@
 package org.sakaiproject.assignment2.tool.params;
 
 import org.sakaiproject.assignment2.logic.ExternalLogic;
-import org.sakaiproject.assignment2.logic.PermissionLogic;
+import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
 import org.sakaiproject.assignment2.tool.producers.AssignmentListSortViewProducer;
 import org.sakaiproject.assignment2.tool.producers.StudentAssignmentListProducer;
 import org.sakaiproject.assignment2.tool.params.AssignmentListSortViewParams;
@@ -23,8 +23,8 @@ public class Assignment2DefaultViewParameters {
 		this.securityService = securityService;
 	}
 	
-	private PermissionLogic permissionLogic;
-	public void setPermissionLogic(PermissionLogic permissionLogic) {
+	private AssignmentPermissionLogic permissionLogic;
+	public void setPermissionLogic(AssignmentPermissionLogic permissionLogic) {
 		this.permissionLogic = permissionLogic;
 	}
 	

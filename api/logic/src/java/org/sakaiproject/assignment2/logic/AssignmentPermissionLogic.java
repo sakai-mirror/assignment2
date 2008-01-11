@@ -36,7 +36,7 @@ import org.sakaiproject.assignment2.model.AssignmentSubmission;
  * 
  * @author <a href="mailto:wagnermr@iupui.edu">michelle wagner</a>
  */
-public interface PermissionLogic {
+public interface AssignmentPermissionLogic {
 
 	/**
 	 * @param contextId

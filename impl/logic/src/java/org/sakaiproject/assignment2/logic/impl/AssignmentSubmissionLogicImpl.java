@@ -45,7 +45,7 @@ import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
-import org.sakaiproject.assignment2.logic.PermissionLogic;
+import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
 import org.sakaiproject.assignment2.logic.utils.ComparatorsUtils;
 import org.sakaiproject.assignment2.dao.AssignmentDao;
 
@@ -74,8 +74,8 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
         this.gradebookLogic = gradebookLogic;
     }
     
-    private PermissionLogic permissionLogic;
-    public void setPermissionLogic(PermissionLogic permissionLogic) {
+    private AssignmentPermissionLogic permissionLogic;
+    public void setPermissionLogic(AssignmentPermissionLogic permissionLogic) {
         this.permissionLogic = permissionLogic;
     }
     

@@ -10,7 +10,7 @@ import org.sakaiproject.assignment2.exception.ConflictingAssignmentNameException
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
-import org.sakaiproject.assignment2.logic.PermissionLogic;
+import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.tool.beans.Assignment2Bean;
 import org.sakaiproject.assignment2.tool.beans.Assignment2Creator;
@@ -70,7 +70,7 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
     private AssignmentLogic assignmentLogic;
     private ExternalLogic externalLogic;
     private ExternalGradebookLogic gradebookLogic;
-    private PermissionLogic permissionLogic;
+    private AssignmentPermissionLogic permissionLogic;
     private Locale locale;
     private Assignment2Bean assignment2Bean;
     private SortHeaderRenderer sortHeaderRenderer;
@@ -247,7 +247,7 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
 		this.gradebookLogic = gradebookLogic;
 	}
 	
-	public void setPermissionLogic(PermissionLogic permissionLogic) {
+	public void setPermissionLogic(AssignmentPermissionLogic permissionLogic) {
 		this.permissionLogic = permissionLogic;
 	}
 }
