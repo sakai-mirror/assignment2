@@ -78,17 +78,16 @@ public class Assignment2 {
     private String submissionStatus;
     private Integer submissionStatusConstant;
 
-	public Assignment2(Long gradableObjectId, String contextId, String title,
-			Boolean draft, int sortIndex, Date openTime, 
-			Date acceptUntilTime, Boolean ungraded, Date dueDateForUngraded,
-			Boolean groupSubmission,
-			Boolean honorPledge, String instructions, int submissionType,
-			int notificationType, String announcementId,
-			String calendarEventId, Boolean allowResubmit,
-			Boolean allowReviewService, Boolean allowStudentViewReport,
-			String creator, Date createTime, String modifiedBy,
-			Date modifiedTime, Double pointsPossible, Date dueDate) {
-
+	public Assignment2(Long assignmentId, Long gradableObjectId,
+			String contextId, String title, Boolean draft, int sortIndex,
+			Date openTime, Date acceptUntilTime, Boolean ungraded,
+			Date dueDateForUngraded, Boolean honorPledge, String instructions,
+			int submissionType, int notificationType, Boolean hasAnnouncement,
+			String announcementId, String calendarEventId,
+			Boolean allowResubmit, Boolean allowReviewService,
+			Boolean allowStudentViewReport, String creator, Date createTime,
+			String modifiedBy, Date modifiedTime, Boolean removed, int version) {
+		this.assignmentId = assignmentId;
 		this.gradableObjectId = gradableObjectId;
 		this.contextId = contextId;
 		this.title = title;
@@ -102,6 +101,7 @@ public class Assignment2 {
 		this.instructions = instructions;
 		this.submissionType = submissionType;
 		this.notificationType = notificationType;
+		this.hasAnnouncement = hasAnnouncement;
 		this.announcementId = announcementId;
 		this.calendarEventId = calendarEventId;
 		this.allowResubmit = allowResubmit;
@@ -111,10 +111,8 @@ public class Assignment2 {
 		this.createTime = createTime;
 		this.modifiedBy = modifiedBy;
 		this.modifiedTime = modifiedTime;
-		
-		// gb fields
-		this.pointsPossible = pointsPossible;
-		this.dueDate = dueDate;
+		this.removed = removed;
+		this.version = version;
 	}
 
 	/**
