@@ -148,8 +148,8 @@ public class AssignmentViewSubmissionsProducer implements ViewComponentProducer,
         for (AssignmentSubmission as : submissions){
         	UIBranchContainer row = UIBranchContainer.make(tofill, "row:");
         	
-        	UIOutput.make(row, "row_name", externalLogic.getUserDisplayName(as.getUserId()));
-        	UIInternalLink.make(row, "row_grade_link", 
+        	UIInternalLink.make(row, "row_grade_link",
+        			externalLogic.getUserDisplayName(as.getUserId()),
         			new AssignmentGradeViewParams(AssignmentGradeProducer.VIEW_ID, as.getAssignment().getAssignmentId(), as.getUserId()));
         	
         	if (as.getCurrentSubmissionVersion() != null && as.getCurrentSubmissionVersion().getSubmittedTime() != null){

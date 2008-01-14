@@ -177,8 +177,7 @@ public class AssignmentGradeProducer implements ViewComponentProducer, Navigatio
 	        	UIMessage.make(tofill, "submitted_attachment_list:", "assignment2.assignment_grade.no_attachments_submitted");
 	        }
         }
-        
-        
+               
         //Attachments
         attachmentListRenderer.makeAttachmentFromAssignment2OTPAttachmentSet(tofill, "attachment_list:", 
         		params.viewID, OTPKey, Boolean.TRUE);
@@ -196,6 +195,12 @@ public class AssignmentGradeProducer implements ViewComponentProducer, Navigatio
         
         if (!assignment.isUngraded()){
         	gradebookDetailsRenderer.makeGradebookDetails(tofill, "gradebook_details", as, assignmentId, userId);
+        } else {
+            //If assignment is ungraded, add the ungraded comments dialog
+        	UIOutput.make(form, "ungraded_comments_fieldset");
+        	
+        	UIInput ungraded_comments = UIInput.make(form, "ungraded_comments:", asvOTP + ".commentForUngraded");
+        	richTextEvolver.evolveTextInput(ungraded_comments);
         }
         
         form.parameters.add(new UIELBinding("#{AssignmentSubmissionBean.assignmentId}", assignmentId));
@@ -208,7 +213,7 @@ public class AssignmentGradeProducer implements ViewComponentProducer, Navigatio
     
 	public List reportNavigationCases() {
     	List<NavigationCase> nav= new ArrayList<NavigationCase>();
-    	nav.add(new NavigationCase("post", new SimpleViewParameters(
+    	nav.add(new NavigationCase("submit", new SimpleViewParameters(
                AssignmentViewSubmissionsProducer.VIEW_ID)));
         nav.add(new NavigationCase("preview", new SimpleViewParameters(
               FragmentSubmissionGradePreviewProducer.VIEW_ID)));
