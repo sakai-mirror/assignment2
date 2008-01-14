@@ -92,7 +92,7 @@ public class AssignmentSubmissionVersion {
 	 * @return formated text composed of the submission with grader-added annotation
 	 */
 	public String getFeedbackTextFormatted() {		
-    	Pattern p = Pattern.compile("\\{\\{(.+)\\}\\}");
+    	Pattern p = Pattern.compile("\\{\\{([^\\}]+|\\}(?!\\}))\\}\\}");
     	Matcher m = p.matcher(feedbackText);
     	StringBuffer sb = new StringBuffer();
     	while(m.find()){
