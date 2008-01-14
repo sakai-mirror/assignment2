@@ -263,6 +263,53 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		updateStudentAttachments(newVersion);
 	}
 	
+	public void saveStudentSubmission(AssignmentSubmissionVersion version) {
+		if (version == null) {
+			throw new IllegalArgumentException("null version passed to saveAssignmentSubmission");
+		}
+		
+		AssignmentSubmission submission = version.getAssignmentSubmission();
+		if (submission == null) {
+			throw new IllegalArgumentException("no AssignmentSubmission record was associated with the given version in saveStudentSubmission");
+		}
+		
+		if (!permissionLogic.isUserAbleToMakeSubmissionForAssignment(externalLogic.getCurrentContextId(), submission.getAssignment())) {
+			log.warn("User " + externalLogic.getCurrentUserId() + " attempted to make a submission " +
+					"without authorization for assignment " + submission.getAssignment().getAssignmentId());
+			throw new SecurityException("User " + externalLogic.getCurrentUserId() + " attempted to make a submission " +
+					"without authorization for assignment " + submission.getAssignment().getAssignmentId());
+		}
+		
+		Set<AssignmentSubmissionAttachment> submissionAttachments = version.getSubmissionAttachSet();
+		
+		AssignmentSubmissionVersion newVersion = version.clone();
+		// we need to add the attachments after we have a persistent version
+		newVersion.setSubmissionAttachSet(null);
+		
+		if (submission.getSubmissionId() == null) {
+			dao.create(submission);
+			log.debug("New student submission rec added for user " + submission.getUserId() + " for assignment " + submission.getAssignment().getTitle() + " ID: " + submission.getAssignment().getAssignmentId());
+			
+			newVersion.setAssignmentSubmission(submission);
+			// populate the feedback text with the student's submitted text if not draft
+			if (newVersion.isDraft()) {
+				newVersion.setFeedbackText(null);
+			} else {
+				newVersion.setFeedbackText(newVersion.getSubmittedText()); 
+			}
+			// wipe out any old feedback info
+			newVersion.setFeedbackAttachSet(null);
+			newVersion.setLastFeedbackSubmittedBy(null);
+			newVersion.setLastFeedbackTime(null);
+		}
+		
+		dao.create(newVersion);
+		log.debug("New student submission version added for user " + submission.getUserId() + " for assignment " + submission.getAssignment().getTitle()+ " ID: " + submission.getAssignment().getAssignmentId());
+		
+		newVersion.setSubmissionAttachSet(submissionAttachments);
+		updateStudentAttachments(newVersion);
+	}
+	
 	public void saveInstructorFeedback(AssignmentSubmission submission) {
 		if (submission == null) {
 			throw new IllegalArgumentException("null submission passed to saveInstructorFeedback");

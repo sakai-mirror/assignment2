@@ -96,6 +96,14 @@ public interface AssignmentSubmissionLogic {
 	public void saveStudentSubmission(AssignmentSubmission assignmentSubmission);
 	
 	/**
+	 * Create or update an AssignmentSubmission
+	 * @param version
+	 * 			the AssignmentSubmissionVersion to create. the parent AssignmentSubmission must be populated
+	 * 
+	 */
+	public void saveStudentSubmission(AssignmentSubmissionVersion version);
+	
+	/**
 	 * Save instructor feedback changes to the given submission rec
 	 * @param submission
 	 * @throws SecurityException if current user is not authorized to provide
