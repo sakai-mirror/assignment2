@@ -25,6 +25,7 @@ import java.util.List;
 
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
+import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 
 
 /**
@@ -92,6 +93,19 @@ public interface AssignmentSubmissionLogic {
 	 * feedback for the given submission
 	 */
 	public void saveInstructorFeedback(AssignmentSubmission submission);
+	
+	/**
+	 * Save instructor feedback changes to the given version. The passed
+	 * version must have the associated AssignmentSubmission populated. If the
+	 * submissionId on the associated submission is null, will create a new
+	 * AssignmentSubmission record. If the id on the passed version is null, will
+	 * create a new version
+	 * @param version
+	 * @throws SubmissionExistsException - if the AssignmentSubmission associated
+	 * with the passed version has a null id, will attempt to create a new submission.
+	 * throws exception if a submission rec already exists for the student and assignment
+	 */
+	public void saveInstructorFeedback(AssignmentSubmissionVersion version);
 	
 	/**
 	 * 

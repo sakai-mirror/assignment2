@@ -41,6 +41,7 @@ import org.sakaiproject.assignment2.model.AssignmentSubmissionAttachment;
 import org.sakaiproject.assignment2.model.AssignmentFeedbackAttachment;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
+import org.sakaiproject.assignment2.exception.SubmissionExistsException;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
@@ -215,8 +216,12 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			log.debug("New student submission rec added for user " + assignmentSubmission.getUserId() + " for assignment " + assignmentSubmission.getAssignment().getTitle() + " ID: " + assignmentSubmission.getAssignment().getAssignmentId());
 			
 			newVersion.setAssignmentSubmission(assignmentSubmission);
-			// populate the feedback text with the student's submitted text
-			newVersion.setFeedbackText(newVersion.getSubmittedText()); 
+			// populate the feedback text with the student's submitted text if not draft
+			if (newVersion.isDraft()) {
+				newVersion.setFeedbackText(null);
+			} else {
+				newVersion.setFeedbackText(newVersion.getSubmittedText()); 
+			}
 			// wipe out any old feedback info
 			newVersion.setFeedbackAttachSet(null);
 			newVersion.setLastFeedbackSubmittedBy(null);
@@ -285,6 +290,71 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		
 		currentVersion.setFeedbackAttachSet(feedbackAttachments);
 		updateFeedbackAttachments(existingVersion, currentVersion);	
+	}
+	
+	public void saveInstructorFeedback(AssignmentSubmissionVersion version) {
+		if (version == null) {
+			throw new IllegalArgumentException("null version passed to saveInstructorFeedback");
+		}
+		
+		AssignmentSubmission submission = version.getAssignmentSubmission();
+		if (submission == null) {
+			throw new IllegalArgumentException("no submission associated with the given version");
+		}
+		
+		if (version.isDraft() && !externalLogic.getCurrentUserId().equals(submission.getUserId())) {
+			throw new SecurityException("User " + externalLogic.getCurrentUserId() + " attempted to edit a draft version rec for student " + submission.getUserId());
+		}
+		
+		if (!permissionLogic.isUserAbleToProvideFeedbackForSubmission(version.getAssignmentSubmission())) {
+			throw new SecurityException("User " + externalLogic.getCurrentUserId() + " attempted to submit feedback for student " + submission.getUserId() + " without authorization");
+		}
+		
+		AssignmentSubmissionVersion existingVersion = null;
+		
+		// the instructor is submitting feedback even though the student has
+		// not made a submission
+		if (submission.getSubmissionId() == null) {
+			// we need to check that this submission doesn't already exist
+			List submissions = dao.findByProperties(AssignmentSubmission.class, 
+					new String[] {"userId", "assignment"}, new Object[] {submission.getUserId(), submission.getAssignment()});
+			if (submissions != null && submissions.size() > 0) {
+				throw new SubmissionExistsException("User " + externalLogic.getCurrentUserId() + " attempted to save a duplicate " +
+						"submission rec for userId " + submission.getUserId() + " and assignment " + submission.getAssignment().getAssignmentId());
+			}
+			
+			dao.create(submission);
+			log.debug("New student submission rec added for user " + submission.getUserId() + " for assignment " + submission.getAssignment().getTitle() + " ID: " + submission.getAssignment().getAssignmentId()
+						+ " added by " + externalLogic.getCurrentUserId() + " via saveInstructorFeedback");
+		} else {
+			// retrieve the most current non-draft version
+			existingVersion = dao.getCurrentSubmissionVersionWithAttachments(submission, Boolean.TRUE);
+
+			dao.update(submission);
+			log.debug("Submission updated for user " + submission.getUserId() + " for assignment " + submission.getAssignment().getTitle() + " ID: " + submission.getAssignment().getAssignmentId()
+					+ " by " + externalLogic.getCurrentUserId() + " via saveInstructorFeedback");
+		}
+
+
+		Set<AssignmentFeedbackAttachment> feedbackAttachments =	version.getFeedbackAttachSet();
+
+		// we need to handle attachments separately
+		version.setFeedbackAttachSet(null);
+
+		if (version.getSubmissionVersionId() != null) {
+			// instructor is providing feedback on the student's current version
+			dao.update(version);
+			log.debug("Submission version " + version.getSubmissionVersionId() + " updated by " + externalLogic.getCurrentUserId() + " via saveInstructorFeedback");
+		} else {
+			// instructor is providing feedback but the student did not
+			// have a submission yet
+			dao.create(version);
+			log.debug("New submission version " + version.getSubmissionVersionId() + " created by " + externalLogic.getCurrentUserId() + " via saveInstructorFeedback");
+		}
+
+		
+		version.setFeedbackAttachSet(feedbackAttachments);
+		updateFeedbackAttachments(existingVersion, version);	
 	}
 	
 	public List<AssignmentSubmission> getViewableSubmissionsForAssignmentId(Long assignmentId) {
