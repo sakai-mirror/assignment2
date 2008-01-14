@@ -68,11 +68,32 @@
 			<img src="/sakai-assignment2-tool/content/images/page_white_word.png" target="_blank" width="16" height="16"/> <a href="">ExampleAttachment.doc</a> (52 KB)
 		</li>
 	</ul>
+	
+	<!-- Grading Stuff -->
+	<div id="gradebook-details-container">
+	<fieldset rsf:id="gradebook_details:" class="highlightPanel">
+	</fieldset>
+	</div>
+	<fieldset rsf:id="ungraded_comments_fieldset" class="highlightPanel">
+		<legend rsf:id="msg=assignment2.assignment_grade.ungraded_comments">Submitted Text</legend>
+		<ol>
+			<li>
+				<label rsf:id="msg=assignment2.assignment_grade.ungraded_text_instructions" class="block instruction">Add Comments Here</label>
+				<div rsf:id="ungraded_comments:">
+					<textarea name="something" cols="80" rows="20" wrap="virtual"></textarea>
+					<!-- this should be the FCKEditor -->
+				</div>		
+			</li>
+		</ol>
+	</fieldset>
+	<!-- /End Grading Stuff -->
+
 
 	<h3 rsf:id="msg=assignment2.assignment_grade.assignment_submission">Assignment Submission</h3>
-
+	<p rsf:id="current_is_draft" class="infoPanel">Current Submission In Progress</p>
+	<p rsf:id="editing_previous_submission" class="infoPanel">Currently Editing a Previous Submission</p>
 	<fieldset rsf:id="submitted_text_fieldset">
-		<legend rsf:id="msg=assignment2.assignment_grade.submitted_text">Submitted Text</legend>
+		<legend rsf:id="msg=assignment2.assignment_grade.annotated_submitted_text">Submitted Text</legend>
 		<ol>
 			<li>
 				<label rsf:id="feedback_instructions" class="block instruction">Below is the submission from a student. You can insert comments into this text by clicking in the box, then type your comments. Comments surrounded by double curly braces, {{<span class="highlight">like this</span>}}, will appear red to the student.</label>
@@ -102,22 +123,8 @@
 			</li>
 		</ol>
 	</fieldset>
-	<div id="gradebook-details-container">
-	<fieldset rsf:id="gradebook_details:" class="highlightPanel">
-	</fieldset>
-	<fieldset rsf:id="ungraded_comments_fieldset">
-		<legend rsf:id="msg=assignment2.assignment_grade.ungraded_comments">Submitted Text</legend>
-		<ol>
-			<li>
-				<label rsf:id="msg=assignment2.assignment_grade.ungraded_text_instructions" class="block instruction">Add Comments Here</label>
-				<div rsf:id="ungraded_comments:">
-					<textarea name="something" cols="80" rows="20" wrap="virtual"></textarea>
-					<!-- this should be the FCKEditor -->
-				</div>		
-			</li>
-		</ol>
-	</fieldset>
-	</div>
+
+	<!-- Allow Resubmissions -->
 	<fieldset>
 		<ol>
 			<li>
@@ -134,6 +141,61 @@
 			</li>
 		</ol>
 	</fieldset>
+	<!-- /Allow Resubmissions -->
+	
+	<!-- Begin Loop for previous submissions -->
+	<h3 rsf:id="msg=assignment2.assignment_grade.previous_submissions">Previous Submissions</h3>
+	<p rsf:id="no_history" class="infoPanel">No Submissions Yet</p>
+	<fieldset rsf:id="previous_submissions:" class="highlightPanel">
+		<h4>
+			<img src="/sakai-assignment2-tool/content/images/expand.png" border="0" alt="Open, click to close assignment instruction" style="cursor:pointer" 
+				onclick="slide_submission(this)" /> 
+			<span rsf:id="loop_submission" style="cursor:pointer" onclick="slide_submission($(this).prev('img').get(0))">Submission</span>
+			<a href="" rsf:id="loop_edit_submission">Edit Submission</a>
+			<span rsf:id="currently_editing"></span>
+		</h4>
+		<div style="display:none" class="indent">
+			<table class="itemSummary" cellspacing="0">
+				<tr>
+					<th rsf:id="msg=assignment2.assignment_grade.submitted_text">Submitted Text</th>
+				</tr>
+				<tr>
+					<td rsf:id="loop_submitted_text"></td>
+				</tr>
+				<tr>
+					<th rsf:id="msg=assignment2.assignment_grade.annotated_submitted_text">Annotated Submitted Text</th>
+				</tr>
+				<tr>
+					<td rsf:id="loop_feedback_text"></td>
+				</tr>
+				<tr>
+					<th rsf:id="msg=assignment2.assignment_grade.submitted_attachments">Submitted Attachments</th>
+				</tr>
+				<tr>
+					<td>
+						<ol class="attachlist indnt1">
+							<li rsf:id="loop_submitted_attachment_list:"></li>
+						</ol>
+					</td>
+				</tr>
+				<tr>
+					<th rsf:id="msg=assignment2.assignemnt_grade.attachments_to_return_with_grade">Attachments To Return With Grade</th>
+				</tr>
+				<tr>
+					<td>
+						<ol class="attachlist indnt1">
+							<li rsf:id="loop_returned_attachment_list:"></li>
+						</ol>
+					</td>
+				</tr>
+				<tr>
+					<td rsf:id="feedback_updated"></td>
+				</tr>
+			</table>
+		</div>
+	</fieldset>
+	<!-- /End Loop for previous submissions -->
+	
 	<fieldset class="submit">
 		<input rsf:id="submit" accesskey="s" type="submit" class="active" name="save" value="Save"/>
 		<input rsf:id="preview" accesskey="v" type="button" name="preview" value="Preview" class="preview_button thickbox" title="Preview" />
@@ -148,6 +210,15 @@
 //<![CDATA[
 function slide_details(img){
 	$('#assignment_instructions').toggle();
+	a2SetMainFrameHeight();
+	if(img.src.match('collapse')){
+		img.src=img.src.replace(/collapse/, 'expand');
+	}else{
+		img.src=img.src.replace(/expand/, 'collapse');
+	}
+}
+function slide_submission(img){
+	$(img).parent('h4').next('div').toggle();
 	a2SetMainFrameHeight();
 	if(img.src.match('collapse')){
 		img.src=img.src.replace(/collapse/, 'expand');

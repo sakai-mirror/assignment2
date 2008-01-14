@@ -6,6 +6,7 @@ public class AssignmentGradeViewParams extends SimpleViewParameters {
 	
 	public Long assignmentId;
 	public String userId;
+	public Long submissionId;
 	
 	public AssignmentGradeViewParams(){}
 	
@@ -13,6 +14,13 @@ public class AssignmentGradeViewParams extends SimpleViewParameters {
 		super(viewId);
 		this.assignmentId = assignmentId;
 		this.userId = userId;
+	}
+	
+	public AssignmentGradeViewParams(String viewId, Long assignmentId, String userId, Long submissionId) {
+		super(viewId);
+		this.assignmentId = assignmentId;
+		this.userId = userId;
+		this.submissionId = submissionId;
 	}
 	
 }

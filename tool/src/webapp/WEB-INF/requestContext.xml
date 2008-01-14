@@ -89,6 +89,7 @@
       <property name="submissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
       <property name="entityBroker" ref="org.sakaiproject.entitybroker.EntityBroker" />
       <property name="gradebookDetailsRenderer" ref="GradebookDetailsRenderer" />
+      <property name="asvEntityBeanLocator" ref="AssignmentSubmissionVersion" />
    </bean>
 
    <bean class="org.sakaiproject.assignment2.tool.producers.AssignmentViewSubmissionsProducer">
@@ -237,6 +238,7 @@
    	  <property name="messages" ref="targettedMessageList"/>
    	  <property name="assignment2EntityBeanLocator" ref="Assignment2"/>
    	  <property name="assignmentSubmissionEntityBeanLocator" ref="AssignmentSubmission" />
+   	  <property name="asvEntityBeanLocator" ref="AssignmentSubmissionVersion" />
    	  <property name="previewAssignmentSubmissionBean" ref="PreviewAssignmentSubmissionBean" />
    	  <property name="messageLocator" ref="messageLocator" />
    	  <property name="sessionManager" ref="org.sakaiproject.tool.api.SessionManager" />

@@ -24,7 +24,7 @@ if(sf3){x+=num(elem,'marginLeft')+num(elem,'borderLeftWidth');y+=num(elem,'margi
 /** END jQuery Plugin **/
 function a2SetMainFrameHeight(){
 	if (iframeId != "")
-	$("#" + iframeId, parent.document).height($(document).height());
+	$("#" + iframeId, parent.document).height($(document).height() + 10);
 }
 
 gradebook_toggle = function(){

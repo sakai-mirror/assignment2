@@ -32,7 +32,7 @@
    <!-- Define the bean roots from the request scope file that are accessible 
     via incoming request URL -->
    <bean parent="requestAddressibleParent">
-	  <property name="value" value="Assignment2,Assignment2Bean,AssignmentSubmission,AssignmentSubmissionBean,FilePickerBean"/>
+	  <property name="value" value="Assignment2,Assignment2Bean,AssignmentSubmission,AssignmentSubmissionBean,FilePickerBean,AssignmentSubmissionVersion"/>
    </bean>
 
    <!-- Override the default style of user messages -->
@@ -78,6 +78,17 @@
       	value="org\.sakaiproject\.assignment2\.logic\.AssignmentSubmissionLogic.saveAssignmentSubmission" />
       <property name="removeMethod"
       	value="org\.sakaiproject\.assignment2\.logic\.AssignmentSubmissionLogic.deleteAssignmentSubmission" />   
+   </bean>
+   
+   <bean id="AssignmentSubmissionVersionCreator" class="org.sakaiproject.assignment2.tool.beans.AssignmentSubmissionVersionCreator">
+   </bean>
+   
+   <bean id="AssignmentSubmissionVersion" parent="entityBeanLocatorParent">
+   	  <property name="newMethod" value="AssignmentSubmissionVersionCreator.create" />
+   	  <property name="fetchMethod"
+   	  	value="org\.sakaiproject\.assignment2\.logic\.AssignmentSubmissionLogic.getSubmissionVersionById" />
+   	  <property name="saveMethod"
+   	  	value="org\.sakaiproject\.assignment2\.logic\.AssignmentSubmissionLogic.saveInstructorFeedback" />
    </bean>
 
   <!-- Use RSF's "BeanGuard" validation scheme to trap all write accesses to a

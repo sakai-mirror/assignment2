@@ -16,6 +16,7 @@ import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionAttachment;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
+import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.model.AssignmentFeedbackAttachment;
 import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.tool.api.ToolSession;
@@ -63,6 +64,11 @@ public class AssignmentSubmissionBean {
 	@SuppressWarnings("unchecked")
 	public void setAssignmentSubmissionEntityBeanLocator(EntityBeanLocator entityBeanLocator) {
 		this.OTPMap = entityBeanLocator.getDeliveredBeans();
+	}
+	
+	private Map<String, AssignmentSubmissionVersion> asvOTPMap;
+	public void setAsvEntityBeanLocator(EntityBeanLocator entityBeanLocator) {
+		this.asvOTPMap = entityBeanLocator.getDeliveredBeans();
 	}
 		
 	private ExternalLogic externalLogic;
@@ -221,22 +227,31 @@ public class AssignmentSubmissionBean {
 	 * INSTRUCTOR FUNCTIONS
 	 */
 	public String processActionGradeSubmit(){
+		if (assignmentId == null || userId == null){
+			return FAILURE;
+		}
+		Assignment2 assignment = assignmentLogic.getAssignmentById(assignmentId);
+		
 		for (String key : OTPMap.keySet()){
 			AssignmentSubmission assignmentSubmission = OTPMap.get(key);
-			if (assignmentId == null || userId == null){
-				return FAILURE;
-			}
-			String currUserId = externalLogic.getCurrentUserId();
-			
-			Assignment2 assignment = assignmentLogic.getAssignmentById(assignmentId);
 			assignmentSubmission.setAssignment(assignment);
 			assignmentSubmission.setUserId(userId);
-			assignmentSubmission.getCurrentSubmissionVersion().setLastFeedbackSubmittedBy(currUserId);
-			assignmentSubmission.getCurrentSubmissionVersion().setLastFeedbackTime(new Date());
-			if (assignmentSubmission.getCurrentSubmissionVersion().getSubmissionVersionId() == null) {
-				assignmentSubmission.getCurrentSubmissionVersion().setCreatedBy(currUserId);
-				assignmentSubmission.getCurrentSubmissionVersion().setCreatedTime(new Date());
-				assignmentSubmission.getCurrentSubmissionVersion().setDraft(Boolean.FALSE);
+		}
+		for (String key : asvOTPMap.keySet()){
+			
+			AssignmentSubmissionVersion asv = asvOTPMap.get(key);
+			
+			String currUserId = externalLogic.getCurrentUserId();
+			AssignmentSubmission assignmentSubmission = submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentIdForInstructorView(assignmentId, userId);
+			
+			asv.setAssignmentSubmission(assignmentSubmission);
+			asv.setLastFeedbackSubmittedBy(currUserId);
+			
+			asv.setLastFeedbackTime(new Date());
+			if (asv.getSubmissionVersionId() == null) {
+				asv.setCreatedBy(currUserId);
+				asv.setCreatedTime(new Date());
+				asv.setDraft(Boolean.FALSE);
 			}
 			
 			//Start attachment stuff
@@ -267,10 +282,10 @@ public class AssignmentSubmissionBean {
 	    	} else {
 	    		final_set.addAll(set);
 	    	}
-	    	assignmentSubmission.getCurrentSubmissionVersion().setFeedbackAttachSet(final_set);
+	    	asv.setFeedbackAttachSet(final_set);
 			//End Attachment stuff			
 			
-			submissionLogic.saveInstructorFeedback(assignmentSubmission);
+			submissionLogic.saveInstructorFeedback(asv);
 		}
 		return SUBMIT;
 	}
