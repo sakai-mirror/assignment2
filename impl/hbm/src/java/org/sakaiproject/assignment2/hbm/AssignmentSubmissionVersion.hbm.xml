@@ -14,7 +14,7 @@
         <!--  This maps to the A2_SUBMISSION_T table -->
         <many-to-one name="assignmentSubmission" column="SUBMISSION_ID"
         	class="org.sakaiproject.assignment2.model.AssignmentSubmission"
-        	not-null="true" />
+        	not-null="true" lazy="false" />
         <!-- the time of submission -->
         <property name="submittedTime" type="java.util.Date">
             <column name="SUBMITTED_TIME" not-null="false" />

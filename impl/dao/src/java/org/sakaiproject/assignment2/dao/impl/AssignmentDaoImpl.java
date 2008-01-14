@@ -195,7 +195,7 @@ public class AssignmentDaoImpl extends HibernateCompleteGenericDao implements As
 		return submissions;
     }
     
-    private AssignmentSubmissionVersion getAssignmentSubmissionVersionByIdWithAttachments(Long submissionVersionId) {
+    public AssignmentSubmissionVersion getAssignmentSubmissionVersionByIdWithAttachments(Long submissionVersionId) {
     	if (submissionVersionId == null) {
     		throw new IllegalArgumentException("Null submissionVersionId passed to getAssignmentSubmissionVersionByIdWithAttachments");
     	}

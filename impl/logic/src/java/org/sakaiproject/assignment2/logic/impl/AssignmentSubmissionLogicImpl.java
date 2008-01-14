@@ -124,6 +124,37 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 
 	}
 	
+	public AssignmentSubmissionVersion getSubmissionVersionById(Long submissionVersionId) {
+		if (submissionVersionId == null) {
+			throw new IllegalArgumentException("null submissionVersionId passed to getSubmissionVersionById");
+		}
+		
+		AssignmentSubmissionVersion version = dao.getAssignmentSubmissionVersionByIdWithAttachments(submissionVersionId);
+		AssignmentSubmission submission = version.getAssignmentSubmission();
+		Assignment2 assignment = submission.getAssignment();
+		
+		if (version != null) {
+			// only the student may view a draft version
+			if (version.isDraft() && !submission.getUserId().equals(externalLogic.getCurrentUserId())) {
+				throw new SecurityException("User " + externalLogic.getCurrentUserId() + " attempted to access a draft version " + 
+						submissionVersionId + " for student " + submission.getUserId());
+			}
+			
+			// ensure that the current user is authorized to view this user for this assignment
+			if (!permissionLogic.isUserAbleToViewStudentSubmissionForAssignment(submission.getUserId(), assignment)) {
+				throw new SecurityException("User " + externalLogic.getCurrentUserId() + " attempted to access the version " + 
+						submissionVersionId + " for student " + submission.getUserId() + " without authorization");
+			}
+			
+			// populate gradebook information, if appropriate
+			if (!assignment.isUngraded() && assignment.getGradableObjectId() != null) {
+				gradebookLogic.populateAllGradeInfoForSubmission(externalLogic.getCurrentContextId(), submission);
+			}
+		}
+		
+		return version;
+	}
+	
 	public AssignmentSubmission getCurrentSubmissionByAssignmentIdAndStudentIdForInstructorView(Long assignmentId, String studentId) {
 		return getCurrentSubmissionByAssignmentIdAndStudentId(assignmentId, studentId, Boolean.TRUE);
 	}

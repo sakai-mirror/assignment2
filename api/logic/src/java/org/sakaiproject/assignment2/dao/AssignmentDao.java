@@ -112,4 +112,12 @@ public interface AssignmentDao extends CompleteGenericDao {
 	 * currentSubmissionVersion
 	 */
 	public AssignmentSubmission getSubmissionWithVersionHistoryForStudentAndAssignment(String studentId, Assignment2 assignment);
+	
+	/**
+	 * 
+	 * @param submissionVersionId
+	 * @return the AssignmentSubmissionVersion with associated attachments for the given id.
+	 * returns null if no version exists with the given id
+	 */
+	public AssignmentSubmissionVersion getAssignmentSubmissionVersionByIdWithAttachments(Long submissionVersionId);
 }

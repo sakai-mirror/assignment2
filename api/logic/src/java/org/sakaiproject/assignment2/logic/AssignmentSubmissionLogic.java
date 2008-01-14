@@ -52,6 +52,15 @@ public interface AssignmentSubmissionLogic {
 	 */
 	public AssignmentSubmission getAssignmentSubmissionById(Long submissionId);
 	
+	/**
+	 * 
+	 * @param submissionVersionId
+	 * @return Returns the AssignmentSubmissionVersion with the given submissionVersionId.
+	 * Will populate grading information. Returns null if no version with that id.
+	 * @SecurityException if current user is not allowed to view the version
+	 */
+	public AssignmentSubmissionVersion getSubmissionVersionById(Long submissionVersionId);
+	
 	
 	/**
 	 * 
