@@ -178,10 +178,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 				throw new SecurityException("Current user is not allowed to view submission for " + studentId + " for assignment " + assignment.getAssignmentId());
 			}
 			
-			List<AssignmentSubmission> submissionRecs = dao.findByProperties(AssignmentSubmission.class, new String[] {"assignment", "userId"}, new Object[] {assignment, studentId});
-			if (submissionRecs != null && !submissionRecs.isEmpty()) {
-				submission = (AssignmentSubmission)submissionRecs.get(0);
-			}
+			submission = dao.getSubmissionWithVersionHistoryForStudentAndAssignment(studentId, assignment, !instructorView);
 			
 			// if the submission rec exists, we need to grab the most current version
 			if (submission != null) {
@@ -596,7 +593,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		} 
 
 		// retrieve the submission history for this student for this assignment
-		AssignmentSubmission submission = dao.getSubmissionWithVersionHistoryForStudentAndAssignment(studentId, assignment);
+		AssignmentSubmission submission = dao.getSubmissionWithVersionHistoryForStudentAndAssignment(studentId, assignment, Boolean.TRUE);
 		
 		// we need to determine if this is the first submission for the student
 		boolean firstSubmission;
@@ -659,4 +656,19 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		return studentAbleToSubmit;
 	}
 
+	public boolean isMostRecentVersionDraft(AssignmentSubmission submission) {
+		if (submission == null) {
+			throw new IllegalArgumentException("null submission passed to currentVersionIsDraft");
+		}
+
+		boolean currVersionIsDraft = false;
+
+		AssignmentSubmissionVersion version = dao.getCurrentSubmissionVersionWithAttachments(submission, Boolean.FALSE);
+
+		if (version != null && version.isDraft()) {
+			currVersionIsDraft = true;
+		}
+
+		return currVersionIsDraft;
+	}
 }

@@ -161,4 +161,12 @@ public interface AssignmentSubmissionLogic {
 	 */
 	public boolean submissionIsOpenForStudentForAssignment(String studentId, Assignment2 assignment);
 	
+	/**
+	 * 
+	 * @param submission
+	 * @return true if the most recent AssignmentSubmissionVersion for this submission
+	 * is a draft
+	 */
+	public boolean isMostRecentVersionDraft(AssignmentSubmission submission);
+	
 }

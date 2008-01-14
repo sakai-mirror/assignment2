@@ -279,12 +279,17 @@ public class AssignmentDaoImpl extends HibernateCompleteGenericDao implements As
 		}
     }
     
-    public AssignmentSubmission getSubmissionWithVersionHistoryForStudentAndAssignment(String studentId, Assignment2 assignment) {
+    public AssignmentSubmission getSubmissionWithVersionHistoryForStudentAndAssignment(String studentId, Assignment2 assignment, boolean includeDrafts) {
     	if (studentId == null || assignment == null) {
     		throw new IllegalArgumentException("null parameter passed to getSubmissionWithVersionHistoryForStudentAndAssignment");
     	}
     	
-    	Query query = getSession().getNamedQuery("findStudentSubmissionWithHistoryForAssignment");
+    	Query query;
+    	if (includeDrafts) {
+    		query = getSession().getNamedQuery("findStudentSubmissionWithHistoryForAssignment");
+    	} else {
+    		query = getSession().getNamedQuery("findStudentSubmissionWithHistoryForAssignmentNoDrafts");
+    	}
     	query.setParameter("studentId", studentId);
     	query.setParameter("assignment", assignment);
     	
