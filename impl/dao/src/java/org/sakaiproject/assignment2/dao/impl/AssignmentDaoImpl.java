@@ -126,8 +126,8 @@ public class AssignmentDaoImpl extends HibernateCompleteGenericDao implements As
     }
     
     public AssignmentSubmissionVersion getCurrentSubmissionVersionWithAttachments(AssignmentSubmission submission, boolean ignoreDrafts) {
-    	if (submission == null) {
-    		throw new IllegalArgumentException("null submission passed to getSubmissionVersionForUserIdWithAttachments");
+    	if (submission == null || submission.getSubmissionId() == null) {
+    		throw new IllegalArgumentException("null or transient submission passed to getSubmissionVersionForUserIdWithAttachments");
     	}
     	
     	AssignmentSubmissionVersion currentVersion = null;

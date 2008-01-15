@@ -709,11 +709,15 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		}
 
 		boolean currVersionIsDraft = false;
-
-		AssignmentSubmissionVersion version = dao.getCurrentSubmissionVersionWithAttachments(submission, Boolean.FALSE);
-
-		if (version != null && version.isDraft()) {
-			currVersionIsDraft = true;
+		
+		// if the id is null, the method was passed a transient object, so there
+		// is no current version
+		if (submission.getSubmissionId() != null) {
+			AssignmentSubmissionVersion version = dao.getCurrentSubmissionVersionWithAttachments(submission, Boolean.FALSE);
+	
+			if (version != null && version.isDraft()) {
+				currVersionIsDraft = true;
+			}
 		}
 
 		return currVersionIsDraft;
