@@ -91,7 +91,10 @@ public class AssignmentSubmissionVersion {
 	 * 
 	 * @return formatted text composed of the inline submission with grader-added annotation
 	 */
-	public String getAnnotatedTextFormatted() {		
+	public String getAnnotatedTextFormatted() {	
+		if (annotatedText == null) {
+			return new String();
+		}
     	Pattern p = Pattern.compile("\\{\\{([^\\}]+|\\}(?!\\}))\\}\\}");
     	Matcher m = p.matcher(annotatedText);
     	StringBuffer sb = new StringBuffer();

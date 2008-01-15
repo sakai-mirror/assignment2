@@ -13,6 +13,7 @@ import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentAttachment;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
+import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.tool.beans.PreviewAssignmentSubmissionBean;
 import org.sakaiproject.assignment2.tool.params.AssignmentAddViewParams;
 import org.sakaiproject.assignment2.tool.producers.renderers.AttachmentListRenderer;
@@ -56,6 +57,7 @@ public class FragmentSubmissionGradePreviewProducer implements ViewComponentProd
         //navBarRenderer.makeNavBar(tofill, "navIntraTool:", VIEW_ID);
 
     	AssignmentSubmission as = previewAssignmentSubmissionBean.getAssignmentSubmission();
+    	AssignmentSubmissionVersion asv = previewAssignmentSubmissionBean.getAssignmentSubmissionVersion();
     	Assignment2 assignment = as.getAssignment();
     	    	
     	
@@ -95,8 +97,8 @@ public class FragmentSubmissionGradePreviewProducer implements ViewComponentProd
     	
     	attachmentListRenderer.makeAttachment(tofill, "attachment_list:", params.viewID, set, Boolean.FALSE);
     	
-    	UIVerbatim.make(tofill, "feedbackText", as.getCurrentSubmissionVersion().getAnnotatedTextFormatted());
-        
+    	UIVerbatim.make(tofill, "feedbackText", asv.getAnnotatedTextFormatted());
+        UIVerbatim.make(tofill, "feedback_notes", asv.getFeedbackNotes());
     }
     
     public ViewParameters getViewParameters() {

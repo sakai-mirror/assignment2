@@ -298,6 +298,10 @@ public class AssignmentSubmissionBean {
 			assignmentSubmission.setAssignment(assignment);
 			previewAssignmentSubmissionBean.setAssignmentSubmission(assignmentSubmission);
 		}
+		for (String key : asvOTPMap.keySet()){
+			AssignmentSubmissionVersion asv = asvOTPMap.get(key);
+			previewAssignmentSubmissionBean.setAssignmentSubmissionVersion(asv);
+		}
 		return PREVIEW;
 	}
 	

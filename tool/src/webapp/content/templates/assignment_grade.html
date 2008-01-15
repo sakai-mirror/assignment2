@@ -74,18 +74,6 @@
 	<fieldset rsf:id="gradebook_details:" class="highlightPanel">
 	</fieldset>
 	</div>
-	<fieldset rsf:id="ungraded_comments_fieldset" class="highlightPanel">
-		<legend rsf:id="msg=assignment2.assignment_grade.ungraded_comments">Submitted Text</legend>
-		<ol>
-			<li>
-				<label rsf:id="msg=assignment2.assignment_grade.ungraded_text_instructions" class="block instruction">Add Comments Here</label>
-				<div rsf:id="ungraded_comments:">
-					<textarea name="something" cols="80" rows="20" wrap="virtual"></textarea>
-					<!-- this should be the FCKEditor -->
-				</div>		
-			</li>
-		</ol>
-	</fieldset>
 	<!-- /End Grading Stuff -->
 
 
@@ -93,7 +81,7 @@
 	<p rsf:id="current_is_draft" class="infoPanel">Current Submission In Progress</p>
 	<p rsf:id="editing_previous_submission" class="infoPanel">Currently Editing a Previous Submission</p>
 	<fieldset rsf:id="submitted_text_fieldset">
-		<legend rsf:id="msg=assignment2.assignment_grade.annotated_submitted_text">Submitted Text</legend>
+		<legend rsf:id="msg=assignment2.assignment_grade.annotated_submitted_text">Annotated Submitted Text</legend>
 		<ol>
 			<li>
 				<label rsf:id="feedback_instructions" class="block instruction">Below is the submission from a student. You can insert comments into this text by clicking in the box, then type your comments. Comments surrounded by double curly braces, {{<span class="highlight">like this</span>}}, will appear red to the student.</label>
@@ -109,6 +97,18 @@
 		<ol class="attachList indnt1">
 			<li rsf:id="submitted_attachment_list:">
 				<img src="/sakai-assignment2-tool/content/images/page_white_word.png" target="_blank" width="16" height="16"/> <a href="">ExampleAttachment.doc</a> (52 KB)
+			</li>
+		</ol>
+	</fieldset>
+	<fieldset>
+		<legend rsf:id="msg=assignment2.assignment_grade.feedback_notes">Feedback Notes</legend>
+		<ol>
+			<li>
+				<label rsf:id="msg=assignment2.assignment_grade.feedback_notes_instructions" class="block instruction">Add Comments Here</label>
+				<div rsf:id="feedback_notes:">
+					<textarea name="something" cols="80" rows="20" wrap="virtual"></textarea>
+					<!-- this should be the FCKEditor -->
+				</div>		
 			</li>
 		</ol>
 	</fieldset>
@@ -177,6 +177,12 @@
 							<li rsf:id="loop_submitted_attachment_list:"></li>
 						</ol>
 					</td>
+				</tr>
+				<tr>
+					<th rsf:id="msg=assignment2.assignment_grade.loop_feedback_notes">Feedback Notes</th>
+				</tr>
+				<tr>
+					<td rsf:id="loop_feedback_notes"></td>
 				</tr>
 				<tr>
 					<th rsf:id="msg=assignment2.assignemnt_grade.attachments_to_return_with_grade">Attachments To Return With Grade</th>

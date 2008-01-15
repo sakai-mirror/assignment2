@@ -216,6 +216,9 @@ public class AssignmentGradeProducer implements ViewComponentProducer, Navigatio
 	        	UIMessage.make(tofill, "submitted_attachment_list:", "assignment2.assignment_grade.no_attachments_submitted");
 	        }
         }
+        
+    	UIInput feedback_notes = UIInput.make(form, "feedback_notes:", asvOTP + ".feedbackNotes");
+    	richTextEvolver.evolveTextInput(feedback_notes);
                
         //Attachments
         Set<AssignmentFeedbackAttachment> afaSet = new HashSet();
@@ -238,51 +241,49 @@ public class AssignmentGradeProducer implements ViewComponentProducer, Navigatio
         
         if (!assignment.isUngraded()){
         	gradebookDetailsRenderer.makeGradebookDetails(tofill, "gradebook_details", as, assignmentId, userId);
-        } else {
-            //If assignment is ungraded, add the ungraded comments dialog
-        	UIOutput.make(form, "ungraded_comments_fieldset");
-        	
-        	UIInput ungraded_comments = UIInput.make(form, "ungraded_comments:", asvOTP + ".feedbackNotes");
-        	richTextEvolver.evolveTextInput(ungraded_comments);
-        }
-        
+        }        
         
         //Begin Looping for previous submissions
         Set<AssignmentSubmissionVersion> history = as.getSubmissionHistorySet();
-        //reverse the set
-        Stack <AssignmentSubmissionVersion> stack = new Stack();
-        for (AssignmentSubmissionVersion asv : history) {
-        	stack.add(asv);
+        if (history != null) {
+	        //reverse the set
+	        Stack <AssignmentSubmissionVersion> stack = new Stack();
+	        for (AssignmentSubmissionVersion asv : history) {
+	        	stack.add(asv);
+	        }
+	        
+	        while (stack.size() > 0){
+	        	AssignmentSubmissionVersion asv = stack.pop();
+	        	UIBranchContainer loop = UIBranchContainer.make(form, "previous_submissions:");
+	        	
+	        	UIMessage.make(loop, "loop_submission", "assignment2.assignment_grade.loop_submission", 
+	        			new Object[] { df.format(asv.getSubmittedTime()) });
+	        	if (asvOTPKey.equals(asv.getSubmissionVersionId().toString())){
+	        		//we are editing this version
+	        		UIMessage.make(loop, "currently_editing", "assignment2.assignment_grade.currently_editing");
+	        	} else {
+	        		//else add link to edit this submission
+	        		UIInternalLink.make(loop, "loop_edit_submission", 
+	        			new AssignmentGradeViewParams(AssignmentGradeProducer.VIEW_ID, assignmentId, userId, asv.getSubmissionVersionId()));
+	        	}
+	        	UIVerbatim.make(loop, "loop_submitted_text", asv.getSubmittedText());
+	        	UIVerbatim.make(loop, "loop_feedback_text", asv.getAnnotatedTextFormatted());
+	        	UIVerbatim.make(loop, "loop_feedback_notes", asv.getFeedbackNotes());
+	        	attachmentListRenderer.makeAttachmentFromAssignmentSubmissionAttachmentSet(loop, "loop_submitted_attachment_list:", 
+	        			AssignmentGradeProducer.VIEW_ID, asv.getSubmissionAttachSet(), Boolean.FALSE);
+	        	attachmentListRenderer.makeAttachmentFromAssignmentFeedbackAttachmentSet(loop, "loop_returned_attachment_list:", 
+	        			AssignmentGradeProducer.VIEW_ID, asv.getFeedbackAttachSet(), Boolean.FALSE);
+	        	if (asv.getLastFeedbackSubmittedBy() != null) {
+		        	UIMessage.make(loop, "feedback_updated", "assignment2.assignment_grade.feedback_updated",
+		        			new Object[]{ 
+		        				(asv.getLastFeedbackTime() != null ? df.format(asv.getLastFeedbackTime()) : ""), 
+		        				externalLogic.getUserDisplayName(asv.getLastFeedbackSubmittedBy()) });
+	        	} else {
+	        		UIMessage.make(loop, "feedback_updated", "assignment2.assignment_grade.feedback_not_updated");
+	        	}
+	        }
         }
-        
-        while (stack.size() > 0){
-        	AssignmentSubmissionVersion asv = stack.pop();
-        	UIBranchContainer loop = UIBranchContainer.make(form, "previous_submissions:");
-        	
-        	UIMessage.make(loop, "loop_submission", "assignment2.assignment_grade.loop_submission", 
-        			new Object[] { df.format(asv.getSubmittedTime()) });
-        	if (asvOTPKey.equals(asv.getSubmissionVersionId().toString())){
-        		//we are editing this version
-        		UIMessage.make(loop, "currently_editing", "assignment2.assignment_grade.currently_editing");
-        	} else {
-        		//else add link to edit this submission
-        		UIInternalLink.make(loop, "loop_edit_submission", 
-        			new AssignmentGradeViewParams(AssignmentGradeProducer.VIEW_ID, assignmentId, userId, asv.getSubmissionVersionId()));
-        	}
-        	UIVerbatim.make(loop, "loop_submitted_text", asv.getSubmittedText());
-        	UIVerbatim.make(loop, "loop_feedback_text", asv.getAnnotatedTextFormatted());
-        	attachmentListRenderer.makeAttachmentFromAssignmentSubmissionAttachmentSet(loop, "loop_submitted_attachment_list:", 
-        			AssignmentGradeProducer.VIEW_ID, asv.getSubmissionAttachSet(), Boolean.FALSE);
-        	attachmentListRenderer.makeAttachmentFromAssignmentFeedbackAttachmentSet(loop, "loop_returned_attachment_list:", 
-        			AssignmentGradeProducer.VIEW_ID, asv.getFeedbackAttachSet(), Boolean.FALSE);
-        	if (asv.getLastFeedbackSubmittedBy() != null) {
-	        	UIMessage.make(loop, "feedback_updated", "assignment2.assignment_grade.feedback_updated",
-	        			new Object[]{ df.format(asv.getLastFeedbackTime()), externalLogic.getUserDisplayName(asv.getLastFeedbackSubmittedBy()) });
-        	} else {
-        		UIMessage.make(loop, "feedback_updated", "assignment2.assignment_grade.feedback_not_updated");
-        	}
-        }
-        if (history.size() == 0) {
+        if (history == null || history.size() == 0) {
         	//no history, add dialog
         	UIMessage.make(form, "no_history", "assignment2.assignment_grade.no_history");
         }
