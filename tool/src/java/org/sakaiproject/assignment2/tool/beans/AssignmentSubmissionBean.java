@@ -256,7 +256,8 @@ public class AssignmentSubmissionBean {
 			
 			//Start attachment stuff
 			Set<AssignmentFeedbackAttachment> set = new HashSet();
-			if (assignmentSubmission.getCurrentSubmissionVersion().getFeedbackAttachSet() != null) {
+			if (assignmentSubmission.getCurrentSubmissionVersion() != null && 
+					assignmentSubmission.getCurrentSubmissionVersion().getFeedbackAttachSet() != null) {
 				set.addAll(assignmentSubmission.getCurrentSubmissionVersion().getFeedbackAttachSet());
 			}
 			

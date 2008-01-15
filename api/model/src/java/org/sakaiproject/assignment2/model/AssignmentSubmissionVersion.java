@@ -36,9 +36,9 @@ public class AssignmentSubmissionVersion {
 	private Long submissionVersionId;
 	private AssignmentSubmission assignmentSubmission;
 	private Date submittedTime;
-	private Date releasedTimeForUngraded;
-	private String feedbackText;
-	private String commentForUngraded;
+	private Date releasedTime;
+	private String annotatedText;
+	private String feedbackNotes;
 	private String submittedText;
 	private Boolean draft;
 	private String reviewReportUrl;
@@ -83,17 +83,17 @@ public class AssignmentSubmissionVersion {
 	 * 
 	 * @return text composed of the submission with grader-added annotation
 	 */
-	public String getFeedbackText() {
-		return feedbackText;
+	public String getAnnotatedText() {
+		return annotatedText;
 	}
 	
 	/**
 	 * 
-	 * @return formated text composed of the submission with grader-added annotation
+	 * @return formatted text composed of the inline submission with grader-added annotation
 	 */
-	public String getFeedbackTextFormatted() {		
+	public String getAnnotatedTextFormatted() {		
     	Pattern p = Pattern.compile("\\{\\{([^\\}]+|\\}(?!\\}))\\}\\}");
-    	Matcher m = p.matcher(feedbackText);
+    	Matcher m = p.matcher(annotatedText);
     	StringBuffer sb = new StringBuffer();
     	while(m.find()){
     		m.appendReplacement(sb, "<span class=\"highlight\">$1</span>");
@@ -103,11 +103,11 @@ public class AssignmentSubmissionVersion {
 	}
 
 	/**
-	 * set the feedback text
-	 * @param feedbackText
+	 * set the text composed of the inline submission with grader-added annotation
+	 * @param annotatedText
 	 */
-	public void setFeedbackText(String feedbackText) {
-		this.feedbackText = feedbackText;
+	public void setAnnotatedText(String annotatedText) {
+		this.annotatedText = annotatedText;
 	}
 	
 	/**
@@ -210,41 +210,35 @@ public class AssignmentSubmissionVersion {
 	}
 
 	/**
-	 * Ungraded assignments will not be linked to the gb, so this field
-	 * will be used in lieu of the gb comment
-	 * @return comment
+	 * Additional feedback comments provided by the "grader"
+	 * @return feedbackNotes
 	 */
-	public String getCommentForUngraded() {
-		return commentForUngraded;
+	public String getFeedbackNotes() {
+		return feedbackNotes;
 	}
 
 	/**
-	 * Ungraded assignments will not be linked to the gb, so this field
-	 * will be used in lieu of the gb comment
-	 * @param commentForUngraded
+	 * Additional feedback comments provided by the "grader"
+	 * @param feedbackNotes
 	 */
-	public void setCommentForUngraded(String commentForUngraded) {
-		this.commentForUngraded = commentForUngraded;
+	public void setFeedbackNotes(String feedbackNotes) {
+		this.feedbackNotes = feedbackNotes;
 	}
 
 	/**
 	 * 
-	 * @return the Date this submission was released to the submitter. only
-	 * used for ungraded assignments. graded assignment release is set in
-	 * the gradebook
+	 * @return the Date feedback for this version was released to the submitter.
 	 */
-	public Date getReleasedTimeForUngraded() {
-		return releasedTimeForUngraded;
+	public Date getReleasedTime() {
+		return releasedTime;
 	}
 
 	/**
-	 * set the Date this submission was released to the submitter. only
-	 * used for ungraded assignments. graded assignment release is set in
-	 * the gradebook
-	 * @param releasedTimeForUngraded
+	 * set the Date feedback for this version was released to the submitter. 
+	 * @param releasedTime
 	 */
-	public void setReleasedTimeForUngraded(Date releasedTimeForUngraded) {
-		this.releasedTimeForUngraded = releasedTimeForUngraded;
+	public void setReleasedTime(Date releasedTime) {
+		this.releasedTime = releasedTime;
 	}
 
 	/**
@@ -376,15 +370,15 @@ public class AssignmentSubmissionVersion {
 	public AssignmentSubmissionVersion clone() {
 		AssignmentSubmissionVersion newVersion = new AssignmentSubmissionVersion();
 		newVersion.setAssignmentSubmission(assignmentSubmission);
-		newVersion.setCommentForUngraded(commentForUngraded);
+		newVersion.setFeedbackNotes(feedbackNotes);
 		newVersion.setCreatedBy(createdBy);
 		newVersion.setCreatedTime(createdTime);
 		newVersion.setDraft(draft);
 		newVersion.setFeedbackAttachSet(feedbackAttachSet);
-		newVersion.setFeedbackText(feedbackText);
+		newVersion.setAnnotatedText(annotatedText);
 		newVersion.setLastFeedbackSubmittedBy(lastFeedbackSubmittedBy);
 		newVersion.setLastFeedbackTime(lastFeedbackTime);
-		newVersion.setReleasedTimeForUngraded(releasedTimeForUngraded);
+		newVersion.setReleasedTime(releasedTime);
 		newVersion.setReviewIconUrl(reviewIconUrl);
 		newVersion.setReviewReportScore(reviewReportScore);
 		newVersion.setReviewReportUrl(reviewReportUrl);

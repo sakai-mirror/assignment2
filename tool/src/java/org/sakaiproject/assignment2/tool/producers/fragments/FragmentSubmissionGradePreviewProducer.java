@@ -95,7 +95,7 @@ public class FragmentSubmissionGradePreviewProducer implements ViewComponentProd
     	
     	attachmentListRenderer.makeAttachment(tofill, "attachment_list:", params.viewID, set, Boolean.FALSE);
     	
-    	UIVerbatim.make(tofill, "feedbackText", as.getCurrentSubmissionVersion().getFeedbackTextFormatted());
+    	UIVerbatim.make(tofill, "feedbackText", as.getCurrentSubmissionVersion().getAnnotatedTextFormatted());
         
     }
     

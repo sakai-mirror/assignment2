@@ -168,7 +168,7 @@ public class AssignmentViewSubmissionsProducer implements ViewComponentProducer,
         	
         	if (assignment.isUngraded()){
         		if (as.getCurrentSubmissionVersion() != null)  {
-        			Date releasedTime = as.getCurrentSubmissionVersion().getReleasedTimeForUngraded();
+        			Date releasedTime = as.getCurrentSubmissionVersion().getReleasedTime();
         			if (releasedTime != null && releasedTime.before(new Date())) {
         				UIOutput.make(row, "row_released");
         			}

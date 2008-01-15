@@ -19,22 +19,23 @@
         <property name="submittedTime" type="java.util.Date">
             <column name="SUBMITTED_TIME" not-null="false" />
         </property>
-        <!-- the time this submission was returned to submitter - only used for ungraded assgn -->
-        <property name="releasedTimeForUngraded" type="java.util.Date">
-            <column name="RELEASED_TIME_FOR_UNGRADED" not-null="false" />
+        <!-- the time feedback for this version was released to submitter -->
+        <property name="releasedTime" type="java.util.Date">
+            <column name="RELEASED_TIME" not-null="false" />
         </property>
         <!-- the inline text for this submission -->
         <property name="submittedText" type="text">
-            <column name="SUBMITTED_TEXT" not-null="false" />
+        	<column name="SUBMITTED_TEXT" not-null="false" />
         </property>
-        <!-- the grader's feedback text -->
-        <property name="feedbackText" type="text">
-            <column name="FEEDBACK_TEXT" not-null="false" />
+        <!-- the submitted text with grader annotation -->
+        <property name="annotatedText" type="text">
+        	<column name="ANNOTATED_TEXT" not-null="false" />
         </property>
-        <!-- the grader comment if ungraded (not integrated with gb)  -->
-        <property name="commentForUngraded" type="text">
-            <column name="COMMENT_FOR_UNGRADED" not-null="false" />
+        <!-- the grader's additional comments -->
+        <property name="feedbackNotes" type="text">
+            <column name="FEEDBACK_NOTES" not-null="false" />
         </property>
+        
         <!-- draft status for this submission -->
         <property name="draft" type="java.lang.Boolean">
             <column name="DRAFT" not-null="true" />

@@ -202,7 +202,7 @@ public class AssignmentGradeProducer implements ViewComponentProducer, Navigatio
         
         
 	        UIVerbatim.make(form, "feedback_instructions", messageLocator.getMessage("assignment2.assignment_grade.feedback_instructions"));
-	        UIInput feedback_text = UIInput.make(form, "feedback_text:", asvOTP + ".feedbackText");
+	        UIInput feedback_text = UIInput.make(form, "feedback_text:", asvOTP + ".annotatedText");
 	        richTextEvolver.evolveTextInput(feedback_text);
         }
         
@@ -242,7 +242,7 @@ public class AssignmentGradeProducer implements ViewComponentProducer, Navigatio
             //If assignment is ungraded, add the ungraded comments dialog
         	UIOutput.make(form, "ungraded_comments_fieldset");
         	
-        	UIInput ungraded_comments = UIInput.make(form, "ungraded_comments:", asvOTP + ".commentForUngraded");
+        	UIInput ungraded_comments = UIInput.make(form, "ungraded_comments:", asvOTP + ".feedbackNotes");
         	richTextEvolver.evolveTextInput(ungraded_comments);
         }
         
@@ -270,7 +270,7 @@ public class AssignmentGradeProducer implements ViewComponentProducer, Navigatio
         			new AssignmentGradeViewParams(AssignmentGradeProducer.VIEW_ID, assignmentId, userId, asv.getSubmissionVersionId()));
         	}
         	UIVerbatim.make(loop, "loop_submitted_text", asv.getSubmittedText());
-        	UIVerbatim.make(loop, "loop_feedback_text", asv.getFeedbackTextFormatted());
+        	UIVerbatim.make(loop, "loop_feedback_text", asv.getAnnotatedTextFormatted());
         	attachmentListRenderer.makeAttachmentFromAssignmentSubmissionAttachmentSet(loop, "loop_submitted_attachment_list:", 
         			AssignmentGradeProducer.VIEW_ID, asv.getSubmissionAttachSet(), Boolean.FALSE);
         	attachmentListRenderer.makeAttachmentFromAssignmentFeedbackAttachmentSet(loop, "loop_returned_attachment_list:", 

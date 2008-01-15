@@ -226,11 +226,11 @@ public class ComparatorsUtils {
 			} else {
 
 				if (submission1.getCurrentSubmissionVersion() != null) {
-					Date releasedTime = submission1.getCurrentSubmissionVersion().getReleasedTimeForUngraded();
+					Date releasedTime = submission1.getCurrentSubmissionVersion().getReleasedTime();
 					submission1Released = releasedTime != null && releasedTime.before(new Date());
 				}
 				if (submission2.getCurrentSubmissionVersion() != null) {
-					Date releasedTime = submission2.getCurrentSubmissionVersion().getReleasedTimeForUngraded();
+					Date releasedTime = submission2.getCurrentSubmissionVersion().getReleasedTime();
 					submission2Released = releasedTime != null && releasedTime.before(new Date());
 				}
 			}

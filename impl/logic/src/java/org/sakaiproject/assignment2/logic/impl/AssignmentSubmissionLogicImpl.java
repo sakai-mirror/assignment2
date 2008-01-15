@@ -246,9 +246,9 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			newVersion.setAssignmentSubmission(assignmentSubmission);
 			// populate the feedback text with the student's submitted text if not draft
 			if (newVersion.isDraft()) {
-				newVersion.setFeedbackText(null);
+				newVersion.setAnnotatedText(null);
 			} else {
-				newVersion.setFeedbackText(newVersion.getSubmittedText()); 
+				newVersion.setAnnotatedText(newVersion.getSubmittedText()); 
 			}
 			// wipe out any old feedback info
 			newVersion.setFeedbackAttachSet(null);
@@ -293,9 +293,9 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			newVersion.setAssignmentSubmission(submission);
 			// populate the feedback text with the student's submitted text if not draft
 			if (newVersion.isDraft()) {
-				newVersion.setFeedbackText(null);
+				newVersion.setAnnotatedText(null);
 			} else {
-				newVersion.setFeedbackText(newVersion.getSubmittedText()); 
+				newVersion.setAnnotatedText(newVersion.getSubmittedText()); 
 			}
 			// wipe out any old feedback info
 			newVersion.setFeedbackAttachSet(null);

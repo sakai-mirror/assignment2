@@ -4,6 +4,8 @@
 	<classpathentry kind="src" path="impl/dao/src/test"/>
 	<classpathentry kind="src" path="api/logic/src/java"/>
 	<classpathentry kind="src" path="impl/logic/src/java"/>
+	<classpathentry kind="src" path="impl/logic/src/test"/>
+	<classpathentry kind="src" path="impl/test/src/java"/>
 	<classpathentry kind="src" path="impl/dao/src/java"/>
 	<classpathentry kind="src" path="impl/hbm/src/java"/>
 	<classpathentry kind="src" path="impl/pack/src/webapp/WEB-INF"/>
