@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.sakaiproject.assignment2.tool.params.PagerViewParams;
-import org.sakaiproject.assignment2.tool.producers.NavBarRenderer;
-import org.sakaiproject.assignment2.tool.producers.PagerRenderer;
+import org.sakaiproject.assignment2.tool.producers.renderers.NavBarRenderer;
+import org.sakaiproject.assignment2.tool.producers.renderers.PagerRenderer;
 
 import uk.org.ponder.messageutil.MessageLocator;
 import uk.org.ponder.rsf.components.UICommand;

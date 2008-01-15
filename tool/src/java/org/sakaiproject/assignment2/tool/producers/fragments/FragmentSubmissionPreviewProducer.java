@@ -1,4 +1,4 @@
-package org.sakaiproject.assignment2.tool.producers;
+package org.sakaiproject.assignment2.tool.producers.fragments;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -16,6 +16,7 @@ import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.tool.beans.PreviewAssignmentSubmissionBean;
 import org.sakaiproject.assignment2.tool.params.AssignmentAddViewParams;
 import org.sakaiproject.assignment2.tool.params.SimpleAssignmentViewParams;
+import org.sakaiproject.assignment2.tool.producers.renderers.AttachmentListRenderer;
 import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.tool.api.ToolSession;
 

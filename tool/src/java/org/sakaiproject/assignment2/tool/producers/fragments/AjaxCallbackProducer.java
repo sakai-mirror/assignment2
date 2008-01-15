@@ -1,4 +1,4 @@
-package org.sakaiproject.assignment2.tool.producers;
+package org.sakaiproject.assignment2.tool.producers.fragments;
 
 import java.util.ArrayList;
 import java.util.List;

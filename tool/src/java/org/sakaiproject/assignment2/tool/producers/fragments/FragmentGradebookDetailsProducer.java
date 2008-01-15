@@ -1,4 +1,4 @@
-package org.sakaiproject.assignment2.tool.producers;
+package org.sakaiproject.assignment2.tool.producers.fragments;
 
 import java.text.DateFormat;
 import java.util.List;
@@ -16,6 +16,7 @@ import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionAttachment;
 import org.sakaiproject.assignment2.tool.params.FragmentGradebookDetailsViewParams;
+import org.sakaiproject.assignment2.tool.producers.renderers.GradebookDetailsRenderer;
 import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.entitybroker.EntityBroker;
 import org.sakaiproject.entitybroker.IdEntityReference;

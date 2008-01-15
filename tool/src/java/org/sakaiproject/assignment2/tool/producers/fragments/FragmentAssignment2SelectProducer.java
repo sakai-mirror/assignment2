@@ -1,4 +1,4 @@
-package org.sakaiproject.assignment2.tool.producers;
+package org.sakaiproject.assignment2.tool.producers.fragments;
 
 import java.text.DateFormat;
 import java.util.List;

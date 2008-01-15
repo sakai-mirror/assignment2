@@ -20,9 +20,9 @@ import org.sakaiproject.assignment2.tool.params.AssignmentAddViewParams;
 import org.sakaiproject.assignment2.tool.producers.AssignmentAddProducer;
 import org.sakaiproject.assignment2.tool.producers.AssignmentViewSubmissionsProducer;
 import org.sakaiproject.assignment2.tool.producers.AssignmentListReorderProducer;
-import org.sakaiproject.assignment2.tool.producers.NavBarRenderer;
-import org.sakaiproject.assignment2.tool.producers.PagerRenderer;
-import org.sakaiproject.assignment2.tool.producers.SortHeaderRenderer;
+import org.sakaiproject.assignment2.tool.producers.renderers.NavBarRenderer;
+import org.sakaiproject.assignment2.tool.producers.renderers.PagerRenderer;
+import org.sakaiproject.assignment2.tool.producers.renderers.SortHeaderRenderer;
 
 
 import uk.org.ponder.messageutil.MessageLocator;

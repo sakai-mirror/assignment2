@@ -13,8 +13,8 @@ import org.sakaiproject.assignment2.tool.params.AssignmentListSortViewParams;
 import org.sakaiproject.assignment2.tool.params.PagerViewParams;
 import org.sakaiproject.assignment2.tool.params.SimpleAssignmentViewParams;
 import org.sakaiproject.assignment2.tool.producers.AssignmentListSortViewProducer;
-import org.sakaiproject.assignment2.tool.producers.NavBarRenderer;
-import org.sakaiproject.assignment2.tool.producers.PagerRenderer;
+import org.sakaiproject.assignment2.tool.producers.renderers.NavBarRenderer;
+import org.sakaiproject.assignment2.tool.producers.renderers.PagerRenderer;
 
 import uk.org.ponder.messageutil.MessageLocator;
 import uk.org.ponder.rsf.components.UIBoundBoolean;

@@ -2,7 +2,7 @@
 package org.sakaiproject.assignment2.tool.params;
 
 import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
-import org.sakaiproject.assignment2.tool.producers.PagerRenderer;
+import org.sakaiproject.assignment2.tool.producers.renderers.PagerRenderer;
 
 public class PagerViewParams extends SimpleViewParameters {
 

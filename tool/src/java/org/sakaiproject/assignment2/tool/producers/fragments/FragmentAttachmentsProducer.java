@@ -1,4 +1,4 @@
-package org.sakaiproject.assignment2.tool.producers;
+package org.sakaiproject.assignment2.tool.producers.fragments;
 
 import java.util.Set;
 import java.util.HashSet;
@@ -11,6 +11,7 @@ import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionAttachment;
 import org.sakaiproject.assignment2.tool.beans.PreviewAssignmentBean;
 import org.sakaiproject.assignment2.tool.params.FragmentAttachmentsViewParams;
+import org.sakaiproject.assignment2.tool.producers.renderers.AttachmentListRenderer;
 import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.content.api.ContentResource;
 import org.sakaiproject.content.api.ContentTypeImageService;
