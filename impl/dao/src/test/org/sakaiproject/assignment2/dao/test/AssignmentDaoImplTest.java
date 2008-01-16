@@ -14,6 +14,8 @@ import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentAttachment;
 import org.sakaiproject.assignment2.model.AssignmentGroup;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
+import org.sakaiproject.assignment2.test.PreloadTestData;
+import org.sakaiproject.assignment2.test.AssignmentTestDataLoad;
 import org.springframework.test.AbstractTransactionalSpringContextTests;
 
 
@@ -24,9 +26,9 @@ import org.springframework.test.AbstractTransactionalSpringContextTests;
  */
 public class AssignmentDaoImplTest extends
 		AbstractTransactionalSpringContextTests {
-
-	private static final String CONTEXT_ID = "bogusContext";
+	
 	protected AssignmentDao assignmentDao;
+	protected AssignmentTestDataLoad testData;
 
 	protected String[] getConfigLocations() {
 		// point to the needed spring config files, must be on the classpath
@@ -45,15 +47,20 @@ public class AssignmentDaoImplTest extends
 			throw new NullPointerException(
 					"DAO could not be retrieved from spring");
 		}
-
-		// init the test class if needed
-
+		
+		PreloadTestData ptd = (PreloadTestData) applicationContext.getBean("org.sakaiproject.assignment2.test.PreloadTestData");
+		if (ptd == null) {
+			throw new NullPointerException("PreloadTestData could not be retrieved from spring");
+		}
+		
+		testData = ptd.getAtdl();
 	}
 
 	// run this before each test starts and as part of the transaction
 	protected void onSetUpInTransaction() {
 		// preload additional data if desired
-
+		// initialize data
+		
 	}
 
 	/**
@@ -69,7 +76,7 @@ public class AssignmentDaoImplTest extends
 	public void testGetHighestSortIndexInSite() {
 		// negative test
 		// count 0 items in unknown context
-		int highestIndex = assignmentDao.getHighestSortIndexInSite(CONTEXT_ID);
+		int highestIndex = assignmentDao.getHighestSortIndexInSite(testData.BAD_CONTEXT);
 		assertEquals(0, highestIndex);
 		
 		// exception testing
@@ -81,20 +88,9 @@ public class AssignmentDaoImplTest extends
 		}
 		
 		// positive test
-		// count 2 or 3 items in the known context
-		Assignment2 a1 = createGenericAssignment2Object("Assignment 1");
-		a1.setSortIndex(0);
-		assignmentDao.save(a1);
-		
-		highestIndex = assignmentDao.getHighestSortIndexInSite(CONTEXT_ID);
-		assertEquals(0, highestIndex);
-		
-		Assignment2 a2 = createGenericAssignment2Object("Assignment 2");
-		a2.setSortIndex(1);
-		assignmentDao.save(a2);
-		
-		highestIndex = assignmentDao.getHighestSortIndexInSite(CONTEXT_ID);
-		assertEquals(1, highestIndex);
+		// count 2 or 3 items in the known context		
+		highestIndex = assignmentDao.getHighestSortIndexInSite(testData.CONTEXT_ID);
+		assertEquals(2, highestIndex);
 	}
 
 	public void testGetAssignmentsWithGroupsAndAttachments() {
@@ -105,78 +101,78 @@ public class AssignmentDaoImplTest extends
 			
 		}
 		
-		Set<Assignment2> assignments = assignmentDao.getAssignmentsWithGroupsAndAttachments(CONTEXT_ID);
+		Set<Assignment2> assignments = assignmentDao.getAssignmentsWithGroupsAndAttachments(testData.BAD_CONTEXT);
 		assertNotNull(assignments);
 		assertTrue(assignments.isEmpty());
-		
-		Assignment2 a1 = createGenericAssignment2Object("Assignment 1");
-		Assignment2 a2 = createGenericAssignment2Object("Assignment 2");
-		Assignment2 a3 = createGenericAssignment2Object("Assignment 3");
-		assignmentDao.create(a1);
-		assignmentDao.create(a2);
-		assignmentDao.create(a3);
-		
-		// add attachments
-		// to Assignment 1
-		AssignmentAttachment attach1 = new AssignmentAttachment();
-		attach1.setAssignment(a1);
-		attach1.setAttachmentReference("reference1");
-		assignmentDao.save(attach1);
-		
-		AssignmentAttachment attach2 = new AssignmentAttachment();
-		attach2.setAssignment(a1);
-		attach2.setAttachmentReference("reference2");
-		assignmentDao.save(attach2);
-		// to Assignment 3
-		AssignmentAttachment attach3 = new AssignmentAttachment();
-		attach3.setAssignment(a3);
-		attach3.setAttachmentReference("reference1");
-		assignmentDao.save(attach3);
-		
-		// add AssignmentGroups
-		AssignmentGroup group1 = new AssignmentGroup();
-		group1.setAssignment(a1);
-		group1.setGroupId("Group1");
-		assignmentDao.save(group1);
-		
-		AssignmentGroup group2 = new AssignmentGroup();
-		group2.setAssignment(a1);
-		group2.setGroupId("Group2");
-		assignmentDao.save(group2);
-		
-		assignments = assignmentDao.getAssignmentsWithGroupsAndAttachments(CONTEXT_ID);
+
+		assignments = assignmentDao.getAssignmentsWithGroupsAndAttachments(testData.CONTEXT_ID);
 		assertNotNull(assignments);
 		assertTrue(assignments.size() == 3);
 		
-		/*for (Iterator assignIter = assignments.iterator(); assignIter.hasNext();) {
+		for (Iterator assignIter = assignments.iterator(); assignIter.hasNext();) {
 			Assignment2 assign = (Assignment2) assignIter.next();
-			if (assign.getTitle().equals("Assignment 1")) {
+			if (assign.getTitle().equals(testData.ASSIGN1_TITLE)) {
 				assertTrue(assign.getAttachmentSet().size() == 2);
 				assertTrue(assign.getAssignmentGroupSet().size() == 2);
+			} else if (assign.getTitle().equals(testData.ASSIGN2_TITLE)) {
+				assertTrue(assign.getAttachmentSet().isEmpty());
+				assertTrue(assign.getAssignmentGroupSet().size() == 1);
+			} else if (assign.getTitle().equals(testData.ASSIGN3_TITLE)) {
+				assertTrue(assign.getAttachmentSet().size() == 1);
+				assertTrue(assign.getAssignmentGroupSet().isEmpty());
 			}
-		}*/
+		}
 		
 	}
 	
-	private Assignment2 createGenericAssignment2Object(String title) {
-		Assignment2 assignment = new Assignment2();
-		assignment.setAllowResubmit(Boolean.FALSE);
-		assignment.setContextId(CONTEXT_ID);
-		assignment.setCreateTime(new Date());
-		assignment.setCreator("ADMIN");
-		assignment.setDraft(Boolean.FALSE);
-		assignment.setInstructions("Summarize the article we discussed on 1/8");
-		assignment.setNotificationType(AssignmentConstants.NOTIFY_NONE);
-		assignment.setOpenTime(new Date());
-		assignment.setRemoved(Boolean.FALSE);
-		assignment.setRestrictedToGroups(Boolean.FALSE);
-		assignment.setSubmissionType(AssignmentConstants.SUBMIT_INLINE_AND_ATTACH);
-		assignment.setUngraded(Boolean.FALSE);
-		assignment.setHonorPledge(Boolean.FALSE);
-		assignment.setHasAnnouncement(Boolean.FALSE);
-		assignment.setTitle(title);
+	public void testGetAssignmentByIdWithGroups() {
+		try {
+			assignmentDao.getAssignmentByIdWithGroups(null);
+			fail("did not catch null parameter passed to getAssignmentByIdWithGroups");
+		} catch (Exception e) {
+			
+		}
 		
-		return assignment;
+		// now try an id that doesn't exist
+		Assignment2 assign = assignmentDao.getAssignmentByIdWithGroups(new Long(27));
+		assertNull(assign);
+		
+		// now let's try some we know exist
+		assign = assignmentDao.getAssignmentByIdWithGroups(testData.a1Id);
+		assertNotNull(assign);
+		assertTrue(assign.getAssignmentGroupSet().size() == 2);
+		assertTrue(assign.getTitle().equals(testData.ASSIGN1_TITLE));
+		
+		assign = assignmentDao.getAssignmentByIdWithGroups(testData.a3Id);
+		assertNotNull(assign);
+		assertTrue(assign.getAssignmentGroupSet().isEmpty());
+		assertTrue(assign.getTitle().equals(testData.ASSIGN3_TITLE));
+	}
+	
+	public void testGetAssignmentByIdWithGroupsAndAttachments() {
+		try {
+			assignmentDao.getAssignmentByIdWithGroupsAndAttachments(null);
+			fail("did not catch null parameter passed to getAssignmentByIdWithGroupsAndAttachments");
+		} catch (Exception e) {
+			
+		}
+		
+		// now try an id that doesn't exist
+		Assignment2 assign = assignmentDao.getAssignmentByIdWithGroupsAndAttachments(new Long(27));
+		assertNull(assign);
+		
+		// now let's try some we know exist
+		assign = assignmentDao.getAssignmentByIdWithGroups(testData.a1Id);
+		assertNotNull(assign);
+		assertTrue(assign.getAssignmentGroupSet().size() == 2);
+		assertTrue(assign.getAttachmentSet().size() == 2);
+		assertTrue(assign.getTitle().equals(testData.ASSIGN1_TITLE));
+		
+		assign = assignmentDao.getAssignmentByIdWithGroups(testData.a3Id);
+		assertNotNull(assign);
+		assertTrue(assign.getAssignmentGroupSet().isEmpty());
+		assertTrue(assign.getAttachmentSet().size() == 1);
+		assertTrue(assign.getTitle().equals(testData.ASSIGN3_TITLE));
 	}
 
 }

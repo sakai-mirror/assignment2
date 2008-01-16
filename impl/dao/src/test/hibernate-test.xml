@@ -58,5 +58,14 @@
 		<property name="sessionFactory"
 			ref="org.sakaiproject.springframework.orm.hibernate.GlobalSessionFactory" />
 	</bean>
+	
+	<!-- create a test data preloading bean -->
+	<bean id="org.sakaiproject.assignment2.test.PreloadTestData"
+		class="org.sakaiproject.assignment2.test.PreloadTestData"
+		init-method="init">
+		<property name="assignmentDao"
+			ref="org.sakaiproject.assignment2.dao.AssignmentDao" />
+			
+	</bean>
 
 </beans>
