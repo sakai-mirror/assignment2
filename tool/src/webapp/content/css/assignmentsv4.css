@@ -210,3 +210,45 @@ li .error p {
 .pointer {
 	cursor: pointer;
 }
+
+
+/* breadcrumb navigation styles */
+.breadCrumb {
+	font-size: .9em;
+	padding: .5em 0; 
+	background: #ffe; /* This is our background color */
+	margin: 1em 0;
+}
+
+.navIntraTool 	 .breadCrumb {
+	margin:0;float:left
+}
+
+.breadCrumb li{
+	display: inline; 
+	background: #ffe url("/sakai-assignment2-tool/content/images/breadSep.gif") center right no-repeat;
+	padding:0 1.2em 0  .5em;
+	margin:0;
+}
+.breadCrumb li:first-child{
+	padding-left:3px
+}
+.breadCrumb li.lastCrumb{
+	display: inline; 
+	background-image: none;
+}
+
+.breadCrumbCurrent {
+	font-weight: bold;
+	display: inline; 
+	padding: 0px;
+}
+
+A.breadCrumb {
+	font-weight: bold;
+	margin: 0px;
+}
+
+A:hover.breadCrumb {
+	color: #333;
+}

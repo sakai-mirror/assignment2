@@ -34,6 +34,7 @@ import uk.org.ponder.rsf.components.UIOutput;
 import uk.org.ponder.rsf.components.UIVerbatim;
 import uk.org.ponder.rsf.view.ComponentChecker;
 import uk.org.ponder.rsf.view.ViewComponentProducer;
+import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
 import uk.org.ponder.rsf.viewstate.ViewParameters;
 import uk.org.ponder.rsf.viewstate.ViewParamsReporter;
 
@@ -95,13 +96,19 @@ public class AssignmentViewSubmissionsProducer implements ViewComponentProducer,
     	
     	List<AssignmentSubmission> submissions = submissionLogic.getViewableSubmissionsForAssignmentId(assignmentId);
     	
+    	//Breadcrumbs
+        UIInternalLink.make(tofill, "breadcrumb", 
+        		messageLocator.getMessage("assignment2.assignment_list-sortview.heading"),
+        		new SimpleViewParameters(AssignmentListSortViewProducer.VIEW_ID));
+        UIMessage.make(tofill, "last_breadcrumb", "assignment2.assignment_grade-assignment.heading", new Object[] { assignment.getTitle() });
+    	
     	//get paging data
     	int total_count = submissions != null ? submissions.size() : 0;
     	
         UIMessage.make(tofill, "page-title", "assignment2.assignment_grade-assignment.title");
-        navBarRenderer.makeNavBar(tofill, "navIntraTool:", VIEW_ID);
+        //navBarRenderer.makeNavBar(tofill, "navIntraTool:", VIEW_ID);
         pagerRenderer.makePager(tofill, "pagerDiv:", VIEW_ID, viewparams, total_count);
-        UIMessage.make(tofill, "heading", "assignment2.assignment_grade-assignment.heading", new Object[] { assignment.getTitle() });
+        //UIMessage.make(tofill, "heading", "assignment2.assignment_grade-assignment.heading", new Object[] { assignment.getTitle() });
 
         UIForm assign_form = UIForm.make(tofill, "assign_form");
         UIMessage.make(assign_form, "assign_grade", "assignment2.assignment_grade-assignment.assign_grade");

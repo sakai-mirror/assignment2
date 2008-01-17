@@ -22,6 +22,7 @@ import org.sakaiproject.assignment2.tool.beans.PreviewAssignmentBean;
 import org.sakaiproject.assignment2.tool.params.AssignmentGradeAssignmentViewParams;
 import org.sakaiproject.assignment2.tool.params.AssignmentGradeViewParams;
 import org.sakaiproject.assignment2.tool.params.FilePickerHelperViewParams;
+import org.sakaiproject.assignment2.tool.params.SimpleAssignmentViewParams;
 import org.sakaiproject.assignment2.tool.producers.fragments.FragmentAttachmentsProducer;
 import org.sakaiproject.assignment2.tool.producers.fragments.FragmentSubmissionGradePreviewProducer;
 import org.sakaiproject.assignment2.tool.producers.fragments.FragmentGradebookDetailsProducer;
@@ -130,10 +131,20 @@ public class AssignmentGradeProducer implements ViewComponentProducer, Navigatio
        	// use a date which is related to the current users locale
         DateFormat df = DateFormat.getDateInstance(DateFormat.MEDIUM, locale);
         
+    	//Breadcrumbs
+        UIInternalLink.make(tofill, "breadcrumb", 
+        		messageLocator.getMessage("assignment2.assignment_list-sortview.heading"),
+        		new SimpleViewParameters(AssignmentListSortViewProducer.VIEW_ID));
+        UIInternalLink.make(tofill, "breadcrumb2",
+        		messageLocator.getMessage("assignment2.assignment_grade-assignment.heading", new Object[] { assignment.getTitle()}),
+        		new SimpleAssignmentViewParams(AssignmentViewSubmissionsProducer.VIEW_ID, assignment.getAssignmentId()));
+        UIMessage.make(tofill, "last_breadcrumb", "assignment2.assignment_grade.heading", 
+        		new Object[]{assignment.getTitle(), externalLogic.getUserDisplayName(params.userId)});
+        
         //Heading messages
         UIMessage.make(tofill, "page-title", "assignment2.assignment_grade.title");
-        navBarRenderer.makeNavBar(tofill, "navIntraTool:", VIEW_ID);
-        UIMessage.make(tofill, "heading", "assignment2.assignment_grade.heading", new Object[]{assignment.getTitle()});
+        //navBarRenderer.makeNavBar(tofill, "navIntraTool:", VIEW_ID);
+        //UIMessage.make(tofill, "heading", "assignment2.assignment_grade.heading", new Object[]{assignment.getTitle()});
         
         //AssignmentSubmission OTP Stuff
         String asOTP = "AssignmentSubmission.";

@@ -130,10 +130,20 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
     	// use a date which is related to the current users locale
         DateFormat df = DateFormat.getDateInstance(DateFormat.MEDIUM, locale);
         
+        //Breadcrumbs
+        UIInternalLink.make(tofill, "breadcrumb", 
+        		messageLocator.getMessage("assignment2.assignment_list-sortview.heading"),
+        		new SimpleViewParameters(AssignmentListSortViewProducer.VIEW_ID));
+        if (params.assignmentId != null) {
+        	UIMessage.make(tofill, "last_breadcrumb", "assignment2.assignment_add.edit_heading");
+        } else {
+        	UIMessage.make(tofill, "last_breadcrumb", "assignment2.assignment_add.add_heading");
+        }
+        
         //Heading messages
         UIMessage.make(tofill, "page-title", "assignment2.assignment_add.title");
-        navBarRenderer.makeNavBar(tofill, "navIntraTool:", VIEW_ID);
-        UIMessage.make(tofill, "heading", "assignment2.assignment_add.heading");
+        //navBarRenderer.makeNavBar(tofill, "navIntraTool:", VIEW_ID);
+        //UIMessage.make(tofill, "heading", "assignment2.assignment_add.heading");
         UIVerbatim.make(tofill, "instructions", messageLocator.getMessage("assignment2.assignment_add.instructions", 
         		new Object[]{ reqStar }));
         

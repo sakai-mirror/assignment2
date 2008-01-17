@@ -20,7 +20,6 @@ import org.sakaiproject.assignment2.tool.producers.renderers.NavBarRenderer;
 import org.sakaiproject.assignment2.tool.producers.renderers.PagerRenderer;
 import org.sakaiproject.assignment2.tool.producers.renderers.SortHeaderRenderer;
 
-
 import uk.org.ponder.messageutil.MessageLocator;
 import uk.org.ponder.rsf.components.*;
 import uk.org.ponder.rsf.view.ComponentChecker;
@@ -66,8 +65,8 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
     	String currentUserId = externalLogic.getCurrentUserId();
     	
     	// use a date which is related to the current users locale
-        DateFormat df = DateFormat.getDateInstance(DateFormat.MEDIUM, locale);
-    	
+        DateFormat df = DateFormat.getDateInstance(DateFormat.MEDIUM, locale);        
+        
     	//get parameters
     	AssignmentListSortViewParams params = (AssignmentListSortViewParams) viewparams;
     	if (params.sort_by == null) params.sort_by = DEFAULT_SORT_BY;
@@ -90,15 +89,18 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
     	
     	//get paging data
     	int total_count = (entries != null ? entries.size() : 0 );
-    		
+    	
+    	//Breadcrumbs
+    	UIMessage.make(tofill, "last_breadcrumb", "assignment2.assignment_list-sortview.heading");
+    	
         UIMessage.make(tofill, "page-title", "assignment2.assignment_list-sortview.title");
-        navBarRenderer.makeNavBar(tofill, "navIntraTool:", VIEW_ID);
+        //navBarRenderer.makeNavBar(tofill, "navIntraTool:", VIEW_ID);
         pagerRenderer.makePager(tofill, "pagerDiv:", VIEW_ID, viewparams, total_count);
         
         UIVerbatim.make(tofill, "debug_info", "Currently, you are sorting by: <strong>" + current_sort_by + " " + 
         			current_sort_dir + "</strong>,   starting from record: <strong>" + params.current_start + "</strong> and paging: <strong>" + params.current_count + "</strong> items.");
         
-        UIMessage.make(tofill, "heading", "assignment2.assignment_list-sortview.heading");
+        //UIMessage.make(tofill, "heading", "assignment2.assignment_list-sortview.heading");
         //Links
         UIInternalLink.make(tofill, "assignment_list-add-assignment-link", UIMessage.make("assignment2.assignment_add.title"),
         		new SimpleViewParameters(AssignmentProducer.VIEW_ID));

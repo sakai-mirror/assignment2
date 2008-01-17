@@ -45,8 +45,7 @@
       <property name="attachmentListRenderer" ref="AttachmentListRenderer" />
       <property name="richTextEvolver" ref="richTextEvolver" />
       <property name="sessionManager" ref="org.sakaiproject.tool.api.SessionManager" />
-   </bean>
-   
+   </bean>   
 
    <!-- list the producer beans here -->
    <bean class="org.sakaiproject.assignment2.tool.producers.AddAttachmentHelperProducer">
