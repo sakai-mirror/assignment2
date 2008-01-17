@@ -131,9 +131,9 @@
       <version>3.1</version>
     </dependency>
     <dependency>
-      <groupId>ehcache</groupId>
-      <artifactId>ehcache</artifactId>
-      <version>1.2.3</version>
+      <groupId>${sakai.ehcache.groupId}</groupId>
+      <artifactId>${sakai.ehcache.artifactId}</artifactId>
+      <version>${sakai.ehcache.version}</version>
     </dependency>
     <dependency>
       <groupId>easymock</groupId>
