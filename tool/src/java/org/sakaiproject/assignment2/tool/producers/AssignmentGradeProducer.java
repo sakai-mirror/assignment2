@@ -62,7 +62,7 @@ import uk.org.ponder.rsf.viewstate.ViewParamsReporter;
 
 public class AssignmentGradeProducer implements ViewComponentProducer, NavigationCaseReporter, ViewParamsReporter, ActionResultInterceptor {
 
-    public static final String VIEW_ID = "assignment_grade";
+    public static final String VIEW_ID = "grade";
     public String getViewID() {
         return VIEW_ID;
     }
