@@ -221,46 +221,13 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			throw new IllegalArgumentException("null assignmentSubmission passed to saveAssignmentSubmission");
 		}
 		
-		if (!permissionLogic.isUserAbleToMakeSubmissionForAssignment(externalLogic.getCurrentContextId(), assignmentSubmission.getAssignment())) {
-			log.warn("User " + externalLogic.getCurrentUserId() + " attempted to make a submission " +
-					"without authorization for assignment " + assignmentSubmission.getAssignment().getAssignmentId());
-			throw new SecurityException("User " + externalLogic.getCurrentUserId() + " attempted to make a submission " +
-					"without authorization for assignment " + assignmentSubmission.getAssignment().getAssignmentId());
-		}
-		
 		AssignmentSubmissionVersion currVersion = assignmentSubmission.getCurrentSubmissionVersion();
-		Set<AssignmentSubmissionAttachment> submissionAttachments = currVersion.getSubmissionAttachSet();
-		
+
 		if (currVersion == null) {
 			throw new IllegalArgumentException("null currentSubmissionVersion associated with the assignmentSubmission in saveStudentSubmission");
 		}
-		
-		AssignmentSubmissionVersion newVersion = currVersion.clone();
-		// we need to add the attachments after we have a persistent version
-		newVersion.setSubmissionAttachSet(null);
-		
-		if (assignmentSubmission.getSubmissionId() == null) {
-			dao.create(assignmentSubmission);
-			log.debug("New student submission rec added for user " + assignmentSubmission.getUserId() + " for assignment " + assignmentSubmission.getAssignment().getTitle() + " ID: " + assignmentSubmission.getAssignment().getAssignmentId());
-			
-			newVersion.setAssignmentSubmission(assignmentSubmission);
-			// populate the feedback text with the student's submitted text if not draft
-			if (newVersion.isDraft()) {
-				newVersion.setAnnotatedText(null);
-			} else {
-				newVersion.setAnnotatedText(newVersion.getSubmittedText()); 
-			}
-			// wipe out any old feedback info
-			newVersion.setFeedbackAttachSet(null);
-			newVersion.setLastFeedbackSubmittedBy(null);
-			newVersion.setLastFeedbackTime(null);
-		}
-		
-		dao.create(newVersion);
-		log.debug("New student submission version added for user " + assignmentSubmission.getUserId() + " for assignment " + assignmentSubmission.getAssignment().getTitle()+ " ID: " + assignmentSubmission.getAssignment().getAssignmentId());
-		
-		newVersion.setSubmissionAttachSet(submissionAttachments);
-		updateStudentAttachments(newVersion);
+		currVersion.setAssignmentSubmission(assignmentSubmission);
+		saveStudentSubmission(currVersion);
 	}
 	
 	public void saveStudentSubmission(AssignmentSubmissionVersion version) {
@@ -280,34 +247,84 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 					"without authorization for assignment " + submission.getAssignment().getAssignmentId());
 		}
 		
-		Set<AssignmentSubmissionAttachment> submissionAttachments = version.getSubmissionAttachSet();
+		if (!submissionIsOpenForStudentForAssignment(externalLogic.getCurrentUserId(), submission.getAssignment())) {
+			log.warn("User " + externalLogic.getCurrentUserId() + " attempted to make a submission " +
+					"but submission for this user for assignment " + submission.getAssignment().getAssignmentId() + " is closed.");
+			throw new SecurityException("User " + externalLogic.getCurrentUserId() + " attempted to make a submission " +
+					"for closed assignment " + submission.getAssignment().getAssignmentId());
+		}
 		
-		AssignmentSubmissionVersion newVersion = version.clone();
-		// we need to add the attachments after we have a persistent version
-		newVersion.setSubmissionAttachSet(null);
-		
+		// if there is no current version or the most recent version was submitted, we will need
+		// to create a new version. If the current version is draft, we will continue to update
+		// this version until it is submitted
+		AssignmentSubmissionVersion existingVersion = null;
 		if (submission.getSubmissionId() == null) {
+			// this is a new submission, so create it
+			// we need to check that this submission doesn't already exist
+			List submissions = dao.findByProperties(AssignmentSubmission.class, 
+					new String[] {"userId", "assignment"}, new Object[] {submission.getUserId(), submission.getAssignment()});
+			if (submissions != null && submissions.size() > 0) {
+				throw new SubmissionExistsException("User " + externalLogic.getCurrentUserId() + " attempted to save a duplicate " +
+						"submission rec for userId " + submission.getUserId() + " and assignment " + submission.getAssignment().getAssignmentId());
+			}
+			
 			dao.create(submission);
 			log.debug("New student submission rec added for user " + submission.getUserId() + " for assignment " + submission.getAssignment().getTitle() + " ID: " + submission.getAssignment().getAssignmentId());
+		} else {
+			existingVersion = dao.getCurrentSubmissionVersionWithAttachments(submission, Boolean.FALSE);
+		}
+		
+		// we will handle attachments separately. we will set the attach set to null before
+		// saving the version b/c the attachment objects may not exist yet
+		Set<AssignmentSubmissionAttachment> submissionAttachments = version.getSubmissionAttachSet();
+		
+		if (existingVersion != null && existingVersion.isDraft()) {
+			// we need to update this rec
+			if (version.getSubmissionVersionId() == null) {
+				version.setSubmissionVersionId(existingVersion.getSubmissionVersionId());
+			}
 			
-			newVersion.setAssignmentSubmission(submission);
-			// populate the feedback text with the student's submitted text if not draft
+			if (!version.isDraft()) {
+				version.setAnnotatedText(version.getSubmittedText());
+			}
+			
+			// handle attachments after the save to account for attachment objects
+			// that need to be created first or else we will get a pretty transient
+			// object exception
+			version.setSubmissionAttachSet(null);
+			
+			dao.update(existingVersion);
+			log.debug("Updated student submission version " + existingVersion.getSubmissionVersionId() + " for user " + submission.getUserId() + " for assignment " + submission.getAssignment().getTitle()+ " ID: " + submission.getAssignment().getAssignmentId());
+
+			existingVersion.setSubmissionAttachSet(submissionAttachments);
+			updateStudentAttachments(existingVersion, version);
+		} else {
+			// this is a new version
+			AssignmentSubmissionVersion newVersion = version.clone();
+			
+			// if this isn't a draft, set the annotated text to be the submitted text
+			// to allow instructor to edit in the future
 			if (newVersion.isDraft()) {
 				newVersion.setAnnotatedText(null);
 			} else {
-				newVersion.setAnnotatedText(newVersion.getSubmittedText()); 
+				newVersion.setAnnotatedText(newVersion.getSubmittedText());
 			}
+			
 			// wipe out any old feedback info
 			newVersion.setFeedbackAttachSet(null);
 			newVersion.setLastFeedbackSubmittedBy(null);
 			newVersion.setLastFeedbackTime(null);
+			
+			// handle attachments separately
+			newVersion.setSubmissionAttachSet(null);
+			
+			dao.create(newVersion);
+			log.debug("New student submission version added for user " + submission.getUserId() + " for assignment " + submission.getAssignment().getTitle()+ " ID: " + submission.getAssignment().getAssignmentId());
+
+			newVersion.setSubmissionAttachSet(submissionAttachments);
+			updateStudentAttachments(null, newVersion);
 		}
-		
-		dao.create(newVersion);
-		log.debug("New student submission version added for user " + submission.getUserId() + " for assignment " + submission.getAssignment().getTitle()+ " ID: " + submission.getAssignment().getAssignmentId());
-		
-		newVersion.setSubmissionAttachSet(submissionAttachments);
-		updateStudentAttachments(newVersion);
+
 	}
 	
 	public void saveInstructorFeedback(AssignmentSubmission submission) {
@@ -315,56 +332,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			throw new IllegalArgumentException("null submission passed to saveInstructorFeedback");
 		}
 		
-		if (submission.getAssignment() == null) {
-			throw new IllegalArgumentException("no assignment associated with the given submission");
-		}
-		
-		if (!permissionLogic.isUserAbleToProvideFeedbackForSubmission(submission)) {
-			throw new SecurityException("User " + externalLogic.getCurrentUserId() + " attempted to submit feedback for student " + submission.getUserId() + " without authorization");
-		}
-		
-		AssignmentSubmissionVersion existingVersion = null;
-		
-		// the instructor is submitting feedback even though the student has
-		// not made a submission
-		if (submission.getSubmissionId() == null) {
-			dao.create(submission);
-			log.debug("New student submission rec added for user " + submission.getUserId() + " for assignment " + submission.getAssignment().getTitle() + " ID: " + submission.getAssignment().getAssignmentId()
-						+ " added by " + externalLogic.getCurrentUserId() + " via saveInstructorFeedback");
-		} else {
-			// retrieve the most current non-draft version
-			existingVersion = dao.getCurrentSubmissionVersionWithAttachments(submission, Boolean.TRUE);
-
-			dao.update(submission);
-			log.debug("Submission updated for user " + submission.getUserId() + " for assignment " + submission.getAssignment().getTitle() + " ID: " + submission.getAssignment().getAssignmentId()
-					+ " by " + externalLogic.getCurrentUserId() + " via saveInstructorFeedback");
-		}
-		
-		// now we need to handle the currentVersion information
-		AssignmentSubmissionVersion currentVersion = submission.getCurrentSubmissionVersion();
-		// if there was no currentVersion passed, the instructor may be updating an
-		// AssignmentSubmission field that doesn't affect version info (such as resubmit info)
-		// no need to save new version 
-		Set<AssignmentFeedbackAttachment> feedbackAttachments =
-			currentVersion.getFeedbackAttachSet();
-
-		if (currentVersion != null) {
-			// we need to handle attachments separately
-			currentVersion.setFeedbackAttachSet(null);
-			
-			if (currentVersion.getSubmissionVersionId() != null) {
-				// instructor is providing feedback on the student's current version
-				dao.update(currentVersion);
-			} else {
-				// instructor is providing feedback but the student did not
-				// have a submission yet
-				currentVersion.setAssignmentSubmission(submission);
-				dao.create(currentVersion);
-			}
-		}
-		
-		currentVersion.setFeedbackAttachSet(feedbackAttachments);
-		updateFeedbackAttachments(existingVersion, currentVersion);	
+		saveInstructorFeedback(submission.getCurrentSubmissionVersion());
 	}
 	
 	public void saveInstructorFeedback(AssignmentSubmissionVersion version) {
@@ -567,7 +535,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		}
 	}
 	
-	private void updateStudentAttachments(AssignmentSubmissionVersion newVersion) {
+	private void updateStudentAttachments(AssignmentSubmissionVersion existingVersion, AssignmentSubmissionVersion newVersion) {
 		if (newVersion == null) {
 			throw new IllegalArgumentException("null version passed to updateStudentAttachments");
 		}
@@ -576,17 +544,57 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			throw new IllegalArgumentException("the version passed to updateStudentAttachments must exist in db. id was null");
 		}
 		
-		if (newVersion.getSubmissionAttachSet() != null) {
-			for (Iterator attachIter = newVersion.getSubmissionAttachSet().iterator(); attachIter.hasNext();) {
-				AssignmentSubmissionAttachment attach = (AssignmentSubmissionAttachment) attachIter.next();
-				if (attach != null) {
-					attach.setSubmissionAttachId(null);
-					attach.setSubmissionVersion(newVersion);
-					dao.create(attach);
-					log.debug("SubmissionAttachment created with id " + attach.getSubmissionAttachId());
+		if (existingVersion == null) {
+			// All of these attachments need to be created
+			if (newVersion.getSubmissionAttachSet() != null) {
+				for (Iterator attachIter = newVersion.getSubmissionAttachSet().iterator(); attachIter.hasNext();) {
+					AssignmentSubmissionAttachment attach = (AssignmentSubmissionAttachment) attachIter.next();
+					if (attach != null) {
+						attach.setSubmissionAttachId(null);
+						attach.setSubmissionVersion(newVersion);
+						dao.create(attach);
+						log.debug("SubmissionAttachment created with id " + attach.getSubmissionAttachId());
+					}
 				}
 			}
+		} else {
+			// we need to compare the old to the new because this is an update
+			Set<AssignmentSubmissionAttachment> revisedAttachSet = new HashSet();
+			
+			if (newVersion.getSubmissionAttachSet() != null && !newVersion.getSubmissionAttachSet().isEmpty()) {
+	        	for (Iterator attachIter = newVersion.getSubmissionAttachSet().iterator(); attachIter.hasNext();) {
+	        		AssignmentSubmissionAttachment attach = (AssignmentSubmissionAttachment) attachIter.next();
+	        		if (attach != null && attach.getSubmissionAttachId() == null) {
+	        			// this is a new attachment and needs to be created
+	        			attach.setSubmissionVersion(newVersion);
+	        			dao.save(attach);
+	        			log.debug("New feedback attachment created: " + attach.getAttachmentReference() + "with attach id " + attach.getSubmissionAttachId());
+	        			revisedAttachSet.add(attach);
+	        		}
+	        	}
+	        }
+			
+			// now we need to handle the case in which existing attachments were removed
+			if (existingVersion != null) {
+				for (Iterator existingIter = existingVersion.getSubmissionAttachSet().iterator(); existingIter.hasNext();) {
+					AssignmentSubmissionAttachment attach = (AssignmentSubmissionAttachment) existingIter.next();
+					if (attach != null) {
+						if (newVersion.getSubmissionAttachSet() == null ||
+								!newVersion.getSubmissionAttachSet().contains(attach)) {
+							// we need to delete this attachment
+							dao.delete(attach);
+							log.debug("Feedback attachment deleted with id: " + attach.getSubmissionAttachId());
+						} else if (newVersion.getSubmissionAttachSet() != null &&
+								newVersion.getSubmissionAttachSet().contains(attach)) {
+							revisedAttachSet.add(attach);
+						}
+					}
+				}
+				
+				newVersion.setSubmissionAttachSet(revisedAttachSet);
+			}
 		}
+
 	}
 	
 	private void updateFeedbackAttachments(AssignmentSubmissionVersion existingVersion, AssignmentSubmissionVersion updatedVersion) {
