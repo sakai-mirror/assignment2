@@ -74,9 +74,9 @@ import org.sakaiproject.site.api.Group;
 import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.tool.api.ToolSession;
 
-public class AssignmentAddProducer implements ViewComponentProducer, NavigationCaseReporter, ViewParamsReporter {
+public class AssignmentProducer implements ViewComponentProducer, NavigationCaseReporter, ViewParamsReporter {
 
-    public static final String VIEW_ID = "assignment_add";
+    public static final String VIEW_ID = "assignment";
     public String getViewID() {
         return VIEW_ID;
     }
@@ -397,9 +397,9 @@ public class AssignmentAddProducer implements ViewComponentProducer, NavigationC
         nav.add(new NavigationCase("post", new SimpleViewParameters(
             AssignmentListSortViewProducer.VIEW_ID)));
         nav.add(new NavigationCase("preview", new AssignmentAddViewParams(
-        	FragmentAssignmentPreviewProducer.VIEW_ID, null, AssignmentAddProducer.VIEW_ID)));
+        	FragmentAssignmentPreviewProducer.VIEW_ID, null)));
         nav.add(new NavigationCase("refresh", new AssignmentAddViewParams(
-        	AssignmentAddProducer.VIEW_ID, null, AssignmentAddProducer.VIEW_ID)));
+        	AssignmentProducer.VIEW_ID, null)));
         nav.add(new NavigationCase("save_draft", new SimpleViewParameters(
         	AssignmentListSortViewProducer.VIEW_ID)));
         nav.add(new NavigationCase("cancel", new SimpleViewParameters(

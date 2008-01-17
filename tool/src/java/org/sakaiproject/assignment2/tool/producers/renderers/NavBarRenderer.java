@@ -8,7 +8,6 @@ import uk.org.ponder.rsf.components.UIContainer;
 import uk.org.ponder.rsf.components.UIInternalLink;
 import uk.org.ponder.rsf.components.UIJointContainer;
 import uk.org.ponder.rsf.components.UIMessage;
-import uk.org.ponder.rsf.components.UIOutput;
 import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
 
 public class NavBarRenderer {
@@ -33,11 +32,11 @@ public class NavBarRenderer {
         
         //Add Link
         cell = UIBranchContainer.make(joint, "navigation-li:", "1");
-        if (currentViewID.equals(AssignmentAddProducer.VIEW_ID)) {
+        if (currentViewID.equals(AssignmentProducer.VIEW_ID)) {
             UIMessage.make(cell, "navigation-text", "assignment2.navbar.add");
         } else {
             UIInternalLink.make(cell, "navigation-link", UIMessage.make("assignment2.navbar.add"), 
-                    new SimpleViewParameters(AssignmentAddProducer.VIEW_ID));               
+                    new SimpleViewParameters(AssignmentProducer.VIEW_ID));               
         }
 **/
 /**        

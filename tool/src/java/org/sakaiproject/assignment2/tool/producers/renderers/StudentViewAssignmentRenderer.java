@@ -191,7 +191,7 @@ public class StudentViewAssignmentRenderer {
     	if (assignment.isHonorPledge()) {
     		UIOutput.make(joint, "honor_pledge_fieldset");
     		UIMessage honor_pledge_label = UIMessage.make(joint, "honor_pledge_label", "assignment2.student-submit.honor_pledge_text");
-    		UIBoundBoolean honor_pledge_checkbox = UIBoundBoolean.make(joint, "honor_pledge", "#{AssignmentSubmissionBean.honorPledge}");
+    		UIBoundBoolean honor_pledge_checkbox = UIBoundBoolean.make(form, "honor_pledge", "#{AssignmentSubmissionBean.honorPledge}");
     		UILabelTargetDecorator.targetLabel(honor_pledge_label, honor_pledge_checkbox);
     	}
         

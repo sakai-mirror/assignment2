@@ -49,19 +49,15 @@ public class FragmentAssignmentPreviewProducer implements ViewComponentProducer,
 
         Assignment2 assignment;
         String OTPKey = "";
-        if (params.fromViewId != null && params.assignmentId != null && params.fromViewId.equals(AssignmentListSortViewProducer.VIEW_ID)) {
-        	//we are coming from the main page and are just viewing
-        	assignment = assignmentLogic.getAssignmentByIdWithAssociatedData(params.assignmentId);
-        	OTPKey = assignment.getAssignmentId().toString();
-        } else {
-        	//we are coming from the add/edit assignment page
-        	assignment = previewAssignmentBean.getAssignment();
-        	if (assignment.getAssignmentId() != null) {
-        		OTPKey = assignment.getAssignmentId().toString();
-        	} else {
-        		OTPKey = EntityBeanLocator.NEW_PREFIX + "1";
-        	}
-        }
+        
+    	//we are coming from the add/edit assignment page
+    	assignment = previewAssignmentBean.getAssignment();
+    	if (assignment.getAssignmentId() != null) {
+    		OTPKey = assignment.getAssignmentId().toString();
+    	} else {
+    		OTPKey = EntityBeanLocator.NEW_PREFIX + "1";
+    	}
+        
         
         AssignmentSubmission assignmentSubmission = new AssignmentSubmission();
         // set the textual representation of the status

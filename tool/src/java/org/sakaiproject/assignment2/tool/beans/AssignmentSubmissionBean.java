@@ -150,9 +150,10 @@ public class AssignmentSubmissionBean {
 			//End Attachment stuff
 			
 	    	//check whether honor pledge was added if required
-	    	if (assignment.isHonorPledge() && !this.honorPledge) {
+	    	if (assignment.isHonorPledge() && (this.honorPledge !=null || !this.honorPledge)) {
 	    		messages.addMessage(new TargettedMessage("assignment2.student-submit.error.honor_pledge_required",
 						new Object[] { assignment.getTitle() }, TargettedMessage.SEVERITY_ERROR));
+	    		return FAILURE;
 	    	}else {
 	    		submissionLogic.saveStudentSubmission(assignmentSubmission);
 	    		messages.addMessage(new TargettedMessage("assignment2.student-submit.info.submission_submitted",

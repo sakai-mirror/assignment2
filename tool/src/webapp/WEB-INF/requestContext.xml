@@ -59,7 +59,7 @@
       <property name="sessionManager" ref="org.sakaiproject.tool.api.SessionManager" />
    </bean>	
 
-   <bean class="org.sakaiproject.assignment2.tool.producers.AssignmentAddProducer">
+   <bean class="org.sakaiproject.assignment2.tool.producers.AssignmentProducer">
       <property name="navBarRenderer" ref="NavbarRenderer" />
       <property name="richTextEvolver" ref="richTextEvolver" />
       <property name="messageLocator" ref="messageLocator" />

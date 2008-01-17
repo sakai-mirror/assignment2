@@ -17,7 +17,7 @@ import org.sakaiproject.assignment2.tool.beans.Assignment2Creator;
 import org.sakaiproject.assignment2.tool.params.AssignmentListSortViewParams;
 import org.sakaiproject.assignment2.tool.params.SimpleAssignmentViewParams;
 import org.sakaiproject.assignment2.tool.params.AssignmentAddViewParams;
-import org.sakaiproject.assignment2.tool.producers.AssignmentAddProducer;
+import org.sakaiproject.assignment2.tool.producers.AssignmentProducer;
 import org.sakaiproject.assignment2.tool.producers.AssignmentViewSubmissionsProducer;
 import org.sakaiproject.assignment2.tool.producers.AssignmentListReorderProducer;
 import org.sakaiproject.assignment2.tool.producers.renderers.NavBarRenderer;
@@ -115,7 +115,7 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
         UIMessage.make(tofill, "heading", "assignment2.assignment_list-sortview.heading");
         //Links
         UIInternalLink.make(tofill, "assignment_list-add-assignment-link", UIMessage.make("assignment2.assignment_add.title"),
-        		new SimpleViewParameters(AssignmentAddProducer.VIEW_ID));
+        		new SimpleViewParameters(AssignmentProducer.VIEW_ID));
         /**
         UIInternalLink.make(tofill, "assignment_list-reorder-link",
 					UIMessage.make("assignment2.assignment_list-reorder.title"),
@@ -165,7 +165,7 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
         	if (edit_perm) {
 	        	UIInternalLink.make(row, "assignment_row_edit", 
 	        			UIMessage.make("assignment2.assignment_list-sortview.assignment_row_edit"), 
-	        			new AssignmentAddViewParams(AssignmentAddProducer.VIEW_ID, assignment.getAssignmentId()));
+	        			new AssignmentAddViewParams(AssignmentProducer.VIEW_ID, assignment.getAssignmentId()));
 	        	UIInternalLink.make(row, "assignment_row_duplicate", 
 	        			UIMessage.make("assignment2.assignment_list-sortview.assignment_row_duplicate"), 
 	        			new AssignmentListSortViewParams(AssignmentListSortViewProducer.VIEW_ID, current_sort_by, current_sort_dir, 
