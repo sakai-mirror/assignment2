@@ -12,7 +12,7 @@ import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentAttachment;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.tool.beans.PreviewAssignmentBean;
-import org.sakaiproject.assignment2.tool.params.AssignmentAddViewParams;
+import org.sakaiproject.assignment2.tool.params.AssignmentViewParams;
 import org.sakaiproject.assignment2.tool.producers.renderers.StudentViewAssignmentRenderer;
 import org.sakaiproject.assignment2.tool.producers.AssignmentListSortViewProducer;
 import org.sakaiproject.tool.api.SessionManager;
@@ -45,7 +45,7 @@ public class FragmentAssignmentPreviewProducer implements ViewComponentProducer,
 	private MessageLocator messageLocator;
 
     public void fillComponents(UIContainer tofill, ViewParameters viewparams, ComponentChecker checker) {
-    	AssignmentAddViewParams params = (AssignmentAddViewParams) viewparams;
+    	AssignmentViewParams params = (AssignmentViewParams) viewparams;
 
         Assignment2 assignment;
         String OTPKey = "";
@@ -68,7 +68,7 @@ public class FragmentAssignmentPreviewProducer implements ViewComponentProducer,
     }
     
     public ViewParameters getViewParameters() {
-        return new AssignmentAddViewParams();
+        return new AssignmentViewParams();
     }
 	
 	public String getContentType() {

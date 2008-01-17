@@ -15,7 +15,7 @@ import org.sakaiproject.assignment2.model.AssignmentAttachment;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.tool.beans.PreviewAssignmentSubmissionBean;
-import org.sakaiproject.assignment2.tool.params.AssignmentAddViewParams;
+import org.sakaiproject.assignment2.tool.params.AssignmentViewParams;
 import org.sakaiproject.assignment2.tool.producers.renderers.AttachmentListRenderer;
 import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.tool.api.ToolSession;
@@ -48,7 +48,7 @@ public class FragmentSubmissionGradePreviewProducer implements ViewComponentProd
 	private SessionManager sessionManager;
 
     public void fillComponents(UIContainer tofill, ViewParameters viewparams, ComponentChecker checker) {
-    	AssignmentAddViewParams params = (AssignmentAddViewParams) viewparams;
+    	AssignmentViewParams params = (AssignmentViewParams) viewparams;
     	
     	//use a date which is related to the current users locale
         DateFormat df = DateFormat.getDateInstance(DateFormat.MEDIUM, locale);
@@ -102,7 +102,7 @@ public class FragmentSubmissionGradePreviewProducer implements ViewComponentProd
     }
     
     public ViewParameters getViewParameters() {
-        return new AssignmentAddViewParams();
+        return new AssignmentViewParams();
     }
 	
 	public String getContentType() {

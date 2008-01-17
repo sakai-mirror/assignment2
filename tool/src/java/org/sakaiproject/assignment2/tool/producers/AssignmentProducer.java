@@ -3,7 +3,7 @@ package org.sakaiproject.assignment2.tool.producers;
 import org.sakaiproject.assignment2.tool.beans.Assignment2Bean;
 import org.sakaiproject.assignment2.tool.beans.Assignment2Creator;
 import org.sakaiproject.assignment2.tool.beans.PreviewAssignmentBean;
-import org.sakaiproject.assignment2.tool.params.AssignmentAddViewParams;
+import org.sakaiproject.assignment2.tool.params.AssignmentViewParams;
 import org.sakaiproject.assignment2.tool.params.SimpleAssignmentViewParams;
 import org.sakaiproject.assignment2.tool.params.FilePickerHelperViewParams;
 import org.sakaiproject.assignment2.tool.params.ThickboxHelperViewParams;
@@ -122,7 +122,7 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
     	session.removeAttribute("removedAttachmentRefs");
  	
     	//Get View Params
-    	AssignmentAddViewParams params = (AssignmentAddViewParams) viewparams;
+    	AssignmentViewParams params = (AssignmentViewParams) viewparams;
     	
     	//get Passed assignmentId to pull in for editing if any
     	Long assignmentId = params.assignmentId;
@@ -299,16 +299,15 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
         
         
         //Links to gradebook Helper
-        String ref = new IdEntityReference("grade-entry", externalLogic.getCurrentContextId()).toString();
-        String url = entityBroker.getEntityURL(ref);
-        String contextId = externalLogic.getCurrentContextId();
+        String url = "/direct/gradebook-item/_/gradebookItem/" + externalLogic.getCurrentContextId();
+        String getParams = "?TB_iframe=true&width=700&height=500&KeepThis=true";
         UILink.make(form, "gradebook_item_new_helper",
         		UIMessage.make("assignment2.assignment_add.gradebook_item_new_helper"),
-        		url + "?TB_iframe=true&width=700&height=500&KeepThis=true");
+        		url + getParams);
         		
         UILink helplink = UIInternalLink.make(form, "gradebook_item_edit_helper",
         		UIMessage.make("assignment2.assignment_add.gradebook_item_edit_helper"),
-        		url + "/add-gradebook-item" + "?TB_iframe=true&width=700&height=500&KeepThis=true&gradebookItemId=" + selectedId + "&contextId=" + contextId);
+        		url + "/" + selectedId + getParams);
         if (selectedId.equals("")){
         	Map attrmap = new HashMap();
         	attrmap.put("display", "none");
@@ -396,9 +395,9 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
     	List<NavigationCase> nav= new ArrayList<NavigationCase>();
         nav.add(new NavigationCase("post", new SimpleViewParameters(
             AssignmentListSortViewProducer.VIEW_ID)));
-        nav.add(new NavigationCase("preview", new AssignmentAddViewParams(
+        nav.add(new NavigationCase("preview", new AssignmentViewParams(
         	FragmentAssignmentPreviewProducer.VIEW_ID, null)));
-        nav.add(new NavigationCase("refresh", new AssignmentAddViewParams(
+        nav.add(new NavigationCase("refresh", new AssignmentViewParams(
         	AssignmentProducer.VIEW_ID, null)));
         nav.add(new NavigationCase("save_draft", new SimpleViewParameters(
         	AssignmentListSortViewProducer.VIEW_ID)));
@@ -408,7 +407,7 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
     }
 	
     public ViewParameters getViewParameters() {
-        return new AssignmentAddViewParams();
+        return new AssignmentViewParams();
     }
     
     public void setMessageLocator(MessageLocator messageLocator) {

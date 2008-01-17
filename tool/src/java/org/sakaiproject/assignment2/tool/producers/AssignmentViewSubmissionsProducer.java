@@ -6,7 +6,7 @@ import java.util.Locale;
 import java.util.Date;
 
 import org.sakaiproject.assignment2.tool.beans.AssignmentSubmissionBean;
-import org.sakaiproject.assignment2.tool.params.AssignmentAddViewParams;
+import org.sakaiproject.assignment2.tool.params.AssignmentViewParams;
 import org.sakaiproject.assignment2.tool.params.AssignmentGradeAssignmentViewParams;
 import org.sakaiproject.assignment2.tool.params.AssignmentGradeViewParams;
 import org.sakaiproject.assignment2.tool.producers.renderers.NavBarRenderer;
@@ -163,7 +163,7 @@ public class AssignmentViewSubmissionsProducer implements ViewComponentProducer,
 
         //Assignment Details
         UIMessage.make(tofill, "assignment_details", "assignment2.assignment_grade-assignment.assignment_details");
-        UIInternalLink.make(tofill, "assignment_details_edit", new AssignmentAddViewParams(AssignmentProducer.VIEW_ID, assignment.getAssignmentId()));
+        UIInternalLink.make(tofill, "assignment_details_edit", new AssignmentViewParams(AssignmentProducer.VIEW_ID, assignment.getAssignmentId()));
         UIMessage.make(tofill, "assignment_details.title_header", "assignment2.assignment_grade-assignment.assignment_details.title");
         UIOutput.make(tofill, "assignment_details.title", assignment.getTitle());
         UIMessage.make(tofill, "assignment_details.created_by_header", "assignment2.assignment_grade-assignment.assignment_details.created_by");

@@ -14,7 +14,7 @@ import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionAttachment;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.tool.beans.PreviewAssignmentSubmissionBean;
-import org.sakaiproject.assignment2.tool.params.AssignmentAddViewParams;
+import org.sakaiproject.assignment2.tool.params.AssignmentViewParams;
 import org.sakaiproject.assignment2.tool.params.SimpleAssignmentViewParams;
 import org.sakaiproject.assignment2.tool.producers.renderers.AttachmentListRenderer;
 import org.sakaiproject.tool.api.SessionManager;
@@ -50,7 +50,7 @@ public class FragmentSubmissionPreviewProducer implements ViewComponentProducer,
 	private SessionManager sessionManager;
 		
     public void fillComponents(UIContainer tofill, ViewParameters viewparams, ComponentChecker checker) {
-    	AssignmentAddViewParams params = (AssignmentAddViewParams) viewparams;
+    	AssignmentViewParams params = (AssignmentViewParams) viewparams;
     	
     	//get the assignmentsubmission object
     	AssignmentSubmission as = previewAssignmentSubmissionBean.getAssignmentSubmission();
@@ -88,7 +88,7 @@ public class FragmentSubmissionPreviewProducer implements ViewComponentProducer,
     }
     
     public ViewParameters getViewParameters() {
-        return new AssignmentAddViewParams();
+        return new AssignmentViewParams();
     }
     
 	public void setPreviewAssignmentSubmissionBean(PreviewAssignmentSubmissionBean previewAssignmentSubmissionBean) {
