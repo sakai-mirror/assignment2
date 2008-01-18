@@ -217,7 +217,7 @@ li .error p {
 	font-size: 1.2em;
 	padding: .5em 0; 
 	background: #ffe; /* This is our background color */
-	margin: 1em 0;
+	margin: 0 0 1em 0;
 }
 
 .navIntraTool 	 .breadCrumb {
