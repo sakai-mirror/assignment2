@@ -10,7 +10,7 @@
       <property name="messageLocator">
          <ref bean="messageLocator" />
       </property>
-      <property name="infoStyleClass" value="info" />
+      <property name="infoStyleClass" value="success" />
       <property name="errorStyleClass" value="alertMessageInline" />
    </bean>
 
@@ -38,7 +38,7 @@
    <!-- Override the default style of user messages -->
    <bean id="messageTemplateContributor" parent="templateContributorParent">
       <property name="baseDirectory" value="component-templates/" />
-      <property name="templateNames" value="Messages,Navbar,Pager,SortHeader,AttachmentList,GradebookDetails,StudentViewAssignment" />
+      <property name="templateNames" value="Messages,Pager,SortHeader,AttachmentList,GradebookDetails,StudentViewAssignment" />
    </bean>
    
    <!-- The beans listed here are session beans (they stick around) -->

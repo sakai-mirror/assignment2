@@ -9,7 +9,6 @@ import org.sakaiproject.assignment2.tool.beans.AssignmentSubmissionBean;
 import org.sakaiproject.assignment2.tool.params.AssignmentViewParams;
 import org.sakaiproject.assignment2.tool.params.AssignmentGradeAssignmentViewParams;
 import org.sakaiproject.assignment2.tool.params.AssignmentGradeViewParams;
-import org.sakaiproject.assignment2.tool.producers.renderers.NavBarRenderer;
 import org.sakaiproject.assignment2.tool.producers.renderers.PagerRenderer;
 import org.sakaiproject.assignment2.tool.producers.renderers.SortHeaderRenderer;
 import org.sakaiproject.assignment2.tool.producers.renderers.AttachmentListRenderer;
@@ -60,7 +59,6 @@ public class AssignmentViewSubmissionsProducer implements ViewComponentProducer,
     public static final String BULLET_UP_IMG_SRC = "/sakai-assignment2-tool/content/images/bullet_arrow_up.png";
     public static final String BULLET_DOWN_IMG_SRC = "/sakai-assignment2-tool/content/images/bullet_arrow_down.png";
 
-    private NavBarRenderer navBarRenderer;
     private PagerRenderer pagerRenderer;
     private MessageLocator messageLocator;
     private AssignmentLogic assignmentLogic;
@@ -116,7 +114,8 @@ public class AssignmentViewSubmissionsProducer implements ViewComponentProducer,
 	        	UIOutput.make(tofill, "edit_gb_item_li");
 	        	
 		        String url = "/direct/gradebook-item/_/gradebookItem/" + externalLogic.getCurrentContextId();
-		        String getParams = "?TB_iframe=true&width=700&height=500&KeepThis=true";
+		        String finishedURL = externalLogic.getAssignmentViewUrl(FinishedHelperProducer.VIEWID);
+		        String getParams = "?TB_iframe=true&width=700&height=500&KeepThis=true&finishURL=" + finishedURL;
 		        		
 		        UILink helplink = UIInternalLink.make(tofill, "gradebook_item_edit_helper",
 		        		UIMessage.make("assignment2.assignment_grade-assignment.gradebook_helper"),
@@ -245,11 +244,7 @@ public class AssignmentViewSubmissionsProducer implements ViewComponentProducer,
     public void setMessageLocator(MessageLocator messageLocator) {
         this.messageLocator = messageLocator;
     }
-    
-    public void setNavBarRenderer(NavBarRenderer navBarRenderer) {
-        this.navBarRenderer = navBarRenderer;
-    }
-    
+
     public void setPagerRenderer(PagerRenderer pagerRenderer){
     	this.pagerRenderer = pagerRenderer;
     }

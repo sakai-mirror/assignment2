@@ -4,6 +4,7 @@ import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
+import org.sakaiproject.assignment2.tool.producers.FinishedHelperProducer;
 import org.sakaiproject.entitybroker.EntityBroker;
 import org.sakaiproject.entitybroker.IdEntityReference;
 
@@ -40,10 +41,12 @@ public class GradebookDetailsRenderer {
     	//Grading Helper Link
         String url = "/direct/grade-gradebook-item/_/gradeGradebookItem/" + externalLogic.getCurrentContextId() +
         	"/" + assignment.getGradableObjectId() + "/" + userId; 
+        String finishedURL = externalLogic.getAssignmentViewUrl(FinishedHelperProducer.VIEWID);
+        String getParams = "?TB_iframe=true&width=700&height=500&KeepThis=true&finishURL=" + finishedURL;
         
         UILink.make(joint, "gradebook_grading_helper",
         		UIMessage.make("assignment2.assignment_grade.gradebook_grade"),
-        		url + "?TB_iframe=true&width=700&height=400&KeepThis=true");
+        		url + getParams);
      
         UIOutput.make(joint, "gradebook_grade", (as!= null && as.getGradebookGrade() != null ? as.getGradebookGrade() : ""));
         UIOutput.make(joint, "gradebook_comment", (as != null && as.getGradebookComment() != null ? as.getGradebookComment() : ""));

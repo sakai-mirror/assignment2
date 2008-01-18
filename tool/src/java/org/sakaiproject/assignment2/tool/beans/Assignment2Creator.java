@@ -42,7 +42,7 @@ public class Assignment2Creator {
     	
     	togo.setOpenTime(openDate);
     	togo.setDueDateForUngraded(closeDate);
-    	togo.setAcceptUntilTime(closeDate);
+    	//togo.setAcceptUntilTime(closeDate);
     	
     	return togo;
     }

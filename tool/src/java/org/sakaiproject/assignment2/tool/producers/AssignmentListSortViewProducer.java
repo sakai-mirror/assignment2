@@ -16,7 +16,6 @@ import org.sakaiproject.assignment2.tool.params.SimpleAssignmentViewParams;
 import org.sakaiproject.assignment2.tool.params.AssignmentViewParams;
 import org.sakaiproject.assignment2.tool.producers.AssignmentProducer;
 import org.sakaiproject.assignment2.tool.producers.AssignmentViewSubmissionsProducer;
-import org.sakaiproject.assignment2.tool.producers.renderers.NavBarRenderer;
 import org.sakaiproject.assignment2.tool.producers.renderers.PagerRenderer;
 import org.sakaiproject.assignment2.tool.producers.renderers.SortHeaderRenderer;
 
@@ -49,12 +48,10 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
         return VIEW_ID;
     }
 
-    private NavBarRenderer navBarRenderer;
     private PagerRenderer pagerRenderer;
     private MessageLocator messageLocator;
     private AssignmentLogic assignmentLogic;
     private ExternalLogic externalLogic;
-    private ExternalGradebookLogic gradebookLogic;
     private AssignmentPermissionLogic permissionLogic;
     private Locale locale;
     private Assignment2Bean assignment2Bean;
@@ -204,10 +201,6 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
     public void setMessageLocator(MessageLocator messageLocator) {
         this.messageLocator = messageLocator;
     }
- 
-    public void setNavBarRenderer(NavBarRenderer navBarRenderer) {
-        this.navBarRenderer = navBarRenderer;
-    }
     
     public void setPagerRenderer(PagerRenderer pagerRenderer) {
     	this.pagerRenderer = pagerRenderer;
@@ -232,10 +225,6 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
     public void setSortHeaderRenderer(SortHeaderRenderer sortHeaderRenderer) {
     	this.sortHeaderRenderer = sortHeaderRenderer;
     }
-
-	public void setExternalGradebookLogic(ExternalGradebookLogic gradebookLogic) {
-		this.gradebookLogic = gradebookLogic;
-	}
 	
 	public void setPermissionLogic(AssignmentPermissionLogic permissionLogic) {
 		this.permissionLogic = permissionLogic;

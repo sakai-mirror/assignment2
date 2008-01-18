@@ -36,11 +36,9 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
 	
 	private PagerRenderer pagerRenderer;
     private AssignmentLogic assignmentLogic;
-    private ExternalLogic externalLogic;
     private Locale locale;
     private Assignment2Bean assignment2Bean;
     private SortHeaderRenderer sortHeaderRenderer;
-    private AssignmentSubmissionLogic submissionLogic;
 
     public static final String DEFAULT_SORT_DIR = AssignmentLogic.SORT_DIR_ASC;
     public static final String DEFAULT_OPPOSITE_SORT_DIR = AssignmentLogic.SORT_DIR_DESC;
@@ -57,7 +55,6 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
 
 	
 	public void fillComponents(UIContainer tofill, ViewParameters viewparams, ComponentChecker checker) {
-    	String currentUserId = externalLogic.getCurrentUserId();
     	
     	// use a date which is related to the current users locale
         DateFormat df = DateFormat.getDateInstance(DateFormat.MEDIUM, locale);
@@ -146,11 +143,7 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
     public void setAssignmentLogic (AssignmentLogic assignmentLogic) {
     	this.assignmentLogic = assignmentLogic;
     }
-    
-    public void setExternalLogic(ExternalLogic externalLogic) {
-    	this.externalLogic = externalLogic;
-    }
-    
+   
     public void setLocale(Locale locale) {
     	this.locale = locale;
     }
@@ -162,8 +155,4 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
     public void setSortHeaderRenderer(SortHeaderRenderer sortHeaderRenderer) {
     	this.sortHeaderRenderer = sortHeaderRenderer;
     }
-
-	public void setSubmissionLogic(AssignmentSubmissionLogic submissionLogic) {
-		this.submissionLogic = submissionLogic;
-	}
 }

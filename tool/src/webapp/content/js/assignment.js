@@ -71,6 +71,21 @@ function update_due_date(){
 	});
 }
 
+function show_accept_until(){
+	el = $("input:checkbox[name='require_accept_until']").get(0);
+	if (el){
+		if(el.checked){
+			$(el).parents("fieldset:first").next('div').show();
+			$(el).parents("fieldset:first").next('div').next('fieldset').show();
+		}else {
+			$(el).parents("fieldset:first").next('div').hide();
+			$(el).parents("fieldset:first").next('div').next('fieldset').hide();
+		}
+		
+	}
+	a2SetMainFrameHeight();
+}
+
 function update_allow_resub(){
 	el = $("input:checkbox[@name='allow_resubmit']").get(0);
 	if (el){

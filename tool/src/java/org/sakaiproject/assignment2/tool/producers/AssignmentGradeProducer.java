@@ -10,15 +10,12 @@ import java.util.Stack;
 
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
-import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.model.AssignmentFeedbackAttachment;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
-import org.sakaiproject.assignment2.tool.beans.Assignment2Bean;
-import org.sakaiproject.assignment2.tool.beans.PreviewAssignmentBean;
 import org.sakaiproject.assignment2.tool.params.AssignmentGradeAssignmentViewParams;
 import org.sakaiproject.assignment2.tool.params.AssignmentGradeViewParams;
 import org.sakaiproject.assignment2.tool.params.FilePickerHelperViewParams;
@@ -26,11 +23,8 @@ import org.sakaiproject.assignment2.tool.params.SimpleAssignmentViewParams;
 import org.sakaiproject.assignment2.tool.producers.fragments.FragmentAttachmentsProducer;
 import org.sakaiproject.assignment2.tool.producers.fragments.FragmentSubmissionGradePreviewProducer;
 import org.sakaiproject.assignment2.tool.producers.fragments.FragmentGradebookDetailsProducer;
-import org.sakaiproject.assignment2.tool.producers.renderers.NavBarRenderer;
 import org.sakaiproject.assignment2.tool.producers.renderers.AttachmentListRenderer;
 import org.sakaiproject.assignment2.tool.producers.renderers.GradebookDetailsRenderer;
-import org.sakaiproject.entitybroker.EntityBroker;
-import org.sakaiproject.entitybroker.IdEntityReference;
 import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.tool.api.ToolSession;
 
@@ -44,7 +38,6 @@ import uk.org.ponder.rsf.components.UIELBinding;
 import uk.org.ponder.rsf.components.UIForm;
 import uk.org.ponder.rsf.components.UIInput;
 import uk.org.ponder.rsf.components.UIInternalLink;
-import uk.org.ponder.rsf.components.UILink;
 import uk.org.ponder.rsf.components.UIMessage;
 import uk.org.ponder.rsf.components.UIOutput;
 import uk.org.ponder.rsf.components.UIVerbatim;
@@ -68,21 +61,14 @@ public class AssignmentGradeProducer implements ViewComponentProducer, Navigatio
         return VIEW_ID;
     }
     
-    
-    private NavBarRenderer navBarRenderer;
     private TextInputEvolver richTextEvolver;
     private MessageLocator messageLocator;
     private AssignmentLogic assignmentLogic;
     private ExternalLogic externalLogic;
-    private ExternalGradebookLogic externalGradebookLogic;
-    private PreviewAssignmentBean previewAssignmentBean;
     private Locale locale;
-    private Assignment2Bean assignment2Bean;
     private SessionManager sessionManager;
-    private EntityBeanLocator assignment2BeanLocator;
     private AttachmentListRenderer attachmentListRenderer;
     private AssignmentSubmissionLogic submissionLogic;
-    private EntityBroker entityBroker;
     private GradebookDetailsRenderer gradebookDetailsRenderer;
     private EntityBeanLocator asvEntityBeanLocator;
 		
@@ -335,11 +321,6 @@ public class AssignmentGradeProducer implements ViewComponentProducer, Navigatio
     public void setMessageLocator(MessageLocator messageLocator) {
         this.messageLocator = messageLocator;
     }
-
-
-    public void setNavBarRenderer(NavBarRenderer navBarRenderer) {
-        this.navBarRenderer = navBarRenderer;
-    }
     
     public void setRichTextEvolver(TextInputEvolver richTextEvolver) {
         this.richTextEvolver = richTextEvolver;
@@ -353,28 +334,12 @@ public class AssignmentGradeProducer implements ViewComponentProducer, Navigatio
     	this.externalLogic = externalLogic;
     }
     
-    public void setExternalGradebookLogic(ExternalGradebookLogic externalGradebookLogic) {
-    	this.externalGradebookLogic = externalGradebookLogic;
-    }
-    
-    public void setPreviewAssignmentBean(PreviewAssignmentBean previewAssignmentBean) {
-    	this.previewAssignmentBean = previewAssignmentBean;
-    }
-    
     public void setLocale(Locale locale) {
     	this.locale = locale;
     }
-    
-    public void setAssignment2Bean(Assignment2Bean assignment2Bean) {
-    	this.assignment2Bean = assignment2Bean;
-    }
-    
+
 	public void setSessionManager(SessionManager sessionManager) {
 		this.sessionManager = sessionManager;
-	}
-	
-	public void setAssignment2EntityBeanLocator(EntityBeanLocator entityBeanLocator) {
-		this.assignment2BeanLocator = entityBeanLocator;
 	}
 	
 	public void setAttachmentListRenderer(AttachmentListRenderer attachmentListRenderer){
@@ -384,10 +349,6 @@ public class AssignmentGradeProducer implements ViewComponentProducer, Navigatio
 	public void setSubmissionLogic(AssignmentSubmissionLogic submissionLogic) {
 		this.submissionLogic = submissionLogic;
 	}
-	
-    public void setEntityBroker(EntityBroker entityBroker) {
-        this.entityBroker = entityBroker;
-    }
     
     public void setGradebookDetailsRenderer(GradebookDetailsRenderer gradebookDetailsRenderer){
 		this.gradebookDetailsRenderer = gradebookDetailsRenderer;

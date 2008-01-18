@@ -1,12 +1,9 @@
 package org.sakaiproject.assignment2.tool.producers.fragments;
 
 import java.text.DateFormat;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
-import java.util.regex.Pattern;
-import java.util.regex.Matcher;
 
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
@@ -20,7 +17,6 @@ import org.sakaiproject.assignment2.tool.producers.renderers.AttachmentListRende
 import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.tool.api.ToolSession;
 
-import uk.org.ponder.beanutil.entity.EntityBeanLocator;
 import uk.org.ponder.rsf.components.UIContainer;
 import uk.org.ponder.rsf.components.UIMessage;
 import uk.org.ponder.rsf.components.UIOutput;
@@ -38,9 +34,7 @@ public class FragmentSubmissionGradePreviewProducer implements ViewComponentProd
     public String getViewID() {
         return VIEW_ID;
     }
-
-
-    private AssignmentLogic assignmentLogic;
+    
     private ExternalLogic externalLogic;
 	private PreviewAssignmentSubmissionBean previewAssignmentSubmissionBean;
 	private Locale locale;
@@ -54,7 +48,6 @@ public class FragmentSubmissionGradePreviewProducer implements ViewComponentProd
         DateFormat df = DateFormat.getDateInstance(DateFormat.MEDIUM, locale);
     	
     	UIMessage.make(tofill, "page-title", "assignment2.assignment_preview.title");
-        //navBarRenderer.makeNavBar(tofill, "navIntraTool:", VIEW_ID);
 
     	AssignmentSubmission as = previewAssignmentSubmissionBean.getAssignmentSubmission();
     	AssignmentSubmissionVersion asv = previewAssignmentSubmissionBean.getAssignmentSubmissionVersion();
@@ -108,10 +101,6 @@ public class FragmentSubmissionGradePreviewProducer implements ViewComponentProd
 	public String getContentType() {
 		return ContentTypeInfoRegistry.HTML_FRAGMENT;
 	}
-
-    public void setAssignmentLogic(AssignmentLogic assignmentLogic) {
-    	this.assignmentLogic = assignmentLogic;
-    }
     
     public void setExternalLogic(ExternalLogic externalLogic) {
     	this.externalLogic = externalLogic;

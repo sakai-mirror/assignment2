@@ -123,6 +123,7 @@ fieldset fieldset legend {
 
 form fieldset fieldset li {
 	margin-bottom: 0;
+	margin-left: 0;
 	padding: 0;
 }
 
@@ -159,6 +160,14 @@ li fieldset ol li p.instruction {
 
 
 /* Errors/Notifications ========================================*/
+
+li.alertMessageInline {
+	display: inline;	
+}
+
+div.generalErrors li.alertMessageInline {
+	display: block;	
+}
 
 .messages {
 	xbackground: url("/sakai-assignment2-tool/content/images/error-arrow.png") no-repeat .5em 0;

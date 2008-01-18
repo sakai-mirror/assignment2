@@ -24,21 +24,19 @@
 <body>
 
 <div class="portletBody">
-	<ul rsf:id="navIntraTool:" class="navIntraTool">
-	</ul>
 	
 	<ul class="breadCrumb">
 		<li><a rsf:id="breadcrumb">Assignment List</a></li>
 		<li rsf:id="last_breadcrumb" class="lastCrumb">Add Assignment</li>
 	</ul>
 	
-	<div rsf:id="message-for:*" class="error">
-		<ul style="margin:0px;">
+
+	<div class="generalErrors">
+		<ul rsf:id="message-for:*" style="margin:0px;">
 			<li>Message for user here</li>
 		</ul>
 	</div>
 	
-	<h3 rsf:id="heading">Add Assignment</h3>
 	<p rsf:id="instructions" class="instruction">Complete the form and choose an action below. <span class="reqStar">*</span> Indicates required information.</p>
 
 	<form rsf:id="assignment_form">
@@ -48,7 +46,7 @@
 			<li>
 				<label rsf:id="title_label" id="title_label"><span class="reqStar">*</span> Title</label> 
 				<input rsf:id="title" type="text" size="30" maxlength="100"/>
-				<p rsf:id="message-for:title">This is an example error: Adding an assignment requires a title</p>
+				<span rsf:id="message-for:title">This is an example error: Adding an assignment requires a title</span>
 			</li>
 			<li>
 				<label rsf:id="msg=assignment2.assignment_add.assignment_instructions" class="block">Assignment Instructions</label>
@@ -124,9 +122,18 @@
 				</p>
 			</li>
 			<li>
-				<label rsf:id="msg=assignment2.assignment_add.accept_until">Accept Until</label> <input rsf:id="accept_until:" value="12/31/2007"/>
+				<label rsf:id="msg=assignment2.assignment_add.accept_until">Accept Until</label> 
+				<fieldset>
+					<ol>
+						<li>
+							<input rsf:id="require_accept_until" type="checkbox" />
+							<label rsf:id="require_accept_until_label">Require Accept Until Date?</label>
+						</li>
+					</ol>
+				</fieldset>
+				<div class="indent" rsf:id="accept_until_container"><input rsf:id="accept_until:" value="12/31/2007"/></div>
 				<p rsf:id="message-for:accept_until"></p>
-				<fieldset class="indent">
+				<fieldset class="indent" rsf:id="accept_until_until_fieldset">
 					<ol>
 						<li>
 							<input rsf:id="accept_until_until" id="accept_until_until" type="checkbox" /> 
@@ -282,6 +289,10 @@ $(document).ready(function(){
 		this.onclick = groups_toggle;
 	});
 	groups_toggle();
+	//Init require accept until date checkboxes
+	$("input[name='require_accept_until']").each(function(){
+		this.onclick = show_accept_until;
+	});
 });
 //]]>
 </script>

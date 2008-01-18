@@ -10,7 +10,6 @@ import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.tool.params.PagerViewParams;
 import org.sakaiproject.assignment2.tool.producers.AssignmentListSortViewProducer;
-import org.sakaiproject.assignment2.tool.producers.renderers.NavBarRenderer;
 import org.sakaiproject.assignment2.tool.producers.renderers.PagerRenderer;
 
 import uk.org.ponder.messageutil.MessageLocator;
@@ -36,7 +35,6 @@ public class AssignmentListReorderProducer implements ViewComponentProducer, Vie
         return VIEW_ID;
     }
 
-    private NavBarRenderer navBarRenderer;
     private PagerRenderer pagerRenderer;
     private MessageLocator messageLocator;
     private AssignmentLogic assignmentLogic;
@@ -59,7 +57,6 @@ public class AssignmentListReorderProducer implements ViewComponentProducer, Vie
         int total_count = entries != null ? entries.size() : 0;
     	
         UIMessage.make(tofill, "page-title", "assignment2.assignment_list-reorder.title");
-        navBarRenderer.makeNavBar(tofill, "navIntraTool:", VIEW_ID);
         pagerRenderer.makePager(tofill, "pagerDiv:", VIEW_ID, pagerparams, total_count);
         UIMessage.make(tofill, "heading", "assignment2.assignment_list-sortview.heading");
 
@@ -130,10 +127,6 @@ public class AssignmentListReorderProducer implements ViewComponentProducer, Vie
 
     public void setMessageLocator(MessageLocator messageLocator) {
         this.messageLocator = messageLocator;
-    }
-
-    public void setNavBarRenderer(NavBarRenderer navBarRenderer) {
-        this.navBarRenderer = navBarRenderer;
     }
     
     public void setPagerRenderer(PagerRenderer pagerRenderer){

@@ -43,6 +43,12 @@ public class Assignment2Bean {
 	private static final String CANCEL = "cancel";
 	private static final String FAILURE = "failure";
 	
+	
+	private Boolean requireAcceptUntil;
+	public void setRequireAcceptUntil(Boolean requireAcceptUntil) {
+		this.requireAcceptUntil = requireAcceptUntil;
+	}
+	
 	public Map selectedIds = new HashMap();
 	
     private TargettedMessageList messages;
@@ -102,6 +108,10 @@ public class Assignment2Bean {
 	
 	private String internalProcessPost(Assignment2 assignment, String key){
 		assignment.setDraft(Boolean.FALSE);
+		
+		if (this.requireAcceptUntil != null && this.requireAcceptUntil == Boolean.FALSE) {
+			assignment.setAcceptUntilTime(null);
+		}
 		
 		assignment.setModifiedTime(new Date());
 		assignment.setModifiedBy(externalLogic.getCurrentUserId());
@@ -222,6 +232,9 @@ public class Assignment2Bean {
 	public String processActionPreview() {
 		for (String key : OTPMap.keySet()) {
 			Assignment2 assignment = OTPMap.get(key);
+			if (this.requireAcceptUntil != null && this.requireAcceptUntil == Boolean.FALSE) {
+				assignment.setAcceptUntilTime(null);
+			}
 			previewAssignmentBean.setAssignment(assignment);
 			previewAssignmentBean.setOTPKey(key);
 		}
@@ -241,6 +254,10 @@ public class Assignment2Bean {
 			assignment.setCreateTime(new Date());
 			assignment.setModifiedTime(new Date());
 			assignment.setModifiedBy(externalLogic.getCurrentUserId());
+
+			if (this.requireAcceptUntil != null && this.requireAcceptUntil == Boolean.FALSE) {
+				assignment.setAcceptUntilTime(null);
+			}
 			
 			//REMOVE THESE - TODO
 			assignment.setNotificationType(0);

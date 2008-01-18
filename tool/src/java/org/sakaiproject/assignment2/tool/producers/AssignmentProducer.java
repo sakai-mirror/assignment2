@@ -1,52 +1,35 @@
 package org.sakaiproject.assignment2.tool.producers;
 
-import org.sakaiproject.assignment2.tool.beans.Assignment2Bean;
-import org.sakaiproject.assignment2.tool.beans.Assignment2Creator;
-import org.sakaiproject.assignment2.tool.beans.PreviewAssignmentBean;
 import org.sakaiproject.assignment2.tool.params.AssignmentViewParams;
-import org.sakaiproject.assignment2.tool.params.SimpleAssignmentViewParams;
 import org.sakaiproject.assignment2.tool.params.FilePickerHelperViewParams;
-import org.sakaiproject.assignment2.tool.params.ThickboxHelperViewParams;
-import org.sakaiproject.assignment2.tool.producers.renderers.NavBarRenderer;
 import org.sakaiproject.assignment2.tool.producers.renderers.AttachmentListRenderer;
 import org.sakaiproject.assignment2.tool.producers.fragments.FragmentAttachmentsProducer;
 import org.sakaiproject.assignment2.tool.producers.fragments.FragmentAssignment2SelectProducer;
 import org.sakaiproject.assignment2.tool.producers.fragments.FragmentAssignmentPreviewProducer;
-import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.GradebookItem;
 import org.sakaiproject.assignment2.model.Assignment2;
-import org.sakaiproject.assignment2.model.AssignmentAttachment;
-import org.sakaiproject.assignment2.model.AssignmentGroup;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
-import org.sakaiproject.entitybroker.EntityBroker;
-import org.sakaiproject.entitybroker.IdEntityReference;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 import java.lang.String;
 
-import uk.org.ponder.arrayutil.ListUtil;
 import uk.org.ponder.beanutil.entity.EntityBeanLocator;
-import uk.org.ponder.htmlutil.HTMLUtil;
 import uk.org.ponder.messageutil.MessageLocator;
 import uk.org.ponder.rsf.components.UIBoundBoolean;
-import uk.org.ponder.rsf.components.UIBoundString;
 import uk.org.ponder.rsf.components.UIBranchContainer;
 import uk.org.ponder.rsf.components.UICommand;
 import uk.org.ponder.rsf.components.UIContainer;
-import uk.org.ponder.rsf.components.UIELBinding;
 import uk.org.ponder.rsf.components.UIForm;
-import uk.org.ponder.rsf.components.UIInitBlock;
 import uk.org.ponder.rsf.components.UIInput;
 import uk.org.ponder.rsf.components.UIInternalLink;
 import uk.org.ponder.rsf.components.UILink;
@@ -61,8 +44,6 @@ import uk.org.ponder.rsf.components.decorators.UIFreeAttributeDecorator;
 import uk.org.ponder.rsf.components.decorators.UILabelTargetDecorator;
 import uk.org.ponder.rsf.evolvers.TextInputEvolver;
 import uk.org.ponder.rsf.evolvers.FormatAwareDateInputEvolver;
-import uk.org.ponder.rsf.flow.ARIResult;
-import uk.org.ponder.rsf.flow.ActionResultInterceptor;
 import uk.org.ponder.rsf.flow.jsfnav.NavigationCase;
 import uk.org.ponder.rsf.flow.jsfnav.NavigationCaseReporter;
 import uk.org.ponder.rsf.view.ComponentChecker;
@@ -70,7 +51,6 @@ import uk.org.ponder.rsf.view.ViewComponentProducer;
 import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
 import uk.org.ponder.rsf.viewstate.ViewParameters;
 import uk.org.ponder.rsf.viewstate.ViewParamsReporter;
-import uk.org.ponder.rsf.viewstate.ViewStateHandler;
 
 import org.sakaiproject.site.api.Group;
 import org.sakaiproject.tool.api.SessionManager;
@@ -85,23 +65,14 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
 
     String reqStar = "<span class=\"reqStar\">*</span>";
 
-    private NavBarRenderer navBarRenderer;
     private TextInputEvolver richTextEvolver;
     private MessageLocator messageLocator;
-    private AssignmentLogic assignmentLogic;
     private ExternalLogic externalLogic;
     private ExternalGradebookLogic externalGradebookLogic;
-    private PreviewAssignmentBean previewAssignmentBean;
     private Locale locale;
-    private Assignment2Bean assignment2Bean;
     private SessionManager sessionManager;
     private EntityBeanLocator assignment2BeanLocator;
     private AttachmentListRenderer attachmentListRenderer;
-    private EntityBroker entityBroker;
-    private ViewStateHandler viewStateHandler;
-    public void setEntityBroker(EntityBroker entityBroker) {
-       this.entityBroker = entityBroker;
-    }
     
 	/*
 	 * You can change the date input to accept time as well by uncommenting the lines like this:
@@ -172,6 +143,15 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
     	
         UIForm form = UIForm.make(tofill, "assignment_form");
         
+    	//Setting up Dates
+    	Calendar cal = Calendar.getInstance();
+    	cal.set(Calendar.HOUR_OF_DAY, 12);
+    	cal.set(Calendar.MINUTE, 0);
+    	Date openDate = cal.getTime();
+    	cal.add(Calendar.DAY_OF_YEAR, 7);
+    	cal.set(Calendar.HOUR_OF_DAY, 17);
+    	Date closeDate = cal.getTime();
+        
         //set dateEvolver
         dateEvolver.setStyle(FormatAwareDateInputEvolver.DATE_TIME_INPUT);
         
@@ -189,8 +169,28 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
 		UIInput dueDateField = UIInput.make(form, "due_date:", assignment2OTP + ".dueDateForUngraded");
 		dateEvolver.evolveDateInput(dueDateField, null);
 		
+		
+		Boolean require_date = (assignment.getAcceptUntilTime() != null);
+		UIBoundBoolean require = UIBoundBoolean.make(form, "require_accept_until", "#{Assignment2Bean.requireAcceptUntil}", require_date);
+		UIMessage require_label = UIMessage.make(form, "require_accept_until_label", "assignment2.assignment_add.require_accept_until");
+		UILabelTargetDecorator.targetLabel(require_label, require);
+		
+		UIOutput require_container = UIOutput.make(form, "accept_until_container");
 		UIInput acceptUntilTimeField = UIInput.make(form, "accept_until:", assignment2OTP + ".acceptUntilTime");
-        dateEvolver.evolveDateInput(acceptUntilTimeField, null);
+        dateEvolver.evolveDateInput(acceptUntilTimeField, (assignment.getAcceptUntilTime() != null ? assignment.getAcceptUntilTime() : closeDate));
+        
+        //Resubmit until until date
+        UIOutput accept_until_until_fieldset = UIOutput.make(form, "accept_until_until_fieldset");
+        UIMessage accept_label = UIMessage.make(form, "accept_until_until_label", "assignment2.assignment_add.accept_until_until");
+        UIBoundBoolean accept = UIBoundBoolean.make(form, "accept_until_until", assignment2OTP + ".allowResubmit");
+        UILabelTargetDecorator.targetLabel(accept_label, accept);
+
+        if (!require_date){
+        	Map attrmap = new HashMap();
+        	attrmap.put("style", "display:none");
+        	require_container.decorators = new DecoratorList(new UIFreeAttributeDecorator(attrmap));
+        	accept_until_until_fieldset.decorators = new DecoratorList(new UIFreeAttributeDecorator(attrmap));
+        }
         
         UIVerbatim.make(form, "student_submissions_label", messageLocator.getMessage("assignment2.assignment_add.student_submissions",
         		new Object[]{ reqStar }));
@@ -207,7 +207,7 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
         		"assignment2.submission_type." + String.valueOf(AssignmentConstants.SUBMIT_INLINE_AND_ATTACH),
         		"assignment2.submission_type." + String.valueOf(AssignmentConstants.SUBMIT_NON_ELECTRONIC)
         };
-        UISelect selectSubmission =UISelect.make(form, "submission_type", submission_type_values,
+        UISelect.make(form, "submission_type", submission_type_values,
         		submisison_type_labels, assignment2OTP + ".submissionType").setMessageKeys();
         
         //Rich Text Input
@@ -222,11 +222,6 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
         	UIBoundBoolean announcement = UIBoundBoolean.make(form, "announcement", assignment2OTP + ".hasAnnouncement");
         	UILabelTargetDecorator.targetLabel(announcement_label, announcement);
         }
-        //Resubmit until until date
-        UIMessage accept_label = UIMessage.make(form, "accept_until_until_label", "assignment2.assignment_add.accept_until_until");
-        UIBoundBoolean accept = UIBoundBoolean.make(form, "accept_until_until", assignment2OTP + ".allowResubmit");
-        UILabelTargetDecorator.targetLabel(accept_label, accept);
-        
         
         //Honor Pledge
         String[] honor_pledge_labels = new String[]{
@@ -314,8 +309,9 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
         //Links to gradebook Helper
         String url = "/direct/gradebook-item/_/gradebookItem/" + externalLogic.getCurrentContextId();
         //TODO URL encode this so I can put it as a url parameter
-        String finishedURL = viewStateHandler.getFullURL(new SimpleViewParameters(FinishedHelperProducer.VIEWID));
-        String getParams = "?TB_iframe=true&width=700&height=500&KeepThis=true&finishURL="+finishedURL;
+        //TODO put this in externalLogic
+        String finishedURL = externalLogic.getAssignmentViewUrl(FinishedHelperProducer.VIEWID);
+        String getParams = "?TB_iframe=true&width=700&height=300&KeepThis=true&finishURL="+finishedURL;
         UILink.make(form, "gradebook_item_new_helper",
         		UIMessage.make("assignment2.assignment_add.gradebook_item_new_helper"),
         		url + getParams);
@@ -325,7 +321,7 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
         		url + "/" + selectedId + getParams);
         if (selectedId.equals("")){
         	Map attrmap = new HashMap();
-        	attrmap.put("display", "none");
+        	attrmap.put("style", "display:none");
         	helplink.decorators = new DecoratorList(new UIFreeAttributeDecorator(attrmap));
         }
         
@@ -428,19 +424,11 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
     public void setMessageLocator(MessageLocator messageLocator) {
         this.messageLocator = messageLocator;
     }
-
-
-    public void setNavBarRenderer(NavBarRenderer navBarRenderer) {
-        this.navBarRenderer = navBarRenderer;
-    }
     
     public void setRichTextEvolver(TextInputEvolver richTextEvolver) {
         this.richTextEvolver = richTextEvolver;
     }
     
-    public void setAssignmentLogic(AssignmentLogic assignmentLogic) {
-    	this.assignmentLogic = assignmentLogic;
-    }
     
     public void setExternalLogic(ExternalLogic externalLogic) {
     	this.externalLogic = externalLogic;
@@ -450,16 +438,8 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
     	this.externalGradebookLogic = externalGradebookLogic;
     }
     
-    public void setPreviewAssignmentBean(PreviewAssignmentBean previewAssignmentBean) {
-    	this.previewAssignmentBean = previewAssignmentBean;
-    }
-    
     public void setLocale(Locale locale) {
     	this.locale = locale;
-    }
-    
-    public void setAssignment2Bean(Assignment2Bean assignment2Bean) {
-    	this.assignment2Bean = assignment2Bean;
     }
     
 	public void setSessionManager(SessionManager sessionManager) {
@@ -472,9 +452,5 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
 	
 	public void setAttachmentListRenderer(AttachmentListRenderer attachmentListRenderer){
 		this.attachmentListRenderer = attachmentListRenderer;
-	}
-
-	public void setViewStateHandler(ViewStateHandler viewStateHandler) {
-		this.viewStateHandler = viewStateHandler;
 	}
 }
