@@ -234,32 +234,65 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
 			throw new IllegalArgumentException("null assignment passed to getViewableStudentsForUserForItem");
 		}
 		
-		List<String> viewableStudents = new ArrayList();
+		return getAvailableStudentsForUserForItem(assignment, AssignmentConstants.VIEW);
+	}
+	
+	public List<String> getGradableStudentsForUserForItem(Assignment2 assignment) {
+		if (assignment == null) {
+			throw new IllegalArgumentException("null assignment passed to getGradableStudentsForUserForItem");
+		}
+		
+		return getAvailableStudentsForUserForItem(assignment, AssignmentConstants.GRADE);
+	}
+	
+	private List<String> getAvailableStudentsForUserForItem(Assignment2 assignment, String gradeOrView) {
+		if (assignment == null) {
+			throw new IllegalArgumentException("null assignment passed to getAvailableStudentsForUserForItem");
+		}
+		
+		if (gradeOrView == null || (!gradeOrView.equals(AssignmentConstants.GRADE) && !gradeOrView.equals(AssignmentConstants.VIEW))) {
+			throw new IllegalArgumentException("Invalid gradeOrView " + gradeOrView + " passed to getAvailableStudentsForUserForItem");
+		}
+		
+		List<String> availStudents = new ArrayList();
 		
 		String contextId = externalLogic.getCurrentContextId();
 		
 		List<String> allStudentsInSite = externalLogic.getStudentsInSite(contextId);
 		
 		if (gradebookLogic.isCurrentUserAbleToGradeAll(contextId)) {
-			viewableStudents = allStudentsInSite;
+			availStudents = allStudentsInSite;
 		} else if(gradebookLogic.isCurrentUserAbleToGrade(contextId)) {
 			if (assignment.isUngraded()) {
 				Set sharedStudents = getStudentsInCurrentUsersSections();
 				if (sharedStudents != null) {
-					viewableStudents.addAll(sharedStudents);
+					availStudents.addAll(sharedStudents);
 				}
 			} else {
 				// we need to get the students that are viewable in the gb
 				if (assignment.getGradableObjectId() != null) {
-					Map studentIdFunctionMap = gradebookLogic.getViewableStudentsForGradedItemMap(contextId, assignment.getGradableObjectId());
+					Map studentIdFunctionMap = 
+						gradebookLogic.getViewableStudentsForGradedItemMap(contextId, assignment.getGradableObjectId());
 					if (studentIdFunctionMap != null) {
-						viewableStudents.addAll(studentIdFunctionMap.keySet());
+						if (gradeOrView.equals(AssignmentConstants.VIEW)) {
+							availStudents.addAll(studentIdFunctionMap.keySet());
+						} else {
+							for (Iterator stIter = studentIdFunctionMap.keySet().iterator(); stIter.hasNext();) {
+								String studentId = (String)stIter.next();
+								if (studentId != null) {
+									String function = (String) studentIdFunctionMap.get(studentId);
+									if (function != null && function.equals(AssignmentConstants.GRADE)) {
+										availStudents.add(studentId);
+									}
+								}
+							}
+						}
 					}
 				}
 			}
 		}
 		
-		return viewableStudents;
+		return availStudents;
 	}
 	
 	/**
@@ -301,6 +334,47 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
 		}
 		
 		return sharedStudents;
+	}
+	
+	public boolean isUserAllowedToReleaseFeedbackForAssignment(Assignment2 assignment) {
+		// returns true if user is authorized to view at least one student for
+		// this assignment
+		if (assignment == null) {
+			throw new IllegalArgumentException("null assignment passed to isUserAllowedToReleaseFeedbackForAssignment");
+		}
+		boolean allowedToRelease = false;
+		String contextId = externalLogic.getCurrentContextId();
+		
+		// current user must have some sort of grading privileges in the gb
+		if (gradebookLogic.isCurrentUserAbleToGrade(contextId)) {
+
+			List<AssignmentGroup> assignGroupRestrictions = 
+				dao.findByProperties(AssignmentGroup.class, new String[] {"assignment"}, new Object[] {assignment});
+			
+			if (assignment.isUngraded()) {
+				if (assignGroupRestrictions == null || assignGroupRestrictions.isEmpty()) {
+					allowedToRelease = true;
+				} else {
+					// the user must be a member of a restricted group
+					List<String> userMemberships = externalLogic.getUserMembershipGroupIdList(externalLogic.getCurrentUserId());
+					assignment.setAssignmentGroupSet(new HashSet(assignGroupRestrictions));
+					if (userMembershipsOverlap(userMemberships, assignment.getListOfAssociatedGroupReferences())) {
+						allowedToRelease = true;
+					}
+				}
+			} else {
+				// we need to respect grading permissions
+				if (assignment.getGradableObjectId() != null) {
+					Map<String, String> studentIdFunctionMap = 
+						gradebookLogic.getViewableStudentsForGradedItemMap(contextId, assignment.getGradableObjectId());
+					if (studentIdFunctionMap != null && studentIdFunctionMap.containsValue(AssignmentConstants.GRADE)) {
+						allowedToRelease = true;
+					}
+				}
+			}
+		}
+		
+		return allowedToRelease;
 	}
 
 }

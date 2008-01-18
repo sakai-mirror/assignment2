@@ -99,10 +99,26 @@ public interface AssignmentPermissionLogic {
 	
 	/**
 	 * 
+	 * @param assignment
+	 * @return a list of student ids that the current user is able to submit
+	 * feedback for on the given assignment
+	 */
+	public List<String> getGradableStudentsForUserForItem(Assignment2 assignment);
+	
+	/**
+	 * 
 	 * @param contextId
 	 * @param assignment
 	 * @return true if the current user is allowed to make a submission for the
 	 * given assignment
 	 */
 	public boolean isUserAbleToMakeSubmissionForAssignment(String contextId, Assignment2 assignment);
+	
+	/**
+	 * 
+	 * @param assignment
+	 * @return true if the current user is authorized to submit feedback (not just view) for
+	 * at least one submission associated with the given assignment
+	 */
+	public boolean isUserAllowedToReleaseFeedbackForAssignment(Assignment2 assignment);
 }

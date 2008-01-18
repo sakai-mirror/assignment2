@@ -74,5 +74,22 @@
              		submission.assignment = :assignment and
              		versions.draft = false]]>
   	</query>
+  	<query name="findSubmissionsWithHistoryForAssignmentAndStudents">
+    <![CDATA[from org.sakaiproject.assignment2.model.AssignmentSubmission submission
+    				 left join fetch submission.submissionHistorySet versions
+    				 left join fetch versions.feedbackAttachSet
+    				 left join fetch versions.submissionAttachSet
+             where submission.userId in (:studentIdList) and
+             		submission.assignment = :assignment]]>
+  	</query>
+  	<query name="findSubmissionsWithHistoryForAssignmentAndStudentsNoDrafts">
+    <![CDATA[from org.sakaiproject.assignment2.model.AssignmentSubmission submission
+    				 left join fetch submission.submissionHistorySet versions
+    				 left join fetch versions.feedbackAttachSet
+    				 left join fetch versions.submissionAttachSet
+             where submission.userId in (:studentIdList) and
+             		submission.assignment = :assignment and
+             		versions.draft = false]]>
+  	</query>
   	
 </hibernate-mapping>

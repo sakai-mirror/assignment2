@@ -177,4 +177,30 @@ public interface AssignmentSubmissionLogic {
 	 */
 	public boolean isMostRecentVersionDraft(AssignmentSubmission submission);
 	
+	/**
+	 * set the version to "released" for all of the submissions that the current 
+	 * user is able to submit feedback for. if the user is only authorized for
+	 * a subset of the students for this assignment, the unauthorized students
+	 * will not be affected
+	 * @param assignment
+	 * @throws SecurityException if user is not allowed to submit feedback
+	 */
+	public void releaseAllFeedbackForAssignment(Assignment2 assignment);
+	
+	/**
+	 * set all of the non-draft versions for this submission to "released"
+	 * @param submission
+	 * @throws SecurityException if the current user is not authorized to 
+	 * submit feedback for the given submission
+	 */
+	public void releaseAllFeedbackForSubmission(AssignmentSubmission submission);
+	
+	/**
+	 * release the feedback for the given submission version to the submitter
+	 * @param version
+	 * @throws SecurityException if the current user is not authorized to 
+	 * submit feedback for the given submission
+	 */
+	public void releaseFeedbackForVersion(AssignmentSubmissionVersion version);
+	
 }

@@ -116,6 +116,18 @@ public interface AssignmentDao extends CompleteGenericDao {
 	
 	/**
 	 * 
+	 * @param studentIdList
+	 * @param assignment
+	 * @param includeDrafts - if true, will include draft versions in the history set
+	 * @return the AssignmentSubmission recs for the given students for the given assignment.
+	 * populates the submissionHistorySet with all of the AssignmentSubmissionVersions for
+	 * each submission. if no submission has been made, no rec will be returned
+	 * 
+	 */
+	public List<AssignmentSubmission> getSubmissionsWithVersionHistoryForStudentListAndAssignment(List<String> studentIdList, Assignment2 assignment, boolean includeDrafts);
+	
+	/**
+	 * 
 	 * @param submissionVersionId
 	 * @return the AssignmentSubmissionVersion with associated attachments for the given id.
 	 * returns null if no version exists with the given id

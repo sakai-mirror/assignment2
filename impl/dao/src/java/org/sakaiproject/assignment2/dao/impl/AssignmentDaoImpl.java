@@ -279,6 +279,30 @@ public class AssignmentDaoImpl extends HibernateCompleteGenericDao implements As
 		}
     }
     
+    public List<AssignmentSubmission> getSubmissionsWithVersionHistoryForStudentListAndAssignment(List<String> studentIdList, Assignment2 assignment, boolean includeDrafts) {
+    	if (assignment == null) {
+    		throw new IllegalArgumentException("null assignment passed to getSubmissionsWithVersionHistoryForStudentListAndAssignment");
+    	}
+    	
+    	List<AssignmentSubmission> submissionList = new ArrayList();
+    	
+    	if (studentIdList != null && !studentIdList.isEmpty()) {
+    		Query query;
+        	if (includeDrafts) {
+        		query = getSession().getNamedQuery("findSubmissionsWithHistoryForAssignmentAndStudents");
+        	} else {
+        		query = getSession().getNamedQuery("findSubmissionsWithHistoryForAssignmentAndStudentsNoDrafts");
+        	}
+        	query.setParameterList("studentIdList", studentIdList);
+        	query.setParameter("assignment", assignment);
+        	
+        	
+        	submissionList = query.list();
+    	}
+    	
+    	return submissionList;
+    }
+    
     public AssignmentSubmission getSubmissionWithVersionHistoryForStudentAndAssignment(String studentId, Assignment2 assignment, boolean includeDrafts) {
     	if (studentId == null || assignment == null) {
     		throw new IllegalArgumentException("null parameter passed to getSubmissionWithVersionHistoryForStudentAndAssignment");
@@ -295,6 +319,19 @@ public class AssignmentDaoImpl extends HibernateCompleteGenericDao implements As
     	
     	AssignmentSubmission submission = (AssignmentSubmission) query.uniqueResult();
     	
+    	if (submission != null) {
+    		setCurrentSubmissionGivenHistory(submission);
+    	}
+    	
+    	return submission;
+    }
+    
+    /**
+     * given a submission with populated version history, sets the currentVersion to
+     * the version with the highest id 
+     * @param submission
+     */
+    private void setCurrentSubmissionGivenHistory(AssignmentSubmission submission) {
     	if (submission != null && submission.getSubmissionHistorySet() != null) {
     		Map versionIdVersionMap = new HashMap();
     		Long maxVersionId = new Long(-1);
@@ -312,8 +349,6 @@ public class AssignmentDaoImpl extends HibernateCompleteGenericDao implements As
     			submission.setCurrentSubmissionVersion((AssignmentSubmissionVersion)versionIdVersionMap.get(maxVersionId));
     		}
     	}
-    	
-    	return submission;
     }
 
 }
