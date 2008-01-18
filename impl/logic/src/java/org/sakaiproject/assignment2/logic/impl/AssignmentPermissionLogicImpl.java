@@ -346,7 +346,10 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
 		String contextId = externalLogic.getCurrentContextId();
 		
 		// current user must have some sort of grading privileges in the gb
-		if (gradebookLogic.isCurrentUserAbleToGrade(contextId)) {
+		if (gradebookLogic.isCurrentUserAbleToGradeAll(contextId)) {
+			allowedToRelease = true;
+			
+		} else if (gradebookLogic.isCurrentUserAbleToGrade(contextId)) {
 
 			List<AssignmentGroup> assignGroupRestrictions = 
 				dao.findByProperties(AssignmentGroup.class, new String[] {"assignment"}, new Object[] {assignment});
@@ -357,8 +360,7 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
 				} else {
 					// the user must be a member of a restricted group
 					List<String> userMemberships = externalLogic.getUserMembershipGroupIdList(externalLogic.getCurrentUserId());
-					assignment.setAssignmentGroupSet(new HashSet(assignGroupRestrictions));
-					if (userMembershipsOverlap(userMemberships, assignment.getListOfAssociatedGroupReferences())) {
+					if (isUserAMemberOfARestrictedGroup(userMemberships, assignGroupRestrictions)) {
 						allowedToRelease = true;
 					}
 				}
