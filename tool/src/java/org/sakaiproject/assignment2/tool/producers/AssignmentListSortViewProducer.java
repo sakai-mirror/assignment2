@@ -67,6 +67,9 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
     	// use a date which is related to the current users locale
         DateFormat df = DateFormat.getDateInstance(DateFormat.MEDIUM, locale);        
         
+        //Edit Permission
+        Boolean edit_perm = permissionLogic.isCurrentUserAbleToEditAssignments(externalLogic.getCurrentContextId());
+        
     	//get parameters
     	AssignmentListSortViewParams params = (AssignmentListSortViewParams) viewparams;
     	if (params.sort_by == null) params.sort_by = DEFAULT_SORT_BY;
@@ -102,17 +105,16 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
         
         //UIMessage.make(tofill, "heading", "assignment2.assignment_list-sortview.heading");
         //Links
-        UIInternalLink.make(tofill, "assignment_list-add-assignment-link", UIMessage.make("assignment2.assignment_add.title"),
+        if (edit_perm){
+        	UIOutput.make(tofill, "navIntraTool");
+        	UIInternalLink.make(tofill, "assignment_list-add-assignment-link", UIMessage.make("assignment2.assignment_add.title"),
         		new SimpleViewParameters(AssignmentProducer.VIEW_ID));
-        /**
-        UIInternalLink.make(tofill, "assignment_list-reorder-link",
-					UIMessage.make("assignment2.assignment_list-reorder.title"),
-				new SimpleViewParameters(AssignmentListReorderProducer.VIEW_ID));
-        UIMessage.make(tofill, "current_page", "assignment2.assignment_list-sortview.title");
-        **/
-        
+        }
+                
         //table headers and sorting links
-        UIMessage.make(tofill, "tableheader.remove", "assignment2.assignment_list-sortview.tableheader.remove");
+        if (edit_perm){
+        	UIMessage.make(tofill, "tableheader.remove", "assignment2.assignment_list-sortview.tableheader.remove");
+        }
         sortHeaderRenderer.makeSortingLink(tofill, "tableheader.assignment", viewparams, 
         		AssignmentLogic.SORT_BY_TITLE, "assignment2.assignment_list-sortview.tableheader.assignment");
         sortHeaderRenderer.makeSortingLink(tofill, "tableheader.for", viewparams, 
@@ -137,15 +139,15 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
             return;
         }
         
-        //Edit Permission
-        Boolean edit_perm = permissionLogic.isCurrentUserAbleToEditAssignments(externalLogic.getCurrentContextId());
-        
         //Fill out Table
         for (Assignment2 assignment : entries){
         	UIBranchContainer row = UIBranchContainer.make(form, "assignment-row:");
-        	UIBoundBoolean.make(row, "assignment_row_remove", 
+        	if (edit_perm){
+        		UIOutput.make(row, "assignment_row_remove_col");
+        		UIBoundBoolean.make(row, "assignment_row_remove", 
         			"Assignment2Bean.selectedIds." + assignment.getAssignmentId().toString(),
         			Boolean.FALSE);
+        	}
         	UIMessage.make(row, "assignment_row_remove_label", "assignment2.assignment_list-sortview.assignment_row_remove_label");
         	UIOutput.make(row, "assignment_title", assignment.getTitle());
         	

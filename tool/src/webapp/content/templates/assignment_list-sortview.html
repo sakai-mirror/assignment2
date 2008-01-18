@@ -22,8 +22,6 @@
 <body>
 
 <div class="portletBody">
-	<ul rsf:id="navIntraTool:" class="navIntraTool">
-	</ul>
 	
 	<ul class="breadCrumb">
 		<li rsf:id="last_breadcrumb" class="lastCrumb">Last Breadcrumb</li>
@@ -31,12 +29,10 @@
 
 	<div rsf:id="message-for:*" class="debug_info">
 	</div>
-
-	<h3 rsf:id="heading">Assignment List</h3>
-
+	
 	<div rsf:id="pagerDiv:" class="listNav">
 	</div>
-	<div class="navIntraTool">
+	<div class="navIntraTool" rsf:id="navIntraTool">
 		<a rsf:id="assignment_list-add-assignment-link" href="">Add Assignment</a>
 		<!-- 
 		<span rsf:id="current_page">Sort Order View</span> | <a rsf:id="assignment_list-reorder-link" href="assignment_list-reorder.html">My Reorder View</a>	
@@ -64,7 +60,7 @@
 
 
 			<tr rsf:id="assignment-row:"> 
-				<td>
+				<td rsf:id="assignment_row_remove_col">
 					<input rsf:id="assignment_row_remove" type="checkbox" /> <label rsf:id="assignment_row_remove_label" class="skip">Remove</label>
 				</td>
 				<td headers="title">

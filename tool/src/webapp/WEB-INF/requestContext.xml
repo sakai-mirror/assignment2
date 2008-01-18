@@ -103,6 +103,7 @@
       <property name="sortHeaderRenderer" ref="SortHeaderRenderer" />
       <property name="attachmentListRenderer" ref="AttachmentListRenderer" />
       <property name="assignmentSubmissionBean" ref="AssignmentSubmissionBean" />
+      <property name="permissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentPermissionLogic" />
    </bean>
    
    <bean class="org.sakaiproject.assignment2.tool.producers.AssignmentGradeReportProducer">

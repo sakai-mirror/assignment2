@@ -15,6 +15,7 @@ import org.sakaiproject.assignment2.tool.producers.renderers.SortHeaderRenderer;
 import org.sakaiproject.assignment2.tool.producers.renderers.AttachmentListRenderer;
 import org.sakaiproject.assignment2.tool.producers.AssignmentGradeProducer;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
+import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
@@ -29,6 +30,7 @@ import uk.org.ponder.rsf.components.UIContainer;
 import uk.org.ponder.rsf.components.UIForm;
 import uk.org.ponder.rsf.components.UIInput;
 import uk.org.ponder.rsf.components.UIInternalLink;
+import uk.org.ponder.rsf.components.UILink;
 import uk.org.ponder.rsf.components.UIMessage;
 import uk.org.ponder.rsf.components.UIOutput;
 import uk.org.ponder.rsf.components.UIVerbatim;
@@ -69,6 +71,7 @@ public class AssignmentViewSubmissionsProducer implements ViewComponentProducer,
     private SortHeaderRenderer sortHeaderRenderer;
     private AttachmentListRenderer attachmentListRenderer;
     private AssignmentSubmissionBean submissionBean;
+    private AssignmentPermissionLogic permissionLogic;
     
     private Long assignmentId;
     
@@ -86,6 +89,9 @@ public class AssignmentViewSubmissionsProducer implements ViewComponentProducer,
     	//use a date which is related to the current users locale
         DateFormat df = DateFormat.getDateInstance(DateFormat.MEDIUM, locale);
     	
+        //Edit Permission
+        Boolean edit_perm = permissionLogic.isCurrentUserAbleToEditAssignments(externalLogic.getCurrentContextId());
+        
     	//get parameters
     	if (params.sort_by == null) params.sort_by = DEFAULT_SORT_BY;
     	if (params.sort_dir == null) params.sort_dir = DEFAULT_SORT_DIR;
@@ -102,6 +108,25 @@ public class AssignmentViewSubmissionsProducer implements ViewComponentProducer,
         		new SimpleViewParameters(AssignmentListSortViewProducer.VIEW_ID));
         UIMessage.make(tofill, "last_breadcrumb", "assignment2.assignment_grade-assignment.heading", new Object[] { assignment.getTitle() });
     	
+        
+        //Release commands
+        if (edit_perm){
+        	UIOutput.make(tofill, "navIntraTool");
+	        if (!assignment.isUngraded() && assignment.getGradableObjectId() != null) {
+	        	UIOutput.make(tofill, "edit_gb_item_li");
+	        	
+		        String url = "/direct/gradebook-item/_/gradebookItem/" + externalLogic.getCurrentContextId();
+		        String getParams = "?TB_iframe=true&width=700&height=500&KeepThis=true";
+		        		
+		        UILink helplink = UIInternalLink.make(tofill, "gradebook_item_edit_helper",
+		        		UIMessage.make("assignment2.assignment_grade-assignment.gradebook_helper"),
+		        		url + "/" + assignment.getGradableObjectId() + getParams);
+	        }
+	        UICommand.make(tofill, "release_feedback", 
+	        		messageLocator.getMessage("assignment2.assignment_grade-assignment.release_feedback"), 
+	        		"");
+        }
+        
     	//get paging data
     	int total_count = submissions != null ? submissions.size() : 0;
     	
@@ -170,7 +195,10 @@ public class AssignmentViewSubmissionsProducer implements ViewComponentProducer,
 
         //Assignment Details
         UIMessage.make(tofill, "assignment_details", "assignment2.assignment_grade-assignment.assignment_details");
-        UIInternalLink.make(tofill, "assignment_details_edit", new AssignmentViewParams(AssignmentProducer.VIEW_ID, assignment.getAssignmentId()));
+        if (edit_perm){
+        	UIOutput.make(tofill, "edit_assignment_span");
+        	UIInternalLink.make(tofill, "assignment_details_edit", new AssignmentViewParams(AssignmentProducer.VIEW_ID, assignment.getAssignmentId()));
+        }
         UIMessage.make(tofill, "assignment_details.title_header", "assignment2.assignment_grade-assignment.assignment_details.title");
         UIOutput.make(tofill, "assignment_details.title", assignment.getTitle());
         UIMessage.make(tofill, "assignment_details.created_by_header", "assignment2.assignment_grade-assignment.assignment_details.created_by");
@@ -256,5 +284,9 @@ public class AssignmentViewSubmissionsProducer implements ViewComponentProducer,
 	
 	public void setAssignmentSubmissionBean(AssignmentSubmissionBean submissionBean){
 		this.submissionBean = submissionBean;
+	}
+
+	public void setPermissionLogic(AssignmentPermissionLogic permissionLogic) {
+		this.permissionLogic = permissionLogic;
 	}
 }

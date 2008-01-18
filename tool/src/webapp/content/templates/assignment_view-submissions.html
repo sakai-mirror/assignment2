@@ -10,10 +10,14 @@
 
 	<link href="/library/skin/tool_base.css" type="text/css" rel="stylesheet" media="all"/>
     <link href="/library/skin/default/tool.css" type="text/css" rel="stylesheet" media="all"/>
-    <script type="text/javascript" language="JavaScript" src="/library/js/jquery.js"></script>
+    <script type="text/javascript" language="JavaScript" src="/sakai-assignment2-tool/content/js/jquery-1.2.1.js"></script>
     <script type="text/javascript" language="JavaScript" src="/library/js/headscripts.js"></script>
     <script type="text/javascript" language="JavaScript" src="/sakai-assignment2-tool/content/js/assignment.js"></script>
 	<link href="/sakai-assignment2-tool/content/css/assignmentsv4.css" type="text/css" rel="stylesheet" media="all" />
+	<script type="text/javascript" src="/sakai-assignment2-tool/content/js/assignment.js"></script>
+	<script type="text/javascript" language="JavaScript" src="/sakai-assignment2-tool/content/js/thickbox.js"></script>
+	<script type="text/javascript" language="JavaScript" src="/sakai-assignment2-tool/content/js/jquery.color.js"></script>
+	<link href="/sakai-assignment2-tool/content/css/thickbox.css" type="text/css" rel="stylesheet" media="all" />
 
 </head>
 
@@ -33,9 +37,17 @@
 			<li>Message for user here</li>
 		</ul>
 	</div>
-
-	<h3 rsf:id="heading">Submissions for "[Homework title]"</h3>
-
+	
+	<ul class="navIntraTool" rsf:id="navIntraTool">
+		<li rsf:id="edit_gb_item_li">
+			<a rsf:id="gradebook_item_edit_helper" class="thickbox">Edit Gradebook Item</a>
+			<span class="separator">|</span>
+		</li>
+		<li>
+			<input rsf:id="release_feedback" type="button" />
+		</li>
+	</ul>
+	<br />
 	<!--  Helper Goes Here, comment out for now
 	<div class="viewNav">
 		<form rsf:id="assign_form" class="inlineForm" method="post">
@@ -47,8 +59,11 @@
 	<p class="discTria">
 		<img src="/sakai-assignment2-tool/content/images/expand.png" border="0" alt="Show Assignment Details" style="cursor:pointer" 
 			onclick="slide_details(this)" />
-		<span rsf:id="assignment_details" style="cursor:pointer" onclick="slide_details($(this).prev('img').get(0))">Assignment Details</span> &ndash;
-		<a rsf:id="assignment_details_edit">Edit</a>
+		<span rsf:id="assignment_details" style="cursor:pointer" onclick="slide_details($(this).prev('img').get(0))">Assignment Details</span> 
+		<span rsf:id="edit_assignment_span">
+			&ndash;
+			<a rsf:id="assignment_details_edit">Edit</a>
+		</span>
 	</p>
 	<div id="assignment_details" style="display:none">
 		<table class="itemSummary" border="0" cellspacing="0" summary="The assignment infos">
