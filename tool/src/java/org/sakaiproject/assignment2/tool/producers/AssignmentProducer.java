@@ -70,6 +70,8 @@ import uk.org.ponder.rsf.view.ViewComponentProducer;
 import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
 import uk.org.ponder.rsf.viewstate.ViewParameters;
 import uk.org.ponder.rsf.viewstate.ViewParamsReporter;
+import uk.org.ponder.rsf.viewstate.ViewStateHandler;
+
 import org.sakaiproject.site.api.Group;
 import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.tool.api.ToolSession;
@@ -96,6 +98,7 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
     private EntityBeanLocator assignment2BeanLocator;
     private AttachmentListRenderer attachmentListRenderer;
     private EntityBroker entityBroker;
+    private ViewStateHandler viewStateHandler;
     public void setEntityBroker(EntityBroker entityBroker) {
        this.entityBroker = entityBroker;
     }
@@ -310,7 +313,9 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
         
         //Links to gradebook Helper
         String url = "/direct/gradebook-item/_/gradebookItem/" + externalLogic.getCurrentContextId();
-        String getParams = "?TB_iframe=true&width=700&height=500&KeepThis=true";
+        //TODO URL encode this so I can put it as a url parameter
+        String finishedURL = viewStateHandler.getFullURL(new SimpleViewParameters(FinishedHelperProducer.VIEWID));
+        String getParams = "?TB_iframe=true&width=700&height=500&KeepThis=true&finishURL="+finishedURL;
         UILink.make(form, "gradebook_item_new_helper",
         		UIMessage.make("assignment2.assignment_add.gradebook_item_new_helper"),
         		url + getParams);
@@ -467,5 +472,9 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
 	
 	public void setAttachmentListRenderer(AttachmentListRenderer attachmentListRenderer){
 		this.attachmentListRenderer = attachmentListRenderer;
+	}
+
+	public void setViewStateHandler(ViewStateHandler viewStateHandler) {
+		this.viewStateHandler = viewStateHandler;
 	}
 }
