@@ -71,6 +71,7 @@
       <property name="assignment2EntityBeanLocator" ref="Assignment2"/>
       <property name="attachmentListRenderer" ref="AttachmentListRenderer" />
       <property name="entityBroker" ref="org.sakaiproject.entitybroker.EntityBroker" />
+      <property name="viewStateHandler" ref="viewStateHandler" />
    </bean>
    
    <bean class="org.sakaiproject.assignment2.tool.producers.AssignmentGradeProducer">
