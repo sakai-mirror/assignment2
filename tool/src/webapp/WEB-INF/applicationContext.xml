@@ -13,6 +13,12 @@
       <property name="infoStyleClass" value="success" />
       <property name="errorStyleClass" value="alertMessageInline" />
    </bean>
+   
+   <bean id="LocalPermissionLogic" class="org.sakaiproject.assignment2.tool.beans.locallogic.LocalPermissionLogic">
+   	  <property name="permissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentPermissionLogic" />
+   	  <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
+   </bean>
+   
 
    <!-- handles configuration of internationalization messages -->
    <bean id="messageLocator" class="uk.org.ponder.springutil.SpringMessageLocator">
@@ -27,6 +33,14 @@
          </bean>
       </property>
       <property name="localeGetter" ref="requestLocaleProxy" />
+   </bean>
+   
+   <bean parent="viewParamsInterceptorParent">
+   	  <property name="value">
+   	     <bean id="Assignment2ViewParamsInterceptor" class="org.sakaiproject.assignment2.tool.params.Assignment2ViewParamsInterceptor">
+   	     	 <property name="localPermissionLogic" ref="LocalPermissionLogic" />
+   	     </bean>
+   	  </property>
    </bean>
 
    <!-- Define the bean roots from the request scope file that are accessible 

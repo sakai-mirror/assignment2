@@ -378,5 +378,9 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
 		
 		return allowedToRelease;
 	}
+	
+	public boolean isCurrentUserAbleToSubmit(String contextId) {
+		return gradebookLogic.isCurrentUserAStudentInGb(contextId);
+	}
 
 }

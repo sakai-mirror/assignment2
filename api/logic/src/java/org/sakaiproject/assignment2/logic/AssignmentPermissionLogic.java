@@ -121,4 +121,10 @@ public interface AssignmentPermissionLogic {
 	 * at least one submission associated with the given assignment
 	 */
 	public boolean isUserAllowedToReleaseFeedbackForAssignment(Assignment2 assignment);
+	
+	/**
+	 * @param contextId
+	 * @reutnr true if the current user is a student in the gradebook
+	 */
+	 public boolean isCurrentUserAbleToSubmit(String contextId);
 }

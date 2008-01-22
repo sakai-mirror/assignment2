@@ -8,9 +8,6 @@
    <bean id="defaultViewParameters" factory-bean="Assignment2DefaultViewParameters" factory-method="getViewParameters" />
    <bean id="Assignment2DefaultViewParameters" 
 		class="org.sakaiproject.assignment2.tool.params.Assignment2DefaultViewParameters">
-		<property name="user" ref="sakai-User" />
-		<property name="securityService"
-			ref="org.sakaiproject.authz.api.SecurityService" />
 		<property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
 		<property name="permissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentPermissionLogic" />
    </bean>
@@ -141,6 +138,8 @@
       <property name="submissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
       <property name="studentViewAssignmentRenderer" ref="StudentViewAssignmentRenderer" />
    </bean>
+   
+   <bean class="org.sakaiproject.assignment2.tool.producers.AuthorizationFailedProducer" />
 
 
    <!--  AJAX Fragment Producers -->

@@ -13,16 +13,6 @@ import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
 
 public class Assignment2DefaultViewParameters {
 	//getters setters
-	private User user;
-	public void setUser(User user) {
-		this.user = user;
-	}
-	
-	private SecurityService securityService;
-	public void setSecurityService(SecurityService securityService) {
-		this.securityService = securityService;
-	}
-	
 	private AssignmentPermissionLogic permissionLogic;
 	public void setPermissionLogic(AssignmentPermissionLogic permissionLogic) {
 		this.permissionLogic = permissionLogic;
