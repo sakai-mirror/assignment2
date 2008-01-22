@@ -254,6 +254,8 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 					"for closed assignment " + submission.getAssignment().getId());
 		}
 		
+		Date currentTime = new Date();
+		
 		// if there is no current version or the most recent version was submitted, we will need
 		// to create a new version. If the current version is draft, we will continue to update
 		// this version until it is submitted
@@ -284,8 +286,11 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 				version.setId(existingVersion.getId());
 			}
 			
-			if (!version.isDraft()) {
+			if (version.isDraft()) {
+				version.setSubmittedTime(null);
+			} else {
 				version.setAnnotatedText(version.getSubmittedText());
+				version.setSubmittedTime(currentTime);
 			}
 			
 			// handle attachments after the save to account for attachment objects
@@ -293,7 +298,10 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			// object exception
 			version.setSubmissionAttachSet(null);
 			
-			dao.update(existingVersion);
+			version.setModifiedBy(externalLogic.getCurrentUserId());
+			version.setModifiedTime(currentTime);
+			
+			dao.update(version);
 			log.debug("Updated student submission version " + existingVersion.getId() + " for user " + submission.getUserId() + " for assignment " + submission.getAssignment().getTitle()+ " ID: " + submission.getAssignment().getId());
 
 			existingVersion.setSubmissionAttachSet(submissionAttachments);
@@ -306,17 +314,26 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			// to allow instructor to edit in the future
 			if (newVersion.isDraft()) {
 				newVersion.setAnnotatedText(null);
+				newVersion.setSubmittedTime(null);
 			} else {
 				newVersion.setAnnotatedText(newVersion.getSubmittedText());
+				newVersion.setSubmittedTime(currentTime);
 			}
 			
-			// wipe out any old feedback info
+			// clean up any old info that isn't pertinent to a new version
+			// submitted by the student
+			newVersion.setFeedbackNotes(null);
 			newVersion.setFeedbackAttachSet(null);
 			newVersion.setLastFeedbackSubmittedBy(null);
 			newVersion.setLastFeedbackTime(null);
+			newVersion.setModifiedBy(null);
+			newVersion.setModifiedTime(null);
 			
 			// handle attachments separately
 			newVersion.setSubmissionAttachSet(null);
+			
+			newVersion.setCreatedBy(externalLogic.getCurrentUserId());
+			newVersion.setCreatedTime(currentTime);
 			
 			dao.create(newVersion);
 			log.debug("New student submission version added for user " + submission.getUserId() + " for assignment " + submission.getAssignment().getTitle()+ " ID: " + submission.getAssignment().getId());
@@ -354,6 +371,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		}
 		
 		AssignmentSubmissionVersion existingVersion = null;
+		Date currentTime = new Date();
 		
 		// the instructor is submitting feedback even though the student has
 		// not made a submission
@@ -383,6 +401,9 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 
 		// we need to handle attachments separately
 		version.setFeedbackAttachSet(null);
+		
+		version.setLastFeedbackSubmittedBy(externalLogic.getCurrentUserId());
+		version.setLastFeedbackTime(currentTime);
 
 		if (version.getId() != null) {
 			// instructor is providing feedback on the student's current version
@@ -391,11 +412,14 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		} else {
 			// instructor is providing feedback but the student did not
 			// have a submission yet
+			
+			version.setCreatedBy(externalLogic.getCurrentUserId());
+			version.setCreatedTime(currentTime);
+			
 			dao.create(version);
 			log.debug("New submission version " + version.getId() + " created by " + externalLogic.getCurrentUserId() + " via saveInstructorFeedback");
 		}
 
-		
 		version.setFeedbackAttachSet(feedbackAttachments);
 		updateFeedbackAttachments(existingVersion, version);	
 	}
@@ -568,7 +592,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 	        			// this is a new attachment and needs to be created
 	        			attach.setSubmissionVersion(newVersion);
 	        			dao.save(attach);
-	        			log.debug("New feedback attachment created: " + attach.getAttachmentReference() + "with attach id " + attach.getId());
+	        			log.debug("New submission attachment created: " + attach.getAttachmentReference() + "with attach id " + attach.getId());
 	        			revisedAttachSet.add(attach);
 	        		}
 	        	}
@@ -583,7 +607,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 								!newVersion.getSubmissionAttachSet().contains(attach)) {
 							// we need to delete this attachment
 							dao.delete(attach);
-							log.debug("Feedback attachment deleted with id: " + attach.getId());
+							log.debug("Submission attachment deleted with id: " + attach.getId());
 						} else if (newVersion.getSubmissionAttachSet() != null &&
 								newVersion.getSubmissionAttachSet().contains(attach)) {
 							revisedAttachSet.add(attach);

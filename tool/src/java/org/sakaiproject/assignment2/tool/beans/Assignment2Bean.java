@@ -112,9 +112,6 @@ public class Assignment2Bean {
 		if (this.requireAcceptUntil != null && this.requireAcceptUntil == Boolean.FALSE) {
 			assignment.setAcceptUntilTime(null);
 		}
-		
-		assignment.setModifiedTime(new Date());
-		assignment.setModifiedBy(externalLogic.getCurrentUserId());
 
 		Set<AssignmentAttachment> set = new HashSet();
 		if (assignment.getAttachmentSet() != null) {
@@ -251,9 +248,6 @@ public class Assignment2Bean {
 			Assignment2 assignment = OTPMap.get(key);
 
 			assignment.setDraft(Boolean.TRUE);
-			assignment.setCreateTime(new Date());
-			assignment.setModifiedTime(new Date());
-			assignment.setModifiedBy(externalLogic.getCurrentUserId());
 
 			if (this.requireAcceptUntil != null && this.requireAcceptUntil == Boolean.FALSE) {
 				assignment.setAcceptUntilTime(null);
@@ -311,8 +305,6 @@ public class Assignment2Bean {
 		int assignmentsRemoved = 0;
 		for (Assignment2 assignment : entries) {
 			if (selectedIds.get(assignment.getId().toString()) == Boolean.TRUE){
-				assignment.setModifiedTime(new Date());
-				assignment.setModifiedBy(externalLogic.getCurrentUserId());
 				if (assignment.getAnnouncementId() != null) {
 					try {
 						announcementLogic.deleteOpenDateAnnouncement(assignment, externalLogic.getCurrentContextId());

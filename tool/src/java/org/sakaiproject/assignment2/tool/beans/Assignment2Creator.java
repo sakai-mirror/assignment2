@@ -21,8 +21,6 @@ public class Assignment2Creator {
     	Assignment2 togo = new Assignment2();
     	togo.setTitle("");
     	togo.setContextId(externalLogic.getCurrentContextId());
-    	togo.setCreator(externalLogic.getCurrentUserId());
-    	togo.setCreateTime(new Date());
     	togo.setRemoved(Boolean.FALSE);
     	togo.setHonorPledge(Boolean.FALSE);
     	togo.setUngraded(Boolean.TRUE);
@@ -70,8 +68,6 @@ public class Assignment2Creator {
 		dup.setAllowResubmit(assignment.isAllowResubmit());
 		dup.setAllowReviewService(assignment.isAllowReviewService());
 		dup.setAllowStudentViewReport(assignment.isAllowStudentViewReport());
-		dup.setCreator(externalLogic.getCurrentUserId());
-		dup.setCreateTime(new Date());
 		dup.setRemoved(Boolean.FALSE);
 		
     	return dup;

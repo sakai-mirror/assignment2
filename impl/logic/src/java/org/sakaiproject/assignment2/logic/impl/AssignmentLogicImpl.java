@@ -175,6 +175,9 @@ public class AssignmentLogicImpl implements AssignmentLogic{
         		assignment.setSortIndex(0);
         	}
         	
+        	assignment.setCreateTime(new Date());
+        	assignment.setCreator(externalLogic.getCurrentUserId());
+        	
         	// the attachment and group recs do not have assignmentId data yet,
         	// so we need to handle it after we do the creation
         	Set<AssignmentAttachment> attachSet = assignment.getAttachmentSet();
@@ -201,6 +204,9 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 	        	}
 			}
 			
+			assignment.setModifiedBy(externalLogic.getCurrentUserId());
+			assignment.setModifiedTime(new Date());
+			
 			updateAttachments(existingAssignment, assignment);
 			updateAssignmentGroups(existingAssignment, assignment);
 			
@@ -225,6 +231,9 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 		}
 		
     	assignment.setRemoved(true);
+    	assignment.setModifiedBy(externalLogic.getCurrentUserId());
+    	assignment.setModifiedTime(new Date());
+    	
     	dao.update(assignment);
         log.debug("Deleted assignment: " + assignment.getTitle() + " with id " + assignment.getId());
 	}
@@ -312,6 +321,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 	public void setAssignmentSortIndexes(Long[] assignmentIds)
 	{
 		if (assignmentIds != null) {
+			String userId = externalLogic.getCurrentUserId();
 			//Assume array of longs is in correct order now
 			//so that the index of the array is the new 
 			//sort index
@@ -323,6 +333,8 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 	    			if (assignment.getSortIndex() != i){
 	    				//update and save
 		    			assignment.setSortIndex(i);
+		    			assignment.setModifiedBy(userId);
+		    			assignment.setModifiedTime(new Date());
 		    			dao.save(assignment);
 	    			}
 	    		}

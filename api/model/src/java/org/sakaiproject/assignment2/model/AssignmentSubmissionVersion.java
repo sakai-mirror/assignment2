@@ -47,6 +47,8 @@ public class AssignmentSubmissionVersion {
 	private String reviewIconUrl;
 	private String createdBy;
 	private Date createdTime;
+	private String modifiedBy;
+	private Date modifiedTime;
 	private String lastFeedbackSubmittedBy;
 	private Date lastFeedbackTime;
 	private Set<AssignmentFeedbackAttachment> feedbackAttachSet;
@@ -246,16 +248,14 @@ public class AssignmentSubmissionVersion {
 
 	/**
 	 * 
-	 * @return the userId of the person who made this modification to
-	 * the submission
+	 * @return the userId of the person who created this version
 	 */
 	public String getCreatedBy() {
 		return createdBy;
 	}
 
 	/**
-	 * set the userId of the person who made this modification to
-	 * the submission
+	 * set the userId of the person who created this version
 	 * @param createdBy
 	 */
 	public void setCreatedBy(String createdBy) {
@@ -264,22 +264,52 @@ public class AssignmentSubmissionVersion {
 	
 	/**
 	 * 
-	 * @return the date this version was created. will be the same as the
-	 * submittedTime unless the instructor is giving feedback where there
-	 * was no submission
+	 * @return the date this version was created
 	 */
 	public Date getCreatedTime() {
 		return createdTime;
 	}
 
 	/**
-	 * the date this version was created. will be the same as the
-	 * submittedTime unless the instructor is giving feedback where there
-	 * was no submission
+	 * the date this version was created
 	 * @param createdTime
 	 */
 	public void setCreatedTime(Date createdTime) {
 		this.createdTime = createdTime;
+	}
+	
+	/**
+	 * 
+	 * @return the userId of the person who made the last modification to
+	 * the submission
+	 */
+	public String getModifiedBy() {
+		return modifiedBy;
+	}
+
+	/**
+	 * set the userId of the person who made the last modification to
+	 * the submission
+	 * @param modifiedBy
+	 */
+	public void setModifiedBy(String modifiedBy) {
+		this.modifiedBy = modifiedBy;
+	}
+
+	/**
+	 * 
+	 * @return the date this version was last modified
+	 */
+	public Date getModifiedTime() {
+		return modifiedTime;
+	}
+
+	/**
+	 * set the date this version was last modified
+	 * @param modifiedTime
+	 */
+	public void setModifiedTime(Date modifiedTime) {
+		this.modifiedTime = modifiedTime;
 	}
 
 	/**

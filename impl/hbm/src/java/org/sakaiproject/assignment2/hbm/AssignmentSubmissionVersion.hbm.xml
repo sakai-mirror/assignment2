@@ -64,6 +64,14 @@
         <property name="createdTime" type="java.util.Date">
             <column name="CREATED_TIME" not-null="true" />
         </property>
+        <!-- version modified by -->
+        <property name="modifiedBy" type="java.lang.String">
+            <column name="MODIFIED_BY" length="99" />
+        </property>
+        <!-- version modified time -->
+        <property name="modifiedTime" type="java.util.Date">
+            <column name="MODIFIED_TIME" />
+        </property>
         
         <!--  the last feedback was submitted by -->
         <property name="lastFeedbackSubmittedBy" type="java.lang.String">
