@@ -4,5 +4,7 @@
 	<tool id="sakai.assignment2"
 		title="Assignment2"
 		description="Assignment2">
+		<category name="course" />
+		<category name="project" />
 	</tool>	
 </registration>
