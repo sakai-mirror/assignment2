@@ -9,11 +9,11 @@ import java.util.Date;
 import org.sakaiproject.assignment2.tool.beans.AssignmentSubmissionBean;
 import org.sakaiproject.assignment2.tool.params.AssignmentViewParams;
 import org.sakaiproject.assignment2.tool.params.ViewSubmissionsViewParams;
-import org.sakaiproject.assignment2.tool.params.AssignmentGradeViewParams;
+import org.sakaiproject.assignment2.tool.params.GradeViewParams;
 import org.sakaiproject.assignment2.tool.producers.renderers.PagerRenderer;
 import org.sakaiproject.assignment2.tool.producers.renderers.SortHeaderRenderer;
 import org.sakaiproject.assignment2.tool.producers.renderers.AttachmentListRenderer;
-import org.sakaiproject.assignment2.tool.producers.AssignmentGradeProducer;
+import org.sakaiproject.assignment2.tool.producers.GradeProducer;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
@@ -166,7 +166,7 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
         	
         	UIInternalLink.make(row, "row_grade_link",
         			externalLogic.getUserDisplayName(as.getUserId()),
-        			new AssignmentGradeViewParams(AssignmentGradeProducer.VIEW_ID, as.getAssignment().getId(), as.getUserId()));
+        			new GradeViewParams(GradeProducer.VIEW_ID, as.getAssignment().getId(), as.getUserId()));
         	
         	if (as.getCurrentSubmissionVersion() != null && as.getCurrentSubmissionVersion().getSubmittedTime() != null){
         		UIOutput.make(row, "row_submitted", df.format(as.getCurrentSubmissionVersion().getSubmittedTime()));

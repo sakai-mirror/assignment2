@@ -18,7 +18,7 @@ import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.model.AssignmentFeedbackAttachment;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.assignment2.tool.params.ViewSubmissionsViewParams;
-import org.sakaiproject.assignment2.tool.params.AssignmentGradeViewParams;
+import org.sakaiproject.assignment2.tool.params.GradeViewParams;
 import org.sakaiproject.assignment2.tool.params.FilePickerHelperViewParams;
 import org.sakaiproject.assignment2.tool.params.SimpleAssignmentViewParams;
 import org.sakaiproject.assignment2.tool.producers.fragments.FragmentAttachmentsProducer;
@@ -56,7 +56,7 @@ import uk.org.ponder.rsf.viewstate.ViewParameters;
 import uk.org.ponder.rsf.viewstate.ViewParamsReporter;
 
 
-public class AssignmentGradeProducer implements ViewComponentProducer, NavigationCaseReporter, ViewParamsReporter, ActionResultInterceptor {
+public class GradeProducer implements ViewComponentProducer, NavigationCaseReporter, ViewParamsReporter, ActionResultInterceptor {
 
     public static final String VIEW_ID = "grade";
     public String getViewID() {
@@ -99,7 +99,7 @@ public class AssignmentGradeProducer implements ViewComponentProducer, Navigatio
         Boolean edit_perm = permissionLogic.isCurrentUserAbleToEditAssignments(externalLogic.getCurrentContextId());
     	
     	//Get Params
-    	AssignmentGradeViewParams params = (AssignmentGradeViewParams) viewparams;
+        GradeViewParams params = (GradeViewParams) viewparams;
     	String userId = params.userId;
     	Long assignmentId = params.assignmentId;
     	if (assignmentId == null || userId == null){
@@ -274,15 +274,15 @@ public class AssignmentGradeProducer implements ViewComponentProducer, Navigatio
 	        	} else {
 	        		//else add link to edit this submission
 	        		UIInternalLink.make(loop, "loop_edit_submission", 
-	        			new AssignmentGradeViewParams(AssignmentGradeProducer.VIEW_ID, assignmentId, userId, asv.getId()));
+	        			new GradeViewParams(GradeProducer.VIEW_ID, assignmentId, userId, asv.getId()));
 	        	}
 	        	UIVerbatim.make(loop, "loop_submitted_text", asv.getSubmittedText());
 	        	UIVerbatim.make(loop, "loop_feedback_text", asv.getAnnotatedTextFormatted());
 	        	UIVerbatim.make(loop, "loop_feedback_notes", asv.getFeedbackNotes());
 	        	attachmentListRenderer.makeAttachmentFromAssignmentSubmissionAttachmentSet(loop, "loop_submitted_attachment_list:", 
-	        			AssignmentGradeProducer.VIEW_ID, asv.getSubmissionAttachSet(), Boolean.FALSE);
+	        			GradeProducer.VIEW_ID, asv.getSubmissionAttachSet(), Boolean.FALSE);
 	        	attachmentListRenderer.makeAttachmentFromAssignmentFeedbackAttachmentSet(loop, "loop_returned_attachment_list:", 
-	        			AssignmentGradeProducer.VIEW_ID, asv.getFeedbackAttachSet(), Boolean.FALSE);
+	        			GradeProducer.VIEW_ID, asv.getFeedbackAttachSet(), Boolean.FALSE);
 	        	if (asv.getLastFeedbackSubmittedBy() != null) {
 		        	UIMessage.make(loop, "feedback_updated", "assignment2.assignment_grade.feedback_updated",
 		        			new Object[]{ 
@@ -314,8 +314,8 @@ public class AssignmentGradeProducer implements ViewComponentProducer, Navigatio
     
 	public List reportNavigationCases() {
     	List<NavigationCase> nav= new ArrayList<NavigationCase>();
-    	nav.add(new NavigationCase("release_all", new AssignmentGradeViewParams(
-    			AssignmentGradeProducer.VIEW_ID, null, null)));
+    	nav.add(new NavigationCase("release_all", new GradeViewParams(
+    			GradeProducer.VIEW_ID, null, null)));
     	nav.add(new NavigationCase("submit", new ViewSubmissionsViewParams(
                ViewSubmissionsProducer.VIEW_ID)));
         nav.add(new NavigationCase("preview", new SimpleViewParameters(
@@ -328,11 +328,11 @@ public class AssignmentGradeProducer implements ViewComponentProducer, Navigatio
 	public void interceptActionResult(ARIResult result, ViewParameters incoming, Object actionReturn) {
 		    if (result.resultingView instanceof ViewSubmissionsViewParams) {
 		    	ViewSubmissionsViewParams outgoing = (ViewSubmissionsViewParams) result.resultingView;
-		    	AssignmentGradeViewParams in = (AssignmentGradeViewParams) incoming;
+		    	GradeViewParams in = (GradeViewParams) incoming;
 		    	outgoing.assignmentId = in.assignmentId;
-		    } else if (result.resultingView instanceof AssignmentGradeViewParams) {
-		    	AssignmentGradeViewParams outgoing = (AssignmentGradeViewParams) result.resultingView;
-		    	AssignmentGradeViewParams in = (AssignmentGradeViewParams) incoming;
+		    } else if (result.resultingView instanceof GradeViewParams) {
+		    	GradeViewParams outgoing = (GradeViewParams) result.resultingView;
+		    	GradeViewParams in = (GradeViewParams) incoming;
 		    	outgoing.assignmentId = in.assignmentId;
 		    	outgoing.userId = in.userId;
 		    	outgoing.submissionId = in.submissionId;
@@ -340,7 +340,7 @@ public class AssignmentGradeProducer implements ViewComponentProducer, Navigatio
 	}
 	
     public ViewParameters getViewParameters() {
-        return new AssignmentGradeViewParams();
+        return new GradeViewParams();
     }
     
     public void setMessageLocator(MessageLocator messageLocator) {

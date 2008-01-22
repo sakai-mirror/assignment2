@@ -11,7 +11,6 @@ import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.tool.beans.Assignment2Bean;
 import org.sakaiproject.assignment2.tool.params.AssignmentListSortViewParams;
-import org.sakaiproject.assignment2.tool.params.SimpleAssignmentViewParams;
 import org.sakaiproject.assignment2.tool.params.AssignmentViewParams;
 import org.sakaiproject.assignment2.tool.params.ViewSubmissionsViewParams;
 import org.sakaiproject.assignment2.tool.producers.AssignmentProducer;
@@ -185,7 +184,7 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
         			UIOutput.make(row, "assignment_row_due", messageLocator.getMessage("assignment2.assignment_list-sortview.no_due_date"));	
         		}
         	}
-        	//UIInternalLink.make(row, "assignment_row_in_new", "2/4", new SimpleViewParameters(AssignmentGradeAssignmentProducer.VIEW_ID));
+        	//UIInternalLink.make(row, "assignment_row_in_new", "2/4", new SimpleViewParameters(GradeAssignmentProducer.VIEW_ID));
         }
         
         UICommand.make(form, "submit_remove", UIMessage.make("assignment2.assignment_list-sortview.submit_remove"),

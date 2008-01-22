@@ -1,9 +1,4 @@
-
-
 package org.sakaiproject.assignment2.tool.params;
-
-import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
-import org.sakaiproject.assignment2.tool.params.PagerViewParams;
 
 public class ViewSubmissionsViewParams extends SortPagerViewParams {
 

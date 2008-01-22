@@ -2,21 +2,21 @@ package org.sakaiproject.assignment2.tool.params;
 
 import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
 
-public class AssignmentGradeViewParams extends SimpleViewParameters {
+public class GradeViewParams extends SimpleViewParameters {
 	
 	public Long assignmentId;
 	public String userId;
 	public Long submissionId;
 	
-	public AssignmentGradeViewParams(){}
+	public GradeViewParams(){}
 	
-	public AssignmentGradeViewParams(String viewId, Long assignmentId, String userId){
+	public GradeViewParams(String viewId, Long assignmentId, String userId){
 		super(viewId);
 		this.assignmentId = assignmentId;
 		this.userId = userId;
 	}
 	
-	public AssignmentGradeViewParams(String viewId, Long assignmentId, String userId, Long submissionId) {
+	public GradeViewParams(String viewId, Long assignmentId, String userId, Long submissionId) {
 		super(viewId);
 		this.assignmentId = assignmentId;
 		this.userId = userId;

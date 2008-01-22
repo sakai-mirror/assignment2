@@ -69,7 +69,7 @@
       <property name="attachmentListRenderer" ref="AttachmentListRenderer" />
    </bean>
    
-   <bean class="org.sakaiproject.assignment2.tool.producers.AssignmentGradeProducer">
+   <bean class="org.sakaiproject.assignment2.tool.producers.GradeProducer">
       <property name="richTextEvolver" ref="richTextEvolver" />
       <property name="messageLocator" ref="messageLocator" />
       <property name="dateEvolver" ref="fieldDateInputEvolver" />
