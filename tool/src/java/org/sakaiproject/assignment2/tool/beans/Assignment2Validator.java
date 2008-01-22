@@ -11,10 +11,10 @@ public class Assignment2Validator  {
 	  
 		boolean valid = true;
 		String key = "";
-		if (assignment.getAssignmentId() == null){
+		if (assignment.getId() == null){
 			key = "new 1";
 		} else {
-			key = assignment.getAssignmentId().toString();
+			key = assignment.getId().toString();
 		}
 		
 		

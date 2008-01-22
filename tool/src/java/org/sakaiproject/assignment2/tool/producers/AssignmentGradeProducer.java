@@ -123,7 +123,7 @@ public class AssignmentGradeProducer implements ViewComponentProducer, Navigatio
         		new SimpleViewParameters(AssignmentListSortViewProducer.VIEW_ID));
         UIInternalLink.make(tofill, "breadcrumb2",
         		messageLocator.getMessage("assignment2.assignment_grade-assignment.heading", new Object[] { assignment.getTitle()}),
-        		new SimpleAssignmentViewParams(AssignmentViewSubmissionsProducer.VIEW_ID, assignment.getAssignmentId()));
+        		new SimpleAssignmentViewParams(AssignmentViewSubmissionsProducer.VIEW_ID, assignment.getId()));
         UIMessage.make(tofill, "last_breadcrumb", "assignment2.assignment_grade.heading", 
         		new Object[]{assignment.getTitle(), externalLogic.getUserDisplayName(params.userId)});
         
@@ -135,8 +135,8 @@ public class AssignmentGradeProducer implements ViewComponentProducer, Navigatio
         //AssignmentSubmission OTP Stuff
         String asOTP = "AssignmentSubmission.";
         String OTPKey = "";
-        if (as != null && as.getSubmissionId() != null){
-        	OTPKey += as.getSubmissionId();
+        if (as != null && as.getId() != null){
+        	OTPKey += as.getId();
         } else {
         	OTPKey += EntityBeanLocator.NEW_PREFIX + "1";
         }
@@ -147,8 +147,8 @@ public class AssignmentGradeProducer implements ViewComponentProducer, Navigatio
         String asvOTPKey = "";
         if (OLD_VERSION && params.submissionId != null) {
         	asvOTPKey += params.submissionId;
-        }else if (as != null && as.getCurrentSubmissionVersion() != null && as.getCurrentSubmissionVersion().getSubmissionVersionId() != null) {
-        	asvOTPKey += as.getCurrentSubmissionVersion().getSubmissionVersionId();
+        }else if (as != null && as.getCurrentSubmissionVersion() != null && as.getCurrentSubmissionVersion().getId() != null) {
+        	asvOTPKey += as.getCurrentSubmissionVersion().getId();
         } else {
         	asvOTPKey += EntityBeanLocator.NEW_PREFIX + "1";
         }
@@ -255,13 +255,13 @@ public class AssignmentGradeProducer implements ViewComponentProducer, Navigatio
 	        	
 	        	UIMessage.make(loop, "loop_submission", "assignment2.assignment_grade.loop_submission", 
 	        			new Object[] { df.format(asv.getSubmittedTime()) });
-	        	if (asvOTPKey.equals(asv.getSubmissionVersionId().toString())){
+	        	if (asvOTPKey.equals(asv.getId().toString())){
 	        		//we are editing this version
 	        		UIMessage.make(loop, "currently_editing", "assignment2.assignment_grade.currently_editing");
 	        	} else {
 	        		//else add link to edit this submission
 	        		UIInternalLink.make(loop, "loop_edit_submission", 
-	        			new AssignmentGradeViewParams(AssignmentGradeProducer.VIEW_ID, assignmentId, userId, asv.getSubmissionVersionId()));
+	        			new AssignmentGradeViewParams(AssignmentGradeProducer.VIEW_ID, assignmentId, userId, asv.getId()));
 	        	}
 	        	UIVerbatim.make(loop, "loop_submitted_text", asv.getSubmittedText());
 	        	UIVerbatim.make(loop, "loop_feedback_text", asv.getAnnotatedTextFormatted());

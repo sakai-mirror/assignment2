@@ -192,13 +192,13 @@ public class Assignment2Bean {
 			//Validation Passed!
 			try {
 				Assignment2 assignmentFromDb = null;
-				if (assignment.getAssignmentId() != null) {
-					assignmentFromDb = logic.getAssignmentByIdWithGroups(assignment.getAssignmentId());
+				if (assignment.getId() != null) {
+					assignmentFromDb = logic.getAssignmentByIdWithGroups(assignment.getId());
 				}
 				
 				logic.saveAssignment(assignment);
 				
-				Assignment2 updatedAssignment = logic.getAssignmentByIdWithGroups(assignment.getAssignmentId());
+				Assignment2 updatedAssignment = logic.getAssignmentByIdWithGroups(assignment.getId());
 				handleAnnouncement(updatedAssignment, assignmentFromDb);
 				
 			} catch( ConflictingAssignmentNameException e){
@@ -269,8 +269,8 @@ public class Assignment2Bean {
 				//Validation Passed!
 				try {
 					Assignment2 assignmentFromDb = null;
-					if (assignment.getAssignmentId() != null) {
-						assignmentFromDb = logic.getAssignmentByIdWithGroups(assignment.getAssignmentId());
+					if (assignment.getId() != null) {
+						assignmentFromDb = logic.getAssignmentByIdWithGroups(assignment.getId());
 					}
 					
 					logic.saveAssignment(assignment);
@@ -310,7 +310,7 @@ public class Assignment2Bean {
 		List<Assignment2> entries = logic.getViewableAssignments();
 		int assignmentsRemoved = 0;
 		for (Assignment2 assignment : entries) {
-			if (selectedIds.get(assignment.getAssignmentId().toString()) == Boolean.TRUE){
+			if (selectedIds.get(assignment.getId().toString()) == Boolean.TRUE){
 				assignment.setModifiedTime(new Date());
 				assignment.setModifiedBy(externalLogic.getCurrentUserId());
 				if (assignment.getAnnouncementId() != null) {

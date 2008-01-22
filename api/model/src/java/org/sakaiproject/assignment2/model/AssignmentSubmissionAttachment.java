@@ -29,7 +29,7 @@ package org.sakaiproject.assignment2.model;
 */
 public class AssignmentSubmissionAttachment {
 
-	private Long submissionAttachId;
+	private Long id;
 	private AssignmentSubmissionVersion submissionVersion;
 	private String attachmentReference;
 	
@@ -39,18 +39,18 @@ public class AssignmentSubmissionAttachment {
 
 	/**
 	 * 
-	 * @return the submissionAttachId for this submission attachment
+	 * @return the id for this submission attachment
 	 */
-	public Long getSubmissionAttachId() {
-		return submissionAttachId;
+	public Long getId() {
+		return id;
 	}
 
 	/**
-	 * set the submissionAttachId for this submission attachment
-	 * @param submissionAttachId
+	 * set the sid for this submission attachment
+	 * @param id
 	 */
-	public void setSubmissionAttachId(Long submissionAttachId) {
-		this.submissionAttachId = submissionAttachId;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	/**

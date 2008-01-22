@@ -94,9 +94,9 @@ public class AssignmentTestDataLoad {
 		dao.create(a2);
 		dao.create(a3);
 		
-		a1Id = a1.getAssignmentId();
-		a2Id = a2.getAssignmentId();
-		a3Id = a3.getAssignmentId();
+		a1Id = a1.getId();
+		a2Id = a2.getId();
+		a3Id = a3.getId();
 		
 		// add attachments
 		// to Assignment 1

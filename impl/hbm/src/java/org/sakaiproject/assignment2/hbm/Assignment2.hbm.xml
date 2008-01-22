@@ -5,7 +5,7 @@
 <hibernate-mapping>
     <class name="org.sakaiproject.assignment2.model.Assignment2" table="A2_ASSIGNMENT_T">
        
-        <id name="assignmentId" column="ASSIGNMENT_ID" type="long">
+        <id name="id" column="ASSIGNMENT_ID" type="long">
 					<generator class="native">
 						<param name="sequence">A2_ASSIGNMENT_S</param>
 					</generator>
@@ -136,14 +136,14 @@
     <![CDATA[from org.sakaiproject.assignment2.model.Assignment2 assignment
              left join fetch assignment.assignmentGroupSet
              left join fetch assignment.attachmentSet
-             where assignment.assignmentId = :assignmentId
+             where assignment.id = :assignmentId
              and assignment.removed = false]]>
   	</query>
   	
   	<query name="findAssignmentByIdWithGroups">
     <![CDATA[from org.sakaiproject.assignment2.model.Assignment2 assignment
              left join fetch assignment.assignmentGroupSet
-             where assignment.assignmentId = :assignmentId
+             where assignment.id = :assignmentId
              and assignment.removed = false]]>
   	</query>
 </hibernate-mapping>

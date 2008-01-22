@@ -154,9 +154,9 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 		Assignment2 existingAssignment = null;
 		
 		// determine if this is a new assignment
-		if (assignment.getAssignmentId() != null) {
+		if (assignment.getId() != null) {
 			// check to see if assignment exists
-			existingAssignment = (Assignment2)dao.getAssignmentByIdWithGroupsAndAttachments(assignment.getAssignmentId());	
+			existingAssignment = (Assignment2)dao.getAssignmentByIdWithGroupsAndAttachments(assignment.getId());	
 			if (existingAssignment != null) {
 				isNewAssignment = false;
 			}
@@ -205,7 +205,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 			updateAssignmentGroups(existingAssignment, assignment);
 			
         	dao.update(assignment);
-            log.debug("Updated assignment: " + assignment.getTitle() + "with id: " + assignment.getAssignmentId());
+            log.debug("Updated assignment: " + assignment.getTitle() + "with id: " + assignment.getId());
 		}
 	}
 	
@@ -226,7 +226,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 		
     	assignment.setRemoved(true);
     	dao.update(assignment);
-        log.debug("Deleted assignment: " + assignment.getTitle() + " with id " + assignment.getAssignmentId());
+        log.debug("Deleted assignment: " + assignment.getTitle() + " with id " + assignment.getId());
 	}
 	
 	/*
@@ -455,7 +455,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 			throw new IllegalArgumentException("Null newAssignment passed to updateAttachments");
 		}
 		
-		if (newAssignment.getAssignmentId() == null) {
+		if (newAssignment.getId() == null) {
 			throw new IllegalArgumentException("newAssignment passed to updateAttachments is not currently defined in db");
 		}
 		
@@ -464,11 +464,11 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 		if (newAssignment.getAttachmentSet() != null && !newAssignment.getAttachmentSet().isEmpty()) {
         	for (Iterator attachIter = newAssignment.getAttachmentSet().iterator(); attachIter.hasNext();) {
         		AssignmentAttachment attach = (AssignmentAttachment) attachIter.next();
-        		if (attach != null && attach.getAssignAttachId() == null) {
+        		if (attach != null && attach.getId() == null) {
         			// this is a new attachment and needs to be created
         			attach.setAssignment(newAssignment);
         			dao.save(attach);
-        			log.debug("New attachment created: " + attach.getAttachmentReference() + "with attach id " + attach.getAssignAttachId());
+        			log.debug("New attachment created: " + attach.getAttachmentReference() + "with attach id " + attach.getId());
         			revisedAttachSet.add(attach);
         		}
         	}
@@ -483,7 +483,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 							!newAssignment.getAttachmentSet().contains(attach)) {
 						// we need to delete this attachment
 						dao.delete(attach);
-						log.debug("Attachment deleted with id: " + attach.getAssignAttachId());
+						log.debug("Attachment deleted with id: " + attach.getId());
 					} else if (newAssignment.getAttachmentSet() != null &&
 								newAssignment.getAttachmentSet().contains(attach)) {
 						revisedAttachSet.add(attach);
@@ -508,7 +508,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 			throw new IllegalArgumentException("Null newAssignment passed to updateAssignmentGroups");
 		}
 		
-		if (newAssignment.getAssignmentId() == null) {
+		if (newAssignment.getId() == null) {
 			throw new IllegalArgumentException("newAssignment passed to updateAssignmentGroups is not currently defined in db");
 		}
 		
@@ -517,11 +517,11 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 		if (newAssignment.getAssignmentGroupSet() != null && !newAssignment.getAssignmentGroupSet().isEmpty()) {
         	for (Iterator groupIter = newAssignment.getAssignmentGroupSet().iterator(); groupIter.hasNext();) {
         		AssignmentGroup group = (AssignmentGroup) groupIter.next();
-        		if (group != null && group.getAssignmentGroupId() == null) {
+        		if (group != null && group.getId() == null) {
         			// this is a new AssignmentGroup and needs to be created
         			group.setAssignment(newAssignment);
         			dao.save(group);
-        			log.debug("New AssignmentGroup created: " + group.getAssignmentGroupId() + "with id " + group.getAssignmentGroupId());
+        			log.debug("New AssignmentGroup created: " + group.getId() + "with id " + group.getId());
         			revisedGroupSet.add(group);
         		}
         	}
@@ -536,7 +536,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 							!newAssignment.getAssignmentGroupSet().contains(group)) {
 						// we need to delete this AssignmentGroup
 						dao.delete(group);
-						log.debug("AssignmentGroup deleted with id: " + group.getAssignmentGroupId());
+						log.debug("AssignmentGroup deleted with id: " + group.getId());
 					}
 				} else if (newAssignment.getAssignmentGroupSet() != null &&
 						newAssignment.getAssignmentGroupSet().contains(group)) {

@@ -195,7 +195,7 @@ public class StudentViewAssignmentRenderer {
     		UILabelTargetDecorator.targetLabel(honor_pledge_label, honor_pledge_checkbox);
     	}
         
-        form.parameters.add( new UIELBinding("#{AssignmentSubmissionBean.assignmentId}", assignment.getAssignmentId()));
+        form.parameters.add( new UIELBinding("#{AssignmentSubmissionBean.assignmentId}", assignment.getId()));
         
         //Buttons
 	     UICommand submit_button = UICommand.make(form, "submit_button", UIMessage.make("assignment2.student-submit.submit"), 

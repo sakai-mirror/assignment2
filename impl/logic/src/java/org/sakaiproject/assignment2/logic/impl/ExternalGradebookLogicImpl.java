@@ -407,7 +407,7 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
     			assignment.setDueDate(gbItem.getDueDate());
     			assignment.setPointsPossible(gbItem.getPoints());
     		} catch (AssessmentNotFoundException e) {
-    			log.debug("Gradebook item that assignment " + assignment.getAssignmentId() + " with associated with no longer exists");
+    			log.debug("Gradebook item that assignment " + assignment.getId() + " with associated with no longer exists");
     			assignment.setNeedsUserAttention(true);
     		}
     	}

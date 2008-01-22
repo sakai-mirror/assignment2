@@ -126,18 +126,18 @@ public class AssignmentDaoImpl extends HibernateCompleteGenericDao implements As
     }
     
     public AssignmentSubmissionVersion getCurrentSubmissionVersionWithAttachments(AssignmentSubmission submission, boolean ignoreDrafts) {
-    	if (submission == null || submission.getSubmissionId() == null) {
+    	if (submission == null || submission.getId() == null) {
     		throw new IllegalArgumentException("null or transient submission passed to getSubmissionVersionForUserIdWithAttachments");
     	}
     	
     	AssignmentSubmissionVersion currentVersion = null;
     	
-    	String hqlGetVersionNoDraft = "select max(submissionVersion.submissionVersionId) " +
+    	String hqlGetVersionNoDraft = "select max(submissionVersion.id) " +
 		"from AssignmentSubmissionVersion as submissionVersion " +
 		"where submissionVersion.assignmentSubmission = :submission " +
 		"and submissionVersion.draft = false";
 	
-    	String hqlGetVersionWithDraft = "select max(submissionVersion.submissionVersionId) " +
+    	String hqlGetVersionWithDraft = "select max(submissionVersion.id) " +
 		"from AssignmentSubmissionVersion as submissionVersion " +
 		"where submissionVersion.assignmentSubmission = :submission";
     	
@@ -210,7 +210,7 @@ public class AssignmentDaoImpl extends HibernateCompleteGenericDao implements As
     	List<AssignmentSubmissionVersion> versions = new ArrayList();
     	
     	if (versionIds != null && !versionIds.isEmpty()) {
-    		String hql = "from AssignmentSubmissionVersion as version where version.submissionVersionId in (:versionIdList)";
+    		String hql = "from AssignmentSubmissionVersion as version where version.id in (:versionIdList)";
     		Query query = getSession().createQuery(hql);
     		query.setParameterList("versionIdList", versionIds);
     		
@@ -260,7 +260,7 @@ public class AssignmentDaoImpl extends HibernateCompleteGenericDao implements As
 				for (Iterator versionIter = currentVersions.iterator(); versionIter.hasNext();) {
 					AssignmentSubmissionVersion version = (AssignmentSubmissionVersion) versionIter.next();
 					if (version != null) {
-						submissionIdVersionMap.put(version.getAssignmentSubmission().getSubmissionId(), version);
+						submissionIdVersionMap.put(version.getAssignmentSubmission().getId(), version);
 					}
 				}
 				
@@ -268,7 +268,7 @@ public class AssignmentDaoImpl extends HibernateCompleteGenericDao implements As
 					AssignmentSubmission submission = (AssignmentSubmission) submissionIter.next();
 					if (submission != null) {
 						AssignmentSubmissionVersion currVersion = 
-							(AssignmentSubmissionVersion)submissionIdVersionMap.get(submission.getSubmissionId());
+							(AssignmentSubmissionVersion)submissionIdVersionMap.get(submission.getId());
 						if (currVersion != null) {
 							submission.setCurrentSubmissionVersion(currVersion);
 						}
@@ -338,9 +338,9 @@ public class AssignmentDaoImpl extends HibernateCompleteGenericDao implements As
     		for (Iterator versionIter = submission.getSubmissionHistorySet().iterator(); versionIter.hasNext();) {
     			AssignmentSubmissionVersion version = (AssignmentSubmissionVersion) versionIter.next();
     			if (version != null) {
-    				versionIdVersionMap.put(version.getSubmissionVersionId(), version);
-    				if (version.getSubmissionVersionId() > maxVersionId) {
-    					maxVersionId = version.getSubmissionVersionId();
+    				versionIdVersionMap.put(version.getId(), version);
+    				if (version.getId() > maxVersionId) {
+    					maxVersionId = version.getId();
     				}
     			}
     		}

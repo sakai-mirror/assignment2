@@ -249,7 +249,7 @@ public class AssignmentSubmissionBean {
 			asv.setLastFeedbackSubmittedBy(currUserId);
 			
 			asv.setLastFeedbackTime(new Date());
-			if (asv.getSubmissionVersionId() == null) {
+			if (asv.getId() == null) {
 				asv.setCreatedBy(currUserId);
 				asv.setCreatedTime(new Date());
 				asv.setDraft(Boolean.FALSE);

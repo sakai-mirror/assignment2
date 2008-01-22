@@ -52,8 +52,8 @@ public class FragmentAssignmentPreviewProducer implements ViewComponentProducer,
         
     	//we are coming from the add/edit assignment page
     	assignment = previewAssignmentBean.getAssignment();
-    	if (assignment.getAssignmentId() != null) {
-    		OTPKey = assignment.getAssignmentId().toString();
+    	if (assignment.getId() != null) {
+    		OTPKey = assignment.getId().toString();
     	} else {
     		OTPKey = EntityBeanLocator.NEW_PREFIX + "1";
     	}

@@ -30,7 +30,7 @@ package org.sakaiproject.assignment2.model;
 */
 public class AssignmentFeedbackAttachment {
 
-	private Long feedbackAttachId;
+	private Long id;
 	private AssignmentSubmissionVersion submissionVersion;
 	private String attachmentReference;
 	
@@ -40,18 +40,18 @@ public class AssignmentFeedbackAttachment {
 
 	/**
 	 * 
-	 * @return the feedbackAttachId 
+	 * @return the id of this feedback attachment
 	 */
-	public Long getFeedbackAttachId() {
-		return feedbackAttachId;
+	public Long getId() {
+		return id;
 	}
 
 	/**
-	 * set the feedbackAttachId
-	 * @param feedbackAttachId
+	 * set the id of this feedback attachment
+	 * @param id
 	 */
-	public void setFeedbackAttachId(Long feedbackAttachId) {
-		this.feedbackAttachId = feedbackAttachId;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	/**

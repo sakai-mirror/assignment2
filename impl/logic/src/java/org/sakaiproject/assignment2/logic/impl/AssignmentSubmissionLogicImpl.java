@@ -175,7 +175,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		Assignment2 assignment = dao.getAssignmentByIdWithGroups(assignmentId);
 		if (assignment != null) {
 			if (!permissionLogic.isUserAbleToViewStudentSubmissionForAssignment(studentId, assignment)) {
-				throw new SecurityException("Current user is not allowed to view submission for " + studentId + " for assignment " + assignment.getAssignmentId());
+				throw new SecurityException("Current user is not allowed to view submission for " + studentId + " for assignment " + assignment.getId());
 			}
 			
 			submission = dao.getSubmissionWithVersionHistoryForStudentAndAssignment(studentId, assignment, !instructorView);
@@ -242,34 +242,34 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		
 		if (!permissionLogic.isUserAbleToMakeSubmissionForAssignment(externalLogic.getCurrentContextId(), submission.getAssignment())) {
 			log.warn("User " + externalLogic.getCurrentUserId() + " attempted to make a submission " +
-					"without authorization for assignment " + submission.getAssignment().getAssignmentId());
+					"without authorization for assignment " + submission.getAssignment().getId());
 			throw new SecurityException("User " + externalLogic.getCurrentUserId() + " attempted to make a submission " +
-					"without authorization for assignment " + submission.getAssignment().getAssignmentId());
+					"without authorization for assignment " + submission.getAssignment().getId());
 		}
 		
 		if (!submissionIsOpenForStudentForAssignment(externalLogic.getCurrentUserId(), submission.getAssignment())) {
 			log.warn("User " + externalLogic.getCurrentUserId() + " attempted to make a submission " +
-					"but submission for this user for assignment " + submission.getAssignment().getAssignmentId() + " is closed.");
+					"but submission for this user for assignment " + submission.getAssignment().getId() + " is closed.");
 			throw new SecurityException("User " + externalLogic.getCurrentUserId() + " attempted to make a submission " +
-					"for closed assignment " + submission.getAssignment().getAssignmentId());
+					"for closed assignment " + submission.getAssignment().getId());
 		}
 		
 		// if there is no current version or the most recent version was submitted, we will need
 		// to create a new version. If the current version is draft, we will continue to update
 		// this version until it is submitted
 		AssignmentSubmissionVersion existingVersion = null;
-		if (submission.getSubmissionId() == null) {
+		if (submission.getId() == null) {
 			// this is a new submission, so create it
 			// we need to check that this submission doesn't already exist
 			List submissions = dao.findByProperties(AssignmentSubmission.class, 
 					new String[] {"userId", "assignment"}, new Object[] {submission.getUserId(), submission.getAssignment()});
 			if (submissions != null && submissions.size() > 0) {
 				throw new SubmissionExistsException("User " + externalLogic.getCurrentUserId() + " attempted to save a duplicate " +
-						"submission rec for userId " + submission.getUserId() + " and assignment " + submission.getAssignment().getAssignmentId());
+						"submission rec for userId " + submission.getUserId() + " and assignment " + submission.getAssignment().getId());
 			}
 			
 			dao.create(submission);
-			log.debug("New student submission rec added for user " + submission.getUserId() + " for assignment " + submission.getAssignment().getTitle() + " ID: " + submission.getAssignment().getAssignmentId());
+			log.debug("New student submission rec added for user " + submission.getUserId() + " for assignment " + submission.getAssignment().getTitle() + " ID: " + submission.getAssignment().getId());
 		} else {
 			existingVersion = dao.getCurrentSubmissionVersionWithAttachments(submission, Boolean.FALSE);
 		}
@@ -280,8 +280,8 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		
 		if (existingVersion != null && existingVersion.isDraft()) {
 			// we need to update this rec
-			if (version.getSubmissionVersionId() == null) {
-				version.setSubmissionVersionId(existingVersion.getSubmissionVersionId());
+			if (version.getId() == null) {
+				version.setId(existingVersion.getId());
 			}
 			
 			if (!version.isDraft()) {
@@ -294,7 +294,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			version.setSubmissionAttachSet(null);
 			
 			dao.update(existingVersion);
-			log.debug("Updated student submission version " + existingVersion.getSubmissionVersionId() + " for user " + submission.getUserId() + " for assignment " + submission.getAssignment().getTitle()+ " ID: " + submission.getAssignment().getAssignmentId());
+			log.debug("Updated student submission version " + existingVersion.getId() + " for user " + submission.getUserId() + " for assignment " + submission.getAssignment().getTitle()+ " ID: " + submission.getAssignment().getId());
 
 			existingVersion.setSubmissionAttachSet(submissionAttachments);
 			updateStudentAttachments(existingVersion, version);
@@ -319,7 +319,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			newVersion.setSubmissionAttachSet(null);
 			
 			dao.create(newVersion);
-			log.debug("New student submission version added for user " + submission.getUserId() + " for assignment " + submission.getAssignment().getTitle()+ " ID: " + submission.getAssignment().getAssignmentId());
+			log.debug("New student submission version added for user " + submission.getUserId() + " for assignment " + submission.getAssignment().getTitle()+ " ID: " + submission.getAssignment().getId());
 
 			newVersion.setSubmissionAttachSet(submissionAttachments);
 			updateStudentAttachments(null, newVersion);
@@ -357,24 +357,24 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		
 		// the instructor is submitting feedback even though the student has
 		// not made a submission
-		if (submission.getSubmissionId() == null) {
+		if (submission.getId() == null) {
 			// we need to check that this submission doesn't already exist
 			List submissions = dao.findByProperties(AssignmentSubmission.class, 
 					new String[] {"userId", "assignment"}, new Object[] {submission.getUserId(), submission.getAssignment()});
 			if (submissions != null && submissions.size() > 0) {
 				throw new SubmissionExistsException("User " + externalLogic.getCurrentUserId() + " attempted to save a duplicate " +
-						"submission rec for userId " + submission.getUserId() + " and assignment " + submission.getAssignment().getAssignmentId());
+						"submission rec for userId " + submission.getUserId() + " and assignment " + submission.getAssignment().getId());
 			}
 			
 			dao.create(submission);
-			log.debug("New student submission rec added for user " + submission.getUserId() + " for assignment " + submission.getAssignment().getTitle() + " ID: " + submission.getAssignment().getAssignmentId()
+			log.debug("New student submission rec added for user " + submission.getUserId() + " for assignment " + submission.getAssignment().getTitle() + " ID: " + submission.getAssignment().getId()
 						+ " added by " + externalLogic.getCurrentUserId() + " via saveInstructorFeedback");
 		} else {
 			// retrieve the most current non-draft version
 			existingVersion = dao.getCurrentSubmissionVersionWithAttachments(submission, Boolean.TRUE);
 
 			dao.update(submission);
-			log.debug("Submission updated for user " + submission.getUserId() + " for assignment " + submission.getAssignment().getTitle() + " ID: " + submission.getAssignment().getAssignmentId()
+			log.debug("Submission updated for user " + submission.getUserId() + " for assignment " + submission.getAssignment().getTitle() + " ID: " + submission.getAssignment().getId()
 					+ " by " + externalLogic.getCurrentUserId() + " via saveInstructorFeedback");
 		}
 
@@ -384,15 +384,15 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		// we need to handle attachments separately
 		version.setFeedbackAttachSet(null);
 
-		if (version.getSubmissionVersionId() != null) {
+		if (version.getId() != null) {
 			// instructor is providing feedback on the student's current version
 			dao.update(version);
-			log.debug("Submission version " + version.getSubmissionVersionId() + " updated by " + externalLogic.getCurrentUserId() + " via saveInstructorFeedback");
+			log.debug("Submission version " + version.getId() + " updated by " + externalLogic.getCurrentUserId() + " via saveInstructorFeedback");
 		} else {
 			// instructor is providing feedback but the student did not
 			// have a submission yet
 			dao.create(version);
-			log.debug("New submission version " + version.getSubmissionVersionId() + " created by " + externalLogic.getCurrentUserId() + " via saveInstructorFeedback");
+			log.debug("New submission version " + version.getId() + " created by " + externalLogic.getCurrentUserId() + " via saveInstructorFeedback");
 		}
 
 		
@@ -480,7 +480,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 					if (submission != null) {
 						Assignment2 assign = submission.getAssignment();
 						if (assign != null) {
-							assignmentIdToSubmissionMap.put(assign.getAssignmentId(), submission);
+							assignmentIdToSubmissionMap.put(assign.getId(), submission);
 						}
 					}
 				}
@@ -490,7 +490,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 				Assignment2 assign = (Assignment2)assignIter.next();
 
 				if (assign != null) {
-					AssignmentSubmission currSubmission = (AssignmentSubmission)assignmentIdToSubmissionMap.get(assign.getAssignmentId());
+					AssignmentSubmission currSubmission = (AssignmentSubmission)assignmentIdToSubmissionMap.get(assign.getId());
 					int status = getSubmissionStatus(currSubmission);
 					assign.setSubmissionStatusConstant(new Integer(status));
 				}
@@ -504,7 +504,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		if (submission == null) {
 			status = AssignmentConstants.SUBMISSION_NOT_STARTED;
 		} else if (submission.getCurrentSubmissionVersion() == null ||
-				submission.getCurrentSubmissionVersion().getSubmissionVersionId() == null) {
+				submission.getCurrentSubmissionVersion().getId() == null) {
 			status = AssignmentConstants.SUBMISSION_NOT_STARTED;
 		} else if (submission.getCurrentSubmissionVersion().isDraft()) {
 			status = AssignmentConstants.SUBMISSION_IN_PROGRESS;
@@ -540,7 +540,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			throw new IllegalArgumentException("null version passed to updateStudentAttachments");
 		}
 		
-		if (newVersion.getSubmissionVersionId() == null) {
+		if (newVersion.getId() == null) {
 			throw new IllegalArgumentException("the version passed to updateStudentAttachments must exist in db. id was null");
 		}
 		
@@ -550,10 +550,10 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 				for (Iterator attachIter = newVersion.getSubmissionAttachSet().iterator(); attachIter.hasNext();) {
 					AssignmentSubmissionAttachment attach = (AssignmentSubmissionAttachment) attachIter.next();
 					if (attach != null) {
-						attach.setSubmissionAttachId(null);
+						attach.setId(null);
 						attach.setSubmissionVersion(newVersion);
 						dao.create(attach);
-						log.debug("SubmissionAttachment created with id " + attach.getSubmissionAttachId());
+						log.debug("SubmissionAttachment created with id " + attach.getId());
 					}
 				}
 			}
@@ -564,11 +564,11 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			if (newVersion.getSubmissionAttachSet() != null && !newVersion.getSubmissionAttachSet().isEmpty()) {
 	        	for (Iterator attachIter = newVersion.getSubmissionAttachSet().iterator(); attachIter.hasNext();) {
 	        		AssignmentSubmissionAttachment attach = (AssignmentSubmissionAttachment) attachIter.next();
-	        		if (attach != null && attach.getSubmissionAttachId() == null) {
+	        		if (attach != null && attach.getId() == null) {
 	        			// this is a new attachment and needs to be created
 	        			attach.setSubmissionVersion(newVersion);
 	        			dao.save(attach);
-	        			log.debug("New feedback attachment created: " + attach.getAttachmentReference() + "with attach id " + attach.getSubmissionAttachId());
+	        			log.debug("New feedback attachment created: " + attach.getAttachmentReference() + "with attach id " + attach.getId());
 	        			revisedAttachSet.add(attach);
 	        		}
 	        	}
@@ -583,7 +583,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 								!newVersion.getSubmissionAttachSet().contains(attach)) {
 							// we need to delete this attachment
 							dao.delete(attach);
-							log.debug("Feedback attachment deleted with id: " + attach.getSubmissionAttachId());
+							log.debug("Feedback attachment deleted with id: " + attach.getId());
 						} else if (newVersion.getSubmissionAttachSet() != null &&
 								newVersion.getSubmissionAttachSet().contains(attach)) {
 							revisedAttachSet.add(attach);
@@ -602,7 +602,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			throw new IllegalArgumentException("Null updatedVersion passed to updateFeedbackAttachments");
 		}
 		
-		if (updatedVersion.getSubmissionVersionId() == null) {
+		if (updatedVersion.getId() == null) {
 			throw new IllegalArgumentException("the version passed to updateFeedbackAttachments must exist in db. id was null");
 		}
 		
@@ -611,11 +611,11 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		if (updatedVersion.getFeedbackAttachSet() != null && !updatedVersion.getFeedbackAttachSet().isEmpty()) {
         	for (Iterator attachIter = updatedVersion.getFeedbackAttachSet().iterator(); attachIter.hasNext();) {
         		AssignmentFeedbackAttachment attach = (AssignmentFeedbackAttachment) attachIter.next();
-        		if (attach != null && attach.getFeedbackAttachId() == null) {
+        		if (attach != null && attach.getId() == null) {
         			// this is a new attachment and needs to be created
         			attach.setSubmissionVersion(updatedVersion);
         			dao.save(attach);
-        			log.debug("New feedback attachment created: " + attach.getAttachmentReference() + "with attach id " + attach.getFeedbackAttachId());
+        			log.debug("New feedback attachment created: " + attach.getAttachmentReference() + "with attach id " + attach.getId());
         			revisedAttachSet.add(attach);
         		}
         	}
@@ -630,7 +630,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 							!updatedVersion.getFeedbackAttachSet().contains(attach)) {
 						// we need to delete this attachment
 						dao.delete(attach);
-						log.debug("Feedback attachment deleted with id: " + attach.getFeedbackAttachId());
+						log.debug("Feedback attachment deleted with id: " + attach.getId());
 					} else if (updatedVersion.getFeedbackAttachSet() != null &&
 							updatedVersion.getFeedbackAttachSet().contains(attach)) {
 						revisedAttachSet.add(attach);
@@ -720,7 +720,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		
 		// if the id is null, the method was passed a transient object, so there
 		// is no current version
-		if (submission.getSubmissionId() != null) {
+		if (submission.getId() != null) {
 			AssignmentSubmissionVersion version = dao.getCurrentSubmissionVersionWithAttachments(submission, Boolean.FALSE);
 	
 			if (version != null && version.isDraft()) {
@@ -738,7 +738,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 
 		String contextId = externalLogic.getCurrentContextId();
 		if (!gradebookLogic.isCurrentUserAbleToGrade(contextId)) {
-			throw new SecurityException("User attempted to release feedback for assignment " + assignment.getAssignmentId() + " without authorization");
+			throw new SecurityException("User attempted to release feedback for assignment " + assignment.getId() + " without authorization");
 		}
 		
 		List<String> gradableStudents = permissionLogic.getGradableStudentsForUserForItem(assignment);
@@ -761,7 +761,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 								if (version != null) {
 									version.setReleasedTime(releasedTime);
 									dao.update(version);
-									log.debug("Version " + version.getSubmissionVersionId() + " released by " + externalLogic.getCurrentUserId());
+									log.debug("Version " + version.getId() + " released by " + externalLogic.getCurrentUserId());
 								}
 							}
 						}
@@ -779,7 +779,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		if (!permissionLogic.isUserAbleToProvideFeedbackForSubmission(submission)) {
 			throw new SecurityException("User " + externalLogic.getCurrentUserId() + " attempted to release feedback" +
 					" for student " + submission.getUserId() + " and assignment " + 
-					submission.getAssignment().getAssignmentId() + "without authorization");
+					submission.getAssignment().getId() + "without authorization");
 		}
 		
 		// retrieve submission with history
@@ -797,7 +797,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 					if (version != null) {
 						version.setReleasedTime(releasedTime);
 						dao.update(version);
-						log.debug("Version " + version.getSubmissionVersionId() + " released by " + externalLogic.getCurrentUserId());
+						log.debug("Version " + version.getId() + " released by " + externalLogic.getCurrentUserId());
 					}
 				}
 			}
@@ -817,11 +817,11 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		if (!permissionLogic.isUserAbleToProvideFeedbackForSubmission(submission)) {
 			throw new SecurityException("User " + externalLogic.getCurrentUserId() + " attempted to release feedback" +
 					" for student " + submission.getUserId() + " and assignment " + 
-					submission.getAssignment().getAssignmentId() + "without authorization");
+					submission.getAssignment().getId() + "without authorization");
 		}
 		
 		version.setReleasedTime(new Date());
 		dao.update(version);
-		log.debug("Version " + version.getSubmissionVersionId() + " released by " + externalLogic.getCurrentUserId());
+		log.debug("Version " + version.getId() + " released by " + externalLogic.getCurrentUserId());
 	}
 }

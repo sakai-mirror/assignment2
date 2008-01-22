@@ -34,7 +34,7 @@ import java.util.Iterator;
  */
 public class Assignment2 {
 
-    private Long assignmentId;
+    private Long id;
     private Long gradableObjectId;
     private String contextId;
     private String title;
@@ -78,7 +78,7 @@ public class Assignment2 {
     private String submissionStatus;
     private Integer submissionStatusConstant;
 
-	public Assignment2(Long assignmentId, Long gradableObjectId,
+	public Assignment2(Long id, Long gradableObjectId,
 			String contextId, String title, Boolean draft, int sortIndex,
 			Date openTime, Date acceptUntilTime, Boolean ungraded,
 			Date dueDateForUngraded, Boolean honorPledge, String instructions,
@@ -87,7 +87,7 @@ public class Assignment2 {
 			Boolean allowResubmit, Boolean allowReviewService,
 			Boolean allowStudentViewReport, String creator, Date createTime,
 			String modifiedBy, Date modifiedTime, Boolean removed, int version) {
-		this.assignmentId = assignmentId;
+		this.id = id;
 		this.gradableObjectId = gradableObjectId;
 		this.contextId = contextId;
 		this.title = title;
@@ -128,16 +128,16 @@ public class Assignment2 {
     /**
      * @return Returns the assignment id
      */
-    public Long getAssignmentId() {
-        return assignmentId;
+    public Long getId() {
+        return id;
     }
     
     /**
      * set the assignment id
-     * @param assignmentId
+     * @param id
      */
-    public void setAssignmentId(Long assignmentId) {
-        this.assignmentId = assignmentId;
+    public void setId(Long id) {
+        this.id = id;
     }
     
     /**

@@ -5,7 +5,7 @@
 <hibernate-mapping>
     <class name="org.sakaiproject.assignment2.model.AssignmentAttachment" table="A2_ASSIGN_ATTACH_T">
        
-        <id name="assignAttachId" column="ASSIGN_ATTACH_ID" type="long">
+        <id name="id" column="ASSIGN_ATTACH_ID" type="long">
 					<generator class="native">
 						<param name="sequence">A2_ASSIGN_ATTACH_S</param>
 					</generator>

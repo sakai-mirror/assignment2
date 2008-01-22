@@ -5,7 +5,7 @@
 <hibernate-mapping>
     <class name="org.sakaiproject.assignment2.model.AssignmentFeedbackAttachment" table="A2_FEEDBACK_ATTACH_T">
        
-        <id name="feedbackAttachId" column="FEEDBACK_ATTACH_ID" type="long">
+        <id name="id" column="FEEDBACK_ATTACH_ID" type="long">
 					<generator class="native">
 						<param name="sequence">A2_FEEDBACK_ATTACH_S</param>
 					</generator>

@@ -142,7 +142,7 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
         	if (edit_perm){
         		UIOutput.make(row, "assignment_row_remove_col");
         		UIBoundBoolean.make(row, "assignment_row_remove", 
-        			"Assignment2Bean.selectedIds." + assignment.getAssignmentId().toString(),
+        			"Assignment2Bean.selectedIds." + assignment.getId().toString(),
         			Boolean.FALSE);
         	}
         	UIMessage.make(row, "assignment_row_remove_label", "assignment2.assignment_list-sortview.assignment_row_remove_label");
@@ -152,17 +152,17 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
         	if (edit_perm) {
 	        	UIInternalLink.make(row, "assignment_row_edit", 
 	        			UIMessage.make("assignment2.assignment_list-sortview.assignment_row_edit"), 
-	        			new AssignmentViewParams(AssignmentProducer.VIEW_ID, assignment.getAssignmentId()));
+	        			new AssignmentViewParams(AssignmentProducer.VIEW_ID, assignment.getId()));
 	        	UIInternalLink.make(row, "assignment_row_duplicate", 
 	        			UIMessage.make("assignment2.assignment_list-sortview.assignment_row_duplicate"), 
 	        			new AssignmentListSortViewParams(AssignmentListSortViewProducer.VIEW_ID, current_sort_by, current_sort_dir, 
-	        					params.current_start, params.current_count, assignment.getAssignmentId()));
+	        					params.current_start, params.current_count, assignment.getId()));
         	}
         	
         	//Current user should always be able to grade, otherwise getViewableAssignments wouldn't have returned it... or at least it shouldn't ;-)
         	UIInternalLink.make(row, "assignment_row_grade", 
         			UIMessage.make("assignment2.assignment_list-sortview.assignment_row_grade"), 
-        			new SimpleAssignmentViewParams(AssignmentViewSubmissionsProducer.VIEW_ID, assignment.getAssignmentId()));
+        			new SimpleAssignmentViewParams(AssignmentViewSubmissionsProducer.VIEW_ID, assignment.getId()));
         	
         	UIOutput.make(row, "assignment_row_for", assignment.getRestrictedToText());
         	if (assignment.isDraft()){

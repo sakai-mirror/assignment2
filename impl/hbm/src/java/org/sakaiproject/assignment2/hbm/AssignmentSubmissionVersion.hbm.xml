@@ -5,7 +5,7 @@
 <hibernate-mapping>
     <class name="org.sakaiproject.assignment2.model.AssignmentSubmissionVersion" table="A2_SUBMISSION_VERSION_T">
        
-        <id name="submissionVersionId" column="SUBMISSION_VERSION_ID" type="long">
+        <id name="id" column="SUBMISSION_VERSION_ID" type="long">
 					<generator class="native">
 						<param name="sequence">A2_SUBMISSION_VERSION_S</param>
 					</generator>
@@ -90,11 +90,11 @@
     <![CDATA[from org.sakaiproject.assignment2.model.AssignmentSubmissionVersion submissionVersion
              left join fetch submissionVersion.submissionAttachSet
              left join fetch submissionVersion.feedbackAttachSet
-             where submissionVersion.submissionVersionId = :submissionVersionId]]>
+             where submissionVersion.id = :submissionVersionId]]>
   	</query>
   	
   	<query name="findCurrentVersionIdsWithDrafts">
-    <![CDATA[select max(submissionVersion.submissionVersionId) 
+    <![CDATA[select max(submissionVersion.id) 
     				 from org.sakaiproject.assignment2.model.AssignmentSubmissionVersion submissionVersion
              where submissionVersion.assignmentSubmission in (:submissionList)
     		     group by submissionVersion.assignmentSubmission]]>

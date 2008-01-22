@@ -163,7 +163,7 @@ public class AssignmentViewSubmissionsProducer implements ViewComponentProducer,
         	
         	UIInternalLink.make(row, "row_grade_link",
         			externalLogic.getUserDisplayName(as.getUserId()),
-        			new AssignmentGradeViewParams(AssignmentGradeProducer.VIEW_ID, as.getAssignment().getAssignmentId(), as.getUserId()));
+        			new AssignmentGradeViewParams(AssignmentGradeProducer.VIEW_ID, as.getAssignment().getId(), as.getUserId()));
         	
         	if (as.getCurrentSubmissionVersion() != null && as.getCurrentSubmissionVersion().getSubmittedTime() != null){
         		UIOutput.make(row, "row_submitted", df.format(as.getCurrentSubmissionVersion().getSubmittedTime()));
@@ -196,7 +196,7 @@ public class AssignmentViewSubmissionsProducer implements ViewComponentProducer,
         UIMessage.make(tofill, "assignment_details", "assignment2.assignment_grade-assignment.assignment_details");
         if (edit_perm){
         	UIOutput.make(tofill, "edit_assignment_span");
-        	UIInternalLink.make(tofill, "assignment_details_edit", new AssignmentViewParams(AssignmentProducer.VIEW_ID, assignment.getAssignmentId()));
+        	UIInternalLink.make(tofill, "assignment_details_edit", new AssignmentViewParams(AssignmentProducer.VIEW_ID, assignment.getId()));
         }
         UIMessage.make(tofill, "assignment_details.title_header", "assignment2.assignment_grade-assignment.assignment_details.title");
         UIOutput.make(tofill, "assignment_details.title", assignment.getTitle());

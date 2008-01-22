@@ -29,7 +29,7 @@ package org.sakaiproject.assignment2.model;
  */
 public class AssignmentGroup {
 
-	private Long assignmentGroupId;
+	private Long id;
 	private Assignment2 assignment;
 	private String groupId;
 	private int version;
@@ -42,16 +42,16 @@ public class AssignmentGroup {
 	 * 
 	 * @return id
 	 */
-	public Long getAssignmentGroupId() {
-		return assignmentGroupId;
+	public Long getId() {
+		return id;
 	}
 	
 	/**
-	 * set the assignmentGroupId
-	 * @param assignmentGroupId
+	 * set the id
+	 * @param id
 	 */
-	public void setAssignmentGroupId(Long assignmentGroupId) {
-		this.assignmentGroupId = assignmentGroupId;
+	public void setId(Long id) {
+		this.id = id;
 	}
 	
 	/**
@@ -101,20 +101,20 @@ public class AssignmentGroup {
 		if (!(obj instanceof AssignmentGroup)) return false;
 		else {
 			AssignmentGroup compGroup = (AssignmentGroup) obj;
-			if (this.assignmentGroupId == null || compGroup.assignmentGroupId == null) {
+			if (this.id == null || compGroup.id == null) {
 				return false;
 			}
-			if (null == this.assignmentGroupId || null == compGroup.assignmentGroupId) return false;
+			if (null == this.id || null == compGroup.id) return false;
 			else return (
-					this.assignmentGroupId.equals(compGroup.assignmentGroupId)
+					this.id.equals(compGroup.id)
 			);
 		}
 	}
 	
 	@Override
 	public int hashCode() {
-		if (null == this.assignmentGroupId) return super.hashCode();
-		String hashStr = this.getClass().getName() + ":" + this.assignmentGroupId.hashCode();
+		if (null == this.id) return super.hashCode();
+		String hashStr = this.getClass().getName() + ":" + this.id.hashCode();
 		return hashStr.hashCode();
 	}
 	

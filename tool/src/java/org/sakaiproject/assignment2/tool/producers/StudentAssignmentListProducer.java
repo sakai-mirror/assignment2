@@ -112,7 +112,7 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
         	
         	UILink.make(row, "attachments", ATTACH_IMG_SRC);
         	UIInternalLink.make(row, "assignment_link", assignment.getTitle(), 
-        			new SimpleAssignmentViewParams(StudentSubmitProducer.VIEW_ID, assignment.getAssignmentId()));
+        			new SimpleAssignmentViewParams(StudentSubmitProducer.VIEW_ID, assignment.getId()));
         	UIOutput.make(row, "assignment_row_for", assignment.getRestrictedToText());
         	UIOutput.make(row, "assignment_row_status", assignment.getSubmissionStatus());
         	UIOutput.make(row, "assignment_row_open", df.format(assignment.getOpenTime()));

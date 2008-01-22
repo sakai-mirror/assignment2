@@ -30,7 +30,7 @@ package org.sakaiproject.assignment2.model;
  */
 public class AssignmentAttachment {
 
-	private Long assignAttachId;
+	private Long id;
 	private Assignment2 assignment;
 	private String attachmentReference;
 	private int version;
@@ -44,18 +44,18 @@ public class AssignmentAttachment {
 	}
 
 	/**
-	 * @return the assignAttachId
+	 * @return the id of this assignment attachment
 	 */
-	public Long getAssignAttachId() {
-		return assignAttachId;
+	public Long getId() {
+		return id;
 	}
 
 	/**
-	 * set the assignAttachId
-	 * @param assignAttachId
+	 * set the the id of this assignment attachment
+	 * @param id
 	 */
-	public void setAssignAttachId(Long assignAttachId) {
-		this.assignAttachId = assignAttachId;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	/**
@@ -104,20 +104,20 @@ public class AssignmentAttachment {
 		if (!(obj instanceof AssignmentAttachment)) return false;
 		else {
 			AssignmentAttachment compAttach = (AssignmentAttachment) obj;
-			if (this.assignAttachId == null || compAttach.assignAttachId == null) {
+			if (this.id == null || compAttach.id == null) {
 				return false;
 			}
-			if (null == this.assignAttachId || null == compAttach.assignAttachId) return false;
+			if (null == this.id || null == compAttach.id) return false;
 			else return (
-					this.assignAttachId.equals(compAttach.assignAttachId)
+					this.id.equals(compAttach.id)
 			);
 		}
 	}
 
 	@Override
 	public int hashCode() {
-		if (null == this.assignAttachId) return super.hashCode();
-		String hashStr = this.getClass().getName() + ":" + this.assignAttachId.hashCode();
+		if (null == this.id) return super.hashCode();
+		String hashStr = this.getClass().getName() + ":" + this.id.hashCode();
 		return hashStr.hashCode();
 	}
 }

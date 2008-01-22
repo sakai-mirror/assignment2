@@ -100,7 +100,7 @@ public class AssignmentListReorderProducer implements ViewComponentProducer, Vie
         	//Sorting LI
         	UIBranchContainer li = UIBranchContainer.make(tofill, "assignment_li:");
         	Map attrmap = new HashMap();
-        	attrmap.put("id", "li_" + assignment.getAssignmentId().toString());
+        	attrmap.put("id", "li_" + assignment.getId().toString());
         	li.decorators = new DecoratorList(new UIFreeAttributeDecorator(attrmap));
         	UIOutput.make(li, "assignment_row_title", assignment.getTitle());
         	

@@ -33,7 +33,7 @@ import java.util.regex.Pattern;
  */
 public class AssignmentSubmissionVersion {
 	
-	private Long submissionVersionId;
+	private Long id;
 	private AssignmentSubmission assignmentSubmission;
 	private Date submittedTime;
 	private Date releasedTime;
@@ -55,12 +55,12 @@ public class AssignmentSubmissionVersion {
 	public AssignmentSubmissionVersion() {
 	}
 	
-	public Long getSubmissionVersionId() {
-		return submissionVersionId;
+	public Long getId() {
+		return id;
 	}
 
-	public void setSubmissionVersionId(Long submissionVersionId) {
-		this.submissionVersionId = submissionVersionId;
+	public void setId(Long id) {
+		this.id = id;
 	}
 	
 	/**

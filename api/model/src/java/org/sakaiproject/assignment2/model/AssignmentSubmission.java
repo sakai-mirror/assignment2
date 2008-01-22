@@ -31,7 +31,7 @@ import java.util.Date;
  */
 public class AssignmentSubmission {
 	
-	private Long submissionId;
+	private Long id;
 	private Assignment2 assignment;
 	private String userId;
 	private Boolean allowResubmit;
@@ -62,16 +62,16 @@ public class AssignmentSubmission {
 	 * 
 	 * @return assignment submission id
 	 */
-	public Long getSubmissionId() {
-		return submissionId;
+	public Long getId() {
+		return id;
 	}
 	
 	/**
 	 * set assignment submission id
-	 * @param submissionId
+	 * @param id
 	 */
-	public void setSubmissionId(Long submissionId) {
-		this.submissionId = submissionId;
+	public void setId(Long id) {
+		this.id = id;
 	}
 	
 	/**
