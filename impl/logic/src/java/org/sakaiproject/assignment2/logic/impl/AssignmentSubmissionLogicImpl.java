@@ -684,7 +684,9 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		
 		boolean studentAbleToSubmit = false;
 		boolean assignmentIsOpen = assignment.getOpenTime().before(new Date()) && 
-					assignment.getAcceptUntilTime().after(new Date());
+		(assignment.getAcceptUntilTime() == null ||
+					(assignment.getAcceptUntilTime() != null && 
+							assignment.getAcceptUntilTime().after(new Date())));
 		
 		if (firstSubmission) {
 			if (assignmentIsOpen) {

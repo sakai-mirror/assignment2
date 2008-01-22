@@ -48,8 +48,18 @@ public class ComparatorsUtils {
 		public int compare(Assignment2 assign1, Assignment2 assign2) {
 			Date dueDate1 = assign1.isUngraded() ? assign1.getDueDateForUngraded() : assign1.getDueDate();
 			Date dueDate2 = assign2.isUngraded() ? assign2.getDueDateForUngraded() : assign2.getDueDate();
-
-			int value = dueDate1.compareTo(dueDate2);
+			
+			int value;
+			if (dueDate1 != null && dueDate2 != null) {
+				value = dueDate1.compareTo(dueDate2);
+			} else if (dueDate1 == null && dueDate2 != null) {
+				value = -1;
+			} else if (dueDate1 != null && dueDate2 == null) {
+				value = 1;
+			} else {
+				value = 0;
+			}
+			
 			if (value == 0) {
 				value = sortByTitle(assign1, assign2);
 			}

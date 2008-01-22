@@ -385,21 +385,20 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 		if (currDate.before(assignment.getOpenTime()))
 			return AssignmentConstants.STATUS_NOT_OPEN;
 		
-		if (currDate.after(assignment.getOpenTime()) && (assignment.getAcceptUntilTime() != null && currDate.before(assignment.getAcceptUntilTime()))) {
-			if (assignment.isUngraded()) {
-				if (currDate.after(assignment.getDueDateForUngraded()))
-					return AssignmentConstants.STATUS_DUE;
-			}
-			else if (assignment.getDueDate() != null) {
-				if (currDate.after(assignment.getDueDate()))
-					return AssignmentConstants.STATUS_DUE;				
-			}
-			
-			return AssignmentConstants.STATUS_OPEN;
+		if (assignment.getAcceptUntilTime() != null && currDate.after(assignment.getAcceptUntilTime())) {
+			return AssignmentConstants.STATUS_CLOSED;
 		}
 		
-		return AssignmentConstants.STATUS_CLOSED;
+		if (assignment.isUngraded()) {
+			if (assignment.getDueDateForUngraded() != null && currDate.after(assignment.getDueDateForUngraded()))
+				return AssignmentConstants.STATUS_DUE;
+		}
+		else if (assignment.getDueDate() != null) {
+			if (currDate.after(assignment.getDueDate()))
+				return AssignmentConstants.STATUS_DUE;				
+		}
 		
+		return AssignmentConstants.STATUS_OPEN;	
 	}
 	
 	/**

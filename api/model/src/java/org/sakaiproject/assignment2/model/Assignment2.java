@@ -232,14 +232,14 @@ public class Assignment2 {
     }
 
     /**
-     * @return The time after which responses to this assignment are considered late
+     * @return The time after which this assignment is closed to submissions.
      */
     public Date getAcceptUntilTime() {
         return acceptUntilTime;
     }
     
     /**
-     * The time after which responses to this assignment are considered late
+     * The time after which this assignment is closed to submissions.
      * @param acceptUntilTime
      */
     public void setAcceptUntilTime(Date acceptUntilTime) {
@@ -268,6 +268,7 @@ public class Assignment2 {
      * All assignments will be linked to the gradebook except ungraded 
      * assignments.  This field is for storing the due date in this situation
      * since all other assignment due dates will be stored on the gb side.
+     * The time after which responses to this assignment are considered late
      * @return due date
      */
     public Date getDueDateForUngraded() {
@@ -278,6 +279,7 @@ public class Assignment2 {
      * All assignments will be linked to the gradebook except ungraded 
      * assignments.  This field is for storing the due date in this situation
      * since all other assignment due dates will be stored on the gb side.
+     * The time after which responses to this assignment are considered late
      * @param dueDateForUngraded
      */
     public void setDueDateForUngraded(Date dueDateForUngraded) {

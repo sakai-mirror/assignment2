@@ -113,7 +113,7 @@ public class AssignmentListReorderProducer implements ViewComponentProducer, Vie
         	   	UIMessage.make(row, "assignment_row_open_text", "assignment2.assignment_list-reorder.assignment_row_open");
         	}
         	UIOutput.make(row, "assignment_row_open", df.format(assignment.getOpenTime()));
-        	UIOutput.make(row, "assignment_row_due", df.format(assignment.getDueDateForUngraded()));
+        	UIOutput.make(row, "assignment_row_due", (assignment.getDueDateForUngraded() != null ? df.format(assignment.getDueDateForUngraded()) : ""));
         	UIInternalLink.make(row, "assignment_row_in_new", "2/2", new SimpleViewParameters(AssignmentListReorderProducer.VIEW_ID));
         	//UIOutput.make(row, "assignment_row_scale", "0-100.0");
         	

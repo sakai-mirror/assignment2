@@ -215,7 +215,7 @@ public class AssignmentViewSubmissionsProducer implements ViewComponentProducer,
         			(assignment.getDueDate() != null ? df.format(assignment.getDueDate()) : ""));
         }
         UIMessage.make(tofill, "assignment_details.accept_until_header", "assignment2.assignment_grade-assignment.assignment_details.accept_until");
-        UIOutput.make(tofill, "assignment_details.accept_until", df.format(assignment.getAcceptUntilTime()));
+        UIOutput.make(tofill, "assignment_details.accept_until", assignment.getAcceptUntilTime() != null ? df.format(assignment.getAcceptUntilTime()) : "");
         UIMessage.make(tofill, "assignment_details.submissions_header", "assignment2.assignment_grade-assignment.assignment_details.submissions");
         UIMessage.make(tofill, "assignment_details.submissions", "assignment2.submission_type." + String.valueOf(assignment.getSubmissionType()));
         //UIMessage.make(tofill, "assignment_details.scale_header", "assignment2.assignment_grade-assignment.assignment_details.scale");
