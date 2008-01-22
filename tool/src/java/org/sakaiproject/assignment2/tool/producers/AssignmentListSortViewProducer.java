@@ -28,7 +28,7 @@ import uk.org.ponder.rsf.viewstate.ViewParamsReporter;
 
 public class AssignmentListSortViewProducer implements ViewComponentProducer, ViewParamsReporter {
 
-    public static final String VIEW_ID = "assignment_list-sortview";
+    public static final String VIEW_ID = "list";
    
     //sorting strings
     public static final String DEFAULT_SORT_DIR = AssignmentLogic.SORT_DIR_ASC;
