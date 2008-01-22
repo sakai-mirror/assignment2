@@ -39,6 +39,12 @@
 
 	<form rsf:id="form" method="post">
 
+	<ul class="navIntraTool" rsf:id="navIntraTool">
+		<li>
+			<input rsf:id="release_all_feedback" type="submit" />
+		</li>
+	</ul>
+
 	<table class="itemSummary" cellspacing="0" summary="Assignment Details">
 		<tr>
 			<th rsf:id="msg=assignment2.assignment_grade.details.student">Student</th>
@@ -132,7 +138,8 @@
 			<li>
 				<fieldset>
 					<ol>
-						<li><input rsf:id="allow_resubmit" type="checkbox" onclick="update_allow_resub()" /> <label rsf:id="msg=assignment2.assignment_grade.allow_resubmission">Allow Resubmission</label></li>
+						<li><input rsf:id="release_feedback" type="checkbox" /><label rsf:id="release_feedback_label">Release this Feedback</label></li>
+						<li><input rsf:id="allow_resubmit" type="checkbox" onclick="update_allow_resub()" /> <label rsf:id="allow_resubmit_label">Allow Resubmission</label></li>
 						<li class="allow_resubmit_toggle">
 							<p class="shorttext"><label rsf:id="msg=assignment2.assignment_grade.accept_until" for="new_assignment_closemonth">Accept Until</label>
 								<input rsf:id="accept_until:" />

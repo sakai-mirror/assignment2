@@ -34,10 +34,12 @@ public class AssignmentSubmissionBean {
 	private static final String EDIT = "edit";
 	private static final String CANCEL = "cancel";
 	private static final String FAILURE = "failure";
+	private static final String RELEASE_ALL= "release_all";
 	
 	public Map selectedIds = new HashMap();
 	public Long assignmentId;
 	public String userId;
+	public Boolean releaseFeedback;
 	
     private TargettedMessageList messages;
     public void setMessages(TargettedMessageList messages) {
@@ -227,6 +229,24 @@ public class AssignmentSubmissionBean {
 	/*
 	 * INSTRUCTOR FUNCTIONS
 	 */
+	public String processActionReleaseAllFeedbackForAssignment() {
+		if (this.assignmentId != null) {
+			Assignment2 assignment = assignmentLogic.getAssignmentById(assignmentId);
+			submissionLogic.releaseAllFeedbackForAssignment(assignment);
+		}
+		
+		return RELEASE_ALL;
+	}
+	
+	public String processActionReleaseAllFeedbackForSubmission(){
+		for (String key : OTPMap.keySet()) {
+			AssignmentSubmission as = OTPMap.get(key);
+			submissionLogic.releaseAllFeedbackForSubmission(as);
+		}
+		
+		return RELEASE_ALL;
+	}
+	
 	public String processActionGradeSubmit(){
 		if (assignmentId == null || userId == null){
 			return FAILURE;
@@ -247,6 +267,9 @@ public class AssignmentSubmissionBean {
 			
 			asv.setAssignmentSubmission(assignmentSubmission);
 			asv.setLastFeedbackSubmittedBy(currUserId);
+			if (this.releaseFeedback != null && asv.getReleasedTime() == null) {
+				asv.setReleasedTime(new Date());
+			}
 			
 			asv.setLastFeedbackTime(new Date());
 			if (asv.getId() == null) {

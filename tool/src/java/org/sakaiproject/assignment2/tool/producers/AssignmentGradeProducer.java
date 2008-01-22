@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.Stack;
 
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
+import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
@@ -16,7 +17,7 @@ import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.model.AssignmentFeedbackAttachment;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
-import org.sakaiproject.assignment2.tool.params.AssignmentGradeAssignmentViewParams;
+import org.sakaiproject.assignment2.tool.params.ViewSubmissionsViewParams;
 import org.sakaiproject.assignment2.tool.params.AssignmentGradeViewParams;
 import org.sakaiproject.assignment2.tool.params.FilePickerHelperViewParams;
 import org.sakaiproject.assignment2.tool.params.SimpleAssignmentViewParams;
@@ -41,6 +42,7 @@ import uk.org.ponder.rsf.components.UIInternalLink;
 import uk.org.ponder.rsf.components.UIMessage;
 import uk.org.ponder.rsf.components.UIOutput;
 import uk.org.ponder.rsf.components.UIVerbatim;
+import uk.org.ponder.rsf.components.decorators.UILabelTargetDecorator;
 import uk.org.ponder.rsf.evolvers.FormatAwareDateInputEvolver;
 import uk.org.ponder.rsf.evolvers.TextInputEvolver;
 import uk.org.ponder.rsf.flow.jsfnav.NavigationCase;
@@ -71,6 +73,7 @@ public class AssignmentGradeProducer implements ViewComponentProducer, Navigatio
     private AssignmentSubmissionLogic submissionLogic;
     private GradebookDetailsRenderer gradebookDetailsRenderer;
     private EntityBeanLocator asvEntityBeanLocator;
+    private AssignmentPermissionLogic permissionLogic;
 		
 	/*
 	 * You can change the date input to accept time as well by uncommenting the lines like this:
@@ -91,6 +94,9 @@ public class AssignmentGradeProducer implements ViewComponentProducer, Navigatio
     	ToolSession session = sessionManager.getCurrentToolSession();
     	session.removeAttribute("attachmentRefs");
     	session.removeAttribute("removedAttachmentRefs");
+    	
+    	//Edit Permission
+        Boolean edit_perm = permissionLogic.isCurrentUserAbleToEditAssignments(externalLogic.getCurrentContextId());
     	
     	//Get Params
     	AssignmentGradeViewParams params = (AssignmentGradeViewParams) viewparams;
@@ -123,7 +129,7 @@ public class AssignmentGradeProducer implements ViewComponentProducer, Navigatio
         		new SimpleViewParameters(AssignmentListSortViewProducer.VIEW_ID));
         UIInternalLink.make(tofill, "breadcrumb2",
         		messageLocator.getMessage("assignment2.assignment_grade-assignment.heading", new Object[] { assignment.getTitle()}),
-        		new SimpleAssignmentViewParams(AssignmentViewSubmissionsProducer.VIEW_ID, assignment.getId()));
+        		new ViewSubmissionsViewParams(ViewSubmissionsProducer.VIEW_ID, assignment.getId()));
         UIMessage.make(tofill, "last_breadcrumb", "assignment2.assignment_grade.heading", 
         		new Object[]{assignment.getTitle(), externalLogic.getUserDisplayName(params.userId)});
         
@@ -231,8 +237,15 @@ public class AssignmentGradeProducer implements ViewComponentProducer, Navigatio
         //set dateEvolver
         dateEvolver.setStyle(FormatAwareDateInputEvolver.DATE_TIME_INPUT);
         
+        UIBoundBoolean release_feedback = UIBoundBoolean.make(form, "release_feedback", "#{AssignmentSubmissionBean.releaseFeedback}", 
+        		assignmentSubmissionVersion.getReleasedTime() != null);
+        UIMessage release_feedback_label = UIMessage.make(form, "release_feedback_label", "assignment2.assignment_grade.release_feedback");
+        UILabelTargetDecorator.targetLabel(release_feedback_label, release_feedback);
         
-        UIBoundBoolean.make(form, "allow_resubmit", asOTP + ".allowResubmit");
+        UIBoundBoolean allow_resubmit = UIBoundBoolean.make(form, "allow_resubmit", asOTP + ".allowResubmit");
+        UIMessage allow_resubmit_label = UIMessage.make(form, "allow_resubmit_label", "assignment2.assignment_grade.allow_resubmission");
+        UILabelTargetDecorator.targetLabel(allow_resubmit_label, allow_resubmit);
+        
         UIInput acceptUntilTimeField = UIInput.make(form, "accept_until:", asOTP + ".resubmitCloseTime");
         dateEvolver.evolveDateInput(acceptUntilTimeField, null);
         
@@ -289,28 +302,40 @@ public class AssignmentGradeProducer implements ViewComponentProducer, Navigatio
         
         form.parameters.add(new UIELBinding("#{AssignmentSubmissionBean.assignmentId}", assignmentId));
         form.parameters.add(new UIELBinding("#{AssignmentSubmissionBean.userId}", userId));
-        
-        UICommand.make(form, "submit", UIMessage.make("assignment2.assignment_grade.submit"), "#{AssignmentSubmissionBean.processActionGradeSubmit}");
-        UICommand.make(form, "preview", UIMessage.make("assignment2.assignment_grade.preview"), "#{AssignmentSubmissionBean.processActionGradePreview}");
-        UICommand.make(form, "cancel", UIMessage.make("assignment2.assignment_grade.cancel"), "#{AssignmentSubmissionBean.processActionCancel}");
+        if (edit_perm){
+        	UIOutput.make(form, "navIntraTool");
+        	UICommand.make(form, "release_all_feedback", UIMessage.make("assignment2.assignment_grade.release_all_feedback"),
+	        		"#{AssignmentSubmissionBean.processActionReleaseAllFeedbackForSubmission}");
+	        UICommand.make(form, "submit", UIMessage.make("assignment2.assignment_grade.submit"), "#{AssignmentSubmissionBean.processActionGradeSubmit}");
+	        UICommand.make(form, "preview", UIMessage.make("assignment2.assignment_grade.preview"), "#{AssignmentSubmissionBean.processActionGradePreview}");
+	        UICommand.make(form, "cancel", UIMessage.make("assignment2.assignment_grade.cancel"), "#{AssignmentSubmissionBean.processActionCancel}");
+        }
     }
     
 	public List reportNavigationCases() {
     	List<NavigationCase> nav= new ArrayList<NavigationCase>();
-    	nav.add(new NavigationCase("submit", new AssignmentGradeAssignmentViewParams(
-               AssignmentViewSubmissionsProducer.VIEW_ID)));
+    	nav.add(new NavigationCase("release_all", new AssignmentGradeViewParams(
+    			AssignmentGradeProducer.VIEW_ID, null, null)));
+    	nav.add(new NavigationCase("submit", new ViewSubmissionsViewParams(
+               ViewSubmissionsProducer.VIEW_ID)));
         nav.add(new NavigationCase("preview", new SimpleViewParameters(
               FragmentSubmissionGradePreviewProducer.VIEW_ID)));
-        nav.add(new NavigationCase("cancel", new AssignmentGradeAssignmentViewParams(
-                AssignmentViewSubmissionsProducer.VIEW_ID)));
+        nav.add(new NavigationCase("cancel", new ViewSubmissionsViewParams(
+                ViewSubmissionsProducer.VIEW_ID)));
         return nav;
     }
 	
 	public void interceptActionResult(ARIResult result, ViewParameters incoming, Object actionReturn) {
-		    if (result.resultingView instanceof AssignmentGradeAssignmentViewParams) {
-		    	AssignmentGradeAssignmentViewParams outgoing = (AssignmentGradeAssignmentViewParams) result.resultingView;
+		    if (result.resultingView instanceof ViewSubmissionsViewParams) {
+		    	ViewSubmissionsViewParams outgoing = (ViewSubmissionsViewParams) result.resultingView;
 		    	AssignmentGradeViewParams in = (AssignmentGradeViewParams) incoming;
 		    	outgoing.assignmentId = in.assignmentId;
+		    } else if (result.resultingView instanceof AssignmentGradeViewParams) {
+		    	AssignmentGradeViewParams outgoing = (AssignmentGradeViewParams) result.resultingView;
+		    	AssignmentGradeViewParams in = (AssignmentGradeViewParams) incoming;
+		    	outgoing.assignmentId = in.assignmentId;
+		    	outgoing.userId = in.userId;
+		    	outgoing.submissionId = in.submissionId;
 		    }
 	}
 	
@@ -356,5 +381,9 @@ public class AssignmentGradeProducer implements ViewComponentProducer, Navigatio
 
 	public void setAsvEntityBeanLocator(EntityBeanLocator asvEntityBeanLocator) {
 		this.asvEntityBeanLocator = asvEntityBeanLocator;
+	}
+
+	public void setPermissionLogic(AssignmentPermissionLogic permissionLogic) {
+		this.permissionLogic = permissionLogic;
 	}
 }

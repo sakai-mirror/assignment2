@@ -81,9 +81,10 @@
       <property name="submissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
       <property name="gradebookDetailsRenderer" ref="GradebookDetailsRenderer" />
       <property name="asvEntityBeanLocator" ref="AssignmentSubmissionVersion" />
+      <property name="permissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentPermissionLogic" />
    </bean>
 
-   <bean class="org.sakaiproject.assignment2.tool.producers.AssignmentViewSubmissionsProducer">
+   <bean class="org.sakaiproject.assignment2.tool.producers.ViewSubmissionsProducer">
       <property name="pagerRenderer" ref="PagerRenderer" />
       <property name="messageLocator" ref="messageLocator" />
       <property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />

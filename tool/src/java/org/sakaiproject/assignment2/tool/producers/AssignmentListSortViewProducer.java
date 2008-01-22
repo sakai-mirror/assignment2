@@ -7,15 +7,15 @@ import java.util.Locale;
 
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
-import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.tool.beans.Assignment2Bean;
 import org.sakaiproject.assignment2.tool.params.AssignmentListSortViewParams;
 import org.sakaiproject.assignment2.tool.params.SimpleAssignmentViewParams;
 import org.sakaiproject.assignment2.tool.params.AssignmentViewParams;
+import org.sakaiproject.assignment2.tool.params.ViewSubmissionsViewParams;
 import org.sakaiproject.assignment2.tool.producers.AssignmentProducer;
-import org.sakaiproject.assignment2.tool.producers.AssignmentViewSubmissionsProducer;
+import org.sakaiproject.assignment2.tool.producers.ViewSubmissionsProducer;
 import org.sakaiproject.assignment2.tool.producers.renderers.PagerRenderer;
 import org.sakaiproject.assignment2.tool.producers.renderers.SortHeaderRenderer;
 
@@ -162,7 +162,7 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
         	//Current user should always be able to grade, otherwise getViewableAssignments wouldn't have returned it... or at least it shouldn't ;-)
         	UIInternalLink.make(row, "assignment_row_grade", 
         			UIMessage.make("assignment2.assignment_list-sortview.assignment_row_grade"), 
-        			new SimpleAssignmentViewParams(AssignmentViewSubmissionsProducer.VIEW_ID, assignment.getId()));
+        			new ViewSubmissionsViewParams(ViewSubmissionsProducer.VIEW_ID, assignment.getId()));
         	
         	UIOutput.make(row, "assignment_row_for", assignment.getRestrictedToText());
         	if (assignment.isDraft()){

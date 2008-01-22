@@ -1,13 +1,14 @@
 package org.sakaiproject.assignment2.tool.producers;
 
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Date;
 
 import org.sakaiproject.assignment2.tool.beans.AssignmentSubmissionBean;
 import org.sakaiproject.assignment2.tool.params.AssignmentViewParams;
-import org.sakaiproject.assignment2.tool.params.AssignmentGradeAssignmentViewParams;
+import org.sakaiproject.assignment2.tool.params.ViewSubmissionsViewParams;
 import org.sakaiproject.assignment2.tool.params.AssignmentGradeViewParams;
 import org.sakaiproject.assignment2.tool.producers.renderers.PagerRenderer;
 import org.sakaiproject.assignment2.tool.producers.renderers.SortHeaderRenderer;
@@ -26,6 +27,7 @@ import uk.org.ponder.messageutil.TargettedMessageList;
 import uk.org.ponder.rsf.components.UIBranchContainer;
 import uk.org.ponder.rsf.components.UICommand;
 import uk.org.ponder.rsf.components.UIContainer;
+import uk.org.ponder.rsf.components.UIELBinding;
 import uk.org.ponder.rsf.components.UIForm;
 import uk.org.ponder.rsf.components.UIInput;
 import uk.org.ponder.rsf.components.UIInternalLink;
@@ -33,15 +35,19 @@ import uk.org.ponder.rsf.components.UILink;
 import uk.org.ponder.rsf.components.UIMessage;
 import uk.org.ponder.rsf.components.UIOutput;
 import uk.org.ponder.rsf.components.UIVerbatim;
+import uk.org.ponder.rsf.flow.jsfnav.NavigationCase;
+import uk.org.ponder.rsf.flow.jsfnav.NavigationCaseReporter;
+import uk.org.ponder.rsf.flow.ARIResult;
+import uk.org.ponder.rsf.flow.ActionResultInterceptor;
 import uk.org.ponder.rsf.view.ComponentChecker;
 import uk.org.ponder.rsf.view.ViewComponentProducer;
 import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
 import uk.org.ponder.rsf.viewstate.ViewParameters;
 import uk.org.ponder.rsf.viewstate.ViewParamsReporter;
 
-public class AssignmentViewSubmissionsProducer implements ViewComponentProducer, ViewParamsReporter {
+public class ViewSubmissionsProducer implements ViewComponentProducer, NavigationCaseReporter, ViewParamsReporter, ActionResultInterceptor {
 
-    public static final String VIEW_ID = "assignment_view-submissions";
+    public static final String VIEW_ID = "viewSubmissions";
     public String getViewID() {
         return VIEW_ID;
     }
@@ -74,7 +80,7 @@ public class AssignmentViewSubmissionsProducer implements ViewComponentProducer,
     private Long assignmentId;
     
     public void fillComponents(UIContainer tofill, ViewParameters viewparams, ComponentChecker checker) {
-    	AssignmentGradeAssignmentViewParams params = (AssignmentGradeAssignmentViewParams) viewparams;
+    	ViewSubmissionsViewParams params = (ViewSubmissionsViewParams) viewparams;
     	//make sure that we have an AssignmentID to work with
     	if (params.assignmentId == null){
     		//ERROR SHOULD BE SET, OTHERWISE TAKE BACK TO ASSIGNMENT_LIST
@@ -121,9 +127,6 @@ public class AssignmentViewSubmissionsProducer implements ViewComponentProducer,
 		        		UIMessage.make("assignment2.assignment_grade-assignment.gradebook_helper"),
 		        		url + "/" + assignment.getGradableObjectId() + getParams);
 	        }
-	        UICommand.make(tofill, "release_feedback", 
-	        		messageLocator.getMessage("assignment2.assignment_grade-assignment.release_feedback"), 
-	        		"");
         }
         
     	//get paging data
@@ -215,7 +218,8 @@ public class AssignmentViewSubmissionsProducer implements ViewComponentProducer,
         			(assignment.getDueDate() != null ? df.format(assignment.getDueDate()) : ""));
         }
         UIMessage.make(tofill, "assignment_details.accept_until_header", "assignment2.assignment_grade-assignment.assignment_details.accept_until");
-        UIOutput.make(tofill, "assignment_details.accept_until", assignment.getAcceptUntilTime() != null ? df.format(assignment.getAcceptUntilTime()) : "");
+        UIOutput.make(tofill, "assignment_details.accept_until", 
+        		(assignment.getAcceptUntilTime() != null ? df.format(assignment.getAcceptUntilTime()) : ""));
         UIMessage.make(tofill, "assignment_details.submissions_header", "assignment2.assignment_grade-assignment.assignment_details.submissions");
         UIMessage.make(tofill, "assignment_details.submissions", "assignment2.submission_type." + String.valueOf(assignment.getSubmissionType()));
         //UIMessage.make(tofill, "assignment_details.scale_header", "assignment2.assignment_grade-assignment.assignment_details.scale");
@@ -235,10 +239,30 @@ public class AssignmentViewSubmissionsProducer implements ViewComponentProducer,
         		assignment.getAttachmentSet(), Boolean.FALSE);
         
         
+        UIForm form = UIForm.make(tofill, "form");
+        form.parameters.add(new UIELBinding("#{AssignmentSubmissionBean.assignmentId}", assignmentId));
+        UICommand.make(form, "release_feedback", UIMessage.make("assignment2.assignment_grade-assignment.release_feedback"),
+        		"#{AssignmentSubmissionBean.processActionReleaseAllFeedbackForAssignment}");
+        
     }
     
+    public List reportNavigationCases() {
+    	List<NavigationCase> nav= new ArrayList<NavigationCase>();
+    	nav.add(new NavigationCase("release_all", new ViewSubmissionsViewParams(
+    			ViewSubmissionsProducer.VIEW_ID, null)));
+    	return nav;
+    }
+    
+    public void interceptActionResult(ARIResult result, ViewParameters incoming, Object actionReturn) {
+	    if (result.resultingView instanceof ViewSubmissionsViewParams) {
+	    	ViewSubmissionsViewParams outgoing = (ViewSubmissionsViewParams) result.resultingView;
+	    	ViewSubmissionsViewParams in = (ViewSubmissionsViewParams) incoming;
+	    	outgoing.assignmentId = in.assignmentId;
+	    }
+}
+    
     public ViewParameters getViewParameters(){
-    	return new AssignmentGradeAssignmentViewParams();
+    	return new ViewSubmissionsViewParams();
     }
 
     public void setMessageLocator(MessageLocator messageLocator) {
