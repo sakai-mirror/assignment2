@@ -254,7 +254,7 @@ public class AssignmentGradeProducer implements ViewComponentProducer, Navigatio
 	        	UIBranchContainer loop = UIBranchContainer.make(form, "previous_submissions:");
 	        	
 	        	UIMessage.make(loop, "loop_submission", "assignment2.assignment_grade.loop_submission", 
-	        			new Object[] { df.format(asv.getSubmittedTime()) });
+	        			new Object[] { (asv.getSubmittedTime() != null ? df.format(asv.getSubmittedTime()) : "") });
 	        	if (asvOTPKey.equals(asv.getId().toString())){
 	        		//we are editing this version
 	        		UIMessage.make(loop, "currently_editing", "assignment2.assignment_grade.currently_editing");
