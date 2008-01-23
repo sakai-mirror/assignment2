@@ -95,5 +95,16 @@
              		submission.assignment = :assignment and
              		versions.draft = false]]>
   	</query>
+  	<query name="findSubmissionByIdWithHistory">
+  	<![CDATA[from org.sakaiproject.assignment2.model.AssignmentSubmission submission
+    				 left join fetch submission.submissionHistorySet versions
+             where submission.id = :submissionId]]>
+  	</query>
+  	<query name="findSubmissionByIdWithHistoryNoDrafts">
+  	<![CDATA[from org.sakaiproject.assignment2.model.AssignmentSubmission submission
+    				 left join fetch submission.submissionHistorySet versions
+             where submission.id = :submissionId and
+             	versions.draft = false]]>
+  	</query>
   	
 </hibernate-mapping>

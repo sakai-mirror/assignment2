@@ -757,14 +757,19 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		return currVersionIsDraft;
 	}
 	
-	public void releaseAllFeedbackForAssignment(Assignment2 assignment) {
-		if (assignment == null) {
-			throw new IllegalArgumentException("null assignment passed to releaseAllFeedbackForAssignment");
+	public void releaseAllFeedbackForAssignment(Long assignmentId) {
+		if (assignmentId == null) {
+			throw new IllegalArgumentException("null assignmentId passed to releaseAllFeedbackForAssignment");
 		}
 
 		String contextId = externalLogic.getCurrentContextId();
 		if (!gradebookLogic.isCurrentUserAbleToGrade(contextId)) {
-			throw new SecurityException("User attempted to release feedback for assignment " + assignment.getId() + " without authorization");
+			throw new SecurityException("User attempted to release feedback for assignment " + assignmentId + " without authorization");
+		}
+		
+		Assignment2 assignment = (Assignment2) dao.findById(Assignment2.class, assignmentId);
+		if (assignment == null) {
+			throw new IllegalArgumentException("Assignment with id " + assignmentId + " does not exist");
 		}
 		
 		List<String> gradableStudents = permissionLogic.getGradableStudentsForUserForItem(assignment);
@@ -797,53 +802,53 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		}
 	}
 	
-	public void releaseAllFeedbackForSubmission(AssignmentSubmission submission) {
-		if (submission == null) {
-			throw new IllegalArgumentException("null submission passed to releaseAllFeedbackForSubmission");
+	public void releaseAllFeedbackForSubmission(Long submissionId) {
+		if (submissionId == null) {
+			throw new IllegalArgumentException("null submissionId passed to releaseAllFeedbackForSubmission");
 		}
-		
-		if (!permissionLogic.isUserAbleToProvideFeedbackForSubmission(submission)) {
+
+		AssignmentSubmission subWithHistory = dao.getSubmissionWithVersionHistoryById(submissionId, Boolean.FALSE);
+
+		if (subWithHistory == null) {
+			throw new IllegalArgumentException("No submission exists with id " + submissionId);
+		}
+
+		if (!permissionLogic.isUserAbleToProvideFeedbackForSubmission(subWithHistory)) {
 			throw new SecurityException("User " + externalLogic.getCurrentUserId() + " attempted to release feedback" +
-					" for student " + submission.getUserId() + " and assignment " + 
-					submission.getAssignment().getId() + "without authorization");
+					" for student " + subWithHistory.getUserId() + " and assignment " + 
+					subWithHistory.getAssignment().getId() + "without authorization");
 		}
-		
-		// retrieve submission with history
-		AssignmentSubmission subWithHistory = dao.getSubmissionWithVersionHistoryForStudentAndAssignment(
-				submission.getUserId(), submission.getAssignment(), Boolean.FALSE);
-		
-		if (subWithHistory != null) {
-			if (submission.getSubmissionHistorySet() != null &&
-					!submission.getSubmissionHistorySet().isEmpty()) {
-				// we need to iterate through all of the versions and
-				// release them
-				Date releasedTime = new Date();
-				for (Iterator versionIter = submission.getSubmissionHistorySet().iterator(); versionIter.hasNext();) {
-					AssignmentSubmissionVersion version = (AssignmentSubmissionVersion) versionIter.next();
-					if (version != null) {
-						version.setReleasedTime(releasedTime);
-						dao.update(version);
-						log.debug("Version " + version.getId() + " released by " + externalLogic.getCurrentUserId());
-					}
+
+		if (subWithHistory.getSubmissionHistorySet() != null &&
+				!subWithHistory.getSubmissionHistorySet().isEmpty()) {
+			// we need to iterate through all of the versions and
+			// release them
+			Date releasedTime = new Date();
+			for (Iterator versionIter = subWithHistory.getSubmissionHistorySet().iterator(); versionIter.hasNext();) {
+				AssignmentSubmissionVersion version = (AssignmentSubmissionVersion) versionIter.next();
+				if (version != null) {
+					version.setReleasedTime(releasedTime);
+					dao.update(version);
+					log.debug("Version " + version.getId() + " released by " + externalLogic.getCurrentUserId());
 				}
 			}
 		}
 	}
 	
-	public void releaseFeedbackForVersion(AssignmentSubmissionVersion version) {
+	public void releaseFeedbackForVersion(Long submissionVersionId) {
+		if (submissionVersionId == null) {
+			throw new IllegalArgumentException("Null submissionVersionId passed to releaseFeedbackForVersion");
+		}
+		
+		AssignmentSubmissionVersion version = getSubmissionVersionById(submissionVersionId);
 		if (version == null) {
-			throw new IllegalArgumentException("Null version passed to releaseFeedbackForVersion");
+			throw new IllegalArgumentException("No version " + submissionVersionId + " exists");
 		}
 		
-		AssignmentSubmission submission = version.getAssignmentSubmission();
-		if (submission == null) {
-			throw new IllegalArgumentException("No submission associated with passed version in releaseFeedbackForVersion");
-		}
-		
-		if (!permissionLogic.isUserAbleToProvideFeedbackForSubmission(submission)) {
+		if (!permissionLogic.isUserAbleToProvideFeedbackForSubmission(version.getAssignmentSubmission())) {
 			throw new SecurityException("User " + externalLogic.getCurrentUserId() + " attempted to release feedback" +
-					" for student " + submission.getUserId() + " and assignment " + 
-					submission.getAssignment().getId() + "without authorization");
+					" for student " + version.getAssignmentSubmission().getUserId() + " and assignment " + 
+					version.getAssignmentSubmission().getAssignment().getId() + "without authorization");
 		}
 		
 		version.setReleasedTime(new Date());

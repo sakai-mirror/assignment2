@@ -97,8 +97,10 @@ public interface AssignmentDao extends CompleteGenericDao {
 	 * @param studentIds
 	 * @param assignment
 	 * @return given a list of studentIds and an assignment, returns the associated 
-	 * AssignmentSubmissions (with current version data) for the given assignment. If
+	 * AssignmentSubmissions for the given assignment. If
 	 * no submission exists for the student yet, no submission is returned
+	 * will populate the currentSubmissionVersion (but will be most recent 
+	 * non-draft version if includeDrafts = false)
 	 */
 	Set<AssignmentSubmission> getCurrentSubmissionsForStudentsForAssignment(List<String> studentIds, Assignment2 assignment);
 	
@@ -110,7 +112,7 @@ public interface AssignmentDao extends CompleteGenericDao {
 	 * @return the AssignmentSubmission rec for the given student and assignment with the
 	 * submissionHistorySet populated with all of the AssignmentSubmissionVersions associated
 	 * with this submission. returns null if no submission has been made. will populate the
-	 * currentSubmissionVersion
+	 * currentSubmissionVersion (but will be most recent non-draft version if includeDrafts = false)
 	 */
 	public AssignmentSubmission getSubmissionWithVersionHistoryForStudentAndAssignment(String studentId, Assignment2 assignment, boolean includeDrafts);
 	
@@ -133,4 +135,14 @@ public interface AssignmentDao extends CompleteGenericDao {
 	 * returns null if no version exists with the given id
 	 */
 	public AssignmentSubmissionVersion getAssignmentSubmissionVersionByIdWithAttachments(Long submissionVersionId);
+	
+	/**
+	 * 
+	 * @param submissionId
+	 * @param includeDrafts - if true, will include draft versions in the history set
+	 * @return the AssignmentSubmission with the given id with the history set populated. Version
+	 * attachments are NOT populated. Will populate currentSubmission (but will be most recent
+	 * non-draft version if includeDrafts = false)
+	 */
+	public AssignmentSubmission getSubmissionWithVersionHistoryById(Long submissionId, boolean includeDrafts);
 }

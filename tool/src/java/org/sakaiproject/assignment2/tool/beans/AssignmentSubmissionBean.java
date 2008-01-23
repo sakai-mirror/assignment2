@@ -226,8 +226,7 @@ public class AssignmentSubmissionBean {
 	 */
 	public String processActionReleaseAllFeedbackForAssignment() {
 		if (this.assignmentId != null) {
-			Assignment2 assignment = assignmentLogic.getAssignmentById(assignmentId);
-			submissionLogic.releaseAllFeedbackForAssignment(assignment);
+			submissionLogic.releaseAllFeedbackForAssignment(assignmentId);
 		}
 		
 		return RELEASE_ALL;
@@ -236,7 +235,7 @@ public class AssignmentSubmissionBean {
 	public String processActionReleaseAllFeedbackForSubmission(){
 		for (String key : OTPMap.keySet()) {
 			AssignmentSubmission as = OTPMap.get(key);
-			submissionLogic.releaseAllFeedbackForSubmission(as);
+			submissionLogic.releaseAllFeedbackForSubmission(as.getId());
 		}
 		
 		return RELEASE_ALL;

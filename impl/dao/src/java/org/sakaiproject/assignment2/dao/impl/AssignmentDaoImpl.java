@@ -350,5 +350,27 @@ public class AssignmentDaoImpl extends HibernateCompleteGenericDao implements As
     		}
     	}
     }
+    
+    public AssignmentSubmission getSubmissionWithVersionHistoryById(Long submissionId, boolean includeDrafts) {
+    	if (submissionId == null) {
+    		throw new IllegalArgumentException("null submissionId passed to getSubmissionWithVersionHistoryById");
+    	}
+    	
+    	Query query;
+    	if (includeDrafts) {
+    		query = getSession().getNamedQuery("findSubmissionByIdWithHistory");
+    	} else {
+    		query = getSession().getNamedQuery("findSubmissionByIdWithHistoryNoDrafts");
+    	}
+    	query.setParameter("submissionId", submissionId);
+    	
+    	AssignmentSubmission submission = (AssignmentSubmission) query.uniqueResult();
+    	
+    	if (submission != null) {
+    		setCurrentSubmissionGivenHistory(submission);
+    	}
+    	
+    	return submission;
+    }
 
 }

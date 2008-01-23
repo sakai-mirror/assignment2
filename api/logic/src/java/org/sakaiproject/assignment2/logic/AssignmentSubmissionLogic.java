@@ -182,25 +182,25 @@ public interface AssignmentSubmissionLogic {
 	 * user is able to submit feedback for. if the user is only authorized for
 	 * a subset of the students for this assignment, the unauthorized students
 	 * will not be affected
-	 * @param assignment
+	 * @param assignmentId
 	 * @throws SecurityException if user is not allowed to submit feedback
 	 */
-	public void releaseAllFeedbackForAssignment(Assignment2 assignment);
+	public void releaseAllFeedbackForAssignment(Long assignmentId);
 	
 	/**
 	 * set all of the non-draft versions for this submission to "released"
-	 * @param submission
+	 * @param submissionId
 	 * @throws SecurityException if the current user is not authorized to 
 	 * submit feedback for the given submission
 	 */
-	public void releaseAllFeedbackForSubmission(AssignmentSubmission submission);
+	public void releaseAllFeedbackForSubmission(Long submissionId);
 	
 	/**
 	 * release the feedback for the given submission version to the submitter
-	 * @param version
+	 * @param submissionVersionId
 	 * @throws SecurityException if the current user is not authorized to 
 	 * submit feedback for the given submission
 	 */
-	public void releaseFeedbackForVersion(AssignmentSubmissionVersion version);
+	public void releaseFeedbackForVersion(Long submissionVersionId);
 	
 }
