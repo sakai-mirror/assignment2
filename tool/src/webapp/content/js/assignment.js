@@ -79,6 +79,17 @@ function update_due_date(){
 	});
 }
 
+function show_due_date(){
+	el = $("input:checkbox[name='require_due_date']").get(0);
+	if (el) {
+		if (el.checked) {
+			$(el).parents("fieldset:first").next('div').show();
+		} else {
+			$(el).parents("fieldset:first").next('div').hide();
+		}
+	}
+}
+
 function show_accept_until(){
 	el = $("input:checkbox[name='require_accept_until']").get(0);
 	if (el){

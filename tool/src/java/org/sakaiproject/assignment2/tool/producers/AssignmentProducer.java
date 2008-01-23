@@ -166,8 +166,24 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
 		dateEvolver.evolveDateInput(openDateField, null);
 		UIMessage.make(form, "open_date_instruction", "assignment2.assignment_add.open_date_instruction");
         
+		//Display None Decorator list
+		Map attrmap = new HashMap();
+		attrmap.put("style", "display:none");
+		DecoratorList display_none_list =  new DecoratorList(new UIFreeAttributeDecorator(attrmap));
+		
+		
+		Boolean require_due_date = (assignment.getDueDateForUngraded() != null);
+		UIBoundBoolean require_due = UIBoundBoolean.make(form, "require_due_date", "#{Assignment2Bean.requireDueDate}", require_due_date);
+		UIMessage require_due_label = UIMessage.make(form, "require_due_date_label", "assignment2.assignment_add.require_due_date");
+		UILabelTargetDecorator.targetLabel(require_due_label, require_due);
+		
+		UIOutput require_due_container = UIOutput.make(form, "require_due_date_container");
 		UIInput dueDateField = UIInput.make(form, "due_date:", assignment2OTP + ".dueDateForUngraded");
-		dateEvolver.evolveDateInput(dueDateField, null);
+		dateEvolver.evolveDateInput(dueDateField, (assignment.getDueDateForUngraded() != null ? assignment.getDueDateForUngraded() : closeDate));
+		
+		if (!require_due_date){
+			require_due_container.decorators = display_none_list;
+		}
 		
 		
 		Boolean require_date = (assignment.getAcceptUntilTime() != null);
@@ -186,10 +202,8 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
         UILabelTargetDecorator.targetLabel(accept_label, accept);
 
         if (!require_date){
-        	Map attrmap = new HashMap();
-        	attrmap.put("style", "display:none");
-        	require_container.decorators = new DecoratorList(new UIFreeAttributeDecorator(attrmap));
-        	accept_until_until_fieldset.decorators = new DecoratorList(new UIFreeAttributeDecorator(attrmap));
+        	require_container.decorators = display_none_list;
+        	accept_until_until_fieldset.decorators = display_none_list;
         }
         
         UIVerbatim.make(form, "student_submissions_label", messageLocator.getMessage("assignment2.assignment_add.student_submissions",
@@ -317,9 +331,7 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
         		UIMessage.make("assignment2.assignment_add.gradebook_item_edit_helper"),
         		url);
         if (selectedId == null){
-        	Map attrmap = new HashMap();
-        	attrmap.put("style", "display:none");
-        	helplink.decorators = new DecoratorList(new UIFreeAttributeDecorator(attrmap));
+        	helplink.decorators = display_none_list;
         }
         
         /******
@@ -344,7 +356,7 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
         for (int i=0; i < access_values.length; i++) {
         	UIBranchContainer access_row = UIBranchContainer.make(form, "access_row:");
         	UISelectChoice radio = UISelectChoice.make(access_row, "access_choice", accessId, i);
-        	Map attrmap = new HashMap();
+
         	UISelectLabel label = UISelectLabel.make(access_row, "access_label", accessId, i);
         	UILabelTargetDecorator.targetLabel(label, radio);
         }

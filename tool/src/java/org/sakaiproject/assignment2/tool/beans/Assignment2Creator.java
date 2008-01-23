@@ -39,7 +39,7 @@ public class Assignment2Creator {
     	Date closeDate = cal.getTime();
     	
     	togo.setOpenTime(openDate);
-    	togo.setDueDateForUngraded(closeDate);
+    	//togo.setDueDateForUngraded(closeDate);
     	//togo.setAcceptUntilTime(closeDate);
     	
     	return togo;
