@@ -37,6 +37,7 @@
       <property name="localeGetter" ref="requestLocaleProxy" />
    </bean>
    
+   <!--  Handles incoming views to filter based on permissions  -->
    <bean parent="viewParamsInterceptorParent">
    	  <property name="value">
    	     <bean id="Assignment2ViewParamsInterceptor" class="org.sakaiproject.assignment2.tool.params.Assignment2ViewParamsInterceptor">
