@@ -37,6 +37,7 @@ public class AssignmentSubmission {
 	private Boolean allowResubmit;
 	private Date resubmitCloseTime;
 	private Set submissionHistorySet;
+	private int revisionVersion;
 	
 	// fields populated with gradebook data
 	private String gradebookGrade;
@@ -270,5 +271,23 @@ public class AssignmentSubmission {
 	 */
 	public void setSubmissionStatus(String submissionStatus) {
 		this.submissionStatus = submissionStatus;
+	}
+
+	/**
+	 * the int value of the version number for this assignment. not
+     * to be confused with submission version.
+	 * @return
+	 */
+	public int getRevisionVersion() {
+		return revisionVersion;
+	}
+
+	/**
+	 * the int value of the version number for this assignment. not
+     * to be confused with submission version.
+	 * @param revisionVersion
+	 */
+	public void setRevisionVersion(int revisionVersion) {
+		this.revisionVersion = revisionVersion;
 	}
 }

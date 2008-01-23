@@ -11,14 +11,15 @@
 					</generator>
 				</id>
         
-        <version name="version" type="integer" column="VERSION"/>
+        <version name="revisionVersion" type="integer" column="VERSION"/>
         
        	<property name="gradableObjectId" type="java.lang.Long">
             <column name="GRADABLE_OBJECT_ID" not-null="false"  />
         </property>
 
         <property name="contextId" type="java.lang.String">
-            <column name="CONTEXT" not-null="true" length="99" />
+            <column name="CONTEXT" not-null="true" length="99" 
+            	index="A2_ASSIGNCONTEXT_IDX"/>
         </property>
         <!-- the title of this assignment -->
         <property name="title" type="java.lang.String">

@@ -59,7 +59,7 @@ public class Assignment2 {
     private String modifiedBy;
     private Date modifiedTime;
     private Boolean removed;
-    private int version;
+    private int revisionVersion;
     private Set<AssignmentSubmission> submissionsSet;
     private Set<AssignmentAttachment> attachmentSet;
     private Set<AssignmentGroup> assignmentGroupSet;
@@ -86,7 +86,7 @@ public class Assignment2 {
 			String announcementId, String calendarEventId,
 			Boolean allowResubmit, Boolean allowReviewService,
 			Boolean allowStudentViewReport, String creator, Date createTime,
-			String modifiedBy, Date modifiedTime, Boolean removed, int version) {
+			String modifiedBy, Date modifiedTime, Boolean removed) {
 		this.id = id;
 		this.gradableObjectId = gradableObjectId;
 		this.contextId = contextId;
@@ -112,7 +112,6 @@ public class Assignment2 {
 		this.modifiedBy = modifiedBy;
 		this.modifiedTime = modifiedTime;
 		this.removed = removed;
-		this.version = version;
 	}
 
 	/**
@@ -533,12 +532,22 @@ public class Assignment2 {
     	this.removed = removed;
     }
     
-    public int getVersion() {
-    	return version;
+    /**
+     * 
+     * @return the int value of the version number for this assignment. not
+     * to be confused with submission version.
+     */
+    public int getRevisionVersion() {
+    	return revisionVersion;
     }
     
-    public void setVersion(int version) {
-    	this.version = version;
+    /**
+     * the int value of the version number for this assignment. not
+     * to be confused with submission version.
+     * @param version
+     */
+    public void setRevisionVersion(int revisionVersion) {
+    	this.revisionVersion = revisionVersion;
     }
     
     /**

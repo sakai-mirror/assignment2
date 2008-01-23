@@ -32,7 +32,7 @@ public class AssignmentGroup {
 	private Long id;
 	private Assignment2 assignment;
 	private String groupId;
-	private int version;
+	private int revisionVersion;
 	
 	public AssignmentGroup() {
 		
@@ -87,12 +87,22 @@ public class AssignmentGroup {
 		this.groupId = groupId;
 	}
 	
-	public int getVersion() {
-		return version;
+	/**
+	 * the int value of the version number for this assignment. not
+     * to be confused with submission version.
+	 * @return
+	 */
+	public int getRevisionVersion() {
+		return revisionVersion;
 	}
 	
-	public void setVersion(int version) {
-		this.version = version;
+	/**
+	 * the int value of the version number for this assignment. not
+     * to be confused with submission version.
+	 * @param revisionVersion
+	 */
+	public void setRevisionVersion(int revisionVersion) {
+		this.revisionVersion = revisionVersion;
 	}
 	
 	@Override

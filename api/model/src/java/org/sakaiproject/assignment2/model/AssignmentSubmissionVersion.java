@@ -53,7 +53,8 @@ public class AssignmentSubmissionVersion {
 	private Date lastFeedbackTime;
 	private Set<AssignmentFeedbackAttachment> feedbackAttachSet;
 	private Set<AssignmentSubmissionAttachment> submissionAttachSet;
-	
+	private int revisionVersion;
+
 	public AssignmentSubmissionVersion() {
 	}
 	
@@ -397,6 +398,24 @@ public class AssignmentSubmissionVersion {
 	public void setSubmissionAttachSet(
 			Set<AssignmentSubmissionAttachment> submissionAttachSet) {
 		this.submissionAttachSet = submissionAttachSet;
+	}
+	
+	/**
+	 * the int value of the version number for this assignment. not
+     * to be confused with submission version.
+	 * @return
+	 */
+	public int getRevisionVersion() {
+		return revisionVersion;
+	}
+
+	/**
+	 * the int value of the version number for this assignment. not
+     * to be confused with submission version.
+	 * @param revisionVersion
+	 */
+	public void setRevisionVersion(int revisionVersion) {
+		this.revisionVersion = revisionVersion;
 	}
 	
 	@Override
