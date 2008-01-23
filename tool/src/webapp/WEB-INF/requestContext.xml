@@ -139,6 +139,9 @@
       <property name="studentViewAssignmentRenderer" ref="StudentViewAssignmentRenderer" />
    </bean>
    
+   <bean class="org.sakaiproject.assignment2.tool.producers.StudentSubmitSummaryProducer">
+   </bean>
+   
    <bean class="org.sakaiproject.assignment2.tool.producers.AuthorizationFailedProducer" />
 
 

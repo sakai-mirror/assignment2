@@ -13,4 +13,8 @@ public class SimpleAssignmentViewParams extends SimpleViewParameters {
     		super(viewId);
 	        this.assignmentId = assignmentId;
     }
+    
+    public String getParseSpec() {
+    	return super.getParseSpec() + ",@1:assignmentId";
+    }
 }

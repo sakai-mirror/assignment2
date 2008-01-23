@@ -2,6 +2,9 @@ package org.sakaiproject.assignment2.tool.params;
 
 import org.sakaiproject.assignment2.tool.beans.locallogic.LocalPermissionLogic;
 import org.sakaiproject.assignment2.tool.producers.AuthorizationFailedProducer;
+import org.sakaiproject.assignment2.tool.producers.StudentSubmitProducer;
+import org.sakaiproject.assignment2.tool.producers.StudentSubmitSummaryProducer;
+import org.sakaiproject.assignment2.tool.params.SimpleAssignmentViewParams;
 
 import uk.org.ponder.rsf.viewstate.AnyViewParameters;
 import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
@@ -22,7 +25,18 @@ public class Assignment2ViewParamsInterceptor implements ViewParamsInterceptor {
 			return incoming;
 		}
 		
+		//If current user has permission access to requested view
 		if (localPermissionLogic.checkCurrentUserHasViewPermission(incoming.viewID)){
+			
+			//now do specific interceptions for student submission pages
+			//Student always has same link, redirect here based on it being open or not
+			if (StudentSubmitProducer.VIEW_ID.equals(incoming.viewID) 
+					|| StudentSubmitSummaryProducer.VIEW_ID.equals(incoming.viewID)) {
+				String newViewID = localPermissionLogic.filterViewIdForStudentSubmission((SimpleAssignmentViewParams)incoming);
+				return new SimpleAssignmentViewParams(newViewID, ((SimpleAssignmentViewParams)incoming).assignmentId);
+			}
+			
+			
 			return incoming;
 		}
 		return new SimpleViewParameters(AuthorizationFailedProducer.VIEWID);

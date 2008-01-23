@@ -70,6 +70,8 @@ function update_due_date(){
 	$("li.gradebook_item_due_date p.instruction a").each(function(){
 		if(id!=null){
 			$(this).show();
+			//TODO - replace this with an AJAX call to the server to get the new url using the logic and VPs...
+			// that way we would not have to hard code stuff in
 			this.href = this.href.replace(/\/[^\?\/]*\?TB_ifra/, "/" + id + "?TB_ifra");
 		}else{
 			$(this).hide();

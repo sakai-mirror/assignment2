@@ -2,8 +2,12 @@ package org.sakaiproject.assignment2.tool.beans.locallogic;
 
 import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
+import org.sakaiproject.assignment2.logic.AssignmentLogic;
+import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
 import org.sakaiproject.assignment2.tool.producers.*;
 import org.sakaiproject.assignment2.tool.producers.fragments.*;
+import org.sakaiproject.assignment2.tool.params.SimpleAssignmentViewParams;
+import org.sakaiproject.assignment2.model.Assignment2;
 
 import uk.org.ponder.rsf.builtin.UVBProducer;
 
@@ -17,6 +21,16 @@ public class LocalPermissionLogic {
 	private ExternalLogic externalLogic;
 	public void setExternalLogic(ExternalLogic externalLogic) {
 		this.externalLogic = externalLogic;
+	}
+	
+	private AssignmentLogic assignmentLogic;
+	public void setAssignmentLogic(AssignmentLogic assignmentLogic) {
+		this.assignmentLogic = assignmentLogic;
+	}
+	
+	private AssignmentSubmissionLogic submissionLogic;
+	public void setSubmissionLogic(AssignmentSubmissionLogic submissionLogic) {
+		this.submissionLogic = submissionLogic;
 	}
 	
 	public Boolean checkCurrentUserHasViewPermission(String viewId) {
@@ -76,6 +90,16 @@ public class LocalPermissionLogic {
 		
 		//else just say No
 		return Boolean.FALSE;
+	}
+	
+	public String filterViewIdForStudentSubmission(SimpleAssignmentViewParams incoming) {
+		String userId = externalLogic.getCurrentUserId();
+		Assignment2 assignment = assignmentLogic.getAssignmentById(incoming.assignmentId);
+		if(submissionLogic.submissionIsOpenForStudentForAssignment(userId, assignment)){
+			return StudentSubmitProducer.VIEW_ID;
+		} else {
+			return StudentSubmitSummaryProducer.VIEW_ID;
+		}
 	}
 	
 }
