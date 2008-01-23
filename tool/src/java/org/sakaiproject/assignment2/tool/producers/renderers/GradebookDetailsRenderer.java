@@ -39,14 +39,11 @@ public class GradebookDetailsRenderer {
 		
 		Assignment2 assignment = assignmentLogic.getAssignmentByIdWithAssociatedData(assignmentId);
     	//Grading Helper Link
-        String url = "/direct/grade-gradebook-item/_/gradeGradebookItem/" + externalLogic.getCurrentContextId() +
-        	"/" + assignment.getGradableObjectId() + "/" + userId; 
-        String finishedURL = externalLogic.getAssignmentViewUrl(FinishedHelperProducer.VIEWID);
-        String getParams = "?TB_iframe=true&width=700&height=500&KeepThis=true&finishURL=" + finishedURL;
-        
+		String url = externalLogic.getUrlForGradeGradebookItemHelper(assignment.getGradableObjectId(), userId, FinishedHelperProducer.VIEWID);
+                
         UILink.make(joint, "gradebook_grading_helper",
         		UIMessage.make("assignment2.assignment_grade.gradebook_grade"),
-        		url + getParams);
+        		url);
      
         UIOutput.make(joint, "gradebook_grade", (as!= null && as.getGradebookGrade() != null ? as.getGradebookGrade() : ""));
         UIOutput.make(joint, "gradebook_comment", (as != null && as.getGradebookComment() != null ? as.getGradebookComment() : ""));

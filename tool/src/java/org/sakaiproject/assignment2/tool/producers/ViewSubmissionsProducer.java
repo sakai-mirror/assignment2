@@ -119,13 +119,11 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
 	        if (!assignment.isUngraded() && assignment.getGradableObjectId() != null) {
 	        	UIOutput.make(tofill, "edit_gb_item_li");
 	        	
-		        String url = "/direct/gradebook-item/_/gradebookItem/" + externalLogic.getCurrentContextId();
-		        String finishedURL = externalLogic.getAssignmentViewUrl(FinishedHelperProducer.VIEWID);
-		        String getParams = "?TB_iframe=true&width=700&height=500&KeepThis=true&finishURL=" + finishedURL;
+		        String url = externalLogic.getUrlForGradebookItemHelper(assignment.getGradableObjectId(), FinishedHelperProducer.VIEWID);
 		        		
 		        UILink helplink = UIInternalLink.make(tofill, "gradebook_item_edit_helper",
 		        		UIMessage.make("assignment2.assignment_grade-assignment.gradebook_helper"),
-		        		url + "/" + assignment.getGradableObjectId() + getParams);
+		        		url);
 	        }
         }
         

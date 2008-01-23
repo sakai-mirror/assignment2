@@ -23,8 +23,14 @@ if(sf3){x+=num(elem,'marginLeft')+num(elem,'borderLeftWidth');y+=num(elem,'margi
 
 /** END jQuery Plugin **/
 function a2SetMainFrameHeight(){
-	if (iframeId != "")
-	$("#" + iframeId, parent.document).height($(document).height() + 10);
+	if (iframeId != ""){
+		if(arguments[0] != null){
+			height = arguments[0];
+		} else {
+			height = $(document).height + 10;
+		}
+		$("#" + iframeId, parent.document).height(height);
+	}
 }
 
 gradebook_toggle = function(){
@@ -64,7 +70,7 @@ function update_due_date(){
 	$("li.gradebook_item_due_date p.instruction a").each(function(){
 		if(id!=null){
 			$(this).show();
-			this.href = this.href.replace(/gradebookItemId=[0-9]*/, "gradebookItemId=" + id);
+			this.href = this.href.replace(/\/[^\?\/]*\?TB_ifra/, "/" + id + "?TB_ifra");
 		}else{
 			$(this).hide();
 		}

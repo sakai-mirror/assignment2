@@ -121,4 +121,21 @@ public interface ExternalLogic {
      * @return a list of the student ids of students in the given section  
      */
     public List<String> getStudentsInSection(String sectionId);
+    
+    /**
+     * 
+     * @param gradeableObjectId
+     * @param returnViewId
+     * @return url to helper
+     */
+    public String getUrlForGradebookItemHelper(Long gradeableObjectId, String returnViewId);
+    
+    /**
+     * 
+     * @param gradeableObjectId
+     * @param userId
+     * @param returnViewId
+     * @return url to helper
+     */
+    public String getUrlForGradeGradebookItemHelper(Long gradeableObjectId, String userId, String returnViewId);
 }

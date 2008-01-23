@@ -160,4 +160,5 @@ margin-top: expression(0 - parseInt(this.offsetHeight / 2) + (TBWindowMargin = d
 	margin-bottom:-1px;
 	margin-top:1px;
 	_margin-bottom:1px;
+	padding: 0 10px;
 }

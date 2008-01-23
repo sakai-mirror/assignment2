@@ -22,6 +22,12 @@ function tb_init(domChunk){
 	var t = this.title || this.name || null;
 	var a = this.href || this.alt;
 	var g = this.rel || false;
+	//check size of parent iframe -- HACK
+	if ($(document).height() < 600) {
+		a2SetMainFrameHeight(600);
+	}
+	
+	//END HACK
 	tb_show(t,a,g);
 	this.blur();
 	return false;
@@ -194,7 +200,7 @@ function tb_show(caption, url, imageGroup) {//function called when the user clic
 					urlNoQuery = url.split('TB_');
 					$("#TB_iframeContent").remove();
 					if(params['modal'] != "true"){//iframe no modal
-						$("#TB_window").append("<div id='TB_title'><div id='TB_ajaxWindowTitle'>"+caption+"</div><div id='TB_closeAjaxWindow'><a href='#' id='TB_closeWindowButton' title='Close'>close</a> or Esc Key</div></div><iframe frameborder='0' hspace='0' src='"+url+"' id='TB_iframeContent' name='TB_iframeContent"+Math.round(Math.random()*1000)+"' onload='tb_showIframe()' style='width:"+(ajaxContentW + 29)+"px;height:"+(ajaxContentH + 17)+"px;' > </iframe>");
+						$("#TB_window").append("<div id='TB_title'><div id='TB_ajaxWindowTitle'>"+caption+"</div><div id='TB_closeAjaxWindow'><a href='#' id='TB_closeWindowButton' title='Close'>close</a> or Esc Key</div></div><iframe frameborder='0' hspace='0' src='"+url+"' id='TB_iframeContent' name='TB_iframeContent"+Math.round(Math.random()*1000)+"' onload='tb_showIframe()' style='width:"+(ajaxContentW + 9)+"px;height:"+(ajaxContentH + 17)+"px;' > </iframe>");
 					}else{//iframe modal
 					$("#TB_overlay").unbind();
 						$("#TB_window").append("<iframe frameborder='0' hspace='0' src='"+url+"' id='TB_iframeContent' name='TB_iframeContent"+Math.round(Math.random()*1000)+"' onload='tb_showIframe()' style='width:"+(ajaxContentW + 29)+"px;height:"+(ajaxContentH + 17)+"px;'> </iframe>");

@@ -5,6 +5,8 @@ import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.tool.producers.*;
 import org.sakaiproject.assignment2.tool.producers.fragments.*;
 
+import uk.org.ponder.rsf.builtin.UVBProducer;
+
 public class LocalPermissionLogic {
 	
 	private AssignmentPermissionLogic permissionLogic;
@@ -29,6 +31,9 @@ public class LocalPermissionLogic {
 		} else if (AssignmentProducer.VIEW_ID.equals(viewId)) {
 			return permissionLogic.isCurrentUserAbleToEditAssignments(contextId);
 			
+		} else if (FinishedHelperProducer.VIEWID.equals(viewId)) {
+			return Boolean.TRUE;
+			
 		} else if (GradeProducer.VIEW_ID.equals(viewId)) {
 			return permissionLogic.isUserAbleToAccessInstructorView(contextId);
 			
@@ -52,6 +57,7 @@ public class LocalPermissionLogic {
 			
 		} else if (FragmentAttachmentsProducer.VIEW_ID.equals(viewId)) {
 			return Boolean.TRUE;
+			
 		} else if (FragmentGradebookDetailsProducer.VIEW_ID.equals(viewId)) {
 			return permissionLogic.isUserAbleToAccessInstructorView(contextId);
 			
@@ -61,6 +67,13 @@ public class LocalPermissionLogic {
 		} else if (FragmentSubmissionPreviewProducer.VIEW_ID.equals(viewId)) {
 			return permissionLogic.isCurrentUserAbleToSubmit(contextId);
 		}
+		
+		//Here are some RSF Generic always true viewIds
+		
+		else if (UVBProducer.VIEW_ID.equals(viewId)) {
+			return Boolean.TRUE;
+		}
+		
 		//else just say No
 		return Boolean.FALSE;
 	}

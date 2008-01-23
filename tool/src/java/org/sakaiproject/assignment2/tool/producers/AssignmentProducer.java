@@ -292,14 +292,14 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
         UILabelTargetDecorator.targetLabel(ungraded_label, ungraded);
         
         //Check if gradebook item due date is not null, else output the formatted date
-        String selectedId = "";
+        Long selectedId = null;
         if (currentSelected == null){
         	UIMessage.make(form, "gradebook_item_due_date", "assignment2.assignment_add.gradebook_item_not_selected");
         }else if(currentSelected.getDueDate() == null) {
         	UIMessage.make(form, "gradebook_item_due_date", "assignment2.assignment_add.gradebook_item_no_due_date");
         } else {
         	UIOutput.make(form, "gradebook_item_due_date", df.format(currentSelected.getDueDate()));
-        	selectedId = currentSelected.getGradableObjectId().toString();
+        	selectedId = currentSelected.getGradableObjectId();
         }
 
         //Output the JS vars
@@ -307,19 +307,16 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
         
         
         //Links to gradebook Helper
-        String url = "/direct/gradebook-item/_/gradebookItem/" + externalLogic.getCurrentContextId();
-        //TODO URL encode this so I can put it as a url parameter
-        //TODO put this in externalLogic
-        String finishedURL = externalLogic.getAssignmentViewUrl(FinishedHelperProducer.VIEWID);
-        String getParams = "?TB_iframe=true&width=700&height=300&KeepThis=true&finishURL="+finishedURL;
+        String url = externalLogic.getUrlForGradebookItemHelper(null, FinishedHelperProducer.VIEWID);
         UILink.make(form, "gradebook_item_new_helper",
         		UIMessage.make("assignment2.assignment_add.gradebook_item_new_helper"),
-        		url + getParams);
+        		url);
         		
+        url = externalLogic.getUrlForGradebookItemHelper(selectedId, FinishedHelperProducer.VIEWID);
         UILink helplink = UIInternalLink.make(form, "gradebook_item_edit_helper",
         		UIMessage.make("assignment2.assignment_add.gradebook_item_edit_helper"),
-        		url + "/" + selectedId + getParams);
-        if (selectedId.equals("")){
+        		url);
+        if (selectedId == null){
         	Map attrmap = new HashMap();
         	attrmap.put("style", "display:none");
         	helplink.decorators = new DecoratorList(new UIFreeAttributeDecorator(attrmap));
