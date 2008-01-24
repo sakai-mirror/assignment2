@@ -16,8 +16,8 @@
         <!--  This maps to the A2_ASSIGNMENT_T table -->
         <many-to-one name="assignment" column="ASSIGNMENT_ID"
         	class="org.sakaiproject.assignment2.model.Assignment2"
-        	not-null="true" unique-key="ASSIGN_ID_GROUP_ID" 
-        	index="A2_ASSIGN_GROUP_ASSIGN_IDX" />
+        	not-null="true" unique-key="ASSIGN_ID_GROUP_ID"  
+        	index="A2_ASSIGN_GROUP_ASSIGN_I" />
 
         <!-- The Authz groupId -->
         <property name="groupId" type="java.lang.String" unique-key="ASSIGN_ID_GROUP_ID">

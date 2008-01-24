@@ -47,7 +47,9 @@ import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
 import org.sakaiproject.assignment2.dao.AssignmentDao;
 import org.sakaiproject.assignment2.exception.ConflictingAssignmentNameException;
 import org.sakaiproject.genericdao.api.finders.ByPropsFinder;
+import org.sakaiproject.service.gradebook.shared.StaleObjectModificationException;
 import org.sakaiproject.assignment2.logic.utils.ComparatorsUtils;
+import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException;
 
 
 /**
@@ -210,8 +212,14 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 			updateAttachments(existingAssignment, assignment);
 			updateAssignmentGroups(existingAssignment, assignment);
 			
-        	dao.update(assignment);
-            log.debug("Updated assignment: " + assignment.getTitle() + "with id: " + assignment.getId());
+			try {
+			
+	        	dao.update(assignment);
+	            log.debug("Updated assignment: " + assignment.getTitle() + "with id: " + assignment.getId());
+			} catch (HibernateOptimisticLockingFailureException holfe) {
+				if(log.isInfoEnabled()) log.info("An optimistic locking failure occurred while attempting to update an assignment");
+	            throw new StaleObjectModificationException(holfe);
+			}
 		}
 	}
 	
@@ -229,13 +237,18 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 			throw new SecurityException("Current user may not delete assignment " + assignment.getTitle()
                     + " because they do not have edit permission");
 		}
-		
-    	assignment.setRemoved(true);
-    	assignment.setModifiedBy(externalLogic.getCurrentUserId());
-    	assignment.setModifiedTime(new Date());
-    	
-    	dao.update(assignment);
-        log.debug("Deleted assignment: " + assignment.getTitle() + " with id " + assignment.getId());
+
+		assignment.setRemoved(true);
+		assignment.setModifiedBy(externalLogic.getCurrentUserId());
+		assignment.setModifiedTime(new Date());
+
+		try {
+			dao.update(assignment);
+			log.debug("Deleted assignment: " + assignment.getTitle() + " with id " + assignment.getId());
+		} catch (HibernateOptimisticLockingFailureException holfe) {
+			if(log.isInfoEnabled()) log.info("An optimistic locking failure occurred while attempting to update an assignment");
+			throw new StaleObjectModificationException(holfe);
+		}
 	}
 	
 	/*

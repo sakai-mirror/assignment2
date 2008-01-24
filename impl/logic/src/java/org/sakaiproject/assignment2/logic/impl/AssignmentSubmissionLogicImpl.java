@@ -49,6 +49,8 @@ import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
 import org.sakaiproject.assignment2.logic.utils.ComparatorsUtils;
 import org.sakaiproject.assignment2.dao.AssignmentDao;
+import org.sakaiproject.service.gradebook.shared.StaleObjectModificationException;
+import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException;
 
 
 /**
@@ -301,9 +303,15 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			version.setModifiedBy(externalLogic.getCurrentUserId());
 			version.setModifiedTime(currentTime);
 			
-			dao.update(version);
-			log.debug("Updated student submission version " + existingVersion.getId() + " for user " + submission.getUserId() + " for assignment " + submission.getAssignment().getTitle()+ " ID: " + submission.getAssignment().getId());
-
+			
+			try {
+				dao.update(version);
+				log.debug("Updated student submission version " + existingVersion.getId() + " for user " + submission.getUserId() + " for assignment " + submission.getAssignment().getTitle()+ " ID: " + submission.getAssignment().getId());
+			} catch (HibernateOptimisticLockingFailureException holfe) {
+				if(log.isInfoEnabled()) log.info("An optimistic locking failure occurred while attempting to update submission version" + version.getId());
+	            throw new StaleObjectModificationException(holfe);
+			}
+			
 			existingVersion.setSubmissionAttachSet(submissionAttachments);
 			updateStudentAttachments(existingVersion, version);
 		} else {
@@ -391,24 +399,34 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			// retrieve the most current non-draft version
 			existingVersion = dao.getCurrentSubmissionVersionWithAttachments(submission, Boolean.TRUE);
 
-			dao.update(submission);
-			log.debug("Submission updated for user " + submission.getUserId() + " for assignment " + submission.getAssignment().getTitle() + " ID: " + submission.getAssignment().getId()
-					+ " by " + externalLogic.getCurrentUserId() + " via saveInstructorFeedback");
+			try {
+				dao.update(submission);
+				log.debug("Submission updated for user " + submission.getUserId() + " for assignment " + submission.getAssignment().getTitle() + " ID: " + submission.getAssignment().getId()
+						+ " by " + externalLogic.getCurrentUserId() + " via saveInstructorFeedback");
+			} catch (HibernateOptimisticLockingFailureException holfe) {
+				if(log.isInfoEnabled()) log.info("An optimistic locking failure occurred while attempting to update submission " + submission.getId());
+	            throw new StaleObjectModificationException(holfe);
+			}
 		}
 
-
+		// we need to handle attachments separately. The version must be persisted
+		// before attachment can be saved
 		Set<AssignmentFeedbackAttachment> feedbackAttachments =	version.getFeedbackAttachSet();
-
-		// we need to handle attachments separately
 		version.setFeedbackAttachSet(null);
-		
+
 		version.setLastFeedbackSubmittedBy(externalLogic.getCurrentUserId());
 		version.setLastFeedbackTime(currentTime);
 
 		if (version.getId() != null) {
 			// instructor is providing feedback on the student's current version
-			dao.update(version);
-			log.debug("Submission version " + version.getId() + " updated by " + externalLogic.getCurrentUserId() + " via saveInstructorFeedback");
+			try {
+				dao.update(version);
+				log.debug("Updated student submission version " + existingVersion.getId() + " for user " + submission.getUserId() + " for assignment " + submission.getAssignment().getTitle()+ " ID: " + submission.getAssignment().getId());
+			} catch (HibernateOptimisticLockingFailureException holfe) {
+				if(log.isInfoEnabled()) log.info("An optimistic locking failure occurred while attempting to update submission version" + version.getId());
+	            throw new StaleObjectModificationException(holfe);
+			}
+			
 		} else {
 			// instructor is providing feedback but the student did not
 			// have a submission yet
@@ -791,8 +809,14 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 								AssignmentSubmissionVersion version = (AssignmentSubmissionVersion) versionIter.next();
 								if (version != null) {
 									version.setReleasedTime(releasedTime);
-									dao.update(version);
-									log.debug("Version " + version.getId() + " released by " + externalLogic.getCurrentUserId());
+									
+									try {
+										dao.update(version);
+										log.debug("Version " + version.getId() + " released by " + externalLogic.getCurrentUserId());
+									} catch (HibernateOptimisticLockingFailureException holfe) {
+										if(log.isInfoEnabled()) log.info("An optimistic locking failure occurred while attempting to update submission version" + version.getId());
+							            throw new StaleObjectModificationException(holfe);
+									}
 								}
 							}
 						}
@@ -828,8 +852,14 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 				AssignmentSubmissionVersion version = (AssignmentSubmissionVersion) versionIter.next();
 				if (version != null) {
 					version.setReleasedTime(releasedTime);
-					dao.update(version);
-					log.debug("Version " + version.getId() + " released by " + externalLogic.getCurrentUserId());
+					
+					try {
+						dao.update(version);
+						log.debug("Version " + version.getId() + " released by " + externalLogic.getCurrentUserId());
+					} catch (HibernateOptimisticLockingFailureException holfe) {
+						if(log.isInfoEnabled()) log.info("An optimistic locking failure occurred while attempting to update submission version" + version.getId());
+			            throw new StaleObjectModificationException(holfe);
+					}
 				}
 			}
 		}
@@ -852,7 +882,13 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		}
 		
 		version.setReleasedTime(new Date());
-		dao.update(version);
-		log.debug("Version " + version.getId() + " released by " + externalLogic.getCurrentUserId());
+		
+		try {
+			dao.update(version);
+			log.debug("Version " + version.getId() + " released by " + externalLogic.getCurrentUserId());
+		} catch (HibernateOptimisticLockingFailureException holfe) {
+			if(log.isInfoEnabled()) log.info("An optimistic locking failure occurred while attempting to update submission version" + version.getId());
+            throw new StaleObjectModificationException(holfe);
+		}
 	}
 }

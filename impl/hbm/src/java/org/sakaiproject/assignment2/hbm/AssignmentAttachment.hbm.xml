@@ -16,7 +16,7 @@
         <!--  This maps to the A2_ASSIGNMENT_T table -->
         <many-to-one name="assignment" column="ASSIGNMENT_ID"
         	class="org.sakaiproject.assignment2.model.Assignment2"
-        	not-null="true" />
+        	not-null="true" index="A2_ASSIGN_ATTACH_ASSIGN_I" />
 
         <!-- The reference for the attachment -->
         <property name="attachmentReference" type="java.lang.String">
