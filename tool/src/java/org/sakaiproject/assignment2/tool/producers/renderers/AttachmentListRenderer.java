@@ -5,20 +5,18 @@ import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentAttachment;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionAttachment;
 import org.sakaiproject.assignment2.model.AssignmentFeedbackAttachment;
+import org.sakaiproject.assignment2.tool.producers.fragments.AjaxCallbackProducer;
 import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.content.api.ContentResource;
 
 import uk.org.ponder.beanutil.entity.EntityBeanLocator;
 import uk.org.ponder.messageutil.MessageLocator;
-import uk.org.ponder.rsf.components.UIBranchContainer;
 import uk.org.ponder.rsf.components.UIContainer;
-import uk.org.ponder.rsf.components.UIInternalLink;
 import uk.org.ponder.rsf.components.UIJointContainer;
 import uk.org.ponder.rsf.components.UILink;
 import uk.org.ponder.rsf.components.UIMessage;
 import uk.org.ponder.rsf.components.UIOutput;
 import uk.org.ponder.rsf.components.UIVerbatim;
-import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
 
 import java.util.Set;
 import java.util.HashSet;
@@ -112,10 +110,11 @@ public class AttachmentListRenderer {
 	    		
 	    		//Add remove link
 	    		if (remove) {
+	    			String url = externalLogic.getAssignmentViewUrl(AjaxCallbackProducer.VIEW_ID);
 	    			UIVerbatim.make(joint, "attachment_remove", 
 	    					"<a href=\"#\" " +
 	    					"onclick=\"" +
-	    					"$.get('ajax-callback?removeAttachment=true&refId=" + org.sakaiproject.util.Web.escapeUrl(ref) + "',function(){" +
+	    					"$.get('" + url + "?removeAttachment=true&refId=" + org.sakaiproject.util.Web.escapeUrl(ref) + "',function(){" +
 	    					"if(refresh_ajax){refresh_ajax();}});" + //"$(this).parent('span').parent('li').remove();" +
 	    					"\">" +
 	    					messageLocator.getMessage("assignment2.remove") +

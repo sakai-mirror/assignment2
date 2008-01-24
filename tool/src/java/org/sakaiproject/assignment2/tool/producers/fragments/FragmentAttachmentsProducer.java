@@ -9,6 +9,7 @@ import org.sakaiproject.assignment2.model.AssignmentAttachment;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionAttachment;
+import org.sakaiproject.assignment2.model.AssignmentFeedbackAttachment;
 import org.sakaiproject.assignment2.tool.beans.PreviewAssignmentBean;
 import org.sakaiproject.assignment2.tool.params.FragmentAttachmentsViewParams;
 import org.sakaiproject.assignment2.tool.producers.renderers.AttachmentListRenderer;
@@ -52,6 +53,11 @@ public class FragmentAttachmentsProducer implements ViewComponentProducer, ViewP
 	private EntityBeanLocator assignmentSubmissionEntityBeanLocator;
 	public void setAssignmentSubmissionEntityBeanLocator(EntityBeanLocator entityBeanLocator) {
 		this.assignmentSubmissionEntityBeanLocator = entityBeanLocator;
+	}
+	
+	private EntityBeanLocator asvEntityBeanLocator;
+	public void setAsvEntityBeanLocator(EntityBeanLocator asvEntityBeanLocator) {
+		this.asvEntityBeanLocator = asvEntityBeanLocator;
 	}
 	
 	private ContentHostingService contentHostingService;
@@ -111,7 +117,12 @@ public class FragmentAttachmentsProducer implements ViewComponentProducer, ViewP
     			}
     		}
     	} else if (params.attachmentSetType == params.ASSIGNMENT_FEEDBACK_ATTACHMENT) {
-    		
+    		AssignmentSubmissionVersion asv = (AssignmentSubmissionVersion) asvEntityBeanLocator.locateBean(params.otpkey);
+    		if (asv != null && asv.getFeedbackAttachSet() != null){
+    			for (AssignmentFeedbackAttachment afa : asv.getFeedbackAttachSet()){
+    				set.add(afa.getAttachmentReference());
+    			}
+    		}
     	}
     	
     	//get New attachments from session set

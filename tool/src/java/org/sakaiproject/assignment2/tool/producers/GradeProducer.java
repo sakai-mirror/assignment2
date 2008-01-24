@@ -162,7 +162,7 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
         asvOTP += asvOTPKey;
         
       //Initialize js otpkey
-    	UIVerbatim.make(tofill, "attachment-ajax-init", "otpkey=\"" + org.sakaiproject.util.Web.escapeUrl(OTPKey) + "\";\n" +
+    	UIVerbatim.make(tofill, "attachment-ajax-init", "otpkey=\"" + org.sakaiproject.util.Web.escapeUrl(asvOTPKey) + "\";\n" +
     			"userId=\"" + userId + "\";\n" +
     			"assignmentId=\"" + assignmentId + "\";\n" +
     			"fragAttachPath=\"" + externalLogic.getAssignmentViewUrl(FragmentAttachmentsProducer.VIEW_ID) + "\";\n" +

@@ -252,7 +252,7 @@ function slide_submission(img){
 function refresh_ajax(){
 	if(fragAttachPath != ""){
 		old=$("#fragment-attachments-container").html();
-		$("#fragment-attachments-container").load(fragAttachPath + "?otpkey=" + otpkey + "&remove=true", function(){
+		$("#fragment-attachments-container").load(fragAttachPath + "?otpkey=" + otpkey + "&attachmentSetType=2&remove=true", function(){
 			if(old != $("#fragment-attachments-container").html())
 				highlight($("#fragment-attachments-container"));
 		});

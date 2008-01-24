@@ -175,6 +175,7 @@
    	  <property name="messageLocator" ref="messageLocator" />
    	  <property name="attachmentListRenderer" ref="AttachmentListRenderer" />
    	  <property name="assignmentSubmissionEntityBeanLocator" ref="AssignmentSubmission" />
+   	  <property name="asvEntityBeanLocator" ref="AssignmentSubmissionVersion" />
    </bean>
    
    <bean class="org.sakaiproject.assignment2.tool.producers.fragments.FragmentGradebookDetailsProducer">
