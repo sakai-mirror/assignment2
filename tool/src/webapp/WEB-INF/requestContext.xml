@@ -48,9 +48,8 @@
       <property name="sessionManager" ref="org.sakaiproject.tool.api.SessionManager" />
    </bean>
    
-   <bean class="org.sakaiproject.assignment2.tool.producers.AjaxCallbackProducer">
+   <bean class="org.sakaiproject.assignment2.tool.producers.fragments.AjaxCallbackProducer">
 	  <property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
-      <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
       <property name="sessionManager" ref="org.sakaiproject.tool.api.SessionManager" />
    </bean>	
 

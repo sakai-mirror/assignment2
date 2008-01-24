@@ -1,21 +1,14 @@
 package org.sakaiproject.assignment2.tool.producers.fragments;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 import java.util.HashSet;
 
 import org.sakaiproject.assignment2.tool.params.AjaxCallbackViewParams;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
-import org.sakaiproject.assignment2.logic.ExternalLogic;
-import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.tool.api.ToolSession;
 
-import uk.org.ponder.messageutil.MessageLocator;
 import uk.org.ponder.rsf.components.UIContainer;
-import uk.org.ponder.rsf.components.UIMessage;
-import uk.org.ponder.rsf.components.UIOutput;
 import uk.org.ponder.rsf.content.ContentTypeInfoRegistry;
 import uk.org.ponder.rsf.content.ContentTypeReporter;
 import uk.org.ponder.rsf.view.ComponentChecker;
@@ -31,7 +24,7 @@ public class AjaxCallbackProducer implements ViewComponentProducer, ViewParamsRe
     }
     
     private String[] assignmentIdParam;
-    private ExternalLogic externalLogic;
+    
     private AssignmentLogic assignmentLogic;
     
     private SessionManager sessionManager;
@@ -74,10 +67,6 @@ public class AjaxCallbackProducer implements ViewComponentProducer, ViewParamsRe
     
     public String getContentType() {
         return ContentTypeInfoRegistry.AJAX;
-    }
-    
-    public void setExternalLogic(ExternalLogic externalLogic){
-    	this.externalLogic = externalLogic;
     }
     
     public void setAssignmentLogic(AssignmentLogic assignmentLogic) {
