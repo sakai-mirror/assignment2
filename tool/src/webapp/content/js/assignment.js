@@ -27,7 +27,7 @@ function a2SetMainFrameHeight(){
 		if(arguments[0] != null){
 			height = arguments[0];
 		} else {
-			height = $(document).height + 10;
+			height = $(document).height() + 10;
 		}
 		$("#" + iframeId, parent.document).height(height);
 	}
@@ -88,6 +88,7 @@ function show_due_date(){
 			$(el).parents("fieldset:first").next('div').hide();
 		}
 	}
+	a2SetMainFrameHeight();
 }
 
 function show_accept_until(){
