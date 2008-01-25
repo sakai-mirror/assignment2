@@ -155,19 +155,19 @@ public class AssignmentDaoImpl extends HibernateCompleteGenericDao implements As
     	return currentVersion;
     }
     
-    private List<Long> getCurrentVersionIdsForSubmissions(Collection<AssignmentSubmission> submissionList) {    	
+    private List<Long> getCurrentVersionIdsForSubmissions(Collection<AssignmentSubmission> submissions) {    	
     	List<Long> versionIdList = new ArrayList();
 
-    	if (submissionList != null && !submissionList.isEmpty()) {
+    	if (submissions != null && !submissions.isEmpty()) {
+    		
+    		List submissionList = new ArrayList(submissions);
     		
     		Query query = getSession().getNamedQuery("findCurrentVersionIdsWithDrafts");
 
-    		// TODO if submission list is > than the max length allowed in sql, we need
+    		// if submission list is > than the max length allowed in sql, we need
     		// to cycle through the list
 
-    		query.setParameterList("submissionList", submissionList);
-
-    		versionIdList = query.list();
+    		versionIdList = queryWithParameterList(query, "submissionList", submissionList);
     	}
 
     	return versionIdList;
@@ -184,9 +184,8 @@ public class AssignmentDaoImpl extends HibernateCompleteGenericDao implements As
 			// retrieve the submissions
 			Query query = getSession().getNamedQuery("findSubmissionsForStudentForAssignments");
 	    	query.setParameter("studentId",studentId);
-	    	query.setParameterList("assignmentList", assignments);
-	    	
-	    	submissions = query.list();
+    	
+	    	submissions = queryWithParameterList(query, "assignmentList", assignments);
 	    	
 	    	// now, populate the version information
     		populateCurrentVersion(submissions);
@@ -212,9 +211,8 @@ public class AssignmentDaoImpl extends HibernateCompleteGenericDao implements As
     	if (versionIds != null && !versionIds.isEmpty()) {
     		String hql = "from AssignmentSubmissionVersion as version where version.id in (:versionIdList)";
     		Query query = getSession().createQuery(hql);
-    		query.setParameterList("versionIdList", versionIds);
     		
-    		versions = query.list();
+    		versions = queryWithParameterList(query, "versionIdList", versionIds);
     	}
     	
     	return versions;
@@ -230,9 +228,8 @@ public class AssignmentDaoImpl extends HibernateCompleteGenericDao implements As
     	if (studentIds != null && !studentIds.isEmpty()) {
     		Query query = getSession().getNamedQuery("findSubmissionsForStudentsForAssignment");
     		query.setParameter("assignment", assignment);
-    		query.setParameterList("studentIdList", studentIds);
     		
-    		List<AssignmentSubmission> submissionList = query.list();
+    		List<AssignmentSubmission> submissionList = queryWithParameterList(query, "studentIdList", studentIds);
     			
     		if (submissionList != null) {
     			submissionSet = new HashSet(submissionList);
@@ -293,11 +290,10 @@ public class AssignmentDaoImpl extends HibernateCompleteGenericDao implements As
         	} else {
         		query = getSession().getNamedQuery("findSubmissionsWithHistoryForAssignmentAndStudentsNoDrafts");
         	}
-        	query.setParameterList("studentIdList", studentIdList);
+        	
         	query.setParameter("assignment", assignment);
         	
-        	
-        	submissionList = query.list();
+        	submissionList = queryWithParameterList(query, "studentIdList", studentIdList);
     	}
     	
     	return submissionList;
@@ -371,6 +367,47 @@ public class AssignmentDaoImpl extends HibernateCompleteGenericDao implements As
     	}
     	
     	return submission;
+    }
+    
+    /**
+     * 
+     * @param query - your query with all other parameters already defined
+     * @param queryParamName - the name of the list parameter referenced in the query
+     * @param fullList - the list that you are using as a parameter
+     * @return the resulting list from a query that takes in a list as a parameter;
+     * this will cycle through with sublists if the size of the list exceeds the
+     * allowed size for an sql query
+     */
+    private List queryWithParameterList(Query query, String queryParamName, List fullList) {
+    	// sql has a limit for the size of a parameter list, so we may need to cycle
+		// through with sublists
+    	List queryResultList = new ArrayList();
+    	
+		if (fullList.size() < MAX_NUMBER_OF_SQL_PARAMETERS_IN_LIST) {
+			query.setParameterList(queryParamName, fullList);
+			queryResultList = query.list();
+    		
+		} else {
+			// if there are more than MAX_NUMBER_OF_SQL_PARAMETERS_IN_LIST, we need to do multiple queries
+			int begIndex = 0;
+			int endIndex = 0;
+
+			while (begIndex < fullList.size()) {
+				endIndex = begIndex + MAX_NUMBER_OF_SQL_PARAMETERS_IN_LIST;
+				if (endIndex > fullList.size()) {
+					endIndex = fullList.size();
+				}
+				List tempSubList = new ArrayList();
+				tempSubList.addAll(fullList.subList(begIndex, endIndex));
+				
+				query.setParameterList(queryParamName, tempSubList);
+				
+				queryResultList.addAll(query.list());
+				begIndex = endIndex;
+			}
+		}
+		
+		return queryResultList;
     }
 
 }
