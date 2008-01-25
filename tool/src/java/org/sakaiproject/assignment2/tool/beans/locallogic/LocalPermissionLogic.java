@@ -23,11 +23,6 @@ public class LocalPermissionLogic {
 		this.externalLogic = externalLogic;
 	}
 	
-	private AssignmentLogic assignmentLogic;
-	public void setAssignmentLogic(AssignmentLogic assignmentLogic) {
-		this.assignmentLogic = assignmentLogic;
-	}
-	
 	private AssignmentSubmissionLogic submissionLogic;
 	public void setSubmissionLogic(AssignmentSubmissionLogic submissionLogic) {
 		this.submissionLogic = submissionLogic;
@@ -94,8 +89,7 @@ public class LocalPermissionLogic {
 	
 	public String filterViewIdForStudentSubmission(SimpleAssignmentViewParams incoming) {
 		String userId = externalLogic.getCurrentUserId();
-		Assignment2 assignment = assignmentLogic.getAssignmentById(incoming.assignmentId);
-		if(submissionLogic.submissionIsOpenForStudentForAssignment(userId, assignment)){
+		if(submissionLogic.submissionIsOpenForStudentForAssignment(userId, incoming.assignmentId)){
 			return StudentSubmitProducer.VIEW_ID;
 		} else {
 			return StudentSubmitSummaryProducer.VIEW_ID;

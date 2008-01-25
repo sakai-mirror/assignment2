@@ -249,7 +249,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 					"without authorization for assignment " + submission.getAssignment().getId());
 		}
 		
-		if (!submissionIsOpenForStudentForAssignment(externalLogic.getCurrentUserId(), submission.getAssignment())) {
+		if (!submissionIsOpenForStudentForAssignment(externalLogic.getCurrentUserId(), submission.getAssignment().getId())) {
 			log.warn("User " + externalLogic.getCurrentUserId() + " attempted to make a submission " +
 					"but submission for this user for assignment " + submission.getAssignment().getId() + " is closed.");
 			throw new SecurityException("User " + externalLogic.getCurrentUserId() + " attempted to make a submission " +
@@ -684,11 +684,16 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		updatedVersion.setFeedbackAttachSet(revisedAttachSet);
 	}
 	
-	public boolean submissionIsOpenForStudentForAssignment(String studentId, Assignment2 assignment) {
-		if (studentId == null || assignment == null) {
+	public boolean submissionIsOpenForStudentForAssignment(String studentId, Long assignmentId) {
+		if (studentId == null || assignmentId == null) {
 			throw new IllegalArgumentException("null parameter passed to studentAbleToSubmit");
 		} 
 
+		Assignment2 assignment = (Assignment2)dao.findById(Assignment2.class, assignmentId);
+		if (assignment == null) {
+			throw new IllegalArgumentException("No assignment exists with id " + assignmentId);
+		}
+		
 		// retrieve the submission history for this student for this assignment
 		AssignmentSubmission submission = dao.getSubmissionWithVersionHistoryForStudentAndAssignment(studentId, assignment, Boolean.TRUE);
 		

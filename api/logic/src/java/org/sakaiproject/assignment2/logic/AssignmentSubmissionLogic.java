@@ -162,12 +162,12 @@ public interface AssignmentSubmissionLogic {
 	/**
 	 * 
 	 * @param studentId
-	 * @param assignment
+	 * @param assignmentId
 	 * @return true if the student is still able to make a submission for the given
 	 * assignment at this time.  checks to see if assignment is open, if resubmission allowed,
 	 * etc to determine if submission is still open
 	 */
-	public boolean submissionIsOpenForStudentForAssignment(String studentId, Assignment2 assignment);
+	public boolean submissionIsOpenForStudentForAssignment(String studentId, Long assignmentId);
 	
 	/**
 	 * 
