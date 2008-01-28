@@ -44,8 +44,6 @@ public interface AssignmentLogic {
     public static final String SORT_BY_STATUS = "status";
     public static final String SORT_BY_OPEN = "openTime";
     public static final String SORT_BY_DUE = "dueDate";
-    public static final String SORT_BY_NUM_UNGRADED = "numUngraded";	
-
 	
 	/**
 	 * 

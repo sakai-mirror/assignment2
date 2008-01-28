@@ -72,10 +72,6 @@
         <property name="announcementId" type="java.lang.String" >
             <column name="ANNOUNCEMENT_ID" length="99" />
         </property>
-        <!-- used if assignment is included in the schedule  -->
-        <property name="calendarEventId" type="java.lang.String" >
-            <column name="CALENDAR_EVENT_ID" length="36" />
-        </property>
         <!-- allow resubmissions until "accept until" date  -->
         <property name="allowResubmit" type="java.lang.Boolean" >
             <column name="ALLOW_RESUBMIT" not-null="true" />

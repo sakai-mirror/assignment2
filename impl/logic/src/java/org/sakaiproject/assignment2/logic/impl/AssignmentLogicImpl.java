@@ -468,8 +468,6 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 			comp = new ComparatorsUtils.Assignment2DueDateComparator();
 		} else if(AssignmentLogic.SORT_BY_FOR.equals(sortBy)) {
 			comp = new ComparatorsUtils.Assignment2ForComparator();
-		}else if(AssignmentLogic.SORT_BY_NUM_UNGRADED.equals(sortBy)){
-			comp = new ComparatorsUtils.Assignment2NumUngradedComparator();
 		} else if(AssignmentLogic.SORT_BY_OPEN.equals(sortBy)){
 			comp = new ComparatorsUtils.Assignment2OpenDateComparator();
 		} else if(AssignmentLogic.SORT_BY_STATUS.equals(sortBy)){

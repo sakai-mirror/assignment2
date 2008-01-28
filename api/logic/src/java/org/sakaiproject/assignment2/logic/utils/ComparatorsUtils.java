@@ -134,25 +134,6 @@ public class ComparatorsUtils {
 			return value;
 		}
 	}
-
-	/**
-	 * static class to sort Assignment2 objects by num ungraded submissions
-	 */
-	public static class Assignment2NumUngradedComparator implements Comparator<Assignment2> {
-		public int compare(Assignment2 assign1, Assignment2 assign2) {
-			int value = 0;
-
-			if (assign1.getNumberOfUngradedSubmissions() > assign2.getNumberOfUngradedSubmissions()) {
-				value = 1;
-			} else if (assign1.getNumberOfUngradedSubmissions() < assign2.getNumberOfUngradedSubmissions()) {
-				value = -1;
-			} else {
-				value = sortByTitle(assign1, assign2);
-			}
-
-			return value;
-		}
-	}
 	
 	/**
 	 * static class to sort AssignmentSubmission objects by student name

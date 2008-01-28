@@ -64,7 +64,6 @@ public class Assignment2Creator {
     	dup.setSubmissionType(assignment.getSubmissionType());
     	dup.setNotificationType(assignment.getNotificationType());
 		dup.setHasAnnouncement(assignment.getHasAnnouncement());
-		dup.setCalendarEventId(assignment.getCalendarEventId());
 		dup.setAllowResubmit(assignment.isAllowResubmit());
 		dup.setAllowReviewService(assignment.isAllowReviewService());
 		dup.setAllowStudentViewReport(assignment.isAllowStudentViewReport());

@@ -191,6 +191,4 @@ public interface ExternalGradebookLogic {
 	 * @param assignment
 	 */
 	public void populateGradebookItemDetailsForAssignment(String contextId, Assignment2 assignment);
-	
-	public String getGradebookItemHelperUrl(String contextId);
 }

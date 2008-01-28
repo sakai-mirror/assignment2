@@ -240,23 +240,6 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
 		return userIsAStudentInGb;
 	}
     
-    //This should only be a temporary method, replaced by a real helper tool in the gradebook
-    public String getGradebookItemHelperUrl(String contextId) {
-    	String url = "";
-    	try {
-	    	url = ServerConfigurationService.getPortalUrl() + "/tool/";
-	    	final Site site = SiteService.getSite(contextId);
-	    	
-	    	ToolConfiguration gbTool = site.getToolForCommonId("sakai.gradebook.tool");
-	    	url += gbTool.getId() + "/addAssignmentHelper.jsf";
-	    	
-    	}
-    	catch (IdUnusedException e) {
-    		
-    	}	
-    	return url;
-    }
-    
     public String getGradeViewPermissionForCurrentUserForStudentForItem(String contextId, String studentId, Long gbItemId) {
     	if (contextId == null || studentId == null || gbItemId == null) {
     		throw new IllegalArgumentException("Null contextId or studentId or itemId passed to getGradeViewPermissionForCurrentUserForStudentForItem");

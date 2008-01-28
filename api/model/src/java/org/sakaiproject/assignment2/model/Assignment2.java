@@ -50,7 +50,6 @@ public class Assignment2 {
     private int notificationType;
     private Boolean hasAnnouncement;
     private String announcementId;
-    private String calendarEventId;
     private Boolean allowResubmit;
     private Boolean allowReviewService;
     private Boolean allowStudentViewReport;
@@ -69,8 +68,6 @@ public class Assignment2 {
     private Date dueDate;
     
     // fields that are not persisted but needed for UI
-    private Integer numberOfTotalSubmissions;
-    private Integer numberOfUngradedSubmissions;
     private String assignmentStatus;
     private boolean restrictedToGroups;
     private String restrictedToText;
@@ -83,8 +80,7 @@ public class Assignment2 {
 			Date openTime, Date acceptUntilTime, Boolean ungraded,
 			Date dueDateForUngraded, Boolean honorPledge, String instructions,
 			int submissionType, int notificationType, Boolean hasAnnouncement,
-			String announcementId, String calendarEventId,
-			Boolean allowResubmit, Boolean allowReviewService,
+			String announcementId, Boolean allowResubmit, Boolean allowReviewService,
 			Boolean allowStudentViewReport, String creator, Date createTime,
 			String modifiedBy, Date modifiedTime, Boolean removed) {
 		this.id = id;
@@ -103,7 +99,6 @@ public class Assignment2 {
 		this.notificationType = notificationType;
 		this.hasAnnouncement = hasAnnouncement;
 		this.announcementId = announcementId;
-		this.calendarEventId = calendarEventId;
 		this.allowResubmit = allowResubmit;
 		this.allowReviewService = allowReviewService;
 		this.allowStudentViewReport = allowStudentViewReport;
@@ -393,23 +388,6 @@ public class Assignment2 {
     }
     
     /**
-     * @return Returns the id of the calendar event with this assignment's due date
-     * If null, there is not a calendar event for this item
-     */
-    public String getCalendarEventId() {
-        return calendarEventId;
-    }
-
-    /**
-     * the id of the calendar event with this assignment's due date
-     * If null, there is not a calendar event for this item
-     * @param calendarEventId
-     */
-    public void setCalendarEventId(String calendarEventId) {
-        this.calendarEventId = calendarEventId;
-    }
-    
-    /**
      * @return If true, will allow students to resubmit an unlimited number of times
      * until the "accept until" date
      */
@@ -641,39 +619,6 @@ public class Assignment2 {
 	}
 	
 	// the following fields are not persisted but are used by the UI
-	
-	/**
-	 * @return the number of submissions to date for this assignment
-	 */
-	public Integer getNumberOfTotalSubmissions() {
-		return numberOfTotalSubmissions;
-	}
-
-	/**
-	 * set the number of submissions to date for this assignment
-	 * @param numberOfTotalSubmissions
-	 */
-	public void setNumberOfTotalSubmissions(Integer numberOfTotalSubmissions) {
-		this.numberOfTotalSubmissions = numberOfTotalSubmissions;
-	}
-
-	/**
-	 * 
-	 * @return the number of submissions for this assignments that have not 
-	 * been graded (this is retrieved from the gradebook)
-	 */
-	public Integer getNumberOfUngradedSubmissions() {
-		return numberOfUngradedSubmissions;
-	}
-
-	/**
-	 * set the number of submissions for this assignments that have not 
-	 * been graded (this is retrieved from the gradebook)
-	 * @param numberOfUngradedSubmissions
-	 */
-	public void setNumberOfUngradedSubmissions(Integer numberOfUngradedSubmissions) {
-		this.numberOfUngradedSubmissions = numberOfUngradedSubmissions;
-	}
 
 	/**
 	 * 
