@@ -72,15 +72,11 @@ public interface AssignmentDao extends CompleteGenericDao {
 	public Assignment2 getAssignmentByIdWithGroups(Long assignmentId);
 	
 	/**
-	 * returns the current submission version for the given AssignmentSubmission and userId
+	 * 
 	 * @param submission
-	 * @param ignoreDrafts
-	 * 		if true, will count drafts as the current version.
-	 * 		if false, will populate the current version with the most recent non-draft
-	 * 		submission info
-	 * @return
+	 * @return returns the current submission version for the given AssignmentSubmission and userId
 	 */
-	public AssignmentSubmissionVersion getCurrentSubmissionVersionWithAttachments(AssignmentSubmission submission, boolean ignoreDrafts);
+	public AssignmentSubmissionVersion getCurrentSubmissionVersionWithAttachments(AssignmentSubmission submission);
 	
 	/**
 	 * 
@@ -108,25 +104,23 @@ public interface AssignmentDao extends CompleteGenericDao {
 	 * 
 	 * @param studentId
 	 * @param assignment
-	 * @includeDrafts if true, will return draft versions in the history set
 	 * @return the AssignmentSubmission rec for the given student and assignment with the
 	 * submissionHistorySet populated with all of the AssignmentSubmissionVersions associated
 	 * with this submission. returns null if no submission has been made. will populate the
-	 * currentSubmissionVersion (but will be most recent non-draft version if includeDrafts = false)
+	 * currentSubmissionVersion 
 	 */
-	public AssignmentSubmission getSubmissionWithVersionHistoryForStudentAndAssignment(String studentId, Assignment2 assignment, boolean includeDrafts);
+	public AssignmentSubmission getSubmissionWithVersionHistoryForStudentAndAssignment(String studentId, Assignment2 assignment);
 	
 	/**
 	 * 
 	 * @param studentIdList
 	 * @param assignment
-	 * @param includeDrafts - if true, will include draft versions in the history set
 	 * @return the AssignmentSubmission recs for the given students for the given assignment.
 	 * populates the submissionHistorySet with all of the AssignmentSubmissionVersions for
 	 * each submission. if no submission has been made, no rec will be returned
 	 * 
 	 */
-	public List<AssignmentSubmission> getSubmissionsWithVersionHistoryForStudentListAndAssignment(List<String> studentIdList, Assignment2 assignment, boolean includeDrafts);
+	public List<AssignmentSubmission> getSubmissionsWithVersionHistoryForStudentListAndAssignment(List<String> studentIdList, Assignment2 assignment);
 	
 	/**
 	 * 
@@ -139,10 +133,8 @@ public interface AssignmentDao extends CompleteGenericDao {
 	/**
 	 * 
 	 * @param submissionId
-	 * @param includeDrafts - if true, will include draft versions in the history set
 	 * @return the AssignmentSubmission with the given id with the history set populated. Version
-	 * attachments are NOT populated. Will populate currentSubmission (but will be most recent
-	 * non-draft version if includeDrafts = false)
+	 * attachments are NOT populated. Will populate currentSubmission 
 	 */
-	public AssignmentSubmission getSubmissionWithVersionHistoryById(Long submissionId, boolean includeDrafts);
+	public AssignmentSubmission getSubmissionWithVersionHistoryById(Long submissionId);
 }

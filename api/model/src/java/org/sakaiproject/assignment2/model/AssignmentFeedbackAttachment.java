@@ -85,4 +85,28 @@ public class AssignmentFeedbackAttachment {
 	public void setAttachmentReference(String attachmentReference) {
 		this.attachmentReference = attachmentReference;
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (null == obj) return false;
+		if (!(obj instanceof AssignmentAttachment)) return false;
+		else {
+			AssignmentFeedbackAttachment compAttach = (AssignmentFeedbackAttachment) obj;
+			if (this.id == null || compAttach.id == null) {
+				return false;
+			}
+			if (null == this.id || null == compAttach.id) return false;
+			else return (
+					this.id.equals(compAttach.id)
+			);
+		}
+	}
+
+	@Override
+	public int hashCode() {
+		if (null == this.id) return super.hashCode();
+		String hashStr = this.getClass().getName() + ":" + this.id.hashCode();
+		return hashStr.hashCode();
+	}
+
 }

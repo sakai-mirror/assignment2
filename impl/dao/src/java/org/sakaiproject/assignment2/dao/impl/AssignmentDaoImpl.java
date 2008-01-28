@@ -125,25 +125,18 @@ public class AssignmentDaoImpl extends HibernateCompleteGenericDao implements As
     	return query.list();
     }
     
-    public AssignmentSubmissionVersion getCurrentSubmissionVersionWithAttachments(AssignmentSubmission submission, boolean ignoreDrafts) {
+    public AssignmentSubmissionVersion getCurrentSubmissionVersionWithAttachments(AssignmentSubmission submission) {
     	if (submission == null || submission.getId() == null) {
     		throw new IllegalArgumentException("null or transient submission passed to getSubmissionVersionForUserIdWithAttachments");
     	}
     	
     	AssignmentSubmissionVersion currentVersion = null;
-    	
-    	String hqlGetVersionNoDraft = "select max(submissionVersion.id) " +
-		"from AssignmentSubmissionVersion as submissionVersion " +
-		"where submissionVersion.assignmentSubmission = :submission " +
-		"and submissionVersion.draft = false";
 	
-    	String hqlGetVersionWithDraft = "select max(submissionVersion.id) " +
+    	String queryString = "select max(submissionVersion.id) " +
 		"from AssignmentSubmissionVersion as submissionVersion " +
 		"where submissionVersion.assignmentSubmission = :submission";
     	
-    	String queryToUse = ignoreDrafts ? hqlGetVersionNoDraft : hqlGetVersionWithDraft;
-    	
-    	Query query = getSession().createQuery(queryToUse);
+    	Query query = getSession().createQuery(queryString);
     	query.setParameter("submission", submission);
     	
     	Long submissionVersionId = (Long) query.uniqueResult();
@@ -162,7 +155,7 @@ public class AssignmentDaoImpl extends HibernateCompleteGenericDao implements As
     		
     		List submissionList = new ArrayList(submissions);
     		
-    		Query query = getSession().getNamedQuery("findCurrentVersionIdsWithDrafts");
+    		Query query = getSession().getNamedQuery("findCurrentVersionIds");
 
     		// if submission list is > than the max length allowed in sql, we need
     		// to cycle through the list
@@ -276,7 +269,7 @@ public class AssignmentDaoImpl extends HibernateCompleteGenericDao implements As
 		}
     }
     
-    public List<AssignmentSubmission> getSubmissionsWithVersionHistoryForStudentListAndAssignment(List<String> studentIdList, Assignment2 assignment, boolean includeDrafts) {
+    public List<AssignmentSubmission> getSubmissionsWithVersionHistoryForStudentListAndAssignment(List<String> studentIdList, Assignment2 assignment) {
     	if (assignment == null) {
     		throw new IllegalArgumentException("null assignment passed to getSubmissionsWithVersionHistoryForStudentListAndAssignment");
     	}
@@ -284,13 +277,7 @@ public class AssignmentDaoImpl extends HibernateCompleteGenericDao implements As
     	List<AssignmentSubmission> submissionList = new ArrayList();
     	
     	if (studentIdList != null && !studentIdList.isEmpty()) {
-    		Query query;
-        	if (includeDrafts) {
-        		query = getSession().getNamedQuery("findSubmissionsWithHistoryForAssignmentAndStudents");
-        	} else {
-        		query = getSession().getNamedQuery("findSubmissionsWithHistoryForAssignmentAndStudentsNoDrafts");
-        	}
-        	
+    		Query query = getSession().getNamedQuery("findSubmissionsWithHistoryForAssignmentAndStudents");	
         	query.setParameter("assignment", assignment);
         	
         	submissionList = queryWithParameterList(query, "studentIdList", studentIdList);
@@ -299,17 +286,12 @@ public class AssignmentDaoImpl extends HibernateCompleteGenericDao implements As
     	return submissionList;
     }
     
-    public AssignmentSubmission getSubmissionWithVersionHistoryForStudentAndAssignment(String studentId, Assignment2 assignment, boolean includeDrafts) {
+    public AssignmentSubmission getSubmissionWithVersionHistoryForStudentAndAssignment(String studentId, Assignment2 assignment) {
     	if (studentId == null || assignment == null) {
     		throw new IllegalArgumentException("null parameter passed to getSubmissionWithVersionHistoryForStudentAndAssignment");
     	}
     	
-    	Query query;
-    	if (includeDrafts) {
-    		query = getSession().getNamedQuery("findStudentSubmissionWithHistoryForAssignment");
-    	} else {
-    		query = getSession().getNamedQuery("findStudentSubmissionWithHistoryForAssignmentNoDrafts");
-    	}
+    	Query query = getSession().getNamedQuery("findStudentSubmissionWithHistoryForAssignment");
     	query.setParameter("studentId", studentId);
     	query.setParameter("assignment", assignment);
     	
@@ -347,17 +329,12 @@ public class AssignmentDaoImpl extends HibernateCompleteGenericDao implements As
     	}
     }
     
-    public AssignmentSubmission getSubmissionWithVersionHistoryById(Long submissionId, boolean includeDrafts) {
+    public AssignmentSubmission getSubmissionWithVersionHistoryById(Long submissionId) {
     	if (submissionId == null) {
     		throw new IllegalArgumentException("null submissionId passed to getSubmissionWithVersionHistoryById");
     	}
     	
-    	Query query;
-    	if (includeDrafts) {
-    		query = getSession().getNamedQuery("findSubmissionByIdWithHistory");
-    	} else {
-    		query = getSession().getNamedQuery("findSubmissionByIdWithHistoryNoDrafts");
-    	}
+    	Query query = getSession().getNamedQuery("findSubmissionByIdWithHistory");
     	query.setParameter("submissionId", submissionId);
     	
     	AssignmentSubmission submission = (AssignmentSubmission) query.uniqueResult();

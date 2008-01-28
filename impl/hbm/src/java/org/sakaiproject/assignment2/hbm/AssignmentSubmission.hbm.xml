@@ -69,15 +69,6 @@
              where submission.userId = :studentId and
              		submission.assignment = :assignment]]>
   	</query>
-  	<query name="findStudentSubmissionWithHistoryForAssignmentNoDrafts">
-    <![CDATA[from org.sakaiproject.assignment2.model.AssignmentSubmission submission
-    				 left join fetch submission.submissionHistorySet versions
-    				 left join fetch versions.feedbackAttachSet
-    				 left join fetch versions.submissionAttachSet
-             where submission.userId = :studentId and
-             		submission.assignment = :assignment and
-             		versions.draft = false]]>
-  	</query>
   	<query name="findSubmissionsWithHistoryForAssignmentAndStudents">
     <![CDATA[from org.sakaiproject.assignment2.model.AssignmentSubmission submission
     				 left join fetch submission.submissionHistorySet versions
@@ -86,25 +77,10 @@
              where submission.userId in (:studentIdList) and
              		submission.assignment = :assignment]]>
   	</query>
-  	<query name="findSubmissionsWithHistoryForAssignmentAndStudentsNoDrafts">
-    <![CDATA[from org.sakaiproject.assignment2.model.AssignmentSubmission submission
-    				 left join fetch submission.submissionHistorySet versions
-    				 left join fetch versions.feedbackAttachSet
-    				 left join fetch versions.submissionAttachSet
-             where submission.userId in (:studentIdList) and
-             		submission.assignment = :assignment and
-             		versions.draft = false]]>
-  	</query>
   	<query name="findSubmissionByIdWithHistory">
   	<![CDATA[from org.sakaiproject.assignment2.model.AssignmentSubmission submission
     				 left join fetch submission.submissionHistorySet versions
              where submission.id = :submissionId]]>
-  	</query>
-  	<query name="findSubmissionByIdWithHistoryNoDrafts">
-  	<![CDATA[from org.sakaiproject.assignment2.model.AssignmentSubmission submission
-    				 left join fetch submission.submissionHistorySet versions
-             where submission.id = :submissionId and
-             	versions.draft = false]]>
   	</query>
   	
 </hibernate-mapping>

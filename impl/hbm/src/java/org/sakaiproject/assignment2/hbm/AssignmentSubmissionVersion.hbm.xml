@@ -103,7 +103,7 @@
              where submissionVersion.id = :submissionVersionId]]>
   	</query>
   	
-  	<query name="findCurrentVersionIdsWithDrafts">
+  	<query name="findCurrentVersionIds">
     <![CDATA[select max(submissionVersion.id) 
     				 from org.sakaiproject.assignment2.model.AssignmentSubmissionVersion submissionVersion
              where submissionVersion.assignmentSubmission in (:submissionList)

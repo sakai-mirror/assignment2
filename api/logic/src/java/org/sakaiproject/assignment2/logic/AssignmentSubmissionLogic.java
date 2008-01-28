@@ -57,6 +57,8 @@ public interface AssignmentSubmissionLogic {
 	 * @param submissionVersionId
 	 * @return Returns the AssignmentSubmissionVersion with the given submissionVersionId.
 	 * Will populate grading information. Returns null if no version with that id.
+	 * If the version is draft and the submitter is not the current user, will not
+	 * populate the submissionText or submissionAttachmentSet
 	 * @SecurityException if current user is not allowed to view the version
 	 */
 	public AssignmentSubmissionVersion getSubmissionVersionById(Long submissionVersionId);
@@ -68,25 +70,12 @@ public interface AssignmentSubmissionLogic {
 	 * @param studentId
 	 * @return AssignmentSubmission associated with the given Assignment and studentId.
 	 * 		will return an empty record (with gb info populated, if appropriate)
-	 * 		if there is no submission info for this student yet. if the
-	 * 		most current submission is a draft, will flag the submission as "currentVersionIsDraft"
-	 * 		and return the most recent non-draft version as the currentVersion
+	 * 		if there is no submission info for this student yet. If the curr version 
+	 * 		is draft and the submitter is not the current user, will not
+	 * 		populate the submissionText or submissionAttachmentSet
 	 * @throws SecurityException if current user not allowed to view student's submission
 	 */
-	public AssignmentSubmission getCurrentSubmissionByAssignmentIdAndStudentIdForInstructorView(Long assignmentId, String studentId);
-	
-	/**
-	 * 
-	 * @param assignmentId
-	 * @param studentId
-	 * @return AssignmentSubmission associated with the given Assignment and studentId.
-	 * 		will return an empty record (with gb info populated, if appropriate) 
-	 * 		if there is no submission info for this student yet. populates
-	 * 		currentVersion info
-	 * @throws SecurityException if current user not allowed to view student's submission
-	 */
-	public AssignmentSubmission getCurrentSubmissionByAssignmentIdAndStudentIdForStudentView(Long assignmentId, String studentId);
-	
+	public AssignmentSubmission getCurrentSubmissionByAssignmentIdAndStudentId(Long assignmentId, String studentId);
 	
 	/**
 	 * Create or update an AssignmentSubmission

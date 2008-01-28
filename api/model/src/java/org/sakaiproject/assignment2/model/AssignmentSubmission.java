@@ -48,7 +48,6 @@ public class AssignmentSubmission {
 	// to retrieve the version rec with the highest id
 	private AssignmentSubmissionVersion currentSubmissionVersion;
 	
-	private boolean currentVersionIsDraft;
 	private String submissionStatus;
 
 	public AssignmentSubmission() {
@@ -237,22 +236,6 @@ public class AssignmentSubmission {
 	 */
 	public void setCurrentSubmissionVersion(AssignmentSubmissionVersion currentSubmissionVersion) {
 		this.currentSubmissionVersion = currentSubmissionVersion;
-	}
-	
-	/**
-	 * 
-	 * @return true if the most recent submission version is in draft status
-	 */
-	public boolean isCurrentVersionIsDraft() {
-		return currentVersionIsDraft;
-	}
-	
-	/**
-	 * true if the most recent submission version is in draft status
-	 * @param currentVersionIsDraft
-	 */
-	public void setCurrentVersionIsDraft(boolean currentVersionIsDraft) {
-		this.currentVersionIsDraft = currentVersionIsDraft;
 	}
 
 	/**

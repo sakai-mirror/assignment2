@@ -117,7 +117,7 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
         UIVerbatim.make(tofill, "iframeId_init", "var iframeId = \"" + frameId + "\";");
         
     	
-    	AssignmentSubmission as = submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentIdForInstructorView(assignmentId, userId);
+    	AssignmentSubmission as = submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(assignmentId, userId);
     	Assignment2 assignment = assignmentLogic.getAssignmentByIdWithAssociatedData(assignmentId);
     	
        	// use a date which is related to the current users locale
@@ -175,7 +175,7 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
         UIForm form = UIForm.make(tofill, "form");
         
         UIOutput.make(form, "details_student", externalLogic.getUserDisplayName(userId));
-        if (assignmentSubmissionVersion.getSubmittedText() != null){
+        if (assignmentSubmissionVersion.getSubmittedTime() != null){
         	UIOutput.make(form, "details_submitted_date", df.format(assignmentSubmissionVersion.getSubmittedTime()));
         } else {
         	UIOutput.make(form, "details_submitted_date", "");

@@ -257,7 +257,7 @@ public class AssignmentSubmissionBean {
 			AssignmentSubmissionVersion asv = asvOTPMap.get(key);
 			
 			String currUserId = externalLogic.getCurrentUserId();
-			AssignmentSubmission assignmentSubmission = submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentIdForInstructorView(assignmentId, userId);
+			AssignmentSubmission assignmentSubmission = submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(assignmentId, userId);
 			
 			asv.setAssignmentSubmission(assignmentSubmission);
 			asv.setLastFeedbackSubmittedBy(currUserId);

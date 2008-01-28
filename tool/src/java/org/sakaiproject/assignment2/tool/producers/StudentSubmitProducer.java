@@ -63,7 +63,7 @@ public class StudentSubmitProducer implements ViewComponentProducer, NavigationC
     		return;
     	}
     	
-    	AssignmentSubmission submission = submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentIdForStudentView(assignmentId, externalLogic.getCurrentUserId());
+    	AssignmentSubmission submission = submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(assignmentId, externalLogic.getCurrentUserId());
     	
     	String ASOTPKey = "";
     	if (submission == null || submission.getId() == null) {

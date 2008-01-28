@@ -147,7 +147,10 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 			throw new IllegalArgumentException("Null assignment passed to saveAssignment");
 		}
 		
-		if (!permissionLogic.isCurrentUserAbleToEditAssignments(externalLogic.getCurrentContextId())) {
+		String currentContextId = externalLogic.getCurrentContextId();
+		String currentUserId = externalLogic.getCurrentUserId();
+		
+		if (!permissionLogic.isCurrentUserAbleToEditAssignments(currentContextId)) {
 			throw new SecurityException("Current user may not save assignment " + assignment.getTitle()
                     + " because they do not have edit permission");
 		}
@@ -170,7 +173,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
         		throw new ConflictingAssignmentNameException("An assignment with the title " + assignment.getTitle() + " already exists");
         	}
         	// identify the next sort index to be used
-        	Integer highestIndex = dao.getHighestSortIndexInSite(externalLogic.getCurrentContextId());
+        	Integer highestIndex = dao.getHighestSortIndexInSite(currentContextId);
         	if (highestIndex != null) {
         		assignment.setSortIndex(highestIndex + 1);
         	} else {
@@ -178,26 +181,26 @@ public class AssignmentLogicImpl implements AssignmentLogic{
         	}
         	
         	assignment.setCreateTime(new Date());
-        	assignment.setCreator(externalLogic.getCurrentUserId());
+        	assignment.setCreator(currentUserId);
         	
-        	// the attachment and group recs do not have assignmentId data yet,
-        	// so we need to handle it after we do the creation
-        	Set<AssignmentAttachment> attachSet = assignment.getAttachmentSet();
-        	Set<AssignmentGroup> assignGroupSet = assignment.getAssignmentGroupSet();
+        	Set<AssignmentAttachment> attachSet = new HashSet();
+        	if (assignment.getAttachmentSet() != null) {
+        		attachSet = assignment.getAttachmentSet();
+        	}
+        	Set<AssignmentGroup> groupSet = new HashSet();
+        	if (assignment.getAssignmentGroupSet() != null) {
+        		groupSet = assignment.getAssignmentGroupSet();
+        	}
         	
-        	assignment.setAttachmentSet(new HashSet());
-        	assignment.setAssignmentGroupSet(new HashSet());
+        	// make sure the assignment has been set for the attachments and groups
+        	populateAssignmentForAttachmentAndGroupSets(attachSet, groupSet, assignment);
         	
-        	dao.create(assignment);
+        	Set<Assignment2> assignSet = new HashSet();
+        	assignSet.add(assignment);
+        	
+        	dao.saveMixedSet(new Set[] {assignSet, attachSet, groupSet});
             log.debug("Created assignment: " + assignment.getTitle());
-            
-            // now that we have an assignmentId, we can add the associated groups and attachments
-            assignment.setAttachmentSet(attachSet);
-            updateAttachments(existingAssignment, assignment);     
-            
-            assignment.setAssignmentGroupSet(assignGroupSet);
-            updateAssignmentGroups(existingAssignment, assignment);
-              
+  
 		} else {
 			if (!assignment.getTitle().equals(existingAssignment.getTitle())) {
 				// check to see if this new title already exists
@@ -206,16 +209,36 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 	        	}
 			}
 			
-			assignment.setModifiedBy(externalLogic.getCurrentUserId());
+			assignment.setModifiedBy(currentUserId);
 			assignment.setModifiedTime(new Date());
 			
-			updateAttachments(existingAssignment, assignment);
-			updateAssignmentGroups(existingAssignment, assignment);
+			Set<AssignmentAttachment> attachToDelete = identifyAttachmentsToDelete(existingAssignment, assignment);
+			Set<AssignmentGroup> groupsToDelete = identifyGroupsToDelete(existingAssignment, assignment);
 			
 			try {
-			
-	        	dao.update(assignment);
+	        	Set<AssignmentAttachment> attachSet = new HashSet();
+	        	if (assignment.getAttachmentSet() != null) {
+	        		attachSet = assignment.getAttachmentSet();
+	        	}
+	        	Set<AssignmentGroup> groupSet = new HashSet();
+	        	if (assignment.getAssignmentGroupSet() != null) {
+	        		groupSet = assignment.getAssignmentGroupSet();
+	        	}
+	        	
+	        	// make sure the assignment has been set for the attachments and groups
+	        	populateAssignmentForAttachmentAndGroupSets(attachSet, groupSet, assignment);
+	        	
+	        	Set<Assignment2> assignSet = new HashSet();
+	        	assignSet.add(assignment);
+	        	
+	        	dao.saveMixedSet(new Set[] {assignSet, attachSet, groupSet});
 	            log.debug("Updated assignment: " + assignment.getTitle() + "with id: " + assignment.getId());
+	            
+	            if ((attachToDelete != null && !attachToDelete.isEmpty()) ||
+	            		(groupsToDelete != null && !groupsToDelete.isEmpty())) {
+	            	dao.deleteMixedSet(new Set[] {attachToDelete, groupsToDelete});
+	            	log.debug("Attachments and/or groups removed for updated assignment " + assignment.getId());
+	            }
 			} catch (HibernateOptimisticLockingFailureException holfe) {
 				if(log.isInfoEnabled()) log.info("An optimistic locking failure occurred while attempting to update an assignment");
 	            throw new StaleObjectModificationException(holfe);
@@ -369,35 +392,6 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 		return count > 0;
 	}
 	
-
-	/**
-	 * 
-	 * @param assignment
-	 * @return the number of submissions to date for the given assignment. this
-	 * will take permissions into account to return the number that the current
-	 * user is authorized to view 
-	 */
-	public int getTotalNumSubmissionsForAssignment(Assignment2 assignment) {
-		if (assignment == null) {
-			throw new IllegalArgumentException("null assignment passed to getTotalNumSubmissionsForAssignment");
-		}
-		return 0;
-	}
-	
-	/**
-	 * 
-	 * @param assignment
-	 * @return the number of ungraded submissions for the given assignment.  this
-	 * will take permissions into account to return the number that the current
-	 * user is authorized to view 
-	 */
-	public int getNumUngradedSubmissionsForAssignment(Assignment2 assignment) {
-		if (assignment == null) {
-			throw new IllegalArgumentException("null assignment passed to getNumUngradedSubmissionsForAssignment");
-		}
-		return 0;
-	}
-	
 	public int getStatusForAssignment(Assignment2 assignment) {
 		if (assignment == null){
 			throw new IllegalArgumentException("Null assignment passed to check status");
@@ -466,112 +460,6 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 		return sb.toString();
 	}
 	
-	/**
-	 * add or delete AssignmentAttachments by comparing the existingAssignment
-	 * from db to the new version
-	 * @param existingAssignment
-	 * @param newAssignment
-	 * @throws IllegalArgumentException if the existingAssignment is null or newAssignment
-	 * is not already persisted in db
-	 */
-	private void updateAttachments(Assignment2 existingAssignment, Assignment2 newAssignment) {
-		if (newAssignment == null) {
-			throw new IllegalArgumentException("Null newAssignment passed to updateAttachments");
-		}
-		
-		if (newAssignment.getId() == null) {
-			throw new IllegalArgumentException("newAssignment passed to updateAttachments is not currently defined in db");
-		}
-		
-		Set<AssignmentAttachment> revisedAttachSet = new HashSet();
-		
-		if (newAssignment.getAttachmentSet() != null && !newAssignment.getAttachmentSet().isEmpty()) {
-        	for (Iterator attachIter = newAssignment.getAttachmentSet().iterator(); attachIter.hasNext();) {
-        		AssignmentAttachment attach = (AssignmentAttachment) attachIter.next();
-        		if (attach != null && attach.getId() == null) {
-        			// this is a new attachment and needs to be created
-        			attach.setAssignment(newAssignment);
-        			dao.save(attach);
-        			log.debug("New attachment created: " + attach.getAttachmentReference() + "with attach id " + attach.getId());
-        			revisedAttachSet.add(attach);
-        		}
-        	}
-        }
-		
-		// now we need to handle the case in which existing attachments were removed
-		if (existingAssignment != null) {
-			for (Iterator existingIter = existingAssignment.getAttachmentSet().iterator(); existingIter.hasNext();) {
-				AssignmentAttachment attach = (AssignmentAttachment) existingIter.next();
-				if (attach != null) {
-					if (newAssignment.getAttachmentSet() == null ||
-							!newAssignment.getAttachmentSet().contains(attach)) {
-						// we need to delete this attachment
-						dao.delete(attach);
-						log.debug("Attachment deleted with id: " + attach.getId());
-					} else if (newAssignment.getAttachmentSet() != null &&
-								newAssignment.getAttachmentSet().contains(attach)) {
-						revisedAttachSet.add(attach);
-					}
-				}
-			}
-		}
-		
-		newAssignment.setAttachmentSet(revisedAttachSet);
-	}
-	
-	/**
-	 * This method will add or delete AssignmentGroups by comparing the existingAssignment
-	 * from db to the new version
-	 * @param existingAssignment
-	 * @param newAssignment
-	 * @throws IllegalArgumentException if the existingAssignment is null or newAssignment
-	 * is not already persisted in db
-	 */
-	private void updateAssignmentGroups(Assignment2 existingAssignment, Assignment2 newAssignment) {
-		if (newAssignment == null) {
-			throw new IllegalArgumentException("Null newAssignment passed to updateAssignmentGroups");
-		}
-		
-		if (newAssignment.getId() == null) {
-			throw new IllegalArgumentException("newAssignment passed to updateAssignmentGroups is not currently defined in db");
-		}
-		
-		Set<AssignmentGroup> revisedGroupSet = new HashSet();
-		
-		if (newAssignment.getAssignmentGroupSet() != null && !newAssignment.getAssignmentGroupSet().isEmpty()) {
-        	for (Iterator groupIter = newAssignment.getAssignmentGroupSet().iterator(); groupIter.hasNext();) {
-        		AssignmentGroup group = (AssignmentGroup) groupIter.next();
-        		if (group != null && group.getId() == null) {
-        			// this is a new AssignmentGroup and needs to be created
-        			group.setAssignment(newAssignment);
-        			dao.save(group);
-        			log.debug("New AssignmentGroup created: " + group.getId() + "with id " + group.getId());
-        			revisedGroupSet.add(group);
-        		}
-        	}
-        }
-		
-		// now we need to handle the case in which existing AssignmentGroups were removed
-		if (existingAssignment != null) {
-			for (Iterator existingIter = existingAssignment.getAssignmentGroupSet().iterator(); existingIter.hasNext();) {
-				AssignmentGroup group = (AssignmentGroup) existingIter.next();
-				if (group != null) {
-					if (newAssignment.getAssignmentGroupSet() == null ||
-							!newAssignment.getAssignmentGroupSet().contains(group)) {
-						// we need to delete this AssignmentGroup
-						dao.delete(group);
-						log.debug("AssignmentGroup deleted with id: " + group.getId());
-					}
-				} else if (newAssignment.getAssignmentGroupSet() != null &&
-						newAssignment.getAssignmentGroupSet().contains(group)) {
-					revisedGroupSet.add(group);
-				}
-			}
-		} 
-		
-		newAssignment.setAssignmentGroupSet(revisedGroupSet);
-	}
-	
 	public void sortAssignments(List<Assignment2> assignmentList, String sortBy, boolean ascending) {
 		Comparator<Assignment2> comp;
 		if(AssignmentLogic.SORT_BY_TITLE.equals(sortBy)) {
@@ -595,5 +483,63 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 			Collections.reverse(assignmentList);
 		}
 	}
+	
+	private void populateAssignmentForAttachmentAndGroupSets(Set<AssignmentAttachment> attachSet, Set<AssignmentGroup> groupSet, Assignment2 assign) {
+		if (attachSet != null && !attachSet.isEmpty()) {
+			for (Iterator attachIter = attachSet.iterator(); attachIter.hasNext();) {
+				AssignmentAttachment attach = (AssignmentAttachment) attachIter.next();
+				if (attach != null) {
+					attach.setAssignment(assign);
+				}
+			}
+		}
+		if (groupSet != null && !groupSet.isEmpty()) {
+			for (Iterator groupIter = groupSet.iterator(); groupIter.hasNext();) {
+				AssignmentGroup group = (AssignmentGroup) groupIter.next();
+				if (group != null) {
+					group.setAssignment(assign);
+				}
+			}
+		}
+	}
+	
+	private Set identifyAttachmentsToDelete(Assignment2 existingAssign, Assignment2 updatedAssign) {
+		Set attachToRemove = new HashSet();
+		
+		if (updatedAssign != null && existingAssign != null) {
+			for (Iterator existingIter = existingAssign.getAttachmentSet().iterator(); existingIter.hasNext();) {
+				AssignmentAttachment attach = (AssignmentAttachment) existingIter.next();
+				if (attach != null) {
+					if (updatedAssign.getAttachmentSet() == null ||
+							!updatedAssign.getAttachmentSet().contains(attach)) {
+						// we need to delete this attachment
+						attachToRemove.add(attach);
+					} 
+				}
+			}
+		}
+		
+		return attachToRemove;
+	}
+	
+	private Set identifyGroupsToDelete(Assignment2 existingAssign, Assignment2 updatedAssign) {
+		Set groupsToRemove = new HashSet();
+		
+		if (updatedAssign != null && existingAssign != null) {
+			for (Iterator existingIter = existingAssign.getAssignmentGroupSet().iterator(); existingIter.hasNext();) {
+				AssignmentGroup attach = (AssignmentGroup) existingIter.next();
+				if (attach != null) {
+					if (updatedAssign.getAssignmentGroupSet() == null ||
+							!updatedAssign.getAssignmentGroupSet().contains(attach)) {
+						// we need to delete this group
+						groupsToRemove.add(attach);
+					} 
+				}
+			}
+		}
+		
+		return groupsToRemove;
+	}
+	
 	
 }
