@@ -203,29 +203,23 @@ public class ComparatorsUtils {
 	}
 	
 	/**
-	 * static class to sort AssignmentSubmission objects by grade release status
+	 * static class to sort AssignmentSubmission objects by feedback release status
 	 */
-	public static class SubmissionGradeReleasedComparator implements Comparator<AssignmentSubmission>  {
+	public static class SubmissionFeedbackReleasedComparator implements Comparator<AssignmentSubmission>  {
 		public int compare(AssignmentSubmission submission1, AssignmentSubmission submission2) {
 			int value;
 			boolean submission1Released = false;
 			boolean submission2Released = false;
-			
-			if (!submission1.getAssignment().isUngraded()) {
-				submission1Released = submission1.isGradebookGradeReleased();
-				submission2Released = submission2.isGradebookGradeReleased();
-			} else {
 
-				if (submission1.getCurrentSubmissionVersion() != null) {
-					Date releasedTime = submission1.getCurrentSubmissionVersion().getReleasedTime();
-					submission1Released = releasedTime != null && releasedTime.before(new Date());
-				}
-				if (submission2.getCurrentSubmissionVersion() != null) {
-					Date releasedTime = submission2.getCurrentSubmissionVersion().getReleasedTime();
-					submission2Released = releasedTime != null && releasedTime.before(new Date());
-				}
+			if (submission1.getCurrentSubmissionVersion() != null) {
+				Date releasedTime = submission1.getCurrentSubmissionVersion().getReleasedTime();
+				submission1Released = releasedTime != null && releasedTime.before(new Date());
 			}
-					
+			if (submission2.getCurrentSubmissionVersion() != null) {
+				Date releasedTime = submission2.getCurrentSubmissionVersion().getReleasedTime();
+				submission2Released = releasedTime != null && releasedTime.before(new Date());
+			}
+
 			if (submission1Released && !submission2Released) {
 				value = 1;
 			} else if (!submission1Released && submission2Released) {

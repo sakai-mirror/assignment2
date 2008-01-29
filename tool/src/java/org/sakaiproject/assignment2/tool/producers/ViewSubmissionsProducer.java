@@ -177,16 +177,10 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
         	if (!assignment.isUngraded()) {
         		UIOutput.make(row, "row_grade", as.getGradebookGrade());
         	}
-        	
-        	if (assignment.isUngraded()){
-        		if (as.getCurrentSubmissionVersion() != null)  {
-        			Date releasedTime = as.getCurrentSubmissionVersion().getReleasedTime();
-        			if (releasedTime != null && releasedTime.before(new Date())) {
-        				UIOutput.make(row, "row_released");
-        			}
-        		}
-        	} else {
-        		if (as.isGradebookGradeReleased()) {
+
+        	if (as.getCurrentSubmissionVersion() != null)  {
+        		Date releasedTime = as.getCurrentSubmissionVersion().getReleasedTime();
+        		if (releasedTime != null && releasedTime.before(new Date())) {
         			UIOutput.make(row, "row_released");
         		}
         	}

@@ -393,6 +393,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 				
 				// we will update the existing version to prevent overwriting 
 				// non-feedback fields accidentally
+				existingVersion.setReleasedTime(version.getReleasedTime());
 				existingVersion.setAnnotatedText(version.getAnnotatedText());
 				existingVersion.setFeedbackNotes(version.getFeedbackNotes());
 				existingVersion.setLastFeedbackSubmittedBy(currentUserId);
@@ -431,6 +432,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			newVersion.setDraft(Boolean.FALSE);
 			newVersion.setAnnotatedText(version.getAnnotatedText());
 			newVersion.setFeedbackNotes(version.getFeedbackNotes());
+			newVersion.setReleasedTime(version.getReleasedTime());
 			
 			newVersion.setLastFeedbackSubmittedBy(currentUserId);
 			newVersion.setLastFeedbackTime(currentTime);
@@ -577,7 +579,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 	public void sortSubmissions(List<AssignmentSubmission> submissionList, String sortBy, boolean ascending) {
 		Comparator<AssignmentSubmission> comp;
 		if(AssignmentSubmissionLogic.SORT_BY_RELEASED.equals(sortBy)) {
-			comp = new ComparatorsUtils.SubmissionGradeReleasedComparator();
+			comp = new ComparatorsUtils.SubmissionFeedbackReleasedComparator();
 		} else if(AssignmentSubmissionLogic.SORT_BY_SUBMIT_DATE.equals(sortBy)) {
 			comp = new ComparatorsUtils.SubmissionDateComparator();
 		} else if(AssignmentSubmissionLogic.SORT_BY_GRADE.equals(sortBy)) {
