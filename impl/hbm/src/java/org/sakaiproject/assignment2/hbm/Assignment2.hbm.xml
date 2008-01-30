@@ -76,6 +76,10 @@
         <property name="allowResubmit" type="java.lang.Boolean" >
             <column name="ALLOW_RESUBMIT" not-null="true" />
         </property>
+        <!-- restrict num submissions allowed  -->
+        <property name="numSubmissionsAllowed" type="java.lang.Integer" >
+            <column name="NUM_SUB_ALLOWED" />
+        </property>
         <!-- allow a review service  -->
         <property name="allowReviewService" type="java.lang.Boolean" >
             <column name="ALLOW_REVIEW_SERVICE"  />

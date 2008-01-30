@@ -27,11 +27,15 @@
         
         <!-- true if allowed to resubmit this submission -->
         <property name="allowResubmit" type="java.lang.Boolean">
-            <column name="ALLOW_RESUBMIT" />
+            <column name="ALLOW_RESUBMIT" not-null="true" />
         </property>
         <!-- Time after which the user can no longer resubmit -->
         <property name="resubmitCloseTime" type="java.util.Date">
             <column name="RESUBMIT_CLOSE_TIME" />
+        </property>
+        <!-- restrict num submissions allowed  -->
+        <property name="numSubmissionsAllowed" type="java.lang.Integer" >
+            <column name="NUM_SUB_ALLOWED" />
         </property>
         
         <set name="submissionHistorySet" lazy="true" inverse="true" cascade="none"

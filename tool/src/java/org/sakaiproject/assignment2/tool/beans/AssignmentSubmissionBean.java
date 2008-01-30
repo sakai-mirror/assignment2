@@ -246,9 +246,10 @@ public class AssignmentSubmissionBean {
 			return FAILURE;
 		}
 		Assignment2 assignment = assignmentLogic.getAssignmentById(assignmentId);
+		AssignmentSubmission assignmentSubmission = new AssignmentSubmission();
 		
 		for (String key : OTPMap.keySet()){
-			AssignmentSubmission assignmentSubmission = OTPMap.get(key);
+			assignmentSubmission = OTPMap.get(key);
 			assignmentSubmission.setAssignment(assignment);
 			assignmentSubmission.setUserId(userId);
 		}
@@ -257,18 +258,13 @@ public class AssignmentSubmissionBean {
 			AssignmentSubmissionVersion asv = asvOTPMap.get(key);
 			
 			String currUserId = externalLogic.getCurrentUserId();
-			AssignmentSubmission assignmentSubmission = submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(assignmentId, userId);
 			
 			asv.setAssignmentSubmission(assignmentSubmission);
-			asv.setLastFeedbackSubmittedBy(currUserId);
 			if (this.releaseFeedback != null && asv.getReleasedTime() == null) {
 				asv.setReleasedTime(new Date());
 			}
 			
-			asv.setLastFeedbackTime(new Date());
 			if (asv.getId() == null) {
-				asv.setCreatedBy(currUserId);
-				asv.setCreatedTime(new Date());
 				asv.setDraft(Boolean.FALSE);
 			}
 			

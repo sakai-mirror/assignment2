@@ -36,6 +36,7 @@ public class AssignmentSubmission {
 	private String userId;
 	private Boolean allowResubmit;
 	private Date resubmitCloseTime;
+	private Integer numSubmissionsAllowed;
 	private Set submissionHistorySet;
 	private int revisionVersion;
 	
@@ -154,6 +155,25 @@ public class AssignmentSubmission {
 	 */
 	public void setResubmitCloseTime(Date resubmitCloseTime) {
 		this.resubmitCloseTime = resubmitCloseTime;
+	}
+	
+
+	/**
+	 * 
+	 * @return the number of submissions allowed for this assignment. if -1,
+     * unlimited submissions. only applicable if allowResubmit = true
+	 */
+	public Integer getNumSubmissionsAllowed() {
+		return numSubmissionsAllowed;
+	}
+
+	/**
+	 * the number of submissions allowed for this assignment. if -1,
+     * unlimited submissions. only applicable if allowResubmit = true
+	 * @param numResubmissionsAllowed
+	 */
+	public void setNumSubmissionsAllowed(Integer numSubmissionsAllowed) {
+		this.numSubmissionsAllowed = numSubmissionsAllowed;
 	}
 
 	

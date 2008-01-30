@@ -29,6 +29,7 @@ public class AssignmentSubmissionCreator {
 		
 		togo.setCurrentSubmissionVersion(currentSubmissionVersion);
 		togo.setUserId(externalLogic.getCurrentUserId());
+		togo.setAllowResubmit(Boolean.FALSE);
 		
 		return togo;
 	}

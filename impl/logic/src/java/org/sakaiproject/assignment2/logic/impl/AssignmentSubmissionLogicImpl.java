@@ -671,11 +671,14 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		
 		// we need to determine if this is the first submission for the student
 		boolean firstSubmission;
+		int currNumSubmissions = 0;
 		if (submission == null) {
 			firstSubmission = true;
+			currNumSubmissions = 0;
 		} else if (submission.getCurrentSubmissionVersion() == null
 				|| submission.getSubmissionHistorySet() == null) {
 			firstSubmission = true;
+			currNumSubmissions = 0;
 		} else {
 			// we need to look at the submission history to determine if there
 			// are any submission by the student (not drafts and not versions
@@ -686,6 +689,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 				if (version != null) {
 					if (version.getSubmittedTime() != null) {
 						firstSubmission = false;
+						currNumSubmissions++;
 					}
 				}
 			}
@@ -696,10 +700,12 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		//   a) assignment is open AND if applicable, accept until date has not passed
 		// 2) student does have a submission
 		//	 a) assignment is open AND if applicable, accept until date has not passed
-		//		AND instructor has allowed resubmission until accept until date
+		//		AND instructor has allowed resubmission until accept until date and
+		// 		max num submissions has not been reached
 		//   OR
 		//   b) instructor has allowed resubmission for this student and the
-		//		resubmit until date has not passed
+		//		resubmit until date has not passed and max num submissions has
+		//		not been reached
 		
 		boolean studentAbleToSubmit = false;
 		boolean assignmentIsOpen = assignment.getOpenTime().before(new Date()) && 
@@ -710,21 +716,42 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		if (firstSubmission) {
 			if (assignmentIsOpen) {
 				studentAbleToSubmit = true;
-			} else if(submission != null && submission.isAllowResubmit() != null && submission.isAllowResubmit()){
+			} else if(submission != null && submission.isAllowResubmit()){
 				// in this scenario, the instructor took some action on this student without there
 				// being a submission, such as adding feedback or allowing this student to resubmit.
 				// thus, there is a submission record, but the student hasn't submitted anything yet
 				// in this case, we need to check if the student is allowed to resubmit
-				if (submission.getResubmitCloseTime() != null && submission.getResubmitCloseTime().after(new Date())) {
-					studentAbleToSubmit = true;
+
+				if (submission.getResubmitCloseTime() == null ||
+						submission.getResubmitCloseTime().after(new Date())) {
+					if (submission.getNumSubmissionsAllowed() != null && 
+							(submission.getNumSubmissionsAllowed() == null || 
+							submission.getNumSubmissionsAllowed().intValue() > currNumSubmissions)) {
+						studentAbleToSubmit = true;
+					}
 				}
 			}
 		} else {
+			// this is a resubmission, so we need to check for resubmission privileges
+			// first, check for resubmission on the assignment level
 			if (assignmentIsOpen && assignment.isAllowResubmit()) {
-				studentAbleToSubmit = true;
-			} else if (submission.isAllowResubmit() != null && submission.isAllowResubmit()) {
-				if (submission.getResubmitCloseTime() != null && submission.getResubmitCloseTime().after(new Date())) {
+				if (assignment.getNumSubmissionsAllowed() != null &&
+						(assignment.getNumSubmissionsAllowed().equals(new Integer(-1)) ||
+						assignment.getNumSubmissionsAllowed().intValue() > currNumSubmissions)) {
 					studentAbleToSubmit = true;
+				}
+			} 
+			
+			// if they still can't submit, check the student level
+			if (!studentAbleToSubmit && submission.isAllowResubmit()) {
+				if (submission.getResubmitCloseTime() == null || 
+						submission.getResubmitCloseTime().after(new Date()))
+				{
+					if (submission.getNumSubmissionsAllowed() != null && 
+							(submission.getNumSubmissionsAllowed().equals(new Integer(-1)) || 
+							submission.getNumSubmissionsAllowed().intValue() > currNumSubmissions)) {
+						studentAbleToSubmit = true;
+					}
 				}
 			}
 		}

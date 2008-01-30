@@ -51,6 +51,7 @@ public class Assignment2 {
     private Boolean hasAnnouncement;
     private String announcementId;
     private Boolean allowResubmit;
+    private Integer numSubmissionsAllowed;
     private Boolean allowReviewService;
     private Boolean allowStudentViewReport;
     private String creator;
@@ -80,9 +81,9 @@ public class Assignment2 {
 			Date openTime, Date acceptUntilTime, Boolean ungraded,
 			Date dueDateForUngraded, Boolean honorPledge, String instructions,
 			int submissionType, int notificationType, Boolean hasAnnouncement,
-			String announcementId, Boolean allowResubmit, Boolean allowReviewService,
-			Boolean allowStudentViewReport, String creator, Date createTime,
-			String modifiedBy, Date modifiedTime, Boolean removed) {
+			String announcementId, Boolean allowResubmit, Integer numSubmissionsAllowed,
+			Boolean allowReviewService,	Boolean allowStudentViewReport, 
+			String creator, Date createTime, String modifiedBy, Date modifiedTime, Boolean removed) {
 		this.id = id;
 		this.gradableObjectId = gradableObjectId;
 		this.contextId = contextId;
@@ -100,6 +101,7 @@ public class Assignment2 {
 		this.hasAnnouncement = hasAnnouncement;
 		this.announcementId = announcementId;
 		this.allowResubmit = allowResubmit;
+		this.numSubmissionsAllowed = numSubmissionsAllowed;
 		this.allowReviewService = allowReviewService;
 		this.allowStudentViewReport = allowStudentViewReport;
 		this.creator = creator;
@@ -403,6 +405,24 @@ public class Assignment2 {
     public void setAllowResubmit(Boolean allowResubmit) {
         this.allowResubmit = allowResubmit;
     }
+    
+    /**
+     * 
+     * @return the number of submissions allowed for this assignment. if -1,
+     * unlimited submissions. only applicable if allowResubmit = true
+     */
+    public Integer getNumSubmissionsAllowed() {
+		return numSubmissionsAllowed;
+	}
+
+    /**
+     * the number of submissions allowed for this assignment. if -1,
+     * unlimited submissions. only applicable if allowResubmit = true
+     * @param numSubmissionsAllowed
+     */
+	public void setNumSubmissionsAllowed(Integer numSubmissionsAllowed) {
+		this.numSubmissionsAllowed = numSubmissionsAllowed;
+	}
     
     /**
      * @return If true, this assignment allows a review service (ie TurnItIn)
