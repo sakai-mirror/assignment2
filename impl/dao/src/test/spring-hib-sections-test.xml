@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+	<!--
+		The Spring transaction test framework does autowiring assuming only one transactionManager
+		and only one sessionFactory. To combine its use with use of the current Sections integration
+		support, we replace the standard Sections "spring-hib.xml" file with this one to eliminate
+		the following bean:
+
+    <bean id="sectionsTransactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+        <property name="sessionFactory"><ref bean="sectionsSessionFactory"/></property>
+    </bean>
+	-->
+    <!--
+        Copied from the Sections spring-hib.xml:
+    -->
+
+    <bean id="sectionsTxTemplate" abstract="true" lazy-init="true" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+        <property name="transactionManager"><ref bean="org.sakaiproject.springframework.orm.hibernate.GlobalTransactionManager"/></property>
+        <property name="transactionAttributes">
+            <props>
+                <prop key="join*">PROPAGATION_REQUIRED</prop>
+                <prop key="switch*">PROPAGATION_REQUIRED</prop>
+                <prop key="drop*">PROPAGATION_REQUIRED</prop>
+                <prop key="add*">PROPAGATION_REQUIRED</prop>
+                <prop key="create*">PROPAGATION_REQUIRED</prop>
+                <prop key="set*">PROPAGATION_REQUIRED</prop>
+                <prop key="update*">PROPAGATION_REQUIRED</prop>
+                <prop key="remove*">PROPAGATION_REQUIRED</prop>
+                <prop key="disband*">PROPAGATION_REQUIRED</prop>
+                <prop key="*">PROPAGATION_REQUIRED,readOnly</prop>
+            </props>
+        </property>
+    </bean>
+    
+    <!-- from spring-beans.xml -->
+    
+    <bean id="org.sakaiproject.section.api.SectionAwareness" parent="sectionsTxTemplate">
+        <property name="target">
+            <bean class="org.sakaiproject.component.section.SectionAwarenessHibernateImpl">
+        		<property name="sessionFactory"><ref bean="org.sakaiproject.springframework.orm.hibernate.GlobalSessionFactory"/></property>
+            </bean>
+        </property>
+	</bean>
+
+    <bean id="org.sakaiproject.section.api.CourseManager" parent="sectionsTxTemplate">
+        <property name="target">
+            <bean class="org.sakaiproject.component.section.CourseManagerHibernateImpl">
+                <property name="sessionFactory"><ref bean="org.sakaiproject.springframework.orm.hibernate.GlobalSessionFactory"/></property>
+                <property name="uuidManager">
+                    <ref bean="org.sakaiproject.id.api.IdManager"/>
+                </property>
+            </bean>
+        </property>
+    </bean>
+
+	<bean id="org.sakaiproject.section.api.SectionManager" parent="sectionsTxTemplate">
+        <property name="target">
+            <bean class="org.sakaiproject.component.section.SectionManagerHibernateImpl">
+        		<property name="sessionFactory"><ref bean="org.sakaiproject.springframework.orm.hibernate.GlobalSessionFactory"/></property>
+                <property name="authn">
+                    <ref bean="org.sakaiproject.section.api.facade.manager.Authn"/>
+                </property>
+                <property name="context">
+                    <ref bean="org.sakaiproject.section.api.facade.manager.Context"/>
+                </property>
+        		<property name="uuidManager">
+        			<ref bean="org.sakaiproject.id.api.IdManager"/>
+        		</property>
+            </bean>
+        </property>
+	</bean>
+	
+	<!--  From spring-integrationSupport.xml -->
+	
+	<bean id="org.sakaiproject.component.section.support.IntegrationSupport" parent="sectionsTxTemplate">
+        <property name="target">
+            <bean class="org.sakaiproject.component.section.support.IntegrationSupportImpl">
+                <property name="sessionFactory"><ref bean="org.sakaiproject.springframework.orm.hibernate.GlobalSessionFactory"/></property>
+                <property name="courseManager">
+                    <ref bean="org.sakaiproject.section.api.CourseManager"/>
+                </property>
+                <property name="sectionManager">
+                    <ref bean="org.sakaiproject.section.api.SectionManager"/>
+                </property>
+                <property name="userManager">
+                    <ref bean="org.sakaiproject.component.section.support.UserManager"/>
+                </property>
+                <property name="uuidManager">
+                    <ref bean="org.sakaiproject.id.api.IdManager"/>
+                </property>
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="org.sakaiproject.component.section.support.UserManager" parent="sectionsTxTemplate">
+        <property name="target">
+            <bean class="org.sakaiproject.component.section.support.UserManagerHibernateImpl">
+                <property name="sessionFactory"><ref bean="org.sakaiproject.springframework.orm.hibernate.GlobalSessionFactory"/></property>
+            </bean>
+        </property>
+    </bean>
+    
+    <!-- springServices.xml -->
+        <bean id="org.sakaiproject.section.api.facade.manager.Context"
+        class="org.sakaiproject.component.section.facade.impl.standalone.ContextStandaloneImpl"/>
+    <bean id="org.sakaiproject.section.api.facade.manager.Authn"
+        class="org.sakaiproject.component.section.facade.impl.standalone.AuthnStandaloneImpl"/>
+    <bean id="org.sakaiproject.section.api.facade.manager.Authz"
+        class="org.sakaiproject.component.section.facade.impl.standalone.AuthzStandaloneImpl">
+            <property name="sessionFactory"><ref bean="org.sakaiproject.springframework.orm.hibernate.GlobalSessionFactory"/></property>
+    </bean>
+    <bean id="org.sakaiproject.id.api.IdManager"
+        class="org.sakaiproject.id.impl.UuidV4IdComponent"/>
+
+</beans>
+

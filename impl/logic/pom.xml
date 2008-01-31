@@ -37,6 +37,7 @@
         <includes>
           <include>hibernate-test.xml</include>
           <include>hibernate.properties</include>
+          <include>spring-hib-sections-test.xml</include>
         </includes>
       </testResource>
 <!--includes:  include: **/*Test.java -->
@@ -204,6 +205,12 @@
       <groupId>easymock</groupId>
       <artifactId>easymock</artifactId>
       <version>1.2_Java1.3</version>
+    </dependency>
+    <!-- Used only for test data. -->
+    <dependency>
+      <groupId>org.sakaiproject</groupId>
+      <artifactId>sakai-sections-integrationsupport</artifactId>
+      <version>${sakai.version}</version>
     </dependency>
     <!-- there are needed if we are testing the logic class using a working DAO -->
     <dependency>

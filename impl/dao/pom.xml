@@ -147,5 +147,17 @@
       <artifactId>easymock</artifactId>
       <version>1.2_Java1.3</version>
     </dependency>
+    <!-- Section Awareness -->
+    <dependency>
+      <groupId>org.sakaiproject</groupId>
+      <artifactId>sakai-sections-api</artifactId>
+      <version>${sakai.version}</version>
+    </dependency>
+<!-- Standalone component -->
+    <dependency>
+      <groupId>org.sakaiproject</groupId>
+      <artifactId>sakai-sections-impl-standalone</artifactId>
+      <version>${sakai.version}</version>
+    </dependency>
   </dependencies>
 </project>

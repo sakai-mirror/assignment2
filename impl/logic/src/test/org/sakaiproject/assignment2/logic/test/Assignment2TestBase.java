@@ -33,9 +33,9 @@ import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.logic.ExternalAnnouncementLogic;
 import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
-//import org.sakaiproject.component.section.support.IntegrationSupport;
-//import org.sakaiproject.component.section.support.UserManager;
-//import org.sakaiproject.section.api.SectionAwareness;
+import org.sakaiproject.component.section.support.IntegrationSupport;
+import org.sakaiproject.component.section.support.UserManager;
+import org.sakaiproject.section.api.SectionAwareness;
 //import org.sakaiproject.section.api.coursemanagement.EnrollmentRecord;
 //import org.sakaiproject.section.api.facade.Role;
 import org.springframework.test.AbstractTransactionalSpringContextTests;
@@ -60,21 +60,27 @@ public abstract class Assignment2TestBase extends AbstractTransactionalSpringCon
 	protected ExternalAnnouncementLogic announcementLogic;
 	protected AssignmentPermissionLogic permissionLogic;
 	
-	/*protected SectionAwareness sectionAwareness;
-    protected UserDirectoryService userDirectoryService;
+	protected SectionAwareness sectionAwareness;
+    //protected UserDirectoryService userDirectoryService;
 	protected IntegrationSupport integrationSupport;
-	protected UserManager userManager;*/
+	protected UserManager userManager;
 
 	protected void onSetUpBeforeTransaction() throws Exception {
 	
 	}
     protected void onSetUpInTransaction() throws Exception {
         
-        /*sectionAwareness = (SectionAwareness)applicationContext.getBean("org.sakaiproject.section.api.SectionAwareness");
-        userDirectoryService = (UserDirectoryService)applicationContext.getBean("org_sakaiproject_tool_gradebook_facades_UserDirectoryService");
+        sectionAwareness = (SectionAwareness)applicationContext.getBean("org.sakaiproject.section.api.SectionAwareness");
+        //userDirectoryService = (UserDirectoryService)applicationContext.getBean("org_sakaiproject_tool_gradebook_facades_UserDirectoryService");*/
         integrationSupport = (IntegrationSupport)applicationContext.getBean("org.sakaiproject.component.section.support.IntegrationSupport");
-        userManager = (UserManager)applicationContext.getBean("org.sakaiproject.component.section.support.UserManager");*/
-    	
+        if (integrationSupport == null) {
+        	throw new NullPointerException("Sections integration support could not be retrieved from spring");
+        }
+        userManager = (UserManager)applicationContext.getBean("org.sakaiproject.component.section.support.UserManager");
+        if (userManager == null) {
+        	throw new NullPointerException("Sections userManager could not be retrieved from spring");
+        }
+        
     	dao = (AssignmentDao)applicationContext.getBean("org.sakaiproject.assignment2.dao.AssignmentDao");
     	if (dao == null) {
 			throw new NullPointerException(
@@ -85,6 +91,8 @@ public abstract class Assignment2TestBase extends AbstractTransactionalSpringCon
 			throw new NullPointerException(
 					"assignmentLogic could not be retrieved from spring");
 		}*/
+    	
+    	
     }
 
     /**
@@ -94,11 +102,17 @@ public abstract class Assignment2TestBase extends AbstractTransactionalSpringCon
     	// point to the needed spring config files, must be on the classpath
 		// (add component/src/webapp/WEB-INF to the build path in Eclipse),
 		// they also need to be referenced in the pom.xml file
-		return new String[] { "hibernate-test.xml", "spring-hibernate.xml"};
+		return new String[] { "hibernate-test.xml", "spring-hibernate.xml",
+				"spring-hib-sections-test.xml",
+
+			// SectionAwareness integration support.
+			//"classpath*:org/sakaiproject/component/section/support/spring-integrationSupport.xml",
+			//"classpath*:org/sakaiproject/component/section/spring-services.xml",
+		};
 
     }
 
-	/*protected List addUsersEnrollments(Gradebook gradebook, Collection studentUids) {
+    /*protected List addUsersEnrollments(Gradebook gradebook, Collection studentUids) {
 		List enrollments = new ArrayList();
 		for (Iterator iter = studentUids.iterator(); iter.hasNext(); ) {
 			String studentUid = (String)iter.next();

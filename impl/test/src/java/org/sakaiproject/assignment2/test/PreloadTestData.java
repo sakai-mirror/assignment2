@@ -34,7 +34,7 @@ import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 		class="org.sakaiproject.assignment.test.PreloadTestData"
 		init-method="init">
 		<property name="assignmentDao"
-			ref="org.sakaiproject.assignment.dao.EvaluationDao" />
+			ref="org.sakaiproject.assignment.dao.AssignmentDao" />
 		<property name="pdl"
 			ref="org.sakaiproject.assignment.dao.PreloadData" />
 	</bean>
