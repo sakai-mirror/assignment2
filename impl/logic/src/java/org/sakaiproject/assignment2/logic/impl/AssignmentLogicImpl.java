@@ -45,6 +45,7 @@ import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
 import org.sakaiproject.assignment2.dao.AssignmentDao;
+import org.sakaiproject.assignment2.exception.AnnouncementPermissionException;
 import org.sakaiproject.assignment2.exception.ConflictingAssignmentNameException;
 import org.sakaiproject.genericdao.api.finders.ByPropsFinder;
 import org.sakaiproject.service.gradebook.shared.StaleObjectModificationException;
@@ -250,13 +251,15 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 	 * (non-Javadoc)
 	 * @see org.sakaiproject.assignment2.logic.AssignmentLogic#deleteAssignment(org.sakaiproject.assignment2.model.Assignment2)
 	 */
-	public void deleteAssignment(Assignment2 assignment) throws SecurityException, IllegalArgumentException
+	public void deleteAssignment(Assignment2 assignment) throws SecurityException, AnnouncementPermissionException
 	{
 		if (assignment == null) {
 			throw new IllegalArgumentException("Null assignment passed to deleteAssignment");
 		}
 		
-		if (!permissionLogic.isCurrentUserAbleToEditAssignments(externalLogic.getCurrentContextId())) {
+		String currentContextId = externalLogic.getCurrentContextId();
+		
+		if (!permissionLogic.isCurrentUserAbleToEditAssignments(currentContextId)) {
 			throw new SecurityException("Current user may not delete assignment " + assignment.getTitle()
                     + " because they do not have edit permission");
 		}
@@ -264,13 +267,31 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 		assignment.setRemoved(true);
 		assignment.setModifiedBy(externalLogic.getCurrentUserId());
 		assignment.setModifiedTime(new Date());
+		
+		String announcementIdToDelete = null;
+		if (assignment.getAnnouncementId() != null) {
+			announcementIdToDelete = assignment.getAnnouncementId();
+			assignment.setAnnouncementId(null);
+			assignment.setHasAnnouncement(Boolean.FALSE);
+		}
 
 		try {
 			dao.update(assignment);
 			log.debug("Deleted assignment: " + assignment.getTitle() + " with id " + assignment.getId());
+			
+			// now remove the announcement, if applicable
+			if (announcementIdToDelete != null) {
+				announcementLogic.deleteOpenDateAnnouncement(announcementIdToDelete, currentContextId);
+				log.debug("Deleted announcement with id " + announcementIdToDelete + " for assignment " + assignment.getId());
+			}
 		} catch (HibernateOptimisticLockingFailureException holfe) {
 			if(log.isInfoEnabled()) log.info("An optimistic locking failure occurred while attempting to update an assignment");
 			throw new StaleObjectModificationException(holfe);
+		} catch (AnnouncementPermissionException ape) {
+			log.debug("The current user is not authorized to remove announcements in the annc tool, " +
+					"but the assignment was deleted");
+			throw new AnnouncementPermissionException("The current user is not authorized to remove announcements in the annc tool, " +
+					"but the assignment was deleted");
 		}
 	}
 	
@@ -539,5 +560,62 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 		return groupsToRemove;
 	}
 	
-	
+	public void saveAssignmentAnnouncement(Assignment2 originalAssignment, Assignment2 updatedAssignment, 
+			String newAnncSubject, String newAnncBody, String revAnncSubject, String revAnncBody) {
+		if (updatedAssignment == null) {
+			throw new IllegalArgumentException("Null updatedAssignment passed to saveAssignmentAnnouncement");
+		}
+		
+		if (updatedAssignment.getId() == null) {
+			throw new IllegalArgumentException("The updatedAssignment passed to saveAssignmentAnnouncement must be persisted");
+		}
+		
+		if (newAnncSubject == null || newAnncBody == null || revAnncSubject == null || revAnncBody == null) {
+			throw new IllegalArgumentException("Null announcement text passed to saveAssignmentAnnouncement");
+		}
+		
+		String currentContextId = externalLogic.getCurrentContextId();
+		
+		if (originalAssignment == null) {
+			// this was a new assignment
+			// check to see if there will be an announcement for the open date
+			if (updatedAssignment.getHasAnnouncement() && !updatedAssignment.isDraft()) {
+				// add an announcement for the open date for this assignment
+				String announcementId = announcementLogic.addOpenDateAnnouncement(
+						updatedAssignment.getListOfAssociatedGroupReferences(), currentContextId,
+						newAnncSubject, newAnncBody);
+				updatedAssignment.setAnnouncementId(announcementId);
+				dao.update(updatedAssignment);
+			}
+		} else if (updatedAssignment.isDraft()) {
+			if (updatedAssignment.getAnnouncementId() != null) {
+				announcementLogic.deleteOpenDateAnnouncement(updatedAssignment.getAnnouncementId(), currentContextId);
+				updatedAssignment.setAnnouncementId(null);
+				dao.update(updatedAssignment);
+			}
+		} else if (originalAssignment.getAnnouncementId() == null && updatedAssignment.getHasAnnouncement()) {
+			// this is a new announcement
+			String announcementId = announcementLogic.addOpenDateAnnouncement(updatedAssignment.getListOfAssociatedGroupReferences(), 
+					currentContextId, newAnncSubject, newAnncBody);
+			updatedAssignment.setAnnouncementId(announcementId);
+			dao.update(updatedAssignment);
+		} else if (originalAssignment.getAnnouncementId() != null && !updatedAssignment.getHasAnnouncement()) {
+			// we must remove the original announcement
+			announcementLogic.deleteOpenDateAnnouncement(updatedAssignment.getAnnouncementId(), currentContextId);
+			updatedAssignment.setAnnouncementId(null);
+			dao.update(updatedAssignment);
+		} else if (updatedAssignment.getHasAnnouncement()){
+			// if title, open date, or group restrictions were updated, we need to update the announcement
+			Date oldTime = (Date)originalAssignment.getOpenTime();
+			Date newTime = updatedAssignment.getOpenTime();
+			if (!originalAssignment.getTitle().equals(updatedAssignment.getTitle()) ||
+					(oldTime.after(newTime) || oldTime.before(newTime)) ||
+					!originalAssignment.getListOfAssociatedGroupReferences().equals(updatedAssignment.getListOfAssociatedGroupReferences())) {
+				announcementLogic.updateOpenDateAnnouncement(updatedAssignment.getAnnouncementId(), 
+						updatedAssignment.getListOfAssociatedGroupReferences(), 
+						currentContextId, revAnncSubject, revAnncBody);
+				// don't need to re-save assignment b/c id already exists
+			}
+		}
+	}
 }

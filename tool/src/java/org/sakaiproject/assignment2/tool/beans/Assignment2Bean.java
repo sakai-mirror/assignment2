@@ -12,6 +12,7 @@ import org.sakaiproject.site.api.Group;
 import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.tool.api.ToolSession;
 import org.sakaiproject.assignment2.exception.AnnouncementPermissionException;
+import org.sakaiproject.assignment2.exception.StaleObjectModificationException;
 
 import uk.org.ponder.beanutil.entity.EntityBeanLocator;
 import uk.org.ponder.messageutil.MessageLocator;
@@ -194,17 +195,13 @@ public class Assignment2Bean {
 				}
 				
 				logic.saveAssignment(assignment);
-				
-				Assignment2 updatedAssignment = logic.getAssignmentByIdWithGroups(assignment.getId());
-				handleAnnouncement(updatedAssignment, assignmentFromDb);
+				handleAnnouncement(assignment, assignmentFromDb);
 				
 			} catch( ConflictingAssignmentNameException e){
 				messages.addMessage(new TargettedMessage("assignment2.assignment_post.conflicting_assignment_name",
 						new Object[] { assignment.getTitle() }, "Assignment2." + key + ".title"));
 				return FAILURE;
-			} catch ( AnnouncementPermissionException ape) {
-				// TODO do something if not allowed to add announcement
-			}
+			} 
 			
 			//set Messages
 			if (key.startsWith(EntityBeanLocator.NEW_PREFIX)) {
@@ -274,10 +271,7 @@ public class Assignment2Bean {
 					messages.addMessage(new TargettedMessage("assignment2.assignment_save_draft.conflicting_assignment_name",
 							new Object[] { assignment.getTitle() }, "Assignment2." + key + ".title"));
 					return FAILURE;
-				} catch ( AnnouncementPermissionException ape) {
-					// TODO handle situtation in which announcement could not be
-					// handled b/c of permission problem
-				}
+				} 
 				
 				//set Messages
 				messages.addMessage(new TargettedMessage("assignment2.assignment_save_draft",
@@ -305,17 +299,16 @@ public class Assignment2Bean {
 		int assignmentsRemoved = 0;
 		for (Assignment2 assignment : entries) {
 			if (selectedIds.get(assignment.getId().toString()) == Boolean.TRUE){
-				if (assignment.getAnnouncementId() != null) {
-					try {
-						announcementLogic.deleteOpenDateAnnouncement(assignment, externalLogic.getCurrentContextId());
-						assignment.setAnnouncementId(null);
-						assignment.setHasAnnouncement(Boolean.FALSE);
-					} catch (AnnouncementPermissionException ape) {
-						//TODO do something here...  anncmt was not deleted
-					}
+				try {
+					logic.deleteAssignment(assignment);
+					assignmentsRemoved++;
+				} catch (AnnouncementPermissionException ape) {
+					// TODO the assign was deleted, but announcement was not
+					// b/c user did not have delete perm in annc tool
+				} catch (StaleObjectModificationException some) {
+					// TODO provide a message to user that someone else was editing
+					// this object at the same time
 				}
-				logic.deleteAssignment(assignment);
-				assignmentsRemoved++;
 			}
 		}
 		messages.addMessage( new TargettedMessage("assignment2.assignments_remove",
@@ -331,16 +324,7 @@ public class Assignment2Bean {
 		Assignment2 duplicate = creator.createDuplicate(logic.getAssignmentById(assignmentId));
 		try {
 			logic.saveAssignment(duplicate);
-			
-			// add the announcement, if appropriate
-			try {
-				handleAnnouncement(duplicate, null);
-
-			} catch (AnnouncementPermissionException ape) {
-				// TODO do something since the assignment was saved but
-				// the announcement was not added b/c user doesn't have
-				// perm in the announcements tool
-			}
+			handleAnnouncement(duplicate, null);
 			
 		} catch(ConflictingAssignmentNameException e){
 			messages.addMessage(new TargettedMessage("assignment2.assignment_post.duplicate_conflicting_assignment_name",
@@ -354,57 +338,19 @@ public class Assignment2Bean {
 			new Object[] {duplicate.getTitle() }, TargettedMessage.SEVERITY_INFO));
 	}
 	
-	/**
-	 * Given a new version of an assignment and the original version, will do
-	 * the logic to determine if an announcement needs to be added, updated, or
-	 * deleted. Will also update and save the assignment object if appropriate
-	 * @param newAssignment
-	 * @param oldAssignment
-	 * 		if null, will assume this announcement is for a new assignment
-	 */
 	private void handleAnnouncement(Assignment2 newAssignment, Assignment2 oldAssignment) {
 		String newAnncSubject = messageLocator.getMessage("assignment2.assignment_annc_subject", new Object[] {newAssignment.getTitle()});
 		String newAnncBody = messageLocator.getMessage("assignment2.assignment_annc_body", new Object[] {newAssignment.getOpenTime()});
 		String revAnncSubject = messageLocator.getMessage("assignment2.assignment_annc_subject_edited", new Object[] {newAssignment.getTitle()});
 		String revAnncBody = messageLocator.getMessage("assignment2.assignment_annc_subject_edited", new Object[] {newAssignment.getOpenTime()});
-		
-		
-		if (oldAssignment == null) {
-			// this was a new assignment
-			// check to see if there will be an announcement for the open date
-        	if (newAssignment.getHasAnnouncement() && !newAssignment.isDraft()) {
-        		// add an announcement for the open date for this assignment
-        		String announcementId = announcementLogic.addOpenDateAnnouncement(newAssignment, externalLogic.getCurrentContextId(),
-        				newAnncSubject, newAnncBody);
-        		newAssignment.setAnnouncementId(announcementId);
-        		logic.saveAssignment(newAssignment);
-        	}
-		} else if (newAssignment.isDraft()) {
-			if (newAssignment.getAnnouncementId() != null) {
-				announcementLogic.deleteOpenDateAnnouncement(newAssignment, externalLogic.getCurrentContextId());
-				newAssignment.setAnnouncementId(null);
-				logic.saveAssignment(newAssignment);
-			}
-		} else if (oldAssignment.getAnnouncementId() == null && newAssignment.getHasAnnouncement()) {
-			// this is a new announcement
-			String announcementId = announcementLogic.addOpenDateAnnouncement(newAssignment, 
-					externalLogic.getCurrentContextId(), newAnncSubject, newAnncBody);
-			newAssignment.setAnnouncementId(announcementId);
-			logic.saveAssignment(newAssignment);
-		} else if (oldAssignment.getAnnouncementId() != null && !newAssignment.getHasAnnouncement()) {
-			// we must remove the original announcement
-			announcementLogic.deleteOpenDateAnnouncement(newAssignment, externalLogic.getCurrentContextId());
-			newAssignment.setAnnouncementId(null);
-			logic.saveAssignment(newAssignment);
-		} else if (newAssignment.getHasAnnouncement()){
-			// if title, open date, or group restrictions were updated, we need to update the announcement
-			if (!oldAssignment.getTitle().equals(newAssignment.getTitle()) ||
-					!oldAssignment.getOpenTime().equals(newAssignment.getOpenTime()) ||
-					!oldAssignment.getAssignmentGroupSet().equals(newAssignment.getAssignmentGroupSet())) {
-				announcementLogic.updateOpenDateAnnouncement(newAssignment, 
-						externalLogic.getCurrentContextId(), revAnncSubject, revAnncBody);
-				// don't need to re-save assignment b/c id already exists
-			}
+
+		try {
+			logic.saveAssignmentAnnouncement(oldAssignment, newAssignment, newAnncSubject, 
+					newAnncBody, revAnncSubject, revAnncBody);
+		} catch (AnnouncementPermissionException ape) {
+			// TODO do something since the assignment was saved but
+			// the announcement was not added b/c user doesn't have
+			// perm in the announcements tool
 		}
 	}
 	

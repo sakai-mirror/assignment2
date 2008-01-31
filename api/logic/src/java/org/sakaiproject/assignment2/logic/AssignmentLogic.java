@@ -27,6 +27,7 @@ import java.util.Map;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentGroup;
 import org.sakaiproject.assignment2.exception.ConflictingAssignmentNameException;
+import org.sakaiproject.assignment2.exception.AnnouncementPermissionException;
 
 
 /**
@@ -61,7 +62,8 @@ public interface AssignmentLogic {
 	 * @throws ConflictingAssignmentNameException -
 	 * if it is a new assignment and the title already exists
 	 */
-	public void saveAssignment(Assignment2 assignment) throws ConflictingAssignmentNameException;
+	public void saveAssignment(Assignment2 assignment) 
+		throws ConflictingAssignmentNameException;
 	
 	/**
 	 * Delete an Assignment 
@@ -71,6 +73,8 @@ public interface AssignmentLogic {
 	 * 			the Assignment to delete
 	 * @throws SecurityException -
 	 * user must have "delete" permission
+	 * @throws AnnouncmentPermissionException if the user does not have
+	 * permission to delete announcements - assignment will be 'deleted' regardless
 	 */	
 	public void deleteAssignment(Assignment2 assignment);
 	
@@ -126,4 +130,19 @@ public interface AssignmentLogic {
 	 * @param ascending
 	 */
 	public void sortAssignments(List<Assignment2> assignmentList, String sortBy, boolean ascending);
+	
+	/**
+	 * Given the originalAssignment and the updated version, will determine if an
+	 * announcement needs to be added, updated, or deleted. Announcements are updated
+	 * if there is a change in title, open date, or group restrictions. They are
+	 * deleted if the assignment is changed to draft status. 
+	 * @param originalAssignmentWithGroups - original assignment with the group info populated
+	 * @param updatedAssignment - updated assignment with the group info populated
+	 * @param newAnncSubject - text for a new announcement's subject
+	 * @param newAnncBody - text for a new announcement's body
+	 * @param revAnncSubject - text for a revised announcement's subject
+	 * @param revAnncBody - text for a revised announcement's body
+	 */
+	public void saveAssignmentAnnouncement(Assignment2 originalAssignmentWithGroups, Assignment2 updatedAssignmentWithGroups, 
+			String newAnncSubject, String newAnncBody, String revAnncSubject, String revAnncBody);
 }

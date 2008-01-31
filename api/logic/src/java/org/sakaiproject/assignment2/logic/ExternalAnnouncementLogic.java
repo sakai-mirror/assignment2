@@ -21,8 +21,8 @@
 
 package org.sakaiproject.assignment2.logic;
 
+import java.util.Collection;
 
-import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.exception.AnnouncementPermissionException;
 
 /**
@@ -35,8 +35,8 @@ public interface ExternalAnnouncementLogic {
 	
 	/**
 	 * Add an announcement of the given assignment's open date to the 
-	 * Annoucements tool
-	 * @param assignment
+	 * Announcements tool
+	 * @param restrictedGroupIds
 	 * @param contextId
 	 * @param announcementSubject
 	 * @param announcementBody
@@ -44,13 +44,14 @@ public interface ExternalAnnouncementLogic {
 	 * 		if the current user is not authorized to add an announcement
 	 * @return the id of the newly created announcement
 	 */
-	public String addOpenDateAnnouncement(Assignment2 assignment, String contextId, 
+	public String addOpenDateAnnouncement(Collection<String> restrictedGroupIds, String contextId, 
 			String announcementSubject, String announcementBody) throws AnnouncementPermissionException;
 	
 	/**
 	 * Update an announcement for the given assignment. Announcements must be
 	 * updated when the title or open date of the assignment changes.
-	 * @param assignment
+	 * @param announcementId
+	 * @param restrictedGroupIds
 	 * @param contextId
 	 * @param announcementSubject
 	 * @param announcementBody
@@ -58,17 +59,17 @@ public interface ExternalAnnouncementLogic {
 	 * 		if the current user is not authorized to update an announcement
 	 * @return the id of the updated announcement
 	 */
-	public String updateOpenDateAnnouncement(Assignment2 assignment, String contextId,
+	public String updateOpenDateAnnouncement(String announcementId, Collection<String> restrictedGroupIds, String contextId,
 			String announcementSubject, String announcementBody) 
 		throws AnnouncementPermissionException;
 	
 	/**
 	 * Delete an existing announcement associated with the given assignment.
-	 * @param assignment
+	 * @param announcementId
 	 * @param contextId
 	 * * @throws AnnouncementPermissionException
 	 * 		if the current user is not authorized to delete an announcement
 	 */
-	public void deleteOpenDateAnnouncement(Assignment2 assignment, String contextId) 
+	public void deleteOpenDateAnnouncement(String announcementId, String contextId) 
 		throws AnnouncementPermissionException;
 }

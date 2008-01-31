@@ -48,8 +48,6 @@ import org.sakaiproject.announcement.api.AnnouncementMessage;
 import org.sakaiproject.announcement.api.AnnouncementMessageEdit;
 import org.sakaiproject.announcement.api.AnnouncementMessageHeaderEdit;
 import org.sakaiproject.announcement.api.AnnouncementService;
-import org.sakaiproject.assignment2.model.Assignment2;
-import org.sakaiproject.assignment2.model.AssignmentGroup;
 import org.sakaiproject.assignment2.exception.AnnouncementPermissionException;
 
 /**
@@ -69,10 +67,10 @@ public class ExternalAnnouncementLogicImpl implements ExternalAnnouncementLogic 
     	log.debug("init");
     }
     
-    public String addOpenDateAnnouncement(Assignment2 assignment, String contextId,
+    public String addOpenDateAnnouncement(Collection<String> restrictedGroupIds, String contextId,
     		String announcementSubject, String announcementBody) throws AnnouncementPermissionException {
-    	if (assignment == null || contextId == null) {
-    		throw new IllegalArgumentException("null assignment or contextId passed to addOpenDateAnnouncement");
+    	if (contextId == null) {
+    		throw new IllegalArgumentException("null contextId passed to addOpenDateAnnouncement");
     	}
     	
     	initializeAnnouncementServiceData(contextId);
@@ -91,11 +89,11 @@ public class ExternalAnnouncementLogicImpl implements ExternalAnnouncementLogic 
 			header.setSubject(announcementSubject);
 			message.setBody(announcementBody);
 				
-			if (assignment.getAssignmentGroupSet() == null || assignment.getAssignmentGroupSet().isEmpty()) {
+			if (restrictedGroupIds == null || restrictedGroupIds.isEmpty()) {
 				//site announcement
 				header.clearGroupAccess();
 			} else {
-				addGroupRestrictions(assignment, contextId, header);
+				addGroupRestrictions(restrictedGroupIds, contextId, header);
 			}
 
 			announcementChannel.commitMessage(message, NotificationService.NOTI_NONE);
@@ -108,10 +106,15 @@ public class ExternalAnnouncementLogicImpl implements ExternalAnnouncementLogic 
 		}
 	}
     
-	public String updateOpenDateAnnouncement(Assignment2 assignment, String contextId, 
+	public String updateOpenDateAnnouncement(String announcementId, Collection<String> restrictedGroupIds, String contextId, 
 			String announcementSubject, String announcementBody) throws AnnouncementPermissionException {
-		if (assignment == null || contextId == null) {
-    		throw new IllegalArgumentException("null assignment or contextId passed to addOpenDateAnnouncement");
+		if (contextId == null) {
+    		throw new IllegalArgumentException("null contextId passed to addOpenDateAnnouncement");
+    	}
+		
+    	if (announcementId == null) {
+    		log.warn("there was no announcementId passed to update");
+    		return null;
     	}
     	
     	initializeAnnouncementServiceData(contextId);
@@ -119,30 +122,25 @@ public class ExternalAnnouncementLogicImpl implements ExternalAnnouncementLogic 
     		log.warn("announcementChannel was null when trying to add announcement so no annc added");
     		return null;
     	}
-    	
-    	if (assignment.getAnnouncementId() == null) {
-    		log.warn("there was no announcement assocated with the passed assignment");
-    		return null;
-    	}
-    	
+
     	try
 		{
-			AnnouncementMessageEdit message = announcementChannel.editAnnouncementMessage(assignment.getAnnouncementId());
+			AnnouncementMessageEdit message = announcementChannel.editAnnouncementMessage(announcementId);
 			AnnouncementMessageHeaderEdit header = message.getAnnouncementHeaderEdit();
 			header.setDraft(false);
 			header.replaceAttachments(EntityManager.newReferenceList());
 			header.setSubject(announcementSubject);
 			message.setBody(announcementBody);
 				
-			if (assignment.getAssignmentGroupSet() == null || assignment.getAssignmentGroupSet().isEmpty()) {
+			if (restrictedGroupIds == null || restrictedGroupIds.isEmpty()) {
 				//site announcement
 				header.clearGroupAccess();
 			} else {
-				addGroupRestrictions(assignment, contextId, header);
+				addGroupRestrictions(restrictedGroupIds, contextId, header);
 			}
 
 			announcementChannel.commitMessage(message, NotificationService.NOTI_NONE);
-			log.debug("Announcement updated with id: " + assignment.getAnnouncementId());
+			log.debug("Announcement updated with id: " + announcementId);
 			
 			return message.getId();	
 			
@@ -151,38 +149,41 @@ public class ExternalAnnouncementLogicImpl implements ExternalAnnouncementLogic 
 		} catch (IdUnusedException iue) {
 			// the announcement id stored in the assignment is invalid, so add a new announcement
 			log.debug("Bad announcementId associated with assignment, so adding new announcement");
-			return addOpenDateAnnouncement(assignment, contextId, announcementSubject, announcementBody);
+			return addOpenDateAnnouncement(restrictedGroupIds, contextId, announcementSubject, announcementBody);
 		} catch (InUseException iue) {
-			log.error("Announcement " + assignment.getAnnouncementId() + " is locked and cannot be" +
+			log.error("Announcement " + announcementId + " is locked and cannot be" +
 					"updated");
 			return null;
 		}
 	}
 	
-	public void deleteOpenDateAnnouncement(Assignment2 assignment, String contextId) {
-		if (assignment == null || contextId == null) {
-    		throw new IllegalArgumentException("null assignment or contextId passed to addOpenDateAnnouncement");
+	public void deleteOpenDateAnnouncement(String announcementId, String contextId) {
+		if (contextId == null) {
+    		throw new IllegalArgumentException("null announcementId or contextId passed to addOpenDateAnnouncement");
+    	}
+    	
+    	if (announcementId == null) {
+    		log.warn("there was no announcementId passed, so announcement was not deleted");
+    		return;
     	}
     	
     	initializeAnnouncementServiceData(contextId);
     	if (announcementChannel == null) {
-    		log.warn("announcementChannel was null when trying to add announcement so no annc added");
+    		log.warn("announcementChannel was null when trying to delete announcement so no annc deleted");
     		return;
     	}
-    	
-    	if (assignment.getAnnouncementId() == null) {
-    		log.warn("there was no announcement associated with the passed assignment, so announcement was not deleted");
-    		return;
-    	}
-    	
+
     	try
 		{
-			announcementChannel.removeMessage(assignment.getAnnouncementId());
-			log.debug("Announcement removed with id: " + assignment.getAnnouncementId());
+			announcementChannel.removeMessage(announcementId);
+			log.debug("Announcement removed with id: " + announcementId);
 			
 		} catch (PermissionException pe) {
 			throw new AnnouncementPermissionException("The current user does not have permission to access add announcement");
-		} 
+		} catch (Exception e) {
+			log.debug("Announcement no longer exists so cannot be deleted. It was probably deleted via annc tool.");
+			// this is thrown by removeMessage if the annc doesn't exist
+		}
 	}
     
 	private void initializeAnnouncementServiceData(String contextId) {
@@ -208,23 +209,15 @@ public class ExternalAnnouncementLogicImpl implements ExternalAnnouncementLogic 
 		}
 	}
 	
-	private void addGroupRestrictions(Assignment2 assignment, String contextId, AnnouncementMessageHeaderEdit header) {
+	private void addGroupRestrictions(Collection<String> restrictedGroupIds, String contextId, AnnouncementMessageHeaderEdit header) {
 		try
 		{
-			Set assignmentGroups = assignment.getAssignmentGroupSet();
-			if (assignmentGroups != null) {
-				List groupIds = new ArrayList();
-				for (Iterator aGroupIter = assignmentGroups.iterator(); aGroupIter.hasNext();) {
-					AssignmentGroup aGroup = (AssignmentGroup) aGroupIter.next();
-					if (aGroup != null && aGroup.getGroupId() != null) {
-						groupIds.add(aGroup.getGroupId());
-					}
-				}
+			if (restrictedGroupIds != null && !restrictedGroupIds.isEmpty()) {
 
 				//make a collection of Group objects from the collection of group ref strings
 				Site site = SiteService.getSite(contextId);
 				List<Group> groupRestrictions = new ArrayList();
-				for (Iterator groupIdIter = groupIds.iterator(); groupIdIter.hasNext();)
+				for (Iterator groupIdIter = restrictedGroupIds.iterator(); groupIdIter.hasNext();)
 				{
 					String groupId = (String) groupIdIter.next();
 					if (groupId != null) {
