@@ -37,6 +37,11 @@ public class AssignmentFeedbackAttachment {
 	public AssignmentFeedbackAttachment() {
 		
 	}
+	
+	public AssignmentFeedbackAttachment(AssignmentSubmissionVersion submissionVersion, String attachmentReference) {
+		this.submissionVersion = submissionVersion;
+		this.attachmentReference = attachmentReference;
+	}
 
 	/**
 	 * 

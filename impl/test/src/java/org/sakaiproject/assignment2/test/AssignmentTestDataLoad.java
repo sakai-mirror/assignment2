@@ -32,8 +32,11 @@ import org.sakaiproject.assignment2.dao.AssignmentDao;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentAttachment;
 import org.sakaiproject.assignment2.model.AssignmentGroup;
+import org.sakaiproject.assignment2.model.AssignmentSubmission;
+import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
+import org.sakaiproject.assignment2.model.AssignmentSubmissionAttachment;
+import org.sakaiproject.assignment2.model.AssignmentFeedbackAttachment;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
-
 
 /**
  * This class holds a bunch of items used to prepopulate the database and then
@@ -51,6 +54,11 @@ public class AssignmentTestDataLoad {
 	public static final String ASSIGN1_TITLE = "Assignment 1";
 	public static final String ASSIGN2_TITLE = "Assignment 2";
 	public static final String ASSIGN3_TITLE = "Assignemnt 3";
+	
+	public static final String INSTRUCTOR_UID = "instructorUid";
+	public static final String TA_UID = "taUid";
+	public static final String STUDENT1_UID = "student1";
+	public static final String STUDENT2_UID = "student2";
 
 	public Assignment2 a1;
 	public Assignment2 a2;
@@ -66,6 +74,16 @@ public class AssignmentTestDataLoad {
 	public AssignmentGroup group1Fora1;
 	public AssignmentGroup group2Fora1;
 	public AssignmentGroup group1Fora2;
+	
+	public AssignmentSubmission st1a1Submission;
+	public AssignmentSubmission st2a1Submission;
+	
+	public AssignmentSubmissionVersion st1a1CurrVersion;
+	public AssignmentSubmissionVersion st2a1Version1;
+	public AssignmentSubmissionVersion st2a1Version2;
+	public AssignmentSubmissionVersion st2a1CurrVersion;
+	
+	public AssignmentSubmission st2a2SubmissionNoVersions;
 
 	public AssignmentTestDataLoad() {
 		initialize();
@@ -131,6 +149,37 @@ public class AssignmentTestDataLoad {
 		group1Fora2.setGroupId("Group3");
 		dao.save(group1Fora2);
 
+		// now create submissions
+		// start with a1
+		st1a1Submission = new AssignmentSubmission(a1, STUDENT1_UID, Boolean.TRUE);
+		st1a1CurrVersion = createGenericVersion(st1a1Submission);
+		dao.save(st1a1Submission);
+		dao.save(st1a1CurrVersion);
+		
+		st2a1Submission = new AssignmentSubmission(a1, STUDENT2_UID, Boolean.TRUE);
+		st2a1Version1 = createGenericVersion(st2a1Submission);
+		dao.save(st2a1Submission);
+		dao.save(st2a1Version1);
+		st2a1Version2 = createGenericVersion(st2a1Submission);
+		dao.save(st2a1Version2);
+		st2a1CurrVersion = createGenericVersion(st2a1Submission);
+		dao.save(st2a1CurrVersion);
+		AssignmentSubmissionAttachment st2a1v3attach = 
+			new AssignmentSubmissionAttachment(st2a1CurrVersion, "attachmentRef");
+		dao.save(st2a1v3attach);
+		AssignmentSubmissionAttachment st2a1v3attach2 = 
+			new AssignmentSubmissionAttachment(st2a1CurrVersion, "attachmentRef");
+		dao.save(st2a1v3attach2);
+		AssignmentFeedbackAttachment st2a1v3Fattach = 
+			new AssignmentFeedbackAttachment(st2a1CurrVersion, "attachmentRef");
+		dao.save(st2a1v3Fattach);
+		AssignmentFeedbackAttachment st2a1v3Fattach2 = 
+			new AssignmentFeedbackAttachment(st2a1CurrVersion, "attachmentRef");
+		dao.save(st2a1v3Fattach2);
+		
+		// create a submission w/o any versions
+		st2a2SubmissionNoVersions = new AssignmentSubmission(a2, STUDENT2_UID, Boolean.FALSE);
+		dao.save(st2a2SubmissionNoVersions);
 	}
 
 
@@ -154,6 +203,17 @@ public class AssignmentTestDataLoad {
 		assignment.setTitle(title);
 
 		return assignment;
+	}
+	
+	private AssignmentSubmissionVersion createGenericVersion(AssignmentSubmission submission) {
+		AssignmentSubmissionVersion version = new AssignmentSubmissionVersion();
+		version.setAssignmentSubmission(submission);
+		version.setCreatedBy(submission.getUserId());
+		version.setCreatedTime(new Date());
+		version.setDraft(Boolean.FALSE);
+		version.setSubmittedText("submitted text by " + submission.getUserId());
+		version.setSubmittedTime(new Date());
+		return version;
 	}
 
 }

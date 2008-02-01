@@ -59,6 +59,12 @@ public class AssignmentSubmission {
 		this.userId = userId;
 	}
 	
+	public AssignmentSubmission(Assignment2 assignment, String userId, Boolean allowResubmit) {
+		this.assignment = assignment;
+		this.userId = userId;
+		this.allowResubmit = allowResubmit;
+	}
+	
 	/**
 	 * 
 	 * @return assignment submission id

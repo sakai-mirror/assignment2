@@ -796,7 +796,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		
 		List<String> gradableStudents = permissionLogic.getGradableStudentsForUserForItem(assignment);
 		if (gradableStudents != null && !gradableStudents.isEmpty()) {
-			List<AssignmentSubmission> submissionList = dao.getSubmissionsWithVersionHistoryForStudentListAndAssignment(
+			Set<AssignmentSubmission> submissionList = dao.getSubmissionsWithVersionHistoryForStudentListAndAssignment(
 					gradableStudents, assignment);
 			
 			Date releasedTime = new Date();

@@ -36,6 +36,11 @@ public class AssignmentSubmissionAttachment {
 	public AssignmentSubmissionAttachment() {
 		
 	}
+	
+	public AssignmentSubmissionAttachment(AssignmentSubmissionVersion submissionVersion, String attachmentReference) {
+		this.submissionVersion = submissionVersion;
+		this.attachmentReference = attachmentReference;
+	}
 
 	/**
 	 * 

@@ -95,8 +95,7 @@ public interface AssignmentDao extends CompleteGenericDao {
 	 * @return given a list of studentIds and an assignment, returns the associated 
 	 * AssignmentSubmissions for the given assignment. If
 	 * no submission exists for the student yet, no submission is returned
-	 * will populate the currentSubmissionVersion (but will be most recent 
-	 * non-draft version if includeDrafts = false)
+	 * will populate the currentSubmissionVersion 
 	 */
 	Set<AssignmentSubmission> getCurrentSubmissionsForStudentsForAssignment(List<String> studentIds, Assignment2 assignment);
 	
@@ -117,10 +116,11 @@ public interface AssignmentDao extends CompleteGenericDao {
 	 * @param assignment
 	 * @return the AssignmentSubmission recs for the given students for the given assignment.
 	 * populates the submissionHistorySet with all of the AssignmentSubmissionVersions for
-	 * each submission. if no submission has been made, no rec will be returned
+	 * each submission. if no submission has been made, no rec will be returned. will
+	 * populate currentVersion
 	 * 
 	 */
-	public List<AssignmentSubmission> getSubmissionsWithVersionHistoryForStudentListAndAssignment(List<String> studentIdList, Assignment2 assignment);
+	public Set<AssignmentSubmission> getSubmissionsWithVersionHistoryForStudentListAndAssignment(List<String> studentIdList, Assignment2 assignment);
 	
 	/**
 	 * 

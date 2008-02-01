@@ -269,21 +269,28 @@ public class AssignmentDaoImpl extends HibernateCompleteGenericDao implements As
 		}
     }
     
-    public List<AssignmentSubmission> getSubmissionsWithVersionHistoryForStudentListAndAssignment(List<String> studentIdList, Assignment2 assignment) {
+    public Set<AssignmentSubmission> getSubmissionsWithVersionHistoryForStudentListAndAssignment(List<String> studentIdList, Assignment2 assignment) {
     	if (assignment == null) {
     		throw new IllegalArgumentException("null assignment passed to getSubmissionsWithVersionHistoryForStudentListAndAssignment");
     	}
     	
-    	List<AssignmentSubmission> submissionList = new ArrayList();
+    	Set<AssignmentSubmission> submissionSet = new HashSet();
     	
     	if (studentIdList != null && !studentIdList.isEmpty()) {
     		Query query = getSession().getNamedQuery("findSubmissionsWithHistoryForAssignmentAndStudents");	
         	query.setParameter("assignment", assignment);
         	
-        	submissionList = queryWithParameterList(query, "studentIdList", studentIdList);
+        	List submissionList = queryWithParameterList(query, "studentIdList", studentIdList);
+        	
+        	if (submissionList != null) {
+    			submissionSet = new HashSet(submissionList);
+    			
+        		// now retrieve the current version information
+        		populateCurrentVersion(submissionSet);
+    		}
     	}
     	
-    	return submissionList;
+    	return submissionSet;
     }
     
     public AssignmentSubmission getSubmissionWithVersionHistoryForStudentAndAssignment(String studentId, Assignment2 assignment) {
