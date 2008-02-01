@@ -21,21 +21,10 @@
 **********************************************************************************/
 package org.sakaiproject.assignment2.dao.test;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-
 import org.sakaiproject.assignment2.dao.AssignmentDao;
-import org.sakaiproject.assignment2.model.Assignment2;
-import org.sakaiproject.assignment2.model.AssignmentAttachment;
-import org.sakaiproject.assignment2.model.AssignmentGroup;
-import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.assignment2.test.AssignmentTestDataLoad;
 import org.sakaiproject.assignment2.test.PreloadTestData;
 import org.springframework.test.AbstractTransactionalSpringContextTests;
-import junit.framework.Assert;
 
 
 /**
@@ -79,7 +68,6 @@ public abstract class Assignment2DaoTestBase extends AbstractTransactionalSpring
 		// (add component/src/webapp/WEB-INF to the build path in Eclipse),
 		// they also need to be referenced in the pom.xml file
 		return new String[] { "hibernate-test.xml", "spring-hibernate.xml",
-				//"spring-hib-sections-test.xml",
 
 		};
 
