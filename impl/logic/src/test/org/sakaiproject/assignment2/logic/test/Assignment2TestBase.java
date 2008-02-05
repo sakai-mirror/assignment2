@@ -21,10 +21,7 @@
 **********************************************************************************/
 package org.sakaiproject.assignment2.logic.test;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
+import java.util.Date;
 
 import org.sakaiproject.assignment2.dao.AssignmentDao;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
@@ -33,13 +30,20 @@ import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.logic.ExternalAnnouncementLogic;
 import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
+import org.sakaiproject.assignment2.logic.impl.AssignmentLogicImpl;
+import org.sakaiproject.assignment2.logic.impl.ExternalAnnouncementLogicImpl;
+import org.sakaiproject.assignment2.logic.impl.ExternalGradebookLogicImpl;
+import org.sakaiproject.assignment2.logic.impl.AssignmentPermissionLogicImpl;
+import org.sakaiproject.assignment2.logic.impl.AssignmentSubmissionLogicImpl;
+import org.sakaiproject.assignment2.logic.test.stubs.ExternalLogicStub;
+
+import org.sakaiproject.service.gradebook.shared.GradebookFrameworkService;
+import org.sakaiproject.service.gradebook.shared.GradebookService;
+import org.sakaiproject.tool.gradebook.facades.Authn;
 import org.sakaiproject.component.section.support.IntegrationSupport;
 import org.sakaiproject.component.section.support.UserManager;
 import org.sakaiproject.section.api.SectionAwareness;
-//import org.sakaiproject.section.api.coursemanagement.EnrollmentRecord;
-//import org.sakaiproject.section.api.facade.Role;
 import org.springframework.test.AbstractTransactionalSpringContextTests;
-import junit.framework.Assert;
 
 
 /**
@@ -53,15 +57,31 @@ import junit.framework.Assert;
  */
 public abstract class Assignment2TestBase extends AbstractTransactionalSpringContextTests {
 	protected AssignmentDao dao;
-	protected AssignmentLogic assignmentLogic;
-	protected AssignmentSubmissionLogic submissionLogic;
+
 	protected ExternalLogic externalogic;
 	protected ExternalGradebookLogic gradebookLogic;
 	protected ExternalAnnouncementLogic announcementLogic;
-	protected AssignmentPermissionLogic permissionLogic;
+	
+	// these use external logic which we have to replace with stub, so use impl
+	protected AssignmentLogicImpl assignmentLogic;
+	protected AssignmentSubmissionLogicImpl submissionLogic;
+	protected AssignmentPermissionLogicImpl permissionLogic;
+	
+	protected GradebookFrameworkService gradebookFrameworkService;
+	protected GradebookService gradebookService;
+	protected Authn authn;
+	
+	
+	protected static final String GB_ITEM1_NAME = "Item 1";
+	protected static final Double GB_ITEM1_PTS = new Double(30);
+	protected static final Date GB_ITEM1_DUE = null;
+	
+	protected static final String GB_ITEM2_NAME = "Item 2";
+	protected static final Double GB_ITEM2_PTS = new Double(40);
+	protected static final Date GB_ITEM2_DUE = new Date();
 	
 	protected SectionAwareness sectionAwareness;
-    //protected UserDirectoryService userDirectoryService;
+	//protected UserDirectoryService userDirectoryService;
 	protected IntegrationSupport integrationSupport;
 	protected UserManager userManager;
 
@@ -71,6 +91,9 @@ public abstract class Assignment2TestBase extends AbstractTransactionalSpringCon
     protected void onSetUpInTransaction() throws Exception {
         
         sectionAwareness = (SectionAwareness)applicationContext.getBean("org.sakaiproject.section.api.SectionAwareness");
+        if (sectionAwareness == null) {
+        	throw new NullPointerException("Sections integration support could not be retrieved from spring");
+        }
         //userDirectoryService = (UserDirectoryService)applicationContext.getBean("org_sakaiproject_tool_gradebook_facades_UserDirectoryService");*/
         integrationSupport = (IntegrationSupport)applicationContext.getBean("org.sakaiproject.component.section.support.IntegrationSupport");
         if (integrationSupport == null) {
@@ -86,13 +109,45 @@ public abstract class Assignment2TestBase extends AbstractTransactionalSpringCon
 			throw new NullPointerException(
 					"DAO could not be retrieved from spring");
 		}
-    	/*assignmentLogic = (AssignmentLogic)applicationContext.getBean("org.sakaiproject.assignment2.logic.AssignmentLogic");
-    	if (assignmentLogic == null) {
+    	
+    	gradebookFrameworkService = (GradebookFrameworkService)applicationContext.getBean("org_sakaiproject_service_gradebook_GradebookFrameworkService");
+    	if (gradebookFrameworkService == null) {
 			throw new NullPointerException(
-					"assignmentLogic could not be retrieved from spring");
-		}*/
+					"gradebookFrameworkService could not be retrieved from spring");
+		} 
     	
+    	gradebookService = (GradebookService)applicationContext.getBean("org_sakaiproject_service_gradebook_GradebookService");
+    	if (gradebookService == null) {
+			throw new NullPointerException(
+					"gradebookService could not be retrieved from spring");
+		} 
     	
+    	authn = (Authn)applicationContext.getBean("org_sakaiproject_tool_gradebook_facades_Authn");
+    	if (authn == null) {
+			throw new NullPointerException("authn could not be retrieved from spring");
+		}
+    	
+    	gradebookLogic = new ExternalGradebookLogicImpl();
+    	announcementLogic = new ExternalAnnouncementLogicImpl();
+    	
+    	permissionLogic = new AssignmentPermissionLogicImpl();
+    	permissionLogic.setDao(dao);
+    	permissionLogic.setExternalGradebookLogic(gradebookLogic);
+    	permissionLogic.setExternalLogic(new ExternalLogicStub());
+    	
+    	submissionLogic = new AssignmentSubmissionLogicImpl();
+    	submissionLogic.setDao(dao);
+    	submissionLogic.setExternalGradebookLogic(gradebookLogic);
+    	submissionLogic.setExternalLogic(new ExternalLogicStub());
+    	submissionLogic.setPermissionLogic(permissionLogic);
+    	
+    	assignmentLogic = new AssignmentLogicImpl();
+    	assignmentLogic.setDao(dao);
+    	assignmentLogic.setExternalAnnouncementLogic(announcementLogic);
+    	assignmentLogic.setExternalGradebookLogic(gradebookLogic);
+    	assignmentLogic.setExternalLogic(new ExternalLogicStub());
+    	assignmentLogic.setAssignmentSubmissionLogic(submissionLogic);
+	
     }
 
     /**
@@ -103,11 +158,9 @@ public abstract class Assignment2TestBase extends AbstractTransactionalSpringCon
 		// (add component/src/webapp/WEB-INF to the build path in Eclipse),
 		// they also need to be referenced in the pom.xml file
 		return new String[] { "hibernate-test.xml", "spring-hibernate.xml",
+				"spring-hib-gb-test.xml",
 				"spring-hib-sections-test.xml",
 
-			// SectionAwareness integration support.
-			//"classpath*:org/sakaiproject/component/section/support/spring-integrationSupport.xml",
-			//"classpath*:org/sakaiproject/component/section/spring-services.xml",
 		};
 
     }

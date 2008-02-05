@@ -37,6 +37,20 @@
         <value>org/sakaiproject/assignment2/hbm/AssignmentSubmission.hbm.xml</value>
         <value>org/sakaiproject/assignment2/hbm/AssignmentSubmissionVersion.hbm.xml</value>
         <value>org/sakaiproject/assignment2/hbm/SubmissionAttachmentBase.hbm.xml</value>
+        <!-- gradebook tables -->
+        <value>org/sakaiproject/tool/gradebook/Gradebook.hbm.xml</value>
+  			<value>org/sakaiproject/tool/gradebook/GradableObject.hbm.xml</value>
+	  		<value>org/sakaiproject/tool/gradebook/GradeRecord.hbm.xml</value>
+		  	<value>org/sakaiproject/tool/gradebook/GradingEvent.hbm.xml</value>
+			  <value>org/sakaiproject/tool/gradebook/GradingScale.hbm.xml</value>
+ 				<value>org/sakaiproject/tool/gradebook/GradebookProperty.hbm.xml</value>
+  			<value>org/sakaiproject/tool/gradebook/GradeMapping.hbm.xml</value>
+        <value>org/sakaiproject/tool/gradebook/Spreadsheet.hbm.xml</value>                
+        <value>org/sakaiproject/tool/gradebook/Comment.hbm.xml</value>   
+        <value>org/sakaiproject/tool/gradebook/Category.hbm.xml</value>
+        <value>org/sakaiproject/tool/gradebook/LetterGradePercenteMapping.hbm.xml</value>
+        <value>org/sakaiproject/tool/gradebook/Permission.hbm.xml</value>
+        <!-- section tables -->
         <value>org/sakaiproject/component/section/LearningContextImpl.hbm.xml</value>
 				<value>org/sakaiproject/component/section/ParticipationRecordImpl.hbm.xml</value>
 				<value>org/sakaiproject/component/section/UserImpl.hbm.xml</value>

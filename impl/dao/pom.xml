@@ -37,6 +37,8 @@
         <includes>
           <include>hibernate-test.xml</include>
           <include>hibernate.properties</include>
+          <include>spring-hib-gb-test.xml</include>
+          <include>spring-hib-sections-test.xml</include>
         </includes>
       </testResource>
 <!--includes:  include: **/*Test.java -->
@@ -91,6 +93,10 @@
             <groupId>cglib</groupId>
             <artifactId>cglib</artifactId>
         </exclusion>
+        <exclusion>
+            <groupId>cglib</groupId>
+            <artifactId>cglib-full</artifactId>
+        </exclusion>
     </exclusions>
     </dependency>
     <dependency>
@@ -120,7 +126,6 @@
       <groupId>jta</groupId>
       <artifactId>jta</artifactId>
       <version>h2.1.8</version> 
-      
     </dependency>
     <dependency>
       <groupId>cglib</groupId>
@@ -147,11 +152,27 @@
       <artifactId>easymock</artifactId>
       <version>1.2_Java1.3</version>
     </dependency>
-    <!-- Used only for test data. -->
+    
+        <!-- GradebookService -->
     <dependency>
       <groupId>org.sakaiproject</groupId>
-      <artifactId>sakai-sections-integrationsupport</artifactId>
+      <artifactId>sakai-gradebook-service-api</artifactId>
       <version>${sakai.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.sakaiproject</groupId>
+      <artifactId>sakai-gradebook-service-impl</artifactId>
+      <version>${sakai.version}</version>
+      <exclusions>
+        <exclusion>
+            <groupId>cglib</groupId>
+            <artifactId>cglib-full</artifactId>
+        </exclusion>
+        <exclusion>
+            <groupId>asm</groupId>
+            <artifactId>asm</artifactId>
+        </exclusion>
+    </exclusions>
     </dependency>
     <!-- Section Awareness -->
     <dependency>
@@ -159,16 +180,16 @@
       <artifactId>sakai-sections-api</artifactId>
       <version>${sakai.version}</version>
     </dependency>
-<!-- Standalone component -->
-    <dependency>
-      <groupId>org.sakaiproject</groupId>
-      <artifactId>sakai-sections-impl-standalone</artifactId>
-      <version>${sakai.version}</version>
-    </dependency>
     <dependency>
       <groupId>org.sakaiproject</groupId>
       <artifactId>sakai-util-api</artifactId>
       <version>${sakai.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.sakaiproject</groupId>
+      <artifactId>sakai-user-api</artifactId>
+      <version>${sakai.version}</version>
+      <scope>provided</scope>
     </dependency>
   </dependencies>
 </project>
