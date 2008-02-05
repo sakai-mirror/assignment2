@@ -11,7 +11,7 @@ import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentAttachment;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
-import org.sakaiproject.assignment2.model.AssignmentSubmissionAttachment;
+import org.sakaiproject.assignment2.model.SubmissionAttachment;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.tool.beans.PreviewAssignmentSubmissionBean;
 import org.sakaiproject.assignment2.tool.params.AssignmentViewParams;
@@ -66,7 +66,7 @@ public class FragmentSubmissionPreviewProducer implements ViewComponentProducer,
 			AssignmentSubmissionVersion asv = (AssignmentSubmissionVersion) as.getCurrentSubmissionVersion();
 			//Now get the attachment set
 			if (asv != null && asv.getSubmissionAttachSet() != null) {
-				for (AssignmentSubmissionAttachment asa : asv.getSubmissionAttachSet()) {
+				for (SubmissionAttachment asa : asv.getSubmissionAttachSet()) {
 					set.add(asa.getAttachmentReference());
 				}
 			}

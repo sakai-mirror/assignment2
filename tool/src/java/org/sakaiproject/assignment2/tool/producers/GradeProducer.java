@@ -15,7 +15,7 @@ import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
-import org.sakaiproject.assignment2.model.AssignmentFeedbackAttachment;
+import org.sakaiproject.assignment2.model.FeedbackAttachment;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.assignment2.tool.params.ViewSubmissionsViewParams;
 import org.sakaiproject.assignment2.tool.params.GradeViewParams;
@@ -213,7 +213,7 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
         if (assignment.getSubmissionType() == AssignmentConstants.SUBMIT_ATTACH_ONLY ||
         		assignment.getSubmissionType() == AssignmentConstants.SUBMIT_INLINE_AND_ATTACH) {
 	        if (assignmentSubmissionVersion.getSubmissionAttachSet() != null){
-	        	attachmentListRenderer.makeAttachmentFromAssignmentSubmissionAttachmentSet(tofill, "submitted_attachment_list:", params.viewID, 
+	        	attachmentListRenderer.makeAttachmentFromSubmissionAttachmentSet(tofill, "submitted_attachment_list:", params.viewID, 
 	        			assignmentSubmissionVersion.getSubmissionAttachSet(), Boolean.FALSE);
 	        } else {
 	        	UIMessage.make(tofill, "submitted_attachment_list:", "assignment2.assignment_grade.no_attachments_submitted");
@@ -224,11 +224,11 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
     	richTextEvolver.evolveTextInput(feedback_notes);
                
         //Attachments
-        Set<AssignmentFeedbackAttachment> afaSet = new HashSet();
+        Set<FeedbackAttachment> afaSet = new HashSet();
         if (assignmentSubmissionVersion.getFeedbackAttachSet() != null) {
         	afaSet.addAll(assignmentSubmissionVersion.getFeedbackAttachSet());
         }
-        attachmentListRenderer.makeAttachmentFromAssignmentFeedbackAttachmentSet(tofill, "attachment_list:", 
+        attachmentListRenderer.makeAttachmentFromFeedbackAttachmentSet(tofill, "attachment_list:", 
         		params.viewID, afaSet, Boolean.TRUE);
         UIInternalLink.make(form, "add_attachments", UIMessage.make("assignment2.assignment_add.add_attachments"),
         		new FilePickerHelperViewParams(AddAttachmentHelperProducer.VIEWID, Boolean.TRUE, 
@@ -279,9 +279,9 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
 	        	UIVerbatim.make(loop, "loop_submitted_text", asv.getSubmittedText());
 	        	UIVerbatim.make(loop, "loop_feedback_text", asv.getAnnotatedTextFormatted());
 	        	UIVerbatim.make(loop, "loop_feedback_notes", asv.getFeedbackNotes());
-	        	attachmentListRenderer.makeAttachmentFromAssignmentSubmissionAttachmentSet(loop, "loop_submitted_attachment_list:", 
+	        	attachmentListRenderer.makeAttachmentFromSubmissionAttachmentSet(loop, "loop_submitted_attachment_list:", 
 	        			GradeProducer.VIEW_ID, asv.getSubmissionAttachSet(), Boolean.FALSE);
-	        	attachmentListRenderer.makeAttachmentFromAssignmentFeedbackAttachmentSet(loop, "loop_returned_attachment_list:", 
+	        	attachmentListRenderer.makeAttachmentFromFeedbackAttachmentSet(loop, "loop_returned_attachment_list:", 
 	        			GradeProducer.VIEW_ID, asv.getFeedbackAttachSet(), Boolean.FALSE);
 	        	if (asv.getLastFeedbackSubmittedBy() != null) {
 		        	UIMessage.make(loop, "feedback_updated", "assignment2.assignment_grade.feedback_updated",

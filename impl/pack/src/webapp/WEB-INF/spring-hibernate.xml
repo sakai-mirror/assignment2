@@ -11,11 +11,11 @@
          <list>
             <value>org.sakaiproject.assignment2.model.Assignment2</value>
             <value>org.sakaiproject.assignment2.model.AssignmentAttachment</value>
-            <value>org.sakaiproject.assignment2.model.AssignmentFeedbackAttachment</value>
+            <value>org.sakaiproject.assignment2.model.FeedbackAttachment</value>
             <value>org.sakaiproject.assignment2.model.AssignmentGroup</value>
             <value>org.sakaiproject.assignment2.model.AssignmentSubmission</value>
             <value>org.sakaiproject.assignment2.model.AssignmentSubmissionVersion</value>
-            <value>org.sakaiproject.assignment2.model.AssignmentSubmissionAttachment</value>
+            <value>org.sakaiproject.assignment2.model.SubmissionAttachment</value>
          </list>
       </property>
    </bean>

@@ -51,8 +51,8 @@ public class AssignmentSubmissionVersion {
 	private Date modifiedTime;
 	private String lastFeedbackSubmittedBy;
 	private Date lastFeedbackTime;
-	private Set<AssignmentFeedbackAttachment> feedbackAttachSet;
-	private Set<AssignmentSubmissionAttachment> submissionAttachSet;
+	private Set<FeedbackAttachment> feedbackAttachSet;
+	private Set<SubmissionAttachment> submissionAttachSet;
 	private int revisionVersion;
 
 	public AssignmentSubmissionVersion() {
@@ -363,40 +363,40 @@ public class AssignmentSubmissionVersion {
 
 	/**
 	 * 
-	 * @return the AssignmentFeedbackAttachments associated with this submission
+	 * @return the FeedbackAttachments associated with this submission
 	 * version
 	 */
-	public Set<AssignmentFeedbackAttachment> getFeedbackAttachSet() {
+	public Set<FeedbackAttachment> getFeedbackAttachSet() {
 		return feedbackAttachSet;
 	}
 
 	/**
 	 * 
 	 * @param feedbackAttachSet
-	 * the AssignmentFeedbackAttachments associated with this submission version
+	 * the FeedbackAttachments associated with this submission version
 	 */
 	public void setFeedbackAttachSet(
-			Set<AssignmentFeedbackAttachment> feedbackAttachSet) {
+			Set<FeedbackAttachment> feedbackAttachSet) {
 		this.feedbackAttachSet = feedbackAttachSet;
 	}
 	
 	/**
 	 * 
-	 * @return the AssignmentSubmissionAttachments associated with this
+	 * @return the SubmissionAttachments associated with this
 	 * submission version
 	 */
-	public Set<AssignmentSubmissionAttachment> getSubmissionAttachSet() {
+	public Set<SubmissionAttachment> getSubmissionAttachSet() {
 		return submissionAttachSet;
 	}
 
 	/**
 	 * 
 	 * @param submissionAttachSet
-	 * the AssignmentSubmissionAttachments associated with this
+	 * the SubmissionAttachments associated with this
 	 * submission version
 	 */
 	public void setSubmissionAttachSet(
-			Set<AssignmentSubmissionAttachment> submissionAttachSet) {
+			Set<SubmissionAttachment> submissionAttachSet) {
 		this.submissionAttachSet = submissionAttachSet;
 	}
 	

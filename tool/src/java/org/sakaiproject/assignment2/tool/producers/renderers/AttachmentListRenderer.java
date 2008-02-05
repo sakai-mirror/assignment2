@@ -3,8 +3,8 @@ package org.sakaiproject.assignment2.tool.producers.renderers;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentAttachment;
-import org.sakaiproject.assignment2.model.AssignmentSubmissionAttachment;
-import org.sakaiproject.assignment2.model.AssignmentFeedbackAttachment;
+import org.sakaiproject.assignment2.model.SubmissionAttachment;
+import org.sakaiproject.assignment2.model.FeedbackAttachment;
 import org.sakaiproject.assignment2.tool.producers.fragments.AjaxCallbackProducer;
 import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.content.api.ContentResource;
@@ -66,22 +66,22 @@ public class AttachmentListRenderer {
 		makeAttachment(tofill, divID, currentViewID, refSet, remove);
 	}
 	
-	public void makeAttachmentFromAssignmentSubmissionAttachmentSet(UIContainer tofill, String divID, String currentViewID,
-			Set<AssignmentSubmissionAttachment> asaSet, Boolean remove) {
+	public void makeAttachmentFromSubmissionAttachmentSet(UIContainer tofill, String divID, String currentViewID,
+			Set<SubmissionAttachment> asaSet, Boolean remove) {
 		Set<String> refSet = new HashSet();
 		if (asaSet != null) {
-			for (AssignmentSubmissionAttachment asa : asaSet) {
+			for (SubmissionAttachment asa : asaSet) {
 				refSet.add(asa.getAttachmentReference());
 			}
 		}
 		makeAttachment(tofill, divID, currentViewID, refSet, remove);
 	}
 	
-	public void makeAttachmentFromAssignmentFeedbackAttachmentSet(UIContainer tofill, String divID, String currentViewID,
-			Set<AssignmentFeedbackAttachment> afaSet, Boolean remove) {
+	public void makeAttachmentFromFeedbackAttachmentSet(UIContainer tofill, String divID, String currentViewID,
+			Set<FeedbackAttachment> afaSet, Boolean remove) {
 		Set<String> refSet = new HashSet();
 		if (afaSet != null) {
-			for (AssignmentFeedbackAttachment afa : afaSet) {
+			for (FeedbackAttachment afa : afaSet) {
 				refSet.add(afa.getAttachmentReference());
 			}
 		}

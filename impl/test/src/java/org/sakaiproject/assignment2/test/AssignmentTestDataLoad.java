@@ -41,8 +41,8 @@ import org.sakaiproject.assignment2.model.AssignmentAttachment;
 import org.sakaiproject.assignment2.model.AssignmentGroup;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
-import org.sakaiproject.assignment2.model.AssignmentSubmissionAttachment;
-import org.sakaiproject.assignment2.model.AssignmentFeedbackAttachment;
+import org.sakaiproject.assignment2.model.SubmissionAttachment;
+import org.sakaiproject.assignment2.model.FeedbackAttachment;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 
 /**
@@ -171,17 +171,17 @@ public class AssignmentTestDataLoad {
 		dao.save(st2a1Version2);
 		st2a1CurrVersion = createGenericVersion(st2a1Submission);
 		dao.save(st2a1CurrVersion);
-		AssignmentSubmissionAttachment st2a1v3attach = 
-			new AssignmentSubmissionAttachment(st2a1CurrVersion, "attachmentRef");
+		SubmissionAttachment st2a1v3attach = 
+			new SubmissionAttachment(st2a1CurrVersion, "attachmentRef");
 		dao.save(st2a1v3attach);
-		AssignmentSubmissionAttachment st2a1v3attach2 = 
-			new AssignmentSubmissionAttachment(st2a1CurrVersion, "attachmentRef");
+		SubmissionAttachment st2a1v3attach2 = 
+			new SubmissionAttachment(st2a1CurrVersion, "attachmentRef");
 		dao.save(st2a1v3attach2);
-		AssignmentFeedbackAttachment st2a1v3Fattach = 
-			new AssignmentFeedbackAttachment(st2a1CurrVersion, "attachmentRef");
+		FeedbackAttachment st2a1v3Fattach = 
+			new FeedbackAttachment(st2a1CurrVersion, "attachmentRef");
 		dao.save(st2a1v3Fattach);
-		AssignmentFeedbackAttachment st2a1v3Fattach2 = 
-			new AssignmentFeedbackAttachment(st2a1CurrVersion, "attachmentRef");
+		FeedbackAttachment st2a1v3Fattach2 = 
+			new FeedbackAttachment(st2a1CurrVersion, "attachmentRef");
 		dao.save(st2a1v3Fattach2);
 		
 		// create a submission w/o any versions

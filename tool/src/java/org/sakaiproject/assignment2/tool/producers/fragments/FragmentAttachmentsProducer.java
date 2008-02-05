@@ -8,8 +8,8 @@ import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentAttachment;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
-import org.sakaiproject.assignment2.model.AssignmentSubmissionAttachment;
-import org.sakaiproject.assignment2.model.AssignmentFeedbackAttachment;
+import org.sakaiproject.assignment2.model.SubmissionAttachment;
+import org.sakaiproject.assignment2.model.FeedbackAttachment;
 import org.sakaiproject.assignment2.tool.beans.PreviewAssignmentBean;
 import org.sakaiproject.assignment2.tool.params.FragmentAttachmentsViewParams;
 import org.sakaiproject.assignment2.tool.producers.renderers.AttachmentListRenderer;
@@ -103,7 +103,7 @@ public class FragmentAttachmentsProducer implements ViewComponentProducer, ViewP
 		    	}
 	    	}
     	} else if (params.attachmentSetType == params.ASSIGNMENT_SUBMISSION_ATTACHMENT) {
-    		//This means we are dealing with AssignmentSubmissionAttachments
+    		//This means we are dealing with SubmissionAttachments
     		//First get the assignment submission
     		AssignmentSubmission as = (AssignmentSubmission) assignmentSubmissionEntityBeanLocator.locateBean(params.otpkey);
     		if (as != null) {
@@ -111,7 +111,7 @@ public class FragmentAttachmentsProducer implements ViewComponentProducer, ViewP
     			AssignmentSubmissionVersion asv = (AssignmentSubmissionVersion) as.getCurrentSubmissionVersion();
     			//Now get the attachment set
     			if (asv != null && asv.getSubmissionAttachSet() != null) {
-    				for (AssignmentSubmissionAttachment asa : asv.getSubmissionAttachSet()) {
+    				for (SubmissionAttachment asa : asv.getSubmissionAttachSet()) {
     					set.add(asa.getAttachmentReference());
     				}
     			}
@@ -119,7 +119,7 @@ public class FragmentAttachmentsProducer implements ViewComponentProducer, ViewP
     	} else if (params.attachmentSetType == params.ASSIGNMENT_FEEDBACK_ATTACHMENT) {
     		AssignmentSubmissionVersion asv = (AssignmentSubmissionVersion) asvEntityBeanLocator.locateBean(params.otpkey);
     		if (asv != null && asv.getFeedbackAttachSet() != null){
-    			for (AssignmentFeedbackAttachment afa : asv.getFeedbackAttachSet()){
+    			for (FeedbackAttachment afa : asv.getFeedbackAttachSet()){
     				set.add(afa.getAttachmentReference());
     			}
     		}

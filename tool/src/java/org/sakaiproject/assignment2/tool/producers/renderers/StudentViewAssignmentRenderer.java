@@ -12,7 +12,7 @@ import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentAttachment;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
-import org.sakaiproject.assignment2.model.AssignmentSubmissionAttachment;
+import org.sakaiproject.assignment2.model.SubmissionAttachment;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.assignment2.tool.params.FilePickerHelperViewParams;
@@ -175,11 +175,11 @@ public class StudentViewAssignmentRenderer {
     		
 	        //Attachments
 	        AssignmentSubmissionVersion submissionVersion = assignmentSubmission.getCurrentSubmissionVersion();
-	        Set<AssignmentSubmissionAttachment> set = new HashSet();
+	        Set<SubmissionAttachment> set = new HashSet();
 	        if (submissionVersion != null && submissionVersion.getSubmissionAttachSet() != null) {
 	        	set.addAll(submissionVersion.getSubmissionAttachSet());
 	        }
-	    	attachmentListRenderer.makeAttachmentFromAssignmentSubmissionAttachmentSet(joint, "submission_attachment_list:", params.viewID, 
+	    	attachmentListRenderer.makeAttachmentFromSubmissionAttachmentSet(joint, "submission_attachment_list:", params.viewID, 
 	    			set, Boolean.TRUE);
 	    	if (!preview){
 	    		UILink add_attachments = UIInternalLink.make(form, "add_submission_attachments", UIMessage.make("assignment2.student-submit.add_attachments"),

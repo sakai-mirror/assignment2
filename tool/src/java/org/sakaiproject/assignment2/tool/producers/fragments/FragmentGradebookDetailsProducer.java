@@ -14,7 +14,6 @@ import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentAttachment;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
-import org.sakaiproject.assignment2.model.AssignmentSubmissionAttachment;
 import org.sakaiproject.assignment2.tool.params.FragmentGradebookDetailsViewParams;
 import org.sakaiproject.assignment2.tool.producers.renderers.GradebookDetailsRenderer;
 import org.sakaiproject.content.api.ContentHostingService;

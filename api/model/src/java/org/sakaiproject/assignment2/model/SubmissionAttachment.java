@@ -1,6 +1,6 @@
 /**********************************************************************************
- * $URL: https://source.sakaiproject.org/contrib/assignment2/trunk/api/model/src/java/org/sakaiproject/assignment2/model/AssignmentAttachment.java $
- * $Id: AssignmentAttachment.java 12544 2006-05-03 15:06:26Z wagnermr@iupui.edu $
+ * $URL: https://source.sakaiproject.org/contrib/assignment2/trunk/api/model/src/java/org/sakaiproject/assignment2/model/AssignmentSubmissionAttachment.java $
+ * $Id: AssignmentSubmissionAttachment.java 12544 2006-05-03 15:06:26Z wagnermr@iupui.edu $
  ***********************************************************************************
  *
  * Copyright (c) 2007 The Sakai Foundation.
@@ -21,39 +21,21 @@
 
 package org.sakaiproject.assignment2.model;
 
-
 /**
- * The AssignmentAttachment object.  AssignmentAttachments are attachments
- * associated with the assignment.
- * 
- * @author <a href="mailto:wagnermr@iupui.edu">michelle wagner</a>
- */
-public class AssignmentAttachment extends AttachmentBase {
-
-	private Assignment2 assignment;
-
-	public AssignmentAttachment() {
+* The SubmissionAttachment object.  SubmissionAttachments 
+* are attachments associated with the submitter's submission.
+* 
+* @author <a href="mailto:wagnermr@iupui.edu">michelle wagner</a>
+*/
+public class SubmissionAttachment extends SubmissionAttachmentBase {
+	
+	public SubmissionAttachment() {
+		
 	}
-
-	public AssignmentAttachment(Assignment2 assignment, String attachmentReference) {
+	
+	public SubmissionAttachment(AssignmentSubmissionVersion submissionVersion, String attachmentReference) {
+		this.submissionVersion = submissionVersion;
 		this.attachmentReference = attachmentReference;
-		this.assignment = assignment;
-	}
-
-	/**
-	 * 
-	 * @return the assignment that this attachment is associated with
-	 */
-	public Assignment2 getAssignment() {
-		return assignment;
-	}
-
-	/**
-	 * set the assignment that this attachment is associated with
-	 * @param assignment
-	 */
-	public void setAssignment(Assignment2 assignment) {
-		this.assignment = assignment;
 	}
 
 }

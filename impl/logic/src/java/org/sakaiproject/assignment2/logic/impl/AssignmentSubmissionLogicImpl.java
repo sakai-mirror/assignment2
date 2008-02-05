@@ -36,8 +36,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
-import org.sakaiproject.assignment2.model.AssignmentSubmissionAttachment;
-import org.sakaiproject.assignment2.model.AssignmentFeedbackAttachment;
+import org.sakaiproject.assignment2.model.SubmissionAttachment;
+import org.sakaiproject.assignment2.model.SubmissionAttachmentBase;
+import org.sakaiproject.assignment2.model.FeedbackAttachment;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.assignment2.exception.SubmissionExistsException;
@@ -264,7 +265,8 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			
 			// identify which attachments need to be removed before we start
 			// editing the existingVersion
-			Set<AssignmentSubmissionAttachment> attachToDelete = identifySubmissionAttachmentsToDelete(existingVersion, version);
+			Set<SubmissionAttachment> attachToDelete = 
+				identifyAttachmentsToDelete(existingVersion.getSubmissionAttachSet(), version.getSubmissionAttachSet());
 			
 			// we will update the existing version to prevent overwriting 
 			// non-student submission fields accidentally
@@ -280,10 +282,10 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			}
 			
 			try {
-				Set<AssignmentSubmissionAttachment> attachSet = new HashSet();
+				Set<SubmissionAttachment> attachSet = new HashSet();
 				if (version.getSubmissionAttachSet() != null) {
 					attachSet = version.getSubmissionAttachSet();
-					populateVersionForSubmissionAttachmentSet(attachSet, existingVersion);
+					populateVersionForAttachmentSet(attachSet, existingVersion);
 				}
 				
 				Set<AssignmentSubmissionVersion> versionSet = new HashSet();
@@ -322,10 +324,10 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			newVersion.setCreatedBy(currentUserId);
 			newVersion.setCreatedTime(currentTime);
 			
-			Set<AssignmentSubmissionAttachment> attachSet = new HashSet();
+			Set<SubmissionAttachment> attachSet = new HashSet();
 			if (version.getSubmissionAttachSet() != null) {
 				attachSet = version.getSubmissionAttachSet();
-				populateVersionForSubmissionAttachmentSet(attachSet, newVersion);
+				populateVersionForAttachmentSet(attachSet, newVersion);
 			}
 			
 			Set<AssignmentSubmissionVersion> versionSet = new HashSet();
@@ -389,7 +391,8 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 				
 				// identify the removed attachments before we start modifying the 
 				// existing version
-				Set<AssignmentFeedbackAttachment> attachToDelete = identifyFeedbackAttachmentsToDelete(existingVersion, version);
+				Set<FeedbackAttachment> attachToDelete = 
+					identifyAttachmentsToDelete(existingVersion.getFeedbackAttachSet(), version.getFeedbackAttachSet());
 				
 				// we will update the existing version to prevent overwriting 
 				// non-feedback fields accidentally
@@ -399,10 +402,10 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 				existingVersion.setLastFeedbackSubmittedBy(currentUserId);
 				existingVersion.setLastFeedbackTime(currentTime);
 				
-				Set<AssignmentFeedbackAttachment> attachSet = new HashSet();
+				Set<FeedbackAttachment> attachSet = new HashSet();
 				if (version.getFeedbackAttachSet() != null) {
 					attachSet = version.getFeedbackAttachSet();
-					populateVersionForFeedbackAttachmentSet(attachSet, existingVersion);
+					populateVersionForAttachmentSet(attachSet, existingVersion);
 				}
 				
 				Set<AssignmentSubmissionVersion> versionSet = new HashSet();
@@ -442,10 +445,10 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			
 			// we need to handle attachments specially. The version must be persisted
 			// before attachment can be saved
-			Set<AssignmentFeedbackAttachment> attachSet = new HashSet();
+			Set<FeedbackAttachment> attachSet = new HashSet();
 			if (version.getFeedbackAttachSet() != null) {
 				attachSet = version.getFeedbackAttachSet();
-				populateVersionForFeedbackAttachmentSet(attachSet, newVersion);
+				populateVersionForAttachmentSet(attachSet, newVersion);
 			}
 			
 			Set<AssignmentSubmissionVersion> versionSet = new HashSet();
@@ -596,10 +599,10 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		}
 	}
 	
-	private void populateVersionForFeedbackAttachmentSet(Set<AssignmentFeedbackAttachment> attachSet, AssignmentSubmissionVersion version) {
+	private void populateVersionForAttachmentSet(Set attachSet, AssignmentSubmissionVersion version) {
 		if (attachSet != null && !attachSet.isEmpty()) {
 			for (Iterator attachIter = attachSet.iterator(); attachIter.hasNext();) {
-				AssignmentFeedbackAttachment attach = (AssignmentFeedbackAttachment) attachIter.next();
+				SubmissionAttachmentBase attach = (SubmissionAttachmentBase) attachIter.next();
 				if (attach != null) {
 					attach.setSubmissionVersion(version);
 				}
@@ -607,51 +610,21 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		}
 	}
 	
-	private Set identifyFeedbackAttachmentsToDelete(AssignmentSubmissionVersion existingVersion, AssignmentSubmissionVersion updatedVersion) {
+	private Set identifyAttachmentsToDelete(Set existingAttachSet, Set updatedAttachSet) {
 		Set attachToRemove = new HashSet();
 		
-		if (updatedVersion != null && existingVersion != null) {
-			for (Iterator existingIter = existingVersion.getFeedbackAttachSet().iterator(); existingIter.hasNext();) {
-				AssignmentFeedbackAttachment attach = (AssignmentFeedbackAttachment) existingIter.next();
+		if (existingAttachSet != null) {
+			for (Iterator existingIter = existingAttachSet.iterator(); existingIter.hasNext();) {
+				SubmissionAttachmentBase attach = (SubmissionAttachmentBase) existingIter.next();
 				if (attach != null) {
-					if (updatedVersion.getFeedbackAttachSet() == null ||
-							!updatedVersion.getFeedbackAttachSet().contains(attach)) {
+					if (updatedAttachSet == null ||
+							!updatedAttachSet.contains(attach)) {
 						// we need to delete this attachment
 						attachToRemove.add(attach);
 					} 
 				}
 			}
-		}
-		
-		return attachToRemove;
-	}
-	
-	private void populateVersionForSubmissionAttachmentSet(Set<AssignmentSubmissionAttachment> attachSet, AssignmentSubmissionVersion version) {
-		if (attachSet != null && !attachSet.isEmpty()) {
-			for (Iterator attachIter = attachSet.iterator(); attachIter.hasNext();) {
-				AssignmentSubmissionAttachment attach = (AssignmentSubmissionAttachment) attachIter.next();
-				if (attach != null) {
-					attach.setSubmissionVersion(version);
-				}
-			}
-		}
-	}
-	
-	private Set identifySubmissionAttachmentsToDelete(AssignmentSubmissionVersion existingVersion, AssignmentSubmissionVersion updatedVersion) {
-		Set attachToRemove = new HashSet();
-		
-		if (updatedVersion != null && existingVersion != null) {
-			for (Iterator existingIter = existingVersion.getSubmissionAttachSet().iterator(); existingIter.hasNext();) {
-				AssignmentSubmissionAttachment attach = (AssignmentSubmissionAttachment) existingIter.next();
-				if (attach != null) {
-					if (updatedVersion.getSubmissionAttachSet() == null ||
-							!updatedVersion.getSubmissionAttachSet().contains(attach)) {
-						// we need to delete this attachment
-						attachToRemove.add(attach);
-					} 
-				}
-			}
-		}
+		} 
 		
 		return attachToRemove;
 	}

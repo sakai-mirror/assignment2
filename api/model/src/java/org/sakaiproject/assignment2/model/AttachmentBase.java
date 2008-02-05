@@ -1,6 +1,6 @@
 /**********************************************************************************
- * $URL: https://source.sakaiproject.org/contrib/assignment2/trunk/api/model/src/java/org/sakaiproject/assignment2/model/AssignmentSubmissionAttachment.java $
- * $Id: AssignmentSubmissionAttachment.java 12544 2006-05-03 15:06:26Z wagnermr@iupui.edu $
+ * $URL$
+ * $Id$
  ***********************************************************************************
  *
  * Copyright (c) 2007 The Sakai Foundation.
@@ -21,37 +21,27 @@
 
 package org.sakaiproject.assignment2.model;
 
-/**
-* The AssignmentSubmissionAttachment object.  AssignmentSubmissionAttachments 
-* are attachments associated with the submission.
-* 
-* @author <a href="mailto:wagnermr@iupui.edu">michelle wagner</a>
-*/
-public class AssignmentSubmissionAttachment {
 
-	private Long id;
-	private AssignmentSubmissionVersion submissionVersion;
-	private String attachmentReference;
-	
-	public AssignmentSubmissionAttachment() {
-		
-	}
-	
-	public AssignmentSubmissionAttachment(AssignmentSubmissionVersion submissionVersion, String attachmentReference) {
-		this.submissionVersion = submissionVersion;
-		this.attachmentReference = attachmentReference;
-	}
+/**
+ * The AttachmentBase object.  All attachments extend this object
+ * 
+ * @author <a href="mailto:wagnermr@iupui.edu">michelle wagner</a>
+ */
+public abstract class AttachmentBase {
+
+	protected Long id;
+	protected String attachmentReference;
+	protected int revisionVersion;  //for optimistic locking
 
 	/**
-	 * 
-	 * @return the id for this submission attachment
+	 * @return the id of this assignment attachment
 	 */
 	public Long getId() {
 		return id;
 	}
 
 	/**
-	 * set the sid for this submission attachment
+	 * set the the id of this assignment attachment
 	 * @param id
 	 */
 	public void setId(Long id) {
@@ -60,42 +50,34 @@ public class AssignmentSubmissionAttachment {
 
 	/**
 	 * 
-	 * @return the AssignmentSubmissionVersion rec associated with this attachment
-	 */
-	public AssignmentSubmissionVersion getSubmissionVersion() {
-		return submissionVersion;
-	}
-
-	/**
-	 * set the AssignmentSubmissionVersion rec associated with this attachment
-	 * @param submissionVersion
-	 */
-	public void setSubmissionVersion(AssignmentSubmissionVersion submissionVersion) {
-		this.submissionVersion = submissionVersion;
-	}
-
-	/**
-	 * 
-	 * @return the reference to this submission attachment
+	 * @return the reference to this attachment
 	 */
 	public String getAttachmentReference() {
 		return attachmentReference;
 	}
 
 	/**
-	 * set the reference to this submission attachment
+	 * set the reference to this attachment
 	 * @param attachmentReference
 	 */
 	public void setAttachmentReference(String attachmentReference) {
 		this.attachmentReference = attachmentReference;
 	}
-	
+
+	public int getRevisionVersion() {
+		return revisionVersion;
+	}
+
+	public void setRevisionVersion(int revisionVersion) {
+		this.revisionVersion = revisionVersion;
+	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (null == obj) return false;
-		if (!(obj instanceof AssignmentSubmissionAttachment)) return false;
+		if (!(obj instanceof AttachmentBase)) return false;
 		else {
-			AssignmentSubmissionAttachment compAttach = (AssignmentSubmissionAttachment) obj;
+			AttachmentBase compAttach = (AttachmentBase) obj;
 			if (this.id == null || compAttach.id == null) {
 				return false;
 			}
@@ -112,5 +94,4 @@ public class AssignmentSubmissionAttachment {
 		String hashStr = this.getClass().getName() + ":" + this.id.hashCode();
 		return hashStr.hashCode();
 	}
-
 }

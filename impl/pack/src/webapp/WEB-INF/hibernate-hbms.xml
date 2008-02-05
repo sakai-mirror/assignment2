@@ -11,11 +11,10 @@
          <list>
             <value>org/sakaiproject/assignment2/hbm/Assignment2.hbm.xml</value>
             <value>org/sakaiproject/assignment2/hbm/AssignmentAttachment.hbm.xml</value>
-            <value>org/sakaiproject/assignment2/hbm/AssignmentFeedbackAttachment.hbm.xml</value>
             <value>org/sakaiproject/assignment2/hbm/AssignmentGroup.hbm.xml</value>
             <value>org/sakaiproject/assignment2/hbm/AssignmentSubmission.hbm.xml</value>
             <value>org/sakaiproject/assignment2/hbm/AssignmentSubmissionVersion.hbm.xml</value>
-            <value>org/sakaiproject/assignment2/hbm/AssignmentSubmissionAttachment.hbm.xml</value>
+            <value>org/sakaiproject/assignment2/hbm/SubmissionAttachmentBase.hbm.xml</value>
          </list>
       </property>
    </bean>

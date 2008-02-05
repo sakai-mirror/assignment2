@@ -14,10 +14,10 @@ import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
 import org.sakaiproject.assignment2.logic.ExternalAnnouncementLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
-import org.sakaiproject.assignment2.model.AssignmentSubmissionAttachment;
+import org.sakaiproject.assignment2.model.SubmissionAttachment;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
-import org.sakaiproject.assignment2.model.AssignmentFeedbackAttachment;
+import org.sakaiproject.assignment2.model.FeedbackAttachment;
 import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.tool.api.ToolSession;
 
@@ -119,7 +119,7 @@ public class AssignmentSubmissionBean {
 			
 			
 			//Start attachment stuff
-			Set<AssignmentSubmissionAttachment> set = new HashSet();
+			Set<SubmissionAttachment> set = new HashSet();
 			if (assignmentSubmission.getCurrentSubmissionVersion().getSubmissionAttachSet() != null) {
 				set.addAll(assignmentSubmission.getCurrentSubmissionVersion().getSubmissionAttachSet());
 			}
@@ -128,15 +128,15 @@ public class AssignmentSubmissionBean {
 	    	ToolSession session = sessionManager.getCurrentToolSession();
 	    	if (session.getAttribute("attachmentRefs") != null) {
 	    		for (String ref : (Set<String>)session.getAttribute("attachmentRefs")) {
-	    			AssignmentSubmissionAttachment asa = new AssignmentSubmissionAttachment();
+	    			SubmissionAttachment asa = new SubmissionAttachment();
 	    			asa.setAttachmentReference(ref);
 	    			set.add(asa);
 	    		}
 	    	}
-	    	Set<AssignmentSubmissionAttachment> final_set = new HashSet();
+	    	Set<SubmissionAttachment> final_set = new HashSet();
 	    	//Now check for attachments that have been removed
 	    	if (session.getAttribute("removedAttachmentRefs") != null) {
-		    	for (AssignmentSubmissionAttachment asa : set) {
+		    	for (SubmissionAttachment asa : set) {
 		    		//If this item in the set does not have a reference id that is 
 		    		// located in the removed attachment reference ids set
 		    		if (!((Set<String>) session.getAttribute("removedAttachmentRefs")).contains(asa.getAttachmentReference())){
@@ -184,7 +184,7 @@ public class AssignmentSubmissionBean {
 			assignmentSubmission.getCurrentSubmissionVersion().setDraft(Boolean.TRUE);
 
 			//Start attachment stuff
-			Set<AssignmentSubmissionAttachment> set = new HashSet();
+			Set<SubmissionAttachment> set = new HashSet();
 			if (assignmentSubmission.getCurrentSubmissionVersion().getSubmissionAttachSet() != null) {
 				set.addAll(assignmentSubmission.getCurrentSubmissionVersion().getSubmissionAttachSet());
 			}
@@ -193,15 +193,15 @@ public class AssignmentSubmissionBean {
 	    	ToolSession session = sessionManager.getCurrentToolSession();
 	    	if (session.getAttribute("attachmentRefs") != null) {
 	    		for (String ref : (Set<String>)session.getAttribute("attachmentRefs")) {
-	    			AssignmentSubmissionAttachment asa = new AssignmentSubmissionAttachment();
+	    			SubmissionAttachment asa = new SubmissionAttachment();
 	    			asa.setAttachmentReference(ref);
 	    			set.add(asa);
 	    		}
 	    	}
-	    	Set<AssignmentSubmissionAttachment> final_set = new HashSet();
+	    	Set<SubmissionAttachment> final_set = new HashSet();
 	    	//Now check for attachments that have been removed
 	    	if (session.getAttribute("removedAttachmentRefs") != null) {
-		    	for (AssignmentSubmissionAttachment asa : set) {
+		    	for (SubmissionAttachment asa : set) {
 		    		//If this item in the set does not have a reference id that is 
 		    		// located in the removed attachment reference ids set
 		    		if (!((Set<String>) session.getAttribute("removedAttachmentRefs")).contains(asa.getAttachmentReference())){
@@ -269,7 +269,7 @@ public class AssignmentSubmissionBean {
 			}
 			
 			//Start attachment stuff
-			Set<AssignmentFeedbackAttachment> set = new HashSet();
+			Set<FeedbackAttachment> set = new HashSet();
 			if (assignmentSubmission.getCurrentSubmissionVersion() != null && 
 					assignmentSubmission.getCurrentSubmissionVersion().getFeedbackAttachSet() != null) {
 				set.addAll(assignmentSubmission.getCurrentSubmissionVersion().getFeedbackAttachSet());
@@ -279,15 +279,15 @@ public class AssignmentSubmissionBean {
 	    	ToolSession session = sessionManager.getCurrentToolSession();
 	    	if (session.getAttribute("attachmentRefs") != null) {
 	    		for (String ref : (Set<String>)session.getAttribute("attachmentRefs")) {
-	    			AssignmentFeedbackAttachment afa = new AssignmentFeedbackAttachment();
+	    			FeedbackAttachment afa = new FeedbackAttachment();
 	    			afa.setAttachmentReference(ref);
 	    			set.add(afa);
 	    		}
 	    	}
-	    	Set<AssignmentFeedbackAttachment> final_set = new HashSet();
+	    	Set<FeedbackAttachment> final_set = new HashSet();
 	    	//Now check for attachments that have been removed
 	    	if (session.getAttribute("removedAttachmentRefs") != null) {
-		    	for (AssignmentFeedbackAttachment afa : set) {
+		    	for (FeedbackAttachment afa : set) {
 		    		//If this item in the set does not have a reference id that is 
 		    		// located in the removed attachment reference ids set
 		    		if (!((Set<String>) session.getAttribute("removedAttachmentRefs")).contains(afa.getAttachmentReference())){
