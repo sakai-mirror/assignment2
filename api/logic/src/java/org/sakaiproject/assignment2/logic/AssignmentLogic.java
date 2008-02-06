@@ -49,7 +49,8 @@ public interface AssignmentLogic {
 	/**
 	 * 
 	 * @param assignmentId
-	 * @return Returns the Assignment based on its assignmentId
+	 * @return Returns the Assignment based on its assignmentId. Populates
+	 * the AssignmentAttachments and AssignmentGroups
 	 */
 	public Assignment2 getAssignmentById(Long assignmentId);
 	

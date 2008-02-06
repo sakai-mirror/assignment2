@@ -27,7 +27,6 @@ import org.sakaiproject.assignment2.dao.AssignmentDao;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
-import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.logic.ExternalAnnouncementLogic;
 import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
 import org.sakaiproject.assignment2.logic.impl.AssignmentLogicImpl;
@@ -36,6 +35,8 @@ import org.sakaiproject.assignment2.logic.impl.ExternalGradebookLogicImpl;
 import org.sakaiproject.assignment2.logic.impl.AssignmentPermissionLogicImpl;
 import org.sakaiproject.assignment2.logic.impl.AssignmentSubmissionLogicImpl;
 import org.sakaiproject.assignment2.logic.test.stubs.ExternalLogicStub;
+import org.sakaiproject.assignment2.test.AssignmentTestDataLoad;
+import org.sakaiproject.assignment2.test.PreloadTestData;
 
 import org.sakaiproject.service.gradebook.shared.GradebookFrameworkService;
 import org.sakaiproject.service.gradebook.shared.GradebookService;
@@ -57,12 +58,11 @@ import org.springframework.test.AbstractTransactionalSpringContextTests;
  */
 public abstract class Assignment2TestBase extends AbstractTransactionalSpringContextTests {
 	protected AssignmentDao dao;
+	protected AssignmentTestDataLoad testData;
 
-	protected ExternalLogic externalogic;
-	protected ExternalGradebookLogic gradebookLogic;
 	protected ExternalAnnouncementLogic announcementLogic;
 	
-	// these use external logic which we have to replace with stub, so use impl
+	protected ExternalGradebookLogicImpl gradebookLogic;
 	protected AssignmentLogicImpl assignmentLogic;
 	protected AssignmentSubmissionLogicImpl submissionLogic;
 	protected AssignmentPermissionLogicImpl permissionLogic;
@@ -80,6 +80,9 @@ public abstract class Assignment2TestBase extends AbstractTransactionalSpringCon
 	protected static final Double GB_ITEM2_PTS = new Double(40);
 	protected static final Date GB_ITEM2_DUE = new Date();
 	
+	protected static final String GRADED_ASSIGN1_TITLE = "Graded Assignment #1";
+	protected static final String GRADED_ASSIGN2_TITLE = "Graded Assignment #2";
+	
 	protected SectionAwareness sectionAwareness;
 	//protected UserDirectoryService userDirectoryService;
 	protected IntegrationSupport integrationSupport;
@@ -89,7 +92,13 @@ public abstract class Assignment2TestBase extends AbstractTransactionalSpringCon
 	
 	}
     protected void onSetUpInTransaction() throws Exception {
-        
+    	PreloadTestData ptd = (PreloadTestData) applicationContext.getBean("org.sakaiproject.assignment2.test.PreloadTestData");
+		if (ptd == null) {
+			throw new NullPointerException("PreloadTestData could not be retrieved from spring");
+		}
+		
+		testData = ptd.getAtdl();
+		
         sectionAwareness = (SectionAwareness)applicationContext.getBean("org.sakaiproject.section.api.SectionAwareness");
         if (sectionAwareness == null) {
         	throw new NullPointerException("Sections integration support could not be retrieved from spring");
@@ -126,27 +135,32 @@ public abstract class Assignment2TestBase extends AbstractTransactionalSpringCon
     	if (authn == null) {
 			throw new NullPointerException("authn could not be retrieved from spring");
 		}
+    	ExternalLogicStub externalLogic = new ExternalLogicStub();
+    	externalLogic.setAuthn(authn);
     	
     	gradebookLogic = new ExternalGradebookLogicImpl();
+    	gradebookLogic.setGradebookService(gradebookService);
+    	
     	announcementLogic = new ExternalAnnouncementLogicImpl();
     	
     	permissionLogic = new AssignmentPermissionLogicImpl();
     	permissionLogic.setDao(dao);
     	permissionLogic.setExternalGradebookLogic(gradebookLogic);
-    	permissionLogic.setExternalLogic(new ExternalLogicStub());
+    	permissionLogic.setExternalLogic(externalLogic);
     	
     	submissionLogic = new AssignmentSubmissionLogicImpl();
     	submissionLogic.setDao(dao);
     	submissionLogic.setExternalGradebookLogic(gradebookLogic);
-    	submissionLogic.setExternalLogic(new ExternalLogicStub());
+    	submissionLogic.setExternalLogic(externalLogic);
     	submissionLogic.setPermissionLogic(permissionLogic);
     	
     	assignmentLogic = new AssignmentLogicImpl();
     	assignmentLogic.setDao(dao);
     	assignmentLogic.setExternalAnnouncementLogic(announcementLogic);
     	assignmentLogic.setExternalGradebookLogic(gradebookLogic);
-    	assignmentLogic.setExternalLogic(new ExternalLogicStub());
+    	assignmentLogic.setExternalLogic(externalLogic);
     	assignmentLogic.setAssignmentSubmissionLogic(submissionLogic);
+    	assignmentLogic.setPermissionLogic(permissionLogic);
 	
     }
 

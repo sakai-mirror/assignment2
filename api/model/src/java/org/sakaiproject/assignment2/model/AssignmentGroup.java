@@ -38,6 +38,11 @@ public class AssignmentGroup {
 		
 	}
 	
+	public AssignmentGroup(Assignment2 assignment, String groupId) {
+		this.assignment = assignment;
+		this.groupId = groupId;
+	}
+	
 	/**
 	 * 
 	 * @return id

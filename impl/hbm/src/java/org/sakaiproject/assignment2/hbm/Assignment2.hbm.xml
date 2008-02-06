@@ -114,12 +114,12 @@
 	        <one-to-many class="org.sakaiproject.assignment2.model.AssignmentSubmission"/>            
     		</set>
         
-        <set name="attachmentSet" lazy="true" inverse="true" cascade="save-update">
+        <set name="attachmentSet" lazy="true" inverse="true" cascade="none">
 	        <key column="ASSIGNMENT_ID"/>                        
 	        <one-to-many class="org.sakaiproject.assignment2.model.AssignmentAttachment"/>            
     		</set>
               
-        <set name="assignmentGroupSet" lazy="true" inverse="true" cascade="save-update">
+        <set name="assignmentGroupSet" lazy="true" inverse="true" cascade="none">
 	        <key column="ASSIGNMENT_ID"/>                        
 	        <one-to-many class="org.sakaiproject.assignment2.model.AssignmentGroup"/>            
     		</set>

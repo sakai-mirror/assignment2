@@ -74,6 +74,10 @@ public class AssignmentTestDataLoad {
 	public Long a2Id;
 	public Long a3Id;
 	
+	// Assignment 1 has 2 attachments and 2 groups
+	// Assignment 2 has 0 attachments and 1 group
+	// Assignment 3 has 1 attachment and 0 groups
+	
 	public AssignmentAttachment attach1Fora1;
 	public AssignmentAttachment attach2Fora1;
 	public AssignmentAttachment attach1Fora3;

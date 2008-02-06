@@ -98,7 +98,8 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 	/**
 	 * 
 	 * @param assignmentId
-	 * @return Returns the Assignment based on its assignmentId
+	 * @return Returns the Assignment based on its assignmentId. null if
+	 * no assignment exists with the given id
 	 */
 	public Assignment2 getAssignmentById(Long assignmentId)
 	{
@@ -138,10 +139,6 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 		return (Assignment2) dao.getAssignmentByIdWithGroups(assignmentId);
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see org.sakaiproject.assignment2.logic.AssignmentLogic#saveAssignment(org.sakaiproject.assignment2.model.Assignment2)
-	 */
 	public void saveAssignment(Assignment2 assignment) throws SecurityException, ConflictingAssignmentNameException
 	{
 		if (assignment == null) {
@@ -181,6 +178,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
         		assignment.setSortIndex(0);
         	}
         	
+        	assignment.setRemoved(Boolean.FALSE);
         	assignment.setCreateTime(new Date());
         	assignment.setCreator(currentUserId);
         	
@@ -210,6 +208,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 	        	}
 			}
 			
+			assignment.setRemoved(Boolean.FALSE);
 			assignment.setModifiedBy(currentUserId);
 			assignment.setModifiedTime(new Date());
 			
@@ -255,6 +254,10 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 	{
 		if (assignment == null) {
 			throw new IllegalArgumentException("Null assignment passed to deleteAssignment");
+		}
+		
+		if (assignment.getId() == null) {
+			throw new IllegalArgumentException("The passed assignment does not have an id. Can only delete persisted assignments");
 		}
 		
 		String currentContextId = externalLogic.getCurrentContextId();
@@ -525,7 +528,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 	private Set identifyAttachmentsToDelete(Assignment2 existingAssign, Assignment2 updatedAssign) {
 		Set attachToRemove = new HashSet();
 		
-		if (updatedAssign != null && existingAssign != null) {
+		if (updatedAssign != null && existingAssign != null && existingAssign.getAttachmentSet() != null) {
 			for (Iterator existingIter = existingAssign.getAttachmentSet().iterator(); existingIter.hasNext();) {
 				AssignmentAttachment attach = (AssignmentAttachment) existingIter.next();
 				if (attach != null) {
@@ -544,7 +547,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 	private Set identifyGroupsToDelete(Assignment2 existingAssign, Assignment2 updatedAssign) {
 		Set groupsToRemove = new HashSet();
 		
-		if (updatedAssign != null && existingAssign != null) {
+		if (updatedAssign != null && existingAssign != null && existingAssign.getAssignmentGroupSet() != null) {
 			for (Iterator existingIter = existingAssign.getAssignmentGroupSet().iterator(); existingIter.hasNext();) {
 				AssignmentGroup attach = (AssignmentGroup) existingIter.next();
 				if (attach != null) {
