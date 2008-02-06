@@ -104,7 +104,7 @@ public interface AssignmentDao extends CompleteGenericDao {
 	 * @return the AssignmentSubmission rec for the given student and assignment with the
 	 * submissionHistorySet populated with all of the AssignmentSubmissionVersions associated
 	 * with this submission. returns null if no submission has been made. will populate the
-	 * currentSubmissionVersion 
+	 * currentSubmissionVersion and associated attachments
 	 */
 	public AssignmentSubmission getSubmissionWithVersionHistoryForStudentAndAssignment(String studentId, Assignment2 assignment);
 	
@@ -115,7 +115,7 @@ public interface AssignmentDao extends CompleteGenericDao {
 	 * @return the AssignmentSubmission recs for the given students for the given assignment.
 	 * populates the submissionHistorySet with all of the AssignmentSubmissionVersions for
 	 * each submission. if no submission has been made, no rec will be returned. will
-	 * populate currentVersion
+	 * populate currentVersion. will also populate attachments for the versions
 	 * 
 	 */
 	public Set<AssignmentSubmission> getSubmissionsWithVersionHistoryForStudentListAndAssignment(List<String> studentIdList, Assignment2 assignment);
@@ -132,7 +132,7 @@ public interface AssignmentDao extends CompleteGenericDao {
 	 * 
 	 * @param submissionId
 	 * @return the AssignmentSubmission with the given id with the history set populated. Version
-	 * attachments are NOT populated. Will populate currentSubmission 
+	 * attachments are NOT populated. Will populate currentVersion 
 	 */
 	public AssignmentSubmission getSubmissionWithVersionHistoryById(Long submissionId);
 }

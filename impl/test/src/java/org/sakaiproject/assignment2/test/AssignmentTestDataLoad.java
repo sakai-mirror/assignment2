@@ -89,10 +89,10 @@ public class AssignmentTestDataLoad {
 	public AssignmentSubmission st1a1Submission;
 	public AssignmentSubmission st2a1Submission;
 	
-	public AssignmentSubmissionVersion st1a1CurrVersion;
-	public AssignmentSubmissionVersion st2a1Version1;
-	public AssignmentSubmissionVersion st2a1Version2;
-	public AssignmentSubmissionVersion st2a1CurrVersion;
+	public AssignmentSubmissionVersion st1a1CurrVersion; // no attach
+	public AssignmentSubmissionVersion st2a1Version1; // 1 Sub Attach
+	public AssignmentSubmissionVersion st2a1Version2; // no attach
+	public AssignmentSubmissionVersion st2a1CurrVersion; // 2 FA, 2 SA
 	
 	public AssignmentSubmission st2a2SubmissionNoVersions;
 
@@ -171,6 +171,9 @@ public class AssignmentTestDataLoad {
 		st2a1Version1 = createGenericVersion(st2a1Submission);
 		dao.save(st2a1Submission);
 		dao.save(st2a1Version1);
+		SubmissionAttachment st2a1v2Attach =
+			new SubmissionAttachment(st2a1Version1, "attachmentRef");
+		dao.save(st2a1v2Attach);
 		st2a1Version2 = createGenericVersion(st2a1Submission);
 		dao.save(st2a1Version2);
 		st2a1CurrVersion = createGenericVersion(st2a1Submission);
