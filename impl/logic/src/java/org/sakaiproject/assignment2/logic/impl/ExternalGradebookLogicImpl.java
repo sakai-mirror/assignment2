@@ -113,6 +113,10 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
 						}
 						// if it exists, then this user does not have perm to view it in the gb
 					}
+				} else {
+					// there is no gradableObjectId set for this assignment!
+					gradedAssignment.setNeedsUserAttention(true);
+					viewableAssignmentsWithGbData.add(gradedAssignment);
 				}
 			}
 		}

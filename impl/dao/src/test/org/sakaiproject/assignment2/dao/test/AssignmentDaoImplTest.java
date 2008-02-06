@@ -76,7 +76,7 @@ public class AssignmentDaoImplTest extends Assignment2DaoTestBase {
 		
 		// positive test	
 		highestIndex = assignmentDao.getHighestSortIndexInSite(AssignmentTestDataLoad.CONTEXT_ID);
-		assertEquals(2, highestIndex);
+		assertEquals(3, highestIndex);
 	}
 
 	public void testGetAssignmentsWithGroupsAndAttachments() {
@@ -96,7 +96,7 @@ public class AssignmentDaoImplTest extends Assignment2DaoTestBase {
 		// now try the valid context - there should be 3 assignments
 		assignments = assignmentDao.getAssignmentsWithGroupsAndAttachments(AssignmentTestDataLoad.CONTEXT_ID);
 		assertNotNull(assignments);
-		assertTrue(assignments.size() == 3);
+		assertTrue(assignments.size() == 4);
 		
 		// for each assignment returned, double check that the attachment and group sets are accurate
 		for (Iterator assignIter = assignments.iterator(); assignIter.hasNext();) {
@@ -107,11 +107,14 @@ public class AssignmentDaoImplTest extends Assignment2DaoTestBase {
 				assertTrue(assign.getAssignmentGroupSet().size() == 2);
 			} else if (assign.getId().equals(testData.a2Id)) {
 				assertTrue(assign.getAttachmentSet().isEmpty());
-				assertTrue(assign.getAssignmentGroupSet().size() == 1);
+				assertTrue(assign.getAssignmentGroupSet().isEmpty());
 			} else if (assign.getId().equals(testData.a3Id)) {
 				assertNotNull(assign.getAttachmentSet());
 				assertTrue(assign.getAttachmentSet().size() == 1);
 				assertTrue(assign.getAssignmentGroupSet().isEmpty());
+			} else if (assign.getId().equals(testData.a4Id)) {
+				assertTrue(assign.getAttachmentSet().isEmpty());
+				assertTrue(assign.getAssignmentGroupSet().size() == 1);
 			}
 		}
 		

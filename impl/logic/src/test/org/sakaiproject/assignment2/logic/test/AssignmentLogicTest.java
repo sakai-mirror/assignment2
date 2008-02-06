@@ -42,6 +42,8 @@ import org.sakaiproject.assignment2.model.AssignmentGroup;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.assignment2.exception.ConflictingAssignmentNameException;
 
+import org.sakaiproject.section.api.coursemanagement.CourseSection;
+import org.sakaiproject.section.api.coursemanagement.Course;
 import org.sakaiproject.section.api.facade.Role;
 
 
@@ -53,9 +55,6 @@ import org.sakaiproject.section.api.facade.Role;
 public class AssignmentLogicTest extends Assignment2TestBase {
 
     private static final Log log = LogFactory.getLog(AssignmentLogicTest.class);
-    
-    private Long gbItem1Id;
-    private Long gbItem2Id;
 
     /**
      * @see org.springframework.test.AbstractTransactionalSpringContextTests#onSetUpInTransaction()
@@ -68,39 +67,81 @@ public class AssignmentLogicTest extends Assignment2TestBase {
         userManager.createUser(AssignmentTestDataLoad.TA_UID, null, null, null);
         userManager.createUser(AssignmentTestDataLoad.STUDENT1_UID, null, null, null);
         userManager.createUser(AssignmentTestDataLoad.STUDENT2_UID, null, null, null);
+        userManager.createUser(AssignmentTestDataLoad.STUDENT3_UID, null, null, null);
         
         // set up the course
-        integrationSupport.createCourse(AssignmentTestDataLoad.CONTEXT_ID, AssignmentTestDataLoad.CONTEXT_ID, false, false, false);
+        Course site = integrationSupport.createCourse(AssignmentTestDataLoad.CONTEXT_ID, AssignmentTestDataLoad.CONTEXT_ID, false, false, false);
         integrationSupport.addSiteMembership(AssignmentTestDataLoad.INSTRUCTOR_UID, AssignmentTestDataLoad.CONTEXT_ID, Role.INSTRUCTOR);
         integrationSupport.addSiteMembership(AssignmentTestDataLoad.TA_UID, AssignmentTestDataLoad.CONTEXT_ID, Role.TA);
         integrationSupport.addSiteMembership(AssignmentTestDataLoad.STUDENT1_UID, AssignmentTestDataLoad.CONTEXT_ID, Role.STUDENT);
         integrationSupport.addSiteMembership(AssignmentTestDataLoad.STUDENT2_UID, AssignmentTestDataLoad.CONTEXT_ID, Role.STUDENT);
+        integrationSupport.addSiteMembership(AssignmentTestDataLoad.STUDENT3_UID, AssignmentTestDataLoad.CONTEXT_ID, Role.STUDENT);
         
+        // create some sections
+        List sectionCategories = sectionAwareness.getSectionCategories(AssignmentTestDataLoad.CONTEXT_ID);
+        CourseSection section1 = integrationSupport.createSection(site.getUuid(), AssignmentTestDataLoad.GROUP1_NAME,
+				(String)sectionCategories.get(0),
+				new Integer(40), null, null, null, true, false, true,  false, false, false, false);
+		section1Uid = section1.getUuid();
+
+		CourseSection section2 = integrationSupport.createSection(site.getUuid(), AssignmentTestDataLoad.GROUP2_NAME,
+				(String)sectionCategories.get(0),
+				new Integer(40), null, null, null, true, false, true,  false, false, false, false);
+		section2Uid = section2.getUuid();
+		CourseSection section3 = integrationSupport.createSection(site.getUuid(), AssignmentTestDataLoad.GROUP3_NAME,
+				(String)sectionCategories.get(0),
+				new Integer(40), null, null, null, true, false, true,  false, false, false, false);
+		section3Uid = section3.getUuid();
+		
+		
+		// put some users in the sections
+		// add TA and STUDENT1 to section 1
+		integrationSupport.addSectionMembership(AssignmentTestDataLoad.STUDENT1_UID, section1Uid, Role.STUDENT);
+		integrationSupport.addSectionMembership(AssignmentTestDataLoad.TA_UID, section1Uid, Role.TA);
+		// add STUDENT2 to section 3
+		integrationSupport.addSectionMembership(AssignmentTestDataLoad.STUDENT2_UID, section3Uid, Role.STUDENT);
+        
+		// refresh the testData vars
+		testData.a1 = dao.getAssignmentByIdWithGroupsAndAttachments(testData.a1Id);
+		testData.a2 = dao.getAssignmentByIdWithGroupsAndAttachments(testData.a2Id);
+		testData.a3 = dao.getAssignmentByIdWithGroupsAndAttachments(testData.a3Id);
+		testData.a4 = dao.getAssignmentByIdWithGroupsAndAttachments(testData.a4Id);
+		
+		// now that we have sections defined, let's update the testData AssignmentGroups to be 
+		// consistent. we can't do it from the beginning b/c i couldn't figure out how to inject
+		// the sections stuff into the PreloadTestData bean...
+		updateAssignmentGroupId(testData.a1.getAssignmentGroupSet());
+		updateAssignmentGroupId(testData.a2.getAssignmentGroupSet());
+		updateAssignmentGroupId(testData.a3.getAssignmentGroupSet());
+		updateAssignmentGroupId(testData.a4.getAssignmentGroupSet());
+		
         // set up the gradebook
         gradebookFrameworkService.addGradebook(AssignmentTestDataLoad.CONTEXT_ID, AssignmentTestDataLoad.CONTEXT_ID);
         
         // switch to the instructor role
         authn.setAuthnContext(AssignmentTestDataLoad.INSTRUCTOR_UID);
-        // add some gb assignments
-        org.sakaiproject.service.gradebook.shared.Assignment gbAssign1 = 
+        // add some gb items
+        org.sakaiproject.service.gradebook.shared.Assignment gbItem1 = 
         	new org.sakaiproject.service.gradebook.shared.Assignment();
-        gbAssign1.setName(GB_ITEM1_NAME);
-        gbAssign1.setPoints(GB_ITEM1_PTS);
-        gbAssign1.setDueDate(GB_ITEM1_DUE);
-        gradebookService.addAssignment(AssignmentTestDataLoad.CONTEXT_ID, gbAssign1);
+        gbItem1.setName(GB_ITEM1_NAME);
+        gbItem1.setPoints(GB_ITEM1_PTS);
+        gbItem1.setDueDate(GB_ITEM1_DUE);
+        gradebookService.addAssignment(AssignmentTestDataLoad.CONTEXT_ID, gbItem1);
         org.sakaiproject.service.gradebook.shared.Assignment item1 = 
         	gradebookService.getAssignment(AssignmentTestDataLoad.CONTEXT_ID, GB_ITEM1_NAME);
         gbItem1Id = item1.getId();
         
-        org.sakaiproject.service.gradebook.shared.Assignment gbAssign2 = 
+        org.sakaiproject.service.gradebook.shared.Assignment gbItem2 = 
         	new org.sakaiproject.service.gradebook.shared.Assignment();
-        gbAssign2.setName(GB_ITEM2_NAME);
-        gbAssign2.setPoints(GB_ITEM2_PTS);
-        gbAssign2.setDueDate(GB_ITEM2_DUE);
-        gradebookService.addAssignment(AssignmentTestDataLoad.CONTEXT_ID, gbAssign2);
+        gbItem2.setName(GB_ITEM2_NAME);
+        gbItem2.setPoints(GB_ITEM2_PTS);
+        gbItem2.setDueDate(GB_ITEM2_DUE);
+        gradebookService.addAssignment(AssignmentTestDataLoad.CONTEXT_ID, gbItem2);
         org.sakaiproject.service.gradebook.shared.Assignment item2 = 
         	gradebookService.getAssignment(AssignmentTestDataLoad.CONTEXT_ID, GB_ITEM2_NAME);
         gbItem2Id = item2.getId();
+        
+        
     }
 
 
@@ -261,10 +302,127 @@ public class AssignmentLogicTest extends Assignment2TestBase {
     public void testGetViewableAssignments() throws Exception {
     	// this method will return different results based upon the user
     	// and section memberships
-    	// TODO add scenario with grader permissions
+    	// TODO add scenario with grader permissions for TA
+    	
+    	// let's make assignment3 and assignment4 graded
+    	testData.a3.setUngraded(false);
+    	testData.a3.setGradableObjectId(gbItem1Id);
+    	dao.save(testData.a3);
+    	
+    	testData.a4.setUngraded(false);
+    	testData.a4.setGradableObjectId(gbItem2Id);
+    	dao.save(testData.a4);
+    	
+    	// assign1 is restricted to group 1 and 2
+    	// assign2 is not restricted
+    	// graded assign 3 is not restricted
+    	// graded assign 4 is restricted to group 3
     	
     	// let's start with instructor. he/she should get all of the assignments
+    	authn.setAuthnContext(AssignmentTestDataLoad.INSTRUCTOR_UID);
+    	List<Assignment2> assignList = assignmentLogic.getViewableAssignments();
+    	assertNotNull(assignList);
+    	assert(assignList.size() == 4);
     	
+    	// let's try the ta. he/she should only be able to view assignments if
+    	// 1) it is ungraded and it is open to the site
+    	// 2) it is ungraded and he/she is a member of a restricted group
+    	// 3) it is graded and he/she is authorized to view/grade the associated
+    	//		gb item in the gb
+
+    	// our ta is a member of group 1. assign1 is restricted to group 1 and 2
+    	// for a4, it is restricted to group, but this restriction only appears
+    	// through the actually students he/she is allowed to view or grade. he/she
+    	// still sees the assignment b/c gb items are not restricted by section
+
+    	authn.setAuthnContext(AssignmentTestDataLoad.TA_UID);
+    	// should return assignment 1, 2, 3, 4
+    	assignList = assignmentLogic.getViewableAssignments();
+    	assertNotNull(assignList);
+    	assertTrue(assignList.size() == 4);
+    	// let's make sure that these are the right assign & gb info was populated
+    	for (Iterator taIter = assignList.iterator(); taIter.hasNext();) {
+    		Assignment2 assign = (Assignment2)taIter.next();
+    		if (assign.getId().equals(testData.a1Id) || assign.getId().equals(testData.a2Id)) {
+    			
+    		} else if (assign.getId().equals(testData.a3Id)) {
+    			// this one is graded, so check that the gb info was populated
+    			assertTrue(assign.getDueDate() == null);
+    			assertTrue(assign.getPointsPossible().equals(GB_ITEM1_PTS));
+    		} else if (assign.getId().equals(testData.a4Id)) {
+    			// this one is graded, so check that the gb info was populated
+    			assertTrue(assign.getDueDate().equals(GB_ITEM2_DUE));
+    			assertTrue(assign.getPointsPossible().equals(GB_ITEM2_PTS));
+    		} else {
+    			fail("Invalid assignment returned for TA via getViewableAssignments");
+    		}
+    	}
+    	
+    	// switch to student 1
+    	// member of section 1
+    	authn.setAuthnContext(AssignmentTestDataLoad.STUDENT1_UID);
+    	// should return assignment 1, 2, 3
+    	assignList = assignmentLogic.getViewableAssignments();
+    	assertNotNull(assignList);
+    	assertTrue(assignList.size() == 3);
+    	for (Iterator st1Iter = assignList.iterator(); st1Iter.hasNext();) {
+    		Assignment2 assign = (Assignment2)st1Iter.next();
+    		if (assign.getId().equals(testData.a1Id) || assign.getId().equals(testData.a2Id)) {
+    			
+    		} else if (assign.getId().equals(testData.a3Id)) {
+    			// this one is graded, so check that the gb info was populated
+    			assertTrue(assign.getDueDate() == null);
+    			assertTrue(assign.getPointsPossible().equals(GB_ITEM1_PTS));
+    		} else {
+    			fail("Invalid assignment returned for STUDENT1 via getViewableAssignments");
+    		}
+    	}
+    	
+    	// switch to student 2
+    	// member of section 3
+    	authn.setAuthnContext(AssignmentTestDataLoad.STUDENT2_UID);
+    	// should return 2, 3, 4
+    	assignList = assignmentLogic.getViewableAssignments();
+    	assertNotNull(assignList);
+    	assertTrue(assignList.size() == 3);
+    	// let's make sure that these are the right assign & gb info was populated
+    	for (Iterator st2Iter = assignList.iterator(); st2Iter.hasNext();) {
+    		Assignment2 assign = (Assignment2)st2Iter.next();
+    		if (assign.getId().equals(testData.a2Id)) {
+    			
+    		} else if (assign.getId().equals(testData.a3Id)) {
+    			// this one is graded, so check that the gb info was populated
+    			assertTrue(assign.getDueDate() == null);
+    			assertTrue(assign.getPointsPossible().equals(GB_ITEM1_PTS));
+    		} else if (assign.getId().equals(testData.a4Id)) {
+    			// this one is graded, so check that the gb info was populated
+    			assertTrue(assign.getDueDate().equals(GB_ITEM2_DUE));
+    			assertTrue(assign.getPointsPossible().equals(GB_ITEM2_PTS));
+    		} else {
+    			fail("Invalid assignment returned for STUDENT2 via getViewableAssignments");
+    		}
+    	}
+    	
+    	// switch to student 3
+    	// not a member of any sections
+    	authn.setAuthnContext(AssignmentTestDataLoad.STUDENT3_UID);
+    	// should return 2 and 3
+    	assignList = assignmentLogic.getViewableAssignments();
+    	assertNotNull(assignList);
+    	assertTrue(assignList.size() == 2);
+    	// let's make sure that these are the right assign & gb info was populated
+    	for (Iterator st3Iter = assignList.iterator(); st3Iter.hasNext();) {
+    		Assignment2 assign = (Assignment2)st3Iter.next();
+    		if (assign.getId().equals(testData.a2Id)) {
+    			
+    		} else if (assign.getId().equals(testData.a3Id)) {
+    			// this one is graded, so check that the gb info was populated
+    			assertTrue(assign.getDueDate() == null);
+    			assertTrue(assign.getPointsPossible().equals(GB_ITEM1_PTS));
+    		} else {
+    			fail("Invalid assignment returned for STUDENT3 via getViewableAssignments");
+    		}
+    	}
     }
 
 }

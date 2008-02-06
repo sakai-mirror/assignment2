@@ -40,7 +40,8 @@ public interface ExternalGradebookLogic {
      * that the user is not authorized to view according to the gradebook
      * permissions and return a list of graded assignments that the user is
      * authorized to view. Also populates the gb-specific fields for each
-     * Assignment2 object
+     * Assignment2 object. Does NOT handle filtering according to AssignmentGroup 
+     * restrictions 
      * @param gradedAssignments
      * @param contextId
      * @return

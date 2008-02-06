@@ -22,6 +22,8 @@
 package org.sakaiproject.assignment2.logic.test;
 
 import java.util.Date;
+import java.util.Iterator;
+import java.util.Set;
 
 import org.sakaiproject.assignment2.dao.AssignmentDao;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
@@ -35,6 +37,7 @@ import org.sakaiproject.assignment2.logic.impl.ExternalGradebookLogicImpl;
 import org.sakaiproject.assignment2.logic.impl.AssignmentPermissionLogicImpl;
 import org.sakaiproject.assignment2.logic.impl.AssignmentSubmissionLogicImpl;
 import org.sakaiproject.assignment2.logic.test.stubs.ExternalLogicStub;
+import org.sakaiproject.assignment2.model.AssignmentGroup;
 import org.sakaiproject.assignment2.test.AssignmentTestDataLoad;
 import org.sakaiproject.assignment2.test.PreloadTestData;
 
@@ -82,6 +85,12 @@ public abstract class Assignment2TestBase extends AbstractTransactionalSpringCon
 	
 	protected static final String GRADED_ASSIGN1_TITLE = "Graded Assignment #1";
 	protected static final String GRADED_ASSIGN2_TITLE = "Graded Assignment #2";
+	
+    protected Long gbItem1Id;
+    protected Long gbItem2Id;
+    protected String section1Uid;
+    protected String section2Uid;
+    protected String section3Uid;
 	
 	protected SectionAwareness sectionAwareness;
 	//protected UserDirectoryService userDirectoryService;
@@ -137,6 +146,7 @@ public abstract class Assignment2TestBase extends AbstractTransactionalSpringCon
 		}
     	ExternalLogicStub externalLogic = new ExternalLogicStub();
     	externalLogic.setAuthn(authn);
+    	externalLogic.setSectionAwareness(sectionAwareness);
     	
     	gradebookLogic = new ExternalGradebookLogicImpl();
     	gradebookLogic.setGradebookService(gradebookService);
@@ -177,6 +187,28 @@ public abstract class Assignment2TestBase extends AbstractTransactionalSpringCon
 
 		};
 
+    }
+    
+    /**
+     * this is a bit of a hack until I can figure out how to inject the section and course
+     * stuff into the data loader upon initialization. this will make the
+     * groupIds consistent with the sections created here
+     * @param assignGroupSet
+     */
+    protected void updateAssignmentGroupId(Set assignGroupSet) {
+    	if (assignGroupSet != null && !assignGroupSet.isEmpty()) {
+    		for (Iterator groupIter = assignGroupSet.iterator(); groupIter.hasNext();) {
+    			AssignmentGroup group = (AssignmentGroup) groupIter.next();
+    			if (group.getGroupId().equals(AssignmentTestDataLoad.GROUP1_NAME)) {
+    				group.setGroupId(section1Uid);
+    			} else if (group.getGroupId().equals(AssignmentTestDataLoad.GROUP2_NAME)) {
+    				group.setGroupId(section2Uid);
+    			} else if (group.getGroupId().equals(AssignmentTestDataLoad.GROUP3_NAME)) {
+    				group.setGroupId(section3Uid);
+    			} 
+    			dao.update(group);
+    		}
+    	}
     }
 
 }

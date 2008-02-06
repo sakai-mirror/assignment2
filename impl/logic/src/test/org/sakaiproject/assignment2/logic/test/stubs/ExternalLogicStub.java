@@ -48,6 +48,9 @@ public class ExternalLogicStub implements ExternalLogic {
 	public void setAuthn(Authn authn) {
 		this.authn = authn;
 	}
+	public void setSectionAwareness(SectionAwareness sectionAwareness) {
+		this.sectionAwareness = sectionAwareness;
+	}
 	/**
      * @return the current sakai user id (not username)
      */
@@ -139,6 +142,7 @@ public class ExternalLogicStub implements ExternalLogic {
     		for (Iterator sIter = sectionList.iterator(); sIter.hasNext();) {
     			CourseSection section = (CourseSection) sIter.next();
     			if (section != null) {
+    				List sectionMembers = sectionAwareness.getSectionMembers(section.getUuid());
     				if (sectionAwareness.isSectionMemberInRole(section.getUuid(), userId, Role.STUDENT) || 
     						sectionAwareness.isSectionMemberInRole(section.getUuid(), userId, Role.TA)) {
     					groupIdList.add(section.getUuid());

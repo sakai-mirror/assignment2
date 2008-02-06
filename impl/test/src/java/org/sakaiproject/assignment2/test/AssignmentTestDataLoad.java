@@ -60,31 +60,33 @@ public class AssignmentTestDataLoad {
 	
 	public static final String ASSIGN1_TITLE = "Assignment 1";
 	public static final String ASSIGN2_TITLE = "Assignment 2";
-	public static final String ASSIGN3_TITLE = "Assignemnt 3";
+	public static final String ASSIGN3_TITLE = "Assignment 3";
+	public static final String ASSIGN4_TITLE = "Assignment 4";
 	
 	public static final String INSTRUCTOR_UID = "instructorUid";
 	public static final String TA_UID = "taUid";
 	public static final String STUDENT1_UID = "student1";
 	public static final String STUDENT2_UID = "student2";
+	public static final String STUDENT3_UID = "student3";
+	
+	public static final String GROUP1_NAME = "Group 1";
+	public static final String GROUP2_NAME = "Group 2";
+	public static final String GROUP3_NAME = "Group 3";
 
 	public Assignment2 a1;
 	public Assignment2 a2;
 	public Assignment2 a3;
+	public Assignment2 a4;
+
 	public Long a1Id;
 	public Long a2Id;
 	public Long a3Id;
+	public Long a4Id;
 	
 	// Assignment 1 has 2 attachments and 2 groups
-	// Assignment 2 has 0 attachments and 1 group
+	// Assignment 2 has 0 attachments and 0 group
 	// Assignment 3 has 1 attachment and 0 groups
-	
-	public AssignmentAttachment attach1Fora1;
-	public AssignmentAttachment attach2Fora1;
-	public AssignmentAttachment attach1Fora3;
-	
-	public AssignmentGroup group1Fora1;
-	public AssignmentGroup group2Fora1;
-	public AssignmentGroup group1Fora2;
+	// Assignment 4 has 0 attachments and 1 group
 	
 	public AssignmentSubmission st1a1Submission;
 	public AssignmentSubmission st2a1Submission;
@@ -118,47 +120,50 @@ public class AssignmentTestDataLoad {
 		a1 = createGenericAssignment2Object(ASSIGN1_TITLE, 0);
 		a2 = createGenericAssignment2Object(ASSIGN2_TITLE, 1);
 		a3 = createGenericAssignment2Object(ASSIGN3_TITLE, 2);
-
-		dao.create(a1);
-		dao.create(a2);
-		dao.create(a3);
+		a4 = createGenericAssignment2Object(ASSIGN4_TITLE, 3);
 		
 		a1Id = a1.getId();
 		a2Id = a2.getId();
 		a3Id = a3.getId();
+		a4Id = a4.getId();
+		
+		Set<AssignmentAttachment> attachFora1 = new HashSet();
+		Set<AssignmentAttachment> attachFora2 = new HashSet();
+		Set<AssignmentAttachment> attachFora3 = new HashSet();
+		Set<AssignmentAttachment> attachFora4 = new HashSet();
+		
+		Set<AssignmentGroup> groupsFora1 = new HashSet();
+		Set<AssignmentGroup> groupsFora2 = new HashSet();
+		Set<AssignmentGroup> groupsFora3 = new HashSet();
+		Set<AssignmentGroup> groupsFora4 = new HashSet();
 		
 		// add attachments
 		// to Assignment 1
-		attach1Fora1 = new AssignmentAttachment();
-		attach1Fora1.setAssignment(a1);
-		attach1Fora1.setAttachmentReference("reference1");
-		dao.save(attach1Fora1);
-
-		attach2Fora1 = new AssignmentAttachment();
-		attach2Fora1.setAssignment(a1);
-		attach2Fora1.setAttachmentReference("reference2");
-		dao.save(attach2Fora1);
+		attachFora1.add(new AssignmentAttachment(a1, "ref1"));
+		attachFora1.add(new AssignmentAttachment(a1, "ref2"));
+	
 		// to Assignment 3
-		attach1Fora3 = new AssignmentAttachment();
-		attach1Fora3.setAssignment(a3);
-		attach1Fora3.setAttachmentReference("reference1");
-		dao.save(attach1Fora3);
+		attachFora3.add(new AssignmentAttachment(a3, "ref1"));
 
 		// add AssignmentGroups
-		group1Fora1 = new AssignmentGroup();
-		group1Fora1.setAssignment(a1);
-		group1Fora1.setGroupId("Group1");
-		dao.save(group1Fora1);
+		groupsFora1.add(new AssignmentGroup(a1, GROUP1_NAME));
+		groupsFora1.add(new AssignmentGroup(a1, GROUP2_NAME));
 
-		group2Fora1 = new AssignmentGroup();
-		group2Fora1.setAssignment(a1);
-		group2Fora1.setGroupId("Group2");
-		dao.save(group2Fora1);
+		groupsFora4.add(new AssignmentGroup(a4, GROUP3_NAME));
 		
-		group1Fora2 = new AssignmentGroup();
-		group1Fora2.setAssignment(a2);
-		group1Fora2.setGroupId("Group3");
-		dao.save(group1Fora2);
+		Set assignSet = new HashSet();
+		assignSet.add(a1);
+		assignSet.add(a2);
+		assignSet.add(a3);
+		assignSet.add(a4);
+
+		dao.saveMixedSet(new Set[] {assignSet, attachFora1, groupsFora1, attachFora2, groupsFora2, attachFora3, groupsFora3,
+				attachFora4, groupsFora4});
+		
+		a1Id = a1.getId();
+		a2Id = a2.getId();
+		a3Id = a3.getId();
+		a4Id = a4.getId();
 
 		// now create submissions
 		// start with a1
@@ -210,7 +215,7 @@ public class AssignmentTestDataLoad {
 		assignment.setRemoved(Boolean.FALSE);
 		assignment.setRestrictedToGroups(Boolean.FALSE);
 		assignment.setSubmissionType(AssignmentConstants.SUBMIT_INLINE_AND_ATTACH);
-		assignment.setUngraded(Boolean.FALSE);
+		assignment.setUngraded(Boolean.TRUE);
 		assignment.setHonorPledge(Boolean.FALSE);
 		assignment.setHasAnnouncement(Boolean.FALSE);
 		assignment.setSortIndex(sortIndex);
