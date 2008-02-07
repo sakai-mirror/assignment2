@@ -96,6 +96,7 @@ public abstract class Assignment2TestBase extends AbstractTransactionalSpringCon
 	//protected UserDirectoryService userDirectoryService;
 	protected IntegrationSupport integrationSupport;
 	protected UserManager userManager;
+	protected ExternalLogicStub externalLogic;
 
 	protected void onSetUpBeforeTransaction() throws Exception {
 	
@@ -144,7 +145,7 @@ public abstract class Assignment2TestBase extends AbstractTransactionalSpringCon
     	if (authn == null) {
 			throw new NullPointerException("authn could not be retrieved from spring");
 		}
-    	ExternalLogicStub externalLogic = new ExternalLogicStub();
+    	externalLogic = new ExternalLogicStub();
     	externalLogic.setAuthn(authn);
     	externalLogic.setSectionAwareness(sectionAwareness);
     	

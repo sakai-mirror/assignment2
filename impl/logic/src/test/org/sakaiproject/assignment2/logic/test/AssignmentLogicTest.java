@@ -23,6 +23,7 @@ package org.sakaiproject.assignment2.logic.test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -539,7 +540,104 @@ public class AssignmentLogicTest extends Assignment2TestBase {
     }
     
     public void testGetStatusForAssignment() {
-
+    	// try a null assignment
+    	try {
+    		assignmentLogic.getStatusForAssignment(null);
+    		fail("Did not catch null assignment passed to getStatusforAssignment");
+    	} catch (IllegalArgumentException iae) {}
+    	
+    	Assignment2 assignment = new Assignment2();
+    	// start out with non-draft, ungraded
+    	assignment.setDraft(false);
+    	assignment.setUngraded(true);
+    	
+    	// first, leave all of nullable fields null:
+    	// 	acceptUntilTime, dueDateForUngraded, dueDate
+    	
+    	// start with an open date in the past
+    	Calendar cal = Calendar.getInstance();
+    	cal.set(2005, 10, 01);
+    	assignment.setOpenTime(cal.getTime());
+    	
+    	// this should be open
+    	assertEquals(assignmentLogic.getStatusForAssignment(assignment), AssignmentConstants.STATUS_OPEN);
+    	
+    	// set the open date in the future
+    	cal.set(2020, 10, 01);
+    	assignment.setOpenTime(cal.getTime());
+    	// should be not open
+    	assertEquals(assignmentLogic.getStatusForAssignment(assignment), AssignmentConstants.STATUS_NOT_OPEN);
+    	
+    	// set it to draft - should be draft
+    	assignment.setDraft(true);
+    	assertEquals(assignmentLogic.getStatusForAssignment(assignment), AssignmentConstants.STATUS_DRAFT);
+    	
+    	// set it back to draft=false, open date in the past, and make it due in the future
+    	assignment.setDraft(false);
+    	cal.set(2005, 10, 01);
+    	assignment.setOpenTime(cal.getTime());
+    	cal.set(2020, 10, 01);
+    	assignment.setDueDateForUngraded(cal.getTime());
+    	assertEquals(assignmentLogic.getStatusForAssignment(assignment), AssignmentConstants.STATUS_OPEN);
+    	// now make it due
+    	cal.set(2007, 10, 01);
+    	assignment.setDueDateForUngraded(cal.getTime());
+    	assertEquals(assignmentLogic.getStatusForAssignment(assignment), AssignmentConstants.STATUS_DUE);
+    	// add an accept until date in the future
+    	cal.set(2020, 10, 01);
+    	assignment.setAcceptUntilTime(cal.getTime());
+    	assertEquals(assignmentLogic.getStatusForAssignment(assignment), AssignmentConstants.STATUS_DUE);
+    	// now make the accept until date in the past
+    	cal.set(2007, 10, 01);
+    	assignment.setAcceptUntilTime(cal.getTime());
+    	assertEquals(assignmentLogic.getStatusForAssignment(assignment), AssignmentConstants.STATUS_CLOSED);
+    	
+    	// now make this graded with accept until in past
+    	assignment.setUngraded(false);
+    	assertEquals(assignmentLogic.getStatusForAssignment(assignment), AssignmentConstants.STATUS_CLOSED);
+    	
+    	// now check with accept until in future and no due date
+    	cal.set(2020, 10, 01);
+    	assignment.setAcceptUntilTime(cal.getTime());
+    	assertEquals(assignmentLogic.getStatusForAssignment(assignment), AssignmentConstants.STATUS_OPEN);
+    	
+    	// add a due date in the past
+    	cal.set(2007, 10, 01);
+    	assignment.setDueDate(cal.getTime());
+    	assertEquals(assignmentLogic.getStatusForAssignment(assignment), AssignmentConstants.STATUS_DUE);
+    	
+    	// double check that open date overrides other dates
+    	cal.set(2020, 10, 01);
+    	assignment.setOpenTime(cal.getTime());
+    	assertEquals(assignmentLogic.getStatusForAssignment(assignment), AssignmentConstants.STATUS_NOT_OPEN);
+    	
+    	// double check that draft overrides everything
+    	assignment.setDraft(true);
+    	assertEquals(assignmentLogic.getStatusForAssignment(assignment), AssignmentConstants.STATUS_DRAFT);
+    }
+    
+    public void testSaveAssignmentAnnouncement() throws Exception {
+    	// try passing a null updatedAssignment
+    	try {
+    		assignmentLogic.saveAssignmentAnnouncement(new Assignment2(), null, 
+    				"newAnncSubject", "newAnncBody", "revAnncSubject", "revAnncBody");
+    		fail("did not catch null updatedAssignment passed to saveAssignmentAnnouncement");
+    	} catch(IllegalArgumentException iae) {}
+    	
+    	// try passing an updatedAssignment without an id
+    	try {
+    		assignmentLogic.saveAssignmentAnnouncement(new Assignment2(), new Assignment2(), 
+    				"newAnncSubject", "newAnncBody", "revAnncSubject", "revAnncBody");
+    		fail("did not catch updatedAssignment without an id passed to saveAssignmentAnnouncement");
+    	} catch(IllegalArgumentException iae) {}
+    	
+    	// try passing null text
+    	try {
+    		assignmentLogic.saveAssignmentAnnouncement(new Assignment2(), new Assignment2(), null, "bogus", null, null);
+    		fail("Did not catch null text passed to saveAssignmentAnnouncement");
+    	} catch(IllegalArgumentException iae) {}
+    	
+    	//TODO - not sure how to access announcements from the test!!!!
     }
 
 }
