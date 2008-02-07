@@ -95,12 +95,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 	public void init(){
 		if(log.isDebugEnabled()) log.debug("init");
 	}
-	/**
-	 * 
-	 * @param assignmentId
-	 * @return Returns the Assignment based on its assignmentId. null if
-	 * no assignment exists with the given id
-	 */
+
 	public Assignment2 getAssignmentById(Long assignmentId)
 	{
 		if (assignmentId == null) {
@@ -137,6 +132,14 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 		}
 		
 		return (Assignment2) dao.getAssignmentByIdWithGroups(assignmentId);
+	}
+	
+	public Assignment2 getAssignmentByIdWithGroupsAndAttachments(Long assignmentId) {
+		if (assignmentId == null) {
+			throw new IllegalArgumentException("Null assignmentId passed to getAssignmentByIdWithGroupsAndAttachments");
+		}
+		
+		return (Assignment2) dao.getAssignmentByIdWithGroupsAndAttachments(assignmentId);
 	}
 	
 	public void saveAssignment(Assignment2 assignment) throws SecurityException, ConflictingAssignmentNameException

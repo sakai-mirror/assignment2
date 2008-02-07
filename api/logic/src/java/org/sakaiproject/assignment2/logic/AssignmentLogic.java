@@ -113,6 +113,13 @@ public interface AssignmentLogic {
 	 */
 	public Assignment2 getAssignmentByIdWithGroups(Long assignmentId);
 	
+	/**
+	 * retrieve the Assignment2 object with the given id and populate the
+	 * associated AssignmentGroups and AssignmentAttachments
+	 * @param assignmentId
+	 * @return
+	 */
+	public Assignment2 getAssignmentByIdWithGroupsAndAttachments(Long assignmentId);
 
 	/**
 	 * Uses the open, due, and accept until dates to determine the current status

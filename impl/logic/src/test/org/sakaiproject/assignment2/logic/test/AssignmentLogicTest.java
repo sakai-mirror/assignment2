@@ -508,6 +508,24 @@ public class AssignmentLogicTest extends Assignment2TestBase {
     	assertTrue(assign.getAssignmentGroupSet().size() == 2);	
     }
     
+    public void testGetAssignmentByIdWithGroupsAndAttachments() throws Exception {
+    	// try passing a null id
+    	try {
+    		assignmentLogic.getAssignmentByIdWithGroupsAndAttachments(null);
+    		fail("Did not catch null assignment id passed to getAssignmentByIdWithGroupsAndAttachments");
+    	} catch (IllegalArgumentException iae) {}
+    	
+    	// try passing an id that doesn't exist - should be null
+    	Assignment2 assign = assignmentLogic.getAssignmentByIdWithGroupsAndAttachments(new Long(12345));
+    	assertNull(assign);
+    	
+    	// try a valid item
+    	assign = assignmentLogic.getAssignmentByIdWithGroupsAndAttachments(testData.a1Id);
+    	assertTrue(assign.getId().equals(testData.a1Id));
+    	assertTrue(assign.getAssignmentGroupSet().size() == 2);	
+    	assertTrue(assign.getAttachmentSet().size() == 2);
+    }
+    
     public void testGetStatusForAssignment() {
 
     }

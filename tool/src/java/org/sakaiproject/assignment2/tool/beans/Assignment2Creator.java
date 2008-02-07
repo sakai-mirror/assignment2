@@ -1,6 +1,8 @@
 package org.sakaiproject.assignment2.tool.beans;
 
 import org.sakaiproject.assignment2.model.Assignment2;
+import org.sakaiproject.assignment2.model.AssignmentAttachment;
+import org.sakaiproject.assignment2.model.AssignmentGroup;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 
@@ -9,6 +11,9 @@ import uk.org.ponder.messageutil.MessageLocator;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Set;
+import java.util.HashSet;
+import java.util.Iterator;
 
 public class Assignment2Creator {
 
@@ -68,6 +73,32 @@ public class Assignment2Creator {
 		dup.setAllowReviewService(assignment.isAllowReviewService());
 		dup.setAllowStudentViewReport(assignment.isAllowStudentViewReport());
 		dup.setRemoved(Boolean.FALSE);
+		
+		// let's duplicate the attachments and group restrictions
+		Set<AssignmentGroup> assignGroupSet = new HashSet();
+		if (assignment.getAssignmentGroupSet() != null && !assignment.getAssignmentGroupSet().isEmpty()) {
+			for (Iterator groupIter = assignment.getAssignmentGroupSet().iterator(); groupIter.hasNext();) {
+				AssignmentGroup group = (AssignmentGroup) groupIter.next();
+				if (group != null) {
+					AssignmentGroup newGroup = new AssignmentGroup(dup, group.getGroupId());
+					assignGroupSet.add(newGroup);
+				}
+			}
+		}
+		
+		Set<AssignmentAttachment> attachSet = new HashSet();
+		if (assignment.getAttachmentSet() != null && !assignment.getAttachmentSet().isEmpty()) {
+			for (Iterator attachIter = assignment.getAttachmentSet().iterator(); attachIter.hasNext();) {
+				AssignmentAttachment attach = (AssignmentAttachment) attachIter.next();
+				if (attach != null) {
+					AssignmentAttachment newGroup = new AssignmentAttachment(dup, attach.getAttachmentReference());
+					attachSet.add(newGroup);
+				}
+			}
+		}
+		
+		dup.setAssignmentGroupSet(assignGroupSet);
+		dup.setAttachmentSet(attachSet);
 		
     	return dup;
     }

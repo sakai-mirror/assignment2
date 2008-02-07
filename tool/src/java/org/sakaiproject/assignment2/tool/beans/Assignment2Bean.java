@@ -327,7 +327,7 @@ public class Assignment2Bean {
 		Assignment2Creator creator = new Assignment2Creator();
 		creator.setExternalLogic(externalLogic);
 		creator.setMessageLocator(messageLocator);
-		Assignment2 duplicate = creator.createDuplicate(logic.getAssignmentById(assignmentId));
+		Assignment2 duplicate = creator.createDuplicate(logic.getAssignmentByIdWithGroupsAndAttachments(assignmentId));
 		try {
 			logic.saveAssignment(duplicate);
 			localAssignmentLogic.handleAnnouncement(duplicate, null);
