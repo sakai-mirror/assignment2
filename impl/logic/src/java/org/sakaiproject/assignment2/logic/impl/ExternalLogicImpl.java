@@ -261,4 +261,15 @@ public class ExternalLogicImpl implements ExternalLogic {
     
     	return url + getParams;
     }
+
+	public String getUserFullName(String userId) {
+        try {
+            User user = userDirectoryService.getUser(userId);
+            return user.getLastName() + ", " + user.getFirstName();
+        } catch (UserNotDefinedException ex) {
+            log.error("Could not get user from userId: " + userId, ex);
+        }
+
+        return ", ";
+    }
 }

@@ -46,6 +46,7 @@
       <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
       <property name="externalGradebookLogic" ref="org.sakaiproject.assignment2.logic.ExternalGradebookLogic" />
       <property name="permissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentPermissionLogic" />
+			<property name="contentHostingService" ref="org.sakaiproject.content.api.ContentHostingService" />
    </bean>
 
 </beans>

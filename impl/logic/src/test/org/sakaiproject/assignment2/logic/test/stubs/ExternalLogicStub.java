@@ -252,5 +252,9 @@ public class ExternalLogicStub implements ExternalLogic {
     public String getUrlForGradeGradebookItemHelper(Long gradeableObjectId, String userId, String returnViewId) {
     	return null; //used for ui
     }
+    
+	public String getUserFullName(String userId) {
+		return getUserDisplayName(userId);
+	}
 
 }

@@ -34,6 +34,14 @@ public interface ExternalLogic {
     public String getUserDisplayName(String userId);
 
     /**
+     *  Get the user's full name in Last, First format
+     * @param userId
+     *            the current sakai user id (not username)
+     * @return full name in Last, First format
+     */
+    public String getUserFullName(String userId);
+    
+    /**
      * @return the current location id of the current user
      */
     public String getCurrentLocationId();
