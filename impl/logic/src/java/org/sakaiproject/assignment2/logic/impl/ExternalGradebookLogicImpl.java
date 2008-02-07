@@ -59,7 +59,7 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
     private static Log log = LogFactory.getLog(ExternalGradebookLogicImpl.class);
 
     public void init() {
-    	log.debug("init");
+    	if (log.isDebugEnabled()) log.debug("init");
     }
     
     private GradebookService gradebookService;
@@ -377,7 +377,7 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
     				
     			} catch (AssessmentNotFoundException anfe) {
     				// this gb item no longer exists, so there is no information to populate
-    				log.debug("gb item with id " + gbItemId + " no longer exists, so returning null grade info");
+    				if (log.isDebugEnabled()) log.debug("gb item with id " + gbItemId + " no longer exists, so returning null grade info");
     			}
     		}
     	}
@@ -394,7 +394,7 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
     			assignment.setDueDate(gbItem.getDueDate());
     			assignment.setPointsPossible(gbItem.getPoints());
     		} catch (AssessmentNotFoundException e) {
-    			log.debug("Gradebook item that assignment " + assignment.getId() + " with associated with no longer exists");
+    			if (log.isDebugEnabled()) log.debug("Gradebook item that assignment " + assignment.getId() + " with associated with no longer exists");
     			assignment.setNeedsUserAttention(true);
     		}
     	}

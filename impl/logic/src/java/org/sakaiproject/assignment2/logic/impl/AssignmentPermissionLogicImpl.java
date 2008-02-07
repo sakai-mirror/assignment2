@@ -51,7 +51,7 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
     private static Log log = LogFactory.getLog(AssignmentPermissionLogicImpl.class);
 
     public void init() {
-    	log.debug("init");
+    	if (log.isDebugEnabled()) log.debug("init");
     }
     
     private AssignmentDao dao;
@@ -70,7 +70,9 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
     }
     
     public boolean isCurrentUserAbleToEditAssignments(String contextId) {
-
+    	if (contextId == null) {
+    		throw new IllegalArgumentException("null contextId passed to isCurrentUserAbleToEditAssignments");
+    	}
     	return gradebookLogic.isCurrentUserAbleToEdit(contextId);
     }
     
@@ -104,21 +106,20 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
     	return viewable;	
     }
     
-    public boolean isUserAbleToProvideFeedbackForSubmission(AssignmentSubmission submission) {
-    	if (submission == null) {
-    		throw new IllegalArgumentException("null submission passed to isUserAbleToProvideFeedbackForSubmission");
+    public boolean isUserAbleToProvideFeedbackForStudentForAssignment(String userId, Assignment2 assignment) {
+    	if (userId == null || assignment == null) {
+    		throw new IllegalArgumentException("null parameter passed to isUserAbleToProvideFeedbackForSubmission");
     	}
     	
     	boolean allowed = false;
     	
-    	Assignment2 assignment = submission.getAssignment();
     	if (assignment != null) {
     		if (assignment.isUngraded()) {
-    			allowed = isUserAbleToViewSubmissionForUngradedAssignment(submission.getUserId(), assignment);
+    			allowed = isUserAbleToViewSubmissionForUngradedAssignment(userId, assignment);
     		} else {
     			if (assignment.getGradableObjectId() != null) {
     				allowed = gradebookLogic.isCurrentUserAbleToGradeStudentForItem(externalLogic.getCurrentContextId(), 
-    					submission.getUserId(), assignment.getGradableObjectId());
+    						userId, assignment.getGradableObjectId());
     			}
     		}
     	}

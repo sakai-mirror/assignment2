@@ -23,7 +23,7 @@ public class ExternalEventLogicImpl implements ExternalEventLogic {
      * Place any code that should run when this class is initialized by spring here
      */
     public void init() {
-        log.debug("init");
+    	if (log.isDebugEnabled()) log.debug("init");
     }
     
     public void postEvent(String message, String objectReference) {

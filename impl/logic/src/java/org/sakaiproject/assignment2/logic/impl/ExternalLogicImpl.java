@@ -82,7 +82,7 @@ public class ExternalLogicImpl implements ExternalLogic {
      * Place any code that should run when this class is initialized by spring here
      */
     public void init() {
-        log.debug("init");
+    	if (log.isDebugEnabled()) log.debug("init");
     }
 
     public String getCurrentLocationId() {
@@ -190,7 +190,7 @@ public class ExternalLogicImpl implements ExternalLogic {
     			return true;
     		}
     	} catch (IdUnusedException ide) {
-    		log.debug("IdUnusedException caught in siteHasTool with contextId: " + contextId + " and toolId: " + toolId);
+    		if (log.isDebugEnabled()) log.debug("IdUnusedException caught in siteHasTool with contextId: " + contextId + " and toolId: " + toolId);
     	}
 		return false;
     }

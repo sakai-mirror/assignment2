@@ -64,7 +64,7 @@ public class ExternalAnnouncementLogicImpl implements ExternalAnnouncementLogic 
     private AnnouncementChannel announcementChannel;
 
     public void init() {
-    	log.debug("init");
+    	if (log.isDebugEnabled()) log.debug("init");
     }
     
     public String addOpenDateAnnouncement(Collection<String> restrictedGroupIds, String contextId,
@@ -97,7 +97,7 @@ public class ExternalAnnouncementLogicImpl implements ExternalAnnouncementLogic 
 			}
 
 			announcementChannel.commitMessage(message, NotificationService.NOTI_NONE);
-			log.debug("announcement added with id: " + message.getId());
+			if (log.isDebugEnabled()) log.debug("announcement added with id: " + message.getId());
 			
 			return message.getId();	
 			
@@ -140,7 +140,7 @@ public class ExternalAnnouncementLogicImpl implements ExternalAnnouncementLogic 
 			}
 
 			announcementChannel.commitMessage(message, NotificationService.NOTI_NONE);
-			log.debug("Announcement updated with id: " + announcementId);
+			if (log.isDebugEnabled()) log.debug("Announcement updated with id: " + announcementId);
 			
 			return message.getId();	
 			
@@ -148,7 +148,7 @@ public class ExternalAnnouncementLogicImpl implements ExternalAnnouncementLogic 
 			throw new AnnouncementPermissionException("The current user does not have permission to access add announcement");
 		} catch (IdUnusedException iue) {
 			// the announcement id stored in the assignment is invalid, so add a new announcement
-			log.debug("Bad announcementId associated with assignment, so adding new announcement");
+			if (log.isDebugEnabled()) log.debug("Bad announcementId associated with assignment, so adding new announcement");
 			return addOpenDateAnnouncement(restrictedGroupIds, contextId, announcementSubject, announcementBody);
 		} catch (InUseException iue) {
 			log.error("Announcement " + announcementId + " is locked and cannot be" +
@@ -176,12 +176,12 @@ public class ExternalAnnouncementLogicImpl implements ExternalAnnouncementLogic 
     	try
 		{
 			announcementChannel.removeMessage(announcementId);
-			log.debug("Announcement removed with id: " + announcementId);
+			if (log.isDebugEnabled()) log.debug("Announcement removed with id: " + announcementId);
 			
 		} catch (PermissionException pe) {
 			throw new AnnouncementPermissionException("The current user does not have permission to access add announcement");
 		} catch (Exception e) {
-			log.debug("Announcement no longer exists so cannot be deleted. It was probably deleted via annc tool.");
+			if (log.isDebugEnabled()) log.debug("Announcement no longer exists so cannot be deleted. It was probably deleted via annc tool.");
 			// this is thrown by removeMessage if the annc doesn't exist
 		}
 	}

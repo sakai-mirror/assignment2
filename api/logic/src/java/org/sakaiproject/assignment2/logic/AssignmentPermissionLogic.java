@@ -56,11 +56,12 @@ public interface AssignmentPermissionLogic {
 	
 	/**
 	 * 
-	 * @param submission
+	 * @param studentId
+	 * @param assignment
 	 * @return true if the current user is allowed to provide feedback for the
-	 * given submission
+	 * given student and assignment
 	 */
-	public boolean isUserAbleToProvideFeedbackForSubmission(AssignmentSubmission submission);
+	public boolean isUserAbleToProvideFeedbackForStudentForAssignment(String studentId, Assignment2 assignment);
 	
 	/**
 	 * @param assignment

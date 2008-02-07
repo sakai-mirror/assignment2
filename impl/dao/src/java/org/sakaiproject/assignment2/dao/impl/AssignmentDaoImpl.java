@@ -54,7 +54,7 @@ public class AssignmentDaoImpl extends HibernateCompleteGenericDao implements As
     public static final int MAX_NUMBER_OF_SQL_PARAMETERS_IN_LIST = 1000;
 
     public void init() {
-        log.debug("init");
+    	if (log.isDebugEnabled()) log.debug("init");
     }
     
     public Integer getHighestSortIndexInSite(String contextId) {

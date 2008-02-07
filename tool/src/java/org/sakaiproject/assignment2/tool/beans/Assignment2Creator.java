@@ -26,7 +26,6 @@ public class Assignment2Creator {
     	Assignment2 togo = new Assignment2();
     	togo.setTitle("");
     	togo.setContextId(externalLogic.getCurrentContextId());
-    	togo.setRemoved(Boolean.FALSE);
     	togo.setHonorPledge(Boolean.FALSE);
     	togo.setUngraded(Boolean.TRUE);
     	togo.setHasAnnouncement(Boolean.FALSE);

@@ -104,7 +104,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
     }
     
 	public void init(){
-		log.debug("init");
+		if (log.isDebugEnabled()) log.debug("init");
 	}
 	
 	public AssignmentSubmission getAssignmentSubmissionById(Long submissionId){
@@ -127,7 +127,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 				if (currentVersion.isDraft() && !submission.getUserId().equals(externalLogic.getCurrentUserId())) {
 					currentVersion.setSubmissionAttachSet(new HashSet());
 					currentVersion.setSubmittedText("");
-					log.debug("Wiping out submission-specific info b/c draft status and current user is not submitter");
+					if (log.isDebugEnabled()) log.debug("Wiping out submission-specific info b/c draft status and current user is not submitter");
 				}
 			}
 			
@@ -163,7 +163,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			if (version.isDraft() && !submission.getUserId().equals(externalLogic.getCurrentUserId())) {
 				version.setSubmissionAttachSet(new HashSet());
 				version.setSubmittedText("");
-				log.debug("Wiping out submission-specific info b/c draft status and current user is not submitter");
+				if (log.isDebugEnabled()) log.debug("Wiping out submission-specific info b/c draft status and current user is not submitter");
 			}
 			
 			// populate gradebook information, if appropriate
@@ -204,7 +204,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 							if (version != null && version.isDraft()) {
 								version.setSubmittedText("");
 								version.setSubmissionAttachSet(new HashSet());
-								log.debug("Wiping out submission-specific info b/c draft status and current user is not submitter");
+								if (log.isDebugEnabled()) log.debug("Wiping out submission-specific info b/c draft status and current user is not submitter");
 							}
 						}
 					}
@@ -317,11 +317,11 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 				submissionSet.add(submission);
 				
 				dao.saveMixedSet(new Set[] {submissionSet, versionSet, attachSet});
-				log.debug("Updated student submission version " + existingVersion.getId() + " for user " + submission.getUserId() + " for assignment " + submission.getAssignment().getTitle()+ " ID: " + submission.getAssignment().getId());
+				if (log.isDebugEnabled()) log.debug("Updated student submission version " + existingVersion.getId() + " for user " + submission.getUserId() + " for assignment " + submission.getAssignment().getTitle()+ " ID: " + submission.getAssignment().getId());
 				
 				if (attachToDelete != null && !attachToDelete.isEmpty()) {
 					dao.deleteSet(attachToDelete);
-					log.debug("Removed feedback attachments deleted for updated version " + version.getId() + " by user " + currentUserId);
+					if (log.isDebugEnabled()) log.debug("Removed feedback attachments deleted for updated version " + version.getId() + " by user " + currentUserId);
 				}
 				
 			} catch (HibernateOptimisticLockingFailureException holfe) {
@@ -359,7 +359,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			submissionSet.add(submission);
 			
 			dao.saveMixedSet(new Set[] {submissionSet, versionSet, attachSet});
-			log.debug("New student submission version added for user " + submission.getUserId() + " for assignment " + submission.getAssignment().getTitle()+ " ID: " + submission.getAssignment().getId());
+			if (log.isDebugEnabled()) log.debug("New student submission version added for user " + submission.getUserId() + " for assignment " + submission.getAssignment().getTitle()+ " ID: " + submission.getAssignment().getId());
 		}
 
 	}
@@ -382,7 +382,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			throw new IllegalArgumentException("no submission associated with the given version");
 		}
 		
-		if (!permissionLogic.isUserAbleToProvideFeedbackForSubmission(version.getAssignmentSubmission())) {
+		if (!permissionLogic.isUserAbleToProvideFeedbackForStudentForAssignment(submission.getUserId(), submission.getAssignment())) {
 			throw new SecurityException("User " + externalLogic.getCurrentUserId() + " attempted to submit feedback for student " + submission.getUserId() + " without authorization");
 		}
 		
@@ -437,11 +437,11 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 				submissionSet.add(submission);
 				
 				dao.saveMixedSet(new Set[] {submissionSet, versionSet, attachSet});
-				log.debug("Updated student submission version " + existingVersion.getId() + " for user " + submission.getUserId() + " for assignment " + submission.getAssignment().getTitle()+ " ID: " + submission.getAssignment().getId());
+				if (log.isDebugEnabled()) log.debug("Updated student submission version " + existingVersion.getId() + " for user " + submission.getUserId() + " for assignment " + submission.getAssignment().getTitle()+ " ID: " + submission.getAssignment().getId());
 				
 				if (attachToDelete != null && !attachToDelete.isEmpty()) {
 					dao.deleteSet(attachToDelete);
-					log.debug("Removed feedback attachments deleted for updated version " + version.getId() + " by user " + currentUserId);
+					if (log.isDebugEnabled()) log.debug("Removed feedback attachments deleted for updated version " + version.getId() + " by user " + currentUserId);
 				}
 				
 			} catch (HibernateOptimisticLockingFailureException holfe) {
@@ -480,7 +480,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			submissionSet.add(submission);
 			
 			dao.saveMixedSet(new Set[] {submissionSet, versionSet, attachSet});
-			log.debug("New submission version " + newVersion.getId() + " created by " + currentUserId + " via saveInstructorFeedback");
+			if (log.isDebugEnabled()) log.debug("New submission version " + newVersion.getId() + " created by " + currentUserId + " via saveInstructorFeedback");
 		}
 	
 	}
@@ -797,6 +797,9 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			Date releasedTime = new Date();
 			
 			if (submissionList != null && !submissionList.isEmpty()) {
+				
+				Set<AssignmentSubmissionVersion> versionsToUpdate = new HashSet();
+				
 				for (Iterator subIter = submissionList.iterator(); subIter.hasNext();) {
 					AssignmentSubmission submission = (AssignmentSubmission) subIter.next();
 					if (submission != null) {
@@ -808,18 +811,19 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 								AssignmentSubmissionVersion version = (AssignmentSubmissionVersion) versionIter.next();
 								if (version != null) {
 									version.setReleasedTime(releasedTime);
-									
-									try {
-										dao.update(version);
-										log.debug("Version " + version.getId() + " released by " + externalLogic.getCurrentUserId());
-									} catch (HibernateOptimisticLockingFailureException holfe) {
-										if(log.isInfoEnabled()) log.info("An optimistic locking failure occurred while attempting to update submission version" + version.getId());
-							            throw new StaleObjectModificationException(holfe);
-									}
+									versionsToUpdate.add(version);
 								}
 							}
 						}
 					}
+				}
+				
+				try {
+					dao.saveMixedSet(new Set[] { versionsToUpdate });
+					if (log.isDebugEnabled()) log.debug("All versions for assignment " + assignmentId + " released by " + externalLogic.getCurrentUserId());
+				} catch (HibernateOptimisticLockingFailureException holfe) {
+					if(log.isInfoEnabled()) log.info("An optimistic locking failure occurred while attempting to update submission versions for assignment " + assignmentId);
+		            throw new StaleObjectModificationException(holfe);
 				}
 			}
 		}
@@ -836,7 +840,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			throw new IllegalArgumentException("No submission exists with id " + submissionId);
 		}
 
-		if (!permissionLogic.isUserAbleToProvideFeedbackForSubmission(subWithHistory)) {
+		if (!permissionLogic.isUserAbleToProvideFeedbackForStudentForAssignment(subWithHistory.getUserId(), subWithHistory.getAssignment())) {
 			throw new SecurityException("User " + externalLogic.getCurrentUserId() + " attempted to release feedback" +
 					" for student " + subWithHistory.getUserId() + " and assignment " + 
 					subWithHistory.getAssignment().getId() + "without authorization");
@@ -847,19 +851,22 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			// we need to iterate through all of the versions and
 			// release them
 			Date releasedTime = new Date();
+			Set<AssignmentSubmissionVersion> updatedVersions = new HashSet();
 			for (Iterator versionIter = subWithHistory.getSubmissionHistorySet().iterator(); versionIter.hasNext();) {
 				AssignmentSubmissionVersion version = (AssignmentSubmissionVersion) versionIter.next();
 				if (version != null) {
 					version.setReleasedTime(releasedTime);
-					
-					try {
-						dao.update(version);
-						log.debug("Version " + version.getId() + " released by " + externalLogic.getCurrentUserId());
-					} catch (HibernateOptimisticLockingFailureException holfe) {
-						if(log.isInfoEnabled()) log.info("An optimistic locking failure occurred while attempting to update submission version" + version.getId());
-			            throw new StaleObjectModificationException(holfe);
-					}
+					updatedVersions.add(version);
 				}
+			}
+			
+			try {
+				dao.saveMixedSet(new Set[] { updatedVersions });
+				if (log.isDebugEnabled()) log.debug("All submission versions for submission " + submissionId + " released by " + externalLogic.getCurrentUserId());
+			} catch (HibernateOptimisticLockingFailureException holfe) {
+				if(log.isInfoEnabled()) log.info("An optimistic locking failure occurred while attempting to update release all version for submission " + submissionId);
+	            
+				throw new StaleObjectModificationException(holfe);
 			}
 		}
 	}
@@ -874,17 +881,19 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			throw new IllegalArgumentException("No version " + submissionVersionId + " exists");
 		}
 		
-		if (!permissionLogic.isUserAbleToProvideFeedbackForSubmission(version.getAssignmentSubmission())) {
+		AssignmentSubmission submission = version.getAssignmentSubmission();
+		
+		if (!permissionLogic.isUserAbleToProvideFeedbackForStudentForAssignment(submission.getUserId(), submission.getAssignment())) {
 			throw new SecurityException("User " + externalLogic.getCurrentUserId() + " attempted to release feedback" +
-					" for student " + version.getAssignmentSubmission().getUserId() + " and assignment " + 
-					version.getAssignmentSubmission().getAssignment().getId() + "without authorization");
+					" for student " + submission.getUserId() + " and assignment " + 
+					submission.getAssignment().getId() + "without authorization");
 		}
 		
 		version.setReleasedTime(new Date());
 		
 		try {
 			dao.update(version);
-			log.debug("Version " + version.getId() + " released by " + externalLogic.getCurrentUserId());
+			if (log.isDebugEnabled()) log.debug("Version " + version.getId() + " released by " + externalLogic.getCurrentUserId());
 		} catch (HibernateOptimisticLockingFailureException holfe) {
 			if(log.isInfoEnabled()) log.info("An optimistic locking failure occurred while attempting to update submission version" + version.getId());
             throw new StaleObjectModificationException(holfe);
