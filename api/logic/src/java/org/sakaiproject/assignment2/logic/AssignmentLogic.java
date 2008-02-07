@@ -27,7 +27,6 @@ import java.util.Map;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentGroup;
 import org.sakaiproject.assignment2.exception.ConflictingAssignmentNameException;
-import org.sakaiproject.assignment2.exception.AnnouncementPermissionException;
 
 
 /**
@@ -62,6 +61,8 @@ public interface AssignmentLogic {
 	 * user must have "edit" permission to add or update an assignment
 	 * @throws ConflictingAssignmentNameException -
 	 * if it is a new assignment and the title already exists
+	 * @throws NoGradebookItemForGradedAssignmentException - if the
+	 * assignment is marked as graded but there is no gradableObjectId
 	 */
 	public void saveAssignment(Assignment2 assignment) 
 		throws ConflictingAssignmentNameException;

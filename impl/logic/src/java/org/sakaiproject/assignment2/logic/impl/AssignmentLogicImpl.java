@@ -47,6 +47,7 @@ import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
 import org.sakaiproject.assignment2.dao.AssignmentDao;
 import org.sakaiproject.assignment2.exception.AnnouncementPermissionException;
 import org.sakaiproject.assignment2.exception.ConflictingAssignmentNameException;
+import org.sakaiproject.assignment2.exception.NoGradebookItemForGradedAssignmentException;
 import org.sakaiproject.genericdao.api.finders.ByPropsFinder;
 import org.sakaiproject.service.gradebook.shared.StaleObjectModificationException;
 import org.sakaiproject.assignment2.logic.utils.ComparatorsUtils;
@@ -142,7 +143,8 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 		return (Assignment2) dao.getAssignmentByIdWithGroupsAndAttachments(assignmentId);
 	}
 	
-	public void saveAssignment(Assignment2 assignment) throws SecurityException, ConflictingAssignmentNameException
+	public void saveAssignment(Assignment2 assignment) throws SecurityException, 
+		ConflictingAssignmentNameException, NoGradebookItemForGradedAssignmentException
 	{
 		if (assignment == null) {
 			throw new IllegalArgumentException("Null assignment passed to saveAssignment");
@@ -150,6 +152,11 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 		
 		String currentContextId = externalLogic.getCurrentContextId();
 		String currentUserId = externalLogic.getCurrentUserId();
+		
+		if (!assignment.isUngraded() && assignment.getGradableObjectId() == null) {
+			throw new NoGradebookItemForGradedAssignmentException("The assignment to save " + 
+					"was defined as graded but it had a null gradableObjectId");
+		}
 		
 		if (!permissionLogic.isCurrentUserAbleToEditAssignments(currentContextId)) {
 			throw new SecurityException("Current user may not save assignment " + assignment.getTitle()

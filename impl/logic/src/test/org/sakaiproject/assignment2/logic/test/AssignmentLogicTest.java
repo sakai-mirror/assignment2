@@ -41,6 +41,7 @@ import org.sakaiproject.assignment2.model.AssignmentAttachment;
 import org.sakaiproject.assignment2.model.AssignmentGroup;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.assignment2.exception.ConflictingAssignmentNameException;
+import org.sakaiproject.assignment2.exception.NoGradebookItemForGradedAssignmentException;
 
 import org.sakaiproject.section.api.coursemanagement.CourseSection;
 import org.sakaiproject.section.api.coursemanagement.Course;
@@ -172,6 +173,31 @@ public class AssignmentLogicTest extends Assignment2TestBase {
     	}
     	
     	Assignment2 newAssign = new Assignment2();
+    	// let's start by creating a new assignment
+    	newAssign.setAllowResubmit(false);
+    	newAssign.setContextId(AssignmentTestDataLoad.CONTEXT_ID);
+    	newAssign.setDraft(false);
+    	newAssign.setHasAnnouncement(false);
+    	newAssign.setHonorPledge(false);
+    	newAssign.setInstructions("Complete this by friday");
+    	newAssign.setNotificationType(AssignmentConstants.NOTIFY_NONE);
+    	newAssign.setOpenTime(new Date());
+    	newAssign.setTitle(AssignmentTestDataLoad.ASSIGN1_TITLE); //we're using a title that already exists
+    	newAssign.setUngraded(true);
+    	
+    	// start with 1 group and 2 attachments
+    	Set<AssignmentGroup> assignGroupSet = new HashSet();
+    	AssignmentGroup group1 = new AssignmentGroup(newAssign, "group1Ref");
+    	assignGroupSet.add(group1);
+    	
+    	Set<AssignmentAttachment> attachSet = new HashSet();
+    	AssignmentAttachment attach1 = new AssignmentAttachment(newAssign, "attach1Ref");
+    	attachSet.add(attach1);
+    	AssignmentAttachment attach2 = new AssignmentAttachment(newAssign, "attach2Ref");
+    	attachSet.add(attach2);
+    	
+    	newAssign.setAssignmentGroupSet(assignGroupSet);
+    	newAssign.setAttachmentSet(attachSet);
     	
     	// let's make sure users without the edit perm can't save
     	authn.setAuthnContext(AssignmentTestDataLoad.STUDENT1_UID);
@@ -190,32 +216,6 @@ public class AssignmentLogicTest extends Assignment2TestBase {
     	// switch to a user with edit perm
     	authn.setAuthnContext(AssignmentTestDataLoad.INSTRUCTOR_UID);
     	
-    	// let's start by creating a new assignment
-    	newAssign.setAllowResubmit(false);
-    	newAssign.setContextId(AssignmentTestDataLoad.CONTEXT_ID);
-    	newAssign.setDraft(false);
-    	newAssign.setHasAnnouncement(false);
-    	newAssign.setHonorPledge(false);
-    	newAssign.setInstructions("Complete this by friday");
-    	newAssign.setNotificationType(AssignmentConstants.NOTIFY_NONE);
-    	newAssign.setOpenTime(new Date());
-    	newAssign.setTitle(AssignmentTestDataLoad.ASSIGN1_TITLE);
-    	newAssign.setUngraded(true);
-    	
-    	// start with 1 group and 2 attachments
-    	Set<AssignmentGroup> assignGroupSet = new HashSet();
-    	AssignmentGroup group1 = new AssignmentGroup(newAssign, "group1Ref");
-    	assignGroupSet.add(group1);
-    	
-    	Set<AssignmentAttachment> attachSet = new HashSet();
-    	AssignmentAttachment attach1 = new AssignmentAttachment(newAssign, "attach1Ref");
-    	attachSet.add(attach1);
-    	AssignmentAttachment attach2 = new AssignmentAttachment(newAssign, "attach2Ref");
-    	attachSet.add(attach2);
-    	
-    	newAssign.setAssignmentGroupSet(assignGroupSet);
-    	newAssign.setAttachmentSet(attachSet);
-    	
     	// first, try to hit the duplicate title exception
     	try {
     		assignmentLogic.saveAssignment(newAssign);
@@ -226,6 +226,18 @@ public class AssignmentLogicTest extends Assignment2TestBase {
     	// change the name
     	String newTitle = "New assignment";
     	newAssign.setTitle(newTitle);
+    	
+    	// now set this item to graded but don't populate gradableObjectId
+    	newAssign.setUngraded(false);
+    	
+    	try {
+    		assignmentLogic.saveAssignment(newAssign);
+    		fail("Did not catch null gradableObjectId for graded assignment");
+    	} catch(NoGradebookItemForGradedAssignmentException ge) {}
+    	
+    	// set the gradableObjectId
+    	newAssign.setGradableObjectId(gbItem1Id);
+    	
     	assignmentLogic.saveAssignment(newAssign);
     	
     	// double check that it was saved
