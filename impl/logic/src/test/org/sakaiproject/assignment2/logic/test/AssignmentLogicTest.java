@@ -161,8 +161,6 @@ public class AssignmentLogicTest extends Assignment2TestBase {
     	assignment = assignmentLogic.getAssignmentById(testData.a1Id);
     	assertNotNull(assignment);
     	assertTrue(assignment.getTitle().equals(AssignmentTestDataLoad.ASSIGN1_TITLE));
-    	assertTrue(assignment.getAttachmentSet().size() == 2);
-    	assertTrue(assignment.getAssignmentGroupSet().size() == 2);
     }
     
     public void testSaveAssignment() throws Exception {
@@ -423,6 +421,95 @@ public class AssignmentLogicTest extends Assignment2TestBase {
     			fail("Invalid assignment returned for STUDENT3 via getViewableAssignments");
     		}
     	}
+    }
+    
+    public void testSetAssignmentSortIndexes() throws Exception {
+    	// this method is used for reordering assignments
+    	// try passing a null even though there are 4 assigns in site
+    	try {
+    		assignmentLogic.setAssignmentSortIndexes(null);
+    		fail("Did not catch null list passed to setAssignmentSortIndexes when there are 4 assign in site");
+    	} catch (IllegalArgumentException iae) {}
+    	// try passing a list w/ a diff # of values than # assign in site
+    	try {
+    		assignmentLogic.setAssignmentSortIndexes(new Long[] {new Long(3),new Long(2),new Long(1)});
+    		fail("Did not catch list w/ 3 passed to setAssignmentSortIndexes when there are 4 assign in site");
+    	} catch (IllegalArgumentException iae) {}
+    	
+    	// right now they are in order assign 1 - 4
+    	// let's put assign 4 first
+    	assignmentLogic.setAssignmentSortIndexes(new Long[] {testData.a4Id,testData.a1Id,testData.a2Id,testData.a3Id});
+    	// double check that they were updated
+    	List allAssigns = dao.findByProperties(Assignment2.class, new String[] {"contextId","removed"}, new Object[] {AssignmentTestDataLoad.CONTEXT_ID, false});
+    	for (Iterator assignIter = allAssigns.iterator(); assignIter.hasNext();) {
+    		Assignment2 assign = (Assignment2)assignIter.next();
+    		if (assign.getId().equals(testData.a1Id)) {
+    			assertTrue(assign.getSortIndex() == 1);
+    		} else if (assign.getId().equals(testData.a2Id)) {
+    			assertTrue(assign.getSortIndex() == 2);
+    		} else if (assign.getId().equals(testData.a3Id)) {
+    			assertTrue(assign.getSortIndex() == 3);
+    		} else if (assign.getId().equals(testData.a4Id)) {
+    			assertTrue(assign.getSortIndex() == 0);
+    		} else {
+    			fail("Invalid assignment returned!");
+    		}
+    	}
+    }
+    
+    public void testGetAssignmentByIdWithAssociatedData() throws Exception {
+    	// try passing a null id
+    	try {
+    		assignmentLogic.getAssignmentByIdWithAssociatedData(null);
+    		fail("Did not catch null assignment id passed to getAssignmentByIdWithAssociatedData");
+    	} catch (IllegalArgumentException iae) {}
+    	
+    	// try passing an id that doesn't exist - should be null
+    	Assignment2 assign = assignmentLogic.getAssignmentByIdWithAssociatedData(new Long(12345));
+    	assertNull(assign);
+    	
+    	// let's make assignment4 graded
+    	testData.a4.setUngraded(false);
+    	testData.a4.setGradableObjectId(gbItem2Id);
+    	dao.save(testData.a4);
+    	
+    	// let's try to retrieve this graded item now
+    	assign = assignmentLogic.getAssignmentByIdWithAssociatedData(testData.a4Id);
+    	assertNotNull(assign);
+    	assertTrue(assign.getId().equals(testData.a4Id));
+    	// the gradebook info should be populated
+    	assertTrue(assign.getDueDate().equals(GB_ITEM2_DUE));
+    	assertTrue(assign.getPointsPossible().equals(GB_ITEM2_PTS));
+    	// double check groups and attach
+    	assertTrue(assign.getAssignmentGroupSet().size() == 1);
+    	assertTrue(assign.getAttachmentSet().isEmpty());
+    	
+    	// try an ungraded item
+    	assign = assignmentLogic.getAssignmentByIdWithAssociatedData(testData.a1Id);
+    	assertTrue(assign.getId().equals(testData.a1Id));
+    	assertTrue(assign.getAssignmentGroupSet().size() == 2);
+    	assertTrue(assign.getAttachmentSet().size() == 2); 	
+    }
+    
+    public void testGetAssignmentByIdWithGroups() throws Exception {
+    	// try passing a null id
+    	try {
+    		assignmentLogic.getAssignmentByIdWithGroups(null);
+    		fail("Did not catch null assignment id passed to getAssignmentByIdWithGroups");
+    	} catch (IllegalArgumentException iae) {}
+    	
+    	// try passing an id that doesn't exist - should be null
+    	Assignment2 assign = assignmentLogic.getAssignmentByIdWithGroups(new Long(12345));
+    	assertNull(assign);
+    	
+    	// try a valid item
+    	assign = assignmentLogic.getAssignmentByIdWithGroups(testData.a1Id);
+    	assertTrue(assign.getId().equals(testData.a1Id));
+    	assertTrue(assign.getAssignmentGroupSet().size() == 2);	
+    }
+    
+    public void testGetStatusForAssignment() {
+
     }
 
 }

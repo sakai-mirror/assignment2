@@ -10,6 +10,7 @@ import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.tool.beans.Assignment2Bean;
+import org.sakaiproject.assignment2.tool.beans.locallogic.LocalAssignmentLogic;
 import org.sakaiproject.assignment2.tool.params.AssignmentListSortViewParams;
 import org.sakaiproject.assignment2.tool.params.AssignmentViewParams;
 import org.sakaiproject.assignment2.tool.params.ViewSubmissionsViewParams;
@@ -55,6 +56,7 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
     private Locale locale;
     private Assignment2Bean assignment2Bean;
     private SortHeaderRenderer sortHeaderRenderer;
+    private LocalAssignmentLogic localAssignmentLogic;
     
     public void fillComponents(UIContainer tofill, ViewParameters viewparams, ComponentChecker checker) {
 
@@ -127,7 +129,7 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
               
         UIForm form = UIForm.make(tofill, "form");
                 
-         assignment2Bean.filterPopulateAndSortAssignmentList(entries, params.current_start, params.current_count, 
+         localAssignmentLogic.filterPopulateAndSortAssignmentList(entries, params.current_start, params.current_count, 
         		current_sort_by, current_sort_dir.equals(AssignmentLogic.SORT_DIR_ASC));
         
         if (entries.size() <= 0) {
@@ -227,5 +229,9 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
 	
 	public void setPermissionLogic(AssignmentPermissionLogic permissionLogic) {
 		this.permissionLogic = permissionLogic;
+	}
+	
+	public void setLocalAssignmentLogic(LocalAssignmentLogic localAssignmentLogic) {
+		this.localAssignmentLogic = localAssignmentLogic;
 	}
 }

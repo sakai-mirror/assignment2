@@ -49,7 +49,7 @@ public interface AssignmentLogic {
 	/**
 	 * 
 	 * @param assignmentId
-	 * @return Returns the Assignment based on its assignmentId. Populates
+	 * @return Returns the Assignment based on its assignmentId. Does not populate
 	 * the AssignmentAttachments and AssignmentGroups
 	 */
 	public Assignment2 getAssignmentById(Long assignmentId);
@@ -88,6 +88,12 @@ public interface AssignmentLogic {
 	 */
 	public List<Assignment2> getViewableAssignments();
 	
+	/**
+	 * Reorder the assignments in your site. The array of assignment ids must
+	 * represent all of the assignments in your site
+	 * @param assignmentIds - an array of Long assignment ids that are ordered in the
+	 * order that you would like the assignments in the site to appear. 
+	 */
 	public void setAssignmentSortIndexes(Long[] assignmentIds);
 	
 	/**
@@ -107,14 +113,6 @@ public interface AssignmentLogic {
 	 */
 	public Assignment2 getAssignmentByIdWithGroups(Long assignmentId);
 	
-	/**
-	 * 
-	 * @param groups
-	 * @return a comma-delimited String representation of the given list of
-	 * groups/section. will delete groups that have been deleted at the site
-	 * level
-	 */
-	public String getListOfGroupRestrictionsAsString(List<AssignmentGroup> restrictedGroups, Map<String, String> siteGroupIdNameMap);
 
 	/**
 	 * Uses the open, due, and accept until dates to determine the current status
@@ -123,15 +121,6 @@ public interface AssignmentLogic {
 	 * @return a constant equivalent to the assignment's status
 	 */
 	public int getStatusForAssignment(Assignment2 assignment);
-	
-	/**
-	 * We cannot rely on db sorting because we must sort by several properties that
-	 * are not persisted in the A2 tables (ie status, due date, for, etc)
-	 * @param assignmentList
-	 * @param sortBy
-	 * @param ascending
-	 */
-	public void sortAssignments(List<Assignment2> assignmentList, String sortBy, boolean ascending);
 	
 	/**
 	 * Given the originalAssignment and the updated version, will determine if an

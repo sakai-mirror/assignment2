@@ -20,6 +20,11 @@
    	  <property name="submissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
    </bean>
    
+   <bean id="localAssignmentLogic" class="org.sakaiproject.assignment2.tool.beans.locallogic.LocalAssignmentLogic">
+   	  <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
+   	  <property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
+   	  <property name="messageLocator" ref="messageLocator" />
+   </bean>
 
    <!-- handles configuration of internationalization messages -->
    <bean id="messageLocator" class="uk.org.ponder.springutil.SpringMessageLocator">

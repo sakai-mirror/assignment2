@@ -180,13 +180,15 @@ public class AssignmentDaoImplTest extends Assignment2DaoTestBase {
 			// try a null submission
 			AssignmentSubmissionVersion version = assignmentDao.getCurrentSubmissionVersionWithAttachments(null);
 			fail("did not catch null submission passed to getCurrentSubmissionVersionWithAttachments");
-			
-			// what happens if submission doesn't have an id? should throw error
-			AssignmentSubmission submission = new AssignmentSubmission();
-			version = assignmentDao.getCurrentSubmissionVersionWithAttachments(submission);
-			fail("did not catch submission w/ no id passed to getCurrentSubmissionVersionWithAttachments");
 		} catch (IllegalArgumentException iae) {
 		}
+		
+		try {
+			// what happens if submission doesn't have an id? should throw error
+			AssignmentSubmission submission = new AssignmentSubmission();
+			AssignmentSubmissionVersion version = assignmentDao.getCurrentSubmissionVersionWithAttachments(submission);
+			fail("did not catch submission w/ no id passed to getCurrentSubmissionVersionWithAttachments");
+		} catch(IllegalArgumentException iae) {}
 
 		// try a submission that does exist
 		AssignmentSubmissionVersion version = assignmentDao.getCurrentSubmissionVersionWithAttachments(testData.st1a1Submission);
@@ -332,11 +334,13 @@ public class AssignmentDaoImplTest extends Assignment2DaoTestBase {
 			// pass a null student
 			assignmentDao.getSubmissionWithVersionHistoryForStudentAndAssignment(null, new Assignment2());
 			fail("Did not catch null student passed to getSubmissionWithVersionHistoryForStudentAndAssignment");
+		} catch (IllegalArgumentException iae) {
+		}
+		try {
 			// pass a non-persisted assignment
 			assignmentDao.getSubmissionWithVersionHistoryForStudentAndAssignment(AssignmentTestDataLoad.STUDENT1_UID, null);
 			fail("Did not catch null assignment passed to getSubmissionWithVersionHistoryForStudentAndAssignment");
-		} catch (IllegalArgumentException iae) {
-		}
+		} catch (IllegalArgumentException iae) {}
 		
 		// should have no submission
 		AssignmentSubmission submission = assignmentDao.getSubmissionWithVersionHistoryForStudentAndAssignment(AssignmentTestDataLoad.STUDENT1_UID, testData.a2);

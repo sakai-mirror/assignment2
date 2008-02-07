@@ -10,6 +10,7 @@ import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.tool.beans.Assignment2Bean;
+import org.sakaiproject.assignment2.tool.beans.locallogic.LocalAssignmentLogic;
 import org.sakaiproject.assignment2.tool.params.AssignmentListSortViewParams;
 import org.sakaiproject.assignment2.tool.params.SimpleAssignmentViewParams;
 import org.sakaiproject.assignment2.tool.producers.renderers.PagerRenderer;
@@ -39,6 +40,7 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
     private Locale locale;
     private Assignment2Bean assignment2Bean;
     private SortHeaderRenderer sortHeaderRenderer;
+    private LocalAssignmentLogic localAssignmentLogic;
 
     public static final String DEFAULT_SORT_DIR = AssignmentLogic.SORT_DIR_ASC;
     public static final String DEFAULT_OPPOSITE_SORT_DIR = AssignmentLogic.SORT_DIR_DESC;
@@ -95,7 +97,7 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
         
         //Table TIME!!!! WOOHOO
 
-        assignment2Bean.filterPopulateAndSortAssignmentList(entries, params.current_start, params.current_count, 
+        localAssignmentLogic.filterPopulateAndSortAssignmentList(entries, params.current_start, params.current_count, 
         		current_sort_by, current_sort_dir.equals(AssignmentLogic.SORT_DIR_ASC));
         
         
@@ -155,4 +157,8 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
     public void setSortHeaderRenderer(SortHeaderRenderer sortHeaderRenderer) {
     	this.sortHeaderRenderer = sortHeaderRenderer;
     }
+    
+	public void setLocalAssignmentLogic(LocalAssignmentLogic localAssignmentLogic) {
+		this.localAssignmentLogic = localAssignmentLogic;
+	}
 }

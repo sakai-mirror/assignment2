@@ -93,7 +93,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
     }
     
 	public void init(){
-		log.debug("init");
+		if(log.isDebugEnabled()) log.debug("init");
 	}
 	/**
 	 * 
@@ -198,7 +198,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
         	assignSet.add(assignment);
         	
         	dao.saveMixedSet(new Set[] {assignSet, attachSet, groupSet});
-            log.debug("Created assignment: " + assignment.getTitle());
+        	if(log.isDebugEnabled()) log.debug("Created assignment: " + assignment.getTitle());
   
 		} else {
 			if (!assignment.getTitle().equals(existingAssignment.getTitle())) {
@@ -232,12 +232,12 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 	        	assignSet.add(assignment);
 	        	
 	        	dao.saveMixedSet(new Set[] {assignSet, attachSet, groupSet});
-	            log.debug("Updated assignment: " + assignment.getTitle() + "with id: " + assignment.getId());
+	        	if(log.isDebugEnabled())log.debug("Updated assignment: " + assignment.getTitle() + "with id: " + assignment.getId());
 	            
 	            if ((attachToDelete != null && !attachToDelete.isEmpty()) ||
 	            		(groupsToDelete != null && !groupsToDelete.isEmpty())) {
 	            	dao.deleteMixedSet(new Set[] {attachToDelete, groupsToDelete});
-	            	log.debug("Attachments and/or groups removed for updated assignment " + assignment.getId());
+	            	if(log.isDebugEnabled())log.debug("Attachments and/or groups removed for updated assignment " + assignment.getId());
 	            }
 			} catch (HibernateOptimisticLockingFailureException holfe) {
 				if(log.isInfoEnabled()) log.info("An optimistic locking failure occurred while attempting to update an assignment");
@@ -246,10 +246,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 		}
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see org.sakaiproject.assignment2.logic.AssignmentLogic#deleteAssignment(org.sakaiproject.assignment2.model.Assignment2)
-	 */
+
 	public void deleteAssignment(Assignment2 assignment) throws SecurityException, AnnouncementPermissionException
 	{
 		if (assignment == null) {
@@ -280,18 +277,18 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 
 		try {
 			dao.update(assignment);
-			log.debug("Deleted assignment: " + assignment.getTitle() + " with id " + assignment.getId());
+			if(log.isDebugEnabled()) log.debug("Deleted assignment: " + assignment.getTitle() + " with id " + assignment.getId());
 			
 			// now remove the announcement, if applicable
 			if (announcementIdToDelete != null) {
 				announcementLogic.deleteOpenDateAnnouncement(announcementIdToDelete, currentContextId);
-				log.debug("Deleted announcement with id " + announcementIdToDelete + " for assignment " + assignment.getId());
+				if(log.isDebugEnabled()) log.debug("Deleted announcement with id " + announcementIdToDelete + " for assignment " + assignment.getId());
 			}
 		} catch (HibernateOptimisticLockingFailureException holfe) {
 			if(log.isInfoEnabled()) log.info("An optimistic locking failure occurred while attempting to update an assignment");
 			throw new StaleObjectModificationException(holfe);
 		} catch (AnnouncementPermissionException ape) {
-			log.debug("The current user is not authorized to remove announcements in the annc tool, " +
+			if(log.isDebugEnabled()) log.debug("The current user is not authorized to remove announcements in the annc tool, " +
 					"but the assignment was deleted");
 			throw new AnnouncementPermissionException("The current user is not authorized to remove announcements in the annc tool, " +
 					"but the assignment was deleted");
@@ -373,18 +370,25 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 			}
 		}
 		
-		
-		
 		return viewableAssignments;
 	}
 	
 	public void setAssignmentSortIndexes(Long[] assignmentIds)
 	{
+		int numAssignsInSite = dao.countByProperties(Assignment2.class, 
+				new String[] {"contextId", "removed"}, new Object[]{externalLogic.getCurrentContextId(), false});
+		
+		if ((assignmentIds == null && numAssignsInSite > 0) ||
+				(assignmentIds != null && assignmentIds.length != numAssignsInSite)) {
+			throw new IllegalArgumentException("The length of the id list passed does not match the num assignments in the site");
+		}
+		
 		if (assignmentIds != null) {
 			String userId = externalLogic.getCurrentUserId();
 			//Assume array of longs is in correct order now
 			//so that the index of the array is the new 
 			//sort index
+			Set<Assignment2> assignSet = new HashSet();
 			for (int i=0; i < assignmentIds.length; i++){
 				//get Assignment
 	    		Assignment2 assignment = getAssignmentById(assignmentIds[i]);
@@ -395,10 +399,19 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 		    			assignment.setSortIndex(i);
 		    			assignment.setModifiedBy(userId);
 		    			assignment.setModifiedTime(new Date());
-		    			dao.save(assignment);
+		    			assignSet.add(assignment);
+		    			if(log.isDebugEnabled()) log.debug("Assignment " + assignment.getId() + " sort index changed to " + i);
 	    			}
 	    		}
 	    	}
+			try {
+				dao.saveMixedSet(new Set[]{assignSet});
+				if(log.isDebugEnabled()) log.debug("Reordered assignments saved. " + 
+						assignSet.size() + " assigns were updated");
+			} catch (HibernateOptimisticLockingFailureException holfe) {
+				if(log.isInfoEnabled()) log.info("An optimistic locking failure occurred while attempting to reorder the assignments");
+	            throw new StaleObjectModificationException(holfe);
+			}
 		}
 	}
 	
@@ -442,68 +455,6 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 		}
 		
 		return AssignmentConstants.STATUS_OPEN;	
-	}
-	
-	/**
-	 * 
-	 * @param groups
-	 * @return a comma-delimited String representation of the given list of
-	 * groups/section. 
-	 */
-	public String getListOfGroupRestrictionsAsString(List<AssignmentGroup> restrictedGroups, Map<String, String> siteGroupIdNameMap) {
-		StringBuilder sb = new StringBuilder();
-		
-		if (restrictedGroups != null) {
-			List<String> groupNameList = new ArrayList();
-			
-			for (Iterator groupIter = restrictedGroups.iterator(); groupIter.hasNext();) {
-				AssignmentGroup group = (AssignmentGroup) groupIter.next();
-				if (group != null) {
-					if (siteGroupIdNameMap.containsKey(group.getGroupId())) {
-						String groupName = (String)siteGroupIdNameMap.get(group.getGroupId());
-						groupNameList.add(groupName);
-					}
-				}
-			}
-			
-			Collections.sort(groupNameList);
-			
-			for (int i=0; i < groupNameList.size(); i++) {
-				
-				String groupName = (String) groupNameList.get(i);
-				if (groupName != null) {
-					if (i != 0) {
-						sb.append(", ");
-					}
-
-					sb.append(groupName);
-				}
-			}	
-		}
-		
-		return sb.toString();
-	}
-	
-	public void sortAssignments(List<Assignment2> assignmentList, String sortBy, boolean ascending) {
-		Comparator<Assignment2> comp;
-		if(AssignmentLogic.SORT_BY_TITLE.equals(sortBy)) {
-			comp = new ComparatorsUtils.Assignment2TitleComparator();
-		} else if(AssignmentLogic.SORT_BY_DUE.equals(sortBy)) {
-			comp = new ComparatorsUtils.Assignment2DueDateComparator();
-		} else if(AssignmentLogic.SORT_BY_FOR.equals(sortBy)) {
-			comp = new ComparatorsUtils.Assignment2ForComparator();
-		} else if(AssignmentLogic.SORT_BY_OPEN.equals(sortBy)){
-			comp = new ComparatorsUtils.Assignment2OpenDateComparator();
-		} else if(AssignmentLogic.SORT_BY_STATUS.equals(sortBy)){
-			comp = new ComparatorsUtils.Assignment2StatusComparator();
-		} else {
-			comp = new ComparatorsUtils.Assignment2SortIndexComparator();
-		}
-
-		Collections.sort(assignmentList, comp);
-		if(!ascending) {
-			Collections.reverse(assignmentList);
-		}
 	}
 	
 	private void populateAssignmentForAttachmentAndGroupSets(Set<AssignmentAttachment> attachSet, Set<AssignmentGroup> groupSet, Assignment2 assign) {

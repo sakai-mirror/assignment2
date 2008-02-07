@@ -13,6 +13,7 @@ import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.tool.api.ToolSession;
 import org.sakaiproject.assignment2.exception.AnnouncementPermissionException;
 import org.sakaiproject.assignment2.exception.StaleObjectModificationException;
+import org.sakaiproject.assignment2.tool.beans.locallogic.LocalAssignmentLogic;
 
 import uk.org.ponder.beanutil.entity.EntityBeanLocator;
 import uk.org.ponder.messageutil.MessageLocator;
@@ -86,6 +87,11 @@ public class Assignment2Bean {
 	private MessageLocator messageLocator;
 	public void setMessageLocator (MessageLocator messageLocator) {
 		this.messageLocator = messageLocator;
+	}
+	
+	private LocalAssignmentLogic localAssignmentLogic;
+	public void setLocalAssignmentLogic (LocalAssignmentLogic localAssignmentLogic) {
+		this.localAssignmentLogic = localAssignmentLogic;
 	}
 	
 	private SessionManager sessionManager;
@@ -195,7 +201,7 @@ public class Assignment2Bean {
 				}
 				
 				logic.saveAssignment(assignment);
-				handleAnnouncement(assignment, assignmentFromDb);
+				localAssignmentLogic.handleAnnouncement(assignment, assignmentFromDb);
 				
 			} catch( ConflictingAssignmentNameException e){
 				messages.addMessage(new TargettedMessage("assignment2.assignment_post.conflicting_assignment_name",
@@ -266,7 +272,7 @@ public class Assignment2Bean {
 					
 					logic.saveAssignment(assignment);
 					
-					handleAnnouncement(assignment, assignmentFromDb);
+					localAssignmentLogic.handleAnnouncement(assignment, assignmentFromDb);
 				} catch( ConflictingAssignmentNameException e){
 					messages.addMessage(new TargettedMessage("assignment2.assignment_save_draft.conflicting_assignment_name",
 							new Object[] { assignment.getTitle() }, "Assignment2." + key + ".title"));
@@ -324,7 +330,7 @@ public class Assignment2Bean {
 		Assignment2 duplicate = creator.createDuplicate(logic.getAssignmentById(assignmentId));
 		try {
 			logic.saveAssignment(duplicate);
-			handleAnnouncement(duplicate, null);
+			localAssignmentLogic.handleAnnouncement(duplicate, null);
 			
 		} catch(ConflictingAssignmentNameException e){
 			messages.addMessage(new TargettedMessage("assignment2.assignment_post.duplicate_conflicting_assignment_name",
@@ -338,82 +344,5 @@ public class Assignment2Bean {
 			new Object[] {duplicate.getTitle() }, TargettedMessage.SEVERITY_INFO));
 	}
 	
-	private void handleAnnouncement(Assignment2 newAssignment, Assignment2 oldAssignment) {
-		String newAnncSubject = messageLocator.getMessage("assignment2.assignment_annc_subject", new Object[] {newAssignment.getTitle()});
-		String newAnncBody = messageLocator.getMessage("assignment2.assignment_annc_body", new Object[] {newAssignment.getOpenTime()});
-		String revAnncSubject = messageLocator.getMessage("assignment2.assignment_annc_subject_edited", new Object[] {newAssignment.getTitle()});
-		String revAnncBody = messageLocator.getMessage("assignment2.assignment_annc_subject_edited", new Object[] {newAssignment.getOpenTime()});
 
-		try {
-			logic.saveAssignmentAnnouncement(oldAssignment, newAssignment, newAnncSubject, 
-					newAnncBody, revAnncSubject, revAnncBody);
-		} catch (AnnouncementPermissionException ape) {
-			// TODO do something since the assignment was saved but
-			// the announcement was not added b/c user doesn't have
-			// perm in the announcements tool
-		}
-	}
-	
-	public void populateNonPersistedFieldsForAssignments(List<Assignment2> assignmentList) {
-		if (assignmentList == null || assignmentList.isEmpty())
-			return;
-		
-		// Now, iterate through the viewable assignments and set the not persisted fields 
-		// that aren't related to the gradebook
-		
-		// create a map of group id to name for all of the groups in this site
-		Map groupIdToNameMap = externalLogic.getGroupIdToNameMapForSite();
-		
-		for (Iterator assignIter = assignmentList.iterator(); assignIter.hasNext();) {
-			Assignment2 assign = (Assignment2) assignIter.next();
-			if (assign != null) {
-
-				// first, populate the text for the "For" column based upon group restrictions
-				if (assign.getAssignmentGroupSet() != null && !assign.getAssignmentGroupSet().isEmpty()) {
-					String groupListAsString = logic.getListOfGroupRestrictionsAsString(
-							new ArrayList(assign.getAssignmentGroupSet()), groupIdToNameMap);
-					assign.setRestrictedToText(groupListAsString);
-				} 
-				else {
-					assign.setRestrictedToText(messageLocator.getMessage("assignment2.assignment_restrict_to_site"));
-				}
-
-				// set the status for this assignment: "Open, Due, etc"
-				int status = logic.getStatusForAssignment(assign);
-				assign.setAssignmentStatus(messageLocator.getMessage("assignment2.status." + status));
-				
-				if (assign.getSubmissionStatusConstant() != null) {
-					assign.setSubmissionStatus(messageLocator.getMessage("assignment2.submission_status." + assign.getSubmissionStatusConstant().intValue()));
-				}
-			}
-		}
-	}
-	
-	public List filterListForPaging(List myList, int begIndex, int numItemsToDisplay) {
-        if (myList == null || myList.isEmpty())
-        	return myList;
-        
-        int endIndex = begIndex + numItemsToDisplay;
-        if (endIndex > myList.size()) {
-        	endIndex = myList.size();
-        }
-
-		return myList.subList(begIndex, endIndex);
-	}
-	
-	/**
-	 * Will apply paging and sorting to the given list and populate any non-persisted
-	 * fields that need to be populated from the UI (ie fields that require access
-	 * to the bundle)
-	 * @param assignmentList
-	 * @param currentStart
-	 * @param currentCount
-	 * @param sortBy
-	 * @param sortDir
-	 */
-	public void filterPopulateAndSortAssignmentList(List<Assignment2> assignmentList, int currentStart, int currentCount, String sortBy, boolean sortDir) {
-		assignmentList = filterListForPaging(assignmentList, currentStart, currentCount);
-        populateNonPersistedFieldsForAssignments(assignmentList);
-        logic.sortAssignments(assignmentList, sortBy, sortDir);
-	}
 }
