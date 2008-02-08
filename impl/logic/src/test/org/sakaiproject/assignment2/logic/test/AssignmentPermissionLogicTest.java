@@ -303,6 +303,329 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
 	   assertFalse(permissionLogic.isUserAbleToProvideFeedbackForStudentForAssignment(AssignmentTestDataLoad.STUDENT2_UID, testData.a1));
    }
    
-   
+   public void testIsUserAbleToViewUngradedAssignment() {
+	   // try passing a null assignment
+	   try {
+		   permissionLogic.isUserAbleToViewUngradedAssignment(null, new ArrayList());
+		   fail("Did not catch null assignment passed to isUserAbleToViewUngradedAssignment");
+	   } catch (IllegalArgumentException iae) {}
+	   
+	   // try passing a graded assignment
+	   try {
+		   permissionLogic.isUserAbleToViewUngradedAssignment(testData.a4, new ArrayList());
+		   fail("Did not catch graded assignment passed to isUserAbleToViewUngradedAssignment");
+	   } catch (IllegalArgumentException iae) {}
+	   
+	   // instructors should be able to view all assignments 
+	   authn.setAuthnContext(AssignmentTestDataLoad.INSTRUCTOR_UID);
+	   assertTrue(permissionLogic.isUserAbleToViewUngradedAssignment(testData.a1, null));
+	   assertTrue(permissionLogic.isUserAbleToViewUngradedAssignment(testData.a2, null));
+	   
+	   // TA should only be able to see assignments that he/she is a member of if restricted
+	   // otherwise, should see all
 
+	   authn.setAuthnContext(AssignmentTestDataLoad.TA_UID);
+	   List memberships = externalLogic.getUserMembershipGroupIdList(AssignmentTestDataLoad.TA_UID);
+	   // try one that is restricted to a group that ta is a member of
+	   assertTrue(permissionLogic.isUserAbleToViewUngradedAssignment(testData.a1, memberships));
+	   // let's try that same one, but remove the membership
+	   assertFalse(permissionLogic.isUserAbleToViewUngradedAssignment(testData.a1, new ArrayList()));
+	   // this one is not restricted, so should be ok
+	   assertTrue(permissionLogic.isUserAbleToViewUngradedAssignment(testData.a2, memberships));
+	   
+	   // Students will see assignments available to site and those available to groups they
+	   // are a member of
+	   authn.setAuthnContext(AssignmentTestDataLoad.STUDENT1_UID);
+	   memberships = externalLogic.getUserMembershipGroupIdList(AssignmentTestDataLoad.STUDENT1_UID);
+	   // student is a member of a restricted group, so ok
+	   assertTrue(permissionLogic.isUserAbleToViewUngradedAssignment(testData.a1, memberships));
+	   // let's try that same one, but remove the membership
+	   assertFalse(permissionLogic.isUserAbleToViewUngradedAssignment(testData.a1, new ArrayList()));
+	   // this one is not restricted, so should be ok
+	   assertTrue(permissionLogic.isUserAbleToViewUngradedAssignment(testData.a2, memberships));
+
+   }
+   
+   public void testIsUserAMemberOfARestrictedGroup() {
+	   List<String> groupMembershipIds = null;
+	   List<AssignmentGroup> assignmentGroupSet = null;
+	   // try with both null
+	   assertFalse(permissionLogic.isUserAMemberOfARestrictedGroup(groupMembershipIds, assignmentGroupSet));
+	   
+	   // add a group to groupMembershipIds - should still be false
+	   groupMembershipIds = new ArrayList();
+	   groupMembershipIds.add(section1Uid);
+	   assertFalse(permissionLogic.isUserAMemberOfARestrictedGroup(groupMembershipIds, assignmentGroupSet));
+	   
+	   // add a different AssignmentGroup to the assignmentGroups
+	   assignmentGroupSet = new ArrayList();
+	   assignmentGroupSet.add(new AssignmentGroup(null, section2Uid));
+	   assertFalse(permissionLogic.isUserAMemberOfARestrictedGroup(groupMembershipIds, assignmentGroupSet));
+	   
+	   // now add an overlapping section to group membership
+	   groupMembershipIds.add(section2Uid);
+	   assertTrue(permissionLogic.isUserAMemberOfARestrictedGroup(groupMembershipIds, assignmentGroupSet));
+	   
+   }
+   
+   public void testIsUserAbleToAccessInstructorView() {
+	   // pass in a null contextId
+	   try {
+		   permissionLogic.isUserAbleToAccessInstructorView(null);
+		   fail("Did not catch null contextId passed to isUserAbleToAccessInstructorView");
+	   } catch (IllegalArgumentException iae) {
+		   
+	   }
+	   // only instructors and tas should have access to the non-student view
+	   authn.setAuthnContext(AssignmentTestDataLoad.INSTRUCTOR_UID);
+	   assertTrue(permissionLogic.isUserAbleToAccessInstructorView(AssignmentTestDataLoad.CONTEXT_ID));
+	   
+	   authn.setAuthnContext(AssignmentTestDataLoad.TA_UID);
+	   assertTrue(permissionLogic.isUserAbleToAccessInstructorView(AssignmentTestDataLoad.CONTEXT_ID));
+	   
+	   authn.setAuthnContext(AssignmentTestDataLoad.STUDENT1_UID);
+	   assertFalse(permissionLogic.isUserAbleToAccessInstructorView(AssignmentTestDataLoad.CONTEXT_ID));
+   }
+   
+   public void testGetViewableStudentsForUserForItem() {
+	   // try a null assignment
+	   try {
+		   permissionLogic.getViewableStudentsForUserForItem(null);
+		   fail("did not catch null assignment passed to getViewableStudentsForUserForItem");
+	   } catch(IllegalArgumentException iae) {}
+	   
+	   // what happens if we pass an assignment with null values?
+	   authn.setAuthnContext(AssignmentTestDataLoad.TA_UID);
+	   try {
+		   permissionLogic.getViewableStudentsForUserForItem(new Assignment2());
+		   fail("did not catch null values for not-null assignment fields");
+	   } catch (IllegalArgumentException iae) {}
+	   
+	   // this method should throw a securityException if a student calls it
+	   authn.setAuthnContext(AssignmentTestDataLoad.STUDENT1_UID);
+	   try {
+		   permissionLogic.getViewableStudentsForUserForItem(testData.a1);
+		   fail("User without grading privileges was able to access getViewableStudentsForUserForItem!!");
+	   } catch (SecurityException se) {}
+	   
+	   // Let's start with an ungraded item
+	   authn.setAuthnContext(AssignmentTestDataLoad.INSTRUCTOR_UID);
+	   // instructor should get all students who have the assignment
+	   // a1 is restricted to groups, so will return all students in those groups
+	   List viewableStudents = permissionLogic.getViewableStudentsForUserForItem(testData.a1);
+	   assertTrue(viewableStudents.size() == 1);
+	   // this one is not restricted
+	   viewableStudents = permissionLogic.getViewableStudentsForUserForItem(testData.a2);
+	   assertTrue(viewableStudents.size() == 3);
+	   
+	   // the ta should have restrictions on a1
+	   authn.setAuthnContext(AssignmentTestDataLoad.TA_UID);
+	   // should only get student 1 b/c may only see students in his/her section
+	   viewableStudents = permissionLogic.getViewableStudentsForUserForItem(testData.a1);
+	   assertTrue(viewableStudents.size() == 1);
+	   // should still get 1 for a2
+	   viewableStudents = permissionLogic.getViewableStudentsForUserForItem(testData.a2);
+	   assertTrue(viewableStudents.size() == 1);
+	   // let's add a group restriction to a2 and make sure no students are returned
+	   AssignmentGroup groupFora2 = new AssignmentGroup(testData.a2, section3Uid);
+	   dao.save(groupFora2);
+	   // shouldn't get any student back now
+	   viewableStudents = permissionLogic.getViewableStudentsForUserForItem(testData.a2);
+	   assertTrue(viewableStudents.isEmpty());
+	   
+	   // now we will consider a graded item
+	   // switch back to instructor
+	   authn.setAuthnContext(AssignmentTestDataLoad.INSTRUCTOR_UID);
+	   // a3 is not restricted, so will return all students
+	   viewableStudents = permissionLogic.getViewableStudentsForUserForItem(testData.a3);
+	   assertTrue(viewableStudents.size() == 3);
+	   // a4 is restricted to group 3
+	   viewableStudents = permissionLogic.getViewableStudentsForUserForItem(testData.a4);
+	   assertTrue(viewableStudents.size() == 1);
+	   
+	   // now switch to the ta
+	   // TODO - GRADER PERMISSIONS!!
+	   authn.setAuthnContext(AssignmentTestDataLoad.TA_UID);
+	   // a3 should return all students in ta's sections
+	   viewableStudents = permissionLogic.getViewableStudentsForUserForItem(testData.a3);
+	   assertTrue(viewableStudents.size() == 1);
+	   // a4 should not return any
+	   viewableStudents = permissionLogic.getViewableStudentsForUserForItem(testData.a4);
+	   assertTrue(viewableStudents.isEmpty());
+   }
+   
+   public void testGetGradableStudentsForUserForItem() {
+	   // try passing a null assignment
+	   try {
+		   permissionLogic.getGradableStudentsForUserForItem(null);
+		   fail("did not catch null assignment passed to getGradableStudentsForUserForItem");
+	   } catch(IllegalArgumentException iae) {}
+	   
+	   // this method should throw a securityException if a student calls it
+	   authn.setAuthnContext(AssignmentTestDataLoad.STUDENT1_UID);
+	   try {
+		   permissionLogic.getGradableStudentsForUserForItem(testData.a1);
+		   fail("User without grading privileges was able to access getGradableStudentsForUserForItem!!");
+	   } catch (SecurityException se) {}
+	   
+	   // this method is exactly the same as getViewableStudentsForItem except
+	   // if there are grader permission involved. this allows the instructor
+	   // to restrict ta's to view-only instead of view and grade
+	   // TODO - we must integrate grader permissions for this test to be accurate!
+	// try a null assignment
+	   try {
+		   permissionLogic.getGradableStudentsForUserForItem(null);
+		   fail("did not catch null assignment passed to getViewableStudentsForUserForItem");
+	   } catch(IllegalArgumentException iae) {}
+	   
+	   // what happens if we pass an assignment with null values?
+	   authn.setAuthnContext(AssignmentTestDataLoad.TA_UID);
+	   try {
+		   permissionLogic.getGradableStudentsForUserForItem(new Assignment2());
+		   fail("did not catch null values for not-null assignment fields");
+	   } catch (IllegalArgumentException iae) {}
+	   
+	   // Let's start with an ungraded item
+	   authn.setAuthnContext(AssignmentTestDataLoad.INSTRUCTOR_UID);
+	   // instructor should get all students who have the assignment
+	   // a1 is restricted to groups, so will return all students in those groups
+	   List gradableStudents = permissionLogic.getGradableStudentsForUserForItem(testData.a1);
+	   assertTrue(gradableStudents.size() == 1);
+	   // this one is not restricted
+	   gradableStudents = permissionLogic.getGradableStudentsForUserForItem(testData.a2);
+	   assertTrue(gradableStudents.size() == 3);
+	   
+	   // the ta should have restrictions on a1
+	   authn.setAuthnContext(AssignmentTestDataLoad.TA_UID);
+	   // should only get student 1 b/c may only see students in his/her section
+	   gradableStudents = permissionLogic.getGradableStudentsForUserForItem(testData.a1);
+	   assertTrue(gradableStudents.size() == 1);
+	   // should still get 1 for a2
+	   gradableStudents = permissionLogic.getGradableStudentsForUserForItem(testData.a2);
+	   assertTrue(gradableStudents.size() == 1);
+	   // let's add a group restriction to a2 and make sure no students are returned
+	   AssignmentGroup groupFora2 = new AssignmentGroup(testData.a2, section3Uid);
+	   dao.save(groupFora2);
+	   // shouldn't get any student back now
+	   gradableStudents = permissionLogic.getGradableStudentsForUserForItem(testData.a2);
+	   assertTrue(gradableStudents.isEmpty());
+	   
+	   // now we will consider a graded item
+	   // switch back to instructor
+	   authn.setAuthnContext(AssignmentTestDataLoad.INSTRUCTOR_UID);
+	   // a3 is not restricted, so will return all students
+	   gradableStudents = permissionLogic.getGradableStudentsForUserForItem(testData.a3);
+	   assertTrue(gradableStudents.size() == 3);
+	   // a4 is restricted to group 3
+	   gradableStudents = permissionLogic.getGradableStudentsForUserForItem(testData.a4);
+	   assertTrue(gradableStudents.size() == 1);
+	   
+	   // now switch to the ta
+	   // TODO - GRADER PERMISSIONS!!
+	   authn.setAuthnContext(AssignmentTestDataLoad.TA_UID);
+	   // a3 should return all students in ta's sections
+	   gradableStudents = permissionLogic.getGradableStudentsForUserForItem(testData.a3);
+	   assertTrue(gradableStudents.size() == 1);
+	   // a4 should not return any
+	   gradableStudents = permissionLogic.getGradableStudentsForUserForItem(testData.a4);
+	   assertTrue(gradableStudents.isEmpty());
+   }
+   
+   public void testIsUserAbleToMakeSubmissionForAssignment() {
+	   // try passing a null contextId
+	   try {
+		   permissionLogic.isUserAbleToMakeSubmissionForAssignment(null, new Assignment2());
+		   fail("did not catch null contextId passed to isUserAbleToMakeSubmissionForAssignment");
+	   } catch (IllegalArgumentException iae) {}
+	   
+	   // try passing a null assignment
+	   try {
+		   permissionLogic.isUserAbleToMakeSubmissionForAssignment(AssignmentTestDataLoad.CONTEXT_ID, null);
+		   fail("did not catch null assignment passed to isUserAbleToMakeSubmissionForAssignment");
+	   } catch (IllegalArgumentException iae) {}
+	   
+	   // try passing an empty assignment
+	   try {
+		   permissionLogic.isUserAbleToMakeSubmissionForAssignment(AssignmentTestDataLoad.CONTEXT_ID, new Assignment2());
+		   fail("did not catch null fields assoc with assignment passed to isUserAbleToMakeSubmissionForAssignment");
+	   } catch (IllegalArgumentException iae) {}
+	   
+	   // TODO - we need to define "who" can submit, so will need to update the tests
+	   // currently there is no check on whether you are a student, guest, instructor, etc
+	   // let's just test students for now
+	   // student 1 is a member of group 1
+	   authn.setAuthnContext(AssignmentTestDataLoad.STUDENT1_UID);
+	   // should be able to submit for a1, a2, a3
+	   assertTrue(permissionLogic.isUserAbleToMakeSubmissionForAssignment(AssignmentTestDataLoad.CONTEXT_ID, testData.a1));
+	   assertTrue(permissionLogic.isUserAbleToMakeSubmissionForAssignment(AssignmentTestDataLoad.CONTEXT_ID, testData.a2));
+	   assertTrue(permissionLogic.isUserAbleToMakeSubmissionForAssignment(AssignmentTestDataLoad.CONTEXT_ID, testData.a3));
+	   assertFalse(permissionLogic.isUserAbleToMakeSubmissionForAssignment(AssignmentTestDataLoad.CONTEXT_ID, testData.a4));
+	   
+	   // student 2 is a member of group 3
+	   authn.setAuthnContext(AssignmentTestDataLoad.STUDENT2_UID);
+	   // should be able to submit for a2, a3, a4
+	   assertFalse(permissionLogic.isUserAbleToMakeSubmissionForAssignment(AssignmentTestDataLoad.CONTEXT_ID, testData.a1));
+	   assertTrue(permissionLogic.isUserAbleToMakeSubmissionForAssignment(AssignmentTestDataLoad.CONTEXT_ID, testData.a2));
+	   assertTrue(permissionLogic.isUserAbleToMakeSubmissionForAssignment(AssignmentTestDataLoad.CONTEXT_ID, testData.a3));
+	   assertTrue(permissionLogic.isUserAbleToMakeSubmissionForAssignment(AssignmentTestDataLoad.CONTEXT_ID, testData.a4));
+	   
+	   // student 3 is not a member of any sections
+	   authn.setAuthnContext(AssignmentTestDataLoad.STUDENT3_UID);
+	   // should only be able to submit to 2,3
+	   assertFalse(permissionLogic.isUserAbleToMakeSubmissionForAssignment(AssignmentTestDataLoad.CONTEXT_ID, testData.a1));
+	   assertTrue(permissionLogic.isUserAbleToMakeSubmissionForAssignment(AssignmentTestDataLoad.CONTEXT_ID, testData.a2));
+	   assertTrue(permissionLogic.isUserAbleToMakeSubmissionForAssignment(AssignmentTestDataLoad.CONTEXT_ID, testData.a3));
+	   assertFalse(permissionLogic.isUserAbleToMakeSubmissionForAssignment(AssignmentTestDataLoad.CONTEXT_ID, testData.a4));
+   }
+   
+   public void testIsUserAllowedToReleaseFeedbackForAssignment() {
+	   // try passing a null assignment
+	   try {
+		   permissionLogic.isUserAllowedToReleaseFeedbackForAssignment(null);
+		   fail("Null assignment passed to isUserAllowedToReleaseFeedbackForAssignment was not caught");
+	   } catch (IllegalArgumentException iae) {}
+	   
+	   // instructor should be true for all
+	   authn.setAuthnContext(AssignmentTestDataLoad.INSTRUCTOR_UID);
+	   assertTrue(permissionLogic.isUserAllowedToReleaseFeedbackForAssignment(testData.a1));
+	   assertTrue(permissionLogic.isUserAllowedToReleaseFeedbackForAssignment(testData.a2));
+	   assertTrue(permissionLogic.isUserAllowedToReleaseFeedbackForAssignment(testData.a3));
+	   assertTrue(permissionLogic.isUserAllowedToReleaseFeedbackForAssignment(testData.a4));
+	   
+	   // ta should be true for a1, a2, a3 - not auth to grade any students for a4
+	   // b/c only avail to students in section3 and doesn't have grading perm for
+	   // this section
+	   // TODO grader permissions
+	   authn.setAuthnContext(AssignmentTestDataLoad.TA_UID);
+	   assertTrue(permissionLogic.isUserAllowedToReleaseFeedbackForAssignment(testData.a1));
+	   assertTrue(permissionLogic.isUserAllowedToReleaseFeedbackForAssignment(testData.a2));
+	   assertTrue(permissionLogic.isUserAllowedToReleaseFeedbackForAssignment(testData.a3));
+	   assertFalse(permissionLogic.isUserAllowedToReleaseFeedbackForAssignment(testData.a4));
+	   
+	   // double check that students are all false
+	   authn.setAuthnContext(AssignmentTestDataLoad.STUDENT1_UID);
+	   assertFalse(permissionLogic.isUserAllowedToReleaseFeedbackForAssignment(testData.a1));
+	   assertFalse(permissionLogic.isUserAllowedToReleaseFeedbackForAssignment(testData.a2));
+	   assertFalse(permissionLogic.isUserAllowedToReleaseFeedbackForAssignment(testData.a3));
+	   assertFalse(permissionLogic.isUserAllowedToReleaseFeedbackForAssignment(testData.a4));
+   }
+
+   public void testIsCurrentUserAbleToSubmit() {
+	   // currently, only students defined by the gb may submit
+	   authn.setAuthnContext(AssignmentTestDataLoad.INSTRUCTOR_UID);
+	   assertFalse(permissionLogic.isCurrentUserAbleToSubmit(AssignmentTestDataLoad.CONTEXT_ID));
+	   authn.setAuthnContext(AssignmentTestDataLoad.TA_UID);
+	   assertFalse(permissionLogic.isCurrentUserAbleToSubmit(AssignmentTestDataLoad.CONTEXT_ID));
+	   
+	   // now try the students
+	   authn.setAuthnContext(AssignmentTestDataLoad.STUDENT1_UID);
+	   assertTrue(permissionLogic.isCurrentUserAbleToSubmit(AssignmentTestDataLoad.CONTEXT_ID));
+	   authn.setAuthnContext(AssignmentTestDataLoad.STUDENT2_UID);
+	   assertTrue(permissionLogic.isCurrentUserAbleToSubmit(AssignmentTestDataLoad.CONTEXT_ID));
+	   authn.setAuthnContext(AssignmentTestDataLoad.STUDENT3_UID);
+	   assertTrue(permissionLogic.isCurrentUserAbleToSubmit(AssignmentTestDataLoad.CONTEXT_ID));
+	   
+	   // try a bogus context
+	   assertFalse(permissionLogic.isCurrentUserAbleToSubmit(AssignmentTestDataLoad.BAD_CONTEXT));
+   }
 }

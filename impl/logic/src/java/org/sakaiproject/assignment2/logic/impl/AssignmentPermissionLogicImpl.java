@@ -151,6 +151,10 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
     		throw new IllegalArgumentException("Null assignment passed to isUserAbleToViewUngradedAssignment");
     	}
     	
+    	if (!assignment.isUngraded()) {
+    		throw new IllegalArgumentException("A graded assignment was passed to isUserAbleToViewUngradedAssignment");
+    	}
+    	
     	boolean viewable = false;
     	
     	if (gradebookLogic.isCurrentUserAbleToGradeAll(assignment.getContextId())) {
@@ -202,6 +206,12 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
 			throw new IllegalArgumentException("null contextId or assignment passed to isUserAbleToMakeSubmission");
 		}
 		
+		if (assignment.isUngraded() == null || assignment.getId() == null) {
+			throw new IllegalArgumentException("null data in not-null fields for assignment passed to isUserAbleToMakeSubmission");
+		} 
+		
+		// TODO - how do we handle certain roles that shouldn't be able to submit?
+		// ie guests? they don't have a section flag on their role
 		boolean userAbleToSubmit = false;
 	
 		if (assignment.isUngraded()) {
@@ -251,6 +261,10 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
 			throw new IllegalArgumentException("null assignment passed to getAvailableStudentsForUserForItem");
 		}
 		
+		if (assignment.isUngraded() == null) {
+			throw new IllegalArgumentException("null value for ungraded passed to getAvailableStudentsForUserForItem");
+		}
+		
 		if (gradeOrView == null || (!gradeOrView.equals(AssignmentConstants.GRADE) && !gradeOrView.equals(AssignmentConstants.VIEW))) {
 			throw new IllegalArgumentException("Invalid gradeOrView " + gradeOrView + " passed to getAvailableStudentsForUserForItem");
 		}
@@ -258,39 +272,87 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
 		List<String> availStudents = new ArrayList();
 		
 		String contextId = externalLogic.getCurrentContextId();
+		String userId = externalLogic.getCurrentUserId();
+
+		List<AssignmentGroup> assignGroupRestrictions = 
+			dao.findByProperties(AssignmentGroup.class, new String[] {"assignment"}, new Object[] {assignment});
 		
-		List<String> allStudentsInSite = externalLogic.getStudentsInSite(contextId);
-		
+		// if user may grade all, then return all of the students who have this assignment
+		// we need to check for group restrictions
 		if (gradebookLogic.isCurrentUserAbleToGradeAll(contextId)) {
-			availStudents = allStudentsInSite;
+			if (assignGroupRestrictions == null || assignGroupRestrictions.isEmpty()) {
+				availStudents.addAll(externalLogic.getStudentsInSite(contextId));
+			} else {
+				availStudents = getAllAvailableStudentsGivenGroupRestrictions(
+						contextId, assignGroupRestrictions);
+			}
+			
 		} else if(gradebookLogic.isCurrentUserAbleToGrade(contextId)) {
 			if (assignment.isUngraded()) {
-				Set sharedStudents = getStudentsInCurrentUsersSections();
-				if (sharedStudents != null) {
-					availStudents.addAll(sharedStudents);
+				// if there are no restrictions, return students in user's section(s)
+				if (assignGroupRestrictions == null || assignGroupRestrictions.isEmpty()) {
+					Set sharedStudents = getStudentsInCurrentUsersSections();
+					if (sharedStudents != null) {
+						availStudents.addAll(sharedStudents);
+					}
+				} else {
+					// otherwise, only return students in his/her section if it is one
+					// of the group restrictions
+					List<String> memberships = externalLogic.getUserMembershipGroupIdList(userId);
+					if (memberships != null && !memberships.isEmpty()) {
+						for (Iterator groupIter = assignGroupRestrictions.iterator(); groupIter.hasNext();) {
+							AssignmentGroup group = (AssignmentGroup) groupIter.next();
+							if (group != null && memberships.contains(group.getGroupId())) {
+								availStudents.addAll(externalLogic.getStudentsInSection(group.getGroupId()));
+							}
+						}
+					}
 				}
+				
 			} else {
 				// we need to get the students that are viewable in the gb
+				List viewableInGb = new ArrayList();
 				if (assignment.getGradableObjectId() != null) {
 					Map studentIdFunctionMap = 
 						gradebookLogic.getViewableStudentsForGradedItemMap(contextId, assignment.getGradableObjectId());
 					if (studentIdFunctionMap != null) {
 						if (gradeOrView.equals(AssignmentConstants.VIEW)) {
-							availStudents.addAll(studentIdFunctionMap.keySet());
+							viewableInGb.addAll(studentIdFunctionMap.keySet());
 						} else {
 							for (Iterator stIter = studentIdFunctionMap.keySet().iterator(); stIter.hasNext();) {
 								String studentId = (String)stIter.next();
 								if (studentId != null) {
 									String function = (String) studentIdFunctionMap.get(studentId);
 									if (function != null && function.equals(AssignmentConstants.GRADE)) {
-										availStudents.add(studentId);
+										viewableInGb.add(studentId);
 									}
 								}
 							}
 						}
 					}
 				}
+				
+				// now we need to filter out the ones who aren't associated w/ this assignment
+				if (assignGroupRestrictions == null || assignGroupRestrictions.isEmpty()) {
+					availStudents.addAll(viewableInGb);
+				} else {
+					List availForAssign = getAllAvailableStudentsGivenGroupRestrictions(
+							contextId, assignGroupRestrictions);
+					if (availForAssign != null && !availForAssign.isEmpty()) {
+						for (Iterator stIter = availForAssign.iterator(); stIter.hasNext();) {
+							String studentId = (String) stIter.next();
+							if (studentId != null && viewableInGb.contains(studentId)) {
+								availStudents.add(studentId);
+							}
+						}
+					}
+				}
 			}
+		} else {
+			// this user does not have grading privileges so should not be
+			// accessing this method!
+			throw new SecurityException("User " + userId + " attempted to view/grade student " +
+					"submissions without authorization!");
 		}
 		
 		return availStudents;
@@ -338,43 +400,21 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
 	}
 	
 	public boolean isUserAllowedToReleaseFeedbackForAssignment(Assignment2 assignment) {
-		// returns true if user is authorized to view at least one student for
+		// returns true if user is authorized to grade at least one student for
 		// this assignment
 		if (assignment == null) {
 			throw new IllegalArgumentException("null assignment passed to isUserAllowedToReleaseFeedbackForAssignment");
 		}
 		boolean allowedToRelease = false;
-		String contextId = externalLogic.getCurrentContextId();
 		
-		// current user must have some sort of grading privileges in the gb
-		if (gradebookLogic.isCurrentUserAbleToGradeAll(contextId)) {
-			allowedToRelease = true;
-			
-		} else if (gradebookLogic.isCurrentUserAbleToGrade(contextId)) {
-
-			List<AssignmentGroup> assignGroupRestrictions = 
-				dao.findByProperties(AssignmentGroup.class, new String[] {"assignment"}, new Object[] {assignment});
-			
-			if (assignment.isUngraded()) {
-				if (assignGroupRestrictions == null || assignGroupRestrictions.isEmpty()) {
-					allowedToRelease = true;
-				} else {
-					// the user must be a member of a restricted group
-					List<String> userMemberships = externalLogic.getUserMembershipGroupIdList(externalLogic.getCurrentUserId());
-					if (isUserAMemberOfARestrictedGroup(userMemberships, assignGroupRestrictions)) {
-						allowedToRelease = true;
-					}
-				}
-			} else {
-				// we need to respect grading permissions
-				if (assignment.getGradableObjectId() != null) {
-					Map<String, String> studentIdFunctionMap = 
-						gradebookLogic.getViewableStudentsForGradedItemMap(contextId, assignment.getGradableObjectId());
-					if (studentIdFunctionMap != null && studentIdFunctionMap.containsValue(AssignmentConstants.GRADE)) {
-						allowedToRelease = true;
-					}
-				}
+		try {
+			List gradableStudents = getGradableStudentsForUserForItem(assignment);
+			if (gradableStudents != null && gradableStudents.size() > 0) {
+				allowedToRelease = true;
 			}
+		} catch (SecurityException se) {
+			// this user does not have grading privileges, so may not release
+			allowedToRelease = false;
 		}
 		
 		return allowedToRelease;
@@ -382,6 +422,30 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
 	
 	public boolean isCurrentUserAbleToSubmit(String contextId) {
 		return gradebookLogic.isCurrentUserAStudentInGb(contextId);
+	}
+	
+	private List<String> getAllAvailableStudentsGivenGroupRestrictions(String contextId, Collection<AssignmentGroup> assignGroupRestrictions) {
+		List<String> allStudentsForAssign = new ArrayList();
+		
+		// if there are group restrictions, only a subset of all of the students in the
+		// class will be available for this assignment
+		if (assignGroupRestrictions == null || assignGroupRestrictions.isEmpty()) {
+			allStudentsForAssign = externalLogic.getStudentsInSite(contextId);
+		} else {
+			// use a set to make sure students only appear once, even if they
+			// are in multiple sections
+			Set<String> studentsInRestrictedGroups = new HashSet();
+			for (Iterator groupIter = assignGroupRestrictions.iterator(); groupIter.hasNext();) {
+				AssignmentGroup group = (AssignmentGroup) groupIter.next();
+				if (group != null) {
+					studentsInRestrictedGroups.addAll(externalLogic.getStudentsInSection(group.getGroupId()));
+				}
+			}
+			
+			allStudentsForAssign.addAll(studentsInRestrictedGroups);
+		}
+		
+		return allStudentsForAssign;
 	}
 
 }

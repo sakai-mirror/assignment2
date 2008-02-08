@@ -336,9 +336,8 @@ public class AssignmentLogicTest extends Assignment2TestBase {
     	//		gb item in the gb
 
     	// our ta is a member of group 1. assign1 is restricted to group 1 and 2
-    	// for a4, it is restricted to group, but this restriction only appears
-    	// through the actually students he/she is allowed to view or grade. he/she
-    	// still sees the assignment b/c gb items are not restricted by section
+    	// for a4 (graded), it is restricted to group, but the ta may view the
+    	// assignment if he/she is authorized to view the corresponding gb item
 
     	authn.setAuthnContext(AssignmentTestDataLoad.TA_UID);
     	// should return assignment 1, 2, 3, 4

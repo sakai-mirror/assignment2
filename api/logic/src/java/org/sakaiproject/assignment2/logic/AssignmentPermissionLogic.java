@@ -95,6 +95,7 @@ public interface AssignmentPermissionLogic {
 	 * @param assignment
 	 * @return a list of student ids that the current user is able to view
 	 * for the given assignment
+	 * @throws SecurityException if current user does not have grading privileges
 	 */
 	public List<String> getViewableStudentsForUserForItem(Assignment2 assignment);
 	
@@ -103,6 +104,7 @@ public interface AssignmentPermissionLogic {
 	 * @param assignment
 	 * @return a list of student ids that the current user is able to submit
 	 * feedback for on the given assignment
+	 * @throws SecurityException if current user does not have grading privileges
 	 */
 	public List<String> getGradableStudentsForUserForItem(Assignment2 assignment);
 	
@@ -125,7 +127,7 @@ public interface AssignmentPermissionLogic {
 	
 	/**
 	 * @param contextId
-	 * @reutnr true if the current user is a student in the gradebook
+	 * @return true if the current user is a student in the gradebook
 	 */
 	 public boolean isCurrentUserAbleToSubmit(String contextId);
 }
