@@ -52,6 +52,7 @@ public class Assignment2Bean {
 	}
 	
 	public Map selectedIds = new HashMap();
+	public Boolean restrictedToGroups;
 	
     private TargettedMessageList messages;
     public void setMessages(TargettedMessageList messages) {

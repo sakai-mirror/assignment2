@@ -346,8 +346,9 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
         		"assignment2.assignment_add.access.not_restricted",
         		"assignment2.assignment_add.access.restricted"
         };
+        Boolean restrictedToGroups = (assignment.getAssignmentGroupSet() != null && !assignment.getAssignmentGroupSet().isEmpty());
         UISelect access = UISelect.make(form, "access_select", access_values, access_labels,
-        		assignment2OTP + ".restrictedToGroups").setMessageKeys();
+        		"#{Assignment2Bean.restrictedToGroups}", restrictedToGroups.toString()).setMessageKeys();
         //((UIBoundString) access.selection).setValue(assignment.isRestrictedToGroups().toString());
         
         String accessId = access.getFullID();
