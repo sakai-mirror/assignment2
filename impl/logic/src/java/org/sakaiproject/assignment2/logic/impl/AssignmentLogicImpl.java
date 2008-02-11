@@ -115,9 +115,6 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 		
 		if (assign != null) {
 			// populate any non-persisted fields that are applicable to this view
-			boolean restrictedToGroups = assign.getAssignmentGroupSet() != null &&
-				!assign.getAssignmentGroupSet().isEmpty();
-			assign.setRestrictedToGroups(restrictedToGroups);
 			
 			if (!assign.isUngraded()) {
 				gradebookLogic.populateGradebookItemDetailsForAssignment(externalLogic.getCurrentContextId(), assign);

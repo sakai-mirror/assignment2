@@ -278,7 +278,6 @@ public class AssignmentTestDataLoad {
 		assignment.setNotificationType(AssignmentConstants.NOTIFY_NONE);
 		assignment.setOpenTime(new Date());
 		assignment.setRemoved(Boolean.FALSE);
-		assignment.setRestrictedToGroups(Boolean.FALSE);
 		assignment.setSubmissionType(AssignmentConstants.SUBMIT_INLINE_AND_ATTACH);
 		assignment.setUngraded(Boolean.TRUE);
 		assignment.setHonorPledge(Boolean.FALSE);

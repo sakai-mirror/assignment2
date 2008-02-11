@@ -70,7 +70,6 @@ public class Assignment2 {
     
     // fields that are not persisted but needed for UI
     private String assignmentStatus;
-    private boolean restrictedToGroups;
     private String restrictedToText;
     private boolean needsUserAttention; 
     private String submissionStatus;
@@ -735,22 +734,6 @@ public class Assignment2 {
 	 */
 	public void setSubmissionStatusConstant(Integer submissionStatusConstant) {
 		this.submissionStatusConstant = submissionStatusConstant;
-	}
-	
-	/**
-	 * 
-	 * @return true if this assignment has group restrictions
-	 */
-	public boolean isRestrictedToGroups() {
-		return restrictedToGroups;
-	}
-
-	/**
-	 * set whether or not this assignment has group restrictions
-	 * @param restrictedToGroups
-	 */
-	public void setRestrictedToGroups(boolean restrictedToGroups) {
-		this.restrictedToGroups = restrictedToGroups;
 	}
 
 	
