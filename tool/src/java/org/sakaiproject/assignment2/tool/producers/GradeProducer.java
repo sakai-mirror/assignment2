@@ -199,8 +199,9 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
         		assignment.getAttachmentSet(), Boolean.FALSE);
         
         //If assignment allows for submitted text
-        if (assignment.getSubmissionType() == AssignmentConstants.SUBMIT_INLINE_ONLY || 
-        		assignment.getSubmissionType() == AssignmentConstants.SUBMIT_INLINE_AND_ATTACH) {
+        if (assignmentSubmissionVersion.getSubmittedTime() != null &&
+        		(assignment.getSubmissionType() == AssignmentConstants.SUBMIT_INLINE_ONLY || 
+        		assignment.getSubmissionType() == AssignmentConstants.SUBMIT_INLINE_AND_ATTACH)) {
         	UIOutput.make(form, "submitted_text_fieldset");
         
         
