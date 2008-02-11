@@ -263,6 +263,8 @@ public class AssignmentLogicTest extends Assignment2TestBase {
     	// check that groups and attach were saved, as well
     	assertTrue(updatedAssign.getAssignmentGroupSet().size() == 2);
     	assertNull(updatedAssign.getAttachmentSet());
+    	
+    	// TODO - try adding an announcement
     }
     
     public void testDeleteAssignment() throws Exception {

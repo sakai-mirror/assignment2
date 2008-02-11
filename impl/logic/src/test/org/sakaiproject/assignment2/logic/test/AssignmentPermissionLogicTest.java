@@ -21,15 +21,7 @@
 package org.sakaiproject.assignment2.logic.test;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.HashSet;
 
 import junit.framework.Assert;
 
@@ -37,18 +29,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment2.test.AssignmentTestDataLoad;
 import org.sakaiproject.assignment2.model.Assignment2;
-import org.sakaiproject.assignment2.model.AssignmentAttachment;
 import org.sakaiproject.assignment2.model.AssignmentGroup;
-import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
-import org.sakaiproject.assignment2.model.AssignmentSubmission;
-import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
-import org.sakaiproject.assignment2.exception.ConflictingAssignmentNameException;
-import org.sakaiproject.assignment2.exception.NoGradebookItemForGradedAssignmentException;
 
 import org.sakaiproject.section.api.coursemanagement.CourseSection;
 import org.sakaiproject.section.api.coursemanagement.Course;
 import org.sakaiproject.section.api.facade.Role;
-import org.sakaiproject.service.gradebook.shared.Assignment;
 
 
 public class AssignmentPermissionLogicTest extends Assignment2TestBase {

@@ -113,10 +113,12 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		}
 
 		AssignmentSubmission submission =  (AssignmentSubmission) dao.findById(AssignmentSubmission.class, submissionId);
-		Assignment2 assignment = submission.getAssignment();
 
 		// if the submission rec exists, we need to grab the most current version
 		if (submission != null) {
+			
+			Assignment2 assignment = submission.getAssignment();
+			
 			if (!permissionLogic.isUserAbleToViewStudentSubmissionForAssignment(submission.getUserId(), assignment)) {
 				throw new SecurityException("user" + externalLogic.getCurrentUserId() + " attempted to view submission with id " + submissionId + " but is not authorized");
 			}
@@ -148,10 +150,11 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		}
 		
 		AssignmentSubmissionVersion version = dao.getAssignmentSubmissionVersionByIdWithAttachments(submissionVersionId);
-		AssignmentSubmission submission = version.getAssignmentSubmission();
-		Assignment2 assignment = submission.getAssignment();
 		
-		if (version != null) {	
+		if (version != null) {		
+			AssignmentSubmission submission = version.getAssignmentSubmission();
+			Assignment2 assignment = submission.getAssignment();
+			
 			// ensure that the current user is authorized to view this user for this assignment
 			if (!permissionLogic.isUserAbleToViewStudentSubmissionForAssignment(submission.getUserId(), assignment)) {
 				throw new SecurityException("User " + externalLogic.getCurrentUserId() + " attempted to access the version " + 

@@ -48,9 +48,9 @@ import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 /**
  * This class holds a bunch of items used to prepopulate the database and then
  * do testing, it also handles initilization of the objects and saving
- * (Note for developers - do not modify this without permission from the author)
+ * (Note for developers - be careful when modifying this b/c it is likely
+ * you will break all of the tests...)
  * 
- * @author Aaron Zeckoski (aaronz@vt.edu)
  */
 public class AssignmentTestDataLoad {
 
@@ -88,6 +88,24 @@ public class AssignmentTestDataLoad {
 	// Assignment 3 has 1 attachment and 0 groups
 	// Assignment 4 has 0 attachments and 1 group
 	
+	// Student 1
+	//	A1: submission with 1 version
+	//  A2: no submission
+	//  A3: submission with 2 versions
+	//  A4: no submission
+	
+	// Student 2
+	//  A1: submission with 3 versions
+	//  A2: submission with no version
+	//  A3: submission with 1 version
+	//  A4: submission with 2 versions
+	
+	// Student 3
+	//  A1: no submission
+	//  A2: no submission
+	//  A3: 1 submission with 2 versions
+	//  A4: no submission
+	
 	public AssignmentSubmission st1a1Submission;
 	public AssignmentSubmission st2a1Submission;
 	
@@ -97,6 +115,19 @@ public class AssignmentTestDataLoad {
 	public AssignmentSubmissionVersion st2a1CurrVersion; // 2 FA, 2 SA
 	
 	public AssignmentSubmission st2a2SubmissionNoVersions;
+	
+	public AssignmentSubmission st1a3Submission;
+	public AssignmentSubmissionVersion st1a3FirstVersion;
+	public AssignmentSubmissionVersion st1a3CurrVersion; // 1 FA, 1 SA - draft!
+	public AssignmentSubmission st2a3Submission;
+	public AssignmentSubmissionVersion st2a3CurrVersion; // 1 SA
+	public AssignmentSubmission st3a3Submission;
+	public AssignmentSubmissionVersion st3a3FirstVersion; // 1 FA
+	public AssignmentSubmissionVersion st3a3CurrVersion;  // 1 SA
+	
+	public AssignmentSubmission st2a4Submission;
+	public AssignmentSubmissionVersion st2a4FirstVersion; // 1 SA
+	public AssignmentSubmissionVersion st2a4CurrVersion;
 
 	public AssignmentTestDataLoad() {
 		initialize();
@@ -164,6 +195,9 @@ public class AssignmentTestDataLoad {
 		a2Id = a2.getId();
 		a3Id = a3.getId();
 		a4Id = a4.getId();
+		
+		Set<FeedbackAttachment> feedbackAttachSet = new HashSet();
+		Set<SubmissionAttachment> subAttachSet = new HashSet();
 
 		// now create submissions
 		// start with a1
@@ -176,29 +210,60 @@ public class AssignmentTestDataLoad {
 		st2a1Version1 = createGenericVersion(st2a1Submission);
 		dao.save(st2a1Submission);
 		dao.save(st2a1Version1);
-		SubmissionAttachment st2a1v2Attach =
-			new SubmissionAttachment(st2a1Version1, "attachmentRef");
-		dao.save(st2a1v2Attach);
+		subAttachSet.add(new SubmissionAttachment(st2a1Version1, "attachmentRef"));
 		st2a1Version2 = createGenericVersion(st2a1Submission);
 		dao.save(st2a1Version2);
 		st2a1CurrVersion = createGenericVersion(st2a1Submission);
 		dao.save(st2a1CurrVersion);
-		SubmissionAttachment st2a1v3attach = 
-			new SubmissionAttachment(st2a1CurrVersion, "attachmentRef");
-		dao.save(st2a1v3attach);
-		SubmissionAttachment st2a1v3attach2 = 
-			new SubmissionAttachment(st2a1CurrVersion, "attachmentRef");
-		dao.save(st2a1v3attach2);
-		FeedbackAttachment st2a1v3Fattach = 
-			new FeedbackAttachment(st2a1CurrVersion, "attachmentRef");
-		dao.save(st2a1v3Fattach);
-		FeedbackAttachment st2a1v3Fattach2 = 
-			new FeedbackAttachment(st2a1CurrVersion, "attachmentRef");
-		dao.save(st2a1v3Fattach2);
+		subAttachSet.add(new SubmissionAttachment(st2a1CurrVersion, "attachmentRef"));
+		subAttachSet.add(new SubmissionAttachment(st2a1CurrVersion, "attachmentRef"));
+		feedbackAttachSet.add(new FeedbackAttachment(st2a1CurrVersion, "attachmentRef"));
+		feedbackAttachSet.add(new FeedbackAttachment(st2a1CurrVersion, "attachmentRef"));
 		
 		// create a submission w/o any versions
 		st2a2SubmissionNoVersions = new AssignmentSubmission(a2, STUDENT2_UID, Boolean.FALSE);
 		dao.save(st2a2SubmissionNoVersions);
+		
+		// make some submission for a3 and a4
+		
+		// student 1 has 2 versions for a3
+		st1a3Submission = new AssignmentSubmission(a3, STUDENT1_UID, false);
+		dao.save(st1a3Submission);
+		st1a3FirstVersion = createGenericVersion(st1a3Submission);
+		dao.save(st1a3FirstVersion);
+		st1a3CurrVersion = createGenericVersion(st1a3Submission);
+		st1a3CurrVersion.setDraft(true);
+		dao.save(st1a3CurrVersion);
+		feedbackAttachSet.add(new FeedbackAttachment(st1a3CurrVersion, "blah"));
+		subAttachSet.add(new SubmissionAttachment(st1a3CurrVersion, "blah"));
+		
+		// student 2 has 1 version for a3
+		st2a3Submission = new AssignmentSubmission(a3, STUDENT2_UID, Boolean.FALSE);
+		dao.save(st2a3Submission);
+		st2a3CurrVersion = createGenericVersion(st2a3Submission);
+		dao.save(st2a3CurrVersion);
+		subAttachSet.add(new SubmissionAttachment(st2a3CurrVersion, "attRef"));
+		// student 3 has 2 versions for a3
+		st3a3Submission = new AssignmentSubmission(a3, STUDENT3_UID, Boolean.FALSE);
+		dao.save(st3a3Submission);
+		st3a3FirstVersion = createGenericVersion(st3a3Submission);
+		dao.save(st3a3FirstVersion);
+		feedbackAttachSet.add(new FeedbackAttachment(st3a3FirstVersion, "f"));
+		st3a3CurrVersion = createGenericVersion(st3a3Submission);
+		dao.save(st3a3CurrVersion);
+		subAttachSet.add(new SubmissionAttachment(st3a3CurrVersion, "sfafd"));
+		
+		// student 2 has 2 versions for a4
+		st2a4Submission = new AssignmentSubmission(a4, STUDENT2_UID, Boolean.FALSE);
+		dao.save(st2a4Submission);
+		st2a4FirstVersion = createGenericVersion(st2a4Submission);
+		dao.save(st2a4FirstVersion);
+		subAttachSet.add(new SubmissionAttachment(st2a4FirstVersion, "afsdf"));
+		st2a4CurrVersion = createGenericVersion(st2a4Submission);
+		dao.save(st2a4CurrVersion);
+		
+		dao.saveMixedSet(new Set[] {feedbackAttachSet, subAttachSet});
+		
 	}
 
 
