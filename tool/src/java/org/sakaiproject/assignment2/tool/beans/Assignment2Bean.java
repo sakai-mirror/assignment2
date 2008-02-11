@@ -162,7 +162,7 @@ public class Assignment2Bean {
 		
 		//do groups
 		Set<AssignmentGroup> newGroups = new HashSet();
-		if (assignment.isRestrictedToGroups()){
+		if (restrictedToGroups){
 			//now add any new groups
 			if (assignment.getAssignmentGroupSet() != null) {
 				newGroups.addAll(assignment.getAssignmentGroupSet());
