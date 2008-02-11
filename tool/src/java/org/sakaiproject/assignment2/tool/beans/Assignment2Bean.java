@@ -51,6 +51,11 @@ public class Assignment2Bean {
 		this.requireAcceptUntil = requireAcceptUntil;
 	}
 	
+	public Boolean requireDueDate;
+	public void setRequireDueDate(Boolean requireDueDate) {
+		this.requireDueDate = requireDueDate;
+	}
+	
 	public Map selectedIds = new HashMap();
 	public Boolean restrictedToGroups;
 	
@@ -120,6 +125,10 @@ public class Assignment2Bean {
 		if (this.requireAcceptUntil != null && this.requireAcceptUntil == Boolean.FALSE) {
 			assignment.setAcceptUntilTime(null);
 		}
+		
+		if (this.requireDueDate != null && this.requireDueDate == Boolean.FALSE) {
+			assignment.setDueDate(null);
+		}
 
 		Set<AssignmentAttachment> set = new HashSet();
 		if (assignment.getAttachmentSet() != null) {
@@ -162,7 +171,7 @@ public class Assignment2Bean {
 		
 		//do groups
 		Set<AssignmentGroup> newGroups = new HashSet();
-		if (restrictedToGroups){
+		if (restrictedToGroups != null && restrictedToGroups){
 			//now add any new groups
 			if (assignment.getAssignmentGroupSet() != null) {
 				newGroups.addAll(assignment.getAssignmentGroupSet());
@@ -236,6 +245,9 @@ public class Assignment2Bean {
 			if (this.requireAcceptUntil != null && this.requireAcceptUntil == Boolean.FALSE) {
 				assignment.setAcceptUntilTime(null);
 			}
+			if (this.requireDueDate != null && this.requireDueDate == Boolean.FALSE) {
+				assignment.setDueDate(null);
+			}
 			previewAssignmentBean.setAssignment(assignment);
 			previewAssignmentBean.setOTPKey(key);
 		}
@@ -255,6 +267,9 @@ public class Assignment2Bean {
 
 			if (this.requireAcceptUntil != null && this.requireAcceptUntil == Boolean.FALSE) {
 				assignment.setAcceptUntilTime(null);
+			}
+			if (this.requireDueDate != null && this.requireDueDate == Boolean.FALSE) {
+				assignment.setDueDate(null);
 			}
 			
 			//REMOVE THESE - TODO
