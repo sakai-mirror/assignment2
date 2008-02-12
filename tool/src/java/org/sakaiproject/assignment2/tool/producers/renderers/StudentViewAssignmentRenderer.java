@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.Locale;
+import java.util.Stack;
 
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
@@ -16,14 +17,18 @@ import org.sakaiproject.assignment2.model.SubmissionAttachment;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.assignment2.tool.params.FilePickerHelperViewParams;
+import org.sakaiproject.assignment2.tool.params.GradeViewParams;
 import org.sakaiproject.assignment2.tool.producers.AddAttachmentHelperProducer;
+import org.sakaiproject.assignment2.tool.producers.GradeProducer;
 import org.sakaiproject.entitybroker.EntityBroker;
 import org.sakaiproject.entitybroker.IdEntityReference;
 import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.tool.api.ToolSession;
 
+import uk.org.ponder.beanutil.entity.EntityBeanLocator;
 import uk.org.ponder.messageutil.MessageLocator;
 import uk.org.ponder.rsf.components.UIBoundBoolean;
+import uk.org.ponder.rsf.components.UIBranchContainer;
 import uk.org.ponder.rsf.components.UICommand;
 import uk.org.ponder.rsf.components.UIContainer;
 import uk.org.ponder.rsf.components.UIELBinding;
@@ -80,7 +85,16 @@ public class StudentViewAssignmentRenderer {
 		String assignmentSubmissionOTP = "AssignmentSubmission.";		//Base for AssignmentSubmission object
     	String submissionVersionOTP = "currentSubmissionVersion";			//Base for the currentSubmissionVersion object
     	assignmentSubmissionOTP += ASOTPKey;							//Full path to current object
-		String versionOTP = assignmentSubmissionOTP + "." + submissionVersionOTP;			//Full path to current version object
+    	
+    	String asvOTP = "AssignmentSubmissionVersion.";
+    	String asvOTPKey = "";
+    	if (assignmentSubmission != null && assignmentSubmission.getCurrentSubmissionVersion() != null 
+    			&& assignmentSubmission.getCurrentSubmissionVersion().isDraft() == Boolean.TRUE) {
+    		asvOTPKey += assignmentSubmission.getCurrentSubmissionVersion().getId();
+    	} else {
+    		asvOTPKey += EntityBeanLocator.NEW_PREFIX + "1";
+    	}
+    	asvOTP = asvOTP + asvOTPKey;
 		
 		UIJointContainer joint = new UIJointContainer(tofill, divID, "portletBody:", ""+1);
 		
@@ -156,13 +170,13 @@ public class StudentViewAssignmentRenderer {
     			assignment.getSubmissionType() == AssignmentConstants.SUBMIT_INLINE_AND_ATTACH){
     		
     		UIOutput.make(form, "submit_text");
-	        UIInput text = UIInput.make(form, "text:", versionOTP + ".submittedText");
+	        UIInput text = UIInput.make(form, "text:", asvOTP + ".submittedText");
 	        if (!preview) {
 	        	richTextEvolver.evolveTextInput(text);
 	        } else {
 	        	//disable textarea
 	        	
-	    		UIInput text_disabled = UIInput.make(form, "text_disabled",versionOTP + ".submittedText");
+	    		UIInput text_disabled = UIInput.make(form, "text_disabled",asvOTP + ".submittedText");
 	    		text_disabled.decorators = disabledDecoratorList;
 	        }
 	       
@@ -194,7 +208,53 @@ public class StudentViewAssignmentRenderer {
     		UIBoundBoolean honor_pledge_checkbox = UIBoundBoolean.make(form, "honor_pledge", "#{AssignmentSubmissionBean.honorPledge}");
     		UILabelTargetDecorator.targetLabel(honor_pledge_label, honor_pledge_checkbox);
     	}
+    	
+    	
+    	//Begin Looping for previous submissions
+        Set<AssignmentSubmissionVersion> history = assignmentSubmission.getSubmissionHistorySet();
+        Stack <AssignmentSubmissionVersion> stack = new Stack();
+        if (history != null) {
+	        //reverse the set
+	       
+	        for (AssignmentSubmissionVersion asv : history) {
+	        	if (!asv.isDraft()) {
+	        		//Do not include drafts
+	        		stack.add(asv);
+	        	}
+	        }
+	        
+	        while (stack.size() > 0){
+	        	AssignmentSubmissionVersion asv = stack.pop();
+	        	if (asv.isDraft()) {
+	        		continue;
+	        	}
+	        	UIBranchContainer loop = UIBranchContainer.make(form, "previous_submissions:");
+	        	
+	        	UIMessage.make(loop, "loop_submission", "assignment2.assignment_grade.loop_submission", 
+	        			new Object[] { (asv.getSubmittedTime() != null ? df.format(asv.getSubmittedTime()) : "") });
+	        	UIVerbatim.make(loop, "loop_submitted_text", asv.getSubmittedText());
+	        	UIVerbatim.make(loop, "loop_feedback_text", asv.getAnnotatedTextFormatted());
+	        	UIVerbatim.make(loop, "loop_feedback_notes", asv.getFeedbackNotes());
+	        	attachmentListRenderer.makeAttachmentFromSubmissionAttachmentSet(loop, "loop_submitted_attachment_list:", 
+	        			GradeProducer.VIEW_ID, asv.getSubmissionAttachSet(), Boolean.FALSE);
+	        	attachmentListRenderer.makeAttachmentFromFeedbackAttachmentSet(loop, "loop_returned_attachment_list:", 
+	        			GradeProducer.VIEW_ID, asv.getFeedbackAttachSet(), Boolean.FALSE);
+	        	if (asv.getLastFeedbackSubmittedBy() != null) {
+		        	UIMessage.make(loop, "feedback_updated", "assignment2.assignment_grade.feedback_updated",
+		        			new Object[]{ 
+		        				(asv.getLastFeedbackTime() != null ? df.format(asv.getLastFeedbackTime()) : ""), 
+		        				externalLogic.getUserDisplayName(asv.getLastFeedbackSubmittedBy()) });
+	        	} else {
+	        		UIMessage.make(loop, "feedback_updated", "assignment2.assignment_grade.feedback_not_updated");
+	        	}
+	        }
+        }
+        if (history == null || history.size() == 0 || stack.empty()) {
+        	//no history, add dialog
+        	UIMessage.make(form, "no_history", "assignment2.assignment_grade.no_history");
+        }
         
+        form.parameters.add( new UIELBinding("#{AssignmentSubmissionBean.ASOTPKey}", ASOTPKey));
         form.parameters.add( new UIELBinding("#{AssignmentSubmissionBean.assignmentId}", assignment.getId()));
         
         //Buttons

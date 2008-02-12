@@ -38,6 +38,7 @@ public class AssignmentSubmissionBean {
 	
 	public Map selectedIds = new HashMap();
 	public Long assignmentId;
+	public String ASOTPKey;
 	public String userId;
 	public Boolean releaseFeedback;
 	
@@ -63,14 +64,18 @@ public class AssignmentSubmissionBean {
 	}
 	
 	private Map<String, AssignmentSubmission> OTPMap;
+	private EntityBeanLocator asEntityBeanLocator;
 	@SuppressWarnings("unchecked")
 	public void setAssignmentSubmissionEntityBeanLocator(EntityBeanLocator entityBeanLocator) {
 		this.OTPMap = entityBeanLocator.getDeliveredBeans();
+		this.asEntityBeanLocator = entityBeanLocator;
 	}
 	
 	private Map<String, AssignmentSubmissionVersion> asvOTPMap;
+	private EntityBeanLocator asvEntityBeanLocator;
 	public void setAsvEntityBeanLocator(EntityBeanLocator entityBeanLocator) {
 		this.asvOTPMap = entityBeanLocator.getDeliveredBeans();
+		this.asvEntityBeanLocator = entityBeanLocator;
 	}
 		
 	private ExternalLogic externalLogic;
@@ -108,20 +113,24 @@ public class AssignmentSubmissionBean {
 	 * STUDENT FUNCTIONS
 	 */
 	public String processActionSubmit(){
-		for (String key : OTPMap.keySet()) {
-			AssignmentSubmission assignmentSubmission = OTPMap.get(key);
-			if (assignmentId == null){
-				return FAILURE;
-			}
-			Assignment2 assignment = assignmentLogic.getAssignmentById(assignmentId);
-			assignmentSubmission.setAssignment(assignment);
-			assignmentSubmission.getCurrentSubmissionVersion().setDraft(Boolean.FALSE);
+		if (assignmentId == null ) {
+			return FAILURE;
+		}
+		
+		AssignmentSubmission assignmentSubmission = (AssignmentSubmission) asEntityBeanLocator.locateBean(ASOTPKey);
+		Assignment2 assignment = assignmentLogic.getAssignmentById(assignmentId);
+		assignmentSubmission.setAssignment(assignment);
+		
+		for (String key : asvOTPMap.keySet()) {
+			AssignmentSubmissionVersion asv = asvOTPMap.get(key);
 			
+			asv.setAssignmentSubmission(assignmentSubmission);
+			asv.setDraft(Boolean.FALSE);
 			
 			//Start attachment stuff
 			Set<SubmissionAttachment> set = new HashSet();
-			if (assignmentSubmission.getCurrentSubmissionVersion().getSubmissionAttachSet() != null) {
-				set.addAll(assignmentSubmission.getCurrentSubmissionVersion().getSubmissionAttachSet());
+			if (asv.getSubmissionAttachSet() != null) {
+				set.addAll(asv.getSubmissionAttachSet());
 			}
 			
 	    	//get New attachments from session set
@@ -146,7 +155,7 @@ public class AssignmentSubmissionBean {
 	    	} else {
 	    		final_set.addAll(set);
 	    	}
-	    	assignmentSubmission.getCurrentSubmissionVersion().setSubmissionAttachSet(final_set);
+	    	asv.setSubmissionAttachSet(final_set);
 			//End Attachment stuff
 			
 	    	//check whether honor pledge was added if required
@@ -155,7 +164,7 @@ public class AssignmentSubmissionBean {
 						new Object[] { assignment.getTitle() }, TargettedMessage.SEVERITY_ERROR));
 	    		return FAILURE;
 	    	}else {
-	    		submissionLogic.saveStudentSubmission(assignmentSubmission);
+	    		submissionLogic.saveStudentSubmission(asv);
 	    		messages.addMessage(new TargettedMessage("assignment2.student-submit.info.submission_submitted",
 						new Object[] { assignment.getTitle() }, TargettedMessage.SEVERITY_INFO));
 	    	}
@@ -165,28 +174,32 @@ public class AssignmentSubmissionBean {
 	}
 	
 	public String processActionPreview(){
-		for (String key : OTPMap.keySet()) {
-			AssignmentSubmission assignmentSubmission = OTPMap.get(key);
-			previewAssignmentSubmissionBean.setAssignmentSubmission(assignmentSubmission);
-			
+		AssignmentSubmission assignmentSubmission = (AssignmentSubmission) asEntityBeanLocator.locateBean(ASOTPKey);
+		previewAssignmentSubmissionBean.setAssignmentSubmission(assignmentSubmission);
+		for (String key : asvOTPMap.keySet()) {
+			AssignmentSubmissionVersion asv = asvOTPMap.get(key);
+			previewAssignmentSubmissionBean.setAssignmentSubmissionVersion(asv);
 		}
 		return PREVIEW;
 	}
 	
 	public String processActionSaveDraft() {
-		for (String key : OTPMap.keySet()) {
-			AssignmentSubmission assignmentSubmission = OTPMap.get(key);
-			if (assignmentId == null){
-				return FAILURE;
-			}
-			Assignment2 assignment = assignmentLogic.getAssignmentById(assignmentId);
-			assignmentSubmission.setAssignment(assignment);
-			assignmentSubmission.getCurrentSubmissionVersion().setDraft(Boolean.TRUE);
+		Assignment2 assignment = assignmentLogic.getAssignmentById(assignmentId);
+		AssignmentSubmission assignmentSubmission = (AssignmentSubmission) asEntityBeanLocator.locateBean(ASOTPKey);
+		if (assignmentId == null){
+			return FAILURE;
+		}
+		assignmentSubmission.setAssignment(assignment);
+		for (String key : asvOTPMap.keySet()) {
+			AssignmentSubmissionVersion asv = (AssignmentSubmissionVersion) asvOTPMap.get(key);
+			
+			asv.setAssignmentSubmission(assignmentSubmission);
+			asv.setDraft(Boolean.TRUE);
 
 			//Start attachment stuff
 			Set<SubmissionAttachment> set = new HashSet();
-			if (assignmentSubmission.getCurrentSubmissionVersion().getSubmissionAttachSet() != null) {
-				set.addAll(assignmentSubmission.getCurrentSubmissionVersion().getSubmissionAttachSet());
+			if (asv.getSubmissionAttachSet() != null) {
+				set.addAll(asv.getSubmissionAttachSet());
 			}
 			
 			//get New attachments from session set
@@ -211,10 +224,10 @@ public class AssignmentSubmissionBean {
 	    	} else {
 	    		final_set.addAll(set);
 	    	}
-	    	assignmentSubmission.getCurrentSubmissionVersion().setSubmissionAttachSet(final_set);
+	    	asv.setSubmissionAttachSet(final_set);
 			//End Attachment stuff
 			
-			submissionLogic.saveStudentSubmission(assignmentSubmission);
+			submissionLogic.saveStudentSubmission(asv);
 			messages.addMessage(new TargettedMessage("assignment2.student-submit.info.submission_save_draft",
 					new Object[] { assignment.getTitle() }, TargettedMessage.SEVERITY_INFO));
 		}

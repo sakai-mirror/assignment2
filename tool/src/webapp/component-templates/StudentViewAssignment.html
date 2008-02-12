@@ -86,7 +86,64 @@
 			</li>
 		</ol>
 	</fieldset>	
-
+	
+	<!--  Begin Loop for History -->
+	<h3 rsf:id="msg=assignment2.student-submit.previous_submissions">Previous Submissions</h3>
+	<p rsf:id="no_history" class="infoPanel">No Submissions Yet</p>
+	<fieldset rsf:id="previous_submissions:" class="highlightPanel">
+		<h4>
+			<img src="/sakai-assignment2-tool/content/images/expand.png" border="0" alt="" style="cursor:pointer" 
+				onclick="slide_submission(this)" /> 
+			<span rsf:id="loop_submission" style="cursor:pointer" onclick="slide_submission($(this).prev('img').get(0))">Submission</span>
+		</h4>
+		<div style="display:none" class="indent">
+			<table class="itemSummary" cellspacing="0">
+				<tr>
+					<th rsf:id="msg=assignment2.student-submit.submitted_text">Submitted Text</th>
+				</tr>
+				<tr>
+					<td rsf:id="loop_submitted_text"></td>
+				</tr>
+				<tr>
+					<th rsf:id="msg=assignment2.student-submit.annotated_submitted_text">Annotated Submitted Text</th>
+				</tr>
+				<tr>
+					<td rsf:id="loop_feedback_text"></td>
+				</tr>
+				<tr>
+					<th rsf:id="msg=assignment2.student-submit.submitted_attachments">Submitted Attachments</th>
+				</tr>
+				<tr>
+					<td>
+						<ol class="attachlist indnt1">
+							<li rsf:id="loop_submitted_attachment_list:"></li>
+						</ol>
+					</td>
+				</tr>
+				<tr>
+					<th rsf:id="msg=assignment2.student-submit.loop_feedback_notes">Feedback Notes</th>
+				</tr>
+				<tr>
+					<td rsf:id="loop_feedback_notes"></td>
+				</tr>
+				<tr>
+					<th rsf:id="msg=assignment2.student-submit.attachments_to_return_with_grade">Attachments To Return With Grade</th>
+				</tr>
+				<tr>
+					<td>
+						<ol class="attachlist indnt1">
+							<li rsf:id="loop_returned_attachment_list:"></li>
+						</ol>
+					</td>
+				</tr>
+				<tr>
+					<td rsf:id="feedback_updated"></td>
+				</tr>
+			</table>
+		</div>
+	</fieldset>
+	
+	
 	<fieldset class="submit">
 		<input rsf:id="submit_button" accesskey="s" type="submit" class="active" value="Submit"/>
 		<input rsf:id="preview_button" title="Preview Submission" accesskey="v" type="button" class="preview_button thickbox" value="Preview"/>
@@ -94,5 +151,19 @@
 		<input rsf:id="cancel_button" accesskey="x" type="submit" value="Cancel"/>
 	</fieldset>													
 	</form>
+	<script type="text/javascript">
+	//<![CDATA[
+	function slide_submission(img){
+		$(img).parent('h4').next('div').toggle();
+		a2SetMainFrameHeight();
+		if(img.src.match('collapse')){
+			img.src=img.src.replace(/collapse/, 'expand');
+		}else{
+			img.src=img.src.replace(/expand/, 'collapse');
+		}
+	}
+	//]]>
+		
+	</script>
 
 </div>
