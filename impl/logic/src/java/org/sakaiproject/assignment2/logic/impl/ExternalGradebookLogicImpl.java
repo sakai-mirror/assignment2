@@ -353,9 +353,9 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
     	return gradebookService.isUserAbleToGradeItemForStudent(contextId, gradableObjectId, studentId);
     }
     
-    public void populateAllGradeInfoForSubmission(String contextId, AssignmentSubmission submission) {
-    	if (contextId == null) {
-    		throw new IllegalArgumentException("null contextId passed to populateAllGradeInfoForSubmission");
+    public void populateAllGradeInfoForSubmission(String contextId, String currUserId, AssignmentSubmission submission) {
+    	if (contextId == null || currUserId == null) {
+    		throw new IllegalArgumentException("null contextId or currUserId passed to populateAllGradeInfoForSubmission");
     	}
     	
     	if (submission != null) {
@@ -373,6 +373,14 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
     				}
     				if (commentDef != null) {
     					submission.setGradebookComment(commentDef.getCommentText());
+    				}
+    				
+    				// if the submission is for the current user and grade info
+    				// has not been released, do not return grade info
+    				if (gradeDef != null && !gradeDef.isGradeReleased() && 
+    						currUserId.equals(submission.getUserId())) {
+    					submission.setGradebookComment(null);
+    					submission.setGradebookGrade(null);
     				}
     				
     			} catch (AssessmentNotFoundException anfe) {

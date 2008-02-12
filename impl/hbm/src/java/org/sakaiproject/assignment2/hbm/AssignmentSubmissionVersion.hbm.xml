@@ -84,12 +84,12 @@
             <column name="LAST_FEEDBACK_TIME" not-null="false" />
         </property>
         
-        <set name="submissionAttachSet" lazy="true" where="SUB_ATTACH_TYPE = 'S'">
+        <set name="submissionAttachSet" lazy="true" where="SUB_ATTACH_TYPE = 'S'" cascade="none">
 	        <key column="SUBMISSION_VERSION_ID"/>                        
 	        <one-to-many class="org.sakaiproject.assignment2.model.SubmissionAttachment"/>            
     		</set>
     		
-    		<set name="feedbackAttachSet" lazy="true" where="SUB_ATTACH_TYPE = 'F'">
+    		<set name="feedbackAttachSet" lazy="true" where="SUB_ATTACH_TYPE = 'F'" cascade="none">
 	        <key column="SUBMISSION_VERSION_ID"/>                        
 	        <one-to-many class="org.sakaiproject.assignment2.model.FeedbackAttachment"/>            
     		</set>

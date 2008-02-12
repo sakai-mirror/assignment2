@@ -178,11 +178,14 @@ public interface ExternalGradebookLogic {
 	
 	/**
 	 * will populate gradebook-related fields on the submission record 
-	 * ie grade, comment, released, etc
+	 * ie grade, comment, released, etc. if the submission is for the currUserId
+	 * you pass and the grade info has not been released, grade and comment will
+	 * not be populated
 	 * @param contextId
+	 * @param currUserId
 	 * @param submission
 	 */
-	public void populateAllGradeInfoForSubmission(String contextId, AssignmentSubmission submission);
+	public void populateAllGradeInfoForSubmission(String contextId, String currUserId, AssignmentSubmission submission);
 	
 	/**
 	 * will populate the gradebook-related fields for the given assignment

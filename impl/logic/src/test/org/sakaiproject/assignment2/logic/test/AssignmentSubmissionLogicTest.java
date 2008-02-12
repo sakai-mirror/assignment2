@@ -115,11 +115,13 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
         // switch to the instructor role
         authn.setAuthnContext(AssignmentTestDataLoad.INSTRUCTOR_UID);
         // add some gb items
+        // gb item 1 is not released to students yet!
         org.sakaiproject.service.gradebook.shared.Assignment gbItem1 = 
         	new org.sakaiproject.service.gradebook.shared.Assignment();
         gbItem1.setName(GB_ITEM1_NAME);
         gbItem1.setPoints(GB_ITEM1_PTS);
         gbItem1.setDueDate(GB_ITEM1_DUE);
+        gbItem1.setReleased(false);
         gradebookService.addAssignment(AssignmentTestDataLoad.CONTEXT_ID, gbItem1);
         org.sakaiproject.service.gradebook.shared.Assignment item1 = 
         	gradebookService.getAssignment(AssignmentTestDataLoad.CONTEXT_ID, GB_ITEM1_NAME);
@@ -201,7 +203,7 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
     	} catch (SecurityException se) {}
     }
     
-    /*public void testGetSubmissionVersionById() {
+    public void testGetSubmissionVersionById() {
     	// try a null versionId
     	try {
     		submissionLogic.getSubmissionVersionById(null);
@@ -256,21 +258,30 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
     	assertEquals(version.getAssignmentSubmission().getGradebookGrade(), st1a3Grade.toString());
     	assertEquals(version.getAssignmentSubmission().getGradebookComment(), st1a3Comment);
     	
-    	// now make sure ta can't see st 2
+    	// now make sure ta can't see st 3
     	try {
-    		version = submissionLogic.getSubmissionVersionById(testData.st2a3CurrVersion.getId());
-    		fail("ta should not be able to access st2's submission for a3!");
+    		version = submissionLogic.getSubmissionVersionById(testData.st3a3CurrVersion.getId());
+    		fail("ta should not be able to access st3's submission for a3!");
     	} catch (SecurityException se) {}
     	
     	// TODO grader permissions
     	
-    	// sub details should be populated for the student
-    	//authn.setAuthnContext(AssignmentTestDataLoad.STUDENT1_UID);
-    	//version = submissionLogic.getSubmissionVersionById(testData.st1a3CurrVersion.getId());
-    	//assertTrue(version.getAssignmentSubmission().getUserId().equals(AssignmentTestDataLoad.STUDENT1_UID));
-    	//assertTrue(version.getFeedbackAttachSet().size() == 1);
-    	// make sure these are populated!
-    	//assertTrue(version.getSubmissionAttachSet().size() == 1);
-    	//assertTrue(!version.getSubmittedText().equals(""));
-    }*/
+    	// student may see their own submission
+    	authn.setAuthnContext(AssignmentTestDataLoad.STUDENT1_UID);
+    	version = submissionLogic.getSubmissionVersionById(testData.st1a3CurrVersion.getId());
+    	assertTrue(version.getAssignmentSubmission().getUserId().equals(AssignmentTestDataLoad.STUDENT1_UID));
+    	assertTrue(version.getFeedbackAttachSet().size() == 1);
+    	// make sure these are populated! other users may not see this info b/c draft status
+    	assertTrue(version.getSubmissionAttachSet().size() == 1);
+    	assertTrue(!version.getSubmittedText().equals(""));
+    	// since grade is not released, students should not see grade info
+    	assertNull(version.getAssignmentSubmission().getGradebookComment());
+    	assertNull(version.getAssignmentSubmission().getGradebookGrade());
+    	
+    	// double check that student can't see other users
+    	try {
+    		version = submissionLogic.getSubmissionVersionById(testData.st2a3CurrVersion.getId());
+    		fail("st1 should not be able to access st2's submission for a3!");
+    	} catch (SecurityException se) {}
+    }
 }

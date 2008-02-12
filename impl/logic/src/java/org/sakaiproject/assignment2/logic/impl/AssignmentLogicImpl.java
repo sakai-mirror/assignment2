@@ -528,7 +528,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 		}
 		
 		if (updatedAssignment.getId() == null) {
-			throw new IllegalArgumentException("The updatedAssignment passed to saveAssignmentAnnouncement must be persisted");
+			throw new IllegalArgumentException("The updatedAssignment passed to saveAssignmentAnnouncement must have an id");
 		}
 		
 		if (newAnncSubject == null || newAnncBody == null || revAnncSubject == null || revAnncBody == null) {

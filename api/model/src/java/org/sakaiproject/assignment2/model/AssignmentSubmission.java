@@ -299,4 +299,17 @@ public class AssignmentSubmission {
 	public void setRevisionVersion(int revisionVersion) {
 		this.revisionVersion = revisionVersion;
 	}
+	
+	public AssignmentSubmission clone() {
+		AssignmentSubmission submission = new AssignmentSubmission();
+		submission.setAllowResubmit(this.allowResubmit);
+		submission.setAssignment(this.assignment);
+		submission.setCurrentSubmissionVersion(this.currentSubmissionVersion);
+		submission.setNumSubmissionsAllowed(this.numSubmissionsAllowed);
+		submission.setResubmitCloseTime(this.resubmitCloseTime);
+		submission.setUserId(this.userId);
+		submission.setSubmissionHistorySet(this.submissionHistorySet);
+		
+		return submission;
+	}
 }

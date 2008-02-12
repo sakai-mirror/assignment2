@@ -122,7 +122,18 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			if (!permissionLogic.isUserAbleToViewStudentSubmissionForAssignment(submission.getUserId(), assignment)) {
 				throw new SecurityException("user" + externalLogic.getCurrentUserId() + " attempted to view submission with id " + submissionId + " but is not authorized");
 			}
-			AssignmentSubmissionVersion currentVersion = dao.getCurrentSubmissionVersionWithAttachments(submission);
+			
+			// since we may make modifications to this object for 
+			// diff users that we will not save, don't use the
+			// persistent object
+			AssignmentSubmissionVersion persistedCurrentVersion = dao.getCurrentSubmissionVersionWithAttachments(submission);
+			AssignmentSubmissionVersion currentVersion = null;
+			
+			if (persistedCurrentVersion != null) {
+				currentVersion = persistedCurrentVersion.clone();
+				currentVersion.setId(persistedCurrentVersion.getId());
+			}
+			
 			if (currentVersion != null) {
 				// if the current user is not the submitter, we don't want to return
 				// populated submission info
@@ -137,7 +148,8 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			
 			if (!assignment.isUngraded() && assignment.getGradableObjectId() != null) {
 				// retrieve the grade information for this submission
-				gradebookLogic.populateAllGradeInfoForSubmission(externalLogic.getCurrentContextId(), submission);
+				gradebookLogic.populateAllGradeInfoForSubmission(externalLogic.getCurrentContextId(), 
+						externalLogic.getCurrentUserId(), submission);
 			}
 		}
 		return submission;
@@ -149,7 +161,18 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			throw new IllegalArgumentException("null submissionVersionId passed to getSubmissionVersionById");
 		}
 		
-		AssignmentSubmissionVersion version = dao.getAssignmentSubmissionVersionByIdWithAttachments(submissionVersionId);
+		AssignmentSubmissionVersion persistedVersion = dao.getAssignmentSubmissionVersionByIdWithAttachments(submissionVersionId);
+		
+		// since we may make modifications to this object for 
+			// diff users that we will not save, don't use the
+			// persistent object
+		AssignmentSubmissionVersion version = null;
+		if (persistedVersion != null) {
+			version = persistedVersion.clone();
+			version.setId(persistedVersion.getId());
+		}
+		
+		String currentUserId = externalLogic.getCurrentUserId();
 		
 		if (version != null) {		
 			AssignmentSubmission submission = version.getAssignmentSubmission();
@@ -157,13 +180,13 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			
 			// ensure that the current user is authorized to view this user for this assignment
 			if (!permissionLogic.isUserAbleToViewStudentSubmissionForAssignment(submission.getUserId(), assignment)) {
-				throw new SecurityException("User " + externalLogic.getCurrentUserId() + " attempted to access the version " + 
+				throw new SecurityException("User " + currentUserId + " attempted to access the version " + 
 						submissionVersionId + " for student " + submission.getUserId() + " without authorization");
 			}
 			
 			// if the current user is not the submitter, we don't want to return
 			// populated submission info
-			if (version.isDraft() && !submission.getUserId().equals(externalLogic.getCurrentUserId())) {
+			if (version.isDraft() && !submission.getUserId().equals(currentUserId)) {
 				version.setSubmissionAttachSet(new HashSet());
 				version.setSubmittedText("");
 				if (log.isDebugEnabled()) log.debug("Wiping out submission-specific info b/c draft status and current user is not submitter");
@@ -171,7 +194,8 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			
 			// populate gradebook information, if appropriate
 			if (!assignment.isUngraded() && assignment.getGradableObjectId() != null) {
-				gradebookLogic.populateAllGradeInfoForSubmission(externalLogic.getCurrentContextId(), submission);
+				gradebookLogic.populateAllGradeInfoForSubmission(externalLogic.getCurrentContextId(), 
+						currentUserId, submission);
 			}
 		}
 		
@@ -194,7 +218,14 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 				throw new SecurityException("Current user " + currentUserId + " is not allowed to view submission for " + studentId + " for assignment " + assignment.getId());
 			}
 			
-			submission = dao.getSubmissionWithVersionHistoryForStudentAndAssignment(studentId, assignment);
+			// since we may make modifications to this object for 
+			// diff users that we will not save, don't use the
+			// persistent object
+			AssignmentSubmission persistedSubmission = dao.getSubmissionWithVersionHistoryForStudentAndAssignment(studentId, assignment);
+			if (persistedSubmission != null) {
+				submission = persistedSubmission.clone();
+				submission.setId(persistedSubmission.getId());
+			}
 			
 			// if the submission rec exists, we need to grab the most current version
 			if (submission != null) {
@@ -219,7 +250,8 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			
 			if (!assignment.isUngraded() && assignment.getGradableObjectId() != null) {
 				// retrieve the grade information for this submission
-				gradebookLogic.populateAllGradeInfoForSubmission(contextId, submission);
+				gradebookLogic.populateAllGradeInfoForSubmission(contextId, 
+						currentUserId, submission);
 			}
 		}
 		

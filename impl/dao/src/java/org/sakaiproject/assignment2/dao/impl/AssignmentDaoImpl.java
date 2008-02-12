@@ -22,6 +22,7 @@
 package org.sakaiproject.assignment2.dao.impl;
 
 import java.lang.Integer;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -33,13 +34,17 @@ import java.util.Collection;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.HibernateException;
 import org.hibernate.Query;
+import org.hibernate.Session;
 
 import org.sakaiproject.assignment2.dao.AssignmentDao;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.genericdao.hibernate.HibernateCompleteGenericDao;
+import org.sakaiproject.section.api.coursemanagement.User;
+import org.springframework.orm.hibernate3.HibernateCallback;
 
 /**
  * Implementations of any specialized DAO methods from the specialized DAO that allows the developer to extend the functionality of the
@@ -57,182 +62,255 @@ public class AssignmentDaoImpl extends HibernateCompleteGenericDao implements As
     	if (log.isDebugEnabled()) log.debug("init");
     }
     
-    public Integer getHighestSortIndexInSite(String contextId) {
+    public Integer getHighestSortIndexInSite(final String contextId) {
     	if (contextId == null) {
     		throw new IllegalArgumentException("contextId cannot be null");
     	}
-    	String hql = "select max(assignment.sortIndex) from Assignment2 as assignment where assignment.contextId = :contextId and assignment.removed != true";
     	
-    	Query query = getSession().createQuery(hql);
-    	query.setParameter("contextId", contextId);
-    	
-    	Integer highestIndex = (Integer)query.uniqueResult();
-    	if (highestIndex == null) {
-    		highestIndex = 0;
-    	}
+    	HibernateCallback hc = new HibernateCallback() {
+			public Object doInHibernate(Session session) throws HibernateException ,SQLException {
+				String hql = "select max(assignment.sortIndex) from Assignment2 as assignment where assignment.contextId = :contextId and assignment.removed != true";
+		    	
+		    	Query query = getSession().createQuery(hql);
+		    	query.setParameter("contextId", contextId);
+		    	
+		    	Integer highestIndex = (Integer)query.uniqueResult();
+		    	if (highestIndex == null) {
+		    		highestIndex = 0;
+		    	}
 
-        return highestIndex; 
+		        return highestIndex; 
+			}
+		};
+		
+		return (Integer)getHibernateTemplate().execute(hc);
+    	
     }
     
-    public Set<Assignment2> getAssignmentsWithGroupsAndAttachments(String contextId) {
+    public Set<Assignment2> getAssignmentsWithGroupsAndAttachments(final String contextId) {
     	if (contextId == null) {
     		throw new IllegalArgumentException("Null contextId passed to getAssignmentsWithGroupsAndAttachments");
     	}
-    	Query query = getSession().getNamedQuery("findAssignmentsWithGroupsAndAttachments");
-    	query.setParameter("contextId", contextId);
     	
-    	List<Assignment2> assignmentList = query.list();
+    	HibernateCallback hc = new HibernateCallback() {
+			public Object doInHibernate(Session session) throws HibernateException ,SQLException {
+				Query query = getSession().getNamedQuery("findAssignmentsWithGroupsAndAttachments");
+		    	query.setParameter("contextId", contextId);
+		    	
+		    	List<Assignment2> assignmentList = query.list();
+		    	
+		    	Set<Assignment2> assignmentSet = new HashSet();
+		    	
+		    	if (assignmentList != null) {
+		    		assignmentSet = new HashSet(assignmentList);
+		    	}
+		    	
+		    	return assignmentSet;
+			}
+		};
     	
-    	Set<Assignment2> assignmentSet = new HashSet();
-    	
-    	if (assignmentList != null) {
-    		assignmentSet = new HashSet(assignmentList);
-    	}
-    	
-    	return assignmentSet;
+		return (Set<Assignment2>)getHibernateTemplate().execute(hc);
     }
     
-    public Assignment2 getAssignmentByIdWithGroupsAndAttachments(Long assignmentId) {
+    public Assignment2 getAssignmentByIdWithGroupsAndAttachments(final Long assignmentId) {
     	if (assignmentId == null) {
     		throw new IllegalArgumentException("Null assignmentId passed to getAssignmentByIdWithGroupsAndAttachments");
     	}
-    	Query query = getSession().getNamedQuery("findAssignmentByIdWithGroupsAndAttachments");
-    	query.setParameter("assignmentId",assignmentId);
     	
-    	return (Assignment2) query.uniqueResult();
+    	HibernateCallback hc = new HibernateCallback() {
+			public Object doInHibernate(Session session) throws HibernateException ,SQLException {
+				Query query = getSession().getNamedQuery("findAssignmentByIdWithGroupsAndAttachments");
+		    	query.setParameter("assignmentId",assignmentId);
+		    	
+		    	return (Assignment2) query.uniqueResult();
+			}
+		};
+    	
+		return (Assignment2)getHibernateTemplate().execute(hc);
+    	
     }
 
-	public Assignment2 getAssignmentByIdWithGroups(Long assignmentId) {
+	public Assignment2 getAssignmentByIdWithGroups(final Long assignmentId) {
 		if (assignmentId == null) {
     		throw new IllegalArgumentException("Null assignmentId passed to getAssignmentByIdWithGroups");
     	}
-    	Query query = getSession().getNamedQuery("findAssignmentByIdWithGroups");
-    	query.setParameter("assignmentId",assignmentId);
-    	
-    	return (Assignment2) query.uniqueResult();
+		
+		HibernateCallback hc = new HibernateCallback() {
+			public Object doInHibernate(Session session) throws HibernateException ,SQLException {
+				Query query = getSession().getNamedQuery("findAssignmentByIdWithGroups");
+		    	query.setParameter("assignmentId",assignmentId);
+		    	
+		    	return (Assignment2) query.uniqueResult();
+			}
+		};
+		
+		return (Assignment2)getHibernateTemplate().execute(hc);
 	}
 	
 	
 	// Assignment Submissions DAO
     
-    public List<AssignmentSubmission> findCurrentSubmissionsForAssignment(Assignment2 assignment) {
+    public List<AssignmentSubmission> findCurrentSubmissionsForAssignment(final Assignment2 assignment) {
     	if (assignment == null) {
     		throw new IllegalArgumentException("Null assignment passed to findCurrentSubmissionsForAssignment");
     	}
-    	Query query = getSession().getNamedQuery("findCurrentSubmissionsForAssignment");
-    	query.setParameter("assignment", assignment);
     	
-    	return query.list();
+    	HibernateCallback hc = new HibernateCallback() {
+			public Object doInHibernate(Session session) throws HibernateException ,SQLException {
+				Query query = getSession().getNamedQuery("findCurrentSubmissionsForAssignment");
+		    	query.setParameter("assignment", assignment);
+		    	
+		    	return query.list();
+			}
+		};
+    	
+		return (List<AssignmentSubmission>)getHibernateTemplate().execute(hc);
     }
     
-    public AssignmentSubmissionVersion getCurrentSubmissionVersionWithAttachments(AssignmentSubmission submission) {
+    public AssignmentSubmissionVersion getCurrentSubmissionVersionWithAttachments(final AssignmentSubmission submission) {
     	if (submission == null || submission.getId() == null) {
-    		throw new IllegalArgumentException("null or transient submission passed to getSubmissionVersionForUserIdWithAttachments");
+    		throw new IllegalArgumentException("null submission or submission w/o id passed to getSubmissionVersionForUserIdWithAttachments");
     	}
     	
-    	AssignmentSubmissionVersion currentVersion = null;
-	
-    	String queryString = "select max(submissionVersion.id) " +
-		"from AssignmentSubmissionVersion as submissionVersion " +
-		"where submissionVersion.assignmentSubmission = :submission";
+    	HibernateCallback hc = new HibernateCallback() {
+			public Object doInHibernate(Session session) throws HibernateException ,SQLException {
+				AssignmentSubmissionVersion currentVersion = null;
+				
+		    	String queryString = "select max(submissionVersion.id) " +
+				"from AssignmentSubmissionVersion as submissionVersion " +
+				"where submissionVersion.assignmentSubmission = :submission";
+		    	
+		    	Query query = getSession().createQuery(queryString);
+		    	query.setParameter("submission", submission);
+		    	
+		    	Long submissionVersionId = (Long) query.uniqueResult();
+		    	
+		    	if (submissionVersionId != null) {
+		    		currentVersion = getAssignmentSubmissionVersionByIdWithAttachments(submissionVersionId);
+		    	}
+		    	
+		    	return currentVersion;
+			}
+		};
     	
-    	Query query = getSession().createQuery(queryString);
-    	query.setParameter("submission", submission);
-    	
-    	Long submissionVersionId = (Long) query.uniqueResult();
-    	
-    	if (submissionVersionId != null) {
-    		currentVersion = getAssignmentSubmissionVersionByIdWithAttachments(submissionVersionId);
-    	}
-    	
-    	return currentVersion;
+		return (AssignmentSubmissionVersion)getHibernateTemplate().execute(hc);
     }
     
-    private List<Long> getCurrentVersionIdsForSubmissions(Collection<AssignmentSubmission> submissions) {    	
-    	List<Long> versionIdList = new ArrayList();
+    private List<Long> getCurrentVersionIdsForSubmissions(final Collection<AssignmentSubmission> submissions) {   
+    	HibernateCallback hc = new HibernateCallback() {
+			public Object doInHibernate(Session session) throws HibernateException ,SQLException {
+				List<Long> versionIdList = new ArrayList();
 
-    	if (submissions != null && !submissions.isEmpty()) {
-    		
-    		List submissionList = new ArrayList(submissions);
-    		
-    		Query query = getSession().getNamedQuery("findCurrentVersionIds");
+		    	if (submissions != null && !submissions.isEmpty()) {
+		    		
+		    		List submissionList = new ArrayList(submissions);
+		    		
+		    		Query query = getSession().getNamedQuery("findCurrentVersionIds");
 
-    		// if submission list is > than the max length allowed in sql, we need
-    		// to cycle through the list
+		    		// if submission list is > than the max length allowed in sql, we need
+		    		// to cycle through the list
 
-    		versionIdList = queryWithParameterList(query, "submissionList", submissionList);
-    	}
+		    		versionIdList = queryWithParameterList(query, "submissionList", submissionList);
+		    	}
 
-    	return versionIdList;
+		    	return versionIdList;
+			}
+		};
+    	
+		return (List<Long>)getHibernateTemplate().execute(hc);
+    	
     }
     
-    public List<AssignmentSubmission> getCurrentAssignmentSubmissionsForStudent(List<Assignment2> assignments, String studentId) {
+    public List<AssignmentSubmission> getCurrentAssignmentSubmissionsForStudent(final List<Assignment2> assignments, final String studentId) {
 		if (studentId == null) {
 			throw new IllegalArgumentException("null studentId passed to getAllSubmissionRecsForStudentWithVersionData");
 		}
 		
-		List<AssignmentSubmission> submissions = new ArrayList();
+		HibernateCallback hc = new HibernateCallback() {
+			public Object doInHibernate(Session session) throws HibernateException ,SQLException {
+				List<AssignmentSubmission> submissions = new ArrayList();
+				
+				if (assignments != null && !assignments.isEmpty()) {
+					// retrieve the submissions
+					Query query = getSession().getNamedQuery("findSubmissionsForStudentForAssignments");
+			    	query.setParameter("studentId",studentId);
+		    	
+			    	submissions = queryWithParameterList(query, "assignmentList", assignments);
+			    	
+			    	// now, populate the version information
+		    		populateCurrentVersion(submissions);
+				}
+				
+				return submissions;
+			}
+		};
+		return (List<AssignmentSubmission>)getHibernateTemplate().execute(hc);
 		
-		if (assignments != null && !assignments.isEmpty()) {
-			// retrieve the submissions
-			Query query = getSession().getNamedQuery("findSubmissionsForStudentForAssignments");
-	    	query.setParameter("studentId",studentId);
-    	
-	    	submissions = queryWithParameterList(query, "assignmentList", assignments);
-	    	
-	    	// now, populate the version information
-    		populateCurrentVersion(submissions);
-		}
-		
-		return submissions;
     }
     
-    public AssignmentSubmissionVersion getAssignmentSubmissionVersionByIdWithAttachments(Long submissionVersionId) {
+    public AssignmentSubmissionVersion getAssignmentSubmissionVersionByIdWithAttachments(final Long submissionVersionId) {
     	if (submissionVersionId == null) {
     		throw new IllegalArgumentException("Null submissionVersionId passed to getAssignmentSubmissionVersionByIdWithAttachments");
     	}
-    	
-    	Query query = getSession().getNamedQuery("findSubmissionVersionByIdWithAttachments");
-    	query.setParameter("submissionVersionId", submissionVersionId);
-    	
-    	return (AssignmentSubmissionVersion) query.uniqueResult();
+    	HibernateCallback hc = new HibernateCallback() {
+			public Object doInHibernate(Session session) throws HibernateException ,SQLException {
+				Query query = getSession().getNamedQuery("findSubmissionVersionByIdWithAttachments");
+		    	query.setParameter("submissionVersionId", submissionVersionId);
+				return query.uniqueResult();
+			}
+		};
+		return (AssignmentSubmissionVersion)getHibernateTemplate().execute(hc);
     }
     
-    private List<AssignmentSubmissionVersion> getAssignmentSubmissionVersionsById(List<Long> versionIds) {
-    	List<AssignmentSubmissionVersion> versions = new ArrayList();
+    private List<AssignmentSubmissionVersion> getAssignmentSubmissionVersionsById(final List<Long> versionIds) {
     	
-    	if (versionIds != null && !versionIds.isEmpty()) {
-    		String hql = "from AssignmentSubmissionVersion as version where version.id in (:versionIdList)";
-    		Query query = getSession().createQuery(hql);
-    		
-    		versions = queryWithParameterList(query, "versionIdList", versionIds);
-    	}
+    	HibernateCallback hc = new HibernateCallback() {
+			public Object doInHibernate(Session session) throws HibernateException ,SQLException {
+		    	List<AssignmentSubmissionVersion> versions = new ArrayList();
+		    	
+				if (versionIds != null && !versionIds.isEmpty()) {
+		    		String hql = "from AssignmentSubmissionVersion as version where version.id in (:versionIdList)";
+		    		Query query = getSession().createQuery(hql);
+		    		
+		    		versions = queryWithParameterList(query, "versionIdList", versionIds);
+		    	}
+		    	
+		    	return versions;
+			}
+		};
+		return (List<AssignmentSubmissionVersion>)getHibernateTemplate().execute(hc);
     	
-    	return versions;
     }
     
-    public Set<AssignmentSubmission> getCurrentSubmissionsForStudentsForAssignment(List<String> studentIds, Assignment2 assignment) {
+    public Set<AssignmentSubmission> getCurrentSubmissionsForStudentsForAssignment(final List<String> studentIds, final Assignment2 assignment) {
     	if (assignment == null) {
     		throw new IllegalArgumentException("null assignment passed to getSubmissionsForStudentsForAssignment");    		
     	}
     	
-    	Set<AssignmentSubmission> submissionSet = new HashSet();
+    	HibernateCallback hc = new HibernateCallback() {
+			public Object doInHibernate(Session session) throws HibernateException ,SQLException {
+				Set<AssignmentSubmission> submissionSet = new HashSet();
+		    	
+		    	if (studentIds != null && !studentIds.isEmpty()) {
+		    		Query query = getSession().getNamedQuery("findSubmissionsForStudentsForAssignment");
+		    		query.setParameter("assignment", assignment);
+		    		
+		    		List<AssignmentSubmission> submissionList = queryWithParameterList(query, "studentIdList", studentIds);
+		    			
+		    		if (submissionList != null) {
+		    			submissionSet = new HashSet(submissionList);
+		    			
+		        		// now retrieve the current version information
+		        		populateCurrentVersion(submissionSet);
+		    		}
+		    	}
+		    	
+		    	return submissionSet;
+			}
+		};
+		return (Set<AssignmentSubmission>)getHibernateTemplate().execute(hc);
     	
-    	if (studentIds != null && !studentIds.isEmpty()) {
-    		Query query = getSession().getNamedQuery("findSubmissionsForStudentsForAssignment");
-    		query.setParameter("assignment", assignment);
-    		
-    		List<AssignmentSubmission> submissionList = queryWithParameterList(query, "studentIdList", studentIds);
-    			
-    		if (submissionList != null) {
-    			submissionSet = new HashSet(submissionList);
-    			
-        		// now retrieve the current version information
-        		populateCurrentVersion(submissionSet);
-    		}
-    	}
     	
-    	return submissionSet;
     }
     
     private void populateCurrentVersion(Collection<AssignmentSubmission> submissions) {
@@ -269,46 +347,58 @@ public class AssignmentDaoImpl extends HibernateCompleteGenericDao implements As
 		}
     }
     
-    public Set<AssignmentSubmission> getSubmissionsWithVersionHistoryForStudentListAndAssignment(List<String> studentIdList, Assignment2 assignment) {
+    public Set<AssignmentSubmission> getSubmissionsWithVersionHistoryForStudentListAndAssignment(final List<String> studentIdList, final Assignment2 assignment) {
     	if (assignment == null) {
     		throw new IllegalArgumentException("null assignment passed to getSubmissionsWithVersionHistoryForStudentListAndAssignment");
     	}
     	
-    	Set<AssignmentSubmission> submissionSet = new HashSet();
-    	
-    	if (studentIdList != null && !studentIdList.isEmpty()) {
-    		Query query = getSession().getNamedQuery("findSubmissionsWithHistoryForAssignmentAndStudents");	
-        	query.setParameter("assignment", assignment);
-        	
-        	List submissionList = queryWithParameterList(query, "studentIdList", studentIdList);
-        	
-        	if (submissionList != null) {
-    			submissionSet = new HashSet(submissionList);
-    			
-        		// now retrieve the current version information
-        		populateCurrentVersion(submissionSet);
-    		}
-    	}
-    	
-    	return submissionSet;
+    	HibernateCallback hc = new HibernateCallback() {
+			public Object doInHibernate(Session session) throws HibernateException ,SQLException {
+				Set<AssignmentSubmission> submissionSet = new HashSet();
+		    	
+		    	if (studentIdList != null && !studentIdList.isEmpty()) {
+		    		Query query = getSession().getNamedQuery("findSubmissionsWithHistoryForAssignmentAndStudents");	
+		        	query.setParameter("assignment", assignment);
+		        	
+		        	List submissionList = queryWithParameterList(query, "studentIdList", studentIdList);
+		        	
+		        	if (submissionList != null) {
+		    			submissionSet = new HashSet(submissionList);
+		    			
+		        		// now retrieve the current version information
+		        		populateCurrentVersion(submissionSet);
+		    		}
+		    	}
+		    	
+		    	return submissionSet;
+			}
+		};
+		
+		return (Set<AssignmentSubmission>)getHibernateTemplate().execute(hc);
     }
     
-    public AssignmentSubmission getSubmissionWithVersionHistoryForStudentAndAssignment(String studentId, Assignment2 assignment) {
+    public AssignmentSubmission getSubmissionWithVersionHistoryForStudentAndAssignment(final String studentId, final Assignment2 assignment) {
     	if (studentId == null || assignment == null) {
     		throw new IllegalArgumentException("null parameter passed to getSubmissionWithVersionHistoryForStudentAndAssignment");
     	}
+    	HibernateCallback hc = new HibernateCallback() {
+			public Object doInHibernate(Session session) throws HibernateException ,SQLException {
+				Query query = getSession().getNamedQuery("findStudentSubmissionWithHistoryForAssignment");
+		    	query.setParameter("studentId", studentId);
+		    	query.setParameter("assignment", assignment);
+		    	
+		    	AssignmentSubmission submission = (AssignmentSubmission) query.uniqueResult();
+		    	
+		    	if (submission != null) {
+		    		setCurrentSubmissionGivenHistory(submission);
+		    	}
+		    	
+		    	return submission;
+			}
+		};
+		
+		return (AssignmentSubmission)getHibernateTemplate().execute(hc);
     	
-    	Query query = getSession().getNamedQuery("findStudentSubmissionWithHistoryForAssignment");
-    	query.setParameter("studentId", studentId);
-    	query.setParameter("assignment", assignment);
-    	
-    	AssignmentSubmission submission = (AssignmentSubmission) query.uniqueResult();
-    	
-    	if (submission != null) {
-    		setCurrentSubmissionGivenHistory(submission);
-    	}
-    	
-    	return submission;
     }
     
     /**
@@ -336,21 +426,28 @@ public class AssignmentDaoImpl extends HibernateCompleteGenericDao implements As
     	}
     }
     
-    public AssignmentSubmission getSubmissionWithVersionHistoryById(Long submissionId) {
+    public AssignmentSubmission getSubmissionWithVersionHistoryById(final Long submissionId) {
     	if (submissionId == null) {
     		throw new IllegalArgumentException("null submissionId passed to getSubmissionWithVersionHistoryById");
     	}
     	
-    	Query query = getSession().getNamedQuery("findSubmissionByIdWithHistory");
-    	query.setParameter("submissionId", submissionId);
+    	HibernateCallback hc = new HibernateCallback() {
+			public Object doInHibernate(Session session) throws HibernateException ,SQLException {
+				Query query = getSession().getNamedQuery("findSubmissionByIdWithHistory");
+		    	query.setParameter("submissionId", submissionId);
+		    	
+		    	AssignmentSubmission submission = (AssignmentSubmission) query.uniqueResult();
+		    	
+		    	if (submission != null) {
+		    		setCurrentSubmissionGivenHistory(submission);
+		    	}
+		    	
+		    	return submission;
+			}
+		};
+		
+		return (AssignmentSubmission)getHibernateTemplate().execute(hc);
     	
-    	AssignmentSubmission submission = (AssignmentSubmission) query.uniqueResult();
-    	
-    	if (submission != null) {
-    		setCurrentSubmissionGivenHistory(submission);
-    	}
-    	
-    	return submission;
     }
     
     /**

@@ -46,7 +46,9 @@ public interface AssignmentSubmissionLogic {
 	 * 
 	 * @param submissionId
 	 * @return Returns the AssignmentSubmission based on its assignmentSubmissionId.
-	 * Does not populate current version information.
+	 * Populates current version information. If version is draft and current
+	 * user is not submitter, submittedText and submissionAttachments will not
+	 * be populated
 	 * @throws SecurityException if current user is not allowed to view the
 	 * corresponding submission
 	 */
@@ -58,7 +60,7 @@ public interface AssignmentSubmissionLogic {
 	 * @return Returns the AssignmentSubmissionVersion with the given submissionVersionId.
 	 * Will populate grading information. Returns null if no version with that id.
 	 * If the version is draft and the submitter is not the current user, will not
-	 * populate the submissionText or submissionAttachmentSet
+	 * populate the submissionText or submissionAttachmentSet.
 	 * @SecurityException if current user is not allowed to view the version
 	 */
 	public AssignmentSubmissionVersion getSubmissionVersionById(Long submissionVersionId);

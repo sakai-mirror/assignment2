@@ -33,8 +33,6 @@ import org.springframework.test.AbstractTransactionalSpringContextTests;
  * be overridden to test specific database configurations by setting the "mem"
  * system property to "false".  In the "mem=false" case, the database configuration
  * is set in the hibernate.properties file in the "hibernate.properties.dir" directory.
- *
- * @author <a href="mailto:jholtzman@berkeley.edu">Josh Holtzman</a>
  */
 public abstract class Assignment2DaoTestBase extends AbstractTransactionalSpringContextTests {
 	protected AssignmentDao assignmentDao;
