@@ -1183,5 +1183,28 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			}
 		}
 	}
+	
+	public List<AssignmentSubmissionVersion> getVersionHistoryForSubmission(AssignmentSubmission submission) {
+		if (submission == null) {
+			throw new IllegalArgumentException("Null submission passed to getVersionHistoryForSubmission");
+		}
+		
+		List<AssignmentSubmissionVersion> filteredVersionHistory = new ArrayList();
+		String currentUserId = externalLogic.getCurrentUserId();
+		
+		Set historySet = dao.getVersionHistoryForSubmission(submission);
+		if (historySet != null && !historySet.isEmpty()) {
+			for (Iterator vIter = historySet.iterator(); vIter.hasNext();) {
+				AssignmentSubmissionVersion version = (AssignmentSubmissionVersion) vIter.next();
+				if (version != null) {
+					AssignmentSubmissionVersion versionCopy = AssignmentSubmissionVersion.deepCopy(version);
+					filterOutRestrictedVersionInfo(versionCopy, currentUserId);
+					filteredVersionHistory.add(versionCopy);
+				}
+			}
+		}
+		
+		return filteredVersionHistory;
+	}
 
 }

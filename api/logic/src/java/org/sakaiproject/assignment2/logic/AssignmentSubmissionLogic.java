@@ -195,4 +195,16 @@ public interface AssignmentSubmissionLogic {
 	 */
 	public void releaseFeedbackForVersion(Long submissionVersionId);
 	
+	/**
+	 * 
+	 * @param submission
+	 * @return a list of all of the AssignmentSubmissionVersions associated with
+	 * the given submission. If the a version is draft and the submitter is not 
+	 * the current user, will not populate the submissionText or 
+	 * submissionAttachmentSet. If the curr user is	the submitter but feedback 
+	 * has not been released, will not populate	feedback.
+	 * 
+	 */
+	public List<AssignmentSubmissionVersion> getVersionHistoryForSubmission(AssignmentSubmission submission);
+	
 }
