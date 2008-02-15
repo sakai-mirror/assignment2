@@ -48,6 +48,7 @@ import org.sakaiproject.assignment2.model.SubmissionAttachmentBase;
 import org.sakaiproject.assignment2.model.FeedbackAttachment;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
+import org.sakaiproject.assignment2.exception.StaleObjectModificationException;
 import org.sakaiproject.assignment2.exception.SubmissionExistsException;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
@@ -63,11 +64,12 @@ import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.exception.ServerOverloadException;
 import org.sakaiproject.exception.TypeException;
-import org.sakaiproject.service.gradebook.shared.StaleObjectModificationException;
 import org.sakaiproject.util.FormattedText;
 import org.sakaiproject.util.StringUtil;
 import org.sakaiproject.util.Validator;
 import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException;
+import org.hibernate.StaleObjectStateException;
+
 
 /**
  * This is the interface for interaction with the AssignmentSubmission object
@@ -113,6 +115,8 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		}
 
 		AssignmentSubmission submission =  (AssignmentSubmission) dao.findById(AssignmentSubmission.class, submissionId);
+		String currentUserId = externalLogic.getCurrentUserId();
+		String currentContextId = externalLogic.getCurrentContextId();
 
 		// if the submission rec exists, we need to grab the most current version
 		if (submission != null) {
@@ -130,26 +134,19 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			AssignmentSubmissionVersion currentVersion = null;
 			
 			if (persistedCurrentVersion != null) {
-				currentVersion = persistedCurrentVersion.clone();
-				currentVersion.setId(persistedCurrentVersion.getId());
+				currentVersion = AssignmentSubmissionVersion.deepCopy(persistedCurrentVersion);
 			}
 			
 			if (currentVersion != null) {
-				// if the current user is not the submitter, we don't want to return
-				// populated submission info
-				if (currentVersion.isDraft() && !submission.getUserId().equals(externalLogic.getCurrentUserId())) {
-					currentVersion.setSubmissionAttachSet(new HashSet());
-					currentVersion.setSubmittedText("");
-					if (log.isDebugEnabled()) log.debug("Wiping out submission-specific info b/c draft status and current user is not submitter");
-				}
+				filterOutRestrictedVersionInfo(currentVersion, currentUserId);
 			}
 			
 			submission.setCurrentSubmissionVersion(currentVersion);
 			
 			if (!assignment.isUngraded() && assignment.getGradableObjectId() != null) {
 				// retrieve the grade information for this submission
-				gradebookLogic.populateAllGradeInfoForSubmission(externalLogic.getCurrentContextId(), 
-						externalLogic.getCurrentUserId(), submission);
+				gradebookLogic.populateAllGradeInfoForSubmission(currentContextId, 
+						currentUserId, submission);
 			}
 		}
 		return submission;
@@ -164,12 +161,11 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		AssignmentSubmissionVersion persistedVersion = dao.getAssignmentSubmissionVersionByIdWithAttachments(submissionVersionId);
 		
 		// since we may make modifications to this object for 
-			// diff users that we will not save, don't use the
-			// persistent object
+		// diff users that we will not save, don't use the
+		// persistent object
 		AssignmentSubmissionVersion version = null;
 		if (persistedVersion != null) {
-			version = persistedVersion.clone();
-			version.setId(persistedVersion.getId());
+			version = AssignmentSubmissionVersion.deepCopy(persistedVersion);
 		}
 		
 		String currentUserId = externalLogic.getCurrentUserId();
@@ -184,13 +180,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 						submissionVersionId + " for student " + submission.getUserId() + " without authorization");
 			}
 			
-			// if the current user is not the submitter, we don't want to return
-			// populated submission info
-			if (version.isDraft() && !submission.getUserId().equals(currentUserId)) {
-				version.setSubmissionAttachSet(new HashSet());
-				version.setSubmittedText("");
-				if (log.isDebugEnabled()) log.debug("Wiping out submission-specific info b/c draft status and current user is not submitter");
-			}
+			filterOutRestrictedVersionInfo(version, currentUserId);
 			
 			// populate gradebook information, if appropriate
 			if (!assignment.isUngraded() && assignment.getGradableObjectId() != null) {
@@ -218,38 +208,23 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 				throw new SecurityException("Current user " + currentUserId + " is not allowed to view submission for " + studentId + " for assignment " + assignment.getId());
 			}
 			
-			// since we may make modifications to this object for 
-			// diff users that we will not save, don't use the
-			// persistent object
+			// since we may make modifications to this object depending on 
+			// the user that we will not save, don't use the
+			// persistent object - make a copy
 			AssignmentSubmission persistedSubmission = dao.getSubmissionWithVersionHistoryForStudentAndAssignment(studentId, assignment);
 			if (persistedSubmission != null) {
-				submission = persistedSubmission.clone();
-				submission.setId(persistedSubmission.getId());
+				submission = AssignmentSubmission.deepCopy(persistedSubmission);
 			}
-			
-			// if the submission rec exists, we need to grab the most current version
-			if (submission != null) {
-				if (submission.getSubmissionHistorySet() != null && !submission.getSubmissionHistorySet().isEmpty()) {
-					// if the current user is not the submitter and a version is draft, 
-					// do not return any of the submission info
-					if (!submission.getUserId().equals(currentUserId)) {
-						for (Iterator versionIter = submission.getSubmissionHistorySet().iterator(); versionIter.hasNext();) {
-							AssignmentSubmissionVersion version = (AssignmentSubmissionVersion) versionIter.next();
-							if (version != null && version.isDraft()) {
-								version.setSubmittedText("");
-								version.setSubmissionAttachSet(new HashSet());
-								if (log.isDebugEnabled()) log.debug("Wiping out submission-specific info b/c draft status and current user is not submitter");
-							}
-						}
-					}
-				}
-				
-			} else {
+
+			if (submission == null) {
+				// return an "empty" submission
 				submission = new AssignmentSubmission(assignment, studentId);
-			}
+			} else {
+				filterOutRestrictedInfo(submission, currentUserId, true);
+			} 
 			
+			// retrieve the grade information for this submission
 			if (!assignment.isUngraded() && assignment.getGradableObjectId() != null) {
-				// retrieve the grade information for this submission
 				gradebookLogic.populateAllGradeInfoForSubmission(contextId, 
 						currentUserId, submission);
 			}
@@ -257,154 +232,139 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		
 		return submission;
 	}
-
-	public void saveStudentSubmission(AssignmentSubmission assignmentSubmission) {
-		if (assignmentSubmission == null) {
-			throw new IllegalArgumentException("null assignmentSubmission passed to saveAssignmentSubmission");
+	
+	public void saveStudentSubmission(String userId, Assignment2 assignment, Boolean draft, 
+			String submittedText, Set<SubmissionAttachment> subAttachSet) {
+		if (userId == null || assignment == null || draft == null) {
+			throw new IllegalArgumentException("null userId, assignment, or draft passed to saveAssignmentSubmission");
 		}
 		
-		AssignmentSubmissionVersion currVersion = assignmentSubmission.getCurrentSubmissionVersion();
-
-		if (currVersion == null) {
-			throw new IllegalArgumentException("null currentSubmissionVersion associated with the assignmentSubmission in saveStudentSubmission");
-		}
-		currVersion.setAssignmentSubmission(assignmentSubmission);
-		saveStudentSubmission(currVersion);
-	}
-	
-	public void saveStudentSubmission(AssignmentSubmissionVersion version) {
-		if (version == null) {
-			throw new IllegalArgumentException("null version passed to saveAssignmentSubmission");
+		if (assignment.getId() == null) {
+			throw new IllegalArgumentException("assignment without an id passed to saveStudentSubmission");
 		}
 		
 		Date currentTime = new Date();
 		String currentUserId = externalLogic.getCurrentUserId();
+		String contextId = externalLogic.getCurrentContextId();
 		
-		AssignmentSubmission submission = version.getAssignmentSubmission();
-		if (submission == null) {
-			throw new IllegalArgumentException("no AssignmentSubmission record was associated with the given version in saveStudentSubmission");
+		if (!currentUserId.equals(userId)) {
+			throw new SecurityException("User " + currentUserId + " attempted to save a submission for " +
+					userId + ". You may only make a submission for yourself!");
 		}
 		
-		if (!permissionLogic.isUserAbleToMakeSubmissionForAssignment(externalLogic.getCurrentContextId(), submission.getAssignment())) {
+		if (!permissionLogic.isUserAbleToMakeSubmissionForAssignment(contextId, assignment)) {
 			log.warn("User " + currentUserId + " attempted to make a submission " +
-					"without authorization for assignment " + submission.getAssignment().getId());
+					"without authorization for assignment " + assignment.getId());
 			throw new SecurityException("User " + currentUserId + " attempted to make a submission " +
-					"without authorization for assignment " + submission.getAssignment().getId());
+					"without authorization for assignment " + assignment.getId());
 		}
 		
-		if (!submissionIsOpenForStudentForAssignment(currentUserId, submission.getAssignment().getId())) {
+		if (!submissionIsOpenForStudentForAssignment(currentUserId, assignment.getId())) {
 			log.warn("User " + currentUserId + " attempted to make a submission " +
-					"but submission for this user for assignment " + submission.getAssignment().getId() + " is closed.");
+					"but submission for this user for assignment " + assignment.getId() + " is closed.");
 			throw new SecurityException("User " + currentUserId + " attempted to make a submission " +
-					"for closed assignment " + submission.getAssignment().getId());
+					"for closed assignment " + assignment.getId());
 		}
 		
 		// if there is no current version or the most recent version was submitted, we will need
 		// to create a new version. If the current version is draft, we will continue to update
 		// this version until it is submitted
-		AssignmentSubmissionVersion existingVersion = null;
-
-		if (submission.getId() == null) {
-			// this should be a new submission
-			// we need to check that this submission doesn't already exist
-			List submissions = dao.findByProperties(AssignmentSubmission.class, 
-					new String[] {"userId", "assignment"}, new Object[] {submission.getUserId(), submission.getAssignment()});
-			if (submissions != null && submissions.size() > 0) {
-				throw new SubmissionExistsException("User " + externalLogic.getCurrentUserId() + " attempted to save a duplicate " +
-						"submission rec for userId " + submission.getUserId() + " and assignment " + submission.getAssignment().getId());
-			}
-		} else {
-			existingVersion = dao.getCurrentSubmissionVersionWithAttachments(submission);
-		}
 		
-		if (existingVersion != null && existingVersion.isDraft()) {
-			// we need to update this rec
+		// retrieve the latest submission for this user and assignment
+		AssignmentSubmission submission = dao.getSubmissionWithVersionHistoryForStudentAndAssignment(userId, assignment);
+		AssignmentSubmissionVersion version = null;
+		Set<SubmissionAttachment> attachToDelete = null;
+		boolean isAnUpdate = false;
+		
+		if (submission == null) {
+			// there is no submission for this user yet
+			submission = new AssignmentSubmission(assignment, userId);
 			
-			// identify which attachments need to be removed before we start
-			// editing the existingVersion
-			Set<SubmissionAttachment> attachToDelete = 
-				identifyAttachmentsToDelete(existingVersion.getSubmissionAttachSet(), version.getSubmissionAttachSet());
-			
-			// we will update the existing version to prevent overwriting 
-			// non-student submission fields accidentally
-			existingVersion.setDraft(version.isDraft());			
-			existingVersion.setSubmittedText(version.getSubmittedText());
-			
-			existingVersion.setModifiedBy(currentUserId);
-			existingVersion.setModifiedTime(currentTime);
-
-			if (!version.isDraft()) {
-				existingVersion.setAnnotatedText(version.getSubmittedText());
-				existingVersion.setSubmittedTime(currentTime);
-			}
-			
-			try {
-				Set<SubmissionAttachment> attachSet = new HashSet();
-				if (version.getSubmissionAttachSet() != null) {
-					attachSet = version.getSubmissionAttachSet();
-					populateVersionForAttachmentSet(attachSet, existingVersion);
-				}
-				
-				Set<AssignmentSubmissionVersion> versionSet = new HashSet();
-				versionSet.add(existingVersion);
-				
-				Set<AssignmentSubmission> submissionSet = new HashSet();
-				submissionSet.add(submission);
-				
-				dao.saveMixedSet(new Set[] {submissionSet, versionSet, attachSet});
-				if (log.isDebugEnabled()) log.debug("Updated student submission version " + existingVersion.getId() + " for user " + submission.getUserId() + " for assignment " + submission.getAssignment().getTitle()+ " ID: " + submission.getAssignment().getId());
-				
-				if (attachToDelete != null && !attachToDelete.isEmpty()) {
-					dao.deleteSet(attachToDelete);
-					if (log.isDebugEnabled()) log.debug("Removed feedback attachments deleted for updated version " + version.getId() + " by user " + currentUserId);
-				}
-				
-			} catch (HibernateOptimisticLockingFailureException holfe) {
-				if(log.isInfoEnabled()) log.info("An optimistic locking failure occurred while attempting to update submission version" + version.getId());
-	            throw new StaleObjectModificationException(holfe);
-			}
-
+			// we need to create a new version for this submission
+			version = new AssignmentSubmissionVersion();
 		} else {
-			// this is a new version
-			AssignmentSubmissionVersion newVersion = new AssignmentSubmissionVersion();
-			newVersion.setAssignmentSubmission(submission);
-			newVersion.setDraft(version.isDraft());
-			newVersion.setSubmittedText(version.getSubmittedText());
+			// the submission exists, so we need to check the current version
+			version = dao.getCurrentSubmissionVersionWithAttachments(submission);
+			
+			// if the current version hasn't been submitted yet, we will
+			// update that one. otherwise, create a new version
+			if (version != null && version.getSubmittedTime() == null) {
+				
+				isAnUpdate = true;
+				
+				// let's make sure the subAttachSet isn't pointing to the
+				// persistent objects
+				if (subAttachSet != null && !subAttachSet.isEmpty()) {
+					for (Iterator attachIter = subAttachSet.iterator(); attachIter.hasNext();) {
+						SubmissionAttachment attach = (SubmissionAttachment) attachIter.next();
+						if (attach != null) {
+							attach = SubmissionAttachment.deepCopy(attach);
+						}
+					}
+				}
+				
+				// identify any attachments that were removed from this version
+				attachToDelete = identifyAttachmentsToDelete(version.getSubmissionAttachSet(), subAttachSet);
+				
+			} else {
+				// we need to create a new version for this submission
+				version = new AssignmentSubmissionVersion();
+			}
+		}
+
+		// now let's set the new data
+		version.setAssignmentSubmission(submission);
+		version.setDraft(draft);
+		version.setSubmittedText(submittedText);
+
+		if (isAnUpdate) {
+			version.setModifiedBy(currentUserId);
+			version.setModifiedTime(currentTime);
+		} else {
+			version.setCreatedBy(currentUserId);
+			version.setCreatedTime(currentTime);
+		}
+
+		if (!version.isDraft()) {
+			version.setSubmittedTime(currentTime);
 			
 			// if this isn't a draft, set the annotated text to be the submitted text
 			// to allow instructor to provide inline comments for submitted text
-			if (!version.isDraft()) {
-				newVersion.setAnnotatedText(newVersion.getSubmittedText());
-				newVersion.setSubmittedTime(currentTime);
-			}
-			
-			newVersion.setCreatedBy(currentUserId);
-			newVersion.setCreatedTime(currentTime);
-			
-			Set<SubmissionAttachment> attachSet = new HashSet();
-			if (version.getSubmissionAttachSet() != null) {
-				attachSet = version.getSubmissionAttachSet();
-				populateVersionForAttachmentSet(attachSet, newVersion);
-			}
-			
+			version.setAnnotatedText(submittedText);
+		}
+
+		// make sure the version was populated on the SubmissionAttachments
+		populateVersionForAttachmentSet(subAttachSet, version);
+		//version.setSubmissionAttachSet(subAttachSet);
+
+		try {
+
 			Set<AssignmentSubmissionVersion> versionSet = new HashSet();
-			versionSet.add(newVersion);
-			
+			versionSet.add(version);
+
 			Set<AssignmentSubmission> submissionSet = new HashSet();
 			submissionSet.add(submission);
 			
-			dao.saveMixedSet(new Set[] {submissionSet, versionSet, attachSet});
-			if (log.isDebugEnabled()) log.debug("New student submission version added for user " + submission.getUserId() + " for assignment " + submission.getAssignment().getTitle()+ " ID: " + submission.getAssignment().getId());
+			if (subAttachSet == null) {
+				subAttachSet = new HashSet();
+			}
+
+			dao.saveMixedSet(new Set[] {submissionSet, versionSet, subAttachSet});
+			if (log.isDebugEnabled()) log.debug("Updated/Added student submission version " + version.getId() + " for user " + submission.getUserId() + " for assignment " + submission.getAssignment().getTitle()+ " ID: " + submission.getAssignment().getId());
+
+			if (attachToDelete != null && !attachToDelete.isEmpty()) {
+				dao.deleteSet(attachToDelete);
+				if (log.isDebugEnabled()) log.debug("Removed feedback attachments deleted for updated version " + version.getId() + " by user " + currentUserId);
+			}
+
+		} catch (HibernateOptimisticLockingFailureException holfe) {
+			if(log.isInfoEnabled()) log.info("An optimistic locking failure occurred while attempting to update submission version" + version.getId());
+			throw new StaleObjectModificationException(holfe);
+		} catch (StaleObjectStateException sose) {
+			if(log.isInfoEnabled()) log.info("An optimistic locking failure occurred while attempting to update submission version" + version.getId());
+			throw new StaleObjectModificationException(sose);
 		}
 
-	}
-	
-	public void saveInstructorFeedback(AssignmentSubmission submission) {
-		if (submission == null) {
-			throw new IllegalArgumentException("null submission passed to saveInstructorFeedback");
-		}
-		
-		saveInstructorFeedback(submission.getCurrentSubmissionVersion());
 	}
 	
 	public void saveInstructorFeedback(AssignmentSubmissionVersion version) {
@@ -415,6 +375,10 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		AssignmentSubmission submission = version.getAssignmentSubmission();
 		if (submission == null) {
 			throw new IllegalArgumentException("no submission associated with the given version");
+		}
+		
+		if (submission.getAssignment() == null) {
+			throw new IllegalArgumentException("no assignment was associated with this version's submission");
 		}
 		
 		if (!permissionLogic.isUserAbleToProvideFeedbackForStudentForAssignment(submission.getUserId(), submission.getAssignment())) {
@@ -482,6 +446,9 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			} catch (HibernateOptimisticLockingFailureException holfe) {
 				if(log.isInfoEnabled()) log.info("An optimistic locking failure occurred while attempting to update submission version" + version.getId());
 	            throw new StaleObjectModificationException(holfe);
+			} catch (StaleObjectStateException sose) {
+				if(log.isInfoEnabled()) log.info("An optimistic locking failure occurred while attempting to update submission version" + version.getId());
+				throw new StaleObjectModificationException(sose);
 			}
 			
 		} else {
@@ -698,27 +665,25 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		
 		// retrieve the submission history for this student for this assignment
 		AssignmentSubmission submission = dao.getSubmissionWithVersionHistoryForStudentAndAssignment(studentId, assignment);
+		Set<AssignmentSubmissionVersion> versionHistory = null;
+		if (submission != null) {
+			versionHistory = dao.getVersionHistoryForSubmission(submission);
+		}
 		
 		// we need to determine if this is the first submission for the student
-		boolean firstSubmission;
 		int currNumSubmissions = 0;
 		if (submission == null) {
-			firstSubmission = true;
 			currNumSubmissions = 0;
-		} else if (submission.getCurrentSubmissionVersion() == null
-				|| submission.getSubmissionHistorySet() == null) {
-			firstSubmission = true;
+		} else if (versionHistory == null) {
 			currNumSubmissions = 0;
 		} else {
 			// we need to look at the submission history to determine if there
 			// are any submission by the student (not drafts and not versions
 			// created by instructor feedback when no submission)
-			firstSubmission = true;
-			for (Iterator versionIter = submission.getSubmissionHistorySet().iterator(); versionIter.hasNext();) {
+			for (Iterator versionIter = versionHistory.iterator(); versionIter.hasNext();) {
 				AssignmentSubmissionVersion version = (AssignmentSubmissionVersion) versionIter.next();
 				if (version != null) {
 					if (version.getSubmittedTime() != null) {
-						firstSubmission = false;
 						currNumSubmissions++;
 					}
 				}
@@ -743,7 +708,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 					(assignment.getAcceptUntilTime() != null && 
 							assignment.getAcceptUntilTime().after(new Date())));
 		
-		if (firstSubmission) {
+		if (currNumSubmissions == 0) {
 			if (assignmentIsOpen) {
 				studentAbleToSubmit = true;
 			} else if(submission != null){
@@ -796,8 +761,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 
 		boolean currVersionIsDraft = false;
 		
-		// if the id is null, the method was passed a transient object, so there
-		// is no current version
+		// if the id is null, there is no current version
 		if (submission.getId() != null) {
 			AssignmentSubmissionVersion version = dao.getCurrentSubmissionVersionWithAttachments(submission);
 	
@@ -859,6 +823,9 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 				} catch (HibernateOptimisticLockingFailureException holfe) {
 					if(log.isInfoEnabled()) log.info("An optimistic locking failure occurred while attempting to update submission versions for assignment " + assignmentId);
 		            throw new StaleObjectModificationException(holfe);
+				} catch (StaleObjectStateException sose) {
+					if(log.isInfoEnabled()) log.info("An optimistic locking failure occurred while attempting to update submission versions for assignment " + assignmentId);
+					throw new StaleObjectModificationException(sose);
 				}
 			}
 		}
@@ -1152,5 +1119,69 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		    }
 		  } // for
 		}
+	
+	/**
+	 * when retrieving a submission and/or version, some fields may be restricted
+	 * for the curr user. If curr user is the submitter and feedback has not been
+	 * released, we do not want to return feedback. If curr user is not the submitter
+	 * and the version is draft, we do not want to return the submission text and attach
+	 * @param submission - do not pass the persistent object since we do not
+	 * want to save the changes we are making
+	 * @param currentUserId
+	 * @param includeHistory - true if the submissionHistorySet was populated and
+	 * needs to be filtered, as well
+	 */
+	private void filterOutRestrictedInfo(AssignmentSubmission submission, String currentUserId, boolean includeHistory) {
+		// if the current user is the submitter and feedback has not been 
+		// released, do not return the feedback info
+		// if the current user is not the submitter and a version is draft, 
+		// do not return any of the submission info
+
+		// check the version history
+		if (includeHistory) {
+			if (submission.getSubmissionHistorySet() != null && !submission.getSubmissionHistorySet().isEmpty()) {
+				for (Iterator versionIter = submission.getSubmissionHistorySet().iterator(); versionIter.hasNext();) {
+					AssignmentSubmissionVersion version = (AssignmentSubmissionVersion) versionIter.next();
+					filterOutRestrictedVersionInfo(version, currentUserId);
+				}
+			}
+		}
+		
+		// also check the currentVersion
+		if (submission.getCurrentSubmissionVersion() != null) {
+			filterOutRestrictedVersionInfo(submission.getCurrentSubmissionVersion(), currentUserId);
+		}
+	}
+	
+	/**
+	 * when retrieving a submission and/or version, some fields may be restricted
+	 * for the curr user. If curr user is the submitter and feedback has not been
+	 * released, we do not want to return feedback. If curr user is not the submitter
+	 * and the version is draft, we do not want to return the submission text and attach
+	 * @param version - do not pass the persistent object since we do not
+	 * want to save the changes we are making
+	 * @param currentUserId
+	 */
+	private void filterOutRestrictedVersionInfo(AssignmentSubmissionVersion version, String currentUserId) {
+		if (version != null) {
+			// if the current user is the submitter
+			if (version.getAssignmentSubmission().getUserId().equals(currentUserId)) {
+				if (version.getReleasedTime() == null || version.getReleasedTime().after(new Date())) {
+					// do not populate the feedback since not released 
+					version.setFeedbackAttachSet(new HashSet());
+					version.setFeedbackNotes("");
+					version.setAnnotatedText("");
+					if (log.isDebugEnabled()) log.debug("Not populating feedback-specific info b/c curr user is submitter and feedback not released");
+				}
+			} else {
+				// do not populate submission info if still draft
+				if (version.isDraft()) {
+					version.setSubmittedText("");
+					version.setSubmissionAttachSet(new HashSet());
+					if (log.isDebugEnabled()) log.debug("Not populating submission-specific info b/c draft status and current user is not submitter");
+				}
+			}
+		}
+	}
 
 }

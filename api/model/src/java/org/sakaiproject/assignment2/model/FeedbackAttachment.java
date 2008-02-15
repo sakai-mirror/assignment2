@@ -39,4 +39,11 @@ public class FeedbackAttachment extends SubmissionAttachmentBase {
 		this.attachmentReference = attachmentReference;
 	}
 
+	public static FeedbackAttachment deepCopy(FeedbackAttachment attachToCopy) {
+		FeedbackAttachment attach = new FeedbackAttachment();
+		attach.setAttachmentReference(attachToCopy.getAttachmentReference());
+		attach.setId(attachToCopy.getId());
+		
+		return attach;
+	}
 }

@@ -38,4 +38,12 @@ public class SubmissionAttachment extends SubmissionAttachmentBase {
 		this.attachmentReference = attachmentReference;
 	}
 
+	
+	public static SubmissionAttachment deepCopy(SubmissionAttachment attachToCopy) {
+		SubmissionAttachment attach = new SubmissionAttachment();
+		attach.setAttachmentReference(attachToCopy.getAttachmentReference());
+		attach.setId(attachToCopy.getId());
+		
+		return attach;
+	}
 }

@@ -43,7 +43,6 @@ import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.genericdao.hibernate.HibernateCompleteGenericDao;
-import org.sakaiproject.section.api.coursemanagement.User;
 import org.springframework.orm.hibernate3.HibernateCallback;
 
 /**
@@ -71,7 +70,7 @@ public class AssignmentDaoImpl extends HibernateCompleteGenericDao implements As
 			public Object doInHibernate(Session session) throws HibernateException ,SQLException {
 				String hql = "select max(assignment.sortIndex) from Assignment2 as assignment where assignment.contextId = :contextId and assignment.removed != true";
 		    	
-		    	Query query = getSession().createQuery(hql);
+		    	Query query = session.createQuery(hql);
 		    	query.setParameter("contextId", contextId);
 		    	
 		    	Integer highestIndex = (Integer)query.uniqueResult();
@@ -94,7 +93,7 @@ public class AssignmentDaoImpl extends HibernateCompleteGenericDao implements As
     	
     	HibernateCallback hc = new HibernateCallback() {
 			public Object doInHibernate(Session session) throws HibernateException ,SQLException {
-				Query query = getSession().getNamedQuery("findAssignmentsWithGroupsAndAttachments");
+				Query query = session.getNamedQuery("findAssignmentsWithGroupsAndAttachments");
 		    	query.setParameter("contextId", contextId);
 		    	
 		    	List<Assignment2> assignmentList = query.list();
@@ -119,7 +118,7 @@ public class AssignmentDaoImpl extends HibernateCompleteGenericDao implements As
     	
     	HibernateCallback hc = new HibernateCallback() {
 			public Object doInHibernate(Session session) throws HibernateException ,SQLException {
-				Query query = getSession().getNamedQuery("findAssignmentByIdWithGroupsAndAttachments");
+				Query query = session.getNamedQuery("findAssignmentByIdWithGroupsAndAttachments");
 		    	query.setParameter("assignmentId",assignmentId);
 		    	
 		    	return (Assignment2) query.uniqueResult();
@@ -137,7 +136,7 @@ public class AssignmentDaoImpl extends HibernateCompleteGenericDao implements As
 		
 		HibernateCallback hc = new HibernateCallback() {
 			public Object doInHibernate(Session session) throws HibernateException ,SQLException {
-				Query query = getSession().getNamedQuery("findAssignmentByIdWithGroups");
+				Query query = session.getNamedQuery("findAssignmentByIdWithGroups");
 		    	query.setParameter("assignmentId",assignmentId);
 		    	
 		    	return (Assignment2) query.uniqueResult();
@@ -149,23 +148,6 @@ public class AssignmentDaoImpl extends HibernateCompleteGenericDao implements As
 	
 	
 	// Assignment Submissions DAO
-    
-    public List<AssignmentSubmission> findCurrentSubmissionsForAssignment(final Assignment2 assignment) {
-    	if (assignment == null) {
-    		throw new IllegalArgumentException("Null assignment passed to findCurrentSubmissionsForAssignment");
-    	}
-    	
-    	HibernateCallback hc = new HibernateCallback() {
-			public Object doInHibernate(Session session) throws HibernateException ,SQLException {
-				Query query = getSession().getNamedQuery("findCurrentSubmissionsForAssignment");
-		    	query.setParameter("assignment", assignment);
-		    	
-		    	return query.list();
-			}
-		};
-    	
-		return (List<AssignmentSubmission>)getHibernateTemplate().execute(hc);
-    }
     
     public AssignmentSubmissionVersion getCurrentSubmissionVersionWithAttachments(final AssignmentSubmission submission) {
     	if (submission == null || submission.getId() == null) {
@@ -180,7 +162,7 @@ public class AssignmentDaoImpl extends HibernateCompleteGenericDao implements As
 				"from AssignmentSubmissionVersion as submissionVersion " +
 				"where submissionVersion.assignmentSubmission = :submission";
 		    	
-		    	Query query = getSession().createQuery(queryString);
+		    	Query query = session.createQuery(queryString);
 		    	query.setParameter("submission", submission);
 		    	
 		    	Long submissionVersionId = (Long) query.uniqueResult();
@@ -205,7 +187,7 @@ public class AssignmentDaoImpl extends HibernateCompleteGenericDao implements As
 		    		
 		    		List submissionList = new ArrayList(submissions);
 		    		
-		    		Query query = getSession().getNamedQuery("findCurrentVersionIds");
+		    		Query query = session.getNamedQuery("findCurrentVersionIds");
 
 		    		// if submission list is > than the max length allowed in sql, we need
 		    		// to cycle through the list
@@ -232,7 +214,7 @@ public class AssignmentDaoImpl extends HibernateCompleteGenericDao implements As
 				
 				if (assignments != null && !assignments.isEmpty()) {
 					// retrieve the submissions
-					Query query = getSession().getNamedQuery("findSubmissionsForStudentForAssignments");
+					Query query = session.getNamedQuery("findSubmissionsForStudentForAssignments");
 			    	query.setParameter("studentId",studentId);
 		    	
 			    	submissions = queryWithParameterList(query, "assignmentList", assignments);
@@ -254,7 +236,7 @@ public class AssignmentDaoImpl extends HibernateCompleteGenericDao implements As
     	}
     	HibernateCallback hc = new HibernateCallback() {
 			public Object doInHibernate(Session session) throws HibernateException ,SQLException {
-				Query query = getSession().getNamedQuery("findSubmissionVersionByIdWithAttachments");
+				Query query = session.getNamedQuery("findSubmissionVersionByIdWithAttachments");
 		    	query.setParameter("submissionVersionId", submissionVersionId);
 				return query.uniqueResult();
 			}
@@ -270,7 +252,7 @@ public class AssignmentDaoImpl extends HibernateCompleteGenericDao implements As
 		    	
 				if (versionIds != null && !versionIds.isEmpty()) {
 		    		String hql = "from AssignmentSubmissionVersion as version where version.id in (:versionIdList)";
-		    		Query query = getSession().createQuery(hql);
+		    		Query query = session.createQuery(hql);
 		    		
 		    		versions = queryWithParameterList(query, "versionIdList", versionIds);
 		    	}
@@ -292,7 +274,7 @@ public class AssignmentDaoImpl extends HibernateCompleteGenericDao implements As
 				Set<AssignmentSubmission> submissionSet = new HashSet();
 		    	
 		    	if (studentIds != null && !studentIds.isEmpty()) {
-		    		Query query = getSession().getNamedQuery("findSubmissionsForStudentsForAssignment");
+		    		Query query = session.getNamedQuery("findSubmissionsForStudentsForAssignment");
 		    		query.setParameter("assignment", assignment);
 		    		
 		    		List<AssignmentSubmission> submissionList = queryWithParameterList(query, "studentIdList", studentIds);
@@ -357,7 +339,7 @@ public class AssignmentDaoImpl extends HibernateCompleteGenericDao implements As
 				Set<AssignmentSubmission> submissionSet = new HashSet();
 		    	
 		    	if (studentIdList != null && !studentIdList.isEmpty()) {
-		    		Query query = getSession().getNamedQuery("findSubmissionsWithHistoryForAssignmentAndStudents");	
+		    		Query query = session.getNamedQuery("findSubmissionsWithHistoryForAssignmentAndStudents");	
 		        	query.setParameter("assignment", assignment);
 		        	
 		        	List submissionList = queryWithParameterList(query, "studentIdList", studentIdList);
@@ -383,7 +365,7 @@ public class AssignmentDaoImpl extends HibernateCompleteGenericDao implements As
     	}
     	HibernateCallback hc = new HibernateCallback() {
 			public Object doInHibernate(Session session) throws HibernateException ,SQLException {
-				Query query = getSession().getNamedQuery("findStudentSubmissionWithHistoryForAssignment");
+				Query query = session.getNamedQuery("findStudentSubmissionWithHistoryForAssignment");
 		    	query.setParameter("studentId", studentId);
 		    	query.setParameter("assignment", assignment);
 		    	
@@ -433,7 +415,7 @@ public class AssignmentDaoImpl extends HibernateCompleteGenericDao implements As
     	
     	HibernateCallback hc = new HibernateCallback() {
 			public Object doInHibernate(Session session) throws HibernateException ,SQLException {
-				Query query = getSession().getNamedQuery("findSubmissionByIdWithHistory");
+				Query query = session.getNamedQuery("findSubmissionByIdWithHistory");
 		    	query.setParameter("submissionId", submissionId);
 		    	
 		    	AssignmentSubmission submission = (AssignmentSubmission) query.uniqueResult();
@@ -489,6 +471,31 @@ public class AssignmentDaoImpl extends HibernateCompleteGenericDao implements As
 		}
 		
 		return queryResultList;
+    }
+    
+    public Set<AssignmentSubmissionVersion> getVersionHistoryForSubmission(final AssignmentSubmission submission) {
+    	if (submission == null) {
+    		throw new IllegalArgumentException("null submission passed to getVersionHistoryForSubmission");
+    	}
+
+    	HibernateCallback hc = new HibernateCallback() {
+    		public Object doInHibernate(Session session) throws HibernateException ,SQLException {
+    			Set<AssignmentSubmission> versionSet = new HashSet();
+
+    			Query query = session.getNamedQuery("findVersionHistoryForSubmission");	
+    			query.setParameter("submission", submission);
+
+    			List versionList = query.list();
+
+    			if (versionList != null) {
+    				versionSet = new HashSet(versionList);
+    			}
+
+    			return versionSet;
+    		}
+    	};
+
+    	return (Set<AssignmentSubmissionVersion>)getHibernateTemplate().execute(hc);
     }
 
 }

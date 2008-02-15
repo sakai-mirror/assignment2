@@ -183,9 +183,13 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
     	// let's try a TA
     	// should be able to view student 1's submission
     	authn.setAuthnContext(AssignmentTestDataLoad.TA_UID);
-    	submission = submissionLogic.getAssignmentSubmissionById(testData.st1a1Submission.getId());
+    	submission = submissionLogic.getAssignmentSubmissionById(testData.st1a3Submission.getId());
     	assertNotNull(submission);
     	assertTrue(submission.getUserId().equals(AssignmentTestDataLoad.STUDENT1_UID));
+    	// but shouldn't see submission details b/c still draft
+    	assertTrue(submission.getCurrentSubmissionVersion().getSubmittedText().equals(""));
+    	assertTrue(submission.getCurrentSubmissionVersion().getSubmissionAttachSet().isEmpty());
+    	
     	// should get a SecurityException trying to get st2
     	try {
     		submission = submissionLogic.getAssignmentSubmissionById(testData.st2a1Submission.getId());
@@ -194,9 +198,17 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
     	
     	// student should be able to get their own
     	authn.setAuthnContext(AssignmentTestDataLoad.STUDENT1_UID);
-    	submission = submissionLogic.getAssignmentSubmissionById(testData.st1a1Submission.getId());
+    	submission = submissionLogic.getAssignmentSubmissionById(testData.st1a3Submission.getId());
     	assertTrue(submission.getUserId().equals(AssignmentTestDataLoad.STUDENT1_UID));
-    	// but not anyone elses!
+    	// double check submission info is populated
+    	assertTrue(submission.getCurrentSubmissionVersion().getSubmissionAttachSet().size() == 1);
+    	assertFalse(submission.getCurrentSubmissionVersion().getSubmittedText().equals(""));
+    	
+    	// double check feedback is empty since not released yet
+    	assertTrue(submission.getCurrentSubmissionVersion().getAnnotatedText().equals(""));
+    	assertTrue(submission.getCurrentSubmissionVersion().getFeedbackAttachSet().isEmpty());
+    	assertTrue(submission.getCurrentSubmissionVersion().getFeedbackNotes().equals(""));
+    	// student should not be able to get other student
     	try {
     		submission = submissionLogic.getAssignmentSubmissionById(testData.st2a1Submission.getId());
     		fail("did not catch a student trying to access another student's submission");
@@ -270,7 +282,10 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
     	authn.setAuthnContext(AssignmentTestDataLoad.STUDENT1_UID);
     	version = submissionLogic.getSubmissionVersionById(testData.st1a3CurrVersion.getId());
     	assertTrue(version.getAssignmentSubmission().getUserId().equals(AssignmentTestDataLoad.STUDENT1_UID));
-    	assertTrue(version.getFeedbackAttachSet().size() == 1);
+    	// feedback was not released, so double check that it was not populated
+    	assertTrue(version.getFeedbackAttachSet().isEmpty());
+    	assertTrue(version.getFeedbackNotes().equals(""));
+    	assertTrue(version.getAnnotatedText().equals(""));
     	// make sure these are populated! other users may not see this info b/c draft status
     	assertTrue(version.getSubmissionAttachSet().size() == 1);
     	assertTrue(!version.getSubmittedText().equals(""));
@@ -283,5 +298,216 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
     		version = submissionLogic.getSubmissionVersionById(testData.st2a3CurrVersion.getId());
     		fail("st1 should not be able to access st2's submission for a3!");
     	} catch (SecurityException se) {}
+    }
+    
+    public void testGetCurrentSubmissionByAssignmentIdAndStudentId() {
+    	// try passing a null assignmentId
+    	try {
+    		submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(null, AssignmentTestDataLoad.STUDENT1_UID);
+    		fail("did not handle null assignmentId passed to testGetCurrentSubmissionByAssignmentIdAndStudentId");
+    	} catch (IllegalArgumentException iae) {}
+    	// try passing a null studentId
+    	try {
+    		submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(testData.a1Id, null);
+    		fail("did not handle null studentId passed to testGetCurrentSubmissionByAssignmentIdAndStudentId");
+    	} catch (IllegalArgumentException iae) {}
+    	
+    	// pass an assignmentId that doesn't exist - should return null
+    	AssignmentSubmission submission = submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(
+    			new Long(12345), AssignmentTestDataLoad.STUDENT1_UID);
+    	assertNull(submission);
+    	
+    	authn.setAuthnContext(AssignmentTestDataLoad.INSTRUCTOR_UID);
+    	
+    	// try to get one for a student who hasn't made a submission yet
+    	submission = submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(testData.a2Id, AssignmentTestDataLoad.STUDENT1_UID);
+    	assertTrue(submission.getUserId().equals(AssignmentTestDataLoad.STUDENT1_UID));
+    	assertNull(submission.getId()); // this should be an "empty rec"
+    	
+    	// try one for a student with multiple versions
+    	submission = submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(testData.a1Id, AssignmentTestDataLoad.STUDENT2_UID);
+    	assertTrue(submission.getUserId().equals(AssignmentTestDataLoad.STUDENT2_UID));
+    	assertTrue(submission.getCurrentSubmissionVersion().getId().equals(testData.st2a1CurrVersion.getId()));
+    	
+    	// get a currentVersion that is draft and make sure submission info is not populated
+    	submission = submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(testData.a3Id, AssignmentTestDataLoad.STUDENT1_UID);
+    	assertTrue(submission.getUserId().equals(AssignmentTestDataLoad.STUDENT1_UID));
+    	assertTrue(submission.getCurrentSubmissionVersion().getId().equals(testData.st1a3CurrVersion.getId()));
+    	assertTrue(submission.getCurrentSubmissionVersion().getSubmissionAttachSet().isEmpty());
+    	assertTrue(submission.getCurrentSubmissionVersion().getSubmittedText().equals(""));
+    	// check that grading info is included
+    	assertTrue(submission.getGradebookComment().equals(st1a3Comment));
+    	assertTrue(submission.getGradebookGrade().equals(st1a3Grade.toString()));
+    	
+    	// what if the student is not part of the passed assignment?
+    	// ie it is restricted to groups that the student is not a member of
+    	
+    	// now, switch to a ta
+    	authn.setAuthnContext(AssignmentTestDataLoad.TA_UID);
+    	// should only have access to student 1 b/c in group 1
+    	submission = submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(testData.a1Id, AssignmentTestDataLoad.STUDENT1_UID);
+    	assertTrue(submission.getUserId().equals(AssignmentTestDataLoad.STUDENT1_UID));
+    	assertTrue(submission.getCurrentSubmissionVersion().getId().equals(testData.st1a1CurrVersion.getId()));
+    	
+    	try {
+    		submission = submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(testData.a1Id, AssignmentTestDataLoad.STUDENT2_UID);
+    		fail("Ta should not have authorization to retrieve submission for st2 through getCurrentSubmissionByAssignmentIdAndStudentId");
+    	} catch (SecurityException se) {}
+    	
+    	// graded assignments
+    	// get a currentVersion that is draft and make sure submission info is not populated
+    	submission = submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(testData.a3Id, AssignmentTestDataLoad.STUDENT1_UID);
+    	assertTrue(submission.getUserId().equals(AssignmentTestDataLoad.STUDENT1_UID));
+    	assertTrue(submission.getCurrentSubmissionVersion().getId().equals(testData.st1a3CurrVersion.getId()));
+    	assertTrue(submission.getCurrentSubmissionVersion().getSubmissionAttachSet().isEmpty());
+    	assertTrue(submission.getCurrentSubmissionVersion().getSubmittedText().equals(""));
+    	// check that grading info is included
+    	assertTrue(submission.getGradebookComment().equals(st1a3Comment));
+    	assertTrue(submission.getGradebookGrade().equals(st1a3Grade.toString()));
+    	
+    	// TODO grader permissions
+    	
+    	// now switch to a student
+    	authn.setAuthnContext(AssignmentTestDataLoad.STUDENT1_UID);
+    	// should be able to retrieve own submission
+    	submission = submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(testData.a3Id, AssignmentTestDataLoad.STUDENT1_UID);
+    	assertTrue(submission.getUserId().equals(AssignmentTestDataLoad.STUDENT1_UID));
+    	assertTrue(submission.getCurrentSubmissionVersion().getId().equals(testData.st1a3CurrVersion.getId()));
+    	// this is a draft, so check that the submission info is populated for student
+    	assertTrue(submission.getCurrentSubmissionVersion().getSubmissionAttachSet().size() == 1);
+    	assertFalse(submission.getCurrentSubmissionVersion().getSubmittedText().equals(""));
+    	// since grade is not released, students should not see grade info
+    	assertNull(submission.getGradebookComment());
+    	assertNull(submission.getGradebookGrade());
+    	
+    	// double check that student can't view others
+    	try {
+    		submission = submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(testData.a1Id, AssignmentTestDataLoad.STUDENT2_UID);
+    		fail("Did not catch student accessing another student via getCurrentSubmissionByAssignmentIdAndStudentId");
+    	} catch (SecurityException se) {}
+    }
+    
+    public void testSaveStudentSubmission() {
+    	// try passing a null userId
+    	try {
+    		submissionLogic.saveStudentSubmission(null, new Assignment2(), true, null, null);
+    		fail("Did not catch null userId passed to saveStudentSubmission");
+    	} catch (IllegalArgumentException iae) {}
+    	
+    	// try passing a null assignment
+    	try {
+    		submissionLogic.saveStudentSubmission(AssignmentTestDataLoad.STUDENT1_UID, null, true, null, null);
+    		fail("Did not catch null assignment passed to saveStudentSubmission");
+    	} catch (IllegalArgumentException iae) {}
+    	
+    	// try passing a null draft status
+    	try {
+    		submissionLogic.saveStudentSubmission(AssignmentTestDataLoad.STUDENT1_UID, 
+    				new Assignment2(), null, null, null);
+    		fail("Did not catch null draft status passed to saveStudentSubmission");
+    	} catch (IllegalArgumentException iae) {}
+    	
+    	// try passing an empty assignment (with no id)
+    	try {
+    		submissionLogic.saveStudentSubmission(AssignmentTestDataLoad.STUDENT1_UID, 
+    				new Assignment2(), null, null, null);
+    	} catch (IllegalArgumentException iae) {}
+    	
+    	// let's see if an instructor can make a submission for a student
+    	authn.setAuthnContext(AssignmentTestDataLoad.INSTRUCTOR_UID);
+    	try {
+    		submissionLogic.saveStudentSubmission(AssignmentTestDataLoad.STUDENT1_UID,
+    				testData.a1, false, null, null);
+    		fail("did not catch instructor trying to save a student's submission via saveStudentSubmission");
+    	} catch (SecurityException se) {}
+    	
+    	// try the ta
+    	authn.setAuthnContext(AssignmentTestDataLoad.TA_UID);
+    	try {
+    		submissionLogic.saveStudentSubmission(AssignmentTestDataLoad.STUDENT1_UID,
+    				testData.a1, false, null, null);
+    		fail("did not catch ta trying to save a student's submission via saveStudentSubmission");
+    	} catch (SecurityException se) {}
+    	
+    	// scenarios
+    	// student tries to save for assignment that he/she is not part of
+    	// student creates a draft
+    	// student edits the draft and submits it
+    	// student creates new submission where there is no prev submission
+    	// student resubmits when ok
+    	// student resubmits but is not allowed
+    	
+    	// student 1 does not have any submission for a2 yet
+    	authn.setAuthnContext(AssignmentTestDataLoad.STUDENT1_UID);
+    	// double check that no submission exists yet
+    	List subList = dao.findByProperties(
+    			AssignmentSubmission.class, new String[] {"userId", "assignment"}, 
+    			new Object[] {AssignmentTestDataLoad.STUDENT1_UID, testData.a2});
+    	assertTrue(subList.isEmpty());
+    	
+    	SubmissionAttachment attach1 = new SubmissionAttachment();
+    	attach1.setAttachmentReference("ref1");
+    	SubmissionAttachment attach2 = new SubmissionAttachment();
+    	attach2.setAttachmentReference("ref2");
+    	Set attachSet = new HashSet();
+    	attachSet.add(attach1);
+    	attachSet.add(attach2);
+    	
+    	submissionLogic.saveStudentSubmission(AssignmentTestDataLoad.STUDENT1_UID, 
+    			testData.a2, true, "this is my text", attachSet);
+    	
+    	// now check that it exists 
+    	subList = dao.findByProperties(
+    			AssignmentSubmission.class, new String[] {"userId", "assignment"}, 
+    			new Object[] {AssignmentTestDataLoad.STUDENT1_UID, testData.a2});
+    	assertFalse(subList.isEmpty());
+    	AssignmentSubmission existingSub = (AssignmentSubmission)subList.get(0);
+    	Long subId = existingSub.getId();
+    	
+    	assertNotNull(existingSub);
+    	AssignmentSubmissionVersion currVersion = dao.getCurrentSubmissionVersionWithAttachments(existingSub);
+    	assertTrue(currVersion.isDraft());
+    	//assertTrue(currVersion.getSubmissionAttachSet().size() == 2);
+    	
+    	// now let's try to edit this version but keep it draft
+    	// should not create a new version
+    	attachSet.remove(attach2);
+    	submissionLogic.saveStudentSubmission(AssignmentTestDataLoad.STUDENT1_UID, 
+    			testData.a2, true, "this is my text - revised!", attachSet);
+    	// text and attach should have been updated
+    	existingSub = (AssignmentSubmission)dao.findById(AssignmentSubmission.class, subId);
+    	Set versionHistory = dao.getVersionHistoryForSubmission(existingSub);
+    	assertTrue(versionHistory.size() == 1);
+    	currVersion = dao.getCurrentSubmissionVersionWithAttachments(existingSub);
+    	//assertTrue(currVersion.getSubmissionAttachSet().size() == 1);
+    	
+    	// now let's actually submit it (make draft = false)
+    	submissionLogic.saveStudentSubmission(AssignmentTestDataLoad.STUDENT1_UID, 
+    			testData.a2, false, "this is my text - revised!", currVersion.getSubmissionAttachSet());
+    	existingSub = (AssignmentSubmission)dao.findById(AssignmentSubmission.class, subId);
+    	versionHistory = dao.getVersionHistoryForSubmission(existingSub);
+    	assertTrue(versionHistory.size() == 1);
+    	
+    	// next time, the student should get an error b/c not allowed to resubmit
+    	try {
+    		submissionLogic.saveStudentSubmission(AssignmentTestDataLoad.STUDENT1_UID, 
+        			testData.a2, false, "this is my text - revised!", currVersion.getSubmissionAttachSet());
+    		fail("submission saved even though not allowed to resubmit!");
+    	} catch (SecurityException se) {}
+    	
+    	// allow student to submit one more time
+    	existingSub.setNumSubmissionsAllowed(new Integer(2));
+    	dao.save(existingSub);
+
+    	submissionLogic.saveStudentSubmission(AssignmentTestDataLoad.STUDENT1_UID, 
+    			testData.a2, false, "this is my newly submitted version", null);
+    	versionHistory = dao.getVersionHistoryForSubmission(existingSub);
+    	assertTrue(versionHistory.size() == 2);
+    	
+    	// what if student is not allowed to submit to a restricted assignment?
+    	try {
+    		submissionLogic.saveStudentSubmission(AssignmentTestDataLoad.STUDENT1_UID, testData.a4, true, null, null);
+    		fail("did not catch student making submission to assignment that is restricted");
+    	} catch(SecurityException se) {}
     }
 }

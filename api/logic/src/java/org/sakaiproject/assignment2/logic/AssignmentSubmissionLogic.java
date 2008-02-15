@@ -22,10 +22,12 @@
 package org.sakaiproject.assignment2.logic;
 
 import java.util.List;
+import java.util.Set;
 
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
+import org.sakaiproject.assignment2.model.SubmissionAttachment;
 
 
 /**
@@ -48,7 +50,8 @@ public interface AssignmentSubmissionLogic {
 	 * @return Returns the AssignmentSubmission based on its assignmentSubmissionId.
 	 * Populates current version information. If version is draft and current
 	 * user is not submitter, submittedText and submissionAttachments will not
-	 * be populated
+	 * be populated. If the curr user is the submitter but feedback has not 
+	 * been released, will not populate	feedback.
 	 * @throws SecurityException if current user is not allowed to view the
 	 * corresponding submission
 	 */
@@ -60,7 +63,9 @@ public interface AssignmentSubmissionLogic {
 	 * @return Returns the AssignmentSubmissionVersion with the given submissionVersionId.
 	 * Will populate grading information. Returns null if no version with that id.
 	 * If the version is draft and the submitter is not the current user, will not
-	 * populate the submissionText or submissionAttachmentSet.
+	 * populate the submissionText or submissionAttachmentSet. If the curr user is
+	 * 		the submitter but feedback has not been released, will not populate
+	 * 		feedback.
 	 * @SecurityException if current user is not allowed to view the version
 	 */
 	public AssignmentSubmissionVersion getSubmissionVersionById(Long submissionVersionId);
@@ -74,33 +79,29 @@ public interface AssignmentSubmissionLogic {
 	 * 		will return an empty record (with gb info populated, if appropriate)
 	 * 		if there is no submission info for this student yet. If the curr version 
 	 * 		is draft and the submitter is not the current user, will not
-	 * 		populate the submissionText or submissionAttachmentSet
+	 * 		populate the submissionText or submissionAttachmentSet. If the curr user is
+	 * 		the submitter but feedback has not been released, will not populate
+	 * 		feedback.
 	 * @throws SecurityException if current user not allowed to view student's submission
 	 */
 	public AssignmentSubmission getCurrentSubmissionByAssignmentIdAndStudentId(Long assignmentId, String studentId);
 	
 	/**
-	 * Create or update an AssignmentSubmission
-	 * @param assignmentSubmission
-	 * 			the AssignmentSubmission to create or update
+	 * Create or update an AssignmentSubmission and AssignmentSubmissionVersion.
+	 * Will retrieve the current submission and determine whether a new submission
+	 * and/or version is required.  Versions are updated until they are submitted.
+	 * Each submission creates a new version. There will be one AssignmentSubmission
+	 * record per student per assignment.
+	 * @param userId - the submitter's userId
+	 * @param assignment - which assignment this submission is for
+	 * @param draft - true if this submission is draft
+	 * @param submittedText - the submitter's text
+	 * @param subAttachSet - the set of SubmissionAttachments associated with the
+	 * version. if this is an update, will delete any existing attachments associated
+	 * with the version that aren't included in this set
 	 */
-	public void saveStudentSubmission(AssignmentSubmission assignmentSubmission);
-	
-	/**
-	 * Create or update an AssignmentSubmission
-	 * @param version
-	 * 			the AssignmentSubmissionVersion to create. the parent AssignmentSubmission must be populated
-	 * 
-	 */
-	public void saveStudentSubmission(AssignmentSubmissionVersion version);
-	
-	/**
-	 * Save instructor feedback changes to the given submission rec
-	 * @param submission
-	 * @throws SecurityException if current user is not authorized to provide
-	 * feedback for the given submission
-	 */
-	public void saveInstructorFeedback(AssignmentSubmission submission);
+	public void saveStudentSubmission(String userId, Assignment2 assignment, Boolean draft, 
+			String submittedText, Set<SubmissionAttachment> subAttachSet);
 	
 	/**
 	 * Save instructor feedback changes to the given version. The passed

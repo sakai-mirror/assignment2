@@ -22,6 +22,8 @@
 package org.sakaiproject.assignment2.model;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -418,27 +420,51 @@ public class AssignmentSubmissionVersion {
 		this.revisionVersion = revisionVersion;
 	}
 	
-	@Override
-	public AssignmentSubmissionVersion clone() {
+	/**
+	 * 
+	 * @param versionToCopy
+	 * @return a copy of the given version. will not copy non-persisted fields
+	 * except for the feedbackAttachSet and submissionAttachSet; assignmentSubmission
+	 * is shallow copy 
+	 */
+	public static AssignmentSubmissionVersion deepCopy(AssignmentSubmissionVersion versionToCopy) {
 		AssignmentSubmissionVersion newVersion = new AssignmentSubmissionVersion();
-		newVersion.setAssignmentSubmission(assignmentSubmission);
-		newVersion.setFeedbackNotes(feedbackNotes);
-		newVersion.setCreatedBy(createdBy);
-		newVersion.setCreatedTime(createdTime);
-		newVersion.setDraft(draft);
-		newVersion.setFeedbackAttachSet(feedbackAttachSet);
-		newVersion.setAnnotatedText(annotatedText);
-		newVersion.setLastFeedbackSubmittedBy(lastFeedbackSubmittedBy);
-		newVersion.setLastFeedbackTime(lastFeedbackTime);
-		newVersion.setReleasedTime(releasedTime);
-		newVersion.setReviewIconUrl(reviewIconUrl);
-		newVersion.setReviewReportScore(reviewReportScore);
-		newVersion.setReviewReportUrl(reviewReportUrl);
-		newVersion.setReviewReportScore(reviewReportScore);
-		newVersion.setReviewStatus(reviewStatus);
-		newVersion.setSubmissionAttachSet(submissionAttachSet);
-		newVersion.setSubmittedText(submittedText);
-		newVersion.setSubmittedTime(submittedTime);
+		newVersion.setId(versionToCopy.getId());
+		newVersion.setAssignmentSubmission(versionToCopy.getAssignmentSubmission());
+		newVersion.setFeedbackNotes(versionToCopy.getFeedbackNotes());
+		newVersion.setCreatedBy(versionToCopy.getCreatedBy());
+		newVersion.setCreatedTime(versionToCopy.getCreatedTime());
+		newVersion.setDraft(versionToCopy.isDraft());
+		newVersion.setAnnotatedText(versionToCopy.getAnnotatedText());
+		newVersion.setLastFeedbackSubmittedBy(versionToCopy.getLastFeedbackSubmittedBy());
+		newVersion.setLastFeedbackTime(versionToCopy.getLastFeedbackTime());
+		newVersion.setReleasedTime(versionToCopy.getReleasedTime());
+		newVersion.setReviewIconUrl(versionToCopy.getReviewIconUrl());
+		newVersion.setReviewReportScore(versionToCopy.getReviewReportScore());
+		newVersion.setReviewReportUrl(versionToCopy.getReviewReportUrl());
+		newVersion.setReviewReportScore(versionToCopy.getReviewReportScore());
+		newVersion.setReviewStatus(versionToCopy.getReviewStatus());
+		newVersion.setSubmittedText(versionToCopy.getSubmittedText());
+		newVersion.setSubmittedTime(versionToCopy.getSubmittedTime());
+		newVersion.setSubmissionAttachSet(new HashSet());
+		newVersion.setFeedbackAttachSet(new HashSet());
+		
+		if (versionToCopy.getSubmissionAttachSet() != null && !versionToCopy.getSubmissionAttachSet().isEmpty()) {
+			for (Iterator attachIter = versionToCopy.getSubmissionAttachSet().iterator(); attachIter.hasNext();) {
+				SubmissionAttachment attach = (SubmissionAttachment) attachIter.next();
+				if (attach != null) {
+					newVersion.getSubmissionAttachSet().add(SubmissionAttachment.deepCopy(attach));
+				}
+			}
+		}
+		if (versionToCopy.getFeedbackAttachSet() != null && !versionToCopy.getFeedbackAttachSet().isEmpty()) {
+			for (Iterator attachIter = versionToCopy.getFeedbackAttachSet().iterator(); attachIter.hasNext();) {
+				FeedbackAttachment attach = (FeedbackAttachment) attachIter.next();
+				if (attach != null) {
+					newVersion.getFeedbackAttachSet().add(FeedbackAttachment.deepCopy(attach));
+				}
+			}
+		}
 		
 		return newVersion;
 	}

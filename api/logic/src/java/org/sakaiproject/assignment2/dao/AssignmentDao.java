@@ -135,4 +135,12 @@ public interface AssignmentDao extends CompleteGenericDao {
 	 * attachments are NOT populated. Will populate currentVersion 
 	 */
 	public AssignmentSubmission getSubmissionWithVersionHistoryById(Long submissionId);
+	
+	/**
+	 * 
+	 * @param submission
+	 * @return set of AssignmentSubmissionVersions associated with the given submission
+	 */
+	public Set<AssignmentSubmissionVersion> getVersionHistoryForSubmission(final AssignmentSubmission submission);
+
 }

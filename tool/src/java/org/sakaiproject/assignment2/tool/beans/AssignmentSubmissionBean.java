@@ -165,7 +165,8 @@ public class AssignmentSubmissionBean {
 						new Object[] { assignment.getTitle() }, TargettedMessage.SEVERITY_ERROR));
 	    		return FAILURE;
 	    	}else {
-	    		submissionLogic.saveStudentSubmission(asv);
+	    		submissionLogic.saveStudentSubmission(assignmentSubmission.getUserId(), 
+	    				assignmentSubmission.getAssignment(), false, asv.getSubmittedText(), final_set);
 	    		messages.addMessage(new TargettedMessage("assignment2.student-submit.info.submission_submitted",
 						new Object[] { assignment.getTitle() }, TargettedMessage.SEVERITY_INFO));
 	    	}
@@ -228,7 +229,9 @@ public class AssignmentSubmissionBean {
 	    	asv.setSubmissionAttachSet(final_set);
 			//End Attachment stuff
 			
-			submissionLogic.saveStudentSubmission(asv);
+			submissionLogic.saveStudentSubmission(assignmentSubmission.getUserId(),
+					assignmentSubmission.getAssignment(), true, asv.getSubmittedText(),
+					final_set);
 			messages.addMessage(new TargettedMessage("assignment2.student-submit.info.submission_save_draft",
 					new Object[] { assignment.getTitle() }, TargettedMessage.SEVERITY_INFO));
 		}

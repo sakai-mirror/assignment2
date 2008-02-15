@@ -23,6 +23,9 @@ package org.sakaiproject.assignment2.model;
 
 import java.util.Set;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Iterator;
+
 
 /**
  * The AssignmentSubmission object
@@ -277,14 +280,40 @@ public class AssignmentSubmission {
 		this.revisionVersion = revisionVersion;
 	}
 	
-	public AssignmentSubmission clone() {
+	/**
+	 * 
+	 * @param subToCopy
+	 * @return a copy of the given submission. does not copy non-persisted 
+	 * fields except for the currentVersion. assignment is shallow copy
+	 */
+	public static AssignmentSubmission deepCopy(AssignmentSubmission subToCopy) {
 		AssignmentSubmission submission = new AssignmentSubmission();
-		submission.setAssignment(this.assignment);
-		submission.setCurrentSubmissionVersion(this.currentSubmissionVersion);
-		submission.setNumSubmissionsAllowed(this.numSubmissionsAllowed);
-		submission.setResubmitCloseTime(this.resubmitCloseTime);
-		submission.setUserId(this.userId);
-		submission.setSubmissionHistorySet(this.submissionHistorySet);
+		submission.setId(subToCopy.getId()); 
+		submission.setAssignment(subToCopy.getAssignment());
+		submission.setNumSubmissionsAllowed(subToCopy.getNumSubmissionsAllowed());
+		submission.setResubmitCloseTime(subToCopy.getResubmitCloseTime());
+		submission.setUserId(subToCopy.getUserId());
+		submission.setAssignment(subToCopy.assignment);
+		submission.setCurrentSubmissionVersion(subToCopy.currentSubmissionVersion);
+		submission.setNumSubmissionsAllowed(subToCopy.numSubmissionsAllowed);
+		submission.setResubmitCloseTime(subToCopy.resubmitCloseTime);
+		submission.setUserId(subToCopy.userId);
+		
+		Set<AssignmentSubmissionVersion> copiedHistory = new HashSet();
+		if (subToCopy.getSubmissionHistorySet() != null && !subToCopy.getSubmissionHistorySet().isEmpty()) {
+			for (Iterator versionIter = subToCopy.getSubmissionHistorySet().iterator(); versionIter.hasNext();) {
+				AssignmentSubmissionVersion version = (AssignmentSubmissionVersion)versionIter.next();
+				AssignmentSubmissionVersion copiedVersion = version.deepCopy(version);
+				copiedHistory.add(copiedVersion);
+			}
+		}
+		submission.setSubmissionHistorySet(copiedHistory);
+		
+		if (subToCopy.getCurrentSubmissionVersion() != null) {
+			AssignmentSubmissionVersion currVersion = 
+				AssignmentSubmissionVersion.deepCopy(subToCopy.getCurrentSubmissionVersion());
+			submission.setCurrentSubmissionVersion(currVersion);
+		}
 		
 		return submission;
 	}

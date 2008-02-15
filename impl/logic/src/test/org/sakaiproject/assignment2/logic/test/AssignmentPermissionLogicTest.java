@@ -398,7 +398,7 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
 	   // instructor should get all students who have the assignment
 	   // a1 is restricted to groups, so will return all students in those groups
 	   List viewableStudents = permissionLogic.getViewableStudentsForUserForItem(testData.a1);
-	   assertTrue(viewableStudents.size() == 1);
+	   assertTrue(viewableStudents.size() == 2);
 	   // this one is not restricted
 	   viewableStudents = permissionLogic.getViewableStudentsForUserForItem(testData.a2);
 	   assertTrue(viewableStudents.size() == 3);
@@ -475,7 +475,7 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
 	   // instructor should get all students who have the assignment
 	   // a1 is restricted to groups, so will return all students in those groups
 	   List gradableStudents = permissionLogic.getGradableStudentsForUserForItem(testData.a1);
-	   assertTrue(gradableStudents.size() == 1);
+	   assertTrue(gradableStudents.size() == 2);
 	   // this one is not restricted
 	   gradableStudents = permissionLogic.getGradableStudentsForUserForItem(testData.a2);
 	   assertTrue(gradableStudents.size() == 3);
@@ -548,8 +548,8 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
 	   
 	   // student 2 is a member of group 3
 	   authn.setAuthnContext(AssignmentTestDataLoad.STUDENT2_UID);
-	   // should be able to submit for a2, a3, a4
-	   assertFalse(permissionLogic.isUserAbleToMakeSubmissionForAssignment(AssignmentTestDataLoad.CONTEXT_ID, testData.a1));
+	   // should be able to submit for a1, a2, a3, a4
+	   assertTrue(permissionLogic.isUserAbleToMakeSubmissionForAssignment(AssignmentTestDataLoad.CONTEXT_ID, testData.a1));
 	   assertTrue(permissionLogic.isUserAbleToMakeSubmissionForAssignment(AssignmentTestDataLoad.CONTEXT_ID, testData.a2));
 	   assertTrue(permissionLogic.isUserAbleToMakeSubmissionForAssignment(AssignmentTestDataLoad.CONTEXT_ID, testData.a3));
 	   assertTrue(permissionLogic.isUserAbleToMakeSubmissionForAssignment(AssignmentTestDataLoad.CONTEXT_ID, testData.a4));

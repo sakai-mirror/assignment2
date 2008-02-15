@@ -319,7 +319,7 @@ public class AssignmentLogicTest extends Assignment2TestBase {
     	testData.a4.setGradableObjectId(gbItem2Id);
     	dao.save(testData.a4);
     	
-    	// assign1 is restricted to group 1 and 2
+    	// assign1 is restricted to group 1 and 3
     	// assign2 is not restricted
     	// graded assign 3 is not restricted
     	// graded assign 4 is restricted to group 3
@@ -386,14 +386,14 @@ public class AssignmentLogicTest extends Assignment2TestBase {
     	// switch to student 2
     	// member of section 3
     	authn.setAuthnContext(AssignmentTestDataLoad.STUDENT2_UID);
-    	// should return 2, 3, 4
+    	// should return 1, 2, 3, 4
     	assignList = assignmentLogic.getViewableAssignments();
     	assertNotNull(assignList);
-    	assertTrue(assignList.size() == 3);
+    	assertTrue(assignList.size() == 4);
     	// let's make sure that these are the right assign & gb info was populated
     	for (Iterator st2Iter = assignList.iterator(); st2Iter.hasNext();) {
     		Assignment2 assign = (Assignment2)st2Iter.next();
-    		if (assign.getId().equals(testData.a2Id)) {
+    		if (assign.getId().equals(testData.a2Id) || assign.getId().equals(testData.a1Id)) {
     			
     		} else if (assign.getId().equals(testData.a3Id)) {
     			// this one is graded, so check that the gb info was populated

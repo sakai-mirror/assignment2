@@ -47,7 +47,7 @@ import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 
 /**
  * This class holds a bunch of items used to prepopulate the database and then
- * do testing, it also handles initilization of the objects and saving
+ * do testing, it also handles initialization of the objects and saving
  * (Note for developers - be careful when modifying this b/c it is likely
  * you will break all of the tests...)
  * 
@@ -178,7 +178,7 @@ public class AssignmentTestDataLoad {
 
 		// add AssignmentGroups
 		groupsFora1.add(new AssignmentGroup(a1, GROUP1_NAME));
-		groupsFora1.add(new AssignmentGroup(a1, GROUP2_NAME));
+		groupsFora1.add(new AssignmentGroup(a1, GROUP3_NAME));
 
 		groupsFora4.add(new AssignmentGroup(a4, GROUP3_NAME));
 		
