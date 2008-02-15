@@ -34,7 +34,6 @@ public class AssignmentSubmission {
 	private Long id;
 	private Assignment2 assignment;
 	private String userId;
-	private Boolean allowResubmit;
 	private Date resubmitCloseTime;
 	private Integer numSubmissionsAllowed;
 	private Set submissionHistorySet;
@@ -57,12 +56,6 @@ public class AssignmentSubmission {
 	public AssignmentSubmission(Assignment2 assignment, String userId) {
 		this.assignment = assignment;
 		this.userId = userId;
-	}
-	
-	public AssignmentSubmission(Assignment2 assignment, String userId, Boolean allowResubmit) {
-		this.assignment = assignment;
-		this.userId = userId;
-		this.allowResubmit = allowResubmit;
 	}
 	
 	/**
@@ -133,22 +126,6 @@ public class AssignmentSubmission {
 	
 	/**
 	 * 
-	 * @return true if the submitter is allowed to resubmit this assignment
-	 */
-	public Boolean isAllowResubmit() {
-		return allowResubmit;
-	}
-
-	/**
-	 * set whether or not the submitter is allowed to resubmit this assignment
-	 * @param allowResubmit
-	 */
-	public void setAllowResubmit(Boolean allowResubmit) {
-		this.allowResubmit = allowResubmit;
-	}
-	
-	/**
-	 * 
 	 * @return time after which the submitter may no longer submit this assignment
 	 */
 	public Date getResubmitCloseTime() {
@@ -167,7 +144,7 @@ public class AssignmentSubmission {
 	/**
 	 * 
 	 * @return the number of submissions allowed for this assignment. if -1,
-     * unlimited submissions. only applicable if allowResubmit = true
+     * unlimited submissions.
 	 */
 	public Integer getNumSubmissionsAllowed() {
 		return numSubmissionsAllowed;
@@ -175,7 +152,7 @@ public class AssignmentSubmission {
 
 	/**
 	 * the number of submissions allowed for this assignment. if -1,
-     * unlimited submissions. only applicable if allowResubmit = true
+     * unlimited submissions.
 	 * @param numResubmissionsAllowed
 	 */
 	public void setNumSubmissionsAllowed(Integer numSubmissionsAllowed) {
@@ -302,7 +279,6 @@ public class AssignmentSubmission {
 	
 	public AssignmentSubmission clone() {
 		AssignmentSubmission submission = new AssignmentSubmission();
-		submission.setAllowResubmit(this.allowResubmit);
 		submission.setAssignment(this.assignment);
 		submission.setCurrentSubmissionVersion(this.currentSubmissionVersion);
 		submission.setNumSubmissionsAllowed(this.numSubmissionsAllowed);

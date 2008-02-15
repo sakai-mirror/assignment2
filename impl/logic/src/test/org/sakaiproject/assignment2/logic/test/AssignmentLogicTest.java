@@ -169,7 +169,6 @@ public class AssignmentLogicTest extends Assignment2TestBase {
     	
     	Assignment2 newAssign = new Assignment2();
     	// let's start by creating a new assignment
-    	newAssign.setAllowResubmit(false);
     	newAssign.setContextId(AssignmentTestDataLoad.CONTEXT_ID);
     	newAssign.setDraft(false);
     	newAssign.setHasAnnouncement(false);

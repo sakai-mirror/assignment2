@@ -746,7 +746,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		if (firstSubmission) {
 			if (assignmentIsOpen) {
 				studentAbleToSubmit = true;
-			} else if(submission != null && submission.isAllowResubmit()){
+			} else if(submission != null){
 				// in this scenario, the instructor took some action on this student without there
 				// being a submission, such as adding feedback or allowing this student to resubmit.
 				// thus, there is a submission record, but the student hasn't submitted anything yet
@@ -764,7 +764,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		} else {
 			// this is a resubmission, so we need to check for resubmission privileges
 			// first, check for resubmission on the assignment level
-			if (assignmentIsOpen && assignment.isAllowResubmit()) {
+			if (assignmentIsOpen) { 
 				if (assignment.getNumSubmissionsAllowed() != null &&
 						(assignment.getNumSubmissionsAllowed().equals(new Integer(-1)) ||
 						assignment.getNumSubmissionsAllowed().intValue() > currNumSubmissions)) {
@@ -773,7 +773,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			} 
 			
 			// if they still can't submit, check the student level
-			if (!studentAbleToSubmit && submission.isAllowResubmit()) {
+			if (!studentAbleToSubmit) {
 				if (submission.getResubmitCloseTime() == null || 
 						submission.getResubmitCloseTime().after(new Date()))
 				{

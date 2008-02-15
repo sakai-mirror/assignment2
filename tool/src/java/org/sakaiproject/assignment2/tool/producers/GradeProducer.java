@@ -1,6 +1,7 @@
 package org.sakaiproject.assignment2.tool.producers;
 
 import java.text.DateFormat;
+import java.util.Date;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -41,6 +42,7 @@ import uk.org.ponder.rsf.components.UIInput;
 import uk.org.ponder.rsf.components.UIInternalLink;
 import uk.org.ponder.rsf.components.UIMessage;
 import uk.org.ponder.rsf.components.UIOutput;
+import uk.org.ponder.rsf.components.UISelect;
 import uk.org.ponder.rsf.components.UIVerbatim;
 import uk.org.ponder.rsf.components.decorators.UILabelTargetDecorator;
 import uk.org.ponder.rsf.evolvers.FormatAwareDateInputEvolver;
@@ -243,12 +245,40 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
         UIMessage release_feedback_label = UIMessage.make(form, "release_feedback_label", "assignment2.assignment_grade.release_feedback");
         UILabelTargetDecorator.targetLabel(release_feedback_label, release_feedback);
         
-        UIBoundBoolean allow_resubmit = UIBoundBoolean.make(form, "allow_resubmit", asOTP + ".allowResubmit");
-        UIMessage allow_resubmit_label = UIMessage.make(form, "allow_resubmit_label", "assignment2.assignment_grade.allow_resubmission");
-        UILabelTargetDecorator.targetLabel(allow_resubmit_label, allow_resubmit);
+        //Assignment LEvel
+        Integer assignment_num_submissions = 1;
+        if (assignment != null && assignment.getNumSubmissionsAllowed() != null) {
+        	assignment_num_submissions = as.getNumSubmissionsAllowed();
+        }
+        UIOutput.make(form, "assignment_total_submissions", assignment_num_submissions.toString());
+        if (assignment.getAcceptUntilTime() != null) {
+        	UIMessage.make(form, "assignment_submit_until_label", "assignment2.assignment_grade.assignment_submit_until");
+        	UIOutput.make(form, "assignment_submit_until", df.format(assignment.getAcceptUntilTime()));
+        }
         
+        
+        //Submission Level
+        Integer current_num_submissions = 1;
+        if (as != null && as.getNumSubmissionsAllowed() != null) {
+        	current_num_submissions = as.getNumSubmissionsAllowed();
+        }
+        int size = 20;
+        String[] number_submissions_options = new String[size+1];
+        String[] number_submissions_values = new String[size+1];
+        number_submissions_values[0] = "-1";
+        number_submissions_options[0] = messageLocator.getMessage("assignment2.assignment_grade.indefinite_resubmit");
+        for (int i=0; i < size; i++){
+        	number_submissions_values[i + 1] = new Integer(i + current_num_submissions).toString();
+        	number_submissions_options[i + 1] = new Integer(i + current_num_submissions).toString();
+        }
+        UISelect.make(form, "number_submissions", number_submissions_values, number_submissions_options, 
+        		asOTP + ".numSubmissionsAllowed", current_num_submissions.toString());
+        
+        if (as.getResubmitCloseTime() == null) {
+        	as.setResubmitCloseTime(new Date());
+        }
         UIInput acceptUntilTimeField = UIInput.make(form, "accept_until:", asOTP + ".resubmitCloseTime");
-        dateEvolver.evolveDateInput(acceptUntilTimeField, null);
+        dateEvolver.evolveDateInput(acceptUntilTimeField, as.getResubmitCloseTime());
         
         if (!assignment.isUngraded()){
         	gradebookDetailsRenderer.makeGradebookDetails(tofill, "gradebook_details", as, assignmentId, userId);

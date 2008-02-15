@@ -122,12 +122,12 @@ public class Assignment2Bean {
 	private String internalProcessPost(Assignment2 assignment, String key){
 		assignment.setDraft(Boolean.FALSE);
 		
-		if (this.requireAcceptUntil != null && this.requireAcceptUntil == Boolean.FALSE) {
+		if (this.requireAcceptUntil == null || this.requireAcceptUntil == Boolean.FALSE) {
 			assignment.setAcceptUntilTime(null);
 		}
 		
-		if (this.requireDueDate != null && this.requireDueDate == Boolean.FALSE) {
-			assignment.setDueDate(null);
+		if (this.requireDueDate == null || this.requireDueDate == Boolean.FALSE) {
+			assignment.setDueDateForUngraded(null);
 		}
 
 		Set<AssignmentAttachment> set = new HashSet();
@@ -242,11 +242,11 @@ public class Assignment2Bean {
 	public String processActionPreview() {
 		for (String key : OTPMap.keySet()) {
 			Assignment2 assignment = OTPMap.get(key);
-			if (this.requireAcceptUntil != null && this.requireAcceptUntil == Boolean.FALSE) {
+			if (this.requireAcceptUntil == null || this.requireAcceptUntil == Boolean.FALSE) {
 				assignment.setAcceptUntilTime(null);
 			}
-			if (this.requireDueDate != null && this.requireDueDate == Boolean.FALSE) {
-				assignment.setDueDate(null);
+			if (this.requireDueDate == null || this.requireDueDate == Boolean.FALSE) {
+				assignment.setDueDateForUngraded(null);
 			}
 			previewAssignmentBean.setAssignment(assignment);
 			previewAssignmentBean.setOTPKey(key);
@@ -265,11 +265,11 @@ public class Assignment2Bean {
 
 			assignment.setDraft(Boolean.TRUE);
 
-			if (this.requireAcceptUntil != null && this.requireAcceptUntil == Boolean.FALSE) {
+			if (this.requireAcceptUntil == null || this.requireAcceptUntil == Boolean.FALSE) {
 				assignment.setAcceptUntilTime(null);
 			}
-			if (this.requireDueDate != null && this.requireDueDate == Boolean.FALSE) {
-				assignment.setDueDate(null);
+			if (this.requireDueDate == null || this.requireDueDate == Boolean.FALSE) {
+				assignment.setDueDateForUngraded(null);
 			}
 			
 			//REMOVE THESE - TODO

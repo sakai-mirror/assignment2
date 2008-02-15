@@ -201,12 +201,12 @@ public class AssignmentTestDataLoad {
 
 		// now create submissions
 		// start with a1
-		st1a1Submission = new AssignmentSubmission(a1, STUDENT1_UID, Boolean.TRUE);
+		st1a1Submission = new AssignmentSubmission(a1, STUDENT1_UID);
 		st1a1CurrVersion = createGenericVersion(st1a1Submission);
 		dao.save(st1a1Submission);
 		dao.save(st1a1CurrVersion);
 		
-		st2a1Submission = new AssignmentSubmission(a1, STUDENT2_UID, Boolean.TRUE);
+		st2a1Submission = new AssignmentSubmission(a1, STUDENT2_UID);
 		st2a1Version1 = createGenericVersion(st2a1Submission);
 		dao.save(st2a1Submission);
 		dao.save(st2a1Version1);
@@ -221,13 +221,13 @@ public class AssignmentTestDataLoad {
 		feedbackAttachSet.add(new FeedbackAttachment(st2a1CurrVersion, "attachmentRef"));
 		
 		// create a submission w/o any versions
-		st2a2SubmissionNoVersions = new AssignmentSubmission(a2, STUDENT2_UID, Boolean.FALSE);
+		st2a2SubmissionNoVersions = new AssignmentSubmission(a2, STUDENT2_UID);
 		dao.save(st2a2SubmissionNoVersions);
 		
 		// make some submission for a3 and a4
 		
 		// student 1 has 2 versions for a3
-		st1a3Submission = new AssignmentSubmission(a3, STUDENT1_UID, false);
+		st1a3Submission = new AssignmentSubmission(a3, STUDENT1_UID);
 		dao.save(st1a3Submission);
 		st1a3FirstVersion = createGenericVersion(st1a3Submission);
 		dao.save(st1a3FirstVersion);
@@ -238,13 +238,13 @@ public class AssignmentTestDataLoad {
 		subAttachSet.add(new SubmissionAttachment(st1a3CurrVersion, "blah"));
 		
 		// student 2 has 1 version for a3
-		st2a3Submission = new AssignmentSubmission(a3, STUDENT2_UID, Boolean.FALSE);
+		st2a3Submission = new AssignmentSubmission(a3, STUDENT2_UID);
 		dao.save(st2a3Submission);
 		st2a3CurrVersion = createGenericVersion(st2a3Submission);
 		dao.save(st2a3CurrVersion);
 		subAttachSet.add(new SubmissionAttachment(st2a3CurrVersion, "attRef"));
 		// student 3 has 2 versions for a3
-		st3a3Submission = new AssignmentSubmission(a3, STUDENT3_UID, Boolean.FALSE);
+		st3a3Submission = new AssignmentSubmission(a3, STUDENT3_UID);
 		dao.save(st3a3Submission);
 		st3a3FirstVersion = createGenericVersion(st3a3Submission);
 		dao.save(st3a3FirstVersion);
@@ -254,7 +254,7 @@ public class AssignmentTestDataLoad {
 		subAttachSet.add(new SubmissionAttachment(st3a3CurrVersion, "sfafd"));
 		
 		// student 2 has 2 versions for a4
-		st2a4Submission = new AssignmentSubmission(a4, STUDENT2_UID, Boolean.FALSE);
+		st2a4Submission = new AssignmentSubmission(a4, STUDENT2_UID);
 		dao.save(st2a4Submission);
 		st2a4FirstVersion = createGenericVersion(st2a4Submission);
 		dao.save(st2a4FirstVersion);
@@ -269,7 +269,6 @@ public class AssignmentTestDataLoad {
 
 	private Assignment2 createGenericAssignment2Object(String title, int sortIndex) {
 		Assignment2 assignment = new Assignment2();
-		assignment.setAllowResubmit(Boolean.FALSE);
 		assignment.setContextId(CONTEXT_ID);
 		assignment.setCreateTime(new Date());
 		assignment.setCreator("ADMIN");

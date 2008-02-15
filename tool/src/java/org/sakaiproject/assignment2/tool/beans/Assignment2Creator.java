@@ -30,7 +30,6 @@ public class Assignment2Creator {
     	togo.setUngraded(Boolean.TRUE);
     	togo.setHasAnnouncement(Boolean.FALSE);
     	togo.setSubmissionType(AssignmentConstants.SUBMIT_INLINE_AND_ATTACH);
-    	togo.setAllowResubmit(Boolean.FALSE);
     	
     	//Setting up Dates
     	Calendar cal = Calendar.getInstance();
@@ -67,7 +66,6 @@ public class Assignment2Creator {
     	dup.setSubmissionType(assignment.getSubmissionType());
     	dup.setNotificationType(assignment.getNotificationType());
 		dup.setHasAnnouncement(assignment.getHasAnnouncement());
-		dup.setAllowResubmit(assignment.isAllowResubmit());
 		dup.setAllowReviewService(assignment.isAllowReviewService());
 		dup.setAllowStudentViewReport(assignment.isAllowStudentViewReport());
 		dup.setRemoved(Boolean.FALSE);

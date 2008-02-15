@@ -50,7 +50,6 @@ public class Assignment2 {
     private int notificationType;
     private Boolean hasAnnouncement;
     private String announcementId;
-    private Boolean allowResubmit;
     private Integer numSubmissionsAllowed;
     private Boolean allowReviewService;
     private Boolean allowStudentViewReport;
@@ -80,7 +79,7 @@ public class Assignment2 {
 			Date openTime, Date acceptUntilTime, Boolean ungraded,
 			Date dueDateForUngraded, Boolean honorPledge, String instructions,
 			int submissionType, int notificationType, Boolean hasAnnouncement,
-			String announcementId, Boolean allowResubmit, Integer numSubmissionsAllowed,
+			String announcementId, Integer numSubmissionsAllowed,
 			Boolean allowReviewService,	Boolean allowStudentViewReport, 
 			String creator, Date createTime, String modifiedBy, Date modifiedTime, Boolean removed) {
 		this.id = id;
@@ -99,7 +98,6 @@ public class Assignment2 {
 		this.notificationType = notificationType;
 		this.hasAnnouncement = hasAnnouncement;
 		this.announcementId = announcementId;
-		this.allowResubmit = allowResubmit;
 		this.numSubmissionsAllowed = numSubmissionsAllowed;
 		this.allowReviewService = allowReviewService;
 		this.allowStudentViewReport = allowStudentViewReport;
@@ -389,26 +387,9 @@ public class Assignment2 {
     }
     
     /**
-     * @return If true, will allow students to resubmit an unlimited number of times
-     * until the "accept until" date
-     */
-    public Boolean isAllowResubmit() {
-        return allowResubmit;
-    }
-    
-    /**
-     * If true, will allow students to resubmit an unlimited number of times
-     * until the "accept until" date
-     * @param allowResubmit
-     */
-    public void setAllowResubmit(Boolean allowResubmit) {
-        this.allowResubmit = allowResubmit;
-    }
-    
-    /**
      * 
      * @return the number of submissions allowed for this assignment. if -1,
-     * unlimited submissions. only applicable if allowResubmit = true
+     * unlimited submissions. 
      */
     public Integer getNumSubmissionsAllowed() {
 		return numSubmissionsAllowed;
@@ -416,7 +397,7 @@ public class Assignment2 {
 
     /**
      * the number of submissions allowed for this assignment. if -1,
-     * unlimited submissions. only applicable if allowResubmit = true
+     * unlimited submissions. 
      * @param numSubmissionsAllowed
      */
 	public void setNumSubmissionsAllowed(Integer numSubmissionsAllowed) {

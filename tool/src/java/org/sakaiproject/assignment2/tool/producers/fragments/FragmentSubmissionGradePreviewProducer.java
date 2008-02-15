@@ -64,10 +64,12 @@ public class FragmentSubmissionGradePreviewProducer implements ViewComponentProd
         UIOutput.make(tofill, "status", as.getSubmissionStatus());
         UIVerbatim.make(tofill, "instructions", assignment.getInstructions());
         
-        if (as.isAllowResubmit() != null && as.isAllowResubmit()){
+        /**
+		if (as.isAllowResubmit() != null && as.isAllowResubmit()){
         	UIMessage.make(tofill, "allow_resubmit", "assignment2.fragment-submission-grade_preview.number_resubmit", 
         		new Object[]{df.format(as.getResubmitCloseTime())});
         }
+        **/
         
     	//Handle Attachments
     	Set<String> set = new HashSet();

@@ -132,22 +132,42 @@
 		</ol>
 	</fieldset>
 
-	<!-- Allow Resubmissions -->
 	<fieldset>
 		<ol>
 			<li>
 				<fieldset>
 					<ol>
 						<li><input rsf:id="release_feedback" type="checkbox" /><label rsf:id="release_feedback_label">Release this Feedback</label></li>
+					</ol>
+				</fieldset>
+			</li>
+		</ol>
+	</fieldset>
+	
+	<!-- Allow Resubmissions -->
+	<fieldset>
+		<legend rsf:id="msg=assignment2.assignment_grade.allow_resubmission">Allowed Resubmissions</legend>
+		<ol>
+		
 						<li><input rsf:id="allow_resubmit" type="checkbox" onclick="update_allow_resub()" /> <label rsf:id="allow_resubmit_label">Allow Resubmission</label></li>
 						<li class="allow_resubmit_toggle">
+							<p class="shorttext">
+								<label rsf:id="msg=assignment2.assignment_grade.total_submissions">Assignment Total Submissions</label>
+								<span rsf:id="assignment_total_submissions">3</span>
+							</p>
+							<p class="shorttext">
+								<label rsf:id="assignment_submit_until_label">Assignment Submit Until</label>
+								<span rsf:id="assignment_submit_until">10/2/08</span>
+							</p>
+							<p class="shorttext">
+								<label rsf:id="msg=assignment2.assignment_grade.allow_number">New Number of Total Submissions</label>
+								<select rsf:id="number_submissions"></select>
+							</p>
 							<p class="shorttext"><label rsf:id="msg=assignment2.assignment_grade.accept_until" for="new_assignment_closemonth">Accept Until</label>
 								<input rsf:id="accept_until:" />
 							</p>
 						</li>
-					</ol>
-				</fieldset>
-			</li>
+		
 		</ol>
 	</fieldset>
 	<!-- /Allow Resubmissions -->
