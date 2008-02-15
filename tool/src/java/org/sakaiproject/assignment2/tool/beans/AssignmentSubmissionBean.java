@@ -41,6 +41,7 @@ public class AssignmentSubmissionBean {
 	public String ASOTPKey;
 	public String userId;
 	public Boolean releaseFeedback;
+	public Boolean resubmitUntil;
 	
     private TargettedMessageList messages;
     public void setMessages(TargettedMessageList messages) {
@@ -265,6 +266,10 @@ public class AssignmentSubmissionBean {
 			assignmentSubmission = OTPMap.get(key);
 			assignmentSubmission.setAssignment(assignment);
 			assignmentSubmission.setUserId(userId);
+			
+			if (this.resubmitUntil == null || this.resubmitUntil == Boolean.FALSE) {
+				assignmentSubmission.setResubmitCloseTime(null);
+			}
 		}
 		for (String key : asvOTPMap.keySet()){
 			

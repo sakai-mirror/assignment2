@@ -195,16 +195,37 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
 		UIInput acceptUntilTimeField = UIInput.make(form, "accept_until:", assignment2OTP + ".acceptUntilTime");
         dateEvolver.evolveDateInput(acceptUntilTimeField, (assignment.getAcceptUntilTime() != null ? assignment.getAcceptUntilTime() : closeDate));
         
+        /*** Out
         //Resubmit until until date
         UIOutput accept_until_until_fieldset = UIOutput.make(form, "accept_until_until_fieldset");
         UIMessage accept_label = UIMessage.make(form, "accept_until_until_label", "assignment2.assignment_add.accept_until_until");
         UIBoundBoolean accept = UIBoundBoolean.make(form, "accept_until_until", assignment2OTP + ".allowResubmit");
         UILabelTargetDecorator.targetLabel(accept_label, accept);
-
+		**/
+        
         if (!require_date){
         	require_container.decorators = display_none_list;
-        	accept_until_until_fieldset.decorators = display_none_list;
+        	//accept_until_until_fieldset.decorators = display_none_list;
         }
+        
+        //Assignment Count for How many Submissions
+        Integer current_num_submissions = 1;
+        if (assignment != null && assignment.getNumSubmissionsAllowed() != null) {
+        	current_num_submissions = assignment.getNumSubmissionsAllowed();
+        }
+        int size = 20;
+        String[] number_submissions_options = new String[size+1];
+        String[] number_submissions_values = new String[size+1];
+        number_submissions_values[0] = "-1";
+        number_submissions_options[0] = messageLocator.getMessage("assignment2.indefinite_resubmit");
+        for (int i=0; i < size; i++){
+        	number_submissions_values[i + 1] = new Integer(i + current_num_submissions).toString();
+        	number_submissions_options[i + 1] = new Integer(i + current_num_submissions).toString();
+        }
+        UISelect.make(form, "number_submissions", number_submissions_values, number_submissions_options, 
+        		assignment2OTP + ".numSubmissionsAllowed", current_num_submissions.toString());
+        
+        
         
         UIVerbatim.make(form, "student_submissions_label", messageLocator.getMessage("assignment2.assignment_add.student_submissions",
         		new Object[]{ reqStar }));

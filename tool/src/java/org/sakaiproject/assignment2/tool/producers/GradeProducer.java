@@ -248,12 +248,13 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
         //Assignment LEvel
         Integer assignment_num_submissions = 1;
         if (assignment != null && assignment.getNumSubmissionsAllowed() != null) {
-        	assignment_num_submissions = as.getNumSubmissionsAllowed();
+        	assignment_num_submissions = assignment.getNumSubmissionsAllowed();
         }
         UIOutput.make(form, "assignment_total_submissions", assignment_num_submissions.toString());
         if (assignment.getAcceptUntilTime() != null) {
-        	UIMessage.make(form, "assignment_submit_until_label", "assignment2.assignment_grade.assignment_submit_until");
         	UIOutput.make(form, "assignment_submit_until", df.format(assignment.getAcceptUntilTime()));
+        } else {
+        	UIMessage.make(form, "assignment_submit_until", "assignment2.assignment_grade.no_end_time");
         }
         
         
@@ -266,13 +267,20 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
         String[] number_submissions_options = new String[size+1];
         String[] number_submissions_values = new String[size+1];
         number_submissions_values[0] = "-1";
-        number_submissions_options[0] = messageLocator.getMessage("assignment2.assignment_grade.indefinite_resubmit");
+        number_submissions_options[0] = messageLocator.getMessage("assignment2.indefinite_resubmit");
         for (int i=0; i < size; i++){
         	number_submissions_values[i + 1] = new Integer(i + current_num_submissions).toString();
         	number_submissions_options[i + 1] = new Integer(i + current_num_submissions).toString();
         }
         UISelect.make(form, "number_submissions", number_submissions_values, number_submissions_options, 
         		asOTP + ".numSubmissionsAllowed", current_num_submissions.toString());
+        
+        
+        UIBoundBoolean allow_resubmit = UIBoundBoolean.make(form, "resubmit_until", "#{AssignmentSubmissionBean.resubmitUntil}", 
+        		as.getResubmitCloseTime() != null);
+        UIMessage allow_resubmit_label = UIMessage.make(form, "resubmit_until_label", "assignment2.assignment_grade.resubmit_until");
+        UILabelTargetDecorator.targetLabel(allow_resubmit_label, allow_resubmit);
+
         
         if (as.getResubmitCloseTime() == null) {
         	as.setResubmitCloseTime(new Date());
@@ -283,6 +291,8 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
         if (!assignment.isUngraded()){
         	gradebookDetailsRenderer.makeGradebookDetails(tofill, "gradebook_details", as, assignmentId, userId);
         }        
+        
+        
         
         //Begin Looping for previous submissions
         Set<AssignmentSubmissionVersion> history = as.getSubmissionHistorySet();

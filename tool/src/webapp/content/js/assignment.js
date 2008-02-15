@@ -96,28 +96,28 @@ function show_accept_until(){
 	if (el){
 		if(el.checked){
 			$(el).parents("fieldset:first").next('div').show();
-			$(el).parents("fieldset:first").next('div').next('fieldset').show();
+			//$(el).parents("fieldset:first").next('div').next('fieldset').show();
 		}else {
 			$(el).parents("fieldset:first").next('div').hide();
-			$(el).parents("fieldset:first").next('div').next('fieldset').hide();
+			//$(el).parents("fieldset:first").next('div').next('fieldset').hide();
 		}
 		
 	}
 	a2SetMainFrameHeight();
 }
 
-function update_allow_resub(){
-	el = $("input:checkbox[@name='allow_resubmit']").get(0);
+function update_resubmit_until(){
+	el = $("input:checkbox[@name='resubmit_until']").get(0);
 	if (el){
 	if (el.checked) {
-		$(".allow_resubmit_toggle").show();
+		$(".resubmit_until_toggle").show();
 	} else {
-		$(".allow_resubmit_toggle").hide();
+		$(".resubmit_until_toggle").hide();
 	}
 	a2SetMainFrameHeight();
 	}
 }
 
 $(document).ready(function(){
-	update_allow_resub();
+	update_resubmit_until();
 });

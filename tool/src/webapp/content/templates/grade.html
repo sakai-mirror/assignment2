@@ -148,26 +148,33 @@
 	<fieldset>
 		<legend rsf:id="msg=assignment2.assignment_grade.allow_resubmission">Allowed Resubmissions</legend>
 		<ol>
-		
-						<li><input rsf:id="allow_resubmit" type="checkbox" onclick="update_allow_resub()" /> <label rsf:id="allow_resubmit_label">Allow Resubmission</label></li>
-						<li class="allow_resubmit_toggle">
-							<p class="shorttext">
-								<label rsf:id="msg=assignment2.assignment_grade.total_submissions">Assignment Total Submissions</label>
-								<span rsf:id="assignment_total_submissions">3</span>
-							</p>
-							<p class="shorttext">
-								<label rsf:id="assignment_submit_until_label">Assignment Submit Until</label>
-								<span rsf:id="assignment_submit_until">10/2/08</span>
-							</p>
-							<p class="shorttext">
-								<label rsf:id="msg=assignment2.assignment_grade.allow_number">New Number of Total Submissions</label>
-								<select rsf:id="number_submissions"></select>
-							</p>
+			<li><input rsf:id="allow_resubmit" type="checkbox" onclick="update_allow_resub()" /> <label rsf:id="allow_resubmit_label">Allow Resubmission</label></li>
+			<li class="allow_resubmit_toggle">
+				<p class="shorttext">
+					<label rsf:id="msg=assignment2.assignment_grade.total_submissions">Assignment Total Submissions</label>
+					<span rsf:id="assignment_total_submissions">3</span>
+				</p>
+				<p class="shorttext">
+					<label rsf:id="msg=assignment2.assignment_grade.assignment_submit_until">Assignment Submit Until</label>
+					<span rsf:id="assignment_submit_until">10/2/08</span>
+				</p>
+				<p class="shorttext">
+					<label rsf:id="msg=assignment2.assignment_grade.allow_number">New Number of Total Submissions</label>
+					<select rsf:id="number_submissions"></select>
+				</p>
+			</li>
+			<li>
+				<fieldset>
+					<ol>
+						<li><input rsf:id="resubmit_until" type="checkbox" onclick="update_resubmit_until()" /> <label rsf:id="resubmit_until_label">Allow Resubmission</label></li>
+						<li class="resubmit_until_toggle">
 							<p class="shorttext"><label rsf:id="msg=assignment2.assignment_grade.accept_until" for="new_assignment_closemonth">Accept Until</label>
 								<input rsf:id="accept_until:" />
 							</p>
 						</li>
-		
+					</ol>
+				</fieldset>
+			</li>
 		</ol>
 	</fieldset>
 	<!-- /Allow Resubmissions -->
