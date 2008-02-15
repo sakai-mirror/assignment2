@@ -24,7 +24,7 @@ public class GradeViewParams extends SimpleViewParameters {
 	}
 	
 	public String getParseSpec(){
-		return super.getParseSpec() + ",@1:assignmentId,@2:userId,?submissionId";
+		return super.getParseSpec() + ",@1:assignmentId,@2:userId,submissionId";
 	}
 	
 }

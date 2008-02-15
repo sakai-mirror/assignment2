@@ -1,15 +1,19 @@
 package org.sakaiproject.assignment2.tool.producers.renderers;
 
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.List;
 import java.util.Locale;
 import java.util.Stack;
 
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
+import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentAttachment;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
@@ -77,6 +81,11 @@ public class StudentViewAssignmentRenderer {
 	private SessionManager sessionManager;
 	public void setSessionManager(SessionManager sessionManager) {
 		this.sessionManager = sessionManager;
+	}
+	
+	private AssignmentSubmissionLogic submissionLogic;
+	public void setSubmissionLogic(AssignmentSubmissionLogic submissionLogic) {
+		this.submissionLogic = submissionLogic;
 	}
 	
 	public void makeStudentView(UIContainer tofill, String divID, AssignmentSubmission assignmentSubmission, 
@@ -211,45 +220,38 @@ public class StudentViewAssignmentRenderer {
     	
     	
     	//Begin Looping for previous submissions
-        Set<AssignmentSubmissionVersion> history = assignmentSubmission.getSubmissionHistorySet();
-        Stack <AssignmentSubmissionVersion> stack = new Stack();
-        if (history != null) {
-	        //reverse the set
-	       
-	        for (AssignmentSubmissionVersion asv : history) {
-	        	if (!asv.isDraft()) {
-	        		//Do not include drafts
-	        		stack.add(asv);
-	        	}
-	        }
-	        
-	        while (stack.size() > 0){
-	        	AssignmentSubmissionVersion asv = stack.pop();
-	        	if (asv.isDraft()) {
-	        		continue;
-	        	}
-	        	UIBranchContainer loop = UIBranchContainer.make(form, "previous_submissions:");
-	        	
-	        	UIMessage.make(loop, "loop_submission", "assignment2.assignment_grade.loop_submission", 
-	        			new Object[] { (asv.getSubmittedTime() != null ? df.format(asv.getSubmittedTime()) : "") });
-	        	UIVerbatim.make(loop, "loop_submitted_text", asv.getSubmittedText());
-	        	UIVerbatim.make(loop, "loop_feedback_text", asv.getAnnotatedTextFormatted());
-	        	UIVerbatim.make(loop, "loop_feedback_notes", asv.getFeedbackNotes());
-	        	attachmentListRenderer.makeAttachmentFromSubmissionAttachmentSet(loop, "loop_submitted_attachment_list:", 
-	        			GradeProducer.VIEW_ID, asv.getSubmissionAttachSet(), Boolean.FALSE);
-	        	attachmentListRenderer.makeAttachmentFromFeedbackAttachmentSet(loop, "loop_returned_attachment_list:", 
-	        			GradeProducer.VIEW_ID, asv.getFeedbackAttachSet(), Boolean.FALSE);
-	        	if (asv.getLastFeedbackSubmittedBy() != null) {
-		        	UIMessage.make(loop, "feedback_updated", "assignment2.assignment_grade.feedback_updated",
-		        			new Object[]{ 
-		        				(asv.getLastFeedbackTime() != null ? df.format(asv.getLastFeedbackTime()) : ""), 
-		        				externalLogic.getUserDisplayName(asv.getLastFeedbackSubmittedBy()) });
-	        	} else {
-	        		UIMessage.make(loop, "feedback_updated", "assignment2.assignment_grade.feedback_not_updated");
-	        	}
-	        }
+    	List<AssignmentSubmissionVersion> history = submissionLogic.getVersionHistoryForSubmission(assignmentSubmission);
+    	List<AssignmentSubmissionVersion> reverse_history = new ArrayList();
+    	for (Iterator iter = history.iterator(); iter.hasNext();){
+    		reverse_history.add((AssignmentSubmissionVersion)iter.next());
+    	}
+                
+    	for (Iterator iter = reverse_history.iterator(); iter.hasNext();){
+    		AssignmentSubmissionVersion asv = (AssignmentSubmissionVersion) iter.next(); 
+        	if (asv.isDraft()) {
+        		continue;
+        	}
+        	UIBranchContainer loop = UIBranchContainer.make(form, "previous_submissions:");
+        	
+        	UIMessage.make(loop, "loop_submission", "assignment2.assignment_grade.loop_submission", 
+        			new Object[] { (asv.getSubmittedTime() != null ? df.format(asv.getSubmittedTime()) : "") });
+        	UIVerbatim.make(loop, "loop_submitted_text", asv.getSubmittedText());
+        	UIVerbatim.make(loop, "loop_feedback_text", asv.getAnnotatedTextFormatted());
+        	UIVerbatim.make(loop, "loop_feedback_notes", asv.getFeedbackNotes());
+        	attachmentListRenderer.makeAttachmentFromSubmissionAttachmentSet(loop, "loop_submitted_attachment_list:", 
+        			GradeProducer.VIEW_ID, asv.getSubmissionAttachSet(), Boolean.FALSE);
+        	attachmentListRenderer.makeAttachmentFromFeedbackAttachmentSet(loop, "loop_returned_attachment_list:", 
+        			GradeProducer.VIEW_ID, asv.getFeedbackAttachSet(), Boolean.FALSE);
+        	if (asv.getLastFeedbackSubmittedBy() != null) {
+	        	UIMessage.make(loop, "feedback_updated", "assignment2.assignment_grade.feedback_updated",
+	        			new Object[]{ 
+	        				(asv.getLastFeedbackTime() != null ? df.format(asv.getLastFeedbackTime()) : ""), 
+	        				externalLogic.getUserDisplayName(asv.getLastFeedbackSubmittedBy()) });
+        	} else {
+        		UIMessage.make(loop, "feedback_updated", "assignment2.assignment_grade.feedback_not_updated");
+        	}
         }
-        if (history == null || history.size() == 0 || stack.empty()) {
+        if (history == null || history.size() == 0) {
         	//no history, add dialog
         	UIMessage.make(form, "no_history", "assignment2.assignment_grade.no_history");
         }

@@ -4,6 +4,7 @@ import java.text.DateFormat;
 import java.util.Date;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -295,44 +296,42 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
         
         
         //Begin Looping for previous submissions
-        Set<AssignmentSubmissionVersion> history = as.getSubmissionHistorySet();
-        if (history != null) {
-	        //reverse the set
-	        Stack <AssignmentSubmissionVersion> stack = new Stack();
-	        for (AssignmentSubmissionVersion asv : history) {
-	        	stack.add(asv);
-	        }
-	        
-	        while (stack.size() > 0){
-	        	AssignmentSubmissionVersion asv = stack.pop();
-	        	UIBranchContainer loop = UIBranchContainer.make(form, "previous_submissions:");
-	        	
-	        	UIMessage.make(loop, "loop_submission", "assignment2.assignment_grade.loop_submission", 
-	        			new Object[] { (asv.getSubmittedTime() != null ? df.format(asv.getSubmittedTime()) : "") });
-	        	if (asvOTPKey.equals(asv.getId().toString())){
-	        		//we are editing this version
-	        		UIMessage.make(loop, "currently_editing", "assignment2.assignment_grade.currently_editing");
-	        	} else {
-	        		//else add link to edit this submission
-	        		UIInternalLink.make(loop, "loop_edit_submission", 
-	        			new GradeViewParams(GradeProducer.VIEW_ID, assignmentId, userId, asv.getId()));
-	        	}
-	        	UIVerbatim.make(loop, "loop_submitted_text", asv.getSubmittedText());
-	        	UIVerbatim.make(loop, "loop_feedback_text", asv.getAnnotatedTextFormatted());
-	        	UIVerbatim.make(loop, "loop_feedback_notes", asv.getFeedbackNotes());
-	        	attachmentListRenderer.makeAttachmentFromSubmissionAttachmentSet(loop, "loop_submitted_attachment_list:", 
-	        			GradeProducer.VIEW_ID, asv.getSubmissionAttachSet(), Boolean.FALSE);
-	        	attachmentListRenderer.makeAttachmentFromFeedbackAttachmentSet(loop, "loop_returned_attachment_list:", 
-	        			GradeProducer.VIEW_ID, asv.getFeedbackAttachSet(), Boolean.FALSE);
-	        	if (asv.getLastFeedbackSubmittedBy() != null) {
-		        	UIMessage.make(loop, "feedback_updated", "assignment2.assignment_grade.feedback_updated",
-		        			new Object[]{ 
-		        				(asv.getLastFeedbackTime() != null ? df.format(asv.getLastFeedbackTime()) : ""), 
-		        				externalLogic.getUserDisplayName(asv.getLastFeedbackSubmittedBy()) });
-	        	} else {
-	        		UIMessage.make(loop, "feedback_updated", "assignment2.assignment_grade.feedback_not_updated");
-	        	}
-	        }
+        List<AssignmentSubmissionVersion> history = submissionLogic.getVersionHistoryForSubmission(as);
+        List<AssignmentSubmissionVersion> reverse_history = new ArrayList();
+    	for (Iterator iter = history.iterator(); iter.hasNext();){
+    		reverse_history.add((AssignmentSubmissionVersion)iter.next());
+    	}
+                
+    	for (Iterator iter = reverse_history.iterator(); iter.hasNext();){
+    		AssignmentSubmissionVersion asv = (AssignmentSubmissionVersion) iter.next(); 
+        
+        	UIBranchContainer loop = UIBranchContainer.make(form, "previous_submissions:");
+        	
+        	UIMessage.make(loop, "loop_submission", "assignment2.assignment_grade.loop_submission", 
+        			new Object[] { (asv.getSubmittedTime() != null ? df.format(asv.getSubmittedTime()) : "") });
+        	if (asvOTPKey.equals(asv.getId().toString())){
+        		//we are editing this version
+        		UIMessage.make(loop, "currently_editing", "assignment2.assignment_grade.currently_editing");
+        	} else {
+        		//else add link to edit this submission
+        		UIInternalLink.make(loop, "loop_edit_submission", 
+        			new GradeViewParams(GradeProducer.VIEW_ID, assignmentId, userId, asv.getId()));
+        	}
+        	UIVerbatim.make(loop, "loop_submitted_text", asv.getSubmittedText());
+        	UIVerbatim.make(loop, "loop_feedback_text", asv.getAnnotatedTextFormatted());
+        	UIVerbatim.make(loop, "loop_feedback_notes", asv.getFeedbackNotes());
+        	attachmentListRenderer.makeAttachmentFromSubmissionAttachmentSet(loop, "loop_submitted_attachment_list:", 
+        			GradeProducer.VIEW_ID, asv.getSubmissionAttachSet(), Boolean.FALSE);
+        	attachmentListRenderer.makeAttachmentFromFeedbackAttachmentSet(loop, "loop_returned_attachment_list:", 
+        			GradeProducer.VIEW_ID, asv.getFeedbackAttachSet(), Boolean.FALSE);
+        	if (asv.getLastFeedbackSubmittedBy() != null) {
+	        	UIMessage.make(loop, "feedback_updated", "assignment2.assignment_grade.feedback_updated",
+	        			new Object[]{ 
+	        				(asv.getLastFeedbackTime() != null ? df.format(asv.getLastFeedbackTime()) : ""), 
+	        				externalLogic.getUserDisplayName(asv.getLastFeedbackSubmittedBy()) });
+        	} else {
+        		UIMessage.make(loop, "feedback_updated", "assignment2.assignment_grade.feedback_not_updated");
+        	}
         }
         if (history == null || history.size() == 0) {
         	//no history, add dialog
