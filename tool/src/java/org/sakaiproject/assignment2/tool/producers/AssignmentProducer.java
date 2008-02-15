@@ -219,8 +219,8 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
         number_submissions_values[0] = "-1";
         number_submissions_options[0] = messageLocator.getMessage("assignment2.indefinite_resubmit");
         for (int i=0; i < size; i++){
-        	number_submissions_values[i + 1] = new Integer(i + current_num_submissions).toString();
-        	number_submissions_options[i + 1] = new Integer(i + current_num_submissions).toString();
+        	number_submissions_values[i + 1] = new Integer(i+1).toString();
+        	number_submissions_options[i + 1] = new Integer(i+1).toString();
         }
         UISelect.make(form, "number_submissions", number_submissions_values, number_submissions_options, 
         		assignment2OTP + ".numSubmissionsAllowed", current_num_submissions.toString());

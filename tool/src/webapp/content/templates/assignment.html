@@ -283,6 +283,7 @@ function refresh_ajax(){
 			    		html.indexOf('var gradebook'),
 			    		html.indexOf('</script')));
 			    $("select[name='gradebook_item-selection']").get(0).selectedIndex=oldSelect;
+			    changeValue();
 			}
 		});
 	}

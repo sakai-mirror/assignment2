@@ -32,6 +32,23 @@ function a2SetMainFrameHeight(){
 		$("#" + iframeId, parent.document).height(height);
 	}
 }
+newValue = "";
+function useValue(value){
+   newValue = value;
+}
+function changeValue(){   
+	el = $("select[name='gradebook_item-selection']").get(0);
+	if(el){
+      for(i=0;i<el.length;i++){
+         if(el.options[i].text == newValue){
+            el.selectedIndex = i;  
+         }
+      }
+   }
+   $("input[type='radio'][value='false'][name='ungraded-selection']").get(0).checked=true;
+   gradebook_toggle();
+   update_due_date();
+}
 
 gradebook_toggle = function(){
 	el = $("input[type='radio'][value='true'][name='ungraded-selection']").get(0);
@@ -120,4 +137,5 @@ function update_resubmit_until(){
 
 $(document).ready(function(){
 	update_resubmit_until();
+	gradebook_toggle();
 });

@@ -269,8 +269,8 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
         number_submissions_values[0] = "-1";
         number_submissions_options[0] = messageLocator.getMessage("assignment2.indefinite_resubmit");
         for (int i=0; i < size; i++){
-        	number_submissions_values[i + 1] = new Integer(i + current_num_submissions).toString();
-        	number_submissions_options[i + 1] = new Integer(i + current_num_submissions).toString();
+        	number_submissions_values[i + 1] = new Integer(i + assignment_num_submissions).toString();
+        	number_submissions_options[i + 1] = new Integer(i + assignment_num_submissions).toString();
         }
         UISelect.make(form, "number_submissions", number_submissions_values, number_submissions_options, 
         		asOTP + ".numSubmissionsAllowed", current_num_submissions.toString());
