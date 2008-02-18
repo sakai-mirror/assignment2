@@ -23,6 +23,7 @@ import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.assignment2.tool.params.FilePickerHelperViewParams;
 import org.sakaiproject.assignment2.tool.params.GradeViewParams;
 import org.sakaiproject.assignment2.tool.producers.AddAttachmentHelperProducer;
+import org.sakaiproject.assignment2.tool.producers.StudentAssignmentListProducer;
 import org.sakaiproject.assignment2.tool.producers.GradeProducer;
 import org.sakaiproject.entitybroker.EntityBroker;
 import org.sakaiproject.entitybroker.IdEntityReference;
@@ -48,6 +49,7 @@ import uk.org.ponder.rsf.components.UIVerbatim;
 import uk.org.ponder.rsf.components.decorators.DecoratorList;
 import uk.org.ponder.rsf.components.decorators.UIFreeAttributeDecorator;
 import uk.org.ponder.rsf.evolvers.TextInputEvolver;
+import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
 import uk.org.ponder.rsf.viewstate.ViewParameters;
 
 
@@ -94,6 +96,17 @@ public class StudentViewAssignmentRenderer {
 		String assignmentSubmissionOTP = "AssignmentSubmission.";		//Base for AssignmentSubmission object
     	String submissionVersionOTP = "currentSubmissionVersion";			//Base for the currentSubmissionVersion object
     	assignmentSubmissionOTP += ASOTPKey;							//Full path to current object
+    	
+    	
+    	//Breadcrumbs
+    	if (!preview){
+    		UIInternalLink.make(tofill, "breadcrumb", 
+        		messageLocator.getMessage("assignment2.student-assignment-list.heading"),
+        		new SimpleViewParameters(StudentAssignmentListProducer.VIEW_ID));
+    	} else {
+    		UIMessage.make(tofill, "breadcrumb", "assignment2.student-assignment-list.heading");
+    	}
+        UIMessage.make(tofill, "last_breadcrumb", "assignment2.student-submit.heading", new Object[] { assignment.getTitle() });
     	
     	String asvOTP = "AssignmentSubmissionVersion.";
     	String asvOTPKey = "";

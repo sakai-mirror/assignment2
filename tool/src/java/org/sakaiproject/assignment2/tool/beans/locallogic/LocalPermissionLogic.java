@@ -5,6 +5,7 @@ import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
 import org.sakaiproject.assignment2.tool.producers.*;
+import org.sakaiproject.assignment2.tool.producers.dev.*;
 import org.sakaiproject.assignment2.tool.producers.fragments.*;
 import org.sakaiproject.assignment2.tool.params.SimpleAssignmentViewParams;
 import org.sakaiproject.assignment2.model.Assignment2;
@@ -37,7 +38,7 @@ public class LocalPermissionLogic {
 		} else if (AssignmentListSortViewProducer.VIEW_ID.equals(viewId)) {
 			return permissionLogic.isUserAbleToAccessInstructorView(contextId);
 			
-		} else if (AssignmentProducer.VIEW_ID.equals(viewId)) {
+		} else if (AssignmentProducer.VIEW_ID.equals(viewId) || AssignmentDevProducer.VIEW_ID.equals(viewId)) {
 			return permissionLogic.isCurrentUserAbleToEditAssignments(contextId);
 			
 		} else if (FinishedHelperProducer.VIEWID.equals(viewId)) {

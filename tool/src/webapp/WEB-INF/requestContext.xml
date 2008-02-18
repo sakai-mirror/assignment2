@@ -142,6 +142,13 @@
    </bean>
    
    <bean class="org.sakaiproject.assignment2.tool.producers.StudentSubmitSummaryProducer">
+   	  <property name="submissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
+   	  <property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
+   	  <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
+   	  <property name="locale" ref="requestLocale" />
+   	  <property name="dateEvolver" ref="fieldDateInputEvolver" />
+   	  <property name="attachmentListRenderer" ref="AttachmentListRenderer" />
+   	  <property name="messageLocator" ref="messageLocator" />
    </bean>
    
    <bean class="org.sakaiproject.assignment2.tool.producers.AuthorizationFailedProducer" />
@@ -198,6 +205,12 @@
    	  <property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
       <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
       <property name="sessionManager" ref="org.sakaiproject.tool.api.SessionManager" />
+   </bean>
+   
+   
+   <!-- Development Producers -->
+   <bean class="org.sakaiproject.assignment2.tool.producers.dev.AssignmentDevProducer">
+   	  <property name="assignmentProducer" ref="org.sakaiproject.assignment2.tool.producers.AssignmentProducer" />
    </bean>
   
    

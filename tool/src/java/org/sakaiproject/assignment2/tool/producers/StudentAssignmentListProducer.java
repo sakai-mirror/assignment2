@@ -79,6 +79,9 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
         List<Assignment2> entries = new ArrayList<Assignment2>();
         entries = assignmentLogic.getViewableAssignments();
     	int total_count = entries != null ? entries.size() : 0;
+    	
+    	//Breadcrumbs
+    	UIMessage.make(tofill, "last_breadcrumb", "assignment2.student-assignment-list.heading");
     		
         UIMessage.make(tofill, "page-title", "assignment2.student-assignment-list.title");
         pagerRenderer.makePager(tofill, "pagerDiv:", VIEW_ID, viewparams, total_count);

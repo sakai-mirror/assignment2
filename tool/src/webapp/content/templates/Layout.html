@@ -25,26 +25,16 @@
 	
 	</div>
 </body>
-<script type="text/javascript" rsf:id="iframeId_init">
-//set in producer
-//iframeId = blah
-</script>
+
 <script type="text/javascript">
 //Add a listener to the document window so that every time it resizes
 // we adjust the main frame height auto-magically without having to
 // even worry abouts it anymores
 catchResize = function(){
-	//first unbind so as to not form an infinite looop
-	$(window).unbind('resize');
-	
-	height = $(document).height();
-	$("#" + iframeId, parent.document).height(height);
-	
-	//now bind back
-	$(window).resize(catchResize);
+	RSF.getDOMModifyFirer().fireEvent();
 }
 
-$(window).resize(catchResize);
+//$(window).resize(catchResize);
 
 //now the fun one, add an event listener so that if a DOM node is modified
 // it will adjust the main frame height.  This way, if we make browser side

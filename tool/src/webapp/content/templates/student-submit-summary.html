@@ -15,7 +15,121 @@
 
 <div rsf:id="page:" class="portletBody">
 
-	<h2>Submission Summary - coming soon</h2>
+	<ul class="breadCrumb">
+		<li><a rsf:id="breadcrumb">Assignment List</a></li>
+		<li rsf:id="last_breadcrumb" class="lastCrumb">Submissions for "{0}"</li>
+	</ul>
+
+	<div class="generalErrors">
+		<ul rsf:id="message-for:*" style="margin:0px;">
+			<li>Message for user here</li>
+		</ul>
+	</div>
+	
+	<table class="itemSummary" cellspacing="0" summary="Assignment Details">
+		<tr>
+			<th rsf:id="msg=assignment2.student-submit-summary.title">Title</th>
+			<td rsf:id="header.title">Homework Example 1</td>
+		</tr>
+		<tr>
+			<th rsf:id="msg=assignment2.student-submit-summary.due_date">Due Date</th>
+			<td rsf:id="header.due_date">Oct 1, 2007 6:00 pm</td>
+		</tr>
+		<tr rsf:id="modified_by_header_row">
+			<th rsf:id="msg=assignment2.student-submit-summary.modified_by">Modified by instructor</th>	
+			<td rsf:id="modified_by">Oct 1, 2007 10:46 am</td>
+		</tr>
+	</table>
+
+	<h4 rsf:id="msg=assignment2.student-submit-summary.instructions_heading">Instructions</h4>
+	<div rsf:id="instructions" class="textPanel"><p>Instructions would go here.</p></div>
+
+	<h4 rsf:id="msg=assignment2.student-submit-summary.additional_resources">Additional resources for assignment</h4>
+
+	<ul class="attachList indnt1">
+		<li rsf:id="attachment_list:">
+			<img src="page_white_word.png" width="16" height="16"/><a href="">ExampleAttachment.doc</a> (52 KB)
+		</li>
+	</ul>
+
+	<hr class="itemSeparator" />
+	
+
+	<h3 rsf:id="msg=assignment2.student-submit-summary.history_heading">Assignment Submission History</h3>
+
+		<!--  Begin Loop for History -->
+	<p rsf:id="no_history" class="infoPanel">No Submissions</p>
+	<fieldset rsf:id="previous_submissions:" class="highlightPanel">
+		<h4>
+			<img src="/sakai-assignment2-tool/content/images/expand.png" border="0" alt="" style="cursor:pointer" 
+				onclick="slide_submission(this)" /> 
+			<span rsf:id="loop_submission" style="cursor:pointer" onclick="slide_submission($(this).prev('img').get(0))">Submission</span>
+		</h4>
+		<div style="display:none" class="indent">
+			<table class="itemSummary" cellspacing="0">
+				<tr>
+					<th rsf:id="msg=assignment2.student-submit-summary.submitted_text">Submitted Text</th>
+				</tr>
+				<tr>
+					<td rsf:id="loop_submitted_text"></td>
+				</tr>
+				<tr>
+					<th rsf:id="msg=assignment2.student-submit-summary.annotated_submitted_text">Annotated Submitted Text</th>
+				</tr>
+				<tr>
+					<td rsf:id="loop_feedback_text"></td>
+				</tr>
+				<tr>
+					<th rsf:id="msg=assignment2.student-submit-summary.submitted_attachments">Submitted Attachments</th>
+				</tr>
+				<tr>
+					<td>
+						<ol class="attachlist indnt1">
+							<li rsf:id="loop_submitted_attachment_list:"></li>
+						</ol>
+					</td>
+				</tr>
+				<tr>
+					<th rsf:id="msg=assignment2.student-submit-summary.feedback_notes">Feedback Notes</th>
+				</tr>
+				<tr>
+					<td rsf:id="loop_feedback_notes"></td>
+				</tr>
+				<tr>
+					<th rsf:id="msg=assignment2.student-submit-summary.attachments_to_return_with_grade">Attachments To Return With Grade</th>
+				</tr>
+				<tr>
+					<td>
+						<ol class="attachlist indnt1">
+							<li rsf:id="loop_returned_attachment_list:"></li>
+						</ol>
+					</td>
+				</tr>
+				<tr>
+					<td rsf:id="feedback_updated"></td>
+				</tr>
+			</table>
+		</div>
+	</fieldset>
+
+	<script type="text/javascript">
+	//<![CDATA[
+	function slide_submission(img){
+		$(img).parent('h4').next('div').toggle();
+		if(img.src.match('collapse')){
+			img.src=img.src.replace(/collapse/, 'expand');
+		}else{
+			img.src=img.src.replace(/expand/, 'collapse');
+		}
+	}
+	$(document).ready(function(){
+		//on page load, open the first submission history
+		slide_submission($("div.portletBody > fieldset.highlightPanel:first > h4 > img").get(0));
+	});
+	//]]>
+		
+	</script>
+
 </div>
 
 </body>
