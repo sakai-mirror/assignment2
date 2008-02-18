@@ -80,6 +80,8 @@ function toggle_group_checkboxes(check_all_box){
 
 function update_due_date(){
 	id = $("select[name='page-replace\:\:gradebook_item-selection']").val();
+	$("input[type='radio'][value='false'][name='page-replace\:\:ungraded-selection']").get(0).checked=true;
+	gradebook_toggle();
 	id = id==""?null:id;
 	$("li.gradebook_item_due_date > span").html(gradebook_items_date[id]);
 	$("li.gradebook_item_due_date p.instruction a").each(function(){
