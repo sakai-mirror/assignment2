@@ -115,11 +115,6 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
     		OLD_VERSION = true;
     	}
     	
-    	//Init JS
-        String frameId = org.sakaiproject.util.Web.escapeJavascript("Main" + org.sakaiproject.tool.cover.ToolManager.getCurrentPlacement().getId());
-        UIVerbatim.make(tofill, "iframeId_init", "var iframeId = \"" + frameId + "\";");
-        
-    	
     	AssignmentSubmission as = submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(assignmentId, userId);
     	Assignment2 assignment = assignmentLogic.getAssignmentByIdWithAssociatedData(assignmentId);
     	

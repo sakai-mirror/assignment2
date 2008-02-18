@@ -1,0 +1,54 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns:rsf="http://ponder.org.uk/rsf" xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link href="/library/skin/tool_base.css" rsf:id="scr=portal-matter" type="text/css" rel="stylesheet" media="all"/>
+    <link href="/library/skin/default/tool.css" rsf:id="scr=portal-matter" type="text/css" rel="stylesheet" media="all"/>
+    <script type="text/javascript" rsf:id="scr=portal-matter" language="JavaScript" src="/library/js/headscripts.js"></script>
+    
+    <title rsf:id="msg=assignment2.title">Assignments</title>
+
+	<script type="text/javascript" src="/library/editor/FCKeditor/fckeditor.js"></script> 
+
+    <script type="text/javascript" language="JavaScript" src="/sakai-assignment2-tool/content/js/jquery-1.2.1.js"></script>
+	<link href="/sakai-assignment2-tool/content/css/assignmentsv4.css" type="text/css" rel="stylesheet" media="all" />
+	<script type="text/javascript" src="/library/calendar/js/calendar2.js"></script>
+	<script type="text/javascript" src="/sakai-assignment2-tool/content/js/assignment.js"></script>
+	<script type="text/javascript" language="JavaScript" src="/sakai-assignment2-tool/content/js/thickbox.js"></script>
+	<script type="text/javascript" language="JavaScript" src="/sakai-assignment2-tool/content/js/jquery.color.js"></script>
+	<link href="/sakai-assignment2-tool/content/css/thickbox.css" type="text/css" rel="stylesheet" media="all" />
+	
+</head>
+<body>
+	<div rsf:id="page-replace:" class="portletBody">
+	
+	</div>
+</body>
+<script type="text/javascript" rsf:id="iframeId_init">
+//set in producer
+//iframeId = blah
+</script>
+<script type="text/javascript">
+//Add a listener to the document window so that every time it resizes
+// we adjust the main frame height auto-magically without having to
+// even worry abouts it anymores
+catchResize = function(){
+	//first unbind so as to not form an infinite looop
+	$(window).unbind('resize');
+	
+	height = $(document).height();
+	$("#" + iframeId, parent.document).height(height);
+	
+	//now bind back
+	$(window).resize(catchResize);
+}
+
+$(window).resize(catchResize);
+
+//now the fun one, add an event listener so that if a DOM node is modified
+// it will adjust the main frame height.  This way, if we make browser side
+// DOM modifications, we do not have to call setMainFrameHeight every time
+document.addEventListener("DOMAttrModified", catchResize, false);
+</script>
+</html>

@@ -137,10 +137,6 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
     			"fragAttachPath=\"" + externalLogic.getAssignmentViewUrl(FragmentAttachmentsProducer.VIEW_ID) + "\";\n" +
     					"fragGBPath=\"" + externalLogic.getAssignmentViewUrl(FragmentAssignment2SelectProducer.VIEW_ID) + "\";");
     	
-    	//Initialize iframeId var
-        String frameId = org.sakaiproject.util.Web.escapeJavascript("Main" + org.sakaiproject.tool.cover.ToolManager.getCurrentPlacement().getId());
-        UIVerbatim.make(tofill, "iframeId_init", "var iframeId = \"" + frameId + "\";");
-    	
         UIForm form = UIForm.make(tofill, "assignment_form");
         
     	//Setting up Dates

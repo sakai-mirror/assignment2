@@ -62,6 +62,13 @@
       <property name="templateNames" value="Messages,Pager,SortHeader,AttachmentList,GradebookDetails,StudentViewAssignment" />
    </bean>
    
+   <!-- Register the template "layout.html" as defining root layout for
+       each page in the application (extension is auto-inferred from view type),
+       base directory is defaulted from "defaultTemplatePath" -> content/templates/ -->
+  	<bean parent="rootTemplateContributorParent">
+    	<property name="templateNames" value="Layout"/>
+  	</bean>
+   
    <!-- The beans listed here are session beans (they stick around) -->
 	<bean id="myBeanScope" parent="beanScopeParent">
 		<property name="copyPreservingBeans" value="PreviewAssignmentBean,PreviewAssignmentSubmissionBean" />

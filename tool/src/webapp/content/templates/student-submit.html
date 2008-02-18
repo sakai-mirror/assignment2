@@ -4,31 +4,19 @@
 <head>
    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 
-   <title rsf:id="page-title">Assignments</title>
-
-	<script type="text/javascript" language="JavaScript" src="/library/js/headscripts.js"></script>
-	<!-- vm/editor/FCKeditor/sakai_header.vm -->
-	<script type="text/javascript" src="/library/editor/FCKeditor/fckeditor.js"></script> 
-
+   <title rsf:id="msg=assignment2.title">Assignments</title>
     <link href="/library/skin/tool_base.css" type="text/css" rel="stylesheet" media="all"/>
     <link href="/library/skin/default/tool.css" type="text/css" rel="stylesheet" media="all"/>
-    <script type="text/javascript" language="JavaScript" src="/library/js/headscripts.js"></script>
-    <script type="text/javascript" language="JavaScript" src="/sakai-assignment2-tool/content/js/jquery-1.2.1.js"></script>
 	<link href="/sakai-assignment2-tool/content/css/assignmentsv4.css" type="text/css" rel="stylesheet" media="all" />
-	<script type="text/javascript" language="JavaScript" src="/sakai-assignment2-tool/content/js/assignment.js"></script>
-	<script type="text/javascript" language="JavaScript" src="/sakai-assignment2-tool/content/js/thickbox.js"></script>
-	<script type="text/javascript" language="JavaScript" src="/sakai-assignment2-tool/content/js/jquery.color.js"></script>
-	<link href="/sakai-assignment2-tool/content/css/thickbox.css" type="text/css" rel="stylesheet" media="all" />
-
 </head>
-<body>
 
-<div rsf:id="portletBody:" class="portletBody">
-<!--  done in StudentViewAssignmentRenderer -->
-</div>
-<script type="text/javascript" rsf:id="iframeId_init">
-//set in producer
-</script>
+<body>
+<!--  everything outside of rsf:id="page:" is set in Layout.html using outerPageTemplates -->
+
+<div rsf:id="page:" class="portletBody">
+	<div rsf:id="portletBody:">
+	<!--  done in StudentViewAssignmentRenderer -->
+	</div>
 <script type="text/javascript" rsf:id="attachment-ajax-init">
 //done in producer
 // otpkey = some value
@@ -46,5 +34,6 @@ function refresh_ajax(){
 }
 //]]>
 </script>
+</div>
 </body>
 </html>

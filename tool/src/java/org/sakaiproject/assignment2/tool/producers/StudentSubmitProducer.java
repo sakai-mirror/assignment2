@@ -1,3 +1,4 @@
+
 package org.sakaiproject.assignment2.tool.producers;
 
 import java.util.ArrayList;
@@ -86,10 +87,7 @@ public class StudentSubmitProducer implements ViewComponentProducer, NavigationC
     	//Initialize js otpkey
     	UIVerbatim.make(tofill, "attachment-ajax-init", "otpkey=\"" + org.sakaiproject.util.Web.escapeUrl(ASOTPKey) + "\";\n" +
     			"fragAttachPath=\"" + externalLogic.getAssignmentViewUrl(FragmentAttachmentsProducer.VIEW_ID) + "\";\n");
-    	//Init JS
-        String frameId = org.sakaiproject.util.Web.escapeJavascript("Main" + org.sakaiproject.tool.cover.ToolManager.getCurrentPlacement().getId());
-        UIVerbatim.make(tofill, "iframeId_init", "var iframeId = \"" + frameId + "\";");	
-    	
+   	
     }
 	
 	public List reportNavigationCases() {

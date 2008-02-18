@@ -145,6 +145,10 @@
    </bean>
    
    <bean class="org.sakaiproject.assignment2.tool.producers.AuthorizationFailedProducer" />
+   
+   <bean id="pageProducer" class="org.sakaiproject.assignment2.tool.producers.LayoutProducer">
+      <property name="pageProducer" ref="pageBasicProducer"/>
+   </bean>
 
 
    <!--  AJAX Fragment Producers -->

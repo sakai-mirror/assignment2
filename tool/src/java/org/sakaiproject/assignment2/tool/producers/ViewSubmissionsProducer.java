@@ -226,10 +226,6 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
         UIMessage.make(tofill, "assignment_details.instructions_header", "assignment2.assignment_grade-assignment.assignment_details.instructions");
         UIVerbatim.make(tofill, "assignment_details.instructions", assignment.getInstructions());
         UIMessage.make(tofill, "assignment_details.attachments_header", "assignment2.assignment_grade-assignment.assignment_details.attachments");
-        
-        //Init JS
-        String frameId = org.sakaiproject.util.Web.escapeJavascript("Main" + org.sakaiproject.tool.cover.ToolManager.getCurrentPlacement().getId());
-        UIVerbatim.make(tofill, "iframeId_init", "var iframeId = \"" + frameId + "\";");
     	
         attachmentListRenderer.makeAttachmentFromAssignmentAttachmentSet(tofill, "attachment_list:", params.viewID, 
         		assignment.getAttachmentSet(), Boolean.FALSE);

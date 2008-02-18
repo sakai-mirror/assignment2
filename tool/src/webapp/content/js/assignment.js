@@ -37,7 +37,7 @@ function useValue(value){
    newValue = value;
 }
 function changeValue(){   
-	el = $("select[name='gradebook_item-selection']").get(0);
+	el = $("select[name='page-replace\:\:gradebook_item-selection']").get(0);
 	if(el){
       for(i=0;i<el.length;i++){
          if(el.options[i].text == newValue){
@@ -45,31 +45,29 @@ function changeValue(){
          }
       }
    }
-   $("input[type='radio'][value='false'][name='ungraded-selection']").get(0).checked=true;
+   $("input[type='radio'][value='false'][name='page-replace\:\:ungraded-selection']").get(0).checked=true;
    gradebook_toggle();
    update_due_date();
 }
 
 gradebook_toggle = function(){
-	el = $("input[type='radio'][value='true'][name='ungraded-selection']").get(0);
+	el = $("input[type='radio'][value='true'][name='page-replace\:\:ungraded-selection']").get(0);
 	if(el){
 	if (el && el.checked) {
 		$('.due_date').show(); $('.gradebook_item_due_date').hide();
 	} else {
 		$('.due_date').hide(); $('.gradebook_item_due_date').show();
 	}
-	a2SetMainFrameHeight();
 	}
 }
 
 groups_toggle = function(){
-	el = $("input[type='radio'][value='false'][name='access_select-selection']").get(0);
+	el = $("input[type='radio'][value='false'][name='page-replace\:\:access_select-selection']").get(0);
 	if (el && el.checked) {
 		$('li#groups_table_li').hide();
 	} else {
 		$('li#groups_table_li').show();
 	}
-	a2SetMainFrameHeight();
 }
 
 function toggle_group_checkboxes(check_all_box){
@@ -81,7 +79,7 @@ function toggle_group_checkboxes(check_all_box){
 }
 
 function update_due_date(){
-	id = $("select[name='gradebook_item-selection']").val();
+	id = $("select[name='page-replace\:\:gradebook_item-selection']").val();
 	id = id==""?null:id;
 	$("li.gradebook_item_due_date > span").html(gradebook_items_date[id]);
 	$("li.gradebook_item_due_date p.instruction a").each(function(){
@@ -97,7 +95,7 @@ function update_due_date(){
 }
 
 function show_due_date(){
-	el = $("input:checkbox[name='require_due_date']").get(0);
+	el = $("input:checkbox[name='page-replace\:\:require_due_date']").get(0);
 	if (el) {
 		if (el.checked) {
 			$(el).parents("fieldset:first").next('div').show();
@@ -105,11 +103,10 @@ function show_due_date(){
 			$(el).parents("fieldset:first").next('div').hide();
 		}
 	}
-	a2SetMainFrameHeight();
 }
 
 function show_accept_until(){
-	el = $("input:checkbox[name='require_accept_until']").get(0);
+	el = $("input:checkbox[name='page-replace\:\:require_accept_until']").get(0);
 	if (el){
 		if(el.checked){
 			$(el).parents("fieldset:first").next('div').show();
@@ -120,18 +117,16 @@ function show_accept_until(){
 		}
 		
 	}
-	a2SetMainFrameHeight();
 }
 
 function update_resubmit_until(){
-	el = $("input:checkbox[@name='resubmit_until']").get(0);
+	el = $("input:checkbox[@name='page-replace\:\:resubmit_until']").get(0);
 	if (el){
 	if (el.checked) {
 		$(".resubmit_until_toggle").show();
 	} else {
 		$(".resubmit_until_toggle").hide();
 	}
-	a2SetMainFrameHeight();
 	}
 }
 

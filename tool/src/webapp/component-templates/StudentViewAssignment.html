@@ -155,7 +155,6 @@
 	//<![CDATA[
 	function slide_submission(img){
 		$(img).parent('h4').next('div').toggle();
-		a2SetMainFrameHeight();
 		if(img.src.match('collapse')){
 			img.src=img.src.replace(/collapse/, 'expand');
 		}else{
