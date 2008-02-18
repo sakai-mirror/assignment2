@@ -21,10 +21,6 @@
 
 package org.sakaiproject.assignment2.logic.impl;
 
-import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -35,14 +31,10 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
-import org.sakaiproject.assignment2.model.AttachmentBase;
 import org.sakaiproject.assignment2.model.SubmissionAttachment;
 import org.sakaiproject.assignment2.model.SubmissionAttachmentBase;
 import org.sakaiproject.assignment2.model.FeedbackAttachment;
@@ -56,17 +48,6 @@ import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
 import org.sakaiproject.assignment2.logic.utils.ComparatorsUtils;
 import org.sakaiproject.assignment2.dao.AssignmentDao;
-import org.sakaiproject.content.api.ContentHostingService;
-import org.sakaiproject.content.api.ContentResource;
-import org.sakaiproject.entity.api.Entity;
-import org.sakaiproject.entity.api.ResourceProperties;
-import org.sakaiproject.exception.IdUnusedException;
-import org.sakaiproject.exception.PermissionException;
-import org.sakaiproject.exception.ServerOverloadException;
-import org.sakaiproject.exception.TypeException;
-import org.sakaiproject.util.FormattedText;
-import org.sakaiproject.util.StringUtil;
-import org.sakaiproject.util.Validator;
 import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException;
 import org.hibernate.StaleObjectStateException;
 
@@ -98,11 +79,6 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
     private AssignmentPermissionLogic permissionLogic;
     public void setPermissionLogic(AssignmentPermissionLogic permissionLogic) {
         this.permissionLogic = permissionLogic;
-    }
-    
-    private ContentHostingService contentHostingService;
-    public void setContentHostingService(ContentHostingService contentHostingService) {
-    	this.contentHostingService = contentHostingService;
     }
     
 	public void init(){
@@ -901,224 +877,6 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
             throw new StaleObjectModificationException(holfe);
 		}
 	}
-
-	public void getSubmissionsZip(OutputStream outputStream, Assignment2 assignment, String feedbackDir, String submDir, Map<String, String> headers) throws PermissionException
-	  {
-	    String assignmentId = assignment.getId().toString();
-	    if (log.isDebugEnabled()) log.debug(this + ": getSubmissionsZip reference=" + assignmentId);
-
-	    List<AssignmentSubmission> submissions = getViewableSubmissionsForAssignmentId(assignment.getId());
-
-	    StringBuilder exceptionMessage = new StringBuilder();
-	    if (gradebookLogic.isCurrentUserAbleToGrade(assignment.getContextId()))
-	    {
-	      zipSubmissions(assignment, submissions.iterator(), outputStream, exceptionMessage, feedbackDir, submDir, headers);
-
-	      if (exceptionMessage.length() > 0)
-	      {
-	        // log any error messages
-	        if (log.isDebugEnabled())
-	          log.debug(this + assignmentId + exceptionMessage.toString());
-	      }
-	    }
-	  } // getSubmissionsZip
-	
-	protected void zipSubmissions(Assignment2 assignment, Iterator<AssignmentSubmission> submissions, OutputStream outputStream, StringBuilder exceptionMessage, String feedbackDir, String submDir, Map<String, String> headers)
-	{
-	  String assignmentTitle = assignment.getTitle();
-	  //String assignmentId = assignment.getAssignmentId().toString();
-	  String gradeTypeString = "fixme";
-	  try
-	  {
-	    ZipOutputStream out = new ZipOutputStream(outputStream);
-
-	    // create the folder structure - named after the assignment's title
-	    String root = Validator.escapeZipEntry(assignmentTitle) + Entity.SEPARATOR;
-
-	    String submittedText = "";
-	    if (!submissions.hasNext())
-	    {
-	      exceptionMessage.append("There is no submission yet. ");
-	    }
-
-	    // the buffer used to store grade information
-	    StringBuilder gradesBuilder = new StringBuilder(assignmentTitle + "," + gradeTypeString + "\n\n");
-	    gradesBuilder.append(headers.get("id") + "," +
-	        headers.get("eid") + "," +
-	        headers.get("lastname") + "," +
-	        headers.get("firstname") + "," +
-	        headers.get("grade") + "\n");
-
-	    // Create the ZIP file
-	    String submittersName = "";
-	    int count = 1;
-	    while (submissions.hasNext())
-	    {
-	      AssignmentSubmission s = (AssignmentSubmission) submissions.next();
-	      String userId = (String) s.getUserId();
-	      AssignmentSubmissionVersion sv = getCurrentSubmissionByAssignmentIdAndStudentId(assignment.getId(), userId).getCurrentSubmissionVersion();
-
-	      if (sv.getSubmittedTime() != null)
-	      {
-	        String name = externalLogic.getUserDisplayName(userId);
-	        String fullName = externalLogic.getUserFullName(userId);
-	        String submittersString = name + "(" + userId + ")";
-	        gradesBuilder.append(name + "," + userId + "," + fullName + "," + s.getGradebookGrade() + "\n");
-
-	        if (StringUtil.trimToNull(submittersString) != null)
-	        {
-	          submittersName = submittersName.concat(StringUtil.trimToNull(submittersString));
-	          submittedText = sv.getSubmittedText();
-
-	          boolean added = false;
-	          while (!added)
-	          {
-	            try
-	            {
-	              submittersName = submittersName.concat("/");
-	              // create the folder structure - named after the submitter's name
-	              if (submittedText != null && submittedText != "")
-	              {
-	                // create the text file only when a text submission is allowed
-	                ZipEntry textEntry = new ZipEntry(submittersName + submittersString + "_submissionText.txt");
-	                out.putNextEntry(textEntry);
-	                byte[] text = submittedText.getBytes();
-	                out.write(text);
-	                textEntry.setSize(text.length);
-	                out.closeEntry();
-	              }
-
-	              // Write the timestamp for the submission
-	              ZipEntry textEntry = new ZipEntry(submittersName + "timestamp.txt");
-	              out.putNextEntry(textEntry);
-	              byte[] b = (sv.getSubmittedTime().toString()).getBytes();
-	              out.write(b);
-	              textEntry.setSize(b.length);
-	              out.closeEntry();
-
-	              // the comments.txt file to show instructor's comments
-	              ZipEntry ctextEntry = new ZipEntry(submittersName + "comments.txt");
-	              out.putNextEntry(ctextEntry);
-	              byte[] cb = FormattedText.encodeUnicode(sv.getFeedbackNotes()).getBytes();
-	              out.write(cb);
-	              ctextEntry.setSize(cb.length);
-	              out.closeEntry();
-
-	              // create an attachment folder for the feedback attachments
-	              String feedbackSubAttachmentFolder = submittersName + feedbackDir + "/";
-	              ZipEntry feedbackSubAttachmentFolderEntry = new ZipEntry(feedbackSubAttachmentFolder);
-	              out.putNextEntry(feedbackSubAttachmentFolderEntry);
-	              out.closeEntry();
-
-	              // create a attachment folder for the submission attachments
-	              String sSubAttachmentFolder = submittersName + submDir + "/";
-	              ZipEntry sSubAttachmentFolderEntry = new ZipEntry(sSubAttachmentFolder);
-	              out.putNextEntry(sSubAttachmentFolderEntry);
-	              out.closeEntry();
-	              // add all submission attachment into the submission attachment folder
-	              zipAttachments(out, submittersName, sSubAttachmentFolder, sv.getSubmissionAttachSet());
-	              // add all feedback attachment folder
-	              zipAttachments(out, submittersName, feedbackSubAttachmentFolder, sv.getFeedbackAttachSet());
-
-	              added = true;
-	            }
-	            catch (IOException e)
-	            {
-	              exceptionMessage.append("Can not establish the IO to create zip file for user "
-	                  + submittersName);
-	              log.debug(this + ": getSubmissionsZip--IOException unable to create the zip file for user"
-	                  + submittersName);
-	              submittersName = submittersName.substring(0, submittersName.length() - 1) + "_" + count++;
-	            }
-	          } //while
-	        } // if
-	      } // if
-	    } // while -- there is submission
-
-	    // create a grades.csv file into zip
-	    ZipEntry gradesCSVEntry = new ZipEntry(root + "grades.csv");
-	    out.putNextEntry(gradesCSVEntry);
-	    byte[] grades = gradesBuilder.toString().getBytes();
-	    out.write(grades);
-	    gradesCSVEntry.setSize(grades.length);
-	    out.closeEntry();
-
-	    // Complete the ZIP file
-	    out.finish();
-	    out.flush();
-	    out.close();
-	  }
-	  catch (IOException e)
-	  {
-	    exceptionMessage.append("Can not establish the IO to create zip file. ");
-	    log.debug(this + ": getSubmissionsZip--IOException unable to create the zip file for assignment "
-	        + assignmentTitle);
-	  }
-	}
-	
-	private void zipAttachments(ZipOutputStream out, String submittersName, String sSubAttachmentFolder, Set<? extends AttachmentBase> attachments) {
-		  int attachedUrlCount = 0;
-		  for (AttachmentBase r : attachments)
-		  {
-		    
-		    try
-		    {
-		      ContentResource resource = contentHostingService.getResource(r.getAttachmentReference());
-
-		      String contentType = resource.getContentType();
-
-		      ResourceProperties props = resource.getProperties();
-		      String displayName = props.getPropertyFormatted(props.getNamePropDisplayName());
-
-		      // for URL content type, encode a redirect to the body URL
-		      if (contentType.equalsIgnoreCase(ResourceProperties.TYPE_URL))
-		      {
-		        displayName = "attached_URL_" + attachedUrlCount;
-		        attachedUrlCount++;
-		      }
-
-		      // buffered stream input
-		      InputStream content = resource.streamContent();
-		      byte data[] = new byte[1024 * 10];
-		      BufferedInputStream bContent = new BufferedInputStream(content, data.length);
-
-		      ZipEntry attachmentEntry = new ZipEntry(sSubAttachmentFolder + displayName);
-		      out.putNextEntry(attachmentEntry);
-		      int bCount = -1;
-		      while ((bCount = bContent.read(data, 0, data.length)) != -1)
-		      {
-		        out.write(data, 0, bCount);
-		      }
-		      out.closeEntry();
-		      content.close();
-		    }
-		    catch (PermissionException e)
-		    {
-		      log.debug(this + ": getSubmissionsZip--PermissionException submittersName="
-		          + submittersName + " attachment reference=" + r);
-		    }
-		    catch (IdUnusedException e)
-		    {
-		      log.debug(this + ": getSubmissionsZip--IdUnusedException submittersName="
-		          + submittersName + " attachment reference=" + r);
-		    }
-		    catch (TypeException e)
-		    {
-		      log.debug(this + ": getSubmissionsZip--TypeException: submittersName="
-		          + submittersName + " attachment reference=" + r);
-		    }
-		    catch (IOException e)
-		    {
-		      log.debug(this + ": getSubmissionsZip--IOException: Problem in creating the attachment file: submittersName="
-		              + submittersName + " attachment reference=" + r);
-		    }
-		    catch (ServerOverloadException e)
-		    {
-		      log.debug(this + ": getSubmissionsZip--ServerOverloadException: submittersName="
-		          + submittersName + " attachment reference=" + r);
-		    }
-		  } // for
-		}
 	
 	/**
 	 * when retrieving a submission and/or version, some fields may be restricted

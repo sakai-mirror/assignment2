@@ -195,4 +195,11 @@ public interface ExternalGradebookLogic {
 	 * @param assignment
 	 */
 	public void populateGradebookItemDetailsForAssignment(String contextId, Assignment2 assignment);
+
+	/**
+	 * 
+	 * @param contextId
+	 * @return the type of grade
+	 */
+	public String getGradeType(String contextId);
 }

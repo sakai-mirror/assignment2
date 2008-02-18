@@ -75,6 +75,8 @@ public class LocalPermissionLogic {
 			
 		} else if (FragmentSubmissionPreviewProducer.VIEW_ID.equals(viewId)) {
 			return permissionLogic.isCurrentUserAbleToSubmit(contextId);
+		} else if ("zipSubmissions".equals(viewId)) {
+			return permissionLogic.isUserAbleToAccessInstructorView(contextId);
 		}
 		
 		//Here are some RSF Generic always true viewIds

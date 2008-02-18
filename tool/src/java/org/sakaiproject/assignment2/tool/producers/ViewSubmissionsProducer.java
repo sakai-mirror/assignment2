@@ -10,6 +10,7 @@ import org.sakaiproject.assignment2.tool.beans.AssignmentSubmissionBean;
 import org.sakaiproject.assignment2.tool.params.AssignmentViewParams;
 import org.sakaiproject.assignment2.tool.params.ViewSubmissionsViewParams;
 import org.sakaiproject.assignment2.tool.params.GradeViewParams;
+import org.sakaiproject.assignment2.tool.params.ZipViewParams;
 import org.sakaiproject.assignment2.tool.producers.renderers.PagerRenderer;
 import org.sakaiproject.assignment2.tool.producers.renderers.SortHeaderRenderer;
 import org.sakaiproject.assignment2.tool.producers.renderers.AttachmentListRenderer;
@@ -124,6 +125,9 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
 		        UILink helplink = UIInternalLink.make(tofill, "gradebook_item_edit_helper",
 		        		UIMessage.make("assignment2.assignment_grade-assignment.gradebook_helper"),
 		        		url);
+		        ZipViewParams zvp = new ZipViewParams("zipSubmissions", assignment.getId());
+		        UILink downloadall = UIInternalLink.make(tofill, "downloadall",
+		        		UIMessage.make("assignment2.assignment_grade-assignment.downloadall.button"), zvp);
 	        }
         }
         

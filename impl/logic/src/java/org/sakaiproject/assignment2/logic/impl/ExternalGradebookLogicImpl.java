@@ -46,6 +46,7 @@ import org.sakaiproject.service.gradebook.shared.AssessmentNotFoundException;
 import org.sakaiproject.service.gradebook.shared.Assignment;
 import org.sakaiproject.service.gradebook.shared.CommentDefinition;
 import org.sakaiproject.service.gradebook.shared.GradeDefinition;
+import org.sakaiproject.tool.gradebook.Gradebook;
 
 
 /**
@@ -407,5 +408,12 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
     		}
     	}
     }
+
+	public String getGradeType(String contextId)
+	{
+		Gradebook gb = (Gradebook) gradebookService.getGradebook(contextId);
+		Integer i = new Integer(gb.getGrade_type());
+		return i.toString();
+	}
 
 }
