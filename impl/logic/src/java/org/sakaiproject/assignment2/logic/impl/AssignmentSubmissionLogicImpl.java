@@ -247,9 +247,9 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		// this version until it is submitted
 		
 		// retrieve the latest submission for this user and assignment
-		AssignmentSubmission submission = dao.getSubmissionWithVersionHistoryForStudentAndAssignment(userId, assignment);
+		AssignmentSubmission submission = getAssignmentSubmissionForStudentAndAssignment(assignment, userId);
 		AssignmentSubmissionVersion version = null;
-		Set<SubmissionAttachment> attachToDelete = null;
+
 		boolean isAnUpdate = false;
 		
 		if (submission == null) {
@@ -267,20 +267,6 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			if (version != null && version.getSubmittedTime() == null) {
 				
 				isAnUpdate = true;
-				
-				// let's make sure the subAttachSet isn't pointing to the
-				// persistent objects
-				if (subAttachSet != null && !subAttachSet.isEmpty()) {
-					for (Iterator attachIter = subAttachSet.iterator(); attachIter.hasNext();) {
-						SubmissionAttachment attach = (SubmissionAttachment) attachIter.next();
-						if (attach != null) {
-							attach = SubmissionAttachment.deepCopy(attach);
-						}
-					}
-				}
-				
-				// identify any attachments that were removed from this version
-				attachToDelete = identifyAttachmentsToDelete(version.getSubmissionAttachSet(), subAttachSet);
 				
 			} else {
 				// we need to create a new version for this submission
@@ -308,10 +294,15 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			// to allow instructor to provide inline comments for submitted text
 			version.setAnnotatedText(submittedText);
 		}
-
-		// make sure the version was populated on the SubmissionAttachments
-		populateVersionForAttachmentSet(subAttachSet, version);
-		//version.setSubmissionAttachSet(subAttachSet);
+		
+		// identify any attachments that were deleted or need to be created
+		// - we don't update attachments
+		Set attachToDelete = identifyAttachmentsToDelete(version.getSubmissionAttachSet(), subAttachSet);
+		Set attachToCreate = identifyAttachmentsToCreate(subAttachSet);
+		
+		// make sure the version was populated on the FeedbackAttachments
+		populateVersionForAttachmentSet(attachToCreate, version);
+		populateVersionForAttachmentSet(attachToDelete, version);
 
 		try {
 
@@ -321,12 +312,124 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			Set<AssignmentSubmission> submissionSet = new HashSet();
 			submissionSet.add(submission);
 			
-			if (subAttachSet == null) {
-				subAttachSet = new HashSet();
+			if (attachToCreate == null) {
+				attachToCreate = new HashSet();
 			}
 
-			dao.saveMixedSet(new Set[] {submissionSet, versionSet, subAttachSet});
-			if (log.isDebugEnabled()) log.debug("Updated/Added student submission version " + version.getId() + " for user " + submission.getUserId() + " for assignment " + submission.getAssignment().getTitle()+ " ID: " + submission.getAssignment().getId());
+			dao.saveMixedSet(new Set[] {submissionSet, versionSet, attachToCreate});
+			if (log.isDebugEnabled()) log.debug("Updated/Added student submission version " + 
+					version.getId() + " for user " + submission.getUserId() + " for assignment " + 
+					submission.getAssignment().getTitle()+ " ID: " + submission.getAssignment().getId());
+			if (log.isDebugEnabled()) log.debug("New submission attachments created: " + attachToCreate.size());
+
+			if (attachToDelete != null && !attachToDelete.isEmpty()) {
+				dao.deleteSet(attachToDelete);
+				if (log.isDebugEnabled()) log.debug("Removed " + attachToDelete.size() + 
+						"sub attachments deleted for updated version " + 
+						version.getId() + " by user " + currentUserId);
+			}
+
+		} catch (HibernateOptimisticLockingFailureException holfe) {
+			if(log.isInfoEnabled()) log.info("An optimistic locking failure occurred while attempting to update submission version" + version.getId());
+			throw new StaleObjectModificationException(holfe);
+		} catch (StaleObjectStateException sose) {
+			if(log.isInfoEnabled()) log.info("An optimistic locking failure occurred while attempting to update submission version" + version.getId());
+			throw new StaleObjectModificationException(sose);
+		}
+
+	}
+	
+	public void saveInstructorFeedback(Long versionId, String studentId, Assignment2 assignment, 
+			String annotatedText, String feedbackNotes, Date releasedTime, Set feedbackAttachSet) {
+		
+		if (studentId == null || assignment == null) {
+			throw new IllegalArgumentException("Null studentId or assignment passed" +
+					"to saveInstructorFeedback");
+		}
+		
+		Date currentTime = new Date();
+		String currentUserId = externalLogic.getCurrentUserId();
+		String contextId = externalLogic.getCurrentContextId();
+		
+		if (!permissionLogic.isUserAbleToProvideFeedbackForStudentForAssignment(studentId, assignment)) {
+			throw new SecurityException("User " + currentUserId + 
+					" attempted to submit feedback for student " + studentId + " without authorization");
+		}
+		
+		// let's retrieve the student's submission
+		AssignmentSubmission submission = getAssignmentSubmissionForStudentAndAssignment(assignment, studentId);
+		
+		if (submission != null && versionId == null) {
+			throw new IllegalArgumentException("Null versionId passed to saveInstructorFeedback " +
+					"even though a submission exists for this student");
+		}
+		
+		if (submission == null) {
+			submission = new AssignmentSubmission(assignment, studentId);
+		}
+		
+		AssignmentSubmissionVersion version = null;
+		boolean newVersion = false;
+		
+		// let's try to retrieve the version to update
+		if (versionId != null) {
+			version = dao.getAssignmentSubmissionVersionByIdWithAttachments(versionId);
+			if (version != null) {
+				// double check that this version matches the student and assignment
+				if (!(version.getAssignmentSubmission().getUserId().equals(studentId) &&
+						version.getAssignmentSubmission().getAssignment().getId().equals(assignment.getId()))) {
+					throw new IllegalArgumentException("The versionId passed is not" +
+							" associated with the given student and assignment");
+				}
+				
+			} else {
+				throw new IllegalArgumentException("No version exists with the given versionId: " + versionId);
+			}
+		} else {
+			// if null, we should be creating a new version b/c the instructor
+			// wants to provide feedback but the student has not made a submission
+			version = new AssignmentSubmissionVersion();
+			newVersion = true;
+		}
+		
+		version.setAssignmentSubmission(submission);
+		version.setAnnotatedText(annotatedText);
+		version.setFeedbackNotes(feedbackNotes);
+		version.setReleasedTime(releasedTime);
+		version.setLastFeedbackSubmittedBy(currentUserId);
+		version.setLastFeedbackTime(currentTime);
+		
+		if (newVersion) {
+			version.setCreatedBy(currentUserId);
+			version.setCreatedTime(currentTime);
+			version.setDraft(false);
+		}
+		
+		// identify any attachments that were deleted
+		Set attachToDelete = identifyAttachmentsToDelete(version.getFeedbackAttachSet(), feedbackAttachSet);
+		Set attachToCreate = identifyAttachmentsToCreate(feedbackAttachSet);
+		
+		// make sure the version was populated on the FeedbackAttachments
+		populateVersionForAttachmentSet(attachToCreate, version);
+		populateVersionForAttachmentSet(attachToDelete, version);
+
+		try {
+
+			Set<AssignmentSubmissionVersion> versionSet = new HashSet();
+			versionSet.add(version);
+
+			Set<AssignmentSubmission> submissionSet = new HashSet();
+			submissionSet.add(submission);
+			
+			if (attachToCreate == null) {
+				attachToCreate = new HashSet();
+			}
+
+			dao.saveMixedSet(new Set[] {submissionSet, versionSet, attachToCreate});
+			if (log.isDebugEnabled()) log.debug("Updated/Added feedback for version " + 
+					version.getId() + " for user " + submission.getUserId() + " for assignment " + 
+					submission.getAssignment().getTitle()+ " ID: " + submission.getAssignment().getId());
+			if (log.isDebugEnabled()) log.debug("Created feedbackAttachments: " + attachToCreate.size());
 
 			if (attachToDelete != null && !attachToDelete.isEmpty()) {
 				dao.deleteSet(attachToDelete);
@@ -340,127 +443,6 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			if(log.isInfoEnabled()) log.info("An optimistic locking failure occurred while attempting to update submission version" + version.getId());
 			throw new StaleObjectModificationException(sose);
 		}
-
-	}
-	
-	public void saveInstructorFeedback(AssignmentSubmissionVersion version) {
-		if (version == null) {
-			throw new IllegalArgumentException("null version passed to saveInstructorFeedback");
-		}
-		
-		AssignmentSubmission submission = version.getAssignmentSubmission();
-		if (submission == null) {
-			throw new IllegalArgumentException("no submission associated with the given version");
-		}
-		
-		if (submission.getAssignment() == null) {
-			throw new IllegalArgumentException("no assignment was associated with this version's submission");
-		}
-		
-		if (!permissionLogic.isUserAbleToProvideFeedbackForStudentForAssignment(submission.getUserId(), submission.getAssignment())) {
-			throw new SecurityException("User " + externalLogic.getCurrentUserId() + " attempted to submit feedback for student " + submission.getUserId() + " without authorization");
-		}
-		
-		Date currentTime = new Date();
-		String currentUserId = externalLogic.getCurrentUserId();
-		
-		// the instructor is submitting feedback even though the student has
-		// not made a submission
-		if (submission.getId() == null) {
-			// we need to check that this submission doesn't already exist
-			List submissions = dao.findByProperties(AssignmentSubmission.class, 
-					new String[] {"userId", "assignment"}, new Object[] {submission.getUserId(), submission.getAssignment()});
-			if (submissions != null && submissions.size() > 0) {
-				throw new SubmissionExistsException("User " + currentUserId + " attempted to save a duplicate " +
-						"submission rec for userId " + submission.getUserId() + " and assignment " + submission.getAssignment().getId());
-			}
-		} 
-
-		if (version.getId() != null) {
-			// instructor is providing feedback on the student's current version
-			try {
-				// make sure you use the dao method b/c the logic method does not populate
-				// submission info if draft
-				AssignmentSubmissionVersion existingVersion = dao.getAssignmentSubmissionVersionByIdWithAttachments(version.getId());
-				if (existingVersion == null) {
-					throw new IllegalArgumentException("No version exists with id " + version.getId());
-				}
-				
-				// identify the removed attachments before we start modifying the 
-				// existing version
-				Set<FeedbackAttachment> attachToDelete = 
-					identifyAttachmentsToDelete(existingVersion.getFeedbackAttachSet(), version.getFeedbackAttachSet());
-				
-				// we will update the existing version to prevent overwriting 
-				// non-feedback fields accidentally
-				existingVersion.setReleasedTime(version.getReleasedTime());
-				existingVersion.setAnnotatedText(version.getAnnotatedText());
-				existingVersion.setFeedbackNotes(version.getFeedbackNotes());
-				existingVersion.setLastFeedbackSubmittedBy(currentUserId);
-				existingVersion.setLastFeedbackTime(currentTime);
-				
-				Set<FeedbackAttachment> attachSet = new HashSet();
-				if (version.getFeedbackAttachSet() != null) {
-					attachSet = version.getFeedbackAttachSet();
-					populateVersionForAttachmentSet(attachSet, existingVersion);
-				}
-				
-				Set<AssignmentSubmissionVersion> versionSet = new HashSet();
-				versionSet.add(existingVersion);
-				
-				Set<AssignmentSubmission> submissionSet = new HashSet();
-				submissionSet.add(submission);
-				
-				dao.saveMixedSet(new Set[] {submissionSet, versionSet, attachSet});
-				if (log.isDebugEnabled()) log.debug("Updated student submission version " + existingVersion.getId() + " for user " + submission.getUserId() + " for assignment " + submission.getAssignment().getTitle()+ " ID: " + submission.getAssignment().getId());
-				
-				if (attachToDelete != null && !attachToDelete.isEmpty()) {
-					dao.deleteSet(attachToDelete);
-					if (log.isDebugEnabled()) log.debug("Removed feedback attachments deleted for updated version " + version.getId() + " by user " + currentUserId);
-				}
-				
-			} catch (HibernateOptimisticLockingFailureException holfe) {
-				if(log.isInfoEnabled()) log.info("An optimistic locking failure occurred while attempting to update submission version" + version.getId());
-	            throw new StaleObjectModificationException(holfe);
-			} catch (StaleObjectStateException sose) {
-				if(log.isInfoEnabled()) log.info("An optimistic locking failure occurred while attempting to update submission version" + version.getId());
-				throw new StaleObjectModificationException(sose);
-			}
-			
-		} else {
-			// instructor is providing feedback but the student did not
-			// have a submission yet
-			AssignmentSubmissionVersion newVersion = new AssignmentSubmissionVersion();
-			newVersion.setAssignmentSubmission(submission);
-			newVersion.setDraft(Boolean.FALSE);
-			newVersion.setAnnotatedText(version.getAnnotatedText());
-			newVersion.setFeedbackNotes(version.getFeedbackNotes());
-			newVersion.setReleasedTime(version.getReleasedTime());
-			
-			newVersion.setLastFeedbackSubmittedBy(currentUserId);
-			newVersion.setLastFeedbackTime(currentTime);
-			
-			newVersion.setCreatedBy(externalLogic.getCurrentUserId());
-			newVersion.setCreatedTime(currentTime);
-			
-			// we need to handle attachments specially. The version must be persisted
-			// before attachment can be saved
-			Set<FeedbackAttachment> attachSet = new HashSet();
-			if (version.getFeedbackAttachSet() != null) {
-				attachSet = version.getFeedbackAttachSet();
-				populateVersionForAttachmentSet(attachSet, newVersion);
-			}
-			
-			Set<AssignmentSubmissionVersion> versionSet = new HashSet();
-			versionSet.add(newVersion);
-			
-			Set<AssignmentSubmission> submissionSet = new HashSet();
-			submissionSet.add(submission);
-			
-			dao.saveMixedSet(new Set[] {submissionSet, versionSet, attachSet});
-			if (log.isDebugEnabled()) log.debug("New submission version " + newVersion.getId() + " created by " + currentUserId + " via saveInstructorFeedback");
-		}
-	
 	}
 	
 	public List<AssignmentSubmission> getViewableSubmissionsForAssignmentId(Long assignmentId) {
@@ -627,6 +609,23 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		} 
 		
 		return attachToRemove;
+	}
+	
+	private Set identifyAttachmentsToCreate(Set updatedAttachSet) {
+		Set attachToCreate = new HashSet();
+		
+		if (updatedAttachSet != null) {
+			for (Iterator attachIter = updatedAttachSet.iterator(); attachIter.hasNext();) {
+				SubmissionAttachmentBase attach = (SubmissionAttachmentBase) attachIter.next();
+				if (attach != null) {
+					if (attach.getId() == null) {
+						attachToCreate.add(attach);
+					} 
+				}
+			}
+		} 
+		
+		return attachToCreate;
 	}
 	
 	public boolean submissionIsOpenForStudentForAssignment(String studentId, Long assignmentId) {
@@ -948,21 +947,43 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		}
 		
 		List<AssignmentSubmissionVersion> filteredVersionHistory = new ArrayList();
-		String currentUserId = externalLogic.getCurrentUserId();
-		
-		Set historySet = dao.getVersionHistoryForSubmission(submission);
-		if (historySet != null && !historySet.isEmpty()) {
-			for (Iterator vIter = historySet.iterator(); vIter.hasNext();) {
-				AssignmentSubmissionVersion version = (AssignmentSubmissionVersion) vIter.next();
-				if (version != null) {
-					AssignmentSubmissionVersion versionCopy = AssignmentSubmissionVersion.deepCopy(version);
-					filterOutRestrictedVersionInfo(versionCopy, currentUserId);
-					filteredVersionHistory.add(versionCopy);
-				}
-			}
+
+		// if id is null, this submission does not exist yet - will return empty
+		// version history
+		if (submission.getId() != null) {
+			String currentUserId = externalLogic.getCurrentUserId();
+
+			Set historySet = dao.getVersionHistoryForSubmission(submission);
+			if (historySet != null && !historySet.isEmpty()) {
+				for (Iterator vIter = historySet.iterator(); vIter.hasNext();) {
+					AssignmentSubmissionVersion version = (AssignmentSubmissionVersion) vIter.next();
+					if (version != null) {
+						AssignmentSubmissionVersion versionCopy = AssignmentSubmissionVersion.deepCopy(version);
+						filterOutRestrictedVersionInfo(versionCopy, currentUserId);
+						filteredVersionHistory.add(versionCopy);
+					}
+
+				}}
+		} else {
+			if (log.isDebugEnabled()) log.debug("Submission does not exist so no version history retrieved");
 		}
 		
+		Collections.sort(filteredVersionHistory, new ComparatorsUtils.VersionCreatedDateComparatorDesc());
+		
 		return filteredVersionHistory;
+	}
+	
+	private AssignmentSubmission getAssignmentSubmissionForStudentAndAssignment(Assignment2 assignment, String studentId) {
+		AssignmentSubmission submission = null;
+		
+		List<AssignmentSubmission> subList = dao.findByProperties(AssignmentSubmission.class, 
+				new String[] {"assignment", "userId"}, new Object[] {assignment, studentId});
+		
+		if (subList != null && subList.size() > 0) {
+			submission = (AssignmentSubmission) subList.get(0);
+		}
+		
+		return submission;
 	}
 
 }

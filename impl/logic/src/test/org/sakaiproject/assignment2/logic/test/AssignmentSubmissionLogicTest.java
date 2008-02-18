@@ -21,6 +21,7 @@
 package org.sakaiproject.assignment2.logic.test;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -35,6 +36,7 @@ import org.sakaiproject.assignment2.model.AssignmentGroup;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.model.SubmissionAttachment;
+import org.sakaiproject.assignment2.model.FeedbackAttachment;
 
 import org.sakaiproject.section.api.coursemanagement.CourseSection;
 import org.sakaiproject.section.api.coursemanagement.Course;
@@ -509,5 +511,105 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
     		submissionLogic.saveStudentSubmission(AssignmentTestDataLoad.STUDENT1_UID, testData.a4, true, null, null);
     		fail("did not catch student making submission to assignment that is restricted");
     	} catch(SecurityException se) {}
+    }
+    
+    public void testSaveInstructorFeedback() {
+    	// try a null studentId
+    	try {
+    		submissionLogic.saveInstructorFeedback(testData.st1a1CurrVersion.getId(), null, testData.a1, 
+    				null, null, null, null);
+    		fail("did not catch null studentId passed to saveInstructorFeedback");
+    	} catch (IllegalArgumentException iae) {}
+    	// try a null assignment
+    	try {
+    		submissionLogic.saveInstructorFeedback(testData.st1a1CurrVersion.getId(), 
+    				AssignmentTestDataLoad.STUDENT1_UID, null, null, null, null, null);
+    		fail("did not catch null assignment passed to saveInstructorFeedback");
+    	} catch (IllegalArgumentException iae) {}
+    	
+    	// try a versionId that doesn't exist
+    	try {
+    		submissionLogic.saveInstructorFeedback(new Long(12345), AssignmentTestDataLoad.STUDENT1_UID, 
+    				testData.a2, null, null, null, null);
+    		fail("did not catch passed versionId that does not exist to saveInstructorFeedback");
+    	} catch (IllegalArgumentException iae) {}
+    	
+    	// try a studentId not associated with the passed version
+    	try {
+    		submissionLogic.saveInstructorFeedback(testData.st1a1CurrVersion.getId(), AssignmentTestDataLoad.STUDENT2_UID, 
+    				testData.a1, null, null, null, null);
+    		fail("did not catch passed studentId not associated with the given versionId");
+    	} catch (IllegalArgumentException iae) {}
+    	
+    	// try an assignment not associated with the passed version
+    	try {
+    		submissionLogic.saveInstructorFeedback(testData.st1a1CurrVersion.getId(), AssignmentTestDataLoad.STUDENT1_UID, 
+    				testData.a2, null, null, null, null);
+    		fail("did not catch passed assignment not associated with the given versionId");
+    	} catch (IllegalArgumentException iae) {}
+    	
+    	// try a null version when submission already exists
+    	try {
+    		submissionLogic.saveInstructorFeedback(null, AssignmentTestDataLoad.STUDENT1_UID, 
+    				testData.a1, null, null, null, null);
+    		fail("did not catch null versionId even though submission exists for given student and assignment");
+    	} catch (IllegalArgumentException iae) {}
+    	
+    	// start as an instructor
+    	authn.setAuthnContext(AssignmentTestDataLoad.INSTRUCTOR_UID);
+    	
+    	// submit feedback for student w/o submission
+    	// student 1 has not submitted for a2 yet
+    	Set feedbackAttachSet = new HashSet();
+    	FeedbackAttachment fb1 = new FeedbackAttachment(null, "fb1");
+    	feedbackAttachSet.add(fb1);
+
+    	submissionLogic.saveInstructorFeedback(null, AssignmentTestDataLoad.STUDENT1_UID,
+    			testData.a2, null, "Please submit this soon!", new Date(), feedbackAttachSet);
+    	// try to retrieve it now
+    	AssignmentSubmission st1a2Submission = dao.getSubmissionWithVersionHistoryForStudentAndAssignment(AssignmentTestDataLoad.STUDENT1_UID, testData.a2);
+    	assertTrue(st1a2Submission.getUserId().equals(AssignmentTestDataLoad.STUDENT1_UID));
+    	Long st1a2SubId = st1a2Submission.getId();
+    	assertNotNull(st1a2SubId);
+    	
+    	AssignmentSubmissionVersion st1a2CurrVersion = dao.getCurrentSubmissionVersionWithAttachments(st1a2Submission);
+    	assertNotNull(st1a2CurrVersion);
+    	Long st1a2CurrVersionId = st1a2CurrVersion.getId();
+    	
+    	// let's try to re-save this one without the attachments
+    	submissionLogic.saveInstructorFeedback(st1a2CurrVersionId, AssignmentTestDataLoad.STUDENT1_UID, 
+    			testData.a2, null, "Revised feedback", new Date(), null);
+    	st1a2Submission = (AssignmentSubmission)dao.findById(AssignmentSubmission.class, st1a2SubId);
+    	assertTrue(st1a2Submission.getUserId().equals(AssignmentTestDataLoad.STUDENT1_UID));
+    	
+    	// make sure there is still only one version
+    	Set versionHistory = dao.getVersionHistoryForSubmission(st1a2Submission);
+    	assertTrue(versionHistory.size() == 1);
+    	
+    	// try a TA
+    	authn.setAuthnContext(AssignmentTestDataLoad.TA_UID);
+    	// should not be allowed to grade student 2
+    	try {
+    		submissionLogic.saveInstructorFeedback(testData.st2a1CurrVersion.getId(), 
+    				AssignmentTestDataLoad.STUDENT2_UID, testData.a1, null, null, null, null);
+    		fail("Did not catch SecurityException when TA attempted to grade unauth student!");
+    	} catch (SecurityException se) {}
+    	
+    	// should be allowed to grade st1 for a1
+    	// make sure versions aren't added
+    	submissionLogic.saveInstructorFeedback(testData.st1a1CurrVersion.getId(), 
+				AssignmentTestDataLoad.STUDENT1_UID, testData.a1, "annotated fb", "notes", null, feedbackAttachSet);
+    	versionHistory = dao.getVersionHistoryForSubmission(testData.st1a1Submission);
+    	assertEquals(versionHistory.size(), 1);
+    	AssignmentSubmissionVersion currVersion = dao.getCurrentSubmissionVersionWithAttachments(testData.st1a1Submission);
+    	assertTrue(currVersion.getFeedbackNotes().equals("notes"));
+    	
+    	// student should not be authorized
+    	authn.setAuthnContext(AssignmentTestDataLoad.STUDENT1_UID);
+    	try {
+    		submissionLogic.saveInstructorFeedback(testData.st1a1CurrVersion.getId(), 
+    				AssignmentTestDataLoad.STUDENT1_UID, testData.a1, null, null, null, null);
+    		fail("Student was able to saveInstructorFeedback without authorization!!!");
+    	} catch (SecurityException se) {}
     }
 }

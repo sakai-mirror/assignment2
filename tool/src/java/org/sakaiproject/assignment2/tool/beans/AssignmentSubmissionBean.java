@@ -285,10 +285,6 @@ public class AssignmentSubmissionBean {
 				asv.setReleasedTime(new Date());
 			}
 			
-			if (asv.getId() == null) {
-				asv.setDraft(Boolean.FALSE);
-			}
-			
 			//Start attachment stuff
 			Set<FeedbackAttachment> set = new HashSet();
 			if (assignmentSubmission.getCurrentSubmissionVersion() != null && 
@@ -321,7 +317,9 @@ public class AssignmentSubmissionBean {
 	    	asv.setFeedbackAttachSet(final_set);
 			//End Attachment stuff			
 			
-			submissionLogic.saveInstructorFeedback(asv);
+			submissionLogic.saveInstructorFeedback(asv.getId(), assignmentSubmission.getUserId(),
+					assignmentSubmission.getAssignment(), asv.getAnnotatedText(), asv.getFeedbackNotes(),
+					asv.getReleasedTime(), final_set);
 		}
 		return SUBMIT;
 	}

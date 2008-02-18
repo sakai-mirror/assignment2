@@ -221,12 +221,8 @@ public class StudentViewAssignmentRenderer {
     	
     	//Begin Looping for previous submissions
     	List<AssignmentSubmissionVersion> history = submissionLogic.getVersionHistoryForSubmission(assignmentSubmission);
-    	List<AssignmentSubmissionVersion> reverse_history = new ArrayList();
-    	for (Iterator iter = history.iterator(); iter.hasNext();){
-    		reverse_history.add((AssignmentSubmissionVersion)iter.next());
-    	}
                 
-    	for (Iterator iter = reverse_history.iterator(); iter.hasNext();){
+    	for (Iterator iter = history.iterator(); iter.hasNext();){
     		AssignmentSubmissionVersion asv = (AssignmentSubmissionVersion) iter.next(); 
         	if (asv.isDraft()) {
         		continue;

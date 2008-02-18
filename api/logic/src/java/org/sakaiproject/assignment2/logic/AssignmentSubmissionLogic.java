@@ -22,6 +22,7 @@
 
 package org.sakaiproject.assignment2.logic;
 
+import java.util.Date;
 import java.io.OutputStream;
 import java.util.List;
 import java.util.Set;
@@ -102,22 +103,28 @@ public interface AssignmentSubmissionLogic {
 	 * @param subAttachSet - the set of SubmissionAttachments associated with the
 	 * version. if this is an update, will delete any existing attachments associated
 	 * with the version that aren't included in this set
+	 * @throws SecurityException if current user is not allowed to make this submission
 	 */
 	public void saveStudentSubmission(String userId, Assignment2 assignment, Boolean draft, 
 			String submittedText, Set<SubmissionAttachment> subAttachSet);
 	
+	
 	/**
-	 * Save instructor feedback changes to the given version. The passed
-	 * version must have the associated AssignmentSubmission populated. If the
-	 * submissionId on the associated submission is null, will create a new
-	 * AssignmentSubmission record. If the id on the passed version is null, will
-	 * create a new version
-	 * @param version
-	 * @throws SubmissionExistsException - if the AssignmentSubmission associated
-	 * with the passed version has a null id, will attempt to create a new submission.
-	 * throws exception if a submission rec already exists for the student and assignment
+	 * Save instructor feedback for a particular version. If student has not made
+	 * a submission, will create the submission and version
+	 * @param versionId - id of the version that you want to update. if null, there must
+	 * not be a student submission yet
+	 * @param studentId
+	 * @param assignment
+	 * @param annotatedText
+	 * @param feedbackNotes
+	 * @param releasedTime
+	 * @param feedbackAttachSet
+	 * @throws SecurityException if user is not allowed to submit feedback for
+	 * the given student and assignment
 	 */
-	public void saveInstructorFeedback(AssignmentSubmissionVersion version);
+	public void saveInstructorFeedback(Long versionId, String studentId, Assignment2 assignment, 
+			String annotatedText, String feedbackNotes, Date releasedTime, Set feedbackAttachSet);
 	
 	/**
 	 * 
@@ -205,7 +212,9 @@ public interface AssignmentSubmissionLogic {
 	 * the given submission. If the a version is draft and the submitter is not 
 	 * the current user, will not populate the submissionText or 
 	 * submissionAttachmentSet. If the curr user is	the submitter but feedback 
-	 * has not been released, will not populate	feedback.
+	 * has not been released, will not populate	feedback. if the passed submission
+	 * does not have an id, will return an empty list. list is ordered by version
+	 * create date
 	 * 
 	 */
 	public List<AssignmentSubmissionVersion> getVersionHistoryForSubmission(AssignmentSubmission submission);

@@ -292,12 +292,8 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
         
         //Begin Looping for previous submissions
         List<AssignmentSubmissionVersion> history = submissionLogic.getVersionHistoryForSubmission(as);
-        List<AssignmentSubmissionVersion> reverse_history = new ArrayList();
-    	for (Iterator iter = history.iterator(); iter.hasNext();){
-    		reverse_history.add((AssignmentSubmissionVersion)iter.next());
-    	}
                 
-    	for (Iterator iter = reverse_history.iterator(); iter.hasNext();){
+    	for (Iterator iter = history.iterator(); iter.hasNext();){
     		AssignmentSubmissionVersion asv = (AssignmentSubmissionVersion) iter.next(); 
         
         	UIBranchContainer loop = UIBranchContainer.make(form, "previous_submissions:");

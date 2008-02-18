@@ -28,6 +28,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
+import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.user.api.User;
 import org.sakaiproject.user.cover.UserDirectoryService;
 import org.sakaiproject.user.api.UserNotDefinedException;
@@ -168,6 +169,27 @@ public class ComparatorsUtils {
 			if (value == 0) {
 				value = sortByName(submission1, submission2);
 			}
+			return value;
+		}
+	}
+	
+	/**
+	 * static class to sort AssignmentSubmissionVersion objects by createdTime
+	 */
+	public static class VersionCreatedDateComparatorDesc implements Comparator<AssignmentSubmissionVersion>  {
+		public int compare(AssignmentSubmissionVersion version1, AssignmentSubmissionVersion version2) {
+			
+			int value;
+			if (version1.getCreatedTime() != null && version2.getCreatedTime() != null) {
+				value = version2.getCreatedTime().compareTo(version1.getCreatedTime());
+			} else if (version1.getCreatedTime() == null && version2.getCreatedTime() != null) {
+				value = 1;
+			} else if (version1.getCreatedTime() != null && version2.getCreatedTime() == null) {
+				value = -1;
+			} else {
+				value = 0;
+			}
+
 			return value;
 		}
 	}
