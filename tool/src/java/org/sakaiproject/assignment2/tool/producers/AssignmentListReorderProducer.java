@@ -48,7 +48,7 @@ public class AssignmentListReorderProducer implements ViewComponentProducer, Vie
     	String currentUserId = externalLogic.getCurrentUserId();
     	
     	//use a date which is related to the current users locale
-        DateFormat df = DateFormat.getDateInstance(DateFormat.MEDIUM, locale);
+    	DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, locale);
     	
         List<Assignment2> entries = new ArrayList<Assignment2>();
         entries = assignmentLogic.getViewableAssignments();

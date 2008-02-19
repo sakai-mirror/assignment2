@@ -63,7 +63,7 @@ public class StudentSubmitSummaryProducer implements ViewComponentProducer, View
 		SimpleAssignmentViewParams params = (SimpleAssignmentViewParams) viewparams;
 		
 		// use a date which is related to the current users locale
-        DateFormat df = DateFormat.getDateInstance(DateFormat.MEDIUM, locale);
+		DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, locale);
 
 		Assignment2 assignment = assignmentLogic.getAssignmentByIdWithAssociatedData(params.assignmentId);
         

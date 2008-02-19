@@ -44,9 +44,6 @@ public class FragmentSubmissionGradePreviewProducer implements ViewComponentProd
     public void fillComponents(UIContainer tofill, ViewParameters viewparams, ComponentChecker checker) {
     	AssignmentViewParams params = (AssignmentViewParams) viewparams;
     	
-    	//use a date which is related to the current users locale
-        DateFormat df = DateFormat.getDateInstance(DateFormat.MEDIUM, locale);
-    	
     	UIMessage.make(tofill, "page-title", "assignment2.assignment_preview.title");
 
     	AssignmentSubmission as = previewAssignmentSubmissionBean.getAssignmentSubmission();

@@ -59,7 +59,7 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
 	public void fillComponents(UIContainer tofill, ViewParameters viewparams, ComponentChecker checker) {
     	
     	// use a date which is related to the current users locale
-        DateFormat df = DateFormat.getDateInstance(DateFormat.MEDIUM, locale);
+		DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, locale);
     	
     	//get parameters
     	AssignmentListSortViewParams params = (AssignmentListSortViewParams) viewparams;

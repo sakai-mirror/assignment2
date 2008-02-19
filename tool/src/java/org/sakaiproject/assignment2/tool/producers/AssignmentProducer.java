@@ -102,7 +102,7 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
     	Long assignmentId = params.assignmentId;
     	
     	// use a date which is related to the current users locale
-        DateFormat df = DateFormat.getDateInstance(DateFormat.MEDIUM, locale);
+    	DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, locale);
         
         //Breadcrumbs
         UIInternalLink.make(tofill, "breadcrumb", 
