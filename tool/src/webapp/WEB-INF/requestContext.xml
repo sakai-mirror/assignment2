@@ -212,6 +212,10 @@
    <bean class="org.sakaiproject.assignment2.tool.producers.dev.AssignmentDevProducer">
    	  <property name="assignmentProducer" ref="org.sakaiproject.assignment2.tool.producers.AssignmentProducer" />
    </bean>
+   
+   <bean class="org.sakaiproject.assignment2.tool.producers.dev.GradeDevProducer">
+   	  <property name="gradeProducer" ref="org.sakaiproject.assignment2.tool.producers.GradeProducer" />
+   </bean>
   
    
    <!--  Beans -->

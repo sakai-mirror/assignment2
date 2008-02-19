@@ -44,7 +44,7 @@ public class LocalPermissionLogic {
 		} else if (FinishedHelperProducer.VIEWID.equals(viewId)) {
 			return Boolean.TRUE;
 			
-		} else if (GradeProducer.VIEW_ID.equals(viewId)) {
+		} else if (GradeProducer.VIEW_ID.equals(viewId) || GradeDevProducer.VIEW_ID.equals(viewId)) {
 			return permissionLogic.isUserAbleToAccessInstructorView(contextId);
 			
 		} else if (StudentAssignmentListProducer.VIEW_ID.equals(viewId)) {
