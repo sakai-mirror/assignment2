@@ -116,6 +116,8 @@ public interface AssignmentSubmissionLogic {
 	 * not be a student submission yet
 	 * @param studentId
 	 * @param assignment
+	 * @param numSubmissionsAllowed
+	 * @param resubmitCloseTime
 	 * @param annotatedText
 	 * @param feedbackNotes
 	 * @param releasedTime
@@ -124,7 +126,8 @@ public interface AssignmentSubmissionLogic {
 	 * the given student and assignment
 	 */
 	public void saveInstructorFeedback(Long versionId, String studentId, Assignment2 assignment, 
-			String annotatedText, String feedbackNotes, Date releasedTime, Set feedbackAttachSet);
+			Integer numSubmissionsAllowed, Date resubmitCloseTime, String annotatedText, 
+			String feedbackNotes, Date releasedTime, Set feedbackAttachSet);
 	
 	/**
 	 * 
@@ -133,24 +136,27 @@ public interface AssignmentSubmissionLogic {
 	 * user is allowed to view or grade with the currentVersion information. If
 	 * no submission exists yet, returns an empty AssigmentSubmission rec for the
 	 * student
+	 * @throws SecurityException if not allowed to view or grade submissions
 	 */
 	public List<AssignmentSubmission> getViewableSubmissionsForAssignmentId(Long assignmentId);
 	
 	/**
-	 * sets the submissionStatus (not persisted) for the given assignments
+	 * sets the submissionStatusConstant (not persisted) for the given assignments for
+	 * the given student
 	 * ie submitted, not started, draft, etc
 	 * @param assignments
 	 * @param studentId
 	 */
-	public void setSubmissionStatusForAssignments(List<Assignment2> assignments, String studentId);
+	public void setSubmissionStatusConstantForAssignments(List<Assignment2> assignments, String studentId);
 	
 	/**
 	 * 
-	 * @param submission
+	 * @param currentVersion
 	 * @return the constant equivalent for the given submission's status 
-	 * ie In Progress, Submitted, etc
+	 * ie In Progress, Submitted, etc based upon the passed currentVersion. will
+	 * return "Not started" if currentVersion is null
 	 */
-	public int getSubmissionStatus(AssignmentSubmission submission);
+	public int getSubmissionStatusConstantForCurrentVersion(AssignmentSubmissionVersion currentVersion);
 	
 	/**
 	 * We cannot rely on db sorting because we must sort by several properties that

@@ -318,7 +318,8 @@ public class AssignmentSubmissionBean {
 			//End Attachment stuff			
 			
 			submissionLogic.saveInstructorFeedback(asv.getId(), assignmentSubmission.getUserId(),
-					assignmentSubmission.getAssignment(), asv.getAnnotatedText(), asv.getFeedbackNotes(),
+					assignmentSubmission.getAssignment(), assignmentSubmission.getNumSubmissionsAllowed(),
+					assignmentSubmission.getResubmitCloseTime(), asv.getAnnotatedText(), asv.getFeedbackNotes(),
 					asv.getReleasedTime(), final_set);
 		}
 		return SUBMIT;
@@ -351,10 +352,9 @@ public class AssignmentSubmissionBean {
 		
 		for (Iterator subIter = submissionList.iterator(); subIter.hasNext();) {
 			AssignmentSubmission submission = (AssignmentSubmission) subIter.next();
-			if (submission != null) {
-
+			if (submission != null) { 
 				// set the status for this submission: "In Progress, Submitted, etc"
-				int status = submissionLogic.getSubmissionStatus(submission);
+				int status = submissionLogic.getSubmissionStatusConstantForCurrentVersion(submission.getCurrentSubmissionVersion());
 				submission.setSubmissionStatus(messageLocator.getMessage("assignment2.assignment_grade-assignment.submission_status." + status));
 			}
 		}

@@ -372,8 +372,8 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 			}
 			
 			if (isUserAStudent) {
-				// if this is a student, we need to populate the submissionStatus for each assignment
-				submissionLogic.setSubmissionStatusForAssignments(viewableAssignments, userId);
+				// if this is a student, we need to populate the submissionStatusConstant for each assignment
+				submissionLogic.setSubmissionStatusConstantForAssignments(viewableAssignments, userId);
 			}
 		}
 		

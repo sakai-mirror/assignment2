@@ -283,10 +283,20 @@ public class AssignmentSubmission {
 	/**
 	 * 
 	 * @param subToCopy
+	 * @param includeHistorySet - if true, will do a deep copy of the versions in the history set
+	 * 			make sure this is false if you haven't initialized the historySet
+	 * @param includeSubAttachSet - if true, will do a deep copy of the submissionAttachmentSet for
+	 * 			currentVersion and history versions
+	 * 			make sure this is false if you haven't initialized the submissionAttachmentSet
+	 * @param includeFBAttachSet - if true, will do a deep copy of the feedbackAttachmentSet for
+	 * 			currentVersion and historySet versions
+	 * 			make sure this is false if you haven't initialized the feedbackAttachmentSet
 	 * @return a copy of the given submission. does not copy non-persisted 
-	 * fields except for the currentVersion. assignment is shallow copy
+	 * fields except for the currentVersion. assignment is shallow copy. this is used largely
+	 * b/c hsqldb doesn't like it when we change some fields without saving
 	 */
-	public static AssignmentSubmission deepCopy(AssignmentSubmission subToCopy) {
+	public static AssignmentSubmission deepCopy(AssignmentSubmission subToCopy, boolean includeHistorySet,
+			boolean includeSubAttachSet, boolean includeFBAttachSet) {
 		AssignmentSubmission submission = new AssignmentSubmission();
 		submission.setId(subToCopy.getId()); 
 		submission.setAssignment(subToCopy.getAssignment());
@@ -299,20 +309,24 @@ public class AssignmentSubmission {
 		submission.setResubmitCloseTime(subToCopy.resubmitCloseTime);
 		submission.setUserId(subToCopy.userId);
 		
-		Set<AssignmentSubmissionVersion> copiedHistory = new HashSet();
-		if (subToCopy.getSubmissionHistorySet() != null && !subToCopy.getSubmissionHistorySet().isEmpty()) {
-			for (Iterator versionIter = subToCopy.getSubmissionHistorySet().iterator(); versionIter.hasNext();) {
-				AssignmentSubmissionVersion version = (AssignmentSubmissionVersion)versionIter.next();
-				AssignmentSubmissionVersion copiedVersion = version.deepCopy(version);
-				copiedHistory.add(copiedVersion);
-			}
-		}
-		submission.setSubmissionHistorySet(copiedHistory);
-		
 		if (subToCopy.getCurrentSubmissionVersion() != null) {
 			AssignmentSubmissionVersion currVersion = 
-				AssignmentSubmissionVersion.deepCopy(subToCopy.getCurrentSubmissionVersion());
+				AssignmentSubmissionVersion.deepCopy(subToCopy.getCurrentSubmissionVersion(),
+						includeSubAttachSet, includeFBAttachSet);
 			submission.setCurrentSubmissionVersion(currVersion);
+		}
+		
+		if (includeHistorySet) {
+			Set<AssignmentSubmissionVersion> copiedHistory = new HashSet();
+			if (subToCopy.getSubmissionHistorySet() != null && !subToCopy.getSubmissionHistorySet().isEmpty()) {
+				for (Iterator versionIter = subToCopy.getSubmissionHistorySet().iterator(); versionIter.hasNext();) {
+					AssignmentSubmissionVersion version = (AssignmentSubmissionVersion)versionIter.next();
+					AssignmentSubmissionVersion copiedVersion = version.deepCopy(version,
+							includeSubAttachSet, includeFBAttachSet);
+					copiedHistory.add(copiedVersion);
+				}
+			}
+			submission.setSubmissionHistorySet(copiedHistory);
 		}
 		
 		return submission;

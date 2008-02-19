@@ -139,7 +139,8 @@ public interface AssignmentDao extends CompleteGenericDao {
 	/**
 	 * 
 	 * @param submission
-	 * @return set of AssignmentSubmissionVersions associated with the given submission
+	 * @return set of AssignmentSubmissionVersions associated with the given submission.
+	 * will populate the feedback and submission attachments for each version
 	 */
 	public Set<AssignmentSubmissionVersion> getVersionHistoryForSubmission(final AssignmentSubmission submission);
 

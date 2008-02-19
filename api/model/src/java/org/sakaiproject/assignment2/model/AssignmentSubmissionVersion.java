@@ -423,11 +423,17 @@ public class AssignmentSubmissionVersion {
 	/**
 	 * 
 	 * @param versionToCopy
+	 * @param includeSubAttachSet - if true, will do a deep copy of the submissionAttachmentSet
+	 * 			make sure this is false if you haven't initialized the submissionAttachmentSet
+	 * @param includeFBAttachSet - if true, will do a deep copy of the feedbackAttachmentSet
+	 * 			make sure this is false if you haven't initialized the feedbackAttachmentSet
 	 * @return a copy of the given version. will not copy non-persisted fields
 	 * except for the feedbackAttachSet and submissionAttachSet; assignmentSubmission
-	 * is shallow copy 
+	 * is shallow copy. this strategy is used largely
+	 * b/c hsqldb doesn't like it when we change some fields without saving
 	 */
-	public static AssignmentSubmissionVersion deepCopy(AssignmentSubmissionVersion versionToCopy) {
+	public static AssignmentSubmissionVersion deepCopy(AssignmentSubmissionVersion versionToCopy,
+			boolean includeSubAttachSet, boolean includeFBAttachSet) {
 		AssignmentSubmissionVersion newVersion = new AssignmentSubmissionVersion();
 		newVersion.setId(versionToCopy.getId());
 		newVersion.setAssignmentSubmission(versionToCopy.getAssignmentSubmission());
@@ -449,7 +455,8 @@ public class AssignmentSubmissionVersion {
 		newVersion.setSubmissionAttachSet(new HashSet());
 		newVersion.setFeedbackAttachSet(new HashSet());
 		
-		if (versionToCopy.getSubmissionAttachSet() != null && !versionToCopy.getSubmissionAttachSet().isEmpty()) {
+		if (includeSubAttachSet && versionToCopy.getSubmissionAttachSet() != null && 
+				!versionToCopy.getSubmissionAttachSet().isEmpty()) {
 			for (Iterator attachIter = versionToCopy.getSubmissionAttachSet().iterator(); attachIter.hasNext();) {
 				SubmissionAttachment attach = (SubmissionAttachment) attachIter.next();
 				if (attach != null) {
@@ -457,7 +464,8 @@ public class AssignmentSubmissionVersion {
 				}
 			}
 		}
-		if (versionToCopy.getFeedbackAttachSet() != null && !versionToCopy.getFeedbackAttachSet().isEmpty()) {
+		if (includeFBAttachSet && versionToCopy.getFeedbackAttachSet() != null && 
+				!versionToCopy.getFeedbackAttachSet().isEmpty()) {
 			for (Iterator attachIter = versionToCopy.getFeedbackAttachSet().iterator(); attachIter.hasNext();) {
 				FeedbackAttachment attach = (FeedbackAttachment) attachIter.next();
 				if (attach != null) {

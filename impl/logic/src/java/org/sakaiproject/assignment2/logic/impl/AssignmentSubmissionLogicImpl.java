@@ -110,7 +110,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			AssignmentSubmissionVersion currentVersion = null;
 			
 			if (persistedCurrentVersion != null) {
-				currentVersion = AssignmentSubmissionVersion.deepCopy(persistedCurrentVersion);
+				currentVersion = AssignmentSubmissionVersion.deepCopy(persistedCurrentVersion, true, true);
 			}
 			
 			if (currentVersion != null) {
@@ -141,7 +141,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		// persistent object
 		AssignmentSubmissionVersion version = null;
 		if (persistedVersion != null) {
-			version = AssignmentSubmissionVersion.deepCopy(persistedVersion);
+			version = AssignmentSubmissionVersion.deepCopy(persistedVersion, true, true);
 		}
 		
 		String currentUserId = externalLogic.getCurrentUserId();
@@ -189,7 +189,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			// persistent object - make a copy
 			AssignmentSubmission persistedSubmission = dao.getSubmissionWithVersionHistoryForStudentAndAssignment(studentId, assignment);
 			if (persistedSubmission != null) {
-				submission = AssignmentSubmission.deepCopy(persistedSubmission);
+				submission = AssignmentSubmission.deepCopy(persistedSubmission, true, true, true);
 			}
 
 			if (submission == null) {
@@ -340,7 +340,8 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 	}
 	
 	public void saveInstructorFeedback(Long versionId, String studentId, Assignment2 assignment, 
-			String annotatedText, String feedbackNotes, Date releasedTime, Set feedbackAttachSet) {
+			Integer numSubmissionsAllowed, Date resubmitCloseTime, String annotatedText, 
+			String feedbackNotes, Date releasedTime, Set feedbackAttachSet) {
 		
 		if (studentId == null || assignment == null) {
 			throw new IllegalArgumentException("Null studentId or assignment passed" +
@@ -391,6 +392,9 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			version = new AssignmentSubmissionVersion();
 			newVersion = true;
 		}
+		
+		submission.setResubmitCloseTime(resubmitCloseTime);
+		submission.setNumSubmissionsAllowed(numSubmissionsAllowed);
 		
 		version.setAssignmentSubmission(submission);
 		version.setAnnotatedText(annotatedText);
@@ -488,13 +492,11 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 							// add an empty rec to the returned list
 							thisSubmission = new AssignmentSubmission(assignment, studentId);
 						} else {
-							if (thisSubmission.getCurrentSubmissionVersion() != null &&
-									thisSubmission.getCurrentSubmissionVersion().isDraft()) {
-								// we should any submission info b/c the
-								// instructor may not see it when draft
-								thisSubmission.getCurrentSubmissionVersion().setSubmissionAttachSet(new HashSet());
-								thisSubmission.getCurrentSubmissionVersion().setSubmittedText("");
-							} 
+							// we need to filter restricted info from instructor
+							// if this is draft, so let's create a copy of this
+							// object and modify it
+							thisSubmission = AssignmentSubmission.deepCopy(thisSubmission, false, false, false);
+							filterOutRestrictedInfo(thisSubmission, externalLogic.getCurrentUserId(), false);
 						}
 						
 						viewableSubmissions.add(thisSubmission);
@@ -511,7 +513,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		return viewableSubmissions;
 	}
 	
-	public void setSubmissionStatusForAssignments(List<Assignment2> assignments, String studentId) {
+	public void setSubmissionStatusConstantForAssignments(List<Assignment2> assignments, String studentId) {
 		if (studentId == null) {
 			throw new IllegalArgumentException("Null studentId passed to setSubmissionStatusForAssignments");
 		}
@@ -537,24 +539,25 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 
 				if (assign != null) {
 					AssignmentSubmission currSubmission = (AssignmentSubmission)assignmentIdToSubmissionMap.get(assign.getId());
-					int status = getSubmissionStatus(currSubmission);
+					AssignmentSubmissionVersion currVersion = currSubmission != null ? 
+							currSubmission.getCurrentSubmissionVersion() : null;
+					int status = getSubmissionStatusConstantForCurrentVersion(currVersion);
 					assign.setSubmissionStatusConstant(new Integer(status));
 				}
 			}
 		}
 	}
 	
-	public int getSubmissionStatus(AssignmentSubmission submission) {
+	public int getSubmissionStatusConstantForCurrentVersion(AssignmentSubmissionVersion currentVersion) {
 		int status = AssignmentConstants.SUBMISSION_NOT_STARTED;
 		
-		if (submission == null) {
+		if (currentVersion == null) {
 			status = AssignmentConstants.SUBMISSION_NOT_STARTED;
-		} else if (submission.getCurrentSubmissionVersion() == null ||
-				submission.getCurrentSubmissionVersion().getId() == null) {
+		} else if (currentVersion.getId() == null) {
 			status = AssignmentConstants.SUBMISSION_NOT_STARTED;
-		} else if (submission.getCurrentSubmissionVersion().isDraft()) {
+		} else if (currentVersion.isDraft()) {
 			status = AssignmentConstants.SUBMISSION_IN_PROGRESS;
-		} else if (submission.getCurrentSubmissionVersion().getSubmittedTime() != null) {
+		} else if (currentVersion.getSubmittedTime() != null) {
 			status = AssignmentConstants.SUBMISSION_SUBMITTED;
 		}
 		
@@ -562,22 +565,24 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 	}
 	
 	public void sortSubmissions(List<AssignmentSubmission> submissionList, String sortBy, boolean ascending) {
-		Comparator<AssignmentSubmission> comp;
-		if(AssignmentSubmissionLogic.SORT_BY_RELEASED.equals(sortBy)) {
-			comp = new ComparatorsUtils.SubmissionFeedbackReleasedComparator();
-		} else if(AssignmentSubmissionLogic.SORT_BY_SUBMIT_DATE.equals(sortBy)) {
-			comp = new ComparatorsUtils.SubmissionDateComparator();
-		} else if(AssignmentSubmissionLogic.SORT_BY_GRADE.equals(sortBy)) {
-			comp = new ComparatorsUtils.SubmissionGradeComparator();
-		}else if(AssignmentSubmissionLogic.SORT_BY_STATUS.equals(sortBy)){
-			comp = new ComparatorsUtils.SubmissionStatusComparator();
-		} else {
-			comp = new ComparatorsUtils.SubmissionNameComparator();
-		}
+		if (submissionList != null && !submissionList.isEmpty()) {
+			Comparator<AssignmentSubmission> comp;
+			if(AssignmentSubmissionLogic.SORT_BY_RELEASED.equals(sortBy)) {
+				comp = new ComparatorsUtils.SubmissionFeedbackReleasedComparator();
+			} else if(AssignmentSubmissionLogic.SORT_BY_SUBMIT_DATE.equals(sortBy)) {
+				comp = new ComparatorsUtils.SubmissionDateComparator();
+			} else if(AssignmentSubmissionLogic.SORT_BY_GRADE.equals(sortBy)) {
+				comp = new ComparatorsUtils.SubmissionGradeComparator();
+			}else if(AssignmentSubmissionLogic.SORT_BY_STATUS.equals(sortBy)){
+				comp = new ComparatorsUtils.SubmissionStatusComparator();
+			} else {
+				comp = new ComparatorsUtils.SubmissionNameComparator();
+			}
 
-		Collections.sort(submissionList, comp);
-		if(!ascending) {
-			Collections.reverse(submissionList);
+			Collections.sort(submissionList, comp);
+			if(!ascending) {
+				Collections.reverse(submissionList);
+			}
 		}
 	}
 	
@@ -958,7 +963,8 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 				for (Iterator vIter = historySet.iterator(); vIter.hasNext();) {
 					AssignmentSubmissionVersion version = (AssignmentSubmissionVersion) vIter.next();
 					if (version != null) {
-						AssignmentSubmissionVersion versionCopy = AssignmentSubmissionVersion.deepCopy(version);
+						AssignmentSubmissionVersion versionCopy = 
+							AssignmentSubmissionVersion.deepCopy(version, true, true);
 						filterOutRestrictedVersionInfo(versionCopy, currentUserId);
 						filteredVersionHistory.add(versionCopy);
 					}

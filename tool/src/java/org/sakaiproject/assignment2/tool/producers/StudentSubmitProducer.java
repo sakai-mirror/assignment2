@@ -12,6 +12,7 @@ import org.sakaiproject.assignment2.tool.producers.fragments.FragmentSubmissionP
 import org.sakaiproject.assignment2.tool.producers.fragments.FragmentAttachmentsProducer;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
+import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.tool.api.ToolSession;
 
@@ -81,7 +82,9 @@ public class StudentSubmitProducer implements ViewComponentProducer, NavigationC
     	AssignmentSubmission assignmentSubmission = (AssignmentSubmission) assignmentSubmissionBeanLocator.locateBean(ASOTPKey); 
     	    	
         // set the textual representation of the status
-        int status = submissionLogic.getSubmissionStatus(assignmentSubmission);
+    	AssignmentSubmissionVersion currVersion = assignmentSubmission != null ?
+    			assignmentSubmission.getCurrentSubmissionVersion() : null;
+        int status = submissionLogic.getSubmissionStatusConstantForCurrentVersion(currVersion);
         assignmentSubmission.setSubmissionStatus(messageLocator.getMessage("assignment2.student-submit.status." + status));
     	
     	studentViewAssignmentRenderer.makeStudentView(tofill, "portletBody:", assignmentSubmission, assignment, params, ASOTPKey, Boolean.FALSE); 
