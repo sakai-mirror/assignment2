@@ -63,7 +63,7 @@
 		<h4>
 			<img src="/sakai-assignment2-tool/content/images/expand.png" border="0" alt="" style="cursor:pointer" 
 				onclick="slide_submission(this)" /> 
-			<span rsf:id="loop_submission" style="cursor:pointer" onclick="slide_submission($(this).prev('img').get(0))">Submission</span>
+			<span rsf:id="loop_submission" style="cursor:pointer" onclick="slide_submission(jQuery(this).prev('img').get(0))">Submission</span>
 		</h4>
 		<div style="display:none" class="indent">
 			<table class="itemSummary" cellspacing="0">
@@ -115,16 +115,16 @@
 	<script type="text/javascript">
 	//<![CDATA[
 	function slide_submission(img){
-		$(img).parent('h4').next('div').toggle();
+		jQuery(img).parent('h4').next('div').toggle();
 		if(img.src.match('collapse')){
 			img.src=img.src.replace(/collapse/, 'expand');
 		}else{
 			img.src=img.src.replace(/expand/, 'collapse');
 		}
 	}
-	$(document).ready(function(){
+	jQuery(document).ready(function(){
 		//on page load, open the first submission history
-		slide_submission($("div.portletBody > fieldset.highlightPanel:first > h4 > img").get(0));
+		slide_submission(jQuery("div.portletBody > fieldset.highlightPanel:first > h4 > img").get(0));
 	});
 	//]]>
 		

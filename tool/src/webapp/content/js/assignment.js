@@ -21,15 +21,19 @@ if(oa){x+=num(elem,'marginLeft');y+=num(elem,'marginTop');}else
 if((ie&&jQuery.boxModel)){x+=num(elem,'borderLeftWidth');y+=num(elem,'borderTopWidth');}else
 if(sf3){x+=num(elem,'marginLeft')+num(elem,'borderLeftWidth');y+=num(elem,'marginTop')+num(elem,'borderTopWidth');}}else{do{parPos=$.css(parent,'position');x+=parent.offsetLeft;y+=parent.offsetTop;if((mo&&!parent.tagName.match(/^t[d|h]$/i))||ie||sf3){x+=num(parent,'borderLeftWidth');y+=num(parent,'borderTopWidth');if(mo&&parPos=='absolute')absparent=true;if(ie&&parPos=='relative')relparent=true;}op=parent.offsetParent||document.body;if(options.scroll||mo){do{if(options.scroll){sl+=parent.scrollLeft;st+=parent.scrollTop;}if(oa&&($.css(parent,'display')||'').match(/table-row|inline/)){sl=sl-((parent.scrollLeft==parent.offsetLeft)?parent.scrollLeft:0);st=st-((parent.scrollTop==parent.offsetTop)?parent.scrollTop:0);}if(mo&&parent!=elem&&$.css(parent,'overflow')!='visible'){x+=num(parent,'borderLeftWidth');y+=num(parent,'borderTopWidth');}parent=parent.parentNode;}while(parent!=op);}parent=op;if(parent==options.relativeTo&&!(parent.tagName=='BODY'||parent.tagName=='HTML')){if(mo&&parent!=elem&&$.css(parent,'overflow')!='visible'){x+=num(parent,'borderLeftWidth');y+=num(parent,'borderTopWidth');}if(((sf&&!sf3)||oa)&&parPos!='static'){x-=num(op,'borderLeftWidth');y-=num(op,'borderTopWidth');}break;}if(parent.tagName=='BODY'||parent.tagName=='HTML'){if(((sf&&!sf3)||(ie&&$.boxModel))&&elemPos!='absolute'&&elemPos!='fixed'){x+=num(parent,'marginLeft');y+=num(parent,'marginTop');}if(sf3||(mo&&!absparent&&elemPos!='fixed')||(ie&&elemPos=='static'&&!relparent)){x+=num(parent,'borderLeftWidth');y+=num(parent,'borderTopWidth');}break;}}while(parent);}var returnValue=handleOffsetReturn(elem,options,x,y,sl,st);if(returnObject){$.extend(returnObject,returnValue);return this;}else{return returnValue;}},offsetLite:function(options,returnObject){if(!this[0])error();var x=0,y=0,sl=0,st=0,parent=this[0],offsetParent,options=$.extend({margin:true,border:false,padding:false,scroll:true,relativeTo:document.body},options||{});if(options.relativeTo.jquery)options.relativeTo=options.relativeTo[0];do{x+=parent.offsetLeft;y+=parent.offsetTop;offsetParent=parent.offsetParent||document.body;if(options.scroll){do{sl+=parent.scrollLeft;st+=parent.scrollTop;parent=parent.parentNode;}while(parent!=offsetParent);}parent=offsetParent;}while(parent&&parent.tagName!='BODY'&&parent.tagName!='HTML'&&parent!=options.relativeTo);var returnValue=handleOffsetReturn(this[0],options,x,y,sl,st);if(returnObject){$.extend(returnObject,returnValue);return this;}else{return returnValue;}},offsetParent:function(){if(!this[0])error();var offsetParent=this[0].offsetParent;while(offsetParent&&(offsetParent.tagName!='BODY'&&$.css(offsetParent,'position')=='static'))offsetParent=offsetParent.offsetParent;return $(offsetParent);}});var error=function(){throw"Dimensions: jQuery collection is empty";};var num=function(el,prop){return parseInt($.css(el.jquery?el[0]:el,prop))||0;};var handleOffsetReturn=function(elem,options,x,y,sl,st){if(!options.margin){x-=num(elem,'marginLeft');y-=num(elem,'marginTop');}if(options.border&&(($.browser.safari&&parseInt($.browser.version)<520)||$.browser.opera)){x+=num(elem,'borderLeftWidth');y+=num(elem,'borderTopWidth');}else if(!options.border&&!(($.browser.safari&&parseInt($.browser.version)<520)||$.browser.opera)){x-=num(elem,'borderLeftWidth');y-=num(elem,'borderTopWidth');}if(options.padding){x+=num(elem,'paddingLeft');y+=num(elem,'paddingTop');}if(options.scroll&&(!$.browser.opera||elem.offsetLeft!=elem.scrollLeft&&elem.offsetTop!=elem.scrollLeft)){sl-=elem.scrollLeft;st-=elem.scrollTop;}return options.scroll?{top:y-st,left:x-sl,scrollTop:st,scrollLeft:sl}:{top:y,left:x};};var scrollbarWidth=0;var getScrollbarWidth=function(){if(!scrollbarWidth){var testEl=$('<div>').css({width:100,height:100,overflow:'auto',position:'absolute',top:-1000,left:-1000}).appendTo('body');scrollbarWidth=100-testEl.append('<div>').find('div').css({width:'100%',height:200}).width();testEl.remove();}return scrollbarWidth;};})(jQuery);
 
+
+//Let jQuery play nicely with other libs
+jQuery.noConflict();
+
 /** END jQuery Plugin **/
 function a2SetMainFrameHeight(){
 	if (iframeId != ""){
 		if(arguments[0] != null){
 			height = arguments[0];
 		} else {
-			height = $(document).height() + 10;
+			height = jQuery(document).height() + 10;
 		}
-		$("#" + iframeId, parent.document).height(height);
+		jQuery("#" + iframeId, parent.document).height(height);
 	}
 }
 newValue = "";
@@ -37,7 +41,7 @@ function useValue(value){
    newValue = value;
 }
 function changeValue(){   
-	el = $("select[name='page-replace\:\:gradebook_item-selection']").get(0);
+	el = jQuery("select[name='page-replace\:\:gradebook_item-selection']").get(0);
 	if(el){
       for(i=0;i<el.length;i++){
          if(el.options[i].text == newValue){
@@ -45,94 +49,94 @@ function changeValue(){
          }
       }
    }
-   $("input[type='radio'][value='false'][name='page-replace\:\:ungraded-selection']").get(0).checked=true;
+   jQuery("input[type='radio'][value='false'][name='page-replace\:\:ungraded-selection']").get(0).checked=true;
    gradebook_toggle();
    update_due_date();
 }
 
 gradebook_toggle = function(){
-	el = $("input[type='radio'][value='true'][name='page-replace\:\:ungraded-selection']").get(0);
+	el = jQuery("input[type='radio'][value='true'][name='page-replace\:\:ungraded-selection']").get(0);
 	if(el){
 	if (el && el.checked) {
-		$('.due_date').show(); $('.gradebook_item_due_date').hide();
+		jQuery('.due_date').show(); jQuery('.gradebook_item_due_date').hide();
 	} else {
-		$('.due_date').hide(); $('.gradebook_item_due_date').show();
+		jQuery('.due_date').hide(); jQuery('.gradebook_item_due_date').show();
 	}
 	}
 }
 
 groups_toggle = function(){
-	el = $("input[type='radio'][value='false'][name='page-replace\:\:access_select-selection']").get(0);
+	el = jQuery("input[type='radio'][value='false'][name='page-replace\:\:access_select-selection']").get(0);
 	if (el && el.checked) {
-		$('li#groups_table_li').hide();
+		jQuery('li#groups_table_li').hide();
 	} else {
-		$('li#groups_table_li').show();
+		jQuery('li#groups_table_li').show();
 	}
 }
 
 function toggle_group_checkboxes(check_all_box){
 	if (check_all_box.checked){
-		$('table#groupTable :checkbox').attr('checked', 'checked');
+		jQuery('table#groupTable :checkbox').attr('checked', 'checked');
 	} else {
-		$('table#groupTable :checkbox').removeAttr('checked');
+		jQuery('table#groupTable :checkbox').removeAttr('checked');
 	}
 }
 
 function update_due_date(){
-	id = $("select[name='page-replace\:\:gradebook_item-selection']").val();
-	$("input[type='radio'][value='false'][name='page-replace\:\:ungraded-selection']").get(0).checked=true;
+	id = jQuery("select[name='page-replace\:\:gradebook_item-selection']").val();
+	jQuery("input[type='radio'][value='false'][name='page-replace\:\:ungraded-selection']").get(0).checked=true;
 	gradebook_toggle();
 	id = id==""?null:id;
-	$("li.gradebook_item_due_date > span").html(gradebook_items_date[id]);
-	$("li.gradebook_item_due_date p.instruction a").each(function(){
+	jQuery("li.gradebook_item_due_date > span").html(gradebook_items_date[id]);
+	jQuery("li.gradebook_item_due_date p.instruction a").each(function(){
 		if(id!=null){
-			$(this).show();
+			jQuery(this).show();
 			//TODO - replace this with an AJAX call to the server to get the new url using the logic and VPs...
 			// that way we would not have to hard code stuff in
 			this.href = this.href.replace(/\/[^\?\/]*\?TB_ifra/, "/" + id + "?TB_ifra");
 		}else{
-			$(this).hide();
+			jQuery(this).hide();
 		}
 	});
 }
 
 function show_due_date(){
-	el = $("input:checkbox[name='page-replace\:\:require_due_date']").get(0);
+	el = jQuery("input:checkbox[name='page-replace\:\:require_due_date']").get(0);
 	if (el) {
 		if (el.checked) {
-			$(el).parents("fieldset:first").next('div').show();
+			jQuery(el).parents("fieldset:first").next('div').show();
 		} else {
-			$(el).parents("fieldset:first").next('div').hide();
+			jQuery(el).parents("fieldset:first").next('div').hide();
 		}
 	}
 }
 
 function show_accept_until(){
-	el = $("input:checkbox[name='page-replace\:\:require_accept_until']").get(0);
+	el = jQuery("input:checkbox[name='page-replace\:\:require_accept_until']").get(0);
 	if (el){
 		if(el.checked){
-			$(el).parents("fieldset:first").next('div').show();
-			//$(el).parents("fieldset:first").next('div').next('fieldset').show();
+			jQuery(el).parents("fieldset:first").next('div').show();
+			//jQuery(el).parents("fieldset:first").next('div').next('fieldset').show();
 		}else {
-			$(el).parents("fieldset:first").next('div').hide();
-			//$(el).parents("fieldset:first").next('div').next('fieldset').hide();
+			jQuery(el).parents("fieldset:first").next('div').hide();
+			//jQuery(el).parents("fieldset:first").next('div').next('fieldset').hide();
 		}
 		
 	}
 }
 
 function update_resubmit_until(){
-	el = $("input:checkbox[@name='page-replace\:\:resubmit_until']").get(0);
+	el = jQuery("input:checkbox[@name='page-replace\:\:resubmit_until']").get(0);
 	if (el){
 	if (el.checked) {
-		$(".resubmit_until_toggle").show();
+		jQuery(".resubmit_until_toggle").show();
 	} else {
-		$(".resubmit_until_toggle").hide();
+		jQuery(".resubmit_until_toggle").hide();
 	}
 	}
 }
 
-$(document).ready(function(){
+jQuery(document).ready(function(){
 	update_resubmit_until();
 	gradebook_toggle();
 });

@@ -249,26 +249,26 @@
 //<![CDATA[
 function refresh_ajax(){
 	if(fragAttachPath != ""){
-		old=$("#fragment-attachments-container").html();
-		$("#fragment-attachments-container").load(fragAttachPath + "?otpkey=" + otpkey + "&attachmentSetType=0&remove=true", function(){
-			if(old != $("#fragment-attachments-container").html())
-				highlight($("#fragment-attachments-container"));
+		old=jQuery("#fragment-attachments-container").html();
+		jQuery("#fragment-attachments-container").load(fragAttachPath + "?otpkey=" + otpkey + "&attachmentSetType=0&remove=true", function(){
+			if(old != jQuery("#fragment-attachments-container").html())
+				highlight(jQuery("#fragment-attachments-container"));
 		});
 	}
 	if(fragGBPath != ""){
-		oldSelect=$("select[name='page-replace\:\:gradebook_item-selection']").get(0).selectedIndex;
-		$.ajax({
+		oldSelect=jQuery("select[name='page-replace\:\:gradebook_item-selection']").get(0).selectedIndex;
+		jQuery.ajax({
 			type: "GET",
 			url: fragGBPath,
 			success: function(html){
-				$("select[name='page-replace\:\:gradebook_item-selection']").html(
+				jQuery("select[name='page-replace\:\:gradebook_item-selection']").html(
 					html.substring(html.indexOf('<option'),
 						html.lastIndexOf('</option>') + 9));
 			    jQuery.globalEval(
 			    	html.substring(
 			    		html.indexOf('var gradebook'),
 			    		html.indexOf('</script',html.indexOf('var gradebook'))));
-			    $("select[name='page-replace\:\:gradebook_item-selection']").get(0).selectedIndex=oldSelect;
+			    jQuery("select[name='page-replace\:\:gradebook_item-selection']").get(0).selectedIndex=oldSelect;
 			    changeValue();
 			}
 		});
@@ -278,23 +278,23 @@ function refresh_ajax(){
 </script>
 <script type="text/javascript">
 //<![CDATA[
-$(document).ready(function(){
+jQuery(document).ready(function(){
 	//gradebook inits
-	$("input[type='radio'][name='page-replace\:\:ungraded-selection']").each(function(){
+	jQuery("input[type='radio'][name='page-replace\:\:ungraded-selection']").each(function(){
 	    this.onclick=gradebook_toggle;
 	});
 	gradebook_toggle();
 	//Groups init
-	$("input[type='radio'][name='page-replace\:\:access_select-selection']").each(function(){
+	jQuery("input[type='radio'][name='page-replace\:\:access_select-selection']").each(function(){
 		this.onclick = groups_toggle;
 	});
 	groups_toggle();
 	//Init require accept until date checkboxes
-	$("input[name='page-replace\:\:require_accept_until']").each(function(){
+	jQuery("input[name='page-replace\:\:require_accept_until']").each(function(){
 		this.onclick = show_accept_until;
 	});
 	//Init require due date checkboxes
-	$("input[name='page-replace\:\:require_due_date']").each(function(){
+	jQuery("input[name='page-replace\:\:require_due_date']").each(function(){
 		this.onclick = show_due_date;
 	});
 });

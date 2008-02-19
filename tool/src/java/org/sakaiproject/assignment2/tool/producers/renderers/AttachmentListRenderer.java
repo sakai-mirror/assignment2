@@ -114,8 +114,8 @@ public class AttachmentListRenderer {
 	    			UIVerbatim.make(joint, "attachment_remove", 
 	    					"<a href=\"#\" " +
 	    					"onclick=\"" +
-	    					"$.get('" + url + "?removeAttachment=true&refId=" + org.sakaiproject.util.Web.escapeUrl(ref) + "',function(){" +
-	    					"if(refresh_ajax){refresh_ajax();}});" + //"$(this).parent('span').parent('li').remove();" +
+	    					"jQuery.get('" + url + "?removeAttachment=true&refId=" + org.sakaiproject.util.Web.escapeUrl(ref) + "',function(){" +
+	    					"if(refresh_ajax){refresh_ajax();}});" + //"jQuery(this).parent('span').parent('li').remove();" +
 	    					"\">" +
 	    					messageLocator.getMessage("assignment2.remove") +
 	    					"</a>");

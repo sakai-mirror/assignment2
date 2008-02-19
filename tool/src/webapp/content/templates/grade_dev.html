@@ -53,7 +53,7 @@
 	<p class="discTria">
 		<img src="/sakai-assignment2-tool/content/images/expand.png" border="0" alt="Open, click to close assignment instruction" style="cursor:pointer" 
 			onclick="slide_details(this)" /> 
-		<span rsf:id="msg=assignment2.assignment_grade.assignment_instructions" style="cursor:pointer" onclick="slide_details($(this).prev('img').get(0))">Assignment Instructions</span>
+		<span rsf:id="msg=assignment2.assignment_grade.assignment_instructions" style="cursor:pointer" onclick="slide_details(jQuery(this).prev('img').get(0))">Assignment Instructions</span>
 	</p>	
 	<div id="assignment_instructions" style="display:none">
 		<div rsf:id="assignment_instructions" class="textPanel"></div>
@@ -176,7 +176,7 @@
 		<h4>
 			<img src="/sakai-assignment2-tool/content/images/expand.png" border="0" alt="Open, click to close assignment instruction" style="cursor:pointer" 
 				onclick="slide_submission(this)" /> 
-			<span rsf:id="loop_submission" style="cursor:pointer" onclick="slide_submission($(this).prev('img').get(0))">Submission</span>
+			<span rsf:id="loop_submission" style="cursor:pointer" onclick="slide_submission(jQuery(this).prev('img').get(0))">Submission</span>
 			<a href="" rsf:id="loop_edit_submission">Edit Submission</a>
 			<span rsf:id="currently_editing"></span>
 		</h4>
@@ -238,7 +238,7 @@
 <script type="text/javascript">
 //<![CDATA[
 function slide_details(img){
-	$('#assignment_instructions').toggle();
+	jQuery('#assignment_instructions').toggle();
 	if(img.src.match('collapse')){
 		img.src=img.src.replace(/collapse/, 'expand');
 	}else{
@@ -246,7 +246,7 @@ function slide_details(img){
 	}
 }
 function slide_submission(img){
-	$(img).parent('h4').next('div').toggle();
+	jQuery(img).parent('h4').next('div').toggle();
 	if(img.src.match('collapse')){
 		img.src=img.src.replace(/collapse/, 'expand');
 	}else{
@@ -263,19 +263,19 @@ function slide_submission(img){
 //<![CDATA[
 function refresh_ajax(){
 	if(fragAttachPath != ""){
-		old=$("#fragment-attachments-container").html();
-		$("#fragment-attachments-container").load(fragAttachPath + "?otpkey=" + otpkey + "&attachmentSetType=2&remove=true", function(){
-			if(old != $("#fragment-attachments-container").html())
-				highlight($("#fragment-attachments-container"));
+		old=jQuery("#fragment-attachments-container").html();
+		jQuery("#fragment-attachments-container").load(fragAttachPath + "?otpkey=" + otpkey + "&attachmentSetType=2&remove=true", function(){
+			if(old != jQuery("#fragment-attachments-container").html())
+				highlight(jQuery("#fragment-attachments-container"));
 		});
 	}
 	if(fragGBDetailsPath != ""){
-		old = $("#gradebook-details-container fieldset").html();
-		$("#gradebook-details-container").load(fragGBDetailsPath + "?assignmentId=" + assignmentId + "&userId=" + userId, {}, 
+		old = jQuery("#gradebook-details-container fieldset").html();
+		jQuery("#gradebook-details-container").load(fragGBDetailsPath + "?assignmentId=" + assignmentId + "&userId=" + userId, {}, 
 			function(){
 				tb_init('a.thickbox, area.thickbox, input.thickbox');
-				if (old != $("#gradebook-details-container fieldset").html())
-					highlight($("#gradebook-details-container fieldset"));
+				if (old != jQuery("#gradebook-details-container fieldset").html())
+					highlight(jQuery("#gradebook-details-container fieldset"));
 			});
 	}
 }

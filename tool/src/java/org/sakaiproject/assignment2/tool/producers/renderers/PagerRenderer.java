@@ -86,7 +86,7 @@ public class PagerRenderer {
 		select_box.optionnames = comboNames;
 		Map attrmap = new HashMap(); 
 		attrmap.put("onchange", "location.href=\"" + url + "?" + href_params + "current_start=" + 
-				currentStart.toString() + "&current_count=\" + $(this).val()");
+				currentStart.toString() + "&current_count=\" + jQuery(this).val()");
 		select_box.decorators = new DecoratorList(new UIFreeAttributeDecorator(attrmap)); 
 		
 		

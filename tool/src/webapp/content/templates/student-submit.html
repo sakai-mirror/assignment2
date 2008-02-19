@@ -25,10 +25,10 @@
 //<![CDATA[
 function refresh_ajax(){
 	if(fragAttachPath != ""){
-		old=$("#fragment-attachments-container").html();
-		$("#fragment-submission-attachments-container").load(fragAttachPath + "?otpkey=" + otpkey + "&attachmentSetType=1&remove=true", function(){
-			if(old != $("#fragment-submission-attachments-container").html())
-				highlight($("#fragment-submission-attachments-container"));
+		old=jQuery("#fragment-attachments-container").html();
+		jQuery("#fragment-submission-attachments-container").load(fragAttachPath + "?otpkey=" + otpkey + "&attachmentSetType=1&remove=true", function(){
+			if(old != jQuery("#fragment-submission-attachments-container").html())
+				highlight(jQuery("#fragment-submission-attachments-container"));
 		});
 	}
 }

@@ -73,5 +73,5 @@
 	
 })(jQuery);
 function highlight(el){
-	$(el).css('backgroundColor', '#ffffCC').animate({backgroundColor: "#ffffcc"}, 1000).animate({backgroundColor: '#ffffff'}, 2000);
+	jQuery(el).css('backgroundColor', '#ffffCC').animate({backgroundColor: "#ffffcc"}, 1000).animate({backgroundColor: '#ffffff'}, 2000);
 }

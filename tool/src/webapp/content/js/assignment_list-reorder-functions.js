@@ -1,5 +1,5 @@
-$(document).ready(function(){
-	$("td#sortable").Sortable({
+jQuery(document).ready(function(){
+	jQuery("td#sortable").Sortable({
 		accept: "sortableitem",
 		axis: "vertically",
       floats: true,
@@ -7,42 +7,42 @@ $(document).ready(function(){
       onStop: redrawTableY
 	});
    //match heights of <li> and <tr>
-   $("table#reorder-table tr.datarow").each(function(i){
-      li = $("#sortable div").get(i);
+   jQuery("table#reorder-table tr.datarow").each(function(i){
+      li = jQuery("#sortable div").get(i);
       this.id='trow_' + li.id.substring(3);
-      if($(li).height() > $(this).height()){
-         $(this).height($(li).height());
+      if(jQuery(li).height() > jQuery(this).height()){
+         jQuery(this).height(jQuery(li).height());
       }else{
-         $(li).height($(this).height());
+         jQuery(li).height(jQuery(this).height());
       }
    });
    //add cords
-   $("table#reorder-table > tbody > tr.datarow").each(function(i){
-      $(this).children("td").each(function(j){
+   jQuery("table#reorder-table > tbody > tr.datarow").each(function(i){
+      jQuery(this).children("td").each(function(j){
          this.id='cell_' + i + '_' + j;
       });
    });
-   $($("table#reorder-table tr").get(1)).hover(function(){
-      $(this).css("background-color", "#fff");
+   jQuery(jQuery("table#reorder-table tr").get(1)).hover(function(){
+      jQuery(this).css("background-color", "#fff");
    }, function(){});
 
 });
 
 redrawTableY = function(){
-   serial = $.SortSerialize('sortable');
-   $.get("ajax-callback?" + serial.hash.replace(/[\[\]]/g, ""));
+   serial = jQuery.SortSerialize('sortable');
+   jQuery.get("ajax-callback?" + serial.hash.replace(/[\[\]]/g, ""));
 
-   $("table#reorder-table tr.datarow").each(function(i){
-   	$(this).animate({opacity: 0}, 10);
+   jQuery("table#reorder-table tr.datarow").each(function(i){
+   	jQuery(this).animate({opacity: 0}, 10);
    })
 
 	setTimeout(function(){
-		$("#sortable > div").each(function(i){
-			$("#reorder-table > tbody").append($("#trow_" + this.id.substring(3)));
+		jQuery("#sortable > div").each(function(i){
+			jQuery("#reorder-table > tbody").append(jQuery("#trow_" + this.id.substring(3)));
 		});
 	
-		$("table#reorder-table tr.datarow").each(function(i){
-			$(this).animate({opacity: 0}, 100 * (i+1)).animate({opacity: 1}, 500);//timeout trick
+		jQuery("table#reorder-table tr.datarow").each(function(i){
+			jQuery(this).animate({opacity: 0}, 100 * (i+1)).animate({opacity: 1}, 500);//timeout trick
 		})
    }, 10);
 }
