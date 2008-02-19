@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<sitemap>
-	<view key="zipSubmissions"
-		type="org.sakaiproject.assignment2.tool.params.ZipViewParams" />
-</sitemap>

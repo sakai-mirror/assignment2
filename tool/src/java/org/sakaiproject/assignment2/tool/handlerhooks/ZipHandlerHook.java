@@ -53,9 +53,8 @@ public class ZipHandlerHook implements HandlerHook {
 			throw UniversalRuntimeException.accumulate(ioe, "Unable to get response stream for Download All Zip");
 		}
 		
-		response.setHeader("Content-disposition", "inline");
+		response.setHeader("Content-disposition", "inline; filename=bulk_download.zip");
 		response.setContentType("application/zip");
-		response.setHeader("filename", "bulk_download.zip");
 		
 		try{
 			zipExporter.getSubmissionsZip(resultsOutputStream, zvp.assignmentId);

@@ -136,7 +136,10 @@
 		<property name="messageLocator" ref="messageLocator" />
 	</bean>
 
-	<bean id="siteMap" parent="siteMapParent" />
+	<bean id="zipSubmissionsBean" parent="viewParamsRegistrarParent">
+		<property name="viewID" value="zipSubmissions"/>
+		<property name="viewParamsClass" value="org.sakaiproject.assignment2.tool.params.ZipViewParams" />
+	</bean>
 
 	<!-- Use RSF's "BeanGuard" validation scheme to trap all write accesses to a
     Assignment2 entity -->
