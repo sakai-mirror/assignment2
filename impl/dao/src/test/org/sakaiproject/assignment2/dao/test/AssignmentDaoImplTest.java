@@ -530,4 +530,23 @@ public class AssignmentDaoImplTest extends Assignment2DaoTestBase {
 		// double check that the history was populated correctly
 		assertTrue(submission.getSubmissionHistorySet().size() == 3);
 	}
+	
+	public void testGetVersionHistoryForSubmission() {
+		// try a null submission
+		try {
+			assignmentDao.getVersionHistoryForSubmission(null);
+			fail("did not catch null submission passed to getVersionHistoryForSubmission");
+		} catch (IllegalArgumentException iae) {}
+		
+		// let's try a few different submissions
+		Set history = assignmentDao.getVersionHistoryForSubmission(testData.st1a1Submission);
+		assertEquals(history.size(), 1);
+		
+		history = assignmentDao.getVersionHistoryForSubmission(testData.st2a2SubmissionNoVersions);
+		assertEquals(history.size(), 0);
+		
+		history = assignmentDao.getVersionHistoryForSubmission(testData.st2a1Submission);
+		assertEquals(history.size(), 3);
+		
+	}
 }

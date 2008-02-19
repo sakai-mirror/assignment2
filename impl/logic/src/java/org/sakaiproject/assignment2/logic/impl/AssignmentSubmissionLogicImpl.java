@@ -858,7 +858,8 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			throw new IllegalArgumentException("Null submissionVersionId passed to releaseFeedbackForVersion");
 		}
 		
-		AssignmentSubmissionVersion version = getSubmissionVersionById(submissionVersionId);
+		AssignmentSubmissionVersion version = (AssignmentSubmissionVersion)dao.findById(
+				AssignmentSubmissionVersion.class, submissionVersionId);
 		if (version == null) {
 			throw new IllegalArgumentException("No version " + submissionVersionId + " exists");
 		}
@@ -952,6 +953,12 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		}
 		
 		List<AssignmentSubmissionVersion> filteredVersionHistory = new ArrayList();
+		
+		if (!permissionLogic.isUserAbleToViewStudentSubmissionForAssignment(submission.getUserId(), submission.getAssignment())) {
+			throw new SecurityException("User " + externalLogic.getCurrentUserId() +
+					" attempted to access version history for student " + submission.getUserId() +
+					" without authorization!");
+		}
 
 		// if id is null, this submission does not exist yet - will return empty
 		// version history

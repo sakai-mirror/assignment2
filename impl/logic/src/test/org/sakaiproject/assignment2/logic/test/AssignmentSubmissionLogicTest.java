@@ -833,6 +833,25 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
 				AssignmentTestDataLoad.STUDENT1_UID, testData.a1Id);
 		assertTrue(open);
 		
+		// let's make this assignment not open yet
+    	cal.set(2020, 10, 01);
+    	Date assignOpenTime = cal.getTime();
+    	assign1.setOpenTime(assignOpenTime);
+    	assignmentLogic.saveAssignment(assign1);
+    	// should be closed for both
+		open = submissionLogic.submissionIsOpenForStudentForAssignment(
+				AssignmentTestDataLoad.STUDENT2_UID, testData.a1Id);
+		assertFalse(open);
+		open = submissionLogic.submissionIsOpenForStudentForAssignment(
+				AssignmentTestDataLoad.STUDENT1_UID, testData.a1Id);
+		assertFalse(open);
+		
+		// open it back up
+		cal.set(2000, 10, 01);
+		assignOpenTime = cal.getTime();
+		assign1.setOpenTime(assignOpenTime);
+		assignmentLogic.saveAssignment(assign1);
+		
 		// let's restrict it by date on the assign level
 		// neither should be able to submit now
 		assign1.setAcceptUntilTime(resubmitCloseTime);
@@ -842,5 +861,232 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
 		open = submissionLogic.submissionIsOpenForStudentForAssignment(
 				AssignmentTestDataLoad.STUDENT1_UID, testData.a1Id);
 		assertFalse(open);
+	}
+	
+	public void testIsMostRecentVersionDraft() {
+		// try a null submission
+		try {
+			submissionLogic.isMostRecentVersionDraft(null);
+			fail("Did not catch null submission passed to isMostRecentVersionDraft");
+		} catch (IllegalArgumentException iae) {}
+		
+		// try one with a submitted curr version
+		boolean draft = submissionLogic.isMostRecentVersionDraft(testData.st1a1Submission);
+		assertFalse(draft);
+		// try one with a draft curr version
+		draft = submissionLogic.isMostRecentVersionDraft(testData.st1a3Submission);
+		assertTrue(draft);
+		// try one without a current version
+		draft = submissionLogic.isMostRecentVersionDraft(testData.st2a2SubmissionNoVersions);
+		assertFalse(draft);
+	}
+	
+	public void testReleaseAllFeedbackForAssignment() {
+		// try a null assignmentId
+		try {
+			submissionLogic.releaseAllFeedbackForAssignment(null);
+			fail("did not catch null assignmentId passed to releaseAllFeedbackForAssignment");
+		} catch (IllegalArgumentException iae) {}
+		
+		// try an assignmentId that doesn't exist
+		try {
+			submissionLogic.releaseAllFeedbackForAssignment(new Long(12345));
+			fail("did not catch non-existent assignId passed to releaseAllFeedbackForAssignment");
+		} catch (IllegalArgumentException iae) {}
+		
+		// try as a student
+		authn.setAuthnContext(AssignmentTestDataLoad.STUDENT1_UID);
+		try {
+			submissionLogic.releaseAllFeedbackForAssignment(testData.a1Id);
+			fail("Did not catch a student releasing feedback!!");
+		} catch (SecurityException se) {}
+		
+		// try as a TA
+		authn.setAuthnContext(AssignmentTestDataLoad.TA_UID);
+		submissionLogic.releaseAllFeedbackForAssignment(testData.a1Id);
+		// should only have updated the one student this TA is allowed to grade!
+		Set st1a1History = dao.getVersionHistoryForSubmission(testData.st1a1Submission);
+		for (Iterator hIter = st1a1History.iterator(); hIter.hasNext();) {
+			AssignmentSubmissionVersion asv = (AssignmentSubmissionVersion)hIter.next();
+			assertNotNull(asv.getReleasedTime());
+		}
+		// nothing should be released for student 2
+		Set st2a1History = dao.getVersionHistoryForSubmission(testData.st2a1Submission);
+		for (Iterator hIter = st2a1History.iterator(); hIter.hasNext();) {
+			AssignmentSubmissionVersion asv = (AssignmentSubmissionVersion)hIter.next();
+			assertNull(asv.getReleasedTime());
+		}
+		
+		// instructor should update all
+		authn.setAuthnContext(AssignmentTestDataLoad.INSTRUCTOR_UID);
+		submissionLogic.releaseAllFeedbackForAssignment(testData.a3Id);
+		
+		// every version should be released for all students
+		Set st1a3History = dao.getVersionHistoryForSubmission(testData.st1a3Submission);
+		for (Iterator hIter = st1a3History.iterator(); hIter.hasNext();) {
+			AssignmentSubmissionVersion asv = (AssignmentSubmissionVersion)hIter.next();
+			assertNotNull(asv.getReleasedTime());
+		}
+		Set st2a3History = dao.getVersionHistoryForSubmission(testData.st2a3Submission);
+		for (Iterator hIter = st2a3History.iterator(); hIter.hasNext();) {
+			AssignmentSubmissionVersion asv = (AssignmentSubmissionVersion)hIter.next();
+			assertNotNull(asv.getReleasedTime());
+		}
+		Set st3a3History = dao.getVersionHistoryForSubmission(testData.st3a3Submission);
+		for (Iterator hIter = st3a3History.iterator(); hIter.hasNext();) {
+			AssignmentSubmissionVersion asv = (AssignmentSubmissionVersion)hIter.next();
+			assertNotNull(asv.getReleasedTime());
+		}
+	}
+	
+	public void testReleaseAllFeedbackForSubmission() {
+		// try null submissionId
+		try {
+			submissionLogic.releaseAllFeedbackForSubmission(null);
+			fail("Did not catch null submissionId passed to releaseAllFeedbackForSubmission");
+		} catch (IllegalArgumentException iae) {}
+		
+		// try a submissionId that doesn't exist
+		try {
+			submissionLogic.releaseAllFeedbackForSubmission(new Long(12345));
+			fail("Did not catch nonexistent submission passed to releaseAllFeedbackForSubmission");
+		} catch (IllegalArgumentException iae) {}
+		
+		// try as a student - should be security exception
+		authn.setAuthnContext(AssignmentTestDataLoad.STUDENT1_UID);
+		try {
+			submissionLogic.releaseAllFeedbackForSubmission(testData.st1a1Submission.getId());
+			fail("Did not catch student trying to release feedback for a submission!!");
+		} catch (SecurityException se) {}
+		
+		// now try as a TA
+		authn.setAuthnContext(AssignmentTestDataLoad.TA_UID);
+		// should get SecurityException for student he/she can't grade
+		try {
+			submissionLogic.releaseAllFeedbackForSubmission(testData.st2a1Submission.getId());
+			fail("Did not catch TA trying to release feedback for a student he/she is not allowed to grade!!!");
+		} catch (SecurityException se) {}
+		
+		// let's try one the ta is authorized to grade
+		submissionLogic.releaseAllFeedbackForSubmission(testData.st1a1Submission.getId());
+		Set versionHistory = dao.getVersionHistoryForSubmission(testData.st1a1Submission);
+		for (Iterator hIter = versionHistory.iterator(); hIter.hasNext();) {
+			AssignmentSubmissionVersion asv = (AssignmentSubmissionVersion) hIter.next();
+			assertNotNull(asv.getReleasedTime());
+		}
+		
+		// make sure instructor can release, as well
+		authn.setAuthnContext(AssignmentTestDataLoad.INSTRUCTOR_UID);
+		submissionLogic.releaseAllFeedbackForSubmission(testData.st2a1Submission.getId());
+		versionHistory = dao.getVersionHistoryForSubmission(testData.st2a1Submission);
+		for (Iterator hIter = versionHistory.iterator(); hIter.hasNext();) {
+			AssignmentSubmissionVersion asv = (AssignmentSubmissionVersion) hIter.next();
+			assertNotNull(asv.getReleasedTime());
+		}
+	}
+	
+	public void testReleaseFeedbackForVersion() {
+		// try a null versionId
+		try {
+			submissionLogic.releaseFeedbackForVersion(null);
+			fail("did not catch null versionId passed to releaseFeedbackForVersion");
+		} catch (IllegalArgumentException iae) {}
+		
+		// try a versionId that doesn't exist
+		try {
+			submissionLogic.releaseFeedbackForVersion(new Long(12345));
+			fail("did not catch bad versionId passed to releaseFeedbackForVersion");
+		} catch (IllegalArgumentException iae) {}
+		
+		// try as a student - should be security exception
+		authn.setAuthnContext(AssignmentTestDataLoad.STUDENT1_UID);
+		try {
+			submissionLogic.releaseFeedbackForVersion(testData.st1a1CurrVersion.getId());
+			fail("Did not catch student trying to release feedback for a version!!");
+		} catch (SecurityException se) {}
+		
+		// now try as a TA
+		authn.setAuthnContext(AssignmentTestDataLoad.TA_UID);
+		// should get SecurityException for student he/she can't grade
+		try {
+			submissionLogic.releaseFeedbackForVersion(testData.st2a1CurrVersion.getId());
+			fail("Did not catch TA trying to release feedback for a student he/she is not allowed to grade!!!");
+		} catch (SecurityException se) {}
+		
+		// let's try one the ta is authorized to grade
+		submissionLogic.releaseFeedbackForVersion(testData.st1a1CurrVersion.getId());
+		Set versionHistory = dao.getVersionHistoryForSubmission(testData.st1a1Submission);
+		for (Iterator hIter = versionHistory.iterator(); hIter.hasNext();) {
+			AssignmentSubmissionVersion asv = (AssignmentSubmissionVersion) hIter.next();
+			if (asv.getId().equals(testData.st1a1CurrVersion.getId())) {
+				assertNotNull(asv.getReleasedTime());
+			} else {
+				// make sure no other versions were released
+				assertNull(asv.getReleasedTime());
+			}
+		}
+		
+		// make sure instructor can release, as well
+		authn.setAuthnContext(AssignmentTestDataLoad.INSTRUCTOR_UID);
+		submissionLogic.releaseFeedbackForVersion(testData.st2a1CurrVersion.getId());
+		versionHistory = dao.getVersionHistoryForSubmission(testData.st2a1Submission);
+		for (Iterator hIter = versionHistory.iterator(); hIter.hasNext();) {
+			AssignmentSubmissionVersion asv = (AssignmentSubmissionVersion) hIter.next();
+			if (asv.getId().equals(testData.st2a1CurrVersion.getId())) {
+				assertNotNull(asv.getReleasedTime());
+			} else {
+				//make sure no other versions were released
+				assertNull(asv.getReleasedTime());
+			}
+		}
+	}
+	
+	public void testGetVersionHistoryForSubmission() {
+		// try a null submission
+		try {
+			submissionLogic.getVersionHistoryForSubmission(null);
+			fail("did not catch null submission passed to getVersionHistoryForSubmission");
+		} catch (IllegalArgumentException iae) {}
+		
+		// student should only be able to retrieve their own history
+		authn.setAuthnContext(AssignmentTestDataLoad.STUDENT2_UID);
+		try {
+			submissionLogic.getVersionHistoryForSubmission(testData.st1a1Submission);
+			fail("Did not catch a student retrieving versionHistory for another student!");
+		} catch (SecurityException se) {}
+		
+		List history = submissionLogic.getVersionHistoryForSubmission(testData.st2a1Submission);
+		assertEquals(history.size(), 3);
+		// check that feedback was restricted b/c none released
+		for (Iterator hIter = history.iterator(); hIter.hasNext();) {
+			AssignmentSubmissionVersion asv = (AssignmentSubmissionVersion) hIter.next();
+			assertTrue(asv.getFeedbackNotes().equals(""));
+			assertTrue(asv.getAnnotatedText().equals(""));
+			assertTrue(asv.getFeedbackAttachSet().isEmpty());
+		}
+		
+		// switch to ta
+		// shouldn't be able to view student2 history
+		authn.setAuthnContext(AssignmentTestDataLoad.TA_UID);
+		try {
+			submissionLogic.getVersionHistoryForSubmission(testData.st2a1Submission);
+			fail("Did not catch a ta retrieving versionHistory for student not authorized to view");
+		} catch (SecurityException se) {}
+		
+		history = submissionLogic.getVersionHistoryForSubmission(testData.st1a1Submission);
+		assertEquals(history.size(), 1);
+		
+		// switch to instructor
+		authn.setAuthnContext(AssignmentTestDataLoad.INSTRUCTOR_UID);
+		history = submissionLogic.getVersionHistoryForSubmission(testData.st1a3Submission);
+		assertEquals(history.size(), 2);
+		// check that submission info for curr version was restricted b/c draft
+		for (Iterator hIter = history.iterator(); hIter.hasNext();) {
+			AssignmentSubmissionVersion asv = (AssignmentSubmissionVersion) hIter.next();
+			if (asv.getId().equals(testData.st1a3CurrVersion.getId())) {
+				assertTrue(asv.getSubmittedText().equals(""));
+				assertTrue(asv.getSubmissionAttachSet().isEmpty());
+			}
+		}
 	}
 }
