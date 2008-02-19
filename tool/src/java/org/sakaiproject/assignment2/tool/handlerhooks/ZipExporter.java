@@ -185,7 +185,7 @@ public class ZipExporter
 								{
 									// create the text file only when a text
 									// submission is allowed
-									ZipEntry textEntry = new ZipEntry(submittersName
+									ZipEntry textEntry = new ZipEntry(root + submittersName
 											+ submittersString + "_submissionText.txt");
 									out.putNextEntry(textEntry);
 									byte[] text = submittedText.getBytes();
@@ -195,7 +195,7 @@ public class ZipExporter
 								}
 
 								// Write the timestamp for the submission
-								ZipEntry textEntry = new ZipEntry(submittersName
+								ZipEntry textEntry = new ZipEntry(root + submittersName
 										+ "timestamp.txt");
 								out.putNextEntry(textEntry);
 								byte[] b = (sv.getSubmittedTime().toString()).getBytes();
@@ -205,7 +205,7 @@ public class ZipExporter
 
 								// the comments.txt file to show instructor's
 								// comments
-								ZipEntry ctextEntry = new ZipEntry(submittersName
+								ZipEntry ctextEntry = new ZipEntry(root + submittersName
 										+ "comments.txt");
 								out.putNextEntry(ctextEntry);
 								byte[] cb = FormattedText.encodeUnicode(
@@ -216,7 +216,7 @@ public class ZipExporter
 
 								// create an attachment folder for the feedback
 								// attachments
-								String feedbackSubAttachmentFolder = submittersName
+								String feedbackSubAttachmentFolder = root + submittersName
 										+ messageLocator
 												.getMessage("assignment2.assignment_grade-assignment.downloadall.feedbackdir")
 										+ "/";
@@ -227,7 +227,7 @@ public class ZipExporter
 
 								// create a attachment folder for the submission
 								// attachments
-								String sSubAttachmentFolder = submittersName
+								String sSubAttachmentFolder = root + submittersName
 										+ messageLocator
 												.getMessage("assignment2.assignment_grade-assignment.downloadall.submdir")
 										+ "/";
@@ -237,10 +237,10 @@ public class ZipExporter
 								out.closeEntry();
 								// add all submission attachment into the
 								// submission attachment folder
-								zipAttachments(out, submittersName, sSubAttachmentFolder,
+								zipAttachments(out, root + submittersName, sSubAttachmentFolder,
 										sv.getSubmissionAttachSet());
 								// add all feedback attachment folder
-								zipAttachments(out, submittersName,
+								zipAttachments(out, root + submittersName,
 										feedbackSubAttachmentFolder, sv
 												.getFeedbackAttachSet());
 
@@ -250,11 +250,11 @@ public class ZipExporter
 							{
 								exceptionMessage
 										.append("Can not establish the IO to create zip file for user "
-												+ submittersName);
+												+ root + submittersName);
 								log
 										.debug(this
 												+ ": getSubmissionsZip--IOException unable to create the zip file for user"
-												+ submittersName);
+												+ root + submittersName);
 								submittersName = submittersName.substring(0,
 										submittersName.length() - 1)
 										+ "_" + count++;
