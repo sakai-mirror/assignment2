@@ -212,6 +212,7 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
         if (assignment.getSubmissionType() == AssignmentConstants.SUBMIT_ATTACH_ONLY ||
         		assignment.getSubmissionType() == AssignmentConstants.SUBMIT_INLINE_AND_ATTACH) {
 	        if (assignmentSubmissionVersion.getSubmissionAttachSet() != null){
+	        	UIOutput.make(tofill, "submitted_attachments_fieldset");
 	        	attachmentListRenderer.makeAttachmentFromSubmissionAttachmentSet(tofill, "submitted_attachment_list:", params.viewID, 
 	        			assignmentSubmissionVersion.getSubmissionAttachSet(), Boolean.FALSE);
 	        } else {
