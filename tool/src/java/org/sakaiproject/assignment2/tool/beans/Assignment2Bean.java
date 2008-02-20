@@ -120,6 +120,8 @@ public class Assignment2Bean {
 	}
 	
 	private String internalProcessPost(Assignment2 assignment, String key){
+		Boolean errorFound = false;
+		
 		assignment.setDraft(Boolean.FALSE);
 		
 		if (this.requireAcceptUntil == null || this.requireAcceptUntil == Boolean.FALSE) {
@@ -197,12 +199,18 @@ public class Assignment2Bean {
 			}
 			newGroups.removeAll(remGroups);
 		}
+
+		if (restrictedToGroups != null && restrictedToGroups) {
+			messages.addMessage(new TargettedMessage("assignment2.assignment_post.no_groups", 
+					new Object[] { messageLocator.getMessage("assignment2.assignment_add.access.restricted") }));
+			errorFound = true;
+		}
 		assignment.setAssignmentGroupSet(newGroups);
 		
 		
 		//start the validator
 		Assignment2Validator validator = new Assignment2Validator();
-		if (validator.validate(assignment, messages)){
+		if (validator.validate(assignment, messages) && !errorFound){
 			//Validation Passed!
 			try {
 				Assignment2 assignmentFromDb = null;

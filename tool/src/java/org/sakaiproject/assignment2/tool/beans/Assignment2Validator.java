@@ -32,7 +32,24 @@ public class Assignment2Validator  {
 			valid = false;
 		}
 		
-		//check that the gradable object exists!
+		//check that the due date and accept until date are after the open date
+		if (assignment.getDueDate() != null && assignment.getOpenTime() != null 
+				&& assignment.getDueDate().before(assignment.getOpenTime())) {
+			messages.addMessage(new TargettedMessage("assignment2.assignment_due_before_open"));
+			valid = false;
+		}
+		
+		if (assignment.getDueDateForUngraded() != null && assignment.getOpenTime() != null
+				&& assignment.getDueDateForUngraded().before(assignment.getOpenTime())) {
+			messages.addMessage(new TargettedMessage("assignment2.assignment_due_before_open"));
+			valid = false;
+		}
+		
+		if (assignment.getAcceptUntilTime() != null && assignment.getOpenTime() != null
+				&& assignment.getAcceptUntilTime().before(assignment.getOpenTime())) {
+			messages.addMessage(new TargettedMessage("assignment2.assignment_accept_before_open"));
+			valid = false;
+		}
 		
 		return valid;
 	}
