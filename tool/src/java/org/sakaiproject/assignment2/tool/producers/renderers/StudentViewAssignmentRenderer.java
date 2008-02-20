@@ -194,6 +194,7 @@ public class StudentViewAssignmentRenderer {
     		UIOutput.make(form, "submit_text");
 	        UIInput text = UIInput.make(form, "text:", asvOTP + ".submittedText");
 	        if (!preview) {
+	        	text.mustapply = Boolean.TRUE;
 	        	richTextEvolver.evolveTextInput(text);
 	        } else {
 	        	//disable textarea

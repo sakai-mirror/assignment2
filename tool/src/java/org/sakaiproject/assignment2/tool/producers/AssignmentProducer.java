@@ -243,6 +243,7 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
         
         //Rich Text Input
         UIInput instructions = UIInput.make(form, "instructions:", assignment2OTP + ".instructions");
+        instructions.mustapply = Boolean.TRUE;
         richTextEvolver.evolveTextInput(instructions);
         
         

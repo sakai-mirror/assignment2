@@ -205,6 +205,7 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
         
 	        UIVerbatim.make(form, "feedback_instructions", messageLocator.getMessage("assignment2.assignment_grade.feedback_instructions"));
 	        UIInput feedback_text = UIInput.make(form, "feedback_text:", asvOTP + ".annotatedText");
+	        feedback_text.mustapply = Boolean.TRUE;
 	        richTextEvolver.evolveTextInput(feedback_text);
         }
         
@@ -221,6 +222,7 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
         }
         
     	UIInput feedback_notes = UIInput.make(form, "feedback_notes:", asvOTP + ".feedbackNotes");
+    	feedback_notes.mustapply = Boolean.TRUE;
     	richTextEvolver.evolveTextInput(feedback_notes);
                
         //Attachments
