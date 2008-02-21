@@ -324,7 +324,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 			//  c) it is restricted, but user is a member of restricted group
 			//  d) it is not draft or user has edit perm
 
-			List<String> userGroupIds = externalLogic.getUserMembershipGroupIdList(userId);	
+			List<String> userGroupIds = externalLogic.getUserMembershipGroupIdList(userId, contextId);	
 			boolean isUserAbleToEdit = permissionLogic.isCurrentUserAbleToEditAssignments(contextId);
 			boolean isUserAStudent = gradebookLogic.isCurrentUserAStudentInGb(contextId);
 

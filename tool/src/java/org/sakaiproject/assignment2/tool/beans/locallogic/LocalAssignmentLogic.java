@@ -121,7 +121,7 @@ public class LocalAssignmentLogic {
 		// that aren't related to the gradebook
 		
 		// create a map of group id to name for all of the groups in this site
-		Map groupIdToNameMap = externalLogic.getGroupIdToNameMapForSite();
+		Map groupIdToNameMap = externalLogic.getGroupIdToNameMapForSite(externalLogic.getCurrentContextId());
 		
 		for (Iterator assignIter = assignmentList.iterator(); assignIter.hasNext();) {
 			Assignment2 assign = (Assignment2) assignIter.next();

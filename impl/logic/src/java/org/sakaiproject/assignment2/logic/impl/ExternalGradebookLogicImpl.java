@@ -22,6 +22,7 @@
 package org.sakaiproject.assignment2.logic.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -414,6 +415,36 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
 		Gradebook gb = (Gradebook) gradebookService.getGradebook(contextId);
 		Integer i = new Integer(gb.getGrade_type());
 		return i.toString();
+	}
+	
+	public Long createGbItemInGradebook(String contextId, String title, Double pointsPossible, Date dueDate,
+			boolean releasedToStudents, boolean countedInCourseGrade) {
+		if (contextId == null || title == null) {
+			throw new IllegalArgumentException("Null contextId or title passed to createGbItemInGradebook");
+		}
+		
+		if (countedInCourseGrade && !releasedToStudents) {
+			throw new IllegalArgumentException("You may not count an item in course grade without releasing to students.");
+		}
+		
+		Long gradableObjectId = null;
+		Assignment newItem = new Assignment();
+		newItem.setCounted(countedInCourseGrade);
+		newItem.setDueDate(dueDate);
+		newItem.setName(title);
+		newItem.setPoints(pointsPossible);
+		newItem.setReleased(releasedToStudents);
+		
+		gradebookService.addAssignment(contextId, newItem);
+		if (log.isDebugEnabled()) log.debug("New gradebook item added to gb via assignment2 tool");
+		
+		// now let's retrieve the id of this newly created item
+		Assignment newlyCreatedAssign = gradebookService.getAssignment(contextId, title);
+		if (newlyCreatedAssign != null) {
+			gradableObjectId = newlyCreatedAssign.getId();
+		}
+		
+		return gradableObjectId;
 	}
 
 }

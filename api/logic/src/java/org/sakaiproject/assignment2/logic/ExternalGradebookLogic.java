@@ -21,6 +21,7 @@
 
 package org.sakaiproject.assignment2.logic;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -202,4 +203,18 @@ public interface ExternalGradebookLogic {
 	 * @return the type of grade
 	 */
 	public String getGradeType(String contextId);
+	
+	/**
+	 * Create a gradebook item in the gradebook tool with the given information.
+	 * @param contextId
+	 * @param title
+	 * @param pointsPossible
+	 * @param dueDate
+	 * @param releasedToStudents - true if this item should be available to students
+	 * @param countedInCourseGrade - true if grades for this gb item will be included
+	 * 			in course grade - may only be true if releasedToStudents is true
+	 * @return id of the newly created gradebook item in the gradebook.
+	 */
+	public Long createGbItemInGradebook(String contextId, String title, Double pointsPossible, Date dueDate,
+			boolean releasedToStudents, boolean countedInCourseGrade);
 }

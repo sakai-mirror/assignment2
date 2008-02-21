@@ -67,6 +67,14 @@
       <artifactId>sakai-gradebook-service-api</artifactId>
       <version>${sakai.version}</version>
     </dependency>
+    
+    <!--  for the import/export -->
+    <dependency>
+      <groupId>org.sakaiproject</groupId>
+      <artifactId>sakai-import-api</artifactId>
+      <version>${sakai.version}</version>
+    </dependency>
+    
   </dependencies>
   <build>
   

@@ -43,5 +43,7 @@
 	<classpathentry kind="var" path="M2_REPO/uk/org/ponder/ponderutilcore/1.2.2/ponderutilcore-1.2.2.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/sakaiproject/sakai-gradebook-service-hibernate/SNAPSHOT/sakai-gradebook-service-hibernate-SNAPSHOT.jar"/>
 	<classpathentry kind="var" path="M2_REPO/javax/servlet/servlet-api/2.4/servlet-api-2.4.jar"/>
+	<classpathentry kind="var" path="M2_REPO/com/thoughtworks/xstream/xstream/1.2.1/xstream-1.2.1.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/import-api"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

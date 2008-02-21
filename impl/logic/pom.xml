@@ -163,12 +163,6 @@
       <version>${sakai.version}</version>
     </dependency>
 
-		<dependency>
-			<groupId>org.sakaiproject</groupId>
-			<artifactId>sakai-content-api</artifactId>
-			<version>${sakai.version}</version>
-		</dependency>
-
   <!-- testing dependencies -->
     <dependency>
       <groupId>${sakai.spring.groupId}</groupId>
@@ -216,7 +210,7 @@
       <version>1.2_Java1.3</version>
     </dependency>
 
-    <!-- there are needed if we are testing the logic class using a working DAO -->
+    <!-- these are needed if we are testing the logic class using a working DAO -->
     <dependency>
       <groupId>org.sakaiproject</groupId>
       <artifactId>sakai-assignment2-hbm</artifactId>
@@ -227,5 +221,18 @@
       <artifactId>sakai-assignment2-dao-impl</artifactId>
       <version>${sakai.version}</version>
     </dependency>
+    
+        <!--  for the import/export -->
+    <dependency>
+      <groupId>com.thoughtworks.xstream</groupId>
+      <artifactId>xstream</artifactId>
+      <version>1.2.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.sakaiproject</groupId>
+      <artifactId>sakai-import-api</artifactId>
+      <version>${sakai.version}</version>
+    </dependency>
+    
   </dependencies>
 </project>

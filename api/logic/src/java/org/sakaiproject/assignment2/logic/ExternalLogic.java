@@ -18,6 +18,8 @@ public interface ExternalLogic {
     //tool ids for external tools that we integrate with
     public final static String TOOL_ID_SCHEDULE = "sakai.schedule";
     public final static String TOOL_ID_ANNC = "sakai.announcements";
+    public final static String TOOL_ID_OLD_ASSIGN_TOOL = "sakai.assignment";
+    public final static String TOOL_ID_ASSIGNMENT2_TOOL = "sakai.assignment2";
 
     /**
      * @return the current sakai user id (not username)
@@ -51,6 +53,12 @@ public interface ExternalLogic {
      * @return the current context for the current user
      */
     public String getCurrentContextId();
+    
+    /**
+     * 
+     * @return the title of the Assignment2 tool
+     */
+    public String getToolTitle();
 
     /**
      * Check if this user has super admin access
@@ -78,29 +86,33 @@ public interface ExternalLogic {
 
     /**
      * Return a Collection of all Groups
-     * @return a collection
+     * @param contextId
+     * @return a collection of Groups associated with the given contextId
      */
-    public Collection getSiteGroups();
+    public Collection getSiteGroups(String contextId);
     
     /**
-     * 
+     * @param userId
+     * @param contextId
      * @return a collection of the groups that the given user is a member of
+     * in the given contextId
      */
-    public Collection getUserMemberships(String userId);
+    public Collection getUserMemberships(String userId, String contextId);
     
     /**
-     * 
+     * @param userId
+     * @param contextId
      * @return list of the group ids of the groups that the given user is
-     * a member of
+     * a member of in the given contextId
      */
-    public List<String> getUserMembershipGroupIdList(String userId);
+    public List<String> getUserMembershipGroupIdList(String userId, String contextId);
     
     /**
-     * 
+     * @param currentContextId
      * @return a map of group id to group name for all of the sections/groups
-     * associated with the current site
+     * associated with the given contextId
      */
-    public Map<String, String> getGroupIdToNameMapForSite();
+    public Map<String, String> getGroupIdToNameMapForSite(String currentContextId);
     
     /**
      * @param contextId

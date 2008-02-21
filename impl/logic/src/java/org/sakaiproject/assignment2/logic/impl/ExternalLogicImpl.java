@@ -1,3 +1,23 @@
+/**********************************************************************************
+ * $URL: https://source.sakaiproject.org/contrib/assignment2/trunk/api/logic/src/java/org/sakaiproject/assignment2/dao/AssignmentDao.java $
+ * $Id: AssignmentDao.java 12544 2006-05-03 15:06:26Z wagnermr@iupui.edu $
+ ***********************************************************************************
+ *
+ * Copyright (c) 2007 The Sakai Foundation.
+ * 
+ * Licensed under the Educational Community License, Version 1.0 (the "License"); 
+ * you may not use this file except in compliance with the License. 
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.opensource.org/licenses/ecl1.php
+ * 
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the License is distributed on an "AS IS" BASIS, 
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+ * See the License for the specific language governing permissions and 
+ * limitations under the License.
+ *
+ **********************************************************************************/
 package org.sakaiproject.assignment2.logic.impl;
 
 import java.net.URLEncoder;
@@ -75,7 +95,6 @@ public class ExternalLogicImpl implements ExternalLogic {
     	this.sectionAwareness = sectionAwareness;
     }
     
-    private static final String ANON_USER_ATTRIBUTE = "AnonUserAttribute";
     private static final String BASE_IMG_PATH= "/library/image/";
 
     /**
@@ -87,7 +106,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 
     public String getCurrentLocationId() {
         try {
-            Site s = siteService.getSite(toolManager.getCurrentPlacement().getContext());
+            Site s = siteService.getSite(getCurrentContextId());
             return s.getReference(); // get the entity reference to the site
         } catch (IdUnusedException e) {
             return NO_LOCATION;
@@ -96,6 +115,10 @@ public class ExternalLogicImpl implements ExternalLogic {
     
     public String getCurrentContextId() {
     	return toolManager.getCurrentPlacement().getContext();
+    }
+    
+    public String getToolTitle() {
+    	return toolManager.getTool("sakai.assignment2").getTitle();
     }
 
     public String getCurrentUserId() {
@@ -127,18 +150,18 @@ public class ExternalLogicImpl implements ExternalLogic {
     	+ toolManager.getCurrentPlacement().getId() + Entity.SEPARATOR + viewId;
     }
     
-    public Collection getSiteGroups() {
+    public Collection getSiteGroups(String contextId) {
     	try {
-	    	Site s = siteService.getSite(toolManager.getCurrentPlacement().getContext());
+	    	Site s = siteService.getSite(contextId);
 	    	return s.getGroups();
     	} catch (IdUnusedException e){
     		return new ArrayList();
     	}
     }
     
-    public Collection getUserMemberships(String userId) {
-    	if (userId == null) {
-    		throw new IllegalArgumentException("Null userId passed to getUserMemberships");
+    public Collection getUserMemberships(String userId, String contextId) {
+    	if (userId == null || contextId == null) {
+    		throw new IllegalArgumentException("Null userId or contextId passed to getUserMemberships");
     	}
     	try {
 	    	Site s = siteService.getSite(toolManager.getCurrentPlacement().getContext());
@@ -148,11 +171,11 @@ public class ExternalLogicImpl implements ExternalLogic {
     	}
     }
     
-    public List<String> getUserMembershipGroupIdList(String userId) {
-    	if (userId == null) {
-    		throw new IllegalArgumentException("Null userId passed to getUserMembershipGroupIdList");
+    public List<String> getUserMembershipGroupIdList(String userId, String contextId) {
+    	if (userId == null || contextId == null) {
+    		throw new IllegalArgumentException("Null userId or contextId passed to getUserMembershipGroupIdList");
     	}
-    	List memberships = new ArrayList(getUserMemberships(userId));
+    	List memberships = new ArrayList(getUserMemberships(userId, contextId));
     	List groupIds = new ArrayList();
     	if (memberships != null) {
     		for (Iterator groupIter = memberships.iterator(); groupIter.hasNext();) {
@@ -166,8 +189,12 @@ public class ExternalLogicImpl implements ExternalLogic {
     	return groupIds;
     }
     
-    public Map<String, String> getGroupIdToNameMapForSite() {
-    	Collection siteGroups = getSiteGroups();
+    public Map<String, String> getGroupIdToNameMapForSite(String contextId) {
+    	if (contextId == null) {
+    		throw new IllegalArgumentException("Null contextId passed to getGroupIdToNameMapForSite");
+    	}
+    	
+    	Collection siteGroups = getSiteGroups(contextId);
     	
     	Map groupIdToNameMap = new HashMap();
     	if (siteGroups != null && !siteGroups.isEmpty()) {

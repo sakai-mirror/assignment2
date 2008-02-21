@@ -47,5 +47,14 @@
       <property name="externalGradebookLogic" ref="org.sakaiproject.assignment2.logic.ExternalGradebookLogic" />
       <property name="permissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentPermissionLogic" />
    </bean>
+   
+   <bean id="org.sakaiproject.assignment2.logic.ImportExportLogic" class="org.sakaiproject.assignment2.logic.impl.ImportExportLogicImpl" init-method="init">
+      <property name="dao" ref="org.sakaiproject.assignment2.dao.AssignmentDao" />
+      <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
+      <property name="externalGradebookLogic" ref="org.sakaiproject.assignment2.logic.ExternalGradebookLogic" />
+      <property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
+      <property name="externalAnnouncementLogic" ref="org.sakaiproject.assignment2.logic.ExternalAnnouncementLogic" />
+      <property name="contentHostingService" ref="org.sakaiproject.content.api.ContentHostingService" />
+   </bean>
 
 </beans>

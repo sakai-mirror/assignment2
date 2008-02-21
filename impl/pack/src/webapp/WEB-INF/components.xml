@@ -19,6 +19,8 @@
 		init-method="init">
 		<property name="label" value="assignment2"/>
 		<property name="externalGradebookLogic" ref="org.sakaiproject.assignment2.logic.ExternalGradebookLogic" />
+		<property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
+		<property name="importExportLogic" ref="org.sakaiproject.assignment2.logic.ImportExportLogic" />
 		<property name="toolIds">
 		    <list>
 				<value>sakai.assignment2</value>

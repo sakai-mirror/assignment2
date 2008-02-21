@@ -94,6 +94,8 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
     	ToolSession session = sessionManager.getCurrentToolSession();
     	session.removeAttribute("attachmentRefs");
     	session.removeAttribute("removedAttachmentRefs");
+    	
+    	String currentContextId = externalLogic.getCurrentContextId();
  	
     	//Get View Params
     	AssignmentViewParams params = (AssignmentViewParams) viewparams;
@@ -249,7 +251,7 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
         
         //Calendar Due Date
         //Announcement -  only display if site has the announcements tool
-        if (externalLogic.siteHasTool(externalLogic.getCurrentContextId(), ExternalLogic.TOOL_ID_ANNC)) {
+        if (externalLogic.siteHasTool(currentContextId, ExternalLogic.TOOL_ID_ANNC)) {
         	UIMessage announcement_label = UIMessage.make(form, "announcement_label", "assignment2.assignment_add.announcement");
         	UIBoundBoolean announcement = UIBoundBoolean.make(form, "announcement", assignment2OTP + ".hasAnnouncement");
         	UILabelTargetDecorator.targetLabel(announcement_label, announcement);
@@ -277,7 +279,7 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
          *Grading
          */  
         //Get Gradebook Items
-        List<GradebookItem> gradebook_items = externalGradebookLogic.getAllGradebookItems(externalLogic.getCurrentContextId());
+        List<GradebookItem> gradebook_items = externalGradebookLogic.getAllGradebookItems(currentContextId);
         //Get an Assignment for currently selected from the select box
         // by default this the first item on the list returned from the externalGradebookLogic
         // this will be overwritten if we have a pre-existing assignment with an assigned
@@ -383,7 +385,7 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
         /**
          * Groups
          */
-        Collection<Group> groups = externalLogic.getSiteGroups();
+        Collection<Group> groups = externalLogic.getSiteGroups(currentContextId);
         List<String> currentGroups = assignment.getListOfAssociatedGroupReferences();
         for (Group g : groups){
         	//Update OTP

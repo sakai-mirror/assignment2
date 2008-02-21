@@ -310,7 +310,7 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
 	   // otherwise, should see all
 
 	   authn.setAuthnContext(AssignmentTestDataLoad.TA_UID);
-	   List memberships = externalLogic.getUserMembershipGroupIdList(AssignmentTestDataLoad.TA_UID);
+	   List memberships = externalLogic.getUserMembershipGroupIdList(AssignmentTestDataLoad.TA_UID, AssignmentTestDataLoad.CONTEXT_ID);
 	   // try one that is restricted to a group that ta is a member of
 	   assertTrue(permissionLogic.isUserAbleToViewUngradedAssignment(testData.a1, memberships));
 	   // let's try that same one, but remove the membership
@@ -321,7 +321,7 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
 	   // Students will see assignments available to site and those available to groups they
 	   // are a member of
 	   authn.setAuthnContext(AssignmentTestDataLoad.STUDENT1_UID);
-	   memberships = externalLogic.getUserMembershipGroupIdList(AssignmentTestDataLoad.STUDENT1_UID);
+	   memberships = externalLogic.getUserMembershipGroupIdList(AssignmentTestDataLoad.STUDENT1_UID, AssignmentTestDataLoad.CONTEXT_ID);
 	   // student is a member of a restricted group, so ok
 	   assertTrue(permissionLogic.isUserAbleToViewUngradedAssignment(testData.a1, memberships));
 	   // let's try that same one, but remove the membership

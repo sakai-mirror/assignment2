@@ -125,7 +125,7 @@ public class ExternalLogicStub implements ExternalLogic {
      * Return a Collection of all Groups
      * @return a collection
      */
-    public Collection getSiteGroups() {
+    public Collection getSiteGroups(String contextId) {
     	return null; // used for ui
     }
     
@@ -133,7 +133,7 @@ public class ExternalLogicStub implements ExternalLogic {
      * 
      * @return a collection of the groups that the given user is a member of
      */
-    public Collection getUserMemberships(String userId) {
+    public Collection getUserMemberships(String userId, String contextId) {
     	return null; // used for ui
     }
     
@@ -142,7 +142,7 @@ public class ExternalLogicStub implements ExternalLogic {
      * @return list of the group ids of the groups that the given user is
      * a member of
      */
-    public List<String> getUserMembershipGroupIdList(String userId) {
+    public List<String> getUserMembershipGroupIdList(String userId, String contextId) {
     	List groupIdList = new ArrayList();
     	List sectionList = sectionAwareness.getSections(AssignmentTestDataLoad.CONTEXT_ID);
     	if (sectionList != null && !sectionList.isEmpty()) {
@@ -167,7 +167,7 @@ public class ExternalLogicStub implements ExternalLogic {
      * @return a map of group id to group name for all of the sections/groups
      * associated with the current site
      */
-    public Map<String, String> getGroupIdToNameMapForSite() {
+    public Map<String, String> getGroupIdToNameMapForSite(String contextId) {
     	return null; //used for ui
     }
     
@@ -262,6 +262,10 @@ public class ExternalLogicStub implements ExternalLogic {
     
 	public String getUserFullName(String userId) {
 		return getUserDisplayName(userId);
+	}
+	
+	public String getToolTitle() {
+		return "Assignment2";
 	}
 
 }

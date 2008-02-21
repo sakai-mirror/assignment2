@@ -136,8 +136,9 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
     	if (gradebookLogic.isCurrentUserAbleToGradeAll(assignment.getContextId())) {
     		viewable = true;
     	} else if (gradebookLogic.isCurrentUserAbleToGrade(assignment.getContextId())) {
-    		List currentUserMemberships = externalLogic.getUserMembershipGroupIdList(externalLogic.getCurrentUserId());
-    		List studentMemberships = externalLogic.getUserMembershipGroupIdList(studentId);
+    		String currContextId = externalLogic.getCurrentContextId();
+    		List currentUserMemberships = externalLogic.getUserMembershipGroupIdList(externalLogic.getCurrentUserId(), currContextId);
+    		List studentMemberships = externalLogic.getUserMembershipGroupIdList(studentId, currContextId);
     		if (userMembershipsOverlap(currentUserMemberships, studentMemberships)) {
     			viewable = true;
     		}
@@ -229,7 +230,7 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
 			List<AssignmentGroup> assignGroupRestrictions = 
 				dao.findByProperties(AssignmentGroup.class, new String[] {"assignment"}, new Object[] {assignment});
 			
-			List<String> groupMembershipIds = externalLogic.getUserMembershipGroupIdList(externalLogic.getCurrentUserId());
+			List<String> groupMembershipIds = externalLogic.getUserMembershipGroupIdList(externalLogic.getCurrentUserId(), contextId);
 			if (assignGroupRestrictions != null && !assignGroupRestrictions.isEmpty()) {
 				if (!isUserAMemberOfARestrictedGroup(groupMembershipIds, assignGroupRestrictions)) {
 					userAbleToSubmit = false;
@@ -291,14 +292,14 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
 			if (assignment.isUngraded()) {
 				// if there are no restrictions, return students in user's section(s)
 				if (assignGroupRestrictions == null || assignGroupRestrictions.isEmpty()) {
-					Set sharedStudents = getStudentsInCurrentUsersSections();
+					Set sharedStudents = getStudentsInCurrentUsersSections(contextId);
 					if (sharedStudents != null) {
 						availStudents.addAll(sharedStudents);
 					}
 				} else {
 					// otherwise, only return students in his/her section if it is one
 					// of the group restrictions
-					List<String> memberships = externalLogic.getUserMembershipGroupIdList(userId);
+					List<String> memberships = externalLogic.getUserMembershipGroupIdList(userId, contextId);
 					if (memberships != null && !memberships.isEmpty()) {
 						for (Iterator groupIter = assignGroupRestrictions.iterator(); groupIter.hasNext();) {
 							AssignmentGroup group = (AssignmentGroup) groupIter.next();
@@ -377,9 +378,9 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
 		return false;
 	}
 	
-	private Set<String> getStudentsInCurrentUsersSections() {
+	private Set<String> getStudentsInCurrentUsersSections(String contextId) {
 		// get the user's memberships
-		List<String> groupMemberships = externalLogic.getUserMembershipGroupIdList(externalLogic.getCurrentUserId());
+		List<String> groupMemberships = externalLogic.getUserMembershipGroupIdList(externalLogic.getCurrentUserId(), contextId);
 		
 		// use a set to eliminate section overlap with duplicate students
 		Set<String> sharedStudents = new HashSet();

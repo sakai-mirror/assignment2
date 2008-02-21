@@ -32,6 +32,8 @@ import org.sakaiproject.importer.api.HandlesImportable;
 import org.sakaiproject.importer.api.Importable;
 
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
+import org.sakaiproject.assignment2.logic.ExternalLogic;
+import org.sakaiproject.assignment2.logic.ImportExportLogic;
 
 /**
  * Implements the Sakai EntityProducer approach to integration of tool-specific
@@ -77,12 +79,32 @@ public class AssignmentEntityProducer extends BaseEntityProducer implements Cont
 	}
 
 	public void transferCopyEntities(String fromContext, String toContext, List ids) {
-		// TODO implement import from site
+		// if the site we are importing from has the "new" assignment2 tool,
+		// import from that tool. Otherwise, check to see if that site has the
+		// "old" assignments tool.  If it does, we are importing from the old tool
+		// to the new tool
+		if (externalLogic.siteHasTool(fromContext, ExternalLogic.TOOL_ID_ASSIGNMENT2_TOOL)) {
+			String fromAssignment2ToolXml = importExportLogic.getAssignmentToolDefinitionXML(fromContext);
+			importExportLogic.mergeAssignmentToolDefinitionXml(toContext, fromAssignment2ToolXml);
+		} else if (externalLogic.siteHasTool(fromContext, ExternalLogic.TOOL_ID_ASSIGNMENT2_TOOL)) {
+			// TODO implement import from old assign tool to this tool
+			log.info("I am going to try to import from the old tool into the new tool!");
+		}
 	}
 	
 	private ExternalGradebookLogic gradebookLogic;
     public void setExternalGradebookLogic(ExternalGradebookLogic gradebookLogic) {
         this.gradebookLogic = gradebookLogic;
+    }
+    
+    private ImportExportLogic importExportLogic;
+    public void setImportExportLogic(ImportExportLogic importExportLogic) {
+        this.importExportLogic = importExportLogic;
+    }
+    
+    private ExternalLogic externalLogic;
+    public void setExternalLogic(ExternalLogic externalLogic) {
+    	this.externalLogic = externalLogic;
     }
 		
 	////////////////////////////////////////////////////////////////
@@ -102,7 +124,7 @@ public class AssignmentEntityProducer extends BaseEntityProducer implements Cont
 	
 	public List<Importable> getAllImportables(String contextId) {
 		List<Importable> importables = new ArrayList<Importable>();
-		//TODO implement import
+		importables.add(new XmlImportable(A2_DEFINITION_TYPE, importExportLogic.getAssignmentToolDefinitionXML(contextId)));
 		return importables;
 	}
 }
