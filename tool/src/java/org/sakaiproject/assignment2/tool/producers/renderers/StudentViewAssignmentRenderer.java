@@ -118,6 +118,8 @@ public class StudentViewAssignmentRenderer {
     	}
     	asvOTP = asvOTP + asvOTPKey;
 		
+    	
+    	assignmentSubmission.setAssignment(assignment);
 		UIJointContainer joint = new UIJointContainer(tofill, divID, "portletBody:", ""+1);
 		
 		// use a date which is related to the current users locale
