@@ -21,6 +21,7 @@
 
 package org.sakaiproject.assignment2.logic.impl;
 
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Date;
@@ -34,6 +35,10 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.assignment.api.Assignment;
+import org.sakaiproject.assignment.api.AssignmentContent;
+import org.sakaiproject.assignment.api.AssignmentService;
+import org.sakaiproject.assignment.api.Assignment.AssignmentAccess;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentAttachment;
@@ -50,6 +55,7 @@ import org.sakaiproject.assignment2.dao.AssignmentDao;
 import org.sakaiproject.assignment2.exception.AnnouncementPermissionException;
 import org.sakaiproject.assignment2.exception.ConflictingAssignmentNameException;
 import org.sakaiproject.assignment2.exception.NoGradebookItemForGradedAssignmentException;
+import org.sakaiproject.entity.api.Reference;
 import org.sakaiproject.entity.api.ResourceProperties;
 import org.sakaiproject.exception.IdInvalidException;
 import org.sakaiproject.exception.IdUnusedException;
@@ -62,6 +68,7 @@ import org.sakaiproject.exception.TypeException;
 import org.sakaiproject.genericdao.api.finders.ByPropsFinder;
 import org.sakaiproject.service.gradebook.shared.StaleObjectModificationException;
 import org.sakaiproject.site.api.Group;
+import org.sakaiproject.time.api.TimeBreakdown;
 import org.sakaiproject.assignment2.logic.entity.AssignmentDefinition;
 import org.sakaiproject.assignment2.logic.utils.ComparatorsUtils;
 import org.sakaiproject.content.api.ContentHostingService;
@@ -103,6 +110,11 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 	private AssignmentDao dao;
 	public void setDao(AssignmentDao dao) {
 		this.dao = dao;
+	}
+	
+	private AssignmentService assignmentService;
+	public void setAssignmentService(AssignmentService assignmentService) {
+		this.assignmentService = assignmentService;
 	}
 	
 	private ContentHostingService contentHostingService;
@@ -280,7 +292,14 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 						newAssignment.setNotificationType(assignDef.getNotificationType());
 						newAssignment.setNumSubmissionsAllowed(assignDef.getNumSubmissionsAllowed());
 						newAssignment.setOpenTime(assignDef.getOpenDate());
-						newAssignment.setSortIndex(assignDef.getSortIndex());
+						
+						if (assignDef.getSortIndex() == null) {
+							int index = dao.getHighestSortIndexInSite(toContext);
+							newAssignment.setSortIndex(index);
+						} else {
+							newAssignment.setSortIndex(assignDef.getSortIndex());
+						}
+
 						newAssignment.setSubmissionType(assignDef.getSubmissionType());
 						newAssignment.setUngraded(assignDef.isUngraded());
 						newAssignment.setHasAnnouncement(assignDef.isHasAnnouncement());
@@ -395,6 +414,131 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 
 	}
 	
+	public String getAssignmentToolDefinitionXmlFromOriginalAssignmentsTool(String fromContext, String toContext) {
+		
+		List<AssignmentDefinition> assignmentDefs = new ArrayList();	
+		Collection siteGroups = externalLogic.getSiteGroups(fromContext);
+		
+		Iterator origAssignIter = assignmentService.getAssignmentsForContext(fromContext);
+		while (origAssignIter.hasNext()) {
+			Assignment oAssignment = (Assignment)origAssignIter.next();
+			AssignmentContent oContent = oAssignment.getContent();
+			ResourceProperties oProperties = oAssignment.getProperties();
+			
+			AssignmentDefinition newAssnDef = new AssignmentDefinition();
+			
+			Calendar cal = Calendar.getInstance();
+			TimeBreakdown openTime = oAssignment.getOpenTime().breakdownLocal();
+			cal.set(openTime.getYear(), openTime.getMonth(), openTime.getDay(), 
+					openTime.getHour(), openTime.getMin(), openTime.getSec());
+			newAssnDef.setOpenDate(cal.getTime());
+			
+			if (oAssignment.getCloseTime() != null) {
+				TimeBreakdown closeTime = oAssignment.getCloseTime().breakdownLocal();
+				cal.set(closeTime.getYear(), closeTime.getMonth(), closeTime.getDay(), 
+						closeTime.getHour(), closeTime.getMin(), closeTime.getSec());
+				newAssnDef.setAcceptUntilDate(cal.getTime());
+			}
+			
+			newAssnDef.setTitle(oAssignment.getTitle());
+			newAssnDef.setDraft(oAssignment.getDraft());
+			newAssnDef.setInstructions(oContent.getInstructions());
+			newAssnDef.setHonorPledge(oContent.getHonorPledge() == Assignment.HONOR_PLEDGE_ENGINEERING);
+			// set submission type
+			if (oContent.getTypeOfSubmission() == Assignment.TEXT_AND_ATTACHMENT_ASSIGNMENT_SUBMISSION) {
+				newAssnDef.setSubmissionType(AssignmentConstants.SUBMIT_INLINE_AND_ATTACH);
+			} else if (oContent.getTypeOfSubmission() == Assignment.ATTACHMENT_ONLY_ASSIGNMENT_SUBMISSION) {
+				newAssnDef.setSubmissionType(AssignmentConstants.SUBMIT_ATTACH_ONLY);
+			} else if (oContent.getTypeOfSubmission() == Assignment.NON_ELECTRONIC_ASSIGNMENT_SUBMISSION) {
+				newAssnDef.setSubmissionType(AssignmentConstants.SUBMIT_NON_ELECTRONIC);
+			} else if (oContent.getTypeOfSubmission() == Assignment.TEXT_ONLY_ASSIGNMENT_SUBMISSION) {
+				newAssnDef.setSubmissionType(AssignmentConstants.SUBMIT_INLINE_ONLY);
+			} else {
+				// default to text and attachments
+				newAssnDef.setSubmissionType(AssignmentConstants.SUBMIT_INLINE_AND_ATTACH);
+			}
+			
+			// retrieve the notification setting
+			String notifProperty = oProperties.getProperty(Assignment.ASSIGNMENT_INSTRUCTOR_NOTIFICATIONS_VALUE);
+			if (notifProperty == null) {
+				newAssnDef.setNotificationType(AssignmentConstants.NOTIFY_NONE);
+			} else if (notifProperty.equals(Assignment.ASSIGNMENT_INSTRUCTOR_NOTIFICATIONS_DIGEST)) {
+				newAssnDef.setNotificationType(AssignmentConstants.NOTIFY_DAILY_SUMMARY);
+			} else if (notifProperty.equals(Assignment.ASSIGNMENT_INSTRUCTOR_NOTIFICATIONS_EACH)) {
+				newAssnDef.setNotificationType(AssignmentConstants.NOTIFY_FOR_EACH);
+			} else if (notifProperty.equals(Assignment.ASSIGNMENT_INSTRUCTOR_NOTIFICATIONS_NONE)) {
+				newAssnDef.setNotificationType(AssignmentConstants.NOTIFY_NONE);
+			} else {
+				newAssnDef.setNotificationType(AssignmentConstants.NOTIFY_NONE); // default
+			}
+			
+			// is there an announcement?
+			String openDateAnnc = oProperties.getProperty(ResourceProperties.PROP_ASSIGNMENT_OPENDATE_ANNOUNCEMENT_MESSAGE_ID);
+			if (openDateAnnc != null) {
+				newAssnDef.setHasAnnouncement(true);
+			} else {
+				newAssnDef.setHasAnnouncement(false);
+			}
+			
+			// the old tool didn't support a resubmission option on the assignment level,
+			// so just allow 1 submission
+			newAssnDef.setNumSubmissionsAllowed(1);
+			
+			// handle attachments
+			List oAttachments = oContent.getAttachments();
+			List attachRefList = new ArrayList();
+			if (oAttachments != null && !oAttachments.isEmpty()) {
+				for (Iterator attachIter = oAttachments.iterator(); attachIter.hasNext();) {
+					Reference attach = (Reference) attachIter.next();
+					if (attach != null) {
+						attachRefList.add(attach.getId());
+					}
+				}
+			}
+			newAssnDef.setAttachmentReferences(attachRefList);
+			
+			// handle any group restrictions
+			List groupTitleList = new ArrayList();
+			if (oAssignment.getAccess() == Assignment.AssignmentAccess.GROUPED &&
+					oAssignment.getGroups() != null && !oAssignment.getGroups().isEmpty()) {
+				if (siteGroups != null) {
+					// iterate through this assignment's groups and find the name
+					for (Iterator gIter = siteGroups.iterator(); gIter.hasNext();) {
+						Group group = (Group)gIter.next();
+						if (group != null) {
+							if (oAssignment.getGroups().contains(group.getReference())) {
+								groupTitleList.add(group.getTitle());
+							}
+						}
+					}
+				}
+			}
+			newAssnDef.setGroupRestrictionGroupTitles(groupTitleList);
+			
+			// now let's handle the graded/ungraded stuff
+			if (oContent.getTypeOfGrade() == Assignment.UNGRADED_GRADE_TYPE) {
+				newAssnDef.setUngraded(true);
+				if (oAssignment.getDueTime() != null) {
+					TimeBreakdown dueTime = oAssignment.getOpenTime().breakdownLocal();
+					cal.set(dueTime.getYear(), dueTime.getMonth(), dueTime.getDay(), 
+							dueTime.getHour(), dueTime.getMin(), dueTime.getSec());
+					newAssnDef.setDueDateForUngraded(cal.getTime());
+				}
+			} else {
+				// TODO - we need to figure out how to handle this!!
+				newAssnDef.setUngraded(true);
+				
+			}
+			
+			assignmentDefs.add(newAssnDef);
+		}
+		
+		AssignmentToolDefinition assignmentToolDef = new AssignmentToolDefinition();
+		assignmentToolDef.setAssignments(assignmentDefs);
+		
+		return VersionedExternalizable.toXml(assignmentToolDef);
+	}
+	
 	private String getNewTitle(String originalTitle, List existingTitles) {
 		int increment = 1;
 		String newTitle = originalTitle + "_" + increment;
@@ -413,7 +557,8 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 				ContentResource oldAttachment = contentHostingService.getResource(attId);
 				String contextId = externalLogic.getCurrentContextId();
 				String toolTitle = externalLogic.getToolTitle();
-				String name = oldAttachment.getProperties().getNamePropDisplayName();
+				String name = oldAttachment.getProperties().getProperty(
+						ResourceProperties.PROP_DISPLAY_NAME);
 				String type = oldAttachment.getContentType();
 				byte[] content = oldAttachment.getContent();
 				ResourceProperties properties = oldAttachment.getProperties();

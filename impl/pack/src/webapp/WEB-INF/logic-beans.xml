@@ -55,6 +55,7 @@
       <property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
       <property name="externalAnnouncementLogic" ref="org.sakaiproject.assignment2.logic.ExternalAnnouncementLogic" />
       <property name="contentHostingService" ref="org.sakaiproject.content.api.ContentHostingService" />
+      <property name="assignmentService" ref="org.sakaiproject.assignment.api.AssignmentService" />
    </bean>
 
 </beans>

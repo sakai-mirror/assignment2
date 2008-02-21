@@ -22,7 +22,7 @@
 package org.sakaiproject.assignment2.logic;
 
 import java.util.List;
-import java.util.Map;
+
 
 //import org.sakaiproject.assignment2.logic.entity.AssignmentDefinition;
 
@@ -64,5 +64,17 @@ public interface ImportExportLogic {
 	 * @param fromAssignmentToolXml
 	 */
 	public void mergeAssignmentToolDefinitionXml(String toContext, String fromAssignmentToolXml);
+	
+	/**
+	 * Will convert data from the original Assignments tool in the given fromContext
+	 * into an AssignmentToolDefintion (with associated AssignmentDefinitions) suitable
+	 * for importing into the new assignments tool. Returns string representation of
+	 * the versioned xml
+	 * @param fromContext
+	 * @param toContext
+	 * @return a versioned xml string
+	 */
+	public String getAssignmentToolDefinitionXmlFromOriginalAssignmentsTool(
+			String fromContext, String toContext);
 	
 }

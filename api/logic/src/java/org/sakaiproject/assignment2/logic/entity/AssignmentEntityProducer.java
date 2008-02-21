@@ -86,9 +86,10 @@ public class AssignmentEntityProducer extends BaseEntityProducer implements Cont
 		if (externalLogic.siteHasTool(fromContext, ExternalLogic.TOOL_ID_ASSIGNMENT2_TOOL)) {
 			String fromAssignment2ToolXml = importExportLogic.getAssignmentToolDefinitionXML(fromContext);
 			importExportLogic.mergeAssignmentToolDefinitionXml(toContext, fromAssignment2ToolXml);
-		} else if (externalLogic.siteHasTool(fromContext, ExternalLogic.TOOL_ID_ASSIGNMENT2_TOOL)) {
-			// TODO implement import from old assign tool to this tool
-			log.info("I am going to try to import from the old tool into the new tool!");
+		} else if (externalLogic.siteHasTool(fromContext, ExternalLogic.TOOL_ID_OLD_ASSIGN_TOOL)) {
+			String fromOldAssignmentToolXml =
+			importExportLogic.getAssignmentToolDefinitionXmlFromOriginalAssignmentsTool(fromContext, toContext);
+			importExportLogic.mergeAssignmentToolDefinitionXml(toContext, fromOldAssignmentToolXml);
 		}
 	}
 	
