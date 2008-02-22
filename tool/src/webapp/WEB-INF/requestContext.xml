@@ -2,6 +2,7 @@
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" 
 	"http://www.springframework.org/dtd/spring-beans.dtd">
 
+
 <beans>
 
    <!--  Request Filtering for Permissions for DefaultView -->
@@ -155,8 +156,11 @@
    
    <bean id="pageProducer" class="org.sakaiproject.assignment2.tool.producers.LayoutProducer">
       <property name="pageProducer" ref="pageBasicProducer"/>
+      <property name="viewGroupResolver" ref="viewGroupResolver"/>
+      <property name="viewParameters" ref="viewParameters"/>
+      <property name="ELEvaluator" ref="ELEvaluator"/>
+      <property name="group" ref="HTMLViewGroup" />
    </bean>
-
 
    <!--  AJAX Fragment Producers -->
    <bean class="org.sakaiproject.assignment2.tool.producers.fragments.FragmentAssignmentPreviewProducer">
