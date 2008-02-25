@@ -54,7 +54,7 @@ public interface AssignmentLogic {
 	public Assignment2 getAssignmentById(Long assignmentId);
 	
 	/**
-	 * Create or update an assignment
+	 * Create or update an assignment in the current context
 	 * @param assignment
 	 * the assignment to create or update
 	 * @throws SecurityException -
@@ -65,6 +65,22 @@ public interface AssignmentLogic {
 	 * assignment is marked as graded but there is no gradableObjectId
 	 */
 	public void saveAssignment(Assignment2 assignment) 
+		throws ConflictingAssignmentNameException;
+	
+	/**
+	 * Create or update an assignment in the given context
+	 * @param assignment
+	 * the assignment to create or update
+	 * @param contextId - the contextId that this new assignment is associated
+	 * with.
+	 * @throws SecurityException -
+	 * user must have "edit" permission to add or update an assignment
+	 * @throws ConflictingAssignmentNameException -
+	 * if it is a new assignment and the title already exists
+	 * @throws NoGradebookItemForGradedAssignmentException - if the
+	 * assignment is marked as graded but there is no gradableObjectId
+	 */
+	public void saveAssignment(Assignment2 assignment, String contextId)
 		throws ConflictingAssignmentNameException;
 	
 	/**

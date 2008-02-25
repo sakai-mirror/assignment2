@@ -304,7 +304,7 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 						newAssignment.setUngraded(assignDef.isUngraded());
 						newAssignment.setHasAnnouncement(assignDef.isHasAnnouncement());
 						
-						// if title already exists, we need to appent "_1" or "_2" etc - whatever it takes to make it unique
+						// if title already exists, we need to append "_1" or "_2" etc - whatever it takes to make it unique
 						String title = assignDef.getTitle();
 						if (currTitles.contains(assignDef.getTitle())) {
 							title = getNewTitle(assignDef.getTitle(), currTitles);
@@ -326,12 +326,21 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 									associatedGbItemId = existingItem.getGradableObjectId();
 								} else {
 									// we need to create a new item
+									// be careful b/c multiple assignments may be associated with
+									// the same gb item. we don't want to try to create it more than once
 									String gbItemTitle = getNewTitle(assignDef.getAssociatedGbItemName(), 
 											new ArrayList(gbTitleToItemMap.keySet()));
 									associatedGbItemId = gradebookLogic.createGbItemInGradebook(toContext, 
 											gbItemTitle, assignDef.getAssociatedGbItemPtsPossible(), 
 											assignDef.getAssociatedGbItemDueDate(), false, false);
 									if (log.isDebugEnabled()) log.debug("New gb item created via import!");
+									
+									// now let's retrieve it and add it to our map of existing gb items
+									// so we don't try to create it again
+									GradebookItem newItem = gradebookLogic.getGradebookItemById(toContext, associatedGbItemId);
+									if (newItem != null) {
+										gbTitleToItemMap.put(newItem.getTitle(), newItem);
+									}
 								}
 							} else {
 								// this is a new item
@@ -339,6 +348,12 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 										assignDef.getAssociatedGbItemName(), assignDef.getAssociatedGbItemPtsPossible(), 
 										assignDef.getAssociatedGbItemDueDate(), false, false);
 								if (log.isDebugEnabled()) log.debug("New gb item created via import!");
+								// now let's retrieve it and add it to our map of existing gb items
+								// so we don't try to create it again
+								GradebookItem newItem = gradebookLogic.getGradebookItemById(toContext, associatedGbItemId);
+								if (newItem != null) {
+									gbTitleToItemMap.put(newItem.getTitle(), newItem);
+								}
 							}
 
 							newAssignment.setGradableObjectId(associatedGbItemId);
@@ -399,13 +414,18 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 								}
 							} else {
 								// this new assignment won't have an annc b/c no tool in site
-								assignDef.setHasAnnouncement(false);
+								newAssignment.setHasAnnouncement(false);
 							}
 						}
 						
-						assignmentLogic.saveAssignment(newAssignment);
-						if (log.isDebugEnabled()) log.debug("New assignment " + 
-								newAssignment.getTitle() + " added in site " + toContext);
+						try {
+							assignmentLogic.saveAssignment(newAssignment, toContext);
+							if (log.isDebugEnabled()) log.debug("New assignment " + 
+									newAssignment.getTitle() + " added in site " + toContext);
+						} catch (ConflictingAssignmentNameException cane) {
+							if (log.isInfoEnabled()) log.info("Assignment with title " +
+									newAssignment.getTitle() + " already exists so was not added to site " + toContext);
+						}
 					}
 				}
 				

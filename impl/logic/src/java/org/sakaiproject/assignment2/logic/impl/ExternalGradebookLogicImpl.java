@@ -446,5 +446,22 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
 		
 		return gradableObjectId;
 	}
+	
+	public GradebookItem getGradebookItemById(String contextId, Long gradableObjectId) {
+		if (contextId == null || gradableObjectId == null) {
+			throw new IllegalArgumentException ("Null contextId or gradableObjectId passed to getGradebookItemById");
+		}
+		
+		GradebookItem gradebookItem = new GradebookItem();
+		
+		try {
+			Assignment assign = gradebookService.getAssignment(contextId, gradableObjectId);
+			gradebookItem = new GradebookItem(assign.getId(), assign.getName(), assign.getPoints(), assign.getDueDate());
+		} catch (AssessmentNotFoundException anfe) {
+			throw new IllegalArgumentException ("No gradebook item exists with gradableObjectId " + gradableObjectId + " in context " + contextId);
+		}
+		
+		return gradebookItem;
+	}
 
 }

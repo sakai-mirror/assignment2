@@ -18,7 +18,7 @@ public interface ExternalLogic {
     //tool ids for external tools that we integrate with
     public final static String TOOL_ID_SCHEDULE = "sakai.schedule";
     public final static String TOOL_ID_ANNC = "sakai.announcements";
-    public final static String TOOL_ID_OLD_ASSIGN_TOOL = "sakai.assignment";
+    public final static String TOOL_ID_OLD_ASSIGN_TOOL = "sakai.assignment.grades";
     public final static String TOOL_ID_ASSIGNMENT2_TOOL = "sakai.assignment2";
 
     /**

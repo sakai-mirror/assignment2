@@ -217,4 +217,14 @@ public interface ExternalGradebookLogic {
 	 */
 	public Long createGbItemInGradebook(String contextId, String title, Double pointsPossible, Date dueDate,
 			boolean releasedToStudents, boolean countedInCourseGrade);
+	
+	/**
+	 * Return the GradebookItem object associated with the given gradableObjectId
+	 * in the given contextId in the gradebook tool. Throws IllegalArgumentException
+	 * if given id does not exist
+	 * @param contextId
+	 * @param gradableObjectId
+	 * @return
+	 */
+	public GradebookItem getGradebookItemById(String contextId, Long gradableObjectId);
 }

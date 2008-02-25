@@ -140,14 +140,18 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 		return (Assignment2) dao.getAssignmentByIdWithGroupsAndAttachments(assignmentId);
 	}
 	
-	public void saveAssignment(Assignment2 assignment) throws SecurityException, 
+	public void saveAssignment(Assignment2 assignment) {
+		String currentContextId = externalLogic.getCurrentContextId();
+		saveAssignment(assignment, currentContextId);
+	}
+	
+	public void saveAssignment(Assignment2 assignment, String contextId) throws SecurityException, 
 		ConflictingAssignmentNameException, NoGradebookItemForGradedAssignmentException
 	{
-		if (assignment == null) {
-			throw new IllegalArgumentException("Null assignment passed to saveAssignment");
+		if (assignment == null || contextId == null) {
+			throw new IllegalArgumentException("Null assignment or contextId passed to saveAssignment");
 		}
 		
-		String currentContextId = externalLogic.getCurrentContextId();
 		String currentUserId = externalLogic.getCurrentUserId();
 		
 		if (!assignment.isUngraded() && assignment.getGradableObjectId() == null) {
@@ -155,7 +159,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 					"was defined as graded but it had a null gradableObjectId");
 		}
 		
-		if (!permissionLogic.isCurrentUserAbleToEditAssignments(currentContextId)) {
+		if (!permissionLogic.isCurrentUserAbleToEditAssignments(contextId)) {
 			throw new SecurityException("Current user may not save assignment " + assignment.getTitle()
                     + " because they do not have edit permission");
 		}
@@ -174,11 +178,11 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 		
 		if (isNewAssignment) {
         	// check to ensure it is not a duplicate title
-        	if (assignmentNameExists(assignment.getTitle())) {
+        	if (assignmentNameExists(assignment.getTitle(), contextId)) {
         		throw new ConflictingAssignmentNameException("An assignment with the title " + assignment.getTitle() + " already exists");
         	}
         	// identify the next sort index to be used
-        	Integer highestIndex = dao.getHighestSortIndexInSite(currentContextId);
+        	Integer highestIndex = dao.getHighestSortIndexInSite(contextId);
         	if (highestIndex != null) {
         		assignment.setSortIndex(highestIndex + 1);
         	} else {
@@ -210,7 +214,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 		} else {
 			if (!assignment.getTitle().equals(existingAssignment.getTitle())) {
 				// check to see if this new title already exists
-				if (assignmentNameExists(assignment.getTitle())) {
+				if (assignmentNameExists(assignment.getTitle(), contextId)) {
 	        		throw new ConflictingAssignmentNameException("An assignment with the title " + assignment.getTitle() + " already exists");
 	        	}
 			}
@@ -428,10 +432,10 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 	 * @return true if there is an existing assignment (removed = false) with
 	 * the given title
 	 */
-	private boolean assignmentNameExists(String assignmentName) {
+	private boolean assignmentNameExists(String assignmentName, String contextId) {
 		int count = dao.countByProperties(Assignment2.class, 
 	               new String[] {"contextId", "title", "removed", "draft"}, 
-	               new Object[] {externalLogic.getCurrentContextId(), assignmentName, Boolean.FALSE, Boolean.FALSE});
+	               new Object[] {contextId, assignmentName, Boolean.FALSE, Boolean.FALSE});
 		
 		return count > 0;
 	}
