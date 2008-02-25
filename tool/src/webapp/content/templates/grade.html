@@ -29,57 +29,20 @@
 
 	<form rsf:id="form" method="post">
 
-	<ul class="navIntraTool" rsf:id="navIntraTool">
-		<li>
-			<input rsf:id="release_all_feedback" type="submit" />
-		</li>
-	</ul>
+	<h3 rsf:id="heading">Submission for Name</h3>
 
-	<table class="itemSummary" cellspacing="0" summary="Assignment Details">
-		<tr>
-			<th rsf:id="msg=assignment2.assignment_grade.details.student">Student</th>
-			<td rsf:id="details_student">Alan, Rob</td>
-		</tr>
-		<tr>
-			<th rsf:id="msg=assignment2.assignment_grade.details.submitted_date">Submitted Date</th>
-			<td rsf:id="details_submitted_date">Sep 04, 2007 11:00 am</td>
-		</tr>
-		<tr>
-			<th rsf:id="msg=assignment2.assignment_grade.details.status">Status</th>	
-			<td rsf:id="details_status">Ungraded</td>
-		</tr>
-	</table>
-
-	<p class="discTria">
-		<img src="/sakai-assignment2-tool/content/images/expand.png" border="0" alt="Open, click to close assignment instruction" style="cursor:pointer" 
-			onclick="slide_details(this)" /> 
-		<span rsf:id="msg=assignment2.assignment_grade.assignment_instructions" style="cursor:pointer" onclick="slide_details(jQuery(this).prev('img').get(0))">Assignment Instructions</span>
-	</p>	
-	<div id="assignment_instructions" style="display:none">
-		<div rsf:id="assignment_instructions" class="textPanel"></div>
-	</div>
-
-	<h4 rsf:id="msg=assignment2.assignment_grade.additional_resources">Additional resources for assignment</h4>
-
-	<ul class="attachList indnt1">
-		<li rsf:id="assignment_attachment_list:">
-			<img src="/sakai-assignment2-tool/content/images/page_white_word.png" target="_blank" width="16" height="16"/> <a href="">ExampleAttachment.doc</a> (52 KB)
-		</li>
-	</ul>
+	<p rsf:id="status" class="subheading"></p>
 	
-	<!-- Grading Stuff -->
-	<div id="gradebook-details-container">
-	<fieldset rsf:id="gradebook_details:" class="highlightPanel">
-	</fieldset>
-	</div>
-	<!-- /End Grading Stuff -->
-
-
+	
+	<a rsf:id="view_assignment_instructions" class="thickbox">View Assignment Instructions</a>
+	
+<!-- 
 	<h3 rsf:id="msg=assignment2.assignment_grade.assignment_submission">Assignment Submission</h3>
 	<p rsf:id="current_is_draft" class="infoPanel">Current Submission In Progress</p>
 	<p rsf:id="editing_previous_submission" class="infoPanel">Currently Editing a Previous Submission</p>
+-->
 	<fieldset rsf:id="submitted_text_fieldset">
-		<legend rsf:id="msg=assignment2.assignment_grade.annotated_submitted_text">Annotated Submitted Text</legend>
+		<legend rsf:id="msg=assignment2.assignment_grade.annotated_submitted_text">Inline Text</legend>
 		<ol>
 			<li>
 				<label rsf:id="feedback_instructions" class="block instruction">Below is the submission from a student. You can insert comments into this text by clicking in the box, then type your comments. Comments surrounded by double curly braces, {{<span class="highlight">like this</span>}}, will appear red to the student.</label>
@@ -91,7 +54,7 @@
 		</ol>
 	</fieldset>
 	<fieldset rsf:id="submitted_attachments_fieldset">
-		<legend rsf:id="msg=assignment2.assignment_grade.submitted_attachments">Submitted Attachments</legend>
+		<legend rsf:id="msg=assignment2.assignment_grade.submitted_attachments">Attachments</legend>
 		<ol class="attachList indnt1">
 			<li rsf:id="submitted_attachment_list:">
 				<img src="/sakai-assignment2-tool/content/images/page_white_word.png" target="_blank" width="16" height="16"/> <a href="">ExampleAttachment.doc</a> (52 KB)
@@ -99,29 +62,36 @@
 		</ol>
 	</fieldset>
 	<fieldset>
-		<legend rsf:id="msg=assignment2.assignment_grade.feedback_notes">Feedback Notes</legend>
-		<ol>
+		<legend>
+			<img src="/sakai-assignment2-tool/content/images/expand.png" border="0" alt="Open, click to close assignment instruction" style="cursor:pointer" 
+				onclick="slideFieldset(this)" />
+			<span rsf:id="msg=assignment2.assignment_grade.feedback" onclick="slideFieldset(jQuery(this).prev('img').get(0));" style="cursor:pointer">Feedback</span>
+		</legend>
+		<ol style="display:none">
 			<li>
-				<label rsf:id="msg=assignment2.assignment_grade.feedback_notes_instructions" class="block instruction">Add Notes Below</label>
+				<!-- <label rsf:id="msg=assignment2.assignment_grade.feedback_notes_instructions" class="block instruction">Add Notes Below</label> -->
 				<div rsf:id="feedback_notes:">
 					<textarea name="something" cols="80" rows="20" wrap="virtual"></textarea>
 					<!-- this should be the FCKEditor -->
 				</div>		
 			</li>
-		</ol>
-	</fieldset>
-	<fieldset>
-		<legend rsf:id="msg=assignment2.assignemnt_grade.attachments_to_return_with_grade">Attachments To Return With Grade</legend>
-		<ol id="fragment-attachments-container">
-			<li rsf:id="attachment_list:"></li>
-		</ol>
-		<ol>
 			<li>
-				<a rsf:id="add_attachments" class="thickbox">Add Attachments</a>
+				<fieldset>
+					<legend rsf:id="msg=assignment2.assignemnt_grade.attachments_to_return_with_grade">Attachments</legend>
+					<ol id="fragment-attachments-container">
+						<li rsf:id="attachment_list:"></li>
+					</ol>
+					<ol>
+						<li>
+							<a rsf:id="add_attachments" class="thickbox">Add Attachments</a>
+						</li>
+					</ol>
+				</fieldset>
 			</li>
 		</ol>
 	</fieldset>
 
+	<!-- 
 	<fieldset>
 		<ol>
 			<li>
@@ -133,102 +103,53 @@
 			</li>
 		</ol>
 	</fieldset>
-	
+	-->
 	<!-- Allow Resubmissions -->
 	<fieldset>
-		<legend rsf:id="msg=assignment2.assignment_grade.allow_resubmission">Allowed Resubmissions</legend>
-		<ol>
-			<li><input rsf:id="allow_resubmit" type="checkbox" onclick="update_allow_resub()" /> <label rsf:id="allow_resubmit_label">Allow Resubmission</label></li>
-			<li class="allow_resubmit_toggle">
-				<p class="shorttext">
-					<label rsf:id="msg=assignment2.assignment_grade.total_submissions">Assignment Total Submissions</label>
-					<span rsf:id="assignment_total_submissions">3</span>
-				</p>
-				<p class="shorttext">
-					<label rsf:id="msg=assignment2.assignment_grade.assignment_submit_until">Assignment Submit Until</label>
-					<span rsf:id="assignment_submit_until">10/2/08</span>
-				</p>
-				<p class="shorttext">
-					<label rsf:id="msg=assignment2.assignment_grade.allow_number">New Number of Total Submissions</label>
-					<select rsf:id="number_submissions"></select>
-				</p>
-			</li>
+		<legend>
+			<img src="/sakai-assignment2-tool/content/images/expand.png" border="0" alt="Open, click to close assignment instruction" style="cursor:pointer" 
+				onclick="slideFieldset(this)" />
+			<span rsf:id="msg=assignment2.assignment_grade.allow_resubmission" onclick="slideFieldset(jQuery(this).prev('img').get(0));" style="cursor:pointer">Resubmissions</span>
+		</legend>
+		<ol style="display:none">
 			<li>
-				<fieldset>
-					<ol>
-						<li><input rsf:id="resubmit_until" type="checkbox" onclick="update_resubmit_until()" /> <label rsf:id="resubmit_until_label">Allow Resubmission</label></li>
-						<li class="resubmit_until_toggle">
-							<p class="shorttext"><label rsf:id="msg=assignment2.assignment_grade.accept_until" for="new_assignment_closemonth">Accept Until</label>
-								<input rsf:id="accept_until:" />
-							</p>
-						</li>
-					</ol>
-				</fieldset>
+				<span rsf:id="resubmission_text_1"></span>
+				<select rsf:id="resubmission_additional">
+				</select>
+				<span rsF:id="msg=assignment2.assignment_grade.resubmission_text_2"> additional times by </span>
+				<input rsf:id="accept_until:" />
 			</li>
 		</ol>
 	</fieldset>
 	<!-- /Allow Resubmissions -->
 	
-	<!-- Begin Loop for previous submissions -->
-	<h3 rsf:id="msg=assignment2.assignment_grade.previous_submissions">Previous Submissions</h3>
-	<p rsf:id="no_history" class="infoPanel">No Submissions Yet</p>
-	<fieldset rsf:id="previous_submissions:" class="highlightPanel">
-		<h4>
+	<fieldset>
+		<legend>
 			<img src="/sakai-assignment2-tool/content/images/expand.png" border="0" alt="Open, click to close assignment instruction" style="cursor:pointer" 
-				onclick="slide_submission(this)" /> 
-			<span rsf:id="loop_submission" style="cursor:pointer" onclick="slide_submission(jQuery(this).prev('img').get(0))">Submission</span>
-			<a href="" rsf:id="loop_edit_submission">Edit Submission</a>
-			<span rsf:id="currently_editing"></span>
-		</h4>
-		<div style="display:none" class="indent">
-			<table class="itemSummary" cellspacing="0">
-				<tr>
-					<th rsf:id="msg=assignment2.assignment_grade.submitted_text">Submitted Text</th>
-				</tr>
-				<tr>
-					<td rsf:id="loop_submitted_text"></td>
-				</tr>
-				<tr>
-					<th rsf:id="msg=assignment2.assignment_grade.annotated_submitted_text">Annotated Submitted Text</th>
-				</tr>
-				<tr>
-					<td rsf:id="loop_feedback_text"></td>
-				</tr>
-				<tr>
-					<th rsf:id="msg=assignment2.assignment_grade.submitted_attachments">Submitted Attachments</th>
-				</tr>
-				<tr>
-					<td>
-						<ol class="attachlist indnt1">
-							<li rsf:id="loop_submitted_attachment_list:"></li>
-						</ol>
-					</td>
-				</tr>
-				<tr>
-					<th rsf:id="msg=assignment2.assignment_grade.loop_feedback_notes">Feedback Notes</th>
-				</tr>
-				<tr>
-					<td rsf:id="loop_feedback_notes"></td>
-				</tr>
-				<tr>
-					<th rsf:id="msg=assignment2.assignemnt_grade.attachments_to_return_with_grade">Attachments To Return With Grade</th>
-				</tr>
-				<tr>
-					<td>
-						<ol class="attachlist indnt1">
-							<li rsf:id="loop_returned_attachment_list:"></li>
-						</ol>
-					</td>
-				</tr>
-				<tr>
-					<td rsf:id="feedback_updated"></td>
-				</tr>
-			</table>
-		</div>
+				onclick="slideFieldset(this)" />
+			<span rsf:id="msg=assignment2.assignment_grade.history" onclick="slideFieldset(jQuery(this).prev('img').get(0));" style="cursor:pointer">History</span>
+		</legend>
+		<ol style="display:none">
+			<li rsf:id="no_history">No History</li>
+			<li rsf:id="previous_submissions:">
+				<span rsf:id="previous_date"></span>
+				<span rsf:id="current_version">Current Version</span>
+				<a rsf:id="previous_link" class="thickbox">View Submission</a>
+			</li>
+		</ol>
+		
 	</fieldset>
-	<!-- /End Loop for previous submissions -->
+	
+	<!-- Grading Stuff -->
+	<div id="gradebook-details-container">
+	<fieldset rsf:id="gradebook_details:" class="highlightPanel">
+	</fieldset>
+	</div>
+	<!-- /End Grading Stuff -->
+	
 	
 	<fieldset class="submit">
+		<input rsf:id="release_feedback" type="submit" />
 		<input rsf:id="submit" accesskey="s" type="submit" class="active" name="save" value="Save"/>
 		<input rsf:id="preview" accesskey="v" type="button" name="preview" value="Preview" class="preview_button thickbox" title="Preview" />
 		<input rsf:id="cancel" accesskey="x" type="submit" name="cancel" value="Cancel"/>
@@ -237,16 +158,15 @@
 
 <script type="text/javascript">
 //<![CDATA[
-function slide_details(img){
-	jQuery('#assignment_instructions').toggle();
-	if(img.src.match('collapse')){
-		img.src=img.src.replace(/collapse/, 'expand');
-	}else{
-		img.src=img.src.replace(/expand/, 'collapse');
-	}
-}
 function slide_submission(img){
 	jQuery(img).parent('h4').next('div').toggle();
+	flip_image(img)
+}
+function slideFieldset(img) {
+	jQuery(img).parent('legend').next('ol').toggle();
+	flip_image(img);
+}
+function flip_image(img){
 	if(img.src.match('collapse')){
 		img.src=img.src.replace(/collapse/, 'expand');
 	}else{

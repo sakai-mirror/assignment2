@@ -211,6 +211,11 @@
       <property name="sessionManager" ref="org.sakaiproject.tool.api.SessionManager" />
    </bean>
    
+   <bean class="org.sakaiproject.assignment2.tool.producers.fragments.FragmentAssignmentInstructionsProducer">
+   	  <property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
+   	  <property name="attachmentListRenderer" ref="AttachmentListRenderer" />
+   </bean>
+   
    
    <!-- Development Producers -->
    <bean class="org.sakaiproject.assignment2.tool.producers.dev.AssignmentDevProducer">

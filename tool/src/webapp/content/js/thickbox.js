@@ -26,15 +26,14 @@ function tb_init(domChunk){
 	if (jQuery(document).height() < 600) {
 		jQuery(document).height(600);
 	}
-	
 	//END HACK
-	tb_show(t,a,g);
+	tb_show(t,a,g, this.tagName);
 	this.blur();
 	return false;
 	});
 }
 
-function tb_show(caption, url, imageGroup) {//function called when the user clicks on a thickbox link
+function tb_show(caption, url, imageGroup, tagName) {//function called when the user clicks on a thickbox link
 
 	try {
 		if (typeof document.body.style.maxHeight === "undefined") {//if IE 6
@@ -252,11 +251,15 @@ function tb_show(caption, url, imageGroup) {//function called when the user clic
 					}
 				
 					serial = jQuery("form").serialize();
-					jQuery.ajax({type: "POST", url: (String(document.location).split("?"))[0], data: serial + "&" + jQuery(".preview_button").get(0).name, 
-					success: function(data, textStatus){
-						jQuery("#TB_ajaxContent").html(data);
-						jQuery("TB_title").html("");
-
+					if (tagName == "A"){
+					   url = url;
+					} else {
+					   url = (String(document.location).split("?"))[0];
+					}
+                 jQuery.ajax({type: "POST", url: url, data: serial + "&" + jQuery(".preview_button").get(0).name,
+                  success: function(data, textStatus){
+                     jQuery("#TB_ajaxContent").html(data);
+                     jQuery("TB_title").html("");
 					/** Hacked
 					jQuery("#TB_ajaxContent").load(url += "&random=" + (new Date().getTime()),function(){//to do a post change this load method
 					**/
