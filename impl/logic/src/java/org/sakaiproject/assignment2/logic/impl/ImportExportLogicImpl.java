@@ -366,7 +366,7 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 							Set<AssignmentAttachment> attachSet = new HashSet();
 							for (Iterator attachIter = assignDef.getAttachmentReferences().iterator(); attachIter.hasNext();) {
 								String attRef = (String) attachIter.next();
-								String newAttId = copyAttachment(attRef);
+								String newAttId = copyAttachment(attRef, toContext);
 								AssignmentAttachment newAA = new AssignmentAttachment(newAssignment, newAttId);
 								attachSet.add(newAA);
 							}
@@ -570,12 +570,11 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 		return newTitle;
 	}
 	
-	private String copyAttachment(String attId) {
+	private String copyAttachment(String attId, String contextId) {
 		String newAttId = null;
 		if (attId != null) {
 			try {
 				ContentResource oldAttachment = contentHostingService.getResource(attId);
-				String contextId = externalLogic.getCurrentContextId();
 				String toolTitle = externalLogic.getToolTitle();
 				String name = oldAttachment.getProperties().getProperty(
 						ResourceProperties.PROP_DISPLAY_NAME);
