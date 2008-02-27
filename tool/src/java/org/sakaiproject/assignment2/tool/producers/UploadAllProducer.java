@@ -49,27 +49,13 @@ public class UploadAllProducer implements ViewComponentProducer, ViewParamsRepor
 		// Render release options radios
 		String[] release_selectValues = new String[] {"release", "norelease"};
 		String[] release_selectKeys = new String[] {"assignment2.uploadall.release", "assignment2.uploadall.norelease"};
-		UISelect releaseSelect = UISelect.make(upload_form, "releaseSelect", release_selectValues, release_selectKeys, "");
-		for (int i = 0; i < release_selectValues.length; i++)
-	    {
-	      makeSelectBranch(upload_form, releaseSelect.getFullID(), "releaseRow:", "release",
-	          "releaseLabel", i);
-	    }
+		UISelect.make(upload_form, "releaseSelect", release_selectValues, release_selectKeys, "", true).setMessageKeys();
 		
 		// Render buttons
 		UICommand.make(upload_form, "uploadButton", UIMessage.make("assignment2.uploadall.upload"), "");
 		UICommand.make(upload_form, "cancelButton", UIMessage.make("assignment2.uploadall.cancel"), "");
 	}
 	
-	private void makeSelectBranch(UIContainer tofill, String selectId, String branchName, String choiceName, String labelName, int i)
-	{
-		UIBranchContainer branch = UIBranchContainer.make(tofill, branchName, Integer.toString(i));
-		UISelectChoice choice = UISelectChoice.make(branch, choiceName, selectId, i);
-		UISelectLabel label = UISelectLabel.make(branch, labelName, selectId, i);
-		UILabelTargetDecorator labelDec = new UILabelTargetDecorator(choice);
-		label.decorate(labelDec);
-	}
-
 	public ViewParameters getViewParameters()
 	{
 		return new AssignmentViewParams();
