@@ -248,7 +248,7 @@ public class StudentViewAssignmentRenderer {
         	}
         	UIBranchContainer loop = UIBranchContainer.make(form, "previous_submissions:");
         	
-        	UIMessage.make(loop, "loop_submission", "assignment2.assignment_grade.loop_submission", 
+        	UIMessage.make(loop, "loop_submission", "assignment2.student-submit.loop_submission", 
         			new Object[] { (asv.getSubmittedTime() != null ? df.format(asv.getSubmittedTime()) : "") });
         	UIVerbatim.make(loop, "loop_submitted_text", asv.getSubmittedText());
         	UIVerbatim.make(loop, "loop_feedback_text", asv.getAnnotatedTextFormatted());
