@@ -45,6 +45,7 @@ import org.sakaiproject.assignment2.model.SubmissionAttachmentBase;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.model.UploadAllOptions;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
+import org.sakaiproject.assignment2.tool.beans.NotificationBean;
 import org.sakaiproject.assignment2.exception.StaleObjectModificationException;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
@@ -52,8 +53,12 @@ import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
 import org.sakaiproject.assignment2.logic.utils.ComparatorsUtils;
 import org.sakaiproject.assignment2.dao.AssignmentDao;
+import org.sakaiproject.exception.IdUnusedException;
+import org.sakaiproject.exception.PermissionException;
+import org.sakaiproject.exception.TypeException;
 import org.sakaiproject.user.api.User;
 import org.sakaiproject.user.api.UserDirectoryService;
+import org.sakaiproject.user.api.UserNotDefinedException;
 import org.sakaiproject.util.StringUtil;
 import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException;
 import org.springframework.web.multipart.MultipartFile;
@@ -92,6 +97,11 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
     private UserDirectoryService userDirectoryService;
     public void setUserDirectoryService(UserDirectoryService userDirectoryService) {
     	this.userDirectoryService = userDirectoryService;
+    }
+    
+    private NotificationBean notificationBean;
+    public void setNotificationBean(NotificationBean notificationBean) {
+    	this.notificationBean = notificationBean;
     }
     
 	public void init(){
@@ -341,6 +351,12 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 						"sub attachments deleted for updated version " + 
 						version.getId() + " by user " + currentUserId);
 			}
+			/*
+			notificationBean.notificationToStudent(submission);
+			if (assignment.getNotificationType() ==  AssignmentConstants.NOTIFY_FOR_EACH)
+			{
+				notificationBean.notificationToInstructors(submission, assignment);
+			}*/
 			
 		} catch (HibernateOptimisticLockingFailureException holfe) {
 			if(log.isInfoEnabled()) log.info("An optimistic locking failure occurred while attempting to update submission version" + version.getId());
@@ -349,6 +365,23 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			if(log.isInfoEnabled()) log.info("An optimistic locking failure occurred while attempting to update submission version" + version.getId());
 			throw new StaleObjectModificationException(sose);
 		}
+		/*catch (IdUnusedException e)
+		{
+			log.error("assignment2", e);
+		}
+		catch (UserNotDefinedException e)
+		{
+			log.error("assignment2", e);
+		}
+		catch (PermissionException e)
+		{
+			log.error("assignment2", e);
+		}
+		catch (TypeException e)
+		{
+			log.error("assignment2", e);
+		}*/
+
 	}
 
 	public void saveInstructorFeedback(Long versionId, String studentId, Assignment2 assignment, 
