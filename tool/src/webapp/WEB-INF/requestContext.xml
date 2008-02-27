@@ -272,6 +272,19 @@
       <property name="assignment2EntityBeanLocator" ref="Assignment2"/>
    </bean>
 
+	<bean id="notificationBean" class="org.sakaiproject.assignment2.tool.beans.NotificationBean">
+		<property name="messageLocator" ref="messageLocator" />
+		<property name="contentHostingService" ref="org.sakaiproject.content.api.ContentHostingService" />
+		<property name="securityService" ref="org.sakaiproject.authz.api.SecurityService" />
+		<property name="timeService" ref="org.sakaiproject.time.api.TimeService" />
+		<property name="digestService" ref="org.sakaiproject.email.api.DigestService" />
+		<property name="authzGroupService" ref="org.sakaiproject.authz.api.AuthzGroupService" />
+		<property name="siteService" ref="org.sakaiproject.site.api.SiteService" />
+		<property name="emailService" ref="org.sakaiproject.email.api.EmailService" />
+		<property name="serverConfigurationService" ref="org.sakaiproject.component.api.ServerConfigurationService" />
+		<property name="userDirectoryService" ref="org.sakaiproject.user.api.UserDirectoryService" />
+	</bean>
+
 	<bean id="zipHandlerHook" class="org.sakaiproject.assignment2.tool.handlerhooks.ZipHandlerHook">
 		<property name="response" ref="httpServletResponseProxy" />
 		<property name="zipExporter" ref="ZipExporter" />

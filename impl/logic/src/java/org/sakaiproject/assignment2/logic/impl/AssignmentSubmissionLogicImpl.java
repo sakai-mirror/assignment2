@@ -42,12 +42,10 @@ import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.SubmissionAttachment;
 import org.sakaiproject.assignment2.model.SubmissionAttachmentBase;
-import org.sakaiproject.assignment2.model.FeedbackAttachment;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.model.UploadAllOptions;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.assignment2.exception.StaleObjectModificationException;
-import org.sakaiproject.assignment2.exception.SubmissionExistsException;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
@@ -72,25 +70,25 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 	private static Log log = LogFactory.getLog(AssignmentSubmissionLogicImpl.class);
 	
 	private ExternalLogic externalLogic;
-    public void setExternalLogic(ExternalLogic externalLogic) {
-        this.externalLogic = externalLogic;
-    }
-    
-    private AssignmentDao dao;
-    public void setDao(AssignmentDao dao) {
-        this.dao = dao;
-    }
-    
-    private ExternalGradebookLogic gradebookLogic;
-    public void setExternalGradebookLogic(ExternalGradebookLogic gradebookLogic) {
-        this.gradebookLogic = gradebookLogic;
-    }
-    
-    private AssignmentPermissionLogic permissionLogic;
-    public void setPermissionLogic(AssignmentPermissionLogic permissionLogic) {
-        this.permissionLogic = permissionLogic;
-    }
-    
+	public void setExternalLogic(ExternalLogic externalLogic) {
+		this.externalLogic = externalLogic;
+	}
+
+	private AssignmentDao dao;
+	public void setDao(AssignmentDao dao) {
+		this.dao = dao;
+	}
+
+	private ExternalGradebookLogic gradebookLogic;
+	public void setExternalGradebookLogic(ExternalGradebookLogic gradebookLogic) {
+		this.gradebookLogic = gradebookLogic;
+	}
+
+	private AssignmentPermissionLogic permissionLogic;
+	public void setPermissionLogic(AssignmentPermissionLogic permissionLogic) {
+		this.permissionLogic = permissionLogic;
+	}
+
     private UserDirectoryService userDirectoryService;
     public void setUserDirectoryService(UserDirectoryService userDirectoryService) {
     	this.userDirectoryService = userDirectoryService;
@@ -343,7 +341,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 						"sub attachments deleted for updated version " + 
 						version.getId() + " by user " + currentUserId);
 			}
-
+			
 		} catch (HibernateOptimisticLockingFailureException holfe) {
 			if(log.isInfoEnabled()) log.info("An optimistic locking failure occurred while attempting to update submission version" + version.getId());
 			throw new StaleObjectModificationException(holfe);
@@ -351,9 +349,8 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			if(log.isInfoEnabled()) log.info("An optimistic locking failure occurred while attempting to update submission version" + version.getId());
 			throw new StaleObjectModificationException(sose);
 		}
-
 	}
-	
+
 	public void saveInstructorFeedback(Long versionId, String studentId, Assignment2 assignment, 
 			Integer numSubmissionsAllowed, Date resubmitCloseTime, String annotatedText, 
 			String feedbackNotes, Date releasedTime, Set feedbackAttachSet) {

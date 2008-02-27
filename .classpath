@@ -9,6 +9,7 @@
 	<classpathentry kind="src" path="impl/dao/src/java"/>
 	<classpathentry kind="src" path="impl/hbm/src/java"/>
 	<classpathentry kind="src" path="impl/pack/src/webapp/WEB-INF"/>
+	<classpathentry kind="src" path="integration-test/src/test/java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="var" path="M2_REPO/uk/org/ponder/rsfutil/rsfutil/0.7.2/rsfutil-0.7.2.jar"/>
 	<classpathentry kind="var" path="M2_REPO/uk/org/ponder/j-servletutil/1.2.2/j-servletutil-1.2.2.jar"/>
@@ -36,14 +37,16 @@
 	<classpathentry kind="src" path="/sections-impl"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/import-api"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/event-api"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/entity-broker"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/entitybroker"/>
 	<classpathentry kind="var" path="M2_REPO/org/sakaiproject/entitybroker/entitybroker-api/1.2.0/entitybroker-api-1.2.0.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/content-api"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3"/>
 	<classpathentry kind="var" path="M2_REPO/uk/org/ponder/ponderutilcore/1.2.2/ponderutilcore-1.2.2.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/sakaiproject/sakai-gradebook-service-hibernate/SNAPSHOT/sakai-gradebook-service-hibernate-SNAPSHOT.jar"/>
 	<classpathentry kind="var" path="M2_REPO/javax/servlet/servlet-api/2.4/servlet-api-2.4.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/email-api"/>
 	<classpathentry kind="var" path="M2_REPO/com/thoughtworks/xstream/xstream/1.2.1/xstream-1.2.1.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/assignment-api"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/test-harness"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
