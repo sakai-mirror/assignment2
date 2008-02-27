@@ -92,14 +92,19 @@
 						<legend rsf:id="msg=assignment2.uploadall.release-option">
 							Select release option
 						</legend>
-						<span rsf:id="releaseSelect">
-							<div rsf:id="releaseRow:" class="checkbox indent">
-								<input rsf:id="release" type="radio" name="release" id="release" />
-								<label rsf:id="releaseLabel" for="release">
-									Release uploaded information to students
-								</label>
+						<div class="checkbox indent">
+							<input rsf:id="release" type="radio" name="release" id="release" />
+							<label rsf:id="msg=assignment2.uploadall.release" for="release">
+								Release uploaded information to students
+							</label>
 						</div>
-						</span>
+						<div class="checkbox indent">
+							<input rsf:id="norelease" type="radio" name="norelease" id="norelease" />
+							<label rsf:id="msg=assignment2.uploadall.norelease" for="norelease">
+								Release uploaded information to students
+							</label>
+
+						</div>
 					</fieldset>
 						<p class="act">
 							<input rsf:id="uploadButton" type="button" name="uploadButton" id="uploadButton" accesskey="s" value="Upload" />
