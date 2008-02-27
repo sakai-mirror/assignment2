@@ -219,6 +219,11 @@
    	  <property name="attachmentListRenderer" ref="AttachmentListRenderer" />
    </bean>
    
+   <bean class="org.sakaiproject.assignment2.tool.producers.fragments.FragmentViewSubmissionProducer">
+      <property name="submissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
+   	  <property name="attachmentListRenderer" ref="AttachmentListRenderer" />
+   </bean>
+   
    
    <!-- Development Producers -->
    <bean class="org.sakaiproject.assignment2.tool.producers.dev.AssignmentDevProducer">

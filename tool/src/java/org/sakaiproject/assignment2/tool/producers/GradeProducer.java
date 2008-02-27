@@ -21,10 +21,12 @@ import org.sakaiproject.assignment2.model.FeedbackAttachment;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.assignment2.tool.params.AssignmentViewParams;
 import org.sakaiproject.assignment2.tool.params.ViewSubmissionsViewParams;
+import org.sakaiproject.assignment2.tool.params.FragmentViewSubmissionViewParams;
 import org.sakaiproject.assignment2.tool.params.GradeViewParams;
 import org.sakaiproject.assignment2.tool.params.FilePickerHelperViewParams;
 import org.sakaiproject.assignment2.tool.params.SimpleAssignmentViewParams;
 import org.sakaiproject.assignment2.tool.producers.fragments.FragmentAssignmentInstructionsProducer;
+import org.sakaiproject.assignment2.tool.producers.fragments.FragmentViewSubmissionProducer;
 import org.sakaiproject.assignment2.tool.producers.fragments.FragmentAttachmentsProducer;
 import org.sakaiproject.assignment2.tool.producers.fragments.FragmentSubmissionGradePreviewProducer;
 import org.sakaiproject.assignment2.tool.producers.fragments.FragmentGradebookDetailsProducer;
@@ -322,7 +324,7 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
         		//else add link to edit this submission
         		UIInternalLink.make(loop, "previous_link", 
         				messageLocator.getMessage("assignment2.assignment_grade.view_submission"),
-            			new GradeViewParams(GradeProducer.VIEW_ID, assignmentId, userId, asv.getId()));
+            			new FragmentViewSubmissionViewParams(FragmentViewSubmissionProducer.VIEW_ID, asv.getId()));
         	}
         }
         if (history == null || history.size() == 0) {
