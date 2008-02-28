@@ -159,6 +159,13 @@
 		<version>${sakai.version}</version>
 	</dependency>
 
+	<dependency>
+		<groupId>org.sakaiproject</groupId>
+		<artifactId>sakai-email-api</artifactId>
+		<version>${sakai.version}</version>
+		<scope>provided</scope>
+	</dependency>
+
 
     <!-- Apache commons dependencies -->
     <dependency>
