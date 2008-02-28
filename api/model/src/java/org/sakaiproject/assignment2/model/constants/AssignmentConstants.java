@@ -154,4 +154,38 @@ public class AssignmentConstants {
 
 	/** Security function giving the user permission to all groups, if granted to at the site level. */
 	public static final String SECURE_ALL_GROUPS = "asn.all.groups";
+
+	/** Grade type not set */
+	public static final int GRADE_TYPE_NOT_SET = -1;
+
+	/** Ungraded grade type */
+	public static final int GRADE_TYPE_UNGRADED = 1;
+
+	/** Letter grade type */
+	public static final int GRADE_TYPE_LETTER = 2;
+
+	/** Score based grade type */
+	public static final int GRADE_TYPE_SCORE = 3;
+
+	/** Pass/fail grade type */
+	public static final int GRADE_TYPE_PASS_FAIL = 4;
+
+	/** Grade type that only requires a check */
+	public static final int GRADE_TYPE_CHECK = 5;
+
+	public enum GradeType
+	{
+		NOT_SET(-1), UNGRADED(1), LETTER(2), SCORE(3), PASS_FAIL(4), CHECK(5);
+
+		private int value = -1;
+		GradeType(int value)
+		{
+			this.value = value;
+		}
+
+		public int getValue()
+		{
+			return value;
+		}
+	}
 }

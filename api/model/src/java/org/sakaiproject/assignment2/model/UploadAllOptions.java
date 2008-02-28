@@ -2,33 +2,32 @@ package org.sakaiproject.assignment2.model;
 
 public class UploadAllOptions
 {
-	public UploadAllOptions(boolean submissionText, boolean submissionAttachments,
-			boolean gradeFile, boolean feedbackText, boolean feedbackAttachments, boolean release){
-		this.submissionText = submissionText;
-		this.submissionAttachments = submissionAttachments;
-		this.gradeFile = gradeFile;
-		this.feedbackText = feedbackText;
-		this.feedbackAttachments = feedbackAttachments;
-		this.release = release;
-	}
-	
-	public UploadAllOptions(){
-		this.submissionText = false;
-		this.submissionAttachments = false;
-		this.gradeFile = false;
-		this.feedbackText = false;
-		this.feedbackAttachments = false;
-		this.release = false;
-	}
-	
 	private boolean submissionText;
 	private boolean submissionAttachments;
 	private boolean gradeFile;
 	private boolean feedbackText;
 	private boolean feedbackAttachments;
-	private boolean release;
+	private boolean releaseGrades;
+	private boolean comments;
 
-	public boolean getSubmissionText()
+	public UploadAllOptions()
+	{
+	}
+
+	public UploadAllOptions(boolean submissionText, boolean submissionAttachments,
+			boolean gradeFile, boolean feedbackText, boolean feedbackAttachments,
+			boolean releaseGrades, boolean comments)
+	{
+		this.submissionText = submissionText;
+		this.submissionAttachments = submissionAttachments;
+		this.gradeFile = gradeFile;
+		this.feedbackText = feedbackText;
+		this.feedbackAttachments = feedbackAttachments;
+		this.releaseGrades = releaseGrades;
+		this.comments = comments;
+	}
+
+	public boolean isSubmissionText()
 	{
 		return submissionText;
 	}
@@ -38,7 +37,7 @@ public class UploadAllOptions
 		this.submissionText = submissionText;
 	}
 
-	public boolean getSubmissionAttachments()
+	public boolean isSubmissionAttachments()
 	{
 		return submissionAttachments;
 	}
@@ -48,7 +47,7 @@ public class UploadAllOptions
 		this.submissionAttachments = submissionAttachments;
 	}
 
-	public boolean getGradeFile()
+	public boolean isGradeFile()
 	{
 		return gradeFile;
 	}
@@ -58,7 +57,7 @@ public class UploadAllOptions
 		this.gradeFile = gradeFile;
 	}
 
-	public boolean getFeedbackText()
+	public boolean isFeedbackText()
 	{
 		return feedbackText;
 	}
@@ -68,7 +67,7 @@ public class UploadAllOptions
 		this.feedbackText = feedbackText;
 	}
 
-	public boolean getFeedbackAttachments()
+	public boolean isFeedbackAttachments()
 	{
 		return feedbackAttachments;
 	}
@@ -78,13 +77,23 @@ public class UploadAllOptions
 		this.feedbackAttachments = feedbackAttachments;
 	}
 
-	public boolean getRelease()
+	public boolean isReleaseGrades()
 	{
-		return release;
+		return releaseGrades;
 	}
 
-	public void setRelease(boolean release)
+	public void setReleaseGrades(boolean releaseGrades)
 	{
-		this.release = release;
+		this.releaseGrades = releaseGrades;
+	}
+
+	public boolean isComments()
+	{
+		return comments;
+	}
+
+	public void setComments(boolean comments)
+	{
+		this.comments = comments;
 	}
 }
