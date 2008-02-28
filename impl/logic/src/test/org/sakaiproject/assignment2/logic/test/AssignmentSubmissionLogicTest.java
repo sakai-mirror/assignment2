@@ -711,17 +711,32 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
     public void testGetSubmissionStatusConstantForCurrentVersion() {
     	
     	// can be in progress, not started, or submitted
+    	// due date has passed
     	// start with one that is in progress/draft
-    	Integer status = submissionLogic.getSubmissionStatusConstantForCurrentVersion(testData.st1a3CurrVersion);
+    	Calendar cal = Calendar.getInstance();
+    	cal.set(2005, 10, 01);
+    	Date dueDate = cal.getTime();
+    	
+    	Integer status = submissionLogic.getSubmissionStatusConstantForCurrentVersion(testData.st1a3CurrVersion, dueDate);
     	assertTrue(status.equals(AssignmentConstants.SUBMISSION_IN_PROGRESS));
     	// empty submission 
-    	status = submissionLogic.getSubmissionStatusConstantForCurrentVersion(new AssignmentSubmissionVersion());
+    	status = submissionLogic.getSubmissionStatusConstantForCurrentVersion(new AssignmentSubmissionVersion(), dueDate);
     	assertTrue(status.equals(AssignmentConstants.SUBMISSION_NOT_STARTED));
     	// null submission
-    	status = submissionLogic.getSubmissionStatusConstantForCurrentVersion(null);
+    	status = submissionLogic.getSubmissionStatusConstantForCurrentVersion(null, dueDate);
     	assertTrue(status.equals(AssignmentConstants.SUBMISSION_NOT_STARTED));
     	// let's try one that is submitted
-    	status = submissionLogic.getSubmissionStatusConstantForCurrentVersion(testData.st1a1CurrVersion);
+    	status = submissionLogic.getSubmissionStatusConstantForCurrentVersion(testData.st1a1CurrVersion, dueDate);
+    	assertTrue(status.equals(AssignmentConstants.SUBMISSION_LATE));
+    	
+    	// try submitted one with null due Date
+    	status = submissionLogic.getSubmissionStatusConstantForCurrentVersion(testData.st1a1CurrVersion, null);
+    	assertTrue(status.equals(AssignmentConstants.SUBMISSION_SUBMITTED));
+    	
+    	// try a due date in the future
+    	cal.set(2020, 10, 1);
+    	dueDate = cal.getTime();
+    	status = submissionLogic.getSubmissionStatusConstantForCurrentVersion(testData.st1a1CurrVersion, dueDate);
     	assertTrue(status.equals(AssignmentConstants.SUBMISSION_SUBMITTED));
     }
     

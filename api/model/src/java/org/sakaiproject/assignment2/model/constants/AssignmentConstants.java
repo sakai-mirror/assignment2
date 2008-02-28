@@ -111,6 +111,11 @@ public class AssignmentConstants {
 	 * Student has made a submission
 	 */
 	public final static int SUBMISSION_SUBMITTED = 2;
+	
+	/**
+	 * Student made a submission but it was submitted after the due date
+	 */
+	public final static int SUBMISSION_LATE = 3;
 
 	// Security functions & locks
 	/** Security function giving the user permission to receive assignment submission email */

@@ -161,7 +161,15 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 				// retrieve the grade information for this submission
 				gradebookLogic.populateAllGradeInfoForSubmission(currentContextId, 
 						currentUserId, submission);
+				
+				gradebookLogic.populateGradebookItemDetailsForAssignment(currentContextId, assignment);
 			}
+	
+			Date dueDate = assignment.isUngraded() ? assignment.getDueDateForUngraded() : assignment.getDueDate();
+					
+			// populate this submission's status
+			Integer status = getSubmissionStatusConstantForCurrentVersion(submission.getCurrentSubmissionVersion(), dueDate);
+			submission.setSubmissionStatusConstant(status);
 		}
 		return submission;
 
@@ -241,7 +249,17 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			if (!assignment.isUngraded() && assignment.getGradableObjectId() != null) {
 				gradebookLogic.populateAllGradeInfoForSubmission(contextId, 
 						currentUserId, submission);
+				
+				gradebookLogic.populateGradebookItemDetailsForAssignment(contextId, assignment);
 			}
+			
+			Date dueDate = assignment.isUngraded() ? assignment.getDueDateForUngraded() : assignment.getDueDate();
+			
+			// populate this submission's status
+			Integer status = getSubmissionStatusConstantForCurrentVersion(
+					submission.getCurrentSubmissionVersion(), dueDate);
+			submission.setSubmissionStatusConstant(status);
+
 		}
 		
 		return submission;
@@ -525,7 +543,13 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			List<String> viewableStudents = permissionLogic.getViewableStudentsForUserForItem(assignment);
 
 			if (viewableStudents != null && !viewableStudents.isEmpty()) {
-
+				// populate the gb info for this assignment, if appropriate. this is used for due date to 
+				// determine if submission is late
+				if (!assignment.isUngraded() && assignment.getGradableObjectId() != null) {
+					gradebookLogic.populateGradebookItemDetailsForAssignment(contextId, assignment);
+				}
+										Date dueDate = assignment.isUngraded() ? assignment.getDueDateForUngraded() : assignment.getDueDate();
+				
 				// get the submissions for these students
 				Set<AssignmentSubmission> existingSubmissions = dao.getCurrentSubmissionsForStudentsForAssignment(viewableStudents, assignment);
 
@@ -559,6 +583,11 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 							filterOutRestrictedInfo(thisSubmission, externalLogic.getCurrentUserId(), false);
 						}
 						
+						// populate this submission's status		
+						Integer status = getSubmissionStatusConstantForCurrentVersion(
+								thisSubmission.getCurrentSubmissionVersion(), dueDate);
+						thisSubmission.setSubmissionStatusConstant(status);
+						
 						viewableSubmissions.add(thisSubmission);
 					}
 				}
@@ -579,6 +608,8 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		}
 		
 		if (assignments != null) {
+			String contextId = externalLogic.getCurrentContextId();
+			
 			// retrieve the associated submission recs with current version data populated
 			List<AssignmentSubmission> submissions = dao.getCurrentAssignmentSubmissionsForStudent(assignments, studentId);
 			Map<Long, AssignmentSubmission> assignmentIdToSubmissionMap = new HashMap();
@@ -601,14 +632,23 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 					AssignmentSubmission currSubmission = (AssignmentSubmission)assignmentIdToSubmissionMap.get(assign.getId());
 					AssignmentSubmissionVersion currVersion = currSubmission != null ? 
 							currSubmission.getCurrentSubmissionVersion() : null;
-					int status = getSubmissionStatusConstantForCurrentVersion(currVersion);
+							
+					// to check for late, we need the due date
+					if (!assign.isUngraded() && assign.getGradableObjectId() != null) {
+						gradebookLogic.populateGradebookItemDetailsForAssignment(contextId, assign);
+					}
+					
+					Date dueDate = assign.isUngraded() ? assign.getDueDateForUngraded() : assign.getDueDate();
+					
+					Integer status = getSubmissionStatusConstantForCurrentVersion(currVersion, dueDate);
 					assign.setSubmissionStatusConstant(new Integer(status));
 				}
 			}
 		}
 	}
 	
-	public int getSubmissionStatusConstantForCurrentVersion(AssignmentSubmissionVersion currentVersion) {
+	public Integer getSubmissionStatusConstantForCurrentVersion(AssignmentSubmissionVersion currentVersion,
+			Date dueDate) {
 		int status = AssignmentConstants.SUBMISSION_NOT_STARTED;
 		
 		if (currentVersion == null) {
@@ -618,7 +658,11 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		} else if (currentVersion.isDraft()) {
 			status = AssignmentConstants.SUBMISSION_IN_PROGRESS;
 		} else if (currentVersion.getSubmittedTime() != null) {
-			status = AssignmentConstants.SUBMISSION_SUBMITTED;
+			if (dueDate != null && dueDate.before(currentVersion.getSubmittedTime())) {
+				status = AssignmentConstants.SUBMISSION_LATE;
+			} else {
+				status = AssignmentConstants.SUBMISSION_SUBMITTED;
+			}
 		}
 		
 		return status;

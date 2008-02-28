@@ -354,8 +354,11 @@ public class AssignmentSubmissionBean {
 			AssignmentSubmission submission = (AssignmentSubmission) subIter.next();
 			if (submission != null) { 
 				// set the status for this submission: "In Progress, Submitted, etc"
-				int status = submissionLogic.getSubmissionStatusConstantForCurrentVersion(submission.getCurrentSubmissionVersion());
-				submission.setSubmissionStatus(messageLocator.getMessage("assignment2.assignment_grade-assignment.submission_status." + status));
+				if (submission.getSubmissionStatusConstant() != null) {
+					submission.setSubmissionStatus(messageLocator.getMessage(
+							"assignment2.assignment_grade-assignment.submission_status." + 
+							submission.getSubmissionStatusConstant()));
+				}
 			}
 		}
 	}

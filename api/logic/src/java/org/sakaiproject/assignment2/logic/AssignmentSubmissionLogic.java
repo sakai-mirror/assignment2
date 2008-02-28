@@ -152,11 +152,14 @@ public interface AssignmentSubmissionLogic {
 	/**
 	 * 
 	 * @param currentVersion
+	 * @param dueDate - due date for the associated assignment. if null, assumes
+	 * no due date
 	 * @return the constant equivalent for the given submission's status 
 	 * ie In Progress, Submitted, etc based upon the passed currentVersion. will
-	 * return "Not started" if currentVersion is null
+	 * return the constant for "Not started" if currentVersion is null
 	 */
-	public int getSubmissionStatusConstantForCurrentVersion(AssignmentSubmissionVersion currentVersion);
+	public Integer getSubmissionStatusConstantForCurrentVersion(AssignmentSubmissionVersion currentVersion,
+			Date dueDate);
 	
 	/**
 	 * We cannot rely on db sorting because we must sort by several properties that

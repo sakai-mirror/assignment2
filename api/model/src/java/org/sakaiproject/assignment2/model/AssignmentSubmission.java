@@ -52,6 +52,7 @@ public class AssignmentSubmission {
 	private AssignmentSubmissionVersion currentSubmissionVersion;
 	
 	private String submissionStatus;
+	private Integer submissionStatusConstant;
 
 	public AssignmentSubmission() {
 	}
@@ -216,6 +217,24 @@ public class AssignmentSubmission {
 	public void setGradebookGradeReleased(boolean gradebookGradeReleased) {
 		this.gradebookGradeReleased = gradebookGradeReleased;
 	}
+	
+	/**
+	 * the int value of the version number for this assignment. not
+     * to be confused with submission version.
+	 * @return
+	 */
+	public int getRevisionVersion() {
+		return revisionVersion;
+	}
+
+	/**
+	 * the int value of the version number for this assignment. not
+     * to be confused with submission version.
+	 * @param revisionVersion
+	 */
+	public void setRevisionVersion(int revisionVersion) {
+		this.revisionVersion = revisionVersion;
+	}
 
 	// non-persisted fields
 	
@@ -261,24 +280,27 @@ public class AssignmentSubmission {
 	public void setSubmissionStatus(String submissionStatus) {
 		this.submissionStatus = submissionStatus;
 	}
-
+	
 	/**
-	 * the int value of the version number for this assignment. not
-     * to be confused with submission version.
-	 * @return
+	 * 
+	 * @return constant representation of this submission's status
+	 * ie Not Started, In Progess, etc
 	 */
-	public int getRevisionVersion() {
-		return revisionVersion;
+	public Integer getSubmissionStatusConstant()
+	{
+		return submissionStatusConstant;
 	}
 
 	/**
-	 * the int value of the version number for this assignment. not
-     * to be confused with submission version.
-	 * @param revisionVersion
+	 * constant representation of this submission's status
+	 * ie Not Started, In Progess, etc
+	 * @param submissionStatusConstant
 	 */
-	public void setRevisionVersion(int revisionVersion) {
-		this.revisionVersion = revisionVersion;
+	public void setSubmissionStatusConstant(Integer submissionStatusConstant)
+	{
+		this.submissionStatusConstant = submissionStatusConstant;
 	}
+
 	
 	/**
 	 * 
@@ -331,4 +353,5 @@ public class AssignmentSubmission {
 		
 		return submission;
 	}
+
 }

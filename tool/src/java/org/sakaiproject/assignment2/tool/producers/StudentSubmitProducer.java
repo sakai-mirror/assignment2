@@ -84,8 +84,12 @@ public class StudentSubmitProducer implements ViewComponentProducer, NavigationC
         // set the textual representation of the status
     	AssignmentSubmissionVersion currVersion = assignmentSubmission != null ?
     			assignmentSubmission.getCurrentSubmissionVersion() : null;
-        int status = submissionLogic.getSubmissionStatusConstantForCurrentVersion(currVersion);
-        assignmentSubmission.setSubmissionStatus(messageLocator.getMessage("assignment2.student-submit.status." + status));
+    	
+    	if (submission.getSubmissionStatusConstant() != null) {
+    		assignmentSubmission.setSubmissionStatus(messageLocator.getMessage(
+    				"assignment2.student-submit.status." + 
+    				submission.getSubmissionStatusConstant()));
+    	}
     	
     	studentViewAssignmentRenderer.makeStudentView(tofill, "portletBody:", assignmentSubmission, assignment, params, ASOTPKey, Boolean.FALSE); 
         

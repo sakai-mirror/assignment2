@@ -185,21 +185,13 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
         } else {
         	UIOutput.make(form, "status", "");
         }
-        Date dueDate;
-        if (assignment.isUngraded()) {
-        	dueDate = assignment.getDueDateForUngraded();
+        
+        int statusConstant = as != null && as.getSubmissionStatusConstant() != null ? as.getSubmissionStatusConstant() : AssignmentConstants.SUBMISSION_NOT_STARTED;
+        
+        if (statusConstant == AssignmentConstants.SUBMISSION_IN_PROGRESS || statusConstant == AssignmentConstants.SUBMISSION_NOT_STARTED) {
+        	UIMessage.make(form, "status", "assignment2.assignment_grade.submission_status." + statusConstant);
         } else {
-        	dueDate = assignment.getDueDate();
-        }
-        String status = (as != null && as.getSubmissionStatus() != null ? as.getSubmissionStatus() : String.valueOf(AssignmentConstants.SUBMISSION_NOT_STARTED));
-        if (status.equals(String.valueOf(AssignmentConstants.SUBMISSION_IN_PROGRESS)) || status.equals(String.valueOf(AssignmentConstants.SUBMISSION_NOT_STARTED))) {
-        	UIMessage.make(form, "status", "assignment2.submission_status." + status);
-        } else {
-        	if (dueDate == null || (assignmentSubmissionVersion.getSubmittedTime() != null && assignmentSubmissionVersion.getSubmittedTime().before(dueDate))) {
-        		UIMessage.make(form, "status", "assignment2.submission_status.2_on_time", new Object[] { df.format(assignmentSubmissionVersion.getSubmittedTime()) });
-        	} else {
-        		UIMessage.make(form, "status", "assignment2.submission_status.2_late", new Object[] { df.format(assignmentSubmissionVersion.getSubmittedTime()) });
-        	}
+        		UIMessage.make(form, "status", "assignment2.assignment_grade.submission_status." + statusConstant, new Object[] { df.format(assignmentSubmissionVersion.getSubmittedTime()) });
         }
         
         

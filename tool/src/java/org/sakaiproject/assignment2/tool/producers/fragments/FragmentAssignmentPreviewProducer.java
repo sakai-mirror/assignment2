@@ -60,8 +60,14 @@ public class FragmentAssignmentPreviewProducer implements ViewComponentProducer,
         
         
         AssignmentSubmission assignmentSubmission = new AssignmentSubmission();
+        
         // set the textual representation of the status
-        assignmentSubmission.setSubmissionStatus(messageLocator.getMessage("assignment2.student-submit.status.0"));
+    	if (assignmentSubmission.getSubmissionStatusConstant() != null) {
+    		assignmentSubmission.setSubmissionStatus(messageLocator.getMessage(
+    				"assignment2.student-submit.status." + 
+    				assignmentSubmission.getSubmissionStatusConstant()));
+    	}
+    	
         String ASOTPKey = EntityBeanLocator.NEW_PREFIX + "1";
         studentViewAssignmentRenderer.makeStudentView(tofill, "portletBody:", assignmentSubmission, assignment, params, ASOTPKey, Boolean.TRUE);
 

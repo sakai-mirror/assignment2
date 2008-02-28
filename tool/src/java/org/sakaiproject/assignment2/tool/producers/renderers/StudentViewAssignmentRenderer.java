@@ -134,6 +134,12 @@ public class StudentViewAssignmentRenderer {
 		disabledLinkAttr.put("onclick", "return false;");
 		DecoratorList disabledLinkDecoratorList = new DecoratorList(new UIFreeAttributeDecorator(disabledLinkAttr));
         
+		// set the textual representation of the submission status
+    	if (assignmentSubmission.getSubmissionStatusConstant() != null) {
+    		assignmentSubmission.setSubmissionStatus(messageLocator.getMessage(
+    				"assignment2.assignment_grade-assignment.submission_status." + 
+    				assignmentSubmission.getSubmissionStatusConstant()));
+    	}
 		
     	UIMessage.make(joint, "heading_status", "assignment2.student-submit.heading_status", 
     			new Object[]{ assignmentSubmission.getSubmissionStatus() });
