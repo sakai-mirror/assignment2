@@ -140,3 +140,19 @@ jQuery(document).ready(function(){
 	update_resubmit_until();
 	gradebook_toggle();
 });
+
+function slide_submission(img){
+	jQuery(img).parent('h4').next('div').toggle();
+	flip_image(img)
+}
+function slideFieldset(img) {
+	jQuery(img).parent('legend').next('ol').toggle();
+	flip_image(img);
+}
+function flip_image(img){
+	if(img.src.match('collapse')){
+		img.src=img.src.replace(/collapse/, 'expand');
+	}else{
+		img.src=img.src.replace(/expand/, 'collapse');
+	}
+}

@@ -1,10 +1,13 @@
 package org.sakaiproject.assignment2.tool.producers.renderers;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentAttachment;
 import org.sakaiproject.assignment2.model.SubmissionAttachment;
 import org.sakaiproject.assignment2.model.FeedbackAttachment;
+import org.sakaiproject.assignment2.tool.beans.Assignment2Bean;
 import org.sakaiproject.assignment2.tool.producers.fragments.AjaxCallbackProducer;
 import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.content.api.ContentResource;
@@ -24,6 +27,7 @@ import java.util.List;
 import java.util.ArrayList;
 
 public class AttachmentListRenderer {
+	private static final Log LOG = LogFactory.getLog(AttachmentListRenderer.class);
 	
 	private ContentHostingService contentHostingService;
 	public void setContentHostingService(ContentHostingService contentHostingService) {
@@ -121,6 +125,7 @@ public class AttachmentListRenderer {
 	    					"</a>");
 	    		}
 			} catch (Exception e) {
+				LOG.error(e.getMessage(), e);
 				//do nothing
 			}
 			i++;

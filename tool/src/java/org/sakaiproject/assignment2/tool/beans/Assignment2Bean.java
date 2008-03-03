@@ -15,6 +15,8 @@ import org.sakaiproject.assignment2.exception.AnnouncementPermissionException;
 import org.sakaiproject.assignment2.exception.StaleObjectModificationException;
 import org.sakaiproject.assignment2.tool.beans.locallogic.LocalAssignmentLogic;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import uk.org.ponder.beanutil.entity.EntityBeanLocator;
 import uk.org.ponder.messageutil.MessageLocator;
 import uk.org.ponder.messageutil.TargettedMessage;
@@ -34,6 +36,8 @@ public class Assignment2Bean {
 	
 	public Assignment2 assignment = new Assignment2();
 	public Date openDate;
+	
+	private static final Log LOG = LogFactory.getLog(Assignment2Bean.class);
 	
 	private static final String REMOVE = "remove";
 	private static final String BACK_TO_LIST = "back_to_list";
@@ -222,6 +226,7 @@ public class Assignment2Bean {
 				localAssignmentLogic.handleAnnouncement(assignment, assignmentFromDb);
 				
 			} catch( ConflictingAssignmentNameException e){
+				LOG.error(e.getMessage(), e);
 				messages.addMessage(new TargettedMessage("assignment2.assignment_post.conflicting_assignment_name",
 						new Object[] { assignment.getTitle() }, "Assignment2." + key + ".title"));
 				return FAILURE;
@@ -298,6 +303,7 @@ public class Assignment2Bean {
 					
 					localAssignmentLogic.handleAnnouncement(assignment, assignmentFromDb);
 				} catch( ConflictingAssignmentNameException e){
+					LOG.error(e.getMessage(), e);
 					messages.addMessage(new TargettedMessage("assignment2.assignment_save_draft.conflicting_assignment_name",
 							new Object[] { assignment.getTitle() }, "Assignment2." + key + ".title"));
 					return FAILURE;
@@ -333,9 +339,11 @@ public class Assignment2Bean {
 					logic.deleteAssignment(assignment);
 					assignmentsRemoved++;
 				} catch (AnnouncementPermissionException ape) {
+					LOG.error(ape.getMessage(), ape);
 					// TODO the assign was deleted, but announcement was not
 					// b/c user did not have delete perm in annc tool
 				} catch (StaleObjectModificationException some) {
+					LOG.error(some.getMessage(), some);
 					// TODO provide a message to user that someone else was editing
 					// this object at the same time
 				}
@@ -357,10 +365,12 @@ public class Assignment2Bean {
 			localAssignmentLogic.handleAnnouncement(duplicate, null);
 			
 		} catch(ConflictingAssignmentNameException e){
+			LOG.error(e.getMessage(), e);
 			messages.addMessage(new TargettedMessage("assignment2.assignment_post.duplicate_conflicting_assignment_name",
 					new Object[]{ duplicate.getTitle() }));
 			return;
 		} catch (SecurityException e) {
+			LOG.error(e.getMessage(), e);
 			messages.addMessage(new TargettedMessage("assignment2.assignment_post.security_exception"));
 			return;
 		}

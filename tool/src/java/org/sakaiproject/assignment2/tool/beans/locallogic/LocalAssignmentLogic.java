@@ -28,12 +28,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment2.exception.AnnouncementPermissionException;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.utils.ComparatorsUtils;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentGroup;
+import org.sakaiproject.assignment2.tool.beans.Assignment2Bean;
 
 import uk.org.ponder.messageutil.MessageLocator;
 
@@ -41,6 +44,8 @@ import uk.org.ponder.messageutil.MessageLocator;
  * Contains logic methods that are used by the ui.
  */
 public class LocalAssignmentLogic {
+	
+	private static final Log LOG = LogFactory.getLog(LocalAssignmentLogic.class);
 	
 	private ExternalLogic externalLogic;
 	public void setExternalLogic(ExternalLogic externalLogic) {
@@ -107,6 +112,7 @@ public class LocalAssignmentLogic {
 			assignmentLogic.saveAssignmentAnnouncement(oldAssignment, newAssignment, newAnncSubject, 
 					newAnncBody, revAnncSubject, revAnncBody);
 		} catch (AnnouncementPermissionException ape) {
+			LOG.error(ape.getMessage(), ape);
 			// TODO do something since the assignment was saved but
 			// the announcement was not added b/c user doesn't have
 			// perm in the announcements tool

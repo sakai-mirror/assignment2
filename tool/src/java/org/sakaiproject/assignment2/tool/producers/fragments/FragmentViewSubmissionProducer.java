@@ -30,8 +30,12 @@ public class FragmentViewSubmissionProducer implements ViewComponentProducer, Vi
     	FragmentViewSubmissionViewParams params = (FragmentViewSubmissionViewParams) viewparams;
 
     	AssignmentSubmissionVersion asv = submissionLogic.getSubmissionVersionById(params.submissionVersionId);
-    	
-    	UIVerbatim.make(tofill, "submitted_text", asv.getSubmittedText());
+
+    	if (asv.getReleasedTime() != null) {
+    		UIVerbatim.make(tofill, "submitted_text", asv.getAnnotatedTextFormatted());
+    	} else {
+    		UIVerbatim.make(tofill, "submitted_text", asv.getSubmittedText());
+    	}
     	
         attachmentListRenderer.makeAttachmentFromSubmissionAttachmentSet(tofill, "assignment_attachment_list:", params.viewID, 
         		asv.getSubmissionAttachSet(), Boolean.FALSE);

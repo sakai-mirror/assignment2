@@ -21,10 +21,12 @@ import org.sakaiproject.assignment2.model.SubmissionAttachment;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.assignment2.tool.params.FilePickerHelperViewParams;
+import org.sakaiproject.assignment2.tool.params.FragmentViewSubmissionViewParams;
 import org.sakaiproject.assignment2.tool.params.GradeViewParams;
 import org.sakaiproject.assignment2.tool.producers.AddAttachmentHelperProducer;
 import org.sakaiproject.assignment2.tool.producers.StudentAssignmentListProducer;
 import org.sakaiproject.assignment2.tool.producers.GradeProducer;
+import org.sakaiproject.assignment2.tool.producers.fragments.FragmentViewSubmissionProducer;
 import org.sakaiproject.entitybroker.EntityBroker;
 import org.sakaiproject.entitybroker.IdEntityReference;
 import org.sakaiproject.tool.api.SessionManager;
@@ -248,33 +250,26 @@ public class StudentViewAssignmentRenderer {
     	}
                 
     	for (Iterator iter = history.iterator(); iter.hasNext();){
-    		AssignmentSubmissionVersion asv = (AssignmentSubmissionVersion) iter.next(); 
-        	if (asv.isDraft()) {
-        		continue;
-        	}
+    		AssignmentSubmissionVersion asv = (AssignmentSubmissionVersion) iter.next();
+    		if (asv.isDraft()) { 
+    			continue;
+    		}
+            
         	UIBranchContainer loop = UIBranchContainer.make(form, "previous_submissions:");
-        	
-        	UIMessage.make(loop, "loop_submission", "assignment2.student-submit.loop_submission", 
-        			new Object[] { (asv.getSubmittedTime() != null ? df.format(asv.getSubmittedTime()) : "") });
-        	UIVerbatim.make(loop, "loop_submitted_text", asv.getSubmittedText());
-        	UIVerbatim.make(loop, "loop_feedback_text", asv.getAnnotatedTextFormatted());
-        	UIVerbatim.make(loop, "loop_feedback_notes", asv.getFeedbackNotes());
-        	attachmentListRenderer.makeAttachmentFromSubmissionAttachmentSet(loop, "loop_submitted_attachment_list:", 
-        			GradeProducer.VIEW_ID, asv.getSubmissionAttachSet(), Boolean.FALSE);
-        	attachmentListRenderer.makeAttachmentFromFeedbackAttachmentSet(loop, "loop_returned_attachment_list:", 
-        			GradeProducer.VIEW_ID, asv.getFeedbackAttachSet(), Boolean.FALSE);
-        	if (asv.getLastFeedbackSubmittedBy() != null) {
-	        	UIMessage.make(loop, "feedback_updated", "assignment2.assignment_grade.feedback_updated",
-	        			new Object[]{ 
-	        				(asv.getLastFeedbackTime() != null ? df.format(asv.getLastFeedbackTime()) : ""), 
-	        				externalLogic.getUserDisplayName(asv.getLastFeedbackSubmittedBy()) });
+        	UIOutput.make(loop, "previous_date", (asv.getSubmittedTime() != null ? df.format(asv.getSubmittedTime()) : ""));
+        	if (asvOTPKey.equals(asv.getId().toString())){
+        		//we are editing this version
+        		UIMessage.make(loop, "current_version", "assignment2.student-submit.current_version");
         	} else {
-        		UIMessage.make(loop, "feedback_updated", "assignment2.assignment_grade.feedback_not_updated");
+        		//else add link to edit this submission
+        		UIInternalLink.make(loop, "previous_link", 
+        				messageLocator.getMessage("assignment2.assignment_grade.view_submission"),
+            			new FragmentViewSubmissionViewParams(FragmentViewSubmissionProducer.VIEW_ID, asv.getId()));
         	}
         }
         if (history == null || history.size() == 0) {
         	//no history, add dialog
-        	UIMessage.make(form, "no_history", "assignment2.assignment_grade.no_history");
+        	UIMessage.make(form, "no_history", "assignment2.student-submit.no_history");
         }
         
         form.parameters.add( new UIELBinding("#{AssignmentSubmissionBean.ASOTPKey}", ASOTPKey));

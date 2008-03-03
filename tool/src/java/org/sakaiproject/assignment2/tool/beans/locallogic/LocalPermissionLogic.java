@@ -78,7 +78,7 @@ public class LocalPermissionLogic {
 			return permissionLogic.isCurrentUserAbleToSubmit(contextId);
 		
 		} else if (FragmentViewSubmissionProducer.VIEW_ID.equals(viewId)) {
-			return permissionLogic.isUserAbleToAccessInstructorView(contextId);
+			return Boolean.TRUE;
 		
 		} else if (UploadAllProducer.VIEW_ID.equals(viewId)) {
 			return permissionLogic.isUserAbleToAccessInstructorView(contextId);

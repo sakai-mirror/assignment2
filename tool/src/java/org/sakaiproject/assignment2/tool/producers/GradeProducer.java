@@ -194,7 +194,6 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
         		UIMessage.make(form, "status", "assignment2.assignment_grade.submission_status." + statusConstant, new Object[] { df.format(assignmentSubmissionVersion.getSubmittedTime()) });
         }
         
-        
         //If current submitted submission is a draft, display note to instructor
         if (submissionLogic.isMostRecentVersionDraft(as) && !OLD_VERSION){
         	UIMessage.make(form, "current_is_draft", "assignment2.assignment_grade.current_is_draft");
