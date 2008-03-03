@@ -15,6 +15,7 @@
   <modules>
     <module>api/model</module>
     <module>api/logic</module>
+    <module>bundle</module>
     <module>tool</module>
     <module>impl/hbm</module>
     <module>impl/pack</module>
