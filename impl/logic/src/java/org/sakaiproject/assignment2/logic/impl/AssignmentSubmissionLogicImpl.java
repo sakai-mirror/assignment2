@@ -362,10 +362,10 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 
 		try {
 
-			Set<AssignmentSubmissionVersion> versionSet = new HashSet();
+			Set<AssignmentSubmissionVersion> versionSet = new HashSet<AssignmentSubmissionVersion>();
 			versionSet.add(version);
 
-			Set<AssignmentSubmission> submissionSet = new HashSet();
+			Set<AssignmentSubmission> submissionSet = new HashSet<AssignmentSubmission>();
 			submissionSet.add(submission);
 			
 			if (attachToCreate == null) {
@@ -497,10 +497,10 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 
 		try {
 
-			Set<AssignmentSubmissionVersion> versionSet = new HashSet();
+			Set<AssignmentSubmissionVersion> versionSet = new HashSet<AssignmentSubmissionVersion>();
 			versionSet.add(version);
 
-			Set<AssignmentSubmission> submissionSet = new HashSet();
+			Set<AssignmentSubmission> submissionSet = new HashSet<AssignmentSubmission>();
 			submissionSet.add(submission);
 			
 			if (attachToCreate == null) {
@@ -534,7 +534,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		
 		String contextId = externalLogic.getCurrentContextId();
 		
-		List<AssignmentSubmission> viewableSubmissions = new ArrayList();
+		List<AssignmentSubmission> viewableSubmissions = new ArrayList<AssignmentSubmission>();
 		
 		Assignment2 assignment = (Assignment2)dao.findById(Assignment2.class, assignmentId);
 
@@ -613,7 +613,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			
 			// retrieve the associated submission recs with current version data populated
 			List<AssignmentSubmission> submissions = dao.getCurrentAssignmentSubmissionsForStudent(assignments, studentId);
-			Map<Long, AssignmentSubmission> assignmentIdToSubmissionMap = new HashMap();
+			Map<Long, AssignmentSubmission> assignmentIdToSubmissionMap = new HashMap<Long, AssignmentSubmission>();
 			if (submissions != null) {
 				for (Iterator subIter = submissions.iterator(); subIter.hasNext();) {
 					AssignmentSubmission submission = (AssignmentSubmission) subIter.next();
@@ -882,7 +882,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			
 			if (submissionList != null && !submissionList.isEmpty()) {
 				
-				Set<AssignmentSubmissionVersion> versionsToUpdate = new HashSet();
+				Set<AssignmentSubmissionVersion> versionsToUpdate = new HashSet<AssignmentSubmissionVersion>();
 				
 				for (Iterator subIter = submissionList.iterator(); subIter.hasNext();) {
 					AssignmentSubmission submission = (AssignmentSubmission) subIter.next();
@@ -938,7 +938,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			// we need to iterate through all of the versions and
 			// release them
 			Date releasedTime = new Date();
-			Set<AssignmentSubmissionVersion> updatedVersions = new HashSet();
+			Set<AssignmentSubmissionVersion> updatedVersions = new HashSet<AssignmentSubmissionVersion>();
 			for (Iterator versionIter = subWithHistory.getSubmissionHistorySet().iterator(); versionIter.hasNext();) {
 				AssignmentSubmissionVersion version = (AssignmentSubmissionVersion) versionIter.next();
 				if (version != null) {
@@ -1057,7 +1057,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			throw new IllegalArgumentException("Null submission passed to getVersionHistoryForSubmission");
 		}
 		
-		List<AssignmentSubmissionVersion> filteredVersionHistory = new ArrayList();
+		List<AssignmentSubmissionVersion> filteredVersionHistory = new ArrayList<AssignmentSubmissionVersion>();
 		
 		if (!permissionLogic.isUserAbleToViewStudentSubmissionForAssignment(submission.getUserId(), submission.getAssignment())) {
 			throw new SecurityException("User " + externalLogic.getCurrentUserId() +
