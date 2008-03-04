@@ -38,6 +38,7 @@ import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentAttachment;
 import org.sakaiproject.assignment2.model.AssignmentGroup;
+import org.sakaiproject.assignment2.logic.AssignmentBundleLogic;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
 import org.sakaiproject.assignment2.logic.ExternalAnnouncementLogic;
@@ -91,6 +92,11 @@ public class AssignmentLogicImpl implements AssignmentLogic{
     private AssignmentDao dao;
     public void setDao(AssignmentDao dao) {
         this.dao = dao;
+    }
+    
+    private AssignmentBundleLogic bundleLogic;
+    public void setAssignmentBundleLogic(AssignmentBundleLogic bundleLogic) {
+    	this.bundleLogic = bundleLogic;
     }
     
 	public void init(){
@@ -311,7 +317,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 	 * @see org.sakaiproject.assignment2.logic.AssignmentLogic#getViewableAssignments(String)
 	 */
 	public List<Assignment2> getViewableAssignments()
-	{
+	{   
 		List<Assignment2> viewableAssignments = new ArrayList();
 		String contextId = externalLogic.getCurrentContextId();
 		String userId = externalLogic.getCurrentUserId();

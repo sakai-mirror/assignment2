@@ -191,6 +191,14 @@
 
     </dependencies>
     <build>
+	    <resources>
+		  <resource>
+	        <directory>${basedir}/../../bundle</directory>
+	        <includes>
+	        	<include>**/*.properties</include>
+	        </includes>
+	      </resource>
+	    </resources>
       <plugins>
         <plugin>
         <groupId>org.apache.maven.plugins</groupId>

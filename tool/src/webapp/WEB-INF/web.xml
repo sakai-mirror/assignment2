@@ -30,9 +30,9 @@
 			classpath:conf/components-applicationContext.xml,
 			classpath:conf/sakaiComponents-applicationContext.xml,
 			classpath:conf/sakai-entitybroker-applicationContext.xml,
-			classpath:webapp/WEB-INF/bundle-applicationContext.xml,
 			/WEB-INF/applicationContext.xml
 		</param-value>
+		<!--  classpath:webapp/WEB-INF/bundle-applicationContext.xml, -->
 	</context-param>
 
   <!-- Configure "request scope" Spring application contexts (RSAC).

@@ -33,6 +33,7 @@
       <property name="externalGradebookLogic" ref="org.sakaiproject.assignment2.logic.ExternalGradebookLogic" />
       <property name="externalAnnouncementLogic" ref="org.sakaiproject.assignment2.logic.ExternalAnnouncementLogic" />
       <property name="assignmentSubmissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
+      <property name="assignmentBundleLogic" ref="org.sakaiproject.assignment2.logic.AssignmentBundleLogic" />
    </bean>
    
    <bean id="org.sakaiproject.assignment2.logic.AssignmentPermissionLogic" class="org.sakaiproject.assignment2.logic.impl.AssignmentPermissionLogicImpl" init-method="init">
@@ -57,6 +58,9 @@
       <property name="externalAnnouncementLogic" ref="org.sakaiproject.assignment2.logic.ExternalAnnouncementLogic" />
       <property name="contentHostingService" ref="org.sakaiproject.content.api.ContentHostingService" />
       <property name="assignmentService" ref="org.sakaiproject.assignment.api.AssignmentService" />
+   </bean>
+   
+   <bean id="org.sakaiproject.assignment2.logic.AssignmentBundleLogic" class="org.sakaiproject.assignment2.logic.impl.AssignmentBundleLogicImpl" init-method="init">
    </bean>
 
 </beans>

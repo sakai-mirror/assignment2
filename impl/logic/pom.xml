@@ -21,6 +21,12 @@
         </includes>
         <filtering>false</filtering>
       </resource>
+	  <resource>
+        <directory>${basedir}/../../bundle</directory>
+        <includes>
+        	<include>**/*.properties</include>
+        </includes>
+      </resource>
     </resources>
 
 <!-- unit testing -->

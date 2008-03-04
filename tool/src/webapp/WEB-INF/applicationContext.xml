@@ -27,7 +27,6 @@
    </bean>
 
    <!-- handles configuration of internationalization messages -->
-   <!-- 
    <bean id="messageLocator" class="uk.org.ponder.springutil.SpringMessageLocator">
       <property name="messageSource">
          <bean class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
@@ -41,7 +40,7 @@
       </property>
       <property name="localeGetter" ref="requestLocaleProxy" />
    </bean>
-   -->
+  
    <!--  Handles incoming views to filter based on permissions  -->
    <bean parent="viewParamsInterceptorParent">
    	  <property name="value">
