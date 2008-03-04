@@ -31,6 +31,6 @@ public interface AssignmentBundleLogic {
 	/** Path to bundle messages */
 	public static final String ASSIGNMENT2_BUNDLE = "messages";
 	
-	public String getResourceBundleString(String key);
+	public String getString(String key);
 	
 }

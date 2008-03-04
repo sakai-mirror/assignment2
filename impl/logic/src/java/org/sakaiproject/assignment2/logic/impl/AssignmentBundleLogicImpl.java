@@ -27,21 +27,26 @@ import org.sakaiproject.assignment2.logic.AssignmentBundleLogic;
 import org.sakaiproject.util.ResourceLoader;
 
 /**
- * This is the interface for the Assignment Bundle object
+ * Makes available the resource bundle for this tool so that messages can be accessed outside of the
+ * tool layer.
  * 
  * @author <a href="mailto:rjlowe@iupui.edu">ryan lowe</a>
+ * @author <a href="mailto:carl.hall@et.gatech.edu">Carl Hall</a>
  */
-public class AssignmentBundleLogicImpl implements AssignmentBundleLogic {
-	
+public class AssignmentBundleLogicImpl implements AssignmentBundleLogic
+{
+	private static ResourceLoader rb = null;
 	private static Log log = LogFactory.getLog(AssignmentLogicImpl.class);
-	
-	public void init(){
-		if(log.isDebugEnabled()) log.debug("init");
+
+	public void init()
+	{
+		if (log.isDebugEnabled())
+			log.debug("init");
+		rb = new ResourceLoader(ASSIGNMENT2_BUNDLE);
 	}
-	
-	public String getResourceBundleString(String key){
-		final ResourceLoader rb = new ResourceLoader(ASSIGNMENT2_BUNDLE);
-	    return rb.getString(key);
+
+	public String getString(String key)
+	{
+		return rb.getString(key);
 	}
-	
 }
