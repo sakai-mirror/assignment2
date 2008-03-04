@@ -596,8 +596,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 
 				Map studentIdSubmissionMap = new HashMap();
 				if (existingSubmissions != null) {
-					for (Iterator subIter = existingSubmissions.iterator(); subIter.hasNext();) {
-						AssignmentSubmission submission = (AssignmentSubmission) subIter.next();
+					for (AssignmentSubmission submission : existingSubmissions) {
 						if (submission != null) {
 							studentIdSubmissionMap.put(submission.getUserId(), submission);
 						}
@@ -606,8 +605,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 
 				// now, iterate through the students and create empty AssignmentSubmission recs
 				// if no submission exists yet
-				for (Iterator studentIter = viewableStudents.iterator(); studentIter.hasNext();) {
-					String studentId = (String) studentIter.next();
+				for (String studentId : viewableStudents) {
 					if (studentId != null) {
 						AssignmentSubmission thisSubmission = 
 							(AssignmentSubmission)studentIdSubmissionMap.get(studentId);
@@ -655,8 +653,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			List<AssignmentSubmission> submissions = dao.getCurrentAssignmentSubmissionsForStudent(assignments, studentId);
 			Map<Long, AssignmentSubmission> assignmentIdToSubmissionMap = new HashMap<Long, AssignmentSubmission>();
 			if (submissions != null) {
-				for (Iterator subIter = submissions.iterator(); subIter.hasNext();) {
-					AssignmentSubmission submission = (AssignmentSubmission) subIter.next();
+				for (AssignmentSubmission submission : submissions) {
 					if (submission != null) {
 						Assignment2 assign = submission.getAssignment();
 						if (assign != null) {
@@ -666,9 +663,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 				}
 			}
 			
-			for (Iterator assignIter = assignments.iterator(); assignIter.hasNext();) {
-				Assignment2 assign = (Assignment2)assignIter.next();
-
+			for (Assignment2 assign : assignments) {
 				if (assign != null) {
 					AssignmentSubmission currSubmission = (AssignmentSubmission)assignmentIdToSubmissionMap.get(assign.getId());
 					AssignmentSubmissionVersion currVersion = currSubmission != null ? 
@@ -805,8 +800,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			// we need to look at the submission history to determine if there
 			// are any submission by the student (not drafts and not versions
 			// created by instructor feedback when no submission)
-			for (Iterator versionIter = versionHistory.iterator(); versionIter.hasNext();) {
-				AssignmentSubmissionVersion version = (AssignmentSubmissionVersion) versionIter.next();
+			for (AssignmentSubmissionVersion version : versionHistory) {
 				if (version != null) {
 					if (version.getSubmittedTime() != null) {
 						currNumSubmissions++;
@@ -924,8 +918,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 				
 				Set<AssignmentSubmissionVersion> versionsToUpdate = new HashSet<AssignmentSubmissionVersion>();
 				
-				for (Iterator subIter = submissionList.iterator(); subIter.hasNext();) {
-					AssignmentSubmission submission = (AssignmentSubmission) subIter.next();
+				for (AssignmentSubmission submission : submissionList) {
 					if (submission != null) {
 						if (submission.getSubmissionHistorySet() != null &&
 								!submission.getSubmissionHistorySet().isEmpty()) {
