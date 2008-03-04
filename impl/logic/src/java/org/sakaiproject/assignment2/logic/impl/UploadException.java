@@ -3,7 +3,7 @@ package org.sakaiproject.assignment2.logic.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import uk.org.ponder.messageutil.MessageLocator;
+//import uk.org.ponder.messageutil.MessageLocator;
 
 public class UploadException extends Exception
 {
@@ -25,8 +25,8 @@ public class UploadException extends Exception
 		return messageKeys;
 	}
 
-	public List<String> getPopulatedMessages(MessageLocator messageLocator)
-	{
-		return null;
-	}
+//	public List<String> getPopulatedMessages(MessageLocator messageLocator)
+//	{
+//		return null;
+//	}
 }

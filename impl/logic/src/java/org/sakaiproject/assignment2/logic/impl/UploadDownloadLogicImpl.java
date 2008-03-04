@@ -3,13 +3,16 @@ package org.sakaiproject.assignment2.logic.impl;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Set;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
 import org.apache.commons.logging.Log;
@@ -101,11 +104,11 @@ public class UploadDownloadLogicImpl
 	 * @param feedbackAttachmentFolder
 	 *            Should come from the system prop download.feedback.attachment
 	 */
-	public void uploadAll(Long assignmentId, UploadAllOptions options,
-			MultipartFile fileFromUpload, String submissionAttachmentFolder,
-			String feedbackAttachmentFolder) throws UploadException, IOException,
-			UserNotDefinedException, InconsistentException, IdUsedException, IdInvalidException,
-			ServerOverloadException, PermissionException, OverQuotaException
+	public void uploadAll(Long assignmentId, UploadAllOptions options, ZipFile zipFile,
+			String submissionAttachmentFolder, String feedbackAttachmentFolder)
+			throws UploadException, IOException, UserNotDefinedException, InconsistentException,
+			IdUsedException, IdInvalidException, ServerOverloadException, PermissionException,
+			OverQuotaException
 	{
 		ArrayList<String> alerts = new ArrayList<String>();
 
@@ -114,7 +117,7 @@ public class UploadDownloadLogicImpl
 		{
 			return;
 			// has to choose one upload feature
-//			throw new UploadException("${uploadall.alert.choose.element}");
+			// throw new UploadException("${uploadall.alert.choose.element}");
 		}
 
 		// constructor the hashtable for all submission objects
@@ -135,35 +138,41 @@ public class UploadDownloadLogicImpl
 			max_bytes = 1024 * 1024;
 		}
 
-		if (fileFromUpload == null || StringUtil.trimToNull(fileFromUpload.getOriginalFilename()) == null)
+		if (zipFile == null)
+//				|| StringUtil.trimToNull(fileFromUpload.getOriginalFilename()) == null)
 		{
 			return;
-//			throw new UploadException("${uploadall.alert.zipFile}");
+			// throw new UploadException("${uploadall.alert.zipFile}");
 		}
 
-		byte[] fileData = fileFromUpload.getBytes();
-//		if (fileData.length >= max_bytes)
-//		{
-//			throw new UploadException("${uploadall.size} " + max_file_size_mb
-//					+ "MB ${uploadall.exceeded}");
-//		}
-		if (fileData.length > 0)
+//		byte[] fileData = fileFromUpload.getBytes();
+		// if (fileData.length >= max_bytes)
+		// {
+		// throw new UploadException("${uploadall.size} " + max_file_size_mb
+		// + "MB ${uploadall.exceeded}");
+		// }
+		Enumeration<? extends ZipEntry> entries = zipFile.entries();
+		while (entries.hasMoreElements())
 		{
-			ZipInputStream zin = new ZipInputStream(new ByteArrayInputStream(fileData));
-			ZipEntry entry = null;
+			ZipEntry entry = entries.nextElement();
+//		if (fileData.length > 0)
+//		{
+//			ZipInputStream zin = new ZipInputStream(new ByteArrayInputStream(fileData));
+//			ZipEntry entry = null;
 
-			while ((entry = zin.getNextEntry()) != null)
-			{
+//			while ((entry = zin.getNextEntry()) != null)
+//			{
 				String entryName = entry.getName();
 				if (!entry.isDirectory())
 				{
+					InputStream is = zipFile.getInputStream(entry);
 					if (entryName.endsWith("grades.csv") && options.isGradeFile())
-						processGrades(alerts, submisTable, assn, zin);
+						processGrades(alerts, submisTable, assn, is);
 					else
-						processEntry(options, feedbackAttachmentFolder, submisTable, zin, entry,
+						processEntry(options, feedbackAttachmentFolder, submisTable, is, entry,
 								entryName);
 				}
-			}
+//			}
 		}
 
 		for (String userEid : submisTable.keySet())
@@ -178,7 +187,7 @@ public class UploadDownloadLogicImpl
 	}
 
 	private void processEntry(UploadAllOptions options, String feedbackAttachmentFolder,
-			Hashtable<String, UploadGradeWrapper> submisTable, ZipInputStream zin, ZipEntry entry,
+			Hashtable<String, UploadGradeWrapper> submisTable, InputStream zin, ZipEntry entry,
 			String entryName) throws IOException, InconsistentException, IdUsedException,
 			IdInvalidException, ServerOverloadException, PermissionException, OverQuotaException
 	{
@@ -245,7 +254,7 @@ public class UploadDownloadLogicImpl
 	}
 
 	private void processGrades(ArrayList<String> alerts,
-			Hashtable<String, UploadGradeWrapper> submisTable, Assignment2 assn, ZipInputStream zin)
+			Hashtable<String, UploadGradeWrapper> submisTable, Assignment2 assn, InputStream zin)
 			throws IOException, UserNotDefinedException
 	{
 		// read grades.cvs from zip
@@ -311,7 +320,7 @@ public class UploadDownloadLogicImpl
 		return lines;
 	}
 
-	private byte[] readIntoBytes(ZipInputStream zin) throws IOException
+	private byte[] readIntoBytes(InputStream zin) throws IOException
 	{
 		byte[] buffer = new byte[4096];
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -326,7 +335,7 @@ public class UploadDownloadLogicImpl
 		return data;
 	}
 
-	private String readIntoString(ZipInputStream zin) throws IOException
+	private String readIntoString(InputStream zin) throws IOException
 	{
 		StringBuilder buffer = new StringBuilder();
 		int size = 2048;
@@ -338,7 +347,7 @@ public class UploadDownloadLogicImpl
 		return buffer.toString();
 	}
 
-	private String getBodyTextFromZipHtml(ZipInputStream zin) throws IOException
+	private String getBodyTextFromZipHtml(InputStream zin) throws IOException
 	{
 		String rv = StringUtil.trimToNull(readIntoString(zin));
 		if (rv != null)
@@ -367,7 +376,7 @@ public class UploadDownloadLogicImpl
 	 * @param submissionOrFeedback
 	 */
 	private void uploadZipAttachments(Hashtable<String, UploadGradeWrapper> submissionTable,
-			ZipInputStream zin, ZipEntry entry, String entryName, String userEid,
+			InputStream zin, ZipEntry entry, String entryName, String userEid,
 			String submissionOrFeedback) throws InconsistentException, IdUsedException,
 			IdInvalidException, IOException, ServerOverloadException, PermissionException,
 			OverQuotaException
