@@ -1,6 +1,5 @@
 package org.sakaiproject.assignment2.logic.impl;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,7 +12,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-import java.util.zip.ZipInputStream;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -39,7 +37,6 @@ import org.sakaiproject.exception.ServerOverloadException;
 import org.sakaiproject.time.api.TimeService;
 import org.sakaiproject.user.api.UserNotDefinedException;
 import org.sakaiproject.util.StringUtil;
-import org.springframework.web.multipart.MultipartFile;
 
 /**
  * Functionality for uploading and downloading an archive bundle
@@ -139,40 +136,26 @@ public class UploadDownloadLogicImpl
 		}
 
 		if (zipFile == null)
-//				|| StringUtil.trimToNull(fileFromUpload.getOriginalFilename()) == null)
+		// || StringUtil.trimToNull(fileFromUpload.getOriginalFilename()) == null)
 		{
 			return;
 			// throw new UploadException("${uploadall.alert.zipFile}");
 		}
 
-//		byte[] fileData = fileFromUpload.getBytes();
-		// if (fileData.length >= max_bytes)
-		// {
-		// throw new UploadException("${uploadall.size} " + max_file_size_mb
-		// + "MB ${uploadall.exceeded}");
-		// }
 		Enumeration<? extends ZipEntry> entries = zipFile.entries();
 		while (entries.hasMoreElements())
 		{
 			ZipEntry entry = entries.nextElement();
-//		if (fileData.length > 0)
-//		{
-//			ZipInputStream zin = new ZipInputStream(new ByteArrayInputStream(fileData));
-//			ZipEntry entry = null;
-
-//			while ((entry = zin.getNextEntry()) != null)
-//			{
-				String entryName = entry.getName();
-				if (!entry.isDirectory())
-				{
-					InputStream is = zipFile.getInputStream(entry);
-					if (entryName.endsWith("grades.csv") && options.isGradeFile())
-						processGrades(alerts, submisTable, assn, is);
-					else
-						processEntry(options, feedbackAttachmentFolder, submisTable, is, entry,
-								entryName);
-				}
-//			}
+			String entryName = entry.getName();
+			if (!entry.isDirectory())
+			{
+				InputStream is = zipFile.getInputStream(entry);
+				if (entryName.endsWith("grades.csv") && options.isGradeFile())
+					processGrades(alerts, submisTable, assn, StringUtil
+							.trimToZero(readIntoString(is)));
+				else
+					processEntry(options, feedbackAttachmentFolder, submisTable, is, entryName);
+			}
 		}
 
 		for (String userEid : submisTable.keySet())
@@ -187,9 +170,9 @@ public class UploadDownloadLogicImpl
 	}
 
 	private void processEntry(UploadAllOptions options, String feedbackAttachmentFolder,
-			Hashtable<String, UploadGradeWrapper> submisTable, InputStream zin, ZipEntry entry,
-			String entryName) throws IOException, InconsistentException, IdUsedException,
-			IdInvalidException, ServerOverloadException, PermissionException, OverQuotaException
+			Hashtable<String, UploadGradeWrapper> submisTable, InputStream zin, String entryName)
+			throws IOException, InconsistentException, IdUsedException, IdInvalidException,
+			ServerOverloadException, PermissionException, OverQuotaException
 	{
 		String userEid = getUserEid(entryName);
 		UploadGradeWrapper r = submisTable.get(userEid);
@@ -219,7 +202,7 @@ public class UploadDownloadLogicImpl
 			{
 				// clear the submission attachment first
 				r.feedbackAttachments = new HashSet<FeedbackAttachment>();
-				uploadZipAttachments(submisTable, zin, entry, entryName, userEid, "feedback");
+				uploadZipAttachments(submisTable, readIntoBytes(zin), entryName, userEid);
 			}
 		}
 
@@ -254,11 +237,10 @@ public class UploadDownloadLogicImpl
 	}
 
 	private void processGrades(ArrayList<String> alerts,
-			Hashtable<String, UploadGradeWrapper> submisTable, Assignment2 assn, InputStream zin)
+			Hashtable<String, UploadGradeWrapper> submisTable, Assignment2 assn, String result)
 			throws IOException, UserNotDefinedException
 	{
 		// read grades.cvs from zip
-		String result = StringUtil.trimToZero(readIntoString(zin));
 		String[] lines = splitLine(result);
 		// skip the first 3 lines because they are headers
 		// - line 1: assignment title, type of grading
@@ -367,19 +349,15 @@ public class UploadDownloadLogicImpl
 	 * This is to get the submission or feedback attachment from the upload zip file into the
 	 * submission object
 	 * 
-	 * @param state
 	 * @param submissionTable
-	 * @param zin
-	 * @param entry
+	 * @param content
 	 * @param entryName
 	 * @param userEid
-	 * @param submissionOrFeedback
 	 */
 	private void uploadZipAttachments(Hashtable<String, UploadGradeWrapper> submissionTable,
-			InputStream zin, ZipEntry entry, String entryName, String userEid,
-			String submissionOrFeedback) throws InconsistentException, IdUsedException,
-			IdInvalidException, IOException, ServerOverloadException, PermissionException,
-			OverQuotaException
+			byte[] content, String entryName, String userEid) throws InconsistentException,
+			IdUsedException, IdInvalidException, IOException, ServerOverloadException,
+			PermissionException, OverQuotaException
 	{
 		// upload all the files as instructor attachments to the submission for grading purpose
 		String fName = entryName.substring(entryName.lastIndexOf("/") + 1, entryName.length());
@@ -398,7 +376,7 @@ public class UploadDownloadLogicImpl
 
 			String contentType = ctis.getContentType(extension);
 			ContentResourceEdit attachment = chs.addAttachmentResource(fName);
-			attachment.setContent(readIntoBytes(zin));
+			attachment.setContent(content);
 			attachment.setContentType(contentType);
 			attachment.getPropertiesEdit().addAll(properties);
 			chs.commitResource(attachment);
@@ -442,7 +420,7 @@ public class UploadDownloadLogicImpl
 	 */
 	private void validPointGrade(String grade, List<String> alerts)
 	{
-		if (grade != null && !grade.equals(""))
+		if (grade != null && grade.length() > 0)
 		{
 			if (grade.startsWith("-"))
 			{

@@ -128,7 +128,7 @@ public class NotificationBean
 	 * @param s
 	 */
 	public void notificationToStudent(AssignmentSubmission s) throws IdUnusedException,
-			UserNotDefinedException, PermissionException, IdUnusedException, TypeException
+			UserNotDefinedException, PermissionException, TypeException
 	{
 		if (serverConfigurationService.getBoolean("assignment.submission.confirmation.email", true))
 		{
@@ -327,7 +327,7 @@ public class NotificationBean
 	 * @return the message for the email.
 	 */
 	private String buildNotificationMessage(AssignmentSubmission s) throws IdUnusedException,
-			UserNotDefinedException, PermissionException, IdUnusedException, TypeException
+			UserNotDefinedException, PermissionException, TypeException
 	{
 		StringBuilder message = new StringBuilder();
 		message.append(MIME_ADVISORY);
@@ -378,7 +378,7 @@ public class NotificationBean
 	}
 
 	private String htmlContent(AssignmentSubmission s) throws IdUnusedException,
-			UserNotDefinedException, PermissionException, IdUnusedException, TypeException
+			UserNotDefinedException, PermissionException, TypeException
 	{
 		String newline = "<br />\n";
 
