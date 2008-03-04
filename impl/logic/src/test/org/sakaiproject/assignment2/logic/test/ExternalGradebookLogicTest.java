@@ -34,21 +34,12 @@ import junit.framework.Assert;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment2.test.AssignmentTestDataLoad;
-import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
-import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
-import org.sakaiproject.assignment2.logic.utils.ComparatorsUtils;
 import org.sakaiproject.assignment2.model.Assignment2;
-import org.sakaiproject.assignment2.model.AssignmentGroup;
-import org.sakaiproject.assignment2.model.AssignmentSubmission;
-import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
-import org.sakaiproject.assignment2.model.SubmissionAttachment;
-import org.sakaiproject.assignment2.model.FeedbackAttachment;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 
 import org.sakaiproject.section.api.coursemanagement.CourseSection;
 import org.sakaiproject.section.api.coursemanagement.Course;
 import org.sakaiproject.section.api.facade.Role;
-import org.sakaiproject.service.gradebook.shared.GradebookNotFoundException;
 
 
 public class ExternalGradebookLogicTest extends Assignment2TestBase {
@@ -565,6 +556,51 @@ public class ExternalGradebookLogicTest extends Assignment2TestBase {
     	assertFalse(gradebookLogic.isCurrentUserAbleToGradeStudentForItem(
     			AssignmentTestDataLoad.CONTEXT_ID, AssignmentTestDataLoad.STUDENT2_UID, gbItem1Id));
     	assertFalse(gradebookLogic.isCurrentUserAbleToGradeStudentForItem(
+    			AssignmentTestDataLoad.CONTEXT_ID, AssignmentTestDataLoad.STUDENT3_UID, gbItem1Id));
+    }
+    
+    public void testGetGradeViewPermissionForCurrentUserForStudentForItem() {
+    	// try some null parameters
+    	try {
+    		gradebookLogic.getGradeViewPermissionForCurrentUserForStudentForItem(null, AssignmentTestDataLoad.STUDENT1_UID, gbItem1Id);
+    		fail("did not catch null contextId passed to getGradeViewPermissionForCurrentUserForStudentForItem");
+    	} catch (IllegalArgumentException iae) {}
+    	
+    	try {
+    		gradebookLogic.getGradeViewPermissionForCurrentUserForStudentForItem(AssignmentTestDataLoad.CONTEXT_ID, null, gbItem1Id);
+    		fail("did not catch null studentId passed to getGradeViewPermissionForCurrentUserForStudentForItem");
+    	} catch (IllegalArgumentException iae) {}
+    	
+    	try {
+    		gradebookLogic.getGradeViewPermissionForCurrentUserForStudentForItem(AssignmentTestDataLoad.CONTEXT_ID, AssignmentTestDataLoad.STUDENT1_UID, null);
+    		fail("did not catch null itemId passed to getGradeViewPermissionForCurrentUserForStudentForItem");
+    	} catch (IllegalArgumentException iae) {}
+    	
+    	// instructor should be able to grade all
+    	authn.setAuthnContext(AssignmentTestDataLoad.INSTRUCTOR_UID);
+    	assertEquals(AssignmentConstants.GRADE, gradebookLogic.getGradeViewPermissionForCurrentUserForStudentForItem(
+    			AssignmentTestDataLoad.CONTEXT_ID, AssignmentTestDataLoad.STUDENT1_UID, gbItem1Id));
+    	assertEquals(AssignmentConstants.GRADE, gradebookLogic.getGradeViewPermissionForCurrentUserForStudentForItem(
+    			AssignmentTestDataLoad.CONTEXT_ID, AssignmentTestDataLoad.STUDENT2_UID, gbItem1Id));
+    	assertEquals(AssignmentConstants.GRADE, gradebookLogic.getGradeViewPermissionForCurrentUserForStudentForItem(
+    			AssignmentTestDataLoad.CONTEXT_ID, AssignmentTestDataLoad.STUDENT3_UID, gbItem1Id));
+    	
+    	// ta should only be able to grade student 1
+    	authn.setAuthnContext(AssignmentTestDataLoad.TA_UID);
+    	assertEquals(AssignmentConstants.GRADE, gradebookLogic.getGradeViewPermissionForCurrentUserForStudentForItem(
+    			AssignmentTestDataLoad.CONTEXT_ID, AssignmentTestDataLoad.STUDENT1_UID, gbItem1Id));
+    	assertNull(gradebookLogic.getGradeViewPermissionForCurrentUserForStudentForItem(
+    			AssignmentTestDataLoad.CONTEXT_ID, AssignmentTestDataLoad.STUDENT2_UID, gbItem1Id));
+    	assertNull(gradebookLogic.getGradeViewPermissionForCurrentUserForStudentForItem(
+    			AssignmentTestDataLoad.CONTEXT_ID, AssignmentTestDataLoad.STUDENT3_UID, gbItem1Id));
+    	
+    	// student should all be null
+    	authn.setAuthnContext(AssignmentTestDataLoad.STUDENT1_UID);
+    	assertNull(gradebookLogic.getGradeViewPermissionForCurrentUserForStudentForItem(
+    			AssignmentTestDataLoad.CONTEXT_ID, AssignmentTestDataLoad.STUDENT1_UID, gbItem1Id));
+    	assertNull(gradebookLogic.getGradeViewPermissionForCurrentUserForStudentForItem(
+    			AssignmentTestDataLoad.CONTEXT_ID, AssignmentTestDataLoad.STUDENT2_UID, gbItem1Id));
+    	assertNull(gradebookLogic.getGradeViewPermissionForCurrentUserForStudentForItem(
     			AssignmentTestDataLoad.CONTEXT_ID, AssignmentTestDataLoad.STUDENT3_UID, gbItem1Id));
     }
 }
