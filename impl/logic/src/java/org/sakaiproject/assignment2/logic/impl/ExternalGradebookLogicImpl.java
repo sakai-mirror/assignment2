@@ -91,14 +91,19 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
 			}
 		}
 		
+		boolean userIsStudent = isCurrentUserAStudentInGb(contextId);
+		List allGbItems = new ArrayList();
+		
 		// there are 2 situations in which the gradable object associated with the assignment
 		// is not included in the list returned from the gradebook:
-		// 1) the user does not have permission to view that GO
+		// 1) the user does not have permission to view that GO - if the user is a student,
+		//		we still want to display the assignment but don't want to display the
+		//		associated grade info b/c not released to students yet
 		// 2) the GO was deleted from the gb
 		
 		for (Iterator assignIter = gradedAssignments.iterator(); assignIter.hasNext();) {
 			Assignment2 gradedAssignment = (Assignment2) assignIter.next();
-			if (gradedAssignment != null) {
+			if (gradedAssignment != null && !gradedAssignment.isUngraded()) {
 				Long goId = gradedAssignment.getGradableObjectId();
 				if (goId != null) {
 					Assignment gbItem =	(Assignment)goIdGbAssignmentMap.get(goId);
@@ -112,8 +117,17 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
 							// then the GO was deleted -- let the user know
 							gradedAssignment.setNeedsUserAttention(true);
 							viewableAssignmentsWithGbData.add(gradedAssignment);
+						} else {
+							// if it exists, then this user does not have perm to view it in the gb
+							if (userIsStudent) {
+								// if a student, we still need to return an assignment with gb item info
+								// this just means the grade info has not been released yet
+								Assignment unreleasedAssign = gradebookService.getAssignment(contextId, goId);
+								gradedAssignment.setDueDate(unreleasedAssign.getDueDate());
+								gradedAssignment.setPointsPossible(unreleasedAssign.getPoints());
+								viewableAssignmentsWithGbData.add(gradedAssignment);
+							}
 						}
-						// if it exists, then this user does not have perm to view it in the gb
 					}
 				} else {
 					// there is no gradableObjectId set for this assignment!
@@ -140,6 +154,10 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
     }
 
     public Map getViewableGradableObjectIdTitleMap(String contextId) {
+    	if (contextId == null) {
+    		throw new IllegalArgumentException("Null contextId passed to getViewableGradableObjectIdTitleMap");
+    	}
+    	
     	List<Assignment> viewableGbItems = gradebookService.getViewableAssignmentsForCurrentUser(contextId);
     	
     	Map<Long, String> idTitleMap = new HashMap();
@@ -163,21 +181,25 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
     		throw new IllegalArgumentException("null contextId passed to getAllGradebookItems");
     	}
 
-    	List<GradebookItem> gradebookItems = new ArrayList();
+    	List<GradebookItem> gradebookItems = new ArrayList<GradebookItem>();
 
-    	List<Assignment> allGbItems = gradebookService.getAssignments(contextId);
+    	try {
+    		List<Assignment> allGbItems = gradebookService.getAssignments(contextId);
 
-    	if (allGbItems != null) {
+    		if (allGbItems != null) {
 
-    		for (Iterator itemIter = allGbItems.iterator(); itemIter.hasNext();) {
-    			Assignment assign =	(Assignment)itemIter.next();
+    			for (Iterator itemIter = allGbItems.iterator(); itemIter.hasNext();) {
+    				Assignment assign =	(Assignment)itemIter.next();
 
-    			if (assign != null) {
-    				GradebookItem item = 
-    					new GradebookItem(assign.getId(), assign.getName(), assign.getPoints(), assign.getDueDate());
-    				gradebookItems.add(item);
+    				if (assign != null) {
+    					GradebookItem item = 
+    						new GradebookItem(assign.getId(), assign.getName(), assign.getPoints(), assign.getDueDate());
+    					gradebookItems.add(item);
+    				}
     			}
     		}
+    	} catch (SecurityException se) {
+    		throw new SecurityException("User without edit or grade perm attempted to access the list of all gb items");
     	}
 
     	return gradebookItems;
@@ -307,9 +329,9 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
     	return comment;
     }
     
-    public void populateGradesForSubmissions(List<AssignmentSubmission> submissionList, Assignment2 assignment) {
-    	if (assignment == null) {
-    		throw new IllegalArgumentException("null assignment passed to populateStudentGradeInformation");
+    public void populateGradesForSubmissions(String contextId, List<AssignmentSubmission> submissionList, Assignment2 assignment) {
+    	if (contextId == null || assignment == null) {
+    		throw new IllegalArgumentException("null contextId or assignment passed to populateStudentGradeInformation");
     	}
     	
     	if (!assignment.isUngraded() && assignment.getGradableObjectId() != null && 
@@ -324,7 +346,7 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
     		
     		List<String> studentIdList = new ArrayList(studentIdSubmissionMap.keySet());
     		List<GradeDefinition> gradeDefs =
-    			gradebookService.getGradesForStudentsForItem(assignment.getGradableObjectId(), studentIdList);
+    			gradebookService.getGradesForStudentsForItem(contextId, assignment.getGradableObjectId(), studentIdList);
     		
     		if (gradeDefs != null) {
     			for (Iterator gradeIter = gradeDefs.iterator(); gradeIter.hasNext();) {

@@ -91,6 +91,8 @@ public interface ExternalGradebookLogic {
 	 * @param contextId
 	 * @param gradableObjectId
 	 * @return
+	 * @throws SecurityException if the current user is not allowed to access student info for
+	 * the given gb item
 	 */
 	public Map<String, String> getViewableStudentsForGradedItemMap(String contextId, Long gradableObjectId);
 	
@@ -172,10 +174,11 @@ public interface ExternalGradebookLogic {
 	/**
 	 * given a list of submissions and the parent assignment, populates the grade information
 	 * for each submission
+	 * @param contextId
 	 * @param submissionList
 	 * @param assignment
 	 */
-	public void populateGradesForSubmissions(List<AssignmentSubmission> submissionList, Assignment2 assignment);
+	public void populateGradesForSubmissions(String contextId, List<AssignmentSubmission> submissionList, Assignment2 assignment);
 	
 	/**
 	 * will populate gradebook-related fields on the submission record 

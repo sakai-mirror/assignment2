@@ -369,7 +369,7 @@ public class AssignmentLogicTest extends Assignment2TestBase {
     	// should return assignment 1, 2, 3
     	assignList = assignmentLogic.getViewableAssignments();
     	assertNotNull(assignList);
-    	assertTrue(assignList.size() == 3);
+    	assertEquals(3, assignList.size());
     	for (Iterator st1Iter = assignList.iterator(); st1Iter.hasNext();) {
     		Assignment2 assign = (Assignment2)st1Iter.next();
     		if (assign.getId().equals(testData.a1Id) || assign.getId().equals(testData.a2Id)) {

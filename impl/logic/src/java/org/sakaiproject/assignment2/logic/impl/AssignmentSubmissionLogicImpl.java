@@ -548,7 +548,8 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 				if (!assignment.isUngraded() && assignment.getGradableObjectId() != null) {
 					gradebookLogic.populateGradebookItemDetailsForAssignment(contextId, assignment);
 				}
-										Date dueDate = assignment.isUngraded() ? assignment.getDueDateForUngraded() : assignment.getDueDate();
+				
+				Date dueDate = assignment.isUngraded() ? assignment.getDueDateForUngraded() : assignment.getDueDate();
 				
 				// get the submissions for these students
 				Set<AssignmentSubmission> existingSubmissions = dao.getCurrentSubmissionsForStudentsForAssignment(viewableStudents, assignment);
@@ -595,7 +596,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			
 			// if this assignment is graded, populate the grade information
 			if (!assignment.isUngraded() && assignment.getGradableObjectId() != null) {
-				gradebookLogic.populateGradesForSubmissions(viewableSubmissions, assignment);
+				gradebookLogic.populateGradesForSubmissions(contextId, viewableSubmissions, assignment);
 			}
 		}
 

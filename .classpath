@@ -38,7 +38,7 @@
 	<classpathentry kind="src" path="/sections-impl"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/import-api"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/event-api"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/entitybroker"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/entity-broker"/>
 	<classpathentry kind="var" path="M2_REPO/org/sakaiproject/entitybroker/entitybroker-api/1.2.0/entitybroker-api-1.2.0.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/content-api"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3"/>
