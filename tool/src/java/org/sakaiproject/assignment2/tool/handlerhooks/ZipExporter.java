@@ -132,21 +132,26 @@ public class ZipExporter
 			StringBuilder gradesBuilder = new StringBuilder(assignmentTitle + ","
 					+ gradeTypeString + "\n\n");
 			gradesBuilder
-					.append(messageLocator
-							.getMessage("assignment2.assignment_grade-assignment.downloadall.id")
-							+ ","
-							+ messageLocator
-									.getMessage("assignment2.assignment_grade-assignment.downloadall.eid")
-							+ ","
-							+ messageLocator
-									.getMessage("assignment2.assignment_grade-assignment.downloadall.lastname")
-							+ ","
-							+ messageLocator
-									.getMessage("assignment2.assignment_grade-assignment.downloadall.firstname")
-							+ ","
-							+ messageLocator
-									.getMessage("assignment2.assignment_grade-assignment.downloadall.grade")
-							+ "\n");
+					.append(
+							messageLocator
+									.getMessage("assignment2.assignment_grade-assignment.downloadall.id"))
+					.append(",")
+					.append(
+							messageLocator
+									.getMessage("assignment2.assignment_grade-assignment.downloadall.eid"))
+					.append(",")
+					.append(
+							messageLocator
+									.getMessage("assignment2.assignment_grade-assignment.downloadall.lastname"))
+					.append(",")
+					.append(
+							messageLocator
+									.getMessage("assignment2.assignment_grade-assignment.downloadall.firstname"))
+					.append(",")
+					.append(
+							messageLocator
+									.getMessage("assignment2.assignment_grade-assignment.downloadall.grade"))
+					.append("\n");
 
 			// Create the ZIP file
 			String submittersName = "";
@@ -164,8 +169,8 @@ public class ZipExporter
 					String name = externalLogic.getUserDisplayName(userId);
 					String fullName = externalLogic.getUserFullName(userId);
 					String submittersString = name + "(" + userId + ")";
-					gradesBuilder.append(name + "," + userId + "," + fullName + ","
-							+ s.getGradebookGrade() + "\n");
+					gradesBuilder.append(name).append(",").append(userId).append(",").append(
+							fullName).append(",").append(s.getGradebookGrade()).append("\n");
 
 					if (StringUtil.trimToNull(submittersString) != null)
 					{

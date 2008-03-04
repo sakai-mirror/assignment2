@@ -21,12 +21,11 @@
 
 package org.sakaiproject.assignment2.dao;
 
+import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.sakaiproject.assignment2.model.Assignment2;
-import org.sakaiproject.assignment2.model.AssignmentAttachment;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.genericdao.api.CompleteGenericDao;
@@ -144,4 +143,15 @@ public interface AssignmentDao extends CompleteGenericDao {
 	 */
 	public Set<AssignmentSubmissionVersion> getVersionHistoryForSubmission(final AssignmentSubmission submission);
 
+	/**
+	 * Get a submission version for a user id by the submitted time.
+	 * 
+	 * @param userId
+	 *            [Non-null] The userId to narrow by.
+	 * @param submittedTime
+	 *            [Non-null] The submitted time to search for.
+	 * @return The submission version matching user and submitted time. Null if not found.
+	 */
+	public AssignmentSubmissionVersion getVersionByUserIdAndSubmittedTime(final String userId,
+			final Date submittedTime);
 }

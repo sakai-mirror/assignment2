@@ -116,5 +116,12 @@
              left join fetch submissionVersion.feedbackAttachSet
              where submissionVersion.assignmentSubmission = :submission]]>
   	</query>
-  	
+
+	<query name="findVersionForUserIdBySubmittedTime">
+	<![CDATA[from org.sakaiproject.assignment2.model.AssignmentSubmissionVersion version
+		left join fetch version.submissionAttachSet
+		left join fetch version.feedbackAttachSet
+		where version.assignmentSubmission.userId = :userId
+			and version.submittedTime = :submittedTime]]>
+	</query>
 </hibernate-mapping>

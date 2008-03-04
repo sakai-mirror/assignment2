@@ -23,8 +23,6 @@ package org.sakaiproject.assignment2.logic.impl;
 
 import java.util.Calendar;
 import java.util.Collection;
-import java.util.Comparator;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -38,7 +36,6 @@ import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment.api.Assignment;
 import org.sakaiproject.assignment.api.AssignmentContent;
 import org.sakaiproject.assignment.api.AssignmentService;
-import org.sakaiproject.assignment.api.Assignment.AssignmentAccess;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentAttachment;
@@ -46,15 +43,12 @@ import org.sakaiproject.assignment2.model.AssignmentGroup;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.GradebookItem;
 import org.sakaiproject.assignment2.logic.ImportExportLogic;
-import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
 import org.sakaiproject.assignment2.logic.ExternalAnnouncementLogic;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
-import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
 import org.sakaiproject.assignment2.dao.AssignmentDao;
 import org.sakaiproject.assignment2.exception.AnnouncementPermissionException;
 import org.sakaiproject.assignment2.exception.ConflictingAssignmentNameException;
-import org.sakaiproject.assignment2.exception.NoGradebookItemForGradedAssignmentException;
 import org.sakaiproject.entity.api.Reference;
 import org.sakaiproject.entity.api.ResourceProperties;
 import org.sakaiproject.exception.IdInvalidException;
@@ -65,21 +59,15 @@ import org.sakaiproject.exception.OverQuotaException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.exception.ServerOverloadException;
 import org.sakaiproject.exception.TypeException;
-import org.sakaiproject.genericdao.api.finders.ByPropsFinder;
-import org.sakaiproject.service.gradebook.shared.StaleObjectModificationException;
 import org.sakaiproject.site.api.Group;
 import org.sakaiproject.time.api.TimeBreakdown;
 import org.sakaiproject.assignment2.logic.entity.AssignmentDefinition;
-import org.sakaiproject.assignment2.logic.utils.ComparatorsUtils;
 import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.content.api.ContentResource;
-import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException;
-
-
 
 /**
  * This is the implementation of methods related to the import/export of
- * Assignment2 data
+ * Assignment2 data.
  * 
  * @author <a href="mailto:wagnermr@iupui.edu">michelle wagner</a>
  */

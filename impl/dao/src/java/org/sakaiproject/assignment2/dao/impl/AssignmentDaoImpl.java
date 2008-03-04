@@ -24,6 +24,7 @@ package org.sakaiproject.assignment2.dao.impl;
 import java.lang.Integer;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -498,4 +499,28 @@ public class AssignmentDaoImpl extends HibernateCompleteGenericDao implements As
     	return (Set<AssignmentSubmissionVersion>)getHibernateTemplate().execute(hc);
     }
 
+    public AssignmentSubmissionVersion getVersionByUserIdAndSubmittedTime(final String userId,
+			final Date submittedTime)
+	{
+		if (userId == null || submittedTime == null)
+		{
+			throw new IllegalArgumentException(
+					"userId and submittedTime must be non-null when looking up version [" + userId
+							+ "," + submittedTime + "]");
+		}
+
+		HibernateCallback hc = new HibernateCallback()
+		{
+			public Object doInHibernate(Session session) throws HibernateException, SQLException
+			{
+				Query query = session.getNamedQuery("findVersionByUserIdAndSubmittedTime");
+				query.setString("userId", userId);
+				query.setTime("submittedTime", submittedTime);
+
+				AssignmentSubmissionVersion v = (AssignmentSubmissionVersion) query.uniqueResult();
+				return v;
+			}
+		};
+		return (AssignmentSubmissionVersion) getHibernateTemplate().execute(hc);
+	}
 }

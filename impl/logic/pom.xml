@@ -169,6 +169,12 @@
       <version>${sakai.version}</version>
     </dependency>
 
+	<dependency>
+      <groupId>org.sakaiproject</groupId>
+      <artifactId>sakai-time-api</artifactId>
+      <version>${sakai.version}</version>
+    </dependency>
+
   <!-- testing dependencies -->
     <dependency>
       <groupId>${sakai.spring.groupId}</groupId>

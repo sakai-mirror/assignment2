@@ -23,16 +23,14 @@
 package org.sakaiproject.assignment2.logic;
 
 import java.util.Date;
-import java.io.OutputStream;
 import java.util.List;
 import java.util.Set;
 
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
-import org.sakaiproject.exception.PermissionException;
+import org.sakaiproject.assignment2.model.FeedbackAttachment;
 import org.sakaiproject.assignment2.model.SubmissionAttachment;
-
 
 /**
  * This is the interface for the AssignmentSubmission object
@@ -127,8 +125,11 @@ public interface AssignmentSubmissionLogic {
 	 */
 	public void saveInstructorFeedback(Long versionId, String studentId, Assignment2 assignment, 
 			Integer numSubmissionsAllowed, Date resubmitCloseTime, String annotatedText, 
-			String feedbackNotes, Date releasedTime, Set feedbackAttachSet);
-	
+			String feedbackNotes, Date releasedTime, Set<FeedbackAttachment> feedbackAttachSet);
+
+	public void saveInstructorFeedback(Long versionId, String studentId, String grade,
+			String annotatedText, String feedbackNotes, Set<FeedbackAttachment> feedbackAttachSet);
+
 	/**
 	 * 
 	 * @param assignmentId
@@ -227,5 +228,12 @@ public interface AssignmentSubmissionLogic {
 	 * 
 	 */
 	public List<AssignmentSubmissionVersion> getVersionHistoryForSubmission(AssignmentSubmission submission);
-	
+
+	/**
+	 * 
+	 * @param userId
+	 * @param submittedTime
+	 * @return
+	 */
+	public AssignmentSubmissionVersion getVersionByUserIdAndSubmittedTime(String userId, Date submittedTime);
 }

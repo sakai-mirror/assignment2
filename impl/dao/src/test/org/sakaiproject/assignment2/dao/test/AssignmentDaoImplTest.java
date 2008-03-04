@@ -22,6 +22,7 @@
 package org.sakaiproject.assignment2.dao.test;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.Iterator;
@@ -548,5 +549,55 @@ public class AssignmentDaoImplTest extends Assignment2DaoTestBase {
 		history = assignmentDao.getVersionHistoryForSubmission(testData.st2a1Submission);
 		assertEquals(history.size(), 3);
 		
+	}
+
+	public void testGetVersionByUserIdAndSubmittedTime() throws Exception
+	{
+		String userId = null;
+		Date submittedTime = null;
+		try
+		{
+			assignmentDao.getVersionByUserIdAndSubmittedTime(userId, submittedTime);
+			fail("Should've thrown exception with userId == submittedTime == null");
+		}
+		catch (IllegalArgumentException iae)
+		{
+		}
+
+		try
+		{
+			userId = AssignmentTestDataLoad.STUDENT1_UID;
+			submittedTime = null;
+			assignmentDao.getVersionByUserIdAndSubmittedTime(userId, submittedTime);
+			fail("Should've thrown exception with userId != null and submittedTime == null");
+		}
+		catch (IllegalArgumentException iae)
+		{
+		}
+
+		try
+		{
+			userId = null;
+			submittedTime = testData.st1a1CurrVersion.getSubmittedTime();
+			assignmentDao.getVersionByUserIdAndSubmittedTime(userId, submittedTime);
+			fail("Should've thrown exception with userId == null and submittedTime != null");
+		}
+		catch (IllegalArgumentException iae)
+		{
+		}
+
+		try
+		{
+			userId = AssignmentTestDataLoad.STUDENT1_UID;
+			submittedTime = testData.st1a1CurrVersion.getSubmittedTime();
+			AssignmentSubmissionVersion asv = assignmentDao.getVersionByUserIdAndSubmittedTime(
+					userId, submittedTime);
+			assertEquals(asv.getCreatedBy(), userId);
+			assertEquals(asv.getSubmittedTime(), submittedTime);
+		}
+		catch (IllegalArgumentException iae)
+		{
+			fail("Shouldn't have thrown exception with userId != null and submittedTime != null");
+		}
 	}
 }
