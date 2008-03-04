@@ -24,8 +24,6 @@ package org.sakaiproject.assignment2.model;
 import java.util.Set;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Iterator;
-
 
 /**
  * The AssignmentSubmission object
@@ -39,7 +37,7 @@ public class AssignmentSubmission {
 	private String userId;
 	private Date resubmitCloseTime;
 	private Integer numSubmissionsAllowed;
-	private Set submissionHistorySet;
+	private Set<AssignmentSubmissionVersion> submissionHistorySet;
 	private int revisionVersion;
 	
 	// fields populated with gradebook data
@@ -115,7 +113,7 @@ public class AssignmentSubmission {
 	 * @return a set of AssignmentSubmissionVersion recs that represent
 	 * the submission history for this user
 	 */
-	public Set getSubmissionHistorySet() {
+	public Set<AssignmentSubmissionVersion> getSubmissionHistorySet() {
 		return submissionHistorySet;
 	}
 
@@ -124,7 +122,7 @@ public class AssignmentSubmission {
 	 * the submission history for this user
 	 * @param submissionHistorySet
 	 */
-	public void setSubmissionHistorySet(Set submissionHistorySet) {
+	public void setSubmissionHistorySet(Set<AssignmentSubmissionVersion> submissionHistorySet) {
 		this.submissionHistorySet = submissionHistorySet;
 	}
 	
@@ -339,11 +337,10 @@ public class AssignmentSubmission {
 		}
 		
 		if (includeHistorySet) {
-			Set<AssignmentSubmissionVersion> copiedHistory = new HashSet();
+			Set<AssignmentSubmissionVersion> copiedHistory = new HashSet<AssignmentSubmissionVersion>();
 			if (subToCopy.getSubmissionHistorySet() != null && !subToCopy.getSubmissionHistorySet().isEmpty()) {
-				for (Iterator versionIter = subToCopy.getSubmissionHistorySet().iterator(); versionIter.hasNext();) {
-					AssignmentSubmissionVersion version = (AssignmentSubmissionVersion)versionIter.next();
-					AssignmentSubmissionVersion copiedVersion = version.deepCopy(version,
+				for (AssignmentSubmissionVersion version : subToCopy.getSubmissionHistorySet()) {
+					AssignmentSubmissionVersion copiedVersion = AssignmentSubmissionVersion.deepCopy(version,
 							includeSubAttachSet, includeFBAttachSet);
 					copiedHistory.add(copiedVersion);
 				}

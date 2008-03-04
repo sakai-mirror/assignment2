@@ -28,7 +28,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -316,12 +315,12 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			// to allow instructor to provide inline comments for submitted text
 			version.setAnnotatedText(submittedText);
 		}
-		
+
 		// identify any attachments that were deleted or need to be created
 		// - we don't update attachments
-		Set attachToDelete = identifyAttachmentsToDelete(version.getSubmissionAttachSet(), subAttachSet);
-		Set attachToCreate = identifyAttachmentsToCreate(subAttachSet);
-		
+		Set<SubmissionAttachmentBase> attachToDelete = identifyAttachmentsToDelete(version.getSubmissionAttachSet(), subAttachSet);
+		Set<SubmissionAttachmentBase> attachToCreate = identifyAttachmentsToCreate(subAttachSet);
+
 		// make sure the version was populated on the FeedbackAttachments
 		populateVersionForAttachmentSet(attachToCreate, version);
 		populateVersionForAttachmentSet(attachToDelete, version);
@@ -335,7 +334,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			submissionSet.add(submission);
 			
 			if (attachToCreate == null) {
-				attachToCreate = new HashSet();
+				attachToCreate = new HashSet<SubmissionAttachmentBase>();
 			}
 
 			dao.saveMixedSet(new Set[] {submissionSet, versionSet, attachToCreate});
@@ -392,16 +391,17 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 				.getAssignmentSubmissionVersionByIdWithAttachments(versionId);
 		// TODO this should call to GB for this func.  The call below does nothing.
 		version.getAssignmentSubmission().setGradebookGrade(grade);
-		// version.setAssignmentSubmission(submission);
-		version.setAnnotatedText(annotatedText);
-		version.setFeedbackNotes(feedbackNotes);
+		if (annotatedText != null)
+			version.setAnnotatedText(annotatedText);
+		if (feedbackNotes != null)
+			version.setFeedbackNotes(feedbackNotes);
 		version.setLastFeedbackSubmittedBy(currentUserId);
 		version.setLastFeedbackTime(currentTime);
 
 		// identify any attachments that were deleted
-		Set attachToDelete = identifyAttachmentsToDelete(version.getFeedbackAttachSet(),
-				feedbackAttachSet);
-		Set attachToCreate = identifyAttachmentsToCreate(feedbackAttachSet);
+		Set<SubmissionAttachmentBase> attachToDelete = identifyAttachmentsToDelete(version
+				.getFeedbackAttachSet(), feedbackAttachSet);
+		Set<SubmissionAttachmentBase> attachToCreate = identifyAttachmentsToCreate(feedbackAttachSet);
 
 		// make sure the version was populated on the FeedbackAttachments
 		populateVersionForAttachmentSet(attachToCreate, version);
@@ -410,7 +410,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		try
 		{
 
-			Set<AssignmentSubmissionVersion> versionSet = new HashSet();
+			Set<AssignmentSubmissionVersion> versionSet = new HashSet<AssignmentSubmissionVersion>();
 			versionSet.add(version);
 
 			// Set<AssignmentSubmission> submissionSet = new HashSet();
@@ -418,7 +418,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 
 			if (attachToCreate == null)
 			{
-				attachToCreate = new HashSet();
+				attachToCreate = new HashSet<SubmissionAttachmentBase>();
 			}
 
 			dao.saveMixedSet(new Set[] { versionSet, attachToCreate });
@@ -459,7 +459,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 
 	public void saveInstructorFeedback(Long versionId, String studentId, Assignment2 assignment, 
 			Integer numSubmissionsAllowed, Date resubmitCloseTime, String annotatedText, 
-			String feedbackNotes, Date releasedTime, Set feedbackAttachSet) {
+			String feedbackNotes, Date releasedTime, Set<FeedbackAttachment> feedbackAttachSet) {
 		
 		if (studentId == null || assignment == null) {
 			throw new IllegalArgumentException("Null studentId or assignment passed" +
@@ -468,7 +468,6 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		
 		Date currentTime = new Date();
 		String currentUserId = externalLogic.getCurrentUserId();
-		String contextId = externalLogic.getCurrentContextId();
 		
 		if (!permissionLogic.isUserAbleToProvideFeedbackForStudentForAssignment(studentId, assignment)) {
 			throw new SecurityException("User " + currentUserId + 
@@ -528,8 +527,8 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		}
 		
 		// identify any attachments that were deleted
-		Set attachToDelete = identifyAttachmentsToDelete(version.getFeedbackAttachSet(), feedbackAttachSet);
-		Set attachToCreate = identifyAttachmentsToCreate(feedbackAttachSet);
+		Set<SubmissionAttachmentBase> attachToDelete = identifyAttachmentsToDelete(version.getFeedbackAttachSet(), feedbackAttachSet);
+		Set<SubmissionAttachmentBase> attachToCreate = identifyAttachmentsToCreate(feedbackAttachSet);
 		
 		// make sure the version was populated on the FeedbackAttachments
 		populateVersionForAttachmentSet(attachToCreate, version);
@@ -544,7 +543,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			submissionSet.add(submission);
 			
 			if (attachToCreate == null) {
-				attachToCreate = new HashSet();
+				attachToCreate = new HashSet<SubmissionAttachmentBase>();
 			}
 
 			dao.saveMixedSet(new Set[] {submissionSet, versionSet, attachToCreate});
@@ -594,7 +593,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 				// get the submissions for these students
 				Set<AssignmentSubmission> existingSubmissions = dao.getCurrentSubmissionsForStudentsForAssignment(viewableStudents, assignment);
 
-				Map studentIdSubmissionMap = new HashMap();
+				Map<String, AssignmentSubmission> studentIdSubmissionMap = new HashMap<String, AssignmentSubmission>();
 				if (existingSubmissions != null) {
 					for (AssignmentSubmission submission : existingSubmissions) {
 						if (submission != null) {
@@ -726,50 +725,42 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		}
 	}
 	
-	private void populateVersionForAttachmentSet(Set attachSet, AssignmentSubmissionVersion version) {
-		if (attachSet != null && !attachSet.isEmpty()) {
-			for (Iterator attachIter = attachSet.iterator(); attachIter.hasNext();) {
-				SubmissionAttachmentBase attach = (SubmissionAttachmentBase) attachIter.next();
-				if (attach != null) {
+	private void populateVersionForAttachmentSet(Set<? extends SubmissionAttachmentBase> attachSet,
+			AssignmentSubmissionVersion version)
+	{
+		if (attachSet != null && !attachSet.isEmpty())
+			for (SubmissionAttachmentBase attach : attachSet)
+				if (attach != null)
 					attach.setSubmissionVersion(version);
-				}
-			}
-		}
 	}
 	
-	private Set identifyAttachmentsToDelete(Set existingAttachSet, Set updatedAttachSet) {
-		Set attachToRemove = new HashSet();
-		
-		if (existingAttachSet != null) {
-			for (Iterator existingIter = existingAttachSet.iterator(); existingIter.hasNext();) {
-				SubmissionAttachmentBase attach = (SubmissionAttachmentBase) existingIter.next();
-				if (attach != null) {
-					if (updatedAttachSet == null ||
-							!updatedAttachSet.contains(attach)) {
+	private Set<SubmissionAttachmentBase> identifyAttachmentsToDelete(
+			Set<? extends SubmissionAttachmentBase> existingAttachSet,
+			Set<? extends SubmissionAttachmentBase> updatedAttachSet)
+	{
+		Set<SubmissionAttachmentBase> attachToRemove = new HashSet<SubmissionAttachmentBase>();
+
+		if (existingAttachSet != null)
+			for (SubmissionAttachmentBase attach : existingAttachSet)
+				if (attach != null)
+					if (updatedAttachSet == null || !updatedAttachSet.contains(attach))
 						// we need to delete this attachment
 						attachToRemove.add(attach);
-					} 
-				}
-			}
-		} 
-		
+
 		return attachToRemove;
 	}
 	
-	private Set identifyAttachmentsToCreate(Set updatedAttachSet) {
-		Set attachToCreate = new HashSet();
-		
-		if (updatedAttachSet != null) {
-			for (Iterator attachIter = updatedAttachSet.iterator(); attachIter.hasNext();) {
-				SubmissionAttachmentBase attach = (SubmissionAttachmentBase) attachIter.next();
-				if (attach != null) {
-					if (attach.getId() == null) {
+	private Set<SubmissionAttachmentBase> identifyAttachmentsToCreate(
+			Set<? extends SubmissionAttachmentBase> updatedAttachSet)
+	{
+		Set<SubmissionAttachmentBase> attachToCreate = new HashSet<SubmissionAttachmentBase>();
+
+		if (updatedAttachSet != null)
+			for (SubmissionAttachmentBase attach : updatedAttachSet)
+				if (attach != null)
+					if (attach.getId() == null)
 						attachToCreate.add(attach);
-					} 
-				}
-			}
-		} 
-		
+
 		return attachToCreate;
 	}
 	
@@ -924,8 +915,8 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 								!submission.getSubmissionHistorySet().isEmpty()) {
 							// we need to iterate through all of the versions and
 							// release them
-							for (Iterator versionIter = submission.getSubmissionHistorySet().iterator(); versionIter.hasNext();) {
-								AssignmentSubmissionVersion version = (AssignmentSubmissionVersion) versionIter.next();
+							for (AssignmentSubmissionVersion version : submission.getSubmissionHistorySet())
+							{
 								if (version != null) {
 									version.setReleasedTime(releasedTime);
 									versionsToUpdate.add(version);
@@ -972,8 +963,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			// release them
 			Date releasedTime = new Date();
 			Set<AssignmentSubmissionVersion> updatedVersions = new HashSet<AssignmentSubmissionVersion>();
-			for (Iterator versionIter = subWithHistory.getSubmissionHistorySet().iterator(); versionIter.hasNext();) {
-				AssignmentSubmissionVersion version = (AssignmentSubmissionVersion) versionIter.next();
+			for (AssignmentSubmissionVersion version : subWithHistory.getSubmissionHistorySet()) {
 				if (version != null) {
 					version.setReleasedTime(releasedTime);
 					updatedVersions.add(version);
@@ -1041,8 +1031,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		// check the version history
 		if (includeHistory) {
 			if (submission.getSubmissionHistorySet() != null && !submission.getSubmissionHistorySet().isEmpty()) {
-				for (Iterator versionIter = submission.getSubmissionHistorySet().iterator(); versionIter.hasNext();) {
-					AssignmentSubmissionVersion version = (AssignmentSubmissionVersion) versionIter.next();
+				for (AssignmentSubmissionVersion version : submission.getSubmissionHistorySet()) {
 					filterOutRestrictedVersionInfo(version, currentUserId);
 				}
 			}
@@ -1069,7 +1058,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			if (version.getAssignmentSubmission().getUserId().equals(currentUserId)) {
 				if (version.getReleasedTime() == null || version.getReleasedTime().after(new Date())) {
 					// do not populate the feedback since not released 
-					version.setFeedbackAttachSet(new HashSet());
+					version.setFeedbackAttachSet(new HashSet<FeedbackAttachment>());
 					version.setFeedbackNotes("");
 					version.setAnnotatedText("");
 					if (log.isDebugEnabled()) log.debug("Not populating feedback-specific info b/c curr user is submitter and feedback not released");
@@ -1078,7 +1067,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 				// do not populate submission info if still draft
 				if (version.isDraft()) {
 					version.setSubmittedText("");
-					version.setSubmissionAttachSet(new HashSet());
+					version.setSubmissionAttachSet(new HashSet<SubmissionAttachment>());
 					if (log.isDebugEnabled()) log.debug("Not populating submission-specific info b/c draft status and current user is not submitter");
 				}
 			}
@@ -1103,10 +1092,9 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		if (submission.getId() != null) {
 			String currentUserId = externalLogic.getCurrentUserId();
 
-			Set historySet = dao.getVersionHistoryForSubmission(submission);
+			Set<AssignmentSubmissionVersion> historySet = dao.getVersionHistoryForSubmission(submission);
 			if (historySet != null && !historySet.isEmpty()) {
-				for (Iterator vIter = historySet.iterator(); vIter.hasNext();) {
-					AssignmentSubmissionVersion version = (AssignmentSubmissionVersion) vIter.next();
+				for (AssignmentSubmissionVersion version : historySet) {
 					if (version != null) {
 						AssignmentSubmissionVersion versionCopy = 
 							AssignmentSubmissionVersion.deepCopy(version, true, true);
