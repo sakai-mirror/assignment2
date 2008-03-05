@@ -186,10 +186,12 @@
     <build>
 	    <resources>
 		  <resource>
-	        <directory>${basedir}/../../bundle</directory>
+		     <targetPath>bundle</targetPath>
+	        <directory>${basedir}/../bundle</directory>
 	        <includes>
 	        	<include>**/*.properties</include>
 	        </includes>
+	        <filtering>false</filtering>
 	      </resource>
 	    </resources>
       <plugins>

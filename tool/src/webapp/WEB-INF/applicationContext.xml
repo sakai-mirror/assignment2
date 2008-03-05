@@ -31,7 +31,7 @@
       <property name="messageSource">
          <bean class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
             <property name="basename">
-               <value>WEB-INF/bundle/messages</value>
+               <value>WEB-INF/classes/bundle/messages</value>
             </property>
             <property name="cacheSeconds">
                <value>10</value>
