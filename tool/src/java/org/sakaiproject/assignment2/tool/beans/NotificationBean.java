@@ -397,9 +397,12 @@ public class NotificationBean
 		// assignment title and due date
 		buffer.append(messageLocator.getMessage("noti.assignment") + " " + a.getTitle() + newline);
 		Time time = timeService.newTime();
-		time.setTime(a.getDueDate().getTime());
-		buffer.append(messageLocator.getMessage("noti.assignment.duedate") + " "
+		if (a.getDueDate() != null)
+		{
+			time.setTime(a.getDueDate().getTime());
+			buffer.append(messageLocator.getMessage("noti.assignment.duedate") + " "
 				+ time.toStringLocalFull() + newline + newline);
+		}
 		// submitter name and id
 		AssignmentSubmissionVersion curSubVers = s.getCurrentSubmissionVersion();
 		String submitterId = curSubVers.getCreatedBy();

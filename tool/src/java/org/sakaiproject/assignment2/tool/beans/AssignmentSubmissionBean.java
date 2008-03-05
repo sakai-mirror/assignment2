@@ -1,6 +1,5 @@
 package org.sakaiproject.assignment2.tool.beans;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -18,8 +17,13 @@ import org.sakaiproject.assignment2.model.SubmissionAttachment;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.model.FeedbackAttachment;
+import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
+import org.sakaiproject.exception.IdUnusedException;
+import org.sakaiproject.exception.PermissionException;
+import org.sakaiproject.exception.TypeException;
 import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.tool.api.ToolSession;
+import org.sakaiproject.user.api.UserNotDefinedException;
 
 import uk.org.ponder.beanutil.entity.EntityBeanLocator;
 import uk.org.ponder.messageutil.MessageLocator;
@@ -109,6 +113,10 @@ public class AssignmentSubmissionBean {
 		this.honorPledge = honorPledge;
 	}
 	
+	private NotificationBean notificationBean;
+	public void setNotificationBean(NotificationBean notificationBean) {
+		this.notificationBean = notificationBean;
+	}
 	
 	/*
 	 * STUDENT FUNCTIONS
@@ -169,6 +177,33 @@ public class AssignmentSubmissionBean {
 	    				assignmentSubmission.getAssignment(), false, asv.getSubmittedText(), final_set);
 	    		messages.addMessage(new TargettedMessage("assignment2.student-submit.info.submission_submitted",
 						new Object[] { assignment.getTitle() }, TargettedMessage.SEVERITY_INFO));
+	    		// Send out notifications
+	    		try {
+	    			notificationBean.notificationToStudent(assignmentSubmission);
+	    			if (assignment.getNotificationType() ==  AssignmentConstants.NOTIFY_FOR_EACH)
+	    			{
+	    				notificationBean.notificationToInstructors(assignmentSubmission, assignment);
+	    			}
+	    		}catch (IdUnusedException e)
+	    		{
+	    			messages.addMessage(new TargettedMessage("assignment2.student-submit.error.unexpected",
+	    					new Object[]{e.getLocalizedMessage()}, TargettedMessage.SEVERITY_ERROR));
+	    		}
+	    		catch (UserNotDefinedException e)
+	    		{
+	    			messages.addMessage(new TargettedMessage("assignment2.student-submit.error.unexpected",
+	    					new Object[]{e.getLocalizedMessage()}, TargettedMessage.SEVERITY_ERROR));
+	    		}
+	    		catch (PermissionException e)
+	    		{
+	    			messages.addMessage(new TargettedMessage("assignment2.student-submit.error.unexpected",
+	    					new Object[]{e.getLocalizedMessage()}, TargettedMessage.SEVERITY_ERROR));
+	    		}
+	    		catch (TypeException e)
+	    		{
+	    			messages.addMessage(new TargettedMessage("assignment2.student-submit.error.unexpected",
+	    					new Object[]{e.getLocalizedMessage()}, TargettedMessage.SEVERITY_ERROR));
+	    		}
 	    	}
 		}
 

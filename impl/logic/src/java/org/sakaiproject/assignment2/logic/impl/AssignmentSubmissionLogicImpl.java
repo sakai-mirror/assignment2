@@ -78,11 +78,6 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 	public void setPermissionLogic(AssignmentPermissionLogic permissionLogic) {
 		this.permissionLogic = permissionLogic;
 	}
-
-//    private NotificationBean notificationBean;
-//    public void setNotificationBean(NotificationBean notificationBean) {
-//    	this.notificationBean = notificationBean;
-//    }
     
 	public void init(){
 		if (log.isDebugEnabled()) log.debug("init");
@@ -349,13 +344,6 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 						"sub attachments deleted for updated version " + 
 						version.getId() + " by user " + currentUserId);
 			}
-			/*
-			notificationBean.notificationToStudent(submission);
-			if (assignment.getNotificationType() ==  AssignmentConstants.NOTIFY_FOR_EACH)
-			{
-				notificationBean.notificationToInstructors(submission, assignment);
-			}*/
-			
 		} catch (HibernateOptimisticLockingFailureException holfe) {
 			if(log.isInfoEnabled()) log.info("An optimistic locking failure occurred while attempting to update submission version" + version.getId());
 			throw new StaleObjectModificationException(holfe);
@@ -363,23 +351,6 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			if(log.isInfoEnabled()) log.info("An optimistic locking failure occurred while attempting to update submission version" + version.getId());
 			throw new StaleObjectModificationException(sose);
 		}
-		/*catch (IdUnusedException e)
-		{
-			log.error("assignment2", e);
-		}
-		catch (UserNotDefinedException e)
-		{
-			log.error("assignment2", e);
-		}
-		catch (PermissionException e)
-		{
-			log.error("assignment2", e);
-		}
-		catch (TypeException e)
-		{
-			log.error("assignment2", e);
-		}*/
-
 	}
 
 	public void saveInstructorFeedback(Long versionId, String studentId, String grade,

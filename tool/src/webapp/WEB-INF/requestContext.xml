@@ -260,6 +260,7 @@
    	  <property name="previewAssignmentSubmissionBean" ref="PreviewAssignmentSubmissionBean" />
    	  <property name="messageLocator" ref="messageLocator" />
    	  <property name="sessionManager" ref="org.sakaiproject.tool.api.SessionManager" />
+			<property name="notificationBean" ref="notificationBean" />
    </bean>
    
    <bean id="PreviewAssignmentBean" class="org.sakaiproject.assignment2.tool.beans.PreviewAssignmentBean" />
