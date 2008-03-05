@@ -20,7 +20,6 @@
  **********************************************************************************/
 package org.sakaiproject.assignment2.logic.impl;
 
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -150,16 +149,16 @@ public class ExternalLogicImpl implements ExternalLogic {
     	+ toolManager.getCurrentPlacement().getId() + Entity.SEPARATOR + viewId;
     }
     
-    public Collection getSiteGroups(String contextId) {
+    public Collection<Group> getSiteGroups(String contextId) {
     	try {
 	    	Site s = siteService.getSite(contextId);
 	    	return s.getGroups();
     	} catch (IdUnusedException e){
-    		return new ArrayList();
+    		return new ArrayList<Group>();
     	}
     }
     
-    public Collection getUserMemberships(String userId, String contextId) {
+    public Collection<Group> getUserMemberships(String userId, String contextId) {
     	if (userId == null || contextId == null) {
     		throw new IllegalArgumentException("Null userId or contextId passed to getUserMemberships");
     	}
@@ -167,7 +166,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 	    	Site s = siteService.getSite(toolManager.getCurrentPlacement().getContext());
 	    	return s.getGroupsWithMember(userId);
     	} catch (IdUnusedException e){
-    		return new ArrayList();
+    		return new ArrayList<Group>();
     	}
     }
     
@@ -175,11 +174,10 @@ public class ExternalLogicImpl implements ExternalLogic {
     	if (userId == null || contextId == null) {
     		throw new IllegalArgumentException("Null userId or contextId passed to getUserMembershipGroupIdList");
     	}
-    	List memberships = new ArrayList(getUserMemberships(userId, contextId));
-    	List groupIds = new ArrayList();
+    	List<Group> memberships = new ArrayList<Group>(getUserMemberships(userId, contextId));
+    	List<String> groupIds = new ArrayList<String>();
     	if (memberships != null) {
-    		for (Iterator groupIter = memberships.iterator(); groupIter.hasNext();) {
-    			Group group = (Group) groupIter.next();
+    		for (Group group : memberships) {
     			if (group != null) {
     				groupIds.add(group.getId());
     			}
@@ -194,12 +192,11 @@ public class ExternalLogicImpl implements ExternalLogic {
     		throw new IllegalArgumentException("Null contextId passed to getGroupIdToNameMapForSite");
     	}
     	
-    	Collection siteGroups = getSiteGroups(contextId);
+    	Collection<Group> siteGroups = getSiteGroups(contextId);
     	
-    	Map groupIdToNameMap = new HashMap();
+    	Map<String, String> groupIdToNameMap = new HashMap<String, String>();
     	if (siteGroups != null && !siteGroups.isEmpty()) {
-			for (Iterator siteGroupIter = siteGroups.iterator(); siteGroupIter.hasNext();) {
-				Group siteGroup = (Group) siteGroupIter.next();
+			for (Group siteGroup : siteGroups) {
 				if (siteGroup != null) {
 					groupIdToNameMap.put(siteGroup.getId(), siteGroup.getTitle());
 				}
@@ -235,12 +232,11 @@ public class ExternalLogicImpl implements ExternalLogic {
     	if (contextId == null) {
     		throw new IllegalArgumentException("Null contextId passed to getStudentsInSite");
     	}
-    	List<String> studentsInSite = new ArrayList();
+    	List<String> studentsInSite = new ArrayList<String>();
     	
     	List<ParticipationRecord> participants = sectionAwareness.getSiteMembersInRole(contextId, Role.STUDENT);
     	if (participants != null) {
-    		for (Iterator pIter = participants.iterator(); pIter.hasNext();) {
-    			ParticipationRecord part = (ParticipationRecord) pIter.next();
+    		for (ParticipationRecord part : participants) {
     			if (part != null) {
     				String studentId = part.getUser().getUserUid();
     				studentsInSite.add(studentId);
@@ -257,11 +253,10 @@ public class ExternalLogicImpl implements ExternalLogic {
     		
     	}
     	
-    	List<String> studentsInSection = new ArrayList();
+    	List<String> studentsInSection = new ArrayList<String>();
     	
     	List<ParticipationRecord> participants = sectionAwareness.getSectionMembersInRole(sectionId, Role.STUDENT);
-    	for (Iterator pIter = participants.iterator(); pIter.hasNext();) {
-			ParticipationRecord part = (ParticipationRecord) pIter.next();
+    	for (ParticipationRecord part : participants) {
 			if (part != null) {
 				String studentId = part.getUser().getUserUid();
 				studentsInSection.add(studentId);

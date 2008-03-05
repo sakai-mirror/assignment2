@@ -25,11 +25,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 import org.sakaiproject.assignment2.dao.AssignmentDao;
-import org.sakaiproject.assignment2.logic.AssignmentLogic;
-import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
-import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.ExternalAnnouncementLogic;
-import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
 import org.sakaiproject.assignment2.logic.impl.AssignmentLogicImpl;
 import org.sakaiproject.assignment2.logic.impl.ExternalAnnouncementLogicImpl;
 import org.sakaiproject.assignment2.logic.impl.ExternalGradebookLogicImpl;
@@ -194,10 +190,9 @@ public abstract class Assignment2TestBase extends AbstractTransactionalSpringCon
      * groupIds consistent with the sections created here
      * @param assignGroupSet
      */
-    protected void updateAssignmentGroupId(Set assignGroupSet) {
+    protected void updateAssignmentGroupId(Set<AssignmentGroup> assignGroupSet) {
     	if (assignGroupSet != null && !assignGroupSet.isEmpty()) {
-    		for (Iterator groupIter = assignGroupSet.iterator(); groupIter.hasNext();) {
-    			AssignmentGroup group = (AssignmentGroup) groupIter.next();
+    		for (AssignmentGroup group : assignGroupSet) {
     			if (group.getGroupId().equals(AssignmentTestDataLoad.GROUP1_NAME)) {
     				group.setGroupId(section1Uid);
     			} else if (group.getGroupId().equals(AssignmentTestDataLoad.GROUP2_NAME)) {

@@ -23,8 +23,6 @@ package org.sakaiproject.assignment2.logic.test;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.Assert;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment2.test.AssignmentTestDataLoad;
@@ -62,7 +60,7 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
         integrationSupport.addSiteMembership(AssignmentTestDataLoad.STUDENT3_UID, AssignmentTestDataLoad.CONTEXT_ID, Role.STUDENT);
         
         // create some sections
-        List sectionCategories = sectionAwareness.getSectionCategories(AssignmentTestDataLoad.CONTEXT_ID);
+        List<String> sectionCategories = sectionAwareness.getSectionCategories(AssignmentTestDataLoad.CONTEXT_ID);
         CourseSection section1 = integrationSupport.createSection(site.getUuid(), AssignmentTestDataLoad.GROUP1_NAME,
 				(String)sectionCategories.get(0),
 				new Integer(40), null, null, null, true, false, true,  false, false, false, false);
@@ -291,13 +289,13 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
    public void testIsUserAbleToViewUngradedAssignment() {
 	   // try passing a null assignment
 	   try {
-		   permissionLogic.isUserAbleToViewUngradedAssignment(null, new ArrayList());
+		   permissionLogic.isUserAbleToViewUngradedAssignment(null, new ArrayList<String>());
 		   fail("Did not catch null assignment passed to isUserAbleToViewUngradedAssignment");
 	   } catch (IllegalArgumentException iae) {}
 	   
 	   // try passing a graded assignment
 	   try {
-		   permissionLogic.isUserAbleToViewUngradedAssignment(testData.a4, new ArrayList());
+		   permissionLogic.isUserAbleToViewUngradedAssignment(testData.a4, new ArrayList<String>());
 		   fail("Did not catch graded assignment passed to isUserAbleToViewUngradedAssignment");
 	   } catch (IllegalArgumentException iae) {}
 	   
@@ -310,11 +308,11 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
 	   // otherwise, should see all
 
 	   authn.setAuthnContext(AssignmentTestDataLoad.TA_UID);
-	   List memberships = externalLogic.getUserMembershipGroupIdList(AssignmentTestDataLoad.TA_UID, AssignmentTestDataLoad.CONTEXT_ID);
+	   List<String> memberships = externalLogic.getUserMembershipGroupIdList(AssignmentTestDataLoad.TA_UID, AssignmentTestDataLoad.CONTEXT_ID);
 	   // try one that is restricted to a group that ta is a member of
 	   assertTrue(permissionLogic.isUserAbleToViewUngradedAssignment(testData.a1, memberships));
 	   // let's try that same one, but remove the membership
-	   assertFalse(permissionLogic.isUserAbleToViewUngradedAssignment(testData.a1, new ArrayList()));
+	   assertFalse(permissionLogic.isUserAbleToViewUngradedAssignment(testData.a1, new ArrayList<String>()));
 	   // this one is not restricted, so should be ok
 	   assertTrue(permissionLogic.isUserAbleToViewUngradedAssignment(testData.a2, memberships));
 	   
@@ -325,7 +323,7 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
 	   // student is a member of a restricted group, so ok
 	   assertTrue(permissionLogic.isUserAbleToViewUngradedAssignment(testData.a1, memberships));
 	   // let's try that same one, but remove the membership
-	   assertFalse(permissionLogic.isUserAbleToViewUngradedAssignment(testData.a1, new ArrayList()));
+	   assertFalse(permissionLogic.isUserAbleToViewUngradedAssignment(testData.a1, new ArrayList<String>()));
 	   // this one is not restricted, so should be ok
 	   assertTrue(permissionLogic.isUserAbleToViewUngradedAssignment(testData.a2, memberships));
 
@@ -338,12 +336,12 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
 	   assertFalse(permissionLogic.isUserAMemberOfARestrictedGroup(groupMembershipIds, assignmentGroupSet));
 	   
 	   // add a group to groupMembershipIds - should still be false
-	   groupMembershipIds = new ArrayList();
+	   groupMembershipIds = new ArrayList<String>();
 	   groupMembershipIds.add(section1Uid);
 	   assertFalse(permissionLogic.isUserAMemberOfARestrictedGroup(groupMembershipIds, assignmentGroupSet));
 	   
 	   // add a different AssignmentGroup to the assignmentGroups
-	   assignmentGroupSet = new ArrayList();
+	   assignmentGroupSet = new ArrayList<AssignmentGroup>();
 	   assignmentGroupSet.add(new AssignmentGroup(null, section2Uid));
 	   assertFalse(permissionLogic.isUserAMemberOfARestrictedGroup(groupMembershipIds, assignmentGroupSet));
 	   
@@ -397,7 +395,7 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
 	   authn.setAuthnContext(AssignmentTestDataLoad.INSTRUCTOR_UID);
 	   // instructor should get all students who have the assignment
 	   // a1 is restricted to groups, so will return all students in those groups
-	   List viewableStudents = permissionLogic.getViewableStudentsForUserForItem(testData.a1);
+	   List<String> viewableStudents = permissionLogic.getViewableStudentsForUserForItem(testData.a1);
 	   assertTrue(viewableStudents.size() == 2);
 	   // this one is not restricted
 	   viewableStudents = permissionLogic.getViewableStudentsForUserForItem(testData.a2);
@@ -474,7 +472,7 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
 	   authn.setAuthnContext(AssignmentTestDataLoad.INSTRUCTOR_UID);
 	   // instructor should get all students who have the assignment
 	   // a1 is restricted to groups, so will return all students in those groups
-	   List gradableStudents = permissionLogic.getGradableStudentsForUserForItem(testData.a1);
+	   List<String> gradableStudents = permissionLogic.getGradableStudentsForUserForItem(testData.a1);
 	   assertTrue(gradableStudents.size() == 2);
 	   // this one is not restricted
 	   gradableStudents = permissionLogic.getGradableStudentsForUserForItem(testData.a2);

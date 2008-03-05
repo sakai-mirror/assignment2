@@ -210,10 +210,9 @@ public class ExternalAnnouncementLogicImpl implements ExternalAnnouncementLogic 
 
 				//make a collection of Group objects from the collection of group ref strings
 				Site site = SiteService.getSite(contextId);
-				List<Group> groupRestrictions = new ArrayList();
-				for (Iterator groupIdIter = restrictedGroupIds.iterator(); groupIdIter.hasNext();)
+				List<Group> groupRestrictions = new ArrayList<Group>();
+				for (String groupId : restrictedGroupIds)
 				{
-					String groupId = (String) groupIdIter.next();
 					if (groupId != null) {
 						Group thisGroup = site.getGroup(groupId);
 						if (thisGroup != null) {

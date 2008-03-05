@@ -22,7 +22,6 @@
 package org.sakaiproject.assignment2.logic.impl;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -38,7 +37,6 @@ import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentGroup;
-import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 
 /**
@@ -137,8 +135,8 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
     		viewable = true;
     	} else if (gradebookLogic.isCurrentUserAbleToGrade(assignment.getContextId())) {
     		String currContextId = externalLogic.getCurrentContextId();
-    		List currentUserMemberships = externalLogic.getUserMembershipGroupIdList(externalLogic.getCurrentUserId(), currContextId);
-    		List studentMemberships = externalLogic.getUserMembershipGroupIdList(studentId, currContextId);
+    		List<String> currentUserMemberships = externalLogic.getUserMembershipGroupIdList(externalLogic.getCurrentUserId(), currContextId);
+    		List<String> studentMemberships = externalLogic.getUserMembershipGroupIdList(studentId, currContextId);
     		if (userMembershipsOverlap(currentUserMemberships, studentMemberships)) {
     			viewable = true;
     		}
@@ -173,8 +171,7 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
     public boolean isUserAMemberOfARestrictedGroup(Collection<String> groupMembershipIds, Collection<AssignmentGroup> assignmentGroupSet) {    	
     	if (assignmentGroupSet != null && !assignmentGroupSet.isEmpty()) {
         	if (groupMembershipIds != null) {
-	        	for (Iterator aGroupIter = assignmentGroupSet.iterator(); aGroupIter.hasNext();) {
-	        		AssignmentGroup aGroup = (AssignmentGroup) aGroupIter.next();
+	        	for (AssignmentGroup aGroup : assignmentGroupSet) {
 	        		if (aGroup != null) {
 	        			if (groupMembershipIds.contains(aGroup.getGroupId())) {
 	        				return true;
@@ -270,7 +267,7 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
 			throw new IllegalArgumentException("Invalid gradeOrView " + gradeOrView + " passed to getAvailableStudentsForUserForItem");
 		}
 		
-		List<String> availStudents = new ArrayList();
+		List<String> availStudents = new ArrayList<String>();
 		
 		String contextId = externalLogic.getCurrentContextId();
 		String userId = externalLogic.getCurrentUserId();
@@ -292,7 +289,7 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
 			if (assignment.isUngraded()) {
 				// if there are no restrictions, return students in user's section(s)
 				if (assignGroupRestrictions == null || assignGroupRestrictions.isEmpty()) {
-					Set sharedStudents = getStudentsInCurrentUsersSections(contextId);
+					Set<String> sharedStudents = getStudentsInCurrentUsersSections(contextId);
 					if (sharedStudents != null) {
 						availStudents.addAll(sharedStudents);
 					}
@@ -301,8 +298,7 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
 					// of the group restrictions
 					List<String> memberships = externalLogic.getUserMembershipGroupIdList(userId, contextId);
 					if (memberships != null && !memberships.isEmpty()) {
-						for (Iterator groupIter = assignGroupRestrictions.iterator(); groupIter.hasNext();) {
-							AssignmentGroup group = (AssignmentGroup) groupIter.next();
+						for (AssignmentGroup group : assignGroupRestrictions) {
 							if (group != null && memberships.contains(group.getGroupId())) {
 								availStudents.addAll(externalLogic.getStudentsInSection(group.getGroupId()));
 							}
@@ -312,16 +308,15 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
 				
 			} else {
 				// we need to get the students that are viewable in the gb
-				List viewableInGb = new ArrayList();
+				List<String> viewableInGb = new ArrayList<String>();
 				if (assignment.getGradableObjectId() != null) {
-					Map studentIdFunctionMap = 
+					Map<String, String> studentIdFunctionMap = 
 						gradebookLogic.getViewableStudentsForGradedItemMap(contextId, assignment.getGradableObjectId());
 					if (studentIdFunctionMap != null) {
 						if (gradeOrView.equals(AssignmentConstants.VIEW)) {
 							viewableInGb.addAll(studentIdFunctionMap.keySet());
 						} else {
-							for (Iterator stIter = studentIdFunctionMap.keySet().iterator(); stIter.hasNext();) {
-								String studentId = (String)stIter.next();
+							for (String studentId : studentIdFunctionMap.keySet()) {
 								if (studentId != null) {
 									String function = (String) studentIdFunctionMap.get(studentId);
 									if (function != null && function.equals(AssignmentConstants.GRADE)) {
@@ -337,11 +332,10 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
 				if (assignGroupRestrictions == null || assignGroupRestrictions.isEmpty()) {
 					availStudents.addAll(viewableInGb);
 				} else {
-					List availForAssign = getAllAvailableStudentsGivenGroupRestrictions(
+					List<String> availForAssign = getAllAvailableStudentsGivenGroupRestrictions(
 							contextId, assignGroupRestrictions);
 					if (availForAssign != null && !availForAssign.isEmpty()) {
-						for (Iterator stIter = availForAssign.iterator(); stIter.hasNext();) {
-							String studentId = (String) stIter.next();
+						for (String studentId : availForAssign) {
 							if (studentId != null && viewableInGb.contains(studentId)) {
 								availStudents.add(studentId);
 							}
@@ -367,8 +361,7 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
 	 */
 	private boolean userMembershipsOverlap(List<String> user1GroupIds, List<String> user2GroupIds) {
 		if (user1GroupIds != null && user2GroupIds != null ) {
-			for (Iterator user1Iter = user1GroupIds.iterator(); user1Iter.hasNext();) {
-				String user1Group = (String) user1Iter.next();
+			for (String user1Group : user1GroupIds) {
 				if (user1Group != null && user2GroupIds.contains(user1Group)) {
 					return true;
 				}
@@ -383,12 +376,11 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
 		List<String> groupMemberships = externalLogic.getUserMembershipGroupIdList(externalLogic.getCurrentUserId(), contextId);
 		
 		// use a set to eliminate section overlap with duplicate students
-		Set<String> sharedStudents = new HashSet();
+		Set<String> sharedStudents = new HashSet<String>();
 		if (groupMemberships != null) {
-			for (Iterator groupIter = groupMemberships.iterator(); groupIter.hasNext();) {
-				String groupId = (String) groupIter.next();
+			for (String groupId : groupMemberships) {
 				if (groupId != null) {
-					List students = externalLogic.getStudentsInSection(groupId);
+					List<String> students = externalLogic.getStudentsInSection(groupId);
 					if (students != null) {
 						sharedStudents.addAll(students);
 					}
@@ -409,7 +401,7 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
 		boolean allowedToRelease = false;
 		
 		try {
-			List gradableStudents = getGradableStudentsForUserForItem(assignment);
+			List<String> gradableStudents = getGradableStudentsForUserForItem(assignment);
 			if (gradableStudents != null && gradableStudents.size() > 0) {
 				allowedToRelease = true;
 			}
@@ -426,7 +418,7 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
 	}
 	
 	private List<String> getAllAvailableStudentsGivenGroupRestrictions(String contextId, Collection<AssignmentGroup> assignGroupRestrictions) {
-		List<String> allStudentsForAssign = new ArrayList();
+		List<String> allStudentsForAssign = new ArrayList<String>();
 		
 		// if there are group restrictions, only a subset of all of the students in the
 		// class will be available for this assignment
@@ -435,9 +427,8 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
 		} else {
 			// use a set to make sure students only appear once, even if they
 			// are in multiple sections
-			Set<String> studentsInRestrictedGroups = new HashSet();
-			for (Iterator groupIter = assignGroupRestrictions.iterator(); groupIter.hasNext();) {
-				AssignmentGroup group = (AssignmentGroup) groupIter.next();
+			Set<String> studentsInRestrictedGroups = new HashSet<String>();
+			for (AssignmentGroup group : assignGroupRestrictions) {
 				if (group != null) {
 					studentsInRestrictedGroups.addAll(externalLogic.getStudentsInSection(group.getGroupId()));
 				}

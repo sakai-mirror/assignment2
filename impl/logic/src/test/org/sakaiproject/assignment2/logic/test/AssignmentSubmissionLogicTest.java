@@ -28,15 +28,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import junit.framework.Assert;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment2.test.AssignmentTestDataLoad;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
-import org.sakaiproject.assignment2.logic.utils.ComparatorsUtils;
 import org.sakaiproject.assignment2.model.Assignment2;
-import org.sakaiproject.assignment2.model.AssignmentGroup;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.model.SubmissionAttachment;
@@ -79,7 +75,7 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
         integrationSupport.addSiteMembership(AssignmentTestDataLoad.STUDENT3_UID, AssignmentTestDataLoad.CONTEXT_ID, Role.STUDENT);
         
         // create some sections
-        List sectionCategories = sectionAwareness.getSectionCategories(AssignmentTestDataLoad.CONTEXT_ID);
+        List<String> sectionCategories = sectionAwareness.getSectionCategories(AssignmentTestDataLoad.CONTEXT_ID);
         CourseSection section1 = integrationSupport.createSection(site.getUuid(), AssignmentTestDataLoad.GROUP1_NAME,
 				(String)sectionCategories.get(0),
 				new Integer(40), null, null, null, true, false, true,  false, false, false, false);
@@ -447,7 +443,7 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
     	// student 1 does not have any submission for a2 yet
     	authn.setAuthnContext(AssignmentTestDataLoad.STUDENT1_UID);
     	// double check that no submission exists yet
-    	List subList = dao.findByProperties(
+    	List<AssignmentSubmission> subList = dao.findByProperties(
     			AssignmentSubmission.class, new String[] {"userId", "assignment"}, 
     			new Object[] {AssignmentTestDataLoad.STUDENT1_UID, testData.a2});
     	assertTrue(subList.isEmpty());
@@ -456,7 +452,7 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
     	attach1.setAttachmentReference("ref1");
     	SubmissionAttachment attach2 = new SubmissionAttachment();
     	attach2.setAttachmentReference("ref2");
-    	Set attachSet = new HashSet();
+    	Set<SubmissionAttachment> attachSet = new HashSet();
     	attachSet.add(attach1);
     	attachSet.add(attach2);
     	
@@ -483,7 +479,7 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
     			testData.a2, true, "this is my text - revised!", attachSet);
     	// text and attach should have been updated
     	existingSub = (AssignmentSubmission)dao.findById(AssignmentSubmission.class, subId);
-    	Set versionHistory = dao.getVersionHistoryForSubmission(existingSub);
+    	Set<AssignmentSubmissionVersion> versionHistory = dao.getVersionHistoryForSubmission(existingSub);
     	assertTrue(versionHistory.size() == 1);
     	currVersion = dao.getCurrentSubmissionVersionWithAttachments(existingSub);
     	//assertTrue(currVersion.getSubmissionAttachSet().size() == 1);
@@ -565,7 +561,7 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
     	
     	// submit feedback for student w/o submission
     	// student 1 has not submitted for a2 yet
-    	Set feedbackAttachSet = new HashSet();
+    	Set<FeedbackAttachment> feedbackAttachSet = new HashSet<FeedbackAttachment>();
     	FeedbackAttachment fb1 = new FeedbackAttachment(null, "fb1");
     	feedbackAttachSet.add(fb1);
 
@@ -588,7 +584,7 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
     	assertTrue(st1a2Submission.getUserId().equals(AssignmentTestDataLoad.STUDENT1_UID));
     	
     	// make sure there is still only one version
-    	Set versionHistory = dao.getVersionHistoryForSubmission(st1a2Submission);
+    	Set<AssignmentSubmissionVersion> versionHistory = dao.getVersionHistoryForSubmission(st1a2Submission);
     	assertTrue(versionHistory.size() == 1);
     	
     	// try a TA
@@ -631,7 +627,7 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
     	// start as instructor
     	authn.setAuthnContext(AssignmentTestDataLoad.INSTRUCTOR_UID);
     	// we should get 2 students back for a1 b/c group restrictions
-    	List subList = submissionLogic.getViewableSubmissionsForAssignmentId(testData.a1Id);
+    	List<AssignmentSubmission> subList = submissionLogic.getViewableSubmissionsForAssignmentId(testData.a1Id);
     	assertTrue(subList.size() == 2);
     	// we should get 3 for a2 b/c no restrictions
     	subList = submissionLogic.getViewableSubmissionsForAssignmentId(testData.a2Id);
@@ -640,8 +636,7 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
     	subList = submissionLogic.getViewableSubmissionsForAssignmentId(testData.a3Id);
     	assertTrue(subList.size() == 3);
     	// let's make sure the submission for st1 is restricted b/c draft
-    	for (Iterator it=subList.iterator(); it.hasNext();) {
-    		AssignmentSubmission sub = (AssignmentSubmission) it.next();
+    	for (AssignmentSubmission sub : subList) {
     		if (sub.getUserId().equals(AssignmentTestDataLoad.STUDENT1_UID)) {
     			assertEquals(sub.getCurrentSubmissionVersion().getSubmittedText(), "");
     			assertTrue(sub.getCurrentSubmissionVersion().getSubmissionAttachSet().isEmpty());
@@ -679,7 +674,7 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
     public void testSetSubmissionStatusConstantForAssignments() {
     	// try null studentId
     	try {
-    		submissionLogic.setSubmissionStatusConstantForAssignments(new ArrayList(), null);
+    		submissionLogic.setSubmissionStatusConstantForAssignments(new ArrayList<Assignment2>(), null);
     		fail("Did not catch null studentId passed to setSubmissionStatusForAssignments");
     	} catch(IllegalArgumentException iae) {}
     	
@@ -688,7 +683,7 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
     	submissionLogic.setSubmissionStatusConstantForAssignments(null, AssignmentTestDataLoad.STUDENT1_UID);
     	
     	// let's create a list of assignments
-    	List assignList = new ArrayList();
+    	List<Assignment2> assignList = new ArrayList<Assignment2>();
     	assignList.add(testData.a1);
     	assignList.add(testData.a2);
     	assignList.add(testData.a3);
@@ -751,7 +746,7 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
     	testData.st2a1Submission.setSubmissionStatus("In Progress");
     	testData.st3a3Submission.setSubmissionStatus("Not Started");
     	
-    	List subList = new ArrayList();
+    	List<AssignmentSubmission> subList = new ArrayList<AssignmentSubmission>();
     	subList.add(testData.st1a1Submission);
     	subList.add(testData.st2a1Submission);
     	subList.add(testData.st3a3Submission);
@@ -920,15 +915,13 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
 		authn.setAuthnContext(AssignmentTestDataLoad.TA_UID);
 		submissionLogic.releaseAllFeedbackForAssignment(testData.a1Id);
 		// should only have updated the one student this TA is allowed to grade!
-		Set st1a1History = dao.getVersionHistoryForSubmission(testData.st1a1Submission);
-		for (Iterator hIter = st1a1History.iterator(); hIter.hasNext();) {
-			AssignmentSubmissionVersion asv = (AssignmentSubmissionVersion)hIter.next();
+		Set<AssignmentSubmissionVersion> st1a1History = dao.getVersionHistoryForSubmission(testData.st1a1Submission);
+		for (AssignmentSubmissionVersion asv : st1a1History) {
 			assertNotNull(asv.getReleasedTime());
 		}
 		// nothing should be released for student 2
-		Set st2a1History = dao.getVersionHistoryForSubmission(testData.st2a1Submission);
-		for (Iterator hIter = st2a1History.iterator(); hIter.hasNext();) {
-			AssignmentSubmissionVersion asv = (AssignmentSubmissionVersion)hIter.next();
+		Set<AssignmentSubmissionVersion> st2a1History = dao.getVersionHistoryForSubmission(testData.st2a1Submission);
+		for (AssignmentSubmissionVersion asv : st2a1History) {
 			assertNull(asv.getReleasedTime());
 		}
 		
@@ -937,19 +930,16 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
 		submissionLogic.releaseAllFeedbackForAssignment(testData.a3Id);
 		
 		// every version should be released for all students
-		Set st1a3History = dao.getVersionHistoryForSubmission(testData.st1a3Submission);
-		for (Iterator hIter = st1a3History.iterator(); hIter.hasNext();) {
-			AssignmentSubmissionVersion asv = (AssignmentSubmissionVersion)hIter.next();
+		Set<AssignmentSubmissionVersion> st1a3History = dao.getVersionHistoryForSubmission(testData.st1a3Submission);
+		for (AssignmentSubmissionVersion asv : st1a3History) {
 			assertNotNull(asv.getReleasedTime());
 		}
-		Set st2a3History = dao.getVersionHistoryForSubmission(testData.st2a3Submission);
-		for (Iterator hIter = st2a3History.iterator(); hIter.hasNext();) {
-			AssignmentSubmissionVersion asv = (AssignmentSubmissionVersion)hIter.next();
+		Set<AssignmentSubmissionVersion> st2a3History = dao.getVersionHistoryForSubmission(testData.st2a3Submission);
+		for (AssignmentSubmissionVersion asv : st2a3History) {
 			assertNotNull(asv.getReleasedTime());
 		}
-		Set st3a3History = dao.getVersionHistoryForSubmission(testData.st3a3Submission);
-		for (Iterator hIter = st3a3History.iterator(); hIter.hasNext();) {
-			AssignmentSubmissionVersion asv = (AssignmentSubmissionVersion)hIter.next();
+		Set<AssignmentSubmissionVersion> st3a3History = dao.getVersionHistoryForSubmission(testData.st3a3Submission);
+		for (AssignmentSubmissionVersion asv : st3a3History) {
 			assertNotNull(asv.getReleasedTime());
 		}
 	}
@@ -984,9 +974,8 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
 		
 		// let's try one the ta is authorized to grade
 		submissionLogic.releaseAllFeedbackForSubmission(testData.st1a1Submission.getId());
-		Set versionHistory = dao.getVersionHistoryForSubmission(testData.st1a1Submission);
-		for (Iterator hIter = versionHistory.iterator(); hIter.hasNext();) {
-			AssignmentSubmissionVersion asv = (AssignmentSubmissionVersion) hIter.next();
+		Set<AssignmentSubmissionVersion> versionHistory = dao.getVersionHistoryForSubmission(testData.st1a1Submission);
+		for (AssignmentSubmissionVersion asv : versionHistory) {
 			assertNotNull(asv.getReleasedTime());
 		}
 		
@@ -994,8 +983,7 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
 		authn.setAuthnContext(AssignmentTestDataLoad.INSTRUCTOR_UID);
 		submissionLogic.releaseAllFeedbackForSubmission(testData.st2a1Submission.getId());
 		versionHistory = dao.getVersionHistoryForSubmission(testData.st2a1Submission);
-		for (Iterator hIter = versionHistory.iterator(); hIter.hasNext();) {
-			AssignmentSubmissionVersion asv = (AssignmentSubmissionVersion) hIter.next();
+		for (AssignmentSubmissionVersion asv : versionHistory) {
 			assertNotNull(asv.getReleasedTime());
 		}
 	}
@@ -1030,9 +1018,8 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
 		
 		// let's try one the ta is authorized to grade
 		submissionLogic.releaseFeedbackForVersion(testData.st1a1CurrVersion.getId());
-		Set versionHistory = dao.getVersionHistoryForSubmission(testData.st1a1Submission);
-		for (Iterator hIter = versionHistory.iterator(); hIter.hasNext();) {
-			AssignmentSubmissionVersion asv = (AssignmentSubmissionVersion) hIter.next();
+		Set<AssignmentSubmissionVersion> versionHistory = dao.getVersionHistoryForSubmission(testData.st1a1Submission);
+		for (AssignmentSubmissionVersion asv : versionHistory) {
 			if (asv.getId().equals(testData.st1a1CurrVersion.getId())) {
 				assertNotNull(asv.getReleasedTime());
 			} else {
@@ -1045,8 +1032,7 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
 		authn.setAuthnContext(AssignmentTestDataLoad.INSTRUCTOR_UID);
 		submissionLogic.releaseFeedbackForVersion(testData.st2a1CurrVersion.getId());
 		versionHistory = dao.getVersionHistoryForSubmission(testData.st2a1Submission);
-		for (Iterator hIter = versionHistory.iterator(); hIter.hasNext();) {
-			AssignmentSubmissionVersion asv = (AssignmentSubmissionVersion) hIter.next();
+		for (AssignmentSubmissionVersion asv : versionHistory) {
 			if (asv.getId().equals(testData.st2a1CurrVersion.getId())) {
 				assertNotNull(asv.getReleasedTime());
 			} else {
@@ -1070,11 +1056,10 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
 			fail("Did not catch a student retrieving versionHistory for another student!");
 		} catch (SecurityException se) {}
 		
-		List history = submissionLogic.getVersionHistoryForSubmission(testData.st2a1Submission);
+		List<AssignmentSubmissionVersion> history = submissionLogic.getVersionHistoryForSubmission(testData.st2a1Submission);
 		assertEquals(history.size(), 3);
 		// check that feedback was restricted b/c none released
-		for (Iterator hIter = history.iterator(); hIter.hasNext();) {
-			AssignmentSubmissionVersion asv = (AssignmentSubmissionVersion) hIter.next();
+		for (AssignmentSubmissionVersion asv : history) {
 			assertTrue(asv.getFeedbackNotes().equals(""));
 			assertTrue(asv.getAnnotatedText().equals(""));
 			assertTrue(asv.getFeedbackAttachSet().isEmpty());
@@ -1096,8 +1081,7 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
 		history = submissionLogic.getVersionHistoryForSubmission(testData.st1a3Submission);
 		assertEquals(history.size(), 2);
 		// check that submission info for curr version was restricted b/c draft
-		for (Iterator hIter = history.iterator(); hIter.hasNext();) {
-			AssignmentSubmissionVersion asv = (AssignmentSubmissionVersion) hIter.next();
+		for (AssignmentSubmissionVersion asv : history) {
 			if (asv.getId().equals(testData.st1a3CurrVersion.getId())) {
 				assertTrue(asv.getSubmittedText().equals(""));
 				assertTrue(asv.getSubmissionAttachSet().isEmpty());

@@ -20,18 +20,12 @@
  **********************************************************************************/
 package org.sakaiproject.assignment2.logic.test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.HashSet;
-
-import junit.framework.Assert;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -180,11 +174,11 @@ public class AssignmentLogicTest extends Assignment2TestBase {
     	newAssign.setUngraded(true);
     	
     	// start with 1 group and 2 attachments
-    	Set<AssignmentGroup> assignGroupSet = new HashSet();
+    	Set<AssignmentGroup> assignGroupSet = new HashSet<AssignmentGroup>();
     	AssignmentGroup group1 = new AssignmentGroup(newAssign, "group1Ref");
     	assignGroupSet.add(group1);
     	
-    	Set<AssignmentAttachment> attachSet = new HashSet();
+    	Set<AssignmentAttachment> attachSet = new HashSet<AssignmentAttachment>();
     	AssignmentAttachment attach1 = new AssignmentAttachment(newAssign, "attach1Ref");
     	attachSet.add(attach1);
     	AssignmentAttachment attach2 = new AssignmentAttachment(newAssign, "attach2Ref");
@@ -235,7 +229,7 @@ public class AssignmentLogicTest extends Assignment2TestBase {
     	assignmentLogic.saveAssignment(newAssign);
     	
     	// double check that it was saved
-    	List assignList = dao.findByProperties(Assignment2.class, new String[] {"title"}, new Object[] {newTitle});
+    	List<Assignment2> assignList = dao.findByProperties(Assignment2.class, new String[] {"title"}, new Object[] {newTitle});
     	assertNotNull(assignList);
     	assertTrue(assignList.size() == 1);
     	newAssign = (Assignment2)assignList.get(0);
@@ -346,8 +340,7 @@ public class AssignmentLogicTest extends Assignment2TestBase {
     	assertNotNull(assignList);
     	assertTrue(assignList.size() == 4);
     	// let's make sure that these are the right assign & gb info was populated
-    	for (Iterator taIter = assignList.iterator(); taIter.hasNext();) {
-    		Assignment2 assign = (Assignment2)taIter.next();
+    	for (Assignment2 assign : assignList) {
     		if (assign.getId().equals(testData.a1Id) || assign.getId().equals(testData.a2Id)) {
     			
     		} else if (assign.getId().equals(testData.a3Id)) {
@@ -370,8 +363,7 @@ public class AssignmentLogicTest extends Assignment2TestBase {
     	assignList = assignmentLogic.getViewableAssignments();
     	assertNotNull(assignList);
     	assertEquals(3, assignList.size());
-    	for (Iterator st1Iter = assignList.iterator(); st1Iter.hasNext();) {
-    		Assignment2 assign = (Assignment2)st1Iter.next();
+    	for (Assignment2 assign : assignList) {
     		if (assign.getId().equals(testData.a1Id) || assign.getId().equals(testData.a2Id)) {
     			
     		} else if (assign.getId().equals(testData.a3Id)) {
@@ -391,8 +383,7 @@ public class AssignmentLogicTest extends Assignment2TestBase {
     	assertNotNull(assignList);
     	assertTrue(assignList.size() == 4);
     	// let's make sure that these are the right assign & gb info was populated
-    	for (Iterator st2Iter = assignList.iterator(); st2Iter.hasNext();) {
-    		Assignment2 assign = (Assignment2)st2Iter.next();
+    	for (Assignment2 assign : assignList) {
     		if (assign.getId().equals(testData.a2Id) || assign.getId().equals(testData.a1Id)) {
     			
     		} else if (assign.getId().equals(testData.a3Id)) {
@@ -416,8 +407,7 @@ public class AssignmentLogicTest extends Assignment2TestBase {
     	assertNotNull(assignList);
     	assertTrue(assignList.size() == 2);
     	// let's make sure that these are the right assign & gb info was populated
-    	for (Iterator st3Iter = assignList.iterator(); st3Iter.hasNext();) {
-    		Assignment2 assign = (Assignment2)st3Iter.next();
+    	for (Assignment2 assign : assignList) {
     		if (assign.getId().equals(testData.a2Id)) {
     			
     		} else if (assign.getId().equals(testData.a3Id)) {
@@ -447,9 +437,8 @@ public class AssignmentLogicTest extends Assignment2TestBase {
     	// let's put assign 4 first
     	assignmentLogic.setAssignmentSortIndexes(new Long[] {testData.a4Id,testData.a1Id,testData.a2Id,testData.a3Id});
     	// double check that they were updated
-    	List allAssigns = dao.findByProperties(Assignment2.class, new String[] {"contextId","removed"}, new Object[] {AssignmentTestDataLoad.CONTEXT_ID, false});
-    	for (Iterator assignIter = allAssigns.iterator(); assignIter.hasNext();) {
-    		Assignment2 assign = (Assignment2)assignIter.next();
+    	List<Assignment2> allAssigns = dao.findByProperties(Assignment2.class, new String[] {"contextId","removed"}, new Object[] {AssignmentTestDataLoad.CONTEXT_ID, false});
+    	for (Assignment2 assign : allAssigns) {
     		if (assign.getId().equals(testData.a1Id)) {
     			assertTrue(assign.getSortIndex() == 1);
     		} else if (assign.getId().equals(testData.a2Id)) {

@@ -126,32 +126,29 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 		if (contextId == null) {
 			throw new IllegalArgumentException("Null contextId passed to getAssignmentDefinitionsInContext");
 		}
-		List<AssignmentDefinition> assignList = new ArrayList();
+		List<AssignmentDefinition> assignList = new ArrayList<AssignmentDefinition>();
 
 		Set<Assignment2> allAssignments = dao.getAssignmentsWithGroupsAndAttachments(contextId);
 		if (allAssignments != null && !allAssignments.isEmpty()) {
-			List allGbItems = gradebookLogic.getAllGradebookItems(contextId);
-			Map<Long, GradebookItem> gbIdItemMap = new HashMap();
+			List<GradebookItem> allGbItems = gradebookLogic.getAllGradebookItems(contextId);
+			Map<Long, GradebookItem> gbIdItemMap = new HashMap<Long, GradebookItem>();
 			if (allGbItems != null) {
-				for (Iterator gbIter = allGbItems.iterator(); gbIter.hasNext();) {
-					GradebookItem item = (GradebookItem) gbIter.next();
+				for (GradebookItem item : allGbItems) {
 					gbIdItemMap.put(item.getGradableObjectId(), item);
 				}
 			}
 
-			Map<String, String> groupIdToTitleMap = new HashMap();
-			Collection groups = externalLogic.getSiteGroups(contextId);
+			Map<String, String> groupIdToTitleMap = new HashMap<String, String>();
+			Collection<Group> groups = externalLogic.getSiteGroups(contextId);
 			if (groups != null) {
-				for (Iterator gIter = groups.iterator(); gIter.hasNext();) {
-					Group group = (Group) gIter.next();
+				for (Group group : groups) {
 					if (group != null) {
 						groupIdToTitleMap.put(group.getId(), group.getTitle());
 					}
 				}
 			}
 
-			for (Iterator assignIter = allAssignments.iterator(); assignIter.hasNext();) {
-				Assignment2 assign = (Assignment2) assignIter.next();
+			for (Assignment2 assign : allAssignments) {
 				if (assign != null) {
 					AssignmentDefinition assignDef = getAssignmentDefinition(assign, gbIdItemMap, groupIdToTitleMap);
 					assignList.add(assignDef);
@@ -162,8 +159,8 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 		return assignList;
 	}
 
-	private AssignmentDefinition getAssignmentDefinition(Assignment2 assignment, Map gbIdItemMap,
-			Map groupIdToTitleMap) {
+	private AssignmentDefinition getAssignmentDefinition(Assignment2 assignment, Map<Long, GradebookItem> gbIdItemMap,
+			Map<String, String> groupIdToTitleMap) {
 		if (assignment == null) {
 			throw new IllegalArgumentException("Null assignment passed to getAssignmentDefinition");
 		}
@@ -195,10 +192,9 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 		}
 
 		// we need to make a list of the attachment references
-		List attachRefList = new ArrayList();
+		List<String> attachRefList = new ArrayList<String>();
 		if (assignment.getAttachmentSet() != null) {
-			for (Iterator attachIter = assignment.getAttachmentSet().iterator(); attachIter.hasNext();) {
-				AssignmentAttachment attach = (AssignmentAttachment) attachIter.next();
+			for (AssignmentAttachment attach : assignment.getAttachmentSet()) {
 				if (attach != null) {
 					attachRefList.add(attach.getAttachmentReference());
 				}
@@ -207,10 +203,9 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 		assignDef.setAttachmentReferences(attachRefList);
 
 		// we need to make a list of the group names
-		List associatedGroupNames = new ArrayList();
+		List<String> associatedGroupNames = new ArrayList<String>();
 		if (assignment.getAssignmentGroupSet() != null && groupIdToTitleMap != null) {
-			for (Iterator agIter = assignment.getAssignmentGroupSet().iterator(); agIter.hasNext();) {
-				AssignmentGroup aGroup = (AssignmentGroup) agIter.next();
+			for (AssignmentGroup aGroup : assignment.getAssignmentGroupSet()) {
 				if (aGroup != null) {
 					String groupName = (String)groupIdToTitleMap.get(aGroup.getGroupId());
 					if (groupName != null) {
@@ -234,10 +229,9 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 				// let's retrieve the existing assignments in this site so we can
 				// compare the assignment titles
 				Set<Assignment2> currAssignments = dao.getAssignmentsWithGroupsAndAttachments(toContext);
-				List currTitles = new ArrayList();
+				List<String> currTitles = new ArrayList<String>();
 				if (currAssignments != null) {
-					for (Iterator aIter = currAssignments.iterator(); aIter.hasNext();) {
-						Assignment2 assign = (Assignment2) aIter.next();
+					for (Assignment2 assign : currAssignments) {
 						if (assign != null) {
 							currTitles.add(assign.getTitle());
 						}
@@ -247,10 +241,9 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 				// now retrieve a list of all of the gb items in this site
 				List<GradebookItem> currGbItems = gradebookLogic.getAllGradebookItems(toContext);
 				// make a map of item title to item
-				Map<String, GradebookItem> gbTitleToItemMap = new HashMap();
+				Map<String, GradebookItem> gbTitleToItemMap = new HashMap<String, GradebookItem>();
 				if (currGbItems != null) {
-					for (Iterator gbIter = currGbItems.iterator(); gbIter.hasNext();) {
-						GradebookItem item = (GradebookItem) gbIter.next();
+					for (GradebookItem item : currGbItems) {
 						if (item != null) {
 							gbTitleToItemMap.put(item.getTitle(), item);
 						}
@@ -258,18 +251,16 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 				}
 
 				// make a map of all of the titles of groups in the new site
-				Collection currGroups = externalLogic.getSiteGroups(toContext);
-				Map<String, Group> groupTitleGroupMap = new HashMap();
-				for (Iterator groupIter = currGroups.iterator(); groupIter.hasNext();) {
-					Group group = (Group) groupIter.next();
+				Collection<Group> currGroups = externalLogic.getSiteGroups(toContext);
+				Map<String, Group> groupTitleGroupMap = new HashMap<String, Group>();
+				for (Group group : currGroups) {
 					if (group != null) {
 						groupTitleGroupMap.put(group.getTitle(), group);
 					}
 				}
 
 				// we will iterate through all of the assignments to be imported
-				for (Iterator aIter = toolDefinition.getAssignments().iterator(); aIter.hasNext();) {
-					AssignmentDefinition assignDef = (AssignmentDefinition) aIter.next();
+				for (AssignmentDefinition assignDef : toolDefinition.getAssignments()) {
 					if (assignDef != null) {
 						Assignment2 newAssignment = new Assignment2();
 						newAssignment.setAcceptUntilTime(assignDef.getAcceptUntilDate());
@@ -317,7 +308,7 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 									// be careful b/c multiple assignments may be associated with
 									// the same gb item. we don't want to try to create it more than once
 									String gbItemTitle = getNewTitle(assignDef.getAssociatedGbItemName(), 
-											new ArrayList(gbTitleToItemMap.keySet()));
+											new ArrayList<String>(gbTitleToItemMap.keySet()));
 									associatedGbItemId = gradebookLogic.createGbItemInGradebook(toContext, 
 											gbItemTitle, assignDef.getAssociatedGbItemPtsPossible(), 
 											assignDef.getAssociatedGbItemDueDate(), false, false);
@@ -351,9 +342,8 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 						if (assignDef.getAttachmentReferences() != null && 
 								!assignDef.getAttachmentReferences().isEmpty()) {
 							
-							Set<AssignmentAttachment> attachSet = new HashSet();
-							for (Iterator attachIter = assignDef.getAttachmentReferences().iterator(); attachIter.hasNext();) {
-								String attRef = (String) attachIter.next();
+							Set<AssignmentAttachment> attachSet = new HashSet<AssignmentAttachment>();
+							for (String attRef : assignDef.getAttachmentReferences()) {
 								String newAttId = copyAttachment(attRef, toContext);
 								AssignmentAttachment newAA = new AssignmentAttachment(newAssignment, newAttId);
 								attachSet.add(newAA);
@@ -367,12 +357,11 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 								!assignDef.getGroupRestrictionGroupTitles().isEmpty() &&
 								groupTitleGroupMap != null) {
 
-							Set assignGroupSet = new HashSet();
+							Set<AssignmentGroup> assignGroupSet = new HashSet<AssignmentGroup>();
 							// now iterate through the groups from the old site
 							// to see if a group with that name exists in the
 							// new site
-							for (Iterator agIter = assignDef.getGroupRestrictionGroupTitles().iterator(); agIter.hasNext();) {
-								String groupTitle = (String) agIter.next();
+							for (String groupTitle : assignDef.getGroupRestrictionGroupTitles()) {
 								Group group = groupTitleGroupMap.get(groupTitle);
 								if (group != null) {
 									// the group exists, so create AssignmentGroup
@@ -424,10 +413,10 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 	
 	public String getAssignmentToolDefinitionXmlFromOriginalAssignmentsTool(String fromContext, String toContext) {
 		
-		List<AssignmentDefinition> assignmentDefs = new ArrayList();	
-		Collection siteGroups = externalLogic.getSiteGroups(fromContext);
+		List<AssignmentDefinition> assignmentDefs = new ArrayList<AssignmentDefinition>();	
+		Collection<Group> siteGroups = externalLogic.getSiteGroups(fromContext);
 		
-		Iterator origAssignIter = assignmentService.getAssignmentsForContext(fromContext);
+		Iterator<Assignment> origAssignIter = assignmentService.getAssignmentsForContext(fromContext);
 		while (origAssignIter.hasNext()) {
 			Assignment oAssignment = (Assignment)origAssignIter.next();
 			AssignmentContent oContent = oAssignment.getContent();
@@ -493,11 +482,10 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 			newAssnDef.setNumSubmissionsAllowed(1);
 			
 			// handle attachments
-			List oAttachments = oContent.getAttachments();
-			List attachRefList = new ArrayList();
+			List<Reference> oAttachments = oContent.getAttachments();
+			List<String> attachRefList = new ArrayList<String>();
 			if (oAttachments != null && !oAttachments.isEmpty()) {
-				for (Iterator attachIter = oAttachments.iterator(); attachIter.hasNext();) {
-					Reference attach = (Reference) attachIter.next();
+				for (Reference attach : oAttachments) {
 					if (attach != null) {
 						attachRefList.add(attach.getId());
 					}
@@ -506,13 +494,12 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 			newAssnDef.setAttachmentReferences(attachRefList);
 			
 			// handle any group restrictions
-			List groupTitleList = new ArrayList();
+			List<String> groupTitleList = new ArrayList<String>();
 			if (oAssignment.getAccess() == Assignment.AssignmentAccess.GROUPED &&
 					oAssignment.getGroups() != null && !oAssignment.getGroups().isEmpty()) {
 				if (siteGroups != null) {
 					// iterate through this assignment's groups and find the name
-					for (Iterator gIter = siteGroups.iterator(); gIter.hasNext();) {
-						Group group = (Group)gIter.next();
+					for (Group group : siteGroups) {
 						if (group != null) {
 							if (oAssignment.getGroups().contains(group.getReference())) {
 								groupTitleList.add(group.getTitle());
@@ -547,7 +534,7 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 		return VersionedExternalizable.toXml(assignmentToolDef);
 	}
 	
-	private String getNewTitle(String originalTitle, List existingTitles) {
+	private String getNewTitle(String originalTitle, List<String> existingTitles) {
 		int increment = 1;
 		String newTitle = originalTitle + "_" + increment;
 		while (existingTitles.contains(newTitle)) {
