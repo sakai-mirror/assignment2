@@ -47,7 +47,6 @@
       <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
       <property name="externalGradebookLogic" ref="org.sakaiproject.assignment2.logic.ExternalGradebookLogic" />
       <property name="permissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentPermissionLogic" />
-			<property name="userDirectoryService" ref="org.sakaiproject.user.api.UserDirectoryService" />
    </bean>
    
    <bean id="org.sakaiproject.assignment2.logic.ImportExportLogic" class="org.sakaiproject.assignment2.logic.impl.ImportExportLogicImpl" init-method="init">
