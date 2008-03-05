@@ -21,20 +21,16 @@
 package org.sakaiproject.assignment2.logic.test;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-
-import junit.framework.Assert;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment2.test.AssignmentTestDataLoad;
+import org.sakaiproject.assignment2.logic.GradebookItem;
 import org.sakaiproject.assignment2.model.Assignment2;
+import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 
 import org.sakaiproject.section.api.coursemanagement.CourseSection;
@@ -73,7 +69,7 @@ public class ExternalGradebookLogicTest extends Assignment2TestBase {
         integrationSupport.addSiteMembership(AssignmentTestDataLoad.STUDENT3_UID, AssignmentTestDataLoad.CONTEXT_ID, Role.STUDENT);
         
         // create some sections
-        List sectionCategories = sectionAwareness.getSectionCategories(AssignmentTestDataLoad.CONTEXT_ID);
+        List<String> sectionCategories = sectionAwareness.getSectionCategories(AssignmentTestDataLoad.CONTEXT_ID);
         CourseSection section1 = integrationSupport.createSection(site.getUuid(), AssignmentTestDataLoad.GROUP1_NAME,
 				(String)sectionCategories.get(0),
 				new Integer(40), null, null, null, true, false, true,  false, false, false, false);
@@ -164,22 +160,22 @@ public class ExternalGradebookLogicTest extends Assignment2TestBase {
     public void testGetViewableAssignmentsWithGbData() {
     	// try a null contextId
     	try {
-    		gradebookLogic.getViewableAssignmentsWithGbData(new ArrayList(), null);
+    		gradebookLogic.getViewableAssignmentsWithGbData(new ArrayList<Assignment2>(), null);
     		fail("Did not catch null contextId passed to getViewableAssignmentsWithGbData");
     	} catch (IllegalArgumentException iae) {}
     	
     	// make sure an empty list is returned if we pass a null list
-    	List viewableAssigns = gradebookLogic.getViewableAssignmentsWithGbData(null, AssignmentTestDataLoad.CONTEXT_ID);
+    	List<Assignment2> viewableAssigns = gradebookLogic.getViewableAssignmentsWithGbData(null, AssignmentTestDataLoad.CONTEXT_ID);
     	assertTrue(viewableAssigns.isEmpty());
     	
     	// now try an empty list
-    	viewableAssigns = gradebookLogic.getViewableAssignmentsWithGbData(new ArrayList(), AssignmentTestDataLoad.CONTEXT_ID);
+    	viewableAssigns = gradebookLogic.getViewableAssignmentsWithGbData(new ArrayList<Assignment2>(), AssignmentTestDataLoad.CONTEXT_ID);
     	assertTrue(viewableAssigns.isEmpty());
     	
     	// A1 & A2 - ungraded
     	// A3 & A4 - graded
     	
-    	List assignList = new ArrayList();
+    	List<Assignment2> assignList = new ArrayList<Assignment2>();
     	assignList.add(testData.a1);
     	assignList.add(testData.a2);
     	
@@ -188,7 +184,7 @@ public class ExternalGradebookLogicTest extends Assignment2TestBase {
     	assertTrue(viewableAssigns.isEmpty());
     	
     	// let's pass graded items
-    	assignList = new ArrayList();
+    	assignList = new ArrayList<Assignment2>();
     	assignList.add(testData.a3);
     	assignList.add(testData.a4);
     	
@@ -198,8 +194,7 @@ public class ExternalGradebookLogicTest extends Assignment2TestBase {
     	assertEquals(2, viewableAssigns.size());
     	
     	// make sure the gb data is populated
-    	for (Iterator<Assignment2> aIter = viewableAssigns.iterator(); aIter.hasNext();) {
-    		Assignment2 assign = aIter.next();
+    	for (Assignment2 assign : viewableAssigns) {
     		if (assign.getId().equals(testData.a3Id)) {
     			assertTrue(assign.getPointsPossible().equals(GB_ITEM1_PTS));
     			assertNull(assign.getDueDate());
@@ -217,8 +212,7 @@ public class ExternalGradebookLogicTest extends Assignment2TestBase {
     	assertEquals(2, viewableAssigns.size());
     	
     	// make sure the gb data is populated
-    	for (Iterator<Assignment2> aIter = viewableAssigns.iterator(); aIter.hasNext();) {
-    		Assignment2 assign = aIter.next();
+    	for (Assignment2 assign : viewableAssigns) {
     		if (assign.getId().equals(testData.a3Id)) {
     			assertTrue(assign.getPointsPossible().equals(GB_ITEM1_PTS));
     			assertNull(assign.getDueDate());
@@ -285,7 +279,7 @@ public class ExternalGradebookLogicTest extends Assignment2TestBase {
         
         // start out as the instructor
         authn.setAuthnContext(AssignmentTestDataLoad.INSTRUCTOR_UID);
-        Map goIdTitleMap = gradebookLogic.getViewableGradableObjectIdTitleMap(AssignmentTestDataLoad.CONTEXT_ID);
+        Map<Long, String> goIdTitleMap = gradebookLogic.getViewableGradableObjectIdTitleMap(AssignmentTestDataLoad.CONTEXT_ID);
         assertEquals(3, goIdTitleMap.size());
         assertTrue(goIdTitleMap.get(newItemId).equals(itemName));
         assertTrue(goIdTitleMap.get(gbItem1Id).equals(GB_ITEM1_NAME));
@@ -325,7 +319,7 @@ public class ExternalGradebookLogicTest extends Assignment2TestBase {
     	} catch (SecurityException se) {}
     	
     	// should return all gb items for instructor and ta
-    	List allItems = gradebookLogic.getAllGradebookItems(AssignmentTestDataLoad.CONTEXT_ID);
+    	List<GradebookItem> allItems = gradebookLogic.getAllGradebookItems(AssignmentTestDataLoad.CONTEXT_ID);
     	assertEquals(2, allItems.size());
     	
     	// switch to TA
@@ -352,7 +346,7 @@ public class ExternalGradebookLogicTest extends Assignment2TestBase {
     	authn.setAuthnContext(AssignmentTestDataLoad.INSTRUCTOR_UID);
     	
     	// try an invalid context
-    	Map groupIdTitleMap = gradebookLogic.getViewableGroupIdToTitleMap(AssignmentTestDataLoad.BAD_CONTEXT);
+    	Map<String, String> groupIdTitleMap = gradebookLogic.getViewableGroupIdToTitleMap(AssignmentTestDataLoad.BAD_CONTEXT);
     	assertTrue(groupIdTitleMap.isEmpty());
     	
     	groupIdTitleMap = gradebookLogic.getViewableGroupIdToTitleMap(AssignmentTestDataLoad.CONTEXT_ID);
@@ -397,7 +391,7 @@ public class ExternalGradebookLogicTest extends Assignment2TestBase {
     	authn.setAuthnContext(AssignmentTestDataLoad.INSTRUCTOR_UID);
     	
     	// what if gb item doesn't exist?
-    	Map studentFunctionMap = gradebookLogic.getViewableStudentsForGradedItemMap(AssignmentTestDataLoad.CONTEXT_ID, new Long(12345));
+    	Map<String, String> studentFunctionMap = gradebookLogic.getViewableStudentsForGradedItemMap(AssignmentTestDataLoad.CONTEXT_ID, new Long(12345));
     	assertTrue(studentFunctionMap.isEmpty());
     	
     	// instructor should be able to view all students
@@ -602,5 +596,170 @@ public class ExternalGradebookLogicTest extends Assignment2TestBase {
     			AssignmentTestDataLoad.CONTEXT_ID, AssignmentTestDataLoad.STUDENT2_UID, gbItem1Id));
     	assertNull(gradebookLogic.getGradeViewPermissionForCurrentUserForStudentForItem(
     			AssignmentTestDataLoad.CONTEXT_ID, AssignmentTestDataLoad.STUDENT3_UID, gbItem1Id));
+    }
+    
+    public void testGetStudentGradeForItem() {
+    	// try some null parameters
+    	try {
+    		gradebookLogic.getStudentGradeForItem(null, AssignmentTestDataLoad.STUDENT1_UID, gbItem1Id);
+    		fail("did not catch null contextId passed to getStudentGradeForItem");
+    	} catch (IllegalArgumentException iae) {}
+    	
+    	try {
+    		gradebookLogic.getStudentGradeForItem(AssignmentTestDataLoad.CONTEXT_ID, null, gbItem1Id);
+    		fail("did not catch null studentId passed to getStudentGradeForItem");
+    	} catch (IllegalArgumentException iae) {}
+    	
+    	try {
+    		gradebookLogic.getStudentGradeForItem(AssignmentTestDataLoad.CONTEXT_ID, AssignmentTestDataLoad.STUDENT1_UID, null);
+    		fail("did not catch null itemId passed to getStudentGradeForItem");
+    	} catch (IllegalArgumentException iae) {}
+    	
+    	// start out as instructor
+    	authn.setAuthnContext(AssignmentTestDataLoad.INSTRUCTOR_UID);
+    	// try a bad context first
+    	String grade = gradebookLogic.getStudentGradeForItem(AssignmentTestDataLoad.BAD_CONTEXT, AssignmentTestDataLoad.STUDENT1_UID, gbItem1Id);
+    	assertNull(grade);
+    	
+    	// try a gb item that doesn't exist
+    	grade = gradebookLogic.getStudentGradeForItem(AssignmentTestDataLoad.CONTEXT_ID, AssignmentTestDataLoad.STUDENT1_UID, new Long(12345));
+    	assertNull(grade);
+    	
+    	// try a real one
+    	grade = gradebookLogic.getStudentGradeForItem(AssignmentTestDataLoad.CONTEXT_ID, AssignmentTestDataLoad.STUDENT1_UID, gbItem1Id);
+    	assertEquals(st1a3Grade.toString(), grade);
+    	
+    	// switch to the ta
+    	authn.setAuthnContext(AssignmentTestDataLoad.TA_UID);
+    	// should only be able to see student1's grade
+    	grade = gradebookLogic.getStudentGradeForItem(AssignmentTestDataLoad.CONTEXT_ID, AssignmentTestDataLoad.STUDENT1_UID, gbItem1Id);
+    	assertEquals(st1a3Grade.toString(), grade);
+    	// shouldn't see st2a4grade
+    	try {
+    		grade = gradebookLogic.getStudentGradeForItem(AssignmentTestDataLoad.CONTEXT_ID, AssignmentTestDataLoad.STUDENT2_UID, gbItem2Id);
+    		fail("did not catch ta trying to get grade for student without auth");
+    	} catch (SecurityException se) {}
+    	
+    	// switch to student
+    	// should only be able to retrieve their own
+    	authn.setAuthnContext(AssignmentTestDataLoad.STUDENT1_UID);
+    	grade = gradebookLogic.getStudentGradeForItem(AssignmentTestDataLoad.CONTEXT_ID, AssignmentTestDataLoad.STUDENT1_UID, gbItem1Id);
+    	// this gb item isn't released yet, so student should get null grade back
+    	assertNull(grade);
+    	
+    	try {
+    		grade = gradebookLogic.getStudentGradeForItem(AssignmentTestDataLoad.CONTEXT_ID, AssignmentTestDataLoad.STUDENT2_UID, gbItem2Id);
+    		fail("did not catch student trying to get grade for another student without auth");
+    	} catch (SecurityException se) {}
+    }
+    
+    public void testGetStudentGradeCommentForItem() {
+    	// try some null parameters
+    	try {
+    		gradebookLogic.getStudentGradeCommentForItem(null, AssignmentTestDataLoad.STUDENT1_UID, gbItem1Id);
+    		fail("did not catch null contextId passed to getStudentGradeCommentForItem");
+    	} catch (IllegalArgumentException iae) {}
+    	
+    	try {
+    		gradebookLogic.getStudentGradeCommentForItem(AssignmentTestDataLoad.CONTEXT_ID, null, gbItem1Id);
+    		fail("did not catch null studentId passed to getStudentGradeCommentForItem");
+    	} catch (IllegalArgumentException iae) {}
+    	
+    	try {
+    		gradebookLogic.getStudentGradeCommentForItem(AssignmentTestDataLoad.CONTEXT_ID, AssignmentTestDataLoad.STUDENT1_UID, null);
+    		fail("did not catch null itemId passed to getStudentGradeCommentForItem");
+    	} catch (IllegalArgumentException iae) {}
+    	
+    	// start out as instructor
+    	authn.setAuthnContext(AssignmentTestDataLoad.INSTRUCTOR_UID);
+    	// try a bad context first
+    	String comment = gradebookLogic.getStudentGradeCommentForItem(AssignmentTestDataLoad.BAD_CONTEXT, AssignmentTestDataLoad.STUDENT1_UID, gbItem1Id);
+    	assertNull(comment);
+    	
+    	// try a gb item that doesn't exist
+    	comment = gradebookLogic.getStudentGradeCommentForItem(AssignmentTestDataLoad.CONTEXT_ID, AssignmentTestDataLoad.STUDENT1_UID, new Long(12345));
+    	assertNull(comment);
+    	
+    	// try a real one
+    	comment = gradebookLogic.getStudentGradeCommentForItem(AssignmentTestDataLoad.CONTEXT_ID, AssignmentTestDataLoad.STUDENT1_UID, gbItem1Id);
+    	assertEquals(st1a3Comment.toString(), comment);
+    	
+    	// switch to the ta
+    	authn.setAuthnContext(AssignmentTestDataLoad.TA_UID);
+    	// the gb does not have its own authz checks for retrieving comments, so should be able to retrieve any student
+    	comment = gradebookLogic.getStudentGradeCommentForItem(AssignmentTestDataLoad.CONTEXT_ID, AssignmentTestDataLoad.STUDENT1_UID, gbItem1Id);
+    	assertEquals(st1a3Comment, comment);
+
+    	comment = gradebookLogic.getStudentGradeCommentForItem(AssignmentTestDataLoad.CONTEXT_ID, AssignmentTestDataLoad.STUDENT2_UID, gbItem2Id);
+    	assertEquals(st2a4Comment, comment);
+    	
+    	// switch to student
+    	authn.setAuthnContext(AssignmentTestDataLoad.STUDENT1_UID);
+    	// the gb does not have its own authz checks for retrieving comments, so should be able to retrieve any student
+    	comment = gradebookLogic.getStudentGradeCommentForItem(AssignmentTestDataLoad.CONTEXT_ID, AssignmentTestDataLoad.STUDENT1_UID, gbItem1Id);
+    	assertEquals(st1a3Comment, comment);
+
+    	comment = gradebookLogic.getStudentGradeCommentForItem(AssignmentTestDataLoad.CONTEXT_ID, AssignmentTestDataLoad.STUDENT2_UID, gbItem2Id);
+    	assertEquals(st2a4Comment, comment);
+    }
+    
+    public void testPopulateGradesForSubmissions() {
+    	// try some null parameters
+    	try {
+    		gradebookLogic.populateGradesForSubmissions(null, new ArrayList<AssignmentSubmission>(), testData.a1);
+    		fail("did not catch null contextId passed to populateGradesForSubmissions");
+    	} catch (IllegalArgumentException iae) {}
+    	
+    	try {
+    		gradebookLogic.populateGradesForSubmissions(AssignmentTestDataLoad.CONTEXT_ID, new ArrayList<AssignmentSubmission>(), null);
+    		fail("did not catch null assignment passed to populateGradesForSubmissions");
+    	} catch (IllegalArgumentException iae) {}
+    	
+    	// try passing a null list
+    	// should do nothing
+    	gradebookLogic.populateGradesForSubmissions(AssignmentTestDataLoad.CONTEXT_ID, null, testData.a3);
+    	
+    	List<AssignmentSubmission> subList = new ArrayList<AssignmentSubmission>();
+    	subList.add(testData.st1a3Submission);
+    	subList.add(testData.st2a3Submission);
+    	
+    	// switch to instructor
+    	authn.setAuthnContext(AssignmentTestDataLoad.INSTRUCTOR_UID);
+    	gradebookLogic.populateGradesForSubmissions(AssignmentTestDataLoad.CONTEXT_ID, subList, testData.a3);
+    	// verify grades were populated
+    	AssignmentSubmission sub1 = (AssignmentSubmission)subList.get(0);
+    	assertFalse(sub1.isGradebookGradeReleased());
+    	assertEquals(st1a3Grade.toString(), sub1.getGradebookGrade());
+    	assertEquals(st1a3Comment, sub1.getGradebookComment());
+    	
+    	AssignmentSubmission sub2 = (AssignmentSubmission)subList.get(1);
+    	assertFalse(sub2.isGradebookGradeReleased());
+    	assertNull(sub2.getGradebookGrade());
+    	assertNull(sub2.getGradebookComment());
+    	
+    	// switch to ta
+    	authn.setAuthnContext(AssignmentTestDataLoad.TA_UID);
+    	// should get SecurityException b/c st2 is in list
+    	try {
+    		gradebookLogic.populateGradesForSubmissions(AssignmentTestDataLoad.CONTEXT_ID, subList, testData.a3);
+    		fail("did not catch ta trying to access student grade info w/o authorization");
+    	} catch (SecurityException se) {}
+    	
+    	// let's only include auth students in list
+    	subList = new ArrayList<AssignmentSubmission>();
+    	subList.add(testData.st1a3Submission);
+    	gradebookLogic.populateGradesForSubmissions(AssignmentTestDataLoad.CONTEXT_ID, subList, testData.a3);
+    	// verify grades were populated
+    	sub1 = (AssignmentSubmission)subList.get(0);
+    	assertFalse(sub1.isGradebookGradeReleased());
+    	assertEquals(st1a3Grade.toString(), sub1.getGradebookGrade());
+    	assertEquals(st1a3Comment, sub1.getGradebookComment());
+    	
+    	// now try student - shouldn't have auth
+    	authn.setAuthnContext(AssignmentTestDataLoad.STUDENT1_UID);
+    	try {
+    		gradebookLogic.populateGradesForSubmissions(AssignmentTestDataLoad.CONTEXT_ID, subList, testData.a3);
+    		fail("did not catch student trying to retrieve grade data via populateGradesForSubmissions");
+    	} catch (SecurityException se) {}
     }
 }

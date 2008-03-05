@@ -177,6 +177,8 @@ public interface ExternalGradebookLogic {
 	 * @param contextId
 	 * @param submissionList
 	 * @param assignment
+	 * @throws SecurityException if the current user is not authorized to access grade information
+	 * for any of the students in the submissionList
 	 */
 	public void populateGradesForSubmissions(String contextId, List<AssignmentSubmission> submissionList, Assignment2 assignment);
 	
