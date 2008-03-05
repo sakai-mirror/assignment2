@@ -21,14 +21,9 @@
 
 package org.sakaiproject.assignment2.logic.impl;
 
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.ArrayList;
 import java.util.Set;
 
@@ -49,9 +44,7 @@ import org.sakaiproject.assignment2.dao.AssignmentDao;
 import org.sakaiproject.assignment2.exception.AnnouncementPermissionException;
 import org.sakaiproject.assignment2.exception.ConflictingAssignmentNameException;
 import org.sakaiproject.assignment2.exception.NoGradebookItemForGradedAssignmentException;
-import org.sakaiproject.genericdao.api.finders.ByPropsFinder;
 import org.sakaiproject.service.gradebook.shared.StaleObjectModificationException;
-import org.sakaiproject.assignment2.logic.utils.ComparatorsUtils;
 import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException;
 
 
@@ -199,11 +192,11 @@ public class AssignmentLogicImpl implements AssignmentLogic{
         	assignment.setCreateTime(new Date());
         	assignment.setCreator(currentUserId);
         	
-        	Set<AssignmentAttachment> attachSet = new HashSet();
+        	Set<AssignmentAttachment> attachSet = new HashSet<AssignmentAttachment>();
         	if (assignment.getAttachmentSet() != null) {
         		attachSet = assignment.getAttachmentSet();
         	}
-        	Set<AssignmentGroup> groupSet = new HashSet();
+        	Set<AssignmentGroup> groupSet = new HashSet<AssignmentGroup>();
         	if (assignment.getAssignmentGroupSet() != null) {
         		groupSet = assignment.getAssignmentGroupSet();
         	}
@@ -211,7 +204,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
         	// make sure the assignment has been set for the attachments and groups
         	populateAssignmentForAttachmentAndGroupSets(attachSet, groupSet, assignment);
         	
-        	Set<Assignment2> assignSet = new HashSet();
+        	Set<Assignment2> assignSet = new HashSet<Assignment2>();
         	assignSet.add(assignment);
         	
         	dao.saveMixedSet(new Set[] {assignSet, attachSet, groupSet});
@@ -233,11 +226,11 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 			Set<AssignmentGroup> groupsToDelete = identifyGroupsToDelete(existingAssignment, assignment);
 			
 			try {
-	        	Set<AssignmentAttachment> attachSet = new HashSet();
+	        	Set<AssignmentAttachment> attachSet = new HashSet<AssignmentAttachment>();
 	        	if (assignment.getAttachmentSet() != null) {
 	        		attachSet = assignment.getAttachmentSet();
 	        	}
-	        	Set<AssignmentGroup> groupSet = new HashSet();
+	        	Set<AssignmentGroup> groupSet = new HashSet<AssignmentGroup>();
 	        	if (assignment.getAssignmentGroupSet() != null) {
 	        		groupSet = assignment.getAssignmentGroupSet();
 	        	}
@@ -245,7 +238,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 	        	// make sure the assignment has been set for the attachments and groups
 	        	populateAssignmentForAttachmentAndGroupSets(attachSet, groupSet, assignment);
 	        	
-	        	Set<Assignment2> assignSet = new HashSet();
+	        	Set<Assignment2> assignSet = new HashSet<Assignment2>();
 	        	assignSet.add(assignment);
 	        	
 	        	dao.saveMixedSet(new Set[] {assignSet, attachSet, groupSet});
@@ -318,7 +311,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 	 */
 	public List<Assignment2> getViewableAssignments()
 	{   
-		List<Assignment2> viewableAssignments = new ArrayList();
+		List<Assignment2> viewableAssignments = new ArrayList<Assignment2>();
 		String contextId = externalLogic.getCurrentContextId();
 		String userId = externalLogic.getCurrentUserId();
 
@@ -326,7 +319,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 
 		if (allAssignments != null && !allAssignments.isEmpty()) {
 
-			List<Assignment2> gradedAssignments = new ArrayList();
+			List<Assignment2> gradedAssignments = new ArrayList<Assignment2>();
 
 			// users may view ungraded items if:
 			//  a) it is not restricted to groups
@@ -338,9 +331,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 			boolean isUserAbleToEdit = permissionLogic.isCurrentUserAbleToEditAssignments(contextId);
 			boolean isUserAStudent = gradebookLogic.isCurrentUserAStudentInGb(contextId);
 
-			for (Iterator asnIter = allAssignments.iterator(); asnIter.hasNext();) {
-				Assignment2 assignment = (Assignment2) asnIter.next();
-
+			for (Assignment2 assignment : allAssignments) {
 				if (!assignment.isDraft() || isUserAbleToEdit) {
 					// students may not view if not open
 					if (!isUserAStudent || (isUserAStudent && assignment.getOpenTime().before(new Date()))) 
@@ -359,11 +350,10 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 				// now, we need to filter the assignments that are associated with
 				// the gradebook according to grader permissions and populate the
 				// gradebook data
-				List viewableGbAssignments = gradebookLogic.getViewableAssignmentsWithGbData(gradedAssignments, externalLogic.getCurrentContextId());
+				List<Assignment2> viewableGbAssignments = gradebookLogic.getViewableAssignmentsWithGbData(gradedAssignments, externalLogic.getCurrentContextId());
 				if (viewableGbAssignments != null) {
 
-					for (Iterator gradedIter = viewableGbAssignments.iterator(); gradedIter.hasNext();) {
-						Assignment2 assignment = (Assignment2) gradedIter.next();
+					for (Assignment2 assignment : viewableGbAssignments) {
 						
 						boolean restrictedToGroups = assignment.getAssignmentGroupSet() != null
 						&& !assignment.getAssignmentGroupSet().isEmpty();
@@ -405,7 +395,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 			//Assume array of longs is in correct order now
 			//so that the index of the array is the new 
 			//sort index
-			Set<Assignment2> assignSet = new HashSet();
+			Set<Assignment2> assignSet = new HashSet<Assignment2>();
 			for (int i=0; i < assignmentIds.length; i++){
 				//get Assignment
 	    		Assignment2 assignment = getAssignmentById(assignmentIds[i]);
@@ -476,16 +466,14 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 	
 	private void populateAssignmentForAttachmentAndGroupSets(Set<AssignmentAttachment> attachSet, Set<AssignmentGroup> groupSet, Assignment2 assign) {
 		if (attachSet != null && !attachSet.isEmpty()) {
-			for (Iterator attachIter = attachSet.iterator(); attachIter.hasNext();) {
-				AssignmentAttachment attach = (AssignmentAttachment) attachIter.next();
+			for (AssignmentAttachment attach : attachSet) {
 				if (attach != null) {
 					attach.setAssignment(assign);
 				}
 			}
 		}
 		if (groupSet != null && !groupSet.isEmpty()) {
-			for (Iterator groupIter = groupSet.iterator(); groupIter.hasNext();) {
-				AssignmentGroup group = (AssignmentGroup) groupIter.next();
+			for (AssignmentGroup group : groupSet) {
 				if (group != null) {
 					group.setAssignment(assign);
 				}
@@ -493,12 +481,11 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 		}
 	}
 	
-	private Set identifyAttachmentsToDelete(Assignment2 existingAssign, Assignment2 updatedAssign) {
-		Set attachToRemove = new HashSet();
+	private Set<AssignmentAttachment> identifyAttachmentsToDelete(Assignment2 existingAssign, Assignment2 updatedAssign) {
+		Set<AssignmentAttachment> attachToRemove = new HashSet<AssignmentAttachment>();
 		
 		if (updatedAssign != null && existingAssign != null && existingAssign.getAttachmentSet() != null) {
-			for (Iterator existingIter = existingAssign.getAttachmentSet().iterator(); existingIter.hasNext();) {
-				AssignmentAttachment attach = (AssignmentAttachment) existingIter.next();
+			for (AssignmentAttachment attach : existingAssign.getAttachmentSet()) {
 				if (attach != null) {
 					if (updatedAssign.getAttachmentSet() == null ||
 							!updatedAssign.getAttachmentSet().contains(attach)) {
@@ -512,12 +499,11 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 		return attachToRemove;
 	}
 	
-	private Set identifyGroupsToDelete(Assignment2 existingAssign, Assignment2 updatedAssign) {
-		Set groupsToRemove = new HashSet();
+	private Set<AssignmentGroup> identifyGroupsToDelete(Assignment2 existingAssign, Assignment2 updatedAssign) {
+		Set<AssignmentGroup> groupsToRemove = new HashSet<AssignmentGroup>();
 		
 		if (updatedAssign != null && existingAssign != null && existingAssign.getAssignmentGroupSet() != null) {
-			for (Iterator existingIter = existingAssign.getAssignmentGroupSet().iterator(); existingIter.hasNext();) {
-				AssignmentGroup attach = (AssignmentGroup) existingIter.next();
+			for (AssignmentGroup attach : existingAssign.getAssignmentGroupSet()) {
 				if (attach != null) {
 					if (updatedAssign.getAssignmentGroupSet() == null ||
 							!updatedAssign.getAssignmentGroupSet().contains(attach)) {

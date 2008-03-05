@@ -21,18 +21,8 @@
 
 package org.sakaiproject.assignment2.test;
 
-import java.io.Serializable;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.sakaiproject.assignment2.dao.AssignmentDao;
@@ -158,15 +148,15 @@ public class AssignmentTestDataLoad {
 		a3Id = a3.getId();
 		a4Id = a4.getId();
 		
-		Set<AssignmentAttachment> attachFora1 = new HashSet();
-		Set<AssignmentAttachment> attachFora2 = new HashSet();
-		Set<AssignmentAttachment> attachFora3 = new HashSet();
-		Set<AssignmentAttachment> attachFora4 = new HashSet();
+		Set<AssignmentAttachment> attachFora1 = new HashSet<AssignmentAttachment>();
+		Set<AssignmentAttachment> attachFora2 = new HashSet<AssignmentAttachment>();
+		Set<AssignmentAttachment> attachFora3 = new HashSet<AssignmentAttachment>();
+		Set<AssignmentAttachment> attachFora4 = new HashSet<AssignmentAttachment>();
 		
-		Set<AssignmentGroup> groupsFora1 = new HashSet();
-		Set<AssignmentGroup> groupsFora2 = new HashSet();
-		Set<AssignmentGroup> groupsFora3 = new HashSet();
-		Set<AssignmentGroup> groupsFora4 = new HashSet();
+		Set<AssignmentGroup> groupsFora1 = new HashSet<AssignmentGroup>();
+		Set<AssignmentGroup> groupsFora2 = new HashSet<AssignmentGroup>();
+		Set<AssignmentGroup> groupsFora3 = new HashSet<AssignmentGroup>();
+		Set<AssignmentGroup> groupsFora4 = new HashSet<AssignmentGroup>();
 		
 		// add attachments
 		// to Assignment 1
@@ -182,7 +172,7 @@ public class AssignmentTestDataLoad {
 
 		groupsFora4.add(new AssignmentGroup(a4, GROUP3_NAME));
 		
-		Set assignSet = new HashSet();
+		Set<Assignment2> assignSet = new HashSet<Assignment2>();
 		assignSet.add(a1);
 		assignSet.add(a2);
 		assignSet.add(a3);
@@ -196,8 +186,8 @@ public class AssignmentTestDataLoad {
 		a3Id = a3.getId();
 		a4Id = a4.getId();
 		
-		Set<FeedbackAttachment> feedbackAttachSet = new HashSet();
-		Set<SubmissionAttachment> subAttachSet = new HashSet();
+		Set<FeedbackAttachment> feedbackAttachSet = new HashSet<FeedbackAttachment>();
+		Set<SubmissionAttachment> subAttachSet = new HashSet<SubmissionAttachment>();
 
 		// now create submissions
 		// start with a1

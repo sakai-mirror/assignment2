@@ -23,7 +23,6 @@ package org.sakaiproject.assignment2.logic.test.stubs;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -37,6 +36,7 @@ import org.sakaiproject.section.api.coursemanagement.CourseSection;
 import org.sakaiproject.section.api.coursemanagement.ParticipationRecord;
 import org.sakaiproject.tool.gradebook.facades.Authn;
 import org.sakaiproject.section.api.facade.Role;
+import org.sakaiproject.site.api.Group;
 
 
 
@@ -125,7 +125,7 @@ public class ExternalLogicStub implements ExternalLogic {
      * Return a Collection of all Groups
      * @return a collection
      */
-    public Collection getSiteGroups(String contextId) {
+    public Collection<Group> getSiteGroups(String contextId) {
     	return null; // used for ui
     }
     
@@ -133,7 +133,7 @@ public class ExternalLogicStub implements ExternalLogic {
      * 
      * @return a collection of the groups that the given user is a member of
      */
-    public Collection getUserMemberships(String userId, String contextId) {
+    public Collection<Group> getUserMemberships(String userId, String contextId) {
     	return null; // used for ui
     }
     
@@ -143,13 +143,11 @@ public class ExternalLogicStub implements ExternalLogic {
      * a member of
      */
     public List<String> getUserMembershipGroupIdList(String userId, String contextId) {
-    	List groupIdList = new ArrayList();
-    	List sectionList = sectionAwareness.getSections(AssignmentTestDataLoad.CONTEXT_ID);
+    	List<String> groupIdList = new ArrayList<String>();
+    	List<CourseSection> sectionList = sectionAwareness.getSections(AssignmentTestDataLoad.CONTEXT_ID);
     	if (sectionList != null && !sectionList.isEmpty()) {
-    		for (Iterator sIter = sectionList.iterator(); sIter.hasNext();) {
-    			CourseSection section = (CourseSection) sIter.next();
+    		for (CourseSection section : sectionList) {
     			if (section != null) {
-    				List sectionMembers = sectionAwareness.getSectionMembers(section.getUuid());
     				if (sectionAwareness.isSectionMemberInRole(section.getUuid(), userId, Role.STUDENT) || 
     						sectionAwareness.isSectionMemberInRole(section.getUuid(), userId, Role.TA)) {
     					groupIdList.add(section.getUuid());
@@ -198,12 +196,11 @@ public class ExternalLogicStub implements ExternalLogic {
     	if (contextId == null) {
     		throw new IllegalArgumentException("Null contextId passed to getStudentsInSite");
     	}
-    	List<String> studentsInSite = new ArrayList();
+    	List<String> studentsInSite = new ArrayList<String>();
     	
     	List<ParticipationRecord> participants = sectionAwareness.getSiteMembersInRole(contextId, Role.STUDENT);
     	if (participants != null) {
-    		for (Iterator pIter = participants.iterator(); pIter.hasNext();) {
-    			ParticipationRecord part = (ParticipationRecord) pIter.next();
+    		for (ParticipationRecord part : participants) {
     			if (part != null) {
     				String studentId = part.getUser().getUserUid();
     				studentsInSite.add(studentId);
@@ -225,11 +222,10 @@ public class ExternalLogicStub implements ExternalLogic {
     		
     	}
     	
-    	List<String> studentsInSection = new ArrayList();
+    	List<String> studentsInSection = new ArrayList<String>();
     	
     	List<ParticipationRecord> participants = sectionAwareness.getSectionMembersInRole(sectionId, Role.STUDENT);
-    	for (Iterator pIter = participants.iterator(); pIter.hasNext();) {
-			ParticipationRecord part = (ParticipationRecord) pIter.next();
+    	for (ParticipationRecord part : participants) {
 			if (part != null) {
 				String studentId = part.getUser().getUserUid();
 				studentsInSection.add(studentId);

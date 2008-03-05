@@ -22,10 +22,8 @@
 package org.sakaiproject.assignment2.logic;
 
 import java.util.List;
-import java.util.Map;
 
 import org.sakaiproject.assignment2.model.Assignment2;
-import org.sakaiproject.assignment2.model.AssignmentGroup;
 import org.sakaiproject.assignment2.exception.ConflictingAssignmentNameException;
 
 

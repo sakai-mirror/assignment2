@@ -22,13 +22,10 @@
 package org.sakaiproject.assignment2.logic;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.Collection;
 
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentGroup;
-import org.sakaiproject.assignment2.model.AssignmentSubmission;
 
 /**
  * This is the interface for logic which is related to the permission 

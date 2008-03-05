@@ -64,7 +64,7 @@ public interface ExternalGradebookLogic {
 	 * @return a map of gradable object id to title for all of the gradebook
 	 * items that the current user may view or grade.
 	 */
-	public Map getViewableGradableObjectIdTitleMap(String contextId);
+	public Map<Long, String> getViewableGradableObjectIdTitleMap(String contextId);
 	
 	/**
 	 * returns a list of GradebookItem objects that represent all of

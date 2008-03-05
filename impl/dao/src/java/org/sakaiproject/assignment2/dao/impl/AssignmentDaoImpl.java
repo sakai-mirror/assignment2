@@ -99,10 +99,10 @@ public class AssignmentDaoImpl extends HibernateCompleteGenericDao implements As
 		    	
 		    	List<Assignment2> assignmentList = query.list();
 		    	
-		    	Set<Assignment2> assignmentSet = new HashSet();
+		    	Set<Assignment2> assignmentSet = new HashSet<Assignment2>();
 		    	
 		    	if (assignmentList != null) {
-		    		assignmentSet = new HashSet(assignmentList);
+		    		assignmentSet = new HashSet<Assignment2>(assignmentList);
 		    	}
 		    	
 		    	return assignmentSet;
@@ -182,11 +182,11 @@ public class AssignmentDaoImpl extends HibernateCompleteGenericDao implements As
     private List<Long> getCurrentVersionIdsForSubmissions(final Collection<AssignmentSubmission> submissions) {   
     	HibernateCallback hc = new HibernateCallback() {
 			public Object doInHibernate(Session session) throws HibernateException ,SQLException {
-				List<Long> versionIdList = new ArrayList();
+				List<Long> versionIdList = new ArrayList<Long>();
 
 		    	if (submissions != null && !submissions.isEmpty()) {
 		    		
-		    		List submissionList = new ArrayList(submissions);
+		    		List<AssignmentSubmission> submissionList = new ArrayList<AssignmentSubmission>(submissions);
 		    		
 		    		Query query = session.getNamedQuery("findCurrentVersionIds");
 
@@ -211,7 +211,7 @@ public class AssignmentDaoImpl extends HibernateCompleteGenericDao implements As
 		
 		HibernateCallback hc = new HibernateCallback() {
 			public Object doInHibernate(Session session) throws HibernateException ,SQLException {
-				List<AssignmentSubmission> submissions = new ArrayList();
+				List<AssignmentSubmission> submissions = new ArrayList<AssignmentSubmission>();
 				
 				if (assignments != null && !assignments.isEmpty()) {
 					// retrieve the submissions
@@ -249,7 +249,7 @@ public class AssignmentDaoImpl extends HibernateCompleteGenericDao implements As
     	
     	HibernateCallback hc = new HibernateCallback() {
 			public Object doInHibernate(Session session) throws HibernateException ,SQLException {
-		    	List<AssignmentSubmissionVersion> versions = new ArrayList();
+		    	List<AssignmentSubmissionVersion> versions = new ArrayList<AssignmentSubmissionVersion>();
 		    	
 				if (versionIds != null && !versionIds.isEmpty()) {
 		    		String hql = "from AssignmentSubmissionVersion as version where version.id in (:versionIdList)";
@@ -272,7 +272,7 @@ public class AssignmentDaoImpl extends HibernateCompleteGenericDao implements As
     	
     	HibernateCallback hc = new HibernateCallback() {
 			public Object doInHibernate(Session session) throws HibernateException ,SQLException {
-				Set<AssignmentSubmission> submissionSet = new HashSet();
+				Set<AssignmentSubmission> submissionSet = new HashSet<AssignmentSubmission>();
 		    	
 		    	if (studentIds != null && !studentIds.isEmpty()) {
 		    		Query query = session.getNamedQuery("findSubmissionsForStudentsForAssignment");
@@ -281,7 +281,7 @@ public class AssignmentDaoImpl extends HibernateCompleteGenericDao implements As
 		    		List<AssignmentSubmission> submissionList = queryWithParameterList(query, "studentIdList", studentIds);
 		    			
 		    		if (submissionList != null) {
-		    			submissionSet = new HashSet(submissionList);
+		    			submissionSet = new HashSet<AssignmentSubmission>(submissionList);
 		    			
 		        		// now retrieve the current version information
 		        		populateCurrentVersion(submissionSet);
@@ -307,16 +307,14 @@ public class AssignmentDaoImpl extends HibernateCompleteGenericDao implements As
 			List<AssignmentSubmissionVersion> currentVersions = getAssignmentSubmissionVersionsById(versionIds);
 			
 			if (currentVersions != null) {
-				Map submissionIdVersionMap = new HashMap();
-				for (Iterator versionIter = currentVersions.iterator(); versionIter.hasNext();) {
-					AssignmentSubmissionVersion version = (AssignmentSubmissionVersion) versionIter.next();
+				Map<Long, AssignmentSubmissionVersion> submissionIdVersionMap = new HashMap<Long, AssignmentSubmissionVersion>();
+				for (AssignmentSubmissionVersion version : currentVersions) {
 					if (version != null) {
 						submissionIdVersionMap.put(version.getAssignmentSubmission().getId(), version);
 					}
 				}
 				
-				for (Iterator submissionIter = submissions.iterator(); submissionIter.hasNext();) {
-					AssignmentSubmission submission = (AssignmentSubmission) submissionIter.next();
+				for (AssignmentSubmission submission : submissions) {
 					if (submission != null) {
 						AssignmentSubmissionVersion currVersion = 
 							(AssignmentSubmissionVersion)submissionIdVersionMap.get(submission.getId());
@@ -337,16 +335,16 @@ public class AssignmentDaoImpl extends HibernateCompleteGenericDao implements As
     	
     	HibernateCallback hc = new HibernateCallback() {
 			public Object doInHibernate(Session session) throws HibernateException ,SQLException {
-				Set<AssignmentSubmission> submissionSet = new HashSet();
+				Set<AssignmentSubmission> submissionSet = new HashSet<AssignmentSubmission>();
 		    	
 		    	if (studentIdList != null && !studentIdList.isEmpty()) {
 		    		Query query = session.getNamedQuery("findSubmissionsWithHistoryForAssignmentAndStudents");	
 		        	query.setParameter("assignment", assignment);
 		        	
-		        	List submissionList = queryWithParameterList(query, "studentIdList", studentIdList);
+		        	List<AssignmentSubmission> submissionList = queryWithParameterList(query, "studentIdList", studentIdList);
 		        	
 		        	if (submissionList != null) {
-		    			submissionSet = new HashSet(submissionList);
+		    			submissionSet = new HashSet<AssignmentSubmission>(submissionList);
 		    			
 		        		// now retrieve the current version information
 		        		populateCurrentVersion(submissionSet);
@@ -391,10 +389,9 @@ public class AssignmentDaoImpl extends HibernateCompleteGenericDao implements As
      */
     private void setCurrentSubmissionGivenHistory(AssignmentSubmission submission) {
     	if (submission != null && submission.getSubmissionHistorySet() != null) {
-    		Map versionIdVersionMap = new HashMap();
+    		Map<Long, AssignmentSubmissionVersion> versionIdVersionMap = new HashMap<Long, AssignmentSubmissionVersion>();
     		Long maxVersionId = new Long(-1);
-    		for (Iterator versionIter = submission.getSubmissionHistorySet().iterator(); versionIter.hasNext();) {
-    			AssignmentSubmissionVersion version = (AssignmentSubmissionVersion) versionIter.next();
+    		for (AssignmentSubmissionVersion version : submission.getSubmissionHistorySet()) {
     			if (version != null) {
     				versionIdVersionMap.put(version.getId(), version);
     				if (version.getId() > maxVersionId) {
@@ -481,15 +478,15 @@ public class AssignmentDaoImpl extends HibernateCompleteGenericDao implements As
 
     	HibernateCallback hc = new HibernateCallback() {
     		public Object doInHibernate(Session session) throws HibernateException ,SQLException {
-    			Set<AssignmentSubmission> versionSet = new HashSet();
+    			Set<AssignmentSubmissionVersion> versionSet = new HashSet<AssignmentSubmissionVersion>();
 
     			Query query = session.getNamedQuery("findVersionHistoryForSubmission");	
     			query.setParameter("submission", submission);
 
-    			List versionList = query.list();
+    			List<AssignmentSubmissionVersion> versionList = query.list();
 
     			if (versionList != null) {
-    				versionSet = new HashSet(versionList);
+    				versionSet = new HashSet<AssignmentSubmissionVersion>(versionList);
     			}
 
     			return versionSet;

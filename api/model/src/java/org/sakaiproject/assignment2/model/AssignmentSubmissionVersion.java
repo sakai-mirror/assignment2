@@ -23,7 +23,6 @@ package org.sakaiproject.assignment2.model;
 
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -452,13 +451,12 @@ public class AssignmentSubmissionVersion {
 		newVersion.setReviewStatus(versionToCopy.getReviewStatus());
 		newVersion.setSubmittedText(versionToCopy.getSubmittedText());
 		newVersion.setSubmittedTime(versionToCopy.getSubmittedTime());
-		newVersion.setSubmissionAttachSet(new HashSet());
-		newVersion.setFeedbackAttachSet(new HashSet());
+		newVersion.setSubmissionAttachSet(new HashSet<SubmissionAttachment>());
+		newVersion.setFeedbackAttachSet(new HashSet<FeedbackAttachment>());
 		
 		if (includeSubAttachSet && versionToCopy.getSubmissionAttachSet() != null && 
 				!versionToCopy.getSubmissionAttachSet().isEmpty()) {
-			for (Iterator attachIter = versionToCopy.getSubmissionAttachSet().iterator(); attachIter.hasNext();) {
-				SubmissionAttachment attach = (SubmissionAttachment) attachIter.next();
+			for (SubmissionAttachment attach : versionToCopy.getSubmissionAttachSet()) {
 				if (attach != null) {
 					newVersion.getSubmissionAttachSet().add(SubmissionAttachment.deepCopy(attach));
 				}
@@ -466,8 +464,7 @@ public class AssignmentSubmissionVersion {
 		}
 		if (includeFBAttachSet && versionToCopy.getFeedbackAttachSet() != null && 
 				!versionToCopy.getFeedbackAttachSet().isEmpty()) {
-			for (Iterator attachIter = versionToCopy.getFeedbackAttachSet().iterator(); attachIter.hasNext();) {
-				FeedbackAttachment attach = (FeedbackAttachment) attachIter.next();
+			for (FeedbackAttachment attach : versionToCopy.getFeedbackAttachSet()) {
 				if (attach != null) {
 					newVersion.getFeedbackAttachSet().add(FeedbackAttachment.deepCopy(attach));
 				}
