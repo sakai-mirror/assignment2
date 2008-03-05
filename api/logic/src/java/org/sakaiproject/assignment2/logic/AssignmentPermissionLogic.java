@@ -64,6 +64,14 @@ public interface AssignmentPermissionLogic {
 	public boolean isUserAbleToProvideFeedbackForStudentForAssignment(String studentId, Assignment2 assignment);
 	
 	/**
+	 * 
+	 * @param submissionId
+	 * @return true if the current user is allowed to provide feedback for the
+	 * AssignmentSubmission associated with the given submissionId
+	 */
+	public boolean isUserAbleToProvideFeedbackForSubmission(Long submissionId);
+	
+	/**
 	 * @param assignment
 	 * @param groupMembershipIds
 	 * 			a collection of the ids for all of the current user's group memberships for this site
@@ -123,7 +131,7 @@ public interface AssignmentPermissionLogic {
 	 * @return true if the current user is authorized to submit feedback (not just view) for
 	 * at least one submission associated with the given assignment
 	 */
-	public boolean isUserAllowedToReleaseFeedbackForAssignment(Assignment2 assignment);
+	public boolean isUserAllowedToProvideFeedbackForAssignment(Assignment2 assignment);
 	
 	/**
 	 * @param contextId

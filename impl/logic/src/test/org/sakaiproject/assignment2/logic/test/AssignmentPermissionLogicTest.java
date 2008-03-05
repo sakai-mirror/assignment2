@@ -227,7 +227,7 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
 	   assertFalse(permissionLogic.isUserAbleToViewStudentSubmissionForAssignment(AssignmentTestDataLoad.STUDENT2_UID, testData.a1));
    }
    
-   public void testIsUserAbleToProvideFeedbackForSubmission() {
+   public void testIsUserAbleToProvideFeedbackForStudentForAssignment() {
 	   // pass null studentId
 	   try {
 		   permissionLogic.isUserAbleToProvideFeedbackForStudentForAssignment(null, new Assignment2());
@@ -284,6 +284,54 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
 	   authn.setAuthnContext(AssignmentTestDataLoad.STUDENT1_UID);
 	   assertFalse(permissionLogic.isUserAbleToProvideFeedbackForStudentForAssignment(AssignmentTestDataLoad.STUDENT1_UID, testData.a1));
 	   assertFalse(permissionLogic.isUserAbleToProvideFeedbackForStudentForAssignment(AssignmentTestDataLoad.STUDENT2_UID, testData.a1));
+   }
+   
+   public void testIsUserAbleToProvideFeedbackForSubmission() {
+	// pass null submissionId
+	   try {
+		   permissionLogic.isUserAbleToProvideFeedbackForSubmission(null);
+		   fail("did not catch null submissionId passed to isUserAbleToProvideFeedbackForSubmission");
+	   } catch(IllegalArgumentException iae) {}
+	   
+	   // start with an ungraded item
+	   // instructor should be able to submit feedback for any student
+	   authn.setAuthnContext(AssignmentTestDataLoad.INSTRUCTOR_UID);
+	   assertTrue(permissionLogic.isUserAbleToProvideFeedbackForSubmission(
+			   testData.st1a1Submission.getId()));
+	   assertTrue(permissionLogic.isUserAbleToProvideFeedbackForSubmission(
+			   testData.st2a1Submission.getId()));
+
+	   // switch to TA
+	   // ta may only submit feedback for students in his/her section
+	   authn.setAuthnContext(AssignmentTestDataLoad.TA_UID);
+	   assertTrue(permissionLogic.isUserAbleToProvideFeedbackForSubmission(
+			   testData.st1a1Submission.getId()));
+	   assertFalse(permissionLogic.isUserAbleToProvideFeedbackForSubmission(
+			   testData.st2a1Submission.getId()));
+	   
+	   // now consider a graded assignment. with no grader perms, the same rules
+	   // as above apply
+	   // instructor should be able to submit feedback for any student
+	   authn.setAuthnContext(AssignmentTestDataLoad.INSTRUCTOR_UID);
+	   assertTrue(permissionLogic.isUserAbleToProvideFeedbackForSubmission(
+			   testData.st1a3Submission.getId()));
+	   assertTrue(permissionLogic.isUserAbleToProvideFeedbackForSubmission(
+			   testData.st2a3Submission.getId()));
+
+	   // switch to TA
+	   // ta may only submit feedback for members in his/her section
+	   authn.setAuthnContext(AssignmentTestDataLoad.TA_UID);
+	   assertTrue(permissionLogic.isUserAbleToProvideFeedbackForSubmission(
+			   testData.st1a3Submission.getId()));
+	   assertFalse(permissionLogic.isUserAbleToProvideFeedbackForSubmission(
+			   testData.st2a3Submission.getId()));
+	   
+	   // TODO check a gb assignment with grader perms. use one with View only perm
+	   
+	   // students should not be able to submit feedback at all
+	   authn.setAuthnContext(AssignmentTestDataLoad.STUDENT1_UID);
+	   assertFalse(permissionLogic.isUserAbleToProvideFeedbackForSubmission(testData.st1a1Submission.getId()));
+	   assertFalse(permissionLogic.isUserAbleToProvideFeedbackForSubmission(testData.st2a1Submission.getId()));
    }
    
    public void testIsUserAbleToViewUngradedAssignment() {
@@ -564,33 +612,33 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
    public void testIsUserAllowedToReleaseFeedbackForAssignment() {
 	   // try passing a null assignment
 	   try {
-		   permissionLogic.isUserAllowedToReleaseFeedbackForAssignment(null);
+		   permissionLogic.isUserAllowedToProvideFeedbackForAssignment(null);
 		   fail("Null assignment passed to isUserAllowedToReleaseFeedbackForAssignment was not caught");
 	   } catch (IllegalArgumentException iae) {}
 	   
 	   // instructor should be true for all
 	   authn.setAuthnContext(AssignmentTestDataLoad.INSTRUCTOR_UID);
-	   assertTrue(permissionLogic.isUserAllowedToReleaseFeedbackForAssignment(testData.a1));
-	   assertTrue(permissionLogic.isUserAllowedToReleaseFeedbackForAssignment(testData.a2));
-	   assertTrue(permissionLogic.isUserAllowedToReleaseFeedbackForAssignment(testData.a3));
-	   assertTrue(permissionLogic.isUserAllowedToReleaseFeedbackForAssignment(testData.a4));
+	   assertTrue(permissionLogic.isUserAllowedToProvideFeedbackForAssignment(testData.a1));
+	   assertTrue(permissionLogic.isUserAllowedToProvideFeedbackForAssignment(testData.a2));
+	   assertTrue(permissionLogic.isUserAllowedToProvideFeedbackForAssignment(testData.a3));
+	   assertTrue(permissionLogic.isUserAllowedToProvideFeedbackForAssignment(testData.a4));
 	   
 	   // ta should be true for a1, a2, a3 - not auth to grade any students for a4
 	   // b/c only avail to students in section3 and doesn't have grading perm for
 	   // this section
 	   // TODO grader permissions
 	   authn.setAuthnContext(AssignmentTestDataLoad.TA_UID);
-	   assertTrue(permissionLogic.isUserAllowedToReleaseFeedbackForAssignment(testData.a1));
-	   assertTrue(permissionLogic.isUserAllowedToReleaseFeedbackForAssignment(testData.a2));
-	   assertTrue(permissionLogic.isUserAllowedToReleaseFeedbackForAssignment(testData.a3));
-	   assertFalse(permissionLogic.isUserAllowedToReleaseFeedbackForAssignment(testData.a4));
+	   assertTrue(permissionLogic.isUserAllowedToProvideFeedbackForAssignment(testData.a1));
+	   assertTrue(permissionLogic.isUserAllowedToProvideFeedbackForAssignment(testData.a2));
+	   assertTrue(permissionLogic.isUserAllowedToProvideFeedbackForAssignment(testData.a3));
+	   assertFalse(permissionLogic.isUserAllowedToProvideFeedbackForAssignment(testData.a4));
 	   
 	   // double check that students are all false
 	   authn.setAuthnContext(AssignmentTestDataLoad.STUDENT1_UID);
-	   assertFalse(permissionLogic.isUserAllowedToReleaseFeedbackForAssignment(testData.a1));
-	   assertFalse(permissionLogic.isUserAllowedToReleaseFeedbackForAssignment(testData.a2));
-	   assertFalse(permissionLogic.isUserAllowedToReleaseFeedbackForAssignment(testData.a3));
-	   assertFalse(permissionLogic.isUserAllowedToReleaseFeedbackForAssignment(testData.a4));
+	   assertFalse(permissionLogic.isUserAllowedToProvideFeedbackForAssignment(testData.a1));
+	   assertFalse(permissionLogic.isUserAllowedToProvideFeedbackForAssignment(testData.a2));
+	   assertFalse(permissionLogic.isUserAllowedToProvideFeedbackForAssignment(testData.a3));
+	   assertFalse(permissionLogic.isUserAllowedToProvideFeedbackForAssignment(testData.a4));
    }
 
    public void testIsCurrentUserAbleToSubmit() {

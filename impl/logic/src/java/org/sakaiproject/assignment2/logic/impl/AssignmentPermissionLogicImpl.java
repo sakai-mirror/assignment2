@@ -37,6 +37,7 @@ import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentGroup;
+import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 
 /**
@@ -104,8 +105,8 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
     	return viewable;	
     }
     
-    public boolean isUserAbleToProvideFeedbackForStudentForAssignment(String userId, Assignment2 assignment) {
-    	if (userId == null || assignment == null) {
+    public boolean isUserAbleToProvideFeedbackForStudentForAssignment(String studentId, Assignment2 assignment) {
+    	if (studentId == null || assignment == null) {
     		throw new IllegalArgumentException("null parameter passed to isUserAbleToProvideFeedbackForSubmission");
     	}
     	
@@ -113,16 +114,29 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
     	
     	if (assignment != null) {
     		if (assignment.isUngraded()) {
-    			allowed = isUserAbleToViewSubmissionForUngradedAssignment(userId, assignment);
+    			allowed = isUserAbleToViewSubmissionForUngradedAssignment(studentId, assignment);
     		} else {
     			if (assignment.getGradableObjectId() != null) {
     				allowed = gradebookLogic.isCurrentUserAbleToGradeStudentForItem(externalLogic.getCurrentContextId(), 
-    						userId, assignment.getGradableObjectId());
+    						studentId, assignment.getGradableObjectId());
     			}
     		}
     	}
     	
     	return allowed;
+    }
+    
+    public boolean isUserAbleToProvideFeedbackForSubmission(Long submissionId) {
+    	if (submissionId == null) {
+    		throw new IllegalArgumentException("Null submissionId passed to isUserAbleToProvideFeedbackForSubmission");
+    	}
+    	
+    	AssignmentSubmission submission = (AssignmentSubmission)dao.findById(AssignmentSubmission.class, submissionId);
+    	if (submission == null) {
+    		throw new IllegalArgumentException("No submission exists with id: " + submissionId);
+    	}
+    	
+    	return isUserAbleToProvideFeedbackForStudentForAssignment(submission.getUserId(), submission.getAssignment());
     }
     
     public boolean isUserAbleToViewSubmissionForUngradedAssignment(String studentId, Assignment2 assignment) {
@@ -392,25 +406,25 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
 		return sharedStudents;
 	}
 	
-	public boolean isUserAllowedToReleaseFeedbackForAssignment(Assignment2 assignment) {
+	public boolean isUserAllowedToProvideFeedbackForAssignment(Assignment2 assignment) {
 		// returns true if user is authorized to grade at least one student for
 		// this assignment
 		if (assignment == null) {
-			throw new IllegalArgumentException("null assignment passed to isUserAllowedToReleaseFeedbackForAssignment");
+			throw new IllegalArgumentException("null assignment passed to isUserAllowedToProvideFeedbackForAssignment");
 		}
-		boolean allowedToRelease = false;
+		boolean allowedToGrade = false;
 		
 		try {
 			List<String> gradableStudents = getGradableStudentsForUserForItem(assignment);
 			if (gradableStudents != null && gradableStudents.size() > 0) {
-				allowedToRelease = true;
+				allowedToGrade = true;
 			}
 		} catch (SecurityException se) {
 			// this user does not have grading privileges, so may not release
-			allowedToRelease = false;
+			allowedToGrade = false;
 		}
 		
-		return allowedToRelease;
+		return allowedToGrade;
 	}
 	
 	public boolean isCurrentUserAbleToSubmit(String contextId) {
