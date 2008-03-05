@@ -3,7 +3,6 @@ package org.sakaiproject.assignment2.tool.beans;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -137,7 +136,7 @@ public class AssignmentSubmissionBean {
 			asv.setDraft(Boolean.FALSE);
 			
 			//Start attachment stuff
-			Set<SubmissionAttachment> set = new HashSet();
+			Set<SubmissionAttachment> set = new HashSet<SubmissionAttachment>();
 			if (asv.getSubmissionAttachSet() != null) {
 				set.addAll(asv.getSubmissionAttachSet());
 			}
@@ -234,7 +233,7 @@ public class AssignmentSubmissionBean {
 			asv.setDraft(Boolean.TRUE);
 
 			//Start attachment stuff
-			Set<SubmissionAttachment> set = new HashSet();
+			Set<SubmissionAttachment> set = new HashSet<SubmissionAttachment>();
 			if (asv.getSubmissionAttachSet() != null) {
 				set.addAll(asv.getSubmissionAttachSet());
 			}
@@ -248,7 +247,7 @@ public class AssignmentSubmissionBean {
 	    			set.add(asa);
 	    		}
 	    	}
-	    	Set<SubmissionAttachment> final_set = new HashSet();
+	    	Set<SubmissionAttachment> final_set = new HashSet<SubmissionAttachment>();
 	    	//Now check for attachments that have been removed
 	    	if (session.getAttribute("removedAttachmentRefs") != null) {
 		    	for (SubmissionAttachment asa : set) {
@@ -321,7 +320,7 @@ public class AssignmentSubmissionBean {
 			}
 			
 			//Start attachment stuff
-			Set<FeedbackAttachment> set = new HashSet();
+			Set<FeedbackAttachment> set = new HashSet<FeedbackAttachment>();
 			if (assignmentSubmission.getCurrentSubmissionVersion() != null && 
 					assignmentSubmission.getCurrentSubmissionVersion().getFeedbackAttachSet() != null) {
 				set.addAll(assignmentSubmission.getCurrentSubmissionVersion().getFeedbackAttachSet());
@@ -336,7 +335,7 @@ public class AssignmentSubmissionBean {
 	    			set.add(afa);
 	    		}
 	    	}
-	    	Set<FeedbackAttachment> final_set = new HashSet();
+	    	Set<FeedbackAttachment> final_set = new HashSet<FeedbackAttachment>();
 	    	//Now check for attachments that have been removed
 	    	if (session.getAttribute("removedAttachmentRefs") != null) {
 		    	for (FeedbackAttachment afa : set) {
@@ -385,8 +384,7 @@ public class AssignmentSubmissionBean {
 		// Now, iterate through the viewable assignments and set the not persisted fields 
 		// that aren't related to the gradebook
 		
-		for (Iterator subIter = submissionList.iterator(); subIter.hasNext();) {
-			AssignmentSubmission submission = (AssignmentSubmission) subIter.next();
+		for (AssignmentSubmission submission : submissionList) {
 			if (submission != null) { 
 				// set the status for this submission: "In Progress, Submitted, etc"
 				if (submission.getSubmissionStatusConstant() != null) {
