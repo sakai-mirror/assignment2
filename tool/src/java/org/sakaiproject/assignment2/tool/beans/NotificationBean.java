@@ -13,8 +13,6 @@ import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.model.SubmissionAttachment;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
-import org.sakaiproject.authz.api.AuthzGroup;
-import org.sakaiproject.authz.api.AuthzGroupService;
 import org.sakaiproject.authz.api.SecurityService;
 import org.sakaiproject.component.api.ServerConfigurationService;
 import org.sakaiproject.content.api.ContentHostingService;
@@ -57,7 +55,6 @@ public class NotificationBean
 	private SecurityService securityService;
 	private TimeService timeService;
 	private DigestService digestService;
-	private AuthzGroupService authzGroupService;
 	private SiteService siteService;
 	private EmailService emailService;
 	private ServerConfigurationService serverConfigurationService;
@@ -86,11 +83,6 @@ public class NotificationBean
 	public void setDigestService(DigestService digestService)
 	{
 		this.digestService = digestService;
-	}
-
-	public void setAuthzGroupService(AuthzGroupService authzGroupService)
-	{
-		this.authzGroupService = authzGroupService;
 	}
 
 	public void setSiteService(SiteService siteService)
@@ -159,10 +151,6 @@ public class NotificationBean
 			// compare the list of users with the receive.notifications and list of users who can
 			// actually grade this assignment
 			List<User> receivers = allowReceiveSubmissionNotificationUsers(context);
-			List<User> allowGradeAssignmentUsers = allowGradeAssignmentUsers(a);
-			receivers.retainAll(allowGradeAssignmentUsers);
-
-			String submitterId = s.getUserId();
 
 			// filter out users who's not able to grade this submission
 			ArrayList<User> finalReceivers = new ArrayList<User>();
@@ -175,24 +163,15 @@ public class NotificationBean
 				{
 					try
 					{
-						AuthzGroup aGroup = authzGroupService.getAuthzGroup(g.getGroupId());
-						if (aGroup.isAllowed(submitterId,
-								AssignmentConstants.SECURE_ADD_ASSIGNMENT_SUBMISSION))
-						{
 							for (User rUser : receivers)
 							{
 								String rUserId = rUser.getId();
-								if (!receiverSet.contains(rUserId)
-										&& aGroup
-												.isAllowed(
-														rUserId,
-														AssignmentConstants.SECURE_GRADE_ASSIGNMENT_SUBMISSION))
+								if (!receiverSet.contains(rUserId))
 								{
 									finalReceivers.add(rUser);
 									receiverSet.add(rUserId);
 								}
 							}
-						}
 					}
 					catch (Exception e)
 					{
@@ -221,44 +200,6 @@ public class NotificationBean
 				}
 			}
 		}
-	}
-
-	/**
-	 * Get the List of Users who can grade submission for this assignment.
-	 * 
-	 * @param assignmentReference -
-	 *            a reference to an assignment
-	 * @return the List (User) of users who can grade submission for this assignment.
-	 */
-	private List<User> allowGradeAssignmentUsers(Assignment2 assignment)
-	{
-		return allowAssignmentFunctionUsers(assignment,
-				AssignmentConstants.SECURE_GRADE_ASSIGNMENT_SUBMISSION);
-	}
-
-	/**
-	 * Get the list of Users who can perform certain functions on this assignment
-	 * 
-	 * @inheritDoc
-	 */
-	private List<User> allowAssignmentFunctionUsers(Assignment2 assignment, String function)
-	{
-		String resourceString = getAccessPoint(true) + Entity.SEPARATOR + "a" + Entity.SEPARATOR
-				+ assignment.getContextId() + Entity.SEPARATOR + assignment.getId().toString();
-		List<User> rv = securityService.unlockUsers(function, resourceString);
-
-		// get the list of users who have SECURE_ALL_GROUPS
-		List<User> allGroupUsers = new ArrayList<User>();
-		String contextRef = siteService.siteReference(assignment.getContextId());
-		allGroupUsers = securityService.unlockUsers(AssignmentConstants.SECURE_ALL_GROUPS,
-				contextRef);
-		// remove duplicates
-		allGroupUsers.removeAll(rv);
-
-		// combine two lists together
-		rv.addAll(allGroupUsers);
-
-		return rv;
 	}
 
 	private List<User> allowReceiveSubmissionNotificationUsers(String context)

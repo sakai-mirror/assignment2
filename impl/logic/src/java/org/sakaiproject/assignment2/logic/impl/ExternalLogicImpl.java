@@ -23,13 +23,11 @@ package org.sakaiproject.assignment2.logic.impl;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Iterator;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.sakaiproject.authz.api.FunctionManager;
 import org.sakaiproject.authz.api.SecurityService;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.component.cover.ServerConfigurationService;
@@ -59,11 +57,6 @@ public class ExternalLogicImpl implements ExternalLogic {
 
     private static Log log = LogFactory.getLog(ExternalLogicImpl.class);
 
-    private FunctionManager functionManager;
-    public void setFunctionManager(FunctionManager functionManager) {
-        this.functionManager = functionManager;
-    }
-
     private ToolManager toolManager;
     public void setToolManager(ToolManager toolManager) {
         this.toolManager = toolManager;
@@ -88,7 +81,7 @@ public class ExternalLogicImpl implements ExternalLogic {
     public void setUserDirectoryService(UserDirectoryService userDirectoryService) {
         this.userDirectoryService = userDirectoryService;
     }
-    
+
     private SectionAwareness sectionAwareness;
     public void setSectionAwareness(SectionAwareness sectionAwareness) {
     	this.sectionAwareness = sectionAwareness;
@@ -201,7 +194,6 @@ public class ExternalLogicImpl implements ExternalLogic {
 					groupIdToNameMap.put(siteGroup.getId(), siteGroup.getTitle());
 				}
 			}
-			
 		}
     	
     	return groupIdToNameMap;
@@ -268,11 +260,11 @@ public class ExternalLogicImpl implements ExternalLogic {
     
     public String getUrlForGradebookItemHelper(Long gradeableObjectId, String returnViewId) {
     	//TODO URL encode this so I can put it as a url parameter
-    	 String url = "/direct/gradebook/_/gradebookItem/" + getCurrentContextId();
-	     String finishedURL = getAssignmentViewUrl(returnViewId);
-	     String getParams = "?TB_iframe=true&width=700&height=350&KeepThis=true&finishURL=" + finishedURL;
+    	String url = "/direct/gradebook/_/gradebookItem/" + getCurrentContextId();
+    	String finishedURL = getAssignmentViewUrl(returnViewId);
+    	String getParams = "?TB_iframe=true&width=700&height=350&KeepThis=true&finishURL=" + finishedURL;
 	      
-	     return url + "/" + (gradeableObjectId != null ? gradeableObjectId : "") + getParams;
+    	return url + "/" + (gradeableObjectId != null ? gradeableObjectId : "") + getParams;
     }
     
     public String getUrlForGradeGradebookItemHelper(Long gradeableObjectId, String userId, String returnViewId) {
