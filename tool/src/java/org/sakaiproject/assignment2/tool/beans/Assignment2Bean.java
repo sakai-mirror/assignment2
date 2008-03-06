@@ -57,7 +57,7 @@ public class Assignment2Bean {
 		this.requireDueDate = requireDueDate;
 	}
 	
-	public Map selectedIds = new HashMap();
+	public Map<String, Boolean> selectedIds = new HashMap<String, Boolean>();
 	public Boolean restrictedToGroups;
 	
     private TargettedMessageList messages;
@@ -176,8 +176,7 @@ public class Assignment2Bean {
 			} 
 			
 			Set<AssignmentGroup> remGroups = new HashSet<AssignmentGroup>();
-			for (Iterator groupIter = selectedIds.keySet().iterator(); groupIter.hasNext();) {
-				String selectedId = (String)groupIter.next();
+			for (String selectedId : selectedIds.keySet()) {
 				if (selectedIds.get(selectedId) == Boolean.TRUE) {
 					//Then add the group
 					AssignmentGroup newGroup = new AssignmentGroup();
