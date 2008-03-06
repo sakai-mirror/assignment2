@@ -21,6 +21,8 @@
 
 package org.sakaiproject.assignment2.logic.impl;
 
+import java.util.Locale;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment2.logic.AssignmentBundleLogic;
@@ -48,5 +50,13 @@ public class AssignmentBundleLogicImpl implements AssignmentBundleLogic
 	public String getString(String key)
 	{
 		return rb.getString(key);
+	}
+	
+	public String getFormattedMessage(String key, Object[] parameters) {
+		return rb.getFormattedMessage(key, parameters);
+	}
+	
+	public Locale getLocale() {
+		return rb.getLocale();
 	}
 }

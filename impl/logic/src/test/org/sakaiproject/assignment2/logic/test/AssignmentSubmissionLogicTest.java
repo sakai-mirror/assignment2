@@ -794,6 +794,7 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
 		
 		// let's allow resubmission on the assignment level for assign1.
 		// allow 3 submissions - this means st1 will still be open but not st2
+		authn.setAuthnContext(AssignmentTestDataLoad.INSTRUCTOR_UID);
 		Assignment2 assign1 = dao.getAssignmentByIdWithGroups(testData.a1Id);
 		assign1.setNumSubmissionsAllowed(3);
 		assign1.setAcceptUntilTime(null);

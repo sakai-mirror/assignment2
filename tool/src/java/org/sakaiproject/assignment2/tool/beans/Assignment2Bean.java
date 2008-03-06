@@ -8,7 +8,6 @@ import org.sakaiproject.assignment2.model.AssignmentGroup;
 import org.sakaiproject.assignment2.model.AssignmentAttachment;
 import org.sakaiproject.assignment2.tool.beans.Assignment2Validator;
 import org.sakaiproject.assignment2.exception.ConflictingAssignmentNameException;
-import org.sakaiproject.site.api.Group;
 import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.tool.api.ToolSession;
 import org.sakaiproject.assignment2.exception.AnnouncementPermissionException;
@@ -22,8 +21,6 @@ import uk.org.ponder.messageutil.MessageLocator;
 import uk.org.ponder.messageutil.TargettedMessage;
 import uk.org.ponder.messageutil.TargettedMessageList;
 
-import java.util.Collection;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -84,11 +81,6 @@ public class Assignment2Bean {
 		this.externalLogic = externalLogic;
 	}
 	
-	private ExternalAnnouncementLogic announcementLogic;
-	public void setExternalAnnouncementLogic(ExternalAnnouncementLogic announcementLogic) {
-		this.announcementLogic = announcementLogic;
-	}
-	
 	private PreviewAssignmentBean previewAssignmentBean;
 	public void setPreviewAssignmentBean (PreviewAssignmentBean previewAssignmentBean) {
 		this.previewAssignmentBean = previewAssignmentBean;
@@ -136,7 +128,7 @@ public class Assignment2Bean {
 			assignment.setDueDateForUngraded(null);
 		}
 
-		Set<AssignmentAttachment> set = new HashSet();
+		Set<AssignmentAttachment> set = new HashSet<AssignmentAttachment>();
 		if (assignment.getAttachmentSet() != null) {
 			set.addAll(assignment.getAttachmentSet());
 		}
@@ -150,7 +142,7 @@ public class Assignment2Bean {
     			set.add(aa);
     		}
     	}
-    	Set<AssignmentAttachment> final_set = new HashSet();
+    	Set<AssignmentAttachment> final_set = new HashSet<AssignmentAttachment>();
     	//Now check for attachments that have been removed
     	if (session.getAttribute("removedAttachmentRefs") != null) {
 	    	for (AssignmentAttachment aa : set) {
@@ -176,14 +168,14 @@ public class Assignment2Bean {
 		//END REMOVE THESE 
 		
 		//do groups
-		Set<AssignmentGroup> newGroups = new HashSet();
+		Set<AssignmentGroup> newGroups = new HashSet<AssignmentGroup>();
 		if (restrictedToGroups != null && restrictedToGroups){
 			//now add any new groups
 			if (assignment.getAssignmentGroupSet() != null) {
 				newGroups.addAll(assignment.getAssignmentGroupSet());
 			} 
 			
-			Set<AssignmentGroup> remGroups = new HashSet();
+			Set<AssignmentGroup> remGroups = new HashSet<AssignmentGroup>();
 			for (Iterator groupIter = selectedIds.keySet().iterator(); groupIter.hasNext();) {
 				String selectedId = (String)groupIter.next();
 				if (selectedIds.get(selectedId) == Boolean.TRUE) {
@@ -223,14 +215,17 @@ public class Assignment2Bean {
 				}
 				
 				logic.saveAssignment(assignment);
-				localAssignmentLogic.handleAnnouncement(assignment, assignmentFromDb);
 				
 			} catch( ConflictingAssignmentNameException e){
 				LOG.error(e.getMessage(), e);
 				messages.addMessage(new TargettedMessage("assignment2.assignment_post.conflicting_assignment_name",
 						new Object[] { assignment.getTitle() }, "Assignment2." + key + ".title"));
 				return FAILURE;
-			} 
+			} catch (AnnouncementPermissionException ape) {
+				if (LOG.isDebugEnabled()) LOG.debug("Announcement could not " +
+				"be updated b/c user does not have perm in annc tool");
+				//TODO display to user?
+			}
 			
 			//set Messages
 			if (key.startsWith(EntityBeanLocator.NEW_PREFIX)) {
@@ -301,13 +296,16 @@ public class Assignment2Bean {
 					
 					logic.saveAssignment(assignment);
 					
-					localAssignmentLogic.handleAnnouncement(assignment, assignmentFromDb);
 				} catch( ConflictingAssignmentNameException e){
 					LOG.error(e.getMessage(), e);
 					messages.addMessage(new TargettedMessage("assignment2.assignment_save_draft.conflicting_assignment_name",
 							new Object[] { assignment.getTitle() }, "Assignment2." + key + ".title"));
 					return FAILURE;
-				} 
+				} catch (AnnouncementPermissionException ape) {
+					if (LOG.isDebugEnabled()) LOG.debug("Announcement could not " +
+							"be updated b/c user does not have perm in annc tool");
+					//TODO display to user?
+				}
 				
 				//set Messages
 				messages.addMessage(new TargettedMessage("assignment2.assignment_save_draft",
@@ -362,7 +360,6 @@ public class Assignment2Bean {
 		Assignment2 duplicate = creator.createDuplicate(logic.getAssignmentByIdWithGroupsAndAttachments(assignmentId));
 		try {
 			logic.saveAssignment(duplicate);
-			localAssignmentLogic.handleAnnouncement(duplicate, null);
 			
 		} catch(ConflictingAssignmentNameException e){
 			LOG.error(e.getMessage(), e);
@@ -373,6 +370,10 @@ public class Assignment2Bean {
 			LOG.error(e.getMessage(), e);
 			messages.addMessage(new TargettedMessage("assignment2.assignment_post.security_exception"));
 			return;
+		} catch (AnnouncementPermissionException ape) {
+			if (LOG.isDebugEnabled()) LOG.debug("Announcement could not " +
+			"be updated b/c user does not have perm in annc tool");
+			//TODO display to user?
 		}
 		messages.addMessage(new TargettedMessage("assignment2.assignment_post.duplicate",
 			new Object[] {duplicate.getTitle() }, TargettedMessage.SEVERITY_INFO));

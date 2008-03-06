@@ -145,17 +145,13 @@ public interface AssignmentLogic {
 	public int getStatusForAssignment(Assignment2 assignment);
 	
 	/**
-	 * Given the originalAssignment and the updated version, will determine if an
+	 * Given the originalAssignment and the updated (or newly created) version, will determine if an
 	 * announcement needs to be added, updated, or deleted. Announcements are updated
 	 * if there is a change in title, open date, or group restrictions. They are
 	 * deleted if the assignment is changed to draft status. 
 	 * @param originalAssignmentWithGroups - original assignment with the group info populated
-	 * @param updatedAssignment - updated assignment with the group info populated
-	 * @param newAnncSubject - text for a new announcement's subject
-	 * @param newAnncBody - text for a new announcement's body
-	 * @param revAnncSubject - text for a revised announcement's subject
-	 * @param revAnncBody - text for a revised announcement's body
+	 * @param updatedAssignment - updated (or newly created) assignment with the group info populated
 	 */
-	public void saveAssignmentAnnouncement(Assignment2 originalAssignmentWithGroups, Assignment2 updatedAssignmentWithGroups, 
-			String newAnncSubject, String newAnncBody, String revAnncSubject, String revAnncBody);
+	public void saveAssignmentAnnouncement(Assignment2 originalAssignmentWithGroups, 
+			Assignment2 updatedAssignmentWithGroups);
 }

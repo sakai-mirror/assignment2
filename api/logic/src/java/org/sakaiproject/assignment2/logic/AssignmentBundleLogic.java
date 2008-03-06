@@ -21,6 +21,8 @@
 
 package org.sakaiproject.assignment2.logic;
 
+import java.util.Locale;
+
 /**
  * This is the interface for the Assignment Bundle object
  * 
@@ -32,5 +34,13 @@ public interface AssignmentBundleLogic {
 	public static final String ASSIGNMENT2_BUNDLE = "messages";
 	
 	public String getString(String key);
+	
+	public String getFormattedMessage(String key, Object[] parameters);
+	
+	/**
+	 * 
+	 * @return user's preferred locale
+	 */
+	public Locale getLocale();
 	
 }

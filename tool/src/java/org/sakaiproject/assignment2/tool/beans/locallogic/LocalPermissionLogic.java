@@ -2,13 +2,11 @@ package org.sakaiproject.assignment2.tool.beans.locallogic;
 
 import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
-import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
 import org.sakaiproject.assignment2.tool.producers.*;
 import org.sakaiproject.assignment2.tool.producers.dev.*;
 import org.sakaiproject.assignment2.tool.producers.fragments.*;
 import org.sakaiproject.assignment2.tool.params.SimpleAssignmentViewParams;
-import org.sakaiproject.assignment2.model.Assignment2;
 
 import uk.org.ponder.rsf.builtin.UVBProducer;
 

@@ -6,8 +6,6 @@ import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 
 import uk.org.ponder.messageutil.MessageLocator;
 
-import java.util.Date;
-
 public class AssignmentSubmissionCreator {
 	
 	private ExternalLogic externalLogic;

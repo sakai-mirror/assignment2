@@ -374,27 +374,6 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 
 						}
 						
-						// if this assignment has an announcement and the new
-						// site has an announcements tool, add one in the new site
-						if (assignDef.isHasAnnouncement()) {
-							if (externalLogic.siteHasTool(toContext, ExternalLogic.TOOL_ID_ANNC)) {
-								// we need to add an announcement in the new site
-								try {
-									//TODO we need access to the bundle!
-									String newAnncId = announcementLogic.addOpenDateAnnouncement(
-											newAssignment.getListOfAssociatedGroupReferences(), 
-											toContext, "imported subject", "imported body");
-									newAssignment.setAnnouncementId(newAnncId);
-								} catch (AnnouncementPermissionException ape) {
-									newAssignment.setHasAnnouncement(false);
-									log.info("No announcement added for imported assignment b/c no permission in annc tool");
-								}
-							} else {
-								// this new assignment won't have an annc b/c no tool in site
-								newAssignment.setHasAnnouncement(false);
-							}
-						}
-						
 						try {
 							assignmentLogic.saveAssignment(newAssignment, toContext);
 							if (log.isDebugEnabled()) log.debug("New assignment " + 

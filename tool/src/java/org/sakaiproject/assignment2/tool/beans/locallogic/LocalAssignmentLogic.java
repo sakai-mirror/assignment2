@@ -24,7 +24,6 @@ package org.sakaiproject.assignment2.tool.beans.locallogic;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -36,7 +35,6 @@ import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.utils.ComparatorsUtils;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentGroup;
-import org.sakaiproject.assignment2.tool.beans.Assignment2Bean;
 
 import uk.org.ponder.messageutil.MessageLocator;
 
@@ -72,10 +70,9 @@ public class LocalAssignmentLogic {
 		StringBuilder sb = new StringBuilder();
 		
 		if (restrictedGroups != null) {
-			List<String> groupNameList = new ArrayList();
+			List<String> groupNameList = new ArrayList<String>();
 			
-			for (Iterator groupIter = restrictedGroups.iterator(); groupIter.hasNext();) {
-				AssignmentGroup group = (AssignmentGroup) groupIter.next();
+			for (AssignmentGroup group : restrictedGroups) {
 				if (group != null) {
 					if (siteGroupIdNameMap.containsKey(group.getGroupId())) {
 						String groupName = (String)siteGroupIdNameMap.get(group.getGroupId());
@@ -102,23 +99,6 @@ public class LocalAssignmentLogic {
 		return sb.toString();
 	}
 	
-	public void handleAnnouncement(Assignment2 newAssignment, Assignment2 oldAssignment) {
-		String newAnncSubject = messageLocator.getMessage("assignment2.assignment_annc_subject", new Object[] {newAssignment.getTitle()});
-		String newAnncBody = messageLocator.getMessage("assignment2.assignment_annc_body", new Object[] {newAssignment.getOpenTime()});
-		String revAnncSubject = messageLocator.getMessage("assignment2.assignment_annc_subject_edited", new Object[] {newAssignment.getTitle()});
-		String revAnncBody = messageLocator.getMessage("assignment2.assignment_annc_subject_edited", new Object[] {newAssignment.getOpenTime()});
-
-		try {
-			assignmentLogic.saveAssignmentAnnouncement(oldAssignment, newAssignment, newAnncSubject, 
-					newAnncBody, revAnncSubject, revAnncBody);
-		} catch (AnnouncementPermissionException ape) {
-			LOG.error(ape.getMessage(), ape);
-			// TODO do something since the assignment was saved but
-			// the announcement was not added b/c user doesn't have
-			// perm in the announcements tool
-		}
-	}
-	
 	public void populateNonPersistedFieldsForAssignments(List<Assignment2> assignmentList) {
 		if (assignmentList == null || assignmentList.isEmpty())
 			return;
@@ -127,16 +107,15 @@ public class LocalAssignmentLogic {
 		// that aren't related to the gradebook
 		
 		// create a map of group id to name for all of the groups in this site
-		Map groupIdToNameMap = externalLogic.getGroupIdToNameMapForSite(externalLogic.getCurrentContextId());
+		Map<String, String> groupIdToNameMap = externalLogic.getGroupIdToNameMapForSite(externalLogic.getCurrentContextId());
 		
-		for (Iterator assignIter = assignmentList.iterator(); assignIter.hasNext();) {
-			Assignment2 assign = (Assignment2) assignIter.next();
+		for (Assignment2 assign : assignmentList) {
 			if (assign != null) {
 
 				// first, populate the text for the "For" column based upon group restrictions
 				if (assign.getAssignmentGroupSet() != null && !assign.getAssignmentGroupSet().isEmpty()) {
 					String groupListAsString = getListOfGroupRestrictionsAsString(
-							new ArrayList(assign.getAssignmentGroupSet()), groupIdToNameMap);
+							new ArrayList<AssignmentGroup>(assign.getAssignmentGroupSet()), groupIdToNameMap);
 					assign.setRestrictedToText(groupListAsString);
 				} 
 				else {

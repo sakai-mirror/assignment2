@@ -87,11 +87,6 @@ public class AssignmentSubmissionBean {
 		this.externalLogic = externalLogic;
 	}
 	
-	private ExternalAnnouncementLogic announcementLogic;
-	public void setExternalAnnouncementLogic(ExternalAnnouncementLogic announcementLogic) {
-		this.announcementLogic = announcementLogic;
-	}
-	
 	private PreviewAssignmentSubmissionBean previewAssignmentSubmissionBean;
 	public void setPreviewAssignmentSubmissionBean (PreviewAssignmentSubmissionBean previewAssignmentSubmissionBean) {
 		this.previewAssignmentSubmissionBean = previewAssignmentSubmissionBean;

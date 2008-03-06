@@ -25,6 +25,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 import org.sakaiproject.assignment2.dao.AssignmentDao;
+import org.sakaiproject.assignment2.logic.AssignmentBundleLogic;
 import org.sakaiproject.assignment2.logic.ExternalAnnouncementLogic;
 import org.sakaiproject.assignment2.logic.impl.AssignmentLogicImpl;
 import org.sakaiproject.assignment2.logic.impl.ExternalAnnouncementLogicImpl;
@@ -63,6 +64,7 @@ public abstract class Assignment2TestBase extends AbstractTransactionalSpringCon
 	protected AssignmentLogicImpl assignmentLogic;
 	protected AssignmentSubmissionLogicImpl submissionLogic;
 	protected AssignmentPermissionLogicImpl permissionLogic;
+	protected AssignmentBundleLogic bundleLogic;
 	
 	protected GradebookFrameworkService gradebookFrameworkService;
 	protected GradebookService gradebookService;
@@ -123,6 +125,12 @@ public abstract class Assignment2TestBase extends AbstractTransactionalSpringCon
 					"DAO could not be retrieved from spring");
 		}
     	
+    	bundleLogic = (AssignmentBundleLogic)applicationContext.getBean("org.sakaiproject.assignment2.logic.AssignmentBundleLogic");
+    	if (bundleLogic == null) {
+			throw new NullPointerException(
+					"bundleLogic could not be retrieved from spring");
+		}
+    	
     	gradebookFrameworkService = (GradebookFrameworkService)applicationContext.getBean("org_sakaiproject_service_gradebook_GradebookFrameworkService");
     	if (gradebookFrameworkService == null) {
 			throw new NullPointerException(
@@ -166,6 +174,7 @@ public abstract class Assignment2TestBase extends AbstractTransactionalSpringCon
     	assignmentLogic.setExternalLogic(externalLogic);
     	assignmentLogic.setAssignmentSubmissionLogic(submissionLogic);
     	assignmentLogic.setPermissionLogic(permissionLogic);
+    	assignmentLogic.setAssignmentBundleLogic(bundleLogic);
 	
     }
 
@@ -179,6 +188,7 @@ public abstract class Assignment2TestBase extends AbstractTransactionalSpringCon
 		return new String[] { "hibernate-test.xml", "spring-hibernate.xml",
 				"spring-hib-gb-test.xml",
 				"spring-hib-sections-test.xml",
+				"logic-beans-test.xml"
 
 		};
 

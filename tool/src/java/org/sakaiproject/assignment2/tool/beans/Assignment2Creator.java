@@ -71,10 +71,9 @@ public class Assignment2Creator {
 		dup.setRemoved(Boolean.FALSE);
 		
 		// let's duplicate the attachments and group restrictions
-		Set<AssignmentGroup> assignGroupSet = new HashSet();
+		Set<AssignmentGroup> assignGroupSet = new HashSet<AssignmentGroup>();
 		if (assignment.getAssignmentGroupSet() != null && !assignment.getAssignmentGroupSet().isEmpty()) {
-			for (Iterator groupIter = assignment.getAssignmentGroupSet().iterator(); groupIter.hasNext();) {
-				AssignmentGroup group = (AssignmentGroup) groupIter.next();
+			for (AssignmentGroup group : assignment.getAssignmentGroupSet()) {
 				if (group != null) {
 					AssignmentGroup newGroup = new AssignmentGroup(dup, group.getGroupId());
 					assignGroupSet.add(newGroup);
@@ -82,10 +81,9 @@ public class Assignment2Creator {
 			}
 		}
 		
-		Set<AssignmentAttachment> attachSet = new HashSet();
+		Set<AssignmentAttachment> attachSet = new HashSet<AssignmentAttachment>();
 		if (assignment.getAttachmentSet() != null && !assignment.getAttachmentSet().isEmpty()) {
-			for (Iterator attachIter = assignment.getAttachmentSet().iterator(); attachIter.hasNext();) {
-				AssignmentAttachment attach = (AssignmentAttachment) attachIter.next();
+			for (AssignmentAttachment attach : assignment.getAttachmentSet()) {
 				if (attach != null) {
 					AssignmentAttachment newGroup = new AssignmentAttachment(dup, attach.getAttachmentReference());
 					attachSet.add(newGroup);

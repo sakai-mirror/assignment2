@@ -602,23 +602,16 @@ public class AssignmentLogicTest extends Assignment2TestBase {
     public void testSaveAssignmentAnnouncement() throws Exception {
     	// try passing a null updatedAssignment
     	try {
-    		assignmentLogic.saveAssignmentAnnouncement(new Assignment2(), null, 
-    				"newAnncSubject", "newAnncBody", "revAnncSubject", "revAnncBody");
+    		assignmentLogic.saveAssignmentAnnouncement(new Assignment2(), null);
     		fail("did not catch null updatedAssignment passed to saveAssignmentAnnouncement");
     	} catch(IllegalArgumentException iae) {}
     	
     	// try passing an updatedAssignment without an id
     	try {
-    		assignmentLogic.saveAssignmentAnnouncement(new Assignment2(), new Assignment2(), 
-    				"newAnncSubject", "newAnncBody", "revAnncSubject", "revAnncBody");
+    		assignmentLogic.saveAssignmentAnnouncement(new Assignment2(), new Assignment2());
     		fail("did not catch updatedAssignment without an id passed to saveAssignmentAnnouncement");
     	} catch(IllegalArgumentException iae) {}
-    	
-    	// try passing null text
-    	try {
-    		assignmentLogic.saveAssignmentAnnouncement(new Assignment2(), new Assignment2(), null, "bogus", null, null);
-    		fail("Did not catch null text passed to saveAssignmentAnnouncement");
-    	} catch(IllegalArgumentException iae) {}
+
     	
     	//TODO - not sure how to access announcements from the test!!!!
     }

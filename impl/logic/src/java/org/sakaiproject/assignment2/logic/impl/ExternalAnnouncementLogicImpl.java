@@ -23,7 +23,6 @@ package org.sakaiproject.assignment2.logic.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -103,7 +102,7 @@ public class ExternalAnnouncementLogicImpl implements ExternalAnnouncementLogic 
 	public String updateOpenDateAnnouncement(String announcementId, Collection<String> restrictedGroupIds, String contextId, 
 			String announcementSubject, String announcementBody) throws AnnouncementPermissionException {
 		if (contextId == null) {
-    		throw new IllegalArgumentException("null contextId passed to addOpenDateAnnouncement");
+    		throw new IllegalArgumentException("null contextId passed to updateOpenDateAnnouncement");
     	}
 		
     	if (announcementId == null) {

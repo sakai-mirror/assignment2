@@ -21,6 +21,7 @@
 
 package org.sakaiproject.assignment2.logic.impl;
 
+import java.text.DateFormat;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -254,6 +255,15 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 	            throw new StaleObjectModificationException(holfe);
 			}
 		}
+		
+		// now let's handle the impact on announcements
+		try {
+			saveAssignmentAnnouncement(existingAssignment, assignment);
+		} catch (AnnouncementPermissionException ape) {
+			throw new AnnouncementPermissionException("The current user is not " +
+					"authorized to update announcements in the announcements " +
+					"tool. Any related announcements were NOT updated");
+		}
 	}
 	
 
@@ -270,6 +280,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 		String currentContextId = externalLogic.getCurrentContextId();
 		
 		if (!permissionLogic.isCurrentUserAbleToEditAssignments(currentContextId)) {
+			if (log.isDebugEnabled()) log.debug("User not authorized to add/delete/update announcements");
 			throw new SecurityException("Current user may not delete assignment " + assignment.getTitle()
                     + " because they do not have edit permission");
 		}
@@ -517,8 +528,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 		return groupsToRemove;
 	}
 	
-	public void saveAssignmentAnnouncement(Assignment2 originalAssignment, Assignment2 updatedAssignment, 
-			String newAnncSubject, String newAnncBody, String revAnncSubject, String revAnncBody) {
+	public void saveAssignmentAnnouncement(Assignment2 originalAssignment, Assignment2 updatedAssignment) {
 		if (updatedAssignment == null) {
 			throw new IllegalArgumentException("Null updatedAssignment passed to saveAssignmentAnnouncement");
 		}
@@ -527,11 +537,22 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 			throw new IllegalArgumentException("The updatedAssignment passed to saveAssignmentAnnouncement must have an id");
 		}
 		
-		if (newAnncSubject == null || newAnncBody == null || revAnncSubject == null || revAnncBody == null) {
-			throw new IllegalArgumentException("Null announcement text passed to saveAssignmentAnnouncement");
+		if (!permissionLogic.isCurrentUserAbleToEditAssignments(updatedAssignment.getContextId())) {
+			throw new SecurityException("Current user is not allowed to edit assignments in context " + updatedAssignment.getContextId());
 		}
+
+		// make the open date locale-aware
+		// use a date which is related to the current users locale
+        DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, bundleLogic.getLocale());
 		
-		String currentContextId = externalLogic.getCurrentContextId();
+		String newAnncSubject = bundleLogic.getFormattedMessage("assignment2.assignment_annc_subject",
+    			new Object[] {updatedAssignment.getTitle()});
+    	String newAnncBody = bundleLogic.getFormattedMessage("assignment2.assignment_annc_body",
+    			new Object[] {df.format(updatedAssignment.getOpenTime())});
+    	String updAnncSubject = bundleLogic.getFormattedMessage("assignment2.assignment_annc_subject_edited",
+    			new Object[] {updatedAssignment.getTitle()});
+    	String updAnncBody = bundleLogic.getFormattedMessage("assignment2.assignment_annc_subject_edited",
+    			new Object[] {df.format(updatedAssignment.getOpenTime())});
 		
 		if (originalAssignment == null) {
 			// this was a new assignment
@@ -539,26 +560,27 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 			if (updatedAssignment.getHasAnnouncement() && !updatedAssignment.isDraft()) {
 				// add an announcement for the open date for this assignment
 				String announcementId = announcementLogic.addOpenDateAnnouncement(
-						updatedAssignment.getListOfAssociatedGroupReferences(), currentContextId,
-						newAnncSubject, newAnncBody);
+						updatedAssignment.getListOfAssociatedGroupReferences(), 
+						updatedAssignment.getContextId(), newAnncSubject,
+						newAnncBody);
 				updatedAssignment.setAnnouncementId(announcementId);
 				dao.update(updatedAssignment);
 			}
 		} else if (updatedAssignment.isDraft()) {
 			if (updatedAssignment.getAnnouncementId() != null) {
-				announcementLogic.deleteOpenDateAnnouncement(updatedAssignment.getAnnouncementId(), currentContextId);
+				announcementLogic.deleteOpenDateAnnouncement(updatedAssignment.getAnnouncementId(), updatedAssignment.getContextId());
 				updatedAssignment.setAnnouncementId(null);
 				dao.update(updatedAssignment);
 			}
 		} else if (originalAssignment.getAnnouncementId() == null && updatedAssignment.getHasAnnouncement()) {
 			// this is a new announcement
 			String announcementId = announcementLogic.addOpenDateAnnouncement(updatedAssignment.getListOfAssociatedGroupReferences(), 
-					currentContextId, newAnncSubject, newAnncBody);
+					updatedAssignment.getContextId(), newAnncSubject, newAnncBody);
 			updatedAssignment.setAnnouncementId(announcementId);
 			dao.update(updatedAssignment);
 		} else if (originalAssignment.getAnnouncementId() != null && !updatedAssignment.getHasAnnouncement()) {
 			// we must remove the original announcement
-			announcementLogic.deleteOpenDateAnnouncement(updatedAssignment.getAnnouncementId(), currentContextId);
+			announcementLogic.deleteOpenDateAnnouncement(updatedAssignment.getAnnouncementId(), updatedAssignment.getContextId());
 			updatedAssignment.setAnnouncementId(null);
 			dao.update(updatedAssignment);
 		} else if (updatedAssignment.getHasAnnouncement()){
@@ -570,7 +592,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 					!originalAssignment.getListOfAssociatedGroupReferences().equals(updatedAssignment.getListOfAssociatedGroupReferences())) {
 				announcementLogic.updateOpenDateAnnouncement(updatedAssignment.getAnnouncementId(), 
 						updatedAssignment.getListOfAssociatedGroupReferences(), 
-						currentContextId, revAnncSubject, revAnncBody);
+						updatedAssignment.getContextId(), updAnncSubject, updAnncBody);
 				// don't need to re-save assignment b/c id already exists
 			}
 		}
