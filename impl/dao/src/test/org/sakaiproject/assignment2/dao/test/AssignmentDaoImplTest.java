@@ -562,6 +562,7 @@ public class AssignmentDaoImplTest extends Assignment2DaoTestBase {
 		}
 		catch (IllegalArgumentException iae)
 		{
+			// expected response
 		}
 
 		try
@@ -573,6 +574,7 @@ public class AssignmentDaoImplTest extends Assignment2DaoTestBase {
 		}
 		catch (IllegalArgumentException iae)
 		{
+			// expected response
 		}
 
 		try
@@ -584,6 +586,7 @@ public class AssignmentDaoImplTest extends Assignment2DaoTestBase {
 		}
 		catch (IllegalArgumentException iae)
 		{
+			// expected response
 		}
 
 		try

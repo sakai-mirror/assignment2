@@ -1,4 +1,4 @@
-package org.sakaiproject.assignments2.tool.beans;
+package org.sakaiproject.assignment2.tool.beans;
 
 import junit.extensions.TestSetup;
 import junit.framework.Test;

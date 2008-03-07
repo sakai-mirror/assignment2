@@ -21,7 +21,6 @@
 package org.sakaiproject.assignment2.logic.test;
 
 import java.util.Date;
-import java.util.Iterator;
 import java.util.Set;
 
 import org.sakaiproject.assignment2.dao.AssignmentDao;

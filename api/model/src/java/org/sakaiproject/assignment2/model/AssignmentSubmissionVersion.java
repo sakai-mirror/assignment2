@@ -32,7 +32,7 @@ import java.util.regex.Pattern;
  * 
  * @author <a href="mailto:wagnermr@iupui.edu">michelle wagner</a>
  */
-public class AssignmentSubmissionVersion {
+public class AssignmentSubmissionVersion implements FeedbackVersion {
 	
 	private Long id;
 	private AssignmentSubmission assignmentSubmission;

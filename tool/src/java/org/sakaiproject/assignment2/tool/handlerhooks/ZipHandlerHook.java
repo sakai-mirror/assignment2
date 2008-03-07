@@ -17,52 +17,63 @@ import uk.org.ponder.util.UniversalRuntimeException;
  * Handles the generation of zip files for download all
  * 
  * @author Stuart Freeman
- *
  */
-public class ZipHandlerHook implements HandlerHook {
-
+public class ZipHandlerHook implements HandlerHook
+{
+	private static Log log = LogFactory.getLog(ZipHandlerHook.class);
 	private HttpServletResponse response;
-	public void setResponse(HttpServletResponse response) {
+	private ZipExporter zipExporter;
+	private ViewParameters viewparams;
+
+	public void setResponse(HttpServletResponse response)
+	{
 		this.response = response;
 	}
-	
-	private ZipExporter zipExporter;
-	public void setZipExporter (ZipExporter zipExporter) {
+
+	public void setZipExporter(ZipExporter zipExporter)
+	{
 		this.zipExporter = zipExporter;
 	}
-	
-	private ViewParameters viewparams;
-	public void setViewparams(ViewParameters viewparams) {
+
+	public void setViewparams(ViewParameters viewparams)
+	{
 		this.viewparams = viewparams;
 	}
-	
-	private static Log log = LogFactory.getLog(ZipHandlerHook.class);
-	
-	public boolean handle() {
+
+	public boolean handle()
+	{
 		ZipViewParams zvp;
-		if (viewparams instanceof ZipViewParams) {
+		if (viewparams instanceof ZipViewParams)
+		{
 			zvp = (ZipViewParams) viewparams;
-		} else {
+		}
+		else
+		{
 			return false;
 		}
 		log.debug("Handling zip");
 		OutputStream resultsOutputStream = null;
-		try {
+		try
+		{
 			resultsOutputStream = response.getOutputStream();
-		}catch (IOException ioe) {
-			throw UniversalRuntimeException.accumulate(ioe, "Unable to get response stream for Download All Zip");
 		}
-		
+		catch (IOException ioe)
+		{
+			throw UniversalRuntimeException.accumulate(ioe,
+					"Unable to get response stream for Download All Zip");
+		}
+
 		response.setHeader("Content-disposition", "inline; filename=bulk_download.zip");
 		response.setContentType("application/zip");
-		
-		try{
+
+		try
+		{
 			zipExporter.getSubmissionsZip(resultsOutputStream, zvp.assignmentId);
 		}
-		catch(PermissionException pe){
+		catch (PermissionException pe)
+		{
 			throw UniversalRuntimeException.accumulate(pe, "User doesn't have permission");
 		}
 		return true;
 	}
-
 }

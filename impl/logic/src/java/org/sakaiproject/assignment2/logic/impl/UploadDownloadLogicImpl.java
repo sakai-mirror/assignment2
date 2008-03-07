@@ -15,15 +15,18 @@ import java.util.zip.ZipFile;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.assignment2.logic.AssignmentBundleLogic;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
+import org.sakaiproject.assignment2.logic.ExternalLogic;
+import org.sakaiproject.assignment2.logic.UploadDownloadLogic;
+import org.sakaiproject.assignment2.logic.UploadException;
 import org.sakaiproject.assignment2.model.Assignment2;
-import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.model.FeedbackAttachment;
+import org.sakaiproject.assignment2.model.FeedbackVersion;
 import org.sakaiproject.assignment2.model.UploadAllOptions;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
-import org.sakaiproject.component.api.ServerConfigurationService;
 import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.content.api.ContentResourceEdit;
 import org.sakaiproject.content.api.ContentTypeImageService;
@@ -35,7 +38,6 @@ import org.sakaiproject.exception.OverQuotaException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.exception.ServerOverloadException;
 import org.sakaiproject.time.api.TimeService;
-import org.sakaiproject.user.api.UserNotDefinedException;
 import org.sakaiproject.util.StringUtil;
 
 /**
@@ -43,17 +45,18 @@ import org.sakaiproject.util.StringUtil;
  * 
  * @author <a href="mailto:carl.hall@et.gatech.edu">Carl Hall</a>
  */
-public class UploadDownloadLogicImpl
+public class UploadDownloadLogicImpl implements UploadDownloadLogic
 {
 	private static final Log log = LogFactory.getLog(UploadDownloadLogicImpl.class);
 
 	private AssignmentLogic assnLogic;
 	private AssignmentSubmissionLogic assnSubLogic;
 	private TimeService ts;
-	private ServerConfigurationService scs;
 	private ContentHostingService chs;
 	private ContentTypeImageService ctis;
 	private ExternalGradebookLogic gradebookLogic;
+	private AssignmentBundleLogic bundle;
+	private ExternalLogic externalLogic;
 
 	public void setAssnLogic(AssignmentLogic assnLogic)
 	{
@@ -63,11 +66,6 @@ public class UploadDownloadLogicImpl
 	public void setTS(TimeService ts)
 	{
 		this.ts = ts;
-	}
-
-	public void setSCS(ServerConfigurationService scs)
-	{
-		this.scs = scs;
 	}
 
 	public void setCHS(ContentHostingService chs)
@@ -90,82 +88,89 @@ public class UploadDownloadLogicImpl
 		this.assnSubLogic = assnSubLogic;
 	}
 
+	public void setAssignmentBundleLogic(AssignmentBundleLogic bundle)
+	{
+		this.bundle = bundle;
+	}
+
+	public void setExternalLogic(ExternalLogic externalLogic)
+	{
+		this.externalLogic = externalLogic;
+	}
+
 	/**
-	 * Process uploaded zip file.
-	 * 
-	 * @param assignmentId
-	 * @param options
-	 * @param fileFromUpload
-	 * @param submissionAttachmentFolder
-	 *            Should come from the system prop download.submission.attachment
-	 * @param feedbackAttachmentFolder
-	 *            Should come from the system prop download.feedback.attachment
+	 * @see org.sakaiproject.assignment2.logic.UploadDownloadLogic#uploadAll(java.lang.Long,
+	 *      org.sakaiproject.assignment2.model.UploadAllOptions, java.util.zip.ZipFile,
+	 *      java.lang.String, java.lang.String)
 	 */
-	public void uploadAll(Long assignmentId, UploadAllOptions options, ZipFile zipFile,
-			String submissionAttachmentFolder, String feedbackAttachmentFolder)
-			throws UploadException, IOException, UserNotDefinedException, InconsistentException,
-			IdUsedException, IdInvalidException, ServerOverloadException, PermissionException,
-			OverQuotaException
+	public void uploadAll(Long assignmentId, UploadAllOptions options, ZipFile zipFile) throws UploadException
 	{
 		ArrayList<String> alerts = new ArrayList<String>();
 
 		if (!options.isFeedbackText() && !options.isGradeFile() && !options.isComments()
 				&& !options.isFeedbackAttachments())
 		{
-			return;
-			// has to choose one upload feature
-			// throw new UploadException("${uploadall.alert.choose.element}");
+			String key = "uploadall.alert.choose.element";
+			String msg = bundle.getString(key);
+			log.warn(msg);
+			throw new UploadException(key, msg);
 		}
 
 		// constructor the hashtable for all submission objects
 		Hashtable<String, UploadGradeWrapper> submisTable = new Hashtable<String, UploadGradeWrapper>();
 		Assignment2 assn = assnLogic.getAssignmentById(assignmentId);
 
-		String max_file_size_mb = scs.getString("content.upload.max", "1");
-		int max_bytes = 1024 * 1024;
-		try
-		{
-			max_bytes = Integer.parseInt(max_file_size_mb) * 1024 * 1024;
-		}
-		catch (NumberFormatException e)
-		{
-			// if unable to parse an integer from the value
-			// in the properties file, use 1 MB as a default
-			max_file_size_mb = "1";
-			max_bytes = 1024 * 1024;
-		}
-
 		if (zipFile == null)
-		// || StringUtil.trimToNull(fileFromUpload.getOriginalFilename()) == null)
 		{
-			return;
-			// throw new UploadException("${uploadall.alert.zipFile}");
+			String key = "uploadall.alert.zipFile";
+			String msg = bundle.getString(key);
+			log.error(msg);
+			throw new UploadException(key, msg);
 		}
 
 		Enumeration<? extends ZipEntry> entries = zipFile.entries();
+		String feedbackAttachmentFolder = bundle.getString("download.feedback.attachment");
 		while (entries.hasMoreElements())
 		{
 			ZipEntry entry = entries.nextElement();
 			String entryName = entry.getName();
 			if (!entry.isDirectory())
 			{
-				InputStream is = zipFile.getInputStream(entry);
-				if (entryName.endsWith("grades.csv") && options.isGradeFile())
-					processGrades(alerts, submisTable, assn, StringUtil
-							.trimToZero(readIntoString(is)));
-				else
-					processEntry(options, feedbackAttachmentFolder, submisTable, is, entryName);
+				try
+				{
+					InputStream is = zipFile.getInputStream(entry);
+					if (entryName.endsWith("grades.csv") && options.isGradeFile())
+						processGrades(alerts, submisTable, assn, StringUtil
+								.trimToZero(readIntoString(is)));
+					else
+						processEntry(options, feedbackAttachmentFolder, submisTable, is, entryName);
+				}
+				catch (Exception e)
+				{
+					// catch everything from these calls and wrap with generic UploadException
+					throw new UploadException(e.getMessage(), e);
+				}
 			}
 		}
 
+		String userId = externalLogic.getCurrentUserId();
 		for (String userEid : submisTable.keySet())
 		{
 			UploadGradeWrapper w = (UploadGradeWrapper) submisTable.get(userEid);
-			// save the changes
-			AssignmentSubmissionVersion ver = assnSubLogic.getVersionByUserIdAndSubmittedTime(
-					userEid, new Date(ts.newTimeGmt(w.timeStamp).getTime()));
-			assnSubLogic.saveInstructorFeedback(ver.getId(), userEid, w.grade, w.feedbackText,
-					w.comment, w.feedbackAttachments);
+			// save the feedback changes
+			FeedbackVersion feedback = assnSubLogic.getFeedbackByUserIdAndSubmittedTime(userEid,
+					new Date(ts.newTimeGmt(w.timeStamp).getTime()));
+			if (options.isComments())
+				feedback.setFeedbackNotes(w.comment);
+			if (options.isFeedbackText())
+				feedback.setAnnotatedText(w.feedbackText);
+			if (options.isFeedbackAttachments())
+				feedback.setFeedbackAttachSet(w.feedbackAttachments);
+			feedback.setLastFeedbackSubmittedBy(userId);
+			assnSubLogic.updateFeedbackForVersion(feedback);
+
+			// save the grade
+//			gradebookLogic.updateGrade(w.grade);
 		}
 	}
 
@@ -177,9 +182,8 @@ public class UploadDownloadLogicImpl
 		String userEid = getUserEid(entryName);
 		UploadGradeWrapper r = submisTable.get(userEid);
 		if (r == null)
-		{
 			r = new UploadGradeWrapper();
-		}
+
 		if (options.isComments() && entryName.contains("comments"))
 		{
 			// read the comments file
@@ -238,7 +242,7 @@ public class UploadDownloadLogicImpl
 
 	private void processGrades(ArrayList<String> alerts,
 			Hashtable<String, UploadGradeWrapper> submisTable, Assignment2 assn, String result)
-			throws IOException, UserNotDefinedException
+			throws UploadException
 	{
 		// read grades.cvs from zip
 		String[] lines = splitLine(result);
@@ -246,12 +250,9 @@ public class UploadDownloadLogicImpl
 		// - line 1: assignment title, type of grading
 		// - line 2: blank line
 		// - line 3: column header
-		// -- [display name, user id, last name, first name, grade]
+		// -- [display id, user id, last name, first name, grade]
 		// define position constants
 		final int DISP_ID = 0;
-		final int USER_ID = 1;
-		final int LAST_NAME = 2;
-		final int FIRST_NAME = 3;
 		final int GRADE = 4;
 		for (int i = 3; i < lines.length; i++)
 		{
@@ -279,6 +280,10 @@ public class UploadDownloadLogicImpl
 							: itemString;
 					w.grade = grade;
 					submisTable.put(displayId, w);
+				}
+				else
+				{
+					throw new UploadException(alerts);
 				}
 			}
 		}
@@ -410,7 +415,7 @@ public class UploadDownloadLogicImpl
 			}
 			if (invalid)
 			{
-				alerts.add("${plesuse0}");
+				alerts.add(bundle.getString("plesuse0"));
 			}
 		}
 	}
@@ -425,7 +430,7 @@ public class UploadDownloadLogicImpl
 			if (grade.startsWith("-"))
 			{
 				// check for negative sign
-				alerts.add("${plesuse3}");
+				alerts.add(bundle.getString("plesuse3"));
 			}
 			else
 			{
@@ -440,7 +445,7 @@ public class UploadDownloadLogicImpl
 						if (grade.length() > index + 2)
 						{
 							// if there are more than one decimal point
-							alerts.add("${plesuse2}");
+							alerts.add(bundle.getString("plesuse2"));
 						}
 						else
 						{
@@ -462,7 +467,7 @@ public class UploadDownloadLogicImpl
 					else
 					{
 						// grade is "."
-						alerts.add("${plesuse1}");
+						alerts.add(bundle.getString("plesuse1"));
 					}
 				}
 				else
@@ -498,7 +503,7 @@ public class UploadDownloadLogicImpl
 		}
 		if (invalid)
 		{
-			alerts.add("${plesuse1}");
+			alerts.add(bundle.getString("plesuse1"));
 		}
 		else
 		{
@@ -506,8 +511,8 @@ public class UploadDownloadLogicImpl
 			int maxDec = Integer.MAX_VALUE - maxInt * 10;
 			// case 2: Due to our internal scaling, input String is larger than Integer.MAX_VALUE/10
 			alerts.add(grade.substring(0, grade.length() - 1) + "."
-					+ grade.substring(grade.length() - 1) + " ${plesuse4}" + maxInt + "." + maxDec
-					+ ".");
+					+ grade.substring(grade.length() - 1) + " " + bundle.getString("plesuse4")
+					+ maxInt + "." + maxDec + ".");
 		}
 	}
 

@@ -30,6 +30,7 @@ import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.model.FeedbackAttachment;
+import org.sakaiproject.assignment2.model.FeedbackVersion;
 import org.sakaiproject.assignment2.model.SubmissionAttachment;
 
 /**
@@ -126,9 +127,6 @@ public interface AssignmentSubmissionLogic {
 	public void saveInstructorFeedback(Long versionId, String studentId, Assignment2 assignment, 
 			Integer numSubmissionsAllowed, Date resubmitCloseTime, String annotatedText, 
 			String feedbackNotes, Date releasedTime, Set<FeedbackAttachment> feedbackAttachSet);
-
-	public void saveInstructorFeedback(Long versionId, String studentId, String grade,
-			String annotatedText, String feedbackNotes, Set<FeedbackAttachment> feedbackAttachSet);
 
 	/**
 	 * 
@@ -235,5 +233,13 @@ public interface AssignmentSubmissionLogic {
 	 * @param submittedTime
 	 * @return
 	 */
-	public AssignmentSubmissionVersion getVersionByUserIdAndSubmittedTime(String userId, Date submittedTime);
+	public FeedbackVersion getFeedbackByUserIdAndSubmittedTime(String userId, Date submittedTime);
+
+	/**
+	 * Update the feedback aspects of a submission version. The submission version is expected to
+	 * exist prior to using this method.
+	 * 
+	 * @param feedback
+	 */
+	public void updateFeedbackForVersion(FeedbackVersion feedback);
 }

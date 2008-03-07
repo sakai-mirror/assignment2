@@ -36,6 +36,7 @@ import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.FeedbackAttachment;
+import org.sakaiproject.assignment2.model.FeedbackVersion;
 import org.sakaiproject.assignment2.model.SubmissionAttachment;
 import org.sakaiproject.assignment2.model.SubmissionAttachmentBase;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
@@ -78,7 +79,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 	public void setPermissionLogic(AssignmentPermissionLogic permissionLogic) {
 		this.permissionLogic = permissionLogic;
 	}
-    
+
 	public void init(){
 		if (log.isDebugEnabled()) log.debug("init");
 	}
@@ -349,81 +350,6 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			throw new StaleObjectModificationException(holfe);
 		} catch (StaleObjectStateException sose) {
 			if(log.isInfoEnabled()) log.info("An optimistic locking failure occurred while attempting to update submission version" + version.getId());
-			throw new StaleObjectModificationException(sose);
-		}
-	}
-
-	public void saveInstructorFeedback(Long versionId, String studentId, String grade,
-			String annotatedText, String feedbackNotes, Set<FeedbackAttachment> feedbackAttachSet)
-	{
-		Date currentTime = new Date();
-		String currentUserId = externalLogic.getCurrentUserId();
-		AssignmentSubmissionVersion version = dao
-				.getAssignmentSubmissionVersionByIdWithAttachments(versionId);
-		// TODO this should call to GB for this func.  The call below does nothing.
-		version.getAssignmentSubmission().setGradebookGrade(grade);
-		if (annotatedText != null)
-			version.setAnnotatedText(annotatedText);
-		if (feedbackNotes != null)
-			version.setFeedbackNotes(feedbackNotes);
-		version.setLastFeedbackSubmittedBy(currentUserId);
-		version.setLastFeedbackTime(currentTime);
-
-		// identify any attachments that were deleted
-		Set<SubmissionAttachmentBase> attachToDelete = identifyAttachmentsToDelete(version
-				.getFeedbackAttachSet(), feedbackAttachSet);
-		Set<SubmissionAttachmentBase> attachToCreate = identifyAttachmentsToCreate(feedbackAttachSet);
-
-		// make sure the version was populated on the FeedbackAttachments
-		populateVersionForAttachmentSet(attachToCreate, version);
-		populateVersionForAttachmentSet(attachToDelete, version);
-
-		try
-		{
-
-			Set<AssignmentSubmissionVersion> versionSet = new HashSet<AssignmentSubmissionVersion>();
-			versionSet.add(version);
-
-			// Set<AssignmentSubmission> submissionSet = new HashSet();
-			// submissionSet.add(submission);
-
-			if (attachToCreate == null)
-			{
-				attachToCreate = new HashSet<SubmissionAttachmentBase>();
-			}
-
-			dao.saveMixedSet(new Set[] { versionSet, attachToCreate });
-			if (log.isDebugEnabled())
-			{
-				AssignmentSubmission submission = version.getAssignmentSubmission();
-				log.debug("Updated/Added feedback for version " + version.getId() + " for user "
-						+ submission.getUserId() + " for assignment "
-						+ submission.getAssignment().getTitle() + " ID: "
-						+ submission.getAssignment().getId());
-				log.debug("Created feedbackAttachments: " + attachToCreate.size());
-			}
-
-			if (attachToDelete != null && !attachToDelete.isEmpty())
-			{
-				dao.deleteSet(attachToDelete);
-				if (log.isDebugEnabled())
-					log.debug("Removed feedback attachments deleted for updated version "
-							+ version.getId() + " by user " + currentUserId);
-			}
-
-		}
-		catch (HibernateOptimisticLockingFailureException holfe)
-		{
-			if (log.isInfoEnabled())
-				log.info("An optimistic locking failure occurred while attempting to update submission version"
-								+ version.getId());
-			throw new StaleObjectModificationException(holfe);
-		}
-		catch (StaleObjectStateException sose)
-		{
-			if (log.isInfoEnabled())
-				log.info("An optimistic locking failure occurred while attempting to update submission version"
-								+ version.getId());
 			throw new StaleObjectModificationException(sose);
 		}
 	}
@@ -1096,10 +1022,45 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		return submission;
 	}
 
-	public AssignmentSubmissionVersion getVersionByUserIdAndSubmittedTime(String userId, Date submittedTime)
+	public FeedbackVersion getFeedbackByUserIdAndSubmittedTime(String userId, Date submittedTime)
 	{
 		AssignmentSubmissionVersion v = dao.getVersionByUserIdAndSubmittedTime(userId,
 				submittedTime);
 		return v;
+	}
+
+	public void updateFeedbackForVersion(FeedbackVersion feedback)
+	{
+		if (feedback == null)
+			throw new IllegalArgumentException("Feedback cannot be null.");
+		if (feedback.getId() == null)
+			throw new IllegalArgumentException("Cannot update feedback without ID.  Please create a submission version first.");
+
+		AssignmentSubmissionVersion asv = (AssignmentSubmissionVersion) dao.findById(
+				AssignmentSubmissionVersion.class, feedback.getId());
+
+		if (asv == null)
+			throw new IllegalArgumentException("Cannot find submission version with id = " + feedback.getId());
+
+		if (feedback.getAnnotatedText() != null)
+			asv.setAnnotatedText(feedback.getAnnotatedText());
+
+		if (feedback.getFeedbackAttachSet() != null)
+			asv.setFeedbackAttachSet(feedback.getFeedbackAttachSet());
+
+		if (feedback.getFeedbackNotes() != null)
+			asv.setFeedbackNotes(feedback.getFeedbackNotes());
+
+		if (feedback.getLastFeedbackTime() != null)
+			asv.setLastFeedbackTime(feedback.getLastFeedbackTime());
+		else
+			asv.setLastFeedbackTime(new Date());
+
+		if (feedback.getLastFeedbackSubmittedBy() != null)
+			asv.setLastFeedbackSubmittedBy(feedback.getLastFeedbackSubmittedBy());
+		else
+			asv.setLastFeedbackSubmittedBy(externalLogic.getCurrentUserId());
+
+		dao.update(asv);
 	}
 }
