@@ -21,7 +21,7 @@
 
 package org.sakaiproject.assignment2.logic.impl;
 
-import java.util.Calendar;
+import java.util.Date;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -60,10 +60,11 @@ import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.exception.ServerOverloadException;
 import org.sakaiproject.exception.TypeException;
 import org.sakaiproject.site.api.Group;
-import org.sakaiproject.time.api.TimeBreakdown;
 import org.sakaiproject.assignment2.logic.entity.AssignmentDefinition;
 import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.content.api.ContentResource;
+
+
 
 /**
  * This is the implementation of methods related to the import/export of
@@ -83,11 +84,6 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 	private ExternalGradebookLogic gradebookLogic;
 	public void setExternalGradebookLogic(ExternalGradebookLogic gradebookLogic) {
 		this.gradebookLogic = gradebookLogic;
-	}
-
-	private ExternalAnnouncementLogic announcementLogic;
-	public void setExternalAnnouncementLogic(ExternalAnnouncementLogic announcementLogic) {
-		this.announcementLogic = announcementLogic;
 	}
 
 	private AssignmentLogic assignmentLogic;
@@ -271,6 +267,7 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 						newAssignment.setNotificationType(assignDef.getNotificationType());
 						newAssignment.setNumSubmissionsAllowed(assignDef.getNumSubmissionsAllowed());
 						newAssignment.setOpenTime(assignDef.getOpenDate());
+						newAssignment.setDueDateForUngraded(assignDef.getDueDateForUngraded());
 						
 						if (assignDef.getSortIndex() == null) {
 							int index = dao.getHighestSortIndexInSite(toContext);
@@ -381,6 +378,8 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 						} catch (ConflictingAssignmentNameException cane) {
 							if (log.isInfoEnabled()) log.info("Assignment with title " +
 									newAssignment.getTitle() + " already exists so was not added to site " + toContext);
+						} catch (AnnouncementPermissionException ape) {
+							log.warn("No announcements were added because the user does not have permission in the announcements tool");
 						}
 					}
 				}
@@ -403,17 +402,12 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 			
 			AssignmentDefinition newAssnDef = new AssignmentDefinition();
 			
-			Calendar cal = Calendar.getInstance();
-			TimeBreakdown openTime = oAssignment.getOpenTime().breakdownLocal();
-			cal.set(openTime.getYear(), openTime.getMonth(), openTime.getDay(), 
-					openTime.getHour(), openTime.getMin(), openTime.getSec());
-			newAssnDef.setOpenDate(cal.getTime());
+			Date openDate = new Date(oAssignment.getOpenTime().getTime());
+			newAssnDef.setOpenDate(openDate);
 			
 			if (oAssignment.getCloseTime() != null) {
-				TimeBreakdown closeTime = oAssignment.getCloseTime().breakdownLocal();
-				cal.set(closeTime.getYear(), closeTime.getMonth(), closeTime.getDay(), 
-						closeTime.getHour(), closeTime.getMin(), closeTime.getSec());
-				newAssnDef.setAcceptUntilDate(cal.getTime());
+				Date closeDate = new Date(oAssignment.getCloseTime().getTime());
+				newAssnDef.setAcceptUntilDate(closeDate);
 			}
 			
 			newAssnDef.setTitle(oAssignment.getTitle());
@@ -493,15 +487,16 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 			if (oContent.getTypeOfGrade() == Assignment.UNGRADED_GRADE_TYPE) {
 				newAssnDef.setUngraded(true);
 				if (oAssignment.getDueTime() != null) {
-					TimeBreakdown dueTime = oAssignment.getOpenTime().breakdownLocal();
-					cal.set(dueTime.getYear(), dueTime.getMonth(), dueTime.getDay(), 
-							dueTime.getHour(), dueTime.getMin(), dueTime.getSec());
-					newAssnDef.setDueDateForUngraded(cal.getTime());
+					Date dueDate = new Date(oAssignment.getDueTime().getTime());
+					newAssnDef.setDueDateForUngraded(dueDate);
 				}
 			} else {
 				// TODO - we need to figure out how to handle this!!
 				newAssnDef.setUngraded(true);
-				
+				if (oAssignment.getDueTime() != null) {
+					Date dueDate = new Date(oAssignment.getDueTime().getTime());
+					newAssnDef.setDueDateForUngraded(dueDate);
+				}
 			}
 			
 			assignmentDefs.add(newAssnDef);
