@@ -1,0 +1,239 @@
+<?xml version="1.0"?>
+<project>
+  <pomVersion>3</pomVersion>
+  <extend>../project.xml</extend>
+  <name>sakai-assignment2-tool</name>
+	<groupId>sakaiproject</groupId>
+	<id>sakai-assignment2-tool</id>
+
+   <dependencies>
+		<dependency>
+         <groupId>ponderutilcore</groupId>
+         <artifactId>ponderutilcore</artifactId>
+         <version>${ponderutilcore.version}</version>
+         <type>jar</type>
+         <properties>
+            <war.bundle>true</war.bundle>
+         </properties>
+      </dependency>
+
+      <dependency>
+         <groupId>j-servletutil</groupId>
+         <artifactId>j-servletutil</artifactId>
+         <version>${jservletutil.version}</version>
+         <type>jar</type>
+         <properties>
+            <war.bundle>true</war.bundle>
+         </properties>
+      </dependency>
+
+      <dependency>
+         <groupId>rsfutil</groupId>
+         <artifactId>rsfutil</artifactId>
+         <version>${rsfutil.version}</version>
+         <type>jar</type>
+         <properties>
+            <war.bundle>true</war.bundle>
+         </properties>
+      </dependency>
+
+      <dependency>
+         <groupId>rsfutil</groupId>
+         <artifactId>RSFComponents-evolvers</artifactId>
+         <version>${rsfcomponents.version}</version>
+         <type>jar</type>
+         <properties>
+            <war.bundle>true</war.bundle>
+         </properties>
+      </dependency>
+
+      <dependency>
+         <groupId>sakairsf</groupId>
+         <artifactId>sakairsf</artifactId>
+         <version>${rsfutil.version}-sakai_${sakairsf.sakai.version}</version>
+         <type>jar</type>
+         <properties>
+            <war.bundle>true</war.bundle>
+         </properties>
+      </dependency>
+
+      <dependency>
+         <groupId>sakairsf</groupId>
+         <artifactId>SakaiRSFComponents-templates</artifactId>
+<!--     <version>${rsfutil.version}-sakai_${sakairsf.sakai.version}</version> -->
+         <version>0.7.3M1p2-sakai_${sakairsf.sakai.version}</version>
+         <type>war</type>
+         <properties>
+            <explode>true</explode>
+         </properties>
+      </dependency>
+
+      <dependency>
+         <groupId>sakairsf</groupId>
+         <artifactId>SakaiRSFComponents-evolvers</artifactId>
+         <version>${rsfcomponents.version}-sakai_${sakairsf.sakai.version}</version>
+         <type>jar</type>
+         <properties>
+            <war.bundle>true</war.bundle>
+         </properties>
+      </dependency>
+      
+      
+		<!-- Sakai dependencies (all RSF apps must have this) -->
+		<dependency>
+			<groupId>sakaiproject</groupId>
+			<artifactId>sakai-util</artifactId>
+			<version>${sakai.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>sakaiproject</groupId>
+			<artifactId>sakai-util-api</artifactId>
+			<version>${sakai.version}</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>sakaiproject</groupId>
+			<artifactId>sakai-component</artifactId>
+			<version>${sakai.version}</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>sakaiproject</groupId>
+			<artifactId>sakai-assignment2-logic-api</artifactId>
+			<version>${sakai.version}</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>sakaiproject</groupId>
+			<artifactId>sakai-authz-api</artifactId>
+			<version>${sakai.version}</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>sakaiproject</groupId>
+			<artifactId>sakai-component-api</artifactId>
+			<version>${sakai.version}</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>sakaiproject</groupId>
+			<artifactId>sakai-tool-api</artifactId>
+			<version>${sakai.version}</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>sakaiproject</groupId>
+			<artifactId>sakai-component-api</artifactId>
+			<version>${sakai.version}</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>sakaiproject</groupId>
+			<artifactId>sakai-assignment2-model</artifactId>
+			<version>${sakai.version}</version>
+			<scope>provided</scope>
+		</dependency>
+
+      <dependency>
+			<groupId>sakaiproject</groupId>
+			<artifactId>sakai-entitybroker-api</artifactId>
+			<version>${sakai.version}</version>
+		</dependency>
+
+
+		<dependency>
+			<groupId>sakaiproject</groupId>
+			<artifactId>sakai-user-api</artifactId>
+			<version>${sakai.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>sakaiproject</groupId>
+			<artifactId>sakai-entity-api</artifactId>
+			<version>${sakai.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>sakaiproject</groupId>
+			<artifactId>sakai-site-api</artifactId>
+			<version>${sakai.version}</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>sakaiproject</groupId>
+			<artifactId>sakai-content-api</artifactId>
+			<version>${sakai.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>sakaiproject</groupId>
+			<artifactId>sakai-email-api</artifactId>
+			<version>${sakai.version}</version>
+			<scope>provided</scope>
+		</dependency>
+
+
+		<!-- Apache commons dependencies -->
+		<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+			<version>1.0.4</version>
+			<scope>provided</scope>
+		</dependency>
+		<!-- Spring dependency -->
+		<dependency>
+			<groupId>${sakai.spring.groupId}</groupId>
+			<artifactId>${sakai.spring.artifactId}</artifactId>
+			<version>${sakai.spring.version}</version>
+			<scope>provided</scope>
+		</dependency>
+
+	</dependencies>
+   <build>
+		<resources>
+			<resource>
+				<targetPath>bundle</targetPath>
+				<directory>${basedir}/../bundle</directory>
+				<includes>
+					<include>**/*.properties</include>
+				</includes>
+				<filtering>false</filtering>
+			</resource>
+		</resources>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>unpack-dependencies</id>
+						<phase>package</phase>
+						<goals>
+							<goal>unpack-dependencies</goal>
+						</goals>
+						<configuration>
+							<includeTypes>war</includeTypes>
+							<outputDirectory>
+								${project.build.directory}/webapp/
+							</outputDirectory>
+							<overWriteReleases>true</overWriteReleases>
+							<overWriteSnapshots>
+								true
+							</overWriteSnapshots>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+	
+</project>

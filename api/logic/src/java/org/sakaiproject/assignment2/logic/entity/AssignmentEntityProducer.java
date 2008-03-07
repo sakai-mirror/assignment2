@@ -78,6 +78,11 @@ public class AssignmentEntityProducer extends BaseEntityProducer implements Cont
 		// do nothing
 	}
 
+   //added to compile in 2-4-x
+   public void transferCopyEntities(String fromContext, String toContext, List ids, boolean bool) {
+      transferCopyEntities(fromContext, toContext, ids);
+   }
+
 	public void transferCopyEntities(String fromContext, String toContext, List ids) {
 		// if the site we are importing from has the "new" assignment2 tool,
 		// import from that tool. Otherwise, check to see if that site has the
