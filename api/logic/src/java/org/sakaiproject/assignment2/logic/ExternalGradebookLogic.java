@@ -25,6 +25,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.sakaiproject.assignment2.exception.InvalidGradeForAssignmentException;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 
@@ -232,4 +233,20 @@ public interface ExternalGradebookLogic {
 	 * @return
 	 */
 	public GradebookItem getGradebookItemById(String contextId, Long gradableObjectId);
+	
+	/**
+	 * Save the given grade and comment for the given student, gb item, and context
+	 * in the gradebook. 
+	 * @param contextId
+	 * @param gradableObjectId
+	 * @param studentId
+	 * @param grade
+	 * @param comment
+	 * @throws InvalidGradeForAssignmentException if the grade is invalid according
+	 * to the gradebook's grade entry type
+	 * @throws SecurityException if user is not auth to grade the student
+	 * 
+	 */
+	public void saveGradeAndCommentForStudent(String contextId, Long gradableObjectId, 
+			String studentId, String grade, String comment) throws InvalidGradeForAssignmentException;
 }

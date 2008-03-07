@@ -28,6 +28,7 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment2.test.AssignmentTestDataLoad;
+import org.sakaiproject.assignment2.exception.InvalidGradeForAssignmentException;
 import org.sakaiproject.assignment2.logic.GradebookItem;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
@@ -760,6 +761,87 @@ public class ExternalGradebookLogicTest extends Assignment2TestBase {
     	try {
     		gradebookLogic.populateGradesForSubmissions(AssignmentTestDataLoad.CONTEXT_ID, subList, testData.a3);
     		fail("did not catch student trying to retrieve grade data via populateGradesForSubmissions");
+    	} catch (SecurityException se) {}
+    }
+    
+    public void testSaveGradeAndCommentForStudent() {
+    	// try some nulls
+    	try {
+    		gradebookLogic.saveGradeAndCommentForStudent(null, gbItem1Id, AssignmentTestDataLoad.STUDENT1_UID, null, null);
+    		fail("did not catch null contextId passed to saveGradeAndCommentForStudent");
+    	} catch (IllegalArgumentException iae) {}
+    	
+    	try {
+    		gradebookLogic.saveGradeAndCommentForStudent(AssignmentTestDataLoad.CONTEXT_ID, null, AssignmentTestDataLoad.STUDENT1_UID, null, null);
+    		fail("did not catch null gradableObjectId passed to saveGradeAndCommentForStudent");
+    	} catch (IllegalArgumentException iae) {}
+    	
+    	try {
+    		gradebookLogic.saveGradeAndCommentForStudent(AssignmentTestDataLoad.CONTEXT_ID, gbItem1Id, null, null, null);
+    		fail("did not catch null studentId passed to saveGradeAndCommentForStudent");
+    	} catch (IllegalArgumentException iae) {}
+    	
+    	// try a bad contextId
+    	try {
+    		gradebookLogic.saveGradeAndCommentForStudent(AssignmentTestDataLoad.BAD_CONTEXT, gbItem1Id, AssignmentTestDataLoad.STUDENT1_UID, null, null);
+    		fail("did not catch invalid contextId passed to saveGradeAndCommentForStudent");
+    	} catch (IllegalArgumentException iae) {}
+    	
+    	// try a bad gradableObjectId
+    	try {
+    		gradebookLogic.saveGradeAndCommentForStudent(AssignmentTestDataLoad.CONTEXT_ID, new Long(12345), AssignmentTestDataLoad.STUDENT1_UID, null, null);
+    		fail("did not catch invalid gradableObjectId passed to saveGradeAndCommentForStudent");
+    	} catch (IllegalArgumentException iae) {}
+    	
+    	// start as instructor
+    	authn.setAuthnContext(AssignmentTestDataLoad.INSTRUCTOR_UID);
+    	String grade = "15.0";
+    	String comment = "Good work";
+    	
+    	gradebookLogic.saveGradeAndCommentForStudent(AssignmentTestDataLoad.CONTEXT_ID, gbItem1Id, AssignmentTestDataLoad.STUDENT1_UID, grade, comment);
+    	// now retrieve it to make sure it stuck
+    	String dbGrade = gradebookLogic.getStudentGradeForItem(AssignmentTestDataLoad.CONTEXT_ID, AssignmentTestDataLoad.STUDENT1_UID, gbItem1Id);
+    	assertEquals(grade, dbGrade);
+    	String dbComment = gradebookLogic.getStudentGradeCommentForItem(AssignmentTestDataLoad.CONTEXT_ID, AssignmentTestDataLoad.STUDENT1_UID, gbItem1Id);
+    	assertEquals(comment, dbComment);
+    	
+    	// try an invalid grade
+    	try {
+    		gradebookLogic.saveGradeAndCommentForStudent(AssignmentTestDataLoad.CONTEXT_ID, 
+    			gbItem1Id, AssignmentTestDataLoad.STUDENT1_UID, "A+", "BAD COMMENT");
+    		fail("Did not catch invalid grade passed to saveGradeAndCommentForStudent");
+    	} catch (InvalidGradeForAssignmentException igfae) {}
+    	// now retrieve it to make sure it didn't do an update
+    	dbGrade = gradebookLogic.getStudentGradeForItem(AssignmentTestDataLoad.CONTEXT_ID, AssignmentTestDataLoad.STUDENT1_UID, gbItem1Id);
+    	assertEquals(grade, dbGrade);
+    	dbComment = gradebookLogic.getStudentGradeCommentForItem(AssignmentTestDataLoad.CONTEXT_ID, AssignmentTestDataLoad.STUDENT1_UID, gbItem1Id);
+    	assertEquals(comment, dbComment);
+    	
+    	// switch to TA
+    	authn.setAuthnContext(AssignmentTestDataLoad.TA_UID);
+    	// should be able to update st1
+    	grade = "25.87";
+    	comment = "Jolly good show!";
+    	gradebookLogic.saveGradeAndCommentForStudent(AssignmentTestDataLoad.CONTEXT_ID, gbItem1Id, AssignmentTestDataLoad.STUDENT1_UID, grade, comment);
+    	// now retrieve it to make sure it stuck
+    	dbGrade = gradebookLogic.getStudentGradeForItem(AssignmentTestDataLoad.CONTEXT_ID, AssignmentTestDataLoad.STUDENT1_UID, gbItem1Id);
+    	assertEquals(grade, dbGrade);
+    	dbComment = gradebookLogic.getStudentGradeCommentForItem(AssignmentTestDataLoad.CONTEXT_ID, AssignmentTestDataLoad.STUDENT1_UID, gbItem1Id);
+    	assertEquals(comment, dbComment);
+    	
+    	// but should not be able to update st2
+    	try {
+    		gradebookLogic.saveGradeAndCommentForStudent(AssignmentTestDataLoad.CONTEXT_ID, 
+        			gbItem1Id, AssignmentTestDataLoad.STUDENT2_UID, grade, comment);
+        		fail("Did not catch ta trying to update grades w/o auth in saveGradeAndCommentForStudent");
+    	} catch (SecurityException se) {}
+    	
+    	// student's should not have auth
+    	authn.setAuthnContext(AssignmentTestDataLoad.STUDENT1_UID);
+    	try {
+    		gradebookLogic.saveGradeAndCommentForStudent(AssignmentTestDataLoad.CONTEXT_ID, 
+        			gbItem1Id, AssignmentTestDataLoad.STUDENT2_UID, grade, comment);
+        		fail("Did not catch student trying to update grades w/o auth in saveGradeAndCommentForStudent");
     	} catch (SecurityException se) {}
     }
 }

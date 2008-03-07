@@ -29,6 +29,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.assignment2.exception.InvalidGradeForAssignmentException;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.GradebookItem;
 import org.sakaiproject.component.cover.ComponentManager;
@@ -42,6 +43,7 @@ import org.sakaiproject.service.gradebook.shared.Assignment;
 import org.sakaiproject.service.gradebook.shared.CommentDefinition;
 import org.sakaiproject.service.gradebook.shared.GradeDefinition;
 import org.sakaiproject.service.gradebook.shared.GradebookNotFoundException;
+import org.sakaiproject.service.gradebook.shared.InvalidGradeException;
 import org.sakaiproject.tool.gradebook.Gradebook;
 
 
@@ -487,6 +489,28 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
 		}
 		
 		return gradebookItem;
+	}
+	
+	public void saveGradeAndCommentForStudent(String contextId, Long gradableObjectId, String studentId, String grade, String comment) {
+		if (contextId == null || gradableObjectId == null || studentId == null) {
+			throw new IllegalArgumentException("Null contextId or gradableObjectId " +
+					"or studentId passed to saveGradeAndCommentForStudent");
+		}
+		
+		try {
+			gradebookService.saveGradeAndCommentForStudent(contextId, gradableObjectId, studentId, grade, comment);
+			if(log.isDebugEnabled()) log.debug("Grade and comment for student " + studentId + 
+					" for gbItem " + gradableObjectId + "updated successfully");
+		} catch (GradebookNotFoundException gnfe) {
+			throw new IllegalArgumentException("No gradebook exists in the given context " + contextId);
+		} catch (AssessmentNotFoundException anfe) {
+			throw new IllegalArgumentException("No gradebook item exists with the given id " + gradableObjectId);
+		} catch (InvalidGradeException ige) {
+			throw new InvalidGradeForAssignmentException("The grade: " + grade + " for gradebook " + contextId + " is invalid");
+		} catch (SecurityException se) {
+			throw new SecurityException("The current user attempted to saveGradeAndCommentForStudent " +
+					"without authorization. Error: " + se.getMessage());
+		}
 	}
 
 }

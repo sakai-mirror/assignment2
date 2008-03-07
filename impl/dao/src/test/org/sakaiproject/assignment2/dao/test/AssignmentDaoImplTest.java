@@ -551,7 +551,7 @@ public class AssignmentDaoImplTest extends Assignment2DaoTestBase {
 		
 	}
 
-	public void testGetVersionByUserIdAndSubmittedTime() throws Exception
+	/*public void testGetVersionByUserIdAndSubmittedTime() throws Exception
 	{
 		String userId = null;
 		Date submittedTime = null;
@@ -599,5 +599,5 @@ public class AssignmentDaoImplTest extends Assignment2DaoTestBase {
 		{
 			fail("Shouldn't have thrown exception with userId != null and submittedTime != null");
 		}
-	}
+	}*/
 }
