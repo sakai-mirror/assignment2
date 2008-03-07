@@ -11,6 +11,7 @@ import junit.framework.TestSuite;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.assignment2.dao.AssignmentDao;
 import org.sakaiproject.assignment2.logic.UploadDownloadLogic;
 import org.sakaiproject.assignment2.model.UploadAllOptions;
 import org.sakaiproject.assignment2.tool.beans.PreloadTestData;
@@ -24,6 +25,7 @@ public class TestUploadDownloadLogic extends SakaiTransactionalTestBase
 	private ZipExporter zipExporter;
 	private UploadAllOptions options;
 	private AssignmentTestDataLoad testData;
+	private AssignmentDao assignmentDao;
 
 	public static Test suite()
 	{
@@ -58,12 +60,29 @@ public class TestUploadDownloadLogic extends SakaiTransactionalTestBase
 	}
 
 	@Override
+	protected void onSetUpBeforeTransaction() throws Exception
+	{
+		updownLogic = (UploadDownloadLogic) getService("org.sakaiproject.assignment2.logic.UploadDownloadLogic");
+//		zipExporter = new ZipExporter();
+//		setAssignmentLogic(AssignmentLogic)
+//		setAssignmentSubmissionLogic(AssignmentSubmissionLogic)
+//		setContentHostingService(ContentHostingService)
+//		setExternalLogic(ExternalLogic)
+//		setGradebookLogic(ExternalGradebookLogic)
+//		setMessageLocator(MessageLocator)
+		options = new UploadAllOptions();
+		assignmentDao = (AssignmentDao) getService("org.sakaiproject.assignment2.dao.AssignmentDao");
+	}
+
+	@Override
 	protected void onSetUpInTransaction() throws Exception
 	{
 		PreloadTestData ptd = new PreloadTestData();
-		if (ptd == null) {
-			throw new NullPointerException("PreloadTestData could not be retrieved from spring");
-		}
+//		if (ptd == null) {
+//			throw new NullPointerException("PreloadTestData could not be retrieved from spring");
+//		}
+		ptd.setAssignmentDao(assignmentDao);
+		ptd.init();
 		testData = ptd.getAtdl();
 	}
 

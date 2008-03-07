@@ -58,22 +58,22 @@ public class UploadDownloadLogicImpl implements UploadDownloadLogic
 	private AssignmentBundleLogic bundle;
 	private ExternalLogic externalLogic;
 
-	public void setAssnLogic(AssignmentLogic assnLogic)
+	public void setAssignmentLogic(AssignmentLogic assnLogic)
 	{
 		this.assnLogic = assnLogic;
 	}
 
-	public void setTS(TimeService ts)
+	public void setTimeService(TimeService ts)
 	{
 		this.ts = ts;
 	}
 
-	public void setCHS(ContentHostingService chs)
+	public void setContentHostingService(ContentHostingService chs)
 	{
 		this.chs = chs;
 	}
 
-	public void setCTIS(ContentTypeImageService ctis)
+	public void setContentTypeImageService(ContentTypeImageService ctis)
 	{
 		this.ctis = ctis;
 	}
@@ -83,7 +83,7 @@ public class UploadDownloadLogicImpl implements UploadDownloadLogic
 		this.gradebookLogic = gradebookLogic;
 	}
 
-	public void setAssnSubLogic(AssignmentSubmissionLogic assnSubLogic)
+	public void setAssignmentSubmissionLogic(AssignmentSubmissionLogic assnSubLogic)
 	{
 		this.assnSubLogic = assnSubLogic;
 	}
