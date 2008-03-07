@@ -24,30 +24,23 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.sakaiproject.assignment2.test.AssignmentTestDataLoad;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
-import org.sakaiproject.assignment2.model.SubmissionAttachment;
 import org.sakaiproject.assignment2.model.FeedbackAttachment;
+import org.sakaiproject.assignment2.model.SubmissionAttachment;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
-
-import org.sakaiproject.section.api.coursemanagement.CourseSection;
+import org.sakaiproject.assignment2.test.AssignmentTestDataLoad;
 import org.sakaiproject.section.api.coursemanagement.Course;
+import org.sakaiproject.section.api.coursemanagement.CourseSection;
 import org.sakaiproject.section.api.facade.Role;
-
 
 public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
 
-    private static final Log log = LogFactory.getLog(AssignmentSubmissionLogicTest.class);
-    
     private static final Double st2a4Grade = new Double(40);
     private static final String st2a4Comment = "Good work";
     private static final Double st1a3Grade = new Double(25);
@@ -452,7 +445,7 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
     	attach1.setAttachmentReference("ref1");
     	SubmissionAttachment attach2 = new SubmissionAttachment();
     	attach2.setAttachmentReference("ref2");
-    	Set<SubmissionAttachment> attachSet = new HashSet();
+    	Set<SubmissionAttachment> attachSet = new HashSet<SubmissionAttachment>();
     	attachSet.add(attach1);
     	attachSet.add(attach2);
     	

@@ -161,7 +161,6 @@ public class StudentViewAssignmentRenderer {
     		UIOutput.make(joint, "header.modified_by", df.format(assignment.getModifiedTime()));
     	}
     	UIVerbatim.make(joint, "instructions", assignment.getInstructions());
-    	Set<String> refSet = new HashSet();
     	
     	if (!preview){
     		//If this is not a preview, then we need to just display the attachment set from the Assignment2 object
@@ -171,7 +170,7 @@ public class StudentViewAssignmentRenderer {
     		//If this is a preview, then the the attachment set from the Assignment2 Object is not complete
     		// there would be some attachments still floating in session vars
     		//Handle Attachments
-        	Set<String> set = new HashSet();
+        	Set<String> set = new HashSet<String>();
         	if (assignment != null && assignment.getAttachmentSet() != null) {
     	    	for (AssignmentAttachment aa : assignment.getAttachmentSet()) {
     	    		set.add(aa.getAttachmentReference());
@@ -222,14 +221,14 @@ public class StudentViewAssignmentRenderer {
     		
 	        //Attachments
 	        AssignmentSubmissionVersion submissionVersion = assignmentSubmission.getCurrentSubmissionVersion();
-	        Set<SubmissionAttachment> set = new HashSet();
+	        Set<SubmissionAttachment> set = new HashSet<SubmissionAttachment>();
 	        if (submissionVersion != null && submissionVersion.getSubmissionAttachSet() != null) {
 	        	set.addAll(submissionVersion.getSubmissionAttachSet());
 	        }
 	    	attachmentListRenderer.makeAttachmentFromSubmissionAttachmentSet(joint, "submission_attachment_list:", params.viewID, 
 	    			set, Boolean.TRUE);
 	    	if (!preview){
-	    		UILink add_attachments = UIInternalLink.make(form, "add_submission_attachments", UIMessage.make("assignment2.student-submit.add_attachments"),
+	    		UIInternalLink.make(form, "add_submission_attachments", UIMessage.make("assignment2.student-submit.add_attachments"),
 	        		new FilePickerHelperViewParams(AddAttachmentHelperProducer.VIEWID, Boolean.TRUE, 
 	        				Boolean.TRUE, 500, 700, ASOTPKey));
 	    	}
@@ -244,13 +243,12 @@ public class StudentViewAssignmentRenderer {
     	
     	
     	//Begin Looping for previous submissions
-    	List<AssignmentSubmissionVersion> history = new ArrayList();
+    	List<AssignmentSubmissionVersion> history = new ArrayList<AssignmentSubmissionVersion>();
     	if (!preview) {
     		history = submissionLogic.getVersionHistoryForSubmission(assignmentSubmission);
     	}
                 
-    	for (Iterator iter = history.iterator(); iter.hasNext();){
-    		AssignmentSubmissionVersion asv = (AssignmentSubmissionVersion) iter.next();
+    	for (AssignmentSubmissionVersion asv : history){
     		if (asv.isDraft()) { 
     			continue;
     		}

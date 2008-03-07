@@ -9,7 +9,6 @@ import java.util.Set;
 
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
-import org.sakaiproject.assignment2.logic.ExternalAnnouncementLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.SubmissionAttachment;
@@ -39,7 +38,7 @@ public class AssignmentSubmissionBean {
 	private static final String FAILURE = "failure";
 	private static final String RELEASE_ALL= "release_all";
 	
-	public Map selectedIds = new HashMap();
+	public Map<String, Boolean> selectedIds = new HashMap<String, Boolean>();
 	public Long assignmentId;
 	public String ASOTPKey;
 	public String userId;
@@ -145,7 +144,7 @@ public class AssignmentSubmissionBean {
 	    			set.add(asa);
 	    		}
 	    	}
-	    	Set<SubmissionAttachment> final_set = new HashSet();
+	    	Set<SubmissionAttachment> final_set = new HashSet<SubmissionAttachment>();
 	    	//Now check for attachments that have been removed
 	    	if (session.getAttribute("removedAttachmentRefs") != null) {
 		    	for (SubmissionAttachment asa : set) {
@@ -173,10 +172,10 @@ public class AssignmentSubmissionBean {
 						new Object[] { assignment.getTitle() }, TargettedMessage.SEVERITY_INFO));
 	    		// Send out notifications
 	    		try {
-	    			notificationBean.notificationToStudent(assignmentSubmission);
+	    			notificationBean.notifyStudentThatSubmissionWasAccepted(assignmentSubmission);
 	    			if (assignment.getNotificationType() ==  AssignmentConstants.NOTIFY_FOR_EACH)
 	    			{
-	    				notificationBean.notificationToInstructors(assignmentSubmission, assignment);
+	    				notificationBean.notifyInstructorsOfSubmission(assignmentSubmission, assignment);
 	    			}
 	    		}catch (IdUnusedException e)
 	    		{
@@ -306,8 +305,6 @@ public class AssignmentSubmissionBean {
 		for (String key : asvOTPMap.keySet()){
 			
 			AssignmentSubmissionVersion asv = asvOTPMap.get(key);
-			
-			String currUserId = externalLogic.getCurrentUserId();
 			
 			asv.setAssignmentSubmission(assignmentSubmission);
 			if (this.releaseFeedback != null && asv.getReleasedTime() == null) {

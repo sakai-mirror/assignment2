@@ -1,14 +1,12 @@
 package org.sakaiproject.assignment2.tool.producers;
 
 import java.text.DateFormat;
-import java.util.Date;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
-import java.util.Stack;
 
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
@@ -19,17 +17,15 @@ import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.model.FeedbackAttachment;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
-import org.sakaiproject.assignment2.tool.params.AssignmentViewParams;
-import org.sakaiproject.assignment2.tool.params.ViewSubmissionsViewParams;
+import org.sakaiproject.assignment2.tool.params.FilePickerHelperViewParams;
 import org.sakaiproject.assignment2.tool.params.FragmentViewSubmissionViewParams;
 import org.sakaiproject.assignment2.tool.params.GradeViewParams;
-import org.sakaiproject.assignment2.tool.params.FilePickerHelperViewParams;
-import org.sakaiproject.assignment2.tool.params.SimpleAssignmentViewParams;
+import org.sakaiproject.assignment2.tool.params.ViewSubmissionsViewParams;
 import org.sakaiproject.assignment2.tool.producers.fragments.FragmentAssignmentInstructionsProducer;
-import org.sakaiproject.assignment2.tool.producers.fragments.FragmentViewSubmissionProducer;
 import org.sakaiproject.assignment2.tool.producers.fragments.FragmentAttachmentsProducer;
-import org.sakaiproject.assignment2.tool.producers.fragments.FragmentSubmissionGradePreviewProducer;
 import org.sakaiproject.assignment2.tool.producers.fragments.FragmentGradebookDetailsProducer;
+import org.sakaiproject.assignment2.tool.producers.fragments.FragmentSubmissionGradePreviewProducer;
+import org.sakaiproject.assignment2.tool.producers.fragments.FragmentViewSubmissionProducer;
 import org.sakaiproject.assignment2.tool.producers.renderers.AttachmentListRenderer;
 import org.sakaiproject.assignment2.tool.producers.renderers.GradebookDetailsRenderer;
 import org.sakaiproject.tool.api.SessionManager;
@@ -37,7 +33,6 @@ import org.sakaiproject.tool.api.ToolSession;
 
 import uk.org.ponder.beanutil.entity.EntityBeanLocator;
 import uk.org.ponder.messageutil.MessageLocator;
-import uk.org.ponder.rsf.components.UIBoundBoolean;
 import uk.org.ponder.rsf.components.UIBranchContainer;
 import uk.org.ponder.rsf.components.UICommand;
 import uk.org.ponder.rsf.components.UIContainer;
@@ -50,20 +45,17 @@ import uk.org.ponder.rsf.components.UIMessage;
 import uk.org.ponder.rsf.components.UIOutput;
 import uk.org.ponder.rsf.components.UISelect;
 import uk.org.ponder.rsf.components.UIVerbatim;
-import uk.org.ponder.rsf.components.decorators.UILabelTargetDecorator;
 import uk.org.ponder.rsf.evolvers.FormatAwareDateInputEvolver;
 import uk.org.ponder.rsf.evolvers.TextInputEvolver;
+import uk.org.ponder.rsf.flow.ARIResult;
+import uk.org.ponder.rsf.flow.ActionResultInterceptor;
 import uk.org.ponder.rsf.flow.jsfnav.NavigationCase;
 import uk.org.ponder.rsf.flow.jsfnav.NavigationCaseReporter;
-import uk.org.ponder.rsf.flow.ActionResultInterceptor;
-import uk.org.ponder.rsf.flow.ARIResult;
 import uk.org.ponder.rsf.view.ComponentChecker;
 import uk.org.ponder.rsf.view.ViewComponentProducer;
-import uk.org.ponder.rsf.viewstate.RawViewParameters;
 import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
 import uk.org.ponder.rsf.viewstate.ViewParameters;
 import uk.org.ponder.rsf.viewstate.ViewParamsReporter;
-
 
 public class GradeProducer implements ViewComponentProducer, NavigationCaseReporter, ViewParamsReporter, ActionResultInterceptor {
 
@@ -238,7 +230,7 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
     	richTextEvolver.evolveTextInput(feedback_notes);
                
         //Attachments
-        Set<FeedbackAttachment> afaSet = new HashSet();
+        Set<FeedbackAttachment> afaSet = new HashSet<FeedbackAttachment>();
         if (assignmentSubmissionVersion.getFeedbackAttachSet() != null) {
         	afaSet.addAll(assignmentSubmissionVersion.getFeedbackAttachSet());
         }
@@ -259,10 +251,10 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
         **/
         
         //Assignment LEvel
-        Integer assignment_num_submissions = 1;
-        if (assignment != null && assignment.getNumSubmissionsAllowed() != null) {
-        	assignment_num_submissions = assignment.getNumSubmissionsAllowed();
-        }
+        //Integer assignment_num_submissions = 1;
+        //if (assignment != null && assignment.getNumSubmissionsAllowed() != null) {
+        //	assignment_num_submissions = assignment.getNumSubmissionsAllowed();
+        //}
         
         //Submission Level
         Integer current_num_submissions = 1;
@@ -303,9 +295,8 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
         //Begin Looping for previous submissions
         List<AssignmentSubmissionVersion> history = submissionLogic.getVersionHistoryForSubmission(as);
                 
-    	for (Iterator iter = history.iterator(); iter.hasNext();){
-    		AssignmentSubmissionVersion asv = (AssignmentSubmissionVersion) iter.next(); 
-        
+    	for (AssignmentSubmissionVersion asv : history){
+    		
         	UIBranchContainer loop = UIBranchContainer.make(form, "previous_submissions:");
         	UIOutput.make(loop, "previous_date", (asv.getSubmittedTime() != null ? df.format(asv.getSubmittedTime()) : ""));
         	if (asvOTPKey.equals(asv.getId().toString())){
@@ -336,7 +327,7 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
         }
     }
     
-	public List reportNavigationCases() {
+	public List<NavigationCase> reportNavigationCases() {
     	List<NavigationCase> nav= new ArrayList<NavigationCase>();
     	nav.add(new NavigationCase("release_all", new GradeViewParams(
     			GradeProducer.VIEW_ID, null, null)));

@@ -10,9 +10,11 @@ import org.sakaiproject.assignment2.tool.beans.Assignment2Validator;
 import org.sakaiproject.assignment2.exception.ConflictingAssignmentNameException;
 import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.tool.api.ToolSession;
+import org.sakaiproject.user.api.UserNotDefinedException;
 import org.sakaiproject.assignment2.exception.AnnouncementPermissionException;
 import org.sakaiproject.assignment2.exception.StaleObjectModificationException;
 import org.sakaiproject.assignment2.tool.beans.locallogic.LocalAssignmentLogic;
+import org.sakaiproject.exception.IdUnusedException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -101,6 +103,11 @@ public class Assignment2Bean {
 		this.sessionManager = sessionManager;
 	}
 	
+	private NotificationBean notificationBean;
+	public void setNotificationBean (NotificationBean notificationBean) {
+		this.notificationBean = notificationBean;
+	}
+	
 	public String processActionBackToList() {
 		return BACK_TO_LIST;
 	}
@@ -110,6 +117,23 @@ public class Assignment2Bean {
 		for (String key : OTPMap.keySet()) {
 			Assignment2 assignment = OTPMap.get(key);
 			 result = internalProcessPost(assignment, key);
+		}
+		
+		// Notify students
+		if (result.equals(POST))
+		{
+			try
+			{
+    			notificationBean.notifyStudentsOfNewAssignment(assignment);
+			}catch (IdUnusedException e)
+			{
+				messages.addMessage(new TargettedMessage("assignment2.student-submit.error.unexpected",
+						new Object[] {e.getLocalizedMessage()}, TargettedMessage.SEVERITY_ERROR));
+			}catch (UserNotDefinedException e)
+			{
+				messages.addMessage(new TargettedMessage("assignment2.student-submit.error.unexpected",
+						new Object[] {e.getLocalizedMessage()}, TargettedMessage.SEVERITY_ERROR));
+			}
 		}
 		
 		return result;

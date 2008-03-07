@@ -49,7 +49,7 @@ public class AjaxCallbackProducer implements ViewComponentProducer, ViewParamsRe
     	    }
 	    	assignmentLogic.setAssignmentSortIndexes(assignmentIds);
 	    } else if (params.removeAttachment && params.refId != null && !params.refId.equals("")) {
-	    	Set<String> set = new HashSet();
+	    	Set<String> set = new HashSet<String>();
 	    	ToolSession session = sessionManager.getCurrentToolSession();
 	    	if (session.getAttribute("removedAttachmentRefs") != null) {
 	    		set.addAll((Set)session.getAttribute("removedAttachmentRefs"));

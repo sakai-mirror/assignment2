@@ -1,12 +1,11 @@
 package org.sakaiproject.assignment2.tool.producers;
 
 import java.text.DateFormat;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
-import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
+import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
@@ -22,7 +21,6 @@ import uk.org.ponder.rsf.components.UIMessage;
 import uk.org.ponder.rsf.components.UIOutput;
 import uk.org.ponder.rsf.components.UIVerbatim;
 import uk.org.ponder.rsf.evolvers.FormatAwareDateInputEvolver;
-import uk.org.ponder.rsf.flow.jsfnav.NavigationCaseReporter;
 import uk.org.ponder.rsf.view.ComponentChecker;
 import uk.org.ponder.rsf.view.ViewComponentProducer;
 import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
@@ -33,7 +31,7 @@ public class StudentSubmitSummaryProducer implements ViewComponentProducer, View
 	
 	public static final String VIEW_ID = "student-submit-summary";
 	public String getViewID() {
-		return this.VIEW_ID;
+		return StudentSubmitSummaryProducer.VIEW_ID;
 	}
 	
 	private AssignmentSubmissionLogic submissionLogic;
@@ -98,8 +96,7 @@ public class StudentSubmitSummaryProducer implements ViewComponentProducer, View
 		//Begin Looping for previous submissions
     	List<AssignmentSubmissionVersion> history = submissionLogic.getVersionHistoryForSubmission(assignmentSubmission);
                 
-    	for (Iterator iter = history.iterator(); iter.hasNext();){
-    		AssignmentSubmissionVersion asv = (AssignmentSubmissionVersion) iter.next(); 
+    	for (AssignmentSubmissionVersion asv : history){
         	if (asv.isDraft()) {
         		continue;
         	}

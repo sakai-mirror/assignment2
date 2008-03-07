@@ -245,6 +245,7 @@
    	  <property name="messageLocator" ref="messageLocator" />
    	  <property name="sessionManager" ref="org.sakaiproject.tool.api.SessionManager" />
    	  <property name="localAssignmentLogic" ref="localAssignmentLogic" />
+			<property name="notificationBean" ref="notificationBean" />
    </bean>
    
    <bean id="AssignmentSubmissionBean" class="org.sakaiproject.assignment2.tool.beans.AssignmentSubmissionBean">
@@ -277,11 +278,11 @@
 		<property name="securityService" ref="org.sakaiproject.authz.api.SecurityService" />
 		<property name="timeService" ref="org.sakaiproject.time.api.TimeService" />
 		<property name="digestService" ref="org.sakaiproject.email.api.DigestService" />
-		<property name="authzGroupService" ref="org.sakaiproject.authz.api.AuthzGroupService" />
 		<property name="siteService" ref="org.sakaiproject.site.api.SiteService" />
 		<property name="emailService" ref="org.sakaiproject.email.api.EmailService" />
 		<property name="serverConfigurationService" ref="org.sakaiproject.component.api.ServerConfigurationService" />
 		<property name="userDirectoryService" ref="org.sakaiproject.user.api.UserDirectoryService" />
+		<property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
 	</bean>
 
 	<bean id="zipHandlerHook" class="org.sakaiproject.assignment2.tool.handlerhooks.ZipHandlerHook">
