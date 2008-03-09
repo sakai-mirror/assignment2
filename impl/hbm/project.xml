@@ -6,10 +6,11 @@
   <groupId>sakaiproject</groupId>
   <artifactId>sakai-assignment2-hbm</artifactId>
   <inceptionYear>2007</inceptionYear>
-  <properties>
-		<!-- deploy as a jar -->
-		<deploy.type>jar</deploy.type>
-	</properties>
+   <properties>
+      <deploy.type>jar</deploy.type>
+      <deploy.target>shared</deploy.target>
+   </properties>
+
   <dependencies>
   </dependencies>
   <build>

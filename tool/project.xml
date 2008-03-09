@@ -5,6 +5,10 @@
   <name>sakai-assignment2-tool</name>
 	<groupId>sakaiproject</groupId>
 	<id>sakai-assignment2-tool</id>
+<properties>
+      <!-- deploy as a war -->
+      <deploy.type>war</deploy.type>
+   </properties>
 
    <dependencies>
 		<dependency>
@@ -25,6 +29,13 @@
          <properties>
             <war.bundle>true</war.bundle>
          </properties>
+      </dependency>
+
+      <dependency>
+         <groupId>servletapi</groupId>
+         <artifactId>servletapi</artifactId>
+         <version>2.4-20040521</version>
+         <type>jar</type>
       </dependency>
 
       <dependency>
@@ -60,8 +71,7 @@
       <dependency>
          <groupId>sakairsf</groupId>
          <artifactId>SakaiRSFComponents-templates</artifactId>
-<!--     <version>${rsfutil.version}-sakai_${sakairsf.sakai.version}</version> -->
-         <version>0.7.3M1p2-sakai_${sakairsf.sakai.version}</version>
+         <version>${rsfutil.version}-sakai_${sakairsf.sakai.version}</version>
          <type>war</type>
          <properties>
             <explode>true</explode>
@@ -145,7 +155,7 @@
       <dependency>
 			<groupId>sakaiproject</groupId>
 			<artifactId>sakai-entitybroker-api</artifactId>
-			<version>${sakai.version}</version>
+         <version>${sakai.version}</version>
 		</dependency>
 
 
@@ -199,6 +209,7 @@
 
 	</dependencies>
    <build>
+      <sourceDirectory>src/java</sourceDirectory>
 		<resources>
 			<resource>
 				<targetPath>bundle</targetPath>
@@ -208,6 +219,12 @@
 				</includes>
 				<filtering>false</filtering>
 			</resource>
+         <resource>
+            <directory>${basedir}/src/java</directory>
+            <includes>
+               <include>**/*.xml</include>
+            </includes>
+         </resource>
 		</resources>
 		<plugins>
 			<plugin>

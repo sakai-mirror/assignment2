@@ -7,7 +7,7 @@
   <artifactId>sakai-assignment2-pack</artifactId>
   <packaging>sakai-component</packaging>
   <properties>
-    <deploy.target>components</deploy.target>
+    <deploy.type>components</deploy.type>
   </properties>
   <build>
     <resources>
