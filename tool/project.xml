@@ -115,6 +115,9 @@
 			<artifactId>sakai-assignment2-logic-api</artifactId>
 			<version>${sakai.version}</version>
 			<scope>provided</scope>
+			<properties>
+            <war.bundle>true</war.bundle>
+         </properties>
 		</dependency>
 
 		<dependency>
@@ -150,12 +153,16 @@
 			<artifactId>sakai-assignment2-model</artifactId>
 			<version>${sakai.version}</version>
 			<scope>provided</scope>
+			<properties>
+            <war.bundle>true</war.bundle>
+         </properties>
 		</dependency>
 
       <dependency>
 			<groupId>sakaiproject</groupId>
-			<artifactId>sakai-entitybroker-api</artifactId>
-         <version>${sakai.version}</version>
+			<artifactId>entitybroker-api</artifactId>
+                  <version>1.2.0</version>
+                  <scope>provided</scope>
 		</dependency>
 
 
@@ -226,31 +233,6 @@
             </includes>
          </resource>
 		</resources>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>unpack-dependencies</id>
-						<phase>package</phase>
-						<goals>
-							<goal>unpack-dependencies</goal>
-						</goals>
-						<configuration>
-							<includeTypes>war</includeTypes>
-							<outputDirectory>
-								${project.build.directory}/webapp/
-							</outputDirectory>
-							<overWriteReleases>true</overWriteReleases>
-							<overWriteSnapshots>
-								true
-							</overWriteSnapshots>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
 	</build>
 	
 </project>

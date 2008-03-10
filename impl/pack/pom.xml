@@ -14,14 +14,14 @@
     <deploy.target>components</deploy.target>
   </properties>
   <build>
+    <sourceDirectory>src/java</sourceDirectory>
     <resources>
       <resource>
-        <directory>${basedir}/src/webapp</directory>
-        <includes>
-          <include>**/*.xml</include>
-        </includes>
-        <filtering>false</filtering>
-      </resource>
+            <directory>src/java</directory>
+            <includes>
+               <include>**/*.xml</include>
+            </includes>
+         </resource>
       <resource>
         <directory>${basedir}/../../bundle</directory>
         <includes>
@@ -42,7 +42,6 @@
       <groupId>org.sakaiproject</groupId>
       <artifactId>sakai-assignment2-dao-impl</artifactId>
       <version>${sakai.version}</version>
-      <type>jar</type>
     </dependency>
       
   </dependencies>

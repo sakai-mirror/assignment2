@@ -9,6 +9,7 @@
      <deploy.type>jar</deploy.type>
   </properties>
   <build>
+    <sourceDirectory>src/java</sourceDirectory>
     <resources>
       <resource>
         <directory>${basedir}/src/java</directory>
@@ -65,49 +66,41 @@
       <groupId>sakaiproject</groupId>
       <artifactId>sakai-assignment2-logic-api</artifactId>
       <version>${sakai.version}</version>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>sakaiproject</groupId>
       <artifactId>sakai-assignment2-model</artifactId>
       <version>${sakai.version}</version>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>sakaiproject</groupId>
       <artifactId>sakai-assignment2-test</artifactId>
       <version>${sakai.version}</version>
-      <scope>provided</scope>
     </dependency>
         <dependency>
       <groupId>sakaiproject</groupId>
       <artifactId>sakai-site-api</artifactId>
       <version>${sakai.version}</version>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>sakaiproject</groupId>
       <artifactId>sakai-util-api</artifactId>
       <version>${sakai.version}</version>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>sakaiproject</groupId>
       <artifactId>sakai-entity-api</artifactId>
       <version>${sakai.version}</version>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>sakaiproject</groupId>
       <artifactId>sakai-tool-api</artifactId>
       <version>${sakai.version}</version>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>sakaiproject</groupId>
       <artifactId>sakai-component-api</artifactId>
       <version>${sakai.version}</version>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>sakaiproject</groupId>
@@ -124,13 +117,11 @@
       <groupId>sakaiproject</groupId>
       <artifactId>sakai-authz-api</artifactId>
       <version>${sakai.version}</version>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>sakaiproject</groupId>
       <artifactId>sakai-user-api</artifactId>
       <version>${sakai.version}</version>
-      <scope>provided</scope>
     </dependency>
     <dependency>
          <groupId>generic-dao</groupId>
