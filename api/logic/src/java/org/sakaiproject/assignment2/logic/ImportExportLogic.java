@@ -23,6 +23,8 @@ package org.sakaiproject.assignment2.logic;
 
 import java.util.List;
 
+import org.sakaiproject.assignment2.logic.entity.AssignmentDefinition;
+
 
 //import org.sakaiproject.assignment2.logic.entity.AssignmentDefinition;
 
@@ -49,7 +51,7 @@ public interface ImportExportLogic {
 	 * @return a list of the AssignmentDefinitions that correspond to the assignments
 	 * in the given context (does not include removed assignments).
 	 */
-	public List getAssignmentDefinitionsInContext(String contextId);
+	public List<AssignmentDefinition> getAssignmentDefinitionsInContext(String contextId);
 	
 	/**
 	 * Given the xml archive of the assignments tool in another site, merge

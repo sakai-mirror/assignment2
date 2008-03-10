@@ -94,12 +94,12 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 	public void setDao(AssignmentDao dao) {
 		this.dao = dao;
 	}
-	
+
 	private AssignmentService assignmentService;
 	public void setAssignmentService(AssignmentService assignmentService) {
 		this.assignmentService = assignmentService;
 	}
-	
+
 	private ContentHostingService contentHostingService;
 	public void setContentHostingService(ContentHostingService contentHostingService) {
 		this.contentHostingService = contentHostingService;
@@ -220,7 +220,7 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 
 		if (toolDefinition != null) {
 			if(toolDefinition.getAssignments() != null) {
-				
+
 				// let's retrieve the existing assignments in this site so we can
 				// compare the assignment titles
 				Set<Assignment2> currAssignments = dao.getAssignmentsWithGroupsAndAttachments(toContext);
@@ -267,7 +267,7 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 						newAssignment.setNumSubmissionsAllowed(assignDef.getNumSubmissionsAllowed());
 						newAssignment.setOpenTime(assignDef.getOpenDate());
 						newAssignment.setDueDateForUngraded(assignDef.getDueDateForUngraded());
-						
+
 						if (assignDef.getSortIndex() == null) {
 							int index = dao.getHighestSortIndexInSite(toContext);
 							newAssignment.setSortIndex(index);
@@ -278,7 +278,7 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 						newAssignment.setSubmissionType(assignDef.getSubmissionType());
 						newAssignment.setUngraded(assignDef.isUngraded());
 						newAssignment.setHasAnnouncement(assignDef.isHasAnnouncement());
-						
+
 						// if title already exists, we need to append "_1" or "_2" etc - whatever it takes to make it unique
 						String title = assignDef.getTitle();
 						if (currTitles.contains(assignDef.getTitle())) {
@@ -309,7 +309,7 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 											gbItemTitle, assignDef.getAssociatedGbItemPtsPossible(), 
 											assignDef.getAssociatedGbItemDueDate(), false, false);
 									if (log.isDebugEnabled()) log.debug("New gb item created via import!");
-									
+
 									// now let's retrieve it and add it to our map of existing gb items
 									// so we don't try to create it again
 									GradebookItem newItem = gradebookLogic.getGradebookItemById(toContext, associatedGbItemId);
@@ -337,7 +337,7 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 						// we need to copy any associated attachments 
 						if (assignDef.getAttachmentReferences() != null && 
 								!assignDef.getAttachmentReferences().isEmpty()) {
-							
+
 							Set<AssignmentAttachment> attachSet = new HashSet<AssignmentAttachment>();
 							for (String attRef : assignDef.getAttachmentReferences()) {
 								String newAttId = copyAttachment(attRef, toContext);
@@ -365,11 +365,11 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 									assignGroupSet.add(ag);
 								}
 							}
-							
+
 							newAssignment.setAssignmentGroupSet(assignGroupSet);
 
 						}
-						
+
 						try {
 							assignmentLogic.saveAssignment(newAssignment, toContext);
 							if (log.isDebugEnabled()) log.debug("New assignment " + 
@@ -382,37 +382,36 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 						}
 					}
 				}
-				
 			}
 		}
 
 	}
-	
+
 	public String getAssignmentToolDefinitionXmlFromOriginalAssignmentsTool(String fromContext, String toContext) {
-		
+
 		List<AssignmentDefinition> assignmentDefs = new ArrayList<AssignmentDefinition>();	
 		Collection<Group> siteGroups = externalLogic.getSiteGroups(fromContext);
-		
+
 		Iterator<Assignment> origAssignIter = assignmentService.getAssignmentsForContext(fromContext);
 		while (origAssignIter.hasNext()) {
 			Assignment oAssignment = (Assignment)origAssignIter.next();
 			AssignmentContent oContent = oAssignment.getContent();
 			ResourceProperties oProperties = oAssignment.getProperties();
-			
+
 			// to identify assignments that act as external maintainers of a gb item,
 			// we need to retrieve all of the gb items in the old site
 			List<GradebookItem> allGbItems = gradebookLogic.getAllGradebookItems(fromContext);
-			
+
 			AssignmentDefinition newAssnDef = new AssignmentDefinition();
-			
+
 			Date openDate = new Date(oAssignment.getOpenTime().getTime());
 			newAssnDef.setOpenDate(openDate);
-			
+
 			if (oAssignment.getCloseTime() != null) {
 				Date closeDate = new Date(oAssignment.getCloseTime().getTime());
 				newAssnDef.setAcceptUntilDate(closeDate);
 			}
-			
+
 			newAssnDef.setTitle(oAssignment.getTitle());
 			newAssnDef.setDraft(oAssignment.getDraft());
 			newAssnDef.setInstructions(oContent.getInstructions());
@@ -430,7 +429,7 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 				// default to text and attachments
 				newAssnDef.setSubmissionType(AssignmentConstants.SUBMIT_INLINE_AND_ATTACH);
 			}
-			
+
 			// retrieve the notification setting
 			String notifProperty = oProperties.getProperty(Assignment.ASSIGNMENT_INSTRUCTOR_NOTIFICATIONS_VALUE);
 			if (notifProperty == null) {
@@ -444,7 +443,7 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 			} else {
 				newAssnDef.setNotificationType(AssignmentConstants.NOTIFY_NONE); // default
 			}
-			
+
 			// is there an announcement?
 			String openDateAnnc = oProperties.getProperty(ResourceProperties.PROP_ASSIGNMENT_OPENDATE_ANNOUNCEMENT_MESSAGE_ID);
 			if (openDateAnnc != null) {
@@ -452,11 +451,11 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 			} else {
 				newAssnDef.setHasAnnouncement(false);
 			}
-			
+
 			// the old tool didn't support a resubmission option on the assignment level,
 			// so just allow 1 submission
 			newAssnDef.setNumSubmissionsAllowed(1);
-			
+
 			// handle attachments
 			List<Reference> oAttachments = oContent.getAttachments();
 			List<String> attachRefList = new ArrayList<String>();
@@ -468,7 +467,7 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 				}
 			}
 			newAssnDef.setAttachmentReferences(attachRefList);
-			
+
 			// handle any group restrictions
 			List<String> groupTitleList = new ArrayList<String>();
 			if (oAssignment.getAccess() == Assignment.AssignmentAccess.GROUPED &&
@@ -485,7 +484,7 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 				}
 			}
 			newAssnDef.setGroupRestrictionGroupTitles(groupTitleList);
-			
+
 			// now let's handle the graded/ungraded stuff
 			if (oContent.getTypeOfGrade() == Assignment.UNGRADED_GRADE_TYPE) {
 				newAssnDef.setUngraded(true);
@@ -521,24 +520,48 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 						}
 					}
 				} else {
-					// TODO - we need to figure out how to handle this!!
-					newAssnDef.setUngraded(true);
-					if (oAssignment.getDueTime() != null) {
-						Date dueDate = new Date(oAssignment.getDueTime().getTime());
-						newAssnDef.setDueDateForUngraded(dueDate);
+					// if the assignment is graded but not associated w/ a gb item,
+					// the only time it will stay graded is if it is graded by points
+					// all other grading options will translate to an ungraded item
+					// in the new tool
+					if (oContent.getTypeOfGrade() == Assignment.SCORE_GRADE_TYPE) {
+						// we will add a gb item for this assignment
+						try {
+							newAssnDef.setAssociatedGbItemName(oAssignment.getTitle());
+							newAssnDef.setAssociatedGbItemPtsPossible(new Double(oContent.getMaxGradePointDisplay()));
+							if (oAssignment.getDueTime() != null) {
+								Date dueDate = new Date(oAssignment.getDueTime().getTime());
+								newAssnDef.setAssociatedGbItemDueDate(dueDate);
+							}
+						} catch (NumberFormatException nfe) {
+							// set this one as ungraded b/c points possible was invalid
+							newAssnDef.setUngraded(true);
+							if (oAssignment.getDueTime() != null) {
+								Date dueDate = new Date(oAssignment.getDueTime().getTime());
+								newAssnDef.setDueDateForUngraded(dueDate);
+							}
+						}
+
+					} else {
+
+						newAssnDef.setUngraded(true);
+						if (oAssignment.getDueTime() != null) {
+							Date dueDate = new Date(oAssignment.getDueTime().getTime());
+							newAssnDef.setDueDateForUngraded(dueDate);
+						}
 					}
 				}
 			}
-			
+
 			assignmentDefs.add(newAssnDef);
 		}
-		
+
 		AssignmentToolDefinition assignmentToolDef = new AssignmentToolDefinition();
 		assignmentToolDef.setAssignments(assignmentDefs);
-		
+
 		return VersionedExternalizable.toXml(assignmentToolDef);
 	}
-	
+
 	private String getNewTitle(String originalTitle, List<String> existingTitles) {
 		int increment = 1;
 		String newTitle = originalTitle + "_" + increment;
@@ -546,10 +569,10 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 			increment++;
 			newTitle = originalTitle + "_" + increment;
 		}
-		
+
 		return newTitle;
 	}
-	
+
 	private String copyAttachment(String attId, String contextId) {
 		String newAttId = null;
 		if (attId != null) {
@@ -561,11 +584,11 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 				String type = oldAttachment.getContentType();
 				byte[] content = oldAttachment.getContent();
 				ResourceProperties properties = oldAttachment.getProperties();
-				
+
 				ContentResource newResource = contentHostingService.addAttachmentResource(name, 
 						contextId, toolTitle, type, content, properties);
 				newAttId = newResource.getId();
-				
+
 			} catch (TypeException te) {
 				log.warn("TypeException thrown while attempting to retrieve resource with" +
 						" id " + attId + ". Attachment was not copied.");
@@ -592,7 +615,7 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 						" id " + attId + ". Attachment was not copied.");
 			}
 		}
-		
+
 		return newAttId;
 	}
 }
