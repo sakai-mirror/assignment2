@@ -184,6 +184,11 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
     				if (assign != null) {
     					GradebookItem item = 
     						new GradebookItem(assign.getId(), assign.getName(), assign.getPoints(), assign.getDueDate());
+    					
+    					if (assign.isExternallyMaintained()) {
+    						item.setExternalId(assign.getExternalId());
+    					}
+    					
     					gradebookItems.add(item);
     				}
     			}

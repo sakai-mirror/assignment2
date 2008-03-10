@@ -22,10 +22,8 @@
 package org.sakaiproject.assignment2.dao.test;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
-import java.util.Iterator;
 
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
@@ -100,8 +98,7 @@ public class AssignmentDaoImplTest extends Assignment2DaoTestBase {
 		assertTrue(assignments.size() == 4);
 		
 		// for each assignment returned, double check that the attachment and group sets are accurate
-		for (Iterator assignIter = assignments.iterator(); assignIter.hasNext();) {
-			Assignment2 assign = (Assignment2) assignIter.next();
+		for (Assignment2 assign : assignments) {
 			if (assign.getId().equals(testData.a1Id)) {
 				System.out.println("A1: " + assign.getTitle() + " " + testData.a1Id);
 				assertTrue(assign.getAttachmentSet().size() == 2);
@@ -139,12 +136,12 @@ public class AssignmentDaoImplTest extends Assignment2DaoTestBase {
 		assign = assignmentDao.getAssignmentByIdWithGroups(testData.a1Id);
 		assertNotNull(assign);
 		assertTrue(assign.getAssignmentGroupSet().size() == 2);
-		assertTrue(assign.getTitle().equals(testData.ASSIGN1_TITLE));
+		assertTrue(assign.getTitle().equals(AssignmentTestDataLoad.ASSIGN1_TITLE));
 		
 		assign = assignmentDao.getAssignmentByIdWithGroups(testData.a3Id);
 		assertNotNull(assign);
 		assertTrue(assign.getAssignmentGroupSet().isEmpty());
-		assertTrue(assign.getTitle().equals(testData.ASSIGN3_TITLE));
+		assertTrue(assign.getTitle().equals(AssignmentTestDataLoad.ASSIGN3_TITLE));
 	}
 	
 	public void testGetAssignmentByIdWithGroupsAndAttachments() {
@@ -166,7 +163,7 @@ public class AssignmentDaoImplTest extends Assignment2DaoTestBase {
 		assertNotNull(assign);
 		assertTrue(assign.getAssignmentGroupSet().size() == 2);
 		assertTrue(assign.getAttachmentSet().size() == 2);
-		assertTrue(assign.getTitle().equals(testData.ASSIGN1_TITLE));
+		assertTrue(assign.getTitle().equals(AssignmentTestDataLoad.ASSIGN1_TITLE));
 		
 		assign = assignmentDao.getAssignmentByIdWithGroups(testData.a3Id);
 		assertNotNull(assign);
@@ -179,7 +176,7 @@ public class AssignmentDaoImplTest extends Assignment2DaoTestBase {
 		// make sure bad data is caught
 		try {
 			// try a null submission
-			AssignmentSubmissionVersion version = assignmentDao.getCurrentSubmissionVersionWithAttachments(null);
+			assignmentDao.getCurrentSubmissionVersionWithAttachments(null);
 			fail("did not catch null submission passed to getCurrentSubmissionVersionWithAttachments");
 		} catch (IllegalArgumentException iae) {
 		}
@@ -187,7 +184,7 @@ public class AssignmentDaoImplTest extends Assignment2DaoTestBase {
 		try {
 			// what happens if submission doesn't have an id? should throw error
 			AssignmentSubmission submission = new AssignmentSubmission();
-			AssignmentSubmissionVersion version = assignmentDao.getCurrentSubmissionVersionWithAttachments(submission);
+			assignmentDao.getCurrentSubmissionVersionWithAttachments(submission);
 			fail("did not catch submission w/ no id passed to getCurrentSubmissionVersionWithAttachments");
 		} catch(IllegalArgumentException iae) {}
 
@@ -216,20 +213,20 @@ public class AssignmentDaoImplTest extends Assignment2DaoTestBase {
 	public void testGetCurrentAssignmentSubmissionsForStudent() throws Exception {
 		// pass a null studentId
 		try {
-			assignmentDao.getCurrentAssignmentSubmissionsForStudent(new ArrayList(), null);
+			assignmentDao.getCurrentAssignmentSubmissionsForStudent(new ArrayList<Assignment2>(), null);
 			fail("method getCurrentAssignmentSubmissionsForStudent did not catch null student parameter");
 		} catch (IllegalArgumentException iae) {
 		}
 		
 		// pass a null assignments list - should return empty list
-		List submissions = assignmentDao.getCurrentAssignmentSubmissionsForStudent(null, AssignmentTestDataLoad.STUDENT1_UID);
+		List<AssignmentSubmission> submissions = assignmentDao.getCurrentAssignmentSubmissionsForStudent(null, AssignmentTestDataLoad.STUDENT1_UID);
 		assertTrue(submissions.isEmpty());
 		// pass an empty assignments list - should return empty list
-		submissions = assignmentDao.getCurrentAssignmentSubmissionsForStudent(new ArrayList(), AssignmentTestDataLoad.STUDENT1_UID);
+		submissions = assignmentDao.getCurrentAssignmentSubmissionsForStudent(new ArrayList<Assignment2>(), AssignmentTestDataLoad.STUDENT1_UID);
 		assertTrue(submissions.isEmpty());
 		
 		// add two assignments to the list
-		List assignList = new ArrayList();
+		List<Assignment2> assignList = new ArrayList<Assignment2>();
 		assignList.add(testData.a1);
 		assignList.add(testData.a2);
 		
@@ -250,8 +247,7 @@ public class AssignmentDaoImplTest extends Assignment2DaoTestBase {
 		submissions = assignmentDao.getCurrentAssignmentSubmissionsForStudent(assignList, AssignmentTestDataLoad.STUDENT2_UID);
 		assertNotNull(submissions);
 		assertTrue(submissions.size() == 2);
-		for (Iterator subIter = submissions.iterator(); subIter.hasNext();) {
-			AssignmentSubmission thisSub = (AssignmentSubmission) subIter.next();
+		for (AssignmentSubmission thisSub : submissions) {
 			if (thisSub.getAssignment().getId().equals(testData.a1.getId())) {
 				// this one should have a currentVersion
 				assertNotNull(thisSub.getCurrentSubmissionVersion());
@@ -265,7 +261,7 @@ public class AssignmentDaoImplTest extends Assignment2DaoTestBase {
 		}
 		
 		// double check that it is restricted by the assignments we pass
-		assignList = new ArrayList();
+		assignList = new ArrayList<Assignment2>();
 		assignList.add(testData.a2);
 		// there are no submissions for this user for the passed assign
 		submissions = assignmentDao.getCurrentAssignmentSubmissionsForStudent(assignList, AssignmentTestDataLoad.STUDENT1_UID);
@@ -278,25 +274,24 @@ public class AssignmentDaoImplTest extends Assignment2DaoTestBase {
 	public void testGetCurrentSubmissionsForStudentsForAssignment() throws Exception {
 		// pass a null assignment
 		try {
-			assignmentDao.getCurrentSubmissionsForStudentsForAssignment(new ArrayList(), null);
+			assignmentDao.getCurrentSubmissionsForStudentsForAssignment(new ArrayList<String>(), null);
 			fail("did not catch null assignment passed to getCurrentSubmissionsForStudentsForAssignment");
 		} catch(IllegalArgumentException iae) {
 		}
 		
 		// null student list - should return empty list
-		Set submissions = assignmentDao.getCurrentSubmissionsForStudentsForAssignment(null, testData.a1);
+		Set<AssignmentSubmission> submissions = assignmentDao.getCurrentSubmissionsForStudentsForAssignment(null, testData.a1);
 		assertTrue(submissions.isEmpty());
 		
 		// add one real and one "fake" student
-		List studentList = new ArrayList();
+		List<String> studentList = new ArrayList<String>();
 		studentList.add(AssignmentTestDataLoad.STUDENT1_UID);
 		studentList.add("bogusStudent"); // shouldn't cause any problems
 		
 		// there should be 1 submission returned
 		submissions = assignmentDao.getCurrentSubmissionsForStudentsForAssignment(studentList, testData.a1);
 		assertTrue(submissions.size() == 1);
-		for (Iterator subIter = submissions.iterator(); subIter.hasNext();) {
-			AssignmentSubmission thisSub = (AssignmentSubmission) subIter.next();
+		for (AssignmentSubmission thisSub : submissions) {
 			// double check that the currentVersion was populated correctly
 			assertNotNull(thisSub.getCurrentSubmissionVersion());
 			assertTrue(thisSub.getCurrentSubmissionVersion().getId().equals(testData.st1a1CurrVersion.getId()));
@@ -307,8 +302,7 @@ public class AssignmentDaoImplTest extends Assignment2DaoTestBase {
 		studentList.add(AssignmentTestDataLoad.STUDENT2_UID);
 		submissions = assignmentDao.getCurrentSubmissionsForStudentsForAssignment(studentList, testData.a1);
 		assertTrue(submissions.size() == 2);
-		for (Iterator subIter = submissions.iterator(); subIter.hasNext();) {
-			AssignmentSubmission thisSub = (AssignmentSubmission) subIter.next();
+		for (AssignmentSubmission thisSub : submissions) {
 			if (thisSub.getUserId().equals(AssignmentTestDataLoad.STUDENT1_UID)) {
 				assertNotNull(thisSub.getCurrentSubmissionVersion());
 				assertTrue(thisSub.getCurrentSubmissionVersion().getId().equals(testData.st1a1CurrVersion.getId()));
@@ -323,8 +317,7 @@ public class AssignmentDaoImplTest extends Assignment2DaoTestBase {
 		// there should only be 1 submission for this assignment
 		submissions = assignmentDao.getCurrentSubmissionsForStudentsForAssignment(studentList, testData.a2);
 		assertTrue(submissions.size() == 1);
-		for (Iterator subIter = submissions.iterator(); subIter.hasNext();) {
-			AssignmentSubmission thisSub = (AssignmentSubmission) subIter.next();
+		for (AssignmentSubmission thisSub : submissions) {
 			// there shouldn't be a currentVersion for this submission
 			assertNull(thisSub.getCurrentSubmissionVersion());
 		}
@@ -367,8 +360,7 @@ public class AssignmentDaoImplTest extends Assignment2DaoTestBase {
 		assertNotNull(submission.getSubmissionHistorySet());
 		assertTrue(submission.getSubmissionHistorySet().size() == 3);
 		// double check that the attachments are correct for the returned versions
-		for (Iterator histIter = submission.getSubmissionHistorySet().iterator(); histIter.hasNext();) {
-			AssignmentSubmissionVersion vers = (AssignmentSubmissionVersion) histIter.next();
+		for (AssignmentSubmissionVersion vers : submission.getSubmissionHistorySet()) {
 			// check that the history versions have attach populated correctly
 			if (vers.getId().equals(testData.st2a1Version1.getId())) {
 				assertTrue(vers.getSubmissionAttachSet().size() == 1);
@@ -396,25 +388,24 @@ public class AssignmentDaoImplTest extends Assignment2DaoTestBase {
 	public void testGetSubmissionsWithVersionHistoryForStudentListAndAssignment() throws Exception {
 		// try a null assignment
 		try {
-			assignmentDao.getSubmissionsWithVersionHistoryForStudentListAndAssignment(new ArrayList(), null);
+			assignmentDao.getSubmissionsWithVersionHistoryForStudentListAndAssignment(new ArrayList<String>(), null);
 			fail("did not catch null assignment passed to getSubmissionsWithVersionHistoryForStudentListAndAssignment");
 		} catch(IllegalArgumentException iae) {
 		}
 		
 		// null student list - should return empty submission list
-		Set submissions = assignmentDao.getSubmissionsWithVersionHistoryForStudentListAndAssignment(null, testData.a1);
+		Set<AssignmentSubmission> submissions = assignmentDao.getSubmissionsWithVersionHistoryForStudentListAndAssignment(null, testData.a1);
 		assertTrue(submissions.isEmpty());
 		
 		// add two students - one is not associated with this class
-		List studentList = new ArrayList();
+		List<String> studentList = new ArrayList<String>();
 		studentList.add(AssignmentTestDataLoad.STUDENT1_UID);
 		studentList.add("bogusStudent"); // shouldn't cause any problems
 		
 		// should return one submission for this assignment
 		submissions = assignmentDao.getSubmissionsWithVersionHistoryForStudentListAndAssignment(studentList, testData.a1);
 		assertTrue(submissions.size() == 1);
-		for (Iterator subIter = submissions.iterator(); subIter.hasNext();) {
-			AssignmentSubmission thisSub = (AssignmentSubmission) subIter.next();
+		for (AssignmentSubmission thisSub : submissions) {
 			// check that current  version is populated correctly
 			assertNotNull(thisSub.getCurrentSubmissionVersion());
 			assertTrue(thisSub.getCurrentSubmissionVersion().getId().equals(testData.st1a1CurrVersion.getId()));
@@ -427,8 +418,7 @@ public class AssignmentDaoImplTest extends Assignment2DaoTestBase {
 		studentList.add(AssignmentTestDataLoad.STUDENT2_UID);
 		submissions = assignmentDao.getSubmissionsWithVersionHistoryForStudentListAndAssignment(studentList, testData.a1);
 		assertTrue(submissions.size() == 2);
-		for (Iterator subIter = submissions.iterator(); subIter.hasNext();) {
-			AssignmentSubmission thisSub = (AssignmentSubmission) subIter.next();
+		for (AssignmentSubmission thisSub : submissions) {
 			if (thisSub.getUserId().equals(AssignmentTestDataLoad.STUDENT1_UID)) {
 				// check that current  version is populated correctly
 				assertNotNull(thisSub.getCurrentSubmissionVersion());
@@ -446,8 +436,7 @@ public class AssignmentDaoImplTest extends Assignment2DaoTestBase {
 				
 				// check that submission history is populated correctly
 				assertTrue(thisSub.getSubmissionHistorySet().size() == 3);
-				for (Iterator histIter = thisSub.getSubmissionHistorySet().iterator(); histIter.hasNext();) {
-					AssignmentSubmissionVersion vers = (AssignmentSubmissionVersion) histIter.next();
+				for (AssignmentSubmissionVersion vers : thisSub.getSubmissionHistorySet()) {
 					// check that the history versions have attach populated correctly
 					if (vers.getId().equals(testData.st2a1Version1.getId())) {
 						assertTrue(vers.getSubmissionAttachSet().size() == 1);
@@ -470,8 +459,7 @@ public class AssignmentDaoImplTest extends Assignment2DaoTestBase {
 		// now try an assignment with only 1 submission
 		submissions = assignmentDao.getSubmissionsWithVersionHistoryForStudentListAndAssignment(studentList, testData.a2);
 		assertTrue(submissions.size() == 1);
-		for (Iterator subIter = submissions.iterator(); subIter.hasNext();) {
-			AssignmentSubmission thisSub = (AssignmentSubmission) subIter.next();
+		for (AssignmentSubmission thisSub : submissions) {
 			// there should be no current version or history for this submission
 			assertNull(thisSub.getCurrentSubmissionVersion());
 			assertTrue(thisSub.getSubmissionHistorySet().isEmpty());
@@ -540,7 +528,7 @@ public class AssignmentDaoImplTest extends Assignment2DaoTestBase {
 		} catch (IllegalArgumentException iae) {}
 		
 		// let's try a few different submissions
-		Set history = assignmentDao.getVersionHistoryForSubmission(testData.st1a1Submission);
+		Set<AssignmentSubmissionVersion> history = assignmentDao.getVersionHistoryForSubmission(testData.st1a1Submission);
 		assertEquals(history.size(), 1);
 		
 		history = assignmentDao.getVersionHistoryForSubmission(testData.st2a2SubmissionNoVersions);

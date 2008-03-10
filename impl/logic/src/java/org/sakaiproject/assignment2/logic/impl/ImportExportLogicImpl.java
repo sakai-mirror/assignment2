@@ -43,7 +43,6 @@ import org.sakaiproject.assignment2.model.AssignmentGroup;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.GradebookItem;
 import org.sakaiproject.assignment2.logic.ImportExportLogic;
-import org.sakaiproject.assignment2.logic.ExternalAnnouncementLogic;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.dao.AssignmentDao;
@@ -400,6 +399,10 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 			AssignmentContent oContent = oAssignment.getContent();
 			ResourceProperties oProperties = oAssignment.getProperties();
 			
+			// to identify assignments that act as external maintainers of a gb item,
+			// we need to retrieve all of the gb items in the old site
+			List<GradebookItem> allGbItems = gradebookLogic.getAllGradebookItems(fromContext);
+			
 			AssignmentDefinition newAssnDef = new AssignmentDefinition();
 			
 			Date openDate = new Date(oAssignment.getOpenTime().getTime());
@@ -491,11 +494,39 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 					newAssnDef.setDueDateForUngraded(dueDate);
 				}
 			} else {
-				// TODO - we need to figure out how to handle this!!
-				newAssnDef.setUngraded(true);
-				if (oAssignment.getDueTime() != null) {
-					Date dueDate = new Date(oAssignment.getDueTime().getTime());
-					newAssnDef.setDueDateForUngraded(dueDate);
+				String grading = oProperties.getProperty(AssignmentService.NEW_ASSIGNMENT_ADD_TO_GRADEBOOK);
+				String associateAssignment = oProperties.getProperty(AssignmentService.PROP_ASSIGNMENT_ASSOCIATE_GRADEBOOK_ASSIGNMENT);
+				if (grading != null && grading.equals(AssignmentService.GRADEBOOK_INTEGRATION_ASSOCIATE)) {
+					// we need to figure out which gb item this was associated with, so iterate
+					// through the gb items
+					// either this is assignment "added" a gb item as an externally maintained item and
+					// the associateAssignment will match the externalId of the gb item, or it was
+					// associated with an existing gb item, in which case the associatedAssignment
+					// will be the gbItem title
+					if (associateAssignment != null && allGbItems != null) {
+						for (GradebookItem gbItem : allGbItems) {
+							if (gbItem.getExternalId() != null) {
+								if (associateAssignment.equals(gbItem.getExternalId())) {
+									newAssnDef.setAssociatedGbItemName(gbItem.getTitle());
+									newAssnDef.setAssociatedGbItemDueDate(gbItem.getDueDate());
+									newAssnDef.setAssociatedGbItemPtsPossible(gbItem.getPointsPossible());
+								}
+							} else {
+								if (associateAssignment.equals(gbItem.getTitle())) {
+									newAssnDef.setAssociatedGbItemName(gbItem.getTitle());
+									newAssnDef.setAssociatedGbItemDueDate(gbItem.getDueDate());
+									newAssnDef.setAssociatedGbItemPtsPossible(gbItem.getPointsPossible());
+								}
+							}
+						}
+					}
+				} else {
+					// TODO - we need to figure out how to handle this!!
+					newAssnDef.setUngraded(true);
+					if (oAssignment.getDueTime() != null) {
+						Date dueDate = new Date(oAssignment.getDueTime().getTime());
+						newAssnDef.setDueDateForUngraded(dueDate);
+					}
 				}
 			}
 			
