@@ -35,6 +35,7 @@ public class GradebookItem {
     private String title;
     private Double pointsPossible;
     private Date dueDate;
+    private String externalId;
     
     public GradebookItem() {
     	
@@ -110,5 +111,25 @@ public class GradebookItem {
 	 */
 	public void setDueDate(Date dueDate) {
 		this.dueDate = dueDate;
+	}
+
+	/**
+	 * 
+	 * @return the id representing the external maintainer of this gb item.
+	 * used ONLY for import from old assignments tool
+	 */
+	public String getExternalId()
+	{
+		return externalId;
+	}
+
+	/**
+	 * the id representing the external maintainer of this gb item.
+	 * used ONLY for import from old assignments tool
+	 * @param externalId
+	 */
+	public void setExternalId(String externalId)
+	{
+		this.externalId = externalId;
 	}
 }

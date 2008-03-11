@@ -47,8 +47,6 @@
       <groupId>commons-logging</groupId>
       <artifactId>commons-logging</artifactId>
       <version>1.0.4</version>
-      <type>jar</type>
-      <scope>provided</scope>
     </dependency>
     <dependency>
          <groupId>generic-dao</groupId>
@@ -59,13 +57,11 @@
       <groupId>sakaiproject</groupId>
       <artifactId>sakai-assignment2-logic-api</artifactId>
       <version>${sakai.version}</version>
-      <scope>provided</scope>
     </dependency> 
     <dependency>
       <groupId>sakaiproject</groupId>
       <artifactId>sakai-assignment2-model</artifactId>
       <version>${sakai.version}</version>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>sakaiproject</groupId>
@@ -76,13 +72,11 @@
       <groupId>${sakai.spring.groupId}</groupId>
       <artifactId>${sakai.spring.artifactId}</artifactId>
       <version>${sakai.spring.version}</version>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>${sakai.hibernate.groupId}</groupId>
       <artifactId>${sakai.hibernate.artifactId}</artifactId>
       <version>${sakai.hibernate.version}</version>
-      <scope>provided</scope>
       <!-- adding this exclusion handles the collision of asm versions -->
       <exclusions>
         <exclusion>
@@ -99,7 +93,6 @@
       <groupId>${sakai.spring.groupId}</groupId>
       <artifactId>${sakai.spring.mock.artifactId}</artifactId>
       <version>${sakai.spring.mock.version}</version>
-      <scope>provided</scope>
     </dependency>
     
     <!-- testing dependencies -->
@@ -185,7 +178,6 @@
       <groupId>sakaiproject</groupId>
       <artifactId>sakai-user-api</artifactId>
       <version>${sakai.version}</version>
-      <scope>provided</scope>
     </dependency>
   </dependencies>
 </project>

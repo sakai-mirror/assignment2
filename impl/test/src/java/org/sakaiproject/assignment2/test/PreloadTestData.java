@@ -21,13 +21,9 @@
 
 package org.sakaiproject.assignment2.test;
 
-import java.util.Date;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment2.dao.AssignmentDao;
-import org.sakaiproject.assignment2.model.Assignment2;
-import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 
 
 /**
