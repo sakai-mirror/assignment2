@@ -6,28 +6,26 @@
   <groupId>sakaiproject</groupId>
   <artifactId>sakai-assignment2-logic-api</artifactId>
   <inceptionYear>2007</inceptionYear>
-  <packaging>jar</packaging>
-<properties>
+  <properties>
 		<!-- deploy as a jar -->
 		<deploy.type>jar</deploy.type>
 		<!-- deploy to "shared", "common" or "server" -->
 		<deploy.target>shared</deploy.target>
-	</properties>
+  </properties>
   <dependencies>
     <dependency>
       <groupId>sakaiproject</groupId>
       <artifactId>sakai-assignment2-model</artifactId>
       <version>${sakai.version}</version>
-      <scope>provided</scope>
     </dependency>
-      <dependency>
-         <groupId>generic-dao</groupId>
-         <artifactId>generic-dao</artifactId>
-         <version>0.9</version>
-      </dependency>
-
     
-        <dependency>
+    <dependency>
+       <groupId>generic-dao</groupId>
+       <artifactId>generic-dao</artifactId>
+       <version>0.9</version>
+    </dependency>
+    
+    <dependency>
       <groupId>sakaiproject</groupId>
       <artifactId>sakai-entity-api</artifactId>
       <version>${sakai.version}</version>
@@ -46,25 +44,22 @@
       <groupId>sakaiproject</groupId>
       <artifactId>sakai-user-api</artifactId>
       <version>${sakai.version}</version>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>commons-logging</groupId>
       <artifactId>commons-logging</artifactId>
       <version>1.0.4</version>
     </dependency>
-		<dependency>
-			<groupId>sakaiproject</groupId>
-			<artifactId>sakai-util-api</artifactId>
-			<version>${sakai.version}</version>
-			<scope>provided</scope>
-		</dependency>
+	<dependency>
+		<groupId>sakaiproject</groupId>
+		<artifactId>sakai-util-api</artifactId>
+		<version>${sakai.version}</version>
+	</dependency>
 
 	<dependency>
 		<groupId>sakaiproject</groupId>
 		<artifactId>sakai-util</artifactId>
 		<version>${sakai.version}</version>
-		<scope>provided</scope>
 	</dependency>
 
         <!-- GradebookService -->

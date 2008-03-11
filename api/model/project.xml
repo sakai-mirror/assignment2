@@ -6,7 +6,6 @@
   <groupId>sakaiproject</groupId>
   <artifactId>sakai-assignment2-model</artifactId>
   <inceptionYear>2007</inceptionYear>
-  <packaging>jar</packaging>
   <properties>
 		<!-- deploy as a jar -->
 		<deploy.type>jar</deploy.type>

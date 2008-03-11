@@ -40,17 +40,11 @@
       <groupId>sakaiproject</groupId>
       <artifactId>sakai-assignment2-logic-api</artifactId>
       <version>${sakai.version}</version>
-         <properties>
-            <war.bundle>true</war.bundle>
-         </properties>
     </dependency>
         <dependency>
       <groupId>sakaiproject</groupId>
       <artifactId>sakai-assignment2-model</artifactId>
       <version>${sakai.version}</version>
-         <properties>
-            <war.bundle>true</war.bundle>
-         </properties>
     </dependency>
     <dependency>
       <groupId>sakaiproject</groupId>
@@ -64,17 +58,11 @@
       <groupId>sakaiproject</groupId>
       <artifactId>sakai-assignment2-hbm</artifactId>
       <version>${sakai.version}</version>
-         <properties>
-            <war.bundle>true</war.bundle>
-         </properties>
     </dependency>
     <dependency>
       <groupId>sakaiproject</groupId>
       <artifactId>sakai-util-api</artifactId>
       <version>${sakai.version}</version>
-         <properties>
-            <war.bundle>true</war.bundle>
-         </properties>
     </dependency>
     <dependency>
       <groupId>sakaiproject</groupId>
