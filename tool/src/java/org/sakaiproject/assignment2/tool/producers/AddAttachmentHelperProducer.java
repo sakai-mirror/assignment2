@@ -35,6 +35,7 @@ public class AddAttachmentHelperProducer implements ViewComponentProducer, ViewP
   }
   
   private SessionManager sessionManager;
+  private MessageLocator messageLocator;
 
   public void fillComponents(UIContainer tofill, ViewParameters viewparams, ComponentChecker checker) {
     FilePickerHelperViewParams params = (FilePickerHelperViewParams) viewparams;
@@ -42,8 +43,8 @@ public class AddAttachmentHelperProducer implements ViewComponentProducer, ViewP
 	  
 	//parameters for helper
 	ToolSession toolSession = sessionManager.getCurrentToolSession();
-	toolSession.setAttribute(FilePickerHelper.FILE_PICKER_TITLE_TEXT, "XML File Data Import");
-	toolSession.setAttribute(FilePickerHelper.FILE_PICKER_INSTRUCTION_TEXT, "Please select an XML data file from which to read data.");
+	toolSession.setAttribute(FilePickerHelper.FILE_PICKER_TITLE_TEXT, messageLocator.getMessage("assignment2.add_attachment_helper.title"));
+	toolSession.setAttribute(FilePickerHelper.FILE_PICKER_INSTRUCTION_TEXT, messageLocator.getMessage("assignment2.add_attachment_helper.instructions"));
 	toolSession.setAttribute(FilePickerHelper.FILE_PICKER_MAX_ATTACHMENTS, FilePickerHelper.CARDINALITY_MULTIPLE);
 	  
     UIOutput.make(tofill, HelperViewParameters.HELPER_ID, "sakai.filepicker");
@@ -66,4 +67,9 @@ public class AddAttachmentHelperProducer implements ViewComponentProducer, ViewP
   public void setSessionManager(SessionManager sessionManager) {
 	  this.sessionManager = sessionManager;
   }
+
+	public void setMessageLocator(MessageLocator messageLocator)
+	{
+		this.messageLocator = messageLocator;
+	}
 }
