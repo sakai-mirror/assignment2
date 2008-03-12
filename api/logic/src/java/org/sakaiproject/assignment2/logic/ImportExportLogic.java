@@ -79,4 +79,11 @@ public interface ImportExportLogic {
 	public String getAssignmentToolDefinitionXmlFromOriginalAssignmentsTool(
 			String fromContext, String toContext);
 	
+	/**
+	 * Will remove all existing assignments and reset any settings required for
+	 * the option of importing into a "clean" tool
+	 * @param contextId
+	 */
+	public void cleanToolForImport(String contextId);
+	
 }

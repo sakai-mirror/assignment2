@@ -78,11 +78,6 @@ public class AssignmentEntityProducer extends BaseEntityProducer implements Cont
 		// do nothing
 	}
 
-   //added to compile in 2-4-x
-   public void transferCopyEntities(String fromContext, String toContext, List ids, boolean bool) {
-      transferCopyEntities(fromContext, toContext, ids);
-   }
-
 	public void transferCopyEntities(String fromContext, String toContext, List ids) {
 		// if the site we are importing from has the "new" assignment2 tool,
 		// import from that tool. Otherwise, check to see if that site has the
@@ -96,6 +91,15 @@ public class AssignmentEntityProducer extends BaseEntityProducer implements Cont
 			importExportLogic.getAssignmentToolDefinitionXmlFromOriginalAssignmentsTool(fromContext, toContext);
 			importExportLogic.mergeAssignmentToolDefinitionXml(toContext, fromOldAssignmentToolXml);
 		}
+	}
+	
+	public void transferCopyEntities(String fromContext, String toContext, List ids, boolean cleanup) {
+		if (cleanup) {
+			// we need to remove all assignments in the current site
+			importExportLogic.cleanToolForImport(toContext);
+		}
+		
+		transferCopyEntities(fromContext, toContext, ids);
 	}
 	
 	private ExternalGradebookLogic gradebookLogic;

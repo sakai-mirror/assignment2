@@ -618,4 +618,18 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 
 		return newAttId;
 	}
+	
+	public void cleanToolForImport(String contextId) {
+		if (contextId == null) {
+			throw new IllegalArgumentException("Null contextId passed to cleanAssignments");
+		}
+		
+		Set<Assignment2> allAssignments = dao.getAssignmentsWithGroupsAndAttachments(contextId);
+		if (allAssignments != null) {
+			for (Assignment2 assign : allAssignments) {
+				assignmentLogic.deleteAssignment(assign);
+				if (log.isDebugEnabled()) log.debug("Assignment " + assign.getId() + " removed in preparation for import");
+			}
+		}
+	}
 }
