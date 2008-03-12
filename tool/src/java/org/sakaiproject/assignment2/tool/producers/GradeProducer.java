@@ -198,7 +198,7 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
 
         UILink.make(form, "view_assignment_instructions", 
         		messageLocator.getMessage("assignment2.assignment_grade.view_assignment_instructions"),
-        		externalLogic.getAssignmentViewUrl(FragmentAssignmentInstructionsProducer.VIEW_ID) + "?height=300");
+        		externalLogic.getAssignmentViewUrl(FragmentAssignmentInstructionsProducer.VIEW_ID) + "/" + assignment.getId() + "?TB_iframe=true&height=300");
         
         //If assignment allows for submitted text
         if (assignmentSubmissionVersion.getSubmittedTime() != null &&
