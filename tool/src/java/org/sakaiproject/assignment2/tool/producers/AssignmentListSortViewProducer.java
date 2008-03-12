@@ -189,10 +189,8 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
         	//UIInternalLink.make(row, "assignment_row_in_new", "2/4", new SimpleViewParameters(GradeAssignmentProducer.VIEW_ID));
         }
         
-        if (edit_perm) {
-        	UICommand.make(form, "submit_remove", UIMessage.make("assignment2.assignment_list-sortview.submit_remove"),
+        UICommand.make(form, "submit_remove", UIMessage.make("assignment2.assignment_list-sortview.submit_remove"),
         		"Assignment2Bean.processActionRemove");
-        }
         
 
     }
