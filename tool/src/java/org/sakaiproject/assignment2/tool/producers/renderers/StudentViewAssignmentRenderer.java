@@ -154,6 +154,10 @@ public class StudentViewAssignmentRenderer {
     	} else {
     		UIOutput.make(joint, "header.due_date", (assignment.getDueDateForUngraded() != null ? df.format(assignment.getDueDateForUngraded()) : ""));
     	}
+    	if (assignment.getAcceptUntilTime() != null) {
+    		UIOutput.make(joint, "accept_until_tr");
+    		UIOutput.make(joint, "header.accept_until", df.format(assignment.getAcceptUntilTime()));
+    	}
     	UIOutput.make(joint, "header.status", assignmentSubmission.getSubmissionStatus());
     	UIOutput.make(joint, "header.grade_scale", "Grade Scale from Gradebook");  //HERE
     	if (assignment.getModifiedTime() != null) {
