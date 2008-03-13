@@ -33,6 +33,9 @@ public class LocalPermissionLogic {
 		if (AddAttachmentHelperProducer.VIEWID.equals(viewId)) {
 			return Boolean.TRUE;
 			
+		} else if (AssignmentDetailProducer.VIEW_ID.equals(viewId)) {
+			return Boolean.TRUE;
+			
 		} else if (AssignmentListSortViewProducer.VIEW_ID.equals(viewId)) {
 			return permissionLogic.isUserAbleToAccessInstructorView(contextId);
 			

@@ -35,9 +35,11 @@ public class LayoutProducer implements NullaryProducer {
 			
 			UIJointContainer page = new UIJointContainer(tofill, "page-replace:", "page:");
 			
-			//Initialize iframeId var -- for a few pages that need it still :-(
-	        String frameId = org.sakaiproject.util.Web.escapeJavascript("Main" + org.sakaiproject.tool.cover.ToolManager.getCurrentPlacement().getId());
-	        UIVerbatim.make(tofill, "iframeId_init", "var iframeId = \"" + frameId + "\";");
+			if (org.sakaiproject.tool.cover.ToolManager.getCurrentPlacement() != null) {
+				//Initialize iframeId var -- for a few pages that need it still :-(
+		        String frameId = org.sakaiproject.util.Web.escapeJavascript("Main" + org.sakaiproject.tool.cover.ToolManager.getCurrentPlacement().getId());
+		        UIVerbatim.make(tofill, "iframeId_init", "var iframeId = \"" + frameId + "\";");
+			}
 			
 			//include the components from the page body into tag "page-replace:"
 			pageproducer.fillComponents(page);

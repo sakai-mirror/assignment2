@@ -25,6 +25,11 @@
    	  <property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
    	  <property name="messageLocator" ref="messageLocator" />
    </bean>
+   
+   <bean id="Assignment2DetailEntityProvider" class="org.sakaiproject.assignment2.tool.entity.Assignment2DetailEntityProvider"
+      init-method="init" destroy-method="destroy">
+      <property name="entityProviderManager" ref="org.sakaiproject.entitybroker.entityprovider.EntityProviderManager" />
+   </bean>
 
    <!-- handles configuration of internationalization messages -->
    <bean id="messageLocator" class="uk.org.ponder.springutil.SpringMessageLocator">

@@ -106,7 +106,13 @@ public class ExternalLogicImpl implements ExternalLogic {
     }
     
     public String getCurrentContextId() {
-    	return toolManager.getCurrentPlacement().getContext();
+    	if (toolManager != null && toolManager.getCurrentPlacement() != null && toolManager.getCurrentPlacement().getContext() != null){
+    		return toolManager.getCurrentPlacement().getContext();
+    		
+    	} else {
+    		return null;
+    		
+    	}
     }
     
     public String getToolTitle() {
