@@ -196,6 +196,7 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
         	UIMessage.make(form, "editing_previous_submission", "assignment2.assignment_grade.editing_previous_submission");
         }
 
+        //TODO - make these viewparams their own actual view params, not raw
         UILink.make(form, "view_assignment_instructions", 
         		messageLocator.getMessage("assignment2.assignment_grade.view_assignment_instructions"),
         		externalLogic.getAssignmentViewUrl(FragmentAssignmentInstructionsProducer.VIEW_ID) + "/" + assignment.getId() + "?TB_iframe=true&height=300");
