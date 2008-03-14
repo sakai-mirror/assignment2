@@ -90,10 +90,10 @@ function update_due_date(){
 		jQuery("input[type='radio'][value='false'][name='page-replace\:\:ungraded-selection']").get(0).checked=true;
 	}
 	gradebook_toggle();
-	id = id==""?null:id;
+	id = id==""?0:id;
 	jQuery("li.gradebook_item_due_date > span").html(gradebook_items_date[id]);
 	jQuery("li.gradebook_item_due_date p.instruction a").each(function(){
-		if(id!=null){
+		if(id!=0){
 			jQuery(this).show();
 			//TODO - replace this with an AJAX call to the server to get the new url using the logic and VPs...
 			// that way we would not have to hard code stuff in
