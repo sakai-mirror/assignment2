@@ -36,12 +36,14 @@
 // we adjust the main frame height auto-magically without having to
 // even worry abouts it anymores
 catchResize = function(){
-	//RSF.getDOMModifyFirer().fireEvent();
+	a2SetMainFrameHeight();
 }
 
 //now the fun one, add an event listener so that if a DOM node is modified
 // it will adjust the main frame height.  This way, if we make browser side
 // DOM modifications, we do not have to call setMainFrameHeight every time
-document.addEventListener("DOMAttrModified", catchResize, false);
+jQuery(window).load(function(){
+	document.addEventListener("DOMAttrModified", catchResize, false);
+});
 </script>
 </html>
