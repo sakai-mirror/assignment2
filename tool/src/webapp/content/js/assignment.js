@@ -49,7 +49,9 @@ function changeValue(){
          }
       }
    }
-   jQuery("input[type='radio'][value='false'][name='page-replace\:\:ungraded-selection']").get(0).checked=true;
+   if (el.selectedIndex != 0){
+   	jQuery("input[type='radio'][value='false'][name='page-replace\:\:ungraded-selection']").get(0).checked=true;
+   }
    gradebook_toggle();
    update_due_date();
 }
@@ -84,7 +86,9 @@ function toggle_group_checkboxes(check_all_box){
 
 function update_due_date(){
 	id = jQuery("select[name='page-replace\:\:gradebook_item-selection']").val();
-	jQuery("input[type='radio'][value='false'][name='page-replace\:\:ungraded-selection']").get(0).checked=true;
+	if (jQuery("select[name='page-replace\:\:gradebook_item-selection']").get(0).selectedIndex != 0) {
+		jQuery("input[type='radio'][value='false'][name='page-replace\:\:ungraded-selection']").get(0).checked=true;
+	}
 	gradebook_toggle();
 	id = id==""?null:id;
 	jQuery("li.gradebook_item_due_date > span").html(gradebook_items_date[id]);
