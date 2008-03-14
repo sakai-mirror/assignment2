@@ -220,8 +220,7 @@ public class Assignment2Bean {
 		}
 
 		if (restrictedToGroups != null && restrictedToGroups) {
-			messages.addMessage(new TargettedMessage("assignment2.assignment_post.no_groups", 
-					new Object[] { messageLocator.getMessage("assignment2.assignment_add.access.restricted") }));
+			messages.addMessage(new TargettedMessage("assignment2.assignment_post.no_groups"));
 			errorFound = true;
 		}
 		assignment.setAssignmentGroupSet(newGroups);
@@ -260,7 +259,7 @@ public class Assignment2Bean {
 						new Object[] { assignment.getTitle() }, TargettedMessage.SEVERITY_INFO));
 			}
 		} else {
-			messages.addMessage(new TargettedMessage("assignment2.assignment_post_error"));
+			//messages.addMessage(new TargettedMessage("assignment2.assignment_post_error"));
 			return FAILURE;
 		}
 		//Clear out session attachment information if everything successful
