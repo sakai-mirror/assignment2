@@ -76,7 +76,7 @@ public class StudentSubmitSummaryProducer implements ViewComponentProducer, View
 		
 		//Display Assignment Info
     	UIOutput.make(tofill, "header.title", assignment.getTitle());
-    	if (assignment.isUngraded()){
+    	if (!assignment.isUngraded()){
     		UIOutput.make(tofill, "header.due_date", (assignment.getDueDate() != null ? df.format(assignment.getDueDate()) : ""));
     	} else {
     		UIOutput.make(tofill, "header.due_date", (assignment.getDueDateForUngraded() != null ? df.format(assignment.getDueDateForUngraded()) : ""));
@@ -112,12 +112,12 @@ public class StudentSubmitSummaryProducer implements ViewComponentProducer, View
         	attachmentListRenderer.makeAttachmentFromFeedbackAttachmentSet(loop, "loop_returned_attachment_list:", 
         			GradeProducer.VIEW_ID, asv.getFeedbackAttachSet(), Boolean.FALSE);
         	if (asv.getLastFeedbackSubmittedBy() != null) {
-	        	UIMessage.make(loop, "feedback_updated", "assignment2.assignment_grade.feedback_updated",
+	        	UIMessage.make(loop, "feedback_updated", "assignment2.student-submit-summary.feedback_updated",
 	        			new Object[]{ 
 	        				(asv.getLastFeedbackTime() != null ? df.format(asv.getLastFeedbackTime()) : ""), 
 	        				externalLogic.getUserDisplayName(asv.getLastFeedbackSubmittedBy()) });
         	} else {
-        		UIMessage.make(loop, "feedback_updated", "assignment2.assignment_grade.feedback_not_updated");
+        		UIMessage.make(loop, "feedback_updated", "assignment2.student-submit-summary.feedback_not_updated");
         	}
         }
         if (history == null || history.size() == 0) {
