@@ -31,7 +31,7 @@ function a2SetMainFrameHeight(){
 		if(arguments[0] != null){
 			height = arguments[0];
 		} else {
-			height = jQuery(document).height() + 10;
+			height = jQuery(document).height();// + 10;
 		}
 		jQuery("#" + iframeId, parent.document).height(height);
 	}
