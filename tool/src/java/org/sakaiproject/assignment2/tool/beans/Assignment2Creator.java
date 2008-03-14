@@ -69,6 +69,7 @@ public class Assignment2Creator {
 		dup.setAllowReviewService(assignment.isAllowReviewService());
 		dup.setAllowStudentViewReport(assignment.isAllowStudentViewReport());
 		dup.setRemoved(Boolean.FALSE);
+		dup.setNumSubmissionsAllowed(assignment.getNumSubmissionsAllowed());
 		
 		// let's duplicate the attachments and group restrictions
 		Set<AssignmentGroup> assignGroupSet = new HashSet<AssignmentGroup>();
