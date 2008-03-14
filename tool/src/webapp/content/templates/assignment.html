@@ -250,15 +250,24 @@
 function refresh_ajax(){
 	if(fragAttachPath != ""){
 		old=jQuery("#fragment-attachments-container").html();
-		jQuery("#fragment-attachments-container").load(fragAttachPath + "?otpkey=" + otpkey + "&attachmentSetType=0&remove=true", function(){
-			if(old != jQuery("#fragment-attachments-container").html())
-				highlight(jQuery("#fragment-attachments-container"));
+		jQuery.ajax({
+		    type: "GET",
+		    cache: false,
+		    url: fragAttachPath + "?otpkey=" + otpkey + "&attachmentSetType=0&remove=true",
+		    success: function(html){
+		       jQuery("#fragment-attachments-container").html(html.substring(html.indexOf('<div>') + 5, html.lastIndexOf('</div>')));
+		       if (old != html){
+		          highlight(jQuery("#fragment-attachments-container"));
+		       }
+		    }
 		});
 	}
+
 	if(fragGBPath != ""){
 		oldSelect=jQuery("select[name='page-replace\:\:gradebook_item-selection']").get(0).selectedIndex;
 		jQuery.ajax({
 			type: "GET",
+			cache: false,
 			url: fragGBPath,
 			success: function(html){
 				jQuery("select[name='page-replace\:\:gradebook_item-selection']").html(

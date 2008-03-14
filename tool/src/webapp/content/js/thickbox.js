@@ -11,7 +11,7 @@ var tb_pathToImage = "/sakai-assignment2-tool/content/images/loadingAnimation.gi
 
 //on page load call tb_init
 jQuery(document).ready(function(){   
-	tb_init('a.thickbox, area.thickbox, input.thickbox');//pass where to apply thickbox
+	setTimeout(function(){tb_init('a.thickbox, area.thickbox, input.thickbox');}, 100); //pass where to apply thickbox
 	imgLoader = new Image();// preload image
 	imgLoader.src = tb_pathToImage;
 });
@@ -189,6 +189,7 @@ function tb_show(caption, url, imageGroup, tagName) {//function called when the 
 			var queryString = url.replace(/^[^\?]+\??/,'');
 			var params = tb_parseQuery( queryString );
 
+			var de = document.documentElement;
 			var h = parent.window.innerHeight || parent.self.innerHeight || (de&&de.clientHeight) || parent.document.body.clientHeight;
 			TB_WIDTH = (params['width']*1) + 30 || 650; //defaults to 630 if no paramaters were added to URL
 			TB_HEIGHT = (params['height']*1) + 40 || h - 250; //defaults to 440 if no paramaters were added to URL
@@ -311,9 +312,9 @@ function tb_remove() {
 }
 
 function tb_position() {
-top = getPageScrollTop();
+tops = getPageScrollTop();
 jQuery("#TB_window").css({marginLeft: '-' + parseInt((TB_WIDTH / 2),10) + 'px', width: TB_WIDTH + 'px'});
-jQuery("#TB_window").css({top: (top > 0 ? top -100 : top + 100) + 'px'});
+jQuery("#TB_window").css({top: (tops > 0 ? tops -100 : tops + 100) + 'px'});
 
 	//if ( !(jQuery.browser.msie && jQuery.browser.version < 7)) { // take away IE6
 	//	jQuery("#TB_window").css({marginTop: '-' + parseInt((TB_HEIGHT / 2),10) + 'px'});

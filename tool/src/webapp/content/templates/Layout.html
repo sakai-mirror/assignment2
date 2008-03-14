@@ -43,7 +43,11 @@ catchResize = function(){
 // it will adjust the main frame height.  This way, if we make browser side
 // DOM modifications, we do not have to call setMainFrameHeight every time
 jQuery(window).load(function(){
-	document.addEventListener("DOMAttrModified", catchResize, false);
+	if(!jQuery.browser.msie){
+		document.addEventListener("DOMAttrModified", catchResize, false);
+	}else{
+		document.onpropertychange = catchResize;
+	}
 });
 </script>
 </html>
