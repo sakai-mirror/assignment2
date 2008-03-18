@@ -142,11 +142,12 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
         pagerRenderer.makePager(tofill, "pagerDiv:", VIEW_ID, viewparams, total_count);
         //UIMessage.make(tofill, "heading", "assignment2.assignment_grade-assignment.heading", new Object[] { assignment.getTitle() });
 
+        /**  Assign This Grade Helper
         UIForm assign_form = UIForm.make(tofill, "assign_form");
         UIMessage.make(assign_form, "assign_grade", "assignment2.assignment_grade-assignment.assign_grade");
         UIInput.make(assign_form, "assign_grade_input", "");
         UICommand.make(assign_form, "assign_grade_submit", "");
-
+		***/
         
         //Do Student Table
         sortHeaderRenderer.makeSortingLink(tofill, "tableheader.student", viewparams, 
