@@ -3,9 +3,11 @@ package org.sakaiproject.assignment2.tool.producers;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
@@ -45,6 +47,8 @@ import uk.org.ponder.rsf.components.UIMessage;
 import uk.org.ponder.rsf.components.UIOutput;
 import uk.org.ponder.rsf.components.UISelect;
 import uk.org.ponder.rsf.components.UIVerbatim;
+import uk.org.ponder.rsf.components.decorators.DecoratorList;
+import uk.org.ponder.rsf.components.decorators.UIFreeAttributeDecorator;
 import uk.org.ponder.rsf.evolvers.FormatAwareDateInputEvolver;
 import uk.org.ponder.rsf.evolvers.TextInputEvolver;
 import uk.org.ponder.rsf.flow.ARIResult;
@@ -112,6 +116,11 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
     	if (params.submissionId != null){
     		OLD_VERSION = true;
     	}
+    	
+    	//get a decorated list of disabled="disabled"
+    	Map disabledAttr = new HashMap();
+		disabledAttr.put("disabled", "disabled");
+		DecoratorList disabledDecoratorList = new DecoratorList(new UIFreeAttributeDecorator(disabledAttr));
     	
     	AssignmentSubmission as = submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(assignmentId, userId);
     	Assignment2 assignment = assignmentLogic.getAssignmentByIdWithAssociatedData(assignmentId);
@@ -209,9 +218,13 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
         
         
 	        UIVerbatim.make(form, "feedback_instructions", messageLocator.getMessage("assignment2.assignment_grade.feedback_instructions"));
-	        UIInput feedback_text = UIInput.make(form, "feedback_text:", asvOTP + ".annotatedText");
-	        feedback_text.mustapply = Boolean.TRUE;
-	        richTextEvolver.evolveTextInput(feedback_text);
+	        if (edit_perm){
+		        UIInput feedback_text = UIInput.make(form, "feedback_text:", asvOTP + ".annotatedText");
+		        feedback_text.mustapply = Boolean.TRUE;
+		        richTextEvolver.evolveTextInput(feedback_text);
+	        } else {
+	        	UIVerbatim.make(form, "feedback_text:", assignmentSubmissionVersion.getAnnotatedTextFormatted());
+	        }
         }
         
         //If assignment allows for submitted attachments
@@ -226,9 +239,13 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
 	        }
         }
         
-    	UIInput feedback_notes = UIInput.make(form, "feedback_notes:", asvOTP + ".feedbackNotes");
-    	feedback_notes.mustapply = Boolean.TRUE;
-    	richTextEvolver.evolveTextInput(feedback_notes);
+        if (edit_perm) {
+	    	UIInput feedback_notes = UIInput.make(form, "feedback_notes:", asvOTP + ".feedbackNotes");
+	    	feedback_notes.mustapply = Boolean.TRUE;
+	    	richTextEvolver.evolveTextInput(feedback_notes);
+        } else {
+        	UIVerbatim.make(form, "feedback_notes:", assignmentSubmissionVersion.getFeedbackNotes());        	
+        }
                
         //Attachments
         Set<FeedbackAttachment> afaSet = new HashSet<FeedbackAttachment>();
@@ -237,9 +254,11 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
         }
         attachmentListRenderer.makeAttachmentFromFeedbackAttachmentSet(tofill, "attachment_list:", 
         		params.viewID, afaSet, Boolean.TRUE);
-        UIInternalLink.make(form, "add_attachments", UIMessage.make("assignment2.assignment_add.add_attachments"),
+        if (edit_perm) {
+        	UIInternalLink.make(form, "add_attachments", UIMessage.make("assignment2.assignment_add.add_attachments"),
         		new FilePickerHelperViewParams(AddAttachmentHelperProducer.VIEWID, Boolean.TRUE, 
         				Boolean.TRUE, 500, 700, OTPKey));
+        }
         
         //set dateEvolver
         dateEvolver.setStyle(FormatAwareDateInputEvolver.DATE_TIME_INPUT);
@@ -282,7 +301,7 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
         UIMessage.make(form, "resubmission_text_1", "assignment2.assignment_grade.resubmission_text_1", 
         		new Object[] { externalLogic.getUserDisplayName(params.userId), current_times_submitted_already});
         
-        UISelect.make(form, "resubmission_additional", number_submissions_values, number_submissions_options, 
+        UISelect resubmit_select = UISelect.make(form, "resubmission_additional", number_submissions_values, number_submissions_options, 
         		asOTP + ".numSubmissionsAllowed", current_num_submissions.toString());
         
         if (as.getResubmitCloseTime() == null) {
@@ -290,7 +309,11 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
         }
         UIInput acceptUntilTimeField = UIInput.make(form, "accept_until:", asOTP + ".resubmitCloseTime");
         dateEvolver.evolveDateInput(acceptUntilTimeField, as.getResubmitCloseTime());
-        
+
+        if (!edit_perm) {
+        	resubmit_select.decorators = disabledDecoratorList;
+        	acceptUntilTimeField.decorators = disabledDecoratorList;
+        }
         
         
         if (!assignment.isUngraded()){
