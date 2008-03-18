@@ -257,7 +257,10 @@ function tb_show(caption, url, imageGroup, tagName) {//function called when the 
 					} else {
 					   url = (String(document.location).split("?"))[0];
 					}
-                 jQuery.ajax({type: "POST", url: url, data: serial + "&" + jQuery(".preview_button").get(0).name,
+					if (jQuery(".preview_button").get(0)) {
+					 serial += "&" + jQuery(".preview_button").get(0).name;
+					}
+                 jQuery.ajax({type: "POST", url: url, data: serial,
                   success: function(data, textStatus){
                      jQuery("#TB_ajaxContent").html(data);
                      jQuery("TB_title").html("");
