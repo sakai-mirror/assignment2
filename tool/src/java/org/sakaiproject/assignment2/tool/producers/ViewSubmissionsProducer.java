@@ -125,13 +125,13 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
 		        UILink helplink = UIInternalLink.make(tofill, "gradebook_item_edit_helper",
 		        		UIMessage.make("assignment2.assignment_grade-assignment.gradebook_helper"),
 		        		url);
-		        ZipViewParams zvp = new ZipViewParams("zipSubmissions", assignmentId);
-		        UILink downloadall = UIInternalLink.make(tofill, "downloadall",
-		        		UIMessage.make("assignment2.assignment_grade-assignment.downloadall.button"), zvp);
-		        AssignmentViewParams avp = new AssignmentViewParams("uploadall", assignmentId);
-		        UILink uploadall = UIInternalLink.make(tofill, "uploadall",
-		        		UIMessage.make("assignment2.assignment_grade-assignment.uploadall.button"), avp);
 	        }
+	        ZipViewParams zvp = new ZipViewParams("zipSubmissions", assignmentId);
+	        UILink downloadall = UIInternalLink.make(tofill, "downloadall",
+	        		UIMessage.make("assignment2.assignment_grade-assignment.downloadall.button"), zvp);
+	        AssignmentViewParams avp = new AssignmentViewParams("uploadall", assignmentId);
+	        UILink uploadall = UIInternalLink.make(tofill, "uploadall",
+	        		UIMessage.make("assignment2.assignment_grade-assignment.uploadall.button"), avp);
         }
         
     	//get paging data
