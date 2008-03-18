@@ -165,19 +165,30 @@
 function refresh_ajax(){
 	if(fragAttachPath != ""){
 		old=jQuery("#fragment-attachments-container").html();
-		jQuery("#fragment-attachments-container").load(fragAttachPath + "?otpkey=" + otpkey + "&attachmentSetType=2&remove=true", function(){
-			if(old != jQuery("#fragment-attachments-container").html())
+		jQuery.ajax({
+			type: "get",
+			cache: false,
+			url: fragAttachPath + "?otpkey=" + otpkey + "&attachmentSetType=2&remove=true",
+			success: function(html){
+				jQuery("#fragment-attachments-container").html(html.substring(html.indexOf('<div>') + 5, html.lastIndexOf('</div>')));
+				if(old != jQuery("#fragment-attachments-container").html())
 				highlight(jQuery("#fragment-attachments-container"));
+			}
 		});
 	}
 	if(fragGBDetailsPath != ""){
 		old = jQuery("#gradebook-details-container fieldset").html();
-		jQuery("#gradebook-details-container").load(fragGBDetailsPath + "?assignmentId=" + assignmentId + "&userId=" + userId, {}, 
-			function(){
+		jQuery.ajax({
+			type: "get",
+			cache: false,
+			url: fragGBDetailsPath + "?assignmentId=" + assignmentId + "&userId=" + userId,
+			success: function(html){
+				jQuery("#gradebook-details-container").html(html.substring(html.indexOf('<div>') + 5, html.lastIndexOf('</div>')));
 				tb_init('a.thickbox, area.thickbox, input.thickbox');
 				if (old != jQuery("#gradebook-details-container fieldset").html())
 					highlight(jQuery("#gradebook-details-container fieldset"));
-			});
+			}
+		});
 	}
 }
 //]]>
