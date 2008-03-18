@@ -1,6 +1,7 @@
 package org.sakaiproject.assignment2.tool.producers.renderers;
 
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
+import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
@@ -33,7 +34,15 @@ public class GradebookDetailsRenderer {
 		this.assignmentLogic = assignmentLogic;
 	}
 	
+	private AssignmentPermissionLogic permissionLogic;
+	public void setPermissionLogic(AssignmentPermissionLogic permissionLogic) {
+		this.permissionLogic = permissionLogic;
+	}
+	
 	public void makeGradebookDetails(UIContainer tofill, String divID, AssignmentSubmission as, Long assignmentId, String userId){
+		
+    	//Edit Permission
+        Boolean edit_perm = permissionLogic.isCurrentUserAbleToEditAssignments(externalLogic.getCurrentContextId());
 		
 		UIJointContainer joint = new UIJointContainer(tofill, divID, "gradebook_details:", ""+1);
 		
@@ -41,9 +50,11 @@ public class GradebookDetailsRenderer {
     	//Grading Helper Link
 		String url = externalLogic.getUrlForGradeGradebookItemHelper(assignment.getGradableObjectId(), userId, FinishedHelperProducer.VIEWID);
                 
-        UILink.make(joint, "gradebook_grading_helper",
+		if (edit_perm) {
+			UILink.make(joint, "gradebook_grading_helper",
         		UIMessage.make("assignment2.assignment_grade.gradebook_grade"),
         		url);
+		}
      
         UIOutput.make(joint, "gradebook_grade", (as!= null && as.getGradebookGrade() != null ? as.getGradebookGrade() : ""));
         UIOutput.make(joint, "gradebook_comment", (as != null && as.getGradebookComment() != null ? as.getGradebookComment() : ""));

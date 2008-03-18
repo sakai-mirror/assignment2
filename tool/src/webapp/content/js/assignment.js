@@ -152,6 +152,7 @@ function slide_submission(img){
 function slideFieldset(img) {
 	jQuery(img).parent('legend').next('ol').toggle();
 	flip_image(img);
+	a2SetMainFrameHeight();
 }
 function flip_image(img){
 	if(img.src.match('collapse')){
