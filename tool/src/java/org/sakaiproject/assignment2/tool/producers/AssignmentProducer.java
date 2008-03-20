@@ -224,9 +224,6 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
         		assignment2OTP + ".numSubmissionsAllowed", current_num_submissions.toString());
         
         
-        
-        UIVerbatim.make(form, "student_submissions_label", messageLocator.getMessage("assignment2.assignment_add.student_submissions",
-        		new Object[]{ reqStar }));
         //Submission Types
         String[] submission_type_values = new String[] {
         		String.valueOf(AssignmentConstants.SUBMIT_INLINE_ONLY),
