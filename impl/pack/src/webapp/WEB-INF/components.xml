@@ -54,6 +54,9 @@
 		<property name="userDirectoryService">
 			<ref bean="org.sakaiproject.user.api.UserDirectoryService" />
 		</property>
+		<property name="assignmentBundleLogic">
+			<ref bean="org.sakaiproject.assignment2.logic.AssignmentBundleLogic" />
+		</property>
 	</bean>
 
 </beans>

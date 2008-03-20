@@ -33,6 +33,7 @@ import org.sakaiproject.taggable.api.TaggableItem;
 import org.sakaiproject.taggable.api.TaggingManager;
 import org.sakaiproject.taggable.api.TaggingProvider;
 import org.sakaiproject.assignment2.dao.AssignmentDao;
+import org.sakaiproject.assignment2.logic.AssignmentBundleLogic;
 import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
@@ -44,7 +45,6 @@ import org.sakaiproject.entity.api.EntityManager;
 import org.sakaiproject.entity.api.Reference;
 import org.sakaiproject.site.api.SiteService;
 import org.sakaiproject.user.api.UserDirectoryService;
-import org.sakaiproject.util.ResourceLoader;
 
 public class AssignmentActivityProducerImpl implements
 		AssignmentActivityProducer {
@@ -52,7 +52,7 @@ public class AssignmentActivityProducerImpl implements
 	private static final Log logger = LogFactory
 			.getLog(AssignmentActivityProducerImpl.class);
 
-	private static ResourceLoader rb = new ResourceLoader("assignment");
+	protected AssignmentBundleLogic assignmentBundleLogic;
 
 	protected AssignmentDao assignmentDao;
 
@@ -188,7 +188,7 @@ public class AssignmentActivityProducerImpl implements
 	}
 
 	public String getName() {
-		return rb.getString("service_name");
+		return assignmentBundleLogic.getString("service_name");
 	}
 
 	public void init() {
@@ -236,4 +236,8 @@ public class AssignmentActivityProducerImpl implements
 	{
 		this.assignmentPermissionLogic = assignmentPermissionLogic;
 	}
+	
+	public void setAssignmentBundleLogic(AssignmentBundleLogic assignmentBundleLogic) {
+    	this.assignmentBundleLogic = assignmentBundleLogic;
+    }
 }
