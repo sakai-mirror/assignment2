@@ -137,7 +137,7 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
               
         UIForm form = UIForm.make(tofill, "form");
                 
-         localAssignmentLogic.filterPopulateAndSortAssignmentList(entries, params.current_start, params.current_count, 
+        entries = (List<Assignment2>) localAssignmentLogic.filterPopulateAndSortAssignmentList(entries, params.current_start, params.current_count, 
         		current_sort_by, current_sort_dir.equals(AssignmentLogic.SORT_DIR_ASC));
         
         if (entries.size() <= 0) {
