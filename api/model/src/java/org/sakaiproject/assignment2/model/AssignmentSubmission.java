@@ -25,6 +25,9 @@ import java.util.Set;
 import java.util.Date;
 import java.util.HashSet;
 
+import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
+import org.sakaiproject.entity.api.Entity;
+
 /**
  * The AssignmentSubmission object
  * 
@@ -349,6 +352,19 @@ public class AssignmentSubmission {
 		}
 		
 		return submission;
+	}
+	
+	public String getReference()
+	{
+		StringBuilder sb = new StringBuilder();
+		sb.append(AssignmentConstants.REFERENCE_ROOT);
+		sb.append(Entity.SEPARATOR);
+		sb.append(AssignmentConstants.SUBMISSION_TYPE);
+		sb.append(Entity.SEPARATOR);
+		sb.append(getAssignment().getContextId());
+		sb.append(Entity.SEPARATOR);
+		sb.append(Long.toString(id));
+		return sb.toString();
 	}
 
 }

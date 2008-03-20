@@ -30,6 +30,7 @@ import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.entity.api.Entity;
 import org.sakaiproject.entity.api.EntityProducer;
 import org.sakaiproject.entity.api.HttpAccess;
@@ -48,7 +49,7 @@ public class BaseEntityProducer implements EntityProducer {
     private static final Log log = LogFactory.getLog(BaseEntityProducer.class);
 
 	private String label;	// This should always be set.
-	private String referenceRoot = null;
+	private String referenceRoot = AssignmentConstants.REFERENCE_ROOT;
 	private String serviceName = null;
 
 	/**
@@ -99,6 +100,27 @@ public class BaseEntityProducer implements EntityProducer {
 	}
 
 	public boolean parseEntityReference(String reference, Reference ref) {
+		if (reference.startsWith(referenceRoot)) {
+			String[] parts = reference.split(Entity.SEPARATOR, 5);
+			if (parts.length < 4) {
+				return false;
+			}
+			String type = parts[0];
+			/*
+			 * This is only really used so we know what kind of object we are
+			 * referencing
+			 */
+			String subtype = parts[1];
+
+			String context = parts[2];
+			/*
+			 * This is only used when we have a reference to a specific object
+			 */
+			String id = parts[3];
+
+			ref.set(type, subtype, id, null, context);
+			return true;
+		}
 		return false;
 	}
 

@@ -193,4 +193,9 @@ public class AssignmentConstants {
 			return value;
 		}
 	}
+	
+	
+	public static final String REFERENCE_ROOT = "asgn2";
+	public static final String ASSIGNMENT_TYPE = "a";
+    public static final String SUBMISSION_TYPE = "s";
 }

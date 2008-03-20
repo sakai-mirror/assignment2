@@ -26,6 +26,9 @@ import java.util.List;
 import java.util.Date;
 import java.util.Set;
 
+import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
+import org.sakaiproject.entity.api.Entity;
+
 /**
  * The Assignment object
  * 
@@ -735,5 +738,18 @@ public class Assignment2 {
 		}
 		
 		return groupReferences;
+	}
+	
+	public String getReference()
+	{
+		StringBuilder sb = new StringBuilder();
+		sb.append(AssignmentConstants.REFERENCE_ROOT);
+		sb.append(Entity.SEPARATOR);
+		sb.append(AssignmentConstants.ASSIGNMENT_TYPE);
+		sb.append(Entity.SEPARATOR);
+		sb.append(contextId);
+		sb.append(Entity.SEPARATOR);
+		sb.append(Long.toString(id));
+		return sb.toString();
 	}
 }

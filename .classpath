@@ -48,5 +48,6 @@
 	<classpathentry kind="var" path="M2_REPO/com/thoughtworks/xstream/xstream/1.2.1/xstream-1.2.1.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/assignment-api"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/test-harness"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/taggable-api"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

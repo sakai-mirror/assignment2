@@ -247,5 +247,12 @@
       <version>${sakai.version}</version>
     </dependency>
     
+    <dependency>
+      <groupId>org.sakaiproject</groupId>
+      <artifactId>sakai-taggable-api</artifactId>
+      <version>${sakai.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    
   </dependencies>
 </project>

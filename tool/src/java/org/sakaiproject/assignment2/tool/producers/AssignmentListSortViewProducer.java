@@ -9,7 +9,9 @@ import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
+import org.sakaiproject.assignment2.taggable.api.AssignmentActivityProducer;
 import org.sakaiproject.assignment2.tool.beans.Assignment2Bean;
+import org.sakaiproject.assignment2.tool.beans.locallogic.DecoratedTaggingProvider;
 import org.sakaiproject.assignment2.tool.beans.locallogic.LocalAssignmentLogic;
 import org.sakaiproject.assignment2.tool.params.AssignmentListSortViewParams;
 import org.sakaiproject.assignment2.tool.params.AssignmentViewParams;
@@ -18,6 +20,11 @@ import org.sakaiproject.assignment2.tool.producers.AssignmentProducer;
 import org.sakaiproject.assignment2.tool.producers.ViewSubmissionsProducer;
 import org.sakaiproject.assignment2.tool.producers.renderers.PagerRenderer;
 import org.sakaiproject.assignment2.tool.producers.renderers.SortHeaderRenderer;
+import org.sakaiproject.component.cover.ComponentManager;
+import org.sakaiproject.component.cover.ServerConfigurationService;
+import org.sakaiproject.taggable.api.TaggingHelperInfo;
+import org.sakaiproject.taggable.api.TaggingManager;
+import org.sakaiproject.taggable.api.TaggingProvider;
 
 import uk.org.ponder.messageutil.MessageLocator;
 import uk.org.ponder.rsf.components.*;
@@ -161,6 +168,38 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
 	        					params.current_start, params.current_count, assignment.getId()));
         	}
         	
+        	// Tag provider stuff
+        	TaggingManager taggingManager = (TaggingManager) ComponentManager
+        	.get("org.sakaiproject.taggable.api.TaggingManager");
+        	if (taggingManager.isTaggable() && assignment != null)
+        	{
+        		//TODO: optimize?
+        		List<DecoratedTaggingProvider> providers = initDecoratedProviders();
+        		
+        		AssignmentActivityProducer assignmentActivityProducer = (AssignmentActivityProducer) ComponentManager
+        		.get("org.sakaiproject.assignment2.taggable.api.AssignmentActivityProducer");
+        		
+        		for (DecoratedTaggingProvider provider : providers)
+        		{
+        			UIBranchContainer tagLinks = UIBranchContainer.make(row, "tag_provider_links:");
+        			String ref = assignmentActivityProducer.getActivity(
+							assignment).getReference();
+        			TaggingHelperInfo helper = provider.getProvider().getActivityHelperInfo(ref);
+        			if (helper != null)
+        			{
+        				String url = ServerConfigurationService.getToolUrl() + "/" + 
+        					helper.getPlacement() + "/" + helper.getHelperId() + 
+        					".helper?1=1";
+        				
+        				for (String key : helper.getParameterMap().keySet()) {
+        					url = url + "&session." + key + "=" + helper.getParameterMap().get(key);
+        				}
+        				
+        				UILink.make(tagLinks, "assignment_view_links", helper.getName(), url);
+        			}
+        		}
+        	}
+
         	//Current user should always be able to grade, otherwise getViewableAssignments wouldn't have returned it... or at least it shouldn't ;-)
         	UIInternalLink.make(row, "assignment_row_grade", 
         			UIMessage.make("assignment2.assignment_list-sortview.assignment_row_grade"), 
@@ -196,6 +235,17 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
         }
 
     }
+    
+    private List<DecoratedTaggingProvider> initDecoratedProviders() {
+		TaggingManager taggingManager = (TaggingManager) ComponentManager
+				.get("org.sakaiproject.taggable.api.TaggingManager");
+		List<DecoratedTaggingProvider> providers = new ArrayList<DecoratedTaggingProvider>();
+		for (TaggingProvider provider : taggingManager.getProviders())
+		{
+			providers.add(new DecoratedTaggingProvider(provider));
+		}
+		return providers;
+	}
     
     public ViewParameters getViewParameters() {
     	return new AssignmentListSortViewParams();
