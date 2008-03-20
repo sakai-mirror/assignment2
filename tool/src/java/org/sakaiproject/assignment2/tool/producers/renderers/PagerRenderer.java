@@ -69,8 +69,6 @@ public class PagerRenderer {
 			AssignmentListSortViewParams sortparams = (AssignmentListSortViewParams) viewparams;
 			href_params = "sort_dir=" + sortparams.sort_dir + "&sort_by=" + sortparams.sort_by + "&";
 		}		
-		//build url
-		String url = externalLogic.getAssignmentViewUrl(currentViewID);
 
 		//Select Box
         UISelect select_box = UISelect.make(form, "pager_select_box");
@@ -85,7 +83,7 @@ public class PagerRenderer {
 		comboNames.setValue(new String[] {"Show 5 items", "Show 10 items", "Show 20 items", "Show 50 items", "Show 100 items", "Show 200 items"});
 		select_box.optionnames = comboNames;
 		Map attrmap = new HashMap(); 
-		attrmap.put("onchange", "location.href=\"" + url + "?" + href_params + "current_start=" + 
+		attrmap.put("onchange", "location.href=location.href.substring(0,location.href.indexOf('?'))+\"" + "?" + href_params + "current_start=" + 
 				currentStart.toString() + "&current_count=\" + jQuery(this).val()");
 		select_box.decorators = new DecoratorList(new UIFreeAttributeDecorator(attrmap)); 
 		
@@ -93,28 +91,28 @@ public class PagerRenderer {
 		//first page
 		UIInput first_page = UIInput.make(form, "pager_first_page", null, messageLocator.getMessage("assignment2.pager.pager_first_page"));
 		attrmap = new HashMap();
-		attrmap.put("onclick", "location.href=\"" + url + "?" + href_params + "current_start=" + 
+		attrmap.put("onclick", "location.href=location.href.substring(0,location.href.indexOf('?'))+\"" + "?" + href_params + "current_start=" + 
 					this.goToFirstPage() + "&current_count=" + this.getCurrentSelect() + "\"");
 		first_page.decorators = new DecoratorList(new UIFreeAttributeDecorator(attrmap));
 				
 		//previous page
 		UIInput prev_page = UIInput.make(form, "pager_prev_page", null, messageLocator.getMessage("assignment2.pager.pager_prev_page"));
 		attrmap = new HashMap();
-		attrmap.put("onclick", "location.href=\"" + url + "?" + href_params + "current_start=" + 
+		attrmap.put("onclick", "location.href=location.href.substring(0,location.href.indexOf('?'))+\"" + "?" + href_params + "current_start=" + 
 				this.goToPrevPage() + "&current_count=" + this.getCurrentSelect() + "\"");
 		prev_page.decorators = new DecoratorList(new UIFreeAttributeDecorator(attrmap));
 
 		//next page
 		UIInput next_page = UIInput.make(form, "pager_next_page", null, messageLocator.getMessage("assignment2.pager.pager_next_page"));
 		attrmap = new HashMap();
-		attrmap.put("onclick", "location.href=\"" + url + "?" + href_params + "current_start=" + 
+		attrmap.put("onclick", "location.href=location.href.substring(0,location.href.indexOf('?'))+\"" + "?" + href_params + "current_start=" + 
 				this.goToNextPage() + "&current_count=" + this.getCurrentSelect() + "\"");
 		next_page.decorators = new DecoratorList(new UIFreeAttributeDecorator(attrmap));
 		
 		//last button
 		UIInput last_page = UIInput.make(form, "pager_last_page", null, messageLocator.getMessage("assignment2.pager.pager_last_page"));
 		attrmap = new HashMap();
-		attrmap.put("onclick", "location.href=\"" + url + "?" + href_params + "current_start=" + 
+		attrmap.put("onclick", "location.href=location.href.substring(0,location.href.indexOf('?'))+\"" + "?" + href_params + "current_start=" + 
 				this.goToLastPage() + "&current_count=" + this.getCurrentSelect() + "\"");
 		last_page.decorators = new DecoratorList(new UIFreeAttributeDecorator(attrmap));
 		
