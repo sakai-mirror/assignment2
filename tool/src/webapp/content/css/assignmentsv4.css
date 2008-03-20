@@ -172,6 +172,10 @@ li.alertMessageInline {
 	display: inline;	
 }
 
+div.generalErrors li {
+	list-style: none;
+}
+
 div.generalErrors li.alertMessageInline {
 	display: block;	
 }

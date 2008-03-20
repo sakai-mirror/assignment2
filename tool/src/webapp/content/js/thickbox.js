@@ -260,12 +260,12 @@ function tb_show(caption, url, imageGroup, tagName) {//function called when the 
 					if (jQuery(".preview_button").get(0)) {
 					 serial += "&" + jQuery(".preview_button").get(0).name;
 					}
-                 jQuery.ajax({type: "POST", url: url, data: serial,
+                 jQuery.ajax({type: "POST", url: url, cache: false, data: serial,
                   success: function(data, textStatus){
                      jQuery("#TB_ajaxContent").html(data);
                      jQuery("TB_title").html("");
 					/** Hacked
-					jQuery("#TB_ajaxContent").load(url += "&random=" + (new Date().getTime()),function(){//to do a post change this load method
+					jQuery("#TB_ajaxContent").load(url,function(){//to do a post change this load method
 					**/
 						tb_position();
 						jQuery("#TB_load").remove();
