@@ -164,7 +164,7 @@ public class StudentViewAssignmentRenderer {
     	UIOutput.make(joint, "header.grade_scale", "Grade Scale from Gradebook");  //HERE
     	if (assignment.getModifiedTime() != null) {
     		UIOutput.make(joint, "modified_by_header_row");
-    		UIOutput.make(joint, "header.modified_by", df.format(assignment.getModifiedTime()));
+    		UIOutput.make(joint, "modified_by", df.format(assignment.getModifiedTime()));
     	}
     	UIVerbatim.make(joint, "instructions", assignment.getInstructions());
     	
