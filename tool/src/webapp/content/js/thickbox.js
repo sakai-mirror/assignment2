@@ -24,7 +24,7 @@ function tb_init(domChunk){
 	var g = this.rel || false;
 	//check size of parent iframe -- HACK
 	if (jQuery(document).height() < 600) {
-		jQuery(document).height(600);
+		a2SetMainFrameHeight(600);
 	}
 	//END HACK
 	tb_show(t,a,g, this.tagName);
