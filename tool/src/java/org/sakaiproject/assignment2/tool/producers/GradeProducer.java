@@ -277,6 +277,11 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
         //}
         
         //Submission Level
+        
+        Integer current_times_submitted_already = 0;
+        if (as != null && as.getSubmissionHistorySet() != null) {
+        	current_times_submitted_already = submissionLogic.getNumSubmittedVersions(as.getUserId(), assignmentId);
+        }
         Integer current_num_submissions = 1;
         if (as != null && as.getNumSubmissionsAllowed() != null) {
         	current_num_submissions = as.getNumSubmissionsAllowed();
@@ -287,13 +292,13 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
         number_submissions_values[0] = "-1";
         number_submissions_options[0] = messageLocator.getMessage("assignment2.indefinite_resubmit");
         for (int i=0; i < size; i++){
-        	number_submissions_values[i + 1] = new Integer(i + current_num_submissions).toString();
+        	number_submissions_values[i + 1] = new Integer(i + current_times_submitted_already).toString();
         	number_submissions_options[i + 1] = new Integer(i).toString();
         }
         
         //Output
         UIMessage.make(form, "resubmission_text_1", "assignment2.assignment_grade.resubmission_text_1", 
-        		new Object[] { externalLogic.getUserDisplayName(params.userId), current_num_submissions});
+        		new Object[] { externalLogic.getUserDisplayName(params.userId), current_times_submitted_already});
         
         UISelect resubmit_select = UISelect.make(form, "resubmission_additional", number_submissions_values, number_submissions_options, 
         		asOTP + ".numSubmissionsAllowed", current_num_submissions.toString());

@@ -154,4 +154,13 @@ public interface AssignmentDao extends CompleteGenericDao {
 	 */
 	public AssignmentSubmissionVersion getVersionByUserIdAndSubmittedTime(final String userId,
 			final Date submittedTime);
+	
+	/**
+	 * 
+	 * @param studentId
+	 * @param assignmentId
+	 * @return the number of submissions the given student has made for the given assignment.
+	 * does not count versions with draft status.
+	 */
+	public int getNumSubmittedVersions(final String studentId, final Long assignmentId);
 }

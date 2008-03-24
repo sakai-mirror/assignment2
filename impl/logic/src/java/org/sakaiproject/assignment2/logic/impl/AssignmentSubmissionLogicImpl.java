@@ -1063,4 +1063,13 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 
 		dao.update(asv);
 	}
+	
+	public int getNumSubmittedVersions(String studentId, Long assignmentId) {
+		if (studentId == null || assignmentId == null) {
+			throw new IllegalArgumentException("Null studentId or assignmentId passed " +
+			"to getTotalNumSubmissionsForStudentForAssignment");
+		}
+
+		return dao.getNumSubmittedVersions(studentId, assignmentId);
+	}
 }
