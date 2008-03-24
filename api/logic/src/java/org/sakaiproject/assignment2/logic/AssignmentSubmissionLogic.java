@@ -242,4 +242,13 @@ public interface AssignmentSubmissionLogic {
 	 * @param feedback
 	 */
 	public void updateFeedbackForVersion(FeedbackVersion feedback);
+	
+	/**
+	 * 
+	 * @param studentId
+	 * @param assignmentId
+	 * @return the total number of versions that the given student has submitted
+	 * for the given assignment. does not count draft versions
+	 */
+	public int getNumSubmittedVersions(String studentId, Long assignmentId);
 }

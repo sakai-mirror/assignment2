@@ -35,6 +35,7 @@ import java.util.Collection;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -520,4 +521,24 @@ public class AssignmentDaoImpl extends HibernateCompleteGenericDao implements As
 		};
 		return (AssignmentSubmissionVersion) getHibernateTemplate().execute(hc);
 	}
+    
+    public int getNumSubmittedVersions(final String studentId, final Long assignmentId) {
+    	if (studentId == null || assignmentId == null) {
+    		throw new IllegalArgumentException("Null studentId or assignmentId passed " +
+    				"to getTotalNumSubmissionsForStudentForAssignment");
+    	}
+    	
+    	HibernateCallback hc = new HibernateCallback()
+		{
+			public Object doInHibernate(Session session) throws HibernateException, SQLException
+			{
+				Query query = session.getNamedQuery("countNumSubmittedVersions");
+				query.setParameter("studentId", studentId, Hibernate.STRING);
+				query.setParameter("assignmentId", assignmentId, Hibernate.LONG);
+				
+				return query.uniqueResult();
+			}
+		};
+		return ((Number) getHibernateTemplate().execute(hc)).intValue();
+    }
 }

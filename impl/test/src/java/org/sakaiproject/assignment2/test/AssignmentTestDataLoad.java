@@ -93,7 +93,7 @@ public class AssignmentTestDataLoad {
 	// Student 3
 	//  A1: no submission
 	//  A2: no submission
-	//  A3: 1 submission with 2 versions
+	//  A3: submission with 2 versions
 	//  A4: no submission
 	
 	public AssignmentSubmission st1a1Submission;
@@ -223,6 +223,7 @@ public class AssignmentTestDataLoad {
 		dao.save(st1a3FirstVersion);
 		st1a3CurrVersion = createGenericVersion(st1a3Submission);
 		st1a3CurrVersion.setDraft(true);
+		st1a3CurrVersion.setSubmittedTime(null);
 		dao.save(st1a3CurrVersion);
 		feedbackAttachSet.add(new FeedbackAttachment(st1a3CurrVersion, "blah"));
 		subAttachSet.add(new SubmissionAttachment(st1a3CurrVersion, "blah"));
@@ -277,7 +278,7 @@ public class AssignmentTestDataLoad {
 		return assignment;
 	}
 	
-	private AssignmentSubmissionVersion createGenericVersion(AssignmentSubmission submission) {
+	public AssignmentSubmissionVersion createGenericVersion(AssignmentSubmission submission) {
 		AssignmentSubmissionVersion version = new AssignmentSubmissionVersion();
 		version.setAssignmentSubmission(submission);
 		version.setCreatedBy(submission.getUserId());

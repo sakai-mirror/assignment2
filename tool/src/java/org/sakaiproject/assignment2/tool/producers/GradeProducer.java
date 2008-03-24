@@ -280,8 +280,7 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
         
         Integer current_times_submitted_already = 0;
         if (as != null && as.getSubmissionHistorySet() != null) {
-        	//TODO - replace this integer with getHowManyTimesSubmitted
-        	current_times_submitted_already = ((Set)as.getSubmissionHistorySet()).size();
+        	current_times_submitted_already = submissionLogic.getNumSubmittedVersions(as.getUserId(), assignmentId);
         }
         Integer current_num_submissions = 1;
         if (as != null && as.getNumSubmissionsAllowed() != null) {

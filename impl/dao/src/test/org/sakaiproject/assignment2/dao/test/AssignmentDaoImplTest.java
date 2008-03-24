@@ -539,6 +539,7 @@ public class AssignmentDaoImplTest extends Assignment2DaoTestBase {
 		
 	}
 
+	// TODO - figure out why this test is broken
 	/*public void testGetVersionByUserIdAndSubmittedTime() throws Exception
 	{
 		String userId = null;
@@ -591,4 +592,37 @@ public class AssignmentDaoImplTest extends Assignment2DaoTestBase {
 			fail("Shouldn't have thrown exception with userId != null and submittedTime != null");
 		}
 	}*/
+	
+	public void testGetNumSubmittedVersions() throws Exception {
+		// try null params
+		try {
+			assignmentDao.getNumSubmittedVersions(null, testData.a1Id);
+			fail("did not catch null studentId passed to getNumSubmittedVersions");
+		} catch (IllegalArgumentException iae) {}
+		
+		try {
+			assignmentDao.getNumSubmittedVersions(AssignmentTestDataLoad.STUDENT1_UID, null);
+			fail("did not catch null assignmentId passed to getNumSubmittedVersions");
+		} catch (IllegalArgumentException iae) {}
+		
+		// try an assignmentId that doesn't exist
+		assertEquals(0, assignmentDao.getNumSubmittedVersions(AssignmentTestDataLoad.STUDENT3_UID, new Long(12345)));
+		
+		// try a student with no submissions 
+		assertEquals(0, assignmentDao.getNumSubmittedVersions(AssignmentTestDataLoad.STUDENT3_UID, testData.a1Id));
+		
+		// try a student with 2 submissions but one is draft
+		assertEquals(1, assignmentDao.getNumSubmittedVersions(AssignmentTestDataLoad.STUDENT1_UID, testData.a3Id));
+		
+		// add instructor feedback w/o a submission
+		AssignmentSubmission st3a1Submission = new AssignmentSubmission(testData.a1, AssignmentTestDataLoad.STUDENT3_UID);
+		AssignmentSubmissionVersion st3a1CurrVersion = testData.createGenericVersion(st3a1Submission);
+		st3a1CurrVersion.setDraft(false);
+		st3a1CurrVersion.setSubmittedTime(null);
+		assignmentDao.save(st3a1Submission);
+		assignmentDao.save(st3a1CurrVersion);
+		
+		// should show up 0 b/c not submitted
+		assertEquals(0, assignmentDao.getNumSubmittedVersions(AssignmentTestDataLoad.STUDENT3_UID, testData.a1Id));
+	}
 }
