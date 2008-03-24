@@ -277,13 +277,23 @@ public class AssignmentSubmissionBean {
 		return RELEASE_ALL;
 	}
 	
-	public String processActionReleaseAllFeedbackForSubmission(){
+	public String processActionSaveAndReleaseAllFeedbackForSubmission(){
+		processActionGradeSubmit();
+		
 		for (String key : OTPMap.keySet()) {
 			AssignmentSubmission as = OTPMap.get(key);
-			submissionLogic.releaseAllFeedbackForSubmission(as.getId());
+			Long subId = as.getId();
+			if (subId == null) {
+				// we need to retrieve the newly created submission
+				AssignmentSubmission sub = submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(
+						as.getAssignment().getId(), as.getUserId());
+				subId = sub.getId();
+			}
+			
+			submissionLogic.releaseAllFeedbackForSubmission(subId);
 		}
 		
-		return RELEASE_ALL;
+		return SUBMIT;
 	}
 	
 	public String processActionGradeSubmit(){

@@ -344,7 +344,7 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
         form.parameters.add(new UIELBinding("#{AssignmentSubmissionBean.userId}", userId));
         if (edit_perm){
         	UICommand.make(form, "release_feedback", UIMessage.make("assignment2.assignment_grade.release_feedback"),
-    			"#{AssignmentSubmissionBean.processActionReleaseAllFeedbackForSubmission}");
+    			"#{AssignmentSubmissionBean.processActionSaveAndReleaseAllFeedbackForSubmission}");
 	        UICommand.make(form, "submit", UIMessage.make("assignment2.assignment_grade.submit"), "#{AssignmentSubmissionBean.processActionGradeSubmit}");
 	        //UICommand.make(form, "preview", UIMessage.make("assignment2.assignment_grade.preview"), "#{AssignmentSubmissionBean.processActionGradePreview}");
 	        UICommand.make(form, "cancel", UIMessage.make("assignment2.assignment_grade.cancel"), "#{AssignmentSubmissionBean.processActionCancel}");
