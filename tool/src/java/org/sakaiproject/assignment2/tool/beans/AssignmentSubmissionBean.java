@@ -161,7 +161,7 @@ public class AssignmentSubmissionBean {
 			//End Attachment stuff
 			
 	    	//check whether honor pledge was added if required
-	    	if (!(assignment.isHonorPledge() && this.honorPledge != null && this.honorPledge == Boolean.TRUE)) {
+	    	if (assignment.isHonorPledge() && !(this.honorPledge != null && this.honorPledge == Boolean.TRUE)) {
 	    		messages.addMessage(new TargettedMessage("assignment2.student-submit.error.honor_pledge_required",
 						new Object[] { assignment.getTitle() }, TargettedMessage.SEVERITY_ERROR));
 	    		return FAILURE;
