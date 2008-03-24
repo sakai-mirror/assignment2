@@ -57,16 +57,18 @@ public class FragmentSubmissionPreviewProducer implements ViewComponentProducer,
     	if (as.getCurrentSubmissionVersion() == null) {
     		return; 
     	}
-    	UIVerbatim.make(tofill, "submittedText", as.getCurrentSubmissionVersion().getSubmittedText());
+    	AssignmentSubmissionVersion asv = previewAssignmentSubmissionBean.getAssignmentSubmissionVersion();
+    	
+    	UIVerbatim.make(tofill, "submittedText", asv.getSubmittedText());
 
     	//Handle ATtachments 
     	Set<String> set = new HashSet();    		
 		if (as != null) {
 			//Next get the current assignment submission version
-			AssignmentSubmissionVersion asv = (AssignmentSubmissionVersion) as.getCurrentSubmissionVersion();
+			AssignmentSubmissionVersion subasv = (AssignmentSubmissionVersion) as.getCurrentSubmissionVersion();
 			//Now get the attachment set
-			if (asv != null && asv.getSubmissionAttachSet() != null) {
-				for (SubmissionAttachment asa : asv.getSubmissionAttachSet()) {
+			if (subasv != null && subasv.getSubmissionAttachSet() != null) {
+				for (SubmissionAttachment asa : subasv.getSubmissionAttachSet()) {
 					set.add(asa.getAttachmentReference());
 				}
 			}
