@@ -164,7 +164,7 @@ public class ZipExporter
 						.getCurrentSubmissionByAssignmentIdAndStudentId(
 								assignment.getId(), userId).getCurrentSubmissionVersion();
 
-				if (sv.getSubmittedTime() != null)
+				if (sv != null && sv.getSubmittedTime() != null)
 				{
 					String name = externalLogic.getUserDisplayName(userId);
 					String fullName = externalLogic.getUserFullName(userId);
