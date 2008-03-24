@@ -100,7 +100,7 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
         
         //Table TIME!!!! WOOHOO
 
-        localAssignmentLogic.filterPopulateAndSortAssignmentList(entries, params.current_start, params.current_count, 
+        entries = localAssignmentLogic.filterPopulateAndSortAssignmentList(entries, params.current_start, params.current_count, 
         		current_sort_by, current_sort_dir.equals(AssignmentLogic.SORT_DIR_ASC));
         
         

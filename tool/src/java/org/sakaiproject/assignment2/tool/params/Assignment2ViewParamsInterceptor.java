@@ -40,8 +40,14 @@ public class Assignment2ViewParamsInterceptor implements ViewParamsInterceptor {
 			//Student always has same link, redirect here based on it being open or not
 			if (StudentSubmitProducer.VIEW_ID.equals(incoming.viewID) 
 					|| StudentSubmitSummaryProducer.VIEW_ID.equals(incoming.viewID)) {
-				String newViewID = localPermissionLogic.filterViewIdForStudentSubmission((SimpleAssignmentViewParams)incoming);
-				return new SimpleAssignmentViewParams(newViewID, ((SimpleAssignmentViewParams)incoming).assignmentId);
+				
+				//Returning newly generated view params causes issues (ASNN-53)
+				String trueDestinationViewID = localPermissionLogic.filterViewIdForStudentSubmission((SimpleAssignmentViewParams)incoming);
+				if (incoming.viewID.equals(trueDestinationViewID)) {
+					return incoming;
+				} else {
+					return new SimpleAssignmentViewParams(trueDestinationViewID, ((SimpleAssignmentViewParams)incoming).assignmentId);
+				}
 			}
 			
 			
