@@ -262,7 +262,7 @@ function tb_show(caption, url, imageGroup, tagName) {//function called when the 
 					}
                  jQuery.ajax({type: "POST", url: url, cache: false, data: serial,
                   success: function(data, textStatus){
-                     jQuery("#TB_ajaxContent").html(data.substring(data.indexOf('<div'), data.lastIndexOf('</div>') - 6));
+                     jQuery("#TB_ajaxContent").html(data.substring(data.indexOf('<div'), data.lastIndexOf('</div>') + 6));
                      jQuery("TB_title").html("");
 					/** Hacked
 					jQuery("#TB_ajaxContent").load(url,function(){//to do a post change this load method
