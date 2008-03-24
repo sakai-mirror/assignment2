@@ -60,7 +60,7 @@ public class Assignment2Bean {
 	}
 	
 	public Map<String, Boolean> selectedIds = new HashMap<String, Boolean>();
-	public Boolean restrictedToGroups;
+	public String restrictedToGroups;
 	
     private TargettedMessageList messages;
     public void setMessages(TargettedMessageList messages) {
@@ -193,7 +193,7 @@ public class Assignment2Bean {
 		
 		//do groups
 		Set<AssignmentGroup> newGroups = new HashSet<AssignmentGroup>();
-		if (restrictedToGroups != null && restrictedToGroups){
+		if (this.restrictedToGroups != null && restrictedToGroups.equals(Boolean.TRUE.toString())){
 			//now add any new groups
 			if (assignment.getAssignmentGroupSet() != null) {
 				newGroups.addAll(assignment.getAssignmentGroupSet());
@@ -219,7 +219,7 @@ public class Assignment2Bean {
 			newGroups.removeAll(remGroups);
 		}
 
-		if (restrictedToGroups != null && restrictedToGroups) {
+		if (this.restrictedToGroups != null && restrictedToGroups.equals(Boolean.TRUE.toString()) && newGroups.size() < 1){
 			messages.addMessage(new TargettedMessage("assignment2.assignment_post.no_groups"));
 			errorFound = true;
 		}
