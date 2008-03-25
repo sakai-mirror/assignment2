@@ -51,6 +51,12 @@ public class Assignment2Validator  {
 			valid = false;
 		}
 		
+		if (assignment.getDueDateForUngraded() != null && assignment.getAcceptUntilTime() != null
+			&& assignment.getAcceptUntilTime().before(assignment.getDueDateForUngraded())) {
+			messages.addMessage(new TargettedMessage("assignment2.assignment_accept_before_due"));
+			valid = false;
+		}
+		
 		return valid;
 	}
   

@@ -172,6 +172,7 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
 		
 		Boolean require_due_date = (assignment.getDueDateForUngraded() != null);
 		UIBoundBoolean require_due = UIBoundBoolean.make(form, "require_due_date", "#{Assignment2Bean.requireDueDate}", require_due_date);
+		require_due.mustapply = true;
 		UIMessage require_due_label = UIMessage.make(form, "require_due_date_label", "assignment2.assignment_add.require_due_date");
 		UILabelTargetDecorator.targetLabel(require_due_label, require_due);
 		
@@ -186,6 +187,7 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
 		
 		Boolean require_date = (assignment.getAcceptUntilTime() != null);
 		UIBoundBoolean require = UIBoundBoolean.make(form, "require_accept_until", "#{Assignment2Bean.requireAcceptUntil}", require_date);
+		require.mustapply = true;
 		UIMessage require_label = UIMessage.make(form, "require_accept_until_label", "assignment2.assignment_add.require_accept_until");
 		UILabelTargetDecorator.targetLabel(require_label, require);
 		
