@@ -262,6 +262,7 @@ function tb_show(caption, url, imageGroup, tagName) {//function called when the 
 					}
                  jQuery.ajax({type: "POST", url: url, cache: false, data: serial,
                   success: function(data, textStatus){
+                  alert(data.substring(data.indexOf('<div'), data.lastIndexOf('</div>') + 6));
                      jQuery("#TB_ajaxContent").html(data.substring(data.indexOf('<div'), data.lastIndexOf('</div>') + 6));
                      jQuery("TB_title").html("");
 					/** Hacked
@@ -317,7 +318,7 @@ function tb_remove() {
 function tb_position() {
 tops = getPageScrollTop();
 jQuery("#TB_window").css({marginLeft: '-' + parseInt((TB_WIDTH / 2),10) + 'px', width: TB_WIDTH + 'px'});
-jQuery("#TB_window").css({top: (tops > 0 ? tops -100 : tops + 100) + 'px'});
+jQuery("#TB_window").css({top: (tops > 0 ? tops -100 : tops + (jQuery.browser.msie && jQuery.browser.version < 7 ? 300 : 100)) + 'px'});
 
 	//if ( !(jQuery.browser.msie && jQuery.browser.version < 7)) { // take away IE6
 	//	jQuery("#TB_window").css({marginTop: '-' + parseInt((TB_HEIGHT / 2),10) + 'px'});
