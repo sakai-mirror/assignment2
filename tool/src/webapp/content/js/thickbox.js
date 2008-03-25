@@ -262,7 +262,6 @@ function tb_show(caption, url, imageGroup, tagName) {//function called when the 
 					}
                  jQuery.ajax({type: "POST", url: url, cache: false, data: serial,
                   success: function(data, textStatus){
-                  alert(data.substring(data.indexOf('<div'), data.lastIndexOf('</div>') + 6));
                      jQuery("#TB_ajaxContent").html(data.substring(data.indexOf('<div'), data.lastIndexOf('</div>') + 6));
                      jQuery("TB_title").html("");
 					/** Hacked
