@@ -136,8 +136,8 @@
 		<dependency>
 			<groupId>org.sakaiproject.entitybroker</groupId>
 			<artifactId>entitybroker-api</artifactId>
-         <version>1.2.0</version>
-         <scope>provided</scope>
+			<version>1.2.0</version>
+			<scope>provided</scope>
 		</dependency>
 
 
@@ -147,6 +147,7 @@
 			<version>${sakai.version}</version>
 			<scope>provided</scope>
 		</dependency>
+
 		<dependency>
 			<groupId>org.sakaiproject</groupId>
 			<artifactId>sakai-entity-api</artifactId>
@@ -173,6 +174,12 @@
 			<scope>provided</scope>
 		</dependency>
 
+		<dependency>
+			<groupId>org.sakaiproject</groupId>
+			<artifactId>sakai-scheduler-api</artifactId>
+			<version>${sakai.version}</version>
+			<scope>provided</scope>
+		</dependency>
 
 		<!-- Apache commons dependencies -->
 		<dependency>

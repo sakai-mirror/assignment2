@@ -67,6 +67,15 @@
 		<scope>provided</scope>
 	</dependency>
 
+<!-- for scheduled notifications -->
+  <dependency>
+		<groupId>org.sakaiproject</groupId>
+		<artifactId>sakai-scheduler-api</artifactId>
+		<version>${sakai.version}</version>
+		<scope>provided</scope>
+	</dependency>
+<!-- end for scheduled notifications -->
+
         <!-- GradebookService -->
     <dependency>
       <groupId>org.sakaiproject</groupId>

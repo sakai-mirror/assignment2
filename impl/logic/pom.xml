@@ -145,6 +145,22 @@
 		<artifactId>sakai-content-api</artifactId>
 		<version>${sakai.version}</version>
 	</dependency>
+
+<!-- for scheduled notifications -->
+  <dependency>
+		<groupId>org.sakaiproject</groupId>
+		<artifactId>sakai-scheduler-api</artifactId>
+		<version>${sakai.version}</version>
+		<scope>provided</scope>
+	</dependency>
+		<dependency>
+			<groupId>org.sakaiproject</groupId>
+			<artifactId>sakai-email-api</artifactId>
+			<version>${sakai.version}</version>
+			<scope>provided</scope>
+		</dependency>
+<!-- end for scheduled notifications -->
+
     <!-- Required for announcements integration -->
     <dependency>
       <groupId>org.sakaiproject</groupId>
