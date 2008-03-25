@@ -302,10 +302,12 @@ jQuery(document).ready(function(){
 	jQuery("input[name='page-replace\:\:require_accept_until']").each(function(){
 		this.onclick = show_accept_until;
 	});
+	show_accept_until();
 	//Init require due date checkboxes
 	jQuery("input[name='page-replace\:\:require_due_date']").each(function(){
 		this.onclick = show_due_date;
 	});
+	show_due_date();
 });
 //]]>
 </script>

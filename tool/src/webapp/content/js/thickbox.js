@@ -23,8 +23,8 @@ function tb_init(domChunk){
 	var a = this.href || this.alt;
 	var g = this.rel || false;
 	//check size of parent iframe -- HACK
-	if (jQuery(document).height() < 600) {
-		a2SetMainFrameHeight(600);
+	if (jQuery(document).height() < getPageScrollTop() + 600) {
+		a2SetMainFrameHeight(getPageScrollTop() + 600);
 	}
 	//END HACK
 	tb_show(t,a,g, this.tagName);
