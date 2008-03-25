@@ -116,7 +116,7 @@ public class Assignment2Bean {
 		String result = POST;
 		for (String key : OTPMap.keySet()) {
 			Assignment2 assignment = OTPMap.get(key);
-			 result = internalProcessPost(assignment, key);
+			 result = internalProcessPost(assignment, key, Boolean.FALSE);
 		}
 		
 		// Notify students
@@ -139,10 +139,10 @@ public class Assignment2Bean {
 		return result;
 	}
 	
-	private String internalProcessPost(Assignment2 assignment, String key){
+	private String internalProcessPost(Assignment2 assignment, String key, Boolean draft){
 		Boolean errorFound = false;
 		
-		assignment.setDraft(Boolean.FALSE);
+		assignment.setDraft(draft);
 		
 		if (this.requireAcceptUntil == null || this.requireAcceptUntil == Boolean.FALSE) {
 			assignment.setAcceptUntilTime(null);
@@ -240,8 +240,13 @@ public class Assignment2Bean {
 				
 			} catch( ConflictingAssignmentNameException e){
 				LOG.error(e.getMessage(), e);
-				messages.addMessage(new TargettedMessage("assignment2.assignment_post.conflicting_assignment_name",
+				if (draft) {
+					messages.addMessage(new TargettedMessage("assignment2.assignment_save_draft.conflicting_assignment_name",
+							new Object[] { assignment.getTitle() }, "Assignment2." + key + ".title"));
+				} else {
+					messages.addMessage(new TargettedMessage("assignment2.assignment_post.conflicting_assignment_name",
 						new Object[] { assignment.getTitle() }, "Assignment2." + key + ".title"));
+				}
 				return FAILURE;
 			} catch (AnnouncementPermissionException ape) {
 				if (LOG.isDebugEnabled()) LOG.debug("Announcement could not " +
@@ -250,7 +255,10 @@ public class Assignment2Bean {
 			}
 			
 			//set Messages
-			if (key.startsWith(EntityBeanLocator.NEW_PREFIX)) {
+			if (draft) {
+				messages.addMessage(new TargettedMessage("assignment2.assignment_save_draft",
+						new Object[] { assignment.getTitle() }, TargettedMessage.SEVERITY_INFO));
+			} else 	if (key.startsWith(EntityBeanLocator.NEW_PREFIX)) {
 				messages.addMessage(new TargettedMessage("assignment2.assignment_post",
 						new Object[] { assignment.getTitle() }, TargettedMessage.SEVERITY_INFO));
 			}
@@ -259,7 +267,11 @@ public class Assignment2Bean {
 						new Object[] { assignment.getTitle() }, TargettedMessage.SEVERITY_INFO));
 			}
 		} else {
-			//messages.addMessage(new TargettedMessage("assignment2.assignment_post_error"));
+			if (draft) {
+				//messages.addMessage(new TargettedMessage("assignment2.assignment_save_draft_error"));
+			} else {
+				//messages.addMessage(new TargettedMessage("assignment2.assignment_post_error"));
+			}
 			return FAILURE;
 		}
 		//Clear out session attachment information if everything successful
@@ -290,55 +302,12 @@ public class Assignment2Bean {
 	
 	public String processActionSaveDraft() {
 		String currentUserId = externalLogic.getCurrentUserId();
+		String result = SAVE_DRAFT;
 		for (String key : OTPMap.keySet()) {
 			Assignment2 assignment = OTPMap.get(key);
-
-			assignment.setDraft(Boolean.TRUE);
-
-			if (this.requireAcceptUntil == null || this.requireAcceptUntil == Boolean.FALSE) {
-				assignment.setAcceptUntilTime(null);
-			}
-			if (this.requireDueDate == null || this.requireDueDate == Boolean.FALSE) {
-				assignment.setDueDateForUngraded(null);
-			}
-			
-			//REMOVE THESE - TODO
-			assignment.setNotificationType(0);
-			//END REMOVE THESE
-			
-			//start the validator
-			Assignment2Validator validator = new Assignment2Validator();
-			if (validator.validate(assignment, messages)){
-				//Validation Passed!
-				try {
-					Assignment2 assignmentFromDb = null;
-					if (assignment.getId() != null) {
-						assignmentFromDb = logic.getAssignmentByIdWithGroups(assignment.getId());
-					}
-					
-					logic.saveAssignment(assignment);
-					
-				} catch( ConflictingAssignmentNameException e){
-					LOG.error(e.getMessage(), e);
-					messages.addMessage(new TargettedMessage("assignment2.assignment_save_draft.conflicting_assignment_name",
-							new Object[] { assignment.getTitle() }, "Assignment2." + key + ".title"));
-					return FAILURE;
-				} catch (AnnouncementPermissionException ape) {
-					if (LOG.isDebugEnabled()) LOG.debug("Announcement could not " +
-							"be updated b/c user does not have perm in annc tool");
-					//TODO display to user?
-				}
-				
-				//set Messages
-				messages.addMessage(new TargettedMessage("assignment2.assignment_save_draft",
-					new Object[] { assignment.getTitle() }, TargettedMessage.SEVERITY_INFO));
-				
-			} else {
-				messages.addMessage(new TargettedMessage("assignment2.assignment_save_draft_error"));
-				return FAILURE;
-			}
+			result = internalProcessPost(assignment, key, Boolean.TRUE);
 		}
-		return SAVE_DRAFT;
+		return result;
 	}
 	
 	public String processActionCancel() {
