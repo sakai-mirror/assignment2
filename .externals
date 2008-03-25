@@ -55,8 +55,8 @@ sam         https://source.sakaiproject.org/svn/sam/branches/sakai_2-5-x
 samples        https://source.sakaiproject.org/svn/samples/branches/sakai_2-5-x
 search         https://source.sakaiproject.org/svn/search/branches/sakai_2-5-x
 sections    https://source.sakaiproject.org/svn/sections/branches/sakai_2-5-x
-site        https://source.sakaiproject.org/svn/site/trunk
-site-manage    https://source.sakaiproject.org/svn/site-manage/branches/SAK-13179
+site        https://source.sakaiproject.org/svn/site/branches/sakai_2-5-x
+site-manage    https://source.sakaiproject.org/svn/site-manage/branches/SAK-13179_2-5-x
 syllabus    https://source.sakaiproject.org/svn/syllabus/branches/sakai_2-5-x
 test-harness      https://source.sakaiproject.org/svn/test-harness/branches/sakai_2-5-x
 textarea    https://source.sakaiproject.org/svn/textarea/branches/sakai_2-5-x
