@@ -20,6 +20,9 @@
  **********************************************************************************/
 package org.sakaiproject.assignment2.tool.beans;
 
+import java.util.List;
+
+import org.sakaiproject.api.app.scheduler.DelayedInvocation;
 import org.sakaiproject.api.app.scheduler.ScheduledInvocationManager;
 import org.sakaiproject.assignment2.logic.ScheduledNotification;
 import org.sakaiproject.assignment2.model.Assignment2;
@@ -83,7 +86,18 @@ public class NotificationBean
 		if (!assignment.isDraft())
 		{
 			Time openTime = timeService.newTime(assignment.getOpenTime().getTime());
-
+			
+			// Remove any existing notifications for this assignment
+			DelayedInvocation[] fdi = scheduledInvocationManager.findDelayedInvocations("org.sakaiproject.assignment2.logic.ScheduledNotification",
+					assignmentId);
+			if (fdi != null && fdi.length > 0)
+			{
+				for (DelayedInvocation d : fdi)
+				{
+					scheduledInvocationManager.deleteDelayedInvocation(d.uuid);
+				}
+			}
+			// Schedule the new notification
 			if (openTime.after(timeService.newTime()))
 			{
 				scheduledInvocationManager.createDelayedInvocation(openTime,
