@@ -280,16 +280,9 @@
    </bean>
 
 	<bean id="notificationBean" class="org.sakaiproject.assignment2.tool.beans.NotificationBean">
-		<property name="messageLocator" ref="messageLocator" />
-		<property name="contentHostingService" ref="org.sakaiproject.content.api.ContentHostingService" />
-		<property name="securityService" ref="org.sakaiproject.authz.api.SecurityService" />
 		<property name="timeService" ref="org.sakaiproject.time.api.TimeService" />
-		<property name="digestService" ref="org.sakaiproject.email.api.DigestService" />
-		<property name="siteService" ref="org.sakaiproject.site.api.SiteService" />
-		<property name="emailService" ref="org.sakaiproject.email.api.EmailService" />
-		<property name="serverConfigurationService" ref="org.sakaiproject.component.api.ServerConfigurationService" />
-		<property name="userDirectoryService" ref="org.sakaiproject.user.api.UserDirectoryService" />
-		<property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
+		<property name="scheduledInvocationManager" ref="org.sakaiproject.api.app.scheduler.ScheduledInvocationManager" />
+		<property name="scheduledNotification" ref="org.sakaiproject.assignment2.logic.ScheduledNotification" />
 	</bean>
 
 	<bean id="zipHandlerHook" class="org.sakaiproject.assignment2.tool.handlerhooks.ZipHandlerHook">
