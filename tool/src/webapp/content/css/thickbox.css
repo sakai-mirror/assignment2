@@ -34,12 +34,11 @@
 	width:100%;
 }
 
-.TB_overlayMacFFBGHack {background: url(/sakai-assignment2-tool/content/images/macFFBgHack.png) repeat;}
 .TB_overlayBG {
-	background-color:#000;
-	filter:alpha(opacity=75);
-	-moz-opacity: 0.75;
-	opacity: 0.75;
+	background-color:#eee;
+	filter:alpha(opacity=50);
+	-moz-opacity: 0.50;
+	opacity: 0.50;
 }
 
 * html #TB_overlay { /* ie6 hack */
