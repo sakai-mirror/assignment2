@@ -392,15 +392,20 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 		List<AssignmentDefinition> assignmentDefs = new ArrayList<AssignmentDefinition>();	
 		Collection<Group> siteGroups = externalLogic.getSiteGroups(fromContext);
 
+		// to identify assignments that act as external maintainers of a gb item,
+		// we need to retrieve all of the gb items in the old site
+		boolean gbDataExists = gradebookLogic.gradebookDataExistsInSite(fromContext);
+		List<GradebookItem> allGbItems = new ArrayList<GradebookItem>();
+		
+		if (gbDataExists) {
+			allGbItems = gradebookLogic.getAllGradebookItems(fromContext);
+		}
+		
 		Iterator<Assignment> origAssignIter = assignmentService.getAssignmentsForContext(fromContext);
 		while (origAssignIter.hasNext()) {
 			Assignment oAssignment = (Assignment)origAssignIter.next();
 			AssignmentContent oContent = oAssignment.getContent();
 			ResourceProperties oProperties = oAssignment.getProperties();
-
-			// to identify assignments that act as external maintainers of a gb item,
-			// we need to retrieve all of the gb items in the old site
-			List<GradebookItem> allGbItems = gradebookLogic.getAllGradebookItems(fromContext);
 
 			AssignmentDefinition newAssnDef = new AssignmentDefinition();
 
