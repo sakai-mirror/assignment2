@@ -258,4 +258,24 @@ public interface ExternalGradebookLogic {
 	 * is there for integration
 	 */
 	public boolean gradebookDataExistsInSite(String contextId);
+	
+	/**
+	 * 
+	 * @param contextId
+	 * @param studentIdToGradeMap - a map of studentId to the entered grade
+	 * 			
+	 * @return a list of studentIds associated with invalid grades according
+	 * to the gradebook.  returns empty list if all grades are valid
+	 */
+	public List<String> identifyStudentsWithInvalidGrades(String contextId, Map<String, String> studentIdToGradeMap);
+	
+	/**
+	 * 
+	 * @param contextId
+	 * @param grade
+	 * @return true if the given grade is valid for the gradebook. if you are
+	 * processing more than one student, use getStudentsWithInvalidGrades for
+	 * efficiency
+	 */
+	public boolean isGradeValid(String contextId, String grade);
 }

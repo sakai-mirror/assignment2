@@ -22,6 +22,7 @@ package org.sakaiproject.assignment2.logic.test;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -843,5 +844,54 @@ public class ExternalGradebookLogicTest extends Assignment2TestBase {
         			gbItem1Id, AssignmentTestDataLoad.STUDENT2_UID, grade, comment);
         		fail("Did not catch student trying to update grades w/o auth in saveGradeAndCommentForStudent");
     	} catch (SecurityException se) {}
+    }
+    
+    public void testIsGradeValid() {
+    	//try a null context
+    	try {
+    		gradebookLogic.isGradeValid(null, "A");
+    		fail("did not catch null contextId passed to isGradeValid");
+    	} catch (IllegalArgumentException iae) {}
+    	
+    	// try passing a null grade - should be valid
+    	assertTrue(gradebookLogic.isGradeValid(AssignmentTestDataLoad.CONTEXT_ID, null));
+    	
+    	//if these tests fail, double check the gradebook. we are using assumptions
+    	// of valid grades as of 3/08
+    	// we are using a default gb, which is points-based
+    	assertTrue(gradebookLogic.isGradeValid(AssignmentTestDataLoad.CONTEXT_ID, "98"));
+    	assertFalse(gradebookLogic.isGradeValid(AssignmentTestDataLoad.CONTEXT_ID, "A"));
+    }
+    
+    public void testIdentifyStudentsWithInvalidGrades() {
+    	// try a null context
+    	try {
+    		gradebookLogic.identifyStudentsWithInvalidGrades(null, new HashMap<String, String>());
+    		fail("did not catch null contextId passed to identifyStudentsWithInvalidGrades");
+    	} catch (IllegalArgumentException iae) {}
+    	
+    	// a null map should return an empty list
+    	List<String> studentList = gradebookLogic.identifyStudentsWithInvalidGrades(AssignmentTestDataLoad.CONTEXT_ID, null);
+    	assertTrue(studentList.isEmpty());
+    	
+    	// we are using a points-based gb
+    	Map<String, String> studentGradeMap = new HashMap<String, String>();
+    	studentGradeMap.put(AssignmentTestDataLoad.STUDENT1_UID, "10");
+    	studentGradeMap.put(AssignmentTestDataLoad.STUDENT2_UID, "124.5");
+    	
+    	studentList = gradebookLogic.identifyStudentsWithInvalidGrades(AssignmentTestDataLoad.CONTEXT_ID, studentGradeMap);
+    	assertTrue(studentList.isEmpty()); // should all be valid
+    	
+    	// try some invalid grades
+    	studentGradeMap = new HashMap<String, String>();
+    	studentGradeMap.put(AssignmentTestDataLoad.STUDENT1_UID, "-10"); // invalid
+    	studentGradeMap.put(AssignmentTestDataLoad.STUDENT2_UID, "124.5"); //valid
+    	studentGradeMap.put(AssignmentTestDataLoad.STUDENT3_UID, "A"); // invalid
+    	
+    	studentList = gradebookLogic.identifyStudentsWithInvalidGrades(AssignmentTestDataLoad.CONTEXT_ID, studentGradeMap);
+    	assertEquals(2, studentList.size()); // should have 2 invalid students
+    	assertTrue(studentList.contains(AssignmentTestDataLoad.STUDENT1_UID));
+    	assertTrue(studentList.contains(AssignmentTestDataLoad.STUDENT3_UID));
+    	
     }
 }

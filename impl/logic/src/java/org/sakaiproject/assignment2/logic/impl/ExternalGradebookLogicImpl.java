@@ -527,4 +527,37 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
 		
 		return gradebookService.isGradebookDefined(contextId);
 	}
+	
+	public boolean isGradeValid(String contextId, String grade) {
+		if (contextId == null) {
+			throw new IllegalArgumentException("Null contextId passed to isGradeValid");
+		}
+		
+		boolean valid = false;
+		
+		try {
+			valid = gradebookService.isGradeValid(contextId, grade);
+		} catch (GradebookNotFoundException gnfe) {
+			throw new IllegalArgumentException("No gradebook exists in the given context: " + contextId);
+		}
+		
+		return valid;
+	}
+	
+	public List<String> identifyStudentsWithInvalidGrades(String contextId, Map<String, String> studentIdToGradeMap) {
+		if (contextId == null) {
+			throw new IllegalArgumentException("Null contextId passed to getStudentsWithInvalidGrades");
+		}
+		
+		List<String> studentsWithInvalidGrades = new ArrayList<String>();
+		if (studentIdToGradeMap != null) {
+			try {
+				studentsWithInvalidGrades = gradebookService.identifyStudentsWithInvalidGrades(contextId, studentIdToGradeMap);
+			} catch (GradebookNotFoundException gnfe) {
+				throw new IllegalArgumentException("No gradebook exists in the given context: " + contextId);
+			}
+		}
+		
+		return studentsWithInvalidGrades;
+	}
 }
