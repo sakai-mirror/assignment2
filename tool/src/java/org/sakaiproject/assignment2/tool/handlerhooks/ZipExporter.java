@@ -158,6 +158,7 @@ public class ZipExporter
 			int count = 1;
 			while (submissions.hasNext())
 			{
+				submittersName = "";
 				AssignmentSubmission s = (AssignmentSubmission) submissions.next();
 				String userId = (String) s.getUserId();
 				AssignmentSubmissionVersion sv = assignmentSubmissionLogic
