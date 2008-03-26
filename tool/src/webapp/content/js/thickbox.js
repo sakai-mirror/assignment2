@@ -41,20 +41,26 @@ function tb_show(caption, url, imageGroup, tagName) {//function called when the 
 			jQuery("html").css("overflow","hidden");
 			if (document.getElementById("TB_HideSelect") === null) {//iframe to hide select elements in ie6
 				jQuery("body").append("<iframe id='TB_HideSelect'></iframe><div id='TB_overlay'></div><div id='TB_window'></div>");
-				jQuery("#TB_overlay").click(tb_remove);
+
 			}
 		}else{//all others
 			if(document.getElementById("TB_overlay") === null){
 				jQuery("body").append("<div id='TB_overlay'></div><div id='TB_window'></div>");
 				jQuery("#TB_overlay").click(tb_remove);
 			}
-		}
+      //Add portalMask to main portal
+      ////
+		jQuery("body", parent.document).append("<div id='portalMask' style='width:100%;height:100%'></div>");		
+		jQuery("#portalMask", parent.document).click(tb_remove);
+		jQuery("#TB_overlay").click(tb_remove);}
+         // now move our iframe zIndex above the portalMask
+		jQuery("#" + iframeId, parent.document).css("z-index", "9001").css("position", "relative").css("background", "#fff");
 		
-		if(tb_detectMacXFF()){
-			jQuery("#TB_overlay").addClass("TB_overlayMacFFBGHack");//use png overlay so hide flash
-		}else{
+		//if(tb_detectMacXFF()){
+		//	jQuery("#TB_overlay").addClass("TB_overlayMacFFBGHack");//use png overlay so hide flash
+		//}else{
 			jQuery("#TB_overlay").addClass("TB_overlayBG");//use background and opacity
-		}
+		//}
 		
 		if(caption===null){caption="";}
 		jQuery("body").append("<div id='TB_load'><img src='"+imgLoader.src+"' /></div>");//add loader to the page
@@ -303,12 +309,16 @@ function tb_showIframe(){
 function tb_remove() {
  	jQuery("#TB_imageOff").unbind("click");
 	jQuery("#TB_closeWindowButton").unbind("click");
-	jQuery("#TB_window").fadeOut("fast",function(){jQuery('#TB_window,#TB_overlay,#TB_HideSelect').trigger("unload").unbind().remove();});
+	jQuery("#TB_window").fadeOut("fast",function(){jQuery('#TB_window,#TB_overlay,#TB_HideSelect').trigger("unload").unbind().remove();
+	jQuery("#portalMask", parent.document).trigger("unload").unbind().remove();
+	});
 	jQuery("#TB_load").remove();
 	if (typeof document.body.style.maxHeight == "undefined") {//if IE 6
 		jQuery("body","html").css({height: "auto", width: "auto"});
 		jQuery("html").css("overflow","");
 	}
+	//set our iframe back
+	jQuery("#" + iframeId, parent.document).css("z-index", "0");
 	document.onkeydown = "";
 	document.onkeyup = "";
 	return false;
