@@ -249,4 +249,13 @@ public interface ExternalGradebookLogic {
 	 */
 	public void saveGradeAndCommentForStudent(String contextId, Long gradableObjectId, 
 			String studentId, String grade, String comment) throws InvalidGradeForAssignmentException;
+	
+	/**
+	 * 
+	 * @param contextId
+	 * @return true if gradebook data exists in the given contextId. This does
+	 * not mean that the tool is in the site, it indicates that the backend data
+	 * is there for integration
+	 */
+	public boolean gradebookDataExistsInSite(String contextId);
 }

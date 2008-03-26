@@ -195,6 +195,8 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
     		}
     	} catch (SecurityException se) {
     		throw new SecurityException("User without edit or grade perm attempted to access the list of all gb items");
+    	} catch (GradebookNotFoundException gnfe) {
+    		throw new IllegalArgumentException("No gradebook exists for the given contextId: " + contextId);
     	}
 
     	return gradebookItems;
@@ -518,4 +520,11 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
 		}
 	}
 
+	public boolean gradebookDataExistsInSite(String contextId) {
+		if (contextId == null) {
+			throw new IllegalArgumentException("Null contextId passed to gradebookDataExistsInSite");
+		}
+		
+		return gradebookService.isGradebookDefined(contextId);
+	}
 }
