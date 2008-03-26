@@ -36,6 +36,9 @@ import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.model.SubmissionAttachment;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
+import org.sakaiproject.authz.api.AuthzGroupService;
+import org.sakaiproject.authz.api.GroupNotDefinedException;
+import org.sakaiproject.authz.api.Member;
 import org.sakaiproject.authz.api.SecurityService;
 import org.sakaiproject.component.api.ServerConfigurationService;
 import org.sakaiproject.content.api.ContentHostingService;
@@ -150,6 +153,13 @@ public class ScheduledNotificationImpl implements ScheduledNotification
 		this.digestService = digestService;
 	}
 
+	private AuthzGroupService authzGroupService;
+
+	public void setAuthzService(AuthzGroupService authzGroupService)
+	{
+		this.authzGroupService = authzGroupService;
+	}
+
 	private static final Log log = LogFactory.getLog(ScheduledNotificationImpl.class);
 
 	/**
@@ -169,37 +179,57 @@ public class ScheduledNotificationImpl implements ScheduledNotification
 		String context = assignment.getContextId();
 		Set<AssignmentGroup> groups = assignment.getAssignmentGroupSet();
 
+		// Send to all members of the groups associated with the assignment unless there are no groups,
+		// then we send to all site members
 		if (groups != null && !groups.isEmpty())
 			for (AssignmentGroup group : groups)
 			{
 				context = group.getGroupId();
-				notifyAllInContext(context, assignment);
+				try
+				{
+					for (Object u : authzGroupService.getAuthzGroup(context).getMembers())
+					{
+						Member user = (Member) u;
+						notifyUser(user.getUserId(), assignment);
+					}
+				}
+				catch (GroupNotDefinedException e)
+				{
+					log.error(e);
+				}
 			}
 		else
 		{
-			notifyAllInContext(context, assignment);
+			try
+			{
+				for (Object u : siteService.getSite(context).getUsers())
+				{
+					String userId = (String) u;
+					notifyUser(userId, assignment);
+				}
+			}
+			catch (IdUnusedException e)
+			{
+				log.error(e);
+			}
 		}
 
 	}
 
-	private void notifyAllInContext(String context, Assignment2 assignment)
+	private void notifyUser(String userId, Assignment2 assignment)
 	{
 		try
 		{
 
-			for (Object u : siteService.getSite(context).getUsers())
+			User user = userDirectoryService.getUser(userId);
+			if (StringUtil.trimToNull(user.getEmail()) != null)
 			{
-				String userId = (String) u;
-				User user = userDirectoryService.getUser(userId);
-				if (StringUtil.trimToNull(user.getEmail()) != null)
-				{
-					ArrayList<User> receivers = new ArrayList<User>();
-					receivers.add(user);
+				ArrayList<User> receivers = new ArrayList<User>();
+				receivers.add(user);
 
-					emailService.sendToUsers(receivers, buildNotificationHeaders(user
-							.getEmail(), "noti.subject.post.content"),
-							buildPostNotificationMessage(assignment));
-				}
+				emailService.sendToUsers(receivers, buildNotificationHeaders(user
+						.getEmail(), "noti.subject.post.content"),
+						buildPostNotificationMessage(assignment));
 			}
 		}
 		catch (IdUnusedException e)
