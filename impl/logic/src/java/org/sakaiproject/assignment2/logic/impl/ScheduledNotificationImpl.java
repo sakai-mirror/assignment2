@@ -155,7 +155,7 @@ public class ScheduledNotificationImpl implements ScheduledNotification
 
 	private AuthzGroupService authzGroupService;
 
-	public void setAuthzService(AuthzGroupService authzGroupService)
+	public void setAuthzGroupService(AuthzGroupService authzGroupService)
 	{
 		this.authzGroupService = authzGroupService;
 	}
