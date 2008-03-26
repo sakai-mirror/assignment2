@@ -307,11 +307,12 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
         	as.setResubmitCloseTime(new Date());
         }
         UIInput acceptUntilTimeField = UIInput.make(form, "accept_until:", asOTP + ".resubmitCloseTime");
-        dateEvolver.evolveDateInput(acceptUntilTimeField, as.getResubmitCloseTime());
 
         if (!edit_perm) {
         	resubmit_select.decorators = disabledDecoratorList;
         	acceptUntilTimeField.decorators = disabledDecoratorList;
+        } else {
+            dateEvolver.evolveDateInput(acceptUntilTimeField, as.getResubmitCloseTime());
         }
         
         
