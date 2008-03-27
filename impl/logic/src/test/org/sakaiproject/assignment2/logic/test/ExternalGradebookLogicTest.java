@@ -29,7 +29,9 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment2.test.AssignmentTestDataLoad;
+import org.sakaiproject.assignment2.exception.GradebookItemNotFoundException;
 import org.sakaiproject.assignment2.exception.InvalidGradeForAssignmentException;
+import org.sakaiproject.assignment2.exception.NoGradebookDataExistsException;
 import org.sakaiproject.assignment2.logic.GradebookItem;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
@@ -786,13 +788,13 @@ public class ExternalGradebookLogicTest extends Assignment2TestBase {
     	try {
     		gradebookLogic.saveGradeAndCommentForStudent(AssignmentTestDataLoad.BAD_CONTEXT, gbItem1Id, AssignmentTestDataLoad.STUDENT1_UID, null, null);
     		fail("did not catch invalid contextId passed to saveGradeAndCommentForStudent");
-    	} catch (IllegalArgumentException iae) {}
+    	} catch (NoGradebookDataExistsException ngdee) {}
     	
     	// try a bad gradableObjectId
     	try {
     		gradebookLogic.saveGradeAndCommentForStudent(AssignmentTestDataLoad.CONTEXT_ID, new Long(12345), AssignmentTestDataLoad.STUDENT1_UID, null, null);
     		fail("did not catch invalid gradableObjectId passed to saveGradeAndCommentForStudent");
-    	} catch (IllegalArgumentException iae) {}
+    	} catch (GradebookItemNotFoundException gine) {}
     	
     	// start as instructor
     	authn.setAuthnContext(AssignmentTestDataLoad.INSTRUCTOR_UID);
