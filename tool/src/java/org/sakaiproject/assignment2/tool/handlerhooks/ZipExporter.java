@@ -4,7 +4,6 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.zip.ZipEntry;
@@ -94,8 +93,7 @@ public class ZipExporter
 		StringBuilder exceptionMessage = new StringBuilder();
 		if (gradebookLogic.isCurrentUserAbleToGrade(assignment.getContextId()))
 		{
-			zipSubmissions(assignment, submissions.iterator(), outputStream,
-					exceptionMessage);
+			zipSubmissions(assignment, submissions, outputStream, exceptionMessage);
 
 			if (exceptionMessage.length() > 0)
 			{
@@ -108,13 +106,14 @@ public class ZipExporter
 	} // getSubmissionsZip
 
 	protected void zipSubmissions(Assignment2 assignment,
-			Iterator<AssignmentSubmission> submissions, OutputStream outputStream,
+			List<AssignmentSubmission> submissions, OutputStream outputStream,
 			StringBuilder exceptionMessage)
 	{
 		String assignmentTitle = assignment.getTitle();
 		// String assignmentId = assignment.getAssignmentId().toString();
-		String gradeTypeString = messageLocator.getMessage("assignment2.assignment_grade-assignment.downloadall.type." +
-				gradebookLogic.getGradeType(assignment.getContextId()));
+		String gradeTypeString = messageLocator
+				.getMessage("assignment2.assignment_grade-assignment.downloadall.type."
+						+ gradebookLogic.getGradeType(assignment.getContextId()));
 		try
 		{
 			ZipOutputStream out = new ZipOutputStream(outputStream);
@@ -123,7 +122,7 @@ public class ZipExporter
 			String root = Validator.escapeZipEntry(assignmentTitle) + Entity.SEPARATOR;
 
 			String submittedText = "";
-			if (!submissions.hasNext())
+			if (submissions.isEmpty())
 			{
 				exceptionMessage.append("There is no submission yet. ");
 			}
@@ -134,32 +133,15 @@ public class ZipExporter
 			gradesBuilder
 					.append(
 							messageLocator
-									.getMessage("assignment2.assignment_grade-assignment.downloadall.id"))
-					.append(",")
-					.append(
-							messageLocator
-									.getMessage("assignment2.assignment_grade-assignment.downloadall.eid"))
-					.append(",")
-					.append(
-							messageLocator
-									.getMessage("assignment2.assignment_grade-assignment.downloadall.lastname"))
-					.append(",")
-					.append(
-							messageLocator
-									.getMessage("assignment2.assignment_grade-assignment.downloadall.firstname"))
-					.append(",")
-					.append(
-							messageLocator
-									.getMessage("assignment2.assignment_grade-assignment.downloadall.grade"))
+									.getMessage("assignment2.assignment_grade-assignment.downloadall.header"))
 					.append("\n");
 
 			// Create the ZIP file
 			String submittersName = "";
 			int count = 1;
-			while (submissions.hasNext())
+			for (AssignmentSubmission s : submissions)
 			{
 				submittersName = "";
-				AssignmentSubmission s = (AssignmentSubmission) submissions.next();
 				String userId = (String) s.getUserId();
 				AssignmentSubmissionVersion sv = assignmentSubmissionLogic
 						.getCurrentSubmissionByAssignmentIdAndStudentId(
@@ -170,8 +152,9 @@ public class ZipExporter
 					String name = externalLogic.getUserDisplayName(userId);
 					String fullName = externalLogic.getUserFullName(userId);
 					String submittersString = name + "(" + userId + ")";
-					gradesBuilder.append(name).append(",").append(userId).append(",").append(
-							fullName).append(",").append(s.getGradebookGrade()).append("\n");
+					gradesBuilder.append(name).append(",").append(userId).append(",")
+							.append(fullName).append(",").append(s.getGradebookGrade())
+							.append("\n");
 
 					if (StringUtil.trimToNull(submittersString) != null)
 					{
@@ -191,8 +174,9 @@ public class ZipExporter
 								{
 									// create the text file only when a text
 									// submission is allowed
-									ZipEntry textEntry = new ZipEntry(root + submittersName
-											+ submittersString + "_submissionText.txt");
+									ZipEntry textEntry = new ZipEntry(root
+											+ submittersName + submittersString
+											+ "_submissionText.txt");
 									out.putNextEntry(textEntry);
 									byte[] text = submittedText.getBytes();
 									out.write(text);
@@ -222,7 +206,8 @@ public class ZipExporter
 
 								// create an attachment folder for the feedback
 								// attachments
-								String feedbackSubAttachmentFolder = root + submittersName
+								String feedbackSubAttachmentFolder = root
+										+ submittersName
 										+ messageLocator
 												.getMessage("assignment2.assignment_grade-assignment.downloadall.feedbackdir")
 										+ "/";
@@ -233,7 +218,8 @@ public class ZipExporter
 
 								// create a attachment folder for the submission
 								// attachments
-								String sSubAttachmentFolder = root + submittersName
+								String sSubAttachmentFolder = root
+										+ submittersName
 										+ messageLocator
 												.getMessage("assignment2.assignment_grade-assignment.downloadall.submdir")
 										+ "/";
@@ -243,8 +229,8 @@ public class ZipExporter
 								out.closeEntry();
 								// add all submission attachment into the
 								// submission attachment folder
-								zipAttachments(out, root + submittersName, sSubAttachmentFolder,
-										sv.getSubmissionAttachSet());
+								zipAttachments(out, root + submittersName,
+										sSubAttachmentFolder, sv.getSubmissionAttachSet());
 								// add all feedback attachment folder
 								zipAttachments(out, root + submittersName,
 										feedbackSubAttachmentFolder, sv
@@ -268,7 +254,7 @@ public class ZipExporter
 						} // while
 					} // if
 				} // if
-			} // while -- there is submission
+			} // for submissions
 
 			// create a grades.csv file into zip
 			ZipEntry gradesCSVEntry = new ZipEntry(root + "grades.csv");
