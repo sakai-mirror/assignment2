@@ -2,7 +2,6 @@
 package org.sakaiproject.assignment2.tool.params;
 
 import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
-import uk.org.ponder.rsf.viewstate.ViewParameters;
 
 public class AssignmentViewParams extends SimpleViewParameters {
 
@@ -20,6 +19,6 @@ public class AssignmentViewParams extends SimpleViewParameters {
     }
     
     public String getParseSpec() {
-    	return super.getParseSpec() + ",@1:assignmentId"; 
+    	return super.getParseSpec() + ",@1:assignmentId";
     }
 }

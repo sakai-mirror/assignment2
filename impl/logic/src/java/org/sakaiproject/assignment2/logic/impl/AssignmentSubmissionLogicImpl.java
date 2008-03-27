@@ -1046,7 +1046,12 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			asv.setAnnotatedText(feedback.getAnnotatedText());
 
 		if (feedback.getFeedbackAttachSet() != null)
+		{
+			for (FeedbackAttachment fa : feedback.getFeedbackAttachSet())
+				fa.setSubmissionVersion(asv);
+			dao.saveSet(feedback.getFeedbackAttachSet());
 			asv.setFeedbackAttachSet(feedback.getFeedbackAttachSet());
+		}
 
 		if (feedback.getFeedbackNotes() != null)
 			asv.setFeedbackNotes(feedback.getFeedbackNotes());

@@ -1,27 +1,17 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns:rsf="http://ponder.org.uk/rsf" xmlns=
-"http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns:rsf="http://ponder.org.uk/rsf" xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 	<head>
-		<meta http-equiv="Content-Type" content=
-		"text/html; charset=UTF-8" />
-		<title rsf:id="msg=assignment2.title">
-			Assignments
-		</title>
-		<link href="/library/skin/tool_base.css" type="text/css" rel=
-		"stylesheet" media="all" />
-		<link href="/library/skin/default/tool.css" type="text/css"
-		rel="stylesheet" media="all" />
-		<link href=
-		"../css/assignmentsv4.css" type=
-		"text/css" rel="stylesheet" media="all" />
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<title rsf:id="msg=assignment2.title">Assignments</title>
+		<link href="/library/skin/tool_base.css" type="text/css" rel="stylesheet" media="all" />
+		<link href="/library/skin/default/tool.css" type="text/css"rel="stylesheet" media="all" />
+		<link href="../css/assignmentsv4.css" type="text/css" rel="stylesheet" media="all" />
 	</head>
 	<body>
 		<!--  everything outside of rsf:id="page:" is set in Layout.html using outerPageTemplates -->
 		<div rsf:id="page:" class="portletBody">
-			<h3 rsf:id="msg=assignment2.uploadall.title">
-				Upload All
-			</h3>
+			<h3 rsf:id="msg=assignment2.uploadall.title">Upload All</h3>
+			<div rsf:id="message-for:*">Messages for the user show here</div>
 			<p class="instruction" rsf:id="msg=assignment2.uploadall.instruction">
 				Select an archive file to upload, choose options, and then
 				click 'Upload' at the bottom.
@@ -38,7 +28,7 @@
 					submission.
 				</span>
 			</p>
-			<form method="post" rsf:id="upload_form">
+			<form method="post" rsf:id="upload_form" enctype="multipart/form-data">
 				<div class="highlightPanel">
 					<p class="shorttext">
 						<label rsf:id="msg=assignment2.uploadall.file" for="file">File:</label>
@@ -70,14 +60,14 @@
 								</label>
 							</div>
 							<div>
-								<input rsf:id="feedbackTexts" id="feedbackTexts" name="feedbackTexts" type="checkbox" />
-								<label rsf:id="msg=assignment2.uploadall.feedbackTexts" for="feedbackTexts">
+								<input rsf:id="feedbackText" id="feedbackText" name="feedbackText" type="checkbox" />
+								<label rsf:id="msg=assignment2.uploadall.feedbackTexts" for="feedbackText">
 									Feedback text (the inline comments with student submission)
 								</label>
 							</div>
 							<div>
-								<input rsf:id="feedbackComments" id="feedbackComments" name="feedbackComments" type="checkbox" />
-								<label rsf:id="msg=assignment2.uploadall.feedbackComments" for="feedbackComments">
+								<input rsf:id="comments" id="comments" name="comments" type="checkbox" />
+								<label rsf:id="msg=assignment2.uploadall.feedbackComments" for="comments">
 									Feedback comments (comments.txt file if available in student's folder. Comments are put into
 									the Instructor Comments field for each student's submission)
 								</label>
@@ -111,12 +101,11 @@
 					</fieldset>
 					-->
 					<p class="act">
-						<input rsf:id="uploadButton" type="button" name="uploadButton" id="uploadButton" accesskey="s" value="Upload" />
-						<input rsf:id="cancelButton" type="button" name="cancelButton" id="cancelButton" accesskey="x" value="Cancel" />
+						<input rsf:id="uploadButton" type="submit" name="uploadButton" id="uploadButton" accesskey="s" value="Upload" />
+						<input rsf:id="cancelButton" type="submit" name="cancelButton" id="cancelButton" accesskey="x" value="Cancel" />
 					</p>
 				</div>
 			</form>
 		</div>
 	</body>
 </html>
-

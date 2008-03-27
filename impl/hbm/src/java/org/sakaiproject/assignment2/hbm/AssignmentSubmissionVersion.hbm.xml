@@ -95,21 +95,21 @@
     		</set>
               
     </class>
-    
+
     <query name="findSubmissionVersionByIdWithAttachments">
     <![CDATA[from org.sakaiproject.assignment2.model.AssignmentSubmissionVersion submissionVersion
              left join fetch submissionVersion.submissionAttachSet
              left join fetch submissionVersion.feedbackAttachSet
              where submissionVersion.id = :submissionVersionId]]>
   	</query>
-  	
+
   	<query name="findCurrentVersionIds">
     <![CDATA[select max(submissionVersion.id) 
     				 from org.sakaiproject.assignment2.model.AssignmentSubmissionVersion submissionVersion
              where submissionVersion.assignmentSubmission in (:submissionList)
     		     group by submissionVersion.assignmentSubmission]]>
   	</query>
-  	
+
   	<query name="findVersionHistoryForSubmission">
     <![CDATA[from org.sakaiproject.assignment2.model.AssignmentSubmissionVersion submissionVersion
              left join fetch submissionVersion.submissionAttachSet
@@ -117,11 +117,10 @@
              where submissionVersion.assignmentSubmission = :submission]]>
   	</query>
 
-	<query name="findVersionForUserIdBySubmittedTime">
-	<![CDATA[from org.sakaiproject.assignment2.model.AssignmentSubmissionVersion version
-		left join fetch version.submissionAttachSet
+	<query name="findVersionByUserIdAndSubmittedTime">
+	<![CDATA[from org.sakaiproject.assignment2.model.AssignmentSubmissionVersion as version
 		left join fetch version.feedbackAttachSet
-		where version.assignmentSubmission.userId = :userId
+		where version.createdBy = :userId
 			and version.submittedTime = :submittedTime]]>
 	</query>
 	
