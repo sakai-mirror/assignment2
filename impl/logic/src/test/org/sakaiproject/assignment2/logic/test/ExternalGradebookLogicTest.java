@@ -896,4 +896,121 @@ public class ExternalGradebookLogicTest extends Assignment2TestBase {
     	assertTrue(studentList.contains(AssignmentTestDataLoad.STUDENT3_UID));
     	
     }
+    
+    public void testSaveGradesAndCommentsForSubmissions() {
+    	// try null info
+    	try {
+    		gradebookLogic.saveGradesAndCommentsForSubmissions(null, gbItem1Id, new ArrayList<AssignmentSubmission>());
+    		fail("did not catch null contextId passed to saveGradesAndCommentsForSubmissions");
+    	} catch (IllegalArgumentException iae) {}
+    	
+    	try {
+    		gradebookLogic.saveGradesAndCommentsForSubmissions(AssignmentTestDataLoad.CONTEXT_ID, null, new ArrayList<AssignmentSubmission>());
+    		fail("did not catch null gradableObjectId passed to saveGradesAndCommentsForSubmissions");
+    	} catch (IllegalArgumentException iae) {}
+    	
+    	// as instructor
+    	authn.setAuthnContext(AssignmentTestDataLoad.INSTRUCTOR_UID);
+    	
+    	// try passing a null list - should do nothing
+    	gradebookLogic.saveGradesAndCommentsForSubmissions(AssignmentTestDataLoad.CONTEXT_ID, gbItem1Id, null);
+    	
+    	// let's refresh the submission objects to make sure the gb associations are there
+    	testData.st1a3Submission = submissionLogic.getAssignmentSubmissionById(testData.st1a3Submission.getId());
+    	testData.st2a3Submission = submissionLogic.getAssignmentSubmissionById(testData.st2a3Submission.getId());
+    	
+    	List<AssignmentSubmission> subList = new ArrayList<AssignmentSubmission>();
+    	// try adding submissions for different assignments
+    	subList.add(testData.st1a1Submission);
+    	subList.add(testData.st1a3Submission);
+    	
+    	try {
+    		gradebookLogic.saveGradesAndCommentsForSubmissions(AssignmentTestDataLoad.CONTEXT_ID, gbItem1Id, subList);
+    		fail("did not catch a passed submission list from diff assignments");
+    	} catch (IllegalArgumentException iae) {}
+    	
+    	subList = new ArrayList<AssignmentSubmission>();
+    	String st1Grade = "15.5";
+    	String st1Comment = "Good work";
+    	String st2Grade = "0.0";
+    	String st2Comment = "You need to turn this in ASAP";
+    	testData.st1a3Submission.setGradebookGrade(st1Grade);
+    	testData.st1a3Submission.setGradebookComment(st1Comment);
+    	testData.st2a3Submission.setGradebookGrade(st2Grade);
+    	testData.st2a3Submission.setGradebookComment(st2Comment);
+    	
+    	subList.add(testData.st1a3Submission);
+    	subList.add(testData.st2a3Submission);
+    	
+    	// should work this time
+    	gradebookLogic.saveGradesAndCommentsForSubmissions(AssignmentTestDataLoad.CONTEXT_ID, gbItem1Id, subList);
+    	
+    	// now let's retrieve it to see if the save was successful
+    	AssignmentSubmission sub1 = submissionLogic.getAssignmentSubmissionById(testData.st1a3Submission.getId());
+    	assertEquals(st1Grade, sub1.getGradebookGrade());
+    	assertEquals(st1Comment, sub1.getGradebookComment());
+    	AssignmentSubmission sub2 = submissionLogic.getAssignmentSubmissionById(testData.st2a3Submission.getId());
+    	assertEquals(st2Grade, sub2.getGradebookGrade());
+    	assertEquals(st2Comment, sub2.getGradebookComment());
+    	
+    	// try a bad grade - make sure nothing was updated
+    	testData.st1a3Submission.setGradebookGrade("10.5");
+    	testData.st1a3Submission.setGradebookComment("lovely");
+    	testData.st2a3Submission.setGradebookGrade("A");  // INVALID
+    	testData.st2a3Submission.setGradebookComment("jolly good show");
+    	subList = new ArrayList<AssignmentSubmission>();
+    	subList.add(testData.st1a3Submission);
+    	subList.add(testData.st2a3Submission);
+    	
+    	try {
+    		gradebookLogic.saveGradesAndCommentsForSubmissions(AssignmentTestDataLoad.CONTEXT_ID, gbItem1Id, subList);
+        	fail("did not catch invalid grade passed to saveGradesAndCommentsForSubmissions");
+    	} catch (InvalidGradeForAssignmentException igfae) {}
+    	
+    	// double check that the grades and comments weren't actually changed
+    	sub1 = submissionLogic.getAssignmentSubmissionById(testData.st1a3Submission.getId());
+    	assertEquals(st1Grade, sub1.getGradebookGrade());
+    	assertEquals(st1Comment, sub1.getGradebookComment());
+    	sub2 = submissionLogic.getAssignmentSubmissionById(testData.st2a3Submission.getId());
+    	assertEquals(st2Grade, sub2.getGradebookGrade());
+    	assertEquals(st2Comment, sub2.getGradebookComment());
+    	
+    	// check security
+    	authn.setAuthnContext(AssignmentTestDataLoad.TA_UID);
+    	// the ta should only be able to update st1
+    	subList = new ArrayList<AssignmentSubmission>();
+    	st1Grade = "25.52";
+    	st1Comment = "graded by ta";
+    	testData.st1a3Submission.setGradebookGrade(st1Grade);
+    	testData.st1a3Submission.setGradebookComment(st1Comment);
+    	subList.add(testData.st1a3Submission);
+    	
+    	gradebookLogic.saveGradesAndCommentsForSubmissions(AssignmentTestDataLoad.CONTEXT_ID, gbItem1Id, subList);
+    	
+    	// now let's retrieve it to see if the save was successful
+    	sub1 = submissionLogic.getAssignmentSubmissionById(testData.st1a3Submission.getId());
+    	assertEquals(st1Grade, sub1.getGradebookGrade());
+    	assertEquals(st1Comment, sub1.getGradebookComment());
+    	
+    	// now try to include st2 in the list - nothing should be updated
+    	testData.st1a3Submission.setGradebookGrade("10.5");
+    	testData.st1a3Submission.setGradebookComment("lovely");
+    	testData.st2a3Submission.setGradebookGrade("11.26"); 
+    	testData.st2a3Submission.setGradebookComment("jolly good show");
+    	subList = new ArrayList<AssignmentSubmission>();
+    	subList.add(testData.st1a3Submission);
+    	subList.add(testData.st2a3Submission);
+    	
+    	try {
+    		gradebookLogic.saveGradesAndCommentsForSubmissions(AssignmentTestDataLoad.CONTEXT_ID, gbItem1Id, subList);
+    		fail("did not catch ta trying to grade st2 without auth!");
+    	} catch (SecurityException se) {}
+    	
+    	// make sure students hit security, as well
+    	authn.setAuthnContext(AssignmentTestDataLoad.STUDENT1_UID);
+    	try {
+    		gradebookLogic.saveGradesAndCommentsForSubmissions(AssignmentTestDataLoad.CONTEXT_ID, gbItem1Id, subList);
+    		fail("did not catch student trying to save grade info without auth!");
+    	} catch (SecurityException se) {}
+    }
 }
