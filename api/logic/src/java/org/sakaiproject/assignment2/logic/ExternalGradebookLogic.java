@@ -258,4 +258,21 @@ public interface ExternalGradebookLogic {
 	 * is there for integration
 	 */
 	public boolean gradebookDataExistsInSite(String contextId);
+	
+	/**
+	 * Save the given grade and comment for the given student, gb item, and context
+	 * in the gradebook. 
+	 * @param contextId
+	 * @param gradableObjectId
+	 * @param studentId
+	 * @param grade
+	 * @param comment
+	 * @throws InvalidGradeForAssignmentException if the grade is invalid according
+	 * to the gradebook's grade entry type
+	 * @throws SecurityException if user is not auth to grade the student
+	 * 
+	 */
+	public void saveGradeAndCommentForStudent(String contextId, Long gradableObjectId, 
+			String studentId, String grade, String comment) throws InvalidGradeForAssignmentException;
+
 }
