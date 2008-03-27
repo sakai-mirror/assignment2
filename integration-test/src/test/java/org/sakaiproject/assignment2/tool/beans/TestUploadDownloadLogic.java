@@ -12,10 +12,15 @@ import junit.framework.TestSuite;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment2.dao.AssignmentDao;
+import org.sakaiproject.assignment2.logic.AssignmentLogic;
+import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
+import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.UploadDownloadLogic;
 import org.sakaiproject.assignment2.model.UploadAllOptions;
 import org.sakaiproject.assignment2.tool.beans.PreloadTestData;
 import org.sakaiproject.assignment2.tool.handlerhooks.ZipExporter;
+
+import uk.org.ponder.messageutil.MessageLocator;
 
 public class TestUploadDownloadLogic extends SakaiTransactionalTestBase
 {
@@ -63,13 +68,24 @@ public class TestUploadDownloadLogic extends SakaiTransactionalTestBase
 	protected void onSetUpBeforeTransaction() throws Exception
 	{
 		updownLogic = (UploadDownloadLogic) getService("org.sakaiproject.assignment2.logic.UploadDownloadLogic");
-//		zipExporter = new ZipExporter();
-//		setAssignmentLogic(AssignmentLogic)
-//		setAssignmentSubmissionLogic(AssignmentSubmissionLogic)
-//		setContentHostingService(ContentHostingService)
-//		setExternalLogic(ExternalLogic)
-//		setGradebookLogic(ExternalGradebookLogic)
-//		setMessageLocator(MessageLocator)
+		zipExporter = new ZipExporter();
+		zipExporter
+				.setAssignmentLogic((AssignmentLogic) getService("org.sakaiproject.assignment2.logic.AssignmentLogic"));
+		zipExporter
+				.setAssignmentSubmissionLogic((AssignmentSubmissionLogic) getService("org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic"));
+		zipExporter
+				.setGradebookLogic((ExternalGradebookLogic) getService("org.sakaiproject.assignment2.logic.ExternalGradebookLogic"));
+		// mock message locator
+		zipExporter.setMessageLocator(new MessageLocator()
+		{
+			@Override
+			public String getMessage(String[] code, Object[] args)
+			{
+				return code.toString() + "[" + args.toString() + "]";
+			}
+		});
+		// setContentHostingService(ContentHostingService)
+		// setExternalLogic(ExternalLogic)
 		options = new UploadAllOptions();
 		assignmentDao = (AssignmentDao) getService("org.sakaiproject.assignment2.dao.AssignmentDao");
 	}
@@ -78,9 +94,9 @@ public class TestUploadDownloadLogic extends SakaiTransactionalTestBase
 	protected void onSetUpInTransaction() throws Exception
 	{
 		PreloadTestData ptd = new PreloadTestData();
-//		if (ptd == null) {
-//			throw new NullPointerException("PreloadTestData could not be retrieved from spring");
-//		}
+		// if (ptd == null) {
+		// throw new NullPointerException("PreloadTestData could not be retrieved from spring");
+		// }
 		ptd.setAssignmentDao(assignmentDao);
 		ptd.init();
 		testData = ptd.getAtdl();
@@ -89,12 +105,13 @@ public class TestUploadDownloadLogic extends SakaiTransactionalTestBase
 	public void testUploadAll() throws Exception
 	{
 		Long assignmentId = testData.a1Id;
+		options.assignmentId = assignmentId;
 		File f = File.createTempFile("assn" + assignmentId, "zip");
 		ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(f));
 		zipExporter.getSubmissionsZip(zos, assignmentId);
 		zos.flush();
 		zos.close();
 		ZipFile zipFile = new ZipFile(f);
-		updownLogic.uploadAll(assignmentId, options, zipFile);
+		updownLogic.uploadAll(options, zipFile);
 	}
 }

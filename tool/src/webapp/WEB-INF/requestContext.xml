@@ -164,8 +164,7 @@
       <property name="group" ref="HTMLViewGroup" />
    </bean>
 
-	<bean id="uploadAllProducer" class="org.sakaiproject.assignment2.tool.producers.UploadAllProducer">
-	</bean>
+	<bean id="uploadAllProducer" class="org.sakaiproject.assignment2.tool.producers.UploadAllProducer" />
 
    <!--  AJAX Fragment Producers -->
    <bean class="org.sakaiproject.assignment2.tool.producers.fragments.FragmentAssignmentPreviewProducer">
@@ -284,6 +283,12 @@
 		<property name="response" ref="httpServletResponseProxy" />
 		<property name="zipExporter" ref="ZipExporter" />
 		<property name="viewparams" ref="viewParameters" />
+	</bean>
+
+	<bean id="uploadBean" class="org.sakaiproject.assignment2.tool.beans.UploadBean">
+		<property name="targettedMessageList" ref="targettedMessageList" />
+		<property name="uploadDownloadLogic" ref="org.sakaiproject.assignment2.logic.UploadDownloadLogic" />
+		<property name="multipartMap" ref="multipartMap" />
 	</bean>
 
 	<!-- Validators -->

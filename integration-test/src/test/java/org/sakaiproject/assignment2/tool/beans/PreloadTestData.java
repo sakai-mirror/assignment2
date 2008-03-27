@@ -44,7 +44,6 @@ import org.sakaiproject.assignment2.dao.AssignmentDao;
  */
 public class PreloadTestData
 {
-
 	private static Log log = LogFactory.getLog(PreloadTestData.class);
 
 	private AssignmentDao assignmentDao;

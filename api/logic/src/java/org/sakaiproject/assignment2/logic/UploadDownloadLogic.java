@@ -6,7 +6,6 @@ import org.sakaiproject.assignment2.model.UploadAllOptions;
 
 public interface UploadDownloadLogic
 {
-
 	/**
 	 * Process uploaded zip file.
 	 * 
@@ -14,7 +13,7 @@ public interface UploadDownloadLogic
 	 * @param options
 	 * @param fileFromUpload
 	 */
-	public abstract void uploadAll(Long assignmentId, UploadAllOptions options, ZipFile zipFile)
+	void uploadAll(UploadAllOptions options, ZipFile zipFile)
 			throws UploadException;
 
 }

@@ -512,11 +512,11 @@ public class AssignmentDaoImpl extends HibernateCompleteGenericDao implements As
 			public Object doInHibernate(Session session) throws HibernateException, SQLException
 			{
 				Query query = session.getNamedQuery("findVersionByUserIdAndSubmittedTime");
-				query.setString("userId", userId);
-				query.setTime("submittedTime", submittedTime);
+				query.setParameter("userId", userId);
+				query.setParameter("submittedTime", submittedTime);
 
-				AssignmentSubmissionVersion v = (AssignmentSubmissionVersion) query.uniqueResult();
-				return v;
+				Object o = query.uniqueResult();
+				return o;
 			}
 		};
 		return (AssignmentSubmissionVersion) getHibernateTemplate().execute(hc);
