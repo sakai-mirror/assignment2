@@ -260,19 +260,22 @@ public interface ExternalGradebookLogic {
 	public boolean gradebookDataExistsInSite(String contextId);
 	
 	/**
-	 * Save the given grade and comment for the given student, gb item, and context
-	 * in the gradebook. 
-	 * @param contextId
-	 * @param gradableObjectId
-	 * @param studentId
-	 * @param grade
-	 * @param comment
-	 * @throws InvalidGradeForAssignmentException if the grade is invalid according
-	 * to the gradebook's grade entry type
-	 * @throws SecurityException if user is not auth to grade the student
 	 * 
+	 * @param contextId
+	 * @param studentIdToGradeMap - a map of studentId to the entered grade
+	 * 			
+	 * @return a list of studentIds associated with invalid grades according
+	 * to the gradebook.  returns empty list if all grades are valid
 	 */
-	public void saveGradeAndCommentForStudent(String contextId, Long gradableObjectId, 
-			String studentId, String grade, String comment) throws InvalidGradeForAssignmentException;
-
+	public List<String> identifyStudentsWithInvalidGrades(String contextId, Map<String, String> studentIdToGradeMap);
+	
+	/**
+	 * 
+	 * @param contextId
+	 * @param grade
+	 * @return true if the given grade is valid for the gradebook. if you are
+	 * processing more than one student, use getStudentsWithInvalidGrades for
+	 * efficiency
+	 */
+	public boolean isGradeValid(String contextId, String grade);
 }
