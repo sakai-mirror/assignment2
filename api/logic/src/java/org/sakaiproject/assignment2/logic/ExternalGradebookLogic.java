@@ -245,10 +245,30 @@ public interface ExternalGradebookLogic {
 	 * @throws InvalidGradeForAssignmentException if the grade is invalid according
 	 * to the gradebook's grade entry type
 	 * @throws SecurityException if user is not auth to grade the student
+	 * @throws NoGradebookDataExistsException if there is no gradebook data in the given context
+	 * @throws GradebookItemNotFoundException if there is no gradebook item with the
+	 * associated gradableObjectId
 	 * 
 	 */
 	public void saveGradeAndCommentForStudent(String contextId, Long gradableObjectId, 
 			String studentId, String grade, String comment) throws InvalidGradeForAssignmentException;
+	
+	/**
+	 * Given a list of submissions with the gradebookGrade and gradebookComment
+	 * information populated with the info you want to update, will update the
+	 * grades and comments in the gradebook. Submissions must all be for the same
+	 * assignment
+	 * @param contextId
+	 * @param gradableObjectId - the id of the associated gradebook item
+	 * @param submissionList
+	 * @throws InvalidGradeForAssignmentException if any passed grade is invalid according
+	 * to the gradebook's grade entry type
+	 * @throws SecurityException if user is not auth to grade any student in the list
+	 * @throws NoGradebookDataExistsException if there is no gradebook data in the given context
+	 * @throws GradebookItemNotFoundException if there is no gradebook item with the
+	 * associated gradableObjectId
+	 */
+	public void saveGradesAndCommentsForSubmissions(String contextId, Long gradableObjectId, List<AssignmentSubmission> submissionList);
 	
 	/**
 	 * 
