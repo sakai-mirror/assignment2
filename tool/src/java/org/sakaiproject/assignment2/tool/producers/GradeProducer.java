@@ -100,9 +100,6 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
     	session.removeAttribute("attachmentRefs");
     	session.removeAttribute("removedAttachmentRefs");
     	
-    	//Edit Permission
-        Boolean edit_perm = permissionLogic.isCurrentUserAbleToEditAssignments(externalLogic.getCurrentContextId());
-    	
     	//Get Params
         GradeViewParams params = (GradeViewParams) viewparams;
     	String userId = params.userId;
@@ -117,13 +114,11 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
     		OLD_VERSION = true;
     	}
     	
-    	//get a decorated list of disabled="disabled"
-    	Map disabledAttr = new HashMap();
-		disabledAttr.put("disabled", "disabled");
-		DecoratorList disabledDecoratorList = new DecoratorList(new UIFreeAttributeDecorator(disabledAttr));
-    	
     	AssignmentSubmission as = submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(assignmentId, userId);
     	Assignment2 assignment = assignmentLogic.getAssignmentByIdWithAssociatedData(assignmentId);
+    	
+    	//Grade Permission?
+        Boolean grade_perm = permissionLogic.isUserAbleToProvideFeedbackForStudentForAssignment(userId, assignment);
     	
        	// use a date which is related to the current users locale
         DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, locale);
@@ -216,15 +211,14 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
         		assignment.getSubmissionType() == AssignmentConstants.SUBMIT_INLINE_AND_ATTACH)) {
         	UIOutput.make(form, "submitted_text_fieldset");
         
-        
-	        UIVerbatim.make(form, "feedback_instructions", messageLocator.getMessage("assignment2.assignment_grade.feedback_instructions"));
-	        if (edit_perm){
-		        UIInput feedback_text = UIInput.make(form, "feedback_text:", asvOTP + ".annotatedText");
-		        feedback_text.mustapply = Boolean.TRUE;
-		        richTextEvolver.evolveTextInput(feedback_text);
-	        } else {
-	        	UIVerbatim.make(form, "feedback_text:", assignmentSubmissionVersion.getAnnotatedTextFormatted());
-	        }
+        	if (grade_perm){
+        		UIVerbatim.make(form, "feedback_instructions", messageLocator.getMessage("assignment2.assignment_grade.feedback_instructions"));
+        		UIInput feedback_text = UIInput.make(form, "feedback_text:", asvOTP + ".annotatedText");
+        		feedback_text.mustapply = Boolean.TRUE;
+        		richTextEvolver.evolveTextInput(feedback_text);
+        	} else {
+        		UIVerbatim.make(form, "feedback_text:", assignmentSubmissionVersion.getAnnotatedTextFormatted());
+        	}
         }
         
         //If assignment allows for submitted attachments
@@ -239,12 +233,12 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
 	        }
         }
         
-        if (edit_perm) {
+        if (grade_perm) {
 	    	UIInput feedback_notes = UIInput.make(form, "feedback_notes:", asvOTP + ".feedbackNotes");
 	    	feedback_notes.mustapply = Boolean.TRUE;
 	    	richTextEvolver.evolveTextInput(feedback_notes);
         } else {
-        	UIVerbatim.make(form, "feedback_notes:", assignmentSubmissionVersion.getFeedbackNotes());        	
+        	UIVerbatim.make(form, "feedback_text_no_edit", assignmentSubmissionVersion.getFeedbackNotes());        	
         }
                
         //Attachments
@@ -254,7 +248,7 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
         }
         attachmentListRenderer.makeAttachmentFromFeedbackAttachmentSet(tofill, "attachment_list:", 
         		params.viewID, afaSet, Boolean.TRUE);
-        if (edit_perm) {
+        if (grade_perm) {
         	UIInternalLink.make(form, "add_attachments", UIMessage.make("assignment2.assignment_add.add_attachments"),
         		new FilePickerHelperViewParams(AddAttachmentHelperProducer.VIEWID, Boolean.TRUE, 
         				Boolean.TRUE, 500, 700, OTPKey));
@@ -277,49 +271,57 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
         //}
         
         //Submission Level
-        
-        Integer current_times_submitted_already = 0;
-        if (as != null && as.getSubmissionHistorySet() != null) {
-        	current_times_submitted_already = submissionLogic.getNumSubmittedVersions(as.getUserId(), assignmentId);
-        }
-        Integer current_num_submissions = 1;
-        if (as != null && as.getNumSubmissionsAllowed() != null) {
-        	current_num_submissions = as.getNumSubmissionsAllowed();
-        }
-        int size = 20;
-        String[] number_submissions_options = new String[size+1];
-        String[] number_submissions_values = new String[size+1];
-        number_submissions_values[0] = "-1";
-        number_submissions_options[0] = messageLocator.getMessage("assignment2.indefinite_resubmit");
-        for (int i=0; i < size; i++){
-        	number_submissions_values[i + 1] = new Integer(i + current_times_submitted_already).toString();
-        	number_submissions_options[i + 1] = new Integer(i).toString();
-        }
-        
-        //Output
-        UIMessage.make(form, "resubmission_text_1", "assignment2.assignment_grade.resubmission_text_1", 
-        		new Object[] { externalLogic.getUserDisplayName(params.userId), current_times_submitted_already});
-        
-        UISelect resubmit_select = UISelect.make(form, "resubmission_additional", number_submissions_values, number_submissions_options, 
-        		asOTP + ".numSubmissionsAllowed", current_num_submissions.toString());
-        
-        if (as.getResubmitCloseTime() == null) {
-        	as.setResubmitCloseTime(new Date());
-        }
-        UIInput acceptUntilTimeField = UIInput.make(form, "accept_until:", asOTP + ".resubmitCloseTime");
+    	Integer current_times_submitted_already = 0;
+    	if (as != null && as.getSubmissionHistorySet() != null) {
+    		current_times_submitted_already = submissionLogic.getNumSubmittedVersions(as.getUserId(), assignmentId);
+    	}
+    	Integer current_num_submissions = 1;
+    	if (as != null && as.getNumSubmissionsAllowed() != null) {
+    		current_num_submissions = as.getNumSubmissionsAllowed();
+    	}
+    	
+        if (grade_perm) {
+        	UIOutput.make(form, "resubmit_change");
         dateEvolver.evolveDateInput(acceptUntilTimeField, as.getResubmitCloseTime());
 
-        if (!edit_perm) {
-        	resubmit_select.decorators = disabledDecoratorList;
-        	acceptUntilTimeField.decorators = disabledDecoratorList;
+        	int size = 20;
+        	String[] number_submissions_options = new String[size+1];
+        	String[] number_submissions_values = new String[size+1];
+        	number_submissions_values[0] = "-1";
+        	number_submissions_options[0] = messageLocator.getMessage("assignment2.indefinite_resubmit");
+        	for (int i=0; i < size; i++){
+        		number_submissions_values[i + 1] = new Integer(i + current_times_submitted_already).toString();
+        		number_submissions_options[i + 1] = new Integer(i).toString();
+        	}
+
+        	//Output
+        	UIMessage.make(form, "resubmission_text_1", "assignment2.assignment_grade.resubmission_text_1", 
+        			new Object[] { externalLogic.getUserDisplayName(params.userId), current_times_submitted_already});
+
+        	UISelect resubmit_select = UISelect.make(form, "resubmission_additional", number_submissions_values, number_submissions_options, 
+        			asOTP + ".numSubmissionsAllowed", current_num_submissions.toString());
+
+        	if (as.getResubmitCloseTime() == null) {
+        		as.setResubmitCloseTime(new Date());
+        	}
+        	UIInput acceptUntilTimeField = UIInput.make(form, "accept_until:", asOTP + ".resubmitCloseTime");
+
+        	dateEvolver.evolveDateInput(acceptUntilTimeField, as.getResubmitCloseTime());
+        } else {
+        	// display text only representation
+        	String totalSubmissions = current_num_submissions.toString();
+        	if (current_num_submissions == -1) {
+        		totalSubmissions = messageLocator.getMessage("assignment2.indefinite_resubmit");
+        	}
+        	UIMessage.make(form, "resubmit_no_change", "assignment2.assignment_grade.resubmission_text", 
+        			new Object[] {externalLogic.getUserDisplayName(params.userId), 
+        			current_times_submitted_already, totalSubmissions, 
+        			(as.getResubmitCloseTime() != null ? df.format(as.getResubmitCloseTime()) : "")});
         }
-        
         
         if (!assignment.isUngraded()){
         	gradebookDetailsRenderer.makeGradebookDetails(tofill, "gradebook_details", as, assignmentId, userId);
         }        
-        
-        
         
         //Begin Looping for previous submissions
         List<AssignmentSubmissionVersion> history = submissionLogic.getVersionHistoryForSubmission(as);
@@ -347,7 +349,7 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
         
         form.parameters.add(new UIELBinding("#{AssignmentSubmissionBean.assignmentId}", assignmentId));
         form.parameters.add(new UIELBinding("#{AssignmentSubmissionBean.userId}", userId));
-        if (edit_perm){
+        if (grade_perm){
         	UICommand.make(form, "release_feedback", UIMessage.make("assignment2.assignment_grade.release_feedback"),
     			"#{AssignmentSubmissionBean.processActionSaveAndReleaseAllFeedbackForSubmission}");
 	        UICommand.make(form, "submit", UIMessage.make("assignment2.assignment_grade.submit"), "#{AssignmentSubmissionBean.processActionGradeSubmit}");

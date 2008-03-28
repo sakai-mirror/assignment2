@@ -49,7 +49,8 @@
 				<div rsf:id="feedback_text:">
 					<textarea name="something" cols="80" rows="20" wrap="virtual"></textarea>
 					<!-- this should be the FCKEditor -->
-				</div>		
+				</div>
+				<p rsf:id="feedback_text_no_edit"></p>
 			</li>
 		</ol>
 	</fieldset>
@@ -112,13 +113,14 @@
 			<span rsf:id="msg=assignment2.assignment_grade.allow_resubmission" onclick="slideFieldset(jQuery(this).prev('img').get(0));" style="cursor:pointer">Resubmissions</span>
 		</legend>
 		<ol style="display:none">
-			<li>
+			<li rsf:id="resubmit_change">
 				<span rsf:id="resubmission_text_1"></span>
 				<select rsf:id="resubmission_additional">
 				</select>
 				<span rsF:id="msg=assignment2.assignment_grade.resubmission_text_2"> additional times by </span>
 				<input rsf:id="accept_until:" />
 			</li>
+			<li rsf:id="resubmit_no_change"></li>
 		</ol>
 	</fieldset>
 	<!-- /Allow Resubmissions -->
