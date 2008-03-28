@@ -240,6 +240,13 @@ public class StudentViewAssignmentRenderer {
 	    	}
     	}
     	
+    	// attachment only situations will not return any values in the OTP map; thus,
+    	// we won't enter the processing loop in processActionSubmit (and nothing will be saved)
+    	// this will force rsf to bind the otp mapping
+    	if (assignment.getSubmissionType() == AssignmentConstants.SUBMIT_ATTACH_ONLY) {
+    		UIInput.make(form, "submitted_text_for_attach_only", asvOTP + ".submittedText");
+    	}
+    	
     	if (assignment.isHonorPledge()) {
     		UIOutput.make(joint, "honor_pledge_fieldset");
     		UIMessage honor_pledge_label = UIMessage.make(joint, "honor_pledge_label", "assignment2.student-submit.honor_pledge_text");
