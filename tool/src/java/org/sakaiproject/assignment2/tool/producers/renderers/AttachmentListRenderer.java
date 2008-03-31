@@ -11,6 +11,8 @@ import org.sakaiproject.assignment2.tool.beans.Assignment2Bean;
 import org.sakaiproject.assignment2.tool.producers.fragments.AjaxCallbackProducer;
 import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.content.api.ContentResource;
+import org.sakaiproject.tool.api.SessionManager;
+import org.sakaiproject.tool.api.ToolSession;
 
 import uk.org.ponder.beanutil.entity.EntityBeanLocator;
 import uk.org.ponder.messageutil.MessageLocator;
@@ -49,6 +51,11 @@ public class AttachmentListRenderer {
 		this.assignment2EntityBeanLocator = assignment2EntityBeanLocator;
 	}
 	
+	private SessionManager sessionManager;
+	public void setSessionManager(SessionManager sessionManager) {
+		this.sessionManager = sessionManager;
+	}
+	
 	public void makeAttachmentFromAssignmentAttachmentSet(UIContainer tofill, String divID, String currentViewID, Set<AssignmentAttachment> aaSet, Boolean remove) {
 		Set<String> refSet = new HashSet();
 		if (aaSet != null){
@@ -59,7 +66,7 @@ public class AttachmentListRenderer {
 		makeAttachment(tofill, divID, currentViewID, refSet, remove);
 	}
 	
-	public void makeAttachmentFromAssignment2OTPAttachmentSet(UIContainer tofill, String divID, String currentViewID, String a2OTPKey, Boolean remove) {
+	public void makeAttachmentFromAssignment2OTPAttachmentSet(UIContainer tofill, String divID, String currentViewID, String a2OTPKey, Boolean remove, Boolean addSession) {
 		Assignment2 assignment = (Assignment2)assignment2EntityBeanLocator.locateBean(a2OTPKey);
 		Set<String> refSet = new HashSet();
 		if (assignment != null && assignment.getAttachmentSet() != null){
@@ -67,16 +74,41 @@ public class AttachmentListRenderer {
 				refSet.add(aa.getAttachmentReference());
 			}
 		}
+		
+		if(addSession) {
+	    	//get New attachments from session set
+	    	ToolSession session = sessionManager.getCurrentToolSession();
+	    	if (session.getAttribute("attachmentRefs") != null) {
+	    		refSet.addAll((Set)session.getAttribute("attachmentRefs"));
+	    	}
+	    	
+	    	//Now remove ones from session
+	    	if (session.getAttribute("removedAttachmentRefs") != null){
+	    		refSet.removeAll((Set<String>)session.getAttribute("removedAttachmentRefs"));
+	    	}
+		}
 		makeAttachment(tofill, divID, currentViewID, refSet, remove);
 	}
 	
 	public void makeAttachmentFromSubmissionAttachmentSet(UIContainer tofill, String divID, String currentViewID,
-			Set<SubmissionAttachment> asaSet, Boolean remove) {
+			Set<SubmissionAttachment> asaSet, Boolean remove, Boolean addSession) {
 		Set<String> refSet = new HashSet();
 		if (asaSet != null) {
 			for (SubmissionAttachment asa : asaSet) {
 				refSet.add(asa.getAttachmentReference());
 			}
+		}
+		if(addSession) {
+	    	//get New attachments from session set
+	    	ToolSession session = sessionManager.getCurrentToolSession();
+	    	if (session.getAttribute("attachmentRefs") != null) {
+	    		refSet.addAll((Set)session.getAttribute("attachmentRefs"));
+	    	}
+	    	
+	    	//Now remove ones from session
+	    	if (session.getAttribute("removedAttachmentRefs") != null){
+	    		refSet.removeAll((Set<String>)session.getAttribute("removedAttachmentRefs"));
+	    	}
 		}
 		makeAttachment(tofill, divID, currentViewID, refSet, remove);
 	}

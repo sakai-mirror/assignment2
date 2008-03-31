@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
+import org.sakaiproject.assignment2.tool.params.AssignmentViewParams;
 import org.sakaiproject.assignment2.tool.params.SimpleAssignmentViewParams;
 import org.sakaiproject.assignment2.tool.producers.renderers.StudentViewAssignmentRenderer;
 import org.sakaiproject.assignment2.tool.producers.fragments.FragmentSubmissionPreviewProducer;
@@ -22,6 +23,7 @@ import uk.org.ponder.rsf.components.UIContainer;
 import uk.org.ponder.rsf.components.UIInternalLink;
 import uk.org.ponder.rsf.components.UIMessage;
 import uk.org.ponder.rsf.components.UIVerbatim;
+import uk.org.ponder.rsf.flow.ARIResult;
 import uk.org.ponder.rsf.flow.jsfnav.NavigationCase;
 import uk.org.ponder.rsf.flow.jsfnav.NavigationCaseReporter;
 import uk.org.ponder.rsf.view.ComponentChecker;
@@ -29,8 +31,9 @@ import uk.org.ponder.rsf.view.ViewComponentProducer;
 import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
 import uk.org.ponder.rsf.viewstate.ViewParameters;
 import uk.org.ponder.rsf.viewstate.ViewParamsReporter;
+import uk.org.ponder.rsf.flow.ActionResultInterceptor;
 
-public class StudentSubmitProducer implements ViewComponentProducer, NavigationCaseReporter, ViewParamsReporter {
+public class StudentSubmitProducer implements ViewComponentProducer, NavigationCaseReporter, ViewParamsReporter, ActionResultInterceptor {
 	public static final String VIEW_ID = "student-submit";
 	public String getViewID() {
 		return this.VIEW_ID;
@@ -52,8 +55,11 @@ public class StudentSubmitProducer implements ViewComponentProducer, NavigationC
     		
     	//Clear out session attachment information if everything successful
     	ToolSession session = sessionManager.getCurrentToolSession();
-    	session.removeAttribute("attachmentRefs");
-    	session.removeAttribute("removedAttachmentRefs");
+    	
+    	if (params.clearSession) {
+	    	session.removeAttribute("attachmentRefs");
+	    	session.removeAttribute("removedAttachmentRefs");
+    	}
     	
     	//get Passed assignmentId to pull in for editing if any
     	Long assignmentId = params.assignmentId;
@@ -111,6 +117,14 @@ public class StudentSubmitProducer implements ViewComponentProducer, NavigationC
         	StudentAssignmentListProducer.VIEW_ID)));
         return nav;
     }
+	
+	public void interceptActionResult(ARIResult result, ViewParameters incoming, Object actionReturn){
+		//If the form fails, then make sure to add a view param not to clear the session
+		if (actionReturn.equals("failure")) {
+			SimpleAssignmentViewParams params = (SimpleAssignmentViewParams) result.resultingView;
+			params.clearSession = false;
+		}
+	}
 	
     public ViewParameters getViewParameters() {
         return new SimpleAssignmentViewParams();
