@@ -51,12 +51,14 @@ import uk.org.ponder.rsf.view.ViewComponentProducer;
 import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
 import uk.org.ponder.rsf.viewstate.ViewParameters;
 import uk.org.ponder.rsf.viewstate.ViewParamsReporter;
+import uk.org.ponder.rsf.flow.ARIResult;
+import uk.org.ponder.rsf.flow.ActionResultInterceptor;
 
 import org.sakaiproject.site.api.Group;
 import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.tool.api.ToolSession;
 
-public class AssignmentProducer implements ViewComponentProducer, NavigationCaseReporter, ViewParamsReporter {
+public class AssignmentProducer implements ViewComponentProducer, NavigationCaseReporter, ViewParamsReporter, ActionResultInterceptor {
 
     public static final String VIEW_ID = "assignment";
     public String getViewID() {
@@ -89,16 +91,20 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
 
     @SuppressWarnings("unchecked")
 	public void fillComponents(UIContainer tofill, ViewParameters viewparams, ComponentChecker checker) {
+
+    	//Get View Params
+    	AssignmentViewParams params = (AssignmentViewParams) viewparams;
     	
     	//Clear out session attachment information if everything successful
     	ToolSession session = sessionManager.getCurrentToolSession();
-    	session.removeAttribute("attachmentRefs");
-    	session.removeAttribute("removedAttachmentRefs");
+    	if (params.clearSession) {
+	    	session.removeAttribute("attachmentRefs");
+	    	session.removeAttribute("removedAttachmentRefs");
+    	}
     	
     	String currentContextId = externalLogic.getCurrentContextId();
  	
-    	//Get View Params
-    	AssignmentViewParams params = (AssignmentViewParams) viewparams;
+
     	
     	//get Passed assignmentId to pull in for editing if any
     	Long assignmentId = params.assignmentId;
@@ -269,7 +275,7 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
         
         //Attachments
         attachmentListRenderer.makeAttachmentFromAssignment2OTPAttachmentSet(tofill, "attachment_list:", 
-        		params.viewID, OTPKey, Boolean.TRUE);
+        		params.viewID, OTPKey, Boolean.TRUE, Boolean.TRUE);
         UIInternalLink.make(form, "add_attachments", UIMessage.make("assignment2.assignment_add.add_attachments"),
         		new FilePickerHelperViewParams(AddAttachmentHelperProducer.VIEWID, Boolean.TRUE, 
         				Boolean.TRUE, 500, 700, OTPKey));
@@ -445,6 +451,15 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
         	AssignmentListSortViewProducer.VIEW_ID)));
         return nav;
     }
+	
+
+	public void interceptActionResult(ARIResult result, ViewParameters incoming, Object actionReturn){
+		//If the form fails, then make sure to add a view param not to clear the session
+		if (actionReturn.equals("failure")) {
+			AssignmentViewParams params = (AssignmentViewParams) result.resultingView;
+			params.clearSession = false;
+		}
+	}
 	
     public ViewParameters getViewParameters() {
         return new AssignmentViewParams();

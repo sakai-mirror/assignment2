@@ -232,7 +232,7 @@ public class StudentViewAssignmentRenderer {
 	        	set.addAll(submissionVersion.getSubmissionAttachSet());
 	        }
 	    	attachmentListRenderer.makeAttachmentFromSubmissionAttachmentSet(joint, "submission_attachment_list:", params.viewID, 
-	    			set, Boolean.TRUE);
+	    			set, Boolean.TRUE, !preview);
 	    	if (!preview){
 	    		UIInternalLink.make(form, "add_submission_attachments", UIMessage.make("assignment2.student-submit.add_attachments"),
 	        		new FilePickerHelperViewParams(AddAttachmentHelperProducer.VIEWID, Boolean.TRUE, 
