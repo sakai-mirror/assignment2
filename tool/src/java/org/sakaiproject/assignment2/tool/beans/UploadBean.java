@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.zip.ZipFile;
 
-import org.sakaiproject.assignment2.logic.UploadDownloadLogic;
+import org.sakaiproject.assignment2.logic.UploadAllLogic;
 import org.sakaiproject.assignment2.logic.UploadException;
 import org.sakaiproject.assignment2.model.UploadAllOptions;
 import org.sakaiproject.assignment2.tool.producers.ViewSubmissionsProducer;
@@ -18,7 +18,7 @@ public class UploadBean
 {
 	private UploadAllOptions uploadOptions;
 	private TargettedMessageList messages;
-	private UploadDownloadLogic updownLogic;
+	private UploadAllLogic updownLogic;
 	private Map<String, MultipartFile> uploads;
 
 	public void setTargettedMessageList(TargettedMessageList messages)
@@ -26,7 +26,7 @@ public class UploadBean
 		this.messages = messages;
 	}
 
-	public void setUploadDownloadLogic(UploadDownloadLogic updownLogic)
+	public void setUploadDownloadLogic(UploadAllLogic updownLogic)
 	{
 		this.updownLogic = updownLogic;
 	}

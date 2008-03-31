@@ -1,4 +1,4 @@
-package org.sakaiproject.assignment2.tool.handlerhooks;
+package org.sakaiproject.assignment2.logic.impl;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -11,10 +11,12 @@ import java.util.zip.ZipOutputStream;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.assignment2.logic.AssignmentBundleLogic;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
+import org.sakaiproject.assignment2.logic.ZipExportLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
@@ -31,11 +33,9 @@ import org.sakaiproject.util.FormattedText;
 import org.sakaiproject.util.StringUtil;
 import org.sakaiproject.util.Validator;
 
-import uk.org.ponder.messageutil.MessageLocator;
-
-public class ZipExporter
+public class ZipExportLogicImpl implements ZipExportLogic
 {
-	private static Log log = LogFactory.getLog(ZipExporter.class);
+	private static Log log = LogFactory.getLog(ZipExportLogicImpl.class);
 
 	private AssignmentLogic assignmentLogic;
 
@@ -73,13 +73,16 @@ public class ZipExporter
 		this.contentHostingService = contentHostingService;
 	}
 
-	private MessageLocator messageLocator;
+	private AssignmentBundleLogic bundle;
 
-	public void setMessageLocator(MessageLocator messageLocator)
+	public void setAssignmentBundleLogic(AssignmentBundleLogic bundle)
 	{
-		this.messageLocator = messageLocator;
+		this.bundle = bundle;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.sakaiproject.assignment2.tool.handlerhooks.ZipExporterI#getSubmissionsZip(java.io.OutputStream, java.lang.Long)
+	 */
 	public void getSubmissionsZip(OutputStream outputStream, Long assignmentId)
 			throws PermissionException
 	{
@@ -111,8 +114,8 @@ public class ZipExporter
 	{
 		String assignmentTitle = assignment.getTitle();
 		// String assignmentId = assignment.getAssignmentId().toString();
-		String gradeTypeString = messageLocator
-				.getMessage("assignment2.assignment_grade-assignment.downloadall.type."
+		String gradeTypeString = bundle
+				.getString("assignment2.assignment_grade-assignment.downloadall.type."
 						+ gradebookLogic.getGradeType(assignment.getContextId()));
 		try
 		{
@@ -130,10 +133,8 @@ public class ZipExporter
 			// the buffer used to store grade information
 			StringBuilder gradesBuilder = new StringBuilder(assignmentTitle + ","
 					+ gradeTypeString + "\n\n");
-			gradesBuilder
-					.append(
-							messageLocator
-									.getMessage("assignment2.assignment_grade-assignment.downloadall.header"))
+			gradesBuilder.append(
+					bundle.getString("assignment2.assignment_grade-assignment.downloadall.header"))
 					.append("\n");
 
 			// Create the ZIP file
@@ -208,8 +209,8 @@ public class ZipExporter
 								// attachments
 								String feedbackSubAttachmentFolder = root
 										+ submittersName
-										+ messageLocator
-												.getMessage("assignment2.assignment_grade-assignment.downloadall.feedbackdir")
+										+ bundle
+												.getString("assignment2.assignment_grade-assignment.downloadall.feedbackdir")
 										+ "/";
 								ZipEntry feedbackSubAttachmentFolderEntry = new ZipEntry(
 										feedbackSubAttachmentFolder);
@@ -220,8 +221,8 @@ public class ZipExporter
 								// attachments
 								String sSubAttachmentFolder = root
 										+ submittersName
-										+ messageLocator
-												.getMessage("assignment2.assignment_grade-assignment.downloadall.submdir")
+										+ bundle
+												.getString("assignment2.assignment_grade-assignment.downloadall.submdir")
 										+ "/";
 								ZipEntry sSubAttachmentFolderEntry = new ZipEntry(
 										sSubAttachmentFolder);

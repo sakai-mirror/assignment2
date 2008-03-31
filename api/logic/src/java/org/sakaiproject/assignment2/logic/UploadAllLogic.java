@@ -4,7 +4,7 @@ import java.util.zip.ZipFile;
 
 import org.sakaiproject.assignment2.model.UploadAllOptions;
 
-public interface UploadDownloadLogic
+public interface UploadAllLogic
 {
 	/**
 	 * Process uploaded zip file.

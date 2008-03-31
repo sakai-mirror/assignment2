@@ -136,15 +136,6 @@
 		</property>
 	</bean>
 
-	<bean id="ZipExporter" class="org.sakaiproject.assignment2.tool.handlerhooks.ZipExporter">
-		<property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
-		<property name="assignmentSubmissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
-		<property name="gradebookLogic" ref="org.sakaiproject.assignment2.logic.ExternalGradebookLogic" />
-		<property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
-		<property name="contentHostingService" ref="org.sakaiproject.content.api.ContentHostingService" />
-		<property name="messageLocator" ref="messageLocator" />
-	</bean>
-
 	<bean id="zipSubmissionsBean" parent="viewParamsRegistrarParent">
 		<property name="viewID" value="zipSubmissions"/>
 		<property name="viewParamsClass" value="org.sakaiproject.assignment2.tool.params.ZipViewParams" />

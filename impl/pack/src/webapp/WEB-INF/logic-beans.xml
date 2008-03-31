@@ -60,8 +60,8 @@
    <bean id="org.sakaiproject.assignment2.logic.AssignmentBundleLogic" class="org.sakaiproject.assignment2.logic.impl.AssignmentBundleLogicImpl" init-method="init">
    </bean>
 
-	<bean id="org.sakaiproject.assignment2.logic.UploadDownloadLogic"
-		  class="org.sakaiproject.assignment2.logic.impl.UploadDownloadLogicImpl">
+	<bean id="org.sakaiproject.assignment2.logic.UploadAllLogic"
+		  class="org.sakaiproject.assignment2.logic.impl.UploadAllLogicImpl">
 		<property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
 		<property name="assignmentSubmissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
 		<property name="contentHostingService" ref="org.sakaiproject.content.api.ContentHostingService" />
@@ -83,5 +83,14 @@
 		<property name="digestService" ref="org.sakaiproject.email.api.DigestService" />
 		<property name="assignmentBundleLogic" ref="org.sakaiproject.assignment2.logic.AssignmentBundleLogic" />
 		<property name="authzGroupService" ref="org.sakaiproject.authz.api.AuthzGroupService" />
+	</bean>
+
+	<bean id="org.sakaiproject.assignment2.logic.ZipExportLogic" class="org.sakaiproject.assignment2.logic.impl.ZipExportLogicImpl">
+		<property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
+		<property name="assignmentSubmissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
+		<property name="gradebookLogic" ref="org.sakaiproject.assignment2.logic.ExternalGradebookLogic" />
+		<property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
+		<property name="contentHostingService" ref="org.sakaiproject.content.api.ContentHostingService" />
+		<property name="assignmentBundleLogic" ref="org.sakaiproject.assignment2.logic.AssignmentBundleLogic" />
 	</bean>
 </beans>

@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.assignment2.logic.ZipExportLogic;
 import org.sakaiproject.assignment2.tool.params.ZipViewParams;
 import org.sakaiproject.exception.PermissionException;
 
@@ -22,7 +23,7 @@ public class ZipHandlerHook implements HandlerHook
 {
 	private static Log log = LogFactory.getLog(ZipHandlerHook.class);
 	private HttpServletResponse response;
-	private ZipExporter zipExporter;
+	private ZipExportLogic zipExporter;
 	private ViewParameters viewparams;
 
 	public void setResponse(HttpServletResponse response)
@@ -30,7 +31,7 @@ public class ZipHandlerHook implements HandlerHook
 		this.response = response;
 	}
 
-	public void setZipExporter(ZipExporter zipExporter)
+	public void setZipExporter(ZipExportLogic zipExporter)
 	{
 		this.zipExporter = zipExporter;
 	}

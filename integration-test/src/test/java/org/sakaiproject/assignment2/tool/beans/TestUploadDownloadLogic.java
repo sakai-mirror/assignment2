@@ -12,22 +12,17 @@ import junit.framework.TestSuite;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment2.dao.AssignmentDao;
-import org.sakaiproject.assignment2.logic.AssignmentLogic;
-import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
-import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
-import org.sakaiproject.assignment2.logic.UploadDownloadLogic;
+import org.sakaiproject.assignment2.logic.UploadAllLogic;
+import org.sakaiproject.assignment2.logic.ZipExportLogic;
 import org.sakaiproject.assignment2.model.UploadAllOptions;
 import org.sakaiproject.assignment2.tool.beans.PreloadTestData;
-import org.sakaiproject.assignment2.tool.handlerhooks.ZipExporter;
-
-import uk.org.ponder.messageutil.MessageLocator;
 
 public class TestUploadDownloadLogic extends SakaiTransactionalTestBase
 {
 	private static final Log log = LogFactory.getLog(TestUploadDownloadLogic.class);
 
-	private UploadDownloadLogic updownLogic;
-	private ZipExporter zipExporter;
+	private UploadAllLogic updownLogic;
+	private ZipExportLogic zipExporter;
 	private UploadAllOptions options;
 	private AssignmentTestDataLoad testData;
 	private AssignmentDao assignmentDao;
@@ -67,23 +62,8 @@ public class TestUploadDownloadLogic extends SakaiTransactionalTestBase
 	@Override
 	protected void onSetUpBeforeTransaction() throws Exception
 	{
-		updownLogic = (UploadDownloadLogic) getService("org.sakaiproject.assignment2.logic.UploadDownloadLogic");
-		zipExporter = new ZipExporter();
-		zipExporter
-				.setAssignmentLogic((AssignmentLogic) getService("org.sakaiproject.assignment2.logic.AssignmentLogic"));
-		zipExporter
-				.setAssignmentSubmissionLogic((AssignmentSubmissionLogic) getService("org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic"));
-		zipExporter
-				.setGradebookLogic((ExternalGradebookLogic) getService("org.sakaiproject.assignment2.logic.ExternalGradebookLogic"));
-		// mock message locator
-		zipExporter.setMessageLocator(new MessageLocator()
-		{
-			@Override
-			public String getMessage(String[] code, Object[] args)
-			{
-				return code.toString() + "[" + args.toString() + "]";
-			}
-		});
+		updownLogic = (UploadAllLogic) getService("org.sakaiproject.assignment2.logic.UploadDownloadLogic");
+		zipExporter = (ZipExportLogic) getService("org.sakaiproject.assignment2.logic.ZipExportLogic");
 		// setContentHostingService(ContentHostingService)
 		// setExternalLogic(ExternalLogic)
 		options = new UploadAllOptions();

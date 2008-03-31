@@ -286,7 +286,7 @@
 
 	<bean id="zipHandlerHook" class="org.sakaiproject.assignment2.tool.handlerhooks.ZipHandlerHook">
 		<property name="response" ref="httpServletResponseProxy" />
-		<property name="zipExporter" ref="ZipExporter" />
+		<property name="zipExporter" ref="org.sakaiproject.assignment2.logic.ZipExportLogic" />
 		<property name="viewparams" ref="viewParameters" />
 	</bean>
 

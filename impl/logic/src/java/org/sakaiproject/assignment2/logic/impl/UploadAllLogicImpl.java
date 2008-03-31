@@ -19,7 +19,7 @@ import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
-import org.sakaiproject.assignment2.logic.UploadDownloadLogic;
+import org.sakaiproject.assignment2.logic.UploadAllLogic;
 import org.sakaiproject.assignment2.logic.UploadException;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.FeedbackAttachment;
@@ -42,9 +42,9 @@ import org.sakaiproject.util.StringUtil;
  * 
  * @author <a href="mailto:carl.hall@et.gatech.edu">Carl Hall</a>
  */
-public class UploadDownloadLogicImpl implements UploadDownloadLogic
+public class UploadAllLogicImpl implements UploadAllLogic
 {
-	private static final Log log = LogFactory.getLog(UploadDownloadLogicImpl.class);
+	private static final Log log = LogFactory.getLog(UploadAllLogicImpl.class);
 
 	private AssignmentLogic assnLogic;
 	private AssignmentSubmissionLogic assnSubLogic;
@@ -90,7 +90,7 @@ public class UploadDownloadLogicImpl implements UploadDownloadLogic
 	}
 
 	/**
-	 * @see org.sakaiproject.assignment2.logic.UploadDownloadLogic#uploadAll(java.lang.Long,
+	 * @see org.sakaiproject.assignment2.logic.UploadAllLogic#uploadAll(java.lang.Long,
 	 *      org.sakaiproject.assignment2.model.UploadAllOptions, java.util.zip.ZipFile,
 	 *      java.lang.String, java.lang.String)
 	 */
