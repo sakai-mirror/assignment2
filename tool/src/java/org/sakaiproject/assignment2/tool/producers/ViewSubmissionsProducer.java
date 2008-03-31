@@ -164,7 +164,7 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
 	      		AssignmentSubmissionLogic.SORT_BY_RELEASED, "assignment2.assignment_grade-assignment.tableheader.released");
                 
         //Do Table Data
-        submissionBean.filterPopulateAndSortSubmissionList(submissions, params.current_start, params.current_count, 
+        submissions = submissionBean.filterPopulateAndSortSubmissionList(submissions, params.current_start, params.current_count, 
         		current_sort_by, current_sort_dir.equals(AssignmentLogic.SORT_DIR_ASC));
         
         for (AssignmentSubmission as : submissions){

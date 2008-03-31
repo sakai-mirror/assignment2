@@ -420,9 +420,10 @@ public class AssignmentSubmissionBean {
 	 * @param sortBy
 	 * @param sortDir
 	 */
-	public void filterPopulateAndSortSubmissionList(List<AssignmentSubmission> submissionList, int currentStart, int currentCount, String sortBy, boolean sortDir) {
+	public List<AssignmentSubmission> filterPopulateAndSortSubmissionList(List<AssignmentSubmission> submissionList, int currentStart, int currentCount, String sortBy, boolean sortDir) {
 		submissionList = filterListForPaging(submissionList, currentStart, currentCount);
         populateNonPersistedFieldsForSubmissions(submissionList);
         submissionLogic.sortSubmissions(submissionList, sortBy, sortDir);
+        return submissionList;
 	}
 }
