@@ -391,7 +391,7 @@ public class AssignmentDaoImpl extends HibernateCompleteGenericDao implements As
     private void setCurrentSubmissionGivenHistory(AssignmentSubmission submission) {
     	if (submission != null && submission.getSubmissionHistorySet() != null) {
     		Map<Long, AssignmentSubmissionVersion> versionIdVersionMap = new HashMap<Long, AssignmentSubmissionVersion>();
-    		Long maxVersionId = new Long(-1);
+    		Long maxVersionId = -1L;
     		for (AssignmentSubmissionVersion version : submission.getSubmissionHistorySet()) {
     			if (version != null) {
     				versionIdVersionMap.put(version.getId(), version);

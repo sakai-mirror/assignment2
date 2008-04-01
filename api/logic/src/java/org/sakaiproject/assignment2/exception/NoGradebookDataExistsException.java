@@ -33,4 +33,8 @@ public class NoGradebookDataExistsException extends AssignmentException {
 	public NoGradebookDataExistsException(String message) {
         super(message);
     }
+
+	public NoGradebookDataExistsException(String message, Throwable t) {
+        super(message, t);
+    }
 }

@@ -97,7 +97,7 @@ public class AssignmentSubmissionVersion implements FeedbackVersion {
 	 */
 	public String getAnnotatedTextFormatted() {	
 		if (annotatedText == null) {
-			return new String();
+			return "";
 		}
     	Pattern p = Pattern.compile("\\{\\{([^\\}]+|\\}(?!\\}))\\}\\}");
     	Matcher m = p.matcher(annotatedText);

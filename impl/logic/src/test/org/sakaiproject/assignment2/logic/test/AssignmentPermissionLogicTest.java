@@ -63,16 +63,16 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
         List<String> sectionCategories = sectionAwareness.getSectionCategories(AssignmentTestDataLoad.CONTEXT_ID);
         CourseSection section1 = integrationSupport.createSection(site.getUuid(), AssignmentTestDataLoad.GROUP1_NAME,
 				(String)sectionCategories.get(0),
-				new Integer(40), null, null, null, true, false, true,  false, false, false, false);
+				Integer.valueOf(40), null, null, null, true, false, true,  false, false, false, false);
 		section1Uid = section1.getUuid();
 
 		CourseSection section2 = integrationSupport.createSection(site.getUuid(), AssignmentTestDataLoad.GROUP2_NAME,
 				(String)sectionCategories.get(0),
-				new Integer(40), null, null, null, true, false, true,  false, false, false, false);
+				40, null, null, null, true, false, true,  false, false, false, false);
 		section2Uid = section2.getUuid();
 		CourseSection section3 = integrationSupport.createSection(site.getUuid(), AssignmentTestDataLoad.GROUP3_NAME,
 				(String)sectionCategories.get(0),
-				new Integer(40), null, null, null, true, false, true,  false, false, false, false);
+				40, null, null, null, true, false, true,  false, false, false, false);
 		section3Uid = section3.getUuid();
 		
 		

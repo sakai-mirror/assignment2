@@ -3,39 +3,26 @@ package org.sakaiproject.assignment2.tool.producers.fragments;
 import java.util.Set;
 import java.util.HashSet;
 
-import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentAttachment;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.model.SubmissionAttachment;
 import org.sakaiproject.assignment2.model.FeedbackAttachment;
-import org.sakaiproject.assignment2.tool.beans.PreviewAssignmentBean;
 import org.sakaiproject.assignment2.tool.params.FragmentAttachmentsViewParams;
 import org.sakaiproject.assignment2.tool.producers.renderers.AttachmentListRenderer;
-import org.sakaiproject.content.api.ContentHostingService;
-import org.sakaiproject.content.api.ContentResource;
-import org.sakaiproject.content.api.ContentTypeImageService;
 
-import org.sakaiproject.entity.api.Reference;
 import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.tool.api.ToolSession;
 
 import uk.org.ponder.beanutil.entity.EntityBeanLocator;
-import uk.org.ponder.messageutil.MessageLocator;
-import uk.org.ponder.rsf.components.UIBranchContainer;
 import uk.org.ponder.rsf.components.UIContainer;
-import uk.org.ponder.rsf.components.UILink;
-import uk.org.ponder.rsf.components.UIMessage;
-import uk.org.ponder.rsf.components.UIOutput;
-import uk.org.ponder.rsf.components.UIVerbatim;
 import uk.org.ponder.rsf.content.ContentTypeReporter;
 import uk.org.ponder.rsf.content.ContentTypeInfoRegistry;
 import uk.org.ponder.rsf.view.ComponentChecker;
 import uk.org.ponder.rsf.view.ViewComponentProducer;
 import uk.org.ponder.rsf.viewstate.ViewParameters;
 import uk.org.ponder.rsf.viewstate.ViewParamsReporter;
-import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
 
 public class FragmentAttachmentsProducer implements ViewComponentProducer, ViewParamsReporter, ContentTypeReporter{
 	
@@ -60,26 +47,11 @@ public class FragmentAttachmentsProducer implements ViewComponentProducer, ViewP
 		this.asvEntityBeanLocator = asvEntityBeanLocator;
 	}
 	
-	private ContentHostingService contentHostingService;
-	public void setContentHostingService(ContentHostingService contentHostingService) {
-		this.contentHostingService = contentHostingService;
-	}
-	
 	private SessionManager sessionManager;
 	public void setSessionManager(SessionManager sessionManager) {
 		this.sessionManager = sessionManager;
 	}
 	
-	private ExternalLogic externalLogic;
-	public void setExternalLogic(ExternalLogic externalLogic) {
-		this.externalLogic = externalLogic;
-	}
-    
-	private MessageLocator messageLocator;
-	public void setMessageLocator(MessageLocator messageLocator) {
-		this.messageLocator = messageLocator;
-	}
-    
 	private AttachmentListRenderer attachmentListRenderer;
 	public void setAttachmentListRenderer(AttachmentListRenderer attachmentListRenderer){
 		this.attachmentListRenderer = attachmentListRenderer;
@@ -92,9 +64,9 @@ public class FragmentAttachmentsProducer implements ViewComponentProducer, ViewP
     		return;
     	}
     	
-    	Set<String> set = new HashSet();
+    	Set<String> set = new HashSet<String>();
     	
-    	if (params.attachmentSetType == params.ASSIGNMENT_ATTACHMENT) {
+    	if (params.attachmentSetType == FragmentAttachmentsViewParams.ASSIGNMENT_ATTACHMENT) {
     		//This means we are dealing with AssignmentAttachments
 	    	Assignment2 assignment = (Assignment2) assignment2EntityBeanLocator.locateBean(params.otpkey);
 	    	if (assignment != null && assignment.getAttachmentSet() != null) {
@@ -102,7 +74,7 @@ public class FragmentAttachmentsProducer implements ViewComponentProducer, ViewP
 		    		set.add(aa.getAttachmentReference());
 		    	}
 	    	}
-    	} else if (params.attachmentSetType == params.ASSIGNMENT_SUBMISSION_ATTACHMENT) {
+    	} else if (params.attachmentSetType == FragmentAttachmentsViewParams.ASSIGNMENT_SUBMISSION_ATTACHMENT) {
     		//This means we are dealing with SubmissionAttachments
     		//First get the assignment submission
     		AssignmentSubmission as = (AssignmentSubmission) assignmentSubmissionEntityBeanLocator.locateBean(params.otpkey);
@@ -116,7 +88,7 @@ public class FragmentAttachmentsProducer implements ViewComponentProducer, ViewP
     				}
     			}
     		}
-    	} else if (params.attachmentSetType == params.ASSIGNMENT_FEEDBACK_ATTACHMENT) {
+    	} else if (params.attachmentSetType == FragmentAttachmentsViewParams.ASSIGNMENT_FEEDBACK_ATTACHMENT) {
     		AssignmentSubmissionVersion asv = (AssignmentSubmissionVersion) asvEntityBeanLocator.locateBean(params.otpkey);
     		if (asv != null && asv.getFeedbackAttachSet() != null){
     			for (FeedbackAttachment afa : asv.getFeedbackAttachSet()){

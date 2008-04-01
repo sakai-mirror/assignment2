@@ -9,7 +9,6 @@ import java.util.Set;
 
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
-import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.SubmissionAttachment;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
@@ -60,12 +59,6 @@ public class AssignmentSubmissionBean {
 		this.submissionLogic = submissionLogic;
 	}
 	
-	
-	private EntityBeanLocator assignment2EntityBeanLocator;
-	public void setAssignment2EntityBeanLocator(EntityBeanLocator entityBeanLocator) {
-		this.assignment2EntityBeanLocator = entityBeanLocator;
-	}
-	
 	private Map<String, AssignmentSubmission> OTPMap;
 	private EntityBeanLocator asEntityBeanLocator;
 	@SuppressWarnings("unchecked")
@@ -75,17 +68,10 @@ public class AssignmentSubmissionBean {
 	}
 	
 	private Map<String, AssignmentSubmissionVersion> asvOTPMap;
-	private EntityBeanLocator asvEntityBeanLocator;
 	public void setAsvEntityBeanLocator(EntityBeanLocator entityBeanLocator) {
 		this.asvOTPMap = entityBeanLocator.getDeliveredBeans();
-		this.asvEntityBeanLocator = entityBeanLocator;
 	}
 		
-	private ExternalLogic externalLogic;
-	public void setExternalLogic(ExternalLogic externalLogic) {
-		this.externalLogic = externalLogic;
-	}
-	
 	private PreviewAssignmentSubmissionBean previewAssignmentSubmissionBean;
 	public void setPreviewAssignmentSubmissionBean (PreviewAssignmentSubmissionBean previewAssignmentSubmissionBean) {
 		this.previewAssignmentSubmissionBean = previewAssignmentSubmissionBean;
@@ -161,7 +147,7 @@ public class AssignmentSubmissionBean {
 			//End Attachment stuff
 			
 	    	//check whether honor pledge was added if required
-	    	if (assignment.isHonorPledge() && !(this.honorPledge != null && this.honorPledge == Boolean.TRUE)) {
+	    	if (assignment.isHonorPledge() && !(this.honorPledge != null && Boolean.TRUE.equals(honorPledge))) {
 	    		messages.addMessage(new TargettedMessage("assignment2.student-submit.error.honor_pledge_required",
 						new Object[] { assignment.getTitle() }, TargettedMessage.SEVERITY_ERROR));
 	    		return FAILURE;
@@ -309,7 +295,7 @@ public class AssignmentSubmissionBean {
 			assignmentSubmission.setAssignment(assignment);
 			assignmentSubmission.setUserId(userId);
 			
-			if (this.resubmitUntil == null || this.resubmitUntil == Boolean.FALSE) {
+			if (resubmitUntil == null || Boolean.FALSE.equals(resubmitUntil)) {
 				assignmentSubmission.setResubmitCloseTime(null);
 			}
 		}

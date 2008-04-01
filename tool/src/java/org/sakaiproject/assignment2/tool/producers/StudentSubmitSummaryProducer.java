@@ -41,20 +41,6 @@ public class StudentSubmitSummaryProducer implements ViewComponentProducer, View
 	private AttachmentListRenderer attachmentListRenderer;
 	private MessageLocator messageLocator;
 	
-	/*
-	 * You can change the date input to accept time as well by uncommenting the lines like this:
-	 * dateevolver.setStyle(FormatAwareDateInputEvolver.DATE_TIME_INPUT);
-	 * and commenting out lines like this:
-	 * dateevolver.setStyle(FormatAwareDateInputEvolver.DATE_INPUT);
-	 * -AZ
-	 * And vice versa - RWE
-	 */
-	private FormatAwareDateInputEvolver dateEvolver;
-	public void setDateEvolver(FormatAwareDateInputEvolver dateEvolver) {
-		this.dateEvolver = dateEvolver;
-	}
-	
-	
 	public void fillComponents(UIContainer tofill, ViewParameters viewparams,
 			ComponentChecker checker) {
 		

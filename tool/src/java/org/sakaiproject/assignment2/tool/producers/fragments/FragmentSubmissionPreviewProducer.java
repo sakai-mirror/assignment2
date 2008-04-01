@@ -1,37 +1,26 @@
 package org.sakaiproject.assignment2.tool.producers.fragments;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
-import org.sakaiproject.assignment2.model.Assignment2;
-import org.sakaiproject.assignment2.model.AssignmentAttachment;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.SubmissionAttachment;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.tool.beans.PreviewAssignmentSubmissionBean;
 import org.sakaiproject.assignment2.tool.params.AssignmentViewParams;
-import org.sakaiproject.assignment2.tool.params.SimpleAssignmentViewParams;
 import org.sakaiproject.assignment2.tool.producers.renderers.AttachmentListRenderer;
 import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.tool.api.ToolSession;
 
-import uk.org.ponder.messageutil.MessageLocator;
 import uk.org.ponder.rsf.components.UIContainer;
 import uk.org.ponder.rsf.components.UIVerbatim;
 import uk.org.ponder.rsf.content.ContentTypeReporter;
 import uk.org.ponder.rsf.content.ContentTypeInfoRegistry;
-import uk.org.ponder.rsf.flow.ARIResult;
-import uk.org.ponder.rsf.flow.ActionResultInterceptor;
-import uk.org.ponder.rsf.flow.jsfnav.NavigationCase;
-import uk.org.ponder.rsf.flow.jsfnav.NavigationCaseReporter;
 import uk.org.ponder.rsf.view.ComponentChecker;
 import uk.org.ponder.rsf.view.ViewComponentProducer;
-import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
 import uk.org.ponder.rsf.viewstate.ViewParameters;
 import uk.org.ponder.rsf.viewstate.ViewParamsReporter;
 
@@ -42,10 +31,7 @@ public class FragmentSubmissionPreviewProducer implements ViewComponentProducer,
         return VIEW_ID;
     }
 
-    private AssignmentLogic assignmentLogic;
-    private ExternalLogic externalLogic;
 	private PreviewAssignmentSubmissionBean previewAssignmentSubmissionBean;
-	private Locale locale;
 	private AttachmentListRenderer attachmentListRenderer;
 	private SessionManager sessionManager;
 		
@@ -54,7 +40,7 @@ public class FragmentSubmissionPreviewProducer implements ViewComponentProducer,
     	
     	//get the assignmentsubmission object
     	AssignmentSubmission as = previewAssignmentSubmissionBean.getAssignmentSubmission();
-    	if (as.getCurrentSubmissionVersion() == null) {
+    	if (as == null || as.getCurrentSubmissionVersion() == null) {
     		return; 
     	}
     	AssignmentSubmissionVersion asv = previewAssignmentSubmissionBean.getAssignmentSubmissionVersion();
@@ -62,7 +48,7 @@ public class FragmentSubmissionPreviewProducer implements ViewComponentProducer,
     	UIVerbatim.make(tofill, "submittedText", asv.getSubmittedText());
 
     	//Handle ATtachments 
-    	Set<String> set = new HashSet();    		
+    	Set<String> set = new HashSet<String>();    		
 		if (as != null) {
 			//Next get the current assignment submission version
 			AssignmentSubmissionVersion subasv = (AssignmentSubmissionVersion) as.getCurrentSubmissionVersion();
@@ -95,18 +81,6 @@ public class FragmentSubmissionPreviewProducer implements ViewComponentProducer,
     
 	public void setPreviewAssignmentSubmissionBean(PreviewAssignmentSubmissionBean previewAssignmentSubmissionBean) {
 		this.previewAssignmentSubmissionBean = previewAssignmentSubmissionBean;
-	}
-	
-	public void setLocale(Locale locale) {
-		this.locale = locale;
-	}
-	
-	public void setAssignmentLogic(AssignmentLogic assignmentLogic) {
-		this.assignmentLogic = assignmentLogic;
-	}
-	
-	public void setExternalLogic(ExternalLogic externalLogic) {
-		this.externalLogic = externalLogic;
 	}
 	
 	public void setAttachmentListRenderer(AttachmentListRenderer attachmentListRenderer) {

@@ -38,7 +38,6 @@ public class Assignment2Creator {
     	Date openDate = cal.getTime();
     	cal.add(Calendar.DAY_OF_YEAR, 7);
     	cal.set(Calendar.HOUR_OF_DAY, 17);
-    	Date closeDate = cal.getTime();
     	
     	togo.setOpenTime(openDate);
     	//togo.setDueDateForUngraded(closeDate);

@@ -131,7 +131,7 @@ public interface AssignmentSubmissionLogic {
 	/**
 	 * 
 	 * @param assignmentId
-	 * @return all AssignmentSubmissions for this assignmentId that the current
+	 * @return Non-null list.  All AssignmentSubmissions for this assignmentId that the current
 	 * user is allowed to view or grade with the currentVersion information. If
 	 * no submission exists yet, returns an empty AssigmentSubmission rec for the
 	 * student

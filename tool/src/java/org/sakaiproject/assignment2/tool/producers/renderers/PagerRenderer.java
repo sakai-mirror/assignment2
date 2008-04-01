@@ -1,28 +1,19 @@
 package org.sakaiproject.assignment2.tool.producers.renderers;
 
-import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.tool.params.PagerViewParams;
 import org.sakaiproject.assignment2.tool.params.AssignmentListSortViewParams;
 import org.sakaiproject.assignment2.tool.producers.AssignmentListSortViewProducer;
 
 import uk.org.ponder.messageutil.MessageLocator;
-import uk.org.ponder.rsf.components.ELReference;
 import uk.org.ponder.rsf.components.UIBoundList;
-import uk.org.ponder.rsf.components.UIBranchContainer;
-import uk.org.ponder.rsf.components.UICommand;
 import uk.org.ponder.rsf.components.UIContainer;
-import uk.org.ponder.rsf.components.UIELBinding;
 import uk.org.ponder.rsf.components.UIForm;
 import uk.org.ponder.rsf.components.UIInput;
-import uk.org.ponder.rsf.components.UIInternalLink;
 import uk.org.ponder.rsf.components.UIJointContainer;
-import uk.org.ponder.rsf.components.UILink;
 import uk.org.ponder.rsf.components.UIMessage;
-import uk.org.ponder.rsf.components.UIOutput;
 import uk.org.ponder.rsf.components.UISelect;
 import uk.org.ponder.rsf.components.decorators.DecoratorList;
 import uk.org.ponder.rsf.components.decorators.UIFreeAttributeDecorator;
-import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
 import uk.org.ponder.rsf.viewstate.ViewParameters;
 import java.util.HashMap;
 import java.util.Map;
@@ -30,7 +21,6 @@ import java.util.Map;
 public class PagerRenderer {
 
 	private MessageLocator messageLocator;
-	private ExternalLogic externalLogic;
 	
 	public static final int DEFAULT_START_COUNT = 50;
 	
@@ -138,11 +128,6 @@ public class PagerRenderer {
     public void setMessageLocator(MessageLocator messageLocator) {
         this.messageLocator = messageLocator;
     }
-    
-    public void setExternalLogic(ExternalLogic externalLogic) {
-    	this.externalLogic = externalLogic;
-    }
-    
     
     //Private Methods
 	private String getViewingStart(){

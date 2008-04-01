@@ -128,7 +128,7 @@ public class AssignmentDaoImplTest extends Assignment2DaoTestBase {
 		}
 		
 		// now try an id that doesn't exist - null should be returned
-		Assignment2 assign = assignmentDao.getAssignmentByIdWithGroups(new Long(27));
+		Assignment2 assign = assignmentDao.getAssignmentByIdWithGroups(27L);
 		assertNull(assign);
 		
 		// now let's try some we know exist
@@ -154,7 +154,7 @@ public class AssignmentDaoImplTest extends Assignment2DaoTestBase {
 		}
 		
 		// now try an id that doesn't exist
-		Assignment2 assign = assignmentDao.getAssignmentByIdWithGroupsAndAttachments(new Long(27));
+		Assignment2 assign = assignmentDao.getAssignmentByIdWithGroupsAndAttachments(27L);
 		assertNull(assign);
 		
 		// now let's try some we know exist - double check that the
@@ -474,7 +474,7 @@ public class AssignmentDaoImplTest extends Assignment2DaoTestBase {
 		} catch(IllegalArgumentException iae) {
 		}
 		// try an id that doesn't exist - should return null
-		AssignmentSubmissionVersion version = assignmentDao.getAssignmentSubmissionVersionByIdWithAttachments(new Long(1234567));
+		AssignmentSubmissionVersion version = assignmentDao.getAssignmentSubmissionVersionByIdWithAttachments(1234567L);
 		assertNull(version);
 		
 		// try a real one
@@ -503,7 +503,7 @@ public class AssignmentDaoImplTest extends Assignment2DaoTestBase {
 		}
 		
 		// try a submission id that doesn't exist
-		AssignmentSubmission submission = assignmentDao.getSubmissionWithVersionHistoryById(new Long(12345));
+		AssignmentSubmission submission = assignmentDao.getSubmissionWithVersionHistoryById(12345L);
 		assertNull(submission);
 		
 		// try a submission with no versions
@@ -606,7 +606,7 @@ public class AssignmentDaoImplTest extends Assignment2DaoTestBase {
 		} catch (IllegalArgumentException iae) {}
 		
 		// try an assignmentId that doesn't exist
-		assertEquals(0, assignmentDao.getNumSubmittedVersions(AssignmentTestDataLoad.STUDENT3_UID, new Long(12345)));
+		assertEquals(0, assignmentDao.getNumSubmittedVersions(AssignmentTestDataLoad.STUDENT3_UID, 12345L));
 		
 		// try a student with no submissions 
 		assertEquals(0, assignmentDao.getNumSubmittedVersions(AssignmentTestDataLoad.STUDENT3_UID, testData.a1Id));

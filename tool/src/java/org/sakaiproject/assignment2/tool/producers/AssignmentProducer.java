@@ -225,8 +225,8 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
         number_submissions_values[0] = "-1";
         number_submissions_options[0] = messageLocator.getMessage("assignment2.indefinite_resubmit");
         for (int i=0; i < size; i++){
-        	number_submissions_values[i + 1] = new Integer(i+1).toString();
-        	number_submissions_options[i + 1] = new Integer(i+1).toString();
+        	number_submissions_values[i + 1] = Integer.valueOf(i+1).toString();
+        	number_submissions_options[i + 1] = Integer.valueOf(i+1).toString();
         }
         UISelect.make(form, "number_submissions", number_submissions_values, number_submissions_options, 
         		assignment2OTP + ".numSubmissionsAllowed", current_num_submissions.toString());
@@ -396,7 +396,7 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
         	//Update OTP
 	        UIBranchContainer groups_row = UIBranchContainer.make(form, "groups_row:");
 	        UIBoundBoolean checkbox = UIBoundBoolean.make(groups_row, "group_check",  
-	        		"Assignment2Bean.selectedIds." + g.getId().toString(), 
+	        		"Assignment2Bean.selectedIds." + g.getId(), 
 	        		(currentGroups == null || !currentGroups.contains(g.getId()) ? Boolean.FALSE : Boolean.TRUE));
 	        UIOutput.make(groups_row, "group_label", g.getTitle());
 	        UIOutput.make(groups_row, "group_description", g.getDescription());

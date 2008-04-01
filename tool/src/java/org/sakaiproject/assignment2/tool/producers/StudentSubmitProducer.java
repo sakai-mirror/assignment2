@@ -13,15 +13,12 @@ import org.sakaiproject.assignment2.tool.producers.fragments.FragmentSubmissionP
 import org.sakaiproject.assignment2.tool.producers.fragments.FragmentAttachmentsProducer;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
-import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.tool.api.ToolSession;
 
 import uk.org.ponder.beanutil.entity.EntityBeanLocator;
 import uk.org.ponder.messageutil.MessageLocator;
 import uk.org.ponder.rsf.components.UIContainer;
-import uk.org.ponder.rsf.components.UIInternalLink;
-import uk.org.ponder.rsf.components.UIMessage;
 import uk.org.ponder.rsf.components.UIVerbatim;
 import uk.org.ponder.rsf.flow.ARIResult;
 import uk.org.ponder.rsf.flow.jsfnav.NavigationCase;
@@ -36,7 +33,7 @@ import uk.org.ponder.rsf.flow.ActionResultInterceptor;
 public class StudentSubmitProducer implements ViewComponentProducer, NavigationCaseReporter, ViewParamsReporter, ActionResultInterceptor {
 	public static final String VIEW_ID = "student-submit";
 	public String getViewID() {
-		return this.VIEW_ID;
+		return VIEW_ID;
 	}
 	
     String reqStar = "<span class=\"reqStar\">*</span>";
@@ -83,15 +80,10 @@ public class StudentSubmitProducer implements ViewComponentProducer, NavigationC
     	}
     	
     	//Now do submission stuff
-    	String assignmentSubmissionOTP = "AssignmentSubmission.";		//Base for AssignmentSubmission object
-    	assignmentSubmissionOTP += ASOTPKey;							//Full path to current object
     	AssignmentSubmission assignmentSubmission = (AssignmentSubmission) assignmentSubmissionBeanLocator.locateBean(ASOTPKey); 
     	    	
         // set the textual representation of the status
-    	AssignmentSubmissionVersion currVersion = assignmentSubmission != null ?
-    			assignmentSubmission.getCurrentSubmissionVersion() : null;
-    	
-    	if (submission.getSubmissionStatusConstant() != null) {
+    	if (assignmentSubmission != null && submission.getSubmissionStatusConstant() != null) {
     		assignmentSubmission.setSubmissionStatus(messageLocator.getMessage(
     				"assignment2.student-submit.status." + 
     				submission.getSubmissionStatusConstant()));
@@ -105,7 +97,7 @@ public class StudentSubmitProducer implements ViewComponentProducer, NavigationC
    	
     }
 	
-	public List reportNavigationCases() {
+	public List<NavigationCase> reportNavigationCases() {
     	List<NavigationCase> nav= new ArrayList<NavigationCase>();
         nav.add(new NavigationCase("submit", new SimpleViewParameters(
             StudentAssignmentListProducer.VIEW_ID)));

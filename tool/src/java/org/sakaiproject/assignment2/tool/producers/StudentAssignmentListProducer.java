@@ -1,13 +1,10 @@
 package org.sakaiproject.assignment2.tool.producers;
 
 import java.text.DateFormat;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
-import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
-import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.tool.beans.Assignment2Bean;
 import org.sakaiproject.assignment2.tool.beans.locallogic.LocalAssignmentLogic;
@@ -25,14 +22,13 @@ import uk.org.ponder.rsf.components.UIOutput;
 import uk.org.ponder.rsf.view.ComponentChecker;
 import uk.org.ponder.rsf.view.ViewComponentProducer;
 import uk.org.ponder.rsf.viewstate.ViewParameters;
-import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
 import uk.org.ponder.rsf.viewstate.ViewParamsReporter;
 
 public class StudentAssignmentListProducer implements ViewComponentProducer, ViewParamsReporter {
 	
 	public static final String VIEW_ID = "student-assignment-list";
 	public String getViewID(){
-		return this.VIEW_ID;
+		return VIEW_ID;
 	}
 	
 	private PagerRenderer pagerRenderer;
@@ -76,15 +72,13 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
     	}
     	
     	//get paging data
-        List<Assignment2> entries = new ArrayList<Assignment2>();
-        entries = assignmentLogic.getViewableAssignments();
-    	int total_count = entries != null ? entries.size() : 0;
+        List<Assignment2> entries = assignmentLogic.getViewableAssignments();
     	
     	//Breadcrumbs
     	UIMessage.make(tofill, "last_breadcrumb", "assignment2.student-assignment-list.heading");
     		
         UIMessage.make(tofill, "page-title", "assignment2.student-assignment-list.title");
-        pagerRenderer.makePager(tofill, "pagerDiv:", VIEW_ID, viewparams, total_count);
+        pagerRenderer.makePager(tofill, "pagerDiv:", VIEW_ID, viewparams, entries.size());
         
         //table headers and sorting links
         sortHeaderRenderer.makeSortingLink(tofill, "tableheader.assignment", viewparams, 

@@ -3,7 +3,6 @@ package org.sakaiproject.assignment2.tool.producers;
 import org.sakaiproject.assignment2.tool.params.PagerViewParams;
 import org.sakaiproject.assignment2.tool.producers.renderers.PagerRenderer;
 
-import uk.org.ponder.messageutil.MessageLocator;
 import uk.org.ponder.rsf.components.UIContainer;
 import uk.org.ponder.rsf.components.UIMessage;
 import uk.org.ponder.rsf.view.ComponentChecker;
@@ -18,10 +17,7 @@ public class AssignmentGradeReportProducer implements ViewComponentProducer, Vie
         return VIEW_ID;
     }
 
-
-    private MessageLocator messageLocator;
     private PagerRenderer pagerRenderer;
-
 
     public void fillComponents(UIContainer tofill, ViewParameters viewparams, ComponentChecker checker) {
     	PagerViewParams pagerparams = (PagerViewParams) viewparams;
@@ -36,10 +32,6 @@ public class AssignmentGradeReportProducer implements ViewComponentProducer, Vie
 
     public ViewParameters getViewParameters(){
     	return new PagerViewParams();
-    }
-    
-    public void setMessageLocator(MessageLocator messageLocator) {
-        this.messageLocator = messageLocator;
     }
     
     public void setPagerRenderer(PagerRenderer pagerRenderer) {

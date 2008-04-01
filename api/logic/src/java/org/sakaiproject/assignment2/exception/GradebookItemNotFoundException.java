@@ -34,4 +34,8 @@ public class GradebookItemNotFoundException extends AssignmentException {
 	public GradebookItemNotFoundException(String message) {
         super(message);
     }
+
+	public GradebookItemNotFoundException(String msg, Throwable t) {
+		super(msg, t);
+	}
 }

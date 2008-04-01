@@ -49,7 +49,7 @@ public class DecoratedTaggingProvider {
 
 	TagList tagList;
 
-	protected final static int[] PAGESIZES = { 5, 10, 20, 50, 100, 200 };
+	final static int[] PAGESIZES = { 5, 10, 20, 50, 100, 200 };
 
 	public DecoratedTaggingProvider(TaggingProvider provider) {
 		this.provider = provider;
@@ -99,7 +99,7 @@ public class DecoratedTaggingProvider {
 		return tags;
 	}
 
-	public class Sort {
+	public static class Sort {
 
 		protected String sortString = "";
 
@@ -127,7 +127,7 @@ public class DecoratedTaggingProvider {
 		}
 	}
 
-	public class Pager {
+	public static class Pager {
 
 		protected int totalItems;
 

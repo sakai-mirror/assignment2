@@ -71,16 +71,16 @@ public class AssignmentLogicTest extends Assignment2TestBase {
         List sectionCategories = sectionAwareness.getSectionCategories(AssignmentTestDataLoad.CONTEXT_ID);
         CourseSection section1 = integrationSupport.createSection(site.getUuid(), AssignmentTestDataLoad.GROUP1_NAME,
 				(String)sectionCategories.get(0),
-				new Integer(40), null, null, null, true, false, true,  false, false, false, false);
+				Integer.valueOf(40), null, null, null, true, false, true,  false, false, false, false);
 		section1Uid = section1.getUuid();
 
 		CourseSection section2 = integrationSupport.createSection(site.getUuid(), AssignmentTestDataLoad.GROUP2_NAME,
 				(String)sectionCategories.get(0),
-				new Integer(40), null, null, null, true, false, true,  false, false, false, false);
+				Integer.valueOf(40), null, null, null, true, false, true,  false, false, false, false);
 		section2Uid = section2.getUuid();
 		CourseSection section3 = integrationSupport.createSection(site.getUuid(), AssignmentTestDataLoad.GROUP3_NAME,
 				(String)sectionCategories.get(0),
-				new Integer(40), null, null, null, true, false, true,  false, false, false, false);
+				Integer.valueOf(40), null, null, null, true, false, true,  false, false, false, false);
 		section3Uid = section3.getUuid();
 		
 		
@@ -144,7 +144,7 @@ public class AssignmentLogicTest extends Assignment2TestBase {
     	}
     	
     	// try a bogus id
-    	Assignment2 assignment = assignmentLogic.getAssignmentById(new Long(12345));
+    	Assignment2 assignment = assignmentLogic.getAssignmentById(12345L);
     	assertNull(assignment);
     	
     	// grab assignment 1
@@ -429,7 +429,7 @@ public class AssignmentLogicTest extends Assignment2TestBase {
     	} catch (IllegalArgumentException iae) {}
     	// try passing a list w/ a diff # of values than # assign in site
     	try {
-    		assignmentLogic.setAssignmentSortIndexes(new Long[] {new Long(3),new Long(2),new Long(1)});
+    		assignmentLogic.setAssignmentSortIndexes(new Long[] {3L, 2L, 1L});
     		fail("Did not catch list w/ 3 passed to setAssignmentSortIndexes when there are 4 assign in site");
     	} catch (IllegalArgumentException iae) {}
     	
@@ -461,7 +461,7 @@ public class AssignmentLogicTest extends Assignment2TestBase {
     	} catch (IllegalArgumentException iae) {}
     	
     	// try passing an id that doesn't exist - should be null
-    	Assignment2 assign = assignmentLogic.getAssignmentByIdWithAssociatedData(new Long(12345));
+    	Assignment2 assign = assignmentLogic.getAssignmentByIdWithAssociatedData(12345L);
     	assertNull(assign);
     	
     	// let's make assignment4 graded
@@ -495,7 +495,7 @@ public class AssignmentLogicTest extends Assignment2TestBase {
     	} catch (IllegalArgumentException iae) {}
     	
     	// try passing an id that doesn't exist - should be null
-    	Assignment2 assign = assignmentLogic.getAssignmentByIdWithGroups(new Long(12345));
+    	Assignment2 assign = assignmentLogic.getAssignmentByIdWithGroups(12345L);
     	assertNull(assign);
     	
     	// try a valid item
@@ -512,7 +512,7 @@ public class AssignmentLogicTest extends Assignment2TestBase {
     	} catch (IllegalArgumentException iae) {}
     	
     	// try passing an id that doesn't exist - should be null
-    	Assignment2 assign = assignmentLogic.getAssignmentByIdWithGroupsAndAttachments(new Long(12345));
+    	Assignment2 assign = assignmentLogic.getAssignmentByIdWithGroupsAndAttachments(12345L);
     	assertNull(assign);
     	
     	// try a valid item

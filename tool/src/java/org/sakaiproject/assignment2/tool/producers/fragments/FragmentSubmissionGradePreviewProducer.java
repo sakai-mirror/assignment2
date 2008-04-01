@@ -1,11 +1,8 @@
 package org.sakaiproject.assignment2.tool.producers.fragments;
 
-import java.text.DateFormat;
 import java.util.HashSet;
-import java.util.Locale;
 import java.util.Set;
 
-import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentAttachment;
@@ -37,7 +34,6 @@ public class FragmentSubmissionGradePreviewProducer implements ViewComponentProd
     
     private ExternalLogic externalLogic;
 	private PreviewAssignmentSubmissionBean previewAssignmentSubmissionBean;
-	private Locale locale;
 	private AttachmentListRenderer attachmentListRenderer;
 	private SessionManager sessionManager;
 
@@ -49,17 +45,17 @@ public class FragmentSubmissionGradePreviewProducer implements ViewComponentProd
     	AssignmentSubmission as = previewAssignmentSubmissionBean.getAssignmentSubmission();
     	AssignmentSubmissionVersion asv = previewAssignmentSubmissionBean.getAssignmentSubmissionVersion();
     	Assignment2 assignment = as.getAssignment();
-    	    	
     	
-    	
-        UIMessage.make(tofill, "preview_heading", "assignment2.fragment-submission-grade_preview.heading", new Object[]{ assignment.getTitle() });
+    	String title = (assignment != null) ? assignment.getTitle() : "";
+        UIMessage.make(tofill, "preview_heading", "assignment2.fragment-submission-grade_preview.heading", new Object[]{ title });
         //Free from memory - if that does what I think it will do :-\
         previewAssignmentSubmissionBean.setAssignmentSubmission(null);
     	
         
         UIOutput.make(tofill, "student", externalLogic.getUserDisplayName(as.getUserId()));
         UIOutput.make(tofill, "status", as.getSubmissionStatus());
-        UIVerbatim.make(tofill, "instructions", assignment.getInstructions());
+        String instructions = (assignment != null) ? assignment.getInstructions() : "";
+        UIVerbatim.make(tofill, "instructions", instructions);
         
         /**
 		if (as.isAllowResubmit() != null && as.isAllowResubmit()){
@@ -69,7 +65,7 @@ public class FragmentSubmissionGradePreviewProducer implements ViewComponentProd
         **/
         
     	//Handle Attachments
-    	Set<String> set = new HashSet();
+    	Set<String> set = new HashSet<String>();
     	if (assignment != null && assignment.getAttachmentSet() != null) {
 	    	for (AssignmentAttachment aa : assignment.getAttachmentSet()) {
 	    		set.add(aa.getAttachmentReference());
@@ -107,10 +103,6 @@ public class FragmentSubmissionGradePreviewProducer implements ViewComponentProd
         
     public void setPreviewAssignmentSubmissionBean(PreviewAssignmentSubmissionBean previewAssignmentSubmissionBean) {
     	this.previewAssignmentSubmissionBean = previewAssignmentSubmissionBean;
-    }
-    
-    public void setLocale(Locale locale) {
-    	this.locale = locale;
     }
     
 	public void setAttachmentListRenderer(AttachmentListRenderer attachmentListRenderer){

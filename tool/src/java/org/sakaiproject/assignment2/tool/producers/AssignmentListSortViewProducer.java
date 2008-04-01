@@ -68,8 +68,6 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
     
     public void fillComponents(UIContainer tofill, ViewParameters viewparams, ComponentChecker checker) {
 
-    	String currentUserId = externalLogic.getCurrentUserId();
-    	
     	// use a date which is related to the current users locale
         DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, locale);        
         
@@ -90,21 +88,17 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
     		params.assignmentIdToDuplicate = null;
     	}
     	
-        List<Assignment2> entries = new ArrayList<Assignment2>();
-        /*entries = assignmentLogic.getViewableAssignments(currentUserId, current_sort_by, current_sort_dir.equals(SORT_DIR_ASC), 
+        /*List<Assignment2> entries = assignmentLogic.getViewableAssignments(currentUserId, current_sort_by, current_sort_dir.equals(SORT_DIR_ASC), 
         		params.current_start, params.current_count);*/
         
-        entries = assignmentLogic.getViewableAssignments();
-    	
-    	//get paging data
-    	int total_count = (entries != null ? entries.size() : 0 );
+    	List<Assignment2> entries = assignmentLogic.getViewableAssignments();
     	
     	//Breadcrumbs
     	UIMessage.make(tofill, "last_breadcrumb", "assignment2.assignment_list-sortview.heading");
     	
         UIMessage.make(tofill, "page-title", "assignment2.assignment_list-sortview.title");
         //navBarRenderer.makeNavBar(tofill, "navIntraTool:", VIEW_ID);
-        pagerRenderer.makePager(tofill, "pagerDiv:", VIEW_ID, viewparams, total_count);
+        pagerRenderer.makePager(tofill, "pagerDiv:", VIEW_ID, viewparams, entries.size());
         
         UIVerbatim.make(tofill, "debug_info", "Currently, you are sorting by: <strong>" + current_sort_by + " " + 
         			current_sort_dir + "</strong>,   starting from record: <strong>" + params.current_start + "</strong> and paging: <strong>" + params.current_count + "</strong> items.");
@@ -151,11 +145,12 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
         	if (edit_perm){
         		UIOutput.make(row, "assignment_row_remove_col");
         		UIBoundBoolean.make(row, "assignment_row_remove", 
-        			"Assignment2Bean.selectedIds." + assignment.getId().toString(),
+        			"Assignment2Bean.selectedIds." + assignment.getId(),
         			Boolean.FALSE);
         	}
         	UIMessage.make(row, "assignment_row_remove_label", "assignment2.assignment_list-sortview.assignment_row_remove_label");
-        	UIOutput.make(row, "assignment_title", assignment.getTitle());
+        	String title = (assignment != null) ? assignment.getTitle() : "";
+        	UIOutput.make(row, "assignment_title", title);
         	
         	//If Current User has the ability to edit or duplicate the assignment
         	if (edit_perm) {

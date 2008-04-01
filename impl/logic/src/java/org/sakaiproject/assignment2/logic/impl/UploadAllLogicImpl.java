@@ -8,6 +8,7 @@ import java.text.SimpleDateFormat;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.Map;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -143,9 +144,10 @@ public class UploadAllLogicImpl implements UploadAllLogic
 		String userId = externalLogic.getCurrentUserId();
 		String format = "yyyy-MM-dd hh:mm:ss.S";
 		SimpleDateFormat dateFormat = new SimpleDateFormat(format);
-		for (String userEid : submisTable.keySet())
+		for (Map.Entry<String, UploadGradeWrapper> entry : submisTable.entrySet())
 		{
-			UploadGradeWrapper w = (UploadGradeWrapper) submisTable.get(userEid);
+			String userEid = entry.getKey();
+			UploadGradeWrapper w = entry.getValue();
 			try
 			{
 				// save the feedback changes
@@ -385,7 +387,7 @@ public class UploadAllLogicImpl implements UploadAllLogic
 	/**
 	 * the UploadGradeWrapper class to be used for the "upload all" feature
 	 */
-	public class UploadGradeWrapper
+	public static class UploadGradeWrapper
 	{
 		private String grade = null;
 		private String comment = "";

@@ -4,7 +4,7 @@ import uk.ac.cam.caret.sakai.rsf.helper.HelperViewParameters;
 
 public class ThickboxHelperViewParams extends HelperViewParameters  {
 
-	public Boolean KeepThis;
+	public Boolean keepThis;
 	public Boolean TB_iframe;
 	public int height;
 	public int width;
@@ -17,7 +17,7 @@ public class ThickboxHelperViewParams extends HelperViewParameters  {
 
     public ThickboxHelperViewParams(String viewId, Boolean KeepThis, Boolean TB_iframe, int height, int width){
     		super(viewId);
-	        this.KeepThis = KeepThis;
+	        this.keepThis = KeepThis;
 	        this.TB_iframe = TB_iframe;
 	        this.height = height;
 	        this.width = width;

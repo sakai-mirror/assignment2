@@ -17,9 +17,9 @@ import org.sakaiproject.assignment2.logic.ZipExportLogic;
 import org.sakaiproject.assignment2.model.UploadAllOptions;
 import org.sakaiproject.assignment2.tool.beans.PreloadTestData;
 
-public class TestUploadDownloadLogic extends SakaiTransactionalTestBase
+public class TestUploadAllLogic extends SakaiTransactionalTestBase
 {
-	private static final Log log = LogFactory.getLog(TestUploadDownloadLogic.class);
+	private static final Log log = LogFactory.getLog(TestUploadAllLogic.class);
 
 	private UploadAllLogic updownLogic;
 	private ZipExportLogic zipExporter;
@@ -29,7 +29,7 @@ public class TestUploadDownloadLogic extends SakaiTransactionalTestBase
 
 	public static Test suite()
 	{
-		TestSetup setup = new TestSetup(new TestSuite(TestUploadDownloadLogic.class))
+		TestSetup setup = new TestSetup(new TestSuite(TestUploadAllLogic.class))
 		{
 			@Override
 			protected void setUp() throws Exception

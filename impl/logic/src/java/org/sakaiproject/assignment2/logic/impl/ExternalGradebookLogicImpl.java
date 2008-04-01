@@ -196,11 +196,9 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
     			}
     		}
     	} catch (SecurityException se) {
-    		throw new SecurityException("User without edit or grade perm attempted " +
-    				"to access the list of all gb items. Original stacktrace: " + se.getStackTrace());
+    		throw new SecurityException("User without edit or grade perm attempted to access the list of all gb items.", se);
     	} catch (GradebookNotFoundException gnfe) {
-    		throw new NoGradebookDataExistsException("No gradebook exists for the given contextId: " + contextId + 
-    				" Original stacktrace: " + gnfe.getStackTrace());
+    		throw new NoGradebookDataExistsException("No gradebook exists for the given contextId: " + contextId, gnfe);
     	}
 
     	return gradebookItems;
@@ -226,9 +224,10 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
 
 
     		if (studentIdGbFunctionMap != null) {
-    			for (String studentId : studentIdGbFunctionMap.keySet()) {
-    				if (studentId != null && studentIdGbFunctionMap.get(studentId) != null) {
-    					String function = studentIdGbFunctionMap.get(studentId);
+    			for (Map.Entry<String, String> entry : studentIdGbFunctionMap.entrySet()) {
+    				String studentId = entry.getKey();
+    				String function = entry.getValue();
+    				if (studentId != null && function != null) {
     					if (function != null) {
     						if (function.equals(GradebookService.gradePermission)) {
     							studentIdAssnFunctionMap.put(studentId, AssignmentConstants.GRADE);
@@ -241,7 +240,7 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
     		}
     	} catch (SecurityException se) {
     		throw new SecurityException("User is not authorized to retrieve student " +
-    				"list for gb item in context: " + contextId + "Original stacktrace: " + se.getStackTrace());
+    				"list for gb item in context: " + contextId, se);
     	}
     	
     	return studentIdAssnFunctionMap;
@@ -312,12 +311,10 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
     		// this gradebook item no longer exists, so return a null grade
     		grade = null;
     	} catch (GradebookNotFoundException gnfe) {
-    		throw new NoGradebookDataExistsException("No gradebook exists for the given contextId: " + contextId + 
-    				" Original stacktrace: " + gnfe.getStackTrace());
+    		throw new NoGradebookDataExistsException("No gradebook exists for the given contextId: " + contextId, gnfe);
     	} catch (SecurityException se) {
     		throw new SecurityException("User attempted to access the grade for student : " + 
-    				studentId + " for gbItemId: " + gbItemId + " without authorization in gb"
-    				 + "Original stacktrace: " + se.getStackTrace());
+    				studentId + " for gbItemId: " + gbItemId + " without authorization in gb", se);
     	}
     	
     	return grade;
@@ -339,8 +336,8 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
     		// this gradebook item no longer exists, so return a null comment
     		comment = null;
     	} catch (GradebookNotFoundException gnfe) {
-    		throw new NoGradebookDataExistsException("No gradebook exists for the given contextId: " + contextId + 
-    				" Original stacktrace: " + gnfe.getStackTrace());
+    		throw new NoGradebookDataExistsException(
+					"No gradebook exists for the given contextId: " + contextId, gnfe);
     	}
     	
     	return comment;
@@ -368,7 +365,7 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
     					assignment.getGradableObjectId(), studentIdList);
     		} catch (SecurityException se) {
     			throw new SecurityException("User attempted to access a list of student grades" +
-    					" that he/she did not have authorization for in the gb. Original stacktrace: " + se.getStackTrace());
+    					" that he/she did not have authorization for in the gb.", se);
     		}
     		
     		if (gradeDefs != null) {
@@ -455,7 +452,7 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
 	public String getGradeType(String contextId)
 	{
 		Gradebook gb = (Gradebook) gradebookService.getGradebook(contextId);
-		Integer i = new Integer(gb.getGrade_type());
+		Integer i = gb.getGrade_type();
 		return i.toString();
 	}
 	
@@ -502,8 +499,7 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
 			gradebookItem = new GradebookItem(assign.getId(), assign.getName(), assign.getPoints(), assign.getDueDate());
 		} catch (AssessmentNotFoundException anfe) {
 			throw new GradebookItemNotFoundException ("No gradebook item exists with gradableObjectId " 
-					+ gradableObjectId + " in context " + contextId + 
-    				" Original stacktrace: " + anfe.getStackTrace());
+					+ gradableObjectId + " in context " + contextId, anfe);
 		}
 		
 		return gradebookItem;
@@ -520,17 +516,18 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
 			if(log.isDebugEnabled()) log.debug("Grade and comment for student " + studentId + 
 					" for gbItem " + gradableObjectId + "updated successfully");
 		} catch (GradebookNotFoundException gnfe) {
-			throw new NoGradebookDataExistsException("No gradebook exists in the given context " + contextId + 
-    				" Original stacktrace: " + gnfe.getStackTrace());
+			throw new NoGradebookDataExistsException("No gradebook exists in the given context "
+					+ contextId, gnfe);
 		} catch (AssessmentNotFoundException anfe) {
-			throw new GradebookItemNotFoundException("No gradebook item exists with the given id " + gradableObjectId + 
-    				" Original stacktrace: " + anfe.getStackTrace());
+			throw new GradebookItemNotFoundException("No gradebook item exists with the given id "
+					+ gradableObjectId, anfe);
 		} catch (InvalidGradeException ige) {
 			throw new InvalidGradeForAssignmentException("The grade: " + grade + 
-					" for gradebook " + contextId + " is invalid. Original stacktrace: " + ige.getStackTrace());
+					" for gradebook " + contextId + " is invalid.", ige);
 		} catch (SecurityException se) {
-			throw new SecurityException("The current user attempted to saveGradeAndCommentForStudent " +
-					"without authorization. Error: " + se.getMessage() + "Original stacktrace: " + se.getStackTrace());
+			throw new SecurityException(
+					"The current user attempted to saveGradeAndCommentForStudent "
+							+ "without authorization. Error: " + se.getMessage(), se);
 		}
 	}
 	
@@ -549,12 +546,12 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
 					// double check that we weren't passed submissions for 
 					// different assignments - we don't want to update the wrong grades!
 					Long assignGo = submission.getAssignment().getGradableObjectId();
-					if (assignGo == null ||	assignGo != gradableObjectId) {
+					if (assignGo == null ||	!assignGo.equals(gradableObjectId)) {
 						throw new IllegalArgumentException("The given submission's gradableObjectId " + assignGo +
 							" does not match the goId passed to saveGradesAndCommentsForSubmissions: " + gradableObjectId);
 					}
 					String assignContext = submission.getAssignment().getContextId();
-					if (assignContext == null ||	assignContext != contextId) {
+					if (assignContext == null || !assignContext.equals(contextId)) {
 						throw new IllegalArgumentException("The given submission's contextId " + assignContext +
 							" does not match the contextId passed to saveGradesAndCommentsForSubmissions: " + contextId);
 					}
@@ -575,18 +572,19 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
 				if(log.isDebugEnabled()) log.debug("Grades and comments for contextId " + contextId + 
 						" for gbItem " + gradableObjectId + "updated successfully for " + gradeDefList.size() + " students");
 			} catch (GradebookNotFoundException gnfe) {
-				throw new NoGradebookDataExistsException("No gradebook exists in the given context " + contextId + 
-	    				" Original stacktrace: " + gnfe.getStackTrace());
+				throw new NoGradebookDataExistsException(
+						"No gradebook exists in the given context " + contextId, gnfe);
 			} catch (AssessmentNotFoundException anfe) {
-				throw new GradebookItemNotFoundException("No gradebook item exists with the given id " + gradableObjectId + 
-	    				" Original stacktrace: " + anfe.getStackTrace());
+				throw new GradebookItemNotFoundException(
+						"No gradebook item exists with the given id " + gradableObjectId, anfe);
 			} catch (InvalidGradeException ige) {
 				throw new InvalidGradeForAssignmentException("Attempted to save an invalid grade in gradebook " 
 						+ contextId + " via saveGradesAndCommentsForSubmissions. " +
-								"No grade information was updated. Original stacktrace: " + ige.getStackTrace());
+								"No grade information was updated.", ige);
 			} catch (SecurityException se) {
-				throw new SecurityException("The current user attempted to saveGradeAndCommentForStudent " +
-						"without authorization. Error: " + se.getMessage() + "Original stacktrace: " + se.getStackTrace());
+				throw new SecurityException(
+						"The current user attempted to saveGradeAndCommentForStudent "
+								+ "without authorization. Error: " + se.getMessage(), se);
 			}
 		}
 	}
@@ -609,8 +607,8 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
 		try {
 			valid = gradebookService.isGradeValid(contextId, grade);
 		} catch (GradebookNotFoundException gnfe) {
-			throw new NoGradebookDataExistsException("No gradebook exists in the given context: " + contextId + 
-    				" Original stacktrace: " + gnfe.getStackTrace());
+			throw new NoGradebookDataExistsException("No gradebook exists in the given context: "
+					+ contextId, gnfe);
 		}
 		
 		return valid;
@@ -626,8 +624,8 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
 			try {
 				studentsWithInvalidGrades = gradebookService.identifyStudentsWithInvalidGrades(contextId, studentIdToGradeMap);
 			} catch (GradebookNotFoundException gnfe) {
-				throw new NoGradebookDataExistsException("No gradebook exists in the given context: " + contextId + 
-	    				" Original stacktrace: " + gnfe.getStackTrace());
+				throw new NoGradebookDataExistsException(
+						"No gradebook exists in the given context: " + contextId, gnfe);
 			}
 		}
 		

@@ -33,4 +33,8 @@ public class InvalidGradeForAssignmentException extends AssignmentException {
 	public InvalidGradeForAssignmentException(String message) {
         super(message);
     }
+
+	public InvalidGradeForAssignmentException(String msg, Throwable t) {
+		super(msg, t);
+	}
 }

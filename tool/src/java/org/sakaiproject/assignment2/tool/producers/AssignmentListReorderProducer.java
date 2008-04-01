@@ -36,28 +36,22 @@ public class AssignmentListReorderProducer implements ViewComponentProducer, Vie
     }
 
     private PagerRenderer pagerRenderer;
-    private MessageLocator messageLocator;
     private AssignmentLogic assignmentLogic;
-    private ExternalLogic externalLogic;
     private Locale locale;
 
 
     @SuppressWarnings("unchecked")
 	public void fillComponents(UIContainer tofill, ViewParameters viewparams, ComponentChecker checker) {
     	PagerViewParams pagerparams = (PagerViewParams) viewparams;
-    	String currentUserId = externalLogic.getCurrentUserId();
-    	
+
     	//use a date which is related to the current users locale
     	DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, locale);
     	
-        List<Assignment2> entries = new ArrayList<Assignment2>();
-        entries = assignmentLogic.getViewableAssignments();
+    	// getViewableAssignments won't return a null object; empty list if nothing found
+        List<Assignment2> entries = assignmentLogic.getViewableAssignments();
         
-    	//get paging data
-        int total_count = entries != null ? entries.size() : 0;
-    	
         UIMessage.make(tofill, "page-title", "assignment2.assignment_list-reorder.title");
-        pagerRenderer.makePager(tofill, "pagerDiv:", VIEW_ID, pagerparams, total_count);
+        pagerRenderer.makePager(tofill, "pagerDiv:", VIEW_ID, pagerparams, entries.size());
         UIMessage.make(tofill, "heading", "assignment2.assignment_list-sortview.heading");
 
         //Links
@@ -77,7 +71,7 @@ public class AssignmentListReorderProducer implements ViewComponentProducer, Vie
         //UIMessage.make(tofill, "scale_header", "assignment2.assignment_list-reorder.scale");
         
         
-        if (entries.size() <= 0) {
+        if (entries.size() == 0) {
             UIMessage.make(tofill, "assignment_empty", "assignment2.assignment_list-reorder.assignment_empty");
             return;
         }
@@ -125,20 +119,12 @@ public class AssignmentListReorderProducer implements ViewComponentProducer, Vie
     	return new PagerViewParams();
     }
 
-    public void setMessageLocator(MessageLocator messageLocator) {
-        this.messageLocator = messageLocator;
-    }
-    
     public void setPagerRenderer(PagerRenderer pagerRenderer){
     	this.pagerRenderer = pagerRenderer;
     }
     
     public void setAssignmentLogic(AssignmentLogic assignmentLogic) {
     	this.assignmentLogic = assignmentLogic;
-    }
-    
-    public void setExternalLogic(ExternalLogic externalLogic) {
-    	this.externalLogic = externalLogic;
     }
     
     public void setLocale(Locale locale) {

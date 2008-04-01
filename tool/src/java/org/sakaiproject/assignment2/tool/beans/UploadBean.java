@@ -26,7 +26,7 @@ public class UploadBean
 		this.messages = messages;
 	}
 
-	public void setUploadDownloadLogic(UploadAllLogic updownLogic)
+	public void setUploadAllLogic(UploadAllLogic updownLogic)
 	{
 		this.updownLogic = updownLogic;
 	}

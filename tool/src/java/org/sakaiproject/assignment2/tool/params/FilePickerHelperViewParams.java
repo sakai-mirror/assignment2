@@ -20,7 +20,6 @@ public class FilePickerHelperViewParams extends ThickboxHelperViewParams {
     
     public String getParseSpec() {
 		// include a comma delimited list of the public properties in this class
-    	String temp = super.getParseSpec();
 		return super.getParseSpec() + ",otpkey";
 	}
 }

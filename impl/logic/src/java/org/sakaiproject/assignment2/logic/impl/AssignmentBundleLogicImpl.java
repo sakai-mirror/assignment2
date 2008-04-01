@@ -44,7 +44,11 @@ public class AssignmentBundleLogicImpl implements AssignmentBundleLogic
 	{
 		if (log.isDebugEnabled())
 			log.debug("init");
-		rb = new ResourceLoader(ASSIGNMENT2_BUNDLE);
+		// since the field is static, only instantiate of not previously populated
+		// this bean should only be created once but this will ensure an overwritten
+		// assignment doesn't occur.
+		if (rb == null)
+			rb = new ResourceLoader(ASSIGNMENT2_BUNDLE);
 	}
 
 	public String getString(String key)

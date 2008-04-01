@@ -60,7 +60,7 @@ import com.thoughtworks.xstream.mapper.Mapper;
  * This largely uses work done by UC Berkeley for the gradebook tool
  */
 public abstract class VersionedExternalizable implements Externalizable {
-	public static String VERSION_ATTRIBUTE = "externalizableVersion";
+	public static final String VERSION_ATTRIBUTE = "externalizableVersion";
 	
 	/**
 	 * @return non-null archivable version identifier for the object definition

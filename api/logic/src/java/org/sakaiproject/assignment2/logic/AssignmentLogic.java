@@ -99,7 +99,7 @@ public interface AssignmentLogic {
 	 * to view or grade. Assignments that the user does not have permission 
 	 * to view or grade will not be returned. If the assignment is graded,
 	 * will populate the gradebook-related info (ie due date, points possible)
-	 * @return
+	 * @return A non-null list of viewable assignments.
 	 */
 	public List<Assignment2> getViewableAssignments();
 	

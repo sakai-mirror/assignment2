@@ -1,7 +1,6 @@
 package org.sakaiproject.assignment2.tool.beans;
 
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
-import org.sakaiproject.assignment2.logic.ExternalAnnouncementLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentGroup;
@@ -13,7 +12,6 @@ import org.sakaiproject.tool.api.ToolSession;
 import org.sakaiproject.user.api.UserNotDefinedException;
 import org.sakaiproject.assignment2.exception.AnnouncementPermissionException;
 import org.sakaiproject.assignment2.exception.StaleObjectModificationException;
-import org.sakaiproject.assignment2.tool.beans.locallogic.LocalAssignmentLogic;
 import org.sakaiproject.exception.IdUnusedException;
 
 import org.apache.commons.logging.Log;
@@ -25,7 +23,6 @@ import uk.org.ponder.messageutil.TargettedMessageList;
 
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -91,11 +88,6 @@ public class Assignment2Bean {
 	private MessageLocator messageLocator;
 	public void setMessageLocator (MessageLocator messageLocator) {
 		this.messageLocator = messageLocator;
-	}
-	
-	private LocalAssignmentLogic localAssignmentLogic;
-	public void setLocalAssignmentLogic (LocalAssignmentLogic localAssignmentLogic) {
-		this.localAssignmentLogic = localAssignmentLogic;
 	}
 	
 	private SessionManager sessionManager;
@@ -283,7 +275,7 @@ public class Assignment2Bean {
 	public String processActionPreview() {
 		for (String key : OTPMap.keySet()) {
 			Assignment2 assignment = OTPMap.get(key);
-			if (this.requireAcceptUntil == null || this.requireAcceptUntil == Boolean.FALSE) {
+			if (this.requireAcceptUntil == null || Boolean.FALSE.equals(requireAcceptUntil)) {
 				assignment.setAcceptUntilTime(null);
 			}
 			if (this.requireDueDate == null || this.requireDueDate == Boolean.FALSE) {
@@ -300,7 +292,6 @@ public class Assignment2Bean {
 	}
 	
 	public String processActionSaveDraft() {
-		String currentUserId = externalLogic.getCurrentUserId();
 		String result = SAVE_DRAFT;
 		for (String key : OTPMap.keySet()) {
 			Assignment2 assignment = OTPMap.get(key);
@@ -318,7 +309,6 @@ public class Assignment2Bean {
 	}
 	
 	public String processActionRemove() {
-		String currentUserId = externalLogic.getCurrentUserId();
 		List<Assignment2> entries = logic.getViewableAssignments();
 		int assignmentsRemoved = 0;
 		for (Assignment2 assignment : entries) {
@@ -338,7 +328,7 @@ public class Assignment2Bean {
 			}
 		}
 		messages.addMessage( new TargettedMessage("assignment2.assignments_remove",
-				new Object[] { new Integer(assignmentsRemoved) },
+				new Object[] { Integer.valueOf(assignmentsRemoved) },
 		        TargettedMessage.SEVERITY_INFO));
 		return REMOVE;
 	}

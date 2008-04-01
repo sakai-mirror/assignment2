@@ -573,7 +573,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 					Date dueDate = assign.isUngraded() ? assign.getDueDateForUngraded() : assign.getDueDate();
 					
 					Integer status = getSubmissionStatusConstantForCurrentVersion(currVersion, dueDate);
-					assign.setSubmissionStatusConstant(new Integer(status));
+					assign.setSubmissionStatusConstant(status);
 				}
 			}
 		}
@@ -738,8 +738,8 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			// first, check for resubmission on the assignment level
 			if (assignmentIsOpen) { 
 				if (assignment.getNumSubmissionsAllowed() != null &&
-						(assignment.getNumSubmissionsAllowed().equals(new Integer(-1)) ||
-						assignment.getNumSubmissionsAllowed().intValue() > currNumSubmissions)) {
+						(assignment.getNumSubmissionsAllowed().equals(-1) ||
+						assignment.getNumSubmissionsAllowed() > currNumSubmissions)) {
 					studentAbleToSubmit = true;
 				}
 			} 
@@ -750,7 +750,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 						submission.getResubmitCloseTime().after(new Date()))
 				{
 					if (submission.getNumSubmissionsAllowed() != null && 
-							(submission.getNumSubmissionsAllowed().equals(new Integer(-1)) || 
+							(submission.getNumSubmissionsAllowed().equals(-1) || 
 							submission.getNumSubmissionsAllowed().intValue() > currNumSubmissions)) {
 						studentAbleToSubmit = true;
 					}

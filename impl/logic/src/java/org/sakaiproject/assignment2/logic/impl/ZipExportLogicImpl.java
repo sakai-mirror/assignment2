@@ -215,6 +215,7 @@ public class ZipExportLogicImpl implements ZipExportLogic
 								ZipEntry feedbackSubAttachmentFolderEntry = new ZipEntry(
 										feedbackSubAttachmentFolder);
 								out.putNextEntry(feedbackSubAttachmentFolderEntry);
+								out.flush();
 								out.closeEntry();
 
 								// create a attachment folder for the submission
@@ -227,6 +228,7 @@ public class ZipExportLogicImpl implements ZipExportLogic
 								ZipEntry sSubAttachmentFolderEntry = new ZipEntry(
 										sSubAttachmentFolder);
 								out.putNextEntry(sSubAttachmentFolderEntry);
+								out.flush();
 								out.closeEntry();
 								// add all submission attachment into the
 								// submission attachment folder
@@ -286,7 +288,8 @@ public class ZipExportLogicImpl implements ZipExportLogic
 		int attachedUrlCount = 0;
 		for (AttachmentBase r : attachments)
 		{
-
+			InputStream content = null;
+			BufferedInputStream bContent = null;
 			try
 			{
 				ContentResource resource = contentHostingService.getResource(r
@@ -306,9 +309,9 @@ public class ZipExportLogicImpl implements ZipExportLogic
 				}
 
 				// buffered stream input
-				InputStream content = resource.streamContent();
+				content = resource.streamContent();
 				byte data[] = new byte[1024 * 10];
-				BufferedInputStream bContent = new BufferedInputStream(content,
+				bContent = new BufferedInputStream(content,
 						data.length);
 
 				ZipEntry attachmentEntry = new ZipEntry(sSubAttachmentFolder
@@ -324,32 +327,57 @@ public class ZipExportLogicImpl implements ZipExportLogic
 			}
 			catch (PermissionException e)
 			{
-				log.debug(this
+				log.warn(this
 						+ ": getSubmissionsZip--PermissionException submittersName="
 						+ submittersName + " attachment reference=" + r);
 			}
 			catch (IdUnusedException e)
 			{
-				log.debug(this + ": getSubmissionsZip--IdUnusedException submittersName="
+				log.warn(this + ": getSubmissionsZip--IdUnusedException submittersName="
 						+ submittersName + " attachment reference=" + r);
 			}
 			catch (TypeException e)
 			{
-				log.debug(this + ": getSubmissionsZip--TypeException: submittersName="
+				log.warn(this + ": getSubmissionsZip--TypeException: submittersName="
 						+ submittersName + " attachment reference=" + r);
 			}
 			catch (IOException e)
 			{
 				log
-						.debug(this
+						.warn(this
 								+ ": getSubmissionsZip--IOException: Problem in creating the attachment file: submittersName="
 								+ submittersName + " attachment reference=" + r);
 			}
 			catch (ServerOverloadException e)
 			{
-				log.debug(this
+				log.warn(this
 						+ ": getSubmissionsZip--ServerOverloadException: submittersName="
 						+ submittersName + " attachment reference=" + r);
+			}
+			finally
+			{
+				if (content != null)
+				{
+					try
+					{
+						content.close();
+					}
+					catch (IOException e)
+					{
+						log.warn("IOException when closing content stream", e);
+					}
+				}
+				if (bContent != null)
+				{
+					try
+					{
+						bContent.close();
+					}
+					catch (IOException e)
+					{
+						log.warn("IOException when closing bContent stream", e);
+					}
+				}
 			}
 		} // for
 	}

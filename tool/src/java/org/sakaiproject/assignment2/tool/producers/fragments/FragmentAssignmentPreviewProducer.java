@@ -1,29 +1,15 @@
 package org.sakaiproject.assignment2.tool.producers.fragments;
 
-import java.text.DateFormat;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Locale;
-import java.util.Set;
-
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
-import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
-import org.sakaiproject.assignment2.model.AssignmentAttachment;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.tool.beans.PreviewAssignmentBean;
 import org.sakaiproject.assignment2.tool.params.AssignmentViewParams;
 import org.sakaiproject.assignment2.tool.producers.renderers.StudentViewAssignmentRenderer;
-import org.sakaiproject.assignment2.tool.producers.AssignmentListSortViewProducer;
-import org.sakaiproject.tool.api.SessionManager;
-import org.sakaiproject.tool.api.ToolSession;
 
 import uk.org.ponder.beanutil.entity.EntityBeanLocator;
 import uk.org.ponder.messageutil.MessageLocator;
 import uk.org.ponder.rsf.components.UIContainer;
-import uk.org.ponder.rsf.components.UIMessage;
-import uk.org.ponder.rsf.components.UIOutput;
-import uk.org.ponder.rsf.components.UIVerbatim;
 import uk.org.ponder.rsf.content.ContentTypeReporter;
 import uk.org.ponder.rsf.content.ContentTypeInfoRegistry;
 import uk.org.ponder.rsf.view.ComponentChecker;
@@ -38,8 +24,6 @@ public class FragmentAssignmentPreviewProducer implements ViewComponentProducer,
         return VIEW_ID;
     }
 
-
-    private AssignmentLogic assignmentLogic;
 	private PreviewAssignmentBean previewAssignmentBean;
 	private StudentViewAssignmentRenderer studentViewAssignmentRenderer;
 	private MessageLocator messageLocator;
@@ -47,17 +31,8 @@ public class FragmentAssignmentPreviewProducer implements ViewComponentProducer,
     public void fillComponents(UIContainer tofill, ViewParameters viewparams, ComponentChecker checker) {
     	AssignmentViewParams params = (AssignmentViewParams) viewparams;
 
-        Assignment2 assignment;
-        String OTPKey = "";
-        
     	//we are coming from the add/edit assignment page
-    	assignment = previewAssignmentBean.getAssignment();
-    	if (assignment.getId() != null) {
-    		OTPKey = assignment.getId().toString();
-    	} else {
-    		OTPKey = EntityBeanLocator.NEW_PREFIX + "1";
-    	}
-        
+        Assignment2 assignment = previewAssignmentBean.getAssignment();
         
         AssignmentSubmission assignmentSubmission = new AssignmentSubmission();
         
@@ -81,10 +56,6 @@ public class FragmentAssignmentPreviewProducer implements ViewComponentProducer,
 		return ContentTypeInfoRegistry.HTML_FRAGMENT;
 	}
 
-    public void setAssignmentLogic(AssignmentLogic assignmentLogic) {
-    	this.assignmentLogic = assignmentLogic;
-    }
-        
     public void setPreviewAssignmentBean(PreviewAssignmentBean previewAssignmentBean) {
     	this.previewAssignmentBean = previewAssignmentBean;
     }

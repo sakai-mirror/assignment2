@@ -21,18 +21,14 @@ public class LayoutProducer implements NullaryProducer {
 	}
 	
 	  private ViewGroupResolver viewGroupResolver;
-	  private BeanGetter ELevaluator;
 	  private ViewParameters viewParameters;
 	  private ViewGroup group;
   
 	public void fillComponents(UIContainer tofill) {
 		
-		LayoutProducerHolder holder = new LayoutProducerHolder();
 		if (!viewGroupResolver.isMatch(group, viewParameters)){
 			pageproducer.fillComponents(tofill);
 		} else {
-			
-			
 			UIJointContainer page = new UIJointContainer(tofill, "page-replace:", "page:");
 			
 			if (org.sakaiproject.tool.cover.ToolManager.getCurrentPlacement() != null) {
@@ -48,9 +44,6 @@ public class LayoutProducer implements NullaryProducer {
 
 	public void setViewGroupResolver(ViewGroupResolver viewGroupResolver) {
 		this.viewGroupResolver = viewGroupResolver;
-	}
-	public void setELEvaluator(BeanGetter levaluator) {
-		ELevaluator = levaluator;
 	}
 	public void setViewParameters(ViewParameters viewParameters) {
 		this.viewParameters = viewParameters;

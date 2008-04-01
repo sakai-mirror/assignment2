@@ -20,25 +20,12 @@ package org.sakaiproject.assignment2.tool.beans;
 
 import java.util.List;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
-import org.sakaiproject.assignment2.logic.AssignmentLogic;
-import org.sakaiproject.assignment2.model.AssignmentAttachment;
-import org.sakaiproject.assignment2.model.Assignment2;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.content.api.FilePickerHelper;
 import org.sakaiproject.entity.api.Reference;
-import org.sakaiproject.exception.IdUnusedException;
-import org.sakaiproject.exception.PermissionException;
-import org.sakaiproject.exception.TypeException;
 import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.tool.api.ToolSession;
-
-import uk.org.ponder.beanutil.entity.EntityBeanLocator;
 
 /**
  * This is the backing bean of the XML data import process.
@@ -52,23 +39,7 @@ public class FilePickerBean {
 		this.sessionManager = sessionManager;
 	}
 
-	private ContentHostingService contentHostingService;
-	public void setContentHostingService(ContentHostingService contentHostingService) {
-		this.contentHostingService = contentHostingService;
-	}
-	
-	private AssignmentLogic assignmentLogic;
-	public void setAssignmentLogic (AssignmentLogic assignmentLogic) {
-		this.assignmentLogic = assignmentLogic;
-	}
-	
 	public String otpkey;
-	
-	private EntityBeanLocator entityBeanLocator;
-	@SuppressWarnings("unchecked")
-	public void setAssignment2EntityBeanLocator(EntityBeanLocator entityBeanLocator) {
-		this.entityBeanLocator = entityBeanLocator;
-	}
 	
 	/**
 	 * Parse and load selected XML data file

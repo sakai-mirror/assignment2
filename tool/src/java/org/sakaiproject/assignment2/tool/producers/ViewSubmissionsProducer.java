@@ -122,24 +122,21 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
 	        	
 		        String url = externalLogic.getUrlForGradebookItemHelper(assignment.getGradableObjectId(), FinishedHelperProducer.VIEWID);
 		        		
-		        UILink helplink = UIInternalLink.make(tofill, "gradebook_item_edit_helper",
+		        UIInternalLink.make(tofill, "gradebook_item_edit_helper",
 		        		UIMessage.make("assignment2.assignment_grade-assignment.gradebook_helper"),
 		        		url);
 	        }
 	        ZipViewParams zvp = new ZipViewParams("zipSubmissions", assignmentId);
-	        UILink downloadall = UIInternalLink.make(tofill, "downloadall",
+	        UIInternalLink.make(tofill, "downloadall",
 	        		UIMessage.make("assignment2.assignment_grade-assignment.downloadall.button"), zvp);
 	        AssignmentViewParams avp = new AssignmentViewParams("uploadall", assignmentId);
-	        UILink uploadall = UIInternalLink.make(tofill, "uploadall",
+	        UIInternalLink.make(tofill, "uploadall",
 	        		UIMessage.make("assignment2.assignment_grade-assignment.uploadall.button"), avp);
         }
         
-    	//get paging data
-    	int total_count = submissions != null ? submissions.size() : 0;
-    	
         UIMessage.make(tofill, "page-title", "assignment2.assignment_grade-assignment.title");
         //navBarRenderer.makeNavBar(tofill, "navIntraTool:", VIEW_ID);
-        pagerRenderer.makePager(tofill, "pagerDiv:", VIEW_ID, viewparams, total_count);
+        pagerRenderer.makePager(tofill, "pagerDiv:", VIEW_ID, viewparams, submissions.size());
         //UIMessage.make(tofill, "heading", "assignment2.assignment_grade-assignment.heading", new Object[] { assignment.getTitle() });
 
         /**  Assign This Grade Helper
@@ -167,7 +164,7 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
         submissions = submissionBean.filterPopulateAndSortSubmissionList(submissions, params.current_start, params.current_count, 
         		current_sort_by, current_sort_dir.equals(AssignmentLogic.SORT_DIR_ASC));
         
-        for (AssignmentSubmission as : submissions){
+        for (AssignmentSubmission as : submissions) {
         	UIBranchContainer row = UIBranchContainer.make(tofill, "row:");
         	
         	UIInternalLink.make(row, "row_grade_link",

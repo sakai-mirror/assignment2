@@ -443,10 +443,8 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 				newAssnDef.setNotificationType(AssignmentConstants.NOTIFY_DAILY_SUMMARY);
 			} else if (notifProperty.equals(Assignment.ASSIGNMENT_INSTRUCTOR_NOTIFICATIONS_EACH)) {
 				newAssnDef.setNotificationType(AssignmentConstants.NOTIFY_FOR_EACH);
-			} else if (notifProperty.equals(Assignment.ASSIGNMENT_INSTRUCTOR_NOTIFICATIONS_NONE)) {
+			} else { //Assignment.ASSIGNMENT_INSTRUCTOR_NOTIFICATIONS_NONE and default
 				newAssnDef.setNotificationType(AssignmentConstants.NOTIFY_NONE);
-			} else {
-				newAssnDef.setNotificationType(AssignmentConstants.NOTIFY_NONE); // default
 			}
 
 			// is there an announcement?

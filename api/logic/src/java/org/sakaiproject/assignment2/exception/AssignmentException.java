@@ -35,5 +35,7 @@ public class AssignmentException extends RuntimeException {
     protected AssignmentException(Throwable t) {
         super(t);
     }
-
+    protected AssignmentException(String msg, Throwable t) {
+        super(msg, t);
+    }
 }

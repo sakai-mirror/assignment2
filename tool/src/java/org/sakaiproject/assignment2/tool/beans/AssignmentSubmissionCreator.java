@@ -4,8 +4,6 @@ import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 
-import uk.org.ponder.messageutil.MessageLocator;
-
 public class AssignmentSubmissionCreator {
 	
 	private ExternalLogic externalLogic;
@@ -13,11 +11,6 @@ public class AssignmentSubmissionCreator {
 		this.externalLogic = externalLogic;
 	}
 
-	private MessageLocator messageLocator;
-	public void setMessageLocator(MessageLocator messageLocator) {
-		this.messageLocator = messageLocator;
-	}
-	
 	public AssignmentSubmission create(){
 		AssignmentSubmission togo = new AssignmentSubmission();
 		

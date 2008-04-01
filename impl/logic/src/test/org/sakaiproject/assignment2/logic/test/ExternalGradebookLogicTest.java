@@ -76,16 +76,16 @@ public class ExternalGradebookLogicTest extends Assignment2TestBase {
         List<String> sectionCategories = sectionAwareness.getSectionCategories(AssignmentTestDataLoad.CONTEXT_ID);
         CourseSection section1 = integrationSupport.createSection(site.getUuid(), AssignmentTestDataLoad.GROUP1_NAME,
 				(String)sectionCategories.get(0),
-				new Integer(40), null, null, null, true, false, true,  false, false, false, false);
+				Integer.valueOf(40), null, null, null, true, false, true,  false, false, false, false);
 		section1Uid = section1.getUuid();
 
 		CourseSection section2 = integrationSupport.createSection(site.getUuid(), AssignmentTestDataLoad.GROUP2_NAME,
 				(String)sectionCategories.get(0),
-				new Integer(40), null, null, null, true, false, true,  false, false, false, false);
+				40, null, null, null, true, false, true,  false, false, false, false);
 		section2Uid = section2.getUuid();
 		CourseSection section3 = integrationSupport.createSection(site.getUuid(), AssignmentTestDataLoad.GROUP3_NAME,
 				(String)sectionCategories.get(0),
-				new Integer(40), null, null, null, true, false, true,  false, false, false, false);
+				40, null, null, null, true, false, true,  false, false, false, false);
 		section3Uid = section3.getUuid();
 		
 		
@@ -395,7 +395,7 @@ public class ExternalGradebookLogicTest extends Assignment2TestBase {
     	authn.setAuthnContext(AssignmentTestDataLoad.INSTRUCTOR_UID);
     	
     	// what if gb item doesn't exist?
-    	Map<String, String> studentFunctionMap = gradebookLogic.getViewableStudentsForGradedItemMap(AssignmentTestDataLoad.CONTEXT_ID, new Long(12345));
+    	Map<String, String> studentFunctionMap = gradebookLogic.getViewableStudentsForGradedItemMap(AssignmentTestDataLoad.CONTEXT_ID, 12345L);
     	assertTrue(studentFunctionMap.isEmpty());
     	
     	// instructor should be able to view all students
@@ -626,7 +626,7 @@ public class ExternalGradebookLogicTest extends Assignment2TestBase {
     	assertNull(grade);
     	
     	// try a gb item that doesn't exist
-    	grade = gradebookLogic.getStudentGradeForItem(AssignmentTestDataLoad.CONTEXT_ID, AssignmentTestDataLoad.STUDENT1_UID, new Long(12345));
+    	grade = gradebookLogic.getStudentGradeForItem(AssignmentTestDataLoad.CONTEXT_ID, AssignmentTestDataLoad.STUDENT1_UID, 12345L);
     	assertNull(grade);
     	
     	// try a real one
@@ -681,12 +681,12 @@ public class ExternalGradebookLogicTest extends Assignment2TestBase {
     	assertNull(comment);
     	
     	// try a gb item that doesn't exist
-    	comment = gradebookLogic.getStudentGradeCommentForItem(AssignmentTestDataLoad.CONTEXT_ID, AssignmentTestDataLoad.STUDENT1_UID, new Long(12345));
+    	comment = gradebookLogic.getStudentGradeCommentForItem(AssignmentTestDataLoad.CONTEXT_ID, AssignmentTestDataLoad.STUDENT1_UID, 12345L);
     	assertNull(comment);
     	
     	// try a real one
     	comment = gradebookLogic.getStudentGradeCommentForItem(AssignmentTestDataLoad.CONTEXT_ID, AssignmentTestDataLoad.STUDENT1_UID, gbItem1Id);
-    	assertEquals(st1a3Comment.toString(), comment);
+    	assertEquals(st1a3Comment, comment);
     	
     	// switch to the ta
     	authn.setAuthnContext(AssignmentTestDataLoad.TA_UID);
@@ -792,7 +792,7 @@ public class ExternalGradebookLogicTest extends Assignment2TestBase {
     	
     	// try a bad gradableObjectId
     	try {
-    		gradebookLogic.saveGradeAndCommentForStudent(AssignmentTestDataLoad.CONTEXT_ID, new Long(12345), AssignmentTestDataLoad.STUDENT1_UID, null, null);
+    		gradebookLogic.saveGradeAndCommentForStudent(AssignmentTestDataLoad.CONTEXT_ID, 12345L, AssignmentTestDataLoad.STUDENT1_UID, null, null);
     		fail("did not catch invalid gradableObjectId passed to saveGradeAndCommentForStudent");
     	} catch (GradebookItemNotFoundException gine) {}
     	

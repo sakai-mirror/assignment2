@@ -6,8 +6,6 @@ import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.tool.producers.FinishedHelperProducer;
-import org.sakaiproject.entitybroker.EntityBroker;
-import org.sakaiproject.entitybroker.IdEntityReference;
 
 import uk.org.ponder.rsf.components.UIContainer;
 import uk.org.ponder.rsf.components.UIJointContainer;
@@ -17,13 +15,6 @@ import uk.org.ponder.rsf.components.UIOutput;
 
 
 public class GradebookDetailsRenderer {
-	
-    
-	private EntityBroker entityBroker;
-	public void setEntityBroker(EntityBroker entityBroker) {
-		this.entityBroker = entityBroker;
-	}
-	
 	private ExternalLogic externalLogic;
 	public void setExternalLogic(ExternalLogic externalLogic) {
 		this.externalLogic = externalLogic;

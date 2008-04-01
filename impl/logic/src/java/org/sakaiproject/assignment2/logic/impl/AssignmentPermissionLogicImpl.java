@@ -330,12 +330,12 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
 						if (gradeOrView.equals(AssignmentConstants.VIEW)) {
 							viewableInGb.addAll(studentIdFunctionMap.keySet());
 						} else {
-							for (String studentId : studentIdFunctionMap.keySet()) {
-								if (studentId != null) {
-									String function = (String) studentIdFunctionMap.get(studentId);
-									if (function != null && function.equals(AssignmentConstants.GRADE)) {
-										viewableInGb.add(studentId);
-									}
+							for (Map.Entry<String, String> entry : studentIdFunctionMap.entrySet()) {
+								String studentId = entry.getKey();
+								String function = entry.getValue();
+								if (studentId != null && function != null
+										&& function.equals(AssignmentConstants.GRADE)) {
+									viewableInGb.add(studentId);
 								}
 							}
 						}

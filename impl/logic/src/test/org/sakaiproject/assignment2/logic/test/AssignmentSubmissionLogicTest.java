@@ -71,16 +71,16 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
         List<String> sectionCategories = sectionAwareness.getSectionCategories(AssignmentTestDataLoad.CONTEXT_ID);
         CourseSection section1 = integrationSupport.createSection(site.getUuid(), AssignmentTestDataLoad.GROUP1_NAME,
 				(String)sectionCategories.get(0),
-				new Integer(40), null, null, null, true, false, true,  false, false, false, false);
+				40, null, null, null, true, false, true,  false, false, false, false);
 		section1Uid = section1.getUuid();
 
 		CourseSection section2 = integrationSupport.createSection(site.getUuid(), AssignmentTestDataLoad.GROUP2_NAME,
 				(String)sectionCategories.get(0),
-				new Integer(40), null, null, null, true, false, true,  false, false, false, false);
+				40, null, null, null, true, false, true,  false, false, false, false);
 		section2Uid = section2.getUuid();
 		CourseSection section3 = integrationSupport.createSection(site.getUuid(), AssignmentTestDataLoad.GROUP3_NAME,
 				(String)sectionCategories.get(0),
-				new Integer(40), null, null, null, true, false, true,  false, false, false, false);
+				40, null, null, null, true, false, true,  false, false, false, false);
 		section3Uid = section3.getUuid();
 		
 		
@@ -164,7 +164,7 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
     	} catch(IllegalArgumentException iae) {}
     	
     	// try passing an id that doesn't exist
-    	assertNull(submissionLogic.getAssignmentSubmissionById(new Long(12345)));
+    	assertNull(submissionLogic.getAssignmentSubmissionById(12345L));
     	
     	// the instructor should be able to retrieve any submission
     	authn.setAuthnContext(AssignmentTestDataLoad.INSTRUCTOR_UID);
@@ -219,7 +219,7 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
     	} catch (IllegalArgumentException iae) {}
     	
     	// try a versionId that doesn't exist
-    	assertNull(submissionLogic.getSubmissionVersionById(new Long(12345)));
+    	assertNull(submissionLogic.getSubmissionVersionById(12345L));
     	
     	// instructors should be able to retrieve any version
     	authn.setAuthnContext(AssignmentTestDataLoad.INSTRUCTOR_UID);
@@ -310,7 +310,7 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
     	
     	// pass an assignmentId that doesn't exist - should return null
     	AssignmentSubmission submission = submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(
-    			new Long(12345), AssignmentTestDataLoad.STUDENT1_UID);
+    			12345L, AssignmentTestDataLoad.STUDENT1_UID);
     	assertNull(submission);
     	
     	authn.setAuthnContext(AssignmentTestDataLoad.INSTRUCTOR_UID);
@@ -492,7 +492,7 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
     	} catch (SecurityException se) {}
     	
     	// allow student to submit one more time
-    	existingSub.setNumSubmissionsAllowed(new Integer(2));
+    	existingSub.setNumSubmissionsAllowed(2);
     	dao.save(existingSub);
 
     	submissionLogic.saveStudentSubmission(AssignmentTestDataLoad.STUDENT1_UID, 
@@ -523,7 +523,7 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
     	
     	// try a versionId that doesn't exist
     	try {
-    		submissionLogic.saveInstructorFeedback(new Long(12345), AssignmentTestDataLoad.STUDENT1_UID, 
+    		submissionLogic.saveInstructorFeedback(12345L, AssignmentTestDataLoad.STUDENT1_UID, 
     				testData.a2, null, null, null, null, null, null);
     		fail("did not catch passed versionId that does not exist to saveInstructorFeedback");
     	} catch (IllegalArgumentException iae) {}
@@ -598,7 +598,7 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
     	assertEquals(versionHistory.size(), 1);
     	AssignmentSubmissionVersion currVersion = dao.getCurrentSubmissionVersionWithAttachments(testData.st1a1Submission);
     	assertTrue(currVersion.getFeedbackNotes().equals("notes"));
-    	assertTrue(currVersion.getAssignmentSubmission().getNumSubmissionsAllowed().equals(new Integer(2)));
+    	assertTrue(currVersion.getAssignmentSubmission().getNumSubmissionsAllowed().equals(2));
     	assertTrue(currVersion.getAssignmentSubmission().getResubmitCloseTime().equals(resubmitCloseDate));
     	
     	// student should not be authorized
@@ -894,7 +894,7 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
 		
 		// try an assignmentId that doesn't exist
 		try {
-			submissionLogic.releaseAllFeedbackForAssignment(new Long(12345));
+			submissionLogic.releaseAllFeedbackForAssignment(12345L);
 			fail("did not catch non-existent assignId passed to releaseAllFeedbackForAssignment");
 		} catch (IllegalArgumentException iae) {}
 		
@@ -947,7 +947,7 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
 		
 		// try a submissionId that doesn't exist
 		try {
-			submissionLogic.releaseAllFeedbackForSubmission(new Long(12345));
+			submissionLogic.releaseAllFeedbackForSubmission(12345L);
 			fail("Did not catch nonexistent submission passed to releaseAllFeedbackForSubmission");
 		} catch (IllegalArgumentException iae) {}
 		
@@ -991,7 +991,7 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
 		
 		// try a versionId that doesn't exist
 		try {
-			submissionLogic.releaseFeedbackForVersion(new Long(12345));
+			submissionLogic.releaseFeedbackForVersion(12345L);
 			fail("did not catch bad versionId passed to releaseFeedbackForVersion");
 		} catch (IllegalArgumentException iae) {}
 		
@@ -1096,7 +1096,7 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
 		} catch (IllegalArgumentException iae) {}
 		
 		// try an assignmentId that doesn't exist
-		assertEquals(0, submissionLogic.getNumSubmittedVersions(AssignmentTestDataLoad.STUDENT3_UID, new Long(12345)));
+		assertEquals(0, submissionLogic.getNumSubmittedVersions(AssignmentTestDataLoad.STUDENT3_UID, 12345L));
 		
 		// try a student with no submissions 
 		assertEquals(0, submissionLogic.getNumSubmittedVersions(AssignmentTestDataLoad.STUDENT3_UID, testData.a1Id));
