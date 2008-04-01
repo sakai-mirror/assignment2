@@ -298,7 +298,7 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
         
         String[] gradebook_item_labels = new String[gradebook_items.size()+1];
         String[] gradebook_item_values = new String[gradebook_items.size()+1];
-        gradebook_item_values[0] = "";
+        gradebook_item_values[0] = "0";
         gradebook_item_labels[0] = messageLocator.getMessage("assignment2.assignment_add.gradebook_item_select");
         String js_gradebook_items_data = "var gradebook_items_date = {\n";
         js_gradebook_items_data += "0: \"" + messageLocator.getMessage("assignment2.assignment_add.gradebook_item_not_selected") + "\"\n";
