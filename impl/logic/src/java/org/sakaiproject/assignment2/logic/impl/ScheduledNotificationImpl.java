@@ -437,7 +437,11 @@ public class ScheduledNotificationImpl implements ScheduledNotification
 				+ s.getId() + newline);
 
 		// submit time
-		time.setTime(curSubVers.getSubmittedTime().getTime());
+		if (curSubVers.getSubmittedTime() != null)
+		{
+			time.setTime(curSubVers.getSubmittedTime().getTime());
+		}
+		
 		content.append(assignmentBundleLogic.getString("noti.submit.time") + " "
 				+ time.toStringLocalFull() + newline + newline);
 

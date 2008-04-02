@@ -173,10 +173,11 @@ public class AssignmentSubmissionBean {
 	    		// Send out notifications
 	    		try {
 	    			notificationBean.notifyStudentThatSubmissionWasAccepted(assignmentSubmission);
-	    			if (assignment.getNotificationType() ==  AssignmentConstants.NOTIFY_FOR_EACH)
-	    			{
+	    			//// TODO: right now there is no way to set NotificationType in the interface, so always notify
+	    			//if (assignment.getNotificationType() ==  AssignmentConstants.NOTIFY_FOR_EACH)
+	    			//{
 	    				notificationBean.notifyInstructorsOfSubmission(assignmentSubmission, assignment);
-	    			}
+	    			//}
 	    		}catch (IdUnusedException e)
 	    		{
 	    			messages.addMessage(new TargettedMessage("assignment2.student-submit.error.unexpected",
