@@ -1,7 +1,14 @@
 package org.sakaiproject.assignment2.tool.params;
 
-public class ViewSubmissionsViewParams extends SortPagerViewParams {
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.assignment2.tool.beans.Assignment2Bean;
+import org.sakaiproject.assignment2.tool.producers.ViewSubmissionsProducer;
 
+public class ViewSubmissionsViewParams extends SortPagerViewParams implements VerifiableViewParams {
+
+	private static final Log LOG = LogFactory.getLog(Assignment2Bean.class);
+	
 	public Long assignmentId;
 	
 	public ViewSubmissionsViewParams() {}
@@ -31,5 +38,14 @@ public class ViewSubmissionsViewParams extends SortPagerViewParams {
 	public String getParseSpec() {
 		// include a comma delimited list of the public properties in this class
 		return super.getParseSpec() + ",@1:assignmentId";
+	}
+
+	public Boolean verify()
+	{
+		if (ViewSubmissionsProducer.VIEW_ID.equals(this.viewID) && this.assignmentId == null) {
+			LOG.error("Null assignmentId in viewparameters while attempting to load ViewSubmissionsProducer");
+			return Boolean.FALSE;
+		}
+		return Boolean.TRUE;
 	}
 }

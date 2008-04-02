@@ -2,7 +2,14 @@ package org.sakaiproject.assignment2.tool.params;
 
 import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
 
-public class GradeViewParams extends SimpleViewParameters {
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.assignment2.tool.beans.Assignment2Bean;
+import org.sakaiproject.assignment2.tool.producers.GradeProducer;
+
+public class GradeViewParams extends SimpleViewParameters implements VerifiableViewParams {
+	
+	private static final Log LOG = LogFactory.getLog(Assignment2Bean.class);
 	
 	public Long assignmentId;
 	public String userId;
@@ -25,6 +32,15 @@ public class GradeViewParams extends SimpleViewParameters {
 	
 	public String getParseSpec(){
 		return super.getParseSpec() + ",@1:assignmentId,@2:userId,submissionId";
+	}
+
+	public Boolean verify()
+	{
+		if (GradeProducer.VIEW_ID.equals(this.viewID) && (this.assignmentId == null || this.userId == null)) {
+			LOG.error("Null assignmentId or userId in viewparameters while attempting to load GradeProducer");
+			return Boolean.FALSE;
+		}
+		return Boolean.TRUE;
 	}
 	
 }

@@ -2,11 +2,13 @@ package org.sakaiproject.assignment2.tool.params;
 
 import org.sakaiproject.assignment2.tool.beans.locallogic.LocalPermissionLogic;
 import org.sakaiproject.assignment2.tool.producers.AuthorizationFailedProducer;
+import org.sakaiproject.assignment2.tool.producers.AssignmentListSortViewProducer;
 import org.sakaiproject.assignment2.tool.producers.AssignmentDetailProducer;
 import org.sakaiproject.assignment2.tool.producers.StudentAssignmentListProducer;
 import org.sakaiproject.assignment2.tool.producers.StudentSubmitProducer;
 import org.sakaiproject.assignment2.tool.producers.StudentSubmitSummaryProducer;
 import org.sakaiproject.assignment2.tool.params.SimpleAssignmentViewParams;
+import org.sakaiproject.assignment2.tool.params.VerifiableViewParams;
 
 import uk.org.ponder.rsf.viewstate.AnyViewParameters;
 import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
@@ -31,6 +33,13 @@ public class Assignment2ViewParamsInterceptor implements ViewParamsInterceptor {
 			//This is a entitybroker "helper" that is always visible
 			//TODO make sure that this is always visible
 			return incoming;
+		}
+		
+		//Verify View Params for completeness
+		if (incoming instanceof VerifiableViewParams) {
+			if(!((VerifiableViewParams)incoming).verify()){
+				return new AssignmentListSortViewParams(AssignmentListSortViewProducer.VIEW_ID);
+			}
 		}
 		
 		//If current user has permission access to requested view
