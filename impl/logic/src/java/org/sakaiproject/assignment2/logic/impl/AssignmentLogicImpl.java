@@ -30,6 +30,7 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.assignment2.taggable.api.AssignmentActivityProducer;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentAttachment;
@@ -45,7 +46,11 @@ import org.sakaiproject.assignment2.dao.AssignmentDao;
 import org.sakaiproject.assignment2.exception.AnnouncementPermissionException;
 import org.sakaiproject.assignment2.exception.ConflictingAssignmentNameException;
 import org.sakaiproject.assignment2.exception.NoGradebookItemForGradedAssignmentException;
+import org.sakaiproject.component.cover.ComponentManager;
+import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.service.gradebook.shared.StaleObjectModificationException;
+import org.sakaiproject.taggable.api.TaggingManager;
+import org.sakaiproject.taggable.api.TaggingProvider;
 import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException;
 
 
@@ -304,6 +309,29 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 			if (announcementIdToDelete != null) {
 				announcementLogic.deleteOpenDateAnnouncement(announcementIdToDelete, currentContextId);
 				if(log.isDebugEnabled()) log.debug("Deleted announcement with id " + announcementIdToDelete + " for assignment " + assignment.getId());
+			}
+			
+			//clean up tags...
+			try
+			{
+				TaggingManager taggingManager = (TaggingManager) ComponentManager
+						.get("org.sakaiproject.taggable.api.TaggingManager");
+
+				AssignmentActivityProducer assignmentActivityProducer = (AssignmentActivityProducer) ComponentManager
+						.get("org.sakaiproject.assignment2.taggable.api.AssignmentActivityProducer");
+
+				if (taggingManager.isTaggable()) {
+					for (TaggingProvider provider : taggingManager
+							.getProviders()) {
+						provider.removeTags(assignmentActivityProducer
+								.getActivity(assignment));
+					}
+				}
+			}
+			catch (PermissionException pe)
+			{
+				throw new SecurityException("The current user is not authorized to remove tags in the assignment tool, " +
+						"but the assignment was deleted", pe);
 			}
 		} catch (HibernateOptimisticLockingFailureException holfe) {
 			if(log.isInfoEnabled()) log.info("An optimistic locking failure occurred while attempting to update an assignment");

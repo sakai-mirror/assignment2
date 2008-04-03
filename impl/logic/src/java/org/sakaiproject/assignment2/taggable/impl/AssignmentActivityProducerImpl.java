@@ -121,7 +121,9 @@ public class AssignmentActivityProducerImpl implements
 		TaggableActivity activity = null;
 		if (checkReference(activityRef)) {
 			Reference ref = entityManager.newReference(activityRef);
-			activity = new AssignmentActivityImpl(assignmentDao.getAssignmentByIdWithGroupsAndAttachments(Long.valueOf(ref.getId())), this);
+			Assignment2 assignment = assignmentDao.getAssignmentByIdWithGroupsAndAttachments(Long.valueOf(ref.getId()));
+			if (assignment != null) 
+				activity = new AssignmentActivityImpl(assignment, this);
 		}
 		return activity;
 	}
