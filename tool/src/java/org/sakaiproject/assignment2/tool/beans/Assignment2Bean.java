@@ -6,7 +6,6 @@ import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentGroup;
 import org.sakaiproject.assignment2.model.AssignmentAttachment;
 import org.sakaiproject.assignment2.tool.beans.Assignment2Validator;
-import org.sakaiproject.assignment2.exception.ConflictingAssignmentNameException;
 import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.tool.api.ToolSession;
 import org.sakaiproject.user.api.UserNotDefinedException;
@@ -229,16 +228,6 @@ public class Assignment2Bean {
 				
 				logic.saveAssignment(assignment);
 				
-			} catch( ConflictingAssignmentNameException e){
-				LOG.error(e.getMessage(), e);
-				if (draft) {
-					messages.addMessage(new TargettedMessage("assignment2.assignment_save_draft.conflicting_assignment_name",
-							new Object[] { assignment.getTitle() }, "Assignment2." + key + ".title"));
-				} else {
-					messages.addMessage(new TargettedMessage("assignment2.assignment_post.conflicting_assignment_name",
-						new Object[] { assignment.getTitle() }, "Assignment2." + key + ".title"));
-				}
-				return FAILURE;
 			} catch (AnnouncementPermissionException ape) {
 				if (LOG.isDebugEnabled()) LOG.debug("Announcement could not " +
 				"be updated b/c user does not have perm in annc tool");
@@ -341,11 +330,6 @@ public class Assignment2Bean {
 		try {
 			logic.saveAssignment(duplicate);
 			
-		} catch(ConflictingAssignmentNameException e){
-			LOG.error(e.getMessage(), e);
-			messages.addMessage(new TargettedMessage("assignment2.assignment_post.duplicate_conflicting_assignment_name",
-					new Object[]{ duplicate.getTitle() }));
-			return;
 		} catch (SecurityException e) {
 			LOG.error(e.getMessage(), e);
 			messages.addMessage(new TargettedMessage("assignment2.assignment_post.security_exception"));

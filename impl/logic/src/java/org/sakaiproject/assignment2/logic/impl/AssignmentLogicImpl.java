@@ -44,7 +44,6 @@ import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
 import org.sakaiproject.assignment2.dao.AssignmentDao;
 import org.sakaiproject.assignment2.exception.AnnouncementPermissionException;
-import org.sakaiproject.assignment2.exception.ConflictingAssignmentNameException;
 import org.sakaiproject.assignment2.exception.NoGradebookItemForGradedAssignmentException;
 import org.sakaiproject.component.cover.ComponentManager;
 import org.sakaiproject.exception.PermissionException;
@@ -151,7 +150,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 	}
 	
 	public void saveAssignment(Assignment2 assignment, String contextId) throws SecurityException, 
-		ConflictingAssignmentNameException, NoGradebookItemForGradedAssignmentException
+		NoGradebookItemForGradedAssignmentException
 	{
 		if (assignment == null || contextId == null) {
 			throw new IllegalArgumentException("Null assignment or contextId passed to saveAssignment");
@@ -181,11 +180,11 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 			}
 		}
 		
+    	// trim trailing spaces on title
+    	assignment.setTitle(assignment.getTitle().trim());
+		
 		if (isNewAssignment) {
-        	// check to ensure it is not a duplicate title
-        	if (assignmentNameExists(assignment.getTitle(), contextId)) {
-        		throw new ConflictingAssignmentNameException("An assignment with the title " + assignment.getTitle() + " already exists");
-        	}
+
         	// identify the next sort index to be used
         	Integer highestIndex = dao.getHighestSortIndexInSite(contextId);
         	if (highestIndex != null) {
@@ -217,12 +216,6 @@ public class AssignmentLogicImpl implements AssignmentLogic{
         	if(log.isDebugEnabled()) log.debug("Created assignment: " + assignment.getTitle());
   
 		} else {
-			if (!assignment.getTitle().equals(existingAssignment.getTitle())) {
-				// check to see if this new title already exists
-				if (assignmentNameExists(assignment.getTitle(), contextId)) {
-	        		throw new ConflictingAssignmentNameException("An assignment with the title " + assignment.getTitle() + " already exists");
-	        	}
-			}
 			
 			assignment.setRemoved(Boolean.FALSE);
 			assignment.setModifiedBy(currentUserId);
@@ -459,20 +452,6 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 	            throw new StaleObjectModificationException(holfe);
 			}
 		}
-	}
-	
-	/**
-	 * 
-	 * @param assignmentName
-	 * @return true if there is an existing assignment (removed = false) with
-	 * the given title
-	 */
-	private boolean assignmentNameExists(String assignmentName, String contextId) {
-		int count = dao.countByProperties(Assignment2.class, 
-	               new String[] {"contextId", "title", "removed", "draft"}, 
-	               new Object[] {contextId, assignmentName, Boolean.FALSE, Boolean.FALSE});
-		
-		return count > 0;
 	}
 	
 	public int getStatusForAssignment(Assignment2 assignment) {

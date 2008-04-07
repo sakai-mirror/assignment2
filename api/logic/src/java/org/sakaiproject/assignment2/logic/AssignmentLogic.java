@@ -24,7 +24,6 @@ package org.sakaiproject.assignment2.logic;
 import java.util.List;
 
 import org.sakaiproject.assignment2.model.Assignment2;
-import org.sakaiproject.assignment2.exception.ConflictingAssignmentNameException;
 
 
 /**
@@ -57,13 +56,10 @@ public interface AssignmentLogic {
 	 * the assignment to create or update
 	 * @throws SecurityException -
 	 * user must have "edit" permission to add or update an assignment
-	 * @throws ConflictingAssignmentNameException -
-	 * if it is a new assignment and the title already exists
 	 * @throws NoGradebookItemForGradedAssignmentException - if the
 	 * assignment is marked as graded but there is no gradableObjectId
 	 */
-	public void saveAssignment(Assignment2 assignment) 
-		throws ConflictingAssignmentNameException;
+	public void saveAssignment(Assignment2 assignment);
 	
 	/**
 	 * Create or update an assignment in the given context
@@ -73,13 +69,10 @@ public interface AssignmentLogic {
 	 * with.
 	 * @throws SecurityException -
 	 * user must have "edit" permission to add or update an assignment
-	 * @throws ConflictingAssignmentNameException -
-	 * if it is a new assignment and the title already exists
 	 * @throws NoGradebookItemForGradedAssignmentException - if the
 	 * assignment is marked as graded but there is no gradableObjectId
 	 */
-	public void saveAssignment(Assignment2 assignment, String contextId)
-		throws ConflictingAssignmentNameException;
+	public void saveAssignment(Assignment2 assignment, String contextId);
 	
 	/**
 	 * Delete an Assignment 
