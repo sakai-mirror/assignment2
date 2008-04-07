@@ -282,7 +282,6 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
     	
         if (grade_perm) {
         	UIOutput.make(form, "resubmit_change");
-        dateEvolver.evolveDateInput(acceptUntilTimeField, as.getResubmitCloseTime());
 
         	int size = 20;
         	String[] number_submissions_options = new String[size+1];
