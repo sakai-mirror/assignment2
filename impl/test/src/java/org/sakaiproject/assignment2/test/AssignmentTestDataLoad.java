@@ -71,7 +71,7 @@ public class AssignmentTestDataLoad {
 	public Long a1Id;
 	public Long a2Id;
 	public Long a3Id;
-	public Long a4Id;
+	public Long a4Id;;
 	
 	// Assignment 1 has 2 attachments and 2 groups
 	// Assignment 2 has 0 attachments and 0 group
@@ -118,6 +118,28 @@ public class AssignmentTestDataLoad {
 	public AssignmentSubmission st2a4Submission;
 	public AssignmentSubmissionVersion st2a4FirstVersion; // 1 SA
 	public AssignmentSubmissionVersion st2a4CurrVersion;
+	
+	// gradebook stuff
+	public static final Long GB_ITEM1_ID = 1L; // assoc w/ assign 3
+	public static final String GB_ITEM1_NAME = "Item 1";
+	public static final Double GB_ITEM1_PTS = new Double(30);
+	public static final Date GB_ITEM1_DUE = null;
+	
+	public static final Long GB_ITEM2_ID = 2L;  // assoc w/ assign 4
+	public static final String GB_ITEM2_NAME = "Item 2";
+	public static final Double GB_ITEM2_PTS = new Double(40);
+	public static final Date GB_ITEM2_DUE = new Date();
+	
+	public static final Long GB_ITEM3_ID = 3L;  // NOT assoc w/ any assign
+	public static final String GB_ITEM3_NAME = "Item 3";
+	public static final Double GB_ITEM3_PTS = new Double(100);
+	public static final Date GB_ITEM3_DUE = new Date();
+	
+	public static final Double st1a3Grade = new Double(25);
+	public static final String st1a3Comment = "Mediocre work";
+	public static final Double st2a4Grade = new Double(40); 
+	public static final String st2a4Comment = "Good work";
+
 
 	public AssignmentTestDataLoad() {
 		initialize();
@@ -133,15 +155,16 @@ public class AssignmentTestDataLoad {
 	}
 
 	/**
-	 * Store all of the persistent objects in this pea
 	 * @param dao A DAO with a save method which takes a persistent object as an argument<br/>
 	 * Example: dao.save(templateUser);
 	 */
 	public void createTestData(AssignmentDao dao) {
-		a1 = createGenericAssignment2Object(ASSIGN1_TITLE, 0);
-		a2 = createGenericAssignment2Object(ASSIGN2_TITLE, 1);
-		a3 = createGenericAssignment2Object(ASSIGN3_TITLE, 2);
-		a4 = createGenericAssignment2Object(ASSIGN4_TITLE, 3);
+		a1 = createGenericAssignment2Object(ASSIGN1_TITLE, 0, true);
+		a2 = createGenericAssignment2Object(ASSIGN2_TITLE, 1, true);
+		a3 = createGenericAssignment2Object(ASSIGN3_TITLE, 2, false);
+		a3.setGradableObjectId(GB_ITEM1_ID);
+		a4 = createGenericAssignment2Object(ASSIGN4_TITLE, 3, false);
+		a4.setGradableObjectId(GB_ITEM2_ID);
 		
 		a1Id = a1.getId();
 		a2Id = a2.getId();
@@ -255,10 +278,16 @@ public class AssignmentTestDataLoad {
 		
 		dao.saveMixedSet(new Set[] {feedbackAttachSet, subAttachSet});
 		
+		// refresh the assignments
+		a1 = dao.getAssignmentByIdWithGroupsAndAttachments(a1Id);
+		a2 = dao.getAssignmentByIdWithGroupsAndAttachments(a2Id);
+		a3 = dao.getAssignmentByIdWithGroupsAndAttachments(a3Id);
+		a4 = dao.getAssignmentByIdWithGroupsAndAttachments(a4Id);
+		
 	}
 
 
-	private Assignment2 createGenericAssignment2Object(String title, int sortIndex) {
+	private Assignment2 createGenericAssignment2Object(String title, int sortIndex, boolean graded) {
 		Assignment2 assignment = new Assignment2();
 		assignment.setContextId(CONTEXT_ID);
 		assignment.setCreateTime(new Date());
@@ -269,7 +298,7 @@ public class AssignmentTestDataLoad {
 		assignment.setOpenTime(new Date());
 		assignment.setRemoved(Boolean.FALSE);
 		assignment.setSubmissionType(AssignmentConstants.SUBMIT_INLINE_AND_ATTACH);
-		assignment.setUngraded(Boolean.TRUE);
+		assignment.setUngraded(graded);
 		assignment.setHonorPledge(Boolean.FALSE);
 		assignment.setHasAnnouncement(Boolean.FALSE);
 		assignment.setSortIndex(sortIndex);

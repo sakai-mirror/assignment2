@@ -35,16 +35,9 @@ import org.sakaiproject.assignment2.model.FeedbackAttachment;
 import org.sakaiproject.assignment2.model.SubmissionAttachment;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.assignment2.test.AssignmentTestDataLoad;
-import org.sakaiproject.section.api.coursemanagement.Course;
-import org.sakaiproject.section.api.coursemanagement.CourseSection;
-import org.sakaiproject.section.api.facade.Role;
+
 
 public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
-
-    private static final Double st2a4Grade = new Double(40);
-    private static final String st2a4Comment = "Good work";
-    private static final Double st1a3Grade = new Double(25);
-    private static final String st1a3Comment = "Mediocre work";
     
     /**
      * @see org.springframework.test.AbstractTransactionalSpringContextTests#onSetUpInTransaction()
@@ -52,108 +45,6 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
     protected void onSetUpInTransaction() throws Exception {
         super.onSetUpInTransaction();
         
-        // set up the users
-        userManager.createUser(AssignmentTestDataLoad.INSTRUCTOR_UID, null, null, null);
-        userManager.createUser(AssignmentTestDataLoad.TA_UID, null, null, null);
-        userManager.createUser(AssignmentTestDataLoad.STUDENT1_UID, null, null, null);
-        userManager.createUser(AssignmentTestDataLoad.STUDENT2_UID, null, null, null);
-        userManager.createUser(AssignmentTestDataLoad.STUDENT3_UID, null, null, null);
-        
-        // set up the course
-        Course site = integrationSupport.createCourse(AssignmentTestDataLoad.CONTEXT_ID, AssignmentTestDataLoad.CONTEXT_ID, false, false, false);
-        integrationSupport.addSiteMembership(AssignmentTestDataLoad.INSTRUCTOR_UID, AssignmentTestDataLoad.CONTEXT_ID, Role.INSTRUCTOR);
-        integrationSupport.addSiteMembership(AssignmentTestDataLoad.TA_UID, AssignmentTestDataLoad.CONTEXT_ID, Role.TA);
-        integrationSupport.addSiteMembership(AssignmentTestDataLoad.STUDENT1_UID, AssignmentTestDataLoad.CONTEXT_ID, Role.STUDENT);
-        integrationSupport.addSiteMembership(AssignmentTestDataLoad.STUDENT2_UID, AssignmentTestDataLoad.CONTEXT_ID, Role.STUDENT);
-        integrationSupport.addSiteMembership(AssignmentTestDataLoad.STUDENT3_UID, AssignmentTestDataLoad.CONTEXT_ID, Role.STUDENT);
-        
-        // create some sections
-        List<String> sectionCategories = sectionAwareness.getSectionCategories(AssignmentTestDataLoad.CONTEXT_ID);
-        CourseSection section1 = integrationSupport.createSection(site.getUuid(), AssignmentTestDataLoad.GROUP1_NAME,
-				(String)sectionCategories.get(0),
-				40, null, null, null, true, false, true,  false, false, false, false);
-		section1Uid = section1.getUuid();
-
-		CourseSection section2 = integrationSupport.createSection(site.getUuid(), AssignmentTestDataLoad.GROUP2_NAME,
-				(String)sectionCategories.get(0),
-				40, null, null, null, true, false, true,  false, false, false, false);
-		section2Uid = section2.getUuid();
-		CourseSection section3 = integrationSupport.createSection(site.getUuid(), AssignmentTestDataLoad.GROUP3_NAME,
-				(String)sectionCategories.get(0),
-				40, null, null, null, true, false, true,  false, false, false, false);
-		section3Uid = section3.getUuid();
-		
-		
-		// put some users in the sections
-		// add TA and STUDENT1 to section 1
-		integrationSupport.addSectionMembership(AssignmentTestDataLoad.STUDENT1_UID, section1Uid, Role.STUDENT);
-		integrationSupport.addSectionMembership(AssignmentTestDataLoad.TA_UID, section1Uid, Role.TA);
-		// add STUDENT2 to section 3
-		integrationSupport.addSectionMembership(AssignmentTestDataLoad.STUDENT2_UID, section3Uid, Role.STUDENT);
-        
-		// refresh the testData vars
-		testData.a1 = dao.getAssignmentByIdWithGroupsAndAttachments(testData.a1Id);
-		testData.a2 = dao.getAssignmentByIdWithGroupsAndAttachments(testData.a2Id);
-		testData.a3 = dao.getAssignmentByIdWithGroupsAndAttachments(testData.a3Id);
-		testData.a4 = dao.getAssignmentByIdWithGroupsAndAttachments(testData.a4Id);
-		
-		// now that we have sections defined, let's update the testData AssignmentGroups to be 
-		// consistent. we can't do it from the beginning b/c i couldn't figure out how to inject
-		// the sections stuff into the PreloadTestData bean...
-		updateAssignmentGroupId(testData.a1.getAssignmentGroupSet());
-		updateAssignmentGroupId(testData.a2.getAssignmentGroupSet());
-		updateAssignmentGroupId(testData.a3.getAssignmentGroupSet());
-		updateAssignmentGroupId(testData.a4.getAssignmentGroupSet());
-		
-        // set up the gradebook
-        gradebookFrameworkService.addGradebook(AssignmentTestDataLoad.CONTEXT_ID, AssignmentTestDataLoad.CONTEXT_ID);
-        
-        // switch to the instructor role
-        authn.setAuthnContext(AssignmentTestDataLoad.INSTRUCTOR_UID);
-        // add some gb items
-        // gb item 1 is not released to students yet!
-        org.sakaiproject.service.gradebook.shared.Assignment gbItem1 = 
-        	new org.sakaiproject.service.gradebook.shared.Assignment();
-        gbItem1.setName(GB_ITEM1_NAME);
-        gbItem1.setPoints(GB_ITEM1_PTS);
-        gbItem1.setDueDate(GB_ITEM1_DUE);
-        gbItem1.setReleased(false);
-        gradebookService.addAssignment(AssignmentTestDataLoad.CONTEXT_ID, gbItem1);
-        org.sakaiproject.service.gradebook.shared.Assignment item1 = 
-        	gradebookService.getAssignment(AssignmentTestDataLoad.CONTEXT_ID, GB_ITEM1_NAME);
-        gbItem1Id = item1.getId();
-        
-        org.sakaiproject.service.gradebook.shared.Assignment gbItem2 = 
-        	new org.sakaiproject.service.gradebook.shared.Assignment();
-        gbItem2.setName(GB_ITEM2_NAME);
-        gbItem2.setPoints(GB_ITEM2_PTS);
-        gbItem2.setDueDate(GB_ITEM2_DUE);
-        gradebookService.addAssignment(AssignmentTestDataLoad.CONTEXT_ID, gbItem2);
-        org.sakaiproject.service.gradebook.shared.Assignment item2 = 
-        	gradebookService.getAssignment(AssignmentTestDataLoad.CONTEXT_ID, GB_ITEM2_NAME);
-        gbItem2Id = item2.getId();
-        
-        // let's add some scores
-        gradebookService.setAssignmentScore(AssignmentTestDataLoad.CONTEXT_ID, 
-        		gbItem2.getName(), AssignmentTestDataLoad.STUDENT2_UID, st2a4Grade, "testing");
-        gradebookService.setAssignmentScoreComment(AssignmentTestDataLoad.CONTEXT_ID, 
-        		gbItem2.getName(), AssignmentTestDataLoad.STUDENT2_UID, st2a4Comment);
-        gradebookService.setAssignmentScore(AssignmentTestDataLoad.CONTEXT_ID, 
-        		gbItem1.getName(), AssignmentTestDataLoad.STUDENT1_UID, st1a3Grade, "testing");
-        gradebookService.setAssignmentScoreComment(AssignmentTestDataLoad.CONTEXT_ID, 
-        		gbItem1.getName(), AssignmentTestDataLoad.STUDENT1_UID, st1a3Comment);
-        
-        // let's make assignment3 and assignment4 graded
-    	testData.a3.setUngraded(false);
-    	testData.a3.setGradableObjectId(gbItem1Id);
-    	dao.save(testData.a3);
-    	
-    	testData.a4.setUngraded(false);
-    	testData.a4.setGradableObjectId(gbItem2Id);
-    	dao.save(testData.a4);
-    	
-    	
-    	// TODO add some grader permissions to a4!!!
     }
 
     public void testGetAssignmentSubmissionById() {
@@ -167,7 +58,7 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
     	assertNull(submissionLogic.getAssignmentSubmissionById(12345L));
     	
     	// the instructor should be able to retrieve any submission
-    	authn.setAuthnContext(AssignmentTestDataLoad.INSTRUCTOR_UID);
+    	externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
     	AssignmentSubmission submission = submissionLogic.getAssignmentSubmissionById(testData.st1a1Submission.getId());
     	assertTrue(submission.getUserId().equals(AssignmentTestDataLoad.STUDENT1_UID));
     	submission = submissionLogic.getAssignmentSubmissionById(testData.st2a2SubmissionNoVersions.getId());
@@ -178,7 +69,7 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
     	// will throw SecurityException if currentUser isn't auth to view submission
     	// let's try a TA
     	// should be able to view student 1's submission
-    	authn.setAuthnContext(AssignmentTestDataLoad.TA_UID);
+    	externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
     	submission = submissionLogic.getAssignmentSubmissionById(testData.st1a3Submission.getId());
     	assertNotNull(submission);
     	assertTrue(submission.getUserId().equals(AssignmentTestDataLoad.STUDENT1_UID));
@@ -193,7 +84,7 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
     	} catch (SecurityException se) {}
     	
     	// student should be able to get their own
-    	authn.setAuthnContext(AssignmentTestDataLoad.STUDENT1_UID);
+    	externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT1_UID);
     	submission = submissionLogic.getAssignmentSubmissionById(testData.st1a3Submission.getId());
     	assertTrue(submission.getUserId().equals(AssignmentTestDataLoad.STUDENT1_UID));
     	// double check submission info is populated
@@ -222,17 +113,17 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
     	assertNull(submissionLogic.getSubmissionVersionById(12345L));
     	
     	// instructors should be able to retrieve any version
-    	authn.setAuthnContext(AssignmentTestDataLoad.INSTRUCTOR_UID);
+    	externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
     	AssignmentSubmissionVersion version = submissionLogic.getSubmissionVersionById(testData.st1a1CurrVersion.getId());
     	assertTrue(version.getAssignmentSubmission().getUserId().equals(AssignmentTestDataLoad.STUDENT1_UID));
     	version = submissionLogic.getSubmissionVersionById(testData.st2a4CurrVersion.getId());
     	assertTrue(version.getAssignmentSubmission().getUserId().equals(AssignmentTestDataLoad.STUDENT2_UID));
     	// double check that gb info was populated
-    	assertEquals(version.getAssignmentSubmission().getGradebookGrade(), st2a4Grade.toString());
-    	assertEquals(version.getAssignmentSubmission().getGradebookComment(), st2a4Comment);
+    	assertEquals(version.getAssignmentSubmission().getGradebookGrade(), AssignmentTestDataLoad.st2a4Grade.toString());
+    	assertEquals(version.getAssignmentSubmission().getGradebookComment(), AssignmentTestDataLoad.st2a4Comment);
     	
     	// ta should be restricted
-    	authn.setAuthnContext(AssignmentTestDataLoad.TA_UID);
+    	externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
     	// let's start with ungraded - should be able to view student 1 but not student 2
     	version = submissionLogic.getSubmissionVersionById(testData.st1a1CurrVersion.getId());
     	assertTrue(version.getAssignmentSubmission().getUserId().equals(AssignmentTestDataLoad.STUDENT1_UID));
@@ -249,8 +140,8 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
     	assertTrue(version.getFeedbackAttachSet().isEmpty());
     	assertTrue(version.getSubmissionAttachSet().isEmpty());
     	// double check that gb info was populated
-    	assertEquals(version.getAssignmentSubmission().getGradebookGrade(), st1a3Grade.toString());
-    	assertEquals(version.getAssignmentSubmission().getGradebookComment(), st1a3Comment);
+    	assertEquals(version.getAssignmentSubmission().getGradebookGrade(), AssignmentTestDataLoad.st1a3Grade.toString());
+    	assertEquals(version.getAssignmentSubmission().getGradebookComment(), AssignmentTestDataLoad.st1a3Comment);
     	
     	// now let's double check that the ta can't see student submission details when it is
     	// draft...
@@ -263,8 +154,8 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
     	assertTrue(version.getSubmittedText().equals(""));
     	
     	// double check that gb info was populated
-    	assertEquals(version.getAssignmentSubmission().getGradebookGrade(), st1a3Grade.toString());
-    	assertEquals(version.getAssignmentSubmission().getGradebookComment(), st1a3Comment);
+    	assertEquals(version.getAssignmentSubmission().getGradebookGrade(), AssignmentTestDataLoad.st1a3Grade.toString());
+    	assertEquals(version.getAssignmentSubmission().getGradebookComment(), AssignmentTestDataLoad.st1a3Comment);
     	
     	// now make sure ta can't see st 3
     	try {
@@ -275,7 +166,7 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
     	// TODO grader permissions
     	
     	// student may see their own submission
-    	authn.setAuthnContext(AssignmentTestDataLoad.STUDENT1_UID);
+    	externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT1_UID);
     	version = submissionLogic.getSubmissionVersionById(testData.st1a3CurrVersion.getId());
     	assertTrue(version.getAssignmentSubmission().getUserId().equals(AssignmentTestDataLoad.STUDENT1_UID));
     	// feedback was not released, so double check that it was not populated
@@ -313,7 +204,7 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
     			12345L, AssignmentTestDataLoad.STUDENT1_UID);
     	assertNull(submission);
     	
-    	authn.setAuthnContext(AssignmentTestDataLoad.INSTRUCTOR_UID);
+    	externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
     	
     	// try to get one for a student who hasn't made a submission yet
     	submission = submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(testData.a2Id, AssignmentTestDataLoad.STUDENT1_UID);
@@ -332,14 +223,14 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
     	assertTrue(submission.getCurrentSubmissionVersion().getSubmissionAttachSet().isEmpty());
     	assertTrue(submission.getCurrentSubmissionVersion().getSubmittedText().equals(""));
     	// check that grading info is included
-    	assertTrue(submission.getGradebookComment().equals(st1a3Comment));
-    	assertTrue(submission.getGradebookGrade().equals(st1a3Grade.toString()));
+    	assertTrue(submission.getGradebookComment().equals(AssignmentTestDataLoad.st1a3Comment));
+    	assertTrue(submission.getGradebookGrade().equals(AssignmentTestDataLoad.st1a3Grade.toString()));
     	
     	// what if the student is not part of the passed assignment?
     	// ie it is restricted to groups that the student is not a member of
     	
     	// now, switch to a ta
-    	authn.setAuthnContext(AssignmentTestDataLoad.TA_UID);
+    	externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
     	// should only have access to student 1 b/c in group 1
     	submission = submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(testData.a1Id, AssignmentTestDataLoad.STUDENT1_UID);
     	assertTrue(submission.getUserId().equals(AssignmentTestDataLoad.STUDENT1_UID));
@@ -358,13 +249,13 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
     	assertTrue(submission.getCurrentSubmissionVersion().getSubmissionAttachSet().isEmpty());
     	assertTrue(submission.getCurrentSubmissionVersion().getSubmittedText().equals(""));
     	// check that grading info is included
-    	assertTrue(submission.getGradebookComment().equals(st1a3Comment));
-    	assertTrue(submission.getGradebookGrade().equals(st1a3Grade.toString()));
+    	assertTrue(submission.getGradebookComment().equals(AssignmentTestDataLoad.st1a3Comment));
+    	assertTrue(submission.getGradebookGrade().equals(AssignmentTestDataLoad.st1a3Grade.toString()));
     	
     	// TODO grader permissions
     	
     	// now switch to a student
-    	authn.setAuthnContext(AssignmentTestDataLoad.STUDENT1_UID);
+    	externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT1_UID);
     	// should be able to retrieve own submission
     	submission = submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(testData.a3Id, AssignmentTestDataLoad.STUDENT1_UID);
     	assertTrue(submission.getUserId().equals(AssignmentTestDataLoad.STUDENT1_UID));
@@ -410,7 +301,7 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
     	} catch (IllegalArgumentException iae) {}
     	
     	// let's see if an instructor can make a submission for a student
-    	authn.setAuthnContext(AssignmentTestDataLoad.INSTRUCTOR_UID);
+    	externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
     	try {
     		submissionLogic.saveStudentSubmission(AssignmentTestDataLoad.STUDENT1_UID,
     				testData.a1, false, null, null);
@@ -418,7 +309,7 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
     	} catch (SecurityException se) {}
     	
     	// try the ta
-    	authn.setAuthnContext(AssignmentTestDataLoad.TA_UID);
+    	externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
     	try {
     		submissionLogic.saveStudentSubmission(AssignmentTestDataLoad.STUDENT1_UID,
     				testData.a1, false, null, null);
@@ -434,7 +325,7 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
     	// student resubmits but is not allowed
     	
     	// student 1 does not have any submission for a2 yet
-    	authn.setAuthnContext(AssignmentTestDataLoad.STUDENT1_UID);
+    	externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT1_UID);
     	// double check that no submission exists yet
     	List<AssignmentSubmission> subList = dao.findByProperties(
     			AssignmentSubmission.class, new String[] {"userId", "assignment"}, 
@@ -521,6 +412,8 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
     		fail("did not catch null assignment passed to saveInstructorFeedback");
     	} catch (IllegalArgumentException iae) {}
     	
+    	externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
+    	
     	// try a versionId that doesn't exist
     	try {
     		submissionLogic.saveInstructorFeedback(12345L, AssignmentTestDataLoad.STUDENT1_UID, 
@@ -550,7 +443,7 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
     	} catch (IllegalArgumentException iae) {}
     	
     	// start as an instructor
-    	authn.setAuthnContext(AssignmentTestDataLoad.INSTRUCTOR_UID);
+    	externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
     	
     	// submit feedback for student w/o submission
     	// student 1 has not submitted for a2 yet
@@ -581,7 +474,7 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
     	assertTrue(versionHistory.size() == 1);
     	
     	// try a TA
-    	authn.setAuthnContext(AssignmentTestDataLoad.TA_UID);
+    	externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
     	// should not be allowed to grade student 2
     	try {
     		submissionLogic.saveInstructorFeedback(testData.st2a1CurrVersion.getId(), 
@@ -602,7 +495,7 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
     	assertTrue(currVersion.getAssignmentSubmission().getResubmitCloseTime().equals(resubmitCloseDate));
     	
     	// student should not be authorized
-    	authn.setAuthnContext(AssignmentTestDataLoad.STUDENT1_UID);
+    	externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT1_UID);
     	try {
     		submissionLogic.saveInstructorFeedback(testData.st1a1CurrVersion.getId(), 
     				AssignmentTestDataLoad.STUDENT1_UID, testData.a1, 2, null, null, null, null, null);
@@ -618,7 +511,7 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
     	} catch (IllegalArgumentException iae) {}
     	
     	// start as instructor
-    	authn.setAuthnContext(AssignmentTestDataLoad.INSTRUCTOR_UID);
+    	externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
     	// we should get 2 students back for a1 b/c group restrictions
     	List<AssignmentSubmission> subList = submissionLogic.getViewableSubmissionsForAssignmentId(testData.a1Id);
     	assertTrue(subList.size() == 2);
@@ -640,7 +533,7 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
     	assertTrue(subList.size() == 1);
     	
     	// now become ta
-    	authn.setAuthnContext(AssignmentTestDataLoad.TA_UID);
+    	externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
     	// we should get 1 student back for a1 b/c only allowed to view group 1
     	subList = submissionLogic.getViewableSubmissionsForAssignmentId(testData.a1Id);
     	assertTrue(subList.size() == 1);
@@ -656,7 +549,7 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
     	assertTrue(subList.isEmpty());
     	
     	// students should get SecurityException
-    	authn.setAuthnContext(AssignmentTestDataLoad.STUDENT1_UID);
+    	externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT1_UID);
     	try {
     		subList = submissionLogic.getViewableSubmissionsForAssignmentId(testData.a1Id);
     		fail("Did not catch student attempting to access submissions via getViewableSubmissionsForAssignmentId");
@@ -670,6 +563,8 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
     		submissionLogic.setSubmissionStatusConstantForAssignments(new ArrayList<Assignment2>(), null);
     		fail("Did not catch null studentId passed to setSubmissionStatusForAssignments");
     	} catch(IllegalArgumentException iae) {}
+    	
+    	externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
     	
     	// try a null assignment list
     	// should do nothing
@@ -787,7 +682,7 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
 		
 		// let's allow resubmission on the assignment level for assign1.
 		// allow 3 submissions - this means st1 will still be open but not st2
-		authn.setAuthnContext(AssignmentTestDataLoad.INSTRUCTOR_UID);
+		externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
 		Assignment2 assign1 = dao.getAssignmentByIdWithGroups(testData.a1Id);
 		assign1.setNumSubmissionsAllowed(3);
 		assign1.setAcceptUntilTime(null);
@@ -892,6 +787,8 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
 			fail("did not catch null assignmentId passed to releaseAllFeedbackForAssignment");
 		} catch (IllegalArgumentException iae) {}
 		
+		externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
+		
 		// try an assignmentId that doesn't exist
 		try {
 			submissionLogic.releaseAllFeedbackForAssignment(12345L);
@@ -899,14 +796,14 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
 		} catch (IllegalArgumentException iae) {}
 		
 		// try as a student
-		authn.setAuthnContext(AssignmentTestDataLoad.STUDENT1_UID);
+		externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT1_UID);
 		try {
 			submissionLogic.releaseAllFeedbackForAssignment(testData.a1Id);
 			fail("Did not catch a student releasing feedback!!");
 		} catch (SecurityException se) {}
 		
 		// try as a TA
-		authn.setAuthnContext(AssignmentTestDataLoad.TA_UID);
+		externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
 		submissionLogic.releaseAllFeedbackForAssignment(testData.a1Id);
 		// should only have updated the one student this TA is allowed to grade!
 		Set<AssignmentSubmissionVersion> st1a1History = dao.getVersionHistoryForSubmission(testData.st1a1Submission);
@@ -920,7 +817,7 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
 		}
 		
 		// instructor should update all
-		authn.setAuthnContext(AssignmentTestDataLoad.INSTRUCTOR_UID);
+		externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
 		submissionLogic.releaseAllFeedbackForAssignment(testData.a3Id);
 		
 		// every version should be released for all students
@@ -952,14 +849,14 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
 		} catch (IllegalArgumentException iae) {}
 		
 		// try as a student - should be security exception
-		authn.setAuthnContext(AssignmentTestDataLoad.STUDENT1_UID);
+		externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT1_UID);
 		try {
 			submissionLogic.releaseAllFeedbackForSubmission(testData.st1a1Submission.getId());
 			fail("Did not catch student trying to release feedback for a submission!!");
 		} catch (SecurityException se) {}
 		
 		// now try as a TA
-		authn.setAuthnContext(AssignmentTestDataLoad.TA_UID);
+		externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
 		// should get SecurityException for student he/she can't grade
 		try {
 			submissionLogic.releaseAllFeedbackForSubmission(testData.st2a1Submission.getId());
@@ -974,7 +871,7 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
 		}
 		
 		// make sure instructor can release, as well
-		authn.setAuthnContext(AssignmentTestDataLoad.INSTRUCTOR_UID);
+		externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
 		submissionLogic.releaseAllFeedbackForSubmission(testData.st2a1Submission.getId());
 		versionHistory = dao.getVersionHistoryForSubmission(testData.st2a1Submission);
 		for (AssignmentSubmissionVersion asv : versionHistory) {
@@ -996,14 +893,14 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
 		} catch (IllegalArgumentException iae) {}
 		
 		// try as a student - should be security exception
-		authn.setAuthnContext(AssignmentTestDataLoad.STUDENT1_UID);
+		externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT1_UID);
 		try {
 			submissionLogic.releaseFeedbackForVersion(testData.st1a1CurrVersion.getId());
 			fail("Did not catch student trying to release feedback for a version!!");
 		} catch (SecurityException se) {}
 		
 		// now try as a TA
-		authn.setAuthnContext(AssignmentTestDataLoad.TA_UID);
+		externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
 		// should get SecurityException for student he/she can't grade
 		try {
 			submissionLogic.releaseFeedbackForVersion(testData.st2a1CurrVersion.getId());
@@ -1023,7 +920,7 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
 		}
 		
 		// make sure instructor can release, as well
-		authn.setAuthnContext(AssignmentTestDataLoad.INSTRUCTOR_UID);
+		externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
 		submissionLogic.releaseFeedbackForVersion(testData.st2a1CurrVersion.getId());
 		versionHistory = dao.getVersionHistoryForSubmission(testData.st2a1Submission);
 		for (AssignmentSubmissionVersion asv : versionHistory) {
@@ -1044,7 +941,7 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
 		} catch (IllegalArgumentException iae) {}
 		
 		// student should only be able to retrieve their own history
-		authn.setAuthnContext(AssignmentTestDataLoad.STUDENT2_UID);
+		externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT2_UID);
 		try {
 			submissionLogic.getVersionHistoryForSubmission(testData.st1a1Submission);
 			fail("Did not catch a student retrieving versionHistory for another student!");
@@ -1061,7 +958,7 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
 		
 		// switch to ta
 		// shouldn't be able to view student2 history
-		authn.setAuthnContext(AssignmentTestDataLoad.TA_UID);
+		externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
 		try {
 			submissionLogic.getVersionHistoryForSubmission(testData.st2a1Submission);
 			fail("Did not catch a ta retrieving versionHistory for student not authorized to view");
@@ -1071,7 +968,7 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
 		assertEquals(history.size(), 1);
 		
 		// switch to instructor
-		authn.setAuthnContext(AssignmentTestDataLoad.INSTRUCTOR_UID);
+		externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
 		history = submissionLogic.getVersionHistoryForSubmission(testData.st1a3Submission);
 		assertEquals(history.size(), 2);
 		// check that submission info for curr version was restricted b/c draft

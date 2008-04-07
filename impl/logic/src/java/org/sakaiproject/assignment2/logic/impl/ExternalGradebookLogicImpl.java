@@ -46,7 +46,6 @@ import org.sakaiproject.service.gradebook.shared.CommentDefinition;
 import org.sakaiproject.service.gradebook.shared.GradeDefinition;
 import org.sakaiproject.service.gradebook.shared.GradebookNotFoundException;
 import org.sakaiproject.service.gradebook.shared.InvalidGradeException;
-import org.sakaiproject.tool.gradebook.Gradebook;
 
 
 /**
@@ -390,8 +389,8 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
     }
     
     public boolean isCurrentUserAbleToGradeStudentForItem(String contextId, String studentId, Long gradableObjectId) {
-    	if (studentId == null || gradableObjectId == null) {
-    		throw new IllegalArgumentException("null studentId or gradableObjectId passed to isCurrentUserAbleToGradeStudentForItem");
+    	if (contextId == null || studentId == null || gradableObjectId == null) {
+    		throw new IllegalArgumentException("null contextId, studentId or gradableObjectId passed to isCurrentUserAbleToGradeStudentForItem");
     	}
     	
     	return gradebookService.isUserAbleToGradeItemForStudent(contextId, gradableObjectId, studentId);
@@ -451,9 +450,7 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
 
 	public String getGradeType(String contextId)
 	{
-		Gradebook gb = (Gradebook) gradebookService.getGradebook(contextId);
-		Integer i = gb.getGrade_type();
-		return i.toString();
+		return "" + gradebookService.getGradeEntryType(contextId);
 	}
 	
 	public Long createGbItemInGradebook(String contextId, String title, Double pointsPossible, Date dueDate,

@@ -31,38 +31,31 @@ import org.sakaiproject.content.api.ContentResource;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.test.AssignmentTestDataLoad;
 
-import org.sakaiproject.section.api.SectionAwareness;
-import org.sakaiproject.section.api.coursemanagement.CourseSection;
-import org.sakaiproject.section.api.coursemanagement.ParticipationRecord;
-import org.sakaiproject.tool.gradebook.facades.Authn;
-import org.sakaiproject.section.api.facade.Role;
 import org.sakaiproject.site.api.Group;
 
 
 
 /**
  * This is a stub class for testing purposes, it will allow us to test all the classes
- * that depend on it since it has way to many external dependencies to make it worth
+ * that depend on it since it has way too many external dependencies to make it worth
  * it to mock them all up<br/>
  *
  * Methods only used by the ui are not implemented
  */
 public class ExternalLogicStub implements ExternalLogic {
-
-	private Authn authn;
-	private SectionAwareness sectionAwareness;
 	
-	public void setAuthn(Authn authn) {
-		this.authn = authn;
-	}
-	public void setSectionAwareness(SectionAwareness sectionAwareness) {
-		this.sectionAwareness = sectionAwareness;
-	}
+	private String currentUserUid;
+	
 	/**
      * @return the current sakai user id (not username)
      */
     public String getCurrentUserId() {
-    	return authn.getUserUid();
+    	//return authn.getUserUid();
+    	return currentUserUid;
+    }
+    
+    public void setCurrentUserId(String currentUserUid) {
+    	this.currentUserUid = currentUserUid;
     }
 
     /**
@@ -144,17 +137,17 @@ public class ExternalLogicStub implements ExternalLogic {
      */
     public List<String> getUserMembershipGroupIdList(String userId, String contextId) {
     	List<String> groupIdList = new ArrayList<String>();
-    	List<CourseSection> sectionList = sectionAwareness.getSections(AssignmentTestDataLoad.CONTEXT_ID);
-    	if (sectionList != null && !sectionList.isEmpty()) {
-    		for (CourseSection section : sectionList) {
-    			if (section != null) {
-    				if (sectionAwareness.isSectionMemberInRole(section.getUuid(), userId, Role.STUDENT) || 
-    						sectionAwareness.isSectionMemberInRole(section.getUuid(), userId, Role.TA)) {
-    					groupIdList.add(section.getUuid());
-    				}
-    			}
-    		}
-    		
+
+    	if (userId.equals(AssignmentTestDataLoad.STUDENT1_UID)) {
+    		groupIdList.add(AssignmentTestDataLoad.GROUP1_NAME);
+    	} else if (userId.equals(AssignmentTestDataLoad.STUDENT2_UID)) {
+    		groupIdList.add(AssignmentTestDataLoad.GROUP3_NAME);
+    	} else if (userId.equals(AssignmentTestDataLoad.STUDENT3_UID)) {
+    		// not a member of any sections
+    	} else if (userId.equals(AssignmentTestDataLoad.TA_UID)) {
+    		groupIdList.add(AssignmentTestDataLoad.GROUP1_NAME);
+    	} else {
+    		// not a member of any sections
     	}
     	
     	return groupIdList;
@@ -198,15 +191,9 @@ public class ExternalLogicStub implements ExternalLogic {
     	}
     	List<String> studentsInSite = new ArrayList<String>();
     	
-    	List<ParticipationRecord> participants = sectionAwareness.getSiteMembersInRole(contextId, Role.STUDENT);
-    	if (participants != null) {
-    		for (ParticipationRecord part : participants) {
-    			if (part != null) {
-    				String studentId = part.getUser().getUserUid();
-    				studentsInSite.add(studentId);
-    			}
-    		}
-    	}
+    	studentsInSite.add(AssignmentTestDataLoad.STUDENT1_UID);
+    	studentsInSite.add(AssignmentTestDataLoad.STUDENT2_UID);
+    	studentsInSite.add(AssignmentTestDataLoad.STUDENT3_UID);
     	
     	return studentsInSite;
     }
@@ -223,14 +210,14 @@ public class ExternalLogicStub implements ExternalLogic {
     	}
     	
     	List<String> studentsInSection = new ArrayList<String>();
-    	
-    	List<ParticipationRecord> participants = sectionAwareness.getSectionMembersInRole(sectionId, Role.STUDENT);
-    	for (ParticipationRecord part : participants) {
-			if (part != null) {
-				String studentId = part.getUser().getUserUid();
-				studentsInSection.add(studentId);
-			}
-		}
+
+    	if (sectionId.equals(AssignmentTestDataLoad.GROUP1_NAME)) {
+    		studentsInSection.add(AssignmentTestDataLoad.STUDENT1_UID);
+    	} else if (sectionId.equals(AssignmentTestDataLoad.GROUP2_NAME)) {
+    		// none
+    	} else if (sectionId.equals(AssignmentTestDataLoad.GROUP3_NAME)) {
+    		studentsInSection.add(AssignmentTestDataLoad.STUDENT2_UID);
+    	}
     	
     	return studentsInSection;
     }

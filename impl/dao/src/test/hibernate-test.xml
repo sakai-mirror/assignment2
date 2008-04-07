@@ -37,33 +37,7 @@
         <value>org/sakaiproject/assignment2/hbm/AssignmentSubmission.hbm.xml</value>
         <value>org/sakaiproject/assignment2/hbm/AssignmentSubmissionVersion.hbm.xml</value>
         <value>org/sakaiproject/assignment2/hbm/SubmissionAttachmentBase.hbm.xml</value>
-        <!-- gradebook tables -->
-        <value>org/sakaiproject/tool/gradebook/Gradebook.hbm.xml</value>
-  			<value>org/sakaiproject/tool/gradebook/GradableObject.hbm.xml</value>
-	  		<value>org/sakaiproject/tool/gradebook/GradeRecord.hbm.xml</value>
-		  	<value>org/sakaiproject/tool/gradebook/GradingEvent.hbm.xml</value>
-			  <value>org/sakaiproject/tool/gradebook/GradingScale.hbm.xml</value>
- 				<value>org/sakaiproject/tool/gradebook/GradebookProperty.hbm.xml</value>
-  			<value>org/sakaiproject/tool/gradebook/GradeMapping.hbm.xml</value>
-        <value>org/sakaiproject/tool/gradebook/Spreadsheet.hbm.xml</value>                
-        <value>org/sakaiproject/tool/gradebook/Comment.hbm.xml</value>   
-        <value>org/sakaiproject/tool/gradebook/Category.hbm.xml</value>
-        <value>org/sakaiproject/tool/gradebook/LetterGradePercenteMapping.hbm.xml</value>
-        <value>org/sakaiproject/tool/gradebook/Permission.hbm.xml</value>
-        <!-- section tables -->
-        <value>org/sakaiproject/component/section/LearningContextImpl.hbm.xml</value>
-				<value>org/sakaiproject/component/section/ParticipationRecordImpl.hbm.xml</value>
-				<value>org/sakaiproject/component/section/UserImpl.hbm.xml</value>
 			</list>
-		</property>
-		<property name="hibernateProperties">
-			<props>
-				<prop key="hibernate.dialect">${hibernate.dialect}</prop>
-				<prop key="hibernate.show_sql">${hibernate.show_sql}</prop>
-				<prop key="hibernate.cache.provider_class">${hibernate.cache.provider_class}</prop>
-				<prop key="hibernate.query.substitutions">true 1, false 0</prop>
-				<prop key="hibernate.hbm2ddl.auto">${hibernate.hbm2ddl.auto}</prop>
-			</props>
 		</property>
 	</bean>
 

@@ -43,8 +43,6 @@
         <includes>
           <include>hibernate-test.xml</include>
           <include>hibernate.properties</include>
-          <include>spring-hib-gb-test.xml</include>
-          <include>spring-hib-sections-test.xml</include>
           <include>logic-beans-test.xml</include>
 
         </includes>

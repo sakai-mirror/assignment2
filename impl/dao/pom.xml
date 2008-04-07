@@ -159,27 +159,7 @@
       <artifactId>sakai-gradebook-service-api</artifactId>
       <version>${sakai.version}</version>
     </dependency>
-    <dependency>
-      <groupId>org.sakaiproject</groupId>
-      <artifactId>sakai-gradebook-service-impl</artifactId>
-      <version>${sakai.version}</version>
-      <exclusions>
-        <exclusion>
-            <groupId>cglib</groupId>
-            <artifactId>cglib-full</artifactId>
-        </exclusion>
-        <exclusion>
-            <groupId>asm</groupId>
-            <artifactId>asm</artifactId>
-        </exclusion>
-    </exclusions>
-    </dependency>
-    <!-- Section Awareness -->
-    <dependency>
-      <groupId>org.sakaiproject</groupId>
-      <artifactId>sakai-sections-api</artifactId>
-      <version>${sakai.version}</version>
-    </dependency>
+
     <dependency>
       <groupId>org.sakaiproject</groupId>
       <artifactId>sakai-util-api</artifactId>
