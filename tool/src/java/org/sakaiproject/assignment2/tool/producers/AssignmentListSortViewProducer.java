@@ -15,6 +15,7 @@ import org.sakaiproject.assignment2.tool.beans.locallogic.DecoratedTaggingProvid
 import org.sakaiproject.assignment2.tool.beans.locallogic.LocalAssignmentLogic;
 import org.sakaiproject.assignment2.tool.params.AssignmentListSortViewParams;
 import org.sakaiproject.assignment2.tool.params.AssignmentViewParams;
+import org.sakaiproject.assignment2.tool.params.TaggableHelperViewParams;
 import org.sakaiproject.assignment2.tool.params.ViewSubmissionsViewParams;
 import org.sakaiproject.assignment2.tool.producers.AssignmentProducer;
 import org.sakaiproject.assignment2.tool.producers.ViewSubmissionsProducer;
@@ -191,6 +192,15 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
         				}
         				
         				UILink.make(tagLinks, "assignment_view_links", helper.getName(), url);
+        				
+        				/*
+        				 //This is commented out until RSF has some better helper support
+        				UIInternalLink.make(tagLinks, "assignment_view_links", helper.getName(),
+        		        		new TaggableHelperViewParams(TaggableHelperProducer.VIEWID, 
+        		        				helper.getHelperId(), 
+        		        				helper.getParameterMap().keySet().toArray(new String[0]), 
+        		        				helper.getParameterMap().values().toArray(new String[0])));
+        		        */
         			}
         		}
         	}

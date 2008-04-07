@@ -89,6 +89,9 @@ public class LocalPermissionLogic {
 			
 		} else if ("zipSubmissions".equals(viewId)) {
 			return permissionLogic.isUserAbleToAccessInstructorView(contextId);
+			
+		} else if (TaggableHelperProducer.VIEWID.equals(viewId)) {
+			return permissionLogic.isUserAbleToAccessInstructorView(contextId);
 		}
 		
 		//Here are some RSF Generic always true viewIds
