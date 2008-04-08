@@ -47,7 +47,6 @@ import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.dao.AssignmentDao;
 import org.sakaiproject.assignment2.exception.AnnouncementPermissionException;
-import org.sakaiproject.assignment2.exception.ConflictingAssignmentNameException;
 import org.sakaiproject.entity.api.Reference;
 import org.sakaiproject.entity.api.ResourceProperties;
 import org.sakaiproject.exception.IdInvalidException;
@@ -279,12 +278,8 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 						newAssignment.setUngraded(assignDef.isUngraded());
 						newAssignment.setHasAnnouncement(assignDef.isHasAnnouncement());
 
-						// if title already exists, we need to append "_1" or "_2" etc - whatever it takes to make it unique
-						String title = assignDef.getTitle();
-						if (currTitles.contains(assignDef.getTitle())) {
-							title = getNewTitle(assignDef.getTitle(), currTitles);
-						}
-						newAssignment.setTitle(title);
+						// title doesn't have to be unique
+						newAssignment.setTitle(assignDef.getTitle());
 
 						// if this item is graded, we need to link it up to a 
 						// corresponding gb item. first, we will check to see if
@@ -374,9 +369,6 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 							assignmentLogic.saveAssignment(newAssignment, toContext);
 							if (log.isDebugEnabled()) log.debug("New assignment " + 
 									newAssignment.getTitle() + " added in site " + toContext);
-						} catch (ConflictingAssignmentNameException cane) {
-							if (log.isInfoEnabled()) log.info("Assignment with title " +
-									newAssignment.getTitle() + " already exists so was not added to site " + toContext);
 						} catch (AnnouncementPermissionException ape) {
 							log.warn("No announcements were added because the user does not have permission in the announcements tool");
 						}
@@ -511,12 +503,14 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 						for (GradebookItem gbItem : allGbItems) {
 							if (gbItem.getExternalId() != null) {
 								if (associateAssignment.equals(gbItem.getExternalId())) {
+									newAssnDef.setUngraded(false);
 									newAssnDef.setAssociatedGbItemName(gbItem.getTitle());
 									newAssnDef.setAssociatedGbItemDueDate(gbItem.getDueDate());
 									newAssnDef.setAssociatedGbItemPtsPossible(gbItem.getPointsPossible());
 								}
 							} else {
 								if (associateAssignment.equals(gbItem.getTitle())) {
+									newAssnDef.setUngraded(false);
 									newAssnDef.setAssociatedGbItemName(gbItem.getTitle());
 									newAssnDef.setAssociatedGbItemDueDate(gbItem.getDueDate());
 									newAssnDef.setAssociatedGbItemPtsPossible(gbItem.getPointsPossible());
@@ -532,6 +526,7 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 					if (oContent.getTypeOfGrade() == Assignment.SCORE_GRADE_TYPE) {
 						// we will add a gb item for this assignment
 						try {
+							newAssnDef.setUngraded(false);
 							newAssnDef.setAssociatedGbItemName(oAssignment.getTitle());
 							newAssnDef.setAssociatedGbItemPtsPossible(new Double(oContent.getMaxGradePointDisplay()));
 							if (oAssignment.getDueTime() != null) {

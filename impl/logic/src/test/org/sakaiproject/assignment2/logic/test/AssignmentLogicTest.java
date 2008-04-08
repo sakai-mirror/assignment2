@@ -34,7 +34,6 @@ import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentAttachment;
 import org.sakaiproject.assignment2.model.AssignmentGroup;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
-import org.sakaiproject.assignment2.exception.ConflictingAssignmentNameException;
 import org.sakaiproject.assignment2.exception.NoGradebookItemForGradedAssignmentException;
 
 import org.sakaiproject.section.api.coursemanagement.CourseSection;
@@ -203,13 +202,6 @@ public class AssignmentLogicTest extends Assignment2TestBase {
     	
     	// switch to a user with edit perm
     	authn.setAuthnContext(AssignmentTestDataLoad.INSTRUCTOR_UID);
-    	
-    	// first, try to hit the duplicate title exception
-    	try {
-    		assignmentLogic.saveAssignment(newAssign);
-    		fail("Did not catch a duplicate name exception!");
-    	} catch (ConflictingAssignmentNameException cane) {
-    	}
     	
     	// change the name
     	String newTitle = "New assignment";
