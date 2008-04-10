@@ -26,17 +26,16 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import org.sakaiproject.content.api.ContentResource;
-
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.test.AssignmentTestDataLoad;
-
+import org.sakaiproject.content.api.ContentResource;
 import org.sakaiproject.section.api.SectionAwareness;
 import org.sakaiproject.section.api.coursemanagement.CourseSection;
 import org.sakaiproject.section.api.coursemanagement.ParticipationRecord;
 import org.sakaiproject.tool.gradebook.facades.Authn;
 import org.sakaiproject.section.api.facade.Role;
 import org.sakaiproject.site.api.Group;
+import org.sakaiproject.user.api.User;
 
 
 
@@ -262,6 +261,10 @@ public class ExternalLogicStub implements ExternalLogic {
 	
 	public String getToolTitle() {
 		return "Assignment2";
+	}
+	public User getUser(String userId)
+	{
+		return null;
 	}
 
 }

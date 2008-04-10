@@ -28,6 +28,7 @@ import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.exception.ServerOverloadException;
 import org.sakaiproject.exception.TypeException;
+import org.sakaiproject.user.api.User;
 import org.sakaiproject.util.FormattedText;
 import org.sakaiproject.util.StringUtil;
 import org.sakaiproject.util.Validator;
@@ -167,11 +168,14 @@ public class ZipExporter
 
 				if (sv != null && sv.getSubmittedTime() != null)
 				{
+					User user = externalLogic.getUser(userId);
 					String name = externalLogic.getUserDisplayName(userId);
+					String displayId = user.getDisplayId();
 					String fullName = externalLogic.getUserFullName(userId);
-					String submittersString = name + "(" + userId + ")";
-					gradesBuilder.append(name).append(",").append(userId).append(",").append(
-							fullName).append(",").append(s.getGradebookGrade()).append("\n");
+					String submittersString = name + "(" + displayId + ")";
+					gradesBuilder.append(name).append(",").append(displayId).append(",")
+							.append(fullName).append(",").append(s.getGradebookGrade())
+							.append("\n");
 
 					if (StringUtil.trimToNull(submittersString) != null)
 					{
