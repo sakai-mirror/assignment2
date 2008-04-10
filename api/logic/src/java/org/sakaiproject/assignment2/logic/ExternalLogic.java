@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.sakaiproject.content.api.ContentResource;
+import org.sakaiproject.user.api.User;
 
 /**
  * This is the interface for logic which is external to our app logic
@@ -158,4 +159,11 @@ public interface ExternalLogic {
      * @return url to helper
      */
     public String getUrlForGradeGradebookItemHelper(Long gradeableObjectId, String userId, String returnViewId);
+    
+    /**
+     * 
+     * @param userId
+     * @return
+     */
+    public User getUser(String userId);
 }
