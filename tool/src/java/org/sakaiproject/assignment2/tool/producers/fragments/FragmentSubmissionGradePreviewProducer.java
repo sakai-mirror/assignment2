@@ -83,7 +83,7 @@ public class FragmentSubmissionGradePreviewProducer implements ViewComponentProd
     		set.removeAll((Set<String>)session.getAttribute("removedAttachmentRefs"));
     	}
     	
-    	attachmentListRenderer.makeAttachment(tofill, "attachment_list:", params.viewID, set, Boolean.FALSE);
+    	attachmentListRenderer.makeAttachment(tofill, "attachment_list:", params.viewID, set, Boolean.FALSE, 0);
     	
     	UIVerbatim.make(tofill, "feedbackText", asv.getAnnotatedTextFormatted());
         UIVerbatim.make(tofill, "feedback_notes", asv.getFeedbackNotes());
