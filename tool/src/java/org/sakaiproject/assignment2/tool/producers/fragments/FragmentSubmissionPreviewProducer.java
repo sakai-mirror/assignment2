@@ -46,32 +46,8 @@ public class FragmentSubmissionPreviewProducer implements ViewComponentProducer,
     	AssignmentSubmissionVersion asv = previewAssignmentSubmissionBean.getAssignmentSubmissionVersion();
     	
     	UIVerbatim.make(tofill, "submittedText", asv.getSubmittedText());
-
-    	//Handle ATtachments 
-    	Set<String> set = new HashSet<String>();    		
-		if (as != null) {
-			//Next get the current assignment submission version
-			AssignmentSubmissionVersion subasv = (AssignmentSubmissionVersion) as.getCurrentSubmissionVersion();
-			//Now get the attachment set
-			if (subasv != null && subasv.getSubmissionAttachSet() != null) {
-				for (SubmissionAttachment asa : subasv.getSubmissionAttachSet()) {
-					set.add(asa.getAttachmentReference());
-				}
-			}
-		}
     	
-    	//get New attachments from session set
-    	ToolSession session = sessionManager.getCurrentToolSession();
-    	if (session.getAttribute("attachmentRefs") != null) {
-    		set.addAll((Set)session.getAttribute("attachmentRefs"));
-    	}
-    	
-    	//Now remove ones from session
-    	if (session.getAttribute("removedAttachmentRefs") != null){
-    		set.removeAll((Set<String>)session.getAttribute("removedAttachmentRefs"));
-    	}
-    	
-    	attachmentListRenderer.makeAttachment(tofill, "attachment_list:", params.viewID, set, Boolean.FALSE);
+    	attachmentListRenderer.makeAttachmentFromSubmissionAttachmentSet(tofill, "attachment_list:", params.viewID, asv.getSubmissionAttachSet(), Boolean.FALSE);
     	
     }
     

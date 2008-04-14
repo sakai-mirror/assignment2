@@ -95,11 +95,6 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
     
     public void fillComponents(UIContainer tofill, ViewParameters viewparams, ComponentChecker checker) {
     	
-    	//Clear out session attachment information if everything successful
-    	ToolSession session = sessionManager.getCurrentToolSession();
-    	session.removeAttribute("attachmentRefs");
-    	session.removeAttribute("removedAttachmentRefs");
-    	
     	//Get Params
         GradeViewParams params = (GradeViewParams) viewparams;
     	String userId = params.userId;
@@ -227,7 +222,7 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
 	        if (assignmentSubmissionVersion.getSubmissionAttachSet() != null){
 	        	UIOutput.make(tofill, "submitted_attachments_fieldset");
 	        	attachmentListRenderer.makeAttachmentFromSubmissionAttachmentSet(tofill, "submitted_attachment_list:", params.viewID, 
-	        			assignmentSubmissionVersion.getSubmissionAttachSet(), Boolean.FALSE, Boolean.FALSE);
+	        			assignmentSubmissionVersion.getSubmissionAttachSet(), Boolean.FALSE);
 	        } else {
 	        	UIMessage.make(tofill, "submitted_attachment_list:", "assignment2.assignment_grade.no_attachments_submitted");
 	        }

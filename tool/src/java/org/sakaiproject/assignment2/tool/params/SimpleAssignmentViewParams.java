@@ -14,7 +14,6 @@ public class SimpleAssignmentViewParams extends SimpleViewParameters implements 
 	private static final Log LOG = LogFactory.getLog(Assignment2Bean.class);
 	
 	public Long assignmentId;
-	public boolean clearSession = true;
 	
 	public SimpleAssignmentViewParams() {}
 
@@ -23,14 +22,8 @@ public class SimpleAssignmentViewParams extends SimpleViewParameters implements 
 	        this.assignmentId = assignmentId;
     }
     
-    public SimpleAssignmentViewParams(String viewId, Long assignmentId, boolean clearSession) {
-    	super(viewId);
-    	this.assignmentId = assignmentId;
-    	this.clearSession = clearSession;
-    }
-    
     public String getParseSpec() {
-    	return super.getParseSpec() + ",@1:assignmentId,clearSession";
+    	return super.getParseSpec() + ",@1:assignmentId";
     }
 
 	public Boolean verify()

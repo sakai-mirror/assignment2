@@ -58,7 +58,7 @@
    <!-- Define the bean roots from the request scope file that are accessible 
     via incoming request URL -->
    <bean parent="requestAddressibleParent">
-	  <property name="value" value="Assignment2,Assignment2Bean,AssignmentSubmission,AssignmentSubmissionBean,FilePickerBean,AssignmentSubmissionVersion,uploadBean"/>
+	  <property name="value" value="Assignment2,Assignment2Bean,AssignmentSubmission,AssignmentSubmissionBean,FilePickerBean,AssignmentSubmissionVersion,uploadBean,AttachmentBean"/>
    </bean>
 
    <!-- Override the default style of user messages -->
@@ -80,7 +80,7 @@
    
    <!-- The beans listed here are session beans (they stick around) -->
 	<bean id="myBeanScope" parent="beanScopeParent">
-		<property name="copyPreservingBeans" value="PreviewAssignmentBean,PreviewAssignmentSubmissionBean" />
+		<property name="copyPreservingBeans" value="PreviewAssignmentBean,PreviewAssignmentSubmissionBean,AttachmentBean" />
 		<property name="exclusive" value="true" />
 	</bean>
 	

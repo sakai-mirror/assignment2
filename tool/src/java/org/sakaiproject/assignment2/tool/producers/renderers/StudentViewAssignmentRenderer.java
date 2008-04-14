@@ -178,7 +178,7 @@ public class StudentViewAssignmentRenderer {
         		set.removeAll((Set<String>)session.getAttribute("removedAttachmentRefs"));
         	}
         	
-        	attachmentListRenderer.makeAttachment(joint, "attachment_list:", params.viewID, set, Boolean.FALSE);
+        	attachmentListRenderer.makeAttachment(joint, "attachment_list:", params.viewID, set, Boolean.FALSE, 0);
     	}
 
     	
@@ -216,7 +216,7 @@ public class StudentViewAssignmentRenderer {
 	        	set.addAll(submissionVersion.getSubmissionAttachSet());
 	        }
 	    	attachmentListRenderer.makeAttachmentFromSubmissionAttachmentSet(joint, "submission_attachment_list:", params.viewID, 
-	    			set, Boolean.TRUE, !preview);
+	    			set, Boolean.TRUE);
 	    	if (!preview){
 	    		UIInternalLink.make(form, "add_submission_attachments", UIMessage.make("assignment2.student-submit.add_attachments"),
 	        		new FilePickerHelperViewParams(AddAttachmentHelperProducer.VIEWID, Boolean.TRUE, 

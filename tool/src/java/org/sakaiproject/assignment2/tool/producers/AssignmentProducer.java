@@ -58,7 +58,7 @@ import org.sakaiproject.site.api.Group;
 import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.tool.api.ToolSession;
 
-public class AssignmentProducer implements ViewComponentProducer, NavigationCaseReporter, ViewParamsReporter, ActionResultInterceptor {
+public class AssignmentProducer implements ViewComponentProducer, NavigationCaseReporter, ViewParamsReporter {
 
     public static final String VIEW_ID = "assignment";
     public String getViewID() {
@@ -94,13 +94,6 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
 
     	//Get View Params
     	AssignmentViewParams params = (AssignmentViewParams) viewparams;
-    	
-    	//Clear out session attachment information if everything successful
-    	ToolSession session = sessionManager.getCurrentToolSession();
-    	if (params.clearSession) {
-	    	session.removeAttribute("attachmentRefs");
-	    	session.removeAttribute("removedAttachmentRefs");
-    	}
     	
     	String currentContextId = externalLogic.getCurrentContextId();
  	
@@ -274,8 +267,8 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
         UISelect.make(form, "honor_pledge", honor_pledge_values, honor_pledge_labels, assignment2OTP + ".honorPledge").setMessageKeys();
         
         //Attachments
-        attachmentListRenderer.makeAttachmentFromAssignment2OTPAttachmentSet(tofill, "attachment_list:", 
-        		params.viewID, OTPKey, Boolean.TRUE, Boolean.TRUE);
+        attachmentListRenderer.makeAttachmentFromAssignment2OTPAttachmentSet(form, "attachment_list:", 
+        		params.viewID, OTPKey, Boolean.TRUE);
         UIInternalLink.make(form, "add_attachments", UIMessage.make("assignment2.assignment_add.add_attachments"),
         		new FilePickerHelperViewParams(AddAttachmentHelperProducer.VIEWID, Boolean.TRUE, 
         				Boolean.TRUE, 500, 700, OTPKey));
@@ -452,14 +445,6 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
         return nav;
     }
 	
-
-	public void interceptActionResult(ARIResult result, ViewParameters incoming, Object actionReturn){
-		//If the form fails, then make sure to add a view param not to clear the session
-		if (actionReturn.equals("failure")) {
-			AssignmentViewParams params = (AssignmentViewParams) result.resultingView;
-			params.clearSession = false;
-		}
-	}
 	
     public ViewParameters getViewParameters() {
         return new AssignmentViewParams();

@@ -164,20 +164,23 @@
 </script>
 <script type="text/javascript">
 //<![CDATA[
-function refresh_ajax(){
-	if(fragAttachPath != ""){
-		old=jQuery("#fragment-attachments-container").html();
-		jQuery.ajax({
-			type: "get",
-			cache: false,
-			url: fragAttachPath + "?otpkey=" + otpkey + "&attachmentSetType=2&remove=true",
-			success: function(html){
-				jQuery("#fragment-attachments-container").html(html.substring(html.indexOf('<div>') + 5, html.lastIndexOf('</div>')));
-				if(old != jQuery("#fragment-attachments-container").html())
-				highlight(jQuery("#fragment-attachments-container"));
+function updateAttachments(){
+	jQuery.each(updateAttachments.arguments, function(){
+	  if (this != null){
+		  jQuery.ajax({
+    		   type: "GET",
+		   	cache: false,
+		   	url: fragAttachPath + "?remove=true&idOffset=" + jQuery("#fragment-attachments-container li").size() + "&attachmentRef=" + this,
+		   	success: function(html){
+			   	jQuery("#fragment-attachments-container").append(html.substring(html.indexOf('<div>') + 5, html.lastIndexOf('</div>')));
+			   	updateDisplayNoAttachments();
 			}
-		});
-	}
+		  });
+      }
+	});
+	highlight(jQuery("#fragment-attachments-container"));
+}
+function refresh_ajax(){
 	if(fragGBDetailsPath != ""){
 		old = jQuery("#gradebook-details-container fieldset").html();
 		jQuery.ajax({

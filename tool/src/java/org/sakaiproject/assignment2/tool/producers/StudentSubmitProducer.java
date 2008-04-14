@@ -30,7 +30,7 @@ import uk.org.ponder.rsf.viewstate.ViewParameters;
 import uk.org.ponder.rsf.viewstate.ViewParamsReporter;
 import uk.org.ponder.rsf.flow.ActionResultInterceptor;
 
-public class StudentSubmitProducer implements ViewComponentProducer, NavigationCaseReporter, ViewParamsReporter, ActionResultInterceptor {
+public class StudentSubmitProducer implements ViewComponentProducer, NavigationCaseReporter, ViewParamsReporter {
 	public static final String VIEW_ID = "student-submit";
 	public String getViewID() {
 		return VIEW_ID;
@@ -50,25 +50,8 @@ public class StudentSubmitProducer implements ViewComponentProducer, NavigationC
 	public void fillComponents(UIContainer tofill, ViewParameters viewparams, ComponentChecker checker) {
     	SimpleAssignmentViewParams params = (SimpleAssignmentViewParams) viewparams;
     		
-    	//Clear out session attachment information if everything successful
-    	ToolSession session = sessionManager.getCurrentToolSession();
-    	
-    	if (params.clearSession) {
-	    	session.removeAttribute("attachmentRefs");
-	    	session.removeAttribute("removedAttachmentRefs");
-    	}
-    	
-    	//get Passed assignmentId to pull in for editing if any
     	Long assignmentId = params.assignmentId;
-    	if (assignmentId == null){
-    		//error 
-    		return;
-    	}
     	Assignment2 assignment = (Assignment2) assignment2BeanLocator.locateBean(assignmentId.toString());
-    	if (assignment == null) {
-    		//error 
-    		return;
-    	}
     	
     	AssignmentSubmission submission = submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(assignmentId, externalLogic.getCurrentUserId());
     	
@@ -109,14 +92,6 @@ public class StudentSubmitProducer implements ViewComponentProducer, NavigationC
         	StudentAssignmentListProducer.VIEW_ID)));
         return nav;
     }
-	
-	public void interceptActionResult(ARIResult result, ViewParameters incoming, Object actionReturn){
-		//If the form fails, then make sure to add a view param not to clear the session
-		if (actionReturn.equals("failure")) {
-			SimpleAssignmentViewParams params = (SimpleAssignmentViewParams) result.resultingView;
-			params.clearSession = false;
-		}
-	}
 	
     public ViewParameters getViewParameters() {
         return new SimpleAssignmentViewParams();

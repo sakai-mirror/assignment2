@@ -20,6 +20,7 @@ import uk.org.ponder.messageutil.MessageLocator;
 import uk.org.ponder.messageutil.TargettedMessage;
 import uk.org.ponder.messageutil.TargettedMessageList;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -89,20 +90,20 @@ public class Assignment2Bean {
 		this.messageLocator = messageLocator;
 	}
 	
-	private SessionManager sessionManager;
-	public void setSessionManager(SessionManager sessionManager) {
-		this.sessionManager = sessionManager;
-	}
-	
 	private NotificationBean notificationBean;
 	public void setNotificationBean (NotificationBean notificationBean) {
 		this.notificationBean = notificationBean;
 	}
 	
+	private AttachmentBean attachmentBean;
+	public void setAttachmentBean(AttachmentBean attachmentBean) {
+		this.attachmentBean = attachmentBean;
+	}
+	
 	public String processActionBackToList() {
 		return BACK_TO_LIST;
 	}
-	
+		
 	public String processActionPost() {
 		String result = POST;
 		for (String key : OTPMap.keySet()) {
@@ -143,33 +144,14 @@ public class Assignment2Bean {
 		}
 
 		Set<AssignmentAttachment> set = new HashSet<AssignmentAttachment>();
-		if (assignment.getAttachmentSet() != null) {
-			set.addAll(assignment.getAttachmentSet());
+		for (String ref : attachmentBean.attachmentRefs) {
+			if (ref != null) {
+				AssignmentAttachment aa = new AssignmentAttachment();
+				aa.setAttachmentReference(ref);
+				set.add(aa);
+			}
 		}
-		
-    	//get New attachments from session set
-    	ToolSession session = sessionManager.getCurrentToolSession();
-    	if (session.getAttribute("attachmentRefs") != null) {
-    		for (String ref : (Set<String>)session.getAttribute("attachmentRefs")) {
-    			AssignmentAttachment aa = new AssignmentAttachment();
-    			aa.setAttachmentReference(ref);
-    			set.add(aa);
-    		}
-    	}
-    	Set<AssignmentAttachment> final_set = new HashSet<AssignmentAttachment>();
-    	//Now check for attachments that have been removed
-    	if (session.getAttribute("removedAttachmentRefs") != null) {
-	    	for (AssignmentAttachment aa : set) {
-	    		//If this item in the set does not have a reference id that is 
-	    		// located in the removed attachment reference ids set
-	    		if (!((Set<String>) session.getAttribute("removedAttachmentRefs")).contains(aa.getAttachmentReference())){
-	    			final_set.add(aa);
-	    		}
-	    	}
-    	} else {
-    		final_set.addAll(set);
-    	}
-    	assignment.setAttachmentSet(final_set);
+		assignment.setAttachmentSet(set);
 
     	//Since in the UI, the select box bound to the gradableObjectId is always present
 		// we need to manually remove this value if the assignment is ungraded
@@ -254,9 +236,7 @@ public class Assignment2Bean {
 			}
 			return FAILURE;
 		}
-		//Clear out session attachment information if everything successful
-    	session.removeAttribute("attachmentRefs");
-    	session.removeAttribute("removedAttachmentRefs");
+		attachmentBean.attachmentRefs = new String[100];
 		return POST;
 	}
 	
@@ -290,10 +270,6 @@ public class Assignment2Bean {
 	}
 	
 	public String processActionCancel() {
-		//Clear out session attachment information if everything successful
-    	ToolSession session = sessionManager.getCurrentToolSession();
-    	session.removeAttribute("attachmentRefs");
-    	session.removeAttribute("removedAttachmentRefs");
 		return CANCEL;
 	}
 	

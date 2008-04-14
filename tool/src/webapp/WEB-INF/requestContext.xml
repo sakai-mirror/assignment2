@@ -29,7 +29,7 @@
    	  <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
    	  <property name="messageLocator" ref="messageLocator" />
    	  <property name="assignment2EntityBeanLocator" ref="Assignment2"/>
-   	  <property name="sessionManager" ref="org.sakaiproject.tool.api.SessionManager" />
+   	  <property name="attachmentBean" ref="AttachmentBean" />
    </bean>
    <bean id="GradebookDetailsRenderer" class="org.sakaiproject.assignment2.tool.producers.renderers.GradebookDetailsRenderer">
       <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
@@ -123,6 +123,7 @@
    </bean>
 
    <bean class="org.sakaiproject.assignment2.tool.producers.FinishedHelperProducer">
+   	  <property name="sessionManager" ref="org.sakaiproject.tool.api.SessionManager" />
    </bean>
    
    <bean class="org.sakaiproject.assignment2.tool.producers.StudentAssignmentListProducer">
@@ -190,11 +191,7 @@
    </bean>
    
    <bean class="org.sakaiproject.assignment2.tool.producers.fragments.FragmentAttachmentsProducer">
-   	  <property name="assignment2EntityBeanLocator" ref="Assignment2"/>
-   	  <property name="sessionManager" ref="org.sakaiproject.tool.api.SessionManager" />
    	  <property name="attachmentListRenderer" ref="AttachmentListRenderer" />
-   	  <property name="assignmentSubmissionEntityBeanLocator" ref="AssignmentSubmission" />
-   	  <property name="asvEntityBeanLocator" ref="AssignmentSubmissionVersion" />
    </bean>
    
    <bean class="org.sakaiproject.assignment2.tool.producers.fragments.FragmentGradebookDetailsProducer">
@@ -237,8 +234,8 @@
    	  <property name="assignment2EntityBeanLocator" ref="Assignment2"/>
    	  <property name="previewAssignmentBean" ref="PreviewAssignmentBean" />
    	  <property name="messageLocator" ref="messageLocator" />
-   	  <property name="sessionManager" ref="org.sakaiproject.tool.api.SessionManager" />
-			<property name="notificationBean" ref="notificationBean" />
+	  <property name="notificationBean" ref="notificationBean" />
+      <property name="attachmentBean" ref="AttachmentBean" />
    </bean>
    
    <bean id="AssignmentSubmissionBean" class="org.sakaiproject.assignment2.tool.beans.AssignmentSubmissionBean">
@@ -249,15 +246,16 @@
    	  <property name="asvEntityBeanLocator" ref="AssignmentSubmissionVersion" />
    	  <property name="previewAssignmentSubmissionBean" ref="PreviewAssignmentSubmissionBean" />
    	  <property name="messageLocator" ref="messageLocator" />
-   	  <property name="sessionManager" ref="org.sakaiproject.tool.api.SessionManager" />
       <property name="notificationBean" ref="notificationBean" />
+      <property name="attachmentBean" ref="AttachmentBean" />
    </bean>
+   
+   <bean id="AttachmentBean" class="org.sakaiproject.assignment2.tool.beans.AttachmentBean" />
    
    <bean id="PreviewAssignmentBean" class="org.sakaiproject.assignment2.tool.beans.PreviewAssignmentBean" />
    <bean id="PreviewAssignmentSubmissionBean" class="org.sakaiproject.assignment2.tool.beans.PreviewAssignmentSubmissionBean" />
 
    <bean id="FilePickerBean" class="org.sakaiproject.assignment2.tool.beans.FilePickerBean">
-      <property name="sessionManager" ref="org.sakaiproject.tool.api.SessionManager" />
    </bean>
 
 	<bean id="notificationBean" class="org.sakaiproject.assignment2.tool.beans.NotificationBean">

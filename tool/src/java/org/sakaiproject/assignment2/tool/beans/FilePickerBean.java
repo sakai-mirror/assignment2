@@ -18,64 +18,10 @@
 
 package org.sakaiproject.assignment2.tool.beans;
 
-import java.util.List;
-import java.util.HashSet;
-import java.util.Set;
-
-import org.sakaiproject.content.api.FilePickerHelper;
-import org.sakaiproject.entity.api.Reference;
-import org.sakaiproject.tool.api.SessionManager;
-import org.sakaiproject.tool.api.ToolSession;
-
-/**
- * This is the backing bean of the XML data import process.
- * 
- */
 public class FilePickerBean {
 		
-	//injection
-	private SessionManager sessionManager;
-	public void setSessionManager(SessionManager sessionManager) {
-		this.sessionManager = sessionManager;
+	public String process() {
+	    return "processed";
 	}
-
-	public String otpkey;
-	
-	/**
-	 * Parse and load selected XML data file
-	 * 
-	 * @return String that is used to determine the place where control is to be sent
-	 * 			in ControlImportProducer (reportNavigationCases method)
-	 * @throws SecurityException 
-	 */
-	@SuppressWarnings("unchecked")
-	public String process() throws SecurityException {
-
-		    ToolSession session = sessionManager.getCurrentToolSession();
-		    if (session.getAttribute(FilePickerHelper.FILE_PICKER_CANCEL) == null &&
-		        session.getAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS) != null) 
-		    {
-		      List refs = (List)session.getAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS);
-		      Set set = new HashSet();
-
-	    	  //check if set already there, if so add on
-	    	  if (session.getAttribute("attachmentRefs") != null) {
-	    		  set.addAll((Set) session.getAttribute("attachmentRefs"));
-	    	  }
-		      
-		      for (int i = 0; i < refs.size(); i++) {
-		    	  Reference ref = (Reference) refs.get(i);
-		    	  set.add(ref.getId());
-
-		    	  session.setAttribute("attachmentRefs", set);
-		      }
-		      
-		    }
-		    session.removeAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS);
-		    session.removeAttribute(FilePickerHelper.FILE_PICKER_CANCEL);
-		    return "processed";
-
-	}
-
 }
 

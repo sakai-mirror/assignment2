@@ -6,7 +6,6 @@ import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
 public class AssignmentViewParams extends SimpleViewParameters {
 
 	public Long assignmentId;
-	public boolean clearSession = true;
 	
 	public AssignmentViewParams() {}
 	
@@ -17,16 +16,9 @@ public class AssignmentViewParams extends SimpleViewParameters {
     public AssignmentViewParams(String viewId, Long assignmentId) {
     		super(viewId);
     		this.assignmentId = assignmentId;
-    		this.clearSession = true;
-    }
-    
-    public AssignmentViewParams(String viewId, Long assignmentId, boolean clearSession) {
-    	super(viewId);
-    	this.assignmentId = assignmentId;
-    	this.clearSession = clearSession;
     }
     
     public String getParseSpec() {
-    	return super.getParseSpec() + ",@1:assignmentId,clearSession";
+    	return super.getParseSpec() + ",@1:assignmentId";
     }
 }

@@ -8,24 +8,30 @@ import org.sakaiproject.assignment2.model.AssignmentAttachment;
 import org.sakaiproject.assignment2.model.SubmissionAttachment;
 import org.sakaiproject.assignment2.model.FeedbackAttachment;
 import org.sakaiproject.assignment2.tool.beans.Assignment2Bean;
+import org.sakaiproject.assignment2.tool.beans.AttachmentBean;
 import org.sakaiproject.assignment2.tool.producers.fragments.AjaxCallbackProducer;
 import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.content.api.ContentResource;
 import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.tool.api.ToolSession;
+import org.sakaiproject.util.commonscodec.CommonsCodecBase64;
 
 import uk.org.ponder.beanutil.entity.EntityBeanLocator;
 import uk.org.ponder.messageutil.MessageLocator;
 import uk.org.ponder.rsf.components.UIContainer;
+import uk.org.ponder.rsf.components.UIInput;
 import uk.org.ponder.rsf.components.UIJointContainer;
 import uk.org.ponder.rsf.components.UILink;
 import uk.org.ponder.rsf.components.UIMessage;
 import uk.org.ponder.rsf.components.UIOutput;
 import uk.org.ponder.rsf.components.UIVerbatim;
+import uk.org.ponder.rsf.components.decorators.UICSSDecorator;
 
 import java.util.Set;
 import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.ArrayList;
 
 public class AttachmentListRenderer {
@@ -51,10 +57,11 @@ public class AttachmentListRenderer {
 		this.assignment2EntityBeanLocator = assignment2EntityBeanLocator;
 	}
 	
-	private SessionManager sessionManager;
-	public void setSessionManager(SessionManager sessionManager) {
-		this.sessionManager = sessionManager;
+	private AttachmentBean attachmentBean;
+	public void setAttachmentBean (AttachmentBean attachmentBean) {
+		this.attachmentBean = attachmentBean;
 	}
+	
 	
 	public void makeAttachmentFromAssignmentAttachmentSet(UIContainer tofill, String divID, String currentViewID, Set<AssignmentAttachment> aaSet, Boolean remove) {
 		Set<String> refSet = new HashSet();
@@ -63,10 +70,10 @@ public class AttachmentListRenderer {
 				refSet.add(aa.getAttachmentReference());
 			}
 		}
-		makeAttachment(tofill, divID, currentViewID, refSet, remove);
+		makeAttachment(tofill, divID, currentViewID, refSet, remove, 0);
 	}
 	
-	public void makeAttachmentFromAssignment2OTPAttachmentSet(UIContainer tofill, String divID, String currentViewID, String a2OTPKey, Boolean remove, Boolean addSession) {
+	public void makeAttachmentFromAssignment2OTPAttachmentSet(UIContainer tofill, String divID, String currentViewID, String a2OTPKey, Boolean remove) {
 		Assignment2 assignment = (Assignment2)assignment2EntityBeanLocator.locateBean(a2OTPKey);
 		Set<String> refSet = new HashSet();
 		if (assignment != null && assignment.getAttachmentSet() != null){
@@ -74,43 +81,18 @@ public class AttachmentListRenderer {
 				refSet.add(aa.getAttachmentReference());
 			}
 		}
-		
-		if(addSession) {
-	    	//get New attachments from session set
-	    	ToolSession session = sessionManager.getCurrentToolSession();
-	    	if (session.getAttribute("attachmentRefs") != null) {
-	    		refSet.addAll((Set)session.getAttribute("attachmentRefs"));
-	    	}
-	    	
-	    	//Now remove ones from session
-	    	if (session.getAttribute("removedAttachmentRefs") != null){
-	    		refSet.removeAll((Set<String>)session.getAttribute("removedAttachmentRefs"));
-	    	}
-		}
-		makeAttachment(tofill, divID, currentViewID, refSet, remove);
+		makeAttachment(tofill, divID, currentViewID, refSet, remove, 0);
 	}
 	
 	public void makeAttachmentFromSubmissionAttachmentSet(UIContainer tofill, String divID, String currentViewID,
-			Set<SubmissionAttachment> asaSet, Boolean remove, Boolean addSession) {
+			Set<SubmissionAttachment> asaSet, Boolean remove) {
 		Set<String> refSet = new HashSet();
 		if (asaSet != null) {
 			for (SubmissionAttachment asa : asaSet) {
 				refSet.add(asa.getAttachmentReference());
 			}
 		}
-		if(addSession) {
-	    	//get New attachments from session set
-	    	ToolSession session = sessionManager.getCurrentToolSession();
-	    	if (session.getAttribute("attachmentRefs") != null) {
-	    		refSet.addAll((Set)session.getAttribute("attachmentRefs"));
-	    	}
-	    	
-	    	//Now remove ones from session
-	    	if (session.getAttribute("removedAttachmentRefs") != null){
-	    		refSet.removeAll((Set<String>)session.getAttribute("removedAttachmentRefs"));
-	    	}
-		}
-		makeAttachment(tofill, divID, currentViewID, refSet, remove);
+		makeAttachment(tofill, divID, currentViewID, refSet, remove, 0);
 	}
 	
 	public void makeAttachmentFromFeedbackAttachmentSet(UIContainer tofill, String divID, String currentViewID,
@@ -121,21 +103,39 @@ public class AttachmentListRenderer {
 				refSet.add(afa.getAttachmentReference());
 			}
 		}
-		makeAttachment(tofill, divID, currentViewID, refSet, remove);
+		makeAttachment(tofill, divID, currentViewID, refSet, remove, 0);
 	}
 
 	
-    public void makeAttachment(UIContainer tofill, String divID, String currentViewID, Set<String> refSet, Boolean remove) {
-        
-    	if (refSet == null || refSet.size() == 0){
-        	UIJointContainer joint = new UIJointContainer(tofill, divID, "attachments:", ""+1);
-        	UIMessage.make(joint, "no_attachments_yet", "assignment2.no_attachments_yet");
-        	return;
-        }
-
-        int i = 1;
+    public void makeAttachment(UIContainer tofill, String divID, String currentViewID, Set<String> refSet, Boolean remove, int idOffset) {
+    	//First add those in session from AttachmentBean
+    	if (attachmentBean.attachmentRefs != null && attachmentBean.attachmentRefs.length > 0) {
+    		for (String ref : attachmentBean.attachmentRefs) {
+    			if (ref != null) {
+    				refSet.add(ref);
+    			}
+    		}
+    	}
+    	
+    	int i = 1;
+    	//basically if idOffset = 0, then this is a fresh attachment list
+    	// 	then you can add the line "No Attachments" to toggle on/off
+    	if (idOffset == 0) {
+	        UIJointContainer joint = new UIJointContainer(tofill, divID, "attachments:", ""+1);
+	        UIMessage li = UIMessage.make(joint, "no_attachments_yet", "assignment2.no_attachments_yet");
+	        
+	        //If no refs, set to hidden
+	        if (refSet.size() > 0){
+	        	Map<String,String> styleMap = new HashMap<String,String>();
+	        	styleMap.put("display", "none");
+	        	li.decorate(new UICSSDecorator(styleMap));
+	        }
+	        i++;
+    	}
+    	
+    	int index = 0;
         for (String ref : refSet){
-        	UIJointContainer joint = new UIJointContainer(tofill, divID, "attachments:", ""+i);
+        	UIJointContainer joint = new UIJointContainer(tofill, divID, "attachments:", ""+(i+idOffset));
 	        try {
 	    		ContentResource cr = contentHostingService.getResource(ref);
 	    		UILink.make(joint, "attachment_image", externalLogic.getContentTypeImagePath(cr));
@@ -143,15 +143,16 @@ public class AttachmentListRenderer {
 	    				cr.getUrl());
 	    		String file_size = getReadableFileSize(cr.getContentLength());
 	    		UIOutput.make(joint, "attachment_size", file_size);
+	    		UIInput hidden = UIInput.make(joint, "attachment_item", "#{AttachmentBean.attachmentRefs." + Integer.valueOf(index+idOffset) + "}", ref);
+	    		
+	    		hidden.mustapply = true;
 	    		
 	    		//Add remove link
 	    		if (remove) {
-	    			String url = externalLogic.getAssignmentViewUrl(AjaxCallbackProducer.VIEW_ID);
 	    			UIVerbatim.make(joint, "attachment_remove", 
 	    					"<a href=\"#\" " +
 	    					"onclick=\"" +
-	    					"jQuery.get('" + url + "?removeAttachment=true&refId=" + org.sakaiproject.util.Web.escapeUrl(ref) + "',function(){" +
-	    					"if(refresh_ajax){refresh_ajax();}});" + //"jQuery(this).parent('span').parent('li').remove();" +
+	    					"jQuery(this).parent('span').parent('li').remove();updateDisplayNoAttachments();" +
 	    					"\">" +
 	    					messageLocator.getMessage("assignment2.remove") +
 	    					"</a>");
@@ -161,6 +162,7 @@ public class AttachmentListRenderer {
 				//do nothing
 			}
 			i++;
+			index++;
         } //Ending for loop
     }
     

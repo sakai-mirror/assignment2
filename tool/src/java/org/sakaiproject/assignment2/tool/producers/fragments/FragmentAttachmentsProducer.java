@@ -31,27 +31,6 @@ public class FragmentAttachmentsProducer implements ViewComponentProducer, ViewP
         return VIEW_ID;
     }
     
-    private EntityBeanLocator assignment2EntityBeanLocator;
-	@SuppressWarnings("unchecked")
-	public void setAssignment2EntityBeanLocator(EntityBeanLocator entityBeanLocator) {
-		this.assignment2EntityBeanLocator = entityBeanLocator;
-	}
-	
-	private EntityBeanLocator assignmentSubmissionEntityBeanLocator;
-	public void setAssignmentSubmissionEntityBeanLocator(EntityBeanLocator entityBeanLocator) {
-		this.assignmentSubmissionEntityBeanLocator = entityBeanLocator;
-	}
-	
-	private EntityBeanLocator asvEntityBeanLocator;
-	public void setAsvEntityBeanLocator(EntityBeanLocator asvEntityBeanLocator) {
-		this.asvEntityBeanLocator = asvEntityBeanLocator;
-	}
-	
-	private SessionManager sessionManager;
-	public void setSessionManager(SessionManager sessionManager) {
-		this.sessionManager = sessionManager;
-	}
-	
 	private AttachmentListRenderer attachmentListRenderer;
 	public void setAttachmentListRenderer(AttachmentListRenderer attachmentListRenderer){
 		this.attachmentListRenderer = attachmentListRenderer;
@@ -60,55 +39,14 @@ public class FragmentAttachmentsProducer implements ViewComponentProducer, ViewP
     public void fillComponents(UIContainer tofill, ViewParameters viewparams, ComponentChecker checker) {
     	FragmentAttachmentsViewParams params = (FragmentAttachmentsViewParams) viewparams;
     	
-    	if (params.otpkey == null || params.otpkey.equals("")){
-    		return;
-    	}
-    	
     	Set<String> set = new HashSet<String>();
+    	set.add(params.attachmentRef);
     	
-    	if (params.attachmentSetType == FragmentAttachmentsViewParams.ASSIGNMENT_ATTACHMENT) {
-    		//This means we are dealing with AssignmentAttachments
-	    	Assignment2 assignment = (Assignment2) assignment2EntityBeanLocator.locateBean(params.otpkey);
-	    	if (assignment != null && assignment.getAttachmentSet() != null) {
-		    	for (AssignmentAttachment aa : assignment.getAttachmentSet()) {
-		    		set.add(aa.getAttachmentReference());
-		    	}
-	    	}
-    	} else if (params.attachmentSetType == FragmentAttachmentsViewParams.ASSIGNMENT_SUBMISSION_ATTACHMENT) {
-    		//This means we are dealing with SubmissionAttachments
-    		//First get the assignment submission
-    		AssignmentSubmission as = (AssignmentSubmission) assignmentSubmissionEntityBeanLocator.locateBean(params.otpkey);
-    		if (as != null) {
-    			//Next get the current assignment submission version
-    			AssignmentSubmissionVersion asv = (AssignmentSubmissionVersion) as.getCurrentSubmissionVersion();
-    			//Now get the attachment set
-    			if (asv != null && asv.getSubmissionAttachSet() != null) {
-    				for (SubmissionAttachment asa : asv.getSubmissionAttachSet()) {
-    					set.add(asa.getAttachmentReference());
-    				}
-    			}
-    		}
-    	} else if (params.attachmentSetType == FragmentAttachmentsViewParams.ASSIGNMENT_FEEDBACK_ATTACHMENT) {
-    		AssignmentSubmissionVersion asv = (AssignmentSubmissionVersion) asvEntityBeanLocator.locateBean(params.otpkey);
-    		if (asv != null && asv.getFeedbackAttachSet() != null){
-    			for (FeedbackAttachment afa : asv.getFeedbackAttachSet()){
-    				set.add(afa.getAttachmentReference());
-    			}
-    		}
+    	if (params.idOffset < 1) {
+    		params.idOffset = 0;
     	}
     	
-    	//get New attachments from session set
-    	ToolSession session = sessionManager.getCurrentToolSession();
-    	if (session.getAttribute("attachmentRefs") != null) {
-    		set.addAll((Set)session.getAttribute("attachmentRefs"));
-    	}
-    	
-    	//Now remove ones from session
-    	if (session.getAttribute("removedAttachmentRefs") != null){
-    		set.removeAll((Set<String>)session.getAttribute("removedAttachmentRefs"));
-    	}
-    	
-    	attachmentListRenderer.makeAttachment(tofill, "attachment_list:", params.viewID, set, params.remove);
+    	attachmentListRenderer.makeAttachment(tofill, "attachment_list:", params.viewID, set, params.remove, params.idOffset);
     	
     }
     

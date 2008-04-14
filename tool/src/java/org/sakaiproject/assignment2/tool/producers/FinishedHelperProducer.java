@@ -10,12 +10,24 @@ import uk.org.ponder.rsf.viewstate.ViewParameters;
 import uk.org.ponder.rsf.viewstate.ViewParamsReporter;
 import uk.org.ponder.htmlutil.HTMLUtil;
 
+import org.sakaiproject.content.api.FilePickerHelper;
+import org.sakaiproject.entity.api.Reference;
+import org.sakaiproject.tool.api.SessionManager;
+import org.sakaiproject.tool.api.ToolSession;
+
+import java.util.List;
+
 public class FinishedHelperProducer implements ViewComponentProducer, ViewParamsReporter
 {
 	  public static final String VIEWID = "FinishedHelper";
 	  
 	  public String getViewID() {
 	    return VIEWID;
+	  }
+	  
+	  private SessionManager sessionManager;
+	  public void setSessionManager(SessionManager sessionManager) {
+		  this.sessionManager = sessionManager;
 	  }
 	
 	  public void fillComponents(UIContainer tofill, ViewParameters viewparams, ComponentChecker checker) {
@@ -32,6 +44,28 @@ public class FinishedHelperProducer implements ViewComponentProducer, ViewParams
 				  			}
 				  )
 		  );
+		  
+		  //check session for attachment refs returned from a file picker helper
+		  ToolSession toolSession = sessionManager.getCurrentToolSession();
+		  if (toolSession.getAttribute(FilePickerHelper.FILE_PICKER_CANCEL) == null &&
+				  toolSession.getAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS) != null) 
+	      {
+			  List<Reference> refs = (List)toolSession.getAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS);
+			  String[] attachmentRefs = new String[refs.size()];
+			  int i=0;
+			  for (Reference ref : refs) {
+				  attachmentRefs[i] = org.sakaiproject.util.Web.escapeUrl(ref.getId());
+				  i++;
+			  }
+			  UIVerbatim.make(tofill, "updateAttachments",
+				  HTMLUtil.emitJavascriptCall("parent.updateAttachments", attachmentRefs));
+				  //Here are my references... now emit a JS call to add these references to the UI
+				  //Then remove the FilePickerBean
+				  //Then make the UI just duplicate or create a row for attachments
+				  //Then do it for all attachments on the site
+			  toolSession.removeAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS);
+			  toolSession.removeAttribute(FilePickerHelper.FILE_PICKER_CANCEL);
+	      }
 		  
 		  if (params.value != null && !params.value.equals("")) {
 			  UIVerbatim.make(tofill, "useValue", 

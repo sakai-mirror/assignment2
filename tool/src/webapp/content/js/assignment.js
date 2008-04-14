@@ -161,3 +161,11 @@ function flip_image(img){
 		img.src=img.src.replace(/expand/, 'collapse');
 	}
 }
+function updateDisplayNoAttachments(){
+	var li = jQuery("#fragment-attachments-container li span.no_attachments_yet").get(0);
+	if (jQuery("#fragment-attachments-container li").size() > 1) {
+		jQuery("span.no_attachments_yet").parent("li").hide();
+	} else {
+		jQuery("span.no_attachments_yet").parent("li").show();
+	}
+}
