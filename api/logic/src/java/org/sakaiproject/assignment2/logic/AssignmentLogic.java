@@ -47,6 +47,7 @@ public interface AssignmentLogic {
 	 * @param assignmentId
 	 * @return Returns the Assignment based on its assignmentId. Does not populate
 	 * the AssignmentAttachments and AssignmentGroups
+	 * @throws AssignmentNotFoundException if no assignment exists with the given id
 	 */
 	public Assignment2 getAssignmentById(Long assignmentId);
 	
@@ -105,27 +106,27 @@ public interface AssignmentLogic {
 	public void setAssignmentSortIndexes(Long[] assignmentIds);
 	
 	/**
-	 * retrieve the Assignment2 object with the given id and populate associated
+	 * @param assignmentId
+	 * @return the Assignment2 object with the given id and populate associated
 	 * data (ie attachments, groups, any gradebook data). Does not include
 	 * student submission information
-	 * @param assignmentId
-	 * @return
+	 * @throws AssignmentNotFoundException if no assignment exists with the given id
 	 */
 	public Assignment2 getAssignmentByIdWithAssociatedData(Long assignmentId);
 	
-	/**
-	 * retrieve the Assignment2 object with the given id and populate the
-	 * associated AssignmentGroups
+	/** 
 	 * @param assignmentId
-	 * @return
+	 * @return the Assignment2 object with the given id and populate the
+	 * associated AssignmentGroups
+	 * @throws AssignmentNotFoundException if no assignment exists with the given id
 	 */
 	public Assignment2 getAssignmentByIdWithGroups(Long assignmentId);
 	
 	/**
-	 * retrieve the Assignment2 object with the given id and populate the
-	 * associated AssignmentGroups and AssignmentAttachments
 	 * @param assignmentId
-	 * @return
+	 * @return the Assignment2 object with the given id and populate the
+	 * associated AssignmentGroups and AssignmentAttachments
+	 * @throws AssignmentNotFoundException if no assignment exists with the given id
 	 */
 	public Assignment2 getAssignmentByIdWithGroupsAndAttachments(Long assignmentId);
 

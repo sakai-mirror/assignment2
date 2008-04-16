@@ -21,14 +21,14 @@
 
 package org.sakaiproject.assignment2.logic.impl;
 
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.ArrayList;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
@@ -36,17 +36,20 @@ import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment.api.Assignment;
 import org.sakaiproject.assignment.api.AssignmentContent;
 import org.sakaiproject.assignment.api.AssignmentService;
-import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
+import org.sakaiproject.assignment2.dao.AssignmentDao;
+import org.sakaiproject.assignment2.exception.AnnouncementPermissionException;
+import org.sakaiproject.assignment2.logic.AssignmentLogic;
+import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
+import org.sakaiproject.assignment2.logic.ExternalLogic;
+import org.sakaiproject.assignment2.logic.GradebookItem;
+import org.sakaiproject.assignment2.logic.ImportExportLogic;
+import org.sakaiproject.assignment2.logic.entity.AssignmentDefinition;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentAttachment;
 import org.sakaiproject.assignment2.model.AssignmentGroup;
-import org.sakaiproject.assignment2.logic.AssignmentLogic;
-import org.sakaiproject.assignment2.logic.GradebookItem;
-import org.sakaiproject.assignment2.logic.ImportExportLogic;
-import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
-import org.sakaiproject.assignment2.logic.ExternalLogic;
-import org.sakaiproject.assignment2.dao.AssignmentDao;
-import org.sakaiproject.assignment2.exception.AnnouncementPermissionException;
+import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
+import org.sakaiproject.content.api.ContentHostingService;
+import org.sakaiproject.content.api.ContentResource;
 import org.sakaiproject.entity.api.Reference;
 import org.sakaiproject.entity.api.ResourceProperties;
 import org.sakaiproject.exception.IdInvalidException;
@@ -58,9 +61,6 @@ import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.exception.ServerOverloadException;
 import org.sakaiproject.exception.TypeException;
 import org.sakaiproject.site.api.Group;
-import org.sakaiproject.assignment2.logic.entity.AssignmentDefinition;
-import org.sakaiproject.content.api.ContentHostingService;
-import org.sakaiproject.content.api.ContentResource;
 
 
 

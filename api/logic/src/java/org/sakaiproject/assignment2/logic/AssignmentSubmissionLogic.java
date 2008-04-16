@@ -57,6 +57,7 @@ public interface AssignmentSubmissionLogic {
 	 * been released, will not populate	feedback.
 	 * @throws SecurityException if current user is not allowed to view the
 	 * corresponding submission
+	 * @throws SubmissionNotFoundException if no submission exists with the given id
 	 */
 	public AssignmentSubmission getAssignmentSubmissionById(Long submissionId);
 	
@@ -64,12 +65,13 @@ public interface AssignmentSubmissionLogic {
 	 * 
 	 * @param submissionVersionId
 	 * @return Returns the AssignmentSubmissionVersion with the given submissionVersionId.
-	 * Will populate grading information. Returns null if no version with that id.
+	 * Will populate grading information.
 	 * If the version is draft and the submitter is not the current user, will not
 	 * populate the submissionText or submissionAttachmentSet. If the curr user is
-	 * 		the submitter but feedback has not been released, will not populate
-	 * 		feedback.
-	 * @SecurityException if current user is not allowed to view the version
+	 * the submitter but feedback has not been released, will not populate
+	 * feedback.
+	 * @throws SecurityException if current user is not allowed to view the version
+	 * @throws VersionNotFoundException if no version exists with the given id
 	 */
 	public AssignmentSubmissionVersion getSubmissionVersionById(Long submissionVersionId);
 	
@@ -78,7 +80,7 @@ public interface AssignmentSubmissionLogic {
 	 * 
 	 * @param assignmentId
 	 * @param studentId
-	 * @return AssignmentSubmission associated with the given Assignment and studentId.
+	 * @return AssignmentSubmission associated with the given assignmentId and studentId.
 	 * 		will return an empty record (with gb info populated, if appropriate)
 	 * 		if there is no submission info for this student yet. If the curr version 
 	 * 		is draft and the submitter is not the current user, will not
@@ -86,6 +88,7 @@ public interface AssignmentSubmissionLogic {
 	 * 		the submitter but feedback has not been released, will not populate
 	 * 		feedback.
 	 * @throws SecurityException if current user not allowed to view student's submission
+	 * @throws AssignmentNotFoundException if no assignment exists with the given assignmentId
 	 */
 	public AssignmentSubmission getCurrentSubmissionByAssignmentIdAndStudentId(Long assignmentId, String studentId);
 	
@@ -136,6 +139,7 @@ public interface AssignmentSubmissionLogic {
 	 * no submission exists yet, returns an empty AssigmentSubmission rec for the
 	 * student
 	 * @throws SecurityException if not allowed to view or grade submissions
+	 * @throws AssignmentNotFoundException if no assignment exists with the given assignmentId
 	 */
 	public List<AssignmentSubmission> getViewableSubmissionsForAssignmentId(Long assignmentId);
 	
@@ -176,6 +180,7 @@ public interface AssignmentSubmissionLogic {
 	 * @return true if the student is still able to make a submission for the given
 	 * assignment at this time.  checks to see if assignment is open, if resubmission allowed,
 	 * etc to determine if submission is still open
+	 * @throws AssignmentNotFoundException if no assignment exists with given assignmentId
 	 */
 	public boolean submissionIsOpenForStudentForAssignment(String studentId, Long assignmentId);
 	
@@ -194,6 +199,7 @@ public interface AssignmentSubmissionLogic {
 	 * will not be affected
 	 * @param assignmentId
 	 * @throws SecurityException if user is not allowed to submit feedback
+	 * @throws AssignmentNotFoundException if no assignment with the given assignmentId
 	 */
 	public void releaseAllFeedbackForAssignment(Long assignmentId);
 	
@@ -202,6 +208,7 @@ public interface AssignmentSubmissionLogic {
 	 * @param submissionId
 	 * @throws SecurityException if the current user is not authorized to 
 	 * submit feedback for the given submission
+	 * @throws SubmissionNotFoundException if no AssignmentSubmission with the given submissionId
 	 */
 	public void releaseAllFeedbackForSubmission(Long submissionId);
 	
@@ -210,6 +217,7 @@ public interface AssignmentSubmissionLogic {
 	 * @param submissionVersionId
 	 * @throws SecurityException if the current user is not authorized to 
 	 * submit feedback for the given submission
+	 * @throws VersionNotFoundException if no version exists with the given submissionVersionId
 	 */
 	public void releaseFeedbackForVersion(Long submissionVersionId);
 
@@ -217,7 +225,7 @@ public interface AssignmentSubmissionLogic {
 	 * 
 	 * @param submission
 	 * @return a list of all of the AssignmentSubmissionVersions associated with
-	 * the given submission. If the a version is draft and the submitter is not 
+	 * the given submission. If the version is draft and the submitter is not 
 	 * the current user, will not populate the submissionText or 
 	 * submissionAttachmentSet. If the curr user is	the submitter but feedback 
 	 * has not been released, will not populate	feedback. if the passed submission

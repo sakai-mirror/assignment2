@@ -25,6 +25,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import org.sakaiproject.assignment2.exception.AssignmentNotFoundException;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
@@ -57,6 +58,7 @@ public interface AssignmentDao extends CompleteGenericDao {
 	 * @param assignmentId
 	 * @return the Assignment2 object associated with the given id with the
 	 * associated AssignmentGroup and AssignmentAttachment data populated
+	 * @throws AssignmentNotFoundException - if no assignment exists with the given assignmentId
 	 */
 	public Assignment2 getAssignmentByIdWithGroupsAndAttachments(Long assignmentId);
 	
@@ -65,6 +67,7 @@ public interface AssignmentDao extends CompleteGenericDao {
 	 * @param assignmentId
 	 * @return the Assignment2 object associated with the given id with the
 	 * associated AssignmentGroup data populated. No attachments or submission info
+	 * @throws AssignmentNotFoundException - if no assignment exists with the given assignmentId
 	 */
 	public Assignment2 getAssignmentByIdWithGroups(Long assignmentId);
 	
@@ -123,7 +126,7 @@ public interface AssignmentDao extends CompleteGenericDao {
 	 * 
 	 * @param submissionVersionId
 	 * @return the AssignmentSubmissionVersion with associated attachments for the given id.
-	 * returns null if no version exists with the given id
+	 * @throws VersionNotFoundException if no version exists with the given id
 	 */
 	public AssignmentSubmissionVersion getAssignmentSubmissionVersionByIdWithAttachments(Long submissionVersionId);
 	
@@ -132,6 +135,7 @@ public interface AssignmentDao extends CompleteGenericDao {
 	 * @param submissionId
 	 * @return the AssignmentSubmission with the given id with the history set populated. Version
 	 * attachments are NOT populated. Will populate currentVersion 
+	 * @throws SubmissionNotFoundException if no submission exists with the given id
 	 */
 	public AssignmentSubmission getSubmissionWithVersionHistoryById(Long submissionId);
 	

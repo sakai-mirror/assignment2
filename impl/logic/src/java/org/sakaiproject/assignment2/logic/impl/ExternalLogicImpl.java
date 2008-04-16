@@ -22,19 +22,23 @@ package org.sakaiproject.assignment2.logic.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.sakaiproject.authz.api.SecurityService;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
+import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
+import org.sakaiproject.authz.api.SecurityService;
 import org.sakaiproject.component.cover.ServerConfigurationService;
 import org.sakaiproject.content.api.ContentResource;
 import org.sakaiproject.content.api.ContentTypeImageService;
 import org.sakaiproject.entity.api.Entity;
 import org.sakaiproject.exception.IdUnusedException;
+import org.sakaiproject.section.api.SectionAwareness;
+import org.sakaiproject.section.api.coursemanagement.ParticipationRecord;
+import org.sakaiproject.section.api.facade.Role;
 import org.sakaiproject.site.api.Group;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.api.SiteService;
@@ -44,14 +48,9 @@ import org.sakaiproject.user.api.User;
 import org.sakaiproject.user.api.UserDirectoryService;
 import org.sakaiproject.user.api.UserNotDefinedException;
 import org.sakaiproject.util.FormattedText;
-import org.sakaiproject.section.api.SectionAwareness;
-import org.sakaiproject.section.api.facade.Role;
-import org.sakaiproject.section.api.coursemanagement.ParticipationRecord;
 
 /**
  * This is the implementation for logic which is external to our app logic
- * 
- * @author Sakai App Builder -AZ
  */
 public class ExternalLogicImpl implements ExternalLogic {
 
@@ -111,12 +110,11 @@ public class ExternalLogicImpl implements ExternalLogic {
     		
     	} else {
     		return null;
-    		
     	}
     }
     
     public String getToolTitle() {
-    	return toolManager.getTool("sakai.assignment2").getTitle();
+    	return toolManager.getTool(ExternalLogic.TOOL_ID_ASSIGNMENT2_TOOL).getTitle();
     }
 
     public String getCurrentUserId() {
@@ -300,7 +298,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 			User user = userDirectoryService.getUser(userId);
 			return user;
 		} catch (UserNotDefinedException ex) {
-        log.error("Could not get user from userId: " + userId, ex);
+			log.error("Could not get user from userId: " + userId, ex);
 		}
 
 		return userDirectoryService.getAnonymousUser();

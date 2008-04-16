@@ -23,7 +23,6 @@ package org.sakaiproject.assignment2.logic.impl;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -32,6 +31,7 @@ import java.util.Collection;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment2.dao.AssignmentDao;
+import org.sakaiproject.assignment2.exception.SubmissionNotFoundException;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
@@ -133,7 +133,7 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
     	
     	AssignmentSubmission submission = (AssignmentSubmission)dao.findById(AssignmentSubmission.class, submissionId);
     	if (submission == null) {
-    		throw new IllegalArgumentException("No submission exists with id: " + submissionId);
+    		throw new SubmissionNotFoundException("No submission exists with id: " + submissionId);
     	}
     	
     	return isUserAbleToProvideFeedbackForStudentForAssignment(submission.getUserId(), submission.getAssignment());
@@ -431,6 +431,13 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
 		return gradebookLogic.isCurrentUserAStudentInGb(contextId);
 	}
 	
+	/**
+	 * 
+	 * @param contextId
+	 * @param assignGroupRestrictions
+	 * @return a list of all of the students who are able to view this assignment
+	 * given any group restrictions
+	 */
 	private List<String> getAllAvailableStudentsGivenGroupRestrictions(String contextId, Collection<AssignmentGroup> assignGroupRestrictions) {
 		List<String> allStudentsForAssign = new ArrayList<String>();
 		

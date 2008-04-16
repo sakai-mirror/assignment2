@@ -28,7 +28,14 @@ package org.sakaiproject.assignment2.exception;
  * @author <a href="mailto:wagnermr@iupui.edu">michelle wagner</a>
  */
 public class NoGradebookItemForGradedAssignmentException extends AssignmentException {
+
+	private static final long serialVersionUID = 1L;
+
 	public NoGradebookItemForGradedAssignmentException(String message) {
         super(message);
+    }
+	
+	public NoGradebookItemForGradedAssignmentException(String message, Throwable t) {
+        super(message, t);
     }
 }

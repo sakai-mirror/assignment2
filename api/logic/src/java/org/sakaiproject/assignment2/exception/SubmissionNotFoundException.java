@@ -22,19 +22,19 @@
 package org.sakaiproject.assignment2.exception;
 
 /**
- * Indicates that the caller attempted to modify a stale object.  A2
- * uses optimistic locking to prevent modification of stale "detached" objects.
+ * Indicates that the given submission does not exist
  *
+ * @author <a href="mailto:wagnermr@iupui.edu">michelle wagner</a>
  */
-public class StaleObjectModificationException extends AssignmentException {
+public class SubmissionNotFoundException extends AssignmentException {
 
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 0L;
 
-	public StaleObjectModificationException(Throwable t) {
-        super(t);
+	public SubmissionNotFoundException(String message) {
+        super(message);
     }
-	
-	public StaleObjectModificationException(String message, Throwable t) {
-        super(message, t);
-    }
+
+	public SubmissionNotFoundException(String msg, Throwable t) {
+		super(msg, t);
+	}
 }

@@ -22,32 +22,33 @@
 package org.sakaiproject.assignment2.logic.impl;
 
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
-import java.util.ArrayList;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.sakaiproject.assignment2.taggable.api.AssignmentActivityProducer;
-import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
-import org.sakaiproject.assignment2.model.Assignment2;
-import org.sakaiproject.assignment2.model.AssignmentAttachment;
-import org.sakaiproject.assignment2.model.AssignmentGroup;
+import org.sakaiproject.assignment2.dao.AssignmentDao;
+import org.sakaiproject.assignment2.exception.AnnouncementPermissionException;
+import org.sakaiproject.assignment2.exception.AssignmentNotFoundException;
+import org.sakaiproject.assignment2.exception.NoGradebookItemForGradedAssignmentException;
+import org.sakaiproject.assignment2.exception.StaleObjectModificationException;
 import org.sakaiproject.assignment2.logic.AssignmentBundleLogic;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
+import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
 import org.sakaiproject.assignment2.logic.ExternalAnnouncementLogic;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
-import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
-import org.sakaiproject.assignment2.dao.AssignmentDao;
-import org.sakaiproject.assignment2.exception.AnnouncementPermissionException;
-import org.sakaiproject.assignment2.exception.NoGradebookItemForGradedAssignmentException;
+import org.sakaiproject.assignment2.model.Assignment2;
+import org.sakaiproject.assignment2.model.AssignmentAttachment;
+import org.sakaiproject.assignment2.model.AssignmentGroup;
+import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
+import org.sakaiproject.assignment2.taggable.api.AssignmentActivityProducer;
 import org.sakaiproject.component.cover.ComponentManager;
 import org.sakaiproject.exception.PermissionException;
-import org.sakaiproject.service.gradebook.shared.StaleObjectModificationException;
 import org.sakaiproject.taggable.api.TaggingManager;
 import org.sakaiproject.taggable.api.TaggingProvider;
 import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException;
@@ -107,7 +108,13 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 			throw new IllegalArgumentException("Null assignmentId passed to getAssignmentById");
 		}
 		
-		return (Assignment2) dao.findById(Assignment2.class, assignmentId);
+		Assignment2 assign = (Assignment2) dao.findById(Assignment2.class, assignmentId);
+		
+		if (assign == null) {
+			throw new AssignmentNotFoundException("No assignment found with id: " + assignmentId);
+		}
+		
+		return assign;
     }
 	
 	public Assignment2 getAssignmentByIdWithAssociatedData(Long assignmentId) {
@@ -117,14 +124,15 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 		// first, retrieve Assignment2 object
 		Assignment2 assign = (Assignment2) dao.getAssignmentByIdWithGroupsAndAttachments(assignmentId);
 		
-		if (assign != null) {
-			// populate any non-persisted fields that are applicable to this view
-			
-			if (!assign.isUngraded()) {
-				gradebookLogic.populateGradebookItemDetailsForAssignment(externalLogic.getCurrentContextId(), assign);
-			}
+		if (assign == null) {
+			throw new AssignmentNotFoundException("No assignment found with id: " + assignmentId);
 		}
-		
+
+		// populate any non-persisted fields that are applicable to this view
+		if (!assign.isUngraded()) {
+			gradebookLogic.populateGradebookItemDetailsForAssignment(externalLogic.getCurrentContextId(), assign);
+		}
+
 		return assign;
 	}
 	
@@ -133,7 +141,12 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 			throw new IllegalArgumentException("Null assignmentId passed to getAssignmentByIdWithGroups");
 		}
 		
-		return (Assignment2) dao.getAssignmentByIdWithGroups(assignmentId);
+		Assignment2 assign = (Assignment2) dao.getAssignmentByIdWithGroups(assignmentId);
+		if (assign == null) {
+			throw new AssignmentNotFoundException("No assignment found with id: " + assignmentId);
+		}
+		
+		return assign;
 	}
 	
 	public Assignment2 getAssignmentByIdWithGroupsAndAttachments(Long assignmentId) {
@@ -141,7 +154,13 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 			throw new IllegalArgumentException("Null assignmentId passed to getAssignmentByIdWithGroupsAndAttachments");
 		}
 		
-		return (Assignment2) dao.getAssignmentByIdWithGroupsAndAttachments(assignmentId);
+		Assignment2 assign = (Assignment2) dao.getAssignmentByIdWithGroupsAndAttachments(assignmentId);
+		
+		if (assign == null) {
+			throw new AssignmentNotFoundException("No assignment found with id: " + assignmentId);
+		}
+		
+		return assign;
 	}
 	
 	public void saveAssignment(Assignment2 assignment) {
@@ -249,8 +268,8 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 	            	if(log.isDebugEnabled())log.debug("Attachments and/or groups removed for updated assignment " + assignment.getId());
 	            }
 			} catch (HibernateOptimisticLockingFailureException holfe) {
-				if(log.isInfoEnabled()) log.info("An optimistic locking failure occurred while attempting to update an assignment");
-	            throw new StaleObjectModificationException(holfe);
+				if(log.isInfoEnabled()) log.info("An optimistic locking failure occurred while attempting to update assignment with id: " + assignment.getId());
+	            throw new StaleObjectModificationException("An optimistic locking failure occurred while attempting to update assignment with id: " + assignment.getId(), holfe);
 			}
 		}
 		
@@ -260,7 +279,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 		} catch (AnnouncementPermissionException ape) {
 			throw new AnnouncementPermissionException("The current user is not " +
 					"authorized to update announcements in the announcements " +
-					"tool. Any related announcements were NOT updated");
+					"tool. Any related announcements were NOT updated", ape);
 		}
 	}
 	
@@ -328,19 +347,16 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 			}
 		} catch (HibernateOptimisticLockingFailureException holfe) {
 			if(log.isInfoEnabled()) log.info("An optimistic locking failure occurred while attempting to update an assignment");
-			throw new StaleObjectModificationException(holfe);
+			throw new StaleObjectModificationException("Locking failure occurred while removing assignment with id: " + assignment.getId(), holfe);
 		} catch (AnnouncementPermissionException ape) {
 			if(log.isDebugEnabled()) log.debug("The current user is not authorized to remove announcements in the annc tool, " +
 					"but the assignment was deleted");
 			throw new AnnouncementPermissionException("The current user is not authorized to remove announcements in the annc tool, " +
-					"but the assignment was deleted");
+					"but the assignment was deleted", ape);
 		}
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see org.sakaiproject.assignment2.logic.AssignmentLogic#getViewableAssignments(String)
-	 */
+
 	public List<Assignment2> getViewableAssignments()
 	{   
 		List<Assignment2> viewableAssignments = new ArrayList<Assignment2>();
@@ -449,14 +465,14 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 						assignSet.size() + " assigns were updated");
 			} catch (HibernateOptimisticLockingFailureException holfe) {
 				if(log.isInfoEnabled()) log.info("An optimistic locking failure occurred while attempting to reorder the assignments");
-	            throw new StaleObjectModificationException(holfe);
+	            throw new StaleObjectModificationException("An optimistic locking failure occurred while attempting to reorder the assignments", holfe);
 			}
 		}
 	}
 	
 	public int getStatusForAssignment(Assignment2 assignment) {
 		if (assignment == null){
-			throw new IllegalArgumentException("Null assignment passed to check status");
+			throw new IllegalArgumentException("Null assignment passed to getStatusForAssignment");
 		}
 		if (assignment.isDraft())
 			return AssignmentConstants.STATUS_DRAFT;

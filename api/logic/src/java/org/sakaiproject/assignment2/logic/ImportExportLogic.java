@@ -26,8 +26,6 @@ import java.util.List;
 import org.sakaiproject.assignment2.logic.entity.AssignmentDefinition;
 
 
-//import org.sakaiproject.assignment2.logic.entity.AssignmentDefinition;
-
 /**
  * This is the interface for importing and exporting data in the Assignments tool
  * 
@@ -56,10 +54,9 @@ public interface ImportExportLogic {
 	/**
 	 * Given the xml archive of the assignments tool in another site, merge
 	 * this new data into the assignments tool in the given toContext.
-	 * If assignment with the same title already exists, will append _1
-	 * to the new assignment title. Announcement will be added in the new
-	 * site if imported assignment had an announcement. Attachments will be
-	 * copied.  If a group in the new site has the same name as the group an
+	 * Allows duplicate assignment titles. Announcement will be added in the new
+	 * site if imported assignment had an announcement and site has the tool. 
+	 * Attachments will be copied.  If a group in the new site has the same name as the group an
 	 * assignment was restricted to, we will restrict the assignment to the
 	 * group with this same name in the site with the given context.
 	 * @param toContext

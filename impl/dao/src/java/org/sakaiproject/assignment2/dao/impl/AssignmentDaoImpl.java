@@ -21,17 +21,15 @@
 
 package org.sakaiproject.assignment2.dao.impl;
 
-import java.lang.Integer;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.HashSet;
 import java.util.Set;
-import java.util.Iterator;
-import java.util.Collection;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -39,8 +37,10 @@ import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
-
 import org.sakaiproject.assignment2.dao.AssignmentDao;
+import org.sakaiproject.assignment2.exception.AssignmentNotFoundException;
+import org.sakaiproject.assignment2.exception.SubmissionNotFoundException;
+import org.sakaiproject.assignment2.exception.VersionNotFoundException;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
@@ -126,9 +126,13 @@ public class AssignmentDaoImpl extends HibernateCompleteGenericDao implements As
 		    	return (Assignment2) query.uniqueResult();
 			}
 		};
-    	
-		return (Assignment2)getHibernateTemplate().execute(hc);
-    	
+		
+		Assignment2 assign = (Assignment2)getHibernateTemplate().execute(hc);
+		if (assign == null) {
+			throw new AssignmentNotFoundException("No assignment exists with id: " + assignmentId);
+		}
+		
+		return assign;
     }
 
 	public Assignment2 getAssignmentByIdWithGroups(final Long assignmentId) {
@@ -145,7 +149,12 @@ public class AssignmentDaoImpl extends HibernateCompleteGenericDao implements As
 			}
 		};
 		
-		return (Assignment2)getHibernateTemplate().execute(hc);
+		Assignment2 assign = (Assignment2)getHibernateTemplate().execute(hc);
+		if (assign == null) {
+			throw new AssignmentNotFoundException("No assignment exists with id: " + assignmentId);
+		}
+		
+		return assign;
 	}
 	
 	
@@ -243,7 +252,13 @@ public class AssignmentDaoImpl extends HibernateCompleteGenericDao implements As
 				return query.uniqueResult();
 			}
 		};
-		return (AssignmentSubmissionVersion)getHibernateTemplate().execute(hc);
+		
+		AssignmentSubmissionVersion version = (AssignmentSubmissionVersion)getHibernateTemplate().execute(hc);
+		if (version == null) {
+			throw new VersionNotFoundException("No version exists with id: " + submissionVersionId);
+		}
+		
+		return version;
     }
     
     private List<AssignmentSubmissionVersion> getAssignmentSubmissionVersionsById(final List<Long> versionIds) {
@@ -427,7 +442,12 @@ public class AssignmentDaoImpl extends HibernateCompleteGenericDao implements As
 			}
 		};
 		
-		return (AssignmentSubmission)getHibernateTemplate().execute(hc);
+		AssignmentSubmission submission = (AssignmentSubmission)getHibernateTemplate().execute(hc);
+		if (submission == null) {
+			throw new SubmissionNotFoundException("No AssignmentSubmission exists with id: " + submissionId);
+		}
+		
+		return submission;
     	
     }
     

@@ -95,7 +95,8 @@ public class ExternalAnnouncementLogicImpl implements ExternalAnnouncementLogic 
 			return message.getId();	
 			
 		} catch (PermissionException pe) {
-			throw new AnnouncementPermissionException("The current user does not have permission to access add announcement");
+			throw new AnnouncementPermissionException("The current user does not " +
+					"have permission to access add announcement in context: " + contextId, pe);
 		}
 	}
     
@@ -138,7 +139,8 @@ public class ExternalAnnouncementLogicImpl implements ExternalAnnouncementLogic 
 			return message.getId();	
 			
 		} catch (PermissionException pe) {
-			throw new AnnouncementPermissionException("The current user does not have permission to access add announcement");
+			throw new AnnouncementPermissionException("The current user does not " +
+					"have permission to access add announcement in context: " + contextId, pe);
 		} catch (IdUnusedException iue) {
 			// the announcement id stored in the assignment is invalid, so add a new announcement
 			if (log.isDebugEnabled()) log.debug("Bad announcementId associated with assignment, so adding new announcement");
@@ -172,7 +174,8 @@ public class ExternalAnnouncementLogicImpl implements ExternalAnnouncementLogic 
 			if (log.isDebugEnabled()) log.debug("Announcement removed with id: " + announcementId);
 			
 		} catch (PermissionException pe) {
-			throw new AnnouncementPermissionException("The current user does not have permission to access add announcement");
+			throw new AnnouncementPermissionException("The current user does not " +
+					"have permission to delete announcement in context: " + contextId, pe);
 		} catch (Exception e) {
 			if (log.isDebugEnabled()) log.debug("Announcement no longer exists so cannot be deleted. It was probably deleted via annc tool.");
 			// this is thrown by removeMessage if the annc doesn't exist
@@ -197,7 +200,8 @@ public class ExternalAnnouncementLogicImpl implements ExternalAnnouncementLogic 
 			}
 			catch (PermissionException e)
 			{
-				throw new AnnouncementPermissionException("The current user does not have permission to access the announcement channel");
+				throw new AnnouncementPermissionException("The current user does " +
+						"not have permission to access the announcement channel for context: " + contextId, e);
 			}
 		}
 	}
@@ -227,6 +231,7 @@ public class ExternalAnnouncementLogicImpl implements ExternalAnnouncementLogic 
 		catch (Exception exception)
 		{
 			log.warn("There was an error adding the group restrictions to the announcement");
+			exception.printStackTrace();
 		}
 	}
 		

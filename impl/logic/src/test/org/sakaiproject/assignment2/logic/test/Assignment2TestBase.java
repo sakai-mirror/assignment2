@@ -25,15 +25,14 @@ import org.sakaiproject.assignment2.dao.AssignmentDao;
 import org.sakaiproject.assignment2.logic.AssignmentBundleLogic;
 import org.sakaiproject.assignment2.logic.ExternalAnnouncementLogic;
 import org.sakaiproject.assignment2.logic.impl.AssignmentLogicImpl;
-import org.sakaiproject.assignment2.logic.impl.ExternalAnnouncementLogicImpl;
-import org.sakaiproject.assignment2.logic.impl.ExternalGradebookLogicImpl;
 import org.sakaiproject.assignment2.logic.impl.AssignmentPermissionLogicImpl;
 import org.sakaiproject.assignment2.logic.impl.AssignmentSubmissionLogicImpl;
+import org.sakaiproject.assignment2.logic.impl.ExternalAnnouncementLogicImpl;
+import org.sakaiproject.assignment2.logic.impl.ExternalGradebookLogicImpl;
 import org.sakaiproject.assignment2.logic.test.stubs.ExternalLogicStub;
 import org.sakaiproject.assignment2.logic.test.stubs.GradebookServiceStub;
 import org.sakaiproject.assignment2.test.AssignmentTestDataLoad;
 import org.sakaiproject.assignment2.test.PreloadTestData;
-
 import org.springframework.test.AbstractTransactionalSpringContextTests;
 
 

@@ -145,7 +145,6 @@ public class AssignmentSubmission {
 		this.resubmitCloseTime = resubmitCloseTime;
 	}
 	
-
 	/**
 	 * 
 	 * @return the number of submissions allowed for this assignment. if -1,
@@ -163,7 +162,26 @@ public class AssignmentSubmission {
 	public void setNumSubmissionsAllowed(Integer numSubmissionsAllowed) {
 		this.numSubmissionsAllowed = numSubmissionsAllowed;
 	}
+	
+	/**
+	 * the int value of the version number for this assignment. not
+     * to be confused with submission version.
+	 * @return
+	 */
+	public int getRevisionVersion() {
+		return revisionVersion;
+	}
 
+	/**
+	 * the int value of the version number for this assignment. not
+     * to be confused with submission version.
+	 * @param revisionVersion
+	 */
+	public void setRevisionVersion(int revisionVersion) {
+		this.revisionVersion = revisionVersion;
+	}
+
+	// non-persisted fields
 	
 	// fields populated with data from the gradebook
 	
@@ -218,26 +236,6 @@ public class AssignmentSubmission {
 	public void setGradebookGradeReleased(boolean gradebookGradeReleased) {
 		this.gradebookGradeReleased = gradebookGradeReleased;
 	}
-	
-	/**
-	 * the int value of the version number for this assignment. not
-     * to be confused with submission version.
-	 * @return
-	 */
-	public int getRevisionVersion() {
-		return revisionVersion;
-	}
-
-	/**
-	 * the int value of the version number for this assignment. not
-     * to be confused with submission version.
-	 * @param revisionVersion
-	 */
-	public void setRevisionVersion(int revisionVersion) {
-		this.revisionVersion = revisionVersion;
-	}
-
-	// non-persisted fields
 	
 	// not persisted but convenient here for UI
 	/**
@@ -302,7 +300,6 @@ public class AssignmentSubmission {
 		this.submissionStatusConstant = submissionStatusConstant;
 	}
 
-	
 	/**
 	 * 
 	 * @param subToCopy

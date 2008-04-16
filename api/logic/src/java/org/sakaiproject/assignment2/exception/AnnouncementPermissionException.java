@@ -29,7 +29,14 @@ package org.sakaiproject.assignment2.exception;
  * @author <a href="mailto:wagnermr@iupui.edu">michelle wagner</a>
  */
 public class AnnouncementPermissionException extends AssignmentException {
+
+	private static final long serialVersionUID = 1L;
+
 	public AnnouncementPermissionException(String message) {
         super(message);
     }
+	
+	public AnnouncementPermissionException(String msg, Throwable t) {
+		super(msg, t);
+	}
 }

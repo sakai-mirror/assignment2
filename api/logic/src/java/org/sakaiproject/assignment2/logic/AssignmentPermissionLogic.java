@@ -65,6 +65,7 @@ public interface AssignmentPermissionLogic {
 	 * @param submissionId
 	 * @return true if the current user is allowed to provide feedback for the
 	 * AssignmentSubmission associated with the given submissionId
+	 * @throws SubmissionNotFoundException if no submission exists with the given submissionId
 	 */
 	public boolean isUserAbleToProvideFeedbackForSubmission(Long submissionId);
 	

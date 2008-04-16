@@ -27,6 +27,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.sakaiproject.assignment2.exception.AssignmentNotFoundException;
+import org.sakaiproject.assignment2.exception.SubmissionNotFoundException;
+import org.sakaiproject.assignment2.exception.VersionNotFoundException;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
@@ -55,7 +58,10 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
     	} catch(IllegalArgumentException iae) {}
     	
     	// try passing an id that doesn't exist
-    	assertNull(submissionLogic.getAssignmentSubmissionById(12345L));
+    	try {
+    		submissionLogic.getAssignmentSubmissionById(12345L);
+    		fail("did not catch non-existent id passed to getAssignmentSubmissionById");
+    	} catch (SubmissionNotFoundException snfe) {}
     	
     	// the instructor should be able to retrieve any submission
     	externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
@@ -110,7 +116,10 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
     	} catch (IllegalArgumentException iae) {}
     	
     	// try a versionId that doesn't exist
-    	assertNull(submissionLogic.getSubmissionVersionById(12345L));
+    	try {
+    		submissionLogic.getSubmissionVersionById(12345L);
+    		fail("did not catch non-existent id passed to getSubmissionVersionById");
+    	} catch (VersionNotFoundException vnfe) {}
     	
     	// instructors should be able to retrieve any version
     	externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
@@ -199,15 +208,16 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
     		fail("did not handle null studentId passed to testGetCurrentSubmissionByAssignmentIdAndStudentId");
     	} catch (IllegalArgumentException iae) {}
     	
-    	// pass an assignmentId that doesn't exist - should return null
-    	AssignmentSubmission submission = submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(
-    			12345L, AssignmentTestDataLoad.STUDENT1_UID);
-    	assertNull(submission);
+    	// pass an assignmentId that doesn't exist
+    	try {
+    		submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(12345L, AssignmentTestDataLoad.STUDENT1_UID);
+    		fail("did not catch non-existent id passed to getCurrentSubmissionByAssignmentIdAndStudentId");
+    	} catch (AssignmentNotFoundException anfe) {}
     	
     	externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
     	
     	// try to get one for a student who hasn't made a submission yet
-    	submission = submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(testData.a2Id, AssignmentTestDataLoad.STUDENT1_UID);
+    	AssignmentSubmission submission = submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(testData.a2Id, AssignmentTestDataLoad.STUDENT1_UID);
     	assertTrue(submission.getUserId().equals(AssignmentTestDataLoad.STUDENT1_UID));
     	assertNull(submission.getId()); // this should be an "empty rec"
     	
@@ -419,7 +429,7 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
     		submissionLogic.saveInstructorFeedback(12345L, AssignmentTestDataLoad.STUDENT1_UID, 
     				testData.a2, null, null, null, null, null, null);
     		fail("did not catch passed versionId that does not exist to saveInstructorFeedback");
-    	} catch (IllegalArgumentException iae) {}
+    	} catch (VersionNotFoundException iae) {}
     	
     	// try a studentId not associated with the passed version
     	try {
@@ -509,6 +519,12 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
     		submissionLogic.getViewableSubmissionsForAssignmentId(null);
     		fail("did not catch null assignmentId passed to getViewableSubmissionsForAssignmentId");
     	} catch (IllegalArgumentException iae) {}
+    	
+    	// try a non-existent assignmentId
+    	try {
+    		submissionLogic.getViewableSubmissionsForAssignmentId(12345L);
+    		fail("did not catch non-existent id passed to getViewableSubmissionsForAssignmentId");
+    	} catch (AssignmentNotFoundException anfe) {}
     	
     	// start as instructor
     	externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
@@ -793,7 +809,7 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
 		try {
 			submissionLogic.releaseAllFeedbackForAssignment(12345L);
 			fail("did not catch non-existent assignId passed to releaseAllFeedbackForAssignment");
-		} catch (IllegalArgumentException iae) {}
+		} catch (AssignmentNotFoundException iae) {}
 		
 		// try as a student
 		externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT1_UID);
@@ -846,7 +862,7 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
 		try {
 			submissionLogic.releaseAllFeedbackForSubmission(12345L);
 			fail("Did not catch nonexistent submission passed to releaseAllFeedbackForSubmission");
-		} catch (IllegalArgumentException iae) {}
+		} catch (SubmissionNotFoundException iae) {}
 		
 		// try as a student - should be security exception
 		externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT1_UID);
@@ -890,7 +906,7 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
 		try {
 			submissionLogic.releaseFeedbackForVersion(12345L);
 			fail("did not catch bad versionId passed to releaseFeedbackForVersion");
-		} catch (IllegalArgumentException iae) {}
+		} catch (VersionNotFoundException iae) {}
 		
 		// try as a student - should be security exception
 		externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT1_UID);

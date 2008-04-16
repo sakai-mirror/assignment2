@@ -28,7 +28,14 @@ package org.sakaiproject.assignment2.exception;
  * @author <a href="mailto:wagnermr@iupui.edu">michelle wagner</a>
  */
 public class SubmissionExistsException extends AssignmentException {
+
+	private static final long serialVersionUID = 1L;
+
 	public SubmissionExistsException(String message) {
         super(message);
+    }
+	
+	public SubmissionExistsException(String message, Throwable t) {
+        super(message, t);
     }
 }

@@ -49,7 +49,7 @@ public interface ExternalAnnouncementLogic {
 	
 	/**
 	 * Update an announcement for the given assignment. Announcements must be
-	 * updated when the title or open date of the assignment changes.
+	 * updated when the title, group restrictions, or open date of the assignment changes.
 	 * @param announcementId
 	 * @param restrictedGroupIds
 	 * @param contextId
@@ -67,7 +67,7 @@ public interface ExternalAnnouncementLogic {
 	 * Delete an existing announcement associated with the given assignment.
 	 * @param announcementId
 	 * @param contextId
-	 * * @throws AnnouncementPermissionException
+	 * @throws AnnouncementPermissionException
 	 * 		if the current user is not authorized to delete an announcement
 	 */
 	public void deleteOpenDateAnnouncement(String announcementId, String contextId) 

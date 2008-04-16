@@ -25,7 +25,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.sakaiproject.assignment2.exception.GradebookItemNotFoundException;
 import org.sakaiproject.assignment2.exception.InvalidGradeForAssignmentException;
+import org.sakaiproject.assignment2.exception.NoGradebookDataExistsException;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 
@@ -37,16 +39,15 @@ import org.sakaiproject.assignment2.model.AssignmentSubmission;
  */
 public interface ExternalGradebookLogic {
 
-    /**
-     * Given a list of graded Assignment2 objects, filter out the objects
+    /** 
+     * @param gradedAssignments
+     * @param contextId
+     * @return Given a list of graded Assignment2 objects, filter out the objects
      * that the user is not authorized to view according to the gradebook
      * permissions and return a list of graded assignments that the user is
      * authorized to view. Also populates the gb-specific fields for each
      * Assignment2 object. Does NOT handle filtering according to AssignmentGroup 
-     * restrictions 
-     * @param gradedAssignments
-     * @param contextId
-     * @return
+     * restrictions
      */
 	public List<Assignment2> getViewableAssignmentsWithGbData(List<Assignment2> gradedAssignments, String contextId);
 	

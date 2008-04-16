@@ -21,35 +21,38 @@
 
 package org.sakaiproject.assignment2.logic.impl;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.StaleObjectStateException;
+import org.sakaiproject.assignment2.dao.AssignmentDao;
+import org.sakaiproject.assignment2.exception.AssignmentNotFoundException;
+import org.sakaiproject.assignment2.exception.StaleObjectModificationException;
+import org.sakaiproject.assignment2.exception.SubmissionNotFoundException;
+import org.sakaiproject.assignment2.exception.VersionNotFoundException;
+import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
+import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
+import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
+import org.sakaiproject.assignment2.logic.ExternalLogic;
+import org.sakaiproject.assignment2.logic.utils.ComparatorsUtils;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
+import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.model.FeedbackAttachment;
 import org.sakaiproject.assignment2.model.FeedbackVersion;
 import org.sakaiproject.assignment2.model.SubmissionAttachment;
 import org.sakaiproject.assignment2.model.SubmissionAttachmentBase;
-import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
-import org.sakaiproject.assignment2.exception.StaleObjectModificationException;
-import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
-import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
-import org.sakaiproject.assignment2.logic.ExternalLogic;
-import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
-import org.sakaiproject.assignment2.logic.utils.ComparatorsUtils;
-import org.sakaiproject.assignment2.dao.AssignmentDao;
 import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException;
-import org.hibernate.StaleObjectStateException;
 
 /**
  * This is the interface for interaction with the AssignmentSubmission object
@@ -90,48 +93,51 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		}
 
 		AssignmentSubmission submission =  (AssignmentSubmission) dao.findById(AssignmentSubmission.class, submissionId);
+		if (submission == null) {
+			throw new SubmissionNotFoundException("No submission found with id: " + submissionId);
+		}
+		
 		String currentUserId = externalLogic.getCurrentUserId();
 		String currentContextId = externalLogic.getCurrentContextId();
 
 		// if the submission rec exists, we need to grab the most current version
-		if (submission != null) {
-			
-			Assignment2 assignment = submission.getAssignment();
-			
-			if (!permissionLogic.isUserAbleToViewStudentSubmissionForAssignment(submission.getUserId(), assignment)) {
-				throw new SecurityException("user" + externalLogic.getCurrentUserId() + " attempted to view submission with id " + submissionId + " but is not authorized");
-			}
-			
-			// since we may make modifications to this object for 
-			// diff users that we will not save, don't use the
-			// persistent object
-			AssignmentSubmissionVersion persistedCurrentVersion = dao.getCurrentSubmissionVersionWithAttachments(submission);
-			AssignmentSubmissionVersion currentVersion = null;
-			
-			if (persistedCurrentVersion != null) {
-				currentVersion = AssignmentSubmissionVersion.deepCopy(persistedCurrentVersion, true, true);
-			}
-			
-			if (currentVersion != null) {
-				filterOutRestrictedVersionInfo(currentVersion, currentUserId);
-			}
-			
-			submission.setCurrentSubmissionVersion(currentVersion);
-			
-			if (!assignment.isUngraded() && assignment.getGradableObjectId() != null) {
-				// retrieve the grade information for this submission
-				gradebookLogic.populateAllGradeInfoForSubmission(currentContextId, 
-						currentUserId, submission);
-				
-				gradebookLogic.populateGradebookItemDetailsForAssignment(currentContextId, assignment);
-			}
-	
-			Date dueDate = assignment.isUngraded() ? assignment.getDueDateForUngraded() : assignment.getDueDate();
-					
-			// populate this submission's status
-			Integer status = getSubmissionStatusConstantForCurrentVersion(submission.getCurrentSubmissionVersion(), dueDate);
-			submission.setSubmissionStatusConstant(status);
+
+		Assignment2 assignment = submission.getAssignment();
+
+		if (!permissionLogic.isUserAbleToViewStudentSubmissionForAssignment(submission.getUserId(), assignment)) {
+			throw new SecurityException("user" + externalLogic.getCurrentUserId() + " attempted to view submission with id " + submissionId + " but is not authorized");
 		}
+
+		// since we may make modifications to this object for 
+		// diff users that we will not save, don't use the
+		// persistent object
+		AssignmentSubmissionVersion persistedCurrentVersion = dao.getCurrentSubmissionVersionWithAttachments(submission);
+		AssignmentSubmissionVersion currentVersion = null;
+
+		if (persistedCurrentVersion != null) {
+			currentVersion = AssignmentSubmissionVersion.deepCopy(persistedCurrentVersion, true, true);
+		}
+
+		if (currentVersion != null) {
+			filterOutRestrictedVersionInfo(currentVersion, currentUserId);
+		}
+
+		submission.setCurrentSubmissionVersion(currentVersion);
+
+		if (!assignment.isUngraded() && assignment.getGradableObjectId() != null) {
+			// retrieve the grade information for this submission
+			gradebookLogic.populateAllGradeInfoForSubmission(currentContextId, 
+					currentUserId, submission);
+
+			gradebookLogic.populateGradebookItemDetailsForAssignment(currentContextId, assignment);
+		}
+
+		Date dueDate = assignment.isUngraded() ? assignment.getDueDateForUngraded() : assignment.getDueDate();
+
+		// populate this submission's status
+		Integer status = getSubmissionStatusConstantForCurrentVersion(submission.getCurrentSubmissionVersion(), dueDate);
+		submission.setSubmissionStatusConstant(status);
+
 		return submission;
 
 	}
@@ -143,13 +149,14 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		
 		AssignmentSubmissionVersion persistedVersion = dao.getAssignmentSubmissionVersionByIdWithAttachments(submissionVersionId);
 		
+		if (persistedVersion == null) {
+			throw new VersionNotFoundException("No AssignmentSubmissionVersion exists with id: " + submissionVersionId);
+		}
+		
 		// since we may make modifications to this object for 
 		// diff users that we will not save, don't use the
 		// persistent object
-		AssignmentSubmissionVersion version = null;
-		if (persistedVersion != null) {
-			version = AssignmentSubmissionVersion.deepCopy(persistedVersion, true, true);
-		}
+		AssignmentSubmissionVersion version = AssignmentSubmissionVersion.deepCopy(persistedVersion, true, true);
 		
 		String currentUserId = externalLogic.getCurrentUserId();
 		
@@ -186,43 +193,45 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		AssignmentSubmission submission = null;
 		
 		Assignment2 assignment = dao.getAssignmentByIdWithGroups(assignmentId);
-		if (assignment != null) {
-			if (!permissionLogic.isUserAbleToViewStudentSubmissionForAssignment(studentId, assignment)) {
-				throw new SecurityException("Current user " + currentUserId + " is not allowed to view submission for " + studentId + " for assignment " + assignment.getId());
-			}
-			
-			// since we may make modifications to this object depending on 
-			// the user that we will not save, don't use the
-			// persistent object - make a copy
-			AssignmentSubmission persistedSubmission = dao.getSubmissionWithVersionHistoryForStudentAndAssignment(studentId, assignment);
-			if (persistedSubmission != null) {
-				submission = AssignmentSubmission.deepCopy(persistedSubmission, true, true, true);
-			}
-
-			if (submission == null) {
-				// return an "empty" submission
-				submission = new AssignmentSubmission(assignment, studentId);
-			} else {
-				filterOutRestrictedInfo(submission, currentUserId, true);
-			} 
-			
-			// retrieve the grade information for this submission
-			if (!assignment.isUngraded() && assignment.getGradableObjectId() != null) {
-				gradebookLogic.populateAllGradeInfoForSubmission(contextId, 
-						currentUserId, submission);
-				
-				gradebookLogic.populateGradebookItemDetailsForAssignment(contextId, assignment);
-			}
-			
-			Date dueDate = assignment.isUngraded() ? assignment.getDueDateForUngraded() : assignment.getDueDate();
-			
-			// populate this submission's status
-			Integer status = getSubmissionStatusConstantForCurrentVersion(
-					submission.getCurrentSubmissionVersion(), dueDate);
-			submission.setSubmissionStatusConstant(status);
-
-		}
 		
+		if (assignment == null) {
+			throw new AssignmentNotFoundException("No assignment found with id: " + assignmentId);
+		}
+
+		if (!permissionLogic.isUserAbleToViewStudentSubmissionForAssignment(studentId, assignment)) {
+			throw new SecurityException("Current user " + currentUserId + " is not allowed to view submission for " + studentId + " for assignment " + assignment.getId());
+		}
+
+		// since we may make modifications to this object depending on 
+		// the user that we will not save, don't use the
+		// persistent object - make a copy
+		AssignmentSubmission persistedSubmission = dao.getSubmissionWithVersionHistoryForStudentAndAssignment(studentId, assignment);
+		if (persistedSubmission != null) {
+			submission = AssignmentSubmission.deepCopy(persistedSubmission, true, true, true);
+		}
+
+		if (submission == null) {
+			// return an "empty" submission
+			submission = new AssignmentSubmission(assignment, studentId);
+		} else {
+			filterOutRestrictedInfo(submission, currentUserId, true);
+		} 
+
+		// retrieve the grade information for this submission
+		if (!assignment.isUngraded() && assignment.getGradableObjectId() != null) {
+			gradebookLogic.populateAllGradeInfoForSubmission(contextId, 
+					currentUserId, submission);
+
+			gradebookLogic.populateGradebookItemDetailsForAssignment(contextId, assignment);
+		}
+
+		Date dueDate = assignment.isUngraded() ? assignment.getDueDateForUngraded() : assignment.getDueDate();
+
+		// populate this submission's status
+		Integer status = getSubmissionStatusConstantForCurrentVersion(
+				submission.getCurrentSubmissionVersion(), dueDate);
+		submission.setSubmissionStatusConstant(status);
+
 		return submission;
 	}
 	
@@ -347,10 +356,10 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			}
 		} catch (HibernateOptimisticLockingFailureException holfe) {
 			if(log.isInfoEnabled()) log.info("An optimistic locking failure occurred while attempting to update submission version" + version.getId());
-			throw new StaleObjectModificationException(holfe);
+			throw new StaleObjectModificationException("An optimistic locking failure occurred while attempting to update submission version" + version.getId(), holfe);
 		} catch (StaleObjectStateException sose) {
 			if(log.isInfoEnabled()) log.info("An optimistic locking failure occurred while attempting to update submission version" + version.getId());
-			throw new StaleObjectModificationException(sose);
+			throw new StaleObjectModificationException("An optimistic locking failure occurred while attempting to update submission version" + version.getId(), sose);
 		}
 	}
 
@@ -456,10 +465,10 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 
 		} catch (HibernateOptimisticLockingFailureException holfe) {
 			if(log.isInfoEnabled()) log.info("An optimistic locking failure occurred while attempting to update submission version" + version.getId());
-			throw new StaleObjectModificationException(holfe);
+			throw new StaleObjectModificationException("An optimistic locking failure occurred while attempting to update submission version" + version.getId(), holfe);
 		} catch (StaleObjectStateException sose) {
 			if(log.isInfoEnabled()) log.info("An optimistic locking failure occurred while attempting to update submission version" + version.getId());
-			throw new StaleObjectModificationException(sose);
+			throw new StaleObjectModificationException("An optimistic locking failure occurred while attempting to update submission version" + version.getId(), sose);
 		}
 	}
 	
@@ -469,69 +478,70 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		}
 		
 		String contextId = externalLogic.getCurrentContextId();
-		
+
 		List<AssignmentSubmission> viewableSubmissions = new ArrayList<AssignmentSubmission>();
-		
+
 		Assignment2 assignment = (Assignment2)dao.findById(Assignment2.class, assignmentId);
+		if (assignment == null) {
+			throw new AssignmentNotFoundException("No assignment found with id: " + assignmentId);
+		}
 
-		if (assignment != null) {
-			// get a list of all the students that the current user may view for the given assignment
-			List<String> viewableStudents = permissionLogic.getViewableStudentsForUserForItem(assignment);
+		// get a list of all the students that the current user may view for the given assignment
+		List<String> viewableStudents = permissionLogic.getViewableStudentsForUserForItem(assignment);
 
-			if (viewableStudents != null && !viewableStudents.isEmpty()) {
-				// populate the gb info for this assignment, if appropriate. this is used for due date to 
-				// determine if submission is late
-				if (!assignment.isUngraded() && assignment.getGradableObjectId() != null) {
-					gradebookLogic.populateGradebookItemDetailsForAssignment(contextId, assignment);
-				}
-				
-				Date dueDate = assignment.isUngraded() ? assignment.getDueDateForUngraded() : assignment.getDueDate();
-				
-				// get the submissions for these students
-				Set<AssignmentSubmission> existingSubmissions = dao.getCurrentSubmissionsForStudentsForAssignment(viewableStudents, assignment);
-
-				Map<String, AssignmentSubmission> studentIdSubmissionMap = new HashMap<String, AssignmentSubmission>();
-				if (existingSubmissions != null) {
-					for (AssignmentSubmission submission : existingSubmissions) {
-						if (submission != null) {
-							studentIdSubmissionMap.put(submission.getUserId(), submission);
-						}
-					}
-				}
-
-				// now, iterate through the students and create empty AssignmentSubmission recs
-				// if no submission exists yet
-				for (String studentId : viewableStudents) {
-					if (studentId != null) {
-						AssignmentSubmission thisSubmission = 
-							(AssignmentSubmission)studentIdSubmissionMap.get(studentId);
-						
-						if (thisSubmission == null) {
-							// no submission exists for this student yet, so just
-							// add an empty rec to the returned list
-							thisSubmission = new AssignmentSubmission(assignment, studentId);
-						} else {
-							// we need to filter restricted info from instructor
-							// if this is draft, so let's create a copy of this
-							// object and modify it
-							thisSubmission = AssignmentSubmission.deepCopy(thisSubmission, false, false, false);
-							filterOutRestrictedInfo(thisSubmission, externalLogic.getCurrentUserId(), false);
-						}
-						
-						// populate this submission's status		
-						Integer status = getSubmissionStatusConstantForCurrentVersion(
-								thisSubmission.getCurrentSubmissionVersion(), dueDate);
-						thisSubmission.setSubmissionStatusConstant(status);
-						
-						viewableSubmissions.add(thisSubmission);
-					}
-				}
-			}
-			
-			// if this assignment is graded, populate the grade information
+		if (viewableStudents != null && !viewableStudents.isEmpty()) {
+			// populate the gb info for this assignment, if appropriate. this is used for due date to 
+			// determine if submission is late
 			if (!assignment.isUngraded() && assignment.getGradableObjectId() != null) {
-				gradebookLogic.populateGradesForSubmissions(contextId, viewableSubmissions, assignment);
+				gradebookLogic.populateGradebookItemDetailsForAssignment(contextId, assignment);
 			}
+
+			Date dueDate = assignment.isUngraded() ? assignment.getDueDateForUngraded() : assignment.getDueDate();
+
+			// get the submissions for these students
+			Set<AssignmentSubmission> existingSubmissions = dao.getCurrentSubmissionsForStudentsForAssignment(viewableStudents, assignment);
+
+			Map<String, AssignmentSubmission> studentIdSubmissionMap = new HashMap<String, AssignmentSubmission>();
+			if (existingSubmissions != null) {
+				for (AssignmentSubmission submission : existingSubmissions) {
+					if (submission != null) {
+						studentIdSubmissionMap.put(submission.getUserId(), submission);
+					}
+				}
+			}
+
+			// now, iterate through the students and create empty AssignmentSubmission recs
+			// if no submission exists yet
+			for (String studentId : viewableStudents) {
+				if (studentId != null) {
+					AssignmentSubmission thisSubmission = 
+						(AssignmentSubmission)studentIdSubmissionMap.get(studentId);
+
+					if (thisSubmission == null) {
+						// no submission exists for this student yet, so just
+						// add an empty rec to the returned list
+						thisSubmission = new AssignmentSubmission(assignment, studentId);
+					} else {
+						// we need to filter restricted info from instructor
+						// if this is draft, so let's create a copy of this
+						// object and modify it
+						thisSubmission = AssignmentSubmission.deepCopy(thisSubmission, false, false, false);
+						filterOutRestrictedInfo(thisSubmission, externalLogic.getCurrentUserId(), false);
+					}
+
+					// populate this submission's status		
+					Integer status = getSubmissionStatusConstantForCurrentVersion(
+							thisSubmission.getCurrentSubmissionVersion(), dueDate);
+					thisSubmission.setSubmissionStatusConstant(status);
+
+					viewableSubmissions.add(thisSubmission);
+				}
+			}
+		}
+
+		// if this assignment is graded, populate the grade information
+		if (!assignment.isUngraded() && assignment.getGradableObjectId() != null) {
+			gradebookLogic.populateGradesForSubmissions(contextId, viewableSubmissions, assignment);
 		}
 
 		return viewableSubmissions;
@@ -668,7 +678,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 
 		Assignment2 assignment = (Assignment2)dao.findById(Assignment2.class, assignmentId);
 		if (assignment == null) {
-			throw new IllegalArgumentException("No assignment exists with id " + assignmentId);
+			throw new AssignmentNotFoundException("No assignment exists with id " + assignmentId);
 		}
 		
 		// retrieve the submission history for this student for this assignment
@@ -792,7 +802,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		
 		Assignment2 assignment = (Assignment2) dao.findById(Assignment2.class, assignmentId);
 		if (assignment == null) {
-			throw new IllegalArgumentException("Assignment with id " + assignmentId + " does not exist");
+			throw new AssignmentNotFoundException("Assignment with id " + assignmentId + " does not exist");
 		}
 		
 		List<String> gradableStudents = permissionLogic.getGradableStudentsForUserForItem(assignment);
@@ -828,10 +838,14 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 					if (log.isDebugEnabled()) log.debug("All versions for assignment " + assignmentId + " released by " + externalLogic.getCurrentUserId());
 				} catch (HibernateOptimisticLockingFailureException holfe) {
 					if(log.isInfoEnabled()) log.info("An optimistic locking failure occurred while attempting to update submission versions for assignment " + assignmentId);
-		            throw new StaleObjectModificationException(holfe);
+		            throw new StaleObjectModificationException("An optimistic locking " +
+		            		"failure occurred while attempting to update submission " +
+		            		"versions for assignment " + assignmentId, holfe);
 				} catch (StaleObjectStateException sose) {
-					if(log.isInfoEnabled()) log.info("An optimistic locking failure occurred while attempting to update submission versions for assignment " + assignmentId);
-					throw new StaleObjectModificationException(sose);
+					if(log.isInfoEnabled()) log.info("An optimistic locking failure " +
+							"occurred while attempting to update submission versions for assignment " + assignmentId);
+					throw new StaleObjectModificationException("An optimistic locking " +
+							"failure occurred while attempting to update submission versions for assignment " + assignmentId, sose);
 				}
 			}
 		}
@@ -845,7 +859,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		AssignmentSubmission subWithHistory = dao.getSubmissionWithVersionHistoryById(submissionId);
 
 		if (subWithHistory == null) {
-			throw new IllegalArgumentException("No submission exists with id " + submissionId);
+			throw new SubmissionNotFoundException("No submission exists with id " + submissionId);
 		}
 
 		if (!permissionLogic.isUserAbleToProvideFeedbackForStudentForAssignment(subWithHistory.getUserId(), subWithHistory.getAssignment())) {
@@ -873,7 +887,8 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			} catch (HibernateOptimisticLockingFailureException holfe) {
 				if(log.isInfoEnabled()) log.info("An optimistic locking failure occurred while attempting to update release all version for submission " + submissionId);
 	            
-				throw new StaleObjectModificationException(holfe);
+				throw new StaleObjectModificationException("An optimistic locking " +
+						"failure occurred while attempting to update release all version for submission " + submissionId, holfe);
 			}
 		}
 	}
@@ -886,7 +901,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		AssignmentSubmissionVersion version = (AssignmentSubmissionVersion)dao.findById(
 				AssignmentSubmissionVersion.class, submissionVersionId);
 		if (version == null) {
-			throw new IllegalArgumentException("No version " + submissionVersionId + " exists");
+			throw new VersionNotFoundException("No version " + submissionVersionId + " exists");
 		}
 		
 		AssignmentSubmission submission = version.getAssignmentSubmission();
@@ -904,7 +919,8 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			if (log.isDebugEnabled()) log.debug("Version " + version.getId() + " released by " + externalLogic.getCurrentUserId());
 		} catch (HibernateOptimisticLockingFailureException holfe) {
 			if(log.isInfoEnabled()) log.info("An optimistic locking failure occurred while attempting to update submission version" + version.getId());
-            throw new StaleObjectModificationException(holfe);
+            throw new StaleObjectModificationException("An optimistic locking failure occurred " +
+            		"while attempting to update submission version" + version.getId(), holfe);
 		}
 	}
 	

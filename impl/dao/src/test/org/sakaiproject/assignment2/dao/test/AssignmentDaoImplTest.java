@@ -25,6 +25,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.sakaiproject.assignment2.exception.AssignmentNotFoundException;
+import org.sakaiproject.assignment2.exception.SubmissionNotFoundException;
+import org.sakaiproject.assignment2.exception.VersionNotFoundException;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
@@ -127,13 +130,15 @@ public class AssignmentDaoImplTest extends Assignment2DaoTestBase {
 			
 		}
 		
-		// now try an id that doesn't exist - null should be returned
-		Assignment2 assign = assignmentDao.getAssignmentByIdWithGroups(27L);
-		assertNull(assign);
+		// now try an id that doesn't exist - exception should be thrown
+		try {
+			assignmentDao.getAssignmentByIdWithGroups(27L);
+			fail("Did not catch bad id passed to getAssignmentByIdWithGroups");
+		} catch (AssignmentNotFoundException anfe) {}
 		
 		// now let's try some we know exist
 		// double check that the assignmentGroupSet is populated correctly
-		assign = assignmentDao.getAssignmentByIdWithGroups(testData.a1Id);
+		Assignment2 assign = assignmentDao.getAssignmentByIdWithGroups(testData.a1Id);
 		assertNotNull(assign);
 		assertTrue(assign.getAssignmentGroupSet().size() == 2);
 		assertTrue(assign.getTitle().equals(AssignmentTestDataLoad.ASSIGN1_TITLE));
@@ -154,12 +159,14 @@ public class AssignmentDaoImplTest extends Assignment2DaoTestBase {
 		}
 		
 		// now try an id that doesn't exist
-		Assignment2 assign = assignmentDao.getAssignmentByIdWithGroupsAndAttachments(27L);
-		assertNull(assign);
+		try {
+			assignmentDao.getAssignmentByIdWithGroupsAndAttachments(27L);
+			fail("did not catch bad id passed to getAssignmentByIdWithGroupsAndAttachments");
+		} catch (AssignmentNotFoundException anfe) {}
 		
 		// now let's try some we know exist - double check that the
 		// assignmentGroupSet and attachmentSet are returned properly
-		assign = assignmentDao.getAssignmentByIdWithGroups(testData.a1Id);
+		Assignment2 assign = assignmentDao.getAssignmentByIdWithGroups(testData.a1Id);
 		assertNotNull(assign);
 		assertTrue(assign.getAssignmentGroupSet().size() == 2);
 		assertTrue(assign.getAttachmentSet().size() == 2);
@@ -473,12 +480,14 @@ public class AssignmentDaoImplTest extends Assignment2DaoTestBase {
 			fail("Did not catch null id passed to getAssignmentSubmissionVersionByIdWithAttachments");
 		} catch(IllegalArgumentException iae) {
 		}
-		// try an id that doesn't exist - should return null
-		AssignmentSubmissionVersion version = assignmentDao.getAssignmentSubmissionVersionByIdWithAttachments(1234567L);
-		assertNull(version);
-		
+		// try an id that doesn't exist - should throw exception
+		try {
+			assignmentDao.getAssignmentSubmissionVersionByIdWithAttachments(1234567L);
+			fail("did not catch bogus version id passed to getAssignmentSubmissionVersionByIdWithAttachments");
+		} catch (VersionNotFoundException vnfe) {}
+
 		// try a real one
-		version = assignmentDao.getAssignmentSubmissionVersionByIdWithAttachments(testData.st1a1CurrVersion.getId());
+		AssignmentSubmissionVersion version = assignmentDao.getAssignmentSubmissionVersionByIdWithAttachments(testData.st1a1CurrVersion.getId());
 		assertNotNull(version);
 		assertNotNull(version.getAssignmentSubmission());
 		assertTrue(version.getAssignmentSubmission().getUserId().equals(AssignmentTestDataLoad.STUDENT1_UID));
@@ -503,11 +512,13 @@ public class AssignmentDaoImplTest extends Assignment2DaoTestBase {
 		}
 		
 		// try a submission id that doesn't exist
-		AssignmentSubmission submission = assignmentDao.getSubmissionWithVersionHistoryById(12345L);
-		assertNull(submission);
+		try {
+			assignmentDao.getSubmissionWithVersionHistoryById(12345L);
+			fail("did not catch bogus submission id passed to getSubmissionWithVersionHistoryById");
+		} catch (SubmissionNotFoundException snfe) {}
 		
 		// try a submission with no versions
-		submission = assignmentDao.getSubmissionWithVersionHistoryById(testData.st2a2SubmissionNoVersions.getId());
+		AssignmentSubmission submission = assignmentDao.getSubmissionWithVersionHistoryById(testData.st2a2SubmissionNoVersions.getId());
 		assertNotNull(submission);
 		assertNull(submission.getCurrentSubmissionVersion());
 		assertTrue(submission.getSubmissionHistorySet().isEmpty());
