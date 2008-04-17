@@ -67,7 +67,6 @@
       <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
       <property name="externalGradebookLogic" ref="org.sakaiproject.assignment2.logic.ExternalGradebookLogic" />
       <property name="locale" ref="requestLocale" />
-      <property name="sessionManager" ref="org.sakaiproject.tool.api.SessionManager" />
       <property name="assignment2EntityBeanLocator" ref="Assignment2"/>
       <property name="attachmentListRenderer" ref="AttachmentListRenderer" />
    </bean>

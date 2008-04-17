@@ -162,7 +162,7 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 		AssignmentDefinition assignDef = new AssignmentDefinition();
 		assignDef.setAcceptUntilDate(assignment.getAcceptUntilTime());
 		assignDef.setDraft(assignment.isDraft());
-		assignDef.setDueDateForUngraded(assignment.getDueDateForUngraded());
+		assignDef.setDueDate(assignment.getDueDate());
 		assignDef.setHasAnnouncement(assignment.getHasAnnouncement());
 		assignDef.setHonorPledge(assignment.isHonorPledge());
 		assignDef.setInstructions(assignment.getInstructions());
@@ -180,7 +180,6 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 			GradebookItem gbItem = (GradebookItem)gbIdItemMap.get(assignment.getGradableObjectId());
 			if (gbItem != null) {
 				assignDef.setAssociatedGbItemName(gbItem.getTitle());
-				assignDef.setAssociatedGbItemDueDate(gbItem.getDueDate());
 				assignDef.setAssociatedGbItemPtsPossible(gbItem.getPointsPossible());
 			}
 		}
@@ -265,7 +264,7 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 						newAssignment.setNotificationType(assignDef.getNotificationType());
 						newAssignment.setNumSubmissionsAllowed(assignDef.getNumSubmissionsAllowed());
 						newAssignment.setOpenTime(assignDef.getOpenDate());
-						newAssignment.setDueDateForUngraded(assignDef.getDueDateForUngraded());
+						newAssignment.setDueDate(assignDef.getDueDate());
 
 						if (assignDef.getSortIndex() == null) {
 							int index = dao.getHighestSortIndexInSite(toContext);
@@ -302,7 +301,7 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 											new ArrayList<String>(gbTitleToItemMap.keySet()));
 									associatedGbItemId = gradebookLogic.createGbItemInGradebook(toContext, 
 											gbItemTitle, assignDef.getAssociatedGbItemPtsPossible(), 
-											assignDef.getAssociatedGbItemDueDate(), false, false);
+											assignDef.getDueDate(), false, false);
 									if (log.isDebugEnabled()) log.debug("New gb item created via import!");
 
 									// now let's retrieve it and add it to our map of existing gb items
@@ -316,7 +315,7 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 								// this is a new item
 								associatedGbItemId = gradebookLogic.createGbItemInGradebook(toContext, 
 										assignDef.getAssociatedGbItemName(), assignDef.getAssociatedGbItemPtsPossible(), 
-										assignDef.getAssociatedGbItemDueDate(), false, false);
+										assignDef.getDueDate(), false, false);
 								if (log.isDebugEnabled()) log.debug("New gb item created via import!");
 								// now let's retrieve it and add it to our map of existing gb items
 								// so we don't try to create it again
@@ -408,6 +407,11 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 				Date closeDate = new Date(oAssignment.getCloseTime().getTime());
 				newAssnDef.setAcceptUntilDate(closeDate);
 			}
+			
+			if (oAssignment.getDueTime() != null) {
+				Date dueDate = new Date(oAssignment.getDueTime().getTime());
+				newAssnDef.setDueDate(dueDate);
+			}
 
 			newAssnDef.setTitle(oAssignment.getTitle());
 			newAssnDef.setDraft(oAssignment.getDraft());
@@ -483,10 +487,7 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 			// now let's handle the graded/ungraded stuff
 			if (oContent.getTypeOfGrade() == Assignment.UNGRADED_GRADE_TYPE) {
 				newAssnDef.setUngraded(true);
-				if (oAssignment.getDueTime() != null) {
-					Date dueDate = new Date(oAssignment.getDueTime().getTime());
-					newAssnDef.setDueDateForUngraded(dueDate);
-				}
+
 			} else {
 				String grading = oProperties.getProperty(AssignmentService.NEW_ASSIGNMENT_ADD_TO_GRADEBOOK);
 				String associateAssignment = oProperties.getProperty(AssignmentService.PROP_ASSIGNMENT_ASSOCIATE_GRADEBOOK_ASSIGNMENT);
@@ -503,14 +504,12 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 								if (associateAssignment.equals(gbItem.getExternalId())) {
 									newAssnDef.setUngraded(false);
 									newAssnDef.setAssociatedGbItemName(gbItem.getTitle());
-									newAssnDef.setAssociatedGbItemDueDate(gbItem.getDueDate());
 									newAssnDef.setAssociatedGbItemPtsPossible(gbItem.getPointsPossible());
 								}
 							} else {
 								if (associateAssignment.equals(gbItem.getTitle())) {
 									newAssnDef.setUngraded(false);
 									newAssnDef.setAssociatedGbItemName(gbItem.getTitle());
-									newAssnDef.setAssociatedGbItemDueDate(gbItem.getDueDate());
 									newAssnDef.setAssociatedGbItemPtsPossible(gbItem.getPointsPossible());
 								}
 							}
@@ -527,26 +526,13 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 							newAssnDef.setUngraded(false);
 							newAssnDef.setAssociatedGbItemName(oAssignment.getTitle());
 							newAssnDef.setAssociatedGbItemPtsPossible(new Double(oContent.getMaxGradePointDisplay()));
-							if (oAssignment.getDueTime() != null) {
-								Date dueDate = new Date(oAssignment.getDueTime().getTime());
-								newAssnDef.setAssociatedGbItemDueDate(dueDate);
-							}
 						} catch (NumberFormatException nfe) {
 							// set this one as ungraded b/c points possible was invalid
 							newAssnDef.setUngraded(true);
-							if (oAssignment.getDueTime() != null) {
-								Date dueDate = new Date(oAssignment.getDueTime().getTime());
-								newAssnDef.setDueDateForUngraded(dueDate);
-							}
 						}
 
 					} else {
-
 						newAssnDef.setUngraded(true);
-						if (oAssignment.getDueTime() != null) {
-							Date dueDate = new Date(oAssignment.getDueTime().getTime());
-							newAssnDef.setDueDateForUngraded(dueDate);
-						}
 					}
 				}
 			}

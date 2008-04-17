@@ -486,11 +486,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 			return AssignmentConstants.STATUS_CLOSED;
 		}
 		
-		if (assignment.isUngraded()) {
-			if (assignment.getDueDateForUngraded() != null && currDate.after(assignment.getDueDateForUngraded()))
-				return AssignmentConstants.STATUS_DUE;
-		}
-		else if (assignment.getDueDate() != null) {
+		if (assignment.getDueDate() != null) {
 			if (currDate.after(assignment.getDueDate()))
 				return AssignmentConstants.STATUS_DUE;				
 		}

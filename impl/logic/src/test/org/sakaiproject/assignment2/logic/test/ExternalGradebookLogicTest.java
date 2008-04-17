@@ -100,7 +100,6 @@ public class ExternalGradebookLogicTest extends Assignment2TestBase {
     	for (Assignment2 assign : viewableAssigns) {
     		if (assign.getId().equals(testData.a3Id)) {
     			assertTrue(assign.getPointsPossible().equals(AssignmentTestDataLoad.GB_ITEM1_PTS));
-    			assertNull(assign.getDueDate());
     		} else if (assign.getId().equals(testData.a4Id)) {
     			assertTrue(assign.getPointsPossible().equals(AssignmentTestDataLoad.GB_ITEM2_PTS));
     		} else {
@@ -118,7 +117,6 @@ public class ExternalGradebookLogicTest extends Assignment2TestBase {
     	for (Assignment2 assign : viewableAssigns) {
     		if (assign.getId().equals(testData.a3Id)) {
     			assertTrue(assign.getPointsPossible().equals(AssignmentTestDataLoad.GB_ITEM1_PTS));
-    			assertNull(assign.getDueDate());
     		} else if (assign.getId().equals(testData.a4Id)) {
     			assertTrue(assign.getPointsPossible().equals(AssignmentTestDataLoad.GB_ITEM2_PTS));
     		} else {

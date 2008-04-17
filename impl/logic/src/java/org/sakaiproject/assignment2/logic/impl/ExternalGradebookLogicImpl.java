@@ -103,7 +103,6 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
 				if (goId != null) {
 					Assignment gbItem =	(Assignment)goIdGbAssignmentMap.get(goId);
 					if (gbItem != null) {
-						gradedAssignment.setDueDate(gbItem.getDueDate());
 						gradedAssignment.setPointsPossible(gbItem.getPoints());
 						viewableAssignmentsWithGbData.add(gradedAssignment);
 					} else {
@@ -118,7 +117,6 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
 								// if a student, we still need to return an assignment with gb item info
 								// this just means the grade info has not been released yet
 								Assignment unreleasedAssign = gradebookService.getAssignment(contextId, goId);
-								gradedAssignment.setDueDate(unreleasedAssign.getDueDate());
 								gradedAssignment.setPointsPossible(unreleasedAssign.getPoints());
 								viewableAssignmentsWithGbData.add(gradedAssignment);
 							}
@@ -439,7 +437,6 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
     	if (!assignment.isUngraded() && assignment.getGradableObjectId() != null) {
     		try {
     			Assignment gbItem = gradebookService.getAssignment(contextId, assignment.getGradableObjectId());
-    			assignment.setDueDate(gbItem.getDueDate());
     			assignment.setPointsPossible(gbItem.getPoints());
     		} catch (AssessmentNotFoundException e) {
     			if (log.isDebugEnabled()) log.debug("Gradebook item that assignment " + assignment.getId() + " associated with no longer exists");

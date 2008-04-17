@@ -132,13 +132,10 @@ public class StudentViewAssignmentRenderer {
     	
     	//Display Assignment Info
     	UIOutput.make(joint, "header.title", title);
-    	if (assignment != null && !assignment.isUngraded()){
-    		//Gradebook Due Date
-    		UIOutput.make(joint, "header.due_date", (assignment.getDueDate() != null ? df.format(assignment.getDueDate()) : ""));
-    	} else {
-    		//A2 Ungraded Due Date
-    		UIOutput.make(joint, "header.due_date", (assignment.getDueDateForUngraded() != null ? df.format(assignment.getDueDateForUngraded()) : ""));
-    	}
+
+    	// Due Date
+    	UIOutput.make(joint, "header.due_date", (assignment.getDueDate() != null ? df.format(assignment.getDueDate()) : ""));
+
     	if (assignment != null && assignment.getAcceptUntilTime() != null) {
     		UIOutput.make(joint, "accept_until_tr");
     		UIOutput.make(joint, "header.accept_until", df.format(assignment.getAcceptUntilTime()));

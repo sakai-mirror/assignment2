@@ -47,8 +47,8 @@ public class ComparatorsUtils {
 	 */
 	public static class Assignment2DueDateComparator implements Comparator<Assignment2>  {
 		public int compare(Assignment2 assign1, Assignment2 assign2) {
-			Date dueDate1 = assign1.isUngraded() ? assign1.getDueDateForUngraded() : assign1.getDueDate();
-			Date dueDate2 = assign2.isUngraded() ? assign2.getDueDateForUngraded() : assign2.getDueDate();
+			Date dueDate1 = assign1.getDueDate();
+			Date dueDate2 = assign2.getDueDate();
 			
 			int value;
 			if (dueDate1 != null && dueDate2 != null) {

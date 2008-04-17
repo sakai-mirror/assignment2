@@ -15,7 +15,6 @@ import org.sakaiproject.assignment2.tool.beans.locallogic.DecoratedTaggingProvid
 import org.sakaiproject.assignment2.tool.beans.locallogic.LocalAssignmentLogic;
 import org.sakaiproject.assignment2.tool.params.AssignmentListSortViewParams;
 import org.sakaiproject.assignment2.tool.params.AssignmentViewParams;
-import org.sakaiproject.assignment2.tool.params.TaggableHelperViewParams;
 import org.sakaiproject.assignment2.tool.params.ViewSubmissionsViewParams;
 import org.sakaiproject.assignment2.tool.producers.AssignmentProducer;
 import org.sakaiproject.assignment2.tool.producers.ViewSubmissionsProducer;
@@ -218,19 +217,13 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
         	   	UIOutput.make(row, "assignment_row_open_text", assignment.getAssignmentStatus());
         	}
         	UIOutput.make(row, "assignment_row_open", df.format(assignment.getOpenTime()));
-        	if (assignment.isUngraded()) {
-        		if (assignment.getDueDateForUngraded() != null) {
-        			UIOutput.make(row, "assignment_row_due", df.format(assignment.getDueDateForUngraded()));
-        		} else {
-        			UIMessage.make(row, "assignment_row_due", "assignment2.assignment_list-sortview.no_due_date");
-        		}
+
+        	if (assignment.getDueDate() != null) {
+        		UIOutput.make(row, "assignment_row_due", df.format(assignment.getDueDate()));
         	} else {
-        		if (assignment.getDueDate() != null) {
-        			UIOutput.make(row, "assignment_row_due", df.format(assignment.getDueDate()));
-        		} else {
-        			UIOutput.make(row, "assignment_row_due", messageLocator.getMessage("assignment2.assignment_list-sortview.no_due_date"));	
-        		}
+        		UIOutput.make(row, "assignment_row_due", messageLocator.getMessage("assignment2.assignment_list-sortview.no_due_date"));	
         	}
+
         	//UIInternalLink.make(row, "assignment_row_in_new", "2/4", new SimpleViewParameters(GradeAssignmentProducer.VIEW_ID));
         }
         

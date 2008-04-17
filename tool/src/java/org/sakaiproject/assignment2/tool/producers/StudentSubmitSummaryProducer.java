@@ -62,11 +62,9 @@ public class StudentSubmitSummaryProducer implements ViewComponentProducer, View
 		
 		//Display Assignment Info
     	UIOutput.make(tofill, "header.title", assignment.getTitle());
-    	if (!assignment.isUngraded()){
-    		UIOutput.make(tofill, "header.due_date", (assignment.getDueDate() != null ? df.format(assignment.getDueDate()) : ""));
-    	} else {
-    		UIOutput.make(tofill, "header.due_date", (assignment.getDueDateForUngraded() != null ? df.format(assignment.getDueDateForUngraded()) : ""));
-    	}
+
+    	UIOutput.make(tofill, "header.due_date", (assignment.getDueDate() != null ? df.format(assignment.getDueDate()) : ""));
+
     	UIOutput.make(tofill, "header.status", assignmentSubmission.getSubmissionStatus());
     	UIOutput.make(tofill, "header.grade_scale", "Grade Scale from Gradebook");  //HERE
     	if (assignment.getModifiedTime() != null) {

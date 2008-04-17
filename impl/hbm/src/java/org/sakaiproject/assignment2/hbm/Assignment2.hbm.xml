@@ -45,9 +45,9 @@
         <property name="ungraded" type="java.lang.Boolean">
             <column name="UNGRADED" not-null="true" />
         </property>
-        <!-- stores due date for ungraded assign, only situation where not stored in gb -->
-        <property name="dueDateForUngraded" type="java.util.Date">
-            <column name="DUE_DATE_FOR_UNGRADED" />
+        <!-- stores due date for assignment - optional -->
+        <property name="dueDate" type="java.util.Date">
+            <column name="DUE_DATE" />
         </property>
         <!-- true if assignment requires student to agree to honor pledge -->
         <property name="honorPledge" type="java.lang.Boolean">

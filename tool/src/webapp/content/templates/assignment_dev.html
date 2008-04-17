@@ -65,7 +65,7 @@
 							<input rsf:id="select_graded" id="select_graded" name="graded" type="radio" /> 
 							<label rsf:id="select_graded_label">This assignment is graded</label>
 							<span rsf:id="msg=assignment2.assignment_add.gradebook_associated"> and is associated with a Gradebook Item:</span> 
-								<select rsf:id="gradebook_item" onchange="update_due_date();">
+								<select rsf:id="gradebook_item">
 									<option value="">Select a Gradebook Item</option>
 									<option value="Category: GB Item 1">Category: GB Item 1</option>
 									<option value="Category: GB Item 2">Category: GB Item 2</option>
@@ -279,11 +279,6 @@ function refresh_ajax(){
 <script type="text/javascript">
 //<![CDATA[
 jQuery(document).ready(function(){
-	//gradebook inits
-	jQuery("input[type='radio'][name='page-replace\:\:ungraded-selection']").each(function(){
-	    this.onclick=gradebook_toggle;
-	});
-	gradebook_toggle();
 	//Groups init
 	jQuery("input[type='radio'][name='page-replace\:\:access_select-selection']").each(function(){
 		this.onclick = groups_toggle;

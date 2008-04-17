@@ -132,10 +132,8 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			gradebookLogic.populateGradebookItemDetailsForAssignment(currentContextId, assignment);
 		}
 
-		Date dueDate = assignment.isUngraded() ? assignment.getDueDateForUngraded() : assignment.getDueDate();
-
 		// populate this submission's status
-		Integer status = getSubmissionStatusConstantForCurrentVersion(submission.getCurrentSubmissionVersion(), dueDate);
+		Integer status = getSubmissionStatusConstantForCurrentVersion(submission.getCurrentSubmissionVersion(), assignment.getDueDate());
 		submission.setSubmissionStatusConstant(status);
 
 		return submission;
@@ -225,11 +223,9 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			gradebookLogic.populateGradebookItemDetailsForAssignment(contextId, assignment);
 		}
 
-		Date dueDate = assignment.isUngraded() ? assignment.getDueDateForUngraded() : assignment.getDueDate();
-
 		// populate this submission's status
 		Integer status = getSubmissionStatusConstantForCurrentVersion(
-				submission.getCurrentSubmissionVersion(), dueDate);
+				submission.getCurrentSubmissionVersion(), assignment.getDueDate());
 		submission.setSubmissionStatusConstant(status);
 
 		return submission;
@@ -496,8 +492,6 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 				gradebookLogic.populateGradebookItemDetailsForAssignment(contextId, assignment);
 			}
 
-			Date dueDate = assignment.isUngraded() ? assignment.getDueDateForUngraded() : assignment.getDueDate();
-
 			// get the submissions for these students
 			Set<AssignmentSubmission> existingSubmissions = dao.getCurrentSubmissionsForStudentsForAssignment(viewableStudents, assignment);
 
@@ -531,7 +525,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 
 					// populate this submission's status		
 					Integer status = getSubmissionStatusConstantForCurrentVersion(
-							thisSubmission.getCurrentSubmissionVersion(), dueDate);
+							thisSubmission.getCurrentSubmissionVersion(), assignment.getDueDate());
 					thisSubmission.setSubmissionStatusConstant(status);
 
 					viewableSubmissions.add(thisSubmission);
@@ -580,9 +574,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 						gradebookLogic.populateGradebookItemDetailsForAssignment(contextId, assign);
 					}
 					
-					Date dueDate = assign.isUngraded() ? assign.getDueDateForUngraded() : assign.getDueDate();
-					
-					Integer status = getSubmissionStatusConstantForCurrentVersion(currVersion, dueDate);
+					Integer status = getSubmissionStatusConstantForCurrentVersion(currVersion, assign.getDueDate());
 					assign.setSubmissionStatusConstant(status);
 				}
 			}

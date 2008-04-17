@@ -10,10 +10,8 @@ import uk.org.ponder.messageutil.MessageLocator;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
 import java.util.Set;
 import java.util.HashSet;
-import java.util.Iterator;
 
 public class Assignment2Creator {
 
@@ -40,7 +38,7 @@ public class Assignment2Creator {
     	cal.set(Calendar.HOUR_OF_DAY, 17);
     	
     	togo.setOpenTime(openDate);
-    	//togo.setDueDateForUngraded(closeDate);
+    	//togo.setDueDate(closeDate);
     	//togo.setAcceptUntilTime(closeDate);
     	
     	return togo;
@@ -59,7 +57,7 @@ public class Assignment2Creator {
     	dup.setOpenTime(assignment.getOpenTime());
     	dup.setAcceptUntilTime(assignment.getAcceptUntilTime());
     	dup.setUngraded(assignment.isUngraded());
-    	dup.setDueDateForUngraded(assignment.getDueDateForUngraded());
+    	dup.setDueDate(assignment.getDueDate());
     	dup.setHonorPledge(assignment.isHonorPledge());
     	dup.setInstructions(assignment.getInstructions());
     	dup.setSubmissionType(assignment.getSubmissionType());

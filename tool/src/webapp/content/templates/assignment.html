@@ -65,7 +65,7 @@
 							<input rsf:id="select_graded" id="select_graded" name="graded" type="radio" /> 
 							<label rsf:id="select_graded_label">This assignment is graded</label>
 							<span rsf:id="msg=assignment2.assignment_add.gradebook_associated"> and is associated with a Gradebook Item:</span> 
-								<select rsf:id="gradebook_item" onchange="update_due_date();">
+								<select rsf:id="gradebook_item">
 									<option value="">Select a Gradebook Item</option>
 									<option value="Category: GB Item 1">Category: GB Item 1</option>
 									<option value="Category: GB Item 2">Category: GB Item 2</option>
@@ -111,14 +111,6 @@
 				</fieldset>
 				<div rsf:id="require_due_date_container" class="indent"><input rsf:id="due_date:" value="12/31/2007"/></div>
 				<p rsf:id="message-for:due_date"></p>
-			</li>
-			<li class="gradebook_item_due_date">
-				<label rsf:id="msg=assignment2.assignment_add.gradebook_item_due_date">Gradebook Item Due Date</label>
-				<span rsf:id="gradebook_item_due_date">12/31/2007</span>
-				<p class="instruction">
-					<span rsf:id="msg=assignment2.assignment_add.gradebook_item_due_Date_instruction">The Due Date is set by the Gradebook Item.</span> 
-					<a rsf:id="gradebook_item_edit_helper" class="thickbox">To Edit, click here</a>
-				</p>
 			</li>
 			<li>
 				<label rsf:id="msg=assignment2.assignment_add.accept_until">Accept Until</label> 
@@ -289,11 +281,6 @@ function refresh_ajax(){
 <script type="text/javascript">
 //<![CDATA[
 jQuery(document).ready(function(){
-	//gradebook inits
-	jQuery("input[type='radio'][name='page-replace\:\:ungraded-selection']").each(function(){
-	    this.onclick=gradebook_toggle;
-	});
-	gradebook_toggle();
 	//Groups init
 	jQuery("input[type='radio'][name='page-replace\:\:access_select-selection']").each(function(){
 		this.onclick = groups_toggle;

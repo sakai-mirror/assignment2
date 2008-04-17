@@ -51,12 +51,8 @@ import uk.org.ponder.rsf.view.ViewComponentProducer;
 import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
 import uk.org.ponder.rsf.viewstate.ViewParameters;
 import uk.org.ponder.rsf.viewstate.ViewParamsReporter;
-import uk.org.ponder.rsf.flow.ARIResult;
-import uk.org.ponder.rsf.flow.ActionResultInterceptor;
 
 import org.sakaiproject.site.api.Group;
-import org.sakaiproject.tool.api.SessionManager;
-import org.sakaiproject.tool.api.ToolSession;
 
 public class AssignmentProducer implements ViewComponentProducer, NavigationCaseReporter, ViewParamsReporter {
 
@@ -72,7 +68,6 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
     private ExternalLogic externalLogic;
     private ExternalGradebookLogic externalGradebookLogic;
     private Locale locale;
-    private SessionManager sessionManager;
     private EntityBeanLocator assignment2BeanLocator;
     private AttachmentListRenderer attachmentListRenderer;
     
@@ -169,15 +164,15 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
 		DecoratorList display_none_list =  new DecoratorList(new UIFreeAttributeDecorator(attrmap));
 		
 		
-		Boolean require_due_date = (assignment.getDueDateForUngraded() != null);
+		Boolean require_due_date = (assignment.getDueDate() != null);
 		UIBoundBoolean require_due = UIBoundBoolean.make(form, "require_due_date", "#{Assignment2Bean.requireDueDate}", require_due_date);
 		require_due.mustapply = true;
 		UIMessage require_due_label = UIMessage.make(form, "require_due_date_label", "assignment2.assignment_add.require_due_date");
 		UILabelTargetDecorator.targetLabel(require_due_label, require_due);
 		
 		UIOutput require_due_container = UIOutput.make(form, "require_due_date_container");
-		UIInput dueDateField = UIInput.make(form, "due_date:", assignment2OTP + ".dueDateForUngraded");
-		dateEvolver.evolveDateInput(dueDateField, (assignment.getDueDateForUngraded() != null ? assignment.getDueDateForUngraded() : closeDate));
+		UIInput dueDateField = UIInput.make(form, "due_date:", assignment2OTP + ".dueDate");
+		dateEvolver.evolveDateInput(dueDateField, (assignment.getDueDate() != null ? assignment.getDueDate() : closeDate));
 		
 		if (!require_due_date){
 			require_due_container.decorators = display_none_list;
@@ -322,17 +317,6 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
         UISelectChoice ungraded = UISelectChoice.make(form, "select_ungraded", grading_select_id, 1);
         UIMessage ungraded_label = UIMessage.make(form, "select_ungraded_label", "assignment2.assignment_add.assignment_ungraded");
         UILabelTargetDecorator.targetLabel(ungraded_label, ungraded);
-        
-        //Check if gradebook item due date is not null, else output the formatted date
-        Long selectedId = null;
-        if (currentSelected == null){
-        	UIMessage.make(form, "gradebook_item_due_date", "assignment2.assignment_add.gradebook_item_not_selected");
-        }else if(currentSelected.getDueDate() == null) {
-        	UIMessage.make(form, "gradebook_item_due_date", "assignment2.assignment_add.gradebook_item_no_due_date");
-        } else {
-        	UIOutput.make(form, "gradebook_item_due_date", df.format(currentSelected.getDueDate()));
-        	selectedId = currentSelected.getGradableObjectId();
-        }
 
         //Output the JS vars
         UIVerbatim.make(tofill, "gradebook_items_data", js_gradebook_items_data);
@@ -343,14 +327,7 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
         UILink.make(form, "gradebook_item_new_helper",
         		UIMessage.make("assignment2.assignment_add.gradebook_item_new_helper"),
         		url);
-        		
-        url = externalLogic.getUrlForGradebookItemHelper(selectedId, FinishedHelperProducer.VIEWID);
-        UILink helplink = UIInternalLink.make(form, "gradebook_item_edit_helper",
-        		UIMessage.make("assignment2.assignment_add.gradebook_item_edit_helper"),
-        		url);
-        if (selectedId == null){
-        	helplink.decorators = display_none_list;
-        }
+
         
         /******
          * Access
@@ -370,7 +347,6 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
         //((UIBoundString) access.selection).setValue(assignment.isRestrictedToGroups().toString());
         
         String accessId = access.getFullID();
-        String displayToEntireSiteFullId = "";
 
         for (int i=0; i < access_values.length; i++) {
         	UIBranchContainer access_row = UIBranchContainer.make(form, "access_row:");
@@ -430,7 +406,7 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
         
     }
 
-	public List reportNavigationCases() {
+	public List<NavigationCase> reportNavigationCases() {
     	List<NavigationCase> nav= new ArrayList<NavigationCase>();
         nav.add(new NavigationCase("post", new SimpleViewParameters(
             AssignmentListSortViewProducer.VIEW_ID)));
@@ -470,10 +446,6 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
     public void setLocale(Locale locale) {
     	this.locale = locale;
     }
-    
-	public void setSessionManager(SessionManager sessionManager) {
-		this.sessionManager = sessionManager;
-	}
 	
 	public void setAssignment2EntityBeanLocator(EntityBeanLocator entityBeanLocator) {
 		this.assignment2BeanLocator = entityBeanLocator;

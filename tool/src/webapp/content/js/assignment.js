@@ -52,20 +52,9 @@ function changeValue(){
    if (el.selectedIndex != 0){
    	jQuery("input[type='radio'][value='false'][name='page-replace\:\:ungraded-selection']").get(0).checked=true;
    }
-   gradebook_toggle();
-   update_due_date();
+
 }
 
-gradebook_toggle = function(){
-	el = jQuery("input[type='radio'][value='true'][name='page-replace\:\:ungraded-selection']").get(0);
-	if(el){
-	if (el && el.checked) {
-		jQuery('.due_date').show(); jQuery('.gradebook_item_due_date').hide();
-	} else {
-		jQuery('.due_date').hide(); jQuery('.gradebook_item_due_date').show();
-	}
-	}
-}
 
 groups_toggle = function(){
 	el = jQuery("input[type='radio'][value='false'][name='page-replace\:\:access_select-selection']").get(0);
@@ -82,26 +71,6 @@ function toggle_group_checkboxes(check_all_box){
 	} else {
 		jQuery('table#groupTable :checkbox').removeAttr('checked');
 	}
-}
-
-function update_due_date(){
-	id = jQuery("select[name='page-replace\:\:gradebook_item-selection']").val();
-	if (jQuery("select[name='page-replace\:\:gradebook_item-selection']").get(0).selectedIndex != 0) {
-		jQuery("input[type='radio'][value='false'][name='page-replace\:\:ungraded-selection']").get(0).checked=true;
-	}
-	gradebook_toggle();
-	id = id==""?0:id;
-	jQuery("li.gradebook_item_due_date > span").html(gradebook_items_date[id]);
-	jQuery("li.gradebook_item_due_date p.instruction a").each(function(){
-		if(id!=0){
-			jQuery(this).show();
-			//TODO - replace this with an AJAX call to the server to get the new url using the logic and VPs...
-			// that way we would not have to hard code stuff in
-			this.href = this.href.replace(/\/[^\?\/]*\?TB_ifra/, "/" + id + "?TB_ifra");
-		}else{
-			jQuery(this).hide();
-		}
-	});
 }
 
 function show_due_date(){
@@ -142,7 +111,6 @@ function update_resubmit_until(){
 
 jQuery(document).ready(function(){
 	update_resubmit_until();
-	gradebook_toggle();
 });
 
 function slide_submission(img){

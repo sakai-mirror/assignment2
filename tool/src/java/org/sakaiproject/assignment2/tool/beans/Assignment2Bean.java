@@ -6,8 +6,6 @@ import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentGroup;
 import org.sakaiproject.assignment2.model.AssignmentAttachment;
 import org.sakaiproject.assignment2.tool.beans.Assignment2Validator;
-import org.sakaiproject.tool.api.SessionManager;
-import org.sakaiproject.tool.api.ToolSession;
 import org.sakaiproject.user.api.UserNotDefinedException;
 import org.sakaiproject.assignment2.exception.AnnouncementPermissionException;
 import org.sakaiproject.assignment2.exception.StaleObjectModificationException;
@@ -20,7 +18,6 @@ import uk.org.ponder.messageutil.MessageLocator;
 import uk.org.ponder.messageutil.TargettedMessage;
 import uk.org.ponder.messageutil.TargettedMessageList;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -39,7 +36,6 @@ public class Assignment2Bean {
 	private static final String BACK_TO_LIST = "back_to_list";
 	private static final String POST = "post";
 	private static final String PREVIEW = "preview";
-	private static final String REFRESH = "refresh";
 	private static final String SAVE_DRAFT = "save_draft";
 	private static final String EDIT = "edit";
 	private static final String CANCEL = "cancel";
@@ -140,7 +136,7 @@ public class Assignment2Bean {
 		}
 		
 		if (this.requireDueDate == null || this.requireDueDate == Boolean.FALSE) {
-			assignment.setDueDateForUngraded(null);
+			assignment.setDueDate(null);
 		}
 
 		Set<AssignmentAttachment> set = new HashSet<AssignmentAttachment>();
@@ -203,10 +199,6 @@ public class Assignment2Bean {
 		if (validator.validate(assignment, messages) && !errorFound){
 			//Validation Passed!
 			try {
-				Assignment2 assignmentFromDb = null;
-				if (assignment.getId() != null) {
-					assignmentFromDb = logic.getAssignmentByIdWithGroups(assignment.getId());
-				}
 				
 				logic.saveAssignment(assignment);
 				
@@ -248,7 +240,7 @@ public class Assignment2Bean {
 				assignment.setAcceptUntilTime(null);
 			}
 			if (this.requireDueDate == null || this.requireDueDate == Boolean.FALSE) {
-				assignment.setDueDateForUngraded(null);
+				assignment.setDueDate(null);
 			}
 			previewAssignmentBean.setAssignment(assignment);
 			previewAssignmentBean.setOTPKey(key);

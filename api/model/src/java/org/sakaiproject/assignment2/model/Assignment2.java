@@ -45,7 +45,7 @@ public class Assignment2 {
     private Date openTime;
     private Date acceptUntilTime;
     private Boolean ungraded;
-    private Date dueDateForUngraded;
+    private Date dueDate;
     private Boolean honorPledge;
     private String instructions;
     private int submissionType;
@@ -67,7 +67,6 @@ public class Assignment2 {
     
     // fields that are manually retrieved from the gradebook
     private Double pointsPossible;
-    private Date dueDate;
     
     // fields that are not persisted but needed for UI
     private String assignmentStatus;
@@ -79,7 +78,7 @@ public class Assignment2 {
 	public Assignment2(Long id, Long gradableObjectId,
 			String contextId, String title, Boolean draft, int sortIndex,
 			Date openTime, Date acceptUntilTime, Boolean ungraded,
-			Date dueDateForUngraded, Boolean honorPledge, String instructions,
+			Date dueDate, Boolean honorPledge, String instructions,
 			int submissionType, int notificationType, Boolean hasAnnouncement,
 			String announcementId, Integer numSubmissionsAllowed,
 			Boolean allowReviewService,	Boolean allowStudentViewReport, 
@@ -93,7 +92,7 @@ public class Assignment2 {
 		this.openTime = openTime;
 		this.acceptUntilTime = acceptUntilTime;
 		this.ungraded = ungraded;
-		this.dueDateForUngraded = dueDateForUngraded;
+		this.dueDate = dueDate;
 		this.honorPledge = honorPledge;
 		this.instructions = instructions;
 		this.submissionType = submissionType;
@@ -260,25 +259,21 @@ public class Assignment2 {
     }
     
     /**
-     * All assignments will be linked to the gradebook except ungraded 
-     * assignments.  This field is for storing the due date in this situation
-     * since all other assignment due dates will be stored on the gb side.
-     * The time after which responses to this assignment are considered late
+     * The time after which responses to this assignment are considered late.
+     * This is an optional setting.
      * @return due date
      */
-    public Date getDueDateForUngraded() {
-    	return dueDateForUngraded;
+    public Date getDueDate() {
+    	return dueDate;
     }
     
     /**
-     * All assignments will be linked to the gradebook except ungraded 
-     * assignments.  This field is for storing the due date in this situation
-     * since all other assignment due dates will be stored on the gb side.
-     * The time after which responses to this assignment are considered late
-     * @param dueDateForUngraded
+     * The time after which responses to this assignment are considered late.
+     * This is an optional setting.
+     * @param dueDate
      */
-    public void setDueDateForUngraded(Date dueDateForUngraded) {
-    	this.dueDateForUngraded = dueDateForUngraded;
+    public void setDueDate(Date dueDate) {
+    	this.dueDate = dueDate;
     }
     
     /**
@@ -599,25 +594,6 @@ public class Assignment2 {
 	 */
 	public void setPointsPossible(Double pointsPossible) {
 		this.pointsPossible = pointsPossible;
-	}
-
-	/**
-	 * 
-	 * @return the due date for this assignment.  actually returns the due
-	 * date of the associated gb item.  null if ungraded or
-	 * if there is no due date.
-	 */
-	public Date getDueDate() {
-		return dueDate;
-	}
-	
-	/**
-	 * set the due date for this assignment.  Actually updates the due date
-	 * for the associated gb item.  Null if ungraded or there is no due date.
-	 * @param dueDate
-	 */
-	public void setDueDate(Date dueDate) {
-		this.dueDate = dueDate;
 	}
 	
 	// the following fields are not persisted but are used by the UI

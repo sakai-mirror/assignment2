@@ -123,17 +123,14 @@ public class AssignmentTestDataLoad {
 	public static final Long GB_ITEM1_ID = 1L; // assoc w/ assign 3
 	public static final String GB_ITEM1_NAME = "Item 1";
 	public static final Double GB_ITEM1_PTS = new Double(30);
-	public static final Date GB_ITEM1_DUE = null;
 	
 	public static final Long GB_ITEM2_ID = 2L;  // assoc w/ assign 4
 	public static final String GB_ITEM2_NAME = "Item 2";
 	public static final Double GB_ITEM2_PTS = new Double(40);
-	public static final Date GB_ITEM2_DUE = new Date();
 	
 	public static final Long GB_ITEM3_ID = 3L;  // NOT assoc w/ any assign
 	public static final String GB_ITEM3_NAME = "Item 3";
 	public static final Double GB_ITEM3_PTS = new Double(100);
-	public static final Date GB_ITEM3_DUE = new Date();
 	
 	public static final Double st1a3Grade = new Double(25);
 	public static final String st1a3Comment = "Mediocre work";

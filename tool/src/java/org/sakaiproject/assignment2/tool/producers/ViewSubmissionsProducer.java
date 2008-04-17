@@ -207,13 +207,10 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
         UIMessage.make(tofill, "assignment_details.open_header", "assignment2.assignment_grade-assignment.assignment_details.open");
         UIOutput.make(tofill, "assignment_details.open", df.format(assignment.getOpenTime()));
         UIMessage.make(tofill, "assignment_details.due_header", "assignment2.assignment_grade-assignment.assignment_details.due");
-        if (assignment.isUngraded()){
-        	UIOutput.make(tofill, "assignment_details.due", 
-        			(assignment.getDueDateForUngraded() != null ? df.format(assignment.getDueDateForUngraded()) : ""));
-        } else {
-        	UIOutput.make(tofill, "assignment_details.due", 
-        			(assignment.getDueDate() != null ? df.format(assignment.getDueDate()) : ""));
-        }
+
+        UIOutput.make(tofill, "assignment_details.due", 
+        		(assignment.getDueDate() != null ? df.format(assignment.getDueDate()) : ""));
+
         UIMessage.make(tofill, "assignment_details.accept_until_header", "assignment2.assignment_grade-assignment.assignment_details.accept_until");
         UIOutput.make(tofill, "assignment_details.accept_until", 
         		(assignment.getAcceptUntilTime() != null ? df.format(assignment.getAcceptUntilTime()) : ""));

@@ -64,7 +64,6 @@ public class GradebookServiceStub implements GradebookService {
 		Assignment gbItem1 = new Assignment();
 		gbItem1.setId(AssignmentTestDataLoad.GB_ITEM1_ID);
 		gbItem1.setName(AssignmentTestDataLoad.GB_ITEM1_NAME);
-		gbItem1.setDueDate(AssignmentTestDataLoad.GB_ITEM1_DUE);
 		gbItem1.setPoints(AssignmentTestDataLoad.GB_ITEM1_PTS);
 		gbItem1.setReleased(false);  // gb item 1 is not released
 
@@ -75,7 +74,6 @@ public class GradebookServiceStub implements GradebookService {
 		Assignment gbItem2 = new Assignment();
 		gbItem2.setId(AssignmentTestDataLoad.GB_ITEM2_ID);
 		gbItem2.setName(AssignmentTestDataLoad.GB_ITEM2_NAME);
-		gbItem2.setDueDate(AssignmentTestDataLoad.GB_ITEM2_DUE);
 		gbItem2.setPoints(AssignmentTestDataLoad.GB_ITEM2_PTS);
 		gbItem2.setReleased(true);
 
@@ -86,7 +84,6 @@ public class GradebookServiceStub implements GradebookService {
 		Assignment gbItem3 = new Assignment();
 		gbItem3.setId(AssignmentTestDataLoad.GB_ITEM3_ID);
 		gbItem3.setName(AssignmentTestDataLoad.GB_ITEM3_NAME);
-		gbItem3.setDueDate(AssignmentTestDataLoad.GB_ITEM3_DUE);
 		gbItem3.setPoints(AssignmentTestDataLoad.GB_ITEM3_PTS);
 		gbItem3.setReleased(true);
 

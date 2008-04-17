@@ -257,11 +257,9 @@ public class AssignmentLogicTest extends Assignment2TestBase {
 
 			} else if (assign.getId().equals(testData.a3Id)) {
 				// this one is graded, so check that the gb info was populated
-				assertTrue(assign.getDueDate() == null);
 				assertTrue(assign.getPointsPossible().equals(AssignmentTestDataLoad.GB_ITEM1_PTS));
 			} else if (assign.getId().equals(testData.a4Id)) {
 				// this one is graded, so check that the gb info was populated
-				assertTrue(assign.getDueDate().equals(AssignmentTestDataLoad.GB_ITEM2_DUE));
 				assertTrue(assign.getPointsPossible().equals(AssignmentTestDataLoad.GB_ITEM2_PTS));
 			} else {
 				fail("Invalid assignment returned for TA via getViewableAssignments");
@@ -281,7 +279,6 @@ public class AssignmentLogicTest extends Assignment2TestBase {
 
 			} else if (assign.getId().equals(testData.a3Id)) {
 				// this one is graded, so check that the gb info was populated
-				assertTrue(assign.getDueDate() == null);
 				assertTrue(assign.getPointsPossible().equals(AssignmentTestDataLoad.GB_ITEM1_PTS));
 			} else {
 				fail("Invalid assignment returned for STUDENT1 via getViewableAssignments");
@@ -301,11 +298,9 @@ public class AssignmentLogicTest extends Assignment2TestBase {
 
 			} else if (assign.getId().equals(testData.a3Id)) {
 				// this one is graded, so check that the gb info was populated
-				assertTrue(assign.getDueDate() == null);
 				assertTrue(assign.getPointsPossible().equals(AssignmentTestDataLoad.GB_ITEM1_PTS));
 			} else if (assign.getId().equals(testData.a4Id)) {
 				// this one is graded, so check that the gb info was populated
-				assertTrue(assign.getDueDate().equals(AssignmentTestDataLoad.GB_ITEM2_DUE));
 				assertTrue(assign.getPointsPossible().equals(AssignmentTestDataLoad.GB_ITEM2_PTS));
 			} else {
 				fail("Invalid assignment returned for STUDENT2 via getViewableAssignments");
@@ -325,7 +320,6 @@ public class AssignmentLogicTest extends Assignment2TestBase {
 
 			} else if (assign.getId().equals(testData.a3Id)) {
 				// this one is graded, so check that the gb info was populated
-				assertTrue(assign.getDueDate() == null);
 				assertTrue(assign.getPointsPossible().equals(AssignmentTestDataLoad.GB_ITEM1_PTS));
 			} else {
 				fail("Invalid assignment returned for STUDENT3 via getViewableAssignments");
@@ -388,7 +382,6 @@ public class AssignmentLogicTest extends Assignment2TestBase {
 		assertNotNull(assign);
 		assertTrue(assign.getId().equals(testData.a4Id));
 		// the gradebook info should be populated
-		assertTrue(assign.getDueDate().equals(AssignmentTestDataLoad.GB_ITEM2_DUE));
 		assertTrue(assign.getPointsPossible().equals(AssignmentTestDataLoad.GB_ITEM2_PTS));
 		// double check groups and attach
 		assertTrue(assign.getAssignmentGroupSet().size() == 1);
@@ -454,7 +447,7 @@ public class AssignmentLogicTest extends Assignment2TestBase {
 		assignment.setUngraded(true);
 
 		// first, leave all of nullable fields null:
-		// 	acceptUntilTime, dueDateForUngraded, dueDate
+		// 	acceptUntilTime, dueDate
 
 		// start with an open date in the past
 		Calendar cal = Calendar.getInstance();
@@ -479,11 +472,11 @@ public class AssignmentLogicTest extends Assignment2TestBase {
 		cal.set(2005, 10, 01);
 		assignment.setOpenTime(cal.getTime());
 		cal.set(2020, 10, 01);
-		assignment.setDueDateForUngraded(cal.getTime());
+		assignment.setDueDate(cal.getTime());
 		assertEquals(assignmentLogic.getStatusForAssignment(assignment), AssignmentConstants.STATUS_OPEN);
 		// now make it due
 		cal.set(2007, 10, 01);
-		assignment.setDueDateForUngraded(cal.getTime());
+		assignment.setDueDate(cal.getTime());
 		assertEquals(assignmentLogic.getStatusForAssignment(assignment), AssignmentConstants.STATUS_DUE);
 		// add an accept until date in the future
 		cal.set(2020, 10, 01);
@@ -501,6 +494,7 @@ public class AssignmentLogicTest extends Assignment2TestBase {
 		// now check with accept until in future and no due date
 		cal.set(2020, 10, 01);
 		assignment.setAcceptUntilTime(cal.getTime());
+		assignment.setDueDate(null);
 		assertEquals(assignmentLogic.getStatusForAssignment(assignment), AssignmentConstants.STATUS_OPEN);
 
 		// add a due date in the past

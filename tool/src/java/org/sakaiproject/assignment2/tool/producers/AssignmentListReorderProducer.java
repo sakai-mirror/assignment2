@@ -1,18 +1,15 @@
 package org.sakaiproject.assignment2.tool.producers;
 
 import java.text.DateFormat;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
-import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.tool.params.PagerViewParams;
 import org.sakaiproject.assignment2.tool.producers.AssignmentListSortViewProducer;
 import org.sakaiproject.assignment2.tool.producers.renderers.PagerRenderer;
 
-import uk.org.ponder.messageutil.MessageLocator;
 import uk.org.ponder.rsf.components.UIBranchContainer;
 import uk.org.ponder.rsf.components.UIContainer;
 import uk.org.ponder.rsf.components.UIInternalLink;
@@ -107,7 +104,7 @@ public class AssignmentListReorderProducer implements ViewComponentProducer, Vie
         	   	UIMessage.make(row, "assignment_row_open_text", "assignment2.assignment_list-reorder.assignment_row_open");
         	}
         	UIOutput.make(row, "assignment_row_open", df.format(assignment.getOpenTime()));
-        	UIOutput.make(row, "assignment_row_due", (assignment.getDueDateForUngraded() != null ? df.format(assignment.getDueDateForUngraded()) : ""));
+        	UIOutput.make(row, "assignment_row_due", (assignment.getDueDate() != null ? df.format(assignment.getDueDate()) : ""));
         	UIInternalLink.make(row, "assignment_row_in_new", "2/2", new SimpleViewParameters(AssignmentListReorderProducer.VIEW_ID));
         	//UIOutput.make(row, "assignment_row_scale", "0-100.0");
         	

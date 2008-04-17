@@ -113,19 +113,13 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
         	UIOutput.make(row, "assignment_row_for", assignment.getRestrictedToText());
         	UIOutput.make(row, "assignment_row_status", assignment.getSubmissionStatus());
         	UIOutput.make(row, "assignment_row_open", df.format(assignment.getOpenTime()));
-        	if (assignment.isUngraded()) {
-        		if (assignment.getDueDateForUngraded() != null) {
-        			UIOutput.make(row, "assignment_row_due", df.format(assignment.getDueDateForUngraded()));
-        		} else {
-        			UIMessage.make(row, "assignment_row_due", "assignment2.student-assignment-list.no_due_date");
-        		}
+        	
+        	if (assignment.getDueDate() != null) {
+        		UIOutput.make(row, "assignment_row_due", df.format(assignment.getDueDate()));
         	} else {
-        		if (assignment.getDueDate() != null) {
-        			UIOutput.make(row, "assignment_row_due", df.format(assignment.getDueDate()));
-        		} else {
-        			UIMessage.make(row, "assignment_row_due", "assignment2.student-assignment-list.no_due_date");	
-        		}
+        		UIMessage.make(row, "assignment_row_due", "assignment2.student-assignment-list.no_due_date");
         	}
+
         }
 	}
 	
