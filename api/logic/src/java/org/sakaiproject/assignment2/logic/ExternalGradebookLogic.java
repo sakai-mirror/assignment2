@@ -49,7 +49,7 @@ public interface ExternalGradebookLogic {
      * Assignment2 object. Does NOT handle filtering according to AssignmentGroup 
      * restrictions
      */
-	public List<Assignment2> getViewableAssignmentsWithGbData(List<Assignment2> gradedAssignments, String contextId);
+	public List<Assignment2> getViewableGradedAssignments(List<Assignment2> gradedAssignments, String contextId);
 	
 	/**
 	 * The Assignment2 tool stores all grading information in the gradebook. Thus,
@@ -194,15 +194,6 @@ public interface ExternalGradebookLogic {
 	 * @param submission
 	 */
 	public void populateAllGradeInfoForSubmission(String contextId, String currUserId, AssignmentSubmission submission);
-	
-	/**
-	 * will populate the gradebook-related fields for the given assignment
-	 * ie due date, points possible. if the gradebook item doesn't exist any
-	 * more will set the needsUserAttention flag to true
-	 * @param contextId
-	 * @param assignment
-	 */
-	public void populateGradebookItemDetailsForAssignment(String contextId, Assignment2 assignment);
 
 	/**
 	 * 

@@ -91,8 +91,7 @@ public interface AssignmentLogic {
 	/**
 	 * Returns list of Assignment objects that the given user has permission
 	 * to view or grade. Assignments that the user does not have permission 
-	 * to view or grade will not be returned. If the assignment is graded,
-	 * will populate the gradebook-related info (ie points possible)
+	 * to view or grade will not be returned. 
 	 * @return A non-null list of viewable assignments.
 	 */
 	public List<Assignment2> getViewableAssignments();
@@ -108,8 +107,7 @@ public interface AssignmentLogic {
 	/**
 	 * @param assignmentId
 	 * @return the Assignment2 object with the given id and populate associated
-	 * data (ie attachments, groups, any gradebook data). Does not include
-	 * student submission information
+	 * data (ie attachments, groups). Does not include student submission information
 	 * @throws AssignmentNotFoundException if no assignment exists with the given id
 	 */
 	public Assignment2 getAssignmentByIdWithAssociatedData(Long assignmentId);

@@ -61,18 +61,18 @@ public class ExternalGradebookLogicTest extends Assignment2TestBase {
     public void testGetViewableAssignmentsWithGbData() {
     	// try a null contextId
     	try {
-    		gradebookLogic.getViewableAssignmentsWithGbData(new ArrayList<Assignment2>(), null);
+    		gradebookLogic.getViewableGradedAssignments(new ArrayList<Assignment2>(), null);
     		fail("Did not catch null contextId passed to getViewableAssignmentsWithGbData");
     	} catch (IllegalArgumentException iae) {}
     	
     	externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
 
     	// make sure an empty list is returned if we pass a null list
-    	List<Assignment2> viewableAssigns = gradebookLogic.getViewableAssignmentsWithGbData(null, AssignmentTestDataLoad.CONTEXT_ID);
+    	List<Assignment2> viewableAssigns = gradebookLogic.getViewableGradedAssignments(null, AssignmentTestDataLoad.CONTEXT_ID);
     	assertTrue(viewableAssigns.isEmpty());
     	
     	// now try an empty list
-    	viewableAssigns = gradebookLogic.getViewableAssignmentsWithGbData(new ArrayList<Assignment2>(), AssignmentTestDataLoad.CONTEXT_ID);
+    	viewableAssigns = gradebookLogic.getViewableGradedAssignments(new ArrayList<Assignment2>(), AssignmentTestDataLoad.CONTEXT_ID);
     	assertTrue(viewableAssigns.isEmpty());
     	
     	// A1 & A2 - ungraded
@@ -83,7 +83,7 @@ public class ExternalGradebookLogicTest extends Assignment2TestBase {
     	assignList.add(testData.a2);
     	
     	// what happens if we pass ungraded items?
-    	viewableAssigns = gradebookLogic.getViewableAssignmentsWithGbData(assignList, AssignmentTestDataLoad.CONTEXT_ID);
+    	viewableAssigns = gradebookLogic.getViewableGradedAssignments(assignList, AssignmentTestDataLoad.CONTEXT_ID);
     	assertTrue(viewableAssigns.isEmpty());
     	
     	// let's pass graded items
@@ -93,40 +93,18 @@ public class ExternalGradebookLogicTest extends Assignment2TestBase {
     	
     	// instructor should get them both back
     	externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
-    	viewableAssigns = gradebookLogic.getViewableAssignmentsWithGbData(assignList, AssignmentTestDataLoad.CONTEXT_ID);
+    	viewableAssigns = gradebookLogic.getViewableGradedAssignments(assignList, AssignmentTestDataLoad.CONTEXT_ID);
     	assertEquals(2, viewableAssigns.size());
-    	
-    	// make sure the gb data is populated
-    	for (Assignment2 assign : viewableAssigns) {
-    		if (assign.getId().equals(testData.a3Id)) {
-    			assertTrue(assign.getPointsPossible().equals(AssignmentTestDataLoad.GB_ITEM1_PTS));
-    		} else if (assign.getId().equals(testData.a4Id)) {
-    			assertTrue(assign.getPointsPossible().equals(AssignmentTestDataLoad.GB_ITEM2_PTS));
-    		} else {
-    			fail("Unknown assignment returned!");
-    		}
-    	}
     	
     	// switch to TA
     	// TODO grader permissions
     	externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
-    	viewableAssigns = gradebookLogic.getViewableAssignmentsWithGbData(assignList, AssignmentTestDataLoad.CONTEXT_ID);
+    	viewableAssigns = gradebookLogic.getViewableGradedAssignments(assignList, AssignmentTestDataLoad.CONTEXT_ID);
     	assertEquals(2, viewableAssigns.size());
-    	
-    	// make sure the gb data is populated
-    	for (Assignment2 assign : viewableAssigns) {
-    		if (assign.getId().equals(testData.a3Id)) {
-    			assertTrue(assign.getPointsPossible().equals(AssignmentTestDataLoad.GB_ITEM1_PTS));
-    		} else if (assign.getId().equals(testData.a4Id)) {
-    			assertTrue(assign.getPointsPossible().equals(AssignmentTestDataLoad.GB_ITEM2_PTS));
-    		} else {
-    			fail("Unknown assignment returned!");
-    		}
-    	}
     	
     	// switch to student - should return all items since none are draft
     	externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT1_UID);
-    	viewableAssigns = gradebookLogic.getViewableAssignmentsWithGbData(assignList, AssignmentTestDataLoad.CONTEXT_ID);
+    	viewableAssigns = gradebookLogic.getViewableGradedAssignments(assignList, AssignmentTestDataLoad.CONTEXT_ID);
     	assertEquals(2, viewableAssigns.size());
     }
     

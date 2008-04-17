@@ -251,16 +251,10 @@ public class AssignmentLogicTest extends Assignment2TestBase {
 		assignList = assignmentLogic.getViewableAssignments();
 		assertNotNull(assignList);
 		assertTrue(assignList.size() == 4);
-		// let's make sure that these are the right assign & gb info was populated
+		// let's make sure that these are the right assign
 		for (Assignment2 assign : assignList) {
-			if (assign.getId().equals(testData.a1Id) || assign.getId().equals(testData.a2Id)) {
-
-			} else if (assign.getId().equals(testData.a3Id)) {
-				// this one is graded, so check that the gb info was populated
-				assertTrue(assign.getPointsPossible().equals(AssignmentTestDataLoad.GB_ITEM1_PTS));
-			} else if (assign.getId().equals(testData.a4Id)) {
-				// this one is graded, so check that the gb info was populated
-				assertTrue(assign.getPointsPossible().equals(AssignmentTestDataLoad.GB_ITEM2_PTS));
+			if (assign.getId().equals(testData.a1Id) || assign.getId().equals(testData.a2Id) || 
+					assign.getId().equals(testData.a3Id) || assign.getId().equals(testData.a4Id)) { 
 			} else {
 				fail("Invalid assignment returned for TA via getViewableAssignments");
 			}
@@ -275,12 +269,11 @@ public class AssignmentLogicTest extends Assignment2TestBase {
 		assertNotNull(assignList);
 		assertEquals(3, assignList.size());
 		for (Assignment2 assign : assignList) {
-			if (assign.getId().equals(testData.a1Id) || assign.getId().equals(testData.a2Id)) {
-
-			} else if (assign.getId().equals(testData.a3Id)) {
-				// this one is graded, so check that the gb info was populated
-				assertTrue(assign.getPointsPossible().equals(AssignmentTestDataLoad.GB_ITEM1_PTS));
-			} else {
+			if (assign.getId().equals(testData.a1Id) || assign.getId().equals(testData.a2Id) ||
+					assign.getId().equals(testData.a3Id)) {
+				// valid
+			}
+			else {
 				fail("Invalid assignment returned for STUDENT1 via getViewableAssignments");
 			}
 		}
@@ -292,16 +285,11 @@ public class AssignmentLogicTest extends Assignment2TestBase {
 		assignList = assignmentLogic.getViewableAssignments();
 		assertNotNull(assignList);
 		assertTrue(assignList.size() == 4);
-		// let's make sure that these are the right assign & gb info was populated
+		// let's make sure that these are the right assign
 		for (Assignment2 assign : assignList) {
-			if (assign.getId().equals(testData.a2Id) || assign.getId().equals(testData.a1Id)) {
-
-			} else if (assign.getId().equals(testData.a3Id)) {
-				// this one is graded, so check that the gb info was populated
-				assertTrue(assign.getPointsPossible().equals(AssignmentTestDataLoad.GB_ITEM1_PTS));
-			} else if (assign.getId().equals(testData.a4Id)) {
-				// this one is graded, so check that the gb info was populated
-				assertTrue(assign.getPointsPossible().equals(AssignmentTestDataLoad.GB_ITEM2_PTS));
+			if (assign.getId().equals(testData.a2Id) || assign.getId().equals(testData.a1Id) ||
+					assign.getId().equals(testData.a3Id) || assign.getId().equals(testData.a4Id)) {
+				// valid
 			} else {
 				fail("Invalid assignment returned for STUDENT2 via getViewableAssignments");
 			}
@@ -314,13 +302,12 @@ public class AssignmentLogicTest extends Assignment2TestBase {
 		assignList = assignmentLogic.getViewableAssignments();
 		assertNotNull(assignList);
 		assertTrue(assignList.size() == 2);
-		// let's make sure that these are the right assign & gb info was populated
+		// let's make sure that these are the right assign
 		for (Assignment2 assign : assignList) {
 			if (assign.getId().equals(testData.a2Id)) {
 
 			} else if (assign.getId().equals(testData.a3Id)) {
-				// this one is graded, so check that the gb info was populated
-				assertTrue(assign.getPointsPossible().equals(AssignmentTestDataLoad.GB_ITEM1_PTS));
+
 			} else {
 				fail("Invalid assignment returned for STUDENT3 via getViewableAssignments");
 			}
@@ -381,8 +368,7 @@ public class AssignmentLogicTest extends Assignment2TestBase {
 		Assignment2 assign = assignmentLogic.getAssignmentByIdWithAssociatedData(testData.a4Id);
 		assertNotNull(assign);
 		assertTrue(assign.getId().equals(testData.a4Id));
-		// the gradebook info should be populated
-		assertTrue(assign.getPointsPossible().equals(AssignmentTestDataLoad.GB_ITEM2_PTS));
+
 		// double check groups and attach
 		assertTrue(assign.getAssignmentGroupSet().size() == 1);
 		assertTrue(assign.getAttachmentSet().isEmpty());

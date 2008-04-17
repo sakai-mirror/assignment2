@@ -65,9 +65,6 @@ public class Assignment2 {
     private Set<AssignmentAttachment> attachmentSet;
     private Set<AssignmentGroup> assignmentGroupSet;
     
-    // fields that are manually retrieved from the gradebook
-    private Double pointsPossible;
-    
     // fields that are not persisted but needed for UI
     private String assignmentStatus;
     private String restrictedToText;
@@ -573,27 +570,6 @@ public class Assignment2 {
 	 */
 	public void setSubmissionsSet(Set<AssignmentSubmission> submissionsSet) {
 		this.submissionsSet = submissionsSet;
-	}
-
-	// the following fields are populated using data from the gradebook
-	
-	/**
-	 * @return the points possible value for this assignment.  this value 
-	 * actually comes from the points possible value in the associated gb item.
-	 * null if this assignment is ungraded.
-	 */
-	public Double getPointsPossible() {
-		return pointsPossible;
-	}
-
-	/**
-	 * the points possible value for this assignment.  this value 
-	 * actually sets the points possible value in the associated gb item. null if
-	 * this assignment is ungraded
-	 * @param pointsPossible
-	 */
-	public void setPointsPossible(Double pointsPossible) {
-		this.pointsPossible = pointsPossible;
 	}
 	
 	// the following fields are not persisted but are used by the UI

@@ -128,8 +128,6 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			// retrieve the grade information for this submission
 			gradebookLogic.populateAllGradeInfoForSubmission(currentContextId, 
 					currentUserId, submission);
-
-			gradebookLogic.populateGradebookItemDetailsForAssignment(currentContextId, assignment);
 		}
 
 		// populate this submission's status
@@ -219,8 +217,6 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		if (!assignment.isUngraded() && assignment.getGradableObjectId() != null) {
 			gradebookLogic.populateAllGradeInfoForSubmission(contextId, 
 					currentUserId, submission);
-
-			gradebookLogic.populateGradebookItemDetailsForAssignment(contextId, assignment);
 		}
 
 		// populate this submission's status
@@ -486,12 +482,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		List<String> viewableStudents = permissionLogic.getViewableStudentsForUserForItem(assignment);
 
 		if (viewableStudents != null && !viewableStudents.isEmpty()) {
-			// populate the gb info for this assignment, if appropriate. this is used for due date to 
-			// determine if submission is late
-			if (!assignment.isUngraded() && assignment.getGradableObjectId() != null) {
-				gradebookLogic.populateGradebookItemDetailsForAssignment(contextId, assignment);
-			}
-
+			
 			// get the submissions for these students
 			Set<AssignmentSubmission> existingSubmissions = dao.getCurrentSubmissionsForStudentsForAssignment(viewableStudents, assignment);
 
@@ -568,11 +559,6 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 					AssignmentSubmission currSubmission = (AssignmentSubmission)assignmentIdToSubmissionMap.get(assign.getId());
 					AssignmentSubmissionVersion currVersion = currSubmission != null ? 
 							currSubmission.getCurrentSubmissionVersion() : null;
-							
-					// to check for late, we need the due date
-					if (!assign.isUngraded() && assign.getGradableObjectId() != null) {
-						gradebookLogic.populateGradebookItemDetailsForAssignment(contextId, assign);
-					}
 					
 					Integer status = getSubmissionStatusConstantForCurrentVersion(currVersion, assign.getDueDate());
 					assign.setSubmissionStatusConstant(status);

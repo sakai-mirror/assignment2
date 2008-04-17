@@ -67,14 +67,14 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
     	this.gradebookService = gradebookService;
     }
 
-    public List<Assignment2> getViewableAssignmentsWithGbData(List<Assignment2> gradedAssignments, String contextId) {
+    public List<Assignment2> getViewableGradedAssignments(List<Assignment2> gradedAssignments, String contextId) {
     	if (contextId == null) {
     		throw new IllegalArgumentException("contextId is null in getViewableAssignmentsWithGbData");
     	}
     	
-    	List<Assignment2> viewableAssignmentsWithGbData = new ArrayList<Assignment2>();
+    	List<Assignment2> viewableGradedAssignments = new ArrayList<Assignment2>();
     	if (gradedAssignments == null || gradedAssignments.isEmpty()) {
-    		return viewableAssignmentsWithGbData;
+    		return viewableGradedAssignments;
     	}
     	
     	List<Assignment> gbAssignments = gradebookService.getViewableAssignmentsForCurrentUser(contextId);
@@ -103,34 +103,32 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
 				if (goId != null) {
 					Assignment gbItem =	(Assignment)goIdGbAssignmentMap.get(goId);
 					if (gbItem != null) {
-						gradedAssignment.setPointsPossible(gbItem.getPoints());
-						viewableAssignmentsWithGbData.add(gradedAssignment);
+						viewableGradedAssignments.add(gradedAssignment);
 					} else {
 						// check to see if this gradable object exists anymore
 						if (!gradebookService.isGradableObjectDefined(goId)) {
 							// then the GO was deleted -- let the user know
 							gradedAssignment.setNeedsUserAttention(true);
-							viewableAssignmentsWithGbData.add(gradedAssignment);
+							viewableGradedAssignments.add(gradedAssignment);
 						} else {
 							// if it exists, then this user does not have perm to view it in the gb
 							if (userIsStudent) {
 								// if a student, we still need to return an assignment with gb item info
-								// this just means the grade info has not been released yet
-								Assignment unreleasedAssign = gradebookService.getAssignment(contextId, goId);
-								gradedAssignment.setPointsPossible(unreleasedAssign.getPoints());
-								viewableAssignmentsWithGbData.add(gradedAssignment);
+								// this just means the grade info has not been released yet - we still
+								// let students view the assignment
+								viewableGradedAssignments.add(gradedAssignment);
 							}
 						}
 					}
 				} else {
 					// there is no gradableObjectId set for this assignment!
 					gradedAssignment.setNeedsUserAttention(true);
-					viewableAssignmentsWithGbData.add(gradedAssignment);
+					viewableGradedAssignments.add(gradedAssignment);
 				}
 			}
 		}
 		
-		return viewableAssignmentsWithGbData;
+		return viewableGradedAssignments;
     }
 
     public void createGradebookDataIfNecessary(String contextId) {
@@ -425,22 +423,6 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
     				// this gb item no longer exists, so there is no information to populate
     				if (log.isDebugEnabled()) log.debug("gb item with id " + gbItemId + " no longer exists, so returning null grade info");
     			}
-    		}
-    	}
-    }
-    
-    public void populateGradebookItemDetailsForAssignment(String contextId, Assignment2 assignment) {
-    	if (contextId == null || assignment == null) {
-    		throw new IllegalArgumentException("null contextId or assignment passed to populateGradebookItemDetailsForAssignment");
-    	}
-    	
-    	if (!assignment.isUngraded() && assignment.getGradableObjectId() != null) {
-    		try {
-    			Assignment gbItem = gradebookService.getAssignment(contextId, assignment.getGradableObjectId());
-    			assignment.setPointsPossible(gbItem.getPoints());
-    		} catch (AssessmentNotFoundException e) {
-    			if (log.isDebugEnabled()) log.debug("Gradebook item that assignment " + assignment.getId() + " associated with no longer exists");
-    			assignment.setNeedsUserAttention(true);
     		}
     	}
     }

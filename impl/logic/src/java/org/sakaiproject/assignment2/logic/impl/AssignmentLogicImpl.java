@@ -128,11 +128,6 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 			throw new AssignmentNotFoundException("No assignment found with id: " + assignmentId);
 		}
 
-		// populate any non-persisted fields that are applicable to this view
-		if (!assign.isUngraded()) {
-			gradebookLogic.populateGradebookItemDetailsForAssignment(externalLogic.getCurrentContextId(), assign);
-		}
-
 		return assign;
 	}
 	
@@ -398,7 +393,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 				// now, we need to filter the assignments that are associated with
 				// the gradebook according to grader permissions and populate the
 				// gradebook data
-				List<Assignment2> viewableGbAssignments = gradebookLogic.getViewableAssignmentsWithGbData(gradedAssignments, externalLogic.getCurrentContextId());
+				List<Assignment2> viewableGbAssignments = gradebookLogic.getViewableGradedAssignments(gradedAssignments, externalLogic.getCurrentContextId());
 				if (viewableGbAssignments != null) {
 
 					for (Assignment2 assignment : viewableGbAssignments) {
