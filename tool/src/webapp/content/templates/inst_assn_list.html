@@ -1,0 +1,101 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+		<title>Assignment List [Instructor]</title>
+		<link rel='stylesheet' type='text/css' href='../css/assn2_hotness.css' />
+		<script src='../js/jquery-1.2.3.min.js' type='text/javascript'></script>
+		<script src='../js/list_common.js' type='text/javascript'></script>
+		<script src='../js/inst_assn_list.js' type='text/javascript'></script>
+	</head>
+	<body>
+		<div class='menuBar'>
+			<div class='menuItem menuItemOn'>Assignments</div>
+			<div class='menuItem'><a href='inst_sub_list.html'>Submissions</a></div>
+			<div class='menuItem'>Settings</div>
+		</div>
+
+		<div id='published' class='section clear'>
+			<div id='publishedHeader' class='header'>
+				<div class='headerLabel'>
+					<a href='#' id='publishedTwisty' class='twisty'><img src='../images/bullet_toggle_minus.png' alt='Published' /></a> Published
+				</div>
+			</div>
+			<div id='publishedList' class='listArea'>
+				<table id='publishedAssns' class='listTable'>
+					<tr class='headerRow'>
+						<th>Title</th>
+						<th>Open Date</th>
+						<th>Due Date</th>
+					</tr>
+					<tr class='dataRow'>
+						<td>Assignment 1</td>
+						<td>03/28</td>
+						<td>05/10</td>
+					</tr>
+					<tr class='dataRow'>
+						<td>Assignment 2</td>
+						<td>03/28</td>
+						<td>05/10</td>
+					</tr>
+					<tr class='dataRow'>
+						<td>Assignment 3</td>
+						<td>03/28</td>
+						<td>05/10</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		<div class='cleaner'></div>
+
+		<div class='section'>
+			<input type='button' value='New Assignment' onclick='location.href="newassignment1.html";'/>
+			<input type='button' value='Copy' />
+			<input type='button' value='Publish' />
+		</div>
+		<div class='cleaner'></div>
+
+		<div id='drafts' class='section'>
+			<div id='draftsHeader' class='header'>
+				<div class='headerLabel'>
+					<a href='#' id='draftsTwisty' class='twisty'><img src='../images/bullet_toggle_minus.png' alt='Drafts' /></a> Drafts
+				</div>
+			</div>
+			<div class='cleaner'></div>
+			<div id='draftsList' class='listArea'>
+				<table id='draftAssns' class='listTable'>
+					<tr class='headerRow'>
+						<td><input type='checkbox' disabled='disabled' /></td>
+						<th>Title</th>
+						<th>Created By</th>
+						<th>Open Date</th>
+						<th>Due Date</th>
+					</tr>
+					<tr class='dataRow'>
+						<td><input type='checkbox' /></td>
+						<td>Assignment 1</td>
+						<td>Carl Hall</td>
+						<td>03/28</td>
+						<td>05/10</td>
+					</tr>
+					<tr class='dataRow'>
+						<td><input type='checkbox' /></td>
+						<td>Assignment 2</td>
+						<td>Carl Hall</td>
+						<td>03/28</td>
+						<td>05/10</td>
+					</tr>
+					<tr class='dataRow'>
+						<td><input type='checkbox' /></td>
+						<td>Assignment 3</td>
+						<td>Carl Hall</td>
+						<td>03/28</td>
+						<td>05/10</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		<div class='cleaner'></div>
+	</body>
+</html>

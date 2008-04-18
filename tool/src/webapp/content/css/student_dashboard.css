@@ -1,0 +1,51 @@
+.nav, .navOff, .navOn {
+	width: 100%;
+}
+
+.navOff, .navOn {
+	width: 49%;
+	text-align: center;
+	float: left;
+}
+
+.navOff {
+	border-bottom: solid;
+}
+
+.navOn {
+	border-style: solid solid none solid;
+}
+
+.content {
+	width: 98%;
+	float: left;
+	border-style: none solid solid solid;
+}
+
+.content-left, .content-right {
+	border: 1px solid;
+	width: 49%;
+}
+
+.content-left {
+	float: left;
+	height: 98%;
+}
+
+.content-right {
+	float: right;
+	height: 49%;
+}
+
+.template {
+	display: none;
+}
+
+.header {
+	text-align: center;
+	background: #eee;
+}
+
+.assignment {
+	border-bottom: double;
+}

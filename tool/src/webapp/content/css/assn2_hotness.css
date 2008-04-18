@@ -1,0 +1,211 @@
+.assignmentListItem {
+	margin-top: .25em;
+	margin-bottom: .25em;
+	width: 100%;
+	float: right;
+}
+
+.bottomline {
+	border-bottom: 1px solid gray;
+}
+
+.box {
+	border: 1px solid gray;
+}
+
+.category {
+	display: none;
+	margin-left: 25px;
+	margin-bottom: 1em;
+}
+
+.categoryLeft {
+	float: left;
+}
+
+.categoryRight {
+	font-weight: none;
+	float: right;
+}
+
+.clear {
+	clear:both;
+}
+
+.dataRowOn {
+	background-color: #ddd;
+}
+
+.header {
+	background-color: lightblue;
+}
+
+.headerLeft {
+	float: left;
+}
+
+.headerMenuItem {
+	text-transform: none;
+	vertical-align: middle;
+}
+
+.headerRight {
+	float: right;
+}
+
+.headerRow {
+	text-align: left;
+	background-color: #f7d98a;
+}
+
+.hidden {
+	display: none;
+}
+
+.listArea {
+}
+
+.listTable {
+	width: 99%;
+	float: right;
+}
+
+.menuItem {
+	text-align: center;
+	float: left;
+	display: inline;
+	width: 32%;
+	border: 1px solid black;
+	padding: 1em 0;
+	margin: 0 .125em;
+}
+
+.menuItemOn {
+	background-color: gray;
+	color: white;
+}
+
+.section {
+	margin: 1em 0em 1em 0em;
+}
+
+.subheader {
+	font-weight: bold;
+}
+
+.spacer {
+	margin-top: 1em;
+	margin-bottom: 1em;
+}
+
+.twisty {
+	text-decoration: none;
+}
+
+.twisty img {
+	border: 0;
+	height: 25px;
+	width: 25px;
+	vertical-align: bottom;
+}
+
+/* Student View */
+.assignmentItem {
+	margin-left: 15px;
+}
+
+/*  Recent Events */
+.contentLeft {
+	float: left;
+	width: 69%;
+}
+
+.contentRight {
+	float: right;
+	width: 30%;
+}
+
+.contentBox {
+	border: 1px solid gray;
+}
+
+.contentBoxContent {
+	padding: 5px;
+}
+
+.contentBoxHeader {
+	background-color: #f7d98a;
+	padding: 0 5px;
+}
+
+.contentItem {
+	padding: 1px;
+}
+
+.feedback {
+	text-decoration: underline;
+}
+.prompt {
+	float: left;
+	width: 18%;
+	padding: 5px;
+}
+.prompt h4 {
+	float: right;
+	padding: 0;
+	margin: 0;
+}
+.input {
+	float: right;
+	width: 80%;
+	padding: 5px;
+}
+.input p {
+	margin: 3px;
+}
+.section {
+	width: 100%;
+	clear: both;
+}
+#gb_item {
+	padding-left: 3em;
+}
+.buttons {
+	padding-top: 20px;
+}
+.submcontent {
+	float: right;
+	width: 95%;
+	border: thin solid #DDD;
+	padding: 4px;
+}
+.fckeditor {
+	width: 99%;
+	height: 30em;
+}
+.toggle {
+	float: left;
+	vertical-align: middle;
+	padding: 5px;
+	margin-top: 1em;
+}
+.toggle a {
+	text-decoration: none;
+	font-size: small;
+	color: #777;
+}
+.title {
+	width: 95%;
+	float: right;
+	background: #f7d98a;
+	padding: 5px;
+	margin-bottom: 2px;
+	font-size: small;
+	font-weight: bold;
+	font-family: sans-serif;
+	margin-top: 1em;
+}
+.title h4 {
+	padding: 0;
+	margin: 0;
+}

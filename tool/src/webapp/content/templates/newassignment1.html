@@ -1,0 +1,94 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+
+	<title>New Assignment</title>
+	<link href="/library/skin/tool_base.css" type="text/css" rel="stylesheet" media="all"/>
+	<link href="/library/skin/default/tool.css" type="text/css" rel="stylesheet" media="all"/>
+	<link href="../css/assn2_hotness.css" type="text/css" rel="stylesheet" media="all" />
+</head>
+
+<body>
+	<div class="breadcrumb">Breadcrumbs/go/here.</div>
+	<div class="steps">
+		Step1: Assignment Details |
+		<a href="newassignment2.html">Step 2: Submission Details</a> |
+		<a href="newassignment3.html">Step 3: Other Options</a>
+	</div>
+	<h2>Assignment Details</h2>
+	<div class="instructions">
+		Complete the form and choose an action below. * indicates required information.
+	</div>
+	<div>
+		<form action="#">
+			<div class="section">
+				<div class="prompt">
+					<h4>
+						* Title:
+					</h4>
+				</div>
+				<div class="input">
+					<input type="text" size="80" />
+				</div>
+			</div>
+			<div class="section">
+				<div class="prompt">
+					<h4>
+						* Assignment Instructions:
+					</h4>
+				</div>
+				<div class="input">
+					<textarea cols="80" rows="24">FCKEditor goes here</textarea>
+				</div>
+			</div>
+			<div class="section">
+				<div class="prompt">
+					<h4>
+						Attachments:
+					</h4>
+				</div>
+				<div class="input">
+					<p>
+						No attachments yet
+					</p>
+					<p>
+						<a href="#">Add attachments</a>
+					</p>
+				</div>
+			</div>
+			<div class="section">
+				<div class="prompt">
+					<h4>
+						Grading:
+					</h4>
+				</div>
+				<div class="input">
+					<p>
+						<input type="radio" name="isGraded" id="ungraded" value="false" checked="checked" />
+						<label for="ungraded">This assignment is ungraded</label>
+					</p>
+					<p>
+						<input type="radio" name="isGraded" id="graded" value="true" />
+						<label for="graded">
+							This assignment is graded and is associated with a Gradebook item:
+						</label>
+						<select>
+							<option>Gradebook items go here</option>
+						</select>
+					</p>
+					<div id="gb_item">
+						-or- <a href="#">Create a new Gradebook item</a>
+					</div>
+					<p class="buttons">
+						<input type="submit" value="Save as Draft" />
+						<input type="submit" value="Cancel" />
+						<input type="submit" value="Step 2 &gt;&gt;" />
+					</p>
+				</div>
+			</div>
+		</form>
+	</div>
+</body>
+</html>

@@ -1,0 +1,10 @@
+{for i in submitted}
+<div class="assignment">
+	<div class="assnTitle">Title: ${i.title}</div>
+	<div class="assnInstructions">Instructions: ${i.instructions}</div>
+	<div class="date">Open Date: ${i.openTime.month + 1}/${i.openTime.date}/${i.openTime.year + 1900}</div>
+	<div class="date">Due Date: ${i.dueDate}</div>
+</div>
+{forelse}
+	No submitted assignments available.
+{/for}
