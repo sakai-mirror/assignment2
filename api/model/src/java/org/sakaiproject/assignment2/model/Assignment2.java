@@ -52,6 +52,8 @@ public class Assignment2 {
     private int notificationType;
     private Boolean hasAnnouncement;
     private String announcementId;
+    private Boolean addedToSchedule;
+    private String eventId;
     private Integer numSubmissionsAllowed;
     private Boolean allowReviewService;
     private Boolean allowStudentViewReport;
@@ -77,7 +79,7 @@ public class Assignment2 {
 			Date openTime, Date acceptUntilTime, Boolean ungraded,
 			Date dueDate, Boolean honorPledge, String instructions,
 			int submissionType, int notificationType, Boolean hasAnnouncement,
-			String announcementId, Integer numSubmissionsAllowed,
+			String announcementId, Boolean addedToSchedule, String scheduleId, Integer numSubmissionsAllowed,
 			Boolean allowReviewService,	Boolean allowStudentViewReport, 
 			String creator, Date createTime, String modifiedBy, Date modifiedTime, Boolean removed) {
 		this.id = id;
@@ -96,6 +98,8 @@ public class Assignment2 {
 		this.notificationType = notificationType;
 		this.hasAnnouncement = hasAnnouncement;
 		this.announcementId = announcementId;
+		this.addedToSchedule = addedToSchedule;
+		this.eventId = scheduleId;
 		this.numSubmissionsAllowed = numSubmissionsAllowed;
 		this.allowReviewService = allowReviewService;
 		this.allowStudentViewReport = allowStudentViewReport;
@@ -382,6 +386,46 @@ public class Assignment2 {
     
     /**
      * 
+     * @return true if the due date for this assignment should be
+     * added to the Schedule (aka Calendar) tool
+     */
+	public Boolean getAddedToSchedule()
+	{
+		return addedToSchedule;
+	}
+
+	/**
+	 * true if the due date for this assignment should be
+     * added to the Schedule (aka Calendar) tool
+	 * @param addedToSchedule
+	 */
+	public void setAddedToSchedule(Boolean addedToSchedule)
+	{
+		this.addedToSchedule = addedToSchedule;
+	}
+
+	/**
+	 * 
+	 * @return the id of the event announcing the assignment's due date in
+	 * the Schedule (aka Calendar) tool. 
+	 */
+	public String getEventId()
+	{
+		return eventId;
+	}
+
+	/**
+	 * the id of the event announcing the assignment's due date in
+	 * the Schedule (aka Calendar) tool.
+	 * @param eventId
+	 */
+	public void setEventId(String eventId)
+	{
+		this.eventId = eventId;
+	}
+    
+    /**
+     * 
      * @return the number of submissions allowed for this assignment. if -1,
      * unlimited submissions. 
      */
@@ -575,7 +619,7 @@ public class Assignment2 {
 	// the following fields are not persisted but are used by the UI
 
 	/**
-	 * 
+	 * NOT-PERSISTED - used for UI
 	 * @return this assignment's status:
 	 * ie Draft, Not Open, Open, Closed, Due
 	 */
@@ -584,6 +628,7 @@ public class Assignment2 {
 	}
 
 	/**
+	 * NOT-PERSISTED - used for UI
 	 * Set this assignment's status:
 	 * ie Draft, Not Open, Open, Closed, Due
 	 * @param assignmentStatus
@@ -593,7 +638,7 @@ public class Assignment2 {
 	}
 	
 	/**
-	 * 
+	 * NOT-PERSISTED - used for UI
 	 * @return a text representation of either the list of groups that this
 	 * assignment is restricted to or "Site"
 	 */
@@ -602,6 +647,7 @@ public class Assignment2 {
 	}
 
 	/**
+	 * NOT-PERSISTED - used for UI
 	 * a text representation of either the list of groups that this
 	 * assignment is restricted to or "Site"
 	 * @param restrictedToText
@@ -611,6 +657,7 @@ public class Assignment2 {
 	}
 
 	/**
+	 * NOT-PERSISTED - used for UI
 	 * used to identify situation where some action has been taken outside
 	 * of the assignments tool that requires user action b/c it affects this
 	 * assignments (ie assignment is associated with a gb item that was deleted
@@ -623,6 +670,7 @@ public class Assignment2 {
 	}
 
 	/**
+	 * NOT-PERSISTED - used for UI
 	 * used to identify situation where some action has been taken outside
 	 * of the assignments tool that requires user action b/c it affects this
 	 * assignment (ie assignment is associated with a gb item that was deleted
@@ -635,7 +683,7 @@ public class Assignment2 {
 	}
 	
 	/**
-	 * 
+	 * NOT-PERSISTED - used for UI
 	 * @return when viewing an individual student, contains text representing
 	 * the current status of the student's submission
 	 * ie not started, submitted, etc
@@ -645,6 +693,7 @@ public class Assignment2 {
 	}
 
 	/**
+	 * NOT-PERSISTED - used for UI
 	 * when viewing an individual student, contains text representing
 	 * the current status of the student's submission
 	 * @param submissionStatus
@@ -654,7 +703,7 @@ public class Assignment2 {
 	}
 	
 	/**
-	 * 
+	 * NOT-PERSISTED - used for UI
 	 * @return the constant equivalent to this assignment's submission status for the
 	 * current user.  null if the user is not a student
 	 */
@@ -663,6 +712,7 @@ public class Assignment2 {
 	}
 
 	/**
+	 * NOT-PERSISTED - used for UI
 	 * set the constant equivalent to this assignment's submission status for the
 	 * current user.  null if the user is not a student
 	 * @param submissionStatusConstant
@@ -704,4 +754,5 @@ public class Assignment2 {
 		sb.append(Long.toString(id));
 		return sb.toString();
 	}
+
 }

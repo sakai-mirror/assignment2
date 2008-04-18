@@ -27,6 +27,7 @@ public class Assignment2Creator {
     	togo.setHonorPledge(Boolean.FALSE);
     	togo.setUngraded(Boolean.TRUE);
     	togo.setHasAnnouncement(Boolean.FALSE);
+    	togo.setAddedToSchedule(Boolean.FALSE);
     	togo.setSubmissionType(AssignmentConstants.SUBMIT_INLINE_AND_ATTACH);
     	
     	//Setting up Dates
@@ -63,6 +64,7 @@ public class Assignment2Creator {
     	dup.setSubmissionType(assignment.getSubmissionType());
     	dup.setNotificationType(assignment.getNotificationType());
 		dup.setHasAnnouncement(assignment.getHasAnnouncement());
+		dup.setAddedToSchedule(assignment.getAddedToSchedule());
 		dup.setAllowReviewService(assignment.isAllowReviewService());
 		dup.setAllowStudentViewReport(assignment.isAllowStudentViewReport());
 		dup.setRemoved(Boolean.FALSE);

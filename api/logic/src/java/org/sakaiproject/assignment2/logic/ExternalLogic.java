@@ -17,10 +17,22 @@ public interface ExternalLogic {
     public final static String NO_LOCATION = "noLocationAvailable";
     
     //tool ids for external tools that we integrate with
+    /**
+     * the tool id for Sakai's Schedule/Calendar tool
+     */
     public final static String TOOL_ID_SCHEDULE = "sakai.schedule";
+    /**
+     * the tool id for Sakai's Announcements tool
+     */
     public final static String TOOL_ID_ANNC = "sakai.announcements";
-    public final static String TOOL_ID_OLD_ASSIGN_TOOL = "sakai.assignment.grades";
-    public final static String TOOL_ID_ASSIGNMENT2_TOOL = "sakai.assignment2";
+    /**
+     * the tool id for Sakai's original Assignments tool
+     */
+    public final static String TOOL_ID_OLD_ASSIGN = "sakai.assignment.grades";
+    /**
+     * the tool if for this Assignment tool
+     */
+    public final static String TOOL_ID_ASSIGNMENT2 = "sakai.assignment2";
 
     /**
      * @return the current sakai user id (not username)

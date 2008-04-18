@@ -29,7 +29,6 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.sakaiproject.assignment2.exception.AnnouncementPermissionException;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.utils.ComparatorsUtils;
@@ -104,7 +103,6 @@ public class LocalAssignmentLogic {
 			return;
 		
 		// Now, iterate through the viewable assignments and set the not persisted fields 
-		// that aren't related to the gradebook
 		
 		// create a map of group id to name for all of the groups in this site
 		Map<String, String> groupIdToNameMap = externalLogic.getGroupIdToNameMapForSite(externalLogic.getCurrentContextId());
@@ -164,7 +162,7 @@ public class LocalAssignmentLogic {
 	
 	/**
 	 * We cannot rely on db sorting because we must sort by several properties that
-	 * are not persisted in the A2 tables (ie status, due date, for, etc)
+	 * are not persisted in the A2 tables (ie status, for, etc)
 	 * @param assignmentList
 	 * @param sortBy
 	 * @param ascending

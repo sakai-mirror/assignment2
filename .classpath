@@ -31,6 +31,7 @@
 	<classpathentry kind="src" path="/util-util"/>
 	<classpathentry kind="src" path="/gradebook"/>
 	<classpathentry kind="src" path="/announcement-api"/>
+	<classpathentry kind="src" path="/calendar-api"/>
 	<classpathentry kind="src" path="/message-api"/>
 	<classpathentry kind="src" path="/sections-api"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/import-api"/>

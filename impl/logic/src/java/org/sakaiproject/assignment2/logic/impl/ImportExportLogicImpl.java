@@ -38,6 +38,7 @@ import org.sakaiproject.assignment.api.AssignmentContent;
 import org.sakaiproject.assignment.api.AssignmentService;
 import org.sakaiproject.assignment2.dao.AssignmentDao;
 import org.sakaiproject.assignment2.exception.AnnouncementPermissionException;
+import org.sakaiproject.assignment2.exception.CalendarPermissionException;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
@@ -276,6 +277,7 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 						newAssignment.setSubmissionType(assignDef.getSubmissionType());
 						newAssignment.setUngraded(assignDef.isUngraded());
 						newAssignment.setHasAnnouncement(assignDef.isHasAnnouncement());
+						newAssignment.setAddedToSchedule(assignDef.isAddedToSchedule());
 
 						// title doesn't have to be unique
 						newAssignment.setTitle(assignDef.getTitle());
@@ -370,6 +372,8 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 									newAssignment.getTitle() + " added in site " + toContext);
 						} catch (AnnouncementPermissionException ape) {
 							log.warn("No announcements were added because the user does not have permission in the announcements tool");
+						} catch (CalendarPermissionException cpe) {
+							log.warn("No events were added because the user does not have permission in the Schedule tool");
 						}
 					}
 				}
@@ -449,6 +453,14 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 				newAssnDef.setHasAnnouncement(true);
 			} else {
 				newAssnDef.setHasAnnouncement(false);
+			}
+			
+			// is there an associated Schedule event?
+			String hasEvent = oProperties.getProperty(ResourceProperties.PROP_ASSIGNMENT_DUEDATE_CALENDAR_EVENT_ID);
+			if (hasEvent != null) {
+				newAssnDef.setAddedToSchedule(true);
+			} else {
+				newAssnDef.setAddedToSchedule(false);
 			}
 
 			// the old tool didn't support a resubmission option on the assignment level,

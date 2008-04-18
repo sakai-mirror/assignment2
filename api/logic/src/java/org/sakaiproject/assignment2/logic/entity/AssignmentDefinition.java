@@ -43,6 +43,7 @@ public class AssignmentDefinition implements Serializable {
     private boolean honorPledge;
     private String instructions;
     private boolean hasAnnouncement;
+    private boolean addedToSchedule;
     private Integer numSubmissionsAllowed;
     private Integer notificationType;
     private Integer submissionType;
@@ -172,6 +173,18 @@ public class AssignmentDefinition implements Serializable {
 
 	public void setHasAnnouncement(boolean hasAnnouncement) {
 		this.hasAnnouncement = hasAnnouncement;
+	}
+	
+
+	public boolean isAddedToSchedule()
+	{
+		return addedToSchedule;
+	}
+
+
+	public void setAddedToSchedule(boolean addedToSchedule)
+	{
+		this.addedToSchedule = addedToSchedule;
 	}
 
 

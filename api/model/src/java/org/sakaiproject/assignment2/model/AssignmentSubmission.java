@@ -43,6 +43,8 @@ public class AssignmentSubmission {
 	private Set<AssignmentSubmissionVersion> submissionHistorySet;
 	private int revisionVersion;
 	
+	// non-persisted fields 
+	
 	// fields populated with gradebook data
 	private String gradebookGrade;
 	private String gradebookComment;
@@ -263,7 +265,7 @@ public class AssignmentSubmission {
 	}
 
 	/**
-	 * 
+	 * NOT-PERSISTED - used for UI
 	 * @return String representation of this student's most current submission
 	 * status ie Submitted, In Progress, etc
 	 */
@@ -272,6 +274,7 @@ public class AssignmentSubmission {
 	}
 
 	/**
+	 * NOT-PERSISTED - used for UI
 	 * String representation of this student's most current submission
 	 * status ie Submitted, In Progress, etc
 	 * @param submissionStatus
@@ -281,7 +284,7 @@ public class AssignmentSubmission {
 	}
 	
 	/**
-	 * 
+	 * NOT-PERSISTED - used for UI
 	 * @return constant representation of this submission's status
 	 * ie Not Started, In Progess, etc
 	 */
@@ -291,6 +294,7 @@ public class AssignmentSubmission {
 	}
 
 	/**
+	 * NOT-PERSISTED - used for UI
 	 * constant representation of this submission's status
 	 * ie Not Started, In Progess, etc
 	 * @param submissionStatusConstant

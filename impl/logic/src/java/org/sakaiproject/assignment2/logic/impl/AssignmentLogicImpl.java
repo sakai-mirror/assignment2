@@ -33,6 +33,7 @@ import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment2.dao.AssignmentDao;
 import org.sakaiproject.assignment2.exception.AnnouncementPermissionException;
 import org.sakaiproject.assignment2.exception.AssignmentNotFoundException;
+import org.sakaiproject.assignment2.exception.CalendarPermissionException;
 import org.sakaiproject.assignment2.exception.NoGradebookItemForGradedAssignmentException;
 import org.sakaiproject.assignment2.exception.StaleObjectModificationException;
 import org.sakaiproject.assignment2.logic.AssignmentBundleLogic;
@@ -40,6 +41,7 @@ import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
 import org.sakaiproject.assignment2.logic.ExternalAnnouncementLogic;
+import org.sakaiproject.assignment2.logic.ExternalCalendarLogic;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
@@ -76,6 +78,11 @@ public class AssignmentLogicImpl implements AssignmentLogic{
     private ExternalAnnouncementLogic announcementLogic;
     public void setExternalAnnouncementLogic(ExternalAnnouncementLogic announcementLogic) {
         this.announcementLogic = announcementLogic;
+    }
+    
+    private ExternalCalendarLogic calendarLogic;
+    public void setExternalCalendarLogic(ExternalCalendarLogic calendarLogic) {
+        this.calendarLogic = calendarLogic;
     }
     
     private AssignmentPermissionLogic permissionLogic;
@@ -269,12 +276,25 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 		}
 		
 		// now let's handle the impact on announcements
-		try {
-			saveAssignmentAnnouncement(existingAssignment, assignment);
-		} catch (AnnouncementPermissionException ape) {
-			throw new AnnouncementPermissionException("The current user is not " +
-					"authorized to update announcements in the announcements " +
-					"tool. Any related announcements were NOT updated", ape);
+		if (externalLogic.siteHasTool(contextId, ExternalLogic.TOOL_ID_ANNC)) {
+			try {
+				saveAssignmentAnnouncement(existingAssignment, assignment);
+			} catch (AnnouncementPermissionException ape) {
+				throw new AnnouncementPermissionException("The current user is not " +
+						"authorized to update announcements in the announcements " +
+						"tool. Any related announcements were NOT updated", ape);
+			}
+		}
+		
+		// now let's handle the impact on the Schedule
+		if (externalLogic.siteHasTool(contextId, ExternalLogic.TOOL_ID_SCHEDULE)) {
+			try {
+				handleDueDateEvent(existingAssignment, assignment);
+			} catch (CalendarPermissionException cpe) {
+				throw new CalendarPermissionException("The current user is not " +
+						"authorized to update events in the Schedule " +
+						"tool. Any related events were NOT updated", cpe);
+			}
 		}
 	}
 	
@@ -301,11 +321,20 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 		assignment.setModifiedBy(externalLogic.getCurrentUserId());
 		assignment.setModifiedTime(new Date());
 		
+		// remove associated announcements, if appropriate
 		String announcementIdToDelete = null;
 		if (assignment.getAnnouncementId() != null) {
 			announcementIdToDelete = assignment.getAnnouncementId();
 			assignment.setAnnouncementId(null);
 			assignment.setHasAnnouncement(Boolean.FALSE);
+		}
+		
+		// remove associated Schedule/Calendar events, if appropriate
+		String eventIdToDelete = null;
+		if (assignment.getEventId() != null) {
+			eventIdToDelete = assignment.getEventId();
+			assignment.setEventId(null);
+			assignment.setAddedToSchedule(false);
 		}
 
 		try {
@@ -316,6 +345,13 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 			if (announcementIdToDelete != null) {
 				announcementLogic.deleteOpenDateAnnouncement(announcementIdToDelete, currentContextId);
 				if(log.isDebugEnabled()) log.debug("Deleted announcement with id " + announcementIdToDelete + " for assignment " + assignment.getId());
+			}
+			
+			// now remove the event, if applicable
+			if (eventIdToDelete !=  null) {
+				calendarLogic.deleteDueDateEvent(eventIdToDelete, currentContextId);
+				if(log.isDebugEnabled()) log.debug("Deleted event with id " + eventIdToDelete + 
+						" for assignment " + assignment.getId());
 			}
 			
 			//clean up tags...
@@ -341,13 +377,24 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 						"but the assignment was deleted", pe);
 			}
 		} catch (HibernateOptimisticLockingFailureException holfe) {
-			if(log.isInfoEnabled()) log.info("An optimistic locking failure occurred while attempting to update an assignment");
-			throw new StaleObjectModificationException("Locking failure occurred while removing assignment with id: " + assignment.getId(), holfe);
+			if(log.isInfoEnabled()) log.info("An optimistic locking failure occurred " +
+					"while attempting to update an assignment");
+			throw new StaleObjectModificationException("Locking failure occurred " +
+					"while removing assignment with id: " + assignment.getId(), holfe);
 		} catch (AnnouncementPermissionException ape) {
-			if(log.isDebugEnabled()) log.debug("The current user is not authorized to remove announcements in the annc tool, " +
+			if(log.isDebugEnabled()) log.debug("The current user is not authorized to " +
+					"remove announcements in the annc tool, " +
 					"but the assignment was deleted");
-			throw new AnnouncementPermissionException("The current user is not authorized to remove announcements in the annc tool, " +
+			throw new AnnouncementPermissionException("The current user is not authorized " +
+					"to remove announcements in the annc tool, " +
 					"but the assignment was deleted", ape);
+		} catch (CalendarPermissionException cpe) {
+			if(log.isDebugEnabled()) log.debug("The current user is not authorized " +
+					"to remove events in the Schedule tool, " +
+					"but the assignment was deleted");
+			throw new CalendarPermissionException("The current user is not authorized " +
+					"to remove events in the Schedule tool, " +
+					"but the assignment was deleted", cpe);
 		}
 	}
 	
@@ -542,7 +589,15 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 		return groupsToRemove;
 	}
 	
-	public void saveAssignmentAnnouncement(Assignment2 originalAssignment, Assignment2 updatedAssignment) {
+	/**
+	 * Given the originalAssignment and the updated (or newly created) version, will determine if an
+	 * announcement needs to be added, updated, or deleted. Announcements are updated
+	 * if there is a change in title, open date, or group restrictions. They are
+	 * deleted if the assignment is changed to draft status. 
+	 * @param originalAssignmentWithGroups - original assignment with the group info populated
+	 * @param updatedAssignment - updated (or newly created) assignment with the group info populated
+	 */
+	private void saveAssignmentAnnouncement(Assignment2 originalAssignment, Assignment2 updatedAssignment) {
 		if (updatedAssignment == null) {
 			throw new IllegalArgumentException("Null updatedAssignment passed to saveAssignmentAnnouncement");
 		}
@@ -607,6 +662,100 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 				announcementLogic.updateOpenDateAnnouncement(updatedAssignment.getAnnouncementId(), 
 						updatedAssignment.getListOfAssociatedGroupReferences(), 
 						updatedAssignment.getContextId(), updAnncSubject, updAnncBody);
+				// don't need to re-save assignment b/c id already exists
+			}
+		}
+	}
+	
+	/**
+	 * will handle the business logic and updates required to determine if an event
+	 * needs to be added, updated, or deleted from the Schedule (Calendar) tool.
+	 * Compares the existing assignment (if not null) to the new assignment to
+	 * carry out any actions that are required for the relationship with the
+	 * Schedule tool.  Events are updated upon a change in the due date, title, or
+	 * group restrictions for the assignment.  Events are deleted if the assignment
+	 * is deleted, changed to draft status, or the due date is removed.  will also
+	 * add event when appropriate
+	 * @param originalAssignment - null if "updatedAssignment" is newly created
+	 * @param updatedAssignment
+	 */
+	private void handleDueDateEvent(Assignment2 originalAssignment, Assignment2 updatedAssignment) {
+		if (updatedAssignment == null) {
+			throw new IllegalArgumentException("Null updatedAssignment passed to saveDueDateEvent");
+		}
+		
+		if (updatedAssignment.getId() == null) {
+			throw new IllegalArgumentException("The updatedAssignment passed to " +
+					"saveDueDateEvent must have an id");
+		}
+		
+		if (!permissionLogic.isCurrentUserAbleToEditAssignments(updatedAssignment.getContextId())) {
+			throw new SecurityException("Current user is not allowed to edit assignments in context " + updatedAssignment.getContextId());
+		}
+		
+		String contextId = externalLogic.getCurrentContextId();
+		
+		// make the due date locale-aware
+		// use a date which is related to the current users locale
+        DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, bundleLogic.getLocale());
+		
+		String eventTitle = "";
+		String eventDescription = "";
+		if (updatedAssignment.getDueDate() != null) {
+			eventTitle = bundleLogic.getFormattedMessage("assignment2.schedule_event_title",
+					new Object[] {updatedAssignment.getTitle()});
+			eventDescription = bundleLogic.getFormattedMessage("assignment2.schedule_event_description",
+					new Object[] {updatedAssignment.getTitle(), df.format(updatedAssignment.getDueDate())});
+		}
+		
+		if (originalAssignment == null) {
+			// this was a new assignment
+			// check to see if there will be an event added for the due date
+			if (updatedAssignment.getAddedToSchedule() && !updatedAssignment.isDraft() &&
+					updatedAssignment.getDueDate() != null) {
+				// add an event for the due date for this assignment
+				String eventId = calendarLogic.addDueDateToSchedule(updatedAssignment.getListOfAssociatedGroupReferences(), 
+						contextId, eventTitle, eventDescription, updatedAssignment.getDueDate(), updatedAssignment.getId());
+				updatedAssignment.setEventId(eventId);
+				dao.update(updatedAssignment);
+			}
+		} else if (updatedAssignment.isDraft()) {
+			if (updatedAssignment.getEventId() != null) {
+				calendarLogic.deleteDueDateEvent(updatedAssignment.getEventId(), contextId);
+				updatedAssignment.setEventId(null);
+				dao.update(updatedAssignment);
+			}
+		} else if (originalAssignment.getEventId() == null && updatedAssignment.getAddedToSchedule()) {
+			// this is a new event
+			String eventIdId = calendarLogic.addDueDateToSchedule(updatedAssignment.getListOfAssociatedGroupReferences(),
+					contextId, eventTitle, eventDescription, updatedAssignment.getDueDate(), updatedAssignment.getId());
+			updatedAssignment.setEventId(eventIdId);
+			dao.update(updatedAssignment);
+		} else if (originalAssignment.getEventId() != null && !updatedAssignment.getAddedToSchedule()) {
+			// we must remove the original event
+			calendarLogic.deleteDueDateEvent(originalAssignment.getEventId(), contextId);
+			updatedAssignment.setEventId(null);
+			dao.update(updatedAssignment);
+		} else if (updatedAssignment.getAddedToSchedule()){
+			// if title, due date, or group restrictions were updated, we need to update the event
+			Date oldDueDate = originalAssignment.getDueDate();
+			Date newDueDate = updatedAssignment.getDueDate();
+			
+			if (oldDueDate != null && newDueDate == null) {
+				// we need to remove this event because no longer has a due date
+				calendarLogic.deleteDueDateEvent(originalAssignment.getEventId(), contextId);
+				updatedAssignment.setEventId(null);
+				dao.update(updatedAssignment);
+			
+			} else if (!originalAssignment.getTitle().equals(updatedAssignment.getTitle()) ||
+					(oldDueDate.after(newDueDate) || oldDueDate.before(newDueDate)) ||
+					!originalAssignment.getListOfAssociatedGroupReferences().equals(updatedAssignment.getListOfAssociatedGroupReferences())) {
+				// otherwise, we update only if there is a change in the assignment title, due date,
+				// or group restrictions
+				calendarLogic.updateDueDateEvent(updatedAssignment.getEventId(), 
+						updatedAssignment.getListOfAssociatedGroupReferences(),
+						contextId, eventTitle, eventDescription, updatedAssignment.getDueDate(), 
+						updatedAssignment.getId());
 				// don't need to re-save assignment b/c id already exists
 			}
 		}

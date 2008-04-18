@@ -85,6 +85,9 @@ public interface AssignmentLogic {
 	 * user must have "delete" permission
 	 * @throws AnnouncmentPermissionException if the user does not have
 	 * permission to delete announcements - assignment will be 'deleted' regardless
+	 * @throws CalendarPermissionException if the user does not have
+	 * permission to delete events in the Schedule tool - assignment will be
+	 * 'deleted' regardless
 	 */	
 	public void deleteAssignment(Assignment2 assignment);
 	
@@ -135,15 +138,5 @@ public interface AssignmentLogic {
 	 * @return a constant equivalent to the assignment's status
 	 */
 	public int getStatusForAssignment(Assignment2 assignment);
-	
-	/**
-	 * Given the originalAssignment and the updated (or newly created) version, will determine if an
-	 * announcement needs to be added, updated, or deleted. Announcements are updated
-	 * if there is a change in title, open date, or group restrictions. They are
-	 * deleted if the assignment is changed to draft status. 
-	 * @param originalAssignmentWithGroups - original assignment with the group info populated
-	 * @param updatedAssignment - updated (or newly created) assignment with the group info populated
-	 */
-	public void saveAssignmentAnnouncement(Assignment2 originalAssignmentWithGroups, 
-			Assignment2 updatedAssignmentWithGroups);
+
 }

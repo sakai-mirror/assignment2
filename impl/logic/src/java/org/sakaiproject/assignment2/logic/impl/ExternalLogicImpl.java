@@ -113,7 +113,7 @@ public class ExternalLogicImpl implements ExternalLogic {
     }
     
     public String getToolTitle() {
-    	return toolManager.getTool(ExternalLogic.TOOL_ID_ASSIGNMENT2_TOOL).getTitle();
+    	return toolManager.getTool(ExternalLogic.TOOL_ID_ASSIGNMENT2).getTitle();
     }
 
     public String getCurrentUserId() {
