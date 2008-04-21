@@ -18,13 +18,30 @@
 <body>
   <div class="breadcrumb">Breadcrumbs/go/here.</div>
   <div class="steps">
-    <a href="newassignment1.html">Step1: Assignment Details</a> |
-    Step 2: Submission Details |
+    <a href="newassignment1.html">Step1: Assignment Content</a> |
+    Step 2: Submission Handling |
     <a href="newassignment3.html">Step 3: Other Options</a>
   </div>
-  <h2>Submission Details</h2>
+  <h2>Submission Handling</h2>
 	<div>
 		<form action="#">
+			<div class="section">
+				<div class="prompt">
+					<h4>
+						* Submission Method:
+					</h4>
+				</div>
+				<div class="input">
+					<p>
+						<input type="radio" name="submissionMethod" id="electronic" value="true" checked="checked" />
+						<label for="electronic">Electronic submissions</label>
+					</p>
+					<p>
+						<input type="radio" name="submissionMethod" id="nonelectronic" value="false"/>
+						<label for="nonelectronic">Non-electronic submissions</label>
+					</p>
+				</div>
+			</div>
 			<div class="section">
 				<div class="prompt">
 					<h4>
@@ -35,7 +52,7 @@
 					<input type="text" size="10" id="openDate" value="01/01/1970" />
 					<input type="text" size="8" id="openTime" value="12:00 PM" />
 					<div class="instructions">
-						Site Participants will not see this assignment until this open date.
+						Site Participants will not see this assignment until the open date.
 					</div>
 				</div>
 			</div>
@@ -62,44 +79,77 @@
 				</div>
 				<div class="input">
 				  <input type="radio" name="acceptUntilRadio" value="1" id="acceptUntilYes" />
-          <label for="acceptUntilYes">Yes</label>
+          			<label for="acceptUntilYes">Yes</label>
 				  <input type="radio" name="acceptUntilRadio" value="0" id="acceptUntilNo" checked="checked" />
-          <label for="acceptUntilNo">No</label>
+          			<label for="acceptUntilNo">No</label>
 					<input type="text" size="10" id="acceptUntilDate" value="01/01/1970" />
 					<input type="text" size="8" id="acceptUntilTime" value="12:00 PM" />
 				</div>
-				<div class="section">
-					<div class="prompt">
-						<h4>
-							* Submission Method:
-						</h4>
-					</div>
-					<div class="input">
-						<select>
-							<option>Inline and Attachments</option>
-							<option>Inline Only</option>
-							<option>Attachment Only</option>
-						</select>
-					</div>
+			</div>
+			<div class="section">
+				<div class="prompt">
+					<h4>
+						Who will submit:
+					</h4>
 				</div>
-				<div class="section">
-					<div class="prompt">
-					</div>
-					<div class="input instructions">
-						* Indicates required information.
-					</div>
-				</div>
-				<div class="section">
-					<div class="prompt">
-					</div>
-					<div class="input buttons">
-						<input type="submit" value="&lt;&lt; Step 1" />
-						<input type="submit" value="Save as Draft" />
-						<input type="submit" value="Cancel" />
-						<input type="submit" value="Step 3 &gt;&gt;" />
-					</div>
+				<div class="input">
+					<p>
+						<input type="radio" name="who" id="all" checked="checked" />
+						<label for="all">All site participants</label>
+					</p>
+					<p>
+						<input type="radio" name="who" id="selectedGroups" />
+						<label for="selectedGroups">Only specific sections or groups ...</label>
+					</p>
+					<p>
+						<input type="radio" name="who" id="groupTeams" />
+						<label for="groupTeams">Teams based on specific groups ...</label>
+					</p>
+					<p>
+						<input type="radio" name="who" id="anonymous" />
+						<label for="anonymous">Anonymous site participants</label>
+					</p>
 				</div>
 			</div>
+			<div class="section">
+				<div class="prompt">
+					<h4>
+						Grading:
+					</h4>
+				</div>
+				<div class="input">
+					<p>
+						<input type="radio" name="isGraded" id="newgrade" value="true" checked="checked" />
+						<label for="newgrade">Add to Gradebook</label>
+					</p>
+					<p>
+						<input type="radio" name="isGraded" id="graded" value="false" />
+						<label for="graded">Link to existing Gradebook column ...</label>
+					</p>
+					<p>
+						<input type="radio" name="isGraded" id="ungraded" value="false" />
+						<label for="ungraded">This assignment will not be graded</label>
+					</p>
+				</div>
+			</div>
+			<div class="section">
+				<div class="prompt">
+				</div>
+				<div class="input instructions">
+					* Indicates required information.
+				</div>
+			</div>
+			<div class="section">
+				<div class="prompt">
+				</div>
+				<div class="input buttons">
+					<input type="submit" value="&lt;&lt; Step 1" />
+					<input type="submit" value="Save as Draft" />
+					<input type="submit" value="Cancel" />
+					<input type="submit" value="Step 3 &gt;&gt;" />
+				</div>
+			</div>
+		</div>
 		</form>
 	</div>
 </body>

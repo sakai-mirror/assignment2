@@ -14,27 +14,31 @@
 <body>
   <div class="breadcrumb">Breadcrumbs/go/here.</div>
   <div class="steps">
-    <a href="newassignment1.html">Step1: Assignment Details</a> |
-    <a href="newassignment2.html">Step 2: Submission Details</a> |
+    <a href="newassignment1.html">Step1: Assignment Content</a> |
+    <a href="newassignment2.html">Step 2: Submission Handling</a> |
     Step 3: Other Options
   </div>
-  <h2>Options</h2>
+  <h2>Other Options</h2>
 	<div>
 		<form action="#">
 			<div class="section">
 				<div class="prompt">
 					<h4>
-						Access:
+						Resubmissions:
 					</h4>
 				</div>
 				<div class="input">
 					<p>
-						<input type="radio" name="access" id="toSite" checked="checked" />
-						<label for="toSite">Display to site</label>
+						<input type="radio" name="resubmissions" id="perpetual" checked="checked" />
+						<label for="dontSend">Submitters can resubmit as often as they like while the Assignment remains open</label>
 					</p>
 					<p>
-						<input type="radio" name="access" id="selectedGroup" />
-						<label for="selectedGroup">Display to selected groups</label>
+						<input type="radio" name="resubmissions" id="oneSubmit" />
+						<label for="oneSubmit">Submitters can submit once and only once</label>
+					</p>
+					<p>
+						<input type="radio" name="resubmissions" id="resubmitLimit" />
+						<label for="resubmitLimit">Submitters can resubmit a set number of times ...</label>
 					</p>
 				</div>
 			</div>
@@ -47,17 +51,34 @@
 				<div class="input">
 					<p>
 						<input type="radio" name="notifications" id="dontSend" checked="checked" />
-						<label for="dontSend">Do not send me notification emails for any student submissions</label>
+						<label for="dontSend">Do not send me notification emails for any submissions</label>
 					</p>
 					<p>
 						<input type="radio" name="notifications" id="sendEach" />
-						<label for="sendEach">Send me a notification email for each student submission</label>
+						<label for="sendEach">Send me a notification email for each submission</label>
 					</p>
 					<p>
 						<input type="radio" name="notifications" id="sendDigest" />
 						<label for="sendDigest">
-							Send me one email per day summarizing notifications for student submissions
+							Send me one email per day summarizing notifications for submissions
 						</label>
+					</p>
+				</div>
+			</div>
+			<div class="section">
+				<div class="prompt">
+					<h4>
+						Honor Code:
+					</h4>
+				</div>
+				<div class="input">
+					<p>
+						<input type="radio" name="honorcode" id="noHonor" />
+						<label for="noHonor">Submitters will not be obliged to agree to Honor Code</label>
+					</p>
+					<p>
+						<input type="radio" name="honorcode" id="honor" checked="checked" />
+						<label for="honor">Submitters will be obliged to agree to Honor Code ...</label>
 					</p>
 				</div>
 			</div>
@@ -68,8 +89,7 @@
 					<input type="submit" value="&lt;&lt; Step 2" />
 					<input type="submit" value="Save as Draft" />
 					<input type="submit" value="Cancel" />
-					<input type="submit" value="Publish" />
-					<input type="submit" value="Preview" />
+					<input type="submit" value="Post" />
 				</div>
 			</div>
 		</form>

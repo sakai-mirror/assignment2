@@ -4,6 +4,6 @@ $(document).ready(function()
 	ListCommon.addHover('.dataRow', 'dataRowOn');
 
 	// add the toggle events to the twisties
-	ListCommon.addToggle('#publishedTwisty', '#publishedList', true);
+	ListCommon.addToggle('#postedTwisty', '#postedList', true);
 	ListCommon.addToggle('#draftsTwisty', '#draftsList', true);
 });
