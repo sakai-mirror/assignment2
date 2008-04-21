@@ -91,6 +91,8 @@
 
 .subheader {
 	font-weight: bold;
+	background: #DDD;
+	margin: 5px;
 }
 
 .spacer {

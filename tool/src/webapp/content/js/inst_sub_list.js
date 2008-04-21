@@ -4,11 +4,9 @@ $(document).ready(function()
 	ListCommon.addHover('.dataRow', 'dataRowOn');
 
 	// add the toggle events to the twisties
-	ListCommon.addToggle('#assignment1Twisty', '#assignment1Area');
 	ListCommon.addToggle('#submitted1Twisty', '#submitted1List', true);
 	ListCommon.addToggle('#completed1Twisty', '#completed1List');
 
-	ListCommon.addToggle('#assignment2Twisty', '#assignment2Area');
 	ListCommon.addToggle('#submitted2Twisty', '#submitted2List', true);
 	ListCommon.addToggle('#completed2Twisty', '#completed2List');
 
@@ -16,4 +14,13 @@ $(document).ready(function()
 	{
 		location.href='submissionview.html';
 	});
+	
+	// accordion by assignment
+	jQuery('#assignmentList').accordion({
+		header: 'div.subheader',
+		autoHeight: false,
+		active: false,
+		navigation: true
+	});
+
 });
