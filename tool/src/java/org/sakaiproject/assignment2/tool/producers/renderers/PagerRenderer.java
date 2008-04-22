@@ -32,10 +32,10 @@ public class PagerRenderer {
 	public void makePager(UIContainer tofill, String divID, String currentViewID, ViewParameters viewparams, Integer totalCount) {
     	PagerViewParams pagerparams = (PagerViewParams) viewparams;
 
-    	if (totalCount <= PagerRenderer.DEFAULT_START_COUNT){
+    	//if (totalCount <= PagerRenderer.DEFAULT_START_COUNT){
     		//Do not show
-    		return;
-    	}
+    		//return;
+    	//}
     	
     	//set vars
     	this.currentCount = pagerparams.current_count;
@@ -73,37 +73,42 @@ public class PagerRenderer {
 		comboNames.setValue(new String[] {"Show 5 items", "Show 10 items", "Show 20 items", "Show 50 items", "Show 100 items", "Show 200 items"});
 		select_box.optionnames = comboNames;
 		Map attrmap = new HashMap(); 
-		attrmap.put("onchange", "location.href=location.href.substring(0,location.href.indexOf('?'))+\"" + "?" + href_params + "current_start=" + 
-				currentStart.toString() + "&current_count=\" + jQuery(this).val()");
+		attrmap.put("onchange", "changePage(pStart);");
+		//attrmap.put("onchange", "location.href=location.href.substring(0,location.href.indexOf('?'))+\"" + "?" + href_params + "current_start=" + 
+		//		currentStart.toString() + "&current_count=\" + jQuery(this).val()");
 		select_box.decorators = new DecoratorList(new UIFreeAttributeDecorator(attrmap)); 
 		
 		
 		//first page
 		UIInput first_page = UIInput.make(form, "pager_first_page", null, messageLocator.getMessage("assignment2.pager.pager_first_page"));
 		attrmap = new HashMap();
-		attrmap.put("onclick", "location.href=location.href.substring(0,location.href.indexOf('?'))+\"" + "?" + href_params + "current_start=" + 
-					this.goToFirstPage() + "&current_count=" + this.getCurrentSelect() + "\"");
+		attrmap.put("onclick", "changePage('first')");
+		//attrmap.put("onclick", "location.href=location.href.substring(0,location.href.indexOf('?'))+\"" + "?" + href_params + "current_start=" + 
+		//			this.goToFirstPage() + "&current_count=" + this.getCurrentSelect() + "\"");
 		first_page.decorators = new DecoratorList(new UIFreeAttributeDecorator(attrmap));
 				
 		//previous page
 		UIInput prev_page = UIInput.make(form, "pager_prev_page", null, messageLocator.getMessage("assignment2.pager.pager_prev_page"));
 		attrmap = new HashMap();
-		attrmap.put("onclick", "location.href=location.href.substring(0,location.href.indexOf('?'))+\"" + "?" + href_params + "current_start=" + 
-				this.goToPrevPage() + "&current_count=" + this.getCurrentSelect() + "\"");
+		attrmap.put("onclick", "changePage('prev')");
+		//attrmap.put("onclick", "location.href=location.href.substring(0,location.href.indexOf('?'))+\"" + "?" + href_params + "current_start=" + 
+		//		this.goToPrevPage() + "&current_count=" + this.getCurrentSelect() + "\"");
 		prev_page.decorators = new DecoratorList(new UIFreeAttributeDecorator(attrmap));
 
 		//next page
 		UIInput next_page = UIInput.make(form, "pager_next_page", null, messageLocator.getMessage("assignment2.pager.pager_next_page"));
 		attrmap = new HashMap();
-		attrmap.put("onclick", "location.href=location.href.substring(0,location.href.indexOf('?'))+\"" + "?" + href_params + "current_start=" + 
-				this.goToNextPage() + "&current_count=" + this.getCurrentSelect() + "\"");
+		attrmap.put("onclick", "changePage('next')");
+		//attrmap.put("onclick", "location.href=location.href.substring(0,location.href.indexOf('?'))+\"" + "?" + href_params + "current_start=" + 
+		//		this.goToNextPage() + "&current_count=" + this.getCurrentSelect() + "\"");
 		next_page.decorators = new DecoratorList(new UIFreeAttributeDecorator(attrmap));
 		
 		//last button
 		UIInput last_page = UIInput.make(form, "pager_last_page", null, messageLocator.getMessage("assignment2.pager.pager_last_page"));
 		attrmap = new HashMap();
-		attrmap.put("onclick", "location.href=location.href.substring(0,location.href.indexOf('?'))+\"" + "?" + href_params + "current_start=" + 
-				this.goToLastPage() + "&current_count=" + this.getCurrentSelect() + "\"");
+		attrmap.put("onclick", "changePage('last')");
+		//attrmap.put("onclick", "location.href=location.href.substring(0,location.href.indexOf('?'))+\"" + "?" + href_params + "current_start=" + 
+		//		this.goToLastPage() + "&current_count=" + this.getCurrentSelect() + "\"");
 		last_page.decorators = new DecoratorList(new UIFreeAttributeDecorator(attrmap));
 		
 		
@@ -114,13 +119,13 @@ public class PagerRenderer {
 		
 		if (currentStart == 0){
 			//disable if on first page
-			first_page.decorators = disabledDecoratorList;
-			prev_page.decorators = disabledDecoratorList;
+			//first_page.decorators = disabledDecoratorList;
+			//prev_page.decorators = disabledDecoratorList;
 		}
 		if ((currentStart + currentCount) >= totalCount){
 			//disable if on last page
-			next_page.decorators = disabledDecoratorList;
-			last_page.decorators = disabledDecoratorList;
+			//next_page.decorators = disabledDecoratorList;
+			//last_page.decorators = disabledDecoratorList;
 		}
         
     }

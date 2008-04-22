@@ -224,6 +224,11 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
         		UIOutput.make(row, "assignment_row_due", messageLocator.getMessage("assignment2.assignment_list-sortview.no_due_date"));	
         	}
 
+        	//For JS Sorting
+        	UIOutput.make(row, "status", assignment.getAssignmentStatus());
+        	UIOutput.make(row, "open_timestamp", assignment.getOpenTime() != null ? String.valueOf(assignment.getOpenTime().getTime()) : "");
+        	UIOutput.make(row, "due_timestamp", assignment.getDueDate() != null ? String.valueOf(assignment.getDueDate().getTime()) : "");
+        	
         	//UIInternalLink.make(row, "assignment_row_in_new", "2/4", new SimpleViewParameters(GradeAssignmentProducer.VIEW_ID));
         }
         

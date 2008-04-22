@@ -9,6 +9,8 @@ import uk.org.ponder.rsf.components.UIJointContainer;
 import uk.org.ponder.rsf.components.UILink;
 import uk.org.ponder.rsf.components.UIMessage;
 import uk.org.ponder.rsf.viewstate.ViewParameters;
+import uk.org.ponder.rsf.components.decorators.DecoratorList;
+import uk.org.ponder.rsf.components.decorators.UIStyleDecorator;
 
 public class SortHeaderRenderer {
 	
@@ -22,20 +24,23 @@ public class SortHeaderRenderer {
     	
     	//Link Text
     	UIMessage.make(joint, "text", link_text);
-    	if (params.sort_by.equals(sort_by)){
-    		UILink.make(joint, "arrow", (params.sort_dir.equals(AssignmentLogic.SORT_DIR_ASC) ? BULLET_UP_IMG_SRC : BULLET_DOWN_IMG_SRC));
-    	}
+    	//if (params.sort_by.equals(sort_by)){
+    		//UILink.make(joint, "arrow", (params.sort_dir.equals(AssignmentLogic.SORT_DIR_ASC) ? BULLET_UP_IMG_SRC : BULLET_DOWN_IMG_SRC));
+    	//}
 
     	//Add Link and modify params
     	String newSortDir = (params.sort_by.equals(sort_by) ? (params.sort_dir.equals(AssignmentLogic.SORT_DIR_ASC) 
     			? AssignmentLogic.SORT_DIR_DESC 
     			: AssignmentLogic.SORT_DIR_ASC) : AssignmentLogic.SORT_DIR_ASC);
+    
+    	
     	
     	ViewParameters new_params = viewparams.copyBase();
     	((SortPagerViewParams)new_params).sort_by = sort_by;
     	((SortPagerViewParams)new_params).sort_dir = newSortDir;
 
-    	UIInternalLink.make(joint, "link", new_params);
+    	UIInternalLink link = UIInternalLink.make(joint, "link", new_params);
+    	link.decorators = new DecoratorList(new UIStyleDecorator(sort_by));
     }
 
 }

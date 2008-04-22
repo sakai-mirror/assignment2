@@ -168,7 +168,7 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
         	UIBranchContainer row = UIBranchContainer.make(tofill, "row:");
         	
         	UIInternalLink.make(row, "row_grade_link",
-        			externalLogic.getUserDisplayName(as.getUserId()),
+        			externalLogic.getUserFullName(as.getUserId()),
         			new GradeViewParams(GradeProducer.VIEW_ID, as.getAssignment().getId(), as.getUserId()));
         	
         	if (as.getCurrentSubmissionVersion() != null && as.getCurrentSubmissionVersion().getSubmittedTime() != null){
@@ -183,12 +183,17 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
         		UIOutput.make(row, "row_grade", as.getGradebookGrade());
         	}
 
+        	String released = "0";
         	if (as.getCurrentSubmissionVersion() != null)  {
         		Date releasedTime = as.getCurrentSubmissionVersion().getReleasedTime();
         		if (releasedTime != null && releasedTime.before(new Date())) {
         			UIOutput.make(row, "row_released");
+        			released += 1;
         		}
         	}
+        	
+        	//For JS Sorting
+        	UIOutput.make(row, "released", released);
         }
         
 

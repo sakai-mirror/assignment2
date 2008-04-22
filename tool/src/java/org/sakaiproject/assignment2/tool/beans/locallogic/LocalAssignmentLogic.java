@@ -154,9 +154,9 @@ public class LocalAssignmentLogic {
 	 * @param sortDir
 	 */
 	public List<Assignment2> filterPopulateAndSortAssignmentList(List<Assignment2> assignmentList, int currentStart, int currentCount, String sortBy, boolean sortDir) {
-		assignmentList = filterListForPaging(assignmentList, currentStart, currentCount);
+		//assignmentList = filterListForPaging(assignmentList, currentStart, currentCount);
         populateNonPersistedFieldsForAssignments(assignmentList);
-        sortAssignments(assignmentList, sortBy, sortDir);
+        //sortAssignments(assignmentList, sortBy, sortDir);
         return assignmentList;
 	}
 	
