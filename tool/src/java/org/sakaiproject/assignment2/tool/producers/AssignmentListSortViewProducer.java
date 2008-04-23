@@ -26,6 +26,7 @@ import org.sakaiproject.taggable.api.TaggingHelperInfo;
 import org.sakaiproject.taggable.api.TaggingManager;
 import org.sakaiproject.taggable.api.TaggingProvider;
 
+import uk.org.ponder.htmlutil.HTMLUtil;
 import uk.org.ponder.messageutil.MessageLocator;
 import uk.org.ponder.rsf.components.*;
 import uk.org.ponder.rsf.view.ComponentChecker;
@@ -81,7 +82,8 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
     	current_sort_by = params.sort_by;
     	current_sort_dir = params.sort_dir;
     	opposite_sort_dir = (AssignmentLogic.SORT_DIR_ASC.equals(current_sort_dir) ? AssignmentLogic.SORT_DIR_DESC : AssignmentLogic.SORT_DIR_ASC);
-
+    	UIVerbatim.make(tofill, "defaultSortBy", HTMLUtil.emitJavascriptVar("defaultSortBy", DEFAULT_SORT_BY));
+    	
     	//check if we need to duplicate an assignment, params.assignmentIdToDuplicate is not null
     	if (params.assignmentIdToDuplicate != null){
     		assignment2Bean.createDuplicate(params.assignmentIdToDuplicate);
@@ -228,6 +230,7 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
         	UIOutput.make(row, "status", assignment.getAssignmentStatus());
         	UIOutput.make(row, "open_timestamp", assignment.getOpenTime() != null ? String.valueOf(assignment.getOpenTime().getTime()) : "");
         	UIOutput.make(row, "due_timestamp", assignment.getDueDate() != null ? String.valueOf(assignment.getDueDate().getTime()) : "");
+        	UIOutput.make(row, "sortIndex", String.valueOf(assignment.getSortIndex()));
         	
         	//UIInternalLink.make(row, "assignment_row_in_new", "2/4", new SimpleViewParameters(GradeAssignmentProducer.VIEW_ID));
         }

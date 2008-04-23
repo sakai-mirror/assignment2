@@ -22,6 +22,7 @@ import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 
+import uk.org.ponder.htmlutil.HTMLUtil;
 import uk.org.ponder.messageutil.MessageLocator;
 import uk.org.ponder.messageutil.TargettedMessage;
 import uk.org.ponder.messageutil.TargettedMessageList;
@@ -104,6 +105,7 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
     	current_sort_dir = params.sort_dir;
     	opposite_sort_dir = (AssignmentLogic.SORT_DIR_ASC.equals(current_sort_dir) 
     			? AssignmentLogic.SORT_DIR_DESC : AssignmentLogic.SORT_DIR_ASC);
+    	UIVerbatim.make(tofill, "defaultSortBy", HTMLUtil.emitJavascriptVar("defaultSortBy", DEFAULT_SORT_BY));
     	
     	List<AssignmentSubmission> submissions = submissionLogic.getViewableSubmissionsForAssignmentId(assignmentId);
     	

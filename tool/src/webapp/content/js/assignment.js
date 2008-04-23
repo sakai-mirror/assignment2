@@ -157,16 +157,24 @@ function sortPageRows(b,d) {
    //Now paging
    jQuery("table#sortable tr:gt(0)").hide();
    jQuery("table#sortable tr:gt(" + pStart + "):lt(" + pLength +")").show();
+   trsLength = jQuery("table#sortable tr:gt(0)").size();
    if (pStart == 0){
      jQuery("div.pagerDiv input[name='page-replace\:\:pagerDiv\:1\:pager_first_page'], div.pagerDiv input[name='page-replace\:\:pagerDiv\:1\:pager_prev_page']").attr('disabled', 'disabled');
    } else {
       jQuery("div.pagerDiv input[name='page-replace\:\:pagerDiv\:1\:pager_first_page'], div.pagerDiv input[name='page-replace\:\:pagerDiv\:1\:pager_prev_page']").removeAttr('disabled');
    }
-   if (Number(pStart) + Number(pLength) > jQuery("table#sortable tr:gt(0)").size()) {
+   if (Number(pStart) + Number(pLength) >= trsLength) {
       jQuery("div.pagerDiv input[name='page-replace\:\:pagerDiv\:1\:pager_next_page'], div.pagerDiv input[name='page-replace\:\:pagerDiv\:1\:pager_last_page']").attr('disabled', 'disabled');
    } else {
       jQuery("div.pagerDiv input[name='page-replace\:\:pagerDiv\:1\:pager_next_page'], div.pagerDiv input[name='page-replace\:\:pagerDiv\:1\:pager_last_page']").removeAttr('disabled');  
    }
+   //now parse the date
+   format = jQuery("div.pagerDiv div.format").get(0).innerHTML;
+   format = format.replace(/\{0\}/, Number(pStart) + 1);
+   last = Number(pStart) + Number(pLength) > trsLength ? trsLength : Number(pStart) + Number(pLength);
+   format = format.replace(/\{1\}/, last);
+   format = format.replace(/\{2\}/, jQuery("table#sortable tr:gt(0)").size());
+   jQuery("div.pagerDiv div.instruction").html(format);
 }
 jQuery(document).ready(function(){
  sortPageRows(defaultSortBy,'asc');
@@ -184,7 +192,7 @@ function changePage(newPStart){
 		pStart = pStart - pLength;
 		if (pStart < 0) pStart =0;
 	} else if ("next" == newPStart) {
-		pStart = pStart + pLength;
+		pStart = Number(pStart) + Number(pLength);
 		if (pStart > total) {
 			pStart = total - (total % pLength);
 		}

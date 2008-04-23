@@ -19,10 +19,12 @@ import uk.org.ponder.rsf.components.UIInternalLink;
 import uk.org.ponder.rsf.components.UILink;
 import uk.org.ponder.rsf.components.UIMessage;
 import uk.org.ponder.rsf.components.UIOutput;
+import uk.org.ponder.rsf.components.UIVerbatim;
 import uk.org.ponder.rsf.view.ComponentChecker;
 import uk.org.ponder.rsf.view.ViewComponentProducer;
 import uk.org.ponder.rsf.viewstate.ViewParameters;
 import uk.org.ponder.rsf.viewstate.ViewParamsReporter;
+import uk.org.ponder.htmlutil.HTMLUtil;
 
 public class StudentAssignmentListProducer implements ViewComponentProducer, ViewParamsReporter {
 	
@@ -64,6 +66,7 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
     	current_sort_by = params.sort_by;
     	current_sort_dir = params.sort_dir;
     	opposite_sort_dir = (AssignmentLogic.SORT_DIR_ASC.equals(current_sort_dir) ? AssignmentLogic.SORT_DIR_DESC : AssignmentLogic.SORT_DIR_ASC);
+    	UIVerbatim.make(tofill, "defaultSortBy", HTMLUtil.emitJavascriptVar("defaultSortBy", DEFAULT_SORT_BY));
 
     	//check if we need to duplicate an assignment, params.assignmentIdToDuplicate is not null
     	if (params.assignmentIdToDuplicate != null){
@@ -120,6 +123,10 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
         		UIMessage.make(row, "assignment_row_due", "assignment2.student-assignment-list.no_due_date");
         	}
 
+        	//For JS Sorting
+        	UIOutput.make(row, "open_timestamp", assignment.getOpenTime() != null ? String.valueOf(assignment.getOpenTime().getTime()) : "");
+        	UIOutput.make(row, "due_timestamp", assignment.getDueDate() != null ? String.valueOf(assignment.getDueDate().getTime()) : "");
+        	UIOutput.make(row, "sortIndex", String.valueOf(assignment.getSortIndex()));
         }
 	}
 	
