@@ -177,9 +177,10 @@ function sortPageRows(b,d) {
    jQuery("div.pagerDiv div.instruction").html(format);
 }
 jQuery(document).ready(function(){
- sortPageRows(defaultSortBy,'asc');
- 
- pStart=0;
+	if (jQuery("table#sortable").get(0)) {
+ 		sortPageRows(defaultSortBy,'asc');
+ 		pStart=0;
+	}
 });
 function changeSort(newBy){
 	sortPageRows(newBy, (newBy!=sortBy ? 'asc' : (sortDir == 'asc' ? 'desc' : 'asc')));
