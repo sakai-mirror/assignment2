@@ -1,6 +1,6 @@
 /**********************************************************************************
- * $URL: https://source.sakaiproject.org/contrib/assignment2/trunk/impl/test/src/java/org/sakaiproject/assignment2/test/PreloadTestData.java $
- * $Id: PreloadTestData.java 45489 2008-02-12 16:05:58Z wagnermr@iupui.edu $
+ * $URL$
+ * $Id$
  ***********************************************************************************
  *
  * Copyright (c) 2007 The Sakai Foundation.

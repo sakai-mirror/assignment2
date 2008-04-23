@@ -1,6 +1,6 @@
 /**********************************************************************************
- * $URL: https://source.sakaiproject.org/svn/assignment/branches/oncourse_osp_enhancements/assignment-api/api/src/java/org/sakaiproject/assignment/taggable/api/AssignmentActivityProducer.java $
- * $Id: AssignmentActivityProducer.java 41064 2008-02-06 20:29:06Z chmaurer@iupui.edu $
+ * $URL$
+ * $Id$
  ***********************************************************************************
  *
  * Copyright (c) 2007 The Sakai Foundation.
