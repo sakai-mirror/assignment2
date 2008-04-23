@@ -6,6 +6,7 @@
 		<title>Assignments [Instructor]</title>
 		<link rel='stylesheet' type='text/css' href='../css/assn2_hotness.css' />
 		<script src='../js/jquery-1.2.3.min.js' type='text/javascript'></script>
+		<script src='../js/jquery.tablesorter.min.js' type='text/javascript'></script>
 		<script src='../js/list_common.js' type='text/javascript'></script>
 		<script src='../js/inst_assn_list.js' type='text/javascript'></script>
 	</head>
@@ -31,40 +32,44 @@
 			</div>
 			<div class='cleaner'></div>
 			<div id='draftsList' class='listArea'>
-				<table id='draftAssns' class='listTable'>
-					<tr class='headerRow'>
-						<td><input type='checkbox' disabled='disabled' /></td>
-						<th>Title</th>
-						<th>Sections/Groups</th>
-						<th>Open Date</th>
-						<th>Due Date</th>
-					</tr>
-					<tr class='dataRow'>
-						<td><input type='checkbox' /></td>
-						<td>Assignment 4 <a href=''><img src="../images/icons/page_white_edit.png" alt="Edit Content" border="0"></a> <a href=''><img src="../images/icons/basket.png" alt="Edit Content" border="0"></a> <a href=''><img src="../images/icons/wrench.png" alt="Edit Content" border="0"></a></td>
-						<td>&nbsp;</td>
-						<td>03/28</td>
-						<td>05/10</td>
-					</tr>
-					<tr class='dataRow'>
-						<td><input type='checkbox' /></td>
-						<td>Assignment 5 <a href=''><img src="../images/icons/page_white_edit.png" alt="Edit Content" border="0"></a> <a href=''><img src="../images/icons/basket.png" alt="Edit Content" border="0"></a> <a href=''><img src="../images/icons/wrench.png" alt="Edit Content" border="0"></a></td>
-						<td>Section B</td>
-						<td>03/28</td>
-						<td>05/10</td>
-					</tr>
-					<tr class='dataRow'>
-						<td><input type='checkbox' /></td>
-						<td>Assignment 5 <a href=''><img src="../images/icons/page_white_edit.png" alt="Edit Content" border="0"></a> <a href=''><img src="../images/icons/basket.png" alt="Edit Content" border="0"></a> <a href=''><img src="../images/icons/wrench.png" alt="Edit Content" border="0"></a></td>
-						<td>Section A</td>
-						<td>03/28</td>
-						<td>05/10</td>
-					</tr>
+				<table id='draftAssns' class='listTable tablesorter'>
+					<thead>
+						<tr class='headerRow'>
+							<th><input type='checkbox' disabled='disabled' /></td>
+							<th>Title</th>
+							<th>Sections/Groups</th>
+							<th>Open Date</th>
+							<th>Due Date</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr class='dataRow'>
+							<td><input type='checkbox' /></td>
+							<td>Assignment 4 <a href=''><img src="../images/icons/page_white_edit.png" alt="Edit Content" border="0"></a> <a href=''><img src="../images/icons/basket.png" alt="Edit Content" border="0"></a> <a href=''><img src="../images/icons/wrench.png" alt="Edit Content" border="0"></a></td>
+							<td>&nbsp;</td>
+							<td>03/28</td>
+							<td>05/10</td>
+							</tr>
+						<tr class='dataRow'>
+							<td><input type='checkbox' /></td>
+							<td>Assignment 5 <a href=''><img src="../images/icons/page_white_edit.png" alt="Edit Content" border="0"></a> <a href=''><img src="../images/icons/basket.png" alt="Edit Content" border="0"></a> <a href=''><img src="../images/icons/wrench.png" alt="Edit Content" border="0"></a></td>
+							<td>Section B</td>
+							<td>03/29</td>
+							<td>05/10</td>
+						</tr>
+						<tr class='dataRow'>
+							<td><input type='checkbox' /></td>
+							<td>Assignment 5 <a href=''><img src="../images/icons/page_white_edit.png" alt="Edit Content" border="0"></a> <a href=''><img src="../images/icons/basket.png" alt="Edit Content" border="0"></a> <a href=''><img src="../images/icons/wrench.png" alt="Edit Content" border="0"></a></td>
+							<td>Section A</td>
+							<td>04/28</td>
+							<td>05/10</td>
+						</tr>
+					</tbody>
 				</table>
+				<div class='buttons'>
+					<a href=''><img src="../images/icons/arrow_down.png" alt="">Post</a>
+				</div>
 			</div>
-		</div>
-		<div class='buttons'>
-			<a href=''><img src="../images/icons/arrow_down.png" alt="">Post</a>
 		</div>
 		<div id='posted' class='section clear'>
 			<div id='postedHeader' class='header'>
@@ -73,31 +78,35 @@
 				</div>
 			</div>
 			<div id='postedList' class='listArea'>
-				<table id='postedAssns' class='listTable'>
-					<tr class='headerRow'>
-						<th>Title</th>
-						<th>Sections/Groups</th>
-						<th>Open Date</th>
-						<th>Due Date</th>
-					</tr>
-					<tr class='dataRow'>
-						<td>Assignment 1 <a href=''><img src="../images/icons/arrow_up.png" alt="To Draft" border="0"></a></td>
-						<td>&nbsp;</td>
-						<td>03/28</td>
-						<td>05/10</td>
-					</tr>
-					<tr class='dataRow'>
-						<td>Assignment 2 <a href=''><img src="../images/icons/arrow_up.png" alt="To Draft" border="0"></a></td>
-						<td>&nbsp;</td>
-						<td>03/28</td>
-						<td>05/10</td>
-					</tr>
-					<tr class='dataRow'>
-						<td>Assignment 3 <a href=''><img src="../images/icons/arrow_up.png" alt="To Draft" border="0"></a></td>
-						<td>&nbsp;</td>
-						<td>03/28</td>
-						<td>05/10</td>
-					</tr>
+				<table id='postedAssns' class='listTable tablesorter'>
+					<thead>
+						<tr class='headerRow'>
+							<th>Title</th>
+							<th>Sections/Groups</th>
+							<th>Open Date</th>
+							<th>Due Date</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr class='dataRow'>
+							<td>Assignment 1 <a href=''><img src="../images/icons/arrow_up.png" alt="To Draft" border="0"></a></td>
+							<td>&nbsp;</td>
+							<td>03/28</td>
+							<td>05/10</td>
+						</tr>
+						<tr class='dataRow'>
+							<td>Assignment 2 <a href=''><img src="../images/icons/arrow_up.png" alt="To Draft" border="0"></a></td>
+							<td>&nbsp;</td>
+							<td>03/28</td>
+							<td>05/10</td>
+						</tr>
+						<tr class='dataRow'>
+							<td>Assignment 3 <a href=''><img src="../images/icons/arrow_up.png" alt="To Draft" border="0"></a></td>
+							<td>&nbsp;</td>
+							<td>03/28</td>
+							<td>05/10</td>
+						</tr>
+					</tbody>
 				</table>
 			</div>
 		</div>
