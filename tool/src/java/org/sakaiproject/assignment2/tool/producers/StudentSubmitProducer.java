@@ -6,21 +6,16 @@ import java.util.List;
 
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
-import org.sakaiproject.assignment2.tool.params.AssignmentViewParams;
-import org.sakaiproject.assignment2.tool.params.SimpleAssignmentViewParams;
-import org.sakaiproject.assignment2.tool.producers.renderers.StudentViewAssignmentRenderer;
-import org.sakaiproject.assignment2.tool.producers.fragments.FragmentSubmissionPreviewProducer;
-import org.sakaiproject.assignment2.tool.producers.fragments.FragmentAttachmentsProducer;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
-import org.sakaiproject.tool.api.SessionManager;
-import org.sakaiproject.tool.api.ToolSession;
+import org.sakaiproject.assignment2.tool.params.SimpleAssignmentViewParams;
+import org.sakaiproject.assignment2.tool.producers.fragments.FragmentAttachmentsProducer;
+import org.sakaiproject.assignment2.tool.producers.fragments.FragmentSubmissionPreviewProducer;
+import org.sakaiproject.assignment2.tool.producers.renderers.StudentViewAssignmentRenderer;
 
 import uk.org.ponder.beanutil.entity.EntityBeanLocator;
-import uk.org.ponder.messageutil.MessageLocator;
 import uk.org.ponder.rsf.components.UIContainer;
 import uk.org.ponder.rsf.components.UIVerbatim;
-import uk.org.ponder.rsf.flow.ARIResult;
 import uk.org.ponder.rsf.flow.jsfnav.NavigationCase;
 import uk.org.ponder.rsf.flow.jsfnav.NavigationCaseReporter;
 import uk.org.ponder.rsf.view.ComponentChecker;
@@ -28,7 +23,6 @@ import uk.org.ponder.rsf.view.ViewComponentProducer;
 import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
 import uk.org.ponder.rsf.viewstate.ViewParameters;
 import uk.org.ponder.rsf.viewstate.ViewParamsReporter;
-import uk.org.ponder.rsf.flow.ActionResultInterceptor;
 
 public class StudentSubmitProducer implements ViewComponentProducer, NavigationCaseReporter, ViewParamsReporter {
 	public static final String VIEW_ID = "student-submit";
@@ -38,10 +32,8 @@ public class StudentSubmitProducer implements ViewComponentProducer, NavigationC
 	
     String reqStar = "<span class=\"reqStar\">*</span>";
 
-    private MessageLocator messageLocator;
     private ExternalLogic externalLogic;
     private AssignmentSubmissionLogic submissionLogic;
-    private SessionManager sessionManager;
     private EntityBeanLocator assignment2BeanLocator;
     private EntityBeanLocator assignmentSubmissionBeanLocator;
     private StudentViewAssignmentRenderer studentViewAssignmentRenderer;
@@ -64,13 +56,6 @@ public class StudentSubmitProducer implements ViewComponentProducer, NavigationC
     	
     	//Now do submission stuff
     	AssignmentSubmission assignmentSubmission = (AssignmentSubmission) assignmentSubmissionBeanLocator.locateBean(ASOTPKey); 
-    	    	
-        // set the textual representation of the status
-    	if (assignmentSubmission != null && submission.getSubmissionStatusConstant() != null) {
-    		assignmentSubmission.setSubmissionStatus(messageLocator.getMessage(
-    				"assignment2.student-submit.status." + 
-    				submission.getSubmissionStatusConstant()));
-    	}
     	
     	studentViewAssignmentRenderer.makeStudentView(tofill, "portletBody:", assignmentSubmission, assignment, params, ASOTPKey, Boolean.FALSE); 
         
@@ -97,17 +82,9 @@ public class StudentSubmitProducer implements ViewComponentProducer, NavigationC
         return new SimpleAssignmentViewParams();
     }
     
-    public void setMessageLocator(MessageLocator messageLocator) {
-        this.messageLocator = messageLocator;
-    }
-    
     public void setExternalLogic(ExternalLogic externalLogic) {
     	this.externalLogic = externalLogic;
     }
-    
-	public void setSessionManager(SessionManager sessionManager) {
-		this.sessionManager = sessionManager;
-	}
 	
 	public void setAssignment2EntityBeanLocator(EntityBeanLocator entityBeanLocator) {
 		this.assignment2BeanLocator = entityBeanLocator;

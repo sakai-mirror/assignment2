@@ -53,9 +53,6 @@ public class AssignmentSubmission {
 	// the current submission version must be populated manually b/c we want
 	// to retrieve the version rec with the highest id
 	private AssignmentSubmissionVersion currentSubmissionVersion;
-	
-	private String submissionStatus;
-	private Integer submissionStatusConstant;
 
 	public AssignmentSubmission() {
 	}
@@ -262,46 +259,6 @@ public class AssignmentSubmission {
 	 */
 	public void setCurrentSubmissionVersion(AssignmentSubmissionVersion currentSubmissionVersion) {
 		this.currentSubmissionVersion = currentSubmissionVersion;
-	}
-
-	/**
-	 * NOT-PERSISTED - used for UI
-	 * @return String representation of this student's most current submission
-	 * status ie Submitted, In Progress, etc
-	 */
-	public String getSubmissionStatus() {
-		return submissionStatus;
-	}
-
-	/**
-	 * NOT-PERSISTED - used for UI
-	 * String representation of this student's most current submission
-	 * status ie Submitted, In Progress, etc
-	 * @param submissionStatus
-	 */
-	public void setSubmissionStatus(String submissionStatus) {
-		this.submissionStatus = submissionStatus;
-	}
-	
-	/**
-	 * NOT-PERSISTED - used for UI
-	 * @return constant representation of this submission's status
-	 * ie Not Started, In Progess, etc
-	 */
-	public Integer getSubmissionStatusConstant()
-	{
-		return submissionStatusConstant;
-	}
-
-	/**
-	 * NOT-PERSISTED - used for UI
-	 * constant representation of this submission's status
-	 * ie Not Started, In Progess, etc
-	 * @param submissionStatusConstant
-	 */
-	public void setSubmissionStatusConstant(Integer submissionStatusConstant)
-	{
-		this.submissionStatusConstant = submissionStatusConstant;
 	}
 
 	/**

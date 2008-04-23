@@ -39,7 +39,6 @@ import org.sakaiproject.assignment2.exception.StaleObjectModificationException;
 import org.sakaiproject.assignment2.logic.AssignmentBundleLogic;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
-import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
 import org.sakaiproject.assignment2.logic.ExternalAnnouncementLogic;
 import org.sakaiproject.assignment2.logic.ExternalCalendarLogic;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
@@ -88,11 +87,6 @@ public class AssignmentLogicImpl implements AssignmentLogic{
     private AssignmentPermissionLogic permissionLogic;
     public void setPermissionLogic(AssignmentPermissionLogic permissionLogic) {
         this.permissionLogic = permissionLogic;
-    }
-    
-    private AssignmentSubmissionLogic submissionLogic;
-    public void setAssignmentSubmissionLogic(AssignmentSubmissionLogic submissionLogic) {
-        this.submissionLogic = submissionLogic;
     }
     
     private AssignmentDao dao;
@@ -459,11 +453,6 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 						}
 					}
 				}
-			}
-			
-			if (isUserAStudent) {
-				// if this is a student, we need to populate the submissionStatusConstant for each assignment
-				submissionLogic.setSubmissionStatusConstantForAssignments(viewableAssignments, userId);
 			}
 		}
 		

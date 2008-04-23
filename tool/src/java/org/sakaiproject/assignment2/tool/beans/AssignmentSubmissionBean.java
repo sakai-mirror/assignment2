@@ -3,28 +3,22 @@ package org.sakaiproject.assignment2.tool.beans;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
-import org.sakaiproject.assignment2.model.AssignmentAttachment;
-import org.sakaiproject.assignment2.model.SubmissionAttachment;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.model.FeedbackAttachment;
-import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
+import org.sakaiproject.assignment2.model.SubmissionAttachment;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.exception.TypeException;
-import org.sakaiproject.tool.api.SessionManager;
-import org.sakaiproject.tool.api.ToolSession;
 import org.sakaiproject.user.api.UserNotDefinedException;
 
 import uk.org.ponder.beanutil.entity.EntityBeanLocator;
-import uk.org.ponder.messageutil.MessageLocator;
 import uk.org.ponder.messageutil.TargettedMessage;
 import uk.org.ponder.messageutil.TargettedMessageList;
 
@@ -76,11 +70,6 @@ public class AssignmentSubmissionBean {
 	private PreviewAssignmentSubmissionBean previewAssignmentSubmissionBean;
 	public void setPreviewAssignmentSubmissionBean (PreviewAssignmentSubmissionBean previewAssignmentSubmissionBean) {
 		this.previewAssignmentSubmissionBean = previewAssignmentSubmissionBean;
-	}
-	
-	private MessageLocator messageLocator;
-	public void setMessageLocator (MessageLocator messageLocator) {
-		this.messageLocator = messageLocator;
 	}
 	
 	private Boolean honorPledge;
@@ -315,52 +304,5 @@ public class AssignmentSubmissionBean {
 	public String processActionCancel() {
 		return CANCEL;
 	}
-	
-	public void populateNonPersistedFieldsForSubmissions(List<AssignmentSubmission> submissionList) {
-		if (submissionList == null || submissionList.isEmpty())
-			return;
-		
-		// Now, iterate through the viewable assignments and set the not persisted fields 
-		// that aren't related to the gradebook
-		
-		for (AssignmentSubmission submission : submissionList) {
-			if (submission != null) { 
-				// set the status for this submission: "In Progress, Submitted, etc"
-				if (submission.getSubmissionStatusConstant() != null) {
-					submission.setSubmissionStatus(messageLocator.getMessage(
-							"assignment2.assignment_grade-assignment.submission_status." + 
-							submission.getSubmissionStatusConstant()));
-				}
-			}
-		}
-	}
-	
-	public List filterListForPaging(List myList, int begIndex, int numItemsToDisplay) {
-        if (myList == null || myList.isEmpty())
-        	return myList;
-        
-        int endIndex = begIndex + numItemsToDisplay;
-        if (endIndex > myList.size()) {
-        	endIndex = myList.size();
-        }
 
-		return myList.subList(begIndex, endIndex);
-	}
-	
-	/**
-	 * Will apply paging and sorting to the given list and populate any non-persisted
-	 * fields that need to be populated from the UI (ie fields that require access
-	 * to the bundle)
-	 * @param submissionList
-	 * @param currentStart
-	 * @param currentCount
-	 * @param sortBy
-	 * @param sortDir
-	 */
-	public List<AssignmentSubmission> filterPopulateAndSortSubmissionList(List<AssignmentSubmission> submissionList, int currentStart, int currentCount, String sortBy, boolean sortDir) {
-		//submissionList = filterListForPaging(submissionList, currentStart, currentCount);
-        populateNonPersistedFieldsForSubmissions(submissionList);
-        //submissionLogic.sortSubmissions(submissionList, sortBy, sortDir);
-        return submissionList;
-	}
 }

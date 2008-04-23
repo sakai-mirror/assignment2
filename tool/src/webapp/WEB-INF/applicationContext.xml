@@ -22,9 +22,6 @@
    </bean>
    
    <bean id="localAssignmentLogic" class="org.sakaiproject.assignment2.tool.beans.locallogic.LocalAssignmentLogic">
-   	  <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
-   	  <property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
-   	  <property name="messageLocator" ref="messageLocator" />
    </bean>
    
    <bean id="Assignment2DetailEntityProvider" class="org.sakaiproject.assignment2.tool.entity.Assignment2DetailEntityProvider"

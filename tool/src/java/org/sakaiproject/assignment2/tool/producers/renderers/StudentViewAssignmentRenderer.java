@@ -119,13 +119,16 @@ public class StudentViewAssignmentRenderer {
 //		DecoratorList disabledLinkDecoratorList = new DecoratorList(new UIFreeAttributeDecorator(disabledLinkAttr));
         
 		// set the textual representation of the submission status
-    	if (assignmentSubmission != null && assignmentSubmission.getSubmissionStatusConstant() != null) {
-    		assignmentSubmission.setSubmissionStatus(messageLocator.getMessage(
-    				"assignment2.assignment_grade-assignment.submission_status." + 
-    				assignmentSubmission.getSubmissionStatusConstant()));
+		String status = "";
+		int statusConstant = AssignmentConstants.SUBMISSION_NOT_STARTED;
+    	if (assignmentSubmission != null) {
+    		statusConstant = submissionLogic.getSubmissionStatusConstantForCurrentVersion(
+    				assignmentSubmission.getCurrentSubmissionVersion(), assignment.getDueDate());
+    		status = messageLocator.getMessage(
+    				"assignment2.student-submit.status." + 
+    				statusConstant);
     	}
-		
-    	String status = (assignmentSubmission != null) ? assignmentSubmission.getSubmissionStatus() : null;
+
     	UIMessage.make(joint, "heading_status", "assignment2.student-submit.heading_status", 
     			new Object[]{ status });
     	UIVerbatim.make(joint, "page_instructions", messageLocator.getMessage("assignment2.student-submit.instructions"));
@@ -140,7 +143,7 @@ public class StudentViewAssignmentRenderer {
     		UIOutput.make(joint, "accept_until_tr");
     		UIOutput.make(joint, "header.accept_until", df.format(assignment.getAcceptUntilTime()));
     	}
-    	UIOutput.make(joint, "header.status", assignmentSubmission.getSubmissionStatus());
+    	UIOutput.make(joint, "header.status", status);
     	UIOutput.make(joint, "header.grade_scale", "Grade Scale from Gradebook");  //HERE
     	if (assignment != null && assignment.getModifiedTime() != null) {
     		UIOutput.make(joint, "modified_by_header_row");

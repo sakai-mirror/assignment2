@@ -37,8 +37,6 @@ public interface AssignmentLogic {
     public static final String SORT_DIR_DESC = "desc";
     public static final String SORT_BY_INDEX = "sortIndex";
     public static final String SORT_BY_TITLE = "title";
-    public static final String SORT_BY_FOR = "for";
-    public static final String SORT_BY_STATUS = "status";
     public static final String SORT_BY_OPEN = "openTime";
     public static final String SORT_BY_DUE = "dueDate";
 	
@@ -81,8 +79,7 @@ public interface AssignmentLogic {
 	 * will be set to true
 	 * @param assignment
 	 * 			the Assignment to delete
-	 * @throws SecurityException -
-	 * user must have "delete" permission
+	 * @throws SecurityException - user must have "edit" permission
 	 * @throws AnnouncmentPermissionException if the user does not have
 	 * permission to delete announcements - assignment will be 'deleted' regardless
 	 * @throws CalendarPermissionException if the user does not have

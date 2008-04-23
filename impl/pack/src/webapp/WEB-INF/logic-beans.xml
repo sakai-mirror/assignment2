@@ -35,7 +35,6 @@
       <property name="externalGradebookLogic" ref="org.sakaiproject.assignment2.logic.ExternalGradebookLogic" />
       <property name="externalAnnouncementLogic" ref="org.sakaiproject.assignment2.logic.ExternalAnnouncementLogic" />
       <property name="externalCalendarLogic" ref="org.sakaiproject.assignment2.logic.ExternalCalendarLogic" />
-      <property name="assignmentSubmissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
       <property name="assignmentBundleLogic" ref="org.sakaiproject.assignment2.logic.AssignmentBundleLogic" />
    </bean>
    

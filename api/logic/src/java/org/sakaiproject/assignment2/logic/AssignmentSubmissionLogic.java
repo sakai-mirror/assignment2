@@ -24,6 +24,7 @@ package org.sakaiproject.assignment2.logic;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.sakaiproject.assignment2.model.Assignment2;
@@ -144,13 +145,12 @@ public interface AssignmentSubmissionLogic {
 	public List<AssignmentSubmission> getViewableSubmissionsForAssignmentId(Long assignmentId);
 	
 	/**
-	 * sets the submissionStatusConstant (not persisted) for the given assignments for
-	 * the given student
-	 * ie submitted, not started, draft, etc
-	 * @param assignments
+	 * @param assignments - list of assignments that you want this student's status for
 	 * @param studentId
+	 * @return a map of Assignment2 object to its associated submission status for the
+	 * given student (ie submitted, not started, draft, etc)
 	 */
-	public void setSubmissionStatusConstantForAssignments(List<Assignment2> assignments, String studentId);
+	public Map<Assignment2, Integer> getSubmissionStatusConstantForAssignments(List<Assignment2> assignments, String studentId);
 	
 	/**
 	 * 
@@ -163,15 +163,6 @@ public interface AssignmentSubmissionLogic {
 	 */
 	public Integer getSubmissionStatusConstantForCurrentVersion(AssignmentSubmissionVersion currentVersion,
 			Date dueDate);
-	
-	/**
-	 * We cannot rely on db sorting because we must sort by several properties that
-	 * are not persisted in the A2 tables (ie status, grade, name, etc)
-	 * @param submissionList
-	 * @param sortBy
-	 * @param ascending
-	 */
-	public void sortSubmissions(List<AssignmentSubmission> submissionList, String sortBy, boolean ascending);
 	
 	/**
 	 * 

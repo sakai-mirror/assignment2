@@ -23,7 +23,6 @@ package org.sakaiproject.assignment2.logic.impl;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -130,10 +129,6 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 					currentUserId, submission);
 		}
 
-		// populate this submission's status
-		Integer status = getSubmissionStatusConstantForCurrentVersion(submission.getCurrentSubmissionVersion(), assignment.getDueDate());
-		submission.setSubmissionStatusConstant(status);
-
 		return submission;
 
 	}
@@ -218,11 +213,6 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			gradebookLogic.populateAllGradeInfoForSubmission(contextId, 
 					currentUserId, submission);
 		}
-
-		// populate this submission's status
-		Integer status = getSubmissionStatusConstantForCurrentVersion(
-				submission.getCurrentSubmissionVersion(), assignment.getDueDate());
-		submission.setSubmissionStatusConstant(status);
 
 		return submission;
 	}
@@ -514,11 +504,6 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 						filterOutRestrictedInfo(thisSubmission, externalLogic.getCurrentUserId(), false);
 					}
 
-					// populate this submission's status		
-					Integer status = getSubmissionStatusConstantForCurrentVersion(
-							thisSubmission.getCurrentSubmissionVersion(), assignment.getDueDate());
-					thisSubmission.setSubmissionStatusConstant(status);
-
 					viewableSubmissions.add(thisSubmission);
 				}
 			}
@@ -532,14 +517,14 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		return viewableSubmissions;
 	}
 	
-	public void setSubmissionStatusConstantForAssignments(List<Assignment2> assignments, String studentId) {
+	public Map<Assignment2, Integer> getSubmissionStatusConstantForAssignments(List<Assignment2> assignments, String studentId) {
 		if (studentId == null) {
 			throw new IllegalArgumentException("Null studentId passed to setSubmissionStatusForAssignments");
 		}
 		
+		Map<Assignment2, Integer> assignToStatusMap = new HashMap<Assignment2, Integer>();
+		
 		if (assignments != null) {
-			String contextId = externalLogic.getCurrentContextId();
-			
 			// retrieve the associated submission recs with current version data populated
 			List<AssignmentSubmission> submissions = dao.getCurrentAssignmentSubmissionsForStudent(assignments, studentId);
 			Map<Long, AssignmentSubmission> assignmentIdToSubmissionMap = new HashMap<Long, AssignmentSubmission>();
@@ -561,10 +546,12 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 							currSubmission.getCurrentSubmissionVersion() : null;
 					
 					Integer status = getSubmissionStatusConstantForCurrentVersion(currVersion, assign.getDueDate());
-					assign.setSubmissionStatusConstant(status);
+					assignToStatusMap.put(assign, status);
 				}
 			}
 		}
+		
+		return assignToStatusMap;
 	}
 	
 	public Integer getSubmissionStatusConstantForCurrentVersion(AssignmentSubmissionVersion currentVersion,
@@ -586,28 +573,6 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		}
 		
 		return status;
-	}
-	
-	public void sortSubmissions(List<AssignmentSubmission> submissionList, String sortBy, boolean ascending) {
-		if (submissionList != null && !submissionList.isEmpty()) {
-			Comparator<AssignmentSubmission> comp;
-			if(AssignmentSubmissionLogic.SORT_BY_RELEASED.equals(sortBy)) {
-				comp = new ComparatorsUtils.SubmissionFeedbackReleasedComparator();
-			} else if(AssignmentSubmissionLogic.SORT_BY_SUBMIT_DATE.equals(sortBy)) {
-				comp = new ComparatorsUtils.SubmissionDateComparator();
-			} else if(AssignmentSubmissionLogic.SORT_BY_GRADE.equals(sortBy)) {
-				comp = new ComparatorsUtils.SubmissionGradeComparator();
-			}else if(AssignmentSubmissionLogic.SORT_BY_STATUS.equals(sortBy)){
-				comp = new ComparatorsUtils.SubmissionStatusComparator();
-			} else {
-				comp = new ComparatorsUtils.SubmissionNameComparator();
-			}
-
-			Collections.sort(submissionList, comp);
-			if(!ascending) {
-				Collections.reverse(submissionList);
-			}
-		}
 	}
 	
 	private void populateVersionForAttachmentSet(Set<? extends SubmissionAttachmentBase> attachSet,
