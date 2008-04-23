@@ -1,13 +1,35 @@
+/**********************************************************************************
+ * $URL$
+ * $Id$
+ ***********************************************************************************
+ *
+ * Copyright (c) 2007, 2008 The Sakai Foundation.
+ *
+ * Licensed under the Educational Community License, Version 1.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.opensource.org/licenses/ecl1.php
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ **********************************************************************************/
+
 package org.sakaiproject.assignment2.tool.producers;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
-import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
+import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.taggable.api.AssignmentActivityProducer;
 import org.sakaiproject.assignment2.tool.beans.Assignment2Bean;
@@ -16,8 +38,6 @@ import org.sakaiproject.assignment2.tool.beans.locallogic.LocalAssignmentLogic;
 import org.sakaiproject.assignment2.tool.params.AssignmentListSortViewParams;
 import org.sakaiproject.assignment2.tool.params.AssignmentViewParams;
 import org.sakaiproject.assignment2.tool.params.ViewSubmissionsViewParams;
-import org.sakaiproject.assignment2.tool.producers.AssignmentProducer;
-import org.sakaiproject.assignment2.tool.producers.ViewSubmissionsProducer;
 import org.sakaiproject.assignment2.tool.producers.renderers.PagerRenderer;
 import org.sakaiproject.assignment2.tool.producers.renderers.SortHeaderRenderer;
 import org.sakaiproject.component.cover.ComponentManager;
@@ -26,14 +46,24 @@ import org.sakaiproject.taggable.api.TaggingHelperInfo;
 import org.sakaiproject.taggable.api.TaggingManager;
 import org.sakaiproject.taggable.api.TaggingProvider;
 
+import uk.org.ponder.htmlutil.HTMLUtil;
 import uk.org.ponder.messageutil.MessageLocator;
-import uk.org.ponder.rsf.components.*;
+import uk.org.ponder.rsf.components.UIBoundBoolean;
+import uk.org.ponder.rsf.components.UIBranchContainer;
+import uk.org.ponder.rsf.components.UICommand;
+import uk.org.ponder.rsf.components.UIContainer;
+import uk.org.ponder.rsf.components.UIForm;
+import uk.org.ponder.rsf.components.UIInternalLink;
+import uk.org.ponder.rsf.components.UILink;
+import uk.org.ponder.rsf.components.UIMessage;
+import uk.org.ponder.rsf.components.UIOutput;
+import uk.org.ponder.rsf.components.UIVerbatim;
 import uk.org.ponder.rsf.view.ComponentChecker;
+import uk.org.ponder.rsf.view.DefaultView;
 import uk.org.ponder.rsf.view.ViewComponentProducer;
 import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
 import uk.org.ponder.rsf.viewstate.ViewParameters;
 import uk.org.ponder.rsf.viewstate.ViewParamsReporter;
-import uk.org.ponder.rsf.view.DefaultView;
 
 public class AssignmentListSortViewProducer implements ViewComponentProducer, ViewParamsReporter, DefaultView {
 
@@ -81,7 +111,8 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
     	current_sort_by = params.sort_by;
     	current_sort_dir = params.sort_dir;
     	opposite_sort_dir = (AssignmentLogic.SORT_DIR_ASC.equals(current_sort_dir) ? AssignmentLogic.SORT_DIR_DESC : AssignmentLogic.SORT_DIR_ASC);
-
+    	UIVerbatim.make(tofill, "defaultSortBy", HTMLUtil.emitJavascriptVar("defaultSortBy", DEFAULT_SORT_BY));
+    	
     	//check if we need to duplicate an assignment, params.assignmentIdToDuplicate is not null
     	if (params.assignmentIdToDuplicate != null){
     		assignment2Bean.createDuplicate(params.assignmentIdToDuplicate);
@@ -118,9 +149,9 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
         sortHeaderRenderer.makeSortingLink(tofill, "tableheader.assignment", viewparams, 
         		AssignmentLogic.SORT_BY_TITLE, "assignment2.assignment_list-sortview.tableheader.assignment");
         sortHeaderRenderer.makeSortingLink(tofill, "tableheader.for", viewparams, 
-        		AssignmentLogic.SORT_BY_FOR, "assignment2.assignment_list-sortview.tableheader.for");
+        		LocalAssignmentLogic.SORT_BY_FOR, "assignment2.assignment_list-sortview.tableheader.for");
         sortHeaderRenderer.makeSortingLink(tofill, "tableheader.status", viewparams, 
-        		AssignmentLogic.SORT_BY_STATUS, "assignment2.assignment_list-sortview.tableheader.status");
+        		LocalAssignmentLogic.SORT_BY_STATUS, "assignment2.assignment_list-sortview.tableheader.status");
         sortHeaderRenderer.makeSortingLink(tofill, "tableheader.open", viewparams, 
         		AssignmentLogic.SORT_BY_OPEN, "assignment2.assignment_list-sortview.tableheader.open");
         sortHeaderRenderer.makeSortingLink(tofill, "tableheader.due", viewparams, 
@@ -130,14 +161,14 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
 
               
         UIForm form = UIForm.make(tofill, "form");
-                
-        entries = (List<Assignment2>) localAssignmentLogic.filterPopulateAndSortAssignmentList(entries, params.current_start, params.current_count, 
-        		current_sort_by, current_sort_dir.equals(AssignmentLogic.SORT_DIR_ASC));
         
         if (entries.size() <= 0) {
             UIMessage.make(tofill, "assignment_empty", "assignment2.assignment_list-sortview.assignment_empty");
             return;
         }
+        
+        // retrieve groups here for display of group restrictions
+        Map<String, String> groupIdToNameMap = externalLogic.getGroupIdToNameMapForSite(externalLogic.getCurrentContextId());
         
         //Fill out Table
         for (Assignment2 assignment : entries){
@@ -209,12 +240,22 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
         			UIMessage.make("assignment2.assignment_list-sortview.assignment_row_grade"), 
         			new ViewSubmissionsViewParams(ViewSubmissionsProducer.VIEW_ID, assignment.getId()));
         	
-        	UIOutput.make(row, "assignment_row_for", assignment.getRestrictedToText());
+        	// group restrictions
+        	String restrictedToText = messageLocator.getMessage("assignment2.assignment_restrict_to_site");
+        	if (assignment.getAssignmentGroupSet() != null && !assignment.getAssignmentGroupSet().isEmpty()) {
+        		// we need to display a comma-delimited list of groups
+        		restrictedToText = localAssignmentLogic.getListOfGroupRestrictionsAsString(
+        				assignment.getAssignmentGroupSet(), groupIdToNameMap);
+        	}
+        	UIOutput.make(row, "assignment_row_for", restrictedToText);
+        	
+        	String status = messageLocator.getMessage("assignment2.status." + assignmentLogic.getStatusForAssignment(assignment));
+        	
         	if (assignment.isDraft()){
         		UIOutput.make(row, "assignment_row_draft_td");
-        		UIOutput.make(row, "assignment_row_draft", assignment.getAssignmentStatus());
+        		UIOutput.make(row, "assignment_row_draft", status);
         	} else {
-        	   	UIOutput.make(row, "assignment_row_open_text", assignment.getAssignmentStatus());
+        	   	UIOutput.make(row, "assignment_row_open_text", status);
         	}
         	UIOutput.make(row, "assignment_row_open", df.format(assignment.getOpenTime()));
 
@@ -224,6 +265,12 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
         		UIOutput.make(row, "assignment_row_due", messageLocator.getMessage("assignment2.assignment_list-sortview.no_due_date"));	
         	}
 
+        	//For JS Sorting
+        	UIOutput.make(row, "status", status);
+        	UIOutput.make(row, "open_timestamp", assignment.getOpenTime() != null ? String.valueOf(assignment.getOpenTime().getTime()) : "");
+        	UIOutput.make(row, "due_timestamp", assignment.getDueDate() != null ? String.valueOf(assignment.getDueDate().getTime()) : "");
+        	UIOutput.make(row, "sortIndex", String.valueOf(assignment.getSortIndex()));
+        	
         	//UIInternalLink.make(row, "assignment_row_in_new", "2/4", new SimpleViewParameters(GradeAssignmentProducer.VIEW_ID));
         }
         

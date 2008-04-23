@@ -78,7 +78,6 @@
       <property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
       <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
       <property name="locale" ref="requestLocale" />
-      <property name="sessionManager" ref="org.sakaiproject.tool.api.SessionManager" />
       <property name="attachmentListRenderer" ref="AttachmentListRenderer" />
       <property name="submissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
       <property name="gradebookDetailsRenderer" ref="GradebookDetailsRenderer" />
@@ -96,7 +95,6 @@
       <property name="locale" ref="requestLocale" />
       <property name="sortHeaderRenderer" ref="SortHeaderRenderer" />
       <property name="attachmentListRenderer" ref="AttachmentListRenderer" />
-      <property name="assignmentSubmissionBean" ref="AssignmentSubmissionBean" />
       <property name="permissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentPermissionLogic" />
    </bean>
    
@@ -127,17 +125,18 @@
    
    <bean class="org.sakaiproject.assignment2.tool.producers.StudentAssignmentListProducer">
       <property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
+      <property name="assignmentSubmissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
       <property name="pagerRenderer" ref="PagerRenderer" />
       <property name="locale" ref="requestLocale" />
       <property name="assignment2Bean" ref="Assignment2Bean" />
       <property name="sortHeaderRenderer" ref="SortHeaderRenderer" />
       <property name="localAssignmentLogic" ref="localAssignmentLogic" />
+      <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
+      <property name="messageLocator" ref="messageLocator" />
    </bean>
    
    <bean class="org.sakaiproject.assignment2.tool.producers.StudentSubmitProducer">
-      <property name="messageLocator" ref="messageLocator" />
       <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
-      <property name="sessionManager" ref="org.sakaiproject.tool.api.SessionManager" />
       <property name="assignment2EntityBeanLocator" ref="Assignment2"/>
       <property name="assignmentSubmissionBeanLocator" ref="AssignmentSubmission" />
       <property name="submissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
@@ -172,7 +171,6 @@
    <bean class="org.sakaiproject.assignment2.tool.producers.fragments.FragmentAssignmentPreviewProducer">
       <property name="previewAssignmentBean" ref="PreviewAssignmentBean" />
       <property name="studentViewAssignmentRenderer" ref="StudentViewAssignmentRenderer" />
-      <property name="messageLocator" ref="messageLocator" />
    </bean>
    
    <bean class="org.sakaiproject.assignment2.tool.producers.fragments.FragmentSubmissionGradePreviewProducer">
@@ -180,6 +178,8 @@
       <property name="previewAssignmentSubmissionBean" ref="PreviewAssignmentSubmissionBean" />
       <property name="attachmentListRenderer" ref="AttachmentListRenderer" />
       <property name="sessionManager" ref="org.sakaiproject.tool.api.SessionManager" />
+      <property name="messageLocator" ref="messageLocator" />
+      <property name="AssignmentSubmissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
    </bean>
    
    <bean class="org.sakaiproject.assignment2.tool.producers.fragments.FragmentAssignment2SelectProducer">
@@ -244,7 +244,6 @@
    	  <property name="assignmentSubmissionEntityBeanLocator" ref="AssignmentSubmission" />
    	  <property name="asvEntityBeanLocator" ref="AssignmentSubmissionVersion" />
    	  <property name="previewAssignmentSubmissionBean" ref="PreviewAssignmentSubmissionBean" />
-   	  <property name="messageLocator" ref="messageLocator" />
       <property name="notificationBean" ref="notificationBean" />
       <property name="attachmentBean" ref="AttachmentBean" />
    </bean>

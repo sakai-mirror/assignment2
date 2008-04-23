@@ -117,7 +117,7 @@
 	</div> <!--  /#assignment_details -->
 
 	<div rsf:id="pagerDiv:" class="listNav pagerDiv"></div>
-	<table class="listHier lines nolines" cellpadding="0" cellspacing="0">
+	<table class="listHier lines nolines" cellpadding="0" cellspacing="0" id="sortable">
 		<tr> 
 			<th rsf:id="tableheader.student:"></th>
 			<th rsf:id="tableheader.submitted:"></th>
@@ -127,15 +127,20 @@
 		</tr>
 
 		<tr rsf:id="row:"> 
-			<td><a rsf:id="row_grade_link">Student Name</a></td>
-			<td rsf:id="row_submitted">&nbsp;</td>
-			<td rsf:id="row_status">Ungraded</td>
-			<td rsf:id="row_grade">&nbsp;</td>
+			<td><a rsf:id="row_grade_link" class="name">Student Name</a></td>
+			<td rsf:id="row_submitted" class="submitDate">&nbsp;</td>
+			<td rsf:id="row_status" class="status">Ungraded</td>
+			<td rsf:id="row_grade" class="grade">&nbsp;</td>
 			<td><img rsf:id="row_released" src="/sakai-assignment2-tool/content/images/check.png" width="16" height="16" border="0" /></td>
+			<td class="skip">
+				<span class="released"></span>
+			</td>
 		</tr>
 
 	</table>
-
+	<script type="text/javascript" rsf:id="defaultSortBy">
+		defaultSortBy="name"; //done via producer
+	</script>
 <script type="text/javascript">
 //<![CDATA[
 function slide_details(img){

@@ -82,6 +82,7 @@ public class AssignmentLogicTest extends Assignment2TestBase {
 		newAssign.setContextId(AssignmentTestDataLoad.CONTEXT_ID);
 		newAssign.setDraft(false);
 		newAssign.setHasAnnouncement(false);
+		newAssign.setAddedToSchedule(false);
 		newAssign.setHonorPledge(false);
 		newAssign.setInstructions("Complete this by friday");
 		newAssign.setNotificationType(AssignmentConstants.NOTIFY_NONE);
@@ -496,23 +497,6 @@ public class AssignmentLogicTest extends Assignment2TestBase {
 		// double check that draft overrides everything
 		assignment.setDraft(true);
 		assertEquals(assignmentLogic.getStatusForAssignment(assignment), AssignmentConstants.STATUS_DRAFT);
-	}
-
-	public void testSaveAssignmentAnnouncement() throws Exception {
-		// try passing a null updatedAssignment
-		try {
-			assignmentLogic.saveAssignmentAnnouncement(new Assignment2(), null);
-			fail("did not catch null updatedAssignment passed to saveAssignmentAnnouncement");
-		} catch(IllegalArgumentException iae) {}
-
-		// try passing an updatedAssignment without an id
-		try {
-			assignmentLogic.saveAssignmentAnnouncement(new Assignment2(), new Assignment2());
-			fail("did not catch updatedAssignment without an id passed to saveAssignmentAnnouncement");
-		} catch(IllegalArgumentException iae) {}
-
-
-		//TODO - not sure how to access announcements from the test!!!!
 	}
 
 }

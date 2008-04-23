@@ -22,21 +22,15 @@
 package org.sakaiproject.assignment2.tool.beans.locallogic;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.sakaiproject.assignment2.exception.AnnouncementPermissionException;
-import org.sakaiproject.assignment2.logic.ExternalLogic;
-import org.sakaiproject.assignment2.logic.AssignmentLogic;
-import org.sakaiproject.assignment2.logic.utils.ComparatorsUtils;
-import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentGroup;
 
-import uk.org.ponder.messageutil.MessageLocator;
 
 /**
  * Contains logic methods that are used by the ui.
@@ -45,20 +39,9 @@ public class LocalAssignmentLogic {
 	
 	private static final Log LOG = LogFactory.getLog(LocalAssignmentLogic.class);
 	
-	private ExternalLogic externalLogic;
-	public void setExternalLogic(ExternalLogic externalLogic) {
-		this.externalLogic = externalLogic;
-	}
-	
-	private AssignmentLogic assignmentLogic;
-	public void setAssignmentLogic(AssignmentLogic assignmentLogic) {
-		this.assignmentLogic = assignmentLogic;
-	}
-	
-	private MessageLocator messageLocator;
-	public void setMessageLocator (MessageLocator messageLocator) {
-		this.messageLocator = messageLocator;
-	}
+	// sorting that uses non-persisted fields populated in the UI
+    public static final String SORT_BY_FOR = "for";
+    public static final String SORT_BY_STATUS = "status";
 	
 	/**
 	 * 
@@ -66,7 +49,7 @@ public class LocalAssignmentLogic {
 	 * @return a comma-delimited String representation of the given list of
 	 * groups/section. 
 	 */
-	public String getListOfGroupRestrictionsAsString(List<AssignmentGroup> restrictedGroups, Map<String, String> siteGroupIdNameMap) {
+	public String getListOfGroupRestrictionsAsString(Collection<AssignmentGroup> restrictedGroups, Map<String, String> siteGroupIdNameMap) {
 		StringBuilder sb = new StringBuilder();
 		
 		if (restrictedGroups != null) {
@@ -98,96 +81,5 @@ public class LocalAssignmentLogic {
 		
 		return sb.toString();
 	}
-	
-	public void populateNonPersistedFieldsForAssignments(List<Assignment2> assignmentList) {
-		if (assignmentList == null || assignmentList.isEmpty())
-			return;
-		
-		// Now, iterate through the viewable assignments and set the not persisted fields 
-		// that aren't related to the gradebook
-		
-		// create a map of group id to name for all of the groups in this site
-		Map<String, String> groupIdToNameMap = externalLogic.getGroupIdToNameMapForSite(externalLogic.getCurrentContextId());
-		
-		for (Assignment2 assign : assignmentList) {
-			if (assign != null) {
 
-				// first, populate the text for the "For" column based upon group restrictions
-				if (assign.getAssignmentGroupSet() != null && !assign.getAssignmentGroupSet().isEmpty()) {
-					String groupListAsString = getListOfGroupRestrictionsAsString(
-							new ArrayList<AssignmentGroup>(assign.getAssignmentGroupSet()), groupIdToNameMap);
-					assign.setRestrictedToText(groupListAsString);
-				} 
-				else {
-					assign.setRestrictedToText(messageLocator.getMessage("assignment2.assignment_restrict_to_site"));
-				}
-
-				// set the status for this assignment: "Open, Due, etc"
-				int status = assignmentLogic.getStatusForAssignment(assign);
-				assign.setAssignmentStatus(messageLocator.getMessage("assignment2.status." + status));
-				
-				if (assign.getSubmissionStatusConstant() != null) {
-					assign.setSubmissionStatus(messageLocator.getMessage("assignment2.submission_status." + assign.getSubmissionStatusConstant().intValue()));
-				}
-			}
-		}
-	}
-	
-	public List filterListForPaging(List myList, int begIndex, int numItemsToDisplay) {
-        if (myList == null || myList.isEmpty())
-        	return myList;
-        
-        int endIndex = begIndex + numItemsToDisplay;
-        if (endIndex > myList.size()) {
-        	endIndex = myList.size();
-        }
-
-		return myList.subList(begIndex, endIndex);
-	}
-	
-	/**
-	 * Will apply paging and sorting to the given list and populate any non-persisted
-	 * fields that need to be populated from the UI (ie fields that require access
-	 * to the bundle)
-	 * @param assignmentList
-	 * @param currentStart
-	 * @param currentCount
-	 * @param sortBy
-	 * @param sortDir
-	 */
-	public List<Assignment2> filterPopulateAndSortAssignmentList(List<Assignment2> assignmentList, int currentStart, int currentCount, String sortBy, boolean sortDir) {
-		assignmentList = filterListForPaging(assignmentList, currentStart, currentCount);
-        populateNonPersistedFieldsForAssignments(assignmentList);
-        sortAssignments(assignmentList, sortBy, sortDir);
-        return assignmentList;
-	}
-	
-	/**
-	 * We cannot rely on db sorting because we must sort by several properties that
-	 * are not persisted in the A2 tables (ie status, due date, for, etc)
-	 * @param assignmentList
-	 * @param sortBy
-	 * @param ascending
-	 */
-	public void sortAssignments(List<Assignment2> assignmentList, String sortBy, boolean ascending) {
-		Comparator<Assignment2> comp;
-		if(AssignmentLogic.SORT_BY_TITLE.equals(sortBy)) {
-			comp = new ComparatorsUtils.Assignment2TitleComparator();
-		} else if(AssignmentLogic.SORT_BY_DUE.equals(sortBy)) {
-			comp = new ComparatorsUtils.Assignment2DueDateComparator();
-		} else if(AssignmentLogic.SORT_BY_FOR.equals(sortBy)) {
-			comp = new ComparatorsUtils.Assignment2ForComparator();
-		} else if(AssignmentLogic.SORT_BY_OPEN.equals(sortBy)){
-			comp = new ComparatorsUtils.Assignment2OpenDateComparator();
-		} else if(AssignmentLogic.SORT_BY_STATUS.equals(sortBy)){
-			comp = new ComparatorsUtils.Assignment2StatusComparator();
-		} else {
-			comp = new ComparatorsUtils.Assignment2SortIndexComparator();
-		}
-
-		Collections.sort(assignmentList, comp);
-		if(!ascending) {
-			Collections.reverse(assignmentList);
-		}
-	}
 }

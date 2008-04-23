@@ -69,8 +69,17 @@
         	<column name="HAS_ANNOUNCEMENT" not-null="true" />
         </property>
         <!-- used if assignment open date is added as an announcement  -->
-        <property name="announcementId" type="java.lang.String" >
-            <column name="ANNOUNCEMENT_ID" length="99" />
+        <property name="announcementId" type="java.lang.String">
+        	<column name="ANNOUNCEMENT_ID" length="99" />
+        </property>
+        <!-- used if assignment due date has been added to the Schedule (aka Calendar) tool  -->
+        <property name="addedToSchedule" type="java.lang.Boolean">
+        	<column name="ADDED_TO_SCHEDULE" not-null="true" />
+        </property>
+        <!-- used if assignment due date has been added to the Schedule (aka Calendar) tool.this is
+        the id of the event in the Schedule tool  -->
+        <property name="eventId" type="java.lang.String">
+        	<column name="EVENT_ID" length="99" />
         </property>
         <!-- restrict num submissions allowed  -->
         <property name="numSubmissionsAllowed" type="java.lang.Integer" >

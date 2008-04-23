@@ -1,13 +1,32 @@
+/**********************************************************************************
+ * $URL$
+ * $Id$
+ ***********************************************************************************
+ *
+ * Copyright (c) 2007, 2008 The Sakai Foundation.
+ *
+ * Licensed under the Educational Community License, Version 1.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.opensource.org/licenses/ecl1.php
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ **********************************************************************************/
+
 package org.sakaiproject.assignment2.tool.producers;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Set;
 
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
@@ -30,8 +49,6 @@ import org.sakaiproject.assignment2.tool.producers.fragments.FragmentSubmissionG
 import org.sakaiproject.assignment2.tool.producers.fragments.FragmentViewSubmissionProducer;
 import org.sakaiproject.assignment2.tool.producers.renderers.AttachmentListRenderer;
 import org.sakaiproject.assignment2.tool.producers.renderers.GradebookDetailsRenderer;
-import org.sakaiproject.tool.api.SessionManager;
-import org.sakaiproject.tool.api.ToolSession;
 
 import uk.org.ponder.beanutil.entity.EntityBeanLocator;
 import uk.org.ponder.messageutil.MessageLocator;
@@ -47,8 +64,6 @@ import uk.org.ponder.rsf.components.UIMessage;
 import uk.org.ponder.rsf.components.UIOutput;
 import uk.org.ponder.rsf.components.UISelect;
 import uk.org.ponder.rsf.components.UIVerbatim;
-import uk.org.ponder.rsf.components.decorators.DecoratorList;
-import uk.org.ponder.rsf.components.decorators.UIFreeAttributeDecorator;
 import uk.org.ponder.rsf.evolvers.FormatAwareDateInputEvolver;
 import uk.org.ponder.rsf.evolvers.TextInputEvolver;
 import uk.org.ponder.rsf.flow.ARIResult;
@@ -73,7 +88,6 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
     private AssignmentLogic assignmentLogic;
     private ExternalLogic externalLogic;
     private Locale locale;
-    private SessionManager sessionManager;
     private AttachmentListRenderer attachmentListRenderer;
     private AssignmentSubmissionLogic submissionLogic;
     private GradebookDetailsRenderer gradebookDetailsRenderer;
@@ -177,7 +191,10 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
         	UIOutput.make(form, "status", "");
         }
         
-        int statusConstant = as != null && as.getSubmissionStatusConstant() != null ? as.getSubmissionStatusConstant() : AssignmentConstants.SUBMISSION_NOT_STARTED;
+        int statusConstant = AssignmentConstants.SUBMISSION_NOT_STARTED;
+        if (assignmentSubmissionVersion != null) {
+        	statusConstant = submissionLogic.getSubmissionStatusConstantForCurrentVersion(assignmentSubmissionVersion, assignment.getDueDate());
+        }
         
         if (statusConstant == AssignmentConstants.SUBMISSION_IN_PROGRESS || statusConstant == AssignmentConstants.SUBMISSION_NOT_STARTED) {
         	UIMessage.make(form, "status", "assignment2.assignment_grade.submission_status." + statusConstant);
@@ -402,10 +419,6 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
     public void setLocale(Locale locale) {
     	this.locale = locale;
     }
-
-	public void setSessionManager(SessionManager sessionManager) {
-		this.sessionManager = sessionManager;
-	}
 	
 	public void setAttachmentListRenderer(AttachmentListRenderer attachmentListRenderer){
 		this.attachmentListRenderer = attachmentListRenderer;

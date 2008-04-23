@@ -1,6 +1,6 @@
 /**********************************************************************************
- * $URL: https://source.sakaiproject.org/contrib/assignment2/trunk/api/logic/src/java/org/sakaiproject/assignment2/dao/AssignmentDao.java $
- * $Id: AssignmentDao.java 12544 2006-05-03 15:06:26Z wagnermr@iupui.edu $
+ * $URL$
+ * $Id$
  ***********************************************************************************
  *
  * Copyright (c) 2007 The Sakai Foundation.
@@ -113,7 +113,7 @@ public class ExternalLogicImpl implements ExternalLogic {
     }
     
     public String getToolTitle() {
-    	return toolManager.getTool(ExternalLogic.TOOL_ID_ASSIGNMENT2_TOOL).getTitle();
+    	return toolManager.getTool(ExternalLogic.TOOL_ID_ASSIGNMENT2).getTitle();
     }
 
     public String getCurrentUserId() {

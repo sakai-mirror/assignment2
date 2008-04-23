@@ -25,12 +25,12 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.sakaiproject.assignment2.exception.AssignmentNotFoundException;
 import org.sakaiproject.assignment2.exception.SubmissionNotFoundException;
 import org.sakaiproject.assignment2.exception.VersionNotFoundException;
-import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
@@ -576,7 +576,7 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
     public void testSetSubmissionStatusConstantForAssignments() {
     	// try null studentId
     	try {
-    		submissionLogic.setSubmissionStatusConstantForAssignments(new ArrayList<Assignment2>(), null);
+    		submissionLogic.getSubmissionStatusConstantForAssignments(new ArrayList<Assignment2>(), null);
     		fail("Did not catch null studentId passed to setSubmissionStatusForAssignments");
     	} catch(IllegalArgumentException iae) {}
     	
@@ -584,7 +584,7 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
     	
     	// try a null assignment list
     	// should do nothing
-    	submissionLogic.setSubmissionStatusConstantForAssignments(null, AssignmentTestDataLoad.STUDENT1_UID);
+    	submissionLogic.getSubmissionStatusConstantForAssignments(null, AssignmentTestDataLoad.STUDENT1_UID);
     	
     	// let's create a list of assignments
     	List<Assignment2> assignList = new ArrayList<Assignment2>();
@@ -593,18 +593,18 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
     	assignList.add(testData.a3);
     	assignList.add(testData.a4);
     	
-    	submissionLogic.setSubmissionStatusConstantForAssignments(assignList, AssignmentTestDataLoad.STUDENT1_UID);
-    	Assignment2 assign1 = (Assignment2) assignList.get(0);
-    	assertTrue(assign1.getSubmissionStatusConstant().equals(AssignmentConstants.SUBMISSION_SUBMITTED));
+    	Map<Assignment2, Integer> assignToStatusMap = submissionLogic.getSubmissionStatusConstantForAssignments(assignList, AssignmentTestDataLoad.STUDENT1_UID);
+    	Integer status = assignToStatusMap.get(testData.a1);
+    	assertTrue(status.equals(AssignmentConstants.SUBMISSION_SUBMITTED));
     	
-    	Assignment2 assign2 = (Assignment2) assignList.get(1);
-    	assertTrue(assign2.getSubmissionStatusConstant().equals(AssignmentConstants.SUBMISSION_NOT_STARTED));
+    	status = assignToStatusMap.get(testData.a2);
+    	assertTrue(status.equals(AssignmentConstants.SUBMISSION_NOT_STARTED));
     	
-    	Assignment2 assign3 = (Assignment2) assignList.get(2);
-    	assertTrue(assign3.getSubmissionStatusConstant().equals(AssignmentConstants.SUBMISSION_IN_PROGRESS));
+    	status = assignToStatusMap.get(testData.a3);
+    	assertTrue(status.equals(AssignmentConstants.SUBMISSION_IN_PROGRESS));
     	
-    	Assignment2 assign4 = (Assignment2) assignList.get(3);
-    	assertTrue(assign4.getSubmissionStatusConstant().equals(AssignmentConstants.SUBMISSION_NOT_STARTED));
+    	status = assignToStatusMap.get(testData.a4);
+    	assertTrue(status.equals(AssignmentConstants.SUBMISSION_NOT_STARTED));
     }
     
     public void testGetSubmissionStatusConstantForCurrentVersion() {
@@ -638,45 +638,7 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
     	status = submissionLogic.getSubmissionStatusConstantForCurrentVersion(testData.st1a1CurrVersion, dueDate);
     	assertTrue(status.equals(AssignmentConstants.SUBMISSION_SUBMITTED));
     }
-    
-    public void testSortSubmissions() {
-    	// let's set some of the non-persisted fields on the submissions first
-    	// these are not necessarily going to jive with the true data - they're just for testing
-    	testData.st1a1Submission.setCurrentSubmissionVersion(testData.st1a1CurrVersion);
-    	testData.st2a1Submission.setCurrentSubmissionVersion(testData.st2a1CurrVersion);
-    	testData.st3a3Submission.setCurrentSubmissionVersion(testData.st3a3CurrVersion);
-    	testData.st1a1Submission.setSubmissionStatus("Submitted");
-    	testData.st1a1Submission.setGradebookGrade("A");
-    	testData.st2a1Submission.setSubmissionStatus("In Progress");
-    	testData.st3a3Submission.setSubmissionStatus("Not Started");
-    	
-    	List<AssignmentSubmission> subList = new ArrayList<AssignmentSubmission>();
-    	subList.add(testData.st1a1Submission);
-    	subList.add(testData.st2a1Submission);
-    	subList.add(testData.st3a3Submission);
-    	
-    	// if list is null, should do nothing
-    	submissionLogic.sortSubmissions(null, AssignmentSubmissionLogic.SORT_BY_GRADE, true);
-    	// TODO - sorting uses UserDirectoryService, so will need to be re-thought
-    	// for test
-    	/*
-    	// let's try the different sorting mech
-    	submissionLogic.sortSubmissions(subList, AssignmentSubmissionLogic.SORT_BY_GRADE, true);
-    	AssignmentSubmission sub1 = (AssignmentSubmission) subList.get(0);
-    	AssignmentSubmission sub2 = (AssignmentSubmission) subList.get(1);
-    	AssignmentSubmission sub3 = (AssignmentSubmission) subList.get(2);
-    	assertTrue(sub1.getId().equals(testData.st1a1Submission.getId()));
-    	assertTrue(sub2.getId().equals(testData.st2a1Submission.getId()));
-    	assertTrue(sub3.getId().equals(testData.st3a3Submission.getId()));
-
-    	submissionLogic.sortSubmissions(subList, AssignmentSubmissionLogic.SORT_BY_GRADE, false);
-    	sub1 = (AssignmentSubmission) subList.get(0);
-    	sub2 = (AssignmentSubmission) subList.get(1);
-    	sub3 = (AssignmentSubmission) subList.get(2);
-    	assertTrue(sub1.getId().equals(testData.st1a1Submission.getId()));
-    	assertTrue(sub2.getId().equals(testData.st2a1Submission.getId()));
-    	assertTrue(sub3.getId().equals(testData.st3a3Submission.getId()));*/
-    }
+   
     
 	public void testSubmissionIsOpenForStudentForAssignment() {
 		// try a null student

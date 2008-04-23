@@ -19,31 +19,24 @@
  *
  **********************************************************************************/
 
-package org.sakaiproject.assignment2.model;
+package org.sakaiproject.assignment2.exception;
 
 /**
-* The SubmissionAttachment object.  SubmissionAttachments 
-* are attachments associated with the submitter's submission.
-* 
-* @author <a href="mailto:wagnermr@iupui.edu">michelle wagner</a>
-*/
-public class SubmissionAttachment extends SubmissionAttachmentBase {
-	
-	public SubmissionAttachment() {
-		
-	}
-	
-	public SubmissionAttachment(AssignmentSubmissionVersion submissionVersion, String attachmentReference) {
-		this.submissionVersion = submissionVersion;
-		this.attachmentReference = attachmentReference;
-	}
+ * Indicates that the user's action (such as saving an assignment) required
+ * some change to an associated Schedule (aka Calendar) item in the Calendar/Schedule tool, but
+ * the user is not authorized to take this action
+ *
+ * @author <a href="mailto:wagnermr@iupui.edu">michelle wagner</a>
+ */
+public class CalendarPermissionException extends AssignmentException {
 
+	private static final long serialVersionUID = 1L;
+
+	public CalendarPermissionException(String message) {
+        super(message);
+    }
 	
-	public static SubmissionAttachment deepCopy(SubmissionAttachment attachToCopy) {
-		SubmissionAttachment attach = new SubmissionAttachment();
-		attach.setAttachmentReference(attachToCopy.getAttachmentReference());
-		attach.setId(attachToCopy.getId());
-		
-		return attach;
+	public CalendarPermissionException(String msg, Throwable t) {
+		super(msg, t);
 	}
 }

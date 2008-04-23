@@ -137,3 +137,72 @@ function updateDisplayNoAttachments(){
 		jQuery("span.no_attachments_yet").parent("li").show();
 	}
 }
+
+//Sorting functions
+var sortBy; var sortDir; var pStart=0; var pLength=5;
+function sortPageRows(b,d) {
+   pLength = jQuery("select[name='page-replace\:\:pagerDiv:1:pager_select_box-selection']").val();
+   sortBy=b; sortDir=d;
+   var trs = jQuery.makeArray(jQuery("table#sortable tr:gt(0)"));
+   trs.sort(function(a,b){
+      return (jQuery("." + sortBy, a).get(0).innerHTML.toLowerCase() < jQuery("." + sortBy, b).get(0).innerHTML.toLowerCase()
+      ? -1 : (jQuery("." + sortBy, a).get(0).innerHTML.toLowerCase()> jQuery("." + sortBy, b).get(0).innerHTML.toLowerCase()
+         ? 1 : 0));
+   });
+   if (sortDir == 'desc') {trs.reverse();}
+   jQuery(trs).appendTo(jQuery("table#sortable tbody"));
+   jQuery("a img", "table#sortable tr:first").remove();
+   imgSrc = "<img src=\"/sakai-assignment2-tool/content/images/bullet_arrow_" + (d == 'asc' ? 'up' : 'down') + ".png\" />";
+   jQuery("a." + b, "table#sortable tr:first").append(imgSrc);
+   //Now paging
+   jQuery("table#sortable tr:gt(0)").hide();
+   jQuery("table#sortable tr:gt(" + pStart + "):lt(" + pLength +")").show();
+   trsLength = jQuery("table#sortable tr:gt(0)").size();
+   if (pStart == 0){
+     jQuery("div.pagerDiv input[name='page-replace\:\:pagerDiv\:1\:pager_first_page'], div.pagerDiv input[name='page-replace\:\:pagerDiv\:1\:pager_prev_page']").attr('disabled', 'disabled');
+   } else {
+      jQuery("div.pagerDiv input[name='page-replace\:\:pagerDiv\:1\:pager_first_page'], div.pagerDiv input[name='page-replace\:\:pagerDiv\:1\:pager_prev_page']").removeAttr('disabled');
+   }
+   if (Number(pStart) + Number(pLength) >= trsLength) {
+      jQuery("div.pagerDiv input[name='page-replace\:\:pagerDiv\:1\:pager_next_page'], div.pagerDiv input[name='page-replace\:\:pagerDiv\:1\:pager_last_page']").attr('disabled', 'disabled');
+   } else {
+      jQuery("div.pagerDiv input[name='page-replace\:\:pagerDiv\:1\:pager_next_page'], div.pagerDiv input[name='page-replace\:\:pagerDiv\:1\:pager_last_page']").removeAttr('disabled');  
+   }
+   //now parse the date
+   format = jQuery("div.pagerDiv div.format").get(0).innerHTML;
+   format = format.replace(/\{0\}/, Number(pStart) + 1);
+   last = Number(pStart) + Number(pLength) > trsLength ? trsLength : Number(pStart) + Number(pLength);
+   format = format.replace(/\{1\}/, last);
+   format = format.replace(/\{2\}/, jQuery("table#sortable tr:gt(0)").size());
+   jQuery("div.pagerDiv div.instruction").html(format);
+}
+jQuery(document).ready(function(){
+	if (jQuery("table#sortable").get(0)) {
+ 		sortPageRows(defaultSortBy,'asc');
+ 		pStart=0;
+	}
+});
+function changeSort(newBy){
+	sortPageRows(newBy, (newBy!=sortBy ? 'asc' : (sortDir == 'asc' ? 'desc' : 'asc')));
+}
+function changePage(newPStart){
+	total = jQuery("table#sortable tr:gt(0)").size();
+	if ("first" == newPStart) {
+		pStart = 0;
+	} else if ("prev" == newPStart) {
+		pStart = pStart - pLength;
+		if (pStart < 0) pStart =0;
+	} else if ("next" == newPStart) {
+		pStart = Number(pStart) + Number(pLength);
+		if (pStart > total) {
+			pStart = total - (total % pLength);
+		}
+	} else if ("last" == newPStart) {
+		if (total > pLength) {
+			pStart = total - (total % pLength);
+		} else {
+			pStart = 0;
+		}
+	}
+   sortPageRows(sortBy, sortDir);   
+}

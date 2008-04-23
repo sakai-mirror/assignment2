@@ -33,7 +33,7 @@
 		</li>
 	</ul>
 	<form rsf:id="form" method="post">
-		<table class="listHier lines">
+		<table class="listHier lines" id="sortable">
 			<tr> 
 				<th rsf:id="tableheader.remove">Remove?</th>
 				<th rsf:id="tableheader.assignment:">
@@ -58,7 +58,7 @@
 					<input rsf:id="assignment_row_remove" type="checkbox" /> <label rsf:id="assignment_row_remove_label" class="skip">Remove</label>
 				</td>
 				<td headers="title">
-				<h4 rsf:id="assignment_title">Homework Example 2</h4>
+				<h4 rsf:id="assignment_title" class="title">Homework Example 2</h4>
 					<ul class="itemAction">
 						<li><a rsf:id="assignment_row_edit">Edit</a></li>
 						<li><a rsf:id="assignment_row_duplicate">Duplicate</a></li>
@@ -68,11 +68,17 @@
 						<li rsf:id="tag_provider_links:"><a rsf:id="assignment_view_links">View Links</a></li>
 					</ul>
 				</td>
-				<td rsf:id="assignment_row_for">Group 1, Group 2</td>
+				<td rsf:id="assignment_row_for" class="for">Group 1, Group 2</td>
 				<td rsf:id="assignment_row_open_text">Open</td>
 				<td rsf:id="assignment_row_draft_td"><span rsf:id="assignment_row_draft" class="highlight"></span></td>
 				<td rsf:id="assignment_row_open">Sep 24, 2007 11:00 am</td>
 				<td rsf:id="assignment_row_due">Oct 1, 2007 6:00 pm</td>
+				<td class="skip">
+					<span class="status" rsf:id="status"></span>
+					<span class="openTime" rsf:id="open_timestamp"></span>
+					<span class="dueDate" rsf:id="due_timestamp"></span>
+					<span class="sortIndex" rsf:id="sortIndex"></span>
+				</td>
 				<!-- 
 				<td><a rsf:id="assignment_row_in_new">2/2</a></td>
 				-->
@@ -81,7 +87,13 @@
 		<br />
 		<input rsf:id="submit_remove" type="submit" class="active" name="eventSubmit_doDelete_confirm_assignment" value="Remove Selected" accesskey="s" />		
 		</form>
+		<table id="table2">
+		
+		</table>
 		<div rsf:id="assignment_empty">There are no Assignments yet</div>
+		<script type="text/javascript" rsf:id="defaultSortBy">
+			defaultSortBy="title"; //done via producer
+		</script>
 	</div>
 </body>
 </html>

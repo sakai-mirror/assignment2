@@ -170,6 +170,12 @@
       <artifactId>sakai-message-api</artifactId>
       <version>${sakai.version}</version>
     </dependency>
+    <!-- Schedule/Calendar integration -->
+    <dependency>
+      <groupId>org.sakaiproject</groupId>
+      <artifactId>sakai-calendar-api</artifactId>
+      <version>${sakai.version}</version>
+    </dependency>
     <!--  sections integration -->
     <dependency>
       <groupId>org.sakaiproject</groupId>

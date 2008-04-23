@@ -1,27 +1,48 @@
+/**********************************************************************************
+ * $URL$
+ * $Id$
+ ***********************************************************************************
+ *
+ * Copyright (c) 2007, 2008 The Sakai Foundation.
+ *
+ * Licensed under the Educational Community License, Version 1.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.opensource.org/licenses/ecl1.php
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ **********************************************************************************/
+
 package org.sakaiproject.assignment2.tool.producers;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.Date;
 
-import org.sakaiproject.assignment2.tool.beans.AssignmentSubmissionBean;
-import org.sakaiproject.assignment2.tool.params.AssignmentViewParams;
-import org.sakaiproject.assignment2.tool.params.ViewSubmissionsViewParams;
-import org.sakaiproject.assignment2.tool.params.GradeViewParams;
-import org.sakaiproject.assignment2.tool.params.ZipViewParams;
-import org.sakaiproject.assignment2.tool.producers.renderers.PagerRenderer;
-import org.sakaiproject.assignment2.tool.producers.renderers.SortHeaderRenderer;
-import org.sakaiproject.assignment2.tool.producers.renderers.AttachmentListRenderer;
-import org.sakaiproject.assignment2.tool.producers.GradeProducer;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
+import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
+import org.sakaiproject.assignment2.tool.params.AssignmentViewParams;
+import org.sakaiproject.assignment2.tool.params.GradeViewParams;
+import org.sakaiproject.assignment2.tool.params.ViewSubmissionsViewParams;
+import org.sakaiproject.assignment2.tool.params.ZipViewParams;
+import org.sakaiproject.assignment2.tool.producers.renderers.AttachmentListRenderer;
+import org.sakaiproject.assignment2.tool.producers.renderers.PagerRenderer;
+import org.sakaiproject.assignment2.tool.producers.renderers.SortHeaderRenderer;
 
+import uk.org.ponder.htmlutil.HTMLUtil;
 import uk.org.ponder.messageutil.MessageLocator;
 import uk.org.ponder.messageutil.TargettedMessage;
 import uk.org.ponder.messageutil.TargettedMessageList;
@@ -30,16 +51,14 @@ import uk.org.ponder.rsf.components.UICommand;
 import uk.org.ponder.rsf.components.UIContainer;
 import uk.org.ponder.rsf.components.UIELBinding;
 import uk.org.ponder.rsf.components.UIForm;
-import uk.org.ponder.rsf.components.UIInput;
 import uk.org.ponder.rsf.components.UIInternalLink;
-import uk.org.ponder.rsf.components.UILink;
 import uk.org.ponder.rsf.components.UIMessage;
 import uk.org.ponder.rsf.components.UIOutput;
 import uk.org.ponder.rsf.components.UIVerbatim;
-import uk.org.ponder.rsf.flow.jsfnav.NavigationCase;
-import uk.org.ponder.rsf.flow.jsfnav.NavigationCaseReporter;
 import uk.org.ponder.rsf.flow.ARIResult;
 import uk.org.ponder.rsf.flow.ActionResultInterceptor;
+import uk.org.ponder.rsf.flow.jsfnav.NavigationCase;
+import uk.org.ponder.rsf.flow.jsfnav.NavigationCaseReporter;
 import uk.org.ponder.rsf.view.ComponentChecker;
 import uk.org.ponder.rsf.view.ViewComponentProducer;
 import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
@@ -60,7 +79,6 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
     
     private String current_sort_by = DEFAULT_SORT_BY;
     private String current_sort_dir = DEFAULT_SORT_DIR;
-    private String opposite_sort_dir = DEFAULT_OPPOSITE_SORT_DIR;
     
     //images
     public static final String BULLET_UP_IMG_SRC = "/sakai-assignment2-tool/content/images/bullet_arrow_up.png";
@@ -75,7 +93,6 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
     private Locale locale;
     private SortHeaderRenderer sortHeaderRenderer;
     private AttachmentListRenderer attachmentListRenderer;
-    private AssignmentSubmissionBean submissionBean;
     private AssignmentPermissionLogic permissionLogic;
     
     private Long assignmentId;
@@ -102,8 +119,7 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
     	if (params.sort_dir == null) params.sort_dir = DEFAULT_SORT_DIR;
     	current_sort_by = params.sort_by;
     	current_sort_dir = params.sort_dir;
-    	opposite_sort_dir = (AssignmentLogic.SORT_DIR_ASC.equals(current_sort_dir) 
-    			? AssignmentLogic.SORT_DIR_DESC : AssignmentLogic.SORT_DIR_ASC);
+    	UIVerbatim.make(tofill, "defaultSortBy", HTMLUtil.emitJavascriptVar("defaultSortBy", DEFAULT_SORT_BY));
     	
     	List<AssignmentSubmission> submissions = submissionLogic.getViewableSubmissionsForAssignmentId(assignmentId);
     	
@@ -160,15 +176,12 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
         sortHeaderRenderer.makeSortingLink(tofill, "tableheader.released", viewparams, 
 	      		AssignmentSubmissionLogic.SORT_BY_RELEASED, "assignment2.assignment_grade-assignment.tableheader.released");
                 
-        //Do Table Data
-        submissions = submissionBean.filterPopulateAndSortSubmissionList(submissions, params.current_start, params.current_count, 
-        		current_sort_by, current_sort_dir.equals(AssignmentLogic.SORT_DIR_ASC));
         
         for (AssignmentSubmission as : submissions) {
         	UIBranchContainer row = UIBranchContainer.make(tofill, "row:");
         	
         	UIInternalLink.make(row, "row_grade_link",
-        			externalLogic.getUserDisplayName(as.getUserId()),
+        			externalLogic.getUserFullName(as.getUserId()),
         			new GradeViewParams(GradeProducer.VIEW_ID, as.getAssignment().getId(), as.getUserId()));
         	
         	if (as.getCurrentSubmissionVersion() != null && as.getCurrentSubmissionVersion().getSubmittedTime() != null){
@@ -177,18 +190,34 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
         		UIOutput.make(row, "row_submitted", "");
         	}
         	
-        	UIOutput.make(row, "row_status", as.getSubmissionStatus());
+    		// set the textual representation of the submission status
+    		String status = "";
+    		int statusConstant = AssignmentConstants.SUBMISSION_NOT_STARTED;
+        	if (as != null) {
+        		statusConstant = submissionLogic.getSubmissionStatusConstantForCurrentVersion(
+        				as.getCurrentSubmissionVersion(), assignment.getDueDate());
+        		status = messageLocator.getMessage(
+        				"assignment2.assignment_grade-assignment.submission_status." + 
+        				statusConstant);
+        	}
+        
+        	UIOutput.make(row, "row_status", status);
         	
         	if (!assignment.isUngraded()) {
         		UIOutput.make(row, "row_grade", as.getGradebookGrade());
         	}
 
+        	String released = "0";
         	if (as.getCurrentSubmissionVersion() != null)  {
         		Date releasedTime = as.getCurrentSubmissionVersion().getReleasedTime();
         		if (releasedTime != null && releasedTime.before(new Date())) {
         			UIOutput.make(row, "row_released");
+        			released += 1;
         		}
         	}
+        	
+        	//For JS Sorting
+        	UIOutput.make(row, "released", released);
         }
         
 
@@ -236,7 +265,7 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
         
     }
     
-    public List reportNavigationCases() {
+    public List<NavigationCase> reportNavigationCases() {
     	List<NavigationCase> nav= new ArrayList<NavigationCase>();
     	nav.add(new NavigationCase("release_all", new ViewSubmissionsViewParams(
     			ViewSubmissionsProducer.VIEW_ID, null)));
@@ -289,10 +318,6 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
     
 	public void setAttachmentListRenderer(AttachmentListRenderer attachmentListRenderer){
 		this.attachmentListRenderer = attachmentListRenderer;
-	}
-	
-	public void setAssignmentSubmissionBean(AssignmentSubmissionBean submissionBean){
-		this.submissionBean = submissionBean;
 	}
 
 	public void setPermissionLogic(AssignmentPermissionLogic permissionLogic) {

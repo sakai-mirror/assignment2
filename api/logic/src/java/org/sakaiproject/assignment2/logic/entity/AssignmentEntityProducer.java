@@ -1,6 +1,6 @@
 /**********************************************************************************
- * $URL: https://source.sakaiproject.org/contrib/assignment2/trunk/api/logic/src/java/org/sakaiproject/assignment2/dao/AssignmentDao.java $
- * $Id: AssignmentDao.java 12544 2006-05-03 15:06:26Z wagnermr@iupui.edu $
+ * $URL$
+ * $Id$
  ***********************************************************************************
  *
  * Copyright (c) 2007 The Sakai Foundation.
@@ -83,10 +83,10 @@ public class AssignmentEntityProducer extends BaseEntityProducer implements Cont
 		// import from that tool. Otherwise, check to see if that site has the
 		// "old" assignments tool.  If it does, we are importing from the old tool
 		// to the new tool
-		if (externalLogic.siteHasTool(fromContext, ExternalLogic.TOOL_ID_ASSIGNMENT2_TOOL)) {
+		if (externalLogic.siteHasTool(fromContext, ExternalLogic.TOOL_ID_ASSIGNMENT2)) {
 			String fromAssignment2ToolXml = importExportLogic.getAssignmentToolDefinitionXML(fromContext);
 			importExportLogic.mergeAssignmentToolDefinitionXml(toContext, fromAssignment2ToolXml);
-		} else if (externalLogic.siteHasTool(fromContext, ExternalLogic.TOOL_ID_OLD_ASSIGN_TOOL)) {
+		} else if (externalLogic.siteHasTool(fromContext, ExternalLogic.TOOL_ID_OLD_ASSIGN)) {
 			String fromOldAssignmentToolXml =
 			importExportLogic.getAssignmentToolDefinitionXmlFromOriginalAssignmentsTool(fromContext, toContext);
 			importExportLogic.mergeAssignmentToolDefinitionXml(toContext, fromOldAssignmentToolXml);

@@ -1,6 +1,6 @@
 /**********************************************************************************
- * $URL: https://source.sakaiproject.org/contrib/assignment2/trunk/api/model/src/java/org/sakaiproject/assignment2/model/AssignmentSubmission.java $
- * $Id: AssignmentSubmission.java 12544 2006-05-03 15:06:26Z wagnermr@iupui.edu $
+ * $URL$
+ * $Id$
  ***********************************************************************************
  *
  * Copyright (c) 2007 The Sakai Foundation.
@@ -43,6 +43,8 @@ public class AssignmentSubmission {
 	private Set<AssignmentSubmissionVersion> submissionHistorySet;
 	private int revisionVersion;
 	
+	// non-persisted fields 
+	
 	// fields populated with gradebook data
 	private String gradebookGrade;
 	private String gradebookComment;
@@ -51,9 +53,6 @@ public class AssignmentSubmission {
 	// the current submission version must be populated manually b/c we want
 	// to retrieve the version rec with the highest id
 	private AssignmentSubmissionVersion currentSubmissionVersion;
-	
-	private String submissionStatus;
-	private Integer submissionStatusConstant;
 
 	public AssignmentSubmission() {
 	}
@@ -260,44 +259,6 @@ public class AssignmentSubmission {
 	 */
 	public void setCurrentSubmissionVersion(AssignmentSubmissionVersion currentSubmissionVersion) {
 		this.currentSubmissionVersion = currentSubmissionVersion;
-	}
-
-	/**
-	 * 
-	 * @return String representation of this student's most current submission
-	 * status ie Submitted, In Progress, etc
-	 */
-	public String getSubmissionStatus() {
-		return submissionStatus;
-	}
-
-	/**
-	 * String representation of this student's most current submission
-	 * status ie Submitted, In Progress, etc
-	 * @param submissionStatus
-	 */
-	public void setSubmissionStatus(String submissionStatus) {
-		this.submissionStatus = submissionStatus;
-	}
-	
-	/**
-	 * 
-	 * @return constant representation of this submission's status
-	 * ie Not Started, In Progess, etc
-	 */
-	public Integer getSubmissionStatusConstant()
-	{
-		return submissionStatusConstant;
-	}
-
-	/**
-	 * constant representation of this submission's status
-	 * ie Not Started, In Progess, etc
-	 * @param submissionStatusConstant
-	 */
-	public void setSubmissionStatusConstant(Integer submissionStatusConstant)
-	{
-		this.submissionStatusConstant = submissionStatusConstant;
 	}
 
 	/**

@@ -298,6 +298,7 @@ public class AssignmentTestDataLoad {
 		assignment.setUngraded(graded);
 		assignment.setHonorPledge(Boolean.FALSE);
 		assignment.setHasAnnouncement(Boolean.FALSE);
+		assignment.setAddedToSchedule(Boolean.FALSE);
 		assignment.setSortIndex(sortIndex);
 		assignment.setTitle(title);
 

@@ -1,3 +1,24 @@
+/**********************************************************************************
+ * $URL$
+ * $Id$
+ ***********************************************************************************
+ *
+ * Copyright (c) 2007, 2008 The Sakai Foundation.
+ *
+ * Licensed under the Educational Community License, Version 1.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.opensource.org/licenses/ecl1.php
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ **********************************************************************************/
+
 package org.sakaiproject.assignment2.tool.producers.renderers;
 
 import java.text.DateFormat;
@@ -119,13 +140,16 @@ public class StudentViewAssignmentRenderer {
 //		DecoratorList disabledLinkDecoratorList = new DecoratorList(new UIFreeAttributeDecorator(disabledLinkAttr));
         
 		// set the textual representation of the submission status
-    	if (assignmentSubmission != null && assignmentSubmission.getSubmissionStatusConstant() != null) {
-    		assignmentSubmission.setSubmissionStatus(messageLocator.getMessage(
-    				"assignment2.assignment_grade-assignment.submission_status." + 
-    				assignmentSubmission.getSubmissionStatusConstant()));
+		String status = "";
+		int statusConstant = AssignmentConstants.SUBMISSION_NOT_STARTED;
+    	if (assignmentSubmission != null) {
+    		statusConstant = submissionLogic.getSubmissionStatusConstantForCurrentVersion(
+    				assignmentSubmission.getCurrentSubmissionVersion(), assignment.getDueDate());
+    		status = messageLocator.getMessage(
+    				"assignment2.student-submit.status." + 
+    				statusConstant);
     	}
-		
-    	String status = (assignmentSubmission != null) ? assignmentSubmission.getSubmissionStatus() : null;
+
     	UIMessage.make(joint, "heading_status", "assignment2.student-submit.heading_status", 
     			new Object[]{ status });
     	UIVerbatim.make(joint, "page_instructions", messageLocator.getMessage("assignment2.student-submit.instructions"));
@@ -140,7 +164,7 @@ public class StudentViewAssignmentRenderer {
     		UIOutput.make(joint, "accept_until_tr");
     		UIOutput.make(joint, "header.accept_until", df.format(assignment.getAcceptUntilTime()));
     	}
-    	UIOutput.make(joint, "header.status", assignmentSubmission.getSubmissionStatus());
+    	UIOutput.make(joint, "header.status", status);
     	UIOutput.make(joint, "header.grade_scale", "Grade Scale from Gradebook");  //HERE
     	if (assignment != null && assignment.getModifiedTime() != null) {
     		UIOutput.make(joint, "modified_by_header_row");

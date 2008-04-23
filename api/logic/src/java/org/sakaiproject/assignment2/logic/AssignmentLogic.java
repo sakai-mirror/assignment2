@@ -1,6 +1,6 @@
 /**********************************************************************************
- * $URL: https://source.sakaiproject.org/contrib/assignment2/trunk/api/logic/src/java/org/sakaiproject/assignment2/dao/AssignmentDao.java $
- * $Id: AssignmentDao.java 12544 2006-05-03 15:06:26Z wagnermr@iupui.edu $
+ * $URL$
+ * $Id$
  ***********************************************************************************
  *
  * Copyright (c) 2007 The Sakai Foundation.
@@ -37,8 +37,6 @@ public interface AssignmentLogic {
     public static final String SORT_DIR_DESC = "desc";
     public static final String SORT_BY_INDEX = "sortIndex";
     public static final String SORT_BY_TITLE = "title";
-    public static final String SORT_BY_FOR = "for";
-    public static final String SORT_BY_STATUS = "status";
     public static final String SORT_BY_OPEN = "openTime";
     public static final String SORT_BY_DUE = "dueDate";
 	
@@ -81,10 +79,12 @@ public interface AssignmentLogic {
 	 * will be set to true
 	 * @param assignment
 	 * 			the Assignment to delete
-	 * @throws SecurityException -
-	 * user must have "delete" permission
+	 * @throws SecurityException - user must have "edit" permission
 	 * @throws AnnouncmentPermissionException if the user does not have
 	 * permission to delete announcements - assignment will be 'deleted' regardless
+	 * @throws CalendarPermissionException if the user does not have
+	 * permission to delete events in the Schedule tool - assignment will be
+	 * 'deleted' regardless
 	 */	
 	public void deleteAssignment(Assignment2 assignment);
 	
@@ -135,15 +135,5 @@ public interface AssignmentLogic {
 	 * @return a constant equivalent to the assignment's status
 	 */
 	public int getStatusForAssignment(Assignment2 assignment);
-	
-	/**
-	 * Given the originalAssignment and the updated (or newly created) version, will determine if an
-	 * announcement needs to be added, updated, or deleted. Announcements are updated
-	 * if there is a change in title, open date, or group restrictions. They are
-	 * deleted if the assignment is changed to draft status. 
-	 * @param originalAssignmentWithGroups - original assignment with the group info populated
-	 * @param updatedAssignment - updated (or newly created) assignment with the group info populated
-	 */
-	public void saveAssignmentAnnouncement(Assignment2 originalAssignmentWithGroups, 
-			Assignment2 updatedAssignmentWithGroups);
+
 }

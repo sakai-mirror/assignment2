@@ -1,3 +1,24 @@
+/**********************************************************************************
+ * $URL$
+ * $Id$
+ ***********************************************************************************
+ *
+ * Copyright (c) 2007, 2008 The Sakai Foundation.
+ *
+ * Licensed under the Educational Community License, Version 1.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.opensource.org/licenses/ecl1.php
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ **********************************************************************************/
+
 package org.sakaiproject.assignment2.tool.producers.renderers;
 
 import org.sakaiproject.assignment2.tool.params.PagerViewParams;
@@ -31,11 +52,6 @@ public class PagerRenderer {
 	@SuppressWarnings("unchecked")
 	public void makePager(UIContainer tofill, String divID, String currentViewID, ViewParameters viewparams, Integer totalCount) {
     	PagerViewParams pagerparams = (PagerViewParams) viewparams;
-
-    	if (totalCount <= PagerRenderer.DEFAULT_START_COUNT){
-    		//Do not show
-    		return;
-    	}
     	
     	//set vars
     	this.currentCount = pagerparams.current_count;
@@ -47,6 +63,7 @@ public class PagerRenderer {
         //Currently Viewing
         UIMessage.make(joint, "pager_viewing", "assignment2.pager.viewing", 
         		new Object[] {this.getViewingStart(), this.getViewingEnd(), this.getViewingTotal()} );
+        UIMessage.make(joint, "pager_viewing_format", "assignment2.pager.viewing");
         
         //Form
         UIForm form = UIForm.make(joint, "pager_form");
@@ -65,7 +82,6 @@ public class PagerRenderer {
         UIInput selection = new UIInput();
         selection.setValue(this.getCurrentSelect());
         select_box.selection = selection;
-        //select_box.selection.valuebinding = new ELReference("#{PagerBean.currentSelect}");
         UIBoundList comboValues = new UIBoundList();
         comboValues.setValue(new String[] {"5","10","20","50","100","200"});
         select_box.optionlist = comboValues;
@@ -73,56 +89,34 @@ public class PagerRenderer {
 		comboNames.setValue(new String[] {"Show 5 items", "Show 10 items", "Show 20 items", "Show 50 items", "Show 100 items", "Show 200 items"});
 		select_box.optionnames = comboNames;
 		Map attrmap = new HashMap(); 
-		attrmap.put("onchange", "location.href=location.href.substring(0,location.href.indexOf('?'))+\"" + "?" + href_params + "current_start=" + 
-				currentStart.toString() + "&current_count=\" + jQuery(this).val()");
+		attrmap.put("onchange", "changePage(pStart);");
 		select_box.decorators = new DecoratorList(new UIFreeAttributeDecorator(attrmap)); 
 		
 		
 		//first page
 		UIInput first_page = UIInput.make(form, "pager_first_page", null, messageLocator.getMessage("assignment2.pager.pager_first_page"));
 		attrmap = new HashMap();
-		attrmap.put("onclick", "location.href=location.href.substring(0,location.href.indexOf('?'))+\"" + "?" + href_params + "current_start=" + 
-					this.goToFirstPage() + "&current_count=" + this.getCurrentSelect() + "\"");
+		attrmap.put("onclick", "changePage('first')");
 		first_page.decorators = new DecoratorList(new UIFreeAttributeDecorator(attrmap));
 				
 		//previous page
 		UIInput prev_page = UIInput.make(form, "pager_prev_page", null, messageLocator.getMessage("assignment2.pager.pager_prev_page"));
 		attrmap = new HashMap();
-		attrmap.put("onclick", "location.href=location.href.substring(0,location.href.indexOf('?'))+\"" + "?" + href_params + "current_start=" + 
-				this.goToPrevPage() + "&current_count=" + this.getCurrentSelect() + "\"");
+		attrmap.put("onclick", "changePage('prev')");
 		prev_page.decorators = new DecoratorList(new UIFreeAttributeDecorator(attrmap));
 
 		//next page
 		UIInput next_page = UIInput.make(form, "pager_next_page", null, messageLocator.getMessage("assignment2.pager.pager_next_page"));
 		attrmap = new HashMap();
-		attrmap.put("onclick", "location.href=location.href.substring(0,location.href.indexOf('?'))+\"" + "?" + href_params + "current_start=" + 
-				this.goToNextPage() + "&current_count=" + this.getCurrentSelect() + "\"");
+		attrmap.put("onclick", "changePage('next')");
 		next_page.decorators = new DecoratorList(new UIFreeAttributeDecorator(attrmap));
 		
 		//last button
 		UIInput last_page = UIInput.make(form, "pager_last_page", null, messageLocator.getMessage("assignment2.pager.pager_last_page"));
 		attrmap = new HashMap();
-		attrmap.put("onclick", "location.href=location.href.substring(0,location.href.indexOf('?'))+\"" + "?" + href_params + "current_start=" + 
-				this.goToLastPage() + "&current_count=" + this.getCurrentSelect() + "\"");
+		attrmap.put("onclick", "changePage('last')");
 		last_page.decorators = new DecoratorList(new UIFreeAttributeDecorator(attrmap));
-		
-		
-		//Disable buttons not in use
-		Map disabledAttr = new HashMap();
-		disabledAttr.put("disabled", "disabled");
-		DecoratorList disabledDecoratorList = new DecoratorList(new UIFreeAttributeDecorator(disabledAttr));
-		
-		if (currentStart == 0){
-			//disable if on first page
-			first_page.decorators = disabledDecoratorList;
-			prev_page.decorators = disabledDecoratorList;
-		}
-		if ((currentStart + currentCount) >= totalCount){
-			//disable if on last page
-			next_page.decorators = disabledDecoratorList;
-			last_page.decorators = disabledDecoratorList;
-		}
-        
+
     }
     
     public void setMessageLocator(MessageLocator messageLocator) {
@@ -149,32 +143,5 @@ public class PagerRenderer {
 	//Form Submit Methods
 	private void changePageSize(){
 		//do nothing
-	}
-	
-	private String goToFirstPage(){
-		Integer newCurrentStart = 0;
-		return newCurrentStart.toString();
-	}
-	
-	private String goToPrevPage(){
-		Integer newCurrentStart = currentStart - currentCount;
-		if (newCurrentStart < 0) return this.goToFirstPage();
-		return newCurrentStart.toString();
-	}
-	
-	private String goToNextPage(){
-		Integer newCurrentStart = currentStart + currentCount;
-		if (newCurrentStart > totalCount) return this.goToLastPage();
-		return newCurrentStart.toString();
-	}
-	
-	private String goToLastPage(){
-		Integer newCurrentStart = 0;
-		if (totalCount > currentCount){
-			newCurrentStart = totalCount - (totalCount % currentCount);
-		} else {
-			newCurrentStart = 0;
-		}
-		return newCurrentStart.toString(); 
 	}
 }

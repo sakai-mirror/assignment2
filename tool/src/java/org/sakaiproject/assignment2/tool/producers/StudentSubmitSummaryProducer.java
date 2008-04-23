@@ -1,3 +1,24 @@
+/**********************************************************************************
+ * $URL$
+ * $Id$
+ ***********************************************************************************
+ *
+ * Copyright (c) 2007, 2008 The Sakai Foundation.
+ *
+ * Licensed under the Educational Community License, Version 1.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.opensource.org/licenses/ecl1.php
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ **********************************************************************************/
+
 package org.sakaiproject.assignment2.tool.producers;
 
 import java.text.DateFormat;
@@ -10,6 +31,7 @@ import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
+import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.assignment2.tool.params.SimpleAssignmentViewParams;
 import org.sakaiproject.assignment2.tool.producers.renderers.AttachmentListRenderer;
 
@@ -20,7 +42,6 @@ import uk.org.ponder.rsf.components.UIInternalLink;
 import uk.org.ponder.rsf.components.UIMessage;
 import uk.org.ponder.rsf.components.UIOutput;
 import uk.org.ponder.rsf.components.UIVerbatim;
-import uk.org.ponder.rsf.evolvers.FormatAwareDateInputEvolver;
 import uk.org.ponder.rsf.view.ComponentChecker;
 import uk.org.ponder.rsf.view.ViewComponentProducer;
 import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
@@ -54,6 +75,17 @@ public class StudentSubmitSummaryProducer implements ViewComponentProducer, View
 		AssignmentSubmission assignmentSubmission = 
 			submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(params.assignmentId, externalLogic.getCurrentUserId());
 		
+		// set the textual representation of the submission status
+		String status = "";
+		int statusConstant = AssignmentConstants.SUBMISSION_NOT_STARTED;
+    	if (assignmentSubmission != null) {
+    		statusConstant = submissionLogic.getSubmissionStatusConstantForCurrentVersion(
+    				assignmentSubmission.getCurrentSubmissionVersion(), assignment.getDueDate());
+    		status = messageLocator.getMessage(
+    				"assignment2.assignment_grade-assignment.submission_status." + 
+    				statusConstant);
+    	}
+		
     	//Breadcrumbs
         UIInternalLink.make(tofill, "breadcrumb", 
         		messageLocator.getMessage("assignment2.student-assignment-list.heading"),
@@ -65,7 +97,7 @@ public class StudentSubmitSummaryProducer implements ViewComponentProducer, View
 
     	UIOutput.make(tofill, "header.due_date", (assignment.getDueDate() != null ? df.format(assignment.getDueDate()) : ""));
 
-    	UIOutput.make(tofill, "header.status", assignmentSubmission.getSubmissionStatus());
+    	UIOutput.make(tofill, "header.status", status);
     	UIOutput.make(tofill, "header.grade_scale", "Grade Scale from Gradebook");  //HERE
     	if (assignment.getModifiedTime() != null) {
     		UIOutput.make(tofill, "modified_by_header_row");

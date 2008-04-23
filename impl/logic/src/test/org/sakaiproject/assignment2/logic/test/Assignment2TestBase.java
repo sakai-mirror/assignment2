@@ -109,7 +109,6 @@ public abstract class Assignment2TestBase extends AbstractTransactionalSpringCon
     	assignmentLogic.setExternalAnnouncementLogic(announcementLogic);
     	assignmentLogic.setExternalGradebookLogic(gradebookLogic);
     	assignmentLogic.setExternalLogic(externalLogic);
-    	assignmentLogic.setAssignmentSubmissionLogic(submissionLogic);
     	assignmentLogic.setPermissionLogic(permissionLogic);
     	assignmentLogic.setAssignmentBundleLogic(bundleLogic);
 	

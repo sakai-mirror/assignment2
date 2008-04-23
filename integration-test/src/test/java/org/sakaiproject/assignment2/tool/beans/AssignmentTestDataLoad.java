@@ -1,6 +1,6 @@
 /**********************************************************************************
- * $URL: https://source.sakaiproject.org/contrib/assignment2/trunk/impl/test/src/java/org/sakaiproject/assignment2/test/AssignmentTestDataLoad.java $
- * $Id: AssignmentTestDataLoad.java 46336 2008-03-05 18:23:08Z wagnermr@iupui.edu $
+ * $URL$
+ * $Id$
  ***********************************************************************************
  *
  * Copyright (c) 2007 The Sakai Foundation.
@@ -276,6 +276,7 @@ public class AssignmentTestDataLoad
 		assignment.setUngraded(Boolean.TRUE);
 		assignment.setHonorPledge(Boolean.FALSE);
 		assignment.setHasAnnouncement(Boolean.FALSE);
+		assignment.setAddedToSchedule(Boolean.FALSE);
 		assignment.setSortIndex(sortIndex);
 		assignment.setTitle(title);
 

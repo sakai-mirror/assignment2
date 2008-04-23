@@ -1,6 +1,6 @@
 /**********************************************************************************
- * $URL: https://source.sakaiproject.org/contrib/assignment2/trunk/api/logic/src/java/org/sakaiproject/assignment2/dao/AssignmentDao.java $
- * $Id: AssignmentDao.java 12544 2006-05-03 15:06:26Z wagnermr@iupui.edu $
+ * $URL$
+ * $Id$
  ***********************************************************************************
  *
  * Copyright (c) 2007 The Sakai Foundation.
@@ -91,19 +91,6 @@ public class ComparatorsUtils {
 	}
 
 	/**
-	 * static class to sort Assignment2 objects by status
-	 */
-	public static class Assignment2StatusComparator implements Comparator<Assignment2> {
-		public int compare(Assignment2 assign1, Assignment2 assign2) {
-			int value = assign1.getAssignmentStatus().compareTo(assign2.getAssignmentStatus());
-			if (value == 0) {
-				value = sortByTitle(assign1, assign2);
-			}
-			return value;
-		}
-	}
-
-	/**
 	 * static class to sort Assignment2 objects by sort index
 	 */
 	public static class Assignment2SortIndexComparator implements Comparator<Assignment2> {
@@ -118,20 +105,6 @@ public class ComparatorsUtils {
 				value = sortByTitle(assign1, assign2);
 			}
 
-			return value;
-		}
-	}
-
-	/**
-	 * static class to sort Assignment2 objects by "for" column - this will be
-	 * Site or a list of the group restrictions
-	 */
-	public static class Assignment2ForComparator implements Comparator<Assignment2> {
-		public int compare(Assignment2 assign1, Assignment2 assign2) {
-			int value = assign1.getRestrictedToText().compareTo(assign2.getRestrictedToText());
-			if (value == 0) {
-				value = sortByTitle(assign1, assign2);
-			}
 			return value;
 		}
 	}
@@ -190,21 +163,6 @@ public class ComparatorsUtils {
 				value = 0;
 			}
 
-			return value;
-		}
-	}
-	
-	/**
-	 * static class to sort AssignmentSubmission objects by submission status
-	 */
-	public static class SubmissionStatusComparator implements Comparator<AssignmentSubmission>  {
-		public int compare(AssignmentSubmission submission1, AssignmentSubmission submission2) {
-			String status1 = submission1.getSubmissionStatus() != null ? submission1.getSubmissionStatus() : "";
-			String status2 = submission2.getSubmissionStatus() != null ? submission2.getSubmissionStatus() : "";
-			int value = status1.compareTo(status2);
-			if (value == 0) {
-				value = sortByName(submission1, submission2);
-			}
 			return value;
 		}
 	}

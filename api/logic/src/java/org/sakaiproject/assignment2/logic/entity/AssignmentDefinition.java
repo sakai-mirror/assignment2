@@ -1,6 +1,6 @@
 /**********************************************************************************
- * $URL: https://source.sakaiproject.org/contrib/assignment2/trunk/api/logic/src/java/org/sakaiproject/assignment2/logic/ExternalGradebookLogic.java $
- * $Id: ExternalGradebookLogic.java 12544 2006-05-03 15:06:26Z wagnermr@iupui.edu $
+ * $URL$
+ * $Id$
  ***********************************************************************************
  *
  * Copyright (c) 2007 The Sakai Foundation.
@@ -43,6 +43,7 @@ public class AssignmentDefinition implements Serializable {
     private boolean honorPledge;
     private String instructions;
     private boolean hasAnnouncement;
+    private boolean addedToSchedule;
     private Integer numSubmissionsAllowed;
     private Integer notificationType;
     private Integer submissionType;
@@ -172,6 +173,18 @@ public class AssignmentDefinition implements Serializable {
 
 	public void setHasAnnouncement(boolean hasAnnouncement) {
 		this.hasAnnouncement = hasAnnouncement;
+	}
+	
+
+	public boolean isAddedToSchedule()
+	{
+		return addedToSchedule;
+	}
+
+
+	public void setAddedToSchedule(boolean addedToSchedule)
+	{
+		this.addedToSchedule = addedToSchedule;
 	}
 
 
