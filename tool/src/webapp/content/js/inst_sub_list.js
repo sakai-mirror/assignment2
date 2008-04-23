@@ -23,4 +23,10 @@ $(document).ready(function()
 		navigation: true
 	});
 
+	//Make tables sortable
+	$("#submitted1Assns").tablesorter();
+	$("#completed1Assns").tablesorter();
+	$("#submitted2Assns").tablesorter();
+	$("#completed2Assns").tablesorter();
+
 });

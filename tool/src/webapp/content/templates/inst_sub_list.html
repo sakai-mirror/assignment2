@@ -7,6 +7,7 @@
 		<title>Submissions [Instructor]</title>
 		<link rel='stylesheet' type='text/css' href='../css/assn2_hotness.css' />
 		<script src='../js/jquery-1.2.3.min.js' type='text/javascript'></script>
+		<script src='../js/jquery.tablesorter.min.js' type='text/javascript'></script>
 		<script src='../js/jquery.dimensions.min.js' type='text/javascript'></script>
 		<script src='../js/jquery.ui-1.5b2/minified-javascript/ui.base.min.js' type='text/javascript'></script>
 		<script src='../js/jquery.ui-1.5b2/minified-javascript/ui.accordion.min.js' type='text/javascript'></script>
@@ -56,37 +57,40 @@
 
 						<div id='submitted1List' class='listArea'>
 
-							<table id='submitted1Assns' class='listTable'>
-								<tr class='headerRow'>
-									<th>Name</th>
-									<th>Submitted On</th>
-									<th>Due Date</th>
-									<th>Section/Group</th>
-									<th>Feedback</th>
-								</tr>
+							<table id='submitted1Assns' class='listTable tablesorter'>
+								<thead>
+									<tr class='headerRow'>
+										<th>Name</th>
+										<th>Submitted On</th>
+										<th>Due Date</th>
+										<th>Section/Group</th>
+										<th>Feedback</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr class='dataRow'>
+										<td>Hall, Carl</td>
+										<td>03/28</td>
+										<td>03/28</td>
+										<td>A4</td>
+										<td>B+</td>
+									</tr>
 
-								<tr class='dataRow'>
-									<td>Hall, Carl</td>
-									<td>03/28</td>
-									<td>03/28</td>
-									<td>A4</td>
-									<td>B+</td>
-								</tr>
-
-								<tr class='dataRow'>
-									<td>Freeman, Stuart</td>
-									<td>03/29</td>
-									<td>03/28</td>
-									<td>A4</td>
-									<td>B+</td>
-								</tr>
-								<tr class='dataRow'>
-									<td>Fenlason, Clay</td>
-									<td>03/28</td>
-									<td>03/28</td>
-									<td>A4</td>
-									<td>B+</td>
-								</tr>
+									<tr class='dataRow'>
+										<td>Freeman, Stuart</td>
+										<td>03/29</td>
+										<td>03/28</td>
+										<td>A4</td>
+										<td>B+</td>
+									</tr>
+									<tr class='dataRow'>
+										<td>Fenlason, Clay</td>
+										<td>03/28</td>
+										<td>03/28</td>
+										<td>A4</td>
+										<td>B+</td>
+									</tr>
+								</tbody>
 							</table>
 						</div>
 						<div class='clear'></div>
@@ -108,32 +112,35 @@
 						</div>
 
 						<div id='completed1List' class='listArea hidden'>
-							<table id='completed1Assns' class='listTable'>
-
-								<tr class='headerRow'>
-									<th>Name</th>
-									<th>Returned On</th>
-									<th>Returned By</th>
-									<th>Feedback</th>
-								</tr>
-								<tr class='dataRow'>
-									<td>Hall, Carl</td>
-									<td>03/28</td>
-									<td>Hall, Carl</td>
-									<td>Well done!</td>
-								</tr>
-								<tr class='dataRow'>
-									<td>Freeman, Stuart</td>
-									<td>03/28</td>
-									<td>Hall, Carl</td>
-									<td>Well done!</td>
-								</tr>
-								<tr class='dataRow'>
-									<td>Fenlason, Clay</td>
-									<td>03/28</td>
-									<td>Hall, Carl</td>
-									<td>Well done!</td>
-								</tr>
+							<table id='completed1Assns' class='listTable tablesorter'>
+								<thead>
+									<tr class='headerRow'>
+										<th>Name</th>
+										<th>Returned On</th>
+										<th>Returned By</th>
+										<th>Feedback</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr class='dataRow'>
+										<td>Hall, Carl</td>
+										<td>03/28</td>
+										<td>Hall, Carl</td>
+										<td>Well done!</td>
+									</tr>
+									<tr class='dataRow'>
+										<td>Freeman, Stuart</td>
+										<td>03/28</td>
+										<td>Hall, Carl</td>
+										<td>Well done!</td>
+									</tr>
+									<tr class='dataRow'>
+										<td>Fenlason, Clay</td>
+										<td>03/28</td>
+										<td>Hall, Carl</td>
+										<td>Well done!</td>
+									</tr>
+								</tbody>
 							</table>
 						</div>
 						<div class='clear'></div>
@@ -165,27 +172,31 @@
 
 						<div id='submitted2List' class='listArea'>
 
-							<table id='submitted2Assns' class='listTable'>
-								<tr class='headerRow'>
-									<th>Name</th>
-									<th>Section/Group</th>
-									<th>Feedback</th>
-								</tr>
-								<tr class='dataRow'>
-									<td>Hall, Carl</td>
-									<td>A4</td>
-									<td>B+</td>
-								</tr>
-								<tr class='dataRow'>
-									<td>Freeman, Stuart</td>
-									<td>A4</td>
-									<td>B+</td>
-								</tr>
-								<tr class='dataRow'>
-									<td>Fenlason, Clay</td>
-									<td>A4</td>
-									<td>B+</td>
-								</tr>
+							<table id='submitted2Assns' class='listTable tablesorter'>
+								<thead>
+									<tr class='headerRow'>
+										<th>Name</th>
+										<th>Section/Group</th>
+										<th>Feedback</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr class='dataRow'>
+										<td>Hall, Carl</td>
+										<td>A4</td>
+										<td>B+</td>
+									</tr>
+									<tr class='dataRow'>
+										<td>Freeman, Stuart</td>
+										<td>A4</td>
+										<td>B+</td>
+									</tr>
+									<tr class='dataRow'>
+										<td>Fenlason, Clay</td>
+										<td>A4</td>
+										<td>B+</td>
+									</tr>
+								</tbody>
 							</table>
 						</div>
 						<div class='clear'></div>
@@ -207,32 +218,35 @@
 						</div>
 
 						<div id='completed2List' class='listArea hidden'>
-							<table id='completed2Assns' class='listTable'>
-
-								<tr class='headerRow'>
-									<th>Name</th>
-									<th>Returned On</th>
-									<th>Returned By</th>
-									<th>Feedback</th>
-								</tr>
-								<tr class='dataRow'>
-									<td>Hall, Carl</td>
-									<td>03/28</td>
-									<td>Hall, Carl</td>
-									<td>Well done!</td>
-								</tr>
-								<tr class='dataRow'>
-									<td>Freeman, Stuart</td>
-									<td>03/28</td>
-									<td>Hall, Carl</td>
-									<td>Well done!</td>
-								</tr>
-								<tr class='dataRow'>
-									<td>Fenlason, Clay</td>
-									<td>03/28</td>
-									<td>Hall, Carl</td>
-									<td>Well done!</td>
-								</tr>
+							<table id='completed2Assns' class='listTable tablesorter'>
+								<thead>
+									<tr class='headerRow'>
+										<th>Name</th>
+										<th>Returned On</th>
+										<th>Returned By</th>
+										<th>Feedback</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr class='dataRow'>
+										<td>Hall, Carl</td>
+										<td>03/28</td>
+										<td>Hall, Carl</td>
+										<td>Well done!</td>
+									</tr>
+									<tr class='dataRow'>
+										<td>Freeman, Stuart</td>
+										<td>03/28</td>
+										<td>Hall, Carl</td>
+										<td>Well done!</td>
+									</tr>
+									<tr class='dataRow'>
+										<td>Fenlason, Clay</td>
+										<td>03/28</td>
+										<td>Hall, Carl</td>
+										<td>Well done!</td>
+									</tr>
+								</tbody>
 							</table>
 						</div>
 						<div class='clear'></div>
