@@ -1,6 +1,6 @@
 /**********************************************************************************
- * $URL$
- * $Id$
+ * $URL:https://source.sakaiproject.org/contrib/assignment2/trunk/impl/logic/src/test/org/sakaiproject/assignment2/logic/test/ExternalGradebookLogicTest.java $
+ * $Id:ExternalGradebookLogicTest.java 48274 2008-04-23 20:07:00Z wagnermr@iupui.edu $
  ***********************************************************************************
  *
  * Copyright (c) 2007 The Sakai Foundation.
@@ -27,6 +27,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.assignment2.logic.GradeInformation;
 import org.sakaiproject.assignment2.logic.GradebookItem;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
@@ -578,65 +579,59 @@ public class ExternalGradebookLogicTest extends Assignment2TestBase {
     	assertEquals(AssignmentTestDataLoad.st2a4Comment, comment);*/
     }
     
-    public void testPopulateGradesForSubmissions() {
+    public void testGetGradeInformationForStudents() {
     	// try some null parameters
     	try {
-    		gradebookLogic.populateGradesForSubmissions(null, new ArrayList<AssignmentSubmission>(), testData.a1);
-    		fail("did not catch null contextId passed to populateGradesForSubmissions");
+    		gradebookLogic.getGradeInformationForStudents(null, new ArrayList<String>(), testData.a1);
+    		fail("did not catch null contextId passed to getGradeInformationForStudents");
     	} catch (IllegalArgumentException iae) {}
     	
     	try {
-    		gradebookLogic.populateGradesForSubmissions(AssignmentTestDataLoad.CONTEXT_ID, new ArrayList<AssignmentSubmission>(), null);
-    		fail("did not catch null assignment passed to populateGradesForSubmissions");
+    		gradebookLogic.getGradeInformationForStudents(AssignmentTestDataLoad.CONTEXT_ID, new ArrayList<String>(), null);
+    		fail("did not catch null assignment passed to getGradeInformationForStudents");
     	} catch (IllegalArgumentException iae) {}
     	
     	// try passing a null list
     	// should do nothing
-    	gradebookLogic.populateGradesForSubmissions(AssignmentTestDataLoad.CONTEXT_ID, null, testData.a3);
+    	gradebookLogic.getGradeInformationForStudents(AssignmentTestDataLoad.CONTEXT_ID, null, testData.a3);
     	
-    	List<AssignmentSubmission> subList = new ArrayList<AssignmentSubmission>();
-    	subList.add(testData.st1a3Submission);
-    	subList.add(testData.st2a3Submission);
+    	Map<String, GradeInformation> studentIdToGradeInfoMap = new HashMap<String, GradeInformation>();
+    	
+    	List<String> studentList = new ArrayList<String>();
+    	studentList.add(AssignmentTestDataLoad.STUDENT1_UID);
+    	studentList.add(AssignmentTestDataLoad.STUDENT2_UID);
     	
     	// switch to instructor
     	externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
-    	gradebookLogic.populateGradesForSubmissions(AssignmentTestDataLoad.CONTEXT_ID, subList, testData.a3);
+    	studentIdToGradeInfoMap = gradebookLogic.getGradeInformationForStudents(AssignmentTestDataLoad.CONTEXT_ID, studentList, testData.a3);
     	// verify grades were populated
-    	AssignmentSubmission sub1 = (AssignmentSubmission)subList.get(0);
-    	assertFalse(sub1.isGradebookGradeReleased());
-    	assertEquals(AssignmentTestDataLoad.st1a3Grade.toString(), sub1.getGradebookGrade());
-    	assertEquals(AssignmentTestDataLoad.st1a3Comment, sub1.getGradebookComment());
+    	GradeInformation gradeInfo = studentIdToGradeInfoMap.get(AssignmentTestDataLoad.STUDENT1_UID);
+    	assertFalse(gradeInfo.isGradebookGradeReleased());
+    	assertEquals(AssignmentTestDataLoad.st1a3Grade.toString(), gradeInfo.getGradebookGrade());
+    	assertEquals(AssignmentTestDataLoad.st1a3Comment, gradeInfo.getGradebookComment());
     	
-    	AssignmentSubmission sub2 = (AssignmentSubmission)subList.get(1);
-    	assertFalse(sub2.isGradebookGradeReleased());
-    	assertNull(sub2.getGradebookGrade());
-    	assertNull(sub2.getGradebookComment());
+    	gradeInfo = studentIdToGradeInfoMap.get(AssignmentTestDataLoad.STUDENT2_UID);
+    	assertFalse(gradeInfo.isGradebookGradeReleased());
+    	assertNull(gradeInfo.getGradebookGrade());
+    	assertNull(gradeInfo.getGradebookComment());
     	
     	// switch to ta
     	externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
     	// should get SecurityException b/c st2 is in list
     	try {
-    		gradebookLogic.populateGradesForSubmissions(AssignmentTestDataLoad.CONTEXT_ID, subList, testData.a3);
+    		studentIdToGradeInfoMap = gradebookLogic.getGradeInformationForStudents(AssignmentTestDataLoad.CONTEXT_ID, studentList, testData.a3);
     		fail("did not catch ta trying to access student grade info w/o authorization");
     	} catch (SecurityException se) {}
     	
     	// let's only include auth students in list
-    	subList = new ArrayList<AssignmentSubmission>();
-    	subList.add(testData.st1a3Submission);
-    	gradebookLogic.populateGradesForSubmissions(AssignmentTestDataLoad.CONTEXT_ID, subList, testData.a3);
+    	studentList = new ArrayList<String>();
+    	studentList.add(AssignmentTestDataLoad.STUDENT1_UID);
+    	studentIdToGradeInfoMap = gradebookLogic.getGradeInformationForStudents(AssignmentTestDataLoad.CONTEXT_ID, studentList, testData.a3);
     	// verify grades were populated
-    	sub1 = (AssignmentSubmission)subList.get(0);
-    	assertFalse(sub1.isGradebookGradeReleased());
-    	assertEquals(AssignmentTestDataLoad.st1a3Grade.toString(), sub1.getGradebookGrade());
-    	assertEquals(AssignmentTestDataLoad.st1a3Comment, sub1.getGradebookComment());
-    	
-    	// this is testing the gb, not a2
-    	// now try student - shouldn't have auth
-    	/*externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT1_UID);
-    	try {
-    		gradebookLogic.populateGradesForSubmissions(AssignmentTestDataLoad.CONTEXT_ID, subList, testData.a3);
-    		fail("did not catch student trying to retrieve grade data via populateGradesForSubmissions");
-    	} catch (SecurityException se) {}*/
+    	gradeInfo = studentIdToGradeInfoMap.get(AssignmentTestDataLoad.STUDENT1_UID);
+    	assertFalse(gradeInfo.isGradebookGradeReleased());
+    	assertEquals(AssignmentTestDataLoad.st1a3Grade.toString(), gradeInfo.getGradebookGrade());
+    	assertEquals(AssignmentTestDataLoad.st1a3Comment, gradeInfo.getGradebookComment());
     }
     
     public void testSaveGradeAndCommentForStudent() {
@@ -784,12 +779,12 @@ public class ExternalGradebookLogicTest extends Assignment2TestBase {
     public void testSaveGradesAndCommentsForSubmissions() {
     	// try null info
     	try {
-    		gradebookLogic.saveGradesAndCommentsForSubmissions(null, AssignmentTestDataLoad.GB_ITEM1_ID, new ArrayList<AssignmentSubmission>());
+    		gradebookLogic.saveGradesAndComments(null, AssignmentTestDataLoad.GB_ITEM1_ID, new ArrayList<GradeInformation>());
     		fail("did not catch null contextId passed to saveGradesAndCommentsForSubmissions");
     	} catch (IllegalArgumentException iae) {}
     	
     	try {
-    		gradebookLogic.saveGradesAndCommentsForSubmissions(AssignmentTestDataLoad.CONTEXT_ID, null, new ArrayList<AssignmentSubmission>());
+    		gradebookLogic.saveGradesAndComments(AssignmentTestDataLoad.CONTEXT_ID, null, new ArrayList<GradeInformation>());
     		fail("did not catch null gradableObjectId passed to saveGradesAndCommentsForSubmissions");
     	} catch (IllegalArgumentException iae) {}
     	
@@ -899,5 +894,31 @@ public class ExternalGradebookLogicTest extends Assignment2TestBase {
     		gradebookLogic.saveGradesAndCommentsForSubmissions(AssignmentTestDataLoad.CONTEXT_ID, AssignmentTestDataLoad.GB_ITEM1_ID, subList);
     		fail("did not catch student trying to save grade info without auth!");
     	} catch (SecurityException se) {}*/
+    }
+    
+    public void testGetGradeInformationForSubmission() {
+    	// let's try some nulls
+    	try {
+    		gradebookLogic.getGradeInformationForSubmission(null, new AssignmentSubmission());
+    		fail("did not catch null contextId passed to getGradeInformationForSubmission");
+    	} catch (IllegalArgumentException iae) {}
+    	
+    	try {
+    		gradebookLogic.getGradeInformationForSubmission(AssignmentTestDataLoad.CONTEXT_ID, null);
+    		fail("did not catch null submission passed to getGradeInformationForSubmission");
+    	} catch (IllegalArgumentException iae) {}
+    	
+    	// become an instructor
+    	externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
+    	// try an ungraded submission
+    	GradeInformation gradeInfo = gradebookLogic.getGradeInformationForSubmission(AssignmentTestDataLoad.CONTEXT_ID, testData.st1a1Submission);
+    	assertNull(gradeInfo.getGradebookGrade());
+    	assertNull(gradeInfo.getGradebookComment());
+    	
+    	// now try a graded one
+    	gradeInfo = gradebookLogic.getGradeInformationForSubmission(AssignmentTestDataLoad.CONTEXT_ID, testData.st1a3Submission);
+    	assertFalse(gradeInfo.isGradebookGradeReleased());
+    	assertEquals(AssignmentTestDataLoad.st1a3Grade.toString(), gradeInfo.getGradebookGrade());
+    	assertEquals(AssignmentTestDataLoad.st1a3Comment, gradeInfo.getGradebookComment());
     }
 }

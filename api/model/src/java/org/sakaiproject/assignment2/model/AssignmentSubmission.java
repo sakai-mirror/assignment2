@@ -43,15 +43,10 @@ public class AssignmentSubmission {
 	private Set<AssignmentSubmissionVersion> submissionHistorySet;
 	private int revisionVersion;
 	
-	// non-persisted fields 
-	
-	// fields populated with gradebook data
-	private String gradebookGrade;
-	private String gradebookComment;
-	private boolean gradebookGradeReleased;
-	
-	// the current submission version must be populated manually b/c we want
-	// to retrieve the version rec with the highest id
+	/**
+	 * the current submission version must be populated manually b/c we want
+	 * to retrieve the most current version
+	 */
 	private AssignmentSubmissionVersion currentSubmissionVersion;
 
 	public AssignmentSubmission() {
@@ -179,64 +174,8 @@ public class AssignmentSubmission {
 	public void setRevisionVersion(int revisionVersion) {
 		this.revisionVersion = revisionVersion;
 	}
-
-	// non-persisted fields
 	
-	// fields populated with data from the gradebook
-	
-	/**
-	 * 
-	 * @return the grade for this submission from the associated gb item. This
-	 * grade will be returned in converted form according to the gradebook's
-	 * grade entry type (ie letter grade, percentage, etc)
-	 */
-	public String getGradebookGrade() {
-		return gradebookGrade;
-	}
-	
-	/**
-	 * set the grade for this submission to be stored in the associated gb item.
-	 * This grade must be in the correct form according to the gradebook's
-	 * grade entry type (ie letter grade, percentage, etc)
-	 * @param gradebookGrade
-	 */
-	public void setGradebookGrade(String gradebookGrade) {
-		this.gradebookGrade = gradebookGrade;
-	}
-	
-	/**
-	 * 
-	 * @return the gradebook comment from the associated gb item for this student
-	 */
-	public String getGradebookComment() {
-		return gradebookComment;
-	}
-	
-	/**
-	 * set the comment to be stored in the gradebook
-	 * @param gradebookComment
-	 */
-	public void setGradebookComment(String gradebookComment) {
-		this.gradebookComment = gradebookComment;
-	}
-	
-	/**
-	 * 
-	 * @return true if this grade has been released to the student
-	 */
-	public boolean isGradebookGradeReleased() {
-		return gradebookGradeReleased;
-	}
-
-	/**
-	 * true if this grade has been released to the student
-	 * @param gradebookGradeReleased
-	 */
-	public void setGradebookGradeReleased(boolean gradebookGradeReleased) {
-		this.gradebookGradeReleased = gradebookGradeReleased;
-	}
-	
-	// not persisted but convenient here for UI
+	// not persisted but convenient to have
 	/**
 	 * <b>Note</b> This is not a persisted field but must be handled specially
 	 * when you want to retrieve or update this information

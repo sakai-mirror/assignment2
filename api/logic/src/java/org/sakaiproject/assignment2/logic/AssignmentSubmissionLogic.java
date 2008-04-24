@@ -44,8 +44,6 @@ public interface AssignmentSubmissionLogic {
 	// sorting information
     public static final String SORT_BY_NAME = "name";
     public static final String SORT_BY_SUBMIT_DATE = "submitDate";
-    public static final String SORT_BY_STATUS = "status";
-    public static final String SORT_BY_GRADE = "grade";
     public static final String SORT_BY_RELEASED = "released";
     
 	/**
@@ -66,7 +64,6 @@ public interface AssignmentSubmissionLogic {
 	 * 
 	 * @param submissionVersionId
 	 * @return Returns the AssignmentSubmissionVersion with the given submissionVersionId.
-	 * Will populate grading information.
 	 * If the version is draft and the submitter is not the current user, will not
 	 * populate the submissionText or submissionAttachmentSet. If the curr user is
 	 * the submitter but feedback has not been released, will not populate
@@ -82,8 +79,7 @@ public interface AssignmentSubmissionLogic {
 	 * @param assignmentId
 	 * @param studentId
 	 * @return AssignmentSubmission associated with the given assignmentId and studentId.
-	 * 		will return an empty record (with gb info populated, if appropriate)
-	 * 		if there is no submission info for this student yet. If the curr version 
+	 * 		will return an empty record if there is no submission info for this student yet. If the curr version 
 	 * 		is draft and the submitter is not the current user, will not
 	 * 		populate the submissionText or submissionAttachmentSet. If the curr user is
 	 * 		the submitter but feedback has not been released, will not populate

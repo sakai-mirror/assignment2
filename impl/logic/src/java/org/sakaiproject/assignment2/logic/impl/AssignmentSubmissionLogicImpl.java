@@ -1,6 +1,6 @@
 /**********************************************************************************
- * $URL$
- * $Id$
+ * $URL:https://source.sakaiproject.org/contrib/assignment2/trunk/impl/logic/src/java/org/sakaiproject/assignment2/logic/impl/AssignmentSubmissionLogicImpl.java $
+ * $Id:AssignmentSubmissionLogicImpl.java 48274 2008-04-23 20:07:00Z wagnermr@iupui.edu $
  ***********************************************************************************
  *
  * Copyright (c) 2007 The Sakai Foundation.
@@ -97,14 +97,13 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		}
 		
 		String currentUserId = externalLogic.getCurrentUserId();
-		String currentContextId = externalLogic.getCurrentContextId();
 
 		// if the submission rec exists, we need to grab the most current version
 
 		Assignment2 assignment = submission.getAssignment();
 
 		if (!permissionLogic.isUserAbleToViewStudentSubmissionForAssignment(submission.getUserId(), assignment)) {
-			throw new SecurityException("user" + externalLogic.getCurrentUserId() + " attempted to view submission with id " + submissionId + " but is not authorized");
+			throw new SecurityException("user" + currentUserId + " attempted to view submission with id " + submissionId + " but is not authorized");
 		}
 
 		// since we may make modifications to this object for 
@@ -123,11 +122,11 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 
 		submission.setCurrentSubmissionVersion(currentVersion);
 
-		if (!assignment.isUngraded() && assignment.getGradableObjectId() != null) {
+		/*if (!assignment.isUngraded() && assignment.getGradableObjectId() != null) {
 			// retrieve the grade information for this submission
 			gradebookLogic.populateAllGradeInfoForSubmission(currentContextId, 
 					currentUserId, submission);
-		}
+		}*/
 
 		return submission;
 
@@ -164,10 +163,10 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			filterOutRestrictedVersionInfo(version, currentUserId);
 			
 			// populate gradebook information, if appropriate
-			if (!assignment.isUngraded() && assignment.getGradableObjectId() != null) {
+			/*if (!assignment.isUngraded() && assignment.getGradableObjectId() != null) {
 				gradebookLogic.populateAllGradeInfoForSubmission(externalLogic.getCurrentContextId(), 
 						currentUserId, submission);
-			}
+			}*/
 		}
 		
 		return version;
@@ -177,8 +176,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		if (assignmentId == null || studentId == null) {
 			throw new IllegalArgumentException("Null assignmentId or userId passed to getCurrentSubmissionByAssignmentAndUser");
 		}
-		
-		String contextId = externalLogic.getCurrentContextId();
+
 		String currentUserId = externalLogic.getCurrentUserId();
 		
 		AssignmentSubmission submission = null;
@@ -209,10 +207,10 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		} 
 
 		// retrieve the grade information for this submission
-		if (!assignment.isUngraded() && assignment.getGradableObjectId() != null) {
+		/*if (!assignment.isUngraded() && assignment.getGradableObjectId() != null) {
 			gradebookLogic.populateAllGradeInfoForSubmission(contextId, 
 					currentUserId, submission);
-		}
+		}*/
 
 		return submission;
 	}
@@ -458,8 +456,6 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		if (assignmentId == null) {
 			throw new IllegalArgumentException("null assignmentId passed to getViewableSubmissionsForAssignmentId");
 		}
-		
-		String contextId = externalLogic.getCurrentContextId();
 
 		List<AssignmentSubmission> viewableSubmissions = new ArrayList<AssignmentSubmission>();
 
@@ -507,11 +503,6 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 					viewableSubmissions.add(thisSubmission);
 				}
 			}
-		}
-
-		// if this assignment is graded, populate the grade information
-		if (!assignment.isUngraded() && assignment.getGradableObjectId() != null) {
-			gradebookLogic.populateGradesForSubmissions(contextId, viewableSubmissions, assignment);
 		}
 
 		return viewableSubmissions;

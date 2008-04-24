@@ -127,9 +127,6 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
     	assertTrue(version.getAssignmentSubmission().getUserId().equals(AssignmentTestDataLoad.STUDENT1_UID));
     	version = submissionLogic.getSubmissionVersionById(testData.st2a4CurrVersion.getId());
     	assertTrue(version.getAssignmentSubmission().getUserId().equals(AssignmentTestDataLoad.STUDENT2_UID));
-    	// double check that gb info was populated
-    	assertEquals(version.getAssignmentSubmission().getGradebookGrade(), AssignmentTestDataLoad.st2a4Grade.toString());
-    	assertEquals(version.getAssignmentSubmission().getGradebookComment(), AssignmentTestDataLoad.st2a4Comment);
     	
     	// ta should be restricted
     	externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
@@ -148,9 +145,6 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
     	assertTrue(version.getAssignmentSubmission().getUserId().equals(AssignmentTestDataLoad.STUDENT1_UID));
     	assertTrue(version.getFeedbackAttachSet().isEmpty());
     	assertTrue(version.getSubmissionAttachSet().isEmpty());
-    	// double check that gb info was populated
-    	assertEquals(version.getAssignmentSubmission().getGradebookGrade(), AssignmentTestDataLoad.st1a3Grade.toString());
-    	assertEquals(version.getAssignmentSubmission().getGradebookComment(), AssignmentTestDataLoad.st1a3Comment);
     	
     	// now let's double check that the ta can't see student submission details when it is
     	// draft...
@@ -161,11 +155,7 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
     	// make sure these are empty!
     	assertTrue(version.getSubmissionAttachSet().isEmpty());
     	assertTrue(version.getSubmittedText().equals(""));
-    	
-    	// double check that gb info was populated
-    	assertEquals(version.getAssignmentSubmission().getGradebookGrade(), AssignmentTestDataLoad.st1a3Grade.toString());
-    	assertEquals(version.getAssignmentSubmission().getGradebookComment(), AssignmentTestDataLoad.st1a3Comment);
-    	
+
     	// now make sure ta can't see st 3
     	try {
     		version = submissionLogic.getSubmissionVersionById(testData.st3a3CurrVersion.getId());
@@ -185,9 +175,6 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
     	// make sure these are populated! other users may not see this info b/c draft status
     	assertTrue(version.getSubmissionAttachSet().size() == 1);
     	assertTrue(!version.getSubmittedText().equals(""));
-    	// since grade is not released, students should not see grade info
-    	assertNull(version.getAssignmentSubmission().getGradebookComment());
-    	assertNull(version.getAssignmentSubmission().getGradebookGrade());
     	
     	// double check that student can't see other users
     	try {
@@ -232,9 +219,6 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
     	assertTrue(submission.getCurrentSubmissionVersion().getId().equals(testData.st1a3CurrVersion.getId()));
     	assertTrue(submission.getCurrentSubmissionVersion().getSubmissionAttachSet().isEmpty());
     	assertTrue(submission.getCurrentSubmissionVersion().getSubmittedText().equals(""));
-    	// check that grading info is included
-    	assertTrue(submission.getGradebookComment().equals(AssignmentTestDataLoad.st1a3Comment));
-    	assertTrue(submission.getGradebookGrade().equals(AssignmentTestDataLoad.st1a3Grade.toString()));
     	
     	// what if the student is not part of the passed assignment?
     	// ie it is restricted to groups that the student is not a member of
@@ -258,9 +242,6 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
     	assertTrue(submission.getCurrentSubmissionVersion().getId().equals(testData.st1a3CurrVersion.getId()));
     	assertTrue(submission.getCurrentSubmissionVersion().getSubmissionAttachSet().isEmpty());
     	assertTrue(submission.getCurrentSubmissionVersion().getSubmittedText().equals(""));
-    	// check that grading info is included
-    	assertTrue(submission.getGradebookComment().equals(AssignmentTestDataLoad.st1a3Comment));
-    	assertTrue(submission.getGradebookGrade().equals(AssignmentTestDataLoad.st1a3Grade.toString()));
     	
     	// TODO grader permissions
     	
@@ -273,9 +254,6 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
     	// this is a draft, so check that the submission info is populated for student
     	assertTrue(submission.getCurrentSubmissionVersion().getSubmissionAttachSet().size() == 1);
     	assertFalse(submission.getCurrentSubmissionVersion().getSubmittedText().equals(""));
-    	// since grade is not released, students should not see grade info
-    	assertNull(submission.getGradebookComment());
-    	assertNull(submission.getGradebookGrade());
     	
     	// double check that student can't view others
     	try {

@@ -173,28 +173,20 @@ public interface ExternalGradebookLogic {
 	 */
 	public String getStudentGradeCommentForItem(String contextId, String studentId, Long gbItemId);
 	
-	/**
-	 * given a list of submissions and the parent assignment, populates the grade information
-	 * for each submission
-	 * @param contextId
-	 * @param submissionList
-	 * @param assignment
-	 * @throws SecurityException if the current user is not authorized to access grade information
-	 * for any of the students in the submissionList
-	 */
-	public void populateGradesForSubmissions(String contextId, List<AssignmentSubmission> submissionList, Assignment2 assignment);
-	
-	/**
-	 * will populate gradebook-related fields on the submission record 
-	 * ie grade, comment, released, etc. if the submission is for the currUserId
-	 * you pass and the grade info has not been released, grade and comment will
-	 * not be populated
-	 * @param contextId
-	 * @param currUserId
-	 * @param submission
-	 */
-	public void populateAllGradeInfoForSubmission(String contextId, String currUserId, AssignmentSubmission submission);
 
+	/**
+	 * 
+	 * @param contextId
+	 * @param submission
+	 * @return a GradeInformation object containing the grade information from the
+	 * Gradebook for the given submission's assignment's associated gb item.
+	 * Returns an "empty" GradeInformation object if the assignment is ungraded or
+	 * gb item does not exist
+	 * @throws SecurityException if user is not authorized to view grade info for
+	 * the student for the gb item in the Gradebook tool
+	 */
+	public GradeInformation getGradeInformationForSubmission(String contextId, AssignmentSubmission submission);
+	
 	/**
 	 * 
 	 * @param contextId
@@ -246,13 +238,15 @@ public interface ExternalGradebookLogic {
 			String studentId, String grade, String comment) throws InvalidGradeForAssignmentException;
 	
 	/**
-	 * Given a list of submissions with the gradebookGrade and gradebookComment
+	 * Given a list of GradeInformation objects with the gradebookGrade and gradebookComment
 	 * information populated with the info you want to update, will update the
-	 * grades and comments in the gradebook. Submissions must all be for the same
-	 * assignment
+	 * grades and comments in the gradebook. GradeInformation must all be for the same
+	 * gradebook item
 	 * @param contextId
 	 * @param gradableObjectId - the id of the associated gradebook item
-	 * @param submissionList
+	 * @param gradeInfoList - list of GradeInformation objects populated with
+	 * the grade and comment you want to update. Note: this will save whatever
+	 * you have passed for grade AND comment, even if they are null
 	 * @throws InvalidGradeForAssignmentException if any passed grade is invalid according
 	 * to the gradebook's grade entry type
 	 * @throws SecurityException if user is not auth to grade any student in the list
@@ -260,7 +254,8 @@ public interface ExternalGradebookLogic {
 	 * @throws GradebookItemNotFoundException if there is no gradebook item with the
 	 * associated gradableObjectId
 	 */
-	public void saveGradesAndCommentsForSubmissions(String contextId, Long gradableObjectId, List<AssignmentSubmission> submissionList);
+	public void saveGradesAndComments(String contextId, Long gradableObjectId, 
+			List<GradeInformation> gradeInfoList);
 	
 	/**
 	 * 
@@ -290,4 +285,18 @@ public interface ExternalGradebookLogic {
 	 * efficiency
 	 */
 	public boolean isGradeValid(String contextId, String grade);
+	
+	/**
+	 * 
+	 * @param contextId
+	 * @param studentIdList
+	 * @param assignment
+	 * @return a map of the studentId to the GradeInformation record populated
+	 * with the student's grade info from the gradebook item associated with the
+	 * given assignment.
+	 * @throws IllegalArgumentException - if the assignment you pass is ungraded
+	 * @throws SecurityException - if the current user is not authorized to
+	 * view grade information for a student in the list for the assoc gb item
+	 */
+	public Map<String, GradeInformation> getGradeInformationForStudents(String contextId, List<String> studentIdList, Assignment2 assignment);
 }

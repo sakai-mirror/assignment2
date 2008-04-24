@@ -4,7 +4,10 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -16,6 +19,7 @@ import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
+import org.sakaiproject.assignment2.logic.GradeInformation;
 import org.sakaiproject.assignment2.logic.ZipExportLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
@@ -118,6 +122,22 @@ public class ZipExportLogicImpl implements ZipExportLogic
 		String gradeTypeString = bundle
 				.getString("assignment2.assignment_grade-assignment.downloadall.type."
 						+ gradebookLogic.getGradeType(assignment.getContextId()));
+		
+		Map<String, GradeInformation> studentIdToGradeMap = new HashMap<String, GradeInformation>();
+		// retrieve all of the grade information for these submissions if
+		// this is a graded assignment
+		if (submissions != null && !assignment.isUngraded() && assignment.getGradableObjectId() != null) {
+			//first, we need a list of the student ids
+			List<String> studentIds = new ArrayList<String>();
+			for (AssignmentSubmission submission : submissions) {
+				studentIds.add(submission.getUserId());
+			}
+			
+			// now retrieve the grades
+			studentIdToGradeMap = gradebookLogic.getGradeInformationForStudents(externalLogic.getCurrentContextId(),
+					studentIds, assignment);
+		}
+		
 		try
 		{
 			ZipOutputStream out = new ZipOutputStream(outputStream);
@@ -156,8 +176,18 @@ public class ZipExportLogicImpl implements ZipExportLogic
 					String displayId = user.getDisplayId();
 					String fullName = externalLogic.getUserFullName(userId);
 					String submittersString = name + "(" + displayId + ")";
+					
+					String grade = "";
+					String gradeComment = "";
+					if (!assignment.isUngraded() && assignment.getGradableObjectId() != null) {
+						GradeInformation gradeInfo = studentIdToGradeMap.get(userId);
+						if (gradeInfo != null) {
+							grade = gradeInfo.getGradebookGrade();
+							gradeComment = gradeInfo.getGradebookComment();
+						}
+					}
 					gradesBuilder.append(name).append(",").append(displayId).append(",")
-							.append(fullName).append(",").append(s.getGradebookGrade())
+							.append(fullName).append(",").append(grade)
 							.append("\n");
 
 					if (StringUtil.trimToNull(submittersString) != null)

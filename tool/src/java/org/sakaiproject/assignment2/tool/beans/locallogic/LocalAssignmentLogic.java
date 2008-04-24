@@ -1,6 +1,6 @@
 /**********************************************************************************
- * $URL$
- * $Id$
+ * $URL:https://source.sakaiproject.org/contrib/assignment2/trunk/tool/src/java/org/sakaiproject/assignment2/tool/beans/locallogic/LocalAssignmentLogic.java $
+ * $Id:LocalAssignmentLogic.java 48274 2008-04-23 20:07:00Z wagnermr@iupui.edu $
  ***********************************************************************************
  *
  * Copyright (c) 2007 The Sakai Foundation.
@@ -42,6 +42,7 @@ public class LocalAssignmentLogic {
 	// sorting that uses non-persisted fields populated in the UI
     public static final String SORT_BY_FOR = "for";
     public static final String SORT_BY_STATUS = "status";
+    public static final String SORT_BY_GRADE = "grade";
 	
 	/**
 	 * 

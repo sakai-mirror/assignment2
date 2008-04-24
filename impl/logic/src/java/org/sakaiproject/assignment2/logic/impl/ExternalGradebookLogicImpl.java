@@ -33,6 +33,7 @@ import org.sakaiproject.assignment2.exception.GradebookItemNotFoundException;
 import org.sakaiproject.assignment2.exception.InvalidGradeForAssignmentException;
 import org.sakaiproject.assignment2.exception.NoGradebookDataExistsException;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
+import org.sakaiproject.assignment2.logic.GradeInformation;
 import org.sakaiproject.assignment2.logic.GradebookItem;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
@@ -107,8 +108,6 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
 					} else {
 						// check to see if this gradable object exists anymore
 						if (!gradebookService.isGradableObjectDefined(goId)) {
-							// then the GO was deleted -- let the user know
-							gradedAssignment.setNeedsUserAttention(true);
 							viewableGradedAssignments.add(gradedAssignment);
 						} else {
 							// if it exists, then this user does not have perm to view it in the gb
@@ -122,7 +121,6 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
 					}
 				} else {
 					// there is no gradableObjectId set for this assignment!
-					gradedAssignment.setNeedsUserAttention(true);
 					viewableGradedAssignments.add(gradedAssignment);
 				}
 			}
@@ -338,52 +336,6 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
     	return comment;
     }
     
-    public void populateGradesForSubmissions(String contextId, List<AssignmentSubmission> submissionList, Assignment2 assignment) {
-    	if (contextId == null || assignment == null) {
-    		throw new IllegalArgumentException("null contextId or assignment passed to populateStudentGradeInformation");
-    	}
-    	
-    	if (!assignment.isUngraded() && assignment.getGradableObjectId() != null && 
-    			submissionList != null && !submissionList.isEmpty()) {
-    		Map<String, AssignmentSubmission> studentIdSubmissionMap = new HashMap<String, AssignmentSubmission>();
-    		for (AssignmentSubmission submission : submissionList) {
-    			if (submission != null) {
-    				studentIdSubmissionMap.put(submission.getUserId(), submission);
-    			}
-    		}
-    		
-    		List<String> studentIdList = new ArrayList<String>(studentIdSubmissionMap.keySet());
-    		List<GradeDefinition> gradeDefs = new ArrayList<GradeDefinition>();
-    		
-    		try {
-    			gradeDefs = gradebookService.getGradesForStudentsForItem(contextId, 
-    					assignment.getGradableObjectId(), studentIdList);
-    		} catch (SecurityException se) {
-    			throw new SecurityException("User attempted to access a list of student grades" +
-    					" that he/she did not have authorization for in the gb.", se);
-    		}
-    		
-    		if (gradeDefs != null) {
-    			for (GradeDefinition gradeDef : gradeDefs) {
-    				if (gradeDef != null) {
-    					StringBuilder sb = new StringBuilder();
-    					sb.append(gradeDef.getGrade());
-    					if (gradeDef.getGradeEntryType() == GradebookService.GRADE_TYPE_PERCENTAGE) {
-    						sb.append("%");
-    					}
-    					
-    					AssignmentSubmission thisSubmission = (AssignmentSubmission) studentIdSubmissionMap.get(gradeDef.getStudentUid());
-    					if (thisSubmission != null) {
-    						thisSubmission.setGradebookGrade(sb.toString());
-    						thisSubmission.setGradebookGradeReleased(gradeDef.isGradeReleased());
-    						thisSubmission.setGradebookComment(gradeDef.getGradeComment());
-    					}
-    				}
-    			}
-    		}
-    	}
-    }
-    
     public boolean isCurrentUserAbleToGradeStudentForItem(String contextId, String studentId, Long gradableObjectId) {
     	if (contextId == null || studentId == null || gradableObjectId == null) {
     		throw new IllegalArgumentException("null contextId, studentId or gradableObjectId passed to isCurrentUserAbleToGradeStudentForItem");
@@ -392,39 +344,40 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
     	return gradebookService.isUserAbleToGradeItemForStudent(contextId, gradableObjectId, studentId);
     }
     
-    public void populateAllGradeInfoForSubmission(String contextId, String currUserId, AssignmentSubmission submission) {
-    	if (contextId == null || currUserId == null) {
-    		throw new IllegalArgumentException("null contextId or currUserId passed to populateAllGradeInfoForSubmission");
+    public GradeInformation getGradeInformationForSubmission(String contextId, AssignmentSubmission submission) {
+    	if (contextId == null || submission == null) {
+    		throw new IllegalArgumentException("null contextId or submission passed to populateAllGradeInfoForSubmission");
     	}
     	
-    	if (submission != null) {
-    		Assignment2 assignment = submission.getAssignment();
-    		if (assignment != null && !assignment.isUngraded() && assignment.getGradableObjectId() != null) {
-    			Long gbItemId = assignment.getGradableObjectId();
-    			
-    			try {
-    				GradeDefinition gradeDef = gradebookService.getGradeDefinitionForStudentForItem(contextId, gbItemId, submission.getUserId());
-    				
-    				if (gradeDef != null) {
-    					submission.setGradebookGrade(gradeDef.getGrade());
-        				submission.setGradebookGradeReleased(gradeDef.isGradeReleased());
-        				submission.setGradebookComment(gradeDef.getGradeComment());
-    				}
-    				
-    				// if the submission is for the current user and grade info
-    				// has not been released, do not return grade info
-    				if (gradeDef != null && !gradeDef.isGradeReleased() && 
-    						currUserId.equals(submission.getUserId())) {
-    					submission.setGradebookComment(null);
-    					submission.setGradebookGrade(null);
-    				}
-    				
-    			} catch (AssessmentNotFoundException anfe) {
-    				// this gb item no longer exists, so there is no information to populate
-    				if (log.isDebugEnabled()) log.debug("gb item with id " + gbItemId + " no longer exists, so returning null grade info");
-    			}
-    		}
+    	Assignment2 assignment = submission.getAssignment();
+    	if (assignment == null) {
+    		throw new IllegalArgumentException("Null assignment associated with submission passed to getGradeInfoForSubmission");
     	}
+    	
+    	GradeInformation gradeInfo = new GradeInformation();
+    	gradeInfo.setStudentId(submission.getUserId());
+    	
+    	if (!assignment.isUngraded() && assignment.getGradableObjectId() != null) {
+    		try {
+				GradeDefinition gradeDef = gradebookService.getGradeDefinitionForStudentForItem(contextId, assignment.getGradableObjectId(), submission.getUserId());
+				
+				if (gradeDef != null) {
+					gradeInfo.setGradebookGrade(gradeDef.getGrade());
+					gradeInfo.setGradebookGradeReleased(gradeDef.isGradeReleased());
+					gradeInfo.setGradebookComment(gradeDef.getGradeComment());
+				}
+				
+			} catch (AssessmentNotFoundException anfe) {
+				// this gb item no longer exists, so there is no information to populate
+				if (log.isDebugEnabled()) log.debug("gb item with id " + assignment.getGradableObjectId() + " no longer exists, so returning null grade info");
+			} catch (SecurityException se) {
+				throw new SecurityException("User does not have authorization to access " +
+						"grade information for " + submission.getUserId() + " for gb item " + 
+						assignment.getGradableObjectId(), se);
+			}
+    	}
+    	
+    	return gradeInfo;
     }
 
 	public String getGradeType(String contextId)
@@ -506,9 +459,66 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
 							+ "without authorization. Error: " + se.getMessage(), se);
 		}
 	}
+
+	public Map<String, GradeInformation> getGradeInformationForStudents(String contextId, List<String> studentIdList, Assignment2 assignment) {
+		if (contextId == null || assignment == null) {
+			throw new IllegalArgumentException("null contextId or assignment passed to populateStudentGradeInformation");
+		}
+
+		// throw an error if this is called for an ungraded assignment
+		if (assignment.isUngraded() || assignment.getGradableObjectId() == null) {
+			throw new IllegalArgumentException("Ungraded assignment was passed to " +
+			"getGradeInformationForStudents. This method may only be used for graded assignments.");
+		}
+
+		if (assignment.isUngraded() || assignment.getGradableObjectId() == null) {
+			throw new IllegalArgumentException("An ungraded assignment was passed to getGradeInformationForSubmissions");
+		}
+
+		Map<String, GradeInformation> studentIdToGradeInfoMap = new HashMap<String, GradeInformation>();
+
+		if (studentIdList != null && !studentIdList.isEmpty()) {
+			// let's retrieve a map of the students and their grades
+			Map<String, GradeDefinition> studentIdToGradeDefMap = new HashMap<String, GradeDefinition>();
+
+			try {
+				List<GradeDefinition>gradeDefs = gradebookService.getGradesForStudentsForItem(contextId, 
+						assignment.getGradableObjectId(), studentIdList);
+
+				if (gradeDefs != null) {
+					for (GradeDefinition gradeDef : gradeDefs) {
+						studentIdToGradeDefMap.put(gradeDef.getStudentUid(), gradeDef);
+					}
+				}
+			} catch (SecurityException se) {
+				throw new SecurityException("User attempted to access a list of student grades" +
+						" that he/she did not have authorization for in the gb.", se);
+			}
+
+			for (String studentId : studentIdList) {
+
+				GradeInformation gradeInfo = new GradeInformation();
+				gradeInfo.setStudentId(studentId);
+				gradeInfo.setGradableObjectId(assignment.getGradableObjectId());
+
+				// get the GradeDefinition for this student and convert it to
+				// our local GradeInformation object
+				GradeDefinition gradeDef = studentIdToGradeDefMap.get(studentId);
+				if (gradeDef != null) {
+					gradeInfo.setGradebookComment(gradeDef.getGradeComment());
+					gradeInfo.setGradebookGrade(gradeDef.getGrade());
+					gradeInfo.setGradebookGradeReleased(gradeDef.isGradeReleased());
+				} 
+
+				studentIdToGradeInfoMap.put(studentId, gradeInfo);
+			}
+		}
+
+		return studentIdToGradeInfoMap;
+	}
 	
-	public void saveGradesAndCommentsForSubmissions(String contextId, Long gradableObjectId, 
-			List<AssignmentSubmission> submissionList) {
+	public void saveGradesAndComments(String contextId, Long gradableObjectId, 
+			List<GradeInformation> gradeInfoList) {
 		if (contextId == null || gradableObjectId == null) {
 			throw new IllegalArgumentException("Null contextId or gradableObjectId " +
 					"passed to saveGradesAndCommentsForSubmissions");
@@ -516,27 +526,22 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
 		
 		List<GradeDefinition> gradeDefList = new ArrayList<GradeDefinition>();
 		
-		if (submissionList != null) {
-			for (AssignmentSubmission submission : submissionList) {
-				if (submission != null) {
+		if (gradeInfoList != null) {
+			for (GradeInformation gradeInfo : gradeInfoList) {
+				if (gradeInfo != null) {
 					// double check that we weren't passed submissions for 
 					// different assignments - we don't want to update the wrong grades!
-					Long assignGo = submission.getAssignment().getGradableObjectId();
+					Long assignGo = gradeInfo.getGradableObjectId();
 					if (assignGo == null ||	!assignGo.equals(gradableObjectId)) {
 						throw new IllegalArgumentException("The given submission's gradableObjectId " + assignGo +
 							" does not match the goId passed to saveGradesAndCommentsForSubmissions: " + gradableObjectId);
 					}
-					String assignContext = submission.getAssignment().getContextId();
-					if (assignContext == null || !assignContext.equals(contextId)) {
-						throw new IllegalArgumentException("The given submission's contextId " + assignContext +
-							" does not match the contextId passed to saveGradesAndCommentsForSubmissions: " + contextId);
-					}
 					
 					// convert the info into a GradeDefinition
 					GradeDefinition gradeDef = new GradeDefinition();
-					gradeDef.setGrade(submission.getGradebookGrade());
-					gradeDef.setGradeComment(submission.getGradebookComment());
-					gradeDef.setStudentUid(submission.getUserId());
+					gradeDef.setGrade(gradeInfo.getGradebookGrade());
+					gradeDef.setGradeComment(gradeInfo.getGradebookComment());
+					gradeDef.setStudentUid(gradeInfo.getStudentId());
 					
 					gradeDefList.add(gradeDef);
 				} 
