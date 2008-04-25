@@ -1,71 +1,55 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
-<head>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-
-	<title>New Assignment</title>
-	<link href="/library/skin/tool_base.css" type="text/css" rel="stylesheet" media="all"/>
-	<link href="/library/skin/default/tool.css" type="text/css" rel="stylesheet" media="all"/>
-	<link href="../css/assn2_hotness.css" type="text/css" rel="stylesheet" media="all" />
-</head>
-
-<body>
-	<div class="breadcrumb">Breadcrumbs/go/here.</div>
-	<div class="steps">
-		Step1: Assignment Content |
-		<a href="newassignment2.html">Step 2: Submission Handling</a> |
-		<a href="newassignment3.html">Step 3: Other Options</a>
-	</div>
-	<h2>Assignment Content</h2>
-	<div class="instructions">
-		Complete the form and choose an action below. * indicates required information.
-	</div>
-	<div>
-		<form action="#">
-			<div class="section">
-				<div class="prompt">
-					<h4>
-						* Title:
-					</h4>
-				</div>
-				<div class="input">
-					<input type="text" size="80" />
-				</div>
+<div class="steps">
+	Step1: Assignment Content |
+	<a href="newassignment2.html?width=800&amp;height=600&amp;modal=true" class="thickbox">Step 2: Submission Handling</a> |
+	<a href="newassignment3.html?width=800&amp;height=600&amp;modal=true" class="thickbox">Step 3: Other Options</a>
+</div>
+<h2>Assignment Content</h2>
+<div class="instructions">
+	Complete the form and choose an action below. * indicates required information.
+</div>
+<div>
+	<form action="#">
+		<div class="section">
+			<div class="prompt">
+				<h4>
+					* Title:
+				</h4>
 			</div>
-			<div class="section">
-				<div class="prompt">
-					<h4>
-						* Assignment Instructions:
-					</h4>
-				</div>
-				<div class="input">
-					<textarea cols="80" rows="15">FCKEditor goes here</textarea>
-				</div>
+			<div class="input">
+				<input type="text" size="80" />
 			</div>
-			<div class="section">
-				<div class="prompt">
-					<h4>
-						Attachments:
-					</h4>
-				</div>
-				<div class="input">
-					<p>
-						No attachments yet
-					</p>
-					<p>
-						<a href="#">Add attachments</a>
-					</p>
-				</div>
-				<div class="input">
-					<p class="buttons">
-						<input type="submit" value="Save as Draft" />
-						<input type="submit" value="Cancel" />
-						<input type="submit" value="Step 2 &gt;&gt;" />
-					</p>
-				</div>
+		</div>
+		<div class="section">
+			<div class="prompt">
+				<h4>
+					* Assignment Instructions:
+				</h4>
 			</div>
-		</form>
-	</div>
-</body>
-</html>
+			<div class="input">
+				<textarea cols="80" rows="15">FCKEditor goes here</textarea>
+			</div>
+		</div>
+		<div class="section">
+			<div class="prompt">
+				<h4>
+					Attachments:
+				</h4>
+			</div>
+			<div class="input">
+				<p>
+					No attachments yet
+				</p>
+				<p>
+					<a href="#" class="thickbox">Add attachments</a>
+				</p>
+			</div>
+			<div class="input">
+				<p class="buttons">
+					<input type="submit" value="Save as Draft" onclick="tb_remove()" />
+					<input type="submit" value="Cancel" onclick="tb_remove()" />
+					<input type="submit" value="Step 2 &gt;&gt;" />
+				</p>
+			</div>
+		</div>
+	</form>
+</div>

@@ -1,156 +1,135 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
-<head>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-
-	<title>New Assignment</title>
-	<link href="/library/skin/tool_base.css" type="text/css" rel="stylesheet" media="all"/>
-	<link href="/library/skin/default/tool.css" type="text/css" rel="stylesheet" media="all"/>
-	<link href="../css/assn2_hotness.css" type="text/css" rel="stylesheet" media="all" />
-	<link rel="stylesheet" href="../css/tsdp/tsdp.datepicker.css" type="text/css" />
-	<script src="../js/jquery-1.2.3.min.js" type="text/javascript"></script>
-	<script src="../js/jquery.ui-1.5b2/datepicker/core/ui.datepicker.js" type="text/javascript"></script>
-	<script src="../js/date.format.js" type="text/javascript"></script>
-	<script src="../js/newassignment2.js" type="text/javascript"></script>
-</head>
-
-<body>
-  <div class="breadcrumb">Breadcrumbs/go/here.</div>
-  <div class="steps">
-    <a href="newassignment1.html">Step1: Assignment Content</a> |
-    Step 2: Submission Handling |
-    <a href="newassignment3.html">Step 3: Other Options</a>
-  </div>
-  <h2>Submission Handling</h2>
-	<div>
-		<form action="#">
-			<div class="section">
-				<div class="prompt">
-					<h4>
-						* Submission Method:
-					</h4>
-				</div>
-				<div class="input">
-					<p>
-						<input type="radio" name="submissionMethod" id="electronic" value="true" checked="checked" />
-						<label for="electronic">Electronic submissions</label>
-					</p>
-					<p>
-						<input type="radio" name="submissionMethod" id="nonelectronic" value="false"/>
-						<label for="nonelectronic">Non-electronic submissions</label>
-					</p>
-				</div>
+<div class="steps">
+	<a href="newassignment1.html?width=800&amp;height=600&amp;modal=true" class="thickbox">Step1: Assignment Content</a> |
+	Step 2: Submission Handling |
+	<a href="newassignment3.html?width=800&amp;height=600&amp;modal=true" class="thickbox">Step 3: Other Options</a>
+</div>
+<h2>Submission Handling</h2>
+<div>
+	<form action="#">
+		<div class="section">
+			<div class="prompt">
+				<h4>
+					* Submission Method:
+				</h4>
 			</div>
-			<div class="section">
-				<div class="prompt">
-					<h4>
-						* Open Date:
-					</h4>
-				</div>
-				<div class="input">
-					<input type="text" size="10" id="openDate" value="01/01/1970" />
-					<input type="text" size="8" id="openTime" value="12:00 PM" />
-					<div class="instructions">
-						Site Participants will not see this assignment until the open date.
-					</div>
-				</div>
+			<div class="input">
+				<p>
+					<input type="radio" name="submissionMethod" id="electronic" value="true" checked="checked" />
+					<label for="electronic">Electronic submissions</label>
+				</p>
+				<p>
+					<input type="radio" name="submissionMethod" id="nonelectronic" value="false"/>
+					<label for="nonelectronic">Non-electronic submissions</label>
+				</p>
 			</div>
-			<div class="section">
-				<div class="prompt">
-					<h4>
-						Due Date:
-					</h4>
-				</div>
-				<div class="input">
-					<input type="radio" name="dueDateRadio" id="dueDateYes" value="1" />
-					<label for="dueDateYes">Yes</label>
-					<input type="radio" name="dueDateRadio" id="dueDateNo" value="0" checked="checked" />
-					<label for="dueDateNo">No</label>
-					<input type="text" size="10" id="dueDate" value="01/01/1970" />
-					<input type="text" size="8" id="dueTime" value="12:00 PM" />
-				</div>
+		</div>
+		<div class="section">
+			<div class="prompt">
+				<h4>
+					* Open Date:
+				</h4>
 			</div>
-			<div class="section">
-				<div class="prompt">
-					<h4>
-						Accept Until:
-					</h4>
-				</div>
-				<div class="input">
-				  <input type="radio" name="acceptUntilRadio" value="1" id="acceptUntilYes" />
-          			<label for="acceptUntilYes">Yes</label>
-				  <input type="radio" name="acceptUntilRadio" value="0" id="acceptUntilNo" checked="checked" />
-          			<label for="acceptUntilNo">No</label>
-					<input type="text" size="10" id="acceptUntilDate" value="01/01/1970" />
-					<input type="text" size="8" id="acceptUntilTime" value="12:00 PM" />
-				</div>
-			</div>
-			<div class="section">
-				<div class="prompt">
-					<h4>
-						Who will submit:
-					</h4>
-				</div>
-				<div class="input">
-					<p>
-						<input type="radio" name="who" id="all" checked="checked" />
-						<label for="all">All site participants</label>
-					</p>
-					<p>
-						<input type="radio" name="who" id="selectedGroups" />
-						<label for="selectedGroups">Only specific sections or groups ...</label>
-					</p>
-					<p>
-						<input type="radio" name="who" id="groupTeams" />
-						<label for="groupTeams">Teams based on specific groups ...</label>
-					</p>
-					<p>
-						<input type="radio" name="who" id="anonymous" />
-						<label for="anonymous">Anonymous site participants</label>
-					</p>
-				</div>
-			</div>
-			<div class="section">
-				<div class="prompt">
-					<h4>
-						Grading:
-					</h4>
-				</div>
-				<div class="input">
-					<p>
-						<input type="radio" name="isGraded" id="newgrade" value="true" checked="checked" />
-						<label for="newgrade">Add to Gradebook</label>
-					</p>
-					<p>
-						<input type="radio" name="isGraded" id="graded" value="false" />
-						<label for="graded">Link to existing Gradebook column ...</label>
-					</p>
-					<p>
-						<input type="radio" name="isGraded" id="ungraded" value="false" />
-						<label for="ungraded">This assignment will not be graded</label>
-					</p>
-				</div>
-			</div>
-			<div class="section">
-				<div class="prompt">
-				</div>
-				<div class="input instructions">
-					* Indicates required information.
-				</div>
-			</div>
-			<div class="section">
-				<div class="prompt">
-				</div>
-				<div class="input buttons">
-					<input type="submit" value="&lt;&lt; Step 1" />
-					<input type="submit" value="Save as Draft" />
-					<input type="submit" value="Cancel" />
-					<input type="submit" value="Step 3 &gt;&gt;" />
+			<div class="input">
+				<input type="text" size="10" id="openDate" value="01/01/1970" />
+				<input type="text" size="8" id="openTime" value="12:00 PM" />
+				<div class="instructions">
+					Site Participants will not see this assignment until the open date.
 				</div>
 			</div>
 		</div>
-		</form>
+		<div class="section">
+			<div class="prompt">
+				<h4>
+					Due Date:
+				</h4>
+			</div>
+			<div class="input">
+				<input type="radio" name="dueDateRadio" id="dueDateYes" value="1" />
+				<label for="dueDateYes">Yes</label>
+				<input type="radio" name="dueDateRadio" id="dueDateNo" value="0" checked="checked" />
+				<label for="dueDateNo">No</label>
+				<input type="text" size="10" id="dueDate" value="01/01/1970" />
+				<input type="text" size="8" id="dueTime" value="12:00 PM" />
+			</div>
+		</div>
+		<div class="section">
+			<div class="prompt">
+				<h4>
+					Accept Until:
+				</h4>
+			</div>
+			<div class="input">
+				<input type="radio" name="acceptUntilRadio" value="1" id="acceptUntilYes" />
+							<label for="acceptUntilYes">Yes</label>
+				<input type="radio" name="acceptUntilRadio" value="0" id="acceptUntilNo" checked="checked" />
+							<label for="acceptUntilNo">No</label>
+				<input type="text" size="10" id="acceptUntilDate" value="01/01/1970" />
+				<input type="text" size="8" id="acceptUntilTime" value="12:00 PM" />
+			</div>
+		</div>
+		<div class="section">
+			<div class="prompt">
+				<h4>
+					Who will submit:
+				</h4>
+			</div>
+			<div class="input">
+				<p>
+					<input type="radio" name="who" id="all" checked="checked" />
+					<label for="all">All site participants</label>
+				</p>
+				<p>
+					<input type="radio" name="who" id="selectedGroups" />
+					<label for="selectedGroups">Only specific sections or groups ...</label>
+				</p>
+				<p>
+					<input type="radio" name="who" id="groupTeams" />
+					<label for="groupTeams">Teams based on specific groups ...</label>
+				</p>
+				<p>
+					<input type="radio" name="who" id="anonymous" />
+					<label for="anonymous">Anonymous site participants</label>
+				</p>
+			</div>
+		</div>
+		<div class="section">
+			<div class="prompt">
+				<h4>
+					Grading:
+				</h4>
+			</div>
+			<div class="input">
+				<p>
+					<input type="radio" name="isGraded" id="newgrade" value="true" checked="checked" />
+					<label for="newgrade">Add to Gradebook</label>
+				</p>
+				<p>
+					<input type="radio" name="isGraded" id="graded" value="false" />
+					<label for="graded">Link to existing Gradebook column ...</label>
+				</p>
+				<p>
+					<input type="radio" name="isGraded" id="ungraded" value="false" />
+					<label for="ungraded">This assignment will not be graded</label>
+				</p>
+			</div>
+		</div>
+		<div class="section">
+			<div class="prompt">
+			</div>
+			<div class="input instructions">
+				* Indicates required information.
+			</div>
+		</div>
+		<div class="section">
+			<div class="prompt">
+			</div>
+			<div class="input buttons">
+				<input type="submit" value="&lt;&lt; Step 1" />
+				<input type="submit" value="Save as Draft" onclick="tb_remove()" />
+				<input type="submit" value="Cancel" onclick="tb_remove()" />
+				<input type="submit" value="Step 3 &gt;&gt;" />
+			</div>
+		</div>
 	</div>
-</body>
-</html>
+	</form>
+</div>
