@@ -168,21 +168,6 @@ public class ComparatorsUtils {
 	}
 	
 	/**
-	 * static class to sort AssignmentSubmission objects by grade
-	 */
-	public static class SubmissionGradeComparator implements Comparator<AssignmentSubmission>  {
-		public int compare(AssignmentSubmission submission1, AssignmentSubmission submission2) {
-			String grade1 = submission1.getGradebookGrade() != null ? submission1.getGradebookGrade() : "";
-			String grade2 = submission2.getGradebookGrade() != null ? submission2.getGradebookGrade() : "";
-			int value = grade1.compareTo(grade2);
-			if (value == 0) {
-				value = sortByName(submission1, submission2);
-			}
-			return value;
-		}
-	}
-	
-	/**
 	 * static class to sort AssignmentSubmission objects by feedback release status
 	 */
 	public static class SubmissionFeedbackReleasedComparator implements Comparator<AssignmentSubmission>  {

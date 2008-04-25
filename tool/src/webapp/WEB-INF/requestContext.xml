@@ -35,6 +35,7 @@
       <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
       <property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
       <property name="permissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentPermissionLogic" />
+      <property name="externalGradebookLogic" ref="org.sakaiproject.assignment2.logic.ExternalGradebookLogic" />
    </bean>
    <bean id="StudentViewAssignmentRenderer" class="org.sakaiproject.assignment2.tool.producers.renderers.StudentViewAssignmentRenderer">
       <property name="locale" ref="requestLocale" />
@@ -96,6 +97,7 @@
       <property name="sortHeaderRenderer" ref="SortHeaderRenderer" />
       <property name="attachmentListRenderer" ref="AttachmentListRenderer" />
       <property name="permissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentPermissionLogic" />
+      <property name="externalGradebookLogic" ref="org.sakaiproject.assignment2.logic.ExternalGradebookLogic" />
    </bean>
    
    <bean class="org.sakaiproject.assignment2.tool.producers.AssignmentGradeReportProducer">

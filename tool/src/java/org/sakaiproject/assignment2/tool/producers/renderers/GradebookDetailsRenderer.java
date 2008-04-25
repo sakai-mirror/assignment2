@@ -23,7 +23,9 @@ package org.sakaiproject.assignment2.tool.producers.renderers;
 
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
+import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
+import org.sakaiproject.assignment2.logic.GradeInformation;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.tool.producers.FinishedHelperProducer;
@@ -51,6 +53,11 @@ public class GradebookDetailsRenderer {
 		this.permissionLogic = permissionLogic;
 	}
 	
+	private ExternalGradebookLogic gradebookLogic;
+	public void setExternalGradebookLogic(ExternalGradebookLogic gradebookLogic) {
+		this.gradebookLogic = gradebookLogic;
+	}
+	
 	public void makeGradebookDetails(UIContainer tofill, String divID, AssignmentSubmission as, Long assignmentId, String userId){
 		
     	//Edit Permission
@@ -67,8 +74,19 @@ public class GradebookDetailsRenderer {
         		UIMessage.make("assignment2.assignment_grade.gradebook_grade"),
         		url);
 		}
+		
+		// retrieve the grade information
+		String grade = "";
+		String gradeComment = "";
+		if (as != null && as.getAssignment() != null && !as.getAssignment().isUngraded()) {
+			GradeInformation gradeInfo = gradebookLogic.getGradeInformationForSubmission(externalLogic.getCurrentContextId(), as);
+			if (gradeInfo != null) {
+				grade = gradeInfo.getGradebookGrade();
+				gradeComment = gradeInfo.getGradebookComment();
+			}
+		}
      
-        UIOutput.make(joint, "gradebook_grade", (as!= null && as.getGradebookGrade() != null ? as.getGradebookGrade() : ""));
-        UIOutput.make(joint, "gradebook_comment", (as != null && as.getGradebookComment() != null ? as.getGradebookComment() : ""));
+        UIOutput.make(joint, "gradebook_grade", (as!= null && grade != null ? grade : ""));
+        UIOutput.make(joint, "gradebook_comment", (as != null && gradeComment != null ? gradeComment : ""));
 	}
 }

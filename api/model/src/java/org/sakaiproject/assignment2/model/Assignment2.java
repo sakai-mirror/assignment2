@@ -65,10 +65,7 @@ public class Assignment2 {
     private int revisionVersion;
     private Set<AssignmentSubmission> submissionsSet;
     private Set<AssignmentAttachment> attachmentSet;
-    private Set<AssignmentGroup> assignmentGroupSet;
-    
-    // fields that are not persisted but needed for UI
-    private boolean needsUserAttention; 
+    private Set<AssignmentGroup> assignmentGroupSet; 
 
 	public Assignment2(Long id, Long gradableObjectId,
 			String contextId, String title, Boolean draft, int sortIndex,
@@ -610,34 +607,6 @@ public class Assignment2 {
 	 */
 	public void setSubmissionsSet(Set<AssignmentSubmission> submissionsSet) {
 		this.submissionsSet = submissionsSet;
-	}
-	
-	// the following fields are not persisted but are used by the UI
-
-	/**
-	 * NOT-PERSISTED - used for UI
-	 * used to identify situation where some action has been taken outside
-	 * of the assignments tool that requires user action b/c it affects this
-	 * assignments (ie assignment is associated with a gb item that was deleted
-	 * from the gb or an associated AssignmentGroup's group was deleted from the
-	 * realm)
-	 * @return true if the user needs to address some issue with this assignment
-	 */
-	public boolean isNeedsUserAttention() {
-		return needsUserAttention;
-	}
-
-	/**
-	 * NOT-PERSISTED - used for UI
-	 * used to identify situation where some action has been taken outside
-	 * of the assignments tool that requires user action b/c it affects this
-	 * assignment (ie assignment is associated with a gb item that was deleted
-	 * from the gb or an associated AssignmentGroup's group was deleted from the
-	 * realm)
-	 * @param needsUserAttention
-	 */
-	public void setNeedsUserAttention(boolean needsUserAttention) {
-		this.needsUserAttention = needsUserAttention;
 	}
 	
 	

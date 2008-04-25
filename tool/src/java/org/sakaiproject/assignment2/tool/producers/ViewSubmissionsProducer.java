@@ -24,16 +24,21 @@ package org.sakaiproject.assignment2.tool.producers;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
+import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
+import org.sakaiproject.assignment2.logic.GradeInformation;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
+import org.sakaiproject.assignment2.tool.beans.locallogic.LocalAssignmentLogic;
 import org.sakaiproject.assignment2.tool.params.AssignmentViewParams;
 import org.sakaiproject.assignment2.tool.params.GradeViewParams;
 import org.sakaiproject.assignment2.tool.params.ViewSubmissionsViewParams;
@@ -94,6 +99,7 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
     private SortHeaderRenderer sortHeaderRenderer;
     private AttachmentListRenderer attachmentListRenderer;
     private AssignmentPermissionLogic permissionLogic;
+    private ExternalGradebookLogic gradebookLogic;
     
     private Long assignmentId;
     
@@ -122,6 +128,20 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
     	UIVerbatim.make(tofill, "defaultSortBy", HTMLUtil.emitJavascriptVar("defaultSortBy", DEFAULT_SORT_BY));
     	
     	List<AssignmentSubmission> submissions = submissionLogic.getViewableSubmissionsForAssignmentId(assignmentId);
+    	
+    	// get grade info, if appropriate
+        Map<String, GradeInformation> studentIdGradeInfoMap = new HashMap<String, GradeInformation>();
+        if (submissions != null && !assignment.isUngraded() && assignment.getGradableObjectId() != null) {
+        	// put studentIds in a list
+        	List<String> studentIdList = new ArrayList<String>();
+        	for (AssignmentSubmission submission : submissions) {
+        		studentIdList.add(submission.getUserId());
+        	}
+        	
+        	// now retrieve all of the GradeInformation
+        	studentIdGradeInfoMap = gradebookLogic.getGradeInformationForStudents(
+        			externalLogic.getCurrentContextId(), studentIdList, assignment);
+        }
     	
     	//Breadcrumbs
         UIInternalLink.make(tofill, "breadcrumb", 
@@ -168,15 +188,14 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
         sortHeaderRenderer.makeSortingLink(tofill, "tableheader.submitted", viewparams, 
         		AssignmentSubmissionLogic.SORT_BY_SUBMIT_DATE, "assignment2.assignment_grade-assignment.tableheader.submitted");
         sortHeaderRenderer.makeSortingLink(tofill, "tableheader.status", viewparams, 
-        		AssignmentSubmissionLogic.SORT_BY_STATUS, "assignment2.assignment_grade-assignment.tableheader.status");
+        		LocalAssignmentLogic.SORT_BY_STATUS, "assignment2.assignment_grade-assignment.tableheader.status");
         if (!assignment.isUngraded()) {
 	        sortHeaderRenderer.makeSortingLink(tofill, "tableheader.grade", viewparams, 
-	        		AssignmentSubmissionLogic.SORT_BY_GRADE, "assignment2.assignment_grade-assignment.tableheader.grade");
+	        		LocalAssignmentLogic.SORT_BY_GRADE, "assignment2.assignment_grade-assignment.tableheader.grade");
         }
         sortHeaderRenderer.makeSortingLink(tofill, "tableheader.released", viewparams, 
 	      		AssignmentSubmissionLogic.SORT_BY_RELEASED, "assignment2.assignment_grade-assignment.tableheader.released");
                 
-        
         for (AssignmentSubmission as : submissions) {
         	UIBranchContainer row = UIBranchContainer.make(tofill, "row:");
         	
@@ -204,7 +223,12 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
         	UIOutput.make(row, "row_status", status);
         	
         	if (!assignment.isUngraded()) {
-        		UIOutput.make(row, "row_grade", as.getGradebookGrade());
+        		String grade = "";
+        		GradeInformation gradeInfo = studentIdGradeInfoMap.get(as.getUserId());
+        		if (gradeInfo != null) {
+        			grade = gradeInfo.getGradebookGrade();
+        		}
+        		UIOutput.make(row, "row_grade", grade);
         	}
 
         	String released = "0";
@@ -322,5 +346,9 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
 
 	public void setPermissionLogic(AssignmentPermissionLogic permissionLogic) {
 		this.permissionLogic = permissionLogic;
+	}
+	
+	public void setExternalGradebookLogic(ExternalGradebookLogic gradebookLogic) {
+		this.gradebookLogic = gradebookLogic;
 	}
 }
