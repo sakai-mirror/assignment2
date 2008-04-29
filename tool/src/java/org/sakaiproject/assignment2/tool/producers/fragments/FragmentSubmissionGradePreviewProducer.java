@@ -21,21 +21,15 @@
 
 package org.sakaiproject.assignment2.tool.producers.fragments;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
-import org.sakaiproject.assignment2.model.AssignmentAttachment;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.assignment2.tool.beans.PreviewAssignmentSubmissionBean;
 import org.sakaiproject.assignment2.tool.params.AssignmentViewParams;
 import org.sakaiproject.assignment2.tool.producers.renderers.AttachmentListRenderer;
-import org.sakaiproject.tool.api.SessionManager;
-import org.sakaiproject.tool.api.ToolSession;
 
 import uk.org.ponder.messageutil.MessageLocator;
 import uk.org.ponder.rsf.components.UIContainer;
@@ -60,7 +54,6 @@ public class FragmentSubmissionGradePreviewProducer implements ViewComponentProd
     private AssignmentSubmissionLogic submissionLogic;
 	private PreviewAssignmentSubmissionBean previewAssignmentSubmissionBean;
 	private AttachmentListRenderer attachmentListRenderer;
-	private SessionManager sessionManager;
 	private MessageLocator messageLocator;
 
     public void fillComponents(UIContainer tofill, ViewParameters viewparams, ComponentChecker checker) {
@@ -119,10 +112,7 @@ public class FragmentSubmissionGradePreviewProducer implements ViewComponentProd
 	public void setAttachmentListRenderer(AttachmentListRenderer attachmentListRenderer){
 		this.attachmentListRenderer = attachmentListRenderer;
 	}
-	
-	public void setSessionManager(SessionManager sessionManager) {
-		this.sessionManager = sessionManager;
-	}
+
 	
 	public void setMessageLocator(MessageLocator messageLocator) {
 		this.messageLocator = messageLocator;

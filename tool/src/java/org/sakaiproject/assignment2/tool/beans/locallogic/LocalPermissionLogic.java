@@ -87,9 +87,6 @@ public class LocalPermissionLogic {
 		} else if (FragmentAssignmentPreviewProducer.VIEW_ID.equals(viewId)) {
 			return permissionLogic.isUserAbleToAccessInstructorView(contextId);
 			
-		} else if (FragmentAttachmentsProducer.VIEW_ID.equals(viewId)) {
-			return Boolean.TRUE;
-			
 		} else if (FragmentGradebookDetailsProducer.VIEW_ID.equals(viewId)) {
 			return permissionLogic.isUserAbleToAccessInstructorView(contextId);
 			

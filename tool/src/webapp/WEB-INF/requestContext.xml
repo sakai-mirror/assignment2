@@ -187,7 +187,6 @@
       <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
       <property name="previewAssignmentSubmissionBean" ref="PreviewAssignmentSubmissionBean" />
       <property name="attachmentListRenderer" ref="AttachmentListRenderer" />
-      <property name="sessionManager" ref="org.sakaiproject.tool.api.SessionManager" />
       <property name="messageLocator" ref="messageLocator" />
       <property name="AssignmentSubmissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
    </bean>
@@ -197,10 +196,6 @@
    	  <property name="messageLocator" ref="messageLocator" />
    	  <property name="externalGradebookLogic" ref="org.sakaiproject.assignment2.logic.ExternalGradebookLogic" />
    	  <property name="locale" ref="requestLocale" />
-   </bean>
-   
-   <bean class="org.sakaiproject.assignment2.tool.producers.fragments.FragmentAttachmentsProducer">
-   	  <property name="attachmentListRenderer" ref="AttachmentListRenderer" />
    </bean>
    
    <bean class="org.sakaiproject.assignment2.tool.producers.fragments.FragmentGradebookDetailsProducer">
