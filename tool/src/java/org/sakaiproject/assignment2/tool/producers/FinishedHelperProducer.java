@@ -94,6 +94,7 @@ public class FinishedHelperProducer implements ViewComponentProducer, ViewParams
 			  String markup = "";
 			  for (Reference ref : refs) {
 				  try{
+					//TODO - but all contentHosting calls in an external Logic
 					  ContentResource cr = contentHostingService.getResource(ref.getId());
 					  markup += HTMLUtil.emitJavascriptCall("parent.updateAttachments", 
 							  new String[]{externalLogic.getContentTypeImagePath(cr), 
