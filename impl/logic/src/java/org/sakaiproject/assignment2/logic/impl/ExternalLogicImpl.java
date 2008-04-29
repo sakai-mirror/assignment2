@@ -302,4 +302,28 @@ public class ExternalLogicImpl implements ExternalLogic {
 
 		return userDirectoryService.getAnonymousUser();
 	}
+	
+	public String getReadableFileSize(int sizeVal)
+	{
+		double retVal = sizeVal;
+		String sizeSuffix = "bytes";
+		int GB = 1024 * 1024 * 1024;
+		int MB = 1024 * 1024;
+		int KB = 1024;
+		if (sizeVal > GB) {
+		retVal = sizeVal / GB;
+		sizeSuffix = "GB";
+		}
+		else if(sizeVal > MB) {
+		retVal = sizeVal / MB;
+		sizeSuffix = "MB";
+		}
+		else if (sizeVal > KB) {
+		retVal = sizeVal / KB;
+		sizeSuffix = "KB";
+		}
+		String finalVal = "(".concat(Double.toString(retVal).concat(" " + sizeSuffix.concat(")")));
+		return finalVal;
+
+	}
 }

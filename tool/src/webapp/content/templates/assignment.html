@@ -160,10 +160,10 @@
 			-->
 		</ol>
 	</fieldset>
-	<fieldset>
+	<fieldset id="attachmentsFieldset">
 		<legend rsf:id="msg=assignment2.assignment_add.attachments_legend">Attachments</legend>
-		<ol id="fragment-attachments-container">
-			<li rsf:id="attachment_list:"></li>
+		<ol class="fragment-attachments-container" rsf:id="attachment_list:">
+			<li></li>
 		</ol>
 		<ol>
 			<li>
@@ -239,22 +239,6 @@
 </script>
 <script type="text/javascript">
 //<![CDATA[
-function updateAttachments(){
-	jQuery.each(updateAttachments.arguments, function(){
-	  if (this != null){
-		  jQuery.ajax({
-			   type: "GET",
-		   	cache: false,
-		   	url: fragAttachPath + "?remove=true&idOffset=" + (jQuery("#fragment-attachments-container li").size() -1) + "&attachmentRef=" + this,
-		   	success: function(html){
-			   	jQuery("#fragment-attachments-container").append(html.substring(html.indexOf('<div>') + 5, html.lastIndexOf('</div>')));
-			   	updateDisplayNoAttachments();
-			}
-		  });
-      }
-	});
-	highlight(jQuery("#fragment-attachments-container"));
-}
 function refresh_ajax(){
 	if(fragGBPath != ""){
 		oldSelect=jQuery("select[name='page-replace\:\:gradebook_item-selection']").get(0).selectedIndex;

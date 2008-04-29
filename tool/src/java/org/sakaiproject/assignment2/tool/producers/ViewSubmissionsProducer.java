@@ -279,7 +279,7 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
         UIMessage.make(tofill, "assignment_details.attachments_header", "assignment2.assignment_grade-assignment.assignment_details.attachments");
     	
         attachmentListRenderer.makeAttachmentFromAssignmentAttachmentSet(tofill, "attachment_list:", params.viewID, 
-        		assignment.getAttachmentSet(), Boolean.FALSE);
+        		assignment.getAttachmentSet());
         
         
         UIForm form = UIForm.make(tofill, "form");

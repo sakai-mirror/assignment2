@@ -47,6 +47,7 @@ import org.sakaiproject.assignment2.tool.producers.fragments.FragmentAttachments
 import org.sakaiproject.assignment2.tool.producers.fragments.FragmentGradebookDetailsProducer;
 import org.sakaiproject.assignment2.tool.producers.fragments.FragmentSubmissionGradePreviewProducer;
 import org.sakaiproject.assignment2.tool.producers.fragments.FragmentViewSubmissionProducer;
+import org.sakaiproject.assignment2.tool.producers.evolvers.AttachmentInputEvolver;
 import org.sakaiproject.assignment2.tool.producers.renderers.AttachmentListRenderer;
 import org.sakaiproject.assignment2.tool.producers.renderers.GradebookDetailsRenderer;
 
@@ -58,6 +59,7 @@ import uk.org.ponder.rsf.components.UIContainer;
 import uk.org.ponder.rsf.components.UIELBinding;
 import uk.org.ponder.rsf.components.UIForm;
 import uk.org.ponder.rsf.components.UIInput;
+import uk.org.ponder.rsf.components.UIInputMany;
 import uk.org.ponder.rsf.components.UIInternalLink;
 import uk.org.ponder.rsf.components.UILink;
 import uk.org.ponder.rsf.components.UIMessage;
@@ -93,6 +95,8 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
     private GradebookDetailsRenderer gradebookDetailsRenderer;
     private EntityBeanLocator asvEntityBeanLocator;
     private AssignmentPermissionLogic permissionLogic;
+    private AttachmentInputEvolver attachmentInputEvolver;
+
 		
 	/*
 	 * You can change the date input to accept time as well by uncommenting the lines like this:
@@ -176,7 +180,6 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
     	UIVerbatim.make(tofill, "attachment-ajax-init", "otpkey=\"" + org.sakaiproject.util.Web.escapeUrl(asvOTPKey) + "\";\n" +
     			"userId=\"" + userId + "\";\n" +
     			"assignmentId=\"" + assignmentId + "\";\n" +
-    			"fragAttachPath=\"" + externalLogic.getAssignmentViewUrl(FragmentAttachmentsProducer.VIEW_ID) + "\";\n" +
     			"fragGBDetailsPath=\"" + externalLogic.getAssignmentViewUrl(FragmentGradebookDetailsProducer.VIEW_ID) + "\";");
         
     	
@@ -239,7 +242,7 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
 	        if (assignmentSubmissionVersion.getSubmissionAttachSet() != null){
 	        	UIOutput.make(tofill, "submitted_attachments_fieldset");
 	        	attachmentListRenderer.makeAttachmentFromSubmissionAttachmentSet(tofill, "submitted_attachment_list:", params.viewID, 
-	        			assignmentSubmissionVersion.getSubmissionAttachSet(), Boolean.FALSE);
+	        			assignmentSubmissionVersion.getSubmissionAttachSet());
 	        } else {
 	        	UIMessage.make(tofill, "submitted_attachment_list:", "assignment2.assignment_grade.no_attachments_submitted");
 	        }
@@ -254,12 +257,11 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
         }
                
         //Attachments
-        Set<FeedbackAttachment> afaSet = new HashSet<FeedbackAttachment>();
-        if (assignmentSubmissionVersion.getFeedbackAttachSet() != null) {
-        	afaSet.addAll(assignmentSubmissionVersion.getFeedbackAttachSet());
-        }
-        attachmentListRenderer.makeAttachmentFromFeedbackAttachmentSet(tofill, "attachment_list:", 
-        		params.viewID, afaSet, Boolean.TRUE);
+        
+        //Attachments
+        UIInputMany attachmentInput = UIInputMany.make(form, "attachment_list:", asvOTP + ".feedbackAttachmentRefs", assignmentSubmissionVersion.getFeedbackAttachmentRefs());
+        attachmentInputEvolver.evolveAttachment(attachmentInput);
+        
         if (grade_perm) {
         	UIInternalLink.make(form, "add_attachments", UIMessage.make("assignment2.assignment_add.add_attachments"),
         		new FilePickerHelperViewParams(AddAttachmentHelperProducer.VIEWID, Boolean.TRUE, 
@@ -438,5 +440,10 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
 
 	public void setPermissionLogic(AssignmentPermissionLogic permissionLogic) {
 		this.permissionLogic = permissionLogic;
+	}
+
+	public void setAttachmentInputEvolver(AttachmentInputEvolver attachmentInputEvolver)
+	{
+		this.attachmentInputEvolver = attachmentInputEvolver;
 	}
 }

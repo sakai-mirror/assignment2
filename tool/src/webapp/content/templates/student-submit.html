@@ -21,26 +21,6 @@
 //done in producer
 // otpkey = some value
 </script>
-<script type="text/javascript">
-//<![CDATA[
-function updateAttachments(){
-	jQuery.each(updateAttachments.arguments, function(){
-	  if (this != null){
-		  jQuery.ajax({
-    		   type: "GET",
-		   	cache: false,
-		   	url: fragAttachPath + "?remove=true&idOffset=" + jQuery("#fragment-attachments-container li").size() + "&attachmentRef=" + this,
-		   	success: function(html){
-			   	jQuery("#fragment-attachments-container").append(html.substring(html.indexOf('<div>') + 5, html.lastIndexOf('</div>')));
-			   	updateDisplayNoAttachments();
-			}
-		  });
-      }
-	});
-	highlight(jQuery("#fragment-attachments-container"));
-}
-//]]>
-</script>
 </div>
 </body>
 </html>

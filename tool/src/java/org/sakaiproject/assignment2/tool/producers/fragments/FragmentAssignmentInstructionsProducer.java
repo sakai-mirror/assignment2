@@ -52,7 +52,7 @@ public class FragmentAssignmentInstructionsProducer implements ViewComponentProd
     	
     	UIVerbatim.make(tofill, "assignment_instructions", assignment.getInstructions());
         attachmentListRenderer.makeAttachmentFromAssignmentAttachmentSet(tofill, "assignment_attachment_list:", params.viewID, 
-        		assignment.getAttachmentSet(), Boolean.FALSE);
+        		assignment.getAttachmentSet());
 
 
     }

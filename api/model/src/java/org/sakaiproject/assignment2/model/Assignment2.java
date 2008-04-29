@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Date;
 import java.util.Set;
+import java.util.HashSet;
 
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.entity.api.Entity;
@@ -643,4 +644,25 @@ public class Assignment2 {
 		return sb.toString();
 	}
 
+	public String[] getAssignmentAttachmentRefs()
+	{
+		String[] refs = new String[attachmentSet.size()];
+		int i = 0;
+		for (AssignmentAttachment aa : attachmentSet) {
+			refs[i++] = aa.getAttachmentReference();
+		}
+		return refs;
+	}
+
+	public void setAssignmentAttachmentRefs(String[] attachmentRefs)
+	{
+		Set<AssignmentAttachment> set = new HashSet<AssignmentAttachment>();
+		for (int i = 0; i < attachmentRefs.length; i++) {
+			AssignmentAttachment aa = new AssignmentAttachment();
+			aa.setAssignment(this);
+			aa.setAttachmentReference(attachmentRefs[i]);
+			set.add(aa);
+		}
+		this.attachmentSet = set;
+	}
 }

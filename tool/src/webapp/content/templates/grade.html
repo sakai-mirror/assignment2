@@ -77,10 +77,10 @@
 				</div>		
 			</li>
 			<li>
-				<fieldset>
+				<fieldset id="attachmentsFieldset">
 					<legend rsf:id="msg=assignment2.assignemnt_grade.attachments_to_return_with_grade">Attachments</legend>
-					<ol id="fragment-attachments-container">
-						<li rsf:id="attachment_list:"></li>
+					<ol rsf:id="attachment_list:">
+						<li></li>
 					</ol>
 					<ol>
 						<li>
@@ -164,22 +164,6 @@
 </script>
 <script type="text/javascript">
 //<![CDATA[
-function updateAttachments(){
-	jQuery.each(updateAttachments.arguments, function(){
-	  if (this != null){
-		  jQuery.ajax({
-    		   type: "GET",
-		   	cache: false,
-		   	url: fragAttachPath + "?remove=true&idOffset=" + jQuery("#fragment-attachments-container li").size() + "&attachmentRef=" + this,
-		   	success: function(html){
-			   	jQuery("#fragment-attachments-container").append(html.substring(html.indexOf('<div>') + 5, html.lastIndexOf('</div>')));
-			   	updateDisplayNoAttachments();
-			}
-		  });
-      }
-	});
-	highlight(jQuery("#fragment-attachments-container"));
-}
 function refresh_ajax(){
 	if(fragGBDetailsPath != ""){
 		old = jQuery("#gradebook-details-container fieldset").html();

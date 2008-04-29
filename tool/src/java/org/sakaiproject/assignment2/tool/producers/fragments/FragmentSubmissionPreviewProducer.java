@@ -60,7 +60,7 @@ public class FragmentSubmissionPreviewProducer implements ViewComponentProducer,
     	
     	UIVerbatim.make(tofill, "submittedText", asv.getSubmittedText());
     	
-    	attachmentListRenderer.makeAttachmentFromSubmissionAttachmentSet(tofill, "attachment_list:", params.viewID, asv.getSubmissionAttachSet(), Boolean.FALSE);
+    	attachmentListRenderer.makeAttachmentFromSubmissionAttachmentSet(tofill, "attachment_list:", params.viewID, asv.getSubmissionAttachSet());
     	
     }
     

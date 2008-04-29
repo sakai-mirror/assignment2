@@ -27,9 +27,7 @@
    <bean id="AttachmentListRenderer" class="org.sakaiproject.assignment2.tool.producers.renderers.AttachmentListRenderer">
    	  <property name="contentHostingService" ref="org.sakaiproject.content.api.ContentHostingService" />
    	  <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
-   	  <property name="messageLocator" ref="messageLocator" />
    	  <property name="assignment2EntityBeanLocator" ref="Assignment2"/>
-   	  <property name="attachmentBean" ref="AttachmentBean" />
    </bean>
    <bean id="GradebookDetailsRenderer" class="org.sakaiproject.assignment2.tool.producers.renderers.GradebookDetailsRenderer">
       <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
@@ -44,7 +42,14 @@
       <property name="richTextEvolver" ref="richTextEvolver" />
       <property name="sessionManager" ref="org.sakaiproject.tool.api.SessionManager" />
       <property name="submissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
+      <property name="attachmentInputEvolver" ref="AttachmentInputEvolver" />
    </bean>   
+   <bean id="AttachmentInputEvolver" class="org.sakaiproject.assignment2.tool.producers.evolvers.AttachmentInputEvolver">
+   	  <property name="contentHostingService" ref="org.sakaiproject.content.api.ContentHostingService" />
+   	  <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
+   	  <property name="messageLocator" ref="messageLocator" />
+   	  <property name="requestBeanGetter" ref="ELEvaluator"/>
+   </bean>
 
    <!-- list the producer beans here -->
    <bean class="org.sakaiproject.assignment2.tool.producers.AddAttachmentHelperProducer">
@@ -69,7 +74,7 @@
       <property name="externalGradebookLogic" ref="org.sakaiproject.assignment2.logic.ExternalGradebookLogic" />
       <property name="locale" ref="requestLocale" />
       <property name="assignment2EntityBeanLocator" ref="Assignment2"/>
-      <property name="attachmentListRenderer" ref="AttachmentListRenderer" />
+      <property name="attachmentInputEvolver" ref="AttachmentInputEvolver" />
    </bean>
    
    <bean class="org.sakaiproject.assignment2.tool.producers.GradeProducer">
@@ -84,6 +89,7 @@
       <property name="gradebookDetailsRenderer" ref="GradebookDetailsRenderer" />
       <property name="asvEntityBeanLocator" ref="AssignmentSubmissionVersion" />
       <property name="permissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentPermissionLogic" />
+      <property name="attachmentInputEvolver" ref="AttachmentInputEvolver" />
    </bean>
 
    <bean class="org.sakaiproject.assignment2.tool.producers.ViewSubmissionsProducer">
@@ -123,6 +129,8 @@
 
    <bean class="org.sakaiproject.assignment2.tool.producers.FinishedHelperProducer">
    	  <property name="sessionManager" ref="org.sakaiproject.tool.api.SessionManager" />
+   	  <property name="contentHostingService" ref="org.sakaiproject.content.api.ContentHostingService" />
+   	  <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
    </bean>
    
    <bean class="org.sakaiproject.assignment2.tool.producers.StudentAssignmentListProducer">
@@ -236,7 +244,6 @@
    	  <property name="previewAssignmentBean" ref="PreviewAssignmentBean" />
    	  <property name="messageLocator" ref="messageLocator" />
 	  <property name="notificationBean" ref="notificationBean" />
-      <property name="attachmentBean" ref="AttachmentBean" />
    </bean>
    
    <bean id="AssignmentSubmissionBean" class="org.sakaiproject.assignment2.tool.beans.AssignmentSubmissionBean">
@@ -247,10 +254,7 @@
    	  <property name="asvEntityBeanLocator" ref="AssignmentSubmissionVersion" />
    	  <property name="previewAssignmentSubmissionBean" ref="PreviewAssignmentSubmissionBean" />
       <property name="notificationBean" ref="notificationBean" />
-      <property name="attachmentBean" ref="AttachmentBean" />
    </bean>
-   
-   <bean id="AttachmentBean" class="org.sakaiproject.assignment2.tool.beans.AttachmentBean" />
    
    <bean id="PreviewAssignmentBean" class="org.sakaiproject.assignment2.tool.beans.PreviewAssignmentBean" />
    <bean id="PreviewAssignmentSubmissionBean" class="org.sakaiproject.assignment2.tool.beans.PreviewAssignmentSubmissionBean" />

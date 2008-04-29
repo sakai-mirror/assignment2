@@ -112,11 +112,6 @@ public class Assignment2Bean {
 		this.notificationBean = notificationBean;
 	}
 	
-	private AttachmentBean attachmentBean;
-	public void setAttachmentBean(AttachmentBean attachmentBean) {
-		this.attachmentBean = attachmentBean;
-	}
-	
 	public String processActionBackToList() {
 		return BACK_TO_LIST;
 	}
@@ -160,16 +155,6 @@ public class Assignment2Bean {
 			assignment.setDueDate(null);
 		}
 
-		Set<AssignmentAttachment> set = new HashSet<AssignmentAttachment>();
-		for (String ref : attachmentBean.attachmentRefs) {
-			if (ref != null) {
-				AssignmentAttachment aa = new AssignmentAttachment();
-				aa.setAttachmentReference(ref);
-				set.add(aa);
-			}
-		}
-		assignment.setAttachmentSet(set);
-
     	//Since in the UI, the select box bound to the gradableObjectId is always present
 		// we need to manually remove this value if the assignment is ungraded
 		if (assignment.isUngraded()) {
@@ -178,6 +163,7 @@ public class Assignment2Bean {
 		
 		//REMOVE THESE - TODO
 		assignment.setNotificationType(0);
+		assignment.setAddedToSchedule(Boolean.FALSE);
 		//END REMOVE THESE 
 		
 		//do groups
@@ -214,7 +200,6 @@ public class Assignment2Bean {
 		}
 		assignment.setAssignmentGroupSet(newGroups);
 		
-		
 		//start the validator
 		Assignment2Validator validator = new Assignment2Validator();
 		if (validator.validate(assignment, messages) && !errorFound){
@@ -249,7 +234,6 @@ public class Assignment2Bean {
 			}
 			return FAILURE;
 		}
-		attachmentBean.attachmentRefs = new String[100];
 		return POST;
 	}
 	

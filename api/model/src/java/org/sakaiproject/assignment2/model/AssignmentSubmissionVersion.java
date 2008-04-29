@@ -473,5 +473,50 @@ public class AssignmentSubmissionVersion implements FeedbackVersion {
 		
 		return newVersion;
 	}
+	
+	public String[] getFeedbackAttachmentRefs()
+	{
+		if (feedbackAttachSet == null) { return new String[]{}; }
+		String[] refs = new String[feedbackAttachSet.size()];   /// HEY FOR FUTURE RYAN _ THIS IS NULL, PROLLY THE OTP GETTER
+		int i = 0;
+		for (FeedbackAttachment fa : feedbackAttachSet) {
+			refs[i++] = fa.getAttachmentReference();
+		}
+		return refs;
+	}
 
+	public void setFeedbackAttachmentRefs(String[] attachmentRefs)
+	{
+		Set<FeedbackAttachment> set = new HashSet<FeedbackAttachment>();
+		for (int i = 0; i < attachmentRefs.length; i++) {
+			FeedbackAttachment fa = new FeedbackAttachment();
+			fa.setSubmissionVersion(this);
+			fa.setAttachmentReference(attachmentRefs[i]);
+			set.add(fa);
+		}
+		this.feedbackAttachSet = set;
+	}
+	
+	public String[] getSubmittedAttachmentRefs()
+	{
+		if (submissionAttachSet == null) { return new String[]{}; }
+		String[] refs = new String[submissionAttachSet.size()];
+		int i = 0;
+		for (SubmissionAttachment sa : submissionAttachSet) {
+			refs[i++] = sa.getAttachmentReference();
+		}
+		return refs;
+	}
+
+	public void setSubmittedAttachmentRefs(String[] attachmentRefs)
+	{
+		Set<SubmissionAttachment> set = new HashSet<SubmissionAttachment>();
+		for (int i = 0; i < attachmentRefs.length; i++) {
+			SubmissionAttachment sa = new SubmissionAttachment();
+			sa.setSubmissionVersion(this);
+			sa.setAttachmentReference(attachmentRefs[i]);
+			set.add(sa);
+		}
+		this.submissionAttachSet = set;
+	}
 }

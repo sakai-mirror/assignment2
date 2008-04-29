@@ -103,10 +103,6 @@ public class AssignmentSubmissionBean {
 		this.notificationBean = notificationBean;
 	}
 	
-	private AttachmentBean attachmentBean;
-	public void setAttachmentBean(AttachmentBean attachmentBean) {
-		this.attachmentBean = attachmentBean;
-	}
 	
 	/*
 	 * STUDENT FUNCTIONS
@@ -126,17 +122,6 @@ public class AssignmentSubmissionBean {
 			asv.setAssignmentSubmission(assignmentSubmission);
 			asv.setDraft(Boolean.FALSE);
 			
-			Set<SubmissionAttachment> set = new HashSet<SubmissionAttachment>();
-			for (String ref : attachmentBean.attachmentRefs) {
-				if (ref != null) {
-					SubmissionAttachment as = new SubmissionAttachment();
-					as.setAttachmentReference(ref);
-					set.add(as);
-				}
-			}
-			asv.setSubmissionAttachSet(set);
-
-			
 	    	//check whether honor pledge was added if required
 	    	if (assignment.isHonorPledge() && !(this.honorPledge != null && Boolean.TRUE.equals(honorPledge))) {
 	    		messages.addMessage(new TargettedMessage("assignment2.student-submit.error.honor_pledge_required",
@@ -144,7 +129,7 @@ public class AssignmentSubmissionBean {
 	    		return FAILURE;
 	    	}else {
 	    		submissionLogic.saveStudentSubmission(assignmentSubmission.getUserId(), 
-	    				assignmentSubmission.getAssignment(), false, asv.getSubmittedText(), set);
+	    				assignmentSubmission.getAssignment(), false, asv.getSubmittedText(), asv.getSubmissionAttachSet());
 	    		messages.addMessage(new TargettedMessage("assignment2.student-submit.info.submission_submitted",
 						new Object[] { assignment.getTitle() }, TargettedMessage.SEVERITY_INFO));
 	    		// Send out notifications
@@ -177,7 +162,6 @@ public class AssignmentSubmissionBean {
 	    		}
 	    	}
 		}
-		attachmentBean.attachmentRefs = new String[100];
 		return SUBMIT;
 	}
 	
@@ -186,15 +170,6 @@ public class AssignmentSubmissionBean {
 		previewAssignmentSubmissionBean.setAssignmentSubmission(assignmentSubmission);
 		for (String key : asvOTPMap.keySet()) {
 			AssignmentSubmissionVersion asv = asvOTPMap.get(key);
-			Set<SubmissionAttachment> set = new HashSet<SubmissionAttachment>();
-			for (String ref : attachmentBean.attachmentRefs) {
-				if (ref != null) {
-					SubmissionAttachment as = new SubmissionAttachment();
-					as.setAttachmentReference(ref);
-					set.add(as);
-				}
-			}
-			asv.setSubmissionAttachSet(set);
 			previewAssignmentSubmissionBean.setAssignmentSubmissionVersion(asv);
 		}
 		return PREVIEW;
@@ -212,25 +187,13 @@ public class AssignmentSubmissionBean {
 			
 			asv.setAssignmentSubmission(assignmentSubmission);
 			asv.setDraft(Boolean.TRUE);
-
-			Set<SubmissionAttachment> set = new HashSet<SubmissionAttachment>();
-			for (String ref : attachmentBean.attachmentRefs) {
-				if (ref != null) {
-					SubmissionAttachment as = new SubmissionAttachment();
-					as.setAttachmentReference(ref);
-					set.add(as);
-				}
-			}
-			asv.setSubmissionAttachSet(set);
-
 			
 			submissionLogic.saveStudentSubmission(assignmentSubmission.getUserId(),
 					assignmentSubmission.getAssignment(), true, asv.getSubmittedText(),
-					set);
+					asv.getSubmissionAttachSet());
 			messages.addMessage(new TargettedMessage("assignment2.student-submit.info.submission_save_draft",
 					new Object[] { assignment.getTitle() }, TargettedMessage.SEVERITY_INFO));
 		}
-		attachmentBean.attachmentRefs = new String[100];
 		return SAVE_DRAFT;
 	}
 	
@@ -289,22 +252,11 @@ public class AssignmentSubmissionBean {
 				asv.setReleasedTime(new Date());
 			}
 			
-			Set<FeedbackAttachment> set = new HashSet<FeedbackAttachment>();
-			for (String ref : attachmentBean.attachmentRefs) {
-				if (ref != null) {
-					FeedbackAttachment afa = new FeedbackAttachment();
-					afa.setAttachmentReference(ref);
-					set.add(afa);
-				}
-			}
-			asv.setFeedbackAttachSet(set);
-			
 			submissionLogic.saveInstructorFeedback(asv.getId(), assignmentSubmission.getUserId(),
 					assignmentSubmission.getAssignment(), assignmentSubmission.getNumSubmissionsAllowed(),
 					assignmentSubmission.getResubmitCloseTime(), asv.getAnnotatedText(), asv.getFeedbackNotes(),
-					asv.getReleasedTime(), set);
+					asv.getReleasedTime(), asv.getFeedbackAttachSet());
 		}
-		attachmentBean.attachmentRefs = new String[100];
 		return SUBMIT;
 	}
 	
