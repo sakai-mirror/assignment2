@@ -178,4 +178,11 @@ public interface ExternalLogic {
      * @return
      */
     public User getUser(String userId);
+    
+    /**
+     * 
+     * @param sizeVal
+     * @return a string representing a human readable format of the file size
+     */
+    public String getReadableFileSize(int sizeVal);
 }

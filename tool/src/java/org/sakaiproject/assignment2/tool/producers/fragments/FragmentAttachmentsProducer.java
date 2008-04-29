@@ -57,7 +57,7 @@ public class FragmentAttachmentsProducer implements ViewComponentProducer, ViewP
     		params.idOffset = 0;
     	}
     	
-    	attachmentListRenderer.makeAttachment(tofill, "attachment_list:", params.viewID, set, params.remove, params.idOffset);
+    	attachmentListRenderer.makeAttachment(tofill, "attachment_list:", params.viewID, set);
     	
     }
     

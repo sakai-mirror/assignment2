@@ -23,8 +23,7 @@ package org.sakaiproject.assignment2.tool.producers;
 
 import org.sakaiproject.assignment2.tool.params.AssignmentViewParams;
 import org.sakaiproject.assignment2.tool.params.FilePickerHelperViewParams;
-import org.sakaiproject.assignment2.tool.producers.renderers.AttachmentListRenderer;
-import org.sakaiproject.assignment2.tool.producers.fragments.FragmentAttachmentsProducer;
+import org.sakaiproject.assignment2.tool.producers.evolvers.AttachmentInputEvolver;
 import org.sakaiproject.assignment2.tool.producers.fragments.FragmentAssignment2SelectProducer;
 import org.sakaiproject.assignment2.tool.producers.fragments.FragmentAssignmentPreviewProducer;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
@@ -52,6 +51,7 @@ import uk.org.ponder.rsf.components.UICommand;
 import uk.org.ponder.rsf.components.UIContainer;
 import uk.org.ponder.rsf.components.UIForm;
 import uk.org.ponder.rsf.components.UIInput;
+import uk.org.ponder.rsf.components.UIInputMany;
 import uk.org.ponder.rsf.components.UIInternalLink;
 import uk.org.ponder.rsf.components.UILink;
 import uk.org.ponder.rsf.components.UIMessage;
@@ -90,7 +90,7 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
     private ExternalGradebookLogic externalGradebookLogic;
     private Locale locale;
     private EntityBeanLocator assignment2BeanLocator;
-    private AttachmentListRenderer attachmentListRenderer;
+    private AttachmentInputEvolver attachmentInputEvolver;
     
 	/*
 	 * You can change the date input to accept time as well by uncommenting the lines like this:
@@ -151,7 +151,6 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
         
     	//Initialize js otpkey
     	UIVerbatim.make(tofill, "attachment-ajax-init", "otpkey=\"" + org.sakaiproject.util.Web.escapeUrl(OTPKey) + "\";\n" +
-    			"fragAttachPath=\"" + externalLogic.getAssignmentViewUrl(FragmentAttachmentsProducer.VIEW_ID) + "\";\n" +
     					"fragGBPath=\"" + externalLogic.getAssignmentViewUrl(FragmentAssignment2SelectProducer.VIEW_ID) + "\";");
     	
         UIForm form = UIForm.make(tofill, "assignment_form");
@@ -283,8 +282,9 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
         UISelect.make(form, "honor_pledge", honor_pledge_values, honor_pledge_labels, assignment2OTP + ".honorPledge").setMessageKeys();
         
         //Attachments
-        attachmentListRenderer.makeAttachmentFromAssignment2OTPAttachmentSet(form, "attachment_list:", 
-        		params.viewID, OTPKey, Boolean.TRUE);
+        UIInputMany attachmentInput = UIInputMany.make(form, "attachment_list:", assignment2OTP + ".assignmentAttachmentRefs", assignment.getAssignmentAttachmentRefs());
+        attachmentInputEvolver.evolveAttachment(attachmentInput);
+
         UIInternalLink.make(form, "add_attachments", UIMessage.make("assignment2.assignment_add.add_attachments"),
         		new FilePickerHelperViewParams(AddAttachmentHelperProducer.VIEWID, Boolean.TRUE, 
         				Boolean.TRUE, 500, 700, OTPKey));
@@ -472,7 +472,8 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
 		this.assignment2BeanLocator = entityBeanLocator;
 	}
 	
-	public void setAttachmentListRenderer(AttachmentListRenderer attachmentListRenderer){
-		this.attachmentListRenderer = attachmentListRenderer;
+	public void setAttachmentInputEvolver(AttachmentInputEvolver attachmentInputEvolver)
+	{
+		this.attachmentInputEvolver = attachmentInputEvolver;
 	}
 }

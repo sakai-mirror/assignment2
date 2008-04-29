@@ -21,7 +21,11 @@
 
 package org.sakaiproject.assignment2.tool.producers;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.tool.params.FinishedHelperViewParameters;
+import org.sakaiproject.assignment2.tool.producers.renderers.AttachmentListRenderer;
 
 import uk.org.ponder.rsf.components.UIContainer;
 import uk.org.ponder.rsf.components.UIVerbatim;
@@ -31,6 +35,8 @@ import uk.org.ponder.rsf.viewstate.ViewParameters;
 import uk.org.ponder.rsf.viewstate.ViewParamsReporter;
 import uk.org.ponder.htmlutil.HTMLUtil;
 
+import org.sakaiproject.content.api.ContentResource;
+import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.content.api.FilePickerHelper;
 import org.sakaiproject.entity.api.Reference;
 import org.sakaiproject.tool.api.SessionManager;
@@ -40,6 +46,7 @@ import java.util.List;
 
 public class FinishedHelperProducer implements ViewComponentProducer, ViewParamsReporter
 {
+	private static final Log LOG = LogFactory.getLog(FinishedHelperProducer.class);
 	  public static final String VIEWID = "FinishedHelper";
 	  
 	  public String getViewID() {
@@ -50,6 +57,16 @@ public class FinishedHelperProducer implements ViewComponentProducer, ViewParams
 	  public void setSessionManager(SessionManager sessionManager) {
 		  this.sessionManager = sessionManager;
 	  }
+	  
+	  private ContentHostingService contentHostingService;
+		public void setContentHostingService(ContentHostingService contentHostingService) {
+			this.contentHostingService = contentHostingService;
+		}
+		
+		private ExternalLogic externalLogic;
+		public void setExternalLogic(ExternalLogic externalLogic) {
+			this.externalLogic = externalLogic;
+		}
 	
 	  public void fillComponents(UIContainer tofill, ViewParameters viewparams, ComponentChecker checker) {
 		  
@@ -74,12 +91,26 @@ public class FinishedHelperProducer implements ViewComponentProducer, ViewParams
 			  List<Reference> refs = (List)toolSession.getAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS);
 			  String[] attachmentRefs = new String[refs.size()];
 			  int i=0;
+			  String markup = "";
 			  for (Reference ref : refs) {
+				  try{
+					  ContentResource cr = contentHostingService.getResource(ref.getId());
+					  markup += HTMLUtil.emitJavascriptCall("parent.updateAttachments", 
+							  new String[]{externalLogic.getContentTypeImagePath(cr), 
+							  cr.getProperties().getProperty(cr.getProperties().getNamePropDisplayName()), 
+							  cr.getUrl(), ref.getId(), externalLogic.getReadableFileSize(cr.getContentLength())});  
+					  
+					  
+				  } catch(Exception e) {
+					  //do nothing
+					  LOG.error(e.getMessage(), e);
+				  }
+				  
+				  
 				  attachmentRefs[i] = org.sakaiproject.util.Web.escapeUrl(ref.getId());
 				  i++;
 			  }
-			  UIVerbatim.make(tofill, "updateAttachments",
-				  HTMLUtil.emitJavascriptCall("parent.updateAttachments", attachmentRefs));
+			  UIVerbatim.make(tofill, "updateAttachments", markup);
 				  //Here are my references... now emit a JS call to add these references to the UI
 				  //Then remove the FilePickerBean
 				  //Then make the UI just duplicate or create a row for attachments

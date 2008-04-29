@@ -42,6 +42,7 @@ import org.sakaiproject.assignment2.tool.params.FragmentViewSubmissionViewParams
 import org.sakaiproject.assignment2.tool.producers.AddAttachmentHelperProducer;
 import org.sakaiproject.assignment2.tool.producers.StudentAssignmentListProducer;
 import org.sakaiproject.assignment2.tool.producers.fragments.FragmentViewSubmissionProducer;
+import org.sakaiproject.assignment2.tool.producers.evolvers.AttachmentInputEvolver;
 import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.tool.api.ToolSession;
 
@@ -54,6 +55,7 @@ import uk.org.ponder.rsf.components.UIContainer;
 import uk.org.ponder.rsf.components.UIELBinding;
 import uk.org.ponder.rsf.components.UIForm;
 import uk.org.ponder.rsf.components.UIInput;
+import uk.org.ponder.rsf.components.UIInputMany;
 import uk.org.ponder.rsf.components.UIInternalLink;
 import uk.org.ponder.rsf.components.UIJointContainer;
 import uk.org.ponder.rsf.components.decorators.UILabelTargetDecorator;
@@ -97,6 +99,11 @@ public class StudentViewAssignmentRenderer {
 	private AssignmentSubmissionLogic submissionLogic;
 	public void setSubmissionLogic(AssignmentSubmissionLogic submissionLogic) {
 		this.submissionLogic = submissionLogic;
+	}
+	
+	private AttachmentInputEvolver attachmentInputEvolver;
+	public void setAttachmentInputEvolver(AttachmentInputEvolver attachmentInputEvolver){
+		this.attachmentInputEvolver = attachmentInputEvolver;
 	}
 	
 	public void makeStudentView(UIContainer tofill, String divID, AssignmentSubmission assignmentSubmission, 
@@ -176,30 +183,10 @@ public class StudentViewAssignmentRenderer {
     		Set<AssignmentAttachment> attachments = (assignment != null) ? assignment.getAttachmentSet() : null;
     		//If this is not a preview, then we need to just display the attachment set from the Assignment2 object
 	        attachmentListRenderer.makeAttachmentFromAssignmentAttachmentSet(joint, "attachment_list:", params.viewID, 
-	        	attachments, Boolean.FALSE);
+	        	attachments);
     	} else {
-    		//If this is a preview, then the the attachment set from the Assignment2 Object is not complete
-    		// there would be some attachments still floating in session vars
-    		//Handle Attachments
-        	Set<String> set = new HashSet<String>();
-        	if (assignment != null && assignment.getAttachmentSet() != null) {
-    	    	for (AssignmentAttachment aa : assignment.getAttachmentSet()) {
-    	    		set.add(aa.getAttachmentReference());
-    	    	}
-        	}
 
-        	//get New attachments from session set
-        	ToolSession session = sessionManager.getCurrentToolSession();
-        	if (session.getAttribute("attachmentRefs") != null) {
-        		set.addAll((Set)session.getAttribute("attachmentRefs"));
-        	}
-        	
-        	//Now remove ones from session
-        	if (session.getAttribute("removedAttachmentRefs") != null){
-        		set.removeAll((Set<String>)session.getAttribute("removedAttachmentRefs"));
-        	}
-        	
-        	attachmentListRenderer.makeAttachment(joint, "attachment_list:", params.viewID, set, Boolean.FALSE, 0);
+        	attachmentListRenderer.makeAttachmentFromAssignmentAttachmentSet(joint, "attachment_list:", params.viewID, assignment.getAttachmentSet());
     	}
 
     	
@@ -231,13 +218,10 @@ public class StudentViewAssignmentRenderer {
     		UIOutput.make(form, "submit_attachments");
     		
 	        //Attachments
-	        AssignmentSubmissionVersion submissionVersion = assignmentSubmission.getCurrentSubmissionVersion();
-	        Set<SubmissionAttachment> set = new HashSet<SubmissionAttachment>();
-	        if (submissionVersion != null && submissionVersion.getSubmissionAttachSet() != null) {
-	        	set.addAll(submissionVersion.getSubmissionAttachSet());
-	        }
-	    	attachmentListRenderer.makeAttachmentFromSubmissionAttachmentSet(joint, "submission_attachment_list:", params.viewID, 
-	    			set, Boolean.TRUE);
+    		UIInputMany attachmentInput = UIInputMany.make(form, "attachment_list:", asvOTP + ".submittedAttachmentRefs", 
+    				assignmentSubmission.getCurrentSubmissionVersion().getSubmittedAttachmentRefs());
+    		attachmentInputEvolver.evolveAttachment(attachmentInput);
+    		
 	    	if (!preview){
 	    		UIInternalLink.make(form, "add_submission_attachments", UIMessage.make("assignment2.student-submit.add_attachments"),
 	        		new FilePickerHelperViewParams(AddAttachmentHelperProducer.VIEWID, Boolean.TRUE, 

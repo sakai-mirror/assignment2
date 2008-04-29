@@ -94,33 +94,7 @@ public class FragmentSubmissionGradePreviewProducer implements ViewComponentProd
         String instructions = (assignment != null) ? assignment.getInstructions() : "";
         UIVerbatim.make(tofill, "instructions", instructions);
         
-        /**
-		if (as.isAllowResubmit() != null && as.isAllowResubmit()){
-        	UIMessage.make(tofill, "allow_resubmit", "assignment2.fragment-submission-grade_preview.number_resubmit", 
-        		new Object[]{df.format(as.getResubmitCloseTime())});
-        }
-        **/
-        
-    	//Handle Attachments
-    	Set<String> set = new HashSet<String>();
-    	if (assignment != null && assignment.getAttachmentSet() != null) {
-	    	for (AssignmentAttachment aa : assignment.getAttachmentSet()) {
-	    		set.add(aa.getAttachmentReference());
-	    	}
-    	}
-
-    	//get New attachments from session set
-    	ToolSession session = sessionManager.getCurrentToolSession();
-    	if (session.getAttribute("attachmentRefs") != null) {
-    		set.addAll((Set)session.getAttribute("attachmentRefs"));
-    	}
-    	
-    	//Now remove ones from session
-    	if (session.getAttribute("removedAttachmentRefs") != null){
-    		set.removeAll((Set<String>)session.getAttribute("removedAttachmentRefs"));
-    	}
-    	
-    	attachmentListRenderer.makeAttachment(tofill, "attachment_list:", params.viewID, set, Boolean.FALSE, 0);
+    	attachmentListRenderer.makeAttachmentFromAssignmentAttachmentSet(tofill, "attachment_list:", params.viewID, assignment.getAttachmentSet());
     	
     	UIVerbatim.make(tofill, "feedbackText", asv.getAnnotatedTextFormatted());
         UIVerbatim.make(tofill, "feedback_notes", asv.getFeedbackNotes());

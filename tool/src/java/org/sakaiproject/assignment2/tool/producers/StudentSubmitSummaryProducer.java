@@ -106,7 +106,7 @@ public class StudentSubmitSummaryProducer implements ViewComponentProducer, View
     	UIVerbatim.make(tofill, "instructions", assignment.getInstructions());
     	
     	attachmentListRenderer.makeAttachmentFromAssignmentAttachmentSet(tofill, "attachment_list:", params.viewID, 
-	        	assignment.getAttachmentSet(), Boolean.FALSE);
+	        	assignment.getAttachmentSet());
 		
 		
 		//Begin Looping for previous submissions
@@ -124,9 +124,9 @@ public class StudentSubmitSummaryProducer implements ViewComponentProducer, View
         	UIVerbatim.make(loop, "loop_feedback_text", asv.getAnnotatedTextFormatted());
         	UIVerbatim.make(loop, "loop_feedback_notes", asv.getFeedbackNotes());
         	attachmentListRenderer.makeAttachmentFromSubmissionAttachmentSet(loop, "loop_submitted_attachment_list:", 
-        			GradeProducer.VIEW_ID, asv.getSubmissionAttachSet(), Boolean.FALSE);
+        			GradeProducer.VIEW_ID, asv.getSubmissionAttachSet());
         	attachmentListRenderer.makeAttachmentFromFeedbackAttachmentSet(loop, "loop_returned_attachment_list:", 
-        			GradeProducer.VIEW_ID, asv.getFeedbackAttachSet(), Boolean.FALSE);
+        			GradeProducer.VIEW_ID, asv.getFeedbackAttachSet());
         	if (asv.getLastFeedbackSubmittedBy() != null) {
 	        	UIMessage.make(loop, "feedback_updated", "assignment2.student-submit-summary.feedback_updated",
 	        			new Object[]{ 

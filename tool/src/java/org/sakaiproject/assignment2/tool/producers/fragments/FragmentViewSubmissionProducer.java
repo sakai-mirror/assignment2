@@ -57,7 +57,7 @@ public class FragmentViewSubmissionProducer implements ViewComponentProducer, Vi
     	}
     	
         attachmentListRenderer.makeAttachmentFromSubmissionAttachmentSet(tofill, "assignment_attachment_list:", params.viewID, 
-        		asv.getSubmissionAttachSet(), Boolean.FALSE);
+        		asv.getSubmissionAttachSet());
 
 
     }

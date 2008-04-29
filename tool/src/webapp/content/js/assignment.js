@@ -206,3 +206,17 @@ function changePage(newPStart){
 	}
    sortPageRows(sortBy, sortDir);   
 }
+function updateAttachments(imgsrc, filename, link, ref, filesize){
+	//Check if current last row is "demo"
+   if (jQuery("#attachmentsFieldset ol:first li:last").hasClass("skip")){
+   	newRow = jQuery("#attachmentsFieldset ol:first li:last").get(0);
+   	jQuery(newRow).removeClass("skip");
+   } else {
+    newRow = jQuery("#attachmentsFieldset ol:first li:last").clone(true).appendTo("#attachmentsFieldset ol:first").get(0);
+   }
+   jQuery("img", newRow).attr("src",imgsrc);
+   jQuery("a:first", newRow).attr("href", link);
+   jQuery("a:first", newRow).html(filename);
+   jQuery("input", newRow).attr("value", ref);
+   jQuery("span:first", newRow).html(filesize);
+}

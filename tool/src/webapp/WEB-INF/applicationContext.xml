@@ -56,13 +56,13 @@
    <!-- Define the bean roots from the request scope file that are accessible 
     via incoming request URL -->
    <bean parent="requestAddressibleParent">
-	  <property name="value" value="Assignment2,Assignment2Bean,AssignmentSubmission,AssignmentSubmissionBean,FilePickerBean,AssignmentSubmissionVersion,uploadBean,AttachmentBean"/>
+	  <property name="value" value="Assignment2,Assignment2Bean,AssignmentSubmission,AssignmentSubmissionBean,FilePickerBean,AssignmentSubmissionVersion,uploadBean"/>
    </bean>
 
    <!-- Override the default style of user messages -->
    <bean id="messageTemplateContributor" parent="templateContributorParent">
       <property name="baseDirectory" value="component-templates/" />
-      <property name="templateNames" value="Messages,Pager,SortHeader,AttachmentList,GradebookDetails,StudentViewAssignment" />
+      <property name="templateNames" value="Messages,Pager,SortHeader,AttachmentList,GradebookDetails,StudentViewAssignment,AttachmentEvolver" />
    </bean>
    
    <!-- Register the template "layout.html" as defining root layout for
@@ -78,7 +78,7 @@
    
    <!-- The beans listed here are session beans (they stick around) -->
 	<bean id="myBeanScope" parent="beanScopeParent">
-		<property name="copyPreservingBeans" value="PreviewAssignmentBean,PreviewAssignmentSubmissionBean,AttachmentBean" />
+		<property name="copyPreservingBeans" value="PreviewAssignmentBean,PreviewAssignmentSubmissionBean" />
 		<property name="exclusive" value="true" />
 	</bean>
 	
@@ -125,7 +125,7 @@
    	  <property name="saveMethod"
    	  	value="org\.sakaiproject\.assignment2\.logic\.AssignmentSubmissionLogic.saveInstructorFeedback" />
    </bean>
-
+   
 	<bean parent="handlerHookParent">
 		<property name="value">
 			<bean parent="RSACBridgeProxy">
