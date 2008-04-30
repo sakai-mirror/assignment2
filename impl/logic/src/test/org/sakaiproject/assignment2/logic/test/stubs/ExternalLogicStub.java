@@ -253,5 +253,9 @@ public class ExternalLogicStub implements ExternalLogic {
 	{
 		return null;
 	}
+	
+	public String getReadableFileSize(int sizeVal) {
+		return null;
+	}
 
 }

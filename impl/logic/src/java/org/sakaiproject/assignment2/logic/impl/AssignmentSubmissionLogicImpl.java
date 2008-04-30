@@ -106,15 +106,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			throw new SecurityException("user" + currentUserId + " attempted to view submission with id " + submissionId + " but is not authorized");
 		}
 
-		// since we may make modifications to this object for 
-		// diff users that we will not save, don't use the
-		// persistent object
-		AssignmentSubmissionVersion persistedCurrentVersion = dao.getCurrentSubmissionVersionWithAttachments(submission);
-		AssignmentSubmissionVersion currentVersion = null;
-
-		if (persistedCurrentVersion != null) {
-			currentVersion = AssignmentSubmissionVersion.deepCopy(persistedCurrentVersion, true, true);
-		}
+		AssignmentSubmissionVersion currentVersion = dao.getCurrentSubmissionVersionWithAttachments(submission);
 
 		if (currentVersion != null) {
 			filterOutRestrictedVersionInfo(currentVersion, currentUserId);
@@ -122,14 +114,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 
 		submission.setCurrentSubmissionVersion(currentVersion);
 
-		/*if (!assignment.isUngraded() && assignment.getGradableObjectId() != null) {
-			// retrieve the grade information for this submission
-			gradebookLogic.populateAllGradeInfoForSubmission(currentContextId, 
-					currentUserId, submission);
-		}*/
-
 		return submission;
-
 	}
 	
 	public AssignmentSubmissionVersion getSubmissionVersionById(Long submissionVersionId) {
@@ -137,16 +122,11 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			throw new IllegalArgumentException("null submissionVersionId passed to getSubmissionVersionById");
 		}
 		
-		AssignmentSubmissionVersion persistedVersion = dao.getAssignmentSubmissionVersionByIdWithAttachments(submissionVersionId);
+		AssignmentSubmissionVersion version = dao.getAssignmentSubmissionVersionByIdWithAttachments(submissionVersionId);
 		
-		if (persistedVersion == null) {
+		if (version == null) {
 			throw new VersionNotFoundException("No AssignmentSubmissionVersion exists with id: " + submissionVersionId);
 		}
-		
-		// since we may make modifications to this object for 
-		// diff users that we will not save, don't use the
-		// persistent object
-		AssignmentSubmissionVersion version = AssignmentSubmissionVersion.deepCopy(persistedVersion, true, true);
 		
 		String currentUserId = externalLogic.getCurrentUserId();
 		
@@ -179,8 +159,6 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 
 		String currentUserId = externalLogic.getCurrentUserId();
 		
-		AssignmentSubmission submission = null;
-		
 		Assignment2 assignment = dao.getAssignmentByIdWithGroups(assignmentId);
 		
 		if (assignment == null) {
@@ -191,13 +169,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			throw new SecurityException("Current user " + currentUserId + " is not allowed to view submission for " + studentId + " for assignment " + assignment.getId());
 		}
 
-		// since we may make modifications to this object depending on 
-		// the user that we will not save, don't use the
-		// persistent object - make a copy
-		AssignmentSubmission persistedSubmission = dao.getSubmissionWithVersionHistoryForStudentAndAssignment(studentId, assignment);
-		if (persistedSubmission != null) {
-			submission = AssignmentSubmission.deepCopy(persistedSubmission, true, true, true);
-		}
+		AssignmentSubmission submission = dao.getSubmissionWithVersionHistoryForStudentAndAssignment(studentId, assignment);
 
 		if (submission == null) {
 			// return an "empty" submission
@@ -205,12 +177,6 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		} else {
 			filterOutRestrictedInfo(submission, currentUserId, true);
 		} 
-
-		// retrieve the grade information for this submission
-		/*if (!assignment.isUngraded() && assignment.getGradableObjectId() != null) {
-			gradebookLogic.populateAllGradeInfoForSubmission(contextId, 
-					currentUserId, submission);
-		}*/
 
 		return submission;
 	}
@@ -494,9 +460,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 						thisSubmission = new AssignmentSubmission(assignment, studentId);
 					} else {
 						// we need to filter restricted info from instructor
-						// if this is draft, so let's create a copy of this
-						// object and modify it
-						thisSubmission = AssignmentSubmission.deepCopy(thisSubmission, false, false, false);
+						// if this is draft
 						filterOutRestrictedInfo(thisSubmission, externalLogic.getCurrentUserId(), false);
 					}
 
@@ -943,10 +907,8 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			if (historySet != null && !historySet.isEmpty()) {
 				for (AssignmentSubmissionVersion version : historySet) {
 					if (version != null) {
-						AssignmentSubmissionVersion versionCopy = 
-							AssignmentSubmissionVersion.deepCopy(version, true, true);
-						filterOutRestrictedVersionInfo(versionCopy, currentUserId);
-						filteredVersionHistory.add(versionCopy);
+						filterOutRestrictedVersionInfo(version, currentUserId);
+						filteredVersionHistory.add(version);
 					}
 
 				}}

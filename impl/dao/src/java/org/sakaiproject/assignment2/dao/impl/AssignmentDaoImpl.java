@@ -561,4 +561,9 @@ public class AssignmentDaoImpl extends HibernateCompleteGenericDao implements As
 		};
 		return ((Number) getHibernateTemplate().execute(hc)).intValue();
     }
+    
+    public void clearSession() {
+    	
+    	getHibernateTemplate().clear();
+    }
 }

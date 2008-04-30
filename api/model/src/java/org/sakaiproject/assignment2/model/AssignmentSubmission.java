@@ -21,9 +21,8 @@
 
 package org.sakaiproject.assignment2.model;
 
-import java.util.Set;
 import java.util.Date;
-import java.util.HashSet;
+import java.util.Set;
 
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.entity.api.Entity;
@@ -198,57 +197,6 @@ public class AssignmentSubmission {
 	 */
 	public void setCurrentSubmissionVersion(AssignmentSubmissionVersion currentSubmissionVersion) {
 		this.currentSubmissionVersion = currentSubmissionVersion;
-	}
-
-	/**
-	 * 
-	 * @param subToCopy
-	 * @param includeHistorySet - if true, will do a deep copy of the versions in the history set
-	 * 			make sure this is false if you haven't initialized the historySet
-	 * @param includeSubAttachSet - if true, will do a deep copy of the submissionAttachmentSet for
-	 * 			currentVersion and history versions
-	 * 			make sure this is false if you haven't initialized the submissionAttachmentSet
-	 * @param includeFBAttachSet - if true, will do a deep copy of the feedbackAttachmentSet for
-	 * 			currentVersion and historySet versions
-	 * 			make sure this is false if you haven't initialized the feedbackAttachmentSet
-	 * @return a copy of the given submission. does not copy non-persisted 
-	 * fields except for the currentVersion. assignment is shallow copy. this is used largely
-	 * b/c hsqldb doesn't like it when we change some fields without saving
-	 */
-	public static AssignmentSubmission deepCopy(AssignmentSubmission subToCopy, boolean includeHistorySet,
-			boolean includeSubAttachSet, boolean includeFBAttachSet) {
-		AssignmentSubmission submission = new AssignmentSubmission();
-		submission.setId(subToCopy.getId()); 
-		submission.setAssignment(subToCopy.getAssignment());
-		submission.setNumSubmissionsAllowed(subToCopy.getNumSubmissionsAllowed());
-		submission.setResubmitCloseTime(subToCopy.getResubmitCloseTime());
-		submission.setUserId(subToCopy.getUserId());
-		submission.setAssignment(subToCopy.assignment);
-		submission.setCurrentSubmissionVersion(subToCopy.currentSubmissionVersion);
-		submission.setNumSubmissionsAllowed(subToCopy.numSubmissionsAllowed);
-		submission.setResubmitCloseTime(subToCopy.resubmitCloseTime);
-		submission.setUserId(subToCopy.userId);
-		
-		if (subToCopy.getCurrentSubmissionVersion() != null) {
-			AssignmentSubmissionVersion currVersion = 
-				AssignmentSubmissionVersion.deepCopy(subToCopy.getCurrentSubmissionVersion(),
-						includeSubAttachSet, includeFBAttachSet);
-			submission.setCurrentSubmissionVersion(currVersion);
-		}
-		
-		if (includeHistorySet) {
-			Set<AssignmentSubmissionVersion> copiedHistory = new HashSet<AssignmentSubmissionVersion>();
-			if (subToCopy.getSubmissionHistorySet() != null && !subToCopy.getSubmissionHistorySet().isEmpty()) {
-				for (AssignmentSubmissionVersion version : subToCopy.getSubmissionHistorySet()) {
-					AssignmentSubmissionVersion copiedVersion = AssignmentSubmissionVersion.deepCopy(version,
-							includeSubAttachSet, includeFBAttachSet);
-					copiedHistory.add(copiedVersion);
-				}
-			}
-			submission.setSubmissionHistorySet(copiedHistory);
-		}
-		
-		return submission;
 	}
 	
 	public String getReference()

@@ -419,61 +419,6 @@ public class AssignmentSubmissionVersion implements FeedbackVersion {
 		this.revisionVersion = revisionVersion;
 	}
 	
-	/**
-	 * 
-	 * @param versionToCopy
-	 * @param includeSubAttachSet - if true, will do a deep copy of the submissionAttachmentSet
-	 * 			make sure this is false if you haven't initialized the submissionAttachmentSet
-	 * @param includeFBAttachSet - if true, will do a deep copy of the feedbackAttachmentSet
-	 * 			make sure this is false if you haven't initialized the feedbackAttachmentSet
-	 * @return a copy of the given version. will not copy non-persisted fields
-	 * except for the feedbackAttachSet and submissionAttachSet; assignmentSubmission
-	 * is shallow copy. this strategy is used largely
-	 * b/c hsqldb doesn't like it when we change some fields without saving
-	 */
-	public static AssignmentSubmissionVersion deepCopy(AssignmentSubmissionVersion versionToCopy,
-			boolean includeSubAttachSet, boolean includeFBAttachSet) {
-		AssignmentSubmissionVersion newVersion = new AssignmentSubmissionVersion();
-		newVersion.setId(versionToCopy.getId());
-		newVersion.setAssignmentSubmission(versionToCopy.getAssignmentSubmission());
-		newVersion.setFeedbackNotes(versionToCopy.getFeedbackNotes());
-		newVersion.setCreatedBy(versionToCopy.getCreatedBy());
-		newVersion.setCreatedTime(versionToCopy.getCreatedTime());
-		newVersion.setDraft(versionToCopy.isDraft());
-		newVersion.setAnnotatedText(versionToCopy.getAnnotatedText());
-		newVersion.setLastFeedbackSubmittedBy(versionToCopy.getLastFeedbackSubmittedBy());
-		newVersion.setLastFeedbackTime(versionToCopy.getLastFeedbackTime());
-		newVersion.setReleasedTime(versionToCopy.getReleasedTime());
-		newVersion.setReviewIconUrl(versionToCopy.getReviewIconUrl());
-		newVersion.setReviewReportScore(versionToCopy.getReviewReportScore());
-		newVersion.setReviewReportUrl(versionToCopy.getReviewReportUrl());
-		newVersion.setReviewReportScore(versionToCopy.getReviewReportScore());
-		newVersion.setReviewStatus(versionToCopy.getReviewStatus());
-		newVersion.setSubmittedText(versionToCopy.getSubmittedText());
-		newVersion.setSubmittedTime(versionToCopy.getSubmittedTime());
-		newVersion.setSubmissionAttachSet(new HashSet<SubmissionAttachment>());
-		newVersion.setFeedbackAttachSet(new HashSet<FeedbackAttachment>());
-		
-		if (includeSubAttachSet && versionToCopy.getSubmissionAttachSet() != null && 
-				!versionToCopy.getSubmissionAttachSet().isEmpty()) {
-			for (SubmissionAttachment attach : versionToCopy.getSubmissionAttachSet()) {
-				if (attach != null) {
-					newVersion.getSubmissionAttachSet().add(SubmissionAttachment.deepCopy(attach));
-				}
-			}
-		}
-		if (includeFBAttachSet && versionToCopy.getFeedbackAttachSet() != null && 
-				!versionToCopy.getFeedbackAttachSet().isEmpty()) {
-			for (FeedbackAttachment attach : versionToCopy.getFeedbackAttachSet()) {
-				if (attach != null) {
-					newVersion.getFeedbackAttachSet().add(FeedbackAttachment.deepCopy(attach));
-				}
-			}
-		}
-		
-		return newVersion;
-	}
-	
 	public String[] getFeedbackAttachmentRefs()
 	{
 		if (feedbackAttachSet == null) { return new String[]{}; }

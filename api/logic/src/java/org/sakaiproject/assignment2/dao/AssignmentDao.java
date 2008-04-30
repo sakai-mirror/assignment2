@@ -167,4 +167,13 @@ public interface AssignmentDao extends CompleteGenericDao {
 	 * does not count versions with draft status.
 	 */
 	public int getNumSubmittedVersions(final String studentId, final Long assignmentId);
+	
+	/**
+	 * Used ONLY for the unit tests. In the logic, some objects will be returned with
+	 * modified fields (that are not meant to be saved), and upon re-retrieval 
+	 * will be out of sync with the session and throw nasty errors in hsqldb.
+	 * This method allows us to clear the session before re-retrieval
+	 * to avoid this problem. 
+	 */
+	public void clearSession();
 }

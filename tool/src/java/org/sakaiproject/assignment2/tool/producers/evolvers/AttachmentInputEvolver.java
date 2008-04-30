@@ -23,9 +23,6 @@ public class AttachmentInputEvolver {
 	public static final String COMPONENT_ID = "attachment-list:";
 	public static final String CORE_ID = "attachment-list-core:";
 	
-	private int maxlength = 1000;
-	private int minlength = 0;
-	
 	private ContentHostingService contentHostingService;
 	public void setContentHostingService(ContentHostingService contentHostingService) {
 		this.contentHostingService = contentHostingService;
@@ -62,11 +59,12 @@ public class AttachmentInputEvolver {
 	    }
 
 		UIBranchContainer core = UIBranchContainer.make(togo, CORE_ID);
-		int limit = Math.max(minlength, value.length);
+		int limit = Math.max(0, value.length);
 		for (int i=0; i < limit; ++i) {
 			UIBranchContainer row = UIBranchContainer.make(core, "attachment-list-row:", Integer.toString(i));
 			String thisvalue = i < value.length ? value[i] : "";
 			try {
+				//TODO - but all contentHosting calls in an external Logic
 				ContentResource cr = contentHostingService.getResource(thisvalue);
 				UILink.make(row, "attachment_image", externalLogic.getContentTypeImagePath(cr));
 				UILink.make(row, "attachment_link", cr.getProperties().getProperty(cr.getProperties().getNamePropDisplayName()),
