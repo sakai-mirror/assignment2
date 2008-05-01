@@ -48,5 +48,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/assignment-api"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/test-harness"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/taggable-api"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/sdata"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
