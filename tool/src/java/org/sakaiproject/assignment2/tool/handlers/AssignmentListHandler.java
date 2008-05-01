@@ -20,9 +20,9 @@ import org.sakaiproject.sdata.tool.json.JSONServiceHandler;
 
 public class AssignmentListHandler extends JSONServiceHandler
 {
-	private ComponentManager compMgr = null;
-	private AssignmentLogic assnLogic = null;
-	private AssignmentSubmissionLogic subLogic = null;
+	private ComponentManager compMgr;
+	private AssignmentLogic assnLogic;
+	private AssignmentSubmissionLogic subLogic;
 	private DateFormat dateFormat;
 
 	@Override
