@@ -1,6 +1,8 @@
 package org.sakaiproject.assignment2.tool.handlers;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -24,6 +26,7 @@ public class SubmissionListHandler extends JSONServiceHandler
 	ComponentManager compMgr = null;
 	AssignmentLogic assnLogic = null;
 	AssignmentSubmissionLogic subLogic = null;
+	private DateFormat dateFormat;
 
 	@Override
 	public void init(Map<String, String> config) throws ServletException
@@ -32,6 +35,7 @@ public class SubmissionListHandler extends JSONServiceHandler
 		assnLogic = (AssignmentLogic) compMgr.get(AssignmentLogic.class.getName());
 		subLogic = (AssignmentSubmissionLogic) compMgr.get(AssignmentSubmissionLogic.class
 				.getName());
+		dateFormat = new SimpleDateFormat("MM/dd");
 	}
 
 	@Override
@@ -85,7 +89,7 @@ public class SubmissionListHandler extends JSONServiceHandler
 				AssignmentSubmissionVersion ver = sub.getCurrentSubmissionVersion();
 				s.put("name", sub.getUserId());
 				s.put("submittedOn", ver.getCreatedTime());
-				s.put("dueDate", assn.getDueDate());
+				s.put("dueDate", dateFormat.format(assn.getDueDate()));
 				s.put("sections", "");
 				s.put("feedback", ver.getFeedbackNotes());
 			}

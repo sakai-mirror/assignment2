@@ -15,9 +15,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
-import org.sakaiproject.assignment2.model.AssignmentSubmission;
-import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
-import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.component.api.ComponentManager;
 import org.sakaiproject.sdata.tool.json.JSONServiceHandler;
 
@@ -52,8 +49,8 @@ public class AssignmentListHandler extends JSONServiceHandler
 			a.put("id", assn.getId());
 			a.put("title", assn.getTitle());
 			a.put("sections", "");
-			a.put("openDate", assn.getOpenTime());
-			a.put("dueDate", assn.getDueDate());
+			a.put("openDate", dateFormat.format(assn.getOpenTime()));
+			a.put("dueDate", dateFormat.format(assn.getDueDate()));
 
 			if (assn.isDraft())
 				drafts.add(a);
