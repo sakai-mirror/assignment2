@@ -34,6 +34,7 @@ public class NewAssn1Handler extends JSONServiceHandler
 		HashMap<String, Object> map = new HashMap<String, Object>();
 		map.put("title", assn.getTitle());
 		map.put("instructions", assn.getInstructions());
+
 		sendMap(request, response, map);
 	}
 
@@ -46,8 +47,17 @@ public class NewAssn1Handler extends JSONServiceHandler
 		Assignment2 assn = new Assignment2();
 		assn.setTitle(title);
 		assn.setInstructions(instructions);
+
+		String draft = request.getParameter("draft");
+		String next = "/sakai-assingment2-tool/sdata/newAssn2?id=" + assn.getId();
+		if (draft != null)
+		{
+			assn.setDraft(true);
+			next = "/sakai-assingment2-tool/content/templates/close.html";
+		}
+
 		assnLogic.saveAssignment(assn);
 
-		response.sendRedirect("newAssn2?id=" + assn.getId());
+		response.sendRedirect(next);
 	}
 }

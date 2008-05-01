@@ -94,9 +94,6 @@
 		<!--
 			classname is the name of the Handler
 			baseurl is the first path element that maps to the handler
-
-			6.classname=org.sakaiproject.assignment2.tool.handlers.SubmissionViewHandler;
-			6.baseurl=/subView;
 		-->
 			<param-name>config</param-name>
 			<param-value> 
@@ -110,6 +107,8 @@
 				4.baseurl=/newAssn2;
 				5.classname=org.sakaiproject.assignment2.tool.handlers.NewAssn3Handler;
 				5.baseurl=/newAssn3;
+				6.classname=org.sakaiproject.assignment2.tool.handlers.SubmissionHandler;
+				6.baseurl=/subView;
 			</param-value>
 		</init-param>
 	</servlet>

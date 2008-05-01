@@ -2,6 +2,7 @@ package org.sakaiproject.assignment2.tool.handlers;
 
 import java.io.IOException;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
@@ -42,6 +43,7 @@ public class NewAssn2Handler extends JSONServiceHandler
 		map.put("acceptUntil", dateFormat.format(assn.getAcceptUntilTime()));
 		map.put("whoWillSubmit", "");
 		map.put("grading", "");
+
 		sendMap(request, response, map);
 	}
 
@@ -59,12 +61,31 @@ public class NewAssn2Handler extends JSONServiceHandler
 
 		Assignment2 assn = assnLogic.getAssignmentById(Long.parseLong(id));
 		assn.setSubmissionType(Integer.parseInt(submissionType));
-		assn.setOpenTime(dateFormat.parse(openDate));
-		assn.setDueDate(dateFormat.parse(dueDate));
-		assn.setAcceptUntilTime(dateFormat.parse(acceptUntil));
+		try
+		{
+			assn.setOpenTime(dateFormat.parse(openDate));
+			assn.setDueDate(dateFormat.parse(dueDate));
+			assn.setAcceptUntilTime(dateFormat.parse(acceptUntil));
+		}
+		catch (ParseException pe)
+		{
+			throw new ServletException(pe.getMessage(), pe);
+		}
 
+		String draft = request.getParameter("draft");
+		String step = request.getParameter("step");
+		String next = "/sakai-assingment2-tool/sdata/newAssn3?id=" + assn.getId();
+		if (draft != null)
+		{
+			assn.setDraft(true);
+			next = "/sakai-assingment2-tool/content/templates/close.html";
+		}
+		else if ("prev".equals(step))
+		{
+			next = "/sakai-assingment2-tool/sdata/newAssn1?id=" + assn.getId();
+		}
 		assnLogic.saveAssignment(assn);
 
-		response.sendRedirect("newAssn2?id=" + assn.getId());
+		response.sendRedirect(next);
 	}
 }
