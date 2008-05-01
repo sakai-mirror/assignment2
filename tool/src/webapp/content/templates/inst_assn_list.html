@@ -7,6 +7,7 @@
 		<link rel="stylesheet" href="../css/thickbox.css" type="text/css" media="screen" />
 		<link rel='stylesheet' type='text/css' href='../css/assn2_hotness.css' />
 		<script src='../js/jquery-1.2.3.min.js' type='text/javascript'></script>
+		<script src='../js/ejs_0.9_alpha_1_production.js' type='text/javascript'></script>
 		<script src='../js/jquery.tablesorter.min.js' type='text/javascript'></script>
 		<script src='../js/thickbox-compressed.js' type='text/javascript'></script>
 		<script src='../js/list_common.js' type='text/javascript'></script>
@@ -44,29 +45,18 @@
 							<th>Due Date</th>
 						</tr>
 					</thead>
-					<tbody>
-						<tr class='dataRow'>
-							<td><input type='checkbox' /></td>
-							<td>Assignment 4 <a href=''><img src="../images/icons/page_white_edit.png" alt="Edit Content" /></a> <a href=''><img src="../images/icons/basket.png" alt="Edit Content" /></a> <a href=''><img src="../images/icons/wrench.png" alt="Edit Content" /></a></td>
-							<td>&nbsp;</td>
-							<td>03/28</td>
-							<td>05/10</td>
-							</tr>
-						<tr class='dataRow'>
-							<td><input type='checkbox' /></td>
-							<td>Assignment 5 <a href=''><img src="../images/icons/page_white_edit.png" alt="Edit Content" /></a> <a href=''><img src="../images/icons/basket.png" alt="Edit Content" /></a> <a href=''><img src="../images/icons/wrench.png" alt="Edit Content" /></a></td>
-							<td>Section B</td>
-							<td>03/29</td>
-							<td>05/10</td>
-						</tr>
-						<tr class='dataRow'>
-							<td><input type='checkbox' /></td>
-							<td>Assignment 5 <a href=''><img src="../images/icons/page_white_edit.png" alt="Edit Content" /></a> <a href=''><img src="../images/icons/basket.png" alt="Edit Content" /></a> <a href=''><img src="../images/icons/wrench.png" alt="Edit Content" /></a></td>
-							<td>Section A</td>
-							<td>04/28</td>
-							<td>05/10</td>
-						</tr>
-					</tbody>
+					<tbody id="draft_out"></tbody>
+					<textarea id="draft_template" class="template">
+						[% for (var i=0; i<drafts.length; i++) { %]
+							<tr class='dataRow'>
+								<td><input type='checkbox' /></td>
+								<td>[%= drafts[i].title %] <a href=''><img src="../images/icons/page_white_edit.png" alt="Edit Content" /></a> <a href=''><img src="../images/icons/basket.png" alt="Edit Content" /></a> <a href=''><img src="../images/icons/wrench.png" alt="Edit Content" /></a></td>
+								<td>[%= drafts[i].sections %]</td>
+								<td>[%= drafts[i].openDate %]</td>
+								<td>[%= drafts[i].dueDate %]</td>
+								</tr>
+						[% } %]
+					</textarea>
 				</table>
 				<div class='buttons'>
 					<a href=''><img src="../images/icons/arrow_down.png" alt="" />Post</a>
@@ -89,26 +79,17 @@
 							<th>Due Date</th>
 						</tr>
 					</thead>
-					<tbody>
-						<tr class='dataRow'>
-							<td>Assignment 1 <a href=''><img src="../images/icons/arrow_up.png" alt="To Draft" /></a></td>
-							<td>&nbsp;</td>
-							<td>03/28</td>
-							<td>05/10</td>
-						</tr>
-						<tr class='dataRow'>
-							<td>Assignment 2 <a href=''><img src="../images/icons/arrow_up.png" alt="To Draft" /></a></td>
-							<td>&nbsp;</td>
-							<td>03/28</td>
-							<td>05/10</td>
-						</tr>
-						<tr class='dataRow'>
-							<td>Assignment 3 <a href=''><img src="../images/icons/arrow_up.png" alt="To Draft" /></a></td>
-							<td>&nbsp;</td>
-							<td>03/28</td>
-							<td>05/10</td>
-						</tr>
-					</tbody>
+					<tbody id="posted_out"></tbody>
+					<textarea id="posted_template" class="template">
+						[% for(var i=0; i<posted.length; i++) { %]
+							<tr class='dataRow'>
+								<td>[%= posted[i].title %] <a href=''><img src="../images/icons/arrow_up.png" alt="To Draft" /></a></td>
+								<td>[%= drafts[i].sections %]</td>
+								<td>[%= posted[i].openDate %]</td>
+								<td>[%= posted[i].dueDate %]</td>
+							</tr>
+						[% } %]
+					</textarea>
 				</table>
 			</div>
 		</div>

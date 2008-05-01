@@ -291,3 +291,6 @@ background-color: #eeb211;
 a img {
 	border: none;
 }
+.template {
+	display: none;
+}
