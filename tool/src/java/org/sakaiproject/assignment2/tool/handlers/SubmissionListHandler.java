@@ -30,7 +30,8 @@ public class SubmissionListHandler extends JSONServiceHandler
 	{
 		compMgr = org.sakaiproject.component.cover.ComponentManager.getInstance();
 		assnLogic = (AssignmentLogic) compMgr.get(AssignmentLogic.class.getName());
-		subLogic = (AssignmentSubmissionLogic) compMgr.get(AssignmentSubmissionLogic.class.getName());
+		subLogic = (AssignmentSubmissionLogic) compMgr.get(AssignmentSubmissionLogic.class
+				.getName());
 	}
 
 	@Override
@@ -39,7 +40,7 @@ public class SubmissionListHandler extends JSONServiceHandler
 	{
 		HashMap<String, Object> content = new HashMap<String, Object>();
 		ArrayList<HashMap<String, Object>> assignments = new ArrayList<HashMap<String, Object>>();
-		
+
 		List<Assignment2> assns = assnLogic.getViewableAssignments();
 		for (Assignment2 assn : assns)
 		{
@@ -55,7 +56,7 @@ public class SubmissionListHandler extends JSONServiceHandler
 			a.put("submissions", subs);
 			assignments.add(a);
 		}
-		
+
 		content.put("assignments", assignments);
 		sendMap(request, response, content);
 	}

@@ -1,6 +1,8 @@
 package org.sakaiproject.assignment2.tool.handlers;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,16 +23,17 @@ import org.sakaiproject.sdata.tool.json.JSONServiceHandler;
 
 public class AssignmentListHandler extends JSONServiceHandler
 {
-	ComponentManager compMgr = null;
-	AssignmentLogic assnLogic = null;
-	AssignmentSubmissionLogic subLogic = null;
+	private ComponentManager compMgr = null;
+	private AssignmentLogic assnLogic = null;
+	private AssignmentSubmissionLogic subLogic = null;
+	private DateFormat dateFormat;
 
 	@Override
 	public void init(Map<String, String> config) throws ServletException
 	{
 		compMgr = org.sakaiproject.component.cover.ComponentManager.getInstance();
 		assnLogic = (AssignmentLogic) compMgr.get(AssignmentLogic.class.getName());
-		
+		dateFormat = new SimpleDateFormat("MM/dd");
 	}
 
 	@Override
@@ -40,31 +43,22 @@ public class AssignmentListHandler extends JSONServiceHandler
 		HashMap<String, Object> content = new HashMap<String, Object>();
 		ArrayList<HashMap<String, Object>> drafts = new ArrayList<HashMap<String, Object>>();
 		ArrayList<HashMap<String, Object>> posted = new ArrayList<HashMap<String, Object>>();
-		
+
 		List<Assignment2> assns = assnLogic.getViewableAssignments();
 		for (Assignment2 assn : assns)
 		{
-			if(assn.isDraft())
-			{
-			    // get specific elements of data
-			    HashMap<String, Object> a = new HashMap<String, Object>();
-			    a.put("id", assn.getId());
-			    a.put("title", assn.getTitle());
-			    a.put("sections", "");
-			    a.put("openDate",assn.getOpenTime());
-                a.put("dueDate",assn.getDueDate());
-                drafts.add(a);
-		    }
+			// get specific elements of data
+			HashMap<String, Object> a = new HashMap<String, Object>();
+			a.put("id", assn.getId());
+			a.put("title", assn.getTitle());
+			a.put("sections", "");
+			a.put("openDate", assn.getOpenTime());
+			a.put("dueDate", assn.getDueDate());
+
+			if (assn.isDraft())
+				drafts.add(a);
 			else
-			{
-				HashMap<String, Object> a = new HashMap<String, Object>();
-			    a.put("id", assn.getId());
-			    a.put("title", assn.getTitle());
-			    a.put("sections", "");
-			    a.put("openDate",assn.getOpenTime());
-                a.put("dueDate",assn.getDueDate());
-                posted.add(a);
-			}
+				posted.add(a);
 		}
 		content.put("drafts", drafts);
 		content.put("posted", posted);
@@ -77,5 +71,4 @@ public class AssignmentListHandler extends JSONServiceHandler
 	{
 
 	}
-
 }
