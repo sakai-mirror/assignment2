@@ -646,10 +646,13 @@ public class Assignment2 {
 
 	public String[] getAssignmentAttachmentRefs()
 	{
-		String[] refs = new String[attachmentSet.size()];
-		int i = 0;
-		for (AssignmentAttachment aa : attachmentSet) {
-			refs[i++] = aa.getAttachmentReference();
+		String[] refs = new String[0];
+		if (attachmentSet != null) {
+			refs = new String[attachmentSet.size()];
+			int i = 0;
+			for (AssignmentAttachment aa : attachmentSet) {
+				refs[i++] = aa.getAttachmentReference();
+			}
 		}
 		return refs;
 	}
