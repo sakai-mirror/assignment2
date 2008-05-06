@@ -282,7 +282,9 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
         UISelect.make(form, "honor_pledge", honor_pledge_values, honor_pledge_labels, assignment2OTP + ".honorPledge").setMessageKeys();
         
         //Attachments
-        UIInputMany attachmentInput = UIInputMany.make(form, "attachment_list:", assignment2OTP + ".assignmentAttachmentRefs", assignment.getAssignmentAttachmentRefs());
+        UIInputMany attachmentInput = UIInputMany.make(form, "attachment_list:", assignment2OTP + ".assignmentAttachmentRefs");//, 
+        		//assignment.getAssignmentAttachmentRefs());
+        attachmentInput.mustapply = true;
         attachmentInputEvolver.evolveAttachment(attachmentInput);
 
         UIInternalLink.make(form, "add_attachments", UIMessage.make("assignment2.assignment_add.add_attachments"),
