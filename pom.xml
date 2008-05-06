@@ -21,6 +21,7 @@
     <module>impl/dao</module>
     <module>impl/logic</module>
     <module>impl/test</module>
+    <module>deployer</module>
   </modules>
   
   <reporting>
