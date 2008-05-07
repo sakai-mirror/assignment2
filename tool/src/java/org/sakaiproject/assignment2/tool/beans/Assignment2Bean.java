@@ -163,7 +163,6 @@ public class Assignment2Bean {
 		
 		//REMOVE THESE - TODO
 		assignment.setNotificationType(0);
-		assignment.setAddedToSchedule(Boolean.FALSE);
 		//END REMOVE THESE 
 		
 		//do groups

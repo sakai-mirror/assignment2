@@ -261,8 +261,16 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
         instructions.mustapply = Boolean.TRUE;
         richTextEvolver.evolveTextInput(instructions);
         
-        
         //Calendar Due Date
+        if (externalLogic.siteHasTool(currentContextId, ExternalLogic.TOOL_ID_SCHEDULE)) {
+    		
+    		UIOutput add_to_schedule_container = UIOutput.make(form, "add_to_schedule_container");
+    		UIMessage schedule_label = UIMessage.make(form, "schedule_label", "assignment2.assignment_add.schedule");
+        	UIBoundBoolean schedule = UIBoundBoolean.make(form, "schedule", assignment2OTP + ".addedToSchedule");
+        	UILabelTargetDecorator.targetLabel(schedule_label, schedule);
+    		
+        }
+        
         //Announcement -  only display if site has the announcements tool
         if (externalLogic.siteHasTool(currentContextId, ExternalLogic.TOOL_ID_ANNC)) {
         	UIMessage announcement_label = UIMessage.make(form, "announcement_label", "assignment2.assignment_add.announcement");
@@ -282,7 +290,9 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
         UISelect.make(form, "honor_pledge", honor_pledge_values, honor_pledge_labels, assignment2OTP + ".honorPledge").setMessageKeys();
         
         //Attachments
-        UIInputMany attachmentInput = UIInputMany.make(form, "attachment_list:", assignment2OTP + ".assignmentAttachmentRefs", assignment.getAssignmentAttachmentRefs());
+        UIInputMany attachmentInput = UIInputMany.make(form, "attachment_list:", assignment2OTP + ".assignmentAttachmentRefs");//, 
+        		//assignment.getAssignmentAttachmentRefs());
+        attachmentInput.mustapply = true;
         attachmentInputEvolver.evolveAttachment(attachmentInput);
 
         UIInternalLink.make(form, "add_attachments", UIMessage.make("assignment2.assignment_add.add_attachments"),

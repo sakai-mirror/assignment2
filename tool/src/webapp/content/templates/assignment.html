@@ -109,8 +109,17 @@
 						</li>
 					</ol>
 				</fieldset>
-				<div rsf:id="require_due_date_container" class="indent"><input rsf:id="due_date:" value="12/31/2007"/></div>
+				<div rsf:id="require_due_date_container" class="indent"><input rsf:id="due_date:" value="12/31/2007"/>
 				<p rsf:id="message-for:due_date"></p>
+					<fieldset rsf:id="add_to_schedule_container" class="indent">
+						<ol>
+							<li>
+								<input rsf:id="schedule" id="schedule" type="checkbox" /> 
+								<label rsf:id="schedule_label">Post Due Date to Schedule</label>
+							</li>
+						</ol>
+					</fieldset>
+				</div>
 			</li>
 			<li>
 				<label rsf:id="msg=assignment2.assignment_add.accept_until">Accept Until</label> 

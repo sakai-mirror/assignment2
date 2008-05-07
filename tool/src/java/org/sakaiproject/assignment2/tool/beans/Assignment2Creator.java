@@ -50,6 +50,7 @@ public class Assignment2Creator {
     	togo.setHasAnnouncement(Boolean.FALSE);
     	togo.setAddedToSchedule(Boolean.FALSE);
     	togo.setSubmissionType(AssignmentConstants.SUBMIT_INLINE_AND_ATTACH);
+    	togo.setAttachmentSet(new HashSet<AssignmentAttachment>());
     	
     	//Setting up Dates
     	Calendar cal = Calendar.getInstance();

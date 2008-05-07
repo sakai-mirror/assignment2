@@ -1,6 +1,6 @@
 /**********************************************************************************
- * $URL$
- * $Id$
+ * $URL:https://source.sakaiproject.org/contrib/assignment2/trunk/impl/logic/src/java/org/sakaiproject/assignment2/logic/impl/ExternalCalendarLogicImpl.java $
+ * $Id:ExternalCalendarLogicImpl.java 48274 2008-04-23 20:07:00Z wagnermr@iupui.edu $
  ***********************************************************************************
  *
  * Copyright (c) 2007 The Sakai Foundation.
@@ -114,14 +114,13 @@ public class ExternalCalendarLogicImpl implements ExternalCalendarLogic {
 
 			eventId = event.getId();
 			
-			// TODO - need to add similar piece to the Calendar side
 			// now add the linkage to the assignment on the calendar side
-			/*if (event.getId() != null) {
+			if (event.getId() != null) {
 				// add the assignmentId to the calendar object
 				try {
 					CalendarEventEdit edit = calendar.getEditEvent(event.getId(), CalendarService.EVENT_ADD_CALENDAR);
-
-					edit.setField(NEW_ASSIGNMENT_DUEDATE_CALENDAR_ASSIGNMENT_ID, assignmentId.toString());
+					// TODO - uncomment this when calendar is updated!!
+					//edit.setField(CalendarService.PROP_DISPLAY_EVENT_ON_DATE, dueDate.getTime() + "");
 
 					calendar.commitEvent(edit);
 					
@@ -132,7 +131,7 @@ public class ExternalCalendarLogicImpl implements ExternalCalendarLogic {
 					log.warn("Error linking newly added event with id: " + event.getId() + 
 							" to assignment: " + assignmentId + ". Assignment link was not added", iue);
 				}
-			}*/
+			}
 			
 			if (log.isDebugEnabled()) log.debug("Event added with id: " + event.getId() + " for assignnment: " + assignmentId);
 			
