@@ -164,8 +164,12 @@
 	padding: 5px;
 }
 .input p {
-	margin: 3px;
+	margin-top: 1px;
+	margin-bottom: 1px;
+	line-height: .3 em;
+	padding: 0px;
 }
+
 .section {
 	width: 100%;
 	clear: both;
