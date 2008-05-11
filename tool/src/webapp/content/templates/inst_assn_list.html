@@ -14,23 +14,20 @@
 		<script src='../js/inst_assn_list.js' type='text/javascript'></script>
 	</head>
 	<body>
-		<div class='menuBar'>
-			<div class='menuItem menuItemOn'>Assignments</div>
-			<div class='menuItem'><a href='inst_sub_list.html'>Submissions</a></div>
-			<div class='menuItem'>Options</div>
-		</div>
 
 
 		<div class='cleaner'></div>
-		<div class='buttons'>
-			<a href='newassignment1.html?width=800&amp;height=600&amp;modal=true' class="thickbox"><img src="../images/icons/add.png" alt="" />New</a>
-			<a href=''><img src="../images/icons/page_white_copy.png" alt="" />Copy</a>
-			<a href=''><img src="../images/icons/page_white_get.png" alt="" />Import</a>
-		</div>
+		
 		<div id='drafts' class='section'>
 			<div id='draftsHeader' class='header'>
 				<div class='headerLabel'>
 					<a href='#' id='draftsTwisty' class='twisty'><img src='../images/bullet_toggle_minus.png' alt='Drafts' /></a> Drafts
+				<div class='buttons'>
+					<a href='newassignment1.html?width=800&amp;height=600&amp;modal=true' class="thickbox"><img src="../images/icons/add.png" alt="" />New</a>
+					<a href=''><img src="../images/icons/arrow_down.png" alt="" />Post</a>
+					<a href=''><img src="../images/icons/page_white_copy.png" alt="" />Copy</a>
+					<a href=''><img src="../images/icons/page_white_get.png" alt="" />Import</a>
+				</div>
 				</div>
 			</div>
 			<div class='cleaner'></div>
@@ -50,7 +47,7 @@
 						[% for (var i=0; i<drafts.length; i++) { %]
 							<tr class='dataRow'>
 								<td><input type='checkbox' /></td>
-								<td>[%= drafts[i].title %] <a href=''><img src="../images/icons/page_white_edit.png" alt="Edit Content" /></a> <a href=''><img src="../images/icons/basket.png" alt="Edit Content" /></a> <a href=''><img src="../images/icons/wrench.png" alt="Edit Content" /></a></td>
+								<td>[%= drafts[i].title %] <a href=''><img src="../images/icons/page_white_edit.png" alt="Edit Content" /></a> </td>
 								<td>[%= drafts[i].sections %]</td>
 								<td>[%= drafts[i].openDate %]</td>
 								<td>[%= drafts[i].dueDate %]</td>
@@ -58,9 +55,6 @@
 						[% } %]
 					</textarea>
 				</table>
-				<div class='buttons'>
-					<a href=''><img src="../images/icons/arrow_down.png" alt="" />Post</a>
-				</div>
 			</div>
 		</div>
 		<div id='posted' class='section clear'>
@@ -73,6 +67,7 @@
 				<table id='postedAssns' class='listTable tablesorter'>
 					<thead>
 						<tr class='headerRow'>
+							<th><input type='checkbox' disabled='disabled' /></th>
 							<th>Title</th>
 							<th>Sections/Groups</th>
 							<th>Open Date</th>
@@ -83,6 +78,7 @@
 					<textarea id="posted_template" class="template">
 						[% for(var i=0; i<posted.length; i++) { %]
 							<tr class='dataRow'>
+								<td><input type='checkbox' /></td>
 								<td>[%= posted[i].title %] <a href=''><img src="../images/icons/arrow_up.png" alt="To Draft" /></a></td>
 								<td>[%= drafts[i].sections %]</td>
 								<td>[%= posted[i].openDate %]</td>
