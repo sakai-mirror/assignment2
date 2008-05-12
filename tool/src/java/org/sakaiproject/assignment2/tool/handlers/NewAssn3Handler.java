@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.component.api.ComponentManager;
-import org.sakaiproject.sdata.tool.json.JSONServiceHandler;
 
 public class NewAssn3Handler extends Assn2HandlerBase
 {

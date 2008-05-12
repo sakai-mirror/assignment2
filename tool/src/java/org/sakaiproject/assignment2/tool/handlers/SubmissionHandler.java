@@ -11,7 +11,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
@@ -24,12 +23,10 @@ import org.sakaiproject.entity.api.ResourceProperties;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.exception.TypeException;
-import org.sakaiproject.sdata.tool.json.JSONServiceHandler;
 
 public class SubmissionHandler extends Assn2HandlerBase
 {
 	private ComponentManager compMgr = null;
-	private AssignmentLogic assnLogic = null;
 	private AssignmentSubmissionLogic subLogic = null;
 	private ContentHostingService chs = null;
 	
@@ -37,7 +34,6 @@ public class SubmissionHandler extends Assn2HandlerBase
 	public void postInit(Map<String, String> config) throws ServletException
 	{
 		compMgr = org.sakaiproject.component.cover.ComponentManager.getInstance();
-		assnLogic = (AssignmentLogic) compMgr.get(AssignmentLogic.class.getName());
 		subLogic = (AssignmentSubmissionLogic) compMgr.get(AssignmentSubmissionLogic.class
 				.getName());
 		chs = (ContentHostingService) compMgr.get(ContentHostingService.class.getName());

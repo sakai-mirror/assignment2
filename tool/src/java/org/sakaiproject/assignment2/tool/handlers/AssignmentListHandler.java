@@ -13,11 +13,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
-import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.component.api.ComponentManager;
-import org.sakaiproject.sdata.tool.json.JSONServiceHandler;
-import org.sakaiproject.thread_local.cover.ThreadLocalManager;
 
 public class AssignmentListHandler extends Assn2HandlerBase
 {
