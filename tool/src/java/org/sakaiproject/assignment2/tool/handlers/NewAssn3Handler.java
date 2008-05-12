@@ -13,20 +13,20 @@ import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.component.api.ComponentManager;
 import org.sakaiproject.sdata.tool.json.JSONServiceHandler;
 
-public class NewAssn3Handler extends JSONServiceHandler
+public class NewAssn3Handler extends Assn2HandlerBase
 {
 	private ComponentManager compMgr;
 	private AssignmentLogic assnLogic;
 
 	@Override
-	public void init(Map<String, String> config) throws ServletException
+	public void postInit(Map<String, String> config) throws ServletException
 	{
 		compMgr = org.sakaiproject.component.cover.ComponentManager.getInstance();
 		assnLogic = (AssignmentLogic) compMgr.get(AssignmentLogic.class.getName());
 	}
 
 	@Override
-	public void doGet(HttpServletRequest request, HttpServletResponse response)
+	public void handleGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException
 	{
 		String id = request.getParameter("id");
@@ -41,7 +41,7 @@ public class NewAssn3Handler extends JSONServiceHandler
 	}
 
 	@Override
-	public void doPost(HttpServletRequest request, HttpServletResponse response)
+	public void handlePost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException
 	{
 		String id = request.getParameter("id");

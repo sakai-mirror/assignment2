@@ -26,7 +26,7 @@ import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.exception.TypeException;
 import org.sakaiproject.sdata.tool.json.JSONServiceHandler;
 
-public class SubmissionHandler extends JSONServiceHandler
+public class SubmissionHandler extends Assn2HandlerBase
 {
 	private ComponentManager compMgr = null;
 	private AssignmentLogic assnLogic = null;
@@ -34,7 +34,7 @@ public class SubmissionHandler extends JSONServiceHandler
 	private ContentHostingService chs = null;
 	
 	@Override
-	public void init(Map<String, String> config) throws ServletException
+	public void postInit(Map<String, String> config) throws ServletException
 	{
 		compMgr = org.sakaiproject.component.cover.ComponentManager.getInstance();
 		assnLogic = (AssignmentLogic) compMgr.get(AssignmentLogic.class.getName());
@@ -44,7 +44,7 @@ public class SubmissionHandler extends JSONServiceHandler
 	}
 
 	@Override
-	public void doGet(HttpServletRequest request, HttpServletResponse response)
+	public void handleGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException
 	{
 		try
@@ -132,12 +132,4 @@ public class SubmissionHandler extends JSONServiceHandler
 			sendError(request, response, iue);
 		}
 	}
-
-	@Override
-	public void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException
-	{
-
-	}
-
 }

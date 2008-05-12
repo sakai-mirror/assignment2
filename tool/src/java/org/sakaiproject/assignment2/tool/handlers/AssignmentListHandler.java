@@ -19,15 +19,14 @@ import org.sakaiproject.component.api.ComponentManager;
 import org.sakaiproject.sdata.tool.json.JSONServiceHandler;
 import org.sakaiproject.thread_local.cover.ThreadLocalManager;
 
-public class AssignmentListHandler extends JSONServiceHandler
+public class AssignmentListHandler extends Assn2HandlerBase
 {
 	private ComponentManager compMgr;
 	private AssignmentLogic assnLogic;
-	private AssignmentSubmissionLogic subLogic;
 	private DateFormat dateFormat;
 
 	@Override
-	public void init(Map<String, String> config) throws ServletException
+	public void postInit(Map<String, String> config) throws ServletException
 	{
 		compMgr = org.sakaiproject.component.cover.ComponentManager.getInstance();
 		assnLogic = (AssignmentLogic) compMgr.get(AssignmentLogic.class.getName());
@@ -35,7 +34,7 @@ public class AssignmentListHandler extends JSONServiceHandler
 	}
 
 	@Override
-	public void doGet(HttpServletRequest request, HttpServletResponse response)
+	public void handleGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException
 	{
 		HashMap<String, Object> content = new HashMap<String, Object>();
@@ -61,12 +60,5 @@ public class AssignmentListHandler extends JSONServiceHandler
 		content.put("drafts", drafts);
 		content.put("posted", posted);
 		sendMap(request, response, content);
-	}
-
-	@Override
-	public void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException
-	{
-
 	}
 }
