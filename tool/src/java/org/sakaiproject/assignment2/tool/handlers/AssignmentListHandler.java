@@ -17,9 +17,11 @@ import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.component.api.ComponentManager;
 import org.sakaiproject.sdata.tool.json.JSONServiceHandler;
+import org.sakaiproject.thread_local.cover.ThreadLocalManager;
 
 public class AssignmentListHandler extends JSONServiceHandler
 {
+	private static final String CURRENT_CONTEXT = "org.sakaiproject.util.RequestFilter.context";
 	private ComponentManager compMgr;
 	private AssignmentLogic assnLogic;
 	private AssignmentSubmissionLogic subLogic;
@@ -41,7 +43,8 @@ public class AssignmentListHandler extends JSONServiceHandler
 		ArrayList<HashMap<String, Object>> drafts = new ArrayList<HashMap<String, Object>>();
 		ArrayList<HashMap<String, Object>> posted = new ArrayList<HashMap<String, Object>>();
 
-		List<Assignment2> assns = assnLogic.getViewableAssignments();
+		String context = (String) ThreadLocalManager.get(CURRENT_CONTEXT);
+		List<Assignment2> assns = assnLogic.getViewableAssignments(context);
 		for (Assignment2 assn : assns)
 		{
 			// get specific elements of data

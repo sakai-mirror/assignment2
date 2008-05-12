@@ -95,7 +95,17 @@ public interface AssignmentLogic {
 	 * @return A non-null list of viewable assignments.
 	 */
 	public List<Assignment2> getViewableAssignments();
-	
+
+	/**
+	 * Returns list of Assignment objects that the given user has permission to view or grade.
+	 * Assignments that the user does not have permission to view or grade will not be returned.
+	 * 
+	 * @param contextId
+	 *            The context to use when check for viewable assignments.
+	 * @return A non-null list of viewable assignments.
+	 */
+	public List<Assignment2> getViewableAssignments(String contextId);
+
 	/**
 	 * Reorder the assignments in your site. The array of assignment ids must
 	 * represent all of the assignments in your site

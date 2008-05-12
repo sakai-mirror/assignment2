@@ -20,7 +20,6 @@
 	<classpathentry kind="var" path="M2_REPO/commons-logging/commons-logging-api/1.1/commons-logging-api-1.1.jar"/>
 	<classpathentry kind="src" path="tool/src/java"/>
 	<classpathentry kind="src" path="/tool-api"/>
-	<classpathentry kind="src" path="/component-api"/>
 	<classpathentry kind="src" path="/entity-api"/>
 	<classpathentry kind="var" path="M2_REPO/org/hibernate/hibernate/3.2.5.ga/hibernate-3.2.5.ga.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/sakaiproject/generic-dao/0.9.1/generic-dao-0.9.1.jar"/>
@@ -37,7 +36,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/import-api"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/jobscheduler"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/event-api"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/entity-broker"/>
 	<classpathentry kind="var" path="M2_REPO/org/sakaiproject/entitybroker/entitybroker-api/1.2.0/entitybroker-api-1.2.0.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/content-api"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3"/>
@@ -49,5 +47,7 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/test-harness"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/taggable-api"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/sdata"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/component-api"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/entitybroker"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
