@@ -396,11 +396,6 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 	public List<Assignment2> getViewableAssignments()
 	{
 		String contextId = externalLogic.getCurrentContextId();
-		return getViewableAssignments(contextId);
-	}
-
-	public List<Assignment2> getViewableAssignments(String contextId)
-	{
 		List<Assignment2> viewableAssignments = new ArrayList<Assignment2>();
 		String userId = externalLogic.getCurrentUserId();
 

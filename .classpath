@@ -49,5 +49,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/sdata"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/component-api"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/entitybroker"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/tool-util"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

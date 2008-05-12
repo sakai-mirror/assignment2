@@ -19,7 +19,7 @@
 	<packaging>war</packaging>
 	<properties>
 		<sakairsf.sakai.version>2.2.x</sakairsf.sakai.version>
-		<rsfutil.version>0.7.3M1</rsfutil.version>
+		<rsfutil.version>0.7.3M3</rsfutil.version>
 	</properties>
 	<repositories>
 		<repository>
@@ -120,6 +120,13 @@
 		<dependency>
 			<groupId>org.sakaiproject</groupId>
 			<artifactId>sakai-tool-api</artifactId>
+			<version>${sakai.version}</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.sakaiproject</groupId>
+			<artifactId>sakai-tool-servlet</artifactId>
 			<version>${sakai.version}</version>
 			<scope>provided</scope>
 		</dependency>

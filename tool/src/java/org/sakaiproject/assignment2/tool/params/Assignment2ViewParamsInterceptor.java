@@ -30,8 +30,10 @@ import org.sakaiproject.assignment2.tool.producers.StudentSubmitProducer;
 import org.sakaiproject.assignment2.tool.producers.StudentSubmitSummaryProducer;
 import org.sakaiproject.assignment2.tool.params.SimpleAssignmentViewParams;
 import org.sakaiproject.assignment2.tool.params.VerifiableViewParams;
+import org.sakaiproject.tool.api.ToolManager;
 
 import uk.org.ponder.rsf.viewstate.AnyViewParameters;
+import uk.org.ponder.rsf.viewstate.RawViewParameters;
 import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
 import uk.org.ponder.rsf.viewstate.ViewParameters;
 import uk.org.ponder.rsf.viewstate.ViewParamsInterceptor;
@@ -42,14 +44,26 @@ public class Assignment2ViewParamsInterceptor implements ViewParamsInterceptor {
 	public void setLocalPermissionLogic(LocalPermissionLogic localPermissionLogic){
 		this.localPermissionLogic = localPermissionLogic;
 	}
-	
+
+	private ToolManager toolMgr;
+	public void setToolManager(ToolManager toolMgr)
+	{
+		this.toolMgr = toolMgr;
+	}
 	
 	public AnyViewParameters adjustViewParameters(ViewParameters incoming) {
 		if (AuthorizationFailedProducer.VIEWID.equals(incoming.viewID)) {
 			//Always return incoming if we are going to the Authorization Failed Page
 			return incoming;
 		}
-		
+
+		if (true) {
+			String context = toolMgr.getCurrentPlacement().getContext();
+			RawViewParameters rawParams = new RawViewParameters(
+					"/sakai-assignment2-tool/sdata/assnList?context=" + context);
+			return rawParams;
+		}
+
 		if (AssignmentDetailProducer.VIEW_ID.equals(incoming.viewID)) {
 			//This is a entitybroker "helper" that is always visible
 			//TODO make sure that this is always visible

@@ -49,6 +49,7 @@
    	  <property name="value">
    	     <bean id="Assignment2ViewParamsInterceptor" class="org.sakaiproject.assignment2.tool.params.Assignment2ViewParamsInterceptor">
    	     	 <property name="localPermissionLogic" ref="LocalPermissionLogic" />
+   	     	 <property name="toolManager" ref="org.sakaiproject.tool.api.ToolManager" />
    	     </bean>
    	  </property>
    </bean>
