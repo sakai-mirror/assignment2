@@ -1,9 +1,25 @@
 $(document).ready(function()
 {
 	// Populate the tables
-	var testdata = {
+  var dataUrl = '/sakai-assignment2-tool/sdata/subList?context=';
+  var qs = new Querystring();
+
+	var template = new EJS({element: 'template'});
+	var context = qs.get('context');
+
+	// if a context is provided, get the data from the server
+	if (context)
+	{
+		var url = dataUrl + context;
+		template.update('draft_out', url);
+	}
+	// with no context, use test data
+	else
+	{
+		// Populate the test data
+		var testdata = {
 		"assignments" : [
-			{
+		{
 				"id" : "3", "title" : "Assignment 3", "type" : "electronic",
 				"submitted" : [
 					{ "name" : "Carl Hall", "submittedOn" : "04/20/2008", "dueDate" : "04/21/2008", "sections" : "A1" },
@@ -25,10 +41,9 @@ $(document).ready(function()
 					{"name" : "Clay Fenlason", "returnedOn" : "04/25/2008", "returnedBy" : "Clay Fenlason", "feedback" : "Well done" }
 				]
 			}
-		]
-	};
-
-	new EJS({element: 'template'}).update('output', testdata);
+		]};
+		template.update('output', testdata);
+	}
 
 	// add a hover effect to each row of data
 	ListCommon.addHover('.dataRow', 'dataRowOn');
