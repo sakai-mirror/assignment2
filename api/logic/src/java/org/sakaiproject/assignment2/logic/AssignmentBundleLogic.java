@@ -22,6 +22,8 @@
 package org.sakaiproject.assignment2.logic;
 
 import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * This is the interface for the Assignment Bundle object
@@ -42,5 +44,11 @@ public interface AssignmentBundleLogic {
 	 * @return user's preferred locale
 	 */
 	public Locale getLocale();
-	
+
+	/**
+	 * Get all entries as a set.
+	 * 
+	 * @return
+	 */
+	public Set<Map.Entry<String, String>> entrySet();
 }

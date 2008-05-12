@@ -7,10 +7,13 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.sakaiproject.component.api.ComponentManager;
 import org.sakaiproject.sdata.tool.json.JSONServiceHandler;
 
 public abstract class Assn2HandlerBase extends JSONServiceHandler
 {
+	protected ComponentManager compMgr;
+
 	@Override
 	public final void doDelete(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException
@@ -49,6 +52,7 @@ public abstract class Assn2HandlerBase extends JSONServiceHandler
 	@Override
 	public final void init(Map<String, String> config) throws ServletException
 	{
+		compMgr = org.sakaiproject.component.cover.ComponentManager.getInstance();
 		postInit(config);
 	}
 
@@ -85,5 +89,15 @@ public abstract class Assn2HandlerBase extends JSONServiceHandler
 	public void postInit(Map<String, String> config) throws ServletException
 	{
 		
+	}
+
+	protected Object getService(Class iface)
+	{
+		return compMgr.get(iface);
+	}
+
+	protected Object getService(String className)
+	{
+		return compMgr.get(className);
 	}
 }

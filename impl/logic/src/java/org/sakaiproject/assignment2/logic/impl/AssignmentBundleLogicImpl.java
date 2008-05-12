@@ -22,6 +22,8 @@
 package org.sakaiproject.assignment2.logic.impl;
 
 import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -44,7 +46,7 @@ public class AssignmentBundleLogicImpl implements AssignmentBundleLogic
 	{
 		if (log.isDebugEnabled())
 			log.debug("init");
-		// since the field is static, only instantiate of not previously populated
+		// since the field is static, only instantiate if not previously populated.
 		// this bean should only be created once but this will ensure an overwritten
 		// assignment doesn't occur.
 		if (rb == null)
@@ -62,5 +64,10 @@ public class AssignmentBundleLogicImpl implements AssignmentBundleLogic
 	
 	public Locale getLocale() {
 		return rb.getLocale();
+	}
+
+	public Set<Map.Entry<String, String>> entrySet()
+	{
+		return rb.entrySet();
 	}
 }
