@@ -58,21 +58,21 @@
     instance, /faces/*. Anything that falls outside this path (interpreted
     as a resource URL) will be handled directly by the container (Tomcat).
   -->
-	<!--
 	<filter>
 		<filter-name>sakai.request</filter-name>
 		<filter-class>org.sakaiproject.assignment2.tool.filters.LandingPageFilter</filter-class>
 	</filter>
-	-->
+	<!--
 	<filter>
 	    <filter-name>sakai.request</filter-name>
 	    <filter-class>org.sakaiproject.util.RequestFilter</filter-class>
 	</filter>
+	-->
 
 	<filter-mapping>
 	    <filter-name>sakai.request</filter-name>
-	    <url-pattern>/faces/*</url-pattern>
-	    <!-- <servlet-name>sakai.assignment2</servlet-name> -->
+	    <!-- <url-pattern>/faces/*</url-pattern> -->
+	    <servlet-name>sakai.assignment2</servlet-name>
 	    <dispatcher>REQUEST</dispatcher>
 	    <dispatcher>FORWARD</dispatcher>
 	    <dispatcher>INCLUDE</dispatcher>
@@ -80,7 +80,8 @@
 
 	<filter-mapping>
 	    <filter-name>sakai.request</filter-name>
-	    <url-pattern>/sdata/*</url-pattern>
+	    <!-- <url-pattern>/sdata/*</url-pattern> -->
+	    <servlet-name>ControllerServlet</servlet-name>
 	    <dispatcher>REQUEST</dispatcher>
 	    <dispatcher>FORWARD</dispatcher>
 	    <dispatcher>INCLUDE</dispatcher>

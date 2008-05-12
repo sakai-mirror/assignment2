@@ -34,6 +34,7 @@ import org.sakaiproject.tool.api.ToolManager;
 
 import uk.org.ponder.rsf.viewstate.AnyViewParameters;
 import uk.org.ponder.rsf.viewstate.RawViewParameters;
+import uk.org.ponder.rsf.viewstate.RedirectViewParameters;
 import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
 import uk.org.ponder.rsf.viewstate.ViewParameters;
 import uk.org.ponder.rsf.viewstate.ViewParamsInterceptor;
@@ -57,26 +58,26 @@ public class Assignment2ViewParamsInterceptor implements ViewParamsInterceptor {
 			return incoming;
 		}
 
-		if (true) {
-			String context = toolMgr.getCurrentPlacement().getContext();
-			RawViewParameters rawParams = new RawViewParameters(
-					"/sakai-assignment2-tool/sdata/assnList?context=" + context);
-			return rawParams;
-		}
-
 		if (AssignmentDetailProducer.VIEW_ID.equals(incoming.viewID)) {
 			//This is a entitybroker "helper" that is always visible
 			//TODO make sure that this is always visible
 			return incoming;
 		}
-		
+
+		if (AssignmentListSortViewProducer.VIEW_ID.equals(incoming.viewID)) {
+			String context = toolMgr.getCurrentPlacement().getContext();
+			RedirectViewParameters redirect = new RedirectViewParameters(new RawViewParameters(
+					"/sakai-assignment2-tool/content/templates/inst_assn_list.html?context=" + context));
+			return redirect;
+		}
+
 		//Verify View Params for completeness
 		if (incoming instanceof VerifiableViewParams) {
 			if(!((VerifiableViewParams)incoming).verify()){
 				return new AssignmentListSortViewParams(AssignmentListSortViewProducer.VIEW_ID);
 			}
 		}
-		
+
 		//If current user has permission access to requested view
 		if (localPermissionLogic.checkCurrentUserHasViewPermission(incoming.viewID)){
 			
