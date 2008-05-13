@@ -59,7 +59,7 @@ public class NewAsnn3Handler extends Asnn2HandlerBase
 			next = "/sakai-assingment2-tool/content/templates/close.html";
 		}
 		else if ("prev".equals(step))
-			next = "/sakai-assingment2-tool/sdata/newAssn2?id=" + assn.getId();
+			next = "/sakai-assingment2-tool/sdata/newassignment2.html?id=" + assn.getId();
 		// check if the 'post' button was clicked
 		else if (request.getParameter("post") != null)
 			assn.setDraft(false);

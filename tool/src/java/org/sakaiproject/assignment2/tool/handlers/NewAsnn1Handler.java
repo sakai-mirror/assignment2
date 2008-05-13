@@ -48,7 +48,7 @@ public class NewAsnn1Handler extends Asnn2HandlerBase
 		assn.setInstructions(instructions);
 
 		String draft = request.getParameter("draft");
-		String next = "/sakai-assingment2-tool/sdata/newAssn2?id=" + assn.getId();
+		String next = "/sakai-assingment2-tool/sdata/newassignment2.html?id=" + assn.getId();
 		if (draft != null)
 		{
 			assn.setDraft(true);

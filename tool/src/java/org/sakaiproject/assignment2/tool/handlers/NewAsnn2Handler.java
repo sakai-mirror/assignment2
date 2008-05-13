@@ -65,7 +65,7 @@ public class NewAsnn2Handler extends Asnn2HandlerBase
 
 			String draft = request.getParameter("draft");
 			String step = request.getParameter("step");
-			String next = "/sakai-assingment2-tool/sdata/newAssn3?id=" + assn.getId();
+			String next = "/sakai-assingment2-tool/sdata/newassignment3.html?id=" + assn.getId();
 			if (draft != null)
 			{
 				assn.setDraft(true);
@@ -73,7 +73,7 @@ public class NewAsnn2Handler extends Asnn2HandlerBase
 			}
 			else if ("prev".equals(step))
 			{
-				next = "/sakai-assingment2-tool/sdata/newAssn1?id=" + assn.getId();
+				next = "/sakai-assingment2-tool/sdata/newassignment1.html?id=" + assn.getId();
 			}
 			assnLogic.saveAssignment(assn);
 

@@ -67,7 +67,7 @@ public class Assignment2ViewParamsInterceptor implements ViewParamsInterceptor {
 		if (AssignmentListSortViewProducer.VIEW_ID.equals(incoming.viewID)) {
 			String context = toolMgr.getCurrentPlacement().getContext();
 			RedirectViewParameters redirect = new RedirectViewParameters(new RawViewParameters(
-					"/sakai-assignment2-tool/content/templates/inst_assn_list.html?context=" + context));
+					"/sakai-assignment2-tool/content/templates/inst_asnn_list.html?context=" + context));
 			return redirect;
 		}
 
