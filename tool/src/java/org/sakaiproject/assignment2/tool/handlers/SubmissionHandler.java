@@ -24,7 +24,7 @@ import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.exception.TypeException;
 
-public class SubmissionHandler extends Assn2HandlerBase
+public class SubmissionHandler extends Asnn2HandlerBase
 {
 	private ComponentManager compMgr = null;
 	private AssignmentSubmissionLogic subLogic = null;

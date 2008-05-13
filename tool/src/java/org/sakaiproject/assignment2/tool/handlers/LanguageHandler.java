@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.sakaiproject.assignment2.logic.AssignmentBundleLogic;
 
-public class LanguageHandler extends Assn2HandlerBase
+public class LanguageHandler extends Asnn2HandlerBase
 {
 	private AssignmentBundleLogic bundle;
 	private Map<Locale, Map<String, Object>> languages = new HashMap<Locale, Map<String, Object>>();

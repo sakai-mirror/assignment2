@@ -16,7 +16,7 @@ import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.component.api.ComponentManager;
 
-public class AssignmentListHandler extends Assn2HandlerBase
+public class AssignmentListHandler extends Asnn2HandlerBase
 {
 	private ComponentManager compMgr;
 	private AssignmentLogic assnLogic;

@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 
-public class NewAssn1Handler extends Assn2HandlerBase
+public class NewAsnn1Handler extends Asnn2HandlerBase
 {
 	private AssignmentLogic assnLogic;
 

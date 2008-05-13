@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.sakaiproject.component.api.ComponentManager;
 import org.sakaiproject.sdata.tool.json.JSONServiceHandler;
 
-public abstract class Assn2HandlerBase extends JSONServiceHandler
+public abstract class Asnn2HandlerBase extends JSONServiceHandler
 {
 	protected ComponentManager compMgr;
 

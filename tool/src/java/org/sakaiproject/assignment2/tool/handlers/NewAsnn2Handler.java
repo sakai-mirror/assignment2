@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 
-public class NewAssn2Handler extends Assn2HandlerBase
+public class NewAsnn2Handler extends Asnn2HandlerBase
 {
 	private AssignmentLogic assnLogic;
 	private DateFormat dateFormat;

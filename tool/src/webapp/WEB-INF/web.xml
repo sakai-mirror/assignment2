@@ -114,15 +114,15 @@
 			<param-name>config</param-name>
 			<param-value> 
 				1.classname=org.sakaiproject.assignment2.tool.handlers.AssignmentListHandler;
-				1.baseurl=/assnList;
+				1.baseurl=/asnnList;
 				2.classname=org.sakaiproject.assignment2.tool.handlers.SubmissionListHandler;
-				2.baseurl=/assnSubList;
-				3.classname=org.sakaiproject.assignment2.tool.handlers.NewAssn1Handler;
-				3.baseurl=/newAssn1;
-				4.classname=org.sakaiproject.assignment2.tool.handlers.NewAssn2Handler;
-				4.baseurl=/newAssn2;
-				5.classname=org.sakaiproject.assignment2.tool.handlers.NewAssn3Handler;
-				5.baseurl=/newAssn3;
+				2.baseurl=/subList;
+				3.classname=org.sakaiproject.assignment2.tool.handlers.NewAsnn1Handler;
+				3.baseurl=/newAsnn1;
+				4.classname=org.sakaiproject.assignment2.tool.handlers.NewAsnn2Handler;
+				4.baseurl=/newAsnn2;
+				5.classname=org.sakaiproject.assignment2.tool.handlers.NewAsnn3Handler;
+				5.baseurl=/newAsnn3;
 				6.classname=org.sakaiproject.assignment2.tool.handlers.SubmissionHandler;
 				6.baseurl=/subView;
 				7.classname=org.sakaiproject.assignment2.tool.handlers.LanguageHandler;
