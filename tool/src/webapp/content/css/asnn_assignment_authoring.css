@@ -1,69 +1,60 @@
 /* GENERAL BITS */
 
-a img {
-	border: none;
-}
-.clear {
-	clear:both;
-}
-
-
-/* CONTAINER BITS STOLEN FROM NATHAN */
+a img { border: none; }
+.clear { clear:both; }
 
 #wrapper {
   width: auto;
   margin-bottom: 24px;
 }
-#container {
-  float: left;
-  display: inline;
-  width: 100%;
-  margin: 0 -220px 0 0;
-  padding: 0 0 0 0;
-}
-#content {
-  margin: 0 40px 0 0;
-  padding: 10px 0 0 0;
-}
+
+.listArea {
+  margin: 20px 0 20px 0;
+ }
 
 
-/* TABLE SPECIALNESS */
 
-.dataRowOn {
-	background-color: #ddd;
-}
 .header {
 	font-family:"Lucida Grande", Tahoma, Arial, Verdana, sans-serif;
 	font-size: 120%;
 }
-.headerRow {
-	text-align: left;
-	background-color: white;
-}
+
 .hidden {
 	display: none;
 }
-.listTable {
-	width: 99%;
-	float: right;
-}
+
 .checkColumn {
 	text-align: center;
 }
 
 
-/* TABLE SORTING */
+/* TABLES */
 
+.listTable {
+	width: 99%;
+	float: right;
+	background-color: #fff;
+}
+.headerRow {
+	text-align: left;
+	background-color: #efefef;
+}
+.dataRowOn {
+	background-color: #efefef;
+}
 table.tablesorter {
-	font-family:arial;
+	font-family: arial;
 	margin:10px 0pt 15px;
-	font-size: 8pt;
 	width: 100%;
+	font-size: 80%;
 }
 table.tablesorter thead tr th, table.tablesorter tfoot tr th {
-	border: thin solid #DDD;
-	font-size: 8pt;
+	border: thin solid #cccccc;
 	padding: 4px;
+}
+table.tablesorter td {
+	padding-top: 3px;
+	padding-bottom: 3px;
 }
 table.tablesorter thead tr .header {
 	background-image: url(../images/bg.gif);
@@ -71,12 +62,6 @@ table.tablesorter thead tr .header {
 	background-position: center right;
 	cursor: pointer;
 }
-/*table.tablesorter tbody td {
-	color: #3D3D3D;
-	padding: 4px;
-	background-color: #FFF;
-	vertical-align: top;
-}*/
 table.tablesorter tbody tr.odd td {
 	background-color:#F0F0F6;
 }
@@ -94,134 +79,146 @@ table.tablesorter thead tr .headerSortDown {
 
 /* WIDGET */
 
-.widget1 {
+#widget-container {
+  float: left;
+  display: inline;
+  width: 100%;
+  margin: 0 -220px 0 0;
+  padding: 0 0 0 0;
+}
+#widget-content {
+  margin: 0 40px 0 0;
+  padding: 10px 0 0 0;
+}
+
+.widget-instance {
   	float: left;
 	width: 100%;
 	margin: 20px;
-	background: #efefef;
+	background: #cccccc;
 }
-.widget1 ul {
+.widget-instance ul {
 	margin: 0;
 	padding: 0;
 }
-.widget1 li {
+.widget-instance li {
 	margin: 0;
 	padding: 0;
 	list-style: none;
 }
-.widget1-head {
+.widget-instance-head {
 	padding: 7px 6px 7px 6px;
 }
-.widget1-head-left {
+.widget-instance-head-left {
 	float: left;
 	display: inline;
 	width: 69%;
 }
-.widget1-head-left li {
+.widget-instance-head-left li {
 	font-family:"Lucida Grande", Tahoma, Arial, Verdana, sans-serif;
 	font-size: 110%;
 	float: left;
 	display: inline;
 }
-.widget1-head-left a {
+.widget-instance-head-left a {
 	float: left;
 	padding-left: 22px;
 	color: #000;
 	font: bold Arial, Helvetica, sans-serif;
 	text-decoration: none;
 }
-.widget1-head-right {
+.widget-instance-head-right {
 	float: right;
 	display: inline;
 	width: 30%;
 }
-.widget1-head-right li {
+.widget-instance-head-right li {
 	position: relative;
 	float: right;
 	display: inline;
 }
-.widget1-head-right li ul {
+.widget-instance-head-right li ul {
 	position: absolute;
 	top: 10px;
 	right: 0;
 	float: none;
 	display: none;
 }
-.widget1-head-right li ul li {
+.widget-instance-head-right li ul li {
 	float: none;
 	display: none;
 }
 /*
-.widget1-head-right li:hover ul,
-.widget1-head-right li:hover li {
+.widget-instance-head-right li:hover ul,
+.widget-instance-head-right li:hover li {
 	display: block;
 }
 */
-.widget1-head-right li.widget1-close {
+.widget-instance-head-right li.widget-instance-close {
 	padding-left: 4px;
 }
-.widget1-head-right li.widget1-close a {
+.widget-instance-head-right li.widget-instance-close a {
 	display: block;
 	width: 16px;
 	height: 16px;
 	text-decoration: none;
 }
-.widget1-head-right li.widget1-menu a {
+.widget-instance-head-right li.widget-instance-menu a {
 	display: block;
 	width: 44px;
 	height: 16px;
 	text-decoration: none;
 }
-.widget1-subhead {
+.widget-instance-subhead {
 	height: 30px;
 	margin: 0 6px;
 	background: #fff;
 }
-.widget1-subhead-left {
+.widget-instance-subhead-left {
 	float: left;
 	display: inline;
 	width: auto;
 }
-.widget1-subhead-left ul {
+.widget-instance-subhead-left ul {
 	padding-top: 6px;
 	padding-left: 3px;
 }
-.widget1-subhead-left li {
+.widget-instance-subhead-left li {
 	float: left;
 	display: inline;
 	padding: 0 9px;
 	line-height: 18px;
 }
-.widget1-subhead-left li.widget1-last {
+.widget-instance-subhead-left li.widget-instance-last {
 	background: url(none);
 }
-.widget1-subhead-left li a {
+.widget-instance-subhead-left li a {
 	color: #666666;
 	text-decoration: none;
 }
-.widget1-subhead-left li a:hover {
+.widget-instance-subhead-left li a:hover {
 	color: #666666;
 	text-decoration: underline;
 }
-.widget1-subhead-right {
+.widget-instance-subhead-right {
 	float: right;
 	display: inline;
 	width: 25%;
 }
-.widget1-subhead-right li {
+.widget-instance-subhead-right li {
 	float: right;
 	display: inline;
 }
-.widget1-subhead-right li.widget1-subscribe a:hover {
+.widget-instance-subhead-right li.widget-instance-subscribe a:hover {
 	text-decoration: underline;
 }
-.widget1-content {
+.widget-instance-content {
 	padding: 0px 6px 6px 6px;
 }
-.widget1-content-in {
+.widget-instance-content-in {
   background: #FFF;
 }	
-.widget1-content-in p {
+.widget-instance-content-in p {
 	margin: 0;
 	padding: 0;
 }
