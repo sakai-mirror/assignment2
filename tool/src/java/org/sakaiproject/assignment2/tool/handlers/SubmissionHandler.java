@@ -11,7 +11,10 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.sakaiproject.assignment2.logic.AssignmentLogic;
+import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
+import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
@@ -29,6 +32,8 @@ public class SubmissionHandler extends Asnn2HandlerBase
 	private ComponentManager compMgr = null;
 	private AssignmentSubmissionLogic subLogic = null;
 	private ContentHostingService chs = null;
+	private ExternalLogic externalLogic = null;
+	private AssignmentPermissionLogic permissionLogic = null;
 	
 	@Override
 	public void postInit(Map<String, String> config) throws ServletException
@@ -37,6 +42,8 @@ public class SubmissionHandler extends Asnn2HandlerBase
 		subLogic = (AssignmentSubmissionLogic) compMgr.get(AssignmentSubmissionLogic.class
 				.getName());
 		chs = (ContentHostingService) compMgr.get(ContentHostingService.class.getName());
+		externalLogic = (ExternalLogic) compMgr.get(ExternalLogic.class.getName());
+		permissionLogic = (AssignmentPermissionLogic) compMgr.get(AssignmentPermissionLogic.class.getName());
 	}
 
 	@Override
@@ -54,6 +61,10 @@ public class SubmissionHandler extends Asnn2HandlerBase
 			content.put("title", assignment.getTitle());
 			content.put("type", assignment.getSubmissionType());
 			content.put("assignment", assignment.getInstructions());
+			String user = externalLogic.getCurrentUserId();
+			Long asnnId = assignment.getId();
+			content.put("editSub", subLogic.submissionIsOpenForStudentForAssignment(user, asnnId));
+			content.put("editFeedback", permissionLogic.isUserAbleToAccessInstructorView(request.getParameter("context")));
 			List<HashMap<String, Object>> drafts = new ArrayList<HashMap<String, Object>>();
 			List<HashMap<String, Object>> submHist = new ArrayList<HashMap<String, Object>>();
 			Set<AssignmentSubmissionVersion> versions = submission.getSubmissionHistorySet();
