@@ -223,6 +223,39 @@ table.tablesorter thead tr .headerSortDown {
 	padding: 0;
 }
 
+/* NEW SUBMISSION WIDGET BITS */
+
+#widget-pane {
+	margin: 0;
+	padding: 0;
+	float: left;
+	width: 90%;
+}
+#sidebar {
+	margin: 0;
+	padding: 0;
+	float: right;
+	width: 10%;
+	background-color: #ddd;
+}
+#sidebar ul {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+li.asnn-menu-selected {
+	margin: 0;
+	padding: 0;
+	list-style-type: none;
+	background-color: white;
+}
+li.asnn-menu-unselected {
+	margin: 0;
+	padding: 0;
+	list-style-type: none;
+	background-color: #efefef;
+}
+
 /* NEW ASSIGNMENT PAGES */
 
 .new-asnn-section {
