@@ -41,13 +41,19 @@ public class NewAsnn1Handler extends Asnn2HandlerBase
 	public void handlePost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException
 	{
+		String id = request.getParameter("id");
+		String context = request.getParameter("context");
 		String title = request.getParameter("title");
 		String instructions = request.getParameter("instructions");
+		String draft = request.getParameter("draft");
+
 		Assignment2 assn = new Assignment2();
+		if (id != null && id.length() > 0)
+			assn.setId(Long.parseLong(id));
+		assn.setContextId(context);
 		assn.setTitle(title);
 		assn.setInstructions(instructions);
 
-		String draft = request.getParameter("draft");
 		String next = "/sakai-assingment2-tool/sdata/newassignment2.html?id=" + assn.getId();
 		if (draft != null)
 		{

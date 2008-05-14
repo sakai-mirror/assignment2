@@ -5,45 +5,37 @@
 </div>
 
 <div>
-	<form action="#">
+	<form action="/sakai-assignment2-tool/sdata/newAsnn1" method='post'>
+		<input type='hidden' name='context' value='' />
+		<input type='hidden' name='id' value='' />
 		<div class="section">
 			<div class="prompt">
-				<h4>
-					* Title:
-				</h4>
+				<h4>* Title:</h4>
 			</div>
 			<div class="input">
-				<input type="text" size="80" />
+				<input type="text" size="80" name='title' id='title' />
 			</div>
 		</div>
 		<div class="section">
 			<div class="prompt">
-				<h4>
-					* Assignment Instructions:
-				</h4>
+				<h4>* Assignment Instructions:</h4>
 			</div>
 			<div class="input">
-				<textarea cols="60" rows="15">FCKEditor goes here</textarea>
+				<textarea cols="60" rows="15" name='instructions' id='instructions'>FCKEditor goes here</textarea>
 			</div>
 		</div>
 		<div class="section">
 			<div class="prompt">
-				<h4>
-					Attachments:
-				</h4>
+				<h4>Attachments:</h4>
 			</div>
 			<div class="input">
-				<p>
-					No attachments yet
-				</p>
-				<p>
-					<a href="#" class="thickbox">Add attachments</a>
-				</p>
+				<p>No attachments yet</p>
+				<p><a href="#" class="thickbox">Add attachments</a></p>
 			</div>
 			<div class="input">
 				<p class="buttons">
-					<input type="submit" value="Save as Draft" onclick="tb_remove()" />
-					<input type="submit" value="Cancel" onclick="tb_remove()" />
+					<input type="submit" value="Save as Draft" />
+					<input type="button" value="Cancel" onclick="tb_remove()" />
 					<input type="submit" value="Submission Handling &gt;&gt;" />
 				</p>
 			</div>

@@ -159,7 +159,7 @@ public class ExternalLogicImpl implements ExternalLogic {
     		throw new IllegalArgumentException("Null userId or contextId passed to getUserMemberships");
     	}
     	try {
-	    	Site s = siteService.getSite(toolManager.getCurrentPlacement().getContext());
+	    	Site s = siteService.getSite(contextId);
 	    	return s.getGroupsWithMember(userId);
     	} catch (IdUnusedException e){
     		return new ArrayList<Group>();

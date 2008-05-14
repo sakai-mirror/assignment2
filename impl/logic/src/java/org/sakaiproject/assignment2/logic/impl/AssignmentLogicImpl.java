@@ -396,6 +396,11 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 	public List<Assignment2> getViewableAssignments()
 	{
 		String contextId = externalLogic.getCurrentContextId();
+		return getViewableAssignments(contextId);
+	}
+
+	public List<Assignment2> getViewableAssignments(String contextId)
+	{
 		List<Assignment2> viewableAssignments = new ArrayList<Assignment2>();
 		String userId = externalLogic.getCurrentUserId();
 
@@ -434,7 +439,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 				// now, we need to filter the assignments that are associated with
 				// the gradebook according to grader permissions and populate the
 				// gradebook data
-				List<Assignment2> viewableGbAssignments = gradebookLogic.getViewableGradedAssignments(gradedAssignments, externalLogic.getCurrentContextId());
+				List<Assignment2> viewableGbAssignments = gradebookLogic.getViewableGradedAssignments(gradedAssignments, contextId);
 				if (viewableGbAssignments != null) {
 
 					for (Assignment2 assignment : viewableGbAssignments) {
