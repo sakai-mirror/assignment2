@@ -13,7 +13,6 @@ a img { border: none; }
  }
 
 
-
 .header {
 	font-family:"Lucida Grande", Tahoma, Arial, Verdana, sans-serif;
 	font-size: 120%;
@@ -223,3 +222,26 @@ table.tablesorter thead tr .headerSortDown {
 	padding: 0;
 }
 
+/* NEW ASSIGNMENT PAGES */
+
+.new-asnn-section {
+	overflow: hidden;
+	width: 750px;
+	margin: 20px;
+	padding: 0;
+}
+.new-asnn-prompt {
+	width: 150px;
+	float: left;
+}
+.new-asnn-prompt h4 {
+	text-align: right;
+}
+.new-asnn-input {
+	width: 600px;
+	float: right;
+}
+.new-asnn-input p {
+	margin: 0;
+	padding: 0;
+}
