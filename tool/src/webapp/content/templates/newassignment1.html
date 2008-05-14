@@ -5,40 +5,40 @@
 </div>
 
 <div>
-	<form action="/sakai-assignment2-tool/sdata/newAsnn1" method='post'>
-		<input type='hidden' name='context' value='' />
-		<input type='hidden' name='id' value='' />
-		<div class="section">
-			<div class="prompt">
-				<h4>* Title:</h4>
+	<form action="#">
+		<div class="new-asnn-section">
+			<div class="new-asnn-prompt">
+				<h4>* Title:&nbsp</h4>
 			</div>
-			<div class="input">
-				<input type="text" size="80" name='title' id='title' />
+			<div class="new-asnn-input">
+				<input type="text" size="80" />
 			</div>
+			<div class='clear'></div>
 		</div>
-		<div class="section">
-			<div class="prompt">
-				<h4>* Assignment Instructions:</h4>
+		<div class="new-asnn-section">
+			<div class="new-asnn-prompt">
+				<h4>* Instructions:&nbsp</h4>
 			</div>
-			<div class="input">
-				<textarea cols="60" rows="15" name='instructions' id='instructions'>FCKEditor goes here</textarea>
+			<div class="new-asnn-input">
+				<textarea cols="60" rows="15">FCKEditor goes here</textarea>
 			</div>
+			<div class='clear'></div>
 		</div>
-		<div class="section">
-			<div class="prompt">
-				<h4>Attachments:</h4>
+		<div class="new-asnn-section">
+			<div class="new-asnn-prompt">
+				<h4> Attachments:&nbsp</h4>
 			</div>
-			<div class="input">
-				<p>No attachments yet</p>
+			<div class="new-asnn-input">
+				<p> No attachments yet</p>
 				<p><a href="#" class="thickbox">Add attachments</a></p>
 			</div>
-			<div class="input">
-				<p class="buttons">
-					<input type="submit" value="Save as Draft" />
-					<input type="button" value="Cancel" onclick="tb_remove()" />
-					<input type="submit" value="Submission Handling &gt;&gt;" />
-				</p>
-			</div>
+			<div class='clear'></div>
 		</div>
+		<div class="new-asnn-input buttons">
+			<input type="submit" value="Save as Draft" onclick="tb_remove()" />
+			<input type="submit" value="Cancel" onclick="tb_remove()" />
+			<input type="submit" value="Submission Handling &gt;&gt;" />
+		</div>
+		<div class='clear'></div>
 	</form>
 </div>

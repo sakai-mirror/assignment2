@@ -4,76 +4,62 @@
 </div>
 <div>
 	<form action="#">
-		<div class="section">
-			<div class="prompt">
-				<h4>
-					Resubmissions:
-				</h4>
+		<div class="new-asnn-section">
+			<div class="new-asnn-prompt">
+				<h4>Resubmissions:</h4>
 			</div>
-			<div class="input">
-				<p>
-					<input type="radio" name="resubmissions" id="perpetual" checked="checked" />
-					<label for="dontSend">Submitters can resubmit as often as they like while the Assignment remains open</label>
-				</p>
-				<p>
-					<input type="radio" name="resubmissions" id="oneSubmit" />
-					<label for="oneSubmit">Submitters can submit once and only once</label>
-				</p>
-				<p>
-					<input type="radio" name="resubmissions" id="resubmitLimit" />
-					<label for="resubmitLimit">Submitters can resubmit a set number of times ...</label>
-				</p>
+			<div class="new-asnn-input">
+				<ul>
+					<li><input type="radio" name="resubmissions" id="perpetual" checked="checked" />
+					<label for="dontSend">Submitters can resubmit as often as they like while the Assignment remains open</label></li>
+					<li><input type="radio" name="resubmissions" id="oneSubmit" />
+					<label for="oneSubmit">Submitters can submit once and only once</label></li>
+					<li><input type="radio" name="resubmissions" id="resubmitLimit" />
+					<label for="resubmitLimit">Submitters can resubmit a set number of times ...</label></li>
+				</ul>
 			</div>
+			<div class='clear'></div>
 		</div>
-		<div class="section">
-			<div class="prompt">
-				<h4>
-					Notifications:
-				</h4>
+		<div class="new-asnn-section">
+			<div class="new-asnn-prompt">
+				<h4>Notifications:</h4>
 			</div>
-			<div class="input">
-				<p>
-					<input type="radio" name="notifications" id="dontSend" checked="checked" />
-					<label for="dontSend">Do not send me notification emails for any submissions</label>
-				</p>
-				<p>
-					<input type="radio" name="notifications" id="sendEach" />
-					<label for="sendEach">Send me a notification email for each submission</label>
-				</p>
-				<p>
-					<input type="radio" name="notifications" id="sendDigest" />
-					<label for="sendDigest">
-						Send me one email per day summarizing notifications for submissions
-					</label>
-				</p>
+			<div class="new-asnn-input">
+				<ul>
+					<li><input type="radio" name="notifications" id="dontSend" checked="checked" />
+					<label for="dontSend">Do not send me notification emails for any submissions</label></li>
+					<li><input type="radio" name="notifications" id="sendEach" />
+					<label for="sendEach">Send me a notification email for each submission</label></li>
+					<li><input type="radio" name="notifications" id="sendDigest" />
+					<label for="sendDigest">Send me one email per day summarizing notifications for submissions</label></li>
+				</ul>
 			</div>
+			<div class='clear'></div>
 		</div>
-		<div class="section">
-			<div class="prompt">
-				<h4>
-					Honor Code:
-				</h4>
+		<div class="new-asnn-section">
+			<div class="new-asnn-prompt">
+				<h4>Honor Code:</h4>
 			</div>
-			<div class="input">
-				<p>
-					<input type="radio" name="honorcode" id="noHonor" />
-					<label for="noHonor">Submitters will not be obliged to agree to Honor Code</label>
-				</p>
-				<p>
-					<input type="radio" name="honorcode" id="honor" checked="checked" />
-					<label for="honor">Submitters will be obliged to agree to Honor Code ...</label>
-				</p>
+			<div class="new-asnn-input">
+				<ul>
+					<li><input type="radio" name="honorcode" id="noHonor" />
+					<label for="noHonor">Submitters will not be obliged to agree to Honor Code</label></li>
+					<li><input type="radio" name="honorcode" id="honor" checked="checked" />
+					<label for="honor">Submitters will be obliged to agree to Honor Code ...</label></li>
+				</ul>
 			</div>
+			<div class='clear'></div>
 		</div>
-		<div class="section">
-			<div class="prompt">
+		<div class="new-asnn-section">
+			<div class="new-asnn-prompt">
 			</div>
-			<div class="input buttons">
+			<div class="new-asnn-input buttons">
 				<input type="submit" value="&lt;&lt; Submission Handling" />
 				<input type="submit" value="Save as Draft" onclick="tb_remove()" />
 				<input type="submit" value="Cancel" onclick="tb_remove()" />
 				<input type="submit" value="Post" onclick="tb_remove()" />
 			</div>
+			<div class='clear'></div>
 		</div>
 	</form>
 </div>

@@ -2,129 +2,103 @@
 	<a href="newassignment1.html?width=800&amp;height=600&amp;modal=true" class="thickbox">Assignment Content</a> | Submission Handling |
 	<a href="newassignment3.html?width=800&amp;height=600&amp;modal=true" class="thickbox"> Other Options</a>
 </div>
+
 <div>
 	<form action="#">
-		<div class="section">
-			<div class="prompt">
-				<h4>
-					* Submission Method:
-				</h4>
+		<div class="new-asnn-section">
+			<div class="new-asnn-prompt">
+				<h4>* Submission Method:</h4>
 			</div>
-			<div class="input">
-				<p>
-					<input type="radio" name="submissionMethod" id="electronic" value="true" checked="checked" />
-					<label for="electronic">Electronic submissions</label>
-				</p>
-				<p>
-					<input type="radio" name="submissionMethod" id="nonelectronic" value="false"/>
-					<label for="nonelectronic">Non-electronic submissions</label>
-				</p>
+			<div class="new-asnn-input">
+				<ul>
+					<li><input type="radio" name="submissionMethod" id="electronic" value="true" checked="checked" />
+					<label for="electronic">Electronic submissions</label></li>
+					<li><input type="radio" name="submissionMethod" id="nonelectronic" value="false"/>
+					<label for="nonelectronic">Non-electronic submissions</label> <a class="help-prompt" href="">What does this mean?</a></li>
+				</ul>
 			</div>
+			<div class='clear'></div>
 		</div>
-		<div class="section">
-			<div class="prompt">
-				<h4>
-					* Open Date:
-				</h4>
+		<div class="new-asnn-section">
+			<div class="new-asnn-prompt">
+				<h4>* Open Date:</h4>
 			</div>
-			<div class="input">
+			<div class="new-asnn-input">
 				<input type="text" size="10" id="openDate" value="01/01/1970" />
 				<input type="text" size="8" id="openTime" value="12:00 PM" />
-				<div class="instructions">
-					Site Participants will not see this assignment until the open date.
-				</div>
+				&nbsp;<a href="">What does this mean?</a>
 			</div>
+			<div class='clear'></div>
 		</div>
-		<div class="section">
-			<div class="prompt">
-				<h4>
-					Due Date:
-				</h4>
+		<div class="new-asnn-section">
+			<div class="new-asnn-prompt">
+				<h4> Due Date:</h4>
 			</div>
-			<div class="input">
+			<div class="new-asnn-input">
 				<input type="radio" name="dueDateRadio" id="dueDateYes" value="1" />
 				<label for="dueDateYes">Yes</label>
 				<input type="radio" name="dueDateRadio" id="dueDateNo" value="0" checked="checked" />
-				<label for="dueDateNo">No</label>
+				<label for="dueDateNo">No&nbsp;</label>
 				<input type="text" size="10" id="dueDate" value="01/01/1970" />
 				<input type="text" size="8" id="dueTime" value="12:00 PM" />
+				<div class="new-asnn-inner-prompt">
+					<p>Accept late submissions?&nbsp;
+					<input type="radio" name="acceptUntilDateRadio" id="acceptUntilDateYes" value="1" />
+					<label for="acceptUntilDateYes">Yes</label>
+					<input type="radio" name="acceptUntilDateRadio" id="acceptUntilDateNo" value="0" checked="checked" />
+					<label for="acceptUntilDateNo">No&nbsp;</label>
+					<input type="text" size="10" id="acceptUntilDate" value="01/01/1970" />
+					<input type="text" size="8" id="acceptUntilTime" value="12:00 PM" />
+					</p>
+				</div>
 			</div>
+			<div class='clear'></div>
 		</div>
-		<div class="section">
-			<div class="prompt">
-				<h4>
-					Accept Until:
-				</h4>
+		<div class="new-asnn-section">
+			<div class="new-asnn-prompt">
+				<h4>Who will submit:</h4>
 			</div>
-			<div class="input">
-				<input type="radio" name="acceptUntilRadio" value="1" id="acceptUntilYes" />
-							<label for="acceptUntilYes">Yes</label>
-				<input type="radio" name="acceptUntilRadio" value="0" id="acceptUntilNo" checked="checked" />
-							<label for="acceptUntilNo">No</label>
-				<input type="text" size="10" id="acceptUntilDate" value="01/01/1970" />
-				<input type="text" size="8" id="acceptUntilTime" value="12:00 PM" />
+			<div class="new-asnn-input">
+				<ul>
+					<li><input type="radio" name="who" id="all" checked="checked" />
+					<label for="all">All site participants</label></li>
+					<li><input type="radio" name="who" id="selectedGroups" />
+					<label for="selectedGroups">Only specific sections or groups ...</label></li>
+					<li><input type="radio" name="who" id="groupTeams" />
+					<label for="groupTeams">Teams based on specific groups ...</label></li>
+					<li><input type="radio" name="who" id="anonymous" />
+					<label for="anonymous">Anonymous site participants</label></li>
+				</ul>
 			</div>
+			<div class='clear'></div>
 		</div>
-		<div class="section">
-			<div class="prompt">
-				<h4>
-					Who will submit:
-				</h4>
+		<div class="new-asnn-section">
+			<div class="new-asnn-prompt">
+				<h4>Grading:</h4>
 			</div>
-			<div class="input">
-				<p>
-					<input type="radio" name="who" id="all" checked="checked" />
-					<label for="all">All site participants</label>
-				</p>
-				<p>
-					<input type="radio" name="who" id="selectedGroups" />
-					<label for="selectedGroups">Only specific sections or groups ...</label>
-				</p>
-				<p>
-					<input type="radio" name="who" id="groupTeams" />
-					<label for="groupTeams">Teams based on specific groups ...</label>
-				</p>
-				<p>
-					<input type="radio" name="who" id="anonymous" />
-					<label for="anonymous">Anonymous site participants</label>
-				</p>
+			<div class="new-asnn-input">
+				<ul>
+					<li><input type="radio" name="isGraded" id="newgrade" value="true" checked="checked" />
+					<label for="newgrade">Add to Gradebook</label></li>
+					<li><input type="radio" name="isGraded" id="graded" value="false" />
+					<label for="graded">Link to existing Gradebook column ...</label></li>
+					<li><input type="radio" name="isGraded" id="ungraded" value="false" />
+					<label for="ungraded">This assignment will not be graded</label></li>
+				</ul>
 			</div>
+			<div class='clear'></div>
 		</div>
-		<div class="section">
-			<div class="prompt">
-				<h4>
-					Grading:
-				</h4>
+		<div class="new-asnn-section">
+			<div class="new-asnn-prompt">
 			</div>
-			<div class="input">
-				<p>
-					<input type="radio" name="isGraded" id="newgrade" value="true" checked="checked" />
-					<label for="newgrade">Add to Gradebook</label>
-				</p>
-				<p>
-					<input type="radio" name="isGraded" id="graded" value="false" />
-					<label for="graded">Link to existing Gradebook column ...</label>
-				</p>
-				<p>
-					<input type="radio" name="isGraded" id="ungraded" value="false" />
-					<label for="ungraded">This assignment will not be graded</label>
-				</p>
-			</div>
-		</div>
-		<div class="section">
-			<div class="prompt">
-			</div>
-		</div>
-		<div class="section">
-			<div class="prompt">
-			</div>
-			<div class="input buttons">
+			<div class="new-asnn-input buttons">
 				<input type="submit" value="&lt;&lt; Assignment Content" />
 				<input type="submit" value="Save as Draft" onclick="tb_remove()" />
 				<input type="submit" value="Cancel" onclick="tb_remove()" />
 				<input type="submit" value="Other Options &gt;&gt;" />
 			</div>
 		</div>
+		<div class='clear'></div>
 	</div>
 	</form>
 </div>

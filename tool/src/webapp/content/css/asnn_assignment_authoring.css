@@ -2,6 +2,7 @@
 
 a img { border: none; }
 .clear { clear:both; }
+li { list-style-type: none; }
 
 #wrapper {
   width: auto;
@@ -238,10 +239,14 @@ table.tablesorter thead tr .headerSortDown {
 	text-align: right;
 }
 .new-asnn-input {
-	width: 600px;
+	width: 580px;
 	float: right;
 }
 .new-asnn-input p {
 	margin: 0;
 	padding: 0;
+}
+.new-asnn-input a:link {
+	font-size: 80%;
+	color: blue;
 }
