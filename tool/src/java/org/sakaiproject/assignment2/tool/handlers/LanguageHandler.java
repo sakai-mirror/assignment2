@@ -21,7 +21,7 @@ public class LanguageHandler extends Asnn2HandlerBase
 	public void postInit(Map<String, String> config) throws ServletException
 	{
 		bundle = (AssignmentBundleLogic) getService(AssignmentBundleLogic.class);
-		// preload the active bundle
+		// preload the current active bundle
 		getActiveBundle();
 	}
 

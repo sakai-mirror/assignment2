@@ -1,6 +1,5 @@
 $(document).ready(function()
 {
-	var dataUrl = '/sakai-assignment2-tool/sdata/assnList?context=';
 	var qs = new Querystring();
 
 	var draftTemplate = new EJS({element: 'draft_template'});
@@ -10,9 +9,14 @@ $(document).ready(function()
 	// if a context is provided, get the data from the server
 	if (context)
 	{
-		var url = dataUrl + context;
-		draftTemplate.update('draft_out', url);
-		postedTemplate.update('posted_out', url);
+		$('#newLink').attr('href', 'newassignment1.html?context=' + context + '&KeepThis=true&TB_iframe=true&width=800&height=600&modal=true');
+
+		var url = '/sakai-assignment2-tool/sdata/asnnList?context=' + context;
+		jQuery.getJSON(url, function(data)
+		{
+			draftTemplate.update('draft_out', data);
+			postedTemplate.update('posted_out', data);
+		});
 	}
 	// with no context, use test data
 	else
@@ -28,7 +32,6 @@ $(document).ready(function()
 				{ "id" : "2", "title" : "Assignment 2", "sections" : "A4", "openDate" : "04/22/2008", "dueDate" : "05/22/2008" }
 			]
 		};
-
 		draftTemplate.update('draft_out', testdata);
 		postedTemplate.update('posted_out', testdata);
 	}
@@ -43,5 +46,4 @@ $(document).ready(function()
 	// Make the tables sortable
 	$("#draftAssns").tablesorter({headers: { 0: { sorter: false}}});
 	$("#postedAssns").tablesorter();
-
 });

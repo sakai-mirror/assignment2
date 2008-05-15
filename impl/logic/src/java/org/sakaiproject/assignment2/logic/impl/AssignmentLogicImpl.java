@@ -392,7 +392,6 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 		}
 	}
 	
-
 	public List<Assignment2> getViewableAssignments()
 	{
 		String contextId = externalLogic.getCurrentContextId();

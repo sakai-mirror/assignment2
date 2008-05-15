@@ -38,7 +38,7 @@
 			    		<li class="widget-instance-last"><a href=''><img src="../images/icons/page_white_get.png" alt="" />Import</a> </li>
 			    		<li class="widget-instance-last"><a href=''><img src="../images/icons/page_white_copy.png" alt="" />Copy</a> | </li>
 			    		<li class="widget-instance-last"><a href=''><img src="../images/icons/arrow_down.png" alt="" />Post</a> | </li>
-			    		<li class="widget-instance-last"><a href='newassignment1.html?width=800&amp;height=600&amp;modal=true' class="thickbox"><img src="../images/icons/add.png" alt="" />New</a> | </li>
+			    		<li class="widget-instance-last"><a href='' class="thickbox" id='newLink'><img src="../images/icons/add.png" alt="" />New</a> | </li>
 			    	</ul>
     			</div>
     		</div>
@@ -57,7 +57,7 @@
 						</thead>
 						<tbody id="draft_out"></tbody>
 						<textarea id="draft_template" class="template">
-							[% for (var i=0; i<drafts.length; i++) { %]
+							[% for (var i = 0; i < drafts.length; i++) { %]
 								<tr class='dataRow'>
 									<td class='checkColumn'><input type='checkbox' /></td>
 									<td>[%= drafts[i].title %] <a href=''><img src="../images/icons/page_white_edit.png" alt="Edit Content" /></a> </td>
@@ -116,7 +116,7 @@
 						</thead>
 						<tbody id="posted_out"></tbody>
 						<textarea id="posted_template" class="template">
-							[% for(var i=0; i<posted.length; i++) { %]
+							[% for(var i = 0; i < posted.length; i++) { %]
 								<tr class='dataRow'>
 									<td class='checkColumn'><input type='checkbox' class='checkColumn' /></td>
 									<td>[%= posted[i].title %] <a href=''><img src="../images/icons/arrow_up.png" alt="To Draft" /></a></td>

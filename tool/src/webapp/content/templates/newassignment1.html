@@ -1,3 +1,4 @@
+<script src='../js/newassignment1.js' type='text/javascript'></script>
 <div class="steps">
 	 Assignment Content |
 	<a href="newassignment2.html?width=800&amp;height=600&amp;modal=true" class="thickbox"> Submission Handling</a> |
@@ -5,13 +6,15 @@
 </div>
 
 <div>
-	<form action="#">
+	<form action="/sakai-assignment2-tool/sdata/newAsnn1" method='post'>
+		<input type='hidden' name='context' id='context' />
+		<input type='hidden' name='id' id='id' />
 		<div class="new-asnn-section">
 			<div class="new-asnn-prompt">
 				<h4>* Title:&nbsp</h4>
 			</div>
 			<div class="new-asnn-input">
-				<input type="text" size="80" />
+				<input type="text" name='title' size="80" />
 			</div>
 			<div class='clear'></div>
 		</div>
@@ -20,7 +23,7 @@
 				<h4>* Instructions:&nbsp</h4>
 			</div>
 			<div class="new-asnn-input">
-				<textarea cols="60" rows="15">FCKEditor goes here</textarea>
+				<textarea name='instructions' cols="60" rows="15">FCKEditor goes here</textarea>
 			</div>
 			<div class='clear'></div>
 		</div>
