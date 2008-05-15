@@ -3,10 +3,15 @@
 a img { border: none; }
 .clear { clear:both; }
 li { list-style-type: none; }
+body {
+	margin: 0;
+	padding: 0;
+	height: 100%;
+}
 
 #wrapper {
-  width: auto;
-  margin-bottom: 24px;
+	height: 100%;
+  	width: 100%;
 }
 
 .listArea {
@@ -226,34 +231,52 @@ table.tablesorter thead tr .headerSortDown {
 /* NEW SUBMISSION WIDGET BITS */
 
 #widget-pane {
+	position: relative;
+	height: 100%;
+	clear: none;
 	margin: 0;
 	padding: 0;
 	float: left;
-	width: 90%;
+	width: 89%;
 }
 #sidebar {
+	position: relative;
+	height: 100%;
 	margin: 0;
 	padding: 0;
+	clear: none;
 	float: right;
-	width: 10%;
+	width: 9%;
 	background-color: #ddd;
 }
-#sidebar ul {
+.sidebar-content {
+	height: 100%
+	margin: 0;
+	padding: 0;
+	background-color: #ddd;
+}
+	
+.sidebar-content ul {
 	list-style: none;
-	padding: 0;
 	margin: 0;
+	padding: 0;
 }
-li.asnn-menu-selected {
+.sidebar-content ul li {
 	margin: 0;
 	padding: 0;
-	list-style-type: none;
-	background-color: white;
 }
-li.asnn-menu-unselected {
-	margin: 0;
-	padding: 0;
-	list-style-type: none;
+.sidebar-content ul li a {
+	font-size: 80%;
+	display: block;
 	background-color: #efefef;
+	border-bottom: thin solid #ddd;
+	padding: 3px;
+	text-decoration: none;
+	width: auto;
+}
+.sidebar-content ul li a:hover, .sidebar ul li a:focus {
+	color: #000000;
+	background-color: #eeeeee;
 }
 
 /* NEW ASSIGNMENT PAGES */

@@ -1,5 +1,10 @@
 $(document).ready(function()
 {
+
+	// Set sidebar heights
+  var document_height = $(document).height();
+  $('#sidebar').height(document_height);
+	
 	// Populate the tables
   var dataUrl = '/sakai-assignment2-tool/sdata/subList?context=';
   var qs = new Querystring();
