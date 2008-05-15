@@ -38,7 +38,8 @@ public class AssignmentListHandler extends Asnn2HandlerBase
 		ArrayList<HashMap<String, Object>> drafts = new ArrayList<HashMap<String, Object>>();
 		ArrayList<HashMap<String, Object>> posted = new ArrayList<HashMap<String, Object>>();
 
-		List<Assignment2> assns = assnLogic.getViewableAssignments();
+		String context = request.getParameter("context");
+		List<Assignment2> assns = assnLogic.getViewableAssignments(context);
 		for (Assignment2 assn : assns)
 		{
 			// get specific elements of data
@@ -46,7 +47,9 @@ public class AssignmentListHandler extends Asnn2HandlerBase
 			a.put("id", assn.getId());
 			a.put("title", assn.getTitle());
 			a.put("sections", "");
-			a.put("openDate", dateFormat.format(assn.getOpenTime()));
+			if (assn.getOpenTime() != null)
+				a.put("openDate", dateFormat.format(assn.getOpenTime()));
+			if (assn.getDueDate() != null)
 			a.put("dueDate", dateFormat.format(assn.getDueDate()));
 
 			if (assn.isDraft())
@@ -54,6 +57,7 @@ public class AssignmentListHandler extends Asnn2HandlerBase
 			else
 				posted.add(a);
 		}
+		content.put("context", context);
 		content.put("drafts", drafts);
 		content.put("posted", posted);
 		sendMap(request, response, content);

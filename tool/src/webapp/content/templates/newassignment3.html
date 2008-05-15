@@ -18,7 +18,6 @@
 					<label for="resubmitLimit">Submitters can resubmit a set number of times ...</label></li>
 				</ul>
 			</div>
-			<div class='clear'></div>
 		</div>
 		<div class="new-asnn-section">
 			<div class="new-asnn-prompt">
@@ -34,7 +33,6 @@
 					<label for="sendDigest">Send me one email per day summarizing notifications for submissions</label></li>
 				</ul>
 			</div>
-			<div class='clear'></div>
 		</div>
 		<div class="new-asnn-section">
 			<div class="new-asnn-prompt">
@@ -48,18 +46,15 @@
 					<label for="honor">Submitters will be obliged to agree to Honor Code ...</label></li>
 				</ul>
 			</div>
-			<div class='clear'></div>
 		</div>
 		<div class="new-asnn-section">
-			<div class="new-asnn-prompt">
-			</div>
+			<div class="new-asnn-prompt">/div>
 			<div class="new-asnn-input buttons">
-				<input type="submit" value="&lt;&lt; Submission Handling" />
-				<input type="submit" value="Save as Draft" onclick="tb_remove()" />
-				<input type="submit" value="Cancel" onclick="tb_remove()" />
-				<input type="submit" value="Post" onclick="tb_remove()" />
+				<input type="submit" name='submission' value="&lt;&lt; Submission Handling" />
+				<input type="submit" name='draft' value="Save as Draft" />
+				<input type="button" name='cancel' value="Cancel" onclick="parent.tb_remove()" />
+				<input type="submit" name='post' value="Post" />
 			</div>
-			<div class='clear'></div>
 		</div>
 	</form>
 </div>

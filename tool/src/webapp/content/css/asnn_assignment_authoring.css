@@ -1,7 +1,21 @@
 /* GENERAL BITS */
 
 a img { border: none; }
-.clear { clear:both; }
+
+/**
+ * Special style to force divs to be able to work right when floating in all
+ * browsers
+ */
+.clear {
+	clear:both;
+	height:1px;
+	font-size:1px;
+	border:none;
+	margin:0;
+	padding:0;
+	background:transparent;
+}
+
 li { list-style-type: none; }
 body {
 	margin: 0;

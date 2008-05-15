@@ -173,7 +173,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 		
 		String currentUserId = externalLogic.getCurrentUserId();
 		
-		if (!assignment.isUngraded() && assignment.getGradableObjectId() == null) {
+		if (assignment.isUngraded() != null && !assignment.isUngraded() && assignment.getGradableObjectId() == null) {
 			throw new NoGradebookItemForGradedAssignmentException("The assignment to save " + 
 					"was defined as graded but it had a null gradableObjectId");
 		}

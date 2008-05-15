@@ -1,4 +1,7 @@
+<script src='../js/jquery-1.2.3.min.js' type='text/javascript'></script>
+<script src='../js/querystring-1.2.4.js' type='text/javascript'></script>
 <script src='../js/newassignment1.js' type='text/javascript'></script>
+
 <div class="steps">
 	 Assignment Content |
 	<a href="newassignment2.html?width=800&amp;height=600&amp;modal=true" class="thickbox"> Submission Handling</a> |
@@ -16,7 +19,6 @@
 			<div class="new-asnn-input">
 				<input type="text" name='title' size="80" />
 			</div>
-			<div class='clear'></div>
 		</div>
 		<div class="new-asnn-section">
 			<div class="new-asnn-prompt">
@@ -25,7 +27,6 @@
 			<div class="new-asnn-input">
 				<textarea name='instructions' cols="60" rows="15">FCKEditor goes here</textarea>
 			</div>
-			<div class='clear'></div>
 		</div>
 		<div class="new-asnn-section">
 			<div class="new-asnn-prompt">
@@ -35,13 +36,11 @@
 				<p> No attachments yet</p>
 				<p><a href="#" class="thickbox">Add attachments</a></p>
 			</div>
-			<div class='clear'></div>
 		</div>
 		<div class="new-asnn-input buttons">
-			<input type="submit" value="Save as Draft" onclick="tb_remove()" />
-			<input type="submit" value="Cancel" onclick="tb_remove()" />
-			<input type="submit" value="Submission Handling &gt;&gt;" />
+			<input type="submit" name='draft' value="Save as Draft" />
+			<input type="button" name='cancel' value="Cancel" onclick="parent.tb_remove()" />
+			<input type="submit" name='submission' value="Submission Handling &gt;&gt;" />
 		</div>
-		<div class='clear'></div>
 	</form>
 </div>

@@ -21,60 +21,56 @@
 
 	<!-- DRAFTS WIDGET -->
 	<div id="widget-container">
-	<div id="widget-content">
-
-		<div id='drafts' class='widget-instance'>
-
-			<div id='draftsHeader' class='widget-instance-head'>
-				<div class="widget-instance-head-left">
-			    	<ul>
-			    		<li><a href='#' id='draftsTwisty' class='twisty'><img src='../images/widget1-arrow.png' alt='Drafts' /></a>   &nbsp;Drafts</li>
-			    	</ul>
-    			</div>
-    			<div class="widget-instance-head-right">
-			    	<ul>
-			    		<!-- <li class="widget-instance-close"><a href="#"></a></li>
-			    		<li class="widget-instance-menu"><a href="#"></a></li> -->
-			    		<li class="widget-instance-last"><a href=''><img src="../images/icons/page_white_get.png" alt="" />Import</a> </li>
-			    		<li class="widget-instance-last"><a href=''><img src="../images/icons/page_white_copy.png" alt="" />Copy</a> | </li>
-			    		<li class="widget-instance-last"><a href=''><img src="../images/icons/arrow_down.png" alt="" />Post</a> | </li>
-			    		<li class="widget-instance-last"><a href='' class="thickbox" id='newLink'><img src="../images/icons/add.png" alt="" />New</a> | </li>
-			    	</ul>
-    			</div>
-    		</div>
-
-			<div id="draftsList" class="widget-instance-content">
-				<div class="widget-instance-content-in listArea">
-					<table id='draftAssns' cellspacing="0" border="0" class="tool-menu listTable tablesorter">
-						<thead>
-							<tr class='headerRow'>
-								<th class='checkColumn'><input type='checkbox' disabled='disabled' /></th>
-								<th>Title</th>
-								<th>Groups</th>
-								<th>Open</th>
-								<th>Due</th>
-							</tr>
-						</thead>
-						<tbody id="draft_out"></tbody>
-						<textarea id="draft_template" class="template">
-							[% for (var i = 0; i < drafts.length; i++) { %]
-								<tr class='dataRow'>
-									<td class='checkColumn'><input type='checkbox' /></td>
-									<td>[%= drafts[i].title %] <a href=''><img src="../images/icons/page_white_edit.png" alt="Edit Content" /></a> </td>
-									<td>[%= drafts[i].sections %]</td>
-									<td>[%= drafts[i].openDate %]</td>
-									<td>[%= drafts[i].dueDate %]</td>
+		<div id="widget-content">
+			<div id='drafts' class='widget-instance'>
+				<div id='draftsHeader' class='widget-instance-head'>
+					<div class="widget-instance-head-left">
+				    	<ul>
+				    		<li><a href='#' id='draftsTwisty' class='twisty'><img src='../images/widget1-arrow.png' alt='Drafts' /></a>   &nbsp;Drafts</li>
+				    	</ul>
+	    			</div>
+	    			<div class="widget-instance-head-right">
+				    	<ul>
+				    		<!-- <li class="widget-instance-close"><a href="#"></a></li>
+				    		<li class="widget-instance-menu"><a href="#"></a></li> -->
+				    		<li class="widget-instance-last"><a href=''><img src="../images/icons/page_white_get.png" alt="" />Import</a> </li>
+				    		<li class="widget-instance-last"><a href=''><img src="../images/icons/page_white_copy.png" alt="" />Copy</a> | </li>
+				    		<li class="widget-instance-last"><a href=''><img src="../images/icons/arrow_down.png" alt="" />Post</a> | </li>
+				    		<!-- link href added by js -->
+				    		<li class="widget-instance-last"><a href='' class="thickbox" id='newLink'><img src="../images/icons/add.png" alt="" />New</a> | </li>
+				    	</ul>
+	    			</div>
+	    		</div>
+	
+				<div id="draftsList" class="widget-instance-content">
+					<div class="widget-instance-content-in listArea">
+						<table id='draftAssns' cellspacing="0" border="0" class="tool-menu listTable tablesorter">
+							<thead>
+								<tr class='headerRow'>
+									<th class='checkColumn'><input type='checkbox' disabled='disabled' /></th>
+									<th>Title</th>
+									<th>Groups</th>
+									<th>Open</th>
+									<th>Due</th>
 								</tr>
-							[% } %]
-						</textarea>
-					</table>
+							</thead>
+							<tbody id="draft_out"></tbody>
+							<textarea id="draft_template" class="template">
+								[%	for (var i = 0; i < drafts.length; i++) { %]
+									<tr class='dataRow'>
+										<td class='checkColumn'><input type='checkbox' /></td>
+										<td>[%= drafts[i].title %] <a href='newassignment1.html?id=[%= drafts[i].id %]&context=[%= context %]&KeepThis=true&TB_iframe=true&width=800&height=600&modal=true' class='thickbox'><img src="../images/icons/page_white_edit.png" alt="Edit Content" /></a> </td>
+										<td>[%= drafts[i].sections %]</td>
+										<td>[%= drafts[i].openDate %]</td>
+										<td>[%= drafts[i].dueDate %]</td>
+									</tr>
+								[% } %]
+							</textarea>
+						</table>
+					</div>
 				</div>
 			</div>
 		</div>
-		<div class='clear'></div>
-
-	</div>
-	<div class='clear'></div>
 	</div>
 	<div class='clear'></div>
 	<!-- END DRAFTS WIDGET -->
@@ -82,59 +78,53 @@
 
 	<!-- POSTED WIDGET -->
 	<div id="widget-container">
-	<div id="widget-content">
+		<div id="widget-content">
+			<div id='posted' class='widget-instance'>
+				<div id='postedHeader' class='widget-instance-head'>
+					<div class="widget-instance-head-left">
+						<ul>
+							<li><a href='#' id='postedTwisty' class='twisty'><img src='../images/widget1-arrow.png' alt='Posted' /></a> &nbsp;Posted</li>
+						</ul>
+					</div>
+					<div class="widget-instance-head-right">
+						<ul>
+							<!-- <li class="widget-instance-close"><a href="#"></a></li>
+							<li class="widget-instance-menu"><a href="#"></a></li> -->
+							<li class="widget-instance-last"><a href=''><img src="../images/icons/arrow_up.png" alt="" />To Draft</a> </li>
+	
+						</ul>
+					</div>
+	    		</div>
 
-		<div id='posted' class='widget-instance'>
-
-			<div id='postedHeader' class='widget-instance-head'>
-				<div class="widget-instance-head-left">
-					<ul>
-						<li><a href='#' id='postedTwisty' class='twisty'><img src='../images/widget1-arrow.png' alt='Posted' /></a> &nbsp;Posted</li>
-					</ul>
-				</div>
-				<div class="widget-instance-head-right">
-					<ul>
-						<!-- <li class="widget-instance-close"><a href="#"></a></li>
-						<li class="widget-instance-menu"><a href="#"></a></li> -->
-						<li class="widget-instance-last"><a href=''><img src="../images/icons/arrow_up.png" alt="" />To Draft</a> </li>
-
-					</ul>
-				</div>
-    		</div>
-
-    		<div id="postedList" class="widget-instance-content">
-				<div class="widget-instance-content-in listArea">
-					<table id='postedAssns' cellpadding="0" cellspacing="0" border="0" class="tool-menu listTable tablesorter">
-						<thead>
-							<tr class='headerRow'>
-								<th class='checkColumn'><input type='checkbox' disabled='disabled' /></th>
-								<th>Title</th>
-								<th>Groups</th>
-								<th>Open</th>
-								<th>Due</th>
-							</tr>
-						</thead>
-						<tbody id="posted_out"></tbody>
-						<textarea id="posted_template" class="template">
-							[% for(var i = 0; i < posted.length; i++) { %]
-								<tr class='dataRow'>
-									<td class='checkColumn'><input type='checkbox' class='checkColumn' /></td>
-									<td>[%= posted[i].title %] <a href=''><img src="../images/icons/arrow_up.png" alt="To Draft" /></a></td>
-									<td>[%= drafts[i].sections %]</td>
-									<td>[%= posted[i].openDate %]</td>
-									<td>[%= posted[i].dueDate %]</td>
+	    		<div id="postedList" class="widget-instance-content">
+					<div class="widget-instance-content-in listArea">
+						<table id='postedAssns' cellpadding="0" cellspacing="0" border="0" class="tool-menu listTable tablesorter">
+							<thead>
+								<tr class='headerRow'>
+									<th class='checkColumn'><input type='checkbox' disabled='disabled' /></th>
+									<th>Title</th>
+									<th>Groups</th>
+									<th>Open</th>
+									<th>Due</th>
 								</tr>
-							[% } %]
-						</textarea>
-					</table>
+							</thead>
+							<tbody id="posted_out"></tbody>
+							<textarea id="posted_template" class="template">
+								[% for(var i = 0; i < posted.length; i++) { %]
+									<tr class='dataRow'>
+										<td class='checkColumn'><input type='checkbox' class='checkColumn' /></td>
+										<td>[%= posted[i].title %] <a href='newassignment1.html?id=[%= drafts[i].id %]&context=[%= context %]' class='thickbox'><img src="../images/icons/arrow_up.png" alt="To Draft" /></a></td>
+										<td>[%= posted[i].sections %]</td>
+										<td>[%= posted[i].openDate %]</td>
+										<td>[%= posted[i].dueDate %]</td>
+									</tr>
+								[% } %]
+							</textarea>
+						</table>
+					</div>
 				</div>
 			</div>
-
 		</div>
-		<div class='clear'></div>
-
-	</div>
-	<div class='clear'></div>
 	</div>
 	<div class='clear'></div>
 	<!-- END POSTED WIDGET -->
