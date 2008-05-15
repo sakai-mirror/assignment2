@@ -54,11 +54,11 @@ public class NewAsnn1Handler extends Asnn2HandlerBase
 		assn.setTitle(title);
 		assn.setInstructions(instructions);
 
-		String next = "/sakai-assingment2-tool/sdata/newassignment2.html?id=" + assn.getId();
+		String next = "/sakai-assignment2-tool/sdata/newassignment2.html?id=" + assn.getId();
 		if (draft != null)
 		{
 			assn.setDraft(true);
-			next = "/sakai-assingment2-tool/content/templates/close.html";
+			next = "/sakai-assignment2-tool/content/templates/close.html";
 		}
 
 		assnLogic.saveAssignment(assn);
