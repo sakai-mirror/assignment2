@@ -8,12 +8,6 @@ a img { border: none; }
  */
 .clear {
 	clear:both;
-	height:1px;
-	font-size:1px;
-	border:none;
-	margin:0;
-	padding:0;
-	background:transparent;
 }
 
 li { list-style-type: none; }
@@ -150,6 +144,9 @@ table.tablesorter thead tr .headerSortDown {
 	float: right;
 	display: inline;
 	width: 30%;
+}
+.widget-instance-head-right ul li a {
+	font-size: 80%;
 }
 .widget-instance-head-right li {
 	position: relative;
