@@ -16,6 +16,9 @@ body {
 	padding: 0;
 	height: 100%;
 }
+.hidden {
+	visibility: hidden;
+}
 
 #wrapper {
 	height: 100%;
@@ -277,13 +280,19 @@ table.tablesorter thead tr .headerSortDown {
 	padding: 0;
 }
 .sidebar-content ul li a {
-	font-size: 80%;
+	font-size: 90%;
+	font-weight: bold;
 	display: block;
 	background-color: #efefef;
 	border-bottom: thin solid #ddd;
-	padding: 3px;
+	border-left: thin solid #ddd;
+	padding: 5px;
 	text-decoration: none;
 	width: auto;
+}
+.sidebar-content ul li a#active {
+	background-color: white;
+	border-left: none;
 }
 .sidebar-content ul li a:hover, .sidebar ul li a:focus {
 	color: #000000;

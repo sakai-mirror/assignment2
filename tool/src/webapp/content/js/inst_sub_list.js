@@ -4,6 +4,7 @@ $(document).ready(function()
 	// Set sidebar heights
   var document_height = $(document).height();
   $('#sidebar').height(document_height);
+  
 	
 	// Populate the tables
   var dataUrl = '/sakai-assignment2-tool/sdata/subList?context=';
@@ -63,14 +64,6 @@ $(document).ready(function()
 	$('.dataRow').click(function()
 	{
 		location.href='submissionview.html';
-	});
-
-	// accordion by assignment
-	jQuery('#assignmentList').accordion({
-		header: 'div.subheader',
-		autoHeight: false,
-		active: false,
-		navigation: true
 	});
 
 	//Make tables sortable
