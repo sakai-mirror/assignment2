@@ -31,12 +31,15 @@ public class AssignmentPost extends Asnn2HandlerBase
 	{
 		String[] ids = request.getParameterValues("id");
 		String context = request.getParameter("context");
-		for (String id : ids)
+		if (ids != null)
 		{
-			Assignment2 asnn = asnnLogic.getAssignmentByIdWithGroupsAndAttachments(Long
-					.parseLong(id));
-			asnn.setDraft(false);
-			asnnLogic.saveAssignment(asnn);
+			for (String id : ids)
+			{
+				Assignment2 asnn = asnnLogic.getAssignmentByIdWithGroupsAndAttachments(Long
+						.parseLong(id));
+				asnn.setDraft(false);
+				asnnLogic.saveAssignment(asnn);
+			}
 		}
 		response
 				.sendRedirect("/sakai-assignment2-tool/content/templates/inst_asnn_list.html?context="

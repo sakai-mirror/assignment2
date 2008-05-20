@@ -34,7 +34,7 @@
 				    	<ul>
 				    		<!-- <li class="widget-instance-close"><a href="#"></a></li>
 							<li class="widget-instance-menu"><a href="#"></a></li> -->
-							<li class="widget-instance-last"><a href='#' onclick='jQuery("#draftsForms").submit();return false;'><img src="../images/icons/arrow_down.png" alt="" />Post</a></li>
+							<li class="widget-instance-last"><a href='#' onclick="jQuery('#draftForm').submit()"><img src="../images/icons/arrow_down.png" alt="" />Post</a></li>
 							<li class="widget-instance-last"><a href=''><img src="../images/icons/page_white_get.png" alt="" />Import</a> | </li>
 			    			<li class="widget-instance-last"><a href='newassignment1.html?width=800&amp;height=600&amp;modal=true' class="thickbox"><img src="../images/icons/add.png" alt="" />New</a> | </li>
 				    	</ul>
@@ -44,7 +44,7 @@
 				<div id="draftsList" class="widget-instance-content">
 					<div class="widget-instance-content-in listArea">
 						<form id='draftForm' action='/sakai-assignment2-tool/sdata/asnnPost' method='post'>
-						<input type='hidden' name='context' value='[%= context %]' />
+						<input type='hidden' name='context' />
 						<table id='draftAssns' cellspacing="0" border="0" class="tool-menu listTable tablesorter">
 							<thead>
 								<tr class='headerRow'>
@@ -66,7 +66,6 @@
 	<div class='clear'></div>
 	<!-- END DRAFTS WIDGET -->
 
-
 	<!-- POSTED WIDGET -->
 	<div id="widget-container">
 		<div id="widget-content">
@@ -81,7 +80,7 @@
 						<ul>
 							<!-- <li class="widget-instance-close"><a href="#"></a></li>
 							<li class="widget-instance-menu"><a href="#"></a></li> -->
-							<li class="widget-instance-last"><a href='#' onclick='InstAsnnList.toDraft();return false;'><img src="../images/icons/arrow_up.png" alt="" />To Draft</a> </li>
+							<li class="widget-instance-last"><a href='#' onclick='jQuery("#postedForm").submit();return false;'><img src="../images/icons/arrow_up.png" alt="" />To Draft</a> </li>
 
 						</ul>
 					</div>
@@ -89,8 +88,8 @@
 
 	    		<div id="postedList" class="widget-instance-content">
 					<div class="widget-instance-content-in listArea">
-						<form action='/sakai-assignment2-tool/sdata/asnnDraft' method='post'>
-						<input type='hidden' name='context' value='[%= context %]' />
+						<form id='postedForm' action='/sakai-assignment2-tool/sdata/asnnDraft' method='post'>
+						<input type='hidden' name='context' />
 						<table id='postedAssns' cellpadding="0" cellspacing="0" border="0" class="tool-menu listTable tablesorter">
 							<thead>
 								<tr class='headerRow'>

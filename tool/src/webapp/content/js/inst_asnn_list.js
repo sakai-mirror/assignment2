@@ -26,6 +26,11 @@ jQuery(document).ready(function()
 			draftTemplate.update('draft_out', data);
 			postedTemplate.update('posted_out', data);
 
+			jQuery('input[name="context"]').each(function()
+			{
+				jQuery(this).val(data['context']);
+			});
+
 			// add thickbox to rendered items
 			tb_init('a.thickbox');
 		});
