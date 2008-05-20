@@ -82,6 +82,7 @@ public class NewAsnn2Handler extends Asnn2HandlerBase
 	public void handlePost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException
 	{
+		// collect incoming data
 		String id = request.getParameter("id");
 		String draft = request.getParameter("draft");
 		String prev = request.getParameter("prev");
@@ -95,21 +96,25 @@ public class NewAsnn2Handler extends Asnn2HandlerBase
 		String whoWillSubmit = request.getParameter("whoWillSubmit");
 		String grading = request.getParameter("grading");
 		String gradebookId = request.getParameter("gradebookId");
+		// clean up data
+		openDate = openDate.trim();
+		dueDate = dueDate.trim();
+		acceptUntilDate = acceptUntilDate.trim();
 
 		try
 		{
 			Assignment2 asnn = asnnLogic.getAssignmentByIdWithGroupsAndAttachments(Long
 					.parseLong(id));
 			asnn.setSubmissionType(Integer.parseInt(submissionType));
-			if (hasOpenDate && openDate.trim().length() > 0)
+			if (hasOpenDate && openDate.length() > 0)
 				asnn.setOpenTime(dateTimeFormatter.parse(openDate));
 			else
 				asnn.setOpenTime(new Date());
-			if (hasDueDate && dueDate.trim().length() > 0)
+			if (hasDueDate && dueDate.length() > 0)
 				asnn.setDueDate(dateTimeFormatter.parse(dueDate));
 			else
 				asnn.setDueDate(null);
-			if (acceptUntilDate.trim().length() > 0)
+			if (acceptUntilDate.length() > 0)
 				asnn.setAcceptUntilTime(dateTimeFormatter.parse(acceptUntilDate));
 			else
 				asnn.setAcceptUntilTime(null);

@@ -127,6 +127,10 @@
 				6.baseurl=/subView;
 				7.classname=org.sakaiproject.assignment2.tool.handlers.LanguageHandler;
 				7.baseurl=/l;
+				8.classname=org.sakaiproject.assignment2.tool.handlers.AssignmentPost;
+				8.baseurl=/asnnPost;
+				9.classname=org.sakaiproject.assignment2.tool.handlers.AssignmentDraft;
+				9.baseurl=/asnnDraft;
 			</param-value>
 		</init-param>
 	</servlet>
