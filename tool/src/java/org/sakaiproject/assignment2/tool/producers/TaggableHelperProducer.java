@@ -25,8 +25,12 @@ import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.tool.api.ToolSession;
 
 import uk.ac.cam.caret.sakai.rsf.helper.HelperViewParameters;
+import uk.org.ponder.rsf.components.UICommand;
 import uk.org.ponder.rsf.components.UIContainer;
+import uk.org.ponder.rsf.components.UIInternalLink;
+import uk.org.ponder.rsf.components.UILink;
 import uk.org.ponder.rsf.components.UIOutput;
+import uk.org.ponder.rsf.components.UIParameter;
 import uk.org.ponder.rsf.view.ComponentChecker;
 import uk.org.ponder.rsf.view.ViewComponentProducer;
 import uk.org.ponder.rsf.viewstate.ViewParameters;
@@ -49,14 +53,13 @@ public class TaggableHelperProducer implements ViewComponentProducer, ViewParams
 		TaggableHelperViewParams params = (TaggableHelperViewParams)viewparams;
 		
 		ToolSession toolSession = sessionManager.getCurrentToolSession();
-		
 		for (int i=0; i<params.keys.length; i++) {
 			toolSession.setAttribute(params.keys[i], params.values[i]);
 		}
 		
-		UIOutput.make(tofill, HelperViewParameters.HELPER_ID, params.helperId);
+		UILink.make(tofill, HelperViewParameters.HELPER_ID, params.helperId);
 
-	    //UICommand help = UICommand.make(tofill, params.helperId);
+	    //UICommand help = UICommand.make(tofill, HelperViewParameters.POST_HELPER_BINDING, "", null);
 	    //help.parameters = new ParameterList();
 	    //for (int i=0; i<params.keys.length; i++) {
 	    //	help.parameters.add(new UIParameter(params.keys[0], params.values[0]));
