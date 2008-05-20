@@ -37,6 +37,7 @@ public class NewAsnn3Handler extends Asnn2HandlerBase
 			throws ServletException, IOException
 	{
 		String id = request.getParameter("id");
+		String begin = request.getParameter("begin");
 		String prev = request.getParameter("prev");
 		String post = request.getParameter("post");
 		String resubmissions = request.getParameter("resubmissions");
@@ -62,7 +63,13 @@ public class NewAsnn3Handler extends Asnn2HandlerBase
 		}
 		else if (prev != null)
 		{
-			next = "/sakai-assignment2-tool/content/templates/newassignment2.html?id=" + asnn.getId();
+			next = "/sakai-assignment2-tool/content/templates/newassignment2.html?id="
+					+ asnn.getId();
+		}
+		else if (begin != null)
+		{
+			next = "/sakai-assignment2-tool/content/templates/newassignment1.html?id="
+					+ asnn.getId();
 		}
 		asnnLogic.saveAssignment(asnn);
 

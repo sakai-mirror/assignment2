@@ -26,6 +26,7 @@ jQuery(document).ready(function()
 			draftTemplate.update('draft_out', data);
 			postedTemplate.update('posted_out', data);
 
+			// set the context for all context fields in forms
 			jQuery('input[name="context"]').each(function()
 			{
 				jQuery(this).val(data['context']);

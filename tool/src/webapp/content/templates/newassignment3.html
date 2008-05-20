@@ -7,8 +7,8 @@
 	</head>
 	<body>
 		<div class="steps">
-			<a href="newassignment1.html?width=800&amp;height=600&amp;modal=true" class="thickbox"> Assignment Content</a> |
-			<a href="newassignment2.html?width=800&amp;height=600&amp;modal=true" class="thickbox"> Submission Handling</a> |
+			<a href="#" onclick='jQuery("#begin").click()'>Assignment Context</a> |
+			<a href="#" onclick='jQuery("#prev").click()'>Submission Handling</a> |
 			Other Options
 		</div>
 		<div>
@@ -61,10 +61,11 @@
 				<div class="new-asnn-section">
 					<div class="new-asnn-prompt"></div>
 					<div class="new-asnn-input buttons">
-						<input type="submit" name='prev' value="&lt;&lt; Submission Handling" />
-						<input type="submit" name='draft' value="Save as Draft" />
-						<input type="button" name='cancel' value="Cancel" onclick="parent.tb_remove()" />
-						<input type="submit" name='post' value="Post" />
+						<input type='submit' id='begin' name='begin' value='&lt;&lt;&lt; Assignment Conext' class='hidden' />
+						<input type="submit" id='prev' name='prev' value="&lt;&lt; Submission Handling" />
+						<input type="submit" id='draft' name='draft' value="Save as Draft" />
+						<input type="button" id='cancel' name='cancel' value="Cancel" onclick="parent.tb_remove()" />
+						<input type="submit" id='post' name='post' value="Post" />
 					</div>
 				</div>
 			</form>

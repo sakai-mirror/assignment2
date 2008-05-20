@@ -8,9 +8,9 @@
 	</head>
 	<body>
 		<div class="steps">
-			 Assignment Content |
-			<a href="newassignment2.html?width=800&amp;height=600&amp;modal=true" class="thickbox"> Submission Handling</a> |
-			<a href="newassignment3.html?width=800&amp;height=600&amp;modal=true" class="thickbox"> Other Options</a>
+			Assignment Content |
+			<a href="#" onclick='jQuery("#next").click()'>Submission Handling</a> |
+			<a href="#" onclick='jQuery("#end").click()'>Other Options</a>
 		</div>
 
 		<div>
@@ -43,9 +43,10 @@
 					</div>
 				</div>
 				<div class="new-asnn-input buttons">
-					<input type="submit" name='draft' value="Save as Draft" />
-					<input type="button" name='cancel' value="Cancel" onclick="parent.tb_remove()" />
-					<input type="submit" name='submission' value="Submission Handling &gt;&gt;" />
+					<input type="submit" id='draft' name='draft' value="Save as Draft" />
+					<input type="button" id='cancel' name='cancel' value="Cancel" onclick="parent.tb_remove()" />
+					<input type="submit" id='next' name='next' value="Submission Handling &gt;&gt;" />
+					<input type='submit' id='end' name='end' value='Other Options &gt;&gt;&gt;' class='hidden' />
 				</div>
 			</form>
 		</div>

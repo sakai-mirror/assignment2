@@ -9,13 +9,13 @@
 	</head>
 	<body>
 		<div class="steps">
-			<a href="newassignment1.html?width=800&amp;height=600&amp;modal=true" class="thickbox">Assignment Content</a> |
+			<a href="#" onclick='jQuery("#prev").click()'>Assignment Content</a> |
 			Submission Handling |
-			<a href="newassignment3.html?width=800&amp;height=600&amp;modal=true" class="thickbox"> Other Options</a>
+			<a href="#" onclick='jQuery("#next").click()'> Other Options</a>
 		</div>
 
 		<div>
-			<form action="/sakai-assignment2-tool/sdata/newAsnn2" method='post'>
+			<form id='newAsnnForm' action="/sakai-assignment2-tool/sdata/newAsnn2" method='post'>
 				<input type='hidden' name='context' id='context' />
 				<input type='hidden' name='id' id='id' />
 				<div class="new-asnn-section">
@@ -116,10 +116,10 @@
 					<div class="new-asnn-prompt">
 					</div>
 					<div class="new-asnn-input buttons">
-						<input type="submit" name='prev' value="&lt;&lt; Assignment Content" />
-						<input type="submit" name='draft' value="Save as Draft" />
-						<input type="button" name='cancel' value="Cancel" onclick="parent.tb_remove()" />
-						<input type="submit" name='other' value="Other Options &gt;&gt;" />
+						<input type="submit" id='prev' name='prev' value="&lt;&lt; Assignment Content" />
+						<input type="submit" id='draft' name='draft' value="Save as Draft" />
+						<input type="button" id='cancel' name='cancel' value="Cancel" onclick="parent.tb_remove()" />
+						<input type="submit" id='next' name='other' value="Other Options &gt;&gt;" />
 					</div>
 				</div>
 				<div class='clear'></div>

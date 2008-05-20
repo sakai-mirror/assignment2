@@ -139,7 +139,7 @@ public class NewAsnn2Handler extends Asnn2HandlerBase
 			if (draft != null)
 			{
 				asnn.setDraft(true);
-				next = "/sakai-assignment2-tool/content/templates/close.html";
+				next = "/sakai-assignment2-tool/content/templates/close.html?refresh=true";
 			}
 			else if (prev != null)
 			{

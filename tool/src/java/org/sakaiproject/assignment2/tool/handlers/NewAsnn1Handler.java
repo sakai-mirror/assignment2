@@ -54,6 +54,7 @@ public class NewAsnn1Handler extends Asnn2HandlerBase
 			String title = request.getParameter("title");
 			String instructions = request.getParameter("instructions");
 			String draft = request.getParameter("draft");
+			String end = request.getParameter("end");
 			String next = "/sakai-assignment2-tool/content/templates/newassignment2.html?context="
 					+ context + "&id=" + id;
 	
@@ -79,16 +80,21 @@ public class NewAsnn1Handler extends Asnn2HandlerBase
 			if (draft != null)
 			{
 				asnn.setDraft(true);
-				next = "/sakai-assignment2-tool/content/templates/close.html";
+				next = "/sakai-assignment2-tool/content/templates/close.html?refresh=true";
 			}
-			else if (asnn.isDraft() == null)
+			else if (end != null)
+			{
+				next = "/sakai-assignment2-tool/content/templates/newassignment3.html?context="
+					+ context + "&id=" + id;
+			}
+			if (asnn.isDraft() == null)
 			{
 				asnn.setDraft(false);
 			}
 			asnn.setInstructions(instructions);
 	
 			asnnLogic.saveAssignment(asnn);
-	
+
 			response.sendRedirect(next);
 		}
 	}
