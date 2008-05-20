@@ -11,9 +11,9 @@
 			</div>
 			<div class="new-asnn-input">
 				<ul>
-					<li><input type="radio" name="submissionMethod" id="electronic" value="true" checked="checked" />
+					<li><input type="radio" name="submissionMethod" id="electronic" value="2" checked="checked" />
 					<label for="electronic">Electronic submissions</label></li>
-					<li><input type="radio" name="submissionMethod" id="nonelectronic" value="false"/>
+					<li><input type="radio" name="submissionMethod" id="nonelectronic" value="3"/>
 					<label for="nonelectronic">Non-electronic submissions</label> <a class="help-prompt" href="">What does this mean?</a></li>
 				</ul>
 			</div>
@@ -72,13 +72,13 @@
 			</div>
 			<div class="new-asnn-input">
 				<ul>
-					<li><input type="radio" name="who" id="all" checked="checked" />
+					<li><input type="radio" name="whoWillSubmit" id="all" checked="checked" />
 					<label for="all">All site participants</label></li>
-					<li><input type="radio" name="who" id="selectedGroups" />
+					<li><input type="radio" name="whoWillSubmit" id="selectedGroups" />
 					<label for="selectedGroups">Only specific sections or groups ...</label></li>
-					<li><input type="radio" name="who" id="groupTeams" />
+					<li><input type="radio" name="whoWillSubmit" id="groupTeams" />
 					<label for="groupTeams">Teams based on specific groups ...</label></li>
-					<li class="hidden"><input type="radio" name="who" id="anonymous" />
+					<li class="hidden"><input type="radio" name="whoWillSubmit" id="anonymous" />
 					<label for="anonymous">Anonymous site participants</label></li>
 				</ul>
 			</div>
@@ -90,11 +90,11 @@
 			</div>
 			<div class="new-asnn-input">
 				<ul>
-					<li><input type="radio" name="isGraded" id="newgrade" value="true" checked="checked" />
-					<label for="newgrade">Add as Gradebook column</label></li>
-					<li><input type="radio" name="isGraded" id="graded" value="false" />
+					<li><input type="radio" name="grading" id="newgrade" value="true" checked="checked" />
+					<label for="newgrade">Add to Gradebook</label></li>
+					<li><input type="radio" name="grading" id="graded" value="false" />
 					<label for="graded">Link to existing Gradebook column ...</label></li>
-					<li><input type="radio" name="isGraded" id="ungraded" value="false" />
+					<li><input type="radio" name="grading" id="ungraded" value="false" />
 					<label for="ungraded">This assignment will not be graded</label></li>
 				</ul>
 			</div>

@@ -37,7 +37,7 @@ public class NewAsnn1Handler extends Asnn2HandlerBase
 			HashMap<String, Object> map = new HashMap<String, Object>();
 			map.put("title", assn.getTitle());
 			map.put("instructions", assn.getInstructions());
-	
+
 			sendMap(request, response, map);
 		}
 	}
@@ -51,7 +51,8 @@ public class NewAsnn1Handler extends Asnn2HandlerBase
 		String title = request.getParameter("title");
 		String instructions = request.getParameter("instructions");
 		String draft = request.getParameter("draft");
-		String next = "/sakai-assignment2-tool/content/templates/newassignment2.html?context=" + context + "&id=" + id;
+		String next = "/sakai-assignment2-tool/content/templates/newassignment2.html?context="
+				+ context + "&id=" + id;
 
 		Assignment2 asnn = new Assignment2();
 		// set the data that is submitted
@@ -82,7 +83,6 @@ public class NewAsnn1Handler extends Asnn2HandlerBase
 		asnn.setCreator(extLogic.getCurrentUserId());
 		asnn.setCreateTime(new Date());
 		asnn.setRemoved(false);
-		
 
 		assnLogic.saveAssignment(asnn, context);
 

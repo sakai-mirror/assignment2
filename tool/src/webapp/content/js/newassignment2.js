@@ -1,43 +1,61 @@
-$(document).ready(function()
+jQuery(document).ready(function()
 {
-	$('#openDate').datepicker();
-	$('#dueDate').datepicker();
-	$('#acceptUntilDate').datepicker();
-	$('#dueDate').hide();
-	$('#dueTime').hide();
-	$('#acceptUntilDate').hide();
-	$('#acceptUntilTime').hide();
-	$("input[@name='dueDateRadio']").change (
-		function()
+	jQuery('#openDate').datepicker();
+	jQuery('#dueDate').datepicker();
+	jQuery('#acceptUntilDate').datepicker();
+	jQuery('#dueDate').hide();
+	jQuery('#dueTime').hide();
+	jQuery('#acceptUntilDate').hide();
+	jQuery('#acceptUntilTime').hide();
+	jQuery("input[@name='dueDateRadio']").change(function()
+	{
+		if (jQuery("input[@name='dueDateRadio']:checked").val() == "1")
 		{
-			if ($("input[@name='dueDateRadio']:checked").val() == "1")
-			{
-				$('#dueDate').show();
-				$('#dueTime').show();
-			}
-			else
-			{
-				$('#dueDate').hide();
-				$('#dueTime').hide();
-			}
+			jQuery('#dueDate').show();
+			jQuery('#dueTime').show();
 		}
-	);
-	$("input[@name='acceptUntilRadio']").change (
-		function()
+		else
 		{
-			if ($("input[@name='acceptUntilRadio']:checked").val() == "1")
-			{
-				$('#acceptUntilDate').show();
-				$('#acceptUntilTime').show();
-			}
-			else
-			{
-				$('#acceptUntilDate').hide();
-				$('#acceptUntilTime').hide();
-			}
+			jQuery('#dueDate').hide();
+			jQuery('#dueTime').hide();
 		}
-	);
-	$('#openDate').val(new Date().format("m/dd/yy"));
-	$('#dueDate').val(new Date().format("m/dd/yy"));
-	$('#acceptUntilDate').val(new Date().format("m/dd/yy"));
+	});
+	jQuery("input[@name='acceptUntilRadio']").change(function()
+	{
+		if (jQuery("input[@name='acceptUntilRadio']:checked").val() == "1")
+		{
+			jQuery('#acceptUntilDate').show();
+			jQuery('#acceptUntilTime').show();
+		}
+		else
+		{
+			jQuery('#acceptUntilDate').hide();
+			jQuery('#acceptUntilTime').hide();
+		}
+	});
+
+	var qs = new Querystring();
+	var id = qs.get('id');
+	var context = qs.get('context');
+
+	// if no id, start the workflow over
+	if (!id)
+	{
+		window.location.href = '/sakai-assignment2-tool/content/templates/newassignment1.html?context=' + context;
+	}
+	else
+	{
+		var url = 'sakai-assignment2-tool/sdata/newAsnn2?id=' + id;
+		jQuery.getJSON(url, function(data)
+		{
+			jQuery('#openDate').val(data['openDate']);
+			jQuery('#openTime').val(data['openTime']);
+			jQuery('#dueDate').val(data['dueDate']);
+			jQuery('#dueTime').val(data['dueTime']);
+			jQuery('#acceptUntilDate').val(data['acceptUntilDate']);
+			jQuery('#acceptUntilTime').val(data['acceptUntilTime']);
+			jQuery('#whoWillSubmit').val(data['whoWillSubmit']);
+			jQuery('#grading').val(data['grading']);
+		});
+	}
 });

@@ -17,13 +17,20 @@ import org.sakaiproject.assignment2.model.Assignment2;
 public class NewAsnn2Handler extends Asnn2HandlerBase
 {
 	private AssignmentLogic assnLogic;
-	private DateFormat dateFormat;
+	private DateFormat dateFormatter;
+	private DateFormat timeFormatter;
+	private DateFormat dateTimeFormatter;
+	private String dateFormat = "MM/dd/yyyy";
+	private String timeFormat = "hh:mm";
+	private String dateTimeFormat = dateFormat + " " + timeFormat;
 
 	@Override
 	public void postInit(Map<String, String> config) throws ServletException
 	{
 		assnLogic = (AssignmentLogic) getService(AssignmentLogic.class);
-		dateFormat = new SimpleDateFormat("MM/dd");
+		dateFormatter = new SimpleDateFormat(dateFormat);
+		timeFormatter = new SimpleDateFormat(timeFormat);
+		dateTimeFormatter = new SimpleDateFormat(dateTimeFormat);
 	}
 
 	@Override
@@ -31,12 +38,39 @@ public class NewAsnn2Handler extends Asnn2HandlerBase
 			throws ServletException, IOException
 	{
 		String id = request.getParameter("id");
-		Assignment2 assn = assnLogic.getAssignmentById(Long.parseLong(id));
+		Assignment2 asnn = assnLogic.getAssignmentById(Long.parseLong(id));
 		HashMap<String, Object> map = new HashMap<String, Object>();
-		map.put("submissionType", assn.getSubmissionType());
-		map.put("openDate", dateFormat.format(assn.getInstructions()));
-		map.put("dueDate", dateFormat.format(assn.getDueDate()));
-		map.put("acceptUntil", dateFormat.format(assn.getAcceptUntilTime()));
+		map.put("submissionType", asnn.getSubmissionType());
+		if (asnn.getOpenTime() != null)
+		{
+			map.put("openDate", dateFormatter.format(asnn.getOpenTime()));
+			map.put("openTime", timeFormatter.format(asnn.getOpenTime()));
+		}
+		else
+		{
+			map.put("openDate", "");
+			map.put("openTime", "");
+		}
+		if (asnn.getDueDate() != null)
+		{
+			map.put("dueDate", dateTimeFormatter.format(asnn.getDueDate()));
+			map.put("dueTime", timeFormatter.format(asnn.getDueDate()));
+		}
+		else
+		{
+			map.put("dueDate", "");
+			map.put("dueTime", "");
+		}
+		if (asnn.getAcceptUntilTime() != null)
+		{
+			map.put("acceptUntilDate", dateTimeFormatter.format(asnn.getAcceptUntilTime()));
+			map.put("acceptUntilTime", timeFormatter.format(asnn.getAcceptUntilTime()));
+		}
+		else
+		{
+			map.put("acceptUntilDate", "");
+			map.put("acceptUntilTime", "");
+		}
 		map.put("whoWillSubmit", "");
 		map.put("grading", "");
 
@@ -49,33 +83,36 @@ public class NewAsnn2Handler extends Asnn2HandlerBase
 	{
 		String id = request.getParameter("id");
 		String submissionType = request.getParameter("submissionType");
-		String openDate = request.getParameter("openDate");
-		String dueDate = request.getParameter("dueDate");
-		String acceptUntil = request.getParameter("acceptUntil");
+		String openDate = request.getParameter("openDate") + " " + request.getParameter("openTime");
+		String dueDate = request.getParameter("dueDate") + " " + request.getParameter("dueTime");
+		String acceptUntilDate = request.getParameter("acceptUntilDate") + " "
+				+ request.getParameter("acceptUntilTime");
 		String whoWillSubmit = request.getParameter("whoWillSubmit");
 		String grading = request.getParameter("grading");
 
 		try
 		{
-			Assignment2 assn = assnLogic.getAssignmentById(Long.parseLong(id));
-			assn.setSubmissionType(Integer.parseInt(submissionType));
-			assn.setOpenTime(dateFormat.parse(openDate));
-			assn.setDueDate(dateFormat.parse(dueDate));
-			assn.setAcceptUntilTime(dateFormat.parse(acceptUntil));
+			Assignment2 asnn = assnLogic.getAssignmentById(Long.parseLong(id));
+			asnn.setSubmissionType(Integer.parseInt(submissionType));
+			asnn.setOpenTime(dateTimeFormatter.parse(openDate));
+			asnn.setDueDate(dateTimeFormatter.parse(dueDate));
+			asnn.setAcceptUntilTime(dateTimeFormatter.parse(acceptUntilDate));
 
 			String draft = request.getParameter("draft");
 			String step = request.getParameter("step");
-			String next = "/sakai-assingment2-tool/sdata/newassignment3.html?id=" + assn.getId();
+			String next = "/sakai-assingment2-tool/sdata/newassignment3.html?context="
+					+ asnn.getContextId() + "id=" + asnn.getId();
 			if (draft != null)
 			{
-				assn.setDraft(true);
+				asnn.setDraft(true);
 				next = "/sakai-assingment2-tool/content/templates/close.html";
 			}
 			else if ("prev".equals(step))
 			{
-				next = "/sakai-assingment2-tool/sdata/newassignment1.html?id=" + assn.getId();
+				next = "/sakai-assingment2-tool/sdata/newassignment1.html?context="
+						+ asnn.getContextId() + "id=" + asnn.getId();
 			}
-			assnLogic.saveAssignment(assn);
+			assnLogic.saveAssignment(asnn);
 
 			response.sendRedirect(next);
 		}
