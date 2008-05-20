@@ -1,0 +1,17 @@
+<html>
+	<head>
+		<script type='text/javascript' src='../js/thick-compressed.js'></script>
+		<script type='text/javascript' src='../js/querystring-1.2.4.js'></script>
+	</head>
+	<body>
+		<script type='text/javascript'>
+		var qs = new Querystring();
+		if (qs.get('refresh') && parent.refresh)
+			parent.refresh();
+		else if (parent.tb_remove)
+			parent.tb_remove();
+		else if (tb_remove)
+			tb_remove();
+		</script>
+	</body>
+</html>
