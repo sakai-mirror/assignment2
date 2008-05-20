@@ -5,38 +5,25 @@ jQuery(document).ready(function()
 	jQuery('#acceptUntilDate').datepicker();
 	jQuery("input[@name='openDateRadio']").change(function()
 	{
-//		alert(jQuery("input[@name='openDateRadio']:checked").val());
 		if (jQuery("input[@name='openDateRadio']:checked").val() == "true")
-		{
-			jQuery('#openD').show();
-		}
+			jQuery('#openD').removeClass('hidden');
 		else
-		{
-			jQuery('#openD').hide();
-		}
+			jQuery('#openD').addClass('hidden');
 	});
 	jQuery("input[@name='dueDateRadio']").change(function()
 	{
-//		alert(jQuery("input[@name='dueDateRadio']:checked").val());
 		if (jQuery("input[@name='dueDateRadio']:checked").val() == "true")
-		{
-			jQuery('#dueD').show();
-		}
+			jQuery('#dueD').removeClass('hidden');
 		else
-		{
-			jQuery('#dueD').hide();
-		}
+			jQuery('#dueD').addClass('hidden');
 	});
 	jQuery("input[@name='acceptUntilDateRadio']").change(function()
 	{
-		if (jQuery("input[@name='acceptUntilDateRadio']:checked").val() == "true")
-		{
-			jQuery('#acceptD').show();
-		}
+		// the verbiage on the page makes the values seem backwards
+		if (jQuery("input[@name='acceptUntilDateRadio']:checked").val() == "false")
+			jQuery('#acceptD').removeClass('hidden');
 		else
-		{
-			jQuery('#acceptD').hide();
-		}
+			jQuery('#acceptD').addClass('hidden');
 	});
 
 	var qs = new Querystring();
