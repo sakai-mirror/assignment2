@@ -16,9 +16,6 @@ body {
 	padding: 0;
 	height: 100%;
 }
-.hidden {
-	visibility: hidden;
-}
 
 #wrapper {
 	height: 100%;
@@ -36,6 +33,7 @@ body {
 }
 
 .hidden {
+	visibility: hidden;
 	display: none;
 }
 

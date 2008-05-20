@@ -7,12 +7,14 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.component.api.ComponentManager;
 import org.sakaiproject.sdata.tool.json.JSONServiceHandler;
 
 public abstract class Asnn2HandlerBase extends JSONServiceHandler
 {
 	protected ComponentManager compMgr;
+	protected AssignmentLogic asnnLogic;
 
 	@Override
 	public final void doDelete(HttpServletRequest request, HttpServletResponse response)
@@ -53,6 +55,7 @@ public abstract class Asnn2HandlerBase extends JSONServiceHandler
 	public final void init(Map<String, String> config) throws ServletException
 	{
 		compMgr = org.sakaiproject.component.cover.ComponentManager.getInstance();
+		asnnLogic = (AssignmentLogic) getService(AssignmentLogic.class);
 		postInit(config);
 	}
 

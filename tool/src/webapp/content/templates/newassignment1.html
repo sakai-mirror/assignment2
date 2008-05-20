@@ -1,46 +1,53 @@
-<script src='../js/jquery-1.2.3.min.js' type='text/javascript'></script>
-<script src='../js/querystring-1.2.4.js' type='text/javascript'></script>
-<script src='../js/newassignment1.js' type='text/javascript'></script>
+<html>
+	<head>
+		<link rel='stylesheet' type='text/css' href='../css/asnn_assignment_authoring.css' />
 
-<div class="steps">
-	 Assignment Content |
-	<a href="newassignment2.html?width=800&amp;height=600&amp;modal=true" class="thickbox"> Submission Handling</a> |
-	<a href="newassignment3.html?width=800&amp;height=600&amp;modal=true" class="thickbox"> Other Options</a>
-</div>
+		<script src='../js/jquery-1.2.3.min.js' type='text/javascript'></script>
+		<script src='../js/querystring-1.2.4.js' type='text/javascript'></script>
+		<script src='../js/newassignment1.js' type='text/javascript'></script>
+	</head>
+	<body>
+		<div class="steps">
+			 Assignment Content |
+			<a href="newassignment2.html?width=800&amp;height=600&amp;modal=true" class="thickbox"> Submission Handling</a> |
+			<a href="newassignment3.html?width=800&amp;height=600&amp;modal=true" class="thickbox"> Other Options</a>
+		</div>
 
-<div>
-	<form action="/sakai-assignment2-tool/sdata/newAsnn1" method='post'>
-		<input type='hidden' name='context' id='context' />
-		<input type='hidden' name='id' id='id' />
-		<div class="new-asnn-section">
-			<div class="new-asnn-prompt">
-				<h4>* Title:&nbsp</h4>
-			</div>
-			<div class="new-asnn-input">
-				<input type="text" id='title' name='title' size="80" />
-			</div>
+		<div>
+			<form action="/sakai-assignment2-tool/sdata/newAsnn1" method='post'>
+				<input type='hidden' name='context' id='context' />
+				<input type='hidden' name='id' id='id' />
+				<div class="new-asnn-section">
+					<div class="new-asnn-prompt">
+						<h4>* Title:&nbsp</h4>
+					</div>
+					<div class="new-asnn-input">
+						<input type="text" id='title' name='title' size="80" />
+					</div>
+				</div>
+				<div class="new-asnn-section">
+					<div class="new-asnn-prompt">
+						<h4>* Instructions:&nbsp</h4>
+					</div>
+					<div class="new-asnn-input">
+						<textarea id='instructions' name='instructions' cols="60" rows="15">FCKEditor goes here</textarea>
+					</div>
+				</div>
+				<div class="new-asnn-section">
+					<div class="new-asnn-prompt">
+						<h4> Attachments:&nbsp</h4>
+					</div>
+					<div class="new-asnn-input">
+						<p> No attachments yet</p>
+						<p><a href="#" class="thickbox">Add attachments</a></p>
+					</div>
+				</div>
+				<div class="new-asnn-input buttons">
+					<input type="submit" name='draft' value="Save as Draft" />
+					<input type="button" name='cancel' value="Cancel" onclick="parent.tb_remove()" />
+					<input type="submit" name='submission' value="Submission Handling &gt;&gt;" />
+				</div>
+			</form>
 		</div>
-		<div class="new-asnn-section">
-			<div class="new-asnn-prompt">
-				<h4>* Instructions:&nbsp</h4>
-			</div>
-			<div class="new-asnn-input">
-				<textarea id='instructions' name='instructions' cols="60" rows="15">FCKEditor goes here</textarea>
-			</div>
-		</div>
-		<div class="new-asnn-section">
-			<div class="new-asnn-prompt">
-				<h4> Attachments:&nbsp</h4>
-			</div>
-			<div class="new-asnn-input">
-				<p> No attachments yet</p>
-				<p><a href="#" class="thickbox">Add attachments</a></p>
-			</div>
-		</div>
-		<div class="new-asnn-input buttons">
-			<input type="submit" name='draft' value="Save as Draft" />
-			<input type="button" name='cancel' value="Cancel" onclick="parent.tb_remove()" />
-			<input type="submit" name='submission' value="Submission Handling &gt;&gt;" />
-		</div>
-	</form>
-</div>
+	</body>
+</html>

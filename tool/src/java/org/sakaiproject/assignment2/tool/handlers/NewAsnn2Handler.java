@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,12 +12,12 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.sakaiproject.assignment2.logic.AssignmentLogic;
+import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 
 public class NewAsnn2Handler extends Asnn2HandlerBase
 {
-	private AssignmentLogic assnLogic;
+	private ExternalGradebookLogic gradebookLogic;
 	private DateFormat dateFormatter;
 	private DateFormat timeFormatter;
 	private DateFormat dateTimeFormatter;
@@ -27,7 +28,7 @@ public class NewAsnn2Handler extends Asnn2HandlerBase
 	@Override
 	public void postInit(Map<String, String> config) throws ServletException
 	{
-		assnLogic = (AssignmentLogic) getService(AssignmentLogic.class);
+		gradebookLogic = (ExternalGradebookLogic) getService(ExternalGradebookLogic.class);
 		dateFormatter = new SimpleDateFormat(dateFormat);
 		timeFormatter = new SimpleDateFormat(timeFormat);
 		dateTimeFormatter = new SimpleDateFormat(dateTimeFormat);
@@ -38,7 +39,7 @@ public class NewAsnn2Handler extends Asnn2HandlerBase
 			throws ServletException, IOException
 	{
 		String id = request.getParameter("id");
-		Assignment2 asnn = assnLogic.getAssignmentById(Long.parseLong(id));
+		Assignment2 asnn = asnnLogic.getAssignmentById(Long.parseLong(id));
 		HashMap<String, Object> map = new HashMap<String, Object>();
 		map.put("submissionType", asnn.getSubmissionType());
 		if (asnn.getOpenTime() != null)
@@ -82,37 +83,65 @@ public class NewAsnn2Handler extends Asnn2HandlerBase
 			throws ServletException, IOException
 	{
 		String id = request.getParameter("id");
+		String draft = request.getParameter("draft");
+		String prev = request.getParameter("prev");
 		String submissionType = request.getParameter("submissionType");
+		boolean hasOpenDate = Boolean.parseBoolean(request.getParameter("openDateRadio"));
 		String openDate = request.getParameter("openDate") + " " + request.getParameter("openTime");
+		boolean hasDueDate = Boolean.parseBoolean(request.getParameter("dueDateRadio"));
 		String dueDate = request.getParameter("dueDate") + " " + request.getParameter("dueTime");
 		String acceptUntilDate = request.getParameter("acceptUntilDate") + " "
 				+ request.getParameter("acceptUntilTime");
 		String whoWillSubmit = request.getParameter("whoWillSubmit");
 		String grading = request.getParameter("grading");
+		String gradebookId = request.getParameter("gradebookId");
 
 		try
 		{
-			Assignment2 asnn = assnLogic.getAssignmentById(Long.parseLong(id));
+			Assignment2 asnn = asnnLogic.getAssignmentByIdWithGroupsAndAttachments(Long
+					.parseLong(id));
 			asnn.setSubmissionType(Integer.parseInt(submissionType));
-			asnn.setOpenTime(dateTimeFormatter.parse(openDate));
-			asnn.setDueDate(dateTimeFormatter.parse(dueDate));
-			asnn.setAcceptUntilTime(dateTimeFormatter.parse(acceptUntilDate));
+			if (hasOpenDate && openDate.trim().length() > 0)
+				asnn.setOpenTime(dateTimeFormatter.parse(openDate));
+			else
+				asnn.setOpenTime(new Date());
+			if (hasDueDate && dueDate.trim().length() > 0)
+				asnn.setDueDate(dateTimeFormatter.parse(dueDate));
+			else
+				asnn.setDueDate(null);
+			if (acceptUntilDate.trim().length() > 0)
+				asnn.setAcceptUntilTime(dateTimeFormatter.parse(acceptUntilDate));
+			else
+				asnn.setAcceptUntilTime(null);
 
-			String draft = request.getParameter("draft");
-			String step = request.getParameter("step");
-			String next = "/sakai-assingment2-tool/sdata/newassignment3.html?context="
-					+ asnn.getContextId() + "id=" + asnn.getId();
+			if ("add".equals(grading))
+			{
+				// create new gradebook entry and set id back to assignment
+				// gradebookLogic.createGbItemInGradebook(asnn.getContextId(), asnn.getTitle(), 100,
+				// , false, countedInCourseGrade)
+			}
+			else if ("link".equals(grading))
+			{
+				// link to submitted gradebook entry id
+				// asnn.setGradableObjectId(Long.parseLong(gradebookId));
+			}
+			else if ("none".equals(grading))
+			{
+				asnn.setGradableObjectId(null);
+			}
+			String next = "/sakai-assignment2-tool/content/templates/newassignment3.html?id="
+					+ asnn.getId();
 			if (draft != null)
 			{
 				asnn.setDraft(true);
-				next = "/sakai-assingment2-tool/content/templates/close.html";
+				next = "/sakai-assignment2-tool/content/templates/close.html";
 			}
-			else if ("prev".equals(step))
+			else if (prev != null)
 			{
-				next = "/sakai-assingment2-tool/sdata/newassignment1.html?context="
-						+ asnn.getContextId() + "id=" + asnn.getId();
+				next = "/sakai-assignment2-tool/content/templates/newassignment1.html?id="
+						+ asnn.getId();
 			}
-			assnLogic.saveAssignment(asnn);
+			asnnLogic.saveAssignment(asnn);
 
 			response.sendRedirect(next);
 		}

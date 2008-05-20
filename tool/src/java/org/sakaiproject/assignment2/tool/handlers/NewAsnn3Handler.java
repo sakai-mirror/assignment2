@@ -8,17 +8,13 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 
 public class NewAsnn3Handler extends Asnn2HandlerBase
 {
-	private AssignmentLogic assnLogic;
-
 	@Override
 	public void postInit(Map<String, String> config) throws ServletException
 	{
-		assnLogic = (AssignmentLogic) getService(AssignmentLogic.class);
 	}
 
 	@Override
@@ -26,12 +22,12 @@ public class NewAsnn3Handler extends Asnn2HandlerBase
 			throws ServletException, IOException
 	{
 		String id = request.getParameter("id");
-		Assignment2 assn = assnLogic.getAssignmentById(Long.parseLong(id));
+		Assignment2 asnn = asnnLogic.getAssignmentById(Long.parseLong(id));
 
 		HashMap<String, Object> map = new HashMap<String, Object>();
-		map.put("resubmissions", assn.getNumSubmissionsAllowed());
-		map.put("notifications", assn.getInstructions());
-		map.put("honorCode", assn.getInstructions());
+		map.put("resubmissions", asnn.getNumSubmissionsAllowed());
+		map.put("notifications", asnn.getNotificationType());
+		map.put("honorCode", asnn.isHonorPledge());
 
 		sendMap(request, response, map);
 	}
@@ -41,29 +37,34 @@ public class NewAsnn3Handler extends Asnn2HandlerBase
 			throws ServletException, IOException
 	{
 		String id = request.getParameter("id");
-		String step = request.getParameter("step");
+		String prev = request.getParameter("prev");
+		String post = request.getParameter("post");
 		String resubmissions = request.getParameter("resubmissions");
 		String notifications = request.getParameter("notifications");
-		String honorCode = request.getParameter("honorCode");
+		String honorCode = request.getParameter("honorcode");
 
-		Assignment2 assn = assnLogic.getAssignmentById(Long.parseLong(id));
-		assn.setNumSubmissionsAllowed(Integer.parseInt(resubmissions));
-		assn.setNotificationType(Integer.parseInt(notifications));
-		assn.setHonorPledge(Boolean.parseBoolean(honorCode));
+		Assignment2 asnn = asnnLogic.getAssignmentByIdWithGroupsAndAttachments(Long.parseLong(id));
+		if (resubmissions != null)
+			asnn.setNumSubmissionsAllowed(Integer.parseInt(resubmissions));
+		asnn.setNotificationType(Integer.parseInt(notifications));
+		asnn.setHonorPledge(Boolean.parseBoolean(honorCode));
 
 		String draft = request.getParameter("draft");
-		String next = "assnList";
+		String next = "/sakai-assignment2-tool/content/templates/close.html?refresh=true";
 		if (draft != null)
 		{
-			assn.setDraft(true);
-			next = "/sakai-assingment2-tool/content/templates/close.html";
+			asnn.setDraft(true);
 		}
-		else if ("prev".equals(step))
-			next = "/sakai-assingment2-tool/sdata/newassignment2.html?id=" + assn.getId();
 		// check if the 'post' button was clicked
-		else if (request.getParameter("post") != null)
-			assn.setDraft(false);
-		assnLogic.saveAssignment(assn);
+		else if (post != null)
+		{
+			asnn.setDraft(false);
+		}
+		else if (prev != null)
+		{
+			next = "/sakai-assignment2-tool/content/templates/newassignment2.html?id=" + asnn.getId();
+		}
+		asnnLogic.saveAssignment(asnn);
 
 		response.sendRedirect(next);
 	}

@@ -9,20 +9,16 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
-import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 
 public class NewAsnn1Handler extends Asnn2HandlerBase
 {
-	private AssignmentLogic assnLogic;
 	private ExternalLogic extLogic;
 
 	@Override
 	public void postInit(Map<String, String> config) throws ServletException
 	{
-		assnLogic = (AssignmentLogic) getService(AssignmentLogic.class);
 		extLogic = (ExternalLogic) getService(ExternalLogic.class);
 	}
 
@@ -33,7 +29,7 @@ public class NewAsnn1Handler extends Asnn2HandlerBase
 		String id = request.getParameter("id");
 		if (id != null)
 		{
-			Assignment2 assn = assnLogic.getAssignmentById(Long.parseLong(id));
+			Assignment2 assn = asnnLogic.getAssignmentById(Long.parseLong(id));
 			HashMap<String, Object> map = new HashMap<String, Object>();
 			map.put("title", assn.getTitle());
 			map.put("instructions", assn.getInstructions());
@@ -48,44 +44,52 @@ public class NewAsnn1Handler extends Asnn2HandlerBase
 	{
 		String id = request.getParameter("id");
 		String context = request.getParameter("context");
-		String title = request.getParameter("title");
-		String instructions = request.getParameter("instructions");
-		String draft = request.getParameter("draft");
-		String next = "/sakai-assignment2-tool/content/templates/newassignment2.html?context="
-				+ context + "&id=" + id;
-
-		Assignment2 asnn = new Assignment2();
-		// set the data that is submitted
-		if (id != null && id.length() > 0)
-			asnn.setId(Long.parseLong(id));
-		asnn.setContextId(context);
-		asnn.setTitle(title);
-		if (draft != null)
+		if (id == null || id.trim().length() == 0)
 		{
-			asnn.setDraft(true);
-			next = "/sakai-assignment2-tool/content/templates/close.html";
+			response.sendRedirect("/sakai-assignment2-tool/content/templates/newassignment2.html?context="
+				+ context);
 		}
 		else
 		{
-			asnn.setDraft(true);
+			String title = request.getParameter("title");
+			String instructions = request.getParameter("instructions");
+			String draft = request.getParameter("draft");
+			String next = "/sakai-assignment2-tool/content/templates/newassignment2.html?context="
+					+ context + "&id=" + id;
+	
+			Assignment2 asnn = null;
+			if (id != null && id.length() > 0)
+				asnn = asnnLogic.getAssignmentByIdWithGroupsAndAttachments(Long.parseLong(id));
+			else
+			{
+				asnn = new Assignment2();
+				asnn.setCreator(extLogic.getCurrentUserId());
+				asnn.setCreateTime(new Date());
+				// set the required fields to reasonable defaults
+				asnn.setOpenTime(new Date());
+				asnn.setUngraded(true);
+				asnn.setHonorPledge(false);
+				asnn.setHasAnnouncement(false);
+				asnn.setAddedToSchedule(false);
+				asnn.setRemoved(false);
+			}
+			// set the data that is submitted
+			asnn.setContextId(context);
+			asnn.setTitle(title);
+			if (draft != null)
+			{
+				asnn.setDraft(true);
+				next = "/sakai-assignment2-tool/content/templates/close.html";
+			}
+			else if (asnn.isDraft() == null)
+			{
+				asnn.setDraft(false);
+			}
+			asnn.setInstructions(instructions);
+	
+			asnnLogic.saveAssignment(asnn);
+	
+			response.sendRedirect(next);
 		}
-		asnn.setInstructions(instructions);
-
-		// set the required fields to reasonable defaults
-		asnn.setSortIndex(-1);
-		asnn.setOpenTime(new Date());
-		asnn.setUngraded(true);
-		asnn.setHonorPledge(false);
-		asnn.setSubmissionType(AssignmentConstants.SUBMIT_INLINE_ONLY);
-		asnn.setNotificationType(AssignmentConstants.NOTIFY_NONE);
-		asnn.setHasAnnouncement(false);
-		asnn.setAddedToSchedule(false);
-		asnn.setCreator(extLogic.getCurrentUserId());
-		asnn.setCreateTime(new Date());
-		asnn.setRemoved(false);
-
-		assnLogic.saveAssignment(asnn, context);
-
-		response.sendRedirect(next);
 	}
 }

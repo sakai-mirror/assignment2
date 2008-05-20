@@ -1,4 +1,38 @@
 var InstSubmView = {
+	addToggle : function(id, alreadyClosed)
+	{
+		var contentId = id + '-content';
+		var toggleId = id + '-toggle';
+		if (alreadyClosed) {
+				jQuery(toggleId).toggle(
+				function()
+				{
+					jQuery(this).text("–");
+					jQuery(contentId).slideDown('fast');
+				},
+				function()
+				{
+					jQuery(this).text('+');
+					jQuery(contentId).slideUp('fast');
+				});
+		} else {
+			jQuery(toggleId).toggle(
+				function()
+				{
+        	jQuery(this).text('+');
+        	jQuery(contentId).slideUp('fast');
+				},
+ 				function()
+				{
+					jQuery(this).text("–");
+					jQuery(contentId).slideDown('fast');
+				});
+			}
+	}
+};
+
+jQuery(document).ready(function()
+{
 	var dataUrl = '/sakai-assignment2-tool/sdata/subView?context=';
 	var qs = new Querystring();
 
@@ -38,47 +72,9 @@ var InstSubmView = {
 		template.update('output', testdata);
 	}	
 
-	addToggle : function(id, alreadyClosed)
-	{
-		var contentId = id + '-content';
-		var toggleId = id + '-toggle';
-		if (alreadyClosed) {
-				$(toggleId).toggle(
-				function()
-				{
-					$(this).text("–");
-					$(contentId).slideDown('fast');
-				},
-				function()
-				{
-					$(this).text('+');
-					$(contentId).slideUp('fast');
-				});
-		} else {
-			$(toggleId).toggle(
-				function()
-				{
-        	$(this).text('+');
-        	$(contentId).slideUp('fast');
-				},
- 				function()
-				{
-					$(this).text("–");
-					$(contentId).slideDown('fast');
-				});
-			}
-	},
-	init : function()
-	{
-		InstSubmView.addToggle('#assignment', true);
-		InstSubmView.addToggle('#drafts', true);
-		InstSubmView.addToggle('#submission', false);
-		InstSubmView.addToggle('#feedback', false);
-		InstSubmView.addToggle('#history', true);
-	}
-};
-
-$(document).ready(function()
-{
-	InstSubmView.init();
+	InstSubmView.addToggle('#assignment', true);
+	InstSubmView.addToggle('#drafts', true);
+	InstSubmView.addToggle('#submission', false);
+	InstSubmView.addToggle('#feedback', false);
+	InstSubmView.addToggle('#history', true);
 });

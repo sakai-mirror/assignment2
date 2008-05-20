@@ -1,60 +1,73 @@
-<div class="steps">
-	<a href="newassignment1.html?width=800&amp;height=600&amp;modal=true" class="thickbox"> Assignment Content</a> |
-	<a href="newassignment2.html?width=800&amp;height=600&amp;modal=true" class="thickbox"> Submission Handling</a> | Other Options
-</div>
-<div>
-	<form action="#">
-		<div class="new-asnn-section">
-			<div class="new-asnn-prompt">
-				<h4>Resubmissions:</h4>
-			</div>
-			<div class="new-asnn-input">
-				<ul>
-					<li><input type="radio" name="resubmissions" id="perpetual" checked="checked" />
-					<label for="dontSend">Submitters can resubmit as often as they like while the Assignment remains open</label></li>
-					<li><input type="radio" name="resubmissions" id="oneSubmit" />
-					<label for="oneSubmit">Submitters can submit once and only once</label></li>
-					<li><input type="radio" name="resubmissions" id="resubmitLimit" />
-					<label for="resubmitLimit">Submitters can resubmit a set number of times ...</label></li>
-				</ul>
-			</div>
+<html>
+	<head>
+		<link rel='stylesheet' type='text/css' href='../css/asnn_assignment_authoring.css' />
+		<script src='../js/jquery-1.2.3.min.js' type='text/javascript'></script>
+		<script src='../js/querystring-1.2.4.js' type='text/javascript'></script>
+		<script src='../js/newassignment3.js' type='text/javascript'></script>
+	</head>
+	<body>
+		<div class="steps">
+			<a href="newassignment1.html?width=800&amp;height=600&amp;modal=true" class="thickbox"> Assignment Content</a> |
+			<a href="newassignment2.html?width=800&amp;height=600&amp;modal=true" class="thickbox"> Submission Handling</a> |
+			Other Options
 		</div>
-		<div class="new-asnn-section">
-			<div class="new-asnn-prompt">
-				<h4>Notifications:</h4>
-			</div>
-			<div class="new-asnn-input">
-				<ul>
-					<li><input type="radio" name="notifications" id="dontSend" checked="checked" />
-					<label for="dontSend">Do not send me notification emails for any submissions</label></li>
-					<li><input type="radio" name="notifications" id="sendEach" />
-					<label for="sendEach">Send me a notification email for each submission</label></li>
-					<li><input type="radio" name="notifications" id="sendDigest" />
-					<label for="sendDigest">Send me one email per day summarizing notifications for submissions</label></li>
-				</ul>
-			</div>
+		<div>
+			<form action="/sakai-assignment2-tool/sdata/newAsnn3" method='post'>
+				<input type='hidden' name='context' id='context' />
+				<input type='hidden' name='id' id='id' />
+				<div class="new-asnn-section">
+					<div class="new-asnn-prompt">
+						<h4>Resubmissions:</h4>
+					</div>
+					<div class="new-asnn-input">
+						<ul>
+							<li><input type="radio" name="resubmissions" id="perpetual" checked="checked" value='-1'/>
+							<label for="dontSend">Submitters can resubmit as often as they like while the Assignment remains open</label></li>
+							<li><input type="radio" name="resubmissions" id="oneSubmit" value='1' />
+							<label for="oneSubmit">Submitters can submit once and only once</label></li>
+							<li><input type="radio" name="resubmissions" id="resubmitLimit" value='2' />
+							<label for="resubmitLimit">Submitters can resubmit a set number of times ...</label></li>
+						</ul>
+					</div>
+				</div>
+				<div class="new-asnn-section">
+					<div class="new-asnn-prompt">
+						<h4>Notifications:</h4>
+					</div>
+					<div class="new-asnn-input">
+						<ul>
+							<li><input type="radio" name="notifications" id="dontSend" checked="checked" value='0' />
+							<label for="dontSend">Do not send me notification emails for any submissions</label></li>
+							<li><input type="radio" name="notifications" id="sendEach" value='1' />
+							<label for="sendEach">Send me a notification email for each submission</label></li>
+							<li><input type="radio" name="notifications" id="sendDigest" value='2' />
+							<label for="sendDigest">Send me one email per day summarizing notifications for submissions</label></li>
+						</ul>
+					</div>
+				</div>
+				<div class="new-asnn-section">
+					<div class="new-asnn-prompt">
+						<h4>Honor Code:</h4>
+					</div>
+					<div class="new-asnn-input">
+						<ul>
+							<li><input type="radio" name="honorcode" id="noHonor" value='false' />
+							<label for="noHonor">Submitters will not be obliged to agree to Honor Code</label></li>
+							<li><input type="radio" name="honorcode" id="honor" value='true' checked="checked" />
+							<label for="honor">Submitters will be obliged to agree to Honor Code ...</label></li>
+						</ul>
+					</div>
+				</div>
+				<div class="new-asnn-section">
+					<div class="new-asnn-prompt"></div>
+					<div class="new-asnn-input buttons">
+						<input type="submit" name='prev' value="&lt;&lt; Submission Handling" />
+						<input type="submit" name='draft' value="Save as Draft" />
+						<input type="button" name='cancel' value="Cancel" onclick="parent.tb_remove()" />
+						<input type="submit" name='post' value="Post" />
+					</div>
+				</div>
+			</form>
 		</div>
-		<div class="new-asnn-section">
-			<div class="new-asnn-prompt">
-				<h4>Honor Code:</h4>
-			</div>
-			<div class="new-asnn-input">
-				<ul>
-					<li><input type="radio" name="honorcode" id="noHonor" />
-					<label for="noHonor">Submitters will not be obliged to agree to Honor Code</label></li>
-					<li><input type="radio" name="honorcode" id="honor" checked="checked" />
-					<label for="honor">Submitters will be obliged to agree to Honor Code ...</label></li>
-				</ul>
-			</div>
-		</div>
-		<div class="new-asnn-section">
-			<div class="new-asnn-prompt">/div>
-			<div class="new-asnn-input buttons">
-				<input type="submit" name='submission' value="&lt;&lt; Submission Handling" />
-				<input type="submit" name='draft' value="Save as Draft" />
-				<input type="button" name='cancel' value="Cancel" onclick="parent.tb_remove()" />
-				<input type="submit" name='post' value="Post" />
-			</div>
-		</div>
-	</form>
-</div>
+	</body>
+</html>

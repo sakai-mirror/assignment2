@@ -1,3 +1,8 @@
+function refresh()
+{
+	window.location.reload(true);
+}
+
 jQuery(document).ready(function()
 {
 	var qs = new Querystring();

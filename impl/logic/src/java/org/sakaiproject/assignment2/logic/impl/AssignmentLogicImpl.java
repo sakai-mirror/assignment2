@@ -158,12 +158,19 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 		
 		return assign;
 	}
-	
+
 	public void saveAssignment(Assignment2 assignment) {
-		String currentContextId = externalLogic.getCurrentContextId();
-		saveAssignment(assignment, currentContextId);
+		if (assignment.getContextId() == null)
+		{
+			String currentContextId = externalLogic.getCurrentContextId();
+			saveAssignment(assignment, currentContextId);
+		}
+		else
+		{
+			saveAssignment(assignment, assignment.getContextId());
+		}
 	}
-	
+
 	public void saveAssignment(Assignment2 assignment, String contextId) throws SecurityException, 
 		NoGradebookItemForGradedAssignmentException
 	{

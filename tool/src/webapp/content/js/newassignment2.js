@@ -3,34 +3,39 @@ jQuery(document).ready(function()
 	jQuery('#openDate').datepicker();
 	jQuery('#dueDate').datepicker();
 	jQuery('#acceptUntilDate').datepicker();
-	jQuery('#dueDate').hide();
-	jQuery('#dueTime').hide();
-	jQuery('#acceptUntilDate').hide();
-	jQuery('#acceptUntilTime').hide();
-	jQuery("input[@name='dueDateRadio']").change(function()
+	jQuery("input[@name='openDateRadio']").change(function()
 	{
-		if (jQuery("input[@name='dueDateRadio']:checked").val() == "1")
+//		alert(jQuery("input[@name='openDateRadio']:checked").val());
+		if (jQuery("input[@name='openDateRadio']:checked").val() == "true")
 		{
-			jQuery('#dueDate').show();
-			jQuery('#dueTime').show();
+			jQuery('#openD').show();
 		}
 		else
 		{
-			jQuery('#dueDate').hide();
-			jQuery('#dueTime').hide();
+			jQuery('#openD').hide();
 		}
 	});
-	jQuery("input[@name='acceptUntilRadio']").change(function()
+	jQuery("input[@name='dueDateRadio']").change(function()
 	{
-		if (jQuery("input[@name='acceptUntilRadio']:checked").val() == "1")
+//		alert(jQuery("input[@name='dueDateRadio']:checked").val());
+		if (jQuery("input[@name='dueDateRadio']:checked").val() == "true")
 		{
-			jQuery('#acceptUntilDate').show();
-			jQuery('#acceptUntilTime').show();
+			jQuery('#dueD').show();
 		}
 		else
 		{
-			jQuery('#acceptUntilDate').hide();
-			jQuery('#acceptUntilTime').hide();
+			jQuery('#dueD').hide();
+		}
+	});
+	jQuery("input[@name='acceptUntilDateRadio']").change(function()
+	{
+		if (jQuery("input[@name='acceptUntilDateRadio']:checked").val() == "true")
+		{
+			jQuery('#acceptD').show();
+		}
+		else
+		{
+			jQuery('#acceptD').hide();
 		}
 	});
 
@@ -45,15 +50,29 @@ jQuery(document).ready(function()
 	}
 	else
 	{
-		var url = 'sakai-assignment2-tool/sdata/newAsnn2?id=' + id;
+		jQuery('#id').val(id);
+		jQuery('#context').val(context);
+		var url = '/sakai-assignment2-tool/sdata/newAsnn2?id=' + id;
 		jQuery.getJSON(url, function(data)
 		{
-			jQuery('#openDate').val(data['openDate']);
-			jQuery('#openTime').val(data['openTime']);
-			jQuery('#dueDate').val(data['dueDate']);
-			jQuery('#dueTime').val(data['dueTime']);
-			jQuery('#acceptUntilDate').val(data['acceptUntilDate']);
-			jQuery('#acceptUntilTime').val(data['acceptUntilTime']);
+			if (data['openDate'])
+			{
+				jQuery('#openDate').val(data['openDate']);
+				jQuery('#openTime').val(data['openTime']);
+				jQuery("input[@name='openDateRadio']").val('true').change();
+			}
+			if (data['dueDate'])
+			{
+				jQuery('#dueDate').val(data['dueDate']);
+				jQuery('#dueTime').val(data['dueTime']);
+				jQuery("input[@name='dueDateRadio']").val('true').change();
+			}
+			if (data['acceptUntilDate'])
+			{
+				jQuery('#acceptUntilDate').val(data['acceptUntilDate']);
+				jQuery('#acceptUntilTime').val(data['acceptUntilTime']);
+				jQuery("input[@name='acceptUntilDateRadio']").val('true').change();
+			}
 			jQuery('#whoWillSubmit').val(data['whoWillSubmit']);
 			jQuery('#grading').val(data['grading']);
 		});
