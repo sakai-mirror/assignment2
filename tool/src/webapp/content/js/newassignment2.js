@@ -59,19 +59,22 @@ jQuery(document).ready(function()
 			{
 				jQuery('#openDate').val(data['openDate']);
 				jQuery('#openTime').val(data['openTime']);
-				jQuery("input[@name='openDateRadio']").val('true').change();
+				jQuery('#openLater').attr('checked', 'checked');
+				jQuery("input[@name='openDateRadio']").change();
 			}
 			if (data['dueDate'])
 			{
 				jQuery('#dueDate').val(data['dueDate']);
 				jQuery('#dueTime').val(data['dueTime']);
-				jQuery("input[@name='dueDateRadio']").val('true').change();
+				jQuery('#dueDateYes').attr('checked', 'checked');
+				jQuery("input[@name='dueDateRadio']").change();
 			}
 			if (data['acceptUntilDate'])
 			{
 				jQuery('#acceptUntilDate').val(data['acceptUntilDate']);
 				jQuery('#acceptUntilTime').val(data['acceptUntilTime']);
-				jQuery("input[@name='acceptUntilDateRadio']").val('true').change();
+				jQuery('#acceptUntilDateNo').attr('checked', 'checked');
+				jQuery("input[@name='acceptUntilDateRadio']").change();
 			}
 			jQuery('#whoWillSubmit').val(data['whoWillSubmit']);
 			jQuery('#grading').val(data['grading']);
