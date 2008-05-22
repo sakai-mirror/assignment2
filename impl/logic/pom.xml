@@ -273,6 +273,12 @@
       <version>${sakai.version}</version>
       <scope>provided</scope>
     </dependency>
-    
+		
+		<!-- for upload/download all -->
+		<dependency>
+			<groupId>commons-vfs</groupId>
+			<artifactId>commons-vfs</artifactId>
+			<version>1.0</version>
+		</dependency>
   </dependencies>
 </project>

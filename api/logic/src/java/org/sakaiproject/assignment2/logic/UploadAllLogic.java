@@ -1,6 +1,6 @@
 package org.sakaiproject.assignment2.logic;
 
-import java.util.zip.ZipFile;
+import java.io.File;
 
 import org.sakaiproject.assignment2.model.UploadAllOptions;
 
@@ -9,11 +9,15 @@ public interface UploadAllLogic
 	/**
 	 * Process uploaded zip file.
 	 * 
-	 * @param assignmentId
 	 * @param options
-	 * @param fileFromUpload
+	 * @param file
 	 */
-	void uploadAll(UploadAllOptions options, ZipFile zipFile)
+	void uploadAll(UploadAllOptions options, File file)
 			throws UploadException;
 
+	/**
+	 * Process uploaded csv file.
+	 */
+	void uploadCSV(UploadAllOptions options, File file)
+			throws UploadException;
 }

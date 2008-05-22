@@ -71,7 +71,6 @@ public class UploadAllProducer implements ViewComponentProducer, ViewParamsRepor
 		// Render checkboxes for uploadable elements
 		UIBoundBoolean.make(upload_form, "gradeFile", uploadOptions + ".gradeFile");
 		UIBoundBoolean.make(upload_form, "feedbackText", uploadOptions + ".feedbackText");
-		UIBoundBoolean.make(upload_form, "comments", uploadOptions + ".comments");
 		UIBoundBoolean.make(upload_form, "feedbackAttachments", uploadOptions
 				+ ".feedbackAttachments");
 
