@@ -243,7 +243,7 @@ public class ZipExportLogicImpl implements ZipExportLogic
 								// the feedback.txt file
 								ZipEntry fbtextEntry = new ZipEntry(root + submittersName + "feedback.txt");
 								out.putNextEntry(fbtextEntry);
-								byte[] fbb = FormattedText.encodeUnicode(sv.getAnnotatedText()).getBytes();
+								byte[] fbb = FormattedText.encodeUnicode(sv.getFeedbackNotes()).getBytes();
 								out.write(fbb);
 								fbtextEntry.setSize(fbb.length);
 								out.closeEntry();

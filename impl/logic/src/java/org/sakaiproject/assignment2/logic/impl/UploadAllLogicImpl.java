@@ -160,7 +160,7 @@ public class UploadAllLogicImpl implements UploadAllLogic
 					feedback.getFeedbackAttachSet();
 
 					if (options.feedbackText)
-						feedback.setAnnotatedText(w.feedbackText);
+						feedback.setFeedbackNotes(w.feedbackText);
 					if (options.feedbackAttachments)
 						feedback.setFeedbackAttachSet(w.feedbackAttachments);
 					feedback.setLastFeedbackSubmittedBy(userId);
