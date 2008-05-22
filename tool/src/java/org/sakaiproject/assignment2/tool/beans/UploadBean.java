@@ -66,30 +66,8 @@ public class UploadBean
 
 	public String processUpload()
 	{
-		// make sure a file was uploaded
-		// if (file == null)
-		// messages.addMessage(new TargettedMessage("uploadall.alert.zipFile"));
-
-		// check that the uploaded file isn't over the limit
-		// String max_file_size_mb = scs.getString("content.upload.max", "1");
-		// int max_bytes = 1024 * 1024;
-		// try
-		// {
-		// max_bytes = Integer.parseInt(max_file_size_mb) * 1024 * 1024;
-		// }
-		// catch (NumberFormatException e)
-		// {
-		// // if unable to parse an integer from the value
-		// // in the properties file, use 1 MB as a default
-		// max_file_size_mb = "1";
-		// max_bytes = 1024 * 1024;
-		// }
-		// if(zipFile.length >= max_bytes)
-		// {
-		// addAlert(state, rb.getString("uploadall.size") + " " + max_file_size_mb + "MB " +
-		// rb.getString("uploadall.exceeded"));
-		// }
 		MultipartFile upFile = null;
+		boolean isZip = false;
 		if (uploads.isEmpty())
 			messages.addMessage(new TargettedMessage("assignment2.uploadall.alert.zipFile"));
 		else
@@ -99,12 +77,16 @@ public class UploadBean
 			{
 				messages.addMessage(new TargettedMessage("assignment2.uploadall.alert.zipFile"));
 			}
+			else if ("application/zip".equals(upFile.getContentType()))
+			{
+				isZip = true;
+			}
 		}
 
 		// check that at least 1 option has been selected
-		if (uploadOptions == null
+		if ((uploadOptions == null
 				|| (!uploadOptions.feedbackText && !uploadOptions.gradeFile
-						&& !uploadOptions.comments && !uploadOptions.feedbackAttachments))
+						&& !uploadOptions.feedbackAttachments)) && isZip)
 		{
 			messages.addMessage(new TargettedMessage("assignment2.uploadall.alert.choose.element"));
 		}
@@ -112,10 +94,19 @@ public class UploadBean
 		{
 			try
 			{
-				File f = File.createTempFile(upFile.getName(), ".zip");
-				upFile.transferTo(f);
-				ZipFile zipFile = new ZipFile(f);
-				updownLogic.uploadAll(uploadOptions, zipFile);
+				File f = null;
+				if (isZip)
+				{
+					f = File.createTempFile(upFile.getName(), ".zip");
+					upFile.transferTo(f);
+					updownLogic.uploadAll(uploadOptions, f);
+				}
+				else
+				{
+					f = File.createTempFile(upFile.getName(), ".csv");
+					upFile.transferTo(f);
+					updownLogic.uploadCSV(uploadOptions, f);
+				}
 			}
 			catch (IOException ioe)
 			{
@@ -128,6 +119,7 @@ public class UploadBean
 						new Object[] { ue.getMessage() }));
 			}
 		}
+
 		return ViewSubmissionsProducer.VIEW_ID;
 	}
 }

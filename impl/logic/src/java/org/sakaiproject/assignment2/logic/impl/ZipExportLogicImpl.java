@@ -186,8 +186,8 @@ public class ZipExportLogicImpl implements ZipExportLogic
 							gradeComment = gradeInfo.getGradebookComment();
 						}
 					}
-					gradesBuilder.append(name).append(",").append(displayId).append(",")
-							.append(fullName).append(",").append(grade)
+					gradesBuilder.append(userId).append(",").append(name).append(",").append(displayId).append(",")
+							.append(fullName).append(",").append(grade).append(",").append(gradeComment)
 							.append("\n");
 
 					if (StringUtil.trimToNull(submittersString) != null)
@@ -222,11 +222,12 @@ public class ZipExportLogicImpl implements ZipExportLogic
 								ZipEntry textEntry = new ZipEntry(root + submittersName
 										+ "timestamp.txt");
 								out.putNextEntry(textEntry);
-								byte[] b = (sv.getSubmittedTime().toString()).getBytes();
+								byte[] b = (sv.getSubmittedTime().toString()+"\n"+userId).getBytes();
 								out.write(b);
 								textEntry.setSize(b.length);
 								out.closeEntry();
 
+								/* Comments go in the csv now, and this was reading the wrong thing anyway
 								// the comments.txt file to show instructor's
 								// comments
 								ZipEntry ctextEntry = new ZipEntry(root + submittersName
@@ -237,7 +238,16 @@ public class ZipExportLogicImpl implements ZipExportLogic
 								out.write(cb);
 								ctextEntry.setSize(cb.length);
 								out.closeEntry();
-
+								*/
+								
+								// the feedback.txt file
+								ZipEntry fbtextEntry = new ZipEntry(root + submittersName + "feedback.txt");
+								out.putNextEntry(fbtextEntry);
+								byte[] fbb = FormattedText.encodeUnicode(sv.getFeedbackNotes()).getBytes();
+								out.write(fbb);
+								fbtextEntry.setSize(fbb.length);
+								out.closeEntry();
+								
 								// create an attachment folder for the feedback
 								// attachments
 								String feedbackSubAttachmentFolder = root

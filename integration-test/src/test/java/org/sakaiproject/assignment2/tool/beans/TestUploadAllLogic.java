@@ -91,7 +91,6 @@ public class TestUploadAllLogic extends SakaiTransactionalTestBase
 		zipExporter.getSubmissionsZip(zos, assignmentId);
 		zos.flush();
 		zos.close();
-		ZipFile zipFile = new ZipFile(f);
-		updownLogic.uploadAll(options, zipFile);
+		updownLogic.uploadAll(options, f);
 	}
 }

@@ -267,6 +267,7 @@
 		<property name="response" ref="httpServletResponseProxy" />
 		<property name="zipExporter" ref="org.sakaiproject.assignment2.logic.ZipExportLogic" />
 		<property name="viewparams" ref="viewParameters" />
+		<property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
 	</bean>
 
 	<bean id="uploadBean" class="org.sakaiproject.assignment2.tool.beans.UploadBean">

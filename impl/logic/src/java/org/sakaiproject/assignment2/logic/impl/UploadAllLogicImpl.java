@@ -1,20 +1,24 @@
 package org.sakaiproject.assignment2.logic.impl;
 
-import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Set;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.commons.vfs.FileContent;
+import org.apache.commons.vfs.FileDepthSelector;
+import org.apache.commons.vfs.FileObject;
+import org.apache.commons.vfs.FileSystemException;
+import org.apache.commons.vfs.FileSystemManager;
+import org.apache.commons.vfs.FileType;
+import org.apache.commons.vfs.VFS;
 import org.sakaiproject.assignment2.logic.AssignmentBundleLogic;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
@@ -95,55 +99,52 @@ public class UploadAllLogicImpl implements UploadAllLogic
 	 *      org.sakaiproject.assignment2.model.UploadAllOptions, java.util.zip.ZipFile,
 	 *      java.lang.String, java.lang.String)
 	 */
-	public void uploadAll(UploadAllOptions options, ZipFile zipFile) throws UploadException
+	public void uploadAll(UploadAllOptions options, File file) throws UploadException
 	{
 		if (options == null)
 			throw new IllegalArgumentException("options cannot be null.");
-
+		
+		
+		
 		// construct the hashtable for all submission objects
 		Hashtable<String, UploadGradeWrapper> submisTable = new Hashtable<String, UploadGradeWrapper>();
 		Assignment2 assn = assnLogic.getAssignmentById(options.assignmentId);
 
-		if (zipFile == null)
-			throw new IllegalArgumentException("zipFile cannot be null.");
+		if (file == null)
+			throw new IllegalArgumentException("file cannot be null.");
 
-		Enumeration<? extends ZipEntry> entries = zipFile.entries();
-		String feedbackAttachmentFolder = bundle
-				.getString("assignment2.download.feedback.attachment");
-		while (entries.hasMoreElements())
+		try
 		{
-			ZipEntry entry = entries.nextElement();
-			String entryName = entry.getName();
-			if (!entry.isDirectory())
+			FileSystemManager fsManager = VFS.getManager();
+			FileObject zipFile = fsManager.toFileObject(file);
+			zipFile = fsManager.createFileSystem("zip", zipFile);
+			
+			zipFile = zipFile.resolveFile(assn.getTitle());
+			if (options.gradeFile)
 			{
-				try
+				processGrades(submisTable, assn, zipFile.resolveFile("grades.csv").getContent());
+			}
+			for (FileObject dir : zipFile.findFiles(new FileDepthSelector(1,1)))
+			{
+				if (dir.getType().equals(FileType.FOLDER))
 				{
-					InputStream is = zipFile.getInputStream(entry);
-					if (entryName.endsWith("grades.csv"))
-					{
-						if (options.gradeFile)
-						{
-							processGrades(submisTable, assn, StringUtil
-									.trimToZero(readIntoString(is)));
-						}
-					}
-					else
-					{
-						processEntry(options, feedbackAttachmentFolder, submisTable, is, entryName);
-					}
-				}
-				catch (Exception e)
-				{
-					log.warn(e.getMessage(), e);
-					// catch everything from these calls and wrap with generic UploadException
-					throw new UploadException(e.getMessage(), e);
+					processFolder(dir, submisTable, options);
 				}
 			}
+			saveGrades(options, submisTable, true);
+		} catch (FileSystemException e) {
+			throw new UploadException(e.getMessage(), e);
 		}
+	}
 
+	private void saveGrades(UploadAllOptions options,
+			Hashtable<String, UploadGradeWrapper> submisTable, boolean isZip)
+			throws UploadException
+	{
 		String userId = externalLogic.getCurrentUserId();
-		String format = "yyyy-MM-dd hh:mm:ss.S";
+		String format = "yyyy-MM-dd HH:mm:ss.S";
 		SimpleDateFormat dateFormat = new SimpleDateFormat(format);
+		Assignment2 assn = assnLogic.getAssignmentById(options.assignmentId);
 		for (Map.Entry<String, UploadGradeWrapper> entry : submisTable.entrySet())
 		{
 			String userEid = entry.getKey();
@@ -152,21 +153,25 @@ public class UploadAllLogicImpl implements UploadAllLogic
 			{
 				// save the feedback changes
 				// date format is derived from output in ZipExporter which uses Date.toString()
-				FeedbackVersion feedback = assnSubLogic.getFeedbackByUserIdAndSubmittedTime(
-						userEid, dateFormat.parse(w.timeStamp));
-				feedback.getFeedbackAttachSet();
-				if (options.comments)
-					feedback.setFeedbackNotes(w.comment);
-				if (options.feedbackText)
-					feedback.setAnnotatedText(w.feedbackText);
-				if (options.feedbackAttachments)
-					feedback.setFeedbackAttachSet(w.feedbackAttachments);
-				feedback.setLastFeedbackSubmittedBy(userId);
-				assnSubLogic.updateFeedbackForVersion(feedback);
+				if (isZip && (options.feedbackText || options.feedbackAttachments))
+				{
+					FeedbackVersion feedback = assnSubLogic.getFeedbackByUserIdAndSubmittedTime(
+							userEid, dateFormat.parse(w.timeStamp));
+					feedback.getFeedbackAttachSet();
 
+					if (options.feedbackText)
+						feedback.setAnnotatedText(w.feedbackText);
+					if (options.feedbackAttachments)
+						feedback.setFeedbackAttachSet(w.feedbackAttachments);
+					feedback.setLastFeedbackSubmittedBy(userId);
+					assnSubLogic.updateFeedbackForVersion(feedback);
+				}
 				// save the grade
-				gradebookLogic.saveGradeAndCommentForStudent(assn.getContextId(), assn
-						.getGradableObjectId(), userEid, w.grade, null);
+				if (options.gradeFile || ! isZip)
+				{
+					gradebookLogic.saveGradeAndCommentForStudent(assn.getContextId(), assn
+						.getGradableObjectId(), userEid, w.grade, w.comment);
+				}
 			}
 			catch (ParseException pe)
 			{
@@ -177,105 +182,87 @@ public class UploadAllLogicImpl implements UploadAllLogic
 		}
 	}
 
-	private void processEntry(UploadAllOptions options, String feedbackAttachmentFolder,
-			Hashtable<String, UploadGradeWrapper> submisTable, InputStream zin, String entryName)
-			throws IOException, InconsistentException, IdUsedException, IdInvalidException,
-			ServerOverloadException, PermissionException, OverQuotaException
+	private void processFolder(FileObject folder, Hashtable<String, UploadGradeWrapper> submisTable, UploadAllOptions options) throws UploadException
 	{
-		String userEid = getUserEid(entryName);
-		UploadGradeWrapper r = submisTable.get(userEid);
-		if (r == null)
-			r = new UploadGradeWrapper();
-
-		if (options.comments && entryName.contains("comments"))
+		String feedbackAttachmentFolder = bundle
+			.getString("assignment2.download.feedback.attachment");
+		try
 		{
-			// read the comments file
-			String comment = getBodyTextFromZipHtml(zin);
-			if (comment != null)
-				r.comment = comment;
-		}
-		if (options.feedbackText && entryName.contains("feedbackText"))
-		{
-			// upload the feedback text
-			String text = getBodyTextFromZipHtml(zin);
-			if (text != null)
-				r.feedbackText = text;
-		}
-		if (options.feedbackAttachments)
-		{
-			// upload the feedback attachment
-			String submissionFolder = "/" + feedbackAttachmentFolder + "/";
-			if (entryName.contains(submissionFolder))
+			//parse the timestamp file
+			String timestamp = readIntoString(folder.resolveFile("timestamp.txt").getContent());
+			String userEid = splitLine(timestamp)[1];
+			
+			//now we're ready to parse the rest of the folder
+			UploadGradeWrapper r = submisTable.get(userEid);
+			if (r == null)
+				r = new UploadGradeWrapper();
+			if (options.feedbackText)
 			{
-				// clear the submission attachment first
-				r.feedbackAttachments = new HashSet<FeedbackAttachment>();
-				uploadZipAttachments(submisTable, readIntoBytes(zin), entryName, userEid);
+				r.feedbackText = getBodyText(folder.resolveFile("feedback.txt").getContent());
 			}
+			if (options.feedbackAttachments)
+			{
+				FileObject feedbackFolder = folder.resolveFile(feedbackAttachmentFolder);
+				uploadZipAttachments(feedbackFolder, submisTable, userEid);
+			}
+			r.timeStamp = splitLine(timestamp)[0];
+			submisTable.put(userEid, r);
+		} catch (FileSystemException e) {
+			throw new UploadException(e.getMessage(), e);
+		} catch (IOException e) {
+			throw new UploadException(e.getMessage(), e);
 		}
-
-		// if this is a timestamp file
-		if (entryName.contains("timestamp"))
-		{
-			byte[] timeStamp = readIntoBytes(zin);
-			r.timeStamp = new String(timeStamp);
-		}
-		submisTable.put(userEid, r);
-	}
-
-	private String getUserEid(String entryName)
-	{
-		// get user eid part
-		String userEid = "";
-		if (entryName.contains("/"))
-		{
-			// remove the part of zip name
-			userEid = entryName.substring(entryName.indexOf("/") + 1);
-			// get out the user name part
-			if (userEid.contains("/"))
-				userEid = userEid.substring(0, userEid.indexOf("/"));
-
-			// get the eid part
-			if (userEid.contains("("))
-				userEid = userEid.substring(userEid.indexOf("(") + 1, userEid.indexOf(")"));
-
-			userEid = StringUtil.trimToNull(userEid);
-		}
-		return userEid;
 	}
 
 	private void processGrades(Hashtable<String, UploadGradeWrapper> submisTable, Assignment2 assn,
-			String result) throws UploadException
+			FileContent fc) throws UploadException
 	{
 		// read grades.cvs from zip
-		String[] lines = splitLine(result);
-		// skip the first 3 lines because they are headers
-		// - line 1: assignment title, type of grading
-		// - line 2: blank line
-		// - line 3: column header
-		// -- [display id, user id, last name, first name, grade]
-		// define position constants
-		final int DISP_ID = 0;
-		final int GRADE = 4;
-		for (int i = 3; i < lines.length; i++)
+		try
 		{
-			String[] items = lines[i].split(",");
-			if (items.length > 4)
+			String[] lines = splitLine(readIntoString(fc));
+			// skip the first 3 lines because they are headers
+			// - line 1: assignment title, type of grading
+			// - line 2: blank line
+			// - line 3: column header
+			// -- [display id, user id, last name, first name, grade]
+			// define position constants
+			final int EID = 0;
+			final int DISP_ID = 2;
+			final int GRADE = 5;
+			final int COMMENT = 6;
+			for (int i = 3; i < lines.length; i++)
 			{
-				// has grade information
-				String displayId = items[DISP_ID];
-				UploadGradeWrapper w = (UploadGradeWrapper) submisTable.get(displayId);
-				if (w == null)
-					w = new UploadGradeWrapper();
-				String itemGrade = items[GRADE];
-				if (gradebookLogic.isGradeValid(assn.getContextId(), itemGrade))
-					w.grade = itemGrade;
-				else
+				String[] items = lines[i].split(",");
+				if (items.length > 6)
 				{
-					String msg = bundle.getFormattedMessage("assignment2.uploadall.invalid.grade",
-							new Object[] { assn.getId(), itemGrade });
-					throw new UploadException(msg);
+					// has grade information
+					String eid = items[EID];
+					if (externalLogic.getUser(eid).getDisplayId().equals(items[DISP_ID]))
+					{
+						UploadGradeWrapper w = (UploadGradeWrapper) submisTable.get(eid);
+						if (w == null)
+							w = new UploadGradeWrapper();
+						String itemGrade = items[GRADE];
+						if (gradebookLogic.isGradeValid(assn.getContextId(), itemGrade))
+							w.grade = itemGrade;
+						else
+						{
+							String msg = bundle.getFormattedMessage("assignment2.uploadall.invalid.grade",
+								new Object[] { assn.getId(), itemGrade });
+							throw new UploadException(msg);
+						}
+						w.comment = items[COMMENT];
+						submisTable.put(eid, w);
+					} else {
+						throw new UploadException("DisplayId doesn't belong to this EID, refusing to update grade.");
+					}
 				}
 			}
+		} catch (FileSystemException e) {
+			throw new UploadException(e.getMessage(), e);
+		} catch (IOException e) {
+			throw new UploadException(e.getMessage(), e);
 		}
 	}
 
@@ -287,6 +274,8 @@ public class UploadAllLogicImpl implements UploadAllLogic
 	 */
 	private String[] splitLine(String result)
 	{
+		if (result == null)
+			return null;
 		String[] lines = null;
 		if (result.contains("\r\n"))
 			lines = result.split("\r\n");
@@ -297,36 +286,22 @@ public class UploadAllLogicImpl implements UploadAllLogic
 		return lines;
 	}
 
-	private byte[] readIntoBytes(InputStream zin) throws IOException
+	private String readIntoString(FileContent fc) throws IOException
 	{
-		byte[] buffer = new byte[4096];
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
-
-		int len = -1;
-		while ((len = zin.read(buffer)) > 0)
-		{
-			out.write(buffer, 0, len);
-		}
-
-		byte[] data = out.toByteArray();
-		return data;
-	}
-
-	private String readIntoString(InputStream zin) throws IOException
-	{
+		InputStream in = fc.getInputStream();
 		StringBuilder buffer = new StringBuilder();
 		int size = 2048;
 		byte[] data = new byte[size];
 
-		while ((size = zin.read(data, 0, data.length)) > 0)
+		while ((size = in.read(data, 0, data.length)) > 0)
 			buffer.append(new String(data, 0, size));
 
 		return buffer.toString();
 	}
 
-	private String getBodyTextFromZipHtml(InputStream zin) throws IOException
+	private String getBodyText(FileContent fc) throws IOException
 	{
-		String rv = StringUtil.trimToNull(readIntoString(zin));
+		String rv = StringUtil.trimToNull(readIntoString(fc));
 		if (rv != null)
 		{
 			int start = rv.indexOf("<body>");
@@ -344,46 +319,50 @@ public class UploadAllLogicImpl implements UploadAllLogic
 	 * This is to get the submission or feedback attachment from the upload zip file into the
 	 * submission object
 	 * 
-	 * @param submissionTable
-	 * @param content
+	 * @param submisTable
 	 * @param entryName
 	 * @param userEid
-	 */
-	private void uploadZipAttachments(Hashtable<String, UploadGradeWrapper> submissionTable,
-			byte[] content, String entryName, String userEid) throws InconsistentException,
-			IdUsedException, IdInvalidException, IOException, ServerOverloadException,
-			PermissionException, OverQuotaException
+	 */	
+	private void uploadZipAttachments(FileObject feedbackFolder, Hashtable<String, UploadGradeWrapper> submisTable, String userEid)throws UploadException
 	{
-		// upload all the files as instructor attachments to the submission for grading purpose
-		String fName = entryName.substring(entryName.lastIndexOf("/") + 1, entryName.length());
-		// get file extension for detecting content type
-		// ignore those hidden files
-		String extension = "";
-		if (!fName.contains(".") || (fName.contains(".") && fName.indexOf(".") != 0))
+		try
 		{
-			// add the file as attachment
-			ResourceProperties properties = chs.newResourceProperties();
-			properties.addProperty(ResourceProperties.PROP_DISPLAY_NAME, fName);
-
-			String[] parts = fName.split("\\.");
-			if (parts.length > 1)
-				extension = parts[parts.length - 1];
-
-			String contentType = ctis.getContentType(extension);
-			ContentResourceEdit attachment = chs.addAttachmentResource(fName);
-			attachment.setContent(content);
-			attachment.setContentType(contentType);
-			attachment.getPropertiesEdit().addAll(properties);
-			chs.commitResource(attachment);
-
-			UploadGradeWrapper r = (UploadGradeWrapper) submissionTable.get(userEid);
-			FeedbackAttachment fa = new FeedbackAttachment();
-			fa.setAttachmentReference(attachment.getReference());
-			r.feedbackAttachments.add(fa);
-			submissionTable.put(userEid, r);
+			for (FileObject file : feedbackFolder.getChildren())
+			{
+				String fname = file.getName().getBaseName();
+				ResourceProperties properties = chs.newResourceProperties();
+				properties.addProperty(ResourceProperties.PROP_DISPLAY_NAME, fname);
+				String extension = file.getName().getExtension();
+				String contentType = ctis.getContentType(extension);
+				ContentResourceEdit attachment = chs.addAttachmentResource(fname);
+				attachment.setContent(file.getContent().getInputStream());
+				attachment.setContentType(contentType);
+				attachment.getPropertiesEdit().addAll(properties);
+				chs.commitResource(attachment);
+				
+				UploadGradeWrapper r = (UploadGradeWrapper) submisTable.get(userEid);
+				FeedbackAttachment fa = new FeedbackAttachment();
+				fa.setAttachmentReference(attachment.getReference());
+				r.feedbackAttachments.add(fa);
+				submisTable.put(userEid, r);
+			}
+		} catch (FileSystemException e) {
+			throw new UploadException(e.getMessage(), e);
+		} catch (PermissionException e) {
+			throw new UploadException(e.getMessage(), e);
+		} catch (InconsistentException e) {
+			throw new UploadException(e.getMessage(), e);
+		} catch (ServerOverloadException e) {
+			throw new UploadException(e.getMessage(), e);
+		} catch (IdInvalidException e) {
+			throw new UploadException(e.getMessage(), e);
+		} catch (IdUsedException e) {
+			throw new UploadException(e.getMessage(), e);
+		} catch (OverQuotaException e) {
+			throw new UploadException(e.getMessage(), e);
 		}
 	}
-
+	
 	/**
 	 * the UploadGradeWrapper class to be used for the "upload all" feature
 	 */
@@ -410,5 +389,36 @@ public class UploadAllLogicImpl implements UploadAllLogic
 			this.feedbackText = feedbackText;
 			this.timeStamp = timeStamp;
 		}
+	}
+
+	public void uploadCSV(UploadAllOptions options, File file)throws UploadException
+	{
+		if (options == null)
+		{
+			throw new IllegalArgumentException("options cannot be null.");
+		}
+
+		// construct the hashtable for all submission objects
+		Hashtable<String, UploadGradeWrapper> submisTable = new Hashtable<String, UploadGradeWrapper>();
+		Assignment2 assn = assnLogic.getAssignmentById(options.assignmentId);
+
+		if (file == null)
+		{
+			throw new IllegalArgumentException("file cannot be null.");
+		}
+
+		try
+		{
+			FileSystemManager fsManager = VFS.getManager();
+			FileObject f = fsManager.toFileObject(file);
+			processGrades(submisTable, assn, f.getContent());
+		}
+		catch (Exception e)
+		{
+			log.warn(e.getMessage(), e);
+			// catch everything from these calls and wrap with generic UploadException
+			throw new UploadException(e.getMessage(), e);
+		}
+		saveGrades(options, submisTable, false);
 	}
 }

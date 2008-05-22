@@ -23,16 +23,20 @@ package org.sakaiproject.assignment2.tool.handlerhooks;
 
 import java.io.IOException;
 import java.io.OutputStream;
+
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.ZipExportLogic;
+import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.tool.params.ZipViewParams;
 import org.sakaiproject.exception.PermissionException;
 
 import uk.org.ponder.rsf.processor.HandlerHook;
 import uk.org.ponder.rsf.viewstate.ViewParameters;
+import uk.org.ponder.stringutil.URLEncoder;
 import uk.org.ponder.util.UniversalRuntimeException;
 
 /**
@@ -46,6 +50,7 @@ public class ZipHandlerHook implements HandlerHook
 	private HttpServletResponse response;
 	private ZipExportLogic zipExporter;
 	private ViewParameters viewparams;
+	private AssignmentLogic assignmentLogic;
 
 	public void setResponse(HttpServletResponse response)
 	{
@@ -60,6 +65,11 @@ public class ZipHandlerHook implements HandlerHook
 	public void setViewparams(ViewParameters viewparams)
 	{
 		this.viewparams = viewparams;
+	}
+
+	public void setAssignmentLogic (AssignmentLogic assignmentLogic)
+	{
+		this.assignmentLogic = assignmentLogic;
 	}
 
 	public boolean handle()
@@ -85,7 +95,9 @@ public class ZipHandlerHook implements HandlerHook
 					"Unable to get response stream for Download All Zip");
 		}
 
-		response.setHeader("Content-disposition", "inline; filename=bulk_download.zip");
+		Assignment2 assignment = assignmentLogic.getAssignmentById(zvp.assignmentId);
+		String title = URLEncoder.encode(assignment.getTitle());
+		response.setHeader("Content-disposition", "inline; filename="+ title +".zip");
 		response.setContentType("application/zip");
 
 		try
