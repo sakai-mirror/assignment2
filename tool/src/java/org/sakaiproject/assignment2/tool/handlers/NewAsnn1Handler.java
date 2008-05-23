@@ -55,8 +55,7 @@ public class NewAsnn1Handler extends Asnn2HandlerBase
 			String instructions = request.getParameter("instructions");
 			String draft = request.getParameter("draft");
 			String end = request.getParameter("end");
-			String next = "/sakai-assignment2-tool/content/templates/newassignment2.html?context="
-					+ context + "&id=" + id;
+			String next = "/sakai-assignment2-tool/content/templates/newassignment2.html?id=" + id;
 	
 			Assignment2 asnn = null;
 			if (id != null && id.length() > 0)
@@ -64,6 +63,7 @@ public class NewAsnn1Handler extends Asnn2HandlerBase
 			else
 			{
 				asnn = new Assignment2();
+				asnn.setContextId(context);
 				asnn.setCreator(extLogic.getCurrentUserId());
 				asnn.setCreateTime(new Date());
 				// set the required fields to reasonable defaults
@@ -75,7 +75,6 @@ public class NewAsnn1Handler extends Asnn2HandlerBase
 				asnn.setRemoved(false);
 			}
 			// set the data that is submitted
-			asnn.setContextId(context);
 			asnn.setTitle(title);
 			if (draft != null)
 			{
@@ -84,8 +83,7 @@ public class NewAsnn1Handler extends Asnn2HandlerBase
 			}
 			else if (end != null)
 			{
-				next = "/sakai-assignment2-tool/content/templates/newassignment3.html?context="
-					+ context + "&id=" + id;
+				next = "/sakai-assignment2-tool/content/templates/newassignment3.html?id=" + id;
 			}
 			if (asnn.isDraft() == null)
 			{

@@ -7,59 +7,33 @@
 	<title>Submission</title>
 	<link href="/library/skin/tool_base.css" type="text/css" rel="stylesheet" media="all"/>
 	<link href="/library/skin/default/tool.css" type="text/css" rel="stylesheet" media="all"/>
-	<link href="../css/assn2_hotness.css" type="text/css" rel="stylesheet" media="all" />
+	<link href="../css/asnn_assignment_authoring.css" type="text/css" rel="stylesheet" media="all" />
 	<script src="../js/jquery-1.2.3.min.js" type="text/javascript"></script>
 	<script src='../js/querystring-1.2.4.js' type='text/javascript'></script>
-	<script src='../js/ejs_0.9_alpha_1_production.js' type='text/javascript'></script>
+	<script src='../js/trimpath-template-1.0.38.js' type='text/javascript'></script>
 	<script src="../js/submissionview.js" type="text/javascript"></script>
-	<script type="text/javascript">
-		function hidediv(id) {
-			//safe function to hide an element with a specified id
-			var contentId = id + '-content';
-			var toggleId = id + '-toggle';
-			document.getElementById(toggleId).innerHTML = '+';
-			if (document.getElementById) { // DOM3 = IE5, NS6
-				document.getElementById(contentId).style.display = 'none';
-			}
-			else {
-				if (document.layers) { // Netscape 4
-					document.contentId.display = 'none';
-				}
-				else { // IE 4
-					document.all.contentId.style.display = 'none';
-				}
-			}
-		}
-		function load() {
-			hidediv('assignment');
-			hidediv('drafts');
-			hidediv('history');
-		}
-	</script>
 </head>
 
-<body onload="load()">
+<body>
 <div>NavIntraTool goes here</div>
 <div class="breadcrumb">breadcrumbs/go/here</div>
 
-<div id="output"></div>
+<div id="output">output goes here</div>
 
-<textarea id=template class="template">
+<pre id='template' class="template">
 	<div class="section">
 		<div class="toggle"><a href="#" id="assignment-toggle">&ndash;</a></div>
-		<div class="title"><h4>[%= title %]</h4></div>
-		<div class="submcontent" id="assignment-content">
-			[%= assignment %]
-		</div>
+		<div class="title"><h4>${title}</h4></div>
+		<div class="submcontent" id="assignment-content">${assignment}</div>
 	</div>
 
 	<div class="section">
 		<div class="toggle"><a href="#" id="drafts-toggle">&ndash;</a></div>
 		<div class="title"><h4>Saved Drafts/Pending</h4></div>
 		<div class="submcontent" id="drafts-content">
-			[% for (var i=0; i<drafts.length; i++) { %]
-				<a href="[%= drafts[i].url %]">[%= drafts[i].date %]</a><br />
-			[% } %]
+			{for d in drafts}
+				<a href="${d.url}">${d.date}</a><br />
+			{/for}
 		</div>
 	</div>
 
@@ -68,28 +42,28 @@
 		<div class="title"><h4>Submission</h4></div>
 		<div class="submcontent" id="submission-content">
 			<p>
-				[% if (editSub) { %]
-					<textarea class="fckeditor" cols="80" rows="24">[%= submission %]</textarea>
+				{if editSub}
+					<textarea class="fckeditor" cols="80" rows="24">${submission}</textarea>
 					<input type="submit" value="Save as draft" />
 					<input type="submit" value="Cancel" />
 					<input type="submit" value="Submit" />
-				[% } else { %]
-					[%= submission %]
-				[% } %]
+				{else}
+					${submission}
+				{/if}
 			</p>
 			<p>
 				<span class="heading">Attachment(s):</span>
-				[% for  (var i=0; i<attachments.length; i++) { %]
+				{for a in attachments}
 					<img src="../images/page_word.png" alt="Word Document" />
-					<a href="[%= attachments[i].url %]">[%= attachments[i].id %]</a>
-					([%= attachments[i].size %])
-				[% } %]
+					<a href="${a.url}">${a.id}</a>
+					(${a.size})
+				{/for}
 			</p>
 			<p>
 				<span class="heading">Additional Resources:</span>
-				[% for (var i=0; i<resources.length; i++) { %]
-					<a href="[%= resources[i].url %]">[%= resources[i].url %]</a>
-				[% } %]
+				{for r in resources}
+					<a href="${r.url}">${r.url}</a>
+				{/for}
 			</p>
 		</div>
 	</div>
@@ -97,31 +71,31 @@
 	<div class="section">
 		<div class="toggle"><a href="#" id="feedback-toggle">&ndash;</a></div>
 		<div class="title"><h4>Feedback</h4></div>
-			<div class="submcontent" id="feedback-content">
-				<form action="#">
-					<p>
-						[% if (editFeedback) { %]
-							<textarea class="fckeditor" cols="80" rows="24">[%= feedback %]</textarea>
-							<input type="submit" value="Save as draft" />
-							<input type="submit" value="Cancel" />
-							<input type="submit" value="Submit" />
-						[% } else { %]
-							[%= feedback %]
-						[% } %]
-					</p>
-				</form>
-			</div>
+		<div class="submcontent" id="feedback-content">
+			<form action="#">
+				<p>
+					{if editFeedback}
+						<textarea class="fckeditor" cols="80" rows="24">${feedback}</textarea>
+						<input type="submit" value="Save as draft" />
+						<input type="submit" value="Cancel" />
+						<input type="submit" value="Submit" />
+					{else}
+						${feedback}
+					{/if}
+				</p>
+			</form>
+		</div>
 	</div>
 
 	<div class="section">
 		<div class="toggle"><a href="#" id="history-toggle">&ndash;</a></div>
 		<div class="title"><h4>History</h4></div>
 		<div class="submcontent" id="history-content">
-			[% for (var i=0; i<history.length; i++) { %]
-				<a href="[%= history[i].url %]">[%= history[i].date %]</a><br />
-			[% } %]
+			{for h in history}
+				<a href="${h.url}">${h.date}</a><br />
+			{/for}
 		</div>
 	</div>
-</textarea>
+</pre>
 </body>
 </html>

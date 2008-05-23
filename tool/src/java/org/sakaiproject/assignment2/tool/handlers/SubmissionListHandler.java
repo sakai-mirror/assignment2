@@ -12,73 +12,78 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
-import org.sakaiproject.component.api.ComponentManager;
-import org.sakaiproject.sdata.tool.json.JSONServiceHandler;
 
-public class SubmissionListHandler extends JSONServiceHandler
+public class SubmissionListHandler extends Asnn2HandlerBase
 {
-	private ComponentManager compMgr = null;
-	private AssignmentLogic assnLogic = null;
 	private AssignmentSubmissionLogic subLogic = null;
 	private DateFormat dateFormat;
 
 	@Override
-	public void init(Map<String, String> config) throws ServletException
+	public void postInit(Map<String, String> config) throws ServletException
 	{
-		compMgr = org.sakaiproject.component.cover.ComponentManager.getInstance();
-		assnLogic = (AssignmentLogic) compMgr.get(AssignmentLogic.class.getName());
-		subLogic = (AssignmentSubmissionLogic) compMgr.get(AssignmentSubmissionLogic.class
-				.getName());
+		subLogic = (AssignmentSubmissionLogic) getService(AssignmentSubmissionLogic.class);
 		dateFormat = new SimpleDateFormat("MM/dd");
 	}
 
 	@Override
-	public void doGet(HttpServletRequest request, HttpServletResponse response)
+	public void handleGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException
 	{
 		HashMap<String, Object> content = new HashMap<String, Object>();
-		ArrayList<HashMap<String, Object>> assignments = new ArrayList<HashMap<String, Object>>();
 
-		List<Assignment2> assns = assnLogic.getViewableAssignments();
-		for (Assignment2 assn : assns)
+		String asnnId = request.getParameter("asnnId");
+		if (asnnId != null)
 		{
-			// get specific elements of data
-			HashMap<String, Object> a = new HashMap<String, Object>();
-			a.put("id", assn.getId());
-			a.put("title", assn.getTitle());
-			a.put("type", assn.getSubmissionType());
-
-			// get submissions
-			// TODO get submission by submitted/completed
-			List<Map<String, Object>> subs = parseSubmissions(assn);
-			a.put("submissions", subs);
-			assignments.add(a);
+			List<Map<String, Object>> subs = parseSubmissions(Long.parseLong(asnnId));
+			content.put("submissions", subs);
+		}
+		else
+		{
+			List<Map<String, Object>> asnns = parseAssignments();
+			content.put("assignments", asnns);
 		}
 
-		content.put("assignments", assignments);
 		sendMap(request, response, content);
 	}
 
-	@Override
-	public void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException
+	private List<Map<String, Object>> parseAssignments()
 	{
-
+		List<Map<String, Object>> assignments = new ArrayList<Map<String, Object>>();
+		List<Assignment2> asnns = asnnLogic.getViewableAssignments();
+		for (Assignment2 asnn : asnns)
+		{
+			// get specific elements of data
+			HashMap<String, Object> a = new HashMap<String, Object>();
+			a.put("id", asnn.getId());
+			a.put("title", asnn.getTitle());
+			String type = "electronic";
+			if (asnn.getSubmissionType() == AssignmentConstants.SUBMIT_NON_ELECTRONIC)
+				type = "non-electronic";
+			a.put("type", type);
+			assignments.add(a);
+		}
+		return assignments;
 	}
 
-	private List<Map<String, Object>> parseSubmissions(Assignment2 assn)
+	/**
+	 * TODO get submission by submitted/completed
+	 * 
+	 * @param asnnId
+	 * @return
+	 */
+	private List<Map<String, Object>> parseSubmissions(Long asnnId)
 	{
+		Assignment2 asnn = asnnLogic.getAssignmentById(asnnId);
 		List<Map<String, Object>> subs = new ArrayList<Map<String, Object>>();
-		for (AssignmentSubmission sub : assn.getSubmissionsSet())
+		for (AssignmentSubmission sub : asnn.getSubmissionsSet())
 		{
 			HashMap<String, Object> s = new HashMap<String, Object>();
-			if (assn.getSubmissionType() == AssignmentConstants.SUBMIT_NON_ELECTRONIC)
+			if (asnn.getSubmissionType() == AssignmentConstants.SUBMIT_NON_ELECTRONIC)
 			{
 				s.put("name", sub.getUserId());
 				s.put("sections", "");
@@ -88,8 +93,8 @@ public class SubmissionListHandler extends JSONServiceHandler
 			{
 				AssignmentSubmissionVersion ver = sub.getCurrentSubmissionVersion();
 				s.put("name", sub.getUserId());
-				s.put("submittedOn", ver.getCreatedTime());
-				s.put("dueDate", dateFormat.format(assn.getDueDate()));
+				s.put("submittedDate", ver.getCreatedTime());
+				s.put("dueDate", dateFormat.format(asnn.getDueDate()));
 				s.put("sections", "");
 				s.put("feedback", ver.getFeedbackNotes());
 			}

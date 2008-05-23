@@ -2,17 +2,17 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-		<title>Assignments</title>
-		<link rel="stylesheet" href="../css/thickbox.css" type="text/css" media="screen" />
-		<link rel='stylesheet' type='text/css' href='../css/asnn_assignment_authoring.css' />
-		<script src='../js/jquery-1.2.3.min.js' type='text/javascript'></script>
-		<script src='../js/querystring-1.2.4.js' type='text/javascript'></script>
-		<script src='../js/ejs_0.9_alpha_1_production.js' type='text/javascript'></script>
-		<script src='../js/jquery.tablesorter.min.js' type='text/javascript'></script>
-		<script src='../js/thickbox-compressed.js' type='text/javascript'></script>
-		<script src='../js/list_common.js' type='text/javascript'></script>
-		<script src='../js/inst_asnn_list.js' type='text/javascript'></script>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<title>Assignments</title>
+	<link rel="stylesheet" href="../css/thickbox.css" type="text/css" media="screen" />
+	<link rel='stylesheet' type='text/css' href='../css/asnn_assignment_authoring.css' />
+	<script src='../js/jquery-1.2.3.min.js' type='text/javascript'></script>
+	<script src='../js/querystring-1.2.4.js' type='text/javascript'></script>
+	<script src='../js/trimpath-template-1.0.38.js' type='text/javascript'></script>
+	<script src='../js/jquery.tablesorter.min.js' type='text/javascript'></script>
+	<script src='../js/thickbox-compressed.js' type='text/javascript'></script>
+	<script src='../js/list_common.js' type='text/javascript'></script>
+	<script src='../js/inst_asnn_list.js' type='text/javascript'></script>
 </head>
 
 <body>
@@ -114,29 +114,29 @@
 </div>
 <div class='clear'></div>
 
-<textarea id="draft_template" class="template">
-[%	for (var i = 0; i < drafts.length; i++) { %]
+<pre id="draft_template" class="template">
+{for (var i = 0; i < drafts.length; i++)}
 	<tr class='dataRow'>
-		<td class='checkColumn'><input type='checkbox' name='id' value='[%= drafts[i].id %]'/></td>
-		<td>[%= drafts[i].title %] <a href='newassignment1.html?id=[%= drafts[i].id %]&context=[%= context %]&KeepThis=true&TB_iframe=true&width=800&height=600&modal=true' class='thickbox'><img src="../images/icons/page_white_edit.png" alt="Edit Content" /></a> <a href=''><img src="../images/icons/page_white_copy.png" alt="Copy" /></a> </td>
-		<td>[%= drafts[i].sections %]</td>
-		<td>[%= drafts[i].openDate %]</td>
-		<td>[%= drafts[i].dueDate %]</td>
+		<td class='checkColumn'><input type='checkbox' name='id' value='${drafts[i].id}'/></td>
+		<td>${drafts[i].title} <a href='newassignment1.html?id=${drafts[i].id}&context=${context}&KeepThis=true&TB_iframe=true&width=800&height=600&modal=true' class='thickbox'><img src="../images/icons/page_white_edit.png" alt="Edit Content" /></a> <a href=''><img src="../images/icons/page_white_copy.png" alt="Copy" /></a> </td>
+		<td>${drafts[i].sections}</td>
+		<td>${drafts[i].openDate}</td>
+		<td>${drafts[i].dueDate}</td>
 	</tr>
-[% } %]
-</textarea>
+{/for}
+</pre>
 
-<textarea id="posted_template" class="template">
-[% for(var i = 0; i < posted.length; i++) { %]
+<pre id="posted_template" class="template">
+{for(var i = 0; i < posted.length; i++)}
 	<tr class='dataRow'>
-		<td class='checkColumn'><input type='checkbox' name='id' class='checkColumn' value='[%= posted[i].id %]' /></td>
-		<td>[%= posted[i].title %] <a href='/sakai-assignment2-tool/sdata/asnnDraft?id=[%= posted[i].id %]&context=[%= context %]'><img src="../images/icons/arrow_up.png" alt="To Draft" /></a></td>
-		<td>[%= posted[i].sections %]</td>
-		<td>[%= posted[i].openDate %]</td>
-		<td>[%= posted[i].dueDate %]</td>
+		<td class='checkColumn'><input type='checkbox' name='id' class='checkColumn' value='${posted[i].id}' /></td>
+		<td>${posted[i].title} <a href='/sakai-assignment2-tool/sdata/asnnDraft?id=${posted[i].id}&context=${context}'><img src="../images/icons/arrow_up.png" alt="To Draft" /></a></td>
+		<td>${posted[i].sections}</td>
+		<td>${posted[i].openDate}</td>
+		<td>${posted[i].dueDate}</td>
 	</tr>
-[% } %]
-</textarea>
+{/for}
+</pre>
 
 </body>
 </html>

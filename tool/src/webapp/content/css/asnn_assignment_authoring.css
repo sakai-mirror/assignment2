@@ -288,7 +288,7 @@ table.tablesorter thead tr .headerSortDown {
 	text-decoration: none;
 	width: auto;
 }
-.sidebar-content ul li a#active {
+.sidebar-content ul li a.active {
 	background-color: white;
 	border-left: none;
 }

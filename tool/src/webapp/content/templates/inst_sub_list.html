@@ -8,7 +8,7 @@
 	<link rel='stylesheet' type='text/css' href='../css/asnn_assignment_authoring.css' />
 	<script src='../js/jquery-1.2.3.min.js' type='text/javascript'></script>
 	<script src='../js/querystring-1.2.4.js' type='text/javascript'></script>
-	<script src='../js/ejs_0.9_alpha_1_production.js' type='text/javascript'></script>
+	<script src='../js/trimpath-template-1.0.38.js' type='text/javascript'></script>
 	<script src='../js/jquery.tablesorter.min.js' type='text/javascript'></script>
 	<script src='../js/jquery.dimensions.min.js' type='text/javascript'></script>
 	<script src='../js/jquery.ui-1.5b2/minified-javascript/ui.base.min.js' type='text/javascript'></script>
@@ -21,62 +21,34 @@
 
 <div id="wrapper">
 <div id="widget-pane">
-
 	<!-- SUBMITTED WIDGET -->
 	<div id="widget-container">
-	<div id="widget-content">
-
-		<div id='submittedList' class='clear widget-instance'>
-
-			<!-- header for submitted list -->
-			<div id='submittedHeader' class='widget-instance-head'>
-				<div class="widget-instance-head-left">
-					<ul>
-						<li><a href='#' id='submittedTwisty' class='twisty'><img src='../images/widget1-arrow.png' alt='Drafts' /></a>&nbsp;Submitted</li>
-					</ul>
-			    </div>
-			    <div class="widget-instance-head-right">
-					<ul>
-						<li class="widget-instance-last"><a href=''> <img src="../images/icons/arrow_down.png" alt="" />Return all Feedback</a></li>
-						<li class="widget-instance-last"> <a href=''> Upload</a> | </li>
-						<li class="widget-instance-last"> <a href="">Download</a> | </li>
-					</ul>
-			    </div>
-    		</div>
-			<!-- end header -->
-
-			<!-- tabular list -->
-			<div id="submittedList" class="widget-instance-content">
-				<div class="widget-instance-content-in listArea">
-					<table id='submittedAssns' cellspacing="0" border="0" class="tool-menu listTable tablesorter">
-						<thead>
-							<tr class='headerRow'>
-								<th>Name</th>
-								<th>Due Date</th>
-								<th>Submitted Date</th>
-								<th>Groups</th>
-								<th>Feedback</th>
-							</tr>
-						</thead>
-						<tbody id="draft_out"></tbody>
-							<textarea id="draft_template" class="template">
-								[% for (var i=0; i<drafts.length; i++) { %]
-									<tr class='dataRow'>
-										<td></td>
-										<td></td>
-										<td></td>
-										<td></td>
-										<td></td>
-									</tr>
-								[% } %]
-							</textarea>
-					</table>
+		<div id="widget-content">
+			<div id='submittedList' class='clear widget-instance'>
+				<!-- header for submitted list -->
+				<div id='submittedHeader' class='widget-instance-head'>
+					<div class="widget-instance-head-left">
+						<ul>
+							<li><a href='#' id='submittedTwisty' class='twisty'><img src='../images/widget1-arrow.png' alt='Drafts' /></a>&nbsp;Submitted</li>
+						</ul>
+				    </div>
+				    <div class="widget-instance-head-right">
+						<ul>
+							<li class="widget-instance-last"><a href=''> <img src="../images/icons/arrow_down.png" alt="" />Return all Feedback</a></li>
+							<li class="widget-instance-last"> <a href=''> Upload</a> | </li>
+							<li class="widget-instance-last"> <a href="">Download</a> | </li>
+						</ul>
+				    </div>
+	    		</div>
+				<!-- end header -->
+				<!-- tabular list -->
+				<div id="submittedList" class="widget-instance-content">
+					<div id='submitted_out' class="widget-instance-content-in listArea">
+						<!--  uses nonElectronicSubmitted_template, electronicSubmitted_template -->
+					</div>
 				</div>
+				<!-- end tabular list -->
 			</div>
-			<!-- end tabular list -->
-
-		</div>
-
 		</div>
 	</div>
 	<div class='clear'></div>
@@ -84,79 +56,145 @@
 
 	<!-- RETURNED WIDGET -->
 	<div id="widget-container">
-	<div id="widget-content">
-
-		<div id='returnedList' class='clear widget-instance'>
-
-			<!-- header for returned list -->
-			<div id='returnedHeader' class='widget-instance-head'>
-				<div class="widget-instance-head-left">
-					<ul>
-						<li><a href='#' id='draftsTwisty' class='twisty'><img src='../images/widget1-collapse-arrow.png' alt='Returned' /></a>&nbsp;Returned</li>
-					</ul>
-			    </div>
-			    <div class="widget-instance-head-right">
-					<ul>
-					</ul>
-			    </div>
-    		</div>
-			<!-- end header -->
-
-			<!-- tabular list -->
-			<div id="returnedList" class="widget-instance-content">
-				<div class="widget-instance-content-in listArea">
-					<table id='returnedAssns' cellspacing="0" border="0" class="tool-menu listTable tablesorter">
-						<thead>
-							<tr class='headerRow'>
-								<th>Name</th>
-								<th>Returned On</th>
-								<th>Returned By</th>
-								<th>Groups</th>
-								<th>Feedback</th>
-							</tr>
-						</thead>
-						<tbody id="draft_out"></tbody>
-							<textarea id="draft_template" class="template">
-								[% for (var i=0; i<drafts.length; i++) { %]
-									<tr class='dataRow'>
-										<td></td>
-										<td></td>
-										<td></td>
-										<td></td>
-										<td></td>
-									</tr>
-								[% } %]
-							</textarea>
-					</table>
+		<div id="widget-content">
+			<div id='returnedList' class='clear widget-instance'>
+				<!-- header for returned list -->
+				<div id='returnedHeader' class='widget-instance-head'>
+					<div class="widget-instance-head-left">
+						<ul>
+							<li><a href='#' id='returnedTwisty' class='twisty'><img src='../images/widget1-collapse-arrow.png' alt='Returned' /></a>&nbsp;Returned</li>
+						</ul>
+				    </div>
+				    <div class="widget-instance-head-right">
+						<ul>
+						</ul>
+				    </div>
+	    		</div>
+				<!-- end header -->
+				<!-- tabular list -->
+				<div id="returnedList" class="widget-instance-content">
+					<div id="returned_out" class="widget-instance-content-in listArea">
+						<!-- uses nonElectronicReturned_template, electronicReturned_template -->
+					</div>
 				</div>
+				<!-- end tabular list -->
 			</div>
-			<!-- end tabular list -->
-
 		</div>
-		<div class='clear'></div>
-
-		</div>
-		<div class='clear'></div>
 	</div>
 	<div class='clear'></div>
 	<!-- END RETURNED WIDGET -->
-
 </div>
 <!-- END WIDGET PANE -->
 
-	<div id="sidebar">
-		<div class="sidebar-content">
-			<ul>
-				<li><a id="active" href="#">Assignment 1</a></li>
-				<li><a href="#">Assignment 2</a></li>
-				<li><a href="#">Assignment 3</a></li>
-			</ul>
-		</div><!-- /sidebar-content -->
-		<div class='clear'></div>
-	</div><!-- /sidebar -->
+	<div id='sidebar' class="sidebar sidebar-content">
+		<!-- uses sidebar_template -->
+	</div><!-- /sidebar-content -->
 	<div class='clear'></div>
 
 </div><!-- /wrapper -->
+
+<!-- ===== templates ===== -->
+<pre id='nonElectronicSubmitted_template' class='template'>
+<table id='submittedAssns' cellspacing="0" border="0" class="tool-menu listTable tablesorter">
+	<thead>
+		<tr class='headerRow'>
+			<th>Name</th>
+			<th>Groups</th>
+			<th>Feedback</th>
+		</tr>
+	</thead>
+	<tbody id="submitted_out">
+		{for s in submitted}
+		<tr class='dataRow'>
+			<td>${s.name}</td>
+			<td>${s.sections}</td>
+			<td>${s.feedback}</td>
+		</tr>
+		{/for}
+	</tbody>
+</table>
+</pre>
+
+<pre id='electronicSubmitted_template' class='template'>
+<table id='submittedAssns' cellspacing="0" border="0" class="tool-menu listTable tablesorter">
+	<thead>
+		<tr class='headerRow'>
+			<th>Name</th>
+			<th>Due Date</th>
+			<th>Submitted Date</th>
+			<th>Groups</th>
+			<th>Feedback</th>
+		</tr>
+	</thead>
+	<tbody id="submitted_out">
+		{for s in submitted}
+		<tr class='dataRow'>
+			<td>${s.name}</td>
+			<td>${s.dueDate}</td>
+			<td>${s.submittedDate}</td>
+			<td>${s.sections}</td>
+			<td>${s.feedback}</td>
+		</tr>
+		{/for}
+	</tbody>
+</table>
+</pre>
+
+<pre id='nonElectronicReturned_template' class='template'>
+<table id='returnedAssns' cellspacing="0" border="0" class="tool-menu listTable tablesorter">
+	<thead>
+		<tr class='headerRow'>
+			<th>Name</th>
+			<th>Returned On</th>
+			<th>Returned By</th>
+			<th>Feedback</th>
+		</tr>
+	</thead>
+	<tbody id="returned_out">
+		{for r in returned}
+		<tr class='dataRow'>
+			<td>${r.name}</td>
+			<td>${r.returnedDate}</td>
+			<td>${r.returnedBy}</td>
+			<td>${r.feedback}</td>
+		</tr>
+		{/for}
+	</tbody>
+</table>
+</pre>
+
+<pre id='electronicReturned_template' class='template'>
+<table id='returnedAssns' cellspacing="0" border="0" class="tool-menu listTable tablesorter">
+	<thead>
+		<tr class='headerRow'>
+			<th>Name</th>
+			<th>Returned On</th>
+			<th>Returned By</th>
+			<th>Groups</th>
+			<th>Feedback</th>
+		</tr>
+	</thead>
+	<tbody id="returned_out">
+		{for r in returned}
+		<tr class='dataRow'>
+			<td>${r.name}</td>
+			<td>${r.returnedDate}</td>
+			<td>${r.returnedBy}</td>
+			<td>${r.sections}</td>
+			<td>${r.feedback}</td>
+		</tr>
+		{/for}
+	</tbody>
+</table>
+</pre>
+
+<pre id='sidebar_template' class='template'>
+<ul>
+	{for a in assignments}
+	<li><a id='asnn_${a.id}' href="#" onclick='InstSubList.showSubmission(>${a.title}</a></li>
+	{/for}
+</ul>
+</pre>
 
 </body>
 </html>
