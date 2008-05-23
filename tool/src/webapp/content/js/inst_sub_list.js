@@ -65,11 +65,15 @@ var testSubs2 = {
 };
 
 var InstSubList = {
+	// constants
+	RETURNED: 'Ret',
+	SUBMITTED: 'Sub',
+
 	// placeholders for template references.
 	// these are populated by the init script run on document ready
 	sidebarTemplate: null,
 	nonElecRetTemp: null,
-	elecRetTem: null,
+	elecRetTemp: null,
 	nonElecSubTemp: null,
 	elecSubTemp: null,
 	bulkActionTemp: null,
@@ -80,6 +84,11 @@ var InstSubList = {
 	// placeholder for the assignments list
 	assignments: {},
 
+	/**
+	 * 
+	 * @param asnnId
+	 *        The id of an assignment to show the submission of
+	 */
 	showSubmissions: function(asnnId)
 	{
 		var asnn = InstSubList.assignments[asnnId];
@@ -89,23 +98,31 @@ var InstSubList = {
 			var url = '/sakai-assignment2-tool/sdata/subList?asnnId=' + asnn['id'];
 			jQuery.getJSON(url, function()
 			{
-				InstSubList.templateSubmission(asnn['type'], 'Sub', 'submitted_out', data);
-				InstSubList.templateSubmission(asnn['type'], 'Ret', 'returned_out', data);
+				InstSubList.templateSubmission(asnn['type'],
+						InstSubList.SUBMITTED, 'submitted_out', data);
+				InstSubList.templateSubmission(asnn['type'],
+						InstSubList.RETURNED, 'returned_out', data);
 			});
 		}
 		else
 		{
-			InstSubList.templateSubmission(asnn['type'], 'Sub', 'submitted_out', testSubs1);
-			InstSubList.templateSubmission(asnn['type'], 'Ret', 'returned_out', testSubs1);
+			InstSubList.templateSubmission(asnn['type'], InstSubList.SUBMITTED,
+					'submitted_out', testSubs1);
+			InstSubList.templateSubmission(asnn['type'], InstSubList.RETURNED,
+					'returned_out', testSubs1);
 		}
 	},
 
 	/**
 	 * 
-	 * @param type Type of submission.  Expected: [electronic, non-electronic]
-	 * @param status Status of submission (returned, submitted)  Expected: [Ret, Sub]
-	 * @param output The area to receive the rendered output
-	 * @param data The data to use for transformation
+	 * @param type
+	 *        Type of submission.  Expected: [electronic, non-electronic]
+	 * @param status
+	 *        Status of submission (returned, submitted)  Expected: [Ret, Sub]
+	 * @param output
+	 *        The area to receive the rendered output
+	 * @param data
+	 *        The data to use for transformation
 	 */
 	templateSubmission: function(type, status, output, data)
 	{
@@ -117,11 +134,14 @@ var InstSubList = {
 		{
 			jQuery('#' + output).html(InstSubList['nonElec' + status + 'Temp'].process(data));
 		}
+		//Make tables sortable
+		jQuery(".tablesorter").tablesorter();
 	},
 
 	/**
 	 * 
-	 * @param [] assignments
+	 * @param assignments
+	 *        List of assignments to cache using the id as a key for lookup
 	 */
 	cacheAssignments: function(assignments)
 	{
@@ -141,7 +161,7 @@ jQuery(document).ready(function()
 	// populate the template references
 	InstSubList.sidebarTemplate = TrimPath.parseDOMTemplate('sidebar_template');
 	InstSubList.nonElecRetTemp = TrimPath.parseDOMTemplate('nonElectronicReturned_template');
-	InstSubList.elecRetTem = TrimPath.parseDOMTemplate('electronicReturned_template');
+	InstSubList.elecRetTemp = TrimPath.parseDOMTemplate('electronicReturned_template');
 	InstSubList.nonElecSubTemp = TrimPath.parseDOMTemplate('nonElectronicSubmitted_template');
 	InstSubList.elecSubTemp = TrimPath.parseDOMTemplate('electronicSubmitted_template');
 	InstSubList.bulkActionTemp = TrimPath.parseDOMTemplate('bulkAction_template');
@@ -176,7 +196,7 @@ jQuery(document).ready(function()
 		// populate sidebar with assignments
 		jQuery('#sidebar').html(InstSubList.sidebarTemplate.process(testAsnn));
 		// show the submissions of the first assignment
-		var asnn = testAsnn['assignments'][1];
+		var asnn = testAsnn['assignments'][0];
 		jQuery('#bulkAction_out').html(InstSubList.bulkActionTemp.process(asnn['id']));
 		InstSubList.showSubmissions(asnn['id']);
 	}
@@ -200,6 +220,6 @@ jQuery(document).ready(function()
 	jQuery(".tablesorter").tablesorter();
 
 	// Set sidebar heights
-	var document_height = jQuery(document).height();
+	var document_height = jQuery(document).height() - 15;
 	jQuery('#sidebar').height(document_height);
 });
