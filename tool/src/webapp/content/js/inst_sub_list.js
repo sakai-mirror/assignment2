@@ -111,6 +111,8 @@ var InstSubList = {
 			InstSubList.templateSubmission(asnn['type'], InstSubList.RETURNED,
 					'returned_out', testSubs1);
 		}
+		// populate the bulk action links
+		jQuery('#bulkAction_out').html(InstSubList.bulkActionTemp.process(asnn));
 	},
 
 	/**
@@ -182,7 +184,6 @@ jQuery(document).ready(function()
 			if (asnn['assignments'].length > 0)
 			{
 				var asnn = data['assignments'][0];
-				jQuery('#bulkAction_out').html(InstSubList.bulkActionTemp.process(asnn['id']));
 				// go to server for submission list data.
 				InstSubList.showSubmissions(asnn['id']);
 			}
@@ -195,9 +196,9 @@ jQuery(document).ready(function()
 		InstSubList.cacheAssignments(testAsnn['assignments']);
 		// populate sidebar with assignments
 		jQuery('#sidebar').html(InstSubList.sidebarTemplate.process(testAsnn));
-		// show the submissions of the first assignment
+		
 		var asnn = testAsnn['assignments'][0];
-		jQuery('#bulkAction_out').html(InstSubList.bulkActionTemp.process(asnn['id']));
+		// show the submissions of the first assignment
 		InstSubList.showSubmissions(asnn['id']);
 	}
 

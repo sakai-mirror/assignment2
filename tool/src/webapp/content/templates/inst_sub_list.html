@@ -90,7 +90,7 @@
 </div><!-- /wrapper -->
 
 <!-- ===== templates ===== -->
-<pre id='nonElectronicSubmitted_template' class='template'>
+<textarea id='nonElectronicSubmitted_template' class='template'>
 <table id='submittedAssns' cellspacing="0" border="0" class="tool-menu listTable tablesorter">
 	<thead>
 		<tr class='headerRow'>
@@ -109,9 +109,9 @@
 		{/for}
 	</tbody>
 </table>
-</pre>
+</textarea>
 
-<pre id='electronicSubmitted_template' class='template'>
+<textarea id='electronicSubmitted_template' class='template'>
 <table id='submittedAssns' cellspacing="0" border="0" class="tool-menu listTable tablesorter">
 	<thead>
 		<tr class='headerRow'>
@@ -134,9 +134,9 @@
 		{/for}
 	</tbody>
 </table>
-</pre>
+</textarea>
 
-<pre id='nonElectronicReturned_template' class='template'>
+<textarea id='nonElectronicReturned_template' class='template'>
 <table id='returnedAssns' cellspacing="0" border="0" class="tool-menu listTable tablesorter">
 	<thead>
 		<tr class='headerRow'>
@@ -157,9 +157,9 @@
 		{/for}
 	</tbody>
 </table>
-</pre>
+</textarea>
 
-<pre id='electronicReturned_template' class='template'>
+<textarea id='electronicReturned_template' class='template'>
 <table id='returnedAssns' cellspacing="0" border="0" class="tool-menu listTable tablesorter">
 	<thead>
 		<tr class='headerRow'>
@@ -182,21 +182,21 @@
 		{/for}
 	</tbody>
 </table>
-</pre>
+</textarea>
 
-<pre id='sidebar_template' class='template'>
+<textarea id='sidebar_template' class='template'>
 <ul>
 	{for a in assignments}
 	<li><a id='asnn_${a.id}' href="#" onclick='InstSubList.showSubmissions(${a.id});return false;'>${a.title}</a></li>
 	{/for}
 </ul>
-</pre>
+</textarea>
 
-<pre id='bulkAction_template' class='template'>
-								<li class="widget-instance-last"><a href=''> <img src="../images/icons/arrow_down.png" alt="" />Return all Feedback</a></li>
-								<li class="widget-instance-last"><a href='/sakai-assignment2-tool/faces/uploadAll/${a.id}'> Upload</a> | </li>
-								<li class="widget-instance-last"><a href='/sakai-assignment2-tool/faces/zipSubmissions/${a.id}'>Download</a> | </li>
-</pre>
+<textarea id='bulkAction_template' class='template'>
+<li class="widget-instance-last"><a href=''> <img src="../images/icons/arrow_down.png" alt="" />Return all Feedback</a></li>
+<li class="widget-instance-last"><a href='/sakai-assignment2-tool/faces/uploadAll/${id}'> Upload</a> | </li>
+<li class="widget-instance-last"><a href='/sakai-assignment2-tool/faces/zipSubmissions/${id}'>Download</a> | </li>
+</textarea>
 
 </body>
 </html>
