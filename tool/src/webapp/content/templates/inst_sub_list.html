@@ -33,11 +33,7 @@
 						</ul>
 				    </div>
 				    <div class="widget-instance-head-right">
-						<ul>
-							<li class="widget-instance-last"><a href=''> <img src="../images/icons/arrow_down.png" alt="" />Return all Feedback</a></li>
-							<li class="widget-instance-last"> <a href=''> Upload</a> | </li>
-							<li class="widget-instance-last"> <a href="">Download</a> | </li>
-						</ul>
+							<ul id='bulkAction_out'></ul>
 				    </div>
 	    		</div>
 				<!-- end header -->
@@ -191,9 +187,15 @@
 <pre id='sidebar_template' class='template'>
 <ul>
 	{for a in assignments}
-	<li><a id='asnn_${a.id}' href="#" onclick='InstSubList.showSubmission(>${a.title}</a></li>
+	<li><a id='asnn_${a.id}' href="#" onclick='InstSubList.showSubmission(${a.id});return false;'>${a.title}</a></li>
 	{/for}
 </ul>
+</pre>
+
+<pre id='bulkAction_template' class='template'>
+								<li class="widget-instance-last"><a href=''> <img src="../images/icons/arrow_down.png" alt="" />Return all Feedback</a></li>
+								<li class="widget-instance-last"><a href='/sakai-assignment2-tool/faces/uploadAll/${a.id}'> Upload</a> | </li>
+								<li class="widget-instance-last"><a href='/sakai-assignment2-tool/faces/zipSubmissions/${a.id}'>Download</a> | </li>
 </pre>
 
 </body>

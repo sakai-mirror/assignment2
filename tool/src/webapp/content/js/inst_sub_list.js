@@ -72,6 +72,7 @@ var InstSubList = {
 	elecRetTem: null,
 	nonElecSubTemp: null,
 	elecSubTemp: null,
+	bulkActionTemp: null,
 
 	// placeholder for a context id, if passed through querystring
 	context: null,
@@ -143,6 +144,7 @@ jQuery(document).ready(function()
 	InstSubList.elecRetTem = TrimPath.parseDOMTemplate('electronicReturned_template');
 	InstSubList.nonElecSubTemp = TrimPath.parseDOMTemplate('nonElectronicSubmitted_template');
 	InstSubList.elecSubTemp = TrimPath.parseDOMTemplate('electronicSubmitted_template');
+	InstSubList.bulkActionTemp = TrimPath.parseDOMTemplate('bulkAction_template');
 
 	// if a context is provided, get the data from the server
 	if (InstSubList.context)
@@ -160,6 +162,7 @@ jQuery(document).ready(function()
 			if (asnn['assignments'].length > 0)
 			{
 				var asnn = data['assignments'][0];
+				jQuery('#bulkAction_out').html(InstSubList.bulkActionTemp.process(asnn['id']));
 				// go to server for submission list data.
 				InstSubList.showSubmissions(asnn['id']);
 			}
@@ -174,6 +177,7 @@ jQuery(document).ready(function()
 		jQuery('#sidebar').html(InstSubList.sidebarTemplate.process(testAsnn));
 		// show the submissions of the first assignment
 		var asnn = testAsnn['assignments'][1];
+		jQuery('#bulkAction_out').html(InstSubList.bulkActionTemp.process(asnn['id']));
 		InstSubList.showSubmissions(asnn['id']);
 	}
 
