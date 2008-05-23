@@ -24,6 +24,7 @@ package org.sakaiproject.assignment2.taggable.impl;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
+import org.sakaiproject.component.cover.ServerConfigurationService;
 import org.sakaiproject.taggable.api.TaggableActivity;
 import org.sakaiproject.taggable.api.TaggableItem;
 import org.sakaiproject.user.api.User;
@@ -90,5 +91,32 @@ public class AssignmentItemImpl implements TaggableItem {
 
 	public String getUserId() {
 		return userId;
+	}
+
+	public String getItemDetailUrl()
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	public String getIconUrl()
+	{
+		String url = ServerConfigurationService.getServerUrl() + "/library/image/silk/page_edit.png";
+		return url;
+	}
+	
+	public boolean equals(Object obj)
+	{
+		if (!(obj instanceof AssignmentItemImpl))
+			return false;
+		else if (!((TaggableItem) obj).getReference().equals(this.getReference()))
+			return false;
+		
+		return true;
+	}
+	
+	public int hashCode()
+	{
+		return this.getReference().hashCode();
 	}
 }
