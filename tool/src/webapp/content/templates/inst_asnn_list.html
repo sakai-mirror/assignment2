@@ -10,15 +10,15 @@
 	<script src='../js/querystring-1.2.4.js' type='text/javascript'></script>
 	<script src='../js/trimpath-template-1.0.38.js' type='text/javascript'></script>
 	<script src='../js/jquery.tablesorter.min.js' type='text/javascript'></script>
-	<script src='../js/thickbox-compressed.js' type='text/javascript'></script>
 	<script src='../js/list_common.js' type='text/javascript'></script>
 	<script src='../js/inst_asnn_list.js' type='text/javascript'></script>
+	<script src='../js/thickbox-compressed.js' type='text/javascript'></script>
 </head>
 
 <body>
 
 <div id="wrapper">
-
+<input type='button' onclick='alert(jQuery(document).height() + " - " + window.frameElement.height);' value='show height' />
 	<!-- DRAFTS WIDGET -->
 	<div id="widget-container">
 
@@ -114,29 +114,29 @@
 </div>
 <div class='clear'></div>
 
-<pre id="draft_template" class="template">
-{for (var i = 0; i < drafts.length; i++)}
+<textarea id="draft_template" class="template">
+{for d in drafts}
 	<tr class='dataRow'>
-		<td class='checkColumn'><input type='checkbox' name='id' value='${drafts[i].id}'/></td>
-		<td>${drafts[i].title} <a href='newassignment1.html?id=${drafts[i].id}&context=${context}&KeepThis=true&TB_iframe=true&width=800&height=600&modal=true' class='thickbox'><img src="../images/icons/page_white_edit.png" alt="Edit Content" /></a> <a href=''><img src="../images/icons/page_white_copy.png" alt="Copy" /></a> </td>
-		<td>${drafts[i].sections}</td>
-		<td>${drafts[i].openDate}</td>
-		<td>${drafts[i].dueDate}</td>
+		<td class='checkColumn'><input type='checkbox' name='id' value='${d.id}'/></td>
+		<td>${d.title} <a href='newassignment1.html?id=${d.id}&context=${context}&KeepThis=true&TB_iframe=true&width=800&height=600&modal=true' class='thickbox'><img src="../images/icons/page_white_edit.png" alt="Edit Content" /></a> <a href=''><img src="../images/icons/page_white_copy.png" alt="Copy" /></a> </td>
+		<td>${d.sections}</td>
+		<td>${d.openDate}</td>
+		<td>${d.dueDate}</td>
 	</tr>
 {/for}
-</pre>
+</textarea>
 
-<pre id="posted_template" class="template">
-{for(var i = 0; i < posted.length; i++)}
+<textarea id="posted_template" class="template">
+{for p in posted}
 	<tr class='dataRow'>
-		<td class='checkColumn'><input type='checkbox' name='id' class='checkColumn' value='${posted[i].id}' /></td>
-		<td>${posted[i].title} <a href='/sakai-assignment2-tool/sdata/asnnDraft?id=${posted[i].id}&context=${context}'><img src="../images/icons/arrow_up.png" alt="To Draft" /></a></td>
-		<td>${posted[i].sections}</td>
-		<td>${posted[i].openDate}</td>
-		<td>${posted[i].dueDate}</td>
+		<td class='checkColumn'><input type='checkbox' name='id' class='checkColumn' value='${p.id}' /></td>
+		<td>${p.title} <a href='/sakai-assignment2-tool/sdata/asnnDraft?id=${p.id}&context=${context}'><img src="../images/icons/arrow_up.png" alt="To Draft" /></a></td>
+		<td>${p.sections}</td>
+		<td>${p.openDate}</td>
+		<td>${p.dueDate}</td>
 	</tr>
 {/for}
-</pre>
+</textarea>
 
 </body>
 </html>

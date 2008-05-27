@@ -26,19 +26,28 @@ var testdata = {
 			"dueDate": "05/22/2008" }
 	]
 };
-		
-function refresh()
-{
-	window.location.reload(true);
+
+var InstAsnnList = {
+	draftTemplate: null,
+	postedTemplate: null,
+
+	paintData: function(data)
+	{
+		jQuery('#draft_out').html(InstAsnnList.draftTemplate.process(data));
+		jQuery('#posted_out').html(InstAsnnList.postedTemplate.process(data));
+
+		// set the context for all context fields in forms
+		jQuery('input[name="context"]').val(data['context']);
+	}
 }
 
 jQuery(document).ready(function()
 {
 	var qs = new Querystring();
-
-	var draftTemplate = new EJS({element: 'draft_template'});
-	var postedTemplate = new EJS({element: 'posted_template'});
 	var context = qs.get('context');
+
+	InstAsnnList.draftTemplate = TrimPath.parseDOMTemplate('draft_template');
+	InstAsnnList.postedTemplate = TrimPath.parseDOMTemplate('posted_template');
 
 	// if a context is provided, get the data from the server
 	if (context)
@@ -52,27 +61,13 @@ jQuery(document).ready(function()
 		var url = '/sakai-assignment2-tool/sdata/asnnList?context=' + context;
 		jQuery.getJSON(url, function(data)
 		{
-			draftTemplate.update('draft_out', data);
-			postedTemplate.update('posted_out', data);
-
-			// set the context for all context fields in forms
-			jQuery('input[name="context"]').each(function()
-			{
-				jQuery(this).val(data['context']);
-			});
-
-			// add thickbox to rendered items
-			tb_init('a.thickbox');
+			InstAsnnList.paintData(data);
 		});
 	}
 	// with no context, use test data
 	else
 	{
-		draftTemplate.update('draft_out', testdata);
-		postedTemplate.update('posted_out', testdata);
-
-		// add thickbox to rendered items
-		tb_init('a.thickbox');
+		InstAsnnList.paintData(testdata);
 	}
 
 	// add a hover effect to each row of data
@@ -85,4 +80,8 @@ jQuery(document).ready(function()
 	// Make the tables sortable
 	jQuery("#draftAssns").tablesorter({headers: {0: {sorter: false}}});
 	jQuery("#postedAssns").tablesorter();
+
+	// set the containing iframe to be the height of the document
+	if (window.frameElement)
+		window.frameElement.height = jQuery(document).height();
 });

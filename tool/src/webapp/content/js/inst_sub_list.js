@@ -98,21 +98,35 @@ var InstSubList = {
 			var url = '/sakai-assignment2-tool/sdata/subList?asnnId=' + asnn['id'];
 			jQuery.getJSON(url, function()
 			{
-				InstSubList.templateSubmission(asnn['type'],
-						InstSubList.SUBMITTED, 'submitted_out', data);
-				InstSubList.templateSubmission(asnn['type'],
-						InstSubList.RETURNED, 'returned_out', data);
+				InstSubList.paintData(asnn['type'], data);
 			});
 		}
 		else
 		{
-			InstSubList.templateSubmission(asnn['type'], InstSubList.SUBMITTED,
-					'submitted_out', testSubs1);
-			InstSubList.templateSubmission(asnn['type'], InstSubList.RETURNED,
-					'returned_out', testSubs1);
+			InstSubList.paintData(asnn['type'], testSubs1);
 		}
 		// populate the bulk action links
 		jQuery('#bulkAction_out').html(InstSubList.bulkActionTemp.process(asnn));
+
+		// set the containing iframe to be the height of the document
+		if (window.frameElement)
+			jQuery(window.frameElement).height(jQuery(document).height());
+	},
+
+	/**
+	 * Paints the data to the screen using known templates.
+	 * 
+	 * @param type
+	 *        The type of assignment (electronic, non-electronic).
+	 * @param data
+	 *        The data to render using the templates.
+	 */
+	paintData: function(type, data)
+	{
+		InstSubList.templateSubmission(type,
+				InstSubList.SUBMITTED, 'submitted_out', data);
+		InstSubList.templateSubmission(type,
+				InstSubList.RETURNED, 'returned_out', data);
 	},
 
 	/**
@@ -221,6 +235,6 @@ jQuery(document).ready(function()
 	jQuery(".tablesorter").tablesorter();
 
 	// Set sidebar heights
-	var document_height = jQuery(document).height() - 15;
-	jQuery('#sidebar').height(document_height);
+	var document_height = jQuery(document).height();
+	jQuery('#sidebar').height(document_height - 15);
 });

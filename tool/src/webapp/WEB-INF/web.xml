@@ -112,7 +112,7 @@
 			baseurl is the first path element that maps to the handler
 		-->
 			<param-name>config</param-name>
-			<param-value> 
+			<param-value>
 				1.classname=org.sakaiproject.assignment2.tool.handlers.AssignmentListHandler;
 				1.baseurl=/asnnList;
 				2.classname=org.sakaiproject.assignment2.tool.handlers.SubmissionListHandler;
