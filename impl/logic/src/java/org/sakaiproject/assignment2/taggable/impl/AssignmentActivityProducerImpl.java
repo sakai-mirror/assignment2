@@ -196,7 +196,8 @@ public class AssignmentActivityProducerImpl implements
 	public void init() {
 		logger.info("init()");
 
-		taggingManager.registerProducer(this);
+		//TODO Removing support for Assignment2 tagging until helpers get fixed
+		//taggingManager.registerProducer(this);
 	}
 
 	protected String parseAuthor(String itemRef) {

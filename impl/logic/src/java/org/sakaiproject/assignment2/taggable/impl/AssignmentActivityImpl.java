@@ -80,5 +80,9 @@ public class AssignmentActivityImpl implements TaggableActivity {
 		return url;
 	}
 	
+	public String getTypeName()
+	{
+		return producer.getName();
+	}
 	
 }
