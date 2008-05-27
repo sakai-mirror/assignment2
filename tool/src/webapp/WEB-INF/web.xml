@@ -131,6 +131,8 @@
 				8.baseurl=/asnnPost;
 				9.classname=org.sakaiproject.assignment2.tool.handlers.AssignmentDraft;
 				9.baseurl=/asnnDraft;
+				10.classname=org.sakaiproject.assignment2.tool.handlers.ReleaseAllFeedbackHandler;
+				10.baseurl=/releaseAllFeedback;
 			</param-value>
 		</init-param>
 	</servlet>
