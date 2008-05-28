@@ -20,8 +20,12 @@
 
 <body>
 
+<div id='nav_out' class="navIntraTool">
+	<!-- uses nav_template -->
+</div>
+
 <div id="wrapper">
-<input type='button' onclick='alert(jQuery(document).height() + " - " + window.frameElement.height);' value='show height' />
+
 	<!-- DRAFTS WIDGET -->
 	<div id="widget-container">
 
@@ -58,7 +62,9 @@
 									<th>Due</th>
 								</tr>
 							</thead>
-							<tbody id="draft_out"></tbody>
+							<tbody id="draft_out">
+								<!-- uses draft_template -->
+							</tbody>
 						</table>
 						</form>
 					</div>
@@ -84,7 +90,6 @@
 							<!-- <li class="widget-instance-close"><a href="#"></a></li>
 							<li class="widget-instance-menu"><a href="#"></a></li> -->
 							<li class="widget-instance-last"><a href='#' onclick='jQuery("#postedForm").submit();return false;'><img src="../images/icons/arrow_up.png" alt="" />To Draft</a> </li>
-
 						</ul>
 					</div>
 	    		</div>
@@ -103,7 +108,9 @@
 									<th>Due</th>
 								</tr>
 							</thead>
-							<tbody id="posted_out"></tbody>
+							<tbody id="posted_out">
+								<!-- uses posted_template -->
+							</tbody>
 						</table>
 						</form>
 					</div>
@@ -116,6 +123,14 @@
 
 </div>
 <div class='clear'></div>
+
+<textarea id='nav_template' class='template'>
+<div style="display:inline">
+	<span id="configNavLink">Assignments</span> |
+	<a id="navConfig" href='inst_sub_list.html?context=${context}'>Submissions</a> |
+	<a id="navConfig" href='options.html?context=${context}'>Options</a>
+</div>
+</textarea>
 
 <textarea id="draft_template" class="template">
 {for d in drafts}

@@ -8,9 +8,16 @@ a img { border: none; }
  */
 .clear {
 	clear:both;
+	//height:1px;
+	//font-size:1px;
+	border:none;
+	margin:0;
+	padding:0;
+	background:transparent;
 }
 
 li { list-style-type: none; }
+
 body {
 	margin: 0;
 	padding: 0;
@@ -25,7 +32,6 @@ body {
 .listArea {
   margin: 20px 0 20px 0;
  }
-
 
 .header {
 	font-family:"Lucida Grande", Tahoma, Arial, Verdana, sans-serif;
@@ -323,4 +329,12 @@ table.tablesorter thead tr .headerSortDown {
 .new-asnn-input a:link {
 	font-size: 80%;
 	color: blue;
+}
+
+/*  Navigation  */
+#navConfig, #navCompose {
+  padding-left: 19px;
+  /*
+  background: url(/sakai-mailtool-tool/content/images/cog.png) center left no-repeat;
+  */
 }

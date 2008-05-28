@@ -12,12 +12,15 @@
 	<script src='../js/jquery.tablesorter.min.js' type='text/javascript'></script>
 	<script src='../js/jquery.dimensions.min.js' type='text/javascript'></script>
 	<script src='../js/jquery.ui-1.5b2/minified-javascript/ui.base.min.js' type='text/javascript'></script>
-	<script src='../js/jquery.ui-1.5b2/minified-javascript/ui.accordion.min.js' type='text/javascript'></script>
 	<script src='../js/list_common.js' type='text/javascript'></script>
 	<script src='../js/inst_sub_list.js' type='text/javascript'></script>
 </head>
 
 <body>
+
+<div id='nav_out' class="navIntraTool">
+	<!-- uses nav_template -->
+</div>
 
 <div id="wrapper">
 <div id="widget-pane">
@@ -89,7 +92,18 @@
 
 </div><!-- /wrapper -->
 
-<!-- ===== templates ===== -->
+<!-- ===================================================== -->
+<!-- ===================== templates ===================== -->
+<!-- ===================================================== -->
+
+<pre id='nav_template' class='template'>
+<div style="display:inline">
+	<a id='navConfig' href='inst_asnn_list.html?context=${context}'>Assignments</a> |
+	<span id="configNavLink">Submissions</span> |
+	<a id='navConfig' href='options.html?context=${context}'>Options</a>
+</div>
+</pre>
+
 <textarea id='nonElectronicSubmitted_template' class='template'>
 <table id='submittedAssns' cellspacing="0" border="0" class="tool-menu listTable tablesorter">
 	<thead>

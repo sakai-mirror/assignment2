@@ -28,11 +28,13 @@ var testdata = {
 };
 
 var InstAsnnList = {
+	navTemplate: null,
 	draftTemplate: null,
 	postedTemplate: null,
 
 	paintData: function(data)
 	{
+		jQuery('#nav_out').html(InstAsnnList.navTemplate.process(data));
 		jQuery('#draft_out').html(InstAsnnList.draftTemplate.process(data));
 		jQuery('#posted_out').html(InstAsnnList.postedTemplate.process(data));
 
@@ -46,6 +48,7 @@ jQuery(document).ready(function()
 	var qs = new Querystring();
 	var context = qs.get('context');
 
+	InstAsnnList.navTemplate = TrimPath.parseDOMTemplate('nav_template');
 	InstAsnnList.draftTemplate = TrimPath.parseDOMTemplate('draft_template');
 	InstAsnnList.postedTemplate = TrimPath.parseDOMTemplate('posted_template');
 
@@ -83,5 +86,7 @@ jQuery(document).ready(function()
 
 	// set the containing iframe to be the height of the document
 	if (window.frameElement)
-		window.frameElement.height = jQuery(document).height();
+	{
+		jQuery(window.frameElement).height(jQuery(document).height());
+	}
 });

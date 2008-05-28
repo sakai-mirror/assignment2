@@ -71,6 +71,7 @@ var InstSubList = {
 
 	// placeholders for template references.
 	// these are populated by the init script run on document ready
+	navTemplate: null,
 	sidebarTemplate: null,
 	nonElecRetTemp: null,
 	elecRetTemp: null,
@@ -123,10 +124,9 @@ var InstSubList = {
 	 */
 	paintData: function(type, data)
 	{
-		InstSubList.templateSubmission(type,
-				InstSubList.SUBMITTED, 'submitted_out', data);
-		InstSubList.templateSubmission(type,
-				InstSubList.RETURNED, 'returned_out', data);
+		jQuery('#nav_out').html(InstSubList.navTemplate.process(data));
+		InstSubList.templateSubmission(type, InstSubList.SUBMITTED, 'submitted_out', data);
+		InstSubList.templateSubmission(type, InstSubList.RETURNED, 'returned_out', data);
 	},
 
 	/**
@@ -175,6 +175,7 @@ jQuery(document).ready(function()
 	InstSubList.context = qs.get('context');
 
 	// populate the template references
+	InstSubList.navTemplate = TrimPath.parseDOMTemplate('nav_template');
 	InstSubList.sidebarTemplate = TrimPath.parseDOMTemplate('sidebar_template');
 	InstSubList.nonElecRetTemp = TrimPath.parseDOMTemplate('nonElectronicReturned_template');
 	InstSubList.elecRetTemp = TrimPath.parseDOMTemplate('electronicReturned_template');
