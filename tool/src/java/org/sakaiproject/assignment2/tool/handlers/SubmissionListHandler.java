@@ -37,24 +37,27 @@ public class SubmissionListHandler extends Asnn2HandlerBase
 		HashMap<String, Object> content = new HashMap<String, Object>();
 
 		String asnnId = request.getParameter("asnnId");
+		String context = request.getParameter("context");
 		if (asnnId != null)
 		{
+			content.put("asnnId", asnnId);
 			List<Map<String, Object>> subs = parseSubmissions(Long.parseLong(asnnId));
 			content.put("submissions", subs);
 		}
 		else
 		{
-			List<Map<String, Object>> asnns = parseAssignments();
+			content.put("context", context);
+			List<Map<String, Object>> asnns = parseAssignments(context);
 			content.put("assignments", asnns);
 		}
 
 		sendMap(request, response, content);
 	}
 
-	private List<Map<String, Object>> parseAssignments()
+	private List<Map<String, Object>> parseAssignments(String context)
 	{
 		List<Map<String, Object>> assignments = new ArrayList<Map<String, Object>>();
-		List<Assignment2> asnns = asnnLogic.getViewableAssignments();
+		List<Assignment2> asnns = asnnLogic.getViewableAssignments(context);
 		for (Assignment2 asnn : asnns)
 		{
 			// get specific elements of data
@@ -78,7 +81,7 @@ public class SubmissionListHandler extends Asnn2HandlerBase
 	 */
 	private List<Map<String, Object>> parseSubmissions(Long asnnId)
 	{
-		Assignment2 asnn = asnnLogic.getAssignmentById(asnnId);
+		Assignment2 asnn = asnnLogic.getAssignmentByIdWithGroupsAndAttachments(asnnId);
 		List<Map<String, Object>> subs = new ArrayList<Map<String, Object>>();
 		for (AssignmentSubmission sub : asnn.getSubmissionsSet())
 		{

@@ -1,5 +1,14 @@
 jQuery(document).ready(function()
 {
+	jQuery("input[name='resubmisssions']").change(function()
+	{
+		// the verbiage on the page makes the values seem backwards
+		if (jQuery(this).val() == "2")
+			jQuery('#numResubmitArea').removeClass('hidden');
+		else
+			jQuery('#numResubmitArea').addClass('hidden');
+	});
+
 	var qs = new Querystring();
 	var id = qs.get('id');
 	var context = qs.get('context');
@@ -16,7 +25,7 @@ jQuery(document).ready(function()
 		var url = '/sakai-assignment2-tool/sdata/newAsnn3?id=' + id;
 		jQuery.getJSON(url, function(data)
 		{
-			jQuery("input[name='resubmissions'][value='" + data['resubmissions'] + "']").attr('checked', 'checked');
+			jQuery("input[name='resubmissions'][value='" + Math.min(2, data['resubmissions']) + "']").attr('checked', 'checked');
 			jQuery("input[name='notifications'][value='" + data['notifications'] + "']").attr('checked', 'checked');
 			jQuery("input[name='honorcode'][value='" + data['honorCode'] + "']").attr('checked', 'checked');
 		});

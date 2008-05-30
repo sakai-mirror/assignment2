@@ -1,5 +1,6 @@
 // Populate the test data
 var testAsnn = {
+	"context": "",
 	"assignments": [
 		{"id": "1",
 			"title": "Assignment 1",
@@ -99,12 +100,12 @@ var InstSubList = {
 			var url = '/sakai-assignment2-tool/sdata/subList?asnnId=' + asnn['id'];
 			jQuery.getJSON(url, function()
 			{
-				InstSubList.paintData(asnn['type'], data);
+				InstSubList.paintSubmissions(asnn['type'], data);
 			});
 		}
 		else
 		{
-			InstSubList.paintData(asnn['type'], testSubs1);
+			InstSubList.paintSubmissions(asnn['type'], testSubs1);
 		}
 		// populate the bulk action links
 		jQuery('#bulkAction_out').html(InstSubList.bulkActionTemp.process(asnn));
@@ -115,18 +116,72 @@ var InstSubList = {
 	},
 
 	/**
-	 * Paints the data to the screen using known templates.
+	 * Paints the submissions data to the screen using known templates.
 	 * 
 	 * @param type
 	 *        The type of assignment (electronic, non-electronic).
 	 * @param data
 	 *        The data to render using the templates.
 	 */
-	paintData: function(type, data)
+	paintSubmissions: function(type, data)
 	{
-		jQuery('#nav_out').html(InstSubList.navTemplate.process(data));
+//		jQuery('#nav_out').html(InstSubList.navTemplate.process(data));
 		InstSubList.templateSubmission(type, InstSubList.SUBMITTED, 'submitted_out', data);
 		InstSubList.templateSubmission(type, InstSubList.RETURNED, 'returned_out', data);
+	},
+
+	/**
+	 * Paints the assignments data to the screen using known templates.
+	 * 
+	 * @param data
+	 *        The data to render using the templates.
+	 */
+	paintAssignments: function(data)
+	{
+		// show the navigation
+		jQuery('#nav_out').html(InstSubList.navTemplate.process(data));
+
+		// cache the data for submission lookup
+		InstSubList.cacheAssignments(data['assignments']);
+
+		// populate the sidebar with the list of assignments
+		jQuery('#sidebar').html(InstSubList.sidebarTemplate.process(data));
+
+		// show submissions of the first assignment
+		if (data['assignments'].length > 0)
+		{
+			var asnn = data['assignments'][0];
+			// go to server for submission list data.
+			InstSubList.showSubmissions(asnn['id']);
+		}
+
+		// add a hover effect to each row of data
+		ListCommon.addHover('.dataRow', 'dataRowOn');
+
+		// add the toggle events to the twisties
+		var toggles = jQuery('.twisty');
+		for (var i=0; i<toggles.length; i++) {
+			var show = (toggles[i].id.substring(0,9) == 'submitted')
+			ListCommon.addToggle(toggles[i].id, toggles[i].id.replace('Twisty', 'List'), show);
+		};
+
+		jQuery('.dataRow').click(function()
+		{
+			location.href='submissionview.html';
+		});
+
+		// Make tables sortable
+		jQuery(".tablesorter").tablesorter();
+
+		// Set sidebar heights
+		var document_height = jQuery(document).height();
+		jQuery('#sidebar').height(document_height - 15);
+
+		// set the iframe to the fit the screen
+		if (window.frameElement)
+		{
+			setMainFrameHeight(window.frameElement.name);
+		}
 	},
 
 	/**
@@ -143,13 +198,10 @@ var InstSubList = {
 	templateSubmission: function(type, status, output, data)
 	{
 		if (type == 'electronic')
-		{
 			jQuery('#' + output).html(InstSubList['elec' + status + 'Temp'].process(data));
-		}
 		else if (type == 'non-electronic')
-		{
 			jQuery('#' + output).html(InstSubList['nonElec' + status + 'Temp'].process(data));
-		}
+
 		//Make tables sortable
 		jQuery(".tablesorter").tablesorter();
 	},
@@ -186,56 +238,15 @@ jQuery(document).ready(function()
 	// if a context is provided, get the data from the server
 	if (InstSubList.context)
 	{
-		var url = '/sakai-assignment2-tool/sdata/subList?context=' + context;
+		var url = '/sakai-assignment2-tool/sdata/subList?context=' + InstSubList.context;
 		jQuery.getJSON(url, function(data)
 		{
-			// cache the data for submission lookup
-			InstSubList.cacheAssignments(data['assignments']);
-
-			// populate the sidebar with the list of assignments
-			jQuery('#sidebar').html(InstSubList.sidebarTemplate.process(data));
-
-			// show submissions of the first assignment
-			if (asnn['assignments'].length > 0)
-			{
-				var asnn = data['assignments'][0];
-				// go to server for submission list data.
-				InstSubList.showSubmissions(asnn['id']);
-			}
+			InstSubList.paintAssignments(data);
 		});
 	}
 	// with no context, use test data
 	else
 	{
-		// cache test data
-		InstSubList.cacheAssignments(testAsnn['assignments']);
-		// populate sidebar with assignments
-		jQuery('#sidebar').html(InstSubList.sidebarTemplate.process(testAsnn));
-		
-		var asnn = testAsnn['assignments'][0];
-		// show the submissions of the first assignment
-		InstSubList.showSubmissions(asnn['id']);
+		InstSubList.paintAssignments(testAsnn);
 	}
-
-	// add a hover effect to each row of data
-	ListCommon.addHover('.dataRow', 'dataRowOn');
-
-	// add the toggle events to the twisties
-	var toggles = jQuery('.twisty');
-	for (var i=0; i<toggles.length; i++) {
-		var show = (toggles[i].id.substring(0,9) == 'submitted')
-		ListCommon.addToggle(toggles[i].id, toggles[i].id.replace('Twisty', 'List'), show);
-	};
-
-	jQuery('.dataRow').click(function()
-	{
-		location.href='submissionview.html';
-	});
-
-	//Make tables sortable
-	jQuery(".tablesorter").tablesorter();
-
-	// Set sidebar heights
-	var document_height = jQuery(document).height();
-	jQuery('#sidebar').height(document_height - 15);
 });

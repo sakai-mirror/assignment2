@@ -32,7 +32,7 @@ var InstAsnnList = {
 	draftTemplate: null,
 	postedTemplate: null,
 
-	paintData: function(data)
+	paintAssignments: function(data)
 	{
 		jQuery('#nav_out').html(InstAsnnList.navTemplate.process(data));
 		jQuery('#draft_out').html(InstAsnnList.draftTemplate.process(data));
@@ -40,6 +40,23 @@ var InstAsnnList = {
 
 		// set the context for all context fields in forms
 		jQuery('input[name="context"]').val(data['context']);
+
+		// add a hover effect to each row of data
+		ListCommon.addHover('.dataRow', 'dataRowOn');
+
+		// add the toggle events to the twisties
+		ListCommon.addToggle('#postedTwisty', '#postedList', true);
+		ListCommon.addToggle('#draftsTwisty', '#draftsList', true);
+
+		// Make the tables sortable
+		jQuery("#draftAssns").tablesorter({headers: {0: {sorter: false}}});
+		jQuery("#postedAssns").tablesorter();
+
+		// set the iframe to the fit the screen
+		if (window.frameElement)
+		{
+			setMainFrameHeight(window.frameElement.name);
+		}
 	}
 }
 
@@ -55,38 +72,17 @@ jQuery(document).ready(function()
 	// if a context is provided, get the data from the server
 	if (context)
 	{
-		// set the iframe to the fit the screen
-//		parent.setMainFrameHeight(parent.frames[0].name);
-//		parent.setFocus(parent.focus_path);
-
 		jQuery('#newLink').attr('href', 'newassignment1.html?context=' + context + '&KeepThis=true&TB_iframe=true&width=800&height=600&modal=true');
 
 		var url = '/sakai-assignment2-tool/sdata/asnnList?context=' + context;
 		jQuery.getJSON(url, function(data)
 		{
-			InstAsnnList.paintData(data);
+			InstAsnnList.paintAssignments(data);
 		});
 	}
 	// with no context, use test data
 	else
 	{
-		InstAsnnList.paintData(testdata);
-	}
-
-	// add a hover effect to each row of data
-	ListCommon.addHover('.dataRow', 'dataRowOn');
-
-	// add the toggle events to the twisties
-	ListCommon.addToggle('#postedTwisty', '#postedList', true);
-	ListCommon.addToggle('#draftsTwisty', '#draftsList', true);
-
-	// Make the tables sortable
-	jQuery("#draftAssns").tablesorter({headers: {0: {sorter: false}}});
-	jQuery("#postedAssns").tablesorter();
-
-	// set the containing iframe to be the height of the document
-	if (window.frameElement)
-	{
-		jQuery(window.frameElement).height(jQuery(document).height());
+		InstAsnnList.paintAssignments(testdata);
 	}
 });

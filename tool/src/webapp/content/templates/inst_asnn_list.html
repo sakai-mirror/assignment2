@@ -10,6 +10,7 @@
 	<script src='../js/querystring-1.2.4.js' type='text/javascript'></script>
 	<script src='../js/trimpath-template-1.0.38.js' type='text/javascript'></script>
 	<script src="/library/editor/FCKeditor/fckeditor.js" type="text/javascript"></script>
+	<script src="/library/js/headscripts.js" type="text/javascript"></script>
 	<script src='../js/list_common.js' type='text/javascript'></script>
 	<script src='../js/inst_asnn_list.js' type='text/javascript'></script>
 	<script src='../js/fck-inserter.js' type='text/javascript'></script>
@@ -124,18 +125,18 @@
 <div class='clear'></div>
 
 <textarea id='nav_template' class='template'>
-<div style="display:inline">
+<span>
 	<span id="configNavLink">Assignments</span> |
 	<a id="navConfig" href='inst_sub_list.html?context=${context}'>Submissions</a> |
 	<a id="navConfig" href='options.html?context=${context}'>Options</a>
-</div>
+</span>
 </textarea>
 
 <textarea id="draft_template" class="template">
 {for d in drafts}
 	<tr class='dataRow'>
 		<td class='checkColumn'><input type='checkbox' name='id' value='${d.id}'/></td>
-		<td>${d.title} <a href='newassignment1.html?id=${d.id}&context=${context}&KeepThis=true&TB_iframe=true&width=800&height=600&modal=true' class='thickbox'><img src="../images/icons/page_white_edit.png" alt="Edit Content" /></a> <a href=''><img src="../images/icons/page_white_copy.png" alt="Copy" /></a> </td>
+		<td>${d.title} <a href='newassignment1.html?KeepThis=true&amp;TB_iframe=true&amp;id=${d.id}&context=${context}&KeepThis=true&TB_iframe=true&width=800&height=600&modal=true' class='thickbox'><img src="../images/icons/page_white_edit.png" alt="Edit Content" /></a> <a href=''><img src="../images/icons/page_white_copy.png" alt="Copy" /></a> </td>
 		<td>${d.sections}</td>
 		<td>${d.openDate}</td>
 		<td>${d.dueDate}</td>
@@ -147,7 +148,7 @@
 {for p in posted}
 	<tr class='dataRow'>
 		<td class='checkColumn'><input type='checkbox' name='id' class='checkColumn' value='${p.id}' /></td>
-		<td>${p.title} <a href='/sakai-assignment2-tool/sdata/asnnDraft?id=${p.id}&context=${context}'><img src="../images/icons/arrow_up.png" alt="To Draft" /></a></td>
+		<td>${p.title} <a href='/sakai-assignment2-tool/sdata/asnnDraft?KeepThis=true&amp;TB_iframe=true&amp;id=${p.id}&context=${context}'><img src="../images/icons/arrow_up.png" alt="To Draft" /></a></td>
 		<td>${p.sections}</td>
 		<td>${p.openDate}</td>
 		<td>${p.dueDate}</td>

@@ -41,12 +41,16 @@ public class NewAsnn3Handler extends Asnn2HandlerBase
 		String prev = request.getParameter("prev");
 		String post = request.getParameter("post");
 		String resubmissions = request.getParameter("resubmissions");
+		String numResubmit = request.getParameter("numResubmit");
 		String notifications = request.getParameter("notifications");
 		String honorCode = request.getParameter("honorcode");
 
 		Assignment2 asnn = asnnLogic.getAssignmentByIdWithGroupsAndAttachments(Long.parseLong(id));
 		if (resubmissions != null)
-			asnn.setNumSubmissionsAllowed(Integer.parseInt(resubmissions));
+			if ("2".equals(resubmissions) && numResubmit != null)
+				asnn.setNumSubmissionsAllowed(Integer.parseInt(numResubmit));
+			else
+				asnn.setNumSubmissionsAllowed(Integer.parseInt(resubmissions));
 		asnn.setNotificationType(Integer.parseInt(notifications));
 		asnn.setHonorPledge(Boolean.parseBoolean(honorCode));
 
