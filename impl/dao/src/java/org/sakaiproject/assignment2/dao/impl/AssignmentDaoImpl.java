@@ -373,7 +373,24 @@ public class AssignmentDaoImpl extends HibernateCompleteGenericDao implements As
 		
 		return (Set<AssignmentSubmission>)getHibernateTemplate().execute(hc);
     }
-    
+
+    public Set<AssignmentSubmissionVersion> getLatestSubmissionsForAssignment(final Long assignmentId)
+    {
+    	if (assignmentId == null)
+    		throw new IllegalArgumentException("Can't use a null assignment ID.");
+
+    	HibernateCallback hc = new HibernateCallback()
+    	{
+    		public Object doInHibernate(Session session) throws HibernateException, SQLException
+    		{
+    			Query query = session.getNamedQuery("findLatestSubmissionsForAssignment");
+    			query.setParameter("assignmentId", assignmentId);
+    			return query.list();
+    		}
+    	};
+    	return (Set<AssignmentSubmissionVersion>) getHibernateTemplate().execute(hc);
+    }
+
     public AssignmentSubmission getSubmissionWithVersionHistoryForStudentAndAssignment(final String studentId, final Assignment2 assignment) {
     	if (studentId == null || assignment == null) {
     		throw new IllegalArgumentException("null parameter passed to getSubmissionWithVersionHistoryForStudentAndAssignment");

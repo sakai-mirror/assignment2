@@ -10,7 +10,7 @@ var tb_pathToImage = "/sakai-assignment2-tool/content/images/loadingAnimation.gi
 /*!!!!!!!!!!!!!!!!! edit below this line at your own risk !!!!!!!!!!!!!!!!!!!!!!!*/
 
 //on page load call tb_init
-jQuery(document).ready(function(){   
+jQuery(document).ready(function(){
 	setTimeout(function(){tb_init('a.thickbox, area.thickbox, input.thickbox');}, 100); //pass where to apply thickbox
 	imgLoader = new Image();// preload image
 	imgLoader.src = tb_pathToImage;
@@ -35,6 +35,7 @@ function tb_init(domChunk){
 
 function tb_show(caption, url, imageGroup, tagName) {//function called when the user clicks on a thickbox link
 
+	var ref = parent.document || document;
 	try {
 		if (typeof document.body.style.maxHeight === "undefined") {//if IE 6
 			jQuery("body","html").css({height: "100%", width: "100%"});
@@ -50,11 +51,15 @@ function tb_show(caption, url, imageGroup, tagName) {//function called when the 
 			}
       //Add portalMask to main portal
       ////
-		jQuery("body", parent.document).append("<div id='portalMask' style='width:100%;height:100%'></div>");		
-		jQuery("#portalMask", parent.document).click(tb_remove);
+		jQuery("body", ref).append("<div id='portalMask' style='width:100%;height:100%'></div>");		
+		jQuery("#portalMask", ref).click(tb_remove);
 		jQuery("#TB_overlay").click(tb_remove);}
          // now move our iframe zIndex above the portalMask
-		jQuery("#" + iframeId, parent.document).css("z-index", "9001").css("position", "relative").css("background", "#fff");
+		if (window.frameElement)
+		{
+			var iframeId = window.frameElement.id;
+			jQuery("#" + iframeId, ref).css("z-index", "9001").css("position", "relative").css("background", "#fff");
+		}
 		
 		//if(tb_detectMacXFF()){
 		//	jQuery("#TB_overlay").addClass("TB_overlayMacFFBGHack");//use png overlay so hide flash
@@ -318,7 +323,11 @@ function tb_remove() {
 		jQuery("html").css("overflow","");
 	}
 	//set our iframe back
-	jQuery("#" + iframeId, parent.document).css("z-index", "0");
+	if (window.frameElement)
+	{
+		var iframeId = window.frameElement.id;
+		jQuery("#" + iframeId, parent.document).css("z-index", "0");
+	}
 	document.onkeydown = "";
 	document.onkeyup = "";
 	return false;

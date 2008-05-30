@@ -121,7 +121,9 @@ public interface AssignmentDao extends CompleteGenericDao {
 	 * 
 	 */
 	public Set<AssignmentSubmission> getSubmissionsWithVersionHistoryForStudentListAndAssignment(List<String> studentIdList, Assignment2 assignment);
-	
+
+	public Set<AssignmentSubmissionVersion> getLatestSubmissionsForAssignment(Long assignmentId);
+
 	/**
 	 * 
 	 * @param submissionVersionId

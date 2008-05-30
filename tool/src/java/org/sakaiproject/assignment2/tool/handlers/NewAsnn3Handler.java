@@ -47,7 +47,7 @@ public class NewAsnn3Handler extends Asnn2HandlerBase
 
 		Assignment2 asnn = asnnLogic.getAssignmentByIdWithGroupsAndAttachments(Long.parseLong(id));
 		if (resubmissions != null)
-			if ("2".equals(resubmissions) && numResubmit != null)
+			if (numResubmit != null && Integer.parseInt(resubmissions) >= 2)
 				asnn.setNumSubmissionsAllowed(Integer.parseInt(numResubmit));
 			else
 				asnn.setNumSubmissionsAllowed(Integer.parseInt(resubmissions));

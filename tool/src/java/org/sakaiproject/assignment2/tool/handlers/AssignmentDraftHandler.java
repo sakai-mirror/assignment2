@@ -11,7 +11,7 @@ import org.sakaiproject.assignment2.model.Assignment2;
 /**
  * Handler to move posted assignments to drafts.
  */
-public class AssignmentDraft extends Asnn2HandlerBase
+public class AssignmentDraftHandler extends Asnn2HandlerBase
 {
 	@Override
 	public void handleGet(HttpServletRequest request, HttpServletResponse response)

@@ -6,9 +6,9 @@
 	<body>
 		<script type='text/javascript'>
 		var qs = new Querystring();
-		if (qs.get('refresh'))
+		if (qs.get('refresh') && parent.location)
 			parent.location.reload(true);
-		else if (parent.tb_remove)
+		if (parent.tb_remove)
 			parent.tb_remove();
 		else if (tb_remove)
 			tb_remove();

@@ -11,7 +11,7 @@ import org.sakaiproject.assignment2.model.Assignment2;
 /**
  * Handler to post assignments to students.
  */
-public class AssignmentPost extends Asnn2HandlerBase
+public class AssignmentPostHandler extends Asnn2HandlerBase
 {
 	public void handleGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException

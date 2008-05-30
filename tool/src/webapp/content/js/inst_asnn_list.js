@@ -28,9 +28,31 @@ var testdata = {
 };
 
 var InstAsnnList = {
+	context: null,
 	navTemplate: null,
 	draftTemplate: null,
 	postedTemplate: null,
+
+	show: function(context)
+	{
+		// if a context is provided, get the data from the server
+		if (context)
+		{
+			InstAsnnList.context = context;
+			jQuery('#newLink').attr('href', 'newassignment1.html?context=' + context + '&KeepThis=true&TB_iframe=true&width=800&height=600&modal=true');
+	
+			var url = '/sakai-assignment2-tool/sdata/asnnList?context=' + context;
+			jQuery.getJSON(url, function(data)
+			{
+				InstAsnnList.paintAssignments(data);
+			});
+		}
+		// with no context, use test data
+		else
+		{
+			InstAsnnList.paintAssignments(testdata);
+		}
+	},
 
 	paintAssignments: function(data)
 	{
@@ -52,11 +74,24 @@ var InstAsnnList = {
 		jQuery("#draftAssns").tablesorter({headers: {0: {sorter: false}}});
 		jQuery("#postedAssns").tablesorter();
 
+		// make sure thickbox is applied
+		tb_init('a.thickbox, area.thickbox, input.thickbox');
+
 		// set the iframe to the fit the screen
 		if (window.frameElement)
 		{
 			setMainFrameHeight(window.frameElement.name);
 		}
+	},
+
+	copyAsnn: function(asnnId)
+	{
+		var url = '/sakai-assignment2-tool/sdata/asnnCopy';
+		var data = {context: InstAsnnList.context, id: asnnId};
+		jQuery.post(url, data, function(data, textStatus)
+		{
+			InstAsnnList.show(InstAsnnList.context);
+		});
 	}
 }
 
@@ -69,20 +104,5 @@ jQuery(document).ready(function()
 	InstAsnnList.draftTemplate = TrimPath.parseDOMTemplate('draft_template');
 	InstAsnnList.postedTemplate = TrimPath.parseDOMTemplate('posted_template');
 
-	// if a context is provided, get the data from the server
-	if (context)
-	{
-		jQuery('#newLink').attr('href', 'newassignment1.html?context=' + context + '&KeepThis=true&TB_iframe=true&width=800&height=600&modal=true');
-
-		var url = '/sakai-assignment2-tool/sdata/asnnList?context=' + context;
-		jQuery.getJSON(url, function(data)
-		{
-			InstAsnnList.paintAssignments(data);
-		});
-	}
-	// with no context, use test data
-	else
-	{
-		InstAsnnList.paintAssignments(testdata);
-	}
+	InstAsnnList.show(context);
 });
