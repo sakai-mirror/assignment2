@@ -44,6 +44,7 @@ public class NewAsnn3Handler extends Asnn2HandlerBase
 		String numResubmit = request.getParameter("numResubmit");
 		String notifications = request.getParameter("notifications");
 		String honorCode = request.getParameter("honorcode");
+		String draft = request.getParameter("draft");
 
 		Assignment2 asnn = asnnLogic.getAssignmentByIdWithGroupsAndAttachments(Long.parseLong(id));
 		if (resubmissions != null)
@@ -53,19 +54,16 @@ public class NewAsnn3Handler extends Asnn2HandlerBase
 				asnn.setNumSubmissionsAllowed(Integer.parseInt(resubmissions));
 		asnn.setNotificationType(Integer.parseInt(notifications));
 		asnn.setHonorPledge(Boolean.parseBoolean(honorCode));
-
-		String draft = request.getParameter("draft");
-		String next = "/sakai-assignment2-tool/content/templates/close.html?refresh=true";
 		if (draft != null)
-		{
 			asnn.setDraft(true);
-		}
 		// check if the 'post' button was clicked
 		else if (post != null)
-		{
 			asnn.setDraft(false);
-		}
-		else if (prev != null)
+		asnnLogic.saveAssignment(asnn);
+
+		String next = "/sakai-assignment2-tool/content/templates/close.html?refresh=true";
+		
+		if (prev != null)
 		{
 			next = "/sakai-assignment2-tool/content/templates/newassignment2.html?id="
 					+ asnn.getId();
@@ -75,7 +73,6 @@ public class NewAsnn3Handler extends Asnn2HandlerBase
 			next = "/sakai-assignment2-tool/content/templates/newassignment1.html?id="
 					+ asnn.getId();
 		}
-		asnnLogic.saveAssignment(asnn);
 
 		response.sendRedirect(next);
 	}
