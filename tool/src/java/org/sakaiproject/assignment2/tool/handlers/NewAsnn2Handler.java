@@ -105,6 +105,8 @@ public class NewAsnn2Handler extends Asnn2HandlerBase
 		{
 			Assignment2 asnn = asnnLogic.getAssignmentByIdWithGroupsAndAttachments(Long
 					.parseLong(id));
+			if (draft != null)
+				asnn.setDraft(true);
 			asnn.setSubmissionType(Integer.parseInt(submissionType));
 			if (hasOpenDate && openDate.length() > 0)
 				asnn.setOpenTime(dateTimeFormatter.parse(openDate));
@@ -134,11 +136,13 @@ public class NewAsnn2Handler extends Asnn2HandlerBase
 			{
 				asnn.setGradableObjectId(null);
 			}
+			asnnLogic.saveAssignment(asnn);
+
+			// determine next step
 			String next = "/sakai-assignment2-tool/content/templates/newassignment3.html?id="
 					+ asnn.getId();
 			if (draft != null)
 			{
-				asnn.setDraft(true);
 				next = "/sakai-assignment2-tool/content/templates/close.html?refresh=true";
 			}
 			else if (prev != null)
@@ -146,7 +150,6 @@ public class NewAsnn2Handler extends Asnn2HandlerBase
 				next = "/sakai-assignment2-tool/content/templates/newassignment1.html?id="
 						+ asnn.getId();
 			}
-			asnnLogic.saveAssignment(asnn);
 
 			response.sendRedirect(next);
 		}

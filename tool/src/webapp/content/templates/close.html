@@ -5,13 +5,17 @@
 	</head>
 	<body>
 		<script type='text/javascript'>
-		var qs = new Querystring();
-		if (qs.get('refresh') && parent.location)
-			parent.location.reload(true);
 		if (parent.tb_remove)
 			parent.tb_remove();
 		else if (tb_remove)
 			tb_remove();
+
+		var qs = new Querystring();
+		if (qs.get('refresh'))
+			if (parent.location)
+				parent.location.reload(true);
+			else
+				location.reload(true);
 		</script>
 	</body>
 </html>

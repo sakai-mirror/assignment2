@@ -66,25 +66,27 @@ public class NewAsnn1Handler extends Asnn2HandlerBase
 			asnn.setAddedToSchedule(false);
 			asnn.setRemoved(false);
 		}
+
+		if (draft != null)
+			asnn.setDraft(true);
+		else if (asnn.isDraft() == null)
+			asnn.setDraft(false);
+
 		// set the data that is submitted
 		asnn.setTitle(title);
+		asnn.setInstructions(instructions);
+
+		asnnLogic.saveAssignment(asnn);
+
 		if (draft != null)
 		{
-			asnn.setDraft(true);
 			next = "/sakai-assignment2-tool/content/templates/close.html?refresh=true";
 		}
 		else if (end != null)
 		{
-			next = "/sakai-assignment2-tool/content/templates/newassignment3.html?id=" + id
-					+ "&context=" + context;
+			next = "/sakai-assignment2-tool/content/templates/newassignment3.html?id="
+					+ asnn.getId() + "&context=" + context;
 		}
-		if (asnn.isDraft() == null)
-		{
-			asnn.setDraft(false);
-		}
-		asnn.setInstructions(instructions);
-
-		asnnLogic.saveAssignment(asnn);
 
 		response.sendRedirect(next);
 	}
