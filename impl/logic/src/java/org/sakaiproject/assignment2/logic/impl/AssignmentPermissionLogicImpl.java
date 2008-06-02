@@ -283,7 +283,8 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
 		
 		List<String> availStudents = new ArrayList<String>();
 		
-		String contextId = externalLogic.getCurrentContextId();
+//		String contextId = externalLogic.getCurrentContextId();
+		String contextId = assignment.getContextId();
 		String userId = externalLogic.getCurrentUserId();
 
 		List<AssignmentGroup> assignGroupRestrictions = 

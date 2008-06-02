@@ -39,7 +39,6 @@ var InstAsnnList = {
 		if (context)
 		{
 			InstAsnnList.context = context;
-			jQuery('#newLink').attr('href', 'newassignment1.html?context=' + context + '&KeepThis=true&TB_iframe=true&width=800&height=600&modal=true');
 	
 			var url = '/sakai-assignment2-tool/sdata/asnnList?context=' + context;
 			jQuery.getJSON(url, function(data)
@@ -80,7 +79,9 @@ var InstAsnnList = {
 		// set the iframe to the fit the screen
 		if (window.frameElement)
 		{
-			setMainFrameHeight(window.frameElement.name);
+			var height = jQuery("#" + window.frameElement.id, parent.document).height();
+			jQuery("#" + window.frameElement.id, parent.document).height(Math.max(700, height));
+//			setMainFrameHeight(window.frameElement.id);
 		}
 	},
 

@@ -636,4 +636,9 @@ public class AssignmentDaoImplTest extends Assignment2DaoTestBase {
 		// should show up 0 b/c not submitted
 		assertEquals(0, assignmentDao.getNumSubmittedVersions(AssignmentTestDataLoad.STUDENT3_UID, testData.a1Id));
 	}
+
+	public void testFindLatestSubmissionsAssignment() throws Exception
+	{
+		assignmentDao.getLatestSubmissionsForAssignment(testData.a2Id);
+	}
 }

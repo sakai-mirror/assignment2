@@ -23,7 +23,7 @@ function tb_init(domChunk){
 	var a = this.href || this.alt;
 	var g = this.rel || false;
 	//check size of parent iframe -- HACK
-	if (jQuery(document).height() < getPageScrollTop() + 600) {
+	if (window.a2SetMainFrameHeight && jQuery(document).height() < getPageScrollTop() + 600) {
 		a2SetMainFrameHeight(getPageScrollTop() + 600);
 	}
 	//END HACK
@@ -312,11 +312,14 @@ function tb_showIframe(){
 }
 
 function tb_remove() {
+	var ref = parent.document || document;
  	jQuery("#TB_imageOff").unbind("click");
 	jQuery("#TB_closeWindowButton").unbind("click");
 	jQuery("#TB_window").fadeOut("fast",function(){jQuery('#TB_window,#TB_overlay,#TB_HideSelect').trigger("unload").unbind().remove();
-	jQuery("#portalMask", parent.document).trigger("unload").unbind().remove();
+		jQuery("#portalMask", ref).trigger("unload").unbind().remove();
 	});
+	// had to call this again to get the area to go away.  dunno why yet
+	jQuery("#portalMask", ref).trigger("unload").unbind().remove();
 	jQuery("#TB_load").remove();
 	if (typeof document.body.style.maxHeight == "undefined") {//if IE 6
 		jQuery("body","html").css({height: "auto", width: "auto"});
@@ -326,7 +329,7 @@ function tb_remove() {
 	if (window.frameElement)
 	{
 		var iframeId = window.frameElement.id;
-		jQuery("#" + iframeId, parent.document).css("z-index", "0");
+		jQuery("#" + iframeId, ref).css("z-index", "0");
 	}
 	document.onkeydown = "";
 	document.onkeyup = "";
@@ -336,7 +339,11 @@ function tb_remove() {
 function tb_position() {
 tops = getPageScrollTop();
 jQuery("#TB_window").css({marginLeft: '-' + parseInt((TB_WIDTH / 2),10) + 'px', width: TB_WIDTH + 'px'});
-jQuery("#TB_window").css({top: (tops > 0 ? tops -100 : tops + (jQuery.browser.msie && jQuery.browser.version < 7 ? 300 : 100)) + 'px'});
+//jQuery("#TB_window").css({top: (tops > 0 ? tops -100 : tops + (jQuery.browser.msie && jQuery.browser.version < 7 ? 300 : 100)) + 'px'});
+
+	if ( !(jQuery.browser.msie && jQuery.browser.version < 7)) { // take away IE6
+		$("#TB_window").css({marginTop: '-' + parseInt((TB_HEIGHT / 2),10) + 'px'});
+	}
 
 	//if ( !(jQuery.browser.msie && jQuery.browser.version < 7)) { // take away IE6
 	//	jQuery("#TB_window").css({marginTop: '-' + parseInt((TB_HEIGHT / 2),10) + 'px'});
