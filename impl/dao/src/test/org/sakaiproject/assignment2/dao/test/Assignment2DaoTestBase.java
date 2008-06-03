@@ -28,7 +28,7 @@ import org.springframework.test.AbstractTransactionalSpringContextTests;
 
 
 /**
- * Base class for gradebook test classes that provides the spring application
+ * Base class for test classes that provides the spring application
  * context.  The database used is an in-memory hsqldb by default, but this can
  * be overridden to test specific database configurations by setting the "mem"
  * system property to "false".  In the "mem=false" case, the database configuration

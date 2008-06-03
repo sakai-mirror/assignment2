@@ -299,4 +299,12 @@ public interface ExternalGradebookLogic {
 	 * view grade information for a student in the list for the assoc gb item
 	 */
 	public Map<String, GradeInformation> getGradeInformationForStudents(String contextId, List<String> studentIdList, Assignment2 assignment);
+	
+	/**
+	 * 
+	 * @param contextId
+	 * @param gradableObjectId
+	 * @return true if the current user may view this gradebook item in the gradebook
+	 */
+	public boolean isCurrentUserAbleToViewGradebookItem(String contextId, Long gradableObjectId);
 }

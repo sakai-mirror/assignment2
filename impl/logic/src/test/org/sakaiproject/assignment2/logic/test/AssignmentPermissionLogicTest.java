@@ -66,7 +66,7 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
    public void testIsUserAbleToViewStudentSubmissionForAssignment() {
 	   // try passing a null studentId
 	   try {
-		   permissionLogic.isUserAbleToViewStudentSubmissionForAssignment(null, new Assignment2());
+		   permissionLogic.isUserAbleToViewStudentSubmissionForAssignment(null, 12345L);
 		   fail("Did not catch null student passed to isUserAbleToViewStudentSubmissionForAssignment");
 	   } catch (IllegalArgumentException iae) {}
 	   
@@ -90,48 +90,48 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
 	   // instructor should be able to view any student
 	   externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
 	   assertTrue(permissionLogic.isUserAbleToViewStudentSubmissionForAssignment(
-			   AssignmentTestDataLoad.STUDENT1_UID, testData.a2));
+			   AssignmentTestDataLoad.STUDENT1_UID, testData.a2Id));
 	   assertTrue(permissionLogic.isUserAbleToViewStudentSubmissionForAssignment(
-			   AssignmentTestDataLoad.STUDENT2_UID, testData.a2));
+			   AssignmentTestDataLoad.STUDENT2_UID, testData.a2Id));
 	   assertTrue(permissionLogic.isUserAbleToViewStudentSubmissionForAssignment(
-			   AssignmentTestDataLoad.STUDENT3_UID, testData.a2));
+			   AssignmentTestDataLoad.STUDENT3_UID, testData.a2Id));
 	   // switch to TA
 	   // ta may only view members in his/her section
 	   externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
 	   assertTrue(permissionLogic.isUserAbleToViewStudentSubmissionForAssignment(
-			   AssignmentTestDataLoad.STUDENT1_UID, testData.a2));
+			   AssignmentTestDataLoad.STUDENT1_UID, testData.a2Id));
 	   assertFalse(permissionLogic.isUserAbleToViewStudentSubmissionForAssignment(
-			   AssignmentTestDataLoad.STUDENT2_UID, testData.a2));
+			   AssignmentTestDataLoad.STUDENT2_UID, testData.a2Id));
 	   assertFalse(permissionLogic.isUserAbleToViewStudentSubmissionForAssignment(
-			   AssignmentTestDataLoad.STUDENT3_UID, testData.a2));
+			   AssignmentTestDataLoad.STUDENT3_UID, testData.a2Id));
 	   
 	   // now consider a graded assignment. with no grader perms, the same rules
 	   // as above apply
 	// instructor should be able to view any student
 	   externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
 	   assertTrue(permissionLogic.isUserAbleToViewStudentSubmissionForAssignment(
-			   AssignmentTestDataLoad.STUDENT1_UID, testData.a3));
+			   AssignmentTestDataLoad.STUDENT1_UID, testData.a3Id));
 	   assertTrue(permissionLogic.isUserAbleToViewStudentSubmissionForAssignment(
-			   AssignmentTestDataLoad.STUDENT2_UID, testData.a3));
+			   AssignmentTestDataLoad.STUDENT2_UID, testData.a3Id));
 	   assertTrue(permissionLogic.isUserAbleToViewStudentSubmissionForAssignment(
-			   AssignmentTestDataLoad.STUDENT3_UID, testData.a3));
+			   AssignmentTestDataLoad.STUDENT3_UID, testData.a3Id));
 	   // switch to TA
 	   // ta may only view members in his/her section
 	   externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
 	   assertTrue(permissionLogic.isUserAbleToViewStudentSubmissionForAssignment(
-			   AssignmentTestDataLoad.STUDENT1_UID, testData.a3));
+			   AssignmentTestDataLoad.STUDENT1_UID, testData.a3Id));
 	   assertFalse(permissionLogic.isUserAbleToViewStudentSubmissionForAssignment(
-			   AssignmentTestDataLoad.STUDENT2_UID, testData.a3));
+			   AssignmentTestDataLoad.STUDENT2_UID, testData.a3Id));
 	   assertFalse(permissionLogic.isUserAbleToViewStudentSubmissionForAssignment(
-			   AssignmentTestDataLoad.STUDENT3_UID, testData.a3));
+			   AssignmentTestDataLoad.STUDENT3_UID, testData.a3Id));
 	   
 	   // TODO - check grader permissions!!
 	   
 	   // user may view their own submission
 	   externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT1_UID);
-	   assertTrue(permissionLogic.isUserAbleToViewStudentSubmissionForAssignment(AssignmentTestDataLoad.STUDENT1_UID, testData.a1));
+	   assertTrue(permissionLogic.isUserAbleToViewStudentSubmissionForAssignment(AssignmentTestDataLoad.STUDENT1_UID, testData.a1Id));
 	   // but they may not view others
-	   assertFalse(permissionLogic.isUserAbleToViewStudentSubmissionForAssignment(AssignmentTestDataLoad.STUDENT2_UID, testData.a1));
+	   assertFalse(permissionLogic.isUserAbleToViewStudentSubmissionForAssignment(AssignmentTestDataLoad.STUDENT2_UID, testData.a1Id));
    }
    
    public void testIsUserAbleToProvideFeedbackForStudentForAssignment() {

@@ -1,6 +1,6 @@
 /**********************************************************************************
- * $URL$
- * $Id$
+ * $URL:https://source.sakaiproject.org/contrib/assignment2/trunk/api/logic/src/java/org/sakaiproject/assignment2/logic/AssignmentPermissionLogic.java $
+ * $Id:AssignmentPermissionLogic.java 48274 2008-04-23 20:07:00Z wagnermr@iupui.edu $
  ***********************************************************************************
  *
  * Copyright (c) 2007 The Sakai Foundation.
@@ -45,11 +45,11 @@ public interface AssignmentPermissionLogic {
 	/**
 	 * 
 	 * @param studentId
-	 * @param assignment
+	 * @param assignmentId
 	 * @return true if the current user is allowed to view the given student's
 	 * submission for the given assignment
 	 */
-	public boolean isUserAbleToViewStudentSubmissionForAssignment(String studentId, Assignment2 assignment);
+	public boolean isUserAbleToViewStudentSubmissionForAssignment(String studentId, Long assignmentId);
 	
 	/**
 	 * 
@@ -136,4 +136,15 @@ public interface AssignmentPermissionLogic {
 	 * @return true if the current user is a student in the gradebook
 	 */
 	 public boolean isCurrentUserAbleToSubmit(String contextId);
+	 
+	 /**
+	  * 
+	  * @param contextId
+	  * @param assignmentId
+	  * @return true if the current user has access to this assignment. some scenarios that
+	  * would be false: if user is a student and assignment is restricted to groups outside of student's memberships
+	  * or not open;
+	  * if user is TA but does not have grading privileges for an the assign's associated gb item
+	  */
+	 public boolean isUserAbleToViewAssignment(String contextId, Long assignmentId);
 }

@@ -64,7 +64,7 @@ public class Assignment2ViewParamsInterceptor implements ViewParamsInterceptor {
 		}
 		
 		//If current user has permission access to requested view
-		if (localPermissionLogic.checkCurrentUserHasViewPermission(incoming.viewID)){
+		if (localPermissionLogic.checkCurrentUserHasViewPermission(incoming)){
 			
 			//now do specific interceptions for student submission pages
 			//Student always has same link, redirect here based on it being open or not
@@ -82,7 +82,7 @@ public class Assignment2ViewParamsInterceptor implements ViewParamsInterceptor {
 			
 			
 			return incoming;
-		} else if (localPermissionLogic.checkCurrentUserHasViewPermission(StudentAssignmentListProducer.VIEW_ID)) {
+		} else if (localPermissionLogic.checkCurrentUserHasViewPermission(new AssignmentListSortViewParams(StudentAssignmentListProducer.VIEW_ID))) {
 			return new AssignmentListSortViewParams(StudentAssignmentListProducer.VIEW_ID);
 			
 		}

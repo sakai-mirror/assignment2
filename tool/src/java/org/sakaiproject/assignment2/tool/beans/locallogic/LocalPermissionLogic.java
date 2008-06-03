@@ -27,9 +27,15 @@ import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
 import org.sakaiproject.assignment2.tool.producers.*;
 import org.sakaiproject.assignment2.tool.producers.dev.*;
 import org.sakaiproject.assignment2.tool.producers.fragments.*;
+import org.sakaiproject.assignment2.tool.params.AssignmentViewParams;
+import org.sakaiproject.assignment2.tool.params.FragmentGradebookDetailsViewParams;
+import org.sakaiproject.assignment2.tool.params.GradeViewParams;
 import org.sakaiproject.assignment2.tool.params.SimpleAssignmentViewParams;
+import org.sakaiproject.assignment2.tool.params.ViewSubmissionsViewParams;
+import org.sakaiproject.assignment2.tool.params.ZipViewParams;
 
 import uk.org.ponder.rsf.builtin.UVBProducer;
+import uk.org.ponder.rsf.viewstate.ViewParameters;
 
 public class LocalPermissionLogic {
 	
@@ -48,13 +54,15 @@ public class LocalPermissionLogic {
 		this.submissionLogic = submissionLogic;
 	}
 	
-	public Boolean checkCurrentUserHasViewPermission(String viewId) {
+	public Boolean checkCurrentUserHasViewPermission(ViewParameters viewParams) {
 		String contextId = externalLogic.getCurrentContextId();
+		String viewId = viewParams.viewID;
 		
 		if (AddAttachmentHelperProducer.VIEWID.equals(viewId)) {
 			return Boolean.TRUE;
 			
 		} else if (AssignmentDetailProducer.VIEW_ID.equals(viewId)) {
+			// used by entity broker
 			return Boolean.TRUE;
 			
 		} else if (AssignmentListSortViewProducer.VIEW_ID.equals(viewId)) {
@@ -67,31 +75,57 @@ public class LocalPermissionLogic {
 			return Boolean.TRUE;
 			
 		} else if (GradeProducer.VIEW_ID.equals(viewId) || GradeDevProducer.VIEW_ID.equals(viewId)) {
-			return permissionLogic.isUserAbleToAccessInstructorView(contextId);
+			if (viewParams instanceof GradeViewParams)
+			{
+				GradeViewParams params = (GradeViewParams) viewParams;
+				return permissionLogic.isUserAbleToViewStudentSubmissionForAssignment(params.userId, params.assignmentId);
+			} 
 			
+			return Boolean.FALSE;
+
 		} else if (StudentAssignmentListProducer.VIEW_ID.equals(viewId)) {
 			return permissionLogic.isCurrentUserAbleToSubmit(contextId);
 			
 		} else if (StudentSubmitProducer.VIEW_ID.equals(viewId)) {
-			return permissionLogic.isCurrentUserAbleToSubmit(contextId);
+			if (viewParams instanceof SimpleAssignmentViewParams) {
+				SimpleAssignmentViewParams params = (SimpleAssignmentViewParams) viewParams;
+				
+				return permissionLogic.isCurrentUserAbleToSubmit(contextId) && 
+					permissionLogic.isUserAbleToViewAssignment(contextId, params.assignmentId);
+			}
+			
+			return Boolean.FALSE;
 			
 		} else if (ViewSubmissionsProducer.VIEW_ID.equals(viewId)) {
-			return permissionLogic.isUserAbleToAccessInstructorView(contextId);
+			if (viewParams instanceof ViewSubmissionsViewParams) {
+				ViewSubmissionsViewParams params = (ViewSubmissionsViewParams) viewParams;
+				
+				return permissionLogic.isUserAbleToAccessInstructorView(contextId) && 
+					permissionLogic.isUserAbleToViewAssignment(contextId, params.assignmentId);
+			}
+
+			return Boolean.FALSE;
 			
 		} else if (AjaxCallbackProducer.VIEW_ID.equals(viewId)) {
 			return Boolean.TRUE;
 			
 		} else if (FragmentAssignment2SelectProducer.VIEW_ID.equals(viewId)) {
-			return permissionLogic.isUserAbleToAccessInstructorView(contextId);
+			return permissionLogic.isCurrentUserAbleToEditAssignments(contextId);
 			
 		} else if (FragmentAssignmentPreviewProducer.VIEW_ID.equals(viewId)) {
-			return permissionLogic.isUserAbleToAccessInstructorView(contextId);
+			return permissionLogic.isCurrentUserAbleToEditAssignments(contextId);
 			
 		} else if (FragmentGradebookDetailsProducer.VIEW_ID.equals(viewId)) {
-			return permissionLogic.isUserAbleToAccessInstructorView(contextId);
+			if (viewParams instanceof FragmentGradebookDetailsViewParams) {
+				FragmentGradebookDetailsViewParams params = (FragmentGradebookDetailsViewParams) viewParams;
+				return permissionLogic.isUserAbleToViewStudentSubmissionForAssignment(params.userId, params.assignmentId);
+			}
+			
+			return Boolean.FALSE;
 			
 		} else if (FragmentSubmissionGradePreviewProducer.VIEW_ID.equals(viewId)) {
-			return permissionLogic.isUserAbleToAccessInstructorView(contextId);
+			//TODO - RYAN!  Remove this producer!
+			return Boolean.FALSE;
 			
 		} else if (FragmentSubmissionPreviewProducer.VIEW_ID.equals(viewId)) {
 			return permissionLogic.isCurrentUserAbleToSubmit(contextId);
@@ -100,13 +134,33 @@ public class LocalPermissionLogic {
 			return Boolean.TRUE;
 		
 		} else if (UploadAllProducer.VIEW_ID.equals(viewId)) {
-			return permissionLogic.isUserAbleToAccessInstructorView(contextId);
+			if (viewParams instanceof AssignmentViewParams) {
+				AssignmentViewParams params = (AssignmentViewParams) viewParams;
+				
+				return permissionLogic.isUserAbleToAccessInstructorView(contextId) && 
+					permissionLogic.isUserAbleToViewAssignment(contextId, params.assignmentId);
+			}
 			
+			return Boolean.FALSE;
+	
 		} else if (FragmentAssignmentInstructionsProducer.VIEW_ID.equals(viewId)) {
-			return permissionLogic.isUserAbleToAccessInstructorView(contextId);
+			if (viewParams instanceof AssignmentViewParams) {
+				AssignmentViewParams params = (AssignmentViewParams) viewParams;
+				
+				return permissionLogic.isUserAbleToViewAssignment(contextId, params.assignmentId);
+			}
+			
+			return Boolean.FALSE;
 			
 		} else if ("zipSubmissions".equals(viewId)) {
-			return permissionLogic.isUserAbleToAccessInstructorView(contextId);
+			if (viewParams instanceof ZipViewParams) {
+				ZipViewParams params = (ZipViewParams) viewParams;
+				
+				return permissionLogic.isUserAbleToAccessInstructorView(contextId) &&
+					permissionLogic.isUserAbleToViewAssignment(contextId, params.assignmentId);
+			}
+			
+			return Boolean.FALSE;
 			
 		} else if (TaggableHelperProducer.VIEWID.equals(viewId)) {
 			return permissionLogic.isUserAbleToAccessInstructorView(contextId);

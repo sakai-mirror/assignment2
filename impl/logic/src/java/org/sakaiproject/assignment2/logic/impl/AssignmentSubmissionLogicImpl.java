@@ -102,7 +102,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 
 		Assignment2 assignment = submission.getAssignment();
 
-		if (!permissionLogic.isUserAbleToViewStudentSubmissionForAssignment(submission.getUserId(), assignment)) {
+		if (!permissionLogic.isUserAbleToViewStudentSubmissionForAssignment(submission.getUserId(), assignment.getId())) {
 			throw new SecurityException("user" + currentUserId + " attempted to view submission with id " + submissionId + " but is not authorized");
 		}
 
@@ -135,7 +135,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			Assignment2 assignment = submission.getAssignment();
 			
 			// ensure that the current user is authorized to view this user for this assignment
-			if (!permissionLogic.isUserAbleToViewStudentSubmissionForAssignment(submission.getUserId(), assignment)) {
+			if (!permissionLogic.isUserAbleToViewStudentSubmissionForAssignment(submission.getUserId(), assignment.getId())) {
 				throw new SecurityException("User " + currentUserId + " attempted to access the version " + 
 						submissionVersionId + " for student " + submission.getUserId() + " without authorization");
 			}
@@ -165,7 +165,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			throw new AssignmentNotFoundException("No assignment found with id: " + assignmentId);
 		}
 
-		if (!permissionLogic.isUserAbleToViewStudentSubmissionForAssignment(studentId, assignment)) {
+		if (!permissionLogic.isUserAbleToViewStudentSubmissionForAssignment(studentId, assignment.getId())) {
 			throw new SecurityException("Current user " + currentUserId + " is not allowed to view submission for " + studentId + " for assignment " + assignment.getId());
 		}
 
@@ -892,7 +892,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		
 		List<AssignmentSubmissionVersion> filteredVersionHistory = new ArrayList<AssignmentSubmissionVersion>();
 		
-		if (!permissionLogic.isUserAbleToViewStudentSubmissionForAssignment(submission.getUserId(), submission.getAssignment())) {
+		if (!permissionLogic.isUserAbleToViewStudentSubmissionForAssignment(submission.getUserId(), submission.getAssignment().getId())) {
 			throw new SecurityException("User " + externalLogic.getCurrentUserId() +
 					" attempted to access version history for student " + submission.getUserId() +
 					" without authorization!");

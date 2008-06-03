@@ -612,4 +612,26 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
 		
 		return studentsWithInvalidGrades;
 	}
+	
+	public boolean isCurrentUserAbleToViewGradebookItem(String contextId, Long gradableObjectId) {
+		if (contextId == null || gradableObjectId == null) {
+			throw new IllegalArgumentException ("Null parameter passed to " +
+					"sCurrentUserAbleToViewGradebookItem - contextId: " + contextId + 
+					", gradableObjectId: " + gradableObjectId);
+		}
+		
+		boolean allowed = false;
+		
+		if (isCurrentUserAbleToGradeAll(contextId)) {
+			allowed = true;
+    	} else if (isCurrentUserAbleToGrade(contextId) || isCurrentUserAStudentInGb(contextId)) {
+    		// check to see if this assignment is among the viewable assign for this user
+    		Map<Long, String> gbItemIdToTitleMap = getViewableGradableObjectIdTitleMap(contextId);
+    		if (gbItemIdToTitleMap.containsKey(gradableObjectId)) {
+    			allowed = true;
+    		}
+    	} 
+		
+		return allowed;
+	}
 }

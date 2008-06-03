@@ -1,6 +1,6 @@
 /**********************************************************************************
- * $URL$
- * $Id$
+ * $URL:https://source.sakaiproject.org/contrib/assignment2/trunk/impl/logic/src/java/org/sakaiproject/assignment2/logic/impl/AssignmentPermissionLogicImpl.java $
+ * $Id:AssignmentPermissionLogicImpl.java 48274 2008-04-23 20:07:00Z wagnermr@iupui.edu $
  ***********************************************************************************
  *
  * Copyright (c) 2007 The Sakai Foundation.
@@ -31,6 +31,7 @@ import java.util.Collection;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment2.dao.AssignmentDao;
+import org.sakaiproject.assignment2.exception.AssignmentNotFoundException;
 import org.sakaiproject.assignment2.exception.SubmissionNotFoundException;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
@@ -75,12 +76,17 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
     	return gradebookLogic.isCurrentUserAbleToEdit(contextId);
     }
     
-    public boolean isUserAbleToViewStudentSubmissionForAssignment(String studentId, Assignment2 assignment) {
-    	if (studentId == null || assignment == null) {
-    		throw new IllegalArgumentException("Null studentId or assignment passed to isUserAbleToViewStudentSubmissionForAssignment");
+    public boolean isUserAbleToViewStudentSubmissionForAssignment(String studentId, Long assignmentId) {
+    	if (studentId == null || assignmentId == null) {
+    		throw new IllegalArgumentException("Null studentId or assignmentId passed to isUserAbleToViewStudentSubmissionForAssignment");
     	}
     	
     	boolean viewable = false;
+    	
+    	Assignment2 assignment = (Assignment2)dao.findById(Assignment2.class, assignmentId);
+    	if (assignment == null) {
+    		throw new AssignmentNotFoundException("No assignment found with id: " + assignmentId + " found in isUserAbleToViewStudentSubmissionForAssignment");
+    	}
     	
     	if (externalLogic.getCurrentUserId().equals(studentId)) {
     		viewable = true;
@@ -177,6 +183,32 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
     	} else {
     		// the user must be a member of a restricted group to view assignment
         	viewable = isUserAMemberOfARestrictedGroup(groupMembershipIds, assignment.getAssignmentGroupSet());
+    	}
+    	
+    	return viewable;
+    }
+    
+    public boolean isUserAbleToViewGradedAssignment(Assignment2 assignment, Collection<String> groupMembershipIds) {
+    	if (assignment == null) {
+    		throw new IllegalArgumentException("Null assignment passed to isUserAbleToViewGradedAssignment");
+    	}
+    	
+    	if (assignment.isUngraded()) {
+    		throw new IllegalArgumentException("An ungraded assignment was passed to isUserAbleToViewGradedAssignment");
+    	}
+    	
+    	boolean viewable = false;
+    	boolean viewableInGb = gradebookLogic.isCurrentUserAbleToViewGradebookItem(
+    			assignment.getContextId(), assignment.getGradableObjectId());
+    	
+    	if (viewableInGb) {
+    		// if it is a student, we may need to filter by group
+    		if (assignment.getAssignmentGroupSet() != null && !assignment.getAssignmentGroupSet().isEmpty() &&
+    				gradebookLogic.isCurrentUserAStudentInGb(assignment.getContextId())) {
+    			viewable = isUserAMemberOfARestrictedGroup(groupMembershipIds, assignment.getAssignmentGroupSet());
+    		} else {
+    			viewable = true;
+    		}
     	}
     	
     	return viewable;
@@ -459,6 +491,26 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
 		}
 		
 		return allStudentsForAssign;
+	}
+
+	public boolean isUserAbleToViewAssignment(String contextId, Long assignmentId) {
+		boolean allowed = false;
+
+		// retrieve the assignment
+		Assignment2 assign = dao.getAssignmentByIdWithGroups(assignmentId);
+		List<String> groupMembershipIds = new ArrayList<String>();
+		if (assign.getAssignmentGroupSet() != null && !assign.getAssignmentGroupSet().isEmpty()) {
+			String currUser = externalLogic.getCurrentUserId();
+			groupMembershipIds = externalLogic.getUserMembershipGroupIdList(currUser, contextId);
+		}
+
+		if (assign.isUngraded()) {
+			allowed = isUserAbleToViewUngradedAssignment(assign, groupMembershipIds);
+		} else {
+			allowed = isUserAbleToViewGradedAssignment(assign, groupMembershipIds);
+		}
+		
+		return allowed;
 	}
 
 }
