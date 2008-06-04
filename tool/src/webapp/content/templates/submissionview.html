@@ -5,9 +5,11 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 
 	<title>Submission</title>
+
 	<link href="/library/skin/tool_base.css" type="text/css" rel="stylesheet" media="all"/>
 	<link href="/library/skin/default/tool.css" type="text/css" rel="stylesheet" media="all"/>
 	<link href="../css/asnn_assignment_authoring.css" type="text/css" rel="stylesheet" media="all" />
+
 	<script src="../js/jquery-1.2.3.min.js" type="text/javascript"></script>
 	<script src='../js/querystring-1.2.4.js' type='text/javascript'></script>
 	<script src="/library/editor/FCKeditor/fckeditor.js" type="text/javascript"></script>
@@ -33,9 +35,11 @@
 		<div class="toggle"><a href="#" id="drafts-toggle">&ndash;</a></div>
 		<div class="title"><h4>Saved Drafts/Pending</h4></div>
 		<div class="submcontent" id="drafts-content">
+		{if defined('drafts')}
 			{for d in drafts}
 				<a href="${d.url}">${d.date}</a><br />
 			{/for}
+		{/if}
 		</div>
 	</div>
 
@@ -45,29 +49,33 @@
 		<div class="submcontent" id="submission-content">
 			<p>
 				{if editSub}
-					<textarea class="fckeditor clear" id="submission" name="submission" cols="80" rows="24">${submission}</textarea>
+					<textarea class="fckeditor clear" id="submission" name="submission" cols="80" rows="24">{if defined('submission')}${submission}{/if}</textarea>
 					<div>
 						<input type="submit" value="Save as draft" />
 						<input type="submit" value="Cancel" />
 						<input type="submit" value="Submit" />
 					</div>
-				{else}
+				{elseif defined('submission')}
 					${submission}
 				{/if}
 			</p>
 			<p>
 				<span class="heading">Attachment(s):</span>
-				{for a in attachments}
-					<img src="../images/page_word.png" alt="Word Document" />
-					<a href="${a.url}">${a.id}</a>
-					(${a.size})
-				{/for}
+				{if defined('attachments')}
+					{for a in attachments}
+						<img src="../images/page_word.png" alt="Word Document" />
+						<a href="${a.url}">${a.id}</a>
+						(${a.size})
+					{/for}
+				{/if}
 			</p>
 			<p>
 				<span class="heading">Additional Resources:</span>
-				{for r in resources}
-					<a href="${r.url}">${r.url}</a>
-				{/for}
+				{if defined('resources')}
+					{for r in resources}
+						<a href="${r.url}">${r.url}</a>
+					{/for}
+				{/if}
 			</p>
 		</div>
 	</div>
@@ -79,13 +87,13 @@
 			<form action="#">
 				<p>
 					{if editFeedback}
-						<textarea class="fckeditor" id="feedback" name="feedback" cols="80" rows="24">${feedback}</textarea>
+						<textarea class="fckeditor" id="feedback" name="feedback" cols="80" rows="24">{if defined('feedback')}${feedback}{/if}</textarea>
 						<div>
 							<input type="submit" value="Save as draft" />
 							<input type="submit" value="Cancel" />
 							<input type="submit" value="Submit" />
 						</div>
-					{else}
+					{elseif defined('feedback')}
 						${feedback}
 					{/if}
 				</p>
@@ -97,9 +105,11 @@
 		<div class="toggle"><a href="#" id="history-toggle">&ndash;</a></div>
 		<div class="title"><h4>History</h4></div>
 		<div class="submcontent" id="history-content">
+		{if defined('history')}
 			{for h in history}
 				<a href="${h.url}">${h.date}</a><br />
 			{/for}
+		{/if}
 		</div>
 	</div>
 </pre>

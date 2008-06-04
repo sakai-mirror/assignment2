@@ -82,6 +82,7 @@
     				 left join fetch submission.submissionHistorySet versions
              where submission.id = :submissionId]]>
   	</query>
+  	<!--
   	<query name="findLatestSubmissionsForAssignment">
   		<![CDATA[from A2_SUBMISSION_VERSION_T a2
 			join (select submission_id, max(created_time) as created_time
@@ -89,5 +90,6 @@
 				group by submission_id) a2s with a2.submission_id = a2s.submission_id
 			and a2.created_time = a2s.created_time;]]>
   	</query>
+  	-->
   	
 </hibernate-mapping>

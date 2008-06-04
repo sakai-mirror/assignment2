@@ -39,7 +39,10 @@ var InstAsnnList = {
 		if (context)
 		{
 			InstAsnnList.context = context;
-	
+
+			// update newLink to include context
+			jQuery('#newLink').attr('href', 'newassignment1.html?context=' + context + '&KeepThis=true&TB_iframe=true&width=800&height=600&modal=true');
+
 			var url = '/sakai-assignment2-tool/sdata/asnnList?context=' + context;
 			jQuery.getJSON(url, function(data)
 			{
