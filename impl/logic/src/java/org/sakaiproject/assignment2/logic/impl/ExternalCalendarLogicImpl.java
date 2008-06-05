@@ -121,6 +121,8 @@ public class ExternalCalendarLogicImpl implements ExternalCalendarLogic {
 					CalendarEventEdit edit = calendar.getEditEvent(event.getId(), CalendarService.EVENT_ADD_CALENDAR);
 					// TODO - uncomment this when calendar is updated!!
 					//edit.setField(CalendarService.PROP_DISPLAY_EVENT_ON_DATE, dueDate.getTime() + "");
+					// we want this to be a formattedDescription to escape html chars, so we have to edit the object
+					edit.setDescriptionFormatted(eventDescription);
 
 					calendar.commitEvent(edit);
 					
@@ -173,7 +175,7 @@ public class ExternalCalendarLogicImpl implements ExternalCalendarLogic {
     		try {
     			CalendarEventEdit edit = calendar.getEditEvent(eventId, CalendarService.EVENT_MODIFY_CALENDAR);
 
-    			edit.setDescription(eventDescription);
+    			edit.setDescriptionFormatted(eventDescription);
     			edit.setDisplayName(eventTitle);
 
     			// convert the due date to a TimeRange

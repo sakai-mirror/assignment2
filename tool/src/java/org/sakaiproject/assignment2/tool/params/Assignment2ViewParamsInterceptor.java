@@ -22,14 +22,14 @@
 package org.sakaiproject.assignment2.tool.params;
 
 import org.sakaiproject.assignment2.tool.beans.locallogic.LocalPermissionLogic;
-import org.sakaiproject.assignment2.tool.producers.AuthorizationFailedProducer;
-import org.sakaiproject.assignment2.tool.producers.AssignmentListSortViewProducer;
 import org.sakaiproject.assignment2.tool.producers.AssignmentDetailProducer;
+import org.sakaiproject.assignment2.tool.producers.AssignmentListSortViewProducer;
+import org.sakaiproject.assignment2.tool.producers.AuthorizationFailedProducer;
+import org.sakaiproject.assignment2.tool.producers.RedirectToAssignmentProducer;
 import org.sakaiproject.assignment2.tool.producers.StudentAssignmentListProducer;
 import org.sakaiproject.assignment2.tool.producers.StudentSubmitProducer;
 import org.sakaiproject.assignment2.tool.producers.StudentSubmitSummaryProducer;
-import org.sakaiproject.assignment2.tool.params.SimpleAssignmentViewParams;
-import org.sakaiproject.assignment2.tool.params.VerifiableViewParams;
+import org.sakaiproject.assignment2.tool.producers.ViewSubmissionsProducer;
 
 import uk.org.ponder.rsf.viewstate.AnyViewParameters;
 import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
@@ -60,6 +60,19 @@ public class Assignment2ViewParamsInterceptor implements ViewParamsInterceptor {
 		if (incoming instanceof VerifiableViewParams) {
 			if(!((VerifiableViewParams)incoming).verify()){
 				return new AssignmentListSortViewParams(AssignmentListSortViewProducer.VIEW_ID);
+			}
+		}
+		
+		// depending on the user's perms in the site, will redirect them to either
+		// the "View Submissions" page or Student Summary/Submit page from this generic link
+		if (RedirectToAssignmentProducer.VIEWID.equals(incoming.viewID)) {
+			if (incoming instanceof SimpleAssignmentViewParams) {
+				SimpleAssignmentViewParams params = (SimpleAssignmentViewParams) incoming;
+				if (localPermissionLogic.checkCurrentUserHasViewPermission(new ViewSubmissionsViewParams(ViewSubmissionsProducer.VIEW_ID, params.assignmentId))) {
+					return new ViewSubmissionsViewParams(ViewSubmissionsProducer.VIEW_ID, params.assignmentId);
+				} else if (localPermissionLogic.checkCurrentUserHasViewPermission(new SimpleAssignmentViewParams(StudentSubmitProducer.VIEW_ID, params.assignmentId))) {
+					return new SimpleAssignmentViewParams(StudentSubmitProducer.VIEW_ID, params.assignmentId);
+				}
 			}
 		}
 		

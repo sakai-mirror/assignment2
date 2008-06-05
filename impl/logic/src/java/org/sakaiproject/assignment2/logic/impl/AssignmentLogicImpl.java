@@ -687,14 +687,16 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 		// make the due date locale-aware
 		// use a date which is related to the current users locale
         DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, bundleLogic.getLocale());
-		
+		// create url to point back to this assignment to be included in the description
+        String assignUrl = externalLogic.getAssignmentViewUrl(REDIRECT_ASSIGNMENT_VIEW_ID) + "/" + updatedAssignment.getId();
+        
 		String eventTitle = "";
 		String eventDescription = "";
 		if (updatedAssignment.getDueDate() != null) {
 			eventTitle = bundleLogic.getFormattedMessage("assignment2.schedule_event_title",
 					new Object[] {updatedAssignment.getTitle()});
 			eventDescription = bundleLogic.getFormattedMessage("assignment2.schedule_event_description",
-					new Object[] {updatedAssignment.getTitle(), df.format(updatedAssignment.getDueDate())});
+					new Object[] {assignUrl, updatedAssignment.getTitle(), df.format(updatedAssignment.getDueDate())});
 		}
 		
 		if (originalAssignment == null) {

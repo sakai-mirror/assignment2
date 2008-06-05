@@ -39,6 +39,8 @@ public interface AssignmentLogic {
     public static final String SORT_BY_TITLE = "title";
     public static final String SORT_BY_OPEN = "openTime";
     public static final String SORT_BY_DUE = "dueDate";
+    
+    public static final String REDIRECT_ASSIGNMENT_VIEW_ID = "redirectAssignmentViewId";
 	
 	/**
 	 * 
