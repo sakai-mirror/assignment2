@@ -22,36 +22,54 @@ var testdata = {
 	]
 };
 
-var InstSubmView = {
+var SubView = {
+	template: null,
+
 	addToggle : function(id, alreadyClosed)
 	{
 		var contentId = id + '-content';
 		var toggleId = id + '-toggle';
 		if (alreadyClosed) {
-				jQuery(toggleId).toggle(
-				function()
-				{
-					jQuery(this).text("–");
-					jQuery(contentId).slideDown('fast');
-				},
-				function()
-				{
-					jQuery(this).text('+');
-					jQuery(contentId).slideUp('fast');
-				});
+			jQuery(toggleId).toggle(
+			function()
+			{
+				jQuery(this).text("–");
+				jQuery(contentId).slideDown('fast');
+			},
+			function()
+			{
+				jQuery(this).text('+');
+				jQuery(contentId).slideUp('fast');
+			});
 		} else {
 			jQuery(toggleId).toggle(
-				function()
-				{
-        	jQuery(this).text('+');
-        	jQuery(contentId).slideUp('fast');
-				},
- 				function()
-				{
-					jQuery(this).text("–");
-					jQuery(contentId).slideDown('fast');
-				});
-			}
+			function()
+			{
+        		jQuery(this).text('+');
+        		jQuery(contentId).slideUp('fast');
+			},
+ 			function()
+			{
+				jQuery(this).text("–");
+				jQuery(contentId).slideDown('fast');
+			});
+		}
+	},
+
+	paintData: function(data)
+	{
+		// producte the template output
+		jQuery('#output').html(SubView.template.process(data));
+
+		// add the content toggles
+		SubView.addToggle('#assignment', true);
+		SubView.addToggle('#drafts', true);
+		SubView.addToggle('#submission', false);
+		SubView.addToggle('#feedback', false);
+		SubView.addToggle('#history', true);
+
+		// turn the textareas to fck editors
+		FckInserter.init('#output');
 	}
 };
 
@@ -59,7 +77,7 @@ jQuery(document).ready(function()
 {
 	var qs = new Querystring();
 
-	var template = TrimPath.parseDOMTemplate('template');
+	SubView.template = TrimPath.parseDOMTemplate('template');
 	var asnnId = qs.get('asnnId');
 	var subId = qs.get('subId');
 
@@ -69,19 +87,12 @@ jQuery(document).ready(function()
 		var url = '/sakai-assignment2-tool/sdata/subView?asnnId=' + asnnId + '&subId=' + subId;
 		jQuery.getJSON(url, function(data)
 		{
-//			alert(template.process(data));
-			jQuery('#output').html(template.process(data));
+			SubView.paintData(data);
 		});
 	}
 	// with no context, use test data
 	else
 	{
-		jQuery('#output').html(template.process(testdata));
+		SubView.paintData(testdata);
 	}
-
-	InstSubmView.addToggle('#assignment', true);
-	InstSubmView.addToggle('#drafts', true);
-	InstSubmView.addToggle('#submission', false);
-	InstSubmView.addToggle('#feedback', false);
-	InstSubmView.addToggle('#history', true);
 });

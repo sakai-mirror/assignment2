@@ -113,7 +113,14 @@ public interface AssignmentPermissionLogic {
 	 * @throws SecurityException if current user does not have grading privileges
 	 */
 	public List<String> getGradableStudentsForUserForItem(Assignment2 assignment);
-	
+
+	/**
+	 * 
+	 * @param assignment
+	 * @return true if the current user is allowed to make a submission for the given assignment
+	 */
+	public boolean isUserAbleToMakeSubmissionForAssignment(Assignment2 assignment);
+
 	/**
 	 * 
 	 * @param contextId

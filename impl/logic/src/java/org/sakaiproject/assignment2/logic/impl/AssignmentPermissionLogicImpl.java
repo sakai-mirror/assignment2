@@ -212,7 +212,11 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
 		
 		return instructorView;
 	}
-	
+
+	public boolean isUserAbleToMakeSubmissionForAssignment(Assignment2 assignment) {
+		return isUserAbleToMakeSubmissionForAssignment(assignment.getContextId(), assignment);
+	}
+
 	public boolean isUserAbleToMakeSubmissionForAssignment(String contextId, Assignment2 assignment) {
 		if (contextId == null || assignment == null) {
 			throw new IllegalArgumentException("null contextId or assignment passed to isUserAbleToMakeSubmission");

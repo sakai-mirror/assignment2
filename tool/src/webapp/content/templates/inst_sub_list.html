@@ -115,6 +115,7 @@
 		</tr>
 	</thead>
 	<tbody>
+	{if defined('submitted')}
 		{for s in submitted}
 		<tr class='dataRow'>
 			<td>${s.name}</td>
@@ -122,6 +123,7 @@
 			<td>${s.feedback}</td>
 		</tr>
 		{/for}
+	{/if}
 	</tbody>
 </table>
 </textarea>
@@ -138,6 +140,7 @@
 		</tr>
 	</thead>
 	<tbody>
+	{if defined('submitted')}
 		{for s in submitted}
 		<tr class='dataRow'>
 			<td>${s.name}</td>
@@ -147,6 +150,7 @@
 			<td>${s.feedback}</td>
 		</tr>
 		{/for}
+	{/if}
 	</tbody>
 </table>
 </textarea>
@@ -162,6 +166,7 @@
 		</tr>
 	</thead>
 	<tbody>
+	{if defined('returned')}
 		{for r in returned}
 		<tr class='dataRow'>
 			<td>${r.name}</td>
@@ -170,6 +175,7 @@
 			<td>${r.feedback}</td>
 		</tr>
 		{/for}
+	{/if}
 	</tbody>
 </table>
 </textarea>
@@ -186,6 +192,7 @@
 		</tr>
 	</thead>
 	<tbody>
+	{if defined('returned')}
 		{for r in returned}
 		<tr class='dataRow'>
 			<td>${r.name}</td>
@@ -195,15 +202,18 @@
 			<td>${r.feedback}</td>
 		</tr>
 		{/for}
+	{/if}
 	</tbody>
 </table>
 </textarea>
 
 <textarea id='sidebar_template' class='template'>
 <ul>
-	{for a in assignments}
-	<li><a id='asnn_${a.id}' href="#" onclick='InstSubList.showSubmissions(${a.id});return false;'>${a.title}</a></li>
-	{/for}
+	{if defined('assignments')}
+		{for a in assignments}
+		<li><a id='asnn_${a.id}' href="#" onclick='InstSubList.showSubmissions(${a.id});return false;'>${a.title}</a></li>
+		{/for}
+	{/if}
 </ul>
 </textarea>
 

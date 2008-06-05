@@ -44,6 +44,13 @@ public class SubmissionHandler extends Asnn2HandlerBase
 	}
 
 	@Override
+	public void handlePost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException
+	{
+
+	}
+
+	@Override
 	public void handleGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException
 	{
@@ -162,10 +169,9 @@ public class SubmissionHandler extends Asnn2HandlerBase
 		content.put("title", asnn.getTitle());
 		content.put("type", asnn.getSubmissionType());
 		content.put("assignment", asnn.getInstructions());
-		String user = externalLogic.getCurrentUserId();
-		Long asnnId = asnn.getId();
-		content.put("editSub", subLogic.submissionIsOpenForStudentForAssignment(user, asnnId));
-		content.put("editFeedback", permissionLogic.isUserAbleToAccessInstructorView(asnn
-				.getContextId()));
+		boolean canSubmit = permissionLogic.isUserAbleToMakeSubmissionForAssignment(asnn);
+		boolean canEditFeedback = permissionLogic.isUserAllowedToProvideFeedbackForAssignment(asnn);
+		content.put("editSub", canSubmit && asnn.isDraft());
+		content.put("editFeedback", canEditFeedback && !asnn.isDraft());
 	}
 }

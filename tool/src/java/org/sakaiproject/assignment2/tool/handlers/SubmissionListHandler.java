@@ -81,10 +81,13 @@ public class SubmissionListHandler extends Asnn2HandlerBase
 	 */
 	private List<Map<String, Object>> parseSubmissions(Long asnnId)
 	{
-		Assignment2 asnn = asnnLogic.getAssignmentById(asnnId);
+		List<AssignmentSubmissionVersion> versions = subLogic.getLatestSubmissionsForAssignment(asnnId);
 		List<Map<String, Object>> subs = new ArrayList<Map<String, Object>>();
-		for (AssignmentSubmission sub : asnn.getSubmissionsSet())
+		for (AssignmentSubmissionVersion version : versions)
+//		for (AssignmentSubmission sub : asnn.getSubmissionsSet())
 		{
+			Assignment2 asnn = version.getAssignmentSubmission().getAssignment();
+			AssignmentSubmission sub = version.getAssignmentSubmission();
 			HashMap<String, Object> s = new HashMap<String, Object>();
 			if (asnn.getSubmissionType() == AssignmentConstants.SUBMIT_NON_ELECTRONIC)
 			{

@@ -31,6 +31,19 @@
 		<div class="submcontent" id="assignment-content">${assignment}</div>
 	</div>
 
+	if defined('id')}
+	<div class="section">
+		<div class="toggle"><a href="#" id="history-toggle">&ndash;</a></div>
+		<div class="title"><h4>History</h4></div>
+		<div class="submcontent" id="history-content">
+		{if defined('history')}
+			{for h in history}
+				<a href="${h.url}">${h.date}</a><br />
+			{/for}
+		{/if}
+		</div>
+	</div>
+	<!-- 
 	<div class="section">
 		<div class="toggle"><a href="#" id="drafts-toggle">&ndash;</a></div>
 		<div class="title"><h4>Saved Drafts/Pending</h4></div>
@@ -42,6 +55,8 @@
 		{/if}
 		</div>
 	</div>
+	 -->
+	/if}
 
 	<div class="section">
 		<div class="toggle"><a href="#" id="submission-toggle">&ndash;</a></div>
@@ -49,12 +64,15 @@
 		<div class="submcontent" id="submission-content">
 			<p>
 				{if editSub}
-					<textarea class="fckeditor clear" id="submission" name="submission" cols="80" rows="24">{if defined('submission')}${submission}{/if}</textarea>
-					<div>
-						<input type="submit" value="Save as draft" />
-						<input type="submit" value="Cancel" />
-						<input type="submit" value="Submit" />
-					</div>
+					<form action="/sakai-assignment2-tool/sdata/subView" method="post">
+						<textarea class="fckeditor clear" id="submission" name="submission" cols="80" rows="24">{if defined('submission')}${submission}{/if}</textarea>
+						<div>
+							<input type="submit" id="draft" name="draft" value="Save as draft" />
+							<!-- onclick populated by JS -->
+							<input type="button" value="Cancel" onclick=""/>
+							<input type="submit" value="Submit" />
+						</div>
+					</form>
 				{elseif defined('submission')}
 					${submission}
 				{/if}
@@ -63,9 +81,8 @@
 				<span class="heading">Attachment(s):</span>
 				{if defined('attachments')}
 					{for a in attachments}
-						<img src="../images/page_word.png" alt="Word Document" />
-						<a href="${a.url}">${a.id}</a>
-						(${a.size})
+						<img src="../images/page_word.png" alt="MS Word Document" />
+						<a href="${a.url}">${a.id}</a> (${a.size})
 					{/for}
 				{/if}
 			</p>
@@ -89,27 +106,22 @@
 					{if editFeedback}
 						<textarea class="fckeditor" id="feedback" name="feedback" cols="80" rows="24">{if defined('feedback')}${feedback}{/if}</textarea>
 						<div>
+							Grade: <input type="text" id="grade" name="grade" value="{if defined('grade')}${grade}{/if}" />
+						</div>
+						<div>
 							<input type="submit" value="Save as draft" />
 							<input type="submit" value="Cancel" />
 							<input type="submit" value="Submit" />
 						</div>
-					{elseif defined('feedback')}
-						${feedback}
+					{else}
+						{if defined('feedback')}
+							${feedback}
+						{else}
+							Submission has not been reviewed.
+						{/if}
 					{/if}
 				</p>
 			</form>
-		</div>
-	</div>
-
-	<div class="section">
-		<div class="toggle"><a href="#" id="history-toggle">&ndash;</a></div>
-		<div class="title"><h4>History</h4></div>
-		<div class="submcontent" id="history-content">
-		{if defined('history')}
-			{for h in history}
-				<a href="${h.url}">${h.date}</a><br />
-			{/for}
-		{/if}
 		</div>
 	</div>
 </pre>

@@ -27,6 +27,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -374,21 +375,67 @@ public class AssignmentDaoImpl extends HibernateCompleteGenericDao implements As
 		return (Set<AssignmentSubmission>)getHibernateTemplate().execute(hc);
     }
 
-    public Set<AssignmentSubmissionVersion> getLatestSubmissionsForAssignment(final Long assignmentId)
+    public List<AssignmentSubmissionVersion> getLatestSubmissionsForAssignment(final Long assignmentId)
     {
     	if (assignmentId == null)
     		throw new IllegalArgumentException("Can't use a null assignment ID.");
 
-    	HibernateCallback hc = new HibernateCallback()
+    	/*
+    	 * The following kludge showcase is because I couldn't get the following SQL into HQL:
+    	 * select *
+    	 * from A2_SUBMISSION_VERSION_T a2
+    	 *   inner join (select submission_id, max(created_time) as created_time
+    	 *      from A2_SUBMISSION_VERSION_T
+    	 *      group by submission_id) a2s
+    	 * where a2.submission_id = a2s.submission_id and a2.created_time = a2s.created_time
+    	 */
+    	HibernateCallback buildSql = new HibernateCallback()
+		{
+			public Object doInHibernate(Session session) throws HibernateException, SQLException
+			{
+				StringBuilder sql = new StringBuilder();
+				Query query = session.getNamedQuery("findLatestSubmissionsForAssignment");
+				query.setParameter("assignmentId", assignmentId);
+				Iterator scalars = query.iterate();
+				while (scalars.hasNext())
+				{
+					// tuple[0]: submission id
+					// tuple[1]: version
+					Object[] tuple = (Object[]) scalars.next();
+					HashMap<String, String> key = new HashMap<String, String>();
+					if (sql.length() == 0)
+						sql.append(" where ");
+					else
+						sql.append(" or ");
+					sql.append("(v.assignmentSubmission.id = ").append(tuple[0]).append(
+							" and v.revisionVersion = ").append(tuple[1]).append(")");
+				}
+				// join fetch Assignment2 a
+				if (sql.length() > 0)
+					sql.insert(0, "from AssignmentSubmissionVersion v");
+				return sql.toString();
+			}
+		};
+    	final String sql = (String) getHibernateTemplate().execute(buildSql);
+
+    	List<AssignmentSubmissionVersion> retval = null;
+    	if (sql.length() > 0)
     	{
-    		public Object doInHibernate(Session session) throws HibernateException, SQLException
-    		{
-    			Query query = session.getNamedQuery("findLatestSubmissionsForAssignment");
-    			query.setParameter("assignmentId", assignmentId);
-    			return query.list();
-    		}
-    	};
-    	return (Set<AssignmentSubmissionVersion>) getHibernateTemplate().execute(hc);
+	    	HibernateCallback hc = new HibernateCallback()
+	    	{
+	    		public Object doInHibernate(Session session) throws HibernateException, SQLException
+	    		{
+	    			Query query = session.createQuery(sql);
+	    			return query.list();
+	    		}
+	    	};
+	    	retval = (List<AssignmentSubmissionVersion>) getHibernateTemplate().execute(hc);
+    	}
+    	else
+    	{
+    		retval = new ArrayList<AssignmentSubmissionVersion>();
+    	}
+    	return retval;
     }
 
     public AssignmentSubmission getSubmissionWithVersionHistoryForStudentAndAssignment(final String studentId, final Assignment2 assignment) {

@@ -637,8 +637,19 @@ public class AssignmentDaoImplTest extends Assignment2DaoTestBase {
 		assertEquals(0, assignmentDao.getNumSubmittedVersions(AssignmentTestDataLoad.STUDENT3_UID, testData.a1Id));
 	}
 
+	public void testFindLatestSubmissionsAssignmentNoResults() throws Exception
+	{
+		List<AssignmentSubmissionVersion> subs = assignmentDao.getLatestSubmissionsForAssignment(-1L);
+		assertNotNull(subs);
+		assertTrue(subs.size() == 0);
+	}
+
 	public void testFindLatestSubmissionsAssignment() throws Exception
 	{
-		assignmentDao.getLatestSubmissionsForAssignment(testData.a2Id);
+		List<AssignmentSubmissionVersion> subs = assignmentDao.getLatestSubmissionsForAssignment(testData.a1Id);
+		assertNotNull(subs);
+		assertTrue(subs.size() > 0);
+		assertNotNull(subs.get(0).getAssignmentSubmission());
+		assertNotNull(subs.get(0).getAssignmentSubmission().getAssignment());
 	}
 }

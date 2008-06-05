@@ -246,4 +246,11 @@ public interface AssignmentSubmissionLogic {
 	 * for the given assignment. does not count draft versions
 	 */
 	public int getNumSubmittedVersions(String studentId, Long assignmentId);
+
+	/**
+	 * 
+	 * @param assignmentId
+	 * @return List of submission versions that are the latest for each submission.
+	 */
+	public List<AssignmentSubmissionVersion> getLatestSubmissionsForAssignment(Long assignmentId);
 }

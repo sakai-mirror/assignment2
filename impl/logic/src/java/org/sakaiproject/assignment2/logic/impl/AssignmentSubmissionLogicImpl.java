@@ -980,7 +980,13 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 
 		dao.update(asv);
 	}
-	
+
+	public List<AssignmentSubmissionVersion> getLatestSubmissionsForAssignment(Long assignmentId)
+	{
+		List<AssignmentSubmissionVersion> l = dao.getLatestSubmissionsForAssignment(assignmentId);
+		return l;
+	}
+
 	public int getNumSubmittedVersions(String studentId, Long assignmentId) {
 		if (studentId == null || assignmentId == null) {
 			throw new IllegalArgumentException("Null studentId or assignmentId passed " +
