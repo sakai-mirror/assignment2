@@ -602,15 +602,17 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 		// make the open date locale-aware
 		// use a date which is related to the current users locale
         DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, bundleLogic.getLocale());
+        // create url to point back to this assignment to be included in the description
+        String assignUrl = externalLogic.getAssignmentViewUrl(REDIRECT_ASSIGNMENT_VIEW_ID) + "/" + updatedAssignment.getId();
 		
 		String newAnncSubject = bundleLogic.getFormattedMessage("assignment2.assignment_annc_subject",
     			new Object[] {updatedAssignment.getTitle()});
     	String newAnncBody = bundleLogic.getFormattedMessage("assignment2.assignment_annc_body",
-    			new Object[] {updatedAssignment.getTitle(), df.format(updatedAssignment.getOpenTime())});
+    			new Object[] {assignUrl, updatedAssignment.getTitle(), df.format(updatedAssignment.getOpenTime())});
     	String updAnncSubject = bundleLogic.getFormattedMessage("assignment2.assignment_annc_subject_edited",
     			new Object[] {updatedAssignment.getTitle()});
     	String updAnncBody = bundleLogic.getFormattedMessage("assignment2.assignment_annc_subject_edited",
-    			new Object[] {updatedAssignment.getTitle(), df.format(updatedAssignment.getOpenTime())});
+    			new Object[] {assignUrl, updatedAssignment.getTitle(), df.format(updatedAssignment.getOpenTime())});
 		
 		if (originalAssignment == null) {
 			// this was a new assignment
