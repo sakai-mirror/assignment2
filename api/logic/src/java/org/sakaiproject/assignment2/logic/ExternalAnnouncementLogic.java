@@ -22,6 +22,7 @@
 package org.sakaiproject.assignment2.logic;
 
 import java.util.Collection;
+import java.util.Date;
 
 import org.sakaiproject.assignment2.exception.AnnouncementPermissionException;
 
@@ -40,12 +41,14 @@ public interface ExternalAnnouncementLogic {
 	 * @param contextId
 	 * @param announcementSubject
 	 * @param announcementBody
+	 * @param openDate the date after which this announcement will appear in the Annc tool
+			if null, defaults to current date and time
 	 * @throws AnnouncementPermissionException
 	 * 		if the current user is not authorized to add an announcement
 	 * @return the id of the newly created announcement
 	 */
 	public String addOpenDateAnnouncement(Collection<String> restrictedGroupIds, String contextId, 
-			String announcementSubject, String announcementBody) throws AnnouncementPermissionException;
+			String announcementSubject, String announcementBody, Date openDate) throws AnnouncementPermissionException;
 	
 	/**
 	 * Update an announcement for the given assignment. Announcements must be
@@ -55,12 +58,14 @@ public interface ExternalAnnouncementLogic {
 	 * @param contextId
 	 * @param announcementSubject
 	 * @param announcementBody
+	 * @param openDate the date after which this announcement will appear in the Annc tool
+			if null, defaults to current date and time
 	 * @throws AnnouncementPermissionException
 	 * 		if the current user is not authorized to update an announcement
 	 * @return the id of the updated announcement
 	 */
 	public String updateOpenDateAnnouncement(String announcementId, Collection<String> restrictedGroupIds, String contextId,
-			String announcementSubject, String announcementBody) 
+			String announcementSubject, String announcementBody, Date openDate) 
 		throws AnnouncementPermissionException;
 	
 	/**

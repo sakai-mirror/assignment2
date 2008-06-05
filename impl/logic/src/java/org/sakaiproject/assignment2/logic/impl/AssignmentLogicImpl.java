@@ -606,11 +606,11 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 		String newAnncSubject = bundleLogic.getFormattedMessage("assignment2.assignment_annc_subject",
     			new Object[] {updatedAssignment.getTitle()});
     	String newAnncBody = bundleLogic.getFormattedMessage("assignment2.assignment_annc_body",
-    			new Object[] {df.format(updatedAssignment.getOpenTime())});
+    			new Object[] {updatedAssignment.getTitle(), df.format(updatedAssignment.getOpenTime())});
     	String updAnncSubject = bundleLogic.getFormattedMessage("assignment2.assignment_annc_subject_edited",
     			new Object[] {updatedAssignment.getTitle()});
     	String updAnncBody = bundleLogic.getFormattedMessage("assignment2.assignment_annc_subject_edited",
-    			new Object[] {df.format(updatedAssignment.getOpenTime())});
+    			new Object[] {updatedAssignment.getTitle(), df.format(updatedAssignment.getOpenTime())});
 		
 		if (originalAssignment == null) {
 			// this was a new assignment
@@ -620,7 +620,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 				String announcementId = announcementLogic.addOpenDateAnnouncement(
 						updatedAssignment.getListOfAssociatedGroupReferences(), 
 						updatedAssignment.getContextId(), newAnncSubject,
-						newAnncBody);
+						newAnncBody, updatedAssignment.getOpenTime());
 				updatedAssignment.setAnnouncementId(announcementId);
 				dao.update(updatedAssignment);
 			}
@@ -633,7 +633,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 		} else if (originalAssignment.getAnnouncementId() == null && updatedAssignment.getHasAnnouncement()) {
 			// this is a new announcement
 			String announcementId = announcementLogic.addOpenDateAnnouncement(updatedAssignment.getListOfAssociatedGroupReferences(), 
-					updatedAssignment.getContextId(), newAnncSubject, newAnncBody);
+					updatedAssignment.getContextId(), newAnncSubject, newAnncBody, updatedAssignment.getOpenTime());
 			updatedAssignment.setAnnouncementId(announcementId);
 			dao.update(updatedAssignment);
 		} else if (originalAssignment.getAnnouncementId() != null && !updatedAssignment.getHasAnnouncement()) {
@@ -650,7 +650,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 					!originalAssignment.getListOfAssociatedGroupReferences().equals(updatedAssignment.getListOfAssociatedGroupReferences())) {
 				announcementLogic.updateOpenDateAnnouncement(updatedAssignment.getAnnouncementId(), 
 						updatedAssignment.getListOfAssociatedGroupReferences(), 
-						updatedAssignment.getContextId(), updAnncSubject, updAnncBody);
+						updatedAssignment.getContextId(), updAnncSubject, updAnncBody, updatedAssignment.getOpenTime());
 				// don't need to re-save assignment b/c id already exists
 			}
 		}

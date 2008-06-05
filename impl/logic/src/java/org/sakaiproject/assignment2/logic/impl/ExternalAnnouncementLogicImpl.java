@@ -23,6 +23,7 @@ package org.sakaiproject.assignment2.logic.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -37,6 +38,8 @@ import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.api.Group;
 import org.sakaiproject.site.cover.SiteService;
+import org.sakaiproject.time.api.Time;
+import org.sakaiproject.time.cover.TimeService;
 import org.sakaiproject.announcement.api.AnnouncementChannel;
 import org.sakaiproject.announcement.api.AnnouncementMessageEdit;
 import org.sakaiproject.announcement.api.AnnouncementMessageHeaderEdit;
@@ -61,7 +64,7 @@ public class ExternalAnnouncementLogicImpl implements ExternalAnnouncementLogic 
     }
     
     public String addOpenDateAnnouncement(Collection<String> restrictedGroupIds, String contextId,
-    		String announcementSubject, String announcementBody) throws AnnouncementPermissionException {
+    		String announcementSubject, String announcementBody, Date openDate) throws AnnouncementPermissionException {
     	if (contextId == null) {
     		throw new IllegalArgumentException("null contextId passed to addOpenDateAnnouncement");
     	}
@@ -81,6 +84,16 @@ public class ExternalAnnouncementLogicImpl implements ExternalAnnouncementLogic 
 
 			header.setSubject(announcementSubject);
 			message.setBody(announcementBody);
+			
+			Time releaseDate;
+			if (openDate != null) {
+				releaseDate = TimeService.newTime(openDate.getTime());
+			} else {
+				releaseDate = TimeService.newTime();
+			}
+
+			// set the release date property
+			message.getPropertiesEdit().addProperty(AnnouncementService.RELEASE_DATE, releaseDate.toString());
 				
 			if (restrictedGroupIds == null || restrictedGroupIds.isEmpty()) {
 				//site announcement
@@ -101,7 +114,7 @@ public class ExternalAnnouncementLogicImpl implements ExternalAnnouncementLogic 
 	}
     
 	public String updateOpenDateAnnouncement(String announcementId, Collection<String> restrictedGroupIds, String contextId, 
-			String announcementSubject, String announcementBody) throws AnnouncementPermissionException {
+			String announcementSubject, String announcementBody, Date openDate) throws AnnouncementPermissionException {
 		if (contextId == null) {
     		throw new IllegalArgumentException("null contextId passed to updateOpenDateAnnouncement");
     	}
@@ -132,6 +145,16 @@ public class ExternalAnnouncementLogicImpl implements ExternalAnnouncementLogic 
 			} else {
 				addGroupRestrictions(restrictedGroupIds, contextId, header);
 			}
+			
+			Time releaseDate;
+			if (openDate != null) {
+				releaseDate = TimeService.newTime(openDate.getTime());
+			} else {
+				releaseDate = TimeService.newTime();
+			}
+
+			// set the release date property
+			message.getPropertiesEdit().addProperty(AnnouncementService.RELEASE_DATE, releaseDate.toString());
 
 			announcementChannel.commitMessage(message, NotificationService.NOTI_NONE);
 			if (log.isDebugEnabled()) log.debug("Announcement updated with id: " + announcementId);
@@ -144,7 +167,7 @@ public class ExternalAnnouncementLogicImpl implements ExternalAnnouncementLogic 
 		} catch (IdUnusedException iue) {
 			// the announcement id stored in the assignment is invalid, so add a new announcement
 			if (log.isDebugEnabled()) log.debug("Bad announcementId associated with assignment, so adding new announcement");
-			return addOpenDateAnnouncement(restrictedGroupIds, contextId, announcementSubject, announcementBody);
+			return addOpenDateAnnouncement(restrictedGroupIds, contextId, announcementSubject, announcementBody, openDate);
 		} catch (InUseException iue) {
 			log.error("Announcement " + announcementId + " is locked and cannot be" +
 					"updated");
