@@ -309,10 +309,10 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 		if (assignment.getId() == null) {
 			throw new IllegalArgumentException("The passed assignment does not have an id. Can only delete persisted assignments");
 		}
-		
-		String currentContextId = externalLogic.getCurrentContextId();
-		
-		if (!permissionLogic.isCurrentUserAbleToEditAssignments(currentContextId)) {
+
+		String contextId = assignment.getContextId();
+
+		if (!permissionLogic.isCurrentUserAbleToEditAssignments(contextId)) {
 			if (log.isDebugEnabled()) log.debug("User not authorized to add/delete/update announcements");
 			throw new SecurityException("Current user may not delete assignment " + assignment.getTitle()
                     + " because they do not have edit permission");
@@ -321,7 +321,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 		assignment.setRemoved(true);
 		assignment.setModifiedBy(externalLogic.getCurrentUserId());
 		assignment.setModifiedTime(new Date());
-		
+
 		// remove associated announcements, if appropriate
 		String announcementIdToDelete = null;
 		if (assignment.getAnnouncementId() != null) {
@@ -329,7 +329,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 			assignment.setAnnouncementId(null);
 			assignment.setHasAnnouncement(Boolean.FALSE);
 		}
-		
+
 		// remove associated Schedule/Calendar events, if appropriate
 		String eventIdToDelete = null;
 		if (assignment.getEventId() != null) {
@@ -344,13 +344,13 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 			
 			// now remove the announcement, if applicable
 			if (announcementIdToDelete != null) {
-				announcementLogic.deleteOpenDateAnnouncement(announcementIdToDelete, currentContextId);
+				announcementLogic.deleteOpenDateAnnouncement(announcementIdToDelete, contextId);
 				if(log.isDebugEnabled()) log.debug("Deleted announcement with id " + announcementIdToDelete + " for assignment " + assignment.getId());
 			}
 			
 			// now remove the event, if applicable
 			if (eventIdToDelete !=  null) {
-				calendarLogic.deleteDueDateEvent(eventIdToDelete, currentContextId);
+				calendarLogic.deleteDueDateEvent(eventIdToDelete, contextId);
 				if(log.isDebugEnabled()) log.debug("Deleted event with id " + eventIdToDelete + 
 						" for assignment " + assignment.getId());
 			}

@@ -135,6 +135,8 @@
 				10.baseurl=/releaseAllFeedback;
 				11.classname=org.sakaiproject.assignment2.tool.handlers.CopyAsnnHandler;
 				11.baseurl=/asnnCopy;
+				12.classname=org.sakaiproject.assignment2.tool.handlers.DeleteAsnnHandler;
+				12.baseurl=/asnnDel;
 			</param-value>
 		</init-param>
 	</servlet>
