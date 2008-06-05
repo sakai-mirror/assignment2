@@ -22,6 +22,7 @@
 package org.sakaiproject.assignment2.logic.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -176,13 +177,21 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
     	
     	boolean viewable = false;
     	
+    	// user can grade all
     	if (gradebookLogic.isCurrentUserAbleToGradeAll(assignment.getContextId())) {
     		viewable = true;
-    	} else if (assignment.getAssignmentGroupSet() == null || assignment.getAssignmentGroupSet().isEmpty()) {
-    		viewable = true;
-    	} else {
-    		// the user must be a member of a restricted group to view assignment
-        	viewable = isUserAMemberOfARestrictedGroup(groupMembershipIds, assignment.getAssignmentGroupSet());
+    		
+    	// user has some grading privileges or they are a student and assign is open
+    	} else if (gradebookLogic.isCurrentUserAbleToGrade(assignment.getContextId()) || 
+    			(gradebookLogic.isCurrentUserAStudentInGb(assignment.getContextId()) && 
+    					assignment.getOpenTime().before(new Date()))) {
+    		
+    		if (assignment.getAssignmentGroupSet() == null || assignment.getAssignmentGroupSet().isEmpty()) {
+    			viewable = true;
+    		} else {
+    			// the user must be a member of a restricted group to view assignment
+    			viewable = isUserAMemberOfARestrictedGroup(groupMembershipIds, assignment.getAssignmentGroupSet());
+    		}
     	}
     	
     	return viewable;
@@ -198,16 +207,23 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
     	}
     	
     	boolean viewable = false;
-    	boolean viewableInGb = gradebookLogic.isCurrentUserAbleToViewGradebookItem(
-    			assignment.getContextId(), assignment.getGradableObjectId());
     	
-    	if (viewableInGb) {
-    		// if it is a student, we may need to filter by group
-    		if (assignment.getAssignmentGroupSet() != null && !assignment.getAssignmentGroupSet().isEmpty() &&
-    				gradebookLogic.isCurrentUserAStudentInGb(assignment.getContextId())) {
-    			viewable = isUserAMemberOfARestrictedGroup(groupMembershipIds, assignment.getAssignmentGroupSet());
-    		} else {
-    			viewable = true;
+    	boolean userIsStudentAndAssignmentNotOpen = gradebookLogic.isCurrentUserAStudentInGb(assignment.getContextId()) && 
+    		assignment.getOpenTime().after(new Date());
+
+    	if (!userIsStudentAndAssignmentNotOpen) {
+
+    		boolean viewableInGb = gradebookLogic.isCurrentUserAbleToViewGradebookItem(
+    				assignment.getContextId(), assignment.getGradableObjectId());
+
+    		if (viewableInGb) {
+    			// if it is a student, we may need to filter by group
+    			if (assignment.getAssignmentGroupSet() != null && !assignment.getAssignmentGroupSet().isEmpty() &&
+    					gradebookLogic.isCurrentUserAStudentInGb(assignment.getContextId())) {
+    				viewable = isUserAMemberOfARestrictedGroup(groupMembershipIds, assignment.getAssignmentGroupSet());
+    			} else {
+    				viewable = true;
+    			}
     		}
     	}
     	
@@ -494,6 +510,10 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
 	}
 
 	public boolean isUserAbleToViewAssignment(String contextId, Long assignmentId) {
+		if (contextId == null || assignmentId == null) {
+			throw new IllegalArgumentException("Null contextId or assignmentId passed to " +
+					"isUserAbleToViewAssignment- contextId: " + contextId + " assignmentId: " + assignmentId);
+		}
 		boolean allowed = false;
 
 		// retrieve the assignment
