@@ -686,6 +686,16 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
 		open = submissionLogic.submissionIsOpenForStudentForAssignment(
 				AssignmentTestDataLoad.STUDENT2_UID, testData.a1Id);
 		assertTrue(open);
+		
+		// let's make a draft submission to double check it is still open
+		externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT2_UID);
+		submissionLogic.saveStudentSubmission(AssignmentTestDataLoad.STUDENT2_UID, testData.a1, true, "blah", null);
+		open = submissionLogic.submissionIsOpenForStudentForAssignment(
+				AssignmentTestDataLoad.STUDENT2_UID, testData.a1Id);
+		assertTrue(open);
+		
+		externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
+		
 		// now let's restrict it by date on the submission level
 		Calendar cal = Calendar.getInstance();
     	cal.set(2005, 10, 01);
@@ -702,13 +712,14 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
 				AssignmentTestDataLoad.STUDENT1_UID, testData.a1Id);
 		assertTrue(open);
 		
-		// let's open it up by allowing resubmission on the assignment level
+		// let's allow resubmission on the assignment level - should not affect it
+		// since submission level trumps
 		assign1.setNumSubmissionsAllowed(4);
 		assignmentLogic.saveAssignment(assign1);
 		// should be open for both
 		open = submissionLogic.submissionIsOpenForStudentForAssignment(
 				AssignmentTestDataLoad.STUDENT2_UID, testData.a1Id);
-		assertTrue(open);
+		assertFalse(open);
 		open = submissionLogic.submissionIsOpenForStudentForAssignment(
 				AssignmentTestDataLoad.STUDENT1_UID, testData.a1Id);
 		assertTrue(open);
@@ -727,17 +738,24 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
 		assertFalse(open);
 		
 		// open it back up
+		// let's restrict it by date on the assign level
 		cal.set(2000, 10, 01);
 		assignOpenTime = cal.getTime();
 		assign1.setOpenTime(assignOpenTime);
+		assign1.setAcceptUntilTime(resubmitCloseTime);
 		assignmentLogic.saveAssignment(assign1);
 		
-		// let's restrict it by date on the assign level
-		// neither should be able to submit now
-		assign1.setAcceptUntilTime(resubmitCloseTime);
+
+		// let's open up on the submission level for student 2
+		submissionLogic.saveInstructorFeedback(testData.st2a1CurrVersion.getId(),
+				AssignmentTestDataLoad.STUDENT2_UID, testData.a1, 4, null,
+				"blah", "notes", null, testData.st2a1CurrVersion.getFeedbackAttachSet());
+		
+		// student 1 should not be able to submit b/c of assignment-level restriction
+		// but student 2 can
 		open = submissionLogic.submissionIsOpenForStudentForAssignment(
 				AssignmentTestDataLoad.STUDENT2_UID, testData.a1Id);
-		assertFalse(open);
+		assertTrue(open);
 		open = submissionLogic.submissionIsOpenForStudentForAssignment(
 				AssignmentTestDataLoad.STUDENT1_UID, testData.a1Id);
 		assertFalse(open);

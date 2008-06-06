@@ -605,65 +605,44 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			}
 		}
 		
-		// there are several factors into whether a student may make a submission or not
-		// 1) if student has not already made a submission:
-		//   a) assignment is open AND if applicable, accept until date has not passed
-		// 2) student does have a submission
-		//	 a) assignment is open AND if applicable, accept until date has not passed
-		//		AND instructor has allowed resubmission until accept until date and
-		// 		max num submissions has not been reached
-		//   OR
-		//   b) instructor has allowed resubmission for this student and the
-		//		resubmit until date has not passed and max num submissions has
-		//		not been reached
+
+		/* A student is allowed to submit if:
+		 	1) student has not made a submission yet and assignment is open
+		 	2) instructor has set resubmission settings on the submission level,
+		 		and the resubmission date has not passed and the limit on the num
+		 		resubmissions has not been reached
+		 	3) there are no submission-level settings but there are on the assignment level
+		 		the assignment is still open and the number submissions allowed on
+		 		the assignment level has not been reached
+		*/
 		
 		boolean studentAbleToSubmit = false;
 		boolean assignmentIsOpen = assignment.getOpenTime().before(new Date()) && 
 		(assignment.getAcceptUntilTime() == null ||
 					(assignment.getAcceptUntilTime() != null && 
 							assignment.getAcceptUntilTime().after(new Date())));
+		boolean resubmitSettingsOnAssignLevel = assignment.getNumSubmissionsAllowed() != null;
+		boolean resubmitSettingsOnSubmissionLevel = submission != null && submission.getNumSubmissionsAllowed() != null;
 		
-		if (currNumSubmissions == 0) {
-			if (assignmentIsOpen) {
-				studentAbleToSubmit = true;
-			} else if(submission != null){
-				// in this scenario, the instructor took some action on this student without there
-				// being a submission, such as adding feedback or allowing this student to resubmit.
-				// thus, there is a submission record, but the student hasn't submitted anything yet
-				// in this case, we need to check if the student is allowed to resubmit
-
-				if (submission.getResubmitCloseTime() == null ||
-						submission.getResubmitCloseTime().after(new Date())) {
-					if (submission.getNumSubmissionsAllowed() != null && 
-							(submission.getNumSubmissionsAllowed() == null || 
-							submission.getNumSubmissionsAllowed().intValue() > currNumSubmissions)) {
-						studentAbleToSubmit = true;
-					}
+		if (currNumSubmissions == 0 && assignmentIsOpen) {
+			studentAbleToSubmit = true;
+		} else if (resubmitSettingsOnSubmissionLevel) {
+			// these setting override any settings on the assignment level
+			if (submission.getResubmitCloseTime() == null || 
+					submission.getResubmitCloseTime().after(new Date()))
+			{
+				if (submission.getNumSubmissionsAllowed().equals(-1) || 
+						submission.getNumSubmissionsAllowed().intValue() > currNumSubmissions) {
+					studentAbleToSubmit = true;
 				}
 			}
-		} else {
-			// this is a resubmission, so we need to check for resubmission privileges
-			// first, check for resubmission on the assignment level
+		} else if (resubmitSettingsOnAssignLevel) {
 			if (assignmentIsOpen) { 
-				if (assignment.getNumSubmissionsAllowed() != null &&
-						(assignment.getNumSubmissionsAllowed().equals(-1) ||
-						assignment.getNumSubmissionsAllowed() > currNumSubmissions)) {
+				if (assignment.getNumSubmissionsAllowed().equals(-1) ||
+						assignment.getNumSubmissionsAllowed() > currNumSubmissions) {
 					studentAbleToSubmit = true;
 				}
 			} 
-			
-			// if they still can't submit, check the student level
-			if (!studentAbleToSubmit) {
-				if (submission.getResubmitCloseTime() == null || 
-						submission.getResubmitCloseTime().after(new Date()))
-				{
-					if (submission.getNumSubmissionsAllowed() != null && 
-							(submission.getNumSubmissionsAllowed().equals(-1) || 
-							submission.getNumSubmissionsAllowed().intValue() > currNumSubmissions)) {
-						studentAbleToSubmit = true;
-					}
-				}
-			}
 		}
 		
 		return studentAbleToSubmit;
