@@ -98,15 +98,15 @@
 <!-- ===================================================== -->
 
 <textarea id='nav_template' class='template'>
-<divw>
-	<a id='navConfig' href='inst_asnn_list.html?context=${context}'>Assignments</a> |
-	<span id='configNavLink'>Submissions</span> |
-	<a id='navConfig' href='options.html?context=${context}'>Options</a>
+<div>
+	<a id="navConfig" href="inst_asnn_list.html?context=${context}">Assignments</a> |
+	<span id="configNavLink">Submissions</span> |
+	<a id="navConfig" href="options.html?context=${context}">Options</a>
 </div>
 </textarea>
 
 <textarea id='nonElectronicSubmitted_template' class='template'>
-<table id='submittedAssns' cellspacing="0" border="0" class="tool-menu listTable tablesorter">
+<table id='submittedAsnns' cellspacing="0" border="0" class="tool-menu listTable tablesorter">
 	<thead>
 		<tr class='headerRow'>
 			<th>Name</th>
@@ -115,9 +115,9 @@
 		</tr>
 	</thead>
 	<tbody>
-	{if defined('submitted')}
-		{for s in submitted}
-		<tr class='dataRow'>
+	{if defined('submissions')}
+		{for s in submissions}
+		<tr class='dataRow clickable' onclick="location.href='/sakai-assignment2-tool/content/templates/submissionview.html?asnnId=${s.id}'">
 			<td>${s.name}</td>
 			<td>${s.sections}</td>
 			<td>${s.feedback}</td>
@@ -129,7 +129,7 @@
 </textarea>
 
 <textarea id='electronicSubmitted_template' class='template'>
-<table id='submittedAssns' cellspacing="0" border="0" class="tool-menu listTable tablesorter">
+<table id='submittedAsnns' cellspacing="0" border="0" class="tool-menu listTable tablesorter">
 	<thead>
 		<tr class='headerRow'>
 			<th>Name</th>
@@ -140,9 +140,9 @@
 		</tr>
 	</thead>
 	<tbody>
-	{if defined('submitted')}
-		{for s in submitted}
-		<tr class='dataRow'>
+	{if defined('versions')}
+		{for s in versions}
+		<tr class='dataRow clickable' onclick="location.href='/sakai-assignment2-tool/content/templates/submissionview.html?verId=${s.id}'">
 			<td>${s.name}</td>
 			<td>${s.dueDate}</td>
 			<td>${s.submittedDate}</td>
@@ -156,7 +156,7 @@
 </textarea>
 
 <textarea id='nonElectronicReturned_template' class='template'>
-<table id='returnedAssns' cellspacing="0" border="0" class="tool-menu listTable tablesorter">
+<table id='returnedAsnns' cellspacing="0" border="0" class="tool-menu listTable tablesorter">
 	<thead>
 		<tr class='headerRow'>
 			<th>Name</th>
@@ -181,7 +181,7 @@
 </textarea>
 
 <textarea id='electronicReturned_template' class='template'>
-<table id='returnedAssns' cellspacing="0" border="0" class="tool-menu listTable tablesorter">
+<table id='returnedAsnns' cellspacing="0" border="0" class="tool-menu listTable tablesorter">
 	<thead>
 		<tr class='headerRow'>
 			<th>Name</th>
@@ -211,7 +211,7 @@
 <ul>
 	{if defined('assignments')}
 		{for a in assignments}
-		<li><a id='asnn_${a.id}' href="#" onclick='InstSubList.showSubmissions(${a.id});return false;'>${a.title}</a></li>
+		<li><a id='asnn_${a.id}' href="#" onclick='InstSubList.showSubmissions(${a.id});return false;' class='assignmentListItem'>${a.title}</a></li>
 		{/for}
 	{/if}
 </ul>

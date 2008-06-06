@@ -193,7 +193,9 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		
 		Date currentTime = new Date();
 		String currentUserId = externalLogic.getCurrentUserId();
-		String contextId = externalLogic.getCurrentContextId();
+		String contextId = assignment.getContextId();
+		if (contextId == null)
+			contextId = externalLogic.getCurrentContextId();
 		
 		if (!currentUserId.equals(userId)) {
 			throw new SecurityException("User " + currentUserId + " attempted to save a submission for " +

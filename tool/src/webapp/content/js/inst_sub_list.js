@@ -17,6 +17,7 @@ var testAsnn = {
 	]
 };
 var testSubs1 = {
+	"context": "",
 	"type": "electronic",
 	"submitted": [
 		{ "name": "Carl Hall",
@@ -44,6 +45,7 @@ var testSubs1 = {
 	]
 };
 var testSubs2 = {
+	"context": "",
 	"type": "non-electronic",
 	"submitted": [
 		{"name": "Carl Hall",
@@ -80,8 +82,9 @@ var InstSubList = {
 	elecSubTemp: null,
 	bulkActionTemp: null,
 
-	// placeholder for a context id, if passed through querystring
+	// placeholder for variables passed through querystring
 	context: null,
+	asnnId: null,
 
 	// placeholder for the assignments list
 	assignments: {},
@@ -93,12 +96,13 @@ var InstSubList = {
 	 */
 	showSubmissions: function(asnnId)
 	{
+		jQuery('.assignmentListItem').removeClass('active');
 		var asnn = InstSubList.assignments[asnnId];
-		jQuery('#assn_' + asnnId).addClass('active');
+		jQuery('#asnn_' + asnnId).addClass('active');
 		if (InstSubList.context)
 		{
 			var url = '/sakai-assignment2-tool/sdata/subList?asnnId=' + asnn['id'];
-			jQuery.getJSON(url, function()
+			jQuery.getJSON(url, function(data)
 			{
 				InstSubList.paintSubmissions(asnn['type'], data);
 			});
@@ -125,7 +129,7 @@ var InstSubList = {
 	 */
 	paintSubmissions: function(type, data)
 	{
-//		jQuery('#nav_out').html(InstSubList.navTemplate.process(data));
+		jQuery('#nav_out').html(InstSubList.navTemplate.process(data));
 		InstSubList.templateSubmission(type, InstSubList.SUBMITTED, 'submitted_out', data);
 		InstSubList.templateSubmission(type, InstSubList.RETURNED, 'returned_out', data);
 	},
@@ -150,25 +154,27 @@ var InstSubList = {
 		// show submissions of the first assignment
 		if (data['assignments'].length > 0)
 		{
-			var asnn = data['assignments'][0];
+			var id = null;
+			if (InstSubList.asnnId)
+			{
+				id = InstSubList.asnnId;
+			}
+			// if not provided id, use the first assignment in the list
+			else
+			{
+				var asnn = data['assignments'][0];
+				id = asnn['id'];
+			}
 			// go to server for submission list data.
-			InstSubList.showSubmissions(asnn['id']);
+			InstSubList.showSubmissions(id);
 		}
-
-		// add a hover effect to each row of data
-		ListCommon.addHover('.dataRow', 'dataRowOn');
 
 		// add the toggle events to the twisties
 		var toggles = jQuery('.twisty');
-		for (var i=0; i<toggles.length; i++) {
+		for (var i = 0; i < toggles.length; i++) {
 			var show = (toggles[i].id.substring(0,9) == 'submitted')
 			ListCommon.addToggle(toggles[i].id, toggles[i].id.replace('Twisty', 'List'), show);
 		};
-
-		jQuery('.dataRow').click(function()
-		{
-			location.href='submissionview.html';
-		});
 
 		// Make tables sortable
 		jQuery(".tablesorter").tablesorter();
@@ -179,9 +185,7 @@ var InstSubList = {
 
 		// set the iframe to the fit the screen
 		if (window.frameElement)
-		{
 			setMainFrameHeight(window.frameElement.name);
-		}
 	},
 
 	/**
@@ -225,6 +229,7 @@ jQuery(document).ready(function()
 	// Populate the tables
 	var qs = new Querystring();
 	InstSubList.context = qs.get('context');
+	InstSubList.asnnId = qs.get('asnnId');
 
 	// populate the template references
 	InstSubList.navTemplate = TrimPath.parseDOMTemplate('nav_template');

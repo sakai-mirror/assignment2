@@ -14,19 +14,23 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
-import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
+import org.sakaiproject.user.api.User;
+import org.sakaiproject.user.api.UserDirectoryService;
+import org.sakaiproject.user.api.UserNotDefinedException;
 
 public class SubmissionListHandler extends Asnn2HandlerBase
 {
 	private AssignmentSubmissionLogic subLogic = null;
 	private DateFormat dateFormat;
+	private UserDirectoryService uds;
 
 	@Override
 	public void postInit(Map<String, String> config) throws ServletException
 	{
 		subLogic = (AssignmentSubmissionLogic) getService(AssignmentSubmissionLogic.class);
+		uds = (UserDirectoryService) getService(UserDirectoryService.class);
 		dateFormat = new SimpleDateFormat("MM/dd");
 	}
 
@@ -34,15 +38,18 @@ public class SubmissionListHandler extends Asnn2HandlerBase
 	public void handleGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException
 	{
-		HashMap<String, Object> content = new HashMap<String, Object>();
-
 		String asnnId = request.getParameter("asnnId");
 		String context = request.getParameter("context");
+		HashMap<String, Object> content = new HashMap<String, Object>();
 		if (asnnId != null)
 		{
+			Long id = Long.parseLong(asnnId);
+			Assignment2 asnn = asnnLogic.getAssignmentById(id);
+
 			content.put("asnnId", asnnId);
-			List<Map<String, Object>> subs = parseSubmissions(Long.parseLong(asnnId));
-			content.put("submissions", subs);
+			content.put("context", asnn.getContextId());
+			List<Map<String, Object>> vers = parseSubmissionVersions(id);
+			content.put("versions", vers);
 		}
 		else
 		{
@@ -79,30 +86,36 @@ public class SubmissionListHandler extends Asnn2HandlerBase
 	 * @param asnnId
 	 * @return
 	 */
-	private List<Map<String, Object>> parseSubmissions(Long asnnId)
+	private List<Map<String, Object>> parseSubmissionVersions(Long asnnId)
 	{
 		List<AssignmentSubmissionVersion> versions = subLogic.getLatestSubmissionsForAssignment(asnnId);
 		List<Map<String, Object>> subs = new ArrayList<Map<String, Object>>();
 		for (AssignmentSubmissionVersion version : versions)
-//		for (AssignmentSubmission sub : asnn.getSubmissionsSet())
 		{
 			Assignment2 asnn = version.getAssignmentSubmission().getAssignment();
-			AssignmentSubmission sub = version.getAssignmentSubmission();
 			HashMap<String, Object> s = new HashMap<String, Object>();
-			if (asnn.getSubmissionType() == AssignmentConstants.SUBMIT_NON_ELECTRONIC)
+			s.put("id", version.getId());
+			try
 			{
-				s.put("name", sub.getUserId());
-				s.put("sections", "");
-				s.put("feedback", sub.getCurrentSubmissionVersion().getFeedbackNotes());
+				User user = uds.getUser(version.getCreatedBy());
+				s.put("name", user.getDisplayName());
 			}
-			else
+			catch (UserNotDefinedException unde)
 			{
-				AssignmentSubmissionVersion ver = sub.getCurrentSubmissionVersion();
-				s.put("name", sub.getUserId());
-				s.put("submittedDate", ver.getCreatedTime());
-				s.put("dueDate", dateFormat.format(asnn.getDueDate()));
-				s.put("sections", "");
-				s.put("feedback", ver.getFeedbackNotes());
+				s.put("name", "User not found");
+			}
+			s.put("sections", "");
+			s.put("feedback", version.getFeedbackNotes());
+
+			if (asnn.getSubmissionType() != AssignmentConstants.SUBMIT_NON_ELECTRONIC)
+			{
+				String dueDate = "";
+				String submittedDate = "";
+				if (asnn.getDueDate() != null)
+					dueDate = dateFormat.format(asnn.getDueDate());
+				submittedDate = dateFormat.format(version.getCreatedTime());
+				s.put("submittedDate", submittedDate);
+				s.put("dueDate", dueDate);
 			}
 			subs.add(s);
 		}

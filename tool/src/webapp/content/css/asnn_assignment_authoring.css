@@ -59,9 +59,13 @@ body {
 	text-align: left;
 	background-color: #efefef;
 }
-.dataRowOn {
+.dataRow:hover {
 	background-color: #efefef;
 }
+.clickable:hover {
+	cursor: pointer;
+}
+
 table.tablesorter {
 	font-family: arial;
 	margin:10px 0pt 15px;

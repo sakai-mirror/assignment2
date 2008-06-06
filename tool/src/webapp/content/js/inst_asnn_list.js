@@ -65,9 +65,6 @@ var InstAsnnList = {
 		// set the context for all context fields in forms
 		jQuery('input[name="context"]').val(data['context']);
 
-		// add a hover effect to each row of data
-		ListCommon.addHover('.dataRow', 'dataRowOn');
-
 		// add the toggle events to the twisties
 		ListCommon.addToggle('#postedTwisty', '#postedList', true);
 		ListCommon.addToggle('#draftsTwisty', '#draftsList', true);
