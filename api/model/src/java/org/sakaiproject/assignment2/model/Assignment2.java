@@ -49,6 +49,7 @@ public class Assignment2 {
     private Date dueDate;
     private Boolean honorPledge;
     private String instructions;
+    private boolean requiresSubmission;
     private int submissionType;
     private int notificationType;
     private Boolean hasAnnouncement;
@@ -300,6 +301,30 @@ public class Assignment2 {
     public void setInstructions(String instructions) {
         this.instructions = instructions;
     }
+    
+
+    /**
+     * 
+     * @return true if this assignment requires submission.
+     * for example, an assignment like "Read Chapter 1" would likely have
+     * requiresSubmission = false
+     */
+	public boolean isRequiresSubmission()
+	{
+		return requiresSubmission;
+	}
+
+	/**
+	 * true if this assignment requires submission.
+     * for example, an assignment like "Read Chapter 1" would likely have
+     * requiresSubmission = false
+	 * @param requiresSubmission
+	 */
+	public void setRequiresSubmission(boolean requiresSubmission)
+	{
+		this.requiresSubmission = requiresSubmission;
+	}
+	
     
     /**
      * @return Returns equivalent int value of the submission type

@@ -57,6 +57,10 @@
         <property name="instructions" type="text">
             <column name="INSTRUCTIONS" />
         </property>
+        <!-- if true, this assignment will have submissions -->
+        <property name="requiresSubmission" type="boolean">
+            <column name="REQUIRES_SUBMISSION" />
+        </property>
         <!-- submission type: inline, non-electronic, etc.  -->
         <property name="submissionType" type="integer" >
             <column name="SUBMISSION_TYPE" not-null="true"/>

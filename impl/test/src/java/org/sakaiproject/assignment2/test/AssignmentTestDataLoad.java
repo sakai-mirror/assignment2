@@ -1,6 +1,6 @@
 /**********************************************************************************
- * $URL$
- * $Id$
+ * $URL:https://source.sakaiproject.org/contrib/assignment2/trunk/impl/test/src/java/org/sakaiproject/assignment2/test/AssignmentTestDataLoad.java $
+ * $Id:AssignmentTestDataLoad.java 48274 2008-04-23 20:07:00Z wagnermr@iupui.edu $
  ***********************************************************************************
  *
  * Copyright (c) 2007 The Sakai Foundation.
@@ -301,6 +301,7 @@ public class AssignmentTestDataLoad {
 		assignment.setAddedToSchedule(Boolean.FALSE);
 		assignment.setSortIndex(sortIndex);
 		assignment.setTitle(title);
+		assignment.setRequiresSubmission(true);
 
 		return assignment;
 	}

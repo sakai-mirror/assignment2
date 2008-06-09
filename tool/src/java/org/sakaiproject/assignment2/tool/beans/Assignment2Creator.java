@@ -47,6 +47,7 @@ public class Assignment2Creator {
     	togo.setContextId(externalLogic.getCurrentContextId());
     	togo.setHonorPledge(Boolean.FALSE);
     	togo.setUngraded(Boolean.TRUE);
+    	togo.setRequiresSubmission(true);
     	togo.setHasAnnouncement(Boolean.FALSE);
     	togo.setAddedToSchedule(Boolean.FALSE);
     	togo.setSubmissionType(AssignmentConstants.SUBMIT_INLINE_AND_ATTACH);
@@ -91,6 +92,7 @@ public class Assignment2Creator {
 		dup.setAllowStudentViewReport(assignment.isAllowStudentViewReport());
 		dup.setRemoved(Boolean.FALSE);
 		dup.setNumSubmissionsAllowed(assignment.getNumSubmissionsAllowed());
+		dup.setRequiresSubmission(assignment.isRequiresSubmission());
 		
 		// let's duplicate the attachments and group restrictions
 		Set<AssignmentGroup> assignGroupSet = new HashSet<AssignmentGroup>();
