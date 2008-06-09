@@ -30,8 +30,10 @@ import java.util.Map;
 
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
+import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
+import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.taggable.api.AssignmentActivityProducer;
 import org.sakaiproject.assignment2.tool.beans.Assignment2Bean;
 import org.sakaiproject.assignment2.tool.beans.locallogic.DecoratedTaggingProvider;
@@ -93,6 +95,7 @@ public class ListProducer implements ViewComponentProducer, ViewParamsReporter, 
     private PagerRenderer pagerRenderer;
     private MessageLocator messageLocator;
     private AssignmentLogic assignmentLogic;
+    private AssignmentSubmissionLogic submissionLogic;
     private ExternalLogic externalLogic;
     private AssignmentPermissionLogic permissionLogic;
     private Locale locale;
@@ -239,11 +242,19 @@ public class ListProducer implements ViewComponentProducer, ViewParamsReporter, 
         		*/
         	}
 
-        	//Current user should always be able to grade, otherwise getViewableAssignments wouldn't have returned it... or at least it shouldn't ;-)
-        	int graded = 4;
-        	int total = 8;
+        	// Submitted/Total display
+        	int total = 0;
+        	int withSubmission = 0;
+        	List<String> viewableStudents = permissionLogic.getViewableStudentsForUserForItem(assignment);
+        	if (viewableStudents != null) {
+        		total = viewableStudents.size();
+        		if (total > 0) {
+        			withSubmission = submissionLogic.getNumStudentsWithASubmission(assignment, viewableStudents);
+        		}
+        	}
+
         	UIInternalLink.make(row, "grade", 
-        			messageLocator.getMessage("assignment2.list.grade_link", new Object[]{ graded, total}), 
+        			messageLocator.getMessage("assignment2.list.submissions_link", new Object[]{ withSubmission, total}), 
         			new ViewSubmissionsViewParams(ViewSubmissionsProducer.VIEW_ID, assignment.getId()));
         	
         	
@@ -328,5 +339,9 @@ public class ListProducer implements ViewComponentProducer, ViewParamsReporter, 
 	
 	public void setLocalAssignmentLogic(LocalAssignmentLogic localAssignmentLogic) {
 		this.localAssignmentLogic = localAssignmentLogic;
+	}
+	
+	public void setAssignmentSubmissionLogic(AssignmentSubmissionLogic submissionLogic) {
+		this.submissionLogic = submissionLogic;
 	}
 }

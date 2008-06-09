@@ -121,6 +121,7 @@
       <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
       <property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
       <property name="permissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentPermissionLogic" />
+      <property name="assignmentSubmissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
       <property name="pagerRenderer" ref="PagerRenderer" />
       <property name="locale" ref="requestLocale" />
       <property name="assignment2Bean" ref="Assignment2Bean" />

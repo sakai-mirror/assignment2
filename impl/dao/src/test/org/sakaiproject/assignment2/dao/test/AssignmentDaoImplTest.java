@@ -636,4 +636,26 @@ public class AssignmentDaoImplTest extends Assignment2DaoTestBase {
 		// should show up 0 b/c not submitted
 		assertEquals(0, assignmentDao.getNumSubmittedVersions(AssignmentTestDataLoad.STUDENT3_UID, testData.a1Id));
 	}
+	
+	public void testGetNumStudentsWithASubmission() {
+		// try a null assignment
+		try {
+			assignmentDao.getNumStudentsWithASubmission(null, new ArrayList<String>());
+			fail("did not catch null assignment passed to getNumStudentsWithASubmission");
+		} catch (IllegalArgumentException iae) {}
+		
+		// try a null studentIdList
+		assertEquals(0, assignmentDao.getNumStudentsWithASubmission(testData.a1, null));
+		List<String> studentIdList = new ArrayList<String>();
+		studentIdList.add(AssignmentTestDataLoad.STUDENT1_UID);
+		studentIdList.add(AssignmentTestDataLoad.STUDENT2_UID);
+		studentIdList.add(AssignmentTestDataLoad.STUDENT3_UID);
+		
+		// this method counts how many of these students have a submission for the given assignment, not the total # versions
+		// see comments in AssignmentTestDataLoad for specific sub info for these assign
+		assertEquals(2, assignmentDao.getNumStudentsWithASubmission(testData.a1, studentIdList));
+		assertEquals(0, assignmentDao.getNumStudentsWithASubmission(testData.a2, studentIdList));
+		assertEquals(3, assignmentDao.getNumStudentsWithASubmission(testData.a3, studentIdList));
+		assertEquals(1, assignmentDao.getNumStudentsWithASubmission(testData.a4, studentIdList));
+	}
 }

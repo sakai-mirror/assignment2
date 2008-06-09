@@ -968,4 +968,12 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 
 		return dao.getNumSubmittedVersions(studentId, assignmentId);
 	}
+	
+	public int getNumStudentsWithASubmission(Assignment2 assignment, List<String> studentIdList) {
+		if (assignment == null) {
+			throw new IllegalArgumentException ("Null assignment passed to getNumStudentsWithASubmission");
+		}
+		
+		return dao.getNumStudentsWithASubmission(assignment, studentIdList);
+	}
 }

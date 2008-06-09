@@ -562,6 +562,37 @@ public class AssignmentDaoImpl extends HibernateCompleteGenericDao implements As
 		return ((Number) getHibernateTemplate().execute(hc)).intValue();
     }
     
+    public int getNumStudentsWithASubmission(final Assignment2 assignment, final List<String> studentIdList) {
+    	if (assignment == null) {
+    		throw new IllegalArgumentException("null assignment passed to getNumStudentsWithASubmission");
+    	}
+    	
+    	int numStudentsWithSubmission = 0;
+    	
+    	HibernateCallback hc = new HibernateCallback() {
+			public Object doInHibernate(Session session) throws HibernateException ,SQLException {
+		    	
+				List<String> studentsWithSubmission = new ArrayList<String>();
+		    	if (studentIdList != null && !studentIdList.isEmpty()) {
+		    		Query query = session.getNamedQuery("countNumStudentsWithASubmission");	
+		        	query.setParameter("assignment", assignment);
+		        	
+		        	studentsWithSubmission = queryWithParameterList(query, "studentIdList", studentIdList);
+		        	
+		    	}
+		    	
+		    	return studentsWithSubmission;
+			}
+		};
+		
+		List<String> studentsWithSubmission = (List<String>)getHibernateTemplate().execute(hc);
+		if (studentsWithSubmission != null) {
+			numStudentsWithSubmission = studentsWithSubmission.size();
+		}
+		
+		return numStudentsWithSubmission;
+    }
+    
     public void clearSession() {
     	
     	getHibernateTemplate().clear();

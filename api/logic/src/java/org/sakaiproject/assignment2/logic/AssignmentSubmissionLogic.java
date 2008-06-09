@@ -246,4 +246,13 @@ public interface AssignmentSubmissionLogic {
 	 * for the given assignment. does not count draft versions
 	 */
 	public int getNumSubmittedVersions(String studentId, Long assignmentId);
+	
+	/**
+	 * 
+	 * @param assignment
+	 * @param studentIdList
+	 * @return the number of students from the given studentId list who have at least
+	 * one submission for the given assignment
+	 */
+	public int getNumStudentsWithASubmission(Assignment2 assignment, List<String> studentIdList);
 }

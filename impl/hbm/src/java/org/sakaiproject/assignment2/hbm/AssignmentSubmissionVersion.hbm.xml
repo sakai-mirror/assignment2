@@ -132,5 +132,13 @@
              and submission.userId = :studentId
              and submissionVersion.submittedTime != null]]>
   	</query>
+  	
+  	<query name="countNumStudentsWithASubmission">
+    <![CDATA[select distinct submission.userId from org.sakaiproject.assignment2.model.AssignmentSubmissionVersion submissionVersion
+             join submissionVersion.assignmentSubmission as submission
+             where submission.assignment = :assignment 
+             and submission.userId in (:studentIdList)
+             and submissionVersion.submittedTime != null]]>
+  	</query>
 	
 </hibernate-mapping>
