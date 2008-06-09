@@ -18,6 +18,7 @@ import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
+import org.sakaiproject.assignment2.model.FeedbackVersion;
 import org.sakaiproject.assignment2.model.SubmissionAttachment;
 import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.content.api.ContentResource;
@@ -62,6 +63,7 @@ public class SubmissionHandler extends Asnn2HandlerBase
 		{
 			String draft = request.getParameter("draft");
 			String submission = request.getParameter("submission");
+			String feedback = request.getParameter("feedback");
 			boolean isDraft = (draft != null);
 
 			Assignment2 asnn = null;
@@ -70,16 +72,25 @@ public class SubmissionHandler extends Asnn2HandlerBase
 				AssignmentSubmissionVersion asv = subLogic.getSubmissionVersionById(Long
 						.parseLong(verId));
 				asnn = asv.getAssignmentSubmission().getAssignment();
+
+				if (feedback != null && feedback.length() > 0)
+				{
+					asv.setFeedbackNotes(feedback);
+					subLogic.updateFeedbackForVersion(asv);
+				}
 			}
 			else if (asnnId != null)
 			{
 				asnn = asnnLogic.getAssignmentById(Long.parseLong(asnnId));
 			}
 
-			// Note: saving as draft should cause a new version to be created
-			// posting should only move the version to a posted state
-			String userId = extLogic.getCurrentUserId();
-			subLogic.saveStudentSubmission(userId, asnn, isDraft, submission, null);
+			if (submission != null && submission.length() > 0)
+			{
+				// Note: saving as draft should cause a new version to be created
+				// posting should only move the version to a posted state
+				String userId = extLogic.getCurrentUserId();
+				subLogic.saveStudentSubmission(userId, asnn, isDraft, submission, null);
+			}
 
 			// send back to submission list
 			response.sendRedirect("/sakai-assignment2-tool/content/templates/inst_sub_list.html?context="
@@ -124,6 +135,8 @@ public class SubmissionHandler extends Asnn2HandlerBase
 
 		try
 		{
+			// TODO TEST - remove after dev complete
+			String text = null;
 			HashMap<String, Object> content = new HashMap<String, Object>();
 			// get needed objects from known data
 			AssignmentSubmission submission = null;
@@ -132,7 +145,8 @@ public class SubmissionHandler extends Asnn2HandlerBase
 				AssignmentSubmissionVersion version = subLogic.getSubmissionVersionById(verId);
 				submission = version.getAssignmentSubmission();
 				content.put("versionId", verId);
-				content.put("submission", version.getSubmittedText());
+				text = version.getSubmittedText();
+				content.put("submission", text);
 				content.put("feedback", version.getFeedbackNotes());
 			}
 			if (subId != 0 && submission == null)
@@ -152,6 +166,13 @@ public class SubmissionHandler extends Asnn2HandlerBase
 			{
 				Assignment2 asnn = asnnLogic.getAssignmentById(Long.parseLong(assignmentId));
 				parseAssignment(asnn, content);
+			}
+
+			// TODO TEST - remove after dev complete
+			if (text != null && text.length() > 0)
+			{
+				content.put("editSub", false);
+				content.put("editFeedback", true);
 			}
 			sendMap(request, response, content);
 		}
