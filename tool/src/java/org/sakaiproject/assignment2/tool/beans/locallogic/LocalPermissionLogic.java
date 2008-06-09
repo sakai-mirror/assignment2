@@ -65,7 +65,7 @@ public class LocalPermissionLogic {
 			// used by entity broker
 			return Boolean.TRUE;
 			
-		} else if (AssignmentListSortViewProducer.VIEW_ID.equals(viewId)) {
+		} else if (ListProducer.VIEW_ID.equals(viewId)) {
 			return permissionLogic.isUserAbleToAccessInstructorView(contextId);
 			
 		} else if (AssignmentProducer.VIEW_ID.equals(viewId) || AssignmentDevProducer.VIEW_ID.equals(viewId)) {

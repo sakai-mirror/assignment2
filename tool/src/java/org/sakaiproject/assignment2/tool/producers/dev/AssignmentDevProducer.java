@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.sakaiproject.assignment2.tool.params.AssignmentViewParams;
-import org.sakaiproject.assignment2.tool.producers.AssignmentListSortViewProducer;
+import org.sakaiproject.assignment2.tool.producers.ListProducer;
 import org.sakaiproject.assignment2.tool.producers.AssignmentProducer;
 import org.sakaiproject.assignment2.tool.producers.fragments.FragmentAssignmentPreviewProducer;
 
@@ -59,15 +59,15 @@ public class AssignmentDevProducer implements ViewComponentProducer, NavigationC
 	public List<NavigationCase> reportNavigationCases() {
     	List<NavigationCase> nav= new ArrayList<NavigationCase>();
         nav.add(new NavigationCase("post", new SimpleViewParameters(
-            AssignmentListSortViewProducer.VIEW_ID)));
+            ListProducer.VIEW_ID)));
         nav.add(new NavigationCase("preview", new AssignmentViewParams(
         	FragmentAssignmentPreviewProducer.VIEW_ID, null)));
         nav.add(new NavigationCase("refresh", new AssignmentViewParams(
         	AssignmentProducer.VIEW_ID, null)));
         nav.add(new NavigationCase("save_draft", new SimpleViewParameters(
-        	AssignmentListSortViewProducer.VIEW_ID)));
+        	ListProducer.VIEW_ID)));
         nav.add(new NavigationCase("cancel", new SimpleViewParameters(
-        	AssignmentListSortViewProducer.VIEW_ID)));
+        	ListProducer.VIEW_ID)));
         return nav;
     }
 

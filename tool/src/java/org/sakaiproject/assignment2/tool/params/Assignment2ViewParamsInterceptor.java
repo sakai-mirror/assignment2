@@ -23,7 +23,7 @@ package org.sakaiproject.assignment2.tool.params;
 
 import org.sakaiproject.assignment2.tool.beans.locallogic.LocalPermissionLogic;
 import org.sakaiproject.assignment2.tool.producers.AssignmentDetailProducer;
-import org.sakaiproject.assignment2.tool.producers.AssignmentListSortViewProducer;
+import org.sakaiproject.assignment2.tool.producers.ListProducer;
 import org.sakaiproject.assignment2.tool.producers.AuthorizationFailedProducer;
 import org.sakaiproject.assignment2.tool.producers.RedirectToAssignmentProducer;
 import org.sakaiproject.assignment2.tool.producers.StudentAssignmentListProducer;
@@ -59,7 +59,7 @@ public class Assignment2ViewParamsInterceptor implements ViewParamsInterceptor {
 		//Verify View Params for completeness
 		if (incoming instanceof VerifiableViewParams) {
 			if(!((VerifiableViewParams)incoming).verify()){
-				return new AssignmentListSortViewParams(AssignmentListSortViewProducer.VIEW_ID);
+				return new AssignmentListSortViewParams(ListProducer.VIEW_ID);
 			}
 		}
 		

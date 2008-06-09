@@ -15,8 +15,14 @@
 
 <div rsf:id="page:" class="portletBody">
 	
+	<script type="text/javascript" src="/sakai-assignment2-tool/content/js/ui.core.js"></script>
+	<script type="text/javascript" src="/sakai-assignment2-tool/content/js/ui.draggable.js"></script>
+	<script type="text/javascript" src="/sakai-assignment2-tool/content/js/ui.sortable.js"></script>
+	
 	<ul class="breadCrumb">
 		<li rsf:id="last_breadcrumb" class="lastCrumb">Last Breadcrumb</li>
+		<li class="lastCrumb"><a rsf:id="settings_link">Settings</a></li>
+		<li class="lastCrumb"><a rsf:id="reorder_link">Reorder</a></li>
 	</ul>
 
 	<div class="generalErrors">
@@ -25,75 +31,154 @@
 		</ul>
 	</div>
 	
-	<div rsf:id="pagerDiv:" class="listNav">
-	</div>
-	<ul class="navIntraTool" rsf:id="navIntraTool">
-		<li>
-			<a rsf:id="assignment_list-add-assignment-link" href="">Add Assignment</a>
-		</li>
-	</ul>
+
+	<style type="text/css">
+	  a.add_assignment {
+	  	 background: #fff url("/sakai-assignment2-tool/content/images/add.png") no-repeat left center;
+	  	 padding-left: 20px;
+	  	 margin-left: 20px;
+	  }
+	  
+	  a.assignment_delete {
+	  }
+	
+	  ul#assignmentList {
+	     margin-left: 50px;
+	  }
+	
+	  ul#assignmentList li {
+	     width: 95%;
+	  }
+	  
+     ul#assignmentList div.assignActive {
+        background: transparent url("/sakai-assignment2-tool/content/images/bullet_green.png") no-repeat top left;
+	  }
+	  
+	  ul#assignmentList div.assignInactive {
+	  	background: transparent url("/sakai-assignment2-tool/content/images/bullet_red.png") no-repeat top left;
+	  }
+	  
+	  ul#assignmentList li.header {
+	  }
+	  
+	  ul#assignmentList li.row {
+	     border-top: 2px solid #DEDEDE;
+	     height: 2.5em;
+	     cursor: move;
+	     padding-top: 10px;
+	  }
+	  	  ul#assignmentList li.row:hover {
+	        background-color: #feffcc;
+	     }
+	  
+	     ul#assignmentList li.row div.widget {
+	        cursor: pointer;
+	        padding: 5px 0;
+	        position: absolute;
+	        left: -50px;
+	        width: 100px;
+	     }
+	
+      ul#assignmentList li div.container {
+         margin-right: 50px;
+         position: relative;
+      }
+            
+      ul#assignmentList div.left,
+      ul#assignmentList h3.left {
+         height: 1.5em;
+         margin-top: 0;
+         xmargin-left: 50px;
+         padding-left: 20px;
+      }     
+      ul#assignmentList h3.left {
+      	padding-left: 0;
+      }
+      
+         ul#assignmentList div.left span.duedate {
+            display: block;
+            padding-left: 30px;
+            padding-top: 5px;
+         }
+         
+         ul#assignmentList div.left span.assignment_title {
+            padding-left: 20px;
+         }
+         
+         ul#assignmentList div.left span.draft {
+         	color: #fa0b12;
+         	text-transform: uppercase;
+         }
+         
+         ul#assignmentList div.left span.group {
+            background: transparent url("/sakai-assignment2-tool/content/images/group.png") no-repeat top left;
+         }
+      
+      ul#assignmentList div.right,
+      ul#assignmentList h3.right {
+         height: 1.5em;
+         margin-top: 0;
+         position: absolute;
+         right: 0;
+         top: 0;
+         width: 200px;
+      }
+	
+	</style>
+	<br /><br /><br />
 	<form rsf:id="form" method="post">
-		<table class="listHier lines" id="sortable">
-			<tr> 
-				<th rsf:id="tableheader.remove">Remove?</th>
-				<th rsf:id="tableheader.assignment:">
-				</th>
-				<th rsf:id="tableheader.for:">
-				</th>
-				<th rsf:id="tableheader.status:">
-				</th>
-				<th rsf:id="tableheader.open:">
-				</th>
-				<th rsf:id="tableheader.due:">
-				</th>
-				<!-- Coming Soon 
-				<th rsf:id="tableheader.ungraded:">
-				</th>
-				-->
-			</tr>
+	<ul id="assignmentList">
+	  <li class="header">
+	     <div class="container">
+           <h3 class="left">
+              <span rsf:id="msg=assignment2.list.assignments">Assignment</span>
+              <a rsf:id="add_assignment" href="" class="add_assignment">Add</a> 
+           </h3>
+           <h3 class="right" rsf:id="msg=assignment2.list.submissions_graded_total">
+              Submissions Graded/Total
+           </h3>
+         </div>
+	  </li>
+	  <li rsf:id="assignment-row:" class="row">
 
-
-			<tr rsf:id="assignment-row:"> 
-				<td rsf:id="assignment_row_remove_col">
-					<input rsf:id="assignment_row_remove" type="checkbox" /> <label rsf:id="assignment_row_remove_label" class="skip">Remove</label>
-				</td>
-				<td headers="title">
-				<h4 rsf:id="assignment_title" class="title">Homework Example 2</h4>
-					<ul class="itemAction">
-						<li><a rsf:id="assignment_row_edit">Edit</a></li>
-						<li><a rsf:id="assignment_row_duplicate">Duplicate</a></li>
-						<li class="last"><a rsf:id="assignment_row_grade">Grade Assignment</a></li>
-					</ul>
-					<ul class="itemAction">
-						<li rsf:id="tag_provider_links:"><a rsf:id="assignment_view_links">View Links</a></li>
-					</ul>
-				</td>
-				<td rsf:id="assignment_row_for" class="for">Group 1, Group 2</td>
-				<td rsf:id="assignment_row_open_text">Open</td>
-				<td rsf:id="assignment_row_draft_td"><span rsf:id="assignment_row_draft" class="highlight"></span></td>
-				<td rsf:id="assignment_row_open">Sep 24, 2007 11:00 am</td>
-				<td rsf:id="assignment_row_due">Oct 1, 2007 6:00 pm</td>
-				<td class="skip">
-					<span class="status" rsf:id="status"></span>
-					<span class="openTime" rsf:id="open_timestamp"></span>
-					<span class="dueDate" rsf:id="due_timestamp"></span>
-					<span class="sortIndex" rsf:id="sortIndex"></span>
-				</td>
-				<!-- 
-				<td><a rsf:id="assignment_row_in_new">2/2</a></td>
-				-->
-			</tr>
-		</table>
-		<br />
-		<input rsf:id="submit_remove" type="submit" class="active" name="eventSubmit_doDelete_confirm_assignment" value="Remove Selected" accesskey="s" />		
-		</form>
-		<table id="table2">
-		
-		</table>
-		<div rsf:id="assignment_empty">There are no Assignments yet</div>
-		<script type="text/javascript" rsf:id="defaultSortBy">
-			defaultSortBy="title"; //done via producer
-		</script>
+	     <div class="container">
+	     	  <div class="widget">
+	           <a style="display:none" class="assignment_delete"><img src="/sakai-assignment2-tool/content/images/bin_closed.png" /></a>
+	           <input type="submit" rsf:id="assignment_delete" class="delete_replace" />
+	           <a rsf:id="assignment_edit">Edit</a>
+	        </div>
+           <div rsf:id="div-left-container" class="left">
+              <span rsf:id="assignment_title" class="assignment_title">Assignment 1</span>
+              <span rsf:id="draft" class="draft">draft</span>
+              <span class="duedate"><strong rsf:id="msg=assignment2.list.due_date">DUE:</strong><span rsf:id="assignment_row_due"></span></span>
+           </div>
+           <div class="right">
+              <a rsf:id="grade">5/8</a>
+           </div>
+        </div>
+	  </li>
+	</ul>
+	</form>
+	
+	<script type="text/javascript">
+	  jQuery("#assignmentList").sortable({items: ">li.row", axis: "y", containment: "parent"});
+     jQuery("#assignmentList div.widget").hide();
+	  jQuery("#assignmentList li.row").hover(function(){ 
+	     jQuery("div.widget", this).show();
+	  }, function() {
+	     jQuery("div.widget", this).hide();
+	  });
+	  
+	  jQuery(document).ready(function(){
+			jQuery("input.delete_replace").each(function(){
+				jQuery(this).hide();
+				that = this;
+				jQuery(this).prev("a.assignment_delete")[0].onclick = function(){jQuery(that).get(0).click();};
+				jQuery(this).prev("a.assignment_delete").show();
+			});
+		});
+	     
+	</script>
 	</div>
 </body>
 </html>

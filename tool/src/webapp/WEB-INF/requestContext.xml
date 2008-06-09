@@ -111,14 +111,12 @@
    
    <bean class="org.sakaiproject.assignment2.tool.producers.AssignmentGradeReportProducer">
    </bean>
-   
-   <bean class="org.sakaiproject.assignment2.tool.producers.AssignmentListReorderProducer">
-	  <property name="pagerRenderer" ref="PagerRenderer" />
-      <property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
-      <property name="locale" ref="requestLocale" />
-   </bean>
 
-   <bean class="org.sakaiproject.assignment2.tool.producers.AssignmentListSortViewProducer">
+   <bean class="org.sakaiproject.assignment2.tool.producers.ListReorderProducer">
+   
+   </bean>
+   
+   <bean class="org.sakaiproject.assignment2.tool.producers.ListProducer">
       <property name="messageLocator" ref="messageLocator" />
       <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
       <property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />

@@ -23,6 +23,7 @@ package org.sakaiproject.assignment2.tool.producers;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -59,6 +60,8 @@ import uk.org.ponder.rsf.components.UILink;
 import uk.org.ponder.rsf.components.UIMessage;
 import uk.org.ponder.rsf.components.UIOutput;
 import uk.org.ponder.rsf.components.UIVerbatim;
+import uk.org.ponder.rsf.components.decorators.DecoratorList;
+import uk.org.ponder.rsf.components.decorators.UIStyleDecorator;
 import uk.org.ponder.rsf.view.ComponentChecker;
 import uk.org.ponder.rsf.view.DefaultView;
 import uk.org.ponder.rsf.view.ViewComponentProducer;
@@ -66,7 +69,7 @@ import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
 import uk.org.ponder.rsf.viewstate.ViewParameters;
 import uk.org.ponder.rsf.viewstate.ViewParamsReporter;
 
-public class AssignmentListSortViewProducer implements ViewComponentProducer, ViewParamsReporter, DefaultView {
+public class ListProducer implements ViewComponentProducer, ViewParamsReporter, DefaultView {
 
     public static final String VIEW_ID = "list";
    
@@ -126,45 +129,49 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
     	List<Assignment2> entries = assignmentLogic.getViewableAssignments();
     	
     	//Breadcrumbs
-    	UIMessage.make(tofill, "last_breadcrumb", "assignment2.assignment_list-sortview.heading");
+    	UIMessage.make(tofill, "last_breadcrumb", "assignment2.list.heading");
     	
-        UIMessage.make(tofill, "page-title", "assignment2.assignment_list-sortview.title");
+    	//Links to settings and reorder
+    	UIInternalLink.make(tofill, "settings_link", new SimpleViewParameters(ListProducer.VIEW_ID));
+    	UIInternalLink.make(tofill, "reorder_link", new SimpleViewParameters(ListReorderProducer.VIEW_ID));
+    	
+    	
+        UIMessage.make(tofill, "page-title", "assignment2.list.title");
         //navBarRenderer.makeNavBar(tofill, "navIntraTool:", VIEW_ID);
         pagerRenderer.makePager(tofill, "pagerDiv:", VIEW_ID, viewparams, entries.size());
         
         UIVerbatim.make(tofill, "debug_info", "Currently, you are sorting by: <strong>" + current_sort_by + " " + 
         			current_sort_dir + "</strong>,   starting from record: <strong>" + params.current_start + "</strong> and paging: <strong>" + params.current_count + "</strong> items.");
         
-        //UIMessage.make(tofill, "heading", "assignment2.assignment_list-sortview.heading");
+        //UIMessage.make(tofill, "heading", "assignment2.list.heading");
         //Links
         if (edit_perm){
-        	UIOutput.make(tofill, "navIntraTool");
-        	UIInternalLink.make(tofill, "assignment_list-add-assignment-link", UIMessage.make("assignment2.assignment_add.title"),
+        	UIInternalLink.make(tofill, "add_assignment", UIMessage.make("assignment2.list.add_assignment"),
         		new SimpleViewParameters(AssignmentProducer.VIEW_ID));
         }
                 
         //table headers and sorting links
         if (edit_perm){
-        	UIMessage.make(tofill, "tableheader.remove", "assignment2.assignment_list-sortview.tableheader.remove");
+        	UIMessage.make(tofill, "tableheader.remove", "assignment2.list.tableheader.remove");
         }
         sortHeaderRenderer.makeSortingLink(tofill, "tableheader.assignment", viewparams, 
-        		AssignmentLogic.SORT_BY_TITLE, "assignment2.assignment_list-sortview.tableheader.assignment");
+        		AssignmentLogic.SORT_BY_TITLE, "assignment2.list.tableheader.assignment");
         sortHeaderRenderer.makeSortingLink(tofill, "tableheader.for", viewparams, 
-        		LocalAssignmentLogic.SORT_BY_FOR, "assignment2.assignment_list-sortview.tableheader.for");
+        		LocalAssignmentLogic.SORT_BY_FOR, "assignment2.list.tableheader.for");
         sortHeaderRenderer.makeSortingLink(tofill, "tableheader.status", viewparams, 
-        		LocalAssignmentLogic.SORT_BY_STATUS, "assignment2.assignment_list-sortview.tableheader.status");
+        		LocalAssignmentLogic.SORT_BY_STATUS, "assignment2.list.tableheader.status");
         sortHeaderRenderer.makeSortingLink(tofill, "tableheader.open", viewparams, 
-        		AssignmentLogic.SORT_BY_OPEN, "assignment2.assignment_list-sortview.tableheader.open");
+        		AssignmentLogic.SORT_BY_OPEN, "assignment2.list.tableheader.open");
         sortHeaderRenderer.makeSortingLink(tofill, "tableheader.due", viewparams, 
-        		AssignmentLogic.SORT_BY_DUE, "assignment2.assignment_list-sortview.tableheader.due");
+        		AssignmentLogic.SORT_BY_DUE, "assignment2.list.tableheader.due");
         //sortHeaderRenderer.makeSortingLink(tofill, "tableheader.ungraded", viewparams, 
-        //		AssignmentLogic.SORT_BY_NUM_UNGRADED, "assignment2.assignment_list-sortview.tableheader.ungraded");
+        //		AssignmentLogic.SORT_BY_NUM_UNGRADED, "assignment2.list.tableheader.ungraded");
 
               
         UIForm form = UIForm.make(tofill, "form");
         
         if (entries.size() <= 0) {
-            UIMessage.make(tofill, "assignment_empty", "assignment2.assignment_list-sortview.assignment_empty");
+            UIMessage.make(tofill, "assignment_empty", "assignment2.list.assignment_empty");
             return;
         }
         
@@ -175,24 +182,18 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
         for (Assignment2 assignment : entries){
         	UIBranchContainer row = UIBranchContainer.make(form, "assignment-row:");
         	if (edit_perm){
-        		UIOutput.make(row, "assignment_row_remove_col");
         		UIBoundBoolean.make(row, "assignment_row_remove", 
         			"Assignment2Bean.selectedIds." + assignment.getId(),
         			Boolean.FALSE);
         	}
-        	UIMessage.make(row, "assignment_row_remove_label", "assignment2.assignment_list-sortview.assignment_row_remove_label");
-        	String title = (assignment != null) ? assignment.getTitle() : "";
-        	UIOutput.make(row, "assignment_title", title);
+        	UIOutput title = UIOutput.make(row, "assignment_title", (assignment != null) ? assignment.getTitle() : "");
         	
         	//If Current User has the ability to edit or duplicate the assignment
         	if (edit_perm) {
-	        	UIInternalLink.make(row, "assignment_row_edit", 
-	        			UIMessage.make("assignment2.assignment_list-sortview.assignment_row_edit"), 
+        		UICommand.make(row, "assignment_delete");
+	        	UIInternalLink.make(row, "assignment_edit", 
+	        			UIMessage.make("assignment2.list.edit"), 
 	        			new AssignmentViewParams(AssignmentProducer.VIEW_ID, assignment.getId()));
-	        	UIInternalLink.make(row, "assignment_row_duplicate", 
-	        			UIMessage.make("assignment2.assignment_list-sortview.assignment_row_duplicate"), 
-	        			new AssignmentListSortViewParams(AssignmentListSortViewProducer.VIEW_ID, current_sort_by, current_sort_dir, 
-	        					params.current_start, params.current_count, assignment.getId()));
         	}
         	
         	// Tag provider stuff
@@ -239,49 +240,44 @@ public class AssignmentListSortViewProducer implements ViewComponentProducer, Vi
         	}
 
         	//Current user should always be able to grade, otherwise getViewableAssignments wouldn't have returned it... or at least it shouldn't ;-)
-        	UIInternalLink.make(row, "assignment_row_grade", 
-        			UIMessage.make("assignment2.assignment_list-sortview.assignment_row_grade"), 
+        	int graded = 4;
+        	int total = 8;
+        	UIInternalLink.make(row, "grade", 
+        			messageLocator.getMessage("assignment2.list.grade_link", new Object[]{ graded, total}), 
         			new ViewSubmissionsViewParams(ViewSubmissionsProducer.VIEW_ID, assignment.getId()));
         	
-        	// group restrictions
-        	String restrictedToText = messageLocator.getMessage("assignment2.assignment_restrict_to_site");
-        	if (assignment.getAssignmentGroupSet() != null && !assignment.getAssignmentGroupSet().isEmpty()) {
-        		// we need to display a comma-delimited list of groups
-        		restrictedToText = localAssignmentLogic.getListOfGroupRestrictionsAsString(
-        				assignment.getAssignmentGroupSet(), groupIdToNameMap);
-        	}
-        	UIOutput.make(row, "assignment_row_for", restrictedToText);
         	
-        	String status = messageLocator.getMessage("assignment2.status." + assignmentLogic.getStatusForAssignment(assignment));
+        	// group restrictions
+        	if (assignment.getAssignmentGroupSet() != null && !assignment.getAssignmentGroupSet().isEmpty()) {
+        		title.decorators = new DecoratorList(new UIStyleDecorator("group"));
+        	}
         	
         	if (assignment.isDraft()){
-        		UIOutput.make(row, "assignment_row_draft_td");
-        		UIOutput.make(row, "assignment_row_draft", status);
-        	} else {
-        	   	UIOutput.make(row, "assignment_row_open_text", status);
+        		UIMessage.make(row, "draft", "assignment2.list.draft");
+        	}
+        	
+        	UIOutput divLeftContainer = UIOutput.make(row, "div-left-container");
+        	//find active
+        	if (((assignment.getOpenTime() != null && assignment.getOpenTime().before(new Date())) || assignment.getOpenTime() == null)
+        			&& ((assignment.getDueDate() != null && assignment.getDueDate().after(new Date())) || assignment.getDueDate() == null))
+        	{
+        		//show active styleclass
+        		divLeftContainer.decorators = new DecoratorList(new UIStyleDecorator("assignActive"));
+        		
+        	}else{
+        		//show inactive styleclass
+        		divLeftContainer.decorators = new DecoratorList(new UIStyleDecorator("assignInactive"));
         	}
         	UIOutput.make(row, "assignment_row_open", df.format(assignment.getOpenTime()));
 
         	if (assignment.getDueDate() != null) {
         		UIOutput.make(row, "assignment_row_due", df.format(assignment.getDueDate()));
         	} else {
-        		UIOutput.make(row, "assignment_row_due", messageLocator.getMessage("assignment2.assignment_list-sortview.no_due_date"));	
+        		UIMessage.make(row, "assignment_row_due", "assignment2.list.no_due_date");	
         	}
 
-        	//For JS Sorting
-        	UIOutput.make(row, "status", status);
-        	UIOutput.make(row, "open_timestamp", assignment.getOpenTime() != null ? String.valueOf(assignment.getOpenTime().getTime()) : "");
-        	UIOutput.make(row, "due_timestamp", assignment.getDueDate() != null ? String.valueOf(assignment.getDueDate().getTime()) : "");
-        	UIOutput.make(row, "sortIndex", String.valueOf(assignment.getSortIndex()));
-        	
-        	//UIInternalLink.make(row, "assignment_row_in_new", "2/4", new SimpleViewParameters(GradeAssignmentProducer.VIEW_ID));
         }
         
-        if (edit_perm) {
-	        UICommand.make(form, "submit_remove", UIMessage.make("assignment2.assignment_list-sortview.submit_remove"),
-	        		"Assignment2Bean.processActionRemove");
-        }
-
     }
     
     private List<DecoratedTaggingProvider> initDecoratedProviders() {

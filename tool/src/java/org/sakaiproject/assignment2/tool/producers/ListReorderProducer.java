@@ -28,7 +28,7 @@ import java.util.Locale;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.tool.params.PagerViewParams;
-import org.sakaiproject.assignment2.tool.producers.AssignmentListSortViewProducer;
+import org.sakaiproject.assignment2.tool.producers.ListProducer;
 import org.sakaiproject.assignment2.tool.producers.renderers.PagerRenderer;
 
 import uk.org.ponder.rsf.components.UIBranchContainer;
@@ -46,9 +46,9 @@ import uk.org.ponder.rsf.viewstate.ViewParamsReporter;
 import java.util.Map;
 import java.util.HashMap;
 
-public class AssignmentListReorderProducer implements ViewComponentProducer, ViewParamsReporter {
+public class ListReorderProducer implements ViewComponentProducer, ViewParamsReporter {
 
-    public static final String VIEW_ID = "assignment_list-reorder";
+    public static final String VIEW_ID = "list-reorder";
     public String getViewID() {
         return VIEW_ID;
     }
@@ -75,7 +75,7 @@ public class AssignmentListReorderProducer implements ViewComponentProducer, Vie
         //Links
         UIInternalLink.make(tofill, "assignment_list-sortview-link",
 					UIMessage.make("assignment2.assignment_list-sortview.title"),
-				new SimpleViewParameters(AssignmentListSortViewProducer.VIEW_ID));
+				new SimpleViewParameters(ListProducer.VIEW_ID));
         UIMessage.make(tofill, "current_page", "assignment2.assignment_list-reorder.title");
         
         //Headers
@@ -126,7 +126,7 @@ public class AssignmentListReorderProducer implements ViewComponentProducer, Vie
         	}
         	UIOutput.make(row, "assignment_row_open", df.format(assignment.getOpenTime()));
         	UIOutput.make(row, "assignment_row_due", (assignment.getDueDate() != null ? df.format(assignment.getDueDate()) : ""));
-        	UIInternalLink.make(row, "assignment_row_in_new", "2/2", new SimpleViewParameters(AssignmentListReorderProducer.VIEW_ID));
+        	UIInternalLink.make(row, "assignment_row_in_new", "2/2", new SimpleViewParameters(ListReorderProducer.VIEW_ID));
         	//UIOutput.make(row, "assignment_row_scale", "0-100.0");
         	
         	i++;

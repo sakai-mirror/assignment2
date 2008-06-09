@@ -23,7 +23,7 @@ package org.sakaiproject.assignment2.tool.producers.renderers;
 
 import org.sakaiproject.assignment2.tool.params.PagerViewParams;
 import org.sakaiproject.assignment2.tool.params.AssignmentListSortViewParams;
-import org.sakaiproject.assignment2.tool.producers.AssignmentListSortViewProducer;
+import org.sakaiproject.assignment2.tool.producers.ListProducer;
 
 import uk.org.ponder.messageutil.MessageLocator;
 import uk.org.ponder.rsf.components.UIBoundList;
@@ -72,7 +72,7 @@ public class PagerRenderer {
 		////////////////////
 		String href_params = "";
 		//If we are on the Assignment_list-sortview page... add in the view params to keep the sorting accurate
-		if (AssignmentListSortViewProducer.VIEW_ID.equals(currentViewID)){
+		if (ListProducer.VIEW_ID.equals(currentViewID)){
 			AssignmentListSortViewParams sortparams = (AssignmentListSortViewParams) viewparams;
 			href_params = "sort_dir=" + sortparams.sort_dir + "&sort_by=" + sortparams.sort_by + "&";
 		}		

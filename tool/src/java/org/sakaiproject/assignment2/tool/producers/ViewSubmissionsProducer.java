@@ -146,7 +146,7 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
     	//Breadcrumbs
         UIInternalLink.make(tofill, "breadcrumb", 
         		messageLocator.getMessage("assignment2.assignment_list-sortview.heading"),
-        		new SimpleViewParameters(AssignmentListSortViewProducer.VIEW_ID));
+        		new SimpleViewParameters(ListProducer.VIEW_ID));
         UIMessage.make(tofill, "last_breadcrumb", "assignment2.assignment_grade-assignment.heading", new Object[] { assignment.getTitle() });
     	
         

@@ -124,7 +124,7 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
         //Breadcrumbs
         UIInternalLink.make(tofill, "breadcrumb", 
         		messageLocator.getMessage("assignment2.assignment_list-sortview.heading"),
-        		new SimpleViewParameters(AssignmentListSortViewProducer.VIEW_ID));
+        		new SimpleViewParameters(ListProducer.VIEW_ID));
         if (params.assignmentId != null) {
         	UIMessage.make(tofill, "last_breadcrumb", "assignment2.assignment_add.edit_heading");
         } else {
@@ -440,15 +440,15 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
 	public List<NavigationCase> reportNavigationCases() {
     	List<NavigationCase> nav= new ArrayList<NavigationCase>();
         nav.add(new NavigationCase("post", new SimpleViewParameters(
-            AssignmentListSortViewProducer.VIEW_ID)));
+            ListProducer.VIEW_ID)));
         nav.add(new NavigationCase("preview", new AssignmentViewParams(
         	FragmentAssignmentPreviewProducer.VIEW_ID, null)));
         nav.add(new NavigationCase("refresh", new AssignmentViewParams(
         	AssignmentProducer.VIEW_ID, null)));
         nav.add(new NavigationCase("save_draft", new SimpleViewParameters(
-        	AssignmentListSortViewProducer.VIEW_ID)));
+        	ListProducer.VIEW_ID)));
         nav.add(new NavigationCase("cancel", new SimpleViewParameters(
-        	AssignmentListSortViewProducer.VIEW_ID)));
+        	ListProducer.VIEW_ID)));
         return nav;
     }
 	

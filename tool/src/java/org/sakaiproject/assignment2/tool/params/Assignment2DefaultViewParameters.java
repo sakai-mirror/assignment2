@@ -23,7 +23,7 @@ package org.sakaiproject.assignment2.tool.params;
 
 import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
-import org.sakaiproject.assignment2.tool.producers.AssignmentListSortViewProducer;
+import org.sakaiproject.assignment2.tool.producers.ListProducer;
 import org.sakaiproject.assignment2.tool.producers.StudentAssignmentListProducer;
 
 import uk.org.ponder.rsf.viewstate.ViewParameters;
@@ -45,7 +45,7 @@ public class Assignment2DefaultViewParameters {
 		String contextId = externalLogic.getCurrentContextId();
 		
 		if (permissionLogic.isUserAbleToAccessInstructorView(contextId)) {
-			viewParams = new AssignmentListSortViewParams(AssignmentListSortViewProducer.VIEW_ID);
+			viewParams = new AssignmentListSortViewParams(ListProducer.VIEW_ID);
 		}
 		
 		return viewParams;
