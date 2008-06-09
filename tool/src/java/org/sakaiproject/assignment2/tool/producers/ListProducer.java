@@ -191,10 +191,6 @@ public class ListProducer implements ViewComponentProducer, NavigationCaseReport
         		divLeftContainer.decorators = new DecoratorList(new UIStyleDecorator("assignInactive"));
         	}
         	
-        	
-        	//show inactive styleclass
-    		divLeftContainer.decorators = new DecoratorList(new UIStyleDecorator("assignInactive"));
-
 	    	UIOutput.make(row, "assignment_row_open", df.format(assignment.getOpenTime()));
 	
 	    	if (assignment.getDueDate() != null) {
