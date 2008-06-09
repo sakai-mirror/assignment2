@@ -134,7 +134,7 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
         
     	//Breadcrumbs
         UIInternalLink.make(tofill, "breadcrumb", 
-        		messageLocator.getMessage("assignment2.assignment_list-sortview.heading"),
+        		messageLocator.getMessage("assignment2.list.heading"),
         		new SimpleViewParameters(ListProducer.VIEW_ID));
         UIInternalLink.make(tofill, "breadcrumb2",
         		messageLocator.getMessage("assignment2.assignment_grade-assignment.heading", new Object[] { assignment.getTitle()}),

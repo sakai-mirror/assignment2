@@ -68,13 +68,13 @@ public class LocalPermissionLogic {
 		} else if (ListProducer.VIEW_ID.equals(viewId)) {
 			return permissionLogic.isUserAbleToAccessInstructorView(contextId);
 			
-		} else if (AssignmentProducer.VIEW_ID.equals(viewId) || AssignmentDevProducer.VIEW_ID.equals(viewId)) {
+		} else if (AssignmentProducer.VIEW_ID.equals(viewId)) {
 			return permissionLogic.isCurrentUserAbleToEditAssignments(contextId);
 			
 		} else if (FinishedHelperProducer.VIEWID.equals(viewId)) {
 			return Boolean.TRUE;
 			
-		} else if (GradeProducer.VIEW_ID.equals(viewId) || GradeDevProducer.VIEW_ID.equals(viewId)) {
+		} else if (GradeProducer.VIEW_ID.equals(viewId)) {
 			if (viewParams instanceof GradeViewParams)
 			{
 				GradeViewParams params = (GradeViewParams) viewParams;

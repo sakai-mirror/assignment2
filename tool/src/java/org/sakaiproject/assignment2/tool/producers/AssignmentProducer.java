@@ -123,7 +123,7 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
         
         //Breadcrumbs
         UIInternalLink.make(tofill, "breadcrumb", 
-        		messageLocator.getMessage("assignment2.assignment_list-sortview.heading"),
+        		messageLocator.getMessage("assignment2.list.heading"),
         		new SimpleViewParameters(ListProducer.VIEW_ID));
         if (params.assignmentId != null) {
         	UIMessage.make(tofill, "last_breadcrumb", "assignment2.assignment_add.edit_heading");

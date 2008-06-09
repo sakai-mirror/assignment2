@@ -70,11 +70,11 @@ public class ListReorderProducer implements ViewComponentProducer, ViewParamsRep
         
         UIMessage.make(tofill, "page-title", "assignment2.assignment_list-reorder.title");
         pagerRenderer.makePager(tofill, "pagerDiv:", VIEW_ID, pagerparams, entries.size());
-        UIMessage.make(tofill, "heading", "assignment2.assignment_list-sortview.heading");
+        UIMessage.make(tofill, "heading", "assignment2.list.heading");
 
         //Links
         UIInternalLink.make(tofill, "assignment_list-sortview-link",
-					UIMessage.make("assignment2.assignment_list-sortview.title"),
+					UIMessage.make("assignment2.list.title"),
 				new SimpleViewParameters(ListProducer.VIEW_ID));
         UIMessage.make(tofill, "current_page", "assignment2.assignment_list-reorder.title");
         
