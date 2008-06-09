@@ -88,11 +88,24 @@ var InstAsnnList = {
 	copyAsnn: function(asnnId)
 	{
 		var url = '/sakai-assignment2-tool/sdata/asnnCopy';
-		var data = {context: InstAsnnList.context, id: asnnId};
+		var data = {context: InstAsnnList.context, asnnId: asnnId};
 		jQuery.post(url, data, function(data, textStatus)
 		{
 			InstAsnnList.show(InstAsnnList.context);
 		});
+	},
+
+	delAsnn: function(asnnId)
+	{
+		if (confirm('Are you sure you want to delete this assignment?'))
+		{
+			var url = '/sakai-assignment2-tool/sdata/asnnDel';
+			var data = {context: InstAsnnList.context, asnnId: asnnId};
+			jQuery.post(url, data, function(data, textStatus)
+			{
+				InstAsnnList.show(InstAsnnList.context);
+			});
+		}
 	}
 }
 

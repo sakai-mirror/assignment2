@@ -15,7 +15,7 @@ public class CopyAsnnHandler extends Asnn2HandlerBase
 	public void handlePost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException
 	{
-		String asnnId = request.getParameter("id");
+		String asnnId = request.getParameter("asnnId");
 		String context = request.getParameter("context");
 		String redirect = request.getParameter("redirect");
 		Date now = new Date();

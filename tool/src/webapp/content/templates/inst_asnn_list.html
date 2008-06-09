@@ -138,7 +138,8 @@
 	<tr class='dataRow'>
 		<td class='checkColumn'><input type='checkbox' name='id' value='${d.id}'/></td>
 		<td>${d.title} <a href='newassignment1.html?context=${context}&amp;id=${d.id}&amp;KeepThis=true&amp;TB_iframe=true&amp;width=800&amp;height=600&amp;modal=true' class='thickbox'><img src="../images/icons/page_white_edit.png" alt="Edit Content" /></a>
-			<a href='#' onclick='InstAsnnList.copyAsnn(${d.id});'><img src="../images/icons/page_white_copy.png" alt="Copy" /></a> </td>
+			<a href='#' onclick='InstAsnnList.copyAsnn(${d.id});'><img src="../images/icons/page_white_copy.png" alt="Copy" /></a>
+			<a href='#' onclick='InstAsnnList.delAsnn(${d.id});'><img src="../images/icons/cross.png" alt="Delete" /></a></td>
 		<td>${d.sections}</td>
 		<td>${d.openDate}</td>
 		<td>${d.dueDate}</td>
