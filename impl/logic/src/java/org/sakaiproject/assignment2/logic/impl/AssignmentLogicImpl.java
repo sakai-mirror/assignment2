@@ -23,6 +23,7 @@ package org.sakaiproject.assignment2.logic.impl;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -43,6 +44,7 @@ import org.sakaiproject.assignment2.logic.ExternalAnnouncementLogic;
 import org.sakaiproject.assignment2.logic.ExternalCalendarLogic;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
+import org.sakaiproject.assignment2.logic.utils.ComparatorsUtils;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentAttachment;
 import org.sakaiproject.assignment2.model.AssignmentGroup;
@@ -455,6 +457,8 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 				}
 			}
 		}
+	
+		Collections.sort(viewableAssignments, new ComparatorsUtils.Assignment2SortIndexComparator());
 		
 		return viewableAssignments;
 	}

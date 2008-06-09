@@ -693,4 +693,22 @@ public class Assignment2 {
 		}
 		this.attachmentSet = set;
 	}
+	
+	/**
+	 * Convenience method for determining if assignment is currently open. Not persisted.
+	 * @return true if the current date is after the open date and before the due date 
+	 * or true if current date is after open date and no due date was set
+	 */
+	public boolean isOpen() {
+		boolean isOpen = false;
+		// if the current date is after the open date
+		if (openTime.before(new Date())) {
+			// check due date restriction
+			if (dueDate == null || dueDate.after(new Date())) {
+				isOpen = true;
+			}
+		}
+		
+		return isOpen;
+	}
 }

@@ -258,8 +258,7 @@ public class ListProducer implements ViewComponentProducer, ViewParamsReporter, 
         	
         	UIOutput divLeftContainer = UIOutput.make(row, "div-left-container");
         	//find active
-        	if (((assignment.getOpenTime() != null && assignment.getOpenTime().before(new Date())) || assignment.getOpenTime() == null)
-        			&& ((assignment.getDueDate() != null && assignment.getDueDate().after(new Date())) || assignment.getDueDate() == null))
+        	if (assignment.isOpen())
         	{
         		//show active styleclass
         		divLeftContainer.decorators = new DecoratorList(new UIStyleDecorator("assignActive"));
