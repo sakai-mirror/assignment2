@@ -122,11 +122,7 @@
       <property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
       <property name="permissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentPermissionLogic" />
       <property name="assignmentSubmissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
-      <property name="pagerRenderer" ref="PagerRenderer" />
       <property name="locale" ref="requestLocale" />
-      <property name="assignment2Bean" ref="Assignment2Bean" />
-      <property name="sortHeaderRenderer" ref="SortHeaderRenderer" />
-      <property name="localAssignmentLogic" ref="localAssignmentLogic" />
    </bean>
 
    <bean class="org.sakaiproject.assignment2.tool.producers.FinishedHelperProducer">
@@ -180,6 +176,9 @@
    </bean>
 
    <!--  AJAX Fragment Producers -->
+   <bean class="org.sakaiproject.assignment2.tool.producers.AjaxResultsProducer">
+   </bean>
+   
    <bean class="org.sakaiproject.assignment2.tool.producers.fragments.FragmentAssignmentPreviewProducer">
       <property name="previewAssignmentBean" ref="PreviewAssignmentBean" />
       <property name="studentViewAssignmentRenderer" ref="StudentViewAssignmentRenderer" />

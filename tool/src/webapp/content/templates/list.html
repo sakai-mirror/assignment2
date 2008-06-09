@@ -21,8 +21,8 @@
 	
 	<ul class="breadCrumb">
 		<li rsf:id="last_breadcrumb" class="lastCrumb">Last Breadcrumb</li>
-		<li class="lastCrumb"><a rsf:id="settings_link">Settings</a></li>
-		<li class="lastCrumb"><a rsf:id="reorder_link">Reorder</a></li>
+		<li class="lastCrumb link"><a rsf:id="settings_link">Settings</a></li>
+		<li class="lastCrumb link"><a rsf:id="reorder_link">Reorder</a></li>
 	</ul>
 
 	<div class="generalErrors">
@@ -30,102 +30,8 @@
 			<li>Message for user here</li>
 		</ul>
 	</div>
-	
 
-	<style type="text/css">
-	  a.add_assignment {
-	  	 background: #fff url("/sakai-assignment2-tool/content/images/add.png") no-repeat left center;
-	  	 padding-left: 20px;
-	  	 margin-left: 20px;
-	  }
-	  
-	  a.assignment_delete {
-	  }
-	
-	  ul#assignmentList {
-	     margin-left: 50px;
-	  }
-	
-	  ul#assignmentList li {
-	     width: 95%;
-	  }
-	  
-     ul#assignmentList div.assignActive {
-        background: transparent url("/sakai-assignment2-tool/content/images/bullet_green.png") no-repeat top left;
-	  }
-	  
-	  ul#assignmentList div.assignInactive {
-	  	background: transparent url("/sakai-assignment2-tool/content/images/bullet_red.png") no-repeat top left;
-	  }
-	  
-	  ul#assignmentList li.header {
-	  }
-	  
-	  ul#assignmentList li.row {
-	     border-top: 2px solid #DEDEDE;
-	     height: 2.5em;
-	     cursor: move;
-	     padding-top: 10px;
-	  }
-	  	  ul#assignmentList li.row:hover {
-	        background-color: #feffcc;
-	     }
-	  
-	     ul#assignmentList li.row div.widget {
-	        cursor: pointer;
-	        padding: 5px 0;
-	        position: absolute;
-	        left: -50px;
-	        width: 100px;
-	     }
-	
-      ul#assignmentList li div.container {
-         margin-right: 50px;
-         position: relative;
-      }
-            
-      ul#assignmentList div.left,
-      ul#assignmentList h3.left {
-         height: 1.5em;
-         margin-top: 0;
-         xmargin-left: 50px;
-         padding-left: 20px;
-      }     
-      ul#assignmentList h3.left {
-      	padding-left: 0;
-      }
-      
-         ul#assignmentList div.left span.duedate {
-            display: block;
-            padding-left: 30px;
-            padding-top: 5px;
-         }
-         
-         ul#assignmentList div.left span.assignment_title {
-            padding-left: 20px;
-         }
-         
-         ul#assignmentList div.left span.draft {
-         	color: #fa0b12;
-         	text-transform: uppercase;
-         }
-         
-         ul#assignmentList div.left span.group {
-            background: transparent url("/sakai-assignment2-tool/content/images/group.png") no-repeat top left;
-         }
-      
-      ul#assignmentList div.right,
-      ul#assignmentList h3.right {
-         height: 1.5em;
-         margin-top: 0;
-         position: absolute;
-         right: 0;
-         top: 0;
-         width: 200px;
-      }
-	
-	</style>
-	<form rsf:id="form" method="post">
+	<br /><br />
 	<ul id="assignmentList">
 	  <li class="header">
 	     <div class="container">
@@ -140,11 +46,14 @@
 	  </li>
 	  <li rsf:id="assignment-row:" class="row">
 
-	     <div class="container">
-	     	  <div class="widget">
-	           <a style="display:none" class="assignment_delete"><img src="/sakai-assignment2-tool/content/images/bin_closed.png" /></a>
-	           <input type="submit" rsf:id="assignment_delete" class="delete_replace" />
-	           <a rsf:id="assignment_edit">Edit</a>
+		<div class="container">
+			<div class="widget">
+ 				<form rsf:id="form" method="post" class="innerForm">
+					<a style="display:none" class="assignment_delete"><img src="/sakai-assignment2-tool/content/images/bin_closed.png" /></a>
+					<input type="submit" rsf:id="assignment_delete" class="delete_replace" />
+					<input type="hidden" rsf:id="current_assignment" />
+					<a rsf:id="assignment_edit">Edit</a>
+				</form>
 	        </div>
            <div rsf:id="div-left-container" class="left">
               <span rsf:id="assignment_title" class="assignment_title">Assignment 1</span>
@@ -157,13 +66,15 @@
         </div>
 	  </li>
 	</ul>
-	</form>
 	
 	<script type="text/javascript">
-	  jQuery("#assignmentList").sortable({items: ">li.row", axis: "y", containment: "parent"});
+	//<![CDATA[
+	 jQuery("#assignmentList").sortable({items: ">li.row", axis: "y", containment: "parent"});
      jQuery("#assignmentList div.widget").hide();
 	  jQuery("#assignmentList li.row").hover(function(){ 
-	     jQuery("div.widget", this).show();
+	  	 if (!jQuery("div.overlayMessage", this).get(0)) {
+	     	jQuery("div.widget", this).show();
+	     }
 	  }, function() {
 	     jQuery("div.widget", this).hide();
 	  });
@@ -172,11 +83,28 @@
 			jQuery("input.delete_replace").each(function(){
 				jQuery(this).hide();
 				that = this;
-				jQuery(this).prev("a.assignment_delete")[0].onclick = function(){jQuery(that).get(0).click();};
+				jQuery(this).prev("a.assignment_delete")[0].onclick = postFormAjax;
 				jQuery(this).prev("a.assignment_delete").show();
 			});
 		});
-	     
+		
+		function postFormAjax() {
+         var params = {};
+         form = jQuery(this).parents("form:first").get(0);
+         li = jQuery(this).parents("li.row:first").get(0);
+         jQuery("input", form).each(function(){params[this.name] = this.value});
+         jQuery.post(form.getAttribute("action") + "?call=ajax", params, function(xml) {
+            body = xml.substring(xml.indexOf('<body'),
+						xml.lastIndexOf('</body>') + 7);
+            div = body.substring(body.indexOf('<div'),
+                  body.lastIndexOf('</div>') + 6);
+            jQuery(li).append('<div class="overlay"></div></div><div class="overlayMessage">' + div + '</div>');
+            jQuery("div.overlay", li).css('opacity',.60);
+            jQuery(".success", li).css('opacity',1);
+            setTimeout(function(){  jQuery(li).fadeOut("slow"); }, 5000);
+         });
+		}
+      //]]>
 	</script>
 	</div>
 </body>

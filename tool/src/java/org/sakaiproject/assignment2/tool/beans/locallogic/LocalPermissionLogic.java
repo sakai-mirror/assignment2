@@ -25,7 +25,6 @@ import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
 import org.sakaiproject.assignment2.tool.producers.*;
-import org.sakaiproject.assignment2.tool.producers.dev.*;
 import org.sakaiproject.assignment2.tool.producers.fragments.*;
 import org.sakaiproject.assignment2.tool.params.AssignmentViewParams;
 import org.sakaiproject.assignment2.tool.params.FragmentGradebookDetailsViewParams;
@@ -61,7 +60,10 @@ public class LocalPermissionLogic {
 		if (AddAttachmentHelperProducer.VIEWID.equals(viewId)) {
 			return Boolean.TRUE;
 			
-		} else if (AssignmentDetailProducer.VIEW_ID.equals(viewId)) {
+		} else if (AjaxResultsProducer.VIEW_ID.equals(viewId)) {
+			return Boolean.TRUE;
+			
+		}else if (AssignmentDetailProducer.VIEW_ID.equals(viewId)) {
 			// used by entity broker
 			return Boolean.TRUE;
 			

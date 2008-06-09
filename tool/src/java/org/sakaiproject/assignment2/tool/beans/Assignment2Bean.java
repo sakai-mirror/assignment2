@@ -63,6 +63,8 @@ public class Assignment2Bean {
 	private static final String FAILURE = "failure";
 	
 	
+	public Long currentAssignmentId;
+	
 	private Boolean requireAcceptUntil;
 	public void setRequireAcceptUntil(Boolean requireAcceptUntil) {
 		this.requireAcceptUntil = requireAcceptUntil;
@@ -291,6 +293,29 @@ public class Assignment2Bean {
 		messages.addMessage( new TargettedMessage("assignment2.assignments_remove",
 				new Object[] { Integer.valueOf(assignmentsRemoved) },
 		        TargettedMessage.SEVERITY_INFO));
+		return REMOVE;
+	}
+	
+	public String processActionRemoteCurrent() {
+		if (currentAssignmentId != null) {
+			try {
+				Assignment2 assignment = logic.getAssignmentById(currentAssignmentId);
+				logic.deleteAssignment(assignment);
+				//String restoreLink = "<a href=\"#\" onclick=\"restoreAssignment(' + currentAssignmentId + ')\">" + 
+					//messageLocator.getMessage("assignment2.assignment_restore").toString() + "</a>";
+					
+				messages.addMessage( new TargettedMessage("assignment2.assignment_removed",
+						new Object[] {  }, TargettedMessage.SEVERITY_INFO));
+			}catch (AnnouncementPermissionException ape) {
+				LOG.error(ape.getMessage(), ape);
+				// TODO the assign was deleted, but announcement was not
+				// b/c user did not have delete perm in annc tool
+			} catch (StaleObjectModificationException some) {
+				LOG.error(some.getMessage(), some);
+				// TODO provide a message to user that someone else was editing
+				// this object at the same time
+			}
+		}
 		return REMOVE;
 	}
 	

@@ -256,6 +256,7 @@ li .error p {
 .breadCrumb li.lastCrumb{
 	display: inline; 
 	background-image: none;
+	padding-right: 0;
 }
 
 .breadCrumbCurrent {
@@ -272,3 +273,123 @@ A.breadCrumb {
 A:hover.breadCrumb {
 	color: #333;
 }
+
+.breadCrumb li.link {
+	margin-left: 0px;	
+}
+
+.breadCrumb li.link a {
+	border-left: 1px solid #999;
+	padding-left: 10px;
+}
+
+/** List Page Styles **/
+a.add_assignment {
+	 background: #fff url("/sakai-assignment2-tool/content/images/add.png") no-repeat left center;
+	 padding-left: 20px;
+	 margin-left: 20px;
+}
+
+a.assignment_delete {
+}
+
+ul#assignmentList {
+   list-style: none;
+   margin-left: 50px;
+}
+
+ul#assignmentList li {
+   width: 95%;
+}
+
+ul#assignmentList div.assignActive {
+     background: transparent url("/sakai-assignment2-tool/content/images/bullet_green.png") no-repeat top left;
+}
+
+ul#assignmentList div.assignInactive {
+	background: transparent url("/sakai-assignment2-tool/content/images/bullet_red.png") no-repeat top left;
+}
+
+ul#assignmentList li.header {
+}
+
+ul#assignmentList li.row {
+   border-top: 2px solid #DEDEDE;
+   height: 2.5em;
+   cursor: move;
+   padding-top: 10px;
+   position: relative;
+}
+ul#assignmentList li.row:hover {
+   background-color: #feffcc;
+}
+
+ul#assignmentList li.row div.widget {
+   cursor: pointer;
+   padding: 5px 0;
+   position: absolute;
+   left: -50px;
+   width: 100px;
+}
+
+ul#assignmentList li div.container {
+   margin-right: 50px;
+   position: relative;
+}
+      
+ul#assignmentList div.left,
+ul#assignmentList h3.left {
+   height: 1.5em;
+   margin-top: 0;
+   xmargin-left: 50px;
+   padding-left: 20px;
+}     
+ul#assignmentList h3.left {
+	padding-left: 0;
+}
+   
+ul#assignmentList div.left span.duedate {
+   display: block;
+   padding-left: 30px;
+   padding-top: 5px;
+}
+
+ul#assignmentList div.left span.assignment_title {
+   padding-left: 20px;
+}
+
+ul#assignmentList div.left span.draft {
+	color: #fa0b12;
+	text-transform: uppercase;
+}
+
+ul#assignmentList div.left span.group {
+   background: transparent url("/sakai-assignment2-tool/content/images/group.png") no-repeat top left;
+}
+   
+ul#assignmentList div.right,
+ul#assignmentList h3.right {
+   height: 1.5em;
+   margin-top: 0;
+   position: absolute;
+   right: 0;
+   top: 0;
+   width: 200px;
+}
+
+ul#assignmentList li.row div.overlay {
+   background: #fff;
+   height: 3.3em;
+   position: absolute;
+   top: 0;
+   width: 100%;
+}
+   ul#assignmentList li.row div.overlayMessage {
+      margin-left: 5em;
+      position: absolute;
+      top: 0;
+      width: 80%;
+   }
+   ul#assignmentList li.row div.overlayMessage .success {
+      background-color: #fff;
+   }
