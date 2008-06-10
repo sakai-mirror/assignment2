@@ -19,16 +19,37 @@ var testAsnn = {
 var testSubs1 = {
 	"context": "",
 	"type": "electronic",
-	"submitted": [
+	"versions": [
 		{ "name": "Carl Hall",
 			"submittedDate": "04/20/2008",
 			"dueDate": "04/21/2008",
 			"sections": "A1",
+			"version": "1",
 			"feedback": "" },
 		{ "name": "Stuart Freeman",
 			"submittedDate": "04/19/2008",
 			"dueDate": "04/21/2008",
 			"sections": "A1",
+			"version": "2",
+			"feedback": "" },
+		{ "name": "Artem Dinaburg",
+			"submittedDate": "04/20/2008",
+			"dueDate": "04/21/2008",
+			"sections": "A1",
+			"version": "1",
+			"feedback": "" },
+		{ "name": "Huey Freeman",
+			"submittedDate": "04/19/2008",
+			"dueDate": "04/21/2008",
+			"sections": "A1",
+			"version": "1",
+			"feedback": "" },
+		{ "name": "Ajani Thomas",
+			"submittedDate": "04/23/2008",
+			"dueDate": "04/21/2008",
+			"sections": "A1",
+			"version": "2",
+			"late": "true",
 			"feedback": "" }
 	],
 	"returned": [
@@ -81,6 +102,7 @@ var InstSubList = {
 	nonElecSubTemp: null,
 	elecSubTemp: null,
 	bulkActionTemp: null,
+	asnnTitleTemp: null,
 
 	// placeholder for variables passed through querystring
 	context: null,
@@ -99,6 +121,7 @@ var InstSubList = {
 		jQuery('.assignmentListItem').removeClass('active');
 		var asnn = InstSubList.assignments[asnnId];
 		jQuery('#asnn_' + asnnId).addClass('active');
+		jQuery('#asnn_title').html(InstSubList.asnnTitleTemp.process(asnn));
 		if (InstSubList.context)
 		{
 			var url = '/sakai-assignment2-tool/sdata/subList?asnnId=' + asnn['id'];
@@ -239,6 +262,7 @@ jQuery(document).ready(function()
 	InstSubList.nonElecSubTemp = TrimPath.parseDOMTemplate('nonElectronicSubmitted_template');
 	InstSubList.elecSubTemp = TrimPath.parseDOMTemplate('electronicSubmitted_template');
 	InstSubList.bulkActionTemp = TrimPath.parseDOMTemplate('bulkAction_template');
+	InstSubList.asnnTitleTemp = TrimPath.parseDOMTemplate('title_template');
 
 	// if a context is provided, get the data from the server
 	if (InstSubList.context)

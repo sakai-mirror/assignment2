@@ -4,8 +4,8 @@
 
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-	<title>Submissions [Instructor]</title>
-	<link rel='stylesheet' type='text/css' href='../css/asnn_assignment_authoring.css' />
+	<title>Submissions [Evaluator]</title>
+	<link rel='stylesheet' type='text/css' href='../css/inst_sub.css' />
 	<script src='../js/jquery-1.2.3.min.js' type='text/javascript'></script>
 	<script src='../js/querystring-1.2.4.js' type='text/javascript'></script>
 	<script src='../js/trimpath-template-1.0.38.js' type='text/javascript'></script>
@@ -21,6 +21,10 @@
 
 <div id='nav_out' class="navIntraTool">
 	<!-- uses nav_template -->
+</div>
+
+<div id="asnn_title" class="asnnTitle">
+	<!-- uses title_template -->
 </div>
 
 <div id="wrapper">
@@ -62,7 +66,7 @@
 				<div id='returnedHeader' class='widget-instance-head'>
 					<div class="widget-instance-head-left">
 						<ul>
-							<li><a href='#' id='returnedTwisty' class='twisty'><img src='../images/widget1-collapse-arrow.png' alt='Returned' /></a>&nbsp;Returned</li>
+							<li><a href='#' id='returnedTwisty' class='twisty'><img src='../images/widget1-collapse-arrow.png' alt='Returned' /></a>&nbsp;Returned to Submitter</li>
 						</ul>
 				    </div>
 				    <div class="widget-instance-head-right">
@@ -105,6 +109,12 @@
 </div>
 </textarea>
 
+<textarea id='title_template' class='template'>
+<div>
+	<h3>${title}</h3>
+</div>
+</textarea>
+
 <textarea id='nonElectronicSubmitted_template' class='template'>
 <table id='submittedAsnns' cellspacing="0" border="0" class="tool-menu listTable tablesorter">
 	<thead>
@@ -142,10 +152,19 @@
 	<tbody>
 	{if defined('versions')}
 		{for s in versions}
-		<tr class='dataRow clickable' onclick="location.href='/sakai-assignment2-tool/content/templates/submissionview.html?verId=${s.id}'">
+		<tr class='dataRow clickable 
+		{if s.late} late {/if}
+		{if s.version > 1} resubmission {/if}' onclick="location.href='/sakai-assignment2-tool/content/templates/submissionview.html?verId=${s.id}'">
 			<td>${s.name}</td>
 			<td>${s.dueDate}</td>
-			<td>${s.submittedDate}</td>
+			<td>${s.submittedDate}
+			{if s.version > 1}
+			&nbsp;<em>(resubmission)</em>
+			{/if}
+			{if s.late}
+			&nbsp;<em><font color="red">(late)</font></em>
+			{/if}
+			</td>
 			<td>${s.sections}</td>
 			<td>${s.feedback}</td>
 		</tr>

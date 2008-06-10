@@ -1,0 +1,362 @@
+/* GENERAL BITS */
+
+a img { border: none; }
+
+/**
+ * Special style to force divs to be able to work right when floating in all
+ * browsers
+ */
+.clear {
+	clear:both;
+	//height:1px;
+	//font-size:1px;
+	border:none;
+	margin:0;
+	padding:0;
+	background:transparent;
+}
+
+li { list-style-type: none; }
+
+body {
+	margin: 0;
+	padding: 0;
+	height: 100%;
+}
+
+#wrapper {
+	height: 100%;
+  	width: 100%;
+}
+
+.listArea {
+  margin: 20px 0 20px 0;
+ }
+
+.header {
+	font-family:"Lucida Grande", Tahoma, Arial, Verdana, sans-serif;
+	font-size: 120%;
+}
+
+.hidden {
+	visibility: hidden;
+	display: none;
+}
+
+.checkColumn {
+	text-align: center;
+}
+
+
+/* TABLES */
+
+.listTable {
+	width: 99%;
+	float: right;
+	background-color: #fff;
+}
+.headerRow {
+	text-align: left;
+	background-color: #efefef;
+}
+.dataRow:hover {
+	background-color: #efefef;
+}
+.clickable:hover {
+	cursor: pointer;
+}
+.resubmission {
+	background-color: #e9e9e9;
+}
+.resubmission:hover {
+	background-color: #e0e0e0;
+}
+.late:hover {
+	background-color: #ffcccc;
+}
+.late {
+	background-color: #ffdddd;
+}
+
+table.tablesorter {
+	font-family: arial;
+	margin:10px 0pt 15px;
+	width: 100%;
+	font-size: 80%;
+}
+table.tablesorter thead tr th, table.tablesorter tfoot tr th {
+	border: thin solid #cccccc;
+	padding: 4px;
+}
+table.tablesorter td {
+	padding-top: 3px;
+	padding-bottom: 3px;
+}
+table.tablesorter thead tr .header {
+	background-image: url(../images/bg.gif);
+	background-repeat: no-repeat;
+	background-position: center right;
+	cursor: pointer;
+}
+table.tablesorter tbody tr.odd td {
+	background-color:#F0F0F6;
+}
+table.tablesorter thead tr .headerSortUp {
+	background-image: url(../images/asc.gif);
+}
+table.tablesorter thead tr .headerSortDown {
+	background-image: url(../images/desc.gif);
+}
+
+.template {
+	display: none;
+}
+
+
+/* WIDGET */
+
+#widget-container {
+  float: left;
+  display: inline;
+  width: 100%;
+  margin: 0 -220px 0 0;
+  padding: 0 0 0 0;
+}
+#widget-content {
+  margin: 0 40px 0 0;
+  padding: 10px 0 0 0;
+}
+
+.widget-instance {
+  	float: left;
+	width: 100%;
+	margin: 20px;
+	background: #cccccc;
+}
+.widget-instance ul {
+	margin: 0;
+	padding: 0;
+}
+.widget-instance li {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+.widget-instance-head {
+	padding: 7px 6px 7px 6px;
+}
+.widget-instance-head-left {
+	float: left;
+	display: inline;
+	width: 69%;
+}
+.widget-instance-head-left li {
+	font-family:"Lucida Grande", Tahoma, Arial, Verdana, sans-serif;
+	font-size: 110%;
+	float: left;
+	display: inline;
+}
+.widget-instance-head-left a {
+	float: left;
+	padding-left: 22px;
+	color: #000;
+	font: bold Arial, Helvetica, sans-serif;
+	text-decoration: none;
+}
+.widget-instance-head-right {
+	float: right;
+	display: inline;
+	width: 30%;
+}
+.widget-instance-head-right ul li a {
+	font-size: 80%;
+}
+.widget-instance-head-right li {
+	position: relative;
+	float: right;
+	display: inline;
+}
+.widget-instance-head-right li ul {
+	position: absolute;
+	top: 10px;
+	right: 0;
+	float: none;
+	display: none;
+}
+.widget-instance-head-right li ul li {
+	float: none;
+	display: none;
+}
+/*
+.widget-instance-head-right li:hover ul,
+.widget-instance-head-right li:hover li {
+	display: block;
+}
+*/
+.widget-instance-head-right li.widget-instance-close {
+	padding-left: 4px;
+}
+.widget-instance-head-right li.widget-instance-close a {
+	display: block;
+	width: 16px;
+	height: 16px;
+	text-decoration: none;
+}
+.widget-instance-head-right li.widget-instance-menu a {
+	display: block;
+	width: 44px;
+	height: 16px;
+	text-decoration: none;
+}
+.widget-instance-subhead {
+	height: 30px;
+	margin: 0 6px;
+	background: #fff;
+}
+.widget-instance-subhead-left {
+	float: left;
+	display: inline;
+	width: auto;
+}
+.widget-instance-subhead-left ul {
+	padding-top: 6px;
+	padding-left: 3px;
+}
+.widget-instance-subhead-left li {
+	float: left;
+	display: inline;
+	padding: 0 9px;
+	line-height: 18px;
+}
+.widget-instance-subhead-left li.widget-instance-last {
+	background: url(none);
+}
+.widget-instance-subhead-left li a {
+	color: #666666;
+	text-decoration: none;
+}
+.widget-instance-subhead-left li a:hover {
+	color: #666666;
+	text-decoration: underline;
+}
+.widget-instance-subhead-right {
+	float: right;
+	display: inline;
+	width: 25%;
+}
+.widget-instance-subhead-right li {
+	float: right;
+	display: inline;
+}
+.widget-instance-subhead-right li.widget-instance-subscribe a:hover {
+	text-decoration: underline;
+}
+.widget-instance-content {
+	padding: 0px 6px 6px 6px;
+}
+.widget-instance-content-in {
+  background: #FFF;
+}	
+.widget-instance-content-in p {
+	margin: 0;
+	padding: 0;
+}
+
+/* NEW SUBMISSION WIDGET BITS */
+
+#widget-pane {
+	position: relative;
+	height: 100%;
+	clear: none;
+	margin: 0;
+	padding: 0;
+	float: left;
+	width: 89%;
+}
+#sidebar {
+	position: relative;
+	height: 100%;
+	margin: 0;
+	padding: 0;
+	clear: none;
+	float: right;
+	width: 9%;
+	background-color: #ddd;
+}
+.sidebar-content {
+	height: 100%
+	margin: 0;
+	padding: 0;
+	background-color: #ddd;
+}
+	
+.sidebar-content ul {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+.sidebar-content ul li {
+	margin: 0;
+	padding: 0;
+}
+.sidebar-content ul li a {
+	font-size: 90%;
+	font-weight: bold;
+	display: block;
+	background-color: #efefef;
+	border-bottom: thin solid #ddd;
+	border-left: thin solid #ddd;
+	padding: 5px;
+	text-decoration: none;
+	width: auto;
+}
+.sidebar-content ul li a.active {
+	background-color: white;
+	border-left: none;
+}
+.sidebar-content ul li a:hover, .sidebar ul li a:focus {
+	color: #000000;
+	background-color: #eeeeee;
+}
+
+/* NEW ASSIGNMENT PAGES */
+
+.new-asnn-section {
+	overflow: hidden;
+	width: 750px;
+	margin: 20px;
+	padding: 0;
+}
+.new-asnn-prompt {
+	width: 150px;
+	float: left;
+}
+.new-asnn-prompt h4 {
+	text-align: right;
+}
+.new-asnn-input {
+	width: 580px;
+	float: right;
+}
+.new-asnn-input p {
+	margin: 0;
+	padding: 0;
+}
+.new-asnn-input a:link {
+	font-size: 80%;
+	color: blue;
+}
+
+/*  Navigation  */
+#navConfig, #navCompose {
+  padding-left: 19px;
+  /*
+  background: url(/sakai-mailtool-tool/content/images/cog.png) center left no-repeat;
+  */
+}
+
+/* Assignment Title */
+.asnnTitle{
+  font-family:"Lucida Grande", Tahoma, Arial, Verdana, sans-serif;
+  padding-left: 19px;
+}
