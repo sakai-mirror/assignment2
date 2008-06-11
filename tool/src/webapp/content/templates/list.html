@@ -67,9 +67,13 @@
 	  </li>
 	</ul>
 	
+	<script rsf:id="init_ajaxCallbackURL" type="text/javascript">
+	//ajaxCallbackURL - set via producer
+	</script>
+	
 	<script type="text/javascript">
 	//<![CDATA[
-	 jQuery("#assignmentList").sortable({items: ">li.row", axis: "y", containment: "parent"});
+	 jQuery("#assignmentList").sortable({items: ">li.row", axis: "y", containment: "parent", update: saveSortables});
      jQuery("#assignmentList div.widget").hide();
 	  jQuery("#assignmentList li.row").hover(function(){ 
 	  	 if (!jQuery("div.overlayMessage", this).get(0)) {
@@ -104,8 +108,25 @@
             setTimeout(function(){  jQuery(li).fadeOut("slow"); }, 5000);
          });
 		}
+		
+		function saveSortables() {
+	     serialize = jQuery("#assignmentList").sortable("serialize", {attribute: "className"});
+	     jQuery.ajax({
+	        type: 'get',
+	        url: ajaxCallbackURL,
+	        data: serialize.replace(/\[\]/g, "").replace(/row\ /g,""),
+	        success: function(a){
+               //yay show confirmation
+	        },
+	        error: function(a) {
+	        	return false;
+	        }	        
+	     });
+	  }
+		
       //]]>
 	</script>
+	
 	</div>
 </body>
 </html>

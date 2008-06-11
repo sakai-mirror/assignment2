@@ -61,6 +61,7 @@ public class Assignment2Bean {
 	private static final String EDIT = "edit";
 	private static final String CANCEL = "cancel";
 	private static final String FAILURE = "failure";
+	private static final String SAVE_REORDER = "save";
 	
 	
 	public Long currentAssignmentId;
@@ -338,6 +339,16 @@ public class Assignment2Bean {
 		}
 		messages.addMessage(new TargettedMessage("assignment2.assignment_post.duplicate",
 			new Object[] {duplicate.getTitle() }, TargettedMessage.SEVERITY_INFO));
+	}
+	
+	public String processSaveReorder() {
+		//all action is done via an ajax request actually
+		messages.addMessage(new TargettedMessage("assignment2.assignment_reorder.saved", new Object[]{}, TargettedMessage.SEVERITY_INFO));
+		return SAVE_REORDER;
+	}
+	
+	public String processCancelReorder() {
+		return CANCEL;
 	}
 	
 

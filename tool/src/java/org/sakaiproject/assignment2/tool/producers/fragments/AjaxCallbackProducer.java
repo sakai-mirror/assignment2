@@ -63,13 +63,10 @@ public class AjaxCallbackProducer implements ViewComponentProducer, ViewParamsRe
     		// create an array of longs to hold the ids
     		Long[] assignmentIds = new Long[assignmentIdParam.length]; 
     	    for (int i=0; i < assignmentIdParam.length; i++){
-    	    	//now remember, the param ids are actually xhtml ids, and begin
-    	    	// with the string "li_", therefore we have to first get the
-    	    	// string after the li_, then convert it to a long
-    	    	assignmentIds[i] = Long.valueOf(assignmentIdParam[i].substring(3));
+    	    	assignmentIds[i] = Long.valueOf(assignmentIdParam[i]);
     	    }
 	    	assignmentLogic.setAssignmentSortIndexes(assignmentIds);
-	    } else if (params.removeAttachment && params.refId != null && !params.refId.equals("")) {
+	    } else if (params.removeAttachment != null && params.removeAttachment && params.refId != null && !params.refId.equals("")) {
 	    	Set<String> set = new HashSet<String>();
 	    	ToolSession session = sessionManager.getCurrentToolSession();
 	    	if (session.getAttribute("removedAttachmentRefs") != null) {

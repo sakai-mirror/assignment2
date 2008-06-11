@@ -70,6 +70,9 @@ public class LocalPermissionLogic {
 		} else if (ListProducer.VIEW_ID.equals(viewId)) {
 			return permissionLogic.isUserAbleToAccessInstructorView(contextId);
 			
+      } else if (ListReorderProducer.VIEW_ID.equals(viewId)) {
+			return permissionLogic.isUserAbleToAccessInstructorView(contextId);
+
 		} else if (AssignmentProducer.VIEW_ID.equals(viewId)) {
 			return permissionLogic.isCurrentUserAbleToEditAssignments(contextId);
 			
@@ -84,6 +87,9 @@ public class LocalPermissionLogic {
 			} 
 			
 			return Boolean.FALSE;
+
+      } else if (SettingsProducer.VIEW_ID.equals(viewId)) {
+         return Boolean.TRUE;         
 
 		} else if (StudentAssignmentListProducer.VIEW_ID.equals(viewId)) {
 			return permissionLogic.isCurrentUserAbleToSubmit(contextId);

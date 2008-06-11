@@ -113,7 +113,10 @@
    </bean>
 
    <bean class="org.sakaiproject.assignment2.tool.producers.ListReorderProducer">
-   
+   	  <property name="messageLocator" ref="messageLocator" />
+   	  <property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
+   	  <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
+      <property name="locale" ref="requestLocale" />
    </bean>
    
    <bean class="org.sakaiproject.assignment2.tool.producers.ListProducer">
@@ -173,6 +176,9 @@
 	
    <bean class="org.sakaiproject.assignment2.tool.producers.AssignmentDetailProducer">
    	  <property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
+   </bean>
+
+   <bean class="org.sakaiproject.assignment2.tool.producers.SettingsProducer">
    </bean>
 
    <!--  AJAX Fragment Producers -->

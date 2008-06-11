@@ -37,6 +37,7 @@ import org.sakaiproject.assignment2.tool.beans.Assignment2Bean;
 import org.sakaiproject.assignment2.tool.beans.locallogic.DecoratedTaggingProvider;
 import org.sakaiproject.assignment2.tool.params.AssignmentViewParams;
 import org.sakaiproject.assignment2.tool.params.ViewSubmissionsViewParams;
+import org.sakaiproject.assignment2.tool.producers.fragments.AjaxCallbackProducer;
 import org.sakaiproject.component.cover.ComponentManager;
 import org.sakaiproject.taggable.api.TaggingManager;
 import org.sakaiproject.taggable.api.TaggingProvider;
@@ -50,6 +51,7 @@ import uk.org.ponder.rsf.components.UIInput;
 import uk.org.ponder.rsf.components.UIInternalLink;
 import uk.org.ponder.rsf.components.UIMessage;
 import uk.org.ponder.rsf.components.UIOutput;
+import uk.org.ponder.rsf.components.UIVerbatim;
 import uk.org.ponder.rsf.components.decorators.DecoratorList;
 import uk.org.ponder.rsf.components.decorators.UIStyleDecorator;
 import uk.org.ponder.rsf.flow.jsfnav.NavigationCase;
@@ -87,7 +89,7 @@ public class ListProducer implements ViewComponentProducer, NavigationCaseReport
     	UIMessage.make(tofill, "last_breadcrumb", "assignment2.list.heading");
     	
     	//Links to settings and reorder
-    	UIInternalLink.make(tofill, "settings_link", new SimpleViewParameters(ListProducer.VIEW_ID));
+    	UIInternalLink.make(tofill, "settings_link", new SimpleViewParameters(SettingsProducer.VIEW_ID));
     	UIInternalLink.make(tofill, "reorder_link", new SimpleViewParameters(ListReorderProducer.VIEW_ID));
     	
         UIMessage.make(tofill, "page-title", "assignment2.list.title");
@@ -106,6 +108,8 @@ public class ListProducer implements ViewComponentProducer, NavigationCaseReport
         //Fill out Table
         for (Assignment2 assignment : entries){
         	UIBranchContainer row = UIBranchContainer.make(tofill, "assignment-row:");
+        	row.decorators = new DecoratorList(new UIStyleDecorator("sortable_" + assignment.getId().toString()));
+        	
         	UIOutput title = UIOutput.make(row, "assignment_title", (assignment != null) ? assignment.getTitle() : "");
         	
         	//If Current User has the ability to edit or duplicate the assignment
@@ -199,6 +203,9 @@ public class ListProducer implements ViewComponentProducer, NavigationCaseReport
 	    		UIMessage.make(row, "assignment_row_due", "assignment2.list.no_due_date");	
 	    	}
         }
+        
+        UIVerbatim.make(tofill, "init_ajaxCallbackURL", "var ajaxCallbackURL = \"" + 
+        		externalLogic.getAssignmentViewUrl(AjaxCallbackProducer.VIEW_ID) + "\";");
         
     }
 	public List reportNavigationCases()
