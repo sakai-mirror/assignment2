@@ -137,7 +137,10 @@ $('.draftAssns').flexigrid();
 <span>
 	<span id="configNavLink">Assignments</span> |
 	<a id="navConfig" href='inst_sub_list.html?context=${context}'>Submissions</a> |
+	<!--
 	<a id="navConfig" href='options.html?context=${context}'>Options</a>
+	-->
+	Options
 </span>
 </textarea>
 
@@ -151,7 +154,7 @@ $('.draftAssns').flexigrid();
 		</td>
 		<td>${d.sections}</td>
 		<td>${d.openDate}</td>
-		<td>${d.dueDate}</td>
+		<td>${d.dueDate.short}</td>
 	</tr>
 {/for}
 </textarea>
@@ -163,7 +166,7 @@ $('.draftAssns').flexigrid();
 		<td>${p.title} <a href='/sakai-assignment2-tool/sdata/asnnDraft?KeepThis=true&amp;TB_iframe=true&amp;id=${p.id}&context=${context}'><img src="../images/icons/arrow_up.png" alt="To Draft" /></a></td>
 		<td>${p.sections}</td>
 		<td>${p.openDate}</td>
-		<td>${p.dueDate}</td>
+		<td>${p.dueDate.short}</td>
 	</tr>
 {/for}
 </textarea>

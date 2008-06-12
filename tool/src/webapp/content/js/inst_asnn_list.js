@@ -6,24 +6,58 @@ var testdata = {
 			"title": "Assignment 3",
 			"sections": "A1",
 			"openDate": "05/21/2008",
-			"dueDate": "06/21/2008" },
+			"dueDate": {
+				"short": "06/21/2008",
+				"long": "Mon, Jun 21, 2008 11:04 AM"
+			},
+			"state": "unavail"},
 		{ "id": "4",
 			"title": "Assignment 4",
 			"sections": "A2",
 			"openDate": "05/22/2008",
-			"dueDate": "06/22/2008" }
+			"dueDate": {
+				"short": "06/22/2008",
+				"long": "Mon, Jun 22, 2008 11:04 AM"
+			},
+			"state": "unavail"}
 	],
 	"posted": [
 		{ "id": "1",
 			"title": "Assignment 1",
 			"sections": "A3",
 			"openDate": "04/21/2008",
-			"dueDate": "05/21/2008" },
+			"dueDate": {
+				"short": "05/21/2010",
+				"long": "Mon, May 21, 2010 11:04 AM"
+			},
+			"state": "open"},
 		{ "id": "2",
 			"title": "Assignment 2",
 			"sections": "A4",
 			"openDate": "04/22/2008",
-			"dueDate": "05/22/2008" }
+			"dueDate": {
+				"short": "05/22/2008",
+				"long": "Mon, May 22, 2008 11:04 AM"
+			},
+			"state": "closed"},
+		{ "id": "5",
+			"title": "Assignment 5",
+			"sections": "A5",
+			"openDate": "04/22/2008",
+			"dueDate": {
+				"short": "05/22/2008",
+				"long": "Mon, May 22, 2008 11:04 AM"
+			},
+			"state": "late"},
+		{ "id": "5",
+			"title": "Assignment 5",
+			"sections": "A5",
+			"openDate": "04/22/2009",
+			"dueDate": {
+				"short": "05/22/2008",
+				"long": "Mon, May 22, 2009 11:04 AM"
+			},
+			"state": "unavailable"}
 	]
 };
 

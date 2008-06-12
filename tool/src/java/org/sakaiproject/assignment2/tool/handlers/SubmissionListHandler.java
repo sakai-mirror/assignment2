@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -88,6 +89,7 @@ public class SubmissionListHandler extends Asnn2HandlerBase
 	 */
 	private List<Map<String, Object>> parseSubmissionVersions(Long asnnId)
 	{
+		Date now = new Date();
 		List<AssignmentSubmissionVersion> versions = subLogic.getLatestSubmissionsForAssignment(asnnId);
 		List<Map<String, Object>> subs = new ArrayList<Map<String, Object>>();
 		for (AssignmentSubmissionVersion version : versions)
@@ -116,6 +118,8 @@ public class SubmissionListHandler extends Asnn2HandlerBase
 				submittedDate = dateFormat.format(version.getCreatedTime());
 				s.put("submittedDate", submittedDate);
 				s.put("dueDate", dueDate);
+				boolean late = asnn.getDueDate().before(now);
+				s.put("late", late);
 			}
 			subs.add(s);
 		}

@@ -24,14 +24,16 @@ public class AssignmentListHandler extends Asnn2HandlerBase
 {
 	private ComponentManager compMgr;
 	private AssignmentLogic assnLogic;
-	private DateFormat dateFormat;
+	private DateFormat shortDateFormat;
+	private DateFormat longDateFormat;
 
 	@Override
 	public void postInit(Map<String, String> config) throws ServletException
 	{
 		compMgr = org.sakaiproject.component.cover.ComponentManager.getInstance();
 		assnLogic = (AssignmentLogic) compMgr.get(AssignmentLogic.class.getName());
-		dateFormat = new SimpleDateFormat("MM/dd");
+		shortDateFormat = new SimpleDateFormat("MM/dd/yyyy");
+		longDateFormat = new SimpleDateFormat("EEE, MMM dd, yyyy HH:mm a");
 	}
 
 	@Override
@@ -43,23 +45,35 @@ public class AssignmentListHandler extends Asnn2HandlerBase
 		List<HashMap<String, Object>> posted = new ArrayList<HashMap<String, Object>>();
 
 		String context = request.getParameter("context");
-		List<Assignment2> assns = assnLogic.getViewableAssignments(context);
-		for (Assignment2 assn : assns)
+		List<Assignment2> asnns = assnLogic.getViewableAssignments(context);
+		for (Assignment2 asnn : asnns)
 		{
 			// get specific elements of data
 			HashMap<String, Object> a = new HashMap<String, Object>();
-			a.put("id", assn.getId());
-			a.put("title", assn.getTitle());
+			a.put("id", asnn.getId());
+			a.put("title", asnn.getTitle());
 			a.put("sections", "");
-			if (assn.getOpenTime() != null)
-				a.put("openDate", dateFormat.format(assn.getOpenTime()));
-			if (assn.getDueDate() != null)
-			a.put("dueDate", dateFormat.format(assn.getDueDate()));
+			if (asnn.getOpenTime() != null)
+				a.put("openDate", shortDateFormat.format(asnn.getOpenTime()));
+			if (asnn.getDueDate() != null)
+			{
+				ArrayList<HashMap<String, Object>> dates = new ArrayList<HashMap<String, Object>>();
+				HashMap<String, Object> date = new HashMap<String, Object>();
+				date.put("short", shortDateFormat.format(asnn.getDueDate()));
+				dates.add(date);
+				date.put("long", longDateFormat.format(asnn.getDueDate()));
+				dates.add(date);
+				a.put("dueDate", dates);
+			}
 
-			if (assn.isDraft())
+			if (asnn.isDraft())
 				drafts.add(a);
 			else
 				posted.add(a);
+
+			// state of assignment
+			String status = determineStatus(asnn);
+			a.put("status", status);
 		}
 
 		Collections.sort(drafts, new Comparator<HashMap<String, Object>>()
@@ -90,5 +104,20 @@ public class AssignmentListHandler extends Asnn2HandlerBase
 		content.put("drafts", drafts);
 		content.put("posted", posted);
 		sendMap(request, response, content);
+	}
+
+	private String determineStatus(Assignment2 asnn)
+	{
+		Date now = new Date();
+		String status = "";
+		if (asnn.getOpenTime().before(now))
+			status = "unavailable";
+		else if (asnn.getOpenTime().before(now) && asnn.getDueDate().after(now))
+			status = "open";
+		else if (asnn.getDueDate().before(now) && asnn.getAcceptUntilTime().after(now))
+			status = "late";
+		else if (asnn.getAcceptUntilTime().before(now))
+			status = "closed";
+		return status;
 	}
 }

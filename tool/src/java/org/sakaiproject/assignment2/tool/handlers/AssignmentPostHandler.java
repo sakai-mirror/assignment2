@@ -13,12 +13,27 @@ import org.sakaiproject.assignment2.model.Assignment2;
  */
 public class AssignmentPostHandler extends Asnn2HandlerBase
 {
+	/**
+	 * Handle the delete for multiple deletions from the reuse of the form.
+	 */
+	@Override
+	public void handleDelete(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException
+	{
+	}
+
+	/**
+	 * Handle the get for single assignment postings
+	 */
 	public void handleGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException
 	{
 		process(request, response);
 	}
 
+	/**
+	 * Handle the post for multiple assignment postings
+	 */
 	@Override
 	public void handlePost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException
