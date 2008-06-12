@@ -65,6 +65,18 @@ body {
 .clickable:hover {
 	cursor: pointer;
 }
+.resubmission {
+	background-color: #e9e9e9;
+}
+.resubmission:hover {
+	background-color: #e0e0e0;
+}
+.late:hover {
+	background-color: #ffcccc;
+}
+.late {
+	background-color: #ffdddd;
+}
 
 table.tablesorter {
 	font-family: arial;
@@ -312,7 +324,7 @@ table.tablesorter thead tr .headerSortDown {
 .new-asnn-section {
 	overflow: hidden;
 	width: 750px;
-	margin: 20px;
+	margin: 0px;
 	padding: 0;
 }
 .new-asnn-prompt {
@@ -341,4 +353,10 @@ table.tablesorter thead tr .headerSortDown {
   /*
   background: url(/sakai-mailtool-tool/content/images/cog.png) center left no-repeat;
   */
+}
+
+/* Assignment Title */
+.asnnTitle{
+  font-family:"Lucida Grande", Tahoma, Arial, Verdana, sans-serif;
+  padding-left: 19px;
 }

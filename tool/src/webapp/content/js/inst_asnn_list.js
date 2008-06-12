@@ -171,15 +171,16 @@ jQuery(document).ready(function()
 		      this.checked = checked_status;
 	      });
       });
+      
+      jQuery("tr[@id=asnnRow]").hover(function()
+      {
+	      jQuery(this).children("td").children("div[@id=shortDate]").hide();
+	      jQuery(this).children("td").children("div[@id=longDate]").show();
+      }, function()
+      {
+	      jQuery(this).children("td").children("div[@id=shortDate]").show();
+	      jQuery(this).children("td").children("div[@id=longDate]").hide();
+      });
 
 });
 
-function reformatDate(dateString)
-{
-	var date = new Date();
-	var year = dateString.substring(6,4);
-	var month = dateString.substring(0,2);
-	var day = dateString.substring(3,2);
-	date.setFullYear(year,month,day);
-
-};
