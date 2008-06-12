@@ -5,7 +5,7 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 	<title>Submissions [Evaluator]</title>
-	<link rel='stylesheet' type='text/css' href='../css/inst_sub.css' />
+	<link rel='stylesheet' type='text/css' href='../css/asnn_assignment_authoring.css' />
 	<script src='../js/jquery-1.2.3.min.js' type='text/javascript'></script>
 	<script src='../js/querystring-1.2.4.js' type='text/javascript'></script>
 	<script src='../js/trimpath-template-1.0.38.js' type='text/javascript'></script>
@@ -108,7 +108,8 @@
 	<!--
 	<a id="navConfig" href='options.html?context=${context}'>Options</a>
 	-->
-	Options
+	Options |
+	<a id="navConfig" href="">Submit</a>
 </div>
 </textarea>
 
@@ -146,8 +147,8 @@
 	<thead>
 		<tr class='headerRow'>
 			<th>Name</th>
-			<th>Due Date</th>
-			<th>Submitted Date</th>
+			<th>Date Due</th>
+			<th>Date Submitted</th>
 			<th>Groups</th>
 			<th>Feedback</th>
 		</tr>
@@ -241,8 +242,10 @@
 
 <textarea id='bulkAction_template' class='template'>
 <li class="widget-instance-last"><a href='/sakai-assignment2-tool/faces/releaseAllFeedback?asnnId=${id}'> <img src="../images/icons/arrow_down.png" alt="" />Return all Feedback</a></li>
+<!--
 <li class="widget-instance-last"><a href='/sakai-assignment2-tool/faces/uploadAll/${id}'> Upload</a> | </li>
 <li class="widget-instance-last"><a href='/sakai-assignment2-tool/faces/zipSubmissions/${id}'>Download</a> | </li>
+-->
 </textarea>
 
 </body>

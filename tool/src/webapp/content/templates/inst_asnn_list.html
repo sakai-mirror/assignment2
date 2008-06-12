@@ -46,8 +46,8 @@
 							<li class="widget-instance-menu"><a href="#"></a></li> -->
 							<li class="widget-instance-last"><a href='#' onclick='jQuery('#draftForm').submit()'><img src="../images/icons/cross.png" alt="Delete" />Delete</a>
 							</li>
-							<li class="widget-instance-last"><a href='#' onclick="jQuery('#draftForm').submit()"><img src="../images/icons/arrow_down.png" alt="" />Post</a> | </li>
-							<li class="widget-instance-last"><a href=''><img src="../images/icons/page_white_get.png" alt="" />Import</a> | </li>
+							<!-- <li class="widget-instance-last"><a href='#' onclick="jQuery('#draftForm').submit()"><img src="../images/icons/arrow_down.png" alt="" />Post</a> | </li>
+							<li class="widget-instance-last"><a href=''><img src="../images/icons/page_white_get.png" alt="" />Import</a> | </li> -->
 							<!-- newLink is updated by JS -->
 			    			<li class="widget-instance-last"><a id='newLink' href='newassignment1.html?context=${context}&amp;KeepThis=true&amp;TB_iframe=true&amp;width=800&amp;height=600&amp;modal=true' class="thickbox"><img src="../images/icons/add.png" alt="" />New</a> | </li>
 				    	</ul>
@@ -146,7 +146,7 @@ $('.draftAssns').flexigrid();
 
 <textarea id="draft_template" class="template">
 {for d in drafts}
-	<tr class='dataRow'>
+	<tr class='dataRow' id="asnnRow">
 		<td class='checkColumn'><input type='checkbox' id="draftCheckBox" name='id' value='${d.id}'/></td>
 		<td>${d.title} <a href='newassignment1.html?context=${context}&amp;id=${d.id}&amp;KeepThis=true&amp;TB_iframe=true&amp;width=800&amp;height=600&amp;modal=true' class='thickbox'><img src="../images/icons/page_white_edit.png" alt="Edit Content" /></a>
 			<a href='#' onclick='InstAsnnList.copyAsnn(${d.id});'><img src="../images/icons/page_white_copy.png" alt="Copy" /></a>
@@ -154,19 +154,23 @@ $('.draftAssns').flexigrid();
 		</td>
 		<td>${d.sections}</td>
 		<td>${d.openDate}</td>
-		<td>${d.dueDate.short}</td>
+		<td id="dueDate" width="30%"><div id="shortDate">${d.dueDate.short}</div>
+		    <div id="longDate" style="display: none">${d.dueDate.long}</div>
+		</td>
 	</tr>
 {/for}
 </textarea>
 
 <textarea id="posted_template" class="template">
 {for p in posted}
-	<tr class='dataRow'>
+	<tr class='dataRow' id="asnnRow">
 		<td class='checkColumn'><input type='checkbox' id="postedCheckBox" name='id' class='checkColumn' value='${p.id}' /></td>
 		<td>${p.title} <a href='/sakai-assignment2-tool/sdata/asnnDraft?KeepThis=true&amp;TB_iframe=true&amp;id=${p.id}&context=${context}'><img src="../images/icons/arrow_up.png" alt="To Draft" /></a></td>
 		<td>${p.sections}</td>
 		<td>${p.openDate}</td>
-		<td>${p.dueDate.short}</td>
+		<td id="dueDate" width="30%"><div id="shortDate">${p.dueDate.short}</div>
+		    <div id="longDate" style="display: none">${p.dueDate.long}</div>
+		</td>
 	</tr>
 {/for}
 </textarea>
