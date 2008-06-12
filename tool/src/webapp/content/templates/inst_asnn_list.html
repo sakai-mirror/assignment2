@@ -16,6 +16,7 @@
 	<script src='../js/inst_asnn_list.js' type='text/javascript'></script>
 	<script src='../js/fck-inserter.js' type='text/javascript'></script>
 	<script src='../js/thickbox.js' type='text/javascript'></script>
+	<script src='../js/flexigrid.js' type='text/javascript'></script>
 </head>
 
 <body>
@@ -60,7 +61,7 @@
 						<table id='draftAssns' cellspacing="0" border="0" class="tool-menu listTable tablesorter">
 							<thead>
 								<tr class='headerRow'>
-									<th class='checkColumn'><input type='checkbox' disabled='disabled' /></th>
+									<th class='checkColumn'><input type='checkbox' id='draftCheckAll' /></th>
 									<th>Title</th>
 									<th>Groups</th>
 									<th>Assigned</th>
@@ -106,7 +107,7 @@
 						<table id='postedAssns' cellpadding="0" cellspacing="0" border="0" class="tool-menu listTable tablesorter">
 							<thead>
 								<tr class='headerRow'>
-									<th class='checkColumn'><input type='checkbox' disabled='disabled' /></th>
+									<th class='checkColumn'><input type='checkbox' id='postedCheckAll' /></th>
 									<th>Title</th>
 									<th>Groups</th>
 									<th>Assigned</th>
@@ -127,6 +128,9 @@
 	<!-- END POSTED WIDGET -->
 
 </div>
+<script>
+$('.draftAssns').flexigrid();
+</script>
 <div class='clear'></div>
 
 <textarea id='nav_template' class='template'>
@@ -140,7 +144,7 @@
 <textarea id="draft_template" class="template">
 {for d in drafts}
 	<tr class='dataRow'>
-		<td class='checkColumn'><input type='checkbox' name='id' value='${d.id}'/></td>
+		<td class='checkColumn'><input type='checkbox' id="draftCheckBox" name='id' value='${d.id}'/></td>
 		<td>${d.title} <a href='newassignment1.html?context=${context}&amp;id=${d.id}&amp;KeepThis=true&amp;TB_iframe=true&amp;width=800&amp;height=600&amp;modal=true' class='thickbox'><img src="../images/icons/page_white_edit.png" alt="Edit Content" /></a>
 			<a href='#' onclick='InstAsnnList.copyAsnn(${d.id});'><img src="../images/icons/page_white_copy.png" alt="Copy" /></a>
 			<!-- <a href='#' onclick='InstAsnnList.delAsnn(${d.id});'><img src="../images/icons/cross.png" alt="Delete" /></a> -->
@@ -155,7 +159,7 @@
 <textarea id="posted_template" class="template">
 {for p in posted}
 	<tr class='dataRow'>
-		<td class='checkColumn'><input type='checkbox' name='id' class='checkColumn' value='${p.id}' /></td>
+		<td class='checkColumn'><input type='checkbox' id="postedCheckBox" name='id' class='checkColumn' value='${p.id}' /></td>
 		<td>${p.title} <a href='/sakai-assignment2-tool/sdata/asnnDraft?KeepThis=true&amp;TB_iframe=true&amp;id=${p.id}&context=${context}'><img src="../images/icons/arrow_up.png" alt="To Draft" /></a></td>
 		<td>${p.sections}</td>
 		<td>${p.openDate}</td>

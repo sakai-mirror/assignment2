@@ -71,7 +71,7 @@ var InstAsnnList = {
 
 		// Make the tables sortable
 		jQuery("#draftAssns").tablesorter({headers: {0: {sorter: false}}});
-		jQuery("#postedAssns").tablesorter();
+		jQuery("#postedAssns").tablesorter({headers: {0: {sorter: false}}});
 
 		// make sure thickbox is applied
 		tb_init('a.thickbox, area.thickbox, input.thickbox');
@@ -119,4 +119,33 @@ jQuery(document).ready(function()
 	InstAsnnList.postedTemplate = TrimPath.parseDOMTemplate('posted_template');
 
 	InstAsnnList.show(context);
+
+      jQuery("#draftCheckAll").click(function()
+      {
+	      var checked_status = this.checked;
+	      jQuery("input[@id=draftCheckBox]").each(function()
+	      {
+		      this.checked = checked_status;
+	      });
+      });
+
+      jQuery("#postedCheckAll").click(function()
+      {
+	      var checked_status = this.checked;
+	      jQuery("input[@id=postedCheckBox]").each(function()
+	      {
+		      this.checked = checked_status;
+	      });
+      });
+
 });
+
+function reformatDate(dateString)
+{
+	var date = new Date();
+	var year = dateString.substring(6,4);
+	var month = dateString.substring(0,2);
+	var day = dateString.substring(3,2);
+	date.setFullYear(year,month,day);
+
+};
