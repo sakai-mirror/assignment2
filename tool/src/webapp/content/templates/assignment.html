@@ -30,6 +30,41 @@
 	<p rsf:id="instructions" class="instruction">Complete the form and choose an action below. <span class="reqStar">*</span> Indicates required information.</p>
 
 	<form rsf:id="assignment_form">
+	
+	<fieldset>
+		<legend rsf:id="access_legend">Access</legend>
+		<ol>
+			<li>
+				<span rsf:id="access_select" />
+				<fieldset>
+					<ol>
+						<li rsf:id="access_row:">
+							<input rsf:id="access_choice" id="access_choice" type="radio" />
+							<label rsf:id="access_label">Display to site</label>
+						</li>
+						<li id="groups_table_li" class="indent">
+							<table id="groupTable" class="listHier lines" cellpadding="0" cellspacing="0" border="0">
+								<tr>
+									<th><input type="checkbox" title="Select all" onclick="toggle_group_checkboxes(this)" /></th>
+									<th>Title</th>
+									<th>Description</th>
+								</tr>
+								<tr rsf:id="groups_row:">
+									<td>
+										<input rsf:id="group_check" type="checkbox" />
+									</td>
+									<td>
+										<label rsf:id="group_label">Blue Cohort</label>	
+									</td>
+									<td rsf:id="group_description">Group Description</td>
+								</tr>
+							</table></li>
+					</ol>
+				</fieldset>
+			</li>
+		</ol>
+	</fieldset>
+	
 	<fieldset>
 		<legend rsf:id="msg=assignment2.assignment_add.assignment_details_legend">Assignment Details</legend>
 		<ol>
@@ -51,6 +86,19 @@
 			</li>
 		</ol>
 	</fieldset>
+	
+	<fieldset id="attachmentsFieldset">
+		<legend rsf:id="msg=assignment2.assignment_add.attachments_legend">Attachments</legend>
+		<ol class="fragment-attachments-container" rsf:id="attachment_list:">
+			<li></li>
+		</ol>
+		<ol>
+			<li>
+				<a rsf:id="add_attachments" class="thickbox">Add Attachments</a>
+			</li>
+		</ol>
+	</fieldset>
+
 	<fieldset>
 		<legend rsf:id="msg=assignment2.assignment_add.grading_legend">Grading</legend>
 		<ol>
@@ -83,8 +131,9 @@
 			</li>
 		</ol>
 	</fieldset>
+	
 	<fieldset>
-		<legend rsf:id="msg=assignment2.assignment_add.other_legend">Other</legend>
+		<legend rsf:id="msg=assignment2.assignment_add.availability_details">Availability Details</legend>
 	    <ol>
 			<li>
 				<label rsf:id="open_date_label"><span class="reqStar">*</span> Open Date</label><input rsf:id="open_date:"  />
@@ -121,6 +170,12 @@
 					</fieldset>
 				</div>
 			</li>
+		</ol>
+	</fieldset>
+	
+	<fieldset>
+		<legend rsf:id="msg=assignment2.assignment_add.other_legend">Other</legend>
+	    <ol>
 			<li>
 				<label rsf:id="msg=assignment2.assignment_add.accept_until">Accept Until</label> 
 				<fieldset>
@@ -152,11 +207,10 @@
 				</select>
 				<p rsf:id="message-for:submission_type"></p>
 			</li>
-			<li>
+			<!--<li>
+				<input rsf:id="honor_pledge" id="honor_pledge" type="checkbox" />
 				<label rsf:id="msg=assignment2.assignment_add.honor_pledge">Add honor pledge</label>
-				<select rsf:id="honor_pledge">
-				</select>
-			</li>
+			</li>-->
 			<!-- 
 			<li>
 				<label rsf:id="msg=assignment2.assignment_add.misc_details_label">Miscellaneous Details</label>
@@ -168,51 +222,12 @@
 			</li>
 			-->
 		</ol>
+
+		<input rsf:id="honor_pledge" id="honor_pledge" type="checkbox" />
+		<label rsf:id="msg=assignment2.assignment_add.honor_pledge">Add honor pledge</label>
+
 	</fieldset>
-	<fieldset id="attachmentsFieldset">
-		<legend rsf:id="msg=assignment2.assignment_add.attachments_legend">Attachments</legend>
-		<ol class="fragment-attachments-container" rsf:id="attachment_list:">
-			<li></li>
-		</ol>
-		<ol>
-			<li>
-				<a rsf:id="add_attachments" class="thickbox">Add Attachments</a>
-			</li>
-		</ol>
-	</fieldset>
-	<fieldset>
-		<legend rsf:id="access_legend">Access</legend>
-		<ol>
-			<li>
-				<span rsf:id="access_select" />
-				<fieldset>
-					<ol>
-						<li rsf:id="access_row:">
-							<input rsf:id="access_choice" id="access_choice" type="radio" />
-							<label rsf:id="access_label">Display to site</label>
-						</li>
-						<li id="groups_table_li" class="indent">
-							<table id="groupTable" class="listHier lines" cellpadding="0" cellspacing="0" border="0">
-								<tr>
-									<th><input type="checkbox" title="Select all" onclick="toggle_group_checkboxes(this)" /></th>
-									<th>Title</th>
-									<th>Description</th>
-								</tr>
-								<tr rsf:id="groups_row:">
-									<td>
-										<input rsf:id="group_check" type="checkbox" />
-									</td>
-									<td>
-										<label rsf:id="group_label">Blue Cohort</label>	
-									</td>
-									<td rsf:id="group_description">Group Description</td>
-								</tr>
-							</table></li>
-					</ol>
-				</fieldset>
-			</li>
-		</ol>
-	</fieldset>
+	
 	<!-- 
 	<fieldset>
 		<legend rsf:id="notification_legend">Submission Notification Email Options</legend>

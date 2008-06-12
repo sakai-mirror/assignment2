@@ -279,15 +279,10 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
         }
         
         //Honor Pledge
-        String[] honor_pledge_labels = new String[]{
-        		"assignment2.no",
-        		"assignment2.yes"
-        };
-        String[] honor_pledge_values = new String[] {
-        		Boolean.FALSE.toString(),
-        		Boolean.TRUE.toString()
-        };
-        UISelect.make(form, "honor_pledge", honor_pledge_values, honor_pledge_labels, assignment2OTP + ".honorPledge").setMessageKeys();
+        UIMessage honor_pledge_label = UIMessage.make(form, "honor_pledge", "assignment2.assignment_add.honor_pledge");
+    	UIBoundBoolean honor_pledge = UIBoundBoolean.make(form, "honor_pledge", assignment2OTP + ".honorPledge");
+    	UILabelTargetDecorator.targetLabel(honor_pledge_label, honor_pledge);
+
         
         //Attachments
         UIInputMany attachmentInput = UIInputMany.make(form, "attachment_list:", assignment2OTP + ".assignmentAttachmentRefs");//, 

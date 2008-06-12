@@ -184,21 +184,26 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
     	 */
         UIForm form = UIForm.make(tofill, "form");
         
-        if (assignmentSubmissionVersion.getSubmittedTime() != null){
-        	UIOutput.make(form, "status", df.format(assignmentSubmissionVersion.getSubmittedTime()));
+        // if this assignment requires non-electronic submission, there is no submission status
+        if (assignment.getSubmissionType() == AssignmentConstants.SUBMIT_NON_ELECTRONIC) {
+        	UIMessage.make(form, "non-electronic-submission", "assignment2.assignment_grade.nonelectronic_sub");
         } else {
-        	UIOutput.make(form, "status", "");
-        }
-        
-        int statusConstant = AssignmentConstants.SUBMISSION_NOT_STARTED;
-        if (assignmentSubmissionVersion != null) {
-        	statusConstant = submissionLogic.getSubmissionStatusConstantForCurrentVersion(assignmentSubmissionVersion, assignment.getDueDate());
-        }
-        
-        if (statusConstant == AssignmentConstants.SUBMISSION_IN_PROGRESS || statusConstant == AssignmentConstants.SUBMISSION_NOT_STARTED) {
-        	UIMessage.make(form, "status", "assignment2.assignment_grade.submission_status." + statusConstant);
-        } else {
+        	if (assignmentSubmissionVersion.getSubmittedTime() != null){
+        		UIOutput.make(form, "status", df.format(assignmentSubmissionVersion.getSubmittedTime()));
+        	} else {
+        		UIOutput.make(form, "status", "");
+        	}
+
+        	int statusConstant = AssignmentConstants.SUBMISSION_NOT_STARTED;
+        	if (assignmentSubmissionVersion != null) {
+        		statusConstant = submissionLogic.getSubmissionStatusConstantForCurrentVersion(assignmentSubmissionVersion, assignment.getDueDate());
+        	}
+
+        	if (statusConstant == AssignmentConstants.SUBMISSION_IN_PROGRESS || statusConstant == AssignmentConstants.SUBMISSION_NOT_STARTED) {
+        		UIMessage.make(form, "status", "assignment2.assignment_grade.submission_status." + statusConstant);
+        	} else {
         		UIMessage.make(form, "status", "assignment2.assignment_grade.submission_status." + statusConstant, new Object[] { df.format(assignmentSubmissionVersion.getSubmittedTime()) });
+        	}
         }
         
         //If current submitted submission is a draft, display note to instructor
