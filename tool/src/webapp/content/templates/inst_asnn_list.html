@@ -49,7 +49,7 @@
 							<!-- <li class="widget-instance-last"><a href='#' onclick="jQuery('#draftForm').submit()"><img src="../images/icons/arrow_down.png" alt="" />Post</a> | </li>
 							<li class="widget-instance-last"><a href=''><img src="../images/icons/page_white_get.png" alt="" />Import</a> | </li> -->
 							<!-- newLink is updated by JS -->
-			    			<li class="widget-instance-last"><a id='newLink' href='newassignment1.html?context=${context}&amp;KeepThis=true&amp;TB_iframe=true&amp;width=800&amp;height=600&amp;modal=true' class="thickbox"><img src="../images/icons/add.png" alt="" />New</a> | </li>
+			    			<li class="widget-instance-last"><a id='newLink' href='newassignment1.html?context=${context}&amp;KeepThis=true&amp;TB_iframe=true&amp;width=700&amp;height=500&amp;modal=true' class="thickbox"><img src="../images/icons/add.png" alt="" />New</a> | </li>
 				    	</ul>
 	    			</div>
 	    		</div>
@@ -135,12 +135,9 @@ $('.draftAssns').flexigrid();
 
 <textarea id='nav_template' class='template'>
 <span>
-	<span id="configNavLink">Assignments</span> |
-	<a id="navConfig" href='inst_sub_list.html?context=${context}'>Submissions</a> |
-	<!--
+	<span id="configNavLink">Assignments</span> | <a id="navConfig" href='inst_sub_list.html?context=${context}'>Submissions</a> | <!--
 	<a id="navConfig" href='options.html?context=${context}'>Options</a>
-	-->
-	Options
+	--> Options | <a id="navConfig" href="submissionview.html?context=${context}">Submit</a>
 </span>
 </textarea>
 
@@ -148,7 +145,7 @@ $('.draftAssns').flexigrid();
 {for d in drafts}
 	<tr class='dataRow' id="asnnRow">
 		<td class='checkColumn'><input type='checkbox' id="draftCheckBox" name='id' value='${d.id}'/></td>
-		<td>${d.title} <a href='newassignment1.html?context=${context}&amp;id=${d.id}&amp;KeepThis=true&amp;TB_iframe=true&amp;width=800&amp;height=600&amp;modal=true' class='thickbox'><img src="../images/icons/page_white_edit.png" alt="Edit Content" /></a>
+		<td>${d.title} <a href='newassignment1.html?context=${context}&amp;id=${d.id}&amp;KeepThis=true&amp;TB_iframe=true&amp;width=700&amp;height=500&amp;modal=true' class='thickbox'><img src="../images/icons/page_white_edit.png" alt="Edit Content" /></a>
 			<a href='#' onclick='InstAsnnList.copyAsnn(${d.id});'><img src="../images/icons/page_white_copy.png" alt="Copy" /></a>
 			<!-- <a href='#' onclick='InstAsnnList.delAsnn(${d.id});'><img src="../images/icons/cross.png" alt="Delete" /></a> -->
 		</td>

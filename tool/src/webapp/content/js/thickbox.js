@@ -202,10 +202,10 @@ function tb_show(caption, url, imageGroup, tagName) {//function called when the 
 
 			var de = document.documentElement;
 			var h = parent.window.innerHeight || parent.self.innerHeight || (de&&de.clientHeight) || parent.document.body.clientHeight;
-			TB_WIDTH = (params['width']*1) + 30 || 650; //defaults to 630 if no paramaters were added to URL
-			TB_HEIGHT = (params['height']*1) + 40 || h - 250; //defaults to 440 if no paramaters were added to URL
-			ajaxContentW = TB_WIDTH - 30;
-			ajaxContentH = TB_HEIGHT - 45;
+			TB_WIDTH = (params['width']*1) + 10 || 650; //defaults to 630 if no paramaters were added to URL
+			TB_HEIGHT = (params['height']*1) + 15 || h - 250; //defaults to 440 if no paramaters were added to URL
+			ajaxContentW = TB_WIDTH - 10;
+			ajaxContentH = TB_HEIGHT - 15;
 			
 			if(url.indexOf('TB_iframe') != -1){// either iframe or ajax window		
 					urlNoQuery = url.split('TB_');

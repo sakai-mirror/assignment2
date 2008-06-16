@@ -7,9 +7,15 @@
 		<script src="/library/editor/FCKeditor/fckeditor.js" type="text/javascript"></script>
 		<script src='../js/newassignment1.js' type='text/javascript'></script>
 		<script src='../js/fck-inserter.js' type='text/javascript'></script>
+		<style>
+			.new-asnn-section {
+				padding: 5px;
+				width: 700px;
+			}
+		</style>
 	</head>
 	<body>
-		<div class="steps">
+		<div class="new-asnn-head">
 			Assignment Content |
 			<a href="#" onclick='jQuery("#next").click()'>Submission Handling</a> |
 			<a href="#" onclick='jQuery("#end").click()'>Other Options</a>
@@ -24,8 +30,9 @@
 						<h4>* Title:&nbsp</h4>
 					</div>
 					<div class="new-asnn-input">
-						<input type="text" id='title' name='title' size="65" />
+						<input type="text" id='title' name='title' size="80" />
 					</div>
+					<div class='clear'></div>
 				</div>
 				<div class="new-asnn-section">
 					<div class="new-asnn-prompt">
@@ -34,6 +41,7 @@
 					<div class="new-asnn-input">
 						<textarea id='instructions' name='instructions' class='fckeditor' cols="60" rows="15"></textarea>
 					</div>
+					<div class='clear'></div>
 				</div>
 				<div class="new-asnn-section">
 					<div class="new-asnn-prompt">
@@ -43,12 +51,14 @@
 						<p> No attachments yet</p>
 						<p><a href="#" class="thickbox">Add attachments</a></p>
 					</div>
+					<div class='clear'></div>
 				</div>
 				<div class="new-asnn-input buttons">
 					<input type="submit" id='draft' name='draft' value="Save as Draft" />
 					<input type="button" id='cancel' name='cancel' value="Cancel" onclick="parent.tb_remove()" />
 					<input type="submit" id='next' name='next' value="Submission Handling &gt;&gt;" />
 					<input type='submit' id='end' name='end' value='Other Options &gt;&gt;&gt;' class='hidden' />
+					<div class='clear'></div>
 				</div>
 			</form>
 		</div>

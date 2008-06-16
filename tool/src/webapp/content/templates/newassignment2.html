@@ -6,9 +6,10 @@
 		<script src='../js/querystring-1.2.4.js' type='text/javascript'></script>
 		<script src='../js/jquery.ui-1.5b2/datepicker/core/ui.datepicker.js' type='text/javascript'></script>
 		<script src='../js/newassignment2.js' type='text/javascript'></script>
+		<script src="../js/jtip.js" type="text/javascript"></script>
 	</head>
 	<body>
-		<div class="steps">
+		<div class="new-asnn-section">
 			<a href="#" onclick='jQuery("#prev").click()'>Assignment Content</a> |
 			Submission Handling |
 			<a href="#" onclick='jQuery("#next").click()'> Other Options</a>
@@ -27,7 +28,7 @@
 							<li><input type="radio" name="submissionType" id="electronic" value="2" checked="checked" />
 							<label for="electronic">Electronic submissions</label></li>
 							<li><input type="radio" name="submissionType" id="nonelectronic" value="3"/>
-							<label for="nonelectronic">Non-electronic submissions</label> <a class="help-prompt" href="">What does this mean?</a></li>
+							<label for="nonelectronic">Non-electronic submissions</label> <a class="jTip" href="nonElectronicHelp.htm?width=300" id="nonElectronicHelp" name="What does this mean?">?</a></li>
 						</ul>
 					</div>
 					<div class='clear'></div>
@@ -39,7 +40,7 @@
 					<div class="new-asnn-input">
 						<ul>
 							<li><input type="radio" name="openDateRadio" id="openImmediate" value="true" checked="checked" />
-							<label for="openImmediate">Immediately</label> &nbsp;<a href="">What does this mean?</a></li>
+							<label for="openImmediate">Immediately</label> &nbsp;<a href="dateAvailableHelp.htm?width=300" class="jTip" id="dateAvailableHelp" name="What does this mean?">?</a></li>
 							<li><input type="radio" name="openDateRadio" id="openLater" value="false"/>
 							<label for="openLater">Set Date Available ...</label></li>
 							<div id="openD" class="hidden">
