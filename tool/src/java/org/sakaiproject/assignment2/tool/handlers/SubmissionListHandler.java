@@ -113,12 +113,15 @@ public class SubmissionListHandler extends Asnn2HandlerBase
 			{
 				String dueDate = "";
 				String submittedDate = "";
+				boolean late = false;
 				if (asnn.getDueDate() != null)
+				{
 					dueDate = dateFormat.format(asnn.getDueDate());
+					late = asnn.getDueDate().before(now);
+				}
 				submittedDate = dateFormat.format(version.getCreatedTime());
 				s.put("submittedDate", submittedDate);
 				s.put("dueDate", dueDate);
-				boolean late = asnn.getDueDate().before(now);
 				s.put("late", late);
 			}
 			subs.add(s);
