@@ -172,14 +172,14 @@ jQuery(document).ready(function()
 	      });
       });
       
-      jQuery("tr[@id=asnnRow]").hover(function()
+      jQuery("tr[@name=asnnRow]").hover(function()
       {
-	      jQuery(this).children("td").children("div[@id=shortDate]").hide();
-	      jQuery(this).children("td").children("div[@id=longDate]").show();
+	      jQuery("td div[@name=shortDate]", this).hide();
+	      jQuery("td div[@name=longDate]", this).show();
       }, function()
       {
-	      jQuery(this).children("td").children("div[@id=shortDate]").show();
-	      jQuery(this).children("td").children("div[@id=longDate]").hide();
+	      jQuery("td div[@name=shortDate]", this).show();
+	      jQuery("td div[@name=longDate]", this).hide();
       });
 
 });
