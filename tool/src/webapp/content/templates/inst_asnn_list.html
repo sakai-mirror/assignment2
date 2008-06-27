@@ -111,6 +111,7 @@
 									<th>Groups</th>
 									<th>Assigned</th>
 									<th>Due</th>
+									<th>Status</th>
 								</tr>
 							</thead>
 							<tbody id="posted_out">
@@ -159,17 +160,17 @@
 
 <textarea id="posted_template" class="template">
 {for p in posted}
-	<tr class='dataRow' name="asnnRow">
+	<tr class='dataRow ${p.state} ${p.due}' name="asnnRow">
 		<td class='checkColumn'><input type='checkbox' id="postedCheckBox" name='id' class='checkColumn' value='${p.id}' /></td>
 		<td>${p.title} <a href='/sakai-assignment2-tool/sdata/asnnDraft?KeepThis=true&amp;TB_iframe=true&amp;id=${p.id}&context=${context}'><img src="../images/icons/arrow_up.png" alt="To Draft" /></a></td>
 		<td>${p.sections}</td>
 		<td>${p.openDate}</td>
-		<td class="dueDate" width="30%">
-		
+		<td class="dueDate" width="20%">
 		<div name="shortDate">${p.dueDate.short}</div>
 		<div name="longDate" style="display: none">${p.dueDate.long}</div>
-		
+		<div name="abbrevDate" style="display: none">${p.dueDate.abbreviated}</div>
 		</td>
+		<td class="status" width="10%">${p.state}</td>
 	</tr>
 {/for}
 </textarea>
