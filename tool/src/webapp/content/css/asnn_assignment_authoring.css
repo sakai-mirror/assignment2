@@ -336,15 +336,16 @@ table.tablesorter thead tr .headerSortDown {
 	text-decoration: none;
 	width: auto;
 }
-.sidebar-content ul li a.active {
-	background-color: white;
-	border-left: none;
-}
+
 .sidebar-content ul li a:hover, .sidebar ul li a:focus {
 	color: #000000;
 	background-color: #eeeeee;
 }
 
+.sidebar-content ul li a.active {
+	background-color: white;
+	border-left: none;
+}
 /* NEW ASSIGNMENT PAGES */
 
 .new-asnn-head {
@@ -359,7 +360,7 @@ table.tablesorter thead tr .headerSortDown {
 	overflow: hidden;
 	width: 700px;
 	margin: 0px;
-	padding: 0px;
+	padding: 5px;
 	font-size: 95%;
 }
 .new-asnn-prompt {

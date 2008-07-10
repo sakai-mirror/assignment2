@@ -117,11 +117,12 @@
 </textarea>
 
 <textarea id='nonElectronicSubmitted_template' class='template'>
-<table id='submittedAsnns' cellspacing="0" border="0" class="tool-menu listTable tablesorter">
+<table id='submittedAsnns' cellspacing="0" border="0" class="tool-menu listTable tablesorter submitted">
 	<thead>
 		<tr class='headerRow'>
+			<th class='checkColumn'><input type='checkbox' id='nonElectronicCheckAll' /></th>
 			<th>Name</th>
-			<th>Groups</th>
+			<th>Section</th>
 			<th>Feedback</th>
 		</tr>
 	</thead>
@@ -129,6 +130,7 @@
 	{if defined('submissions')}
 		{for s in submissions}
 		<tr class='dataRow clickable' onclick="location.href='/sakai-assignment2-tool/content/templates/submissionview.html?asnnId=${s.id}'">
+			<td class='checkColumn'><input type='checkbox' id="nonElectronicCheckBox" name='id' value='${s.id}'/></td>
 			<td>${s.name}</td>
 			<td>${s.sections}</td>
 			<td>${s.feedback}</td>
@@ -140,13 +142,14 @@
 </textarea>
 
 <textarea id='electronicSubmitted_template' class='template'>
-<table id='submittedAsnns' cellspacing="0" border="0" class="tool-menu listTable tablesorter">
+<table id='submittedAsnns' cellspacing="0" border="0" class="tool-menu listTable submitted tablesorter">
 	<thead>
 		<tr class='headerRow'>
-			<th>Name</th>
-			<th>Date Due</th>
-			<th>Date Submitted</th>
-			<th>Groups</th>
+			<th width="3%" class='checkColumn'><input type='checkbox' id='electronicCheckAll' /></th>
+			<th width="18%">Name</th>
+			<th width="11%">Date Due</th>
+			<th width="20%">Date Submitted</th>
+			<th width="8%">Section</th>
 			<th>Feedback</th>
 		</tr>
 	</thead>
@@ -156,8 +159,9 @@
 		<tr class='dataRow clickable 
 		{if s.late} late {/if}
 		{if s.version > 1} resubmission {/if}' onclick="location.href='/sakai-assignment2-tool/content/templates/submissionview.html?verId=${s.id}'">
+			<td class='checkColumn'><input type='checkbox' id="electronicCheckBox" name='id' value='${s.id}'/></td>
 			<td>${s.name}</td>
-			<td>${s.dueDate}</td>
+			<td align="center">${s.dueDate}</td>
 			<td>${s.submittedDate}
 			{if s.version > 1}
 			&nbsp;<em>(resubmission)</em>
@@ -166,7 +170,7 @@
 			&nbsp;<em><font color="red">(late)</font></em>
 			{/if}
 			</td>
-			<td>${s.sections}</td>
+			<td align="center">${s.sections}</td>
 			<td>${s.feedback}</td>
 		</tr>
 		{/for}
@@ -176,12 +180,12 @@
 </textarea>
 
 <textarea id='nonElectronicReturned_template' class='template'>
-<table id='returnedAsnns' cellspacing="0" border="0" class="tool-menu listTable tablesorter">
+<table id='returnedAsnns' cellspacing="0" border="0" class="tool-menu listTable tablesorter returned">
 	<thead>
 		<tr class='headerRow'>
-			<th>Name</th>
-			<th>Returned On</th>
-			<th>Returned By</th>
+			<th width="21%">Name</th>
+			<th width="11%">Returned On</th>
+			<th width="20%">Returned By</th>
 			<th>Feedback</th>
 		</tr>
 	</thead>
@@ -190,7 +194,7 @@
 		{for r in returned}
 		<tr class='dataRow'>
 			<td>${r.name}</td>
-			<td>${r.returnedDate}</td>
+			<td align="cente">${r.returnedDate}</td>
 			<td>${r.returnedBy}</td>
 			<td>${r.feedback}</td>
 		</tr>
@@ -201,13 +205,13 @@
 </textarea>
 
 <textarea id='electronicReturned_template' class='template'>
-<table id='returnedAsnns' cellspacing="0" border="0" class="tool-menu listTable tablesorter">
+<table id='returnedAsnns' cellspacing="0" border="0" class="tool-menu listTable tablesorter returned">
 	<thead>
 		<tr class='headerRow'>
-			<th>Name</th>
-			<th>Returned On</th>
-			<th>Returned By</th>
-			<th>Groups</th>
+			<th width="21%">Name</th>
+			<th width="11%">Returned On</th>
+			<th width="20%">Returned By</th>
+			<th width="8%">Section</th>
 			<th>Feedback</th>
 		</tr>
 	</thead>
@@ -216,9 +220,9 @@
 		{for r in returned}
 		<tr class='dataRow'>
 			<td>${r.name}</td>
-			<td>${r.returnedDate}</td>
+			<td align="center">${r.returnedDate}</td>
 			<td>${r.returnedBy}</td>
-			<td>${r.sections}</td>
+			<td align="center">${r.sections}</td>
 			<td>${r.feedback}</td>
 		</tr>
 		{/for}

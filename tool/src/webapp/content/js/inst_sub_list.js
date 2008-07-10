@@ -200,7 +200,9 @@ var InstSubList = {
 		};
 
 		// Make tables sortable
-		jQuery(".tablesorter").tablesorter();
+		jQuery("#submittedAsnns").tablesorter({headers: {0: {sorter: false}}});
+					
+		jQuery("#returnedAsnns").tablesorter();
 
 		// Set sidebar heights
 		var document_height = jQuery(document).height();
@@ -278,4 +280,21 @@ jQuery(document).ready(function()
 	{
 		InstSubList.paintAssignments(testAsnn);
 	}
+	
+	jQuery("#nonElectronicCheckAll").click(function()
+	{
+	      var checked_status = this.checked;
+	      jQuery("input[@id=nonElectronicCheckBox]").each(function()
+	      {
+		      this.checked = checked_status;
+	      });
+	});
+        jQuery("#electronicCheckAll").click(function()
+	{
+	      var checked_status = this.checked;
+	      jQuery("input[@id=electronicCheckBox]").each(function()
+	      {
+		      this.checked = checked_status;
+	      });
+	});
 });
