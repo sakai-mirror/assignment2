@@ -25,13 +25,19 @@ var testSubs1 = {
 			"dueDate": "04/21/2008",
 			"sections": "A1",
 			"version": "1",
-			"feedback": "" },
+			"feedback": {"grade": "A",
+					"comment": "Well played clerk..."
+			}
+		},
 		{ "name": "Stuart Freeman",
 			"submittedDate": "04/19/2008",
 			"dueDate": "04/21/2008",
 			"sections": "A1",
 			"version": "2",
-			"feedback": "" },
+			"feedback": {"grade": "C",
+					"comment": "Not so well played..."
+			}
+		},
 		{ "name": "Artem Dinaburg",
 			"submittedDate": "04/20/2008",
 			"dueDate": "04/21/2008",

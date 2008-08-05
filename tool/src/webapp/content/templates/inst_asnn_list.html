@@ -149,7 +149,7 @@
 		<td align="center">${d.sections}</td>
 		<td>${d.openDate}</td>
 		<td class="dueDate" width="30%">
-		{if defined('d.dueDate')}
+		{if d.dueDate != undefined}
 		<div name="shortDate">${d.dueDate.short}</div>
 		<div name="longDate" style="display: none">${d.dueDate.long}</div>
 		{/if}
@@ -166,9 +166,11 @@
 		<td align="center">${p.sections}</td>
 		<td>${p.openDate}</td>
 		<td class="dueDate" width="20%">
+		{if p.dueDate != undefined}
 		<div name="shortDate">${p.dueDate.short}</div>
 		<div name="longDate" style="display: none">${p.dueDate.long}</div>
 		<div name="abbrevDate" style="display: none">${p.dueDate.abbreviated}</div>
+		{/if}
 		</td>
 		<td class="status" width="10%">${p.state}</td>
 	</tr>
