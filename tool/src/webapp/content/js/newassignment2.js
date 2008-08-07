@@ -5,17 +5,25 @@ jQuery(document).ready(function()
 	jQuery('#acceptUntilDate').datepicker();
 	jQuery("input[name='openDateRadio']").change(function()
 	{
-		if (jQuery("input[name='openDateRadio']:checked").val() == "true")
+		if (jQuery("input[name='openDateRadio']:checked").val() == "false"){
 			jQuery('#openD').removeClass('hidden');
-		else
+			jQuery('#openDlabel').addClass('hidden');
+		}
+		else{
 			jQuery('#openD').addClass('hidden');
+			jQuery('#openDlabel').removeClass('hidden');
+		}
 	});
 	jQuery("input[name='dueDateRadio']").change(function()
 	{
-		if (jQuery("input[name='dueDateRadio']:checked").val() == "true")
+		if (jQuery("input[name='dueDateRadio']:checked").val() == "true"){
 			jQuery('#dueD').removeClass('hidden');
-		else
+			jQuery('#dueDlabel').addClass('hidden');
+		}
+		else{
 			jQuery('#dueD').addClass('hidden');
+			jQuery('#dueDlabel').removeClass('hidden');
+		}
 	});
 	jQuery("input[name='acceptUntilDateRadio']").change(function()
 	{
@@ -24,6 +32,38 @@ jQuery(document).ready(function()
 			jQuery('#acceptD').removeClass('hidden');
 		else
 			jQuery('#acceptD').addClass('hidden');
+	});
+	jQuery("input[name='whoWillSubmit']").change(function()
+	{
+		// the verbiage on the page makes the values seem backwards
+		if (jQuery("input[name='whoWillSubmit']:checked").val() == "sections"){
+			jQuery('#sectionG').removeClass('hidden');
+			jQuery('#teamG').addClass('hidden');
+			jQuery('#sectionGlabel').addClass('hidden');
+			jQuery('#teamGlabel').removeClass('hidden');
+			
+		}else if (jQuery("input[name='whoWillSubmit']:checked").val() == "teams"){
+			jQuery('#sectionG').addClass('hidden');
+			jQuery('#teamG').removeClass('hidden');
+			jQuery('#sectionGlabel').removeClass('hidden');
+			jQuery('#teamGlabel').addClass('hidden');
+		}else{
+			jQuery('#sectionG').addClass('hidden');
+			jQuery('#teamG').addClass('hidden');
+			jQuery('#sectionGlabel').removeClass('hidden');
+			jQuery('#teamGlabel').removeClass('hidden');
+		}
+	});
+	jQuery("input[name='grading']").change(function()
+	{
+		if (jQuery("input[name='grading']:checked").val() == "link"){
+			jQuery('#linkG').removeClass('hidden');
+			jQuery('#linkGlabel').addClass('hidden');
+		}
+		else{
+			jQuery('#linkG').addClass('hidden');
+			jQuery('#linkGlabel').removeClass('hidden');
+		}
 	});
 
 	var qs = new Querystring();

@@ -24,17 +24,18 @@ function JT_show(url,linkId,title){
 	var queryString = url.replace(/^[^\?]+\??/,'');
 	var params = parseQuery( queryString );
 	if(params['width'] === undefined){params['width'] = 250};
+	if(params['content'] === undefined){params['content'] = ""};
 	if(params['link'] !== undefined){
 	$('#' + linkId).bind('click',function(){window.location = params['link']});
 	$('#' + linkId).css('cursor','pointer');
 	}
 	
 	if(hasArea>((params['width']*1)+75)){
-		$("body").append("<div id='JT' style='width:"+params['width']*1+"px'><div id='JT_arrow_left'></div><div id='JT_close_left'>"+title+"</div><div id='JT_copy'><div class='JT_loader'><div></div></div>");//right side
+		$("body").append("<div id='JT' style='width:"+params['width']*1+"px'><div id='JT_arrow_left'></div><div id='JT_close_left'>"+title+"</div><div id='JT_content'>"+params['content']+"</div><div id='JT_copy'><div class='JT_loader'><div></div></div>");//right side
 		var arrowOffset = getElementWidth(linkId) + 11;
 		var clickElementx = getAbsoluteLeft(linkId) + arrowOffset; //set x position
 	}else{
-		$("body").append("<div id='JT' style='width:"+params['width']*1+"px'><div id='JT_arrow_right' style='left:"+((params['width']*1)+1)+"px'></div><div id='JT_close_right'>"+title+"</div><div id='JT_copy'><div class='JT_loader'><div></div></div>");//left side
+		$("body").append("<div id='JT' style='width:"+params['width']*1+"px'><div id='JT_arrow_right' style='left:"+((params['width']*1)+1)+"px'></div><div id='JT_close_right'>"+title+"</div><div id='JT_content'>"+params['content']+"</div><div id='JT_copy'><div class='JT_loader'><div></div></div>");//left side
 		var clickElementx = getAbsoluteLeft(linkId) - ((params['width']*1) + 15); //set x position
 	}
 	

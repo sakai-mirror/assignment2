@@ -433,6 +433,11 @@ table.tablesorter thead tr .headerSortDown {
 	color:#333333;
 }
 
+#JT_content{
+	padding:10px 10px 10px 10px;
+	color:#333333;
+}
+
 .JT_loader{
 	background-image: url(../images/loader.gif);
 	background-repeat: no-repeat;
@@ -459,6 +464,17 @@ table.tablesorter thead tr .headerSortDown {
 	padding-top: 2px;
 	font-size: 80%;
 	font-weight:bold;
+}
+#JT_content p{
+	margin:3px 0;
+	font-size: 80%;
+	
+	padding-bottom: 5px;
+}
+
+#JT_content img{
+	padding: 1px;
+	border: 1px solid #CCCCCC;
 }
 
 #JT_copy p{

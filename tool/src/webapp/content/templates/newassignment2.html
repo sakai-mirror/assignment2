@@ -22,7 +22,7 @@
 				<input type='hidden' name='id' id='id' />
 				<div class="new-asnn-section">
 					<div class="new-asnn-prompt">
-						<h4>* Submission Method:</h4>
+						<h4>Submission Method:</h4>
 					</div>
 					<div class="new-asnn-input">
 						<ul>
@@ -36,14 +36,14 @@
 				</div>
 				<div class="new-asnn-section">
 					<div class="new-asnn-prompt">
-						<h4>* Date Available:</h4>
+						<h4>Date Available:</h4>
 					</div>
 					<div class="new-asnn-input">
 						<ul>
 							<li><input type="radio" name="openDateRadio" id="openImmediate" value="true" checked="checked" />
 							<label for="openImmediate">Immediately</label> &nbsp;<a href="dateAvailableHelp.htm?width=300" class="jTip" id="dateAvailableHelp" name="What does this mean?">?</a></li>
 							<li><input type="radio" name="openDateRadio" id="openLater" value="false"/>
-							<label for="openLater">Set Date Available ...</label></li>
+							<label for="openLater">Set Date Available <span id="openDlabel">...</span></label></li>
 							<div id="openD" class="hidden">
 							  	<input type="text" size="10" id="openDate" name='openDate' />
 								<input type="text" size="8" id="openTime" name='openTime' />
@@ -61,7 +61,7 @@
 							<li><input type="radio" name="dueDateRadio" id="dueDateNo" value="false" checked="checked" />
 								<label for="dueDateNo">None&nbsp;</label></li>
 							<li><input type="radio" name="dueDateRadio" id="dueDateYes" value="true" />
-								<label for="dueDateYes">Set Date Due ...</label></li>
+								<label for="dueDateYes">Set Date Due <span id="dueDlabel">...</span></label> </li>
 							<div id="dueD" class="hidden">
 								<input type="text" size="10" id="dueDate" name='dueDate' />
 								<input type="text" size="8" id="dueTime" name='dueTime' />
@@ -86,13 +86,22 @@
 					</div>
 					<div class="new-asnn-input">
 						<ul>
-							<li><input type="radio" name="whoWillSubmit" id="all" checked="checked" />
+							<li><input type="radio" name="whoWillSubmit" id="all" checked="checked" value="all"/>
 							<label for="all">All site participants</label></li>
-							<li><input type="radio" name="whoWillSubmit" id="selectedGroups" />
-							<label for="selectedGroups">Only specific sections or groups ...</label></li>
-							<li><input type="radio" name="whoWillSubmit" id="groupTeams" />
-							<label for="groupTeams">Teams based on specific groups ...</label></li>
-							<li class="hidden"><input type="radio" name="whoWillSubmit" id="anonymous" />
+							<li><input type="radio" name="whoWillSubmit" id="selectedGroups" value="sections"/>
+							<label for="selectedGroups">Only specific sections or groups <span id="sectionGlabel">...</span></label></li><!-- INSERT SECTIONS OR GROUPS FROM GRADEBOOK HERE-->
+							<div id="sectionG" class="hidden">
+							  	<input type="text" size="10" id="openDate" name='openDate' />
+								<input type="text" size="8" id="openTime" name='openTime' />
+							</div>
+							<li><input type="radio" name="whoWillSubmit" id="groupTeams" value="teams"/>
+							<label for="groupTeams">Teams based on specific groups <span id="teamGlabel">...</span></label></li>
+							<!-- INSERT TEAMS FROM GRADEBOOK HERE-->
+							<div id="teamG" class="hidden">
+							  	<input type="text" size="10" id="openDate" name='openDate' />
+								<input type="text" size="8" id="openTime" name='openTime' />
+							</div>
+							<li class="hidden"><input type="radio" name="whoWillSubmit" id="anonymous" value="anonymous"/>
 							<label for="anonymous">Anonymous site participants</label></li>
 						</ul>
 					</div>
@@ -107,7 +116,11 @@
 							<li><input type="radio" name="grading" id="newgrade" value="add" checked="checked" />
 							<label for="newgrade">Add to Gradebook</label></li>
 							<li><input type="radio" name="grading" id="graded" value="link" />
-							<label for="graded">Link to existing Gradebook column ...</label></li>
+							<label for="graded">Link to existing Gradebook column <span id="linkGlabel">...</span></label></li>
+							<!-- INSERT COLUMN FROM GRADEBOOK HERE-->
+							<div id="linkG" class="hidden">
+							  	<input type="text" size="30" id="openDate" name='openDate' />
+							</div>
 							<li><input type="radio" name="grading" id="ungraded" value="none" />
 							<label for="ungraded">This assignment will not be graded</label></li>
 						</ul>

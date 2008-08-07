@@ -13,9 +13,10 @@
 	<script src='../js/jquery.tablesorter.min.js' type='text/javascript'></script>
 	<script src='../js/jquery.dimensions.min.js' type='text/javascript'></script>
 	<script src='../js/jquery.ui-1.5b2/minified-javascript/ui.base.min.js' type='text/javascript'></script>
-	<script src="../js/jtip.js" type="text/javascript"></script>
+
 	<script src='../js/list_common.js' type='text/javascript'></script>
 	<script src='../js/inst_sub_list.js' type='text/javascript'></script>
+	<script src="../js/jtip.js" type="text/javascript"></script>
 </head>
 
 <body>
@@ -178,7 +179,8 @@
 				<div name="feedback">${s.feedback.grade}
 				{/if}
 				{if s.feedback.comment != undefined}
-				<a class="jTip" href="comment.htm?width=300" id="electronicSubmittedEvaluatorComment" name="Evaluator's Comment">comment</a> </div>
+				<a class="jTip" href="comment.php?width=300&content=${s.feedback.comment}" id="electronicSubmittedEvaluatorComment${s.id}"
+				name="Evaluator Comment">Comment</a> </div>
 				{/if}
 			{/if}
 			</td>
@@ -248,7 +250,7 @@
 				<div name="grade">${r.feedback.grade}</div>
 				{/if}
 				{if r.feedback.comment != undefined}
-				<div name="comment"> <a class="jTip" href="comment.php?width=300&comment=${r.feedback.comment}" id="nonElectronicHelp" name="Evaluator's Comment">comment</a> </div>
+				<div name="comment"> <a class="jTip" href="comment.php?width=300&comment=${r.feedback.comment}" id="nonElectronicHelp" name="Evaluator's Comment">Comment</a> </div>
 				{/if}
 			{/if}
 			</td>
