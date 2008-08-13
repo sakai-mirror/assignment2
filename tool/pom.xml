@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>org.sakaiproject</groupId>
 		<artifactId>sakai-assignment2-base</artifactId>
-		<version>SNAPSHOT</version>
+		<version>M2</version>
 	</parent>
 	<name>sakai-assignment2-tool</name>
 	<groupId>org.sakaiproject</groupId>
@@ -136,7 +136,7 @@
 		<dependency>
 			<groupId>org.sakaiproject.entitybroker</groupId>
 			<artifactId>entitybroker-api</artifactId>
-			<version>1.2.0</version>
+			<version>1.3.3</version>
 			<scope>provided</scope>
 		</dependency>
 
