@@ -4,14 +4,13 @@
   <parent>
     <groupId>org.sakaiproject</groupId>
     <artifactId>sakai-assignment2-base</artifactId>
-    <version>SNAPSHOT</version>
+    <version>2.6.0RC1-SNAPSHOT</version>
   </parent>
   <name>sakai-assignment2-logic-impl</name>
   <groupId>org.sakaiproject</groupId>
   <artifactId>sakai-assignment2-logic-impl</artifactId>
   <packaging>jar</packaging>
-  <properties>
-  </properties>
+  <properties/>
   <build>
     <resources>
       <resource>
@@ -21,14 +20,13 @@
         </includes>
         <filtering>false</filtering>
       </resource>
-	  <resource>
+      <resource>
         <directory>${basedir}/../../bundle</directory>
         <includes>
-        	<include>**/*.properties</include>
+          <include>**/*.properties</include>
         </includes>
       </resource>
     </resources>
-
 <!-- unit testing -->
     <testSourceDirectory>src/test</testSourceDirectory>
     <testResources>
@@ -44,13 +42,24 @@
           <include>hibernate-test.xml</include>
           <include>hibernate.properties</include>
           <include>logic-beans-test.xml</include>
-
         </includes>
       </testResource>
 <!--includes:  include: **/*Test.java -->
     </testResources>
   </build>
   <dependencies>
+    <dependency>
+      <groupId>org.sakaiproject.kernel</groupId>
+      <artifactId>sakai-kernel-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.sakaiproject.kernel</groupId>
+      <artifactId>sakai-component-manager</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.sakaiproject.kernel.util</groupId>
+      <artifactId>sakai-util</artifactId>
+    </dependency>
     <dependency>
       <groupId>org.sakaiproject</groupId>
       <artifactId>sakai-assignment2-logic-api</artifactId>
@@ -69,59 +78,15 @@
       <version>${sakai.version}</version>
       <scope>provided</scope>
     </dependency>
-        <dependency>
-      <groupId>org.sakaiproject</groupId>
-      <artifactId>sakai-site-api</artifactId>
-      <version>${sakai.version}</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.sakaiproject</groupId>
-      <artifactId>sakai-util-api</artifactId>
-      <version>${sakai.version}</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.sakaiproject</groupId>
-      <artifactId>sakai-entity-api</artifactId>
-      <version>${sakai.version}</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.sakaiproject</groupId>
-      <artifactId>sakai-tool-api</artifactId>
-      <version>${sakai.version}</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.sakaiproject</groupId>
-      <artifactId>sakai-component-api</artifactId>
-      <version>${sakai.version}</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.sakaiproject</groupId>
-      <artifactId>sakai-component</artifactId>
-      <version>${sakai.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.sakaiproject</groupId>
-      <artifactId>sakai-util</artifactId>
-      <version>${sakai.version}</version>
-      <type>jar</type>
-    </dependency>
-    <dependency>
-      <groupId>org.sakaiproject</groupId>
-      <artifactId>sakai-authz-api</artifactId>
-      <version>${sakai.version}</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.sakaiproject</groupId>
-      <artifactId>sakai-user-api</artifactId>
-      <version>${sakai.version}</version>
-      <scope>provided</scope>
-    </dependency>
+<!--org.sakaiprojectsakai-site-api${sakai.version}provided-->
+<!--org.sakaiprojectsakai-util-api${sakai.version}provided-->
+<!--org.sakaiprojectsakai-entity-api${sakai.version}provided-->
+<!--org.sakaiprojectsakai-tool-api${sakai.version}provided-->
+<!--org.sakaiprojectsakai-component-api${sakai.version}provided-->
+<!--org.sakaiprojectsakai-component${sakai.version}-->
+<!--org.sakaiprojectsakai-util${sakai.version}jar-->
+<!--org.sakaiprojectsakai-authz-api${sakai.version}provided-->
+<!--org.sakaiprojectsakai-user-api${sakai.version}provided-->
     <dependency>
       <groupId>org.sakaiproject</groupId>
       <artifactId>generic-dao</artifactId>
@@ -133,33 +98,18 @@
       <artifactId>commons-logging</artifactId>
       <version>1.0.4</version>
     </dependency>
+<!--org.sakaiprojectsakai-event-api${sakai.version}-->
+<!--org.sakaiprojectsakai-content-api${sakai.version}-->
+<!-- for scheduled notifications -->
     <dependency>
       <groupId>org.sakaiproject</groupId>
-      <artifactId>sakai-event-api</artifactId>
+      <artifactId>sakai-scheduler-api</artifactId>
       <version>${sakai.version}</version>
+      <scope>provided</scope>
     </dependency>
-    <dependency>
-		<groupId>org.sakaiproject</groupId>
-		<artifactId>sakai-content-api</artifactId>
-		<version>${sakai.version}</version>
-	</dependency>
-
-<!-- for scheduled notifications -->
-  <dependency>
-		<groupId>org.sakaiproject</groupId>
-		<artifactId>sakai-scheduler-api</artifactId>
-		<version>${sakai.version}</version>
-		<scope>provided</scope>
-	</dependency>
-		<dependency>
-			<groupId>org.sakaiproject</groupId>
-			<artifactId>sakai-email-api</artifactId>
-			<version>${sakai.version}</version>
-			<scope>provided</scope>
-		</dependency>
+<!--org.sakaiprojectsakai-email-api${sakai.version}provided-->
 <!-- end for scheduled notifications -->
-
-    <!-- Required for announcements integration -->
+<!-- Required for announcements integration -->
     <dependency>
       <groupId>org.sakaiproject</groupId>
       <artifactId>sakai-announcement-api</artifactId>
@@ -170,27 +120,25 @@
       <artifactId>sakai-message-api</artifactId>
       <version>${sakai.version}</version>
     </dependency>
-    <!-- Schedule/Calendar integration -->
+<!-- Schedule/Calendar integration -->
     <dependency>
       <groupId>org.sakaiproject</groupId>
       <artifactId>sakai-calendar-api</artifactId>
       <version>${sakai.version}</version>
     </dependency>
-    <!--  sections integration -->
+<!--  sections integration -->
     <dependency>
       <groupId>org.sakaiproject</groupId>
       <artifactId>sakai-sections-api</artifactId>
       <version>${sakai.version}</version>
     </dependency>
-    
-    <!-- GradebookService -->
+<!-- GradebookService -->
     <dependency>
       <groupId>org.sakaiproject</groupId>
       <artifactId>sakai-gradebook-service-api</artifactId>
       <version>${sakai.version}</version>
     </dependency>
-
-  <!-- testing dependencies -->
+<!-- testing dependencies -->
     <dependency>
       <groupId>${sakai.spring.groupId}</groupId>
       <artifactId>${sakai.spring.mock.artifactId}</artifactId>
@@ -236,8 +184,7 @@
       <artifactId>easymock</artifactId>
       <version>1.2_Java1.3</version>
     </dependency>
-
-    <!-- these are needed if we are testing the logic class using a working DAO -->
+<!-- these are needed if we are testing the logic class using a working DAO -->
     <dependency>
       <groupId>org.sakaiproject</groupId>
       <artifactId>sakai-assignment2-hbm</artifactId>
@@ -248,8 +195,7 @@
       <artifactId>sakai-assignment2-dao-impl</artifactId>
       <version>${sakai.version}</version>
     </dependency>
-    
-        <!--  for the import/export -->
+<!--  for the import/export -->
     <dependency>
       <groupId>com.thoughtworks.xstream</groupId>
       <artifactId>xstream</artifactId>
@@ -260,25 +206,23 @@
       <artifactId>sakai-import-api</artifactId>
       <version>${sakai.version}</version>
     </dependency>
-    <!--  for importing from the original assignments tool -->
+<!--  for importing from the original assignments tool -->
     <dependency>
       <groupId>org.sakaiproject</groupId>
       <artifactId>sakai-assignment-api</artifactId>
       <version>${sakai.version}</version>
     </dependency>
-    
     <dependency>
       <groupId>org.sakaiproject</groupId>
       <artifactId>sakai-taggable-api</artifactId>
       <version>${sakai.version}</version>
       <scope>provided</scope>
     </dependency>
-		
-		<!-- for upload/download all -->
-		<dependency>
-			<groupId>commons-vfs</groupId>
-			<artifactId>commons-vfs</artifactId>
-			<version>1.0</version>
-		</dependency>
+<!-- for upload/download all -->
+    <dependency>
+      <groupId>commons-vfs</groupId>
+      <artifactId>commons-vfs</artifactId>
+      <version>1.0</version>
+    </dependency>
   </dependencies>
 </project>
