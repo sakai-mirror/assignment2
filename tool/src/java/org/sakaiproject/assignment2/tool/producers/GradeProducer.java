@@ -199,11 +199,11 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
         		statusConstant = submissionLogic.getSubmissionStatusConstantForCurrentVersion(assignmentSubmissionVersion, assignment.getDueDate());
         	}
 
-        	if (statusConstant == AssignmentConstants.SUBMISSION_IN_PROGRESS || statusConstant == AssignmentConstants.SUBMISSION_NOT_STARTED) {
-        		UIMessage.make(form, "status", "assignment2.assignment_grade.submission_status." + statusConstant);
-        	} else {
-        		UIMessage.make(form, "status", "assignment2.assignment_grade.submission_status." + statusConstant, new Object[] { df.format(assignmentSubmissionVersion.getSubmittedTime()) });
-        	}
+        	//TODO FIXME swg if (statusConstant == AssignmentConstants.SUBMISSION_IN_PROGRESS || statusConstant == AssignmentConstants.SUBMISSION_NOT_STARTED) {
+        	//	UIMessage.make(form, "status", "assignment2.assignment_grade.submission_status." + statusConstant);
+        	//} else {
+        	//	UIMessage.make(form, "status", "assignment2.assignment_grade.submission_status." + statusConstant, new Object[] { df.format(assignmentSubmissionVersion.getSubmittedTime()) });
+        //	}
         }
         
         //If current submitted submission is a draft, display note to instructor
@@ -260,8 +260,8 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
         //Attachments
         
         //Attachments
-        UIInputMany attachmentInput = UIInputMany.make(form, "attachment_list:", asvOTP + ".feedbackAttachmentRefs", assignmentSubmissionVersion.getFeedbackAttachmentRefs());
-        attachmentInputEvolver.evolveAttachment(attachmentInput);
+        //TODO FIXME SWG UIInputMany attachmentInput = UIInputMany.make(form, "attachment_list:", asvOTP + ".feedbackAttachmentRefs", assignmentSubmissionVersion.getFeedbackAttachmentRefs());
+        //attachmentInputEvolver.evolveAttachment(attachmentInput);
         
         if (grade_perm) {
         	UIInternalLink.make(form, "add_attachments", UIMessage.make("assignment2.assignment_add.add_attachments"),

@@ -279,16 +279,16 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
         }
         
         //Honor Pledge
-        UIMessage honor_pledge_label = UIMessage.make(form, "honor_pledge", "assignment2.assignment_add.honor_pledge");
-    	UIBoundBoolean honor_pledge = UIBoundBoolean.make(form, "honor_pledge", assignment2OTP + ".honorPledge");
-    	UILabelTargetDecorator.targetLabel(honor_pledge_label, honor_pledge);
+        //TODO FIXME SWG UIMessage honor_pledge_label = UIMessage.make(form, "honor_pledge", "assignment2.assignment_add.honor_pledge");
+    	//UIBoundBoolean honor_pledge = UIBoundBoolean.make(form, "honor_pledge", assignment2OTP + ".honorPledge");
+    	//UILabelTargetDecorator.targetLabel(honor_pledge_label, honor_pledge);
 
         
         //Attachments
-        UIInputMany attachmentInput = UIInputMany.make(form, "attachment_list:", assignment2OTP + ".assignmentAttachmentRefs");//, 
+        //TODO FIXME SWG UIInputMany attachmentInput = UIInputMany.make(form, "attachment_list:", assignment2OTP + ".assignmentAttachmentRefs");//, 
         		//assignment.getAssignmentAttachmentRefs());
-        attachmentInput.mustapply = true;
-        attachmentInputEvolver.evolveAttachment(attachmentInput);
+        //attachmentInput.mustapply = true;
+        //attachmentInputEvolver.evolveAttachment(attachmentInput);
 
         UIInternalLink.make(form, "add_attachments", UIMessage.make("assignment2.assignment_add.add_attachments"),
         		new FilePickerHelperViewParams(AddAttachmentHelperProducer.VIEWID, Boolean.TRUE, 
