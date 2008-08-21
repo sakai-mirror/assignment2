@@ -46,7 +46,7 @@ public class ThickboxHelperViewParams extends HelperViewParameters  {
     
     public String getParseSpec() {
 		// include a comma delimited list of the public properties in this class
-		return super.getParseSpec() + ",KeepThis,TB_iframe,height,width";
+		return super.getParseSpec() + ",keepThis,TB_iframe,height,width";
 	}
 }
 

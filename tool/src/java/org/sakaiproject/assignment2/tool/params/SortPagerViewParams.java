@@ -50,6 +50,6 @@ public class SortPagerViewParams extends PagerViewParams {
     
 	public String getParseSpec() {
 		// include a comma delimited list of the public properties in this class
-		return super.getParseSpec() + ",sort_by,sort_dir,currentStart,currentCount";
+		return super.getParseSpec() + ",sort_by,sort_dir";
 	}
 }
