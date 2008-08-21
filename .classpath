@@ -10,10 +10,9 @@
 	<classpathentry kind="src" path="impl/test/src/java"/>
 	<classpathentry kind="src" path="impl/pack/src/webapp/WEB-INF"/>
 	<classpathentry kind="src" path="integration-test/src/test/java"/>
+	<classpathentry kind="src" path="tool/src/webapp"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="var" path="M2_REPO/uk/org/ponder/rsfutil/rsfutil/0.7.3M3/rsfutil-0.7.3M3.jar"/>
 	<classpathentry kind="var" path="M2_REPO/uk/org/ponder/j-servletutil/1.2.2/j-servletutil-1.2.2.jar"/>
-	<classpathentry kind="var" path="M2_REPO/uk/org/ponder/sakairsf/sakairsf/0.7.3M3-sakai_2.2.x/sakairsf-0.7.3M3-sakai_2.2.x.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/springframework/spring/2.0.6/spring-2.0.6.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/springframework/spring-mock/2.0.6/spring-mock-2.0.6.jar"/>
 	<classpathentry kind="var" path="M2_REPO/commons-lang/commons-lang/2.1/commons-lang-2.1.jar"/>
@@ -49,5 +48,8 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/test-harness"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/taggable-api"/>
 	<classpathentry kind="var" path="M2_REPO/commons-vfs/commons-vfs/1.0/commons-vfs-1.0.jar"/>
+	<classpathentry kind="var" path="M2_REPO/uk/org/ponder/rsfutil/rsfutil/0.7.3/rsfutil-0.7.3.jar"/>
+	<classpathentry kind="var" path="M2_REPO/uk/org/ponder/sakairsf/sakairsf/0.7.3-sakai_2.2.x/sakairsf-0.7.3-sakai_2.2.x.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/sakaiproject/kernel/sakai-kernel-api/1.0RC2-SNAPSHOT/sakai-kernel-api-1.0RC2-SNAPSHOT.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
