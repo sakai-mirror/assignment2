@@ -285,10 +285,11 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
 
         
         //Attachments
-        //TODO FIXME SWG UIInputMany attachmentInput = UIInputMany.make(form, "attachment_list:", assignment2OTP + ".assignmentAttachmentRefs");//, 
-        		//assignment.getAssignmentAttachmentRefs());
-        //attachmentInput.mustapply = true;
-        //attachmentInputEvolver.evolveAttachment(attachmentInput);
+        UIInputMany attachmentInput = UIInputMany.make(form, "attachment_list:", assignment2OTP + ".assignmentAttachmentRefs", 
+        		assignment.getAssignmentAttachmentRefs());
+        attachmentInput.mustapply = true;
+        //attachmentInput.parent = form;
+        attachmentInputEvolver.evolveAttachment(attachmentInput);
 
         UIInternalLink.make(form, "add_attachments", UIMessage.make("assignment2.assignment_add.add_attachments"),
         		new FilePickerHelperViewParams(AddAttachmentHelperProducer.VIEWID, Boolean.TRUE, 

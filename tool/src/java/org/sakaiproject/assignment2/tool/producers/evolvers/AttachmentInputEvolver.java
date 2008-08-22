@@ -2,6 +2,7 @@ package org.sakaiproject.assignment2.tool.producers.evolvers;
 
 import uk.org.ponder.rsf.components.UIBasicListMember;
 import uk.org.ponder.rsf.components.UIBranchContainer;
+import uk.org.ponder.rsf.components.UIContainer;
 import uk.org.ponder.rsf.components.UIInputMany;
 import uk.org.ponder.rsf.components.UIJointContainer;
 import uk.org.ponder.rsf.components.UILink;
@@ -43,8 +44,13 @@ public class AttachmentInputEvolver {
 	    this.rbg = rbg;
 	}
 	public UIJointContainer evolveAttachment(UIInputMany toevolve) {
+		//TODO FIXME SWG
+		// The parent seems to be getting nulled after the toevolve.parent.remove
+		// call.
+		UIContainer oldparent = toevolve.parent;
 		toevolve.parent.remove(toevolve);
-		UIJointContainer togo = new UIJointContainer(toevolve.parent, toevolve.ID, COMPONENT_ID);
+		//UIJointContainer togo = new UIJointContainer(toevolve.parent, toevolve.ID, COMPONENT_ID);
+		UIJointContainer togo = new UIJointContainer(oldparent, toevolve.ID, COMPONENT_ID);
 		
 		toevolve.ID = "attachments-input";
 		togo.addComponent(toevolve);
@@ -91,7 +97,7 @@ public class AttachmentInputEvolver {
 			UIBranchContainer row = UIBranchContainer.make(core, "attachment-list-row:", Integer.toString(0));
 			UILink.make(row, "attachment_image", "image.jpg");
 			UILink.make(row, "attachment_link", "demo", "demo.html");
-			UIOutput.make(row, "attachment_item", "demo");
+			//UIOutput.make(row, "attachment_item", "demo");
 			UIBasicListMember.makeBasic(row, "attachment_item", toevolve.getFullID(), 0);
 			UIOutput.make(row, "attachment_size", "demo");
 			//Add remove link

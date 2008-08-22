@@ -19,6 +19,8 @@
 package org.sakaiproject.assignment2.tool.beans;
 
 public class FilePickerBean {
+	
+	public String otpkey;
 		
 	public String process() {
 	    return "processed";
