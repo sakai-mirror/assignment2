@@ -79,3 +79,9 @@ Student Assignment View / Submission
 * Broke because of minor issues at moment.
 * Student landing redesigns need to be implemented.
 * Load Testing ASAP
+
+Gradebook Helpers
+=================
+* Missing audits
+* Need to be compared to equivalent gradebook pages to make sure consistent
+  (ie - only displays 2 decimal places, etc)
