@@ -386,15 +386,18 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
          * Groups
          */
         Collection<Group> groups = externalLogic.getSiteGroups(currentContextId);
-        List<String> currentGroups = assignment.getListOfAssociatedGroupReferences();
-        for (Group g : groups){
-        	//Update OTP
-	        UIBranchContainer groups_row = UIBranchContainer.make(form, "groups_row:");
-	        UIBoundBoolean checkbox = UIBoundBoolean.make(groups_row, "group_check",  
-	        		"Assignment2Bean.selectedIds." + g.getId(), 
-	        		(currentGroups == null || !currentGroups.contains(g.getId()) ? Boolean.FALSE : Boolean.TRUE));
-	        UIOutput.make(groups_row, "group_label", g.getTitle());
-	        UIOutput.make(groups_row, "group_description", g.getDescription());
+        if (groups.size() > 0) {
+        	UIOutput.make(form, "access-selection-area");
+	        List<String> currentGroups = assignment.getListOfAssociatedGroupReferences();
+	        for (Group g : groups){
+	        	//Update OTP
+		        UIBranchContainer groups_row = UIBranchContainer.make(form, "groups_row:");
+		        UIBoundBoolean checkbox = UIBoundBoolean.make(groups_row, "group_check",  
+		        		"Assignment2Bean.selectedIds." + g.getId(), 
+		        		(currentGroups == null || !currentGroups.contains(g.getId()) ? Boolean.FALSE : Boolean.TRUE));
+		        UIOutput.make(groups_row, "group_label", g.getTitle());
+		        UIOutput.make(groups_row, "group_description", g.getDescription());
+	        }
         }
         
         //Notifications
