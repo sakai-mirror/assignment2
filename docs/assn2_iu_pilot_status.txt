@@ -49,6 +49,8 @@ Main Page / Reordering
 * Assignment bullets need accessible icons (instead of red/green circles).
 * Need to add confirmation dialog for deleting assignments from main screen.
 * Deleted assignment not really deleted after disappearing with DHTML
+* Load Testing ASAP a) lots of users, b) Large number of assignments, 
+  c) Large number of submissions
 
 Submissions Page
 ================
@@ -60,6 +62,7 @@ Submissions Page
 * Regress Download/Upload functionality implemented by GATech.
 * Submission status should have a label if no work has started on assignment.
 * Minor css/style issues for sorting and paging.
+* Load Testing ASAP
 
 Feedback / Single Submission Page Instructor View
 =================================================
@@ -75,3 +78,4 @@ Student Assignment View / Submission
 
 * Broke because of minor issues at moment.
 * Student landing redesigns need to be implemented.
+* Load Testing ASAP
