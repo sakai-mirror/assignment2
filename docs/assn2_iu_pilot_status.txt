@@ -21,7 +21,7 @@ Add/Edit Assignment Page
   
 * Honor pledge on add assignment page needs fixed.  (commented out)
 * Add attachment on add assignment page needs fixed. (commented out)
-* Access should only display if there are groups in the site (currenlty
+* Fixed ASNN-200 Access should only display if there are groups in the site (currenlty
   always displays)
 * Thickbox display position for Attachments helper and other helpers
 * Random errors when using attachments helper, needs full regression
@@ -80,8 +80,16 @@ Student Assignment View / Submission
 * Student landing redesigns need to be implemented.
 * Load Testing ASAP
 
+
 Gradebook Helpers
 =================
 * Missing audits
 * Need to be compared to equivalent gradebook pages to make sure consistent
   (ie - only displays 2 decimal places, etc)
+
+Testing Notes
+=============
+
+* What happens if an assignment is assigned to a group/section, and then later
+  that group/section is deleted?
+* Load Testing ASAP
