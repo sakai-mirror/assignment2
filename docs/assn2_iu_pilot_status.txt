@@ -93,3 +93,7 @@ Testing Notes
 * What happens if an assignment is assigned to a group/section, and then later
   that group/section is deleted?
 * Load Testing ASAP
+
+Other
+=====
+* Implement event tracking
