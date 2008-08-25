@@ -280,7 +280,7 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
         
         //Honor Pledge
         //TODO FIXME SWG UIMessage honor_pledge_label = UIMessage.make(form, "honor_pledge", "assignment2.assignment_add.honor_pledge");
-    	//UIBoundBoolean honor_pledge = UIBoundBoolean.make(form, "honor_pledge", assignment2OTP + ".honorPledge");
+    	UIBoundBoolean honor_pledge = UIBoundBoolean.make(form, "honor_pledge", assignment2OTP + ".honorPledge");
     	//UILabelTargetDecorator.targetLabel(honor_pledge_label, honor_pledge);
 
         
@@ -294,6 +294,12 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
         UIInternalLink.make(form, "add_attachments", UIMessage.make("assignment2.assignment_add.add_attachments"),
         		new FilePickerHelperViewParams(AddAttachmentHelperProducer.VIEWID, Boolean.TRUE, 
         				Boolean.TRUE, 500, 700, OTPKey));
+        
+        /********
+         * Require Submissions
+         */
+        UIBoundBoolean require_submissions = UIBoundBoolean.make(form, "require_submissions", assignment2OTP + ".requiresSubmission");
+        // TODO FIXME boolean label
         
         /********
          *Grading
