@@ -465,13 +465,6 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
 		   fail("did not catch null assignment passed to getViewableStudentsForUserForItem");
 	   } catch(IllegalArgumentException iae) {}
 	   
-	   // what happens if we pass an assignment with null values?
-	   externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
-	   try {
-		   permissionLogic.getViewableStudentsForUserForItem(new Assignment2());
-		   fail("did not catch null values for not-null assignment fields");
-	   } catch (IllegalArgumentException iae) {}
-	   
 	   // this method should throw a securityException if a student calls it
 	   externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT1_UID);
 	   try {
@@ -549,12 +542,6 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
 		   fail("did not catch null assignment passed to getViewableStudentsForUserForItem");
 	   } catch(IllegalArgumentException iae) {}
 	   
-	   // what happens if we pass an assignment with null values?
-	   externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
-	   try {
-		   permissionLogic.getGradableStudentsForUserForItem(new Assignment2());
-		   fail("did not catch null values for not-null assignment fields");
-	   } catch (IllegalArgumentException iae) {}
 	   
 	   // Let's start with an ungraded item
 	   externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);

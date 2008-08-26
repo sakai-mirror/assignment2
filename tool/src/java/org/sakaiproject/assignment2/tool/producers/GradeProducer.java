@@ -333,7 +333,7 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
         			(as.getResubmitCloseTime() != null ? df.format(as.getResubmitCloseTime()) : "")});
         }
         
-        if (!assignment.isUngraded()){
+        if (assignment.isGraded()){
         	gradebookDetailsRenderer.makeGradebookDetails(tofill, "gradebook_details", as, assignmentId, userId);
         }        
         

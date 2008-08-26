@@ -160,7 +160,7 @@ public class Assignment2Bean {
 
     	//Since in the UI, the select box bound to the gradableObjectId is always present
 		// we need to manually remove this value if the assignment is ungraded
-		if (assignment.isUngraded()) {
+		if (!assignment.isGraded()) {
 			assignment.setGradableObjectId(null);
 		}
 		
@@ -171,6 +171,9 @@ public class Assignment2Bean {
 		//do groups
 		Set<AssignmentGroup> newGroups = new HashSet<AssignmentGroup>();
 		if (this.restrictedToGroups != null && restrictedToGroups.equals(Boolean.TRUE.toString())){
+			
+			List<String> existingGroups = assignment.getListOfAssociatedGroupReferences();
+			
 			//now add any new groups
 			if (assignment.getAssignmentGroupSet() != null) {
 				newGroups.addAll(assignment.getAssignmentGroupSet());
@@ -179,11 +182,13 @@ public class Assignment2Bean {
 			Set<AssignmentGroup> remGroups = new HashSet<AssignmentGroup>();
 			for (String selectedId : selectedIds.keySet()) {
 				if (selectedIds.get(selectedId) == Boolean.TRUE) {
-					//Then add the group
-					AssignmentGroup newGroup = new AssignmentGroup();
-					newGroup.setAssignment(assignment);
-					newGroup.setGroupId(selectedId);
-					newGroups.add(newGroup);
+					// if it isn't already associated with this assignment, add it
+					if (existingGroups == null || (existingGroups != null && !existingGroups.contains(selectedId))) {
+						AssignmentGroup newGroup = new AssignmentGroup();
+						newGroup.setAssignment(assignment);
+						newGroup.setGroupId(selectedId);
+						newGroups.add(newGroup);
+					}
 				} else if (selectedIds.get(selectedId) == Boolean.FALSE) {
 					//then remove the group
 					for (AssignmentGroup ag : newGroups) {

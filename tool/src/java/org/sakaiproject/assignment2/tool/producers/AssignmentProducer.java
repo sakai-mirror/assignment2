@@ -341,7 +341,7 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
         
         //Radio Buttons for Grading
         UISelect grading_select = UISelect.make(form, "ungraded", 
-        		new String[]{Boolean.FALSE.toString(), Boolean.TRUE.toString()}, new String[]{"", ""}, assignment2OTP + ".ungraded");
+        		new String[]{Boolean.TRUE.toString(), Boolean.FALSE.toString()}, new String[]{"", ""}, assignment2OTP + ".graded");
         String grading_select_id = grading_select.getFullID();
         UISelectChoice graded = UISelectChoice.make(form, "select_graded", grading_select_id, 0);
         UIMessage graded_label = UIMessage.make(form, "select_graded_label", "assignment2.assignment_add.assignment_graded");

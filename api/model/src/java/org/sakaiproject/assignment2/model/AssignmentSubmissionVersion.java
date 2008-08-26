@@ -41,11 +41,7 @@ public class AssignmentSubmissionVersion implements FeedbackVersion {
 	private String annotatedText;
 	private String feedbackNotes;
 	private String submittedText;
-	private Boolean draft;
-	private String reviewReportUrl;
-	private int reviewReportScore;
-	private String reviewStatus;
-	private String reviewIconUrl;
+	private boolean draft;
 	private String createdBy;
 	private Date createdTime;
 	private String modifiedBy;
@@ -138,7 +134,7 @@ public class AssignmentSubmissionVersion implements FeedbackVersion {
 	 * @return true if the submitter has started working on the submission
 	 * but has not yet submitted it for review
 	 */
-	public Boolean isDraft() {
+	public boolean isDraft() {
 		return draft;
 	}
 
@@ -146,74 +142,8 @@ public class AssignmentSubmissionVersion implements FeedbackVersion {
 	 * set the draft status
 	 * @param draft
 	 */
-	public void setDraft(Boolean draft) {
+	public void setDraft(boolean draft) {
 		this.draft = draft;
-	}
-	
-	/**
-	 * 
-	 * @return the URL of the content review report (ie from turnitin)
-	 */
-	public String getReviewReportUrl() {
-		return reviewReportUrl;
-	}
-
-	/**
-	 * set the URL of the content review report (ie from turnitin)
-	 * @param reviewReportUrl
-	 */
-	public void setReviewReportUrl(String reviewReportUrl) {
-		this.reviewReportUrl = reviewReportUrl;
-	}
-	
-	/**
-	 * 
-	 * @return the score from the content review service (ie from turnitin)
-	 */
-	public int getReviewReportScore() {
-		return reviewReportScore;
-	}
-
-	/**
-	 * set the score from the content review service (ie from turnitin)
-	 * @param reviewReportScore
-	 */
-	public void setReviewReportScore(int reviewReportScore) {
-		this.reviewReportScore = reviewReportScore;
-	}
-	
-	/**
-	 * 
-	 * @return the status of the content review (ie from turnitin)
-	 */
-	public String getReviewStatus() {
-		return reviewStatus;
-	}
-
-	/**
-	 * set the status of the content review (ie from turnitin)
-	 * @param reviewStatus
-	 */
-	public void setReviewStatus(String reviewStatus) {
-		this.reviewStatus = reviewStatus;
-	}
-	
-	/**
-	 * 
-	 * @return the URL of the content review icon associated with 
-	 * this submission (ie from turnitin)
-	 */
-	public String getReviewIconUrl() {
-		return reviewIconUrl;
-	}
-
-	/**
-	 * set the URL of the content review icon associated with this 
-	 * submission (ie from turnitin)
-	 * @param reviewIconUrl
-	 */
-	public void setReviewIconUrl(String reviewIconUrl) {
-		this.reviewIconUrl = reviewIconUrl;
 	}
 
 	/**

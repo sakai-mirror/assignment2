@@ -37,7 +37,7 @@ public class AssignmentDefinition implements Serializable {
     private Date acceptUntilDate;
     private String associatedGbItemName;
     private Double associatedGbItemPtsPossible;
-    private boolean ungraded;
+    private boolean graded;
     private boolean draft;
     private Date dueDate;
     private boolean honorPledge;
@@ -116,13 +116,13 @@ public class AssignmentDefinition implements Serializable {
 	}
 
 
-	public boolean isUngraded() {
-		return ungraded;
+	public boolean isGraded() {
+		return graded;
 	}
 
 
-	public void setUngraded(boolean ungraded) {
-		this.ungraded = ungraded;
+	public void setGraded(boolean graded) {
+		this.graded = graded;
 	}
 
 

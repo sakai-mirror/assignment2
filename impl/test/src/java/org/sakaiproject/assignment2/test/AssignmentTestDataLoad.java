@@ -156,11 +156,11 @@ public class AssignmentTestDataLoad {
 	 * Example: dao.save(templateUser);
 	 */
 	public void createTestData(AssignmentDao dao) {
-		a1 = createGenericAssignment2Object(ASSIGN1_TITLE, 0, true);
-		a2 = createGenericAssignment2Object(ASSIGN2_TITLE, 1, true);
-		a3 = createGenericAssignment2Object(ASSIGN3_TITLE, 2, false);
+		a1 = createGenericAssignment2Object(ASSIGN1_TITLE, 0, false);
+		a2 = createGenericAssignment2Object(ASSIGN2_TITLE, 1, false);
+		a3 = createGenericAssignment2Object(ASSIGN3_TITLE, 2, true);
 		a3.setGradableObjectId(GB_ITEM1_ID);
-		a4 = createGenericAssignment2Object(ASSIGN4_TITLE, 3, false);
+		a4 = createGenericAssignment2Object(ASSIGN4_TITLE, 3, true);
 		a4.setGradableObjectId(GB_ITEM2_ID);
 		
 		a1Id = a1.getId();
@@ -289,16 +289,16 @@ public class AssignmentTestDataLoad {
 		assignment.setContextId(CONTEXT_ID);
 		assignment.setCreateTime(new Date());
 		assignment.setCreator("ADMIN");
-		assignment.setDraft(Boolean.FALSE);
+		assignment.setDraft(false);
 		assignment.setInstructions("Summarize the article we discussed on 1/8");
 		assignment.setNotificationType(AssignmentConstants.NOTIFY_NONE);
 		assignment.setOpenTime(new Date());
-		assignment.setRemoved(Boolean.FALSE);
+		assignment.setRemoved(false);
 		assignment.setSubmissionType(AssignmentConstants.SUBMIT_INLINE_AND_ATTACH);
-		assignment.setUngraded(graded);
-		assignment.setHonorPledge(Boolean.FALSE);
-		assignment.setHasAnnouncement(Boolean.FALSE);
-		assignment.setAddedToSchedule(Boolean.FALSE);
+		assignment.setGraded(graded);
+		assignment.setHonorPledge(false);
+		assignment.setHasAnnouncement(false);
+		assignment.setAddedToSchedule(false);
 		assignment.setSortIndex(sortIndex);
 		assignment.setTitle(title);
 		assignment.setRequiresSubmission(true);
@@ -311,7 +311,7 @@ public class AssignmentTestDataLoad {
 		version.setAssignmentSubmission(submission);
 		version.setCreatedBy(submission.getUserId());
 		version.setCreatedTime(new Date());
-		version.setDraft(Boolean.FALSE);
+		version.setDraft(false);
 		version.setSubmittedText("submitted text by " + submission.getUserId());
 		version.setSubmittedTime(new Date());
 		return version;

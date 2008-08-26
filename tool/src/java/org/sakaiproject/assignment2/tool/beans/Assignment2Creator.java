@@ -45,11 +45,11 @@ public class Assignment2Creator {
     	Assignment2 togo = new Assignment2();
     	togo.setTitle("");
     	togo.setContextId(externalLogic.getCurrentContextId());
-    	togo.setHonorPledge(Boolean.FALSE);
-    	togo.setUngraded(Boolean.TRUE);
+    	togo.setHonorPledge(false);
+    	togo.setGraded(false);
     	togo.setRequiresSubmission(true);
-    	togo.setHasAnnouncement(Boolean.FALSE);
-    	togo.setAddedToSchedule(Boolean.FALSE);
+    	togo.setHasAnnouncement(false);
+    	togo.setAddedToSchedule(false);
     	togo.setSubmissionType(AssignmentConstants.SUBMIT_INLINE_AND_ATTACH);
     	togo.setAttachmentSet(new HashSet<AssignmentAttachment>());
     	
@@ -76,11 +76,11 @@ public class Assignment2Creator {
     	dup.setGradableObjectId(assignment.getGradableObjectId());
     	dup.setContextId(assignment.getContextId());
     	dup.setTitle(newTitle);
-    	dup.setDraft(Boolean.TRUE);
+    	dup.setDraft(true);
     	dup.setSortIndex(assignment.getSortIndex());
     	dup.setOpenTime(assignment.getOpenTime());
     	dup.setAcceptUntilTime(assignment.getAcceptUntilTime());
-    	dup.setUngraded(assignment.isUngraded());
+    	dup.setGraded(assignment.isGraded());
     	dup.setDueDate(assignment.getDueDate());
     	dup.setHonorPledge(assignment.isHonorPledge());
     	dup.setInstructions(assignment.getInstructions());
@@ -88,9 +88,7 @@ public class Assignment2Creator {
     	dup.setNotificationType(assignment.getNotificationType());
 		dup.setHasAnnouncement(assignment.getHasAnnouncement());
 		dup.setAddedToSchedule(assignment.getAddedToSchedule());
-		dup.setAllowReviewService(assignment.isAllowReviewService());
-		dup.setAllowStudentViewReport(assignment.isAllowStudentViewReport());
-		dup.setRemoved(Boolean.FALSE);
+		dup.setRemoved(false);
 		dup.setNumSubmissionsAllowed(assignment.getNumSubmissionsAllowed());
 		dup.setRequiresSubmission(assignment.isRequiresSubmission());
 		

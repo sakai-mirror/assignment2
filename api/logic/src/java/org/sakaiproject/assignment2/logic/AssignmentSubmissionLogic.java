@@ -104,7 +104,7 @@ public interface AssignmentSubmissionLogic {
 	 * with the version that aren't included in this set
 	 * @throws SecurityException if current user is not allowed to make this submission
 	 */
-	public void saveStudentSubmission(String userId, Assignment2 assignment, Boolean draft, 
+	public void saveStudentSubmission(String userId, Assignment2 assignment, boolean draft, 
 			String submittedText, Set<SubmissionAttachment> subAttachSet);
 	
 	

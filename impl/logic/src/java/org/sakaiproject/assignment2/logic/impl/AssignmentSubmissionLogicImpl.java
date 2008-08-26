@@ -141,12 +141,6 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			}
 			
 			filterOutRestrictedVersionInfo(version, currentUserId);
-			
-			// populate gradebook information, if appropriate
-			/*if (!assignment.isUngraded() && assignment.getGradableObjectId() != null) {
-				gradebookLogic.populateAllGradeInfoForSubmission(externalLogic.getCurrentContextId(), 
-						currentUserId, submission);
-			}*/
 		}
 		
 		return version;
@@ -181,10 +175,10 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		return submission;
 	}
 	
-	public void saveStudentSubmission(String userId, Assignment2 assignment, Boolean draft, 
+	public void saveStudentSubmission(String userId, Assignment2 assignment, boolean draft, 
 			String submittedText, Set<SubmissionAttachment> subAttachSet) {
-		if (userId == null || assignment == null || draft == null) {
-			throw new IllegalArgumentException("null userId, assignment, or draft passed to saveAssignmentSubmission");
+		if (userId == null || assignment == null) {
+			throw new IllegalArgumentException("null userId, or assignment passed to saveAssignmentSubmission");
 		}
 		
 		if (assignment.getId() == null) {

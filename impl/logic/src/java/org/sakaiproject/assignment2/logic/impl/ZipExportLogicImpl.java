@@ -126,7 +126,7 @@ public class ZipExportLogicImpl implements ZipExportLogic
 		Map<String, GradeInformation> studentIdToGradeMap = new HashMap<String, GradeInformation>();
 		// retrieve all of the grade information for these submissions if
 		// this is a graded assignment
-		if (submissions != null && !assignment.isUngraded() && assignment.getGradableObjectId() != null) {
+		if (submissions != null && assignment.isGraded() && assignment.getGradableObjectId() != null) {
 			//first, we need a list of the student ids
 			List<String> studentIds = new ArrayList<String>();
 			for (AssignmentSubmission submission : submissions) {
@@ -179,7 +179,7 @@ public class ZipExportLogicImpl implements ZipExportLogic
 					
 					String grade = "";
 					String gradeComment = "";
-					if (!assignment.isUngraded() && assignment.getGradableObjectId() != null) {
+					if (assignment.isGraded() && assignment.getGradableObjectId() != null) {
 						GradeInformation gradeInfo = studentIdToGradeMap.get(userId);
 						if (gradeInfo != null) {
 							grade = gradeInfo.getGradebookGrade();

@@ -131,7 +131,7 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
     	
     	// get grade info, if appropriate
         Map<String, GradeInformation> studentIdGradeInfoMap = new HashMap<String, GradeInformation>();
-        if (submissions != null && !assignment.isUngraded() && assignment.getGradableObjectId() != null) {
+        if (submissions != null && assignment.isGraded() && assignment.getGradableObjectId() != null) {
         	// put studentIds in a list
         	List<String> studentIdList = new ArrayList<String>();
         	for (AssignmentSubmission submission : submissions) {
@@ -153,7 +153,7 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
         //Release commands
         if (edit_perm){
         	UIOutput.make(tofill, "navIntraTool");
-	        if (!assignment.isUngraded() && assignment.getGradableObjectId() != null) {
+	        if (assignment.isGraded() && assignment.getGradableObjectId() != null) {
 	        	UIOutput.make(tofill, "edit_gb_item_li");
 	        	
 		        String url = externalLogic.getUrlForGradebookItemHelper(assignment.getGradableObjectId(), FinishedHelperProducer.VIEWID);
@@ -189,7 +189,7 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
         		AssignmentSubmissionLogic.SORT_BY_SUBMIT_DATE, "assignment2.assignment_grade-assignment.tableheader.submitted");
         sortHeaderRenderer.makeSortingLink(tofill, "tableheader.status", viewparams, 
         		LocalAssignmentLogic.SORT_BY_STATUS, "assignment2.assignment_grade-assignment.tableheader.status");
-        if (!assignment.isUngraded()) {
+        if (assignment.isGraded()) {
 	        sortHeaderRenderer.makeSortingLink(tofill, "tableheader.grade", viewparams, 
 	        		LocalAssignmentLogic.SORT_BY_GRADE, "assignment2.assignment_grade-assignment.tableheader.grade");
         }
@@ -222,7 +222,7 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
         
         	UIOutput.make(row, "row_status", status);
         	
-        	if (!assignment.isUngraded()) {
+        	if (assignment.isGraded()) {
         		String grade = "";
         		GradeInformation gradeInfo = studentIdGradeInfoMap.get(as.getUserId());
         		if (gradeInfo != null) {

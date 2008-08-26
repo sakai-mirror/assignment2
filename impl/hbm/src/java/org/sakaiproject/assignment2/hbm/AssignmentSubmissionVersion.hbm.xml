@@ -37,26 +37,9 @@
         <property name="feedbackNotes" type="text">
             <column name="FEEDBACK_NOTES" not-null="false" />
         </property>
-        
         <!-- draft status for this submission -->
-        <property name="draft" type="java.lang.Boolean">
-            <column name="DRAFT" not-null="true" />
-        </property>
-        <!-- url for review service report url -->
-        <property name="reviewReportUrl" type="java.lang.String">
-            <column name="REVIEW_REPORT_URL" length="255" />
-        </property>
-        <!-- score from review service -->
-        <property name="reviewReportScore" type="int">
-            <column name="REVIEW_REPORT_SCORE" />
-        </property>
-        <!-- review report status -->
-        <property name="reviewStatus" type="java.lang.String">
-            <column name="REVIEW_STATUS" length="255" />
-        </property>
-        <!-- review report icon url -->
-        <property name="reviewIconUrl" type="java.lang.String">
-            <column name="REVIEW_ICON_URL" length="255" />
+        <property name="draft" type="boolean">
+            <column name="DRAFT"  />
         </property>
         <!-- version created by -->
         <property name="createdBy" type="java.lang.String">

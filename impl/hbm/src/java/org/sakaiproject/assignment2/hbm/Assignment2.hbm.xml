@@ -26,8 +26,8 @@
             <column name="TITLE" not-null="true" length="255" />
         </property>
         <!-- the draft status for this assignment -->
-        <property name="draft" type="java.lang.Boolean">
-            <column name="DRAFT" not-null="true" />
+        <property name="draft" type="boolean">
+            <column name="DRAFT"  />
         </property>
         <!-- the index used for ordering assignments in the UI -->
         <property name="sortIndex" type="integer">
@@ -41,17 +41,18 @@
         <property name="acceptUntilTime" type="java.util.Date">
             <column name="ACCEPT_UNTIL_TIME" />
         </property>
-        <!-- mark this assignment as ungraded and will not be linked to GB -->
-        <property name="ungraded" type="java.lang.Boolean">
-            <column name="UNGRADED" not-null="true" />
+        <!-- if true, this assignment is graded and linked to the gradebook.
+        if false, this assignment is not graded and will not be linked to GB -->
+        <property name="graded" type="boolean">
+            <column name="GRADED" />
         </property>
         <!-- stores due date for assignment - optional -->
         <property name="dueDate" type="java.util.Date">
             <column name="DUE_DATE" />
         </property>
         <!-- true if assignment requires student to agree to honor pledge -->
-        <property name="honorPledge" type="java.lang.Boolean">
-            <column name="HONOR_PLEDGE" not-null="true" />
+        <property name="honorPledge" type="boolean">
+            <column name="HONOR_PLEDGE" />
         </property>
         <!-- assignment instructions -->
         <property name="instructions" type="text">
@@ -69,16 +70,16 @@
         <property name="notificationType" type="integer" >
             <column name="NOTIFICATION_TYPE" not-null="true"/>
         </property>
-        <property name="hasAnnouncement" type="java.lang.Boolean">
-        	<column name="HAS_ANNOUNCEMENT" not-null="true" />
+        <property name="hasAnnouncement" type="boolean">
+        	<column name="HAS_ANNOUNCEMENT" />
         </property>
         <!-- used if assignment open date is added as an announcement  -->
         <property name="announcementId" type="java.lang.String">
         	<column name="ANNOUNCEMENT_ID" length="99" />
         </property>
         <!-- used if assignment due date has been added to the Schedule (aka Calendar) tool  -->
-        <property name="addedToSchedule" type="java.lang.Boolean">
-        	<column name="ADDED_TO_SCHEDULE" not-null="true" />
+        <property name="addedToSchedule" type="boolean">
+        	<column name="ADDED_TO_SCHEDULE" />
         </property>
         <!-- used if assignment due date has been added to the Schedule (aka Calendar) tool.this is
         the id of the event in the Schedule tool  -->
@@ -88,14 +89,6 @@
         <!-- restrict num submissions allowed  -->
         <property name="numSubmissionsAllowed" type="java.lang.Integer" >
             <column name="NUM_SUB_ALLOWED" />
-        </property>
-        <!-- allow a review service  -->
-        <property name="allowReviewService" type="java.lang.Boolean" >
-            <column name="ALLOW_REVIEW_SERVICE"  />
-        </property>
-        <!-- allow student to view the review report  -->
-        <property name="allowStudentViewReport" type="java.lang.Boolean" >
-            <column name="ALLOW_STUDENT_VIEW_REPORT" />
         </property>
         <!-- assignment creator  -->
         <property name="creator" type="java.lang.String" >
@@ -114,8 +107,8 @@
             <column name="MODIFIED_TIME" />
         </property>
         <!-- true if this assignment was deleted -->
-        <property name="removed" type="java.lang.Boolean" >
-        		<column name="REMOVED" not-null="true" />
+        <property name="removed" type="boolean" >
+        		<column name="REMOVED" />
         </property>
         
         <set name="submissionsSet" lazy="true" inverse="true" cascade="none">

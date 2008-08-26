@@ -267,16 +267,16 @@ public class AssignmentTestDataLoad
 		assignment.setContextId(CONTEXT_ID);
 		assignment.setCreateTime(new Date());
 		assignment.setCreator("ADMIN");
-		assignment.setDraft(Boolean.FALSE);
+		assignment.setDraft(false);
 		assignment.setInstructions("Summarize the article we discussed on 1/8");
 		assignment.setNotificationType(AssignmentConstants.NOTIFY_NONE);
 		assignment.setOpenTime(new Date());
-		assignment.setRemoved(Boolean.FALSE);
+		assignment.setRemoved(false);
 		assignment.setSubmissionType(AssignmentConstants.SUBMIT_INLINE_AND_ATTACH);
-		assignment.setUngraded(Boolean.TRUE);
-		assignment.setHonorPledge(Boolean.FALSE);
-		assignment.setHasAnnouncement(Boolean.FALSE);
-		assignment.setAddedToSchedule(Boolean.FALSE);
+		assignment.setGraded(false);
+		assignment.setHonorPledge(false);
+		assignment.setHasAnnouncement(false);
+		assignment.setAddedToSchedule(false);
 		assignment.setSortIndex(sortIndex);
 		assignment.setTitle(title);
 
@@ -289,7 +289,7 @@ public class AssignmentTestDataLoad
 		version.setAssignmentSubmission(submission);
 		version.setCreatedBy(submission.getUserId());
 		version.setCreatedTime(new Date());
-		version.setDraft(Boolean.FALSE);
+		version.setDraft(false);
 		version.setSubmittedText("submitted text by " + submission.getUserId());
 		version.setSubmittedTime(new Date());
 		return version;

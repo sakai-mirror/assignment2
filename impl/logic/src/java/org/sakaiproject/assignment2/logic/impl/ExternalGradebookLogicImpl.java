@@ -99,7 +99,7 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
 		// 2) the GO was deleted from the gb
 		
 		for (Assignment2 gradedAssignment : gradedAssignments) {
-			if (gradedAssignment != null && !gradedAssignment.isUngraded()) {
+			if (gradedAssignment != null && gradedAssignment.isGraded()) {
 				Long goId = gradedAssignment.getGradableObjectId();
 				if (goId != null) {
 					Assignment gbItem =	(Assignment)goIdGbAssignmentMap.get(goId);
@@ -357,7 +357,7 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
     	GradeInformation gradeInfo = new GradeInformation();
     	gradeInfo.setStudentId(submission.getUserId());
     	
-    	if (!assignment.isUngraded() && assignment.getGradableObjectId() != null) {
+    	if (assignment.isGraded() && assignment.getGradableObjectId() != null) {
     		try {
 				GradeDefinition gradeDef = gradebookService.getGradeDefinitionForStudentForItem(contextId, assignment.getGradableObjectId(), submission.getUserId());
 				
@@ -466,13 +466,9 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
 		}
 
 		// throw an error if this is called for an ungraded assignment
-		if (assignment.isUngraded() || assignment.getGradableObjectId() == null) {
+		if (!assignment.isGraded() || assignment.getGradableObjectId() == null) {
 			throw new IllegalArgumentException("Ungraded assignment was passed to " +
 			"getGradeInformationForStudents. This method may only be used for graded assignments.");
-		}
-
-		if (assignment.isUngraded() || assignment.getGradableObjectId() == null) {
-			throw new IllegalArgumentException("An ungraded assignment was passed to getGradeInformationForSubmissions");
 		}
 
 		Map<String, GradeInformation> studentIdToGradeInfoMap = new HashMap<String, GradeInformation>();

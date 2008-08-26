@@ -175,7 +175,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 		
 		String currentUserId = externalLogic.getCurrentUserId();
 		
-		if (!assignment.isUngraded() && assignment.getGradableObjectId() == null) {
+		if (assignment.isGraded() && assignment.getGradableObjectId() == null) {
 			throw new NoGradebookItemForGradedAssignmentException("The assignment to save " + 
 					"was defined as graded but it had a null gradableObjectId");
 		}
@@ -210,7 +210,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
         		assignment.setSortIndex(0);
         	}
         	
-        	assignment.setRemoved(Boolean.FALSE);
+        	assignment.setRemoved(false);
         	assignment.setCreateTime(new Date());
         	assignment.setCreator(currentUserId);
         	
@@ -234,7 +234,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
   
 		} else {
 			
-			assignment.setRemoved(Boolean.FALSE);
+			assignment.setRemoved(false);
 			assignment.setModifiedBy(currentUserId);
 			assignment.setModifiedTime(new Date());
 			
@@ -322,7 +322,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 		if (assignment.getAnnouncementId() != null) {
 			announcementIdToDelete = assignment.getAnnouncementId();
 			assignment.setAnnouncementId(null);
-			assignment.setHasAnnouncement(Boolean.FALSE);
+			assignment.setHasAnnouncement(false);
 		}
 		
 		// remove associated Schedule/Calendar events, if appropriate
@@ -421,7 +421,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 				if (!assignment.isDraft() || isUserAbleToEdit) {
 					// students may not view if not open
 					if (!isUserAStudent || (isUserAStudent && assignment.getOpenTime().before(new Date()))) 
-						if (assignment.isUngraded()) {
+						if (!assignment.isGraded()) {
 							if (permissionLogic.isUserAbleToViewUngradedAssignment(assignment, userGroupIds)) {
 								viewableAssignments.add(assignment);
 							} 
@@ -556,6 +556,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 							!updatedAssign.getAttachmentSet().contains(attach)) {
 						// we need to delete this attachment
 						attachToRemove.add(attach);
+						if (log.isDebugEnabled()) log.debug("Attach to remove: " + attach.getAttachmentReference());
 					} 
 				}
 			}
@@ -568,12 +569,13 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 		Set<AssignmentGroup> groupsToRemove = new HashSet<AssignmentGroup>();
 		
 		if (updatedAssign != null && existingAssign != null && existingAssign.getAssignmentGroupSet() != null) {
-			for (AssignmentGroup attach : existingAssign.getAssignmentGroupSet()) {
-				if (attach != null) {
+			for (AssignmentGroup group : existingAssign.getAssignmentGroupSet()) {
+				if (group != null) {
 					if (updatedAssign.getAssignmentGroupSet() == null ||
-							!updatedAssign.getAssignmentGroupSet().contains(attach)) {
+							!updatedAssign.getAssignmentGroupSet().contains(group)) {
 						// we need to delete this group
-						groupsToRemove.add(attach);
+						groupsToRemove.add(group);
+						if (log.isDebugEnabled()) log.debug("Group to remove: " + group.getGroupId());
 					} 
 				}
 			}

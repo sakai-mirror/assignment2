@@ -41,69 +41,31 @@ public class Assignment2 {
     private Long gradableObjectId;
     private String contextId;
     private String title;
-    private Boolean draft;
+    private boolean draft;
     private int sortIndex;
     private Date openTime;
     private Date acceptUntilTime;
-    private Boolean ungraded;
+    private boolean graded;
     private Date dueDate;
-    private Boolean honorPledge;
+    private boolean honorPledge;
     private String instructions;
     private boolean requiresSubmission;
     private int submissionType;
     private int notificationType;
-    private Boolean hasAnnouncement;
+    private boolean hasAnnouncement;
     private String announcementId;
-    private Boolean addedToSchedule;
+    private boolean addedToSchedule;
     private String eventId;
     private Integer numSubmissionsAllowed;
-    private Boolean allowReviewService;
-    private Boolean allowStudentViewReport;
     private String creator;
     private Date createTime;
     private String modifiedBy;
     private Date modifiedTime;
-    private Boolean removed;
+    private boolean removed;
     private int revisionVersion;
     private Set<AssignmentSubmission> submissionsSet;
     private Set<AssignmentAttachment> attachmentSet;
     private Set<AssignmentGroup> assignmentGroupSet; 
-
-	public Assignment2(Long id, Long gradableObjectId,
-			String contextId, String title, Boolean draft, int sortIndex,
-			Date openTime, Date acceptUntilTime, Boolean ungraded,
-			Date dueDate, Boolean honorPledge, String instructions,
-			int submissionType, int notificationType, Boolean hasAnnouncement,
-			String announcementId, Boolean addedToSchedule, String scheduleId, Integer numSubmissionsAllowed,
-			Boolean allowReviewService,	Boolean allowStudentViewReport, 
-			String creator, Date createTime, String modifiedBy, Date modifiedTime, Boolean removed) {
-		this.id = id;
-		this.gradableObjectId = gradableObjectId;
-		this.contextId = contextId;
-		this.title = title;
-		this.draft = draft;
-		this.sortIndex = sortIndex;
-		this.openTime = openTime;
-		this.acceptUntilTime = acceptUntilTime;
-		this.ungraded = ungraded;
-		this.dueDate = dueDate;
-		this.honorPledge = honorPledge;
-		this.instructions = instructions;
-		this.submissionType = submissionType;
-		this.notificationType = notificationType;
-		this.hasAnnouncement = hasAnnouncement;
-		this.announcementId = announcementId;
-		this.addedToSchedule = addedToSchedule;
-		this.eventId = scheduleId;
-		this.numSubmissionsAllowed = numSubmissionsAllowed;
-		this.allowReviewService = allowReviewService;
-		this.allowStudentViewReport = allowStudentViewReport;
-		this.creator = creator;
-		this.createTime = createTime;
-		this.modifiedBy = modifiedBy;
-		this.modifiedTime = modifiedTime;
-		this.removed = removed;
-	}
 
 	/**
      * Default constructor
@@ -179,7 +141,7 @@ public class Assignment2 {
     /**
      * @return Returns this assignment's draft status
      */
-    public Boolean isDraft() {
+    public boolean isDraft() {
         return draft;
     }
     
@@ -187,7 +149,7 @@ public class Assignment2 {
      * draft status
      * @param draft
      */
-    public void setDraft(Boolean draft) {
+    public void setDraft(boolean draft) {
         this.draft = draft;
     }
     
@@ -239,19 +201,19 @@ public class Assignment2 {
     /**
      * All assignments will be linked to the gradebook and store grade
      * information in the gradebook tables except ungraded assignments.  
-     * @return true if this assignment is ungraded
+     * @return true if this assignment is graded
      */
-    public Boolean isUngraded() {
-    	return ungraded;
+    public boolean isGraded() {
+    	return graded;
     }
     
     /**
      * All assignments will be linked to the gradebook and store grade
      * information in the gradebook tables except ungraded assignments.  
-     * @param ungraded
+     * @param graded
      */
-    public void setUngraded(Boolean ungraded) {
-    	this.ungraded = ungraded;
+    public void setGraded(boolean graded) {
+    	this.graded = graded;
     }
     
     /**
@@ -275,7 +237,7 @@ public class Assignment2 {
     /**
      * @return Returns true if this assignment requires an honor pledge
      */
-    public Boolean isHonorPledge() {
+    public boolean isHonorPledge() {
         return honorPledge;
     }
     
@@ -283,7 +245,7 @@ public class Assignment2 {
      * true if this assignment requires an honor pledge
      * @param honorPledge
      */
-    public void setHonorPledge(Boolean honorPledge) {
+    public void setHonorPledge(boolean honorPledge) {
         this.honorPledge = honorPledge;
     }
     
@@ -370,7 +332,7 @@ public class Assignment2 {
 	 * date. this field may be true and the announcementId field null if
 	 * the assignment is in draft status
 	 */
-	public Boolean getHasAnnouncement() {
+	public boolean getHasAnnouncement() {
 		return hasAnnouncement;
 	}
 
@@ -380,7 +342,7 @@ public class Assignment2 {
 	 * the assignment is in draft status
 	 * @param hasAnnouncement
 	 */
-	public void setHasAnnouncement(Boolean hasAnnouncement) {
+	public void setHasAnnouncement(boolean hasAnnouncement) {
 		this.hasAnnouncement = hasAnnouncement;
 	}
     
@@ -408,7 +370,7 @@ public class Assignment2 {
      * @return true if the due date for this assignment should be
      * added to the Schedule (aka Calendar) tool
      */
-	public Boolean getAddedToSchedule()
+	public boolean getAddedToSchedule()
 	{
 		return addedToSchedule;
 	}
@@ -418,7 +380,7 @@ public class Assignment2 {
      * added to the Schedule (aka Calendar) tool
 	 * @param addedToSchedule
 	 */
-	public void setAddedToSchedule(Boolean addedToSchedule)
+	public void setAddedToSchedule(boolean addedToSchedule)
 	{
 		this.addedToSchedule = addedToSchedule;
 	}
@@ -460,36 +422,6 @@ public class Assignment2 {
 	public void setNumSubmissionsAllowed(Integer numSubmissionsAllowed) {
 		this.numSubmissionsAllowed = numSubmissionsAllowed;
 	}
-    
-    /**
-     * @return If true, this assignment allows a review service (ie TurnItIn)
-     */
-    public Boolean isAllowReviewService() {
-        return allowReviewService;
-    }
-
-    /**
-     * If true, this assignment allows a review service (ie TurnItIn)
-     * @param allowReviewService
-     */
-    public void setAllowReviewService(Boolean allowReviewService) {
-        this.allowReviewService = allowReviewService;
-    }
-    
-    /**
-     * @return If true, students are allowed to view the review service report
-     */
-    public Boolean isAllowStudentViewReport() {
-        return allowStudentViewReport;
-    }
-
-    /**
-     * If true, students are allowed to view the review service report
-     * @param allowStudentViewReport
-     */
-    public void setAllowStudentViewReport(Boolean allowStudentViewReport) {
-        this.allowStudentViewReport = allowStudentViewReport;
-    }
     
     /**
      * @return User id of this assignment's creator
@@ -555,7 +487,7 @@ public class Assignment2 {
      * 
      * @return true if this assignment was deleted
      */
-    public Boolean isRemoved() {
+    public boolean isRemoved() {
     	return removed;
     }
     
@@ -563,7 +495,7 @@ public class Assignment2 {
      * true if this assignment was deleted
      * @param removed
      */
-    public void setRemoved(Boolean removed) {
+    public void setRemoved(boolean removed) {
     	this.removed = removed;
     }
     

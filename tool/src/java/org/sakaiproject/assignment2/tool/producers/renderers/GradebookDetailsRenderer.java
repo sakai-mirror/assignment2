@@ -78,7 +78,7 @@ public class GradebookDetailsRenderer {
 		// retrieve the grade information
 		String grade = "";
 		String gradeComment = "";
-		if (as != null && as.getAssignment() != null && !as.getAssignment().isUngraded()) {
+		if (as != null && as.getAssignment() != null && as.getAssignment().isGraded()) {
 			GradeInformation gradeInfo = gradebookLogic.getGradeInformationForSubmission(externalLogic.getCurrentContextId(), as);
 			if (gradeInfo != null) {
 				grade = gradeInfo.getGradebookGrade();

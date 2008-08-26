@@ -173,10 +173,10 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 		assignDef.setSortIndex(assignment.getSortIndex());
 		assignDef.setSubmissionType(assignment.getSubmissionType());
 		assignDef.setTitle(assignment.getTitle());
-		assignDef.setUngraded(assignment.isUngraded());
+		assignDef.setGraded(assignment.isGraded());
 
 		// if it is graded, we need to retrieve the name of the associated gb item
-		if (!assignment.isUngraded() && assignment.getGradableObjectId() != null &&
+		if (assignment.isGraded() && assignment.getGradableObjectId() != null &&
 				gbIdItemMap != null) {
 			GradebookItem gbItem = (GradebookItem)gbIdItemMap.get(assignment.getGradableObjectId());
 			if (gbItem != null) {
@@ -275,7 +275,7 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 						}
 
 						newAssignment.setSubmissionType(assignDef.getSubmissionType());
-						newAssignment.setUngraded(assignDef.isUngraded());
+						newAssignment.setGraded(assignDef.isGraded());
 						newAssignment.setHasAnnouncement(assignDef.isHasAnnouncement());
 						newAssignment.setAddedToSchedule(assignDef.isAddedToSchedule());
 
@@ -288,7 +288,7 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 						// the same name and points possible value, we will link
 						// our assignment to this item. Otherwise, we will create
 						// a new gradebook item
-						if (!assignDef.isUngraded() && assignDef.getAssociatedGbItemName() != null) {
+						if (assignDef.isGraded() && assignDef.getAssociatedGbItemName() != null) {
 							Long associatedGbItemId = null;
 							GradebookItem existingItem = gbTitleToItemMap.get(assignDef.getAssociatedGbItemName());
 							if (existingItem != null) {
@@ -498,7 +498,7 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 
 			// now let's handle the graded/ungraded stuff
 			if (oContent.getTypeOfGrade() == Assignment.UNGRADED_GRADE_TYPE) {
-				newAssnDef.setUngraded(true);
+				newAssnDef.setGraded(false);
 
 			} else {
 				String grading = oProperties.getProperty(AssignmentService.NEW_ASSIGNMENT_ADD_TO_GRADEBOOK);
@@ -514,13 +514,13 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 						for (GradebookItem gbItem : allGbItems) {
 							if (gbItem.getExternalId() != null) {
 								if (associateAssignment.equals(gbItem.getExternalId())) {
-									newAssnDef.setUngraded(false);
+									newAssnDef.setGraded(true);
 									newAssnDef.setAssociatedGbItemName(gbItem.getTitle());
 									newAssnDef.setAssociatedGbItemPtsPossible(gbItem.getPointsPossible());
 								}
 							} else {
 								if (associateAssignment.equals(gbItem.getTitle())) {
-									newAssnDef.setUngraded(false);
+									newAssnDef.setGraded(true);
 									newAssnDef.setAssociatedGbItemName(gbItem.getTitle());
 									newAssnDef.setAssociatedGbItemPtsPossible(gbItem.getPointsPossible());
 								}
@@ -535,16 +535,16 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 					if (oContent.getTypeOfGrade() == Assignment.SCORE_GRADE_TYPE) {
 						// we will add a gb item for this assignment
 						try {
-							newAssnDef.setUngraded(false);
+							newAssnDef.setGraded(true);
 							newAssnDef.setAssociatedGbItemName(oAssignment.getTitle());
 							newAssnDef.setAssociatedGbItemPtsPossible(new Double(oContent.getMaxGradePointDisplay()));
 						} catch (NumberFormatException nfe) {
 							// set this one as ungraded b/c points possible was invalid
-							newAssnDef.setUngraded(true);
+							newAssnDef.setGraded(false);
 						}
 
 					} else {
-						newAssnDef.setUngraded(true);
+						newAssnDef.setGraded(false);
 					}
 				}
 			}

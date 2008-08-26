@@ -94,7 +94,7 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
     	} else if (gradebookLogic.isCurrentUserAbleToGradeAll(assignment.getContextId())) {
     		viewable = true;
     	} else {
-    		if (assignment.isUngraded()) {
+    		if (!assignment.isGraded()) {
     			viewable = isUserAbleToViewSubmissionForUngradedAssignment(studentId, assignment);
     		} else {
     			Long gbItemId = assignment.getGradableObjectId();
@@ -120,7 +120,7 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
     	boolean allowed = false;
     	
     	if (assignment != null) {
-    		if (assignment.isUngraded()) {
+    		if (!assignment.isGraded()) {
     			allowed = isUserAbleToViewSubmissionForUngradedAssignment(studentId, assignment);
     		} else {
     			if (assignment.getGradableObjectId() != null) {
@@ -171,7 +171,7 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
     		throw new IllegalArgumentException("Null assignment passed to isUserAbleToViewUngradedAssignment");
     	}
     	
-    	if (!assignment.isUngraded()) {
+    	if (assignment.isGraded()) {
     		throw new IllegalArgumentException("A graded assignment was passed to isUserAbleToViewUngradedAssignment");
     	}
     	
@@ -202,7 +202,7 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
     		throw new IllegalArgumentException("Null assignment passed to isUserAbleToViewGradedAssignment");
     	}
     	
-    	if (assignment.isUngraded()) {
+    	if (!assignment.isGraded()) {
     		throw new IllegalArgumentException("An ungraded assignment was passed to isUserAbleToViewGradedAssignment");
     	}
     	
@@ -266,7 +266,7 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
 			throw new IllegalArgumentException("null contextId or assignment passed to isUserAbleToMakeSubmission");
 		}
 		
-		if (assignment.isUngraded() == null || assignment.getId() == null) {
+		if (assignment.getId() == null) {
 			throw new IllegalArgumentException("null data in not-null fields for assignment passed to isUserAbleToMakeSubmission");
 		} 
 		
@@ -274,7 +274,7 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
 		// ie guests? they don't have a section flag on their role
 		boolean userAbleToSubmit = false;
 	
-		if (assignment.isUngraded()) {
+		if (!assignment.isGraded()) {
 			// TODO right now, we don't have any checks for ungraded assignments...
 			userAbleToSubmit = true;
 		} else {
@@ -321,10 +321,6 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
 			throw new IllegalArgumentException("null assignment passed to getAvailableStudentsForUserForItem");
 		}
 		
-		if (assignment.isUngraded() == null) {
-			throw new IllegalArgumentException("null value for ungraded passed to getAvailableStudentsForUserForItem");
-		}
-		
 		if (gradeOrView == null || (!gradeOrView.equals(AssignmentConstants.GRADE) && !gradeOrView.equals(AssignmentConstants.VIEW))) {
 			throw new IllegalArgumentException("Invalid gradeOrView " + gradeOrView + " passed to getAvailableStudentsForUserForItem");
 		}
@@ -348,7 +344,7 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
 			}
 			
 		} else if(gradebookLogic.isCurrentUserAbleToGrade(contextId)) {
-			if (assignment.isUngraded()) {
+			if (!assignment.isGraded()) {
 				// if there are no restrictions, return students in user's section(s)
 				if (assignGroupRestrictions == null || assignGroupRestrictions.isEmpty()) {
 					Set<String> sharedStudents = getStudentsInCurrentUsersSections(contextId);
@@ -524,10 +520,10 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
 			groupMembershipIds = externalLogic.getUserMembershipGroupIdList(currUser, contextId);
 		}
 
-		if (assign.isUngraded()) {
-			allowed = isUserAbleToViewUngradedAssignment(assign, groupMembershipIds);
-		} else {
+		if (assign.isGraded()) {
 			allowed = isUserAbleToViewGradedAssignment(assign, groupMembershipIds);
+		} else {
+			allowed = isUserAbleToViewUngradedAssignment(assign, groupMembershipIds);
 		}
 		
 		return allowed;

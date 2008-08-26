@@ -294,18 +294,11 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
     		submissionLogic.saveStudentSubmission(AssignmentTestDataLoad.STUDENT1_UID, null, true, null, null);
     		fail("Did not catch null assignment passed to saveStudentSubmission");
     	} catch (IllegalArgumentException iae) {}
-    	
-    	// try passing a null draft status
-    	try {
-    		submissionLogic.saveStudentSubmission(AssignmentTestDataLoad.STUDENT1_UID, 
-    				new Assignment2(), null, null, null);
-    		fail("Did not catch null draft status passed to saveStudentSubmission");
-    	} catch (IllegalArgumentException iae) {}
-    	
+   
     	// try passing an empty assignment (with no id)
     	try {
     		submissionLogic.saveStudentSubmission(AssignmentTestDataLoad.STUDENT1_UID, 
-    				new Assignment2(), null, null, null);
+    				new Assignment2(), false, null, null);
     	} catch (IllegalArgumentException iae) {}
     	
     	// let's see if an instructor can make a submission for a student

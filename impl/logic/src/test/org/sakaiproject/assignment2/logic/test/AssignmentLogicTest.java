@@ -88,7 +88,7 @@ public class AssignmentLogicTest extends Assignment2TestBase {
 		newAssign.setNotificationType(AssignmentConstants.NOTIFY_NONE);
 		newAssign.setOpenTime(new Date());
 		newAssign.setTitle(AssignmentTestDataLoad.ASSIGN1_TITLE); //we're using a title that already exists
-		newAssign.setUngraded(true);
+		newAssign.setGraded(false);
 
 		// start with 1 group and 2 attachments
 		Set<AssignmentGroup> assignGroupSet = new HashSet<AssignmentGroup>();
@@ -126,7 +126,7 @@ public class AssignmentLogicTest extends Assignment2TestBase {
 		newAssign.setTitle(newTitle);
 
 		// now set this item to graded but don't populate gradableObjectId
-		newAssign.setUngraded(false);
+		newAssign.setGraded(true);
 
 		try {
 			assignmentLogic.saveAssignment(newAssign);
@@ -218,11 +218,11 @@ public class AssignmentLogicTest extends Assignment2TestBase {
 		// TODO add scenario with grader permissions for TA
 
 		// let's make assignment3 and assignment4 graded
-		testData.a3.setUngraded(false);
+		testData.a3.setGraded(true);
 		testData.a3.setGradableObjectId(AssignmentTestDataLoad.GB_ITEM1_ID);
 		dao.save(testData.a3);
 
-		testData.a4.setUngraded(false);
+		testData.a4.setGraded(true);
 		testData.a4.setGradableObjectId(AssignmentTestDataLoad.GB_ITEM2_ID);
 		dao.save(testData.a4);
 
@@ -431,7 +431,7 @@ public class AssignmentLogicTest extends Assignment2TestBase {
 		Assignment2 assignment = new Assignment2();
 		// start out with non-draft, ungraded
 		assignment.setDraft(false);
-		assignment.setUngraded(true);
+		assignment.setGraded(false);
 
 		// first, leave all of nullable fields null:
 		// 	acceptUntilTime, dueDate
@@ -475,7 +475,7 @@ public class AssignmentLogicTest extends Assignment2TestBase {
 		assertEquals(assignmentLogic.getStatusForAssignment(assignment), AssignmentConstants.STATUS_CLOSED);
 
 		// now make this graded with accept until in past
-		assignment.setUngraded(false);
+		assignment.setGraded(true);
 		assertEquals(assignmentLogic.getStatusForAssignment(assignment), AssignmentConstants.STATUS_CLOSED);
 
 		// now check with accept until in future and no due date
