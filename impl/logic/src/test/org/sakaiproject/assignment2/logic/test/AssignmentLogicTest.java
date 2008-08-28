@@ -86,7 +86,7 @@ public class AssignmentLogicTest extends Assignment2TestBase {
 		newAssign.setHonorPledge(false);
 		newAssign.setInstructions("Complete this by friday");
 		newAssign.setNotificationType(AssignmentConstants.NOTIFY_NONE);
-		newAssign.setOpenTime(new Date());
+		newAssign.setOpenDate(new Date());
 		newAssign.setTitle(AssignmentTestDataLoad.ASSIGN1_TITLE); //we're using a title that already exists
 		newAssign.setGraded(false);
 
@@ -439,14 +439,14 @@ public class AssignmentLogicTest extends Assignment2TestBase {
 		// start with an open date in the past
 		Calendar cal = Calendar.getInstance();
 		cal.set(2005, 10, 01);
-		assignment.setOpenTime(cal.getTime());
+		assignment.setOpenDate(cal.getTime());
 
 		// this should be open
 		assertEquals(assignmentLogic.getStatusForAssignment(assignment), AssignmentConstants.STATUS_OPEN);
 
 		// set the open date in the future
 		cal.set(2020, 10, 01);
-		assignment.setOpenTime(cal.getTime());
+		assignment.setOpenDate(cal.getTime());
 		// should be not open
 		assertEquals(assignmentLogic.getStatusForAssignment(assignment), AssignmentConstants.STATUS_NOT_OPEN);
 
@@ -457,7 +457,7 @@ public class AssignmentLogicTest extends Assignment2TestBase {
 		// set it back to draft=false, open date in the past, and make it due in the future
 		assignment.setDraft(false);
 		cal.set(2005, 10, 01);
-		assignment.setOpenTime(cal.getTime());
+		assignment.setOpenDate(cal.getTime());
 		cal.set(2020, 10, 01);
 		assignment.setDueDate(cal.getTime());
 		assertEquals(assignmentLogic.getStatusForAssignment(assignment), AssignmentConstants.STATUS_OPEN);
@@ -467,11 +467,11 @@ public class AssignmentLogicTest extends Assignment2TestBase {
 		assertEquals(assignmentLogic.getStatusForAssignment(assignment), AssignmentConstants.STATUS_DUE);
 		// add an accept until date in the future
 		cal.set(2020, 10, 01);
-		assignment.setAcceptUntilTime(cal.getTime());
+		assignment.setAcceptUntilDate(cal.getTime());
 		assertEquals(assignmentLogic.getStatusForAssignment(assignment), AssignmentConstants.STATUS_DUE);
 		// now make the accept until date in the past
 		cal.set(2007, 10, 01);
-		assignment.setAcceptUntilTime(cal.getTime());
+		assignment.setAcceptUntilDate(cal.getTime());
 		assertEquals(assignmentLogic.getStatusForAssignment(assignment), AssignmentConstants.STATUS_CLOSED);
 
 		// now make this graded with accept until in past
@@ -480,7 +480,7 @@ public class AssignmentLogicTest extends Assignment2TestBase {
 
 		// now check with accept until in future and no due date
 		cal.set(2020, 10, 01);
-		assignment.setAcceptUntilTime(cal.getTime());
+		assignment.setAcceptUntilDate(cal.getTime());
 		assignment.setDueDate(null);
 		assertEquals(assignmentLogic.getStatusForAssignment(assignment), AssignmentConstants.STATUS_OPEN);
 
@@ -491,7 +491,7 @@ public class AssignmentLogicTest extends Assignment2TestBase {
 
 		// double check that open date overrides other dates
 		cal.set(2020, 10, 01);
-		assignment.setOpenTime(cal.getTime());
+		assignment.setOpenDate(cal.getTime());
 		assertEquals(assignmentLogic.getStatusForAssignment(assignment), AssignmentConstants.STATUS_NOT_OPEN);
 
 		// double check that draft overrides everything

@@ -11,7 +11,7 @@
 					</generator>
 				</id>
         
-        <version name="revisionVersion" type="integer" column="VERSION"/>
+        <version name="optimisticVersion" type="integer" column="VERSION"/>
         
        	<property name="gradableObjectId" type="java.lang.Long">
             <column name="GRADABLE_OBJECT_ID" not-null="false"  />
@@ -33,20 +33,21 @@
         <property name="sortIndex" type="integer">
             <column name="SORT_INDEX" not-null="true" />
         </property>
-        <!-- The first time at which the assignment can be viewed -->
-        <property name="openTime" type="java.util.Date">
-            <column name="OPEN_TIME" not-null="true" />
+        <!-- The first date and time at which the assignment can be viewed -->
+        <property name="openDate" type="java.util.Date">
+            <column name="OPEN_DATE" not-null="true" />
         </property>
-        <!-- The time after which responses to this assignment are considered late -->
-        <property name="acceptUntilTime" type="java.util.Date">
-            <column name="ACCEPT_UNTIL_TIME" />
+        <!-- The date and time after which responses to this assignment are no longer accepted -->
+        <property name="acceptUntilDate" type="java.util.Date">
+            <column name="ACCEPT_UNTIL_DATE" />
         </property>
         <!-- if true, this assignment is graded and linked to the gradebook.
         if false, this assignment is not graded and will not be linked to GB -->
         <property name="graded" type="boolean">
             <column name="GRADED" />
         </property>
-        <!-- stores due date for assignment - optional -->
+        <!-- stores due date for assignment - optional 
+        The date and time after which responses to this assignment are no longer accepted-->
         <property name="dueDate" type="java.util.Date">
             <column name="DUE_DATE" />
         </property>
@@ -94,17 +95,17 @@
         <property name="creator" type="java.lang.String" >
             <column name="CREATOR" length="99" not-null="true" />
         </property>
-        <!-- assignment create time  -->
-        <property name="createTime" type="java.util.Date" >
-            <column name="CREATE_TIME" not-null="true" />
+        <!-- assignment create date and time  -->
+        <property name="createDate" type="java.util.Date" >
+            <column name="CREATE_DATE" not-null="true" />
         </property>
         <!-- assignment last modifier  -->
         <property name="modifiedBy" type="java.lang.String" >
             <column name="MODIFIED_BY" length="99" />
         </property>
-        <!-- last modified time  -->
-        <property name="modifiedTime" type="java.util.Date" >
-            <column name="MODIFIED_TIME" />
+        <!-- last modified date and time  -->
+        <property name="modifiedDate" type="java.util.Date" >
+            <column name="MODIFIED_DATE" />
         </property>
         <!-- true if this assignment was deleted -->
         <property name="removed" type="boolean" >

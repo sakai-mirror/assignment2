@@ -287,7 +287,7 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
 	   Calendar cal = Calendar.getInstance();
 	   cal.set(2025, 10, 01);
 
-	   testData.a1.setOpenTime(cal.getTime());
+	   testData.a1.setOpenDate(cal.getTime());
 	   assertFalse(permissionLogic.isUserAbleToViewUngradedAssignment(testData.a1, memberships));
 
    }
@@ -338,7 +338,7 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
 	   Calendar cal = Calendar.getInstance();
 	   cal.set(2025, 10, 01);
 
-	   testData.a4.setOpenTime(cal.getTime());
+	   testData.a4.setOpenDate(cal.getTime());
 	   assertFalse(permissionLogic.isUserAbleToViewGradedAssignment(testData.a4, memberships));
 
    }
@@ -385,7 +385,7 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
 	   cal.set(2025, 10, 01);
 
 	   dao.clearSession();
-	   testData.a1.setOpenTime(cal.getTime());
+	   testData.a1.setOpenDate(cal.getTime());
 	   dao.save(testData.a1);
 	   assertFalse(permissionLogic.isUserAbleToViewAssignment(AssignmentTestDataLoad.CONTEXT_ID, testData.a1Id));
 	   

@@ -99,9 +99,9 @@ public class StudentSubmitSummaryProducer implements ViewComponentProducer, View
 
     	UIOutput.make(tofill, "header.status", status);
     	UIOutput.make(tofill, "header.grade_scale", "Grade Scale from Gradebook");  //HERE
-    	if (assignment.getModifiedTime() != null) {
+    	if (assignment.getModifiedDate() != null) {
     		UIOutput.make(tofill, "modified_by_header_row");
-    		UIOutput.make(tofill, "header.modified_by", df.format(assignment.getModifiedTime()));
+    		UIOutput.make(tofill, "header.modified_by", df.format(assignment.getModifiedDate()));
     	}
     	UIVerbatim.make(tofill, "instructions", assignment.getInstructions());
     	
@@ -119,7 +119,7 @@ public class StudentSubmitSummaryProducer implements ViewComponentProducer, View
         	UIBranchContainer loop = UIBranchContainer.make(tofill, "previous_submissions:");
         	
         	UIMessage.make(loop, "loop_submission", "assignment2.student-submit-summary.loop_submission", 
-        			new Object[] { (asv.getSubmittedTime() != null ? df.format(asv.getSubmittedTime()) : "") });
+        			new Object[] { (asv.getSubmittedDate() != null ? df.format(asv.getSubmittedDate()) : "") });
         	UIVerbatim.make(loop, "loop_submitted_text", asv.getSubmittedText());
         	UIVerbatim.make(loop, "loop_feedback_text", asv.getAnnotatedTextFormatted());
         	UIVerbatim.make(loop, "loop_feedback_notes", asv.getFeedbackNotes());
@@ -130,7 +130,7 @@ public class StudentSubmitSummaryProducer implements ViewComponentProducer, View
         	if (asv.getLastFeedbackSubmittedBy() != null) {
 	        	UIMessage.make(loop, "feedback_updated", "assignment2.student-submit-summary.feedback_updated",
 	        			new Object[]{ 
-	        				(asv.getLastFeedbackTime() != null ? df.format(asv.getLastFeedbackTime()) : ""), 
+	        				(asv.getLastFeedbackDate() != null ? df.format(asv.getLastFeedbackDate()) : ""), 
 	        				externalLogic.getUserDisplayName(asv.getLastFeedbackSubmittedBy()) });
         	} else {
         		UIMessage.make(loop, "feedback_updated", "assignment2.student-submit-summary.feedback_not_updated");

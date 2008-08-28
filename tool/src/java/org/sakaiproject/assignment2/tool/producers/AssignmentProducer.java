@@ -174,7 +174,7 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
         
         UIVerbatim.make(form, "open_date_label", messageLocator.getMessage("assignment2.assignment_add.open_date",
         		new Object[]{ reqStar }));
-        UIInput openDateField = UIInput.make(form, "open_date:", assignment2OTP + ".openTime");
+        UIInput openDateField = UIInput.make(form, "open_date:", assignment2OTP + ".openDate");
 		dateEvolver.evolveDateInput(openDateField, null);
 		UIMessage.make(form, "open_date_instruction", "assignment2.assignment_add.open_date_instruction");
         
@@ -199,15 +199,15 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
 		}
 		
 		
-		Boolean require_date = (assignment.getAcceptUntilTime() != null);
+		Boolean require_date = (assignment.getAcceptUntilDate() != null);
 		UIBoundBoolean require = UIBoundBoolean.make(form, "require_accept_until", "#{Assignment2Bean.requireAcceptUntil}", require_date);
 		require.mustapply = true;
 		UIMessage require_label = UIMessage.make(form, "require_accept_until_label", "assignment2.assignment_add.require_accept_until");
 		UILabelTargetDecorator.targetLabel(require_label, require);
 		
 		UIOutput require_container = UIOutput.make(form, "accept_until_container");
-		UIInput acceptUntilTimeField = UIInput.make(form, "accept_until:", assignment2OTP + ".acceptUntilTime");
-        dateEvolver.evolveDateInput(acceptUntilTimeField, (assignment.getAcceptUntilTime() != null ? assignment.getAcceptUntilTime() : closeDate));
+		UIInput acceptUntilDateField = UIInput.make(form, "accept_until:", assignment2OTP + ".acceptUntilDate");
+        dateEvolver.evolveDateInput(acceptUntilDateField, (assignment.getAcceptUntilDate() != null ? assignment.getAcceptUntilDate() : closeDate));
         
         /*** Out
         //Resubmit until until date

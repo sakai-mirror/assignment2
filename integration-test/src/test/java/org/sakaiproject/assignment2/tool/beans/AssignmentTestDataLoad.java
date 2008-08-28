@@ -265,12 +265,12 @@ public class AssignmentTestDataLoad
 	{
 		Assignment2 assignment = new Assignment2();
 		assignment.setContextId(CONTEXT_ID);
-		assignment.setCreateTime(new Date());
+		assignment.setCreateDate(new Date());
 		assignment.setCreator("ADMIN");
 		assignment.setDraft(false);
 		assignment.setInstructions("Summarize the article we discussed on 1/8");
 		assignment.setNotificationType(AssignmentConstants.NOTIFY_NONE);
-		assignment.setOpenTime(new Date());
+		assignment.setOpenDate(new Date());
 		assignment.setRemoved(false);
 		assignment.setSubmissionType(AssignmentConstants.SUBMIT_INLINE_AND_ATTACH);
 		assignment.setGraded(false);
@@ -288,10 +288,10 @@ public class AssignmentTestDataLoad
 		AssignmentSubmissionVersion version = new AssignmentSubmissionVersion();
 		version.setAssignmentSubmission(submission);
 		version.setCreatedBy(submission.getUserId());
-		version.setCreatedTime(new Date());
+		version.setCreatedDate(new Date());
 		version.setDraft(false);
 		version.setSubmittedText("submitted text by " + submission.getUserId());
-		version.setSubmittedTime(new Date());
+		version.setSubmittedDate(new Date());
 		return version;
 	}
 }

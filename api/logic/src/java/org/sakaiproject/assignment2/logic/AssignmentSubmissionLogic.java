@@ -116,17 +116,17 @@ public interface AssignmentSubmissionLogic {
 	 * @param studentId
 	 * @param assignment
 	 * @param numSubmissionsAllowed
-	 * @param resubmitCloseTime
+	 * @param resubmitCloseDate
 	 * @param annotatedText
 	 * @param feedbackNotes
-	 * @param releasedTime
+	 * @param releasedDate
 	 * @param feedbackAttachSet
 	 * @throws SecurityException if user is not allowed to submit feedback for
 	 * the given student and assignment
 	 */
 	public void saveInstructorFeedback(Long versionId, String studentId, Assignment2 assignment, 
-			Integer numSubmissionsAllowed, Date resubmitCloseTime, String annotatedText, 
-			String feedbackNotes, Date releasedTime, Set<FeedbackAttachment> feedbackAttachSet);
+			Integer numSubmissionsAllowed, Date resubmitCloseDate, String annotatedText, 
+			String feedbackNotes, Date releasedDate, Set<FeedbackAttachment> feedbackAttachSet);
 
 	/**
 	 * 
@@ -225,10 +225,10 @@ public interface AssignmentSubmissionLogic {
 	/**
 	 * 
 	 * @param userId
-	 * @param submittedTime
+	 * @param submittedDate
 	 * @return
 	 */
-	public FeedbackVersion getFeedbackByUserIdAndSubmittedTime(String userId, Date submittedTime);
+	public FeedbackVersion getFeedbackByUserIdAndSubmittedDate(String userId, Date submittedDate);
 
 	/**
 	 * Update the feedback aspects of a submission version. The submission version is expected to

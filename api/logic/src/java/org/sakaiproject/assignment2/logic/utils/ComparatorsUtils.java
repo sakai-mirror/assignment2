@@ -82,7 +82,7 @@ public class ComparatorsUtils {
 	 */
 	public static class Assignment2OpenDateComparator implements Comparator<Assignment2> {
 		public int compare(Assignment2 assign1, Assignment2 assign2) {
-			int value = assign1.getOpenTime().compareTo(assign2.getOpenTime());
+			int value = assign1.getOpenDate().compareTo(assign2.getOpenDate());
 			if (value == 0) {
 				value = sortByTitle(assign1, assign2);
 			}
@@ -124,9 +124,9 @@ public class ComparatorsUtils {
 	public static class SubmissionDateComparator implements Comparator<AssignmentSubmission>  {
 		public int compare(AssignmentSubmission submission1, AssignmentSubmission submission2) {
 			Date subDate1 = submission1.getCurrentSubmissionVersion() != null 
-				? submission1.getCurrentSubmissionVersion().getSubmittedTime() : null;
+				? submission1.getCurrentSubmissionVersion().getSubmittedDate() : null;
 			Date subDate2 = submission2.getCurrentSubmissionVersion() != null 
-				? submission2.getCurrentSubmissionVersion().getSubmittedTime() : null;
+				? submission2.getCurrentSubmissionVersion().getSubmittedDate() : null;
 			
 			int value;
 			if (subDate1 != null && subDate2 != null) {
@@ -147,17 +147,17 @@ public class ComparatorsUtils {
 	}
 	
 	/**
-	 * static class to sort AssignmentSubmissionVersion objects by createdTime
+	 * static class to sort AssignmentSubmissionVersion objects by createdDate
 	 */
 	public static class VersionCreatedDateComparatorDesc implements Comparator<AssignmentSubmissionVersion>  {
 		public int compare(AssignmentSubmissionVersion version1, AssignmentSubmissionVersion version2) {
 			
 			int value;
-			if (version1.getCreatedTime() != null && version2.getCreatedTime() != null) {
-				value = version2.getCreatedTime().compareTo(version1.getCreatedTime());
-			} else if (version1.getCreatedTime() == null && version2.getCreatedTime() != null) {
+			if (version1.getCreatedDate() != null && version2.getCreatedDate() != null) {
+				value = version2.getCreatedDate().compareTo(version1.getCreatedDate());
+			} else if (version1.getCreatedDate() == null && version2.getCreatedDate() != null) {
 				value = 1;
-			} else if (version1.getCreatedTime() != null && version2.getCreatedTime() == null) {
+			} else if (version1.getCreatedDate() != null && version2.getCreatedDate() == null) {
 				value = -1;
 			} else {
 				value = 0;
@@ -177,11 +177,11 @@ public class ComparatorsUtils {
 			boolean submission2Released = false;
 
 			if (submission1.getCurrentSubmissionVersion() != null) {
-				Date releasedTime = submission1.getCurrentSubmissionVersion().getReleasedTime();
+				Date releasedTime = submission1.getCurrentSubmissionVersion().getFeedbackReleasedDate();
 				submission1Released = releasedTime != null && releasedTime.before(new Date());
 			}
 			if (submission2.getCurrentSubmissionVersion() != null) {
-				Date releasedTime = submission2.getCurrentSubmissionVersion().getReleasedTime();
+				Date releasedTime = submission2.getCurrentSubmissionVersion().getFeedbackReleasedDate();
 				submission2Released = releasedTime != null && releasedTime.before(new Date());
 			}
 

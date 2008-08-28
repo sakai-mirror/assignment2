@@ -32,7 +32,7 @@ public class AssignmentGroup {
 	private Long id;
 	private Assignment2 assignment;
 	private String groupId;
-	private int revisionVersion;
+	private int optimisticVersion;
 	
 	public AssignmentGroup() {
 		
@@ -92,23 +92,23 @@ public class AssignmentGroup {
 		this.groupId = groupId;
 	}
 	
-	/**
-	 * the int value of the version number for this assignment. not
-     * to be confused with submission version.
-	 * @return
-	 */
-	public int getRevisionVersion() {
-		return revisionVersion;
-	}
-	
-	/**
-	 * the int value of the version number for this assignment. not
-     * to be confused with submission version.
-	 * @param revisionVersion
-	 */
-	public void setRevisionVersion(int revisionVersion) {
-		this.revisionVersion = revisionVersion;
-	}
+    /**
+     * 
+     * @return version stored for hibernate's automatic optimistic concurrency control.
+     * this is not related to any of the submission version data for assignment2
+     */
+    public int getOptimisticVersion() {
+    	return optimisticVersion;
+    }
+    
+    /**
+     * version stored for hibernate's automatic optimistic concurrency control.
+     * this is not related to any of the submission version data for assignment2
+     * @param optimisticVersion
+     */
+    public void setOptimisticVersion(int optimisticVersion) {
+    	this.optimisticVersion = optimisticVersion;
+    }
 	
 	@Override
 	public boolean equals(Object obj) {

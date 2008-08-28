@@ -11,7 +11,7 @@
 					</generator>
 				</id>
         
-        <version name="revisionVersion" type="integer" column="VERSION"/>
+        <version name="optimisticVersion" type="integer" column="VERSION"/>
         
         <!--  This maps to the A2_ASSIGNMENT_T table -->
         <many-to-one name="assignment" column="ASSIGNMENT_ID"

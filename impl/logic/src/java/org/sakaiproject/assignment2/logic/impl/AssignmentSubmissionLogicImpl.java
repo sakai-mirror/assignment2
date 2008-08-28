@@ -230,7 +230,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			
 			// if the current version hasn't been submitted yet, we will
 			// update that one. otherwise, create a new version
-			if (version != null && version.getSubmittedTime() == null) {
+			if (version != null && version.getSubmittedDate() == null) {
 				
 				isAnUpdate = true;
 				
@@ -247,14 +247,14 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 
 		if (isAnUpdate) {
 			version.setModifiedBy(currentUserId);
-			version.setModifiedTime(currentTime);
+			version.setModifiedDate(currentTime);
 		} else {
 			version.setCreatedBy(currentUserId);
-			version.setCreatedTime(currentTime);
+			version.setCreatedDate(currentTime);
 		}
 
 		if (!version.isDraft()) {
-			version.setSubmittedTime(currentTime);
+			version.setSubmittedDate(currentTime);
 			
 			// if this isn't a draft, set the annotated text to be the submitted text
 			// to allow instructor to provide inline comments for submitted text
@@ -304,8 +304,8 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 	}
 
 	public void saveInstructorFeedback(Long versionId, String studentId, Assignment2 assignment, 
-			Integer numSubmissionsAllowed, Date resubmitCloseTime, String annotatedText, 
-			String feedbackNotes, Date releasedTime, Set<FeedbackAttachment> feedbackAttachSet) {
+			Integer numSubmissionsAllowed, Date resubmitCloseDate, String annotatedText, 
+			String feedbackNotes, Date releasedDate, Set<FeedbackAttachment> feedbackAttachSet) {
 		
 		if (studentId == null || assignment == null) {
 			throw new IllegalArgumentException("Null studentId or assignment passed" +
@@ -356,19 +356,19 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			newVersion = true;
 		}
 		
-		submission.setResubmitCloseTime(resubmitCloseTime);
+		submission.setResubmitCloseDate(resubmitCloseDate);
 		submission.setNumSubmissionsAllowed(numSubmissionsAllowed);
 		
 		version.setAssignmentSubmission(submission);
 		version.setAnnotatedText(annotatedText);
 		version.setFeedbackNotes(feedbackNotes);
-		version.setReleasedTime(releasedTime);
+		version.setFeedbackReleasedDate(releasedDate);
 		version.setLastFeedbackSubmittedBy(currentUserId);
-		version.setLastFeedbackTime(currentTime);
+		version.setLastFeedbackDate(currentTime);
 		
 		if (newVersion) {
 			version.setCreatedBy(currentUserId);
-			version.setCreatedTime(currentTime);
+			version.setCreatedDate(currentTime);
 			version.setDraft(false);
 		}
 		
@@ -513,8 +513,8 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			status = AssignmentConstants.SUBMISSION_NOT_STARTED;
 		} else if (currentVersion.isDraft()) {
 			status = AssignmentConstants.SUBMISSION_IN_PROGRESS;
-		} else if (currentVersion.getSubmittedTime() != null) {
-			if (dueDate != null && dueDate.before(currentVersion.getSubmittedTime())) {
+		} else if (currentVersion.getSubmittedDate() != null) {
+			if (dueDate != null && dueDate.before(currentVersion.getSubmittedDate())) {
 				status = AssignmentConstants.SUBMISSION_LATE;
 			} else {
 				status = AssignmentConstants.SUBMISSION_SUBMITTED;
@@ -592,7 +592,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			// created by instructor feedback when no submission)
 			for (AssignmentSubmissionVersion version : versionHistory) {
 				if (version != null) {
-					if (version.getSubmittedTime() != null) {
+					if (version.getSubmittedDate() != null) {
 						currNumSubmissions++;
 					}
 				}
@@ -611,10 +611,10 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		*/
 		
 		boolean studentAbleToSubmit = false;
-		boolean assignmentIsOpen = assignment.getOpenTime().before(new Date()) && 
-		(assignment.getAcceptUntilTime() == null ||
-					(assignment.getAcceptUntilTime() != null && 
-							assignment.getAcceptUntilTime().after(new Date())));
+		boolean assignmentIsOpen = assignment.getOpenDate().before(new Date()) && 
+		(assignment.getAcceptUntilDate() == null ||
+					(assignment.getAcceptUntilDate() != null && 
+							assignment.getAcceptUntilDate().after(new Date())));
 		boolean resubmitSettingsOnAssignLevel = assignment.getNumSubmissionsAllowed() != null;
 		boolean resubmitSettingsOnSubmissionLevel = submission != null && submission.getNumSubmissionsAllowed() != null;
 		
@@ -622,8 +622,8 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			studentAbleToSubmit = true;
 		} else if (resubmitSettingsOnSubmissionLevel) {
 			// these setting override any settings on the assignment level
-			if (submission.getResubmitCloseTime() == null || 
-					submission.getResubmitCloseTime().after(new Date()))
+			if (submission.getResubmitCloseDate() == null || 
+					submission.getResubmitCloseDate().after(new Date()))
 			{
 				if (submission.getNumSubmissionsAllowed().equals(-1) || 
 						submission.getNumSubmissionsAllowed().intValue() > currNumSubmissions) {
@@ -681,7 +681,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			Set<AssignmentSubmission> submissionList = dao.getSubmissionsWithVersionHistoryForStudentListAndAssignment(
 					gradableStudents, assignment);
 			
-			Date releasedTime = new Date();
+			Date releasedDate = new Date();
 			
 			if (submissionList != null && !submissionList.isEmpty()) {
 				
@@ -696,7 +696,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 							for (AssignmentSubmissionVersion version : submission.getSubmissionHistorySet())
 							{
 								if (version != null) {
-									version.setReleasedTime(releasedTime);
+									version.setFeedbackReleasedDate(releasedDate);
 									versionsToUpdate.add(version);
 								}
 							}
@@ -743,11 +743,11 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 				!subWithHistory.getSubmissionHistorySet().isEmpty()) {
 			// we need to iterate through all of the versions and
 			// release them
-			Date releasedTime = new Date();
+			Date releasedDate = new Date();
 			Set<AssignmentSubmissionVersion> updatedVersions = new HashSet<AssignmentSubmissionVersion>();
 			for (AssignmentSubmissionVersion version : subWithHistory.getSubmissionHistorySet()) {
 				if (version != null) {
-					version.setReleasedTime(releasedTime);
+					version.setFeedbackReleasedDate(releasedDate);
 					updatedVersions.add(version);
 				}
 			}
@@ -783,7 +783,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 					submission.getAssignment().getId() + "without authorization");
 		}
 		
-		version.setReleasedTime(new Date());
+		version.setFeedbackReleasedDate(new Date());
 		
 		try {
 			dao.update(version);
@@ -840,7 +840,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		if (version != null) {
 			// if the current user is the submitter
 			if (version.getAssignmentSubmission().getUserId().equals(currentUserId)) {
-				if (version.getReleasedTime() == null || version.getReleasedTime().after(new Date())) {
+				if (version.getFeedbackReleasedDate() == null || version.getFeedbackReleasedDate().after(new Date())) {
 					// do not populate the feedback since not released 
 					version.setFeedbackAttachSet(new HashSet<FeedbackAttachment>());
 					version.setFeedbackNotes("");
@@ -907,10 +907,10 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		return submission;
 	}
 
-	public FeedbackVersion getFeedbackByUserIdAndSubmittedTime(String userId, Date submittedTime)
+	public FeedbackVersion getFeedbackByUserIdAndSubmittedDate(String userId, Date submittedDate)
 	{
-		AssignmentSubmissionVersion v = dao.getVersionByUserIdAndSubmittedTime(userId,
-				submittedTime);
+		AssignmentSubmissionVersion v = dao.getVersionByUserIdAndSubmittedDate(userId,
+				submittedDate);
 		return v;
 	}
 
@@ -941,10 +941,10 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		if (feedback.getFeedbackNotes() != null)
 			asv.setFeedbackNotes(feedback.getFeedbackNotes());
 
-		if (feedback.getLastFeedbackTime() != null)
-			asv.setLastFeedbackTime(feedback.getLastFeedbackTime());
+		if (feedback.getLastFeedbackDate() != null)
+			asv.setLastFeedbackDate(feedback.getLastFeedbackDate());
 		else
-			asv.setLastFeedbackTime(new Date());
+			asv.setLastFeedbackDate(new Date());
 
 		if (feedback.getLastFeedbackSubmittedBy() != null)
 			asv.setLastFeedbackSubmittedBy(feedback.getLastFeedbackSubmittedBy());

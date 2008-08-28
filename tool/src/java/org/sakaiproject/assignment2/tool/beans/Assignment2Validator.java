@@ -55,21 +55,21 @@ public class Assignment2Validator  {
 		}
 		
 		// check for due date after open date
-		if (assignment.getDueDate() != null && assignment.getOpenTime() != null
-				&& assignment.getDueDate().before(assignment.getOpenTime())) {
+		if (assignment.getDueDate() != null && assignment.getOpenDate() != null
+				&& assignment.getDueDate().before(assignment.getOpenDate())) {
 			messages.addMessage(new TargettedMessage("assignment2.assignment_due_before_open"));
 			valid = false;
 		}
 		
-		if (assignment.getAcceptUntilTime() != null && assignment.getOpenTime() != null
-				&& assignment.getAcceptUntilTime().before(assignment.getOpenTime())) {
+		if (assignment.getAcceptUntilDate() != null && assignment.getOpenDate() != null
+				&& assignment.getAcceptUntilDate().before(assignment.getOpenDate())) {
 			messages.addMessage(new TargettedMessage("assignment2.assignment_accept_before_open"));
 			valid = false;
 		}
 		
 		// check for due date before or equal to accept until
-		if (assignment.getDueDate() != null && assignment.getAcceptUntilTime() != null
-			&& assignment.getAcceptUntilTime().before(assignment.getDueDate())) {
+		if (assignment.getDueDate() != null && assignment.getAcceptUntilDate() != null
+			&& assignment.getAcceptUntilDate().before(assignment.getDueDate())) {
 			messages.addMessage(new TargettedMessage("assignment2.assignment_accept_before_due"));
 			valid = false;
 		}

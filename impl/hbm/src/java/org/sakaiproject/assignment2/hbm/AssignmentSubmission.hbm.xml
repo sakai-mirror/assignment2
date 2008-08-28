@@ -11,7 +11,7 @@
 					</generator>
 				</id>
         
-        <version name="revisionVersion" type="integer" column="VERSION"/>
+        <version name="optimisticVersion" type="integer" column="VERSION"/>
         
         <!--  This maps to the A2_ASSIGNMENT_T table -->
         <many-to-one name="assignment" column="ASSIGNMENT_ID"
@@ -25,15 +25,16 @@
             	unique-key="ASSIGN_ID_USER_ID" index="A2_SUBMISSION_USER_ID_I" />
         </property>
         
-        <!-- Time after which the user can no longer resubmit -->
-        <property name="resubmitCloseTime" type="java.util.Date">
-            <column name="RESUBMIT_CLOSE_TIME" />
+        <!-- Date and time after which the user can no longer resubmit -->
+        <property name="resubmitCloseDate" type="java.util.Date">
+            <column name="RESUBMIT_CLOSE_DATE" />
         </property>
         <!-- restrict num submissions allowed  -->
         <property name="numSubmissionsAllowed" type="java.lang.Integer" >
             <column name="NUM_SUB_ALLOWED" />
         </property>
         
+        <!-- a set of all of the versions of this submission -->
         <set name="submissionHistorySet" lazy="true" inverse="true" cascade="none"
         		order-by="SUBMISSION_ID desc">
 	        <key column="SUBMISSION_ID"/>                        

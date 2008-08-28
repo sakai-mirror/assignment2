@@ -31,7 +31,7 @@ public abstract class AttachmentBase {
 
 	protected Long id;
 	protected String attachmentReference;
-	protected int revisionVersion;  //for optimistic locking
+	private int optimisticVersion;
 
 	/**
 	 * @return the id of this assignment attachment
@@ -63,14 +63,24 @@ public abstract class AttachmentBase {
 	public void setAttachmentReference(String attachmentReference) {
 		this.attachmentReference = attachmentReference;
 	}
-
-	public int getRevisionVersion() {
-		return revisionVersion;
-	}
-
-	public void setRevisionVersion(int revisionVersion) {
-		this.revisionVersion = revisionVersion;
-	}
+    
+    /**
+     * 
+     * @return version stored for hibernate's automatic optimistic concurrency control.
+     * this is not related to any of the submission version data for assignment2
+     */
+    public int getOptimisticVersion() {
+    	return optimisticVersion;
+    }
+    
+    /**
+     * version stored for hibernate's automatic optimistic concurrency control.
+     * this is not related to any of the submission version data for assignment2
+     * @param optimisticVersion
+     */
+    public void setOptimisticVersion(int optimisticVersion) {
+    	this.optimisticVersion = optimisticVersion;
+    }
 
 	@Override
 	public boolean equals(Object obj) {

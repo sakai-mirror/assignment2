@@ -43,8 +43,8 @@ public class Assignment2 {
     private String title;
     private boolean draft;
     private int sortIndex;
-    private Date openTime;
-    private Date acceptUntilTime;
+    private Date openDate;
+    private Date acceptUntilDate;
     private boolean graded;
     private Date dueDate;
     private boolean honorPledge;
@@ -58,11 +58,11 @@ public class Assignment2 {
     private String eventId;
     private Integer numSubmissionsAllowed;
     private String creator;
-    private Date createTime;
+    private Date createDate;
     private String modifiedBy;
-    private Date modifiedTime;
+    private Date modifiedDate;
     private boolean removed;
-    private int revisionVersion;
+    private int optimisticVersion;
     private Set<AssignmentSubmission> submissionsSet;
     private Set<AssignmentAttachment> attachmentSet;
     private Set<AssignmentGroup> assignmentGroupSet; 
@@ -169,33 +169,33 @@ public class Assignment2 {
     }
     
     /**
-     * @return The first time at which the assignment can be viewed
+     * @return The first date and time at which the assignment can be viewed
      */
-    public Date getOpenTime() {
-        return openTime;
+    public Date getOpenDate() {
+        return openDate;
     }
     
     /**
-     * The first time at which the assignment can be viewed
-     * @param openTime
+     * The first date and time at which the assignment can be viewed
+     * @param openDate
      */
-    public void setOpenTime(Date openTime) {
-        this.openTime = openTime;
+    public void setOpenDate(Date openDate) {
+        this.openDate = openDate;
     }
 
     /**
-     * @return The time after which this assignment is closed to submissions.
+     * @return The date and time after which this assignment is closed for submissions.
      */
-    public Date getAcceptUntilTime() {
-        return acceptUntilTime;
+    public Date getAcceptUntilDate() {
+        return acceptUntilDate;
     }
     
     /**
-     * The time after which this assignment is closed to submissions.
-     * @param acceptUntilTime
+     * The date and time after which this assignment is closed to submissions.
+     * @param acceptUntilDate
      */
-    public void setAcceptUntilTime(Date acceptUntilTime) {
-        this.acceptUntilTime = acceptUntilTime;
+    public void setAcceptUntilDate(Date acceptUntilDate) {
+        this.acceptUntilDate = acceptUntilDate;
     }
     
     /**
@@ -217,7 +217,7 @@ public class Assignment2 {
     }
     
     /**
-     * The time after which responses to this assignment are considered late.
+     * The date and time after which responses to this assignment are considered late.
      * This is an optional setting.
      * @return due date
      */
@@ -226,7 +226,7 @@ public class Assignment2 {
     }
     
     /**
-     * The time after which responses to this assignment are considered late.
+     * The date and time after which responses to this assignment are considered late.
      * This is an optional setting.
      * @param dueDate
      */
@@ -439,18 +439,18 @@ public class Assignment2 {
     }
     
     /**
-     * @return Time this assignment was created
+     * @return Date and time this assignment was created
      */
-    public Date getCreateTime() {
-        return createTime;
+    public Date getCreateDate() {
+        return createDate;
     }
 
     /**
-     * Time this assignment was created
-     * @param createTime
+     * Date and time this assignment was created
+     * @param createDate
      */
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
     }
     
     /**
@@ -469,18 +469,18 @@ public class Assignment2 {
     }
     
     /**
-     * @return Time this assignment was last modified
+     * @return Date and time this assignment was last modified
      */
-    public Date getModifiedTime() {
-        return modifiedTime;
+    public Date getModifiedDate() {
+        return modifiedDate;
     }
 
     /**
-     * Time this assignment was last modified
-     * @param modifiedTime
+     * Date and time this assignment was last modified
+     * @param modifiedDate
      */
-    public void setModifiedTime(Date modifiedTime) {
-        this.modifiedTime = modifiedTime;
+    public void setModifiedDate(Date modifiedDate) {
+        this.modifiedDate = modifiedDate;
     }
     
     /**
@@ -497,24 +497,6 @@ public class Assignment2 {
      */
     public void setRemoved(boolean removed) {
     	this.removed = removed;
-    }
-    
-    /**
-     * 
-     * @return the int value of the version number for this assignment. not
-     * to be confused with submission version.
-     */
-    public int getRevisionVersion() {
-    	return revisionVersion;
-    }
-    
-    /**
-     * the int value of the version number for this assignment. not
-     * to be confused with submission version.
-     * @param version
-     */
-    public void setRevisionVersion(int revisionVersion) {
-    	this.revisionVersion = revisionVersion;
     }
     
     /**
@@ -566,6 +548,24 @@ public class Assignment2 {
 	public void setSubmissionsSet(Set<AssignmentSubmission> submissionsSet) {
 		this.submissionsSet = submissionsSet;
 	}
+	
+    /**
+     * 
+     * @return version stored for hibernate's automatic optimistic concurrency control.
+     * this is not related to any of the submission version data for assignment2
+     */
+    public int getOptimisticVersion() {
+    	return optimisticVersion;
+    }
+    
+    /**
+     * version stored for hibernate's automatic optimistic concurrency control.
+     * this is not related to any of the submission version data for assignment2
+     * @param optimisticVersion
+     */
+    public void setOptimisticVersion(int optimisticVersion) {
+    	this.optimisticVersion = optimisticVersion;
+    }
 	
 	
 	// Convenience methods
@@ -634,7 +634,7 @@ public class Assignment2 {
 	public boolean isOpen() {
 		boolean isOpen = false;
 		// if the current date is after the open date
-		if (openTime.before(new Date())) {
+		if (openDate.before(new Date())) {
 			// check due date restriction
 			if (dueDate == null || dueDate.after(new Date())) {
 				isOpen = true;

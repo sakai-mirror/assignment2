@@ -188,8 +188,8 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
         if (assignment.getSubmissionType() == AssignmentConstants.SUBMIT_NON_ELECTRONIC) {
         	UIMessage.make(form, "non-electronic-submission", "assignment2.assignment_grade.nonelectronic_sub");
         } else {
-        	if (assignmentSubmissionVersion.getSubmittedTime() != null){
-        		UIOutput.make(form, "status", df.format(assignmentSubmissionVersion.getSubmittedTime()));
+        	if (assignmentSubmissionVersion.getSubmittedDate() != null){
+        		UIOutput.make(form, "status", df.format(assignmentSubmissionVersion.getSubmittedDate()));
         	} else {
         		UIOutput.make(form, "status", "");
         	}
@@ -202,7 +202,7 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
         	//TODO FIXME swg if (statusConstant == AssignmentConstants.SUBMISSION_IN_PROGRESS || statusConstant == AssignmentConstants.SUBMISSION_NOT_STARTED) {
         	//	UIMessage.make(form, "status", "assignment2.assignment_grade.submission_status." + statusConstant);
         	//} else {
-        	//	UIMessage.make(form, "status", "assignment2.assignment_grade.submission_status." + statusConstant, new Object[] { df.format(assignmentSubmissionVersion.getSubmittedTime()) });
+        	//	UIMessage.make(form, "status", "assignment2.assignment_grade.submission_status." + statusConstant, new Object[] { df.format(assignmentSubmissionVersion.getSubmittedDate()) });
         //	}
         }
         
@@ -222,7 +222,7 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
         		externalLogic.getAssignmentViewUrl(FragmentAssignmentInstructionsProducer.VIEW_ID) + "/" + assignment.getId() + "?TB_iframe=true&height=300");
         
         //If assignment allows for submitted text
-        if (assignmentSubmissionVersion.getSubmittedTime() != null &&
+        if (assignmentSubmissionVersion.getSubmittedDate() != null &&
         		(assignment.getSubmissionType() == AssignmentConstants.SUBMIT_INLINE_ONLY || 
         		assignment.getSubmissionType() == AssignmentConstants.SUBMIT_INLINE_AND_ATTACH)) {
         	UIOutput.make(form, "submitted_text_fieldset");
@@ -274,7 +274,7 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
         
         /**
         UIBoundBoolean release_feedback = UIBoundBoolean.make(form, "release_feedback", "#{AssignmentSubmissionBean.releaseFeedback}", 
-        		assignmentSubmissionVersion.getReleasedTime() != null);
+        		assignmentSubmissionVersion.getFeedbackReleasedDate() != null);
         UIMessage release_feedback_label = UIMessage.make(form, "release_feedback_label", "assignment2.assignment_grade.release_feedback");
         UILabelTargetDecorator.targetLabel(release_feedback_label, release_feedback);
         **/
@@ -315,12 +315,12 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
         	UISelect resubmit_select = UISelect.make(form, "resubmission_additional", number_submissions_values, number_submissions_options, 
         			asOTP + ".numSubmissionsAllowed", current_num_submissions.toString());
 
-        	if (as.getResubmitCloseTime() == null) {
-        		as.setResubmitCloseTime(new Date());
+        	if (as.getResubmitCloseDate() == null) {
+        		as.setResubmitCloseDate(new Date());
         	}
-        	UIInput acceptUntilTimeField = UIInput.make(form, "accept_until:", asOTP + ".resubmitCloseTime");
+        	UIInput acceptUntilTimeField = UIInput.make(form, "accept_until:", asOTP + ".resubmitCloseDate");
 
-        	dateEvolver.evolveDateInput(acceptUntilTimeField, as.getResubmitCloseTime());
+        	dateEvolver.evolveDateInput(acceptUntilTimeField, as.getResubmitCloseDate());
         } else {
         	// display text only representation
         	String totalSubmissions = current_num_submissions.toString();
@@ -330,7 +330,7 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
         	UIMessage.make(form, "resubmit_no_change", "assignment2.assignment_grade.resubmission_text", 
         			new Object[] {externalLogic.getUserDisplayName(params.userId), 
         			current_times_submitted_already, totalSubmissions, 
-        			(as.getResubmitCloseTime() != null ? df.format(as.getResubmitCloseTime()) : "")});
+        			(as.getResubmitCloseDate() != null ? df.format(as.getResubmitCloseDate()) : "")});
         }
         
         if (assignment.isGraded()){
@@ -343,7 +343,7 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
     	for (AssignmentSubmissionVersion asv : history){
     		
         	UIBranchContainer loop = UIBranchContainer.make(form, "previous_submissions:");
-        	UIOutput.make(loop, "previous_date", (asv.getSubmittedTime() != null ? df.format(asv.getSubmittedTime()) : ""));
+        	UIOutput.make(loop, "previous_date", (asv.getSubmittedDate() != null ? df.format(asv.getSubmittedDate()) : ""));
         	if (asvOTPKey.equals(asv.getId().toString())){
         		//we are editing this version
         		UIMessage.make(loop, "current_version", "assignment2.assignment_grade.current_version");

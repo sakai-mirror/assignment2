@@ -184,7 +184,7 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
     	// user has some grading privileges or they are a student and assign is open
     	} else if (gradebookLogic.isCurrentUserAbleToGrade(assignment.getContextId()) || 
     			(gradebookLogic.isCurrentUserAStudentInGb(assignment.getContextId()) && 
-    					assignment.getOpenTime().before(new Date()))) {
+    					assignment.getOpenDate().before(new Date()))) {
     		
     		if (assignment.getAssignmentGroupSet() == null || assignment.getAssignmentGroupSet().isEmpty()) {
     			viewable = true;
@@ -209,7 +209,7 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
     	boolean viewable = false;
     	
     	boolean userIsStudentAndAssignmentNotOpen = gradebookLogic.isCurrentUserAStudentInGb(assignment.getContextId()) && 
-    		assignment.getOpenTime().after(new Date());
+    		assignment.getOpenDate().after(new Date());
 
     	if (!userIsStudentAndAssignmentNotOpen) {
 

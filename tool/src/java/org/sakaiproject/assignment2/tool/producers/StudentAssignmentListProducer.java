@@ -155,7 +155,7 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
         	String statusText = messageLocator.getMessage("assignment2.submission_status." + status.intValue());
         	UIOutput.make(row, "assignment_row_status", statusText);
         	
-        	UIOutput.make(row, "assignment_row_open", df.format(assignment.getOpenTime()));
+        	UIOutput.make(row, "assignment_row_open", df.format(assignment.getOpenDate()));
         	
         	if (assignment.getDueDate() != null) {
         		UIOutput.make(row, "assignment_row_due", df.format(assignment.getDueDate()));
@@ -164,7 +164,7 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
         	}
 
         	//For JS Sorting
-        	UIOutput.make(row, "open_timestamp", assignment.getOpenTime() != null ? String.valueOf(assignment.getOpenTime().getTime()) : "");
+        	UIOutput.make(row, "open_timestamp", assignment.getOpenDate() != null ? String.valueOf(assignment.getOpenDate().getTime()) : "");
         	UIOutput.make(row, "due_timestamp", assignment.getDueDate() != null ? String.valueOf(assignment.getDueDate().getTime()) : "");
         	UIOutput.make(row, "sortIndex", String.valueOf(assignment.getSortIndex()));
         }

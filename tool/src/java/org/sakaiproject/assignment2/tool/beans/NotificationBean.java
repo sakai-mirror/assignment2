@@ -85,7 +85,7 @@ public class NotificationBean
 		String assignmentId = assignment.getId().toString();
 		if (!assignment.isDraft())
 		{
-			Time openTime = timeService.newTime(assignment.getOpenTime().getTime());
+			Time openTime = timeService.newTime(assignment.getOpenDate().getTime());
 			
 			// Remove any existing notifications for this assignment
 			DelayedInvocation[] fdi = scheduledInvocationManager.findDelayedInvocations("org.sakaiproject.assignment2.logic.ScheduledNotification",

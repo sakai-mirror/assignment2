@@ -493,7 +493,7 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
     	AssignmentSubmissionVersion currVersion = dao.getCurrentSubmissionVersionWithAttachments(testData.st1a1Submission);
     	assertTrue(currVersion.getFeedbackNotes().equals("notes"));
     	assertTrue(currVersion.getAssignmentSubmission().getNumSubmissionsAllowed().equals(2));
-    	assertTrue(currVersion.getAssignmentSubmission().getResubmitCloseTime().equals(resubmitCloseDate));
+    	assertTrue(currVersion.getAssignmentSubmission().getResubmitCloseDate().equals(resubmitCloseDate));
     	
     	// student should not be authorized
     	externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT1_UID);
@@ -659,7 +659,7 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
 		externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
 		Assignment2 assign1 = dao.getAssignmentByIdWithGroups(testData.a1Id);
 		assign1.setNumSubmissionsAllowed(3);
-		assign1.setAcceptUntilTime(null);
+		assign1.setAcceptUntilDate(null);
 		assignmentLogic.saveAssignment(assign1);
 		
 		// st 1 only has one submission, so still open
@@ -720,7 +720,7 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
 		// let's make this assignment not open yet
     	cal.set(2020, 10, 01);
     	Date assignOpenTime = cal.getTime();
-    	assign1.setOpenTime(assignOpenTime);
+    	assign1.setOpenDate(assignOpenTime);
     	assignmentLogic.saveAssignment(assign1);
     	// should be closed for both
 		open = submissionLogic.submissionIsOpenForStudentForAssignment(
@@ -734,8 +734,8 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
 		// let's restrict it by date on the assign level
 		cal.set(2000, 10, 01);
 		assignOpenTime = cal.getTime();
-		assign1.setOpenTime(assignOpenTime);
-		assign1.setAcceptUntilTime(resubmitCloseTime);
+		assign1.setOpenDate(assignOpenTime);
+		assign1.setAcceptUntilDate(resubmitCloseTime);
 		assignmentLogic.saveAssignment(assign1);
 		
 
@@ -800,12 +800,12 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
 		// should only have updated the one student this TA is allowed to grade!
 		Set<AssignmentSubmissionVersion> st1a1History = dao.getVersionHistoryForSubmission(testData.st1a1Submission);
 		for (AssignmentSubmissionVersion asv : st1a1History) {
-			assertNotNull(asv.getReleasedTime());
+			assertNotNull(asv.getFeedbackReleasedDate());
 		}
 		// nothing should be released for student 2
 		Set<AssignmentSubmissionVersion> st2a1History = dao.getVersionHistoryForSubmission(testData.st2a1Submission);
 		for (AssignmentSubmissionVersion asv : st2a1History) {
-			assertNull(asv.getReleasedTime());
+			assertNull(asv.getFeedbackReleasedDate());
 		}
 		
 		// instructor should update all
@@ -815,15 +815,15 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
 		// every version should be released for all students
 		Set<AssignmentSubmissionVersion> st1a3History = dao.getVersionHistoryForSubmission(testData.st1a3Submission);
 		for (AssignmentSubmissionVersion asv : st1a3History) {
-			assertNotNull(asv.getReleasedTime());
+			assertNotNull(asv.getFeedbackReleasedDate());
 		}
 		Set<AssignmentSubmissionVersion> st2a3History = dao.getVersionHistoryForSubmission(testData.st2a3Submission);
 		for (AssignmentSubmissionVersion asv : st2a3History) {
-			assertNotNull(asv.getReleasedTime());
+			assertNotNull(asv.getFeedbackReleasedDate());
 		}
 		Set<AssignmentSubmissionVersion> st3a3History = dao.getVersionHistoryForSubmission(testData.st3a3Submission);
 		for (AssignmentSubmissionVersion asv : st3a3History) {
-			assertNotNull(asv.getReleasedTime());
+			assertNotNull(asv.getFeedbackReleasedDate());
 		}
 	}
 	
@@ -859,7 +859,7 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
 		submissionLogic.releaseAllFeedbackForSubmission(testData.st1a1Submission.getId());
 		Set<AssignmentSubmissionVersion> versionHistory = dao.getVersionHistoryForSubmission(testData.st1a1Submission);
 		for (AssignmentSubmissionVersion asv : versionHistory) {
-			assertNotNull(asv.getReleasedTime());
+			assertNotNull(asv.getFeedbackReleasedDate());
 		}
 		
 		// make sure instructor can release, as well
@@ -867,7 +867,7 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
 		submissionLogic.releaseAllFeedbackForSubmission(testData.st2a1Submission.getId());
 		versionHistory = dao.getVersionHistoryForSubmission(testData.st2a1Submission);
 		for (AssignmentSubmissionVersion asv : versionHistory) {
-			assertNotNull(asv.getReleasedTime());
+			assertNotNull(asv.getFeedbackReleasedDate());
 		}
 	}
 	
@@ -904,10 +904,10 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
 		Set<AssignmentSubmissionVersion> versionHistory = dao.getVersionHistoryForSubmission(testData.st1a1Submission);
 		for (AssignmentSubmissionVersion asv : versionHistory) {
 			if (asv.getId().equals(testData.st1a1CurrVersion.getId())) {
-				assertNotNull(asv.getReleasedTime());
+				assertNotNull(asv.getFeedbackReleasedDate());
 			} else {
 				// make sure no other versions were released
-				assertNull(asv.getReleasedTime());
+				assertNull(asv.getFeedbackReleasedDate());
 			}
 		}
 		
@@ -917,10 +917,10 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
 		versionHistory = dao.getVersionHistoryForSubmission(testData.st2a1Submission);
 		for (AssignmentSubmissionVersion asv : versionHistory) {
 			if (asv.getId().equals(testData.st2a1CurrVersion.getId())) {
-				assertNotNull(asv.getReleasedTime());
+				assertNotNull(asv.getFeedbackReleasedDate());
 			} else {
 				//make sure no other versions were released
-				assertNull(asv.getReleasedTime());
+				assertNull(asv.getFeedbackReleasedDate());
 			}
 		}
 	}
@@ -1001,7 +1001,7 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
 		AssignmentSubmission st3a1Submission = new AssignmentSubmission(testData.a1, AssignmentTestDataLoad.STUDENT3_UID);
 		AssignmentSubmissionVersion st3a1CurrVersion = testData.createGenericVersion(st3a1Submission);
 		st3a1CurrVersion.setDraft(false);
-		st3a1CurrVersion.setSubmittedTime(null);
+		st3a1CurrVersion.setSubmittedDate(null);
 		dao.save(st3a1Submission);
 		dao.save(st3a1CurrVersion);
 		

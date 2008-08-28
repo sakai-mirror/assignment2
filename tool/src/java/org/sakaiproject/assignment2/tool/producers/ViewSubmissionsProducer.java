@@ -203,8 +203,8 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
         			externalLogic.getUserFullName(as.getUserId()),
         			new GradeViewParams(GradeProducer.VIEW_ID, as.getAssignment().getId(), as.getUserId()));
         	
-        	if (as.getCurrentSubmissionVersion() != null && as.getCurrentSubmissionVersion().getSubmittedTime() != null){
-        		UIOutput.make(row, "row_submitted", df.format(as.getCurrentSubmissionVersion().getSubmittedTime()));
+        	if (as.getCurrentSubmissionVersion() != null && as.getCurrentSubmissionVersion().getSubmittedDate() != null){
+        		UIOutput.make(row, "row_submitted", df.format(as.getCurrentSubmissionVersion().getSubmittedDate()));
         	} else {
         		UIOutput.make(row, "row_submitted", "");
         	}
@@ -233,7 +233,7 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
 
         	String released = "0";
         	if (as.getCurrentSubmissionVersion() != null)  {
-        		Date releasedTime = as.getCurrentSubmissionVersion().getReleasedTime();
+        		Date releasedTime = as.getCurrentSubmissionVersion().getFeedbackReleasedDate();
         		if (releasedTime != null && releasedTime.before(new Date())) {
         			UIOutput.make(row, "row_released");
         			released += 1;
@@ -256,9 +256,9 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
         UIMessage.make(tofill, "assignment_details.created_by_header", "assignment2.assignment_grade-assignment.assignment_details.created_by");
         UIOutput.make(tofill, "assignment_details.created_by", externalLogic.getUserDisplayName(assignment.getCreator()));
         UIMessage.make(tofill, "assignment_details.modified_header", "assignment2.assignment_grade-assignment.assignment_details.modified");
-        UIOutput.make(tofill, "assignment_details.modified", (assignment.getModifiedTime() != null ? df.format(assignment.getModifiedTime()) : ""));
+        UIOutput.make(tofill, "assignment_details.modified", (assignment.getModifiedDate() != null ? df.format(assignment.getModifiedDate()) : ""));
         UIMessage.make(tofill, "assignment_details.open_header", "assignment2.assignment_grade-assignment.assignment_details.open");
-        UIOutput.make(tofill, "assignment_details.open", df.format(assignment.getOpenTime()));
+        UIOutput.make(tofill, "assignment_details.open", df.format(assignment.getOpenDate()));
         UIMessage.make(tofill, "assignment_details.due_header", "assignment2.assignment_grade-assignment.assignment_details.due");
 
         UIOutput.make(tofill, "assignment_details.due", 
@@ -266,7 +266,7 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
 
         UIMessage.make(tofill, "assignment_details.accept_until_header", "assignment2.assignment_grade-assignment.assignment_details.accept_until");
         UIOutput.make(tofill, "assignment_details.accept_until", 
-        		(assignment.getAcceptUntilTime() != null ? df.format(assignment.getAcceptUntilTime()) : ""));
+        		(assignment.getAcceptUntilDate() != null ? df.format(assignment.getAcceptUntilDate()) : ""));
         UIMessage.make(tofill, "assignment_details.submissions_header", "assignment2.assignment_grade-assignment.assignment_details.submissions");
         UIMessage.make(tofill, "assignment_details.submissions", "assignment2.submission_type." + String.valueOf(assignment.getSubmissionType()));
         //UIMessage.make(tofill, "assignment_details.scale_header", "assignment2.assignment_grade-assignment.assignment_details.scale");

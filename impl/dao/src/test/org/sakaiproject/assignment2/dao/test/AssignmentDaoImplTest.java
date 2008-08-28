@@ -551,14 +551,14 @@ public class AssignmentDaoImplTest extends Assignment2DaoTestBase {
 	}
 
 	// TODO - figure out why this test is broken
-	/*public void testGetVersionByUserIdAndSubmittedTime() throws Exception
+	/*public void testGetVersionByUserIdAndSubmittedDate() throws Exception
 	{
 		String userId = null;
-		Date submittedTime = null;
+		Date submittedDate = null;
 		try
 		{
-			assignmentDao.getVersionByUserIdAndSubmittedTime(userId, submittedTime);
-			fail("Should've thrown exception with userId == submittedTime == null");
+			assignmentDao.getVersionByUserIdAndSubmittedDate(userId, submittedDate);
+			fail("Should've thrown exception with userId == submittedDate == null");
 		}
 		catch (IllegalArgumentException iae)
 		{
@@ -568,9 +568,9 @@ public class AssignmentDaoImplTest extends Assignment2DaoTestBase {
 		try
 		{
 			userId = AssignmentTestDataLoad.STUDENT1_UID;
-			submittedTime = null;
-			assignmentDao.getVersionByUserIdAndSubmittedTime(userId, submittedTime);
-			fail("Should've thrown exception with userId != null and submittedTime == null");
+			submittedDate = null;
+			assignmentDao.getVersionByUserIdAndSubmittedDate(userId, submittedDate);
+			fail("Should've thrown exception with userId != null and submittedDate == null");
 		}
 		catch (IllegalArgumentException iae)
 		{
@@ -580,9 +580,9 @@ public class AssignmentDaoImplTest extends Assignment2DaoTestBase {
 		try
 		{
 			userId = null;
-			submittedTime = testData.st1a1CurrVersion.getSubmittedTime();
-			assignmentDao.getVersionByUserIdAndSubmittedTime(userId, submittedTime);
-			fail("Should've thrown exception with userId == null and submittedTime != null");
+			submittedDate = testData.st1a1CurrVersion.getSubmittedDate();
+			assignmentDao.getVersionByUserIdAndSubmittedDate(userId, submittedDate);
+			fail("Should've thrown exception with userId == null and submittedDate != null");
 		}
 		catch (IllegalArgumentException iae)
 		{
@@ -592,15 +592,15 @@ public class AssignmentDaoImplTest extends Assignment2DaoTestBase {
 		try
 		{
 			userId = AssignmentTestDataLoad.STUDENT1_UID;
-			submittedTime = testData.st1a1CurrVersion.getSubmittedTime();
-			AssignmentSubmissionVersion asv = assignmentDao.getVersionByUserIdAndSubmittedTime(
-					userId, submittedTime);
+			submittedDate = testData.st1a1CurrVersion.getSubmittedDate();
+			AssignmentSubmissionVersion asv = assignmentDao.getVersionByUserIdAndSubmittedDate(
+					userId, submittedDate);
 			assertEquals(asv.getCreatedBy(), userId);
-			assertEquals(asv.getSubmittedTime(), submittedTime);
+			assertEquals(asv.getSubmittedDate(), submittedDate);
 		}
 		catch (IllegalArgumentException iae)
 		{
-			fail("Shouldn't have thrown exception with userId != null and submittedTime != null");
+			fail("Shouldn't have thrown exception with userId != null and submittedDate != null");
 		}
 	}*/
 	
@@ -629,7 +629,7 @@ public class AssignmentDaoImplTest extends Assignment2DaoTestBase {
 		AssignmentSubmission st3a1Submission = new AssignmentSubmission(testData.a1, AssignmentTestDataLoad.STUDENT3_UID);
 		AssignmentSubmissionVersion st3a1CurrVersion = testData.createGenericVersion(st3a1Submission);
 		st3a1CurrVersion.setDraft(false);
-		st3a1CurrVersion.setSubmittedTime(null);
+		st3a1CurrVersion.setSubmittedDate(null);
 		assignmentDao.save(st3a1Submission);
 		assignmentDao.save(st3a1CurrVersion);
 		

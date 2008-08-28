@@ -151,7 +151,7 @@ public class Assignment2Bean {
 		assignment.setDraft(draft);
 		
 		if (this.requireAcceptUntil == null || this.requireAcceptUntil == Boolean.FALSE) {
-			assignment.setAcceptUntilTime(null);
+			assignment.setAcceptUntilDate(null);
 		}
 		
 		if (this.requireDueDate == null || this.requireDueDate == Boolean.FALSE) {
@@ -249,7 +249,7 @@ public class Assignment2Bean {
 		for (String key : OTPMap.keySet()) {
 			Assignment2 assignment = OTPMap.get(key);
 			if (this.requireAcceptUntil == null || Boolean.FALSE.equals(requireAcceptUntil)) {
-				assignment.setAcceptUntilTime(null);
+				assignment.setAcceptUntilDate(null);
 			}
 			if (this.requireDueDate == null || this.requireDueDate == Boolean.FALSE) {
 				assignment.setDueDate(null);

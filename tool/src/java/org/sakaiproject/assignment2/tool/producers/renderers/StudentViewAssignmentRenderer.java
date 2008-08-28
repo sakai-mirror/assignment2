@@ -167,15 +167,15 @@ public class StudentViewAssignmentRenderer {
     	// Due Date
     	UIOutput.make(joint, "header.due_date", (assignment.getDueDate() != null ? df.format(assignment.getDueDate()) : ""));
 
-    	if (assignment != null && assignment.getAcceptUntilTime() != null) {
+    	if (assignment != null && assignment.getAcceptUntilDate() != null) {
     		UIOutput.make(joint, "accept_until_tr");
-    		UIOutput.make(joint, "header.accept_until", df.format(assignment.getAcceptUntilTime()));
+    		UIOutput.make(joint, "header.accept_until", df.format(assignment.getAcceptUntilDate()));
     	}
     	UIOutput.make(joint, "header.status", status);
     	UIOutput.make(joint, "header.grade_scale", "Grade Scale from Gradebook");  //HERE
-    	if (assignment != null && assignment.getModifiedTime() != null) {
+    	if (assignment != null && assignment.getModifiedDate() != null) {
     		UIOutput.make(joint, "modified_by_header_row");
-    		UIOutput.make(joint, "modified_by", df.format(assignment.getModifiedTime()));
+    		UIOutput.make(joint, "modified_by", df.format(assignment.getModifiedDate()));
     	}
     	UIVerbatim.make(joint, "instructions", assignment.getInstructions());
     	
@@ -256,7 +256,7 @@ public class StudentViewAssignmentRenderer {
     		}
             
         	UIBranchContainer loop = UIBranchContainer.make(form, "previous_submissions:");
-        	UIOutput.make(loop, "previous_date", (asv.getSubmittedTime() != null ? df.format(asv.getSubmittedTime()) : ""));
+        	UIOutput.make(loop, "previous_date", (asv.getSubmittedDate() != null ? df.format(asv.getSubmittedDate()) : ""));
         	if (asvOTPKey.equals(asv.getId().toString())){
         		//we are editing this version
         		UIMessage.make(loop, "current_version", "assignment2.student-submit.current_version");

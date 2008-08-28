@@ -155,7 +155,7 @@ public class UploadAllLogicImpl implements UploadAllLogic
 				// date format is derived from output in ZipExporter which uses Date.toString()
 				if (isZip && (options.feedbackText || options.feedbackAttachments))
 				{
-					FeedbackVersion feedback = assnSubLogic.getFeedbackByUserIdAndSubmittedTime(
+					FeedbackVersion feedback = assnSubLogic.getFeedbackByUserIdAndSubmittedDate(
 							userEid, dateFormat.parse(w.timeStamp));
 					feedback.getFeedbackAttachSet();
 

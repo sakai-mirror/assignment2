@@ -37,10 +37,10 @@ public class AssignmentSubmission {
 	private Long id;
 	private Assignment2 assignment;
 	private String userId;
-	private Date resubmitCloseTime;
+	private Date resubmitCloseDate;
 	private Integer numSubmissionsAllowed;
+	private int optimisticVersion;
 	private Set<AssignmentSubmissionVersion> submissionHistorySet;
-	private int revisionVersion;
 	
 	/**
 	 * the current submission version must be populated manually b/c we want
@@ -124,18 +124,22 @@ public class AssignmentSubmission {
 	
 	/**
 	 * 
-	 * @return time after which the submitter may no longer submit this assignment
+	 * @return date and time after which the submitter may no longer submit this assignment. This
+	 * value overrides the acceptUntilDate on the assignment level if numResubmissionsAllowed is
+	 * populated. if null and resubmission allowed on submission level, may resubmit indefinitely
 	 */
-	public Date getResubmitCloseTime() {
-		return resubmitCloseTime;
+	public Date getResubmitCloseDate() {
+		return resubmitCloseDate;
 	}
 
 	/**
-	 * set the time after which no more submissions will be accepted
-	 * @param resubmitCloseTime
+	 * date and time after which the submitter may no longer submit this assignment. This
+	 * value overrides the acceptUntilDate on the assignment level if numResubmissionsAllowed is
+	 * populated. if null and resubmission allowed on submission level, may resubmit indefinitely
+	 * @param resubmitCloseDate
 	 */
-	public void setResubmitCloseTime(Date resubmitCloseTime) {
-		this.resubmitCloseTime = resubmitCloseTime;
+	public void setResubmitCloseDate(Date resubmitCloseDate) {
+		this.resubmitCloseDate = resubmitCloseDate;
 	}
 	
 	/**
@@ -156,23 +160,24 @@ public class AssignmentSubmission {
 		this.numSubmissionsAllowed = numSubmissionsAllowed;
 	}
 	
-	/**
-	 * the int value of the version number for this assignment. not
-     * to be confused with submission version.
-	 * @return
-	 */
-	public int getRevisionVersion() {
-		return revisionVersion;
-	}
-
-	/**
-	 * the int value of the version number for this assignment. not
-     * to be confused with submission version.
-	 * @param revisionVersion
-	 */
-	public void setRevisionVersion(int revisionVersion) {
-		this.revisionVersion = revisionVersion;
-	}
+    
+    /**
+     * 
+     * @return version stored for hibernate's automatic optimistic concurrency control.
+     * this is not related to any of the submission version data for assignment2
+     */
+    public int getOptimisticVersion() {
+    	return optimisticVersion;
+    }
+    
+    /**
+     * version stored for hibernate's automatic optimistic concurrency control.
+     * this is not related to any of the submission version data for assignment2
+     * @param optimisticVersion
+     */
+    public void setOptimisticVersion(int optimisticVersion) {
+    	this.optimisticVersion = optimisticVersion;
+    }
 	
 	// not persisted but convenient to have
 	/**
@@ -180,7 +185,10 @@ public class AssignmentSubmission {
 	 * when you want to retrieve or update this information
 	 * @return The current AssignmentSubmissionVersion for this submission. Each
 	 * modification to the submission will result in a new AssignmentSubmissionVersion
-	 * record so we maintain a history.
+	 * record so we maintain a history. If the current user is the submitter,
+	 * the current version will be the most recent version saved. Otherwise,
+	 * will be populated with the most recent non-draft version. This is done
+	 * here to save on db calls.
 	 */
 	public AssignmentSubmissionVersion getCurrentSubmissionVersion() {
 		return currentSubmissionVersion;
@@ -192,7 +200,7 @@ public class AssignmentSubmission {
 	 * 
 	 * Set the current AssignmentSubmissionVersion for this submission. Each
 	 * modification to the submission will result in a new AssignmentSubmissionVersion
-	 * record so we maintain a history.
+	 * record so we maintain a history.  
 	 * @param currentSubmissionVersion
 	 */
 	public void setCurrentSubmissionVersion(AssignmentSubmissionVersion currentSubmissionVersion) {

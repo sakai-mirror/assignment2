@@ -148,16 +148,16 @@ public interface AssignmentDao extends CompleteGenericDao {
 	public Set<AssignmentSubmissionVersion> getVersionHistoryForSubmission(final AssignmentSubmission submission);
 
 	/**
-	 * Get a submission version for a user id by the submitted time.
+	 * Get a submission version for a user id by the submitted date.
 	 * 
 	 * @param userId
 	 *            [Non-null] The userId to narrow by.
-	 * @param submittedTime
-	 *            [Non-null] The submitted time to search for.
-	 * @return The submission version matching user and submitted time. Null if not found.
+	 * @param submittedDate
+	 *            [Non-null] The submitted date and time to search for.
+	 * @return The submission version matching user and submitted date. Null if not found.
 	 */
-	public AssignmentSubmissionVersion getVersionByUserIdAndSubmittedTime(final String userId,
-			final Date submittedTime);
+	public AssignmentSubmissionVersion getVersionByUserIdAndSubmittedDate(final String userId,
+			final Date submittedDate);
 	
 	/**
 	 * 

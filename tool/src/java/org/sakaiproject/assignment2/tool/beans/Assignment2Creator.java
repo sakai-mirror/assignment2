@@ -61,9 +61,9 @@ public class Assignment2Creator {
     	cal.add(Calendar.DAY_OF_YEAR, 7);
     	cal.set(Calendar.HOUR_OF_DAY, 17);
     	
-    	togo.setOpenTime(openDate);
+    	togo.setOpenDate(openDate);
     	//togo.setDueDate(closeDate);
-    	//togo.setAcceptUntilTime(closeDate);
+    	//togo.setAcceptUntilDate(closeDate);
     	
     	return togo;
     }
@@ -78,8 +78,8 @@ public class Assignment2Creator {
     	dup.setTitle(newTitle);
     	dup.setDraft(true);
     	dup.setSortIndex(assignment.getSortIndex());
-    	dup.setOpenTime(assignment.getOpenTime());
-    	dup.setAcceptUntilTime(assignment.getAcceptUntilTime());
+    	dup.setOpenDate(assignment.getOpenDate());
+    	dup.setAcceptUntilDate(assignment.getAcceptUntilDate());
     	dup.setGraded(assignment.isGraded());
     	dup.setDueDate(assignment.getDueDate());
     	dup.setHonorPledge(assignment.isHonorPledge());

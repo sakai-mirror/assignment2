@@ -13,7 +13,7 @@ public interface FeedbackVersion
 
 	String getLastFeedbackSubmittedBy();
 
-	Date getLastFeedbackTime();
+	Date getLastFeedbackDate();
 
 	Set<FeedbackAttachment> getFeedbackAttachSet();
 
@@ -23,7 +23,7 @@ public interface FeedbackVersion
 
 	void setLastFeedbackSubmittedBy(String feedbackSubmittedBy);
 
-	void setLastFeedbackTime(Date feebackTime);
+	void setLastFeedbackDate(Date feebackDate);
 
 	void setFeedbackAttachSet(Set<FeedbackAttachment> feedbackAttachSet);
 

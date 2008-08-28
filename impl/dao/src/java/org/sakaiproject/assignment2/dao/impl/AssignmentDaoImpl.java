@@ -517,23 +517,23 @@ public class AssignmentDaoImpl extends HibernateCompleteGenericDao implements As
     	return (Set<AssignmentSubmissionVersion>)getHibernateTemplate().execute(hc);
     }
 
-    public AssignmentSubmissionVersion getVersionByUserIdAndSubmittedTime(final String userId,
-			final Date submittedTime)
+    public AssignmentSubmissionVersion getVersionByUserIdAndSubmittedDate(final String userId,
+			final Date submittedDate)
 	{
-		if (userId == null || submittedTime == null)
+		if (userId == null || submittedDate == null)
 		{
 			throw new IllegalArgumentException(
-					"userId and submittedTime must be non-null when looking up version [" + userId
-							+ "," + submittedTime + "]");
+					"userId and submittedDate must be non-null when looking up version [" + userId
+							+ "," + submittedDate + "]");
 		}
 
 		HibernateCallback hc = new HibernateCallback()
 		{
 			public Object doInHibernate(Session session) throws HibernateException, SQLException
 			{
-				Query query = session.getNamedQuery("findVersionByUserIdAndSubmittedTime");
+				Query query = session.getNamedQuery("findVersionByUserIdAndSubmittedDate");
 				query.setParameter("userId", userId);
-				query.setParameter("submittedTime", submittedTime);
+				query.setParameter("submittedDate", submittedDate);
 
 				Object o = query.uniqueResult();
 				return o;

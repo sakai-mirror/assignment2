@@ -11,19 +11,24 @@
 					</generator>
 				</id>
 				
-				<version name="revisionVersion" type="integer" column="VERSION"/>
+				<!-- used by hibernate for optimistic locking - not to be confused with an assignment-related field -->
+				<version name="optimisticVersion" type="integer" column="VERSION"/>
         
         <!--  This maps to the A2_SUBMISSION_T table -->
         <many-to-one name="assignmentSubmission" column="SUBMISSION_ID"
         	class="org.sakaiproject.assignment2.model.AssignmentSubmission"
         	not-null="true" lazy="false" index="A2_SUB_VERSION_SUB_I" />
-        <!-- the time of submission -->
-        <property name="submittedTime" type="java.util.Date">
-            <column name="SUBMITTED_TIME" not-null="false" />
+        <!-- the date and time of submission -->
+        <property name="submittedDate" type="java.util.Date">
+            <column name="SUBMITTED_DATE" not-null="false" />
         </property>
-        <!-- the time feedback for this version was released to submitter -->
-        <property name="releasedTime" type="java.util.Date">
-            <column name="RELEASED_TIME" not-null="false" />
+        <!-- which version is this? first submitted version? second? answers which submitted version this is -->
+        <property name="submittedVersionNumber" type="integer">
+            <column name="SUBMITTED_VERSION_NUMBER" />
+        </property>
+        <!-- the date and time feedback for this version was released to submitter -->
+        <property name="feedbackReleasedDate" type="java.util.Date">
+            <column name="RELEASED_DATE" not-null="false" />
         </property>
         <!-- the inline text for this submission -->
         <property name="submittedText" type="text">
@@ -45,26 +50,26 @@
         <property name="createdBy" type="java.lang.String">
             <column name="CREATED_BY" length="99" not-null="true" />
         </property>
-        <!-- version created time -->
-        <property name="createdTime" type="java.util.Date">
-            <column name="CREATED_TIME" not-null="true" />
+        <!-- version created date and time -->
+        <property name="createdDate" type="java.util.Date">
+            <column name="CREATED_DATE" not-null="true" />
         </property>
         <!-- version modified by -->
         <property name="modifiedBy" type="java.lang.String">
             <column name="MODIFIED_BY" length="99" />
         </property>
-        <!-- version modified time -->
-        <property name="modifiedTime" type="java.util.Date">
-            <column name="MODIFIED_TIME" />
+        <!-- version modified date and time -->
+        <property name="modifiedDate" type="java.util.Date">
+            <column name="MODIFIED_DATE" />
         </property>
         
         <!--  the last feedback was submitted by -->
         <property name="lastFeedbackSubmittedBy" type="java.lang.String">
             <column name="LAST_FEEDBACK_BY" length="99" not-null="false" />
         </property>
-        <!-- last feedback time -->
-        <property name="lastFeedbackTime" type="java.util.Date">
-            <column name="LAST_FEEDBACK_TIME" not-null="false" />
+        <!-- last feedback date and time -->
+        <property name="lastFeedbackDate" type="java.util.Date">
+            <column name="LAST_FEEDBACK_DATE" not-null="false" />
         </property>
         
         <set name="submissionAttachSet" lazy="true" where="SUB_ATTACH_TYPE = 'S'" cascade="none">
@@ -100,11 +105,11 @@
              where submissionVersion.assignmentSubmission = :submission]]>
   	</query>
 
-	<query name="findVersionByUserIdAndSubmittedTime">
+	<query name="findVersionByUserIdAndSubmittedDate">
 	<![CDATA[from org.sakaiproject.assignment2.model.AssignmentSubmissionVersion as version
 		left join fetch version.feedbackAttachSet
 		where version.createdBy = :userId
-			and version.submittedTime = :submittedTime]]>
+			and version.submittedDate = :submittedDate]]>
 	</query>
 	
 	<query name="countNumSubmittedVersions">
@@ -113,7 +118,7 @@
              join submission.assignment as assignment
              where assignment.id = :assignmentId
              and submission.userId = :studentId
-             and submissionVersion.submittedTime != null]]>
+             and submissionVersion.submittedDate != null]]>
   	</query>
   	
   	<query name="countNumStudentsWithASubmission">
@@ -121,7 +126,7 @@
              join submissionVersion.assignmentSubmission as submission
              where submission.assignment = :assignment 
              and submission.userId in (:studentIdList)
-             and submissionVersion.submittedTime != null]]>
+             and submissionVersion.submittedDate != null]]>
   	</query>
 	
 </hibernate-mapping>

@@ -169,7 +169,7 @@ public class ZipExportLogicImpl implements ZipExportLogic
 						.getCurrentSubmissionByAssignmentIdAndStudentId(
 								assignment.getId(), userId).getCurrentSubmissionVersion();
 
-				if (sv != null && sv.getSubmittedTime() != null)
+				if (sv != null && sv.getSubmittedDate() != null)
 				{
 					User user = externalLogic.getUser(userId);
 					String name = externalLogic.getUserDisplayName(userId);
@@ -222,7 +222,7 @@ public class ZipExportLogicImpl implements ZipExportLogic
 								ZipEntry textEntry = new ZipEntry(root + submittersName
 										+ "timestamp.txt");
 								out.putNextEntry(textEntry);
-								byte[] b = (sv.getSubmittedTime().toString()+"\n"+userId).getBytes();
+								byte[] b = (sv.getSubmittedDate().toString()+"\n"+userId).getBytes();
 								out.write(b);
 								textEntry.setSize(b.length);
 								out.closeEntry();

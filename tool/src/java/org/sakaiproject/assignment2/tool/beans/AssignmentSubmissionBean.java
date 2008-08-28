@@ -240,7 +240,7 @@ public class AssignmentSubmissionBean {
 			assignmentSubmission.setUserId(userId);
 			
 			if (resubmitUntil == null || Boolean.FALSE.equals(resubmitUntil)) {
-				assignmentSubmission.setResubmitCloseTime(null);
+				assignmentSubmission.setResubmitCloseDate(null);
 			}
 		}
 		for (String key : asvOTPMap.keySet()){
@@ -248,14 +248,14 @@ public class AssignmentSubmissionBean {
 			AssignmentSubmissionVersion asv = asvOTPMap.get(key);
 			
 			asv.setAssignmentSubmission(assignmentSubmission);
-			if (this.releaseFeedback != null && asv.getReleasedTime() == null) {
-				asv.setReleasedTime(new Date());
+			if (this.releaseFeedback != null && asv.getFeedbackReleasedDate() == null) {
+				asv.setFeedbackReleasedDate(new Date());
 			}
 			
 			submissionLogic.saveInstructorFeedback(asv.getId(), assignmentSubmission.getUserId(),
 					assignmentSubmission.getAssignment(), assignmentSubmission.getNumSubmissionsAllowed(),
-					assignmentSubmission.getResubmitCloseTime(), asv.getAnnotatedText(), asv.getFeedbackNotes(),
-					asv.getReleasedTime(), asv.getFeedbackAttachSet());
+					assignmentSubmission.getResubmitCloseDate(), asv.getAnnotatedText(), asv.getFeedbackNotes(),
+					asv.getFeedbackReleasedDate(), asv.getFeedbackAttachSet());
 		}
 		return SUBMIT;
 	}

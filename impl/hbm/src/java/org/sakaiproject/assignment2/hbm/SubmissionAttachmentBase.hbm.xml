@@ -18,7 +18,7 @@
 	      <column name="SUB_ATTACH_TYPE" length="1" index="SUB_ATTACH_TYPE_I"/>
 	    </discriminator>
 	        	
-    	<version name="revisionVersion" type="integer" column="VERSION"/>
+    	<version name="optimisticVersion" type="integer" column="VERSION"/>
 
     	<!--  This maps to the A2_ASSIGN_SUBMISSION_T table -->
     	<many-to-one name="submissionVersion"

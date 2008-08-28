@@ -211,7 +211,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
         	}
         	
         	assignment.setRemoved(false);
-        	assignment.setCreateTime(new Date());
+        	assignment.setCreateDate(new Date());
         	assignment.setCreator(currentUserId);
         	
         	Set<AssignmentAttachment> attachSet = new HashSet<AssignmentAttachment>();
@@ -236,7 +236,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 			
 			assignment.setRemoved(false);
 			assignment.setModifiedBy(currentUserId);
-			assignment.setModifiedTime(new Date());
+			assignment.setModifiedDate(new Date());
 			
 			Set<AssignmentAttachment> attachToDelete = identifyAttachmentsToDelete(existingAssignment, assignment);
 			Set<AssignmentGroup> groupsToDelete = identifyGroupsToDelete(existingAssignment, assignment);
@@ -315,7 +315,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 
 		assignment.setRemoved(true);
 		assignment.setModifiedBy(externalLogic.getCurrentUserId());
-		assignment.setModifiedTime(new Date());
+		assignment.setModifiedDate(new Date());
 		
 		// remove associated announcements, if appropriate
 		String announcementIdToDelete = null;
@@ -420,7 +420,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 			for (Assignment2 assignment : allAssignments) {
 				if (!assignment.isDraft() || isUserAbleToEdit) {
 					// students may not view if not open
-					if (!isUserAStudent || (isUserAStudent && assignment.getOpenTime().before(new Date()))) 
+					if (!isUserAStudent || (isUserAStudent && assignment.getOpenDate().before(new Date()))) 
 						if (!assignment.isGraded()) {
 							if (permissionLogic.isUserAbleToViewUngradedAssignment(assignment, userGroupIds)) {
 								viewableAssignments.add(assignment);
@@ -488,7 +488,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 	    				//update and save
 		    			assignment.setSortIndex(i);
 		    			assignment.setModifiedBy(userId);
-		    			assignment.setModifiedTime(new Date());
+		    			assignment.setModifiedDate(new Date());
 		    			assignSet.add(assignment);
 		    			if(log.isDebugEnabled()) log.debug("Assignment " + assignment.getId() + " sort index changed to " + i);
 	    			}
@@ -514,10 +514,10 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 		
 		Date currDate = new Date();
 		
-		if (currDate.before(assignment.getOpenTime()))
+		if (currDate.before(assignment.getOpenDate()))
 			return AssignmentConstants.STATUS_NOT_OPEN;
 		
-		if (assignment.getAcceptUntilTime() != null && currDate.after(assignment.getAcceptUntilTime())) {
+		if (assignment.getAcceptUntilDate() != null && currDate.after(assignment.getAcceptUntilDate())) {
 			return AssignmentConstants.STATUS_CLOSED;
 		}
 		
@@ -614,11 +614,11 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 		String newAnncSubject = bundleLogic.getFormattedMessage("assignment2.assignment_annc_subject",
     			new Object[] {updatedAssignment.getTitle()});
     	String newAnncBody = bundleLogic.getFormattedMessage("assignment2.assignment_annc_body",
-    			new Object[] {assignUrl, updatedAssignment.getTitle(), df.format(updatedAssignment.getOpenTime())});
+    			new Object[] {assignUrl, updatedAssignment.getTitle(), df.format(updatedAssignment.getOpenDate())});
     	String updAnncSubject = bundleLogic.getFormattedMessage("assignment2.assignment_annc_subject_edited",
     			new Object[] {updatedAssignment.getTitle()});
     	String updAnncBody = bundleLogic.getFormattedMessage("assignment2.assignment_annc_subject_edited",
-    			new Object[] {assignUrl, updatedAssignment.getTitle(), df.format(updatedAssignment.getOpenTime())});
+    			new Object[] {assignUrl, updatedAssignment.getTitle(), df.format(updatedAssignment.getOpenDate())});
 		
 		if (originalAssignment == null) {
 			// this was a new assignment
@@ -628,7 +628,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 				String announcementId = announcementLogic.addOpenDateAnnouncement(
 						updatedAssignment.getListOfAssociatedGroupReferences(), 
 						updatedAssignment.getContextId(), newAnncSubject,
-						newAnncBody, updatedAssignment.getOpenTime());
+						newAnncBody, updatedAssignment.getOpenDate());
 				updatedAssignment.setAnnouncementId(announcementId);
 				dao.update(updatedAssignment);
 			}
@@ -641,7 +641,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 		} else if (originalAssignment.getAnnouncementId() == null && updatedAssignment.getHasAnnouncement()) {
 			// this is a new announcement
 			String announcementId = announcementLogic.addOpenDateAnnouncement(updatedAssignment.getListOfAssociatedGroupReferences(), 
-					updatedAssignment.getContextId(), newAnncSubject, newAnncBody, updatedAssignment.getOpenTime());
+					updatedAssignment.getContextId(), newAnncSubject, newAnncBody, updatedAssignment.getOpenDate());
 			updatedAssignment.setAnnouncementId(announcementId);
 			dao.update(updatedAssignment);
 		} else if (originalAssignment.getAnnouncementId() != null && !updatedAssignment.getHasAnnouncement()) {
@@ -651,14 +651,14 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 			dao.update(updatedAssignment);
 		} else if (updatedAssignment.getHasAnnouncement()){
 			// if title, open date, or group restrictions were updated, we need to update the announcement
-			Date oldTime = (Date)originalAssignment.getOpenTime();
-			Date newTime = updatedAssignment.getOpenTime();
+			Date oldTime = (Date)originalAssignment.getOpenDate();
+			Date newTime = updatedAssignment.getOpenDate();
 			if (!originalAssignment.getTitle().equals(updatedAssignment.getTitle()) ||
 					(oldTime.after(newTime) || oldTime.before(newTime)) ||
 					!originalAssignment.getListOfAssociatedGroupReferences().equals(updatedAssignment.getListOfAssociatedGroupReferences())) {
 				announcementLogic.updateOpenDateAnnouncement(updatedAssignment.getAnnouncementId(), 
 						updatedAssignment.getListOfAssociatedGroupReferences(), 
-						updatedAssignment.getContextId(), updAnncSubject, updAnncBody, updatedAssignment.getOpenTime());
+						updatedAssignment.getContextId(), updAnncSubject, updAnncBody, updatedAssignment.getOpenDate());
 				// don't need to re-save assignment b/c id already exists
 			}
 		}

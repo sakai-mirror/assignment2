@@ -36,21 +36,22 @@ public class AssignmentSubmissionVersion implements FeedbackVersion {
 	
 	private Long id;
 	private AssignmentSubmission assignmentSubmission;
-	private Date submittedTime;
-	private Date releasedTime;
+	private int submittedVersionNumber;
+	private Date submittedDate;
+	private Date feedbackReleasedDate;
 	private String annotatedText;
 	private String feedbackNotes;
 	private String submittedText;
 	private boolean draft;
 	private String createdBy;
-	private Date createdTime;
+	private Date createdDate;
 	private String modifiedBy;
-	private Date modifiedTime;
+	private Date modifiedDate;
 	private String lastFeedbackSubmittedBy;
-	private Date lastFeedbackTime;
+	private Date lastFeedbackDate;
+	private int optimisticVersion;
 	private Set<FeedbackAttachment> feedbackAttachSet;
 	private Set<SubmissionAttachment> submissionAttachSet;
-	private int revisionVersion;
 
 	public AssignmentSubmissionVersion() {
 	}
@@ -64,53 +65,56 @@ public class AssignmentSubmissionVersion implements FeedbackVersion {
 	}
 	
 	/**
-	 * @return time this assignment was submitted. If null, assignment has not
-	 * been submitted for this user.
-	 */
-	public Date getSubmittedTime() {
-		return submittedTime;
-	}
-	
-	/**
-	 * Set the time the assignment was submitted. Null if no submission yet.
-	 * @param submittedTime
-	 */
-	public void setSubmittedTime(Date submittedTime) {
-		this.submittedTime = submittedTime;
-	}
-	
-	/**
 	 * 
-	 * @return text composed of the submission with grader-added annotation
+	 * @return the parent submission record associated with this version
 	 */
-	public String getAnnotatedText() {
-		return annotatedText;
-	}
-	
-	/**
-	 * 
-	 * @return formatted text composed of the inline submission with grader-added annotation
-	 */
-	public String getAnnotatedTextFormatted() {	
-		if (annotatedText == null) {
-			return "";
-		}
-    	Pattern p = Pattern.compile("\\{\\{([^\\}]+|\\}(?!\\}))\\}\\}");
-    	Matcher m = p.matcher(annotatedText);
-    	StringBuffer sb = new StringBuffer();
-    	while(m.find()){
-    		m.appendReplacement(sb, "<span class=\"highlight\">$1</span>");
-    	}
-    	m.appendTail(sb);
-		return sb.toString();
+	public AssignmentSubmission getAssignmentSubmission() {
+		return assignmentSubmission;
 	}
 
 	/**
-	 * set the text composed of the inline submission with grader-added annotation
-	 * @param annotatedText
+	 * set the parent submission record associated with this version
+	 * @param assignmentSubmission
 	 */
-	public void setAnnotatedText(String annotatedText) {
-		this.annotatedText = annotatedText;
+	public void setAssignmentSubmission(AssignmentSubmission assignmentSubmission) {
+		this.assignmentSubmission = assignmentSubmission;
+	}
+	
+	/**
+	 * 
+	 * @return which version is this? is this the second version of this submission?
+	 * keeps track of which version this is in the submission history
+	 */
+	public int getSubmittedVersionNumber() {
+		return submittedVersionNumber; 
+	}
+	
+	/**
+	 * which version is this? is this the second version of this submission?
+	 * keeps track of which version this is in the submission history
+	 * @param submittedVersionNumber
+	 */
+	public void setSubmittedVersionNumber(int submittedVersionNumber) {
+		this.submittedVersionNumber = submittedVersionNumber;
+	}
+	
+	/* ************* Information related to the student's submission ************* */
+	
+	/**
+	 * @return Set the date and time the assignment was submitted. Null if this has not
+	 *  yet been submitted for feedback yet.
+	 */
+	public Date getSubmittedDate() {
+		return submittedDate;
+	}
+	
+	/**
+	 * Set the date and time the assignment was submitted. Null if this has not
+	 *  yet been submitted for feedback yet.
+	 * @param submittedDate
+	 */
+	public void setSubmittedDate(Date submittedDate) {
+		this.submittedDate = submittedDate;
 	}
 	
 	/**
@@ -145,6 +149,44 @@ public class AssignmentSubmissionVersion implements FeedbackVersion {
 	public void setDraft(boolean draft) {
 		this.draft = draft;
 	}
+	
+	/**
+	 * 
+	 * @return the SubmissionAttachments associated with this
+	 * submission version
+	 */
+	public Set<SubmissionAttachment> getSubmissionAttachSet() {
+		return submissionAttachSet;
+	}
+
+	/**
+	 * 
+	 * @param submissionAttachSet
+	 * the SubmissionAttachments associated with this
+	 * submission version
+	 */
+	public void setSubmissionAttachSet(
+			Set<SubmissionAttachment> submissionAttachSet) {
+		this.submissionAttachSet = submissionAttachSet;
+	}
+	
+	/* ************* Information related to the feedback provided for this version ************* */
+	
+	/**
+	 * 
+	 * @return text composed of the submission with grader-added annotation
+	 */
+	public String getAnnotatedText() {
+		return annotatedText;
+	}
+
+	/**
+	 * set the text composed of the inline submission with grader-added annotation
+	 * @param annotatedText
+	 */
+	public void setAnnotatedText(String annotatedText) {
+		this.annotatedText = annotatedText;
+	}
 
 	/**
 	 * Additional feedback comments provided by the "grader"
@@ -164,19 +206,72 @@ public class AssignmentSubmissionVersion implements FeedbackVersion {
 
 	/**
 	 * 
-	 * @return the Date feedback for this version was released to the submitter.
+	 * @return the Date and time feedback for this version was released to the submitter.
 	 */
-	public Date getReleasedTime() {
-		return releasedTime;
+	public Date getFeedbackReleasedDate() {
+		return feedbackReleasedDate;
 	}
 
 	/**
-	 * set the Date feedback for this version was released to the submitter. 
-	 * @param releasedTime
+	 * set the Date and time feedback for this version was released to the submitter. 
+	 * @param releasedDate
 	 */
-	public void setReleasedTime(Date releasedTime) {
-		this.releasedTime = releasedTime;
+	public void setFeedbackReleasedDate(Date releasedDate) {
+		this.feedbackReleasedDate = releasedDate;
 	}
+	
+	/**
+	 * 
+	 * @return the FeedbackAttachments associated with this submission
+	 * version
+	 */
+	public Set<FeedbackAttachment> getFeedbackAttachSet() {
+		return feedbackAttachSet;
+	}
+
+	/**
+	 * 
+	 * @param feedbackAttachSet
+	 * the FeedbackAttachments associated with this submission version
+	 */
+	public void setFeedbackAttachSet(
+			Set<FeedbackAttachment> feedbackAttachSet) {
+		this.feedbackAttachSet = feedbackAttachSet;
+	}
+	
+	/**
+	 * 
+	 * @return the userid who last submitted feedback on this version
+	 */
+	public String getLastFeedbackSubmittedBy() {
+		return lastFeedbackSubmittedBy;
+	}
+
+	/**
+	 *  the userid who last submitted feedback on this version
+	 * @param lastFeedbackSubmittedBy
+	 */
+	public void setLastFeedbackSubmittedBy(String lastFeedbackSubmittedBy) {
+		this.lastFeedbackSubmittedBy = lastFeedbackSubmittedBy;
+	}
+
+	/**
+	 * 
+	 * @return the date and time that the feedback for this version was last updated
+	 */
+	public Date getLastFeedbackDate() {
+		return lastFeedbackDate;
+	}
+
+	/**
+	 * the date and time that the feedback for this version was last updated
+	 * @param lastFeedbackDate
+	 */
+	public void setLastFeedbackDate(Date lastFeedbackDate) {
+		this.lastFeedbackDate = lastFeedbackDate;
+	}
+	
+	/* ************* Other information ************* */
 
 	/**
 	 * 
@@ -196,18 +291,18 @@ public class AssignmentSubmissionVersion implements FeedbackVersion {
 	
 	/**
 	 * 
-	 * @return the date this version was created
+	 * @return the date and time this version was created
 	 */
-	public Date getCreatedTime() {
-		return createdTime;
+	public Date getCreatedDate() {
+		return createdDate;
 	}
 
 	/**
-	 * the date this version was created
-	 * @param createdTime
+	 * the date and time this version was created
+	 * @param createdDate
 	 */
-	public void setCreatedTime(Date createdTime) {
-		this.createdTime = createdTime;
+	public void setCreatedDate(Date createdDate) {
+		this.createdDate = createdDate;
 	}
 	
 	/**
@@ -230,123 +325,56 @@ public class AssignmentSubmissionVersion implements FeedbackVersion {
 
 	/**
 	 * 
-	 * @return the date this version was last modified
+	 * @return the date and time this version was last modified
 	 */
-	public Date getModifiedTime() {
-		return modifiedTime;
+	public Date getModifiedDate() {
+		return modifiedDate;
 	}
 
 	/**
-	 * set the date this version was last modified
-	 * @param modifiedTime
+	 * set the date and time this version was last modified
+	 * @param modifiedDate
 	 */
-	public void setModifiedTime(Date modifiedTime) {
-		this.modifiedTime = modifiedTime;
+	public void setModifiedDate(Date modifiedDate) {
+		this.modifiedDate = modifiedDate;
 	}
-
-	/**
-	 * 
-	 * @return the parent submission record associated with this version
-	 */
-	public AssignmentSubmission getAssignmentSubmission() {
-		return assignmentSubmission;
-	}
-
-	/**
-	 * set the parent submission record associated with this version
-	 * @param assignmentSubmission
-	 */
-	public void setAssignmentSubmission(AssignmentSubmission assignmentSubmission) {
-		this.assignmentSubmission = assignmentSubmission;
-	}
-
-	/**
-	 * 
-	 * @return the userid who last submitted feedback on this version
-	 */
-	public String getLastFeedbackSubmittedBy() {
-		return lastFeedbackSubmittedBy;
-	}
-
-	/**
-	 *  the userid who last submitted feedback on this version
-	 * @param lastFeedbackSubmittedBy
-	 */
-	public void setLastFeedbackSubmittedBy(String lastFeedbackSubmittedBy) {
-		this.lastFeedbackSubmittedBy = lastFeedbackSubmittedBy;
-	}
-
-	/**
-	 * 
-	 * @return the date that the feedback for this version was last updated
-	 */
-	public Date getLastFeedbackTime() {
-		return lastFeedbackTime;
-	}
-
-	/**
-	 * the date that the feedback for this version was last updated
-	 * @param lastFeedbackTime
-	 */
-	public void setLastFeedbackTime(Date lastFeedbackTime) {
-		this.lastFeedbackTime = lastFeedbackTime;
-	}
-
-	/**
-	 * 
-	 * @return the FeedbackAttachments associated with this submission
-	 * version
-	 */
-	public Set<FeedbackAttachment> getFeedbackAttachSet() {
-		return feedbackAttachSet;
-	}
-
-	/**
-	 * 
-	 * @param feedbackAttachSet
-	 * the FeedbackAttachments associated with this submission version
-	 */
-	public void setFeedbackAttachSet(
-			Set<FeedbackAttachment> feedbackAttachSet) {
-		this.feedbackAttachSet = feedbackAttachSet;
-	}
+	
+    /**
+     * 
+     * @return version stored for hibernate's automatic optimistic concurrency control.
+     * this is not related to any of the submission version data for assignment2
+     */
+    public int getOptimisticVersion() {
+    	return optimisticVersion;
+    }
+    
+    /**
+     * version stored for hibernate's automatic optimistic concurrency control.
+     * this is not related to any of the submission version data for assignment2
+     * @param optimisticVersion
+     */
+    public void setOptimisticVersion(int optimisticVersion) {
+    	this.optimisticVersion = optimisticVersion;
+    }
+	
+	// CONVENIENCE METHODS
 	
 	/**
 	 * 
-	 * @return the SubmissionAttachments associated with this
-	 * submission version
+	 * @return formatted text composed of the inline submission with grader-added annotation
 	 */
-	public Set<SubmissionAttachment> getSubmissionAttachSet() {
-		return submissionAttachSet;
-	}
-
-	/**
-	 * 
-	 * @param submissionAttachSet
-	 * the SubmissionAttachments associated with this
-	 * submission version
-	 */
-	public void setSubmissionAttachSet(
-			Set<SubmissionAttachment> submissionAttachSet) {
-		this.submissionAttachSet = submissionAttachSet;
-	}
-	
-	/**
-	 * the int value of the version number for this assignment. not
-     * to be confused with submission version.
-	 * @return
-	 */
-	public int getRevisionVersion() {
-		return revisionVersion;
-	}
-
-	/**
-	 * the int value of the version number for this assignment. not
-     * to be confused with submission version.
-	 * @param revisionVersion
-	 */
-	public void setRevisionVersion(int revisionVersion) {
-		this.revisionVersion = revisionVersion;
+	public String getAnnotatedTextFormatted() {	
+		if (annotatedText == null) {
+			return "";
+		}
+    	Pattern p = Pattern.compile("\\{\\{([^\\}]+|\\}(?!\\}))\\}\\}");
+    	Matcher m = p.matcher(annotatedText);
+    	StringBuffer sb = new StringBuffer();
+    	while(m.find()){
+    		m.appendReplacement(sb, "<span class=\"highlight\">$1</span>");
+    	}
+    	m.appendTail(sb);
+		return sb.toString();
 	}
 	
 	public String[] getFeedbackAttachmentRefs()

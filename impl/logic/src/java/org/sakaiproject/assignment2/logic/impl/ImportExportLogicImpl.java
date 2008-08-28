@@ -161,7 +161,7 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 		}
 
 		AssignmentDefinition assignDef = new AssignmentDefinition();
-		assignDef.setAcceptUntilDate(assignment.getAcceptUntilTime());
+		assignDef.setAcceptUntilDate(assignment.getAcceptUntilDate());
 		assignDef.setDraft(assignment.isDraft());
 		assignDef.setDueDate(assignment.getDueDate());
 		assignDef.setHasAnnouncement(assignment.getHasAnnouncement());
@@ -169,7 +169,7 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 		assignDef.setInstructions(assignment.getInstructions());
 		assignDef.setNotificationType(assignment.getNotificationType());
 		assignDef.setNumSubmissionsAllowed(assignment.getNumSubmissionsAllowed());
-		assignDef.setOpenDate(assignment.getOpenTime());
+		assignDef.setOpenDate(assignment.getOpenDate());
 		assignDef.setSortIndex(assignment.getSortIndex());
 		assignDef.setSubmissionType(assignment.getSubmissionType());
 		assignDef.setTitle(assignment.getTitle());
@@ -257,14 +257,14 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 				for (AssignmentDefinition assignDef : toolDefinition.getAssignments()) {
 					if (assignDef != null) {
 						Assignment2 newAssignment = new Assignment2();
-						newAssignment.setAcceptUntilTime(assignDef.getAcceptUntilDate());
+						newAssignment.setAcceptUntilDate(assignDef.getAcceptUntilDate());
 						newAssignment.setContextId(toContext);
 						newAssignment.setDraft(assignDef.isDraft());
 						newAssignment.setHonorPledge(assignDef.isHonorPledge());
 						newAssignment.setInstructions(assignDef.getInstructions());
 						newAssignment.setNotificationType(assignDef.getNotificationType());
 						newAssignment.setNumSubmissionsAllowed(assignDef.getNumSubmissionsAllowed());
-						newAssignment.setOpenTime(assignDef.getOpenDate());
+						newAssignment.setOpenDate(assignDef.getOpenDate());
 						newAssignment.setDueDate(assignDef.getDueDate());
 
 						if (assignDef.getSortIndex() == null) {

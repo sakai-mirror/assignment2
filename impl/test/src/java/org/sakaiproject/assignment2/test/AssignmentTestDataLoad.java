@@ -243,7 +243,7 @@ public class AssignmentTestDataLoad {
 		dao.save(st1a3FirstVersion);
 		st1a3CurrVersion = createGenericVersion(st1a3Submission);
 		st1a3CurrVersion.setDraft(true);
-		st1a3CurrVersion.setSubmittedTime(null);
+		st1a3CurrVersion.setSubmittedDate(null);
 		dao.save(st1a3CurrVersion);
 		feedbackAttachSet.add(new FeedbackAttachment(st1a3CurrVersion, "blah"));
 		subAttachSet.add(new SubmissionAttachment(st1a3CurrVersion, "blah"));
@@ -287,12 +287,12 @@ public class AssignmentTestDataLoad {
 	private Assignment2 createGenericAssignment2Object(String title, int sortIndex, boolean graded) {
 		Assignment2 assignment = new Assignment2();
 		assignment.setContextId(CONTEXT_ID);
-		assignment.setCreateTime(new Date());
+		assignment.setCreateDate(new Date());
 		assignment.setCreator("ADMIN");
 		assignment.setDraft(false);
 		assignment.setInstructions("Summarize the article we discussed on 1/8");
 		assignment.setNotificationType(AssignmentConstants.NOTIFY_NONE);
-		assignment.setOpenTime(new Date());
+		assignment.setOpenDate(new Date());
 		assignment.setRemoved(false);
 		assignment.setSubmissionType(AssignmentConstants.SUBMIT_INLINE_AND_ATTACH);
 		assignment.setGraded(graded);
@@ -310,10 +310,10 @@ public class AssignmentTestDataLoad {
 		AssignmentSubmissionVersion version = new AssignmentSubmissionVersion();
 		version.setAssignmentSubmission(submission);
 		version.setCreatedBy(submission.getUserId());
-		version.setCreatedTime(new Date());
+		version.setCreatedDate(new Date());
 		version.setDraft(false);
 		version.setSubmittedText("submitted text by " + submission.getUserId());
-		version.setSubmittedTime(new Date());
+		version.setSubmittedDate(new Date());
 		return version;
 	}
 
