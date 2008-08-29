@@ -82,7 +82,7 @@
 		parent="templateContributorParent">
 		<property name="baseDirectory" value="component-templates/" />
 		<property name="templateNames"
-			value="Pager,SortHeader,AttachmentList,GradebookDetails,StudentViewAssignment,AttachmentEvolver" />
+			value="Pager,SortHeader,AttachmentList,GradebookDetails,StudentViewAssignment,AttachmentEvolver,MarkupEditor" />
 	</bean>
 
 	<!-- Override the default style of user messages -->

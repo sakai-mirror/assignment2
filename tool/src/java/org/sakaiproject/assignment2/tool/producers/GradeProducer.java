@@ -82,6 +82,7 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
     }
     
     private TextInputEvolver richTextEvolver;
+    private TextInputEvolver assnCommentTextEvolver;
     private MessageLocator messageLocator;
     private AssignmentLogic assignmentLogic;
     private ExternalLogic externalLogic;
@@ -221,17 +222,19 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
         		messageLocator.getMessage("assignment2.assignment_grade.view_assignment_instructions"),
         		externalLogic.getAssignmentViewUrl(FragmentAssignmentInstructionsProducer.VIEW_ID) + "/" + assignment.getId() + "?TB_iframe=true&height=300");
         
-        //If assignment allows for submitted text
+        // If assignment allows for submitted text
+        // This is the rich text editor for instructors to annotate the submission
+        // using red italized text.
         if (assignmentSubmissionVersion.getSubmittedDate() != null &&
         		(assignment.getSubmissionType() == AssignmentConstants.SUBMIT_INLINE_ONLY || 
         		assignment.getSubmissionType() == AssignmentConstants.SUBMIT_INLINE_AND_ATTACH)) {
         	UIOutput.make(form, "submitted_text_fieldset");
         
         	if (grade_perm){
-        		UIVerbatim.make(form, "feedback_instructions", messageLocator.getMessage("assignment2.assignment_grade.feedback_instructions"));
+        		//UIVerbatim.make(form, "feedback_instructions", messageLocator.getMessage("assignment2.assignment_grade.feedback_instructions"));
         		UIInput feedback_text = UIInput.make(form, "feedback_text:", asvOTP + ".annotatedText");
         		feedback_text.mustapply = Boolean.TRUE;
-        		richTextEvolver.evolveTextInput(feedback_text);
+        		assnCommentTextEvolver.evolveTextInput(feedback_text);
         	} else {
         		UIVerbatim.make(form, "feedback_text:", assignmentSubmissionVersion.getAnnotatedTextFormatted());
         	}
@@ -446,5 +449,9 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
 	public void setAttachmentInputEvolver(AttachmentInputEvolver attachmentInputEvolver)
 	{
 		this.attachmentInputEvolver = attachmentInputEvolver;
+	}
+
+	public void setAssnCommentTextEvolver(TextInputEvolver assnCommentTextEvolver) {
+		this.assnCommentTextEvolver = assnCommentTextEvolver;
 	}
 }
