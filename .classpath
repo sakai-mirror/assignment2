@@ -11,6 +11,7 @@
 	<classpathentry kind="src" path="impl/pack/src/webapp/WEB-INF"/>
 	<classpathentry kind="src" path="integration-test/src/test/java"/>
 	<classpathentry kind="src" path="tool/src/webapp"/>
+	<classpathentry kind="src" path="bundle"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="var" path="M2_REPO/uk/org/ponder/j-servletutil/1.2.2/j-servletutil-1.2.2.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/springframework/spring/2.0.6/spring-2.0.6.jar"/>
