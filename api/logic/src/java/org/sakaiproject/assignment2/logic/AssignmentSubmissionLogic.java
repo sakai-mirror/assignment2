@@ -53,7 +53,9 @@ public interface AssignmentSubmissionLogic {
 	 * Populates current version information. If version is draft and current
 	 * user is not submitter, submittedText and submissionAttachments will not
 	 * be populated. If the curr user is the submitter but feedback has not 
-	 * been released, will not populate	feedback.
+	 * been released, will not populate	feedback. Because of these 
+	 * changes that we don't want to save, the associated version was evicted 
+	 * from the session and is not persistent.
 	 * @throws SecurityException if current user is not allowed to view the
 	 * corresponding submission
 	 * @throws SubmissionNotFoundException if no submission exists with the given id
@@ -67,7 +69,8 @@ public interface AssignmentSubmissionLogic {
 	 * If the version is draft and the submitter is not the current user, will not
 	 * populate the submissionText or submissionAttachmentSet. If the curr user is
 	 * the submitter but feedback has not been released, will not populate
-	 * feedback.
+	 * feedback.  Because of these changes that we don't want to save, the 
+	 * returned version was evicted from the session and is not persistent.
 	 * @throws SecurityException if current user is not allowed to view the version
 	 * @throws VersionNotFoundException if no version exists with the given id
 	 */
@@ -78,12 +81,14 @@ public interface AssignmentSubmissionLogic {
 	 * 
 	 * @param assignmentId
 	 * @param studentId
-	 * @return AssignmentSubmission associated with the given assignmentId and studentId.
-	 * 		will return an empty record if there is no submission info for this student yet. If the curr version 
-	 * 		is draft and the submitter is not the current user, will not
-	 * 		populate the submissionText or submissionAttachmentSet. If the curr user is
-	 * 		the submitter but feedback has not been released, will not populate
-	 * 		feedback.
+	 * @return AssignmentSubmission associated with the given assignmentId and studentId with
+	 * the attachments and submission version history populated.
+	 * will return an empty record if there is no submission info for this student yet. If the curr version 
+	 * is draft and the submitter is not the current user, will not
+	 * populate the submissionText or submissionAttachmentSet. If the curr user is
+	 * the submitter but feedback has not been released, will not populate
+	 * feedback.  Because of these changes that we don't want to save, the 
+	 * returned submission was evicted from the session and is not persistent.
 	 * @throws SecurityException if current user not allowed to view student's submission
 	 * @throws AssignmentNotFoundException if no assignment exists with the given assignmentId
 	 */
@@ -134,7 +139,10 @@ public interface AssignmentSubmissionLogic {
 	 * @return Non-null list.  All AssignmentSubmissions for this assignmentId that the current
 	 * user is allowed to view or grade with the currentVersion information. If
 	 * no submission exists yet, returns an empty AssigmentSubmission rec for the
-	 * student
+	 * student. If the curr version is draft, will not
+	 * populate the submissionText or submissionAttachmentSet. Because of these 
+	 * changes that we don't want to save, the returned submissions were evicted 
+	 * from the session and are not persistent.
 	 * @throws SecurityException if not allowed to view or grade submissions
 	 * @throws AssignmentNotFoundException if no assignment exists with the given assignmentId
 	 */
@@ -212,12 +220,15 @@ public interface AssignmentSubmissionLogic {
 	 * 
 	 * @param submission
 	 * @return a list of all of the AssignmentSubmissionVersions associated with
-	 * the given submission. If the version is draft and the submitter is not 
+	 * the given submission. 
+	 * if the passed submission does not have an id, will return an empty list. 
+	 * list is ordered by submittedVersionNumber
+	 * If the version is draft and the submitter is not 
 	 * the current user, will not populate the submissionText or 
 	 * submissionAttachmentSet. If the curr user is	the submitter but feedback 
-	 * has not been released, will not populate	feedback. if the passed submission
-	 * does not have an id, will return an empty list. list is ordered by version
-	 * create date
+	 * has not been released, will not populate	feedback. Because of these 
+	 * changes that we don't want to save, the returned submissions were evicted 
+	 * from the session and are not persistent.
 	 * 
 	 */
 	public List<AssignmentSubmissionVersion> getVersionHistoryForSubmission(AssignmentSubmission submission);
@@ -243,7 +254,7 @@ public interface AssignmentSubmissionLogic {
 	 * @param studentId
 	 * @param assignmentId
 	 * @return the total number of versions that the given student has submitted
-	 * for the given assignment. does not count draft versions
+	 * for the given assignment. does not count draft versions or feedback-only versions
 	 */
 	public int getNumSubmittedVersions(String studentId, Long assignmentId);
 	

@@ -623,8 +623,9 @@ public class AssignmentDaoImpl extends HibernateCompleteGenericDao implements As
 		return ((Integer)getHibernateTemplate().execute(hc)).intValue();
     }
     
-    public void clearSession() {
-    	
-    	getHibernateTemplate().clear();
+    public void evictObject(Object obj) {
+    	if (obj != null) {
+    		getHibernateTemplate().evict(obj);
+    	}
     }
 }

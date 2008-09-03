@@ -89,10 +89,6 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
     		fail("did not catch TA was trying to access a submission w/o authorization!");
     	} catch (SecurityException se) {}
     	
-    	// clear the session since hsqld won't do it for you and will try to save it
-    	// upon re-retrieval
-    	dao.clearSession();
-    	
     	// student should be able to get their own
     	externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT1_UID);
     	submission = submissionLogic.getAssignmentSubmissionById(testData.st1a3Submission.getId());
@@ -160,9 +156,6 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
     	assertTrue(version.getSubmissionAttachSet().isEmpty());
     	assertTrue(version.getSubmittedText().equals(""));
     	
-    	// let's clear out the session b/c hsqldb will try to save the prev
-    	// version upon re-retrieval (and some fields were nulled out so will be out of sync)
-    	dao.clearSession();
 
     	// now make sure ta can't see st 3
     	try {
@@ -183,10 +176,6 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
     	// make sure these are populated! other users may not see this info b/c draft status
     	assertTrue(version.getSubmissionAttachSet().size() == 1);
     	assertTrue(!version.getSubmittedText().equals(""));
-    	
-    	// let's clear out the session b/c hsqldb will try to save the prev
-    	// version upon re-retrieval (and some fields were nulled out so will be out of sync)
-    	dao.clearSession();
     	
     	// double check that student can't see other users
     	try {
@@ -232,10 +221,6 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
     	assertTrue(submission.getCurrentSubmissionVersion().getSubmissionAttachSet().isEmpty());
     	assertTrue(submission.getCurrentSubmissionVersion().getSubmittedText().equals(""));
     	
-		// clear the history b/c some fields will be out of sync with the
-		// session (in hsqldb) and will throw an error on re-retrieval
-		dao.clearSession();
-    	
     	// what if the student is not part of the passed assignment?
     	// ie it is restricted to groups that the student is not a member of
     	
@@ -258,10 +243,6 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
     	assertTrue(submission.getCurrentSubmissionVersion().getId().equals(testData.st1a3CurrVersion.getId()));
     	assertTrue(submission.getCurrentSubmissionVersion().getSubmissionAttachSet().isEmpty());
     	assertTrue(submission.getCurrentSubmissionVersion().getSubmittedText().equals(""));
-    	
-		// clear the history b/c some fields will be out of sync with the
-		// session (in hsqldb) and will throw an error on re-retrieval
-		dao.clearSession();
 		
     	// TODO grader permissions
     	
@@ -539,10 +520,6 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
     			assertTrue(sub.getCurrentSubmissionVersion().getSubmissionAttachSet().isEmpty());
     		}
     	}
-    	
-		// clear the history b/c some fields will be out of sync with the
-		// session (in hsqldb) and will throw an error on re-retrieval
-		dao.clearSession();
 		
     	// we should get 1 for a4 b/c group restrictions
     	subList = submissionLogic.getViewableSubmissionsForAssignmentId(testData.a4Id);
@@ -960,9 +937,7 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
 			fail("Did not catch a ta retrieving versionHistory for student not authorized to view");
 		} catch (SecurityException se) {}
 		
-		// clear the history b/c some fields will be out of sync with the
-		// session (in hsqldb) and will throw an error on re-retrieval
-		dao.clearSession();
+
 		
 		history = submissionLogic.getVersionHistoryForSubmission(testData.st1a1Submission);
 		assertEquals(history.size(), 1);

@@ -109,6 +109,9 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		AssignmentSubmissionVersion currentVersion = dao.getCurrentSubmissionVersionWithAttachments(submission);
 
 		if (currentVersion != null) {
+			// since we may modify this object before returning it to filter
+			// out restricted info, we don't want to return the persistent object
+			dao.evictObject(currentVersion);
 			filterOutRestrictedVersionInfo(currentVersion, currentUserId);
 		}
 
@@ -140,6 +143,10 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 						submissionVersionId + " for student " + submission.getUserId() + " without authorization");
 			}
 			
+			// since we may modify this object before returning it to filter
+			// out restricted info, we don't want to return the persistent object
+			dao.evictObject(version); 
+			
 			filterOutRestrictedVersionInfo(version, currentUserId);
 		}
 		
@@ -169,6 +176,16 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			// return an "empty" submission
 			submission = new AssignmentSubmission(assignment, studentId);
 		} else {
+			// since we may modify the versions before returning them to filter
+			// out restricted info, we don't want to return the persistent objects.
+			// we have no intention of saving the modified object
+			dao.evictObject(submission);
+			if (submission.getSubmissionHistorySet() != null) {
+				for (AssignmentSubmissionVersion version : submission.getSubmissionHistorySet()) {
+					dao.evictObject(version);
+				}
+			}
+			
 			filterOutRestrictedInfo(submission, currentUserId, true);
 		} 
 
@@ -469,6 +486,14 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 						// add an empty rec to the returned list
 						thisSubmission = new AssignmentSubmission(assignment, studentId);
 					} else {
+						
+						// will evict the submission and version from the session because we may
+						// need to modify this object with no intention of saving
+						// to filter out restricted info
+						// no need to evict history b/c was not retrieved
+						dao.evictObject(thisSubmission);
+						dao.evictObject(thisSubmission.getCurrentSubmissionVersion());
+						
 						// we need to filter restricted info from instructor
 						// if this is draft
 						filterOutRestrictedInfo(thisSubmission, externalLogic.getCurrentUserId(), false);
@@ -896,6 +921,10 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			if (historySet != null && !historySet.isEmpty()) {
 				for (AssignmentSubmissionVersion version : historySet) {
 					if (version != null) {
+						// since we may modify this object before returning it to filter
+						// out restricted info, we don't want to return the persistent object
+						dao.evictObject(version);
+						
 						filterOutRestrictedVersionInfo(version, currentUserId);
 						filteredVersionHistory.add(version);
 					}

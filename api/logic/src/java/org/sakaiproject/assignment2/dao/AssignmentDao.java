@@ -186,11 +186,13 @@ public interface AssignmentDao extends CompleteGenericDao {
 	public int getHighestSubmittedVersionNumber(final AssignmentSubmission submission);
 	
 	/**
-	 * Used ONLY for the unit tests. In the logic, some objects will be returned with
-	 * modified fields (that are not meant to be saved), and upon re-retrieval 
-	 * will be out of sync with the session and throw nasty errors in hsqldb.
-	 * This method allows us to clear the session before re-retrieval
-	 * to avoid this problem. 
+	 * In the logic, some objects will be returned with
+	 * modified fields (that are not meant to be saved). For example, the feedback
+	 * for a student's submission version may not be released yet, so we do not want
+	 * to expose it to the student yet. This allows the logic
+	 * to evict these objects from the session before they are returned to
+	 * ensure they are not persistent at that point
+	 * @param obj
 	 */
-	public void clearSession();
+	public void evictObject(Object obj);
 }

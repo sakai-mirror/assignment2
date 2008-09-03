@@ -384,7 +384,8 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
 	   Calendar cal = Calendar.getInstance();
 	   cal.set(2025, 10, 01);
 
-	   dao.clearSession();
+	   // re-retrieve this assignment
+	   testData.a1 = (Assignment2)dao.findById(Assignment2.class, testData.a1Id);
 	   testData.a1.setOpenDate(cal.getTime());
 	   dao.save(testData.a1);
 	   assertFalse(permissionLogic.isUserAbleToViewAssignment(AssignmentTestDataLoad.CONTEXT_ID, testData.a1Id));
