@@ -36,6 +36,8 @@
       <property name="externalAnnouncementLogic" ref="org.sakaiproject.assignment2.logic.ExternalAnnouncementLogic" />
       <property name="externalCalendarLogic" ref="org.sakaiproject.assignment2.logic.ExternalCalendarLogic" />
       <property name="assignmentBundleLogic" ref="org.sakaiproject.assignment2.logic.AssignmentBundleLogic" />
+      <property name="taggingManager" ref="org.sakaiproject.taggable.api.TaggingManager" />
+      <property name="assignmentActivityProducer" ref="org.sakaiproject.assignment2.taggable.api.AssignmentActivityProducer" />
    </bean>
    
    <bean id="org.sakaiproject.assignment2.logic.AssignmentPermissionLogic" class="org.sakaiproject.assignment2.logic.impl.AssignmentPermissionLogicImpl" init-method="init">

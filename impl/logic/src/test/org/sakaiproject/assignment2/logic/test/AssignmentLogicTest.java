@@ -200,14 +200,14 @@ public class AssignmentLogicTest extends Assignment2TestBase {
 		// let's actually delete an assignment
 		// TODO - this will crash the unit tests b/c of the call to TaggingManager
 		// we need to fix this so the test works
-		/*
+		
     	externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
     	assignmentLogic.deleteAssignment(testData.a1);
 
     	// let's double check that it still exists. it should just have removed = true now
     	Assignment2 deletedAssign = assignmentLogic.getAssignmentById(testData.a1Id);
     	assertNotNull(deletedAssign);
-    	assertTrue(deletedAssign.isRemoved());*/
+    	assertTrue(deletedAssign.isRemoved());
 
 		//TODO - somehow check the deletion of announcements?
 	}

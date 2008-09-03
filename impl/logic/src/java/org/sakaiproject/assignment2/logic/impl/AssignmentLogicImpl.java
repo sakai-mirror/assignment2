@@ -50,7 +50,6 @@ import org.sakaiproject.assignment2.model.AssignmentAttachment;
 import org.sakaiproject.assignment2.model.AssignmentGroup;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.assignment2.taggable.api.AssignmentActivityProducer;
-import org.sakaiproject.component.cover.ComponentManager;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.taggable.api.TaggingManager;
 import org.sakaiproject.taggable.api.TaggingProvider;
@@ -99,6 +98,16 @@ public class AssignmentLogicImpl implements AssignmentLogic{
     private AssignmentBundleLogic bundleLogic;
     public void setAssignmentBundleLogic(AssignmentBundleLogic bundleLogic) {
     	this.bundleLogic = bundleLogic;
+    }
+    
+    private TaggingManager taggingManager;
+    public void setTaggingManager(TaggingManager taggingManager) {
+    	this.taggingManager = taggingManager;
+    }
+    
+    private AssignmentActivityProducer assignmentActivityProducer;
+    public void setAssignmentActivityProducer(AssignmentActivityProducer assignmentActivityProducer) {
+    	this.assignmentActivityProducer = assignmentActivityProducer;
     }
     
 	public void init(){
@@ -351,26 +360,24 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 			}
 			
 			//clean up tags...
-			try
-			{
-				TaggingManager taggingManager = (TaggingManager) ComponentManager
-						.get("org.sakaiproject.taggable.api.TaggingManager");
-
-				AssignmentActivityProducer assignmentActivityProducer = (AssignmentActivityProducer) ComponentManager
-						.get("org.sakaiproject.assignment2.taggable.api.AssignmentActivityProducer");
-
-				if (taggingManager.isTaggable()) {
-					for (TaggingProvider provider : taggingManager
-							.getProviders()) {
-						provider.removeTags(assignmentActivityProducer
-								.getActivity(assignment));
+			// only process if taggingManager != null --> this is for the unit
+			// tests to run without mocking up all the tagging stuff
+			if (taggingManager != null) {
+				try
+				{
+					if (taggingManager.isTaggable()) {
+						for (TaggingProvider provider : taggingManager
+								.getProviders()) {
+							provider.removeTags(assignmentActivityProducer
+									.getActivity(assignment));
+						}
 					}
 				}
-			}
-			catch (PermissionException pe)
-			{
-				throw new SecurityException("The current user is not authorized to remove tags in the assignment tool, " +
-						"but the assignment was deleted", pe);
+				catch (PermissionException pe)
+				{
+					throw new SecurityException("The current user is not authorized to remove tags in the assignment tool, " +
+							"but the assignment was deleted", pe);
+				}
 			}
 		} catch (HibernateOptimisticLockingFailureException holfe) {
 			if(log.isInfoEnabled()) log.info("An optimistic locking failure occurred " +
