@@ -178,6 +178,14 @@ public interface AssignmentDao extends CompleteGenericDao {
 	public int getNumStudentsWithASubmission(final Assignment2 assignment, final List<String> studentIdList);
 	
 	/**
+	 * 
+	 * @param submission
+	 * @return returns the highest submittedVersionNumber currently
+	 * existing for this submission
+	 */
+	public int getHighestSubmittedVersionNumber(final AssignmentSubmission submission);
+	
+	/**
 	 * Used ONLY for the unit tests. In the logic, some objects will be returned with
 	 * modified fields (that are not meant to be saved), and upon re-retrieval 
 	 * will be out of sync with the session and throw nasty errors in hsqldb.

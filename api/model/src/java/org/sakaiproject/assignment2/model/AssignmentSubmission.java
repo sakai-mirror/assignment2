@@ -44,7 +44,7 @@ public class AssignmentSubmission {
 	
 	/**
 	 * the current submission version must be populated manually b/c we want
-	 * to retrieve the most current version
+	 * to retrieve the most recent version
 	 */
 	private AssignmentSubmissionVersion currentSubmissionVersion;
 
@@ -183,12 +183,9 @@ public class AssignmentSubmission {
 	/**
 	 * <b>Note</b> This is not a persisted field but must be handled specially
 	 * when you want to retrieve or update this information
-	 * @return The current AssignmentSubmissionVersion for this submission. Each
+	 * @return The most recent AssignmentSubmissionVersion for this submission. Each
 	 * modification to the submission will result in a new AssignmentSubmissionVersion
-	 * record so we maintain a history. If the current user is the submitter,
-	 * the current version will be the most recent version saved. Otherwise,
-	 * will be populated with the most recent non-draft version. This is done
-	 * here to save on db calls.
+	 * record so we maintain a history. 
 	 */
 	public AssignmentSubmissionVersion getCurrentSubmissionVersion() {
 		return currentSubmissionVersion;
@@ -198,9 +195,9 @@ public class AssignmentSubmission {
 	 * <b>Note</b> This is not a persisted field but must be handled specially
 	 * when you want to retrieve or update this information
 	 * 
-	 * Set the current AssignmentSubmissionVersion for this submission. Each
+	 * Set the most recent AssignmentSubmissionVersion for this submission. Each
 	 * modification to the submission will result in a new AssignmentSubmissionVersion
-	 * record so we maintain a history.  
+	 * record so we maintain a history. 
 	 * @param currentSubmissionVersion
 	 */
 	public void setCurrentSubmissionVersion(AssignmentSubmissionVersion currentSubmissionVersion) {

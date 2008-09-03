@@ -627,7 +627,7 @@ public class AssignmentDaoImplTest extends Assignment2DaoTestBase {
 		
 		// add instructor feedback w/o a submission
 		AssignmentSubmission st3a1Submission = new AssignmentSubmission(testData.a1, AssignmentTestDataLoad.STUDENT3_UID);
-		AssignmentSubmissionVersion st3a1CurrVersion = testData.createGenericVersion(st3a1Submission);
+		AssignmentSubmissionVersion st3a1CurrVersion = testData.createGenericVersion(st3a1Submission, 0);
 		st3a1CurrVersion.setDraft(false);
 		st3a1CurrVersion.setSubmittedDate(null);
 		assignmentDao.save(st3a1Submission);
@@ -657,5 +657,16 @@ public class AssignmentDaoImplTest extends Assignment2DaoTestBase {
 		assertEquals(0, assignmentDao.getNumStudentsWithASubmission(testData.a2, studentIdList));
 		assertEquals(3, assignmentDao.getNumStudentsWithASubmission(testData.a3, studentIdList));
 		assertEquals(1, assignmentDao.getNumStudentsWithASubmission(testData.a4, studentIdList));
+	}
+	
+	public void testGetHighestSubmittedVersionNumber() {
+		// try a null submission
+		try {
+			assignmentDao.getHighestSubmittedVersionNumber(null);
+			fail("did not catch null submission passed to getHighestSubmittedVersionNumber");
+		} catch (IllegalArgumentException iae) {}
+		
+		// should be 2 even though one is draft
+		assertEquals(2, assignmentDao.getHighestSubmittedVersionNumber(testData.st1a3Submission));
 	}
 }

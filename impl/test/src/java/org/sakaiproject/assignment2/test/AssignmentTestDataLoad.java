@@ -212,18 +212,18 @@ public class AssignmentTestDataLoad {
 		// now create submissions
 		// start with a1
 		st1a1Submission = new AssignmentSubmission(a1, STUDENT1_UID);
-		st1a1CurrVersion = createGenericVersion(st1a1Submission);
+		st1a1CurrVersion = createGenericVersion(st1a1Submission, 1);
 		dao.save(st1a1Submission);
 		dao.save(st1a1CurrVersion);
 		
 		st2a1Submission = new AssignmentSubmission(a1, STUDENT2_UID);
-		st2a1Version1 = createGenericVersion(st2a1Submission);
+		st2a1Version1 = createGenericVersion(st2a1Submission, 1);
 		dao.save(st2a1Submission);
 		dao.save(st2a1Version1);
 		subAttachSet.add(new SubmissionAttachment(st2a1Version1, "attachmentRef"));
-		st2a1Version2 = createGenericVersion(st2a1Submission);
+		st2a1Version2 = createGenericVersion(st2a1Submission, 2);
 		dao.save(st2a1Version2);
-		st2a1CurrVersion = createGenericVersion(st2a1Submission);
+		st2a1CurrVersion = createGenericVersion(st2a1Submission, 3);
 		dao.save(st2a1CurrVersion);
 		subAttachSet.add(new SubmissionAttachment(st2a1CurrVersion, "attachmentRef"));
 		subAttachSet.add(new SubmissionAttachment(st2a1CurrVersion, "attachmentRef"));
@@ -239,9 +239,9 @@ public class AssignmentTestDataLoad {
 		// student 1 has 2 versions for a3
 		st1a3Submission = new AssignmentSubmission(a3, STUDENT1_UID);
 		dao.save(st1a3Submission);
-		st1a3FirstVersion = createGenericVersion(st1a3Submission);
+		st1a3FirstVersion = createGenericVersion(st1a3Submission, 1);
 		dao.save(st1a3FirstVersion);
-		st1a3CurrVersion = createGenericVersion(st1a3Submission);
+		st1a3CurrVersion = createGenericVersion(st1a3Submission, 2);
 		st1a3CurrVersion.setDraft(true);
 		st1a3CurrVersion.setSubmittedDate(null);
 		dao.save(st1a3CurrVersion);
@@ -251,26 +251,26 @@ public class AssignmentTestDataLoad {
 		// student 2 has 1 version for a3
 		st2a3Submission = new AssignmentSubmission(a3, STUDENT2_UID);
 		dao.save(st2a3Submission);
-		st2a3CurrVersion = createGenericVersion(st2a3Submission);
+		st2a3CurrVersion = createGenericVersion(st2a3Submission, 1);
 		dao.save(st2a3CurrVersion);
 		subAttachSet.add(new SubmissionAttachment(st2a3CurrVersion, "attRef"));
 		// student 3 has 2 versions for a3
 		st3a3Submission = new AssignmentSubmission(a3, STUDENT3_UID);
 		dao.save(st3a3Submission);
-		st3a3FirstVersion = createGenericVersion(st3a3Submission);
+		st3a3FirstVersion = createGenericVersion(st3a3Submission, 1);
 		dao.save(st3a3FirstVersion);
 		feedbackAttachSet.add(new FeedbackAttachment(st3a3FirstVersion, "f"));
-		st3a3CurrVersion = createGenericVersion(st3a3Submission);
+		st3a3CurrVersion = createGenericVersion(st3a3Submission, 2);
 		dao.save(st3a3CurrVersion);
 		subAttachSet.add(new SubmissionAttachment(st3a3CurrVersion, "sfafd"));
 		
 		// student 2 has 2 versions for a4
 		st2a4Submission = new AssignmentSubmission(a4, STUDENT2_UID);
 		dao.save(st2a4Submission);
-		st2a4FirstVersion = createGenericVersion(st2a4Submission);
+		st2a4FirstVersion = createGenericVersion(st2a4Submission, 1);
 		dao.save(st2a4FirstVersion);
 		subAttachSet.add(new SubmissionAttachment(st2a4FirstVersion, "afsdf"));
-		st2a4CurrVersion = createGenericVersion(st2a4Submission);
+		st2a4CurrVersion = createGenericVersion(st2a4Submission, 2);
 		dao.save(st2a4CurrVersion);
 		
 		dao.saveMixedSet(new Set[] {feedbackAttachSet, subAttachSet});
@@ -306,7 +306,7 @@ public class AssignmentTestDataLoad {
 		return assignment;
 	}
 	
-	public AssignmentSubmissionVersion createGenericVersion(AssignmentSubmission submission) {
+	public AssignmentSubmissionVersion createGenericVersion(AssignmentSubmission submission, int versionNum) {
 		AssignmentSubmissionVersion version = new AssignmentSubmissionVersion();
 		version.setAssignmentSubmission(submission);
 		version.setCreatedBy(submission.getUserId());
@@ -314,6 +314,7 @@ public class AssignmentTestDataLoad {
 		version.setDraft(false);
 		version.setSubmittedText("submitted text by " + submission.getUserId());
 		version.setSubmittedDate(new Date());
+		version.setSubmittedVersionNumber(versionNum);
 		return version;
 	}
 

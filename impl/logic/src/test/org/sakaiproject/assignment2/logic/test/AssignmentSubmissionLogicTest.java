@@ -355,6 +355,8 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
     	assertNotNull(existingSub);
     	AssignmentSubmissionVersion currVersion = dao.getCurrentSubmissionVersionWithAttachments(existingSub);
     	assertTrue(currVersion.isDraft());
+    	// submittedVersionNumber for a student submission starts at 1
+    	assertEquals(1, currVersion.getSubmittedVersionNumber());
     	//assertTrue(currVersion.getSubmissionAttachSet().size() == 2);
     	
     	// now let's try to edit this version but keep it draft
@@ -462,6 +464,8 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
     	
     	AssignmentSubmissionVersion st1a2CurrVersion = dao.getCurrentSubmissionVersionWithAttachments(st1a2Submission);
     	assertNotNull(st1a2CurrVersion);
+    	// fb without a submission should have submittedVersionNumber = 0
+    	assertEquals(0, st1a2CurrVersion.getSubmittedVersionNumber()); 
     	Long st1a2CurrVersionId = st1a2CurrVersion.getId();
     	
     	// let's try to re-save this one without the attachments
@@ -999,7 +1003,7 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
 		
 		// add instructor feedback w/o a submission
 		AssignmentSubmission st3a1Submission = new AssignmentSubmission(testData.a1, AssignmentTestDataLoad.STUDENT3_UID);
-		AssignmentSubmissionVersion st3a1CurrVersion = testData.createGenericVersion(st3a1Submission);
+		AssignmentSubmissionVersion st3a1CurrVersion = testData.createGenericVersion(st3a1Submission, 0);
 		st3a1CurrVersion.setDraft(false);
 		st3a1CurrVersion.setSubmittedDate(null);
 		dao.save(st3a1Submission);

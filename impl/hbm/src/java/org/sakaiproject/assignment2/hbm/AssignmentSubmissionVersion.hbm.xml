@@ -17,14 +17,18 @@
         <!--  This maps to the A2_SUBMISSION_T table -->
         <many-to-one name="assignmentSubmission" column="SUBMISSION_ID"
         	class="org.sakaiproject.assignment2.model.AssignmentSubmission"
-        	not-null="true" lazy="false" index="A2_SUB_VERSION_SUB_I" />
+        	not-null="true" lazy="false" index="A2_SUB_VERSION_SUB_I" 
+        	unique-key="SUBMISSION_ID_VERSION_NUM" />
         <!-- the date and time of submission -->
         <property name="submittedDate" type="java.util.Date">
             <column name="SUBMITTED_DATE" not-null="false" />
         </property>
-        <!-- which version is this? first submitted version? second? answers which submitted version this is -->
+        <!-- which version is this? first submitted version? second? answers which submitted version this is .
+        		will be 0 if feedback provided without submission. student submitted versions
+        		start at 1 -->
         <property name="submittedVersionNumber" type="integer">
-            <column name="SUBMITTED_VERSION_NUMBER" />
+            <column name="SUBMITTED_VERSION_NUMBER" not-null="true"
+            unique-key="SUBMISSION_ID_VERSION_NUM" index="A2_SUB_VERSION_SUBMITTED_NUM"/>
         </property>
         <!-- the date and time feedback for this version was released to submitter -->
         <property name="feedbackReleasedDate" type="java.util.Date">
@@ -102,7 +106,8 @@
     <![CDATA[from org.sakaiproject.assignment2.model.AssignmentSubmissionVersion submissionVersion
              left join fetch submissionVersion.submissionAttachSet
              left join fetch submissionVersion.feedbackAttachSet
-             where submissionVersion.assignmentSubmission = :submission]]>
+             where submissionVersion.assignmentSubmission = :submission
+             order by submissionVersion.submittedVersionNumber desc]]>
   	</query>
 
 	<query name="findVersionByUserIdAndSubmittedDate">

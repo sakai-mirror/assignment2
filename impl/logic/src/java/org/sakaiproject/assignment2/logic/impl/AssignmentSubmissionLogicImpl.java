@@ -230,7 +230,10 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			
 			// if the current version hasn't been submitted yet, we will
 			// update that one. otherwise, create a new version
-			if (version != null && version.getSubmittedDate() == null) {
+			// note: the submittedVersionNumber = 0 is reserved for feedback-only
+			// versions. if the current version is number 0, we need to 
+			// create a new version
+			if (version != null && version.getSubmittedDate() == null && version.getSubmittedVersionNumber() != 0) {
 				
 				isAnUpdate = true;
 				
@@ -251,6 +254,14 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		} else {
 			version.setCreatedBy(currentUserId);
 			version.setCreatedDate(currentTime);
+			
+			// set the version number for this submission - if this submission
+			// doesn't exist yet, set the version to 1 --> 0 is reserved for feedback before submission
+			if (submission.getId() == null) {
+				version.setSubmittedVersionNumber(1);
+			} else {
+				version.setSubmittedVersionNumber(dao.getHighestSubmittedVersionNumber(submission) + 1);
+			}
 		}
 
 		if (!version.isDraft()) {
@@ -356,6 +367,17 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			newVersion = true;
 		}
 		
+		
+		if (newVersion) {
+			version.setCreatedBy(currentUserId);
+			version.setCreatedDate(currentTime);
+			version.setDraft(false);
+			// the only time an instructor can create a new version is if no
+			// submitted version exists. in this case, we always set the
+			// submittedVersionNumber to 0 to differentiate it
+			version.setSubmittedVersionNumber(0);
+		}
+		
 		submission.setResubmitCloseDate(resubmitCloseDate);
 		submission.setNumSubmissionsAllowed(numSubmissionsAllowed);
 		
@@ -365,12 +387,6 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		version.setFeedbackReleasedDate(releasedDate);
 		version.setLastFeedbackSubmittedBy(currentUserId);
 		version.setLastFeedbackDate(currentTime);
-		
-		if (newVersion) {
-			version.setCreatedBy(currentUserId);
-			version.setCreatedDate(currentTime);
-			version.setDraft(false);
-		}
 		
 		// identify any attachments that were deleted
 		Set<SubmissionAttachmentBase> attachToDelete = identifyAttachmentsToDelete(version.getFeedbackAttachSet(), feedbackAttachSet);

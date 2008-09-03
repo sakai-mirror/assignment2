@@ -312,6 +312,10 @@ public class AssignmentDaoImpl extends HibernateCompleteGenericDao implements As
     	
     }
     
+    /**
+     * populates the most recent version for the given submissions.
+     * @param submissions
+     */
     private void populateCurrentVersion(Collection<AssignmentSubmission> submissions) {
     	if (submissions != null && !submissions.isEmpty()) {
 			// then, we will populate the version data
@@ -591,6 +595,32 @@ public class AssignmentDaoImpl extends HibernateCompleteGenericDao implements As
 		}
 		
 		return numStudentsWithSubmission;
+    }
+    
+    
+    public int getHighestSubmittedVersionNumber(final AssignmentSubmission submission) {
+    	if (submission == null) {
+    		throw new IllegalArgumentException("submission cannot be null in getNextSubmittedVersionNumber");
+    	}
+    	
+    	HibernateCallback hc = new HibernateCallback() {
+			public Object doInHibernate(Session session) throws HibernateException ,SQLException {
+				String hql = "select max(version.submittedVersionNumber) from org.sakaiproject.assignment2.model.AssignmentSubmissionVersion as version where version.assignmentSubmission = :submission";
+		    	
+		    	Query query = session.createQuery(hql);
+		    	query.setParameter("submission", submission);
+		    	
+		    	Integer currHighestVersionNum = (Integer)query.uniqueResult();
+		    	
+		    	if (currHighestVersionNum == null) {
+		    		currHighestVersionNum = 0;
+		    	}
+
+		        return currHighestVersionNum; 
+			}
+		};
+		
+		return ((Integer)getHibernateTemplate().execute(hc)).intValue();
     }
     
     public void clearSession() {

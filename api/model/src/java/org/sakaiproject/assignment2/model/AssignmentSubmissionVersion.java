@@ -83,7 +83,9 @@ public class AssignmentSubmissionVersion implements FeedbackVersion {
 	/**
 	 * 
 	 * @return which version is this? is this the second version of this submission?
-	 * keeps track of which version this is in the submission history
+	 * keeps track of which version this is in the submission history. Version 0
+	 * is reserved for instructor feedback before a submission. All student submitted
+	 * versions start at 1.
 	 */
 	public int getSubmittedVersionNumber() {
 		return submittedVersionNumber; 
@@ -91,7 +93,9 @@ public class AssignmentSubmissionVersion implements FeedbackVersion {
 	
 	/**
 	 * which version is this? is this the second version of this submission?
-	 * keeps track of which version this is in the submission history
+	 * keeps track of which version this is in the submission history. Version 0
+	 * is reserved for instructor feedback before a submission. All student submitted
+	 * versions start at 1.
 	 * @param submittedVersionNumber
 	 */
 	public void setSubmittedVersionNumber(int submittedVersionNumber) {
