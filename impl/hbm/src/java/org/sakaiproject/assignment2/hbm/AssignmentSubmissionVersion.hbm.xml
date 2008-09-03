@@ -32,7 +32,7 @@
         </property>
         <!-- the date and time feedback for this version was released to submitter -->
         <property name="feedbackReleasedDate" type="java.util.Date">
-            <column name="RELEASED_DATE" not-null="false" />
+            <column name="FEEDBACK_RELEASED_DATE" not-null="false" />
         </property>
         <!-- the inline text for this submission -->
         <property name="submittedText" type="text">
