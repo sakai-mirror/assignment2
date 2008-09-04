@@ -187,6 +187,7 @@
    </bean>
 
    <bean class="org.sakaiproject.assignment2.tool.producers.SettingsProducer">
+     <property name="messageLocator" ref="messageLocator" />
    </bean>
 
    <!--  AJAX Fragment Producers -->
