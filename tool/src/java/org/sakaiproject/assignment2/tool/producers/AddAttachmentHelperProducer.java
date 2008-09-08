@@ -46,48 +46,48 @@ import uk.org.ponder.rsf.viewstate.ViewParamsReporter;
 
 public class AddAttachmentHelperProducer implements ViewComponentProducer, ViewParamsReporter, NavigationCaseReporter
 {
-  public static final String VIEWID = "AddAttachment";
-  
-  public String getViewID() {
-    return VIEWID;
-  }
-  
-  private SessionManager sessionManager;
-  private MessageLocator messageLocator;
+    public static final String VIEWID = "AddAttachment";
 
-  public void fillComponents(UIContainer tofill, ViewParameters viewparams, ComponentChecker checker) {
-    FilePickerHelperViewParams params = (FilePickerHelperViewParams) viewparams;
-	  
-	  
-	//parameters for helper
-	ToolSession toolSession = sessionManager.getCurrentToolSession();
-	toolSession.setAttribute(FilePickerHelper.FILE_PICKER_TITLE_TEXT, messageLocator.getMessage("assignment2.add_attachment_helper.title"));
-	toolSession.setAttribute(FilePickerHelper.FILE_PICKER_INSTRUCTION_TEXT, messageLocator.getMessage("assignment2.add_attachment_helper.instructions"));
-	toolSession.setAttribute(FilePickerHelper.FILE_PICKER_MAX_ATTACHMENTS, FilePickerHelper.CARDINALITY_MULTIPLE);
-	  
-    UIOutput.make(tofill, HelperViewParameters.HELPER_ID, "sakai.filepicker");
-    UICommand goattach = UICommand.make(tofill, HelperViewParameters.POST_HELPER_BINDING, "#{FilePickerBean.process}");
-    goattach.parameters = new ParameterList();
-    goattach.parameters.add(new UIELBinding("FilePickerBean.otpkey", params.otpkey));
-  }
+    public String getViewID() {
+        return VIEWID;
+    }
 
-  public ViewParameters getViewParameters() {
-      return new FilePickerHelperViewParams();
-  }
-  
-  
-  public List reportNavigationCases() {
-    List l = new ArrayList();
-    l.add(new NavigationCase("processed", new SimpleViewParameters(FinishedHelperProducer.VIEWID)));
-    return l;
-  }
-  
-  public void setSessionManager(SessionManager sessionManager) {
-	  this.sessionManager = sessionManager;
-  }
+    private SessionManager sessionManager;
+    private MessageLocator messageLocator;
 
-	public void setMessageLocator(MessageLocator messageLocator)
-	{
-		this.messageLocator = messageLocator;
-	}
+    public void fillComponents(UIContainer tofill, ViewParameters viewparams, ComponentChecker checker) {
+        FilePickerHelperViewParams params = (FilePickerHelperViewParams) viewparams;
+
+
+        //parameters for helper
+        ToolSession toolSession = sessionManager.getCurrentToolSession();
+        toolSession.setAttribute(FilePickerHelper.FILE_PICKER_TITLE_TEXT, messageLocator.getMessage("assignment2.add_attachment_helper.title"));
+        toolSession.setAttribute(FilePickerHelper.FILE_PICKER_INSTRUCTION_TEXT, messageLocator.getMessage("assignment2.add_attachment_helper.instructions"));
+        toolSession.setAttribute(FilePickerHelper.FILE_PICKER_MAX_ATTACHMENTS, FilePickerHelper.CARDINALITY_MULTIPLE);
+
+        UIOutput.make(tofill, HelperViewParameters.HELPER_ID, "sakai.filepicker");
+        UICommand goattach = UICommand.make(tofill, HelperViewParameters.POST_HELPER_BINDING, "#{FilePickerBean.process}");
+        goattach.parameters = new ParameterList();
+        goattach.parameters.add(new UIELBinding("FilePickerBean.otpkey", params.otpkey));
+    }
+
+    public ViewParameters getViewParameters() {
+        return new FilePickerHelperViewParams();
+    }
+
+
+    public List reportNavigationCases() {
+        List l = new ArrayList();
+        l.add(new NavigationCase("processed", new SimpleViewParameters(FinishedHelperProducer.VIEWID)));
+        return l;
+    }
+
+    public void setSessionManager(SessionManager sessionManager) {
+        this.sessionManager = sessionManager;
+    }
+
+    public void setMessageLocator(MessageLocator messageLocator)
+    {
+        this.messageLocator = messageLocator;
+    }
 }
