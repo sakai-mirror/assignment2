@@ -143,29 +143,24 @@
 			<li>
 				<label rsf:id="open_date_label"><span class="reqStar">*</span> Open Date</label>
 				<input rsf:id="open_date:"  />
+			</li>
+			<li>
+				<label rsf:id="announcement_label">Post Open Date to Announcements on Open Date</label> 
 				<input rsf:id="announcement" id="announcement" type="checkbox" />
-				<span rsf:id="msg=assignment2.assignment_add.announcement">Add an announcement about the open date to Announcements</span>
-				<!--  TODO FIX Figure out the CSS so the label doens't start a new line.
-				<label rsf:id="announcement_label">Add an announcement about the open date to Announcements</label> 
-				-->
-				
 				<p rsf:id="message-for:open_date"></p>
 			</li>
 			<li class="due_date">
+				<label rsf:id="msg=assignment2.assignment_add.due_date">Due Date</label>
 				<input rsf:id="require_due_date" type="checkbox" />
-				<span rsf:id="msg=assignment2.assignment_add.require_due_date">Set Due Date?</span>
-				<!-- TODO FIXME CSS <label rsf:id="require_due_date_label">Set Due Date?</label> -->
-				<!-- <label rsf:id="msg=assignment2.assignment_add.due_date">Due Date</label> --> 
 				
-				<!-- <span rsf:id="require_due_date_container" class="indent"> -->
-				<input rsf:id="due_date:" value="12/31/2007"/>
-				<p rsf:id="message-for:due_date"></p>
-				<span rsf:id="add_to_schedule_container" class="indent">
-					<input rsf:id="schedule" id="schedule" type="checkbox" /> 
-					<!-- TODO FIXME CSS <label rsf:id="schedule_label">Post Due Date to Schedule</label> -->
-					<span rsf:id="msg=assignment2.assignment_add.schedule">Post Due Date to Schedule</span>
+				<span rsf:id="require_due_date_container" class="indent">
+					<input rsf:id="due_date:" value="12/31/2007"/>
+					<p rsf:id="message-for:due_date"></p>
+					<span rsf:id="add_to_schedule_container" class="indent">
+						<input rsf:id="schedule" id="schedule" type="checkbox" /> 
+						<label rsf:id="schedule_label">Post Due Date to Schedule</label>
+					</span>
 				</span>
-				<!-- </span> -->
 			</li>
 		</ol>
 	</fieldset>
@@ -197,7 +192,9 @@
 						</li>
 					</ol>
 				</fieldset>
-				<div class="indent" rsf:id="accept_until_container"><input rsf:id="accept_until:" value="12/31/2007"/></div>
+				<div class="indent" rsf:id="accept_until_container">
+					<input rsf:id="accept_until:" value="12/31/2007"/>
+				</div>
 				<p rsf:id="message-for:accept_until"></p>
 				<fieldset class="indent" rsf:id="accept_until_until_fieldset">
 					<ol>
@@ -304,6 +301,7 @@ jQuery(document).ready(function(){
 	jQuery("input[name='page-replace\:\:require_due_date']").each(function(){
 		this.onclick = show_due_date;
 	});
+	alert("What is going on?");
 	show_due_date();
 });
 //]]>

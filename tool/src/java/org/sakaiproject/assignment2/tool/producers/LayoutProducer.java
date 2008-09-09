@@ -32,41 +32,41 @@ import uk.org.ponder.rsf.viewstate.ViewParameters;
 
 public class LayoutProducer implements NullaryProducer {
 
-	private NullaryProducer pageproducer;
-	public void setPageProducer(NullaryProducer pageproducer) {
-		this.pageproducer = pageproducer;
-	}
-	
-	  private ViewGroupResolver viewGroupResolver;
-	  private ViewParameters viewParameters;
-	  private ViewGroup group;
-  
-	public void fillComponents(UIContainer tofill) {
-		
-		if (!viewGroupResolver.isMatch(group, viewParameters)){
-			pageproducer.fillComponents(tofill);
-		} else {
-			UIJointContainer page = new UIJointContainer(tofill, "page-replace:", "page:");
-			
-			if (org.sakaiproject.tool.cover.ToolManager.getCurrentPlacement() != null) {
-				//Initialize iframeId var -- for a few pages that need it still :-(
-		        String frameId = org.sakaiproject.util.Web.escapeJavascript("Main" + org.sakaiproject.tool.cover.ToolManager.getCurrentPlacement().getId());
-		        UIVerbatim.make(tofill, "iframeId_init", "var iframeId = \"" + frameId + "\";");
-			}
-			
-			//include the components from the page body into tag "page-replace:"
-			pageproducer.fillComponents(page);
-		}
-	}
+    private NullaryProducer pageproducer;
+    public void setPageProducer(NullaryProducer pageproducer) {
+        this.pageproducer = pageproducer;
+    }
 
-	public void setViewGroupResolver(ViewGroupResolver viewGroupResolver) {
-		this.viewGroupResolver = viewGroupResolver;
-	}
-	public void setViewParameters(ViewParameters viewParameters) {
-		this.viewParameters = viewParameters;
-	}
-	public void setGroup(ViewGroup group) {
-		this.group = group;
-	}
-    
+    private ViewGroupResolver viewGroupResolver;
+    private ViewParameters viewParameters;
+    private ViewGroup group;
+
+    public void fillComponents(UIContainer tofill) {
+
+        if (!viewGroupResolver.isMatch(group, viewParameters)){
+            pageproducer.fillComponents(tofill);
+        } else {
+            UIJointContainer page = new UIJointContainer(tofill, "page-replace:", "page:");
+
+            if (org.sakaiproject.tool.cover.ToolManager.getCurrentPlacement() != null) {
+                //Initialize iframeId var -- for a few pages that need it still :-(
+                String frameId = org.sakaiproject.util.Web.escapeJavascript("Main" + org.sakaiproject.tool.cover.ToolManager.getCurrentPlacement().getId());
+                UIVerbatim.make(tofill, "iframeId_init", "var iframeId = \"" + frameId + "\";");
+            }
+
+            //include the components from the page body into tag "page-replace:"
+            pageproducer.fillComponents(page);
+        }
+    }
+
+    public void setViewGroupResolver(ViewGroupResolver viewGroupResolver) {
+        this.viewGroupResolver = viewGroupResolver;
+    }
+    public void setViewParameters(ViewParameters viewParameters) {
+        this.viewParameters = viewParameters;
+    }
+    public void setGroup(ViewGroup group) {
+        this.group = group;
+    }
+
 }
