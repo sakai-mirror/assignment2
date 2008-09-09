@@ -46,6 +46,7 @@ import java.lang.String;
 import uk.org.ponder.beanutil.entity.EntityBeanLocator;
 import uk.org.ponder.messageutil.MessageLocator;
 import uk.org.ponder.rsf.components.UIBoundBoolean;
+import uk.org.ponder.rsf.components.UIBoundString;
 import uk.org.ponder.rsf.components.UIBranchContainer;
 import uk.org.ponder.rsf.components.UICommand;
 import uk.org.ponder.rsf.components.UIContainer;
@@ -208,14 +209,6 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
         UIOutput require_container = UIOutput.make(form, "accept_until_container");
         UIInput acceptUntilDateField = UIInput.make(form, "accept_until:", assignment2OTP + ".acceptUntilDate");
         dateEvolver.evolveDateInput(acceptUntilDateField, (assignment.getAcceptUntilDate() != null ? assignment.getAcceptUntilDate() : closeDate));
-
-        /*** Out
-        //Resubmit until until date
-        UIOutput accept_until_until_fieldset = UIOutput.make(form, "accept_until_until_fieldset");
-        UIMessage accept_label = UIMessage.make(form, "accept_until_until_label", "assignment2.assignment_add.accept_until_until");
-        UIBoundBoolean accept = UIBoundBoolean.make(form, "accept_until_until", assignment2OTP + ".allowResubmit");
-        UILabelTargetDecorator.targetLabel(accept_label, accept);
-         **/
 
         if (!require_date){
             require_container.decorators = display_none_list;
@@ -419,8 +412,13 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
                 "assignment2.assignment_add.notification_type.notify_each",
                 "assignment2.assignment_add.notification_type.notify_daily"
         };
+        // SWG TODO FIXME Tryign to figure out why some fields bind to the OTP Assignment2.new 1 field
+        // and why some bind straight to the request scope Assignment2 bean.
+        //UISelect notifications = UISelect.make(form, "notifications_select", notification_type_values,
+        //        notification_type_labels, "Assignment2Bean.notificationType").setMessageKeys();
         UISelect notifications = UISelect.make(form, "notifications_select", notification_type_values,
-                notification_type_labels, assignment2OTP + ".notificationType").setMessageKeys();
+                notification_type_labels, assignment2OTP + ".notificationType", "1").setMessageKeys();
+        notifications.selection.mustapply = true;
         //((UIBoundString) notifications.selection).setValue(String.valueOf(assignment.getNotificationType()));
         String notificationSelectId = notifications.getFullID();
         for (int i = 0; i < notification_type_values.length; i++){

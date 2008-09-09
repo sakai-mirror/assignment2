@@ -149,11 +149,16 @@
 				<input rsf:id="announcement" id="announcement" type="checkbox" />
 				<p rsf:id="message-for:open_date"></p>
 			</li>
-			<li class="due_date">
-				<label rsf:id="msg=assignment2.assignment_add.due_date">Due Date</label>
-				<input rsf:id="require_due_date" type="checkbox" />
-				
+			<li>
 				<fieldset>
+					<ol>
+						<li>
+							<label rsf:id="msg=assignment2.assignment_add.due_date">Due Date</label>
+							<input rsf:id="require_due_date" type="checkbox" />
+						</li>
+					</ol>
+				</fieldset>
+				
 				<div rsf:id="require_due_date_container" class="indent">
 					<input rsf:id="due_date:" value="12/31/2007"/>
 					<p rsf:id="message-for:due_date"></p>
@@ -162,7 +167,7 @@
 						<label rsf:id="schedule_label">Post Due Date to Schedule</label>
 					</span>
 				</div>
-				</fieldset>
+				
 			</li>
 		</ol>
 	</fieldset>
@@ -211,33 +216,21 @@
 				<input rsf:id="honor_pledge" id="honor_pledge" type="checkbox" />
 				<label rsf:id="msg=assignment2.assignment_add.honor_pledge">Add honor pledge</label>
 			</li>
-			<!-- 
-			<li>
-				<label rsf:id="msg=assignment2.assignment_add.misc_details_label">Miscellaneous Details</label>
-				<fieldset>
-					<ol>
-						<li><input rsf:id="on_calendar" type="checkbox" /> <label rsf:id="msg=assignment2.assignment_add.on_calendar">Add the due date to Calendar</label></li>
-					</ol>
-				</fieldset>
-			</li>
-			-->
+
 		</ol>
-<!-- 
-		<input rsf:id="honor_pledge" id="honor_pledge" type="checkbox" />
-		<label rsf:id="msg=assignment2.assignment_add.honor_pledge">Add honor pledge</label>
--->
+
 	</fieldset>
 	
-	<!-- 
+	
 	<fieldset>
 		<legend rsf:id="notification_legend">Submission Notification Email Options</legend>
 		<ol>
 			<li>
-				<span rsf:id="notifications_select"/>
+				<span rsf:id="notifications_select"></span>
 				<fieldset>
 					<ol>
 						<li rsf:id="notification_row:">
-							<input rsf:id="notification_choice" type="radio" />
+							<input id="notification_choice" rsf:id="notification_choice" type="radio" />
 							<label rsf:id="notification_label">Do not send me notification emails for any student submissions</label>
 						</li>
 					</ol>
@@ -245,7 +238,7 @@
 			</li>
 		</ol>
 	</fieldset>
-	-->
+	
 	<fieldset class="submit">
 		<input rsf:id="post_assignment" accesskey="s" type="submit" class="active" value="Post"/>
 		<input rsf:id="preview_assignment" title="Preview Assignment" accesskey="v" type="button" class="preview_button thickbox" value="Preview"/>
@@ -303,7 +296,6 @@ jQuery(document).ready(function(){
 	jQuery("input[name='page-replace\:\:require_due_date']").each(function(){
 		this.onclick = show_due_date;
 	});
-	alert("What is going on?");
 	show_due_date();
 });
 //]]>
