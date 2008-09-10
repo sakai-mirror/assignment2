@@ -116,7 +116,7 @@ public class AttachmentListRenderer {
         for (String ref : refSet){
             UIJointContainer joint = new UIJointContainer(tofill, divID, "attachments:", ""+(i++));
             try {
-                //TODO - but all contentHosting calls in an external Logic
+                //TODO - put all contentHosting calls in an external Logic
                 ContentResource cr = contentHostingService.getResource(ref);
                 UILink.make(joint, "attachment_image", externalLogic.getContentTypeImagePath(cr));
                 UILink.make(joint, "attachment_link", cr.getProperties().getProperty(cr.getProperties().getNamePropDisplayName()),
