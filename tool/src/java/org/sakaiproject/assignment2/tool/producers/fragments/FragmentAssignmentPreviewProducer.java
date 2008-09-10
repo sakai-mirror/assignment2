@@ -43,37 +43,37 @@ public class FragmentAssignmentPreviewProducer implements ViewComponentProducer,
         return VIEW_ID;
     }
 
-	private PreviewAssignmentBean previewAssignmentBean;
-	private StudentViewAssignmentRenderer studentViewAssignmentRenderer;
+    private PreviewAssignmentBean previewAssignmentBean;
+    private StudentViewAssignmentRenderer studentViewAssignmentRenderer;
 
     public void fillComponents(UIContainer tofill, ViewParameters viewparams, ComponentChecker checker) {
-    	AssignmentViewParams params = (AssignmentViewParams) viewparams;
+        AssignmentViewParams params = (AssignmentViewParams) viewparams;
 
-    	//we are coming from the add/edit assignment page
+        //we are coming from the add/edit assignment page
         Assignment2 assignment = previewAssignmentBean.getAssignment();
-        
+
         AssignmentSubmission assignmentSubmission = new AssignmentSubmission();
-    	
+
         String ASOTPKey = EntityBeanLocator.NEW_PREFIX + "1";
         studentViewAssignmentRenderer.makeStudentView(tofill, "portletBody:", assignmentSubmission, assignment, params, ASOTPKey, Boolean.TRUE);
 
     }
-    
+
     public ViewParameters getViewParameters() {
         return new AssignmentViewParams();
     }
-	
-	public String getContentType() {
-		return ContentTypeInfoRegistry.HTML_FRAGMENT;
-	}
 
-    public void setPreviewAssignmentBean(PreviewAssignmentBean previewAssignmentBean) {
-    	this.previewAssignmentBean = previewAssignmentBean;
+    public String getContentType() {
+        return ContentTypeInfoRegistry.HTML_FRAGMENT;
     }
 
-	public void setStudentViewAssignmentRenderer(
-			StudentViewAssignmentRenderer studentViewAssignmentRenderer) {
-		this.studentViewAssignmentRenderer = studentViewAssignmentRenderer;
-	}
+    public void setPreviewAssignmentBean(PreviewAssignmentBean previewAssignmentBean) {
+        this.previewAssignmentBean = previewAssignmentBean;
+    }
+
+    public void setStudentViewAssignmentRenderer(
+            StudentViewAssignmentRenderer studentViewAssignmentRenderer) {
+        this.studentViewAssignmentRenderer = studentViewAssignmentRenderer;
+    }
 
 }
