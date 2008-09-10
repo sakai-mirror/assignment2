@@ -46,7 +46,6 @@ import java.lang.String;
 import uk.org.ponder.beanutil.entity.EntityBeanLocator;
 import uk.org.ponder.messageutil.MessageLocator;
 import uk.org.ponder.rsf.components.UIBoundBoolean;
-import uk.org.ponder.rsf.components.UIBoundString;
 import uk.org.ponder.rsf.components.UIBranchContainer;
 import uk.org.ponder.rsf.components.UICommand;
 import uk.org.ponder.rsf.components.UIContainer;
@@ -63,7 +62,6 @@ import uk.org.ponder.rsf.components.UISelectLabel;
 import uk.org.ponder.rsf.components.UIVerbatim;
 import uk.org.ponder.rsf.components.decorators.DecoratorList;
 import uk.org.ponder.rsf.components.decorators.UIFreeAttributeDecorator;
-import uk.org.ponder.rsf.components.decorators.UILabelTargetDecorator;
 import uk.org.ponder.rsf.evolvers.TextInputEvolver;
 import uk.org.ponder.rsf.evolvers.FormatAwareDateInputEvolver;
 import uk.org.ponder.rsf.flow.jsfnav.NavigationCase;
@@ -113,8 +111,6 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
         AssignmentViewParams params = (AssignmentViewParams) viewparams;
 
         String currentContextId = externalLogic.getCurrentContextId();
-
-
 
         //get Passed assignmentId to pull in for editing if any
         Long assignmentId = params.assignmentId;
@@ -171,7 +167,6 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
         UIVerbatim title_label = UIVerbatim.make(form, "title_label", messageLocator.getMessage("assignment2.assignment_add.assignment_title",
                 new Object[]{ reqStar }));
         UIInput title = UIInput.make(form, "title", assignment2OTP + ".title");
-        UILabelTargetDecorator.targetLabel(title_label, title);
 
         UIVerbatim.make(form, "open_date_label", messageLocator.getMessage("assignment2.assignment_add.open_date",
                 new Object[]{ reqStar }));
@@ -184,12 +179,9 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
         attrmap.put("style", "display:none");
         DecoratorList display_none_list =  new DecoratorList(new UIFreeAttributeDecorator(attrmap));
 
-
         Boolean require_due_date = (assignment.getDueDate() != null);
         UIBoundBoolean require_due = UIBoundBoolean.make(form, "require_due_date", "#{Assignment2Bean.requireDueDate}", require_due_date);
         require_due.mustapply = true;
-        UIMessage require_due_label = UIMessage.make(form, "require_due_date_label", "assignment2.assignment_add.require_due_date");
-        UILabelTargetDecorator.targetLabel(require_due_label, require_due);
 
         UIOutput require_due_container = UIOutput.make(form, "require_due_date_container");
         UIInput dueDateField = UIInput.make(form, "due_date:", assignment2OTP + ".dueDate");
@@ -203,8 +195,6 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
         Boolean require_date = (assignment.getAcceptUntilDate() != null);
         UIBoundBoolean require = UIBoundBoolean.make(form, "require_accept_until", "#{Assignment2Bean.requireAcceptUntil}", require_date);
         require.mustapply = true;
-        UIMessage require_label = UIMessage.make(form, "require_accept_until_label", "assignment2.assignment_add.require_accept_until");
-        UILabelTargetDecorator.targetLabel(require_label, require);
 
         UIOutput require_container = UIOutput.make(form, "accept_until_container");
         UIInput acceptUntilDateField = UIInput.make(form, "accept_until:", assignment2OTP + ".acceptUntilDate");
@@ -256,32 +246,22 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
 
         //Calendar Due Date
         if (externalLogic.siteHasTool(currentContextId, ExternalLogic.TOOL_ID_SCHEDULE)) {
-
-            UIOutput add_to_schedule_container = UIOutput.make(form, "add_to_schedule_container");
-            UIMessage schedule_label = UIMessage.make(form, "schedule_label", "assignment2.assignment_add.schedule");
-            UIBoundBoolean schedule = UIBoundBoolean.make(form, "schedule", assignment2OTP + ".addedToSchedule");
-            UILabelTargetDecorator.targetLabel(schedule_label, schedule);
-
+            UIOutput.make(form, "add_to_schedule_container");
+            UIBoundBoolean.make(form, "schedule", assignment2OTP + ".addedToSchedule");
         }
 
         //Announcement -  only display if site has the announcements tool
         if (externalLogic.siteHasTool(currentContextId, ExternalLogic.TOOL_ID_ANNC)) {
-            UIMessage announcement_label = UIMessage.make(form, "announcement_label", "assignment2.assignment_add.announcement");
-            UIBoundBoolean announcement = UIBoundBoolean.make(form, "announcement", assignment2OTP + ".hasAnnouncement");
-            UILabelTargetDecorator.targetLabel(announcement_label, announcement);
+            UIBoundBoolean.make(form, "announcement", assignment2OTP + ".hasAnnouncement");
         }
 
         //Honor Pledge
-        //TODO FIXME SWG UIMessage honor_pledge_label = UIMessage.make(form, "honor_pledge", "assignment2.assignment_add.honor_pledge");
-        UIBoundBoolean honor_pledge = UIBoundBoolean.make(form, "honor_pledge", assignment2OTP + ".honorPledge");
-        //UILabelTargetDecorator.targetLabel(honor_pledge_label, honor_pledge);
-
+        UIBoundBoolean.make(form, "honor_pledge", assignment2OTP + ".honorPledge");
 
         //Attachments
         UIInputMany attachmentInput = UIInputMany.make(form, "attachment_list:", assignment2OTP + ".assignmentAttachmentRefs", 
                 assignment.getAssignmentAttachmentRefs());
         attachmentInput.mustapply = true;
-        //attachmentInput.parent = form;
         attachmentInputEvolver.evolveAttachment(attachmentInput);
 
         UIInternalLink.make(form, "add_attachments", UIMessage.make("assignment2.assignment_add.add_attachments"),
@@ -291,8 +271,7 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
         /********
          * Require Submissions
          */
-        UIBoundBoolean require_submissions = UIBoundBoolean.make(form, "require_submissions", assignment2OTP + ".requiresSubmission");
-        // TODO FIXME boolean label
+        UIBoundBoolean.make(form, "require_submissions", assignment2OTP + ".requiresSubmission");
 
         /********
          *Grading
@@ -333,16 +312,21 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
         UISelect.make(form, "gradebook_item",gradebook_item_values, gradebook_item_labels, assignment2OTP + ".gradableObjectId"); 
 
         //Radio Buttons for Grading
-        UISelect grading_select = UISelect.make(form, "ungraded", 
-                new String[]{Boolean.TRUE.toString(), Boolean.FALSE.toString()}, new String[]{"", ""}, assignment2OTP + ".graded");
+        String [] grading_values = new String[] {
+                Boolean.TRUE.toString(), Boolean.FALSE.toString()
+        };
+        String [] grading_labels = new String[] {
+               "assignment2.assignment_add.assignment_graded",
+               "assignment2.assignment_add.assignment_ungraded"
+        };
+        UISelect grading_select = UISelect.make(form, "graded-radios", 
+                grading_values, grading_labels, assignment2OTP + ".graded").setMessageKeys();
         String grading_select_id = grading_select.getFullID();
-        UISelectChoice graded = UISelectChoice.make(form, "select_graded", grading_select_id, 0);
-        UIMessage graded_label = UIMessage.make(form, "select_graded_label", "assignment2.assignment_add.assignment_graded");
-        UILabelTargetDecorator.targetLabel(graded_label, graded);
+        UISelectChoice.make(form, "select_graded", grading_select_id, 0);
+        UISelectLabel.make(form, "select_graded_label", grading_select_id, 0);
 
-        UISelectChoice ungraded = UISelectChoice.make(form, "select_ungraded", grading_select_id, 1);
-        UIMessage ungraded_label = UIMessage.make(form, "select_ungraded_label", "assignment2.assignment_add.assignment_ungraded");
-        UILabelTargetDecorator.targetLabel(ungraded_label, ungraded);
+        UISelectChoice.make(form, "select_ungraded", grading_select_id, 1);
+        UISelectLabel.make(form, "select_ungraded_label", grading_select_id, 1);
 
         //Output the JS vars
         UIVerbatim.make(tofill, "gradebook_items_data", js_gradebook_items_data);
@@ -376,10 +360,10 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
 
         for (int i=0; i < access_values.length; i++) {
             UIBranchContainer access_row = UIBranchContainer.make(form, "access_row:");
-            UISelectChoice radio = UISelectChoice.make(access_row, "access_choice", accessId, i);
-
-            UISelectLabel label = UISelectLabel.make(access_row, "access_label", accessId, i);
-            UILabelTargetDecorator.targetLabel(label, radio);
+            UISelectChoice.make(access_row, "access_choice", accessId, i);
+            UISelectLabel.make(access_row, "access_label", accessId, i);
+            
+            // TODO REMOVE UILabelTargetDecorator.targetLabel(label, radio);
         }
 
         /**
@@ -419,9 +403,8 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
         String notificationSelectId = notifications.getFullID();
         for (int i = 0; i < notification_type_values.length; i++){
             UIBranchContainer notification_row = UIBranchContainer.make(form, "notification_row:");
-            UISelectChoice notification_radio = UISelectChoice.make(notification_row, "notification_choice", notificationSelectId, i);
-            UISelectLabel notification_label = UISelectLabel.make(notification_row, "notification_label", notificationSelectId, i);
-            UILabelTargetDecorator.targetLabel(notification_label, notification_radio);
+            UISelectChoice.make(notification_row, "notification_choice", notificationSelectId, i);
+            UISelectLabel.make(notification_row, "notification_label", notificationSelectId, i);
         }
 
 
