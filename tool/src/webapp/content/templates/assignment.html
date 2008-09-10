@@ -143,23 +143,21 @@
 			<li>
 				<label rsf:id="open_date_label"><span class="reqStar">*</span> Open Date</label>
 				<input rsf:id="open_date:"  />
-			</li>
-			<li>
-				<label for="announcement" rsf:id="msg=assignment2.assignment_add.announcement">Post Open Date to Announcements on Open Date</label> 
 				<input rsf:id="announcement" id="announcement" type="checkbox" />
+				<label for="announcement" rsf:id="msg=assignment2.assignment_add.announcement">Post Open Date to Announcements on Open Date</label> 
 				<p rsf:id="message-for:open_date"></p>
 			</li>
 			<li>
 				<fieldset>
 					<ol>
 						<li>
-							<label for="require_due_date" rsf:id="msg=assignment2.assignment_add.due_date">Due Date</label>
 							<input id="require_due_date" rsf:id="require_due_date" type="checkbox" />
+							<label for="require_due_date" rsf:id="msg=assignment2.assignment_add.due_date">Due Date</label>
 						</li>
 					</ol>
 				</fieldset>
 				
-				<div rsf:id="require_due_date_container" class="indent">
+				<div style="display:inline" rsf:id="require_due_date_container" class="indent">
 					<input rsf:id="due_date:" value="12/31/2007"/>
 					<p rsf:id="message-for:due_date"></p>
 					<span rsf:id="add_to_schedule_container" class="indent">
@@ -190,7 +188,7 @@
 				<select rsf:id="number_submissions"></select>
 			</li>
 			<li>
-				<label rsf:id="msg=assignment2.assignment_add.accept_until">Accept Until</label> 
+				<!-- <label rsf:id="msg=assignment2.assignment_add.accept_until">Accept Until</label> --> 
 				<fieldset>
 					<ol>
 						<li>
@@ -241,8 +239,8 @@
 	
 	<fieldset class="submit">
 		<input rsf:id="post_assignment" accesskey="s" type="submit" class="active" value="Post"/>
-		<input rsf:id="preview_assignment" title="Preview Assignment" accesskey="v" type="button" class="preview_button thickbox" value="Preview"/>
 		<input rsf:id="save_draft" accesskey="d" type="submit" value="Save Draft"/>
+		<input rsf:id="preview_assignment" title="Preview Assignment" accesskey="v" type="button" class="preview_button thickbox" value="Preview"/>
 		<input rsf:id="cancel_assignment" accesskey="x" type="submit" value="Cancel"/>
 	</fieldset>													
 	</form>
