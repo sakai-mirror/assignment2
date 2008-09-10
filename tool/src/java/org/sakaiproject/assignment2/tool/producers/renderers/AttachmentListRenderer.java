@@ -116,13 +116,20 @@ public class AttachmentListRenderer {
         for (String ref : refSet){
             UIJointContainer joint = new UIJointContainer(tofill, divID, "attachments:", ""+(i++));
             try {
-                //TODO - put all contentHosting calls in an external Logic
-                ContentResource cr = contentHostingService.getResource(ref);
-                UILink.make(joint, "attachment_image", externalLogic.getContentTypeImagePath(cr));
-                UILink.make(joint, "attachment_link", cr.getProperties().getProperty(cr.getProperties().getNamePropDisplayName()),
-                        cr.getUrl());
-                String file_size = externalLogic.getReadableFileSize(cr.getContentLength());
-                UIOutput.make(joint, "attachment_size", file_size);
+                //TODO  put all contentHosting calls in an external Logic
+                
+                //TODO FIXME For some reason, when there are no attachments, we 
+                // still getting a single item in the Set<String> ref that is 
+                // just an empty string.  This is on previewing an assignment.
+                // To reproduce, just put in a title and hit preview.
+                if (ref != null && !ref.equals("")) {
+                    ContentResource cr = contentHostingService.getResource(ref);
+                    UILink.make(joint, "attachment_image", externalLogic.getContentTypeImagePath(cr));
+                    UILink.make(joint, "attachment_link", cr.getProperties().getProperty(cr.getProperties().getNamePropDisplayName()),
+                            cr.getUrl());
+                    String file_size = externalLogic.getReadableFileSize(cr.getContentLength());
+                    UIOutput.make(joint, "attachment_size", file_size);
+                }
 
             } catch (Exception e) {
                 LOG.error(e.getMessage(), e);
