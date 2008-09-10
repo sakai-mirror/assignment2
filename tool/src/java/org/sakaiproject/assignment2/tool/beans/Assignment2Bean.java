@@ -164,10 +164,6 @@ public class Assignment2Bean {
             assignment.setGradableObjectId(null);
         }
 
-        //REMOVE THESE - TODO
-        assignment.setNotificationType(0);
-        //END REMOVE THESE 
-
         //do groups
         Set<AssignmentGroup> newGroups = new HashSet<AssignmentGroup>();
         if (this.restrictedToGroups != null && restrictedToGroups.equals(Boolean.TRUE.toString())){
