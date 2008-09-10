@@ -412,19 +412,16 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
                 "assignment2.assignment_add.notification_type.notify_each",
                 "assignment2.assignment_add.notification_type.notify_daily"
         };
-        // SWG TODO FIXME Tryign to figure out why some fields bind to the OTP Assignment2.new 1 field
-        // and why some bind straight to the request scope Assignment2 bean.
-        //UISelect notifications = UISelect.make(form, "notifications_select", notification_type_values,
-        //        notification_type_labels, "Assignment2Bean.notificationType").setMessageKeys();
         UISelect notifications = UISelect.make(form, "notifications_select", notification_type_values,
-                notification_type_labels, assignment2OTP + ".notificationType", "1").setMessageKeys();
+                notification_type_labels, assignment2OTP + ".notificationType").setMessageKeys();
         notifications.selection.mustapply = true;
         //((UIBoundString) notifications.selection).setValue(String.valueOf(assignment.getNotificationType()));
         String notificationSelectId = notifications.getFullID();
         for (int i = 0; i < notification_type_values.length; i++){
             UIBranchContainer notification_row = UIBranchContainer.make(form, "notification_row:");
-            UISelectChoice.make(notification_row, "notification_choice", notificationSelectId, i);
-            UISelectLabel.make(notification_row, "notification_label", notificationSelectId, i);
+            UISelectChoice notification_radio = UISelectChoice.make(notification_row, "notification_choice", notificationSelectId, i);
+            UISelectLabel notification_label = UISelectLabel.make(notification_row, "notification_label", notificationSelectId, i);
+            UILabelTargetDecorator.targetLabel(notification_label, notification_radio);
         }
 
 
