@@ -42,93 +42,93 @@ import uk.org.ponder.rsf.components.UIMessage;
 import uk.org.ponder.rsf.components.UIOutput;
 
 public class AttachmentListRenderer {
-	private static final Log LOG = LogFactory.getLog(AttachmentListRenderer.class);
-	
-	private ContentHostingService contentHostingService;
-	public void setContentHostingService(ContentHostingService contentHostingService) {
-		this.contentHostingService = contentHostingService;
-	}
-	
-	private ExternalLogic externalLogic;
-	public void setExternalLogic(ExternalLogic externalLogic) {
-		this.externalLogic = externalLogic;
-	}
-	
-	private EntityBeanLocator assignment2EntityBeanLocator;
-	public void setAssignment2EntityBeanLocator(EntityBeanLocator assignment2EntityBeanLocator) {
-		this.assignment2EntityBeanLocator = assignment2EntityBeanLocator;
-	}
-	
-	public void makeAttachmentFromAssignmentAttachmentSet(UIContainer tofill, String divID, String currentViewID, Set<AssignmentAttachment> aaSet) {
-		Set<String> refSet = new HashSet<String>();
-		if (aaSet != null){
-			for (AssignmentAttachment aa : aaSet) {
-				refSet.add(aa.getAttachmentReference());
-			}
-		}
-		makeAttachment(tofill, divID, currentViewID, refSet);
-	}
-	
-	public void makeAttachmentFromAssignment2OTPAttachmentSet(UIContainer tofill, String divID, String currentViewID, String a2OTPKey) {
-		Assignment2 assignment = (Assignment2)assignment2EntityBeanLocator.locateBean(a2OTPKey);
-		Set<String> refSet = new HashSet<String>();
-		if (assignment != null && assignment.getAttachmentSet() != null){
-			for (AssignmentAttachment aa : assignment.getAttachmentSet()) {
-				refSet.add(aa.getAttachmentReference());
-			}
-		}
-		makeAttachment(tofill, divID, currentViewID, refSet);
-	}
-	
-	public void makeAttachmentFromSubmissionAttachmentSet(UIContainer tofill, String divID, String currentViewID,
-			Set<SubmissionAttachment> asaSet) {
-		Set<String> refSet = new HashSet<String>();
-		if (asaSet != null) {
-			for (SubmissionAttachment asa : asaSet) {
-				refSet.add(asa.getAttachmentReference());
-			}
-		}
-		makeAttachment(tofill, divID, currentViewID, refSet);
-	}
-	
-	public void makeAttachmentFromFeedbackAttachmentSet(UIContainer tofill, String divID, String currentViewID,
-			Set<FeedbackAttachment> afaSet) {
-		Set<String> refSet = new HashSet<String>();
-		if (afaSet != null) {
-			for (FeedbackAttachment afa : afaSet) {
-				refSet.add(afa.getAttachmentReference());
-			}
-		}
-		makeAttachment(tofill, divID, currentViewID, refSet);
-	}
+    private static final Log LOG = LogFactory.getLog(AttachmentListRenderer.class);
 
-	
+    private ContentHostingService contentHostingService;
+    public void setContentHostingService(ContentHostingService contentHostingService) {
+        this.contentHostingService = contentHostingService;
+    }
+
+    private ExternalLogic externalLogic;
+    public void setExternalLogic(ExternalLogic externalLogic) {
+        this.externalLogic = externalLogic;
+    }
+
+    private EntityBeanLocator assignment2EntityBeanLocator;
+    public void setAssignment2EntityBeanLocator(EntityBeanLocator assignment2EntityBeanLocator) {
+        this.assignment2EntityBeanLocator = assignment2EntityBeanLocator;
+    }
+
+    public void makeAttachmentFromAssignmentAttachmentSet(UIContainer tofill, String divID, String currentViewID, Set<AssignmentAttachment> aaSet) {
+        Set<String> refSet = new HashSet<String>();
+        if (aaSet != null){
+            for (AssignmentAttachment aa : aaSet) {
+                refSet.add(aa.getAttachmentReference());
+            }
+        }
+        makeAttachment(tofill, divID, currentViewID, refSet);
+    }
+
+    public void makeAttachmentFromAssignment2OTPAttachmentSet(UIContainer tofill, String divID, String currentViewID, String a2OTPKey) {
+        Assignment2 assignment = (Assignment2)assignment2EntityBeanLocator.locateBean(a2OTPKey);
+        Set<String> refSet = new HashSet<String>();
+        if (assignment != null && assignment.getAttachmentSet() != null){
+            for (AssignmentAttachment aa : assignment.getAttachmentSet()) {
+                refSet.add(aa.getAttachmentReference());
+            }
+        }
+        makeAttachment(tofill, divID, currentViewID, refSet);
+    }
+
+    public void makeAttachmentFromSubmissionAttachmentSet(UIContainer tofill, String divID, String currentViewID,
+            Set<SubmissionAttachment> asaSet) {
+        Set<String> refSet = new HashSet<String>();
+        if (asaSet != null) {
+            for (SubmissionAttachment asa : asaSet) {
+                refSet.add(asa.getAttachmentReference());
+            }
+        }
+        makeAttachment(tofill, divID, currentViewID, refSet);
+    }
+
+    public void makeAttachmentFromFeedbackAttachmentSet(UIContainer tofill, String divID, String currentViewID,
+            Set<FeedbackAttachment> afaSet) {
+        Set<String> refSet = new HashSet<String>();
+        if (afaSet != null) {
+            for (FeedbackAttachment afa : afaSet) {
+                refSet.add(afa.getAttachmentReference());
+            }
+        }
+        makeAttachment(tofill, divID, currentViewID, refSet);
+    }
+
+
     public void makeAttachment(UIContainer tofill, String divID, String currentViewID, Set<String> refSet) {
 
-    	
-    	int i = 1;
-    	if (refSet.size() == 0) {
-	        UIJointContainer joint = new UIJointContainer(tofill, divID, "attachments:", ""+1);
-	        UIMessage.make(joint, "no_attachments_yet", "assignment2.no_attachments_yet");
-	        return;
-    	}
-	        
+
+        int i = 1;
+        if (refSet.size() == 0) {
+            UIJointContainer joint = new UIJointContainer(tofill, divID, "attachments:", ""+1);
+            UIMessage.make(joint, "no_attachments_yet", "assignment2.no_attachments_yet");
+            return;
+        }
+
         for (String ref : refSet){
-        	UIJointContainer joint = new UIJointContainer(tofill, divID, "attachments:", ""+(i++));
-	        try {
-	        	//TODO - but all contentHosting calls in an external Logic
-	    		ContentResource cr = contentHostingService.getResource(ref);
-	    		UILink.make(joint, "attachment_image", externalLogic.getContentTypeImagePath(cr));
-	    		UILink.make(joint, "attachment_link", cr.getProperties().getProperty(cr.getProperties().getNamePropDisplayName()),
-	    				cr.getUrl());
-	    		String file_size = externalLogic.getReadableFileSize(cr.getContentLength());
-	    		UIOutput.make(joint, "attachment_size", file_size);
-	    		
-			} catch (Exception e) {
-				LOG.error(e.getMessage(), e);
-				//do nothing
-			}
+            UIJointContainer joint = new UIJointContainer(tofill, divID, "attachments:", ""+(i++));
+            try {
+                //TODO - but all contentHosting calls in an external Logic
+                ContentResource cr = contentHostingService.getResource(ref);
+                UILink.make(joint, "attachment_image", externalLogic.getContentTypeImagePath(cr));
+                UILink.make(joint, "attachment_link", cr.getProperties().getProperty(cr.getProperties().getNamePropDisplayName()),
+                        cr.getUrl());
+                String file_size = externalLogic.getReadableFileSize(cr.getContentLength());
+                UIOutput.make(joint, "attachment_size", file_size);
+
+            } catch (Exception e) {
+                LOG.error(e.getMessage(), e);
+                //do nothing
+            }
         } //Ending for loop
     }
-    
+
 }
