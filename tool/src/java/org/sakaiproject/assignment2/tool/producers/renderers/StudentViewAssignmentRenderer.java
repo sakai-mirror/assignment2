@@ -217,12 +217,13 @@ public class StudentViewAssignmentRenderer {
                 assignment.getSubmissionType() == AssignmentConstants.SUBMIT_INLINE_AND_ATTACH){
             UIOutput.make(form, "submit_attachments");
 
-            //Attachments
-            UIInputMany attachmentInput = UIInputMany.make(form, "attachment_list:", asvOTP + ".submittedAttachmentRefs", 
-                    assignmentSubmission.getCurrentSubmissionVersion().getSubmittedAttachmentRefs());
-            attachmentInputEvolver.evolveAttachment(attachmentInput);
+            
+            if (!preview) {
+                //Attachments
+                UIInputMany attachmentInput = UIInputMany.make(form, "attachment_list:", asvOTP + ".submittedAttachmentRefs", 
+                        assignmentSubmission.getCurrentSubmissionVersion().getSubmittedAttachmentRefs());
+                attachmentInputEvolver.evolveAttachment(attachmentInput);
 
-            if (!preview){
                 UIInternalLink.make(form, "add_submission_attachments", UIMessage.make("assignment2.student-submit.add_attachments"),
                         new FilePickerHelperViewParams(AddAttachmentHelperProducer.VIEWID, Boolean.TRUE, 
                                 Boolean.TRUE, 500, 700, ASOTPKey));

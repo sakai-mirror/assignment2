@@ -362,8 +362,6 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
             UIBranchContainer access_row = UIBranchContainer.make(form, "access_row:");
             UISelectChoice.make(access_row, "access_choice", accessId, i);
             UISelectLabel.make(access_row, "access_label", accessId, i);
-            
-            // TODO REMOVE UILabelTargetDecorator.targetLabel(label, radio);
         }
 
         /**
@@ -435,7 +433,6 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
         return nav;
     }
 
-
     public ViewParameters getViewParameters() {
         return new AssignmentViewParams();
     }
@@ -447,7 +444,6 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
     public void setRichTextEvolver(TextInputEvolver richTextEvolver) {
         this.richTextEvolver = richTextEvolver;
     }
-
 
     public void setExternalLogic(ExternalLogic externalLogic) {
         this.externalLogic = externalLogic;
