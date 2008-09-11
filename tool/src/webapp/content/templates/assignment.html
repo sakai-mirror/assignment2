@@ -153,11 +153,19 @@
 						<li>
 							<input id="require_due_date" rsf:id="require_due_date" type="checkbox" />
 							<label for="require_due_date" rsf:id="msg=assignment2.assignment_add.due_date">Due Date</label>
+							<span rsf:id="require_due_date_container" class="indent">
+								<input rsf:id="due_date:" value="12/31/2007"/>
+								<p rsf:id="message-for:due_date"></p>
+								<span rsf:id="add_to_schedule_container" class="indent">
+									<input rsf:id="schedule" id="schedule" type="checkbox" /> 
+									<label for="schedule" rsf:id="msg=assignment2.assignment_add.schedule">Post Due Date to Schedule</label>
+								</span>
+							</span>
 						</li>
 					</ol>
 				</fieldset>
-				
-				<div style="display:inline" rsf:id="require_due_date_container" class="indent">
+				<!-- 
+				<div rsf:id="require_due_date_container" class="indent">
 					<input rsf:id="due_date:" value="12/31/2007"/>
 					<p rsf:id="message-for:due_date"></p>
 					<span rsf:id="add_to_schedule_container" class="indent">
@@ -165,7 +173,7 @@
 						<label for="schedule" rsf:id="msg=assignment2.assignment_add.schedule">Post Due Date to Schedule</label>
 					</span>
 				</div>
-				
+				-->
 			</li>
 		</ol>
 	</fieldset>
@@ -194,13 +202,16 @@
 						<li>
 							<input id="require_accept_until" rsf:id="require_accept_until" type="checkbox" />
 							<label for="require_accept_until" rsf:id="msg=assignment2.assignment_add.require_accept_until">Require Accept Until Date?</label>
+							<span class="indent" rsf:id="accept_until_container">
+								<input rsf:id="accept_until:" value="12/31/2007"/>
+							</span>
+							<p rsf:id="message-for:accept_until"></p>						
 						</li>
 					</ol>
 				</fieldset>
-				<div class="indent" rsf:id="accept_until_container">
-					<input rsf:id="accept_until:" value="12/31/2007"/>
-				</div>
-				<p rsf:id="message-for:accept_until"></p>
+				
+				<!-- SWG TODO I don't the accept until is part of the spec anymore -->
+				<!-- 
 				<fieldset class="indent" rsf:id="accept_until_until_fieldset">
 					<ol>
 						<li>
@@ -209,6 +220,7 @@
 						</li>
 					</ol>
 				</fieldset>
+				-->
 			</li>
 			<li>
 				<input rsf:id="honor_pledge" id="honor_pledge" type="checkbox" />

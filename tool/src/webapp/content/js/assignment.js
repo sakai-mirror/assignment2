@@ -77,9 +77,9 @@ function show_due_date(){
 	el = jQuery("input:checkbox[name='page-replace\:\:require_due_date']").get(0);
 	if (el) {
 		if (el.checked) {
-			jQuery(el).parents("fieldset:first").next('div').show();
+			jQuery(el).nextAll('span:first').show();
 		} else {
-			jQuery(el).parents("fieldset:first").next('div').hide();
+			jQuery(el).nextAll('span:first').hide();
 		}
 	}
 }
@@ -88,11 +88,9 @@ function show_accept_until(){
 	el = jQuery("input:checkbox[name='page-replace\:\:require_accept_until']").get(0);
 	if (el){
 		if(el.checked){
-			jQuery(el).parents("fieldset:first").next('div').show();
-			//jQuery(el).parents("fieldset:first").next('div').next('fieldset').show();
+			jQuery(el).nextAll('span:first').show();
 		}else {
-			jQuery(el).parents("fieldset:first").next('div').hide();
-			//jQuery(el).parents("fieldset:first").next('div').next('fieldset').hide();
+			jQuery(el).nextAll('span:first').hide();
 		}
 		
 	}
