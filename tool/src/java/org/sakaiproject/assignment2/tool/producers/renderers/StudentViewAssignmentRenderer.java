@@ -45,6 +45,7 @@ import org.sakaiproject.assignment2.tool.producers.fragments.FragmentViewSubmiss
 import org.sakaiproject.assignment2.tool.producers.evolvers.AttachmentInputEvolver;
 import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.tool.api.ToolSession;
+import org.sakaiproject.user.api.User;
 
 import uk.org.ponder.beanutil.entity.EntityBeanLocator;
 import uk.org.ponder.messageutil.MessageLocator;
@@ -105,6 +106,11 @@ public class StudentViewAssignmentRenderer {
     public void setAttachmentInputEvolver(AttachmentInputEvolver attachmentInputEvolver){
         this.attachmentInputEvolver = attachmentInputEvolver;
     }
+    
+    private User currentUser;
+    public void setCurrentUser(User currentUser) {
+        this.currentUser = currentUser;
+    }
 
     public void makeStudentView(UIContainer tofill, String divID, AssignmentSubmission assignmentSubmission, 
             Assignment2 assignment, ViewParameters params, String ASOTPKey, Boolean preview) {
@@ -159,16 +165,27 @@ public class StudentViewAssignmentRenderer {
                     statusConstant);
         }
 
+        //UIMessage.make(joint, "heading_status", "assignment2.student-submit.heading_status", 
+        //        new Object[]{ status });
         UIMessage.make(joint, "heading_status", "assignment2.student-submit.heading_status", 
-                new Object[]{ status });
+                        new Object[]{ title, currentUser.getDisplayName() });
+        
         UIVerbatim.make(joint, "page_instructions", messageLocator.getMessage("assignment2.student-submit.instructions"));
 
         //Display Assignment Info
         UIOutput.make(joint, "header.title", title);
 
         // Due Date
-        UIOutput.make(joint, "header.due_date", (assignment.getDueDate() != null ? df.format(assignment.getDueDate()) : ""));
-
+        if (assignment.getDueDate() == null) {
+            UIMessage.make(joint, "due_date",
+                    "assignment2.student-submit.no_due_date");
+        }
+        else {
+            UIMessage.make(joint, "due_date",  
+                    "assignment2.student-submit.due_date", 
+                    new Object[] {df.format(assignment.getDueDate())});
+        }
+        
         if (assignment != null && assignment.getAcceptUntilDate() != null) {
             UIOutput.make(joint, "accept_until_tr");
             UIOutput.make(joint, "header.accept_until", df.format(assignment.getAcceptUntilDate()));

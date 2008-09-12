@@ -50,6 +50,7 @@
       <property name="sessionManager" ref="org.sakaiproject.tool.api.SessionManager" />
       <property name="submissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
       <property name="attachmentInputEvolver" ref="AttachmentInputEvolver" />
+      <property name="currentUser" ref="sakai-User" />
    </bean>   
    <bean id="AttachmentInputEvolver" class="org.sakaiproject.assignment2.tool.producers.evolvers.AttachmentInputEvolver">
    	  <property name="contentHostingService" ref="org.sakaiproject.content.api.ContentHostingService" />
