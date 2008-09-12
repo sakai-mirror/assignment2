@@ -109,15 +109,17 @@ public class StudentViewAssignmentRenderer {
     public void makeStudentView(UIContainer tofill, String divID, AssignmentSubmission assignmentSubmission, 
             Assignment2 assignment, ViewParameters params, String ASOTPKey, Boolean preview) {
         //Breadcrumbs
-        if (!preview){
+        if (!preview) {
             UIInternalLink.make(tofill, "breadcrumb", 
                     messageLocator.getMessage("assignment2.student-assignment-list.heading"),
                     new SimpleViewParameters(StudentAssignmentListProducer.VIEW_ID));
         } else {
             UIMessage.make(tofill, "breadcrumb", "assignment2.student-assignment-list.heading");
         }
+        
+        // SWG Changing breadcrumb to match spec
         String title = (assignment != null) ? assignment.getTitle() : "";
-        UIMessage.make(tofill, "last_breadcrumb", "assignment2.student-submit.heading", new Object[] { title });
+        //UIMessage.make(tofill, "last_breadcrumb", "assignment2.student-submit.heading", new Object[] { title });
 
         String asvOTP = "AssignmentSubmissionVersion.";
         String asvOTPKey = "";
