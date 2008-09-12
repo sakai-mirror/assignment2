@@ -114,7 +114,9 @@ public class StudentViewAssignmentRenderer {
 
     public void makeStudentView(UIContainer tofill, String divID, AssignmentSubmission assignmentSubmission, 
             Assignment2 assignment, ViewParameters params, String ASOTPKey, Boolean preview) {
-        //Breadcrumbs
+        /**
+         * Breadcrumbs
+         */
         if (!preview) {
             UIInternalLink.make(tofill, "breadcrumb", 
                     messageLocator.getMessage("assignment2.student-assignment-list.heading"),
@@ -123,10 +125,8 @@ public class StudentViewAssignmentRenderer {
             UIMessage.make(tofill, "breadcrumb", "assignment2.student-assignment-list.heading");
         }
         
-        // SWG Changing breadcrumb to match spec
         String title = (assignment != null) ? assignment.getTitle() : "";
-        //UIMessage.make(tofill, "last_breadcrumb", "assignment2.student-submit.heading", new Object[] { title });
-
+        
         String asvOTP = "AssignmentSubmissionVersion.";
         String asvOTPKey = "";
         if (assignmentSubmission != null && assignmentSubmission.getCurrentSubmissionVersion() != null 
@@ -138,8 +138,9 @@ public class StudentViewAssignmentRenderer {
         asvOTP = asvOTP + asvOTPKey;
 
 
-        if (assignmentSubmission != null)
+        if (assignmentSubmission != null) {
             assignmentSubmission.setAssignment(assignment);
+        }
         UIJointContainer joint = new UIJointContainer(tofill, divID, "portletBody:", ""+1);
 
         // use a date which is related to the current users locale
@@ -152,7 +153,7 @@ public class StudentViewAssignmentRenderer {
 
         Map<String, String> disabledLinkAttr = new HashMap<String, String>();
         disabledLinkAttr.put("onclick", "return false;");
-        //		DecoratorList disabledLinkDecoratorList = new DecoratorList(new UIFreeAttributeDecorator(disabledLinkAttr));
+        // DecoratorList disabledLinkDecoratorList = new DecoratorList(new UIFreeAttributeDecorator(disabledLinkAttr));
 
         // set the textual representation of the submission status
         String status = "";
@@ -165,17 +166,12 @@ public class StudentViewAssignmentRenderer {
                     statusConstant);
         }
 
-        //UIMessage.make(joint, "heading_status", "assignment2.student-submit.heading_status", 
-        //        new Object[]{ status });
+        /***
+         * Title and Due Date Information
+         */
         UIMessage.make(joint, "heading_status", "assignment2.student-submit.heading_status", 
                         new Object[]{ title, currentUser.getDisplayName() });
         
-        UIVerbatim.make(joint, "page_instructions", messageLocator.getMessage("assignment2.student-submit.instructions"));
-
-        //Display Assignment Info
-        UIOutput.make(joint, "header.title", title);
-
-        // Due Date
         if (assignment.getDueDate() == null) {
             UIMessage.make(joint, "due_date",
                     "assignment2.student-submit.no_due_date");
@@ -186,6 +182,30 @@ public class StudentViewAssignmentRenderer {
                     new Object[] {df.format(assignment.getDueDate())});
         }
         
+        /***
+         * Assignment Details including:
+         *   - Graded?
+         *   - Points Possible
+         *   - Resubmissions Allowed
+         *   - Remaining Resubmissions Allowed
+         *   - Grade
+         *   - Comments
+         */
+        
+        // Graded?
+        if (assignment.isGraded()) {
+            UIMessage.make(joint, "is_graded", "assignment2.student-submit.yes_graded");
+        }
+        else {
+            UIMessage.make(joint, "is_graded", "assignment2.student-submit.no_graded");
+        }
+        
+        //Display Assignment Info
+        UIOutput.make(joint, "header.title", title);
+
+        
+        
+        /* Old STuff
         if (assignment != null && assignment.getAcceptUntilDate() != null) {
             UIOutput.make(joint, "accept_until_tr");
             UIOutput.make(joint, "header.accept_until", df.format(assignment.getAcceptUntilDate()));
@@ -197,6 +217,7 @@ public class StudentViewAssignmentRenderer {
             UIOutput.make(joint, "modified_by", df.format(assignment.getModifiedDate()));
         }
         UIVerbatim.make(joint, "instructions", assignment.getInstructions());
+        */
 
         if (!preview) {
             Set<AssignmentAttachment> attachments = (assignment != null) ? assignment.getAttachmentSet() : null;
