@@ -44,11 +44,11 @@ import uk.org.ponder.rsf.viewstate.ViewParameters;
 import uk.org.ponder.rsf.viewstate.ViewParamsReporter;
 
 public class StudentSubmitProducer implements ViewComponentProducer, NavigationCaseReporter, ViewParamsReporter {
-	public static final String VIEW_ID = "student-submit";
-	public String getViewID() {
-		return VIEW_ID;
-	}
-	
+    public static final String VIEW_ID = "student-submit";
+    public String getViewID() {
+        return VIEW_ID;
+    }
+
     String reqStar = "<span class=\"reqStar\">*</span>";
 
     private ExternalLogic externalLogic;
@@ -58,71 +58,71 @@ public class StudentSubmitProducer implements ViewComponentProducer, NavigationC
     private StudentViewAssignmentRenderer studentViewAssignmentRenderer;
 
     @SuppressWarnings("unchecked")
-	public void fillComponents(UIContainer tofill, ViewParameters viewparams, ComponentChecker checker) {
-    	SimpleAssignmentViewParams params = (SimpleAssignmentViewParams) viewparams;
-    		
-    	Long assignmentId = params.assignmentId;
-    	Assignment2 assignment = (Assignment2) assignment2BeanLocator.locateBean(assignmentId.toString());
-    	
-    	AssignmentSubmission submission = submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(assignmentId, externalLogic.getCurrentUserId());
-    	
-    	String ASOTPKey = "";
-    	if (submission == null || submission.getId() == null) {
-    		ASOTPKey += EntityBeanLocator.NEW_PREFIX + "1";
-    	} else {
-    		ASOTPKey += submission.getId();
-    	}
-    	
-    	//Now do submission stuff
-    	AssignmentSubmission assignmentSubmission = (AssignmentSubmission) assignmentSubmissionBeanLocator.locateBean(ASOTPKey); 
-    	
-    	studentViewAssignmentRenderer.makeStudentView(tofill, "portletBody:", assignmentSubmission, assignment, params, ASOTPKey, Boolean.FALSE); 
-        
-    	//Initialize js otpkey
-    	UIVerbatim.make(tofill, "attachment-ajax-init", "otpkey=\"" + org.sakaiproject.util.Web.escapeUrl(ASOTPKey) + "\";\n");
-   	
+    public void fillComponents(UIContainer tofill, ViewParameters viewparams, ComponentChecker checker) {
+        SimpleAssignmentViewParams params = (SimpleAssignmentViewParams) viewparams;
+
+        Long assignmentId = params.assignmentId;
+        Assignment2 assignment = (Assignment2) assignment2BeanLocator.locateBean(assignmentId.toString());
+
+        AssignmentSubmission submission = submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(assignmentId, externalLogic.getCurrentUserId());
+
+        String ASOTPKey = "";
+        if (submission == null || submission.getId() == null) {
+            ASOTPKey += EntityBeanLocator.NEW_PREFIX + "1";
+        } else {
+            ASOTPKey += submission.getId();
+        }
+
+        //Now do submission stuff
+        AssignmentSubmission assignmentSubmission = (AssignmentSubmission) assignmentSubmissionBeanLocator.locateBean(ASOTPKey); 
+
+        studentViewAssignmentRenderer.makeStudentView(tofill, "portletBody:", assignmentSubmission, assignment, params, ASOTPKey, Boolean.FALSE); 
+
+        //Initialize js otpkey
+        UIVerbatim.make(tofill, "attachment-ajax-init", "otpkey=\"" + org.sakaiproject.util.Web.escapeUrl(ASOTPKey) + "\";\n");
+
     }
-	
-	public List<NavigationCase> reportNavigationCases() {
-    	List<NavigationCase> nav= new ArrayList<NavigationCase>();
+
+    public List<NavigationCase> reportNavigationCases() {
+        List<NavigationCase> nav= new ArrayList<NavigationCase>();
         nav.add(new NavigationCase("submit", new SimpleViewParameters(
-            StudentAssignmentListProducer.VIEW_ID)));
+                StudentAssignmentListProducer.VIEW_ID)));
         nav.add(new NavigationCase("preview", new SimpleViewParameters(
-        	FragmentSubmissionPreviewProducer.VIEW_ID)));
+                FragmentSubmissionPreviewProducer.VIEW_ID)));
         nav.add(new NavigationCase("save_draft", new SimpleViewParameters(
-        	StudentAssignmentListProducer.VIEW_ID)));
+                StudentAssignmentListProducer.VIEW_ID)));
         nav.add(new NavigationCase("cancel", new SimpleViewParameters(
-        	StudentAssignmentListProducer.VIEW_ID)));
+                StudentAssignmentListProducer.VIEW_ID)));
         return nav;
     }
-	
+
     public ViewParameters getViewParameters() {
         return new SimpleAssignmentViewParams();
     }
-    
+
     public void setExternalLogic(ExternalLogic externalLogic) {
-    	this.externalLogic = externalLogic;
+        this.externalLogic = externalLogic;
     }
-	
-	public void setAssignment2EntityBeanLocator(EntityBeanLocator entityBeanLocator) {
-		this.assignment2BeanLocator = entityBeanLocator;
-	}
-	
-	public void setAssignmentSubmissionBeanLocator(EntityBeanLocator entityBeanLocator) {
-		this.assignmentSubmissionBeanLocator = entityBeanLocator;
-	}
-	
-	public void setAssignmentSubmissionEntityBeanLocator(EntityBeanLocator entityBeanLocator) {
-		this.assignmentSubmissionBeanLocator = entityBeanLocator;
-	}
 
-	public void setSubmissionLogic(AssignmentSubmissionLogic submissionLogic) {
-		this.submissionLogic = submissionLogic;
-	}
+    public void setAssignment2EntityBeanLocator(EntityBeanLocator entityBeanLocator) {
+        this.assignment2BeanLocator = entityBeanLocator;
+    }
 
-	public void setStudentViewAssignmentRenderer(
-			StudentViewAssignmentRenderer studentViewAssignmentRenderer) {
-		this.studentViewAssignmentRenderer = studentViewAssignmentRenderer;
-	}
+    public void setAssignmentSubmissionBeanLocator(EntityBeanLocator entityBeanLocator) {
+        this.assignmentSubmissionBeanLocator = entityBeanLocator;
+    }
+
+    public void setAssignmentSubmissionEntityBeanLocator(EntityBeanLocator entityBeanLocator) {
+        this.assignmentSubmissionBeanLocator = entityBeanLocator;
+    }
+
+    public void setSubmissionLogic(AssignmentSubmissionLogic submissionLogic) {
+        this.submissionLogic = submissionLogic;
+    }
+
+    public void setStudentViewAssignmentRenderer(
+            StudentViewAssignmentRenderer studentViewAssignmentRenderer) {
+        this.studentViewAssignmentRenderer = studentViewAssignmentRenderer;
+    }
 
 }
