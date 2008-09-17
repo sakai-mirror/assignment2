@@ -48,7 +48,7 @@ public class Assignment2Validator  {
 		
 		//check for graded but no gradable object id
 		if (assignment.isGraded() && (assignment.getGradableObjectId() == null || 
-				assignment.getGradableObjectId().equals("") || assignment.getGradableObjectId().longValue() < 1)) {
+				assignment.getGradableObjectId().longValue() < 1)) {
 			messages.addMessage(new TargettedMessage("assignment2.assignment_graded_no_gb_item", 
 					new Object[] {}, "Assignment2."+ key + ".gradableObjectId"));
 			valid = false;

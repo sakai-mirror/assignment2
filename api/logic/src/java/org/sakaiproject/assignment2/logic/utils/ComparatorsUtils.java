@@ -202,8 +202,8 @@ public class ComparatorsUtils {
 	}
 	
 	private static int sortByTitle(Assignment2 assign1, Assignment2 assign2) {
-		String title1 = assign1.getTitle() != null ? assign1.getTitle().toLowerCase() : null;
-		String title2 = assign2.getTitle() != null ? assign2.getTitle().toLowerCase() : null;
+		String title1 = assign1.getTitle() != null ? assign1.getTitle().toLowerCase() : "";
+		String title2 = assign2.getTitle() != null ? assign2.getTitle().toLowerCase() : "";
 		return title1.compareTo(title2);
 	}
 	
@@ -212,14 +212,15 @@ public class ComparatorsUtils {
 		String sortName2 = null;
 		try {
 			User u1 = UserDirectoryService.getUser(submission1.getUserId());
-			sortName1 = u1.getSortName();
+			sortName1 = u1.getSortName() != null ? u1.getSortName() : "";
 		} catch (UserNotDefinedException unde) {
 			log.error("user with id " + submission1.getUserId() + " not defined");
 		}
 		
 		try {
 			User u2 = UserDirectoryService.getUser(submission2.getUserId());
-			sortName2 = u2.getSortName();
+			sortName2 = u2.getSortName() != null ? u2.getSortName() : "";
+
 		} catch (UserNotDefinedException unde) {
 			log.error("user with id " + submission2.getUserId() + " not defined");
 		}
