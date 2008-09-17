@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+                      http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <name>sakai-assignment2-gdocs</name>
+  <groupId>org.sakaiproject</groupId>
+  <artifactId>sakai-assignment2-gdocs</artifactId>
+  <parent>
+    <groupId>org.sakaiproject</groupId>
+    <artifactId>sakai-assignment2-base</artifactId>
+    <version>2.6.0RC1-SNAPSHOT</version>
+  </parent>
+    <packaging>pom</packaging>
+  <properties>
+    <sakairsf.sakai.version>2.2.x</sakairsf.sakai.version>
+    <rsfutil.version>0.7.3</rsfutil.version>
+  </properties>
+  <repositories>
+    <repository>
+      <id>CARET-Maven2</id>
+      <name>CARET Maven 2 Repository</name>
+      <url>http://www2.caret.cam.ac.uk/maven2</url>
+    </repository>
+  </repositories>  
+  <modules>
+    <module>evolvers</module>
+    <module>templates</module>
+  </modules>
+</project>
