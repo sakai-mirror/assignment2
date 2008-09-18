@@ -1,0 +1,94 @@
+<?xml version="1.0"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="http://maven.apache.org/POM/4.0.0"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <artifactId>sakai-assignment2-base</artifactId>
+        <groupId>org.sakaiproject</groupId>
+        <version>2.6.0RC1-SNAPSHOT</version>
+    </parent>
+    <name>Sakai Assignment2 API</name>
+    <groupId>org.sakaiproject.assignment2</groupId>
+    <artifactId>sakai-assignment2-api</artifactId>
+    <organization>
+        <name>Sakai Project</name>
+        <url>http://www.sakaiproject.org/</url>
+    </organization>
+    <inceptionYear>2007</inceptionYear>
+
+    <!-- you must deploy your API to shared or it will be 
+        inaccessible from your tool -->
+    <packaging>jar</packaging>
+    <properties>
+        <deploy.target>shared</deploy.target>
+    </properties>
+
+    <dependencies>
+
+      <dependency>
+      <groupId>org.sakaiproject.kernel</groupId>
+      <artifactId>sakai-kernel-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.sakaiproject.kernel</groupId>
+      <artifactId>sakai-kernel-util</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.sakaiproject</groupId>
+      <artifactId>generic-dao</artifactId>
+      <version>${sakai.generic-dao.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.sakaiproject</groupId>
+      <artifactId>sakai-taggable-api</artifactId>
+      <version>${sakai.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging</artifactId>
+      <version>1.0.4</version>
+    </dependency>
+    <!--  for Importable -->
+    <dependency>
+      <groupId>org.sakaiproject</groupId>
+      <artifactId>sakai-import-api</artifactId>
+      <version>${sakai.version}</version>
+    </dependency>
+    <!-- for scheduled notifications -->
+    <dependency>
+      <groupId>org.sakaiproject</groupId>
+      <artifactId>sakai-scheduler-api</artifactId>
+      <version>${sakai.version}</version>
+      <scope>provided</scope>
+    </dependency>
+<!-- end for scheduled notifications -->
+
+    </dependencies>
+
+    <build>
+        <sourceDirectory>src/java</sourceDirectory>
+        <resources>
+            <!-- include the readme.txt file and the java source files -->
+            <resource>
+                <directory>${basedir}</directory>
+                <includes>
+                    <include>*.txt</include>
+                    <include>src/**/*.java</include>
+                    <include>src/**/*.html</include>
+                    <include>src/**/*.xml</include>
+                    <include>src/**/*.properties</include>
+                </includes>
+                <filtering>false</filtering>
+            </resource>
+            <resource>
+                <directory>src/java</directory>
+                <includes>
+                    <include>**/*.xml</include>
+                </includes>
+            </resource>
+        </resources>
+    </build>
+</project>

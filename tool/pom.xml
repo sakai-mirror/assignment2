@@ -30,7 +30,14 @@
     </repository>
   </repositories>
   <dependencies>
-    <dependency>
+  
+	  <!-- Assignment2 dependencies -->
+		<dependency>
+			<groupId>org.sakaiproject.assignment2</groupId>
+			<artifactId>sakai-assignment2-api</artifactId>
+			<version>${sakai.version}</version>
+		</dependency>
+		<dependency>
       <groupId>org.sakaiproject.kernel</groupId>
       <artifactId>sakai-kernel-api</artifactId>
     </dependency>
@@ -82,22 +89,10 @@
 <!--org.sakaiprojectsakai-util${sakai.version}-->
 <!--org.sakaiprojectsakai-util-api${sakai.version}provided-->
 <!--org.sakaiprojectsakai-component${sakai.version}provided-->
-    <dependency>
-      <groupId>org.sakaiproject</groupId>
-      <artifactId>sakai-assignment2-logic-api</artifactId>
-      <version>${sakai.version}</version>
-      <scope>provided</scope>
-    </dependency>
 <!--org.sakaiprojectsakai-authz-api${sakai.version}provided-->
 <!--org.sakaiprojectsakai-component-api${sakai.version}provided-->
 <!--org.sakaiprojectsakai-tool-api${sakai.version}provided-->
 <!--org.sakaiprojectsakai-component-api${sakai.version}provided-->
-    <dependency>
-      <groupId>org.sakaiproject</groupId>
-      <artifactId>sakai-assignment2-model</artifactId>
-      <version>${sakai.version}</version>
-      <scope>provided</scope>
-    </dependency>
     <dependency>
       <groupId>org.sakaiproject.entitybroker</groupId>
       <artifactId>entitybroker-api</artifactId>
