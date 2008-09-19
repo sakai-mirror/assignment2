@@ -1,6 +1,6 @@
 /**********************************************************************************
- * $URL$
- * $Id$
+ * $URL: https://source.sakaiproject.org/contrib/assignment2/trunk/api/src/java/org/sakaiproject/assignment2/dao/AssignmentDao.java $
+ * $Id: AssignmentDao.java 53248 2008-09-18 17:33:24Z wagnermr@iupui.edu $
  ***********************************************************************************
  *
  * Copyright (c) 2007 The Sakai Foundation.
@@ -29,14 +29,14 @@ import org.sakaiproject.assignment2.exception.AssignmentNotFoundException;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
-import org.sakaiproject.genericdao.api.CompleteGenericDao;
+import org.sakaiproject.genericdao.api.GeneralGenericDao;
 
 /**
  * Basic DAO functionality for the Assignment2 tool
  * 
  * @author <a href="mailto:wagnermr@iupui.edu">michelle wagner</a>
  */
-public interface AssignmentDao extends CompleteGenericDao {
+public interface AssignmentDao extends GeneralGenericDao {
 
 	/**
 	 * Used to identify the next sort index for new assignments

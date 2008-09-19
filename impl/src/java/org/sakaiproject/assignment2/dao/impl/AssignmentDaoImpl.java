@@ -44,7 +44,7 @@ import org.sakaiproject.assignment2.exception.VersionNotFoundException;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
-import org.sakaiproject.genericdao.hibernate.HibernateCompleteGenericDao;
+import org.sakaiproject.genericdao.hibernate.HibernateGeneralGenericDao;
 import org.springframework.orm.hibernate3.HibernateCallback;
 
 /**
@@ -53,7 +53,7 @@ import org.springframework.orm.hibernate3.HibernateCallback;
  * 
  * @author <a href="mailto:wagnermr@iupui.edu">michelle wagner</a>
  */
-public class AssignmentDaoImpl extends HibernateCompleteGenericDao implements AssignmentDao {
+public class AssignmentDaoImpl extends HibernateGeneralGenericDao implements AssignmentDao {
 
     private static Log log = LogFactory.getLog(AssignmentDaoImpl.class);
     
