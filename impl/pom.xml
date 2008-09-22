@@ -205,7 +205,22 @@
     </dependencies>
 
     <build>
-        <resources />
+        <resources>
+		      <resource>
+		        <directory>${basedir}/src/java</directory>
+		        <includes>
+		          <include>**/*.xml</include>
+		        </includes>
+		        <filtering>false</filtering>
+		      </resource>
+			  <resource>
+		        <directory>${basedir}/../bundle</directory>
+		        <includes>
+		        	<include>**/*.properties</include>
+		        </includes>
+		      </resource>
+		    </resources>
+		    
         <sourceDirectory>src/java</sourceDirectory>
 
         <!-- unit testing -->
