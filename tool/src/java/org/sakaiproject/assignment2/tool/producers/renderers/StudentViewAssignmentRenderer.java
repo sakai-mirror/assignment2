@@ -30,7 +30,11 @@ import java.util.Set;
 import java.util.List;
 import java.util.Locale;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
+import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
+import org.sakaiproject.assignment2.logic.GradebookItem;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentAttachment;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
@@ -71,6 +75,7 @@ import uk.org.ponder.rsf.viewstate.ViewParameters;
 
 
 public class StudentViewAssignmentRenderer {
+    private static Log log = LogFactory.getLog(StudentViewAssignmentRenderer.class);
 
     private Locale locale;
     public void setLocale(Locale locale) {
@@ -110,6 +115,17 @@ public class StudentViewAssignmentRenderer {
     private User currentUser;
     public void setCurrentUser(User currentUser) {
         this.currentUser = currentUser;
+    }
+    
+    private ExternalGradebookLogic externalGradebookLogic;
+    public void setExternalGradebookLogic(
+            ExternalGradebookLogic externalGradebookLogic) {
+        this.externalGradebookLogic = externalGradebookLogic;
+    }
+    
+    private String curContext;
+    public void setCurContext(String curContext) {
+        this.curContext = curContext;
     }
 
     public void makeStudentView(UIContainer tofill, String divID, AssignmentSubmission assignmentSubmission, 
@@ -198,6 +214,33 @@ public class StudentViewAssignmentRenderer {
         }
         else {
             UIMessage.make(joint, "is_graded", "assignment2.student-submit.no_graded");
+        }
+        
+        /*
+         * Points possible : Display if the assignment is 
+         *
+         *  1) graded 
+         *  2) associated with a gradebook item
+         *  3) gradebook entry type is "Points"
+         *  
+         *  TODO FIXME Needs checks for whether the graded item is point based 
+         *  (rather than percentage, pass/fail, etc). We are still working on 
+         *  the best way to integrate this with the gradebook a reasonable
+         *  amount of coupling.
+         */
+        if (assignment.isGraded() && assignment.getGradableObjectId() != null) {
+            try {
+                GradebookItem gradebookItem = 
+                    externalGradebookLogic.getGradebookItemById(curContext, 
+                            assignment.getGradableObjectId());
+                UIOutput.make(joint, "points-possible-row");
+                UIOutput.make(joint, "points-possible", gradebookItem.getPointsPossible().toString());             
+            } catch (IllegalArgumentException iae) {
+                log.warn("Trying to look up grade object that doesn't exist" 
+                        + "context: " + curContext 
+                        + " gradeObjectId: " + assignment.getGradableObjectId() 
+                        + "asnnId: " + assignment.getId());
+            }
         }
         
         //Display Assignment Info

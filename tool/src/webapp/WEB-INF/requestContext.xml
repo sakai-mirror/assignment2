@@ -51,6 +51,8 @@
       <property name="submissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
       <property name="attachmentInputEvolver" ref="AttachmentInputEvolver" />
       <property name="currentUser" ref="sakai-User" />
+      <property name="externalGradebookLogic" ref="org.sakaiproject.assignment2.logic.ExternalGradebookLogic" />
+      <property name="curContext" ref="sakai-Context" />
    </bean>   
    <bean id="AttachmentInputEvolver" class="org.sakaiproject.assignment2.tool.producers.evolvers.AttachmentInputEvolver">
    	  <property name="contentHostingService" ref="org.sakaiproject.content.api.ContentHostingService" />
