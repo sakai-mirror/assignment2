@@ -272,10 +272,6 @@ public class StudentViewAssignmentRenderer {
             UIOutput.make(joint, "remaining-resubmissions", "This functionality in progress");
         }
         
-        /*
-         * Grade
-         */
-        
         
         
         //Display Assignment Info
