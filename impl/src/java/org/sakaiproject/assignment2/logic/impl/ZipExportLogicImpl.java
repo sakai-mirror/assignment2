@@ -4,7 +4,10 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +19,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment2.logic.AssignmentBundleLogic;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
+import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
@@ -84,6 +88,11 @@ public class ZipExportLogicImpl implements ZipExportLogic
 	{
 		this.bundle = bundle;
 	}
+	
+	private AssignmentPermissionLogic permissionLogic;
+	public void setAssignmentPermissionLogic(AssignmentPermissionLogic permissionLogic) {
+		this.permissionLogic = permissionLogic;
+	}
 
 	/* (non-Javadoc)
 	 * @see org.sakaiproject.assignment2.tool.handlerhooks.ZipExporterI#getSubmissionsZip(java.io.OutputStream, java.lang.Long)
@@ -95,12 +104,12 @@ public class ZipExportLogicImpl implements ZipExportLogic
 		if (log.isDebugEnabled())
 			log.debug(this + ": getSubmissionsZip reference=" + assignmentId);
 
-		List<AssignmentSubmission> submissions = assignmentSubmissionLogic
-				.getViewableSubmissionsForAssignmentId(assignment.getId());
-
 		StringBuilder exceptionMessage = new StringBuilder();
 		if (gradebookLogic.isCurrentUserAbleToGrade(assignment.getContextId()))
 		{
+			List<AssignmentSubmission> submissions = assignmentSubmissionLogic
+				.getViewableSubmissionsWithHistoryForAssignmentId(assignment.getId());
+			
 			zipSubmissions(assignment, submissions, outputStream, exceptionMessage);
 
 			if (exceptionMessage.length() > 0)
@@ -114,29 +123,18 @@ public class ZipExportLogicImpl implements ZipExportLogic
 	} // getSubmissionsZip
 
 	protected void zipSubmissions(Assignment2 assignment,
-			List<AssignmentSubmission> submissions, OutputStream outputStream,
+			List<AssignmentSubmission> submissionsWithHistory, OutputStream outputStream,
 			StringBuilder exceptionMessage)
 	{
 		String assignmentTitle = assignment.getTitle();
-		// String assignmentId = assignment.getAssignmentId().toString();
-		String gradeTypeString = bundle
-				.getString("assignment2.assignment_grade-assignment.downloadall.type."
-						+ gradebookLogic.getGradeType(assignment.getContextId()));
+		String contextId = externalLogic.getCurrentContextId();
+		List<String> viewableStudents = permissionLogic.getViewableStudentsForUserForItem(assignment);
+		Map<String, User> userIdUserMap = externalLogic.getUserIdUserMap(viewableStudents);
 		
-		Map<String, GradeInformation> studentIdToGradeMap = new HashMap<String, GradeInformation>();
-		// retrieve all of the grade information for these submissions if
-		// this is a graded assignment
-		if (submissions != null && assignment.isGraded() && assignment.getGradableObjectId() != null) {
-			//first, we need a list of the student ids
-			List<String> studentIds = new ArrayList<String>();
-			for (AssignmentSubmission submission : submissions) {
-				studentIds.add(submission.getUserId());
-			}
-			
-			// now retrieve the grades
-			studentIdToGradeMap = gradebookLogic.getGradeInformationForStudents(externalLogic.getCurrentContextId(),
-					studentIds, assignment);
-		}
+		String formatWithTime = bundle.getString("assignment2.assignment_grade_assignment.downloadall.filename_date_format_with_time");
+		String formatNoTime = bundle.getString("assignment2.assignment_grade_assignment.downloadall.filename_date_format");
+		DateFormat df_withTime = new SimpleDateFormat(formatWithTime, bundle.getLocale());
+		DateFormat df_noTime = new SimpleDateFormat(formatNoTime, bundle.getLocale());
 		
 		try
 		{
@@ -145,170 +143,123 @@ public class ZipExportLogicImpl implements ZipExportLogic
 			// create the folder structure - named after the assignment's title
 			String root = Validator.escapeZipEntry(assignmentTitle) + Entity.SEPARATOR;
 
-			String submittedText = "";
-			if (submissions.isEmpty())
+			if (submissionsWithHistory != null && !submissionsWithHistory.isEmpty())
 			{
-				exceptionMessage.append("There is no submission yet. ");
-			}
-
-			// the buffer used to store grade information
-			StringBuilder gradesBuilder = new StringBuilder(assignmentTitle + ","
-					+ gradeTypeString + "\n\n");
-			gradesBuilder.append(
-					bundle.getString("assignment2.assignment_grade-assignment.downloadall.header"))
-					.append("\n");
-
-			// Create the ZIP file
-			String submittersName = "";
-			int count = 1;
-			for (AssignmentSubmission s : submissions)
-			{
-				submittersName = "";
-				String userId = (String) s.getUserId();
-				AssignmentSubmissionVersion sv = assignmentSubmissionLogic
-						.getCurrentSubmissionByAssignmentIdAndStudentId(
-								assignment.getId(), userId).getCurrentSubmissionVersion();
-
-				if (sv != null && sv.getSubmittedDate() != null)
+				// Create the ZIP file
+				String submittersName = "";
+				for (AssignmentSubmission s : submissionsWithHistory)
 				{
-					User user = externalLogic.getUser(userId);
-					String name = externalLogic.getUserDisplayName(userId);
-					String displayId = user.getDisplayId();
-					String fullName = externalLogic.getUserFullName(userId);
-					String submittersString = name + "(" + displayId + ")";
-					
-					String grade = "";
-					String gradeComment = "";
-					if (assignment.isGraded() && assignment.getGradableObjectId() != null) {
-						GradeInformation gradeInfo = studentIdToGradeMap.get(userId);
-						if (gradeInfo != null) {
-							grade = gradeInfo.getGradebookGrade();
-							gradeComment = gradeInfo.getGradebookComment();
+					User submitterUser = userIdUserMap.get(s.getUserId());
+					if (submitterUser != null) {
+						submittersName = submitterUser.getSortName();
+
+						Set<AssignmentSubmissionVersion> versionHistory = s.getSubmissionHistorySet();
+
+						if (versionHistory != null && !versionHistory.isEmpty()) {
+
+							for (AssignmentSubmissionVersion version : versionHistory) {
+								// only include submitted versions
+								if (version.getSubmittedDate() != null) {
+									// we will create a folder for each submitted version for
+									// this student
+									String versionFolder = root + "/" + submittersName + "/" 
+									+ df_withTime.format(version.getSubmittedDate())
+									+ "/";
+									ZipEntry versionFolderEntry = new ZipEntry(
+											versionFolder);
+									out.putNextEntry(versionFolderEntry);
+									out.flush();
+									out.closeEntry();
+
+									// inside this folder, we will put the submission info
+									if (version.getSubmittedText() != null && version.getSubmittedText().trim().length() > 0)
+									{
+										// create the text file only when a text
+										// exists
+										ZipEntry textEntry = new ZipEntry(versionFolder
+												+ bundle.getString("assignment2.assignment_grade_assignment.downloadall.filename_submitted_text")
+												+ ".txt");
+										out.putNextEntry(textEntry);
+										byte[] text = version.getSubmittedText().getBytes();
+										out.write(text);
+										textEntry.setSize(text.length);
+										out.closeEntry();
+									}
+
+									// add the submission attachments
+									if (version.getSubmissionAttachSet() != null && !version.getSubmissionAttachSet().isEmpty()) {
+										zipAttachments(out, root + submittersName,
+												versionFolder, version.getSubmissionAttachSet());
+									}
+								}
+							}
 						}
 					}
-					gradesBuilder.append(userId).append(",").append(name).append(",").append(displayId).append(",")
-							.append(fullName).append(",").append(grade).append(",").append(gradeComment)
-							.append("\n");
+				}
+			}
+			
+			if (assignment.isGraded() && assignment.getGradableObjectId() != null) {
+				// the buffer used to store grade information
+				StringBuilder gradesBuilder = new StringBuilder();
+				gradesBuilder.append(
+						bundle.getFormattedMessage("assignment2.assignment_grade-assignment.downloadall.header",
+								new Object[] {assignmentTitle}))
+								.append("\n");
 
-					if (StringUtil.trimToNull(submittersString) != null)
-					{
-						submittersName = submittersName.concat(StringUtil
-								.trimToNull(submittersString));
-						submittedText = sv.getSubmittedText();
-
-						boolean added = false;
-						while (!added)
-						{
-							try
-							{
-								submittersName = submittersName.concat("/");
-								// create the folder structure - named after the
-								// submitter's name
-								if (submittedText != null && submittedText != "")
-								{
-									// create the text file only when a text
-									// submission is allowed
-									ZipEntry textEntry = new ZipEntry(root
-											+ submittersName + submittersString
-											+ "_submissionText.txt");
-									out.putNextEntry(textEntry);
-									byte[] text = submittedText.getBytes();
-									out.write(text);
-									textEntry.setSize(text.length);
-									out.closeEntry();
+				// now iterate through all viewable students in this class to create the grades file
+				
+				if (viewableStudents != null && !viewableStudents.isEmpty()) {
+					// get the grade information
+					Map<String, GradeInformation> userIdGradeMap = gradebookLogic.getGradeInformationForStudents(contextId, viewableStudents, assignment);
+					
+					for (String studentId : viewableStudents) {
+						// get their User info
+						User student = userIdUserMap.get(studentId);
+						if (student != null) {
+							gradesBuilder.append("\"");
+							gradesBuilder.append(student.getDisplayId());
+							gradesBuilder.append("\"");
+							gradesBuilder.append(",");
+							gradesBuilder.append("\"");
+							gradesBuilder.append(student.getSortName());
+							gradesBuilder.append("\"");
+							gradesBuilder.append(",");
+							
+							// now check for grade information
+							GradeInformation gradeInfo = userIdGradeMap.get(studentId);
+							if (gradeInfo != null) {
+								String gradebookGrade = "";
+								String gradebookComment = "";
+								
+								if (gradeInfo.getGradebookGrade() != null) {
+									gradebookGrade = gradeInfo.getGradebookGrade();
 								}
-
-								// Write the timestamp for the submission
-								ZipEntry textEntry = new ZipEntry(root + submittersName
-										+ "timestamp.txt");
-								out.putNextEntry(textEntry);
-								byte[] b = (sv.getSubmittedDate().toString()+"\n"+userId).getBytes();
-								out.write(b);
-								textEntry.setSize(b.length);
-								out.closeEntry();
-
-								/* Comments go in the csv now, and this was reading the wrong thing anyway
-								// the comments.txt file to show instructor's
-								// comments
-								ZipEntry ctextEntry = new ZipEntry(root + submittersName
-										+ "comments.txt");
-								out.putNextEntry(ctextEntry);
-								byte[] cb = FormattedText.encodeUnicode(
-										sv.getFeedbackNotes()).getBytes();
-								out.write(cb);
-								ctextEntry.setSize(cb.length);
-								out.closeEntry();
-								*/
-								
-								// the feedback.txt file
-								ZipEntry fbtextEntry = new ZipEntry(root + submittersName + "feedback.txt");
-								out.putNextEntry(fbtextEntry);
-								byte[] fbb = FormattedText.encodeUnicode(sv.getFeedbackNotes()).getBytes();
-								out.write(fbb);
-								fbtextEntry.setSize(fbb.length);
-								out.closeEntry();
-								
-								// create an attachment folder for the feedback
-								// attachments
-								String feedbackSubAttachmentFolder = root
-										+ submittersName
-										+ bundle
-												.getString("assignment2.assignment_grade-assignment.downloadall.feedbackdir")
-										+ "/";
-								ZipEntry feedbackSubAttachmentFolderEntry = new ZipEntry(
-										feedbackSubAttachmentFolder);
-								out.putNextEntry(feedbackSubAttachmentFolderEntry);
-								out.flush();
-								out.closeEntry();
-
-								// create a attachment folder for the submission
-								// attachments
-								String sSubAttachmentFolder = root
-										+ submittersName
-										+ bundle
-												.getString("assignment2.assignment_grade-assignment.downloadall.submdir")
-										+ "/";
-								ZipEntry sSubAttachmentFolderEntry = new ZipEntry(
-										sSubAttachmentFolder);
-								out.putNextEntry(sSubAttachmentFolderEntry);
-								out.flush();
-								out.closeEntry();
-								// add all submission attachment into the
-								// submission attachment folder
-								zipAttachments(out, root + submittersName,
-										sSubAttachmentFolder, sv.getSubmissionAttachSet());
-								// add all feedback attachment folder
-								zipAttachments(out, root + submittersName,
-										feedbackSubAttachmentFolder, sv
-												.getFeedbackAttachSet());
-
-								added = true;
+								if (gradeInfo.getGradebookComment() != null) {
+									gradebookComment = gradeInfo.getGradebookComment();
+								}
+								gradesBuilder.append("\"");
+								gradesBuilder.append(gradebookGrade);
+								gradesBuilder.append("\"");
+								gradesBuilder.append(",");
+								gradesBuilder.append("\"");
+								gradesBuilder.append(gradebookComment);
+								gradesBuilder.append("\"");
+								gradesBuilder.append(",");
 							}
-							catch (IOException e)
-							{
-								exceptionMessage
-										.append("Can not establish the IO to create zip file for user "
-												+ root + submittersName);
-								log
-										.debug(this
-												+ ": getSubmissionsZip--IOException unable to create the zip file for user"
-												+ root + submittersName);
-								submittersName = submittersName.substring(0,
-										submittersName.length() - 1)
-										+ "_" + count++;
-							}
-						} // while
-					} // if
-				} // if
-			} // for submissions
-
-			// create a grades.csv file into zip
-			ZipEntry gradesCSVEntry = new ZipEntry(root + "grades.csv");
-			out.putNextEntry(gradesCSVEntry);
-			byte[] grades = gradesBuilder.toString().getBytes();
-			out.write(grades);
-			gradesCSVEntry.setSize(grades.length);
-			out.closeEntry();
+							
+							gradesBuilder.append("\n");
+						}
+					}
+			
+					// create a grades.csv file into zip
+					ZipEntry gradesCSVEntry = new ZipEntry(root + assignmentTitle + "-" + contextId + "_" + df_noTime.format(new Date()) + ".csv");
+					out.putNextEntry(gradesCSVEntry);
+					byte[] grades = gradesBuilder.toString().getBytes();
+					out.write(grades);
+					gradesCSVEntry.setSize(grades.length);
+					out.closeEntry();
+				}
+			}
 
 			// Complete the ZIP file
 			out.finish();
@@ -317,7 +268,7 @@ public class ZipExportLogicImpl implements ZipExportLogic
 		}
 		catch (IOException e)
 		{
-			exceptionMessage.append("Can not establish the IO to create zip file. ");
+			exceptionMessage.append("Cannot establish the IO to create zip file. ");
 			log
 					.debug(this
 							+ ": getSubmissionsZip--IOException unable to create the zip file for assignment "

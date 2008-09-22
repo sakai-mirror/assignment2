@@ -181,6 +181,14 @@ public interface ExternalLogic {
     
     /**
      * 
+     * @param userIds
+     * @return given a list of userIds, returns a map of userId to the associated
+     * User object
+     */
+    public Map<String, User> getUserIdUserMap(List<String> userIds);
+    
+    /**
+     * 
      * @param sizeVal
      * @return a string representing a human readable format of the file size
      */

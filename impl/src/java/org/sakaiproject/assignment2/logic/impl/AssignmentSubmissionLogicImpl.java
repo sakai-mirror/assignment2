@@ -445,7 +445,15 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		}
 	}
 	
+	public List<AssignmentSubmission> getViewableSubmissionsWithHistoryForAssignmentId(Long assignmentId) {
+		return getViewableSubmissions(assignmentId, true);
+	}
+	
 	public List<AssignmentSubmission> getViewableSubmissionsForAssignmentId(Long assignmentId) {
+		return getViewableSubmissions(assignmentId, false);
+	}
+	
+	private List<AssignmentSubmission> getViewableSubmissions(Long assignmentId, boolean includeVersionHistory) {
 		if (assignmentId == null) {
 			throw new IllegalArgumentException("null assignmentId passed to getViewableSubmissionsForAssignmentId");
 		}
@@ -463,7 +471,13 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		if (viewableStudents != null && !viewableStudents.isEmpty()) {
 			
 			// get the submissions for these students
-			Set<AssignmentSubmission> existingSubmissions = dao.getCurrentSubmissionsForStudentsForAssignment(viewableStudents, assignment);
+			Set<AssignmentSubmission> existingSubmissions;
+			
+			if (includeVersionHistory) {
+				existingSubmissions = dao.getSubmissionsWithVersionHistoryForStudentListAndAssignment(viewableStudents, assignment);
+			} else {
+				existingSubmissions = dao.getCurrentSubmissionsForStudentsForAssignment(viewableStudents, assignment);
+			}
 
 			Map<String, AssignmentSubmission> studentIdSubmissionMap = new HashMap<String, AssignmentSubmission>();
 			if (existingSubmissions != null) {

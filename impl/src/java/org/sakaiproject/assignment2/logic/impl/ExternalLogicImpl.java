@@ -326,4 +326,20 @@ public class ExternalLogicImpl implements ExternalLogic {
 		return finalVal;
 
 	}
+	
+	public Map<String, User> getUserIdUserMap(List<String> userIds) {
+		Map<String, User> userIdUserMap = new HashMap<String, User>();
+		if (userIds != null) {
+			List<User> userList = new ArrayList<User>();
+			userList = userDirectoryService.getUsers(userIds);
+			
+			if (userList != null) {
+				for (User user : userList) {
+					userIdUserMap.put(user.getId(), user);
+				}
+			}
+		}
+		
+		return userIdUserMap;
+	}
 }

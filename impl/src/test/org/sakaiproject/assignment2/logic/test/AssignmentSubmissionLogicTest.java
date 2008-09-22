@@ -489,6 +489,80 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
     	} catch (SecurityException se) {}
     }
     
+    public void testGetViewableSubmissionsWithHistoryForAssignmentId() {
+    	// try a null assignmentId
+    	try {
+    		submissionLogic.getViewableSubmissionsWithHistoryForAssignmentId(null);
+    		fail("did not catch null assignmentId passed to getViewableSubmissionsWithHistoryForAssignmentId");
+    	} catch (IllegalArgumentException iae) {}
+    	
+    	// try a non-existent assignmentId
+    	try {
+    		submissionLogic.getViewableSubmissionsWithHistoryForAssignmentId(12345L);
+    		fail("did not catch non-existent id passed to getViewableSubmissionsWithHistoryForAssignmentId");
+    	} catch (AssignmentNotFoundException anfe) {}
+    	
+    	// start as instructor
+    	externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
+    	// we should get 2 students back for a1 b/c group restrictions
+    	List<AssignmentSubmission> subList = submissionLogic.getViewableSubmissionsWithHistoryForAssignmentId(testData.a1Id);
+    	assertTrue(subList.size() == 2);
+    	assertNotNull(subList.get(0).getSubmissionHistorySet());
+    	for (int i=0; i<subList.size(); i++) {
+    		AssignmentSubmission thisSub = (AssignmentSubmission) subList.get(i);
+    		if (thisSub.getUserId().equals(AssignmentTestDataLoad.STUDENT1_UID)) {
+    			// there should be 3 versions in the history
+    			assertEquals(1, thisSub.getSubmissionHistorySet().size());
+    		} else if (thisSub.getUserId().equals(AssignmentTestDataLoad.STUDENT2_UID)) {
+    			assertEquals(3, thisSub.getSubmissionHistorySet().size());
+    		} else {
+    			throw new IllegalArgumentException("Unknown/Invalid user returned by testGetViewableSubmissionsWithHistoryForAssignmentId!");
+    		}
+    	}
+    	
+    	// we should get 3 for a2 b/c no restrictions
+    	subList = submissionLogic.getViewableSubmissionsWithHistoryForAssignmentId(testData.a2Id);
+    	assertTrue(subList.size() == 3);
+    	// we should get 3 for a3 b/c no restrictions
+    	subList = submissionLogic.getViewableSubmissionsWithHistoryForAssignmentId(testData.a3Id);
+    	assertTrue(subList.size() == 3);
+    	// let's make sure the submission for st1 is restricted b/c draft
+    	for (AssignmentSubmission sub : subList) {
+    		if (sub.getUserId().equals(AssignmentTestDataLoad.STUDENT1_UID)) {
+    			assertEquals(sub.getCurrentSubmissionVersion().getSubmittedText(), "");
+    			assertTrue(sub.getCurrentSubmissionVersion().getSubmissionAttachSet().isEmpty());
+    		}
+    	}
+		
+    	// we should get 1 for a4 b/c group restrictions
+    	subList = submissionLogic.getViewableSubmissionsWithHistoryForAssignmentId(testData.a4Id);
+    	assertTrue(subList.size() == 1);
+    	
+    	// now become ta
+    	externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
+    	// we should get 1 student back for a1 b/c only allowed to view group 1
+    	subList = submissionLogic.getViewableSubmissionsWithHistoryForAssignmentId(testData.a1Id);
+    	assertTrue(subList.size() == 1);
+    	// we should still get 1 for a2 b/c no group restrictions for this assign
+    	subList = submissionLogic.getViewableSubmissionsWithHistoryForAssignmentId(testData.a2Id);
+    	assertTrue(subList.size() == 1);
+    	// we should still get 1 for a2 b/c no group restrictions for this assign
+    	subList = submissionLogic.getViewableSubmissionsWithHistoryForAssignmentId(testData.a3Id);
+    	assertTrue(subList.size() == 1);
+    	//TODO grader permissions
+    	// should return no students
+    	subList = submissionLogic.getViewableSubmissionsWithHistoryForAssignmentId(testData.a4Id);
+    	assertTrue(subList.isEmpty());
+    	
+    	// students should get SecurityException
+    	externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT1_UID);
+    	try {
+    		subList = submissionLogic.getViewableSubmissionsWithHistoryForAssignmentId(testData.a1Id);
+    		fail("Did not catch student attempting to access submissions via getViewableSubmissionsWithHistoryForAssignmentId");
+    	} catch (SecurityException se) {}
+
+    }
+    
     public void testGetViewableSubmissionsForAssignmentId() {
     	// try a null assignmentId
     	try {

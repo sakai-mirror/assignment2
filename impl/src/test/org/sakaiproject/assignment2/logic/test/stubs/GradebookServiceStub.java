@@ -837,4 +837,10 @@ public class GradebookServiceStub implements GradebookService {
 		
 	}
 
+	public void finalizeGrades(String gradebookUid) throws GradebookNotFoundException
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
 }

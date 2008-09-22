@@ -137,8 +137,8 @@ public interface AssignmentSubmissionLogic {
 	 * 
 	 * @param assignmentId
 	 * @return Non-null list.  All AssignmentSubmissions for this assignmentId that the current
-	 * user is allowed to view or grade with the currentVersion information. If
-	 * no submission exists yet, returns an empty AssigmentSubmission rec for the
+	 * user is allowed to view or grade with the currentVersion information. Version history is not populated.
+	 * If no submission exists yet, returns an empty AssigmentSubmission rec for the
 	 * student. If the curr version is draft, will not
 	 * populate the submissionText or submissionAttachmentSet. Because of these 
 	 * changes that we don't want to save, the returned submissions were evicted 
@@ -147,6 +147,21 @@ public interface AssignmentSubmissionLogic {
 	 * @throws AssignmentNotFoundException if no assignment exists with the given assignmentId
 	 */
 	public List<AssignmentSubmission> getViewableSubmissionsForAssignmentId(Long assignmentId);
+	
+	/**
+	 * 
+	 * @param assignmentId
+	 * @return Non-null list.  All AssignmentSubmissions for this assignmentId that the current
+	 * user is allowed to view or grade with the currentVersion information and version history populated. If
+	 * no submission exists yet, returns an empty AssigmentSubmission rec for the
+	 * student. If the curr version is draft, will not
+	 * populate the submissionText or submissionAttachmentSet. Because of these 
+	 * changes that we don't want to save, the returned submissions were evicted 
+	 * from the session and are not persistent.
+	 * @throws SecurityException if not allowed to view or grade submissions
+	 * @throws AssignmentNotFoundException if no assignment exists with the given assignmentId
+	 */
+	public List<AssignmentSubmission> getViewableSubmissionsWithHistoryForAssignmentId(Long assignmentId);
 	
 	/**
 	 * @param assignments - list of assignments that you want this student's status for
