@@ -243,6 +243,15 @@ public class StudentViewAssignmentRenderer {
                     UIOutput.make(joint, "grade-row");
                     UIOutput.make(joint, "grade", grade);
                 }
+                
+                String comment = externalGradebookLogic.getStudentGradeCommentForItem(
+                        curContext, currentUser.getId(), assignment.getGradableObjectId());
+                
+                if (comment != null) {
+                    UIOutput.make(joint, "comment-row");
+                    UIOutput.make(joint, "comment", comment);
+                }
+                
             } catch (IllegalArgumentException iae) {
                 log.warn("Trying to look up grade object that doesn't exist" 
                         + "context: " + curContext 
