@@ -188,13 +188,6 @@ public interface ExternalGradebookLogic {
 	public GradeInformation getGradeInformationForSubmission(String contextId, AssignmentSubmission submission);
 	
 	/**
-	 * 
-	 * @param contextId
-	 * @return the type of grade
-	 */
-	public String getGradeType(String contextId);
-	
-	/**
 	 * Create a gradebook item in the gradebook tool with the given information.
 	 * @param contextId
 	 * @param title

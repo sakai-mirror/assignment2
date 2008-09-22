@@ -379,11 +379,6 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
     	
     	return gradeInfo;
     }
-
-	public String getGradeType(String contextId)
-	{
-		return "" + gradebookService.getGradeEntryType(contextId);
-	}
 	
 	public Long createGbItemInGradebook(String contextId, String title, Double pointsPossible, Date dueDate,
 			boolean releasedToStudents, boolean countedInCourseGrade) {
