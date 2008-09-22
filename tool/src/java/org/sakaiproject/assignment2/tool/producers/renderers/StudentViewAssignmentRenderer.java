@@ -234,7 +234,15 @@ public class StudentViewAssignmentRenderer {
                     externalGradebookLogic.getGradebookItemById(curContext, 
                             assignment.getGradableObjectId());
                 UIOutput.make(joint, "points-possible-row");
-                UIOutput.make(joint, "points-possible", gradebookItem.getPointsPossible().toString());             
+                UIOutput.make(joint, "points-possible", gradebookItem.getPointsPossible().toString());      
+                
+                // Render the graded information if it's available.
+                String grade = externalGradebookLogic.getStudentGradeForItem(
+                        curContext, currentUser.getId(), assignment.getGradableObjectId());
+                if (grade != null) {
+                    UIOutput.make(joint, "grade-row");
+                    UIOutput.make(joint, "grade", grade);
+                }
             } catch (IllegalArgumentException iae) {
                 log.warn("Trying to look up grade object that doesn't exist" 
                         + "context: " + curContext 
@@ -263,6 +271,11 @@ public class StudentViewAssignmentRenderer {
             //TODO FIXME Michelle is adding in a Logic method to get this info.
             UIOutput.make(joint, "remaining-resubmissions", "This functionality in progress");
         }
+        
+        /*
+         * Grade
+         */
+        
         
         
         //Display Assignment Info
