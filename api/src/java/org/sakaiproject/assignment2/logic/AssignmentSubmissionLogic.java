@@ -290,4 +290,14 @@ public interface AssignmentSubmissionLogic {
 	 * one submission for the given assignment
 	 */
 	public int getNumStudentsWithASubmission(Assignment2 assignment, List<String> studentIdList);
+	
+	/**
+	 * Will update the "feedbackLastViewed" property for each version in the given versionIdList
+	 * to the current date and time if feedback has been released for the version. 
+	 * This allows you to mark that the student has viewed the feedback for these versions
+	 * @param submissionId
+	 * @param versionIdList
+	 * @throws SecurityException if the current user is not the submitter 
+	 */
+	public void markFeedbackAsViewed(Long submissionId, List<Long> versionIdList);
 }

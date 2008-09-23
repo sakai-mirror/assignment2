@@ -49,6 +49,7 @@ public class AssignmentSubmissionVersion implements FeedbackVersion {
 	private Date modifiedDate;
 	private String lastFeedbackSubmittedBy;
 	private Date lastFeedbackDate;
+	private Date feedbackLastViewed;
 	private int optimisticVersion;
 	private Set<FeedbackAttachment> feedbackAttachSet;
 	private Set<SubmissionAttachment> submissionAttachSet;
@@ -273,6 +274,24 @@ public class AssignmentSubmissionVersion implements FeedbackVersion {
 	 */
 	public void setLastFeedbackDate(Date lastFeedbackDate) {
 		this.lastFeedbackDate = lastFeedbackDate;
+	}
+	
+	/**
+	 * 
+	 * @return the date and time this feedback was last viewed by this student
+	 */
+	public Date getFeedbackLastViewed()
+	{
+		return feedbackLastViewed;
+	}
+
+	/**
+	 * the date and time this feedback was last viewed by this student
+	 * @param feedbackLastViewed
+	 */
+	public void setFeedbackLastViewed(Date feedbackLastViewed)
+	{
+		this.feedbackLastViewed = feedbackLastViewed;
 	}
 	
 	/* ************* Other information ************* */

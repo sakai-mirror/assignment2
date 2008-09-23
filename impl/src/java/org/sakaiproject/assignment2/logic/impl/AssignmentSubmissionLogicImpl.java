@@ -1078,4 +1078,51 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		
 		return dao.getNumStudentsWithASubmission(assignment, studentIdList);
 	}
+	
+	public void markFeedbackAsViewed(Long submissionId, List<Long> versionIdList) {
+		if (submissionId == null) {
+			throw new IllegalArgumentException("Null submissionId passed to markFeedbackAsViewed");
+		}
+		
+		if (versionIdList != null) {
+			// retrieve the submission and version history
+			AssignmentSubmission subWithHistory = dao.getSubmissionWithVersionHistoryById(submissionId);
+			if (subWithHistory == null) {
+				throw new SubmissionNotFoundException("No submission exists with id " + submissionId);
+			}
+			
+			String currentUserId = externalLogic.getCurrentUserId();
+			if (!currentUserId.equals(subWithHistory.getUserId())) {
+				throw new SecurityException("User " + currentUserId + " attempted to mark " +
+						"feedback as viewed for student " + subWithHistory.getUserId());
+			}
+			
+			if (subWithHistory.getSubmissionHistorySet() != null) {
+				Set<AssignmentSubmissionVersion> updatedVersions = new HashSet<AssignmentSubmissionVersion>();
+				Date now = new Date();
+				
+				for (AssignmentSubmissionVersion existingVersion : subWithHistory.getSubmissionHistorySet()) {
+					if (versionIdList.contains(existingVersion.getId())) {
+						// double check that this feedback has actually been released
+						if (existingVersion.getFeedbackReleasedDate() != null && 
+								existingVersion.getFeedbackReleasedDate().before(now)) {
+							// this version needs to be marked as viewed and updated
+							existingVersion.setFeedbackLastViewed(now);
+							updatedVersions.add(existingVersion);
+						} else {
+							if (log.isDebugEnabled()) log.debug("Version " + existingVersion.getId() +
+									" was not marked as read b/c feedback has not been released yet");
+						}
+					}
+				}
+				
+				if (!updatedVersions.isEmpty()) {
+					dao.saveSet(updatedVersions);
+				}
+				
+				if (log.isDebugEnabled()) log.debug(updatedVersions.size() + 
+				" versions marked as feedback viewed");
+			}
+		}
+	}
 }

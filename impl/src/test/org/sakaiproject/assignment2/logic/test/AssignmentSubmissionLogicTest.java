@@ -1181,4 +1181,61 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
 		// should show up 0 b/c not submitted
 		assertEquals(0, submissionLogic.getNumSubmittedVersions(AssignmentTestDataLoad.STUDENT3_UID, testData.a1Id));
 	}
+	
+	public void testMarkFeedbackAsViewed() {
+		// try a null submissionId
+		try {
+			submissionLogic.markFeedbackAsViewed(null, new ArrayList<Long>());
+			fail("Did not catch null submissionId passed to markFeedbackAsViewed");
+		} catch (IllegalArgumentException iae) {}
+		
+		// try a null list - should do nothing
+		submissionLogic.markFeedbackAsViewed(testData.st1a1Submission.getId(), null);
+		
+		// st2 has 3 versions - let's mark the 1st and 3rd versions as read
+		List<Long> versionsToUpdate = new ArrayList<Long>();
+		versionsToUpdate.add(testData.st2a1CurrVersion.getId());
+		versionsToUpdate.add(testData.st2a1Version1.getId());
+		
+		// try marking feedback for someone else
+		externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
+		try {
+			submissionLogic.markFeedbackAsViewed(testData.st1a1Submission.getId(), versionsToUpdate);
+			fail("Did not catch attempt to mark another user's feedback as read!");
+		} catch (SecurityException se) {}
+		
+		// set the user to student 2
+		externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT2_UID);
+		submissionLogic.markFeedbackAsViewed(testData.st2a1Submission.getId(), versionsToUpdate);
+		
+		// since feedback has not been released none of these should have a value
+		// in feedbackLastViewed yet
+		AssignmentSubmission st2a1SubWithHistory = dao.getSubmissionWithVersionHistoryById(testData.st2a1Submission.getId());
+		for (AssignmentSubmissionVersion version : st2a1SubWithHistory.getSubmissionHistorySet()) {
+			assertNull(version.getFeedbackLastViewed());
+		}
+
+		// set the feedback as released on version 1 and 3
+		testData.st2a1Version1 = dao.getAssignmentSubmissionVersionByIdWithAttachments(testData.st2a1Version1.getId());
+		testData.st2a1Version1.setFeedbackReleasedDate(new Date());
+		dao.save(testData.st2a1Version1);
+		
+		testData.st2a1CurrVersion = dao.getAssignmentSubmissionVersionByIdWithAttachments(testData.st2a1CurrVersion.getId());
+		testData.st2a1CurrVersion.setFeedbackReleasedDate(new Date());
+		dao.save(testData.st2a1CurrVersion);
+		
+		// try marking as read again
+		submissionLogic.markFeedbackAsViewed(testData.st2a1Submission.getId(), versionsToUpdate);
+		st2a1SubWithHistory = dao.getSubmissionWithVersionHistoryById(testData.st2a1Submission.getId());
+		for (AssignmentSubmissionVersion version : st2a1SubWithHistory.getSubmissionHistorySet()) {
+			if (version.getId().equals(testData.st2a1Version1.getId())
+					|| version.getId().equals(testData.st2a1CurrVersion.getId())) {
+				assertNotNull(version.getFeedbackLastViewed());
+			} else if (version.getId().equals(testData.st2a1Version2.getId())) {
+				assertNull(version.getFeedbackLastViewed());
+			} else {
+				throw new IllegalArgumentException("Invalid version returned while checking markFeedbackAsViewed!");
+			}
+		}
+	}
 }
