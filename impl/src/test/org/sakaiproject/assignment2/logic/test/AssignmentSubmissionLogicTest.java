@@ -689,6 +689,126 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
     	status = submissionLogic.getSubmissionStatusConstantForCurrentVersion(testData.st1a1CurrVersion, dueDate);
     	assertTrue(status.equals(AssignmentConstants.SUBMISSION_SUBMITTED));
     }
+    
+    public void testGetNumberOfRemainingSubmissionsForStudent() {
+    	// try a null student
+		try {
+			submissionLogic.getNumberOfRemainingSubmissionsForStudent(null, testData.a1Id);
+			fail("did not catch null studentId passed to getNumberOfRemainingSubmissionsForStudent");
+		} catch (IllegalArgumentException iae) {}
+		
+		// try a null assignment
+		try {
+			submissionLogic.getNumberOfRemainingSubmissionsForStudent(AssignmentTestDataLoad.STUDENT1_UID, null);
+			fail("did not catch null assignmentId passed to getNumberOfRemainingSubmissionsForStudent");
+		} catch (IllegalArgumentException iae) {}
+		
+		// try one with a submission already and no resubmission
+		int numRemaining = submissionLogic.getNumberOfRemainingSubmissionsForStudent(
+				AssignmentTestDataLoad.STUDENT1_UID, testData.a1Id);
+		assertEquals(0, numRemaining);
+		
+		// let's allow resubmission on the assignment level for assign1.
+		// allow 3 submissions - this means st1 will still be open but not st2
+		externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
+		Assignment2 assign1 = dao.getAssignmentByIdWithGroups(testData.a1Id);
+		assign1.setNumSubmissionsAllowed(3);
+		assign1.setAcceptUntilDate(null);
+		assignmentLogic.saveAssignment(assign1);
+		
+		// st 1 only has one submission, so still open
+		numRemaining = submissionLogic.getNumberOfRemainingSubmissionsForStudent(
+				AssignmentTestDataLoad.STUDENT1_UID, testData.a1Id);
+		assertEquals(2, numRemaining);
+		// st 2 already has 3 submissions, so closed
+		numRemaining = submissionLogic.getNumberOfRemainingSubmissionsForStudent(
+				AssignmentTestDataLoad.STUDENT2_UID, testData.a1Id);
+		assertEquals(0, numRemaining);
+		
+		// now let's set resubmission on the submission level - increase allowed # to 4
+		// st 2 only has 3 submissions
+		testData.st2a1CurrVersion = dao.getAssignmentSubmissionVersionByIdWithAttachments(testData.st2a1CurrVersion.getId());
+		submissionLogic.saveInstructorFeedback(testData.st2a1CurrVersion.getId(),
+				AssignmentTestDataLoad.STUDENT2_UID, testData.a1, 4, null,
+				"blah", "notes", null, testData.st2a1CurrVersion.getFeedbackAttachSet());
+		numRemaining = submissionLogic.getNumberOfRemainingSubmissionsForStudent(
+				AssignmentTestDataLoad.STUDENT2_UID, testData.a1Id);
+		assertEquals(1, numRemaining);
+		
+		// let's make a draft submission to double check it is still open
+		externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT2_UID);
+		submissionLogic.saveStudentSubmission(AssignmentTestDataLoad.STUDENT2_UID, testData.a1, true, "blah", null);
+		numRemaining = submissionLogic.getNumberOfRemainingSubmissionsForStudent(
+				AssignmentTestDataLoad.STUDENT2_UID, testData.a1Id);
+		assertEquals(1, numRemaining);
+		
+		externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
+		
+		// now let's restrict it by date on the submission level
+		Calendar cal = Calendar.getInstance();
+    	cal.set(2005, 10, 01);
+    	Date resubmitCloseTime = cal.getTime();
+    	submissionLogic.saveInstructorFeedback(testData.st2a1CurrVersion.getId(),
+				AssignmentTestDataLoad.STUDENT2_UID, testData.a1, 4, resubmitCloseTime,
+				"blah", "notes", null, testData.st2a1CurrVersion.getFeedbackAttachSet());
+    	// should be closed even though num submissions not reached
+    	numRemaining = submissionLogic.getNumberOfRemainingSubmissionsForStudent(
+				AssignmentTestDataLoad.STUDENT2_UID, testData.a1Id);
+		assertEquals(0, numRemaining);
+		// should still be open for student1 b/c we haven't changed their submission
+		numRemaining = submissionLogic.getNumberOfRemainingSubmissionsForStudent(
+				AssignmentTestDataLoad.STUDENT1_UID, testData.a1Id);
+		assertEquals(2, numRemaining);
+		
+		// let's allow resubmission on the assignment level - should not affect it
+		// since submission level trumps
+		assign1.setNumSubmissionsAllowed(4);
+		assignmentLogic.saveAssignment(assign1);
+		
+		numRemaining = submissionLogic.getNumberOfRemainingSubmissionsForStudent(
+				AssignmentTestDataLoad.STUDENT2_UID, testData.a1Id);
+		assertEquals(0, numRemaining);
+		// there are no submission-level settings,so use assignment-level
+		numRemaining = submissionLogic.getNumberOfRemainingSubmissionsForStudent(
+				AssignmentTestDataLoad.STUDENT1_UID, testData.a1Id);
+		assertEquals(3, numRemaining);
+		
+		// let's make this assignment not open yet
+    	cal.set(2020, 10, 01);
+    	Date assignOpenTime = cal.getTime();
+    	assign1.setOpenDate(assignOpenTime);
+    	assignmentLogic.saveAssignment(assign1);
+    	// should be closed for both
+    	numRemaining = submissionLogic.getNumberOfRemainingSubmissionsForStudent(
+				AssignmentTestDataLoad.STUDENT2_UID, testData.a1Id);
+    	assertEquals(0, numRemaining);
+		numRemaining = submissionLogic.getNumberOfRemainingSubmissionsForStudent(
+				AssignmentTestDataLoad.STUDENT1_UID, testData.a1Id);
+		assertEquals(0, numRemaining);
+		
+		// open it back up
+		// let's restrict it by date on the assign level
+		cal.set(2000, 10, 01);
+		assignOpenTime = cal.getTime();
+		assign1.setOpenDate(assignOpenTime);
+		assign1.setAcceptUntilDate(resubmitCloseTime);
+		assignmentLogic.saveAssignment(assign1);
+		
+
+		// let's open up on the submission level for student 2
+		submissionLogic.saveInstructorFeedback(testData.st2a1CurrVersion.getId(),
+				AssignmentTestDataLoad.STUDENT2_UID, testData.a1, 4, null,
+				"blah", "notes", null, testData.st2a1CurrVersion.getFeedbackAttachSet());
+		
+		// student 1 should not be able to submit b/c of assignment-level restriction
+		// but student 2 can
+		numRemaining = submissionLogic.getNumberOfRemainingSubmissionsForStudent(
+				AssignmentTestDataLoad.STUDENT2_UID, testData.a1Id);
+		assertEquals(1, numRemaining);
+		numRemaining = submissionLogic.getNumberOfRemainingSubmissionsForStudent(
+				AssignmentTestDataLoad.STUDENT1_UID, testData.a1Id);
+		assertEquals(0, numRemaining);
+    }
    
     
 	public void testSubmissionIsOpenForStudentForAssignment() {
@@ -764,7 +884,7 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
 		// since submission level trumps
 		assign1.setNumSubmissionsAllowed(4);
 		assignmentLogic.saveAssignment(assign1);
-		// should be open for both
+		
 		open = submissionLogic.submissionIsOpenForStudentForAssignment(
 				AssignmentTestDataLoad.STUDENT2_UID, testData.a1Id);
 		assertFalse(open);

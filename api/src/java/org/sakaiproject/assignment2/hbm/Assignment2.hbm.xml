@@ -88,8 +88,8 @@
         	<column name="EVENT_ID" length="99" />
         </property>
         <!-- restrict num submissions allowed  -->
-        <property name="numSubmissionsAllowed" type="java.lang.Integer" >
-            <column name="NUM_SUB_ALLOWED" />
+        <property name="numSubmissionsAllowed" type="integer" >
+            <column name="NUM_SUB_ALLOWED" not-null="true" />
         </property>
         <!-- assignment creator  -->
         <property name="creator" type="java.lang.String" >

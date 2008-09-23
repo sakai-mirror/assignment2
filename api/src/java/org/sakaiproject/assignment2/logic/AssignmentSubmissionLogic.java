@@ -196,6 +196,15 @@ public interface AssignmentSubmissionLogic {
 	
 	/**
 	 * 
+	 * @param studentId
+	 * @param assignmentId
+	 * @return the number of submissions remaining for the given student and assignment.
+	 * will return -1 if there are an unlimited number of submissions allowed
+	 */
+	public int getNumberOfRemainingSubmissionsForStudent(String studentId, Long assignmentId);
+	
+	/**
+	 * 
 	 * @param submission
 	 * @return true if the most recent AssignmentSubmissionVersion for this submission
 	 * is a draft

@@ -618,7 +618,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		return attachToCreate;
 	}
 	
-	public boolean submissionIsOpenForStudentForAssignment(String studentId, Long assignmentId) {
+	public int getNumberOfRemainingSubmissionsForStudent(String studentId, Long assignmentId) {
 		if (studentId == null || assignmentId == null) {
 			throw new IllegalArgumentException("null parameter passed to studentAbleToSubmit");
 		} 
@@ -627,74 +627,123 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		if (assignment == null) {
 			throw new AssignmentNotFoundException("No assignment exists with id " + assignmentId);
 		}
-		
-		// retrieve the submission history for this student for this assignment
-		AssignmentSubmission submission = dao.getSubmissionWithVersionHistoryForStudentAndAssignment(studentId, assignment);
-		Set<AssignmentSubmissionVersion> versionHistory = null;
-		if (submission != null) {
-			versionHistory = dao.getVersionHistoryForSubmission(submission);
-		}
-		
-		// we need to determine if this is the first submission for the student
-		int currNumSubmissions = 0;
-		if (submission == null) {
-			currNumSubmissions = 0;
-		} else if (versionHistory == null) {
-			currNumSubmissions = 0;
-		} else {
-			// we need to look at the submission history to determine if there
-			// are any submission by the student (not drafts and not versions
-			// created by instructor feedback when no submission)
-			for (AssignmentSubmissionVersion version : versionHistory) {
-				if (version != null) {
-					if (version.getSubmittedDate() != null) {
-						currNumSubmissions++;
+
+		int numSubmissionsRemaining = 0;
+
+		if (assignment.isRequiresSubmission()) {
+
+			// retrieve the submission history for this student for this assignment
+			AssignmentSubmission submission = dao.getSubmissionWithVersionHistoryForStudentAndAssignment(studentId, assignment);
+			Set<AssignmentSubmissionVersion> versionHistory = null;
+			if (submission != null) {
+				versionHistory = dao.getVersionHistoryForSubmission(submission);
+			}
+
+			// we need to determine if this is the first submission for the student
+			int currNumSubmissions = 0;
+			if (submission == null) {
+				currNumSubmissions = 0;
+			} else if (versionHistory == null) {
+				currNumSubmissions = 0;
+			} else {
+				// we need to look at the submission history to determine if there
+				// are any submission by the student (not drafts and not versions
+				// created by instructor feedback when no submission)
+				for (AssignmentSubmissionVersion version : versionHistory) {
+					if (version != null) {
+						if (version.getSubmittedDate() != null) {
+							currNumSubmissions++;
+						}
 					}
 				}
 			}
-		}
-		
 
-		/* A student is allowed to submit if:
-		 	1) student has not made a submission yet and assignment is open
+			/* A student is allowed to submit if:
+		 	1) student has not made a submission yet and assignment is open -OR-
 		 	2) instructor has set resubmission settings on the submission level,
 		 		and the resubmission date has not passed and the limit on the num
-		 		resubmissions has not been reached
+		 		resubmissions has not been reached -OR-
 		 	3) there are no submission-level settings but there are on the assignment level
 		 		the assignment is still open and the number submissions allowed on
 		 		the assignment level has not been reached
-		*/
-		
-		boolean studentAbleToSubmit = false;
-		boolean assignmentIsOpen = assignment.getOpenDate().before(new Date()) && 
-		(assignment.getAcceptUntilDate() == null ||
+			 */
+
+			boolean assignmentIsOpen = assignment.getOpenDate().before(new Date()) && 
+			(assignment.getAcceptUntilDate() == null ||
 					(assignment.getAcceptUntilDate() != null && 
 							assignment.getAcceptUntilDate().after(new Date())));
-		boolean resubmitSettingsOnAssignLevel = assignment.getNumSubmissionsAllowed() != null;
-		boolean resubmitSettingsOnSubmissionLevel = submission != null && submission.getNumSubmissionsAllowed() != null;
-		
-		if (currNumSubmissions == 0 && assignmentIsOpen) {
-			studentAbleToSubmit = true;
-		} else if (resubmitSettingsOnSubmissionLevel) {
-			// these setting override any settings on the assignment level
-			if (submission.getResubmitCloseDate() == null || 
-					submission.getResubmitCloseDate().after(new Date()))
-			{
-				if (submission.getNumSubmissionsAllowed().equals(-1) || 
-						submission.getNumSubmissionsAllowed().intValue() > currNumSubmissions) {
-					studentAbleToSubmit = true;
+			
+			int numAllowedOnAssignLevel = assignment.getNumSubmissionsAllowed();
+			Integer numAllowedOnSubLevel = submission != null ? submission.getNumSubmissionsAllowed() : null;
+			
+			boolean resubmitSettingsOnAssignLevel = numAllowedOnAssignLevel > 0;
+			boolean resubmitSettingsOnSubmissionLevel = numAllowedOnSubLevel != null;
+			
+
+			if (currNumSubmissions == 0 && assignmentIsOpen) {
+				numSubmissionsRemaining = determineNumSubmissionRemaining(numAllowedOnAssignLevel, 
+						numAllowedOnSubLevel, currNumSubmissions);
+			} else if (resubmitSettingsOnSubmissionLevel) {
+				// these setting override any settings on the assignment level
+				if (submission.getResubmitCloseDate() == null || 
+						submission.getResubmitCloseDate().after(new Date())) {
+						numSubmissionsRemaining = determineNumSubmissionRemaining(numAllowedOnAssignLevel, 
+								numAllowedOnSubLevel, currNumSubmissions);
 				}
+			} else if (resubmitSettingsOnAssignLevel) {
+				if (assignmentIsOpen) { 
+					numSubmissionsRemaining = determineNumSubmissionRemaining(numAllowedOnAssignLevel, 
+							numAllowedOnSubLevel, currNumSubmissions);
+				} 
 			}
-		} else if (resubmitSettingsOnAssignLevel) {
-			if (assignmentIsOpen) { 
-				if (assignment.getNumSubmissionsAllowed().equals(-1) ||
-						assignment.getNumSubmissionsAllowed() > currNumSubmissions) {
-					studentAbleToSubmit = true;
-				}
-			} 
 		}
 		
-		return studentAbleToSubmit;
+		return numSubmissionsRemaining;
+	}
+	
+	public boolean submissionIsOpenForStudentForAssignment(String studentId, Long assignmentId) {
+		int numRemainingSubmissions = getNumberOfRemainingSubmissionsForStudent(studentId, assignmentId);
+		boolean isOpen = false;
+		if (numRemainingSubmissions == -1 || numRemainingSubmissions > 0) {
+			isOpen = true;
+		}
+		
+		return isOpen;
+	}
+	
+	/**
+	 * 
+	 * @param assignmentLevelNumAllowed
+	 * @param subLevelNumAllowed
+	 * @param numAlreadySubmitted
+	 * @return the number of submissions remaining based upon the submission level num
+	 * submissions allowed, assign level num submission allowed, and the number of
+	 * submissions that have already occurred.  does NOT account for the assignment
+	 * being open or resubmission deadlines having passed
+	 */
+	private int determineNumSubmissionRemaining(int assignmentLevelNumAllowed, Integer subLevelNumAllowed, int numAlreadySubmitted) {
+		int numRemaining = 0;
+		// first, check settings on the submission level. these override any other setting
+		if (subLevelNumAllowed != null) {
+			if (subLevelNumAllowed.equals(-1)) {
+				numRemaining = -1;
+			} else if (numAlreadySubmitted < subLevelNumAllowed ){
+				numRemaining = subLevelNumAllowed.intValue() - numAlreadySubmitted;
+			} else {
+				numRemaining = 0;
+			} 
+		} else {
+			// then check assignment level
+			if (assignmentLevelNumAllowed == -1) {
+				numRemaining = -1;
+			} else if (numAlreadySubmitted < assignmentLevelNumAllowed){
+				numRemaining = assignmentLevelNumAllowed - numAlreadySubmitted; 
+			} else {
+				numRemaining = 0;
+			}
+		}
+
+		return numRemaining;
 	}
 
 	public boolean isMostRecentVersionDraft(AssignmentSubmission submission) {

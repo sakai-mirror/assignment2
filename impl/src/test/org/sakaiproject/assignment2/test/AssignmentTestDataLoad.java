@@ -302,6 +302,7 @@ public class AssignmentTestDataLoad {
 		assignment.setSortIndex(sortIndex);
 		assignment.setTitle(title);
 		assignment.setRequiresSubmission(true);
+		assignment.setNumSubmissionsAllowed(1);
 
 		return assignment;
 	}

@@ -207,7 +207,7 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
 
         //Assignment Count for How many Submissions
         Integer current_num_submissions = 1;
-        if (assignment != null && assignment.getNumSubmissionsAllowed() != null) {
+        if (assignment != null) {
             current_num_submissions = assignment.getNumSubmissionsAllowed();
         }
         int size = 20;

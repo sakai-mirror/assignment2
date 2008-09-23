@@ -56,7 +56,7 @@ public class Assignment2 {
     private String announcementId;
     private boolean addedToSchedule;
     private String eventId;
-    private Integer numSubmissionsAllowed;
+    private int numSubmissionsAllowed;
     private String creator;
     private Date createDate;
     private String modifiedBy;
@@ -410,7 +410,7 @@ public class Assignment2 {
      * @return the number of submissions allowed for this assignment. if -1,
      * unlimited submissions. 
      */
-    public Integer getNumSubmissionsAllowed() {
+    public int getNumSubmissionsAllowed() {
 		return numSubmissionsAllowed;
 	}
 
@@ -419,7 +419,7 @@ public class Assignment2 {
      * unlimited submissions. 
      * @param numSubmissionsAllowed
      */
-	public void setNumSubmissionsAllowed(Integer numSubmissionsAllowed) {
+	public void setNumSubmissionsAllowed(int numSubmissionsAllowed) {
 		this.numSubmissionsAllowed = numSubmissionsAllowed;
 	}
     
