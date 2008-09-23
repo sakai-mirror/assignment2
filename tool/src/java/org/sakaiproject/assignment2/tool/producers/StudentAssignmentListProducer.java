@@ -53,7 +53,7 @@ import uk.org.ponder.htmlutil.HTMLUtil;
 
 /**
  * This view is responsible for showing the Student Landing page which will have
- * the Todo style list of assignments that need to be completed.
+ * the To Do style list of assignments that need to be completed.
  * 
  * @author rjlowe
  * @author sgithens
@@ -117,7 +117,8 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
         UIMessage.make(tofill, "last_breadcrumb", "assignment2.student-assignment-list.heading");
 
         UIMessage.make(tofill, "page-title", "assignment2.student-assignment-list.title");
-        pagerRenderer.makePager(tofill, "pagerDiv:", VIEW_ID, viewparams, entries.size());
+        
+        //pagerRenderer.makePager(tofill, "pagerDiv:", VIEW_ID, viewparams, entries.size());
 
         //table headers and sorting links
         /*
