@@ -30,9 +30,9 @@
 			<key>GanttGroupShading</key>
 			<false/>
 			<key>GanttVisibleRect</key>
-			<string>{{-20, 0}, {1160, 815}}</string>
+			<string>{{-20, 0}, {1875, 1164}}</string>
 			<key>OutlineVisibleRect</key>
-			<string>{{0, 0}, {437, 815}}</string>
+			<string>{{0, 0}, {437, 1164}}</string>
 			<key>ScaleWidths</key>
 			<dict>
 				<key>Automatic</key>
@@ -123,13 +123,13 @@
 				<real>20</real>
 			</dict>
 			<key>dayWidth</key>
-			<real>39.964282989501953</real>
+			<real>54</real>
 			<key>resourceSplit</key>
 			<real>0.8120347261428833</real>
 			<key>resourcesController</key>
 			<dict>
 				<key>DayWidth</key>
-				<real>38.326530456542969</real>
+				<real>25</real>
 				<key>OutlineVisibleRect</key>
 				<string>{{0, 0}, {288, 815}}</string>
 				<key>ScaleWidths</key>
@@ -178,9 +178,9 @@
 				</dict>
 			</dict>
 			<key>side</key>
-			<real>0.72890818119049072</real>
+			<real>0.81220453977584839</real>
 			<key>window</key>
-			<string>{{471, 587}, {1621, 949}}</string>
+			<string>{{0, 280}, {2336, 1298}}</string>
 		</dict>
 	</array>
 	<key>displaySeconds</key>
@@ -479,7 +479,7 @@
 		</dict>
 		<dict>
 			<key>effort</key>
-			<real>28800</real>
+			<real>259200</real>
 			<key>forcedStart</key>
 			<string>20080911080000</string>
 			<key>lockedStartDate</key>
@@ -489,9 +489,9 @@
 			<key>task</key>
 			<string>ASNN-205 Submit/Grade/Feedback cleanup</string>
 			<key>workSeconds</key>
-			<real>28800</real>
+			<real>259200</real>
 			<key>workTime</key>
-			<real>8</real>
+			<real>72</real>
 		</dict>
 		<dict>
 			<key>effort</key>
@@ -531,7 +531,7 @@
 		<integer>-1</integer>
 	</array>
 	<key>uuid</key>
-	<string>6FAC510F-2197-433F-99F7-C130C614B73C</string>
+	<string>E11F06AD-D14F-4BA3-9B3B-5584E8FD374E</string>
 	<key>version</key>
 	<integer>2</integer>
 </dict>
