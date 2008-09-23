@@ -105,7 +105,7 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
         UIVerbatim.make(tofill, "defaultSortBy", HTMLUtil.emitJavascriptVar("defaultSortBy", DEFAULT_SORT_BY));
 
         //check if we need to duplicate an assignment, params.assignmentIdToDuplicate is not null
-        if (params.assignmentIdToDuplicate != null){
+        if (params.assignmentIdToDuplicate != null) {
             assignment2Bean.createDuplicate(params.assignmentIdToDuplicate);
             params.assignmentIdToDuplicate = null;
         }
@@ -120,6 +120,7 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
         pagerRenderer.makePager(tofill, "pagerDiv:", VIEW_ID, viewparams, entries.size());
 
         //table headers and sorting links
+        /*
         sortHeaderRenderer.makeSortingLink(tofill, "tableheader.assignment", viewparams, 
                 AssignmentLogic.SORT_BY_TITLE, "assignment2.student-assignment-list.tableheader.assignment");
         sortHeaderRenderer.makeSortingLink(tofill, "tableheader.for", viewparams, 
@@ -130,6 +131,7 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
                 AssignmentLogic.SORT_BY_OPEN, "assignment2.student-assignment-list.tableheader.open");
         sortHeaderRenderer.makeSortingLink(tofill, "tableheader.due", viewparams, 
                 AssignmentLogic.SORT_BY_DUE, "assignment2.student-assignment-list.tableheader.due");
+        */
 
         if (entries.size() <= 0) {
             UIMessage.make(tofill, "assignment_empty", "assignment2.student-assignment-list.assignment_empty");
@@ -146,35 +148,40 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
         for (Assignment2 assignment : entries){
             UIBranchContainer row = UIBranchContainer.make(tofill, "assignment-row:");
 
-            UILink.make(row, "attachments", ATTACH_IMG_SRC);
-            UIInternalLink.make(row, "assignment_link", assignment.getTitle(), 
-                    new SimpleAssignmentViewParams(StudentSubmitProducer.VIEW_ID, assignment.getId()));
+            //UILink.make(row, "attachments", ATTACH_IMG_SRC);
 
             // Access
-            String restrictedToText = messageLocator.getMessage("assignment2.assignment_restrict_to_site");
-            if (assignment.getAssignmentGroupSet() != null && !assignment.getAssignmentGroupSet().isEmpty()) {
+            //String restrictedToText = messageLocator.getMessage("assignment2.assignment_restrict_to_site");
+            //if (assignment.getAssignmentGroupSet() != null && !assignment.getAssignmentGroupSet().isEmpty()) {
                 // we need to display a comma-delimited list of groups
-                restrictedToText = localAssignmentLogic.getListOfGroupRestrictionsAsString(
-                        assignment.getAssignmentGroupSet(), groupIdToNameMap);
-            }
-            UIOutput.make(row, "assignment_row_for", restrictedToText);
+            //    restrictedToText = localAssignmentLogic.getListOfGroupRestrictionsAsString(
+            //            assignment.getAssignmentGroupSet(), groupIdToNameMap);
+            //}
+            //UIOutput.make(row, "assignment_row_for", restrictedToText);
 
-            Integer status = assignToStatusMap.get(assignment);
-            String statusText = messageLocator.getMessage("assignment2.submission_status." + status.intValue());
-            UIOutput.make(row, "assignment_row_status", statusText);
+            //Integer status = assignToStatusMap.get(assignment);
+            //String statusText = messageLocator.getMessage("assignment2.submission_status." + status.intValue());
+            //UIOutput.make(row, "assignment_row_status", statusText);
 
-            UIOutput.make(row, "assignment_row_open", df.format(assignment.getOpenDate()));
-
+            //UIOutput.make(row, "assignment_row_open", df.format(assignment.getOpenDate()));
+   
+            
+            // Title
+            UIInternalLink.make(row, "assignment_link", assignment.getTitle(), 
+                new SimpleAssignmentViewParams(StudentSubmitProducer.VIEW_ID, assignment.getId()));
+            
+            // Due date
             if (assignment.getDueDate() != null) {
                 UIOutput.make(row, "assignment_row_due", df.format(assignment.getDueDate()));
-            } else {
+            } 
+            else {
                 UIMessage.make(row, "assignment_row_due", "assignment2.student-assignment-list.no_due_date");
             }
 
             //For JS Sorting
-            UIOutput.make(row, "open_timestamp", assignment.getOpenDate() != null ? String.valueOf(assignment.getOpenDate().getTime()) : "");
-            UIOutput.make(row, "due_timestamp", assignment.getDueDate() != null ? String.valueOf(assignment.getDueDate().getTime()) : "");
-            UIOutput.make(row, "sortIndex", String.valueOf(assignment.getSortIndex()));
+            //UIOutput.make(row, "open_timestamp", assignment.getOpenDate() != null ? String.valueOf(assignment.getOpenDate().getTime()) : "");
+            //UIOutput.make(row, "due_timestamp", assignment.getDueDate() != null ? String.valueOf(assignment.getDueDate().getTime()) : "");
+            //UIOutput.make(row, "sortIndex", String.valueOf(assignment.getSortIndex()));
         }
     }
 
