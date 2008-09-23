@@ -314,7 +314,6 @@ public class StudentViewAssignmentRenderer {
                 attachmentListRenderer.makeAttachmentFromAssignmentAttachmentSet(joint, "attachment_list:", params.viewID, assignment.getAttachmentSet());
             }
         }
-
         
 
 
