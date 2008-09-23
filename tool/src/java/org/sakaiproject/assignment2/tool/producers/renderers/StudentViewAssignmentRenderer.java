@@ -281,36 +281,41 @@ public class StudentViewAssignmentRenderer {
             UIOutput.make(joint, "remaining-resubmissions", "This functionality in progress");
         }
         
-        
-        
-        //Display Assignment Info
-        UIOutput.make(joint, "header.title", title);
+        /*
+         * Assignments Instructions
+         * 
+         * If there are no instructions show the "No Instructions... etc" 
+         * message.
+         * 
+         * If there are attachments render the supporting materials header and
+         * contents. Otherwise don't show any attachments stuff.
+         * 
+         * TODO FIXME At the moment there are ghost attachments showing up on
+         * all the assignments, I think is related to ASNN-204
+         * 
+         */
+        if (!preview && assignment.getInstructions() == null || assignment.getInstructions().equals("")) {
+            UIMessage.make(joint, "instructions", "assignment2.student-submit.no_instructions");
+        }
+        else {
+            UIVerbatim.make(joint, "instructions", assignment.getInstructions());
+        }
+
+        if (assignment.getAttachmentSet() != null && assignment.getAttachmentSet().size() > 0) {
+            UIMessage.make(joint, "attachments-header", "assignment2.student-submit.additional_resources");
+            
+            if (!preview) {
+                Set<AssignmentAttachment> attachments = (assignment != null) ? assignment.getAttachmentSet() : null;
+                //If this is not a preview, then we need to just display the attachment set from the Assignment2 object
+                attachmentListRenderer.makeAttachmentFromAssignmentAttachmentSet(joint, "attachment_list:", params.viewID, 
+                        attachments);
+            } 
+            else {
+                attachmentListRenderer.makeAttachmentFromAssignmentAttachmentSet(joint, "attachment_list:", params.viewID, assignment.getAttachmentSet());
+            }
+        }
 
         
-        
-        /* Old STuff
-        if (assignment != null && assignment.getAcceptUntilDate() != null) {
-            UIOutput.make(joint, "accept_until_tr");
-            UIOutput.make(joint, "header.accept_until", df.format(assignment.getAcceptUntilDate()));
-        }
-        UIOutput.make(joint, "header.status", status);
-        UIOutput.make(joint, "header.grade_scale", "Grade Scale from Gradebook");  //HERE
-        if (assignment != null && assignment.getModifiedDate() != null) {
-            UIOutput.make(joint, "modified_by_header_row");
-            UIOutput.make(joint, "modified_by", df.format(assignment.getModifiedDate()));
-        }
-        UIVerbatim.make(joint, "instructions", assignment.getInstructions());
-        */
-
-        if (!preview) {
-            Set<AssignmentAttachment> attachments = (assignment != null) ? assignment.getAttachmentSet() : null;
-            //If this is not a preview, then we need to just display the attachment set from the Assignment2 object
-            attachmentListRenderer.makeAttachmentFromAssignmentAttachmentSet(joint, "attachment_list:", params.viewID, 
-                    attachments);
-        } else {
-
-            attachmentListRenderer.makeAttachmentFromAssignmentAttachmentSet(joint, "attachment_list:", params.viewID, assignment.getAttachmentSet());
-        }
 
 
         UIForm form = UIForm.make(joint, "form");
