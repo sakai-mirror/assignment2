@@ -38,6 +38,7 @@ public class AssignmentSubmission {
 	private Assignment2 assignment;
 	private String userId;
 	private Date resubmitCloseDate;
+	private boolean completed;
 	private Integer numSubmissionsAllowed;
 	private int optimisticVersion;
 	private Set<AssignmentSubmissionVersion> submissionHistorySet;
@@ -106,24 +107,6 @@ public class AssignmentSubmission {
 	
 	/**
 	 * 
-	 * @return a set of AssignmentSubmissionVersion recs that represent
-	 * the submission history for this user
-	 */
-	public Set<AssignmentSubmissionVersion> getSubmissionHistorySet() {
-		return submissionHistorySet;
-	}
-
-	/**
-	 * the set of AssignmentSubmissionVersion recs that represent
-	 * the submission history for this user
-	 * @param submissionHistorySet
-	 */
-	public void setSubmissionHistorySet(Set<AssignmentSubmissionVersion> submissionHistorySet) {
-		this.submissionHistorySet = submissionHistorySet;
-	}
-	
-	/**
-	 * 
 	 * @return date and time after which the submitter may no longer submit this assignment. This
 	 * value overrides the acceptUntilDate on the assignment level if numResubmissionsAllowed is
 	 * populated. if null and resubmission allowed on submission level, may resubmit indefinitely
@@ -160,6 +143,45 @@ public class AssignmentSubmission {
 		this.numSubmissionsAllowed = numSubmissionsAllowed;
 	}
 	
+	/**
+	 * 
+	 * @return true if this submission has been marked as "completed". this is
+	 * set to true when the student submits. it may also be changed to true or
+	 * false by the student
+	 */
+	public boolean isCompleted()
+	{
+		return completed;
+	}
+
+	/**
+	 * true if this submission has been marked as "completed". this is
+	 * set to true when the student submits. it may also be changed to true or
+	 * false by the student
+	 * @param completed
+	 */
+	public void setCompleted(boolean completed)
+	{
+		this.completed = completed;
+	}
+	
+	/**
+	 * 
+	 * @return a set of AssignmentSubmissionVersion recs that represent
+	 * the submission history for this user
+	 */
+	public Set<AssignmentSubmissionVersion> getSubmissionHistorySet() {
+		return submissionHistorySet;
+	}
+
+	/**
+	 * the set of AssignmentSubmissionVersion recs that represent
+	 * the submission history for this user
+	 * @param submissionHistorySet
+	 */
+	public void setSubmissionHistorySet(Set<AssignmentSubmissionVersion> submissionHistorySet) {
+		this.submissionHistorySet = submissionHistorySet;
+	}
     
     /**
      * 
