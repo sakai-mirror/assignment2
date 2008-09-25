@@ -263,22 +263,24 @@ public class StudentViewAssignmentRenderer {
         /*
          * Resubmissions Allowed
          */
-        boolean resubmissionsAllowed = submissionLogic.submissionIsOpenForStudentForAssignment(
-                currentUser.getId(), assignment.getId());
-        if (resubmissionsAllowed) {
-            UIMessage.make(joint, "resubmissions-allowed", "assignment2.student-submit.resubmissions_allowed");
-        }
-        else {
-            UIMessage.make(joint, "resubmissions-allowed", "assignment2.student-submit.resubmissions_not_allowed");
-        }
-        
-        /*
-         * Remaining resubmissions allowed
-         */
-        if (resubmissionsAllowed) {
-            UIOutput.make(joint, "remaining-resubmissions-row");
-            //TODO FIXME Michelle is adding in a Logic method to get this info.
-            UIOutput.make(joint, "remaining-resubmissions", "This functionality in progress");
+        if (!preview) {
+            boolean resubmissionsAllowed = submissionLogic.submissionIsOpenForStudentForAssignment(
+                    currentUser.getId(), assignment.getId());
+            if (resubmissionsAllowed) {
+                UIMessage.make(joint, "resubmissions-allowed", "assignment2.student-submit.resubmissions_allowed");
+            }
+            else {
+                UIMessage.make(joint, "resubmissions-allowed", "assignment2.student-submit.resubmissions_not_allowed");
+            }
+            
+            /*
+             * Remaining resubmissions allowed
+             */
+            if (resubmissionsAllowed) {
+                UIOutput.make(joint, "remaining-resubmissions-row");
+                //TODO FIXME Michelle is adding in a Logic method to get this info.
+                UIOutput.make(joint, "remaining-resubmissions", "This functionality in progress");
+            }
         }
         
         /*
