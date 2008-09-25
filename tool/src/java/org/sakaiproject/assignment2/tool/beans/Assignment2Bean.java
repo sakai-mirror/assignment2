@@ -242,6 +242,8 @@ public class Assignment2Bean {
 
 
     public String processActionPreview() {
+        String returnCode = FAILURE;
+        
         for (String key : OTPMap.keySet()) {
             Assignment2 assignment = OTPMap.get(key);
             if (this.requireAcceptUntil == null || Boolean.FALSE.equals(requireAcceptUntil)) {
@@ -253,7 +255,14 @@ public class Assignment2Bean {
             previewAssignmentBean.setAssignment(assignment);
             previewAssignmentBean.setOTPKey(key);
         }
-        return PREVIEW;
+        
+        // Validation
+        Assignment2Validator validator = new Assignment2Validator();
+        if (validator.validate(assignment, messages)) {
+            returnCode = PREVIEW;
+        }
+        
+        return returnCode;
     }
 
     public String processActionEdit() {
