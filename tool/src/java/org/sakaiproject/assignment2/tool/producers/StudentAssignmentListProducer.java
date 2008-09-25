@@ -38,8 +38,11 @@ import org.sakaiproject.assignment2.tool.producers.renderers.PagerRenderer;
 import org.sakaiproject.assignment2.tool.producers.renderers.SortHeaderRenderer;
 
 import uk.org.ponder.messageutil.MessageLocator;
+import uk.org.ponder.rsf.components.UIBoundBoolean;
 import uk.org.ponder.rsf.components.UIBranchContainer;
 import uk.org.ponder.rsf.components.UIContainer;
+import uk.org.ponder.rsf.components.UIForm;
+import uk.org.ponder.rsf.components.UIInput;
 import uk.org.ponder.rsf.components.UIInternalLink;
 import uk.org.ponder.rsf.components.UILink;
 import uk.org.ponder.rsf.components.UIMessage;
@@ -166,6 +169,10 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
 
             //UIOutput.make(row, "assignment_row_open", df.format(assignment.getOpenDate()));
    
+            // Todo
+            UIForm markTodoForm = UIForm.make(row, "todo-check-form");
+            UIInput.make(markTodoForm, "assn_id", "markTodoBean.assignmentId");
+            UIBoundBoolean.make(markTodoForm, "todo-checkbox", "markTodoBean.checkTodo");
             
             // Title
             UIInternalLink.make(row, "assignment_link", assignment.getTitle(), 
