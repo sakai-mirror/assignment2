@@ -238,6 +238,10 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		if (submission == null) {
 			// there is no submission for this user yet
 			submission = new AssignmentSubmission(assignment, userId);
+			submission.setCreatedBy(currentUserId);
+			submission.setCreatedDate(currentTime);
+			submission.setModifiedBy(currentUserId);
+			submission.setModifiedDate(currentTime);
 			
 			// we need to create a new version for this submission
 			version = new AssignmentSubmissionVersion();
@@ -265,10 +269,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		version.setDraft(draft);
 		version.setSubmittedText(submittedText);
 
-		if (isAnUpdate) {
-			version.setModifiedBy(currentUserId);
-			version.setModifiedDate(currentTime);
-		} else {
+		if (!isAnUpdate) {
 			version.setCreatedBy(currentUserId);
 			version.setCreatedDate(currentTime);
 			
@@ -280,6 +281,9 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 				version.setSubmittedVersionNumber(dao.getHighestSubmittedVersionNumber(submission) + 1);
 			}
 		}
+		
+		version.setModifiedBy(currentUserId);
+		version.setModifiedDate(currentTime);
 
 		if (!version.isDraft()) {
 			version.setSubmittedDate(currentTime);
@@ -287,6 +291,10 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			// if this isn't a draft, set the annotated text to be the submitted text
 			// to allow instructor to provide inline comments for submitted text
 			version.setAnnotatedText(submittedText);
+			// mark this submission as completed
+			submission.setCompleted(true);
+			submission.setModifiedBy(currentUserId);
+			submission.setModifiedDate(currentTime);
 		}
 
 		// identify any attachments that were deleted or need to be created
@@ -358,6 +366,8 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		
 		if (submission == null) {
 			submission = new AssignmentSubmission(assignment, studentId);
+			submission.setCreatedBy(currentUserId);
+			submission.setCreatedDate(currentTime);
 		}
 		
 		AssignmentSubmissionVersion version = null;
@@ -384,7 +394,6 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			newVersion = true;
 		}
 		
-		
 		if (newVersion) {
 			version.setCreatedBy(currentUserId);
 			version.setCreatedDate(currentTime);
@@ -397,6 +406,8 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		
 		submission.setResubmitCloseDate(resubmitCloseDate);
 		submission.setNumSubmissionsAllowed(numSubmissionsAllowed);
+		submission.setModifiedBy(currentUserId);
+		submission.setModifiedDate(currentTime);
 		
 		version.setAssignmentSubmission(submission);
 		version.setAnnotatedText(annotatedText);
@@ -404,6 +415,8 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		version.setFeedbackReleasedDate(releasedDate);
 		version.setLastFeedbackSubmittedBy(currentUserId);
 		version.setLastFeedbackDate(currentTime);
+		version.setModifiedBy(currentUserId);
+		version.setModifiedDate(currentTime);
 		
 		// identify any attachments that were deleted
 		Set<SubmissionAttachmentBase> attachToDelete = identifyAttachmentsToDelete(version.getFeedbackAttachSet(), feedbackAttachSet);
@@ -771,6 +784,9 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		}
 
 		String contextId = externalLogic.getCurrentContextId();
+		String currUserId = externalLogic.getCurrentUserId();
+		Date now = new Date();
+		
 		if (!gradebookLogic.isCurrentUserAbleToGrade(contextId)) {
 			throw new SecurityException("User attempted to release feedback for assignment " + assignmentId + " without authorization");
 		}
@@ -785,8 +801,6 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			Set<AssignmentSubmission> submissionList = dao.getSubmissionsWithVersionHistoryForStudentListAndAssignment(
 					gradableStudents, assignment);
 			
-			Date releasedDate = new Date();
-			
 			if (submissionList != null && !submissionList.isEmpty()) {
 				
 				Set<AssignmentSubmissionVersion> versionsToUpdate = new HashSet<AssignmentSubmissionVersion>();
@@ -800,7 +814,10 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 							for (AssignmentSubmissionVersion version : submission.getSubmissionHistorySet())
 							{
 								if (version != null) {
-									version.setFeedbackReleasedDate(releasedDate);
+									version.setFeedbackReleasedDate(now);
+									version.setModifiedBy(currUserId);
+									version.setModifiedDate(now);
+									
 									versionsToUpdate.add(version);
 								}
 							}
@@ -831,6 +848,9 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			throw new IllegalArgumentException("null submissionId passed to releaseAllFeedbackForSubmission");
 		}
 
+		String currUserId = externalLogic.getCurrentUserId();
+		Date now = new Date();
+		
 		AssignmentSubmission subWithHistory = dao.getSubmissionWithVersionHistoryById(submissionId);
 
 		if (subWithHistory == null) {
@@ -838,7 +858,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		}
 
 		if (!permissionLogic.isUserAbleToProvideFeedbackForStudentForAssignment(subWithHistory.getUserId(), subWithHistory.getAssignment())) {
-			throw new SecurityException("User " + externalLogic.getCurrentUserId() + " attempted to release feedback" +
+			throw new SecurityException("User " + currUserId + " attempted to release feedback" +
 					" for student " + subWithHistory.getUserId() + " and assignment " + 
 					subWithHistory.getAssignment().getId() + "without authorization");
 		}
@@ -847,11 +867,12 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 				!subWithHistory.getSubmissionHistorySet().isEmpty()) {
 			// we need to iterate through all of the versions and
 			// release them
-			Date releasedDate = new Date();
 			Set<AssignmentSubmissionVersion> updatedVersions = new HashSet<AssignmentSubmissionVersion>();
 			for (AssignmentSubmissionVersion version : subWithHistory.getSubmissionHistorySet()) {
 				if (version != null) {
-					version.setFeedbackReleasedDate(releasedDate);
+					version.setFeedbackReleasedDate(now);
+					version.setModifiedBy(currUserId);
+					version.setModifiedDate(now);
 					updatedVersions.add(version);
 				}
 			}
@@ -873,6 +894,9 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			throw new IllegalArgumentException("Null submissionVersionId passed to releaseFeedbackForVersion");
 		}
 		
+		String currUserId = externalLogic.getCurrentUserId();
+		Date now = new Date();
+		
 		AssignmentSubmissionVersion version = (AssignmentSubmissionVersion)dao.findById(
 				AssignmentSubmissionVersion.class, submissionVersionId);
 		if (version == null) {
@@ -887,7 +911,9 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 					submission.getAssignment().getId() + "without authorization");
 		}
 		
-		version.setFeedbackReleasedDate(new Date());
+		version.setFeedbackReleasedDate(now);
+		version.setModifiedBy(currUserId);
+		version.setModifiedDate(now);
 		
 		try {
 			dao.update(version);
@@ -1035,6 +1061,9 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		if (asv == null)
 			throw new IllegalArgumentException("Cannot find submission version with id = " + feedback.getId());
 
+		String currUserId = externalLogic.getCurrentUserId();
+		Date now = new Date();
+		
 		if (feedback.getAnnotatedText() != null)
 			asv.setAnnotatedText(feedback.getAnnotatedText());
 
@@ -1049,15 +1078,10 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		if (feedback.getFeedbackNotes() != null)
 			asv.setFeedbackNotes(feedback.getFeedbackNotes());
 
-		if (feedback.getLastFeedbackDate() != null)
-			asv.setLastFeedbackDate(feedback.getLastFeedbackDate());
-		else
-			asv.setLastFeedbackDate(new Date());
-
-		if (feedback.getLastFeedbackSubmittedBy() != null)
-			asv.setLastFeedbackSubmittedBy(feedback.getLastFeedbackSubmittedBy());
-		else
-			asv.setLastFeedbackSubmittedBy(externalLogic.getCurrentUserId());
+		asv.setLastFeedbackDate(now);
+		asv.setLastFeedbackSubmittedBy(currUserId);
+		asv.setModifiedDate(now);
+		asv.setModifiedBy(currUserId);
 
 		dao.update(asv);
 	}
@@ -1108,6 +1132,9 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 								existingVersion.getFeedbackReleasedDate().before(now)) {
 							// this version needs to be marked as viewed and updated
 							existingVersion.setFeedbackLastViewed(now);
+							existingVersion.setModifiedBy(currentUserId);
+							existingVersion.setModifiedDate(now);
+							
 							updatedVersions.add(existingVersion);
 						} else {
 							if (log.isDebugEnabled()) log.debug("Version " + existingVersion.getId() +
@@ -1125,4 +1152,62 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			}
 		}
 	}
+	
+	public void markAssignmentsAsCompleted(String studentId, Map<Long, Boolean> assignmentIdToCompletedMap) {
+		if (studentId == null) {
+			throw new IllegalArgumentException("Null studentId passed to markAssignmentAsCompleted");
+		}
+
+		String currentUserId = externalLogic.getCurrentUserId();
+		
+		if (!studentId.equals(currentUserId)) {
+			throw new SecurityException("User " + currentUserId + " attempted to mark assignments as " +
+					"complete for student " + studentId);
+		}
+		
+		if (assignmentIdToCompletedMap != null && !assignmentIdToCompletedMap.isEmpty()) {
+			// first, retrieve the Assignment2 objects associated with the list
+			Set<Assignment2> assignToMarkComplete = dao.getAssignmentsWithGroupsAndAttachmentsById(assignmentIdToCompletedMap.keySet());
+			if (assignToMarkComplete != null) {
+				// now, let's retrieve the submissions
+				List<AssignmentSubmission> submissions = dao.getCurrentAssignmentSubmissionsForStudent(assignToMarkComplete, studentId);
+				Map<Assignment2, AssignmentSubmission> assignmentToSubmissionMap = new HashMap<Assignment2, AssignmentSubmission>();
+				if (submissions != null) {
+					for (AssignmentSubmission sub : submissions) {
+						assignmentToSubmissionMap.put(sub.getAssignment(), sub);
+					}
+				}
+				
+				// now, iterate through the assignments to see if any do not have
+				// a submission yet - we will need to create it
+				Set<AssignmentSubmission> submissionsToSave = new HashSet<AssignmentSubmission>();
+				for (Assignment2 assign : assignToMarkComplete) {
+					Boolean complete = assignmentIdToCompletedMap.get(assign.getId());
+					if (complete == null) {
+						throw new IllegalArgumentException("Null value for completed passed in map to markAssignmentsAsCompleted");
+					}
+					
+					AssignmentSubmission submission = (AssignmentSubmission)assignmentToSubmissionMap.get(assign);
+					if (submission == null) {
+						// we need to create this submission record
+						submission = new AssignmentSubmission(assign, studentId);
+						submission.setCreatedBy(currentUserId);
+						submission.setCreatedDate(new Date());
+					}
+					
+					submission.setCompleted(complete);
+					submission.setModifiedBy(currentUserId);
+					submission.setModifiedDate(new Date());
+					
+					submissionsToSave.add(submission);
+				}
+				
+				if (!submissionsToSave.isEmpty()) {
+					dao.saveSet(submissionsToSave);
+					if (log.isDebugEnabled()) log.debug(submissionsToSave.size() + " submissions updated through markAssignmentsAsCompleted");
+				}
+			}
+		}
+	}
+	
 }

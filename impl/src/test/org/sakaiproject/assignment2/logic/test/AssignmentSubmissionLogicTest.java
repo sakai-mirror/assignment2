@@ -23,6 +23,7 @@ package org.sakaiproject.assignment2.logic.test;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -338,7 +339,8 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
     	assertTrue(currVersion.isDraft());
     	// submittedVersionNumber for a student submission starts at 1
     	assertEquals(1, currVersion.getSubmittedVersionNumber());
-    	//assertTrue(currVersion.getSubmissionAttachSet().size() == 2);
+    	// make sure it wasn't marked as completed yet since still draft
+    	assertFalse(existingSub.isCompleted());
     	
     	// now let's try to edit this version but keep it draft
     	// should not create a new version
@@ -350,7 +352,8 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
     	Set<AssignmentSubmissionVersion> versionHistory = dao.getVersionHistoryForSubmission(existingSub);
     	assertTrue(versionHistory.size() == 1);
     	currVersion = dao.getCurrentSubmissionVersionWithAttachments(existingSub);
-    	//assertTrue(currVersion.getSubmissionAttachSet().size() == 1);
+    	// make sure it wasn't marked as completed yet since still draft
+    	assertFalse(existingSub.isCompleted());
     	
     	// now let's actually submit it (make draft = false)
     	submissionLogic.saveStudentSubmission(AssignmentTestDataLoad.STUDENT1_UID, 
@@ -358,6 +361,8 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
     	existingSub = (AssignmentSubmission)dao.findById(AssignmentSubmission.class, subId);
     	versionHistory = dao.getVersionHistoryForSubmission(existingSub);
     	assertTrue(versionHistory.size() == 1);
+    	// should be marked as completed now
+    	assertTrue(existingSub.isCompleted());
     	
     	// next time, the student should get an error b/c not allowed to resubmit
     	try {
@@ -1171,7 +1176,7 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
 		assertEquals(1, submissionLogic.getNumSubmittedVersions(AssignmentTestDataLoad.STUDENT1_UID, testData.a3Id));
 		
 		// add instructor feedback w/o a submission
-		AssignmentSubmission st3a1Submission = new AssignmentSubmission(testData.a1, AssignmentTestDataLoad.STUDENT3_UID);
+		AssignmentSubmission st3a1Submission = testData.createGenericSubmission(testData.a1, AssignmentTestDataLoad.STUDENT3_UID);
 		AssignmentSubmissionVersion st3a1CurrVersion = testData.createGenericVersion(st3a1Submission, 0);
 		st3a1CurrVersion.setDraft(false);
 		st3a1CurrVersion.setSubmittedDate(null);
@@ -1228,13 +1233,87 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
 		submissionLogic.markFeedbackAsViewed(testData.st2a1Submission.getId(), versionsToUpdate);
 		st2a1SubWithHistory = dao.getSubmissionWithVersionHistoryById(testData.st2a1Submission.getId());
 		for (AssignmentSubmissionVersion version : st2a1SubWithHistory.getSubmissionHistorySet()) {
-			if (version.getId().equals(testData.st2a1Version1.getId())
-					|| version.getId().equals(testData.st2a1CurrVersion.getId())) {
+			if (version.getId().equals(testData.st2a1Version1.getId())) {
+				assertNotNull(version.getFeedbackLastViewed());
+			} else if (version.getId().equals(testData.st2a1CurrVersion.getId())) {
 				assertNotNull(version.getFeedbackLastViewed());
 			} else if (version.getId().equals(testData.st2a1Version2.getId())) {
 				assertNull(version.getFeedbackLastViewed());
 			} else {
 				throw new IllegalArgumentException("Invalid version returned while checking markFeedbackAsViewed!");
+			}
+		}
+	}
+	
+	public void testMarkAssignmentsAsCompleted() {
+		// try passing a null studentId
+		try {
+			submissionLogic.markAssignmentsAsCompleted(null, new HashMap<Long, Boolean>());
+			fail("Did not catch null studentId passed to markAssignmentsAsCompleted");
+		} catch (IllegalArgumentException iae) {}
+		
+		// try to mark someone else's work as completed
+		externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT2_UID);
+		try {
+			submissionLogic.markAssignmentsAsCompleted(AssignmentTestDataLoad.STUDENT1_UID, new HashMap<Long, Boolean>());
+			fail("did not catch user attempting to mark another student's assignment as complete");
+		} catch (SecurityException se) {}
+		
+		externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT1_UID);
+		// try passing a null map - should do nothing
+		submissionLogic.markAssignmentsAsCompleted(AssignmentTestDataLoad.STUDENT1_UID, null);
+		
+		// try passing an empty map - should do nothing
+		submissionLogic.markAssignmentsAsCompleted(AssignmentTestDataLoad.STUDENT1_UID, new HashMap<Long, Boolean>());
+		
+		Map<Long, Boolean> assignmentIdToCompletedMap = new HashMap<Long, Boolean>();
+		// let's put some null booleans in the map to make sure it fails
+		assignmentIdToCompletedMap.put(testData.a1Id, true);
+		assignmentIdToCompletedMap.put(testData.a2Id, null);
+		try {
+			submissionLogic.markAssignmentsAsCompleted(AssignmentTestDataLoad.STUDENT1_UID, assignmentIdToCompletedMap);
+			fail("did not catch null completed value passed to markAssignmentsAsCompleted");
+		} catch (IllegalArgumentException iae) {}
+		
+		// let's mark some assignments as completed
+		assignmentIdToCompletedMap.put(testData.a2Id, true);
+		submissionLogic.markAssignmentsAsCompleted(AssignmentTestDataLoad.STUDENT1_UID, assignmentIdToCompletedMap);
+		
+		List<Assignment2> assignList = new ArrayList<Assignment2>();
+		assignList.add(testData.a1);
+		assignList.add(testData.a2);
+		assignList.add(testData.a3);
+		assignList.add(testData.a4);
+		
+		// now, retrieve these submissions to double check them
+		List<AssignmentSubmission> subList = dao.getCurrentAssignmentSubmissionsForStudent(assignList, AssignmentTestDataLoad.STUDENT1_UID);
+		for (AssignmentSubmission sub : subList) {
+			if (sub.getAssignment().equals(testData.a1)) {
+				assertTrue(sub.isCompleted());
+			} else if (sub.getAssignment().equals(testData.a2)) {
+				assertTrue(sub.isCompleted());
+			} else if (sub.getAssignment().equals(testData.a3)) {
+				assertFalse(sub.isCompleted());
+			} else if (sub.getAssignment().equals(testData.a4)) {
+				assertFalse(sub.isCompleted());
+			}
+		}
+		
+		// let's try marking one as complete even though no sub exists
+		externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT3_UID);
+		assignmentIdToCompletedMap.put(testData.a2Id, true);
+		assignmentIdToCompletedMap.put(testData.a1Id, false); 
+		submissionLogic.markAssignmentsAsCompleted(AssignmentTestDataLoad.STUDENT3_UID, assignmentIdToCompletedMap);
+		subList = dao.getCurrentAssignmentSubmissionsForStudent(assignList, AssignmentTestDataLoad.STUDENT3_UID);
+		for (AssignmentSubmission sub : subList) {
+			if (sub.getAssignment().equals(testData.a1)) {
+				assertFalse(sub.isCompleted());
+			} else if (sub.getAssignment().equals(testData.a2)) {
+				assertTrue(sub.isCompleted());
+			} else if (sub.getAssignment().equals(testData.a3)) {
+				assertFalse(sub.isCompleted());
+			} else if (sub.getAssignment().equals(testData.a4)) {
+				assertFalse(sub.isCompleted());
 			}
 		}
 	}

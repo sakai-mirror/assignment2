@@ -40,6 +40,10 @@ public class AssignmentSubmission {
 	private Date resubmitCloseDate;
 	private boolean completed;
 	private Integer numSubmissionsAllowed;
+	private String createdBy;
+	private Date createdDate;
+	private String modifiedBy;
+	private Date modifiedDate;
 	private int optimisticVersion;
 	private Set<AssignmentSubmissionVersion> submissionHistorySet;
 	
@@ -163,6 +167,78 @@ public class AssignmentSubmission {
 	public void setCompleted(boolean completed)
 	{
 		this.completed = completed;
+	}
+	
+	/**
+	 * 
+	 * @return the userId of this submission record's creator
+	 */
+	public String getCreatedBy()
+	{
+		return createdBy;
+	}
+
+	/**
+	 * the userId of this submission record's creator
+	 * @param createdBy
+	 */
+	public void setCreatedBy(String createdBy)
+	{
+		this.createdBy = createdBy;
+	}
+
+	/**
+	 * 
+	 * @return the date and time this submission was created
+	 */
+	public Date getCreatedDate()
+	{
+		return createdDate;
+	}
+
+	/**
+	 * the date and time this submission was created
+	 * @param createdDate
+	 */
+	public void setCreatedDate(Date createdDate)
+	{
+		this.createdDate = createdDate;
+	}
+
+	/**
+	 * 
+	 * @return the userId of the person who last modified this record
+	 */
+	public String getModifiedBy()
+	{
+		return modifiedBy;
+	}
+
+	/**
+	 * the userId of the person who last modified this record
+	 * @param modifiedBy
+	 */
+	public void setModifiedBy(String modifiedBy)
+	{
+		this.modifiedBy = modifiedBy;
+	}
+
+	/**
+	 * 
+	 * @return the date and time this submission was last modified
+	 */
+	public Date getModifiedDate()
+	{
+		return modifiedDate;
+	}
+
+	/**
+	 * the date and time this submission was last modified
+	 * @param modifiedDate
+	 */
+	public void setModifiedDate(Date modifiedDate)
+	{
+		this.modifiedDate = modifiedDate;
 	}
 	
 	/**

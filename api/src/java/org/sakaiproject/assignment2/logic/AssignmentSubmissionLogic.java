@@ -300,4 +300,18 @@ public interface AssignmentSubmissionLogic {
 	 * @throws SecurityException if the current user is not the submitter 
 	 */
 	public void markFeedbackAsViewed(Long submissionId, List<Long> versionIdList);
+	
+	/**
+	 * method to update whether or not a student has completed the given assignment(s). 
+	 * will update the "completed" property for the submission associated with the
+	 * given assignmentId depending on the corresponding Boolean value in the 
+	 * assignmentIdToCompletedMap.
+	 * @param studentId
+	 * @param assignmentIdToCompletedMap - map of assignmentId to Boolean to indicate if
+	 * the assignment should be marked as completed (true) or not completed (false)
+	 * @throws SecurityException if current user is not the submitter
+	 * @throws IllegalArgumentException if the Boolean in the map is null - won't update
+	 * any records
+	 */
+	public void markAssignmentsAsCompleted(String studentId, Map<Long, Boolean> assignmentIdToCompletedMap);
 }

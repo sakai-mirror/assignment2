@@ -21,6 +21,7 @@
 
 package org.sakaiproject.assignment2.dao;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -55,6 +56,14 @@ public interface AssignmentDao extends GeneralGenericDao {
 	
 	/**
 	 * 
+	 * @param assignmentIdList
+	 * @return the assignments associated with the given id list. Populates
+	 * the attachments and groups
+	 */
+	public Set<Assignment2> getAssignmentsWithGroupsAndAttachmentsById(Collection<Long> assignmentIdList);
+	
+	/**
+	 * 
 	 * @param assignmentId
 	 * @return the Assignment2 object associated with the given id with the
 	 * associated AssignmentGroup and AssignmentAttachment data populated
@@ -86,7 +95,7 @@ public interface AssignmentDao extends GeneralGenericDao {
 	 * the given student and assignments. if there is no submission for an assignment,
 	 * nothing is returned
 	 */
-	public List<AssignmentSubmission> getCurrentAssignmentSubmissionsForStudent(List<Assignment2> assignments, String studentId);
+	public List<AssignmentSubmission> getCurrentAssignmentSubmissionsForStudent(Collection<Assignment2> assignments, String studentId);
 	
 	/**
 	 * 
@@ -97,7 +106,7 @@ public interface AssignmentDao extends GeneralGenericDao {
 	 * no submission exists for the student yet, no submission is returned
 	 * will populate the currentSubmissionVersion 
 	 */
-	Set<AssignmentSubmission> getCurrentSubmissionsForStudentsForAssignment(List<String> studentIds, Assignment2 assignment);
+	Set<AssignmentSubmission> getCurrentSubmissionsForStudentsForAssignment(Collection<String> studentIds, Assignment2 assignment);
 	
 	/**
 	 * 
@@ -120,7 +129,7 @@ public interface AssignmentDao extends GeneralGenericDao {
 	 * populate currentVersion. will also populate attachments for the versions
 	 * 
 	 */
-	public Set<AssignmentSubmission> getSubmissionsWithVersionHistoryForStudentListAndAssignment(List<String> studentIdList, Assignment2 assignment);
+	public Set<AssignmentSubmission> getSubmissionsWithVersionHistoryForStudentListAndAssignment(Collection<String> studentIdList, Assignment2 assignment);
 	
 	/**
 	 * 
@@ -175,7 +184,7 @@ public interface AssignmentDao extends GeneralGenericDao {
 	 * @return the number of students from the given studentId list who have at least
 	 * one submission for the given assignment
 	 */
-	public int getNumStudentsWithASubmission(final Assignment2 assignment, final List<String> studentIdList);
+	public int getNumStudentsWithASubmission(final Assignment2 assignment, final Collection<String> studentIdList);
 	
 	/**
 	 * 

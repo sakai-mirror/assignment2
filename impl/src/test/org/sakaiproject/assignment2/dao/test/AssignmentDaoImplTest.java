@@ -103,7 +103,6 @@ public class AssignmentDaoImplTest extends Assignment2DaoTestBase {
 		// for each assignment returned, double check that the attachment and group sets are accurate
 		for (Assignment2 assign : assignments) {
 			if (assign.getId().equals(testData.a1Id)) {
-				System.out.println("A1: " + assign.getTitle() + " " + testData.a1Id);
 				assertTrue(assign.getAttachmentSet().size() == 2);
 				assertTrue(assign.getAssignmentGroupSet().size() == 2);
 			} else if (assign.getId().equals(testData.a2Id)) {
@@ -117,6 +116,43 @@ public class AssignmentDaoImplTest extends Assignment2DaoTestBase {
 				assertTrue(assign.getAttachmentSet().isEmpty());
 				assertTrue(assign.getAssignmentGroupSet().size() == 1);
 			}
+		}
+		
+	}
+	
+	public void testGetAssignmentsWithGroupsAndAttachmentsById() {
+		// try passing a null assignmentIdList - should do nothing
+		assignmentDao.getAssignmentsWithGroupsAndAttachmentsById(null);
+		
+		// try passing an empty list 
+		Set<Assignment2> assignments = assignmentDao.getAssignmentsWithGroupsAndAttachmentsById(new ArrayList<Long>());
+		assertNotNull(assignments);
+		assertTrue(assignments.isEmpty());
+
+		// now let's make a list of assignments to retrieve
+		List<Long> assignmentIdList = new ArrayList<Long>();
+		assignmentIdList.add(testData.a1Id);
+		assignmentIdList.add(testData.a2Id);
+		assignmentIdList.add(testData.a3Id);
+		assignments = assignmentDao.getAssignmentsWithGroupsAndAttachmentsById(assignmentIdList);
+		assertNotNull(assignments);
+		assertEquals(3, assignments.size());
+		
+		// for each assignment returned, double check that the attachment and group sets are accurate
+		for (Assignment2 assign : assignments) {
+			if (assign.getId().equals(testData.a1Id)) {
+				assertTrue(assign.getAttachmentSet().size() == 2);
+				assertTrue(assign.getAssignmentGroupSet().size() == 2);
+			} else if (assign.getId().equals(testData.a2Id)) {
+				assertTrue(assign.getAttachmentSet().isEmpty());
+				assertTrue(assign.getAssignmentGroupSet().isEmpty());
+			} else if (assign.getId().equals(testData.a3Id)) {
+				assertNotNull(assign.getAttachmentSet());
+				assertTrue(assign.getAttachmentSet().size() == 1);
+				assertTrue(assign.getAssignmentGroupSet().isEmpty());
+			} else  {
+				fail("Unknown assignment returned by getAssignmentsWithGroupsAndAttachmentsById");
+			} 
 		}
 		
 	}
@@ -626,7 +662,7 @@ public class AssignmentDaoImplTest extends Assignment2DaoTestBase {
 		assertEquals(1, assignmentDao.getNumSubmittedVersions(AssignmentTestDataLoad.STUDENT1_UID, testData.a3Id));
 		
 		// add instructor feedback w/o a submission
-		AssignmentSubmission st3a1Submission = new AssignmentSubmission(testData.a1, AssignmentTestDataLoad.STUDENT3_UID);
+		AssignmentSubmission st3a1Submission = testData.createGenericSubmission(testData.a1, AssignmentTestDataLoad.STUDENT3_UID);
 		AssignmentSubmissionVersion st3a1CurrVersion = testData.createGenericVersion(st3a1Submission, 0);
 		st3a1CurrVersion.setDraft(false);
 		st3a1CurrVersion.setSubmittedDate(null);

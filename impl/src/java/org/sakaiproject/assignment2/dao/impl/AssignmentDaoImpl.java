@@ -88,6 +88,29 @@ public class AssignmentDaoImpl extends HibernateGeneralGenericDao implements Ass
     	
     }
     
+    public Set<Assignment2> getAssignmentsWithGroupsAndAttachmentsById(final Collection<Long> assignmentIdList) {
+    	
+    	HibernateCallback hc = new HibernateCallback() {
+			public Object doInHibernate(Session session) throws HibernateException ,SQLException {
+		    	Set<Assignment2> assignmentSet = new HashSet<Assignment2>();
+		    	
+		    	if (assignmentIdList != null && !assignmentIdList.isEmpty()) {
+		    		Query query = session.getNamedQuery("findAssignmentsByIdList");	
+		        	
+		        	List<Assignment2> assignmentList = queryWithParameterList(query, "assignmentIdList", new ArrayList<Long>(assignmentIdList));
+		        	
+		        	if (assignmentList != null) {
+		        		assignmentSet = new HashSet<Assignment2>(assignmentList);
+		    		}
+		    	}
+		    	
+		    	return assignmentSet;
+			}
+		};
+		
+		return (Set<Assignment2>)getHibernateTemplate().execute(hc);
+    }
+    
     public Set<Assignment2> getAssignmentsWithGroupsAndAttachments(final String contextId) {
     	if (contextId == null) {
     		throw new IllegalArgumentException("Null contextId passed to getAssignmentsWithGroupsAndAttachments");
@@ -214,7 +237,7 @@ public class AssignmentDaoImpl extends HibernateGeneralGenericDao implements Ass
     	
     }
     
-    public List<AssignmentSubmission> getCurrentAssignmentSubmissionsForStudent(final List<Assignment2> assignments, final String studentId) {
+    public List<AssignmentSubmission> getCurrentAssignmentSubmissionsForStudent(final Collection<Assignment2> assignments, final String studentId) {
 		if (studentId == null) {
 			throw new IllegalArgumentException("null studentId passed to getAllSubmissionRecsForStudentWithVersionData");
 		}
@@ -228,7 +251,7 @@ public class AssignmentDaoImpl extends HibernateGeneralGenericDao implements Ass
 					Query query = session.getNamedQuery("findSubmissionsForStudentForAssignments");
 			    	query.setParameter("studentId",studentId);
 		    	
-			    	submissions = queryWithParameterList(query, "assignmentList", assignments);
+			    	submissions = queryWithParameterList(query, "assignmentList", new ArrayList<Assignment2>(assignments));
 			    	
 			    	// now, populate the version information
 		    		populateCurrentVersion(submissions);
@@ -281,7 +304,7 @@ public class AssignmentDaoImpl extends HibernateGeneralGenericDao implements Ass
     	
     }
     
-    public Set<AssignmentSubmission> getCurrentSubmissionsForStudentsForAssignment(final List<String> studentIds, final Assignment2 assignment) {
+    public Set<AssignmentSubmission> getCurrentSubmissionsForStudentsForAssignment(final Collection<String> studentIds, final Assignment2 assignment) {
     	if (assignment == null) {
     		throw new IllegalArgumentException("null assignment passed to getSubmissionsForStudentsForAssignment");    		
     	}
@@ -294,7 +317,7 @@ public class AssignmentDaoImpl extends HibernateGeneralGenericDao implements Ass
 		    		Query query = session.getNamedQuery("findSubmissionsForStudentsForAssignment");
 		    		query.setParameter("assignment", assignment);
 		    		
-		    		List<AssignmentSubmission> submissionList = queryWithParameterList(query, "studentIdList", studentIds);
+		    		List<AssignmentSubmission> submissionList = queryWithParameterList(query, "studentIdList", new ArrayList<String>(studentIds));
 		    			
 		    		if (submissionList != null) {
 		    			submissionSet = new HashSet<AssignmentSubmission>(submissionList);
@@ -348,7 +371,7 @@ public class AssignmentDaoImpl extends HibernateGeneralGenericDao implements Ass
 		}
     }
     
-    public Set<AssignmentSubmission> getSubmissionsWithVersionHistoryForStudentListAndAssignment(final List<String> studentIdList, final Assignment2 assignment) {
+    public Set<AssignmentSubmission> getSubmissionsWithVersionHistoryForStudentListAndAssignment(final Collection<String> studentIdList, final Assignment2 assignment) {
     	if (assignment == null) {
     		throw new IllegalArgumentException("null assignment passed to getSubmissionsWithVersionHistoryForStudentListAndAssignment");
     	}
@@ -361,7 +384,7 @@ public class AssignmentDaoImpl extends HibernateGeneralGenericDao implements Ass
 		    		Query query = session.getNamedQuery("findSubmissionsWithHistoryForAssignmentAndStudents");	
 		        	query.setParameter("assignment", assignment);
 		        	
-		        	List<AssignmentSubmission> submissionList = queryWithParameterList(query, "studentIdList", studentIdList);
+		        	List<AssignmentSubmission> submissionList = queryWithParameterList(query, "studentIdList", new ArrayList<String>(studentIdList));
 		        	
 		        	if (submissionList != null) {
 		    			submissionSet = new HashSet<AssignmentSubmission>(submissionList);
@@ -566,7 +589,7 @@ public class AssignmentDaoImpl extends HibernateGeneralGenericDao implements Ass
 		return ((Number) getHibernateTemplate().execute(hc)).intValue();
     }
     
-    public int getNumStudentsWithASubmission(final Assignment2 assignment, final List<String> studentIdList) {
+    public int getNumStudentsWithASubmission(final Assignment2 assignment, final Collection<String> studentIdList) {
     	if (assignment == null) {
     		throw new IllegalArgumentException("null assignment passed to getNumStudentsWithASubmission");
     	}
@@ -581,7 +604,7 @@ public class AssignmentDaoImpl extends HibernateGeneralGenericDao implements Ass
 		    		Query query = session.getNamedQuery("countNumStudentsWithASubmission");	
 		        	query.setParameter("assignment", assignment);
 		        	
-		        	studentsWithSubmission = queryWithParameterList(query, "studentIdList", studentIdList);
+		        	studentsWithSubmission = queryWithParameterList(query, "studentIdList", new ArrayList<String>(studentIdList));
 		        	
 		    	}
 		    	

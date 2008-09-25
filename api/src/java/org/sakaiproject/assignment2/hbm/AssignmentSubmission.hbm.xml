@@ -40,6 +40,26 @@
             <column name="COMPLETED" />
         </property>
         
+        <!-- AssignmentSubmission created by -->
+        <property name="createdBy" type="java.lang.String">
+            <column name="CREATED_BY" length="99" not-null="true" />
+        </property>
+        
+        <!-- AssignmentSubmission created date and time -->
+        <property name="createdDate" type="java.util.Date">
+            <column name="CREATED_DATE" not-null="true" />
+        </property>
+        
+        <!-- AssignmentSubmission modified by -->
+        <property name="modifiedBy" type="java.lang.String">
+            <column name="MODIFIED_BY" length="99" />
+        </property>
+        
+        <!-- AssignmentSubmission modified date and time -->
+        <property name="modifiedDate" type="java.util.Date">
+            <column name="MODIFIED_DATE" />
+        </property>
+        
         <!-- a set of all of the versions of this submission -->
         <set name="submissionHistorySet" lazy="true" inverse="true" cascade="none"
         		order-by="SUBMITTED_VERSION_NUMBER desc">
