@@ -30,12 +30,11 @@ Instructor Tests
 ----------------
 
 1. Test validation for no title
-#. Create Assn with Due Date
-#. Create Assn that is graded
-#. Create Assn that is NOT graded
-#. Create Assn with formatted instructions
-#. Create Assn with no instructions
-#. Create Assn with attachments
-#. Create Assn with no attachments
-#. Create Assn that does not require honor pledge
-#. Create Assn that requires honor pledge
+2. Create Assn with Due Date
+3. Create Assn that is graded
+4. Create Assn that is NOT graded
+5. Create Assn with formatted instructions
+6. Create Assn with no instructions
+7. Create Assn with attachments
+8. Create Assn with no attachments
+9. Create Assn that requires honor pledge
