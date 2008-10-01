@@ -264,4 +264,10 @@ public class ExternalLogicStub implements ExternalLogic {
 		return null;
 	}
 
+	public Map<String, String> getUserDisplayIdUserIdMapForStudentsInSite(String contextId)
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

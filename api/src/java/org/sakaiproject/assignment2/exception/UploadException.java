@@ -1,6 +1,6 @@
-package org.sakaiproject.assignment2.logic;
+package org.sakaiproject.assignment2.exception;
 
-public class UploadException extends Exception
+public class UploadException extends AssignmentException
 {
 	public UploadException(String msg)
 	{

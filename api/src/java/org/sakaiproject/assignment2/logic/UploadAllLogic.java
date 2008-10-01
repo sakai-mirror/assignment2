@@ -2,6 +2,7 @@ package org.sakaiproject.assignment2.logic;
 
 import java.io.File;
 
+import org.sakaiproject.assignment2.exception.UploadException;
 import org.sakaiproject.assignment2.model.UploadAllOptions;
 
 public interface UploadAllLogic

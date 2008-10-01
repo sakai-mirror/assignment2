@@ -65,7 +65,7 @@
    <bean id="org.sakaiproject.assignment2.logic.AssignmentBundleLogic" class="org.sakaiproject.assignment2.logic.impl.AssignmentBundleLogicImpl" init-method="init">
    </bean>
 
-	<bean id="org.sakaiproject.assignment2.logic.UploadAllLogic"
+	<!-- <bean id="org.sakaiproject.assignment2.logic.UploadAllLogic"
 		  class="org.sakaiproject.assignment2.logic.impl.UploadAllLogicImpl">
 		<property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
 		<property name="assignmentSubmissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
@@ -74,6 +74,13 @@
 		<property name="externalGradebookLogic" ref="org.sakaiproject.assignment2.logic.ExternalGradebookLogic" />
 		<property name="assignmentBundleLogic" ref="org.sakaiproject.assignment2.logic.AssignmentBundleLogic" />
 		<property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
+	</bean> -->
+	
+	<bean id="org.sakaiproject.assignment2.logic.UploadGradesLogic"
+		  class="org.sakaiproject.assignment2.logic.impl.UploadGradesLogicImpl">
+		<property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
+		<property name="assignmentPermissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentPermissionLogic" />
+		<property name="externalGradebookLogic" ref="org.sakaiproject.assignment2.logic.ExternalGradebookLogic" />
 	</bean>
 
 	<bean id="org.sakaiproject.assignment2.logic.ScheduledNotification" class="org.sakaiproject.assignment2.logic.impl.ScheduledNotificationImpl">

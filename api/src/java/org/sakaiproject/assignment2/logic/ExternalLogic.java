@@ -193,4 +193,14 @@ public interface ExternalLogic {
      * @return a string representing a human readable format of the file size
      */
     public String getReadableFileSize(int sizeVal);
+    
+    /**
+     * 
+     * @param contextId
+     * @return a map of the displayId to userId for all of the students in the
+     * given site. Useful for display scenarios that require use of the displayId
+     * (such as upload and download) that we need to convert to the equivalent
+     * userId for processing
+     */
+    public Map<String, String> getUserDisplayIdUserIdMapForStudentsInSite(String contextId);
 }

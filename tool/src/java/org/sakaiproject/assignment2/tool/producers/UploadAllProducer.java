@@ -54,7 +54,9 @@ public class UploadAllProducer implements ViewComponentProducer, ViewParamsRepor
 		return VIEW_ID;
 	}
 
-	public void fillComponents(UIContainer tofill, ViewParameters viewparams,
+	/*
+	 **** This is the original work for upload all. For now, we are only going to upload grades
+	 public void fillComponents(UIContainer tofill, ViewParameters viewparams,
 			ComponentChecker checker)
 	{
 		AssignmentViewParams params = (AssignmentViewParams) viewparams;
@@ -77,6 +79,27 @@ public class UploadAllProducer implements ViewComponentProducer, ViewParamsRepor
 		// Render buttons
 		UICommand.make(upload_form, "uploadButton", UIMessage.make("assignment2.uploadall.upload"),
 				"uploadBean.processUpload");
+		 UICommand.make(upload_form, "cancelButton", UIMessage.make("assignment2.uploadall.cancel"))
+				.setReturn(ViewSubmissionsProducer.VIEW_ID);
+	}*/
+	
+	public void fillComponents(UIContainer tofill, ViewParameters viewparams,
+			ComponentChecker checker)
+	{
+		AssignmentViewParams params = (AssignmentViewParams) viewparams;
+
+		ZipViewParams zvp = new ZipViewParams("zipSubmissions", params.assignmentId);
+		UIInternalLink.make(tofill, "downloadtemplate", UIMessage
+				.make("assignment2.assignment_grade-assignment.downloadall.button"), zvp);
+
+		String uploadOptions = "uploadBean.uploadOptions";
+		UIForm upload_form = UIForm.make(tofill, "upload_form");
+		upload_form
+				.addParameter(new UIELBinding(uploadOptions + ".assignmentId", zvp.assignmentId));
+
+		// Render buttons
+		UICommand.make(upload_form, "uploadButton", UIMessage.make("assignment2.uploadall.upload"),
+				"uploadBean.processUploadGradesCSV");
 		 UICommand.make(upload_form, "cancelButton", UIMessage.make("assignment2.uploadall.cancel"))
 				.setReturn(ViewSubmissionsProducer.VIEW_ID);
 	}

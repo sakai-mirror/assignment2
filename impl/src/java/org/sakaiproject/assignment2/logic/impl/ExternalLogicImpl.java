@@ -342,4 +342,27 @@ public class ExternalLogicImpl implements ExternalLogic {
 		
 		return userIdUserMap;
 	}
+	
+    public Map<String, String> getUserDisplayIdUserIdMapForStudentsInSite(String contextId) {
+    	if (contextId == null) {
+    		throw new IllegalArgumentException("Null contextId passed to getUserDisplayIdUserIdMapForStudentsInSite");
+    	}
+    	
+    	Map<String, String> userDisplayIdUserIdMap = new HashMap<String, String>();
+
+    	List<String> allStudentsInSite = getStudentsInSite(contextId);
+    	
+    	if (allStudentsInSite != null) {
+			List<User> userList = new ArrayList<User>();
+			userList = userDirectoryService.getUsers(allStudentsInSite);
+			
+			if (userList != null) {
+				for (User user : userList) {
+					userDisplayIdUserIdMap.put(user.getDisplayId(), user.getId());
+				}
+			}
+		}
+    	
+    	return userDisplayIdUserIdMap;
+    }
 }

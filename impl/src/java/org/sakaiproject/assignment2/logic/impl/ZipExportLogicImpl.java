@@ -206,13 +206,14 @@ public class ZipExportLogicImpl implements ZipExportLogic
 								new Object[] {assignmentTitle}))
 								.append("\n");
 
-				// now iterate through all viewable students in this class to create the grades file
+				// now iterate through all GRADABLE students in this class to create the grades file
+				List<String> gradableStudents = permissionLogic.getGradableStudentsForUserForItem(assignment);
 				
-				if (viewableStudents != null && !viewableStudents.isEmpty()) {
+				if (gradableStudents != null && !gradableStudents.isEmpty()) {
 					// get the grade information
-					Map<String, GradeInformation> userIdGradeMap = gradebookLogic.getGradeInformationForStudents(contextId, viewableStudents, assignment);
+					Map<String, GradeInformation> userIdGradeMap = gradebookLogic.getGradeInformationForStudents(contextId, gradableStudents, assignment);
 					
-					for (String studentId : viewableStudents) {
+					for (String studentId : gradableStudents) {
 						// get their User info
 						User student = userIdUserMap.get(studentId);
 						if (student != null) {
@@ -245,6 +246,8 @@ public class ZipExportLogicImpl implements ZipExportLogic
 								gradesBuilder.append(gradebookComment);
 								gradesBuilder.append("\"");
 								gradesBuilder.append(",");
+							} else {
+								gradesBuilder.append(",,");
 							}
 							
 							gradesBuilder.append("\n");
