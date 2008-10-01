@@ -62,7 +62,7 @@
 		via incoming request URL -->
 	<bean parent="requestAddressibleParent">
 		<property name="value"
-			value="Assignment2,Assignment2Bean,AssignmentSubmission,AssignmentSubmissionBean,FilePickerBean,AssignmentSubmissionVersion,uploadBean" />
+			value="Assignment2,Assignment2Bean,AssignmentSubmission,AssignmentSubmissionBean,FilePickerBean,AssignmentSubmissionVersion,uploadBean,MarkTodoBean" />
 	</bean>
 
 	<!-- Override the default style of user messages -->
