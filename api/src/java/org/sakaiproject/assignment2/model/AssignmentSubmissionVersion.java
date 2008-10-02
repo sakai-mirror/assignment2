@@ -445,4 +445,19 @@ public class AssignmentSubmissionVersion implements FeedbackVersion {
 		}
 		this.submissionAttachSet = set;
 	}
+	
+	/**
+	 * 
+	 * @return true if the submitter has read the most recent feedback
+	 * for this version
+	 */
+	public boolean isFeedbackRead() {
+		boolean feedbackRead = false;
+		if (lastFeedbackDate != null && feedbackLastViewed != null
+				&& lastFeedbackDate.before(feedbackLastViewed)) {
+			feedbackRead = true;
+		}
+
+		return feedbackRead;
+	}
 }
