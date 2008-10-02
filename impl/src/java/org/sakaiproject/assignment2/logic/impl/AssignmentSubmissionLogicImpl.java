@@ -1166,10 +1166,10 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			if (assignToMarkComplete != null) {
 				// now, let's retrieve the submissions
 				List<AssignmentSubmission> submissions = dao.getCurrentAssignmentSubmissionsForStudent(assignToMarkComplete, studentId);
-				Map<Assignment2, AssignmentSubmission> assignmentToSubmissionMap = new HashMap<Assignment2, AssignmentSubmission>();
+				Map<Long, AssignmentSubmission> assignmentIdToSubmissionMap = new HashMap<Long, AssignmentSubmission>();
 				if (submissions != null) {
 					for (AssignmentSubmission sub : submissions) {
-						assignmentToSubmissionMap.put(sub.getAssignment(), sub);
+						assignmentIdToSubmissionMap.put(sub.getAssignment().getId(), sub);
 					}
 				}
 				
@@ -1182,7 +1182,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 						throw new IllegalArgumentException("Null value for completed passed in map to markAssignmentsAsCompleted");
 					}
 					
-					AssignmentSubmission submission = (AssignmentSubmission)assignmentToSubmissionMap.get(assign);
+					AssignmentSubmission submission = (AssignmentSubmission)assignmentIdToSubmissionMap.get(assign.getId());
 					if (submission == null) {
 						// we need to create this submission record
 						submission = new AssignmentSubmission(assign, studentId);
