@@ -575,7 +575,7 @@ public class AssignmentDaoImplTest extends Assignment2DaoTestBase {
 		} catch (IllegalArgumentException iae) {}
 		
 		// let's try a few different submissions
-		Set<AssignmentSubmissionVersion> history = assignmentDao.getVersionHistoryForSubmission(testData.st1a1Submission);
+		List<AssignmentSubmissionVersion> history = assignmentDao.getVersionHistoryForSubmission(testData.st1a1Submission);
 		assertEquals(history.size(), 1);
 		
 		history = assignmentDao.getVersionHistoryForSubmission(testData.st2a2SubmissionNoVersions);
@@ -704,5 +704,67 @@ public class AssignmentDaoImplTest extends Assignment2DaoTestBase {
 		
 		// should be 2 even though one is draft
 		assertEquals(2, assignmentDao.getHighestSubmittedVersionNumber(testData.st1a3Submission));
+	}
+	
+	public void testGetSubmissionsForStudentWithVersionHistoryAndAttach() {
+		// try a null studentId
+		try {
+			assignmentDao.getSubmissionsForStudentWithVersionHistoryAndAttach(null, new ArrayList<Assignment2>());
+			fail("did not catch null studentId passed to getSubmissionsForStudentForAssignments");
+		} catch (IllegalArgumentException iae) {}
+		
+		// try a null assignmentList - should do nothing
+		assignmentDao.getSubmissionsForStudentWithVersionHistoryAndAttach(AssignmentTestDataLoad.STUDENT1_UID, null);
+		
+		List<Assignment2> assignList = new ArrayList<Assignment2>();
+		assignList.add(testData.a1);
+		assignList.add(testData.a2);
+		assignList.add(testData.a3);
+		assignList.add(testData.a4);
+		
+		Set<AssignmentSubmission> subSet = assignmentDao.getSubmissionsForStudentWithVersionHistoryAndAttach(AssignmentTestDataLoad.STUDENT1_UID, assignList);
+		assertEquals(2, subSet.size());
+		for (AssignmentSubmission sub : subSet) {
+			if (sub.getAssignment().getId().equals(testData.a1Id)) {
+				assertEquals(1, sub.getSubmissionHistorySet().size());
+				assertNotNull(sub.getCurrentSubmissionVersion());
+			} else if (sub.getAssignment().getId().equals(testData.a3Id)) {
+				assertEquals(2, sub.getSubmissionHistorySet().size());
+				assertNotNull(sub.getCurrentSubmissionVersion());
+			} else {
+				fail("Invalid submission returned by getSubmissionsForStudentForAssignments");
+			}
+		}
+		
+		subSet = assignmentDao.getSubmissionsForStudentWithVersionHistoryAndAttach(AssignmentTestDataLoad.STUDENT2_UID, assignList);
+		assertEquals(4, subSet.size());
+		for (AssignmentSubmission sub : subSet) {
+			if (sub.getAssignment().getId().equals(testData.a1Id)) {
+				assertEquals(3, sub.getSubmissionHistorySet().size());
+				assertNotNull(sub.getCurrentSubmissionVersion());
+			} else if (sub.getAssignment().getId().equals(testData.a3Id)) {
+				assertEquals(1, sub.getSubmissionHistorySet().size());
+				assertNotNull(sub.getCurrentSubmissionVersion());
+			} else if (sub.getAssignment().getId().equals(testData.a4Id)) {
+				assertEquals(2, sub.getSubmissionHistorySet().size());
+				assertNotNull(sub.getCurrentSubmissionVersion());
+			} else if (sub.getAssignment().getId().equals(testData.a2Id)) {
+				assertEquals(0, sub.getSubmissionHistorySet().size());
+				assertNull(sub.getCurrentSubmissionVersion());
+			} else {
+				fail("Invalid submission returned by getSubmissionsForStudentForAssignments");
+			}
+		}
+		
+		subSet = assignmentDao.getSubmissionsForStudentWithVersionHistoryAndAttach(AssignmentTestDataLoad.STUDENT3_UID, assignList);
+		assertEquals(1, subSet.size());
+		for (AssignmentSubmission sub : subSet) {
+			if (sub.getAssignment().getId().equals(testData.a3Id)) {
+				assertEquals(2, sub.getSubmissionHistorySet().size());
+				assertNotNull(sub.getCurrentSubmissionVersion());
+			} else {
+				fail("Invalid submission returned by getSubmissionsForStudentForAssignments");
+			}
+		}
 	}
 }

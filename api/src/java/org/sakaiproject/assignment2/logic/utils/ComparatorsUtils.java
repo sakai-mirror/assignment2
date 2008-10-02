@@ -168,6 +168,38 @@ public class ComparatorsUtils {
 	}
 	
 	/**
+	 * static class to sort AssignmentSubmission objects by completed status
+	 * (uncompleted come first, then completed) and then by the sortIndex of
+	 * the associated assignment
+	 */
+	public static class SubmissionCompletedSortOrderComparator implements Comparator<AssignmentSubmission>  {
+		public int compare(AssignmentSubmission sub1, AssignmentSubmission sub2) {
+			
+			int value;
+			if (sub1.isCompleted() && !sub2.isCompleted()) {
+				value = 1;
+			} else if (!sub1.isCompleted() && sub2.isCompleted()) {
+				value = -1;
+			} else {
+				// sort by sortIndex on the assignment
+				Assignment2 assign1 = sub1.getAssignment();
+				Assignment2 assign2 = sub2.getAssignment();
+				
+				if (assign1.getSortIndex() > assign2.getSortIndex()) {
+					value = 1;
+				} else if (assign1.getSortIndex() < assign2.getSortIndex()) {
+					value = -1;
+				} else {
+					// sortIndex should be unique, so shouldn't get to this point
+					value = 0;
+				}
+			}
+
+			return value;
+		}
+	}
+	
+	/**
 	 * static class to sort AssignmentSubmission objects by feedback release status
 	 */
 	public static class SubmissionFeedbackReleasedComparator implements Comparator<AssignmentSubmission>  {

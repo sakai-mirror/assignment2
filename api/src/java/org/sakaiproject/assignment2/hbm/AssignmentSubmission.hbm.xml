@@ -109,5 +109,13 @@
     				 left join fetch submission.submissionHistorySet versions
              where submission.id = :submissionId]]>
   	</query>
+  	<query name="findSubmissionsForStudentWithVersionHistoryAndAttach">
+  	<![CDATA[from org.sakaiproject.assignment2.model.AssignmentSubmission submission
+    				 left join fetch submission.submissionHistorySet versions
+    				 left join fetch versions.feedbackAttachSet
+    				 left join fetch versions.submissionAttachSet
+             where submission.userId = :studentId and
+             		submission.assignment in (:assignmentList)]]>
+  	</query>
   	
 </hibernate-mapping>

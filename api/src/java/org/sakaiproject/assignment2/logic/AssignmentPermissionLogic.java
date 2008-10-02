@@ -134,7 +134,8 @@ public interface AssignmentPermissionLogic {
 	
 	/**
 	 * @param contextId
-	 * @return true if the current user is a student in the gradebook
+	 * @return true if the current user is a "student" according to the gradebook's definition
+	 * and is allowed to make submissions for assignments in this site
 	 */
 	 public boolean isCurrentUserAbleToSubmit(String contextId);
 	 

@@ -27,6 +27,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -519,14 +520,13 @@ public class AssignmentDaoImpl extends HibernateGeneralGenericDao implements Ass
 		return queryResultList;
     }
     
-    public Set<AssignmentSubmissionVersion> getVersionHistoryForSubmission(final AssignmentSubmission submission) {
+    public List<AssignmentSubmissionVersion> getVersionHistoryForSubmission(final AssignmentSubmission submission) {
     	if (submission == null) {
     		throw new IllegalArgumentException("null submission passed to getVersionHistoryForSubmission");
     	}
 
     	HibernateCallback hc = new HibernateCallback() {
     		public Object doInHibernate(Session session) throws HibernateException ,SQLException {
-    			Set<AssignmentSubmissionVersion> versionSet = new HashSet<AssignmentSubmissionVersion>();
 
     			Query query = session.getNamedQuery("findVersionHistoryForSubmission");	
     			query.setParameter("submission", submission);
@@ -534,14 +534,16 @@ public class AssignmentDaoImpl extends HibernateGeneralGenericDao implements Ass
     			List<AssignmentSubmissionVersion> versionList = query.list();
 
     			if (versionList != null) {
-    				versionSet = new HashSet<AssignmentSubmissionVersion>(versionList);
+    				// get rid of duplicates introduced by join but retain order
+    				Set<AssignmentSubmissionVersion>versionSet = new LinkedHashSet<AssignmentSubmissionVersion>(versionList);
+    				versionList = new ArrayList<AssignmentSubmissionVersion>(versionSet);
     			}
 
-    			return versionSet;
+    			return versionList;
     		}
     	};
 
-    	return (Set<AssignmentSubmissionVersion>)getHibernateTemplate().execute(hc);
+    	return (List<AssignmentSubmissionVersion>)getHibernateTemplate().execute(hc);
     }
 
     public AssignmentSubmissionVersion getVersionByUserIdAndSubmittedDate(final String userId,
@@ -644,6 +646,36 @@ public class AssignmentDaoImpl extends HibernateGeneralGenericDao implements Ass
 		};
 		
 		return ((Integer)getHibernateTemplate().execute(hc)).intValue();
+    }
+    
+    public Set<AssignmentSubmission> getSubmissionsForStudentWithVersionHistoryAndAttach(final String studentId, final Collection<Assignment2> assignmentList) {
+    	if (studentId == null) {
+    		throw new IllegalArgumentException("Null studentId passed to getSubmissionsForStudentWithVersionHistoryAndAttach");
+    	}
+    	
+    	HibernateCallback hc = new HibernateCallback() {
+			public Object doInHibernate(Session session) throws HibernateException ,SQLException {
+				Set<AssignmentSubmission> submissionSet = new HashSet<AssignmentSubmission>();
+		    	
+		    	if (assignmentList != null && !assignmentList.isEmpty()) {
+		    		Query query = session.getNamedQuery("findSubmissionsForStudentWithVersionHistoryAndAttach");	
+		        	query.setParameter("studentId", studentId);
+		        	
+		        	List<AssignmentSubmission> submissionList = queryWithParameterList(query, "assignmentList", new ArrayList<Assignment2>(assignmentList));
+		        	
+		        	if (submissionList != null && !submissionList.isEmpty()) {
+		        		// get rid of duplicates 
+		        		submissionSet = new HashSet<AssignmentSubmission>(submissionList);
+		        		// now retrieve the current version information
+		        		populateCurrentVersion(submissionSet);
+		    		}
+		    	}
+		    	
+		    	return submissionSet;
+			}
+		};
+		
+		return (Set<AssignmentSubmission>)getHibernateTemplate().execute(hc);
     }
     
     public void evictObject(Object obj) {

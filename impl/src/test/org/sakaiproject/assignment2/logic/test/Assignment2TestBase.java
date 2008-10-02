@@ -98,12 +98,6 @@ public abstract class Assignment2TestBase extends AbstractTransactionalSpringCon
     	permissionLogic.setExternalGradebookLogic(gradebookLogic);
     	permissionLogic.setExternalLogic(externalLogic);
     	
-    	submissionLogic = new AssignmentSubmissionLogicImpl();
-    	submissionLogic.setDao(dao);
-    	submissionLogic.setExternalGradebookLogic(gradebookLogic);
-    	submissionLogic.setExternalLogic(externalLogic);
-    	submissionLogic.setPermissionLogic(permissionLogic);
-    	
     	assignmentLogic = new AssignmentLogicImpl();
     	assignmentLogic.setDao(dao);
     	assignmentLogic.setExternalAnnouncementLogic(announcementLogic);
@@ -111,6 +105,14 @@ public abstract class Assignment2TestBase extends AbstractTransactionalSpringCon
     	assignmentLogic.setExternalLogic(externalLogic);
     	assignmentLogic.setPermissionLogic(permissionLogic);
     	assignmentLogic.setAssignmentBundleLogic(bundleLogic);
+    	
+    	
+    	submissionLogic = new AssignmentSubmissionLogicImpl();
+    	submissionLogic.setDao(dao);
+    	submissionLogic.setExternalGradebookLogic(gradebookLogic);
+    	submissionLogic.setExternalLogic(externalLogic);
+    	submissionLogic.setPermissionLogic(permissionLogic);
+    	submissionLogic.setAssignmentLogic(assignmentLogic);
 	
     }
 

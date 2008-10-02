@@ -93,7 +93,7 @@ public interface AssignmentDao extends GeneralGenericDao {
 	 * @param studentId
 	 * @return all AssignmentSubmission records with the currentVersion populated for
 	 * the given student and assignments. if there is no submission for an assignment,
-	 * nothing is returned
+	 * nothing is returned. does not populate version history or attachments
 	 */
 	public List<AssignmentSubmission> getCurrentAssignmentSubmissionsForStudent(Collection<Assignment2> assignments, String studentId);
 	
@@ -152,9 +152,10 @@ public interface AssignmentDao extends GeneralGenericDao {
 	 * 
 	 * @param submission
 	 * @return set of AssignmentSubmissionVersions associated with the given submission.
-	 * will populate the feedback and submission attachments for each version
+	 * will populate the feedback and submission attachments for each version.
+	 * ordered by submitted version number
 	 */
-	public Set<AssignmentSubmissionVersion> getVersionHistoryForSubmission(final AssignmentSubmission submission);
+	public List<AssignmentSubmissionVersion> getVersionHistoryForSubmission(final AssignmentSubmission submission);
 
 	/**
 	 * Get a submission version for a user id by the submitted date.
@@ -193,6 +194,16 @@ public interface AssignmentDao extends GeneralGenericDao {
 	 * existing for this submission
 	 */
 	public int getHighestSubmittedVersionNumber(final AssignmentSubmission submission);
+	
+	/**
+	 * 
+	 * @param studentId
+	 * @param assignmentList
+	 * @return the AssignmentSubmissions associated with the given assignments for the given student. If no
+	 * submission exists, none is returned for that assignment. Populates versionHistory,
+	 * attachments, and currentVersion.
+	 */
+	public Set<AssignmentSubmission> getSubmissionsForStudentWithVersionHistoryAndAttach(final String studentId, final Collection<Assignment2> assignmentList);
 	
 	/**
 	 * In the logic, some objects will be returned with

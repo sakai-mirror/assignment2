@@ -38,6 +38,7 @@ import org.sakaiproject.assignment2.exception.AssignmentNotFoundException;
 import org.sakaiproject.assignment2.exception.StaleObjectModificationException;
 import org.sakaiproject.assignment2.exception.SubmissionNotFoundException;
 import org.sakaiproject.assignment2.exception.VersionNotFoundException;
+import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
@@ -81,6 +82,11 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 	public void setPermissionLogic(AssignmentPermissionLogic permissionLogic) {
 		this.permissionLogic = permissionLogic;
 	}
+	
+	private AssignmentLogic assignmentLogic;
+	public void setAssignmentLogic(AssignmentLogic assignmentLogic) {
+		this.assignmentLogic = assignmentLogic;
+	}
 
 	public void init(){
 		if (log.isDebugEnabled()) log.debug("init");
@@ -109,9 +115,6 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		AssignmentSubmissionVersion currentVersion = dao.getCurrentSubmissionVersionWithAttachments(submission);
 
 		if (currentVersion != null) {
-			// since we may modify this object before returning it to filter
-			// out restricted info, we don't want to return the persistent object
-			dao.evictObject(currentVersion);
 			filterOutRestrictedVersionInfo(currentVersion, currentUserId);
 		}
 
@@ -143,10 +146,6 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 						submissionVersionId + " for student " + submission.getUserId() + " without authorization");
 			}
 			
-			// since we may modify this object before returning it to filter
-			// out restricted info, we don't want to return the persistent object
-			dao.evictObject(version); 
-			
 			filterOutRestrictedVersionInfo(version, currentUserId);
 		}
 		
@@ -176,15 +175,6 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			// return an "empty" submission
 			submission = new AssignmentSubmission(assignment, studentId);
 		} else {
-			// since we may modify the versions before returning them to filter
-			// out restricted info, we don't want to return the persistent objects.
-			// we have no intention of saving the modified object
-			dao.evictObject(submission);
-			if (submission.getSubmissionHistorySet() != null) {
-				for (AssignmentSubmissionVersion version : submission.getSubmissionHistorySet()) {
-					dao.evictObject(version);
-				}
-			}
 			
 			filterOutRestrictedInfo(submission, currentUserId, true);
 		} 
@@ -513,14 +503,6 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 						// add an empty rec to the returned list
 						thisSubmission = new AssignmentSubmission(assignment, studentId);
 					} else {
-						
-						// will evict the submission and version from the session because we may
-						// need to modify this object with no intention of saving
-						// to filter out restricted info
-						// no need to evict history b/c was not retrieved
-						dao.evictObject(thisSubmission);
-						dao.evictObject(thisSubmission.getCurrentSubmissionVersion());
-						
 						// we need to filter restricted info from instructor
 						// if this is draft
 						filterOutRestrictedInfo(thisSubmission, externalLogic.getCurrentUserId(), false);
@@ -647,7 +629,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 
 			// retrieve the submission history for this student for this assignment
 			AssignmentSubmission submission = dao.getSubmissionWithVersionHistoryForStudentAndAssignment(studentId, assignment);
-			Set<AssignmentSubmissionVersion> versionHistory = null;
+			List<AssignmentSubmissionVersion> versionHistory = null;
 			if (submission != null) {
 				versionHistory = dao.getVersionHistoryForSubmission(submission);
 			}
@@ -929,9 +911,10 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 	 * when retrieving a submission and/or version, some fields may be restricted
 	 * for the curr user. If curr user is the submitter and feedback has not been
 	 * released, we do not want to return feedback. If curr user is not the submitter
-	 * and the version is draft, we do not want to return the submission text and attach
-	 * @param submission - do not pass the persistent object since we do not
-	 * want to save the changes we are making
+	 * and the version is draft, we do not want to return the submission text and attach.
+	 * this method will also evict the submission and version(s) from session since we do not want
+	 * to accidentally save or re-load these modified objects
+	 * @param submission 
 	 * @param currentUserId
 	 * @param includeHistory - true if the submissionHistorySet was populated and
 	 * needs to be filtered, as well
@@ -941,6 +924,10 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		// released, do not return the feedback info
 		// if the current user is not the submitter and a version is draft, 
 		// do not return any of the submission info
+		
+		// evict the submission from the session since we are making modifications
+		// that we don't want to be saved or re-loaded
+		dao.evictObject(submission);
 
 		// check the version history
 		if (includeHistory) {
@@ -961,13 +948,21 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 	 * when retrieving a submission and/or version, some fields may be restricted
 	 * for the curr user. If curr user is the submitter and feedback has not been
 	 * released, we do not want to return feedback. If curr user is not the submitter
-	 * and the version is draft, we do not want to return the submission text and attach
-	 * @param version - do not pass the persistent object since we do not
+	 * and the version is draft, we do not want to return the submission text and attach.
+	 * this method will also evict the version from session since we do not want
+	 * to accidentally save this modified object
+	 * @param version 
 	 * want to save the changes we are making
 	 * @param currentUserId
 	 */
 	private void filterOutRestrictedVersionInfo(AssignmentSubmissionVersion version, String currentUserId) {
 		if (version != null) {
+			
+			// since we may modify the versions before returning them to filter
+			// out restricted info, we don't want to return the persistent objects.
+			// we have no intention of saving the modified object
+			dao.evictObject(version);
+			
 			// if the current user is the submitter
 			if (version.getAssignmentSubmission().getUserId().equals(currentUserId)) {
 				if (version.getFeedbackReleasedDate() == null || version.getFeedbackReleasedDate().after(new Date())) {
@@ -1006,14 +1001,10 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		if (submission.getId() != null) {
 			String currentUserId = externalLogic.getCurrentUserId();
 
-			Set<AssignmentSubmissionVersion> historySet = dao.getVersionHistoryForSubmission(submission);
+			List<AssignmentSubmissionVersion> historySet = dao.getVersionHistoryForSubmission(submission);
 			if (historySet != null && !historySet.isEmpty()) {
 				for (AssignmentSubmissionVersion version : historySet) {
-					if (version != null) {
-						// since we may modify this object before returning it to filter
-						// out restricted info, we don't want to return the persistent object
-						dao.evictObject(version);
-						
+					if (version != null) {					
 						filterOutRestrictedVersionInfo(version, currentUserId);
 						filteredVersionHistory.add(version);
 					}
@@ -1208,6 +1199,53 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 				}
 			}
 		}
+	}
+	
+	public List<AssignmentSubmission> getSubmissionsForCurrentUser() {
+		List<AssignmentSubmission> userSubmissions = new ArrayList<AssignmentSubmission>();
+		
+		String currentUserId = externalLogic.getCurrentUserId();
+		String currentContextId = externalLogic.getCurrentContextId();
+		
+		if (!permissionLogic.isCurrentUserAbleToSubmit(currentContextId)) {
+			throw new SecurityException("Attempt to retrieve submissions for a non-student user");
+		}
+
+		List<Assignment2> viewableAssignments = assignmentLogic.getViewableAssignments();
+
+		if (viewableAssignments != null) {
+			Set<AssignmentSubmission> existingSubmissions = dao.getSubmissionsForStudentWithVersionHistoryAndAttach(currentUserId, viewableAssignments);
+
+			// put these submissions into a map so we can determine which assignments don't
+			// have submissions yet
+			Map<Long, AssignmentSubmission> assignIdSubmissionMap = new HashMap<Long, AssignmentSubmission>();
+			if (existingSubmissions != null) {
+				for (AssignmentSubmission existingSub : existingSubmissions) {
+					assignIdSubmissionMap.put(existingSub.getAssignment().getId(), existingSub);
+				}
+			}
+			
+			// now, let's iterate through all of the viewable assignments. we may need to
+			// add filler recs for assignments with no submissions yet
+			for (Assignment2 assign : viewableAssignments) {
+				// try to get the existing submission
+				AssignmentSubmission existingSub = assignIdSubmissionMap.get(assign.getId());
+				if (existingSub == null) {
+					// we need to add an "empty" submission to the list as a placeholder
+					// for this assignment
+					AssignmentSubmission newSub = new AssignmentSubmission(assign, currentUserId);
+					userSubmissions.add(newSub);
+				} else {
+					filterOutRestrictedInfo(existingSub, currentUserId, true);
+					userSubmissions.add(existingSub);
+				}
+			}
+		}
+		
+		// sort by completed, then by assignment sortIndex
+		Collections.sort(userSubmissions, new ComparatorsUtils.SubmissionCompletedSortOrderComparator());
+		
+		return userSubmissions;
 	}
 	
 }

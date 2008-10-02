@@ -314,4 +314,19 @@ public interface AssignmentSubmissionLogic {
 	 * any records
 	 */
 	public void markAssignmentsAsCompleted(String studentId, Map<Long, Boolean> assignmentIdToCompletedMap);
+	
+	/**
+	 * 
+	 * @return Non-null list.  The AssignmentSubmissions for the current user
+	 * for all of the user's viewable assignments in the current site.
+	 * If no submission exists yet for an assignment that is available to the user, 
+	 * adds an empty AssigmentSubmission rec to the list for that assignment. Populates attachments
+	 * and version history. If feedback has not been released, does not populate
+	 * feedback-related information.  Because of these changes that we don't want 
+	 * to save, the returned submissions were evicted from the session and are not persistent.
+	 * Ordered by completed, then by the assignment sort order
+	 * @throws SecurityException - if the current user is not allowed to make
+	 * submissions in the current site (ie non-students)
+	 */
+	public List<AssignmentSubmission> getSubmissionsForCurrentUser();
 }
