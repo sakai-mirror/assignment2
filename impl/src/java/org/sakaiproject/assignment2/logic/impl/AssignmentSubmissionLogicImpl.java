@@ -350,8 +350,12 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		AssignmentSubmission submission = getAssignmentSubmissionForStudentAndAssignment(assignment, studentId);
 		
 		if (submission != null && versionId == null) {
-			throw new IllegalArgumentException("Null versionId passed to saveInstructorFeedback " +
-					"even though a submission exists for this student");
+			// check to see if any versions exist - if they do, we have an error
+			List<AssignmentSubmissionVersion> existingVersions = getVersionHistoryForSubmission(submission);
+			if (existingVersions != null && !existingVersions.isEmpty()) {
+				throw new IllegalArgumentException("Null versionId passed to saveInstructorFeedback " +
+					"even though at least one submission version exists for this student");
+			}
 		}
 		
 		if (submission == null) {

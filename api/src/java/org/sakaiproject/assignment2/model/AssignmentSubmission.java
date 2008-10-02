@@ -22,6 +22,7 @@
 package org.sakaiproject.assignment2.model;
 
 import java.util.Date;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
@@ -45,7 +46,8 @@ public class AssignmentSubmission {
 	private String modifiedBy;
 	private Date modifiedDate;
 	private int optimisticVersion;
-	private Set<AssignmentSubmissionVersion> submissionHistorySet;
+	// to preserve order, use a LinkedHashSet
+	private Set<AssignmentSubmissionVersion> submissionHistorySet = new LinkedHashSet<AssignmentSubmissionVersion>();
 	
 	/**
 	 * the current submission version must be populated manually b/c we want
