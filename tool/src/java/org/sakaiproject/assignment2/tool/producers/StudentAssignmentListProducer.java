@@ -194,6 +194,8 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
             else {
                 UIMessage.make(row, "assignment_row_due", "assignment2.student-assignment-list.no_due_date");
             }
+            
+            // Feedback
 
             //For JS Sorting
             //UIOutput.make(row, "open_timestamp", assignment.getOpenDate() != null ? String.valueOf(assignment.getOpenDate().getTime()) : "");
