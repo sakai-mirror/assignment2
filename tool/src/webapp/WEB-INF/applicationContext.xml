@@ -29,11 +29,17 @@
 		class="org.sakaiproject.assignment2.tool.beans.locallogic.LocalAssignmentLogic">
 	</bean>
 
+	<!-- Entity Providers -->
 	<bean id="Assignment2DetailEntityProvider"
 		class="org.sakaiproject.assignment2.tool.entity.Assignment2DetailEntityProvider"
 		init-method="init" destroy-method="destroy">
 		<property name="entityProviderManager"
 			ref="org.sakaiproject.entitybroker.entityprovider.EntityProviderManager" />
+	</bean>
+	
+	<bean parent="org.sakaiproject.entitybroker.entityprovider.AbstractEntityProvider"  
+	    class="org.sakaiproject.assignment2.tool.entity.Assignment2EntityProvider">
+		<property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
 	</bean>
 
 	<!--  causes every variable to post, even if it hasn't changed since page render -->

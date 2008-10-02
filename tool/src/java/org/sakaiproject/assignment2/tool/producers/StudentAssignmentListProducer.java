@@ -30,6 +30,7 @@ import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
+import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.tool.beans.Assignment2Bean;
 import org.sakaiproject.assignment2.tool.beans.locallogic.LocalAssignmentLogic;
 import org.sakaiproject.assignment2.tool.params.AssignmentListSortViewParams;
@@ -117,7 +118,8 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
         }
 
         //get paging data
-        List<Assignment2> entries = assignmentLogic.getViewableAssignments();
+        //List<Assignment2> entries = assignmentLogic.getViewableAssignments();
+        List<AssignmentSubmission> submissionEntries = submissionLogic.getSubmissionsForCurrentUser();
 
         //Breadcrumbs
         UIMessage.make(tofill, "last_breadcrumb", "assignment2.student-assignment-list.heading");
@@ -140,21 +142,23 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
                 AssignmentLogic.SORT_BY_DUE, "assignment2.student-assignment-list.tableheader.due");
         */
 
-        if (entries.size() <= 0) {
+        if (submissionEntries.size() <= 0) {
             UIMessage.make(tofill, "assignment_empty", "assignment2.student-assignment-list.assignment_empty");
             return;
         }
 
         // retrieve groups here for display of group restrictions
-        Map<String, String> groupIdToNameMap = externalLogic.getGroupIdToNameMapForSite(externalLogic.getCurrentContextId());
+        //Map<String, String> groupIdToNameMap = externalLogic.getGroupIdToNameMapForSite(externalLogic.getCurrentContextId());
 
         // retrieve the statuses for the assignments
-        Map<Assignment2, Integer> assignToStatusMap = submissionLogic.getSubmissionStatusConstantForAssignments(entries, externalLogic.getCurrentUserId());
+        //Map<Assignment2, Integer> assignToStatusMap = submissionLogic.getSubmissionStatusConstantForAssignments(entries, externalLogic.getCurrentUserId());
 
         //Fill out Table
-        for (Assignment2 assignment : entries){
+        for (AssignmentSubmission assignmentSubmission : submissionEntries){
             UIBranchContainer row = UIBranchContainer.make(tofill, "assignment-row:");
 
+            Assignment2 assignment = assignmentSubmission.getAssignment();
+            
             //UILink.make(row, "attachments", ATTACH_IMG_SRC);
 
             // Access
@@ -174,7 +178,7 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
    
             // Todo
             UIForm markTodoForm = UIForm.make(row, "todo-check-form");
-            UIBoundBoolean todoCheck = UIBoundBoolean.make(markTodoForm, "todo-checkbox", "MarkTodoBean.checkTodo");
+            UIBoundBoolean todoCheck = UIBoundBoolean.make(markTodoForm, "todo-checkbox", "MarkTodoBean.checkTodo", assignmentSubmission.isCompleted());
             UICommand hiddenSubmit = UICommand.make(markTodoForm, "submit-button", "MarkTodoBean.markTodo");
             todoCheck.decorate(new UIFreeAttributeDecorator("onclick", "document.getElementById('"+hiddenSubmit.getFullID()+"').click()"));
             hiddenSubmit.addParameter(new UIELBinding("MarkTodoBean.assignmentId", assignment.getId()));
