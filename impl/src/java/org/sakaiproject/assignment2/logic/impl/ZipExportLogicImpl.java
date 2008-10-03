@@ -130,12 +130,12 @@ public class ZipExportLogicImpl implements ZipExportLogic
 		String contextId = externalLogic.getCurrentContextId();
 		List<String> viewableStudents = permissionLogic.getViewableStudentsForUserForItem(assignment);
 		Map<String, User> userIdUserMap = externalLogic.getUserIdUserMap(viewableStudents);
-		
+
 		String formatWithTime = bundle.getString("assignment2.assignment_grade_assignment.downloadall.filename_date_format_with_time");
 		String formatNoTime = bundle.getString("assignment2.assignment_grade_assignment.downloadall.filename_date_format");
 		DateFormat df_withTime = new SimpleDateFormat(formatWithTime, bundle.getLocale());
 		DateFormat df_noTime = new SimpleDateFormat(formatNoTime, bundle.getLocale());
-		
+
 		try
 		{
 			ZipOutputStream out = new ZipOutputStream(outputStream);
@@ -146,50 +146,76 @@ public class ZipExportLogicImpl implements ZipExportLogic
 			if (submissionsWithHistory != null && !submissionsWithHistory.isEmpty())
 			{
 				// Create the ZIP file
-				String submittersName = "";
+
+				// to keep our folder names unique (otherwise the zip will be corrupt)
+				List<String> submissionFolderNames = new ArrayList<String>();
+
 				for (AssignmentSubmission s : submissionsWithHistory)
 				{
-					User submitterUser = userIdUserMap.get(s.getUserId());
-					if (submitterUser != null) {
-						submittersName = submitterUser.getSortName();
+					// only create the folder if the student has made a submission
+					if (s.getSubmissionHistorySet() != null && !s.getSubmissionHistorySet().isEmpty()) {
+						User submitterUser = userIdUserMap.get(s.getUserId());
+						if (submitterUser != null) {
+							// the zip will contain a folder for each submission with the submitter's name
+							String submissionFolder = submitterUser.getSortName();
 
-						Set<AssignmentSubmissionVersion> versionHistory = s.getSubmissionHistorySet();
+							// make sure the folder name is unique in case you have two
+							// students with the same name in your class. otherwise
+							// zip file will be corrupt
+							if (submissionFolderNames.contains(submissionFolder)) {
+								submissionFolder = getUniqueFolderName(submissionFolder, submissionFolderNames);
+							}
+							submissionFolderNames.add(submissionFolder);
 
-						if (versionHistory != null && !versionHistory.isEmpty()) {
+							Set<AssignmentSubmissionVersion> versionHistory = s.getSubmissionHistorySet();
 
-							for (AssignmentSubmissionVersion version : versionHistory) {
-								// only include submitted versions
-								if (version.getSubmittedDate() != null) {
-									// we will create a folder for each submitted version for
-									// this student
-									String versionFolder = root + "/" + submittersName + "/" 
-									+ df_withTime.format(version.getSubmittedDate())
-									+ "/";
-									ZipEntry versionFolderEntry = new ZipEntry(
-											versionFolder);
-									out.putNextEntry(versionFolderEntry);
-									out.flush();
-									out.closeEntry();
+							if (versionHistory != null && !versionHistory.isEmpty()) {
+								// we need to keep the file names unique
+								List<String> versionFolderNames = new ArrayList<String>(); 
 
-									// inside this folder, we will put the submission info
-									if (version.getSubmittedText() != null && version.getSubmittedText().trim().length() > 0)
-									{
-										// create the text file only when a text
-										// exists
-										ZipEntry textEntry = new ZipEntry(versionFolder
-												+ bundle.getString("assignment2.assignment_grade_assignment.downloadall.filename_submitted_text")
-												+ ".txt");
-										out.putNextEntry(textEntry);
-										byte[] text = version.getSubmittedText().getBytes();
-										out.write(text);
-										textEntry.setSize(text.length);
+								for (AssignmentSubmissionVersion version : versionHistory) {
+									// only include submitted versions
+									if (version.getSubmittedDate() != null) {
+										// we will create a folder for each submitted version for
+										// this student
+										String versionFolder = root + submissionFolder + Entity.SEPARATOR 
+										+ df_withTime.format(version.getSubmittedDate());
+
+										// we need to make it unique in case 2 versions
+										// were submitted with the same hour:minutes AM/PM
+										// time stamp. otherwise the zip file will be corrupt
+										if (versionFolderNames.contains(versionFolder)) {
+											versionFolder = getUniqueFolderName(versionFolder, versionFolderNames);
+										}
+
+										versionFolderNames.add(versionFolder);
+
+										ZipEntry versionFolderEntry = new ZipEntry(
+												versionFolder);
+										out.putNextEntry(versionFolderEntry);
+										out.flush();
 										out.closeEntry();
-									}
 
-									// add the submission attachments
-									if (version.getSubmissionAttachSet() != null && !version.getSubmissionAttachSet().isEmpty()) {
-										zipAttachments(out, root + submittersName,
-												versionFolder, version.getSubmissionAttachSet());
+										// inside this folder, we will put the submission info
+										if (version.getSubmittedText() != null && version.getSubmittedText().trim().length() > 0)
+										{
+											// create the text file only when a text
+											// exists
+											ZipEntry textEntry = new ZipEntry(versionFolder + Entity.SEPARATOR 
+													+ bundle.getString("assignment2.assignment_grade_assignment.downloadall.filename_submitted_text")
+													+ ".txt");
+											out.putNextEntry(textEntry);
+											byte[] text = version.getSubmittedText().getBytes();
+											out.write(text);
+											textEntry.setSize(text.length);
+											out.closeEntry();
+										}
+
+										// add the submission attachments
+										if (version.getSubmissionAttachSet() != null && !version.getSubmissionAttachSet().isEmpty()) {
+											zipAttachments(out, root + submissionFolder,
+													versionFolder, version.getSubmissionAttachSet());
+										}
 									}
 								}
 							}
@@ -312,7 +338,7 @@ public class ZipExportLogicImpl implements ZipExportLogic
 						data.length);
 
 				ZipEntry attachmentEntry = new ZipEntry(sSubAttachmentFolder
-						+ displayName);
+						+ Entity.SEPARATOR + displayName);
 				out.putNextEntry(attachmentEntry);
 				int bCount = -1;
 				while ((bCount = bContent.read(data, 0, data.length)) != -1)
@@ -377,5 +403,25 @@ public class ZipExportLogicImpl implements ZipExportLogic
 				}
 			}
 		} // for
+	}
+	
+	/**
+	 * We can't have two folders at the same level with the same name, so we
+	 * need to append _1, _2, etc until we make it unique. This may occur if
+	 * we have two students with the same name or if a student makes multiple submissions 
+	 * within the same minute (ie at 12:56 PM)
+	 * @param currFolderName
+	 * @param existingFolderNames
+	 * @return a unique file name built from the given currFileName
+	 */
+	private String getUniqueFolderName(String currFolderName, List<String> existingFolderNames) {
+		int extension = 1;
+		String folderName = currFolderName;
+		while (existingFolderNames.contains(folderName)) {
+			folderName = currFolderName + "_" + extension;
+			extension++;
+		}
+		
+		return folderName;
 	}
 }
