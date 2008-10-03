@@ -304,7 +304,7 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
         	int size = 20;
         	String[] number_submissions_options = new String[size+1];
         	String[] number_submissions_values = new String[size+1];
-        	number_submissions_values[0] = "-1";
+        	number_submissions_values[0] = "" + AssignmentConstants.UNLIMITED_SUBMISSION;
         	number_submissions_options[0] = messageLocator.getMessage("assignment2.indefinite_resubmit");
         	for (int i=0; i < size; i++){
         		number_submissions_values[i + 1] = Integer.valueOf(i + current_times_submitted_already).toString();
@@ -327,7 +327,7 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
         } else {
         	// display text only representation
         	String totalSubmissions = current_num_submissions.toString();
-        	if (current_num_submissions == -1) {
+        	if (current_num_submissions == AssignmentConstants.UNLIMITED_SUBMISSION) {
         		totalSubmissions = messageLocator.getMessage("assignment2.indefinite_resubmit");
         	}
         	UIMessage.make(form, "resubmit_no_change", "assignment2.assignment_grade.resubmission_text", 

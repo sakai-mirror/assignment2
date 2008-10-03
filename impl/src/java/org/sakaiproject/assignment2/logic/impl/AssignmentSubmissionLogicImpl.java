@@ -675,8 +675,10 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			int numAllowedOnAssignLevel = assignment.getNumSubmissionsAllowed();
 			Integer numAllowedOnSubLevel = submission != null ? submission.getNumSubmissionsAllowed() : null;
 			
-			boolean resubmitSettingsOnAssignLevel = numAllowedOnAssignLevel > 0;
-			boolean resubmitSettingsOnSubmissionLevel = numAllowedOnSubLevel != null;
+			boolean resubmitSettingsOnAssignLevel = numAllowedOnAssignLevel == AssignmentConstants.UNLIMITED_SUBMISSION
+						|| numAllowedOnAssignLevel > 0;
+			boolean resubmitSettingsOnSubmissionLevel = numAllowedOnSubLevel != null 
+						&& (numAllowedOnSubLevel > 0 || numAllowedOnSubLevel == AssignmentConstants.UNLIMITED_SUBMISSION);
 			
 
 			if (currNumSubmissions == 0 && assignmentIsOpen) {
@@ -703,7 +705,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 	public boolean submissionIsOpenForStudentForAssignment(String studentId, Long assignmentId) {
 		int numRemainingSubmissions = getNumberOfRemainingSubmissionsForStudent(studentId, assignmentId);
 		boolean isOpen = false;
-		if (numRemainingSubmissions == -1 || numRemainingSubmissions > 0) {
+		if (numRemainingSubmissions == AssignmentConstants.UNLIMITED_SUBMISSION || numRemainingSubmissions > 0) {
 			isOpen = true;
 		}
 		

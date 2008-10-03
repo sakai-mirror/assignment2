@@ -199,7 +199,8 @@ public interface AssignmentSubmissionLogic {
 	 * @param studentId
 	 * @param assignmentId
 	 * @return the number of submissions remaining for the given student and assignment.
-	 * will return -1 if there are an unlimited number of submissions allowed
+	 * will return AssignmentConstants.UNLIMITED_SUBMISSION constant
+	 *  if there are an unlimited number of submissions allowed
 	 */
 	public int getNumberOfRemainingSubmissionsForStudent(String studentId, Long assignmentId);
 	

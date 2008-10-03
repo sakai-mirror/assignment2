@@ -37,6 +37,11 @@ public class AssignmentConstants {
 	 * specified user
 	 */
 	public final static String GRADE = "grade";
+	
+	/**
+	 * Used to indicate that a user may submit indefinitely
+	 */
+	public final static int UNLIMITED_SUBMISSION = -1;
 
 	// Notification Types
 	/**

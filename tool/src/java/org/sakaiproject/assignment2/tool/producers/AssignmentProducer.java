@@ -213,7 +213,7 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
         int size = 20;
         String[] number_submissions_options = new String[size+1];
         String[] number_submissions_values = new String[size+1];
-        number_submissions_values[0] = "-1";
+        number_submissions_values[0] = "" + AssignmentConstants.UNLIMITED_SUBMISSION;
         number_submissions_options[0] = messageLocator.getMessage("assignment2.indefinite_resubmit");
         for (int i=0; i < size; i++){
             number_submissions_values[i + 1] = Integer.valueOf(i+1).toString();
