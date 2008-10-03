@@ -1221,15 +1221,15 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
 		}
 
 		// set the feedback as released on version 1 and 3
-		testData.st2a1Version1 = dao.getAssignmentSubmissionVersionByIdWithAttachments(testData.st2a1Version1.getId());
-		testData.st2a1Version1.setFeedbackReleasedDate(new Date());
-		dao.save(testData.st2a1Version1);
-		
-		testData.st2a1CurrVersion = dao.getAssignmentSubmissionVersionByIdWithAttachments(testData.st2a1CurrVersion.getId());
-		testData.st2a1CurrVersion.setFeedbackReleasedDate(new Date());
-		dao.save(testData.st2a1CurrVersion);
+		externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
+		submissionLogic.saveInstructorFeedback(testData.st2a1Version1.getId(), AssignmentTestDataLoad.STUDENT2_UID, 
+				testData.a1, 3, null, "hello", "hello", new Date(), testData.st2a1Version1.getFeedbackAttachSet());
+
+		submissionLogic.saveInstructorFeedback(testData.st2a1CurrVersion.getId(), AssignmentTestDataLoad.STUDENT2_UID, 
+				testData.a1, 3, null, "hello", "hello", new Date(), testData.st2a1CurrVersion.getFeedbackAttachSet());
 		
 		// try marking as read again
+		externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT2_UID);
 		submissionLogic.markFeedbackAsViewed(testData.st2a1Submission.getId(), versionsToUpdate);
 		st2a1SubWithHistory = dao.getSubmissionWithVersionHistoryById(testData.st2a1Submission.getId());
 		for (AssignmentSubmissionVersion version : st2a1SubWithHistory.getSubmissionHistorySet()) {
