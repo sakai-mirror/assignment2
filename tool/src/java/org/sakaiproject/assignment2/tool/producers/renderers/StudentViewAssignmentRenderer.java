@@ -278,8 +278,14 @@ public class StudentViewAssignmentRenderer {
              */
             if (resubmissionsAllowed) {
                 UIOutput.make(joint, "remaining-resubmissions-row");
-                //TODO FIXME Michelle is adding in a Logic method to get this info.
-                UIOutput.make(joint, "remaining-resubmissions", "This functionality in progress");
+                int numSubmissionsAllowed = submissionLogic.getNumberOfRemainingSubmissionsForStudent(currentUser.getId(), assignment.getId());
+                String numAllowedDisplay;
+                if (numSubmissionsAllowed == AssignmentConstants.UNLIMITED_SUBMISSION) {
+                	numAllowedDisplay = messageLocator.getMessage("assignment2.indefinite_resubmit");
+                } else {
+                	numAllowedDisplay = "" + numSubmissionsAllowed;
+                }
+                UIOutput.make(joint, "remaining-resubmissions", numAllowedDisplay);
             }
         }
         
