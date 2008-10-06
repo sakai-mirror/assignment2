@@ -22,8 +22,10 @@
 package org.sakaiproject.assignment2.tool.producers;
 
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
@@ -75,6 +77,20 @@ public class StudentSubmitSummaryProducer implements ViewComponentProducer, View
         AssignmentSubmission assignmentSubmission = 
             submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(params.assignmentId, externalLogic.getCurrentUserId());
 
+        /* TODO FIXME Marking feedback as viewed. 
+         * For now we are doing this here. Eventually this is suppose to be
+         * Ajaxy and on a version by version basis. For now, marking them all
+         * in bulk when viewing a submission, in order to finish the student
+         * assignment list landing page.
+         */
+        Set<AssignmentSubmissionVersion>versions = submission.getSubmissionHistorySet();
+        List<Long>versionIds = new ArrayList<Long>();
+        for (AssignmentSubmissionVersion version: versions) {
+            versionIds.add(version.getId());
+        }
+        submissionLogic.markFeedbackAsViewed(submission.getId(), versionIds);
+        
+        
         // set the textual representation of the submission status
         String status = "";
         int statusConstant = AssignmentConstants.SUBMISSION_NOT_STARTED;
