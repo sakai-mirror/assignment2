@@ -209,12 +209,10 @@ public class ComparatorsUtils {
 			boolean submission2Released = false;
 
 			if (submission1.getCurrentSubmissionVersion() != null) {
-				Date releasedTime = submission1.getCurrentSubmissionVersion().getFeedbackReleasedDate();
-				submission1Released = releasedTime != null && releasedTime.before(new Date());
+				submission1Released = submission1.getCurrentSubmissionVersion().isFeedbackReleased();
 			}
 			if (submission2.getCurrentSubmissionVersion() != null) {
-				Date releasedTime = submission2.getCurrentSubmissionVersion().getFeedbackReleasedDate();
-				submission2Released = releasedTime != null && releasedTime.before(new Date());
+				submission2Released = submission2.getCurrentSubmissionVersion().isFeedbackReleased();
 			}
 
 			if (submission1Released && !submission2Released) {

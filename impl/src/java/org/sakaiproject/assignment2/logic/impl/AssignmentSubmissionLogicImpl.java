@@ -971,7 +971,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			
 			// if the current user is the submitter
 			if (version.getAssignmentSubmission().getUserId().equals(currentUserId)) {
-				if (version.getFeedbackReleasedDate() == null || version.getFeedbackReleasedDate().after(new Date())) {
+				if (!version.isFeedbackReleased()) {
 					// do not populate the feedback since not released 
 					version.setFeedbackAttachSet(new HashSet<FeedbackAttachment>());
 					version.setFeedbackNotes("");
@@ -1125,8 +1125,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 				for (AssignmentSubmissionVersion existingVersion : subWithHistory.getSubmissionHistorySet()) {
 					if (versionIdList.contains(existingVersion.getId())) {
 						// double check that this feedback has actually been released
-						if (existingVersion.getFeedbackReleasedDate() != null && 
-								existingVersion.getFeedbackReleasedDate().before(now)) {
+						if (existingVersion.isFeedbackReleased()) {
 							// this version needs to be marked as viewed and updated
 							existingVersion.setFeedbackLastViewed(now);
 							existingVersion.setModifiedBy(currentUserId);

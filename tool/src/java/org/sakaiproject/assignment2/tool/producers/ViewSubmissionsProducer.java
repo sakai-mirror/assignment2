@@ -233,8 +233,7 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
 
             String released = "0";
             if (as.getCurrentSubmissionVersion() != null)  {
-                Date releasedTime = as.getCurrentSubmissionVersion().getFeedbackReleasedDate();
-                if (releasedTime != null && releasedTime.before(new Date())) {
+                if (as.getCurrentSubmissionVersion().isFeedbackReleased()) {
                     UIOutput.make(row, "row_released");
                     released += 1;
                 }
