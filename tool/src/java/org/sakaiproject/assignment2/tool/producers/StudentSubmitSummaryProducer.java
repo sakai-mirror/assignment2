@@ -49,131 +49,131 @@ import uk.org.ponder.rsf.viewstate.ViewParameters;
 import uk.org.ponder.rsf.viewstate.ViewParamsReporter;
 
 public class StudentSubmitSummaryProducer implements ViewComponentProducer, ViewParamsReporter {
-	
-	public static final String VIEW_ID = "student-submit-summary";
-	public String getViewID() {
-		return StudentSubmitSummaryProducer.VIEW_ID;
-	}
-	
-	private AssignmentSubmissionLogic submissionLogic;
-	private AssignmentLogic assignmentLogic;
-	private ExternalLogic externalLogic;
-	private Locale locale;
-	private AttachmentListRenderer attachmentListRenderer;
-	private MessageLocator messageLocator;
-	
-	public void fillComponents(UIContainer tofill, ViewParameters viewparams,
-			ComponentChecker checker) {
-		
-		SimpleAssignmentViewParams params = (SimpleAssignmentViewParams) viewparams;
-		
-		// use a date which is related to the current users locale
-		DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, locale);
 
-		Assignment2 assignment = assignmentLogic.getAssignmentByIdWithAssociatedData(params.assignmentId);
-        
-		AssignmentSubmission assignmentSubmission = 
-			submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(params.assignmentId, externalLogic.getCurrentUserId());
-		
-		// set the textual representation of the submission status
-		String status = "";
-		int statusConstant = AssignmentConstants.SUBMISSION_NOT_STARTED;
-    	if (assignmentSubmission != null) {
-    		statusConstant = submissionLogic.getSubmissionStatusConstantForCurrentVersion(
-    				assignmentSubmission.getCurrentSubmissionVersion(), assignment.getDueDate());
-    		status = messageLocator.getMessage(
-    				"assignment2.assignment_grade-assignment.submission_status." + 
-    				statusConstant);
-    	}
-		
-    	//Breadcrumbs
+    public static final String VIEW_ID = "student-submit-summary";
+    public String getViewID() {
+        return StudentSubmitSummaryProducer.VIEW_ID;
+    }
+
+    private AssignmentSubmissionLogic submissionLogic;
+    private AssignmentLogic assignmentLogic;
+    private ExternalLogic externalLogic;
+    private Locale locale;
+    private AttachmentListRenderer attachmentListRenderer;
+    private MessageLocator messageLocator;
+
+    public void fillComponents(UIContainer tofill, ViewParameters viewparams,
+            ComponentChecker checker) {
+
+        SimpleAssignmentViewParams params = (SimpleAssignmentViewParams) viewparams;
+
+        // use a date which is related to the current users locale
+        DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, locale);
+
+        Assignment2 assignment = assignmentLogic.getAssignmentByIdWithAssociatedData(params.assignmentId);
+
+        AssignmentSubmission assignmentSubmission = 
+            submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(params.assignmentId, externalLogic.getCurrentUserId());
+
+        // set the textual representation of the submission status
+        String status = "";
+        int statusConstant = AssignmentConstants.SUBMISSION_NOT_STARTED;
+        if (assignmentSubmission != null) {
+            statusConstant = submissionLogic.getSubmissionStatusConstantForCurrentVersion(
+                    assignmentSubmission.getCurrentSubmissionVersion(), assignment.getDueDate());
+            status = messageLocator.getMessage(
+                    "assignment2.assignment_grade-assignment.submission_status." + 
+                    statusConstant);
+        }
+
+        //Breadcrumbs
         UIInternalLink.make(tofill, "breadcrumb", 
-        		messageLocator.getMessage("assignment2.student-assignment-list.heading"),
-        		new SimpleViewParameters(StudentAssignmentListProducer.VIEW_ID));
+                messageLocator.getMessage("assignment2.student-assignment-list.heading"),
+                new SimpleViewParameters(StudentAssignmentListProducer.VIEW_ID));
         UIMessage.make(tofill, "last_breadcrumb", "assignment2.student-submit-summary.heading", new Object[] { assignment.getTitle() });
-		
-		//Display Assignment Info
-    	UIOutput.make(tofill, "header.title", assignment.getTitle());
 
-    	UIOutput.make(tofill, "header.due_date", (assignment.getDueDate() != null ? df.format(assignment.getDueDate()) : ""));
+        //Display Assignment Info
+        UIOutput.make(tofill, "header.title", assignment.getTitle());
 
-    	UIOutput.make(tofill, "header.status", status);
-    	UIOutput.make(tofill, "header.grade_scale", "Grade Scale from Gradebook");  //HERE
-    	if (assignment.getModifiedDate() != null) {
-    		UIOutput.make(tofill, "modified_by_header_row");
-    		UIOutput.make(tofill, "header.modified_by", df.format(assignment.getModifiedDate()));
-    	}
-    	UIVerbatim.make(tofill, "instructions", assignment.getInstructions());
-    	
-    	attachmentListRenderer.makeAttachmentFromAssignmentAttachmentSet(tofill, "attachment_list:", params.viewID, 
-	        	assignment.getAttachmentSet());
-		
-		
-		//Begin Looping for previous submissions
-    	List<AssignmentSubmissionVersion> history = submissionLogic.getVersionHistoryForSubmission(assignmentSubmission);
-                
-    	for (AssignmentSubmissionVersion asv : history){
-        	if (asv.isDraft()) {
-        		continue;
-        	}
-        	UIBranchContainer loop = UIBranchContainer.make(tofill, "previous_submissions:");
-        	
-        	UIMessage.make(loop, "loop_submission", "assignment2.student-submit-summary.loop_submission", 
-        			new Object[] { (asv.getSubmittedDate() != null ? df.format(asv.getSubmittedDate()) : "") });
-        	UIVerbatim.make(loop, "loop_submitted_text", asv.getSubmittedText());
-        	UIVerbatim.make(loop, "loop_feedback_text", asv.getAnnotatedTextFormatted());
-        	UIVerbatim.make(loop, "loop_feedback_notes", asv.getFeedbackNotes());
-        	attachmentListRenderer.makeAttachmentFromSubmissionAttachmentSet(loop, "loop_submitted_attachment_list:", 
-        			GradeProducer.VIEW_ID, asv.getSubmissionAttachSet());
-        	attachmentListRenderer.makeAttachmentFromFeedbackAttachmentSet(loop, "loop_returned_attachment_list:", 
-        			GradeProducer.VIEW_ID, asv.getFeedbackAttachSet());
-        	if (asv.getLastFeedbackSubmittedBy() != null) {
-	        	UIMessage.make(loop, "feedback_updated", "assignment2.student-submit-summary.feedback_updated",
-	        			new Object[]{ 
-	        				(asv.getLastFeedbackDate() != null ? df.format(asv.getLastFeedbackDate()) : ""), 
-	        				externalLogic.getUserDisplayName(asv.getLastFeedbackSubmittedBy()) });
-        	} else {
-        		UIMessage.make(loop, "feedback_updated", "assignment2.student-submit-summary.feedback_not_updated");
-        	}
+        UIOutput.make(tofill, "header.due_date", (assignment.getDueDate() != null ? df.format(assignment.getDueDate()) : ""));
+
+        UIOutput.make(tofill, "header.status", status);
+        UIOutput.make(tofill, "header.grade_scale", "Grade Scale from Gradebook");  //HERE
+        if (assignment.getModifiedDate() != null) {
+            UIOutput.make(tofill, "modified_by_header_row");
+            UIOutput.make(tofill, "header.modified_by", df.format(assignment.getModifiedDate()));
+        }
+        UIVerbatim.make(tofill, "instructions", assignment.getInstructions());
+
+        attachmentListRenderer.makeAttachmentFromAssignmentAttachmentSet(tofill, "attachment_list:", params.viewID, 
+                assignment.getAttachmentSet());
+
+
+        //Begin Looping for previous submissions
+        List<AssignmentSubmissionVersion> history = submissionLogic.getVersionHistoryForSubmission(assignmentSubmission);
+
+        for (AssignmentSubmissionVersion asv : history){
+            if (asv.isDraft()) {
+                continue;
+            }
+            UIBranchContainer loop = UIBranchContainer.make(tofill, "previous_submissions:");
+
+            UIMessage.make(loop, "loop_submission", "assignment2.student-submit-summary.loop_submission", 
+                    new Object[] { (asv.getSubmittedDate() != null ? df.format(asv.getSubmittedDate()) : "") });
+            UIVerbatim.make(loop, "loop_submitted_text", asv.getSubmittedText());
+            UIVerbatim.make(loop, "loop_feedback_text", asv.getAnnotatedTextFormatted());
+            UIVerbatim.make(loop, "loop_feedback_notes", asv.getFeedbackNotes());
+            attachmentListRenderer.makeAttachmentFromSubmissionAttachmentSet(loop, "loop_submitted_attachment_list:", 
+                    GradeProducer.VIEW_ID, asv.getSubmissionAttachSet());
+            attachmentListRenderer.makeAttachmentFromFeedbackAttachmentSet(loop, "loop_returned_attachment_list:", 
+                    GradeProducer.VIEW_ID, asv.getFeedbackAttachSet());
+            if (asv.getLastFeedbackSubmittedBy() != null) {
+                UIMessage.make(loop, "feedback_updated", "assignment2.student-submit-summary.feedback_updated",
+                        new Object[]{ 
+                        (asv.getLastFeedbackDate() != null ? df.format(asv.getLastFeedbackDate()) : ""), 
+                        externalLogic.getUserDisplayName(asv.getLastFeedbackSubmittedBy()) });
+            } else {
+                UIMessage.make(loop, "feedback_updated", "assignment2.student-submit-summary.feedback_not_updated");
+            }
         }
         if (history == null || history.size() == 0) {
-        	//no history, add dialog
-        	UIMessage.make(tofill, "no_history", "assignment2.student-submit-summary.no_history");
+            //no history, add dialog
+            UIMessage.make(tofill, "no_history", "assignment2.student-submit-summary.no_history");
         }
-		
-		
-	}
-
-	public ViewParameters getViewParameters() {
-		return new SimpleAssignmentViewParams();
-	}
-
-	public void setSubmissionLogic(AssignmentSubmissionLogic submissionLogic) {
-		this.submissionLogic = submissionLogic;
-	}
-
-	public void setExternalLogic(ExternalLogic externalLogic) {
-		this.externalLogic = externalLogic;
-	}
 
 
-	public void setLocale(Locale locale) {
-		this.locale = locale;
-	}
+    }
+
+    public ViewParameters getViewParameters() {
+        return new SimpleAssignmentViewParams();
+    }
+
+    public void setSubmissionLogic(AssignmentSubmissionLogic submissionLogic) {
+        this.submissionLogic = submissionLogic;
+    }
+
+    public void setExternalLogic(ExternalLogic externalLogic) {
+        this.externalLogic = externalLogic;
+    }
 
 
-	public void setAttachmentListRenderer(
-			AttachmentListRenderer attachmentListRenderer) {
-		this.attachmentListRenderer = attachmentListRenderer;
-	}
+    public void setLocale(Locale locale) {
+        this.locale = locale;
+    }
 
 
-	public void setAssignmentLogic(AssignmentLogic assignmentLogic) {
-		this.assignmentLogic = assignmentLogic;
-	}
+    public void setAttachmentListRenderer(
+            AttachmentListRenderer attachmentListRenderer) {
+        this.attachmentListRenderer = attachmentListRenderer;
+    }
 
 
-	public void setMessageLocator(MessageLocator messageLocator) {
-		this.messageLocator = messageLocator;
-	}
+    public void setAssignmentLogic(AssignmentLogic assignmentLogic) {
+        this.assignmentLogic = assignmentLogic;
+    }
+
+
+    public void setMessageLocator(MessageLocator messageLocator) {
+        this.messageLocator = messageLocator;
+    }
 }
