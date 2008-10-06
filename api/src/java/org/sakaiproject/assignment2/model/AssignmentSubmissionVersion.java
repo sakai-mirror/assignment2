@@ -460,4 +460,17 @@ public class AssignmentSubmissionVersion implements FeedbackVersion {
 
 		return feedbackRead;
 	}
+	
+	/**
+	 * 
+	 * @return true if the feedback for this version has been released to the student
+	 */
+	public boolean isFeedbackReleased() {
+	    boolean feedbackReleased = false;
+	    if (feedbackReleasedDate != null && feedbackReleasedDate.before(new Date())) {
+	        feedbackReleased = true;
+	    }
+	    
+	    return feedbackReleased;
+	}
 }
