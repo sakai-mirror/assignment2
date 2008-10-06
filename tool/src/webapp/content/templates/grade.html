@@ -116,11 +116,15 @@
 		</legend>
 		<ol style="display:none">
 			<li rsf:id="resubmit_change">
-				<span rsf:id="resubmission_text_1"></span>
-				<select rsf:id="resubmission_additional">
-				</select>
-				<span rsF:id="msg=assignment2.assignment_grade.resubmission_text_2"> additional times by </span>
-				<input rsf:id="accept_until:" />
+                <input id="override_settings" rsf:id="override_settings" type="checkbox" />
+                <label for="override_settings" rsf:id="msg=assignment2.assignment_grade.override_settings">Override assignment-level settings?</label>
+                <div id="override_settings_container">
+    				<span rsf:id="resubmission_text_1"></span>
+    				<select rsf:id="resubmission_additional">
+    				</select>
+    				<span rsF:id="msg=assignment2.assignment_grade.resubmission_text_2"> additional times by </span>
+    				<input rsf:id="accept_until:" />
+				</div>
 			</li>
 			<li rsf:id="resubmit_no_change"></li>
 		</ol>
@@ -182,7 +186,16 @@ function refresh_ajax(){
 		});
 	}
 }
+
+jQuery(document).ready(function(){
+    //Init override assignment-level resubmission checkbox
+    jQuery("input[name='page-replace\:\:override_settings']").each(function(){
+        this.onclick = override_submission_settings;
+    });
+    override_submission_settings();
+});
 //]]>
+
 </script>
 </div>
 </body>

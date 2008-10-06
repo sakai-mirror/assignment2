@@ -107,6 +107,17 @@ function update_resubmit_until(){
 	}
 }
 
+function override_submission_settings(){
+    el = jQuery("input:checkbox[@name='page-replace\:\:override_settings']").get(0);
+    if (el){
+    if (el.checked) {
+        jQuery("#override_settings_container").show();
+    } else {
+        jQuery("#override_settings_container").hide();
+    }
+    }
+}
+
 jQuery(document).ready(function(){
 	update_resubmit_until();
 });

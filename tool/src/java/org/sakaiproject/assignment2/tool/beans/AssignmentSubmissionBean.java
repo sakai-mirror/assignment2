@@ -102,6 +102,11 @@ public class AssignmentSubmissionBean {
     public void setNotificationBean(NotificationBean notificationBean) {
         this.notificationBean = notificationBean;
     }
+    
+    private Boolean overrideResubmissionSettings;
+    public void setOverrideResubmissionSettings(Boolean overrideResubmissionSettings) {
+        this.overrideResubmissionSettings = overrideResubmissionSettings;
+    }
 
 
     /*
@@ -240,6 +245,11 @@ public class AssignmentSubmissionBean {
             assignmentSubmission.setUserId(userId);
 
             if (resubmitUntil == null || Boolean.FALSE.equals(resubmitUntil)) {
+                assignmentSubmission.setResubmitCloseDate(null);
+            }
+            
+            if (overrideResubmissionSettings == null || !overrideResubmissionSettings) {
+                assignmentSubmission.setNumSubmissionsAllowed(null);
                 assignmentSubmission.setResubmitCloseDate(null);
             }
         }

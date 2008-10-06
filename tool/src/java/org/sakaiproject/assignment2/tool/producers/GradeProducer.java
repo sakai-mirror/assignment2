@@ -49,6 +49,7 @@ import org.sakaiproject.assignment2.tool.producers.renderers.GradebookDetailsRen
 
 import uk.org.ponder.beanutil.entity.EntityBeanLocator;
 import uk.org.ponder.messageutil.MessageLocator;
+import uk.org.ponder.rsf.components.UIBoundBoolean;
 import uk.org.ponder.rsf.components.UIBranchContainer;
 import uk.org.ponder.rsf.components.UICommand;
 import uk.org.ponder.rsf.components.UIContainer;
@@ -293,12 +294,27 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
     	if (as != null && as.getSubmissionHistorySet() != null) {
     		current_times_submitted_already = submissionLogic.getNumSubmittedVersions(as.getUserId(), assignmentId);
     	}
-    	Integer current_num_submissions = 1;
-    	if (as != null && as.getNumSubmissionsAllowed() != null) {
-    		current_num_submissions = as.getNumSubmissionsAllowed();
-    	}
     	
+        Boolean is_override = (as.getNumSubmissionsAllowed() != null);
+        int numSubmissionsAllowed;
+        Date resubmitUntil;
+        
+        if (as.getNumSubmissionsAllowed() != null) {
+            // this student already has an override, so use these settings
+            numSubmissionsAllowed = as.getNumSubmissionsAllowed();
+            resubmitUntil = as.getResubmitCloseDate();
+        } else {
+            // otherwise, populate the fields with the assignment-level settings
+            numSubmissionsAllowed = assignment.getNumSubmissionsAllowed();
+            resubmitUntil = assignment.getAcceptUntilDate();
+        }
+        
+        as.setNumSubmissionsAllowed(numSubmissionsAllowed);
+        as.setResubmitCloseDate(resubmitUntil);
+        
         if (grade_perm) {
+            UIBoundBoolean.make(form, "override_settings", "#{AssignmentSubmissionBean.overrideResubmissionSettings}", is_override);
+            
         	UIOutput.make(form, "resubmit_change");
 
         	int size = 20;
@@ -315,19 +331,16 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
         	UIMessage.make(form, "resubmission_text_1", "assignment2.assignment_grade.resubmission_text_1", 
         			new Object[] { externalLogic.getUserDisplayName(params.userId), current_times_submitted_already});
 
-        	UISelect resubmit_select = UISelect.make(form, "resubmission_additional", number_submissions_values, number_submissions_options, 
-        			asOTP + ".numSubmissionsAllowed", current_num_submissions.toString());
-
-        	if (as.getResubmitCloseDate() == null) {
-        		as.setResubmitCloseDate(new Date());
-        	}
+        	UISelect.make(form, "resubmission_additional", number_submissions_values, number_submissions_options, 
+        			asOTP + ".numSubmissionsAllowed", as.getNumSubmissionsAllowed().toString());
+        	
         	UIInput acceptUntilTimeField = UIInput.make(form, "accept_until:", asOTP + ".resubmitCloseDate");
 
         	dateEvolver.evolveDateInput(acceptUntilTimeField, as.getResubmitCloseDate());
         } else {
         	// display text only representation
-        	String totalSubmissions = current_num_submissions.toString();
-        	if (current_num_submissions == AssignmentConstants.UNLIMITED_SUBMISSION) {
+        	String totalSubmissions = as.getNumSubmissionsAllowed().toString();
+        	if (as.getNumSubmissionsAllowed() == AssignmentConstants.UNLIMITED_SUBMISSION) {
         		totalSubmissions = messageLocator.getMessage("assignment2.indefinite_resubmit");
         	}
         	UIMessage.make(form, "resubmit_no_change", "assignment2.assignment_grade.resubmission_text", 
