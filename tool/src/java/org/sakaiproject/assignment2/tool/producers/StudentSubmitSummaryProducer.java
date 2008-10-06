@@ -83,12 +83,12 @@ public class StudentSubmitSummaryProducer implements ViewComponentProducer, View
          * in bulk when viewing a submission, in order to finish the student
          * assignment list landing page.
          */
-        Set<AssignmentSubmissionVersion>versions = submission.getSubmissionHistorySet();
+        Set<AssignmentSubmissionVersion>versions = assignmentSubmission.getSubmissionHistorySet();
         List<Long>versionIds = new ArrayList<Long>();
         for (AssignmentSubmissionVersion version: versions) {
             versionIds.add(version.getId());
         }
-        submissionLogic.markFeedbackAsViewed(submission.getId(), versionIds);
+        submissionLogic.markFeedbackAsViewed(assignmentSubmission.getId(), versionIds);
         
         
         // set the textual representation of the submission status

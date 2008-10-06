@@ -23,11 +23,13 @@ package org.sakaiproject.assignment2.tool.producers;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
+import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.tool.params.SimpleAssignmentViewParams;
 import org.sakaiproject.assignment2.tool.producers.fragments.FragmentSubmissionPreviewProducer;
 import org.sakaiproject.assignment2.tool.producers.renderers.StudentViewAssignmentRenderer;

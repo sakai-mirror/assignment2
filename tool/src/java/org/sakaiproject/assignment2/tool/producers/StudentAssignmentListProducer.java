@@ -25,12 +25,14 @@ import java.text.DateFormat;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
+import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.tool.beans.Assignment2Bean;
 import org.sakaiproject.assignment2.tool.beans.locallogic.LocalAssignmentLogic;
 import org.sakaiproject.assignment2.tool.params.AssignmentListSortViewParams;
@@ -195,7 +197,33 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
                 UIMessage.make(row, "assignment_row_due", "assignment2.student-assignment-list.no_due_date");
             }
             
-            // Feedback
+            /*
+             *  Feedback
+             */
+            boolean feedbackExists = false;
+            boolean unreadFeedbackExists = false;
+            Set<AssignmentSubmissionVersion> submissions = assignmentSubmission.getSubmissionHistorySet();
+            for (AssignmentSubmissionVersion version: submissions) {
+                if (version.isFeedbackReleased()) {
+                    feedbackExists = true;
+                }
+                if (!version.isFeedbackRead()) {
+                    unreadFeedbackExists = true;
+                }
+            }
+            
+            if (feedbackExists && unreadFeedbackExists) {
+                UIInternalLink.make(row, "unread-feedback-link",
+                        new SimpleAssignmentViewParams(StudentSubmitProducer.VIEW_ID, assignment.getId()));
+            }
+            else if (feedbackExists) {
+                UIInternalLink.make(row, "read-feedback-link",
+                        new SimpleAssignmentViewParams(StudentSubmitProducer.VIEW_ID, assignment.getId()));
+            }
+            // else.  TODO FIXME
+            // I know you're always supposed to have an ending else
+            // but I can't think of what to put here at the moment.
+            // We should probably put an accessible note.
 
             //For JS Sorting
             //UIOutput.make(row, "open_timestamp", assignment.getOpenDate() != null ? String.valueOf(assignment.getOpenDate().getTime()) : "");
