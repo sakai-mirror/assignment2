@@ -187,9 +187,34 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
             todoCheck.decorate(new UIFreeAttributeDecorator("onclick", "document.getElementById('"+hiddenSubmit.getFullID()+"').click()"));
             hiddenSubmit.addParameter(new UIELBinding("MarkTodoBean.assignmentId", assignment.getId()));
             
-            // Title
+            /*
+             * Title and Action Links
+             * 
+             * There are 4 options for the string on the action link:
+             * 
+             * 1) View Details and Submit
+             *    - Assignment has not been submitted
+             *    - accept until date has not passed
+             *    - submission type of text only, attachments only, or text and attachments
+             * 
+             * 2) View Details
+             *    - submission type of non-electronic or do not require a submission
+             * 
+             * 3) Resubmit
+             *    - assignment allows resubmission
+             *    - accept until date has not passed
+             * 
+             * 4) View Submission / View Submissions
+             *    - shown for assignments 
+             * 
+             */
             UIInternalLink.make(row, "assignment_link", assignment.getTitle(), 
                 new SimpleAssignmentViewParams(StudentSubmitProducer.VIEW_ID, assignment.getId()));
+            
+            for (AssignmentSubmissionVersion version: assignmentSubmission.getSubmissionHistorySet()) {
+                System.out.println("VERSION: " + version.getSubmittedVersionNumber());
+            }
+            
             
             // Due date
             if (assignment.getDueDate() != null) {
