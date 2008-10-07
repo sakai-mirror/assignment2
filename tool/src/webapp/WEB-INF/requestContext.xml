@@ -155,6 +155,7 @@
       <property name="localAssignmentLogic" ref="localAssignmentLogic" />
       <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
       <property name="messageLocator" ref="messageLocator" />
+      <property name="externalGradebookLogic" ref="org.sakaiproject.assignment2.logic.ExternalGradebookLogic" />
    </bean>
    
    <bean class="org.sakaiproject.assignment2.tool.producers.StudentSubmitProducer">

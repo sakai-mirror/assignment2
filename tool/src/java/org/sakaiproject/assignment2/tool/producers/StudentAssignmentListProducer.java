@@ -29,6 +29,7 @@ import java.util.Set;
 
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
+import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
@@ -84,6 +85,7 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
     private LocalAssignmentLogic localAssignmentLogic;
     private ExternalLogic externalLogic;
     private MessageLocator messageLocator;
+    private ExternalGradebookLogic externalGradebookLogic;
 
     public static final String DEFAULT_SORT_DIR = AssignmentLogic.SORT_DIR_ASC;
     public static final String DEFAULT_OPPOSITE_SORT_DIR = AssignmentLogic.SORT_DIR_DESC;
@@ -224,6 +226,25 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
             // I know you're always supposed to have an ending else
             // but I can't think of what to put here at the moment.
             // We should probably put an accessible note.
+            
+            /*
+             * Grade
+             */
+            if (!assignment.isGraded()) {
+                UIMessage.make(row, "grade", "assignment2.student-assignment-list.not-graded");
+            } else {
+                String grade = externalGradebookLogic.getStudentGradeForItem(
+                        assignment.getContextId(), 
+                        assignmentSubmission.getUserId(), 
+                        assignment.getGradableObjectId());
+                
+                if (grade == null) {
+                    UIMessage.make(row, "grade", "assignment2.student-assignment-list.no-grade-yet");
+                } else {
+                    UIOutput.make(row, "grade", grade);
+                }
+                
+            }
 
             //For JS Sorting
             //UIOutput.make(row, "open_timestamp", assignment.getOpenDate() != null ? String.valueOf(assignment.getOpenDate().getTime()) : "");
@@ -270,5 +291,10 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
 
     public void setMessageLocator(MessageLocator messageLocator) {
         this.messageLocator = messageLocator;
+    }
+
+    public void setExternalGradebookLogic(
+            ExternalGradebookLogic externalGradebookLogic) {
+        this.externalGradebookLogic = externalGradebookLogic;
     }
 }
