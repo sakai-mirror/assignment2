@@ -44,6 +44,18 @@ import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
 import uk.org.ponder.rsf.viewstate.ViewParameters;
 import uk.org.ponder.rsf.viewstate.ViewParamsReporter;
 
+/**
+ * This producer provides the view for attaching materials to Assignments,
+ * Submissions etc.
+ * 
+ * It's one of these producer helpers that uses an Old School Sakai helper which
+ * is why it might look a bit odd. The tool state get based back and forth
+ * between the Resources based File Picker Helper.
+ * 
+ * @author rjlowe
+ * @author sgithens
+ *
+ */
 public class AddAttachmentHelperProducer implements ViewComponentProducer, ViewParamsReporter, NavigationCaseReporter
 {
     public static final String VIEWID = "AddAttachment";
