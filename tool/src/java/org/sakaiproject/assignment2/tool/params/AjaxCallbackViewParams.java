@@ -23,24 +23,33 @@ package org.sakaiproject.assignment2.tool.params;
 
 import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
 
+/**
+ * This currently holds params for a number of seperate Ajax operations in the
+ * application, such as reording assignments, and removing attachments.
+ * 
+ * 
+ * @author rjlowe
+ * @author sgithens
+ *
+ */
 public class AjaxCallbackViewParams extends SimpleViewParameters {
 
-	public String[] sortable;
-	public Boolean removeAttachment;
-	public String refId;
-	
-	public AjaxCallbackViewParams() {}
+    public String[] sortable;
+    public Boolean removeAttachment;
+    public String refId;
 
-	//For sorting
+    public AjaxCallbackViewParams() {}
+
+    //For sorting
     public AjaxCallbackViewParams(String viewId, String[] sortable){
-    		super(viewId);
-	        this.sortable = sortable;
+        super(viewId);
+        this.sortable = sortable;
     }
-    
+
     //for removing attachments
     public AjaxCallbackViewParams(String viewId, Boolean removeAttachment, String refId) {
-    	super(viewId);
-    	this.removeAttachment = removeAttachment;
-    	this.refId = refId;
+        super(viewId);
+        this.removeAttachment = removeAttachment;
+        this.refId = refId;
     }
 }
