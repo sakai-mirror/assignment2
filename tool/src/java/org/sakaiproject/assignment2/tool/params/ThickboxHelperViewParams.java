@@ -23,11 +23,36 @@ package org.sakaiproject.assignment2.tool.params;
 
 import uk.ac.cam.caret.sakai.rsf.helper.HelperViewParameters;
 
+/**
+ * These view parameters contain information for creating links that will
+ * use the <a href="http://jquery.com/demo/thickbox/">Thickbox JQuery Plugin</a>
+ * 
+ * 
+ * @author rjlowe
+ * @author sgithens
+ *
+ */
 public class ThickboxHelperViewParams extends HelperViewParameters  {
 
+    
+    /**
+     * I am not sure what this does, but it's in the Thickbox iframe demo.
+     */
     public Boolean keepThis;
+    
+    /**
+     * When true tells thickbox to use an iframe for content.
+     */
     public Boolean TB_iframe;
+    
+    /**
+     * Height of the thickbox.
+     */
     public int height;
+    
+    /**
+     * Width of the iframe.
+     */
     public int width;
 
     public ThickboxHelperViewParams() {}
