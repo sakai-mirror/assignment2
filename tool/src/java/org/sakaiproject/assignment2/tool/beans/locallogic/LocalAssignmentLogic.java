@@ -33,54 +33,69 @@ import org.sakaiproject.assignment2.model.AssignmentGroup;
 
 
 /**
- * Contains logic methods that are used by the ui.
+ * Contains logic methods that are used by the UI, currently for the Student
+ * Assignment List only
+ * 
+ * @author rjlowe
+ * @author sgithens
  */
 public class LocalAssignmentLogic {
-	
-	private static final Log LOG = LogFactory.getLog(LocalAssignmentLogic.class);
-	
-	// sorting that uses non-persisted fields populated in the UI
+
+    private static final Log LOG = LogFactory.getLog(LocalAssignmentLogic.class);
+
+    // sorting that uses non-persisted fields populated in the UI
     public static final String SORT_BY_FOR = "for";
     public static final String SORT_BY_STATUS = "status";
     public static final String SORT_BY_GRADE = "grade";
-	
-	/**
-	 * 
-	 * @param groups
-	 * @return a comma-delimited String representation of the given list of
-	 * groups/section. 
-	 */
-	public String getListOfGroupRestrictionsAsString(Collection<AssignmentGroup> restrictedGroups, Map<String, String> siteGroupIdNameMap) {
-		StringBuilder sb = new StringBuilder();
-		
-		if (restrictedGroups != null) {
-			List<String> groupNameList = new ArrayList<String>();
-			
-			for (AssignmentGroup group : restrictedGroups) {
-				if (group != null) {
-					if (siteGroupIdNameMap.containsKey(group.getGroupId())) {
-						String groupName = (String)siteGroupIdNameMap.get(group.getGroupId());
-						groupNameList.add(groupName);
-					}
-				}
-			}
-			
-			Collections.sort(groupNameList);
-			
-			for (int i=0; i < groupNameList.size(); i++) {
-				
-				String groupName = (String) groupNameList.get(i);
-				if (groupName != null) {
-					if (i != 0) {
-						sb.append(", ");
-					}
 
-					sb.append(groupName);
-				}
-			}	
-		}
-		
-		return sb.toString();
-	}
+    /**
+     * For a set of AssignmentGroups and a Map of Group ID's to Names, return a
+     * list of group names comma delimited.
+     * 
+     * The AssignmentGroups GroupID must match the GroupId keys in the map. 
+     * 
+     * Wow, this would only be like 2 lines in Python or Lisp.
+     * TODO FIXME This was only being used to generate the access column in 
+     * the Student Assignment view, which isn't in the spec anymore. So we
+     * might be able to get rid of this source part all together. The same with
+     * the constants above, they are no longer being used. This is all commented
+     * out in StudentAssignmentListProducer.
+     * 
+     * @param groups
+     * @return a comma-delimited String representation of the given list of
+     * groups/section. 
+     */
+    public String getListOfGroupRestrictionsAsString(Collection<AssignmentGroup> restrictedGroups, Map<String, String> siteGroupIdNameMap) {
+        StringBuilder sb = new StringBuilder();
+
+        if (restrictedGroups != null) {
+            List<String> groupNameList = new ArrayList<String>();
+
+            for (AssignmentGroup group : restrictedGroups) {
+                if (group != null) {
+                    if (siteGroupIdNameMap.containsKey(group.getGroupId())) {
+                        String groupName = (String)siteGroupIdNameMap.get(group.getGroupId());
+                        groupNameList.add(groupName);
+                    }
+                }
+            }
+
+            Collections.sort(groupNameList);
+
+            for (int i=0; i < groupNameList.size(); i++) {
+
+                String groupName = (String) groupNameList.get(i);
+                if (groupName != null) {
+                    if (i != 0) {
+                        sb.append(", ");
+                    }
+
+                    sb.append(groupName);
+                }
+            }	
+        }
+
+        return sb.toString();
+    }
 
 }
