@@ -25,7 +25,7 @@ import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
 
 /**
  * This currently holds params for a number of seperate Ajax operations in the
- * application, such as reording assignments, and removing attachments.
+ * application, such as reordering assignments, and removing attachments.
  * 
  * 
  * @author rjlowe

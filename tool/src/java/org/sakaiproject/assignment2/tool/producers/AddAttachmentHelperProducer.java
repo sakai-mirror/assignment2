@@ -52,6 +52,12 @@ import uk.org.ponder.rsf.viewstate.ViewParamsReporter;
  * is why it might look a bit odd. The tool state get based back and forth
  * between the Resources based File Picker Helper.
  * 
+ * Also of importance is to notice that this is going to FinishedHelperProducer
+ * when finished, which is where the files seem to be processed.  I wonder why
+ * that doesn't happen in the FilePickerBean. It might have to do with 
+ * interaction with the Thickbox dialog, and the way that the attachments are
+ * stored before clicking save. TODO
+ * 
  * @author rjlowe
  * @author sgithens
  *
