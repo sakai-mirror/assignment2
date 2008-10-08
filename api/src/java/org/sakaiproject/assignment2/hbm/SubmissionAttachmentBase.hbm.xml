@@ -24,12 +24,13 @@
     	<many-to-one name="submissionVersion"
     		column="SUBMISSION_VERSION_ID"
     		class="org.sakaiproject.assignment2.model.AssignmentSubmissionVersion"
-    		not-null="true" index="A2_SUB_ATTACH_VERSION_I" />
+    		not-null="true" index="A2_SUB_ATTACH_VERSION_I" 
+    		unique-key="VERSION_ID_ATTACH_REF" />
 
     	<!-- The reference for the attachment -->
     	<property name="attachmentReference" type="java.lang.String">
     		<column name="ATTACHMENT_REFERENCE" not-null="true"
-    			length="255" />
+    			length="255" unique-key="VERSION_ID_ATTACH_REF"/>
     	</property>
 
     	<subclass name="org.sakaiproject.assignment2.model.SubmissionAttachment"

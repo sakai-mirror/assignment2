@@ -292,9 +292,20 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		Set<SubmissionAttachmentBase> attachToDelete = identifyAttachmentsToDelete(version.getSubmissionAttachSet(), subAttachSet);
 		Set<SubmissionAttachmentBase> attachToCreate = identifyAttachmentsToCreate(subAttachSet);
 
-		// make sure the version was populated on the FeedbackAttachments
+		// make sure the version was populated on the SubmissionAttachments
 		populateVersionForAttachmentSet(attachToCreate, version);
 		populateVersionForAttachmentSet(attachToDelete, version);
+		
+		// double check that the attachments we are creating are valid for saving
+        if (attachToCreate != null) {
+            for (SubmissionAttachmentBase attach : attachToCreate) {
+                if (!attach.isAttachmentValid()) {
+                    throw new IllegalArgumentException("The subAttachSet passed to saveStudentSubmission" +
+                            " contained invalid attachment(s). Please ensure all required fields are populated " +
+                            " before saving.");
+                }
+            }
+        }
 
 		try {
 
@@ -419,6 +430,17 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		// make sure the version was populated on the FeedbackAttachments
 		populateVersionForAttachmentSet(attachToCreate, version);
 		populateVersionForAttachmentSet(attachToDelete, version);
+		
+		// double check that the attachments to create have valid data
+		if (attachToCreate != null) {
+		    for (SubmissionAttachmentBase attach : attachToCreate) {
+		        if (!attach.isAttachmentValid()) {
+		            throw new IllegalArgumentException("The feedbackAttachSet passed to saveInstructorFeedback" +
+                            " contained invalid attachment(s). Please ensure all required fields are populated " +
+                            " before saving.");
+		        }
+		    }
+		}
 
 		try {
 

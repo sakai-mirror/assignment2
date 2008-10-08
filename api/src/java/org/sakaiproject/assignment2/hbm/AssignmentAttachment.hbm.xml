@@ -16,11 +16,13 @@
         <!--  This maps to the A2_ASSIGNMENT_T table -->
         <many-to-one name="assignment" column="ASSIGNMENT_ID"
         	class="org.sakaiproject.assignment2.model.Assignment2"
-        	not-null="true" index="A2_ASSIGN_ATTACH_ASSIGN_I" />
+        	not-null="true" index="A2_ASSIGN_ATTACH_ASSIGN_I" 
+        	unique-key="ASSIGN_ID_ATTACH_REF" />
 
         <!-- The reference for the attachment -->
         <property name="attachmentReference" type="java.lang.String">
-            <column name="ATTACHMENT_REFERENCE" not-null="true" length="255" />
+            <column name="ATTACHMENT_REFERENCE" not-null="true" length="255" 
+            	unique-key="ASSIGN_ID_ATTACH_REF"/>
         </property>
     </class>
 </hibernate-mapping>

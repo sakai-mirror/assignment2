@@ -235,6 +235,9 @@ public class AssignmentLogicImpl implements AssignmentLogic{
         	// make sure the assignment has been set for the attachments and groups
         	populateAssignmentForAttachmentAndGroupSets(attachSet, groupSet, assignment);
         	
+            // ensure that these objects are ready for saving
+            validateAttachmentsAndGroups(attachSet, groupSet);
+        	
         	Set<Assignment2> assignSet = new HashSet<Assignment2>();
         	assignSet.add(assignment);
         	
@@ -262,6 +265,9 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 	        	
 	        	// make sure the assignment has been set for the attachments and groups
 	        	populateAssignmentForAttachmentAndGroupSets(attachSet, groupSet, assignment);
+	        	
+	        	// ensure that these objects are ready for saving
+	        	validateAttachmentsAndGroups(attachSet, groupSet);
 	        	
 	        	Set<Assignment2> assignSet = new HashSet<Assignment2>();
 	        	assignSet.add(assignment);
@@ -765,5 +771,37 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 				// don't need to re-save assignment b/c id already exists
 			}
 		}
+	}
+	
+	/**
+	 * ensure that the attachments and groups are populated with everything
+	 * required for saving
+	 * @param attachSet
+	 * @param groupSet
+	 * @throws IllegalArgumentException if any group or attachment is invalid
+	 */
+	private void validateAttachmentsAndGroups(Set<AssignmentAttachment> attachSet, Set<AssignmentGroup> groupSet) {
+	       // ensure that the necessary data was populated for the attachments
+        if (attachSet != null) {
+            for (AssignmentAttachment attach : attachSet) {
+                if (!attach.isAttachmentValid()) {
+                    throw new IllegalArgumentException("At least one attachment associated " +
+                            "with the assignment is missing necessary data. Check to see " +
+                            "if your attachmentReference is populated.");
+                }
+            }
+            
+        }
+        
+        // ensure group info required for saving was populated
+        if (groupSet != null) {
+            for (AssignmentGroup group : groupSet) {
+                if (!group.isAssignmentGroupValid()) {
+                    throw new IllegalArgumentException("At least one AssignmentGroup " +
+                            "associated with this assignment is not valid. Check to " +
+                            "see if all required info is populated.");
+                }
+            }
+        }
 	}
 }

@@ -45,5 +45,26 @@ public abstract class SubmissionAttachmentBase extends AttachmentBase {
 	public void setSubmissionVersion(AssignmentSubmissionVersion submissionVersion) {
 		this.submissionVersion = submissionVersion;
 	}
+	
+   // CONVENIENCE METHODS
+    
+    /**
+     * 
+     * @return true if all of the properties required for this attachment
+     * to be successfully saved have been populated
+     */
+    public boolean isAttachmentValid() {
+        boolean attachmentIsValid = true;
+        
+        if (this.attachmentReference == null || this.attachmentReference.trim().length() == 0) {
+            attachmentIsValid = false;
+        }
+        
+        if (this.submissionVersion == null) {
+            attachmentIsValid = false;
+        }
+        
+        return attachmentIsValid;
+    }
 
 }

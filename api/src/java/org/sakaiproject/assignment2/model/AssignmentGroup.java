@@ -133,4 +133,25 @@ public class AssignmentGroup {
 		return hashStr.hashCode();
 	}
 	
+// CONVENIENCE METHODS
+    
+    /**
+     * 
+     * @return true if all of the properties required for this AssignmentGroup
+     * to be successfully saved have been populated
+     */
+    public boolean isAssignmentGroupValid() {
+        boolean groupIsValid = true;
+        
+        if (this.groupId == null || this.groupId.trim().length() == 0) {
+            groupIsValid = false;
+        }
+        
+        if (this.assignment == null) {
+            groupIsValid = false;
+        }
+        
+        return groupIsValid;
+    }
+	
 }

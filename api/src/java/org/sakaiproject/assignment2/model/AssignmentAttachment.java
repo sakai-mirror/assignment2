@@ -56,4 +56,24 @@ public class AssignmentAttachment extends AttachmentBase {
 		this.assignment = assignment;
 	}
 
+// CONVENIENCE METHODS
+    
+    /**
+     * 
+     * @return true if all of the properties required for this attachment
+     * to be successfully saved have been populated
+     */
+    public boolean isAttachmentValid() {
+        boolean attachmentIsValid = true;
+        
+        if (this.attachmentReference == null || this.attachmentReference.trim().length() == 0) {
+            attachmentIsValid = false;
+        }
+        
+        if (this.assignment == null) {
+            attachmentIsValid = false;
+        }
+        
+        return attachmentIsValid;
+    }
 }
