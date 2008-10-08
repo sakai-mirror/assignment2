@@ -75,13 +75,22 @@ import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
 import uk.org.ponder.rsf.viewstate.ViewParameters;
 import uk.org.ponder.rsf.viewstate.ViewParamsReporter;
 
+/**
+ * This view is for grading a submission from a student. Typically you get to it
+ * by going Assignment List -> Submissions -> Student Name.
+ * 
+ * @author rjlowe
+ * @author wagnermr
+ * @author sgithens
+ *
+ */
 public class GradeProducer implements ViewComponentProducer, NavigationCaseReporter, ViewParamsReporter, ActionResultInterceptor {
 
     public static final String VIEW_ID = "grade";
     public String getViewID() {
         return VIEW_ID;
     }
-    
+
     private TextInputEvolver richTextEvolver;
     private TextInputEvolver assnCommentTextEvolver;
     private MessageLocator messageLocator;
@@ -95,210 +104,210 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
     private AssignmentPermissionLogic permissionLogic;
     private AttachmentInputEvolver attachmentInputEvolver;
 
-		
-	/*
-	 * You can change the date input to accept time as well by uncommenting the lines like this:
-	 * dateevolver.setStyle(FormatAwareDateInputEvolver.DATE_TIME_INPUT);
-	 * and commenting out lines like this:
-	 * dateevolver.setStyle(FormatAwareDateInputEvolver.DATE_INPUT);
-	 * -AZ
-	 * And vice versa - RWE
-	 */
-	private FormatAwareDateInputEvolver dateEvolver;
-	public void setDateEvolver(FormatAwareDateInputEvolver dateEvolver) {
-		this.dateEvolver = dateEvolver;
-	}
-    
+
+    /*
+     * You can change the date input to accept time as well by uncommenting the lines like this:
+     * dateevolver.setStyle(FormatAwareDateInputEvolver.DATE_TIME_INPUT);
+     * and commenting out lines like this:
+     * dateevolver.setStyle(FormatAwareDateInputEvolver.DATE_INPUT);
+     * -AZ
+     * And vice versa - RWE
+     */
+    private FormatAwareDateInputEvolver dateEvolver;
+    public void setDateEvolver(FormatAwareDateInputEvolver dateEvolver) {
+        this.dateEvolver = dateEvolver;
+    }
+
     public void fillComponents(UIContainer tofill, ViewParameters viewparams, ComponentChecker checker) {
-    	
-    	//Get Params
+
+        //Get Params
         GradeViewParams params = (GradeViewParams) viewparams;
-    	String userId = params.userId;
-    	Long assignmentId = params.assignmentId;
-    	if (assignmentId == null || userId == null){
-    		//handle error
-    		return;
-    	}
-    	Boolean OLD_VERSION = false;
-    	//Check if we are modifying an older version
-    	if (params.submissionId != null){
-    		OLD_VERSION = true;
-    	}
-    	
-    	AssignmentSubmission as = submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(assignmentId, userId);
-    	Assignment2 assignment = assignmentLogic.getAssignmentByIdWithAssociatedData(assignmentId);
-    	
-    	//Grade Permission?
+        String userId = params.userId;
+        Long assignmentId = params.assignmentId;
+        if (assignmentId == null || userId == null){
+            //handle error
+            return;
+        }
+        Boolean OLD_VERSION = false;
+        //Check if we are modifying an older version
+        if (params.submissionId != null){
+            OLD_VERSION = true;
+        }
+
+        AssignmentSubmission as = submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(assignmentId, userId);
+        Assignment2 assignment = assignmentLogic.getAssignmentByIdWithAssociatedData(assignmentId);
+
+        //Grade Permission?
         Boolean grade_perm = permissionLogic.isUserAbleToProvideFeedbackForStudentForAssignment(userId, assignment);
-    	
-       	// use a date which is related to the current users locale
+
+        // use a date which is related to the current users locale
         DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, locale);
-        
-    	//Breadcrumbs
+
+        //Breadcrumbs
         UIInternalLink.make(tofill, "breadcrumb", 
-        		messageLocator.getMessage("assignment2.list.heading"),
-        		new SimpleViewParameters(ListProducer.VIEW_ID));
+                messageLocator.getMessage("assignment2.list.heading"),
+                new SimpleViewParameters(ListProducer.VIEW_ID));
         UIInternalLink.make(tofill, "breadcrumb2",
-        		messageLocator.getMessage("assignment2.assignment_grade-assignment.heading", new Object[] { assignment.getTitle()}),
-        		new ViewSubmissionsViewParams(ViewSubmissionsProducer.VIEW_ID, assignment.getId()));
+                messageLocator.getMessage("assignment2.assignment_grade-assignment.heading", new Object[] { assignment.getTitle()}),
+                new ViewSubmissionsViewParams(ViewSubmissionsProducer.VIEW_ID, assignment.getId()));
         UIMessage.make(tofill, "last_breadcrumb", "assignment2.assignment_grade.heading", 
-        		new Object[]{assignment.getTitle(), externalLogic.getUserDisplayName(params.userId)});
-        
+                new Object[]{assignment.getTitle(), externalLogic.getUserDisplayName(params.userId)});
+
         //Heading messages
         UIMessage.make(tofill, "heading", "assignment2.assignment_grade.heading", 
-        		new Object[]{assignment.getTitle(), externalLogic.getUserDisplayName(params.userId)});
+                new Object[]{assignment.getTitle(), externalLogic.getUserDisplayName(params.userId)});
         UIMessage.make(tofill, "page-title", "assignment2.assignment_grade.title");
         //navBarRenderer.makeNavBar(tofill, "navIntraTool:", VIEW_ID);
         //UIMessage.make(tofill, "heading", "assignment2.assignment_grade.heading", new Object[]{assignment.getTitle()});
-        
+
         //AssignmentSubmission OTP Stuff
         String asOTP = "AssignmentSubmission.";
         String OTPKey = "";
         if (as != null && as.getId() != null){
-        	OTPKey += as.getId();
+            OTPKey += as.getId();
         } else {
-        	OTPKey += EntityBeanLocator.NEW_PREFIX + "1";
+            OTPKey += EntityBeanLocator.NEW_PREFIX + "1";
         }
         asOTP += OTPKey;
-        
+
         //AssignmentSubmissionVersion OTP Stuff
         String asvOTP = "AssignmentSubmissionVersion.";
         String asvOTPKey = "";
         if (OLD_VERSION && params.submissionId != null) {
-        	asvOTPKey += params.submissionId;
+            asvOTPKey += params.submissionId;
         }else if (as != null && as.getCurrentSubmissionVersion() != null && as.getCurrentSubmissionVersion().getId() != null) {
-        	asvOTPKey += as.getCurrentSubmissionVersion().getId();
+            asvOTPKey += as.getCurrentSubmissionVersion().getId();
         } else {
-        	asvOTPKey += EntityBeanLocator.NEW_PREFIX + "1";
+            asvOTPKey += EntityBeanLocator.NEW_PREFIX + "1";
         }
         AssignmentSubmissionVersion assignmentSubmissionVersion = (AssignmentSubmissionVersion)asvEntityBeanLocator.locateBean(asvOTPKey);
         asvOTP += asvOTPKey;
-        
-      //Initialize js otpkey
-    	UIVerbatim.make(tofill, "attachment-ajax-init", "otpkey=\"" + org.sakaiproject.util.Web.escapeUrl(asvOTPKey) + "\";\n" +
-    			"userId=\"" + userId + "\";\n" +
-    			"assignmentId=\"" + assignmentId + "\";\n" +
-    			"fragGBDetailsPath=\"" + externalLogic.getAssignmentViewUrl(FragmentGradebookDetailsProducer.VIEW_ID) + "\";");
-        
-    	
-    	/**
-    	 * Begin the Form
-    	 */
+
+        //Initialize js otpkey
+        UIVerbatim.make(tofill, "attachment-ajax-init", "otpkey=\"" + org.sakaiproject.util.Web.escapeUrl(asvOTPKey) + "\";\n" +
+                "userId=\"" + userId + "\";\n" +
+                "assignmentId=\"" + assignmentId + "\";\n" +
+                "fragGBDetailsPath=\"" + externalLogic.getAssignmentViewUrl(FragmentGradebookDetailsProducer.VIEW_ID) + "\";");
+
+
+        /**
+         * Begin the Form
+         */
         UIForm form = UIForm.make(tofill, "form");
-        
+
         // if this assignment requires non-electronic submission, there is no submission status
         if (assignment.getSubmissionType() == AssignmentConstants.SUBMIT_NON_ELECTRONIC) {
-        	UIMessage.make(form, "non-electronic-submission", "assignment2.assignment_grade.nonelectronic_sub");
+            UIMessage.make(form, "non-electronic-submission", "assignment2.assignment_grade.nonelectronic_sub");
         } else {
-        	if (assignmentSubmissionVersion.getSubmittedDate() != null){
-        		UIOutput.make(form, "status", df.format(assignmentSubmissionVersion.getSubmittedDate()));
-        	} else {
-        		UIOutput.make(form, "status", "");
-        	}
+            if (assignmentSubmissionVersion.getSubmittedDate() != null){
+                UIOutput.make(form, "status", df.format(assignmentSubmissionVersion.getSubmittedDate()));
+            } else {
+                UIOutput.make(form, "status", "");
+            }
 
-        	int statusConstant = AssignmentConstants.SUBMISSION_NOT_STARTED;
-        	if (assignmentSubmissionVersion != null) {
-        		statusConstant = submissionLogic.getSubmissionStatusConstantForCurrentVersion(assignmentSubmissionVersion, assignment.getDueDate());
-        	}
+            int statusConstant = AssignmentConstants.SUBMISSION_NOT_STARTED;
+            if (assignmentSubmissionVersion != null) {
+                statusConstant = submissionLogic.getSubmissionStatusConstantForCurrentVersion(assignmentSubmissionVersion, assignment.getDueDate());
+            }
 
-        	//TODO FIXME swg if (statusConstant == AssignmentConstants.SUBMISSION_IN_PROGRESS || statusConstant == AssignmentConstants.SUBMISSION_NOT_STARTED) {
-        	//	UIMessage.make(form, "status", "assignment2.assignment_grade.submission_status." + statusConstant);
-        	//} else {
-        	//	UIMessage.make(form, "status", "assignment2.assignment_grade.submission_status." + statusConstant, new Object[] { df.format(assignmentSubmissionVersion.getSubmittedDate()) });
-        //	}
+            //TODO FIXME swg if (statusConstant == AssignmentConstants.SUBMISSION_IN_PROGRESS || statusConstant == AssignmentConstants.SUBMISSION_NOT_STARTED) {
+            //	UIMessage.make(form, "status", "assignment2.assignment_grade.submission_status." + statusConstant);
+            //} else {
+            //	UIMessage.make(form, "status", "assignment2.assignment_grade.submission_status." + statusConstant, new Object[] { df.format(assignmentSubmissionVersion.getSubmittedDate()) });
+            //	}
         }
-        
+
         //If current submitted submission is a draft, display note to instructor
         if (submissionLogic.isMostRecentVersionDraft(as) && !OLD_VERSION){
-        	UIMessage.make(form, "current_is_draft", "assignment2.assignment_grade.current_is_draft");
+            UIMessage.make(form, "current_is_draft", "assignment2.assignment_grade.current_is_draft");
         }
-        
+
         //If editing Old Version, remind UI
         if (OLD_VERSION) {
-        	UIMessage.make(form, "editing_previous_submission", "assignment2.assignment_grade.editing_previous_submission");
+            UIMessage.make(form, "editing_previous_submission", "assignment2.assignment_grade.editing_previous_submission");
         }
 
         //TODO - make these viewparams their own actual view params, not raw
         UILink.make(form, "view_assignment_instructions", 
-        		messageLocator.getMessage("assignment2.assignment_grade.view_assignment_instructions"),
-        		externalLogic.getAssignmentViewUrl(FragmentAssignmentInstructionsProducer.VIEW_ID) + "/" + assignment.getId() + "?TB_iframe=true&height=300");
-        
+                messageLocator.getMessage("assignment2.assignment_grade.view_assignment_instructions"),
+                externalLogic.getAssignmentViewUrl(FragmentAssignmentInstructionsProducer.VIEW_ID) + "/" + assignment.getId() + "?TB_iframe=true&height=300");
+
         // If assignment allows for submitted text
         // This is the rich text editor for instructors to annotate the submission
         // using red italized text.
         if (assignmentSubmissionVersion.getSubmittedDate() != null &&
-        		(assignment.getSubmissionType() == AssignmentConstants.SUBMIT_INLINE_ONLY || 
-        		assignment.getSubmissionType() == AssignmentConstants.SUBMIT_INLINE_AND_ATTACH)) {
-        	UIOutput.make(form, "submitted_text_fieldset");
-        
-        	if (grade_perm){
-        		//UIVerbatim.make(form, "feedback_instructions", messageLocator.getMessage("assignment2.assignment_grade.feedback_instructions"));
-        		UIInput feedback_text = UIInput.make(form, "feedback_text:", asvOTP + ".annotatedText");
-        		feedback_text.mustapply = Boolean.TRUE;
-        		assnCommentTextEvolver.evolveTextInput(feedback_text);
-        	} else {
-        		UIVerbatim.make(form, "feedback_text:", assignmentSubmissionVersion.getAnnotatedTextFormatted());
-        	}
+                (assignment.getSubmissionType() == AssignmentConstants.SUBMIT_INLINE_ONLY || 
+                        assignment.getSubmissionType() == AssignmentConstants.SUBMIT_INLINE_AND_ATTACH)) {
+            UIOutput.make(form, "submitted_text_fieldset");
+
+            if (grade_perm){
+                //UIVerbatim.make(form, "feedback_instructions", messageLocator.getMessage("assignment2.assignment_grade.feedback_instructions"));
+                UIInput feedback_text = UIInput.make(form, "feedback_text:", asvOTP + ".annotatedText");
+                feedback_text.mustapply = Boolean.TRUE;
+                assnCommentTextEvolver.evolveTextInput(feedback_text);
+            } else {
+                UIVerbatim.make(form, "feedback_text:", assignmentSubmissionVersion.getAnnotatedTextFormatted());
+            }
         }
-        
+
         //If assignment allows for submitted attachments
         if (assignment.getSubmissionType() == AssignmentConstants.SUBMIT_ATTACH_ONLY ||
-        		assignment.getSubmissionType() == AssignmentConstants.SUBMIT_INLINE_AND_ATTACH) {
-	        if (assignmentSubmissionVersion.getSubmissionAttachSet() != null){
-	        	UIOutput.make(tofill, "submitted_attachments_fieldset");
-	        	attachmentListRenderer.makeAttachmentFromSubmissionAttachmentSet(tofill, "submitted_attachment_list:", params.viewID, 
-	        			assignmentSubmissionVersion.getSubmissionAttachSet());
-	        } else {
-	        	UIMessage.make(tofill, "submitted_attachment_list:", "assignment2.assignment_grade.no_attachments_submitted");
-	        }
+                assignment.getSubmissionType() == AssignmentConstants.SUBMIT_INLINE_AND_ATTACH) {
+            if (assignmentSubmissionVersion.getSubmissionAttachSet() != null){
+                UIOutput.make(tofill, "submitted_attachments_fieldset");
+                attachmentListRenderer.makeAttachmentFromSubmissionAttachmentSet(tofill, "submitted_attachment_list:", params.viewID, 
+                        assignmentSubmissionVersion.getSubmissionAttachSet());
+            } else {
+                UIMessage.make(tofill, "submitted_attachment_list:", "assignment2.assignment_grade.no_attachments_submitted");
+            }
         }
-        
+
         if (grade_perm) {
-	    	UIInput feedback_notes = UIInput.make(form, "feedback_notes:", asvOTP + ".feedbackNotes");
-	    	feedback_notes.mustapply = Boolean.TRUE;
-	    	richTextEvolver.evolveTextInput(feedback_notes);
+            UIInput feedback_notes = UIInput.make(form, "feedback_notes:", asvOTP + ".feedbackNotes");
+            feedback_notes.mustapply = Boolean.TRUE;
+            richTextEvolver.evolveTextInput(feedback_notes);
         } else {
-        	UIVerbatim.make(form, "feedback_text_no_edit", assignmentSubmissionVersion.getFeedbackNotes());        	
+            UIVerbatim.make(form, "feedback_text_no_edit", assignmentSubmissionVersion.getFeedbackNotes());        	
         }
-               
+
         //Attachments
-        
+
         //Attachments
         //TODO FIXME SWG UIInputMany attachmentInput = UIInputMany.make(form, "attachment_list:", asvOTP + ".feedbackAttachmentRefs", assignmentSubmissionVersion.getFeedbackAttachmentRefs());
         //attachmentInputEvolver.evolveAttachment(attachmentInput);
-        
+
         if (grade_perm) {
-        	UIInternalLink.make(form, "add_attachments", UIMessage.make("assignment2.assignment_add.add_attachments"),
-        		new FilePickerHelperViewParams(AddAttachmentHelperProducer.VIEWID, Boolean.TRUE, 
-        				Boolean.TRUE, 500, 700, OTPKey));
+            UIInternalLink.make(form, "add_attachments", UIMessage.make("assignment2.assignment_add.add_attachments"),
+                    new FilePickerHelperViewParams(AddAttachmentHelperProducer.VIEWID, Boolean.TRUE, 
+                            Boolean.TRUE, 500, 700, OTPKey));
         }
-        
+
         //set dateEvolver
         dateEvolver.setStyle(FormatAwareDateInputEvolver.DATE_TIME_INPUT);
-        
+
         /**
         UIBoundBoolean release_feedback = UIBoundBoolean.make(form, "release_feedback", "#{AssignmentSubmissionBean.releaseFeedback}", 
         		assignmentSubmissionVersion.getFeedbackReleasedDate() != null);
         UIMessage release_feedback_label = UIMessage.make(form, "release_feedback_label", "assignment2.assignment_grade.release_feedback");
         UILabelTargetDecorator.targetLabel(release_feedback_label, release_feedback);
-        **/
-        
+         **/
+
         //Assignment LEvel
         //Integer assignment_num_submissions = 1;
         //if (assignment != null && assignment.getNumSubmissionsAllowed() != null) {
         //	assignment_num_submissions = assignment.getNumSubmissionsAllowed();
         //}
-        
+
         //Submission Level
-    	Integer current_times_submitted_already = 0;
-    	if (as != null && as.getSubmissionHistorySet() != null) {
-    		current_times_submitted_already = submissionLogic.getNumSubmittedVersions(as.getUserId(), assignmentId);
-    	}
-    	
+        Integer current_times_submitted_already = 0;
+        if (as != null && as.getSubmissionHistorySet() != null) {
+            current_times_submitted_already = submissionLogic.getNumSubmittedVersions(as.getUserId(), assignmentId);
+        }
+
         Boolean is_override = (as.getNumSubmissionsAllowed() != null);
         int numSubmissionsAllowed;
         Date resubmitUntil;
-        
+
         if (as.getNumSubmissionsAllowed() != null) {
             // this student already has an override, so use these settings
             numSubmissionsAllowed = as.getNumSubmissionsAllowed();
@@ -308,163 +317,163 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
             numSubmissionsAllowed = assignment.getNumSubmissionsAllowed();
             resubmitUntil = assignment.getAcceptUntilDate();
         }
-        
+
         as.setNumSubmissionsAllowed(numSubmissionsAllowed);
         as.setResubmitCloseDate(resubmitUntil);
-        
+
         if (grade_perm) {
             UIBoundBoolean.make(form, "override_settings", "#{AssignmentSubmissionBean.overrideResubmissionSettings}", is_override);
-            
-        	UIOutput.make(form, "resubmit_change");
 
-        	int size = 20;
-        	String[] number_submissions_options = new String[size+1];
-        	String[] number_submissions_values = new String[size+1];
-        	number_submissions_values[0] = "" + AssignmentConstants.UNLIMITED_SUBMISSION;
-        	number_submissions_options[0] = messageLocator.getMessage("assignment2.indefinite_resubmit");
-        	for (int i=0; i < size; i++){
-        		number_submissions_values[i + 1] = Integer.valueOf(i + current_times_submitted_already).toString();
-        		number_submissions_options[i + 1] = Integer.valueOf(i).toString();
-        	}
+            UIOutput.make(form, "resubmit_change");
 
-        	//Output
-        	UIMessage.make(form, "resubmission_text_1", "assignment2.assignment_grade.resubmission_text_1", 
-        			new Object[] { externalLogic.getUserDisplayName(params.userId), current_times_submitted_already});
+            int size = 20;
+            String[] number_submissions_options = new String[size+1];
+            String[] number_submissions_values = new String[size+1];
+            number_submissions_values[0] = "" + AssignmentConstants.UNLIMITED_SUBMISSION;
+            number_submissions_options[0] = messageLocator.getMessage("assignment2.indefinite_resubmit");
+            for (int i=0; i < size; i++){
+                number_submissions_values[i + 1] = Integer.valueOf(i + current_times_submitted_already).toString();
+                number_submissions_options[i + 1] = Integer.valueOf(i).toString();
+            }
 
-        	UISelect.make(form, "resubmission_additional", number_submissions_values, number_submissions_options, 
-        			asOTP + ".numSubmissionsAllowed", as.getNumSubmissionsAllowed().toString());
-        	
-        	UIInput acceptUntilTimeField = UIInput.make(form, "accept_until:", asOTP + ".resubmitCloseDate");
+            //Output
+            UIMessage.make(form, "resubmission_text_1", "assignment2.assignment_grade.resubmission_text_1", 
+                    new Object[] { externalLogic.getUserDisplayName(params.userId), current_times_submitted_already});
 
-        	dateEvolver.evolveDateInput(acceptUntilTimeField, as.getResubmitCloseDate());
+            UISelect.make(form, "resubmission_additional", number_submissions_values, number_submissions_options, 
+                    asOTP + ".numSubmissionsAllowed", as.getNumSubmissionsAllowed().toString());
+
+            UIInput acceptUntilTimeField = UIInput.make(form, "accept_until:", asOTP + ".resubmitCloseDate");
+
+            dateEvolver.evolveDateInput(acceptUntilTimeField, as.getResubmitCloseDate());
         } else {
-        	// display text only representation
-        	String totalSubmissions = as.getNumSubmissionsAllowed().toString();
-        	if (as.getNumSubmissionsAllowed() == AssignmentConstants.UNLIMITED_SUBMISSION) {
-        		totalSubmissions = messageLocator.getMessage("assignment2.indefinite_resubmit");
-        	}
-        	UIMessage.make(form, "resubmit_no_change", "assignment2.assignment_grade.resubmission_text", 
-        			new Object[] {externalLogic.getUserDisplayName(params.userId), 
-        			current_times_submitted_already, totalSubmissions, 
-        			(as.getResubmitCloseDate() != null ? df.format(as.getResubmitCloseDate()) : "")});
+            // display text only representation
+            String totalSubmissions = as.getNumSubmissionsAllowed().toString();
+            if (as.getNumSubmissionsAllowed() == AssignmentConstants.UNLIMITED_SUBMISSION) {
+                totalSubmissions = messageLocator.getMessage("assignment2.indefinite_resubmit");
+            }
+            UIMessage.make(form, "resubmit_no_change", "assignment2.assignment_grade.resubmission_text", 
+                    new Object[] {externalLogic.getUserDisplayName(params.userId), 
+                    current_times_submitted_already, totalSubmissions, 
+                    (as.getResubmitCloseDate() != null ? df.format(as.getResubmitCloseDate()) : "")});
         }
-        
+
         if (assignment.isGraded()){
-        	gradebookDetailsRenderer.makeGradebookDetails(tofill, "gradebook_details", as, assignmentId, userId);
+            gradebookDetailsRenderer.makeGradebookDetails(tofill, "gradebook_details", as, assignmentId, userId);
         }        
-        
+
         //Begin Looping for previous submissions
         List<AssignmentSubmissionVersion> history = submissionLogic.getVersionHistoryForSubmission(as);
-                
-    	for (AssignmentSubmissionVersion asv : history){
-    		
-        	UIBranchContainer loop = UIBranchContainer.make(form, "previous_submissions:");
-        	UIOutput.make(loop, "previous_date", (asv.getSubmittedDate() != null ? df.format(asv.getSubmittedDate()) : ""));
-        	if (asvOTPKey.equals(asv.getId().toString())){
-        		//we are editing this version
-        		UIMessage.make(loop, "current_version", "assignment2.assignment_grade.current_version");
-        	} else {
-        		//else add link to edit this submission
-        		UIInternalLink.make(loop, "previous_link", 
-        				messageLocator.getMessage("assignment2.assignment_grade.view_submission"),
-            			new FragmentViewSubmissionViewParams(FragmentViewSubmissionProducer.VIEW_ID, asv.getId()));
-        	}
+
+        for (AssignmentSubmissionVersion asv : history){
+
+            UIBranchContainer loop = UIBranchContainer.make(form, "previous_submissions:");
+            UIOutput.make(loop, "previous_date", (asv.getSubmittedDate() != null ? df.format(asv.getSubmittedDate()) : ""));
+            if (asvOTPKey.equals(asv.getId().toString())){
+                //we are editing this version
+                UIMessage.make(loop, "current_version", "assignment2.assignment_grade.current_version");
+            } else {
+                //else add link to edit this submission
+                UIInternalLink.make(loop, "previous_link", 
+                        messageLocator.getMessage("assignment2.assignment_grade.view_submission"),
+                        new FragmentViewSubmissionViewParams(FragmentViewSubmissionProducer.VIEW_ID, asv.getId()));
+            }
         }
         if (history == null || history.size() == 0) {
-        	//no history, add dialog
-        	UIMessage.make(form, "no_history", "assignment2.assignment_grade.no_history");
+            //no history, add dialog
+            UIMessage.make(form, "no_history", "assignment2.assignment_grade.no_history");
         }
-        
-        
-        
+
+
+
         form.parameters.add(new UIELBinding("#{AssignmentSubmissionBean.assignmentId}", assignmentId));
         form.parameters.add(new UIELBinding("#{AssignmentSubmissionBean.userId}", userId));
         if (grade_perm){
-        	UICommand.make(form, "release_feedback", UIMessage.make("assignment2.assignment_grade.release_feedback"),
-    			"#{AssignmentSubmissionBean.processActionSaveAndReleaseAllFeedbackForSubmission}");
-	        UICommand.make(form, "submit", UIMessage.make("assignment2.assignment_grade.submit"), "#{AssignmentSubmissionBean.processActionGradeSubmit}");
-	        //UICommand.make(form, "preview", UIMessage.make("assignment2.assignment_grade.preview"), "#{AssignmentSubmissionBean.processActionGradePreview}");
-	        UICommand.make(form, "cancel", UIMessage.make("assignment2.assignment_grade.cancel"), "#{AssignmentSubmissionBean.processActionCancel}");
+            UICommand.make(form, "release_feedback", UIMessage.make("assignment2.assignment_grade.release_feedback"),
+            "#{AssignmentSubmissionBean.processActionSaveAndReleaseAllFeedbackForSubmission}");
+            UICommand.make(form, "submit", UIMessage.make("assignment2.assignment_grade.submit"), "#{AssignmentSubmissionBean.processActionGradeSubmit}");
+            //UICommand.make(form, "preview", UIMessage.make("assignment2.assignment_grade.preview"), "#{AssignmentSubmissionBean.processActionGradePreview}");
+            UICommand.make(form, "cancel", UIMessage.make("assignment2.assignment_grade.cancel"), "#{AssignmentSubmissionBean.processActionCancel}");
         }
     }
-    
-	public List<NavigationCase> reportNavigationCases() {
-    	List<NavigationCase> nav= new ArrayList<NavigationCase>();
-    	nav.add(new NavigationCase("release_all", new GradeViewParams(
-    			GradeProducer.VIEW_ID, null, null)));
-    	nav.add(new NavigationCase("submit", new ViewSubmissionsViewParams(
-               ViewSubmissionsProducer.VIEW_ID)));
+
+    public List<NavigationCase> reportNavigationCases() {
+        List<NavigationCase> nav= new ArrayList<NavigationCase>();
+        nav.add(new NavigationCase("release_all", new GradeViewParams(
+                GradeProducer.VIEW_ID, null, null)));
+        nav.add(new NavigationCase("submit", new ViewSubmissionsViewParams(
+                ViewSubmissionsProducer.VIEW_ID)));
         nav.add(new NavigationCase("preview", new SimpleViewParameters(
-              FragmentSubmissionGradePreviewProducer.VIEW_ID)));
+                FragmentSubmissionGradePreviewProducer.VIEW_ID)));
         nav.add(new NavigationCase("cancel", new ViewSubmissionsViewParams(
                 ViewSubmissionsProducer.VIEW_ID)));
         return nav;
     }
-	
-	public void interceptActionResult(ARIResult result, ViewParameters incoming, Object actionReturn) {
-		    if (result.resultingView instanceof ViewSubmissionsViewParams) {
-		    	ViewSubmissionsViewParams outgoing = (ViewSubmissionsViewParams) result.resultingView;
-		    	GradeViewParams in = (GradeViewParams) incoming;
-		    	outgoing.assignmentId = in.assignmentId;
-		    } else if (result.resultingView instanceof GradeViewParams) {
-		    	GradeViewParams outgoing = (GradeViewParams) result.resultingView;
-		    	GradeViewParams in = (GradeViewParams) incoming;
-		    	outgoing.assignmentId = in.assignmentId;
-		    	outgoing.userId = in.userId;
-		    	outgoing.submissionId = in.submissionId;
-		    }
-	}
-	
+
+    public void interceptActionResult(ARIResult result, ViewParameters incoming, Object actionReturn) {
+        if (result.resultingView instanceof ViewSubmissionsViewParams) {
+            ViewSubmissionsViewParams outgoing = (ViewSubmissionsViewParams) result.resultingView;
+            GradeViewParams in = (GradeViewParams) incoming;
+            outgoing.assignmentId = in.assignmentId;
+        } else if (result.resultingView instanceof GradeViewParams) {
+            GradeViewParams outgoing = (GradeViewParams) result.resultingView;
+            GradeViewParams in = (GradeViewParams) incoming;
+            outgoing.assignmentId = in.assignmentId;
+            outgoing.userId = in.userId;
+            outgoing.submissionId = in.submissionId;
+        }
+    }
+
     public ViewParameters getViewParameters() {
         return new GradeViewParams();
     }
-    
+
     public void setMessageLocator(MessageLocator messageLocator) {
         this.messageLocator = messageLocator;
     }
-    
+
     public void setRichTextEvolver(TextInputEvolver richTextEvolver) {
         this.richTextEvolver = richTextEvolver;
     }
-    
+
     public void setAssignmentLogic(AssignmentLogic assignmentLogic) {
-    	this.assignmentLogic = assignmentLogic;
+        this.assignmentLogic = assignmentLogic;
     }
-    
+
     public void setExternalLogic(ExternalLogic externalLogic) {
-    	this.externalLogic = externalLogic;
+        this.externalLogic = externalLogic;
     }
-    
+
     public void setLocale(Locale locale) {
-    	this.locale = locale;
+        this.locale = locale;
     }
-	
-	public void setAttachmentListRenderer(AttachmentListRenderer attachmentListRenderer){
-		this.attachmentListRenderer = attachmentListRenderer;
-	}
 
-	public void setSubmissionLogic(AssignmentSubmissionLogic submissionLogic) {
-		this.submissionLogic = submissionLogic;
-	}
-    
+    public void setAttachmentListRenderer(AttachmentListRenderer attachmentListRenderer){
+        this.attachmentListRenderer = attachmentListRenderer;
+    }
+
+    public void setSubmissionLogic(AssignmentSubmissionLogic submissionLogic) {
+        this.submissionLogic = submissionLogic;
+    }
+
     public void setGradebookDetailsRenderer(GradebookDetailsRenderer gradebookDetailsRenderer){
-		this.gradebookDetailsRenderer = gradebookDetailsRenderer;
-	}
+        this.gradebookDetailsRenderer = gradebookDetailsRenderer;
+    }
 
-	public void setAsvEntityBeanLocator(EntityBeanLocator asvEntityBeanLocator) {
-		this.asvEntityBeanLocator = asvEntityBeanLocator;
-	}
+    public void setAsvEntityBeanLocator(EntityBeanLocator asvEntityBeanLocator) {
+        this.asvEntityBeanLocator = asvEntityBeanLocator;
+    }
 
-	public void setPermissionLogic(AssignmentPermissionLogic permissionLogic) {
-		this.permissionLogic = permissionLogic;
-	}
+    public void setPermissionLogic(AssignmentPermissionLogic permissionLogic) {
+        this.permissionLogic = permissionLogic;
+    }
 
-	public void setAttachmentInputEvolver(AttachmentInputEvolver attachmentInputEvolver)
-	{
-		this.attachmentInputEvolver = attachmentInputEvolver;
-	}
+    public void setAttachmentInputEvolver(AttachmentInputEvolver attachmentInputEvolver)
+    {
+        this.attachmentInputEvolver = attachmentInputEvolver;
+    }
 
-	public void setAssnCommentTextEvolver(TextInputEvolver assnCommentTextEvolver) {
-		this.assnCommentTextEvolver = assnCommentTextEvolver;
-	}
+    public void setAssnCommentTextEvolver(TextInputEvolver assnCommentTextEvolver) {
+        this.assnCommentTextEvolver = assnCommentTextEvolver;
+    }
 }
