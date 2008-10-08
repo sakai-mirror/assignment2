@@ -104,7 +104,7 @@ public interface AssignmentLogic {
 	 * @param assignmentIds - an array of Long assignment ids that are ordered in the
 	 * order that you would like the assignments in the site to appear. 
 	 */
-	public void setAssignmentSortIndexes(Long[] assignmentIds);
+	public void reorderAssignments(Long[] assignmentIds);
 	
 	/**
 	 * @param assignmentId

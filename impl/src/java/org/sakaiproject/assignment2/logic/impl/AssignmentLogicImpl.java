@@ -476,46 +476,76 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 		return viewableAssignments;
 	}
 	
-	public void setAssignmentSortIndexes(Long[] assignmentIds)
-	{
-		int numAssignsInSite = dao.countByProperties(Assignment2.class, 
-				new String[] {"contextId", "removed"}, new Object[]{externalLogic.getCurrentContextId(), false});
-		
-		if ((assignmentIds == null && numAssignsInSite > 0) ||
-				(assignmentIds != null && assignmentIds.length != numAssignsInSite)) {
-			throw new IllegalArgumentException("The length of the id list passed does not match the num assignments in the site");
-		}
-		
-		if (assignmentIds != null) {
-			String userId = externalLogic.getCurrentUserId();
-			//Assume array of longs is in correct order now
-			//so that the index of the array is the new 
-			//sort index
-			Set<Assignment2> assignSet = new HashSet<Assignment2>();
-			for (int i=0; i < assignmentIds.length; i++){
-				//get Assignment
-	    		Assignment2 assignment = getAssignmentById(assignmentIds[i]);
-	    		if (assignment != null){
-	    			//check if we need to update
-	    			if (assignment.getSortIndex() != i){
-	    				//update and save
-		    			assignment.setSortIndex(i);
-		    			assignment.setModifiedBy(userId);
-		    			assignment.setModifiedDate(new Date());
-		    			assignSet.add(assignment);
-		    			if(log.isDebugEnabled()) log.debug("Assignment " + assignment.getId() + " sort index changed to " + i);
-	    			}
-	    		}
-	    	}
-			try {
-				dao.saveMixedSet(new Set[]{assignSet});
-				if(log.isDebugEnabled()) log.debug("Reordered assignments saved. " + 
-						assignSet.size() + " assigns were updated");
-			} catch (HibernateOptimisticLockingFailureException holfe) {
-				if(log.isInfoEnabled()) log.info("An optimistic locking failure occurred while attempting to reorder the assignments");
-	            throw new StaleObjectModificationException("An optimistic locking failure occurred while attempting to reorder the assignments", holfe);
-			}
-		}
+	public void reorderAssignments(Long[] assignmentIds)
+	{	
+	    if (assignmentIds == null) {
+	        throw new IllegalArgumentException("Null list of assignmentIds passed to reorder.");
+	    }
+
+	    String currentContextId = externalLogic.getCurrentContextId();
+	    if (!permissionLogic.isCurrentUserAbleToEditAssignments(currentContextId)) {
+	        throw new SecurityException("Unauthorized user attempted to reorder assignments!");
+	    }
+
+	    List<Assignment2> allAssigns = dao.findByProperties(Assignment2.class, 
+	            new String[] {"contextId", "removed"}, new Object[]{externalLogic.getCurrentContextId(), false});
+	    List<Long> assignIdsInSite = new ArrayList<Long>();
+	    if (allAssigns != null) {
+	        for (Assignment2 assign : allAssigns) {
+	            assignIdsInSite.add(assign.getId());
+	        }
+	    }
+
+	    // throw the passed ids into a set to remove duplicates
+	    Set<Long> assignIdSet = new HashSet<Long>();
+	    for (int i = 0; i < assignmentIds.length; i++) {
+	        assignIdSet.add(assignmentIds[i]);
+	    }
+
+	    // check that there are an equal number in the passed list as there are
+	    // assignments in this site
+	    if (assignIdSet.size() != assignIdsInSite.size()) {
+	        throw new IllegalArgumentException("The number of unique assignment ids passed does not match the num assignments in the site");
+	    }
+
+	    // now make sure all of the passed ids actually exist
+	    for (int i = 0; i < assignmentIds.length; i++) {
+	        Long currId = (Long)assignmentIds[i];
+	        if (!assignIdsInSite.contains(currId)) {
+	            throw new IllegalArgumentException("The assignment id " + currId 
+	                    + " does not exist in site " + currentContextId);
+	        }
+	    }
+
+	    String userId = externalLogic.getCurrentUserId();
+	    //Assume array of longs is in correct order now
+	    //so that the index of the array is the new 
+	    //sort index
+	    Set<Assignment2> assignSet = new HashSet<Assignment2>();
+	    for (int i=0; i < assignmentIds.length; i++){
+	        //get Assignment
+	        Assignment2 assignment = getAssignmentById(assignmentIds[i]);
+	        if (assignment != null){
+	            //check if we need to update
+	            if (assignment.getSortIndex() != i){
+	                //update and save
+	                assignment.setSortIndex(i);
+	                assignment.setModifiedBy(userId);
+	                assignment.setModifiedDate(new Date());
+	                assignSet.add(assignment);
+	                if(log.isDebugEnabled()) log.debug("Assignment " + assignment.getId() + " sort index changed to " + i);
+	            }
+	        }
+	    }
+
+	    try {
+	        dao.saveMixedSet(new Set[]{assignSet});
+	        if(log.isDebugEnabled()) log.debug("Reordered assignments saved. " + 
+	                assignSet.size() + " assigns were updated");
+	    } catch (HibernateOptimisticLockingFailureException holfe) {
+	        if(log.isInfoEnabled()) log.info("An optimistic locking failure occurred while attempting to reorder the assignments");
+	        throw new StaleObjectModificationException("An optimistic locking failure occurred while attempting to reorder the assignments", holfe);
+	    }
 	}
 	
 	public int getStatusForAssignment(Assignment2 assignment) {

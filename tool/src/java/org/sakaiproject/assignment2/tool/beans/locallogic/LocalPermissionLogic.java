@@ -91,7 +91,7 @@ public class LocalPermissionLogic {
             return permissionLogic.isUserAbleToAccessInstructorView(contextId);
 
         } else if (ListReorderProducer.VIEW_ID.equals(viewId)) {
-            return permissionLogic.isUserAbleToAccessInstructorView(contextId);
+            return permissionLogic.isCurrentUserAbleToEditAssignments(contextId);
 
         } else if (AssignmentProducer.VIEW_ID.equals(viewId)) {
             return permissionLogic.isCurrentUserAbleToEditAssignments(contextId);

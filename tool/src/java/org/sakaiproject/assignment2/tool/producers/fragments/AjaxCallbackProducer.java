@@ -79,7 +79,7 @@ public class AjaxCallbackProducer implements ViewComponentProducer, ViewParamsRe
             for (int i=0; i < assignmentIdParam.length; i++){
                 assignmentIds[i] = Long.valueOf(assignmentIdParam[i]);
             }
-            assignmentLogic.setAssignmentSortIndexes(assignmentIds);
+            assignmentLogic.reorderAssignments(assignmentIds);
         } else if (params.removeAttachment != null && params.removeAttachment && params.refId != null && !params.refId.equals("")) {
             Set<String> set = new HashSet<String>();
             ToolSession session = sessionManager.getCurrentToolSession();
