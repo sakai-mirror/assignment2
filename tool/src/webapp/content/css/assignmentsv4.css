@@ -393,3 +393,15 @@ ul#assignmentList li.row div.overlay {
    ul#assignmentList li.row div.overlayMessage .success {
       background-color: #fff;
    }
+   
+   #override_settings_container ol {
+       margin:10px 0 0 20px;
+   }
+   
+   #override_settings_container label {
+       margin:0;
+   }
+   
+   #override_settings_container li {
+       margin-top: 5px;
+   }

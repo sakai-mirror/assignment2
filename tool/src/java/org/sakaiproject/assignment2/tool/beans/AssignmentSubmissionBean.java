@@ -58,7 +58,6 @@ public class AssignmentSubmissionBean {
     public String ASOTPKey;
     public String userId;
     public Boolean releaseFeedback;
-    public Boolean resubmitUntil;
 
     private TargettedMessageList messages;
     public void setMessages(TargettedMessageList messages) {
@@ -108,6 +107,10 @@ public class AssignmentSubmissionBean {
         this.overrideResubmissionSettings = overrideResubmissionSettings;
     }
 
+    private Boolean resubmitUntil;
+    public void setResubmitUntil(Boolean resubmitUntil) {
+        this.resubmitUntil = resubmitUntil;
+    }
 
     /*
      * STUDENT FUNCTIONS

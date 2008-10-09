@@ -119,11 +119,24 @@
                 <input id="override_settings" rsf:id="override_settings" type="checkbox" />
                 <label for="override_settings" rsf:id="msg=assignment2.assignment_grade.override_settings">Override assignment-level settings?</label>
                 <div id="override_settings_container">
-    				<span rsf:id="resubmission_text_1"></span>
-    				<select rsf:id="resubmission_additional">
-    				</select>
-    				<span rsF:id="msg=assignment2.assignment_grade.resubmission_text_2"> additional times by </span>
-    				<input rsf:id="accept_until:" />
+                    <fieldset>
+                        <ol>
+                            <li>
+                                <span rsf:id="resubmission_curr_submissions">This assignment has 2 submissions.</span>
+                            </li>
+                            <li>
+                                <label rsf:id="msg=assignment2.assignment_grade.resubmission_allow_number">Additional Allowed Submissions Blah</label>
+                                <select rsf:id="resubmission_additional"></select>
+                            </li>
+                            <li>
+                                <input id="require_accept_until" rsf:id="require_accept_until" type="checkbox" />
+                                <label for="require_accept_until" rsf:id="msg=assignment2.assignment_grade.resubmission_accept_until">Set Accept Until Date? Blah</label>
+                                <span id="accept_until_container">
+                                    <input id="accept_until" rsf:id="accept_until:" value="12/31/2007"/>
+                                </span>                      
+                            </li>
+                        </ol>
+                    </fieldset>
 				</div>
 			</li>
 			<li rsf:id="resubmit_no_change"></li>
@@ -193,6 +206,12 @@ jQuery(document).ready(function(){
         this.onclick = override_submission_settings;
     });
     override_submission_settings();
+    
+    //Init resubmission set accept until checkbox
+    jQuery("input[name='page-replace\:\:require_accept_until']").each(function(){
+        this.onclick = set_accept_until_on_submission_level;
+    });
+    set_accept_until_on_submission_level();
 });
 //]]>
 

@@ -282,31 +282,16 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
                             Boolean.TRUE, 500, 700, OTPKey));
         }
 
-        //set dateEvolver
-        dateEvolver.setStyle(FormatAwareDateInputEvolver.DATE_TIME_INPUT);
-
-        /**
-        UIBoundBoolean release_feedback = UIBoundBoolean.make(form, "release_feedback", "#{AssignmentSubmissionBean.releaseFeedback}", 
-        		assignmentSubmissionVersion.getFeedbackReleasedDate() != null);
-        UIMessage release_feedback_label = UIMessage.make(form, "release_feedback_label", "assignment2.assignment_grade.release_feedback");
-        UILabelTargetDecorator.targetLabel(release_feedback_label, release_feedback);
-         **/
-
-        //Assignment LEvel
-        //Integer assignment_num_submissions = 1;
-        //if (assignment != null && assignment.getNumSubmissionsAllowed() != null) {
-        //	assignment_num_submissions = assignment.getNumSubmissionsAllowed();
-        //}
-
-        //Submission Level
+        // Submission-Level resubmission settings
         Integer current_times_submitted_already = 0;
         if (as != null && as.getSubmissionHistorySet() != null) {
             current_times_submitted_already = submissionLogic.getNumSubmittedVersions(as.getUserId(), assignmentId);
         }
 
-        Boolean is_override = (as.getNumSubmissionsAllowed() != null);
+        boolean is_override = (as.getNumSubmissionsAllowed() != null);
         int numSubmissionsAllowed;
         Date resubmitUntil;
+        boolean is_require_accept_until = false;
 
         if (as.getNumSubmissionsAllowed() != null) {
             // this student already has an override, so use these settings
@@ -316,6 +301,15 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
             // otherwise, populate the fields with the assignment-level settings
             numSubmissionsAllowed = assignment.getNumSubmissionsAllowed();
             resubmitUntil = assignment.getAcceptUntilDate();
+        }
+        
+        // if resubmit is still null, throw the current date and time in there
+        // it will only show up if the user clicks the "Set accept until" checkbox
+        if (resubmitUntil == null) {
+            resubmitUntil = new Date();
+            is_require_accept_until = false;
+        } else {
+            is_require_accept_until = true;
         }
 
         as.setNumSubmissionsAllowed(numSubmissionsAllowed);
@@ -337,15 +331,26 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
             }
 
             //Output
-            UIMessage.make(form, "resubmission_text_1", "assignment2.assignment_grade.resubmission_text_1", 
-                    new Object[] { externalLogic.getUserDisplayName(params.userId), current_times_submitted_already});
+            String currSubmissionMsg = "assignment2.assignment_grade.resubmission_curr_submissions";
+            if (current_times_submitted_already == 1) {
+                currSubmissionMsg = "assignment2.assignment_grade.resubmission_curr_submissions_1";
+            }
+            
+            UIMessage.make(form, "resubmission_curr_submissions", currSubmissionMsg, 
+                    new Object[] { current_times_submitted_already});
+            
+            UIVerbatim.make(form, "addtl_sub_label", messageLocator.getMessage("assignment2.assignment_grade.resubmission_allow_number"));
 
             UISelect.make(form, "resubmission_additional", number_submissions_values, number_submissions_options, 
-                    asOTP + ".numSubmissionsAllowed", as.getNumSubmissionsAllowed().toString());
+                    asOTP + ".numSubmissionsAllowed", numSubmissionsAllowed + "");
+            
+            UIBoundBoolean require = UIBoundBoolean.make(form, "require_accept_until", "#{AssignmentSubmissionBean.resubmitUntil}", is_require_accept_until);
+            require.mustapply = true;
 
-            UIInput acceptUntilTimeField = UIInput.make(form, "accept_until:", asOTP + ".resubmitCloseDate");
-
-            dateEvolver.evolveDateInput(acceptUntilTimeField, as.getResubmitCloseDate());
+            UIInput acceptUntilDateField = UIInput.make(form, "accept_until:", asOTP + ".resubmitCloseDate");
+            //set dateEvolver
+            dateEvolver.setStyle(FormatAwareDateInputEvolver.DATE_TIME_INPUT);
+            dateEvolver.evolveDateInput(acceptUntilDateField, resubmitUntil);
         } else {
             // display text only representation
             String totalSubmissions = as.getNumSubmissionsAllowed().toString();
