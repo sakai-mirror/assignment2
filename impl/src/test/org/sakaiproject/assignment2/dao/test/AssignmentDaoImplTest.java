@@ -767,4 +767,40 @@ public class AssignmentDaoImplTest extends Assignment2DaoTestBase {
 			}
 		}
 	}
+	
+	public void testGetExistingSubmissionsForRemovedAssignments() {
+	    // try null params
+	    try {
+	        assignmentDao.getExistingSubmissionsForRemovedAssignments(null, AssignmentTestDataLoad.CONTEXT_ID);
+	        fail("did not catch null studentId passed to getExistingSubmissionsForRemovedAssignments");
+	    } catch (IllegalArgumentException iae) {}
+	    
+	    try {
+            assignmentDao.getExistingSubmissionsForRemovedAssignments(AssignmentTestDataLoad.STUDENT1_UID, null);
+            fail("did not catch null contextId passed to getExistingSubmissionsForRemovedAssignments");
+        } catch (IllegalArgumentException iae) {}
+        
+        // there should be none right now
+        Set<AssignmentSubmission> existingSubs = assignmentDao.getExistingSubmissionsForRemovedAssignments(AssignmentTestDataLoad.STUDENT1_UID, AssignmentTestDataLoad.CONTEXT_ID);
+        assertEquals(0, existingSubs.size());
+        
+        // let's remove some assignments!
+        testData.a1.setRemoved(true);
+        assignmentDao.update(testData.a1);
+        
+        testData.a3.setRemoved(true);
+        assignmentDao.update(testData.a3);
+        
+        // student 1 should have 2, student 2 should have 2, student 3 should have 1
+        existingSubs = assignmentDao.getExistingSubmissionsForRemovedAssignments(AssignmentTestDataLoad.STUDENT1_UID, AssignmentTestDataLoad.CONTEXT_ID);
+        assertEquals(2, existingSubs.size());
+        
+        existingSubs = assignmentDao.getExistingSubmissionsForRemovedAssignments(AssignmentTestDataLoad.STUDENT2_UID, AssignmentTestDataLoad.CONTEXT_ID);
+        assertEquals(2, existingSubs.size());
+        
+        existingSubs = assignmentDao.getExistingSubmissionsForRemovedAssignments(AssignmentTestDataLoad.STUDENT3_UID, AssignmentTestDataLoad.CONTEXT_ID);
+        assertEquals(1, existingSubs.size());
+        
+        
+	}
 }

@@ -1269,6 +1269,17 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			}
 		}
 		
+		// now let's add in any submissions that exist for assignments that were
+		// deleted
+		Set<AssignmentSubmission> subForRemovedAssigns = dao.getExistingSubmissionsForRemovedAssignments(currentUserId, currentContextId);
+		if (subForRemovedAssigns != null) {
+		    for (AssignmentSubmission submission : subForRemovedAssigns) {
+		        filterOutRestrictedInfo(submission, currentUserId, true);
+		    }
+		    
+		    userSubmissions.addAll(subForRemovedAssigns);
+		}
+		
 		// sort by completed, then by assignment sortIndex
 		Collections.sort(userSubmissions, new ComparatorsUtils.SubmissionCompletedSortOrderComparator());
 		

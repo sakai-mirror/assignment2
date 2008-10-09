@@ -678,6 +678,35 @@ public class AssignmentDaoImpl extends HibernateGeneralGenericDao implements Ass
 		return (Set<AssignmentSubmission>)getHibernateTemplate().execute(hc);
     }
     
+    public Set<AssignmentSubmission> getExistingSubmissionsForRemovedAssignments(final String studentId, final String contextId) {
+        if (studentId == null || contextId == null) {
+            throw new IllegalArgumentException("Null studentId of contextId passed to getExistingSubmissionsForRemovedAssignments. " +
+            		"studentId=" + studentId + " contextId=" + contextId);
+        }
+        
+        HibernateCallback hc = new HibernateCallback() {
+            public Object doInHibernate(Session session) throws HibernateException ,SQLException {
+
+                Set<AssignmentSubmission> submissionSet = new HashSet<AssignmentSubmission>();
+                Query query = session.getNamedQuery("findSubmissionsForRemovedAssignments"); 
+                query.setParameter("contextId", contextId);
+                query.setParameter("studentId", studentId);
+
+                List<AssignmentSubmission> submissionsList = query.list();
+
+                if (submissionsList != null) {
+                    // get rid of duplicates introduced by join
+                    submissionSet = new HashSet<AssignmentSubmission>(submissionsList);
+                }
+
+                return submissionSet;
+            }
+        };
+        
+        return (Set<AssignmentSubmission>)getHibernateTemplate().execute(hc);
+        
+    }
+    
     public void evictObject(Object obj) {
     	if (obj != null) {
     		getHibernateTemplate().evict(obj);

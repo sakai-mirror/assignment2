@@ -78,19 +78,19 @@ public class AssignmentTestDataLoad {
 	// Assignment 3 has 1 attachment and 0 groups
 	// Assignment 4 has 0 attachments and 1 group
 	
-	// Student 1
+	// Student 1 - has access to assign 1, 2, 3
 	//	A1: submission with 1 version
 	//  A2: no submission
 	//  A3: submission with 2 versions
 	//  A4: no submission
 	
-	// Student 2
+	// Student 2 - has access to assign 1, 2, 3, 4
 	//  A1: submission with 3 versions
 	//  A2: submission with no version
 	//  A3: submission with 1 version
 	//  A4: submission with 2 versions
 	
-	// Student 3
+	// Student 3 - has access to assign 2 and 3
 	//  A1: no submission
 	//  A2: no submission
 	//  A3: submission with 2 versions

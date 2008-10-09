@@ -206,6 +206,18 @@ public interface AssignmentDao extends GeneralGenericDao {
 	public Set<AssignmentSubmission> getSubmissionsForStudentWithVersionHistoryAndAttach(final String studentId, final Collection<Assignment2> assignmentList);
 	
 	/**
+	 * 
+	 * @param studentId
+	 * @param contextId
+	 * @return a set of AssignmentSubmissions for the given student for any removed
+	 * assignments in the given context. This is useful if an instructor deletes
+	 * an assignment after the student has already made a submission and the
+	 * student still needs access to that submission. Populates attachments, version 
+	 * history, and currentVersion
+	 */
+	public Set<AssignmentSubmission> getExistingSubmissionsForRemovedAssignments(final String studentId, final String contextId);
+	
+	/**
 	 * In the logic, some objects will be returned with
 	 * modified fields (that are not meant to be saved). For example, the feedback
 	 * for a student's submission version may not be released yet, so we do not want

@@ -321,8 +321,11 @@ public interface AssignmentSubmissionLogic {
 	 * @return Non-null list.  The AssignmentSubmissions for the current user
 	 * for all of the user's viewable assignments in the current site.
 	 * If no submission exists yet for an assignment that is available to the user, 
-	 * adds an empty AssigmentSubmission rec to the list for that assignment. Populates attachments
-	 * and version history. If feedback has not been released, does not populate
+	 * adds an empty AssigmentSubmission rec to the list for that assignment. 
+	 * If a submission exists for an assignment in this site that was deleted,
+	 * the submission is still returned (so the student can still access their work).
+	 * Populates attachments and version history. 
+	 * If feedback has not been released, does not populate
 	 * feedback-related information.  Because of these changes that we don't want 
 	 * to save, the returned submissions were evicted from the session and are not persistent.
 	 * Ordered by completed, then by the assignment sort order

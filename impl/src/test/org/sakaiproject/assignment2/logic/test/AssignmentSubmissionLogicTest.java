@@ -1373,5 +1373,24 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
 		assertEquals(testData.st2a4Submission.getId(), subList.get(1).getId());
 		assertEquals(testData.st2a1Submission.getId(), subList.get(2).getId());
 		assertEquals(testData.st2a3Submission.getId(), subList.get(3).getId());
+		
+		// now let's test the scenario where we remove an assignment
+		// should still return a submission if it exists but otherwise there
+		// will be no placeholder
+		externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
+		testData.a2 = assignmentLogic.getAssignmentById(testData.a2Id);
+		assignmentLogic.deleteAssignment(testData.a2);
+		
+		externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT1_UID);
+        subList = submissionLogic.getSubmissionsForCurrentUser();
+        assertEquals(2, subList.size());
+        
+        externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT2_UID);
+        subList = submissionLogic.getSubmissionsForCurrentUser();
+        assertEquals(4, subList.size());
+        
+        externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT3_UID);
+        subList = submissionLogic.getSubmissionsForCurrentUser();
+        assertEquals(1, subList.size());
 	}
 }

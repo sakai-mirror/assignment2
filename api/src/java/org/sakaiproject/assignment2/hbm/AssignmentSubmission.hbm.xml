@@ -117,5 +117,14 @@
              where submission.userId = :studentId and
              		submission.assignment in (:assignmentList)]]>
   	</query>
+  	<query name="findSubmissionsForRemovedAssignments">
+  	<![CDATA[from org.sakaiproject.assignment2.model.AssignmentSubmission submission
+    				 left join fetch submission.submissionHistorySet versions
+    				 left join fetch versions.feedbackAttachSet
+    				 left join fetch versions.submissionAttachSet
+             where submission.userId = :studentId and
+             		submission.assignment.contextId = :contextId and
+             		submission.assignment.removed = true]]>
+  	</query>
   	
 </hibernate-mapping>
