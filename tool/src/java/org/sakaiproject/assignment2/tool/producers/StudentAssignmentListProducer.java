@@ -21,6 +21,7 @@
 
 package org.sakaiproject.assignment2.tool.producers;
 
+import java.awt.Color;
 import java.text.DateFormat;
 import java.util.List;
 import java.util.Locale;
@@ -54,7 +55,10 @@ import uk.org.ponder.rsf.components.UILink;
 import uk.org.ponder.rsf.components.UIMessage;
 import uk.org.ponder.rsf.components.UIOutput;
 import uk.org.ponder.rsf.components.UIVerbatim;
+import uk.org.ponder.rsf.components.decorators.UIColourDecorator;
+import uk.org.ponder.rsf.components.decorators.UIDecorator;
 import uk.org.ponder.rsf.components.decorators.UIFreeAttributeDecorator;
+import uk.org.ponder.rsf.components.decorators.UIStyleDecorator;
 import uk.org.ponder.rsf.view.ComponentChecker;
 import uk.org.ponder.rsf.view.ViewComponentProducer;
 import uk.org.ponder.rsf.viewstate.ViewParameters;
@@ -180,9 +184,11 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
 
             //UIOutput.make(row, "assignment_row_open", df.format(assignment.getOpenDate()));
    
+            boolean assignmentCompleted = assignmentSubmission.isCompleted();
+            
             // Todo
             UIForm markTodoForm = UIForm.make(row, "todo-check-form");
-            UIBoundBoolean todoCheck = UIBoundBoolean.make(markTodoForm, "todo-checkbox", "MarkTodoBean.checkTodo", assignmentSubmission.isCompleted());
+            UIBoundBoolean todoCheck = UIBoundBoolean.make(markTodoForm, "todo-checkbox", "MarkTodoBean.checkTodo", assignmentCompleted);
             UICommand hiddenSubmit = UICommand.make(markTodoForm, "submit-button", "MarkTodoBean.markTodo");
             todoCheck.decorate(new UIFreeAttributeDecorator("onclick", "document.getElementById('"+hiddenSubmit.getFullID()+"').click()"));
             hiddenSubmit.addParameter(new UIELBinding("MarkTodoBean.assignmentId", assignment.getId()));
@@ -208,7 +214,21 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
              *    - shown for assignments 
              * 
              */
-            UIInternalLink.make(row, "assignment_link", assignment.getTitle(), 
+            
+            /*
+             * TODO FIXME I'm having major issues getting the CSS style to take
+             * effect here, so wer are creating this decorated color for now.
+             * If you pass null to the UIColourDecorator it doesn't do anything,
+             * so this lets us create a color to pass to each item that needs
+             * greyed out (or doesn't, in which case we just leave it null).
+             */
+            Color decoratedColor = assignmentCompleted ? Color.gray : null;
+            UIDecorator assnItemDecorator = new UIColourDecorator(decoratedColor, null);
+            
+            UIOutput.make(row, "assignment-title", assignment.getTitle())
+                    .decorate(assnItemDecorator);
+            
+            UIInternalLink.make(row, "assignment-action-link",  
                 new SimpleAssignmentViewParams(StudentSubmitProducer.VIEW_ID, assignment.getId()));
             
             for (AssignmentSubmissionVersion version: assignmentSubmission.getSubmissionHistorySet()) {
@@ -218,10 +238,10 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
             
             // Due date
             if (assignment.getDueDate() != null) {
-                UIOutput.make(row, "assignment_row_due", df.format(assignment.getDueDate()));
+                UIOutput.make(row, "assignment_row_due", df.format(assignment.getDueDate())).decorate(assnItemDecorator);
             } 
             else {
-                UIMessage.make(row, "assignment_row_due", "assignment2.student-assignment-list.no_due_date");
+                UIMessage.make(row, "assignment_row_due", "assignment2.student-assignment-list.no_due_date").decorate(assnItemDecorator);
             }
             
             /*
@@ -256,7 +276,7 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
              * Grade
              */
             if (!assignment.isGraded()) {
-                UIMessage.make(row, "grade", "assignment2.student-assignment-list.not-graded");
+                UIMessage.make(row, "grade", "assignment2.student-assignment-list.not-graded").decorate(assnItemDecorator);
             } else {
                 String grade = externalGradebookLogic.getStudentGradeForItem(
                         assignment.getContextId(), 
@@ -264,9 +284,9 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
                         assignment.getGradableObjectId());
                 
                 if (grade == null) {
-                    UIMessage.make(row, "grade", "assignment2.student-assignment-list.no-grade-yet");
+                    UIMessage.make(row, "grade", "assignment2.student-assignment-list.no-grade-yet").decorate(assnItemDecorator);
                 } else {
-                    UIOutput.make(row, "grade", grade);
+                    UIOutput.make(row, "grade", grade).decorate(assnItemDecorator);
                 }
                 
             }
