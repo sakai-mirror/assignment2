@@ -194,6 +194,16 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
             hiddenSubmit.addParameter(new UIELBinding("MarkTodoBean.assignmentId", assignment.getId()));
             
             /*
+             * TODO FIXME I'm having major issues getting the CSS style to take
+             * effect here, so wer are creating this decorated color for now.
+             * If you pass null to the UIColourDecorator it doesn't do anything,
+             * so this lets us create a color to pass to each item that needs
+             * greyed out (or doesn't, in which case we just leave it null).
+             */
+            Color decoratedColor = assignmentCompleted ? Color.gray : null;
+            UIDecorator assnItemDecorator = new UIColourDecorator(decoratedColor, null);
+            
+            /*
              * Title and Action Links
              * 
              * There are 4 options for the string on the action link:
@@ -213,28 +223,44 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
              * 4) View Submission / View Submissions
              *    - shown for assignments 
              * 
-             */
-            
-            /*
-             * TODO FIXME I'm having major issues getting the CSS style to take
-             * effect here, so wer are creating this decorated color for now.
-             * If you pass null to the UIColourDecorator it doesn't do anything,
-             * so this lets us create a color to pass to each item that needs
-             * greyed out (or doesn't, in which case we just leave it null).
-             */
-            Color decoratedColor = assignmentCompleted ? Color.gray : null;
-            UIDecorator assnItemDecorator = new UIColourDecorator(decoratedColor, null);
-            
+             */            
             UIOutput.make(row, "assignment-title", assignment.getTitle())
                     .decorate(assnItemDecorator);
             
-            UIInternalLink.make(row, "assignment-action-link",  
-                new SimpleAssignmentViewParams(StudentSubmitProducer.VIEW_ID, assignment.getId()));
+            boolean isOpenForSubmission = submissionLogic.submissionIsOpenForStudentForAssignment(
+                    assignmentSubmission.getUserId(), assignment.getId());
             
+            int numberOfRealSubmissions = 0;
             for (AssignmentSubmissionVersion version: assignmentSubmission.getSubmissionHistorySet()) {
-                System.out.println("VERSION: " + version.getSubmittedVersionNumber());
+                if (version.getSubmittedVersionNumber() > 0) {
+                    numberOfRealSubmissions++;
+                }
             }
             
+            String actionmsgkey;
+            // 1. View Details and Submit
+            if (isOpenForSubmission && numberOfRealSubmissions < 1) {
+                actionmsgkey = "assignment2.student-assignment-list.action.view-details-and-submit";
+            }
+            // 3. Resubmit
+            else if (isOpenForSubmission && numberOfRealSubmissions >= 1) {
+                actionmsgkey = "assignment2.student-assignment-list.action.view-details-and-resubmit";
+            }
+            // 4a View Submission
+            else if (numberOfRealSubmissions == 1) {
+                actionmsgkey = "assignment2.student-assignment-list.action.view-submission";
+            }
+            // 4b View Submissions
+            else if (numberOfRealSubmissions > 1) {
+                actionmsgkey = "assignment2.student-assignment-list.action.view-submissions";
+            }
+            // 2 View Details
+            else {
+                actionmsgkey = "assignment2.student-assignment-list.action.view-details";
+            }
+            
+            UIInternalLink.make(row, "assignment-action-link", UIMessage.make(actionmsgkey),  
+                new SimpleAssignmentViewParams(StudentSubmitProducer.VIEW_ID, assignment.getId()));
             
             // Due date
             if (assignment.getDueDate() != null) {
