@@ -41,6 +41,22 @@ import uk.org.ponder.rsf.components.UILink;
 import uk.org.ponder.rsf.components.UIMessage;
 import uk.org.ponder.rsf.components.UIOutput;
 
+/**
+ * Contains a number of convenience methods for rendering different kinds of
+ * Attachments (ie. Supporting Materials). Note that there are different methods
+ * to be used depending on whether the attachments are on an Assignment,
+ * Submission, Feedback, etc.
+ * 
+ * TODO FIXME I'm still not sure why some of these methods require a viewid.
+ * I'm guessing they might need to generate return URL's or something.
+ * It would be cool to have the option of passing null for the viewid, in 
+ * which case it would look it up in the context. But that would also allow
+ * you to script this in case you were generating markup for future events.
+ * 
+ * @author rjlowe
+ * @author sgithens
+ *
+ */
 public class AttachmentListRenderer {
     private static final Log LOG = LogFactory.getLog(AttachmentListRenderer.class);
 
@@ -48,7 +64,7 @@ public class AttachmentListRenderer {
     public void setContentHostingService(ContentHostingService contentHostingService) {
         this.contentHostingService = contentHostingService;
     }
-
+    
     private ExternalLogic externalLogic;
     public void setExternalLogic(ExternalLogic externalLogic) {
         this.externalLogic = externalLogic;
@@ -59,6 +75,15 @@ public class AttachmentListRenderer {
         this.assignment2EntityBeanLocator = assignment2EntityBeanLocator;
     }
 
+    /**
+     * Use this for rendering attachments from an Assignment2 assignment
+     * object. 
+     * 
+     * @param tofill
+     * @param divID
+     * @param currentViewID
+     * @param aaSet
+     */
     public void makeAttachmentFromAssignmentAttachmentSet(UIContainer tofill, String divID, String currentViewID, Set<AssignmentAttachment> aaSet) {
         Set<String> refSet = new HashSet<String>();
         if (aaSet != null){
