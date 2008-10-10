@@ -117,7 +117,7 @@
 							<input rsf:id="select_graded" id="select_graded" name="graded" type="radio" /> 
 							<label for="select_graded" rsf:id="select_graded_label">This assignment is graded</label>
 							<span rsf:id="msg=assignment2.assignment_add.gradebook_associated"> and is associated with a Gradebook Item:</span> 
-								<select rsf:id="gradebook_item">
+								<select rsf:id="gradebook_item" onchange="selectGraded()">
 									<option value="">Select a Gradebook Item</option>
 									<option value="GB Item 1">GB Item 1</option>
 									<option value="GB Item 2">GB Item 2</option>

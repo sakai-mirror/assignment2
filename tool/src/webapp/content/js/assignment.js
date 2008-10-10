@@ -41,18 +41,25 @@ function useValue(value){
    newValue = value;
 }
 function changeValue(){   
-	el = jQuery("select[name='page-replace\:\:gradebook_item-selection']").get(0);
-	if(el){
-      for(i=0;i<el.length;i++){
-         if(el.options[i].text == newValue){
-            el.selectedIndex = i;  
-         }
-      }
-   }
-   if (el.selectedIndex != 0){
-   	jQuery("input[type='radio'][value='false'][name='page-replace\:\:ungraded-selection']").get(0).checked=true;
-   }
+    el = jQuery("select[name='page-replace\:\:gradebook_item-selection']").get(0);
+    if(el){
+        for(i=0;i<el.length;i++){
+            if(el.options[i].text == newValue){
+                el.selectedIndex = i;  
+            }
+        }
+    }
 
+    selectGraded()
+}
+
+function selectGraded() {
+    el = jQuery("select[name='page-replace\:\:gradebook_item-selection']").get(0);
+    if (el.selectedIndex != 0){
+        jQuery("input[type='radio'][id='page-replace\:\:select_graded']").get(0).checked=true;
+    } else {
+        jQuery("input[type='radio'][id='page-replace\:\:select_ungraded']").get(0).checked=true;
+    }
 }
 
 
