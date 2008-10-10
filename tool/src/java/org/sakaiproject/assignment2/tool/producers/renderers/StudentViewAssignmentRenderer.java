@@ -90,12 +90,6 @@ public class StudentViewAssignmentRenderer {
     }
 
     // Dependency
-    private AttachmentListRenderer attachmentListRenderer;
-    public void setAttachmentListRenderer (AttachmentListRenderer attachmentListRenderer) {
-        this.attachmentListRenderer = attachmentListRenderer;
-    }
-
-    // Dependency
     private TextInputEvolver richTextEvolver;
     public void setRichTextEvolver(TextInputEvolver richTextEvolver) {
         this.richTextEvolver = richTextEvolver;
@@ -114,9 +108,15 @@ public class StudentViewAssignmentRenderer {
     }
     
     // Dependency
-    private AsnnSubmissionDetailsRenderer assnSubmissionDetailsRenderer;
-    public void setAssnSubmissionDetailsRenderer(AsnnSubmissionDetailsRenderer assnSubmissionDetailsRenderer) {
-        this.assnSubmissionDetailsRenderer = assnSubmissionDetailsRenderer;
+    private AsnnSubmissionDetailsRenderer asnnSubmissionDetailsRenderer;
+    public void setAsnnSubmissionDetailsRenderer(AsnnSubmissionDetailsRenderer asnnSubmissionDetailsRenderer) {
+        this.asnnSubmissionDetailsRenderer = asnnSubmissionDetailsRenderer;
+    }
+    
+    // Dependency
+    private AsnnInstructionsRenderer asnnInstructionsRenderer;
+    public void setAsnnInstructionsRenderer(AsnnInstructionsRenderer asnnInstructionsRenderer) {
+        this.asnnInstructionsRenderer = asnnInstructionsRenderer;
     }
 
     public void makeStudentView(UIContainer tofill, String divID, AssignmentSubmission assignmentSubmission, 
@@ -172,43 +172,9 @@ public class StudentViewAssignmentRenderer {
                     statusConstant);
         }
         
-        assnSubmissionDetailsRenderer.fillComponents(joint, "assignment-details:", assignmentSubmission);
+        asnnSubmissionDetailsRenderer.fillComponents(joint, "assignment-details:", assignmentSubmission);
         
-        /*
-         * Assignments Instructions
-         * 
-         * If there are no instructions show the "No Instructions... etc" 
-         * message.
-         * 
-         * If there are attachments render the supporting materials header and
-         * contents. Otherwise don't show any attachments stuff.
-         * 
-         * TODO FIXME At the moment there are ghost attachments showing up on
-         * all the assignments, I think is related to ASNN-204
-         * 
-         */
-        if (!preview && assignment.getInstructions() == null || assignment.getInstructions().equals("")) {
-            UIMessage.make(joint, "instructions", "assignment2.student-submit.no_instructions");
-        }
-        else {
-            UIVerbatim.make(joint, "instructions", assignment.getInstructions());
-        }
-
-        if (assignment.getAttachmentSet() != null && assignment.getAttachmentSet().size() > 0) {
-            UIMessage.make(joint, "attachments-header", "assignment2.student-submit.additional_resources");
-            
-            if (!preview) {
-                Set<AssignmentAttachment> attachments = (assignment != null) ? assignment.getAttachmentSet() : null;
-                //If this is not a preview, then we need to just display the attachment set from the Assignment2 object
-                attachmentListRenderer.makeAttachmentFromAssignmentAttachmentSet(joint, "attachment_list:", params.viewID, 
-                        attachments);
-            } 
-            else {
-                attachmentListRenderer.makeAttachmentFromAssignmentAttachmentSet(joint, "attachment_list:", params.viewID, assignment.getAttachmentSet());
-            }
-        }
-        
-
+        asnnInstructionsRenderer.fillComponents(joint, "assignment-instructions:", assignment);
 
         UIForm form = UIForm.make(joint, "form");
         UIOutput.make(form, "submission_instructions"); //Fill in with submission type specific instructions
