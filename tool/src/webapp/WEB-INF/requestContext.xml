@@ -27,6 +27,16 @@
   </bean>
 
 	<!-- Renderers -->
+    <bean id="AssnSubmissionDetailsRenderer" 
+        class="org.sakaiproject.assignment2.tool.producers.renderers.AsnnSubmissionDetailsRenderer">
+    	<property name="curContext" ref="sakai-Context"></property>
+    	<property name="currentUser" ref="sakai-User"></property>
+    	<property name="externalGradebookLogic" ref="org.sakaiproject.assignment2.logic.ExternalGradebookLogic"></property>
+    	<property name="locale" ref="requestLocale"></property>
+    	<property name="messageLocator" ref="messageLocator"></property>
+    	<property name="submissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic"></property>
+    </bean>	
+	
    <bean id="PagerRenderer" class="org.sakaiproject.assignment2.tool.producers.renderers.PagerRenderer">
       <property name="messageLocator" ref="messageLocator" />
    </bean>
@@ -47,12 +57,9 @@
       <property name="messageLocator" ref="messageLocator" />
       <property name="attachmentListRenderer" ref="AttachmentListRenderer" />
       <property name="richTextEvolver" ref="richTextEvolver" />
-      <property name="sessionManager" ref="org.sakaiproject.tool.api.SessionManager" />
       <property name="submissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
       <property name="attachmentInputEvolver" ref="AttachmentInputEvolver" />
-      <property name="currentUser" ref="sakai-User" />
-      <property name="externalGradebookLogic" ref="org.sakaiproject.assignment2.logic.ExternalGradebookLogic" />
-      <property name="curContext" ref="sakai-Context" />
+      <property name="assnSubmissionDetailsRenderer" ref="AssnSubmissionDetailsRenderer" />
    </bean>   
    <bean id="AttachmentInputEvolver" class="org.sakaiproject.assignment2.tool.producers.evolvers.AttachmentInputEvolver">
    	  <property name="contentHostingService" ref="org.sakaiproject.content.api.ContentHostingService" />
@@ -293,5 +300,6 @@
 
 	<!-- Validators -->
 	<bean id="Assignment2Validator" class="org.sakaiproject.assignment2.tool.beans.Assignment2Validator" />
+
 
 </beans>

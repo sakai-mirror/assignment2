@@ -24,7 +24,6 @@ package org.sakaiproject.assignment2.tool.producers.renderers;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.List;
@@ -33,12 +32,9 @@ import java.util.Locale;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
-import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
-import org.sakaiproject.assignment2.logic.GradebookItem;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentAttachment;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
-import org.sakaiproject.assignment2.model.SubmissionAttachment;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.assignment2.tool.params.FilePickerHelperViewParams;
@@ -47,9 +43,6 @@ import org.sakaiproject.assignment2.tool.producers.AddAttachmentHelperProducer;
 import org.sakaiproject.assignment2.tool.producers.StudentAssignmentListProducer;
 import org.sakaiproject.assignment2.tool.producers.fragments.FragmentViewSubmissionProducer;
 import org.sakaiproject.assignment2.tool.producers.evolvers.AttachmentInputEvolver;
-import org.sakaiproject.tool.api.SessionManager;
-import org.sakaiproject.tool.api.ToolSession;
-import org.sakaiproject.user.api.User;
 
 import uk.org.ponder.beanutil.entity.EntityBeanLocator;
 import uk.org.ponder.messageutil.MessageLocator;
@@ -63,7 +56,6 @@ import uk.org.ponder.rsf.components.UIInput;
 import uk.org.ponder.rsf.components.UIInputMany;
 import uk.org.ponder.rsf.components.UIInternalLink;
 import uk.org.ponder.rsf.components.UIJointContainer;
-import uk.org.ponder.rsf.components.decorators.UILabelTargetDecorator;
 import uk.org.ponder.rsf.components.UIMessage;
 import uk.org.ponder.rsf.components.UIOutput;
 import uk.org.ponder.rsf.components.UIVerbatim;
@@ -74,58 +66,57 @@ import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
 import uk.org.ponder.rsf.viewstate.ViewParameters;
 
 
+/**
+ * Renders the Students view of an assignments details and instructions, as well
+ * as completing the material and viewing previous submissions and feedback.
+ * 
+ * @author rjlowe
+ * @author sgithens
+ *
+ */
 public class StudentViewAssignmentRenderer {
     private static Log log = LogFactory.getLog(StudentViewAssignmentRenderer.class);
 
+    // Dependency
     private Locale locale;
     public void setLocale(Locale locale) {
         this.locale = locale;
     }
 
+    // Dependency
     private MessageLocator messageLocator;
     public void setMessageLocator(MessageLocator messageLocator) {
         this.messageLocator = messageLocator;
     }
 
+    // Dependency
     private AttachmentListRenderer attachmentListRenderer;
     public void setAttachmentListRenderer (AttachmentListRenderer attachmentListRenderer) {
         this.attachmentListRenderer = attachmentListRenderer;
     }
 
+    // Dependency
     private TextInputEvolver richTextEvolver;
     public void setRichTextEvolver(TextInputEvolver richTextEvolver) {
         this.richTextEvolver = richTextEvolver;
     }
 
-    private SessionManager sessionManager;
-    public void setSessionManager(SessionManager sessionManager) {
-        this.sessionManager = sessionManager;
-    }
-
+    // Dependency
     private AssignmentSubmissionLogic submissionLogic;
     public void setSubmissionLogic(AssignmentSubmissionLogic submissionLogic) {
         this.submissionLogic = submissionLogic;
     }
 
+    // Dependency
     private AttachmentInputEvolver attachmentInputEvolver;
     public void setAttachmentInputEvolver(AttachmentInputEvolver attachmentInputEvolver){
         this.attachmentInputEvolver = attachmentInputEvolver;
     }
     
-    private User currentUser;
-    public void setCurrentUser(User currentUser) {
-        this.currentUser = currentUser;
-    }
-    
-    private ExternalGradebookLogic externalGradebookLogic;
-    public void setExternalGradebookLogic(
-            ExternalGradebookLogic externalGradebookLogic) {
-        this.externalGradebookLogic = externalGradebookLogic;
-    }
-    
-    private String curContext;
-    public void setCurContext(String curContext) {
-        this.curContext = curContext;
+    // Dependency
+    private AsnnSubmissionDetailsRenderer assnSubmissionDetailsRenderer;
+    public void setAssnSubmissionDetailsRenderer(AsnnSubmissionDetailsRenderer assnSubmissionDetailsRenderer) {
+        this.assnSubmissionDetailsRenderer = assnSubmissionDetailsRenderer;
     }
 
     public void makeStudentView(UIContainer tofill, String divID, AssignmentSubmission assignmentSubmission, 
@@ -141,7 +132,6 @@ public class StudentViewAssignmentRenderer {
             UIMessage.make(tofill, "breadcrumb", "assignment2.student-assignment-list.heading");
         }
         
-        String title = (assignment != null) ? assignment.getTitle() : "";
         
         String asvOTP = "AssignmentSubmissionVersion.";
         String asvOTPKey = "";
@@ -181,113 +171,8 @@ public class StudentViewAssignmentRenderer {
                     "assignment2.student-submit.status." + 
                     statusConstant);
         }
-
-        /***
-         * Title and Due Date Information
-         */
-        UIMessage.make(joint, "heading_status", "assignment2.student-submit.heading_status", 
-                        new Object[]{ title, currentUser.getDisplayName() });
         
-        if (assignment.getDueDate() == null) {
-            UIMessage.make(joint, "due_date",
-                    "assignment2.student-submit.no_due_date");
-        }
-        else {
-            UIMessage.make(joint, "due_date",  
-                    "assignment2.student-submit.due_date", 
-                    new Object[] {df.format(assignment.getDueDate())});
-        }
-        
-        /***
-         * Assignment Details including:
-         *   - Graded?
-         *   - Points Possible
-         *   - Resubmissions Allowed
-         *   - Remaining Resubmissions Allowed
-         *   - Grade
-         *   - Comments
-         */
-        
-        // Graded?
-        if (assignment.isGraded()) {
-            UIMessage.make(joint, "is_graded", "assignment2.student-submit.yes_graded");
-        }
-        else {
-            UIMessage.make(joint, "is_graded", "assignment2.student-submit.no_graded");
-        }
-        
-        /*
-         * Points possible : Display if the assignment is 
-         *
-         *  1) graded 
-         *  2) associated with a gradebook item
-         *  3) gradebook entry type is "Points"
-         *  
-         *  TODO FIXME Needs checks for whether the graded item is point based 
-         *  (rather than percentage, pass/fail, etc). We are still working on 
-         *  the best way to integrate this with the gradebook a reasonable
-         *  amount of coupling.
-         */
-        if (assignment.isGraded() && assignment.getGradableObjectId() != null) {
-            try {
-                GradebookItem gradebookItem = 
-                    externalGradebookLogic.getGradebookItemById(curContext, 
-                            assignment.getGradableObjectId());
-                UIOutput.make(joint, "points-possible-row");
-                UIOutput.make(joint, "points-possible", gradebookItem.getPointsPossible().toString());      
-                
-                // Render the graded information if it's available.
-                String grade = externalGradebookLogic.getStudentGradeForItem(
-                        curContext, currentUser.getId(), assignment.getGradableObjectId());
-                if (grade != null) {
-                    UIOutput.make(joint, "grade-row");
-                    UIOutput.make(joint, "grade", grade);
-                }
-                
-                String comment = externalGradebookLogic.getStudentGradeCommentForItem(
-                        curContext, currentUser.getId(), assignment.getGradableObjectId());
-                
-                if (comment != null) {
-                    UIOutput.make(joint, "comment-row");
-                    UIOutput.make(joint, "comment", comment);
-                }
-                
-            } catch (IllegalArgumentException iae) {
-                log.warn("Trying to look up grade object that doesn't exist" 
-                        + "context: " + curContext 
-                        + " gradeObjectId: " + assignment.getGradableObjectId() 
-                        + "asnnId: " + assignment.getId());
-            }
-        }
-        
-        /*
-         * Resubmissions Allowed
-         */
-        if (!preview) {
-            boolean resubmissionsAllowed = submissionLogic.submissionIsOpenForStudentForAssignment(
-                    currentUser.getId(), assignment.getId());
-            if (resubmissionsAllowed) {
-                UIMessage.make(joint, "resubmissions-allowed", "assignment2.student-submit.resubmissions_allowed");
-            }
-            else {
-                UIMessage.make(joint, "resubmissions-allowed", "assignment2.student-submit.resubmissions_not_allowed");
-            }
-            
-            /*
-             * Remaining resubmissions allowed
-             */
-            if (resubmissionsAllowed) {
-                UIOutput.make(joint, "remaining-resubmissions-row");
-                int numSubmissionsAllowed = submissionLogic.getNumberOfRemainingSubmissionsForStudent(currentUser.getId(), assignment.getId());
-                String numAllowedDisplay;
-                if (numSubmissionsAllowed == AssignmentConstants.UNLIMITED_SUBMISSION) {
-                	numAllowedDisplay = messageLocator.getMessage("assignment2.indefinite_resubmit");
-                } else {
-                	numAllowedDisplay = "" + numSubmissionsAllowed;
-                }
-                UIOutput.make(joint, "remaining-resubmissions", numAllowedDisplay);
-            }
-        }
+        assnSubmissionDetailsRenderer.fillComponents(joint, "assignment-details:", assignmentSubmission);
         
         /*
          * Assignments Instructions
@@ -376,7 +261,7 @@ public class StudentViewAssignmentRenderer {
             UIOutput.make(joint, "honor_pledge_fieldset");
             UIMessage honor_pledge_label = UIMessage.make(joint, "honor_pledge_label", "assignment2.student-submit.honor_pledge_text");
             UIBoundBoolean honor_pledge_checkbox = UIBoundBoolean.make(form, "honor_pledge", "#{AssignmentSubmissionBean.honorPledge}");
-            UILabelTargetDecorator.targetLabel(honor_pledge_label, honor_pledge_checkbox);
+            //UILabelTargetDecorator.targetLabel(honor_pledge_label, honor_pledge_checkbox);
         }
 
 
