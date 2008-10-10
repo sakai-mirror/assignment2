@@ -270,4 +270,11 @@ public class ExternalLogicStub implements ExternalLogic {
 		return null;
 	}
 
+    public String getUrlForGradebookItemHelper(Long gradeableObjectId,
+            String gradebookItemName, String returnViewId)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
 }
