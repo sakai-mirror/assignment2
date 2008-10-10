@@ -149,7 +149,16 @@ function set_accept_until_on_submission_level(){
 function update_new_gb_item_helper_url() {
     var gbUrlWithoutName = jQuery("a[id='page-replace\:\:gradebook_url_without_name']").attr("href");
     var new_title = jQuery("input[name='page-replace\:\:title']").get(0).value
-    var modifiedUrl = gbUrlWithoutName + "&name=" + new_title;
+    
+    // encode unsafe characters that may be in the assignment title
+   
+    var escaped_title = "";
+    if (new_title) {
+        escaped_title = escape(new_title);
+    }
+    
+    var modifiedUrl = gbUrlWithoutName + "&name=" + escaped_title;
+    
     jQuery("a[id='page-replace\:\:gradebook_item_new_helper']").attr("href", modifiedUrl);
 }
 
