@@ -1,5 +1,59 @@
 <div>
 
+<div rsf:id="asnn2-submit-editor-widget:">
+	<form rsf:id="form" method="post">
+	<h3 rsf:id="msg=assignment2.student-submit.assignment_submission">Assignment Submission</h3>
+	<fieldset rsf:id="submit_text">
+		<legend rsf:id="msg=assignment2.student-submit.assignment_text">Assignment Text</legend>
+		<ol>
+			<li>
+				<label rsf:id="submission_instructions" class="block instruction">This assignment allows submissions using both the text box below and attached documents. Type your comments in the box below and use the Add Attachments button to include other documents. Save frequently while working.</label>
+				<div rsf:id="text:">
+					<textarea rsf:id="text_disabled" name="something" cols="80" rows="20" wrap="virtual"></textarea>
+					<!-- this should be the FCKEditor -->
+				</div>
+			</li>
+		</ol>
+	</fieldset>
+	<div rsf:id="submit_attachments">
+	<fieldset id="attachmentsFieldset">
+		<legend rsf:id="msg=assignment2.student-submit.attachments">Attachments</legend>
+		<ol class="fragment-attachments-container" rsf:id="attachment_list:">
+			<li></li>
+		</ol>
+		<ol>
+			<li>
+				<a rsf:id="add_submission_attachments" class="thickbox">Add Attachments</a>
+			</li>
+		</ol>
+	</fieldset>
+	</div>
+	<fieldset rsf:id="honor_pledge_fieldset" >
+		<legend rsf:id="msg=assignment2.student-submit.honor_pledge">Honor Pledge</legend>
+		<ol>
+			<li>
+				<fieldset>
+					<ol>
+						<li>
+							<span class="reqStar">*</span>
+							<input type="checkbox" rsf:id="honor_pledge" id="honor_pledge" />
+							<label for="honor_pledge" rsf:id="honor_pledge_label">I have neither given nor received aid on this assignment.</label>
+						</li>
+					</ol>
+				</fieldset>
+			</li>
+		</ol>
+	</fieldset>
+	<fieldset class="submit">
+		<input type="hidden" rsf:id="submitted_text_for_attach_only" />
+		<input rsf:id="submit_button" accesskey="s" type="submit" class="active" value="Submit"/>
+		<input rsf:id="preview_button" title="Preview Submission" accesskey="v" type="button" class="preview_button thickbox" value="Preview"/>
+		<input rsf:id="save_draft_button" accesskey="d" type="submit" value="Save Draft"/>
+		<input rsf:id="cancel_button" accesskey="x" type="submit" value="Cancel"/>
+	</fieldset>													
+	</form>	
+</div>
+
 <div rsf:id="assn2-assignment-instructions-widget:">
     <h4 rsf:id="msg=assignment2.student-submit.instructions_heading">Instructions</h4>
     <div rsf:id="instructions" class="textPanel"><p>Instructions would go here.</p></div>

@@ -38,35 +38,45 @@
     </bean>	
     
     <bean id="AsnnInstructionsRenderer"
-       class="org.sakaiproject.assignment2.tool.producers.renderers.AsnnInstructionsRenderer">
-       <property name="attachmentListRenderer" ref="AttachmentListRenderer"></property>
-       <property name="viewParameters" ref="viewParameters"></property>
+        class="org.sakaiproject.assignment2.tool.producers.renderers.AsnnInstructionsRenderer">
+        <property name="attachmentListRenderer" ref="AttachmentListRenderer"></property>
+        <property name="viewParameters" ref="viewParameters"></property>
+    </bean>
+    
+    <bean id="AsnnSubmitEditorRenderer"
+        class="org.sakaiproject.assignment2.tool.producers.renderers.AsnnSubmitEditorRenderer">
+        <property name="attachmentInputEvolver" ref="AttachmentInputEvolver" />
+        <property name="messageLocator" ref="messageLocator" />
+        <property name="richTextEvolver" ref="richTextEvolver"></property>
     </bean>
 	
    <bean id="PagerRenderer" class="org.sakaiproject.assignment2.tool.producers.renderers.PagerRenderer">
       <property name="messageLocator" ref="messageLocator" />
    </bean>
+   
    <bean id="SortHeaderRenderer" class="org.sakaiproject.assignment2.tool.producers.renderers.SortHeaderRenderer" />
    <bean id="AttachmentListRenderer" class="org.sakaiproject.assignment2.tool.producers.renderers.AttachmentListRenderer">
    	  <property name="contentHostingService" ref="org.sakaiproject.content.api.ContentHostingService" />
    	  <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
    	  <property name="assignment2EntityBeanLocator" ref="Assignment2"/>
    </bean>
+   
    <bean id="GradebookDetailsRenderer" class="org.sakaiproject.assignment2.tool.producers.renderers.GradebookDetailsRenderer">
       <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
       <property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
       <property name="permissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentPermissionLogic" />
       <property name="externalGradebookLogic" ref="org.sakaiproject.assignment2.logic.ExternalGradebookLogic" />
    </bean>
+   
    <bean id="StudentViewAssignmentRenderer" class="org.sakaiproject.assignment2.tool.producers.renderers.StudentViewAssignmentRenderer">
       <property name="locale" ref="requestLocale" />
       <property name="messageLocator" ref="messageLocator" />
-      <property name="richTextEvolver" ref="richTextEvolver" />
       <property name="submissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
-      <property name="attachmentInputEvolver" ref="AttachmentInputEvolver" />
       <property name="asnnSubmissionDetailsRenderer" ref="AsnnSubmissionDetailsRenderer" />
       <property name="asnnInstructionsRenderer" ref="AsnnInstructionsRenderer"></property>
+      <property name="asnnSubmitEditorRenderer" ref="AsnnSubmitEditorRenderer"></property>
    </bean>   
+   
    <bean id="AttachmentInputEvolver" class="org.sakaiproject.assignment2.tool.producers.evolvers.AttachmentInputEvolver">
    	  <property name="contentHostingService" ref="org.sakaiproject.content.api.ContentHostingService" />
    	  <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />

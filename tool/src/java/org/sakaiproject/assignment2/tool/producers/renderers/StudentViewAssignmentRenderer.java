@@ -90,21 +90,9 @@ public class StudentViewAssignmentRenderer {
     }
 
     // Dependency
-    private TextInputEvolver richTextEvolver;
-    public void setRichTextEvolver(TextInputEvolver richTextEvolver) {
-        this.richTextEvolver = richTextEvolver;
-    }
-
-    // Dependency
     private AssignmentSubmissionLogic submissionLogic;
     public void setSubmissionLogic(AssignmentSubmissionLogic submissionLogic) {
         this.submissionLogic = submissionLogic;
-    }
-
-    // Dependency
-    private AttachmentInputEvolver attachmentInputEvolver;
-    public void setAttachmentInputEvolver(AttachmentInputEvolver attachmentInputEvolver){
-        this.attachmentInputEvolver = attachmentInputEvolver;
     }
     
     // Dependency
@@ -119,8 +107,15 @@ public class StudentViewAssignmentRenderer {
         this.asnnInstructionsRenderer = asnnInstructionsRenderer;
     }
 
+    // Dependency
+    private AsnnSubmitEditorRenderer asnnSubmitEditorRenderer;
+    public void setAsnnSubmitEditorRenderer(AsnnSubmitEditorRenderer asnnSubmitEditorRenderer) {
+        this.asnnSubmitEditorRenderer = asnnSubmitEditorRenderer;
+    }
+    
     public void makeStudentView(UIContainer tofill, String divID, AssignmentSubmission assignmentSubmission, 
             Assignment2 assignment, ViewParameters params, String ASOTPKey, Boolean preview) {
+        System.out.println("THE STUDENT VIEW PASSED IN ASOTPKey: " + ASOTPKey);
         /**
          * Breadcrumbs
          */
@@ -133,15 +128,7 @@ public class StudentViewAssignmentRenderer {
         }
         
         
-        String asvOTP = "AssignmentSubmissionVersion.";
-        String asvOTPKey = "";
-        if (assignmentSubmission != null && assignmentSubmission.getCurrentSubmissionVersion() != null 
-                && assignmentSubmission.getCurrentSubmissionVersion().isDraft() == Boolean.TRUE) {
-            asvOTPKey += assignmentSubmission.getCurrentSubmissionVersion().getId();
-        } else {
-            asvOTPKey += EntityBeanLocator.NEW_PREFIX + "1";
-        }
-        asvOTP = asvOTP + asvOTPKey;
+        
 
 
         if (assignmentSubmission != null) {
@@ -155,11 +142,9 @@ public class StudentViewAssignmentRenderer {
         //For preview, get a decorated list of disabled="disabled"
         Map<String, String> disabledAttr = new HashMap<String, String>();
         disabledAttr.put("disabled", "disabled");
-        DecoratorList disabledDecoratorList = new DecoratorList(new UIFreeAttributeDecorator(disabledAttr));
 
         Map<String, String> disabledLinkAttr = new HashMap<String, String>();
         disabledLinkAttr.put("onclick", "return false;");
-        // DecoratorList disabledLinkDecoratorList = new DecoratorList(new UIFreeAttributeDecorator(disabledLinkAttr));
 
         // set the textual representation of the submission status
         String status = "";
@@ -175,61 +160,8 @@ public class StudentViewAssignmentRenderer {
         asnnSubmissionDetailsRenderer.fillComponents(joint, "assignment-details:", assignmentSubmission);
         
         asnnInstructionsRenderer.fillComponents(joint, "assignment-instructions:", assignment);
-
-        UIForm form = UIForm.make(joint, "form");
-        UIOutput.make(form, "submission_instructions"); //Fill in with submission type specific instructions
-        UIVerbatim.make(form, "instructions", messageLocator.getMessage("assignment2.student-submit.instructions"));
-
-        //Rich Text Input
-        if (assignment.getSubmissionType() == AssignmentConstants.SUBMIT_INLINE_ONLY || 
-                assignment.getSubmissionType() == AssignmentConstants.SUBMIT_INLINE_AND_ATTACH){
-
-            UIOutput.make(form, "submit_text");
-            UIInput text = UIInput.make(form, "text:", asvOTP + ".submittedText");
-            if (!preview) {
-                text.mustapply = Boolean.TRUE;
-                richTextEvolver.evolveTextInput(text);
-            } else {
-                //disable textarea
-
-                UIInput text_disabled = UIInput.make(form, "text_disabled",asvOTP + ".submittedText");
-                text_disabled.decorators = disabledDecoratorList;
-            }
-
-        }
-
-        //Attachment Stuff
-        if (assignment.getSubmissionType() == AssignmentConstants.SUBMIT_ATTACH_ONLY ||
-                assignment.getSubmissionType() == AssignmentConstants.SUBMIT_INLINE_AND_ATTACH){
-            UIOutput.make(form, "submit_attachments");
-
-            
-            if (!preview) {
-                //Attachments
-                UIInputMany attachmentInput = UIInputMany.make(form, "attachment_list:", asvOTP + ".submittedAttachmentRefs", 
-                        assignmentSubmission.getCurrentSubmissionVersion().getSubmittedAttachmentRefs());
-                attachmentInputEvolver.evolveAttachment(attachmentInput);
-
-                UIInternalLink.make(form, "add_submission_attachments", UIMessage.make("assignment2.student-submit.add_attachments"),
-                        new FilePickerHelperViewParams(AddAttachmentHelperProducer.VIEWID, Boolean.TRUE, 
-                                Boolean.TRUE, 500, 700, ASOTPKey));
-            }
-        }
-
-        // attachment only situations will not return any values in the OTP map; thus,
-        // we won't enter the processing loop in processActionSubmit (and nothing will be saved)
-        // this will force rsf to bind the otp mapping
-        if (assignment.getSubmissionType() == AssignmentConstants.SUBMIT_ATTACH_ONLY) {
-            UIInput.make(form, "submitted_text_for_attach_only", asvOTP + ".submittedText");
-        }
-
-        if (assignment.isHonorPledge()) {
-            UIOutput.make(joint, "honor_pledge_fieldset");
-            UIMessage honor_pledge_label = UIMessage.make(joint, "honor_pledge_label", "assignment2.student-submit.honor_pledge_text");
-            UIBoundBoolean honor_pledge_checkbox = UIBoundBoolean.make(form, "honor_pledge", "#{AssignmentSubmissionBean.honorPledge}");
-            //UILabelTargetDecorator.targetLabel(honor_pledge_label, honor_pledge_checkbox);
-        }
-
+        
+        asnnSubmitEditorRenderer.fillComponents(joint, "assignment-edit-submission:", assignmentSubmission, preview);
 
         //Begin Looping for previous submissions
         List<AssignmentSubmissionVersion> history = new ArrayList<AssignmentSubmissionVersion>();
@@ -242,41 +174,23 @@ public class StudentViewAssignmentRenderer {
                 continue;
             }
 
-            UIBranchContainer loop = UIBranchContainer.make(form, "previous_submissions:");
+            UIBranchContainer loop = UIBranchContainer.make(joint, "previous_submissions:");
             UIOutput.make(loop, "previous_date", (asv.getSubmittedDate() != null ? df.format(asv.getSubmittedDate()) : ""));
-            if (asvOTPKey.equals(asv.getId().toString())){
+//            if (asvOTPKey.equals(asv.getId().toString())){
                 //we are editing this version
-                UIMessage.make(loop, "current_version", "assignment2.student-submit.current_version");
-            } else {
+  //              UIMessage.make(loop, "current_version", "assignment2.student-submit.current_version");
+    //        } else {
                 //else add link to edit this submission
-                UIInternalLink.make(loop, "previous_link", 
-                        messageLocator.getMessage("assignment2.assignment_grade.view_submission"),
-                        new FragmentViewSubmissionViewParams(FragmentViewSubmissionProducer.VIEW_ID, asv.getId()));
-            }
+      //          UIInternalLink.make(loop, "previous_link", 
+        //                messageLocator.getMessage("assignment2.assignment_grade.view_submission"),
+        //                new FragmentViewSubmissionViewParams(FragmentViewSubmissionProducer.VIEW_ID, asv.getId()));
+         //   }
         }
         if (history == null || history.size() == 0) {
             //no history, add dialog
-            UIMessage.make(form, "no_history", "assignment2.student-submit.no_history");
+            UIMessage.make(joint, "no_history", "assignment2.student-submit.no_history");
         }
 
-        form.parameters.add( new UIELBinding("#{AssignmentSubmissionBean.ASOTPKey}", ASOTPKey));
-        form.parameters.add( new UIELBinding("#{AssignmentSubmissionBean.assignmentId}", assignment.getId()));
-
-        //Buttons
-        UICommand submit_button = UICommand.make(form, "submit_button", UIMessage.make("assignment2.student-submit.submit"), 
-        "#{AssignmentSubmissionBean.processActionSubmit}");
-        UICommand preview_button = UICommand.make(form, "preview_button", UIMessage.make("assignment2.student-submit.preview"), 
-        "#{AssignmentSubmissionBean.processActionPreview}");
-        UICommand save_button = UICommand.make(form, "save_draft_button", UIMessage.make("assignment2.student-submit.save_draft"), 
-        "#{AssignmentSubmissionBean.processActionSaveDraft}");
-        UICommand cancel_button = UICommand.make(form, "cancel_button", UIMessage.make("assignment2.student-submit.cancel"), 
-        "#{AssignmentSubmissionBean.processActionCancel}");
-
-        if (preview) {
-            submit_button.decorators = disabledDecoratorList;
-            preview_button.decorators = disabledDecoratorList;
-            save_button.decorators = disabledDecoratorList;
-            cancel_button.decorators = disabledDecoratorList;
-        }
+        
     }
 }
