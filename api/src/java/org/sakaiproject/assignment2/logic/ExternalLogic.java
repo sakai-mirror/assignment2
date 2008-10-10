@@ -166,6 +166,16 @@ public interface ExternalLogic {
     /**
      * 
      * @param gradeableObjectId
+     * @param gradebookItemName - the gradebook item name that you would like the helper
+     * to have automatically populated
+     * @param returnViewId
+     * @return url to the "create a gradebook item" helper.
+     */
+    public String getUrlForGradebookItemHelper(Long gradeableObjectId, String gradebookItemName, String returnViewId);
+    
+    /**
+     * 
+     * @param gradeableObjectId
      * @param userId
      * @param returnViewId
      * @return url to helper

@@ -333,10 +333,13 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
 
 
         //Links to gradebook Helper
-        String url = externalLogic.getUrlForGradebookItemHelper(null, FinishedHelperProducer.VIEWID);
+        String urlWithNameParam = externalLogic.getUrlForGradebookItemHelper(null, assignment.getTitle(), FinishedHelperProducer.VIEWID);
         UILink.make(form, "gradebook_item_new_helper",
                 UIMessage.make("assignment2.assignment_add.gradebook_item_new_helper"),
-                url);
+                urlWithNameParam);
+        // this link will be hidden and used as a base for adding the user-entered title as a param via javascript
+        String urlWithoutNameParam = externalLogic.getUrlForGradebookItemHelper(null, FinishedHelperProducer.VIEWID);
+        UILink.make(form, "gradebook_url_without_name", urlWithoutNameParam);
 
 
         /******

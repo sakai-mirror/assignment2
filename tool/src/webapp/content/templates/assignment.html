@@ -126,7 +126,9 @@
 								</select>
 								<p class="indent">
 									<span rsf:id="msg=assignment2.assignment_add.gradebook_or"> -or- </span>
-									<a rsf:id="gradebook_item_new_helper" class="thickbox">Create a new Gradebook Item</a>
+									<a rsf:id="gradebook_item_new_helper" id="gradebook_item_new_helper" class="thickbox" onclick="update_new_gb_item_helper_url();">Create a new Gradebook Item</a>
+									<!-- hidden anchor contains the ref to the gb helper without the name attr -->
+									<a rsf:id="gradebook_url_without_name" id="gradebook_url_without_name" style="display:none;"></a>
 								</p>
 						</li>
 					</ol>
