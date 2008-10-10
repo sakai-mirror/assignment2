@@ -55,6 +55,12 @@
     	<property name="attachmentListRenderer" ref="AttachmentListRenderer"></property>
     	<property name="viewParameters" ref="viewParameters"></property>
     </bean>
+    
+    <bean id="AsnnSubmissionHistoryRenderer"
+    	class="org.sakaiproject.assignment2.tool.producers.renderers.AsnnSubmissionHistoryRenderer">
+    	<property name="asnnSubmissionVersionRenderer" ref="AsnnSubmissionVersionRenderer" />
+    	<property name="submissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
+    </bean>
 	
    <bean id="PagerRenderer" class="org.sakaiproject.assignment2.tool.producers.renderers.PagerRenderer">
       <property name="messageLocator" ref="messageLocator" />
@@ -81,7 +87,7 @@
       <property name="asnnSubmissionDetailsRenderer" ref="AsnnSubmissionDetailsRenderer" />
       <property name="asnnInstructionsRenderer" ref="AsnnInstructionsRenderer"></property>
       <property name="asnnSubmitEditorRenderer" ref="AsnnSubmitEditorRenderer"></property>
-      <property name="asnnSubmissionVersionRenderer" ref="AsnnSubmissionVersionRenderer"></property>
+      <property name="asnnSubmissionHistoryRenderer" ref="AsnnSubmissionHistoryRenderer"></property>
       <property name="currentUser" ref="sakai-User"></property>
    </bean>   
    

@@ -1,5 +1,17 @@
 package org.sakaiproject.assignment2.tool.producers.renderers;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
+import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
+import org.sakaiproject.assignment2.model.AssignmentSubmission;
+import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
+
+import uk.org.ponder.rsf.components.UIContainer;
+import uk.org.ponder.rsf.components.UIJointContainer;
+import uk.org.ponder.rsf.producers.BasicProducer;
+
 /**
  * This renders the aggregated view of all the submissions from a student for
  * a particular assignment. It does this by using collapsable drop downs for 
@@ -14,6 +26,35 @@ package org.sakaiproject.assignment2.tool.producers.renderers;
  * @author sgithens
  *
  */
-public class AsnnSubmissionHistoryRenderer {
+public class AsnnSubmissionHistoryRenderer implements BasicProducer {
+    
+    // Dependency
+    private AsnnSubmissionVersionRenderer asnnSubmissionVersionRenderer;
+    public void setAsnnSubmissionVersionRenderer(AsnnSubmissionVersionRenderer asnnSubmissionVersionRenderer) {
+        this.asnnSubmissionVersionRenderer = asnnSubmissionVersionRenderer;
+    }
+    
+    // Dependency
+    private AssignmentSubmissionLogic submissionLogic;
+    public void setSubmissionLogic(AssignmentSubmissionLogic submissionLogic) {
+        this.submissionLogic = submissionLogic;
+    }
+
+    public void fillComponents(UIContainer parent, String clientID, AssignmentSubmission assignmentSubmission) {
+        UIJointContainer joint = new UIJointContainer(parent, clientID, "asnn2-submission-history-widget:");       
+        
+        List<AssignmentSubmissionVersion> versionHistory = new ArrayList<AssignmentSubmissionVersion>();
+        versionHistory = submissionLogic.getVersionHistoryForSubmission(assignmentSubmission);
+        
+        //TODO FIXME We'll have to think about the VERSION 0 logic here
+        for (AssignmentSubmissionVersion version: versionHistory) {
+            asnnSubmissionVersionRenderer.fillComponents(joint, 
+                    "submission-version:", version);
+        }
+    }
+    
+    public void fillComponents(UIContainer parent, String clientID) {
+        
+    }
 
 }

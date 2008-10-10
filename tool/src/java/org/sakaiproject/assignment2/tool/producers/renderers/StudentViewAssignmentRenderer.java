@@ -115,9 +115,9 @@ public class StudentViewAssignmentRenderer {
     }
     
     // Dependency
-    private AsnnSubmissionVersionRenderer asnnSubmissionVersionRenderer;
-    public void setAsnnSubmissionVersionRenderer(AsnnSubmissionVersionRenderer asnnSubmissionVersionRenderer) {
-        this.asnnSubmissionVersionRenderer = asnnSubmissionVersionRenderer;
+    private AsnnSubmissionHistoryRenderer asnnSubmissionHistoryRenderer;
+    public void setAsnnSubmissionHistoryRenderer(AsnnSubmissionHistoryRenderer asnnSubmissionHistoryRenderer) {
+        this.asnnSubmissionHistoryRenderer = asnnSubmissionHistoryRenderer;
     }
     
     // Dependency
@@ -170,6 +170,8 @@ public class StudentViewAssignmentRenderer {
         
         asnnInstructionsRenderer.fillComponents(joint, "assignment-instructions:", assignment);
         
+        // Submission History
+        asnnSubmissionHistoryRenderer.fillComponents(joint, "assignment-previous-submissions:", assignmentSubmission);
         
         if (submissionLogic.submissionIsOpenForStudentForAssignment(currentUser.getId(), assignment.getId())) {
             asnnSubmitEditorRenderer.fillComponents(joint, "assignment-edit-submission:", assignmentSubmission, preview);
