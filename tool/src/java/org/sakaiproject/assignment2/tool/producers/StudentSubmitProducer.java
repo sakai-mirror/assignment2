@@ -80,6 +80,21 @@ public class StudentSubmitProducer implements ViewComponentProducer, NavigationC
 
         studentViewAssignmentRenderer.makeStudentView(tofill, "portletBody:", assignmentSubmission, assignment, params, ASOTPKey, Boolean.FALSE); 
 
+        /* TODO FIXME Marking feedback as viewed. 
+         * For now we are doing this here. Eventually this is suppose to be
+         * Ajaxy and on a version by version basis. For now, marking them all
+         * in bulk when viewing a submission, in order to finish the student
+         * assignment list landing page.
+         */
+        /*
+        Set<AssignmentSubmissionVersion>versions = assignmentSubmission.getSubmissionHistorySet();
+        List<Long>versionIds = new ArrayList<Long>();
+        for (AssignmentSubmissionVersion version: versions) {
+            versionIds.add(version.getId());
+        }
+        submissionLogic.markFeedbackAsViewed(assignmentSubmission.getId(), versionIds);
+        */
+        
         //Initialize js otpkey
         UIVerbatim.make(tofill, "attachment-ajax-init", "otpkey=\"" + org.sakaiproject.util.Web.escapeUrl(ASOTPKey) + "\";\n");
 

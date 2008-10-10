@@ -90,20 +90,23 @@ public class Assignment2ViewParamsInterceptor implements ViewParamsInterceptor {
 
             //now do specific interceptions for student submission pages
             //Student always has same link, redirect here based on it being open or not
-            if (StudentSubmitProducer.VIEW_ID.equals(incoming.viewID) 
-                    || StudentSubmitSummaryProducer.VIEW_ID.equals(incoming.viewID)) {
+            // TODO FIXME This is being merged into one view. Come back
+            // and remove this after it works.
+            //if (StudentSubmitProducer.VIEW_ID.equals(incoming.viewID) 
+            //        || StudentSubmitSummaryProducer.VIEW_ID.equals(incoming.viewID)) {
 
                 /*
                  * This is responsible for going to different views depending on
                  * if the Student can submit still.
                  */
-                String trueDestinationViewID = localPermissionLogic.filterViewIdForStudentSubmission((SimpleAssignmentViewParams)incoming);
-                if (incoming.viewID.equals(trueDestinationViewID)) {
-                    return incoming;
-                } else {
-                    return new SimpleAssignmentViewParams(trueDestinationViewID, ((SimpleAssignmentViewParams)incoming).assignmentId);
-                }
-            }
+            //    String trueDestinationViewID = localPermissionLogic.filterViewIdForStudentSubmission((SimpleAssignmentViewParams)incoming);
+             //   if (incoming.viewID.equals(trueDestinationViewID)) {
+             //       return incoming;
+             //   } else {
+             //       return new SimpleAssignmentViewParams(trueDestinationViewID, ((SimpleAssignmentViewParams)incoming).assignmentId);
+             //   }
+            //    */
+           // }
 
             return incoming;
         } else if (localPermissionLogic.checkCurrentUserHasViewPermission(new AssignmentListSortViewParams(StudentAssignmentListProducer.VIEW_ID))) {

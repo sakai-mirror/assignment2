@@ -50,6 +50,13 @@ import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
 import uk.org.ponder.rsf.viewstate.ViewParameters;
 import uk.org.ponder.rsf.viewstate.ViewParamsReporter;
 
+/**
+ * TODO FIXME These are getting merged, remove this class when we're done.
+ * 
+ * @author rjlowe
+ * @author sgithens
+ *
+ */
 public class StudentSubmitSummaryProducer implements ViewComponentProducer, ViewParamsReporter {
 
     public static final String VIEW_ID = "student-submit-summary";
@@ -76,19 +83,6 @@ public class StudentSubmitSummaryProducer implements ViewComponentProducer, View
 
         AssignmentSubmission assignmentSubmission = 
             submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(params.assignmentId, externalLogic.getCurrentUserId());
-
-        /* TODO FIXME Marking feedback as viewed. 
-         * For now we are doing this here. Eventually this is suppose to be
-         * Ajaxy and on a version by version basis. For now, marking them all
-         * in bulk when viewing a submission, in order to finish the student
-         * assignment list landing page.
-         */
-        Set<AssignmentSubmissionVersion>versions = assignmentSubmission.getSubmissionHistorySet();
-        List<Long>versionIds = new ArrayList<Long>();
-        for (AssignmentSubmissionVersion version: versions) {
-            versionIds.add(version.getId());
-        }
-        submissionLogic.markFeedbackAsViewed(assignmentSubmission.getId(), versionIds);
         
         
         // set the textual representation of the submission status
@@ -101,28 +95,6 @@ public class StudentSubmitSummaryProducer implements ViewComponentProducer, View
                     "assignment2.assignment_grade-assignment.submission_status." + 
                     statusConstant);
         }
-
-        //Breadcrumbs
-        UIInternalLink.make(tofill, "breadcrumb", 
-                messageLocator.getMessage("assignment2.student-assignment-list.heading"),
-                new SimpleViewParameters(StudentAssignmentListProducer.VIEW_ID));
-        UIMessage.make(tofill, "last_breadcrumb", "assignment2.student-submit-summary.heading", new Object[] { assignment.getTitle() });
-
-        //Display Assignment Info
-        UIOutput.make(tofill, "header.title", assignment.getTitle());
-
-        UIOutput.make(tofill, "header.due_date", (assignment.getDueDate() != null ? df.format(assignment.getDueDate()) : ""));
-
-        UIOutput.make(tofill, "header.status", status);
-        UIOutput.make(tofill, "header.grade_scale", "Grade Scale from Gradebook");  //HERE
-        if (assignment.getModifiedDate() != null) {
-            UIOutput.make(tofill, "modified_by_header_row");
-            UIOutput.make(tofill, "header.modified_by", df.format(assignment.getModifiedDate()));
-        }
-        UIVerbatim.make(tofill, "instructions", assignment.getInstructions());
-
-        attachmentListRenderer.makeAttachmentFromAssignmentAttachmentSet(tofill, "attachment_list:", params.viewID, 
-                assignment.getAttachmentSet());
 
 
         //Begin Looping for previous submissions

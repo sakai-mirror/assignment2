@@ -208,9 +208,13 @@ public class LocalPermissionLogic {
      * Returns the View ID that a student should go to for an assignment, depending
      * on whether or not they can still turn in submissions for the assignment.
      * 
+     * TODO FIXME This is being merged into one view.  Come back and remove this
+     * commented out code once it works.
+     * 
      * @param incoming
      * @return
      */
+    /*
     public String filterViewIdForStudentSubmission(SimpleAssignmentViewParams incoming) {
         String userId = externalLogic.getCurrentUserId();
         if(submissionLogic.submissionIsOpenForStudentForAssignment(userId, incoming.assignmentId)){
@@ -219,5 +223,6 @@ public class LocalPermissionLogic {
             return StudentSubmitSummaryProducer.VIEW_ID;
         }
     }
+    */
 
 }

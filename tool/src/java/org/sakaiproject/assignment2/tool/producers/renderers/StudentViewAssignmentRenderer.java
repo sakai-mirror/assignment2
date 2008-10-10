@@ -43,6 +43,7 @@ import org.sakaiproject.assignment2.tool.producers.AddAttachmentHelperProducer;
 import org.sakaiproject.assignment2.tool.producers.StudentAssignmentListProducer;
 import org.sakaiproject.assignment2.tool.producers.fragments.FragmentViewSubmissionProducer;
 import org.sakaiproject.assignment2.tool.producers.evolvers.AttachmentInputEvolver;
+import org.sakaiproject.user.api.User;
 
 import uk.org.ponder.beanutil.entity.EntityBeanLocator;
 import uk.org.ponder.messageutil.MessageLocator;
@@ -113,6 +114,18 @@ public class StudentViewAssignmentRenderer {
         this.asnnSubmitEditorRenderer = asnnSubmitEditorRenderer;
     }
     
+    // Dependency
+    private AsnnSubmissionVersionRenderer asnnSubmissionVersionRenderer;
+    public void setAsnnSubmissionVersionRenderer(AsnnSubmissionVersionRenderer asnnSubmissionVersionRenderer) {
+        this.asnnSubmissionVersionRenderer = asnnSubmissionVersionRenderer;
+    }
+    
+    // Dependency
+    private User currentUser;
+    public void setCurrentUser(User currentUser) {
+        this.currentUser = currentUser;
+    }
+    
     public void makeStudentView(UIContainer tofill, String divID, AssignmentSubmission assignmentSubmission, 
             Assignment2 assignment, ViewParameters params, String ASOTPKey, Boolean preview) {
         System.out.println("THE STUDENT VIEW PASSED IN ASOTPKey: " + ASOTPKey);
@@ -126,10 +139,6 @@ public class StudentViewAssignmentRenderer {
         } else {
             UIMessage.make(tofill, "breadcrumb", "assignment2.student-assignment-list.heading");
         }
-        
-        
-        
-
 
         if (assignmentSubmission != null) {
             assignmentSubmission.setAssignment(assignment);
@@ -161,21 +170,25 @@ public class StudentViewAssignmentRenderer {
         
         asnnInstructionsRenderer.fillComponents(joint, "assignment-instructions:", assignment);
         
-        asnnSubmitEditorRenderer.fillComponents(joint, "assignment-edit-submission:", assignmentSubmission, preview);
-
-        //Begin Looping for previous submissions
-        List<AssignmentSubmissionVersion> history = new ArrayList<AssignmentSubmissionVersion>();
-        if (!preview) {
-            history = submissionLogic.getVersionHistoryForSubmission(assignmentSubmission);
+        
+        if (submissionLogic.submissionIsOpenForStudentForAssignment(currentUser.getId(), assignment.getId())) {
+            asnnSubmitEditorRenderer.fillComponents(joint, "assignment-edit-submission:", assignmentSubmission, preview);
         }
 
-        for (AssignmentSubmissionVersion asv : history){
-            if (asv.isDraft()) { 
-                continue;
-            }
+        //Begin Looping for previous submissions
 
-            UIBranchContainer loop = UIBranchContainer.make(joint, "previous_submissions:");
-            UIOutput.make(loop, "previous_date", (asv.getSubmittedDate() != null ? df.format(asv.getSubmittedDate()) : ""));
+  //      List<AssignmentSubmissionVersion> history = new ArrayList<AssignmentSubmissionVersion>();
+  //      if (!preview) {
+   //         history = submissionLogic.getVersionHistoryForSubmission(assignmentSubmission);
+   //     }
+
+   //     for (AssignmentSubmissionVersion asv : history){
+   //         if (asv.isDraft()) { 
+   //             continue;
+    //        }
+
+    //        UIBranchContainer loop = UIBranchContainer.make(joint, "previous_submissions:");
+     //       UIOutput.make(loop, "previous_date", (asv.getSubmittedDate() != null ? df.format(asv.getSubmittedDate()) : ""));
 //            if (asvOTPKey.equals(asv.getId().toString())){
                 //we are editing this version
   //              UIMessage.make(loop, "current_version", "assignment2.student-submit.current_version");
@@ -185,11 +198,11 @@ public class StudentViewAssignmentRenderer {
         //                messageLocator.getMessage("assignment2.assignment_grade.view_submission"),
         //                new FragmentViewSubmissionViewParams(FragmentViewSubmissionProducer.VIEW_ID, asv.getId()));
          //   }
-        }
-        if (history == null || history.size() == 0) {
+      //  }
+      //  if (history == null || history.size() == 0) {
             //no history, add dialog
-            UIMessage.make(joint, "no_history", "assignment2.student-submit.no_history");
-        }
+     //       UIMessage.make(joint, "no_history", "assignment2.student-submit.no_history");
+     //   }
 
         
     }

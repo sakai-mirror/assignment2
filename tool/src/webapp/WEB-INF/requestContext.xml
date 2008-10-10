@@ -49,6 +49,12 @@
         <property name="messageLocator" ref="messageLocator" />
         <property name="richTextEvolver" ref="richTextEvolver"></property>
     </bean>
+    
+    <bean id="AsnnSubmissionVersionRenderer"
+    	class="org.sakaiproject.assignment2.tool.producers.renderers.AsnnSubmissionVersionRenderer">
+    	<property name="attachmentListRenderer" ref="AttachmentListRenderer"></property>
+    	<property name="viewParameters" ref="viewParameters"></property>
+    </bean>
 	
    <bean id="PagerRenderer" class="org.sakaiproject.assignment2.tool.producers.renderers.PagerRenderer">
       <property name="messageLocator" ref="messageLocator" />
@@ -75,6 +81,8 @@
       <property name="asnnSubmissionDetailsRenderer" ref="AsnnSubmissionDetailsRenderer" />
       <property name="asnnInstructionsRenderer" ref="AsnnInstructionsRenderer"></property>
       <property name="asnnSubmitEditorRenderer" ref="AsnnSubmitEditorRenderer"></property>
+      <property name="asnnSubmissionVersionRenderer" ref="AsnnSubmissionVersionRenderer"></property>
+      <property name="currentUser" ref="sakai-User"></property>
    </bean>   
    
    <bean id="AttachmentInputEvolver" class="org.sakaiproject.assignment2.tool.producers.evolvers.AttachmentInputEvolver">
