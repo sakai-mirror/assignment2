@@ -227,6 +227,14 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
             UIOutput.make(row, "assignment-title", assignment.getTitle())
                     .decorate(assnItemDecorator);
             
+            /*
+             * If the assignment has been deleted, we are suppose to show this
+             * bit of text.
+             */
+            if (assignment.isRemoved()) {
+                UIMessage.make(row, "assignment-deleted", "assignment2.student-assignment-list.assignment-deleted");
+            }
+            
             boolean isOpenForSubmission = submissionLogic.submissionIsOpenForStudentForAssignment(
                     assignmentSubmission.getUserId(), assignment.getId());
             
