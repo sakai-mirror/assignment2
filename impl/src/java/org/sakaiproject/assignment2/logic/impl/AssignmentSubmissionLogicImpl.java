@@ -651,7 +651,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 
 		int numSubmissionsRemaining = 0;
 
-		if (assignment.isRequiresSubmission()) {
+		if (!assignment.isRemoved() && assignment.isRequiresSubmission()) {
 
 			// retrieve the submission history for this student for this assignment
 			AssignmentSubmission submission = dao.getSubmissionWithVersionHistoryForStudentAndAssignment(studentId, assignment);
