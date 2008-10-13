@@ -82,6 +82,7 @@ public class ListProducer implements ViewComponentProducer, NavigationCaseReport
     	DateFormat df = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, locale);
         //Edit Permission
         Boolean edit_perm = permissionLogic.isCurrentUserAbleToEditAssignments(externalLogic.getCurrentContextId());
+        String currUserId = externalLogic.getCurrentUserId();
         
     	List<Assignment2> entries = assignmentLogic.getViewableAssignments();
     	
@@ -163,7 +164,7 @@ public class ListProducer implements ViewComponentProducer, NavigationCaseReport
         	// Submitted/Total display
         	int total = 0;
         	int withSubmission = 0;
-        	List<String> viewableStudents = permissionLogic.getViewableStudentsForUserForItem(assignment);
+        	List<String> viewableStudents = permissionLogic.getViewableStudentsForUserForItem(currUserId, assignment);
         	if (viewableStudents != null) {
         		total = viewableStudents.size();
         		if (total > 0) {

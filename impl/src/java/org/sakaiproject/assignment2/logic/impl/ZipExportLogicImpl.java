@@ -8,7 +8,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -38,8 +37,6 @@ import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.exception.ServerOverloadException;
 import org.sakaiproject.exception.TypeException;
 import org.sakaiproject.user.api.User;
-import org.sakaiproject.util.FormattedText;
-import org.sakaiproject.util.StringUtil;
 import org.sakaiproject.util.Validator;
 
 public class ZipExportLogicImpl implements ZipExportLogic
@@ -128,7 +125,9 @@ public class ZipExportLogicImpl implements ZipExportLogic
 	{
 		String assignmentTitle = assignment.getTitle();
 		String contextId = externalLogic.getCurrentContextId();
-		List<String> viewableStudents = permissionLogic.getViewableStudentsForUserForItem(assignment);
+		String currUserId = externalLogic.getCurrentUserId();
+		
+		List<String> viewableStudents = permissionLogic.getViewableStudentsForUserForItem(currUserId, assignment);
 		Map<String, User> userIdUserMap = externalLogic.getUserIdUserMap(viewableStudents);
 
 		String formatWithTime = bundle.getString("assignment2.assignment_grade_assignment.downloadall.filename_date_format_with_time");
@@ -233,7 +232,7 @@ public class ZipExportLogicImpl implements ZipExportLogic
 								.append("\n");
 
 				// now iterate through all GRADABLE students in this class to create the grades file
-				List<String> gradableStudents = permissionLogic.getGradableStudentsForUserForItem(assignment);
+				List<String> gradableStudents = permissionLogic.getGradableStudentsForUserForItem(currUserId, assignment);
 				
 				if (gradableStudents != null && !gradableStudents.isEmpty()) {
 					// get the grade information

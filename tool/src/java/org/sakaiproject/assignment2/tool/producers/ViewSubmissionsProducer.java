@@ -200,7 +200,7 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
             UIBranchContainer row = UIBranchContainer.make(tofill, "row:");
 
             UIInternalLink.make(row, "row_grade_link",
-                    externalLogic.getUserFullName(as.getUserId()),
+                    externalLogic.getUserSortName(as.getUserId()),
                     new GradeViewParams(GradeProducer.VIEW_ID, as.getAssignment().getId(), as.getUserId()));
 
             if (as.getCurrentSubmissionVersion() != null && as.getCurrentSubmissionVersion().getSubmittedDate() != null){

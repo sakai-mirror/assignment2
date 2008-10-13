@@ -21,9 +21,10 @@
 
 package org.sakaiproject.assignment2.logic;
 
-import java.util.List;
 import java.util.Collection;
+import java.util.List;
 
+import org.sakaiproject.assignment2.exception.SubmissionNotFoundException;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentGroup;
 
@@ -97,22 +98,22 @@ public interface AssignmentPermissionLogic {
 	public boolean isUserAbleToAccessInstructorView(String contextId);
 	
 	/**
-	 * 
+	 * @param userId
 	 * @param assignment
 	 * @return a list of student ids that the current user is able to view
 	 * for the given assignment
 	 * @throws SecurityException if current user does not have grading privileges
 	 */
-	public List<String> getViewableStudentsForUserForItem(Assignment2 assignment);
+	public List<String> getViewableStudentsForUserForItem(String userId, Assignment2 assignment);
 	
 	/**
-	 * 
+	 * @param userId
 	 * @param assignment
 	 * @return a list of student ids that the current user is able to submit
 	 * feedback for on the given assignment
 	 * @throws SecurityException if current user does not have grading privileges
 	 */
-	public List<String> getGradableStudentsForUserForItem(Assignment2 assignment);
+	public List<String> getGradableStudentsForUserForItem(String userId, Assignment2 assignment);
 	
 	/**
 	 * 
@@ -149,4 +150,12 @@ public interface AssignmentPermissionLogic {
 	  * if user is TA but does not have grading privileges for an the assign's associated gb item
 	  */
 	 public boolean isUserAbleToViewAssignment(String contextId, Long assignmentId);
+	 
+	 /**
+	  * @param studentId
+	  * @param assignment
+	  * @return a list of the userIds of users who are able to view the given
+	  * student's submission(s) for the given assignment. does not include the student. 
+	  */
+	 public List<String> getUsersAllowedToViewStudentForAssignment(String studentId, Assignment2 assignment);
 }

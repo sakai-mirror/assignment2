@@ -88,15 +88,16 @@ public interface ExternalGradebookLogic {
 	
 	/**
 	 * Using the grader permissions, returns a map of all of the student ids of 
-	 * the students that the current user is allowed to view or grade
+	 * the students that the given user is allowed to view or grade
 	 * to the actual function (grade/view)
+	 * @param userId
 	 * @param contextId
 	 * @param gradableObjectId
 	 * @return
 	 * @throws SecurityException if the current user is not allowed to access student info for
 	 * the given gb item
 	 */
-	public Map<String, String> getViewableStudentsForGradedItemMap(String contextId, Long gradableObjectId);
+	public Map<String, String> getViewableStudentsForGradedItemMap(String userId, String contextId, Long gradableObjectId);
 	
 	/**
 	 * @param contextId
@@ -111,12 +112,28 @@ public interface ExternalGradebookLogic {
 	public boolean isCurrentUserAbleToGradeAll(String contextId);
 	
 	/**
+     * @param contextId
+     * @param userId
+     * @return true if the given user is authorized to grade all in gradebook
+     */
+    public boolean isUserAbleToGradeAll(String contextId, String userId);
+	
+	/**
 	 * @param contextId
 	 * @return true if the current user is authorized to grade in some 
 	 * capacity in the gradebook.  (ie they may grade all or grade
 	 * section)
 	 */
 	public boolean isCurrentUserAbleToGrade(String contextId);
+	
+	/**
+	 * 
+	 * @param contextId
+	 * @param userId
+	 * @return true if the given user is authorized to grade in some
+	 * capacity in the gradebook. (ie they may grade all or grade section)
+	 */
+	public boolean isUserAbleToGrade(String contextId, String userId);
 	
 	/**
 	 * @param contextId

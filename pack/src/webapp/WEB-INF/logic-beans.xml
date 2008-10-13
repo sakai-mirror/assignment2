@@ -85,17 +85,13 @@
 	</bean>
 
 	<bean id="org.sakaiproject.assignment2.logic.ScheduledNotification" class="org.sakaiproject.assignment2.logic.impl.ScheduledNotificationImpl">
-		<property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
-		<property name="siteService" ref="org.sakaiproject.site.api.SiteService" />
-		<property name="userDirectoryService" ref="org.sakaiproject.user.api.UserDirectoryService" />
 		<property name="emailService" ref="org.sakaiproject.email.api.EmailService" />
 		<property name="contentHostingService" ref="org.sakaiproject.content.api.ContentHostingService" />
-		<property name="securityService" ref="org.sakaiproject.authz.api.SecurityService" />
-		<property name="timeService" ref="org.sakaiproject.time.api.TimeService" />
 		<property name="serverConfigurationService" ref="org.sakaiproject.component.api.ServerConfigurationService" />
 		<property name="digestService" ref="org.sakaiproject.email.api.DigestService" />
 		<property name="assignmentBundleLogic" ref="org.sakaiproject.assignment2.logic.AssignmentBundleLogic" />
-		<property name="authzGroupService" ref="org.sakaiproject.authz.api.AuthzGroupService" />
+		<property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
+		<property name="assignmentPermissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentPermissionLogic" />
 	</bean>
 
 	<bean id="org.sakaiproject.assignment2.logic.ZipExportLogic" class="org.sakaiproject.assignment2.logic.impl.ZipExportLogicImpl">

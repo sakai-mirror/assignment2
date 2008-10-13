@@ -143,7 +143,7 @@ public interface AssignmentSubmissionLogic {
 	 * populate the submissionText or submissionAttachmentSet. Because of these 
 	 * changes that we don't want to save, the returned submissions were evicted 
 	 * from the session and are not persistent.
-	 * @throws SecurityException if not allowed to view or grade submissions
+	 * @throws SecurityException if not allowed to provide feedback for the given assignment
 	 * @throws AssignmentNotFoundException if no assignment exists with the given assignmentId
 	 */
 	public List<AssignmentSubmission> getViewableSubmissionsForAssignmentId(Long assignmentId);
@@ -158,7 +158,7 @@ public interface AssignmentSubmissionLogic {
 	 * populate the submissionText or submissionAttachmentSet. Because of these 
 	 * changes that we don't want to save, the returned submissions were evicted 
 	 * from the session and are not persistent.
-	 * @throws SecurityException if not allowed to view or grade submissions
+	 * @throws SecurityException if not allowed to provide feedback for the given assignment
 	 * @throws AssignmentNotFoundException if no assignment exists with the given assignmentId
 	 */
 	public List<AssignmentSubmission> getViewableSubmissionsWithHistoryForAssignmentId(Long assignmentId);

@@ -205,38 +205,35 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
     	return gradebookService.getViewableSectionUuidToNameMap(contextId);
     }
 
-    public Map<String, String> getViewableStudentsForGradedItemMap(String contextId, Long gradableObjectId) {
-    	if (contextId == null) {
-    		throw new IllegalArgumentException("Null contextId passed to getViewableGroupIdToTitleMap");
-    	}
-    	
-    	Map<String, String> studentIdAssnFunctionMap = new HashMap<String, String>();
+    public Map<String, String> getViewableStudentsForGradedItemMap(String userId, String contextId, Long gradableObjectId) {
+        if (contextId == null || userId == null) {
+            throw new IllegalArgumentException("Null contextId or userId passed to " +
+                    "getViewableGroupIdToTitleMap. contextId: " + contextId +
+                    " userId:" + userId);
+        }
 
-    	try {
-    		Map<String, String> studentIdGbFunctionMap = gradebookService.getViewableStudentsForItemForCurrentUser(contextId, gradableObjectId);
+        Map<String, String> studentIdAssnFunctionMap = new HashMap<String, String>();
 
 
-    		if (studentIdGbFunctionMap != null) {
-    			for (Map.Entry<String, String> entry : studentIdGbFunctionMap.entrySet()) {
-    				String studentId = entry.getKey();
-    				String function = entry.getValue();
-    				if (studentId != null && function != null) {
-    					if (function != null) {
-    						if (function.equals(GradebookService.gradePermission)) {
-    							studentIdAssnFunctionMap.put(studentId, AssignmentConstants.GRADE);
-    						} else {
-    							studentIdAssnFunctionMap.put(studentId, AssignmentConstants.VIEW);
-    						}
-    					}
-    				}
-    			}
-    		}
-    	} catch (SecurityException se) {
-    		throw new SecurityException("User is not authorized to retrieve student " +
-    				"list for gb item in context: " + contextId, se);
-    	}
-    	
-    	return studentIdAssnFunctionMap;
+        Map<String, String> studentIdGbFunctionMap = gradebookService.getViewableStudentsForItemForUser(userId, contextId, gradableObjectId);
+
+        if (studentIdGbFunctionMap != null) {
+            for (Map.Entry<String, String> entry : studentIdGbFunctionMap.entrySet()) {
+                String studentId = entry.getKey();
+                String function = entry.getValue();
+                if (studentId != null && function != null) {
+                    if (function != null) {
+                        if (function.equals(GradebookService.gradePermission)) {
+                            studentIdAssnFunctionMap.put(studentId, AssignmentConstants.GRADE);
+                        } else {
+                            studentIdAssnFunctionMap.put(studentId, AssignmentConstants.VIEW);
+                        }
+                    }
+                }
+            }
+        }
+
+        return studentIdAssnFunctionMap;
     }
     
     public boolean isCurrentUserAbleToEdit(String contextId) {
@@ -247,9 +244,17 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
     	return gradebookService.currentUserHasGradeAllPerm(contextId);
 	}
 	
+	public boolean isUserAbleToGradeAll(String contextId, String userId) {
+	    return gradebookService.isUserAllowedToGradeAll(contextId, userId); 
+	}
+	
 	public boolean isCurrentUserAbleToGrade(String contextId) {
     	return gradebookService.currentUserHasGradingPerm(contextId);
 	}
+	
+	public boolean isUserAbleToGrade(String contextId, String userId) {
+        return gradebookService.isUserAllowedToGrade(contextId, userId); 
+    }
 	
 	public boolean isCurrentUserAbleToViewOwnGrades(String contextId) {
     	return gradebookService.currentUserHasViewOwnGradesPerm(contextId);

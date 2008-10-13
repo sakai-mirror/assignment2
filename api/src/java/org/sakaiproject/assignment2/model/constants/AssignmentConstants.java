@@ -120,11 +120,7 @@ public class AssignmentConstants {
 	/**
 	 * Student made a submission but it was submitted after the due date
 	 */
-	public final static int SUBMISSION_LATE = 3;
-
-	// Security functions & locks
-	/** Security function giving the user permission to receive assignment submission email */
-	public static final String SECURE_ASSIGNMENT_RECEIVE_NOTIFICATIONS = "asn.receive.notifications";	
+	public final static int SUBMISSION_LATE = 3;	
 	
 	public static final String REFERENCE_ROOT = "asgn2";
 	public static final String ASSIGNMENT_TYPE = "a";

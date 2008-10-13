@@ -460,134 +460,130 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
    }
    
    public void testGetViewableStudentsForUserForItem() {
+       // try a null userI
+       try {
+           permissionLogic.getViewableStudentsForUserForItem(null, testData.a1);
+           fail("did not catch null assignment passed to getViewableStudentsForUserForItem");
+       } catch(IllegalArgumentException iae) {}
+       
 	   // try a null assignment
 	   try {
-		   permissionLogic.getViewableStudentsForUserForItem(null);
+		   permissionLogic.getViewableStudentsForUserForItem(AssignmentTestDataLoad.STUDENT1_UID, null);
 		   fail("did not catch null assignment passed to getViewableStudentsForUserForItem");
 	   } catch(IllegalArgumentException iae) {}
 	   
-	   // this method should throw a securityException if a student calls it
-	   externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT1_UID);
-	   try {
-		   permissionLogic.getViewableStudentsForUserForItem(testData.a1);
-		   fail("User without grading privileges was able to access getViewableStudentsForUserForItem!!");
-	   } catch (SecurityException se) {}
+	   // this method should return 0 if a student calls it
+
+	   List<String> viewableStudents = permissionLogic.getViewableStudentsForUserForItem(AssignmentTestDataLoad.STUDENT1_UID, testData.a1);
+	   assertEquals(0, viewableStudents.size());
 	   
 	   // Let's start with an ungraded item
-	   externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
 	   // instructor should get all students who have the assignment
 	   // a1 is restricted to groups, so will return all students in those groups
-	   List<String> viewableStudents = permissionLogic.getViewableStudentsForUserForItem(testData.a1);
-	   assertTrue(viewableStudents.size() == 2);
+	   viewableStudents = permissionLogic.getViewableStudentsForUserForItem(AssignmentTestDataLoad.INSTRUCTOR_UID, testData.a1);
+	   assertEquals(2, viewableStudents.size());
 	   // this one is not restricted
-	   viewableStudents = permissionLogic.getViewableStudentsForUserForItem(testData.a2);
-	   assertTrue(viewableStudents.size() == 3);
+	   viewableStudents = permissionLogic.getViewableStudentsForUserForItem(AssignmentTestDataLoad.INSTRUCTOR_UID, testData.a2);
+	   assertEquals(3, viewableStudents.size());
 	   
 	   // the ta should have restrictions on a1
-	   externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
 	   // should only get student 1 b/c may only see students in his/her section
-	   viewableStudents = permissionLogic.getViewableStudentsForUserForItem(testData.a1);
-	   assertTrue(viewableStudents.size() == 1);
+	   viewableStudents = permissionLogic.getViewableStudentsForUserForItem(AssignmentTestDataLoad.TA_UID, testData.a1);
+	   assertEquals(1, viewableStudents.size());
 	   // should still get 1 for a2
-	   viewableStudents = permissionLogic.getViewableStudentsForUserForItem(testData.a2);
-	   assertTrue(viewableStudents.size() == 1);
+	   viewableStudents = permissionLogic.getViewableStudentsForUserForItem(AssignmentTestDataLoad.TA_UID, testData.a2);
+	   assertEquals(1, viewableStudents.size());
 	   // let's add a group restriction to a2 and make sure no students are returned
 	   AssignmentGroup groupFora2 = new AssignmentGroup(testData.a2, AssignmentTestDataLoad.GROUP3_NAME);
 	   dao.save(groupFora2);
 	   // shouldn't get any student back now
-	   viewableStudents = permissionLogic.getViewableStudentsForUserForItem(testData.a2);
-	   assertTrue(viewableStudents.isEmpty());
+	   viewableStudents = permissionLogic.getViewableStudentsForUserForItem(AssignmentTestDataLoad.TA_UID, testData.a2);
+	   assertEquals(0, viewableStudents.size());
 	   
 	   // now we will consider a graded item
 	   // switch back to instructor
-	   externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
 	   // a3 is not restricted, so will return all students
-	   viewableStudents = permissionLogic.getViewableStudentsForUserForItem(testData.a3);
-	   assertTrue(viewableStudents.size() == 3);
+	   viewableStudents = permissionLogic.getViewableStudentsForUserForItem(AssignmentTestDataLoad.INSTRUCTOR_UID, testData.a3);
+	   assertEquals(3, viewableStudents.size());
 	   // a4 is restricted to group 3
-	   viewableStudents = permissionLogic.getViewableStudentsForUserForItem(testData.a4);
-	   assertTrue(viewableStudents.size() == 1);
+	   viewableStudents = permissionLogic.getViewableStudentsForUserForItem(AssignmentTestDataLoad.INSTRUCTOR_UID, testData.a4);
+	   assertEquals(1, viewableStudents.size());
 	   
 	   // now switch to the ta
 	   // TODO - GRADER PERMISSIONS!!
-	   externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
 	   // a3 should return all students in ta's sections
-	   viewableStudents = permissionLogic.getViewableStudentsForUserForItem(testData.a3);
-	   assertTrue(viewableStudents.size() == 1);
+	   viewableStudents = permissionLogic.getViewableStudentsForUserForItem(AssignmentTestDataLoad.TA_UID, testData.a3);
+	   assertEquals(1, viewableStudents.size());
 	   // a4 should not return any
-	   viewableStudents = permissionLogic.getViewableStudentsForUserForItem(testData.a4);
+	   viewableStudents = permissionLogic.getViewableStudentsForUserForItem(AssignmentTestDataLoad.TA_UID, testData.a4);
 	   assertTrue(viewableStudents.isEmpty());
    }
    
    public void testGetGradableStudentsForUserForItem() {
+       // try passing a null userId
+       try {
+           permissionLogic.getGradableStudentsForUserForItem(null, testData.a1);
+           fail("did not catch null userId passed to getGradableStudentsForUserForItem");
+       } catch(IllegalArgumentException iae) {}
+       
 	   // try passing a null assignment
 	   try {
-		   permissionLogic.getGradableStudentsForUserForItem(null);
+		   permissionLogic.getGradableStudentsForUserForItem(AssignmentTestDataLoad.STUDENT1_UID, null);
 		   fail("did not catch null assignment passed to getGradableStudentsForUserForItem");
 	   } catch(IllegalArgumentException iae) {}
 	   
-	   // this method should throw a securityException if a student calls it
-	   externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT1_UID);
-	   try {
-		   permissionLogic.getGradableStudentsForUserForItem(testData.a1);
-		   fail("User without grading privileges was able to access getGradableStudentsForUserForItem!!");
-	   } catch (SecurityException se) {}
+	   // this method should return 0 if a student calls it
+
+	   List<String> gradableStudents = permissionLogic.getGradableStudentsForUserForItem(AssignmentTestDataLoad.STUDENT1_UID, testData.a1);
+	   assertEquals(0, gradableStudents.size());
 	   
 	   // this method is exactly the same as getViewableStudentsForItem except
 	   // if there are grader permission involved. this allows the instructor
 	   // to restrict ta's to view-only instead of view and grade
-	   // TODO - we must integrate grader permissions for this test to be accurate!
-	// try a null assignment
-	   try {
-		   permissionLogic.getGradableStudentsForUserForItem(null);
-		   fail("did not catch null assignment passed to getViewableStudentsForUserForItem");
-	   } catch(IllegalArgumentException iae) {}
-	   
+	   // TODO - we must integrate grader permissions for this test to be accurate   
 	   
 	   // Let's start with an ungraded item
-	   externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
+
 	   // instructor should get all students who have the assignment
 	   // a1 is restricted to groups, so will return all students in those groups
-	   List<String> gradableStudents = permissionLogic.getGradableStudentsForUserForItem(testData.a1);
-	   assertTrue(gradableStudents.size() == 2);
+	   gradableStudents = permissionLogic.getGradableStudentsForUserForItem(AssignmentTestDataLoad.INSTRUCTOR_UID, testData.a1);
+	   assertEquals(2, gradableStudents.size());
 	   // this one is not restricted
-	   gradableStudents = permissionLogic.getGradableStudentsForUserForItem(testData.a2);
-	   assertTrue(gradableStudents.size() == 3);
+	   gradableStudents = permissionLogic.getGradableStudentsForUserForItem(AssignmentTestDataLoad.INSTRUCTOR_UID, testData.a2);
+	   assertEquals(3, gradableStudents.size());
 	   
 	   // the ta should have restrictions on a1
-	   externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
 	   // should only get student 1 b/c may only see students in his/her section
-	   gradableStudents = permissionLogic.getGradableStudentsForUserForItem(testData.a1);
-	   assertTrue(gradableStudents.size() == 1);
+	   gradableStudents = permissionLogic.getGradableStudentsForUserForItem(AssignmentTestDataLoad.TA_UID, testData.a1);
+	   assertEquals(1, gradableStudents.size());
 	   // should still get 1 for a2
-	   gradableStudents = permissionLogic.getGradableStudentsForUserForItem(testData.a2);
-	   assertTrue(gradableStudents.size() == 1);
+	   gradableStudents = permissionLogic.getGradableStudentsForUserForItem(AssignmentTestDataLoad.TA_UID, testData.a2);
+	   assertEquals(1, gradableStudents.size());
 	   // let's add a group restriction to a2 and make sure no students are returned
 	   AssignmentGroup groupFora2 = new AssignmentGroup(testData.a2, AssignmentTestDataLoad.GROUP3_NAME);
 	   dao.save(groupFora2);
 	   // shouldn't get any student back now
-	   gradableStudents = permissionLogic.getGradableStudentsForUserForItem(testData.a2);
-	   assertTrue(gradableStudents.isEmpty());
+	   gradableStudents = permissionLogic.getGradableStudentsForUserForItem(AssignmentTestDataLoad.TA_UID, testData.a2);
+	   assertEquals(0, gradableStudents.size());
 	   
 	   // now we will consider a graded item
 	   // switch back to instructor
-	   externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
 	   // a3 is not restricted, so will return all students
-	   gradableStudents = permissionLogic.getGradableStudentsForUserForItem(testData.a3);
-	   assertTrue(gradableStudents.size() == 3);
+	   gradableStudents = permissionLogic.getGradableStudentsForUserForItem(AssignmentTestDataLoad.INSTRUCTOR_UID, testData.a3);
+	   assertEquals(3, gradableStudents.size());
 	   // a4 is restricted to group 3
-	   gradableStudents = permissionLogic.getGradableStudentsForUserForItem(testData.a4);
-	   assertTrue(gradableStudents.size() == 1);
+	   gradableStudents = permissionLogic.getGradableStudentsForUserForItem(AssignmentTestDataLoad.INSTRUCTOR_UID, testData.a4);
+	   assertEquals(1, gradableStudents.size());
 	   
 	   // now switch to the ta
 	   // TODO - GRADER PERMISSIONS!!
-	   externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
+
 	   // a3 should return all students in ta's sections
-	   gradableStudents = permissionLogic.getGradableStudentsForUserForItem(testData.a3);
-	   assertTrue(gradableStudents.size() == 1);
+	   gradableStudents = permissionLogic.getGradableStudentsForUserForItem(AssignmentTestDataLoad.TA_UID, testData.a3);
+	   assertEquals(1, gradableStudents.size());
 	   // a4 should not return any
-	   gradableStudents = permissionLogic.getGradableStudentsForUserForItem(testData.a4);
-	   assertTrue(gradableStudents.isEmpty());
+	   gradableStudents = permissionLogic.getGradableStudentsForUserForItem(AssignmentTestDataLoad.TA_UID, testData.a4);
+	   assertEquals(0, gradableStudents.size());
    }
    
    public void testIsUserAbleToMakeSubmissionForAssignment() {
@@ -686,5 +682,57 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
 	   
 	   // try a bogus context
 	   assertFalse(permissionLogic.isCurrentUserAbleToSubmit(AssignmentTestDataLoad.BAD_CONTEXT));
+   }
+   
+   public void testGetUsersAllowedToViewStudentForAssignment() {
+       // try some null params
+       try {
+           permissionLogic.getUsersAllowedToViewStudentForAssignment(null, testData.a1);
+           fail("Did not catch null studentId passed to getUsersAllowedToViewStudentForAssignment");
+       } catch (IllegalArgumentException iae) {}
+       
+       try {
+           permissionLogic.getUsersAllowedToViewStudentForAssignment(AssignmentTestDataLoad.TA_UID, null);
+           fail("Did not catch null assignment passed to getUsersAllowedToViewStudentForAssignment");
+       } catch (IllegalArgumentException iae) {}
+       
+       // instructor and ta passed as a student should return nothing
+       List<String> usersAllowedToView = permissionLogic.getUsersAllowedToViewStudentForAssignment(AssignmentTestDataLoad.INSTRUCTOR_UID, testData.a1);
+       assertEquals(0, usersAllowedToView.size());
+       
+       usersAllowedToView = permissionLogic.getUsersAllowedToViewStudentForAssignment(AssignmentTestDataLoad.TA_UID, testData.a1);
+       assertEquals(0, usersAllowedToView.size());
+       
+       // ta only has access to group 1 - student1
+       // STUDENT 1 should have inst and ta
+       usersAllowedToView = permissionLogic.getUsersAllowedToViewStudentForAssignment(AssignmentTestDataLoad.STUDENT1_UID, testData.a1);
+       assertEquals(2, usersAllowedToView.size());
+       assertTrue(usersAllowedToView.contains(AssignmentTestDataLoad.TA_UID));
+       assertTrue(usersAllowedToView.contains(AssignmentTestDataLoad.INSTRUCTOR_UID));
+       
+       // student 2 should only have instructor
+       usersAllowedToView = permissionLogic.getUsersAllowedToViewStudentForAssignment(AssignmentTestDataLoad.STUDENT2_UID, testData.a1);
+       assertEquals(1, usersAllowedToView.size());
+       assertTrue(usersAllowedToView.contains(AssignmentTestDataLoad.INSTRUCTOR_UID));
+       
+       // student 3 does not have access to assign 1
+       usersAllowedToView = permissionLogic.getUsersAllowedToViewStudentForAssignment(AssignmentTestDataLoad.STUDENT3_UID, testData.a1);
+       assertEquals(0, usersAllowedToView.size());
+       
+       // all of the students can access assign 3
+       usersAllowedToView = permissionLogic.getUsersAllowedToViewStudentForAssignment(AssignmentTestDataLoad.STUDENT1_UID, testData.a3);
+       assertEquals(2, usersAllowedToView.size());
+       assertTrue(usersAllowedToView.contains(AssignmentTestDataLoad.TA_UID));
+       assertTrue(usersAllowedToView.contains(AssignmentTestDataLoad.INSTRUCTOR_UID));
+       
+       // student 2 should only have instructor
+       usersAllowedToView = permissionLogic.getUsersAllowedToViewStudentForAssignment(AssignmentTestDataLoad.STUDENT2_UID, testData.a3);
+       assertEquals(1, usersAllowedToView.size());
+       assertTrue(usersAllowedToView.contains(AssignmentTestDataLoad.INSTRUCTOR_UID));
+       
+       // student 3 should only have instructor
+       usersAllowedToView = permissionLogic.getUsersAllowedToViewStudentForAssignment(AssignmentTestDataLoad.STUDENT3_UID, testData.a3);
+       assertEquals(1, usersAllowedToView.size());
+       assertTrue(usersAllowedToView.contains(AssignmentTestDataLoad.INSTRUCTOR_UID));
    }
 }

@@ -238,52 +238,48 @@ public class ExternalGradebookLogicTest extends Assignment2TestBase {
     
     public void testGetViewableStudentsForGradedItemMap() {
     	// try null parameters
+        
+        try {
+            gradebookLogic.getViewableStudentsForGradedItemMap(null, AssignmentTestDataLoad.CONTEXT_ID, AssignmentTestDataLoad.GB_ITEM1_ID);
+            fail("Did not catch null contextId passed to getViewableStudentsForGradedItemMap");
+        } catch (IllegalArgumentException iae) {}
+        
     	try {
-    		gradebookLogic.getViewableStudentsForGradedItemMap(null, AssignmentTestDataLoad.GB_ITEM1_ID);
+    		gradebookLogic.getViewableStudentsForGradedItemMap(AssignmentTestDataLoad.INSTRUCTOR_UID, null, AssignmentTestDataLoad.GB_ITEM1_ID);
     		fail("Did not catch null contextId passed to getViewableStudentsForGradedItemMap");
     	} catch (IllegalArgumentException iae) {}
     	
     	try {
-    		gradebookLogic.getViewableStudentsForGradedItemMap(AssignmentTestDataLoad.CONTEXT_ID, null);
+    		gradebookLogic.getViewableStudentsForGradedItemMap(AssignmentTestDataLoad.INSTRUCTOR_UID, AssignmentTestDataLoad.CONTEXT_ID, null);
     		fail("Did not catch null gbItemId passed to getViewableStudentsForGradedItemMap");
     	} catch (IllegalArgumentException iae) {}
     	
-    	externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
-    	
-    	// what if we pass a bad contextId? should throw SecurityException
-    	try {
-    		gradebookLogic.getViewableStudentsForGradedItemMap(AssignmentTestDataLoad.BAD_CONTEXT, AssignmentTestDataLoad.GB_ITEM1_ID);
-    		fail("Did not catch SecurityException thrown b/c user does not have permissions in bad context");
-    	} catch (SecurityException se) {}
-    	
-    	// become instructor
-    	externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
+    	// what if we pass a bad contextId? should return 0
+
+    	Map<String, String> studentFunctionMap = gradebookLogic.getViewableStudentsForGradedItemMap(AssignmentTestDataLoad.INSTRUCTOR_UID, AssignmentTestDataLoad.BAD_CONTEXT, AssignmentTestDataLoad.GB_ITEM1_ID);
+    	assertEquals(0, studentFunctionMap.size());
     	
     	// what if gb item doesn't exist?
-    	Map<String, String> studentFunctionMap = gradebookLogic.getViewableStudentsForGradedItemMap(AssignmentTestDataLoad.CONTEXT_ID, 12345L);
+    	studentFunctionMap = gradebookLogic.getViewableStudentsForGradedItemMap(AssignmentTestDataLoad.INSTRUCTOR_UID, AssignmentTestDataLoad.CONTEXT_ID, 12345L);
     	assertTrue(studentFunctionMap.isEmpty());
     	
     	// instructor should be able to view all students
-    	studentFunctionMap = gradebookLogic.getViewableStudentsForGradedItemMap(AssignmentTestDataLoad.CONTEXT_ID, AssignmentTestDataLoad.GB_ITEM1_ID);
+    	studentFunctionMap = gradebookLogic.getViewableStudentsForGradedItemMap(AssignmentTestDataLoad.INSTRUCTOR_UID, AssignmentTestDataLoad.CONTEXT_ID, AssignmentTestDataLoad.GB_ITEM1_ID);
     	assertEquals(3, studentFunctionMap.size());
     	assertEquals(AssignmentConstants.GRADE, studentFunctionMap.get(AssignmentTestDataLoad.STUDENT1_UID));
     	assertEquals(AssignmentConstants.GRADE, studentFunctionMap.get(AssignmentTestDataLoad.STUDENT2_UID));
     	assertEquals(AssignmentConstants.GRADE, studentFunctionMap.get(AssignmentTestDataLoad.STUDENT3_UID));
     	
-    	// switch to TA
-    	externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
-    	// should only get students in his/her section
+    	// TA should only get students in his/her section
     	// TODO grader perms
-    	studentFunctionMap = gradebookLogic.getViewableStudentsForGradedItemMap(AssignmentTestDataLoad.CONTEXT_ID, AssignmentTestDataLoad.GB_ITEM1_ID);
+    	studentFunctionMap = gradebookLogic.getViewableStudentsForGradedItemMap(AssignmentTestDataLoad.TA_UID, AssignmentTestDataLoad.CONTEXT_ID, AssignmentTestDataLoad.GB_ITEM1_ID);
     	assertEquals(1, studentFunctionMap.size());
     	assertEquals(AssignmentConstants.GRADE, studentFunctionMap.get(AssignmentTestDataLoad.STUDENT1_UID));
     	
-    	// try a student - should get a SecurityException
+    	// try a student - should get an empty list
     	externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT1_UID);
-    	try {
-    		studentFunctionMap = gradebookLogic.getViewableStudentsForGradedItemMap(AssignmentTestDataLoad.CONTEXT_ID, AssignmentTestDataLoad.GB_ITEM1_ID);
-    		fail("did not catch student trying to access student information");
-    	} catch (SecurityException se) {}
+    	studentFunctionMap = gradebookLogic.getViewableStudentsForGradedItemMap(AssignmentTestDataLoad.STUDENT1_UID, AssignmentTestDataLoad.CONTEXT_ID, AssignmentTestDataLoad.GB_ITEM1_ID);
+    	assertEquals(0, studentFunctionMap.size());
     }
     
     public void testIsCurrentUserAbleToEdit() {

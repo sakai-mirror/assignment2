@@ -21,22 +21,13 @@
 package org.sakaiproject.assignment2.logic;
 
 import org.sakaiproject.api.app.scheduler.ScheduledInvocationCommand;
-import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
-import org.sakaiproject.exception.IdUnusedException;
-import org.sakaiproject.exception.PermissionException;
-import org.sakaiproject.exception.TypeException;
-import org.sakaiproject.user.api.UserNotDefinedException;
 
 public interface ScheduledNotification extends ScheduledInvocationCommand
 {
 
-	void notifyStudentThatSubmissionWasAccepted(AssignmentSubmission submission)
-			throws IdUnusedException, UserNotDefinedException, PermissionException,
-			TypeException;
+	void notifyStudentThatSubmissionWasAccepted(AssignmentSubmission submission);
 
-	void notifyInstructorsOfSubmission(AssignmentSubmission submission,
-			Assignment2 assignment) throws IdUnusedException, UserNotDefinedException,
-			PermissionException, IdUnusedException, TypeException;
+	void notifyInstructorsOfSubmission(AssignmentSubmission submission);
 
 }

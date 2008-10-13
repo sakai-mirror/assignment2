@@ -493,9 +493,15 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		if (assignment == null) {
 			throw new AssignmentNotFoundException("No assignment found with id: " + assignmentId);
 		}
+		
+		if (!permissionLogic.isUserAbleToAccessInstructorView(assignment.getContextId())) {
+		    throw new SecurityException("A user without feedback privileges attempted to access submissions for assignment: " + assignment.getId());
+		}
+		
+		String currUserId = externalLogic.getCurrentUserId();
 
 		// get a list of all the students that the current user may view for the given assignment
-		List<String> viewableStudents = permissionLogic.getViewableStudentsForUserForItem(assignment);
+		List<String> viewableStudents = permissionLogic.getViewableStudentsForUserForItem(currUserId, assignment);
 
 		if (viewableStudents != null && !viewableStudents.isEmpty()) {
 			
@@ -806,7 +812,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			throw new AssignmentNotFoundException("Assignment with id " + assignmentId + " does not exist");
 		}
 		
-		List<String> gradableStudents = permissionLogic.getGradableStudentsForUserForItem(assignment);
+		List<String> gradableStudents = permissionLogic.getGradableStudentsForUserForItem(currUserId, assignment);
 		if (gradableStudents != null && !gradableStudents.isEmpty()) {
 			Set<AssignmentSubmission> submissionList = dao.getSubmissionsWithVersionHistoryForStudentListAndAssignment(
 					gradableStudents, assignment);

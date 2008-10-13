@@ -93,15 +93,6 @@ public class ExternalLogicImpl implements ExternalLogic {
     public void init() {
     	if (log.isDebugEnabled()) log.debug("init");
     }
-
-    public String getCurrentLocationId() {
-        try {
-            Site s = siteService.getSite(getCurrentContextId());
-            return s.getReference(); // get the entity reference to the site
-        } catch (IdUnusedException e) {
-            return NO_LOCATION;
-        }
-    }
     
     public String getCurrentContextId() {
     	if (toolManager != null && toolManager.getCurrentPlacement() != null && toolManager.getCurrentPlacement().getContext() != null){
@@ -110,6 +101,17 @@ public class ExternalLogicImpl implements ExternalLogic {
     	} else {
     		return null;
     	}
+    }
+    
+    public Site getSite(String contextId) {
+        Site site = null;
+        try {
+            site = siteService.getSite(contextId);
+        } catch (IdUnusedException iue) {
+            log.warn("IdUnusedException attempting to find site with id: " + contextId);
+        }
+        
+        return site;
     }
     
     public String getToolTitle() {
@@ -150,6 +152,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 	    	Site s = siteService.getSite(contextId);
 	    	return s.getGroups();
     	} catch (IdUnusedException e){
+    	    log.warn("IdUnusedException attempting to find site with id: " + contextId);
     		return new ArrayList<Group>();
     	}
     }
@@ -159,9 +162,10 @@ public class ExternalLogicImpl implements ExternalLogic {
     		throw new IllegalArgumentException("Null userId or contextId passed to getUserMemberships");
     	}
     	try {
-	    	Site s = siteService.getSite(toolManager.getCurrentPlacement().getContext());
+	    	Site s = siteService.getSite(contextId);
 	    	return s.getGroupsWithMember(userId);
     	} catch (IdUnusedException e){
+    	    log.error("IdUnusedException attempting to find site with id: " + contextId);
     		return new ArrayList<Group>();
     	}
     }
@@ -203,15 +207,16 @@ public class ExternalLogicImpl implements ExternalLogic {
     }
     
     public boolean siteHasTool(String contextId, String toolId) {
-    	try {
-    		Site currSite = siteService.getSite(contextId);
-    		if (currSite.getToolForCommonId(toolId) != null) {
-    			return true;
-    		}
-    	} catch (IdUnusedException ide) {
-    		if (log.isDebugEnabled()) log.debug("IdUnusedException caught in siteHasTool with contextId: " + contextId + " and toolId: " + toolId);
-    	}
-		return false;
+        boolean siteHasTool = false;
+        try {
+            Site currSite = siteService.getSite(contextId);
+            if (currSite.getToolForCommonId(toolId) != null) {
+                siteHasTool = true;
+            }
+        } catch (IdUnusedException ide) {
+            log.warn("IdUnusedException caught in siteHasTool with contextId: " + contextId + " and toolId: " + toolId);
+        }
+        return siteHasTool;
     }
     
     public String getContentTypeImagePath(ContentResource contentReference) {
@@ -223,23 +228,44 @@ public class ExternalLogicImpl implements ExternalLogic {
     	return image_path;
     }
     
+    public List<String> getInstructorsInSite(String contextId) {
+        if (contextId == null) {
+            throw new IllegalArgumentException("Null contextId passed to getInstructorsInSite");
+        }
+        
+        return getUsersInRoleInSite(Role.INSTRUCTOR, contextId);
+    }
+    
+    public List<String> getTAsInSite(String contextId) {
+        if (contextId == null) {
+            throw new IllegalArgumentException("Null contextId passed to getTAsInSite");
+        }
+        
+        return getUsersInRoleInSite(Role.TA, contextId);
+    }
+    
     public List<String> getStudentsInSite(String contextId) {
     	if (contextId == null) {
     		throw new IllegalArgumentException("Null contextId passed to getStudentsInSite");
     	}
-    	List<String> studentsInSite = new ArrayList<String>();
     	
-    	List<ParticipationRecord> participants = sectionAwareness.getSiteMembersInRole(contextId, Role.STUDENT);
-    	if (participants != null) {
-    		for (ParticipationRecord part : participants) {
-    			if (part != null) {
-    				String studentId = part.getUser().getUserUid();
-    				studentsInSite.add(studentId);
-    			}
-    		}
-    	}
-    	
-    	return studentsInSite;
+    	return getUsersInRoleInSite(Role.STUDENT, contextId);
+    }
+    
+    private List<String> getUsersInRoleInSite(Role role, String contextId) {   
+        List<String> usersInRole = new ArrayList<String>();
+        
+        List<ParticipationRecord> participants = sectionAwareness.getSiteMembersInRole(contextId, role);
+        if (participants != null) {
+            for (ParticipationRecord part : participants) {
+                if (part != null) {
+                    String studentId = part.getUser().getUserUid();
+                    usersInRole.add(studentId);
+                }
+            }
+        }
+        
+        return usersInRole;
     }
     
     public List<String> getStudentsInSection(String sectionId) {
@@ -288,28 +314,42 @@ public class ExternalLogicImpl implements ExternalLogic {
     	return url + getParams;
     }
 
-	public String getUserFullName(String userId) {
+	public String getUserSortName(String userId) {
+	    String userSortName = ", ";
         try {
             User user = userDirectoryService.getUser(userId);
-            return user.getLastName() + ", " + user.getFirstName();
+            userSortName = user.getSortName();
         } catch (UserNotDefinedException ex) {
             log.error("Could not get user from userId: " + userId, ex);
         }
 
-        return ", ";
+        return userSortName;
     }
+	
+	public String getUserEmail(String userId) {
+	    String userEmail = null;
+
+	    try {
+	        User user = userDirectoryService.getUser(userId);
+	        userEmail =  user.getEmail();
+	    } catch (UserNotDefinedException ex) {
+	        log.error("Could not get user from userId: " + userId + "Returning null email address.", ex);
+	    }
+
+	    return userEmail;
+	}
 
 	public User getUser(String userId)
 	{
-		try
-		{
-			User user = userDirectoryService.getUser(userId);
-			return user;
-		} catch (UserNotDefinedException ex) {
-			log.error("Could not get user from userId: " + userId, ex);
-		}
+	    User user = null;
+	    
+	    try {
+	        user = userDirectoryService.getUser(userId);
+	    } catch (UserNotDefinedException ex) {
+	        log.error("Could not get user from userId: " + userId, ex);
+	    }
 
-		return userDirectoryService.getAnonymousUser();
+	    return user;
 	}
 	
 	public String getReadableFileSize(int sizeVal)

@@ -42,6 +42,7 @@ import org.sakaiproject.assignment2.exception.InvalidGradeForAssignmentException
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
+import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.logic.GradeInformation;
 import org.sakaiproject.assignment2.exception.UploadException;
 import org.sakaiproject.assignment2.logic.UploadGradesLogic;
@@ -55,23 +56,29 @@ public class UploadGradesLogicImpl implements UploadGradesLogic
 {
 	private static final Log log = LogFactory.getLog(UploadGradesLogicImpl.class);
 
-	private AssignmentLogic assnLogic;
-	private ExternalGradebookLogic gradebookLogic;
-	private AssignmentPermissionLogic permissionLogic;
 	
+	private AssignmentPermissionLogic permissionLogic;
 	public void setAssignmentPermissionLogic(AssignmentPermissionLogic permissionLogic) {
 		this.permissionLogic = permissionLogic;
 	}
 
+	private AssignmentLogic assnLogic;
 	public void setAssignmentLogic(AssignmentLogic assnLogic)
 	{
 		this.assnLogic = assnLogic;
 	}
 
+	private ExternalGradebookLogic gradebookLogic;
 	public void setExternalGradebookLogic(ExternalGradebookLogic gradebookLogic)
 	{
 		this.gradebookLogic = gradebookLogic;
 	}
+	
+	private ExternalLogic externalLogic;
+	public void setExternalLogic(ExternalLogic externalLogic)
+    {
+        this.externalLogic = externalLogic;
+    }
 
 	public List<String> uploadGrades(Map<String, String> displayIdUserIdMap, Long assignmentId, List<List<String>> parsedContent)
 	{
@@ -93,12 +100,14 @@ public class UploadGradesLogicImpl implements UploadGradesLogic
 			throw new SecurityException("User attempted to upload grades without permission");
 		}
 		
+		String currUserId = externalLogic.getCurrentUserId();
+		
 		// parse the content into GradeInformation records
 		List<GradeInformation> gradeInfoToUpdate = retrieveGradeInfoFromContent(displayIdUserIdMap, assign.getGradableObjectId(), parsedContent);
 		
 		// let's remove any students the user is not authorized to grade from the
 		// list we send the gradebook. this will avoid a SecurityException.
-		List<String> gradableStudents = permissionLogic.getGradableStudentsForUserForItem(assign);
+		List<String> gradableStudents = permissionLogic.getGradableStudentsForUserForItem(currUserId, assign);
 		
 		List<String> studentsIgnored = new ArrayList<String>();
 		List<GradeInformation> filteredGradeInfoList = new ArrayList<GradeInformation>();

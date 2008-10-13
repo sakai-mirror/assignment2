@@ -224,33 +224,37 @@ public class GradebookServiceStub implements GradebookService {
 	}
 
 	public String getGradeViewFunctionForUserForStudentForItem(String gradebookUid, Long itemId, String studentUid) {
-		String viewGrade = null;
-		
-		// make sure item exists
-		if (itemId.equals(AssignmentTestDataLoad.GB_ITEM1_ID) || 
-				itemId.equals(AssignmentTestDataLoad.GB_ITEM2_ID) ||
-				itemId.equals(AssignmentTestDataLoad.GB_ITEM2_ID)) {
-
-			String currentUser = externalLogic.getCurrentUserId();
-
-			if (currentUser.equals(AssignmentTestDataLoad.STUDENT1_UID)) {
-				viewGrade = null;
-			} else if (currentUser.equals(AssignmentTestDataLoad.STUDENT2_UID)) {
-				viewGrade = null;
-			} else if (currentUser.equals(AssignmentTestDataLoad.STUDENT3_UID)) {
-				viewGrade = null;
-			} else if (currentUser.equals(AssignmentTestDataLoad.TA_UID)) {
-				// TA may only grade student 1
-				if (studentUid.equals(AssignmentTestDataLoad.STUDENT1_UID)) {
-					viewGrade = GradebookService.gradePermission;
-				}
-			} else if (currentUser.equals(AssignmentTestDataLoad.INSTRUCTOR_UID)) {
-				viewGrade = GradebookService.gradePermission;
-			}
-		}
-
-		return viewGrade;
+		return getGradeViewFunctionForUserForStudentForItem(externalLogic.getCurrentUserId(), gradebookUid, itemId, studentUid);
 	}
+	
+	private String getGradeViewFunctionForUserForStudentForItem(String userId, String gradebookUid, Long itemId, String studentUid) {
+	    String viewGrade = null;
+
+	    if (gradebookUid.equals(AssignmentTestDataLoad.CONTEXT_ID)) {
+	        // make sure item exists
+	        if (itemId.equals(AssignmentTestDataLoad.GB_ITEM1_ID) || 
+	                itemId.equals(AssignmentTestDataLoad.GB_ITEM2_ID) ||
+	                itemId.equals(AssignmentTestDataLoad.GB_ITEM2_ID)) {
+
+	            if (userId.equals(AssignmentTestDataLoad.STUDENT1_UID)) {
+	                viewGrade = null;
+	            } else if (userId.equals(AssignmentTestDataLoad.STUDENT2_UID)) {
+	                viewGrade = null;
+	            } else if (userId.equals(AssignmentTestDataLoad.STUDENT3_UID)) {
+	                viewGrade = null;
+	            } else if (userId.equals(AssignmentTestDataLoad.TA_UID)) {
+	                // TA may only grade student 1
+	                if (studentUid.equals(AssignmentTestDataLoad.STUDENT1_UID)) {
+	                    viewGrade = GradebookService.gradePermission;
+	                }
+	            } else if (userId.equals(AssignmentTestDataLoad.INSTRUCTOR_UID)) {
+	                viewGrade = GradebookService.gradePermission;
+	            }
+	        }
+	    }
+
+        return viewGrade;
+    }
 
 	public String getGradeViewFunctionForUserForStudentForItem(String gradebookUid, String itemName, String studentUid) {
 		// assignment doesn't matter b/c we don't have grader perms
@@ -460,11 +464,6 @@ public class GradebookServiceStub implements GradebookService {
 		if (gradebookUid == null || gradableObjectId == null) {
 			throw new IllegalArgumentException("null gradebookUid or gradableObjectId passed to getViewableStudentsForUserForItem");
 		}
-		
-		// throw SecurityException if user can't grade
-		if (!currentUserHasGradingPerm(gradebookUid)) {
-			throw new SecurityException("user attempted to retrieve students w/o grading perm via getViewableStudentsForItemForCurrentUser");
-		}
 
 		Map<String, String> studentIdFunctionMap = new HashMap<String, String>();
 
@@ -482,6 +481,30 @@ public class GradebookServiceStub implements GradebookService {
 
 		return studentIdFunctionMap;
 	}
+	
+    public Map<String, String> getViewableStudentsForItemForUser(String userUid,
+            String gradebookUid, Long gradableObjectId)
+    {
+        if (gradebookUid == null || gradableObjectId == null || userUid == null) {
+            throw new IllegalArgumentException("null gradebookUid or gradableObjectId passed to getViewableStudentsForUserForItem");
+        }
+
+        Map<String, String> studentIdFunctionMap = new HashMap<String, String>();
+
+        List<String> studentList = new ArrayList<String>();
+        studentList.add(AssignmentTestDataLoad.STUDENT1_UID);
+        studentList.add(AssignmentTestDataLoad.STUDENT2_UID);
+        studentList.add(AssignmentTestDataLoad.STUDENT3_UID);
+
+        for (String studentId : studentList) {
+            String function = getGradeViewFunctionForUserForStudentForItem(userUid, gradebookUid, gradableObjectId, studentId);
+            if (function != null) {
+                studentIdFunctionMap.put(studentId, function);
+            }
+        }
+
+        return studentIdFunctionMap;
+    }
 
 	public boolean isGradableObjectDefined(Long gradableObjectId) {
 		if (gradableObjectId.equals(AssignmentTestDataLoad.GB_ITEM1_ID) || gradableObjectId.equals(AssignmentTestDataLoad.GB_ITEM2_ID)) {
@@ -517,49 +540,55 @@ public class GradebookServiceStub implements GradebookService {
 	}
 
 	public boolean currentUserHasGradeAllPerm(String gradebookUid) {
-		// return false if not the current context
-		if (!externalLogic.getCurrentContextId().equals(gradebookUid)) {
-			return false;
-		}
-		
-		String currentUser = externalLogic.getCurrentUserId();
-		boolean hasPerm = false;
-		if (currentUser.equals(AssignmentTestDataLoad.STUDENT1_UID)) {
-			hasPerm = false;
-		} else if (currentUser.equals(AssignmentTestDataLoad.STUDENT2_UID)) {
-			hasPerm = false;
-		} else if (currentUser.equals(AssignmentTestDataLoad.STUDENT3_UID)) {
-			hasPerm = false;
-		} else if (currentUser.equals(AssignmentTestDataLoad.TA_UID)) {
-			hasPerm = false;
-		} else if (currentUser.equals(AssignmentTestDataLoad.INSTRUCTOR_UID)) {
-			hasPerm = true;
-		}
-
-		return hasPerm;
+	    return isUserAllowedToGradeAll(gradebookUid, externalLogic.getCurrentUserId());
 	}
 
+	public boolean isUserAllowedToGradeAll(String gradebookUid, String userId) {
+	       // return false if not the current context
+        if (!externalLogic.getCurrentContextId().equals(gradebookUid)) {
+            return false;
+        }
+        
+        boolean hasPerm = false;
+        if (userId.equals(AssignmentTestDataLoad.STUDENT1_UID)) {
+            hasPerm = false;
+        } else if (userId.equals(AssignmentTestDataLoad.STUDENT2_UID)) {
+            hasPerm = false;
+        } else if (userId.equals(AssignmentTestDataLoad.STUDENT3_UID)) {
+            hasPerm = false;
+        } else if (userId.equals(AssignmentTestDataLoad.TA_UID)) {
+            hasPerm = false;
+        } else if (userId.equals(AssignmentTestDataLoad.INSTRUCTOR_UID)) {
+            hasPerm = true;
+        }
+
+        return hasPerm;
+	}
+	
 	public boolean currentUserHasGradingPerm(String gradebookUid) {
-		// return false if not the current context
-		if (!externalLogic.getCurrentContextId().equals(gradebookUid)) {
-			return false;
-		}
-		
-		String currentUser = externalLogic.getCurrentUserId();
-		boolean hasPerm = false;
-		if (currentUser.equals(AssignmentTestDataLoad.STUDENT1_UID)) {
-			hasPerm = false;
-		} else if (currentUser.equals(AssignmentTestDataLoad.STUDENT2_UID)) {
-			hasPerm = false;
-		} else if (currentUser.equals(AssignmentTestDataLoad.STUDENT3_UID)) {
-			hasPerm = false;
-		} else if (currentUser.equals(AssignmentTestDataLoad.TA_UID)) {
-			hasPerm = true;
-		} else if (currentUser.equals(AssignmentTestDataLoad.INSTRUCTOR_UID)) {
-			hasPerm = true;
-		}
-		
-		return hasPerm;
+	    return isUserAllowedToGrade(gradebookUid, externalLogic.getCurrentUserId());
+	}
+
+	public boolean isUserAllowedToGrade(String gradebookUid, String userId) {
+	    // return false if not the current context
+        if (!externalLogic.getCurrentContextId().equals(gradebookUid)) {
+            return false;
+        }
+        
+	    boolean hasPerm = false;
+	    if (userId.equals(AssignmentTestDataLoad.STUDENT1_UID)) {
+	        hasPerm = false;
+	    } else if (userId.equals(AssignmentTestDataLoad.STUDENT2_UID)) {
+	        hasPerm = false;
+	    } else if (userId.equals(AssignmentTestDataLoad.STUDENT3_UID)) {
+	        hasPerm = false;
+	    } else if (userId.equals(AssignmentTestDataLoad.TA_UID)) {
+	        hasPerm = true;
+	    } else if (userId.equals(AssignmentTestDataLoad.INSTRUCTOR_UID)) {
+	        hasPerm = true;
+	    }
+
+	    return hasPerm;
 	}
 
 	public boolean currentUserHasEditPerm(String gradebookUid) {

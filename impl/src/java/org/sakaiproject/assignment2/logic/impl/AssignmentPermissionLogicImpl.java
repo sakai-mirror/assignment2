@@ -22,21 +22,21 @@
 package org.sakaiproject.assignment2.logic.impl;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Collection;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment2.dao.AssignmentDao;
 import org.sakaiproject.assignment2.exception.AssignmentNotFoundException;
 import org.sakaiproject.assignment2.exception.SubmissionNotFoundException;
+import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
-import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentGroup;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
@@ -300,25 +300,28 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
 		return userAbleToSubmit;
 	}
 	
-	public List<String> getViewableStudentsForUserForItem(Assignment2 assignment) {
-		if (assignment == null) {
-			throw new IllegalArgumentException("null assignment passed to getViewableStudentsForUserForItem");
+	public List<String> getViewableStudentsForUserForItem(String userId, Assignment2 assignment) {
+		if (assignment == null || userId == null) {
+			throw new IllegalArgumentException("null assignment or userId passed to " +
+					"getViewableStudentsForUserForItem. userId: " + userId + " assignment: " + assignment);
 		}
 		
-		return getAvailableStudentsForUserForItem(assignment, AssignmentConstants.VIEW);
+		return getAvailableStudentsForUserForItem(userId, assignment, AssignmentConstants.VIEW);
 	}
 	
-	public List<String> getGradableStudentsForUserForItem(Assignment2 assignment) {
-		if (assignment == null) {
-			throw new IllegalArgumentException("null assignment passed to getGradableStudentsForUserForItem");
+	public List<String> getGradableStudentsForUserForItem(String userId, Assignment2 assignment) {
+		if (assignment == null || userId == null) {
+			throw new IllegalArgumentException("null assignment or userId passed " +
+					"to getGradableStudentsForUserForItem. " +
+					"userId: " + userId + " assignment: " + assignment);
 		}
 		
-		return getAvailableStudentsForUserForItem(assignment, AssignmentConstants.GRADE);
+		return getAvailableStudentsForUserForItem(userId, assignment, AssignmentConstants.GRADE);
 	}
 	
-	private List<String> getAvailableStudentsForUserForItem(Assignment2 assignment, String gradeOrView) {
-		if (assignment == null) {
-			throw new IllegalArgumentException("null assignment passed to getAvailableStudentsForUserForItem");
+	private List<String> getAvailableStudentsForUserForItem(String userId, Assignment2 assignment, String gradeOrView) {
+		if (assignment == null || userId == null) {
+			throw new IllegalArgumentException("null assignment passed to getAvailableStudentsForUserForItem. userId: " + userId + " assignment: " + assignment);
 		}
 		
 		if (gradeOrView == null || (!gradeOrView.equals(AssignmentConstants.GRADE) && !gradeOrView.equals(AssignmentConstants.VIEW))) {
@@ -328,14 +331,13 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
 		List<String> availStudents = new ArrayList<String>();
 		
 		String contextId = externalLogic.getCurrentContextId();
-		String userId = externalLogic.getCurrentUserId();
 
 		List<AssignmentGroup> assignGroupRestrictions = 
 			dao.findByProperties(AssignmentGroup.class, new String[] {"assignment"}, new Object[] {assignment});
 		
 		// if user may grade all, then return all of the students who have this assignment
 		// we need to check for group restrictions
-		if (gradebookLogic.isCurrentUserAbleToGradeAll(contextId)) {
+		if (gradebookLogic.isUserAbleToGradeAll(contextId, userId)) {
 			if (assignGroupRestrictions == null || assignGroupRestrictions.isEmpty()) {
 				availStudents.addAll(externalLogic.getStudentsInSite(contextId));
 			} else {
@@ -343,11 +345,11 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
 						contextId, assignGroupRestrictions);
 			}
 			
-		} else if(gradebookLogic.isCurrentUserAbleToGrade(contextId)) {
+		} else if(gradebookLogic.isUserAbleToGrade(contextId, userId)) {
 			if (!assignment.isGraded()) {
 				// if there are no restrictions, return students in user's section(s)
 				if (assignGroupRestrictions == null || assignGroupRestrictions.isEmpty()) {
-					Set<String> sharedStudents = getStudentsInCurrentUsersSections(contextId);
+					Set<String> sharedStudents = getStudentsInUsersSections(userId, contextId);
 					if (sharedStudents != null) {
 						availStudents.addAll(sharedStudents);
 					}
@@ -369,7 +371,7 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
 				List<String> viewableInGb = new ArrayList<String>();
 				if (assignment.getGradableObjectId() != null) {
 					Map<String, String> studentIdFunctionMap = 
-						gradebookLogic.getViewableStudentsForGradedItemMap(contextId, assignment.getGradableObjectId());
+						gradebookLogic.getViewableStudentsForGradedItemMap(userId, contextId, assignment.getGradableObjectId());
 					if (studentIdFunctionMap != null) {
 						if (gradeOrView.equals(AssignmentConstants.VIEW)) {
 							viewableInGb.addAll(studentIdFunctionMap.keySet());
@@ -401,11 +403,6 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
 					}
 				}
 			}
-		} else {
-			// this user does not have grading privileges so should not be
-			// accessing this method!
-			throw new SecurityException("User " + userId + " attempted to view/grade student " +
-					"submissions without authorization!");
 		}
 		
 		return availStudents;
@@ -429,9 +426,9 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
 		return false;
 	}
 	
-	private Set<String> getStudentsInCurrentUsersSections(String contextId) {
+	private Set<String> getStudentsInUsersSections(String userId, String contextId) {
 		// get the user's memberships
-		List<String> groupMemberships = externalLogic.getUserMembershipGroupIdList(externalLogic.getCurrentUserId(), contextId);
+		List<String> groupMemberships = externalLogic.getUserMembershipGroupIdList(userId, contextId);
 		
 		// use a set to eliminate section overlap with duplicate students
 		Set<String> sharedStudents = new HashSet<String>();
@@ -456,10 +453,13 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
 		if (assignment == null) {
 			throw new IllegalArgumentException("null assignment passed to isUserAllowedToProvideFeedbackForAssignment");
 		}
+		
 		boolean allowedToGrade = false;
 		
+		String currUserId = externalLogic.getCurrentUserId();
+		
 		try {
-			List<String> gradableStudents = getGradableStudentsForUserForItem(assignment);
+			List<String> gradableStudents = getGradableStudentsForUserForItem(currUserId, assignment);
 			if (gradableStudents != null && gradableStudents.size() > 0) {
 				allowedToGrade = true;
 			}
@@ -527,6 +527,36 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
 		}
 		
 		return allowed;
+	}
+	
+	public List<String> getUsersAllowedToViewStudentForAssignment(String studentId, Assignment2 assignment) {
+	    if (studentId == null || assignment == null) {
+	        throw new IllegalArgumentException("Null studentId or assignmentId passed to getUsersAllowedToViewSubmission");
+	    }
+	    
+	    List<String> usersAllowedToViewStudent = new ArrayList<String>();
+
+	    // identify all of the instructors in this site
+	    Set<String> instructorsAndTas = new HashSet<String>();
+	    List<String> instructors = externalLogic.getInstructorsInSite(assignment.getContextId());
+	    List<String> tas = externalLogic.getTAsInSite(assignment.getContextId());
+	    
+	    if (instructors != null) {
+	        instructorsAndTas.addAll(instructors);
+	    }
+	    
+	    if (tas != null) {
+	        instructorsAndTas.addAll(tas);
+	    }
+	    
+	    for (String userId : instructorsAndTas) {
+	        List<String> viewableStudents = getViewableStudentsForUserForItem(userId, assignment);
+	        if (viewableStudents != null && viewableStudents.contains(studentId)) {
+	            usersAllowedToViewStudent.add(userId);
+	        }
+	    }
+	    
+	    return usersAllowedToViewStudent;
 	}
 
 }

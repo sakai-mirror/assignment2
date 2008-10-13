@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.sakaiproject.content.api.ContentResource;
+import org.sakaiproject.site.api.Site;
 import org.sakaiproject.user.api.User;
 
 /**
@@ -13,8 +14,6 @@ import org.sakaiproject.user.api.User;
  * @author Sakai App Builder -AZ
  */
 public interface ExternalLogic {
-
-    public final static String NO_LOCATION = "noLocationAvailable";
     
     //tool ids for external tools that we integrate with
     /**
@@ -38,6 +37,13 @@ public interface ExternalLogic {
      * @return the current sakai user id (not username)
      */
     public String getCurrentUserId();
+    
+    /**
+     * 
+     * @param userId
+     * @return the User object associated with the given userId. Returns null if no User object found.
+     */
+    public User getUser(String userId);
 
     /**
      * Get the display name for a user by their unique id
@@ -49,23 +55,32 @@ public interface ExternalLogic {
     public String getUserDisplayName(String userId);
 
     /**
-     *  Get the user's full name in Last, First format
      * @param userId
      *            the current sakai user id (not username)
-     * @return full name in Last, First format
+     * @return the user's sort name as defined in the User object
      */
-    public String getUserFullName(String userId);
+    public String getUserSortName(String userId);
     
     /**
-     * @return the current location id of the current user
+     * 
+     * @param userId
+     * @return the email address associated with this userId. Returns null if not found.
      */
-    public String getCurrentLocationId();
+    public String getUserEmail(String userId);
     
     /**
      * 
      * @return the current context for the current user
      */
     public String getCurrentContextId();
+    
+    /**
+     * 
+     * @param contextId
+     * @return the Site associated with the given contextId.
+     * Returns null if the Site could not be retrieved.
+     */
+    public Site getSite(String contextId);
     
     /**
      * 
@@ -144,9 +159,24 @@ public interface ExternalLogic {
     /**
      * 
      * @param contextId
-     * @return a list of the student Ids of all of the students in the given site
+     * @return a list of userIds of members of this site with a "student"-type role
      */
     public List<String> getStudentsInSite(String contextId);
+    
+    /**
+     * 
+     * @param contextId
+     * @return a list of userIds of members of this site with a "TA"-type role
+     * 
+     */
+    public List<String> getTAsInSite(String contextId);
+    
+    /**
+     * 
+     * @param contextId
+     * @return a list of userIds of members of this site with an "instructor"-type role
+     */
+    public List<String> getInstructorsInSite(String contextId);
     
     /**
      * 
@@ -181,13 +211,6 @@ public interface ExternalLogic {
      * @return url to helper
      */
     public String getUrlForGradeGradebookItemHelper(Long gradeableObjectId, String userId, String returnViewId);
-    
-    /**
-     * 
-     * @param userId
-     * @return
-     */
-    public User getUser(String userId);
     
     /**
      * 

@@ -30,6 +30,7 @@ import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.test.AssignmentTestDataLoad;
 import org.sakaiproject.content.api.ContentResource;
 import org.sakaiproject.site.api.Group;
+import org.sakaiproject.site.api.Site;
 import org.sakaiproject.user.api.User;
 
 
@@ -50,6 +51,9 @@ public class ExternalLogicStub implements ExternalLogic {
      */
     public String getCurrentUserId() {
     	//return authn.getUserUid();
+        if (currentUserUid == null) {
+            currentUserUid = AssignmentTestDataLoad.INSTRUCTOR_UID;
+        }
     	return currentUserUid;
     }
     
@@ -242,7 +246,7 @@ public class ExternalLogicStub implements ExternalLogic {
     	return null; //used for ui
     }
     
-	public String getUserFullName(String userId) {
+	public String getUserSortName(String userId) {
 		return getUserDisplayName(userId);
 	}
 	
@@ -272,6 +276,32 @@ public class ExternalLogicStub implements ExternalLogic {
 
     public String getUrlForGradebookItemHelper(Long gradeableObjectId,
             String gradebookItemName, String returnViewId)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public List<String> getInstructorsInSite(String contextId)
+    {
+        List<String> taList = new ArrayList<String>();
+        taList.add(AssignmentTestDataLoad.INSTRUCTOR_UID);
+        return taList;
+    }
+
+    public Site getSite(String contextId)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public List<String> getTAsInSite(String contextId)
+    {
+        List<String> taList = new ArrayList<String>();
+        taList.add(AssignmentTestDataLoad.TA_UID);
+        return taList;
+    }
+
+    public String getUserEmail(String userId)
     {
         // TODO Auto-generated method stub
         return null;

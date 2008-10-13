@@ -140,34 +140,12 @@ public class AssignmentSubmissionBean {
                         assignmentSubmission.getAssignment(), false, asv.getSubmittedText(), asv.getSubmissionAttachSet());
                 messages.addMessage(new TargettedMessage("assignment2.student-submit.info.submission_submitted",
                         new Object[] { assignment.getTitle() }, TargettedMessage.SEVERITY_INFO));
+                
                 // Send out notifications
-                try {
-                    notificationBean.notifyStudentThatSubmissionWasAccepted(assignmentSubmission);
-                    //// TODO: right now there is no way to set NotificationType in the interface, so always notify
-                    //if (assignment.getNotificationType() ==  AssignmentConstants.NOTIFY_FOR_EACH)
-                    //{
-                    notificationBean.notifyInstructorsOfSubmission(assignmentSubmission, assignment);
-                    //}
-                }catch (IdUnusedException e)
-                {
-                    messages.addMessage(new TargettedMessage("assignment2.student-submit.error.unexpected",
-                            new Object[]{e.getLocalizedMessage()}, TargettedMessage.SEVERITY_ERROR));
-                }
-                catch (UserNotDefinedException e)
-                {
-                    messages.addMessage(new TargettedMessage("assignment2.student-submit.error.unexpected",
-                            new Object[]{e.getLocalizedMessage()}, TargettedMessage.SEVERITY_ERROR));
-                }
-                catch (PermissionException e)
-                {
-                    messages.addMessage(new TargettedMessage("assignment2.student-submit.error.unexpected",
-                            new Object[]{e.getLocalizedMessage()}, TargettedMessage.SEVERITY_ERROR));
-                }
-                catch (TypeException e)
-                {
-                    messages.addMessage(new TargettedMessage("assignment2.student-submit.error.unexpected",
-                            new Object[]{e.getLocalizedMessage()}, TargettedMessage.SEVERITY_ERROR));
-                }
+                AssignmentSubmission newSubmission = submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(assignmentId, assignmentSubmission.getUserId());            
+                notificationBean.notifyStudentThatSubmissionWasAccepted(newSubmission);
+                notificationBean.notifyInstructorsOfSubmission(newSubmission);
+
             }
         }
         return SUBMIT;
