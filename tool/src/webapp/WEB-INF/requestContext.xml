@@ -203,15 +203,6 @@
       <property name="studentViewAssignmentRenderer" ref="StudentViewAssignmentRenderer" />
    </bean>
    
-   <bean class="org.sakaiproject.assignment2.tool.producers.StudentSubmitSummaryProducer">
-   	  <property name="submissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
-   	  <property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
-   	  <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
-   	  <property name="locale" ref="requestLocale" />
-   	  <property name="attachmentListRenderer" ref="AttachmentListRenderer" />
-   	  <property name="messageLocator" ref="messageLocator" />
-   </bean>
-   
    <bean class="org.sakaiproject.assignment2.tool.producers.AuthorizationFailedProducer" />
    
    <bean id="pageProducer" class="org.sakaiproject.assignment2.tool.producers.LayoutProducer">

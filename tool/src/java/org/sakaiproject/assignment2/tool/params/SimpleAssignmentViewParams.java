@@ -27,7 +27,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment2.tool.beans.Assignment2Bean;
 import org.sakaiproject.assignment2.tool.producers.StudentSubmitProducer;
-import org.sakaiproject.assignment2.tool.producers.StudentSubmitSummaryProducer;
 
 /**
  * This view params is for navigating to the apparently student view of an 
@@ -60,11 +59,6 @@ public class SimpleAssignmentViewParams extends SimpleViewParameters implements 
     {
         if (StudentSubmitProducer.VIEW_ID.equals(this.viewID) && this.assignmentId == null){
             LOG.error("Null assignmentId in viewparamters while attempting to load StudentSubmitProducer");
-            return Boolean.FALSE;
-        }
-
-        if (StudentSubmitSummaryProducer.VIEW_ID.equals(this.viewID) && this.assignmentId == null) {
-            LOG.error("Null assignmentId in viewparamters while attempting to load StudentSubmitSummaryProducer");
             return Boolean.FALSE;
         }
 

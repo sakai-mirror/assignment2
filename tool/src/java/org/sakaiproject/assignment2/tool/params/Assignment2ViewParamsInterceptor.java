@@ -28,7 +28,6 @@ import org.sakaiproject.assignment2.tool.producers.AuthorizationFailedProducer;
 import org.sakaiproject.assignment2.tool.producers.RedirectToAssignmentProducer;
 import org.sakaiproject.assignment2.tool.producers.StudentAssignmentListProducer;
 import org.sakaiproject.assignment2.tool.producers.StudentSubmitProducer;
-import org.sakaiproject.assignment2.tool.producers.StudentSubmitSummaryProducer;
 import org.sakaiproject.assignment2.tool.producers.ViewSubmissionsProducer;
 
 import uk.org.ponder.rsf.viewstate.AnyViewParameters;
