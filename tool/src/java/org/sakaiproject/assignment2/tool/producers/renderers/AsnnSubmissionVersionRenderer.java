@@ -96,7 +96,7 @@ public class AsnnSubmissionVersionRenderer implements BasicProducer {
         if (asnnSubVersion.isFeedbackReleased()) {
             UIMessage.make(joint, "feedback-header", "assignment2.student-submission.feedback.header");
             
-            UIOutput.make(joint, "feedback-text", asnnSubVersion.getFeedbackNotes());
+            UIVerbatim.make(joint, "feedback-text", asnnSubVersion.getFeedbackNotes());
             
             if (asnnSubVersion.getFeedbackAttachSet() != null && 
                     asnnSubVersion.getFeedbackAttachSet().size() > 0) {
