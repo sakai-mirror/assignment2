@@ -9,6 +9,7 @@ import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 
 import uk.org.ponder.rsf.components.UIContainer;
 import uk.org.ponder.rsf.components.UIJointContainer;
+import uk.org.ponder.rsf.components.UIMessage;
 import uk.org.ponder.rsf.components.UIOutput;
 import uk.org.ponder.rsf.components.UIVerbatim;
 import uk.org.ponder.rsf.producers.BasicProducer;
@@ -35,19 +36,27 @@ public class AsnnSubmissionVersionRenderer implements BasicProducer {
     public void setViewParameters(ViewParameters viewParameters) {
         this.viewParameters = viewParameters;
     }
-    
+
     // Dependency
     private AttachmentListRenderer attachmentListRenderer;
     public void setAttachmentListRenderer (AttachmentListRenderer attachmentListRenderer) {
         this.attachmentListRenderer = attachmentListRenderer;
     }
-    
+
     public void fillComponents(UIContainer parent, String clientID, AssignmentSubmissionVersion asnnSubVersion) {
         UIJointContainer joint = new UIJointContainer(parent, clientID, "asnn2-submission-version-widget:");
-        
+
         AssignmentSubmission assignmentSubmssion = asnnSubVersion.getAssignmentSubmission();
         Assignment2 assignment = assignmentSubmssion.getAssignment();
         int submissionType = assignment.getSubmissionType();
+
+        /*
+         * Render the headers
+         */
+        //TODO FIXME on multiple submissions this header is different
+        UIMessage.make(joint, "submission-header", "assignment2.student-submission.submission.header");
+        
+        //TODO FIXME time and date of submission here
         
         /*
          * Render the Students Submission Materials
@@ -60,10 +69,10 @@ public class AsnnSubmissionVersionRenderer implements BasicProducer {
                     asnnSubVersion.getSubmissionAttachSet());
         }
         else if (submissionType == AssignmentConstants.SUBMIT_INLINE_AND_ATTACH) {
-            
+
             UIOutput.make(joint, "submission-text-header");
             UIVerbatim.make(joint, "submission-text", asnnSubVersion.getSubmittedText());
-            
+
             // TODO FIXME if the student didn't actually submit any attachments
             // what should we say
             UIOutput.make(joint, "submission-attachments-header");
@@ -80,22 +89,27 @@ public class AsnnSubmissionVersionRenderer implements BasicProducer {
         else {
             log.error("Trying to render an unknown submission type: " + submissionType);
         }
-        
+
         /* 
          * Render the Instructors Feedback Materials
          */
-        UIOutput.make(joint, "feedback-text", asnnSubVersion.getFeedbackNotes());
-        if (asnnSubVersion.getFeedbackAttachSet() != null && 
-                asnnSubVersion.getFeedbackAttachSet().size() > 0) {
-            UIOutput.make(joint, "submission-attachments-header");
-            attachmentListRenderer.makeAttachmentFromFeedbackAttachmentSet(joint, 
-                    "feedback-attachment-list:", viewParameters.viewID, 
-                    asnnSubVersion.getFeedbackAttachSet());
+        if (asnnSubVersion.isFeedbackReleased()) {
+            UIMessage.make(joint, "feedback-header", "assignment2.student-submission.feedback.header");
+            
+            UIOutput.make(joint, "feedback-text", asnnSubVersion.getFeedbackNotes());
+            
+            if (asnnSubVersion.getFeedbackAttachSet() != null && 
+                    asnnSubVersion.getFeedbackAttachSet().size() > 0) {
+                UIMessage.make(joint, "submission-attachments-header", "assignment2.student-submission.feedback.materials.header");
+                attachmentListRenderer.makeAttachmentFromFeedbackAttachmentSet(joint, 
+                        "feedback-attachment-list:", viewParameters.viewID, 
+                        asnnSubVersion.getFeedbackAttachSet());
+            }
         }
     }
-    
+
     public void fillComponents(UIContainer parent, String clientID) {
-        
+
     }
 
 }
