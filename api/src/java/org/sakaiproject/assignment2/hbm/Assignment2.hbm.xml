@@ -147,14 +147,12 @@
     <![CDATA[from org.sakaiproject.assignment2.model.Assignment2 assignment
              left join fetch assignment.assignmentGroupSet
              left join fetch assignment.attachmentSet
-             where assignment.id = :assignmentId
-             and assignment.removed = false]]>
+             where assignment.id = :assignmentId]]>
   	</query>
   	
   	<query name="findAssignmentByIdWithGroups">
     <![CDATA[from org.sakaiproject.assignment2.model.Assignment2 assignment
              left join fetch assignment.assignmentGroupSet
-             where assignment.id = :assignmentId
-             and assignment.removed = false]]>
+             where assignment.id = :assignmentId]]>
   	</query>
 </hibernate-mapping>
