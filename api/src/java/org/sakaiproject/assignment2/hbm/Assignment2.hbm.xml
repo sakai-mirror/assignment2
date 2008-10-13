@@ -67,9 +67,9 @@
         <property name="submissionType" type="integer" >
             <column name="SUBMISSION_TYPE" not-null="true"/>
         </property>
-        <!-- notification type: none, email for each submission, etc.  -->
-        <property name="notificationType" type="integer" >
-            <column name="NOTIFICATION_TYPE" not-null="true"/>
+        <!-- true if we need to send submission notifications for this assignment  -->
+        <property name="sendSubmissionNotifications" type="boolean" >
+            <column name="SEND_SUBMISSION_NOTIF" not-null="true"/>
         </property>
         <property name="hasAnnouncement" type="boolean">
         	<column name="HAS_ANNOUNCEMENT" />

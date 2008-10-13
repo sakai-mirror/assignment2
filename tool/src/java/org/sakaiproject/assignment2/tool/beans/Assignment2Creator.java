@@ -86,7 +86,7 @@ public class Assignment2Creator {
         dup.setHonorPledge(assignment.isHonorPledge());
         dup.setInstructions(assignment.getInstructions());
         dup.setSubmissionType(assignment.getSubmissionType());
-        dup.setNotificationType(assignment.getNotificationType());
+        dup.setSendSubmissionNotifications(assignment.isSendSubmissionNotifications());
         dup.setHasAnnouncement(assignment.getHasAnnouncement());
         dup.setAddedToSchedule(assignment.getAddedToSchedule());
         dup.setRemoved(false);

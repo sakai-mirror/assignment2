@@ -269,7 +269,7 @@ public class AssignmentTestDataLoad
 		assignment.setCreator("ADMIN");
 		assignment.setDraft(false);
 		assignment.setInstructions("Summarize the article we discussed on 1/8");
-		assignment.setNotificationType(AssignmentConstants.NOTIFY_NONE);
+		assignment.setSendSubmissionNotifications(false);
 		assignment.setOpenDate(new Date());
 		assignment.setRemoved(false);
 		assignment.setSubmissionType(AssignmentConstants.SUBMIT_INLINE_AND_ATTACH);

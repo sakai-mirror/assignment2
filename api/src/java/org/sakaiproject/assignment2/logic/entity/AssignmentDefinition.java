@@ -45,7 +45,7 @@ public class AssignmentDefinition implements Serializable {
     private boolean hasAnnouncement;
     private boolean addedToSchedule;
     private Integer numSubmissionsAllowed;
-    private Integer notificationType;
+    private boolean sendSubmissionNotifications;
     private Integer submissionType;
     private List<String> groupRestrictionGroupTitles;
     private List<String> attachmentReferences;
@@ -198,13 +198,13 @@ public class AssignmentDefinition implements Serializable {
 	}
 
 
-	public Integer getNotificationType() {
-		return notificationType;
+	public boolean isSendSubmissionNotifications() {
+		return sendSubmissionNotifications;
 	}
 
 
-	public void setNotificationType(Integer notificationType) {
-		this.notificationType = notificationType;
+	public void setSendSubmissionNotifications(boolean sendSubmissionNotifications) {
+		this.sendSubmissionNotifications = sendSubmissionNotifications;
 	}
 
 

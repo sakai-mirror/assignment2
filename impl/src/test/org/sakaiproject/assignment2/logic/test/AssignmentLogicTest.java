@@ -85,7 +85,7 @@ public class AssignmentLogicTest extends Assignment2TestBase {
 		newAssign.setAddedToSchedule(false);
 		newAssign.setHonorPledge(false);
 		newAssign.setInstructions("Complete this by friday");
-		newAssign.setNotificationType(AssignmentConstants.NOTIFY_NONE);
+		newAssign.setSendSubmissionNotifications(false);
 		newAssign.setOpenDate(new Date());
 		newAssign.setTitle(AssignmentTestDataLoad.ASSIGN1_TITLE); //we're using a title that already exists
 		newAssign.setGraded(false);

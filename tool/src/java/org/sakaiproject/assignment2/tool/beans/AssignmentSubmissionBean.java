@@ -142,9 +142,11 @@ public class AssignmentSubmissionBean {
                         new Object[] { assignment.getTitle() }, TargettedMessage.SEVERITY_INFO));
                 
                 // Send out notifications
-                AssignmentSubmission newSubmission = submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(assignmentId, assignmentSubmission.getUserId());            
-                notificationBean.notifyStudentThatSubmissionWasAccepted(newSubmission);
-                notificationBean.notifyInstructorsOfSubmission(newSubmission);
+                if (assignment.isSendSubmissionNotifications()) {
+                    AssignmentSubmission newSubmission = submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(assignmentId, assignmentSubmission.getUserId());            
+                    notificationBean.notifyStudentThatSubmissionWasAccepted(newSubmission);
+                    notificationBean.notifyInstructorsOfSubmission(newSubmission);
+                }
 
             }
         }

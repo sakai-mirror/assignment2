@@ -167,7 +167,7 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 		assignDef.setHasAnnouncement(assignment.getHasAnnouncement());
 		assignDef.setHonorPledge(assignment.isHonorPledge());
 		assignDef.setInstructions(assignment.getInstructions());
-		assignDef.setNotificationType(assignment.getNotificationType());
+		assignDef.setSendSubmissionNotifications(assignment.isSendSubmissionNotifications());
 		assignDef.setNumSubmissionsAllowed(assignment.getNumSubmissionsAllowed());
 		assignDef.setOpenDate(assignment.getOpenDate());
 		assignDef.setSortIndex(assignment.getSortIndex());
@@ -262,7 +262,7 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 						newAssignment.setDraft(assignDef.isDraft());
 						newAssignment.setHonorPledge(assignDef.isHonorPledge());
 						newAssignment.setInstructions(assignDef.getInstructions());
-						newAssignment.setNotificationType(assignDef.getNotificationType());
+						newAssignment.setSendSubmissionNotifications(assignDef.isSendSubmissionNotifications());
 						newAssignment.setNumSubmissionsAllowed(assignDef.getNumSubmissionsAllowed());
 						newAssignment.setOpenDate(assignDef.getOpenDate());
 						newAssignment.setDueDate(assignDef.getDueDate());
@@ -438,13 +438,13 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 			// retrieve the notification setting
 			String notifProperty = oProperties.getProperty(Assignment.ASSIGNMENT_INSTRUCTOR_NOTIFICATIONS_VALUE);
 			if (notifProperty == null) {
-				newAssnDef.setNotificationType(AssignmentConstants.NOTIFY_NONE);
+				newAssnDef.setSendSubmissionNotifications(false);
 			} else if (notifProperty.equals(Assignment.ASSIGNMENT_INSTRUCTOR_NOTIFICATIONS_DIGEST)) {
-				newAssnDef.setNotificationType(AssignmentConstants.NOTIFY_DAILY_SUMMARY);
+				newAssnDef.setSendSubmissionNotifications(true);
 			} else if (notifProperty.equals(Assignment.ASSIGNMENT_INSTRUCTOR_NOTIFICATIONS_EACH)) {
-				newAssnDef.setNotificationType(AssignmentConstants.NOTIFY_FOR_EACH);
+			    newAssnDef.setSendSubmissionNotifications(true);
 			} else { //Assignment.ASSIGNMENT_INSTRUCTOR_NOTIFICATIONS_NONE and default
-				newAssnDef.setNotificationType(AssignmentConstants.NOTIFY_NONE);
+			    newAssnDef.setSendSubmissionNotifications(false);
 			}
 
 			// is there an announcement?

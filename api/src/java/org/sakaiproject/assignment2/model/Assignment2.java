@@ -51,7 +51,7 @@ public class Assignment2 {
     private String instructions;
     private boolean requiresSubmission;
     private int submissionType;
-    private int notificationType;
+    private boolean sendSubmissionNotifications;
     private boolean hasAnnouncement;
     private String announcementId;
     private boolean addedToSchedule;
@@ -306,24 +306,21 @@ public class Assignment2 {
     }
     
     /**
-     * @return Returns the equivalent int value of the notification setting for this
-     * assignment
-     * ie Do not send me notifications of student submissions,
-     * 		Send me notification for each student submission, etc
+     * 
+     * @return true if we should send notifications upon submission for this assignment
      */
-    public int getNotificationType() {
-        return notificationType;
+    public boolean isSendSubmissionNotifications()
+    {
+        return sendSubmissionNotifications;
     }
 
     /**
-     * the equivalent int value of the notification setting for this
-     * assignment
-     * ie Do not send me notifications of student submissions,
-     * 		Send me notification for each student submission, etc
-     * @param notificationType
+     * true if we should send notifications upon submission for this assignment
+     * @param sendSubmissionNotfications
      */
-    public void setNotificationType(int notificationType) {
-        this.notificationType = notificationType;
+    public void setSendSubmissionNotifications(boolean sendSubmissionNotifications)
+    {
+        this.sendSubmissionNotifications = sendSubmissionNotifications;
     }
     
 	/**

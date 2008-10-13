@@ -386,29 +386,7 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
         }
 
         //Notifications
-        UIMessage.make(form, "notification_legend", "assignment2.assignment_add.notification_legend");
-        String[] notification_type_values = new String[] {
-                String.valueOf(AssignmentConstants.NOTIFY_NONE),
-                String.valueOf(AssignmentConstants.NOTIFY_FOR_EACH),
-                String.valueOf(AssignmentConstants.NOTIFY_DAILY_SUMMARY)
-        };
-        String[] notification_type_labels = new String[] {
-                "assignment2.assignment_add.notification_type.notify_none",
-                "assignment2.assignment_add.notification_type.notify_each",
-                "assignment2.assignment_add.notification_type.notify_daily"
-        };
-        UISelect notifications = UISelect.make(form, "notifications_select", notification_type_values,
-                notification_type_labels, assignment2OTP + ".notificationType").setMessageKeys();
-        notifications.selection.mustapply = true;
-        //((UIBoundString) notifications.selection).setValue(String.valueOf(assignment.getNotificationType()));
-        String notificationSelectId = notifications.getFullID();
-        for (int i = 0; i < notification_type_values.length; i++){
-            UIBranchContainer notification_row = UIBranchContainer.make(form, "notification_row:");
-            UISelectChoice.make(notification_row, "notification_choice", notificationSelectId, i);
-            UISelectLabel.make(notification_row, "notification_label", notificationSelectId, i);
-        }
-
-
+        UIBoundBoolean.make(form, "sub_notif", assignment2OTP + ".sendSubmissionNotifications");
 
         //Post Buttons
         UICommand.make(form, "post_assignment", UIMessage.make("assignment2.assignment_add.post"), "#{Assignment2Bean.processActionPost}");
