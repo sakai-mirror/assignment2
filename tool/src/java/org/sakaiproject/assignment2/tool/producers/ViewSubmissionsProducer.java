@@ -172,7 +172,7 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
 
         UIMessage.make(tofill, "page-title", "assignment2.assignment_grade-assignment.title");
         //navBarRenderer.makeNavBar(tofill, "navIntraTool:", VIEW_ID);
-        pagerRenderer.makePager(tofill, "pagerDiv:", VIEW_ID, viewparams, submissions.size());
+        //pagerRenderer.makePager(tofill, "pagerDiv:", VIEW_ID, viewparams, submissions.size());
         //UIMessage.make(tofill, "heading", "assignment2.assignment_grade-assignment.heading", new Object[] { assignment.getTitle() });
 
         /**  Assign This Grade Helper

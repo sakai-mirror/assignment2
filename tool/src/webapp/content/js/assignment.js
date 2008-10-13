@@ -229,12 +229,13 @@ function sortPageRows(b,d) {
       jQuery("div.pagerDiv input[name='page-replace\:\:pagerDiv\:1\:pager_next_page'], div.pagerDiv input[name='page-replace\:\:pagerDiv\:1\:pager_last_page']").removeAttr('disabled');  
    }
    //now parse the date
-   format = jQuery("div.pagerDiv div.format").get(0).innerHTML;
-   format = format.replace(/\{0\}/, Number(pStart) + 1);
-   last = Number(pStart) + Number(pLength) > trsLength ? trsLength : Number(pStart) + Number(pLength);
-   format = format.replace(/\{1\}/, last);
-   format = format.replace(/\{2\}/, jQuery("table#sortable tr:gt(0)").size());
-   jQuery("div.pagerDiv div.instruction").html(format);
+   // TODO FIXME SWG commenting out temporarily so the table will show up.
+   //format = jQuery("div.pagerDiv div.format").get(0).innerHTML;
+   //format = format.replace(/\{0\}/, Number(pStart) + 1);
+   //last = Number(pStart) + Number(pLength) > trsLength ? trsLength : Number(pStart) + Number(pLength);
+   //format = format.replace(/\{1\}/, last);
+   //format = format.replace(/\{2\}/, jQuery("table#sortable tr:gt(0)").size());
+   //jQuery("div.pagerDiv div.instruction").html(format);
 }
 jQuery(document).ready(function(){
 	if (jQuery("table#sortable").get(0)) {

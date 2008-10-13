@@ -100,7 +100,7 @@ public class AsnnSubmissionVersionRenderer implements BasicProducer {
             
             if (asnnSubVersion.getFeedbackAttachSet() != null && 
                     asnnSubVersion.getFeedbackAttachSet().size() > 0) {
-                UIMessage.make(joint, "submission-attachments-header", "assignment2.student-submission.feedback.materials.header");
+                UIMessage.make(joint, "feedback-attachments-header", "assignment2.student-submission.feedback.materials.header");
                 attachmentListRenderer.makeAttachmentFromFeedbackAttachmentSet(joint, 
                         "feedback-attachment-list:", viewParameters.viewID, 
                         asnnSubVersion.getFeedbackAttachSet());
