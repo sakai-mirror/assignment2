@@ -244,7 +244,10 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
                 //UIVerbatim.make(form, "feedback_instructions", messageLocator.getMessage("assignment2.assignment_grade.feedback_instructions"));
                 UIInput feedback_text = UIInput.make(form, "feedback_text:", asvOTP + ".annotatedText");
                 feedback_text.mustapply = Boolean.TRUE;
-                assnCommentTextEvolver.evolveTextInput(feedback_text);
+                // SWG TODO Switching back to regular rich text edit until I get
+                // the FCK Editor working
+                richTextEvolver.evolveTextInput(feedback_text);
+                //assnCommentTextEvolver.evolveTextInput(feedback_text);
             } else {
                 UIVerbatim.make(form, "feedback_text:", assignmentSubmissionVersion.getAnnotatedTextFormatted());
             }
