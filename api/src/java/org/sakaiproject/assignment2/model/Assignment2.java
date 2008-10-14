@@ -615,10 +615,12 @@ public class Assignment2 {
 	{
 		Set<AssignmentAttachment> set = new HashSet<AssignmentAttachment>();
 		for (int i = 0; i < attachmentRefs.length; i++) {
-			AssignmentAttachment aa = new AssignmentAttachment();
-			aa.setAssignment(this);
-			aa.setAttachmentReference(attachmentRefs[i]);
-			set.add(aa);
+		        if (attachmentRefs[i] != null && !attachmentRefs[i].equals("")) {
+		        	AssignmentAttachment aa = new AssignmentAttachment();
+				aa.setAssignment(this);
+				aa.setAttachmentReference(attachmentRefs[i]);
+				set.add(aa);
+			}
 		}
 		this.attachmentSet = set;
 	}
