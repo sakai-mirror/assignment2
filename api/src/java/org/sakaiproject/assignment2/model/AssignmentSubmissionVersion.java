@@ -415,10 +415,12 @@ public class AssignmentSubmissionVersion implements FeedbackVersion {
 	{
 		Set<FeedbackAttachment> set = new HashSet<FeedbackAttachment>();
 		for (int i = 0; i < attachmentRefs.length; i++) {
-			FeedbackAttachment fa = new FeedbackAttachment();
-			fa.setSubmissionVersion(this);
-			fa.setAttachmentReference(attachmentRefs[i]);
-			set.add(fa);
+			if (attachmentRefs[i] != null && !attachmentRefs[i].equals("")) {
+				FeedbackAttachment fa = new FeedbackAttachment();
+				fa.setSubmissionVersion(this);
+				fa.setAttachmentReference(attachmentRefs[i]);
+				set.add(fa);
+			}
 		}
 		this.feedbackAttachSet = set;
 	}
@@ -438,10 +440,12 @@ public class AssignmentSubmissionVersion implements FeedbackVersion {
 	{
 		Set<SubmissionAttachment> set = new HashSet<SubmissionAttachment>();
 		for (int i = 0; i < attachmentRefs.length; i++) {
-			SubmissionAttachment sa = new SubmissionAttachment();
-			sa.setSubmissionVersion(this);
-			sa.setAttachmentReference(attachmentRefs[i]);
-			set.add(sa);
+			if (attachmentRefs[i] != null && !attachmentRefs[i].equals("")) {
+				SubmissionAttachment sa = new SubmissionAttachment();
+				sa.setSubmissionVersion(this);
+				sa.setAttachmentReference(attachmentRefs[i]);
+				set.add(sa);
+			}
 		}
 		this.submissionAttachSet = set;
 	}
