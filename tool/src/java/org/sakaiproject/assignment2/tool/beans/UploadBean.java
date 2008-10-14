@@ -23,11 +23,13 @@ package org.sakaiproject.assignment2.tool.beans;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
-import java.util.zip.ZipFile;
 
-import org.sakaiproject.assignment2.logic.UploadAllLogic;
-import org.sakaiproject.assignment2.logic.UploadException;
+import org.sakaiproject.assignment2.exception.UploadException;
+import org.sakaiproject.assignment2.logic.ExternalLogic;
+import org.sakaiproject.assignment2.logic.UploadGradesLogic;
 import org.sakaiproject.assignment2.model.UploadAllOptions;
 import org.sakaiproject.assignment2.tool.producers.ViewSubmissionsProducer;
 import org.springframework.web.multipart.MultipartFile;
@@ -38,18 +40,20 @@ import uk.org.ponder.messageutil.TargettedMessageList;
 public class UploadBean
 {
 	private UploadAllOptions uploadOptions;
-	private TargettedMessageList messages;
-	private UploadAllLogic updownLogic;
 	private Map<String, MultipartFile> uploads;
+	
+	private static final String FAILURE = "failure";
 
+	private TargettedMessageList messages;
 	public void setTargettedMessageList(TargettedMessageList messages)
 	{
 		this.messages = messages;
 	}
 
-	public void setUploadAllLogic(UploadAllLogic updownLogic)
+	private UploadGradesLogic uploadGradesLogic;
+	public void setUploadGradesLogic(UploadGradesLogic uploadGradesLogic)
 	{
-		this.updownLogic = updownLogic;
+		this.uploadGradesLogic = uploadGradesLogic;
 	}
 
 	public void setMultipartMap(Map<String, MultipartFile> uploads)
@@ -63,8 +67,109 @@ public class UploadBean
 			uploadOptions = new UploadAllOptions();
 		return uploadOptions;
 	}
+	
+	private ExternalLogic externalLogic;
+	public void setExternalLogic(ExternalLogic externalLogic) {
+		this.externalLogic = externalLogic;
+	}
 
-	public String processUpload()
+	public String processUploadGradesCSV()
+	{
+		if (uploadOptions == null || uploadOptions.assignmentId == null ) {
+			messages.addMessage(new TargettedMessage("No assignmentId was passed " +
+					"in the request to processUploadGradesCSV. Cannot continue.", new Object[] {},
+					TargettedMessage.SEVERITY_ERROR));
+            return FAILURE;
+        }
+
+		if (uploads.isEmpty()) 
+		{
+			messages.addMessage(new TargettedMessage("assignment2.upload_grades.missing_file", new Object[] {},
+					TargettedMessage.SEVERITY_ERROR));
+			return FAILURE;
+		}
+	
+		MultipartFile uploadedFile = uploads.get("file");
+		
+		if (uploadedFile.getSize() == 0)
+		{
+			messages.addMessage(new TargettedMessage("assignment2.upload_grades.missing_file", new Object[] {},
+					TargettedMessage.SEVERITY_ERROR));
+			return FAILURE;
+		}
+		
+		if (!uploadedFile.getContentType().equals("text/comma-separated-values"))
+		{
+			messages.addMessage(new TargettedMessage("assignment2.upload_grades.not_csv", new Object[] {},
+					TargettedMessage.SEVERITY_ERROR));
+			return FAILURE;
+		}
+		
+		// now let's parse the content of the file so we can do some validation
+		// on the data before we attempt to save it. 
+		String contextId = externalLogic.getCurrentContextId();
+		
+		File newFile = null;
+		try {
+			newFile = File.createTempFile(uploadedFile.getName(), ".csv");
+			uploadedFile.transferTo(newFile);
+		} catch (IOException ioe) {
+			throw new UploadException(ioe.getMessage(), ioe);
+		}
+		
+		// retrieve the displayIdUserId info once and re-use it
+		Map<String, String> displayIdUserIdMap = externalLogic.getUserDisplayIdUserIdMapForStudentsInSite(contextId);		
+		List<List<String>> parsedContent = uploadGradesLogic.getCSVContent(newFile);
+		
+		// let's check that the students included in the file are actually in the site
+		List<String> invalidDisplayIds = uploadGradesLogic.getInvalidDisplayIdsInContent(displayIdUserIdMap, parsedContent);
+		if (invalidDisplayIds != null && !invalidDisplayIds.isEmpty()) {
+			messages.addMessage(new TargettedMessage("assignment2.upload_grades.user_not_in_site", 
+					new Object[] {getListAsString(invalidDisplayIds)}, TargettedMessage.SEVERITY_ERROR ));
+			return FAILURE;
+		}
+		
+		// check that the grades are valid
+		List<String> displayIdsWithInvalidGrade = uploadGradesLogic.getStudentsWithInvalidGradesInContent(parsedContent, contextId);
+		if (displayIdsWithInvalidGrade != null && !displayIdsWithInvalidGrade.isEmpty()) {
+			messages.addMessage(new TargettedMessage("assignment2.upload_grades.grades_not_valid", 
+					new Object[] {getListAsString(displayIdsWithInvalidGrade)}, TargettedMessage.SEVERITY_ERROR ));
+			return FAILURE;
+		}
+		
+		// let's upload the grades now
+		List<String> usersNotUpdated = uploadGradesLogic.uploadGrades(displayIdUserIdMap, uploadOptions.assignmentId, parsedContent);
+		
+		if (!usersNotUpdated.isEmpty()) {
+			messages.addMessage(new TargettedMessage("assignment2.upload_grades.upload_successful_with_exception",
+					new Object[] {getListAsString(usersNotUpdated)}, TargettedMessage.SEVERITY_INFO));
+		} else {
+			messages.addMessage(new TargettedMessage("assignment2.upload_grades.upload_successful",
+					new Object[] {}, TargettedMessage.SEVERITY_INFO));
+		}
+		
+		// let's proceed with the grade upload
+		return ViewSubmissionsProducer.VIEW_ID;
+	}
+
+	private String getListAsString(List<String> itemList) {
+		StringBuilder sb = new StringBuilder();
+		if (itemList != null) {
+			for (int i = 0; i < itemList.size(); i++) {
+				if (i != 0) {
+					sb.append(", ");
+				}
+				
+				sb.append(itemList.get(i));
+			}
+		}
+		
+		return sb.toString();
+	}
+	
+	/*
+	 * **** This is the original code for a full upload. For now, we are only updating grades via the csv
+	 public String processUpload()
 	{
 		MultipartFile upFile = null;
 		boolean isZip = false;
@@ -121,5 +226,5 @@ public class UploadBean
 		}
 
 		return ViewSubmissionsProducer.VIEW_ID;
-	}
+	}*/
 }

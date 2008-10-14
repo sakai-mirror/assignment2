@@ -93,8 +93,8 @@ form li.activefield {
 }
 
 form li label {
-	display: block;
-	float: left;
+	/* display: block;
+	float: left; */
 	margin-right: .5em;
 	margin-top: .3em;
 	text-align: left;
@@ -384,12 +384,35 @@ ul#assignmentList li.row div.overlay {
    top: 0;
    width: 100%;
 }
-   ul#assignmentList li.row div.overlayMessage {
-      margin-left: 5em;
-      position: absolute;
-      top: 0;
-      width: 80%;
-   }
-   ul#assignmentList li.row div.overlayMessage .success {
-      background-color: #fff;
-   }
+
+ul#assignmentList li.row div.overlayMessage {
+   margin-left: 5em;
+   position: absolute;
+   top: 0;
+   width: 80%;
+}
+
+ul#assignmentList li.row div.overlayMessage .success {
+   background-color: #fff;
+}
+   
+#override_settings_container ol {
+    margin:10px 0 0 20px;
+}
+   
+#override_settings_container label {
+    margin:0;
+}
+   
+#override_settings_container li {
+    margin-top: 5px;
+}
+
+/* 
+ *  Student Assignment List and Landing Page
+ */
+
+/* This class is for assignments that have been checked as completed */
+h4.completed_assignment {
+    color: gray;
+}

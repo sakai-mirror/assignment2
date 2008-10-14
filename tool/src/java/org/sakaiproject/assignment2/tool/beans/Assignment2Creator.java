@@ -36,96 +36,95 @@ import java.util.HashSet;
 
 public class Assignment2Creator {
 
-	//public static final String DEFAULT_TITLE = "";
-	private ExternalLogic externalLogic;
-	private MessageLocator messageLocator;
-	
-    public Assignment2 create() {
-  
-    	Assignment2 togo = new Assignment2();
-    	togo.setTitle("");
-    	togo.setContextId(externalLogic.getCurrentContextId());
-    	togo.setHonorPledge(Boolean.FALSE);
-    	togo.setUngraded(Boolean.TRUE);
-    	togo.setRequiresSubmission(true);
-    	togo.setHasAnnouncement(Boolean.FALSE);
-    	togo.setAddedToSchedule(Boolean.FALSE);
-    	togo.setSubmissionType(AssignmentConstants.SUBMIT_INLINE_AND_ATTACH);
-    	togo.setAttachmentSet(new HashSet<AssignmentAttachment>());
-    	
-    	//Setting up Dates
-    	Calendar cal = Calendar.getInstance();
-    	//cal.set(Calendar.HOUR_OF_DAY, 12);
-    	//cal.set(Calendar.MINUTE, 0);
-    	Date openDate = cal.getTime();
-    	cal.add(Calendar.DAY_OF_YEAR, 7);
-    	cal.set(Calendar.HOUR_OF_DAY, 17);
-    	
-    	togo.setOpenTime(openDate);
-    	//togo.setDueDate(closeDate);
-    	//togo.setAcceptUntilTime(closeDate);
-    	
-    	return togo;
-    }
-    
-    public Assignment2 createDuplicate(Assignment2 assignment) {
-    	Assignment2 dup = new Assignment2();
+    //public static final String DEFAULT_TITLE = "";
+    private ExternalLogic externalLogic;
+    private MessageLocator messageLocator;
 
-    	String newTitle = messageLocator.getMessage("Assignment2Creator.duplicate.title", assignment.getTitle());
-    	
-    	dup.setGradableObjectId(assignment.getGradableObjectId());
-    	dup.setContextId(assignment.getContextId());
-    	dup.setTitle(newTitle);
-    	dup.setDraft(Boolean.TRUE);
-    	dup.setSortIndex(assignment.getSortIndex());
-    	dup.setOpenTime(assignment.getOpenTime());
-    	dup.setAcceptUntilTime(assignment.getAcceptUntilTime());
-    	dup.setUngraded(assignment.isUngraded());
-    	dup.setDueDate(assignment.getDueDate());
-    	dup.setHonorPledge(assignment.isHonorPledge());
-    	dup.setInstructions(assignment.getInstructions());
-    	dup.setSubmissionType(assignment.getSubmissionType());
-    	dup.setNotificationType(assignment.getNotificationType());
-		dup.setHasAnnouncement(assignment.getHasAnnouncement());
-		dup.setAddedToSchedule(assignment.getAddedToSchedule());
-		dup.setAllowReviewService(assignment.isAllowReviewService());
-		dup.setAllowStudentViewReport(assignment.isAllowStudentViewReport());
-		dup.setRemoved(Boolean.FALSE);
-		dup.setNumSubmissionsAllowed(assignment.getNumSubmissionsAllowed());
-		dup.setRequiresSubmission(assignment.isRequiresSubmission());
-		
-		// let's duplicate the attachments and group restrictions
-		Set<AssignmentGroup> assignGroupSet = new HashSet<AssignmentGroup>();
-		if (assignment.getAssignmentGroupSet() != null && !assignment.getAssignmentGroupSet().isEmpty()) {
-			for (AssignmentGroup group : assignment.getAssignmentGroupSet()) {
-				if (group != null) {
-					AssignmentGroup newGroup = new AssignmentGroup(dup, group.getGroupId());
-					assignGroupSet.add(newGroup);
-				}
-			}
-		}
-		
-		Set<AssignmentAttachment> attachSet = new HashSet<AssignmentAttachment>();
-		if (assignment.getAttachmentSet() != null && !assignment.getAttachmentSet().isEmpty()) {
-			for (AssignmentAttachment attach : assignment.getAttachmentSet()) {
-				if (attach != null) {
-					AssignmentAttachment newGroup = new AssignmentAttachment(dup, attach.getAttachmentReference());
-					attachSet.add(newGroup);
-				}
-			}
-		}
-		
-		dup.setAssignmentGroupSet(assignGroupSet);
-		dup.setAttachmentSet(attachSet);
-		
-    	return dup;
+    public Assignment2 create() {
+
+        Assignment2 togo = new Assignment2();
+        togo.setTitle("");
+        togo.setContextId(externalLogic.getCurrentContextId());
+        togo.setHonorPledge(false);
+        togo.setGraded(false);
+        togo.setRequiresSubmission(true);
+        togo.setHasAnnouncement(false);
+        togo.setAddedToSchedule(false);
+        togo.setSubmissionType(AssignmentConstants.SUBMIT_INLINE_AND_ATTACH);
+        togo.setAttachmentSet(new HashSet<AssignmentAttachment>());
+        togo.setNumSubmissionsAllowed(1);
+
+        //Setting up Dates
+        Calendar cal = Calendar.getInstance();
+        //cal.set(Calendar.HOUR_OF_DAY, 12);
+        //cal.set(Calendar.MINUTE, 0);
+        Date openDate = cal.getTime();
+        cal.add(Calendar.DAY_OF_YEAR, 7);
+        cal.set(Calendar.HOUR_OF_DAY, 17);
+
+        togo.setOpenDate(openDate);
+        //togo.setDueDate(closeDate);
+        //togo.setAcceptUntilDate(closeDate);
+
+        return togo;
+    }
+
+    public Assignment2 createDuplicate(Assignment2 assignment) {
+        Assignment2 dup = new Assignment2();
+
+        String newTitle = messageLocator.getMessage("Assignment2Creator.duplicate.title", assignment.getTitle());
+
+        dup.setGradableObjectId(assignment.getGradableObjectId());
+        dup.setContextId(assignment.getContextId());
+        dup.setTitle(newTitle);
+        dup.setDraft(true);
+        dup.setSortIndex(assignment.getSortIndex());
+        dup.setOpenDate(assignment.getOpenDate());
+        dup.setAcceptUntilDate(assignment.getAcceptUntilDate());
+        dup.setGraded(assignment.isGraded());
+        dup.setDueDate(assignment.getDueDate());
+        dup.setHonorPledge(assignment.isHonorPledge());
+        dup.setInstructions(assignment.getInstructions());
+        dup.setSubmissionType(assignment.getSubmissionType());
+        dup.setSendSubmissionNotifications(assignment.isSendSubmissionNotifications());
+        dup.setHasAnnouncement(assignment.getHasAnnouncement());
+        dup.setAddedToSchedule(assignment.getAddedToSchedule());
+        dup.setRemoved(false);
+        dup.setNumSubmissionsAllowed(assignment.getNumSubmissionsAllowed());
+        dup.setRequiresSubmission(assignment.isRequiresSubmission());
+
+        // let's duplicate the attachments and group restrictions
+        Set<AssignmentGroup> assignGroupSet = new HashSet<AssignmentGroup>();
+        if (assignment.getAssignmentGroupSet() != null && !assignment.getAssignmentGroupSet().isEmpty()) {
+            for (AssignmentGroup group : assignment.getAssignmentGroupSet()) {
+                if (group != null) {
+                    AssignmentGroup newGroup = new AssignmentGroup(dup, group.getGroupId());
+                    assignGroupSet.add(newGroup);
+                }
+            }
+        }
+
+        Set<AssignmentAttachment> attachSet = new HashSet<AssignmentAttachment>();
+        if (assignment.getAttachmentSet() != null && !assignment.getAttachmentSet().isEmpty()) {
+            for (AssignmentAttachment attach : assignment.getAttachmentSet()) {
+                if (attach != null) {
+                    AssignmentAttachment newGroup = new AssignmentAttachment(dup, attach.getAttachmentReference());
+                    attachSet.add(newGroup);
+                }
+            }
+        }
+
+        dup.setAssignmentGroupSet(assignGroupSet);
+        dup.setAttachmentSet(attachSet);
+
+        return dup;
     }
 
     public void setExternalLogic(ExternalLogic externalLogic) {
-	    this.externalLogic = externalLogic;
+        this.externalLogic = externalLogic;
     }
-    
+
     public void setMessageLocator (MessageLocator messageLocator) {
-    	this.messageLocator = messageLocator;
+        this.messageLocator = messageLocator;
     }
 }

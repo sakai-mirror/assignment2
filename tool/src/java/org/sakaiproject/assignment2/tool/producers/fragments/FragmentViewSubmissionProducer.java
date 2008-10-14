@@ -50,7 +50,7 @@ public class FragmentViewSubmissionProducer implements ViewComponentProducer, Vi
 
     	AssignmentSubmissionVersion asv = submissionLogic.getSubmissionVersionById(params.submissionVersionId);
 
-    	if (asv.getReleasedTime() != null) {
+    	if (asv.getFeedbackReleasedDate() != null) {
     		UIVerbatim.make(tofill, "submitted_text", asv.getAnnotatedTextFormatted());
     	} else {
     		UIVerbatim.make(tofill, "submitted_text", asv.getSubmittedText());

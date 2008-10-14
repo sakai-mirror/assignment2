@@ -20,16 +20,12 @@
  **********************************************************************************/
 package org.sakaiproject.assignment2.tool.beans;
 
-import java.util.List;
-
 import org.sakaiproject.api.app.scheduler.DelayedInvocation;
 import org.sakaiproject.api.app.scheduler.ScheduledInvocationManager;
 import org.sakaiproject.assignment2.logic.ScheduledNotification;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.exception.IdUnusedException;
-import org.sakaiproject.exception.PermissionException;
-import org.sakaiproject.exception.TypeException;
 import org.sakaiproject.time.api.Time;
 import org.sakaiproject.time.api.TimeService;
 import org.sakaiproject.user.api.UserNotDefinedException;
@@ -65,18 +61,14 @@ public class NotificationBean
 	 * the tool layer isn't visible to the scheduledInvocation stuff
 	 */
 	
-	public void notifyStudentThatSubmissionWasAccepted(AssignmentSubmission s)
-			throws IdUnusedException, UserNotDefinedException, PermissionException,
-			TypeException
+	public void notifyStudentThatSubmissionWasAccepted(AssignmentSubmission s) 
 	{
 		scheduledNotification.notifyStudentThatSubmissionWasAccepted(s);
 	}
 
-	public void notifyInstructorsOfSubmission(AssignmentSubmission s, Assignment2 a)
-			throws IdUnusedException, UserNotDefinedException, PermissionException,
-			IdUnusedException, TypeException
+	public void notifyInstructorsOfSubmission(AssignmentSubmission s)
 	{
-		scheduledNotification.notifyInstructorsOfSubmission(s, a);
+		scheduledNotification.notifyInstructorsOfSubmission(s);
 	}
 
 	public void notifyStudentsOfNewAssignment(Assignment2 assignment)
@@ -85,7 +77,7 @@ public class NotificationBean
 		String assignmentId = assignment.getId().toString();
 		if (!assignment.isDraft())
 		{
-			Time openTime = timeService.newTime(assignment.getOpenTime().getTime());
+			Time openTime = timeService.newTime(assignment.getOpenDate().getTime());
 			
 			// Remove any existing notifications for this assignment
 			DelayedInvocation[] fdi = scheduledInvocationManager.findDelayedInvocations("org.sakaiproject.assignment2.logic.ScheduledNotification",

@@ -41,18 +41,25 @@ function useValue(value){
    newValue = value;
 }
 function changeValue(){   
-	el = jQuery("select[name='page-replace\:\:gradebook_item-selection']").get(0);
-	if(el){
-      for(i=0;i<el.length;i++){
-         if(el.options[i].text == newValue){
-            el.selectedIndex = i;  
-         }
-      }
-   }
-   if (el.selectedIndex != 0){
-   	jQuery("input[type='radio'][value='false'][name='page-replace\:\:ungraded-selection']").get(0).checked=true;
-   }
+    el = jQuery("select[name='page-replace\:\:gradebook_item-selection']").get(0);
+    if(el){
+        for(i=0;i<el.length;i++){
+            if(el.options[i].text == newValue){
+                el.selectedIndex = i;  
+            }
+        }
+    }
 
+    selectGraded()
+}
+
+function selectGraded() {
+    el = jQuery("select[name='page-replace\:\:gradebook_item-selection']").get(0);
+    if (el.selectedIndex != 0){
+        jQuery("input[type='radio'][id='page-replace\:\:select_graded']").get(0).checked=true;
+    } else {
+        jQuery("input[type='radio'][id='page-replace\:\:select_ungraded']").get(0).checked=true;
+    }
 }
 
 
@@ -77,9 +84,9 @@ function show_due_date(){
 	el = jQuery("input:checkbox[name='page-replace\:\:require_due_date']").get(0);
 	if (el) {
 		if (el.checked) {
-			jQuery(el).parents("fieldset:first").next('div').show();
+			jQuery(el).nextAll('span:first').show();
 		} else {
-			jQuery(el).parents("fieldset:first").next('div').hide();
+			jQuery(el).nextAll('span:first').hide();
 		}
 	}
 }
@@ -88,11 +95,9 @@ function show_accept_until(){
 	el = jQuery("input:checkbox[name='page-replace\:\:require_accept_until']").get(0);
 	if (el){
 		if(el.checked){
-			jQuery(el).parents("fieldset:first").next('div').show();
-			//jQuery(el).parents("fieldset:first").next('div').next('fieldset').show();
+			jQuery(el).nextAll('span:first').show();
 		}else {
-			jQuery(el).parents("fieldset:first").next('div').hide();
-			//jQuery(el).parents("fieldset:first").next('div').next('fieldset').hide();
+			jQuery(el).nextAll('span:first').hide();
 		}
 		
 	}
@@ -107,6 +112,61 @@ function update_resubmit_until(){
 		jQuery(".resubmit_until_toggle").hide();
 	}
 	}
+}
+
+function override_submission_settings(){
+    override_checkbox = jQuery("input:checkbox[@name='page-replace\:\:override_settings']").get(0);
+    
+    if (override_checkbox){
+        if (override_checkbox.checked) {
+            // change text back to normal
+            jQuery("#override_settings_container").removeClass("inactive");
+            
+            // enable all of the form elements
+            jQuery("select[@name='page-replace\:\:resubmission_additional-selection']").removeAttr("disabled");
+            jQuery("input:checkbox[@name='page-replace\:\:require_accept_until']").removeAttr("disabled");
+            // TODO - get the rsf date widget to work when these are disabled -it
+            // is throwing syntax error upon submission
+            //jQuery("input[@name='page-replace\:\:accept_until\:1\:date-field']").removeAttr("disabled");
+           //jQuery("input[@name='page-replace\:\:accept_until\:1\:time-field']").removeAttr("disabled");
+        } else {
+            // gray out the text
+            jQuery("#override_settings_container").addClass("inactive");
+            
+            // disable all form elements
+            jQuery("select[@name='page-replace\:\:resubmission_additional-selection']").attr("disabled","disabled");
+            jQuery("input:checkbox[@name='page-replace\:\:require_accept_until']").attr("disabled","disabled");
+           // jQuery("input[@name='page-replace\:\:accept_until\:1\:date-field']").attr("disabled","disabled");
+            //jQuery("input[@name='page-replace\:\:accept_until\:1\:time-field']").attr("disabled","disabled");
+        }
+    }
+}
+
+function set_accept_until_on_submission_level(){
+    el = jQuery("input:checkbox[@name='page-replace\:\:require_accept_until']").get(0);
+    if (el){
+        if (el.checked) {
+            jQuery("#accept_until_container").show();
+        } else {
+            jQuery("#accept_until_container").hide();
+        }
+    }
+}
+
+function update_new_gb_item_helper_url() {
+    var gbUrlWithoutName = jQuery("a[id='page-replace\:\:gradebook_url_without_name']").attr("href");
+    var new_title = jQuery("input[name='page-replace\:\:title']").get(0).value
+    
+    // encode unsafe characters that may be in the assignment title
+   
+    var escaped_title = "";
+    if (new_title) {
+        escaped_title = escape(new_title);
+    }
+    
+    var modifiedUrl = gbUrlWithoutName + "&name=" + escaped_title;
+    
+    jQuery("a[id='page-replace\:\:gradebook_item_new_helper']").attr("href", modifiedUrl);
 }
 
 jQuery(document).ready(function(){
@@ -169,12 +229,13 @@ function sortPageRows(b,d) {
       jQuery("div.pagerDiv input[name='page-replace\:\:pagerDiv\:1\:pager_next_page'], div.pagerDiv input[name='page-replace\:\:pagerDiv\:1\:pager_last_page']").removeAttr('disabled');  
    }
    //now parse the date
-   format = jQuery("div.pagerDiv div.format").get(0).innerHTML;
-   format = format.replace(/\{0\}/, Number(pStart) + 1);
-   last = Number(pStart) + Number(pLength) > trsLength ? trsLength : Number(pStart) + Number(pLength);
-   format = format.replace(/\{1\}/, last);
-   format = format.replace(/\{2\}/, jQuery("table#sortable tr:gt(0)").size());
-   jQuery("div.pagerDiv div.instruction").html(format);
+   // TODO FIXME SWG commenting out temporarily so the table will show up.
+   //format = jQuery("div.pagerDiv div.format").get(0).innerHTML;
+   //format = format.replace(/\{0\}/, Number(pStart) + 1);
+   //last = Number(pStart) + Number(pLength) > trsLength ? trsLength : Number(pStart) + Number(pLength);
+   //format = format.replace(/\{1\}/, last);
+   //format = format.replace(/\{2\}/, jQuery("table#sortable tr:gt(0)").size());
+   //jQuery("div.pagerDiv div.instruction").html(format);
 }
 jQuery(document).ready(function(){
 	if (jQuery("table#sortable").get(0)) {

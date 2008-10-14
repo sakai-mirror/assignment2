@@ -36,161 +36,193 @@ import org.sakaiproject.assignment2.tool.params.ZipViewParams;
 import uk.org.ponder.rsf.builtin.UVBProducer;
 import uk.org.ponder.rsf.viewstate.ViewParameters;
 
+/**
+ * Given a view params, this class allows you determine whether a User has
+ * permission to actually view that URL.
+ * 
+ * Also included is the logic that determines whether to go to the 
+ * StudentSubmitSummary or just StudentSubmit page.  I'm thinking about 
+ * combining those.
+ * 
+ * @author rjlowe
+ * @author sgithens
+ *
+ */
 public class LocalPermissionLogic {
-	
-	private AssignmentPermissionLogic permissionLogic;
-	public void setPermissionLogic(AssignmentPermissionLogic permissionLogic) {
-		this.permissionLogic = permissionLogic;
-	}
-	
-	private ExternalLogic externalLogic;
-	public void setExternalLogic(ExternalLogic externalLogic) {
-		this.externalLogic = externalLogic;
-	}
-	
-	private AssignmentSubmissionLogic submissionLogic;
-	public void setSubmissionLogic(AssignmentSubmissionLogic submissionLogic) {
-		this.submissionLogic = submissionLogic;
-	}
-	
-	public Boolean checkCurrentUserHasViewPermission(ViewParameters viewParams) {
-		String contextId = externalLogic.getCurrentContextId();
-		String viewId = viewParams.viewID;
-		
-		if (AddAttachmentHelperProducer.VIEWID.equals(viewId)) {
-			return Boolean.TRUE;
-			
-		} else if (AjaxResultsProducer.VIEW_ID.equals(viewId)) {
-			return Boolean.TRUE;
-			
-		}else if (AssignmentDetailProducer.VIEW_ID.equals(viewId)) {
-			// used by entity broker
-			return Boolean.TRUE;
-			
-		} else if (ListProducer.VIEW_ID.equals(viewId)) {
-			return permissionLogic.isUserAbleToAccessInstructorView(contextId);
-			
-      } else if (ListReorderProducer.VIEW_ID.equals(viewId)) {
-			return permissionLogic.isUserAbleToAccessInstructorView(contextId);
 
-		} else if (AssignmentProducer.VIEW_ID.equals(viewId)) {
-			return permissionLogic.isCurrentUserAbleToEditAssignments(contextId);
-			
-		} else if (FinishedHelperProducer.VIEWID.equals(viewId)) {
-			return Boolean.TRUE;
-			
-		} else if (GradeProducer.VIEW_ID.equals(viewId)) {
-			if (viewParams instanceof GradeViewParams)
-			{
-				GradeViewParams params = (GradeViewParams) viewParams;
-				return permissionLogic.isUserAbleToViewStudentSubmissionForAssignment(params.userId, params.assignmentId);
-			} 
-			
-			return Boolean.FALSE;
+    private AssignmentPermissionLogic permissionLogic;
+    public void setPermissionLogic(AssignmentPermissionLogic permissionLogic) {
+        this.permissionLogic = permissionLogic;
+    }
 
-      } else if (SettingsProducer.VIEW_ID.equals(viewId)) {
-         return Boolean.TRUE;         
+    private ExternalLogic externalLogic;
+    public void setExternalLogic(ExternalLogic externalLogic) {
+        this.externalLogic = externalLogic;
+    }
 
-		} else if (StudentAssignmentListProducer.VIEW_ID.equals(viewId)) {
-			return permissionLogic.isCurrentUserAbleToSubmit(contextId);
-			
-		} else if (StudentSubmitProducer.VIEW_ID.equals(viewId)) {
-			if (viewParams instanceof SimpleAssignmentViewParams) {
-				SimpleAssignmentViewParams params = (SimpleAssignmentViewParams) viewParams;
-				
-				return permissionLogic.isCurrentUserAbleToSubmit(contextId) && 
-					permissionLogic.isUserAbleToViewAssignment(contextId, params.assignmentId);
-			}
-			
-			return Boolean.FALSE;
-			
-		} else if (ViewSubmissionsProducer.VIEW_ID.equals(viewId)) {
-			if (viewParams instanceof ViewSubmissionsViewParams) {
-				ViewSubmissionsViewParams params = (ViewSubmissionsViewParams) viewParams;
-				
-				return permissionLogic.isUserAbleToAccessInstructorView(contextId) && 
-					permissionLogic.isUserAbleToViewAssignment(contextId, params.assignmentId);
-			}
+    private AssignmentSubmissionLogic submissionLogic;
+    public void setSubmissionLogic(AssignmentSubmissionLogic submissionLogic) {
+        this.submissionLogic = submissionLogic;
+    }
 
-			return Boolean.FALSE;
-			
-		} else if (AjaxCallbackProducer.VIEW_ID.equals(viewId)) {
-			return Boolean.TRUE;
-			
-		} else if (FragmentAssignment2SelectProducer.VIEW_ID.equals(viewId)) {
-			return permissionLogic.isCurrentUserAbleToEditAssignments(contextId);
-			
-		} else if (FragmentAssignmentPreviewProducer.VIEW_ID.equals(viewId)) {
-			return permissionLogic.isCurrentUserAbleToEditAssignments(contextId);
-			
-		} else if (FragmentGradebookDetailsProducer.VIEW_ID.equals(viewId)) {
-			if (viewParams instanceof FragmentGradebookDetailsViewParams) {
-				FragmentGradebookDetailsViewParams params = (FragmentGradebookDetailsViewParams) viewParams;
-				return permissionLogic.isUserAbleToViewStudentSubmissionForAssignment(params.userId, params.assignmentId);
-			}
-			
-			return Boolean.FALSE;
-			
-		} else if (FragmentSubmissionGradePreviewProducer.VIEW_ID.equals(viewId)) {
-			//TODO - RYAN!  Remove this producer!
-			return Boolean.FALSE;
-			
-		} else if (FragmentSubmissionPreviewProducer.VIEW_ID.equals(viewId)) {
-			return permissionLogic.isCurrentUserAbleToSubmit(contextId);
-		
-		} else if (FragmentViewSubmissionProducer.VIEW_ID.equals(viewId)) {
-			return Boolean.TRUE;
-		
-		} else if (UploadAllProducer.VIEW_ID.equals(viewId)) {
-			if (viewParams instanceof AssignmentViewParams) {
-				AssignmentViewParams params = (AssignmentViewParams) viewParams;
-				
-				return permissionLogic.isUserAbleToAccessInstructorView(contextId) && 
-					permissionLogic.isUserAbleToViewAssignment(contextId, params.assignmentId);
-			}
-			
-			return Boolean.FALSE;
-	
-		} else if (FragmentAssignmentInstructionsProducer.VIEW_ID.equals(viewId)) {
-			if (viewParams instanceof AssignmentViewParams) {
-				AssignmentViewParams params = (AssignmentViewParams) viewParams;
-				
-				return permissionLogic.isUserAbleToViewAssignment(contextId, params.assignmentId);
-			}
-			
-			return Boolean.FALSE;
-			
-		} else if ("zipSubmissions".equals(viewId)) {
-			if (viewParams instanceof ZipViewParams) {
-				ZipViewParams params = (ZipViewParams) viewParams;
-				
-				return permissionLogic.isUserAbleToAccessInstructorView(contextId) &&
-					permissionLogic.isUserAbleToViewAssignment(contextId, params.assignmentId);
-			}
-			
-			return Boolean.FALSE;
-			
-		} else if (TaggableHelperProducer.VIEWID.equals(viewId)) {
-			return permissionLogic.isUserAbleToAccessInstructorView(contextId);
-		}
-		
-		//Here are some RSF Generic always true viewIds
-		
-		else if (UVBProducer.VIEW_ID.equals(viewId)) {
-			return Boolean.TRUE;
-		}
-		
-		//else just say No
-		return Boolean.FALSE;
-	}
-	
-	public String filterViewIdForStudentSubmission(SimpleAssignmentViewParams incoming) {
-		String userId = externalLogic.getCurrentUserId();
-		if(submissionLogic.submissionIsOpenForStudentForAssignment(userId, incoming.assignmentId)){
-			return StudentSubmitProducer.VIEW_ID;
-		} else {
-			return StudentSubmitSummaryProducer.VIEW_ID;
-		}
-	}
-	
+    /**
+     * Determines whether or not a User can actually view the page defined
+     * by these view parameters.
+     * 
+     * @param viewParams
+     * @return Whether not the user can view this page.  False if not, True if
+     * they are.
+     */
+    public Boolean checkCurrentUserHasViewPermission(ViewParameters viewParams) {
+        String contextId = externalLogic.getCurrentContextId();
+        String viewId = viewParams.viewID;
+
+        if (AddAttachmentHelperProducer.VIEWID.equals(viewId)) {
+            return Boolean.TRUE;
+
+        } else if (AjaxResultsProducer.VIEW_ID.equals(viewId)) {
+            return Boolean.TRUE;
+
+        } else if (AssignmentDetailProducer.VIEW_ID.equals(viewId)) {
+            // used by entity broker
+            return Boolean.TRUE;
+
+        } else if (ListProducer.VIEW_ID.equals(viewId)) {
+            return permissionLogic.isUserAbleToAccessInstructorView(contextId);
+
+        } else if (ListReorderProducer.VIEW_ID.equals(viewId)) {
+            return permissionLogic.isCurrentUserAbleToEditAssignments(contextId);
+
+        } else if (AssignmentProducer.VIEW_ID.equals(viewId)) {
+            return permissionLogic.isCurrentUserAbleToEditAssignments(contextId);
+
+        } else if (FinishedHelperProducer.VIEWID.equals(viewId)) {
+            return Boolean.TRUE;
+
+        } else if (GradeProducer.VIEW_ID.equals(viewId)) {
+            if (viewParams instanceof GradeViewParams)
+            {
+                GradeViewParams params = (GradeViewParams) viewParams;
+                return permissionLogic.isUserAbleToViewStudentSubmissionForAssignment(params.userId, params.assignmentId);
+            } 
+
+            return Boolean.FALSE;
+
+        } else if (SettingsProducer.VIEW_ID.equals(viewId)) {
+            return Boolean.TRUE;         
+
+        } else if (StudentAssignmentListProducer.VIEW_ID.equals(viewId)) {
+            return permissionLogic.isCurrentUserAbleToSubmit(contextId);
+
+        } else if (StudentSubmitProducer.VIEW_ID.equals(viewId)) {
+            if (viewParams instanceof SimpleAssignmentViewParams) {
+                SimpleAssignmentViewParams params = (SimpleAssignmentViewParams) viewParams;
+
+                return permissionLogic.isCurrentUserAbleToSubmit(contextId) && 
+                permissionLogic.isUserAbleToViewAssignment(contextId, params.assignmentId);
+            }
+
+            return Boolean.FALSE;
+
+        } else if (ViewSubmissionsProducer.VIEW_ID.equals(viewId)) {
+            if (viewParams instanceof ViewSubmissionsViewParams) {
+                ViewSubmissionsViewParams params = (ViewSubmissionsViewParams) viewParams;
+
+                return permissionLogic.isUserAbleToAccessInstructorView(contextId) && 
+                permissionLogic.isUserAbleToViewAssignment(contextId, params.assignmentId);
+            }
+
+            return Boolean.FALSE;
+
+        } else if (AjaxCallbackProducer.VIEW_ID.equals(viewId)) {
+            return Boolean.TRUE;
+
+        } else if (FragmentAssignment2SelectProducer.VIEW_ID.equals(viewId)) {
+            return permissionLogic.isCurrentUserAbleToEditAssignments(contextId);
+
+        } else if (FragmentAssignmentPreviewProducer.VIEW_ID.equals(viewId)) {
+            return permissionLogic.isCurrentUserAbleToEditAssignments(contextId);
+
+        } else if (FragmentGradebookDetailsProducer.VIEW_ID.equals(viewId)) {
+            if (viewParams instanceof FragmentGradebookDetailsViewParams) {
+                FragmentGradebookDetailsViewParams params = (FragmentGradebookDetailsViewParams) viewParams;
+                return permissionLogic.isUserAbleToViewStudentSubmissionForAssignment(params.userId, params.assignmentId);
+            }
+
+            return Boolean.FALSE;
+
+        } else if (FragmentSubmissionGradePreviewProducer.VIEW_ID.equals(viewId)) {
+            //TODO - RYAN!  Remove this producer!
+            return Boolean.FALSE;
+
+        } else if (FragmentSubmissionPreviewProducer.VIEW_ID.equals(viewId)) {
+            return permissionLogic.isCurrentUserAbleToSubmit(contextId);
+
+        } else if (FragmentViewSubmissionProducer.VIEW_ID.equals(viewId)) {
+            return Boolean.TRUE;
+
+        } else if (UploadAllProducer.VIEW_ID.equals(viewId)) {
+            if (viewParams instanceof AssignmentViewParams) {
+                AssignmentViewParams params = (AssignmentViewParams) viewParams;
+
+                return permissionLogic.isUserAbleToAccessInstructorView(contextId) && 
+                permissionLogic.isUserAbleToViewAssignment(contextId, params.assignmentId);
+            }
+
+            return Boolean.FALSE;
+
+        } else if (FragmentAssignmentInstructionsProducer.VIEW_ID.equals(viewId)) {
+            if (viewParams instanceof AssignmentViewParams) {
+                AssignmentViewParams params = (AssignmentViewParams) viewParams;
+
+                return permissionLogic.isUserAbleToViewAssignment(contextId, params.assignmentId);
+            }
+
+            return Boolean.FALSE;
+
+        } else if ("zipSubmissions".equals(viewId)) {
+            if (viewParams instanceof ZipViewParams) {
+                ZipViewParams params = (ZipViewParams) viewParams;
+
+                return permissionLogic.isUserAbleToAccessInstructorView(contextId) &&
+                permissionLogic.isUserAbleToViewAssignment(contextId, params.assignmentId);
+            }
+
+            return Boolean.FALSE;
+
+        } else if (TaggableHelperProducer.VIEWID.equals(viewId)) {
+            return permissionLogic.isUserAbleToAccessInstructorView(contextId);
+        }
+
+        //Here are some RSF Generic always true viewIds
+
+        else if (UVBProducer.VIEW_ID.equals(viewId)) {
+            return Boolean.TRUE;
+        }
+
+        //else just say No
+        return Boolean.FALSE;
+    }
+
+    /**
+     * Returns the View ID that a student should go to for an assignment, depending
+     * on whether or not they can still turn in submissions for the assignment.
+     * 
+     * TODO FIXME This is being merged into one view.  Come back and remove this
+     * commented out code once it works.
+     * 
+     * @param incoming
+     * @return
+     */
+    /*
+    public String filterViewIdForStudentSubmission(SimpleAssignmentViewParams incoming) {
+        String userId = externalLogic.getCurrentUserId();
+        if(submissionLogic.submissionIsOpenForStudentForAssignment(userId, incoming.assignmentId)){
+            return StudentSubmitProducer.VIEW_ID;
+        } else {
+            return StudentSubmitSummaryProducer.VIEW_ID;
+        }
+    }
+    */
+
 }

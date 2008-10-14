@@ -114,8 +114,8 @@ public class ListReorderProducer implements ViewComponentProducer, NavigationCas
         	assignment_row.decorators = new DecoratorList(new UIStyleDecorator("sortable_" + assignment.getId().toString()));
         	
         	UIOutput.make(assignment_row, "row_title", assignment.getTitle());
-        	if (assignment.getOpenTime() != null) {
-        		UIOutput.make(assignment_row, "row_open", df.format(assignment.getOpenTime()));
+        	if (assignment.getOpenDate() != null) {
+        		UIOutput.make(assignment_row, "row_open", df.format(assignment.getOpenDate()));
         	} else {
         		UIMessage.make(assignment_row, "row_open", "assignment2.list-reorder.no_open_date");
         	}

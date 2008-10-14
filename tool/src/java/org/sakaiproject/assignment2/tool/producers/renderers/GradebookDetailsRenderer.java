@@ -60,16 +60,16 @@ public class GradebookDetailsRenderer {
 	
 	public void makeGradebookDetails(UIContainer tofill, String divID, AssignmentSubmission as, Long assignmentId, String userId){
 		
-    	//Edit Permission
-        Boolean edit_perm = permissionLogic.isCurrentUserAbleToEditAssignments(externalLogic.getCurrentContextId());
-		
 		UIJointContainer joint = new UIJointContainer(tofill, divID, "gradebook_details:", ""+1);
 		
 		Assignment2 assignment = assignmentLogic.getAssignmentByIdWithAssociatedData(assignmentId);
+	      //Grade Permission
+        Boolean grade_perm = permissionLogic.isUserAbleToProvideFeedbackForStudentForAssignment(userId, assignment);
+        
     	//Grading Helper Link
 		String url = externalLogic.getUrlForGradeGradebookItemHelper(assignment.getGradableObjectId(), userId, FinishedHelperProducer.VIEWID);
                 
-		if (edit_perm) {
+		if (grade_perm) {
 			UILink.make(joint, "gradebook_grading_helper",
         		UIMessage.make("assignment2.assignment_grade.gradebook_grade"),
         		url);
@@ -78,7 +78,7 @@ public class GradebookDetailsRenderer {
 		// retrieve the grade information
 		String grade = "";
 		String gradeComment = "";
-		if (as != null && as.getAssignment() != null && !as.getAssignment().isUngraded()) {
+		if (as != null && as.getAssignment() != null && as.getAssignment().isGraded()) {
 			GradeInformation gradeInfo = gradebookLogic.getGradeInformationForSubmission(externalLogic.getCurrentContextId(), as);
 			if (gradeInfo != null) {
 				grade = gradeInfo.getGradebookGrade();

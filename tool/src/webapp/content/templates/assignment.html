@@ -27,11 +27,12 @@
 		</ul>
 	</div>
 	
+	<h2 rsf:id="msg=assignment2.assignment_add.title">Add Assignment Title</h2>
 	<p rsf:id="instructions" class="instruction">Complete the form and choose an action below. <span class="reqStar">*</span> Indicates required information.</p>
 
 	<form rsf:id="assignment_form">
 	
-	<fieldset>
+	<fieldset rsf:id="access-selection-area">
 		<legend rsf:id="access_legend">Access</legend>
 		<ol>
 			<li>
@@ -40,7 +41,7 @@
 					<ol>
 						<li rsf:id="access_row:">
 							<input rsf:id="access_choice" id="access_choice" type="radio" />
-							<label rsf:id="access_label">Display to site</label>
+							<label for="access_choice" rsf:id="access_label">Display to site</label>
 						</li>
 						<li id="groups_table_li" class="indent">
 							<table id="groupTable" class="listHier lines" cellpadding="0" cellspacing="0" border="0">
@@ -69,8 +70,8 @@
 		<legend rsf:id="msg=assignment2.assignment_add.assignment_details_legend">Assignment Details</legend>
 		<ol>
 			<li>
-				<label rsf:id="title_label" id="title_label"><span class="reqStar">*</span> Title</label> 
-				<input rsf:id="title" type="text" size="30" maxlength="100"/>
+				<label for="title" rsf:id="title_label" id="title_label"><span class="reqStar">*</span> Title</label> 
+				<input id="title" rsf:id="title" type="text" size="30" maxlength="100"/>
 				<span rsf:id="message-for:title">This is an example error: Adding an assignment requires a title</span>
 			</li>
 			<li>
@@ -88,41 +89,46 @@
 	</fieldset>
 	
 	<fieldset id="attachmentsFieldset">
-		<legend rsf:id="msg=assignment2.assignment_add.attachments_legend">Attachments</legend>
+		<legend>
+			<span rsf:id="msg=assignment2.assignment_add.attachments_legend">Attachments</span>
+			<span><a rsf:id="add_attachments" class="thickbox">Add Attachments</a></span>
+		</legend>
 		<ol class="fragment-attachments-container" rsf:id="attachment_list:">
 			<li></li>
-		</ol>
+		</ol> <!-- 
 		<ol>
 			<li>
-				<a rsf:id="add_attachments" class="thickbox">Add Attachments</a>
+				
 			</li>
-		</ol>
+		</ol> -->
 	</fieldset>
 
 	<fieldset>
 		<legend rsf:id="msg=assignment2.assignment_add.grading_legend">Grading</legend>
 		<ol>
-			<li><span rsf:id="ungraded" />
+			<li><span rsf:id="graded-radios" />
 				<fieldset>
 					<ol>
 						<li>
 							<input rsf:id="select_ungraded" id="select_ungraded" name="graded" type="radio" /> 
-							<label rsf:id="select_ungraded_label">This assignment is ungraded</label>
+							<label for="select_ungraded" rsf:id="select_ungraded_label">This assignment is ungraded</label>
 						</li>
 						<li>
 							<input rsf:id="select_graded" id="select_graded" name="graded" type="radio" /> 
-							<label rsf:id="select_graded_label">This assignment is graded</label>
+							<label for="select_graded" rsf:id="select_graded_label">This assignment is graded</label>
 							<span rsf:id="msg=assignment2.assignment_add.gradebook_associated"> and is associated with a Gradebook Item:</span> 
-								<select rsf:id="gradebook_item">
+								<select rsf:id="gradebook_item" onchange="selectGraded()">
 									<option value="">Select a Gradebook Item</option>
-									<option value="Category: GB Item 1">Category: GB Item 1</option>
-									<option value="Category: GB Item 2">Category: GB Item 2</option>
-									<option value="Category: GB Item 3">Category: GB Item 3</option>
-									<option value="Category: GB Item 4">Category: GB Item 4</option>
+									<option value="GB Item 1">GB Item 1</option>
+									<option value="GB Item 2">GB Item 2</option>
+									<option value="GB Item 3">GB Item 3</option>
+									<option value="GB Item 4">GB Item 4</option>
 								</select>
 								<p class="indent">
 									<span rsf:id="msg=assignment2.assignment_add.gradebook_or"> -or- </span>
-									<a rsf:id="gradebook_item_new_helper" class="thickbox">Create a new Gradebook Item</a>
+									<a rsf:id="gradebook_item_new_helper" id="gradebook_item_new_helper" class="thickbox" onclick="update_new_gb_item_helper_url();">Create a new Gradebook Item</a>
+									<!-- hidden anchor contains the ref to the gb helper without the name attr -->
+									<a rsf:id="gradebook_url_without_name" id="gradebook_url_without_name" style="display:none;"></a>
 								</p>
 						</li>
 					</ol>
@@ -134,60 +140,80 @@
 	
 	<fieldset>
 		<legend rsf:id="msg=assignment2.assignment_add.availability_details">Availability Details</legend>
+		
 	    <ol>
 			<li>
-				<label rsf:id="open_date_label"><span class="reqStar">*</span> Open Date</label><input rsf:id="open_date:"  />
+				<label rsf:id="open_date_label"><span class="reqStar">*</span> Open Date</label>
+				<input rsf:id="open_date:"  />
+				<input rsf:id="announcement" id="announcement" type="checkbox" />
+				<label for="announcement" rsf:id="msg=assignment2.assignment_add.announcement">Post Open Date to Announcements on Open Date</label> 
 				<p rsf:id="message-for:open_date"></p>
-				<p rsf:id="open_date_instruction" class="instruction">Students won't see this assignment until this open date.</p>
-				<fieldset class="indent">
-					<ol>
-						<li>
-							<input rsf:id="announcement" id="announcement" type="checkbox" /> 
-							<label rsf:id="announcement_label">Add an announcement about the open date to Announcements</label>
-						</li>
-					</ol>
-				</fieldset>
 			</li>
-			<li class="due_date">
-				<label rsf:id="msg=assignment2.assignment_add.due_date">Due Date</label> 
+			<li>
 				<fieldset>
 					<ol>
 						<li>
-							<input rsf:id="require_due_date" type="checkbox" />
-							<label rsf:id="require_due_date_label">Require Due Date?</label>
+							<input id="require_due_date" rsf:id="require_due_date" type="checkbox" />
+							<label for="require_due_date" rsf:id="msg=assignment2.assignment_add.due_date">Due Date</label>
+							<span rsf:id="require_due_date_container" class="indent">
+								<input rsf:id="due_date:" value="12/31/2007"/>
+								<p rsf:id="message-for:due_date"></p>
+								<span rsf:id="add_to_schedule_container" class="indent">
+									<input rsf:id="schedule" id="schedule" type="checkbox" /> 
+									<label for="schedule" rsf:id="msg=assignment2.assignment_add.schedule">Post Due Date to Schedule</label>
+								</span>
+							</span>
 						</li>
 					</ol>
 				</fieldset>
-				<div rsf:id="require_due_date_container" class="indent"><input rsf:id="due_date:" value="12/31/2007"/>
-				<p rsf:id="message-for:due_date"></p>
-					<fieldset rsf:id="add_to_schedule_container" class="indent">
-						<ol>
-							<li>
-								<input rsf:id="schedule" id="schedule" type="checkbox" /> 
-								<label rsf:id="schedule_label">Post Due Date to Schedule</label>
-							</li>
-						</ol>
-					</fieldset>
+				<!-- 
+				<div rsf:id="require_due_date_container" class="indent">
+					<input rsf:id="due_date:" value="12/31/2007"/>
+					<p rsf:id="message-for:due_date"></p>
+					<span rsf:id="add_to_schedule_container" class="indent">
+						<input rsf:id="schedule" id="schedule" type="checkbox" /> 
+						<label for="schedule" rsf:id="msg=assignment2.assignment_add.schedule">Post Due Date to Schedule</label>
+					</span>
 				</div>
+				-->
 			</li>
 		</ol>
 	</fieldset>
 	
 	<fieldset>
-		<legend rsf:id="msg=assignment2.assignment_add.other_legend">Other</legend>
+		<legend rsf:id="msg=assignment2.assignment_add.other_legend">Submission Details</legend>
 	    <ol>
 			<li>
-				<label rsf:id="msg=assignment2.assignment_add.accept_until">Accept Until</label> 
+				<input id="require_submissions" rsf:id="require_submissions" type="checkbox" />
+				<label for="require_submissions" rsf:id="msg=assignment2.assignment_add.require_submissions"> Require Submissions?</label>
+			</li>
+			<li>
+				<label rsf:id="msg=assignment2.assignment_add.student_submissions">Submission Format</label>
+				<select rsf:id="submission_type">
+				</select>
+				<p rsf:id="message-for:submission_type"></p>
+			</li>
+			<li>
+				<label rsf:id="msg=assignment2.assignment_add.allow_number">Number of Submissions</label>
+				<select rsf:id="number_submissions"></select>
+			</li>
+			<li>
+				<!-- <label rsf:id="msg=assignment2.assignment_add.accept_until">Accept Until</label> --> 
 				<fieldset>
 					<ol>
 						<li>
-							<input rsf:id="require_accept_until" type="checkbox" />
-							<label rsf:id="require_accept_until_label">Require Accept Until Date?</label>
+							<input id="require_accept_until" rsf:id="require_accept_until" type="checkbox" />
+							<label for="require_accept_until" rsf:id="msg=assignment2.assignment_add.require_accept_until">Require Accept Until Date?</label>
+							<span class="indent" rsf:id="accept_until_container">
+								<input rsf:id="accept_until:" value="12/31/2007"/>
+							</span>
+							<p rsf:id="message-for:accept_until"></p>						
 						</li>
 					</ol>
 				</fieldset>
-				<div class="indent" rsf:id="accept_until_container"><input rsf:id="accept_until:" value="12/31/2007"/></div>
-				<p rsf:id="message-for:accept_until"></p>
+				
+				<!-- SWG TODO I don't the accept until is part of the spec anymore -->
+				<!-- 
 				<fieldset class="indent" rsf:id="accept_until_until_fieldset">
 					<ol>
 						<li>
@@ -196,60 +222,38 @@
 						</li>
 					</ol>
 				</fieldset>
+				-->
 			</li>
 			<li>
-				<label rsf:id="msg=assignment2.assignment_add.allow_number">Number of Submissions</label>
-				<select rsf:id="number_submissions"></select>
-			</li>
-			<li>
-				<label rsf:id="msg=assignment2.assignment_add.student_submissions">Submission Method</label>
-				<select rsf:id="submission_type">
-				</select>
-				<p rsf:id="message-for:submission_type"></p>
-			</li>
-			<!--<li>
 				<input rsf:id="honor_pledge" id="honor_pledge" type="checkbox" />
-				<label rsf:id="msg=assignment2.assignment_add.honor_pledge">Add honor pledge</label>
-			</li>-->
-			<!-- 
-			<li>
-				<label rsf:id="msg=assignment2.assignment_add.misc_details_label">Miscellaneous Details</label>
-				<fieldset>
-					<ol>
-						<li><input rsf:id="on_calendar" type="checkbox" /> <label rsf:id="msg=assignment2.assignment_add.on_calendar">Add the due date to Calendar</label></li>
-					</ol>
-				</fieldset>
+				<label for="honor_pledge" rsf:id="msg=assignment2.assignment_add.honor_pledge">Add honor pledge</label>
 			</li>
-			-->
-		</ol>
 
-		<input rsf:id="honor_pledge" id="honor_pledge" type="checkbox" />
-		<label rsf:id="msg=assignment2.assignment_add.honor_pledge">Add honor pledge</label>
+		</ol>
 
 	</fieldset>
 	
-	<!-- 
+	
 	<fieldset>
-		<legend rsf:id="notification_legend">Submission Notification Email Options</legend>
+	    <legend rsf:id="msg=assignment2.assignment_add.notification_legend">Submission Notifications</legend>
 		<ol>
 			<li>
-				<span rsf:id="notifications_select"/>
 				<fieldset>
 					<ol>
-						<li rsf:id="notification_row:">
-							<input rsf:id="notification_choice" type="radio" />
-							<label rsf:id="notification_label">Do not send me notification emails for any student submissions</label>
+						<li>
+    						<input rsf:id="sub_notif" id="sub_notif" type="checkbox" />
+    		                <label for="sub_notif" rsf:id="msg=assignment2.assignment_add.notification">Send email notifications for student submissions</label>
 						</li>
 					</ol>
 				</fieldset>
 			</li>
 		</ol>
 	</fieldset>
-	-->
+	
 	<fieldset class="submit">
 		<input rsf:id="post_assignment" accesskey="s" type="submit" class="active" value="Post"/>
-		<input rsf:id="preview_assignment" title="Preview Assignment" accesskey="v" type="button" class="preview_button thickbox" value="Preview"/>
 		<input rsf:id="save_draft" accesskey="d" type="submit" value="Save Draft"/>
+		<input rsf:id="preview_assignment" title="Preview Assignment" accesskey="v" type="button" class="preview_button thickbox" value="Preview"/>
 		<input rsf:id="cancel_assignment" accesskey="x" type="submit" value="Cancel"/>
 	</fieldset>													
 	</form>

@@ -15,8 +15,35 @@
 
 <div rsf:id="page:" class="portletBody">
 
-   <h3>Settings</h3>
-   <p>this is not null</p>
+   <ul class="breadCrumb">
+		<li><a rsf:id="breadcrumb">Assignment List</a></li>
+		<li rsf:id="last_breadcrumb" class="lastCrumb">Add Assignment</li>
+	</ul>
+	
+
+	<div class="generalErrors">
+		<ul rsf:id="message-for:*" style="margin:0px;">
+			<li>Message for user here</li>
+		</ul>
+	</div>
+
+<form rsf:id="settings-form">
+	<div rsf:id="settings:instructor">
+		
+	</div>
+	<div rsf:id="settings:ta">
+	
+	</div>
+	<div rsf:id="settings:student">
+	
+	</div>
+	
+	<fieldset class="submit">
+		<input rsf:id="save_settings" accesskey="s" type="submit" class="active" value="Save"/>
+		<input rsf:id="cancel_settings" accesskey="x" type="submit" value="Cancel"/>
+	</fieldset>		
+	
+</form>
 
 </div>
 

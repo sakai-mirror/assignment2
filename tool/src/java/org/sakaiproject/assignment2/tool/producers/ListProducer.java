@@ -82,6 +82,7 @@ public class ListProducer implements ViewComponentProducer, NavigationCaseReport
     	DateFormat df = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, locale);
         //Edit Permission
         Boolean edit_perm = permissionLogic.isCurrentUserAbleToEditAssignments(externalLogic.getCurrentContextId());
+        String currUserId = externalLogic.getCurrentUserId();
         
     	List<Assignment2> entries = assignmentLogic.getViewableAssignments();
     	
@@ -90,7 +91,9 @@ public class ListProducer implements ViewComponentProducer, NavigationCaseReport
     	
     	//Links to settings and reorder
     	UIInternalLink.make(tofill, "settings_link", new SimpleViewParameters(SettingsProducer.VIEW_ID));
-    	UIInternalLink.make(tofill, "reorder_link", new SimpleViewParameters(ListReorderProducer.VIEW_ID));
+    	if (edit_perm) {
+    	    UIInternalLink.make(tofill, "reorder_link", new SimpleViewParameters(ListReorderProducer.VIEW_ID));
+    	}
     	
         UIMessage.make(tofill, "page-title", "assignment2.list.title");
         
@@ -161,7 +164,7 @@ public class ListProducer implements ViewComponentProducer, NavigationCaseReport
         	// Submitted/Total display
         	int total = 0;
         	int withSubmission = 0;
-        	List<String> viewableStudents = permissionLogic.getViewableStudentsForUserForItem(assignment);
+        	List<String> viewableStudents = permissionLogic.getViewableStudentsForUserForItem(currUserId, assignment);
         	if (viewableStudents != null) {
         		total = viewableStudents.size();
         		if (total > 0) {
@@ -195,7 +198,7 @@ public class ListProducer implements ViewComponentProducer, NavigationCaseReport
         		divLeftContainer.decorators = new DecoratorList(new UIStyleDecorator("assignInactive"));
         	}
         	
-	    	UIOutput.make(row, "assignment_row_open", df.format(assignment.getOpenTime()));
+	    	UIOutput.make(row, "assignment_row_open", df.format(assignment.getOpenDate()));
 	
 	    	if (assignment.getDueDate() != null) {
 	    		UIOutput.make(row, "assignment_row_due", df.format(assignment.getDueDate()));

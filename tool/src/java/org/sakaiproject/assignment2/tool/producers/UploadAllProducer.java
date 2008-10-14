@@ -44,17 +44,35 @@ import uk.org.ponder.rsf.view.ViewComponentProducer;
 import uk.org.ponder.rsf.viewstate.ViewParameters;
 import uk.org.ponder.rsf.viewstate.ViewParamsReporter;
 
+/**
+ * This view shows the form for uploading grades.
+ * 
+ * One thing to note is the implementation of both {@link NavigationCaseReporter}
+ * and {@link ActionResultInterceptor}. During runtime processing, RSF will try
+ * to use the Navigation Cases first, and then try Action Result Interceptors.
+ * 
+ * TODO FIXME I'm pretty sure we can get rid of the NavigationCaseReporter, but
+ * can't get a CSV file to upload so I can't test it.  Come back here later. SWG
+ * 
+ * @author sgithens
+ * @author wagnermr
+ * @author stuart.freeman
+ * @author carl.hall
+ *
+ */
 public class UploadAllProducer implements ViewComponentProducer, ViewParamsReporter,
-		NavigationCaseReporter, ActionResultInterceptor
+NavigationCaseReporter, ActionResultInterceptor
 {
-	public static final String VIEW_ID = "uploadall";
+    public static final String VIEW_ID = "uploadall";
 
-	public String getViewID()
-	{
-		return VIEW_ID;
-	}
+    public String getViewID()
+    {
+        return VIEW_ID;
+    }
 
-	public void fillComponents(UIContainer tofill, ViewParameters viewparams,
+    /*
+     **** This is the original work for upload all. For now, we are only going to upload grades
+	 public void fillComponents(UIContainer tofill, ViewParameters viewparams,
 			ComponentChecker checker)
 	{
 		AssignmentViewParams params = (AssignmentViewParams) viewparams;
@@ -79,28 +97,51 @@ public class UploadAllProducer implements ViewComponentProducer, ViewParamsRepor
 				"uploadBean.processUpload");
 		 UICommand.make(upload_form, "cancelButton", UIMessage.make("assignment2.uploadall.cancel"))
 				.setReturn(ViewSubmissionsProducer.VIEW_ID);
-	}
+	}*/
 
-	public ViewParameters getViewParameters()
-	{
-		return new AssignmentViewParams();
-	}
+    public void fillComponents(UIContainer tofill, ViewParameters viewparams,
+            ComponentChecker checker)
+    {
+        AssignmentViewParams params = (AssignmentViewParams) viewparams;
 
-	public List<NavigationCase> reportNavigationCases()
-	{
-		List<NavigationCase> nav = new ArrayList<NavigationCase>();
-		nav.add(new NavigationCase(ViewSubmissionsProducer.VIEW_ID, new ViewSubmissionsViewParams(
-				ViewSubmissionsProducer.VIEW_ID, null)));
-		return nav;
-	}
+        // TODO FIXME This doesn't appear to be in the template anymore, can
+        // we remove the code for this link?
+        ZipViewParams zvp = new ZipViewParams("zipSubmissions", params.assignmentId);
+        UIInternalLink.make(tofill, "downloadtemplate", UIMessage
+                .make("assignment2.assignment_grade-assignment.downloadall.button"), zvp);
 
-	public void interceptActionResult(ARIResult result, ViewParameters incoming, Object actionReturn)
-	{
-		if (result.resultingView instanceof ViewSubmissionsViewParams)
-		{
-			ViewSubmissionsViewParams outgoing = (ViewSubmissionsViewParams) result.resultingView;
-			AssignmentViewParams in = (AssignmentViewParams) incoming;
-			outgoing.assignmentId = in.assignmentId;
-		}
-	}
+        String uploadOptions = "uploadBean.uploadOptions";
+        UIForm upload_form = UIForm.make(tofill, "upload_form");
+        upload_form
+        .addParameter(new UIELBinding(uploadOptions + ".assignmentId", zvp.assignmentId));
+
+        // Render buttons
+        UICommand.make(upload_form, "uploadButton", UIMessage.make("assignment2.uploadall.upload"),
+        "uploadBean.processUploadGradesCSV");
+        UICommand.make(upload_form, "cancelButton", UIMessage.make("assignment2.uploadall.cancel"))
+        .setReturn(ViewSubmissionsProducer.VIEW_ID);
+    }
+
+    public ViewParameters getViewParameters()
+    {
+        return new AssignmentViewParams();
+    }
+
+    public List<NavigationCase> reportNavigationCases()
+    {
+        List<NavigationCase> nav = new ArrayList<NavigationCase>();
+        nav.add(new NavigationCase(ViewSubmissionsProducer.VIEW_ID, new ViewSubmissionsViewParams(
+                ViewSubmissionsProducer.VIEW_ID, null)));
+        return nav;
+    }
+
+    public void interceptActionResult(ARIResult result, ViewParameters incoming, Object actionReturn)
+    {
+        if (result.resultingView instanceof ViewSubmissionsViewParams)
+        {
+            ViewSubmissionsViewParams outgoing = (ViewSubmissionsViewParams) result.resultingView;
+            AssignmentViewParams in = (AssignmentViewParams) incoming;
+            outgoing.assignmentId = in.assignmentId;
+        }
+    }
 }
