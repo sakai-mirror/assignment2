@@ -65,8 +65,21 @@
 			<span rsf:id="msg=assignment2.student-submit.previous_submissions" onclick="slideFieldset(jQuery(this).prev('img').get(0));" style="cursor:pointer">Previous Submissions</span>
 		</legend>
 		-->
-		<div rsf:id="submission-version:">
+		<div rsf:id="single-submission-version:">
 		
+		</div>
+		
+		<div rsf:id="multiple-submissions">
+		    <div rsf:id="submission-version:">
+		        <h2>
+		          <img rsf:id="collapse-arrow" />
+		          <span rsf:id="header-text">Blah blah</span>
+		          <img rsf:id="envelope" />
+		        </h2>
+		        <div rsf:id="submission-entry:">
+		          <!-- The rendered submission goes here. -->
+		        </div>
+		    </div>
 		</div>
 		<!-- 
 		<ol style="display:none">
