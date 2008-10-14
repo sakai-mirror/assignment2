@@ -243,4 +243,23 @@ public class AssignmentActivityProducerImpl implements
 	public void setAssignmentBundleLogic(AssignmentBundleLogic assignmentBundleLogic) {
     	this.assignmentBundleLogic = assignmentBundleLogic;
     }
+
+	public String getItemPermissionOverride()
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public boolean hasSubmissions(TaggableActivity activity, TaggingProvider provider)
+	{
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public boolean hasSubmissions(TaggableActivity activity, String userId,
+			TaggingProvider provider)
+	{
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

@@ -6,7 +6,7 @@
     <parent>
         <artifactId>sakai-assignment2-base</artifactId>
         <groupId>org.sakaiproject</groupId>
-        <version>2.6.0RC1-SNAPSHOT</version>
+        <version>M2</version>
     </parent>
     <name>Sakai Assignment2 Impl</name>
     <groupId>org.sakaiproject.assignment2</groupId>
@@ -27,19 +27,8 @@
 			<version>${sakai.version}</version>
 		</dependency>
 
-        <!-- other project dependencies -->
-		<dependency>
-			<groupId>org.sakaiproject.kernel</groupId>
-			<artifactId>sakai-kernel-api</artifactId>
-		</dependency>
-    <dependency>
-      <groupId>org.sakaiproject.kernel</groupId>
-      <artifactId>sakai-component-manager</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.sakaiproject.kernel</groupId>
-      <artifactId>sakai-kernel-util</artifactId>
-    </dependency>
+    <!-- other project dependencies -->
+
     <dependency>
       <groupId>commons-logging</groupId>
       <artifactId>commons-logging</artifactId>
@@ -47,6 +36,70 @@
       <type>jar</type>
       <scope>provided</scope>
     </dependency>
+    
+    <!-- kernel -->
+   	<dependency>
+		<groupId>org.sakaiproject</groupId>
+		<artifactId>sakai-util-api</artifactId>
+		<version>${sakai.version}</version>
+	</dependency>
+	<dependency>
+		<groupId>org.sakaiproject</groupId>
+		<artifactId>sakai-util</artifactId>
+		<version>${sakai.version}</version>
+	</dependency>
+	<dependency>
+		<groupId>org.sakaiproject</groupId>
+		<artifactId>sakai-content-api</artifactId>
+		<version>${sakai.version}</version>
+	</dependency>
+	<dependency>
+      <groupId>org.sakaiproject</groupId>
+      <artifactId>sakai-entity-api</artifactId>
+      <version>${sakai.version}</version>
+    </dependency>
+	<dependency>
+		<groupId>org.sakaiproject</groupId>
+		<artifactId>sakai-email-api</artifactId>
+		<version>${sakai.version}</version>
+	</dependency>
+	<dependency>
+		<groupId>org.sakaiproject</groupId>
+		<artifactId>sakai-user-api</artifactId>
+		<version>${sakai.version}</version>
+	</dependency>
+	<dependency>
+		<groupId>org.sakaiproject</groupId>
+		<artifactId>sakai-site-api</artifactId>
+		<version>${sakai.version}</version>
+	</dependency>
+	<dependency>
+      <groupId>org.sakaiproject</groupId>
+      <artifactId>sakai-event-api</artifactId>
+      <version>${sakai.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.sakaiproject</groupId>
+      <artifactId>sakai-authz-api</artifactId>
+      <version>${sakai.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.sakaiproject</groupId>
+      <artifactId>sakai-component-api</artifactId>
+      <version>${sakai.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.sakaiproject</groupId>
+      <artifactId>sakai-component</artifactId>
+      <version>${sakai.version}</version>
+    </dependency>
+	<dependency>
+      <groupId>org.sakaiproject</groupId>
+      <artifactId>sakai-tool-api</artifactId>
+      <version>${sakai.version}</version>
+    </dependency>
+	
+    
     <!-- generic-dao -->
     <dependency>
         <groupId>org.sakaiproject</groupId>
