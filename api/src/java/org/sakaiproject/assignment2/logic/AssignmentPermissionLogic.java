@@ -101,8 +101,8 @@ public interface AssignmentPermissionLogic {
 	 * @param userId
 	 * @param assignment
 	 * @return a list of student ids that the current user is able to view
-	 * for the given assignment
-	 * @throws SecurityException if current user does not have grading privileges
+	 * for the given assignment. if assignment has been removed, no 
+	 * students will be returned
 	 */
 	public List<String> getViewableStudentsForUserForItem(String userId, Assignment2 assignment);
 	
@@ -110,8 +110,8 @@ public interface AssignmentPermissionLogic {
 	 * @param userId
 	 * @param assignment
 	 * @return a list of student ids that the current user is able to submit
-	 * feedback for on the given assignment
-	 * @throws SecurityException if current user does not have grading privileges
+	 * feedback for on the given assignment. if assignment has been removed,
+	 * no students will be returned
 	 */
 	public List<String> getGradableStudentsForUserForItem(String userId, Assignment2 assignment);
 	
@@ -147,7 +147,9 @@ public interface AssignmentPermissionLogic {
 	  * @return true if the current user has access to this assignment. some scenarios that
 	  * would be false: if user is a student and assignment is restricted to groups outside of student's memberships
 	  * or not open;
-	  * if user is TA but does not have grading privileges for an the assign's associated gb item
+	  * if user is TA but does not have grading privileges for the assign's associated gb item;
+	  * note: if assignment has been removed, only a student with an existing
+	  * submission for that assignment may view the assignment
 	  */
 	 public boolean isUserAbleToViewAssignment(String contextId, Long assignmentId);
 	 
@@ -155,7 +157,8 @@ public interface AssignmentPermissionLogic {
 	  * @param studentId
 	  * @param assignment
 	  * @return a list of the userIds of users who are able to view the given
-	  * student's submission(s) for the given assignment. does not include the student. 
+	  * student's submission(s) for the given assignment. does not include the student
+	  * as a user who may view the student. 
 	  */
 	 public List<String> getUsersAllowedToViewStudentForAssignment(String studentId, Assignment2 assignment);
 }

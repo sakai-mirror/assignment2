@@ -192,7 +192,7 @@ public interface AssignmentSubmissionLogic {
 	 * etc to determine if submission is still open
 	 * @throws AssignmentNotFoundException if no assignment exists with given assignmentId
 	 */
-	public boolean submissionIsOpenForStudentForAssignment(String studentId, Long assignmentId);
+	public boolean isSubmissionOpenForStudentForAssignment(String studentId, Long assignmentId);
 	
 	/**
 	 * 

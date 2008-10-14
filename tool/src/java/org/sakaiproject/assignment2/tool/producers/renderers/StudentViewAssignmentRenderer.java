@@ -173,7 +173,7 @@ public class StudentViewAssignmentRenderer {
         // Submission History
         asnnSubmissionHistoryRenderer.fillComponents(joint, "assignment-previous-submissions:", assignmentSubmission);
         
-        if (submissionLogic.submissionIsOpenForStudentForAssignment(currentUser.getId(), assignment.getId())) {
+        if (submissionLogic.isSubmissionOpenForStudentForAssignment(currentUser.getId(), assignment.getId())) {
             asnnSubmitEditorRenderer.fillComponents(joint, "assignment-edit-submission:", assignmentSubmission, preview);
         }
 

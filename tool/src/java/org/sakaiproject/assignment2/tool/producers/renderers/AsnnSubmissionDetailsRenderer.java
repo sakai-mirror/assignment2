@@ -185,7 +185,7 @@ public class AsnnSubmissionDetailsRenderer implements BasicProducer {
          * Resubmissions Allowed
          */
         //if (!preview) {
-            boolean resubmissionsAllowed = submissionLogic.submissionIsOpenForStudentForAssignment(
+            boolean resubmissionsAllowed = submissionLogic.isSubmissionOpenForStudentForAssignment(
                     currentUser.getId(), assignment.getId());
             if (resubmissionsAllowed) {
                 UIMessage.make(joint, "resubmissions-allowed", "assignment2.student-submit.resubmissions_allowed");

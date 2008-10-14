@@ -89,22 +89,30 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
     		throw new AssignmentNotFoundException("No assignment found with id: " + assignmentId + " found in isUserAbleToViewStudentSubmissionForAssignment");
     	}
     	
-    	if (externalLogic.getCurrentUserId().equals(studentId)) {
-    		viewable = true;
+    	String currUserId = externalLogic.getCurrentUserId();
+
+    	// double check to see if this is a removed assignment. if so, only
+    	// the student may view it
+    	if (assignment.isRemoved()) {
+    	    if (currUserId.equals(studentId)) {
+    	        viewable = true;
+    	    }
+    	} else if (currUserId.equals(studentId)) {
+    	    viewable = true;
     	} else if (gradebookLogic.isCurrentUserAbleToGradeAll(assignment.getContextId())) {
-    		viewable = true;
+    	    viewable = true;
     	} else {
-    		if (!assignment.isGraded()) {
-    			viewable = isUserAbleToViewSubmissionForUngradedAssignment(studentId, assignment);
-    		} else {
-    			Long gbItemId = assignment.getGradableObjectId();
-    			if (gbItemId != null) {
-    				String function = gradebookLogic.getGradeViewPermissionForCurrentUserForStudentForItem(externalLogic.getCurrentContextId(), 
-    						studentId, gbItemId);
-    				if (function != null && (function.equals(AssignmentConstants.GRADE) ||
-    						function.equals(AssignmentConstants.VIEW))) {
-    					viewable = true;
-    				}
+    	    if (!assignment.isGraded()) {
+    	        viewable = isUserAbleToViewSubmissionForUngradedAssignment(studentId, assignment);
+    	    } else {
+    	        Long gbItemId = assignment.getGradableObjectId();
+    	        if (gbItemId != null) {
+    	            String function = gradebookLogic.getGradeViewPermissionForCurrentUserForStudentForItem(assignment.getContextId(), 
+    	                    studentId, gbItemId);
+    	            if (function != null && (function.equals(AssignmentConstants.GRADE) ||
+    	                    function.equals(AssignmentConstants.VIEW))) {
+    	                viewable = true;
+    	            }
     			}
     		}
     	}
@@ -330,81 +338,83 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
 		
 		List<String> availStudents = new ArrayList<String>();
 		
-		String contextId = externalLogic.getCurrentContextId();
+		if (!assignment.isRemoved()) {
+		    String contextId = externalLogic.getCurrentContextId();
 
-		List<AssignmentGroup> assignGroupRestrictions = 
-			dao.findByProperties(AssignmentGroup.class, new String[] {"assignment"}, new Object[] {assignment});
-		
-		// if user may grade all, then return all of the students who have this assignment
-		// we need to check for group restrictions
-		if (gradebookLogic.isUserAbleToGradeAll(contextId, userId)) {
-			if (assignGroupRestrictions == null || assignGroupRestrictions.isEmpty()) {
-				availStudents.addAll(externalLogic.getStudentsInSite(contextId));
-			} else {
-				availStudents = getAllAvailableStudentsGivenGroupRestrictions(
-						contextId, assignGroupRestrictions);
-			}
-			
-		} else if(gradebookLogic.isUserAbleToGrade(contextId, userId)) {
-			if (!assignment.isGraded()) {
-				// if there are no restrictions, return students in user's section(s)
-				if (assignGroupRestrictions == null || assignGroupRestrictions.isEmpty()) {
-					Set<String> sharedStudents = getStudentsInUsersSections(userId, contextId);
-					if (sharedStudents != null) {
-						availStudents.addAll(sharedStudents);
-					}
-				} else {
-					// otherwise, only return students in his/her section if it is one
-					// of the group restrictions
-					List<String> memberships = externalLogic.getUserMembershipGroupIdList(userId, contextId);
-					if (memberships != null && !memberships.isEmpty()) {
-						for (AssignmentGroup group : assignGroupRestrictions) {
-							if (group != null && memberships.contains(group.getGroupId())) {
-								availStudents.addAll(externalLogic.getStudentsInSection(group.getGroupId()));
-							}
-						}
-					}
-				}
-				
-			} else {
-				// we need to get the students that are viewable in the gb
-				List<String> viewableInGb = new ArrayList<String>();
-				if (assignment.getGradableObjectId() != null) {
-					Map<String, String> studentIdFunctionMap = 
-						gradebookLogic.getViewableStudentsForGradedItemMap(userId, contextId, assignment.getGradableObjectId());
-					if (studentIdFunctionMap != null) {
-						if (gradeOrView.equals(AssignmentConstants.VIEW)) {
-							viewableInGb.addAll(studentIdFunctionMap.keySet());
-						} else {
-							for (Map.Entry<String, String> entry : studentIdFunctionMap.entrySet()) {
-								String studentId = entry.getKey();
-								String function = entry.getValue();
-								if (studentId != null && function != null
-										&& function.equals(AssignmentConstants.GRADE)) {
-									viewableInGb.add(studentId);
-								}
-							}
-						}
-					}
-				}
-				
-				// now we need to filter out the ones who aren't associated w/ this assignment
-				if (assignGroupRestrictions == null || assignGroupRestrictions.isEmpty()) {
-					availStudents.addAll(viewableInGb);
-				} else {
-					List<String> availForAssign = getAllAvailableStudentsGivenGroupRestrictions(
-							contextId, assignGroupRestrictions);
-					if (availForAssign != null && !availForAssign.isEmpty()) {
-						for (String studentId : availForAssign) {
-							if (studentId != null && viewableInGb.contains(studentId)) {
-								availStudents.add(studentId);
-							}
-						}
-					}
-				}
-			}
+		    List<AssignmentGroup> assignGroupRestrictions = 
+		        dao.findByProperties(AssignmentGroup.class, new String[] {"assignment"}, new Object[] {assignment});
+
+		    // if user may grade all, then return all of the students who have this assignment
+		    // we need to check for group restrictions
+		    if (gradebookLogic.isUserAbleToGradeAll(contextId, userId)) {
+		        if (assignGroupRestrictions == null || assignGroupRestrictions.isEmpty()) {
+		            availStudents.addAll(externalLogic.getStudentsInSite(contextId));
+		        } else {
+		            availStudents = getAllAvailableStudentsGivenGroupRestrictions(
+		                    contextId, assignGroupRestrictions);
+		        }
+
+		    } else if(gradebookLogic.isUserAbleToGrade(contextId, userId)) {
+		        if (!assignment.isGraded()) {
+		            // if there are no restrictions, return students in user's section(s)
+		            if (assignGroupRestrictions == null || assignGroupRestrictions.isEmpty()) {
+		                Set<String> sharedStudents = getStudentsInUsersSections(userId, contextId);
+		                if (sharedStudents != null) {
+		                    availStudents.addAll(sharedStudents);
+		                }
+		            } else {
+		                // otherwise, only return students in his/her section if it is one
+		                // of the group restrictions
+		                List<String> memberships = externalLogic.getUserMembershipGroupIdList(userId, contextId);
+		                if (memberships != null && !memberships.isEmpty()) {
+		                    for (AssignmentGroup group : assignGroupRestrictions) {
+		                        if (group != null && memberships.contains(group.getGroupId())) {
+		                            availStudents.addAll(externalLogic.getStudentsInSection(group.getGroupId()));
+		                        }
+		                    }
+		                }
+		            }
+
+		        } else {
+		            // we need to get the students that are viewable in the gb
+		            List<String> viewableInGb = new ArrayList<String>();
+		            if (assignment.getGradableObjectId() != null) {
+		                Map<String, String> studentIdFunctionMap = 
+		                    gradebookLogic.getViewableStudentsForGradedItemMap(userId, contextId, assignment.getGradableObjectId());
+		                if (studentIdFunctionMap != null) {
+		                    if (gradeOrView.equals(AssignmentConstants.VIEW)) {
+		                        viewableInGb.addAll(studentIdFunctionMap.keySet());
+		                    } else {
+		                        for (Map.Entry<String, String> entry : studentIdFunctionMap.entrySet()) {
+		                            String studentId = entry.getKey();
+		                            String function = entry.getValue();
+		                            if (studentId != null && function != null
+		                                    && function.equals(AssignmentConstants.GRADE)) {
+		                                viewableInGb.add(studentId);
+		                            }
+		                        }
+		                    }
+		                }
+		            }
+
+		            // now we need to filter out the ones who aren't associated w/ this assignment
+		            if (assignGroupRestrictions == null || assignGroupRestrictions.isEmpty()) {
+		                availStudents.addAll(viewableInGb);
+		            } else {
+		                List<String> availForAssign = getAllAvailableStudentsGivenGroupRestrictions(
+		                        contextId, assignGroupRestrictions);
+		                if (availForAssign != null && !availForAssign.isEmpty()) {
+		                    for (String studentId : availForAssign) {
+		                        if (studentId != null && viewableInGb.contains(studentId)) {
+		                            availStudents.add(studentId);
+		                        }
+		                    }
+		                }
+		            }
+		        }
+		    }
 		}
-		
+
 		return availStudents;
 	}
 	
@@ -514,16 +524,36 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
 
 		// retrieve the assignment
 		Assignment2 assign = dao.getAssignmentByIdWithGroups(assignmentId);
-		List<String> groupMembershipIds = new ArrayList<String>();
-		if (assign.getAssignmentGroupSet() != null && !assign.getAssignmentGroupSet().isEmpty()) {
-			String currUser = externalLogic.getCurrentUserId();
-			groupMembershipIds = externalLogic.getUserMembershipGroupIdList(currUser, contextId);
+		if (assign == null) {
+		    throw new AssignmentNotFoundException("No assignment found with id " + assignmentId);
 		}
 
-		if (assign.isGraded()) {
-			allowed = isUserAbleToViewGradedAssignment(assign, groupMembershipIds);
+		String currUserId = externalLogic.getCurrentUserId();
+
+		if (assign.isRemoved()) {
+		    // if it has been removed only students may view it if they have 
+		    // an existing submission
+		    Set<AssignmentSubmission> subForRemovedAssign = dao.getExistingSubmissionsForRemovedAssignments(currUserId, contextId);
+		    if (subForRemovedAssign != null && !subForRemovedAssign.isEmpty()) {
+		        for (AssignmentSubmission sub : subForRemovedAssign) {
+		            if (sub.getAssignment().getId().equals(assignmentId)) {
+		                allowed = true;
+		            }
+		        }
+		    }
+
 		} else {
-			allowed = isUserAbleToViewUngradedAssignment(assign, groupMembershipIds);
+
+		    List<String> groupMembershipIds = new ArrayList<String>();
+		    if (assign.getAssignmentGroupSet() != null && !assign.getAssignmentGroupSet().isEmpty()) {
+		        groupMembershipIds = externalLogic.getUserMembershipGroupIdList(currUserId, contextId);
+		    }
+
+		    if (assign.isGraded()) {
+		        allowed = isUserAbleToViewGradedAssignment(assign, groupMembershipIds);
+		    } else {
+		        allowed = isUserAbleToViewUngradedAssignment(assign, groupMembershipIds);
+		    }
 		}
 		
 		return allowed;

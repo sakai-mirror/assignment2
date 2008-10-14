@@ -208,7 +208,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 					"without authorization for assignment " + assignment.getId());
 		}
 		
-		if (!submissionIsOpenForStudentForAssignment(currentUserId, assignment.getId())) {
+		if (!isSubmissionOpenForStudentForAssignment(currentUserId, assignment.getId())) {
 			log.warn("User " + currentUserId + " attempted to make a submission " +
 					"but submission for this user for assignment " + assignment.getId() + " is closed.");
 			throw new SecurityException("User " + currentUserId + " attempted to make a submission " +
@@ -730,7 +730,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		return numSubmissionsRemaining;
 	}
 	
-	public boolean submissionIsOpenForStudentForAssignment(String studentId, Long assignmentId) {
+	public boolean isSubmissionOpenForStudentForAssignment(String studentId, Long assignmentId) {
 		int numRemainingSubmissions = getNumberOfRemainingSubmissionsForStudent(studentId, assignmentId);
 		boolean isOpen = false;
 		if (numRemainingSubmissions == AssignmentConstants.UNLIMITED_SUBMISSION || numRemainingSubmissions > 0) {

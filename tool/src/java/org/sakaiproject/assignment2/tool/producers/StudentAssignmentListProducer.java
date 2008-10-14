@@ -235,7 +235,7 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
                 UIMessage.make(row, "assignment-deleted", "assignment2.student-assignment-list.assignment-deleted");
             }
             
-            boolean isOpenForSubmission = submissionLogic.submissionIsOpenForStudentForAssignment(
+            boolean isOpenForSubmission = submissionLogic.isSubmissionOpenForStudentForAssignment(
                     assignmentSubmission.getUserId(), assignment.getId());
             
             int numberOfRealSubmissions = 0;

@@ -819,18 +819,18 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
 	public void testSubmissionIsOpenForStudentForAssignment() {
 		// try a null student
 		try {
-			submissionLogic.submissionIsOpenForStudentForAssignment(null, testData.a1Id);
+			submissionLogic.isSubmissionOpenForStudentForAssignment(null, testData.a1Id);
 			fail("did not catch null studentId passed to submissionIsOpenForStudentForAssignment");
 		} catch (IllegalArgumentException iae) {}
 		
 		// try a null assignment
 		try {
-			submissionLogic.submissionIsOpenForStudentForAssignment(AssignmentTestDataLoad.STUDENT1_UID, null);
+			submissionLogic.isSubmissionOpenForStudentForAssignment(AssignmentTestDataLoad.STUDENT1_UID, null);
 			fail("did not catch null assignmentId passed to submissionIsOpenForStudentForAssignment");
 		} catch (IllegalArgumentException iae) {}
 		
 		// try one with a submission already and no resubmission
-		boolean open = submissionLogic.submissionIsOpenForStudentForAssignment(
+		boolean open = submissionLogic.isSubmissionOpenForStudentForAssignment(
 				AssignmentTestDataLoad.STUDENT1_UID, testData.a1Id);
 		assertFalse(open);
 		
@@ -843,11 +843,11 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
 		assignmentLogic.saveAssignment(assign1);
 		
 		// st 1 only has one submission, so still open
-		open = submissionLogic.submissionIsOpenForStudentForAssignment(
+		open = submissionLogic.isSubmissionOpenForStudentForAssignment(
 				AssignmentTestDataLoad.STUDENT1_UID, testData.a1Id);
 		assertTrue(open);
 		// st 2 already has 3 submissions, so closed
-		open = submissionLogic.submissionIsOpenForStudentForAssignment(
+		open = submissionLogic.isSubmissionOpenForStudentForAssignment(
 				AssignmentTestDataLoad.STUDENT2_UID, testData.a1Id);
 		assertFalse(open);
 		
@@ -856,14 +856,14 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
 		submissionLogic.saveInstructorFeedback(testData.st2a1CurrVersion.getId(),
 				AssignmentTestDataLoad.STUDENT2_UID, testData.a1, 4, null,
 				"blah", "notes", null, testData.st2a1CurrVersion.getFeedbackAttachSet());
-		open = submissionLogic.submissionIsOpenForStudentForAssignment(
+		open = submissionLogic.isSubmissionOpenForStudentForAssignment(
 				AssignmentTestDataLoad.STUDENT2_UID, testData.a1Id);
 		assertTrue(open);
 		
 		// let's make a draft submission to double check it is still open
 		externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT2_UID);
 		submissionLogic.saveStudentSubmission(AssignmentTestDataLoad.STUDENT2_UID, testData.a1, true, "blah", null);
-		open = submissionLogic.submissionIsOpenForStudentForAssignment(
+		open = submissionLogic.isSubmissionOpenForStudentForAssignment(
 				AssignmentTestDataLoad.STUDENT2_UID, testData.a1Id);
 		assertTrue(open);
 		
@@ -877,11 +877,11 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
 				AssignmentTestDataLoad.STUDENT2_UID, testData.a1, 4, resubmitCloseTime,
 				"blah", "notes", null, testData.st2a1CurrVersion.getFeedbackAttachSet());
     	// should be closed even though num submissions not reached
-    	open = submissionLogic.submissionIsOpenForStudentForAssignment(
+    	open = submissionLogic.isSubmissionOpenForStudentForAssignment(
 				AssignmentTestDataLoad.STUDENT2_UID, testData.a1Id);
 		assertFalse(open);
 		// should still be open for student1 b/c we haven't changed their submission
-		open = submissionLogic.submissionIsOpenForStudentForAssignment(
+		open = submissionLogic.isSubmissionOpenForStudentForAssignment(
 				AssignmentTestDataLoad.STUDENT1_UID, testData.a1Id);
 		assertTrue(open);
 		
@@ -890,10 +890,10 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
 		assign1.setNumSubmissionsAllowed(4);
 		assignmentLogic.saveAssignment(assign1);
 		
-		open = submissionLogic.submissionIsOpenForStudentForAssignment(
+		open = submissionLogic.isSubmissionOpenForStudentForAssignment(
 				AssignmentTestDataLoad.STUDENT2_UID, testData.a1Id);
 		assertFalse(open);
-		open = submissionLogic.submissionIsOpenForStudentForAssignment(
+		open = submissionLogic.isSubmissionOpenForStudentForAssignment(
 				AssignmentTestDataLoad.STUDENT1_UID, testData.a1Id);
 		assertTrue(open);
 		
@@ -903,10 +903,10 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
     	assign1.setOpenDate(assignOpenTime);
     	assignmentLogic.saveAssignment(assign1);
     	// should be closed for both
-		open = submissionLogic.submissionIsOpenForStudentForAssignment(
+		open = submissionLogic.isSubmissionOpenForStudentForAssignment(
 				AssignmentTestDataLoad.STUDENT2_UID, testData.a1Id);
 		assertFalse(open);
-		open = submissionLogic.submissionIsOpenForStudentForAssignment(
+		open = submissionLogic.isSubmissionOpenForStudentForAssignment(
 				AssignmentTestDataLoad.STUDENT1_UID, testData.a1Id);
 		assertFalse(open);
 		
@@ -926,10 +926,10 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
 		
 		// student 1 should not be able to submit b/c of assignment-level restriction
 		// but student 2 can
-		open = submissionLogic.submissionIsOpenForStudentForAssignment(
+		open = submissionLogic.isSubmissionOpenForStudentForAssignment(
 				AssignmentTestDataLoad.STUDENT2_UID, testData.a1Id);
 		assertTrue(open);
-		open = submissionLogic.submissionIsOpenForStudentForAssignment(
+		open = submissionLogic.isSubmissionOpenForStudentForAssignment(
 				AssignmentTestDataLoad.STUDENT1_UID, testData.a1Id);
 		assertFalse(open);
 	}
