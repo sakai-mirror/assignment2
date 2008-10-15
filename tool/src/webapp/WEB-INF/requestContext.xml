@@ -218,9 +218,12 @@
    	  <property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
    </bean>
 
+<!-- Not yet fully implemented ASNN-207 -->
+<!-- 
    <bean class="org.sakaiproject.assignment2.tool.producers.SettingsProducer">
      <property name="messageLocator" ref="messageLocator" />
    </bean>
+-->
 
    <!--  AJAX Fragment Producers -->
    <bean class="org.sakaiproject.assignment2.tool.producers.AjaxResultsProducer">
