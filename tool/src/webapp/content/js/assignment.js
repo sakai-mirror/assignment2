@@ -293,6 +293,10 @@ var asnn2 = asnn2 || {};
     var NEW_FEEDBACK_IMAGE = "/library/image/silk/email.png";
     var READ_FEEDBACK_IMAGE = "/library/image/silk/email_open.png";
     
+    asnn2.toggle_hideshow_by_id = function (arrowImgId, toggledId) {
+        toggle_hideshow(jQuery('#'+arrowImgId.replace(/:/g, "\\:")),
+                        jQuery('#'+toggledId.replace(/:/g, "\\:")));
+    }
     
     function toggle_hideshow(arrowImg, toggled) {
         if (arrowImg.attr('src') == EXPAND_IMAGE) {

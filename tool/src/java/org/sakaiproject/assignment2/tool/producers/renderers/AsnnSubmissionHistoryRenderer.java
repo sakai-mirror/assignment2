@@ -14,6 +14,7 @@ import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import uk.org.ponder.rsf.components.UIBranchContainer;
 import uk.org.ponder.rsf.components.UIContainer;
 import uk.org.ponder.rsf.components.UIJointContainer;
+import uk.org.ponder.rsf.components.UIMessage;
 import uk.org.ponder.rsf.components.UIOutput;
 import uk.org.ponder.rsf.components.UIVerbatim;
 import uk.org.ponder.rsf.components.decorators.UICSSDecorator;
@@ -65,11 +66,13 @@ public class AsnnSubmissionHistoryRenderer implements BasicProducer {
             submissionLogic.markFeedbackAsViewed(assignmentSubmission.getId(), versionIds);
         } else {
             //TODO FIXME We'll have to think about the VERSION 0 logic here
+            UIOutput.make(joint, "submissions-header");
             UIOutput.make(joint, "multiple-submissions");
             
             for (AssignmentSubmissionVersion version: versionHistory) {
                 UIBranchContainer versionDiv = UIBranchContainer.make(joint, "submission-version:");
-                UIOutput.make(versionDiv, "header-text", version.getSubmittedDate().toLocaleString());
+                UIMessage.make(versionDiv, "header-text", "assignment2.student-submission.history.version.header", 
+                        new Object[] {version.getSubmittedDate().toLocaleString()});
                 boolean newfeedback = false;
                 // Make the envelope icons for feedback if necessary
                 if (version.isFeedbackReleased() && version.isFeedbackRead()) {
