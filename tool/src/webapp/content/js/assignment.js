@@ -281,3 +281,45 @@ function updateAttachments(imgsrc, filename, link, ref, filesize){
    jQuery("input", newRow).attr("value", ref);
    jQuery("span:first", newRow).html(filesize);
 }
+
+/* New Asnn2 functions that are namespaced. Will need to go back
+ * and namespace others eventually.
+ */
+var asnn2 = asnn2 || {};
+
+(function (jQuery, asnn2) {
+    var EXPAND_IMAGE = "/sakai-assignment2-tool/content/images/expand.png";
+    var COLLAPSE_IMAGE = "/sakai-assignment2-tool/content/images/collapse.png";
+    var NEW_FEEDBACK_IMAGE = "/library/image/silk/email.png";
+    var READ_FEEDBACK_IMAGE = "/library/image/silk/email_open.png";
+    
+    
+    function toggle_hideshow(arrowImg, toggled) {
+        if (arrowImg.attr('src') == EXPAND_IMAGE) {
+            arrowImg.attr('src', COLLAPSE_IMAGE);
+            toggled.show();
+        }
+        else {
+            arrowImg.attr('src', EXPAND_IMAGE);
+            toggled.hide();
+        }
+    };
+
+    /**
+     * Setup the element for a Assignment Submission Version. This includes
+     * hooking up the (un)collapse actions, as well as the Ajax used to mark
+     * feedback as read when the div is expanded.
+     *
+     * If the markup changes, this will need to change as well as it depends
+     * on the structure.
+     */
+    asnn2.assnSubVersionDiv = function (elementId, feedbackRead) {
+        var escElemId = elementId.replace(/:/g, "\\:");
+        var versionHeader = jQuery('#'+escElemId+ ' h2');
+        var arrow = versionHeader.find("img:first");
+        var toggled = jQuery('#'+escElemId+ ' div')
+        versionHeader.click(function() {
+            toggle_hideshow(arrow, toggled);
+        });
+    };
+})(jQuery, asnn2);

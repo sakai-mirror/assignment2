@@ -1,7 +1,9 @@
 package org.sakaiproject.assignment2.tool.producers.renderers;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
@@ -13,6 +15,8 @@ import uk.org.ponder.rsf.components.UIBranchContainer;
 import uk.org.ponder.rsf.components.UIContainer;
 import uk.org.ponder.rsf.components.UIJointContainer;
 import uk.org.ponder.rsf.components.UIOutput;
+import uk.org.ponder.rsf.components.UIVerbatim;
+import uk.org.ponder.rsf.components.decorators.UICSSDecorator;
 import uk.org.ponder.rsf.producers.BasicProducer;
 
 /**
@@ -59,15 +63,29 @@ public class AsnnSubmissionHistoryRenderer implements BasicProducer {
             List<Long>versionIds = new ArrayList<Long>();
             versionIds.add(curVersion.getId());
             submissionLogic.markFeedbackAsViewed(assignmentSubmission.getId(), versionIds);
-        }
-
-        //TODO FIXME We'll have to think about the VERSION 0 logic here
-        UIOutput.make(joint, "multiple-submissions");
-        
-        for (AssignmentSubmissionVersion version: versionHistory) {
-            UIBranchContainer versionDiv = UIBranchContainer.make(joint, "submission-version:");
-            UIOutput.make(versionDiv, "header-text", version.getSubmittedDate().toLocaleString());
-            asnnSubmissionVersionRenderer.fillComponents(versionDiv, "submission-entry:", version);
+        } else {
+            //TODO FIXME We'll have to think about the VERSION 0 logic here
+            UIOutput.make(joint, "multiple-submissions");
+            
+            for (AssignmentSubmissionVersion version: versionHistory) {
+                UIBranchContainer versionDiv = UIBranchContainer.make(joint, "submission-version:");
+                UIOutput.make(versionDiv, "header-text", version.getSubmittedDate().toLocaleString());
+                boolean newfeedback = false;
+                // Make the envelope icons for feedback if necessary
+                if (version.isFeedbackReleased() && version.isFeedbackRead()) {
+                    UIOutput.make(versionDiv, "open-feedback-img");
+                    newfeedback = true;
+                }
+                else if (version.isFeedbackReleased()) {
+                    UIOutput.make(versionDiv, "new-feedback-img");
+                }
+                UIContainer versionContainer = asnnSubmissionVersionRenderer.fillComponents(versionDiv, "submission-entry:", version);
+                Map<String,String> stylemap = new HashMap<String,String>();
+                stylemap.put("display", "none");
+                versionContainer.decorate(new UICSSDecorator(stylemap));
+                UIVerbatim.make(versionDiv, "jsinit", "asnn2.assnSubVersionDiv('" +
+                        versionDiv.getFullID()+"',"+newfeedback+");");
+            }
         }
     }
 
