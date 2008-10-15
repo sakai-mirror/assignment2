@@ -84,7 +84,9 @@ public class AsnnSubmissionHistoryRenderer implements BasicProducer {
                 stylemap.put("display", "none");
                 versionContainer.decorate(new UICSSDecorator(stylemap));
                 UIVerbatim.make(versionDiv, "jsinit", "asnn2.assnSubVersionDiv('" +
-                        versionDiv.getFullID()+"',"+newfeedback+");");
+                        versionDiv.getFullID()+"',"+newfeedback+
+                        ",'"+assignmentSubmission.getId()+"','"+
+                        version.getId()+"');");
             }
         }
     }

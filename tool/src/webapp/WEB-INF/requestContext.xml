@@ -321,6 +321,11 @@
 		<property name="assignmentSubmissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
 		<property name="currentUser" ref="sakai-User" />
 	</bean>
+	
+	<bean id="MarkFeedbackAsReadAction"
+		class="org.sakaiproject.assignment2.tool.beans.MarkFeedbackAsReadAction" >
+		<property name="submissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
+	</bean>
 
 	<!-- Validators -->
 	<bean id="Assignment2Validator" class="org.sakaiproject.assignment2.tool.beans.Assignment2Validator" />

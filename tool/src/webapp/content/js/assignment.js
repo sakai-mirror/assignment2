@@ -304,6 +304,16 @@ var asnn2 = asnn2 || {};
             toggled.hide();
         }
     };
+    
+    function mark_feedback(submissionId, versionId) {
+        alert("Marking feedback");
+        var queries = new Array();
+        queries.push(RSF.renderBinding("MarkFeedbackAsReadAction.asnnSubId",submissionId));
+        queries.push(RSF.renderBinding("MarkFeedbackAsReadAction.asnnSubVersionId",versionId));
+        queries.push(RSF.renderActionBinding("MarkFeedbackAsReadAction.execute"))
+        var body = queries.join("&");
+        jQuery.post(document.URL, body);
+    };
 
     /**
      * Setup the element for a Assignment Submission Version. This includes
@@ -313,13 +323,18 @@ var asnn2 = asnn2 || {};
      * If the markup changes, this will need to change as well as it depends
      * on the structure.
      */
-    asnn2.assnSubVersionDiv = function (elementId, feedbackRead) {
+    asnn2.assnSubVersionDiv = function (elementId, feedbackRead, submissionId, versionId) {
         var escElemId = elementId.replace(/:/g, "\\:");
         var versionHeader = jQuery('#'+escElemId+ ' h2');
         var arrow = versionHeader.find("img:first");
         var toggled = jQuery('#'+escElemId+ ' div')
+        var envelope = versionHeader.find("img:last");
         versionHeader.click(function() {
             toggle_hideshow(arrow, toggled);
+            if (envelope.attr('src') == NEW_FEEDBACK_IMAGE) {
+                envelope.attr('src', READ_FEEDBACK_IMAGE);
+                mark_feedback(submissionId, versionId);
+            }
         });
     };
 })(jQuery, asnn2);
