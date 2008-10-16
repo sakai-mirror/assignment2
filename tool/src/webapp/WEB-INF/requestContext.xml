@@ -326,6 +326,13 @@
 		class="org.sakaiproject.assignment2.tool.beans.MarkFeedbackAsReadAction" >
 		<property name="submissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
 	</bean>
+	
+	<bean id="GradeAllRemainingAction"
+		class="org.sakaiproject.assignment2.tool.beans.GradeAllRemainingAction">
+		<property name="submissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
+		<property name="gradebookLogic" ref="org.sakaiproject.assignment2.logic.ExternalGradebookLogic" />
+		<property name="curContext" ref="sakai-Context" />
+	</bean>
 
 	<!-- Validators -->
 	<bean id="Assignment2Validator" class="org.sakaiproject.assignment2.tool.beans.Assignment2Validator" />

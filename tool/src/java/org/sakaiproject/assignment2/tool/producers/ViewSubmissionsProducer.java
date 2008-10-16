@@ -56,6 +56,7 @@ import uk.org.ponder.rsf.components.UICommand;
 import uk.org.ponder.rsf.components.UIContainer;
 import uk.org.ponder.rsf.components.UIELBinding;
 import uk.org.ponder.rsf.components.UIForm;
+import uk.org.ponder.rsf.components.UIInput;
 import uk.org.ponder.rsf.components.UIInternalLink;
 import uk.org.ponder.rsf.components.UIMessage;
 import uk.org.ponder.rsf.components.UIOutput;
@@ -70,6 +71,16 @@ import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
 import uk.org.ponder.rsf.viewstate.ViewParameters;
 import uk.org.ponder.rsf.viewstate.ViewParamsReporter;
 
+/**
+ * This producer renders the page that has the table of all the students
+ * with links to their submissions and information on the current grade, 
+ * feedback released, etc.
+ * 
+ * @author rjlowe
+ * @author mrwagner
+ * @author sgithens
+ *
+ */
 public class ViewSubmissionsProducer implements ViewComponentProducer, NavigationCaseReporter, ViewParamsReporter, ActionResultInterceptor {
 
     public static final String VIEW_ID = "viewSubmissions";
@@ -286,6 +297,15 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
         UICommand.make(form, "release_feedback", UIMessage.make("assignment2.assignment_grade-assignment.release_feedback"),
         "#{AssignmentSubmissionBean.processActionReleaseAllFeedbackForAssignment}");
 
+        /*
+         * Form for assigning a grade to all submissions without a grade.
+         */
+        if (assignment.isGraded()) {
+            UIForm unassignedForm = UIForm.make(tofill, "unassigned-apply-form");
+            unassignedForm.addParameter(new UIELBinding("GradeAllRemainingAction.assignmentId", assignment.getId()));
+            UIInput.make(unassignedForm, "new-grade-value", "GradeAllRemainingAction.grade", "0");
+            UICommand.make(unassignedForm, "apply-button", "GradeAllRemainingAction.execute");
+        }
     }
 
     public List<NavigationCase> reportNavigationCases() {

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
+import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 
 /**
@@ -44,7 +45,6 @@ public class MarkFeedbackAsReadAction {
      * The action method.
      */
     public void execute() {
-        System.out.println("FEEDBACK EXECUTE: " + asnnSubId + ", " + asnnSubVersionId);
         List<Long>versionIds = new ArrayList<Long>();
         versionIds.add(asnnSubVersionId);
         submissionLogic.markFeedbackAsViewed(asnnSubId, versionIds);
