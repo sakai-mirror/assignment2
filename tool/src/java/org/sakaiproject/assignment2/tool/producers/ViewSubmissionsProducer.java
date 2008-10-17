@@ -299,12 +299,15 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
          */
         UIForm releaseFeedbackForm = UIForm.make(tofill, "release-feedback-form");
         releaseFeedbackForm.parameters.add(new UIELBinding("#{AssignmentSubmissionBean.assignmentId}", assignmentId));
-        UICommand.make(releaseFeedbackForm, "release_feedback", UIMessage.make("assignment2.assignment_grade-assignment.release_feedback"),
+        UICommand submitAllFeedbackButton = UICommand.make(releaseFeedbackForm, "release_feedback", UIMessage.make("assignment2.assignment_grade-assignment.release_feedback"),
         "#{AssignmentSubmissionBean.processActionReleaseAllFeedbackForAssignment}");
         
-        UIOutput releaseFeedbackLink = UIOutput.make(tofill, "release-feedback-link");
+        UIInternalLink releaseFeedbackLink = UIInternalLink.make(tofill, 
+                "release-feedback-link", 
+                UIMessage.make("assignment2.assignment_grade-assignment.release_feedback"),
+                viewparams);
         Map<String,String> idmap = new HashMap<String,String>();
-        idmap.put("onclick", "alert("+releaseFeedbackForm.getFullID()+");");
+        idmap.put("onclick", "document.getElementById('"+submitAllFeedbackButton.getFullID()+"').click(); return false;");
         releaseFeedbackLink.decorate(new UIFreeAttributeDecorator(idmap));
 
         /*
@@ -316,7 +319,7 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
             UIInput.make(unassignedForm, "new-grade-value", "GradeAllRemainingAction.grade", "0");
             UICommand.make(unassignedForm, "apply-button", "GradeAllRemainingAction.execute");
         }
-    }
+    } 
 
     public List<NavigationCase> reportNavigationCases() {
         List<NavigationCase> nav= new ArrayList<NavigationCase>();
