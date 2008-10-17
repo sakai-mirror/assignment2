@@ -61,6 +61,7 @@ import uk.org.ponder.rsf.components.UIInternalLink;
 import uk.org.ponder.rsf.components.UIMessage;
 import uk.org.ponder.rsf.components.UIOutput;
 import uk.org.ponder.rsf.components.UIVerbatim;
+import uk.org.ponder.rsf.components.decorators.UIFreeAttributeDecorator;
 import uk.org.ponder.rsf.flow.ARIResult;
 import uk.org.ponder.rsf.flow.ActionResultInterceptor;
 import uk.org.ponder.rsf.flow.jsfnav.NavigationCase;
@@ -292,10 +293,19 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
                 assignment.getAttachmentSet());
 
 
-        UIForm form = UIForm.make(tofill, "form");
-        form.parameters.add(new UIELBinding("#{AssignmentSubmissionBean.assignmentId}", assignmentId));
-        UICommand.make(form, "release_feedback", UIMessage.make("assignment2.assignment_grade-assignment.release_feedback"),
+        /* 
+         * Form for releasing all feedback. The form will be hidden, and there
+         * will be a link that submits it.
+         */
+        UIForm releaseFeedbackForm = UIForm.make(tofill, "release-feedback-form");
+        releaseFeedbackForm.parameters.add(new UIELBinding("#{AssignmentSubmissionBean.assignmentId}", assignmentId));
+        UICommand.make(releaseFeedbackForm, "release_feedback", UIMessage.make("assignment2.assignment_grade-assignment.release_feedback"),
         "#{AssignmentSubmissionBean.processActionReleaseAllFeedbackForAssignment}");
+        
+        UIOutput releaseFeedbackLink = UIOutput.make(tofill, "release-feedback-link");
+        Map<String,String> idmap = new HashMap<String,String>();
+        idmap.put("onclick", "alert("+releaseFeedbackForm.getFullID()+");");
+        releaseFeedbackLink.decorate(new UIFreeAttributeDecorator(idmap));
 
         /*
          * Form for assigning a grade to all submissions without a grade.
