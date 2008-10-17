@@ -373,23 +373,27 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
         //Begin Looping for previous submissions
         List<AssignmentSubmissionVersion> history = submissionLogic.getVersionHistoryForSubmission(as);
 
-        for (AssignmentSubmissionVersion asv : history){
-
-            UIBranchContainer loop = UIBranchContainer.make(form, "previous_submissions:");
-            UIOutput.make(loop, "previous_date", (asv.getSubmittedDate() != null ? df.format(asv.getSubmittedDate()) : ""));
-            if (asvOTPKey.equals(asv.getId().toString())){
-                //we are editing this version
-                UIMessage.make(loop, "current_version", "assignment2.assignment_grade.current_version");
-            } else {
-                //else add link to edit this submission
-                UIInternalLink.make(loop, "previous_link", 
-                        messageLocator.getMessage("assignment2.assignment_grade.view_submission"),
-                        new FragmentViewSubmissionViewParams(FragmentViewSubmissionProducer.VIEW_ID, asv.getId()));
+        /*
+         * According to the spec, we should only show the history area if there
+         * is more than 1 submission for the student.
+         */
+        if (history != null && history.size() > 1) {
+            UIOutput.make(form, "submission-history-area");
+            
+            for (AssignmentSubmissionVersion asv : history){
+    
+                UIBranchContainer loop = UIBranchContainer.make(form, "previous_submissions:");
+                UIOutput.make(loop, "previous_date", (asv.getSubmittedDate() != null ? df.format(asv.getSubmittedDate()) : ""));
+                if (asvOTPKey.equals(asv.getId().toString())){
+                    //we are editing this version
+                    UIMessage.make(loop, "current_version", "assignment2.assignment_grade.current_version");
+                } else {
+                    //else add link to edit this submission
+                    UIInternalLink.make(loop, "previous_link", 
+                            messageLocator.getMessage("assignment2.assignment_grade.view_submission"),
+                            new FragmentViewSubmissionViewParams(FragmentViewSubmissionProducer.VIEW_ID, asv.getId()));
+                }
             }
-        }
-        if (history == null || history.size() == 0) {
-            //no history, add dialog
-            UIMessage.make(form, "no_history", "assignment2.assignment_grade.no_history");
         }
 
 
