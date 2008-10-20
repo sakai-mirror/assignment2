@@ -198,7 +198,6 @@
 				<select rsf:id="number_submissions"></select>
 			</li>
 			<li>
-				<!-- <label rsf:id="msg=assignment2.assignment_add.accept_until">Accept Until</label> --> 
 				<fieldset>
 					<ol>
 						<li>
@@ -212,23 +211,11 @@
 					</ol>
 				</fieldset>
 				
-				<!-- SWG TODO I don't the accept until is part of the spec anymore -->
-				<!-- 
-				<fieldset class="indent" rsf:id="accept_until_until_fieldset">
-					<ol>
-						<li>
-							<input rsf:id="accept_until_until" id="accept_until_until" type="checkbox" /> 
-							<label rsf:id="accept_until_until_label">Allow resubmissions until "Accept Until" Date</label>
-						</li>
-					</ol>
-				</fieldset>
-				-->
 			</li>
 			<li>
 				<input rsf:id="honor_pledge" id="honor_pledge" type="checkbox" />
 				<label for="honor_pledge" rsf:id="msg=assignment2.assignment_add.honor_pledge">Add honor pledge</label>
 			</li>
-
 		</ol>
 
 	</fieldset>
@@ -306,6 +293,9 @@ jQuery(document).ready(function(){
 	//Init require due date checkboxes
 	jQuery("input[name='page-replace\:\:require_due_date']").each(function(){
 		this.onclick = show_due_date;
+	});
+	jQuery("input[name='page-replace\:\:require_submissions']").click(function(){
+		asnn2.showHideSiblings(this.parentNode, this.checked);
 	});
 	show_due_date();
 });
