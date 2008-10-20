@@ -183,15 +183,9 @@
    </bean>
    
    <bean class="org.sakaiproject.assignment2.tool.producers.StudentAssignmentListProducer">
-      <property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
       <property name="assignmentSubmissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
-      <property name="pagerRenderer" ref="PagerRenderer" />
       <property name="locale" ref="requestLocale" />
       <property name="assignment2Bean" ref="Assignment2Bean" />
-      <property name="sortHeaderRenderer" ref="SortHeaderRenderer" />
-      <property name="localAssignmentLogic" ref="localAssignmentLogic" />
-      <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
-      <property name="messageLocator" ref="messageLocator" />
       <property name="externalGradebookLogic" ref="org.sakaiproject.assignment2.logic.ExternalGradebookLogic" />
    </bean>
    

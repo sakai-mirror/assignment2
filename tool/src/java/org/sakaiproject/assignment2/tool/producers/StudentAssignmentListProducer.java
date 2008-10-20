@@ -80,24 +80,14 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
         return VIEW_ID;
     }
 
-    private PagerRenderer pagerRenderer;
-    private AssignmentLogic assignmentLogic;
     private AssignmentSubmissionLogic submissionLogic;
     private Locale locale;
     private Assignment2Bean assignment2Bean;
-    private SortHeaderRenderer sortHeaderRenderer;
-    private LocalAssignmentLogic localAssignmentLogic;
-    private ExternalLogic externalLogic;
-    private MessageLocator messageLocator;
     private ExternalGradebookLogic externalGradebookLogic;
 
     public static final String DEFAULT_SORT_DIR = AssignmentLogic.SORT_DIR_ASC;
     public static final String DEFAULT_OPPOSITE_SORT_DIR = AssignmentLogic.SORT_DIR_DESC;
     public static final String DEFAULT_SORT_BY = AssignmentLogic.SORT_BY_INDEX;
-
-    private String current_sort_by = DEFAULT_SORT_BY;
-    private String current_sort_dir = DEFAULT_SORT_DIR;
-    private String opposite_sort_dir = DEFAULT_OPPOSITE_SORT_DIR;
 
     //images
     public static final String BULLET_UP_IMG_SRC = "/sakai-assignment2-tool/content/images/bullet_arrow_up.png";
@@ -112,12 +102,7 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
 
         //get parameters
         AssignmentListSortViewParams params = (AssignmentListSortViewParams) viewparams;
-        if (params.sort_by == null) params.sort_by = DEFAULT_SORT_BY;
-        if (params.sort_dir == null) params.sort_dir = DEFAULT_SORT_DIR;
-        current_sort_by = params.sort_by;
-        current_sort_dir = params.sort_dir;
-        opposite_sort_dir = (AssignmentLogic.SORT_DIR_ASC.equals(current_sort_dir) ? AssignmentLogic.SORT_DIR_DESC : AssignmentLogic.SORT_DIR_ASC);
-        UIVerbatim.make(tofill, "defaultSortBy", HTMLUtil.emitJavascriptVar("defaultSortBy", DEFAULT_SORT_BY));
+
 
         //check if we need to duplicate an assignment, params.assignmentIdToDuplicate is not null
         if (params.assignmentIdToDuplicate != null) {
@@ -133,56 +118,24 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
         UIMessage.make(tofill, "last_breadcrumb", "assignment2.student-assignment-list.heading");
 
         UIMessage.make(tofill, "page-title", "assignment2.student-assignment-list.title");
-        
-        //pagerRenderer.makePager(tofill, "pagerDiv:", VIEW_ID, viewparams, entries.size());
 
-        //table headers and sorting links
-        /*
-        sortHeaderRenderer.makeSortingLink(tofill, "tableheader.assignment", viewparams, 
-                AssignmentLogic.SORT_BY_TITLE, "assignment2.student-assignment-list.tableheader.assignment");
-        sortHeaderRenderer.makeSortingLink(tofill, "tableheader.for", viewparams, 
-                LocalAssignmentLogic.SORT_BY_FOR, "assignment2.student-assignment-list.tableheader.for");
-        sortHeaderRenderer.makeSortingLink(tofill, "tableheader.status", viewparams, 
-                LocalAssignmentLogic.SORT_BY_STATUS, "assignment2.student-assignment-list.tableheader.status");
-        sortHeaderRenderer.makeSortingLink(tofill, "tableheader.open", viewparams, 
-                AssignmentLogic.SORT_BY_OPEN, "assignment2.student-assignment-list.tableheader.open");
-        sortHeaderRenderer.makeSortingLink(tofill, "tableheader.due", viewparams, 
-                AssignmentLogic.SORT_BY_DUE, "assignment2.student-assignment-list.tableheader.due");
-        */
-
+        /* 
+         * If there are no assignments, print out the message String, otherwise,
+         * create the table element.
+         */
         if (submissionEntries.size() <= 0) {
             UIMessage.make(tofill, "assignment_empty", "assignment2.student-assignment-list.assignment_empty");
             return;
         }
-
-        // retrieve groups here for display of group restrictions
-        //Map<String, String> groupIdToNameMap = externalLogic.getGroupIdToNameMapForSite(externalLogic.getCurrentContextId());
-
-        // retrieve the statuses for the assignments
-        //Map<Assignment2, Integer> assignToStatusMap = submissionLogic.getSubmissionStatusConstantForAssignments(entries, externalLogic.getCurrentUserId());
+        else {
+            UIOutput.make(tofill, "assignment-list-table");
+        }
 
         //Fill out Table
         for (AssignmentSubmission assignmentSubmission : submissionEntries){
             UIBranchContainer row = UIBranchContainer.make(tofill, "assignment-row:");
 
             Assignment2 assignment = assignmentSubmission.getAssignment();
-            
-            //UILink.make(row, "attachments", ATTACH_IMG_SRC);
-
-            // Access
-            //String restrictedToText = messageLocator.getMessage("assignment2.assignment_restrict_to_site");
-            //if (assignment.getAssignmentGroupSet() != null && !assignment.getAssignmentGroupSet().isEmpty()) {
-                // we need to display a comma-delimited list of groups
-            //    restrictedToText = localAssignmentLogic.getListOfGroupRestrictionsAsString(
-            //            assignment.getAssignmentGroupSet(), groupIdToNameMap);
-            //}
-            //UIOutput.make(row, "assignment_row_for", restrictedToText);
-
-            //Integer status = assignToStatusMap.get(assignment);
-            //String statusText = messageLocator.getMessage("assignment2.submission_status." + status.intValue());
-            //UIOutput.make(row, "assignment_row_status", statusText);
-
-            //UIOutput.make(row, "assignment_row_open", df.format(assignment.getOpenDate()));
    
             boolean assignmentCompleted = assignmentSubmission.isCompleted();
             
@@ -325,23 +278,11 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
                 
             }
 
-            //For JS Sorting
-            //UIOutput.make(row, "open_timestamp", assignment.getOpenDate() != null ? String.valueOf(assignment.getOpenDate().getTime()) : "");
-            //UIOutput.make(row, "due_timestamp", assignment.getDueDate() != null ? String.valueOf(assignment.getDueDate().getTime()) : "");
-            //UIOutput.make(row, "sortIndex", String.valueOf(assignment.getSortIndex()));
         }
     }
 
     public ViewParameters getViewParameters() {
         return new AssignmentListSortViewParams();
-    }
-
-    public void setPagerRenderer(PagerRenderer pagerRenderer) {
-        this.pagerRenderer = pagerRenderer;
-    }
-
-    public void setAssignmentLogic (AssignmentLogic assignmentLogic) {
-        this.assignmentLogic = assignmentLogic;
     }
 
     public void setAssignmentSubmissionLogic (AssignmentSubmissionLogic submissionLogic) {
@@ -354,22 +295,6 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
 
     public void setAssignment2Bean(Assignment2Bean assignment2Bean) {
         this.assignment2Bean = assignment2Bean;
-    }
-
-    public void setSortHeaderRenderer(SortHeaderRenderer sortHeaderRenderer) {
-        this.sortHeaderRenderer = sortHeaderRenderer;
-    }
-
-    public void setLocalAssignmentLogic(LocalAssignmentLogic localAssignmentLogic) {
-        this.localAssignmentLogic = localAssignmentLogic;
-    }
-
-    public void setExternalLogic(ExternalLogic externalLogic) {
-        this.externalLogic = externalLogic;
-    }
-
-    public void setMessageLocator(MessageLocator messageLocator) {
-        this.messageLocator = messageLocator;
     }
 
     public void setExternalGradebookLogic(
