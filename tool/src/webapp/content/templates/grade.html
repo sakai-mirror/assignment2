@@ -144,14 +144,13 @@
 	</fieldset>
 	<!-- /Allow Resubmissions -->
 	
-	<fieldset>
+	<fieldset rsf:id="submission-history-area">
 		<legend>
 			<img src="/sakai-assignment2-tool/content/images/expand.png" border="0" alt="Open, click to close assignment instruction" style="cursor:pointer" 
 				onclick="slideFieldset(this)" />
 			<span rsf:id="msg=assignment2.assignment_grade.history" onclick="slideFieldset(jQuery(this).prev('img').get(0));" style="cursor:pointer">History</span>
 		</legend>
 		<ol style="display:none">
-			<li rsf:id="no_history">No History</li>
 			<li rsf:id="previous_submissions:">
 				<span rsf:id="previous_date"></span>
 				<span rsf:id="current_version">Current Version</span>

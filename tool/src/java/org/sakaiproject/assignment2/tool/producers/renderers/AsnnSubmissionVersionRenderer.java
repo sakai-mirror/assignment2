@@ -43,7 +43,17 @@ public class AsnnSubmissionVersionRenderer implements BasicProducer {
         this.attachmentListRenderer = attachmentListRenderer;
     }
 
-    public void fillComponents(UIContainer parent, String clientID, AssignmentSubmissionVersion asnnSubVersion) {
+    /**
+     * Renders the Submission Version in the parent container in element with 
+     * the client id. Returns the new UIContainer that holds this rendered
+     * version.
+     * 
+     * @param parent
+     * @param clientID
+     * @param asnnSubVersion
+     * @return
+     */
+    public UIContainer fillComponents(UIContainer parent, String clientID, AssignmentSubmissionVersion asnnSubVersion) {
         UIJointContainer joint = new UIJointContainer(parent, clientID, "asnn2-submission-version-widget:");
 
         AssignmentSubmission assignmentSubmssion = asnnSubVersion.getAssignmentSubmission();
@@ -106,6 +116,8 @@ public class AsnnSubmissionVersionRenderer implements BasicProducer {
                         asnnSubVersion.getFeedbackAttachSet());
             }
         }
+        
+        return joint;
     }
 
     public void fillComponents(UIContainer parent, String clientID) {

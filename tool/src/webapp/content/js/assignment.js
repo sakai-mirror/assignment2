@@ -281,3 +281,64 @@ function updateAttachments(imgsrc, filename, link, ref, filesize){
    jQuery("input", newRow).attr("value", ref);
    jQuery("span:first", newRow).html(filesize);
 }
+
+/* New Asnn2 functions that are namespaced. Will need to go back
+ * and namespace others eventually.
+ */
+var asnn2 = asnn2 || {};
+
+(function (jQuery, asnn2) {
+    var EXPAND_IMAGE = "/sakai-assignment2-tool/content/images/expand.png";
+    var COLLAPSE_IMAGE = "/sakai-assignment2-tool/content/images/collapse.png";
+    var NEW_FEEDBACK_IMAGE = "/library/image/silk/email.png";
+    var READ_FEEDBACK_IMAGE = "/library/image/silk/email_open.png";
+    
+    asnn2.toggle_hideshow_by_id = function (arrowImgId, toggledId) {
+        toggle_hideshow(jQuery('#'+arrowImgId.replace(/:/g, "\\:")),
+                        jQuery('#'+toggledId.replace(/:/g, "\\:")));
+    }
+    
+    function toggle_hideshow(arrowImg, toggled) {
+        if (arrowImg.attr('src') == EXPAND_IMAGE) {
+            arrowImg.attr('src', COLLAPSE_IMAGE);
+            toggled.show();
+        }
+        else {
+            arrowImg.attr('src', EXPAND_IMAGE);
+            toggled.hide();
+        }
+    };
+    
+    function mark_feedback(submissionId, versionId) {
+        alert("Marking feedback");
+        var queries = new Array();
+        queries.push(RSF.renderBinding("MarkFeedbackAsReadAction.asnnSubId",submissionId));
+        queries.push(RSF.renderBinding("MarkFeedbackAsReadAction.asnnSubVersionId",versionId));
+        queries.push(RSF.renderActionBinding("MarkFeedbackAsReadAction.execute"))
+        var body = queries.join("&");
+        jQuery.post(document.URL, body);
+    };
+
+    /**
+     * Setup the element for a Assignment Submission Version. This includes
+     * hooking up the (un)collapse actions, as well as the Ajax used to mark
+     * feedback as read when the div is expanded.
+     *
+     * If the markup changes, this will need to change as well as it depends
+     * on the structure.
+     */
+    asnn2.assnSubVersionDiv = function (elementId, feedbackRead, submissionId, versionId) {
+        var escElemId = elementId.replace(/:/g, "\\:");
+        var versionHeader = jQuery('#'+escElemId+ ' h2');
+        var arrow = versionHeader.find("img:first");
+        var toggled = jQuery('#'+escElemId+ ' div')
+        var envelope = versionHeader.find("img:last");
+        versionHeader.click(function() {
+            toggle_hideshow(arrow, toggled);
+            if (envelope.attr('src') == NEW_FEEDBACK_IMAGE) {
+                envelope.attr('src', READ_FEEDBACK_IMAGE);
+                mark_feedback(submissionId, versionId);
+            }
+        });
+    };
+})(jQuery, asnn2);

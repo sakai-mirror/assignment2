@@ -218,9 +218,12 @@
    	  <property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
    </bean>
 
+<!-- Not yet fully implemented ASNN-207 -->
+<!-- 
    <bean class="org.sakaiproject.assignment2.tool.producers.SettingsProducer">
      <property name="messageLocator" ref="messageLocator" />
    </bean>
+-->
 
    <!--  AJAX Fragment Producers -->
    <bean class="org.sakaiproject.assignment2.tool.producers.AjaxResultsProducer">
@@ -317,6 +320,18 @@
 	<bean id="MarkTodoBean" class="org.sakaiproject.assignment2.tool.beans.MarkTodoBean">
 		<property name="assignmentSubmissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
 		<property name="currentUser" ref="sakai-User" />
+	</bean>
+	
+	<bean id="MarkFeedbackAsReadAction"
+		class="org.sakaiproject.assignment2.tool.beans.MarkFeedbackAsReadAction" >
+		<property name="submissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
+	</bean>
+	
+	<bean id="GradeAllRemainingAction"
+		class="org.sakaiproject.assignment2.tool.beans.GradeAllRemainingAction">
+		<property name="submissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
+		<property name="gradebookLogic" ref="org.sakaiproject.assignment2.logic.ExternalGradebookLogic" />
+		<property name="curContext" ref="sakai-Context" />
 	</bean>
 
 	<!-- Validators -->

@@ -90,7 +90,8 @@ public class ListProducer implements ViewComponentProducer, NavigationCaseReport
     	UIMessage.make(tofill, "last_breadcrumb", "assignment2.list.heading");
     	
     	//Links to settings and reorder
-    	UIInternalLink.make(tofill, "settings_link", new SimpleViewParameters(SettingsProducer.VIEW_ID));
+    	// Settings page not yet implemented. ASNN-207
+    	//UIInternalLink.make(tofill, "settings_link", new SimpleViewParameters(SettingsProducer.VIEW_ID));
     	if (edit_perm) {
     	    UIInternalLink.make(tofill, "reorder_link", new SimpleViewParameters(ListReorderProducer.VIEW_ID));
     	}

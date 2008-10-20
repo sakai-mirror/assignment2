@@ -56,10 +56,12 @@ import uk.org.ponder.rsf.components.UICommand;
 import uk.org.ponder.rsf.components.UIContainer;
 import uk.org.ponder.rsf.components.UIELBinding;
 import uk.org.ponder.rsf.components.UIForm;
+import uk.org.ponder.rsf.components.UIInput;
 import uk.org.ponder.rsf.components.UIInternalLink;
 import uk.org.ponder.rsf.components.UIMessage;
 import uk.org.ponder.rsf.components.UIOutput;
 import uk.org.ponder.rsf.components.UIVerbatim;
+import uk.org.ponder.rsf.components.decorators.UIFreeAttributeDecorator;
 import uk.org.ponder.rsf.flow.ARIResult;
 import uk.org.ponder.rsf.flow.ActionResultInterceptor;
 import uk.org.ponder.rsf.flow.jsfnav.NavigationCase;
@@ -70,6 +72,16 @@ import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
 import uk.org.ponder.rsf.viewstate.ViewParameters;
 import uk.org.ponder.rsf.viewstate.ViewParamsReporter;
 
+/**
+ * This producer renders the page that has the table of all the students
+ * with links to their submissions and information on the current grade, 
+ * feedback released, etc.
+ * 
+ * @author rjlowe
+ * @author mrwagner
+ * @author sgithens
+ *
+ */
 public class ViewSubmissionsProducer implements ViewComponentProducer, NavigationCaseReporter, ViewParamsReporter, ActionResultInterceptor {
 
     public static final String VIEW_ID = "viewSubmissions";
@@ -281,12 +293,33 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
                 assignment.getAttachmentSet());
 
 
-        UIForm form = UIForm.make(tofill, "form");
-        form.parameters.add(new UIELBinding("#{AssignmentSubmissionBean.assignmentId}", assignmentId));
-        UICommand.make(form, "release_feedback", UIMessage.make("assignment2.assignment_grade-assignment.release_feedback"),
+        /* 
+         * Form for releasing all feedback. The form will be hidden, and there
+         * will be a link that submits it.
+         */
+        UIForm releaseFeedbackForm = UIForm.make(tofill, "release-feedback-form");
+        releaseFeedbackForm.parameters.add(new UIELBinding("#{AssignmentSubmissionBean.assignmentId}", assignmentId));
+        UICommand submitAllFeedbackButton = UICommand.make(releaseFeedbackForm, "release_feedback", UIMessage.make("assignment2.assignment_grade-assignment.release_feedback"),
         "#{AssignmentSubmissionBean.processActionReleaseAllFeedbackForAssignment}");
+        
+        UIInternalLink releaseFeedbackLink = UIInternalLink.make(tofill, 
+                "release-feedback-link", 
+                UIMessage.make("assignment2.assignment_grade-assignment.release_feedback"),
+                viewparams);
+        Map<String,String> idmap = new HashMap<String,String>();
+        idmap.put("onclick", "document.getElementById('"+submitAllFeedbackButton.getFullID()+"').click(); return false;");
+        releaseFeedbackLink.decorate(new UIFreeAttributeDecorator(idmap));
 
-    }
+        /*
+         * Form for assigning a grade to all submissions without a grade.
+         */
+        if (assignment.isGraded()) {
+            UIForm unassignedForm = UIForm.make(tofill, "unassigned-apply-form");
+            unassignedForm.addParameter(new UIELBinding("GradeAllRemainingAction.assignmentId", assignment.getId()));
+            UIInput.make(unassignedForm, "new-grade-value", "GradeAllRemainingAction.grade", "0");
+            UICommand.make(unassignedForm, "apply-button", "GradeAllRemainingAction.execute");
+        }
+    } 
 
     public List<NavigationCase> reportNavigationCases() {
         List<NavigationCase> nav= new ArrayList<NavigationCase>();
