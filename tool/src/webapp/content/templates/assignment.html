@@ -140,11 +140,22 @@
 	
 	<fieldset>
 		<legend rsf:id="msg=assignment2.assignment_add.availability_details">Availability Details</legend>
+		<!-- 
+		<div>
+		<p style="float:left;width:200px;border:blue solid thin"><label><span class="reqStar">*</span> Open Date</label></p>
+		<p style="display:inline"><input type="text" value="abcde" /></p>
+		</div>
+		<div>
+		<p style="float:left;width:200px;border:blue solid thin"><input type="checkbox" /><label>Due Date</label></p>
+		<p style="display:inline"><input type="text" value="abcde" /></p>
+		</div>
+		-->
 		
 	    <ol>
 			<li>
 				<label rsf:id="open_date_label"><span class="reqStar">*</span> Open Date</label>
 				<input rsf:id="open_date:"  />
+				
 				<input rsf:id="announcement" id="announcement" type="checkbox" />
 				<label for="announcement" rsf:id="msg=assignment2.assignment_add.announcement">Post Open Date to Announcements on Open Date</label> 
 				<p rsf:id="message-for:open_date"></p>
@@ -155,6 +166,7 @@
 						<li>
 							<input id="require_due_date" rsf:id="require_due_date" type="checkbox" />
 							<label for="require_due_date" rsf:id="msg=assignment2.assignment_add.due_date">Due Date</label>
+							
 							<span rsf:id="require_due_date_container" class="indent">
 								<input rsf:id="due_date:" value="12/31/2007"/>
 								<p rsf:id="message-for:due_date"></p>

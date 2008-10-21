@@ -416,3 +416,9 @@ ul#assignmentList li.row div.overlayMessage .success {
 h4.completed_assignment {
     color: gray;
 }
+
+.asnnOptionsLabel {
+	float:left;
+	width:200px;
+	border:blue solid thin;
+}

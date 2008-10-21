@@ -310,7 +310,6 @@ var asnn2 = asnn2 || {};
     };
     
     function mark_feedback(submissionId, versionId) {
-        alert("Marking feedback");
         var queries = new Array();
         queries.push(RSF.renderBinding("MarkFeedbackAsReadAction.asnnSubId",submissionId));
         queries.push(RSF.renderBinding("MarkFeedbackAsReadAction.asnnSubVersionId",versionId));
