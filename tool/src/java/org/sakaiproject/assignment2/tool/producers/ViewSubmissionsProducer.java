@@ -152,7 +152,7 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
 
             // now retrieve all of the GradeInformation
             studentIdGradeInfoMap = gradebookLogic.getGradeInformationForStudents(
-                    externalLogic.getCurrentContextId(), studentIdList, assignment);
+                    studentIdList, assignment.getContextId(), assignment.getGradableObjectId());
         }
 
         //Breadcrumbs
@@ -316,7 +316,7 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
         if (assignment.isGraded()) {
             UIForm unassignedForm = UIForm.make(tofill, "unassigned-apply-form");
             unassignedForm.addParameter(new UIELBinding("GradeAllRemainingAction.assignmentId", assignment.getId()));
-            UIInput.make(unassignedForm, "new-grade-value", "GradeAllRemainingAction.grade", "0");
+            UIInput.make(unassignedForm, "new-grade-value", "GradeAllRemainingAction.grade", "");
             UICommand.make(unassignedForm, "apply-button", "GradeAllRemainingAction.execute");
         }
     } 

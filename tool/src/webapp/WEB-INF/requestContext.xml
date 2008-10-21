@@ -323,9 +323,12 @@
 	
 	<bean id="GradeAllRemainingAction"
 		class="org.sakaiproject.assignment2.tool.beans.GradeAllRemainingAction">
-		<property name="submissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
+		<property name="assignmentPermissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentPermissionLogic" />
 		<property name="gradebookLogic" ref="org.sakaiproject.assignment2.logic.ExternalGradebookLogic" />
+		<property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
+		<property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
 		<property name="curContext" ref="sakai-Context" />
+		<property name="messages" ref="targettedMessageList"/>
 	</bean>
 
 	<!-- Validators -->

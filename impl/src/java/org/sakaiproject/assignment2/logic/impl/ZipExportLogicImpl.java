@@ -236,7 +236,7 @@ public class ZipExportLogicImpl implements ZipExportLogic
 				
 				if (gradableStudents != null && !gradableStudents.isEmpty()) {
 					// get the grade information
-					Map<String, GradeInformation> userIdGradeMap = gradebookLogic.getGradeInformationForStudents(contextId, gradableStudents, assignment);
+					Map<String, GradeInformation> userIdGradeMap = gradebookLogic.getGradeInformationForStudents(gradableStudents, assignment.getContextId(), assignment.getGradableObjectId());
 					
 					for (String studentId : gradableStudents) {
 						// get their User info
