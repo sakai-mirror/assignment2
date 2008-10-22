@@ -82,6 +82,7 @@
 		<property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
 		<property name="assignmentPermissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentPermissionLogic" />
 		<property name="externalGradebookLogic" ref="org.sakaiproject.assignment2.logic.ExternalGradebookLogic" />
+		<property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
 	</bean>
 
 	<bean id="org.sakaiproject.assignment2.logic.ScheduledNotification" class="org.sakaiproject.assignment2.logic.impl.ScheduledNotificationImpl">

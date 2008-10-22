@@ -460,15 +460,11 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
 		}
 	}
 
-	public Map<String, GradeInformation> getGradeInformationForStudents(String contextId, List<String> studentIdList, Assignment2 assignment) {
-		if (contextId == null || assignment == null) {
-			throw new IllegalArgumentException("null contextId or assignment passed to populateStudentGradeInformation");
-		}
-
-		// throw an error if this is called for an ungraded assignment
-		if (!assignment.isGraded() || assignment.getGradableObjectId() == null) {
-			throw new IllegalArgumentException("Ungraded assignment was passed to " +
-			"getGradeInformationForStudents. This method may only be used for graded assignments.");
+	public Map<String, GradeInformation> getGradeInformationForStudents(List<String> studentIdList, String contextId, Long gradableObjectId) {
+		if (contextId == null || gradableObjectId == null) {
+			throw new IllegalArgumentException("null contextId or gradableObjectId " +
+					"passed to getGradeInformationForStudents. contextId:" + 
+					contextId + " gradableObjectId:" + gradableObjectId);
 		}
 
 		Map<String, GradeInformation> studentIdToGradeInfoMap = new HashMap<String, GradeInformation>();
@@ -479,7 +475,7 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
 
 			try {
 				List<GradeDefinition>gradeDefs = gradebookService.getGradesForStudentsForItem(contextId, 
-						assignment.getGradableObjectId(), studentIdList);
+						gradableObjectId, studentIdList);
 
 				if (gradeDefs != null) {
 					for (GradeDefinition gradeDef : gradeDefs) {
@@ -495,7 +491,7 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
 
 				GradeInformation gradeInfo = new GradeInformation();
 				gradeInfo.setStudentId(studentId);
-				gradeInfo.setGradableObjectId(assignment.getGradableObjectId());
+				gradeInfo.setGradableObjectId(gradableObjectId);
 
 				// get the GradeDefinition for this student and convert it to
 				// our local GradeInformation object
@@ -629,5 +625,50 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
     	} 
 		
 		return allowed;
+	}
+	
+	public void assignGradeToUngradedStudents(String contextId, Long gradableObjectId, List<String> studentIds, String grade) {
+	    if (contextId == null || gradableObjectId == null) {
+	        throw new IllegalArgumentException("Null contextId or gradableObjectId passed " +
+	        		"to assignGradeToUngradedSubmissions. contextId:" + contextId + " gradableObjectId:" + gradableObjectId);
+	    }
+
+	    // no need to continue if they didn't pass a new grade
+	    if (grade != null && grade.trim().length() > 0) {
+	        // first, let's validate the grade
+	        if (!isGradeValid(contextId, grade)) {
+	            throw new InvalidGradeForAssignmentException("Invalid grade passed to assignGradeToUngradedSubmissions: " + grade);
+	        }
+
+	        if (studentIds != null && !studentIds.isEmpty()) {
+
+	            // now determine which don't have a grade yet
+	            Map<String, GradeInformation> studentIdGradeInfoMap = getGradeInformationForStudents(studentIds, contextId, gradableObjectId);
+	            List<String> ungradedStudents = new ArrayList<String>();
+
+	            if (studentIdGradeInfoMap != null && !studentIdGradeInfoMap.isEmpty()) {
+	                for (Map.Entry<String, GradeInformation> entry : studentIdGradeInfoMap.entrySet()) {
+	                    String studentId = entry.getKey();
+	                    GradeInformation gradeInfo = entry.getValue();
+	                    if (studentId != null && gradeInfo != null) {
+	                        if (gradeInfo.getGradebookGrade() == null || gradeInfo.getGradebookGrade().trim().equals("")) {
+	                            ungradedStudents.add(studentId);
+	                        }
+	                    }
+	                }
+
+	                if (!ungradedStudents.isEmpty()) {
+	                    List<GradeInformation> gradeInfoToSave = new ArrayList<GradeInformation>();
+	                    for (String ungradedStudent : ungradedStudents) {
+	                        GradeInformation gradeInfo = studentIdGradeInfoMap.get(ungradedStudent);
+	                        gradeInfo.setGradebookGrade(grade);
+	                        gradeInfoToSave.add(gradeInfo);
+	                    }
+
+	                    saveGradesAndComments(contextId, gradableObjectId, gradeInfoToSave);
+	                }
+	            }
+	        }
+	    }
 	}
 }

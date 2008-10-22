@@ -98,7 +98,7 @@ public class UploadBean
 			return FAILURE;
 		}
 		
-		if (!uploadedFile.getContentType().equals("text/comma-separated-values"))
+		if (!uploadedFile.getOriginalFilename().endsWith("csv"))
 		{
 			messages.addMessage(new TargettedMessage("assignment2.upload_grades.not_csv", new Object[] {},
 					TargettedMessage.SEVERITY_ERROR));

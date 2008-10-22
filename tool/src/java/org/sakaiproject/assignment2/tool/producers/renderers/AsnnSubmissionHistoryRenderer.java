@@ -64,7 +64,7 @@ public class AsnnSubmissionHistoryRenderer implements BasicProducer {
             List<Long>versionIds = new ArrayList<Long>();
             versionIds.add(curVersion.getId());
             submissionLogic.markFeedbackAsViewed(assignmentSubmission.getId(), versionIds);
-        } else {
+        } else if (versionHistory.size() > 1){
             //TODO FIXME We'll have to think about the VERSION 0 logic here
             UIOutput.make(joint, "submissions-header");
             UIOutput.make(joint, "multiple-submissions");

@@ -310,7 +310,6 @@ var asnn2 = asnn2 || {};
     };
     
     function mark_feedback(submissionId, versionId) {
-        alert("Marking feedback");
         var queries = new Array();
         queries.push(RSF.renderBinding("MarkFeedbackAsReadAction.asnnSubId",submissionId));
         queries.push(RSF.renderBinding("MarkFeedbackAsReadAction.asnnSubVersionId",versionId));
@@ -318,6 +317,25 @@ var asnn2 = asnn2 || {};
         var body = queries.join("&");
         jQuery.post(document.URL, body);
     };
+    
+    /**
+     * Custom javascript for the Assignment Add/Edit page. When the "Require
+     * Submissions" box is checked or unchecked, the Submission Details below it
+     * need to show/hide. It does this by hiding/removing all siblings at the
+     * same level (ie. the rest of the <li/> in the current list).
+     * 
+     * @param element The jQuery element whose downstream siblings will be 
+     * shown or hidden
+     * @param show Whether or not to show them.
+     */
+    asnn2.showHideSiblings = function(element, show) {
+    	if (show == true) {
+    		jQuery(element).siblings("li").show();
+    	}
+    	else {
+    		jQuery(element).siblings("li").hide();
+    	}
+    },
 
     /**
      * Setup the element for a Assignment Submission Version. This includes

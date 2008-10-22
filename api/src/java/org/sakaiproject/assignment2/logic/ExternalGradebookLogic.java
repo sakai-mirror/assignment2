@@ -298,17 +298,17 @@ public interface ExternalGradebookLogic {
 	
 	/**
 	 * 
-	 * @param contextId
 	 * @param studentIdList
-	 * @param assignment
+	 * @param contextId
+	 * @param gradableObjectId the id of the gradebook item associated with the assignment
 	 * @return a map of the studentId to the GradeInformation record populated
 	 * with the student's grade info from the gradebook item associated with the
 	 * given assignment.
-	 * @throws IllegalArgumentException - if the assignment you pass is ungraded
+	 * @throws IllegalArgumentException - if contextId or gradableObjectId are null
 	 * @throws SecurityException - if the current user is not authorized to
 	 * view grade information for a student in the list for the assoc gb item
 	 */
-	public Map<String, GradeInformation> getGradeInformationForStudents(String contextId, List<String> studentIdList, Assignment2 assignment);
+	public Map<String, GradeInformation> getGradeInformationForStudents(List<String> studentIdList, String contextId, Long gradableObjectId);
 	
 	/**
 	 * 
@@ -317,4 +317,17 @@ public interface ExternalGradebookLogic {
 	 * @return true if the current user may view this gradebook item in the gradebook
 	 */
 	public boolean isCurrentUserAbleToViewGradebookItem(String contextId, Long gradableObjectId);
+	
+	/**
+	 * Assign the given grade to all students in the list who do not have a grade
+	 * yet (grade is null or empty string) for this gradebook item.
+	 * @param contextId
+	 * @param gradableObjectId - the id of the gradebook item the assignment is associated with
+	 * @param studentIds - ids of the students that the current user is allowed to grade for this assignment
+	 * @param grade non-null grade to be saved for all of the students who do not yet have a grade
+	 * @throws InvalidGradeException if the passed grade is not valid for this gradebook item
+	 * @throws SecurityException - if the current user is not authorized to
+     * grade a student in the list for the assoc gb item
+	 */
+	public void assignGradeToUngradedStudents(String contextId, Long gradableObjectId, List<String> studentIds, String grade);
 }

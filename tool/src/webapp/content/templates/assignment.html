@@ -140,11 +140,22 @@
 	
 	<fieldset>
 		<legend rsf:id="msg=assignment2.assignment_add.availability_details">Availability Details</legend>
+		<!-- 
+		<div>
+		<p style="float:left;width:200px;border:blue solid thin"><label><span class="reqStar">*</span> Open Date</label></p>
+		<p style="display:inline"><input type="text" value="abcde" /></p>
+		</div>
+		<div>
+		<p style="float:left;width:200px;border:blue solid thin"><input type="checkbox" /><label>Due Date</label></p>
+		<p style="display:inline"><input type="text" value="abcde" /></p>
+		</div>
+		-->
 		
 	    <ol>
 			<li>
 				<label rsf:id="open_date_label"><span class="reqStar">*</span> Open Date</label>
 				<input rsf:id="open_date:"  />
+				
 				<input rsf:id="announcement" id="announcement" type="checkbox" />
 				<label for="announcement" rsf:id="msg=assignment2.assignment_add.announcement">Post Open Date to Announcements on Open Date</label> 
 				<p rsf:id="message-for:open_date"></p>
@@ -155,6 +166,7 @@
 						<li>
 							<input id="require_due_date" rsf:id="require_due_date" type="checkbox" />
 							<label for="require_due_date" rsf:id="msg=assignment2.assignment_add.due_date">Due Date</label>
+							
 							<span rsf:id="require_due_date_container" class="indent">
 								<input rsf:id="due_date:" value="12/31/2007"/>
 								<p rsf:id="message-for:due_date"></p>
@@ -198,7 +210,6 @@
 				<select rsf:id="number_submissions"></select>
 			</li>
 			<li>
-				<!-- <label rsf:id="msg=assignment2.assignment_add.accept_until">Accept Until</label> --> 
 				<fieldset>
 					<ol>
 						<li>
@@ -212,23 +223,11 @@
 					</ol>
 				</fieldset>
 				
-				<!-- SWG TODO I don't the accept until is part of the spec anymore -->
-				<!-- 
-				<fieldset class="indent" rsf:id="accept_until_until_fieldset">
-					<ol>
-						<li>
-							<input rsf:id="accept_until_until" id="accept_until_until" type="checkbox" /> 
-							<label rsf:id="accept_until_until_label">Allow resubmissions until "Accept Until" Date</label>
-						</li>
-					</ol>
-				</fieldset>
-				-->
 			</li>
 			<li>
 				<input rsf:id="honor_pledge" id="honor_pledge" type="checkbox" />
 				<label for="honor_pledge" rsf:id="msg=assignment2.assignment_add.honor_pledge">Add honor pledge</label>
 			</li>
-
 		</ol>
 
 	</fieldset>
@@ -306,6 +305,9 @@ jQuery(document).ready(function(){
 	//Init require due date checkboxes
 	jQuery("input[name='page-replace\:\:require_due_date']").each(function(){
 		this.onclick = show_due_date;
+	});
+	jQuery("input[name='page-replace\:\:require_submissions']").click(function(){
+		asnn2.showHideSiblings(this.parentNode, this.checked);
 	});
 	show_due_date();
 });
