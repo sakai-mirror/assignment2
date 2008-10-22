@@ -291,7 +291,7 @@ public class ExternalLogicImpl implements ExternalLogic {
     	//TODO URL encode this so I can put it as a url parameter
     	String url = "/direct/gradebook/_/gradebookItem/" + getCurrentContextId();
     	String finishedURL = getAssignmentViewUrl(returnViewId);
-    	String getParams = "?TB_iframe=true&width=700&height=350&KeepThis=true&finishURL=" + finishedURL;
+    	String getParams = "?TB_iframe=true&width=700&height=415&KeepThis=true&finishURL=" + finishedURL;
 	      
     	return url + "/" + (gradeableObjectId != null ? gradeableObjectId : "") + getParams;
     }
@@ -300,7 +300,7 @@ public class ExternalLogicImpl implements ExternalLogic {
         //TODO URL encode this so I can put it as a url parameter
         String url = "/direct/gradebook/_/gradebookItem/" + getCurrentContextId();
         String finishedURL = getAssignmentViewUrl(returnViewId);
-        String getParams = "?TB_iframe=true&width=700&height=350&KeepThis=true&finishURL=" + finishedURL + "&name=" + gradebookItemName;
+        String getParams = "?TB_iframe=true&width=700&height=415&KeepThis=true&finishURL=" + finishedURL + "&name=" + gradebookItemName;
           
         return url + "/" + (gradeableObjectId != null ? gradeableObjectId : "") + getParams;
     }
