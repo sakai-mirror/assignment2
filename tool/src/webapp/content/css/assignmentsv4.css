@@ -408,6 +408,13 @@ ul#assignmentList li.row div.overlayMessage .success {
     margin-top: 5px;
 }
 
+/*
+ * Attachments
+ */
+#attachmentsFieldset ol {
+    margin-bottom: 10px;
+}
+
 /* 
  *  Student Assignment List and Landing Page
  */

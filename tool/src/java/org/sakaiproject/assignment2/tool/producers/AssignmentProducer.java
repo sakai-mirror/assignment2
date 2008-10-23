@@ -267,6 +267,8 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
         attachmentInput.mustapply = true;
         attachmentInputEvolver.evolveAttachment(attachmentInput);
 
+        UIOutput.make(form, "no_attachments_yet", messageLocator.getMessage("assignment2.assignment_add.no_attachments"));
+        
         UIInternalLink.make(form, "add_attachments", UIMessage.make("assignment2.assignment_add.add_attachments"),
                 new FilePickerHelperViewParams(AddAttachmentHelperProducer.VIEWID, Boolean.TRUE, 
                         Boolean.TRUE, 500, 700, OTPKey));

@@ -189,14 +189,6 @@ function flip_image(img){
 		img.src=img.src.replace(/expand/, 'collapse');
 	}
 }
-function updateDisplayNoAttachments(){
-	var li = jQuery("#fragment-attachments-container li span.no_attachments_yet").get(0);
-	if (jQuery("#fragment-attachments-container li").size() > 1) {
-		jQuery("span.no_attachments_yet").parent("li").hide();
-	} else {
-		jQuery("span.no_attachments_yet").parent("li").show();
-	}
-}
 
 //Sorting functions
 var sortBy; var sortDir; var pStart=0; var pLength=5;
@@ -280,6 +272,34 @@ function updateAttachments(imgsrc, filename, link, ref, filesize){
    jQuery("a:first", newRow).html(filename);
    jQuery("input", newRow).attr("value", ref);
    jQuery("span:first", newRow).html(filesize);
+   
+   updateDisplayNoAttachments();
+}
+
+function removeAttachment(attach) {
+    // we need to leave at least one "skipped" demo for use for new attachments
+    var li = jQuery("#attachmentsFieldset li");
+    if (li.size() <=1) {
+        // this is the only one in the list, so we need to just
+        // change it to "skipped"
+        jQuery(attach).parent('span').parent('li').addClass("skip");
+    } else {
+        jQuery(attach).parent('span').parent('li').remove();
+    }
+}
+
+function updateDisplayNoAttachments(){
+    var li = jQuery("#attachmentsFieldset li").get(0);
+    if (li) {
+        var skipped = jQuery("#attachmentsFieldset ol:first li:last").hasClass("skip");
+        if (skipped) {
+            jQuery("span.no_attachments_yet").show();
+        } else {
+            jQuery("span.no_attachments_yet").hide();
+        }
+    } else {
+        jQuery("span.no_attachments_yet").show();
+    }
 }
 
 /* New Asnn2 functions that are namespaced. Will need to go back

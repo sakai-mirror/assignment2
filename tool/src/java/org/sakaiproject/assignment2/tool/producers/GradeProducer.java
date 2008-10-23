@@ -256,7 +256,7 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
         //If assignment allows for submitted attachments
         if (assignment.getSubmissionType() == AssignmentConstants.SUBMIT_ATTACH_ONLY ||
                 assignment.getSubmissionType() == AssignmentConstants.SUBMIT_INLINE_AND_ATTACH) {
-            if (assignmentSubmissionVersion.getSubmissionAttachSet() != null){
+            if (assignmentSubmissionVersion.getSubmissionAttachSet() != null && !assignmentSubmissionVersion.getSubmissionAttachSet().isEmpty()){
                 UIOutput.make(tofill, "submitted_attachments_fieldset");
                 attachmentListRenderer.makeAttachmentFromSubmissionAttachmentSet(tofill, "submitted_attachment_list:", params.viewID, 
                         assignmentSubmissionVersion.getSubmissionAttachSet());
@@ -280,9 +280,15 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
         //attachmentInputEvolver.evolveAttachment(attachmentInput);
 
         if (grade_perm) {
-            UIInternalLink.make(form, "add_attachments", UIMessage.make("assignment2.assignment_add.add_attachments"),
+            UIInternalLink.make(form, "add_attachments", UIMessage.make("assignment2.assignment_grade.add_feedback_attach"),
                     new FilePickerHelperViewParams(AddAttachmentHelperProducer.VIEWID, Boolean.TRUE, 
                             Boolean.TRUE, 500, 700, OTPKey));
+            
+            UIInputMany attachmentInput = UIInputMany.make(form, "attachment_list:", asvOTP + ".feedbackAttachmentRefs", 
+                    assignmentSubmissionVersion.getFeedbackAttachmentRefs());
+            attachmentInputEvolver.evolveAttachment(attachmentInput);
+            
+            UIOutput.make(form, "no_attachments_yet", messageLocator.getMessage("assignment2.assignment_grade.no_feedback_attach"));
         }
 
         // Submission-Level resubmission settings
