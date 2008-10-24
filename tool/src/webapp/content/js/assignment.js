@@ -350,10 +350,10 @@ var asnn2 = asnn2 || {};
      */
     asnn2.showHideSiblings = function(element, show) {
     	if (show == true) {
-    		jQuery(element).siblings("li").show();
+    		jQuery(element).nextAll().show();
     	}
     	else {
-    		jQuery(element).siblings("li").hide();
+    		jQuery(element).nextAll().hide();
     	}
     };
     
