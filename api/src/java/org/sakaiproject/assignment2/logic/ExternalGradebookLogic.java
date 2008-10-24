@@ -219,12 +219,11 @@ public interface ExternalGradebookLogic {
 			boolean releasedToStudents, boolean countedInCourseGrade);
 	
 	/**
-	 * Return the GradebookItem object associated with the given gradableObjectId
-	 * in the given contextId in the gradebook tool. Throws IllegalArgumentException
-	 * if given id does not exist
 	 * @param contextId
 	 * @param gradableObjectId
-	 * @return
+	 * @return GradebookItem object associated with the given gradableObjectId
+     * in the given contextId in the gradebook tool
+     * @throws GradebookItemNotFoundException if no gradebook item exists with the given gradableObjectId
 	 */
 	public GradebookItem getGradebookItemById(String contextId, Long gradableObjectId);
 	

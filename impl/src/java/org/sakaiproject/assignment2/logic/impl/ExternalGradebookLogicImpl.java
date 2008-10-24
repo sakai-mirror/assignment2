@@ -178,7 +178,7 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
     			for (Assignment assign : allGbItems) {
     				if (assign != null) {
     					GradebookItem item = 
-    						new GradebookItem(assign.getId(), assign.getName(), assign.getPoints(), assign.getDueDate());
+    						new GradebookItem(assign.getId(), assign.getName(), assign.getPoints(), assign.getDueDate(), assign.isReleased());
     					
     					if (assign.isExternallyMaintained()) {
     						item.setExternalId(assign.getExternalId());
@@ -425,7 +425,8 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
 		
 		try {
 			Assignment assign = gradebookService.getAssignment(contextId, gradableObjectId);
-			gradebookItem = new GradebookItem(assign.getId(), assign.getName(), assign.getPoints(), assign.getDueDate());
+			gradebookItem = new GradebookItem(assign.getId(), assign.getName(), 
+			        assign.getPoints(), assign.getDueDate(), assign.isReleased());
 		} catch (AssessmentNotFoundException anfe) {
 			throw new GradebookItemNotFoundException ("No gradebook item exists with gradableObjectId " 
 					+ gradableObjectId + " in context " + contextId, anfe);
