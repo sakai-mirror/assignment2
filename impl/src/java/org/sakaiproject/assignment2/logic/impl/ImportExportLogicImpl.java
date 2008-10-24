@@ -40,6 +40,7 @@ import org.sakaiproject.assignment2.dao.AssignmentDao;
 import org.sakaiproject.assignment2.exception.AnnouncementPermissionException;
 import org.sakaiproject.assignment2.exception.CalendarPermissionException;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
+import org.sakaiproject.assignment2.logic.ExternalContentLogic;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.logic.GradebookItem;
@@ -49,20 +50,9 @@ import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentAttachment;
 import org.sakaiproject.assignment2.model.AssignmentGroup;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
-import org.sakaiproject.content.api.ContentHostingService;
-import org.sakaiproject.content.api.ContentResource;
 import org.sakaiproject.entity.api.Reference;
 import org.sakaiproject.entity.api.ResourceProperties;
-import org.sakaiproject.exception.IdInvalidException;
-import org.sakaiproject.exception.IdUnusedException;
-import org.sakaiproject.exception.IdUsedException;
-import org.sakaiproject.exception.InconsistentException;
-import org.sakaiproject.exception.OverQuotaException;
-import org.sakaiproject.exception.PermissionException;
-import org.sakaiproject.exception.ServerOverloadException;
-import org.sakaiproject.exception.TypeException;
 import org.sakaiproject.site.api.Group;
-
 
 
 /**
@@ -100,9 +90,9 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 		this.assignmentService = assignmentService;
 	}
 
-	private ContentHostingService contentHostingService;
-	public void setContentHostingService(ContentHostingService contentHostingService) {
-		this.contentHostingService = contentHostingService;
+	private ExternalContentLogic contentLogic;
+	public void setExternalContentLogic(ExternalContentLogic contentLogic) {
+		this.contentLogic = contentLogic;
 	}
 
 	public void init(){
@@ -336,9 +326,14 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 
 							Set<AssignmentAttachment> attachSet = new HashSet<AssignmentAttachment>();
 							for (String attRef : assignDef.getAttachmentReferences()) {
-								String newAttId = copyAttachment(attRef, toContext);
-								AssignmentAttachment newAA = new AssignmentAttachment(newAssignment, newAttId);
-								attachSet.add(newAA);
+								String newAttId = contentLogic.copyAttachment(attRef, toContext);
+								if (newAttId != null) {
+    								AssignmentAttachment newAA = new AssignmentAttachment(newAssignment, newAttId);
+    								attachSet.add(newAA);
+								} else {
+								    log.warn("A copy of attachment with ref:" + 
+								            attRef + " was NOT created because an error occurred.");
+								}
 							}
 							newAssignment.setAttachmentSet(attachSet);
 						}
@@ -567,52 +562,6 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 		}
 
 		return newTitle;
-	}
-
-	private String copyAttachment(String attId, String contextId) {
-		String newAttId = null;
-		if (attId != null) {
-			try {
-				ContentResource oldAttachment = contentHostingService.getResource(attId);
-				String toolTitle = externalLogic.getToolTitle();
-				String name = oldAttachment.getProperties().getProperty(
-						ResourceProperties.PROP_DISPLAY_NAME);
-				String type = oldAttachment.getContentType();
-				byte[] content = oldAttachment.getContent();
-				ResourceProperties properties = oldAttachment.getProperties();
-
-				ContentResource newResource = contentHostingService.addAttachmentResource(name, 
-						contextId, toolTitle, type, content, properties);
-				newAttId = newResource.getId();
-
-			} catch (TypeException te) {
-				log.warn("TypeException thrown while attempting to retrieve resource with" +
-						" id " + attId + ". Attachment was not copied.");
-			} catch (PermissionException pe) {
-				log.warn("PermissionException thrown while attempting to retrieve resource with" +
-						" id " + attId + ". Attachment was not copied.");
-			} catch (IdUnusedException iue) {
-				log.warn("IdUnusedException thrown while attempting to retrieve resource with" +
-						" id " + attId + ". Attachment was not copied.");
-			} catch (IdInvalidException iie) {
-				log.warn("IdInvalidException thrown while attempting to copy resource with" +
-						" id " + attId + ". Attachment was not copied.");
-			} catch (ServerOverloadException soe) {
-				log.warn("ServerOverloadException thrown while attempting to copy resource with" +
-						" id " + attId + ". Attachment was not copied.");
-			} catch (IdUsedException iue) {
-				log.warn("IdUsedException thrown while attempting to copy resource with" +
-						" id " + attId + ". Attachment was not copied.");
-			} catch (OverQuotaException oqe) {
-				log.warn("OverQuotaException thrown while attempting to copy resource with" +
-						" id " + attId + ". Attachment was not copied.");
-			} catch (InconsistentException ie) {
-				log.warn("InconsistentException thrown while attempting to copy resource with" +
-						" id " + attId + ". Attachment was not copied.");
-			}
-		}
-
-		return newAttId;
 	}
 	
 	public void cleanToolForImport(String contextId) {

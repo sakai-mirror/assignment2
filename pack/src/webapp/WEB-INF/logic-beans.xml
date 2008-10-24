@@ -27,6 +27,11 @@
    <bean id="org.sakaiproject.assignment2.logic.ExternalEventLogic" class="org.sakaiproject.assignment2.logic.impl.ExternalEventLogicImpl" init-method="init">
      <property name="eventTrackingService" ref="org.sakaiproject.event.api.EventTrackingService" />
    </bean>
+   
+   <bean id="org.sakaiproject.assignment2.logic.ExternalContentLogic" class="org.sakaiproject.assignment2.logic.impl.ExternalContentLogicImpl" init-method="init">
+     <property name="contentHostingService" ref="org.sakaiproject.content.api.ContentHostingService" />
+     <property name="contentTypeImageService" ref="org.sakaiproject.content.api.ContentTypeImageService" />
+   </bean>
 
    <bean id="org.sakaiproject.assignment2.logic.AssignmentLogic" class="org.sakaiproject.assignment2.logic.impl.AssignmentLogicImpl" init-method="init">
       <property name="dao" ref="org.sakaiproject.assignment2.dao.AssignmentDao" />
@@ -59,7 +64,7 @@
       <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
       <property name="externalGradebookLogic" ref="org.sakaiproject.assignment2.logic.ExternalGradebookLogic" />
       <property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
-      <property name="contentHostingService" ref="org.sakaiproject.content.api.ContentHostingService" />
+      <property name="externalContentLogic" ref="org.sakaiproject.assignment2.logic.ExternalContentLogic" />
       <property name="assignmentService" ref="org.sakaiproject.assignment.api.AssignmentService" />
    </bean>
    
@@ -87,7 +92,7 @@
 
 	<bean id="org.sakaiproject.assignment2.logic.ScheduledNotification" class="org.sakaiproject.assignment2.logic.impl.ScheduledNotificationImpl">
 		<property name="emailService" ref="org.sakaiproject.email.api.EmailService" />
-		<property name="contentHostingService" ref="org.sakaiproject.content.api.ContentHostingService" />
+		<property name="externalContentLogic" ref="org.sakaiproject.assignment2.logic.ExternalContentLogic" />
 		<property name="serverConfigurationService" ref="org.sakaiproject.component.api.ServerConfigurationService" />
 		<property name="digestService" ref="org.sakaiproject.email.api.DigestService" />
 		<property name="assignmentBundleLogic" ref="org.sakaiproject.assignment2.logic.AssignmentBundleLogic" />
@@ -100,7 +105,7 @@
 		<property name="assignmentSubmissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
 		<property name="gradebookLogic" ref="org.sakaiproject.assignment2.logic.ExternalGradebookLogic" />
 		<property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
-		<property name="contentHostingService" ref="org.sakaiproject.content.api.ContentHostingService" />
+		<property name="externalContentLogic" ref="org.sakaiproject.assignment2.logic.ExternalContentLogic" />
 		<property name="assignmentBundleLogic" ref="org.sakaiproject.assignment2.logic.AssignmentBundleLogic" />
 		<property name="assignmentPermissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentPermissionLogic" />
 	</bean>

@@ -21,8 +21,7 @@
    
    <bean id="assn2FCKTextEvolver"
     class="org.sakaiproject.assignment2.tool.producers.evolvers.MarkupEvolver">
-    <property name="contentHostingService"
-      ref="org.sakaiproject.content.api.ContentHostingService" />
+    <property name="externalContentLogic" ref="org.sakaiproject.assignment2.logic.ExternalContentLogic"></property>
     <property name="context" ref="sakai-Context" />
   </bean>
 
@@ -67,9 +66,9 @@
    </bean>
    
    <bean id="SortHeaderRenderer" class="org.sakaiproject.assignment2.tool.producers.renderers.SortHeaderRenderer" />
+   
    <bean id="AttachmentListRenderer" class="org.sakaiproject.assignment2.tool.producers.renderers.AttachmentListRenderer">
-   	  <property name="contentHostingService" ref="org.sakaiproject.content.api.ContentHostingService" />
-   	  <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
+   	  <property name="externalContentLogic" ref="org.sakaiproject.assignment2.logic.ExternalContentLogic" />
    	  <property name="assignment2EntityBeanLocator" ref="Assignment2"/>
    </bean>
    
@@ -92,8 +91,7 @@
    </bean>   
    
    <bean id="AttachmentInputEvolver" class="org.sakaiproject.assignment2.tool.producers.evolvers.AttachmentInputEvolver">
-   	  <property name="contentHostingService" ref="org.sakaiproject.content.api.ContentHostingService" />
-   	  <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
+   	  <property name="externalContentLogic" ref="org.sakaiproject.assignment2.logic.ExternalContentLogic" />
    	  <property name="messageLocator" ref="messageLocator" />
    	  <property name="requestBeanGetter" ref="ELEvaluator"/>
    </bean>
@@ -178,8 +176,7 @@
 
    <bean class="org.sakaiproject.assignment2.tool.producers.FinishedHelperProducer">
    	  <property name="sessionManager" ref="org.sakaiproject.tool.api.SessionManager" />
-   	  <property name="contentHostingService" ref="org.sakaiproject.content.api.ContentHostingService" />
-   	  <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
+   	  <property name="externalContentLogic" ref="org.sakaiproject.assignment2.logic.ExternalContentLogic" />
    </bean>
    
    <bean class="org.sakaiproject.assignment2.tool.producers.StudentAssignmentListProducer">

@@ -21,29 +21,26 @@
 
 package org.sakaiproject.assignment2.tool.producers;
 
+import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.sakaiproject.assignment2.logic.ExternalLogic;
+import org.sakaiproject.assignment2.logic.AttachmentInformation;
+import org.sakaiproject.assignment2.logic.ExternalContentLogic;
 import org.sakaiproject.assignment2.tool.params.FinishedHelperViewParameters;
 import org.sakaiproject.assignment2.tool.params.ThickboxHelperViewParams;
-import org.sakaiproject.assignment2.tool.producers.renderers.AttachmentListRenderer;
+import org.sakaiproject.content.api.FilePickerHelper;
+import org.sakaiproject.entity.api.Reference;
+import org.sakaiproject.tool.api.SessionManager;
+import org.sakaiproject.tool.api.ToolSession;
 
+import uk.org.ponder.htmlutil.HTMLUtil;
 import uk.org.ponder.rsf.components.UIContainer;
 import uk.org.ponder.rsf.components.UIVerbatim;
 import uk.org.ponder.rsf.view.ComponentChecker;
 import uk.org.ponder.rsf.view.ViewComponentProducer;
 import uk.org.ponder.rsf.viewstate.ViewParameters;
 import uk.org.ponder.rsf.viewstate.ViewParamsReporter;
-import uk.org.ponder.htmlutil.HTMLUtil;
-
-import org.sakaiproject.content.api.ContentResource;
-import org.sakaiproject.content.api.ContentHostingService;
-import org.sakaiproject.content.api.FilePickerHelper;
-import org.sakaiproject.entity.api.Reference;
-import org.sakaiproject.tool.api.SessionManager;
-import org.sakaiproject.tool.api.ToolSession;
-
-import java.util.List;
 
 /**
  * The FinishedHelper View is a little special. It is redirected to when the 
@@ -74,14 +71,9 @@ public class FinishedHelperProducer implements ViewComponentProducer, ViewParams
         this.sessionManager = sessionManager;
     }
 
-    private ContentHostingService contentHostingService;
-    public void setContentHostingService(ContentHostingService contentHostingService) {
-        this.contentHostingService = contentHostingService;
-    }
-
-    private ExternalLogic externalLogic;
-    public void setExternalLogic(ExternalLogic externalLogic) {
-        this.externalLogic = externalLogic;
+    private ExternalContentLogic contentLogic;
+    public void setExternalContentLogic(ExternalContentLogic contentLogic) {
+        this.contentLogic = contentLogic;
     }
 
     public void fillComponents(UIContainer tofill, ViewParameters viewparams, ComponentChecker checker) {
@@ -105,24 +97,20 @@ public class FinishedHelperProducer implements ViewComponentProducer, ViewParams
                 toolSession.getAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS) != null) 
         {
             List<Reference> refs = (List)toolSession.getAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS);
-            int i=0;
+
             String markup = "";
             for (Reference ref : refs) {
-                try{
-                    //TODO - but all contentHosting calls in an external Logic
-                    ContentResource cr = contentHostingService.getResource(ref.getId());
+                AttachmentInformation attach = contentLogic.getAttachmentInformation(ref.getId());
+
+                if (attach != null) {
+                    String file_size = "(" + attach.getContentLength() + ")";
+                    
                     markup += HTMLUtil.emitJavascriptCall("parent.updateAttachments", 
-                            new String[]{externalLogic.getContentTypeImagePath(cr), 
-                            cr.getProperties().getProperty(cr.getProperties().getNamePropDisplayName()), 
-                            cr.getUrl(), ref.getId(), externalLogic.getReadableFileSize(cr.getContentLength())});  
-
-                } catch(Exception e) {
-                    //do nothing
-                    LOG.error(e.getMessage(), e);
+                            new String[]{attach.getContentTypeImagePath(), 
+                            attach.getDisplayName(), attach.getUrl(), ref.getId(), file_size});  
                 }
-
-                i++;
             }
+            
             UIVerbatim.make(tofill, "updateAttachments", markup);
             //Here are my references... now emit a JS call to add these references to the UI
             //Then remove the FilePickerBean
