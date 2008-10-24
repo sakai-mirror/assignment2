@@ -161,21 +161,26 @@ public class ListProducer implements ViewComponentProducer, NavigationCaseReport
         		}
         	}
         	*/
-
-        	// Submitted/Total display
-        	int total = 0;
-        	int withSubmission = 0;
-        	List<String> viewableStudents = permissionLogic.getViewableStudentsForUserForItem(currUserId, assignment);
-        	if (viewableStudents != null) {
-        		total = viewableStudents.size();
-        		if (total > 0) {
-        			withSubmission = submissionLogic.getNumStudentsWithASubmission(assignment, viewableStudents);
-        		}
+        	
+        	if (assignment.isRequiresSubmission()) {
+                // Submitted/Total display
+                int total = 0;
+                int withSubmission = 0;
+                
+                List<String> viewableStudents = permissionLogic.getViewableStudentsForUserForItem(currUserId, assignment);
+                if (viewableStudents != null) {
+                    total = viewableStudents.size();
+                    if (total > 0) {
+                        withSubmission = submissionLogic.getNumStudentsWithASubmission(assignment, viewableStudents);
+                    }
+                }
+                
+            	UIInternalLink.make(row, "grade", 
+            			messageLocator.getMessage("assignment2.list.submissions_link", new Object[]{ withSubmission, total}), 
+            			new ViewSubmissionsViewParams(ViewSubmissionsProducer.VIEW_ID, assignment.getId()));
+        	} else {
+        	    UIOutput.make(row, "no_submission_req", messageLocator.getMessage("assignment2.list.no_sub_required"));
         	}
-
-        	UIInternalLink.make(row, "grade", 
-        			messageLocator.getMessage("assignment2.list.submissions_link", new Object[]{ withSubmission, total}), 
-        			new ViewSubmissionsViewParams(ViewSubmissionsProducer.VIEW_ID, assignment.getId()));
         	
         	
         	// group restrictions

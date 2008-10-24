@@ -70,7 +70,7 @@ public class AttachmentInputEvolver {
                 UILink.make(row, "attachment_image", externalLogic.getContentTypeImagePath(cr));
                 UILink.make(row, "attachment_link", cr.getProperties().getProperty(cr.getProperties().getNamePropDisplayName()),
                         cr.getUrl());
-                UIOutput.make(row, "attachment_item", thisvalue);
+
                 UIBasicListMember.makeBasic(row, "attachment_item", toevolve.getFullID(), i);
                 String file_size = externalLogic.getReadableFileSize(cr.getContentLength());
                 UIOutput.make(row, "attachment_size", file_size);
@@ -78,12 +78,12 @@ public class AttachmentInputEvolver {
                 UIVerbatim.make(row, "attachment_remove", 
                         "<a href=\"#\" " +
                         "onclick=\"" +
-                        "jQuery(this).parent('span').parent('li').remove();updateDisplayNoAttachments();" +
+                        "removeAttachment(this);updateDisplayNoAttachments();" +
                         "\">" +
                         messageLocator.getMessage("assignment2.remove") +
                 "</a>");
             } catch (Exception e) {
-                //do nothing
+                e.printStackTrace();
             }
         }
 
@@ -99,7 +99,7 @@ public class AttachmentInputEvolver {
             UIVerbatim.make(row, "attachment_remove", 
                     "<a href=\"#\" " +
                     "onclick=\"" +
-                    "jQuery(this).parent('span').parent('li').remove();updateDisplayNoAttachments();" +
+                    "removeAttachment(this);updateDisplayNoAttachments();" +
                     "\">" +
                     messageLocator.getMessage("assignment2.remove") +
             "</a>");
