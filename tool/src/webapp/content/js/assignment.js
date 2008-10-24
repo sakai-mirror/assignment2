@@ -50,7 +50,22 @@ function changeValue(){
         }
     }
 
-    selectGraded()
+    selectGraded();
+    populateTitleWithGbItemName();
+}
+
+function populateTitleWithGbItemName() {
+    var curr_title = jQuery("input[name='page-replace\:\:title']").get(0).value;
+    if (!curr_title || curr_title == "") {
+        // get the currently selected gb item
+        var gbSelect = jQuery("select[name='page-replace\:\:gradebook_item-selection']").get(0);
+        var gbSelIndex = gbSelect.selectedIndex;
+        if (gbSelIndex != 0) { 
+            var selectedItem = gbSelect.options[gbSelIndex].text;
+            // replace the empty title field with the new_title
+            jQuery("input[name='page-replace\:\:title']").val(selectedItem);
+        }
+    }
 }
 
 function selectGraded() {
