@@ -140,113 +140,93 @@
 	
 	<fieldset>
 		<legend rsf:id="msg=assignment2.assignment_add.availability_details">Availability Details</legend>
-		<!-- 
+		 
+		<!-- Test for new styles
 		<div>
-		<p style="float:left;width:200px;border:blue solid thin"><label><span class="reqStar">*</span> Open Date</label></p>
-		<p style="display:inline"><input type="text" value="abcde" /></p>
+			<p class="asnnOptionsLabel"><label><span class="reqStar">*</span> Open Date</label></p>
+			<p class="asnnOptionsEdit"><input type="text" value="abcde" /></p>
 		</div>
 		<div>
-		<p style="float:left;width:200px;border:blue solid thin"><input type="checkbox" /><label>Due Date</label></p>
-		<p style="display:inline"><input type="text" value="abcde" /></p>
+			<p class="asnnOptionsLabel"><input type="checkbox" /><label>Due Date</label></p>
+			<p class="asnnOptionsEdit"><input type="text" value="abcde" /></p>
 		</div>
 		-->
 		
-	    <ol>
-			<li>
-				<label rsf:id="open_date_label"><span class="reqStar">*</span> Open Date</label>
-				<input rsf:id="open_date:"  />
-				
-				<input rsf:id="announcement" id="announcement" type="checkbox" />
-				<label for="announcement" rsf:id="msg=assignment2.assignment_add.announcement">Post Open Date to Announcements on Open Date</label> 
-				<p rsf:id="message-for:open_date"></p>
-			</li>
-			<li>
-				<fieldset>
-					<ol>
-						<li>
-							<input id="require_due_date" rsf:id="require_due_date" type="checkbox" />
-							<label for="require_due_date" rsf:id="msg=assignment2.assignment_add.require_due_date">Due Date</label>
-							
-							<span rsf:id="require_due_date_container" class="indent">
-								<input rsf:id="due_date:" value="12/31/2007"/>
-								<p rsf:id="message-for:due_date"></p>
-								<span rsf:id="add_to_schedule_container" class="indent">
-									<input rsf:id="schedule" id="schedule" type="checkbox" /> 
-									<label for="schedule" rsf:id="msg=assignment2.assignment_add.schedule">Post Due Date to Schedule</label>
-								</span>
-							</span>
-						</li>
-					</ol>
-				</fieldset>
-				<!-- 
-				<div rsf:id="require_due_date_container" class="indent">
+		<div>
+			<label class="asnnOptionsLabel" rsf:id="open_date_label"><span class="reqStar">*</span> Open Date</label>
+			<p class="asnnOptionsEdit">
+			  <input class="asnnOptionsEdit" rsf:id="open_date:"  />
+			  <input rsf:id="announcement" id="announcement" type="checkbox" />
+			  <label for="announcement" rsf:id="msg=assignment2.assignment_add.announcement">Post Open Date to Announcements on Open Date</label> 
+			  <p rsf:id="message-for:open_date"></p>
+			</p>
+		</div>
+		<div>
+			<p class="asnnOptionsLabel">
+				<input id="require_due_date" rsf:id="require_due_date" type="checkbox" />
+				<label for="require_due_date" rsf:id="msg=assignment2.assignment_add.require_due_date">Due Date</label>
+			</p>
+			<p class="asnnOptionsEdit">
+				<span rsf:id="require_due_date_container" id="require_due_date_container">
 					<input rsf:id="due_date:" value="12/31/2007"/>
 					<p rsf:id="message-for:due_date"></p>
 					<span rsf:id="add_to_schedule_container" class="indent">
 						<input rsf:id="schedule" id="schedule" type="checkbox" /> 
 						<label for="schedule" rsf:id="msg=assignment2.assignment_add.schedule">Post Due Date to Schedule</label>
 					</span>
-				</div>
-				-->
-			</li>
-		</ol>
+				</span>
+			</p>
+		</div>
 	</fieldset>
 	
 	<fieldset>
 		<legend rsf:id="msg=assignment2.assignment_add.other_legend">Submission Details</legend>
-	    <ol>
-			<li>
-				<input id="require_submissions" rsf:id="require_submissions" type="checkbox" />
-				<label for="require_submissions" rsf:id="msg=assignment2.assignment_add.require_submissions"> Require Submissions?</label>
-			</li>
-			<li>
-				<label rsf:id="msg=assignment2.assignment_add.student_submissions">Submission Format</label>
+	    <div>
+			<input id="require_submissions" rsf:id="require_submissions" type="checkbox" />
+			<label for="require_submissions" rsf:id="msg=assignment2.assignment_add.require_submissions"> Require Submissions?</label>
+		</div>
+		<div>
+			<label class="asnnOptionsLabel" rsf:id="msg=assignment2.assignment_add.student_submissions">Submission Format</label>
+			<p class="asnnOptionsEdit">
 				<select rsf:id="submission_type">
 				</select>
 				<p rsf:id="message-for:submission_type"></p>
-			</li>
-			<li>
-				<label rsf:id="msg=assignment2.assignment_add.allow_number">Number of Submissions</label>
+			</p>
+		</div>
+		<div>
+			<label class="asnnOptionsLabel" rsf:id="msg=assignment2.assignment_add.allow_number">Number of Submissions</label>
+			<p class="asnnOptionsEdit">
 				<select rsf:id="number_submissions"></select>
-			</li>
-			<li>
-				<fieldset>
-					<ol>
-						<li>
-							<input id="require_accept_until" rsf:id="require_accept_until" type="checkbox" />
-							<label for="require_accept_until" rsf:id="msg=assignment2.assignment_add.require_accept_until">Require Accept Until Date?</label>
-							<span class="indent" rsf:id="accept_until_container">
-								<input rsf:id="accept_until:" value="12/31/2007"/>
-							</span>
-							<p rsf:id="message-for:accept_until"></p>						
-						</li>
-					</ol>
-				</fieldset>
-				
-			</li>
-			<li>
+			</p>
+		</div>
+		<div style="clear:both">
+			<p class="asnnOptionsLabel">
+				<input id="require_accept_until" rsf:id="require_accept_until" type="checkbox" />
+				<label for="require_accept_until" rsf:id="msg=assignment2.assignment_add.require_accept_until">Set Accept Until Date?</label>
+			</p>
+			<p class="asnnOptionsEdit">
+				<span rsf:id="accept_until_container" id="accept_until_container">
+					<input rsf:id="accept_until:" value="12/31/2007"/>
+				</span>
+				<p rsf:id="message-for:accept_until"></p>	
+			</p>					
+		</div>
+		<div style="clear:both">
+			<p class="asnnOptionsLabel">
 				<input rsf:id="honor_pledge" id="honor_pledge" type="checkbox" />
 				<label for="honor_pledge" rsf:id="msg=assignment2.assignment_add.honor_pledge">Add honor pledge</label>
-			</li>
-		</ol>
-
+			</p>
+			<p class="asnnOptionsEdit">
+			</p>
+		</div>
 	</fieldset>
-	
 	
 	<fieldset>
 	    <legend rsf:id="msg=assignment2.assignment_add.notification_legend">Submission Notifications</legend>
-		<ol>
-			<li>
-				<fieldset>
-					<ol>
-						<li>
-    						<input rsf:id="sub_notif" id="sub_notif" type="checkbox" />
-    		                <label for="sub_notif" rsf:id="msg=assignment2.assignment_add.notification">Send email notifications for student submissions</label>
-						</li>
-					</ol>
-				</fieldset>
-			</li>
-		</ol>
+		<div class="asnnOptionsLabel" style="width:90%">
+    		<input rsf:id="sub_notif" id="sub_notif" type="checkbox" />
+    		<label for="sub_notif" rsf:id="msg=assignment2.assignment_add.notification">Send email notifications for student submissions</label>
+		</div>
 	</fieldset>
 	
 	<fieldset class="submit">
@@ -299,12 +279,14 @@ jQuery(document).ready(function(){
 	groups_toggle();
 	//Init require accept until date checkboxes
 	jQuery("input[name='page-replace\:\:require_accept_until']").each(function(){
-		this.onclick = show_accept_until;
+		var container = jQuery('#page-replace\\:\\:accept_until_container').get(0);
+		asnn2.showHideByCheckbox(this, container);
 	});
 	show_accept_until();
 	//Init require due date checkboxes
 	jQuery("input[name='page-replace\:\:require_due_date']").each(function(){
-		this.onclick = show_due_date;
+		var container = jQuery('#page-replace\\:\\:require_due_date_container').get(0);
+		asnn2.showHideByCheckbox(this, container);
 	});
 	jQuery("input[name='page-replace\:\:require_submissions']").click(function(){
 		asnn2.showHideSiblings(this.parentNode, this.checked);

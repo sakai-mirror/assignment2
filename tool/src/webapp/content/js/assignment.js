@@ -355,7 +355,32 @@ var asnn2 = asnn2 || {};
     	else {
     		jQuery(element).siblings("li").hide();
     	}
-    },
+    };
+    
+    /**
+     * Given a checkbox element, hide or show the area element whenever checkbox
+     * is clicked.  Checking the box shows the area, unchecking the box hides
+     * the area. Will also do the initialization of the area based on the 
+     * checkboxes initial value when set up.
+     */
+    asnn2.showHideByCheckbox = function(checkboxElem, areaElem) {
+    	var checkbox = jQuery(checkboxElem);
+    	var area = jQuery(areaElem);
+    	if (checkbox.checked == true) {
+    		area.show();
+    	}
+    	else {
+    		area.hide();
+    	}
+    	checkbox.click(function () {
+    		if (this.checked == true) {
+    			area.show();
+    		}
+    		else {
+    			area.hide();
+    		}
+    	});
+    };
 
     /**
      * Setup the element for a Assignment Submission Version. This includes

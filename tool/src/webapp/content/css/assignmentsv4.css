@@ -424,8 +424,17 @@ h4.completed_assignment {
     color: gray;
 }
 
+/*
+ * These are for the assignments options such as open date,
+ * submission type, etc.
+ */
 .asnnOptionsLabel {
 	float:left;
 	width:200px;
-	border:blue solid thin;
+	margin-left: 2em;
+	/* border:blue solid thin; */
+}
+
+.asnnOptionsEdit {
+	display:inline;
 }
