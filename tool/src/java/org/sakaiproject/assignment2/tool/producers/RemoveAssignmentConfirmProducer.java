@@ -1,5 +1,5 @@
 /**********************************************************************************
- * $URL: $
+ * $URL: https://source.sakaiproject.org/contrib/assignment2/trunk/tool/src/java/org/sakaiproject/assignment2/tool/producers/RemoveAssignmentConfirmProducer.java $
  * $Id: $
  ***********************************************************************************
  *
