@@ -1,6 +1,6 @@
 /**********************************************************************************
- * $URL$
- * $Id$
+ * $URL: $
+ * $Id: $
  ***********************************************************************************
  *
  * Copyright (c) 2007, 2008 The Sakai Foundation.
@@ -19,33 +19,37 @@
  *
  **********************************************************************************/
 
-package org.sakaiproject.assignment2.tool.params;
+package org.sakaiproject.assignment2.tool.producers;
 
-import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
+import uk.org.ponder.rsf.components.UIContainer;
+import uk.org.ponder.rsf.view.ComponentChecker;
+import uk.org.ponder.rsf.view.ViewComponentProducer;
+import uk.org.ponder.rsf.viewstate.ViewParameters;
+import uk.org.ponder.rsf.viewstate.ViewParamsReporter;
 
 /**
- * Standard View Parameters for operating on a single Assignment2 entry.
+ * This is responsible for rendering the Remove Assignments Confirmation
+ * page/dialog.
  * 
- * @author rjlowe
  * @author sgithens
- *
  */
-public class AssignmentViewParams extends SimpleViewParameters {
+public class RemoveAssignmentConfirmProducer implements ViewComponentProducer,
+ViewParamsReporter {
+    public static final String VIEW_ID = "remove-assignment-confirm";
 
-    public Long assignmentId;
-
-    public AssignmentViewParams() {}
-
-    public AssignmentViewParams(String viewId) {
-        super(viewId);
+    public void fillComponents(UIContainer tofill, ViewParameters viewparams,
+            ComponentChecker checker) {
+        
+        
     }
 
-    public AssignmentViewParams(String viewId, Long assignmentId) {
-        super(viewId);
-        this.assignmentId = assignmentId;
+    public String getViewID() {
+        return VIEW_ID;
     }
 
-    public String getParseSpec() {
-        return super.getParseSpec() + ",@1:assignmentId";
+    public ViewParameters getViewParameters() {
+        // TODO Auto-generated method stub
+        return null;
     }
+
 }
