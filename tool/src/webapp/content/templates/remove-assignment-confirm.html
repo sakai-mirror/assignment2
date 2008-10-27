@@ -1,0 +1,44 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns:rsf="http://ponder.org.uk/rsf" xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+
+   <title rsf:id="msg=assignment2.title">Assignments</title>
+    <link href="/library/skin/tool_base.css" type="text/css" rel="stylesheet" media="all"/>
+    <link href="/library/skin/default/tool.css" type="text/css" rel="stylesheet" media="all"/>
+   <link href="/sakai-assignment2-tool/content/css/assignmentsv4.css" type="text/css" rel="stylesheet" media="all" />
+</head>
+
+<body>
+<!--  everything outside of rsf:id="page:" is set in Layout.html using outerPageTemplates -->
+
+<div rsf:id="page:" class="portletBody">
+
+<div class="generalErrors">
+	<ul rsf:id="message-for:*" style="margin:0px;">
+		<li>Message for user here</li>
+	</ul>
+</div>
+
+<table rsf:id="assignment-list-table" class="listHier lines">
+	<tr> 
+		<th rsf:id="msg=assignment2.remove.assn.header.title">Assignment Title</th>
+		<th rsf:id="msg=assignment2.remove.assn.header.due">Due</th>
+		<th rsf:id="msg=assignment2.remove.assn.header.submissions">Submissions</th>
+	</tr>
+	<tr rsf:id="asnn-row:">
+		<td rsf:id="asnn-title">Homework 1</td>
+		<td rsf:id="due">Mar 26, 2008 5:00 pm</td>
+		<td rsf:id="submissions">1</td>
+	</tr>
+</table>
+<form rsf:id="confirm-remove-form">
+	<fieldset class="submit">
+		<input rsf:id="remove-button" accesskey="r" type="submit" class="active" value="Post" />
+		<input rsf:id="cancel-button" accesskey="x" type="submit" value="Cancel" />
+	</fieldset>
+</form>
+</div>
+</body>
+</html>
