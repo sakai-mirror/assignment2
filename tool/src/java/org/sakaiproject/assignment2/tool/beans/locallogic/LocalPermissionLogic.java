@@ -80,7 +80,10 @@ public class LocalPermissionLogic {
         if (AddAttachmentHelperProducer.VIEWID.equals(viewId)) {
             return Boolean.TRUE;
 
-        } else if (AjaxResultsProducer.VIEW_ID.equals(viewId)) {
+        } else if (RemoveAssignmentConfirmProducer.VIEW_ID.equals(viewId)) {
+            return permissionLogic.isCurrentUserAbleToEditAssignments(contextId);
+        }
+        else if (AjaxResultsProducer.VIEW_ID.equals(viewId)) {
             return Boolean.TRUE;
 
         } else if (AssignmentDetailProducer.VIEW_ID.equals(viewId)) {

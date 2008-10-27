@@ -91,6 +91,13 @@
    </bean>
 
    <!-- list the producer beans here -->
+   <bean class="org.sakaiproject.assignment2.tool.producers.RemoveAssignmentConfirmProducer">
+       <property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
+       <property name="curUserId" ref="sakai-UserID" />
+       <property name="permissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentPermissionLogic" />
+       <property name="submissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />  
+   </bean>
+   
    <bean class="org.sakaiproject.assignment2.tool.producers.AddAttachmentHelperProducer">
       <property name="sessionManager" ref="org.sakaiproject.tool.api.SessionManager" />
       <property name="messageLocator" ref="messageLocator" />

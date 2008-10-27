@@ -127,6 +127,7 @@ public class ListProducer implements ViewComponentProducer, NavigationCaseReport
 
             //If Current User has the ability to edit or duplicate the assignment
             if (edit_perm) {
+                //UIInternalLink.make(row, "delete-asnn-link", new AssignmentViewParams(RemoveAssignmentConfirmProducer.VIEW_ID, assignment.getId()));
                 UIForm form = UIForm.make(row, "form");
                 UIInput.make(form, "current_assignment", "Assignment2Bean.currentAssignmentId", assignment.getId().toString());
                 UICommand.make(form, "assignment_delete", "", "#{Assignment2Bean.processActionRemoteCurrent}");
