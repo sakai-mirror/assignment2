@@ -123,13 +123,17 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
                 messageLocator.getMessage("assignment2.list.heading"),
                 new SimpleViewParameters(ListProducer.VIEW_ID));
         if (params.assignmentId != null) {
+            // Breadcrumb
             UIMessage.make(tofill, "last_breadcrumb", "assignment2.assignment_add.edit_heading");
+            //Heading messages
+            UIMessage.make(tofill, "page-title", "assignment2.assignment_add.title.edit");
         } else {
+            // Breadcrumb
             UIMessage.make(tofill, "last_breadcrumb", "assignment2.assignment_add.add_heading");
+            //Heading messages
+            UIMessage.make(tofill, "page-title", "assignment2.assignment_add.title");
         }
 
-        //Heading messages
-        UIMessage.make(tofill, "page-title", "assignment2.assignment_add.title");
         //navBarRenderer.makeNavBar(tofill, "navIntraTool:", VIEW_ID);
         //UIMessage.make(tofill, "heading", "assignment2.assignment_add.heading");
         UIVerbatim.make(tofill, "instructions", messageLocator.getMessage("assignment2.assignment_add.instructions", 
