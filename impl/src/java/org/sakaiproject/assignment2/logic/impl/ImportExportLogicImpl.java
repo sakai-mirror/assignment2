@@ -113,7 +113,7 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 		}
 		List<AssignmentDefinition> assignList = new ArrayList<AssignmentDefinition>();
 
-		Set<Assignment2> allAssignments = dao.getAssignmentsWithGroupsAndAttachments(contextId);
+		List<Assignment2> allAssignments = dao.getAssignmentsWithGroupsAndAttachments(contextId);
 		if (allAssignments != null && !allAssignments.isEmpty()) {
 			List<GradebookItem> allGbItems = gradebookLogic.getAllGradebookItems(contextId);
 			Map<Long, GradebookItem> gbIdItemMap = new HashMap<Long, GradebookItem>();
@@ -164,6 +164,7 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 		assignDef.setSubmissionType(assignment.getSubmissionType());
 		assignDef.setTitle(assignment.getTitle());
 		assignDef.setGraded(assignment.isGraded());
+		assignDef.setRequiresSubmission(assignment.isRequiresSubmission());
 
 		// if it is graded, we need to retrieve the name of the associated gb item
 		if (assignment.isGraded() && assignment.getGradableObjectId() != null &&
@@ -210,19 +211,7 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 		if (toolDefinition != null) {
 			if(toolDefinition.getAssignments() != null) {
 
-				// let's retrieve the existing assignments in this site so we can
-				// compare the assignment titles
-				Set<Assignment2> currAssignments = dao.getAssignmentsWithGroupsAndAttachments(toContext);
-				List<String> currTitles = new ArrayList<String>();
-				if (currAssignments != null) {
-					for (Assignment2 assign : currAssignments) {
-						if (assign != null) {
-							currTitles.add(assign.getTitle());
-						}
-					}
-				}
-
-				// now retrieve a list of all of the gb items in this site
+				// retrieve a list of all of the gb items in this site
 				List<GradebookItem> currGbItems = gradebookLogic.getAllGradebookItems(toContext);
 				// make a map of item title to item
 				Map<String, GradebookItem> gbTitleToItemMap = new HashMap<String, GradebookItem>();
@@ -256,13 +245,12 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 						newAssignment.setNumSubmissionsAllowed(assignDef.getNumSubmissionsAllowed());
 						newAssignment.setOpenDate(assignDef.getOpenDate());
 						newAssignment.setDueDate(assignDef.getDueDate());
+						newAssignment.setRequiresSubmission(assignDef.isRequiresSubmission());
 
-						if (assignDef.getSortIndex() == null) {
-							int index = dao.getHighestSortIndexInSite(toContext);
-							newAssignment.setSortIndex(index);
-						} else {
-							newAssignment.setSortIndex(assignDef.getSortIndex());
-						}
+						// we don't set the sort index here. the sort index will
+						// be generated upon saving. so make sure that the assignments
+						// in the xml are in the order you want them to appear
+						// in the UI
 
 						newAssignment.setSubmissionType(assignDef.getSubmissionType());
 						newAssignment.setGraded(assignDef.isGraded());
@@ -461,6 +449,10 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 			// the old tool didn't support a resubmission option on the assignment level,
 			// so just allow 1 submission
 			newAssnDef.setNumSubmissionsAllowed(1);
+			
+			// the old tool didn't support the concept of optionally requiring submission
+			// so we will always require
+			newAssnDef.setRequiresSubmission(true);
 
 			// handle attachments
 			List<Reference> oAttachments = oContent.getAttachments();
@@ -569,7 +561,7 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 			throw new IllegalArgumentException("Null contextId passed to cleanAssignments");
 		}
 		
-		Set<Assignment2> allAssignments = dao.getAssignmentsWithGroupsAndAttachments(contextId);
+		List<Assignment2> allAssignments = dao.getAssignmentsWithGroupsAndAttachments(contextId);
 		if (allAssignments != null) {
 			for (Assignment2 assign : allAssignments) {
 				assignmentLogic.deleteAssignment(assign);

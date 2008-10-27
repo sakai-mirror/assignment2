@@ -91,7 +91,7 @@ public class AssignmentDaoImplTest extends Assignment2DaoTestBase {
 		}
 		
 		// try passing a context that doesn't exist
-		Set<Assignment2> assignments = assignmentDao.getAssignmentsWithGroupsAndAttachments(AssignmentTestDataLoad.BAD_CONTEXT);
+		List<Assignment2> assignments = assignmentDao.getAssignmentsWithGroupsAndAttachments(AssignmentTestDataLoad.BAD_CONTEXT);
 		assertNotNull(assignments);
 		assertTrue(assignments.isEmpty());
 

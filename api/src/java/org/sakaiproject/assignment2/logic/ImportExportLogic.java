@@ -58,7 +58,10 @@ public interface ImportExportLogic {
 	 * site if imported assignment had an announcement and site has the tool. 
 	 * Attachments will be copied.  If a group in the new site has the same name as the group an
 	 * assignment was restricted to, we will restrict the assignment to the
-	 * group with this same name in the site with the given context.
+	 * group with this same name in the site with the given context. The sortOrder
+	 * of the new assignments will be in the order of the provided xml. If assignments
+	 * already exist in the site, new assignments will be added after the existing
+	 * assignments.
 	 * @param toContext
 	 * @param fromAssignmentToolXml
 	 */

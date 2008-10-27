@@ -31,6 +31,7 @@
    <bean id="org.sakaiproject.assignment2.logic.ExternalContentLogic" class="org.sakaiproject.assignment2.logic.impl.ExternalContentLogicImpl" init-method="init">
      <property name="contentHostingService" ref="org.sakaiproject.content.api.ContentHostingService" />
      <property name="contentTypeImageService" ref="org.sakaiproject.content.api.ContentTypeImageService" />
+     <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
    </bean>
 
    <bean id="org.sakaiproject.assignment2.logic.AssignmentLogic" class="org.sakaiproject.assignment2.logic.impl.AssignmentLogicImpl" init-method="init">

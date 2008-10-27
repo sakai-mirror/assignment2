@@ -104,7 +104,7 @@ public class AssignmentActivityProducerImpl implements
 			TaggingProvider provider) {
 		// We aren't picky about the provider, so ignore that argument.
 		List<TaggableActivity> activities = new ArrayList<TaggableActivity>();
-		Set<Assignment2> assignments = assignmentDao.getAssignmentsWithGroupsAndAttachments(context);
+		List<Assignment2> assignments = assignmentDao.getAssignmentsWithGroupsAndAttachments(context);
 		for (Assignment2 assignment : assignments) {
 			activities.add(getActivity(assignment));
 		}
