@@ -18,12 +18,6 @@
    <bean id="richTextEvolver" class="org.springframework.beans.factory.config.BeanReferenceFactoryBean">
       <property name="targetBeanName" value="sakaiFCKTextEvolver" />
    </bean>
-   
-   <bean id="assn2FCKTextEvolver"
-    class="org.sakaiproject.assignment2.tool.producers.evolvers.MarkupEvolver">
-    <property name="externalContentLogic" ref="org.sakaiproject.assignment2.logic.ExternalContentLogic"></property>
-    <property name="context" ref="sakai-Context" />
-  </bean>
 
 	<!-- Renderers -->
     <bean id="AsnnSubmissionDetailsRenderer" 
@@ -126,7 +120,6 @@
    </bean>
    
    <bean class="org.sakaiproject.assignment2.tool.producers.GradeProducer">
-      <property name="assnCommentTextEvolver" ref="assn2FCKTextEvolver" />
       <property name="richTextEvolver" ref="richTextEvolver" />
       <property name="messageLocator" ref="messageLocator" />
       <property name="dateEvolver" ref="fieldDateInputEvolver" />

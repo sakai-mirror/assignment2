@@ -92,7 +92,6 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
     }
 
     private TextInputEvolver richTextEvolver;
-    private TextInputEvolver assnCommentTextEvolver;
     private MessageLocator messageLocator;
     private AssignmentLogic assignmentLogic;
     private ExternalLogic externalLogic;
@@ -491,7 +490,4 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
         this.attachmentInputEvolver = attachmentInputEvolver;
     }
 
-    public void setAssnCommentTextEvolver(TextInputEvolver assnCommentTextEvolver) {
-        this.assnCommentTextEvolver = assnCommentTextEvolver;
-    }
 }
