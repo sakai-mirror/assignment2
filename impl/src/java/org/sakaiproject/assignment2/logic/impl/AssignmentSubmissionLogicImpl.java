@@ -22,6 +22,7 @@
 package org.sakaiproject.assignment2.logic.impl;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -1120,12 +1121,12 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		return dao.getNumSubmittedVersions(studentId, assignmentId);
 	}
 	
-	public int getNumStudentsWithASubmission(Assignment2 assignment, List<String> studentIdList) {
+	public int getNumStudentsWithASubmission(Assignment2 assignment, Collection<String> studentIds) {
 		if (assignment == null) {
 			throw new IllegalArgumentException ("Null assignment passed to getNumStudentsWithASubmission");
 		}
 		
-		return dao.getNumStudentsWithASubmission(assignment, studentIdList);
+		return dao.getNumStudentsWithASubmission(assignment, studentIds);
 	}
 	
 	public void markFeedbackAsViewed(Long submissionId, List<Long> versionIdList) {

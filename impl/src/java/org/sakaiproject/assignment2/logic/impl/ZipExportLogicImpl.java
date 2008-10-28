@@ -132,172 +132,177 @@ public class ZipExportLogicImpl implements ZipExportLogic
 		DateFormat df_withTime = new SimpleDateFormat(formatWithTime, bundle.getLocale());
 		DateFormat df_noTime = new SimpleDateFormat(formatNoTime, bundle.getLocale());
 
-		try
-		{
-			ZipOutputStream out = new ZipOutputStream(outputStream);
+		// only create a file if the file is graded OR the file is ungraded w/ at least one submission
+		if (!assignment.isGraded() && (submissionsWithHistory == null || submissionsWithHistory.isEmpty())) {
+		    if (log.isDebugEnabled()) log.debug("Nothing to download!!");
+		} else {
+		    try
+		    {
+		        ZipOutputStream out = new ZipOutputStream(outputStream);
 
-			// create the folder structure - named after the assignment's title
-			String root = Validator.escapeZipEntry(assignmentTitle) + Entity.SEPARATOR;
+		        // create the folder structure - named after the assignment's title
+		        String root = Validator.escapeZipEntry(assignmentTitle) + Entity.SEPARATOR;
 
-			if (submissionsWithHistory != null && !submissionsWithHistory.isEmpty())
-			{
-				// Create the ZIP file
+		        if (submissionsWithHistory != null && !submissionsWithHistory.isEmpty())
+		        {
+		            // Create the ZIP file
 
-				// to keep our folder names unique (otherwise the zip will be corrupt)
-				List<String> submissionFolderNames = new ArrayList<String>();
+		            // to keep our folder names unique (otherwise the zip will be corrupt)
+		            List<String> submissionFolderNames = new ArrayList<String>();
 
-				for (AssignmentSubmission s : submissionsWithHistory)
-				{
-					// only create the folder if the student has made a submission
-					if (s.getSubmissionHistorySet() != null && !s.getSubmissionHistorySet().isEmpty()) {
-						User submitterUser = userIdUserMap.get(s.getUserId());
-						if (submitterUser != null) {
-							// the zip will contain a folder for each submission with the submitter's name
-							String submissionFolder = submitterUser.getSortName();
+		            for (AssignmentSubmission s : submissionsWithHistory)
+		            {
+		                // only create the folder if the student has made a submission
+		                if (s.getSubmissionHistorySet() != null && !s.getSubmissionHistorySet().isEmpty()) {
+		                    User submitterUser = userIdUserMap.get(s.getUserId());
+		                    if (submitterUser != null) {
+		                        // the zip will contain a folder for each submission with the submitter's name
+		                        String submissionFolder = submitterUser.getSortName();
 
-							// make sure the folder name is unique in case you have two
-							// students with the same name in your class. otherwise
-							// zip file will be corrupt
-							if (submissionFolderNames.contains(submissionFolder)) {
-								submissionFolder = getUniqueFolderName(submissionFolder, submissionFolderNames);
-							}
-							submissionFolderNames.add(submissionFolder);
+		                        // make sure the folder name is unique in case you have two
+		                        // students with the same name in your class. otherwise
+		                        // zip file will be corrupt
+		                        if (submissionFolderNames.contains(submissionFolder)) {
+		                            submissionFolder = getUniqueFolderName(submissionFolder, submissionFolderNames);
+		                        }
+		                        submissionFolderNames.add(submissionFolder);
 
-							Set<AssignmentSubmissionVersion> versionHistory = s.getSubmissionHistorySet();
+		                        Set<AssignmentSubmissionVersion> versionHistory = s.getSubmissionHistorySet();
 
-							if (versionHistory != null && !versionHistory.isEmpty()) {
-								// we need to keep the file names unique
-								List<String> versionFolderNames = new ArrayList<String>(); 
+		                        if (versionHistory != null && !versionHistory.isEmpty()) {
+		                            // we need to keep the file names unique
+		                            List<String> versionFolderNames = new ArrayList<String>(); 
 
-								for (AssignmentSubmissionVersion version : versionHistory) {
-									// only include submitted versions
-									if (version.getSubmittedDate() != null) {
-										// we will create a folder for each submitted version for
-										// this student
-										String versionFolder = root + submissionFolder + Entity.SEPARATOR 
-										+ df_withTime.format(version.getSubmittedDate());
+		                            for (AssignmentSubmissionVersion version : versionHistory) {
+		                                // only include submitted versions
+		                                if (version.getSubmittedDate() != null) {
+		                                    // we will create a folder for each submitted version for
+		                                    // this student
+		                                    String versionFolder = root + submissionFolder + Entity.SEPARATOR 
+		                                    + df_withTime.format(version.getSubmittedDate());
 
-										// we need to make it unique in case 2 versions
-										// were submitted with the same hour:minutes AM/PM
-										// time stamp. otherwise the zip file will be corrupt
-										if (versionFolderNames.contains(versionFolder)) {
-											versionFolder = getUniqueFolderName(versionFolder, versionFolderNames);
-										}
+		                                    // we need to make it unique in case 2 versions
+		                                    // were submitted with the same hour:minutes AM/PM
+		                                    // time stamp. otherwise the zip file will be corrupt
+		                                    if (versionFolderNames.contains(versionFolder)) {
+		                                        versionFolder = getUniqueFolderName(versionFolder, versionFolderNames);
+		                                    }
 
-										versionFolderNames.add(versionFolder);
+		                                    versionFolderNames.add(versionFolder);
 
-										ZipEntry versionFolderEntry = new ZipEntry(
-												versionFolder);
-										out.putNextEntry(versionFolderEntry);
-										out.flush();
-										out.closeEntry();
+		                                    ZipEntry versionFolderEntry = new ZipEntry(
+		                                            versionFolder);
+		                                    out.putNextEntry(versionFolderEntry);
+		                                    out.flush();
+		                                    out.closeEntry();
 
-										// inside this folder, we will put the submission info
-										if (version.getSubmittedText() != null && version.getSubmittedText().trim().length() > 0)
-										{
-											// create the text file only when a text
-											// exists
-											ZipEntry textEntry = new ZipEntry(versionFolder + Entity.SEPARATOR 
-													+ bundle.getString("assignment2.assignment_grade_assignment.downloadall.filename_submitted_text")
-													+ ".txt");
-											out.putNextEntry(textEntry);
-											byte[] text = version.getSubmittedText().getBytes();
-											out.write(text);
-											textEntry.setSize(text.length);
-											out.closeEntry();
-										}
+		                                    // inside this folder, we will put the submission info
+		                                    if (version.getSubmittedText() != null && version.getSubmittedText().trim().length() > 0)
+		                                    {
+		                                        // create the text file only when a text
+		                                        // exists
+		                                        ZipEntry textEntry = new ZipEntry(versionFolder + Entity.SEPARATOR 
+		                                                + bundle.getString("assignment2.assignment_grade_assignment.downloadall.filename_submitted_text")
+		                                                + ".txt");
+		                                        out.putNextEntry(textEntry);
+		                                        byte[] text = version.getSubmittedText().getBytes();
+		                                        out.write(text);
+		                                        textEntry.setSize(text.length);
+		                                        out.closeEntry();
+		                                    }
 
-										// add the submission attachments
-										if (version.getSubmissionAttachSet() != null && !version.getSubmissionAttachSet().isEmpty()) {
-											zipAttachments(out, root + submissionFolder,
-													versionFolder, version.getSubmissionAttachSet());
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-			
-			if (assignment.isGraded() && assignment.getGradableObjectId() != null) {
-				// the buffer used to store grade information
-				StringBuilder gradesBuilder = new StringBuilder();
-				gradesBuilder.append(
-						bundle.getFormattedMessage("assignment2.assignment_grade-assignment.downloadall.header",
-								new Object[] {assignmentTitle}))
-								.append("\n");
+		                                    // add the submission attachments
+		                                    if (version.getSubmissionAttachSet() != null && !version.getSubmissionAttachSet().isEmpty()) {
+		                                        zipAttachments(out, root + submissionFolder,
+		                                                versionFolder, version.getSubmissionAttachSet());
+		                                    }
+		                                }
+		                            }
+		                        }
+		                    }
+		                }
+		            }
+		        }
 
-				// now iterate through all GRADABLE students in this class to create the grades file
-				List<String> gradableStudents = permissionLogic.getGradableStudentsForUserForItem(currUserId, assignment);
-				
-				if (gradableStudents != null && !gradableStudents.isEmpty()) {
-					// get the grade information
-					Map<String, GradeInformation> userIdGradeMap = gradebookLogic.getGradeInformationForStudents(gradableStudents, assignment.getContextId(), assignment.getGradableObjectId());
-					
-					for (String studentId : gradableStudents) {
-						// get their User info
-						User student = userIdUserMap.get(studentId);
-						if (student != null) {
-							gradesBuilder.append("\"");
-							gradesBuilder.append(student.getDisplayId());
-							gradesBuilder.append("\"");
-							gradesBuilder.append(",");
-							gradesBuilder.append("\"");
-							gradesBuilder.append(student.getSortName());
-							gradesBuilder.append("\"");
-							gradesBuilder.append(",");
-							
-							// now check for grade information
-							GradeInformation gradeInfo = userIdGradeMap.get(studentId);
-							if (gradeInfo != null) {
-								String gradebookGrade = "";
-								String gradebookComment = "";
-								
-								if (gradeInfo.getGradebookGrade() != null) {
-									gradebookGrade = gradeInfo.getGradebookGrade();
-								}
-								if (gradeInfo.getGradebookComment() != null) {
-									gradebookComment = gradeInfo.getGradebookComment();
-								}
-								gradesBuilder.append("\"");
-								gradesBuilder.append(gradebookGrade);
-								gradesBuilder.append("\"");
-								gradesBuilder.append(",");
-								gradesBuilder.append("\"");
-								gradesBuilder.append(gradebookComment);
-								gradesBuilder.append("\"");
-								gradesBuilder.append(",");
-							} else {
-								gradesBuilder.append(",,");
-							}
-							
-							gradesBuilder.append("\n");
-						}
-					}
-			
-					// create a grades.csv file into zip
-					ZipEntry gradesCSVEntry = new ZipEntry(root + assignmentTitle + "-" + contextId + "_" + df_noTime.format(new Date()) + ".csv");
-					out.putNextEntry(gradesCSVEntry);
-					byte[] grades = gradesBuilder.toString().getBytes();
-					out.write(grades);
-					gradesCSVEntry.setSize(grades.length);
-					out.closeEntry();
-				}
-			}
+		        if (assignment.isGraded() && assignment.getGradableObjectId() != null) {
+		            // the buffer used to store grade information
+		            StringBuilder gradesBuilder = new StringBuilder();
+		            gradesBuilder.append(
+		                    bundle.getFormattedMessage("assignment2.assignment_grade-assignment.downloadall.header",
+		                            new Object[] {assignmentTitle}))
+		                            .append("\n");
 
-			// Complete the ZIP file
-			out.finish();
-			out.flush();
-			out.close();
-		}
-		catch (IOException e)
-		{
-			exceptionMessage.append("Cannot establish the IO to create zip file. ");
-			log
-					.debug(this
-							+ ": getSubmissionsZip--IOException unable to create the zip file for assignment "
-							+ assignmentTitle);
+		            // now iterate through all GRADABLE students in this class to create the grades file
+		            List<String> gradableStudents = permissionLogic.getGradableStudentsForUserForItem(currUserId, assignment);
+
+		            if (gradableStudents != null && !gradableStudents.isEmpty()) {
+		                // get the grade information
+		                Map<String, GradeInformation> userIdGradeMap = gradebookLogic.getGradeInformationForStudents(gradableStudents, assignment.getContextId(), assignment.getGradableObjectId());
+
+		                for (String studentId : gradableStudents) {
+		                    // get their User info
+		                    User student = userIdUserMap.get(studentId);
+		                    if (student != null) {
+		                        gradesBuilder.append("\"");
+		                        gradesBuilder.append(student.getDisplayId());
+		                        gradesBuilder.append("\"");
+		                        gradesBuilder.append(",");
+		                        gradesBuilder.append("\"");
+		                        gradesBuilder.append(student.getSortName());
+		                        gradesBuilder.append("\"");
+		                        gradesBuilder.append(",");
+
+		                        // now check for grade information
+		                        GradeInformation gradeInfo = userIdGradeMap.get(studentId);
+		                        if (gradeInfo != null) {
+		                            String gradebookGrade = "";
+		                            String gradebookComment = "";
+
+		                            if (gradeInfo.getGradebookGrade() != null) {
+		                                gradebookGrade = gradeInfo.getGradebookGrade();
+		                            }
+		                            if (gradeInfo.getGradebookComment() != null) {
+		                                gradebookComment = gradeInfo.getGradebookComment();
+		                            }
+		                            gradesBuilder.append("\"");
+		                            gradesBuilder.append(gradebookGrade);
+		                            gradesBuilder.append("\"");
+		                            gradesBuilder.append(",");
+		                            gradesBuilder.append("\"");
+		                            gradesBuilder.append(gradebookComment);
+		                            gradesBuilder.append("\"");
+		                            gradesBuilder.append(",");
+		                        } else {
+		                            gradesBuilder.append(",,");
+		                        }
+
+		                        gradesBuilder.append("\n");
+		                    }
+		                }
+
+		                // create a grades.csv file into zip
+		                ZipEntry gradesCSVEntry = new ZipEntry(root + assignmentTitle + "-" + contextId + "_" + df_noTime.format(new Date()) + ".csv");
+		                out.putNextEntry(gradesCSVEntry);
+		                byte[] grades = gradesBuilder.toString().getBytes();
+		                out.write(grades);
+		                gradesCSVEntry.setSize(grades.length);
+		                out.closeEntry();
+		            }
+		        }
+
+		        // Complete the ZIP file
+		        out.finish();
+		        out.flush();
+		        out.close();
+		    }
+		    catch (IOException e)
+		    {
+		        exceptionMessage.append("Cannot establish the IO to create zip file. ");
+		        log
+		        .debug(this
+		                + ": getSubmissionsZip--IOException unable to create the zip file for assignment "
+		                + assignmentTitle);
+		    }
 		}
 	}
 
