@@ -20,6 +20,7 @@ import org.sakaiproject.assignment2.logic.AssignmentBundleLogic;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
+import org.sakaiproject.assignment2.logic.ExternalContentLogic;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.logic.GradeInformation;
@@ -28,14 +29,11 @@ import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.model.AttachmentBase;
-import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.content.api.ContentResource;
 import org.sakaiproject.entity.api.Entity;
 import org.sakaiproject.entity.api.ResourceProperties;
-import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.exception.ServerOverloadException;
-import org.sakaiproject.exception.TypeException;
 import org.sakaiproject.user.api.User;
 import org.sakaiproject.util.Validator;
 
@@ -72,11 +70,10 @@ public class ZipExportLogicImpl implements ZipExportLogic
 		this.externalLogic = externalLogic;
 	}
 
-	private ContentHostingService contentHostingService;
-
-	public void setContentHostingService(ContentHostingService contentHostingService)
+	private ExternalContentLogic contentLogic;
+	public void setExternalContentLogic(ExternalContentLogic contentLogic)
 	{
-		this.contentHostingService = contentHostingService;
+		this.contentLogic = contentLogic;
 	}
 
 	private AssignmentBundleLogic bundle;
@@ -305,103 +302,93 @@ public class ZipExportLogicImpl implements ZipExportLogic
 	}
 
 	private void zipAttachments(ZipOutputStream out, String submittersName,
-			String sSubAttachmentFolder, Set<? extends AttachmentBase> attachments)
+	        String sSubAttachmentFolder, Set<? extends AttachmentBase> attachments)
 	{
-		int attachedUrlCount = 0;
-		for (AttachmentBase r : attachments)
-		{
-			InputStream content = null;
-			BufferedInputStream bContent = null;
-			try
-			{
-				ContentResource resource = contentHostingService.getResource(r
-						.getAttachmentReference());
+	    int attachedUrlCount = 0;
+	    for (AttachmentBase r : attachments)
+	    {
+	        InputStream content = null;
+	        BufferedInputStream bContent = null;
+	        try
+	        {
+	            ContentResource resource = contentLogic.getContentResource(r
+	                    .getAttachmentReference());
 
-				String contentType = resource.getContentType();
+	            if (resource == null) 
+	            {
+	                log.warn("Unable to retrieve ContentResource with reference:" + 
+	                        r.getAttachmentReference() + ". This attachment was " +
+	                "not included in the zip file.");
+	            } else
+	            {
+	                String contentType = resource.getContentType();
 
-				ResourceProperties props = resource.getProperties();
-				String displayName = props.getPropertyFormatted(props
-						.getNamePropDisplayName());
+	                ResourceProperties props = resource.getProperties();
+	                String displayName = props.getPropertyFormatted(props
+	                        .getNamePropDisplayName());
 
-				// for URL content type, encode a redirect to the body URL
-				if (contentType.equalsIgnoreCase(ResourceProperties.TYPE_URL))
-				{
-					displayName = "attached_URL_" + attachedUrlCount;
-					attachedUrlCount++;
-				}
+	                // for URL content type, encode a redirect to the body URL
+	                if (contentType.equalsIgnoreCase(ResourceProperties.TYPE_URL))
+	                {
+	                    displayName = "attached_URL_" + attachedUrlCount;
+	                    attachedUrlCount++;
+	                }
 
-				// buffered stream input
-				content = resource.streamContent();
-				byte data[] = new byte[1024 * 10];
-				bContent = new BufferedInputStream(content,
-						data.length);
+	                // buffered stream input
+	                content = resource.streamContent();
+	                byte data[] = new byte[1024 * 10];
+	                bContent = new BufferedInputStream(content,
+	                        data.length);
 
-				ZipEntry attachmentEntry = new ZipEntry(sSubAttachmentFolder
-						+ Entity.SEPARATOR + displayName);
-				out.putNextEntry(attachmentEntry);
-				int bCount = -1;
-				while ((bCount = bContent.read(data, 0, data.length)) != -1)
-				{
-					out.write(data, 0, bCount);
-				}
-				out.closeEntry();
-				content.close();
-			}
-			catch (PermissionException e)
-			{
-				log.warn(this
-						+ ": getSubmissionsZip--PermissionException submittersName="
-						+ submittersName + " attachment reference=" + r);
-			}
-			catch (IdUnusedException e)
-			{
-				log.warn(this + ": getSubmissionsZip--IdUnusedException submittersName="
-						+ submittersName + " attachment reference=" + r);
-			}
-			catch (TypeException e)
-			{
-				log.warn(this + ": getSubmissionsZip--TypeException: submittersName="
-						+ submittersName + " attachment reference=" + r);
-			}
-			catch (IOException e)
-			{
-				log
-						.warn(this
-								+ ": getSubmissionsZip--IOException: Problem in creating the attachment file: submittersName="
-								+ submittersName + " attachment reference=" + r);
-			}
-			catch (ServerOverloadException e)
-			{
-				log.warn(this
-						+ ": getSubmissionsZip--ServerOverloadException: submittersName="
-						+ submittersName + " attachment reference=" + r);
-			}
-			finally
-			{
-				if (content != null)
-				{
-					try
-					{
-						content.close();
-					}
-					catch (IOException e)
-					{
-						log.warn("IOException when closing content stream", e);
-					}
-				}
-				if (bContent != null)
-				{
-					try
-					{
-						bContent.close();
-					}
-					catch (IOException e)
-					{
-						log.warn("IOException when closing bContent stream", e);
-					}
-				}
-			}
-		} // for
+	                ZipEntry attachmentEntry = new ZipEntry(sSubAttachmentFolder
+	                        + Entity.SEPARATOR + displayName);
+	                out.putNextEntry(attachmentEntry);
+	                int bCount = -1;
+	                while ((bCount = bContent.read(data, 0, data.length)) != -1)
+	                {
+	                    out.write(data, 0, bCount);
+	                }
+	                out.closeEntry();
+	                content.close();
+	            }
+	        }
+	        catch (IOException e)
+	        {
+	            log	.warn(this + ": getSubmissionsZip--IOException: Problem in " +
+	            		"creating the attachment file: submittersName="
+	                    + submittersName + " attachment reference=" + r);
+	        }
+	        catch (ServerOverloadException e)
+	        {
+	            log.warn(this + ": getSubmissionsZip--ServerOverloadException: " +
+	            		"submittersName=" + submittersName + " attachment reference=" + r);
+	        }
+	        finally
+	        {
+	            if (content != null)
+	            {
+	                try
+	                {
+	                    content.close();
+	                }
+	                catch (IOException e)
+	                {
+	                    log.warn("IOException when closing content stream", e);
+	                }
+	            }
+	            if (bContent != null)
+	            {
+	                try
+	                {
+	                    bContent.close();
+	                }
+	                catch (IOException e)
+	                {
+	                    log.warn("IOException when closing bContent stream", e);
+	                }
+	            }
+	        }
+	    } // for
 	}
 	
 	/**

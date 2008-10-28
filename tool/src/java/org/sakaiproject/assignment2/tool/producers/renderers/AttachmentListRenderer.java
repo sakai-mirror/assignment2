@@ -26,13 +26,12 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.sakaiproject.assignment2.logic.ExternalLogic;
+import org.sakaiproject.assignment2.logic.AttachmentInformation;
+import org.sakaiproject.assignment2.logic.ExternalContentLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentAttachment;
 import org.sakaiproject.assignment2.model.FeedbackAttachment;
 import org.sakaiproject.assignment2.model.SubmissionAttachment;
-import org.sakaiproject.content.api.ContentHostingService;
-import org.sakaiproject.content.api.ContentResource;
 
 import uk.org.ponder.beanutil.entity.EntityBeanLocator;
 import uk.org.ponder.rsf.components.UIContainer;
@@ -60,14 +59,9 @@ import uk.org.ponder.rsf.components.UIOutput;
 public class AttachmentListRenderer {
     private static final Log LOG = LogFactory.getLog(AttachmentListRenderer.class);
 
-    private ContentHostingService contentHostingService;
-    public void setContentHostingService(ContentHostingService contentHostingService) {
-        this.contentHostingService = contentHostingService;
-    }
-    
-    private ExternalLogic externalLogic;
-    public void setExternalLogic(ExternalLogic externalLogic) {
-        this.externalLogic = externalLogic;
+    private ExternalContentLogic contentLogic;
+    public void setExternalContentLogic(ExternalContentLogic contentLogic) {
+        this.contentLogic = contentLogic;
     }
 
     private EntityBeanLocator assignment2EntityBeanLocator;
@@ -140,26 +134,22 @@ public class AttachmentListRenderer {
 
         for (String ref : refSet){
             UIJointContainer joint = new UIJointContainer(tofill, divID, "attachments:", ""+(i++));
-            try {
-                //TODO  put all contentHosting calls in an external Logic
                 
                 //TODO FIXME For some reason, when there are no attachments, we 
                 // still getting a single item in the Set<String> ref that is 
                 // just an empty string.  This is on previewing an assignment.
                 // To reproduce, just put in a title and hit preview.
                 if (ref != null && !ref.equals("")) {
-                    ContentResource cr = contentHostingService.getResource(ref);
-                    UILink.make(joint, "attachment_image", externalLogic.getContentTypeImagePath(cr));
-                    UILink.make(joint, "attachment_link", cr.getProperties().getProperty(cr.getProperties().getNamePropDisplayName()),
-                            cr.getUrl());
-                    String file_size = externalLogic.getReadableFileSize(cr.getContentLength());
-                    UIOutput.make(joint, "attachment_size", file_size);
+                    AttachmentInformation attach = contentLogic.getAttachmentInformation(ref);
+                    if (attach != null) {
+                        String file_size = "(" + attach.getContentLength() + ")";
+
+                        UILink.make(joint, "attachment_image", attach.getContentTypeImagePath());
+                        UILink.make(joint, "attachment_link", attach.getDisplayName(), attach.getUrl());  
+                        UIOutput.make(joint, "attachment_size", file_size);
+                    }
                 }
 
-            } catch (Exception e) {
-                LOG.error(e.getMessage(), e);
-                //do nothing
-            }
         } //Ending for loop
     }
 

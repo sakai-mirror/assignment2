@@ -140,7 +140,8 @@
              left join fetch assignment.assignmentGroupSet
              left join fetch assignment.attachmentSet
              where assignment.contextId = :contextId
-             and assignment.removed = false]]>
+             and assignment.removed = false
+             order by assignment.sortIndex]]>
   	</query>
   	
   	<query name="findAssignmentByIdWithGroupsAndAttachments">

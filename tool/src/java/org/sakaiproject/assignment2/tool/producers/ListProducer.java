@@ -62,10 +62,19 @@ import uk.org.ponder.rsf.view.ViewComponentProducer;
 import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
 import uk.org.ponder.rsf.viewstate.ViewParameters;
 
+/**
+ * This renders the Instructor Landing Page that shows the list of assignments
+ * in the course. Along with the ability to drag'n'drop reorder, delete, edit,
+ * and go to the submissions.
+ * 
+ * @author rjlowe
+ * @author sgithens
+ *
+ */
 public class ListProducer implements ViewComponentProducer, NavigationCaseReporter, DefaultView {
 
     public static final String VIEW_ID = "list";
-    
+
     public String getViewID() {
         return VIEW_ID;
     }
@@ -76,65 +85,66 @@ public class ListProducer implements ViewComponentProducer, NavigationCaseReport
     private ExternalLogic externalLogic;
     private AssignmentPermissionLogic permissionLogic;
     private Locale locale;
-    
+
     public void fillComponents(UIContainer tofill, ViewParameters viewparams, ComponentChecker checker) {
-      
-    	DateFormat df = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, locale);
+
+        DateFormat df = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, locale);
         //Edit Permission
         Boolean edit_perm = permissionLogic.isCurrentUserAbleToEditAssignments(externalLogic.getCurrentContextId());
         String currUserId = externalLogic.getCurrentUserId();
-        
-    	List<Assignment2> entries = assignmentLogic.getViewableAssignments();
-    	
-    	//Breadcrumbs
-    	UIMessage.make(tofill, "last_breadcrumb", "assignment2.list.heading");
-    	
-    	//Links to settings and reorder
-    	// Settings page not yet implemented. ASNN-207
-    	//UIInternalLink.make(tofill, "settings_link", new SimpleViewParameters(SettingsProducer.VIEW_ID));
-    	if (edit_perm) {
-    	    UIInternalLink.make(tofill, "reorder_link", new SimpleViewParameters(ListReorderProducer.VIEW_ID));
-    	}
-    	
+
+        List<Assignment2> entries = assignmentLogic.getViewableAssignments();
+
+        //Breadcrumbs
+        UIMessage.make(tofill, "last_breadcrumb", "assignment2.list.heading");
+
+        //Links to settings and reorder
+        // Settings page not yet implemented. ASNN-207
+        //UIInternalLink.make(tofill, "settings_link", new SimpleViewParameters(SettingsProducer.VIEW_ID));
+        if (edit_perm) {
+            UIInternalLink.make(tofill, "reorder_link", new SimpleViewParameters(ListReorderProducer.VIEW_ID));
+        }
+
         UIMessage.make(tofill, "page-title", "assignment2.list.title");
-        
+
         //Links
         if (edit_perm){
-        	UIInternalLink.make(tofill, "add_assignment", UIMessage.make("assignment2.list.add_assignment"),
-        		new SimpleViewParameters(AssignmentProducer.VIEW_ID));
+            UIInternalLink.make(tofill, "add_assignment", UIMessage.make("assignment2.list.add_assignment"),
+                    new SimpleViewParameters(AssignmentProducer.VIEW_ID));
         }
-                                      
+
         if (entries.size() <= 0) {
             UIMessage.make(tofill, "assignment_empty", "assignment2.list.assignment_empty");
             return;
         }
-        
+
         //Fill out Table
         for (Assignment2 assignment : entries){
-        	UIBranchContainer row = UIBranchContainer.make(tofill, "assignment-row:");
-        	row.decorators = new DecoratorList(new UIStyleDecorator("sortable_" + assignment.getId().toString()));
-        	
-        	UIOutput title = UIOutput.make(row, "assignment_title", (assignment != null) ? assignment.getTitle() : "");
-        	
-        	//If Current User has the ability to edit or duplicate the assignment
-        	if (edit_perm) {
+            UIBranchContainer row = UIBranchContainer.make(tofill, "assignment-row:");
+            row.decorators = new DecoratorList(new UIStyleDecorator("sortable_" + assignment.getId().toString()));
+
+            UIOutput title = UIOutput.make(row, "assignment_title", (assignment != null) ? assignment.getTitle() : "");
+
+            //If Current User has the ability to edit or duplicate the assignment
+            if (edit_perm) {
+                //UIInternalLink.make(row, "delete-asnn-link", new AssignmentViewParams(RemoveAssignmentConfirmProducer.VIEW_ID, assignment.getId()));
                 UIForm form = UIForm.make(row, "form");
-        		UIInput.make(form, "current_assignment", "Assignment2Bean.currentAssignmentId", assignment.getId().toString());
-        		UICommand.make(form, "assignment_delete", "", "#{Assignment2Bean.processActionRemoteCurrent}");
-	        	UIInternalLink.make(form, "assignment_edit",  UIMessage.make("assignment2.list.edit"), 
-	        			new AssignmentViewParams(AssignmentProducer.VIEW_ID, assignment.getId()));
-        	}
-        	
-        	// Tag provider stuff
-        	/*** Removing support for Assignments2 and matrix linking for now
+                UIInput.make(form, "current_assignment", "Assignment2Bean.currentAssignmentId", assignment.getId().toString());
+                UICommand.make(form, "assignment_delete", "", "#{Assignment2Bean.processActionRemoteCurrent}");
+                UIInternalLink.make(form, "assignment_edit",  UIMessage.make("assignment2.list.edit"), 
+                        new AssignmentViewParams(AssignmentProducer.VIEW_ID, assignment.getId()));
+            }
+
+            // Tag provider stuff
+            /*** Removing support for Assignments2 and matrix linking for now
         	TaggingManager taggingManager = (TaggingManager) ComponentManager.get("org.sakaiproject.taggable.api.TaggingManager");
         	if (taggingManager.isTaggable() && assignment != null){
         		//TODO: optimize?
         		List<DecoratedTaggingProvider> providers = initDecoratedProviders();
-        		
+
         		AssignmentActivityProducer assignmentActivityProducer = (AssignmentActivityProducer) ComponentManager
         		.get("org.sakaiproject.assignment2.taggable.api.AssignmentActivityProducer");
-        		
+
         		for (DecoratedTaggingProvider provider : providers){
         			UIBranchContainer tagLinks = UIBranchContainer.make(row, "tag_provider_links:");
         			String ref = assignmentActivityProducer.getActivity(
@@ -148,9 +158,9 @@ public class ListProducer implements ViewComponentProducer, NavigationCaseReport
         				for (String key : helper.getParameterMap().keySet()) {
         					url = url + "&" + key + "=" + helper.getParameterMap().get(key);
         				}
-        				
+
         				//UILink.make(tagLinks, "assignment_view_links", helper.getName(), url);        				
-        				
+
         				 //This is commented out until RSF has some better helper support
         				UIInternalLink.make(tagLinks, "assignment_view_links", helper.getName(),
         		        		new TaggableHelperViewParams(TaggableHelperProducer.VIEWID, 
@@ -160,13 +170,13 @@ public class ListProducer implements ViewComponentProducer, NavigationCaseReport
         			}
         		}
         	}
-        	*/
-        	
-        	if (assignment.isRequiresSubmission()) {
+             */
+
+            if (assignment.isRequiresSubmission()) {
                 // Submitted/Total display
                 int total = 0;
                 int withSubmission = 0;
-                
+
                 List<String> viewableStudents = permissionLogic.getViewableStudentsForUserForItem(currUserId, assignment);
                 if (viewableStudents != null) {
                     total = viewableStudents.size();
@@ -174,92 +184,92 @@ public class ListProducer implements ViewComponentProducer, NavigationCaseReport
                         withSubmission = submissionLogic.getNumStudentsWithASubmission(assignment, viewableStudents);
                     }
                 }
-                
-            	UIInternalLink.make(row, "grade", 
-            			messageLocator.getMessage("assignment2.list.submissions_link", new Object[]{ withSubmission, total}), 
-            			new ViewSubmissionsViewParams(ViewSubmissionsProducer.VIEW_ID, assignment.getId()));
-        	} else {
-        	    UIOutput.make(row, "no_submission_req", messageLocator.getMessage("assignment2.list.no_sub_required"));
-        	}
-        	
-        	
-        	// group restrictions
-        	if (assignment.getAssignmentGroupSet() != null && !assignment.getAssignmentGroupSet().isEmpty()) {
-        		title.decorators = new DecoratorList(new UIStyleDecorator("group"));
-        	}
-        	
-        	if (assignment.isDraft()){
-        		UIMessage.make(row, "draft", "assignment2.list.draft");
-        	}
-        	
-        	UIOutput divLeftContainer = UIOutput.make(row, "div-left-container");
-        	//find active
-        	if (assignment.isOpen())
-        	{
-        		//show active styleclass
-        		divLeftContainer.decorators = new DecoratorList(new UIStyleDecorator("assignActive"));
-        		
-        	}else{
-        		//show inactive styleclass
-        		divLeftContainer.decorators = new DecoratorList(new UIStyleDecorator("assignInactive"));
-        	}
-        	
-	    	UIOutput.make(row, "assignment_row_open", df.format(assignment.getOpenDate()));
-	
-	    	if (assignment.getDueDate() != null) {
-	    		UIOutput.make(row, "assignment_row_due", df.format(assignment.getDueDate()));
-	    	} else {
-	    		UIMessage.make(row, "assignment_row_due", "assignment2.list.no_due_date");	
-	    	}
+
+                UIInternalLink.make(row, "grade", 
+                        messageLocator.getMessage("assignment2.list.submissions_link", new Object[]{ withSubmission, total}), 
+                        new ViewSubmissionsViewParams(ViewSubmissionsProducer.VIEW_ID, assignment.getId()));
+            } else {
+                UIOutput.make(row, "no_submission_req", messageLocator.getMessage("assignment2.list.no_sub_required"));
+            }
+
+
+            // group restrictions
+            if (assignment.getAssignmentGroupSet() != null && !assignment.getAssignmentGroupSet().isEmpty()) {
+                title.decorators = new DecoratorList(new UIStyleDecorator("group"));
+            }
+
+            if (assignment.isDraft()){
+                UIMessage.make(row, "draft", "assignment2.list.draft");
+            }
+
+            UIOutput divLeftContainer = UIOutput.make(row, "div-left-container");
+            //find active
+            if (assignment.isOpen())
+            {
+                //show active styleclass
+                divLeftContainer.decorators = new DecoratorList(new UIStyleDecorator("assignActive"));
+
+            }else{
+                //show inactive styleclass
+                divLeftContainer.decorators = new DecoratorList(new UIStyleDecorator("assignInactive"));
+            }
+
+            UIOutput.make(row, "assignment_row_open", df.format(assignment.getOpenDate()));
+
+            if (assignment.getDueDate() != null) {
+                UIOutput.make(row, "assignment_row_due", df.format(assignment.getDueDate()));
+            } else {
+                UIMessage.make(row, "assignment_row_due", "assignment2.list.no_due_date");	
+            }
         }
-        
+
         UIVerbatim.make(tofill, "init_ajaxCallbackURL", "var ajaxCallbackURL = \"" + 
-        		externalLogic.getAssignmentViewUrl(AjaxCallbackProducer.VIEW_ID) + "\";");
-        
+                externalLogic.getAssignmentViewUrl(AjaxCallbackProducer.VIEW_ID) + "\";");
+
     }
-	public List reportNavigationCases()
-	{
-		List<NavigationCase> nav= new ArrayList<NavigationCase>();
-		nav.add(new NavigationCase("remove", new SimpleViewParameters(AjaxResultsProducer.VIEW_ID)));
-		return nav;
-	}
-    
+    public List reportNavigationCases()
+    {
+        List<NavigationCase> nav= new ArrayList<NavigationCase>();
+        nav.add(new NavigationCase("remove", new SimpleViewParameters(AjaxResultsProducer.VIEW_ID)));
+        return nav;
+    }
+
     private List<DecoratedTaggingProvider> initDecoratedProviders() {
-		TaggingManager taggingManager = (TaggingManager) ComponentManager
-				.get("org.sakaiproject.taggable.api.TaggingManager");
-		List<DecoratedTaggingProvider> providers = new ArrayList<DecoratedTaggingProvider>();
-		for (TaggingProvider provider : taggingManager.getProviders())
-		{
-			providers.add(new DecoratedTaggingProvider(provider));
-		}
-		return providers;
-	}
-    
+        TaggingManager taggingManager = (TaggingManager) ComponentManager
+        .get("org.sakaiproject.taggable.api.TaggingManager");
+        List<DecoratedTaggingProvider> providers = new ArrayList<DecoratedTaggingProvider>();
+        for (TaggingProvider provider : taggingManager.getProviders())
+        {
+            providers.add(new DecoratedTaggingProvider(provider));
+        }
+        return providers;
+    }
+
     public void setMessageLocator(MessageLocator messageLocator) {
         this.messageLocator = messageLocator;
     }
-      
+
     public void setAssignmentLogic (AssignmentLogic assignmentLogic) {
-    	this.assignmentLogic = assignmentLogic;
+        this.assignmentLogic = assignmentLogic;
     }
-    
+
     public void setExternalLogic(ExternalLogic externalLogic) {
-    	this.externalLogic = externalLogic;
+        this.externalLogic = externalLogic;
     }
-    
-	public void setPermissionLogic(AssignmentPermissionLogic permissionLogic) {
-		this.permissionLogic = permissionLogic;
-	}
-	public Locale getLocale()
-	{
-		return locale;
-	}
-	public void setLocale(Locale locale)
-	{
-		this.locale = locale;
-	}
-	
-	public void setAssignmentSubmissionLogic(AssignmentSubmissionLogic submissionLogic) {
-		this.submissionLogic = submissionLogic;
-	}
+
+    public void setPermissionLogic(AssignmentPermissionLogic permissionLogic) {
+        this.permissionLogic = permissionLogic;
+    }
+    public Locale getLocale()
+    {
+        return locale;
+    }
+    public void setLocale(Locale locale)
+    {
+        this.locale = locale;
+    }
+
+    public void setAssignmentSubmissionLogic(AssignmentSubmissionLogic submissionLogic) {
+        this.submissionLogic = submissionLogic;
+    }
 }

@@ -23,22 +23,29 @@ package org.sakaiproject.assignment2.tool.params;
 
 import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
 
+/**
+ * Standard View Parameters for operating on a single Assignment2 entry.
+ * 
+ * @author rjlowe
+ * @author sgithens
+ *
+ */
 public class AssignmentViewParams extends SimpleViewParameters {
 
-	public Long assignmentId;
-	
-	public AssignmentViewParams() {}
-	
-	public AssignmentViewParams(String viewId) {
-		super(viewId);
-	}
+    public Long assignmentId;
+
+    public AssignmentViewParams() {}
+
+    public AssignmentViewParams(String viewId) {
+        super(viewId);
+    }
 
     public AssignmentViewParams(String viewId, Long assignmentId) {
-    		super(viewId);
-    		this.assignmentId = assignmentId;
+        super(viewId);
+        this.assignmentId = assignmentId;
     }
-    
+
     public String getParseSpec() {
-    	return super.getParseSpec() + ",@1:assignmentId";
+        return super.getParseSpec() + ",@1:assignmentId";
     }
 }

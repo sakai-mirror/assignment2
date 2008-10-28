@@ -31,8 +31,6 @@ import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.authz.api.SecurityService;
 import org.sakaiproject.component.cover.ServerConfigurationService;
-import org.sakaiproject.content.api.ContentResource;
-import org.sakaiproject.content.api.ContentTypeImageService;
 import org.sakaiproject.entity.api.Entity;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.section.api.SectionAwareness;
@@ -84,8 +82,6 @@ public class ExternalLogicImpl implements ExternalLogic {
     public void setSectionAwareness(SectionAwareness sectionAwareness) {
     	this.sectionAwareness = sectionAwareness;
     }
-    
-    private static final String BASE_IMG_PATH= "/library/image/";
 
     /**
      * Place any code that should run when this class is initialized by spring here
@@ -219,15 +215,6 @@ public class ExternalLogicImpl implements ExternalLogic {
         return siteHasTool;
     }
     
-    public String getContentTypeImagePath(ContentResource contentReference) {
-    	String image_path = BASE_IMG_PATH;
-    	ContentTypeImageService imageService = org.sakaiproject.content.cover.ContentTypeImageService.getInstance();
-    	image_path += imageService.getContentTypeImage(
-    			contentReference.getProperties().getProperty(
-    					contentReference.getProperties().getNamePropContentType()));
-    	return image_path;
-    }
-    
     public List<String> getInstructorsInSite(String contextId) {
         if (contextId == null) {
             throw new IllegalArgumentException("Null contextId passed to getInstructorsInSite");
@@ -350,30 +337,6 @@ public class ExternalLogicImpl implements ExternalLogic {
 	    }
 
 	    return user;
-	}
-	
-	public String getReadableFileSize(int sizeVal)
-	{
-		double retVal = sizeVal;
-		String sizeSuffix = "bytes";
-		int GB = 1024 * 1024 * 1024;
-		int MB = 1024 * 1024;
-		int KB = 1024;
-		if (sizeVal > GB) {
-		retVal = sizeVal / GB;
-		sizeSuffix = "GB";
-		}
-		else if(sizeVal > MB) {
-		retVal = sizeVal / MB;
-		sizeSuffix = "MB";
-		}
-		else if (sizeVal > KB) {
-		retVal = sizeVal / KB;
-		sizeSuffix = "KB";
-		}
-		String finalVal = "(".concat(Double.toString(retVal).concat(" " + sizeSuffix.concat(")")));
-		return finalVal;
-
 	}
 	
 	public Map<String, User> getUserIdUserMap(List<String> userIds) {

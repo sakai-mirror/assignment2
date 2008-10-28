@@ -31,6 +31,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment2.logic.AssignmentBundleLogic;
 import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
+import org.sakaiproject.assignment2.logic.AttachmentInformation;
+import org.sakaiproject.assignment2.logic.ExternalContentLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.logic.ScheduledNotification;
 import org.sakaiproject.assignment2.model.Assignment2;
@@ -39,14 +41,8 @@ import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.model.SubmissionAttachment;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.component.api.ServerConfigurationService;
-import org.sakaiproject.content.api.ContentHostingService;
-import org.sakaiproject.content.api.ContentResource;
 import org.sakaiproject.email.api.DigestService;
 import org.sakaiproject.email.api.EmailService;
-import org.sakaiproject.entity.api.ResourceProperties;
-import org.sakaiproject.exception.IdUnusedException;
-import org.sakaiproject.exception.PermissionException;
-import org.sakaiproject.exception.TypeException;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.user.api.User;
 import org.sakaiproject.util.FormattedText;
@@ -95,16 +91,15 @@ public class ScheduledNotificationImpl implements ScheduledNotification
         this.serverConfigurationService = serverConfigurationService;
     }
 
-    private ContentHostingService contentHostingService;
-    public void setContentHostingService(ContentHostingService contentHostingService)
-    {
-        this.contentHostingService = contentHostingService;
-    }
-
     private DigestService digestService;
     public void setDigestService(DigestService digestService)
     {
         this.digestService = digestService;
+    }
+    
+    private ExternalContentLogic contentLogic;
+    public void setExternalContentLogic(ExternalContentLogic contentLogic) {
+        this.contentLogic = contentLogic;
     }
 
     private static final Log log = LogFactory.getLog(ScheduledNotificationImpl.class);
@@ -375,21 +370,15 @@ public class ScheduledNotificationImpl implements ScheduledNotification
             for (SubmissionAttachment attachment : attachments)
             {
                 String ref = attachment.getAttachmentReference();
-                try {
-                    ContentResource res = contentHostingService.getResource(ref);
-                    ResourceProperties resProps = res.getProperties();
-                    String resLength = resProps.getPropertyFormatted(ResourceProperties.PROP_CONTENT_LENGTH);;
-                    String resourceLengthDisplay = assignmentBundleLogic.getFormattedMessage(
-                            "noti.submit.attach_size_display", new Object[] {resLength});
-                    content.append(resProps.getProperty(ResourceProperties.PROP_DISPLAY_NAME)
-                            + " " + resourceLengthDisplay + newline);
-                } catch (TypeException te) {
-                    log.warn("TypeException thrown trying to retrieve resource with reference: " + ref, te);
-                } catch (IdUnusedException iue) {
-                    log.warn("IdUnusedException thrown trying to retrieve resource with reference: " + ref, iue);
-                } catch (PermissionException iue) {
-                    log.warn("PermissionException thrown trying to retrieve resource with reference: " + ref, iue);
-                }
+
+                    AttachmentInformation attach = contentLogic.getAttachmentInformation(ref);
+                    if (attach != null) {
+                        
+                        String resourceLengthDisplay = assignmentBundleLogic.getFormattedMessage(
+                                "noti.submit.attach_size_display", new Object[] {attach.getContentLength()});
+                        content.append(attach.getDisplayName() + " " + resourceLengthDisplay + newline);
+                    }
+
             }
         }
 

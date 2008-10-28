@@ -414,7 +414,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 		String contextId = externalLogic.getCurrentContextId();
 		String userId = externalLogic.getCurrentUserId();
 
-		Set<Assignment2> allAssignments = dao.getAssignmentsWithGroupsAndAttachments(contextId);
+		List<Assignment2> allAssignments = dao.getAssignmentsWithGroupsAndAttachments(contextId);
 
 		if (allAssignments != null && !allAssignments.isEmpty()) {
 

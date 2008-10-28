@@ -112,7 +112,7 @@ public class AssignmentDaoImpl extends HibernateGeneralGenericDao implements Ass
 		return (Set<Assignment2>)getHibernateTemplate().execute(hc);
     }
     
-    public Set<Assignment2> getAssignmentsWithGroupsAndAttachments(final String contextId) {
+    public List<Assignment2> getAssignmentsWithGroupsAndAttachments(final String contextId) {
     	if (contextId == null) {
     		throw new IllegalArgumentException("Null contextId passed to getAssignmentsWithGroupsAndAttachments");
     	}
@@ -124,17 +124,19 @@ public class AssignmentDaoImpl extends HibernateGeneralGenericDao implements Ass
 		    	
 		    	List<Assignment2> assignmentList = query.list();
 		    	
-		    	Set<Assignment2> assignmentSet = new HashSet<Assignment2>();
-		    	
+		    	// we need to remove duplicates but retain order, so put
+		    	// in a LinkedHashSet and then back into a list
 		    	if (assignmentList != null) {
-		    		assignmentSet = new HashSet<Assignment2>(assignmentList);
+		    	    Set<Assignment2> assignmentSet = new LinkedHashSet<Assignment2>(assignmentList);
+		    		assignmentList.clear();
+		    		assignmentList.addAll(assignmentSet);
 		    	}
 		    	
-		    	return assignmentSet;
+		    	return assignmentList;
 			}
 		};
     	
-		return (Set<Assignment2>)getHibernateTemplate().execute(hc);
+		return (List<Assignment2>)getHibernateTemplate().execute(hc);
     }
     
     public Assignment2 getAssignmentByIdWithGroupsAndAttachments(final Long assignmentId) {

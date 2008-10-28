@@ -40,6 +40,7 @@ import org.sakaiproject.assignment2.dao.AssignmentDao;
 import org.sakaiproject.assignment2.exception.AnnouncementPermissionException;
 import org.sakaiproject.assignment2.exception.CalendarPermissionException;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
+import org.sakaiproject.assignment2.logic.ExternalContentLogic;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.logic.GradebookItem;
@@ -49,20 +50,9 @@ import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentAttachment;
 import org.sakaiproject.assignment2.model.AssignmentGroup;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
-import org.sakaiproject.content.api.ContentHostingService;
-import org.sakaiproject.content.api.ContentResource;
 import org.sakaiproject.entity.api.Reference;
 import org.sakaiproject.entity.api.ResourceProperties;
-import org.sakaiproject.exception.IdInvalidException;
-import org.sakaiproject.exception.IdUnusedException;
-import org.sakaiproject.exception.IdUsedException;
-import org.sakaiproject.exception.InconsistentException;
-import org.sakaiproject.exception.OverQuotaException;
-import org.sakaiproject.exception.PermissionException;
-import org.sakaiproject.exception.ServerOverloadException;
-import org.sakaiproject.exception.TypeException;
 import org.sakaiproject.site.api.Group;
-
 
 
 /**
@@ -100,9 +90,9 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 		this.assignmentService = assignmentService;
 	}
 
-	private ContentHostingService contentHostingService;
-	public void setContentHostingService(ContentHostingService contentHostingService) {
-		this.contentHostingService = contentHostingService;
+	private ExternalContentLogic contentLogic;
+	public void setExternalContentLogic(ExternalContentLogic contentLogic) {
+		this.contentLogic = contentLogic;
 	}
 
 	public void init(){
@@ -123,7 +113,7 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 		}
 		List<AssignmentDefinition> assignList = new ArrayList<AssignmentDefinition>();
 
-		Set<Assignment2> allAssignments = dao.getAssignmentsWithGroupsAndAttachments(contextId);
+		List<Assignment2> allAssignments = dao.getAssignmentsWithGroupsAndAttachments(contextId);
 		if (allAssignments != null && !allAssignments.isEmpty()) {
 			List<GradebookItem> allGbItems = gradebookLogic.getAllGradebookItems(contextId);
 			Map<Long, GradebookItem> gbIdItemMap = new HashMap<Long, GradebookItem>();
@@ -174,6 +164,7 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 		assignDef.setSubmissionType(assignment.getSubmissionType());
 		assignDef.setTitle(assignment.getTitle());
 		assignDef.setGraded(assignment.isGraded());
+		assignDef.setRequiresSubmission(assignment.isRequiresSubmission());
 
 		// if it is graded, we need to retrieve the name of the associated gb item
 		if (assignment.isGraded() && assignment.getGradableObjectId() != null &&
@@ -220,19 +211,7 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 		if (toolDefinition != null) {
 			if(toolDefinition.getAssignments() != null) {
 
-				// let's retrieve the existing assignments in this site so we can
-				// compare the assignment titles
-				Set<Assignment2> currAssignments = dao.getAssignmentsWithGroupsAndAttachments(toContext);
-				List<String> currTitles = new ArrayList<String>();
-				if (currAssignments != null) {
-					for (Assignment2 assign : currAssignments) {
-						if (assign != null) {
-							currTitles.add(assign.getTitle());
-						}
-					}
-				}
-
-				// now retrieve a list of all of the gb items in this site
+				// retrieve a list of all of the gb items in this site
 				List<GradebookItem> currGbItems = gradebookLogic.getAllGradebookItems(toContext);
 				// make a map of item title to item
 				Map<String, GradebookItem> gbTitleToItemMap = new HashMap<String, GradebookItem>();
@@ -266,13 +245,12 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 						newAssignment.setNumSubmissionsAllowed(assignDef.getNumSubmissionsAllowed());
 						newAssignment.setOpenDate(assignDef.getOpenDate());
 						newAssignment.setDueDate(assignDef.getDueDate());
+						newAssignment.setRequiresSubmission(assignDef.isRequiresSubmission());
 
-						if (assignDef.getSortIndex() == null) {
-							int index = dao.getHighestSortIndexInSite(toContext);
-							newAssignment.setSortIndex(index);
-						} else {
-							newAssignment.setSortIndex(assignDef.getSortIndex());
-						}
+						// we don't set the sort index here. the sort index will
+						// be generated upon saving. so make sure that the assignments
+						// in the xml are in the order you want them to appear
+						// in the UI
 
 						newAssignment.setSubmissionType(assignDef.getSubmissionType());
 						newAssignment.setGraded(assignDef.isGraded());
@@ -336,9 +314,14 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 
 							Set<AssignmentAttachment> attachSet = new HashSet<AssignmentAttachment>();
 							for (String attRef : assignDef.getAttachmentReferences()) {
-								String newAttId = copyAttachment(attRef, toContext);
-								AssignmentAttachment newAA = new AssignmentAttachment(newAssignment, newAttId);
-								attachSet.add(newAA);
+								String newAttId = contentLogic.copyAttachment(attRef, toContext);
+								if (newAttId != null) {
+    								AssignmentAttachment newAA = new AssignmentAttachment(newAssignment, newAttId);
+    								attachSet.add(newAA);
+								} else {
+								    log.warn("A copy of attachment with ref:" + 
+								            attRef + " was NOT created because an error occurred.");
+								}
 							}
 							newAssignment.setAttachmentSet(attachSet);
 						}
@@ -466,6 +449,10 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 			// the old tool didn't support a resubmission option on the assignment level,
 			// so just allow 1 submission
 			newAssnDef.setNumSubmissionsAllowed(1);
+			
+			// the old tool didn't support the concept of optionally requiring submission
+			// so we will always require
+			newAssnDef.setRequiresSubmission(true);
 
 			// handle attachments
 			List<Reference> oAttachments = oContent.getAttachments();
@@ -568,59 +555,13 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 
 		return newTitle;
 	}
-
-	private String copyAttachment(String attId, String contextId) {
-		String newAttId = null;
-		if (attId != null) {
-			try {
-				ContentResource oldAttachment = contentHostingService.getResource(attId);
-				String toolTitle = externalLogic.getToolTitle();
-				String name = oldAttachment.getProperties().getProperty(
-						ResourceProperties.PROP_DISPLAY_NAME);
-				String type = oldAttachment.getContentType();
-				byte[] content = oldAttachment.getContent();
-				ResourceProperties properties = oldAttachment.getProperties();
-
-				ContentResource newResource = contentHostingService.addAttachmentResource(name, 
-						contextId, toolTitle, type, content, properties);
-				newAttId = newResource.getId();
-
-			} catch (TypeException te) {
-				log.warn("TypeException thrown while attempting to retrieve resource with" +
-						" id " + attId + ". Attachment was not copied.");
-			} catch (PermissionException pe) {
-				log.warn("PermissionException thrown while attempting to retrieve resource with" +
-						" id " + attId + ". Attachment was not copied.");
-			} catch (IdUnusedException iue) {
-				log.warn("IdUnusedException thrown while attempting to retrieve resource with" +
-						" id " + attId + ". Attachment was not copied.");
-			} catch (IdInvalidException iie) {
-				log.warn("IdInvalidException thrown while attempting to copy resource with" +
-						" id " + attId + ". Attachment was not copied.");
-			} catch (ServerOverloadException soe) {
-				log.warn("ServerOverloadException thrown while attempting to copy resource with" +
-						" id " + attId + ". Attachment was not copied.");
-			} catch (IdUsedException iue) {
-				log.warn("IdUsedException thrown while attempting to copy resource with" +
-						" id " + attId + ". Attachment was not copied.");
-			} catch (OverQuotaException oqe) {
-				log.warn("OverQuotaException thrown while attempting to copy resource with" +
-						" id " + attId + ". Attachment was not copied.");
-			} catch (InconsistentException ie) {
-				log.warn("InconsistentException thrown while attempting to copy resource with" +
-						" id " + attId + ". Attachment was not copied.");
-			}
-		}
-
-		return newAttId;
-	}
 	
 	public void cleanToolForImport(String contextId) {
 		if (contextId == null) {
 			throw new IllegalArgumentException("Null contextId passed to cleanAssignments");
 		}
 		
-		Set<Assignment2> allAssignments = dao.getAssignmentsWithGroupsAndAttachments(contextId);
+		List<Assignment2> allAssignments = dao.getAssignmentsWithGroupsAndAttachments(contextId);
 		if (allAssignments != null) {
 			for (Assignment2 assign : allAssignments) {
 				assignmentLogic.deleteAssignment(assign);

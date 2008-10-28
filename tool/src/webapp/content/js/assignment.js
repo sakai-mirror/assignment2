@@ -50,7 +50,22 @@ function changeValue(){
         }
     }
 
-    selectGraded()
+    selectGraded();
+    populateTitleWithGbItemName();
+}
+
+function populateTitleWithGbItemName() {
+    var curr_title = jQuery("input[name='page-replace\:\:title']").get(0).value;
+    if (!curr_title || curr_title == "") {
+        // get the currently selected gb item
+        var gbSelect = jQuery("select[name='page-replace\:\:gradebook_item-selection']").get(0);
+        var gbSelIndex = gbSelect.selectedIndex;
+        if (gbSelIndex != 0) { 
+            var selectedItem = gbSelect.options[gbSelIndex].text;
+            // replace the empty title field with the new_title
+            jQuery("input[name='page-replace\:\:title']").val(selectedItem);
+        }
+    }
 }
 
 function selectGraded() {
@@ -350,12 +365,37 @@ var asnn2 = asnn2 || {};
      */
     asnn2.showHideSiblings = function(element, show) {
     	if (show == true) {
-    		jQuery(element).siblings("li").show();
+    		jQuery(element).nextAll().show();
     	}
     	else {
-    		jQuery(element).siblings("li").hide();
+    		jQuery(element).nextAll().hide();
     	}
-    },
+    };
+    
+    /**
+     * Given a checkbox element, hide or show the area element whenever checkbox
+     * is clicked.  Checking the box shows the area, unchecking the box hides
+     * the area. Will also do the initialization of the area based on the 
+     * checkboxes initial value when set up.
+     */
+    asnn2.showHideByCheckbox = function(checkboxElem, areaElem) {
+    	var checkbox = jQuery(checkboxElem);
+    	var area = jQuery(areaElem);
+    	if (checkbox.checked == true) {
+    		area.show();
+    	}
+    	else {
+    		area.hide();
+    	}
+    	checkbox.click(function () {
+    		if (this.checked == true) {
+    			area.show();
+    		}
+    		else {
+    			area.hide();
+    		}
+    	});
+    };
 
     /**
      * Setup the element for a Assignment Submission Version. This includes
@@ -379,4 +419,5 @@ var asnn2 = asnn2 || {};
             }
         });
     };
+    
 })(jQuery, asnn2);

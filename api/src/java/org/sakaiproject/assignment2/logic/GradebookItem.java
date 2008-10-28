@@ -36,17 +36,19 @@ public class GradebookItem {
     private Double pointsPossible;
     private Date dueDate;
     private String externalId;
+    private boolean released;
     
     public GradebookItem() {
     	
     }
     
 	public GradebookItem(Long gradableObjectId, String title,
-			Double pointsPossible, Date dueDate) {
+			Double pointsPossible, Date dueDate, boolean released) {
 		this.gradableObjectId = gradableObjectId;
 		this.title = title;
 		this.pointsPossible = pointsPossible;
 		this.dueDate = dueDate;
+		this.released = released;
 	}
 
 	/**
@@ -132,4 +134,24 @@ public class GradebookItem {
 	{
 		this.externalId = externalId;
 	}
+
+	/**
+	 * 
+	 * @return true if the grades in this gradebook item have been released
+	 * to the students
+	 */
+    public boolean isReleased()
+    {
+        return released;
+    }
+
+    /**
+     * true if the grades in this gradebook item have been released
+     * to the students
+     * @param released
+     */
+    public void setReleased(boolean released)
+    {
+        this.released = released;
+    }
 }

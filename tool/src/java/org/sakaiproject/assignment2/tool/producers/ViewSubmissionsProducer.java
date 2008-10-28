@@ -34,6 +34,7 @@ import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.logic.GradeInformation;
+import org.sakaiproject.assignment2.logic.GradebookItem;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
@@ -209,8 +210,15 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
         sortHeaderRenderer.makeSortingLink(tofill, "tableheader.status", viewparams, 
                 LocalAssignmentLogic.SORT_BY_STATUS, "assignment2.assignment_grade-assignment.tableheader.status");
         if (assignment.isGraded()) {
+            String releasedString;
+            GradebookItem gradebookItem = gradebookLogic.getGradebookItemById(assignment.getContextId(), assignment.getGradableObjectId());
+            if (gradebookItem.isReleased()) {
+                releasedString = "assignment2.assignment_grade-assignment.tableheader.grade.released";
+            } else {
+                releasedString = "assignment2.assignment_grade-assignment.tableheader.grade.not_released";
+            }
             sortHeaderRenderer.makeSortingLink(tofill, "tableheader.grade", viewparams, 
-                    LocalAssignmentLogic.SORT_BY_GRADE, "assignment2.assignment_grade-assignment.tableheader.grade");
+                    LocalAssignmentLogic.SORT_BY_GRADE, releasedString);
         }
         sortHeaderRenderer.makeSortingLink(tofill, "tableheader.released", viewparams, 
                 AssignmentSubmissionLogic.SORT_BY_RELEASED, "assignment2.assignment_grade-assignment.tableheader.released");

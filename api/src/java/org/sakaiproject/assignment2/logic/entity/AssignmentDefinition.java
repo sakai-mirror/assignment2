@@ -32,7 +32,7 @@ public class AssignmentDefinition implements Serializable {
 	private static final long serialVersionUID = 1L;
 
     private String title;
-    private Integer sortIndex;
+    private int sortIndex;
     private Date openDate;
     private Date acceptUntilDate;
     private String associatedGbItemName;
@@ -44,9 +44,11 @@ public class AssignmentDefinition implements Serializable {
     private String instructions;
     private boolean hasAnnouncement;
     private boolean addedToSchedule;
-    private Integer numSubmissionsAllowed;
+    private int numSubmissionsAllowed;
     private boolean sendSubmissionNotifications;
-    private Integer submissionType;
+    private int submissionType;
+    private boolean requiresSubmission;
+
     private List<String> groupRestrictionGroupTitles;
     private List<String> attachmentReferences;
     
@@ -65,12 +67,12 @@ public class AssignmentDefinition implements Serializable {
 	}
 
 
-	public Integer getSortIndex() {
+	public int getSortIndex() {
 		return sortIndex;
 	}
 
 
-	public void setSortIndex(Integer sortIndex) {
+	public void setSortIndex(int sortIndex) {
 		this.sortIndex = sortIndex;
 	}
 
@@ -188,12 +190,12 @@ public class AssignmentDefinition implements Serializable {
 	}
 
 
-	public Integer getNumSubmissionsAllowed() {
+	public int getNumSubmissionsAllowed() {
 		return numSubmissionsAllowed;
 	}
 
 
-	public void setNumSubmissionsAllowed(Integer numSubmissionsAllowed) {
+	public void setNumSubmissionsAllowed(int numSubmissionsAllowed) {
 		this.numSubmissionsAllowed = numSubmissionsAllowed;
 	}
 
@@ -208,14 +210,25 @@ public class AssignmentDefinition implements Serializable {
 	}
 
 
-	public Integer getSubmissionType() {
+	public int getSubmissionType() {
 		return submissionType;
 	}
 
 
-	public void setSubmissionType(Integer submissionType) {
+	public void setSubmissionType(int submissionType) {
 		this.submissionType = submissionType;
 	}
+	
+    public boolean isRequiresSubmission()
+    {
+        return requiresSubmission;
+    }
+
+
+    public void setRequiresSubmission(boolean requiresSubmission)
+    {
+        this.requiresSubmission = requiresSubmission;
+    }
 
 
 	public List<String> getGroupRestrictionGroupTitles() {

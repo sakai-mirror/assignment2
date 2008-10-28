@@ -18,13 +18,6 @@
    <bean id="richTextEvolver" class="org.springframework.beans.factory.config.BeanReferenceFactoryBean">
       <property name="targetBeanName" value="sakaiFCKTextEvolver" />
    </bean>
-   
-   <bean id="assn2FCKTextEvolver"
-    class="org.sakaiproject.assignment2.tool.producers.evolvers.MarkupEvolver">
-    <property name="contentHostingService"
-      ref="org.sakaiproject.content.api.ContentHostingService" />
-    <property name="context" ref="sakai-Context" />
-  </bean>
 
 	<!-- Renderers -->
     <bean id="AsnnSubmissionDetailsRenderer" 
@@ -67,9 +60,9 @@
    </bean>
    
    <bean id="SortHeaderRenderer" class="org.sakaiproject.assignment2.tool.producers.renderers.SortHeaderRenderer" />
+   
    <bean id="AttachmentListRenderer" class="org.sakaiproject.assignment2.tool.producers.renderers.AttachmentListRenderer">
-   	  <property name="contentHostingService" ref="org.sakaiproject.content.api.ContentHostingService" />
-   	  <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
+   	  <property name="externalContentLogic" ref="org.sakaiproject.assignment2.logic.ExternalContentLogic" />
    	  <property name="assignment2EntityBeanLocator" ref="Assignment2"/>
    </bean>
    
@@ -92,13 +85,19 @@
    </bean>   
    
    <bean id="AttachmentInputEvolver" class="org.sakaiproject.assignment2.tool.producers.evolvers.AttachmentInputEvolver">
-   	  <property name="contentHostingService" ref="org.sakaiproject.content.api.ContentHostingService" />
-   	  <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
+   	  <property name="externalContentLogic" ref="org.sakaiproject.assignment2.logic.ExternalContentLogic" />
    	  <property name="messageLocator" ref="messageLocator" />
    	  <property name="requestBeanGetter" ref="ELEvaluator"/>
    </bean>
 
    <!-- list the producer beans here -->
+   <bean class="org.sakaiproject.assignment2.tool.producers.RemoveAssignmentConfirmProducer">
+       <property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
+       <property name="curUserId" ref="sakai-UserID" />
+       <property name="permissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentPermissionLogic" />
+       <property name="submissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />  
+   </bean>
+   
    <bean class="org.sakaiproject.assignment2.tool.producers.AddAttachmentHelperProducer">
       <property name="sessionManager" ref="org.sakaiproject.tool.api.SessionManager" />
       <property name="messageLocator" ref="messageLocator" />
@@ -128,7 +127,6 @@
    </bean>
    
    <bean class="org.sakaiproject.assignment2.tool.producers.GradeProducer">
-      <property name="assnCommentTextEvolver" ref="assn2FCKTextEvolver" />
       <property name="richTextEvolver" ref="richTextEvolver" />
       <property name="messageLocator" ref="messageLocator" />
       <property name="dateEvolver" ref="fieldDateInputEvolver" />
@@ -178,8 +176,7 @@
 
    <bean class="org.sakaiproject.assignment2.tool.producers.FinishedHelperProducer">
    	  <property name="sessionManager" ref="org.sakaiproject.tool.api.SessionManager" />
-   	  <property name="contentHostingService" ref="org.sakaiproject.content.api.ContentHostingService" />
-   	  <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
+   	  <property name="externalContentLogic" ref="org.sakaiproject.assignment2.logic.ExternalContentLogic" />
    </bean>
    
    <bean class="org.sakaiproject.assignment2.tool.producers.StudentAssignmentListProducer">
