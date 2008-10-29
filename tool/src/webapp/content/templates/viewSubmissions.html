@@ -143,11 +143,13 @@
 
 	</table>
 	<form rsf:id="unassigned-apply-form" method="post">
-		<p rsf:id="msg=assignment2.assignment_grade.assigntoall">Apply to all unassigned</p>
-		<p>
-			<input rsf:id="new-grade-value" type="text" size="4" value="0" />
-			<input rsf:id="apply-button" type="submit" value="Apply" />
-		</p>
+	    <div id="unassigned-apply">
+    		<p rsf:id="msg=assignment2.assignment_grade.assigntoall">Apply to all unassigned</p>
+    		<p>
+    			<input rsf:id="new-grade-value" type="text" size="4" value="0" />
+    			<input rsf:id="apply-button" type="submit" value="Apply" />
+    		</p>
+		</div>
 	</form>
 	<script type="text/javascript" rsf:id="defaultSortBy">
 		defaultSortBy="name"; //done via producer
@@ -163,6 +165,18 @@ function slide_details(img){
 	}
 	a2SetMainFrameHeight();
 }
+//]]>
+</script>
+<script type="text/javascript">
+//<![CDATA[
+jQuery(document).ready(function(){
+  // Init position of the Apply to Unassigned grading feature
+    var p = jQuery("td.grade:first");
+    var position = p.position();
+    var applyToUnassigned = jQuery('#unassigned-apply');
+    applyToUnassigned.attr("style", "margin-left:" + position.left + "px");
+
+});
 //]]>
 </script>
 	</div>
