@@ -82,6 +82,7 @@
       <property name="asnnSubmitEditorRenderer" ref="AsnnSubmitEditorRenderer"></property>
       <property name="asnnSubmissionHistoryRenderer" ref="AsnnSubmissionHistoryRenderer"></property>
       <property name="currentUser" ref="sakai-User"></property>
+      <property name="assignmentSubmissionBean" ref="AssignmentSubmissionBean" />
    </bean>   
    
    <bean id="AttachmentInputEvolver" class="org.sakaiproject.assignment2.tool.producers.evolvers.AttachmentInputEvolver">
@@ -183,6 +184,7 @@
       <property name="assignmentSubmissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
       <property name="locale" ref="requestLocale" />
       <property name="assignment2Bean" ref="Assignment2Bean" />
+      <property name="assignmentSubmissionBean" ref="AssignmentSubmissionBean" />
       <property name="externalGradebookLogic" ref="org.sakaiproject.assignment2.logic.ExternalGradebookLogic" />
    </bean>
    

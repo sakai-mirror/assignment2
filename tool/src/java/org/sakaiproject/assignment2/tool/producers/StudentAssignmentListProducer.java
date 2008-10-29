@@ -36,6 +36,7 @@ import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.tool.beans.Assignment2Bean;
+import org.sakaiproject.assignment2.tool.beans.AssignmentSubmissionBean;
 import org.sakaiproject.assignment2.tool.beans.locallogic.LocalAssignmentLogic;
 import org.sakaiproject.assignment2.tool.params.AssignmentListSortViewParams;
 import org.sakaiproject.assignment2.tool.params.SimpleAssignmentViewParams;
@@ -83,6 +84,7 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
     private AssignmentSubmissionLogic submissionLogic;
     private Locale locale;
     private Assignment2Bean assignment2Bean;
+    private AssignmentSubmissionBean submissionBean;
     private ExternalGradebookLogic externalGradebookLogic;
 
     public static final String DEFAULT_SORT_DIR = AssignmentLogic.SORT_DIR_ASC;
@@ -188,39 +190,9 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
                 UIMessage.make(row, "assignment-deleted", "assignment2.student-assignment-list.assignment-deleted");
             }
             
-            boolean isOpenForSubmission = submissionLogic.isSubmissionOpenForStudentForAssignment(
-                    assignmentSubmission.getUserId(), assignment.getId());
+            int availStudentAction = submissionBean.determineStudentAction(assignmentSubmission.getUserId(), assignment.getId());
             
-            int numberOfRealSubmissions = 0;
-            for (AssignmentSubmissionVersion version: assignmentSubmission.getSubmissionHistorySet()) {
-                if (version.getSubmittedVersionNumber() > 0) {
-                    numberOfRealSubmissions++;
-                }
-            }
-            
-            String actionmsgkey;
-            // 1. View Details and Submit
-            if (isOpenForSubmission && numberOfRealSubmissions < 1) {
-                actionmsgkey = "assignment2.student-assignment-list.action.view-details-and-submit";
-            }
-            // 3. Resubmit
-            else if (isOpenForSubmission && numberOfRealSubmissions >= 1) {
-                actionmsgkey = "assignment2.student-assignment-list.action.view-details-and-resubmit";
-            }
-            // 4a View Submission
-            else if (numberOfRealSubmissions == 1) {
-                actionmsgkey = "assignment2.student-assignment-list.action.view-submission";
-            }
-            // 4b View Submissions
-            else if (numberOfRealSubmissions > 1) {
-                actionmsgkey = "assignment2.student-assignment-list.action.view-submissions";
-            }
-            // 2 View Details
-            else {
-                actionmsgkey = "assignment2.student-assignment-list.action.view-details";
-            }
-            
-            UIInternalLink.make(row, "assignment-action-link", UIMessage.make(actionmsgkey),  
+            UIInternalLink.make(row, "assignment-action-link", UIMessage.make("assignment2.student-assignment-list.action." + availStudentAction),  
                 new SimpleAssignmentViewParams(StudentSubmitProducer.VIEW_ID, assignment.getId()));
             
             // Due date
@@ -295,6 +267,10 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
 
     public void setAssignment2Bean(Assignment2Bean assignment2Bean) {
         this.assignment2Bean = assignment2Bean;
+    }
+    
+    public void setAssignmentSubmissionBean(AssignmentSubmissionBean submissionBean) {
+        this.submissionBean = submissionBean;
     }
 
     public void setExternalGradebookLogic(

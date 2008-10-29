@@ -204,32 +204,40 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
         
         // DOWNLOAD ALL
         if (grade_perm) {
-            displayDownloadAll = true;
-
-            // only allow download if it is graded or at least one submission
-            boolean allowDownload = false;
-            if (assignment.isGraded()) {
-                allowDownload = true;
+            // do not display download all link if assign is ungraded and has non-electronic submission
+            if (assignment.getSubmissionType() == AssignmentConstants.SUBMIT_NON_ELECTRONIC && !assignment.isGraded()) {
+                displayDownloadAll = false;
             } else {
-                List<String> studentIds = new ArrayList<String>();
-                for (AssignmentSubmission sub : submissions) {
-                    studentIds.add(sub.getUserId());
-                }
-
-                int numSubmissions = submissionLogic.getNumStudentsWithASubmission(assignment, studentIds);
-                if (numSubmissions > 0) {
-                    allowDownload = true;
-                }
+                displayDownloadAll = true;
             }
 
-            if (allowDownload) {
-                ZipViewParams zvp = new ZipViewParams("zipSubmissions", assignmentId);
-                UIInternalLink.make(tofill, "downloadall",
-                        UIMessage.make("assignment2.assignment_grade-assignment.downloadall.button"), zvp);
-            } else {
-                // show a disabled link if no submissions yet
-                UIOutput.make(tofill, "downloadall_disabled", messageLocator.getMessage("assignment2.assignment_grade-assignment.downloadall.button"));
-            } 
+            if (displayDownloadAll) {
+                // only allow download if it is graded or at least one submission
+                // otherwise we display a "disabled" link
+                boolean allowDownload = false;
+                if (assignment.isGraded()) {
+                    allowDownload = true;
+                } else {
+                    List<String> studentIds = new ArrayList<String>();
+                    for (AssignmentSubmission sub : submissions) {
+                        studentIds.add(sub.getUserId());
+                    }
+
+                    int numSubmissions = submissionLogic.getNumStudentsWithASubmission(assignment, studentIds);
+                    if (numSubmissions > 0) {
+                        allowDownload = true;
+                    }
+                }
+
+                if (allowDownload) {
+                    ZipViewParams zvp = new ZipViewParams("zipSubmissions", assignmentId);
+                    UIInternalLink.make(tofill, "downloadall",
+                            UIMessage.make("assignment2.assignment_grade-assignment.downloadall.button"), zvp);
+                } else {
+                    // show a disabled link if no submissions yet 
+                    UIOutput.make(tofill, "downloadall_disabled", messageLocator.getMessage("assignment2.assignment_grade-assignment.downloadall.button"));
+                } 
+            }
         }
         
         // UPLOAD GRADES
@@ -270,10 +278,15 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
         //Do Student Table
         sortHeaderRenderer.makeSortingLink(tofill, "tableheader.student", viewparams, 
                 AssignmentSubmissionLogic.SORT_BY_NAME, "assignment2.assignment_grade-assignment.tableheader.student");
-        sortHeaderRenderer.makeSortingLink(tofill, "tableheader.submitted", viewparams, 
-                AssignmentSubmissionLogic.SORT_BY_SUBMIT_DATE, "assignment2.assignment_grade-assignment.tableheader.submitted");
-        sortHeaderRenderer.makeSortingLink(tofill, "tableheader.status", viewparams, 
-                LocalAssignmentLogic.SORT_BY_STATUS, "assignment2.assignment_grade-assignment.tableheader.status");
+        
+        if (assignment.getSubmissionType() != AssignmentConstants.SUBMIT_NON_ELECTRONIC) {
+            sortHeaderRenderer.makeSortingLink(tofill, "tableheader.status", viewparams, 
+                    LocalAssignmentLogic.SORT_BY_STATUS, "assignment2.assignment_grade-assignment.tableheader.status");
+            sortHeaderRenderer.makeSortingLink(tofill, "tableheader.submitted", viewparams, 
+                    AssignmentSubmissionLogic.SORT_BY_SUBMIT_DATE, "assignment2.assignment_grade-assignment.tableheader.submitted");
+            
+        }
+        
         if (assignment.isGraded()) {
             String releasedString;
             GradebookItem gradebookItem = gradebookLogic.getGradebookItemById(assignment.getContextId(), assignment.getGradableObjectId());
@@ -295,24 +308,28 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
                     externalLogic.getUserSortName(as.getUserId()),
                     new GradeViewParams(GradeProducer.VIEW_ID, as.getAssignment().getId(), as.getUserId()));
 
-            if (as.getCurrentSubmissionVersion() != null && as.getCurrentSubmissionVersion().getSubmittedDate() != null){
-                UIOutput.make(row, "row_submitted", df.format(as.getCurrentSubmissionVersion().getSubmittedDate()));
-            } else {
-                UIOutput.make(row, "row_submitted", "");
-            }
 
-            // set the textual representation of the submission status
-            String status = "";
-            int statusConstant = AssignmentConstants.SUBMISSION_NOT_STARTED;
-            if (as != null) {
-                statusConstant = submissionLogic.getSubmissionStatusConstantForCurrentVersion(
-                        as.getCurrentSubmissionVersion(), assignment.getDueDate());
-                status = messageLocator.getMessage(
-                        "assignment2.assignment_grade-assignment.submission_status." + 
-                        statusConstant);
-            }
+            // submission info columns are not displayed for non-electronic assignments
+            if (assignment.getSubmissionType() != AssignmentConstants.SUBMIT_NON_ELECTRONIC) {
+                if (as.getCurrentSubmissionVersion() != null && as.getCurrentSubmissionVersion().getSubmittedDate() != null){
+                    UIOutput.make(row, "row_submitted", df.format(as.getCurrentSubmissionVersion().getSubmittedDate()));
+                } else {
+                    UIOutput.make(row, "row_submitted", "");
+                }
+                
+                // set the textual representation of the submission status
+                String status = "";
+                int statusConstant = AssignmentConstants.SUBMISSION_NOT_STARTED;
+                if (as != null) {
+                    statusConstant = submissionLogic.getSubmissionStatusConstantForCurrentVersion(
+                            as.getCurrentSubmissionVersion(), assignment.getDueDate());
+                    status = messageLocator.getMessage(
+                            "assignment2.assignment_grade-assignment.submission_status." + 
+                            statusConstant);
+                }
 
-            UIOutput.make(row, "row_status", status);
+                UIOutput.make(row, "row_status", status);
+            }
 
             if (assignment.isGraded()) {
                 String grade = "";
