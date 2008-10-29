@@ -142,6 +142,7 @@ public class ListProducer implements ViewComponentProducer, NavigationCaseReport
                         new AssignmentViewParams(AssignmentProducer.VIEW_ID, assignment.getId()));
                 
                 // Hidden form for removing assignments.
+                /*
                 UIOutput.make(row, "remove-dialog");
                 UIBranchContainer tablerow = UIBranchContainer.make(row, "asnn-row:");
                 UIOutput.make(tablerow, "asnn-title", assignment.getTitle());
@@ -159,6 +160,7 @@ public class ListProducer implements ViewComponentProducer, NavigationCaseReport
                 UIForm removeForm = UIForm.make(row, "confirm-remove-form");
                 UICommand.make(removeForm, "remove-button");
                 UICommand.make(removeForm, "cancel-button");
+                */
             }
 
             // Tag provider removed for now ASNN-113

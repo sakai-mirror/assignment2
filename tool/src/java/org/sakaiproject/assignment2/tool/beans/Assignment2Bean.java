@@ -282,31 +282,6 @@ public class Assignment2Bean {
         return CANCEL;
     }
 
-    public String processActionRemove() {
-        List<Assignment2> entries = logic.getViewableAssignments();
-        int assignmentsRemoved = 0;
-        for (Assignment2 assignment : entries) {
-            if (selectedIds.get(assignment.getId().toString()) == Boolean.TRUE){
-                try {
-                    logic.deleteAssignment(assignment);
-                    assignmentsRemoved++;
-                } catch (AnnouncementPermissionException ape) {
-                    LOG.error(ape.getMessage(), ape);
-                    // TODO the assign was deleted, but announcement was not
-                    // b/c user did not have delete perm in annc tool
-                } catch (StaleObjectModificationException some) {
-                    LOG.error(some.getMessage(), some);
-                    // TODO provide a message to user that someone else was editing
-                    // this object at the same time
-                }
-            }
-        }
-        messages.addMessage( new TargettedMessage("assignment2.assignments_remove",
-                new Object[] { Integer.valueOf(assignmentsRemoved) },
-                TargettedMessage.SEVERITY_INFO));
-        return REMOVE;
-    }
-
     public void createDuplicate(Long assignmentId) {
         Assignment2Creator creator = new Assignment2Creator();
         creator.setExternalLogic(externalLogic);
