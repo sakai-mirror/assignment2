@@ -215,26 +215,28 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
     	}
     	
     	boolean viewable = false;
-    	
-    	boolean userIsStudentAndAssignmentNotOpen = gradebookLogic.isCurrentUserAStudentInGb(assignment.getContextId()) && 
-    		assignment.getOpenDate().after(new Date());
+    	boolean userIsStudent = gradebookLogic.isCurrentUserAStudentInGb(assignment.getContextId());
+    	boolean assignIsOpen = assignment.getOpenDate().before(new Date());
 
-    	if (!userIsStudentAndAssignmentNotOpen) {
-
-    		boolean viewableInGb = gradebookLogic.isCurrentUserAbleToViewGradebookItem(
-    				assignment.getContextId(), assignment.getGradableObjectId());
-
-    		if (viewableInGb) {
-    			// if it is a student, we may need to filter by group
-    			if (assignment.getAssignmentGroupSet() != null && !assignment.getAssignmentGroupSet().isEmpty() &&
-    					gradebookLogic.isCurrentUserAStudentInGb(assignment.getContextId())) {
-    				viewable = isUserAMemberOfARestrictedGroup(groupMembershipIds, assignment.getAssignmentGroupSet());
-    			} else {
-    				viewable = true;
-    			}
-    		}
+    	if (!userIsStudent) {
+    	    // if the user is not a student, then we just check to see if the
+    	    // current user has access to the associated gb item
+    	    viewable = gradebookLogic.isCurrentUserAbleToViewGradebookItem(assignment.getContextId(), assignment.getGradableObjectId());
+    	} else {
+    	    // students may only view open assignments
+    	    // students are allowed to view graded assignments regardless of
+    	    // whether the gradebook item has been released. we just don't give
+    	    // them access to the grade info
+    	    if (assignIsOpen) {
+    	        // check the group restrictions
+    	        if (assignment.getAssignmentGroupSet() != null && !assignment.getAssignmentGroupSet().isEmpty()) {
+    	            viewable = isUserAMemberOfARestrictedGroup(groupMembershipIds, assignment.getAssignmentGroupSet());
+    	        } else {
+    	            viewable = true;
+    	        }
+    	    }
     	}
-    	
+
     	return viewable;
     }
     
