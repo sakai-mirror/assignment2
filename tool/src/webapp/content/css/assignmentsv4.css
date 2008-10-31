@@ -322,7 +322,7 @@ ul#assignmentList li.header {
 ul#assignmentList li.row {
    border-top: 2px solid #DEDEDE;
    height: 3.2em;
-   cursor: move;
+   /* cursor: move; */
    padding-top: 10px;
    position: relative;
 }

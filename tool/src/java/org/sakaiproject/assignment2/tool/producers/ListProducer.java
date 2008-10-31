@@ -184,9 +184,14 @@ public class ListProducer implements ViewComponentProducer, NavigationCaseReport
             renderDueDateOnRow(df, assignment, row);
         }
 
-        UIVerbatim.make(tofill, "init_ajaxCallbackURL", "var ajaxCallbackURL = \"" + 
-                externalLogic.getAssignmentViewUrl(AjaxCallbackProducer.VIEW_ID) + "\";");
-
+        // The Javascript for Delete and Sorting Ajax
+        if (edit_perm) {
+            UIVerbatim.make(tofill, "init_ajaxCallbackURL", "var ajaxCallbackURL = \"" + 
+                    externalLogic.getAssignmentViewUrl(AjaxCallbackProducer.VIEW_ID) + "\";");
+            
+            UIOutput.make(tofill, "edit-setup-javascript");
+        }
+        
     }
 
     /**

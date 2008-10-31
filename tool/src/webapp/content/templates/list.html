@@ -95,8 +95,10 @@
 	//ajaxCallbackURL - set via producer
 	</script>
 	
-	<script type="text/javascript">
+	<script rsf:id="edit-setup-javascript" type="text/javascript">
 	//<![CDATA[
+	 jQuery("ul#assignmentList li.row").css('cursor', 'move');
+	
 	 jQuery("#assignmentList").sortable({items: ">li.row", axis: "y", containment: "parent", update: saveSortables});
      jQuery("#assignmentList div.widget").hide();
 	  jQuery("#assignmentList li.row").hover(function(){ 
