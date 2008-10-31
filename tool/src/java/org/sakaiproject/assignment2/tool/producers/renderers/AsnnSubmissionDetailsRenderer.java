@@ -185,9 +185,21 @@ public class AsnnSubmissionDetailsRenderer implements BasicProducer {
          * Resubmissions Allowed
          */
         //if (!preview) {
-            boolean resubmissionsAllowed = submissionLogic.isSubmissionOpenForStudentForAssignment(
-                    currentUser.getId(), assignment.getId());
-            if (resubmissionsAllowed) {
+            boolean resubmissionAllowed = false;
+            Integer subLevelNumSubmissions = assignmentSubmission.getNumSubmissionsAllowed();
+            if (subLevelNumSubmissions != null) {
+                if (subLevelNumSubmissions.equals(AssignmentConstants.UNLIMITED_SUBMISSION) ||
+                        subLevelNumSubmissions.intValue() > 1) {
+                    resubmissionAllowed = true;
+                }
+            } else {
+                if (assignment.getNumSubmissionsAllowed() > 1 || 
+                        assignment.getNumSubmissionsAllowed() == AssignmentConstants.UNLIMITED_SUBMISSION) {
+                    resubmissionAllowed = true;
+                }
+            }
+
+            if (resubmissionAllowed) {
                 UIMessage.make(joint, "resubmissions-allowed", "assignment2.student-submit.resubmissions_allowed");
             }
             else {
@@ -197,7 +209,6 @@ public class AsnnSubmissionDetailsRenderer implements BasicProducer {
             /*
              * Remaining resubmissions allowed
              */
-            if (resubmissionsAllowed) {
                 UIOutput.make(joint, "remaining-resubmissions-row");
                 int numSubmissionsAllowed = submissionLogic.getNumberOfRemainingSubmissionsForStudent(currentUser.getId(), assignment.getId());
                 String numAllowedDisplay;
@@ -207,7 +218,6 @@ public class AsnnSubmissionDetailsRenderer implements BasicProducer {
                     numAllowedDisplay = "" + numSubmissionsAllowed;
                 }
                 UIOutput.make(joint, "remaining-resubmissions", numAllowedDisplay);
-            }
         //}
 
     }
