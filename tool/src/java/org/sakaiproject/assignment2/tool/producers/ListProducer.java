@@ -125,6 +125,19 @@ public class ListProducer implements ViewComponentProducer, NavigationCaseReport
             UIInternalLink.make(tofill, "add_assignment", UIMessage.make("assignment2.list.add_assignment"),
                     new SimpleViewParameters(AssignmentProducer.VIEW_ID));
         }
+        
+        // Only show the submissions/total header if there are actual assignments
+        if (entries.size() > 0) {
+            UIMessage.make(tofill, "submissions_total", "assignment2.list.submissions_total" );
+        }
+        else {
+            if (edit_perm) {
+                UIMessage.make(tofill, "no-assignments-message", "assignment2.list.assignment_empty.editable");
+            }
+            else {
+                UIMessage.make(tofill, "no-assignments-message", "assignment2.list.assignment_empty");
+            }
+        }
 
         for (Assignment2 assignment : entries) {
             UIBranchContainer row = UIBranchContainer.make(tofill, "assignment-row:");
