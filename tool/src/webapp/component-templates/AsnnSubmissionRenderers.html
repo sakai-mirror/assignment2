@@ -137,18 +137,16 @@
 <div rsf:id="asnn2-submit-editor-widget:">
 	<form rsf:id="form" method="post">
 	<h3 rsf:id="msg=assignment2.student-submit.assignment_submission">Assignment Submission</h3>
+	<p class="instruction" rsf:id="submission_instructions">Submission Instructions</p>
+	<p rsf:id="required" class="instruction">An * means required.</p>
 	<fieldset rsf:id="submit_text">
-		<legend rsf:id="msg=assignment2.student-submit.assignment_text">Assignment Text</legend>
-		<ol>
-			<li>
-				<label rsf:id="submission_instructions" class="block instruction">This assignment allows submissions using both the text box below and attached documents. Type your comments in the box below and use the Add Attachments button to include other documents. Save frequently while working.</label>
-				<div rsf:id="text:">
-					<textarea rsf:id="text_disabled" name="something" cols="80" rows="20" wrap="virtual"></textarea>
-					<!-- this should be the FCKEditor -->
-				</div>
-			</li>
-		</ol>
+		<legend rsf:id="msg=assignment2.student-submit.submission_text">Assignment Text</legend>
+		<div rsf:id="text:" >		        
+		    <textarea id="sub_text" rsf:id="text_disabled" name="something" cols="80" rows="20" wrap="virtual"></textarea>
+			<!-- this should be the FCKEditor -->
+		</div>
 	</fieldset>
+	
 	<div rsf:id="submit_attachments">
 	<fieldset id="attachmentsFieldset">
 		<legend rsf:id="msg=assignment2.student-submit.attachments">Attachments</legend>
@@ -162,15 +160,9 @@
 		<legend rsf:id="msg=assignment2.student-submit.honor_pledge">Honor Pledge</legend>
 		<ol>
 			<li>
-				<fieldset>
-					<ol>
-						<li>
-							<span class="reqStar">*</span>
-							<input type="checkbox" rsf:id="honor_pledge" id="honor_pledge" />
-							<label for="honor_pledge" rsf:id="honor_pledge_label">I have neither given nor received aid on this assignment.</label>
-						</li>
-					</ol>
-				</fieldset>
+				<span rsf:id="msg=assignment2.req_star" class="reqStar">*</span>
+				<input type="checkbox" rsf:id="honor_pledge" id="honor_pledge" />
+				<label for="honor_pledge" rsf:id="honor_pledge_label">I have neither given nor received aid on this assignment.</label>
 			</li>
 		</ol>
 	</fieldset>

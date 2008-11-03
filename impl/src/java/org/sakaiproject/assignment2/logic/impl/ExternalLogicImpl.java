@@ -20,6 +20,8 @@
  **********************************************************************************/
 package org.sakaiproject.assignment2.logic.impl;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -53,6 +55,11 @@ public class ExternalLogicImpl implements ExternalLogic {
 
     private static Log log = LogFactory.getLog(ExternalLogicImpl.class);
 
+    /**
+     * Encoding method to use when URL encoding
+     */
+    public static String URL_ENCODING = "UTF-8";
+    
     private ToolManager toolManager;
     public void setToolManager(ToolManager toolManager) {
         this.toolManager = toolManager;
@@ -284,7 +291,13 @@ public class ExternalLogicImpl implements ExternalLogic {
     }
     
     public String getUrlForGradebookItemHelper(Long gradeableObjectId, String gradebookItemName, String returnViewId) {
-        //TODO URL encode this so I can put it as a url parameter
+        // encode the params
+        try {
+            gradebookItemName = URLEncoder.encode(gradebookItemName, URL_ENCODING);
+        } catch (UnsupportedEncodingException e) {
+            throw new IllegalStateException("Invalid character encoding specified: " + URL_ENCODING);
+        }
+        
         String url = "/direct/gradebook/_/gradebookItem/" + getCurrentContextId();
         String finishedURL = getAssignmentViewUrl(returnViewId);
         String getParams = "?TB_iframe=true&width=700&height=415&KeepThis=true&finishURL=" + finishedURL + "&name=" + gradebookItemName;
@@ -293,6 +306,13 @@ public class ExternalLogicImpl implements ExternalLogic {
     }
     
     public String getUrlForGradeGradebookItemHelper(Long gradeableObjectId, String userId, String returnViewId) {
+        // encode the params
+        try {
+            userId = URLEncoder.encode(userId, URL_ENCODING);
+        } catch (UnsupportedEncodingException e) {
+            throw new IllegalStateException("Invalid character encoding specified: " + URL_ENCODING);
+        }
+        
     	String url = "/direct/gradebook/_/gradeGradebookItem/" + getCurrentContextId() +
     	"/" + gradeableObjectId + "/" + userId; 
     	String finishedURL = getAssignmentViewUrl(returnViewId);

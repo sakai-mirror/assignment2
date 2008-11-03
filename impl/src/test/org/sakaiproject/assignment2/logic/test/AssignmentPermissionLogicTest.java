@@ -320,13 +320,13 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
 	   assertTrue(permissionLogic.isUserAbleToViewGradedAssignment(testData.a4, null));
 	   
 	   // Students will see assignments available to site and those available to groups they
-	   // are a member of. assoc gb item must be released and assign open
+	   // are a member of. assign must be open
 	   externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT1_UID);
 	   List<String> memberships = externalLogic.getUserMembershipGroupIdList(AssignmentTestDataLoad.STUDENT1_UID, AssignmentTestDataLoad.CONTEXT_ID);
 	   // student is not a member of the restricted group, so cannot view
 	   assertFalse(permissionLogic.isUserAbleToViewGradedAssignment(testData.a4, memberships));
-	   // this gb item hasn't been released yet
-	   assertFalse(permissionLogic.isUserAbleToViewGradedAssignment(testData.a3, memberships));
+	   // this gb item hasn't been released yet, but the student can still view it
+	   assertTrue(permissionLogic.isUserAbleToViewGradedAssignment(testData.a3, memberships));
 	   
 	   // switch to student who is a member of group 3
 	   externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT2_UID);
@@ -406,12 +406,12 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
 	   assertTrue(permissionLogic.isUserAbleToViewAssignment(AssignmentTestDataLoad.CONTEXT_ID, testData.a4Id));
 	   
 	   // Students will see assignments available to site and those available to groups they
-	   // are a member of. assoc gb item must be released and assign open
+	   // are a member of. assign must be open
 	   externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT1_UID);
 	   // student is not a member of the restricted group, so cannot view
 	   assertFalse(permissionLogic.isUserAbleToViewAssignment(AssignmentTestDataLoad.CONTEXT_ID, testData.a4Id));
-	   // this gb item hasn't been released yet
-	   assertFalse(permissionLogic.isUserAbleToViewAssignment(AssignmentTestDataLoad.CONTEXT_ID, testData.a3Id));
+	   // this gb item hasn't been released yet, but student may still view it
+	   assertTrue(permissionLogic.isUserAbleToViewAssignment(AssignmentTestDataLoad.CONTEXT_ID, testData.a3Id));
 	   
 	   // switch to student who is a member of group 3
 	   externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT2_UID);

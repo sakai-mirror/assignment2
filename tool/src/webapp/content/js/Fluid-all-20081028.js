@@ -6260,12 +6260,12 @@ https://source.fluidproject.org/svn/LICENSE.txt
 // Declare dependencies.
 /*global jQuery, YAHOO, opera*/
 
-var fluid_0_5 = fluid_0_5 || {};
-var fluid = fluid || fluid_0_5;
+var fluid_0_6 = fluid_0_6 || {};
+var fluid = fluid || fluid_0_6;
 
-(function (jQuery, fluid) {
+(function ($, fluid) {
     
-    fluid.version = "Infusion 0.5";
+    fluid.version = "Infusion 0.6";
     
     /**
      * Causes an error message to be logged to the console and a real runtime error to be thrown.
@@ -6282,13 +6282,14 @@ var fluid = fluid || fluid_0_5;
     };
     
     /**
-     * Deprecated: please use jQuery to wrap an object - this will be removed in 0.6
-     * Wraps an object in a jQuery if it isn't already one.
+     * Wraps an object in a jQuery if it isn't already one. This function is useful since
+     * it ensures to wrap a null or otherwise falsy argument to itself, rather than the
+     * often unhelpful jQuery default of returning the overall document node.
      * 
      * @param {Object} obj the object to wrap in a jQuery
      */
     fluid.wrap = function (obj) {
-        return ((!obj || obj.jquery) ? obj : jQuery(obj)); 
+        return ((!obj || obj.jquery) ? obj : $(obj)); 
     };
     
     /**
@@ -6300,6 +6301,13 @@ var fluid = fluid || fluid_0_5;
         return obj && obj.jquery && obj.length === 1 ? obj[0] : obj; // Unwrap the element if it's a jQuery.
     };
     
+    /** Searches through the supplied object for the first value which matches the one supplied.
+     * @param obj {Object} the Object to be searched through
+     * @param value {Object} the value to be found. This will be compared against the object's
+     * member using === equality.
+     * @return {String} The first key whose value matches the one supplied, or <code>null</code> if no
+     * such key is found.
+     */
     fluid.findKeyInObject = function (obj, value) {
         for (var key in obj) {
             if (obj[key] === value) {
@@ -6337,7 +6345,7 @@ var fluid = fluid || fluid_0_5;
     fluid.container = function (container) {
         if (typeof container === "string" || 
           container.nodeType && (container.nodeType === 1  || container.nodeType === 9)) {
-            container = jQuery(container);
+            container = $(container);
         }
         
         // Throw an exception if we've got more or less than one element.
@@ -6388,7 +6396,7 @@ var fluid = fluid || fluid_0_5;
         var cache = {}, that = {};
         
         function cacheKey(name, thisContainer) {
-            return jQuery.data(fluid.unwrap(thisContainer)) + "-" + name;
+            return $.data(fluid.unwrap(thisContainer)) + "-" + name;
         }
 
         function record(name, thisContainer, result) {
@@ -6409,9 +6417,9 @@ var fluid = fluid || fluid_0_5;
             }
 
             if (typeof(selector) === "function") {
-                togo = jQuery(selector.call(null, fluid.unwrap(thisContainer)));
+                togo = $(selector.call(null, fluid.unwrap(thisContainer)));
             } else {
-                togo = jQuery(selector, thisContainer);
+                togo = $(selector, thisContainer);
             }
             if (togo.get(0) === document) {
                 togo = [];
@@ -6542,6 +6550,12 @@ var fluid = fluid || fluid_0_5;
         return that;
     };
     
+    /** A special "marker object" which is recognised as one of the arguments to 
+     * fluid.initSubcomponents. This object is recognised by reference equality - 
+     * where it is found, it is replaced in the actual argument position supplied
+     * to the specific subcomponent instance, with the particular options block
+     * for that instance attached to the overall "that" object.
+     */
     fluid.COMPONENT_OPTIONS = {};
     
     
@@ -6549,12 +6563,32 @@ var fluid = fluid || fluid_0_5;
         return fluid.initSubcomponents(that, className, args)[0];
     };
     
+    /** Initialise all the "subcomponents" which are configured to be attached to 
+     * the supplied top-level component, which share a particular "class name".
+     * @param {Component} that The top-level component for which sub-components are
+     * to be instantiated. It contains specifications for these subcomponents in its
+     * <code>options</code> structure.
+     * @param {String} className The "class name" or "category" for the subcomponents to
+     * be instantiated. A class name specifies an overall "function" for a class of 
+     * subcomponents and represents a category which accept the same signature of
+     * instantiation arguments.
+     * @param {Array of Object} args The instantiation arguments to be passed to each 
+     * constructed subcomponent. These will typically be members derived from the
+     * top-level <code>that</code> or perhaps globally discovered from elsewhere. One
+     * of these arguments may be <code>fluid.COMPONENT_OPTIONS</code> in which case this
+     * placeholder argument will be replaced by instance-specific options configured
+     * into the member of the top-level <code>options</code> structure named for the
+     * <code>className</code>
+     * @return {Array of Object} The instantiated subcomponents, one for each member
+     * of <code>that.options[className]</code>.
+     */
+    
     fluid.initSubcomponents = function (that, className, args) {
         var entry = that.options[className];
         if (!entry) {
             return;
         }
-        var entries = jQuery.makeArray(entry);
+        var entries = $.makeArray(entry);
         var optindex = -1;
         var togo = [];
         for (var i = 0; i < args.length; ++ i) {
@@ -6586,7 +6620,7 @@ var fluid = fluid || fluid_0_5;
     /**
      * Creates a new DOM Binder instance for the specified component and mixes it in.
      * 
-     * @param {Object} that the compoennt instance to attach the new DOM Binder to
+     * @param {Object} that the component instance to attach the new DOM Binder to
      */
     fluid.initDomBinder = function (that) {
         that.dom = fluid.createDomBinder(that.container, that.options.selectors);
@@ -6627,6 +6661,21 @@ var fluid = fluid || fluid_0_5;
         return target;
     }
     
+    /** Merge a collection of options structures onto a target, following an optional policy.
+     * This function is typically called automatically, as a result of an invocation of
+     * <code>fluid.iniView</code>. The behaviour of this function is explained more fully on
+     * the page http://wiki.fluidproject.org/display/fluid/Options+Merging+for+Fluid+Components .
+     * @param policy {Object/String} A "policy object" specifiying the type of merge to be performed.
+     * If policy is of type {String} it should take on the value "reverse" or "replace" representing
+     * a static policy. If it is an
+     * Object, it should contain a mapping of EL paths onto these String values, representing a
+     * fine-grained policy. If it is an Object, the values may also themselves be EL paths 
+     * representing that a default value is to be taken from that path.
+     * @param target {Object} The options structure which is to be modified by receiving the merge results.
+     * @param options1, options2, .... {Object} an arbitrary list of options structure which are to
+     * be merged "on top of" the <code>target</code>. These will not be modified.    
+     */
+    
     fluid.merge = function (policy, target) {
         var path = "";
         
@@ -6651,6 +6700,12 @@ var fluid = fluid || fluid_0_5;
         return target;     
     };
     
+    /** Performs a deep copy (clone) of its argument **/
+    
+    fluid.copy = function (tocopy) {
+        return $.extend(true, {}, tocopy);
+    }
+    
     fluid.invokeGlobalFunction = function (functionPath, args, environment) {
         return fluid.model.getBeanValue(window, functionPath, environment).apply(null, args);
     };
@@ -6661,6 +6716,17 @@ var fluid = fluid || fluid_0_5;
     fluid.event = {};
         
     var fluid_guid = 1;
+    /** Construct an "event firer" object which can be used to register and deregister 
+     * listeners, to which "events" can be fired. These events consist of an arbitrary
+     * function signature. General documentation on the Fluid events system is at
+     * http://wiki.fluidproject.org/display/fluid/The+Fluid+Event+System .
+     * @param {Boolean} unicast If <code>true</code>, this is a "unicast" event which may only accept
+     * a single listener.
+     * @param {Boolean} preventable If <code>true</code> the return value of each handler will 
+     * be checked for <code>true</code> in which case further listeners will be shortcircuited, and this
+     * will be the return value of fire()
+     */
+    
     fluid.event.getEventFirer = function (unicast, preventable) {
         var log = fluid.log;
         var listeners = {};
@@ -6717,9 +6783,15 @@ var fluid = fluid || fluid_0_5;
     /** Copy a source "model" onto a target **/
     fluid.model.copyModel = function (target, source) {
         fluid.clear(target);
-        jQuery.extend(true, target, source);
+        $.extend(true, target, source);
     };
     
+    /** Parse an EL expression separated by periods (.) into its component segments.
+     * @param {String} EL The EL expression to be split
+     * @return {Array of String} the component path expressions.
+     * TODO: This needs to be upgraded to handle (the same) escaping rules (as RSF), so that
+     * path segments containing periods and backslashes etc. can be processed.
+     */
     fluid.model.parseEL = function (EL) {
         return EL.split('.');
     };
@@ -6753,13 +6825,26 @@ var fluid = fluid || fluid_0_5;
         }
         return root;
     };
-
-
-    // Logging
     
-    fluid.logEnabled = false;
+    
+    // Logging
+    var logging;
+    /** method to allow user to enable logging (off by default) */
+    fluid.setLogging = function(enabled) {
+      if (typeof enabled == "boolean") {
+        logging = enabled;
+        } else {
+        logging = false;
+        }
+      };
+
+    /** Log a message to a suitable environmental console. If the standard "console" 
+     * stream is available, the message will be sent there - otherwise either the
+     * YAHOO logger or the Opera "postError" stream will be used. Logging must first
+     * be enabled with a call fo the fluid.setLogging(true) function.
+     */
     fluid.log = function (str) {
-        if (fluid.logEnabled) {
+        if (logging) {
             str = new Date().toTimeString() + ":  " + str;
             if (typeof(console) !== "undefined") {
                 if (console.debug) {
@@ -6777,6 +6862,42 @@ var fluid = fluid || fluid_0_5;
         }
     };
     
+    /** 
+     * Dumps a DOM element into a readily recognisable form for debugging - produces a
+     * "semi-selector" summarising its tag name, class and id, whichever are set.
+     * 
+     * @param {jQueryable} element The element to be dumped
+     * @return A string representing the element.
+     */
+    fluid.dumpEl = function (element) {
+        var togo;
+        
+        if (!element) {
+            return "null";
+        }
+        if (element.nodeType === 3 || element.nodeType === 8) {
+            return "[data: " + element.data + "]";
+        } 
+        if (typeof element.length === "number") {
+            togo = "[";
+            for (var i = 0; i < element.length; ++ i) {
+                togo += fluid.dumpEl(element[i]);
+                if (i < element.length - 1) {
+                    togo += ", ";
+                }
+            }
+            return togo + "]";
+        }
+        element = $(element);
+        togo = element.get(0).tagName;
+        if (element.attr("id")) {
+            togo += "#" + element.attr("id");
+        }
+        if (element.attr("class")) {
+            togo += "." + element.attr("class");
+        }
+        return togo;
+    };
 
     // DOM Utilities.
     
@@ -6786,7 +6907,7 @@ var fluid = fluid || fluid_0_5;
      * @param {Function} test A function which takes an element as a parameter and return true or false for some test
      */
     fluid.findAncestor = function (element, test) {
-        return test(element) ? element : jQuery.grep(jQuery(element).parents(), test)[0];
+        return test(element) ? element : $.grep($(element).parents(), test)[0];
     };
     
     /**
@@ -6794,7 +6915,7 @@ var fluid = fluid || fluid_0_5;
      */
     fluid.jById = function (id) {
         var element = fluid.byId(id);
-        return element? jQuery(element) : null;
+        return element? $(element) : null;
     };
     
     /**
@@ -6831,6 +6952,17 @@ var fluid = fluid || fluid_0_5;
         
     // Functional programming utilities.
     
+    /** Return a list of objects, transformed by one or more functions. Similar to
+     * jQuery.map, only will accept an arbitrary list of transformation functions.
+     * @param list {Array} The initial array of objects to be transformed.
+     * @param fn1, fn2, etc. {Function} An arbitrary number of optional further arguments,
+     * all of type Function, accepting the signature (object, index), where object is the
+     * list member to be transformed, and index is its list index. Each function will be
+     * applied in turn to each list member, which will be replaced by the return value
+     * from the function.
+     * @return The finally transformed list, where each member has been replaced by the
+     * original member acted on by the function or functions.
+     */
     fluid.transform = function (list) {
         var togo = [];
         for (var i = 0; i < list.length; ++ i) {
@@ -6843,6 +6975,17 @@ var fluid = fluid || fluid_0_5;
         return togo;
     };
     
+    /** Scan through a list of objects, terminating on and returning the first member which
+     * matches a predicate function.
+     * @param list {Array} The list of objects to be searched.
+     * @param fn {Function} A predicate function, acting on a list member. A predicate which
+     * returns any value which is not <code>null</code> or <code>undefined</code> will terminate
+     * the search. The function accepts (object, index).
+     * @param deflt {Object} A value to be returned in the case no predicate function matches
+     * a list member. The default will be the natural value of <code>undefined</code>
+     * @return The first return value from the predicate function which is not <code>null</code>
+     * or <code>undefined</code>
+     */
     fluid.find = function (list, fn, deflt) {
         for (var i = 0; i < list.length; ++ i) {
             var transit = fn(list[i], i);
@@ -6853,6 +6996,15 @@ var fluid = fluid || fluid_0_5;
         return deflt;
     };
     
+    /** Scan through a list of objects, "accumulating" a value over them 
+     * (may be a straightforward "sum" or some other chained computation).
+     * @param list {Array} The list of objects to be accumulated over.
+     * @param fn {Function} An "accumulation function" accepting the signature (object, total, index) where
+     * object is the list member, total is the "running total" object (which is the return value from the previous function),
+     * and index is the index number.
+     * @param arg {Object} The initial value for the "running total" object.
+     * @return {Object} the final running total object as returned from the final invocation of the function on the last list member.
+     */
     fluid.accumulate = function (list, fn, arg) {
 	    for (var i = 0; i < list.length; ++ i) {
 	        arg = fn(list[i], arg, i);
@@ -6860,6 +7012,16 @@ var fluid = fluid || fluid_0_5;
 	    return arg;
     };
     
+    /** Can through a list of objects, removing those which match a predicate. Similar to
+     * jQuery.grep, only acts on the list in-place by removal, rather than by creating
+     * a new list by inclusion.
+     * @param list {Array} The list of objects to be scanned over.
+     * @param fn {Function} A predicate function determining whether an element should be
+     * removed. This accepts the standard signature (object, index) and returns a "truthy"
+     * result in order to determine that the supplied object should be removed from the list.
+     * @return The list, transformed by the operation of removing the matched elements. The
+     * supplied list is modified by this operation.
+     */
     fluid.remove_if = function (list, fn) {
         for (var i = 0; i < list.length; ++ i) {
             if (fn(list[i], i)) {
@@ -6893,7 +7055,7 @@ var fluid = fluid || fluid_0_5;
         return newString;
     };
     
-})(jQuery, fluid_0_5);
+})(jQuery, fluid_0_6);
 /*
 Copyright 2007-2008 University of Cambridge
 Copyright 2007-2008 University of Toronto
@@ -6908,9 +7070,9 @@ https://source.fluidproject.org/svn/LICENSE.txt
 */
 
 // Declare dependencies.
-/*global jQuery, YAHOO, opera*/
+/*global jQuery */
 
-var fluid_0_5 = fluid_0_5 || {};
+var fluid_0_6 = fluid_0_6 || {};
 
 (function ($, fluid) {
     
@@ -7033,6 +7195,19 @@ var fluid_0_5 = fluid_0_5 || {};
          ((node.nodeType === 3) && fluid.dom.isWhitespaceNode(node)); // a text node, all ws
     };
     
+    /** Return the element text from the supplied DOM node as a single String */
+    fluid.dom.getElementText = function(element) {
+        var nodes = element.childNodes;
+        var text = "";
+        for (var i = 0; i < nodes.length; ++ i) {
+          var child = nodes[i];
+          if (child.nodeType == 3) {
+            text = text + child.nodeValue;
+            }
+          }
+        return text; 
+    };
+    
     /** 
      * Cleanse the children of a DOM node by removing all <script> tags.
      * This is necessary to prevent the possibility that these blocks are
@@ -7049,43 +7224,7 @@ var fluid_0_5 = fluid_0_5 || {};
     };  
     fluid.dom.cleanseScripts.MARKER = "fluid-scripts-cleansed";
     
-    /** 
-     * Dumps a DOM element into a readily recognisable form for debugging - produces a
-     * "semi-selector" summarising its tag name, class and id, whichever are set.
-     * 
-     * @param {jQueryable} element The element to be dumped
-     * @return A string representing the element.
-     */
-    fluid.dom.dumpEl = function (element) {
-        var togo;
-        
-        if (!element) {
-            return "null";
-        }
-        if (element.nodeType === 3 || element.nodeType === 8) {
-            return "[data: " + element.data + "]";
-        } 
-        if (typeof element.length === "number") {
-            togo = "[";
-            for (var i = 0; i < element.length; ++ i) {
-                togo += fluid.dumpEl(element[i]);
-                if (i < element.length - 1) {
-                    togo += ", ";
-                }
-            }
-            return togo + "]";
-        }
-        element = jQuery(element);
-        togo = element.get(0).tagName;
-        if (element.attr("id")) {
-            togo += "#" + element.attr("id");
-        }
-        if (element.attr("class")) {
-            togo += "." + element.attr("class");
-        }
-        return togo;
-    };
-})(jQuery, fluid_0_5);
+})(jQuery, fluid_0_6);
 /*
 Copyright 2007 - 2008 University of Toronto
 Copyright 2007 - 2008 University of Cambridge
@@ -7100,9 +7239,9 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
 // Declare dependencies.
 /*global jQuery*/
-/*global fluid_0_5*/
+/*global fluid_0_6*/
 
-var fluid_0_5 = fluid_0_5 || {};
+var fluid_0_6 = fluid_0_6 || {};
 
 (function (jQuery, fluid) {
     
@@ -7171,7 +7310,7 @@ var fluid_0_5 = fluid_0_5 || {};
         target = fluid.unwrap(target);
         
         var scan;
-        // fluid.log("moveDom source " + fluid.dom.dumpEl(source) + " target " + fluid.dom.dumpEl(target) + " position " + position);     
+        // fluid.log("moveDom source " + fluid.dumpEl(source) + " target " + fluid.dumpEl(target) + " position " + position);     
         if (position === fluid.position.INSIDE) {
             target.appendChild(source);
         }
@@ -7215,13 +7354,13 @@ var fluid_0_5 = fluid_0_5 || {};
         target = fluid.unwrap(target);
         var sourcei = jQuery.inArray(element, sourceelements);
         if (sourcei === -1) {
-            fluid.fail("Error in permuteDom: source element " + fluid.dom.dumpEl(element) 
-               + " not found in source list " + fluid.dom.dumpEl(sourceelements));
+            fluid.fail("Error in permuteDom: source element " + fluid.dumpEl(element) 
+               + " not found in source list " + fluid.dumpEl(sourceelements));
         }
         var targeti = jQuery.inArray(target, targetelements);
         if (targeti === -1) {
-            fluid.fail("Error in permuteDom: target element " + fluid.dom.dumpEl(target) 
-               + " not found in source list " + fluid.dom.dumpEl(targetelements));
+            fluid.fail("Error in permuteDom: target element " + fluid.dumpEl(target) 
+               + " not found in source list " + fluid.dumpEl(targetelements));
         }
         var samespan = sourceelements === targetelements;
         position = fluid.normalisePosition(position, samespan, targeti, sourcei);
@@ -7312,7 +7451,7 @@ var fluid_0_5 = fluid_0_5 || {};
     function dumpelem(cacheelem) {
       if (!cacheelem || !cacheelem.rect) return "null";
       else return dumprect(cacheelem.rect) + " position: " +
-                cacheelem.position + " for " + fluid.dom.dumpEl(cacheelem.element);
+                cacheelem.position + " for " + fluid.dumpEl(cacheelem.element);
     }
     
     fluid.dropManager = function () {
@@ -7486,7 +7625,7 @@ var fluid_0_5 = fluid_0_5 || {};
                 minlockedelem = blankHolder;
             }
             //fluid.log("PRE: mindistance " + mindistance + " element " + 
-            //   fluid.dom.dumpEl(minelem.element) + " minlockeddistance " + minlockeddistance
+            //   fluid.dumpEl(minelem.element) + " minlockeddistance " + minlockeddistance
             //    + " locked elem " + dumpelem(minlockedelem));
             if (lastClosest && lastClosest.position === minelem.position &&
                 fluid.unwrap(lastClosest.element) === fluid.unwrap(minelem.element) &&
@@ -7668,7 +7807,7 @@ var fluid_0_5 = fluid_0_5 || {};
         }
         return togo;
     };
-}) (jQuery, fluid_0_5);
+}) (jQuery, fluid_0_6);
 /*
 Copyright 2007 - 2008 University of Toronto
 Copyright 2007 - 2008 University of Cambridge
@@ -7683,9 +7822,9 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
 // Declare dependencies.
 /*global $, jQuery*/
-/*global fluid_0_5*/
+/*global fluid_0_6*/
 
-fluid_0_5 = fluid_0_5 || {};
+fluid_0_6 = fluid_0_6 || {};
 
 (function ($, fluid) {
     
@@ -7703,15 +7842,6 @@ fluid_0_5 = fluid_0_5 || {};
         });
         
         avatar.removeAttr("id");
-        //$("[id]", avatar).removeAttr("id");
-        //$(":hidden", avatar).remove();
-        //$("input", avatar).attr("disabled", "true");
-        // dropping in the same column fails if the avatar is considered a droppable.
-        // droppable ("destroy") should take care of this, but it doesn't seem to remove
-        // the class, which is what is checked, so we remove it manually
-        // (see http://dev.$.com/ticket/2599)
-        // 2008-05-12: 2599 has been fixed now in trunk
-        //                    avatar.droppable ("destroy");
         avatar.removeClass("ui-droppable");
         avatar.addClass(cssClass);
         
@@ -8008,7 +8138,7 @@ fluid_0_5 = fluid_0_5 || {};
             );
             var avatar;
         
-            item.draggable({
+            thatReorderer.dom.fastLocate("grabHandle", item).draggable({
                 refreshPositions: false,
                 scroll: true,
                 helper: function () {
@@ -8093,26 +8223,33 @@ fluid_0_5 = fluid_0_5 || {};
             };
             
             var selectables = thatReorderer.dom.fastLocate("selectables");
-            selectables.addClass(styles.defaultStyle);
+            for (var i = 0; i < selectables.length; ++ i) {
+                var selectable = $(selectables[i]);
+                if (!jQuery.data(selectable[0], "fluid.reorderer.selectable-initialised")) { 
+                    selectable.addClass(styles.defaultStyle);
             
-            selectables.blur(handleBlur);
-            selectables.focus(handleFocus);
-            selectables.click(function (evt) {
-                var handle = fluid.unwrap(thatReorderer.dom.fastLocate("grabHandle", this));
-                if (fluid.dom.isContainer(handle, evt.target)) {
-                    $(this).focus();
+                    selectables.blur(handleBlur);
+                    selectables.focus(handleFocus);
+                    selectables.click(function (evt) {
+                        var handle = fluid.unwrap(thatReorderer.dom.fastLocate("grabHandle", this));
+                        if (fluid.dom.isContainer(handle, evt.target)) {
+                            $(this).focus();
+                        }
+                    });
+                    
+                    selectables.ariaRole(options.containerRole.item);
+                    selectables.ariaState("selected", "false");
+                    selectables.ariaState("disabled", "false");
+                    jQuery.data(jQuery.data(selectable[0], "fluid.reorderer.selectable-initialised", true));
                 }
-            });
-            
-            selectables.ariaRole(options.containerRole.item);
-            selectables.ariaState("selected", "false");
-            selectables.ariaState("disabled", "false");
-                
-            thatReorderer.container.selectable({
-                selectableElements: selectables,
-                selectablesTabindex: thatReorderer.options.selectablesTabindex,
-                direction: null
-            });
+            }
+            if (!thatReorderer.selectableContext) {   
+                thatReorderer.container.selectable({
+                    selectableElements: selectables,
+                    selectablesTabindex: thatReorderer.options.selectablesTabindex,
+                    direction: null
+                });
+            }
             thatReorderer.selectableContext = thatReorderer.container.getSelectableContext();
         };
     
@@ -8137,22 +8274,27 @@ fluid_0_5 = fluid_0_5 || {};
             // Setup movables
             for (var i = 0; i < movables.length; i++) {
                 var item = movables[i];
-                initMovable($(item));
+                if (!jQuery.data(item, "fluid.reorderer.movable-initialised")) { 
+                    initMovable($(item));
+                    jQuery.data(item, "fluid.reorderer.movable-initialised", true)
+                }
             }
 
             // In order to create valid html, the drop marker is the same type as the node being dragged.
             // This creates a confusing UI in cases such as an ordered list. 
             // drop marker functionality should be made pluggable. 
-            if (movables.length > 0) {
+            if (movables.length > 0 && !dropMarker) {
                 dropMarker = createDropMarker(movables[0].tagName);
             }
             
             dropManager.updateGeometry(thatReorderer.layoutHandler.getGeometricInfo());
             
-            dropManager.dropChangeFirer.addListener(dropChangeListener);
+            dropManager.dropChangeFirer.addListener(dropChangeListener, "fluid.Reorderer");
             // Setup dropTargets
-            dropTargets.ariaState("dropeffect", "none");
+            dropTargets.ariaState("dropeffect", "none");  
+
         };
+
 
         // Final initialization of the Reorderer at the end of the construction process 
         if (thatReorderer.container) {
@@ -8180,6 +8322,7 @@ fluid_0_5 = fluid_0_5 || {};
             thatReorderer.dom.refresh("grabHandle", thatReorderer.dom.fastLocate("movables"));
             thatReorderer.dom.refresh("stylisticOffset", thatReorderer.dom.fastLocate("movables"));
             thatReorderer.dom.refresh("dropTargets");
+            initItems();
             thatReorderer.selectableContext.selectables = thatReorderer.dom.fastLocate("selectables");
             thatReorderer.selectableContext.selectablesUpdated(thatReorderer.activeItem);
         };
@@ -8374,7 +8517,7 @@ fluid_0_5 = fluid_0_5 || {};
         return that;
     }; // End of GridLayoutHandler
 
-})(jQuery, fluid_0_5);
+})(jQuery, fluid_0_6);
 /*
 Copyright 2007 - 2008 University of Toronto
 Copyright 2007 - 2008 University of Cambridge
@@ -8389,9 +8532,9 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
 // Declare dependencies.
 /*global jQuery*/
-/*global fluid_0_5*/
+/*global fluid_0_6*/
 
-fluid_0_5 = fluid_0_5 || {};
+fluid_0_6 = fluid_0_6 || {};
 
 fluid.moduleLayout = fluid.moduleLayout || {};
 
@@ -8557,7 +8700,7 @@ fluid.moduleLayout = fluid.moduleLayout || {};
                     elements: jQuery.makeArray(column.elements),
                     parentElement: column.container
                 };
-              //  fluid.log("Geometry col " + col + " elements " + fluid.dom.dumpEl(thisEls.elements) + " isLocked [" + 
+              //  fluid.log("Geometry col " + col + " elements " + fluid.dumpEl(thisEls.elements) + " isLocked [" + 
               //       fluid.transform(thisEls.elements, togo.elementMapper).join(", ") + "]");
                 extents.push(thisEls);
             }
@@ -8598,7 +8741,7 @@ fluid.moduleLayout = fluid.moduleLayout || {};
         
         return that;
     };
-}) (jQuery, fluid_0_5);
+}) (jQuery, fluid_0_6);
 /*
 Copyright 2007 - 2008 University of Cambridge
 Copyright 2007 - 2008 University of Toronto
@@ -8612,8 +8755,8 @@ https://source.fluidproject.org/svn/LICENSE.txt
 */
 
 /*global jQuery*/
-/*global fluid_0_5*/
-fluid_0_5 = fluid_0_5 || {};
+/*global fluid_0_6*/
+fluid_0_6 = fluid_0_6 || {};
 
 (function (fluid) {
  
@@ -8631,7 +8774,7 @@ fluid_0_5 = fluid_0_5 || {};
         var options = jQuery.extend(true, assembleOptions, userOptions);
         return fluid.reorderer(container, options);
     };    
-})(fluid_0_5);
+})(fluid_0_6);
 /*
 Copyright 2007 - 2008 University of Toronto
 Copyright 2007 - 2008 University of Cambridge
@@ -8645,9 +8788,9 @@ https://source.fluidproject.org/svn/LICENSE.txt
 */
 
 /*global jQuery*/
-/*global fluid_0_5*/
+/*global fluid_0_6*/
 
-fluid_0_5 = fluid_0_5 || {};
+fluid_0_6 = fluid_0_6 || {};
 
 (function (jQuery, fluid) {
     
@@ -8768,7 +8911,7 @@ fluid_0_5 = fluid_0_5 || {};
     fluid.lightbox = fluid.reorderImages;
     
         
-})(jQuery, fluid_0_5);
+})(jQuery, fluid_0_6);
 /* Fluid Multi-File Uploader Component
  * 
  * Built by The Fluid Project (http://www.fluidproject.org)
@@ -8806,9 +8949,9 @@ fluid_0_5 = fluid_0_5 || {};
  */
 
 /*global jQuery*/
-/*global fluid_0_5*/
+/*global fluid_0_6*/
 
-fluid_0_5 = fluid_0_5 || {};
+fluid_0_6 = fluid_0_6 || {};
 
 (function ($,fluid) {
       
@@ -8891,7 +9034,7 @@ fluid_0_5 = fluid_0_5 || {};
         browseText: "Browse files",
         addMoreText: "Add more",
         fileUploaded: "File Uploaded",
-            // tokens replaced by fluid.util.stringTemplate
+            // tokens replaced by fluid.stringTemplate
         pausedLabel: "Paused at: %curFileN of %totalFilesN files (%currBytes of %totalBytes)",
         totalLabel: "Uploading: %curFileN of %totalFilesN files (%currBytes of %totalBytes)", 
         completedLabel: "Uploaded: %curFileN files (%totalCurrBytes)"
@@ -9072,7 +9215,7 @@ fluid_0_5 = fluid_0_5 || {};
     };
     
     /*
-     * Sets the state (using a css class) for the top level element
+     * Sets the (using a css class) for the top level element
      * @param {String} uploaderContainer    the uploader container
      * @param {String} stateClass    the file queue used to test numbers.
      */
@@ -10038,7 +10181,7 @@ fluid_0_5 = fluid_0_5 || {};
         return "";
     };
     
-})(jQuery, fluid_0_5);
+})(jQuery, fluid_0_6);
 /*
 
 Copyright 2008 University of Cambridge
@@ -10053,9 +10196,9 @@ https://source.fluidproject.org/svn/LICENSE.txt
 */
 
 /*global jQuery*/
-/*global fluid_0_5*/
+/*global fluid_0_6*/
 
-fluid_0_5 = fluid_0_5 || {};
+fluid_0_6 = fluid_0_6 || {};
 
 (function ($, fluid) {
     
@@ -10115,10 +10258,11 @@ fluid_0_5 = fluid_0_5 || {};
                 that.state = STATE_CHANGED;
                 refreshView(that);
             },
-            onFinish: function () {
-                if (that.component.model === that.extremalModel) {
-                    fluid.model.copyModel(that.initialModel, that.component.model);
+            afterFinish: function () {
+                if (that.component.model.value !== that.extremalModel.value) {
+                    fluid.model.copyModel(that.initialModel, that.extremalModel);
                 }
+                fluid.model.copyModel(that.extremalModel, that.component.model);
             }
         };
     };
@@ -10138,6 +10282,7 @@ fluid_0_5 = fluid_0_5 || {};
         that.initialModel = {};
         that.extremalModel = {};
         fluid.model.copyModel(that.initialModel, component.model);
+        fluid.model.copyModel(that.extremalModel, component.model);
         
         that.state = STATE_INITIAL;
         refreshView(that);
@@ -10160,7 +10305,7 @@ fluid_0_5 = fluid_0_5 || {};
         renderer: defaultRenderer
     });
         
-})(jQuery, fluid_0_5);
+})(jQuery, fluid_0_6);
 /*
 Copyright 2008 University of Cambridge
 Copyright 2008 University of Toronto
@@ -10174,12 +10319,13 @@ https://source.fluidproject.org/svn/LICENSE.txt
 */
 
 /*global jQuery*/
-/*global fluid_0_5*/
+/*global fluid_0_6*/
 
-fluid_0_5 = fluid_0_5 || {};
+fluid_0_6 = fluid_0_6 || {};
 
 (function ($, fluid) {
-    function setCaretToStart(control) {
+    
+    var setCaretToStart = function (control) {
         if (control.createTextRange) {
             var range = control.createTextRange();
             range.collapse(true);
@@ -10188,8 +10334,9 @@ fluid_0_5 = fluid_0_5 || {};
             control.focus();
             control.setSelectionRange(0, 0);
         }
-    }
-    function setCaretToEnd(control) {
+    };
+    
+    var setCaretToEnd = function (control) {
         var pos = control.value.length;
         if (control.createTextRange) {
             var range = control.createTextRange();
@@ -10199,10 +10346,9 @@ fluid_0_5 = fluid_0_5 || {};
             control.focus();
             control.setSelectionRange(pos, pos);
         }
-    }
+    };
     
-    // Is paddings doing what we want? Should it be in the CSS file instead?
-    function edit(that) {
+    var edit = function (that) {
         var viewEl = that.viewEl;
         var displayText = viewEl.text();
         that.updateModel(displayText === that.options.defaultViewText? "" : displayText);
@@ -10228,26 +10374,34 @@ fluid_0_5 = fluid_0_5 || {};
             }
         }, 0);
         that.events.afterBeginEdit.fire();
-    }
+    };
+    
+    var finish = function (that) {
+        if (that.options.finishedEditing) {
+            that.options.finishedEditing(that.editField[0], that.viewEl[0]);
+        }
+        that.updateModel(that.editField.val());
+        that.events.afterFinish.fire();
+        
+        that.editContainer.hide();
+        that.viewEl.show();
+    };
 
-
-
-    function clearEmptyViewStyles(textEl, defaultViewStyle, originalViewPadding) {
+    var clearEmptyViewStyles = function (textEl, defaultViewStyle, originalViewPadding) {
         textEl.removeClass(defaultViewStyle);
         textEl.css('padding-right', originalViewPadding);
-    }
+    };
     
-    
-    function showDefaultViewText(that) {
+    var showDefaultViewText = function (that) {
         that.viewEl.text(that.options.defaultViewText);
         that.viewEl.addClass(that.options.styles.defaultViewText);
-    }
-    
+    };
 
-    function showNothing(that) {
+    var showNothing = function (that) {
         that.viewEl.text("");
-       // workaround for FLUID-938, IE can not style an empty inline element, so force element to be display: inline-block
-       
+        
+        // workaround for FLUID-938:
+        // IE can not style an empty inline element, so force element to be display: inline-block
         if ($.browser.msie) {
             if (that.viewEl.css('display') === 'inline') {
                 that.viewEl.css('display', "inline-block");
@@ -10258,34 +10412,37 @@ fluid_0_5 = fluid_0_5 || {};
         if (that.existingPadding < that.options.paddings.minimumView) {
             that.viewEl.css('padding-right',  that.options.paddings.minimumView);
         }
-    }
+    };
 
-    function showEditedText(that) {
+    var showEditedText = function (that) {
         that.viewEl.text(that.model.value);
         clearEmptyViewStyles(that.viewEl, that.options.defaultViewStyle, that.existingPadding);
-    }
-
-    function finish(that) {
-        that.events.onFinish.fire();
-        if (that.options.finishedEditing) {
-            that.options.finishedEditing(that.editField[0], that.viewEl[0]);
+    };
+        
+    var refreshView = function (that, source) {
+        if (that.model.value) {
+            showEditedText(that);
+        } else if (that.options.defaultViewText) {
+            showDefaultViewText(that);
+        } else {
+            showNothing(that);
         }
-        that.updateModel(that.editField.val());
-        
-        that.editContainer.hide();
-        that.viewEl.show();
-    }
-        
-    function makeEditHandler(that) {
-        return function () {
-            var prevent = that.events.onBeginEdit.fire();
-            if (prevent) return true;
-            edit(that);
-            return false;
-        }; 
-    }
+      
+        if (that.editField && that.editField.index(source) === -1) {
+            that.editField.val(that.model.value);
+        }
+    };
     
-    function bindHoverHandlers(viewEl, invitationStyle) {
+    var updateModel = function (that, newValue, source) {
+        var change = that.model.value !== newValue;
+        if (change) {
+            that.model.value = newValue;
+            that.events.modelChanged.fire(newValue);
+        }
+        that.refreshView(source); // Always render, because of possibility of initial event
+    };
+    
+    var bindHoverHandlers = function (viewEl, invitationStyle) {
         var over = function (evt) {
             viewEl.addClass(invitationStyle);
         };     
@@ -10294,14 +10451,26 @@ fluid_0_5 = fluid_0_5 || {};
         };
 
         viewEl.hover(over, out);
-    }
+    };
     
-    function bindMouseHandlers(that) {
+    var makeEditHandler = function (that) {
+        return function () {
+            var prevent = that.events.onBeginEdit.fire();
+            if (prevent) {
+                return true;
+            }
+            edit(that);
+            
+            return false;
+        }; 
+    };
+    
+    var bindMouseHandlers = function (that) {
         bindHoverHandlers(that.viewEl, that.options.styles.invitation);
         that.viewEl.click(makeEditHandler(that));
-    }
+    };
     
-    function bindKeyHighlight(viewEl, focusStyle, invitationStyle) {
+    var bindKeyHighlight = function (viewEl, focusStyle, invitationStyle) {
         var focusOn = function () {
             viewEl.addClass(focusStyle);
             viewEl.addClass(invitationStyle); 
@@ -10312,17 +10481,17 @@ fluid_0_5 = fluid_0_5 || {};
         };
         viewEl.focus(focusOn);
         viewEl.blur(focusOff);
-    }
+    };
     
-    function bindKeyboardHandlers(that) {
+    var bindKeyboardHandlers = function (that) {
         that.viewEl.tabbable();
         bindKeyHighlight(that.viewEl, that.options.styles.focus, that.options.styles.invitation);
         that.viewEl.activatable(makeEditHandler(that));
-    } 
+    };
     
-    function bindEditFinish(that) {
+    var bindEditFinish = function (that) {
         var finishHandler = function (evt) {
-            // Fix for handling arrow key presses see FLUID-760
+            // Fix for handling arrow key presses. See FLUID-760.
             var code = (evt.keyCode ? evt.keyCode : (evt.which ? evt.which : 0));
             if (code !== $.a11y.keys.ENTER) {
                 return true;
@@ -10333,30 +10502,27 @@ fluid_0_5 = fluid_0_5 || {};
             return false;
         };
         that.editContainer.keypress(finishHandler);
-    }
+    };
     
-    function bindBlurHandler(that) {
+    var bindBlurHandler = function (that) {
         var blurHandler = function (evt) {
             finish(that);
             return false;
         };
         that.editField.blur(blurHandler);
-    }
+    };
     
-    function aria(viewEl, editContainer) {
+    var aria = function (viewEl, editContainer) {
         viewEl.ariaRole("button");
-    }
+    };
     
-    var bindToDom = function (that, container) {
-        // Bind to the DOM.
-        that.viewEl = that.locate("text");
-
+    var setupEditContainer = function (that) {
         // If an edit container is found in the markup, use it. Otherwise generate one based on the view text.
-        that.editContainer = $(that.options.selectors.editContainer, that.container);
+        that.editContainer = that.locate("editContainer");
         if (that.editContainer.length >= 1) {
             var isEditSameAsContainer = that.editContainer.is(that.options.selectors.edit);
             var containerConstraint = isEditSameAsContainer ? that.container : that.editContainer;
-            that.editField =  $(that.options.selectors.edit, containerConstraint);
+            that.editField =  that.locate("edit", containerConstraint);
         } else {
             var editElms = that.options.editModeRenderer(that);
             that.editContainer = editElms.container;
@@ -10393,9 +10559,9 @@ fluid_0_5 = fluid_0_5 || {};
         };
     };
     
-    
     var setupInlineEdit = function (componentContainer, that) {
-        bindToDom(that, componentContainer);
+        that.viewEl = that.locate("text");
+        setupEditContainer(that);
         var padding = that.viewEl.css("padding-right");
         that.existingPadding = padding? parseFloat(padding) : 0;
         that.updateModel(that.viewEl.text());
@@ -10412,6 +10578,8 @@ fluid_0_5 = fluid_0_5 || {};
         // Hide the edit container to start
         that.editContainer.hide();
         
+        // Initialize the tooltip once the document is ready.
+        // For more details, see http://issues.fluidproject.org/browse/FLUID-1030
         var initTooltip = function () {
             // Add tooltip handler if required and available
             if (that.tooltipEnabled()) {
@@ -10425,70 +10593,15 @@ fluid_0_5 = fluid_0_5 || {};
                 });
             }
         };
-
-        // when the document is ready, initialize the tooltip
-        // see http://issues.fluidproject.org/browse/FLUID-1030
         jQuery(initTooltip);
-    };
-    
-    
-    /**
-     * Instantiates a new Inline Edit component
-     * 
-     * @param {Object} componentContainer a selector, jquery, or a dom element representing the component's container
-     * @param {Object} options a collection of options settings
-     */
-    fluid.inlineEdit = function (componentContainer, userOptions) {
-      
-        var that = fluid.initView("inlineEdit", componentContainer, userOptions);
-       
-        that.model = {value: ""};
-       
-        that.edit = function () {
-            edit(that);
-        };
         
-        that.finish = function () {
-            finish(that);
-        };
-            
-        that.tooltipEnabled = function () {
-            return that.options.useTooltip && $.fn.tooltip;
-        };
-        
-        that.refreshView = function (source) {
-            if (that.model.value) {
-                showEditedText(that);
-            } else if (that.options.defaultViewText) {
-                showDefaultViewText(that);
-            } else {
-                showNothing(that);
-            }
-          
-            if (that.editField && that.editField.index(source) === -1) {
-                that.editField.val(that.model.value);
-            }
-        };
-        
-        that.updateModel = function (newValue, source) {
-            var change = that.model.value !== newValue;
-            if (change) {
-                that.model.value = newValue;
-                that.events.modelChanged.fire(newValue);
-            }
-            that.refreshView(source); // Always render, because of possibility of initial event
-        };
-
-        setupInlineEdit(componentContainer, that);
-        
+        // Setup any registered decorators for the component.
         that.decorators = fluid.initSubcomponents(that, "componentDecorators", 
             [that, fluid.COMPONENT_OPTIONS]);
-        
-        return that;
     };
     
     /**
-     * A set of inline edit fields.
+     * Creates a whole list of inline editors.
      */
     var setupInlineEdits = function (editables, options) {
         var editors = [];
@@ -10498,7 +10611,75 @@ fluid_0_5 = fluid_0_5 || {};
         
         return editors;
     };
+    
+    /**
+     * Instantiates a new Inline Edit component
+     * 
+     * @param {Object} componentContainer a selector, jquery, or a dom element representing the component's container
+     * @param {Object} options a collection of options settings
+     */
+    fluid.inlineEdit = function (componentContainer, userOptions) {   
+        var that = fluid.initView("inlineEdit", componentContainer, userOptions);
+       
+        /**
+         * The current value of the inline editable text. The "model" in MVC terms.
+         */
+        that.model = {value: ""};
+       
+        /**
+         * Switches to edit mode.
+         */
+        that.edit = function () {
+            edit(that);
+        };
+        
+        /**
+         * Finishes editing, switching back to view mode.
+         */
+        that.finish = function () {
+            finish(that);
+        };
+            
+        /**
+         * Determines if the tooltip feature is enabled.
+         * 
+         * @return true if the tooltip feature is turned on, false if not
+         */
+        that.tooltipEnabled = function () {
+            return that.options.useTooltip && $.fn.tooltip;
+        };
+        
+        /**
+         * Updates the state of the inline editor in the DOM, based on changes that may have
+         * happened to the model.
+         * 
+         * @param {Object} source
+         */
+        that.refreshView = function (source) {
+            refreshView(that, source);
+        };
+        
+        /**
+         * Pushes external changes to the model into the inline editor, refreshing its
+         * rendering in the DOM.
+         * 
+         * @param {Object} newValue
+         * @param {Object} source
+         */
+        that.updateModel = function (newValue, source) {
+            updateModel(that, newValue, source);
+        };
 
+        setupInlineEdit(componentContainer, that);
+        return that;
+    };
+    
+    /**
+     * Instantiates a list of InlineEdit components.
+     * 
+     * @param {Object} componentContainer the element containing the inline editors
+     * @param {Object} options configuration options for the components
+     */
     fluid.inlineEdits = function (componentContainer, options) {
         options = options || {};
         var selectors = $.extend({}, fluid.defaults("inlineEdits").selectors, options.selectors);
@@ -10528,7 +10709,7 @@ fluid_0_5 = fluid_0_5 || {};
             modelChanged: null,
             onBeginEdit: "preventable",
             afterBeginEdit: null,
-            onFinish: null
+            afterFinish: null
         },
         
         paddings: {
@@ -10558,7 +10739,8 @@ fluid_0_5 = fluid_0_5 || {};
             editables: ".inlineEditable"
         }
     });
-})(jQuery, fluid_0_5);
+    
+})(jQuery, fluid_0_6);
 /*
 Copyright 2008 University of Toronto
 
@@ -10571,9 +10753,9 @@ https://source.fluidproject.org/svn/LICENSE.txt
 */
 
 /*global jQuery*/
-/*global fluid_0_5*/
+/*global fluid_0_6*/
 
-fluid_0_5 = fluid_0_5 || {};
+fluid_0_6 = fluid_0_6 || {};
 
 (function ($, fluid) {
     
@@ -10779,7 +10961,2285 @@ fluid_0_5 = fluid_0_5 || {};
         }
     };
     
-})(jQuery, fluid_0_5);
+})(jQuery, fluid_0_6);
+// =========================================================================
+//
+// tinyxmlsax.js - an XML SAX parser in JavaScript compressed for downloading
+//
+// version 3.1
+//
+// =========================================================================
+//
+// Copyright (C) 2000 - 2002, 2003 Michael Houghton (mike@idle.org), Raymond Irving and David Joham (djoham@yahoo.com)
+//
+// This library is free software; you can redistribute it and/or
+// modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation; either
+// version 2.1 of the License, or (at your option) any later version.
+
+// This library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+// Lesser General Public License for more details.
+
+// You should have received a copy of the GNU Lesser General Public
+// License along with this library; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+//
+// Visit the XML for <SCRIPT> home page at http://xmljs.sourceforge.net
+//
+
+
+var whitespace = "\n\r\t ";
+// List of closed HTML tags, taken from JQuery 1.2.3
+var closedTags = {
+  abbr: true, br: true, col: true, img: true, input: true,
+  link: true, meta: true, param: true, hr: true, area: true, embed:true
+}
+
+
+XMLP = function(strXML) { 
+
+    this.m_xml = strXML; 
+    this.m_iP = 0;
+    this.m_iState = XMLP._STATE_PROLOG; 
+    this.m_stack = [];
+    this.m_attributes = {};
+    }
+    
+  XMLP._NONE = 0; 
+  XMLP._ELM_B = 1; 
+  XMLP._ELM_E = 2; 
+  XMLP._ELM_EMP = 3; 
+  XMLP._ATT = 4; 
+  XMLP._TEXT = 5; 
+  XMLP._ENTITY = 6; 
+  XMLP._PI = 7; 
+  XMLP._CDATA = 8; 
+  XMLP._COMMENT = 9; 
+  XMLP._DTD = 10; 
+  XMLP._ERROR = 11;
+   
+  XMLP._CONT_XML = 0; 
+  XMLP._CONT_ALT = 1; 
+  XMLP._ATT_NAME = 0; 
+  XMLP._ATT_VAL = 1; 
+  
+  XMLP._STATE_PROLOG = 1; 
+  XMLP._STATE_DOCUMENT = 2; 
+  XMLP._STATE_MISC = 3; 
+  XMLP._errs = new Array(); 
+  XMLP._errs[XMLP.ERR_CLOSE_PI = 0 ] = "PI: missing closing sequence"; 
+  XMLP._errs[XMLP.ERR_CLOSE_DTD = 1 ] = "DTD: missing closing sequence"; 
+  XMLP._errs[XMLP.ERR_CLOSE_COMMENT = 2 ] = "Comment: missing closing sequence"; 
+  XMLP._errs[XMLP.ERR_CLOSE_CDATA = 3 ] = "CDATA: missing closing sequence"; 
+  XMLP._errs[XMLP.ERR_CLOSE_ELM = 4 ] = "Element: missing closing sequence"; 
+  XMLP._errs[XMLP.ERR_CLOSE_ENTITY = 5 ] = "Entity: missing closing sequence"; 
+  XMLP._errs[XMLP.ERR_PI_TARGET = 6 ] = "PI: target is required"; 
+  XMLP._errs[XMLP.ERR_ELM_EMPTY = 7 ] = "Element: cannot be both empty and closing"; 
+  XMLP._errs[XMLP.ERR_ELM_NAME = 8 ] = "Element: name must immediatly follow \"<\""; 
+  XMLP._errs[XMLP.ERR_ELM_LT_NAME = 9 ] = "Element: \"<\" not allowed in element names"; 
+  XMLP._errs[XMLP.ERR_ATT_VALUES = 10] = "Attribute: values are required and must be in quotes"; 
+  XMLP._errs[XMLP.ERR_ATT_LT_NAME = 11] = "Element: \"<\" not allowed in attribute names"; 
+  XMLP._errs[XMLP.ERR_ATT_LT_VALUE = 12] = "Attribute: \"<\" not allowed in attribute values"; 
+  XMLP._errs[XMLP.ERR_ATT_DUP = 13] = "Attribute: duplicate attributes not allowed"; 
+  XMLP._errs[XMLP.ERR_ENTITY_UNKNOWN = 14] = "Entity: unknown entity"; 
+  XMLP._errs[XMLP.ERR_INFINITELOOP = 15] = "Infinite loop"; 
+  XMLP._errs[XMLP.ERR_DOC_STRUCTURE = 16] = "Document: only comments, processing instructions, or whitespace allowed outside of document element"; 
+  XMLP._errs[XMLP.ERR_ELM_NESTING = 17] = "Element: must be nested correctly"; 
+  
+  XMLP.prototype._checkStructure = function(iEvent) {
+    var stack = this.m_stack; 
+    if (XMLP._STATE_PROLOG == this.m_iState) {
+      // disabled original check for text node in prologue
+      this.m_iState = XMLP._STATE_DOCUMENT;
+      }
+
+    if (XMLP._STATE_DOCUMENT === this.m_iState) {
+      if ((XMLP._ELM_B == iEvent) || (XMLP._ELM_EMP == iEvent)) { 
+        this.m_stack[stack.length] = this.getName();
+        }
+      if ((XMLP._ELM_E == iEvent) || (XMLP._ELM_EMP == iEvent)) {
+        if (stack.length === 0) {
+          //return this._setErr(XMLP.ERR_DOC_STRUCTURE);
+          return XMLP._NONE;
+          }
+        var strTop = stack[stack.length - 1];
+        this.m_stack.length--;
+        if (strTop === null || strTop !== this.getName()) { 
+          return this._setErr(XMLP.ERR_ELM_NESTING);
+          }
+        }
+  
+      // disabled original check for text node in epilogue - "MISC" state is disused
+    }
+  return iEvent;
+  }
+  
+  
+XMLP.prototype.getColumnNumber = function() { 
+  return SAXStrings.getColumnNumber(this.m_xml, this.m_iP);
+  }
+  
+XMLP.prototype.getContent = function() { 
+  return (this.m_cSrc == XMLP._CONT_XML) ? this.m_xml : this.m_cAlt;
+  }
+  
+XMLP.prototype.getContentBegin = function() { return this.m_cB;}
+XMLP.prototype.getContentEnd = function() { return this.m_cE;}
+
+XMLP.prototype.getLineNumber = function() { 
+  return SAXStrings.getLineNumber(this.m_xml, this.m_iP);
+  }
+  
+XMLP.prototype.getName = function() { 
+  return this.m_name;
+  }
+  
+XMLP.prototype.next = function() { 
+  return this._checkStructure(this._parse());
+  }
+  
+XMLP.prototype._parse = function() {
+  var iP = this.m_iP;
+  var xml = this.m_xml; 
+  if (iP === xml.length) { return XMLP._NONE;}
+  var c = xml.charAt(iP);
+  if (c === '<') {
+    var c2 = xml.charAt(iP + 1);
+    if (c2 === '?') {
+      return this._parsePI (iP + 2);
+      }
+    else if (c2 === '!') {
+      if (iP === xml.indexOf("<!DOCTYPE", iP)) { 
+        return this._parseDTD (iP + 9);
+        }
+      else if (iP === xml.indexOf("<!--", iP)) { 
+        return this._parseComment(iP + 4);
+        }
+      else if (iP === xml.indexOf("<![CDATA[", iP)) { 
+        return this._parseCDATA (iP + 9);
+        }
+      }
+    else {
+      return this._parseElement(iP + 1);
+      }
+    }
+  else {
+    return this._parseText (iP);
+    }
+  }
+  
+var nameRegex = /([^\s>]+)/g;
+var attrRegex = /\s*([\w:]+)=\"([^\"]*)\"\s*/gm;
+var closeRegex = /\s*<\//g;
+
+XMLP.prototype._parseElement = function(iB) { 
+  var iE, iDE, iRet; 
+  var iType, strN, iLast; 
+  iDE = iE = this.m_xml.indexOf(">", iB); 
+  if (iE == -1) { 
+    return this._setErr(XMLP.ERR_CLOSE_ELM);
+    }
+  if (this.m_xml.charAt(iB) == "/") { 
+    iType = XMLP._ELM_E; 
+    iB++;
+    } 
+  else { 
+    iType = XMLP._ELM_B;
+    }
+  if (this.m_xml.charAt(iE - 1) == "/") { 
+    if (iType == XMLP._ELM_E) { 
+      return this._setErr(XMLP.ERR_ELM_EMPTY);
+      }
+    iType = XMLP._ELM_EMP; iDE--;
+    }
+
+  nameRegex.lastIndex = iB;
+  var nameMatch = nameRegex.exec(this.m_xml);
+  if (!nameMatch) {
+    return this._setErr(XMLP.ERR_ELM_NAME);
+    }
+  this.m_attributes = {};
+  this.m_cAlt = ""; 
+  strN = nameMatch[1];
+  if (nameRegex.lastIndex < iDE) {
+    this.m_iP = nameRegex.lastIndex;
+    while (this.m_iP < iDE) {
+      attrRegex.lastIndex = this.m_iP;
+      var attrMatch = attrRegex.exec(this.m_xml);
+      if (!attrMatch) {
+        return this._setErr(XMLP.ERR_ATT_VALUES)
+        }
+      var attrname = attrMatch[1];
+      var attrval = attrMatch[2];
+      if (!this.m_attributes[attrname]) {
+        this.m_attributes[attrname] = attrval;
+        }
+      else { 
+        return this._setErr(XMLP.ERR_ATT_DUP);
+      }
+      this.m_iP = attrRegex.lastIndex;
+      }
+    }
+  if (strN.indexOf("<") != -1) { 
+    return this._setErr(XMLP.ERR_ELM_LT_NAME);
+    }
+  this.m_name = strN; 
+  this.m_iP = iE + 1;
+  // Check for corrupted "closed tags" from innerHTML
+  if (closedTags[strN]) {
+    closeRegex.lastIndex = iE + 1;
+    var closeMatch = closeRegex.exec;
+    if (closeMatch) {
+      var matchclose = this.m_xml.indexOf(strN, closeMatch.lastIndex);
+      if (matchclose === closeMatch.lastIndex) {
+        return iType; // bail out, a valid close tag is separated only by whitespace
+      }
+      else {
+        return XMLP._ELM_EMP;
+      }
+    }
+  } 
+  return iType;
+  }
+  
+XMLP.prototype._parseCDATA = function(iB) { 
+  var iE = this.m_xml.indexOf("]]>", iB); 
+  if (iE == -1) { return this._setErr(XMLP.ERR_CLOSE_CDATA);}
+  this._setContent(XMLP._CONT_XML, iB, iE); 
+  this.m_iP = iE + 3; 
+  return XMLP._CDATA;
+  }
+  
+XMLP.prototype._parseComment = function(iB) { 
+  var iE = this.m_xml.indexOf("-" + "->", iB); 
+  if (iE == -1) { 
+    return this._setErr(XMLP.ERR_CLOSE_COMMENT);
+    }
+  this._setContent(XMLP._CONT_XML, iB, iE); 
+  this.m_iP = iE + 3; 
+  return XMLP._COMMENT;
+  }
+  
+XMLP.prototype._parseDTD = function(iB) { 
+  var iE, strClose, iInt, iLast; 
+  iE = this.m_xml.indexOf(">", iB); 
+  if (iE == -1) { 
+    return this._setErr(XMLP.ERR_CLOSE_DTD);
+    }
+  iInt = this.m_xml.indexOf("[", iB); 
+  strClose = ((iInt != -1) && (iInt < iE)) ? "]>" : ">"; 
+  while (true) { 
+    if (iE == iLast) { 
+      return this._setErr(XMLP.ERR_INFINITELOOP);
+      }
+    iLast = iE; 
+    iE = this.m_xml.indexOf(strClose, iB); 
+    if(iE == -1) { 
+      return this._setErr(XMLP.ERR_CLOSE_DTD);
+      }
+    if (this.m_xml.substring(iE - 1, iE + 2) != "]]>") { break;}
+    }
+  this.m_iP = iE + strClose.length; 
+  return XMLP._DTD;
+  }
+  
+XMLP.prototype._parsePI = function(iB) { 
+  var iE, iTB, iTE, iCB, iCE; 
+  iE = this.m_xml.indexOf("?>", iB); 
+  if (iE == -1) { return this._setErr(XMLP.ERR_CLOSE_PI);}
+  iTB = SAXStrings.indexOfNonWhitespace(this.m_xml, iB, iE); 
+  if (iTB == -1) { return this._setErr(XMLP.ERR_PI_TARGET);}
+  iTE = SAXStrings.indexOfWhitespace(this.m_xml, iTB, iE); 
+  if (iTE == -1) { iTE = iE;}
+  iCB = SAXStrings.indexOfNonWhitespace(this.m_xml, iTE, iE); 
+  if (iCB == -1) { iCB = iE;}
+  iCE = SAXStrings.lastIndexOfNonWhitespace(this.m_xml, iCB, iE); 
+  if (iCE == -1) { iCE = iE - 1;}
+  this.m_name = this.m_xml.substring(iTB, iTE); 
+  this._setContent(XMLP._CONT_XML, iCB, iCE + 1); 
+  this.m_iP = iE + 2; 
+  return XMLP._PI;
+  }
+  
+XMLP.prototype._parseText = function(iB) { 
+  var iE, iEE;
+  iE = this.m_xml.indexOf("<", iB);
+  if (iE == -1) { iE = this.m_xml.length;}
+  this._setContent(XMLP._CONT_XML, iB, iE); 
+  this.m_iP = iE; 
+  return XMLP._TEXT;
+  }
+  
+XMLP.prototype._setContent = function(iSrc) { 
+  var args = arguments; 
+  if (XMLP._CONT_XML == iSrc) { 
+    this.m_cAlt = null; 
+    this.m_cB = args[1]; 
+    this.m_cE = args[2];
+    } 
+  else { 
+    this.m_cAlt = args[1]; 
+    this.m_cB = 0; 
+    this.m_cE = args[1].length;
+    }
+    
+  this.m_cSrc = iSrc;
+  }
+  
+XMLP.prototype._setErr = 
+  function(iErr) { 
+  var strErr = XMLP._errs[iErr]; 
+  this.m_cAlt = strErr; 
+  this.m_cB = 0; 
+  this.m_cE = strErr.length; 
+  this.m_cSrc = XMLP._CONT_ALT; 
+  return XMLP._ERROR;
+  }
+  
+
+
+SAXStrings = function() { }
+
+SAXStrings.WHITESPACE = " \t\n\r"; 
+SAXStrings.QUOTES = "\"'"; 
+SAXStrings.getColumnNumber = function(strD, iP) { 
+  if (!strD) { return -1;}
+  iP = iP || strD.length; 
+  var arrD = strD.substring(0, iP).split("\n"); 
+  var strLine = arrD[arrD.length - 1]; 
+  arrD.length--; 
+  var iLinePos = arrD.join("\n").length; 
+  return iP - iLinePos;
+  } 
+  
+SAXStrings.getLineNumber = function(strD, iP) { 
+  if (!strD) { return -1;}
+  iP = iP || strD.length; 
+  return strD.substring(0, iP).split("\n").length;
+  }
+  
+SAXStrings.indexOfNonWhitespace = function(strD, iB, iE) {
+  if (!strD) return -1;
+  iB = iB || 0; 
+  iE = iE || strD.length; 
+  
+  for (var i = iB; i < iE; ++ i) { 
+    var c = strD.charAt(i);
+    if (c !== ' ' && c !== '\t' && c !== '\n' && c !== '\r') return i;
+    }
+  return -1;
+  }
+  
+  
+SAXStrings.indexOfWhitespace = function(strD, iB, iE) { 
+  if (!strD) { return -1;}
+    iB = iB || 0; 
+    iE = iE || strD.length; 
+    for (var i = iB; i < iE; i++) { 
+      if (SAXStrings.WHITESPACE.indexOf(strD.charAt(i)) != -1) { return i;}
+    }
+  return -1;
+  }
+  
+  
+SAXStrings.lastIndexOfNonWhitespace = function(strD, iB, iE) { 
+    if (!strD) { return -1;}
+    iB = iB || 0; iE = iE || strD.length; 
+    for (var i = iE - 1; i >= iB; i--) { 
+    if (SAXStrings.WHITESPACE.indexOf(strD.charAt(i)) == -1) { 
+      return i;
+      }
+    }
+  return -1;
+  }
+  
+SAXStrings.replace = function(strD, iB, iE, strF, strR) { 
+  if (!strD) { return "";}
+  iB = iB || 0; 
+  iE = iE || strD.length; 
+  return strD.substring(iB, iE).split(strF).join(strR);
+  }
+
+function __unescapeString(str) {
+  return str.replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&")
+    .replace(/&quot;/g, "\"").replace(/&apos;/g, "'");
+  }
+  
+function __escapeString(str) { var escAmpRegEx = /&/g; var escLtRegEx = /</g; var escGtRegEx = />/g; var quotRegEx = /"/g;
+    var aposRegEx = /'/g;
+
+    str = str.replace(escAmpRegEx, "&amp;");
+    str = str.replace(escLtRegEx, "&lt;");
+    str = str.replace(escGtRegEx, "&gt;");
+    str = str.replace(quotRegEx, "&quot;");
+    str = str.replace(aposRegEx, "&apos;");
+
+  return str;
+}
+
+/*
+Copyright 2007 - 2008 University of Toronto
+Copyright 2007 - 2008 University of Cambridge
+
+Licensed under the Educational Community License (ECL), Version 2.0 or the New
+BSD license. You may not use this file except in compliance with one these
+Licenses.
+
+You may obtain a copy of the ECL 2.0 License and BSD License at
+https://source.fluidproject.org/svn/LICENSE.txt
+*/
+
+/*global jQuery*/
+/*global fluid_0_6*/
+
+fluid_0_6 = fluid_0_6 || {};
+
+(function ($, fluid) {
+  
+   // Since Javascript is not multi-threaded, these working variables may be shared 
+   // during a template parse
+  var t;
+  var parser;
+  var tagstack;
+  var lumpindex = 0;
+  var nestingdepth = 0;
+  var justended = false;
+  
+  var defstart = -1;
+  var defend = -1;   
+  
+  var baseURL;
+  
+  var debugMode = false;
+  
+  var cutpoints = []; // list of selector, tree, id
+  
+  var cutstatus = [];
+  
+  function init(baseURLin, debugModeIn, cutpointsIn) {
+    t.rootlump = fluid.XMLLump(0, -1);
+    tagstack = [t.rootlump];
+    lumpindex = 0;
+    nestingdepth = 0;
+    justended = false;
+    defstart = -1;
+    defend = -1;
+    baseURL = baseURLin;
+    debugMode = debugModeIn;
+    cutpoints = cutpointsIn;
+    if (cutpoints) {
+      for (var i = 0; i < cutpoints.length; ++ i) {
+        cutstatus[i] = [];
+        cutpoints[i].tree = fluid.parseSelector(cutpoints[i].selector);
+        }
+      }
+    }
+  
+  function findTopContainer() {
+    for (var i = tagstack.length - 1; i >= 0; --i ) {
+      var lump = tagstack[i];
+      if (lump.rsfID !== undefined) {
+        return lump;
+      }
+    }
+    return t.rootlump;
+  }
+  
+  function newLump() {
+    var togo = fluid.XMLLump(lumpindex, nestingdepth);
+    if (debugMode) {
+      togo.line = parser.getLineNumber();
+      togo.column = parser.getColumnNumber();
+    }
+    //togo.parent = t;
+    t.lumps[lumpindex] = togo;
+    ++lumpindex;
+    return togo;
+  }
+  
+  function addLump(mmap, ID, lump) {
+  	 var list = mmap[ID];
+  	 if (!list) {
+  	 	 list = [];
+  	 	 mmap[ID] = list;
+  	 }
+  	 list[list.length] = lump;
+  }
+  
+  function checkContribute(ID, lump) {
+    if (ID.indexOf("scr=contribute-") !== -1) {
+      var scr = ID.substring("scr=contribute-".length);
+      addLump(t.collectmap, scr, lump);
+      }
+    }
+  
+  /* parseUri 1.2; MIT License
+   By Steven Levithan <http://stevenlevithan.com> 
+   http://blog.stevenlevithan.com/archives/parseuri
+   */
+   var parseUri = function (source) {
+      var o = parseUri.options,
+         value = o.parser[o.strictMode ? "strict" : "loose"].exec(source);
+      
+      for (var i = 0, uri = {}; i < 14; i++) {
+         uri[o.key[i]] = value[i] || "";
+      }
+      
+      uri[o.q.name] = {};
+      uri[o.key[12]].replace(o.q.parser, function ($0, $1, $2) {
+         if ($1) {
+             uri[o.q.name][$1] = $2;
+         }
+      });
+      
+      return uri;
+   };
+   
+   parseUri.options = {
+      strictMode: false,
+      key: ["source","protocol","authority","userInfo","user","password","host","port","relative","path","directory","file","query","anchor"],
+      q: {
+         name: "queryKey",
+         parser: /(?:^|&)([^&=]*)=?([^&]*)/g
+      },
+      parser: {
+         strict: /^(?:([^:\/?#]+):)?(?:\/\/((?:(([^:@]*):?([^:@]*))?@)?([^:\/?#]*)(?::(\d*))?))?((((?:[^?#\/]*\/)*)([^?#]*))(?:\?([^#]*))?(?:#(.*))?)/,
+         loose: /^(?:(?![^:@]+:[^:@\/]*@)([^:\/?#.]+):)?(?:\/\/)?((?:(([^:@]*):?([^:@]*))?@)?([^:\/?#]*)(?::(\d*))?)(((\/(?:[^?#](?![^?#\/]*\.[^?#\/.]+(?:[?#]|$)))*\/?)?([^?#\/]*))(?:\?([^#]*))?(?:#(.*))?)/
+      }
+   };
+  
+  function rewriteUrl(url) {
+    var po = parseUri(url);
+    if (po.protocol || url.charAt(0) === '/') {
+        return url;
+    }
+    else {
+        return baseURL + url;
+    }
+  }
+  
+  function debugLump(lump) {
+  // TODO expand this to agree with the Firebug "self-selector" idiom
+    return "<" + lump.tagname + ">";
+    }
+  
+  function hasCssClass(clazz, totest) {
+    if (!totest) {
+        return false;
+    }
+    // algorithm from JQuery
+    return (" " + totest + " ").indexOf(" " + clazz + " ") !== -1;
+    }
+  
+  function matchNode(term, headlump) {
+    if (term.predList) {
+      for (var i = 0; i < term.predList.length; ++ i) {
+        var pred = term.predList[i];
+        if (pred.id && headlump.attributemap.id !== pred.id) return false;
+        if (pred.clazz && !hasCssClass(pred.clazz, headlump.attributemap["class"])) return false;
+        if (pred.tag && headlump.tagname !== pred.tag) return false;
+        }
+      return true;
+      }
+    }
+  
+  function tagStartCut(headlump) {
+    var togo = null;
+    if (cutpoints) {
+      for (var i = 0; i < cutpoints.length; ++ i) {
+        var cut = cutpoints[i];
+        var cutstat = cutstatus[i];
+        var nextterm = cutstat.length; // the next term for this node
+        if (nextterm < cut.tree.length) {
+          var term = cut.tree[nextterm];
+          if (nextterm > 0) {
+            if (cut.tree[nextterm - 1].child && 
+              cutstat[nextterm - 1] !== headlump.nestingdepth - 1) {
+              continue; // it is a failure to match if not at correct nesting depth 
+              }
+            }
+          var isMatch = matchNode(term, headlump);
+          if (isMatch) {
+            cutstat[cutstat.length] = headlump.nestingdepth;
+            if (cutstat.length === cut.tree.length) {
+              if (togo !== null) {
+                throw ("Cutpoint specification error - node " +
+                  debugLump(headlump) +
+                  " has already matched with rsf:id of " + togo);
+                }
+              togo = cut.id;
+              }
+            }
+          }
+        }
+      }
+    return togo;
+    }
+    
+  function tagEndCut() {
+    if (cutpoints) {
+      for (var i = 0; i < cutpoints.length; ++ i) {
+        var cutstat = cutstatus[i];
+        if (cutstat.length > 0 && cutstat[cutstat.length - 1] === nestingdepth) {
+          cutstat.length--;
+          }
+        }
+      }
+    }
+  
+  function processTagStart(isempty, text) {
+    ++nestingdepth;
+    if (justended) {
+      justended = false;
+      var backlump = newLump();
+      backlump.nestingdepth--;
+    }
+    if (t.firstdocumentindex === -1) {
+      t.firstdocumentindex = lumpindex;
+    }
+    var headlump = newLump();
+    var stacktop = tagstack[tagstack.length - 1];
+    headlump.uplump = stacktop;
+    var tagname = parser.getName();
+    headlump.tagname = tagname;
+    // NB - attribute names and values are now NOT DECODED!!
+    headlump.attributemap = parser.m_attributes;
+    var ID = headlump.attributemap? headlump.attributemap[fluid.ID_ATTRIBUTE] : undefined;
+    if (ID === undefined) {
+      ID = tagStartCut(headlump);
+      }
+    for (var attrname in headlump.attributemap) {
+      var attrval = headlump.attributemap[attrname];
+      if (attrval === "href" || attrval === "src" || attrval === "codebase" || attrval === "action") {
+        attrval = rewriteUrl(attrval);
+        headlump.attributemap[attrname] = attrval;
+        }
+        // port of TPI effect of IDRelationRewriter
+      if (ID === undefined && (attrval === "for" || attrval === "headers")) {
+        ID = headlump.attributemap[fluid.ID_ATTRIBUTE] = "scr=null";
+        }
+      }
+
+    if (ID) {
+      checkContribute(ID, headlump);
+      headlump.rsfID = ID;
+      var downreg = findTopContainer();
+      if (!downreg.downmap) {
+        downreg.downmap = {};
+        }
+      addLump(downreg.downmap, ID, headlump);
+      addLump(t.globalmap, ID, headlump);
+      var colpos = ID.indexOf(":");
+      if (colpos !== -1) {
+      var prefix = ID.substring(0, colpos);
+      if (!stacktop.finallump) {
+        stacktop.finallump = {};
+        }
+      stacktop.finallump[prefix] = headlump;
+      }
+    }
+    
+    // TODO: accelerate this by grabbing original template text (requires parser
+    // adjustment) as well as dealing with empty tags
+    headlump.text = "<" + tagname + fluid.dumpAttributes(headlump.attributemap) + ">";
+    tagstack[tagstack.length] = headlump;
+    if (isempty) {
+      processTagEnd();
+    }
+  }
+  
+  function processTagEnd() {
+    tagEndCut();
+    var endlump = newLump();
+    --nestingdepth;
+    endlump.text = "</" + parser.getName() + ">";
+    var oldtop = tagstack[tagstack.length - 1];
+    oldtop.close_tag = t.lumps[lumpindex - 1];
+    tagstack.length --;
+    justended = true;
+  }
+  
+  function processDefaultTag() {
+    if (defstart !== -1) {
+      if (t.firstdocumentindex === -1) {
+        t.firstdocumentindex = lumpindex;
+        }
+      var text = parser.getContent().substr(defstart, defend - defstart);
+      justended = false;
+      var newlump = newLump();
+      newlump.text = text; 
+      defstart = -1;
+    }
+  }
+  // Public definitions begin here
+  
+  fluid.ID_ATTRIBUTE = "rsf:id";
+  
+  fluid.getPrefix = function(id) {
+   var colpos = id.indexOf(':');
+   return colpos === -1? id : id.substring(0, colpos);
+   };
+  
+  fluid.SplitID = function(id) {
+    var that = {};
+    var colpos = id.indexOf(':');
+    if (colpos === -1) {
+      that.prefix = id;
+      }
+    else {
+      that.prefix = id.substring(0, colpos);
+      that.suffix = id.substring(colpos + 1);
+     }
+     return that;
+  };
+  fluid.XMLLump = function (lumpindex, nestingdepth) {
+    return {
+      //rsfID: "",
+      //text: "",
+      //downmap: {},
+      //attributemap: {},
+      //finallump: {},
+      nestingdepth: nestingdepth,
+      lumpindex: lumpindex,
+      parent: t
+    };
+  };
+  
+  fluid.XMLViewTemplate = function() {
+    return {
+      globalmap: {},
+      collectmap: {},
+      lumps: [],
+      firstdocumentindex: -1
+    };
+  };
+  
+  /** Accepts a hash of structures with free keys, where each entry has either
+   * href or nodeId set - on completion, callback will be called with the populated
+   * structure with fetched resource text in the field "resourceText" for each
+   * entry.
+   */
+  fluid.fetchResources = function(resourceSpecs, callback) {
+    var resourceCallback = function (thisSpec) {
+      return {
+        success: function(response) {
+          thisSpec.resourceText = response;
+          thisSpec.resourceKey = thisSpec.href;
+          thisSpec.queued = false; 
+          fluid.fetchResources(resourceSpecs, callback);
+          }
+        };
+      };
+    
+    var complete = true;
+    for (var key in resourceSpecs) {
+      var resourceSpec = resourceSpecs[key];
+      if (resourceSpec.href && !resourceSpec.resourceText) {
+         if (!resourceSpec.queued) {
+           $.ajax({url: resourceSpec.href, success: resourceCallback(resourceSpec).success});
+           resourceSpec.queued = true;
+         }
+         complete = false;             
+        }
+      else if (resourceSpec.nodeId && !resourceSpec.resourceText) {
+        var node = document.getElementById(resourceSpec.nodeId);
+        // upgrade this to somehow detect whether node is "armoured" somehow
+        // with comment or CDATA wrapping
+        resourceSpec.resourceText = fluid.dom.getElementText(node);
+        resourceSpec.resourceKey = resourceSpec.nodeId;
+      }
+    }
+    if (complete) {
+      callback(resourceSpecs);
+    }
+  };
+  
+    // TODO: find faster encoder
+  fluid.XMLEncode = function (text) {
+    return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); 
+    };
+  
+  fluid.dumpAttributes = function(attrcopy) {
+    var togo = "";
+    for (var attrname in attrcopy) {
+      togo += " " + attrname + "=\"" + attrcopy[attrname] + "\"";
+      }
+    return togo;
+    };
+  
+  fluid.aggregateMMap = function (target, source) {
+    for (var key in source) {
+      var targhas = target[key];
+      if (!targhas) {
+        target[key] = [];
+      }
+      target[key] = target[key].concat(source[key]);
+    }
+  };
+  
+  var unUnicode = /(\\u[\dabcdef]{4}|\\x[\dabcdef]{2})/g;
+  
+  fluid.unescapeProperties = function (string) {
+    string = string.replace(unUnicode, function(match) {
+      var code = match.substring(2);
+      var parsed = parseInt(code, 16);
+      return String.fromCharCode(parsed);
+      }
+    );
+    var pos = 0;
+    while (true) {
+        var backpos = string.indexOf("\\", pos);
+        if (backpos === -1) {
+            break;
+        }
+        if (backpos === string.length - 1) {
+          return [string.substring(0, string.length - 1), true];
+        }
+        var replace = string.charAt(backpos + 1);
+        if (replace === "n") replace = "\n";
+        if (replace === "r") replace = "\r";
+        if (replace === "t") replace = "\t";
+        string = string.substring(0, backpos) + replace + string.substring(backpos + 2);
+        pos = backpos + 1;
+    }
+    return [string, false];
+  };
+  
+  var breakPos = /[^\\][\s:=]/;
+  fluid.parseJavaProperties = function(text) {
+    // File format described at http://java.sun.com/javase/6/docs/api/java/util/Properties.html#load(java.io.Reader)
+    var togo = {};
+    text = text.replace(/\r\n/g, "\n");
+    text = text.replace(/\r/g, "\n");
+    lines = text.split("\n");
+    var contin, key, valueComp, valueRaw, valueEsc;
+    for (var i = 0; i < lines.length; ++ i) {
+      var line = $.trim(lines[i]);
+      if (!line || line.charAt(0) === "#" || line.charAt(0) === '!') {
+          continue;
+      }
+      if (!contin) {
+        valueComp = "";
+        var breakpos = line.search(breakPos);
+        if (breakpos === -1) {
+          key = line;
+          valueRaw = "";
+          }
+        else {
+          key = $.trim(line.substring(0, breakpos + 1)); // +1 since first char is escape exclusion
+          valueRaw = $.trim(line.substring(breakpos + 2));
+          if (valueRaw.charAt(0) === ":" || valueRaw.charAt(0) === "=") {
+            valueRaw = $.trim(valueRaw.substring(1));
+          }
+        }
+      
+        key = fluid.unescapeProperties(key)[0];
+        valueEsc = fluid.unescapeProperties(valueRaw);
+      }
+      else {
+        valueEsc = fluid.unescapeProperties(line);
+      }
+
+      contin = valueEsc[1];
+      if (!valueEsc[1]) { // this line was not a continuation line - store the value
+        togo[key] = valueComp + valueEsc[0];
+      }
+      else {
+        valueComp += valueEsc[0];
+      }
+    }
+    return togo;
+  };
+  
+  /** Returns a "template structure", with globalmap in the root, and a list
+   * of entries {href, template, cutpoints} for each parsed template.
+   */
+  fluid.parseTemplates = function(resourceSpec, templateList, opts) {
+    var togo = [];
+    togo.globalmap = {};
+    for (var i = 0; i < templateList.length; ++ i) {
+      var resource = resourceSpec[templateList[i]];
+      var lastslash = resource.href.lastIndexOf("/");
+      var baseURL = lastslash === -1? "" : resource.href.substring(0, lastslash + 1);
+        
+        var template = fluid.parseTemplate(resource.resourceText, baseURL, 
+          opts.scanStart && i === 0, resource.cutpoints, opts);
+        if (i === 0) {
+          fluid.aggregateMMap(togo.globalmap, template.globalmap);
+        }
+        template.href = resource.href;
+        template.baseURL = baseURL;
+        template.resourceKey = resource.resourceKey;
+
+        togo[i] = template;
+        fluid.aggregateMMap(togo.globalmap, template.rootlump.downmap);
+      }
+      return togo;
+    };
+  
+  fluid.parseTemplate = function(template, baseURL, scanStart, cutpoints_in, opts) {
+    t = fluid.XMLViewTemplate();
+    opts = opts || {};
+    
+    init(baseURL, opts.debugMode, cutpoints_in);
+
+    var idpos = template.indexOf(fluid.ID_ATTRIBUTE);
+    if (scanStart) {
+      var brackpos = template.indexOf('>', idpos);
+      parser = new XMLP(template.substring(brackpos + 1));
+    }
+    else {
+      parser = new XMLP(template); 
+      }
+
+    parseloop: while(true) {
+      var iEvent = parser.next();
+//        if (iEvent === XMLP._NONE) break parseloop;
+//        continue;
+     
+      switch(iEvent) {
+        case XMLP._ELM_B:
+          processDefaultTag();
+          //var text = parser.getContent().substr(parser.getContentBegin(), parser.getContentEnd() - parser.getContentBegin());
+          processTagStart(false, "");
+          break;
+        case XMLP._ELM_E:
+          processDefaultTag();
+          processTagEnd();
+          break;
+        case XMLP._ELM_EMP:
+          processDefaultTag();
+          //var text = parser.getContent().substr(parser.getContentBegin(), parser.getContentEnd() - parser.getContentBegin());    
+          processTagStart(true, "");
+          break;
+        case XMLP._PI:
+        case XMLP._DTD:
+          defstart = -1;
+          continue; // not interested in reproducing these
+        case XMLP._TEXT:
+        case XMLP._ENTITY:
+        case XMLP._CDATA:
+        case XMLP._COMMENT:
+          if (defstart === -1) {
+            defstart = parser.m_cB;
+            }
+          defend = parser.m_cE;
+          break;
+        case XMLP._ERROR:
+          fluid.setLogging(true);
+          var message = "Error parsing template: " + parser.m_cAlt + 
+          " at line " + parser.getLineNumber(); 
+          fluid.log(message);
+          fluid.log("Just read: " + parser.m_xml.substring(parser.m_iP - 30, parser.m_iP));
+          fluid.log("Still to read: " + parser.m_xml.substring(parser.m_iP, parser.m_iP + 30));
+          fluid.fail(message);
+          break parseloop;
+        case XMLP._NONE:
+          break parseloop;
+        }
+      }
+    return t;
+//       alert("document complete: " + chars.length + " chars");
+  
+    };
+    
+  // ******* SELECTOR ENGINE *********  
+    
+  // selector regexps copied from JQuery
+  var chars = "(?:[\\w\u0128-\uFFFF*_-]|\\\\.)";
+  var quickChild = new RegExp("^>\\s*(" + chars + "+)");
+  var quickID = new RegExp("^(" + chars + "+)(#)(" + chars + "+)");
+  var selSeg = new RegExp("^\s*([#.]?)(" + chars + "*)");
+
+  var quickClass = new RegExp("([#.]?)(" + chars + "+)", "g");
+  var childSeg = new RegExp("\\s*(>)?\\s*", "g");
+  var whiteSpace = new RegExp("^\\w*$");
+
+  fluid.parseSelector = function(selstring) {
+    var togo = [];
+    selstring = $.trim(selstring);
+    //ws-(ss*)[ws/>]
+    quickClass.lastIndex = 0;
+    var lastIndex = 0;
+    while (true) {
+      var atNode = []; // a list of predicates at a particular node
+      while (true) {
+        var segMatch = quickClass.exec(selstring);
+        if (!segMatch || segMatch.index !== lastIndex) {
+          break;
+          }
+        var thisNode = {};
+        var text = segMatch[2];
+        if (segMatch[1] === "") {
+          thisNode.tag = text;
+        }
+        else if (segMatch[1] === "#"){
+          thisNode.id = text;
+          }
+        else if (segMatch[1] === ".") {
+          thisNode.clazz = text;
+          }
+        atNode[atNode.length] = thisNode;
+        lastIndex = quickClass.lastIndex;
+        }
+      childSeg.lastIndex = lastIndex;
+      var fullAtNode = {predList: atNode};
+      var childMatch = childSeg.exec(selstring);
+      if (!childMatch || childMatch.index !== lastIndex) {
+        var remainder = selstring.substring(lastIndex);
+        throw ("Error in selector string - can not match child selector expression at " + remainder);
+        }
+      if (childMatch[1] === ">") {
+        fullAtNode.child = true;
+        }
+      togo[togo.length] = fullAtNode;
+      if (childSeg.lastIndex === selstring.length) {
+        break;
+        }
+      lastIndex = childSeg.lastIndex;
+      quickClass.lastIndex = childSeg.lastIndex; 
+      }
+    return togo;
+    };
+    
+})(jQuery, fluid_0_6);
+/*
+Copyright 2007 - 2008 University of Toronto
+Copyright 2007 - 2008 University of Cambridge
+
+Licensed under the Educational Community License (ECL), Version 2.0 or the New
+BSD license. You may not use this file except in compliance with one these
+Licenses.
+
+You may obtain a copy of the ECL 2.0 License and BSD License at
+https://source.fluidproject.org/svn/LICENSE.txt
+*/
+
+/*global jQuery*/
+/*global fluid_0_6*/
+
+fluid_0_6 = fluid_0_6 || {};
+
+(function ($, fluid) {
+  
+  function computeFullID(component) {
+    var togo = "";
+    var move = component;
+    if (component.children === undefined) { // not a container
+      togo = component.ID;
+      move = component.parent;
+      }
+    while (move.parent) {
+      var parent = move.parent;
+      if (move.fullID !== undefined) {
+        togo = move.fullID + togo;
+        return togo;
+        }
+      if (move.noID === undefined) {
+        var ID = move.ID;
+        if (ID === undefined) {
+          fluid.fail("Error in component tree - component found with no ID as child of "
+            + (parent.fullID? "component with full ID " + parent.fullID : "root") + ": please check structure");
+        }
+        var colpos = ID.indexOf(":");        
+        var prefix = colpos === -1? ID : ID.substring(0, colpos);
+        togo = prefix + ":" + (move.localID === undefined ? "" : move.localID) + ":" + togo;
+      }
+      move = parent;
+    }
+    return togo;
+  }
+  
+  function isPrimitive(value) {
+      var valueType = typeof(value);
+      return !value || valueType === "string" || valueType === "boolean" || 
+          valueType == "number" || value instanceof Array 
+             && (value.length === 0 || typeof(value[0]) === "string");
+  }
+  
+  function processChild(value, key) {
+    if (isPrimitive(value)) {
+      return {componentType: "UIBound", value: value, ID: key};
+      }
+    else {
+      var unzip = unzipComponent(value);
+      if (unzip.ID) {
+        return {ID: key, componentType: "UIContainer", children: [unzip]};
+      }
+      else {
+        unzip.ID = key;
+        return unzip;
+        } 
+      }    
+    }
+  
+  function fixChildren(children) {
+    if (!(children instanceof Array)) {
+      var togo = [];
+      for (var key in children) {
+        var value = children[key];
+        if (value instanceof Array) {
+          for (var i = 0; i < value.length; ++ i) {
+            var processed = processChild(value[i], key);
+//            if (processed.componentType === "UIContainer" &&
+//              processed.localID === undefined) {
+//              processed.localID = i;
+//            }
+            togo[togo.length] = processed;
+            }
+          }
+        else {
+          togo[togo.length] = processChild(value, key);
+        } 
+      }
+      return togo;
+    }
+    else return children;
+  }
+  
+  function fixupValue(uibound, model) {
+      if (model && uibound.value === undefined && uibound.valuebinding !== undefined) {
+          uibound.value = fluid.model.getBeanValue(model, uibound.valuebinding);
+      }
+  }
+  
+  function upgradeBound(holder, property, model) {
+      if (holder[property] !== undefined) {
+          if (isPrimitive(holder[property])) {
+              holder[property] = {value: holder[property]};
+          }
+      }
+      else {
+          holder[property] = {value: null}
+      }
+      fixupValue(holder[property], model);
+  }
+  
+  var duckMap = {children: "UIContainer", 
+        value: "UIBound", markup: "UIVerbatim", selection: "UISelect", target: "UILink",
+        choiceindex: "UISelectChoice", functionname: "UIInitBlock"};
+  
+  function unzipComponent(component, model) {
+    if (component) {
+      for (var key in duckMap) {
+        if (component[key] !== undefined) {
+          component.componentType = duckMap[key];
+          break;
+        }
+      }
+    }
+    if (!component || component.componentType === undefined) {
+        var decorators = component.decorators;
+        if (decorators) delete component.decorators;
+        component = {componentType: "UIContainer", children: component};
+        component.decorators = decorators;
+    }
+    if (component.componentType === "UIContainer") {
+        component.children = fixChildren(component.children);
+    }
+    else if (component.componentType === "UISelect") {
+        upgradeBound(component, "selection", model);
+        upgradeBound(component, "optionlist", model);
+        upgradeBound(component, "optionnames", model);
+    }
+    return component;
+  }
+  
+  // When a component
+  function assignSubmittingName(component) {
+      if (component.submittingname === undefined && component.willinput !== false) {
+          component.submittingname = component.fullID;
+      }
+  }
+  
+  function fixupTree(tree, model) {
+    if (tree.componentType === undefined) {
+      tree = unzipComponent(tree, model);
+      }
+    
+    if (tree.children) {
+       tree.childmap = {};
+      for (var i = 0; i < tree.children.length; ++ i) {
+        var child = tree.children[i];
+        if (child.componentType === undefined) {
+          child = unzipComponent(child, model);
+          tree.children[i] = child;
+          }
+        child.parent = tree;
+        tree.childmap[child.ID] = child;
+        var colpos = child.ID.indexOf(":"); 
+        if (colpos === -1) {
+        //  tree.childmap[child.ID] = child; // moved out of branch to allow
+        // "relative id expressions" to be easily parsed
+        }
+        else {
+          var prefix = child.ID.substring(0, colpos);
+          var childlist = tree.childmap[prefix]; 
+          if (!childlist) {
+            childlist = [];
+            tree.childmap[prefix] = childlist;
+          }
+          if (child.localID === undefined && childlist.length != 0) {
+              child.localID = childlist.length;
+          }
+          childlist[childlist.length] = child;
+        }
+        child.fullID = computeFullID(child);
+
+        var componentType = child.componentType;
+        if (componentType == "UISelect") {
+          child.selection.fullID = child.fullID + "-selection";
+        }
+        else if (componentType == "UIInitBlock") {
+          var call = child.functionname + '(';
+          for (var j = 0; j < child.arguments.length; ++ j) {
+            if (child.arguments[j] instanceof fluid.ComponentReference) {
+              // TODO: support more forms of id reference
+              child.arguments[j] = child.parent.fullID + child.arguments[j].reference;
+            }
+            call += '"' + child.arguments[j] + '"'; 
+            if (j < child.arguments.length - 1) {
+              call += ", ";
+            }
+          }
+          child.markup = call + ")\n";
+          child.componentType = "UIVerbatim";
+          }
+        else if (componentType == "UIBound") {
+            fixupValue(child, model);
+            }
+        fixupTree(child, model);
+        }
+      }
+    return tree;
+    }
+  // private renderer state variables, stored in this outer closure location to reduce argument
+  // parsing. Renderer is non-reentrant.
+  var globalmap = {};
+  var branchmap = {};
+  var rewritemap = {}; // map of rewritekey (for original id in template) to full ID 
+  var seenset = {};
+  var collected = {};
+  var out = "";
+  var debugMode = false;
+  var directFossils = {}; // map of submittingname to {EL, submittingname, oldvalue}
+  var renderOptions = {};
+  var decoratorQueue = [];
+  
+  var renderedbindings = {}; // map of fullID to true for UISelects which have already had bindings written
+  
+  function getRewriteKey(template, parent, id) {
+    return template.resourceKey + parent.fullID + id;
+  }
+  // returns: lump
+  function resolveInScope(searchID, defprefix, scope, child) {
+    var deflump;
+    var scopelook = scope? scope[searchID] : null;
+    if (scopelook) {
+      for (var i = 0; i < scopelook.length; ++ i) {
+        var scopelump = scopelook[i];
+        if (!deflump && scopelump.rsfID == defprefix) {
+          deflump = scopelump;
+        }
+        if (scopelump.rsfID == searchID) {
+          return scopelump;
+        }
+      }
+    }
+    return deflump;
+  }
+  // returns: lump
+  function resolveCall(sourcescope, child) {
+    var searchID = child.jointID? child.jointID : child.ID;
+    var split = fluid.SplitID(searchID);
+    var defprefix = split.prefix + ':';
+    var match = resolveInScope(searchID, defprefix, sourcescope.downmap, child);
+    if (match) return match;
+    if (child.children) {
+      match = resolveInScope(searchID, defprefix, globalmap, child);
+      if (match) return match;
+    }
+    return null;
+  }
+  
+  function noteCollected(template) {
+    if (!seenset[template.href]) {
+      fluid.aggregateMMap(collected, template.collectmap);
+      seenset[template.href] = true;
+    }
+  }
+  
+  function resolveRecurse(basecontainer, parentlump) {
+    for (var i = 0; i < basecontainer.children.length; ++ i) {
+      var branch = basecontainer.children[i];
+      if (branch.children) { // it is a branch TODO
+        var resolved = resolveCall(parentlump, branch);
+        if (resolved) {
+          branchmap[branch.fullID] = resolved;
+          var id = resolved.attributemap.id;
+          if (id !== undefined) {
+            rewritemap[getRewriteKey(parentlump.parent, basecontainer, id)] = branchfullID;
+          }
+          // on server-side this is done separately
+          noteCollected(resolved.parent);
+          resolveRecurse(branch, resolved);
+        }
+      }
+    }
+    // collect any rewritten ids for the purpose of later rewriting
+    if (parentlump.downmap) {
+      for (var id in parentlump.downmap) {
+        if (id.indexOf(":") === -1) {
+          var lumps = parentlump.downmap[id];
+          for (var i = 0; i < lumps.length; ++ i) {
+            var lump = lumps[i];
+            var lumpid = lump.attributemap["id"];
+            if (lumpid !== undefined && lump.rsfID !== undefined) {
+              var resolved = fetchComponent(basecontainer, lump.rsfID);
+              if (resolved !== null) {
+                rewritemap[getRewriteKey(parentlump.parent, basecontainer,
+                    lumpid)] = resolved.fullID;
+              }
+            }
+          }
+        }
+      }
+    }
+      
+  }
+  
+  function resolveBranches(globalmapp, basecontainer, parentlump) {
+      branchmap = {};
+      rewritemap = {};
+      seenset = {};
+      collected = {};
+      globalmap = globalmapp;
+      branchmap[basecontainer.fullID] = parentlump;
+      resolveRecurse(basecontainer, parentlump);
+  }
+  
+  function dumpBranchHead(branch, targetlump) {
+      var attrcopy = {};
+      $.extend(true, attrcopy, targetlump.attributemap);
+      adjustForID(attrcopy, branch);
+      outDecorators(branch, attrcopy);
+      out += "<" + targetlump.tagname + " ";
+      out += fluid.dumpAttributes(attrcopy);
+      out += "/>";
+  }
+  
+  function dumpTillLump(lumps, start, limit) {
+      for (; start < limit; ++ start) {
+          var text = lumps[start].text;
+          if (text) { // guard against "undefined" lumps from "justended"
+              out += lumps[start].text;
+          }
+      }
+  }
+
+  function dumpScan(lumps, renderindex, basedepth, closeparent, insideleaf) {
+    var start = renderindex;
+    while (true) {
+      if (renderindex === lumps.length)
+        break;
+      var lump = lumps[renderindex];
+      if (lump.nestingdepth < basedepth)
+        break;
+      if (lump.rsfID !== undefined) {
+        if (!insideleaf) break;
+        if (insideleaf && lump.nestingdepth > basedepth + (closeparent?0:1) ) {
+          fluid.log("Error in component tree - leaf component found to contain further components - at " +
+              lump.toString());
+        }
+        else break;
+      }
+      // target.print(lump.text);
+      ++renderindex;
+    }
+    // ASSUMPTIONS: close tags are ONE LUMP
+    if (!closeparent && (renderindex == lumps.length || !lumps[renderindex].rsfID))
+      --renderindex;
+    
+    dumpTillLump(lumps, start, renderindex);
+    //target.write(buffer, start, limit - start);
+    return renderindex;
+  }
+  // In RSF Client, this is a "flyweight" "global" object that is reused for every tag, 
+  // to avoid generating garbage. In RSF Server, it is an argument to the following rendering
+  // methods of type "TagRenderContext".
+  
+  var trc = {};
+  
+  /*** TRC METHODS ***/
+  
+  function closeTag() {
+    if (!trc.iselide) {
+      out += "</" + trc.uselump.tagname + ">";
+    }
+  }
+
+  function renderUnchanged() {
+    // TODO needs work since we don't keep attributes in text
+    dumpTillLump(trc.uselump.parent.lumps, trc.uselump.lumpindex + 1,
+        trc.close.lumpindex + (trc.iselide ? 0 : 1));
+  }
+  
+  function replaceAttributes() {
+    if (!trc.iselide) {
+      out += fluid.dumpAttributes(trc.attrcopy);
+    }
+    dumpTemplateBody();
+  }
+
+  function replaceAttributesOpen() {
+    if (trc.iselide) {
+      replaceAttributes();
+    }
+    else {
+      out += fluid.dumpAttributes(trc.attrcopy);
+      out += trc.endopen.lumpindex === trc.close.lumpindex ? "/>" : ">";
+
+      trc.nextpos = trc.endopen.lumpindex;
+    }
+  }
+
+  function dumpTemplateBody() {
+    if (trc.endopen.lumpindex === trc.close.lumpindex) {
+      if (!trc.iselide) {
+        out += "/>";
+      }
+    }
+    else {
+      if (!trc.iselide) {
+        out += ">";
+      }
+      dumpTillLump(trc.uselump.parent.lumps, trc.endopen.lumpindex,
+          trc.close.lumpindex + (trc.iselide ? 0 : 1));
+    }
+  }
+
+  function rewriteLeaf(value) {
+      if (isValue(value))
+          replaceBody(value);
+      else
+          replaceAttributes();
+  }
+
+  function rewriteLeafOpen(value) {
+      if (trc.iselide) {
+          rewriteLeaf(trc.value);
+      }
+      else {
+          if (isValue(value)) 
+              replaceBody(value);
+          else
+              replaceAttributesOpen();
+      }
+  }
+  
+  function replaceBody(value) {
+      out += fluid.dumpAttributes(trc.attrcopy);
+      if (!trc.iselide) {
+          out += ">";
+      }
+      out += fluid.XMLEncode(value.toString());
+      closeTag();
+  }
+  
+  /*** END TRC METHODS**/
+  
+  function isValue(value) {
+      return value !== null && value !== undefined && !isPlaceholder(value);
+  }
+  
+  function isPlaceholder(value) {
+      // TODO: equivalent of server-side "placeholder" system
+      return false;
+  }
+  
+  function rewriteURL(template, URL) {
+      // TODO: rebasing of "relative URLs" discovered/issued from subcomponent templates
+      return URL;
+  }
+  
+  function dumpHiddenField(/** UIParameter **/ todump) {
+      out += "<input type=\"hidden\" ";
+      var isvirtual = todump.virtual;
+      var outattrs = {};
+      outattrs[isvirtual? "id" : "name"] = todump.name;
+      outattrs.value = todump.value;
+      out += fluid.dumpAttributes(outattrs);
+      out += " />\n";
+  }
+  
+  function applyAutoBind(torender, finalID) {
+      var tagname = trc.uselump.tagname;
+      if (renderOptions.autoBind && (tagname === "input" || tagname === "select") 
+            && !renderedbindings[finalID]) {
+          outDecoratorsImpl(torender, [{
+            jQuery: ["change", function() {
+              fluid.applyChange(fluid.byId(finalID));}]
+          }], trc.attrcopy, finalID)
+      }    
+  }
+  
+  function dumpBoundFields(/** UIBound**/ torender, parent) {
+      if (torender) {
+          var holder = parent? parent : torender;
+          if (directFossils && holder.submittingname && holder.valuebinding) {
+            // TODO: this will store multiple times for each member of a UISelect
+              directFossils[holder.submittingname] = {
+                name: holder.submittingname,
+                EL: holder.valuebinding,
+                oldvalue: holder.value};
+            // But this has to happen multiple times
+              applyAutoBind(torender, torender.fullID);
+          }
+          if (torender.fossilizedbinding) {
+              dumpHiddenField(torender.fossilizedbinding);
+          }
+          if (torender.fossilizedshaper) {
+              dumpHiddenField(torender.fossilizedshaper);
+          }
+      }
+  }
+  
+  function dumpSelectionBindings(uiselect) {
+      if (!renderedbindings[uiselect.selection.fullID]) {
+          renderedbindings[uiselect.selection.fullID] = true; // set this true early so that selection does not autobind twice
+          dumpBoundFields(uiselect.selection);
+          dumpBoundFields(uiselect.optionlist);
+          dumpBoundFields(uiselect.optionnames);
+      }
+  }
+  
+  fluid.NULL_STRING = "\u25a9null\u25a9";
+  
+  var LINK_ATTRIBUTES = {
+      a: "href", link: "href", img: "src", frame: "src", script: "src", style: "src", input: "src", embed: "src",
+      form: "action",
+      applet: "codebase", object: "codebase"
+  };
+
+  
+  function isSelectedValue(torender, value) {
+      var selection = torender.selection;
+      return typeof(selection.value) !== "string" && typeof(selection.value.length) === "number" ? 
+            $.inArray(value, selection.value, value) !== -1 :
+               selection.value === value;
+  }
+  
+  function getRelativeComponent(component, relativeID) {
+      component = component.parent;
+      if (relativeID.indexOf("..::") === 0) {
+          relativeID = relativeID.substring(4);
+          component = component.parent;
+      }
+      return component.childmap[relativeID];
+  }
+  
+  function explodeDecorators(decorators) {
+      var togo = [];
+      for (var key in decorators) {
+          if (key === "$") key = "jQuery";
+          var value = decorators[key];
+          var decorator = {
+            type: key
+          };
+          if (key === "jQuery") {
+              decorator.func = value[0];
+              decorator.args = value.slice(1);
+          }
+          else if (key === "addClass") {
+              decorator.classes = value;
+          }
+          else if (key === "attrs") {
+              decorator.attributes = value;
+          }
+      togo[togo.length] = decorator;
+      }
+      return togo;
+  }
+  
+  function outDecoratorsImpl(torender, decorators, attrcopy, finalID) {
+      for (var i = 0; i < decorators.length; ++ i) {
+          var decorator = decorators[i];
+          var type = decorator.type;
+          if (!type) {
+              var decorators = explodeDecorators(decorator);
+              outDecoratorsImpl(torender, decorators, attrcopy, finalID);
+          }
+          if (type === "jQuery" || type === "event") {
+              var id = adjustForID(attrcopy, torender, true, finalID);
+              var outdec = $.extend(true, {id: id}, decorator);
+              decoratorQueue[decoratorQueue.length] = outdec;
+          }
+          // honour these remaining types immediately
+          else if (type === "attrs") {
+              $.extend(true, attrcopy, decorator.attributes);
+          }
+          else if (type === "addClass") {
+              var fakeNode = {
+                nodeType: 1,
+                className: attrcopy["class"] || ""
+              }
+              $(fakeNode).addClass(decorator.classes);
+              attrcopy["class"] = fakeNode.className;
+          }
+      }
+  }
+  
+  function outDecorators(torender, attrcopy) {
+      if (!torender.decorators) return;
+      if (torender.decorators.length === undefined) {
+          torender.decorators = explodeDecorators(torender.decorators);
+      }
+      outDecoratorsImpl(torender, torender.decorators, attrcopy);
+  }
+    
+    
+  function renderComponent(torender) {
+    var attrcopy = trc.attrcopy;
+    var lumps = trc.uselump.parent.lumps;
+    var lumpindex = trc.uselump.lumpindex;
+    
+    var componentType = torender.componentType;
+    var tagname = trc.uselump.tagname;
+    
+    outDecorators(torender, attrcopy);
+    
+    if (componentType === "UIBound" || componentType === "UISelectChoice") {
+        var parent;
+        if (torender.choiceindex !== undefined) {
+            if (torender.parentFullID) {
+                parent = getAbsoluteComponent(view, torender.parentFullID);
+            }
+            else if (torender.parentRelativeID !== undefined){
+                parent = getRelativeComponent(torender, torender.parentRelativeID);
+            }
+            else {
+                fluid.fail("Error in component tree - UISelectChoice with id " + torender.fullID 
+                + " does not have either parentFullID or parentRelativeID set");
+            }
+            assignSubmittingName(parent.selection);
+            dumpSelectionBindings(parent);
+        }
+
+        var submittingname = parent? parent.selection.submittingname : torender.submittingname;
+        if (tagname === "input" || tagname === "textarea") {
+            assignSubmittingName(torender);
+            if (submittingname !== undefined) {
+                attrcopy.name = submittingname;
+                }
+            }
+  
+        if (typeof(torender.value) === 'boolean' || attrcopy.type === "radio" 
+               || attrcopy.type === "checkbox") {
+            var underlyingValue;
+            var directValue = torender.value;
+            
+            if (torender.choiceindex !== undefined) {
+                if (!parent.optionlist.value) {
+                    fluid.fail("Error in component tree - selection control with full ID " + parent.fullID + " has no values");
+                }
+                underlyingValue = parent.optionlist.value[torender.choiceindex];
+                directValue = isSelectedValue(parent, underlyingValue);
+            }
+            if (isValue(directValue)) {
+                if (directValue) {
+                    attrcopy.checked = "checked";
+                    }
+                else {
+                    delete attrcopy.checked;
+                    }
+                }
+            attrcopy.value = underlyingValue? underlyingValue: "true";
+            rewriteLeaf(null);
+        }
+        else if (torender.value instanceof Array) {
+            // Cannot be rendered directly, must be fake
+            renderUnchanged();
+        }
+        else { // String value
+          var value = parent? 
+              parent[tagname === "textarea" || tagname === "input" ? "optionlist" : "optionnames"].value[torender.choiceindex] : 
+                torender.value;
+          if (tagname === "textarea") {
+            if (isPlaceholder(value) && torender.willinput) {
+              // FORCE a blank value for input components if nothing from
+              // model, if input was intended.
+              value = "";
+            }
+            rewriteLeaf(value);
+          }
+          else if (tagname === "input") {
+            if (torender.willinput || isValue(value)) {
+              attrcopy.value = value;
+              }
+            rewriteLeaf(null);
+            }
+          else {
+            delete attrcopy.name;
+            rewriteLeafOpen(value);
+            }
+          }
+        dumpBoundFields(torender, parent? parent.selection : null);
+        }
+    else if (componentType === "UISelect") {
+      // need to do this first to see whether we need to write out an ID or not
+      applyAutoBind(torender, torender.selection.fullID);
+      if (attrcopy.id) {
+        // TODO: This is an irregularity, should probably remove for 0.8
+        attrcopy.id = torender.selection.fullID;
+        }
+      var ishtmlselect = tagname === "select";
+      var ismultiple = false;
+
+      if (torender.selection.value instanceof Array) {
+        ismultiple = true;
+        if (ishtmlselect) {
+          attrcopy.multiple = "multiple";
+          }
+        }
+      
+      assignSubmittingName(torender.selection);
+      if (ishtmlselect) {
+        // The HTML submitted value from a <select> actually corresponds
+        // with the selection member, not the top-level component.
+        if (torender.selection.willinput !== false) {
+          attrcopy.name = torender.selection.submittingname;
+        }
+      }
+      out += fluid.dumpAttributes(attrcopy);
+      if (ishtmlselect) {
+        out += ">";
+        var values = torender.optionlist.value;
+        var names = torender.optionnames === null || torender.optionnames === undefined ? values: torender.optionnames.value;
+        for (var i = 0; i < names.length; ++i) {
+          out += "<option value=\"";
+          var value = values[i];
+          if (value === null)
+            value = fluid.NULL_STRING;
+          out += fluid.XMLEncode(value);
+          if (isSelectedValue(torender, value)) {
+            out += "\" selected=\"selected";
+            }
+          out += "\">";
+          out += fluid.XMLEncode(names[i]);
+          out += "</option>\n";
+        }
+        closeTag();
+      }
+      else {
+        dumpTemplateBody();
+      }
+      dumpSelectionBindings(torender);
+    }
+    else if (componentType === "UILink") {
+      var attrname = LINK_ATTRIBUTES[tagname];
+      if (attrname) {
+        var target= torender.target;
+        if (!isValue(target)) {
+          target = attrcopy[attname];
+          }
+        else {
+          target = rewriteURL(trc.uselump.parent, target);
+          }
+        attrcopy[attrname] = target;
+      }
+      var value = torender.linktext;
+      if (!isValue(value)) {
+        replaceAttributesOpen();
+      }
+      else {
+        rewriteLeaf(value);
+      }
+    }
+    
+    else if (torender.markup !== undefined) { // detect UIVerbatim
+      var rendered = torender.markup;
+      if (rendered == null) {
+        // TODO, doesn't quite work due to attr folding cf Java code
+          out += fluid.dumpAttributes(attrcopy);
+          out +=">";
+          renderUnchanged(); 
+      }
+      else {
+        if (!trc.iselide) {
+          out += fluid.dumpAttributes(attrcopy);
+          out += ">";
+        }
+        out += rendered;
+        closeTag();
+        }    
+      }
+      else {
+        
+      }
+    }
+  
+  function adjustForID(attrcopy, component, late, forceID) {
+    if (!late) {
+        delete attrcopy["rsf:id"];
+    }
+    if (forceID !== undefined) {
+        attrcopy.id = forceID;
+    }
+    else {
+        if (attrcopy.id || late) {
+            attrcopy.id = component.fullID;
+            }
+    }
+    return attrcopy.id;
+    }
+  
+  function rewriteIDRelation(context) {
+    var attrname;
+    var attrval = trc.attrcopy["for"];
+    if (attrval !== undefined) {
+       attrname = "for";
+    }
+    else {
+      attrval = trc.attrcopy["headers"];
+      if (attrval !== undefined) {
+        attrname = "headers";
+      }
+    }
+    if (!attrname) return;
+    var tagname = trc.uselump.tagname;
+    if (attrname === "for" && tagname !== "label") return;
+    if (attrname === "headers" && tagname !== "td" && tagname !== "th") return;
+    var rewritten = rewritemap[getRewriteKey(trc.uselump.parent, context, attrval)];
+    if (rewritten !== undefined) {
+      trc.attrcopy[attrname] = rewritten;
+    }
+  }
+  
+  function renderComponentSystem(context, torendero, lump) {
+    var lumpindex = lump.lumpindex;
+    var lumps = lump.parent.lumps;
+    var nextpos = -1;
+    var outerendopen = lumps[lumpindex + 1];
+    var outerclose = lump.close_tag;
+
+    nextpos = outerclose.lumpindex + 1;
+
+    var payloadlist = lump.downmap? lump.downmap["payload-component"] : null;
+    var payload = payloadlist? payloadlist[0] : null;
+    
+    var iselide = lump.rsfID.charCodeAt(0) === 126 // "~"
+    
+    var endopen = outerendopen;
+    var close = outerclose;
+    var uselump = lump;
+    var attrcopy = {};
+    $.extend(true, attrcopy, lump.attributemap);
+    
+    trc.attrcopy = attrcopy;
+    trc.uselump = uselump;
+    trc.endopen = endopen;
+    trc.close = close;
+    trc.nextpos = nextpos;
+    trc.iselide = iselide;
+    
+    rewriteIDRelation(context);
+    
+    if (torendero == null) {
+      // no support for SCR yet
+    }
+    else {
+      // else there IS a component and we are going to render it. First make
+      // sure we render any preamble.
+
+      if (payload) {
+        endopen = lumps[payload.lumpindex + 1];
+        close = payload.close_tag;
+        uselump = payload;
+        dumpTillLump(lumps, lumpindex, payload.lumpindex);
+        lumpindex = payload.lumpindex;
+      }
+
+      adjustForID(attrcopy, torendero);
+      //decoratormanager.decorate(torendero.decorators, uselump.getTag(), attrcopy);
+
+      
+      // ALWAYS dump the tag name, this can never be rewritten. (probably?!)
+      if (!iselide) {
+        out += "<" + uselump.tagname;
+       }
+
+      renderComponent(torendero);
+      // if there is a payload, dump the postamble.
+      if (payload != null) {
+        // the default case is initialised to tag close
+        if (rendercontext.nextpos === nextpos) {
+          dumpTillLump(lumps, close.lumpindex + 1, outerclose.lumpindex + 1);
+        }
+      }
+      nextpos = trc.nextpos;
+      }
+  return nextpos;
+  }
+  
+  function renderContainer(child, targetlump) {
+      var t2 = targetlump.parent;
+      var firstchild = t2.lumps[targetlump.lumpindex + 1];
+      if (child.children !== undefined) {
+          dumpBranchHead(child, targetlump);
+      }
+      else {
+          renderComponentSystem(child.parent, child, targetlump);
+      }
+      renderRecurse(child, targetlump, firstchild);
+  }
+  
+  function fetchComponent(basecontainer, id, lump) {
+      if (id.indexOf("msg=") === 0) {
+          var key = id.substring(4);
+          return {componentType: "UIBound"};
+          // TODO messages
+      }
+      while (basecontainer) {
+          var togo = basecontainer.childmap[id];
+          if (togo)
+              return togo;
+          basecontainer = basecontainer.parent;
+      }
+      return null;
+  }
+
+  function fetchComponents(basecontainer, id) {
+      var togo;
+      while (basecontainer) {
+          togo = basecontainer.childmap[id];
+          if (togo)
+              break;
+          basecontainer = basecontainer.parent;
+      }
+      return togo;
+  }
+
+  function findChild(sourcescope, child) {
+      var split = fluid.SplitID(child.ID);
+      var headlumps = sourcescope.downmap[child.ID];
+      if (headlumps == null) {
+          headlumps = sourcescope.downmap[split.prefix + ":"];
+      }
+      return headlumps == null ? null : headlumps[0];
+  }
+  
+  function renderRecurse(basecontainer, parentlump, baselump) {
+    var renderindex = baselump.lumpindex;
+    var basedepth = parentlump.nestingdepth;
+    var t1 = parentlump.parent;
+    while (true) {
+      renderindex = dumpScan(t1.lumps, renderindex, basedepth, true, false);
+      if (renderindex === t1.lumps.length) { 
+        break;
+      }
+      var lump = t1.lumps[renderindex];  
+      if (lump.nestingdepth < basedepth) {
+        break;
+      } 
+      var id = lump.rsfID;
+      if (id.charCodeAt(0) === 126) { // "~"
+        id = id.substring(1);
+      }
+      
+      //var ismessagefor = id.indexOf("message-for:") === 0;
+      
+      if (id.indexOf(':') !== -1) {
+        var prefix = fluid.getPrefix(id);
+        var children = fetchComponents(basecontainer, prefix);
+        
+        var finallump = lump.uplump.finallump[prefix];
+        var closefinal = finallump.close_tag;
+        
+        if (children) {
+          for (var i = 0; i < children.length; ++ i) {
+            var child = children[i];
+            if (child.children) { // it is a branch TODO
+              var targetlump = branchmap[child.fullID];
+              if (targetlump) {
+                renderContainer(child, targetlump);
+              }
+              else if (debugMode){
+                out += "Unable to look up branch for component with id " + child.fullID;
+              }
+            }
+            else { // repetitive leaf
+              var targetlump = findChild(parentlump, child);
+              var renderend = renderComponentSystem(basecontainer, child, targetlump);
+              var wasopentag = renderend < t1.lumps.lengtn && t1.lumps[renderend].nestingdepth >= targetlump.nestingdepth;
+              var newbase = child.children? child : basecontainer;
+              if (wasopentag) {
+                renderRecurse(newbase, targetlump, t1.lumps[renderend]);
+                renderend = targetlump.close_tag.lumpindex + 1;
+              }
+              if (i !== children.length - 1) {
+                // TODO - fix this bug in RSF Server!
+                if (renderend < closefinal.lumpindex) {
+                  dumpScan(t1.lumps, renderend, targetlump.nestingdepth - 1, false, false);
+                }
+              }
+              else {
+                dumpScan(t1.lumps, renderend, targetlump.nestingdepth, true, false);
+              }
+            }
+          }
+        }
+        
+        renderindex = closefinal.lumpindex + 1;
+      }
+      else {
+        var component;
+        if (id) {
+          component = fetchComponent(basecontainer, id, lump);
+        }
+        if (component && component.children !== undefined) {
+          renderContainer(component);
+          renderindex = lump.close_tag.lumpindex + 1;
+        }
+        else {
+          renderindex = renderComponentSystem(basecontainer, component, lump);
+        }
+      }
+      if (renderindex === t1.lumps.length) {
+        break;
+      }
+    }
+  }
+  
+  function renderCollect(collump) {
+      dumpTillLump(collump.parent.lumps, collump.lumpindex, collump.close_tag.lumpindex + 1);
+  }
+  
+  function renderCollects() {
+      for (var key in collected) {
+          var collist = collected[key];
+          for (var i = 0; i < collist.length; ++ i) {
+              renderCollect(collist[i]);
+          }
+      }
+  }
+  
+  function processDecoratorQueue() {
+      for (var i = 0; i < decoratorQueue.length; ++ i) {
+          var decorator = decoratorQueue[i];
+          var node = fluid.byId(decorator.id);
+          if (decorator.type === "jQuery") {
+              var jnode = $(node);
+              jnode[decorator.func].apply(jnode, decorator.args);
+          }
+          else if (decorator.type === "event") {
+            node[decorator.event] = decorator.handler; 
+          }
+      }
+  }
+
+  fluid.ComponentReference = function(reference) {
+      this.reference = reference;
+  };
+    
+  // Explodes a raw "hash" into a list of UIOutput/UIBound entries
+  fluid.explode = function(hash, basepath) {
+      var togo = [];
+      for (var key in hash) {
+          var binding = basepath === undefined? key : basepath + "." + key;
+          togo[togo.length] = {ID: key, value: hash[key], valuebinding: binding};
+      }
+      return togo;
+    };
+  
+  fluid.findForm = function (node) {
+    return fluid.findAncestor(node, 
+        function(element) {return element.nodeName.toLowerCase() === "form"});
+  }
+  
+  /** A generalisation of jQuery.val to correctly handle the case of acquiring and
+   * setting the value of clustered radio button/checkbox sets, potentially, given
+   * a node corresponding to just one element.
+   */
+  fluid.value = function (nodeIn, newValue) {
+      var node = fluid.unwrap(nodeIn);
+      var multiple = false;
+      if (node.nodeType === undefined && node.length > 1) {
+          node = node[0];
+          multiple = true;
+      }
+      var jNode = $(node);
+      if ("input" !== node.nodeName.toLowerCase()
+         || ! /radio|checkbox/.test(node.type)) return $(node).val(newValue);
+      var name = node.name;
+      if (name === undefined) {
+          fluid.fail("Cannot acquire value from node " + fluid.dumpEl(node) + " which does not have name attribute set");
+      }
+      var elements;
+      if (multiple) {
+          elements = nodeIn;
+      }
+      else {
+          var elements = document.getElementsByName(name);
+          var scope = fluid.findForm(node);
+          elements = jQuery.grep(elements, 
+            function(element) {
+              if (element.name !== name) return false;
+              return !(scope && fluid.dom.isContainer(scope, element));
+            });
+      }
+      if (newValue !== undefined) {
+        // jQuery gets this partially right, but when dealing with radio button array will
+        // set all of their values to "newValue" rather than setting the checked property
+        // of the corresponding control. 
+          jQuery.each(elements, function() {
+             this.checked = (newValue instanceof Array? 
+               jQuery.inArray(this.value, newValue) !== -1 : newValue === this.value);
+          });
+      }
+      else { // this part jQuery will not do - extracting value from <input> array
+          var checked = jQuery.map(elements, function(element) {
+            return element.checked? element.value : null;
+          });
+          return node.type === "radio"? checked[0] : checked;
+          }
+     }
+  
+  /** "Automatically" apply to whatever part of the data model is
+   * relevant, the changed value received at the given DOM node*/
+  fluid.applyChange = function(node, newValue) {
+      node = fluid.unwrap(node);
+      if (newValue === undefined) {
+          newValue = fluid.value(node);
+      }
+      if (node.nodeType === undefined && node.length > 0) node = node[0]; // assume here that they share name and parent
+      var root = fluid.findData(node, fluid.BINDING_ROOT_KEY);
+      if (!root) {
+          fluid.fail("Bound data could not be discovered in any node above " + fluid.dumpEl(node));
+      }
+      var name = node.name;
+      var fossil = root.fossils[name];
+      if (!fossil) {
+          fluid.fail("No fossil discovered for name " + name + " in fossil record above " + fluid.dumpEl(node));
+      }
+      var EL = root.fossils[name].EL;
+      fluid.model.setBeanValue(root.data, EL, newValue);    
+      };
+    
+  fluid.makeBranches = function() {
+      var firstBranch;
+      var thisBranch;
+      for (var i = 0; i < arguments.length; ++ i) {
+          var thisarg = arguments[i];
+          var nextBranch;
+          if (typeof(thisarg) === "string") {
+              nextBranch = {ID: thisarg}; 
+              }
+          else if (thisarg instanceof Array) {
+              nextBranch = {ID: thisarg[0], jointID: thisarg[1]};
+              }
+          else {
+              $.extend(true, thisBranch, thisarg);
+              nextBranch = thisBranch;
+              } 
+          if (thisBranch && nextBranch !== thisBranch) {
+              if (!thisBranch.children) {
+                  thisBranch.children = [];
+              }
+              thisBranch.children[thisBranch.children.length] = nextBranch;
+          }
+          thisBranch = nextBranch;
+          if (!firstBranch) {
+             firstBranch = nextBranch;
+          }
+      }
+    
+    return firstBranch;
+  };
+    
+  fluid.renderTemplates = function(templates, tree, options, fossilsIn) {
+      options = options || {};
+      tree = tree || {};
+      debugMode = options.debugMode;
+      directFossils = fossilsIn;
+      decoratorQueue = [];
+  
+      tree = fixupTree(tree, options.model);
+      var template = templates[0];
+      resolveBranches(templates.globalmap, tree, template.rootlump);
+      out = "";
+      renderedbindings = {};
+      renderOptions = options;
+      renderCollects();
+      renderRecurse(tree, template.rootlump, template.lumps[template.firstdocumentindex]);
+      return out;
+      };
+  
+  fluid.BINDING_ROOT_KEY = "fluid-binding-root";
+  
+  /** Recursively find any data stored under a given name from a node upwards
+   * in its DOM hierarchy **/
+   
+  fluid.findData = function(elem, name) {
+      while (elem) {
+          var data = $.data(elem, name);
+          if (data) return data;
+          elem = elem.parentNode;
+          }
+      }
+
+  fluid.bindFossils = function(node, data, fossils) {
+      $.data(node, fluid.BINDING_ROOT_KEY, {data: data, fossils: fossils});
+      }
+
+  /** A driver to render and bind an already parsed set of templates onto
+   * a node. See documentation for fluid.selfRender.
+   * @param templates A parsed template set, as returned from fluid.selfRender or 
+   * fluid.parseTemplates.
+   */
+
+  fluid.reRender = function(templates, node, tree, options) {
+      options = options || {};
+      node = fluid.unwrap(node);
+      var fossils = {};
+      var rendered = fluid.renderTemplates(templates, tree, options, fossils);
+      if (options.renderRaw) {
+          rendered = fluid.XMLEncode(rendered);
+          rendered = rendered.replace(/\n/g, "<br/>");
+          }
+      if (options.model) {
+          fluid.bindFossils(node, options.model, fossils);
+          }
+      node.innerHTML = rendered;
+      processDecoratorQueue();
+      return templates;
+  }
+
+  /** A simple driver for single node self-templating. Treats the markup for a
+   * node as a template, parses it into a template structure, renders it using
+   * the supplied component tree and options, then replaces the markup in the 
+   * node with the rendered markup, and finally performs any required data
+   * binding. The parsed template is returned for use with a further call to
+   * reRender.
+   * @param node The node both holding the template, and whose markup is to be
+   * replaced with the rendered result.
+   * @param tree The component tree to be rendered.
+   * @param options An options structure to configure the rendering and binding process.
+   * @return A templates structure, suitable for a further call to fluid.reRender or
+   * fluid.renderTemplates.
+   */  
+  fluid.selfRender = function(node, tree, options) {
+      options = options || {};
+      node = fluid.unwrap(node);
+      var resourceSpec = {base: {resourceText: node.innerHTML, 
+                          href: ".", resourceKey: ".", cutpoints: options.cutpoints}
+                          };
+      var templates = fluid.parseTemplates(resourceSpec, ["base"], options);
+      return fluid.reRender(templates, node, tree, options);
+    }
+  
+})(jQuery, fluid_0_6);
 /*
     json2.js
     2007-11-06

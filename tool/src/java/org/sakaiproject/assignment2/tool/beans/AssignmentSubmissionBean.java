@@ -52,6 +52,13 @@ public class AssignmentSubmissionBean {
     private static final String CANCEL = "cancel";
     private static final String FAILURE = "failure";
     private static final String RELEASE_ALL= "release_all";
+    
+    // for determining available student action(s)
+    public static final int VIEW_DETAILS = 0;
+    public static final int VIEW_AND_SUBMIT = 1;
+    public static final int VIEW_AND_RESUBMIT = 2;
+    public static final int VIEW_SUB = 3;
+    public static final int VIEW_ALL_SUB = 4;
 
     public Map<String, Boolean> selectedIds = new HashMap<String, Boolean>();
     public Long assignmentId;
@@ -197,6 +204,7 @@ public class AssignmentSubmissionBean {
     }
 
     public String processActionSaveAndReleaseAllFeedbackForSubmission(){
+        this.releaseFeedback = true;
         processActionGradeSubmit();
 
         for (String key : OTPMap.keySet()) {
@@ -220,7 +228,7 @@ public class AssignmentSubmissionBean {
             return FAILURE;
         }
         Assignment2 assignment = assignmentLogic.getAssignmentById(assignmentId);
-        AssignmentSubmission assignmentSubmission = new AssignmentSubmission();
+        AssignmentSubmission assignmentSubmission = new AssignmentSubmission(assignment, userId);
 
         for (String key : OTPMap.keySet()){
             assignmentSubmission = OTPMap.get(key);
@@ -269,6 +277,38 @@ public class AssignmentSubmissionBean {
 
     public String processActionCancel() {
         return CANCEL;
+    }
+    
+    public int determineStudentAction(String studentId, Long assignmentId) {
+        boolean isOpenForSubmission = submissionLogic.isSubmissionOpenForStudentForAssignment(
+                studentId, assignmentId);
+
+        int numSubmittedVersions = submissionLogic.getNumSubmittedVersions(studentId, assignmentId);
+
+        int action = VIEW_DETAILS;
+
+        // 1. View Details and Submit
+        if (isOpenForSubmission && numSubmittedVersions < 1) {
+            action = VIEW_AND_SUBMIT;
+        }
+        // 3. Resubmit
+        else if (isOpenForSubmission && numSubmittedVersions >= 1) {
+            action = VIEW_AND_RESUBMIT;
+        }
+        // 4a View Submission
+        else if (numSubmittedVersions == 1) {
+            action = VIEW_SUB;
+        }
+        // 4b View Submissions
+        else if (numSubmittedVersions > 1) {
+            action = VIEW_ALL_SUB;
+        }
+        // 2 View Details
+        else {
+            action = VIEW_DETAILS;
+        }
+
+        return action;
     }
 
 }

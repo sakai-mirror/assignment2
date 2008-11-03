@@ -94,9 +94,13 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
         DecoratorList disabledDecoratorList = new DecoratorList(new UIFreeAttributeDecorator(disabledAttr));
         
         UIForm form = UIForm.make(joint, "form");
-        UIOutput.make(form, "submission_instructions"); //Fill in with submission type specific instructions
-        UIVerbatim.make(form, "instructions", messageLocator.getMessage("assignment2.student-submit.instructions"));
-
+        //Fill in with submission type specific instructions
+        UIOutput.make(form, "submission_instructions", messageLocator.getMessage("assignment2.student-submit.instructions." + assignment.getSubmissionType())); 
+        
+        if (assignment.isHonorPledge()) {
+            UIVerbatim.make(form, "required", messageLocator.getMessage("assignment2.student-submit.required"));
+        }
+        
         //Rich Text Input
         if (assignment.getSubmissionType() == AssignmentConstants.SUBMIT_INLINE_ONLY || 
                 assignment.getSubmissionType() == AssignmentConstants.SUBMIT_INLINE_AND_ATTACH){
@@ -144,9 +148,8 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
 
         if (assignment.isHonorPledge()) {
             UIOutput.make(joint, "honor_pledge_fieldset");
-            UIMessage honor_pledge_label = UIMessage.make(joint, "honor_pledge_label", "assignment2.student-submit.honor_pledge_text");
-            UIBoundBoolean honor_pledge_checkbox = UIBoundBoolean.make(form, "honor_pledge", "#{AssignmentSubmissionBean.honorPledge}");
-            //UILabelTargetDecorator.targetLabel(honor_pledge_label, honor_pledge_checkbox);
+            UIMessage.make(joint, "honor_pledge_label", "assignment2.student-submit.honor_pledge_text");
+            UIBoundBoolean.make(form, "honor_pledge", "#{AssignmentSubmissionBean.honorPledge}");
         }
         
         // Gosh I hope I'm putting the right thing for the ASOTPKey

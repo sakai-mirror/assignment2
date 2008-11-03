@@ -104,7 +104,7 @@
 	</fieldset>
 	-->
 	<!-- Allow Resubmissions -->
-	<fieldset>
+	<fieldset rsf:id="resubmission_settings">
 		<legend>
 			<img src="/sakai-assignment2-tool/content/images/expand.png" border="0" alt="Open, click to close assignment instruction" style="cursor:pointer" 
 				onclick="slideFieldset(this)" />
@@ -165,8 +165,8 @@
 	
 	
 	<fieldset class="submit">
-		<input rsf:id="release_feedback" type="submit" />
 		<input rsf:id="submit" accesskey="s" type="submit" class="active" name="save" value="Save"/>
+	    <input rsf:id="release_feedback" type="submit" />
 		<input rsf:id="preview" accesskey="v" type="button" name="preview" value="Preview" class="preview_button thickbox" title="Preview" />
 		<input rsf:id="cancel" accesskey="x" type="submit" name="cancel" value="Cancel"/>
 	</fieldset>

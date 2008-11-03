@@ -290,85 +290,90 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
             UIOutput.make(form, "no_attachments_yet", messageLocator.getMessage("assignment2.assignment_grade.no_feedback_attach"));
         }
 
-        // Submission-Level resubmission settings
-        Integer current_times_submitted_already = 0;
-        if (as != null && as.getSubmissionHistorySet() != null) {
-            current_times_submitted_already = submissionLogic.getNumSubmittedVersions(as.getUserId(), assignmentId);
-        }
-
-        boolean is_override = (as.getNumSubmissionsAllowed() != null);
-        int numSubmissionsAllowed;
-        Date resubmitUntil;
-        boolean is_require_accept_until = false;
-
-        if (as.getNumSubmissionsAllowed() != null) {
-            // this student already has an override, so use these settings
-            numSubmissionsAllowed = as.getNumSubmissionsAllowed();
-            resubmitUntil = as.getResubmitCloseDate();
-        } else {
-            // otherwise, populate the fields with the assignment-level settings
-            numSubmissionsAllowed = assignment.getNumSubmissionsAllowed();
-            resubmitUntil = assignment.getAcceptUntilDate();
-        }
-        
-        // if resubmit is still null, throw the current date and time in there
-        // it will only show up if the user clicks the "Set accept until" checkbox
-        if (resubmitUntil == null) {
-            resubmitUntil = new Date();
-            is_require_accept_until = false;
-        } else {
-            is_require_accept_until = true;
-        }
-
-        as.setNumSubmissionsAllowed(numSubmissionsAllowed);
-        as.setResubmitCloseDate(resubmitUntil);
-
-        if (grade_perm) {
-            UIBoundBoolean.make(form, "override_settings", "#{AssignmentSubmissionBean.overrideResubmissionSettings}", is_override);
-
-            UIOutput.make(form, "resubmit_change");
-
-            int size = 20;
-            String[] number_submissions_options = new String[size+1];
-            String[] number_submissions_values = new String[size+1];
-            number_submissions_values[0] = "" + AssignmentConstants.UNLIMITED_SUBMISSION;
-            number_submissions_options[0] = messageLocator.getMessage("assignment2.indefinite_resubmit");
-            for (int i=0; i < size; i++){
-                number_submissions_values[i + 1] = Integer.valueOf(i + current_times_submitted_already).toString();
-                number_submissions_options[i + 1] = Integer.valueOf(i).toString();
+        // Submission-Level resubmission settings - not available for non-electronic
+        // assignments
+        if (assignment.getSubmissionType() != AssignmentConstants.SUBMIT_NON_ELECTRONIC) {
+            UIOutput.make(form, "resubmission_settings");
+            
+            Integer current_times_submitted_already = 0;
+            if (as != null && as.getSubmissionHistorySet() != null) {
+                current_times_submitted_already = submissionLogic.getNumSubmittedVersions(as.getUserId(), assignmentId);
             }
 
-            //Output
-            String currSubmissionMsg = "assignment2.assignment_grade.resubmission_curr_submissions";
-            if (current_times_submitted_already == 1) {
-                currSubmissionMsg = "assignment2.assignment_grade.resubmission_curr_submissions_1";
-            }
-            
-            UIMessage.make(form, "resubmission_curr_submissions", currSubmissionMsg, 
-                    new Object[] { current_times_submitted_already});
-            
-            UIVerbatim.make(form, "addtl_sub_label", messageLocator.getMessage("assignment2.assignment_grade.resubmission_allow_number"));
+            boolean is_override = (as.getNumSubmissionsAllowed() != null);
+            int numSubmissionsAllowed;
+            Date resubmitUntil;
+            boolean is_require_accept_until = false;
 
-            UISelect.make(form, "resubmission_additional", number_submissions_values, number_submissions_options, 
-                    asOTP + ".numSubmissionsAllowed", numSubmissionsAllowed + "");
-            
-            UIBoundBoolean require = UIBoundBoolean.make(form, "require_accept_until", "#{AssignmentSubmissionBean.resubmitUntil}", is_require_accept_until);
-            require.mustapply = true;
-
-            UIInput acceptUntilDateField = UIInput.make(form, "accept_until:", asOTP + ".resubmitCloseDate");
-            //set dateEvolver
-            dateEvolver.setStyle(FormatAwareDateInputEvolver.DATE_TIME_INPUT);
-            dateEvolver.evolveDateInput(acceptUntilDateField, resubmitUntil);
-        } else {
-            // display text only representation
-            String totalSubmissions = as.getNumSubmissionsAllowed().toString();
-            if (as.getNumSubmissionsAllowed() == AssignmentConstants.UNLIMITED_SUBMISSION) {
-                totalSubmissions = messageLocator.getMessage("assignment2.indefinite_resubmit");
+            if (as.getNumSubmissionsAllowed() != null) {
+                // this student already has an override, so use these settings
+                numSubmissionsAllowed = as.getNumSubmissionsAllowed();
+                resubmitUntil = as.getResubmitCloseDate();
+            } else {
+                // otherwise, populate the fields with the assignment-level settings
+                numSubmissionsAllowed = assignment.getNumSubmissionsAllowed();
+                resubmitUntil = assignment.getAcceptUntilDate();
             }
-            UIMessage.make(form, "resubmit_no_change", "assignment2.assignment_grade.resubmission_text", 
-                    new Object[] {externalLogic.getUserDisplayName(params.userId), 
-                    current_times_submitted_already, totalSubmissions, 
-                    (as.getResubmitCloseDate() != null ? df.format(as.getResubmitCloseDate()) : "")});
+
+            // if resubmit is still null, throw the current date and time in there
+            // it will only show up if the user clicks the "Set accept until" checkbox
+            if (resubmitUntil == null) {
+                resubmitUntil = new Date();
+                is_require_accept_until = false;
+            } else {
+                is_require_accept_until = true;
+            }
+
+            as.setNumSubmissionsAllowed(numSubmissionsAllowed);
+            as.setResubmitCloseDate(resubmitUntil);
+
+            if (grade_perm) {
+                UIBoundBoolean.make(form, "override_settings", "#{AssignmentSubmissionBean.overrideResubmissionSettings}", is_override);
+
+                UIOutput.make(form, "resubmit_change");
+
+                int size = 20;
+                String[] number_submissions_options = new String[size+1];
+                String[] number_submissions_values = new String[size+1];
+                number_submissions_values[0] = "" + AssignmentConstants.UNLIMITED_SUBMISSION;
+                number_submissions_options[0] = messageLocator.getMessage("assignment2.indefinite_resubmit");
+                for (int i=0; i < size; i++){
+                    number_submissions_values[i + 1] = Integer.valueOf(i + current_times_submitted_already).toString();
+                    number_submissions_options[i + 1] = Integer.valueOf(i).toString();
+                }
+
+                //Output
+                String currSubmissionMsg = "assignment2.assignment_grade.resubmission_curr_submissions";
+                if (current_times_submitted_already == 1) {
+                    currSubmissionMsg = "assignment2.assignment_grade.resubmission_curr_submissions_1";
+                }
+
+                UIMessage.make(form, "resubmission_curr_submissions", currSubmissionMsg, 
+                        new Object[] { current_times_submitted_already});
+
+                UIVerbatim.make(form, "addtl_sub_label", messageLocator.getMessage("assignment2.assignment_grade.resubmission_allow_number"));
+
+                UISelect.make(form, "resubmission_additional", number_submissions_values, number_submissions_options, 
+                        asOTP + ".numSubmissionsAllowed", numSubmissionsAllowed + "");
+
+                UIBoundBoolean require = UIBoundBoolean.make(form, "require_accept_until", "#{AssignmentSubmissionBean.resubmitUntil}", is_require_accept_until);
+                require.mustapply = true;
+
+                UIInput acceptUntilDateField = UIInput.make(form, "accept_until:", asOTP + ".resubmitCloseDate");
+                //set dateEvolver
+                dateEvolver.setStyle(FormatAwareDateInputEvolver.DATE_TIME_INPUT);
+                dateEvolver.evolveDateInput(acceptUntilDateField, resubmitUntil);
+            } else {
+                // display text only representation
+                String totalSubmissions = as.getNumSubmissionsAllowed().toString();
+                if (as.getNumSubmissionsAllowed() == AssignmentConstants.UNLIMITED_SUBMISSION) {
+                    totalSubmissions = messageLocator.getMessage("assignment2.indefinite_resubmit");
+                }
+                UIMessage.make(form, "resubmit_no_change", "assignment2.assignment_grade.resubmission_text", 
+                        new Object[] {externalLogic.getUserDisplayName(params.userId), 
+                        current_times_submitted_already, totalSubmissions, 
+                        (as.getResubmitCloseDate() != null ? df.format(as.getResubmitCloseDate()) : "")});
+            }
         }
 
         if (assignment.isGraded()){

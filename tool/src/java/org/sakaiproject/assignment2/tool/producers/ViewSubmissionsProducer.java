@@ -162,32 +162,105 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
                 new SimpleViewParameters(ListProducer.VIEW_ID));
         UIMessage.make(tofill, "last_breadcrumb", "assignment2.assignment_grade-assignment.heading", new Object[] { assignment.getTitle() });
 
-
-        //Release commands
-        if (edit_perm){
+        // ACTION BAR
+        boolean displayEditGb = false;
+        boolean displayReleaseFB = false;
+        boolean displayDownloadAll = false;
+        boolean displayUploadAll = false;
+        
+        if (edit_perm || grade_perm) {
             UIOutput.make(tofill, "navIntraTool");
-            if (assignment.isGraded() && assignment.getGradableObjectId() != null) {
-                UIOutput.make(tofill, "edit_gb_item_li");
+        }
+        
+        // RELEASE GRADES
+        if (edit_perm && assignment.isGraded()){
+            UIOutput.make(tofill, "edit_gb_item_li");
+            displayEditGb = true;
+            
+            String url = externalLogic.getUrlForGradebookItemHelper(assignment.getGradableObjectId(), FinishedHelperProducer.VIEWID);
 
-                String url = externalLogic.getUrlForGradebookItemHelper(assignment.getGradableObjectId(), FinishedHelperProducer.VIEWID);
+            UIInternalLink.make(tofill, "gradebook_item_edit_helper",
+                    UIMessage.make("assignment2.assignment_grade-assignment.gradebook_helper"),
+                    url);
+        }
+        
+        // RELEASE FEEDBACK
+        if (grade_perm) {
+            displayReleaseFB = true;
 
-                UIInternalLink.make(tofill, "gradebook_item_edit_helper",
-                        UIMessage.make("assignment2.assignment_grade-assignment.gradebook_helper"),
-                        url);
+            UIForm releaseFeedbackForm = UIForm.make(tofill, "release-feedback-form");
+            releaseFeedbackForm.parameters.add(new UIELBinding("#{AssignmentSubmissionBean.assignmentId}", assignmentId));
+            UICommand submitAllFeedbackButton = UICommand.make(releaseFeedbackForm, "release_feedback", UIMessage.make("assignment2.assignment_grade-assignment.release_feedback"),
+            "#{AssignmentSubmissionBean.processActionReleaseAllFeedbackForAssignment}");
+
+            UIInternalLink releaseFeedbackLink = UIInternalLink.make(tofill, 
+                    "release-feedback-link", 
+                    UIMessage.make("assignment2.assignment_grade-assignment.release_feedback"),
+                    viewparams);
+            Map<String,String> idmap = new HashMap<String,String>();
+            idmap.put("onclick", "document.getElementById('"+submitAllFeedbackButton.getFullID()+"').click(); return false;");
+            releaseFeedbackLink.decorate(new UIFreeAttributeDecorator(idmap));
+        }
+        
+        // DOWNLOAD ALL
+        if (grade_perm) {
+            // do not display download all link if assign is ungraded and has non-electronic submission
+            if (assignment.getSubmissionType() == AssignmentConstants.SUBMIT_NON_ELECTRONIC && !assignment.isGraded()) {
+                displayDownloadAll = false;
+            } else {
+                displayDownloadAll = true;
+            }
+
+            if (displayDownloadAll) {
+                // only allow download if it is graded or at least one submission
+                // otherwise we display a "disabled" link
+                boolean allowDownload = false;
+                if (assignment.isGraded()) {
+                    allowDownload = true;
+                } else {
+                    List<String> studentIds = new ArrayList<String>();
+                    for (AssignmentSubmission sub : submissions) {
+                        studentIds.add(sub.getUserId());
+                    }
+
+                    int numSubmissions = submissionLogic.getNumStudentsWithASubmission(assignment, studentIds);
+                    if (numSubmissions > 0) {
+                        allowDownload = true;
+                    }
+                }
+
+                if (allowDownload) {
+                    ZipViewParams zvp = new ZipViewParams("zipSubmissions", assignmentId);
+                    UIInternalLink.make(tofill, "downloadall",
+                            UIMessage.make("assignment2.assignment_grade-assignment.downloadall.button"), zvp);
+                } else {
+                    // show a disabled link if no submissions yet 
+                    UIOutput.make(tofill, "downloadall_disabled", messageLocator.getMessage("assignment2.assignment_grade-assignment.downloadall.button"));
+                } 
             }
         }
         
-        if (grade_perm) {
-            ZipViewParams zvp = new ZipViewParams("zipSubmissions", assignmentId);
-            UIInternalLink.make(tofill, "downloadall",
-                    UIMessage.make("assignment2.assignment_grade-assignment.downloadall.button"), zvp);
-            
-            if (assignment.isGraded() && assignment.getGradableObjectId() != null) {
-                // upload grades should only appear for graded items
-                AssignmentViewParams avp = new AssignmentViewParams("uploadall", assignmentId);
-                UIInternalLink.make(tofill, "uploadall",
-                        UIMessage.make("assignment2.assignment_grade-assignment.uploadall.button"), avp);
-            }
+        // UPLOAD GRADES
+        // upload grades should only appear for graded items
+        if (grade_perm && assignment.isGraded()) {
+            displayUploadAll = true;
+
+            AssignmentViewParams avp = new AssignmentViewParams("uploadall", assignmentId);
+            UIInternalLink.make(tofill, "uploadall",
+                    UIMessage.make("assignment2.assignment_grade-assignment.uploadall.button"), avp);
+        }
+        
+        // handle those pesky separators
+        if (displayEditGb && (displayReleaseFB || displayUploadAll || displayDownloadAll)) {
+            UIOutput.make(tofill, "gradebook_item_edit_helper_sep");
+        }
+        
+        if (displayReleaseFB && (displayUploadAll || displayDownloadAll)) {
+            UIOutput.make(tofill, "release_feedback_sep");
+        }
+        
+        if (displayDownloadAll && displayUploadAll) {
+            UIOutput.make(tofill, "downloadall_sep");
         }
 
         UIMessage.make(tofill, "page-title", "assignment2.assignment_grade-assignment.title");
@@ -205,10 +278,15 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
         //Do Student Table
         sortHeaderRenderer.makeSortingLink(tofill, "tableheader.student", viewparams, 
                 AssignmentSubmissionLogic.SORT_BY_NAME, "assignment2.assignment_grade-assignment.tableheader.student");
-        sortHeaderRenderer.makeSortingLink(tofill, "tableheader.submitted", viewparams, 
-                AssignmentSubmissionLogic.SORT_BY_SUBMIT_DATE, "assignment2.assignment_grade-assignment.tableheader.submitted");
-        sortHeaderRenderer.makeSortingLink(tofill, "tableheader.status", viewparams, 
-                LocalAssignmentLogic.SORT_BY_STATUS, "assignment2.assignment_grade-assignment.tableheader.status");
+        
+        if (assignment.getSubmissionType() != AssignmentConstants.SUBMIT_NON_ELECTRONIC) {
+            sortHeaderRenderer.makeSortingLink(tofill, "tableheader.status", viewparams, 
+                    LocalAssignmentLogic.SORT_BY_STATUS, "assignment2.assignment_grade-assignment.tableheader.status");
+            sortHeaderRenderer.makeSortingLink(tofill, "tableheader.submitted", viewparams, 
+                    AssignmentSubmissionLogic.SORT_BY_SUBMIT_DATE, "assignment2.assignment_grade-assignment.tableheader.submitted");
+            
+        }
+        
         if (assignment.isGraded()) {
             String releasedString;
             GradebookItem gradebookItem = gradebookLogic.getGradebookItemById(assignment.getContextId(), assignment.getGradableObjectId());
@@ -230,24 +308,28 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
                     externalLogic.getUserSortName(as.getUserId()),
                     new GradeViewParams(GradeProducer.VIEW_ID, as.getAssignment().getId(), as.getUserId()));
 
-            if (as.getCurrentSubmissionVersion() != null && as.getCurrentSubmissionVersion().getSubmittedDate() != null){
-                UIOutput.make(row, "row_submitted", df.format(as.getCurrentSubmissionVersion().getSubmittedDate()));
-            } else {
-                UIOutput.make(row, "row_submitted", "");
-            }
 
-            // set the textual representation of the submission status
-            String status = "";
-            int statusConstant = AssignmentConstants.SUBMISSION_NOT_STARTED;
-            if (as != null) {
-                statusConstant = submissionLogic.getSubmissionStatusConstantForCurrentVersion(
-                        as.getCurrentSubmissionVersion(), assignment.getDueDate());
-                status = messageLocator.getMessage(
-                        "assignment2.assignment_grade-assignment.submission_status." + 
-                        statusConstant);
-            }
+            // submission info columns are not displayed for non-electronic assignments
+            if (assignment.getSubmissionType() != AssignmentConstants.SUBMIT_NON_ELECTRONIC) {
+                if (as.getCurrentSubmissionVersion() != null && as.getCurrentSubmissionVersion().getSubmittedDate() != null){
+                    UIOutput.make(row, "row_submitted", df.format(as.getCurrentSubmissionVersion().getSubmittedDate()));
+                } else {
+                    UIOutput.make(row, "row_submitted", "");
+                }
+                
+                // set the textual representation of the submission status
+                String status = "";
+                int statusConstant = AssignmentConstants.SUBMISSION_NOT_STARTED;
+                if (as != null) {
+                    statusConstant = submissionLogic.getSubmissionStatusConstantForCurrentVersion(
+                            as.getCurrentSubmissionVersion(), assignment.getDueDate());
+                    status = messageLocator.getMessage(
+                            "assignment2.assignment_grade-assignment.submission_status." + 
+                            statusConstant);
+                }
 
-            UIOutput.make(row, "row_status", status);
+                UIOutput.make(row, "row_status", status);
+            }
 
             if (assignment.isGraded()) {
                 String grade = "";
@@ -307,25 +389,6 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
         attachmentListRenderer.makeAttachmentFromAssignmentAttachmentSet(tofill, "attachment_list:", params.viewID, 
                 assignment.getAttachmentSet());
 
-
-        /* 
-         * Form for releasing all feedback. The form will be hidden, and there
-         * will be a link that submits it.
-         */
-        if (grade_perm) {
-            UIForm releaseFeedbackForm = UIForm.make(tofill, "release-feedback-form");
-            releaseFeedbackForm.parameters.add(new UIELBinding("#{AssignmentSubmissionBean.assignmentId}", assignmentId));
-            UICommand submitAllFeedbackButton = UICommand.make(releaseFeedbackForm, "release_feedback", UIMessage.make("assignment2.assignment_grade-assignment.release_feedback"),
-            "#{AssignmentSubmissionBean.processActionReleaseAllFeedbackForAssignment}");
-
-            UIInternalLink releaseFeedbackLink = UIInternalLink.make(tofill, 
-                    "release-feedback-link", 
-                    UIMessage.make("assignment2.assignment_grade-assignment.release_feedback"),
-                    viewparams);
-            Map<String,String> idmap = new HashMap<String,String>();
-            idmap.put("onclick", "document.getElementById('"+submitAllFeedbackButton.getFullID()+"').click(); return false;");
-            releaseFeedbackLink.decorate(new UIFreeAttributeDecorator(idmap));
-        }
 
         /*
          * Form for assigning a grade to all submissions without a grade.

@@ -82,6 +82,7 @@
       <property name="asnnSubmitEditorRenderer" ref="AsnnSubmitEditorRenderer"></property>
       <property name="asnnSubmissionHistoryRenderer" ref="AsnnSubmissionHistoryRenderer"></property>
       <property name="currentUser" ref="sakai-User"></property>
+      <property name="assignmentSubmissionBean" ref="AssignmentSubmissionBean" />
    </bean>   
    
    <bean id="AttachmentInputEvolver" class="org.sakaiproject.assignment2.tool.producers.evolvers.AttachmentInputEvolver">
@@ -170,7 +171,7 @@
       <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
       <property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
       <property name="permissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentPermissionLogic" />
-      <property name="assignmentSubmissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
+      <property name="submissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
       <property name="locale" ref="requestLocale" />
    </bean>
 
@@ -183,6 +184,7 @@
       <property name="assignmentSubmissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
       <property name="locale" ref="requestLocale" />
       <property name="assignment2Bean" ref="Assignment2Bean" />
+      <property name="assignmentSubmissionBean" ref="AssignmentSubmissionBean" />
       <property name="externalGradebookLogic" ref="org.sakaiproject.assignment2.logic.ExternalGradebookLogic" />
    </bean>
    
@@ -259,6 +261,12 @@
    <bean class="org.sakaiproject.assignment2.tool.producers.fragments.FragmentViewSubmissionProducer">
       <property name="submissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
    	  <property name="attachmentListRenderer" ref="AttachmentListRenderer" />
+   </bean>
+   
+   <!--  Actions -->
+   <bean id="RemoveAssignmentAction"  class="org.sakaiproject.assignment2.tool.beans.RemoveAssignmentAction">
+       <property name="logic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
+       <property name="messages" ref="targettedMessageList" />
    </bean>
     
    <!--  Beans -->

@@ -14,11 +14,7 @@
 <!--  everything outside of rsf:id="page:" is set in Layout.html using outerPageTemplates -->
 
 <div rsf:id="page:" class="portletBody">
-	
-	<script type="text/javascript" src="/sakai-assignment2-tool/content/js/ui.core.js"></script>
-	<script type="text/javascript" src="/sakai-assignment2-tool/content/js/ui.draggable.js"></script>
-	<script type="text/javascript" src="/sakai-assignment2-tool/content/js/ui.sortable.js"></script>
-	
+
 	<ul class="breadCrumb">
 		<li rsf:id="last_breadcrumb" class="lastCrumb">Last Breadcrumb</li>
 		<li class="lastCrumb link"><a rsf:id="settings_link">Settings</a></li>
@@ -45,11 +41,10 @@
          </div>
 	  </li>
 	  <li rsf:id="assignment-row:" class="row">
-
 		<div class="container">
 			<div class="widget">
  				<form rsf:id="form" method="post" class="innerForm">
- 					<a rsf:id="delete-asnn-link" class="assignment_delete">Delete</a>
+ 					<!-- <a href="#TB_inline?height=155&amp;width=300&amp;inlineId=confirm-remove&amp;modal=true" class="thickbox">Delete</a> -->
 					<a style="display:none" class="assignment_delete"><img src="/sakai-assignment2-tool/content/images/bin_closed.png" /></a>
 					<input type="submit" rsf:id="assignment_delete" class="delete_replace" />
 					<input type="hidden" rsf:id="current_assignment" />
@@ -66,15 +61,44 @@
               <span rsf:id="no_submission_req">N/A</span>
            </div>
         </div>
-	  </li>
+		</li>
 	</ul>
+	
+	<!-- This is the template for the Confirm Asnn Remove Dialog. -->
+	<div id="remove-assn-dialog" style="display:none">
+		<div class="generalErrors">
+			<ul style="margin:0px;">
+				<li id="msg=assignment2.remove.assn.confirm">Message for user here</li>
+			</ul>
+		</div>
+		<table rsf:id="assignment-list-table" class="listHier lines">
+			<tr> 
+				<th rsf:id="msg=assignment2.remove.assn.header.title">Assignment Title</th>
+				<th rsf:id="msg=assignment2.remove.assn.header.due">Due</th>
+				<th rsf:id="msg=assignment2.remove.assn.header.submissions">Submissions</th>
+			</tr>
+			<tr rsf:id="asnn-row:">
+				<td class="asnn-title">Homework 1</td>
+				<td class="due">Mar 26, 2008 5:00 pm</td>
+				<td class="submissions">1</td>
+			</tr>
+		</table>
+		<form rsf:id="confirm-remove-form">
+			<fieldset class="submit">
+				<input accesskey="r" type="submit" class="remove-button active" value="Post" />
+				<input class="cancel-button" accesskey="x" type="submit" value="Cancel" />
+			</fieldset>
+		</form>
+	</div>
 	
 	<script rsf:id="init_ajaxCallbackURL" type="text/javascript">
 	//ajaxCallbackURL - set via producer
 	</script>
 	
-	<script type="text/javascript">
+	<script rsf:id="edit-setup-javascript" type="text/javascript">
 	//<![CDATA[
+	 jQuery("ul#assignmentList li.row").css('cursor', 'move');
+	
 	 jQuery("#assignmentList").sortable({items: ">li.row", axis: "y", containment: "parent", update: saveSortables});
      jQuery("#assignmentList div.widget").hide();
 	  jQuery("#assignmentList li.row").hover(function(){ 

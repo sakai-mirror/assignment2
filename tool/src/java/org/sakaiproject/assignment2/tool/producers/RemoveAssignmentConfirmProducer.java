@@ -94,7 +94,6 @@ ViewParamsReporter, NavigationCaseReporter {
         UIOutput.make(tablerow, "submissions", totalSubmissions+"");
         
         UIForm removeForm = UIForm.make(tofill, "confirm-remove-form");
-        //UICommand.make
         
     }
 

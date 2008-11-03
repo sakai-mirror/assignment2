@@ -22,6 +22,7 @@
 package org.sakaiproject.assignment2.logic.impl;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -657,7 +658,9 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 
 		int numSubmissionsRemaining = 0;
 
-		if (!assignment.isRemoved() && assignment.isRequiresSubmission()) {
+		if (!assignment.isRemoved() 
+		        && assignment.isRequiresSubmission() 
+		        && assignment.getSubmissionType() != AssignmentConstants.SUBMIT_NON_ELECTRONIC) {
 
 			// retrieve the submission history for this student for this assignment
 			AssignmentSubmission submission = dao.getSubmissionWithVersionHistoryForStudentAndAssignment(studentId, assignment);
@@ -1120,12 +1123,12 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		return dao.getNumSubmittedVersions(studentId, assignmentId);
 	}
 	
-	public int getNumStudentsWithASubmission(Assignment2 assignment, List<String> studentIdList) {
+	public int getNumStudentsWithASubmission(Assignment2 assignment, Collection<String> studentIds) {
 		if (assignment == null) {
 			throw new IllegalArgumentException ("Null assignment passed to getNumStudentsWithASubmission");
 		}
 		
-		return dao.getNumStudentsWithASubmission(assignment, studentIdList);
+		return dao.getNumStudentsWithASubmission(assignment, studentIds);
 	}
 	
 	public void markFeedbackAsViewed(Long submissionId, List<Long> versionIdList) {

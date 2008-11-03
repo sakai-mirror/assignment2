@@ -37,6 +37,7 @@ import org.sakaiproject.assignment2.model.AssignmentAttachment;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
+import org.sakaiproject.assignment2.tool.beans.AssignmentSubmissionBean;
 import org.sakaiproject.assignment2.tool.params.FilePickerHelperViewParams;
 import org.sakaiproject.assignment2.tool.params.FragmentViewSubmissionViewParams;
 import org.sakaiproject.assignment2.tool.producers.AddAttachmentHelperProducer;
@@ -126,6 +127,12 @@ public class StudentViewAssignmentRenderer {
         this.currentUser = currentUser;
     }
     
+    // Dependency
+    private AssignmentSubmissionBean submissionBean;
+    public void setAssignmentSubmissionBean(AssignmentSubmissionBean submissionBean) {
+        this.submissionBean = submissionBean;
+    }
+    
     public void makeStudentView(UIContainer tofill, String divID, AssignmentSubmission assignmentSubmission, 
             Assignment2 assignment, ViewParameters params, String ASOTPKey, Boolean preview) {
         System.out.println("THE STUDENT VIEW PASSED IN ASOTPKey: " + ASOTPKey);
@@ -139,6 +146,9 @@ public class StudentViewAssignmentRenderer {
         } else {
             UIMessage.make(tofill, "breadcrumb", "assignment2.student-assignment-list.heading");
         }
+        
+        int studentAction = submissionBean.determineStudentAction(assignmentSubmission.getUserId(), assignment.getId());
+        UIOutput.make(tofill, "student-submit-heading", messageLocator.getMessage("assignment2.student-assignment-list.action." + studentAction));
 
         if (assignmentSubmission != null) {
             assignmentSubmission.setAssignment(assignment);
