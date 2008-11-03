@@ -163,14 +163,15 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
         "#{AssignmentSubmissionBean.processActionPreview}");
         UICommand save_button = UICommand.make(form, "save_draft_button", UIMessage.make("assignment2.student-submit.save_draft"), 
         "#{AssignmentSubmissionBean.processActionSaveDraft}");
-        UICommand cancel_button = UICommand.make(form, "cancel_button", UIMessage.make("assignment2.student-submit.cancel"), 
-        "#{AssignmentSubmissionBean.processActionCancel}");
+        // ASNN-288
+        //UICommand cancel_button = UICommand.make(form, "cancel_button", UIMessage.make("assignment2.student-submit.cancel"), 
+        //"#{AssignmentSubmissionBean.processActionCancel}");
 
         if (preview) {
             submit_button.decorators = disabledDecoratorList;
             preview_button.decorators = disabledDecoratorList;
             save_button.decorators = disabledDecoratorList;
-            cancel_button.decorators = disabledDecoratorList;
+            //cancel_button.decorators = disabledDecoratorList;
         }
 
     }
