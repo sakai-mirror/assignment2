@@ -69,7 +69,7 @@
         </property>
         <!-- true if we need to send submission notifications for this assignment  -->
         <property name="sendSubmissionNotifications" type="boolean" >
-            <column name="SEND_SUBMISSION_NOTIF" not-null="true"/>
+            <column name="SEND_SUBMISSION_NOTIF" />
         </property>
         <property name="hasAnnouncement" type="boolean">
         	<column name="HAS_ANNOUNCEMENT" />
@@ -109,7 +109,7 @@
         </property>
         <!-- true if this assignment was deleted -->
         <property name="removed" type="boolean" >
-        		<column name="REMOVED" />
+        		<column name="REMOVED" index="A2_ASSIGN_REMOVED_I"/>
         </property>
         
         <set name="submissionsSet" lazy="true" inverse="true" cascade="none">
