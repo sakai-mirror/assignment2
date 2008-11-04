@@ -130,6 +130,7 @@ public class StudentSubmitProducer implements ViewComponentProducer, ActionResul
             result.resultingView = params;
             result.propagateBeans = ARIResult.FLOW_ONESTEP;
         } else if (AssignmentSubmissionBean.SAVE_DRAFT.equals(actionReturn)) {
+            result.resultingView = new SimpleViewParameters(StudentAssignmentListProducer.VIEW_ID);
             System.out.println("SAVE_DRAFT action");
         } else if (AssignmentSubmissionBean.CANCEL.equals(actionReturn)) {
             System.out.println("CANCEL action");
