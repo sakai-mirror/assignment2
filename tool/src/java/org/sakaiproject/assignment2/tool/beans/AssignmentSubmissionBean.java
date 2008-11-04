@@ -45,11 +45,11 @@ import uk.org.ponder.messageutil.TargettedMessageList;
 
 public class AssignmentSubmissionBean {
 
-    private static final String SUBMIT = "submit";
-    private static final String PREVIEW = "preview";
-    private static final String SAVE_DRAFT = "save_draft";
+    public static final String SUBMIT = "submit";
+    public static final String PREVIEW = "preview";
+    public static final String SAVE_DRAFT = "save_draft";
     private static final String EDIT = "edit";
-    private static final String CANCEL = "cancel";
+    public static final String CANCEL = "cancel";
     private static final String FAILURE = "failure";
     private static final String RELEASE_ALL= "release_all";
     
