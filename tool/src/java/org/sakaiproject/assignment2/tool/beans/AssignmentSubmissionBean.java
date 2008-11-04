@@ -94,10 +94,10 @@ public class AssignmentSubmissionBean {
         this.asvOTPMap = entityBeanLocator.getDeliveredBeans();
     }
 
-    private PreviewAssignmentSubmissionBean previewAssignmentSubmissionBean;
-    public void setPreviewAssignmentSubmissionBean (PreviewAssignmentSubmissionBean previewAssignmentSubmissionBean) {
-        this.previewAssignmentSubmissionBean = previewAssignmentSubmissionBean;
-    }
+    //private PreviewAssignmentSubmissionBean previewAssignmentSubmissionBean;
+    //public void setPreviewAssignmentSubmissionBean (PreviewAssignmentSubmissionBean previewAssignmentSubmissionBean) {
+    //    this.previewAssignmentSubmissionBean = previewAssignmentSubmissionBean;
+    //}
 
     private Boolean honorPledge;
     public void setHonorPledge(Boolean honorPledge) {
@@ -162,11 +162,11 @@ public class AssignmentSubmissionBean {
 
     public String processActionPreview(){
         AssignmentSubmission assignmentSubmission = (AssignmentSubmission) asEntityBeanLocator.locateBean(ASOTPKey);
-        previewAssignmentSubmissionBean.setAssignmentSubmission(assignmentSubmission);
-        for (String key : asvOTPMap.keySet()) {
-            AssignmentSubmissionVersion asv = asvOTPMap.get(key);
-            previewAssignmentSubmissionBean.setAssignmentSubmissionVersion(asv);
-        }
+        //previewAssignmentSubmissionBean.setAssignmentSubmission(assignmentSubmission);
+        //for (String key : asvOTPMap.keySet()) {
+        //    AssignmentSubmissionVersion asv = asvOTPMap.get(key);
+         //   previewAssignmentSubmissionBean.setAssignmentSubmissionVersion(asv);
+        //}
         return PREVIEW;
     }
 
@@ -266,11 +266,11 @@ public class AssignmentSubmissionBean {
             AssignmentSubmission assignmentSubmission = OTPMap.get(key);
             Assignment2 assignment = assignmentLogic.getAssignmentByIdWithAssociatedData(assignmentId);
             assignmentSubmission.setAssignment(assignment);
-            previewAssignmentSubmissionBean.setAssignmentSubmission(assignmentSubmission);
+           // previewAssignmentSubmissionBean.setAssignmentSubmission(assignmentSubmission);
         }
         for (String key : asvOTPMap.keySet()){
             AssignmentSubmissionVersion asv = asvOTPMap.get(key);
-            previewAssignmentSubmissionBean.setAssignmentSubmissionVersion(asv);
+           // previewAssignmentSubmissionBean.setAssignmentSubmissionVersion(asv);
         }
         return PREVIEW;
     }
