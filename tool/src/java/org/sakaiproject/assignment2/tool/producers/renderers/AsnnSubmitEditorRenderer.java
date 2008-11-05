@@ -152,7 +152,8 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
             UIBoundBoolean.make(form, "honor_pledge", "#{AssignmentSubmissionBean.honorPledge}");
         }
         
-        form.parameters.add( new UIELBinding("#{AssignmentSubmissionBean.ASOTPKey}", assignmentSubmission.getId()));
+        //form.parameters.add( new UIELBinding("#{AssignmentSubmissionBean.ASOTPKey}", assignmentSubmission.getId()));
+        form.parameters.add( new UIELBinding("#{AssignmentSubmissionBean.ASOTPKey}", asvOTPKey));
         form.parameters.add( new UIELBinding("#{AssignmentSubmissionBean.assignmentId}", assignment.getId()));
 
         //Buttons
