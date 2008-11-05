@@ -146,6 +146,11 @@ function slideFieldset(img) {
 	flip_image(img);
 	a2SetMainFrameHeight();
 }
+function slideDiv(img) {
+    jQuery(img).parent('legend').next('div').toggle();
+    flip_image(img);
+    a2SetMainFrameHeight();
+}
 function flip_image(img){
 	if(img.src.match('collapse')){
 		img.src=img.src.replace(/collapse/, 'expand');

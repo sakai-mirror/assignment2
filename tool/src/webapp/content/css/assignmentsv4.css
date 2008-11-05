@@ -169,6 +169,12 @@ li fieldset ol li p.instruction {
 	margin-left: 0;	
 }
 
+.subgroupHeading {
+    font-weight: bold;
+    margin-top: 5px;
+    margin-bottom: 8px;
+    font-size: 98%;
+}
 
 
 /* Errors/Notifications ========================================*/
