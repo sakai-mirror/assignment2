@@ -279,26 +279,32 @@ jQuery(document).ready(function(){
 		this.onclick = groups_toggle;
 	});
 	groups_toggle();
-	//Init require accept until date checkboxes
-	jQuery("input[name='page-replace\:\:require_accept_until']").each(function(){
-		var container = jQuery('#page-replace\\:\\:accept_until_container').get(0);
-		asnn2.showHideByCheckbox(this, container);
-	});
-	show_accept_until();
+	
 	//Init require due date checkboxes
-	jQuery("input[name='page-replace\:\:require_due_date']").each(function(){
-		var container = jQuery('#page-replace\\:\\:require_due_date_container').get(0);
-		asnn2.showHideByCheckbox(this, container);
-	});
+	var due_date_container = jQuery('#page-replace\\:\\:require_due_date_container').get(0);
+    var due_date = jQuery("input[name='page-replace\:\:require_due_date']").get(0);
+    jQuery(due_date).click(function(){
+        asnn2.showHideByCheckbox(this, due_date_container);
+    });
+
+    asnn2.showHideByCheckbox(due_date, due_date_container);
+    
+	//Init require accept until date checkboxes
+    var accept_until_container = jQuery('#page-replace\\:\\:accept_until_container').get(0);
+    var accept_until = jQuery("input[name='page-replace\:\:require_accept_until']").get(0);
+    jQuery(accept_until).click(function(){
+        asnn2.showHideByCheckbox(this, accept_until_container);
+    });
+
+	asnn2.showHideByCheckbox(accept_until, accept_until_container);
+	
+	// Require Submissions checkbox
 	jQuery("input[name='page-replace\:\:require_submissions']").click(function(){
 		asnn2.showHideSiblings(this.parentNode.parentNode, this.checked);
 	});
-	
-	// initialize the hide/show options
 	var requireSubInput = jQuery("input[name='page-replace\:\:require_submissions']").get(0);
-	asnn2.showHideSiblings(requireSubInput.parentNode.parentNode, requireSubInput.checked);
-	
-	show_due_date();
+    asnn2.showHideSiblings(requireSubInput.parentNode.parentNode, requireSubInput.checked);
+
 });
 //]]>
 </script>

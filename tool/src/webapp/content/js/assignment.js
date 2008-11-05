@@ -67,29 +67,6 @@ function toggle_group_checkboxes(check_all_box){
 	}
 }
 
-function show_due_date(){
-	el = jQuery("input:checkbox[name='page-replace\:\:require_due_date']").get(0);
-	if (el) {
-		if (el.checked) {
-			jQuery(el).nextAll('span:first').show();
-		} else {
-			jQuery(el).nextAll('span:first').hide();
-		}
-	}
-}
-
-function show_accept_until(){
-	el = jQuery("input:checkbox[name='page-replace\:\:require_accept_until']").get(0);
-	if (el){
-		if(el.checked){
-			jQuery(el).nextAll('span:first').show();
-		}else {
-			jQuery(el).nextAll('span:first').hide();
-		}
-		
-	}
-}
-
 function update_resubmit_until(){
 	el = jQuery("input:checkbox[@name='page-replace\:\:resubmit_until']").get(0);
 	if (el){
@@ -350,26 +327,16 @@ var asnn2 = asnn2 || {};
     /**
      * Given a checkbox element, hide or show the area element whenever checkbox
      * is clicked.  Checking the box shows the area, unchecking the box hides
-     * the area. Will also do the initialization of the area based on the 
-     * checkboxes initial value when set up.
+     * the area. 
      */
     asnn2.showHideByCheckbox = function(checkboxElem, areaElem) {
-    	var checkbox = jQuery(checkboxElem);
     	var area = jQuery(areaElem);
-    	if (checkbox.checked == true) {
+    	if (checkboxElem.checked) {
     		area.show();
     	}
     	else {
     		area.hide();
     	}
-    	checkbox.click(function () {
-    		if (this.checked == true) {
-    			area.show();
-    		}
-    		else {
-    			area.hide();
-    		}
-    	});
     };
 
     /**
