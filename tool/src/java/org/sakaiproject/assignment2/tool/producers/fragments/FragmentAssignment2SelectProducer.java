@@ -41,45 +41,55 @@ import uk.org.ponder.rsf.view.ViewComponentProducer;
 import uk.org.ponder.rsf.viewstate.ViewParameters;
 
 
+/**
+ * This appears to be rendering the select box on the Assignment authoring page
+ * for hooking an assignment to a gradebook item.  However, putting a debug 
+ * point in it and breaking, the page still seems to render. So will need to 
+ * still determine exactly what this is doing on the page. TODO FIXME
+ * 
+ * @author rjlowe
+ * @author sgithens
+ *
+ */
 public class FragmentAssignment2SelectProducer implements ViewComponentProducer, ContentTypeReporter{
-	
+
     public static final String VIEW_ID = "fragment-assignment2-select";
     public String getViewID() {
         return VIEW_ID;
     }
-    	
-	private ExternalLogic externalLogic;
-	public void setExternalLogic(ExternalLogic externalLogic) {
-		this.externalLogic = externalLogic;
-	}
-    
-	private MessageLocator messageLocator;
-	public void setMessageLocator(MessageLocator messageLocator) {
-		this.messageLocator = messageLocator;
-	}
-	
-	private ExternalGradebookLogic externalGradebookLogic;
-	public void setExternalGradebookLogic(ExternalGradebookLogic externalGradebookLogic){
-		this.externalGradebookLogic = externalGradebookLogic;
-	}
-	
-	private Locale locale;
-	public void setLocale(Locale locale){
-		this.locale = locale;
-	}
-	
-	
+
+    private ExternalLogic externalLogic;
+    public void setExternalLogic(ExternalLogic externalLogic) {
+        this.externalLogic = externalLogic;
+    }
+
+    private MessageLocator messageLocator;
+    public void setMessageLocator(MessageLocator messageLocator) {
+        this.messageLocator = messageLocator;
+    }
+
+    private ExternalGradebookLogic externalGradebookLogic;
+    public void setExternalGradebookLogic(ExternalGradebookLogic externalGradebookLogic){
+        this.externalGradebookLogic = externalGradebookLogic;
+    }
+
+    private Locale locale;
+    public void setLocale(Locale locale){
+        this.locale = locale;
+    }
+
+
     public void fillComponents(UIContainer tofill, ViewParameters viewparams, ComponentChecker checker) {
 
-    	UIForm form = UIForm.make(tofill, "form");
-    	
-    	// use a date which is related to the current users locale
-    	DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, locale);
-    	
+        UIForm form = UIForm.make(tofill, "form");
+
+        // use a date which is related to the current users locale
+        DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, locale);
+
         //Get Gradebook Items
         List<GradebookItem> gradebook_items = externalGradebookLogic.getAllGradebookItems(externalLogic.getCurrentContextId());
 
-        
+
         String[] gradebook_item_labels = new String[gradebook_items.size()+1];
         String[] gradebook_item_values = new String[gradebook_items.size()+1];
         gradebook_item_values[0] = "0";
@@ -87,26 +97,26 @@ public class FragmentAssignment2SelectProducer implements ViewComponentProducer,
         String js_gradebook_items_data = "var gradebook_items_date = {\n";
         js_gradebook_items_data += "0: \"" + messageLocator.getMessage("assignment2.assignment_add.gradebook_item_not_selected") + "\"";
         for (int i=1; i <= gradebook_items.size(); i++) {
-        	//Fill out select options
-        	gradebook_item_labels[i] = gradebook_items.get(i-1).getTitle();
-        	gradebook_item_values[i] = gradebook_items.get(i-1).getGradableObjectId().toString();
-        	
-        	//store js hash of id => due_date string
-        	js_gradebook_items_data += "," + gradebook_items.get(i-1).getGradableObjectId().toString();
-        	if(gradebook_items.get(i-1).getDueDate() != null){
-        		js_gradebook_items_data += ":\"" + df.format(gradebook_items.get(i-1).getDueDate()) + "\"";
-        	}else{
-        		js_gradebook_items_data += ":\"" + messageLocator.getMessage("assignment2.assignment_add.gradebook_item_no_due_date") + "\"";
-        	}
+            //Fill out select options
+            gradebook_item_labels[i] = gradebook_items.get(i-1).getTitle();
+            gradebook_item_values[i] = gradebook_items.get(i-1).getGradableObjectId().toString();
+
+            //store js hash of id => due_date string
+            js_gradebook_items_data += "," + gradebook_items.get(i-1).getGradableObjectId().toString();
+            if(gradebook_items.get(i-1).getDueDate() != null){
+                js_gradebook_items_data += ":\"" + df.format(gradebook_items.get(i-1).getDueDate()) + "\"";
+            }else{
+                js_gradebook_items_data += ":\"" + messageLocator.getMessage("assignment2.assignment_add.gradebook_item_no_due_date") + "\"";
+            }
         }
         js_gradebook_items_data += "}";
         UISelect.make(form, "assignments",gradebook_item_values, gradebook_item_labels, null);
-        
+
         //Output the JS vars
         UIVerbatim.make(form, "gradebook_items_data", js_gradebook_items_data);
     }
-    	
-	public String getContentType() {
-		return ContentTypeInfoRegistry.HTML_FRAGMENT;
-	}
+
+    public String getContentType() {
+        return ContentTypeInfoRegistry.HTML_FRAGMENT;
+    }
 }
