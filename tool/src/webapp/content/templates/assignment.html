@@ -223,7 +223,7 @@
 		</div>
 	</fieldset>
 	
-	<fieldset>
+	<fieldset id="notifications">
 	    <legend rsf:id="msg=assignment2.assignment_add.notification_legend">Submission Notifications</legend>
 		<div class="asnnOptionsLabel" style="width:90%">
     		<input rsf:id="sub_notif" id="sub_notif" type="checkbox" />
@@ -293,6 +293,11 @@ jQuery(document).ready(function(){
 	jQuery("input[name='page-replace\:\:require_submissions']").click(function(){
 		asnn2.showHideSiblings(this.parentNode.parentNode, this.checked);
 	});
+	
+	// initialize the hide/show options
+	var requireSubInput = jQuery("input[name='page-replace\:\:require_submissions']").get(0);
+	asnn2.showHideSiblings(requireSubInput.parentNode.parentNode, requireSubInput.checked);
+	
 	show_due_date();
 });
 //]]>

@@ -329,7 +329,8 @@ var asnn2 = asnn2 || {};
      * Custom javascript for the Assignment Add/Edit page. When the "Require
      * Submissions" box is checked or unchecked, the Submission Details below it
      * need to show/hide. It does this by hiding/removing all siblings at the
-     * same level (ie. the rest of the <li/> in the current list).
+     * same level (ie. the rest of the <li/> in the current list). it also
+     * needs to show/hide the notifications block, as well
      * 
      * @param element The jQuery element whose downstream siblings will be 
      * shown or hidden
@@ -338,9 +339,11 @@ var asnn2 = asnn2 || {};
     asnn2.showHideSiblings = function(element, show) {
     	if (show == true) {
     		jQuery(element).nextAll().show();
+    		jQuery("#notifications").show();
     	}
     	else {
     		jQuery(element).nextAll().hide();
+    		jQuery("#notifications").hide();
     	}
     };
     
