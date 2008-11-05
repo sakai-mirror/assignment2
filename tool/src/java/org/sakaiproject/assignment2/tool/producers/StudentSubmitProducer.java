@@ -33,7 +33,6 @@ import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.tool.beans.AssignmentSubmissionBean;
 import org.sakaiproject.assignment2.tool.params.SimpleAssignmentViewParams;
 import org.sakaiproject.assignment2.tool.params.StudentSubmissionParams;
-import org.sakaiproject.assignment2.tool.producers.fragments.FragmentSubmissionPreviewProducer;
 import org.sakaiproject.assignment2.tool.producers.renderers.StudentViewAssignmentRenderer;
 
 import uk.org.ponder.beanutil.entity.EntityBeanLocator;

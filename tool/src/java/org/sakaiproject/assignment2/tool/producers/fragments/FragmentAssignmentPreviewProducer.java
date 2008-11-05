@@ -23,7 +23,6 @@ package org.sakaiproject.assignment2.tool.producers.fragments;
 
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
-import org.sakaiproject.assignment2.tool.beans.PreviewAssignmentBean;
 import org.sakaiproject.assignment2.tool.params.AssignmentViewParams;
 import org.sakaiproject.assignment2.tool.producers.renderers.StudentViewAssignmentRenderer;
 
@@ -36,6 +35,16 @@ import uk.org.ponder.rsf.view.ViewComponentProducer;
 import uk.org.ponder.rsf.viewstate.ViewParameters;
 import uk.org.ponder.rsf.viewstate.ViewParamsReporter;
 
+/**
+ * TODO FIXME I believe this is about to go away, as part of the work Kristol
+ * is doing with the Assignment Preview part of the spec.
+ * 
+ * It is certainly broke at the moment because of the removal of the Preview
+ * Session Beans.
+ * 
+ * @author sgithens
+ *
+ */
 public class FragmentAssignmentPreviewProducer implements ViewComponentProducer, ViewParamsReporter, ContentTypeReporter {
 
     public static final String VIEW_ID = "fragment-assignment_preview";
@@ -43,14 +52,13 @@ public class FragmentAssignmentPreviewProducer implements ViewComponentProducer,
         return VIEW_ID;
     }
 
-    private PreviewAssignmentBean previewAssignmentBean;
     private StudentViewAssignmentRenderer studentViewAssignmentRenderer;
 
     public void fillComponents(UIContainer tofill, ViewParameters viewparams, ComponentChecker checker) {
         AssignmentViewParams params = (AssignmentViewParams) viewparams;
 
         //we are coming from the add/edit assignment page
-        Assignment2 assignment = previewAssignmentBean.getAssignment();
+        Assignment2 assignment = null; // previewAssignmentBean.getAssignment();
 
         AssignmentSubmission assignmentSubmission = new AssignmentSubmission();
 
@@ -65,10 +73,6 @@ public class FragmentAssignmentPreviewProducer implements ViewComponentProducer,
 
     public String getContentType() {
         return ContentTypeInfoRegistry.HTML_FRAGMENT;
-    }
-
-    public void setPreviewAssignmentBean(PreviewAssignmentBean previewAssignmentBean) {
-        this.previewAssignmentBean = previewAssignmentBean;
     }
 
     public void setStudentViewAssignmentRenderer(
