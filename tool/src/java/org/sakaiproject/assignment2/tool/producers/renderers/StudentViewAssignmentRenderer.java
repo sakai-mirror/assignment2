@@ -57,6 +57,8 @@ import uk.org.ponder.rsf.viewstate.ViewParameters;
 public class StudentViewAssignmentRenderer {
     private static Log log = LogFactory.getLog(StudentViewAssignmentRenderer.class);
 
+    private static final String STUDENT_SUBMISSION_DIVID = "student-view-assignment-area:";
+    
     // Dependency
     private Locale locale;
     public void setLocale(Locale locale) {
@@ -111,9 +113,26 @@ public class StudentViewAssignmentRenderer {
         this.submissionBean = submissionBean;
     }
     
+    public void makeStudentPreviewSubmissionConfirmView(UIContainer tofill, String divID, AssignmentSubmission assignmentSubmission, 
+            Assignment2 assignment, ViewParameters params, String ASOTPKey) {
+        //UIOutput.make(student-preview-submission-confirm-buttons
+    }
+    
+    /**
+     * It's important to note that the boolean preview on this method is for
+     * previewing what the assignment will look like to a student. It is not the
+     * Preview Submission view for when the student is about to submit.
+     * 
+     * @param tofill
+     * @param divID
+     * @param assignmentSubmission
+     * @param assignment
+     * @param params
+     * @param ASOTPKey
+     * @param preview
+     */
     public void makeStudentView(UIContainer tofill, String divID, AssignmentSubmission assignmentSubmission, 
             Assignment2 assignment, ViewParameters params, String ASOTPKey, Boolean preview) {
-        System.out.println("THE STUDENT VIEW PASSED IN ASOTPKey: " + ASOTPKey);
         /**
          * Breadcrumbs
          */
@@ -131,7 +150,7 @@ public class StudentViewAssignmentRenderer {
         if (assignmentSubmission != null) {
             assignmentSubmission.setAssignment(assignment);
         }
-        UIJointContainer joint = new UIJointContainer(tofill, divID, "portletBody:", ""+1);
+        UIJointContainer joint = new UIJointContainer(tofill, divID, STUDENT_SUBMISSION_DIVID, ""+1);
 
         // use a date which is related to the current users locale
         DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, locale);

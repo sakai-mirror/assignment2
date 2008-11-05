@@ -38,6 +38,7 @@ import org.sakaiproject.assignment2.tool.producers.renderers.StudentViewAssignme
 
 import uk.org.ponder.beanutil.entity.EntityBeanLocator;
 import uk.org.ponder.rsf.components.UIContainer;
+import uk.org.ponder.rsf.components.UIOutput;
 import uk.org.ponder.rsf.components.UIVerbatim;
 import uk.org.ponder.rsf.flow.ARIResult;
 import uk.org.ponder.rsf.flow.ActionResultInterceptor;
@@ -83,8 +84,11 @@ public class StudentSubmitProducer implements ViewComponentProducer, ActionResul
         //Now do submission stuff
         AssignmentSubmission assignmentSubmission = (AssignmentSubmission) assignmentSubmissionBeanLocator.locateBean(ASOTPKey); 
 
-        studentViewAssignmentRenderer.makeStudentView(tofill, "portletBody:", assignmentSubmission, assignment, params, ASOTPKey, Boolean.FALSE); 
-
+        if (params.preview) {
+            UIOutput.make(tofill, "portletBody:studentPreviewSubmission");   
+        } else {
+            studentViewAssignmentRenderer.makeStudentView(tofill, "portletBody:", assignmentSubmission, assignment, params, ASOTPKey, Boolean.FALSE); 
+        }
         
         /* TODO FIXME Marking feedback as viewed. 
          * For now we are doing this here. Eventually this is suppose to be

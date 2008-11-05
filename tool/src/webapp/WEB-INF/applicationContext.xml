@@ -108,7 +108,7 @@
 	  <!-- The beans which will be preserved across a flow via simple instance
 			copying -->
 	<bean parent="copyPreservingParent">
-		<property name="value" value="AssignmentSubmissionVersion"/>
+		<property name="value" value="AssignmentSubmissionVersion, AssignmentSubmissionBean"/>
 	</bean>
 
 	<bean id="Assignment2Creator"
