@@ -48,6 +48,7 @@ public class AssignmentSubmissionBean {
     public static final String SUBMIT = "submit";
     public static final String PREVIEW = "preview";
     public static final String SAVE_DRAFT = "save_draft";
+    public static final String BACK_TO_EDIT = "back_to_edit";
     private static final String EDIT = "edit";
     public static final String CANCEL = "cancel";
     private static final String FAILURE = "failure";
@@ -161,13 +162,17 @@ public class AssignmentSubmissionBean {
     }
 
     public String processActionPreview(){
-        AssignmentSubmission assignmentSubmission = (AssignmentSubmission) asEntityBeanLocator.locateBean(ASOTPKey);
+        //AssignmentSubmission assignmentSubmission = (AssignmentSubmission) asEntityBeanLocator.locateBean(ASOTPKey);
         //previewAssignmentSubmissionBean.setAssignmentSubmission(assignmentSubmission);
         //for (String key : asvOTPMap.keySet()) {
         //    AssignmentSubmissionVersion asv = asvOTPMap.get(key);
          //   previewAssignmentSubmissionBean.setAssignmentSubmissionVersion(asv);
         //}
         return PREVIEW;
+    }
+    
+    public String processActionBackToEdit() {
+        return BACK_TO_EDIT;
     }
 
     public String processActionSaveDraft() {

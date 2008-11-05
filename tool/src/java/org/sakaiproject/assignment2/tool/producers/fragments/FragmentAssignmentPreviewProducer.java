@@ -63,7 +63,7 @@ public class FragmentAssignmentPreviewProducer implements ViewComponentProducer,
         AssignmentSubmission assignmentSubmission = new AssignmentSubmission();
 
         String ASOTPKey = EntityBeanLocator.NEW_PREFIX + "1";
-        studentViewAssignmentRenderer.makeStudentView(tofill, "portletBody:", assignmentSubmission, assignment, params, ASOTPKey, Boolean.TRUE);
+        studentViewAssignmentRenderer.makeStudentView(tofill, "portletBody:", assignmentSubmission, assignment, params, ASOTPKey, Boolean.TRUE, false);
 
     }
 

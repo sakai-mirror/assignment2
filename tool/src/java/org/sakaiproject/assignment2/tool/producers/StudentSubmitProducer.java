@@ -83,11 +83,8 @@ public class StudentSubmitProducer implements ViewComponentProducer, ActionResul
         //Now do submission stuff
         AssignmentSubmission assignmentSubmission = (AssignmentSubmission) assignmentSubmissionBeanLocator.locateBean(ASOTPKey); 
 
-        if (params.preview) {
-            UIOutput.make(tofill, "portletBody:studentPreviewSubmission");   
-        } else {
-            studentViewAssignmentRenderer.makeStudentView(tofill, "portletBody:", assignmentSubmission, assignment, params, ASOTPKey, Boolean.FALSE); 
-        }
+        studentViewAssignmentRenderer.makeStudentView(tofill, "portletBody:", assignmentSubmission, assignment, params, ASOTPKey, Boolean.FALSE, params.previewsubmission); 
+
         
         /* TODO FIXME Marking feedback as viewed. 
          * For now we are doing this here. Eventually this is suppose to be
@@ -108,29 +105,20 @@ public class StudentSubmitProducer implements ViewComponentProducer, ActionResul
         UIVerbatim.make(tofill, "attachment-ajax-init", "otpkey=\"" + org.sakaiproject.util.Web.escapeUrl(ASOTPKey) + "\";\n");
 
     }
-/*
-    public List<NavigationCase> reportNavigationCases() {
-        List<NavigationCase> nav= new ArrayList<NavigationCase>();
-        nav.add(new NavigationCase("submit", new SimpleViewParameters(
-                StudentAssignmentListProducer.VIEW_ID)));
-        nav.add(new NavigationCase("preview", new SimpleViewParameters(
-                FragmentSubmissionPreviewProducer.VIEW_ID)));
-        nav.add(new NavigationCase("save_draft", new SimpleViewParameters(
-                StudentAssignmentListProducer.VIEW_ID)));
-        nav.add(new NavigationCase("cancel", new SimpleViewParameters(
-                StudentAssignmentListProducer.VIEW_ID)));
-        return nav;
-    } */
     
     public void interceptActionResult(ARIResult result, ViewParameters incoming, Object actionReturn) {
         StudentSubmissionParams params = (StudentSubmissionParams) incoming;
         
         if (AssignmentSubmissionBean.SUBMIT.equals(actionReturn)) {
             result.resultingView = new SimpleViewParameters(StudentAssignmentListProducer.VIEW_ID);
-        } else if (AssignmentSubmissionBean.PREVIEW.equals(actionReturn)) {
+        }
+        else if (AssignmentSubmissionBean.BACK_TO_EDIT.equals(actionReturn)) {
+            result.resultingView = new StudentSubmissionParams(StudentSubmitProducer.VIEW_ID, params.assignmentId, false);
+            result.propagateBeans = ARIResult.FLOW_ONESTEP;
+        }
+        else if (AssignmentSubmissionBean.PREVIEW.equals(actionReturn)) {
             System.out.println("PREVIEW action");
-            params.preview = true;
-            result.resultingView = params;
+            result.resultingView = new StudentSubmissionParams(StudentSubmitProducer.VIEW_ID, params.assignmentId, true);
             result.propagateBeans = ARIResult.FLOW_ONESTEP;
         } else if (AssignmentSubmissionBean.SAVE_DRAFT.equals(actionReturn)) {
             result.resultingView = new SimpleViewParameters(StudentAssignmentListProducer.VIEW_ID);

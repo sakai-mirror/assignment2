@@ -1,7 +1,7 @@
 package org.sakaiproject.assignment2.tool.params;
 
 public class StudentSubmissionParams extends SimpleAssignmentViewParams {
-    public boolean preview;
+    public boolean previewsubmission;
 
     public StudentSubmissionParams() {}
     
@@ -13,6 +13,10 @@ public class StudentSubmissionParams extends SimpleAssignmentViewParams {
     public StudentSubmissionParams(String viewid, Long assignmentId, boolean preview) {
         this.viewID = viewid;
         this.assignmentId = assignmentId;
-        this.preview = preview;
+        this.previewsubmission = preview;
+    }
+    
+    public String getParseSpec() {
+        return super.getParseSpec() + ",previewsubmission";
     }
 }

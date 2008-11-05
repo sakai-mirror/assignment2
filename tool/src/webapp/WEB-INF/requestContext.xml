@@ -81,6 +81,7 @@
       <property name="asnnInstructionsRenderer" ref="AsnnInstructionsRenderer"></property>
       <property name="asnnSubmitEditorRenderer" ref="AsnnSubmitEditorRenderer"></property>
       <property name="asnnSubmissionHistoryRenderer" ref="AsnnSubmissionHistoryRenderer"></property>
+      <property name="asnnSubmissionVersionRenderer" ref="AsnnSubmissionVersionRenderer"></property>
       <property name="currentUser" ref="sakai-User"></property>
       <property name="assignmentSubmissionBean" ref="AssignmentSubmissionBean" />
    </bean>   

@@ -102,6 +102,13 @@ public class StudentViewAssignmentRenderer {
     }
     
     // Dependency
+    private AsnnSubmissionVersionRenderer asnnSubmissionVersionRenderer;
+    public void setAsnnSubmissionVersionRenderer(
+            AsnnSubmissionVersionRenderer asnnSubmissionVersionRenderer) {
+        this.asnnSubmissionVersionRenderer = asnnSubmissionVersionRenderer;
+    }
+    
+    // Dependency
     private User currentUser;
     public void setCurrentUser(User currentUser) {
         this.currentUser = currentUser;
@@ -111,11 +118,6 @@ public class StudentViewAssignmentRenderer {
     private AssignmentSubmissionBean submissionBean;
     public void setAssignmentSubmissionBean(AssignmentSubmissionBean submissionBean) {
         this.submissionBean = submissionBean;
-    }
-    
-    public void makeStudentPreviewSubmissionConfirmView(UIContainer tofill, String divID, AssignmentSubmission assignmentSubmission, 
-            Assignment2 assignment, ViewParameters params, String ASOTPKey) {
-        //UIOutput.make(student-preview-submission-confirm-buttons
     }
     
     /**
@@ -132,7 +134,7 @@ public class StudentViewAssignmentRenderer {
      * @param preview
      */
     public void makeStudentView(UIContainer tofill, String divID, AssignmentSubmission assignmentSubmission, 
-            Assignment2 assignment, ViewParameters params, String ASOTPKey, Boolean preview) {
+            Assignment2 assignment, ViewParameters params, String ASOTPKey, Boolean preview, Boolean studentSubmissionPreview) {
         /**
          * Breadcrumbs
          */
@@ -173,15 +175,21 @@ public class StudentViewAssignmentRenderer {
                     statusConstant);
         }
         
-        asnnSubmissionDetailsRenderer.fillComponents(joint, "assignment-details:", assignmentSubmission);
+        /* 
+         * If the Student is previewing their submission, only want to show the
+         * text and attachments of that submission.
+         */
+        if (!studentSubmissionPreview) {
+            asnnSubmissionDetailsRenderer.fillComponents(joint, "assignment-details:", assignmentSubmission);
         
-        asnnInstructionsRenderer.fillComponents(joint, "assignment-instructions:", assignment);
+            asnnInstructionsRenderer.fillComponents(joint, "assignment-instructions:", assignment);
         
-        // Submission History
-        asnnSubmissionHistoryRenderer.fillComponents(joint, "assignment-previous-submissions:", assignmentSubmission);
-        
+            // Submission History
+            asnnSubmissionHistoryRenderer.fillComponents(joint, "assignment-previous-submissions:", assignmentSubmission);
+        }
+            
         if (submissionLogic.isSubmissionOpenForStudentForAssignment(currentUser.getId(), assignment.getId())) {
-            asnnSubmitEditorRenderer.fillComponents(joint, "assignment-edit-submission:", assignmentSubmission, preview);
+            asnnSubmitEditorRenderer.fillComponents(joint, "assignment-edit-submission:", assignmentSubmission, preview, studentSubmissionPreview);
         }
         
     }
