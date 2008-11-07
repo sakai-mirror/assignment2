@@ -1385,9 +1385,11 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
         subList = submissionLogic.getSubmissionsForCurrentUser();
         assertEquals(2, subList.size());
         
+        // even though st 2 has 4 submissions, the submissions for assign 2 does not
+        // have associated versions. so this one should not be returned
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT2_UID);
         subList = submissionLogic.getSubmissionsForCurrentUser();
-        assertEquals(4, subList.size());
+        assertEquals(3, subList.size());
         
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT3_UID);
         subList = submissionLogic.getSubmissionsForCurrentUser();

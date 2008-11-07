@@ -323,7 +323,7 @@ public interface AssignmentSubmissionLogic {
 	 * for all of the user's viewable assignments in the current site.
 	 * If no submission exists yet for an assignment that is available to the user, 
 	 * adds an empty AssigmentSubmission rec to the list for that assignment. 
-	 * If a submission exists for an assignment in this site that was deleted,
+	 * If a submission exists (with at least one version) for an assignment in this site that was deleted,
 	 * the submission is still returned (so the student can still access their work).
 	 * Populates attachments and version history. 
 	 * If feedback has not been released, does not populate
