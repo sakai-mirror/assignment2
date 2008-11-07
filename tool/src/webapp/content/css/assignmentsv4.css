@@ -1,0 +1,508 @@
+/* Reset tool styles ========================================*/
+
+.reqStar{
+	float: none;
+	margin-left: 0;
+}
+
+label .reqStar {
+	margin-left: -6pt;	
+}
+
+table.listHier{
+	width: 100%;
+}
+
+/* extends the sakai highlight class */
+h2 span.highlight {
+    font-size:0.85em;
+    font-weight:normal;
+    margin-left:5px;
+}
+
+/* override the sakai "gray" with black */
+h4 {
+    color: #000;
+}
+
+
+
+/* Nav ========================================*/
+
+.navIntraTool li, .itemAction li {
+	display: inline;
+	margin: 0;
+	margin-left: -.5em;
+	padding: 0 1em;
+}
+
+.navIntraTool li span.separator {
+    margin-left: 1em;
+    margin-right: -.8em;
+}
+
+.itemAction li {
+	margin-left: 0;
+	padding: 0 .3em;
+}
+
+.navIntraTool a, .navIntraTool a:link{
+	margin: 0;
+	padding: 0;
+}
+
+.navIntraTool li span.inactive {
+    margin: 0;
+    padding: 0;
+    border: 0 none;
+}
+
+li.last {
+	border: 0 none;
+}
+
+
+.pagerDiv {
+	float: right;	
+	position: relative;
+}
+
+p.subheading {
+	color: #555;
+	font-family: Arial,Helvetica,sans-serif;
+	margin: 0.8em;
+}
+
+table.infoTable th {
+    color: #000;
+}
+
+
+/* Forms ========================================*/
+
+fieldset {
+	background-color: #fff;
+	margin: 20px 0;
+	padding: 0;
+}
+
+legend {
+	color: #000;
+	font-weight: bold;
+	margin-left: 0;
+	margin-bottom: .5em;
+	padding: 0;
+}
+
+form ol {
+	margin:0;
+	padding:0;
+}
+
+form li {
+	list-style: none;
+	margin: 0 .5em .5em 15px;
+	padding: 2px;
+}
+
+form li.activefield {
+   background-color: #f1f5f8;
+}
+
+form li label {
+	/* display: block;
+	float: left; */
+	margin-right: .5em;
+	margin-top: .3em;
+	text-align: left;
+	width: 14em;
+}
+
+li label.block {
+	display: block;
+	float: none;
+	width: auto;
+}
+
+fieldset fieldset {
+	background: transparent;
+	border: none;
+	margin: 0;
+	padding: 0;
+}
+
+fieldset fieldset.indent {
+    margin-left: 14.5em;	
+}
+
+fieldset fieldset.indent li {
+	margin: 0 .5em .5em 0;
+}
+
+fieldset fieldset legend {
+	color: #333;
+	font-weight: normal;
+	margin-left: 0;
+}
+
+form fieldset fieldset li {
+	margin-bottom: 0;
+	margin-left: 0;
+	padding: 0;
+}
+
+form fieldset fieldset label {
+	display: inline;
+	float: none;
+	margin: 5px 0 0 5px;
+	text-align: left;
+	width: auto;
+}
+
+.textarea {
+	width: 100%;
+}
+
+.submit {
+	border-style: none;
+	padding: 0;
+	background: none;
+}
+
+.indent {
+	margin-left: 3em;
+}
+
+li p.instruction {
+	margin-left: 14.5em;
+}
+
+li fieldset ol li p.instruction {
+	margin-left: 0;	
+}
+
+.subgroupHeading {
+    font-weight: bold;
+    margin-top: 5px;
+    margin-bottom: 8px;
+    font-size: 98%;
+}
+
+
+/* Errors/Notifications ========================================*/
+
+li.alertMessageInline {
+	display: inline;	
+}
+
+div.generalErrors li {
+	list-style: none;
+}
+
+div.generalErrors li.alertMessageInline {
+	display: block;	
+}
+
+.messages {
+	xbackground: url("/sakai-assignment2-tool/content/images/error-arrow.png") no-repeat .5em 0;
+	xcolor: #fff;
+	display: block;
+	margin: 0;
+	xpadding: .5em .5em .5em 2em;
+}
+
+.messages li {
+	xbackground: url("/sakai-assignment2-tool/content/images/error-arrow.png") no-repeat .5em 0;
+	padding: .5em .5em .5em 2em;
+}
+
+li.error {
+	background-color: #ba0005;
+}
+
+li.info {
+	background-color: #00ba05;
+	color: #fff;
+}
+
+.error input[type="text"] {
+	border: 1px solid #ba0005;
+}
+
+.error p,
+.error ul {
+	background: #ba0005 url("/sakai-assignment2-tool/content/images/error-arrow.png") no-repeat .5em 0;
+	color: #fff;
+	display: block;
+	margin: 0;
+	padding: .5em .5em .5em 2em;
+}
+
+.error ul {
+	list-style: none;
+}
+
+li .error p {
+	margin-left: 12.5em;
+}
+
+.error a {
+	color: #fff;
+}
+
+.pointer {
+	cursor: pointer;
+}
+
+
+/* breadcrumb navigation styles */
+.breadCrumb {
+	font-size: 1.2em;
+	padding: .5em 0; 
+	background: #ffe; /* This is our background color */
+	margin: 0 0 1em 0;
+}
+
+.navIntraTool 	 .breadCrumb {
+	margin:0;float:left
+}
+
+.breadCrumb li{
+	display: inline; 
+	background: #ffe url("/sakai-assignment2-tool/content/images/breadSep.gif") center right no-repeat;
+	padding:0 1.2em 0  .5em;
+	margin:0;
+}
+.breadCrumb li:first-child{
+	padding-left:3px
+}
+.breadCrumb li.lastCrumb{
+	display: inline; 
+	background-image: none;
+	padding-right: 0;
+}
+
+.breadCrumbCurrent {
+	font-weight: bold;
+	display: inline; 
+	padding: 0px;
+}
+
+A.breadCrumb {
+	font-weight: bold;
+	margin: 0px;
+}
+
+A:hover.breadCrumb {
+	color: #333;
+}
+
+.breadCrumb li.link {
+	margin-left: 0px;	
+}
+
+.breadCrumb li.link a {
+	border-left: 1px solid #999;
+	padding-left: 10px;
+}
+
+/** List Page Styles **/
+a.add_assignment {
+	 background: #fff url("/sakai-assignment2-tool/content/images/add.png") no-repeat left center;
+	 padding-left: 20px;
+	 margin-left: 20px;
+}
+
+a.assignment_delete {
+}
+
+ul#assignmentList {
+   list-style: none;
+   margin-left: 50px;
+}
+
+ul#assignmentList li {
+   width: 95%;
+}
+
+ul#assignmentList div.assignActive {
+     background: transparent url("/sakai-assignment2-tool/content/images/bullet_green.png") no-repeat top left;
+}
+
+ul#assignmentList div.assignInactive {
+	background: transparent url("/sakai-assignment2-tool/content/images/bullet_red.png") no-repeat top left;
+}
+
+ul#assignmentList li.header {
+}
+
+ul#assignmentList li.row {
+   border-top: 2px solid #DEDEDE;
+   height: 3.2em;
+   /* cursor: move; */
+   padding-top: 10px;
+   position: relative;
+}
+ul#assignmentList li.row:hover {
+   background-color: #feffcc;
+}
+
+ul#assignmentList li.row div.widget {
+   cursor: pointer;
+   padding: 5px 0;
+   position: absolute;
+   left: -50px;
+   width: 100px;
+}
+
+ul#assignmentList li div.container {
+   margin-right: 50px;
+   position: relative;
+}
+      
+ul#assignmentList div.left,
+ul#assignmentList h3.left {
+   height: 1.5em;
+   margin-top: 0;
+   xmargin-left: 50px;
+   padding-left: 20px;
+}     
+ul#assignmentList h3.left {
+	padding-left: 0;
+}
+   
+ul#assignmentList div.left span.duedate {
+   display: block;
+   padding-left: 30px;
+   padding-top: 5px;
+}
+
+ul#assignmentList div.left span.assignment_title {
+   padding-left: 20px;
+}
+
+ul#assignmentList div.left span.draft {
+	color: #fa0b12;
+	text-transform: uppercase;
+}
+
+ul#assignmentList div.left span.group {
+   background: transparent url("/sakai-assignment2-tool/content/images/group.png") no-repeat top left;
+}
+   
+ul#assignmentList div.right,
+ul#assignmentList h3.right {
+   height: 1.5em;
+   margin-top: 0;
+   position: absolute;
+   right: 0;
+   top: 0;
+   width: 200px;
+}
+
+ul#assignmentList li.row div.overlay {
+   background: #fff;
+   height: 3.3em;
+   position: absolute;
+   top: 0;
+   width: 100%;
+}
+
+ul#assignmentList li.row div.overlayMessage {
+   margin-left: 5em;
+   position: absolute;
+   top: 0;
+   width: 80%;
+}
+
+ul#assignmentList li.row div.overlayMessage .success {
+   background-color: #fff;
+}
+   
+#override_settings_container ol {
+    margin:10px 0 0 20px;
+}
+   
+#override_settings_container label {
+    margin:0;
+}
+   
+#override_settings_container li {
+    margin-top: 5px;
+}
+
+/*
+ * Display of version history
+ */
+.versionHistory {
+    margin-bottom: 10px;
+}
+.versionEntry {
+    margin-left: 10px;
+}
+.versionEntry div {
+    margin-left: 20px;
+}
+
+
+
+/*
+ * Attachments
+ */
+#attachmentsFieldset ol {
+    margin-bottom: 10px;
+}
+
+/* 
+ *  Student Assignment List and Landing Page
+ */
+
+/* This class is for assignments that have been checked as completed */
+h4.completed_assignment {
+    color: gray;
+}
+
+/*
+ * These are for the assignments options such as open date,
+ * submission type, etc.
+ */
+.asnnOptionsLabel {
+	float:left;
+	width:200px;
+	margin-left: 2em;
+	/* border:blue solid thin; */
+}
+
+.asnnOptionsEdit {
+	display:inline;
+}
+
+/*
+ * Styles for our confirmation dialogs using JQuery UI Dialog
+ */
+.ui-dialog-container {
+    background-color: white;
+    border: solid thin blue;
+}
+/*
+.ui-dialog-content {
+    
+    margin: 20px;
+}
+*/
+
+.submission-confirm-div {
+    
+}
+
+.ui-dialog-titlebar-close {
+    display: none;
+}
+
+.ui-dialog-titlebar {
+    display: none;
+}
+
+.ui-dialog-buttonpane {
+    display: none;
+}
