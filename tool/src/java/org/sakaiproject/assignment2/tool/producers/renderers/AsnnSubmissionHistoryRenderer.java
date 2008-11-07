@@ -91,6 +91,9 @@ public class AsnnSubmissionHistoryRenderer implements BasicProducer {
                         ",'"+assignmentSubmission.getId()+"','"+
                         version.getId()+"');");
             }
+            // add the <hr> tag separating this section - we only want it to appear if this 
+            // section appears!
+            UIOutput.make(parent, "previous_submissions_sep");
         }
     }
 
