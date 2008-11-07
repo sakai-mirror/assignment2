@@ -60,7 +60,7 @@ public class AsnnSubmissionHistoryRenderer implements BasicProducer {
 
         if (versionHistory.size() == 1) {
             AssignmentSubmissionVersion curVersion = versionHistory.get(0);
-            asnnSubmissionVersionRenderer.fillComponents(joint, "single-submission-version:", curVersion);
+            asnnSubmissionVersionRenderer.fillComponents(joint, "single-submission-version:", curVersion, true);
             List<Long>versionIds = new ArrayList<Long>();
             versionIds.add(curVersion.getId());
             submissionLogic.markFeedbackAsViewed(assignmentSubmission.getId(), versionIds);
@@ -82,7 +82,7 @@ public class AsnnSubmissionHistoryRenderer implements BasicProducer {
                 else if (version.isFeedbackReleased()) {
                     UIOutput.make(versionDiv, "new-feedback-img");
                 }
-                UIContainer versionContainer = asnnSubmissionVersionRenderer.fillComponents(versionDiv, "submission-entry:", version);
+                UIContainer versionContainer = asnnSubmissionVersionRenderer.fillComponents(versionDiv, "submission-entry:", version, false);
                 Map<String,String> stylemap = new HashMap<String,String>();
                 stylemap.put("display", "none");
                 versionContainer.decorate(new UICSSDecorator(stylemap));

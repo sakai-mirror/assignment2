@@ -20,6 +20,11 @@ h2 span.highlight {
     margin-left:5px;
 }
 
+/* override the sakai "gray" with black */
+h4 {
+    color: #000;
+}
+
 
 
 /* Nav ========================================*/
@@ -62,14 +67,14 @@ li.last {
 	position: relative;
 }
 
-h3 {
-	height: 2.5em;
-}
-
 p.subheading {
 	color: #555;
 	font-family: Arial,Helvetica,sans-serif;
-	margin: -1em 0 1.5em 1em;
+	margin: 0.8em;
+}
+
+table.infoTable th {
+    color: #000;
 }
 
 
@@ -425,6 +430,21 @@ ul#assignmentList li.row div.overlayMessage .success {
 #override_settings_container li {
     margin-top: 5px;
 }
+
+/*
+ * Display of version history
+ */
+.versionHistory {
+    margin-bottom: 10px;
+}
+.versionEntry {
+    margin-left: 10px;
+}
+.versionEntry div {
+    margin-left: 20px;
+}
+
+
 
 /*
  * Attachments

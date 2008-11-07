@@ -51,9 +51,11 @@ public class AsnnSubmissionVersionRenderer implements BasicProducer {
      * @param parent
      * @param clientID
      * @param asnnSubVersion
+     * @param singleVersionDisplay - true if being used in the context of a single
+     * version. the heading information is different for multi-version display (ie the history)
      * @return
      */
-    public UIContainer fillComponents(UIContainer parent, String clientID, AssignmentSubmissionVersion asnnSubVersion) {
+    public UIContainer fillComponents(UIContainer parent, String clientID, AssignmentSubmissionVersion asnnSubVersion, boolean multipleVersionDisplay) {
         UIJointContainer joint = new UIJointContainer(parent, clientID, "asnn2-submission-version-widget:");
 
         AssignmentSubmission assignmentSubmssion = asnnSubVersion.getAssignmentSubmission();
@@ -63,8 +65,11 @@ public class AsnnSubmissionVersionRenderer implements BasicProducer {
         /*
          * Render the headers
          */
-        //TODO FIXME on multiple submissions this header is different
-        UIMessage.make(joint, "submission-header", "assignment2.student-submission.submission.header");
+        // if this is being used in a multiple version context (like the submission history),
+        // don't display the header
+        if (multipleVersionDisplay) {
+            UIMessage.make(joint, "submission-header", "assignment2.student-submission.submission.header");
+        }
         
         //TODO FIXME time and date of submission here
         

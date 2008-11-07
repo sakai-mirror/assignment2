@@ -354,7 +354,7 @@ var asnn2 = asnn2 || {};
      */
     asnn2.assnSubVersionDiv = function (elementId, feedbackRead, submissionId, versionId) {
         var escElemId = elementId.replace(/:/g, "\\:");
-        var versionHeader = jQuery('#'+escElemId+ ' h2');
+        var versionHeader = jQuery('#'+escElemId+ ' h3');
         var arrow = versionHeader.find("img:first");
         var toggled = jQuery('#'+escElemId+ ' div')
         var envelope = versionHeader.find("img:last");
