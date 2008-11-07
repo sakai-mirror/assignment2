@@ -18,6 +18,7 @@ import uk.org.ponder.rsf.components.UIContainer;
 import uk.org.ponder.rsf.components.UIJointContainer;
 import uk.org.ponder.rsf.components.UIMessage;
 import uk.org.ponder.rsf.components.UIOutput;
+import uk.org.ponder.rsf.components.UIVerbatim;
 import uk.org.ponder.rsf.producers.BasicProducer;
 
 /**
@@ -102,12 +103,16 @@ public class AsnnSubmissionDetailsRenderer implements BasicProducer {
         
         DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, locale);
         
-        //String title = (assignment != null) ? assignment.getTitle() : "";
         /***
          * Title and Due Date Information
          */
-        UIMessage.make(joint, "heading_status", "assignment2.student-submit.heading_status", 
-                new Object[]{ title, currentUser.getDisplayName() });
+        if (!assignment.isRemoved()) {
+        UIOutput.make(joint, "heading_status", messageLocator.getMessage("assignment2.student-submit.heading_status", 
+                new Object[]{ title, currentUser.getDisplayName() }));
+        } else {
+            UIVerbatim.make(joint, "heading_status", messageLocator.getMessage("assignment2.student-submit.heading_status.assign_deleted", 
+                new Object[]{ title, currentUser.getDisplayName() }));
+        }
 
         if (assignment.getDueDate() == null) {
             UIMessage.make(joint, "due_date",

@@ -13,6 +13,13 @@ table.listHier{
 	width: 100%;
 }
 
+/* extends the sakai highlight class */
+h2 span.highlight {
+    font-size:0.85em;
+    font-weight:normal;
+    margin-left:5px;
+}
+
 
 
 /* Nav ========================================*/
