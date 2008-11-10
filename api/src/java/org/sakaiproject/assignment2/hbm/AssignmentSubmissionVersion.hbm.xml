@@ -77,6 +77,12 @@
             <column name="LAST_FEEDBACK_DATE" not-null="false" />
         </property>
         
+        <!-- the date and time the student last saved this version 
+        	(or it was auto-saved while student was working on it) -->
+        <property name="studentSaveDate" type="java.util.Date">
+            <column name="STUDENT_SAVE_DATE" not-null="false" />
+        </property>
+        
         <!--  the date and time the student last viewed the feedback for this version -->
         <property name="feedbackLastViewed" type="java.util.Date">
         		<column name="FEEDBACK_LAST_VIEWED" not-null="false" />

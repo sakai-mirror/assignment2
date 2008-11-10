@@ -275,6 +275,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		
 		version.setModifiedBy(currentUserId);
 		version.setModifiedDate(currentTime);
+		version.setStudentSaveDate(currentTime);
 
 		if (!version.isDraft()) {
 			version.setSubmittedDate(currentTime);
