@@ -82,6 +82,14 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
         Assignment2 assignment = assignmentSubmission.getAssignment();
         
         UIJointContainer joint = new UIJointContainer(parent, clientID, "asnn2-submit-editor-widget:");
+        String asOTP = "AssignmentSubmission.";
+        String asOTPKey = "";
+        if (assignmentSubmission != null && assignmentSubmission.getId() != null) {
+            asOTPKey += assignmentSubmission.getId();
+        } else {
+            asOTPKey += EntityBeanLocator.NEW_PREFIX + "1";
+        }
+        asOTP = asOTP + asOTPKey;
         
         String asvOTP = "AssignmentSubmissionVersion.";
         String asvOTPKey = "";
@@ -170,8 +178,7 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
             }
         }
         
-        //form.parameters.add( new UIELBinding("#{AssignmentSubmissionBean.ASOTPKey}", assignmentSubmission.getId()));
-        form.parameters.add( new UIELBinding("#{AssignmentSubmissionBean.ASOTPKey}", asvOTPKey));
+        form.parameters.add( new UIELBinding("#{AssignmentSubmissionBean.ASOTPKey}", asOTPKey));
         form.parameters.add( new UIELBinding("#{AssignmentSubmissionBean.assignmentId}", assignment.getId()));
 
         /*

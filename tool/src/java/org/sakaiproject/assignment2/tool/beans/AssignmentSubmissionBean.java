@@ -130,13 +130,9 @@ public class AssignmentSubmissionBean {
 
         AssignmentSubmission assignmentSubmission = (AssignmentSubmission) asEntityBeanLocator.locateBean(ASOTPKey);
         Assignment2 assignment = assignmentLogic.getAssignmentById(assignmentId);
-        assignmentSubmission.setAssignment(assignment);
 
         for (String key : asvOTPMap.keySet()) {
             AssignmentSubmissionVersion asv = asvOTPMap.get(key);
-
-            asv.setAssignmentSubmission(assignmentSubmission);
-            asv.setDraft(Boolean.FALSE);
 
             //check whether honor pledge was added if required
             if (assignment.isHonorPledge() && !(this.honorPledge != null && Boolean.TRUE.equals(honorPledge))) {
@@ -144,8 +140,8 @@ public class AssignmentSubmissionBean {
                         new Object[] { assignment.getTitle() }, TargettedMessage.SEVERITY_ERROR));
                 return FAILURE;
             }else {
-                submissionLogic.saveStudentSubmission(assignmentSubmission.getUserId(), 
-                        assignmentSubmission.getAssignment(), false, asv.getSubmittedText(), asv.getSubmissionAttachSet());
+                submissionLogic.saveStudentSubmission(assignmentSubmission.getUserId(), assignment, false, 
+                        asv.getSubmittedText(), asv.getSubmissionAttachSet());
                 messages.addMessage(new TargettedMessage("assignment2.student-submit.info.submission_submitted",
                         new Object[] { assignment.getTitle() }, TargettedMessage.SEVERITY_INFO));
                 
@@ -177,11 +173,13 @@ public class AssignmentSubmissionBean {
 
     public String processActionSaveDraft() {
         Assignment2 assignment = assignmentLogic.getAssignmentById(assignmentId);
-        AssignmentSubmission assignmentSubmission = (AssignmentSubmission) asEntityBeanLocator.locateBean(ASOTPKey);
         if (assignmentId == null){
             return FAILURE;
         }
+        
+        AssignmentSubmission assignmentSubmission = (AssignmentSubmission) asEntityBeanLocator.locateBean(ASOTPKey);
         assignmentSubmission.setAssignment(assignment);
+        
         for (String key : asvOTPMap.keySet()) {
             AssignmentSubmissionVersion asv = (AssignmentSubmissionVersion) asvOTPMap.get(key);
 
