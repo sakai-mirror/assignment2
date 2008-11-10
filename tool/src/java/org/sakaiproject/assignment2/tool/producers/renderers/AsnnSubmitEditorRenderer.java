@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
+import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.assignment2.tool.params.FilePickerHelperViewParams;
 import org.sakaiproject.assignment2.tool.producers.AddAttachmentHelperProducer;
@@ -13,6 +14,7 @@ import org.sakaiproject.assignment2.tool.producers.evolvers.AttachmentInputEvolv
 import uk.org.ponder.beanutil.entity.EntityBeanLocator;
 import uk.org.ponder.messageutil.MessageLocator;
 import uk.org.ponder.rsf.components.UIBoundBoolean;
+import uk.org.ponder.rsf.components.UIBoundString;
 import uk.org.ponder.rsf.components.UICommand;
 import uk.org.ponder.rsf.components.UIContainer;
 import uk.org.ponder.rsf.components.UIELBinding;
@@ -64,6 +66,11 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
     public void setAttachmentInputEvolver(AttachmentInputEvolver attachmentInputEvolver){
         this.attachmentInputEvolver = attachmentInputEvolver;
     }
+    
+    private EntityBeanLocator asnnSubmissionVersionLocator;
+    public void setAsnnSubmissionVersion(EntityBeanLocator asnnSubmissionVersion) {
+		this.asnnSubmissionVersionLocator = asnnSubmissionVersion;
+	}
 
     /**
      *  
@@ -115,6 +122,7 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
         }
         
         //Rich Text Input
+        String hackSubmissionText = "";
         if (assignment.getSubmissionType() == AssignmentConstants.SUBMIT_INLINE_ONLY || 
                 assignment.getSubmissionType() == AssignmentConstants.SUBMIT_INLINE_AND_ATTACH){
 
@@ -122,8 +130,14 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
             
             if (studentPreviewSubmission) {
                 // TODO FIXME Make this a UIVerbatim
-                UIOutput.make(form, "text:",asvOTP + ".submittedText");
-                //text_disabled.decorators = disabledDecoratorList;
+            	for (Object versionObj: asnnSubmissionVersionLocator.getDeliveredBeans().values()) {
+            		AssignmentSubmissionVersion version = (AssignmentSubmissionVersion) versionObj;
+            		hackSubmissionText = version.getSubmittedText();
+            		UIVerbatim make = UIVerbatim.make(form, "text:", hackSubmissionText);
+            	}
+            	//UIOutput.make(form, "text:", asnnSubmissionVersionLocator.getDeliveredBeans().size()+"");
+                //UIOutput.make(form, "text:", null,asvOTP + ".submittedText" );
+            	//text_disabled.decorators = disabledDecoratorList;
             }
             else if (!preview) {
                 UIInput text = UIInput.make(form, "text:", asvOTP + ".submittedText");
@@ -194,6 +208,7 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
             "AssignmentSubmissionBean.processActionSaveDraft");
             UICommand edit_button = UICommand.make(form, "back_to_edit_button", UIMessage.make("assignment2.student-submit.back_to_edit"),
             "AssignmentSubmissionBean.processActionBackToEdit");
+            edit_button.addParameter(new UIELBinding(asvOTP + ".submittedText", hackSubmissionText));
         } else {
             submit_button = UICommand.make(form, "submit_button", UIMessage.make("assignment2.student-submit.submit"), 
                 "AssignmentSubmissionBean.processActionSubmit");

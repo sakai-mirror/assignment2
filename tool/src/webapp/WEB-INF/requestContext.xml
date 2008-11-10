@@ -41,6 +41,7 @@
         <property name="attachmentInputEvolver" ref="AttachmentInputEvolver" />
         <property name="messageLocator" ref="messageLocator" />
         <property name="richTextEvolver" ref="richTextEvolver"></property>
+        <property name="asnnSubmissionVersion" ref="AssignmentSubmissionVersion" />
     </bean>
     
     <bean id="AsnnSubmissionVersionRenderer"
