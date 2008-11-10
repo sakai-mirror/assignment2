@@ -1,6 +1,6 @@
 /**********************************************************************************
- * $URL$
- * $Id$
+ * $URL: https://source.sakaiproject.org/contrib/assignment2/trunk/tool/src/java/org/sakaiproject/assignment2/tool/params/Assignment2ViewParamsInterceptor.java $
+ * $Id: Assignment2ViewParamsInterceptor.java 53899 2008-10-13 15:07:58Z swgithen@mtu.edu $
  ***********************************************************************************
  *
  * Copyright (c) 2007, 2008 The Sakai Foundation.
@@ -19,9 +19,14 @@
  *
  **********************************************************************************/
 
-package org.sakaiproject.assignment2.tool.params;
+package org.sakaiproject.assignment2.tool.beans;
 
 import org.sakaiproject.assignment2.tool.beans.locallogic.LocalPermissionLogic;
+import org.sakaiproject.assignment2.tool.params.AssignmentListSortViewParams;
+import org.sakaiproject.assignment2.tool.params.SimpleAssignmentViewParams;
+import org.sakaiproject.assignment2.tool.params.StudentSubmissionParams;
+import org.sakaiproject.assignment2.tool.params.VerifiableViewParams;
+import org.sakaiproject.assignment2.tool.params.ViewSubmissionsViewParams;
 import org.sakaiproject.assignment2.tool.producers.AssignmentDetailProducer;
 import org.sakaiproject.assignment2.tool.producers.ListProducer;
 import org.sakaiproject.assignment2.tool.producers.AuthorizationFailedProducer;
@@ -30,6 +35,8 @@ import org.sakaiproject.assignment2.tool.producers.StudentAssignmentListProducer
 import org.sakaiproject.assignment2.tool.producers.StudentSubmitProducer;
 import org.sakaiproject.assignment2.tool.producers.ViewSubmissionsProducer;
 
+import uk.org.ponder.rsf.flow.ARIResult;
+import uk.org.ponder.rsf.flow.ActionResultInterceptor;
 import uk.org.ponder.rsf.viewstate.AnyViewParameters;
 import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
 import uk.org.ponder.rsf.viewstate.ViewParameters;
@@ -44,7 +51,7 @@ import uk.org.ponder.rsf.viewstate.ViewParamsInterceptor;
  * @author sgithens
  *
  */
-public class Assignment2ViewParamsInterceptor implements ViewParamsInterceptor {
+public class Assignment2WorkFlowLogic implements ViewParamsInterceptor, ActionResultInterceptor {
 
     private LocalPermissionLogic localPermissionLogic;
     public void setLocalPermissionLogic(LocalPermissionLogic localPermissionLogic){
@@ -113,6 +120,33 @@ public class Assignment2ViewParamsInterceptor implements ViewParamsInterceptor {
         }
 
         return new SimpleViewParameters(AuthorizationFailedProducer.VIEWID);
+    }
+
+
+    public void interceptActionResult(ARIResult result, ViewParameters incoming, Object actionReturn) {
+        if (incoming instanceof StudentSubmissionParams) {
+            StudentSubmissionParams params = (StudentSubmissionParams) incoming;
+            
+            if (AssignmentSubmissionBean.SUBMIT.equals(actionReturn)) {
+                result.resultingView = new SimpleViewParameters(StudentAssignmentListProducer.VIEW_ID);
+            }
+            else if (AssignmentSubmissionBean.BACK_TO_EDIT.equals(actionReturn)) {
+                result.resultingView = new StudentSubmissionParams(StudentSubmitProducer.VIEW_ID, params.assignmentId, false);
+                result.propagateBeans = ARIResult.FLOW_ONESTEP;
+            }
+            else if (AssignmentSubmissionBean.PREVIEW.equals(actionReturn)) {
+                System.out.println("PREVIEW action");
+                result.resultingView = new StudentSubmissionParams(StudentSubmitProducer.VIEW_ID, params.assignmentId, true);
+                result.propagateBeans = ARIResult.FLOW_ONESTEP;
+            } else if (AssignmentSubmissionBean.SAVE_DRAFT.equals(actionReturn)) {
+                result.resultingView = new SimpleViewParameters(StudentAssignmentListProducer.VIEW_ID);
+                System.out.println("SAVE_DRAFT action");
+            } else if (AssignmentSubmissionBean.CANCEL.equals(actionReturn)) {
+                System.out.println("CANCEL action");
+            } else {
+                System.out.println("OTHER ACTION!!! " + actionReturn);
+            }
+        }
     }
 
 }
