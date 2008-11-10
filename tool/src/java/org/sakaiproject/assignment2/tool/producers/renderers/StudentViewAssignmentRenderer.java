@@ -22,48 +22,26 @@
 package org.sakaiproject.assignment2.tool.producers.renderers;
 
 import java.text.DateFormat;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
-import java.util.List;
 import java.util.Locale;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
-import org.sakaiproject.assignment2.model.AssignmentAttachment;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
-import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.assignment2.tool.beans.AssignmentSubmissionBean;
-import org.sakaiproject.assignment2.tool.params.FilePickerHelperViewParams;
-import org.sakaiproject.assignment2.tool.params.FragmentViewSubmissionViewParams;
-import org.sakaiproject.assignment2.tool.producers.AddAttachmentHelperProducer;
 import org.sakaiproject.assignment2.tool.producers.StudentAssignmentListProducer;
-import org.sakaiproject.assignment2.tool.producers.fragments.FragmentViewSubmissionProducer;
-import org.sakaiproject.assignment2.tool.producers.evolvers.AttachmentInputEvolver;
 import org.sakaiproject.user.api.User;
 
-import uk.org.ponder.beanutil.entity.EntityBeanLocator;
 import uk.org.ponder.messageutil.MessageLocator;
-import uk.org.ponder.rsf.components.UIBoundBoolean;
-import uk.org.ponder.rsf.components.UIBranchContainer;
-import uk.org.ponder.rsf.components.UICommand;
 import uk.org.ponder.rsf.components.UIContainer;
-import uk.org.ponder.rsf.components.UIELBinding;
-import uk.org.ponder.rsf.components.UIForm;
-import uk.org.ponder.rsf.components.UIInput;
-import uk.org.ponder.rsf.components.UIInputMany;
 import uk.org.ponder.rsf.components.UIInternalLink;
 import uk.org.ponder.rsf.components.UIJointContainer;
 import uk.org.ponder.rsf.components.UIMessage;
 import uk.org.ponder.rsf.components.UIOutput;
-import uk.org.ponder.rsf.components.UIVerbatim;
-import uk.org.ponder.rsf.components.decorators.DecoratorList;
-import uk.org.ponder.rsf.components.decorators.UIFreeAttributeDecorator;
-import uk.org.ponder.rsf.evolvers.TextInputEvolver;
 import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
 import uk.org.ponder.rsf.viewstate.ViewParameters;
 
@@ -79,6 +57,8 @@ import uk.org.ponder.rsf.viewstate.ViewParameters;
 public class StudentViewAssignmentRenderer {
     private static Log log = LogFactory.getLog(StudentViewAssignmentRenderer.class);
 
+    private static final String STUDENT_SUBMISSION_DIVID = "student-view-assignment-area:";
+    
     // Dependency
     private Locale locale;
     public void setLocale(Locale locale) {
@@ -122,6 +102,13 @@ public class StudentViewAssignmentRenderer {
     }
     
     // Dependency
+    private AsnnSubmissionVersionRenderer asnnSubmissionVersionRenderer;
+    public void setAsnnSubmissionVersionRenderer(
+            AsnnSubmissionVersionRenderer asnnSubmissionVersionRenderer) {
+        this.asnnSubmissionVersionRenderer = asnnSubmissionVersionRenderer;
+    }
+    
+    // Dependency
     private User currentUser;
     public void setCurrentUser(User currentUser) {
         this.currentUser = currentUser;
@@ -133,9 +120,21 @@ public class StudentViewAssignmentRenderer {
         this.submissionBean = submissionBean;
     }
     
+    /**
+     * It's important to note that the boolean preview on this method is for
+     * previewing what the assignment will look like to a student. It is not the
+     * Preview Submission view for when the student is about to submit.
+     * 
+     * @param tofill
+     * @param divID
+     * @param assignmentSubmission
+     * @param assignment
+     * @param params
+     * @param ASOTPKey
+     * @param preview
+     */
     public void makeStudentView(UIContainer tofill, String divID, AssignmentSubmission assignmentSubmission, 
-            Assignment2 assignment, ViewParameters params, String ASOTPKey, Boolean preview) {
-        System.out.println("THE STUDENT VIEW PASSED IN ASOTPKey: " + ASOTPKey);
+            Assignment2 assignment, ViewParameters params, String ASOTPKey, Boolean preview, Boolean studentSubmissionPreview) {
         /**
          * Breadcrumbs
          */
@@ -153,7 +152,7 @@ public class StudentViewAssignmentRenderer {
         if (assignmentSubmission != null) {
             assignmentSubmission.setAssignment(assignment);
         }
-        UIJointContainer joint = new UIJointContainer(tofill, divID, "portletBody:", ""+1);
+        UIJointContainer joint = new UIJointContainer(tofill, divID, STUDENT_SUBMISSION_DIVID, ""+1);
 
         // use a date which is related to the current users locale
         DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, locale);
@@ -176,46 +175,22 @@ public class StudentViewAssignmentRenderer {
                     statusConstant);
         }
         
-        asnnSubmissionDetailsRenderer.fillComponents(joint, "assignment-details:", assignmentSubmission);
+        /* 
+         * If the Student is previewing their submission, only want to show the
+         * text and attachments of that submission.
+         */
+        if (!studentSubmissionPreview) {
+            asnnSubmissionDetailsRenderer.fillComponents(joint, "assignment-details:", assignmentSubmission);
         
-        asnnInstructionsRenderer.fillComponents(joint, "assignment-instructions:", assignment);
+            asnnInstructionsRenderer.fillComponents(joint, "assignment-instructions:", assignment);
         
-        // Submission History
-        asnnSubmissionHistoryRenderer.fillComponents(joint, "assignment-previous-submissions:", assignmentSubmission);
-        
-        if (submissionLogic.isSubmissionOpenForStudentForAssignment(currentUser.getId(), assignment.getId())) {
-            asnnSubmitEditorRenderer.fillComponents(joint, "assignment-edit-submission:", assignmentSubmission, preview);
+            // Submission History
+            asnnSubmissionHistoryRenderer.fillComponents(joint, "assignment-previous-submissions:", assignmentSubmission);
         }
-
-        //Begin Looping for previous submissions
-
-  //      List<AssignmentSubmissionVersion> history = new ArrayList<AssignmentSubmissionVersion>();
-  //      if (!preview) {
-   //         history = submissionLogic.getVersionHistoryForSubmission(assignmentSubmission);
-   //     }
-
-   //     for (AssignmentSubmissionVersion asv : history){
-   //         if (asv.isDraft()) { 
-   //             continue;
-    //        }
-
-    //        UIBranchContainer loop = UIBranchContainer.make(joint, "previous_submissions:");
-     //       UIOutput.make(loop, "previous_date", (asv.getSubmittedDate() != null ? df.format(asv.getSubmittedDate()) : ""));
-//            if (asvOTPKey.equals(asv.getId().toString())){
-                //we are editing this version
-  //              UIMessage.make(loop, "current_version", "assignment2.student-submit.current_version");
-    //        } else {
-                //else add link to edit this submission
-      //          UIInternalLink.make(loop, "previous_link", 
-        //                messageLocator.getMessage("assignment2.assignment_grade.view_submission"),
-        //                new FragmentViewSubmissionViewParams(FragmentViewSubmissionProducer.VIEW_ID, asv.getId()));
-         //   }
-      //  }
-      //  if (history == null || history.size() == 0) {
-            //no history, add dialog
-     //       UIMessage.make(joint, "no_history", "assignment2.student-submit.no_history");
-     //   }
-
+            
+        if (submissionLogic.isSubmissionOpenForStudentForAssignment(currentUser.getId(), assignment.getId())) {
+            asnnSubmitEditorRenderer.fillComponents(joint, "assignment-edit-submission:", assignmentSubmission, preview, studentSubmissionPreview);
+        }
         
     }
 }

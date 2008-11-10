@@ -21,7 +21,8 @@
         	unique-key="SUBMISSION_ID_VERSION_NUM" />
         <!-- the date and time of submission -->
         <property name="submittedDate" type="java.util.Date">
-            <column name="SUBMITTED_DATE" not-null="false" />
+            <column name="SUBMITTED_DATE" not-null="false" 
+            	index="A2_SUB_VERSION_SUB_DATE_I"/>
         </property>
         <!-- which version is this? first submitted version? second? answers which submitted version this is .
         		will be 0 if feedback provided without submission. student submitted versions

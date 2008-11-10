@@ -100,11 +100,6 @@ public class Assignment2Bean {
         this.externalLogic = externalLogic;
     }
 
-    private PreviewAssignmentBean previewAssignmentBean;
-    public void setPreviewAssignmentBean (PreviewAssignmentBean previewAssignmentBean) {
-        this.previewAssignmentBean = previewAssignmentBean;
-    }
-
     private MessageLocator messageLocator;
     public void setMessageLocator (MessageLocator messageLocator) {
         this.messageLocator = messageLocator;
@@ -252,8 +247,9 @@ public class Assignment2Bean {
             if (this.requireDueDate == null || this.requireDueDate == Boolean.FALSE) {
                 assignment.setDueDate(null);
             }
-            previewAssignmentBean.setAssignment(assignment);
-            previewAssignmentBean.setOTPKey(key);
+            // TODO FIXME ASNN-295
+            // previewAssignmentBean.setAssignment(assignment);
+            // reviewAssignmentBean.setOTPKey(key);
         }
         
         // Validation

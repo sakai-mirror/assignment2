@@ -4,12 +4,15 @@
 <!--     Assignment Submission Detail Headers Widget                         -->
 <!--                                                                         -->
 <div rsf:id="assn2-submission-details-widget:">
-    <h2 rsf:id="heading_status">Professional Writing for Visual Media Submission for Earlene Arledge</h2>
-	<h3 rsf:id="due_date">DUE: 09 23, 2008 4:00pm or No due date</h3>
+    <h3 rsf:id="heading_status" >
+        Professional Writing for Visual Media Submission for Earlene Arledge
+    </h3>
+    
+	<p class="subheading" rsf:id="due_date">DUE: 09 23, 2008 4:00pm or No due date</p>
 	
-	<h2 rsf:id="msg=assignment2.student-submit.details_title">Assignment Details</h2>
+	<h3 rsf:id="msg=assignment2.student-submit.details_title">Assignment Details</h3>
 
-	<table class="itemSummary" cellspacing="0" summary="Assignment Details">
+	<table class="itemSummary infoTable" cellspacing="0" summary="Assignment Details">
 		<tr>
 			<th rsf:id="msg=assignment2.student-submit.is_graded_title">Graded?</th>	
 			<td rsf:id="is_graded"></td>
@@ -56,31 +59,23 @@
 <!--                                                                         -->
 <!--     Assignment Submission History Display Widget                        -->
 <!--                                                                         -->
-<div rsf:id="asnn2-submission-history-widget:">
-	<fieldset>
-	    <!-- 
-		<legend>
-			<img src="/sakai-assignment2-tool/content/images/expand.png" border="0" alt="Open, click to close assignment instruction" style="cursor:pointer" 
-				onclick="slideFieldset(this)" />
-			<span rsf:id="msg=assignment2.student-submit.previous_submissions" onclick="slideFieldset(jQuery(this).prev('img').get(0));" style="cursor:pointer">Previous Submissions</span>
-		</legend>
-		-->
+<div rsf:id="asnn2-submission-history-widget:" class="versionHistory">
 		<div rsf:id="single-submission-version:">
 		
 		</div>
 		
-		<h2 id="submissions-header" rsf:id="submissions-header">
+		<h3 id="submissions-header" rsf:id="submissions-header">
 			<img src="/sakai-assignment2-tool/content/images/collapse.png" border="0" alt="Open, click to close assignment instruction" style="cursor:pointer" />
 		    <span rsf:id="msg=assignment2.student-submission.history.header">Previous Submissions</span>
-		</h2>
+		</h3>
 		<div id="multiple-submissions" rsf:id="multiple-submissions">
-		    <div id="submission-version:" rsf:id="submission-version:">
-		        <h2>
+		    <div class="versionEntry" id="submission-version:" rsf:id="submission-version:">
+		        <h3>
 		          <img src="/sakai-assignment2-tool/content/images/expand.png" border="0" alt="Open, click to close assignment instruction" style="cursor:pointer" />
 		          <span rsf:id="header-text">Blah blah</span>
 		          <img rsf:id="new-feedback-img" src="/library/image/silk/email.png" />
 		          <img rsf:id="open-feedback-img" src="/library/image/silk/email_open.png" />
-		        </h2>
+		        </h3>
 		        <div rsf:id="submission-entry:">
 		          <!-- The rendered submission goes here. -->
 		        </div>
@@ -99,14 +94,13 @@
 			</li>
 		</ol>
 		-->
-	</fieldset>
 </div>
 
 <!--                                                                         -->
 <!--     Assignment Submission Version Display Widget                        -->
 <!--                                                                         -->
 <div rsf:id="asnn2-submission-version-widget:">
-    <h2 rsf:id="submission-header" >Assignment Submission</h2>
+    <h3 rsf:id="submission-header" >Assignment Submission</h3>
     <h4 rsf:id="submission-text-header">Submission Text</h4>
     <div rsf:id="submission-text" class="textPanel">
         <p>This is the students submission text,
@@ -168,12 +162,24 @@
 	</fieldset>
 	<fieldset class="submit">
 		<input type="hidden" rsf:id="submitted_text_for_attach_only" />
-		<input rsf:id="submit_button" accesskey="s" type="submit" class="active" value="Submit"/>
-		<input rsf:id="preview_button" title="Preview Submission" accesskey="v" type="button" class="preview_button thickbox" value="Preview"/>
+		<input rsf:id="submit_button"  accesskey="s" type="submit" class="active" value="Submit"/> <!-- onclick="return asnn2.studentSubmissionConfirm(this);" -->
+		<input rsf:id="back_to_edit_button" type="submit" value="Edit" />
+		<!-- <input rsf:id="preview_button" title="Preview Submission" accesskey="v" type="button" class="preview_button thickbox" value="Preview"/> -->
+		<input rsf:id="preview_button" title="Preview Submission" accesskey="v" type="submit" value="Preview"/>
 		<input rsf:id="save_draft_button" accesskey="d" type="submit" value="Save Draft"/>
 		<input rsf:id="cancel_button" accesskey="x" type="submit" value="Cancel"/>
 	</fieldset>													
 	</form>	
+	
+	<div class="submission-confirm-div" style="display:none" id="submit-confirm-dialog">
+        <ul style="margin:0;padding:0;display:inline;">
+            <li class="alertMessageInline">Are you sure you are ready to send this submission to your instructor?</li>
+        </ul>
+        <fieldset class="submit">
+            <input id="submission-confirm-button" accesskey="s" type="button" class="active" value="Yes, Continue"/>
+            <input id="submission-cancel-button" accesskey="x" type="button" value="No, Return to Assignment"/>
+        </fieldset>
+    </div>
 </div>
 
 

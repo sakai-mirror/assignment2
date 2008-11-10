@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
+import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.assignment2.tool.params.FilePickerHelperViewParams;
 import org.sakaiproject.assignment2.tool.producers.AddAttachmentHelperProducer;
@@ -13,6 +14,7 @@ import org.sakaiproject.assignment2.tool.producers.evolvers.AttachmentInputEvolv
 import uk.org.ponder.beanutil.entity.EntityBeanLocator;
 import uk.org.ponder.messageutil.MessageLocator;
 import uk.org.ponder.rsf.components.UIBoundBoolean;
+import uk.org.ponder.rsf.components.UIBoundString;
 import uk.org.ponder.rsf.components.UICommand;
 import uk.org.ponder.rsf.components.UIContainer;
 import uk.org.ponder.rsf.components.UIELBinding;
@@ -64,6 +66,11 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
     public void setAttachmentInputEvolver(AttachmentInputEvolver attachmentInputEvolver){
         this.attachmentInputEvolver = attachmentInputEvolver;
     }
+    
+    private EntityBeanLocator asnnSubmissionVersionLocator;
+    public void setAsnnSubmissionVersion(EntityBeanLocator asnnSubmissionVersion) {
+		this.asnnSubmissionVersionLocator = asnnSubmissionVersion;
+	}
 
     /**
      *  
@@ -73,10 +80,23 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
      * @param preview
      * @param asvOTP
      */
-    public void fillComponents(UIContainer parent, String clientID, AssignmentSubmission assignmentSubmission, boolean preview) {
+    public void fillComponents(UIContainer parent, String clientID, AssignmentSubmission assignmentSubmission, boolean preview, boolean studentPreviewSubmission) {
+        // Various Widgets we may need to decorate later.
+        UICommand submit_button = null;
+        UICommand preview_button = null;
+        UICommand save_button = null;
+        
         Assignment2 assignment = assignmentSubmission.getAssignment();
         
         UIJointContainer joint = new UIJointContainer(parent, clientID, "asnn2-submit-editor-widget:");
+        String asOTP = "AssignmentSubmission.";
+        String asOTPKey = "";
+        if (assignmentSubmission != null && assignmentSubmission.getId() != null) {
+            asOTPKey += assignmentSubmission.getId();
+        } else {
+            asOTPKey += EntityBeanLocator.NEW_PREFIX + "1";
+        }
+        asOTP = asOTP + asOTPKey;
         
         String asvOTP = "AssignmentSubmissionVersion.";
         String asvOTPKey = "";
@@ -102,20 +122,35 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
         }
         
         //Rich Text Input
+        String hackSubmissionText = "";
         if (assignment.getSubmissionType() == AssignmentConstants.SUBMIT_INLINE_ONLY || 
                 assignment.getSubmissionType() == AssignmentConstants.SUBMIT_INLINE_AND_ATTACH){
 
             UIOutput.make(form, "submit_text");
-            UIInput text = UIInput.make(form, "text:", asvOTP + ".submittedText");
-            if (!preview) {
+            
+            if (studentPreviewSubmission) {
+                // TODO FIXME Make this a UIVerbatim
+            	for (Object versionObj: asnnSubmissionVersionLocator.getDeliveredBeans().values()) {
+            		AssignmentSubmissionVersion version = (AssignmentSubmissionVersion) versionObj;
+            		hackSubmissionText = version.getSubmittedText();
+            		UIVerbatim make = UIVerbatim.make(form, "text:", hackSubmissionText);
+            	}
+            	//UIOutput.make(form, "text:", asnnSubmissionVersionLocator.getDeliveredBeans().size()+"");
+                //UIOutput.make(form, "text:", null,asvOTP + ".submittedText" );
+            	//text_disabled.decorators = disabledDecoratorList;
+            }
+            else if (!preview) {
+                UIInput text = UIInput.make(form, "text:", asvOTP + ".submittedText");
                 text.mustapply = Boolean.TRUE;
                 richTextEvolver.evolveTextInput(text);
-            } else {
+            } 
+            else {
                 //disable textarea
-
+                UIInput text = UIInput.make(form, "text:", asvOTP + ".submittedText");
                 UIInput text_disabled = UIInput.make(form, "text_disabled",asvOTP + ".submittedText");
                 text_disabled.decorators = disabledDecoratorList;
             }
+            
 
         }
 
@@ -131,9 +166,11 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
                         assignmentSubmission.getCurrentSubmissionVersion().getSubmittedAttachmentRefs());
                 attachmentInputEvolver.evolveAttachment(attachmentInput);
 
-                UIInternalLink.make(form, "add_submission_attachments", UIMessage.make("assignment2.student-submit.add_attachments"),
+                if (!studentPreviewSubmission) {
+                    UIInternalLink.make(form, "add_submission_attachments", UIMessage.make("assignment2.student-submit.add_attachments"),
                         new FilePickerHelperViewParams(AddAttachmentHelperProducer.VIEWID, Boolean.TRUE, 
                                 Boolean.TRUE, 500, 700, asvOTPKey));
+                }
                 
                 UIOutput.make(form, "no_attachments_yet", messageLocator.getMessage("assignment2.student-submit.no_attachments"));
             }
@@ -149,28 +186,46 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
         if (assignment.isHonorPledge()) {
             UIOutput.make(joint, "honor_pledge_fieldset");
             UIMessage.make(joint, "honor_pledge_label", "assignment2.student-submit.honor_pledge_text");
-            UIBoundBoolean.make(form, "honor_pledge", "#{AssignmentSubmissionBean.honorPledge}");
+            UIBoundBoolean honorPledgeCheckbox = UIBoundBoolean.make(form, "honor_pledge", "#{AssignmentSubmissionBean.honorPledge}");
+            if (studentPreviewSubmission) {
+                honorPledgeCheckbox.decorators = disabledDecoratorList;
+            }
         }
         
-        // Gosh I hope I'm putting the right thing for the ASOTPKey
-        form.parameters.add( new UIELBinding("#{AssignmentSubmissionBean.ASOTPKey}", asvOTPKey));
+        form.parameters.add( new UIELBinding("#{AssignmentSubmissionBean.ASOTPKey}", asOTPKey));
         form.parameters.add( new UIELBinding("#{AssignmentSubmissionBean.assignmentId}", assignment.getId()));
 
-        //Buttons
-        UICommand submit_button = UICommand.make(form, "submit_button", UIMessage.make("assignment2.student-submit.submit"), 
-        "#{AssignmentSubmissionBean.processActionSubmit}");
-        UICommand preview_button = UICommand.make(form, "preview_button", UIMessage.make("assignment2.student-submit.preview"), 
-        "#{AssignmentSubmissionBean.processActionPreview}");
-        UICommand save_button = UICommand.make(form, "save_draft_button", UIMessage.make("assignment2.student-submit.save_draft"), 
-        "#{AssignmentSubmissionBean.processActionSaveDraft}");
-        UICommand cancel_button = UICommand.make(form, "cancel_button", UIMessage.make("assignment2.student-submit.cancel"), 
-        "#{AssignmentSubmissionBean.processActionCancel}");
+        /*
+         * According to the spec, if a student is editing a submision they will
+         * see the Submit,Preview, and Save&Exit buttons.  If they are previewing
+         * a submission they will see Submit,Edit, and Save&Exit.
+         */
+        
+        if (studentPreviewSubmission) {
+            submit_button = UICommand.make(form, "submit_button", UIMessage.make("assignment2.student-submit.submit"), 
+            "AssignmentSubmissionBean.processActionSubmit");
+            save_button = UICommand.make(form, "save_draft_button", UIMessage.make("assignment2.student-submit.save_draft"), 
+            "AssignmentSubmissionBean.processActionSaveDraft");
+            UICommand edit_button = UICommand.make(form, "back_to_edit_button", UIMessage.make("assignment2.student-submit.back_to_edit"),
+            "AssignmentSubmissionBean.processActionBackToEdit");
+            edit_button.addParameter(new UIELBinding(asvOTP + ".submittedText", hackSubmissionText));
+        } else {
+            submit_button = UICommand.make(form, "submit_button", UIMessage.make("assignment2.student-submit.submit"), 
+                "AssignmentSubmissionBean.processActionSubmit");
+            preview_button = UICommand.make(form, "preview_button", UIMessage.make("assignment2.student-submit.preview"), 
+                "AssignmentSubmissionBean.processActionPreview");
+            save_button = UICommand.make(form, "save_draft_button", UIMessage.make("assignment2.student-submit.save_draft"), 
+                "AssignmentSubmissionBean.processActionSaveDraft");
+        }
+        // ASNN-288
+        //UICommand cancel_button = UICommand.make(form, "cancel_button", UIMessage.make("assignment2.student-submit.cancel"), 
+        //"#{AssignmentSubmissionBean.processActionCancel}");
 
         if (preview) {
             submit_button.decorators = disabledDecoratorList;
             preview_button.decorators = disabledDecoratorList;
             save_button.decorators = disabledDecoratorList;
-            cancel_button.decorators = disabledDecoratorList;
+            //cancel_button.decorators = disabledDecoratorList;
         }
 
     }

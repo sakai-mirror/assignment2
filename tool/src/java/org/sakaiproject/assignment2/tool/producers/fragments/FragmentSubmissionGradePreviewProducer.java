@@ -27,7 +27,6 @@ import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
-import org.sakaiproject.assignment2.tool.beans.PreviewAssignmentSubmissionBean;
 import org.sakaiproject.assignment2.tool.params.AssignmentViewParams;
 import org.sakaiproject.assignment2.tool.producers.renderers.AttachmentListRenderer;
 
@@ -43,83 +42,86 @@ import uk.org.ponder.rsf.view.ViewComponentProducer;
 import uk.org.ponder.rsf.viewstate.ViewParameters;
 import uk.org.ponder.rsf.viewstate.ViewParamsReporter;
 
+/**
+ * TODO FIXME This Preview Functionality is currently in flux.  A number of 
+ * things are being removed as part of ASNN-295 
+ * 
+ * @author sgithens
+ *
+ */
 public class FragmentSubmissionGradePreviewProducer implements ViewComponentProducer, ViewParamsReporter, ContentTypeReporter {
 
     public static final String VIEW_ID = "fragment-submission-grade_preview";
     public String getViewID() {
         return VIEW_ID;
     }
-    
+
     private ExternalLogic externalLogic;
     private AssignmentSubmissionLogic submissionLogic;
-	private PreviewAssignmentSubmissionBean previewAssignmentSubmissionBean;
-	private AttachmentListRenderer attachmentListRenderer;
-	private MessageLocator messageLocator;
+    private AttachmentListRenderer attachmentListRenderer;
+    private MessageLocator messageLocator;
 
     public void fillComponents(UIContainer tofill, ViewParameters viewparams, ComponentChecker checker) {
-    	AssignmentViewParams params = (AssignmentViewParams) viewparams;
-    	
-    	UIMessage.make(tofill, "page-title", "assignment2.assignment_preview.title");
+        AssignmentViewParams params = (AssignmentViewParams) viewparams;
 
-    	AssignmentSubmission as = previewAssignmentSubmissionBean.getAssignmentSubmission();
-    	AssignmentSubmissionVersion asv = previewAssignmentSubmissionBean.getAssignmentSubmissionVersion();
-    	Assignment2 assignment = as.getAssignment();
-    	
-    	String title = (assignment != null) ? assignment.getTitle() : "";
+        UIMessage.make(tofill, "page-title", "assignment2.assignment_preview.title");
+
+        // TODO FIXME ASNN-295 in progress
+        AssignmentSubmission as = null; //previewAssignmentSubmissionBean.getAssignmentSubmission();
+        AssignmentSubmissionVersion asv = null; // = previewAssignmentSubmissionBean.getAssignmentSubmissionVersion();
+        Assignment2 assignment = as.getAssignment();
+
+        String title = (assignment != null) ? assignment.getTitle() : "";
         UIMessage.make(tofill, "preview_heading", "assignment2.fragment-submission-grade_preview.heading", new Object[]{ title });
         //Free from memory - if that does what I think it will do :-\
-        previewAssignmentSubmissionBean.setAssignmentSubmission(null);
-    	
+        //previewAssignmentSubmissionBean.setAssignmentSubmission(null);
+
         UIOutput.make(tofill, "student", externalLogic.getUserDisplayName(as.getUserId()));
-        
+
         // set the textual representation of the submission status
-		String status = "";
-		int statusConstant = AssignmentConstants.SUBMISSION_NOT_STARTED;
-    	if (as != null) {
-    		statusConstant = submissionLogic.getSubmissionStatusConstantForCurrentVersion(
-    				as.getCurrentSubmissionVersion(), assignment.getDueDate());
-    		status = messageLocator.getMessage(
-    				"assignment2.assignment_grade-assignment.submission_status." + 
-    				statusConstant);
-    	}
+        String status = "";
+        int statusConstant = AssignmentConstants.SUBMISSION_NOT_STARTED;
+        if (as != null) {
+            statusConstant = submissionLogic.getSubmissionStatusConstantForCurrentVersion(
+                    as.getCurrentSubmissionVersion(), assignment.getDueDate());
+            status = messageLocator.getMessage(
+                    "assignment2.assignment_grade-assignment.submission_status." + 
+                    statusConstant);
+        }
         UIOutput.make(tofill, "status", status);
-        
+
         String instructions = (assignment != null) ? assignment.getInstructions() : "";
         UIVerbatim.make(tofill, "instructions", instructions);
-        
-    	attachmentListRenderer.makeAttachmentFromAssignmentAttachmentSet(tofill, "attachment_list:", params.viewID, assignment.getAttachmentSet());
-    	
-    	UIVerbatim.make(tofill, "feedbackText", asv.getAnnotatedTextFormatted());
+
+        attachmentListRenderer.makeAttachmentFromAssignmentAttachmentSet(tofill, "attachment_list:", params.viewID, assignment.getAttachmentSet());
+
+        UIVerbatim.make(tofill, "feedbackText", asv.getAnnotatedTextFormatted());
         UIVerbatim.make(tofill, "feedback_notes", asv.getFeedbackNotes());
     }
-    
+
     public ViewParameters getViewParameters() {
         return new AssignmentViewParams();
     }
-	
-	public String getContentType() {
-		return ContentTypeInfoRegistry.HTML_FRAGMENT;
-	}
-    
+
+    public String getContentType() {
+        return ContentTypeInfoRegistry.HTML_FRAGMENT;
+    }
+
     public void setExternalLogic(ExternalLogic externalLogic) {
-    	this.externalLogic = externalLogic;
+        this.externalLogic = externalLogic;
     }
-        
-    public void setPreviewAssignmentSubmissionBean(PreviewAssignmentSubmissionBean previewAssignmentSubmissionBean) {
-    	this.previewAssignmentSubmissionBean = previewAssignmentSubmissionBean;
+
+    public void setAttachmentListRenderer(AttachmentListRenderer attachmentListRenderer){
+        this.attachmentListRenderer = attachmentListRenderer;
     }
-    
-	public void setAttachmentListRenderer(AttachmentListRenderer attachmentListRenderer){
-		this.attachmentListRenderer = attachmentListRenderer;
-	}
 
-	
-	public void setMessageLocator(MessageLocator messageLocator) {
-		this.messageLocator = messageLocator;
-	}
 
-	public void setSubmissionLogic(AssignmentSubmissionLogic submissionLogic)
-	{
-		this.submissionLogic = submissionLogic;
-	}
+    public void setMessageLocator(MessageLocator messageLocator) {
+        this.messageLocator = messageLocator;
+    }
+
+    public void setSubmissionLogic(AssignmentSubmissionLogic submissionLogic)
+    {
+        this.submissionLogic = submissionLogic;
+    }
 }

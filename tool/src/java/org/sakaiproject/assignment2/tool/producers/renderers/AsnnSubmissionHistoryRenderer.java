@@ -60,7 +60,7 @@ public class AsnnSubmissionHistoryRenderer implements BasicProducer {
 
         if (versionHistory.size() == 1) {
             AssignmentSubmissionVersion curVersion = versionHistory.get(0);
-            asnnSubmissionVersionRenderer.fillComponents(joint, "single-submission-version:", curVersion);
+            asnnSubmissionVersionRenderer.fillComponents(joint, "single-submission-version:", curVersion, true);
             List<Long>versionIds = new ArrayList<Long>();
             versionIds.add(curVersion.getId());
             submissionLogic.markFeedbackAsViewed(assignmentSubmission.getId(), versionIds);
@@ -70,27 +70,33 @@ public class AsnnSubmissionHistoryRenderer implements BasicProducer {
             UIOutput.make(joint, "multiple-submissions");
             
             for (AssignmentSubmissionVersion version: versionHistory) {
-                UIBranchContainer versionDiv = UIBranchContainer.make(joint, "submission-version:");
-                UIMessage.make(versionDiv, "header-text", "assignment2.student-submission.history.version.header", 
-                        new Object[] {version.getSubmittedDate().toLocaleString()});
-                boolean newfeedback = false;
-                // Make the envelope icons for feedback if necessary
-                if (version.isFeedbackReleased() && version.isFeedbackRead()) {
-                    UIOutput.make(versionDiv, "open-feedback-img");
-                    newfeedback = true;
+                // do not include draft versions in this history display
+                if (!version.isDraft()) {
+                    UIBranchContainer versionDiv = UIBranchContainer.make(joint, "submission-version:");
+                    UIMessage.make(versionDiv, "header-text", "assignment2.student-submission.history.version.header", 
+                            new Object[] {version.getSubmittedDate().toLocaleString()});
+                    boolean newfeedback = false;
+                    // Make the envelope icons for feedback if necessary
+                    if (version.isFeedbackReleased() && version.isFeedbackRead()) {
+                        UIOutput.make(versionDiv, "open-feedback-img");
+                        newfeedback = true;
+                    }
+                    else if (version.isFeedbackReleased()) {
+                        UIOutput.make(versionDiv, "new-feedback-img");
+                    }
+                    UIContainer versionContainer = asnnSubmissionVersionRenderer.fillComponents(versionDiv, "submission-entry:", version, false);
+                    Map<String,String> stylemap = new HashMap<String,String>();
+                    stylemap.put("display", "none");
+                    versionContainer.decorate(new UICSSDecorator(stylemap));
+                    UIVerbatim.make(versionDiv, "jsinit", "asnn2.assnSubVersionDiv('" +
+                            versionDiv.getFullID()+"',"+newfeedback+
+                            ",'"+assignmentSubmission.getId()+"','"+
+                            version.getId()+"');");
                 }
-                else if (version.isFeedbackReleased()) {
-                    UIOutput.make(versionDiv, "new-feedback-img");
-                }
-                UIContainer versionContainer = asnnSubmissionVersionRenderer.fillComponents(versionDiv, "submission-entry:", version);
-                Map<String,String> stylemap = new HashMap<String,String>();
-                stylemap.put("display", "none");
-                versionContainer.decorate(new UICSSDecorator(stylemap));
-                UIVerbatim.make(versionDiv, "jsinit", "asnn2.assnSubVersionDiv('" +
-                        versionDiv.getFullID()+"',"+newfeedback+
-                        ",'"+assignmentSubmission.getId()+"','"+
-                        version.getId()+"');");
             }
+            // add the <hr> tag separating this section - we only want it to appear if this 
+            // section appears!
+            UIOutput.make(parent, "previous_submissions_sep");
         }
     }
 

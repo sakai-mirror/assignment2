@@ -63,46 +63,31 @@
 				<img src="/sakai-assignment2-tool/content/images/page_white_word.png" target="_blank" width="16" height="16"/> <a href="">ExampleAttachment.doc</a> (52 KB)
 			</li>
 		</ol>
+        <span rsf:id="no_submitted_attachments" class="instruction no_attachments_yet">No attachments yet</span>
 	</fieldset>
 	<fieldset>
 		<legend>
 			<img src="/sakai-assignment2-tool/content/images/expand.png" border="0" alt="Open, click to close assignment instruction" style="cursor:pointer" 
-				onclick="slideFieldset(this)" />
-			<span rsf:id="msg=assignment2.assignment_grade.feedback" onclick="slideFieldset(jQuery(this).prev('img').get(0));" style="cursor:pointer">Feedback</span>
+				onclick="slideDiv(this)" />
+			<span rsf:id="msg=assignment2.assignment_grade.feedback" onclick="slideDiv(jQuery(this).prev('img').get(0));" style="cursor:pointer">Feedback</span>
 		</legend>
-		<ol style="display:none">
-			<li>
-				<!-- <label rsf:id="msg=assignment2.assignment_grade.feedback_notes_instructions" class="block instruction">Add Notes Below</label> -->
-				<div rsf:id="feedback_notes:">
-					<textarea name="something" cols="80" rows="20" wrap="virtual"></textarea>
-					<!-- this should be the FCKEditor -->
-				</div>		
-			</li>
-			<li>
-				<fieldset id="attachmentsFieldset">
-					<legend rsf:id="msg=assignment2.assignment_grade.feedback_attachments">Attachments</legend>
-					<ol rsf:id="attachment_list:">
-						<li></li>
-					</ol>
-					<span><a rsf:id="add_attachments" class="thickbox">Add Attachments</a></span>
-				</fieldset>
-			</li>
-		</ol>
+		<div style="display: none;">
+			<div>
+                <p rsf:id="msg=assignment2.assignment_grade.feedback_notes" class="subgroupHeading">Additional Feedback</p>
+				<textarea  rsf:id="feedback_notes:" name="something" cols="80" rows="20" wrap="virtual"></textarea>
+				<!-- this should be the FCKEditor -->
+			</div>	
+
+			<div id="attachmentsFieldset">
+				<p rsf:id="msg=assignment2.assignment_grade.feedback_attachments" class="subgroupHeading">Attachments</p>
+				<ol rsf:id="attachment_list:">
+					<li></li>
+				</ol>
+				<span><a rsf:id="add_attachments" class="thickbox">Add Attachments</a></span>
+			</div>
+		</div>
 	</fieldset>
 
-	<!-- 
-	<fieldset>
-		<ol>
-			<li>
-				<fieldset>
-					<ol>
-						<li><input rsf:id="release_feedback" type="checkbox" /><label rsf:id="release_feedback_label">Release this Feedback</label></li>
-					</ol>
-				</fieldset>
-			</li>
-		</ol>
-	</fieldset>
-	-->
 	<!-- Allow Resubmissions -->
 	<fieldset rsf:id="resubmission_settings">
 		<legend>
@@ -186,10 +171,12 @@ function refresh_ajax(){
 			cache: false,
 			url: fragGBDetailsPath + "?assignmentId=" + assignmentId + "&userId=" + userId,
 			success: function(html){
-				jQuery("#gradebook-details-container").html(html.substring(html.indexOf('<div>') + 5, html.lastIndexOf('</div>')));
-				tb_init('a.thickbox, area.thickbox, input.thickbox');
-				if (old != jQuery("#gradebook-details-container fieldset").html())
-					highlight(jQuery("#gradebook-details-container fieldset"));
+    		    if (old != null) {
+    				jQuery("#gradebook-details-container").html(html.substring(html.indexOf('<div>') + 5, html.lastIndexOf('</div>')));
+    				tb_init('a.thickbox, area.thickbox, input.thickbox');
+    				if (old != jQuery("#gradebook-details-container fieldset").html())
+    					highlight(jQuery("#gradebook-details-container fieldset"));
+    		    }
 			}
 		});
 	}

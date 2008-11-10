@@ -29,6 +29,7 @@ import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.tool.params.AssignmentViewParams;
+import org.sakaiproject.assignment2.tool.params.RemoveAssignmentParams;
 
 import uk.org.ponder.rsf.components.UIBranchContainer;
 import uk.org.ponder.rsf.components.UIContainer;
@@ -75,7 +76,7 @@ ViewParamsReporter, NavigationCaseReporter {
 
     public void fillComponents(UIContainer tofill, ViewParameters viewparams,
             ComponentChecker checker) {
-        AssignmentViewParams params = (AssignmentViewParams) viewparams;
+        RemoveAssignmentParams params = (RemoveAssignmentParams) viewparams;
         
         Assignment2 assignment = assignmentLogic.getAssignmentById(params.assignmentId);
         
@@ -102,7 +103,7 @@ ViewParamsReporter, NavigationCaseReporter {
     }
 
     public ViewParameters getViewParameters() {
-        return new AssignmentViewParams();
+        return new RemoveAssignmentParams();
     }
 
     public List reportNavigationCases() {

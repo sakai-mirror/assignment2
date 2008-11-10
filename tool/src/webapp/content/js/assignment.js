@@ -67,29 +67,6 @@ function toggle_group_checkboxes(check_all_box){
 	}
 }
 
-function show_due_date(){
-	el = jQuery("input:checkbox[name='page-replace\:\:require_due_date']").get(0);
-	if (el) {
-		if (el.checked) {
-			jQuery(el).nextAll('span:first').show();
-		} else {
-			jQuery(el).nextAll('span:first').hide();
-		}
-	}
-}
-
-function show_accept_until(){
-	el = jQuery("input:checkbox[name='page-replace\:\:require_accept_until']").get(0);
-	if (el){
-		if(el.checked){
-			jQuery(el).nextAll('span:first').show();
-		}else {
-			jQuery(el).nextAll('span:first').hide();
-		}
-		
-	}
-}
-
 function update_resubmit_until(){
 	el = jQuery("input:checkbox[@name='page-replace\:\:resubmit_until']").get(0);
 	if (el){
@@ -168,6 +145,11 @@ function slideFieldset(img) {
 	jQuery(img).parent('legend').next('ol').toggle();
 	flip_image(img);
 	a2SetMainFrameHeight();
+}
+function slideDiv(img) {
+    jQuery(img).parent('legend').next('div').toggle();
+    flip_image(img);
+    a2SetMainFrameHeight();
 }
 function flip_image(img){
 	if(img.src.match('collapse')){
@@ -329,7 +311,8 @@ var asnn2 = asnn2 || {};
      * Custom javascript for the Assignment Add/Edit page. When the "Require
      * Submissions" box is checked or unchecked, the Submission Details below it
      * need to show/hide. It does this by hiding/removing all siblings at the
-     * same level (ie. the rest of the <li/> in the current list).
+     * same level (ie. the rest of the <li/> in the current list). it also
+     * needs to show/hide the notifications block, as well
      * 
      * @param element The jQuery element whose downstream siblings will be 
      * shown or hidden
@@ -338,35 +321,27 @@ var asnn2 = asnn2 || {};
     asnn2.showHideSiblings = function(element, show) {
     	if (show == true) {
     		jQuery(element).nextAll().show();
+    		jQuery("#notifications").show();
     	}
     	else {
     		jQuery(element).nextAll().hide();
+    		jQuery("#notifications").hide();
     	}
     };
     
     /**
      * Given a checkbox element, hide or show the area element whenever checkbox
      * is clicked.  Checking the box shows the area, unchecking the box hides
-     * the area. Will also do the initialization of the area based on the 
-     * checkboxes initial value when set up.
+     * the area. 
      */
     asnn2.showHideByCheckbox = function(checkboxElem, areaElem) {
-    	var checkbox = jQuery(checkboxElem);
     	var area = jQuery(areaElem);
-    	if (checkbox.checked == true) {
+    	if (checkboxElem.checked) {
     		area.show();
     	}
     	else {
     		area.hide();
     	}
-    	checkbox.click(function () {
-    		if (this.checked == true) {
-    			area.show();
-    		}
-    		else {
-    			area.hide();
-    		}
-    	});
     };
 
     /**
@@ -379,7 +354,7 @@ var asnn2 = asnn2 || {};
      */
     asnn2.assnSubVersionDiv = function (elementId, feedbackRead, submissionId, versionId) {
         var escElemId = elementId.replace(/:/g, "\\:");
-        var versionHeader = jQuery('#'+escElemId+ ' h2');
+        var versionHeader = jQuery('#'+escElemId+ ' h3');
         var arrow = versionHeader.find("img:first");
         var toggled = jQuery('#'+escElemId+ ' div')
         var envelope = versionHeader.find("img:last");
@@ -390,6 +365,32 @@ var asnn2 = asnn2 || {};
                 mark_feedback(submissionId, versionId);
             }
         });
+    };
+    
+    asnn2.studentSubmissionConfirm = function(buttonform) {
+        confirmDialog = jQuery('#submit-confirm-dialog');
+        dialogOptions = {
+            resizable: false,
+            width: 500,
+            modal: true
+            //overlay: {
+            //    opacity: 0.5,
+            //    background: "black"
+            //}
+        };
+        var submitButton = buttonform;
+        jQuery('#submission-confirm-button').click( function (event) {
+            confirmDialog.dialog('destroy');
+            submitButton.onclick = function (event) { return true };
+            submitButton.click();
+        });
+
+        jQuery('#submission-cancel-button').click( function (event) {
+            confirmDialog.dialog('destroy');
+        });
+
+        confirmDialog.dialog(dialogOptions).show();
+        return false;
     };
     
     

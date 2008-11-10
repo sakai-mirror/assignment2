@@ -45,11 +45,12 @@ import uk.org.ponder.messageutil.TargettedMessageList;
 
 public class AssignmentSubmissionBean {
 
-    private static final String SUBMIT = "submit";
-    private static final String PREVIEW = "preview";
-    private static final String SAVE_DRAFT = "save_draft";
+    public static final String SUBMIT = "submit";
+    public static final String PREVIEW = "preview";
+    public static final String SAVE_DRAFT = "save_draft";
+    public static final String BACK_TO_EDIT = "back_to_edit";
     private static final String EDIT = "edit";
-    private static final String CANCEL = "cancel";
+    public static final String CANCEL = "cancel";
     private static final String FAILURE = "failure";
     private static final String RELEASE_ALL= "release_all";
     
@@ -94,10 +95,10 @@ public class AssignmentSubmissionBean {
         this.asvOTPMap = entityBeanLocator.getDeliveredBeans();
     }
 
-    private PreviewAssignmentSubmissionBean previewAssignmentSubmissionBean;
-    public void setPreviewAssignmentSubmissionBean (PreviewAssignmentSubmissionBean previewAssignmentSubmissionBean) {
-        this.previewAssignmentSubmissionBean = previewAssignmentSubmissionBean;
-    }
+    //private PreviewAssignmentSubmissionBean previewAssignmentSubmissionBean;
+    //public void setPreviewAssignmentSubmissionBean (PreviewAssignmentSubmissionBean previewAssignmentSubmissionBean) {
+    //    this.previewAssignmentSubmissionBean = previewAssignmentSubmissionBean;
+    //}
 
     private Boolean honorPledge;
     public void setHonorPledge(Boolean honorPledge) {
@@ -129,13 +130,9 @@ public class AssignmentSubmissionBean {
 
         AssignmentSubmission assignmentSubmission = (AssignmentSubmission) asEntityBeanLocator.locateBean(ASOTPKey);
         Assignment2 assignment = assignmentLogic.getAssignmentById(assignmentId);
-        assignmentSubmission.setAssignment(assignment);
 
         for (String key : asvOTPMap.keySet()) {
             AssignmentSubmissionVersion asv = asvOTPMap.get(key);
-
-            asv.setAssignmentSubmission(assignmentSubmission);
-            asv.setDraft(Boolean.FALSE);
 
             //check whether honor pledge was added if required
             if (assignment.isHonorPledge() && !(this.honorPledge != null && Boolean.TRUE.equals(honorPledge))) {
@@ -143,8 +140,8 @@ public class AssignmentSubmissionBean {
                         new Object[] { assignment.getTitle() }, TargettedMessage.SEVERITY_ERROR));
                 return FAILURE;
             }else {
-                submissionLogic.saveStudentSubmission(assignmentSubmission.getUserId(), 
-                        assignmentSubmission.getAssignment(), false, asv.getSubmittedText(), asv.getSubmissionAttachSet());
+                submissionLogic.saveStudentSubmission(assignmentSubmission.getUserId(), assignment, false, 
+                        asv.getSubmittedText(), asv.getSubmissionAttachSet());
                 messages.addMessage(new TargettedMessage("assignment2.student-submit.info.submission_submitted",
                         new Object[] { assignment.getTitle() }, TargettedMessage.SEVERITY_INFO));
                 
@@ -161,22 +158,28 @@ public class AssignmentSubmissionBean {
     }
 
     public String processActionPreview(){
-        AssignmentSubmission assignmentSubmission = (AssignmentSubmission) asEntityBeanLocator.locateBean(ASOTPKey);
-        previewAssignmentSubmissionBean.setAssignmentSubmission(assignmentSubmission);
-        for (String key : asvOTPMap.keySet()) {
-            AssignmentSubmissionVersion asv = asvOTPMap.get(key);
-            previewAssignmentSubmissionBean.setAssignmentSubmissionVersion(asv);
-        }
+        //AssignmentSubmission assignmentSubmission = (AssignmentSubmission) asEntityBeanLocator.locateBean(ASOTPKey);
+        //previewAssignmentSubmissionBean.setAssignmentSubmission(assignmentSubmission);
+        //for (String key : asvOTPMap.keySet()) {
+        //    AssignmentSubmissionVersion asv = asvOTPMap.get(key);
+         //   previewAssignmentSubmissionBean.setAssignmentSubmissionVersion(asv);
+        //}
         return PREVIEW;
+    }
+    
+    public String processActionBackToEdit() {
+        return BACK_TO_EDIT;
     }
 
     public String processActionSaveDraft() {
         Assignment2 assignment = assignmentLogic.getAssignmentById(assignmentId);
-        AssignmentSubmission assignmentSubmission = (AssignmentSubmission) asEntityBeanLocator.locateBean(ASOTPKey);
         if (assignmentId == null){
             return FAILURE;
         }
+        
+        AssignmentSubmission assignmentSubmission = (AssignmentSubmission) asEntityBeanLocator.locateBean(ASOTPKey);
         assignmentSubmission.setAssignment(assignment);
+        
         for (String key : asvOTPMap.keySet()) {
             AssignmentSubmissionVersion asv = (AssignmentSubmissionVersion) asvOTPMap.get(key);
 
@@ -266,11 +269,11 @@ public class AssignmentSubmissionBean {
             AssignmentSubmission assignmentSubmission = OTPMap.get(key);
             Assignment2 assignment = assignmentLogic.getAssignmentByIdWithAssociatedData(assignmentId);
             assignmentSubmission.setAssignment(assignment);
-            previewAssignmentSubmissionBean.setAssignmentSubmission(assignmentSubmission);
+           // previewAssignmentSubmissionBean.setAssignmentSubmission(assignmentSubmission);
         }
         for (String key : asvOTPMap.keySet()){
             AssignmentSubmissionVersion asv = asvOTPMap.get(key);
-            previewAssignmentSubmissionBean.setAssignmentSubmissionVersion(asv);
+           // previewAssignmentSubmissionBean.setAssignmentSubmissionVersion(asv);
         }
         return PREVIEW;
     }

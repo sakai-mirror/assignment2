@@ -198,69 +198,66 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
         if (assignment.getSubmissionType() == AssignmentConstants.SUBMIT_NON_ELECTRONIC) {
             UIMessage.make(form, "non-electronic-submission", "assignment2.assignment_grade.nonelectronic_sub");
         } else {
-            if (assignmentSubmissionVersion.getSubmittedDate() != null){
-                UIOutput.make(form, "status", df.format(assignmentSubmissionVersion.getSubmittedDate()));
-            } else {
-                UIOutput.make(form, "status", "");
-            }
-
             int statusConstant = AssignmentConstants.SUBMISSION_NOT_STARTED;
             if (assignmentSubmissionVersion != null) {
                 statusConstant = submissionLogic.getSubmissionStatusConstantForCurrentVersion(assignmentSubmissionVersion, assignment.getDueDate());
             }
+            
+            if (statusConstant == AssignmentConstants.SUBMISSION_NOT_STARTED) {
+                UIOutput.make(form, "status", messageLocator.getMessage("assignment2.assignment_grade.status.not_started"));
+            } else if (statusConstant == AssignmentConstants.SUBMISSION_IN_PROGRESS) {
+                UIOutput.make(form, "status", messageLocator.getMessage("assignment2.assignment_grade.status.draft", assignmentSubmissionVersion.getModifiedDate()));
+            } else if (statusConstant == AssignmentConstants.SUBMISSION_SUBMITTED) {
+                UIOutput.make(form, "status", messageLocator.getMessage("assignment2.assignment_grade.status.submitted", df.format(assignmentSubmissionVersion.getSubmittedDate())));
+            } else if (statusConstant == AssignmentConstants.SUBMISSION_LATE) {
+                UIOutput.make(form, "status", messageLocator.getMessage("assignment2.assignment_grade.status.submitted.late", df.format(assignmentSubmissionVersion.getSubmittedDate())));
+            }
 
-            //TODO FIXME swg if (statusConstant == AssignmentConstants.SUBMISSION_IN_PROGRESS || statusConstant == AssignmentConstants.SUBMISSION_NOT_STARTED) {
-            //	UIMessage.make(form, "status", "assignment2.assignment_grade.submission_status." + statusConstant);
-            //} else {
-            //	UIMessage.make(form, "status", "assignment2.assignment_grade.submission_status." + statusConstant, new Object[] { df.format(assignmentSubmissionVersion.getSubmittedDate()) });
-            //	}
-        }
-
-        //If current submitted submission is a draft, display note to instructor
-        if (submissionLogic.isMostRecentVersionDraft(as) && !OLD_VERSION){
-            UIMessage.make(form, "current_is_draft", "assignment2.assignment_grade.current_is_draft");
         }
 
         //If editing Old Version, remind UI
-        if (OLD_VERSION) {
+        // TODO - i don't think this code is applicable any more..
+        /*if (OLD_VERSION) {
             UIMessage.make(form, "editing_previous_submission", "assignment2.assignment_grade.editing_previous_submission");
-        }
+        }*/
 
         //TODO - make these viewparams their own actual view params, not raw
         UILink.make(form, "view_assignment_instructions", 
                 messageLocator.getMessage("assignment2.assignment_grade.view_assignment_instructions"),
                 externalLogic.getAssignmentViewUrl(FragmentAssignmentInstructionsProducer.VIEW_ID) + "/" + assignment.getId() + "?TB_iframe=true&height=300");
 
-        // If assignment allows for submitted text
-        // This is the rich text editor for instructors to annotate the submission
-        // using red italized text.
-        if (assignmentSubmissionVersion.getSubmittedDate() != null &&
-                (assignment.getSubmissionType() == AssignmentConstants.SUBMIT_INLINE_ONLY || 
-                        assignment.getSubmissionType() == AssignmentConstants.SUBMIT_INLINE_AND_ATTACH)) {
-            UIOutput.make(form, "submitted_text_fieldset");
+        // Only display submission info if there has actually been a submission
+        if (assignmentSubmissionVersion.getSubmittedDate() != null) {
+            // If assignment allows for submitted text
+            // This is the rich text editor for instructors to annotate the submission
+            // using red italized text.
+            if  (assignment.getSubmissionType() == AssignmentConstants.SUBMIT_INLINE_ONLY || 
+                    assignment.getSubmissionType() == AssignmentConstants.SUBMIT_INLINE_AND_ATTACH) {
+                UIOutput.make(form, "submitted_text_fieldset");
 
-            if (grade_perm){
-                //UIVerbatim.make(form, "feedback_instructions", messageLocator.getMessage("assignment2.assignment_grade.feedback_instructions"));
-                UIInput feedback_text = UIInput.make(form, "feedback_text:", asvOTP + ".annotatedText");
-                feedback_text.mustapply = Boolean.TRUE;
-                // SWG TODO Switching back to regular rich text edit until I get
-                // the FCK Editor working
-                richTextEvolver.evolveTextInput(feedback_text);
-                //assnCommentTextEvolver.evolveTextInput(feedback_text);
-            } else {
-                UIVerbatim.make(form, "feedback_text:", assignmentSubmissionVersion.getAnnotatedTextFormatted());
+                if (grade_perm){
+                    //UIVerbatim.make(form, "feedback_instructions", messageLocator.getMessage("assignment2.assignment_grade.feedback_instructions"));
+                    UIInput feedback_text = UIInput.make(form, "feedback_text:", asvOTP + ".annotatedText");
+                    feedback_text.mustapply = Boolean.TRUE;
+                    // SWG TODO Switching back to regular rich text edit until I get
+                    // the FCK Editor working
+                    richTextEvolver.evolveTextInput(feedback_text);
+                    //assnCommentTextEvolver.evolveTextInput(feedback_text);
+                } else {
+                    UIVerbatim.make(form, "feedback_text:", assignmentSubmissionVersion.getAnnotatedTextFormatted());
+                }
             }
-        }
 
-        //If assignment allows for submitted attachments
-        if (assignment.getSubmissionType() == AssignmentConstants.SUBMIT_ATTACH_ONLY ||
-                assignment.getSubmissionType() == AssignmentConstants.SUBMIT_INLINE_AND_ATTACH) {
-            if (assignmentSubmissionVersion.getSubmissionAttachSet() != null && !assignmentSubmissionVersion.getSubmissionAttachSet().isEmpty()){
+            //If assignment allows for submitted attachments, display the attachment section
+            if (assignment.getSubmissionType() == AssignmentConstants.SUBMIT_ATTACH_ONLY ||
+                    assignment.getSubmissionType() == AssignmentConstants.SUBMIT_INLINE_AND_ATTACH) {
                 UIOutput.make(tofill, "submitted_attachments_fieldset");
-                attachmentListRenderer.makeAttachmentFromSubmissionAttachmentSet(tofill, "submitted_attachment_list:", params.viewID, 
-                        assignmentSubmissionVersion.getSubmissionAttachSet());
-            } else {
-                UIMessage.make(tofill, "submitted_attachment_list:", "assignment2.assignment_grade.no_attachments_submitted");
+                if (assignmentSubmissionVersion.getSubmissionAttachSet() != null && !assignmentSubmissionVersion.getSubmissionAttachSet().isEmpty()){
+                    attachmentListRenderer.makeAttachmentFromSubmissionAttachmentSet(tofill, "submitted_attachment_list:", params.viewID, 
+                            assignmentSubmissionVersion.getSubmissionAttachSet());
+                } else {
+                    UIOutput.make(tofill, "no_submitted_attachments", messageLocator.getMessage("assignment2.assignment_grade.no_attachments_submitted"));
+                }
             }
         }
 

@@ -173,8 +173,10 @@ jQuery(document).ready(function(){
   // Init position of the Apply to Unassigned grading feature
     var p = jQuery("td.grade:first");
     var position = p.position();
-    var applyToUnassigned = jQuery('#unassigned-apply');
-    applyToUnassigned.attr("style", "margin-left:" + position.left + "px");
+    if (position) {
+        var applyToUnassigned = jQuery('#unassigned-apply');
+        applyToUnassigned.attr("style", "margin-left:" + position.left + "px");
+    }
 
 });
 //]]>

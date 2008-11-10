@@ -36,6 +36,7 @@ import org.sakaiproject.assignment2.taggable.api.AssignmentActivityProducer;
 import org.sakaiproject.assignment2.tool.beans.Assignment2Bean;
 import org.sakaiproject.assignment2.tool.beans.locallogic.DecoratedTaggingProvider;
 import org.sakaiproject.assignment2.tool.params.AssignmentViewParams;
+import org.sakaiproject.assignment2.tool.params.RemoveAssignmentParams;
 import org.sakaiproject.assignment2.tool.params.ViewSubmissionsViewParams;
 import org.sakaiproject.assignment2.tool.producers.fragments.AjaxCallbackProducer;
 import org.sakaiproject.component.cover.ComponentManager;
@@ -147,33 +148,14 @@ public class ListProducer implements ViewComponentProducer, NavigationCaseReport
 
             //If Current User has the ability to edit or duplicate the assignment
             if (edit_perm) {
-                //UIInternalLink.make(row, "delete-asnn-link", new AssignmentViewParams(RemoveAssignmentConfirmProducer.VIEW_ID, assignment.getId()));
-                UIForm form = UIForm.make(row, "form");
-                UIInput.make(form, "current_assignment", "RemoveAssignmentAction.assignmentId", assignment.getId().toString());
-                UICommand.make(form, "assignment_delete", "", "RemoveAssignmentAction.execute");
-                UIInternalLink.make(form, "assignment_edit",  UIMessage.make("assignment2.list.edit"), 
+                
+                UIInternalLink.make(row, "delete-asnn-link", new RemoveAssignmentParams(RemoveAssignmentConfirmProducer.VIEW_ID, assignment.getId()));
+                //UIForm form = UIForm.make(row, "form");
+                //UIInput.make(form, "current_assignment", "RemoveAssignmentAction.assignmentId", assignment.getId().toString());
+               // UICommand.make(form, "assignment_delete", "", "RemoveAssignmentAction.execute");
+                UIInternalLink.make(row, "assignment_edit",  UIMessage.make("assignment2.list.edit"), 
                         new AssignmentViewParams(AssignmentProducer.VIEW_ID, assignment.getId()));
                 
-                // Hidden form for removing assignments.
-                /*
-                UIOutput.make(row, "remove-dialog");
-                UIBranchContainer tablerow = UIBranchContainer.make(row, "asnn-row:");
-                UIOutput.make(tablerow, "asnn-title", assignment.getTitle());
-                if (assignment.getDueDate() == null) {
-                    UIMessage.make(tablerow, "due", "assignment2.remove.assn.no_due_date"); 
-                } else {
-                    UIOutput.make(tablerow, "due", assignment.getDueDate().toLocaleString()); // TODO FIXME
-                }
-                    
-                List<String> viewableStudents = permissionLogic.getViewableStudentsForUserForItem(currUserId, assignment);
-                int totalSubmissions = submissionLogic.getNumStudentsWithASubmission(assignment, viewableStudents);
-
-                UIOutput.make(tablerow, "submissions", totalSubmissions+"");
-                
-                UIForm removeForm = UIForm.make(row, "confirm-remove-form");
-                UICommand.make(removeForm, "remove-button");
-                UICommand.make(removeForm, "cancel-button");
-                */
             }
 
             // Tag provider removed for now ASNN-113

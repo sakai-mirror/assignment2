@@ -96,11 +96,19 @@
 		<property name="contentTypeSpec" value="HTML,HTML-FRAGMENT" />
 	</bean>
 
-	<!-- The beans listed here are session beans (they stick around) -->
+	<!-- The beans listed here are session beans, currently we have none. :) -->
+	<!-- 
 	<bean id="myBeanScope" parent="beanScopeParent">
 		<property name="copyPreservingBeans"
-			value="PreviewAssignmentBean,PreviewAssignmentSubmissionBean" />
+			value="" />
 		<property name="exclusive" value="true" />
+	</bean>
+	-->
+	
+	  <!-- The beans which will be preserved across a flow via simple instance
+			copying -->
+	<bean parent="copyPreservingParent">
+		<property name="value" value="AssignmentSubmissionVersion, AssignmentSubmissionBean"/>
 	</bean>
 
 	<bean id="Assignment2Creator"

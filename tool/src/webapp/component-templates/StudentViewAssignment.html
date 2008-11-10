@@ -1,4 +1,4 @@
-<div rsf:id="portletBody:" class="portletBody">
+<div rsf:id="student-view-assignment-area:" class="portletBody">
 
 	<ul class="breadCrumb">
 		<li><a rsf:id="breadcrumb">Assignment List</a></li>
@@ -19,19 +19,21 @@
 	    <!-- Assignment Instructions go here. -->
 	</div>
 	
-	<hr class="itemSeparator" />
-	
 	<div rsf:id="assignment-previous-submissions:">
 	    <!-- Students previous submissions will be rendered. It might just -->
 	    <!-- be a single one, or a collapsable tree if there are multiple. -->
 	</div>
 
-	<hr class="itemSeparator" />
+	<hr class="itemSeparator" rsf:id="previous_submissions_sep"/>
 	
     <div rsf:id="assignment-edit-submission:">
         <!-- Rich text editor and/or attachments for editing submission -->
         <!-- and honor pledge and save/cancel buttons. -->
     </div>
+	
+	<div rsf:id="student-preview-submission-confirm-buttons">
+		<p>These are the preview submit buttons!</p>
+	</div>
 	
 	<!-- 
 	<fieldset>
