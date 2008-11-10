@@ -259,7 +259,6 @@ li .error p {
 .breadCrumb {
 	font-size: 1.2em;
 	padding: .5em 0; 
-	background: #ffe; /* This is our background color */
 	margin: 0 0 1em 0;
 }
 
@@ -269,7 +268,7 @@ li .error p {
 
 .breadCrumb li{
 	display: inline; 
-	background: #ffe url("/sakai-assignment2-tool/content/images/breadSep.gif") center right no-repeat;
+	background: transparent url("/sakai-assignment2-tool/content/images/breadSep.gif") center right no-repeat;
 	padding:0 1.2em 0  .5em;
 	margin:0;
 }
