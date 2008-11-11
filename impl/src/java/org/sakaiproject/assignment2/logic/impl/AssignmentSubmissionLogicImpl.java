@@ -292,7 +292,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		// identify any attachments that were deleted or need to be created
 		// - we don't update attachments
 		Set<SubmissionAttachmentBase> attachToDelete = identifyAttachmentsToDelete(version.getSubmissionAttachSet(), subAttachSet);
-		Set<SubmissionAttachmentBase> attachToCreate = identifyAttachmentsToCreate(subAttachSet);
+		Set<SubmissionAttachmentBase> attachToCreate = identifyAttachmentsToCreate(version.getSubmissionAttachSet(), subAttachSet);
 
 		// make sure the version was populated on the SubmissionAttachments
 		populateVersionForAttachmentSet(attachToCreate, version);
@@ -427,7 +427,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		
 		// identify any attachments that were deleted
 		Set<SubmissionAttachmentBase> attachToDelete = identifyAttachmentsToDelete(version.getFeedbackAttachSet(), feedbackAttachSet);
-		Set<SubmissionAttachmentBase> attachToCreate = identifyAttachmentsToCreate(feedbackAttachSet);
+		Set<SubmissionAttachmentBase> attachToCreate = identifyAttachmentsToCreate(version.getFeedbackAttachSet(), feedbackAttachSet);
 		
 		// make sure the version was populated on the FeedbackAttachments
 		populateVersionForAttachmentSet(attachToCreate, version);
@@ -617,32 +617,76 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 					attach.setSubmissionVersion(version);
 	}
 	
+	/**
+	 * 
+	 * @param existingAttachSet
+	 * @param updatedAttachSet
+	 * @return a set of attachments from the given updatedAttachSet that need
+	 * to be deleted. this is determined by comparing the attachmentReferences
+	 * of the attachments in the existingAttachSet to those in the updatedAttachSet.
+	 * if it does not exist in the updatedAttachSet, it needs to be deleted
+	 */
 	private Set<SubmissionAttachmentBase> identifyAttachmentsToDelete(
 			Set<? extends SubmissionAttachmentBase> existingAttachSet,
 			Set<? extends SubmissionAttachmentBase> updatedAttachSet)
 	{
 		Set<SubmissionAttachmentBase> attachToRemove = new HashSet<SubmissionAttachmentBase>();
+		
+		// make a set of attachment references in case the id wasn't populated
+		// properly
+		Set<String> updatedAttachSetRefs = new HashSet<String>();
+		if (updatedAttachSet != null) {
+		    for (SubmissionAttachmentBase attach : updatedAttachSet) {
+		        updatedAttachSetRefs.add(attach.getAttachmentReference());
+		    }
+		}
 
 		if (existingAttachSet != null)
-			for (SubmissionAttachmentBase attach : existingAttachSet)
-				if (attach != null)
-					if (updatedAttachSet == null || !updatedAttachSet.contains(attach))
+			for (SubmissionAttachmentBase attach : existingAttachSet) {
+				if (attach != null) {
+					if (updatedAttachSet == null || !updatedAttachSetRefs.contains(attach.getAttachmentReference())) {
 						// we need to delete this attachment
 						attachToRemove.add(attach);
+					}
+				}
+			}
 
 		return attachToRemove;
 	}
 	
+	/**
+	 * 
+	 * @param existingAttachSet
+	 * @param updatedAttachSet
+	 * @return a set of attachments from the given updatedAttachSet that do not
+	 * currently exist. this is determined by checking to see if there is
+	 * already an attachment in the given existingAttachSet with the same
+	 * attachmentReference as each attachment in the updatedAttachSet. 
+	 */
 	private Set<SubmissionAttachmentBase> identifyAttachmentsToCreate(
+	        Set<? extends SubmissionAttachmentBase> existingAttachSet,
 			Set<? extends SubmissionAttachmentBase> updatedAttachSet)
 	{
 		Set<SubmissionAttachmentBase> attachToCreate = new HashSet<SubmissionAttachmentBase>();
+		
+		// make a set of attachment references in case the id wasn't populated
+        // properly
+        Set<String> existingAttachSetRefs = new HashSet<String>();
+        if (existingAttachSet != null) {
+            for (SubmissionAttachmentBase attach : existingAttachSet) {
+                existingAttachSetRefs.add(attach.getAttachmentReference());
+            }
+        }
 
-		if (updatedAttachSet != null)
-			for (SubmissionAttachmentBase attach : updatedAttachSet)
-				if (attach != null)
-					if (attach.getId() == null)
+		if (updatedAttachSet != null) {
+			for (SubmissionAttachmentBase attach : updatedAttachSet) {
+				if (attach != null) {
+					if (!existingAttachSetRefs.contains(attach.getAttachmentReference())) {
 						attachToCreate.add(attach);
+					}
+				}
+			}
+		}
 
 		return attachToCreate;
 	}
