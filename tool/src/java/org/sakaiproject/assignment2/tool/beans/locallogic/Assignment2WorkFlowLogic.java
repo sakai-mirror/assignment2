@@ -19,9 +19,9 @@
  *
  **********************************************************************************/
 
-package org.sakaiproject.assignment2.tool.beans;
+package org.sakaiproject.assignment2.tool.beans.locallogic;
 
-import org.sakaiproject.assignment2.tool.beans.locallogic.LocalPermissionLogic;
+import org.sakaiproject.assignment2.tool.beans.AssignmentSubmissionBean;
 import org.sakaiproject.assignment2.tool.params.AssignmentListSortViewParams;
 import org.sakaiproject.assignment2.tool.params.SimpleAssignmentViewParams;
 import org.sakaiproject.assignment2.tool.params.StudentSubmissionParams;

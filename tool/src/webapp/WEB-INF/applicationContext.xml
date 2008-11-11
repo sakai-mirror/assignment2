@@ -54,7 +54,7 @@
 
 
 	<bean id="Assignment2ViewParamsInterceptor"
-				class="org.sakaiproject.assignment2.tool.beans.Assignment2WorkFlowLogic">
+				class="org.sakaiproject.assignment2.tool.beans.locallogic.Assignment2WorkFlowLogic">
 		<property name="localPermissionLogic" ref="LocalPermissionLogic" />
 	</bean>
 

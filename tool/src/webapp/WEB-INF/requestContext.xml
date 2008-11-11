@@ -254,7 +254,7 @@
    </bean>
    
    <!--  Actions -->
-   <bean id="RemoveAssignmentAction"  class="org.sakaiproject.assignment2.tool.beans.RemoveAssignmentAction">
+   <bean id="RemoveAssignmentAction"  class="org.sakaiproject.assignment2.tool.commands.RemoveAssignmentCommand">
        <property name="logic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
        <property name="messages" ref="targettedMessageList" />
    </bean>
@@ -301,18 +301,18 @@
 		<property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
 	</bean>
 	
-	<bean id="MarkTodoBean" class="org.sakaiproject.assignment2.tool.beans.MarkTodoBean">
+	<bean id="MarkTodoBean" class="org.sakaiproject.assignment2.tool.commands.MarkTodoCommand">
 		<property name="assignmentSubmissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
 		<property name="currentUser" ref="sakai-User" />
 	</bean>
 	
 	<bean id="MarkFeedbackAsReadAction"
-		class="org.sakaiproject.assignment2.tool.beans.MarkFeedbackAsReadAction" >
+		class="org.sakaiproject.assignment2.tool.commands.MarkFeedbackAsReadCommand" >
 		<property name="submissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
 	</bean>
 	
 	<bean id="GradeAllRemainingAction"
-		class="org.sakaiproject.assignment2.tool.beans.GradeAllRemainingAction">
+		class="org.sakaiproject.assignment2.tool.commands.GradeAllRemainingCommand">
 		<property name="assignmentPermissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentPermissionLogic" />
 		<property name="gradebookLogic" ref="org.sakaiproject.assignment2.logic.ExternalGradebookLogic" />
 		<property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
