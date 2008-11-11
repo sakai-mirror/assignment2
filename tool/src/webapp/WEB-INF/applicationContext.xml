@@ -52,16 +52,21 @@
       <property name="basename" value="classpath:/bundle/messages" />
     </bean>
 
+
+	<bean id="Assignment2ViewParamsInterceptor"
+				class="org.sakaiproject.assignment2.tool.beans.Assignment2WorkFlowLogic">
+		<property name="localPermissionLogic" ref="LocalPermissionLogic" />
+	</bean>
+
 	<!--  Handles incoming views to filter based on permissions  -->
 	<bean parent="viewParamsInterceptorParent">
-		<property name="value">
-			<bean id="Assignment2ViewParamsInterceptor"
-				class="org.sakaiproject.assignment2.tool.params.Assignment2ViewParamsInterceptor">
-				<property name="localPermissionLogic"
-					ref="LocalPermissionLogic" />
-			</bean>
-		</property>
+		<property name="value" ref="Assignment2ViewParamsInterceptor" />
 	</bean>
+	
+	<bean parent="actionResultInterceptorParent">
+    	<property name="value" ref="Assignment2ViewParamsInterceptor" />
+ 	</bean>
+	
 
 	<!-- Define the bean roots from the request scope file that are accessible 
 		via incoming request URL -->
