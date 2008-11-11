@@ -34,6 +34,7 @@ import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.model.FeedbackAttachment;
 import org.sakaiproject.assignment2.model.SubmissionAttachment;
+import org.sakaiproject.assignment2.tool.beans.locallogic.WorkFlowResult;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.exception.TypeException;
@@ -43,13 +44,20 @@ import uk.org.ponder.beanutil.entity.EntityBeanLocator;
 import uk.org.ponder.messageutil.TargettedMessage;
 import uk.org.ponder.messageutil.TargettedMessageList;
 
+/**
+ * This bean is for binding the Assignment Submissions for various pages and
+ * acting on them.
+ * 
+ * @author sgithens
+ *
+ */
 public class AssignmentSubmissionBean {
 
     public static final String SUBMIT = "submit";
     public static final String PREVIEW = "preview";
-    public static final String SAVE_DRAFT = "save_draft";
-    public static final String BACK_TO_EDIT = "back_to_edit";
-    private static final String EDIT = "edit";
+    //public static final String SAVE_DRAFT = "save_draft";
+    //public static final String BACK_TO_EDIT = "back_to_edit";
+    //private static final String EDIT = "edit";
     public static final String CANCEL = "cancel";
     private static final String FAILURE = "failure";
     private static final String RELEASE_ALL= "release_all";
@@ -95,11 +103,6 @@ public class AssignmentSubmissionBean {
         this.asvOTPMap = entityBeanLocator.getDeliveredBeans();
     }
 
-    //private PreviewAssignmentSubmissionBean previewAssignmentSubmissionBean;
-    //public void setPreviewAssignmentSubmissionBean (PreviewAssignmentSubmissionBean previewAssignmentSubmissionBean) {
-    //    this.previewAssignmentSubmissionBean = previewAssignmentSubmissionBean;
-    //}
-
     private Boolean honorPledge;
     public void setHonorPledge(Boolean honorPledge) {
         this.honorPledge = honorPledge;
@@ -123,9 +126,9 @@ public class AssignmentSubmissionBean {
     /*
      * STUDENT FUNCTIONS
      */
-    public String processActionSubmit(){
+    public WorkFlowResult processActionSubmit(){
         if (assignmentId == null ) {
-            return FAILURE;
+            return WorkFlowResult.STUDENT_SUBMISSION_FAILURE;
         }
 
         AssignmentSubmission assignmentSubmission = (AssignmentSubmission) asEntityBeanLocator.locateBean(ASOTPKey);
@@ -138,7 +141,7 @@ public class AssignmentSubmissionBean {
             if (assignment.isHonorPledge() && !(this.honorPledge != null && Boolean.TRUE.equals(honorPledge))) {
                 messages.addMessage(new TargettedMessage("assignment2.student-submit.error.honor_pledge_required",
                         new Object[] { assignment.getTitle() }, TargettedMessage.SEVERITY_ERROR));
-                return FAILURE;
+                return WorkFlowResult.STUDENT_SUBMISSION_FAILURE;
             }else {
                 submissionLogic.saveStudentSubmission(assignmentSubmission.getUserId(), assignment, false, 
                         asv.getSubmittedText(), asv.getSubmissionAttachSet());
@@ -154,27 +157,21 @@ public class AssignmentSubmissionBean {
 
             }
         }
-        return SUBMIT;
+        return WorkFlowResult.STUDENT_SUBMIT_SUBMISSION;
     }
 
-    public String processActionPreview(){
-        //AssignmentSubmission assignmentSubmission = (AssignmentSubmission) asEntityBeanLocator.locateBean(ASOTPKey);
-        //previewAssignmentSubmissionBean.setAssignmentSubmission(assignmentSubmission);
-        //for (String key : asvOTPMap.keySet()) {
-        //    AssignmentSubmissionVersion asv = asvOTPMap.get(key);
-         //   previewAssignmentSubmissionBean.setAssignmentSubmissionVersion(asv);
-        //}
-        return PREVIEW;
+    public WorkFlowResult processActionPreview(){
+        return WorkFlowResult.STUDENT_PREVIEW_SUBMISSION;
     }
     
-    public String processActionBackToEdit() {
-        return BACK_TO_EDIT;
+    public WorkFlowResult processActionBackToEdit() {
+        return WorkFlowResult.STUDENT_CONTINUE_EDITING_SUBMISSION;
     }
 
-    public String processActionSaveDraft() {
+    public WorkFlowResult processActionSaveDraft() {
         Assignment2 assignment = assignmentLogic.getAssignmentById(assignmentId);
         if (assignmentId == null){
-            return FAILURE;
+            return WorkFlowResult.STUDENT_SUBMISSION_FAILURE;
         }
         
         AssignmentSubmission assignmentSubmission = (AssignmentSubmission) asEntityBeanLocator.locateBean(ASOTPKey);
@@ -192,7 +189,7 @@ public class AssignmentSubmissionBean {
             messages.addMessage(new TargettedMessage("assignment2.student-submit.info.submission_save_draft",
                     new Object[] { assignment.getTitle() }, TargettedMessage.SEVERITY_INFO));
         }
-        return SAVE_DRAFT;
+        return WorkFlowResult.STUDENT_SAVE_DRAFT_SUBMISSION;
     }
 
     /*

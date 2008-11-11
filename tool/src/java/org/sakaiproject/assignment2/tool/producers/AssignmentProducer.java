@@ -74,7 +74,14 @@ import uk.org.ponder.rsf.viewstate.ViewParamsReporter;
 
 import org.sakaiproject.site.api.Group;
 
-public class AssignmentProducer implements ViewComponentProducer, NavigationCaseReporter, ViewParamsReporter {
+/**
+ * Paints the Assignment2 Page used by Instructors to create and edit 
+ * assignments.
+ * 
+ * @author sgithens
+ *
+ */
+public class AssignmentProducer implements ViewComponentProducer, ViewParamsReporter {
 
     public static final String VIEW_ID = "assignment";
     public String getViewID() {
@@ -134,8 +141,6 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
             UIMessage.make(tofill, "page-title", "assignment2.assignment_add.title");
         }
 
-        //navBarRenderer.makeNavBar(tofill, "navIntraTool:", VIEW_ID);
-        //UIMessage.make(tofill, "heading", "assignment2.assignment_add.heading");
         UIVerbatim.make(tofill, "instructions", messageLocator.getMessage("assignment2.assignment_add.instructions", 
                 new Object[]{ reqStar }));
 
@@ -209,7 +214,6 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
 
         if (!require_date){
             require_container.decorators = display_none_list;
-            //accept_until_until_fieldset.decorators = display_none_list;
         }
 
         //Assignment Count for How many Submissions
@@ -406,21 +410,6 @@ public class AssignmentProducer implements ViewComponentProducer, NavigationCase
         }
         UICommand.make(form, "cancel_assignment", UIMessage.make("assignment2.assignment_add.cancel_assignment"), "#{Assignment2Bean.processActionCancel}");
 
-    }
-
-    public List<NavigationCase> reportNavigationCases() {
-        List<NavigationCase> nav= new ArrayList<NavigationCase>();
-        nav.add(new NavigationCase("post", new SimpleViewParameters(
-                ListProducer.VIEW_ID)));
-        nav.add(new NavigationCase("preview", new AssignmentViewParams(
-                FragmentAssignmentPreviewProducer.VIEW_ID, null)));
-        nav.add(new NavigationCase("refresh", new AssignmentViewParams(
-                AssignmentProducer.VIEW_ID, null)));
-        nav.add(new NavigationCase("save_draft", new SimpleViewParameters(
-                ListProducer.VIEW_ID)));
-        nav.add(new NavigationCase("cancel", new SimpleViewParameters(
-                ListProducer.VIEW_ID)));
-        return nav;
     }
 
     public ViewParameters getViewParameters() {

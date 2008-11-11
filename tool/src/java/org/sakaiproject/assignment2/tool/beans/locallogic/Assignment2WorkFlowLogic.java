@@ -23,6 +23,7 @@ package org.sakaiproject.assignment2.tool.beans.locallogic;
 
 import org.sakaiproject.assignment2.tool.beans.AssignmentSubmissionBean;
 import org.sakaiproject.assignment2.tool.params.AssignmentListSortViewParams;
+import org.sakaiproject.assignment2.tool.params.AssignmentViewParams;
 import org.sakaiproject.assignment2.tool.params.SimpleAssignmentViewParams;
 import org.sakaiproject.assignment2.tool.params.StudentSubmissionParams;
 import org.sakaiproject.assignment2.tool.params.VerifiableViewParams;
@@ -34,6 +35,7 @@ import org.sakaiproject.assignment2.tool.producers.RedirectToAssignmentProducer;
 import org.sakaiproject.assignment2.tool.producers.StudentAssignmentListProducer;
 import org.sakaiproject.assignment2.tool.producers.StudentSubmitProducer;
 import org.sakaiproject.assignment2.tool.producers.ViewSubmissionsProducer;
+import org.sakaiproject.assignment2.tool.producers.fragments.FragmentAssignmentPreviewProducer;
 
 import uk.org.ponder.rsf.flow.ARIResult;
 import uk.org.ponder.rsf.flow.ActionResultInterceptor;
@@ -122,30 +124,59 @@ public class Assignment2WorkFlowLogic implements ViewParamsInterceptor, ActionRe
         return new SimpleViewParameters(AuthorizationFailedProducer.VIEWID);
     }
 
-
-    public void interceptActionResult(ARIResult result, ViewParameters incoming, Object actionReturn) {
+    private void interceptWorkFlowResult(ARIResult result, ViewParameters incoming, WorkFlowResult actionReturn) {
+        Long assignmentId = null;
         if (incoming instanceof StudentSubmissionParams) {
-            StudentSubmissionParams params = (StudentSubmissionParams) incoming;
-            
-            if (AssignmentSubmissionBean.SUBMIT.equals(actionReturn)) {
-                result.resultingView = new SimpleViewParameters(StudentAssignmentListProducer.VIEW_ID);
-            }
-            else if (AssignmentSubmissionBean.BACK_TO_EDIT.equals(actionReturn)) {
-                result.resultingView = new StudentSubmissionParams(StudentSubmitProducer.VIEW_ID, params.assignmentId, false);
-                result.propagateBeans = ARIResult.FLOW_ONESTEP;
-            }
-            else if (AssignmentSubmissionBean.PREVIEW.equals(actionReturn)) {
-                System.out.println("PREVIEW action");
-                result.resultingView = new StudentSubmissionParams(StudentSubmitProducer.VIEW_ID, params.assignmentId, true);
-                result.propagateBeans = ARIResult.FLOW_ONESTEP;
-            } else if (AssignmentSubmissionBean.SAVE_DRAFT.equals(actionReturn)) {
-                result.resultingView = new SimpleViewParameters(StudentAssignmentListProducer.VIEW_ID);
-                System.out.println("SAVE_DRAFT action");
-            } else if (AssignmentSubmissionBean.CANCEL.equals(actionReturn)) {
-                System.out.println("CANCEL action");
-            } else {
-                System.out.println("OTHER ACTION!!! " + actionReturn);
-            }
+            assignmentId = ((StudentSubmissionParams) incoming).assignmentId;
+        }
+        else if (incoming instanceof SimpleAssignmentViewParams) {
+            assignmentId = ((SimpleAssignmentViewParams) incoming).assignmentId;
+        }
+        else if (incoming instanceof AssignmentViewParams) {
+            assignmentId = ((AssignmentViewParams) incoming).assignmentId;
+        }
+        
+        switch (actionReturn) {
+        case INSTRUCTOR_CANCEL_ASSIGNMENT:
+            result.resultingView = new SimpleViewParameters(ListProducer.VIEW_ID);
+            break;
+        case INSTRUCTOR_POST_ASSIGNMENT:
+            result.resultingView = new SimpleViewParameters(ListProducer.VIEW_ID);
+            break;
+        case INSTRUCTOR_PREVIEW_ASSIGNMENT:
+            result.resultingView = new StudentSubmissionParams(
+                    StudentSubmitProducer.VIEW_ID, assignmentId, false, true);
+            result.propagateBeans = ARIResult.FLOW_ONESTEP;
+           //result.resultingView = new AssignmentViewParams(
+           //         FragmentAssignmentPreviewProducer.VIEW_ID, null);
+            break;
+        case INSTRUCTOR_SAVE_DRAFT_ASSIGNMENT:
+            result.resultingView = new SimpleViewParameters(ListProducer.VIEW_ID);
+            break;
+        case STUDENT_CONTINUE_EDITING_SUBMISSION:
+            result.resultingView = new StudentSubmissionParams(StudentSubmitProducer.VIEW_ID, assignmentId, false);
+            result.propagateBeans = ARIResult.FLOW_ONESTEP;
+            break;
+        case STUDENT_PREVIEW_SUBMISSION:
+            result.resultingView = new StudentSubmissionParams(StudentSubmitProducer.VIEW_ID, assignmentId, true);
+            result.propagateBeans = ARIResult.FLOW_ONESTEP;
+            break;
+        case STUDENT_SAVE_DRAFT_SUBMISSION:
+            result.resultingView = new SimpleViewParameters(StudentAssignmentListProducer.VIEW_ID);
+            break;
+        case STUDENT_SUBMISSION_FAILURE:
+            break;
+        case STUDENT_SUBMIT_SUBMISSION:
+            result.resultingView = new SimpleViewParameters(StudentAssignmentListProducer.VIEW_ID);
+            break;
+        default:
+            break;
+        }
+    }
+    
+    public void interceptActionResult(ARIResult result, ViewParameters incoming, Object actionReturn) {
+        if (actionReturn instanceof WorkFlowResult) {
+            interceptWorkFlowResult(result, incoming, (WorkFlowResult) actionReturn);
         }
     }
 

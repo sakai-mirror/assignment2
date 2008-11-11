@@ -27,6 +27,7 @@ import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentGroup;
 import org.sakaiproject.assignment2.model.AssignmentAttachment;
 import org.sakaiproject.assignment2.tool.beans.Assignment2Validator;
+import org.sakaiproject.assignment2.tool.beans.locallogic.WorkFlowResult;
 import org.sakaiproject.user.api.UserNotDefinedException;
 import org.sakaiproject.assignment2.exception.AnnouncementPermissionException;
 import org.sakaiproject.assignment2.exception.StaleObjectModificationException;
@@ -55,12 +56,12 @@ public class Assignment2Bean {
 
     private static final String REMOVE = "remove";
     private static final String BACK_TO_LIST = "back_to_list";
-    private static final String POST = "post";
-    private static final String PREVIEW = "preview";
-    private static final String SAVE_DRAFT = "save_draft";
+    //private static final String POST = "post";
+    //private static final String PREVIEW = "preview";
+    //private static final String SAVE_DRAFT = "save_draft";
     private static final String EDIT = "edit";
-    private static final String CANCEL = "cancel";
-    private static final String FAILURE = "failure";
+    //private static final String CANCEL = "cancel";
+    //private static final String FAILURE = "failure";
     private static final String SAVE_REORDER = "save";
 
 
@@ -114,14 +115,14 @@ public class Assignment2Bean {
         return BACK_TO_LIST;
     }
 
-    public String processActionPost() {
-        String result = POST;
+    public WorkFlowResult processActionPost() {
+        WorkFlowResult result = WorkFlowResult.INSTRUCTOR_POST_ASSIGNMENT;
         for (String key : OTPMap.keySet()) {
             Assignment2 assignment = OTPMap.get(key);
             result = internalProcessPost(assignment, key, Boolean.FALSE);
 
             // Notify students
-            if (result.equals(POST))
+            if (result.equals(WorkFlowResult.INSTRUCTOR_POST_ASSIGNMENT))
             {
                 try
                 {
@@ -140,7 +141,7 @@ public class Assignment2Bean {
         return result;
     }
 
-    private String internalProcessPost(Assignment2 assignment, String key, Boolean draft){
+    private WorkFlowResult internalProcessPost(Assignment2 assignment, String key, Boolean draft){
         Boolean errorFound = false;
 
         assignment.setDraft(draft);
@@ -230,14 +231,14 @@ public class Assignment2Bean {
             } else {
                 //messages.addMessage(new TargettedMessage("assignment2.assignment_post_error"));
             }
-            return FAILURE;
+            return WorkFlowResult.INSTRUCTOR_ASSIGNMENT_FAILURE;
         }
-        return POST;
+        return WorkFlowResult.INSTRUCTOR_POST_ASSIGNMENT;
     }
 
 
-    public String processActionPreview() {
-        String returnCode = FAILURE;
+    public WorkFlowResult processActionPreview() {
+        WorkFlowResult returnCode = WorkFlowResult.INSTRUCTOR_ASSIGNMENT_FAILURE;
         
         for (String key : OTPMap.keySet()) {
             Assignment2 assignment = OTPMap.get(key);
@@ -253,20 +254,23 @@ public class Assignment2Bean {
         }
         
         // Validation
-        Assignment2Validator validator = new Assignment2Validator();
-        if (validator.validate(assignment, messages)) {
-            returnCode = PREVIEW;
-        }
+       
+        // SWG Put this back in.
+        // Assignment2Validator validator = new Assignment2Validator();
+       // if (validator.validate(assignment, messages)) {
+       //     returnCode = WorkFlowResult.INSTRUCTOR_PREVIEW_ASSIGNMENT;
+       // }
         
-        return returnCode;
+        //return returnCode;
+        return WorkFlowResult.INSTRUCTOR_PREVIEW_ASSIGNMENT;
     }
 
     public String processActionEdit() {
         return EDIT;
     }
 
-    public String processActionSaveDraft() {
-        String result = SAVE_DRAFT;
+    public WorkFlowResult processActionSaveDraft() {
+        WorkFlowResult result = WorkFlowResult.INSTRUCTOR_SAVE_DRAFT_ASSIGNMENT;
         for (String key : OTPMap.keySet()) {
             Assignment2 assignment = OTPMap.get(key);
             result = internalProcessPost(assignment, key, Boolean.TRUE);
@@ -274,8 +278,8 @@ public class Assignment2Bean {
         return result;
     }
 
-    public String processActionCancel() {
-        return CANCEL;
+    public WorkFlowResult processActionCancel() {
+        return WorkFlowResult.INSTRUCTOR_CANCEL_ASSIGNMENT;
     }
 
     public void createDuplicate(Long assignmentId) {
@@ -306,7 +310,7 @@ public class Assignment2Bean {
     }
 
     public String processCancelReorder() {
-        return CANCEL;
+        return "cancel";
     }
 
 
