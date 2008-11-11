@@ -284,11 +284,13 @@ public class UploadGradesLogicImpl implements UploadGradesLogic
     	return displayIdsNotInSite;
     }   
     
-    public List<String> getStudentsWithInvalidGradesInContent(List<List<String>> parsedContent, String contextId) {
+    public List<String> getStudentsWithInvalidGradesInContent(List<List<String>> parsedContent, Long assignmentId) {
     	List<String> displayIdsAssocWithInvalidGrades = new ArrayList<String>();
     	if (parsedContent != null) {
+    		// get the assignment so we know which gradebook item it is assoc with
+    		Assignment2 assign = assnLogic.getAssignmentById(assignmentId);
     		Map<String, String> displayIdToGradeMap = getDisplayIdToGradeMapFromContent(parsedContent);
-    		 displayIdsAssocWithInvalidGrades = gradebookLogic.identifyStudentsWithInvalidGrades(contextId, displayIdToGradeMap);
+    		 displayIdsAssocWithInvalidGrades = gradebookLogic.identifyStudentsWithInvalidGrades(assign.getGradableObjectId(), displayIdToGradeMap);
     	}
     	
     	return displayIdsAssocWithInvalidGrades;

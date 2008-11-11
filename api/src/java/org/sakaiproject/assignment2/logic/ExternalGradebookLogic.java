@@ -277,23 +277,27 @@ public interface ExternalGradebookLogic {
 	
 	/**
 	 * 
-	 * @param contextId
+	 * @param gradebookItemId - the id of the gradebook item associated with the assignment
 	 * @param studentIdToGradeMap - a map of studentId to the entered grade
 	 * 			
 	 * @return a list of studentIds associated with invalid grades according
 	 * to the gradebook.  returns empty list if all grades are valid
+	 * @throws GradebookItemNotFoundException if there is no gradebook item associated with
+	 * the given gradebookItemId
 	 */
-	public List<String> identifyStudentsWithInvalidGrades(String contextId, Map<String, String> studentIdToGradeMap);
+	public List<String> identifyStudentsWithInvalidGrades(Long gradebookItemId, Map<String, String> studentIdToGradeMap);
 	
 	/**
 	 * 
-	 * @param contextId
+	 * @param gradebookItemId - the id of the gradebook item associated with the assignment
 	 * @param grade
 	 * @return true if the given grade is valid for the gradebook. if you are
 	 * processing more than one student, use getStudentsWithInvalidGrades for
 	 * efficiency
+	 * @throws GradebookItemNotFoundException if there is no gradebook item associated with
+	 * the given gradebookItemId
 	 */
-	public boolean isGradeValid(String contextId, String grade);
+	public boolean isGradeValid(Long gradebookItemId, String grade);
 	
 	/**
 	 * 

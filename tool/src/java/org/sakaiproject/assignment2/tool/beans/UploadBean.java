@@ -130,7 +130,7 @@ public class UploadBean
 		}
 		
 		// check that the grades are valid
-		List<String> displayIdsWithInvalidGrade = uploadGradesLogic.getStudentsWithInvalidGradesInContent(parsedContent, contextId);
+		List<String> displayIdsWithInvalidGrade = uploadGradesLogic.getStudentsWithInvalidGradesInContent(parsedContent, uploadOptions.assignmentId);
 		if (displayIdsWithInvalidGrade != null && !displayIdsWithInvalidGrade.isEmpty()) {
 			messages.addMessage(new TargettedMessage("assignment2.upload_grades.grades_not_valid", 
 					new Object[] {getListAsString(displayIdsWithInvalidGrade)}, TargettedMessage.SEVERITY_ERROR ));

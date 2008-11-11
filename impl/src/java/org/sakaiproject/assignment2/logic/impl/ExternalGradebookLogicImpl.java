@@ -571,35 +571,35 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
 		return gradebookService.isGradebookDefined(contextId);
 	}
 	
-	public boolean isGradeValid(String contextId, String grade) {
-		if (contextId == null) {
-			throw new IllegalArgumentException("Null contextId passed to isGradeValid");
+	public boolean isGradeValid(Long gradebookItemId, String grade) {
+		if (gradebookItemId == null) {
+			throw new IllegalArgumentException("Null gradebookItemId passed to isGradeValid");
 		}
 		
 		boolean valid = false;
 		
 		try {
-			valid = gradebookService.isGradeValid(contextId, grade);
-		} catch (GradebookNotFoundException gnfe) {
-			throw new NoGradebookDataExistsException("No gradebook exists in the given context: "
-					+ contextId, gnfe);
+			valid = gradebookService.isGradeValid(gradebookItemId, grade);
+		} catch (AssessmentNotFoundException gnfe) {
+			throw new GradebookItemNotFoundException("No gradebook exists in the given context: "
+					+ gradebookItemId, gnfe);
 		}
 		
 		return valid;
 	}
 	
-	public List<String> identifyStudentsWithInvalidGrades(String contextId, Map<String, String> studentIdToGradeMap) {
-		if (contextId == null) {
-			throw new IllegalArgumentException("Null contextId passed to getStudentsWithInvalidGrades");
+	public List<String> identifyStudentsWithInvalidGrades(Long gradebookItemId, Map<String, String> studentIdToGradeMap) {
+		if (gradebookItemId == null) {
+			throw new IllegalArgumentException("Null gradebookItemId passed to getStudentsWithInvalidGrades");
 		}
 		
 		List<String> studentsWithInvalidGrades = new ArrayList<String>();
 		if (studentIdToGradeMap != null) {
 			try {
-				studentsWithInvalidGrades = gradebookService.identifyStudentsWithInvalidGrades(contextId, studentIdToGradeMap);
-			} catch (GradebookNotFoundException gnfe) {
-				throw new NoGradebookDataExistsException(
-						"No gradebook exists in the given context: " + contextId, gnfe);
+				studentsWithInvalidGrades = gradebookService.identifyStudentsWithInvalidGrades(gradebookItemId, studentIdToGradeMap);
+			} catch (AssessmentNotFoundException anfe) {
+				throw new GradebookItemNotFoundException(
+						"No gradebook item exists with the given id: " + gradebookItemId, anfe);
 			}
 		}
 		
@@ -637,7 +637,7 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
 	    // no need to continue if they didn't pass a new grade
 	    if (grade != null && grade.trim().length() > 0) {
 	        // first, let's validate the grade
-	        if (!isGradeValid(contextId, grade)) {
+	        if (!isGradeValid(gradableObjectId, grade)) {
 	            throw new InvalidGradeForAssignmentException("Invalid grade passed to assignGradeToUngradedSubmissions: " + grade);
 	        }
 

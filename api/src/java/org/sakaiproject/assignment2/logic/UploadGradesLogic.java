@@ -69,10 +69,11 @@ public interface UploadGradesLogic
 	/**
 	 * 
 	 * @param parsedContent
-	 * @param contextId
+	 * @param assignmentId
 	 * @return a list of the displayIds contained in the given parsedContent
 	 * that are associated with invalid grades. useful for validating your
-	 * content before you try to save anything
+	 * content before you try to save anything.  only call this method on
+	 * graded assignments
 	 */
-	public List<String> getStudentsWithInvalidGradesInContent(List<List<String>> parsedContent, String contextId);
+	public List<String> getStudentsWithInvalidGradesInContent(List<List<String>> parsedContent, Long assignmentId);
 }

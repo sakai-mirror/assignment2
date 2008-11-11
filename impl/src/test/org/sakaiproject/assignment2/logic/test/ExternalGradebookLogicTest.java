@@ -745,7 +745,7 @@ public class ExternalGradebookLogicTest extends Assignment2TestBase {
     	} catch (IllegalArgumentException iae) {}
     	
     	// a null map should return an empty list
-    	List<String> studentList = gradebookLogic.identifyStudentsWithInvalidGrades(AssignmentTestDataLoad.CONTEXT_ID, null);
+    	List<String> studentList = gradebookLogic.identifyStudentsWithInvalidGrades(AssignmentTestDataLoad.GB_ITEM1_ID, null);
     	assertTrue(studentList.isEmpty());
     	
     	// this method basically tests the gradebook (which we don't need to do here),

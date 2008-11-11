@@ -660,13 +660,13 @@ public class GradebookServiceStub implements GradebookService {
 		return studentGrades;
 	}
 
-	public boolean isGradeValid(String gradebookUuid, String grade) {
+	public boolean isGradeValid(Long gradebookItemId, String grade) {
 		return true;
 	}
 
-	public List<String> identifyStudentsWithInvalidGrades(String gradebookUid, Map<String, String> studentIdToGradeMap) {
-		if (gradebookUid == null) {
-			throw new IllegalArgumentException("null gradebookUid passed to identifyStudentsWithInvalidGrades");
+	public List<String> identifyStudentsWithInvalidGrades(Long gradebookItemId, Map<String, String> studentIdToGradeMap) {
+		if (gradebookItemId == null) {
+			throw new IllegalArgumentException("null gradebookItemId passed to identifyStudentsWithInvalidGrades");
 		}
 
 		return new ArrayList<String>();
