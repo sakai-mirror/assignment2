@@ -19,6 +19,17 @@ import uk.org.ponder.rsf.view.ComponentChecker;
 import uk.org.ponder.rsf.view.ViewComponentProducer;
 import uk.org.ponder.rsf.viewstate.ViewParameters;
 
+/**
+ * This renders the "Preview As Student" view for Instructors editing
+ * assignments. Currently it's accessed at the bottom of the Assignment Editing
+ * with the "Preview As Student" button.  This uses the 
+ * {@link StudentViewAssignmentRenderer} to render the actual sample view, and
+ * then adds an Edit button at the bottom, which will take you back to the 
+ * screen to edit the assignment.
+ * 
+ * @author sgithens
+ *
+ */
 public class PreviewAsStudentProducer implements ViewComponentProducer {
     public static final String VIEW_ID = "preview-as-student";
     private static final Log log = LogFactory.getLog(PreviewAsStudentProducer.class);
