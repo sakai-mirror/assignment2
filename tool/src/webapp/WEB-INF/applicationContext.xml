@@ -15,7 +15,7 @@
 	-->
 
 	<bean id="LocalPermissionLogic"
-		class="org.sakaiproject.assignment2.tool.beans.locallogic.LocalPermissionLogic">
+		class="org.sakaiproject.assignment2.tool.LocalPermissionLogic">
 		<property name="permissionLogic"
 			ref="org.sakaiproject.assignment2.logic.AssignmentPermissionLogic" />
 		<property name="externalLogic"
@@ -25,7 +25,7 @@
 	</bean>
 
 	<bean id="localAssignmentLogic"
-		class="org.sakaiproject.assignment2.tool.beans.locallogic.LocalAssignmentLogic">
+		class="org.sakaiproject.assignment2.tool.LocalAssignmentLogic">
 	</bean>
 
 	<!-- Entity Providers -->
@@ -54,7 +54,7 @@
 
 
 	<bean id="Assignment2ViewParamsInterceptor"
-				class="org.sakaiproject.assignment2.tool.beans.locallogic.Assignment2WorkFlowLogic">
+				class="org.sakaiproject.assignment2.tool.Assignment2WorkFlowLogic">
 		<property name="localPermissionLogic" ref="LocalPermissionLogic" />
 	</bean>
 
