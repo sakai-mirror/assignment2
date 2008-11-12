@@ -132,14 +132,14 @@ public class StudentViewAssignmentRenderer {
      * @param assignment
      * @param params
      * @param ASOTPKey
-     * @param preview
+     * @param previewAsStudent
      */
     public void makeStudentView(UIContainer tofill, String divID, AssignmentSubmission assignmentSubmission, 
-            Assignment2 assignment, ViewParameters params, String ASOTPKey, Boolean preview, Boolean studentSubmissionPreview) {
+            Assignment2 assignment, ViewParameters params, String ASOTPKey, Boolean previewAsStudent, Boolean studentSubmissionPreview) {
         /**
          * Breadcrumbs
          */
-        if (!preview) {
+        if (!previewAsStudent) {
             UIInternalLink.make(tofill, "breadcrumb", 
                     messageLocator.getMessage("assignment2.student-assignment-list.heading"),
                     new SimpleViewParameters(StudentAssignmentListProducer.VIEW_ID));
@@ -147,7 +147,7 @@ public class StudentViewAssignmentRenderer {
             UIMessage.make(tofill, "breadcrumb", "assignment2.student-assignment-list.heading");
         }
         
-        if (!preview) {
+        if (!previewAsStudent) {
             StudentAction studentAction = submissionBean.determineStudentAction(assignmentSubmission.getUserId(), assignment.getId());
             UIOutput.make(tofill, "student-submit-heading", messageLocator.getMessage("assignment2.student-assignment-list.action." + studentAction));
         }
@@ -183,16 +183,21 @@ public class StudentViewAssignmentRenderer {
          * text and attachments of that submission.
          */
         if (!studentSubmissionPreview) {
-            asnnSubmissionDetailsRenderer.fillComponents(joint, "assignment-details:", assignmentSubmission);
+            asnnSubmissionDetailsRenderer.fillComponents(joint, "assignment-details:", assignmentSubmission, previewAsStudent);
         
             asnnInstructionsRenderer.fillComponents(joint, "assignment-instructions:", assignment);
         
             // Submission History
-            asnnSubmissionHistoryRenderer.fillComponents(joint, "assignment-previous-submissions:", assignmentSubmission);
+            if (!previewAsStudent) {
+                asnnSubmissionHistoryRenderer.fillComponents(joint, "assignment-previous-submissions:", assignmentSubmission);
+            }
         }
             
-        if (submissionLogic.isSubmissionOpenForStudentForAssignment(currentUser.getId(), assignment.getId())) {
-            asnnSubmitEditorRenderer.fillComponents(joint, "assignment-edit-submission:", assignmentSubmission, preview, studentSubmissionPreview);
+        if (previewAsStudent) {
+            asnnSubmitEditorRenderer.fillComponents(joint, "assignment-edit-submission:", assignmentSubmission, true, false);
+        }
+        else if (submissionLogic.isSubmissionOpenForStudentForAssignment(currentUser.getId(), assignment.getId())) {
+            asnnSubmitEditorRenderer.fillComponents(joint, "assignment-edit-submission:", assignmentSubmission, previewAsStudent, studentSubmissionPreview);
         }
         
     }

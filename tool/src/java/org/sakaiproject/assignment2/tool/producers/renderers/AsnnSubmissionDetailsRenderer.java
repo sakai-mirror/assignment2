@@ -95,7 +95,7 @@ public class AsnnSubmissionDetailsRenderer implements BasicProducer {
         this.submissionLogic = submissionLogic;
     }
 
-    public void fillComponents(UIContainer parent, String clientID, AssignmentSubmission assignmentSubmission) {
+    public void fillComponents(UIContainer parent, String clientID, AssignmentSubmission assignmentSubmission, boolean previewAsStudent) {
         Assignment2 assignment = assignmentSubmission.getAssignment();
         String title = assignment.getTitle();
 
@@ -214,15 +214,17 @@ public class AsnnSubmissionDetailsRenderer implements BasicProducer {
         /*
          * Remaining resubmissions allowed
          */
-        UIOutput.make(joint, "remaining-resubmissions-row");
-        int numSubmissionsAllowed = submissionLogic.getNumberOfRemainingSubmissionsForStudent(currentUser.getId(), assignment.getId());
-        String numAllowedDisplay;
-        if (numSubmissionsAllowed == AssignmentConstants.UNLIMITED_SUBMISSION) {
-            numAllowedDisplay = messageLocator.getMessage("assignment2.indefinite_resubmit");
-        } else {
-            numAllowedDisplay = "" + numSubmissionsAllowed;
+        if (!previewAsStudent) {
+            UIOutput.make(joint, "remaining-resubmissions-row");
+            int numSubmissionsAllowed = submissionLogic.getNumberOfRemainingSubmissionsForStudent(currentUser.getId(), assignment.getId());
+            String numAllowedDisplay;
+            if (numSubmissionsAllowed == AssignmentConstants.UNLIMITED_SUBMISSION) {
+                numAllowedDisplay = messageLocator.getMessage("assignment2.indefinite_resubmit");
+            } else {
+                numAllowedDisplay = "" + numSubmissionsAllowed;
+            }
+            UIOutput.make(joint, "remaining-resubmissions", numAllowedDisplay);
         }
-        UIOutput.make(joint, "remaining-resubmissions", numAllowedDisplay);
 
     }
 
