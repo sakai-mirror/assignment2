@@ -352,44 +352,6 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
             UIOutput.make(row, "released", released);
         }
 
-
-        //Assignment Details
-        UIMessage.make(tofill, "assignment_details", "assignment2.assignment_grade-assignment.assignment_details");
-        if (edit_perm){
-            UIOutput.make(tofill, "edit_assignment_span");
-            UIInternalLink.make(tofill, "assignment_details_edit", new AssignmentViewParams(AssignmentProducer.VIEW_ID, assignment.getId()));
-        }
-        UIMessage.make(tofill, "assignment_details.title_header", "assignment2.assignment_grade-assignment.assignment_details.title");
-        UIOutput.make(tofill, "assignment_details.title", assignment.getTitle());
-        UIMessage.make(tofill, "assignment_details.created_by_header", "assignment2.assignment_grade-assignment.assignment_details.created_by");
-        UIOutput.make(tofill, "assignment_details.created_by", externalLogic.getUserDisplayName(assignment.getCreator()));
-        UIMessage.make(tofill, "assignment_details.modified_header", "assignment2.assignment_grade-assignment.assignment_details.modified");
-        UIOutput.make(tofill, "assignment_details.modified", (assignment.getModifiedDate() != null ? df.format(assignment.getModifiedDate()) : ""));
-        UIMessage.make(tofill, "assignment_details.open_header", "assignment2.assignment_grade-assignment.assignment_details.open");
-        UIOutput.make(tofill, "assignment_details.open", df.format(assignment.getOpenDate()));
-        UIMessage.make(tofill, "assignment_details.due_header", "assignment2.assignment_grade-assignment.assignment_details.due");
-
-        UIOutput.make(tofill, "assignment_details.due", 
-                (assignment.getDueDate() != null ? df.format(assignment.getDueDate()) : ""));
-
-        UIMessage.make(tofill, "assignment_details.accept_until_header", "assignment2.assignment_grade-assignment.assignment_details.accept_until");
-        UIOutput.make(tofill, "assignment_details.accept_until", 
-                (assignment.getAcceptUntilDate() != null ? df.format(assignment.getAcceptUntilDate()) : ""));
-        UIMessage.make(tofill, "assignment_details.submissions_header", "assignment2.assignment_grade-assignment.assignment_details.submissions");
-        UIMessage.make(tofill, "assignment_details.submissions", "assignment2.submission_type." + String.valueOf(assignment.getSubmissionType()));
-        //UIMessage.make(tofill, "assignment_details.scale_header", "assignment2.assignment_grade-assignment.assignment_details.scale");
-        //UIOutput.make(tofill, "assignment_details.scale", "Points (max100.0)");
-        UIMessage.make(tofill, "assignment_details.honor_header", "assignment2.assignment_grade-assignment.assignment_details.honor");
-        UIMessage.make(tofill, "assignment_details.honor", (assignment.isHonorPledge() ? "assignment2.yes" : "assignment2.no"));
-
-        UIMessage.make(tofill, "assignment_details.instructions_header", "assignment2.assignment_grade-assignment.assignment_details.instructions");
-        UIVerbatim.make(tofill, "assignment_details.instructions", assignment.getInstructions());
-        UIMessage.make(tofill, "assignment_details.attachments_header", "assignment2.assignment_grade-assignment.assignment_details.attachments");
-
-        attachmentListRenderer.makeAttachmentFromAssignmentAttachmentSet(tofill, "attachment_list:", params.viewID, 
-                assignment.getAttachmentSet());
-
-
         /*
          * Form for assigning a grade to all submissions without a grade.
          */
