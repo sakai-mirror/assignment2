@@ -21,7 +21,6 @@
 
 package org.sakaiproject.assignment2.tool;
 
-import org.sakaiproject.assignment2.tool.beans.AssignmentSubmissionBean;
 import org.sakaiproject.assignment2.tool.params.AssignmentListSortViewParams;
 import org.sakaiproject.assignment2.tool.params.AssignmentViewParams;
 import org.sakaiproject.assignment2.tool.params.SimpleAssignmentViewParams;
@@ -37,7 +36,6 @@ import org.sakaiproject.assignment2.tool.producers.RedirectToAssignmentProducer;
 import org.sakaiproject.assignment2.tool.producers.StudentAssignmentListProducer;
 import org.sakaiproject.assignment2.tool.producers.StudentSubmitProducer;
 import org.sakaiproject.assignment2.tool.producers.ViewSubmissionsProducer;
-import org.sakaiproject.assignment2.tool.producers.fragments.FragmentAssignmentPreviewProducer;
 
 import uk.org.ponder.rsf.flow.ARIResult;
 import uk.org.ponder.rsf.flow.ActionResultInterceptor;

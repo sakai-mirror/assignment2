@@ -145,18 +145,14 @@ public class LocalPermissionLogic {
 
         } else if (FragmentAssignment2SelectProducer.VIEW_ID.equals(viewId)) {
             return permissionLogic.isCurrentUserAbleToEditAssignments(contextId);
-
-        } else if (FragmentAssignmentPreviewProducer.VIEW_ID.equals(viewId)) {
-            return permissionLogic.isCurrentUserAbleToEditAssignments(contextId);
-
-        } else if (FragmentGradebookDetailsProducer.VIEW_ID.equals(viewId)) {
+        }
+        else if (FragmentGradebookDetailsProducer.VIEW_ID.equals(viewId)) {
             if (viewParams instanceof FragmentGradebookDetailsViewParams) {
                 FragmentGradebookDetailsViewParams params = (FragmentGradebookDetailsViewParams) viewParams;
                 return permissionLogic.isUserAbleToViewStudentSubmissionForAssignment(params.userId, params.assignmentId);
             }
 
             return Boolean.FALSE;
-
         } else if (FragmentSubmissionGradePreviewProducer.VIEW_ID.equals(viewId)) {
             //TODO - RYAN!  Remove this producer!
             return Boolean.FALSE;
