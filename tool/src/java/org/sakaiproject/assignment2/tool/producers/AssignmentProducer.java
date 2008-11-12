@@ -25,7 +25,6 @@ import org.sakaiproject.assignment2.tool.params.AssignmentViewParams;
 import org.sakaiproject.assignment2.tool.params.FilePickerHelperViewParams;
 import org.sakaiproject.assignment2.tool.producers.evolvers.AttachmentInputEvolver;
 import org.sakaiproject.assignment2.tool.producers.fragments.FragmentAssignment2SelectProducer;
-import org.sakaiproject.assignment2.tool.producers.fragments.FragmentAssignmentPreviewProducer;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.GradebookItem;
@@ -33,7 +32,6 @@ import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 
 import java.text.DateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -64,8 +62,6 @@ import uk.org.ponder.rsf.components.decorators.DecoratorList;
 import uk.org.ponder.rsf.components.decorators.UIFreeAttributeDecorator;
 import uk.org.ponder.rsf.evolvers.TextInputEvolver;
 import uk.org.ponder.rsf.evolvers.FormatAwareDateInputEvolver;
-import uk.org.ponder.rsf.flow.jsfnav.NavigationCase;
-import uk.org.ponder.rsf.flow.jsfnav.NavigationCaseReporter;
 import uk.org.ponder.rsf.view.ComponentChecker;
 import uk.org.ponder.rsf.view.ViewComponentProducer;
 import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
@@ -149,8 +145,14 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
         if (assignmentId != null) {
             OTPKey = assignmentId.toString();
         } else {
-            //create new
-            OTPKey = EntityBeanLocator.NEW_PREFIX + "1";
+            // if we are returning from the preview page
+            if (assignment2BeanLocator.getDeliveredBeans().size() == 1) {
+                OTPKey = (String) assignment2BeanLocator.getDeliveredBeans().keySet().toArray()[0];
+            }
+            // create new
+            else {
+                OTPKey = EntityBeanLocator.NEW_PREFIX + "1";
+            }
         }
         assignment2OTP += OTPKey;
         Assignment2 assignment = (Assignment2)assignment2BeanLocator.locateBean(OTPKey);
@@ -370,7 +372,6 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
         Boolean restrictedToGroups = (assignment.getAssignmentGroupSet() != null && !assignment.getAssignmentGroupSet().isEmpty());
         UISelect access = UISelect.make(form, "access_select", access_values, access_labels,
                 "#{Assignment2Bean.restrictedToGroups}", restrictedToGroups.toString()).setMessageKeys();
-        //((UIBoundString) access.selection).setValue(assignment.isRestrictedToGroups().toString());
 
         String accessId = access.getFullID();
 
@@ -402,13 +403,13 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
         UIBoundBoolean.make(form, "sub_notif", assignment2OTP + ".sendSubmissionNotifications");
 
         //Post Buttons
-        UICommand.make(form, "post_assignment", UIMessage.make("assignment2.assignment_add.post"), "#{Assignment2Bean.processActionPost}");
-        UICommand.make(form, "preview_assignment", UIMessage.make("assignment2.assignment_add.preview"), "#{Assignment2Bean.processActionPreview}");
+        UICommand.make(form, "post_assignment", UIMessage.make("assignment2.assignment_add.post"), "Assignment2Bean.processActionPost");
+        UICommand.make(form, "preview_assignment", UIMessage.make("assignment2.assignment_add.preview"), "Assignment2Bean.processActionPreview");
 
         if (assignment == null || assignment.getId() == null || assignment.isDraft()){
-            UICommand.make(form, "save_draft", UIMessage.make("assignment2.assignment_add.save_draft"), "#{Assignment2Bean.processActionSaveDraft}");
+            UICommand.make(form, "save_draft", UIMessage.make("assignment2.assignment_add.save_draft"), "Assignment2Bean.processActionSaveDraft");
         }
-        UICommand.make(form, "cancel_assignment", UIMessage.make("assignment2.assignment_add.cancel_assignment"), "#{Assignment2Bean.processActionCancel}");
+        UICommand.make(form, "cancel_assignment", UIMessage.make("assignment2.assignment_add.cancel_assignment"), "Assignment2Bean.processActionCancel");
 
     }
 

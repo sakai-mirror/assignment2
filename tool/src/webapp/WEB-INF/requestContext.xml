@@ -94,6 +94,12 @@
    </bean>
 
    <!-- list the producer beans here -->
+   <bean class="org.sakaiproject.assignment2.tool.producers.PreviewAsStudentProducer">
+       <property name="assignment2BeanLocator" ref="Assignment2" />
+       <property name="assignmentSubmissionCreator" ref="AssignmentSubmissionCreator" />
+       <property name="studentViewAssignmentRenderer" ref="StudentViewAssignmentRenderer" />
+   </bean>
+   
    <bean class="org.sakaiproject.assignment2.tool.producers.RemoveAssignmentConfirmProducer">
        <property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
        <property name="curUserId" ref="sakai-UserID" />

@@ -29,8 +29,10 @@ import org.sakaiproject.assignment2.tool.params.StudentSubmissionParams;
 import org.sakaiproject.assignment2.tool.params.VerifiableViewParams;
 import org.sakaiproject.assignment2.tool.params.ViewSubmissionsViewParams;
 import org.sakaiproject.assignment2.tool.producers.AssignmentDetailProducer;
+import org.sakaiproject.assignment2.tool.producers.AssignmentProducer;
 import org.sakaiproject.assignment2.tool.producers.ListProducer;
 import org.sakaiproject.assignment2.tool.producers.AuthorizationFailedProducer;
+import org.sakaiproject.assignment2.tool.producers.PreviewAsStudentProducer;
 import org.sakaiproject.assignment2.tool.producers.RedirectToAssignmentProducer;
 import org.sakaiproject.assignment2.tool.producers.StudentAssignmentListProducer;
 import org.sakaiproject.assignment2.tool.producers.StudentSubmitProducer;
@@ -144,14 +146,15 @@ public class Assignment2WorkFlowLogic implements ViewParamsInterceptor, ActionRe
             result.resultingView = new SimpleViewParameters(ListProducer.VIEW_ID);
             break;
         case INSTRUCTOR_PREVIEW_ASSIGNMENT:
-            result.resultingView = new StudentSubmissionParams(
-                    StudentSubmitProducer.VIEW_ID, assignmentId, false, true);
-            result.propagateBeans = ARIResult.FLOW_ONESTEP;
-           //result.resultingView = new AssignmentViewParams(
-           //         FragmentAssignmentPreviewProducer.VIEW_ID, null);
+            result.resultingView = new SimpleViewParameters(PreviewAsStudentProducer.VIEW_ID);
+            result.propagateBeans = ARIResult.FLOW_FASTSTART;
             break;
         case INSTRUCTOR_SAVE_DRAFT_ASSIGNMENT:
             result.resultingView = new SimpleViewParameters(ListProducer.VIEW_ID);
+            break;
+        case INSTRUCTOR_CONTINUE_EDITING_ASSIGNMENT:
+            result.resultingView = new SimpleViewParameters(AssignmentProducer.VIEW_ID);
+            result.propagateBeans = ARIResult.PROPAGATE;
             break;
         case STUDENT_CONTINUE_EDITING_SUBMISSION:
             result.resultingView = new StudentSubmissionParams(StudentSubmitProducer.VIEW_ID, assignmentId, false);

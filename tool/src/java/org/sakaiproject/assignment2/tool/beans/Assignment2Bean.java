@@ -55,15 +55,7 @@ public class Assignment2Bean {
     private static final Log LOG = LogFactory.getLog(Assignment2Bean.class);
 
     private static final String REMOVE = "remove";
-    private static final String BACK_TO_LIST = "back_to_list";
-    //private static final String POST = "post";
-    //private static final String PREVIEW = "preview";
-    //private static final String SAVE_DRAFT = "save_draft";
-    private static final String EDIT = "edit";
-    //private static final String CANCEL = "cancel";
-    //private static final String FAILURE = "failure";
     private static final String SAVE_REORDER = "save";
-
 
     public Long currentAssignmentId;
 
@@ -109,10 +101,6 @@ public class Assignment2Bean {
     private NotificationBean notificationBean;
     public void setNotificationBean (NotificationBean notificationBean) {
         this.notificationBean = notificationBean;
-    }
-
-    public String processActionBackToList() {
-        return BACK_TO_LIST;
     }
 
     public WorkFlowResult processActionPost() {
@@ -265,8 +253,8 @@ public class Assignment2Bean {
         return WorkFlowResult.INSTRUCTOR_PREVIEW_ASSIGNMENT;
     }
 
-    public String processActionEdit() {
-        return EDIT;
+    public WorkFlowResult processActionEdit() {
+        return WorkFlowResult.INSTRUCTOR_CONTINUE_EDITING_ASSIGNMENT;
     }
 
     public WorkFlowResult processActionSaveDraft() {

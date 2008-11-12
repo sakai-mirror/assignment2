@@ -33,6 +33,7 @@ import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.assignment2.tool.beans.AssignmentSubmissionBean;
+import org.sakaiproject.assignment2.tool.beans.locallogic.StudentAction;
 import org.sakaiproject.assignment2.tool.producers.StudentAssignmentListProducer;
 import org.sakaiproject.user.api.User;
 
@@ -146,9 +147,11 @@ public class StudentViewAssignmentRenderer {
             UIMessage.make(tofill, "breadcrumb", "assignment2.student-assignment-list.heading");
         }
         
-        int studentAction = submissionBean.determineStudentAction(assignmentSubmission.getUserId(), assignment.getId());
-        UIOutput.make(tofill, "student-submit-heading", messageLocator.getMessage("assignment2.student-assignment-list.action." + studentAction));
-
+        if (!preview) {
+            StudentAction studentAction = submissionBean.determineStudentAction(assignmentSubmission.getUserId(), assignment.getId());
+            UIOutput.make(tofill, "student-submit-heading", messageLocator.getMessage("assignment2.student-assignment-list.action." + studentAction));
+        }
+            
         if (assignmentSubmission != null) {
             assignmentSubmission.setAssignment(assignment);
         }

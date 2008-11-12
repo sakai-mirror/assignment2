@@ -34,6 +34,7 @@ import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.model.FeedbackAttachment;
 import org.sakaiproject.assignment2.model.SubmissionAttachment;
+import org.sakaiproject.assignment2.tool.beans.locallogic.StudentAction;
 import org.sakaiproject.assignment2.tool.beans.locallogic.WorkFlowResult;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.PermissionException;
@@ -55,19 +56,9 @@ public class AssignmentSubmissionBean {
 
     public static final String SUBMIT = "submit";
     public static final String PREVIEW = "preview";
-    //public static final String SAVE_DRAFT = "save_draft";
-    //public static final String BACK_TO_EDIT = "back_to_edit";
-    //private static final String EDIT = "edit";
     public static final String CANCEL = "cancel";
     private static final String FAILURE = "failure";
     private static final String RELEASE_ALL= "release_all";
-    
-    // for determining available student action(s)
-    public static final int VIEW_DETAILS = 0;
-    public static final int VIEW_AND_SUBMIT = 1;
-    public static final int VIEW_AND_RESUBMIT = 2;
-    public static final int VIEW_SUB = 3;
-    public static final int VIEW_ALL_SUB = 4;
 
     public Map<String, Boolean> selectedIds = new HashMap<String, Boolean>();
     public Long assignmentId;
@@ -279,33 +270,33 @@ public class AssignmentSubmissionBean {
         return CANCEL;
     }
     
-    public int determineStudentAction(String studentId, Long assignmentId) {
+    public StudentAction determineStudentAction(String studentId, Long assignmentId) {
         boolean isOpenForSubmission = submissionLogic.isSubmissionOpenForStudentForAssignment(
                 studentId, assignmentId);
 
         int numSubmittedVersions = submissionLogic.getNumSubmittedVersions(studentId, assignmentId);
 
-        int action = VIEW_DETAILS;
+        StudentAction action = StudentAction.VIEW_DETAILS;
 
         // 1. View Details and Submit
         if (isOpenForSubmission && numSubmittedVersions < 1) {
-            action = VIEW_AND_SUBMIT;
+            action = StudentAction.VIEW_AND_SUBMIT;
         }
         // 3. Resubmit
         else if (isOpenForSubmission && numSubmittedVersions >= 1) {
-            action = VIEW_AND_RESUBMIT;
+            action = StudentAction.VIEW_AND_RESUBMIT;
         }
         // 4a View Submission
         else if (numSubmittedVersions == 1) {
-            action = VIEW_SUB;
+            action = StudentAction.VIEW_SUB;
         }
         // 4b View Submissions
         else if (numSubmittedVersions > 1) {
-            action = VIEW_ALL_SUB;
+            action = StudentAction.VIEW_ALL_SUB;
         }
         // 2 View Details
         else {
-            action = VIEW_DETAILS;
+            action = StudentAction.VIEW_DETAILS;
         }
 
         return action;
