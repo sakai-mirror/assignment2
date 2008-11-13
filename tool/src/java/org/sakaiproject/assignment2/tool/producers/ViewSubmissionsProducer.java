@@ -23,6 +23,8 @@ package org.sakaiproject.assignment2.tool.producers;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -46,6 +48,7 @@ import org.sakaiproject.assignment2.tool.params.ZipViewParams;
 import org.sakaiproject.assignment2.tool.producers.renderers.AttachmentListRenderer;
 import org.sakaiproject.assignment2.tool.producers.renderers.PagerRenderer;
 import org.sakaiproject.assignment2.tool.producers.renderers.SortHeaderRenderer;
+import org.sakaiproject.site.api.Group;
 
 import uk.org.ponder.htmlutil.HTMLUtil;
 import uk.org.ponder.messageutil.MessageLocator;
@@ -60,6 +63,7 @@ import uk.org.ponder.rsf.components.UIInput;
 import uk.org.ponder.rsf.components.UIInternalLink;
 import uk.org.ponder.rsf.components.UIMessage;
 import uk.org.ponder.rsf.components.UIOutput;
+import uk.org.ponder.rsf.components.UISelect;
 import uk.org.ponder.rsf.components.UIVerbatim;
 import uk.org.ponder.rsf.components.decorators.UIFreeAttributeDecorator;
 import uk.org.ponder.rsf.flow.ARIResult;
@@ -140,7 +144,7 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
         current_sort_dir = params.sort_dir;
         UIVerbatim.make(tofill, "defaultSortBy", HTMLUtil.emitJavascriptVar("defaultSortBy", DEFAULT_SORT_BY));
 
-        List<AssignmentSubmission> submissions = submissionLogic.getViewableSubmissionsForAssignmentId(assignmentId);
+        List<AssignmentSubmission> submissions = submissionLogic.getViewableSubmissionsForAssignmentId(assignmentId, params.groupId);
 
         // get grade info, if appropriate
         Map<String, GradeInformation> studentIdGradeInfoMap = new HashMap<String, GradeInformation>();
@@ -268,13 +272,9 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
         //pagerRenderer.makePager(tofill, "pagerDiv:", VIEW_ID, viewparams, submissions.size());
         //UIMessage.make(tofill, "heading", "assignment2.assignment_grade-assignment.heading", new Object[] { assignment.getTitle() });
 
-        /**  Assign This Grade Helper
-        UIForm assign_form = UIForm.make(tofill, "assign_form");
-        UIMessage.make(assign_form, "assign_grade", "assignment2.assignment_grade-assignment.assign_grade");
-        UIInput.make(assign_form, "assign_grade_input", "");
-        UICommand.make(assign_form, "assign_grade_submit", "");
-         ***/
-
+        // now make the "View By Sections/Groups" filter
+        makeViewByGroupFilter(tofill, params);
+        
         //Do Student Table
         sortHeaderRenderer.makeSortingLink(tofill, "tableheader.student", viewparams, 
                 AssignmentSubmissionLogic.SORT_BY_NAME, "assignment2.assignment_grade-assignment.tableheader.student");
@@ -362,6 +362,63 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
             UICommand.make(unassignedForm, "apply-button", "GradeAllRemainingAction.execute");
         }
     } 
+    
+    private void makeViewByGroupFilter(UIContainer tofill, ViewSubmissionsViewParams params) {
+        List<Group> viewableGroups = permissionLogic.getViewableGroupsForCurrUserForAssignment(assignmentId);
+        if (viewableGroups != null && !viewableGroups.isEmpty()) {
+            UIForm groupFilterForm = UIForm.make(tofill, "group_filter_form", params);
+            
+            // we need to order the groups alphabetically. Group names are unique
+            // per site, so let's make a map
+            Map<String, String> groupNameToIdMap = new HashMap<String, String>();
+            for (Group group : viewableGroups) { 
+                groupNameToIdMap.put(group.getTitle(), group.getId());
+            }
+            
+            List<String> orderedGroupNames = new ArrayList<String>(groupNameToIdMap.keySet());
+            Collections.sort(orderedGroupNames, new Comparator<String>() {
+                public int compare(String groupName1, String groupName2) {
+                    return groupName1.compareToIgnoreCase(groupName2);
+                }
+            });
+
+            String selectedValue = "";
+            if (params.groupId != null && params.groupId.trim().length() > 0) {
+                selectedValue = params.groupId;
+            }
+            
+            int numItemsInDropDown = viewableGroups.size();
+            
+            // if there is more than one viewable group, add the 
+            // "All Sections/Groups option"
+            if (viewableGroups.size() > 1) {
+                numItemsInDropDown++;
+            }
+
+            // Group Ids
+            String[] view_filter_values = new String[numItemsInDropDown]; 
+            // Group Names
+            String[] view_filter_options = new String[numItemsInDropDown];
+
+            int index = 0;
+            
+            // the first entry is "All Sections/Groups"
+            if (viewableGroups.size() > 1) {  
+                view_filter_values[index] = "";
+                view_filter_options[index] = messageLocator.getMessage("assignment2.assignment_grade.filter.all_sections");
+                index++;
+            }
+
+            for (String groupName : orderedGroupNames) { 
+                view_filter_values[index] = groupNameToIdMap.get(groupName);
+                view_filter_options[index] = groupName;
+                index++;
+            }
+
+            UISelect.make(groupFilterForm, "group_filter", view_filter_values,
+                    view_filter_options, "groupId", selectedValue);
+        }
+    }
 
     public List<NavigationCase> reportNavigationCases() {
         List<NavigationCase> nav= new ArrayList<NavigationCase>();
@@ -375,6 +432,7 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
             ViewSubmissionsViewParams outgoing = (ViewSubmissionsViewParams) result.resultingView;
             ViewSubmissionsViewParams in = (ViewSubmissionsViewParams) incoming;
             outgoing.assignmentId = in.assignmentId;
+            outgoing.groupId = in.groupId;
         }
     }
 

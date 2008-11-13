@@ -477,14 +477,14 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 	}
 	
 	public List<AssignmentSubmission> getViewableSubmissionsWithHistoryForAssignmentId(Long assignmentId) {
-		return getViewableSubmissions(assignmentId, true);
+		return getViewableSubmissions(assignmentId, true, null);
 	}
 	
-	public List<AssignmentSubmission> getViewableSubmissionsForAssignmentId(Long assignmentId) {
-		return getViewableSubmissions(assignmentId, false);
+	public List<AssignmentSubmission> getViewableSubmissionsForAssignmentId(Long assignmentId, String filterGroupId) {
+		return getViewableSubmissions(assignmentId, false, filterGroupId);
 	}
 	
-	private List<AssignmentSubmission> getViewableSubmissions(Long assignmentId, boolean includeVersionHistory) {
+	private List<AssignmentSubmission> getViewableSubmissions(Long assignmentId, boolean includeVersionHistory, String filterGroupId) {
 		if (assignmentId == null) {
 			throw new IllegalArgumentException("null assignmentId passed to getViewableSubmissionsForAssignmentId");
 		}
@@ -504,6 +504,11 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 
 		// get a list of all the students that the current user may view for the given assignment
 		List<String> viewableStudents = permissionLogic.getViewableStudentsForUserForItem(currUserId, assignment);
+		
+		// filter by group, if a group id was supplied
+		if (filterGroupId != null && filterGroupId.trim().length() > 0) {
+		    viewableStudents = filterStudentsByGroupMembership(viewableStudents, filterGroupId);
+		}
 
 		if (viewableStudents != null && !viewableStudents.isEmpty()) {
 			
@@ -1345,6 +1350,22 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		Collections.sort(userSubmissions, new ComparatorsUtils.SubmissionCompletedSortOrderComparator());
 		
 		return userSubmissions;
+	}
+	
+	private List<String> filterStudentsByGroupMembership(List<String> fullStudentIdList, String filterGroupId) {
+	    List<String> filteredStudentIdList = new ArrayList<String>();
+	    if (fullStudentIdList != null && filterGroupId != null) {
+	        List<String> studentsInGroup = externalLogic.getStudentsInGroup(filterGroupId);
+	        if (studentsInGroup != null) {
+	            for (String studentId : studentsInGroup) {
+	                if (fullStudentIdList.contains(studentId)) {
+	                    filteredStudentIdList.add(studentId);
+	                }
+	            }
+	        }
+	    }
+	    
+	    return filteredStudentIdList;
 	}
 	
 }

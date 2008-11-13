@@ -188,6 +188,14 @@ li fieldset ol li p.instruction {
     font-size: 98%;
 }
 
+.viewFilter label {
+    font-weight: bold;
+}
+
+.viewFilter {
+    margin-bottom: 8px;
+}
+
 
 /* Errors/Notifications ========================================*/
 

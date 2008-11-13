@@ -181,7 +181,7 @@ public class AssignmentActivityProducerImpl implements
 		 * submissions.
 		 */
 		if (allowGetItems(activity, provider)) {
-			for (Iterator<AssignmentSubmission> i = assignmentSubmissionLogic.getViewableSubmissionsForAssignmentId(assignment.getId()).iterator(); i.hasNext();) {
+			for (Iterator<AssignmentSubmission> i = assignmentSubmissionLogic.getViewableSubmissionsForAssignmentId(assignment.getId(), null).iterator(); i.hasNext();) {
 				AssignmentSubmission submission = i.next();
 				items.add(new AssignmentItemImpl(submission, submission.getUserId(), activity));
 			}

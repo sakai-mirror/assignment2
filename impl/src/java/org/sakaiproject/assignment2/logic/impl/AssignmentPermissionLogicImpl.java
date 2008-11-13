@@ -24,6 +24,7 @@ package org.sakaiproject.assignment2.logic.impl;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -41,6 +42,7 @@ import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentGroup;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
+import org.sakaiproject.site.api.Group;
 
 /**
  * This is the implementation for logic to answer common permissions questions
@@ -358,20 +360,20 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
 
 		    } else if(gradebookLogic.isUserAbleToGrade(contextId, userId)) {
 		        if (!assignment.isGraded()) {
-		            // if there are no restrictions, return students in user's section(s)
+		            // if there are no restrictions, return students in user's group(s)
 		            if (assignGroupRestrictions == null || assignGroupRestrictions.isEmpty()) {
-		                Set<String> sharedStudents = getStudentsInUsersSections(userId, contextId);
+		                Set<String> sharedStudents = getStudentsInUsersGroups(userId, contextId);
 		                if (sharedStudents != null) {
 		                    availStudents.addAll(sharedStudents);
 		                }
 		            } else {
-		                // otherwise, only return students in his/her section if it is one
+		                // otherwise, only return students in his/her group if it is one
 		                // of the group restrictions
 		                List<String> memberships = externalLogic.getUserMembershipGroupIdList(userId, contextId);
 		                if (memberships != null && !memberships.isEmpty()) {
 		                    for (AssignmentGroup group : assignGroupRestrictions) {
 		                        if (group != null && memberships.contains(group.getGroupId())) {
-		                            availStudents.addAll(externalLogic.getStudentsInSection(group.getGroupId()));
+		                            availStudents.addAll(externalLogic.getStudentsInGroup(group.getGroupId()));
 		                        }
 		                    }
 		                }
@@ -438,16 +440,16 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
 		return false;
 	}
 	
-	private Set<String> getStudentsInUsersSections(String userId, String contextId) {
+	private Set<String> getStudentsInUsersGroups(String userId, String contextId) {
 		// get the user's memberships
 		List<String> groupMemberships = externalLogic.getUserMembershipGroupIdList(userId, contextId);
 		
-		// use a set to eliminate section overlap with duplicate students
+		// use a set to eliminate group overlap with duplicate students
 		Set<String> sharedStudents = new HashSet<String>();
 		if (groupMemberships != null) {
 			for (String groupId : groupMemberships) {
 				if (groupId != null) {
-					List<String> students = externalLogic.getStudentsInSection(groupId);
+					List<String> students = externalLogic.getStudentsInGroup(groupId);
 					if (students != null) {
 						sharedStudents.addAll(students);
 					}
@@ -503,11 +505,11 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
 			allStudentsForAssign = externalLogic.getStudentsInSite(contextId);
 		} else {
 			// use a set to make sure students only appear once, even if they
-			// are in multiple sections
+			// are in multiple groups
 			Set<String> studentsInRestrictedGroups = new HashSet<String>();
 			for (AssignmentGroup group : assignGroupRestrictions) {
 				if (group != null) {
-					studentsInRestrictedGroups.addAll(externalLogic.getStudentsInSection(group.getGroupId()));
+					studentsInRestrictedGroups.addAll(externalLogic.getStudentsInGroup(group.getGroupId()));
 				}
 			}
 			
@@ -589,6 +591,44 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
 	    }
 	    
 	    return usersAllowedToViewStudent;
+	}
+	
+	public List<Group> getViewableGroupsForCurrUserForAssignment(Long assignmentId) {
+	    List<Group> viewableGroups = new ArrayList<Group>();
+
+	    Assignment2 assign = dao.getAssignmentByIdWithGroups(assignmentId);
+	    if (assign == null) {
+	        throw new AssignmentNotFoundException("getViewableGroupsForCurrUserForAssignment: " +
+	                "No assignment exists with id: " + assignmentId);
+	    }
+
+	    // first, we need to identify the viewable groups in the gb. then we will filter
+	    // these based upon whether or not this assignment is restricted to groups.
+	    List<Group> viewableGroupsInGB = gradebookLogic.getViewableGroupsInGradebook(assign.getContextId());
+	    if (viewableGroupsInGB != null && !viewableGroupsInGB.isEmpty()) {
+
+	        if (assign.getAssignmentGroupSet() == null || assign.getAssignmentGroupSet().isEmpty()) {
+	            // there are no group restrictions, so return all viewable
+	            viewableGroups = viewableGroupsInGB;
+	        } else {
+	            // put the groups in a map for easier processing
+	            Map<String, Group> gbGroupIdToGroupMap = new HashMap<String, Group>();
+	            for (Group group : viewableGroupsInGB) {
+	                gbGroupIdToGroupMap.put(group.getId(), group);
+	            }
+
+	            // check to see if this user may view any of the restricted groups
+	            for (AssignmentGroup assignGroup : assign.getAssignmentGroupSet()) {
+	                String groupId = assignGroup.getGroupId();
+	                
+	                if (gbGroupIdToGroupMap.containsKey(groupId)) {
+	                    viewableGroups.add(gbGroupIdToGroupMap.get(groupId));
+	                }
+	            }
+	        }
+	    }
+
+	    return viewableGroups;
 	}
 
 }

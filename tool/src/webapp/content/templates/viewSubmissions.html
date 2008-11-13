@@ -58,59 +58,14 @@
 		</form>
 	</div>
 	-->
-
-	<div id="assignment_details" style="display:none">
-		<table class="itemSummary" border="0" cellspacing="0" summary="The assignment infos">
-			<tr> 
-				<th rsf:id="assignment_details.title_header">Assignment title</th>
-				<td rsf:id="assignment_details.title">Rob's Homework</td>
-			</tr>
-			<tr>
-				<th rsf:id="assignment_details.created_by_header">Created by</th>
-				<td rsf:id="assignment_details.created_by">Kristol J Hancock (Sep 24, 2007 10:12 am)</td>
-			</tr>
-			<tr>
-				<th rsf:id="assignment_details.modified_header">Modified</th>
-				<td rsf:id="assignment_details.modified">Sep 28, 2007 1:40 pm</td>
-			</tr>
-			<tr> 
-				<th rsf:id="assignment_details.open_header">Open</th>
-				<td rsf:id="assignment_details.open">Sep 24, 2007 11:00 am</td>
-			</tr>
-			<tr> 
-				<th rsf:id="assignment_details.due_header">Due</th>
-				<td rsf:id="assignment_details.due">Oct 1, 2007 6:00 pm</td>
-			</tr>
-			<tr>
-				<th rsf:id="assignment_details.accept_until_header">Accept Until</th>
-				<td rsf:id="assignment_details.accept_until">Oct 1, 2007 6:00 pm</td>
-			</tr>
-			<tr> 
-				<th rsf:id="assignment_details.submissions_header">Student Submissions</th>
-				<td rsf:id="assignment_details.submissions">Inline and Attachments</td>
-			</tr>
-			<tr>
-				<th rsf:id="assignment_details.scale_header">Grade Scale</th>
-				<td rsf:id="assignment_details.scale">Points (max 100.0)</td>
-			</tr>
-			<tr> 
-				<th rsf:id="assignment_details.honor_header">Honor pledge:</th>
-				<td rsf:id="assignment_details.honor">No</td>
-			</tr>
-		</table>	
-	
-		<h4 rsf:id="assignment_details.instructions_header">Assignment Instructions</h4>
-		<div class="textPanel">
-			<p rsf:id="assignment_details.instructions">Assignments instructions would be placed here.</p>
-		</div>
-	
-		<h4 rsf:id="assignment_details.attachments_header">Attachments</h4>
-			<ul class="attachList indnt1">
-				<li rsf:id="attachment_list:">
-					<img src="/sakai-assignment2-tool/content/images/page_white_word.png" target="_blank" width="16" height="16"/> <a href="">ExampleAttachment.doc</a> (52 KB)
-				</li>
-			</ul>
-	</div> <!--  /#assignment_details -->
+	<!-- The view by sections filter -->
+	<div class="viewFilter">
+    	<form rsf:id="group_filter_form" method="get">
+            <label rsf:id="msg=assignment2.assignment_grade.filter.label" for="group_filter">View</label>
+            <select rsf:id="group_filter" id="group_filter" onchange="this.form.submit();">
+            </select>
+    	</form>
+	</div>
 
 	<div rsf:id="pagerDiv:" class="listNav pagerDiv"></div>
 	<table class="listHier lines nolines" cellpadding="0" cellspacing="0" > <!-- SWG TODO Removing for now due to error id="sortable"> -->

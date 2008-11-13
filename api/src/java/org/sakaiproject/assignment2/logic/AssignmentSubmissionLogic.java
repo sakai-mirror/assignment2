@@ -137,6 +137,8 @@ public interface AssignmentSubmissionLogic {
 	/**
 	 * 
 	 * @param assignmentId
+	 * @param filterGroupId optional - if not null and not the empty string, will 
+	 * filter the returned viewable student list to only include viewable students in the given group
 	 * @return Non-null list.  All AssignmentSubmissions for this assignmentId that the current
 	 * user is allowed to view or grade with the currentVersion information. Version history is not populated.
 	 * If no submission exists yet, returns an empty AssigmentSubmission rec for the
@@ -147,7 +149,7 @@ public interface AssignmentSubmissionLogic {
 	 * @throws SecurityException if not allowed to provide feedback for the given assignment
 	 * @throws AssignmentNotFoundException if no assignment exists with the given assignmentId
 	 */
-	public List<AssignmentSubmission> getViewableSubmissionsForAssignmentId(Long assignmentId);
+	public List<AssignmentSubmission> getViewableSubmissionsForAssignmentId(Long assignmentId, String filterGroupId);
 	
 	/**
 	 * 

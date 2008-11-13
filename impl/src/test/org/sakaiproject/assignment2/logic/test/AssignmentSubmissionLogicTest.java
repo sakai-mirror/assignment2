@@ -571,27 +571,27 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
     public void testGetViewableSubmissionsForAssignmentId() {
     	// try a null assignmentId
     	try {
-    		submissionLogic.getViewableSubmissionsForAssignmentId(null);
+    		submissionLogic.getViewableSubmissionsForAssignmentId(null, null);
     		fail("did not catch null assignmentId passed to getViewableSubmissionsForAssignmentId");
     	} catch (IllegalArgumentException iae) {}
     	
     	// try a non-existent assignmentId
     	try {
-    		submissionLogic.getViewableSubmissionsForAssignmentId(12345L);
+    		submissionLogic.getViewableSubmissionsForAssignmentId(12345L, null);
     		fail("did not catch non-existent id passed to getViewableSubmissionsForAssignmentId");
     	} catch (AssignmentNotFoundException anfe) {}
     	
     	// start as instructor
     	externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
     	// we should get 2 students back for a1 b/c group restrictions
-    	List<AssignmentSubmission> subList = submissionLogic.getViewableSubmissionsForAssignmentId(testData.a1Id);
-    	assertTrue(subList.size() == 2);
+    	List<AssignmentSubmission> subList = submissionLogic.getViewableSubmissionsForAssignmentId(testData.a1Id, null);
+    	assertEquals(2, subList.size());
     	// we should get 3 for a2 b/c no restrictions
-    	subList = submissionLogic.getViewableSubmissionsForAssignmentId(testData.a2Id);
-    	assertTrue(subList.size() == 3);
+    	subList = submissionLogic.getViewableSubmissionsForAssignmentId(testData.a2Id, null);
+    	assertEquals(3, subList.size());
     	// we should get 3 for a3 b/c no restrictions
-    	subList = submissionLogic.getViewableSubmissionsForAssignmentId(testData.a3Id);
-    	assertTrue(subList.size() == 3);
+    	subList = submissionLogic.getViewableSubmissionsForAssignmentId(testData.a3Id, null);
+    	assertEquals(3, subList.size());
     	// let's make sure the submission for st1 is restricted b/c draft
     	for (AssignmentSubmission sub : subList) {
     		if (sub.getUserId().equals(AssignmentTestDataLoad.STUDENT1_UID)) {
@@ -601,29 +601,33 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
     	}
 		
     	// we should get 1 for a4 b/c group restrictions
-    	subList = submissionLogic.getViewableSubmissionsForAssignmentId(testData.a4Id);
-    	assertTrue(subList.size() == 1);
+    	subList = submissionLogic.getViewableSubmissionsForAssignmentId(testData.a4Id, null);
+    	assertEquals(1, subList.size());
+    	
+    	//let's check the group filter - should only return one student now
+    	subList = submissionLogic.getViewableSubmissionsForAssignmentId(testData.a1Id, AssignmentTestDataLoad.GROUP1_NAME);
+        assertEquals(1, subList.size());
     	
     	// now become ta
     	externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
     	// we should get 1 student back for a1 b/c only allowed to view group 1
-    	subList = submissionLogic.getViewableSubmissionsForAssignmentId(testData.a1Id);
+    	subList = submissionLogic.getViewableSubmissionsForAssignmentId(testData.a1Id, null);
     	assertTrue(subList.size() == 1);
     	// we should still get 1 for a2 b/c no group restrictions for this assign
-    	subList = submissionLogic.getViewableSubmissionsForAssignmentId(testData.a2Id);
+    	subList = submissionLogic.getViewableSubmissionsForAssignmentId(testData.a2Id, null);
     	assertTrue(subList.size() == 1);
     	// we should still get 1 for a2 b/c no group restrictions for this assign
-    	subList = submissionLogic.getViewableSubmissionsForAssignmentId(testData.a3Id);
+    	subList = submissionLogic.getViewableSubmissionsForAssignmentId(testData.a3Id, null);
     	assertTrue(subList.size() == 1);
     	//TODO grader permissions
     	// should return no students
-    	subList = submissionLogic.getViewableSubmissionsForAssignmentId(testData.a4Id);
+    	subList = submissionLogic.getViewableSubmissionsForAssignmentId(testData.a4Id, null);
     	assertTrue(subList.isEmpty());
     	
     	// students should get SecurityException
     	externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT1_UID);
     	try {
-    		subList = submissionLogic.getViewableSubmissionsForAssignmentId(testData.a1Id);
+    		subList = submissionLogic.getViewableSubmissionsForAssignmentId(testData.a1Id, null);
     		fail("Did not catch student attempting to access submissions via getViewableSubmissionsForAssignmentId");
     	} catch (SecurityException se) {}
 

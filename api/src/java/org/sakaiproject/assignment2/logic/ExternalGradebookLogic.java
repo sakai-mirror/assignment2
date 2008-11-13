@@ -30,6 +30,7 @@ import org.sakaiproject.assignment2.exception.InvalidGradeForAssignmentException
 import org.sakaiproject.assignment2.exception.NoGradebookDataExistsException;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
+import org.sakaiproject.site.api.Group;
 
 /**
  * This is the interface for logic which is related to the integration
@@ -78,13 +79,12 @@ public interface ExternalGradebookLogic {
 	public List<GradebookItem> getAllGradebookItems(String contextId);
 	
 	/**
-	 * returns a map of the group id to name for
-	 * all of the groups/sections that the current user is authorized to view
+	 * returns a list of all groups that the current user is authorized to view
 	 * according to the gradebook grader permissions
 	 * @param contextId
 	 * @return
 	 */
-	public Map<String, String> getViewableGroupIdToTitleMap(String contextId);
+	public List<Group> getViewableGroupsInGradebook(String contextId);
 	
 	/**
 	 * Using the grader permissions, returns a map of all of the student ids of 

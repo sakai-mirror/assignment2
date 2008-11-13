@@ -200,6 +200,11 @@
       <artifactId>easymock</artifactId>
       <version>1.2_Java1.3</version>
     </dependency>
+    <dependency>
+      <groupId>org.sakaiproject</groupId>
+      <artifactId>sakai-mock</artifactId>
+      <version>${sakai.version}</version>
+    </dependency>
 
 
     </dependencies>

@@ -23,12 +23,14 @@ package org.sakaiproject.assignment2.logic.test;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment2.test.AssignmentTestDataLoad;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentGroup;
+import org.sakaiproject.site.api.Group;
 
 
 public class AssignmentPermissionLogicTest extends Assignment2TestBase {
@@ -97,7 +99,7 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
 	   assertTrue(permissionLogic.isUserAbleToViewStudentSubmissionForAssignment(
 			   AssignmentTestDataLoad.STUDENT3_UID, testData.a2Id));
 	   // switch to TA
-	   // ta may only view members in his/her section
+	   // ta may only view members in his/her group
 	   externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
 	   assertTrue(permissionLogic.isUserAbleToViewStudentSubmissionForAssignment(
 			   AssignmentTestDataLoad.STUDENT1_UID, testData.a2Id));
@@ -117,7 +119,7 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
 	   assertTrue(permissionLogic.isUserAbleToViewStudentSubmissionForAssignment(
 			   AssignmentTestDataLoad.STUDENT3_UID, testData.a3Id));
 	   // switch to TA
-	   // ta may only view members in his/her section
+	   // ta may only view members in his/her group
 	   externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
 	   assertTrue(permissionLogic.isUserAbleToViewStudentSubmissionForAssignment(
 			   AssignmentTestDataLoad.STUDENT1_UID, testData.a3Id));
@@ -157,7 +159,7 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
 	   assertTrue(permissionLogic.isUserAbleToProvideFeedbackForStudentForAssignment(
 			   AssignmentTestDataLoad.STUDENT3_UID, testData.a2));
 	   // switch to TA
-	   // ta may only submit feedback for students in his/her section
+	   // ta may only submit feedback for students in his/her group
 	   externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
 	   assertTrue(permissionLogic.isUserAbleToProvideFeedbackForStudentForAssignment(
 			   AssignmentTestDataLoad.STUDENT1_UID, testData.a2));
@@ -177,7 +179,7 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
 	   assertTrue(permissionLogic.isUserAbleToProvideFeedbackForStudentForAssignment(
 			   AssignmentTestDataLoad.STUDENT3_UID, testData.a3));
 	   // switch to TA
-	   // ta may only submit feedback for members in his/her section
+	   // ta may only submit feedback for members in his/her group
 	   externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
 	   assertTrue(permissionLogic.isUserAbleToProvideFeedbackForStudentForAssignment(
 			   AssignmentTestDataLoad.STUDENT1_UID, testData.a3));
@@ -210,7 +212,7 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
 			   testData.st2a1Submission.getId()));
 
 	   // switch to TA
-	   // ta may only submit feedback for students in his/her section
+	   // ta may only submit feedback for students in his/her Group
 	   externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
 	   assertTrue(permissionLogic.isUserAbleToProvideFeedbackForSubmission(
 			   testData.st1a1Submission.getId()));
@@ -227,7 +229,7 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
 			   testData.st2a3Submission.getId()));
 
 	   // switch to TA
-	   // ta may only submit feedback for members in his/her section
+	   // ta may only submit feedback for members in his/her group
 	   externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
 	   assertTrue(permissionLogic.isUserAbleToProvideFeedbackForSubmission(
 			   testData.st1a3Submission.getId()));
@@ -434,7 +436,7 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
 	   assignmentGroupSet.add(new AssignmentGroup(null, AssignmentTestDataLoad.GROUP2_NAME));
 	   assertFalse(permissionLogic.isUserAMemberOfARestrictedGroup(groupMembershipIds, assignmentGroupSet));
 	   
-	   // now add an overlapping section to group membership
+	   // now add an overlapping group to group membership
 	   groupMembershipIds.add(AssignmentTestDataLoad.GROUP2_NAME);
 	   assertTrue(permissionLogic.isUserAMemberOfARestrictedGroup(groupMembershipIds, assignmentGroupSet));
 	   
@@ -487,7 +489,7 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
 	   assertEquals(3, viewableStudents.size());
 	   
 	   // the ta should have restrictions on a1
-	   // should only get student 1 b/c may only see students in his/her section
+	   // should only get student 1 b/c may only see students in his/her group
 	   viewableStudents = permissionLogic.getViewableStudentsForUserForItem(AssignmentTestDataLoad.TA_UID, testData.a1);
 	   assertEquals(1, viewableStudents.size());
 	   // should still get 1 for a2
@@ -511,7 +513,7 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
 	   
 	   // now switch to the ta
 	   // TODO - GRADER PERMISSIONS!!
-	   // a3 should return all students in ta's sections
+	   // a3 should return all students in ta's groups
 	   viewableStudents = permissionLogic.getViewableStudentsForUserForItem(AssignmentTestDataLoad.TA_UID, testData.a3);
 	   assertEquals(1, viewableStudents.size());
 	   // a4 should not return any
@@ -553,7 +555,7 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
 	   assertEquals(3, gradableStudents.size());
 	   
 	   // the ta should have restrictions on a1
-	   // should only get student 1 b/c may only see students in his/her section
+	   // should only get student 1 b/c may only see students in his/her group
 	   gradableStudents = permissionLogic.getGradableStudentsForUserForItem(AssignmentTestDataLoad.TA_UID, testData.a1);
 	   assertEquals(1, gradableStudents.size());
 	   // should still get 1 for a2
@@ -578,7 +580,7 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
 	   // now switch to the ta
 	   // TODO - GRADER PERMISSIONS!!
 
-	   // a3 should return all students in ta's sections
+	   // a3 should return all students in ta's groups
 	   gradableStudents = permissionLogic.getGradableStudentsForUserForItem(AssignmentTestDataLoad.TA_UID, testData.a3);
 	   assertEquals(1, gradableStudents.size());
 	   // a4 should not return any
@@ -624,7 +626,7 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
 	   assertTrue(permissionLogic.isUserAbleToMakeSubmissionForAssignment(AssignmentTestDataLoad.CONTEXT_ID, testData.a3));
 	   assertTrue(permissionLogic.isUserAbleToMakeSubmissionForAssignment(AssignmentTestDataLoad.CONTEXT_ID, testData.a4));
 	   
-	   // student 3 is not a member of any sections
+	   // student 3 is not a member of any groups
 	   externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT3_UID);
 	   // should only be able to submit to 2,3
 	   assertFalse(permissionLogic.isUserAbleToMakeSubmissionForAssignment(AssignmentTestDataLoad.CONTEXT_ID, testData.a1));
@@ -648,8 +650,8 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
 	   assertTrue(permissionLogic.isUserAllowedToProvideFeedbackForAssignment(testData.a4));
 	   
 	   // ta should be true for a1, a2, a3 - not auth to grade any students for a4
-	   // b/c only avail to students in section3 and doesn't have grading perm for
-	   // this section
+	   // b/c only avail to students in group3 and doesn't have grading perm for
+	   // this group
 	   // TODO grader permissions
 	   externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
 	   assertTrue(permissionLogic.isUserAllowedToProvideFeedbackForAssignment(testData.a1));
@@ -734,5 +736,69 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
        usersAllowedToView = permissionLogic.getUsersAllowedToViewStudentForAssignment(AssignmentTestDataLoad.STUDENT3_UID, testData.a3);
        assertEquals(1, usersAllowedToView.size());
        assertTrue(usersAllowedToView.contains(AssignmentTestDataLoad.INSTRUCTOR_UID));
+   }
+   
+   public void testGetViewableGroupsForCurrUserForAssignment() {
+       // try passing a null
+       try {
+           permissionLogic.getViewableGroupsForCurrUserForAssignment(null);
+           fail("did not catch null assignmentId passed to getViewableGroupsForCurrUserForAssignment");
+       } catch (IllegalArgumentException iae) {}
+       
+       // Assign 1 is restricted to groups 1 and 3
+       // Assign 2 is not restricted
+       // there are 3 groups defined 
+       
+       // start as instructor - should be allowed to view all available groups
+       externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
+       List<Group> viewableGroups = permissionLogic.getViewableGroupsForCurrUserForAssignment(testData.a1Id);
+       assertEquals(2, viewableGroups.size());  // restricted to group 1 and 3
+       for (Group group : viewableGroups) {
+           if (!group.getId().equals(AssignmentTestDataLoad.GROUP1_NAME) &&
+                   !group.getId().equals(AssignmentTestDataLoad.GROUP3_NAME)) {
+               fail("Unknown group returned by getViewableGroupsForCurrUserForAssignment");
+           }
+       }
+
+       
+       viewableGroups = permissionLogic.getViewableGroupsForCurrUserForAssignment(testData.a2Id);
+       assertEquals(3, viewableGroups.size());
+       for (Group group : viewableGroups) {
+           if (!group.getId().equals(AssignmentTestDataLoad.GROUP1_NAME) &&
+                   !group.getId().equals(AssignmentTestDataLoad.GROUP2_NAME) &&
+                   !group.getId().equals(AssignmentTestDataLoad.GROUP3_NAME)) {
+               fail("Unknown group returned by getViewableGroupsForCurrUserForAssignment");
+           }
+       }
+       
+       // now test TA - should only be able to view group 1
+       externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
+       viewableGroups = permissionLogic.getViewableGroupsForCurrUserForAssignment(testData.a1Id);
+       assertEquals(1, viewableGroups.size());  // restricted to group 1 and 3 and only 1 is viewable
+       for (Group group : viewableGroups) {
+           if (!group.getId().equals(AssignmentTestDataLoad.GROUP1_NAME)) {
+               fail("Unknown group returned by getViewableGroupsForCurrUserForAssignment");
+           }
+       }
+       
+       viewableGroups = permissionLogic.getViewableGroupsForCurrUserForAssignment(testData.a2Id);
+       assertEquals(1, viewableGroups.size());
+       for (Group group : viewableGroups) {
+           if (!group.getId().equals(AssignmentTestDataLoad.GROUP1_NAME)) {
+               fail("Unknown group returned by getViewableGroupsForCurrUserForAssignment");
+           }
+       }
+       
+       // this method really shouldn't be called with students, but let's see
+       // what happens anyhow
+       
+       // no groups are returned for students!
+       externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT1_UID);
+       viewableGroups = permissionLogic.getViewableGroupsForCurrUserForAssignment(testData.a1Id);
+       assertEquals(0, viewableGroups.size());  
+       
+       viewableGroups = permissionLogic.getViewableGroupsForCurrUserForAssignment(testData.a2Id);
+       assertEquals(0, viewableGroups.size());
+       
    }
 }
