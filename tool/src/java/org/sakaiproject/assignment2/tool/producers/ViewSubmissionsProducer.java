@@ -129,6 +129,8 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
         }
         assignmentId = params.assignmentId;
         Assignment2 assignment = assignmentLogic.getAssignmentByIdWithAssociatedData(assignmentId);
+        
+        String currContextId = externalLogic.getCurrentContextId();
 
         //use a date which is related to the current users locale
         DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, locale);
@@ -167,7 +169,7 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
         UIMessage.make(tofill, "last_breadcrumb", "assignment2.assignment_grade-assignment.heading", new Object[] { assignment.getTitle() });
 
         // ACTION BAR
-        boolean displayEditGb = false;
+        boolean displayReleaseGrades = false;
         boolean displayReleaseFB = false;
         boolean displayDownloadAll = false;
         boolean displayUploadAll = false;
@@ -178,14 +180,28 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
         
         // RELEASE GRADES
         if (edit_perm && assignment.isGraded()){
-            UIOutput.make(tofill, "edit_gb_item_li");
-            displayEditGb = true;
+            displayReleaseGrades = true;
             
-            String url = externalLogic.getUrlForGradebookItemHelper(assignment.getGradableObjectId(), FinishedHelperProducer.VIEWID);
+            // determine if grades have been released yet
+            GradebookItem gbItem = gradebookLogic.getGradebookItemById(currContextId, assignment.getGradableObjectId());
+            boolean gradesReleased = gbItem.isReleased();
+            String releaseLinkText = messageLocator.getMessage("assignment2.assignment_grade-assignment.grades.release");
+            if (gradesReleased) {
+                releaseLinkText = messageLocator.getMessage("assignment2.assignment_grade-assignment.grades.retract");
+            }
 
-            UIInternalLink.make(tofill, "gradebook_item_edit_helper",
-                    UIMessage.make("assignment2.assignment_grade-assignment.gradebook_helper"),
-                    url);
+            UIForm releaseGradesForm = UIForm.make(tofill, "release_grades_form");
+            releaseGradesForm.addParameter(new UIELBinding("ReleaseGradesAction.gradebookItemId", assignment.getGradableObjectId()));
+            releaseGradesForm.addParameter(new UIELBinding("ReleaseGradesAction.curContext", currContextId));
+            releaseGradesForm.addParameter(new UIELBinding("ReleaseGradesAction.releaseGrades", !gradesReleased));
+
+            UICommand releaseGradesButton = UICommand.make(releaseGradesForm, "release_grades", "ReleaseGradesAction.execute");
+
+            UIInternalLink releaseGradesLink = UIInternalLink.make(tofill, 
+                    "release_grades_link", releaseLinkText, viewparams);
+            Map<String,String> idmap = new HashMap<String,String>();
+            idmap.put("onclick", "document.getElementById('"+releaseGradesButton.getFullID()+"').click(); return false;");
+            releaseGradesLink.decorate(new UIFreeAttributeDecorator(idmap));
         }
         
         // RELEASE FEEDBACK
@@ -255,8 +271,8 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
         }
         
         // handle those pesky separators
-        if (displayEditGb && (displayReleaseFB || displayUploadAll || displayDownloadAll)) {
-            UIOutput.make(tofill, "gradebook_item_edit_helper_sep");
+        if (displayReleaseGrades && (displayReleaseFB || displayUploadAll || displayDownloadAll)) {
+            UIOutput.make(tofill, "release_grades_sep");
         }
         
         if (displayReleaseFB && (displayUploadAll || displayDownloadAll)) {

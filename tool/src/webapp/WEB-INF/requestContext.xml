@@ -264,6 +264,10 @@
        <property name="logic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
        <property name="messages" ref="targettedMessageList" />
    </bean>
+   
+   <bean id="ReleaseGradesAction"  class="org.sakaiproject.assignment2.tool.commands.ReleaseGradesCommand">
+       <property name="gradebookLogic" ref="org.sakaiproject.assignment2.logic.ExternalGradebookLogic" />
+   </bean>
     
    <!--  Beans -->
    <bean id="Assignment2Bean" class="org.sakaiproject.assignment2.tool.beans.Assignment2Bean">

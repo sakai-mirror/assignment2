@@ -696,4 +696,24 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
 	        }
 	    }
 	}
+	
+	public void releaseOrRetractGrades(String contextId, Long gradebookItemId, boolean release) {
+	    if (gradebookItemId == null || contextId == null) {
+	        throw new IllegalArgumentException("Null gradebookItemId passed to releaseOrRetractGrades." +
+	        		"contextId: " + contextId + " gradebookItemId: " + gradebookItemId);
+	    }
+	    
+	    try {
+	        Assignment gbAssign = gradebookService.getAssignment(contextId, gradebookItemId);
+	        gbAssign.setReleased(release);
+	        if (!release) {
+	            gbAssign.setCounted(false);
+	        }
+	        gradebookService.updateAssignment(contextId, gbAssign.getName(), gbAssign);
+	        if (log.isDebugEnabled()) log.debug("Gradebook setting released updated to " + release);
+	    } catch (AssessmentNotFoundException anfe) {
+	        throw new GradebookItemNotFoundException(
+                    "No gradebook item exists with the given id " + gradebookItemId, anfe);
+	    }
+	}
 }
