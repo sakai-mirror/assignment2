@@ -216,7 +216,7 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
             "AssignmentSubmissionBean.processActionSaveDraft");
             UICommand edit_button = UICommand.make(form, "back_to_edit_button", UIMessage.make("assignment2.student-submit.back_to_edit"),
             "AssignmentSubmissionBean.processActionBackToEdit");
-            edit_button.addParameter(new UIELBinding(asvOTP + ".submittedText", hackSubmissionText));
+            //edit_button.addParameter(new UIELBinding(asvOTP + ".submittedText", hackSubmissionText));
         } else {
             submit_button = UICommand.make(form, "submit_button", UIMessage.make("assignment2.student-submit.submit"), 
                 "AssignmentSubmissionBean.processActionSubmit");

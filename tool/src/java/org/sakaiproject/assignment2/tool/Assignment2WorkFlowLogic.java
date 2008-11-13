@@ -93,31 +93,7 @@ public class Assignment2WorkFlowLogic implements ViewParamsInterceptor, ActionRe
             }
         }
 
-        //If current user has permission access to requested view
-        if (localPermissionLogic.checkCurrentUserHasViewPermission(incoming)){
-
-            //now do specific interceptions for student submission pages
-            //Student always has same link, redirect here based on it being open or not
-            // TODO FIXME This is being merged into one view. Come back
-            // and remove this after it works.
-            //if (StudentSubmitProducer.VIEW_ID.equals(incoming.viewID) 
-            //        || StudentSubmitSummaryProducer.VIEW_ID.equals(incoming.viewID)) {
-
-                /*
-                 * This is responsible for going to different views depending on
-                 * if the Student can submit still.
-                 */
-            //    String trueDestinationViewID = localPermissionLogic.filterViewIdForStudentSubmission((SimpleAssignmentViewParams)incoming);
-             //   if (incoming.viewID.equals(trueDestinationViewID)) {
-             //       return incoming;
-             //   } else {
-             //       return new SimpleAssignmentViewParams(trueDestinationViewID, ((SimpleAssignmentViewParams)incoming).assignmentId);
-             //   }
-            //    */
-           // }
-
-            return incoming;
-        } else if (localPermissionLogic.checkCurrentUserHasViewPermission(new AssignmentListSortViewParams(StudentAssignmentListProducer.VIEW_ID))) {
+        if (localPermissionLogic.checkCurrentUserHasViewPermission(new AssignmentListSortViewParams(StudentAssignmentListProducer.VIEW_ID))) {
             return new AssignmentListSortViewParams(StudentAssignmentListProducer.VIEW_ID);
         }
 
@@ -139,9 +115,11 @@ public class Assignment2WorkFlowLogic implements ViewParamsInterceptor, ActionRe
         switch (actionReturn) {
         case INSTRUCTOR_CANCEL_ASSIGNMENT:
             result.resultingView = new SimpleViewParameters(ListProducer.VIEW_ID);
+            result.propagateBeans = ARIResult.FLOW_END;
             break;
         case INSTRUCTOR_POST_ASSIGNMENT:
             result.resultingView = new SimpleViewParameters(ListProducer.VIEW_ID);
+            result.propagateBeans = ARIResult.FLOW_END;
             break;
         case INSTRUCTOR_PREVIEW_ASSIGNMENT:
             result.resultingView = new SimpleViewParameters(PreviewAsStudentProducer.VIEW_ID);
@@ -149,6 +127,7 @@ public class Assignment2WorkFlowLogic implements ViewParamsInterceptor, ActionRe
             break;
         case INSTRUCTOR_SAVE_DRAFT_ASSIGNMENT:
             result.resultingView = new SimpleViewParameters(ListProducer.VIEW_ID);
+            result.propagateBeans = ARIResult.FLOW_END;
             break;
         case INSTRUCTOR_CONTINUE_EDITING_ASSIGNMENT:
             result.resultingView = new SimpleViewParameters(AssignmentProducer.VIEW_ID);
@@ -156,11 +135,11 @@ public class Assignment2WorkFlowLogic implements ViewParamsInterceptor, ActionRe
             break;
         case STUDENT_CONTINUE_EDITING_SUBMISSION:
             result.resultingView = new StudentSubmissionParams(StudentSubmitProducer.VIEW_ID, assignmentId, false);
-            result.propagateBeans = ARIResult.FLOW_ONESTEP;
+            result.propagateBeans = ARIResult.PROPAGATE;
             break;
         case STUDENT_PREVIEW_SUBMISSION:
             result.resultingView = new StudentSubmissionParams(StudentSubmitProducer.VIEW_ID, assignmentId, true);
-            result.propagateBeans = ARIResult.FLOW_ONESTEP;
+            result.propagateBeans = ARIResult.FLOW_FASTSTART;
             break;
         case STUDENT_SAVE_DRAFT_SUBMISSION:
             result.resultingView = new SimpleViewParameters(StudentAssignmentListProducer.VIEW_ID);
