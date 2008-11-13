@@ -93,7 +93,10 @@ public class Assignment2WorkFlowLogic implements ViewParamsInterceptor, ActionRe
             }
         }
 
-        if (localPermissionLogic.checkCurrentUserHasViewPermission(new AssignmentListSortViewParams(StudentAssignmentListProducer.VIEW_ID))) {
+        if (localPermissionLogic.checkCurrentUserHasViewPermission(incoming)){
+            return incoming;
+        }
+        else if (localPermissionLogic.checkCurrentUserHasViewPermission(new AssignmentListSortViewParams(StudentAssignmentListProducer.VIEW_ID))) {
             return new AssignmentListSortViewParams(StudentAssignmentListProducer.VIEW_ID);
         }
 
