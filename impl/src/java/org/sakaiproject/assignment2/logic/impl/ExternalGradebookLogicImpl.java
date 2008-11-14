@@ -99,7 +99,7 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
 		
 		boolean userIsStudent = isCurrentUserAStudentInGb(contextId);
 		
-		// there are 2 situations in which the gradable object associated with the assignment
+		// there are 2 situations in which the gradebook item associated with the assignment
 		// is not included in the list returned from the gradebook:
 		// 1) the user does not have permission to view that GO - if the user is a student,
 		//		we still want to display the assignment but don't want to display the
@@ -108,13 +108,13 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
 		
 		for (Assignment2 gradedAssignment : gradedAssignments) {
 			if (gradedAssignment != null && gradedAssignment.isGraded()) {
-				Long goId = gradedAssignment.getGradableObjectId();
+				Long goId = gradedAssignment.getGradebookItemId();
 				if (goId != null) {
 					Assignment gbItem =	(Assignment)goIdGbAssignmentMap.get(goId);
 					if (gbItem != null) {
 						viewableGradedAssignments.add(gradedAssignment);
 					} else {
-						// check to see if this gradable object exists anymore
+						// check to see if this gradebook item exists anymore
 						if (!gradebookService.isGradableObjectDefined(goId)) {
 							viewableGradedAssignments.add(gradedAssignment);
 						} else {
@@ -128,7 +128,7 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
 						}
 					}
 				} else {
-					// there is no gradableObjectId set for this assignment!
+					// there is no gradebookItemId set for this assignment!
 					viewableGradedAssignments.add(gradedAssignment);
 				}
 			}
@@ -150,9 +150,9 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
         }
     }
 
-    public Map<Long, String> getViewableGradableObjectIdTitleMap(String contextId) {
+    public Map<Long, String> getViewableGradebookItemIdTitleMap(String contextId) {
     	if (contextId == null) {
-    		throw new IllegalArgumentException("Null contextId passed to getViewableGradableObjectIdTitleMap");
+    		throw new IllegalArgumentException("Null contextId passed to getViewableGradebookItemIdTitleMap");
     	}
     	
     	List<Assignment> viewableGbItems = gradebookService.getViewableAssignmentsForCurrentUser(contextId);
@@ -229,7 +229,7 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
     	return viewableGroups;
     }
 
-    public Map<String, String> getViewableStudentsForGradedItemMap(String userId, String contextId, Long gradableObjectId) {
+    public Map<String, String> getViewableStudentsForGradedItemMap(String userId, String contextId, Long gradebookItemId) {
         if (contextId == null || userId == null) {
             throw new IllegalArgumentException("Null contextId or userId passed to " +
                     "getViewableGroupIdToTitleMap. contextId: " + contextId +
@@ -239,7 +239,7 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
         Map<String, String> studentIdAssnFunctionMap = new HashMap<String, String>();
 
 
-        Map<String, String> studentIdGbFunctionMap = gradebookService.getViewableStudentsForItemForUser(userId, contextId, gradableObjectId);
+        Map<String, String> studentIdGbFunctionMap = gradebookService.getViewableStudentsForItemForUser(userId, contextId, gradebookItemId);
 
         if (studentIdGbFunctionMap != null) {
             for (Map.Entry<String, String> entry : studentIdGbFunctionMap.entrySet()) {
@@ -317,15 +317,15 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
     	return viewOrGrade;
     }
     
-    public String getStudentGradeForItem(String contextId, String studentId, Long gbItemId) {
-    	if (contextId == null || studentId == null || gbItemId == null) {
+    public String getStudentGradeForItem(String contextId, String studentId, Long gradebookItemId) {
+    	if (contextId == null || studentId == null || gradebookItemId == null) {
     		throw new IllegalArgumentException("Null contextId or studentId or gbItemId passed to getStudentGradeForItem");
     	}
     	
     	String grade = null;
     	
     	try {
-    		GradeDefinition gradeDef = gradebookService.getGradeDefinitionForStudentForItem(contextId, gbItemId, studentId);
+    		GradeDefinition gradeDef = gradebookService.getGradeDefinitionForStudentForItem(contextId, gradebookItemId, studentId);
     		if (gradeDef != null) {
     			grade = gradeDef.getGrade();
     		}
@@ -336,21 +336,21 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
     		throw new NoGradebookDataExistsException("No gradebook exists for the given contextId: " + contextId, gnfe);
     	} catch (SecurityException se) {
     		throw new SecurityException("User attempted to access the grade for student : " + 
-    				studentId + " for gbItemId: " + gbItemId + " without authorization in gb", se);
+    				studentId + " for gbItemId: " + gradebookItemId + " without authorization in gb", se);
     	}
     	
     	return grade;
     }
     
-    public String getStudentGradeCommentForItem(String contextId, String studentId, Long gbItemId) {
-    	if (contextId == null || studentId == null || gbItemId == null) {
+    public String getStudentGradeCommentForItem(String contextId, String studentId, Long gradebookItemId) {
+    	if (contextId == null || studentId == null || gradebookItemId == null) {
     		throw new IllegalArgumentException("Null contextId or studentId or gbItemId passed to getStudentGradeCommentForItem");
     	}
     	
     	String comment = null;
     	
     	try {
-    		CommentDefinition commentDef = gradebookService.getAssignmentScoreComment(contextId, gbItemId, studentId);
+    		CommentDefinition commentDef = gradebookService.getAssignmentScoreComment(contextId, gradebookItemId, studentId);
     		if (commentDef != null) {
     			comment = commentDef.getCommentText();
     		}
@@ -365,12 +365,14 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
     	return comment;
     }
     
-    public boolean isCurrentUserAbleToGradeStudentForItem(String contextId, String studentId, Long gradableObjectId) {
-    	if (contextId == null || studentId == null || gradableObjectId == null) {
-    		throw new IllegalArgumentException("null contextId, studentId or gradableObjectId passed to isCurrentUserAbleToGradeStudentForItem");
+    public boolean isCurrentUserAbleToGradeStudentForItem(String contextId, String studentId, Long gradebookItemId) {
+    	if (contextId == null || studentId == null || gradebookItemId == null) {
+    		throw new IllegalArgumentException("null contextId, studentId or gradebookItemId " +
+    				"passed to isCurrentUserAbleToGradeStudentForItem. contextId:" + contextId +
+    				" studentId:" + studentId + " gradebookItemId: " + gradebookItemId);
     	}
     	
-    	return gradebookService.isUserAbleToGradeItemForStudent(contextId, gradableObjectId, studentId);
+    	return gradebookService.isUserAbleToGradeItemForStudent(contextId, gradebookItemId, studentId);
     }
     
     public GradeInformation getGradeInformationForSubmission(String contextId, AssignmentSubmission submission) {
@@ -386,9 +388,9 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
     	GradeInformation gradeInfo = new GradeInformation();
     	gradeInfo.setStudentId(submission.getUserId());
     	
-    	if (assignment.isGraded() && assignment.getGradableObjectId() != null) {
+    	if (assignment.isGraded() && assignment.getGradebookItemId() != null) {
     		try {
-				GradeDefinition gradeDef = gradebookService.getGradeDefinitionForStudentForItem(contextId, assignment.getGradableObjectId(), submission.getUserId());
+				GradeDefinition gradeDef = gradebookService.getGradeDefinitionForStudentForItem(contextId, assignment.getGradebookItemId(), submission.getUserId());
 				
 				if (gradeDef != null) {
 					gradeInfo.setGradebookGrade(gradeDef.getGrade());
@@ -398,11 +400,11 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
 				
 			} catch (AssessmentNotFoundException anfe) {
 				// this gb item no longer exists, so there is no information to populate
-				if (log.isDebugEnabled()) log.debug("gb item with id " + assignment.getGradableObjectId() + " no longer exists, so returning null grade info");
+				if (log.isDebugEnabled()) log.debug("gb item with id " + assignment.getGradebookItemId() + " no longer exists, so returning null grade info");
 			} catch (SecurityException se) {
 				throw new SecurityException("User does not have authorization to access " +
 						"grade information for " + submission.getUserId() + " for gb item " + 
-						assignment.getGradableObjectId(), se);
+						assignment.getGradebookItemId(), se);
 			}
     	}
     	
@@ -420,7 +422,7 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
 					" grade without releasing to students.");
 		}
 		
-		Long gradableObjectId = null;
+		Long gradebookItemId = null;
 		Assignment newItem = new Assignment();
 		newItem.setCounted(countedInCourseGrade);
 		newItem.setDueDate(dueDate);
@@ -434,47 +436,50 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
 		// now let's retrieve the id of this newly created item
 		Assignment newlyCreatedAssign = gradebookService.getAssignment(contextId, title);
 		if (newlyCreatedAssign != null) {
-			gradableObjectId = newlyCreatedAssign.getId();
+			gradebookItemId = newlyCreatedAssign.getId();
 		}
 		
-		return gradableObjectId;
+		return gradebookItemId;
 	}
 	
-	public GradebookItem getGradebookItemById(String contextId, Long gradableObjectId) {
-		if (contextId == null || gradableObjectId == null) {
-			throw new IllegalArgumentException ("Null contextId or gradableObjectId passed to getGradebookItemById");
+	public GradebookItem getGradebookItemById(String contextId, Long gradebookItemId) {
+		if (contextId == null || gradebookItemId == null) {
+			throw new IllegalArgumentException ("Null contextId or gradebookItemId " +
+					"passed to getGradebookItemById. contextId:" +
+					contextId + " gradebookItemId:" + gradebookItemId);
 		}
 		
 		GradebookItem gradebookItem = new GradebookItem();
 		
 		try {
-			Assignment assign = gradebookService.getAssignment(contextId, gradableObjectId);
+			Assignment assign = gradebookService.getAssignment(contextId, gradebookItemId);
 			gradebookItem = new GradebookItem(assign.getId(), assign.getName(), 
 			        assign.getPoints(), assign.getDueDate(), assign.isReleased());
 		} catch (AssessmentNotFoundException anfe) {
-			throw new GradebookItemNotFoundException ("No gradebook item exists with gradableObjectId " 
-					+ gradableObjectId + " in context " + contextId, anfe);
+			throw new GradebookItemNotFoundException ("No gradebook item exists with gradebookItemId " 
+					+ gradebookItemId + " in context " + contextId, anfe);
 		}
 		
 		return gradebookItem;
 	}
 	
-	public void saveGradeAndCommentForStudent(String contextId, Long gradableObjectId, String studentId, String grade, String comment) {
-		if (contextId == null || gradableObjectId == null || studentId == null) {
-			throw new IllegalArgumentException("Null contextId or gradableObjectId " +
-					"or studentId passed to saveGradeAndCommentForStudent");
+	public void saveGradeAndCommentForStudent(String contextId, Long gradebookItemId, String studentId, String grade, String comment) {
+		if (contextId == null || gradebookItemId == null || studentId == null) {
+			throw new IllegalArgumentException("Null contextId or gradebookItemId " +
+					"or studentId passed to saveGradeAndCommentForStudent. contextId:" + 
+					contextId + " studentId:" + studentId + " gradebookItemId:" + gradebookItemId);
 		}
 		
 		try {
-			gradebookService.saveGradeAndCommentForStudent(contextId, gradableObjectId, studentId, grade, comment);
+			gradebookService.saveGradeAndCommentForStudent(contextId, gradebookItemId, studentId, grade, comment);
 			if(log.isDebugEnabled()) log.debug("Grade and comment for student " + studentId + 
-					" for gbItem " + gradableObjectId + "updated successfully");
+					" for gbItem " + gradebookItemId + "updated successfully");
 		} catch (GradebookNotFoundException gnfe) {
 			throw new NoGradebookDataExistsException("No gradebook exists in the given context "
 					+ contextId, gnfe);
 		} catch (AssessmentNotFoundException anfe) {
 			throw new GradebookItemNotFoundException("No gradebook item exists with the given id "
-					+ gradableObjectId, anfe);
+					+ gradebookItemId, anfe);
 		} catch (InvalidGradeException ige) {
 			throw new InvalidGradeForAssignmentException("The grade: " + grade + 
 					" for gradebook " + contextId + " is invalid.", ige);
@@ -485,11 +490,11 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
 		}
 	}
 
-	public Map<String, GradeInformation> getGradeInformationForStudents(List<String> studentIdList, String contextId, Long gradableObjectId) {
-		if (contextId == null || gradableObjectId == null) {
-			throw new IllegalArgumentException("null contextId or gradableObjectId " +
+	public Map<String, GradeInformation> getGradeInformationForStudents(List<String> studentIdList, String contextId, Long gradebookItemId) {
+		if (contextId == null || gradebookItemId == null) {
+			throw new IllegalArgumentException("null contextId or gradebookItemId " +
 					"passed to getGradeInformationForStudents. contextId:" + 
-					contextId + " gradableObjectId:" + gradableObjectId);
+					contextId + " gradebookItemId:" + gradebookItemId);
 		}
 
 		Map<String, GradeInformation> studentIdToGradeInfoMap = new HashMap<String, GradeInformation>();
@@ -500,7 +505,7 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
 
 			try {
 				List<GradeDefinition>gradeDefs = gradebookService.getGradesForStudentsForItem(contextId, 
-						gradableObjectId, studentIdList);
+						gradebookItemId, studentIdList);
 
 				if (gradeDefs != null) {
 					for (GradeDefinition gradeDef : gradeDefs) {
@@ -516,7 +521,7 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
 
 				GradeInformation gradeInfo = new GradeInformation();
 				gradeInfo.setStudentId(studentId);
-				gradeInfo.setGradableObjectId(gradableObjectId);
+				gradeInfo.setGradebookItemId(gradebookItemId);
 
 				// get the GradeDefinition for this student and convert it to
 				// our local GradeInformation object
@@ -534,11 +539,12 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
 		return studentIdToGradeInfoMap;
 	}
 	
-	public void saveGradesAndComments(String contextId, Long gradableObjectId, 
+	public void saveGradesAndComments(String contextId, Long gradebookItemId, 
 			List<GradeInformation> gradeInfoList) {
-		if (contextId == null || gradableObjectId == null) {
-			throw new IllegalArgumentException("Null contextId or gradableObjectId " +
-					"passed to saveGradesAndCommentsForSubmissions");
+		if (contextId == null || gradebookItemId == null) {
+			throw new IllegalArgumentException("Null contextId or gradebookItemId " +
+					"passed to saveGradesAndCommentsForSubmissions. contextId:" + contextId +
+					" gradebookItemId:" + gradebookItemId);
 		}
 		
 		List<GradeDefinition> gradeDefList = new ArrayList<GradeDefinition>();
@@ -548,10 +554,10 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
 				if (gradeInfo != null) {
 					// double check that we weren't passed submissions for 
 					// different assignments - we don't want to update the wrong grades!
-					Long assignGo = gradeInfo.getGradableObjectId();
-					if (assignGo == null ||	!assignGo.equals(gradableObjectId)) {
-						throw new IllegalArgumentException("The given submission's gradableObjectId " + assignGo +
-							" does not match the goId passed to saveGradesAndCommentsForSubmissions: " + gradableObjectId);
+					Long assignGo = gradeInfo.getGradebookItemId();
+					if (assignGo == null ||	!assignGo.equals(gradebookItemId)) {
+						throw new IllegalArgumentException("The given submission's gradebookItemId " + assignGo +
+							" does not match the goId passed to saveGradesAndCommentsForSubmissions: " + gradebookItemId);
 					}
 					
 					// convert the info into a GradeDefinition
@@ -566,15 +572,15 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
 			
 			// now try to save the new information
 			try {
-				gradebookService.saveGradesAndComments(contextId, gradableObjectId, gradeDefList);
+				gradebookService.saveGradesAndComments(contextId, gradebookItemId, gradeDefList);
 				if(log.isDebugEnabled()) log.debug("Grades and comments for contextId " + contextId + 
-						" for gbItem " + gradableObjectId + "updated successfully for " + gradeDefList.size() + " students");
+						" for gbItem " + gradebookItemId + "updated successfully for " + gradeDefList.size() + " students");
 			} catch (GradebookNotFoundException gnfe) {
 				throw new NoGradebookDataExistsException(
 						"No gradebook exists in the given context " + contextId, gnfe);
 			} catch (AssessmentNotFoundException anfe) {
 				throw new GradebookItemNotFoundException(
-						"No gradebook item exists with the given id " + gradableObjectId, anfe);
+						"No gradebook item exists with the given id " + gradebookItemId, anfe);
 			} catch (InvalidGradeException ige) {
 				throw new InvalidGradeForAssignmentException("Attempted to save an invalid grade in gradebook " 
 						+ contextId + " via saveGradesAndCommentsForSubmissions. " +
@@ -630,11 +636,11 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
 		return studentsWithInvalidGrades;
 	}
 	
-	public boolean isCurrentUserAbleToViewGradebookItem(String contextId, Long gradableObjectId) {
-		if (contextId == null || gradableObjectId == null) {
+	public boolean isCurrentUserAbleToViewGradebookItem(String contextId, Long gradebookItemId) {
+		if (contextId == null || gradebookItemId == null) {
 			throw new IllegalArgumentException ("Null parameter passed to " +
 					"sCurrentUserAbleToViewGradebookItem - contextId: " + contextId + 
-					", gradableObjectId: " + gradableObjectId);
+					", gradebookItemId: " + gradebookItemId);
 		}
 		
 		boolean allowed = false;
@@ -643,8 +649,8 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
 			allowed = true;
     	} else if (isCurrentUserAbleToGrade(contextId) || isCurrentUserAStudentInGb(contextId)) {
     		// check to see if this assignment is among the viewable assign for this user
-    		Map<Long, String> gbItemIdToTitleMap = getViewableGradableObjectIdTitleMap(contextId);
-    		if (gbItemIdToTitleMap.containsKey(gradableObjectId)) {
+    		Map<Long, String> gbItemIdToTitleMap = getViewableGradebookItemIdTitleMap(contextId);
+    		if (gbItemIdToTitleMap.containsKey(gradebookItemId)) {
     			allowed = true;
     		}
     	} 
@@ -652,10 +658,10 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
 		return allowed;
 	}
 	
-	public void assignGradeToUngradedStudents(String contextId, Long gradableObjectId, List<String> studentIds, String grade) {
-	    if (contextId == null || gradableObjectId == null) {
-	        throw new IllegalArgumentException("Null contextId or gradableObjectId passed " +
-	        		"to assignGradeToUngradedSubmissions. contextId:" + contextId + " gradableObjectId:" + gradableObjectId);
+	public void assignGradeToUngradedStudents(String contextId, Long gradebookItemId, List<String> studentIds, String grade) {
+	    if (contextId == null || gradebookItemId == null) {
+	        throw new IllegalArgumentException("Null contextId or gradebookItemId passed " +
+	        		"to assignGradeToUngradedSubmissions. contextId:" + contextId + " gradebookItemId:" + gradebookItemId);
 	    }
 
 	    // no need to continue if they didn't pass a new grade
@@ -668,7 +674,7 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
 	        if (studentIds != null && !studentIds.isEmpty()) {
 
 	            // now determine which don't have a grade yet
-	            Map<String, GradeInformation> studentIdGradeInfoMap = getGradeInformationForStudents(studentIds, contextId, gradableObjectId);
+	            Map<String, GradeInformation> studentIdGradeInfoMap = getGradeInformationForStudents(studentIds, contextId, gradebookItemId);
 	            List<String> ungradedStudents = new ArrayList<String>();
 
 	            if (studentIdGradeInfoMap != null && !studentIdGradeInfoMap.isEmpty()) {
@@ -690,7 +696,7 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
 	                        gradeInfoToSave.add(gradeInfo);
 	                    }
 
-	                    saveGradesAndComments(contextId, gradableObjectId, gradeInfoToSave);
+	                    saveGradesAndComments(contextId, gradebookItemId, gradeInfoToSave);
 	                }
 	            }
 	        }

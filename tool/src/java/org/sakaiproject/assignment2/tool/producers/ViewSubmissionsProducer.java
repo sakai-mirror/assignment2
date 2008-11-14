@@ -150,7 +150,7 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
 
         // get grade info, if appropriate
         Map<String, GradeInformation> studentIdGradeInfoMap = new HashMap<String, GradeInformation>();
-        if (submissions != null && assignment.isGraded() && assignment.getGradableObjectId() != null) {
+        if (submissions != null && assignment.isGraded() && assignment.getGradebookItemId() != null) {
             // put studentIds in a list
             List<String> studentIdList = new ArrayList<String>();
             for (AssignmentSubmission submission : submissions) {
@@ -159,7 +159,7 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
 
             // now retrieve all of the GradeInformation
             studentIdGradeInfoMap = gradebookLogic.getGradeInformationForStudents(
-                    studentIdList, assignment.getContextId(), assignment.getGradableObjectId());
+                    studentIdList, assignment.getContextId(), assignment.getGradebookItemId());
         }
 
         //Breadcrumbs
@@ -183,7 +183,7 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
             displayReleaseGrades = true;
             
             // determine if grades have been released yet
-            GradebookItem gbItem = gradebookLogic.getGradebookItemById(currContextId, assignment.getGradableObjectId());
+            GradebookItem gbItem = gradebookLogic.getGradebookItemById(currContextId, assignment.getGradebookItemId());
             boolean gradesReleased = gbItem.isReleased();
             String releaseLinkText = messageLocator.getMessage("assignment2.assignment_grade-assignment.grades.release");
             if (gradesReleased) {
@@ -191,7 +191,7 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
             }
 
             UIForm releaseGradesForm = UIForm.make(tofill, "release_grades_form");
-            releaseGradesForm.addParameter(new UIELBinding("ReleaseGradesAction.gradebookItemId", assignment.getGradableObjectId()));
+            releaseGradesForm.addParameter(new UIELBinding("ReleaseGradesAction.gradebookItemId", assignment.getGradebookItemId()));
             releaseGradesForm.addParameter(new UIELBinding("ReleaseGradesAction.curContext", currContextId));
             releaseGradesForm.addParameter(new UIELBinding("ReleaseGradesAction.releaseGrades", !gradesReleased));
 
@@ -305,7 +305,7 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
         
         if (assignment.isGraded()) {
             String releasedString;
-            GradebookItem gradebookItem = gradebookLogic.getGradebookItemById(assignment.getContextId(), assignment.getGradableObjectId());
+            GradebookItem gradebookItem = gradebookLogic.getGradebookItemById(assignment.getContextId(), assignment.getGradebookItemId());
             if (gradebookItem.isReleased()) {
                 releasedString = "assignment2.assignment_grade-assignment.tableheader.grade.released";
             } else {

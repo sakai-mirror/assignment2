@@ -13,8 +13,8 @@
         
         <version name="optimisticVersion" type="integer" column="VERSION"/>
         
-       	<property name="gradableObjectId" type="java.lang.Long">
-            <column name="GRADABLE_OBJECT_ID" not-null="false"  />
+       	<property name="gradebookItemId" type="java.lang.Long">
+            <column name="GRADEBOOK_ITEM_ID" not-null="false"  />
         </property>
 
         <property name="contextId" type="java.lang.String">

@@ -103,7 +103,7 @@ public class GradeAllRemainingCommand {
         
         if (gradableStudents != null) {
             try {
-                gradebookLogic.assignGradeToUngradedStudents(assign.getContextId(), assign.getGradableObjectId(), gradableStudents, grade);
+                gradebookLogic.assignGradeToUngradedStudents(assign.getContextId(), assign.getGradebookItemId(), gradableStudents, grade);
             } catch (InvalidGradeForAssignmentException igfae) {
                 messages.addMessage(new TargettedMessage("assignment2.assignment_grade.assigntoall.invalid_grade",
                         new Object[] { }, TargettedMessage.SEVERITY_ERROR));

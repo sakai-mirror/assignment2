@@ -67,7 +67,7 @@ public class GradebookDetailsRenderer {
         Boolean grade_perm = permissionLogic.isUserAbleToProvideFeedbackForStudentForAssignment(userId, assignment);
         
     	//Grading Helper Link
-		String url = externalLogic.getUrlForGradeGradebookItemHelper(assignment.getGradableObjectId(), userId, FinishedHelperProducer.VIEWID);
+		String url = externalLogic.getUrlForGradeGradebookItemHelper(assignment.getGradebookItemId(), userId, FinishedHelperProducer.VIEWID);
                 
 		if (grade_perm) {
 			UILink.make(joint, "gradebook_grading_helper",

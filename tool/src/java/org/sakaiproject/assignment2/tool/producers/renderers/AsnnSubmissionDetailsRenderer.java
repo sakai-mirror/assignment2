@@ -154,24 +154,24 @@ public class AsnnSubmissionDetailsRenderer implements BasicProducer {
          *  the best way to integrate this with the gradebook a reasonable
          *  amount of coupling.
          */
-        if (assignment.isGraded() && assignment.getGradableObjectId() != null) {
+        if (assignment.isGraded() && assignment.getGradebookItemId() != null) {
             try {
                 GradebookItem gradebookItem = 
                     externalGradebookLogic.getGradebookItemById(curContext, 
-                            assignment.getGradableObjectId());
+                            assignment.getGradebookItemId());
                 UIOutput.make(joint, "points-possible-row");
                 UIOutput.make(joint, "points-possible", gradebookItem.getPointsPossible().toString());      
 
                 // Render the graded information if it's available.
                 String grade = externalGradebookLogic.getStudentGradeForItem(
-                        curContext, currentUser.getId(), assignment.getGradableObjectId());
+                        curContext, currentUser.getId(), assignment.getGradebookItemId());
                 if (grade != null) {
                     UIOutput.make(joint, "grade-row");
                     UIOutput.make(joint, "grade", grade);
                 }
 
                 String comment = externalGradebookLogic.getStudentGradeCommentForItem(
-                        curContext, currentUser.getId(), assignment.getGradableObjectId());
+                        curContext, currentUser.getId(), assignment.getGradebookItemId());
 
                 if (comment != null) {
                     UIOutput.make(joint, "comment-row");
@@ -181,7 +181,7 @@ public class AsnnSubmissionDetailsRenderer implements BasicProducer {
             } catch (IllegalArgumentException iae) {
                 log.warn("Trying to look up grade object that doesn't exist" 
                         + "context: " + curContext 
-                        + " gradeObjectId: " + assignment.getGradableObjectId() 
+                        + " gradeObjectId: " + assignment.getGradebookItemId() 
                         + "asnnId: " + assignment.getId());
             }
         }

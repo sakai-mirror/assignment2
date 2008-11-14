@@ -23,7 +23,7 @@ package org.sakaiproject.assignment2.exception;
 
 /**
  * Indicates that no gradebook item exists in the gradebook with the provided
- * gradableObjectId
+ * gradebookItemId
  *
  * @author <a href="mailto:wagnermr@iupui.edu">michelle wagner</a>
  */

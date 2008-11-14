@@ -223,7 +223,7 @@ public class ZipExportLogicImpl implements ZipExportLogic
 		            }
 		        }
 
-		        if (assignment.isGraded() && assignment.getGradableObjectId() != null) {
+		        if (assignment.isGraded() && assignment.getGradebookItemId() != null) {
 		            // the buffer used to store grade information
 		            StringBuilder gradesBuilder = new StringBuilder();
 		            gradesBuilder.append(
@@ -236,7 +236,7 @@ public class ZipExportLogicImpl implements ZipExportLogic
 
 		            if (gradableStudents != null && !gradableStudents.isEmpty()) {
 		                // get the grade information
-		                Map<String, GradeInformation> userIdGradeMap = gradebookLogic.getGradeInformationForStudents(gradableStudents, assignment.getContextId(), assignment.getGradableObjectId());
+		                Map<String, GradeInformation> userIdGradeMap = gradebookLogic.getGradeInformationForStudents(gradableStudents, assignment.getContextId(), assignment.getGradebookItemId());
 
 		                for (String studentId : gradableStudents) {
 		                    // get their User info

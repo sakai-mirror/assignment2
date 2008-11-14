@@ -142,10 +142,10 @@ public class Assignment2Bean {
             assignment.setDueDate(null);
         }
 
-        //Since in the UI, the select box bound to the gradableObjectId is always present
+        //Since in the UI, the select box bound to the gradebookItemId is always present
         // we need to manually remove this value if the assignment is ungraded
         if (!assignment.isGraded()) {
-            assignment.setGradableObjectId(null);
+            assignment.setGradebookItemId(null);
         }
 
         //do groups
