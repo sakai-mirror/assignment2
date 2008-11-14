@@ -23,14 +23,19 @@ package org.sakaiproject.assignment2.tool.params;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.sakaiproject.assignment2.tool.beans.Assignment2Bean;
 import org.sakaiproject.assignment2.tool.producers.ViewSubmissionsProducer;
 
 public class ViewSubmissionsViewParams extends SortPagerViewParams implements VerifiableViewParams {
 
-	private static final Log LOG = LogFactory.getLog(Assignment2Bean.class);
+	private static final Log LOG = LogFactory.getLog(ViewSubmissionsViewParams.class);
 	
 	public Long assignmentId;
+	
+	/**
+	 * optionally filter the view by group membership. null if you
+	 * do not want to filter by group
+	 */
+	public String groupId;
 	
 	public ViewSubmissionsViewParams() {}
 
@@ -42,6 +47,12 @@ public class ViewSubmissionsViewParams extends SortPagerViewParams implements Ve
 		super(viewId);
 		this.assignmentId = assignmentId;
 	}
+	
+	public ViewSubmissionsViewParams(String viewId, Long assignmentId, String groupId) {
+        super(viewId);
+        this.assignmentId = assignmentId;
+        this.groupId = groupId;
+    }
 	
     public ViewSubmissionsViewParams(String viewId, String sort_by, String sort_dir) {
     		super(viewId, sort_by, sort_dir);
@@ -58,7 +69,7 @@ public class ViewSubmissionsViewParams extends SortPagerViewParams implements Ve
     
 	public String getParseSpec() {
 		// include a comma delimited list of the public properties in this class
-		return super.getParseSpec() + ",@1:assignmentId";
+		return super.getParseSpec() + ",@1:assignmentId,groupId,";
 	}
 
 	public Boolean verify()

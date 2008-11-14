@@ -90,6 +90,7 @@ public abstract class Assignment2TestBase extends AbstractTransactionalSpringCon
     	
     	gradebookLogic = new ExternalGradebookLogicImpl();
     	gradebookLogic.setGradebookService(gradebookService);
+    	gradebookLogic.setExternalLogic(externalLogic);
     	
     	announcementLogic = new ExternalAnnouncementLogicImpl();
     	

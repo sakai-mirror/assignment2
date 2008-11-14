@@ -16,6 +16,7 @@
    
    <bean id="org.sakaiproject.assignment2.logic.ExternalGradebookLogic" class="org.sakaiproject.assignment2.logic.impl.ExternalGradebookLogicImpl" init-method="init">
    		<property name="gradebookService" ref="org_sakaiproject_service_gradebook_GradebookService" />
+   		<property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
    </bean>
    
    <bean id="org.sakaiproject.assignment2.logic.ExternalAnnouncementLogic" class="org.sakaiproject.assignment2.logic.impl.ExternalAnnouncementLogicImpl" init-method="init">

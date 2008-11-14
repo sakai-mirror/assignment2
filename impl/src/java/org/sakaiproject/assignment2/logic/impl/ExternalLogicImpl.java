@@ -262,23 +262,23 @@ public class ExternalLogicImpl implements ExternalLogic {
         return usersInRole;
     }
     
-    public List<String> getStudentsInSection(String sectionId) {
-    	if (sectionId == null) {
-    		throw new IllegalArgumentException("null sectionId passed to getStudentsInSection");
+    public List<String> getStudentsInGroup(String groupId) {
+    	if (groupId == null) {
+    		throw new IllegalArgumentException("null groupId passed to getStudentsInSection");
     		
     	}
     	
-    	List<String> studentsInSection = new ArrayList<String>();
+    	List<String> studentsInGroup = new ArrayList<String>();
     	
-    	List<ParticipationRecord> participants = sectionAwareness.getSectionMembersInRole(sectionId, Role.STUDENT);
+    	List<ParticipationRecord> participants = sectionAwareness.getSectionMembersInRole(groupId, Role.STUDENT);
     	for (ParticipationRecord part : participants) {
 			if (part != null) {
 				String studentId = part.getUser().getUserUid();
-				studentsInSection.add(studentId);
+				studentsInGroup.add(studentId);
 			}
 		}
     	
-    	return studentsInSection;
+    	return studentsInGroup;
     }
     
     public String getUrlForGradebookItemHelper(Long gradeableObjectId, String returnViewId) {

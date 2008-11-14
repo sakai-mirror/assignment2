@@ -275,6 +275,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		
 		version.setModifiedBy(currentUserId);
 		version.setModifiedDate(currentTime);
+		version.setStudentSaveDate(currentTime);
 
 		if (!version.isDraft()) {
 			version.setSubmittedDate(currentTime);
@@ -291,7 +292,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		// identify any attachments that were deleted or need to be created
 		// - we don't update attachments
 		Set<SubmissionAttachmentBase> attachToDelete = identifyAttachmentsToDelete(version.getSubmissionAttachSet(), subAttachSet);
-		Set<SubmissionAttachmentBase> attachToCreate = identifyAttachmentsToCreate(subAttachSet);
+		Set<SubmissionAttachmentBase> attachToCreate = identifyAttachmentsToCreate(version.getSubmissionAttachSet(), subAttachSet);
 
 		// make sure the version was populated on the SubmissionAttachments
 		populateVersionForAttachmentSet(attachToCreate, version);
@@ -426,7 +427,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		
 		// identify any attachments that were deleted
 		Set<SubmissionAttachmentBase> attachToDelete = identifyAttachmentsToDelete(version.getFeedbackAttachSet(), feedbackAttachSet);
-		Set<SubmissionAttachmentBase> attachToCreate = identifyAttachmentsToCreate(feedbackAttachSet);
+		Set<SubmissionAttachmentBase> attachToCreate = identifyAttachmentsToCreate(version.getFeedbackAttachSet(), feedbackAttachSet);
 		
 		// make sure the version was populated on the FeedbackAttachments
 		populateVersionForAttachmentSet(attachToCreate, version);
@@ -476,14 +477,14 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 	}
 	
 	public List<AssignmentSubmission> getViewableSubmissionsWithHistoryForAssignmentId(Long assignmentId) {
-		return getViewableSubmissions(assignmentId, true);
+		return getViewableSubmissions(assignmentId, true, null);
 	}
 	
-	public List<AssignmentSubmission> getViewableSubmissionsForAssignmentId(Long assignmentId) {
-		return getViewableSubmissions(assignmentId, false);
+	public List<AssignmentSubmission> getViewableSubmissionsForAssignmentId(Long assignmentId, String filterGroupId) {
+		return getViewableSubmissions(assignmentId, false, filterGroupId);
 	}
 	
-	private List<AssignmentSubmission> getViewableSubmissions(Long assignmentId, boolean includeVersionHistory) {
+	private List<AssignmentSubmission> getViewableSubmissions(Long assignmentId, boolean includeVersionHistory, String filterGroupId) {
 		if (assignmentId == null) {
 			throw new IllegalArgumentException("null assignmentId passed to getViewableSubmissionsForAssignmentId");
 		}
@@ -503,6 +504,11 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 
 		// get a list of all the students that the current user may view for the given assignment
 		List<String> viewableStudents = permissionLogic.getViewableStudentsForUserForItem(currUserId, assignment);
+		
+		// filter by group, if a group id was supplied
+		if (filterGroupId != null && filterGroupId.trim().length() > 0) {
+		    viewableStudents = filterStudentsByGroupMembership(viewableStudents, filterGroupId);
+		}
 
 		if (viewableStudents != null && !viewableStudents.isEmpty()) {
 			
@@ -616,32 +622,76 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 					attach.setSubmissionVersion(version);
 	}
 	
+	/**
+	 * 
+	 * @param existingAttachSet
+	 * @param updatedAttachSet
+	 * @return a set of attachments from the given updatedAttachSet that need
+	 * to be deleted. this is determined by comparing the attachmentReferences
+	 * of the attachments in the existingAttachSet to those in the updatedAttachSet.
+	 * if it does not exist in the updatedAttachSet, it needs to be deleted
+	 */
 	private Set<SubmissionAttachmentBase> identifyAttachmentsToDelete(
 			Set<? extends SubmissionAttachmentBase> existingAttachSet,
 			Set<? extends SubmissionAttachmentBase> updatedAttachSet)
 	{
 		Set<SubmissionAttachmentBase> attachToRemove = new HashSet<SubmissionAttachmentBase>();
+		
+		// make a set of attachment references in case the id wasn't populated
+		// properly
+		Set<String> updatedAttachSetRefs = new HashSet<String>();
+		if (updatedAttachSet != null) {
+		    for (SubmissionAttachmentBase attach : updatedAttachSet) {
+		        updatedAttachSetRefs.add(attach.getAttachmentReference());
+		    }
+		}
 
 		if (existingAttachSet != null)
-			for (SubmissionAttachmentBase attach : existingAttachSet)
-				if (attach != null)
-					if (updatedAttachSet == null || !updatedAttachSet.contains(attach))
+			for (SubmissionAttachmentBase attach : existingAttachSet) {
+				if (attach != null) {
+					if (updatedAttachSet == null || !updatedAttachSetRefs.contains(attach.getAttachmentReference())) {
 						// we need to delete this attachment
 						attachToRemove.add(attach);
+					}
+				}
+			}
 
 		return attachToRemove;
 	}
 	
+	/**
+	 * 
+	 * @param existingAttachSet
+	 * @param updatedAttachSet
+	 * @return a set of attachments from the given updatedAttachSet that do not
+	 * currently exist. this is determined by checking to see if there is
+	 * already an attachment in the given existingAttachSet with the same
+	 * attachmentReference as each attachment in the updatedAttachSet. 
+	 */
 	private Set<SubmissionAttachmentBase> identifyAttachmentsToCreate(
+	        Set<? extends SubmissionAttachmentBase> existingAttachSet,
 			Set<? extends SubmissionAttachmentBase> updatedAttachSet)
 	{
 		Set<SubmissionAttachmentBase> attachToCreate = new HashSet<SubmissionAttachmentBase>();
+		
+		// make a set of attachment references in case the id wasn't populated
+        // properly
+        Set<String> existingAttachSetRefs = new HashSet<String>();
+        if (existingAttachSet != null) {
+            for (SubmissionAttachmentBase attach : existingAttachSet) {
+                existingAttachSetRefs.add(attach.getAttachmentReference());
+            }
+        }
 
-		if (updatedAttachSet != null)
-			for (SubmissionAttachmentBase attach : updatedAttachSet)
-				if (attach != null)
-					if (attach.getId() == null)
+		if (updatedAttachSet != null) {
+			for (SubmissionAttachmentBase attach : updatedAttachSet) {
+				if (attach != null) {
+					if (!existingAttachSetRefs.contains(attach.getAttachmentReference())) {
 						attachToCreate.add(attach);
+					}
+				}
+			}
+		}
 
 		return attachToCreate;
 	}
@@ -1300,6 +1350,22 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		Collections.sort(userSubmissions, new ComparatorsUtils.SubmissionCompletedSortOrderComparator());
 		
 		return userSubmissions;
+	}
+	
+	private List<String> filterStudentsByGroupMembership(List<String> fullStudentIdList, String filterGroupId) {
+	    List<String> filteredStudentIdList = new ArrayList<String>();
+	    if (fullStudentIdList != null && filterGroupId != null) {
+	        List<String> studentsInGroup = externalLogic.getStudentsInGroup(filterGroupId);
+	        if (studentsInGroup != null) {
+	            for (String studentId : studentsInGroup) {
+	                if (fullStudentIdList.contains(studentId)) {
+	                    filteredStudentIdList.add(studentId);
+	                }
+	            }
+	        }
+	    }
+	    
+	    return filteredStudentIdList;
 	}
 	
 }

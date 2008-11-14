@@ -1,4 +1,4 @@
-package org.sakaiproject.assignment2.tool.beans;
+package org.sakaiproject.assignment2.tool.commands;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +15,7 @@ import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
  * @author sgithens
  *
  */
-public class MarkFeedbackAsReadAction {
+public class MarkFeedbackAsReadCommand {
 
     // Dependency
     private AssignmentSubmissionLogic submissionLogic;

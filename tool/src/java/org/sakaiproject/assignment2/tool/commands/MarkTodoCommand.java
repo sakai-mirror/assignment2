@@ -1,4 +1,4 @@
-package org.sakaiproject.assignment2.tool.beans;
+package org.sakaiproject.assignment2.tool.commands;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,8 +21,8 @@ import org.sakaiproject.user.api.User;
  * @author sgithens
  *
  */
-public class MarkTodoBean {
-    private static Log log = LogFactory.getLog(MarkTodoBean.class);
+public class MarkTodoCommand {
+    private static Log log = LogFactory.getLog(MarkTodoCommand.class);
 
     // Dependency
     private AssignmentSubmissionLogic assignmentSubmissionLogic;

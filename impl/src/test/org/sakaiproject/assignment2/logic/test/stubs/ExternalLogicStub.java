@@ -29,8 +29,8 @@ import java.util.Map;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.test.AssignmentTestDataLoad;
 import org.sakaiproject.content.api.ContentResource;
-import org.sakaiproject.site.api.Group;
-import org.sakaiproject.site.api.Site;
+import org.sakaiproject.mock.domain.Group;
+import org.sakaiproject.mock.domain.Site;
 import org.sakaiproject.user.api.User;
 
 
@@ -122,7 +122,23 @@ public class ExternalLogicStub implements ExternalLogic {
      * @return a collection
      */
     public Collection<Group> getSiteGroups(String contextId) {
-    	return null; // used for ui
+        Site currSite = new Site();
+    	Group group1 = new Group(currSite);
+    	group1.setId(AssignmentTestDataLoad.GROUP1_NAME);
+    	group1.setReference(AssignmentTestDataLoad.GROUP1_NAME);
+    	Group group2 = new Group(currSite);
+        group2.setId(AssignmentTestDataLoad.GROUP2_NAME);
+        group2.setReference(AssignmentTestDataLoad.GROUP2_NAME);
+        Group group3 = new Group(currSite);
+        group3.setId(AssignmentTestDataLoad.GROUP3_NAME);
+        group3.setReference(AssignmentTestDataLoad.GROUP3_NAME);
+        
+        Collection<Group> siteGroups = new ArrayList<Group>();
+        siteGroups.add((Group) group1);
+        siteGroups.add((Group) group2);
+        siteGroups.add((Group) group3);
+        
+        return siteGroups;    
     }
     
     /**
@@ -146,11 +162,11 @@ public class ExternalLogicStub implements ExternalLogic {
     	} else if (userId.equals(AssignmentTestDataLoad.STUDENT2_UID)) {
     		groupIdList.add(AssignmentTestDataLoad.GROUP3_NAME);
     	} else if (userId.equals(AssignmentTestDataLoad.STUDENT3_UID)) {
-    		// not a member of any sections
+    		// not a member of any groups
     	} else if (userId.equals(AssignmentTestDataLoad.TA_UID)) {
     		groupIdList.add(AssignmentTestDataLoad.GROUP1_NAME);
     	} else {
-    		// not a member of any sections
+    		// not a member of any groups
     	}
     	
     	return groupIdList;
@@ -203,26 +219,26 @@ public class ExternalLogicStub implements ExternalLogic {
     
     /**
      * 
-     * @param sectionId
-     * @return a list of the student ids of students in the given section  
+     * @param groupId
+     * @return a list of the student ids of students in the Group with the given groupId  
      */
-    public List<String> getStudentsInSection(String sectionId) {
-    	if (sectionId == null) {
-    		throw new IllegalArgumentException("null sectionId passed to getStudentsInSection");
+    public List<String> getStudentsInGroup(String groupId) {
+    	if (groupId == null) {
+    		throw new IllegalArgumentException("null groupId passed to getStudentsInSection");
     		
     	}
     	
-    	List<String> studentsInSection = new ArrayList<String>();
+    	List<String> studentsInGroup = new ArrayList<String>();
 
-    	if (sectionId.equals(AssignmentTestDataLoad.GROUP1_NAME)) {
-    		studentsInSection.add(AssignmentTestDataLoad.STUDENT1_UID);
-    	} else if (sectionId.equals(AssignmentTestDataLoad.GROUP2_NAME)) {
+    	if (groupId.equals(AssignmentTestDataLoad.GROUP1_NAME)) {
+    	    studentsInGroup.add(AssignmentTestDataLoad.STUDENT1_UID);
+    	} else if (groupId.equals(AssignmentTestDataLoad.GROUP2_NAME)) {
     		// none
-    	} else if (sectionId.equals(AssignmentTestDataLoad.GROUP3_NAME)) {
-    		studentsInSection.add(AssignmentTestDataLoad.STUDENT2_UID);
+    	} else if (groupId.equals(AssignmentTestDataLoad.GROUP3_NAME)) {
+    	    studentsInGroup.add(AssignmentTestDataLoad.STUDENT2_UID);
     	}
     	
-    	return studentsInSection;
+    	return studentsInGroup;
     }
     
     /**

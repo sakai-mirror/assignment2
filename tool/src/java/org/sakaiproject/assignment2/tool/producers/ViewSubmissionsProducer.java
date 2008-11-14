@@ -23,6 +23,8 @@ package org.sakaiproject.assignment2.tool.producers;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -38,7 +40,7 @@ import org.sakaiproject.assignment2.logic.GradebookItem;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
-import org.sakaiproject.assignment2.tool.beans.locallogic.LocalAssignmentLogic;
+import org.sakaiproject.assignment2.tool.LocalAssignmentLogic;
 import org.sakaiproject.assignment2.tool.params.AssignmentViewParams;
 import org.sakaiproject.assignment2.tool.params.GradeViewParams;
 import org.sakaiproject.assignment2.tool.params.ViewSubmissionsViewParams;
@@ -46,6 +48,7 @@ import org.sakaiproject.assignment2.tool.params.ZipViewParams;
 import org.sakaiproject.assignment2.tool.producers.renderers.AttachmentListRenderer;
 import org.sakaiproject.assignment2.tool.producers.renderers.PagerRenderer;
 import org.sakaiproject.assignment2.tool.producers.renderers.SortHeaderRenderer;
+import org.sakaiproject.site.api.Group;
 
 import uk.org.ponder.htmlutil.HTMLUtil;
 import uk.org.ponder.messageutil.MessageLocator;
@@ -60,6 +63,7 @@ import uk.org.ponder.rsf.components.UIInput;
 import uk.org.ponder.rsf.components.UIInternalLink;
 import uk.org.ponder.rsf.components.UIMessage;
 import uk.org.ponder.rsf.components.UIOutput;
+import uk.org.ponder.rsf.components.UISelect;
 import uk.org.ponder.rsf.components.UIVerbatim;
 import uk.org.ponder.rsf.components.decorators.UIFreeAttributeDecorator;
 import uk.org.ponder.rsf.flow.ARIResult;
@@ -125,6 +129,8 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
         }
         assignmentId = params.assignmentId;
         Assignment2 assignment = assignmentLogic.getAssignmentByIdWithAssociatedData(assignmentId);
+        
+        String currContextId = externalLogic.getCurrentContextId();
 
         //use a date which is related to the current users locale
         DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, locale);
@@ -140,7 +146,7 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
         current_sort_dir = params.sort_dir;
         UIVerbatim.make(tofill, "defaultSortBy", HTMLUtil.emitJavascriptVar("defaultSortBy", DEFAULT_SORT_BY));
 
-        List<AssignmentSubmission> submissions = submissionLogic.getViewableSubmissionsForAssignmentId(assignmentId);
+        List<AssignmentSubmission> submissions = submissionLogic.getViewableSubmissionsForAssignmentId(assignmentId, params.groupId);
 
         // get grade info, if appropriate
         Map<String, GradeInformation> studentIdGradeInfoMap = new HashMap<String, GradeInformation>();
@@ -163,7 +169,7 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
         UIMessage.make(tofill, "last_breadcrumb", "assignment2.assignment_grade-assignment.heading", new Object[] { assignment.getTitle() });
 
         // ACTION BAR
-        boolean displayEditGb = false;
+        boolean displayReleaseGrades = false;
         boolean displayReleaseFB = false;
         boolean displayDownloadAll = false;
         boolean displayUploadAll = false;
@@ -174,14 +180,28 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
         
         // RELEASE GRADES
         if (edit_perm && assignment.isGraded()){
-            UIOutput.make(tofill, "edit_gb_item_li");
-            displayEditGb = true;
+            displayReleaseGrades = true;
             
-            String url = externalLogic.getUrlForGradebookItemHelper(assignment.getGradableObjectId(), FinishedHelperProducer.VIEWID);
+            // determine if grades have been released yet
+            GradebookItem gbItem = gradebookLogic.getGradebookItemById(currContextId, assignment.getGradableObjectId());
+            boolean gradesReleased = gbItem.isReleased();
+            String releaseLinkText = messageLocator.getMessage("assignment2.assignment_grade-assignment.grades.release");
+            if (gradesReleased) {
+                releaseLinkText = messageLocator.getMessage("assignment2.assignment_grade-assignment.grades.retract");
+            }
 
-            UIInternalLink.make(tofill, "gradebook_item_edit_helper",
-                    UIMessage.make("assignment2.assignment_grade-assignment.gradebook_helper"),
-                    url);
+            UIForm releaseGradesForm = UIForm.make(tofill, "release_grades_form");
+            releaseGradesForm.addParameter(new UIELBinding("ReleaseGradesAction.gradebookItemId", assignment.getGradableObjectId()));
+            releaseGradesForm.addParameter(new UIELBinding("ReleaseGradesAction.curContext", currContextId));
+            releaseGradesForm.addParameter(new UIELBinding("ReleaseGradesAction.releaseGrades", !gradesReleased));
+
+            UICommand releaseGradesButton = UICommand.make(releaseGradesForm, "release_grades", "ReleaseGradesAction.execute");
+
+            UIInternalLink releaseGradesLink = UIInternalLink.make(tofill, 
+                    "release_grades_link", releaseLinkText, viewparams);
+            Map<String,String> idmap = new HashMap<String,String>();
+            idmap.put("onclick", "document.getElementById('"+releaseGradesButton.getFullID()+"').click(); return false;");
+            releaseGradesLink.decorate(new UIFreeAttributeDecorator(idmap));
         }
         
         // RELEASE FEEDBACK
@@ -251,8 +271,8 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
         }
         
         // handle those pesky separators
-        if (displayEditGb && (displayReleaseFB || displayUploadAll || displayDownloadAll)) {
-            UIOutput.make(tofill, "gradebook_item_edit_helper_sep");
+        if (displayReleaseGrades && (displayReleaseFB || displayUploadAll || displayDownloadAll)) {
+            UIOutput.make(tofill, "release_grades_sep");
         }
         
         if (displayReleaseFB && (displayUploadAll || displayDownloadAll)) {
@@ -265,16 +285,12 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
 
         UIMessage.make(tofill, "page-title", "assignment2.assignment_grade-assignment.title");
         //navBarRenderer.makeNavBar(tofill, "navIntraTool:", VIEW_ID);
-        //pagerRenderer.makePager(tofill, "pagerDiv:", VIEW_ID, viewparams, submissions.size());
+        pagerRenderer.makePager(tofill, "pagerDiv:", VIEW_ID, viewparams, submissions.size());
         //UIMessage.make(tofill, "heading", "assignment2.assignment_grade-assignment.heading", new Object[] { assignment.getTitle() });
 
-        /**  Assign This Grade Helper
-        UIForm assign_form = UIForm.make(tofill, "assign_form");
-        UIMessage.make(assign_form, "assign_grade", "assignment2.assignment_grade-assignment.assign_grade");
-        UIInput.make(assign_form, "assign_grade_input", "");
-        UICommand.make(assign_form, "assign_grade_submit", "");
-         ***/
-
+        // now make the "View By Sections/Groups" filter
+        makeViewByGroupFilter(tofill, params);
+        
         //Do Student Table
         sortHeaderRenderer.makeSortingLink(tofill, "tableheader.student", viewparams, 
                 AssignmentSubmissionLogic.SORT_BY_NAME, "assignment2.assignment_grade-assignment.tableheader.student");
@@ -352,44 +368,6 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
             UIOutput.make(row, "released", released);
         }
 
-
-        //Assignment Details
-        UIMessage.make(tofill, "assignment_details", "assignment2.assignment_grade-assignment.assignment_details");
-        if (edit_perm){
-            UIOutput.make(tofill, "edit_assignment_span");
-            UIInternalLink.make(tofill, "assignment_details_edit", new AssignmentViewParams(AssignmentProducer.VIEW_ID, assignment.getId()));
-        }
-        UIMessage.make(tofill, "assignment_details.title_header", "assignment2.assignment_grade-assignment.assignment_details.title");
-        UIOutput.make(tofill, "assignment_details.title", assignment.getTitle());
-        UIMessage.make(tofill, "assignment_details.created_by_header", "assignment2.assignment_grade-assignment.assignment_details.created_by");
-        UIOutput.make(tofill, "assignment_details.created_by", externalLogic.getUserDisplayName(assignment.getCreator()));
-        UIMessage.make(tofill, "assignment_details.modified_header", "assignment2.assignment_grade-assignment.assignment_details.modified");
-        UIOutput.make(tofill, "assignment_details.modified", (assignment.getModifiedDate() != null ? df.format(assignment.getModifiedDate()) : ""));
-        UIMessage.make(tofill, "assignment_details.open_header", "assignment2.assignment_grade-assignment.assignment_details.open");
-        UIOutput.make(tofill, "assignment_details.open", df.format(assignment.getOpenDate()));
-        UIMessage.make(tofill, "assignment_details.due_header", "assignment2.assignment_grade-assignment.assignment_details.due");
-
-        UIOutput.make(tofill, "assignment_details.due", 
-                (assignment.getDueDate() != null ? df.format(assignment.getDueDate()) : ""));
-
-        UIMessage.make(tofill, "assignment_details.accept_until_header", "assignment2.assignment_grade-assignment.assignment_details.accept_until");
-        UIOutput.make(tofill, "assignment_details.accept_until", 
-                (assignment.getAcceptUntilDate() != null ? df.format(assignment.getAcceptUntilDate()) : ""));
-        UIMessage.make(tofill, "assignment_details.submissions_header", "assignment2.assignment_grade-assignment.assignment_details.submissions");
-        UIMessage.make(tofill, "assignment_details.submissions", "assignment2.submission_type." + String.valueOf(assignment.getSubmissionType()));
-        //UIMessage.make(tofill, "assignment_details.scale_header", "assignment2.assignment_grade-assignment.assignment_details.scale");
-        //UIOutput.make(tofill, "assignment_details.scale", "Points (max100.0)");
-        UIMessage.make(tofill, "assignment_details.honor_header", "assignment2.assignment_grade-assignment.assignment_details.honor");
-        UIMessage.make(tofill, "assignment_details.honor", (assignment.isHonorPledge() ? "assignment2.yes" : "assignment2.no"));
-
-        UIMessage.make(tofill, "assignment_details.instructions_header", "assignment2.assignment_grade-assignment.assignment_details.instructions");
-        UIVerbatim.make(tofill, "assignment_details.instructions", assignment.getInstructions());
-        UIMessage.make(tofill, "assignment_details.attachments_header", "assignment2.assignment_grade-assignment.assignment_details.attachments");
-
-        attachmentListRenderer.makeAttachmentFromAssignmentAttachmentSet(tofill, "attachment_list:", params.viewID, 
-                assignment.getAttachmentSet());
-
-
         /*
          * Form for assigning a grade to all submissions without a grade.
          */
@@ -400,6 +378,63 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
             UICommand.make(unassignedForm, "apply-button", "GradeAllRemainingAction.execute");
         }
     } 
+    
+    private void makeViewByGroupFilter(UIContainer tofill, ViewSubmissionsViewParams params) {
+        List<Group> viewableGroups = permissionLogic.getViewableGroupsForCurrUserForAssignment(assignmentId);
+        if (viewableGroups != null && !viewableGroups.isEmpty()) {
+            UIForm groupFilterForm = UIForm.make(tofill, "group_filter_form", params);
+            
+            // we need to order the groups alphabetically. Group names are unique
+            // per site, so let's make a map
+            Map<String, String> groupNameToIdMap = new HashMap<String, String>();
+            for (Group group : viewableGroups) { 
+                groupNameToIdMap.put(group.getTitle(), group.getId());
+            }
+            
+            List<String> orderedGroupNames = new ArrayList<String>(groupNameToIdMap.keySet());
+            Collections.sort(orderedGroupNames, new Comparator<String>() {
+                public int compare(String groupName1, String groupName2) {
+                    return groupName1.compareToIgnoreCase(groupName2);
+                }
+            });
+
+            String selectedValue = "";
+            if (params.groupId != null && params.groupId.trim().length() > 0) {
+                selectedValue = params.groupId;
+            }
+            
+            int numItemsInDropDown = viewableGroups.size();
+            
+            // if there is more than one viewable group, add the 
+            // "All Sections/Groups option"
+            if (viewableGroups.size() > 1) {
+                numItemsInDropDown++;
+            }
+
+            // Group Ids
+            String[] view_filter_values = new String[numItemsInDropDown]; 
+            // Group Names
+            String[] view_filter_options = new String[numItemsInDropDown];
+
+            int index = 0;
+            
+            // the first entry is "All Sections/Groups"
+            if (viewableGroups.size() > 1) {  
+                view_filter_values[index] = "";
+                view_filter_options[index] = messageLocator.getMessage("assignment2.assignment_grade.filter.all_sections");
+                index++;
+            }
+
+            for (String groupName : orderedGroupNames) { 
+                view_filter_values[index] = groupNameToIdMap.get(groupName);
+                view_filter_options[index] = groupName;
+                index++;
+            }
+
+            UISelect.make(groupFilterForm, "group_filter", view_filter_values,
+                    view_filter_options, "groupId", selectedValue);
+        }
+    }
 
     public List<NavigationCase> reportNavigationCases() {
         List<NavigationCase> nav= new ArrayList<NavigationCase>();
@@ -413,6 +448,7 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
             ViewSubmissionsViewParams outgoing = (ViewSubmissionsViewParams) result.resultingView;
             ViewSubmissionsViewParams in = (ViewSubmissionsViewParams) incoming;
             outgoing.assignmentId = in.assignmentId;
+            outgoing.groupId = in.groupId;
         }
     }
 

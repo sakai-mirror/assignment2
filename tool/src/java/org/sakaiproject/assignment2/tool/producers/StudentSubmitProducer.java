@@ -49,7 +49,7 @@ import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
 import uk.org.ponder.rsf.viewstate.ViewParameters;
 import uk.org.ponder.rsf.viewstate.ViewParamsReporter;
 
-public class StudentSubmitProducer implements ViewComponentProducer, ActionResultInterceptor, ViewParamsReporter {
+public class StudentSubmitProducer implements ViewComponentProducer,  ViewParamsReporter {
     
     public static final String VIEW_ID = "student-submit";
     public String getViewID() {
@@ -106,30 +106,6 @@ public class StudentSubmitProducer implements ViewComponentProducer, ActionResul
 
     }
     
-    public void interceptActionResult(ARIResult result, ViewParameters incoming, Object actionReturn) {
-        StudentSubmissionParams params = (StudentSubmissionParams) incoming;
-        
-        if (AssignmentSubmissionBean.SUBMIT.equals(actionReturn)) {
-            result.resultingView = new SimpleViewParameters(StudentAssignmentListProducer.VIEW_ID);
-        }
-        else if (AssignmentSubmissionBean.BACK_TO_EDIT.equals(actionReturn)) {
-            result.resultingView = new StudentSubmissionParams(StudentSubmitProducer.VIEW_ID, params.assignmentId, false);
-            result.propagateBeans = ARIResult.FLOW_ONESTEP;
-        }
-        else if (AssignmentSubmissionBean.PREVIEW.equals(actionReturn)) {
-            System.out.println("PREVIEW action");
-            result.resultingView = new StudentSubmissionParams(StudentSubmitProducer.VIEW_ID, params.assignmentId, true);
-            result.propagateBeans = ARIResult.FLOW_ONESTEP;
-        } else if (AssignmentSubmissionBean.SAVE_DRAFT.equals(actionReturn)) {
-            result.resultingView = new SimpleViewParameters(StudentAssignmentListProducer.VIEW_ID);
-            System.out.println("SAVE_DRAFT action");
-        } else if (AssignmentSubmissionBean.CANCEL.equals(actionReturn)) {
-            System.out.println("CANCEL action");
-        } else {
-            System.out.println("OTHER ACTION!!! " + actionReturn);
-        }
-    }
-
     public ViewParameters getViewParameters() {
         return new StudentSubmissionParams();
     }

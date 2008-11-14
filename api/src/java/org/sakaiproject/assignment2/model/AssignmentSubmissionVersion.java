@@ -49,6 +49,7 @@ public class AssignmentSubmissionVersion implements FeedbackVersion {
 	private Date modifiedDate;
 	private String lastFeedbackSubmittedBy;
 	private Date lastFeedbackDate;
+	private Date studentSaveDate;
 	private Date feedbackLastViewed;
 	private int optimisticVersion;
 	private Set<FeedbackAttachment> feedbackAttachSet;
@@ -277,6 +278,26 @@ public class AssignmentSubmissionVersion implements FeedbackVersion {
 	}
 	
 	/**
+	 * 
+	 * @return the date and time the student last saved this version 
+     * (or when it was last auto-saved while student was working on it)
+	 */
+	public Date getStudentSaveDate()
+    {
+        return studentSaveDate;
+    }
+
+	/**
+	 * the date and time the student last saved this version 
+     * (or when it was last auto-saved while student was working on it)
+	 * @param studentSaveDate
+	 */
+    public void setStudentSaveDate(Date studentSaveDate)
+    {
+        this.studentSaveDate = studentSaveDate;
+    }
+
+    /**
 	 * 
 	 * @return the date and time this feedback was last viewed by this student
 	 */

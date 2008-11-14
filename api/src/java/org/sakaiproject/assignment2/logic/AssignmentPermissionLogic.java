@@ -27,6 +27,7 @@ import java.util.List;
 import org.sakaiproject.assignment2.exception.SubmissionNotFoundException;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentGroup;
+import org.sakaiproject.site.api.Group;
 
 /**
  * This is the interface for logic which is related to the permission 
@@ -161,4 +162,15 @@ public interface AssignmentPermissionLogic {
 	  * as a user who may view the student. 
 	  */
 	 public List<String> getUsersAllowedToViewStudentForAssignment(String studentId, Assignment2 assignment);
+	 
+	 /**
+	  * 
+	  * @param assignmentId
+	  * @return a list of Groups that the current user is allowed
+	  * to view for the given assignment. If the user is allowed to view the
+	  * group in the gradebook, then they can view the group in assignment2. if
+	  * assignment is restricted to groups, will only return viewable groups within
+	  * this restriction
+	  */
+	 public List<Group> getViewableGroupsForCurrUserForAssignment(Long assignmentId);
 }
