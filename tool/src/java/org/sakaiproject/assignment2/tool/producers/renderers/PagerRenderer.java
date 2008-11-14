@@ -89,32 +89,32 @@ public class PagerRenderer {
 		comboNames.setValue(new String[] {"Show 5 items", "Show 10 items", "Show 20 items", "Show 50 items", "Show 100 items", "Show 200 items"});
 		select_box.optionnames = comboNames;
 		Map attrmap = new HashMap(); 
-		attrmap.put("onchange", "changePage(pStart);");
+		attrmap.put("onchange", "asnn2.changePage(asnn2.pStart);");
 		select_box.decorators = new DecoratorList(new UIFreeAttributeDecorator(attrmap)); 
 		
 		
 		//first page
 		UIInput first_page = UIInput.make(form, "pager_first_page", null, messageLocator.getMessage("assignment2.pager.pager_first_page"));
 		attrmap = new HashMap();
-		attrmap.put("onclick", "changePage('first')");
+		attrmap.put("onclick", "asnn2.changePage('first')");
 		first_page.decorators = new DecoratorList(new UIFreeAttributeDecorator(attrmap));
 				
 		//previous page
 		UIInput prev_page = UIInput.make(form, "pager_prev_page", null, messageLocator.getMessage("assignment2.pager.pager_prev_page"));
 		attrmap = new HashMap();
-		attrmap.put("onclick", "changePage('prev')");
+		attrmap.put("onclick", "asnn2.changePage('prev')");
 		prev_page.decorators = new DecoratorList(new UIFreeAttributeDecorator(attrmap));
 
 		//next page
 		UIInput next_page = UIInput.make(form, "pager_next_page", null, messageLocator.getMessage("assignment2.pager.pager_next_page"));
 		attrmap = new HashMap();
-		attrmap.put("onclick", "changePage('next')");
+		attrmap.put("onclick", "asnn2.changePage('next')");
 		next_page.decorators = new DecoratorList(new UIFreeAttributeDecorator(attrmap));
 		
 		//last button
 		UIInput last_page = UIInput.make(form, "pager_last_page", null, messageLocator.getMessage("assignment2.pager.pager_last_page"));
 		attrmap = new HashMap();
-		attrmap.put("onclick", "changePage('last')");
+		attrmap.put("onclick", "asnn2.changePage('last')");
 		last_page.decorators = new DecoratorList(new UIFreeAttributeDecorator(attrmap));
 
     }

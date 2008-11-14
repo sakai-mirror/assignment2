@@ -53,25 +53,24 @@
 		</ul>
 	
 	<br />
-	<!--  Helper Goes Here, comment out for now
-	<div class="viewNav">
-		<form rsf:id="assign_form" class="inlineForm" method="post">
-			<label rsf:id="assign_grade">Assign this grade to all participants without submissions:</label> <input rsf:id="assign_grade_input" type="text" size="3" />
-			<input rsf:id="assign_grade_submit" type="submit" accesskey="a" class="active" value="Apply" />
-		</form>
-	</div>
-	-->
+
 	<!-- The view by sections filter -->
 	<div class="viewFilter">
-    	<form rsf:id="group_filter_form" method="get">
-            <label rsf:id="msg=assignment2.assignment_grade.filter.label" for="group_filter">View</label>
-            <select rsf:id="group_filter" id="group_filter" onchange="this.form.submit();">
-            </select>
-    	</form>
-	</div>
+        
 
-	<div rsf:id="pagerDiv:" class="listNav pagerDiv"></div>
-	<table class="listHier lines nolines" cellpadding="0" cellspacing="0" > <!-- SWG TODO Removing for now due to error id="sortable"> -->
+	    <div class="groupFilterContainer">
+        	<form rsf:id="group_filter_form" method="get">
+                <label rsf:id="msg=assignment2.assignment_grade.filter.label" for="group_filter">View</label>
+                <select rsf:id="group_filter" id="group_filter" onchange="this.form.submit();">
+                </select>
+        	</form>
+    	</div>
+    	
+        <div rsf:id="pagerDiv:"></div>
+
+	</div>
+	
+	<table class="listHier lines nolines" cellpadding="0" cellspacing="0" id="sortable"> 
 		<tr> 
 			<th rsf:id="tableheader.student:"></th>
 			<th rsf:id="tableheader.submitted:"></th>
@@ -121,12 +120,7 @@ function slide_details(img){
 //<![CDATA[
 jQuery(document).ready(function(){
   // Init position of the Apply to Unassigned grading feature
-    var p = jQuery("td.grade:first");
-    var position = p.position();
-    if (position) {
-        var applyToUnassigned = jQuery('#unassigned-apply');
-        applyToUnassigned.attr("style", "margin-left:" + position.left + "px");
-    }
+    asnn2.alignGrading();
 
 });
 //]]>
