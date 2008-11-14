@@ -119,4 +119,16 @@ public class AssignmentItemImpl implements TaggableItem {
 	{
 		return this.getReference().hashCode();
 	}
+
+	public String getItemDetailUrlParams()
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public boolean getUseDecoration()
+	{
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

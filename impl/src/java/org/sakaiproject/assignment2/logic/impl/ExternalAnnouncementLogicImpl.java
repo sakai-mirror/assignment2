@@ -58,6 +58,10 @@ public class ExternalAnnouncementLogicImpl implements ExternalAnnouncementLogic 
     
     private AnnouncementService aService;
     private AnnouncementChannel announcementChannel;
+    
+    /** release date property names for announcements - temporary fix until we upgrade to 2.6	 */
+	public static final String RELEASE_DATE = "releaseDate";
+
 
     public void init() {
     	if (log.isDebugEnabled()) log.debug("init");
@@ -93,7 +97,7 @@ public class ExternalAnnouncementLogicImpl implements ExternalAnnouncementLogic 
 			}
 
 			// set the release date property
-			message.getPropertiesEdit().addProperty(AnnouncementService.RELEASE_DATE, releaseDate.toString());
+			message.getPropertiesEdit().addProperty(RELEASE_DATE, releaseDate.toString());
 				
 			if (restrictedGroupIds == null || restrictedGroupIds.isEmpty()) {
 				//site announcement
@@ -154,7 +158,7 @@ public class ExternalAnnouncementLogicImpl implements ExternalAnnouncementLogic 
 			}
 
 			// set the release date property
-			message.getPropertiesEdit().addProperty(AnnouncementService.RELEASE_DATE, releaseDate.toString());
+			message.getPropertiesEdit().addProperty(RELEASE_DATE, releaseDate.toString());
 
 			announcementChannel.commitMessage(message, NotificationService.NOTI_NONE);
 			if (log.isDebugEnabled()) log.debug("Announcement updated with id: " + announcementId);
