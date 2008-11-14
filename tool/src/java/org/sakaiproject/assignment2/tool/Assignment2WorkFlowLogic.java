@@ -1,6 +1,6 @@
 /**********************************************************************************
- * $URL$
- * $Id$
+ * $URL: https://source.sakaiproject.org/contrib/assignment2/trunk/tool/src/java/org/sakaiproject/assignment2/tool/params/Assignment2ViewParamsInterceptor.java $
+ * $Id: Assignment2ViewParamsInterceptor.java 53899 2008-10-13 15:07:58Z swgithen@mtu.edu $
  ***********************************************************************************
  *
  * Copyright (c) 2007, 2008 The Sakai Foundation.
@@ -19,17 +19,26 @@
  *
  **********************************************************************************/
 
-package org.sakaiproject.assignment2.tool.params;
+package org.sakaiproject.assignment2.tool;
 
-import org.sakaiproject.assignment2.tool.beans.locallogic.LocalPermissionLogic;
+import org.sakaiproject.assignment2.tool.params.AssignmentListSortViewParams;
+import org.sakaiproject.assignment2.tool.params.AssignmentViewParams;
+import org.sakaiproject.assignment2.tool.params.SimpleAssignmentViewParams;
+import org.sakaiproject.assignment2.tool.params.StudentSubmissionParams;
+import org.sakaiproject.assignment2.tool.params.VerifiableViewParams;
+import org.sakaiproject.assignment2.tool.params.ViewSubmissionsViewParams;
 import org.sakaiproject.assignment2.tool.producers.AssignmentDetailProducer;
+import org.sakaiproject.assignment2.tool.producers.AssignmentProducer;
 import org.sakaiproject.assignment2.tool.producers.ListProducer;
 import org.sakaiproject.assignment2.tool.producers.AuthorizationFailedProducer;
+import org.sakaiproject.assignment2.tool.producers.PreviewAsStudentProducer;
 import org.sakaiproject.assignment2.tool.producers.RedirectToAssignmentProducer;
 import org.sakaiproject.assignment2.tool.producers.StudentAssignmentListProducer;
 import org.sakaiproject.assignment2.tool.producers.StudentSubmitProducer;
 import org.sakaiproject.assignment2.tool.producers.ViewSubmissionsProducer;
 
+import uk.org.ponder.rsf.flow.ARIResult;
+import uk.org.ponder.rsf.flow.ActionResultInterceptor;
 import uk.org.ponder.rsf.viewstate.AnyViewParameters;
 import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
 import uk.org.ponder.rsf.viewstate.ViewParameters;
@@ -44,7 +53,7 @@ import uk.org.ponder.rsf.viewstate.ViewParamsInterceptor;
  * @author sgithens
  *
  */
-public class Assignment2ViewParamsInterceptor implements ViewParamsInterceptor {
+public class Assignment2WorkFlowLogic implements ViewParamsInterceptor, ActionResultInterceptor {
 
     private LocalPermissionLogic localPermissionLogic;
     public void setLocalPermissionLogic(LocalPermissionLogic localPermissionLogic){
@@ -84,35 +93,74 @@ public class Assignment2ViewParamsInterceptor implements ViewParamsInterceptor {
             }
         }
 
-        //If current user has permission access to requested view
         if (localPermissionLogic.checkCurrentUserHasViewPermission(incoming)){
-
-            //now do specific interceptions for student submission pages
-            //Student always has same link, redirect here based on it being open or not
-            // TODO FIXME This is being merged into one view. Come back
-            // and remove this after it works.
-            //if (StudentSubmitProducer.VIEW_ID.equals(incoming.viewID) 
-            //        || StudentSubmitSummaryProducer.VIEW_ID.equals(incoming.viewID)) {
-
-                /*
-                 * This is responsible for going to different views depending on
-                 * if the Student can submit still.
-                 */
-            //    String trueDestinationViewID = localPermissionLogic.filterViewIdForStudentSubmission((SimpleAssignmentViewParams)incoming);
-             //   if (incoming.viewID.equals(trueDestinationViewID)) {
-             //       return incoming;
-             //   } else {
-             //       return new SimpleAssignmentViewParams(trueDestinationViewID, ((SimpleAssignmentViewParams)incoming).assignmentId);
-             //   }
-            //    */
-           // }
-
             return incoming;
-        } else if (localPermissionLogic.checkCurrentUserHasViewPermission(new AssignmentListSortViewParams(StudentAssignmentListProducer.VIEW_ID))) {
+        }
+        else if (localPermissionLogic.checkCurrentUserHasViewPermission(new AssignmentListSortViewParams(StudentAssignmentListProducer.VIEW_ID))) {
             return new AssignmentListSortViewParams(StudentAssignmentListProducer.VIEW_ID);
         }
 
         return new SimpleViewParameters(AuthorizationFailedProducer.VIEWID);
+    }
+
+    private void interceptWorkFlowResult(ARIResult result, ViewParameters incoming, WorkFlowResult actionReturn) {
+        Long assignmentId = null;
+        if (incoming instanceof StudentSubmissionParams) {
+            assignmentId = ((StudentSubmissionParams) incoming).assignmentId;
+        }
+        else if (incoming instanceof SimpleAssignmentViewParams) {
+            assignmentId = ((SimpleAssignmentViewParams) incoming).assignmentId;
+        }
+        else if (incoming instanceof AssignmentViewParams) {
+            assignmentId = ((AssignmentViewParams) incoming).assignmentId;
+        }
+        
+        switch (actionReturn) {
+        case INSTRUCTOR_CANCEL_ASSIGNMENT:
+            result.resultingView = new SimpleViewParameters(ListProducer.VIEW_ID);
+            result.propagateBeans = ARIResult.FLOW_END;
+            break;
+        case INSTRUCTOR_POST_ASSIGNMENT:
+            result.resultingView = new SimpleViewParameters(ListProducer.VIEW_ID);
+            result.propagateBeans = ARIResult.FLOW_END;
+            break;
+        case INSTRUCTOR_PREVIEW_ASSIGNMENT:
+            result.resultingView = new SimpleViewParameters(PreviewAsStudentProducer.VIEW_ID);
+            result.propagateBeans = ARIResult.FLOW_FASTSTART;
+            break;
+        case INSTRUCTOR_SAVE_DRAFT_ASSIGNMENT:
+            result.resultingView = new SimpleViewParameters(ListProducer.VIEW_ID);
+            result.propagateBeans = ARIResult.FLOW_END;
+            break;
+        case INSTRUCTOR_CONTINUE_EDITING_ASSIGNMENT:
+            result.resultingView = new SimpleViewParameters(AssignmentProducer.VIEW_ID);
+            result.propagateBeans = ARIResult.PROPAGATE;
+            break;
+        case STUDENT_CONTINUE_EDITING_SUBMISSION:
+            result.resultingView = new StudentSubmissionParams(StudentSubmitProducer.VIEW_ID, assignmentId, false);
+            result.propagateBeans = ARIResult.PROPAGATE;
+            break;
+        case STUDENT_PREVIEW_SUBMISSION:
+            result.resultingView = new StudentSubmissionParams(StudentSubmitProducer.VIEW_ID, assignmentId, true);
+            result.propagateBeans = ARIResult.FLOW_FASTSTART;
+            break;
+        case STUDENT_SAVE_DRAFT_SUBMISSION:
+            result.resultingView = new SimpleViewParameters(StudentAssignmentListProducer.VIEW_ID);
+            break;
+        case STUDENT_SUBMISSION_FAILURE:
+            break;
+        case STUDENT_SUBMIT_SUBMISSION:
+            result.resultingView = new SimpleViewParameters(StudentAssignmentListProducer.VIEW_ID);
+            break;
+        default:
+            break;
+        }
+    }
+    
+    public void interceptActionResult(ARIResult result, ViewParameters incoming, Object actionReturn) {
+        if (actionReturn instanceof WorkFlowResult) {
+            interceptWorkFlowResult(result, incoming, (WorkFlowResult) actionReturn);
+        }
     }
 
 }

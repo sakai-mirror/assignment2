@@ -22,6 +22,7 @@
 package org.sakaiproject.assignment2.logic.impl;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -33,6 +34,7 @@ import org.sakaiproject.assignment2.exception.GradebookItemNotFoundException;
 import org.sakaiproject.assignment2.exception.InvalidGradeForAssignmentException;
 import org.sakaiproject.assignment2.exception.NoGradebookDataExistsException;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
+import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.logic.GradeInformation;
 import org.sakaiproject.assignment2.logic.GradebookItem;
 import org.sakaiproject.assignment2.model.Assignment2;
@@ -47,6 +49,7 @@ import org.sakaiproject.service.gradebook.shared.GradebookFrameworkService;
 import org.sakaiproject.service.gradebook.shared.GradebookNotFoundException;
 import org.sakaiproject.service.gradebook.shared.GradebookService;
 import org.sakaiproject.service.gradebook.shared.InvalidGradeException;
+import org.sakaiproject.site.api.Group;
 
 
 /**
@@ -66,6 +69,11 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
     private GradebookService gradebookService;
     public void setGradebookService(GradebookService gradebookService) {
     	this.gradebookService = gradebookService;
+    }
+    
+    private ExternalLogic externalLogic;
+    public void setExternalLogic(ExternalLogic externalLogic) {
+        this.externalLogic = externalLogic;
     }
 
     public List<Assignment2> getViewableGradedAssignments(List<Assignment2> gradedAssignments, String contextId) {
@@ -197,12 +205,28 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
     	return gradebookItems;
     }
 
-    public Map<String, String> getViewableGroupIdToTitleMap(String contextId) {
+    public List<Group> getViewableGroupsInGradebook(String contextId) {
     	if (contextId == null) {
     		throw new IllegalArgumentException("Null contextId passed to getViewableGroupIdToTitleMap");
     	}
     	
-    	return gradebookService.getViewableSectionUuidToNameMap(contextId);
+        List<Group> viewableGroups = new ArrayList<Group>();
+        
+    	Collection<Group> allGroupsInSite = externalLogic.getSiteGroups(contextId);
+    	if (allGroupsInSite != null && !allGroupsInSite.isEmpty()) {
+    	    // let's identify the groups that the current user is allowed to
+    	    // view in the gradebook. this method returns the sectionUid (group reference)
+    	    Map<String,String> sectionUidToNameMap =  gradebookService.getViewableSectionUuidToNameMap(contextId);
+    	    if (sectionUidToNameMap != null && !sectionUidToNameMap.isEmpty()) {
+    	        for (Group siteGroup : allGroupsInSite) {
+    	            if (sectionUidToNameMap.containsKey(siteGroup.getReference())) {
+    	                viewableGroups.add(siteGroup);
+    	            }
+    	        }
+    	    }
+    	}
+    	
+    	return viewableGroups;
     }
 
     public Map<String, String> getViewableStudentsForGradedItemMap(String userId, String contextId, Long gradableObjectId) {
@@ -670,6 +694,26 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
 	                }
 	            }
 	        }
+	    }
+	}
+	
+	public void releaseOrRetractGrades(String contextId, Long gradebookItemId, boolean release) {
+	    if (gradebookItemId == null || contextId == null) {
+	        throw new IllegalArgumentException("Null gradebookItemId passed to releaseOrRetractGrades." +
+	        		"contextId: " + contextId + " gradebookItemId: " + gradebookItemId);
+	    }
+	    
+	    try {
+	        Assignment gbAssign = gradebookService.getAssignment(contextId, gradebookItemId);
+	        gbAssign.setReleased(release);
+	        if (!release) {
+	            gbAssign.setCounted(false);
+	        }
+	        gradebookService.updateAssignment(contextId, gbAssign.getName(), gbAssign);
+	        if (log.isDebugEnabled()) log.debug("Gradebook setting released updated to " + release);
+	    } catch (AssessmentNotFoundException anfe) {
+	        throw new GradebookItemNotFoundException(
+                    "No gradebook item exists with the given id " + gradebookItemId, anfe);
 	    }
 	}
 }

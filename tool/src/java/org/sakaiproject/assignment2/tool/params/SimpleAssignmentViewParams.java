@@ -57,10 +57,11 @@ public class SimpleAssignmentViewParams extends SimpleViewParameters implements 
 
     public Boolean verify()
     {
-        if (StudentSubmitProducer.VIEW_ID.equals(this.viewID) && this.assignmentId == null){
-            LOG.error("Null assignmentId in viewparamters while attempting to load StudentSubmitProducer");
-            return Boolean.FALSE;
-        }
+        // SWG TODO FIXME
+       // if (StudentSubmitProducer.VIEW_ID.equals(this.viewID) && this.assignmentId == null){
+       //     LOG.error("Null assignmentId in viewparamters while attempting to load StudentSubmitProducer");
+       //     return Boolean.FALSE;
+       // }
 
         return Boolean.TRUE;
     }

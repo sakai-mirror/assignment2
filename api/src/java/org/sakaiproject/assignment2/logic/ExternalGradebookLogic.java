@@ -30,6 +30,7 @@ import org.sakaiproject.assignment2.exception.InvalidGradeForAssignmentException
 import org.sakaiproject.assignment2.exception.NoGradebookDataExistsException;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
+import org.sakaiproject.site.api.Group;
 
 /**
  * This is the interface for logic which is related to the integration
@@ -78,13 +79,12 @@ public interface ExternalGradebookLogic {
 	public List<GradebookItem> getAllGradebookItems(String contextId);
 	
 	/**
-	 * returns a map of the group id to name for
-	 * all of the groups/sections that the current user is authorized to view
+	 * returns a list of all groups that the current user is authorized to view
 	 * according to the gradebook grader permissions
 	 * @param contextId
 	 * @return
 	 */
-	public Map<String, String> getViewableGroupIdToTitleMap(String contextId);
+	public List<Group> getViewableGroupsInGradebook(String contextId);
 	
 	/**
 	 * Using the grader permissions, returns a map of all of the student ids of 
@@ -333,4 +333,16 @@ public interface ExternalGradebookLogic {
      * grade a student in the list for the assoc gb item
 	 */
 	public void assignGradeToUngradedStudents(String contextId, Long gradableObjectId, List<String> studentIds, String grade);
+	
+	/**
+	 * Modify the gradebook item with the given gradebookItemId to release or
+	 * retract the grade information to students. Note: if the grades are retracted,
+	 * the grades are also changed to "not counted" in this gradebook item since 
+	 * grades cannot be counted but not released
+	 * @param contextId
+	 * @param gradebookItemId
+	 * @param release if true, will release grade info. if false, will retract grade info
+	 * @throw {@link GradebookItemNotFoundException} if no gradebook item exists with the given gradebookItemId
+	 */
+	public void releaseOrRetractGrades(String contextId, Long gradebookItemId, boolean release);
 }

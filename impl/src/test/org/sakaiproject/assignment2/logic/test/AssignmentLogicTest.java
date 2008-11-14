@@ -214,7 +214,7 @@ public class AssignmentLogicTest extends Assignment2TestBase {
 
 	public void testGetViewableAssignments() throws Exception {
 		// this method will return different results based upon the user
-		// and section memberships
+		// and group memberships
 		// TODO add scenario with grader permissions for TA
 
 		// let's make assignment3 and assignment4 graded
@@ -262,7 +262,7 @@ public class AssignmentLogicTest extends Assignment2TestBase {
 		}
 
 		// switch to student 1
-		// member of section 1
+		// member of group 1
 		externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT1_UID);
 		// should return assignment 1, 2, 3
 		assignList = assignmentLogic.getViewableAssignments();
@@ -280,7 +280,7 @@ public class AssignmentLogicTest extends Assignment2TestBase {
 		}
 
 		// switch to student 2
-		// member of section 3
+		// member of group 3
 		externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT2_UID);
 		// should return 1, 2, 3, 4
 		assignList = assignmentLogic.getViewableAssignments();
@@ -297,7 +297,7 @@ public class AssignmentLogicTest extends Assignment2TestBase {
 		}
 
 		// switch to student 3
-		// not a member of any sections
+		// not a member of any groups
 		externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT3_UID);
 		// should return 2 and 3
 		assignList = assignmentLogic.getViewableAssignments();

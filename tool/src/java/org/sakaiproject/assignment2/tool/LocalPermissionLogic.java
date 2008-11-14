@@ -19,7 +19,7 @@
  *
  **********************************************************************************/
 
-package org.sakaiproject.assignment2.tool.beans.locallogic;
+package org.sakaiproject.assignment2.tool;
 
 import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
@@ -83,6 +83,9 @@ public class LocalPermissionLogic {
         } else if (RemoveAssignmentConfirmProducer.VIEW_ID.equals(viewId)) {
             return permissionLogic.isCurrentUserAbleToEditAssignments(contextId);
         }
+        else if (PreviewAsStudentProducer.VIEW_ID.equals(viewId)) {
+            return permissionLogic.isCurrentUserAbleToEditAssignments(contextId);
+        }
         else if (AjaxResultsProducer.VIEW_ID.equals(viewId)) {
             return Boolean.TRUE;
 
@@ -142,18 +145,14 @@ public class LocalPermissionLogic {
 
         } else if (FragmentAssignment2SelectProducer.VIEW_ID.equals(viewId)) {
             return permissionLogic.isCurrentUserAbleToEditAssignments(contextId);
-
-        } else if (FragmentAssignmentPreviewProducer.VIEW_ID.equals(viewId)) {
-            return permissionLogic.isCurrentUserAbleToEditAssignments(contextId);
-
-        } else if (FragmentGradebookDetailsProducer.VIEW_ID.equals(viewId)) {
+        }
+        else if (FragmentGradebookDetailsProducer.VIEW_ID.equals(viewId)) {
             if (viewParams instanceof FragmentGradebookDetailsViewParams) {
                 FragmentGradebookDetailsViewParams params = (FragmentGradebookDetailsViewParams) viewParams;
                 return permissionLogic.isUserAbleToViewStudentSubmissionForAssignment(params.userId, params.assignmentId);
             }
 
             return Boolean.FALSE;
-
         } else if (FragmentSubmissionGradePreviewProducer.VIEW_ID.equals(viewId)) {
             //TODO - RYAN!  Remove this producer!
             return Boolean.FALSE;
@@ -201,26 +200,5 @@ public class LocalPermissionLogic {
         //else just say No
         return Boolean.FALSE;
     }
-
-    /**
-     * Returns the View ID that a student should go to for an assignment, depending
-     * on whether or not they can still turn in submissions for the assignment.
-     * 
-     * TODO FIXME This is being merged into one view.  Come back and remove this
-     * commented out code once it works.
-     * 
-     * @param incoming
-     * @return
-     */
-    /*
-    public String filterViewIdForStudentSubmission(SimpleAssignmentViewParams incoming) {
-        String userId = externalLogic.getCurrentUserId();
-        if(submissionLogic.submissionIsOpenForStudentForAssignment(userId, incoming.assignmentId)){
-            return StudentSubmitProducer.VIEW_ID;
-        } else {
-            return StudentSubmitSummaryProducer.VIEW_ID;
-        }
-    }
-    */
 
 }

@@ -1,4 +1,4 @@
-package org.sakaiproject.assignment2.tool.beans;
+package org.sakaiproject.assignment2.tool.commands;
 
 import java.util.List;
 
@@ -20,7 +20,7 @@ import uk.org.ponder.messageutil.TargettedMessageList;
  * @author sgithens
  *
  */
-public class GradeAllRemainingAction {
+public class GradeAllRemainingCommand {
     
     // Dependency
     private AssignmentPermissionLogic permissionLogic;

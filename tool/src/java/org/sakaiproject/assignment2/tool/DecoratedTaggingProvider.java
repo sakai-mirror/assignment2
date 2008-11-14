@@ -19,7 +19,7 @@
  *
  **********************************************************************************/
 
-package org.sakaiproject.assignment2.tool.beans.locallogic;
+package org.sakaiproject.assignment2.tool;
 
 import java.util.ArrayList;
 import java.util.List;

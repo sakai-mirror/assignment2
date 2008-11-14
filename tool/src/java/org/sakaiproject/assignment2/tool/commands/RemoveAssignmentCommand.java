@@ -1,4 +1,4 @@
-package org.sakaiproject.assignment2.tool.beans;
+package org.sakaiproject.assignment2.tool.commands;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -17,8 +17,8 @@ import uk.org.ponder.messageutil.TargettedMessageList;
  * @author sgithens
  *
  */
-public class RemoveAssignmentAction {
-    private static final Log LOG = LogFactory.getLog(RemoveAssignmentAction.class);
+public class RemoveAssignmentCommand {
+    private static final Log LOG = LogFactory.getLog(RemoveAssignmentCommand.class);
     
     // Dependency
     private TargettedMessageList messages;

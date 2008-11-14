@@ -206,7 +206,7 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
             if (statusConstant == AssignmentConstants.SUBMISSION_NOT_STARTED) {
                 UIOutput.make(form, "status", messageLocator.getMessage("assignment2.assignment_grade.status.not_started"));
             } else if (statusConstant == AssignmentConstants.SUBMISSION_IN_PROGRESS) {
-                UIOutput.make(form, "status", messageLocator.getMessage("assignment2.assignment_grade.status.draft", assignmentSubmissionVersion.getModifiedDate()));
+                UIOutput.make(form, "status", messageLocator.getMessage("assignment2.assignment_grade.status.draft", assignmentSubmissionVersion.getStudentSaveDate()));
             } else if (statusConstant == AssignmentConstants.SUBMISSION_SUBMITTED) {
                 UIOutput.make(form, "status", messageLocator.getMessage("assignment2.assignment_grade.status.submitted", df.format(assignmentSubmissionVersion.getSubmittedDate())));
             } else if (statusConstant == AssignmentConstants.SUBMISSION_LATE) {

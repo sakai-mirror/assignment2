@@ -35,9 +35,10 @@ import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
+import org.sakaiproject.assignment2.tool.LocalAssignmentLogic;
+import org.sakaiproject.assignment2.tool.StudentAction;
 import org.sakaiproject.assignment2.tool.beans.Assignment2Bean;
 import org.sakaiproject.assignment2.tool.beans.AssignmentSubmissionBean;
-import org.sakaiproject.assignment2.tool.beans.locallogic.LocalAssignmentLogic;
 import org.sakaiproject.assignment2.tool.params.AssignmentListSortViewParams;
 import org.sakaiproject.assignment2.tool.params.SimpleAssignmentViewParams;
 import org.sakaiproject.assignment2.tool.producers.renderers.PagerRenderer;
@@ -190,9 +191,9 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
                 UIMessage.make(row, "assignment-deleted", "assignment2.student-assignment-list.assignment-deleted");
             }
             
-            int availStudentAction = submissionBean.determineStudentAction(assignmentSubmission.getUserId(), assignment.getId());
+            StudentAction availStudentAction = submissionBean.determineStudentAction(assignmentSubmission.getUserId(), assignment.getId());
             
-            UIInternalLink.make(row, "assignment-action-link", UIMessage.make("assignment2.student-assignment-list.action." + availStudentAction),  
+            UIInternalLink.make(row, "assignment-action-link", UIMessage.make("assignment2.student-assignment-list.action." + availStudentAction.toString().toLowerCase()),  
                 new SimpleAssignmentViewParams(StudentSubmitProducer.VIEW_ID, assignment.getId()));
             
             // Due date

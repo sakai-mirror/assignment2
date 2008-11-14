@@ -15,7 +15,7 @@
 	-->
 
 	<bean id="LocalPermissionLogic"
-		class="org.sakaiproject.assignment2.tool.beans.locallogic.LocalPermissionLogic">
+		class="org.sakaiproject.assignment2.tool.LocalPermissionLogic">
 		<property name="permissionLogic"
 			ref="org.sakaiproject.assignment2.logic.AssignmentPermissionLogic" />
 		<property name="externalLogic"
@@ -25,7 +25,7 @@
 	</bean>
 
 	<bean id="localAssignmentLogic"
-		class="org.sakaiproject.assignment2.tool.beans.locallogic.LocalAssignmentLogic">
+		class="org.sakaiproject.assignment2.tool.LocalAssignmentLogic">
 	</bean>
 
 	<!-- Entity Providers -->
@@ -52,22 +52,27 @@
       <property name="basename" value="classpath:/bundle/messages" />
     </bean>
 
+
+	<bean id="Assignment2ViewParamsInterceptor"
+				class="org.sakaiproject.assignment2.tool.Assignment2WorkFlowLogic">
+		<property name="localPermissionLogic" ref="LocalPermissionLogic" />
+	</bean>
+
 	<!--  Handles incoming views to filter based on permissions  -->
 	<bean parent="viewParamsInterceptorParent">
-		<property name="value">
-			<bean id="Assignment2ViewParamsInterceptor"
-				class="org.sakaiproject.assignment2.tool.params.Assignment2ViewParamsInterceptor">
-				<property name="localPermissionLogic"
-					ref="LocalPermissionLogic" />
-			</bean>
-		</property>
+		<property name="value" ref="Assignment2ViewParamsInterceptor" />
 	</bean>
+	
+	<bean parent="actionResultInterceptorParent">
+    	<property name="value" ref="Assignment2ViewParamsInterceptor" />
+ 	</bean>
+	
 
 	<!-- Define the bean roots from the request scope file that are accessible 
 		via incoming request URL -->
 	<bean parent="requestAddressibleParent">
 		<property name="value"
-			value="RemoveAssignmentAction,GradeAllRemainingAction,MarkFeedbackAsReadAction,Assignment2,Assignment2Bean,AssignmentSubmission,AssignmentSubmissionBean,FilePickerBean,AssignmentSubmissionVersion,uploadBean,MarkTodoBean" />
+			value="RemoveAssignmentAction,GradeAllRemainingAction,MarkFeedbackAsReadAction,Assignment2,Assignment2Bean,AssignmentSubmission,AssignmentSubmissionBean,FilePickerBean,AssignmentSubmissionVersion,uploadBean,MarkTodoBean,ReleaseGradesAction" />
 	</bean>
 
 	<!-- Override the default style of user messages -->
@@ -75,7 +80,7 @@
 		parent="templateContributorParent">
 		<property name="baseDirectory" value="component-templates/" />
 		<property name="templateNames"
-			value="AsnnSubmissionRenderers,AsPager,SortHeader,AttachmentList,GradebookDetails,StudentViewAssignment,AttachmentEvolver,MarkupEditor" />
+			value="AsnnSubmissionRenderers,Pager,SortHeader,AttachmentList,GradebookDetails,StudentViewAssignment,AttachmentEvolver,MarkupEditor" />
 	</bean>
 
 	<!-- Override the default style of user messages -->
@@ -108,7 +113,7 @@
 	  <!-- The beans which will be preserved across a flow via simple instance
 			copying -->
 	<bean parent="copyPreservingParent">
-		<property name="value" value="AssignmentSubmissionVersion, AssignmentSubmissionBean"/>
+		<property name="value" value="Assignment2, Assignment2Bean, AssignmentSubmissionVersion, AssignmentSubmissionBean"/>
 	</bean>
 
 	<bean id="Assignment2Creator"

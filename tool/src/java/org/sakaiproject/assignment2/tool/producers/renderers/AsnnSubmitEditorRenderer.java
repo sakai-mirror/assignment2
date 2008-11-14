@@ -101,7 +101,7 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
         String asvOTP = "AssignmentSubmissionVersion.";
         String asvOTPKey = "";
         if (assignmentSubmission != null && assignmentSubmission.getCurrentSubmissionVersion() != null 
-                && assignmentSubmission.getCurrentSubmissionVersion().isDraft() == Boolean.TRUE) {
+                && assignmentSubmission.getCurrentSubmissionVersion().isDraft()) {
             asvOTPKey += assignmentSubmission.getCurrentSubmissionVersion().getId();
         } else {
             asvOTPKey += EntityBeanLocator.NEW_PREFIX + "1";
@@ -155,6 +155,8 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
         }
 
         //Attachment Stuff
+        // the editor will only display attachments for the current version if
+        // it is a draft. otherwise, the user is working on a new submission
         if (assignment.getSubmissionType() == AssignmentConstants.SUBMIT_ATTACH_ONLY ||
                 assignment.getSubmissionType() == AssignmentConstants.SUBMIT_INLINE_AND_ATTACH){
             UIOutput.make(form, "submit_attachments");
@@ -162,8 +164,14 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
 
             if (!preview) {
                 //Attachments
+                String[] attachmentRefs;
+                if (assignmentSubmission.getCurrentSubmissionVersion().isDraft()) {
+                    attachmentRefs = assignmentSubmission.getCurrentSubmissionVersion().getSubmittedAttachmentRefs();
+                } else {
+                    attachmentRefs = new String[] {};
+                }
                 UIInputMany attachmentInput = UIInputMany.make(form, "attachment_list:", asvOTP + ".submittedAttachmentRefs", 
-                        assignmentSubmission.getCurrentSubmissionVersion().getSubmittedAttachmentRefs());
+                        attachmentRefs);
                 attachmentInputEvolver.evolveAttachment(attachmentInput);
 
                 if (!studentPreviewSubmission) {
@@ -208,7 +216,7 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
             "AssignmentSubmissionBean.processActionSaveDraft");
             UICommand edit_button = UICommand.make(form, "back_to_edit_button", UIMessage.make("assignment2.student-submit.back_to_edit"),
             "AssignmentSubmissionBean.processActionBackToEdit");
-            edit_button.addParameter(new UIELBinding(asvOTP + ".submittedText", hackSubmissionText));
+            //edit_button.addParameter(new UIELBinding(asvOTP + ".submittedText", hackSubmissionText));
         } else {
             submit_button = UICommand.make(form, "submit_button", UIMessage.make("assignment2.student-submit.submit"), 
                 "AssignmentSubmissionBean.processActionSubmit");

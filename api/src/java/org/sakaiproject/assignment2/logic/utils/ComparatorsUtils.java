@@ -232,9 +232,9 @@ public class ComparatorsUtils {
 	}
 	
 	private static int sortByTitle(Assignment2 assign1, Assignment2 assign2) {
-		String title1 = assign1.getTitle() != null ? assign1.getTitle().toLowerCase() : "";
-		String title2 = assign2.getTitle() != null ? assign2.getTitle().toLowerCase() : "";
-		return title1.compareTo(title2);
+		String title1 = assign1.getTitle() != null ? assign1.getTitle() : "";
+		String title2 = assign2.getTitle() != null ? assign2.getTitle() : "";
+		return title1.compareToIgnoreCase(title2);
 	}
 	
 	private static int sortByName(AssignmentSubmission submission1, AssignmentSubmission submission2) {
@@ -255,7 +255,7 @@ public class ComparatorsUtils {
 			log.error("user with id " + submission2.getUserId() + " not defined");
 		}
 
-		return sortName1.compareTo(sortName2);
+		return sortName1.compareToIgnoreCase(sortName2);
 	}
 
 }

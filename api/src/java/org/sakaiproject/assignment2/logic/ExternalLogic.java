@@ -194,10 +194,10 @@ public interface ExternalLogic {
     
     /**
      * 
-     * @param sectionId
-     * @return a list of the student ids of students in the given section  
+     * @param groupId
+     * @return a list of the student ids of students in the Group with the given groupId  
      */
-    public List<String> getStudentsInSection(String sectionId);
+    public List<String> getStudentsInGroup(String groupId);
     
     /**
      * 

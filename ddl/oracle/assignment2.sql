@@ -90,6 +90,7 @@
         MODIFIED_DATE date,
         LAST_FEEDBACK_BY varchar2(99),
         LAST_FEEDBACK_DATE date,
+        STUDENT_SAVE_DATE date,
         FEEDBACK_LAST_VIEWED date,
         primary key (SUBMISSION_VERSION_ID),
         unique (SUBMISSION_ID, SUBMITTED_VERSION_NUMBER)

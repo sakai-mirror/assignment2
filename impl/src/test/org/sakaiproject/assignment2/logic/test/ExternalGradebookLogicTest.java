@@ -33,6 +33,7 @@ import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.assignment2.test.AssignmentTestDataLoad;
+import org.sakaiproject.site.api.Group;
 
 
 /**
@@ -202,10 +203,10 @@ public class ExternalGradebookLogicTest extends Assignment2TestBase {
     	} catch (SecurityException se) {}
     }
     
-    public void testGetViewableGroupIdToTitleMap() {
+    public void testGetViewableGroupsInGradebook() {
     	// try null
     	try {
-    		gradebookLogic.getViewableGroupIdToTitleMap(null);
+    		gradebookLogic.getViewableGroupsInGradebook(null);
     		fail("did not catch null contextId passed to getViewableGroupIdToTitleMap");
     	} catch (IllegalArgumentException iae) {}
     	
@@ -213,26 +214,34 @@ public class ExternalGradebookLogicTest extends Assignment2TestBase {
     	externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
     	
     	// try an invalid context
-    	Map<String, String> groupIdTitleMap = gradebookLogic.getViewableGroupIdToTitleMap(AssignmentTestDataLoad.BAD_CONTEXT);
-    	assertTrue(groupIdTitleMap.isEmpty());
+    	List<Group> viewableGroups = gradebookLogic.getViewableGroupsInGradebook(AssignmentTestDataLoad.BAD_CONTEXT);
+    	assertEquals(0, viewableGroups.size());
     	
-    	groupIdTitleMap = gradebookLogic.getViewableGroupIdToTitleMap(AssignmentTestDataLoad.CONTEXT_ID);
-    	assertEquals(3, groupIdTitleMap.size());
-    	assertEquals((String)groupIdTitleMap.get(AssignmentTestDataLoad.GROUP1_NAME), AssignmentTestDataLoad.GROUP1_NAME);
-    	assertEquals((String)groupIdTitleMap.get(AssignmentTestDataLoad.GROUP2_NAME), AssignmentTestDataLoad.GROUP2_NAME);
-    	assertEquals((String)groupIdTitleMap.get(AssignmentTestDataLoad.GROUP3_NAME), AssignmentTestDataLoad.GROUP3_NAME);
+    	viewableGroups = gradebookLogic.getViewableGroupsInGradebook(AssignmentTestDataLoad.CONTEXT_ID);
+    	assertEquals(3, viewableGroups.size());
+    	for (Group group : viewableGroups) {
+    	    if (!group.getId().equals(AssignmentTestDataLoad.GROUP1_NAME) &&
+    	            !group.getId().equals(AssignmentTestDataLoad.GROUP2_NAME) &&
+    	            !group.getId().equals(AssignmentTestDataLoad.GROUP3_NAME)) {
+    	        fail("Invalid group returned by getViewableGroupsInGradebook");
+    	    }
+    	}
     	
     	// try the ta
     	// TODO grader perms
     	externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
-    	groupIdTitleMap = gradebookLogic.getViewableGroupIdToTitleMap(AssignmentTestDataLoad.CONTEXT_ID);
-    	assertEquals(1, groupIdTitleMap.size());
-    	assertEquals((String)groupIdTitleMap.get(AssignmentTestDataLoad.GROUP1_NAME), AssignmentTestDataLoad.GROUP1_NAME);
+    	viewableGroups = gradebookLogic.getViewableGroupsInGradebook(AssignmentTestDataLoad.CONTEXT_ID);
+    	assertEquals(1, viewableGroups.size());
+    	for (Group group : viewableGroups) {
+            if (!group.getId().equals(AssignmentTestDataLoad.GROUP1_NAME)) {
+                fail("Invalid group returned by getViewableGroupsInGradebook");
+            }
+        }
     	
-    	// try the student - should not get any sections returned b/c can't grade
+    	// try the student - should not get any groups returned b/c can't grade
     	externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT1_UID);
-    	groupIdTitleMap = gradebookLogic.getViewableGroupIdToTitleMap(AssignmentTestDataLoad.CONTEXT_ID);
-    	assertEquals(0, groupIdTitleMap.size());
+    	viewableGroups = gradebookLogic.getViewableGroupsInGradebook(AssignmentTestDataLoad.CONTEXT_ID);
+    	assertEquals(0, viewableGroups.size());
     	
     }
     
@@ -270,7 +279,7 @@ public class ExternalGradebookLogicTest extends Assignment2TestBase {
     	assertEquals(AssignmentConstants.GRADE, studentFunctionMap.get(AssignmentTestDataLoad.STUDENT2_UID));
     	assertEquals(AssignmentConstants.GRADE, studentFunctionMap.get(AssignmentTestDataLoad.STUDENT3_UID));
     	
-    	// TA should only get students in his/her section
+    	// TA should only get students in his/her group
     	// TODO grader perms
     	studentFunctionMap = gradebookLogic.getViewableStudentsForGradedItemMap(AssignmentTestDataLoad.TA_UID, AssignmentTestDataLoad.CONTEXT_ID, AssignmentTestDataLoad.GB_ITEM1_ID);
     	assertEquals(1, studentFunctionMap.size());

@@ -191,9 +191,8 @@ public class ZipExportLogicImpl implements ZipExportLogic
 		                                    versionFolderNames.add(versionFolder);
 
 		                                    ZipEntry versionFolderEntry = new ZipEntry(
-		                                            versionFolder);
+		                                            versionFolder + Entity.SEPARATOR);
 		                                    out.putNextEntry(versionFolderEntry);
-		                                    out.flush();
 		                                    out.closeEntry();
 
 		                                    // inside this folder, we will put the submission info
@@ -201,9 +200,9 @@ public class ZipExportLogicImpl implements ZipExportLogic
 		                                    {
 		                                        // create the text file only when a text
 		                                        // exists
+		                                        String submittedTextFileName = bundle.getString("assignment2.assignment_grade_assignment.downloadall.filename_submitted_text") + ".txt";
 		                                        ZipEntry textEntry = new ZipEntry(versionFolder + Entity.SEPARATOR 
-		                                                + bundle.getString("assignment2.assignment_grade_assignment.downloadall.filename_submitted_text")
-		                                                + ".txt");
+		                                                + submittedTextFileName);
 		                                        out.putNextEntry(textEntry);
 		                                        byte[] text = version.getSubmittedText().getBytes();
 		                                        out.write(text);
