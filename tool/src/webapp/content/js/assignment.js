@@ -389,6 +389,7 @@ var asnn2 = asnn2 || {};
     };
     
     asnn2.studentSubmissionConfirm = function(buttonform) {
+    	alert("The iframe value is: " + iframeId);
         confirmDialog = jQuery('#submit-confirm-dialog');
         dialogOptions = {
             resizable: false,
