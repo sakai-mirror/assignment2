@@ -102,7 +102,7 @@ public class ZipExportLogicImpl implements ZipExportLogic
 		if (gradebookLogic.isCurrentUserAbleToGrade(assignment.getContextId()))
 		{
 			List<AssignmentSubmission> submissions = assignmentSubmissionLogic
-				.getViewableSubmissionsWithHistoryForAssignmentId(assignment.getId());
+				.getViewableSubmissionsWithHistoryForAssignmentId(assignment.getId(), null);
 			
 			zipSubmissions(assignment, submissions, outputStream, exceptionMessage);
 

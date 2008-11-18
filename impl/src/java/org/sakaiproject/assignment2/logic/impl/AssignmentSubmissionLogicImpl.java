@@ -476,8 +476,8 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		}
 	}
 	
-	public List<AssignmentSubmission> getViewableSubmissionsWithHistoryForAssignmentId(Long assignmentId) {
-		return getViewableSubmissions(assignmentId, true, null);
+	public List<AssignmentSubmission> getViewableSubmissionsWithHistoryForAssignmentId(Long assignmentId, String filterGroupId) {
+		return getViewableSubmissions(assignmentId, true, filterGroupId);
 	}
 	
 	public List<AssignmentSubmission> getViewableSubmissionsForAssignmentId(Long assignmentId, String filterGroupId) {
@@ -847,7 +847,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		return currVersionIsDraft;
 	}
 	
-	public void releaseAllFeedbackForAssignment(Long assignmentId) {
+	public void releaseOrRetractAllFeedback(Long assignmentId, boolean release) {
 		if (assignmentId == null) {
 			throw new IllegalArgumentException("null assignmentId passed to releaseAllFeedbackForAssignment");
 		}
@@ -883,9 +883,14 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 							for (AssignmentSubmissionVersion version : submission.getSubmissionHistorySet())
 							{
 								if (version != null) {
-									version.setFeedbackReleasedDate(now);
-									version.setModifiedBy(currUserId);
-									version.setModifiedDate(now);
+								    if (release) {
+								        version.setFeedbackReleasedDate(now);
+								    } else {
+								        version.setFeedbackReleasedDate(null);
+								    }
+								    
+                                    version.setModifiedBy(currUserId);
+                                    version.setModifiedDate(now);
 									
 									versionsToUpdate.add(version);
 								}
@@ -912,7 +917,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		}
 	}
 	
-	public void releaseAllFeedbackForSubmission(Long submissionId) {
+	public void releaseOrRetractAllFeedbackForSubmission(Long submissionId, boolean release) {
 		if (submissionId == null) {
 			throw new IllegalArgumentException("null submissionId passed to releaseAllFeedbackForSubmission");
 		}
@@ -939,7 +944,11 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			Set<AssignmentSubmissionVersion> updatedVersions = new HashSet<AssignmentSubmissionVersion>();
 			for (AssignmentSubmissionVersion version : subWithHistory.getSubmissionHistorySet()) {
 				if (version != null) {
-					version.setFeedbackReleasedDate(now);
+				    if (release) {
+				        version.setFeedbackReleasedDate(now);
+				    } else {
+				        version.setFeedbackReleasedDate(null);
+				    }
 					version.setModifiedBy(currUserId);
 					version.setModifiedDate(now);
 					updatedVersions.add(version);
@@ -958,7 +967,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		}
 	}
 	
-	public void releaseFeedbackForVersion(Long submissionVersionId) {
+	public void releaseOrRetractFeedbackForVersion(Long submissionVersionId, boolean release) {
 		if (submissionVersionId == null) {
 			throw new IllegalArgumentException("Null submissionVersionId passed to releaseFeedbackForVersion");
 		}
@@ -980,7 +989,12 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 					submission.getAssignment().getId() + "without authorization");
 		}
 		
-		version.setFeedbackReleasedDate(now);
+		if (release) {
+		    version.setFeedbackReleasedDate(now);
+		} else {
+		    version.setFeedbackReleasedDate(null);
+		}
+		
 		version.setModifiedBy(currUserId);
 		version.setModifiedDate(now);
 		
