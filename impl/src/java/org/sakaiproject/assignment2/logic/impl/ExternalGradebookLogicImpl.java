@@ -667,7 +667,7 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
 	    // no need to continue if they didn't pass a new grade
 	    if (grade != null && grade.trim().length() > 0) {
 	        // first, let's validate the grade
-	        if (!isGradeValid(gradableObjectId, grade)) {
+	        if (!isGradeValid(gradebookItemId, grade)) {
 	            throw new InvalidGradeForAssignmentException("Invalid grade passed to assignGradeToUngradedSubmissions: " + grade);
 	        }
 

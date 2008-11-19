@@ -290,7 +290,7 @@ public class UploadGradesLogicImpl implements UploadGradesLogic
     		// get the assignment so we know which gradebook item it is assoc with
     		Assignment2 assign = assnLogic.getAssignmentById(assignmentId);
     		Map<String, String> displayIdToGradeMap = getDisplayIdToGradeMapFromContent(parsedContent);
-    		 displayIdsAssocWithInvalidGrades = gradebookLogic.identifyStudentsWithInvalidGrades(assign.getGradableObjectId(), displayIdToGradeMap);
+    		 displayIdsAssocWithInvalidGrades = gradebookLogic.identifyStudentsWithInvalidGrades(assign.getGradebookItemId(), displayIdToGradeMap);
     	}
     	
     	return displayIdsAssocWithInvalidGrades;

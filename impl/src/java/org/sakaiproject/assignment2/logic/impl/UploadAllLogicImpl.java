@@ -244,7 +244,7 @@ public class UploadAllLogicImpl implements UploadAllLogic
 						if (w == null)
 							w = new UploadGradeWrapper();
 						String itemGrade = items[GRADE];
-						if (gradebookLogic.isGradeValid(assn.getGradableObjectId(), itemGrade))
+						if (gradebookLogic.isGradeValid(assn.getGradebookItemId(), itemGrade))
 							w.grade = itemGrade;
 						else
 						{
