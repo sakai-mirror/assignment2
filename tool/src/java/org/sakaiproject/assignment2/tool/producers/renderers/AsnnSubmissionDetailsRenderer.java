@@ -165,7 +165,12 @@ public class AsnnSubmissionDetailsRenderer implements BasicProducer {
          *   - Grade
          *   - Comments
          */
+        // Title
+        UIMessage.make(joint, "assignment-details-header", "assignment2.student-submit.details_title");
 
+        // Details Table
+        UIOutput.make(joint, "assignment-details-table");
+        
         // Graded?
         if (assignment.isGraded()) {
             UIMessage.make(joint, "is_graded", "assignment2.student-submit.yes_graded");

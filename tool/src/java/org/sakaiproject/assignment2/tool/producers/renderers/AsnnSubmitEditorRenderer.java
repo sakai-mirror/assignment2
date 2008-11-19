@@ -114,9 +114,14 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
         DecoratorList disabledDecoratorList = new DecoratorList(new UIFreeAttributeDecorator(disabledAttr));
         
         UIForm form = UIForm.make(joint, "form");
-        //Fill in with submission type specific instructions
-        UIOutput.make(form, "submission_instructions", messageLocator.getMessage("assignment2.student-submit.instructions." + assignment.getSubmissionType())); 
         
+        // Fill in with submission type specific instructions
+        // If this is a Student Preview, we dont' want these instruction headers
+        // per the design spec.
+        if (!studentPreviewSubmission) {
+            UIOutput.make(form, "submission_instructions", messageLocator.getMessage("assignment2.student-submit.instructions." + assignment.getSubmissionType())); 
+        }
+            
         if (assignment.isHonorPledge()) {
             UIVerbatim.make(form, "required", messageLocator.getMessage("assignment2.student-submit.required"));
         }
