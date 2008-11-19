@@ -96,6 +96,21 @@ public class AsnnSubmissionDetailsRenderer implements BasicProducer {
     }
 
     public void fillComponents(UIContainer parent, String clientID, AssignmentSubmission assignmentSubmission, boolean previewAsStudent) {
+        fillComponents(parent, clientID, assignmentSubmission, previewAsStudent, false);
+    }
+    
+    /**
+     * Renders the assignment details at the top of the Student Submission
+     * Page(s)
+     * 
+     * @param parent
+     * @param clientID
+     * @param assignmentSubmission
+     * @param previewAsStudent
+     * @param excludeDetails If this is true, we only render the Title/Name and
+     * due date, but leave off the table with Graded, Submission Status etc.
+     */
+    public void fillComponents(UIContainer parent, String clientID, AssignmentSubmission assignmentSubmission, boolean previewAsStudent, boolean excludeDetails) {
         Assignment2 assignment = assignmentSubmission.getAssignment();
         String title = assignment.getTitle();
 
@@ -124,6 +139,23 @@ public class AsnnSubmissionDetailsRenderer implements BasicProducer {
                     new Object[] {df.format(assignment.getDueDate())});
         }
 
+        if (!excludeDetails) {
+            renderAssignmentDetails(assignmentSubmission, previewAsStudent,
+                    assignment, joint);
+        }
+
+    }
+
+    /**
+     * @param assignmentSubmission
+     * @param previewAsStudent
+     * @param assignment
+     * @param joint
+     */
+    private void renderAssignmentDetails(
+            AssignmentSubmission assignmentSubmission,
+            boolean previewAsStudent, Assignment2 assignment,
+            UIJointContainer joint) {
         /***
          * Assignment Details including:
          *   - Graded?
@@ -225,7 +257,6 @@ public class AsnnSubmissionDetailsRenderer implements BasicProducer {
             }
             UIOutput.make(joint, "remaining-resubmissions", numAllowedDisplay);
         }
-
     }
 
     public void fillComponents(UIContainer parent, String clientID) {
