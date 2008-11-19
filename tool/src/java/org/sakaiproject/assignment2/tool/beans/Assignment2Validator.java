@@ -69,11 +69,11 @@ public class Assignment2Validator  {
             valid = false;
         }
 
-        //check for graded but no gradable object id
-        if (assignment.isGraded() && (assignment.getGradableObjectId() == null || 
-                assignment.getGradableObjectId().longValue() < 1)) {
+        //check for graded but no gradebookItemId
+        if (assignment.isGraded() && (assignment.getGradebookItemId() == null || 
+                assignment.getGradebookItemId().longValue() < 1)) {
             messages.addMessage(new TargettedMessage("assignment2.assignment_graded_no_gb_item", 
-                    new Object[] {}, "Assignment2."+ key + ".gradableObjectId"));
+                    new Object[] {}, "Assignment2."+ key + ".gradebookItemId"));
             valid = false;
         }
 

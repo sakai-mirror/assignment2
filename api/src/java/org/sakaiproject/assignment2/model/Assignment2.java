@@ -38,7 +38,7 @@ import org.sakaiproject.entity.api.Entity;
 public class Assignment2 {
 
     private Long id;
-    private Long gradableObjectId;
+    private Long gradebookItemId;
     private String contextId;
     private String title;
     private boolean draft;
@@ -93,18 +93,18 @@ public class Assignment2 {
     }
     
     /**
-     * @return Returns the id of the associated GradableObject in the Gradebook
+     * @return Returns the id of the associated gradebook item in the Gradebook
      */
-    public Long getGradableObjectId() {
-        return gradableObjectId;
+    public Long getGradebookItemId() {
+        return gradebookItemId;
     }
     
     /**
-     * set the GradableObject id
-     * @param gradableObjectId
+     * set the id of the associated gradebook item in the Gradebook
+     * @param gradebookItemId
      */
-    public void setGradableObjectId(Long gradableObjectId) {
-        this.gradableObjectId = gradableObjectId;
+    public void setGradebookItemId(Long gradebookItemId) {
+        this.gradebookItemId = gradebookItemId;
     }
     
     /**

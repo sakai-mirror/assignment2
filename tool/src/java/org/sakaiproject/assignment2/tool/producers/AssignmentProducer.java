@@ -299,7 +299,7 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
         // item
         GradebookItem currentSelected = null;
         for (GradebookItem gi : gradebook_items){
-            if (gi.getGradableObjectId().equals(assignment.getGradableObjectId())){
+            if (gi.getGradebookItemId().equals(assignment.getGradebookItemId())){
                 currentSelected = gi;
             }
         }
@@ -313,10 +313,10 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
         for (int i=1; i <= gradebook_items.size(); i++) {
             //Fill out select options
             gradebook_item_labels[i] = gradebook_items.get(i-1).getTitle();
-            gradebook_item_values[i] = gradebook_items.get(i-1).getGradableObjectId().toString();
+            gradebook_item_values[i] = gradebook_items.get(i-1).getGradebookItemId().toString();
 
             //store js hash of id => due_date string
-            js_gradebook_items_data += "," + gradebook_items.get(i-1).getGradableObjectId().toString();
+            js_gradebook_items_data += "," + gradebook_items.get(i-1).getGradebookItemId().toString();
             if(gradebook_items.get(i-1).getDueDate() != null){
                 js_gradebook_items_data += ":\"" + df.format(gradebook_items.get(i-1).getDueDate()) + "\"\n";
             }else{
@@ -324,7 +324,7 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
             }
         }
         js_gradebook_items_data += "}";
-        UISelect.make(form, "gradebook_item",gradebook_item_values, gradebook_item_labels, assignment2OTP + ".gradableObjectId"); 
+        UISelect.make(form, "gradebook_item",gradebook_item_values, gradebook_item_labels, assignment2OTP + ".gradebookItemId"); 
 
         //Radio Buttons for Grading
         String [] grading_values = new String[] {

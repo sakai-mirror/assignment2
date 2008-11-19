@@ -107,7 +107,7 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
     	    if (!assignment.isGraded()) {
     	        viewable = isUserAbleToViewSubmissionForUngradedAssignment(studentId, assignment);
     	    } else {
-    	        Long gbItemId = assignment.getGradableObjectId();
+    	        Long gbItemId = assignment.getGradebookItemId();
     	        if (gbItemId != null) {
     	            String function = gradebookLogic.getGradeViewPermissionForCurrentUserForStudentForItem(assignment.getContextId(), 
     	                    studentId, gbItemId);
@@ -133,9 +133,9 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
     		if (!assignment.isGraded()) {
     			allowed = isUserAbleToViewSubmissionForUngradedAssignment(studentId, assignment);
     		} else {
-    			if (assignment.getGradableObjectId() != null) {
+    			if (assignment.getGradebookItemId() != null) {
     				allowed = gradebookLogic.isCurrentUserAbleToGradeStudentForItem(externalLogic.getCurrentContextId(), 
-    						studentId, assignment.getGradableObjectId());
+    						studentId, assignment.getGradebookItemId());
     			}
     		}
     	}
@@ -223,7 +223,7 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
     	if (!userIsStudent) {
     	    // if the user is not a student, then we just check to see if the
     	    // current user has access to the associated gb item
-    	    viewable = gradebookLogic.isCurrentUserAbleToViewGradebookItem(assignment.getContextId(), assignment.getGradableObjectId());
+    	    viewable = gradebookLogic.isCurrentUserAbleToViewGradebookItem(assignment.getContextId(), assignment.getGradebookItemId());
     	} else {
     	    // students may only view open assignments
     	    // students are allowed to view graded assignments regardless of
@@ -382,9 +382,9 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
 		        } else {
 		            // we need to get the students that are viewable in the gb
 		            List<String> viewableInGb = new ArrayList<String>();
-		            if (assignment.getGradableObjectId() != null) {
+		            if (assignment.getGradebookItemId() != null) {
 		                Map<String, String> studentIdFunctionMap = 
-		                    gradebookLogic.getViewableStudentsForGradedItemMap(userId, contextId, assignment.getGradableObjectId());
+		                    gradebookLogic.getViewableStudentsForGradedItemMap(userId, contextId, assignment.getGradebookItemId());
 		                if (studentIdFunctionMap != null) {
 		                    if (gradeOrView.equals(AssignmentConstants.VIEW)) {
 		                        viewableInGb.addAll(studentIdFunctionMap.keySet());

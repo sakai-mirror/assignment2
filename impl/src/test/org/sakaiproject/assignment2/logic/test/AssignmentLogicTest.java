@@ -125,16 +125,16 @@ public class AssignmentLogicTest extends Assignment2TestBase {
 		String newTitle = "New assignment";
 		newAssign.setTitle(newTitle);
 
-		// now set this item to graded but don't populate gradableObjectId
+		// now set this item to graded but don't populate gradebookItemId
 		newAssign.setGraded(true);
 
 		try {
 			assignmentLogic.saveAssignment(newAssign);
-			fail("Did not catch null gradableObjectId for graded assignment");
+			fail("Did not catch null gradebookItemId for graded assignment");
 		} catch(NoGradebookItemForGradedAssignmentException ge) {}
 
-		// set the gradableObjectId
-		newAssign.setGradableObjectId(AssignmentTestDataLoad.GB_ITEM1_ID);
+		// set the gradebookItemId
+		newAssign.setGradebookItemId(AssignmentTestDataLoad.GB_ITEM1_ID);
 
 		assignmentLogic.saveAssignment(newAssign);
 
@@ -219,11 +219,11 @@ public class AssignmentLogicTest extends Assignment2TestBase {
 
 		// let's make assignment3 and assignment4 graded
 		testData.a3.setGraded(true);
-		testData.a3.setGradableObjectId(AssignmentTestDataLoad.GB_ITEM1_ID);
+		testData.a3.setGradebookItemId(AssignmentTestDataLoad.GB_ITEM1_ID);
 		dao.save(testData.a3);
 
 		testData.a4.setGraded(true);
-		testData.a4.setGradableObjectId(AssignmentTestDataLoad.GB_ITEM2_ID);
+		testData.a4.setGradebookItemId(AssignmentTestDataLoad.GB_ITEM2_ID);
 		dao.save(testData.a4);
 
 		// assign1 is restricted to group 1 and 3

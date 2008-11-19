@@ -58,7 +58,7 @@ public interface AssignmentLogic {
 	 * @throws SecurityException -
 	 * user must have "edit" permission to add or update an assignment
 	 * @throws NoGradebookItemForGradedAssignmentException - if the
-	 * assignment is marked as graded but there is no gradableObjectId
+	 * assignment is marked as graded but there is no gradebookItemId
 	 */
 	public void saveAssignment(Assignment2 assignment);
 	
@@ -71,7 +71,7 @@ public interface AssignmentLogic {
 	 * @throws SecurityException -
 	 * user must have "edit" permission to add or update an assignment
 	 * @throws NoGradebookItemForGradedAssignmentException - if the
-	 * assignment is marked as graded but there is no gradableObjectId
+	 * assignment is marked as graded but there is no gradebookItemId
 	 */
 	public void saveAssignment(Assignment2 assignment, String contextId);
 	

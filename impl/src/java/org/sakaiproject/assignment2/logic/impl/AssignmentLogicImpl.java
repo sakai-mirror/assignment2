@@ -184,9 +184,9 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 		
 		String currentUserId = externalLogic.getCurrentUserId();
 		
-		if (assignment.isGraded() && assignment.getGradableObjectId() == null) {
+		if (assignment.isGraded() && assignment.getGradebookItemId() == null) {
 			throw new NoGradebookItemForGradedAssignmentException("The assignment to save " + 
-					"was defined as graded but it had a null gradableObjectId");
+					"was defined as graded but it had a null getGradebookItemId");
 		}
 		
 		if (!permissionLogic.isCurrentUserAbleToEditAssignments(contextId)) {

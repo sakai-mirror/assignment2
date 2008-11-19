@@ -74,7 +74,7 @@ public class Assignment2Creator {
 
         String newTitle = messageLocator.getMessage("Assignment2Creator.duplicate.title", assignment.getTitle());
 
-        dup.setGradableObjectId(assignment.getGradableObjectId());
+        dup.setGradebookItemId(assignment.getGradebookItemId());
         dup.setContextId(assignment.getContextId());
         dup.setTitle(newTitle);
         dup.setDraft(true);

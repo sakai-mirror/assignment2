@@ -241,7 +241,7 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
                 String grade = externalGradebookLogic.getStudentGradeForItem(
                         assignment.getContextId(), 
                         assignmentSubmission.getUserId(), 
-                        assignment.getGradableObjectId());
+                        assignment.getGradebookItemId());
                 
                 if (grade == null) {
                     UIMessage.make(row, "grade", "assignment2.student-assignment-list.no-grade-yet").decorate(assnItemDecorator);

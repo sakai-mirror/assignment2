@@ -268,6 +268,10 @@
    <bean id="ReleaseGradesAction"  class="org.sakaiproject.assignment2.tool.commands.ReleaseGradesCommand">
        <property name="gradebookLogic" ref="org.sakaiproject.assignment2.logic.ExternalGradebookLogic" />
    </bean>
+   
+   <bean id="ReleaseFeedbackAction"  class="org.sakaiproject.assignment2.tool.commands.ReleaseFeedbackCommand">
+       <property name="assignmentSubmissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
+   </bean>
     
    <!--  Beans -->
    <bean id="Assignment2Bean" class="org.sakaiproject.assignment2.tool.beans.Assignment2Bean">

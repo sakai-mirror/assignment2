@@ -605,7 +605,7 @@ public class AssignmentDaoImpl extends HibernateGeneralGenericDao implements Ass
 		    	
 				List<String> studentsWithSubmission = new ArrayList<String>();
 		    	if (studentIdList != null && !studentIdList.isEmpty()) {
-		    		Query query = session.getNamedQuery("countNumStudentsWithASubmission");	
+		    		Query query = session.getNamedQuery("findStudentsWithASubmission");	
 		        	query.setParameter("assignment", assignment);
 		        	
 		        	studentsWithSubmission = queryWithParameterList(query, "studentIdList", new ArrayList<String>(studentIdList));

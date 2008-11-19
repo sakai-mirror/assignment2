@@ -159,9 +159,9 @@ public class AssignmentTestDataLoad {
 		a1 = createGenericAssignment2Object(ASSIGN1_TITLE, 0, false);
 		a2 = createGenericAssignment2Object(ASSIGN2_TITLE, 1, false);
 		a3 = createGenericAssignment2Object(ASSIGN3_TITLE, 2, true);
-		a3.setGradableObjectId(GB_ITEM1_ID);
+		a3.setGradebookItemId(GB_ITEM1_ID);
 		a4 = createGenericAssignment2Object(ASSIGN4_TITLE, 3, true);
-		a4.setGradableObjectId(GB_ITEM2_ID);
+		a4.setGradebookItemId(GB_ITEM2_ID);
 		
 		a1Id = a1.getId();
 		a2Id = a2.getId();

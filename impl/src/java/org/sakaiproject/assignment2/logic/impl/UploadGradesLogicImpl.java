@@ -91,7 +91,7 @@ public class UploadGradesLogicImpl implements UploadGradesLogic
 			throw new AssignmentNotFoundException("No assignment exists with id: " + assignmentId);
 		}
 
-		if (!assign.isGraded() || assign.getGradableObjectId() == null) {
+		if (!assign.isGraded() || assign.getGradebookItemId() == null) {
 			throw new IllegalArgumentException("You may only upload grades for an assignment " +
 			"that is associated with a gradebook item.");
 		}
@@ -103,7 +103,7 @@ public class UploadGradesLogicImpl implements UploadGradesLogic
 		String currUserId = externalLogic.getCurrentUserId();
 		
 		// parse the content into GradeInformation records
-		List<GradeInformation> gradeInfoToUpdate = retrieveGradeInfoFromContent(displayIdUserIdMap, assign.getGradableObjectId(), parsedContent);
+		List<GradeInformation> gradeInfoToUpdate = retrieveGradeInfoFromContent(displayIdUserIdMap, assign.getGradebookItemId(), parsedContent);
 		
 		// let's remove any students the user is not authorized to grade from the
 		// list we send the gradebook. this will avoid a SecurityException.
@@ -122,7 +122,7 @@ public class UploadGradesLogicImpl implements UploadGradesLogic
 		
 		// update the grades
 		try {
-			gradebookLogic.saveGradesAndComments(assign.getContextId(), assign.getGradableObjectId(), filteredGradeInfoList);
+			gradebookLogic.saveGradesAndComments(assign.getContextId(), assign.getGradebookItemId(), filteredGradeInfoList);
 		} catch (InvalidGradeForAssignmentException igfae) {
 			throw new InvalidGradeForAssignmentException(igfae.getMessage(), igfae);
 		}
@@ -130,9 +130,9 @@ public class UploadGradesLogicImpl implements UploadGradesLogic
 		return studentsIgnored;
 	}
 	
-	private List<GradeInformation> retrieveGradeInfoFromContent(Map<String, String> displayIdUserIdMap, Long gradableObjectId, List<List<String>> parsedContent) {
-		if (gradableObjectId == null) {
-			throw new IllegalArgumentException("Null gradableObjectId passed to retrieveGradeInfoFromContent");
+	private List<GradeInformation> retrieveGradeInfoFromContent(Map<String, String> displayIdUserIdMap, Long gradebookItemId, List<List<String>> parsedContent) {
+		if (gradebookItemId == null) {
+			throw new IllegalArgumentException("Null gradebookItemId passed to retrieveGradeInfoFromContent");
 		}
 		
 		List<GradeInformation> gradeInfoList = new ArrayList<GradeInformation>();
@@ -176,7 +176,7 @@ public class UploadGradesLogicImpl implements UploadGradesLogic
 						String userId = displayIdUserIdMap.get(displayId);
 						GradeInformation gradeInfo = new GradeInformation();
 						gradeInfo.setStudentId(userId);
-						gradeInfo.setGradableObjectId(gradableObjectId);
+						gradeInfo.setGradebookItemId(gradebookItemId);
 						gradeInfo.setGradebookGrade(grade);
 						gradeInfo.setGradebookComment(comments);
 	

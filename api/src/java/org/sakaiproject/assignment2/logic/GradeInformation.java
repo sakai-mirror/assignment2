@@ -30,7 +30,7 @@ package org.sakaiproject.assignment2.logic;
 public class GradeInformation {
 
 	// fields populated with gradebook data
-	private Long gradableObjectId;
+	private Long gradebookItemId;
 	private String studentId;
 	private String gradebookGrade;
 	private String gradebookComment;
@@ -44,18 +44,18 @@ public class GradeInformation {
 	 * 
 	 * @return the id of the assignment's associated gradebook item
 	 */
-    public Long getGradableObjectId()
+    public Long getGradebookItemId()
 	{
-		return gradableObjectId;
+		return gradebookItemId;
 	}
 
     /**
      * the id of the assignment's associated gradebook item
-     * @param gradableObjectId
+     * @param gradebookItemId
      */
-	public void setGradableObjectId(Long gradableObjectId)
+	public void setGradebookItemId(Long gradebookItemId)
 	{
-		this.gradableObjectId = gradableObjectId;
+		this.gradebookItemId = gradebookItemId;
 	}
 
 	/**

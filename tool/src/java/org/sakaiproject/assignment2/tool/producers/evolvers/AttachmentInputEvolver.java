@@ -17,6 +17,15 @@ import uk.org.ponder.rsf.components.decorators.UIStyleDecorator;
 import uk.org.ponder.rsf.uitype.UITypes;
 
 
+/**
+ * This evolver renders the list of attachments on the Student Submission Editor
+ * and previewer.  This includes teh name of the attachment, it's size, and an
+ * optional remove link.
+ * 
+ * @author rjlowe
+ * @author sgithens
+ *
+ */
 public class AttachmentInputEvolver {
 
     public static final String COMPONENT_ID = "attachment-list:";
@@ -37,7 +46,25 @@ public class AttachmentInputEvolver {
         this.rbg = rbg;
     }
     
+    /**
+     * Renders the attachments.  There will be an option to remove them.
+     * 
+     * @param toevolve
+     * @return
+     */
     public UIJointContainer evolveAttachment(UIInputMany toevolve) {
+        return evolveAttachment(toevolve, true);
+    }
+    
+    /**
+     * Renders the list of Attachments.  If removable is true, then a link for
+     * removing the attachment is rendered as well.
+     * 
+     * @param toevolve
+     * @param removable
+     * @return
+     */
+    public UIJointContainer evolveAttachment(UIInputMany toevolve, boolean removable) {
         UIJointContainer togo = new UIJointContainer(toevolve.parent, toevolve.ID, COMPONENT_ID);
         toevolve.parent.remove(toevolve);
 
@@ -70,13 +97,15 @@ public class AttachmentInputEvolver {
                 UIBasicListMember.makeBasic(row, "attachment_item", toevolve.getFullID(), i);
                 
                 //Add remove link
-                UIVerbatim.make(row, "attachment_remove", 
-                        "<a href=\"#\" " +
-                        "onclick=\"" +
-                        "removeAttachment(this);updateDisplayNoAttachments();" +
-                        "\">" +
-                        messageLocator.getMessage("assignment2.remove") +
-                "</a>");
+                if (removable) {
+                    UIVerbatim.make(row, "attachment_remove", 
+                            "<a href=\"#\" " +
+                            "onclick=\"" +
+                            "removeAttachment(this);updateDisplayNoAttachments();" +
+                            "\">" +
+                            messageLocator.getMessage("assignment2.remove") +
+                    "</a>");
+                }
             }
 
         }

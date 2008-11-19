@@ -154,6 +154,8 @@ public interface AssignmentSubmissionLogic {
 	/**
 	 * 
 	 * @param assignmentId
+	 * @param filterGroupId optional - if not null and not the empty string, will 
+     * filter the returned viewable student list to only include viewable students in the given group
 	 * @return Non-null list.  All AssignmentSubmissions for this assignmentId that the current
 	 * user is allowed to view or grade with the currentVersion information and version history populated. If
 	 * no submission exists yet, returns an empty AssigmentSubmission rec for the
@@ -164,7 +166,7 @@ public interface AssignmentSubmissionLogic {
 	 * @throws SecurityException if not allowed to provide feedback for the given assignment
 	 * @throws AssignmentNotFoundException if no assignment exists with the given assignmentId
 	 */
-	public List<AssignmentSubmission> getViewableSubmissionsWithHistoryForAssignmentId(Long assignmentId);
+	public List<AssignmentSubmission> getViewableSubmissionsWithHistoryForAssignmentId(Long assignmentId, String filterGroupId);
 	
 	/**
 	 * @param assignments - list of assignments that you want this student's status for
@@ -216,33 +218,39 @@ public interface AssignmentSubmissionLogic {
 	public boolean isMostRecentVersionDraft(AssignmentSubmission submission);
 	
 	/**
-	 * set the version to "released" for all of the submissions that the current 
+	 * set the version's "released" status for all of the submissions that the current 
 	 * user is able to submit feedback for. if the user is only authorized for
 	 * a subset of the students for this assignment, the unauthorized students
-	 * will not be affected
+	 * will not be affected. only affects non-draft versions
 	 * @param assignmentId
+	 * @param release true if you want to release all feedback for this assignment.
+	 * false if you want to retract all feedback
 	 * @throws SecurityException if user is not allowed to submit feedback
 	 * @throws AssignmentNotFoundException if no assignment with the given assignmentId
 	 */
-	public void releaseAllFeedbackForAssignment(Long assignmentId);
+	public void releaseOrRetractAllFeedback(Long assignmentId, boolean release);
 	
 	/**
 	 * set all of the non-draft versions for this submission to "released"
 	 * @param submissionId
+	 * @param release true if you want to release all feedback for this submission.
+     * false if you want to retract all feedback
 	 * @throws SecurityException if the current user is not authorized to 
 	 * submit feedback for the given submission
 	 * @throws SubmissionNotFoundException if no AssignmentSubmission with the given submissionId
 	 */
-	public void releaseAllFeedbackForSubmission(Long submissionId);
+	public void releaseOrRetractAllFeedbackForSubmission(Long submissionId, boolean release);
 	
 	/**
 	 * release the feedback for the given submission version to the submitter
 	 * @param submissionVersionId
+	 * @param release true if you want to release the feedback for this version.
+     * false if you want to retract the feedback
 	 * @throws SecurityException if the current user is not authorized to 
 	 * submit feedback for the given submission
 	 * @throws VersionNotFoundException if no version exists with the given submissionVersionId
 	 */
-	public void releaseFeedbackForVersion(Long submissionVersionId);
+	public void releaseOrRetractFeedbackForVersion(Long submissionVersionId, boolean release);
 
 	/**
 	 * 

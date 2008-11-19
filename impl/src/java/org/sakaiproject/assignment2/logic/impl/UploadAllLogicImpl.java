@@ -170,7 +170,7 @@ public class UploadAllLogicImpl implements UploadAllLogic
 				if (options.gradeFile || ! isZip)
 				{
 					gradebookLogic.saveGradeAndCommentForStudent(assn.getContextId(), assn
-						.getGradableObjectId(), userEid, w.grade, w.comment);
+						.getGradebookItemId(), userEid, w.grade, w.comment);
 				}
 			}
 			catch (ParseException pe)

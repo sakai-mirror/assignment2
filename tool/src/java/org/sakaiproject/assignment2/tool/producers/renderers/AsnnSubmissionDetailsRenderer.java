@@ -96,6 +96,21 @@ public class AsnnSubmissionDetailsRenderer implements BasicProducer {
     }
 
     public void fillComponents(UIContainer parent, String clientID, AssignmentSubmission assignmentSubmission, boolean previewAsStudent) {
+        fillComponents(parent, clientID, assignmentSubmission, previewAsStudent, false);
+    }
+    
+    /**
+     * Renders the assignment details at the top of the Student Submission
+     * Page(s)
+     * 
+     * @param parent
+     * @param clientID
+     * @param assignmentSubmission
+     * @param previewAsStudent
+     * @param excludeDetails If this is true, we only render the Title/Name and
+     * due date, but leave off the table with Graded, Submission Status etc.
+     */
+    public void fillComponents(UIContainer parent, String clientID, AssignmentSubmission assignmentSubmission, boolean previewAsStudent, boolean excludeDetails) {
         Assignment2 assignment = assignmentSubmission.getAssignment();
         String title = assignment.getTitle();
 
@@ -124,6 +139,23 @@ public class AsnnSubmissionDetailsRenderer implements BasicProducer {
                     new Object[] {df.format(assignment.getDueDate())});
         }
 
+        if (!excludeDetails) {
+            renderAssignmentDetails(assignmentSubmission, previewAsStudent,
+                    assignment, joint);
+        }
+
+    }
+
+    /**
+     * @param assignmentSubmission
+     * @param previewAsStudent
+     * @param assignment
+     * @param joint
+     */
+    private void renderAssignmentDetails(
+            AssignmentSubmission assignmentSubmission,
+            boolean previewAsStudent, Assignment2 assignment,
+            UIJointContainer joint) {
         /***
          * Assignment Details including:
          *   - Graded?
@@ -133,7 +165,12 @@ public class AsnnSubmissionDetailsRenderer implements BasicProducer {
          *   - Grade
          *   - Comments
          */
+        // Title
+        UIMessage.make(joint, "assignment-details-header", "assignment2.student-submit.details_title");
 
+        // Details Table
+        UIOutput.make(joint, "assignment-details-table");
+        
         // Graded?
         if (assignment.isGraded()) {
             UIMessage.make(joint, "is_graded", "assignment2.student-submit.yes_graded");
@@ -154,24 +191,24 @@ public class AsnnSubmissionDetailsRenderer implements BasicProducer {
          *  the best way to integrate this with the gradebook a reasonable
          *  amount of coupling.
          */
-        if (assignment.isGraded() && assignment.getGradableObjectId() != null) {
+        if (assignment.isGraded() && assignment.getGradebookItemId() != null) {
             try {
                 GradebookItem gradebookItem = 
                     externalGradebookLogic.getGradebookItemById(curContext, 
-                            assignment.getGradableObjectId());
+                            assignment.getGradebookItemId());
                 UIOutput.make(joint, "points-possible-row");
                 UIOutput.make(joint, "points-possible", gradebookItem.getPointsPossible().toString());      
 
                 // Render the graded information if it's available.
                 String grade = externalGradebookLogic.getStudentGradeForItem(
-                        curContext, currentUser.getId(), assignment.getGradableObjectId());
+                        curContext, currentUser.getId(), assignment.getGradebookItemId());
                 if (grade != null) {
                     UIOutput.make(joint, "grade-row");
                     UIOutput.make(joint, "grade", grade);
                 }
 
                 String comment = externalGradebookLogic.getStudentGradeCommentForItem(
-                        curContext, currentUser.getId(), assignment.getGradableObjectId());
+                        curContext, currentUser.getId(), assignment.getGradebookItemId());
 
                 if (comment != null) {
                     UIOutput.make(joint, "comment-row");
@@ -181,7 +218,7 @@ public class AsnnSubmissionDetailsRenderer implements BasicProducer {
             } catch (IllegalArgumentException iae) {
                 log.warn("Trying to look up grade object that doesn't exist" 
                         + "context: " + curContext 
-                        + " gradeObjectId: " + assignment.getGradableObjectId() 
+                        + " gradeObjectId: " + assignment.getGradebookItemId() 
                         + "asnnId: " + assignment.getId());
             }
         }
@@ -225,7 +262,6 @@ public class AsnnSubmissionDetailsRenderer implements BasicProducer {
             }
             UIOutput.make(joint, "remaining-resubmissions", numAllowedDisplay);
         }
-
     }
 
     public void fillComponents(UIContainer parent, String clientID) {
