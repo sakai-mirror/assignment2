@@ -389,7 +389,6 @@ var asnn2 = asnn2 || {};
     };
     
     asnn2.studentSubmissionConfirm = function(buttonform) {
-    	alert("The iframe value is: " + iframeId);
     	jQuery("body", parent.document).append("<div id='portalMask' style='width:100%;height:100%'></div>");
     	jQuery("#" + iframeId, parent.document).css("z-index", "9001").css("position", "relative").css("background", "#fff");
         confirmDialog = jQuery('#submit-confirm-dialog');
