@@ -186,13 +186,6 @@ public class AssignmentSubmissionBean {
     /*
      * INSTRUCTOR FUNCTIONS
      */
-    public String processActionReleaseAllFeedbackForAssignment() {
-        if (this.assignmentId != null) {
-            submissionLogic.releaseAllFeedbackForAssignment(assignmentId);
-        }
-
-        return RELEASE_ALL;
-    }
 
     public String processActionSaveAndReleaseAllFeedbackForSubmission(){
         this.releaseFeedback = true;
@@ -208,7 +201,7 @@ public class AssignmentSubmissionBean {
                 subId = sub.getId();
             }
 
-            submissionLogic.releaseAllFeedbackForSubmission(subId);
+            submissionLogic.releaseOrRetractAllFeedbackForSubmission(subId, true);
         }
 
         return SUBMIT;

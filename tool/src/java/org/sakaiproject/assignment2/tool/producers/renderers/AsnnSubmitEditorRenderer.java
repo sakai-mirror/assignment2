@@ -114,30 +114,35 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
         DecoratorList disabledDecoratorList = new DecoratorList(new UIFreeAttributeDecorator(disabledAttr));
         
         UIForm form = UIForm.make(joint, "form");
-        //Fill in with submission type specific instructions
-        UIOutput.make(form, "submission_instructions", messageLocator.getMessage("assignment2.student-submit.instructions." + assignment.getSubmissionType())); 
         
+        // Fill in with submission type specific instructions
+        // If this is a Student Preview, we dont' want these instruction headers
+        // per the design spec.
+        if (!studentPreviewSubmission) {
+            UIOutput.make(form, "submission_instructions", messageLocator.getMessage("assignment2.student-submit.instructions." + assignment.getSubmissionType())); 
+        }
+            
         if (assignment.isHonorPledge()) {
             UIVerbatim.make(form, "required", messageLocator.getMessage("assignment2.student-submit.required"));
         }
         
+        // Student PReview Version 
+        AssignmentSubmissionVersion studentSubmissionPreviewVersion = null;
+        if (studentPreviewSubmission) {
+            for (Object versionObj: asnnSubmissionVersionLocator.getDeliveredBeans().values()) {
+                studentSubmissionPreviewVersion = (AssignmentSubmissionVersion) versionObj;
+            }
+        }
+        
         //Rich Text Input
-        String hackSubmissionText = "";
         if (assignment.getSubmissionType() == AssignmentConstants.SUBMIT_INLINE_ONLY || 
                 assignment.getSubmissionType() == AssignmentConstants.SUBMIT_INLINE_AND_ATTACH){
 
             UIOutput.make(form, "submit_text");
             
             if (studentPreviewSubmission) {
-                // TODO FIXME Make this a UIVerbatim
-            	for (Object versionObj: asnnSubmissionVersionLocator.getDeliveredBeans().values()) {
-            		AssignmentSubmissionVersion version = (AssignmentSubmissionVersion) versionObj;
-            		hackSubmissionText = version.getSubmittedText();
-            		UIVerbatim make = UIVerbatim.make(form, "text:", hackSubmissionText);
-            	}
-            	//UIOutput.make(form, "text:", asnnSubmissionVersionLocator.getDeliveredBeans().size()+"");
-                //UIOutput.make(form, "text:", null,asvOTP + ".submittedText" );
-            	//text_disabled.decorators = disabledDecoratorList;
+                // TODO FIXME This is being duplicated
+            	UIVerbatim make = UIVerbatim.make(form, "text:", studentSubmissionPreviewVersion.getSubmittedText());
             }
             else if (!preview) {
                 UIInput text = UIInput.make(form, "text:", asvOTP + ".submittedText");
@@ -161,8 +166,12 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
                 assignment.getSubmissionType() == AssignmentConstants.SUBMIT_INLINE_AND_ATTACH){
             UIOutput.make(form, "submit_attachments");
 
-
-            if (!preview) {
+            if (studentPreviewSubmission) {
+                String[] attachmentRefs = studentSubmissionPreviewVersion.getSubmittedAttachmentRefs();
+                renderSubmittedAttachments(studentPreviewSubmission, asvOTP,
+                        asvOTPKey, form, attachmentRefs);
+            }
+            else if (!preview) {
                 //Attachments
                 String[] attachmentRefs;
                 if (assignmentSubmission.getCurrentSubmissionVersion().isDraft()) {
@@ -170,17 +179,8 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
                 } else {
                     attachmentRefs = new String[] {};
                 }
-                UIInputMany attachmentInput = UIInputMany.make(form, "attachment_list:", asvOTP + ".submittedAttachmentRefs", 
-                        attachmentRefs);
-                attachmentInputEvolver.evolveAttachment(attachmentInput);
-
-                if (!studentPreviewSubmission) {
-                    UIInternalLink.make(form, "add_submission_attachments", UIMessage.make("assignment2.student-submit.add_attachments"),
-                        new FilePickerHelperViewParams(AddAttachmentHelperProducer.VIEWID, Boolean.TRUE, 
-                                Boolean.TRUE, 500, 700, asvOTPKey));
-                }
-                
-                UIOutput.make(form, "no_attachments_yet", messageLocator.getMessage("assignment2.student-submit.no_attachments"));
+                renderSubmittedAttachments(studentPreviewSubmission, asvOTP,
+                        asvOTPKey, form, attachmentRefs);
             }
         }
 
@@ -236,6 +236,29 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
             //cancel_button.decorators = disabledDecoratorList;
         }
 
+    }
+
+    /**
+     * @param studentPreviewSubmission
+     * @param asvOTP
+     * @param asvOTPKey
+     * @param form
+     * @param attachmentRefs
+     */
+    private void renderSubmittedAttachments(boolean studentPreviewSubmission,
+            String asvOTP, String asvOTPKey, UIForm form,
+            String[] attachmentRefs) {
+        UIInputMany attachmentInput = UIInputMany.make(form, "attachment_list:", asvOTP + ".submittedAttachmentRefs", 
+                attachmentRefs);
+        attachmentInputEvolver.evolveAttachment(attachmentInput, !studentPreviewSubmission);
+
+        if (!studentPreviewSubmission) {
+            UIInternalLink.make(form, "add_submission_attachments", UIMessage.make("assignment2.student-submit.add_attachments"),
+                new FilePickerHelperViewParams(AddAttachmentHelperProducer.VIEWID, Boolean.TRUE, 
+                        Boolean.TRUE, 500, 700, asvOTPKey));
+        }
+        
+        UIOutput.make(form, "no_attachments_yet", messageLocator.getMessage("assignment2.student-submit.no_attachments"));
     }
 
     public void fillComponents(UIContainer parent, String clientID) {

@@ -31,7 +31,7 @@ import java.util.Date;
  */
 public class GradebookItem {
 
-    private Long gradableObjectId;
+    private Long gradebookItemId;
     private String title;
     private Double pointsPossible;
     private Date dueDate;
@@ -42,9 +42,9 @@ public class GradebookItem {
     	
     }
     
-	public GradebookItem(Long gradableObjectId, String title,
+	public GradebookItem(Long gradebookItemId, String title,
 			Double pointsPossible, Date dueDate, boolean released) {
-		this.gradableObjectId = gradableObjectId;
+		this.gradebookItemId = gradebookItemId;
 		this.title = title;
 		this.pointsPossible = pointsPossible;
 		this.dueDate = dueDate;
@@ -53,18 +53,18 @@ public class GradebookItem {
 
 	/**
 	 * 
-	 * @return the gradableObjectId for this gradebook item
+	 * @return the id for this gradebook item
 	 */
-	public Long getGradableObjectId() {
-		return gradableObjectId;
+	public Long getGradebookItemId() {
+		return gradebookItemId;
 	}
 
 	/**
-	 * set the gradableObjectId for this gradebook item
-	 * @param gradableObjectId
+	 * set the gradebookItemId for this gradebook item
+	 * @param gradebookItemId
 	 */
-	public void setGradableObjectId(Long gradableObjectId) {
-		this.gradableObjectId = gradableObjectId;
+	public void setGradebookItemId(Long gradebookItemId) {
+		this.gradebookItemId = gradebookItemId;
 	}
 
 	/**

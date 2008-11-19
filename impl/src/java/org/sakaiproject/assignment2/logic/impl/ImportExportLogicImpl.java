@@ -119,7 +119,7 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 			Map<Long, GradebookItem> gbIdItemMap = new HashMap<Long, GradebookItem>();
 			if (allGbItems != null) {
 				for (GradebookItem item : allGbItems) {
-					gbIdItemMap.put(item.getGradableObjectId(), item);
+					gbIdItemMap.put(item.getGradebookItemId(), item);
 				}
 			}
 
@@ -167,9 +167,9 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 		assignDef.setRequiresSubmission(assignment.isRequiresSubmission());
 
 		// if it is graded, we need to retrieve the name of the associated gb item
-		if (assignment.isGraded() && assignment.getGradableObjectId() != null &&
+		if (assignment.isGraded() && assignment.getGradebookItemId() != null &&
 				gbIdItemMap != null) {
-			GradebookItem gbItem = (GradebookItem)gbIdItemMap.get(assignment.getGradableObjectId());
+			GradebookItem gbItem = (GradebookItem)gbIdItemMap.get(assignment.getGradebookItemId());
 			if (gbItem != null) {
 				assignDef.setAssociatedGbItemName(gbItem.getTitle());
 				assignDef.setAssociatedGbItemPtsPossible(gbItem.getPointsPossible());
@@ -272,7 +272,7 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 							if (existingItem != null) {
 								// an item exists with this title already - check the points possible
 								if (existingItem.getPointsPossible().equals(assignDef.getAssociatedGbItemPtsPossible())) {
-									associatedGbItemId = existingItem.getGradableObjectId();
+									associatedGbItemId = existingItem.getGradebookItemId();
 								} else {
 									// we need to create a new item
 									// be careful b/c multiple assignments may be associated with
@@ -305,7 +305,7 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 								}
 							}
 
-							newAssignment.setGradableObjectId(associatedGbItemId);
+							newAssignment.setGradebookItemId(associatedGbItemId);
 						}
 
 						// we need to copy any associated attachments 

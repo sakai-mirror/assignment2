@@ -64,10 +64,10 @@ public interface ExternalGradebookLogic {
 	/**
 	 * 
 	 * @param contextId
-	 * @return a map of gradable object id to title for all of the gradebook
+	 * @return a map of gradebook item id to title for all of the gradebook
 	 * items that the current user may view or grade.
 	 */
-	public Map<Long, String> getViewableGradableObjectIdTitleMap(String contextId);
+	public Map<Long, String> getViewableGradebookItemIdTitleMap(String contextId);
 	
 	/**
 	 * returns a list of GradebookItem objects that represent all of
@@ -92,12 +92,12 @@ public interface ExternalGradebookLogic {
 	 * to the actual function (grade/view)
 	 * @param userId
 	 * @param contextId
-	 * @param gradableObjectId
+	 * @param gradebookItemId
 	 * @return
 	 * @throws SecurityException if the current user is not allowed to access student info for
 	 * the given gb item
 	 */
-	public Map<String, String> getViewableStudentsForGradedItemMap(String userId, String contextId, Long gradableObjectId);
+	public Map<String, String> getViewableStudentsForGradedItemMap(String userId, String contextId, Long gradebookItemId);
 	
 	/**
 	 * @param contextId
@@ -153,11 +153,11 @@ public interface ExternalGradebookLogic {
 	/**
 	 * @contextId
 	 * @param studentId
-	 * @param gradableObjectId
+	 * @param gradebookItemId
 	 * @return true if the current user is authorized to grade the given student
-	 * for the given gb item id
+	 * for the gradebook item with the given gradebookItemId
 	 */
-	public boolean isCurrentUserAbleToGradeStudentForItem(String contextId, String studentId, Long gradableObjectId);
+	public boolean isCurrentUserAbleToGradeStudentForItem(String contextId, String studentId, Long gradebookItemId);
 	
 	/**
 	 * 
@@ -174,21 +174,21 @@ public interface ExternalGradebookLogic {
 	 * 
 	 * @param contextId
 	 * @param studentId
-	 * @param gbItemId
-	 * @return the grade in the gb for the given gradable object id and student. null if no
+	 * @param gradebookItemId
+	 * @return the grade in the gb for the given gradebookItemId and student. null if no
 	 * grade or if the gb item does not exist
 	 */
-	public String getStudentGradeForItem(String contextId, String studentId, Long gbItemId);
+	public String getStudentGradeForItem(String contextId, String studentId, Long gradebookItemId);
 	
 	/**
 	 * 
 	 * @param contextId
 	 * @param studentId
-	 * @param gbItemId
-	 * @return the grade comment in the gb for the given gradable object id and student. null if no
+	 * @param gradebookItemId
+	 * @return the grade comment in the gb for the given gradebookItemId and student. null if no
 	 * comment or if the gb item does not exist
 	 */
-	public String getStudentGradeCommentForItem(String contextId, String studentId, Long gbItemId);
+	public String getStudentGradeCommentForItem(String contextId, String studentId, Long gradebookItemId);
 	
 
 	/**
@@ -220,18 +220,18 @@ public interface ExternalGradebookLogic {
 	
 	/**
 	 * @param contextId
-	 * @param gradableObjectId
-	 * @return GradebookItem object associated with the given gradableObjectId
+	 * @param gradebookItemId
+	 * @return GradebookItem object associated with the given gradebookItemId
      * in the given contextId in the gradebook tool
-     * @throws GradebookItemNotFoundException if no gradebook item exists with the given gradableObjectId
+     * @throws GradebookItemNotFoundException if no gradebook item exists with the given gradebookItemId
 	 */
-	public GradebookItem getGradebookItemById(String contextId, Long gradableObjectId);
+	public GradebookItem getGradebookItemById(String contextId, Long gradebookItemId);
 	
 	/**
 	 * Save the given grade and comment for the given student, gb item, and context
 	 * in the gradebook. 
 	 * @param contextId
-	 * @param gradableObjectId
+	 * @param gradebookItemId
 	 * @param studentId
 	 * @param grade
 	 * @param comment
@@ -240,10 +240,10 @@ public interface ExternalGradebookLogic {
 	 * @throws SecurityException if user is not auth to grade the student
 	 * @throws NoGradebookDataExistsException if there is no gradebook data in the given context
 	 * @throws GradebookItemNotFoundException if there is no gradebook item with the
-	 * associated gradableObjectId
+	 * associated gradebookItemId
 	 * 
 	 */
-	public void saveGradeAndCommentForStudent(String contextId, Long gradableObjectId, 
+	public void saveGradeAndCommentForStudent(String contextId, Long gradebookItemId, 
 			String studentId, String grade, String comment) throws InvalidGradeForAssignmentException;
 	
 	/**
@@ -252,7 +252,7 @@ public interface ExternalGradebookLogic {
 	 * grades and comments in the gradebook. GradeInformation must all be for the same
 	 * gradebook item
 	 * @param contextId
-	 * @param gradableObjectId - the id of the associated gradebook item
+	 * @param gradebookItemId - the id of the associated gradebook item
 	 * @param gradeInfoList - list of GradeInformation objects populated with
 	 * the grade and comment you want to update. Note: this will save whatever
 	 * you have passed for grade AND comment, even if they are null
@@ -261,9 +261,9 @@ public interface ExternalGradebookLogic {
 	 * @throws SecurityException if user is not auth to grade any student in the list
 	 * @throws NoGradebookDataExistsException if there is no gradebook data in the given context
 	 * @throws GradebookItemNotFoundException if there is no gradebook item with the
-	 * associated gradableObjectId
+	 * associated gradebookItemId
 	 */
-	public void saveGradesAndComments(String contextId, Long gradableObjectId, 
+	public void saveGradesAndComments(String contextId, Long gradebookItemId, 
 			List<GradeInformation> gradeInfoList);
 	
 	/**
@@ -299,36 +299,36 @@ public interface ExternalGradebookLogic {
 	 * 
 	 * @param studentIdList
 	 * @param contextId
-	 * @param gradableObjectId the id of the gradebook item associated with the assignment
+	 * @param gradebookItemId the id of the gradebook item associated with the assignment
 	 * @return a map of the studentId to the GradeInformation record populated
 	 * with the student's grade info from the gradebook item associated with the
 	 * given assignment.
-	 * @throws IllegalArgumentException - if contextId or gradableObjectId are null
+	 * @throws IllegalArgumentException - if contextId or gradebookItemId are null
 	 * @throws SecurityException - if the current user is not authorized to
 	 * view grade information for a student in the list for the assoc gb item
 	 */
-	public Map<String, GradeInformation> getGradeInformationForStudents(List<String> studentIdList, String contextId, Long gradableObjectId);
+	public Map<String, GradeInformation> getGradeInformationForStudents(List<String> studentIdList, String contextId, Long gradebookItemId);
 	
 	/**
 	 * 
 	 * @param contextId
-	 * @param gradableObjectId
+	 * @param gradebookItemId
 	 * @return true if the current user may view this gradebook item in the gradebook
 	 */
-	public boolean isCurrentUserAbleToViewGradebookItem(String contextId, Long gradableObjectId);
+	public boolean isCurrentUserAbleToViewGradebookItem(String contextId, Long gradebookItemId);
 	
 	/**
 	 * Assign the given grade to all students in the list who do not have a grade
 	 * yet (grade is null or empty string) for this gradebook item.
 	 * @param contextId
-	 * @param gradableObjectId - the id of the gradebook item the assignment is associated with
+	 * @param gradebookItemId - the id of the gradebook item the assignment is associated with
 	 * @param studentIds - ids of the students that the current user is allowed to grade for this assignment
 	 * @param grade non-null grade to be saved for all of the students who do not yet have a grade
 	 * @throws InvalidGradeException if the passed grade is not valid for this gradebook item
 	 * @throws SecurityException - if the current user is not authorized to
      * grade a student in the list for the assoc gb item
 	 */
-	public void assignGradeToUngradedStudents(String contextId, Long gradableObjectId, List<String> studentIds, String grade);
+	public void assignGradeToUngradedStudents(String contextId, Long gradebookItemId, List<String> studentIds, String grade);
 	
 	/**
 	 * Modify the gradebook item with the given gradebookItemId to release or

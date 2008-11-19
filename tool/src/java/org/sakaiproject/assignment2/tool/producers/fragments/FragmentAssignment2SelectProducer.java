@@ -99,10 +99,10 @@ public class FragmentAssignment2SelectProducer implements ViewComponentProducer,
         for (int i=1; i <= gradebook_items.size(); i++) {
             //Fill out select options
             gradebook_item_labels[i] = gradebook_items.get(i-1).getTitle();
-            gradebook_item_values[i] = gradebook_items.get(i-1).getGradableObjectId().toString();
+            gradebook_item_values[i] = gradebook_items.get(i-1).getGradebookItemId().toString();
 
             //store js hash of id => due_date string
-            js_gradebook_items_data += "," + gradebook_items.get(i-1).getGradableObjectId().toString();
+            js_gradebook_items_data += "," + gradebook_items.get(i-1).getGradebookItemId().toString();
             if(gradebook_items.get(i-1).getDueDate() != null){
                 js_gradebook_items_data += ":\"" + df.format(gradebook_items.get(i-1).getDueDate()) + "\"";
             }else{

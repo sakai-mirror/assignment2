@@ -39,6 +39,7 @@ import org.sakaiproject.assignment2.logic.GradeInformation;
 import org.sakaiproject.assignment2.logic.GradebookItem;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
+import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.assignment2.tool.LocalAssignmentLogic;
 import org.sakaiproject.assignment2.tool.params.AssignmentViewParams;
@@ -146,11 +147,12 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
         current_sort_dir = params.sort_dir;
         UIVerbatim.make(tofill, "defaultSortBy", HTMLUtil.emitJavascriptVar("defaultSortBy", DEFAULT_SORT_BY));
 
-        List<AssignmentSubmission> submissions = submissionLogic.getViewableSubmissionsForAssignmentId(assignmentId, params.groupId);
+        // we need to retrieve the history for the release/retract feedback logic
+        List<AssignmentSubmission> submissions = submissionLogic.getViewableSubmissionsWithHistoryForAssignmentId(assignmentId, params.groupId);
 
         // get grade info, if appropriate
         Map<String, GradeInformation> studentIdGradeInfoMap = new HashMap<String, GradeInformation>();
-        if (submissions != null && assignment.isGraded() && assignment.getGradableObjectId() != null) {
+        if (submissions != null && assignment.isGraded() && assignment.getGradebookItemId() != null) {
             // put studentIds in a list
             List<String> studentIdList = new ArrayList<String>();
             for (AssignmentSubmission submission : submissions) {
@@ -159,7 +161,7 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
 
             // now retrieve all of the GradeInformation
             studentIdGradeInfoMap = gradebookLogic.getGradeInformationForStudents(
-                    studentIdList, assignment.getContextId(), assignment.getGradableObjectId());
+                    studentIdList, assignment.getContextId(), assignment.getGradebookItemId());
         }
 
         //Breadcrumbs
@@ -183,7 +185,7 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
             displayReleaseGrades = true;
             
             // determine if grades have been released yet
-            GradebookItem gbItem = gradebookLogic.getGradebookItemById(currContextId, assignment.getGradableObjectId());
+            GradebookItem gbItem = gradebookLogic.getGradebookItemById(currContextId, assignment.getGradebookItemId());
             boolean gradesReleased = gbItem.isReleased();
             String releaseLinkText = messageLocator.getMessage("assignment2.assignment_grade-assignment.grades.release");
             if (gradesReleased) {
@@ -191,7 +193,7 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
             }
 
             UIForm releaseGradesForm = UIForm.make(tofill, "release_grades_form");
-            releaseGradesForm.addParameter(new UIELBinding("ReleaseGradesAction.gradebookItemId", assignment.getGradableObjectId()));
+            releaseGradesForm.addParameter(new UIELBinding("ReleaseGradesAction.gradebookItemId", assignment.getGradebookItemId()));
             releaseGradesForm.addParameter(new UIELBinding("ReleaseGradesAction.curContext", currContextId));
             releaseGradesForm.addParameter(new UIELBinding("ReleaseGradesAction.releaseGrades", !gradesReleased));
 
@@ -207,19 +209,7 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
         // RELEASE FEEDBACK
         if (grade_perm) {
             displayReleaseFB = true;
-
-            UIForm releaseFeedbackForm = UIForm.make(tofill, "release-feedback-form");
-            releaseFeedbackForm.parameters.add(new UIELBinding("#{AssignmentSubmissionBean.assignmentId}", assignmentId));
-            UICommand submitAllFeedbackButton = UICommand.make(releaseFeedbackForm, "release_feedback", UIMessage.make("assignment2.assignment_grade-assignment.release_feedback"),
-            "#{AssignmentSubmissionBean.processActionReleaseAllFeedbackForAssignment}");
-
-            UIInternalLink releaseFeedbackLink = UIInternalLink.make(tofill, 
-                    "release-feedback-link", 
-                    UIMessage.make("assignment2.assignment_grade-assignment.release_feedback"),
-                    viewparams);
-            Map<String,String> idmap = new HashMap<String,String>();
-            idmap.put("onclick", "document.getElementById('"+submitAllFeedbackButton.getFullID()+"').click(); return false;");
-            releaseFeedbackLink.decorate(new UIFreeAttributeDecorator(idmap));
+            makeReleaseFeedbackLink(tofill, params, submissions);
         }
         
         // DOWNLOAD ALL
@@ -305,7 +295,7 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
         
         if (assignment.isGraded()) {
             String releasedString;
-            GradebookItem gradebookItem = gradebookLogic.getGradebookItemById(assignment.getContextId(), assignment.getGradableObjectId());
+            GradebookItem gradebookItem = gradebookLogic.getGradebookItemById(assignment.getContextId(), assignment.getGradebookItemId());
             if (gradebookItem.isReleased()) {
                 releasedString = "assignment2.assignment_grade-assignment.tableheader.grade.released";
             } else {
@@ -371,13 +361,62 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
         /*
          * Form for assigning a grade to all submissions without a grade.
          */
-        if (grade_perm && assignment.isGraded()) {
+        if (submissions != null && !submissions.isEmpty() && 
+                grade_perm && assignment.isGraded()) {
             UIForm unassignedForm = UIForm.make(tofill, "unassigned-apply-form");
             unassignedForm.addParameter(new UIELBinding("GradeAllRemainingAction.assignmentId", assignment.getId()));
             UIInput.make(unassignedForm, "new-grade-value", "GradeAllRemainingAction.grade", "");
             UICommand.make(unassignedForm, "apply-button", "GradeAllRemainingAction.execute");
         }
-    } 
+    }
+    
+    private void makeReleaseFeedbackLink(UIContainer tofill, ViewSubmissionsViewParams viewparams, List<AssignmentSubmission> submissionsWithHistory) {
+        // check to see if there is anything to release yet
+        boolean feedbackExists = false;
+        // determine if we are releasing or retracting
+        boolean release = false;
+
+        if (submissionsWithHistory != null) {
+            for (AssignmentSubmission submission : submissionsWithHistory) {
+                if (submission.getSubmissionHistorySet() != null) {
+                    for (AssignmentSubmissionVersion version : submission.getSubmissionHistorySet()) {
+                        // only look at versions that have had feedback activity
+                        if (version.getLastFeedbackDate() != null) {
+                            feedbackExists = true;
+                            // if there is at least one version with unreleased feedback,
+                            // we will show the "Release" link
+                            if (!version.isFeedbackReleased()) {
+                                release = true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        if (feedbackExists) {
+            String releaseLinkText;
+            if (release) {
+                releaseLinkText = messageLocator.getMessage("assignment2.assignment_grade-assignment.feedback.release");
+            } else {
+                releaseLinkText = messageLocator.getMessage("assignment2.assignment_grade-assignment.feedback.retract");
+            }
+            UIForm releaseFeedbackForm = UIForm.make(tofill, "release-feedback-form");
+            releaseFeedbackForm.parameters.add(new UIELBinding("#{ReleaseFeedbackAction.assignmentId}", assignmentId));
+            releaseFeedbackForm.parameters.add(new UIELBinding("#{ReleaseFeedbackAction.releaseFeedback}", release));
+            UICommand submitAllFeedbackButton = UICommand.make(releaseFeedbackForm, "release_feedback", releaseLinkText,
+            "#{ReleaseFeedbackAction.execute}");
+
+            UIInternalLink releaseFeedbackLink = UIInternalLink.make(tofill, 
+                    "release-feedback-link", releaseLinkText, viewparams);
+            Map<String,String> idmap = new HashMap<String,String>();
+            idmap.put("onclick", "document.getElementById('"+submitAllFeedbackButton.getFullID()+"').click(); return false;");
+            releaseFeedbackLink.decorate(new UIFreeAttributeDecorator(idmap));
+        } else {
+            // show a disabled link if no feedback to release or retract
+            UIOutput.make(tofill, "release_feedback_disabled", messageLocator.getMessage("assignment2.assignment_grade-assignment.feedback.release"));
+        }
+    }
     
     private void makeViewByGroupFilter(UIContainer tofill, ViewSubmissionsViewParams params) {
         List<Group> viewableGroups = permissionLogic.getViewableGroupsForCurrUserForAssignment(assignmentId);

@@ -22,8 +22,8 @@
 package org.sakaiproject.assignment2.exception;
 
 /**
- * Indicates that the assignment that the user attempted to save was marked as
- * graded, but no gradableObjectId was defined
+ * Indicates that the assignment was marked as
+ * graded, but no gradebookItemId was defined
  *
  * @author <a href="mailto:wagnermr@iupui.edu">michelle wagner</a>
  */

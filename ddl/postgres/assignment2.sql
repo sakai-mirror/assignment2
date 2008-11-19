@@ -2,7 +2,7 @@
     create table A2_ASSIGNMENT_T (
         ASSIGNMENT_ID int8 not null,
         VERSION int4 not null,
-        GRADABLE_OBJECT_ID int8,
+        GRADEBOOK_ITEM_ID int8,
         CONTEXT varchar(99) not null,
         TITLE varchar(255) not null,
         DRAFT bool,

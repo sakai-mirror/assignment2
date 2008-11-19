@@ -389,25 +389,31 @@ var asnn2 = asnn2 || {};
     };
     
     asnn2.studentSubmissionConfirm = function(buttonform) {
+    	jQuery("body", parent.document).append("<div id='portalMask' style='width:100%;height:100%'></div>");
+    	jQuery("#" + iframeId, parent.document).css("z-index", "9001").css("position", "relative").css("background", "#fff");
         confirmDialog = jQuery('#submit-confirm-dialog');
         dialogOptions = {
             resizable: false,
             width: 500,
-            modal: true
-            //overlay: {
-            //    opacity: 0.5,
-            //    background: "black"
-            //}
+            modal: true,
+            overlay: {
+                opacity: 0.5,
+                background: "#eee"
+            }
         };
         var submitButton = buttonform;
         jQuery('#submission-confirm-button').click( function (event) {
             confirmDialog.dialog('destroy');
+            jQuery("#portalMask", parent.document).trigger("unload").unbind().remove();
+            jQuery("#" + iframeId, parent.document).css("z-index", "0");
             submitButton.onclick = function (event) { return true };
             submitButton.click();
         });
 
         jQuery('#submission-cancel-button').click( function (event) {
             confirmDialog.dialog('destroy');
+            jQuery("#portalMask", parent.document).trigger("unload").unbind().remove();
+            jQuery("#" + iframeId, parent.document).css("z-index", "0");
         });
 
         confirmDialog.dialog(dialogOptions).show();

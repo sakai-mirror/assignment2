@@ -72,7 +72,7 @@
 		via incoming request URL -->
 	<bean parent="requestAddressibleParent">
 		<property name="value"
-			value="RemoveAssignmentAction,GradeAllRemainingAction,MarkFeedbackAsReadAction,Assignment2,Assignment2Bean,AssignmentSubmission,AssignmentSubmissionBean,FilePickerBean,AssignmentSubmissionVersion,uploadBean,MarkTodoBean,ReleaseGradesAction" />
+			value="RemoveAssignmentAction,GradeAllRemainingAction,MarkFeedbackAsReadAction,Assignment2,Assignment2Bean,AssignmentSubmission,AssignmentSubmissionBean,FilePickerBean,AssignmentSubmissionVersion,uploadBean,MarkTodoBean,ReleaseGradesAction,ReleaseFeedbackAction" />
 	</bean>
 
 	<!-- Override the default style of user messages -->
@@ -113,7 +113,7 @@
 	  <!-- The beans which will be preserved across a flow via simple instance
 			copying -->
 	<bean parent="copyPreservingParent">
-		<property name="value" value="Assignment2, Assignment2Bean, AssignmentSubmissionVersion, AssignmentSubmissionBean"/>
+		<property name="value" value="Assignment2, Assignment2Bean, AssignmentSubmissionVersion, AssignmentSubmissionBean, AssignmentSubmission"/>
 	</bean>
 
 	<bean id="Assignment2Creator"
