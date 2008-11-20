@@ -389,8 +389,7 @@ var asnn2 = asnn2 || {};
     };
     
     asnn2.studentSubmissionConfirm = function(buttonform) {
-    	jQuery("body", parent.document).append("<div id='portalMask' style='width:100%;height:100%'></div>");
-    	jQuery("#" + iframeId, parent.document).css("z-index", "9001").css("position", "relative").css("background", "#fff");
+    	asnn2.turnOnPortalOverlay();
         confirmDialog = jQuery('#submit-confirm-dialog');
         dialogOptions = {
             resizable: false,
@@ -404,20 +403,34 @@ var asnn2 = asnn2 || {};
         var submitButton = buttonform;
         jQuery('#submission-confirm-button').click( function (event) {
             confirmDialog.dialog('destroy');
-            jQuery("#portalMask", parent.document).trigger("unload").unbind().remove();
-            jQuery("#" + iframeId, parent.document).css("z-index", "0");
+            asnn2.turnOffPortalOverlay();
             submitButton.onclick = function (event) { return true };
             submitButton.click();
         });
 
         jQuery('#submission-cancel-button').click( function (event) {
             confirmDialog.dialog('destroy');
-            jQuery("#portalMask", parent.document).trigger("unload").unbind().remove();
-            jQuery("#" + iframeId, parent.document).css("z-index", "0");
+            asnn2.turnOffPortalOverlay();
         });
 
         confirmDialog.dialog(dialogOptions).show();
         return false;
+    };
+    
+    /**
+     * Turns on the 2.x portals background overlay
+     */
+    asnn2.turnOnPortalOverlay = function() {
+    	jQuery("body", parent.document).append("<div id='portalMask' style='width:100%;height:100%'></div>");
+    	jQuery("#" + iframeId, parent.document).css("z-index", "9001").css("position", "relative").css("background", "#fff");
+    };
+    
+    /**
+     * Turns off the 2.x portal background overlay
+     */
+    asnn2.turnOffPortalOverlay = function() {
+    	jQuery("#portalMask", parent.document).trigger("unload").unbind().remove();
+        jQuery("#" + iframeId, parent.document).css("z-index", "0");
     };
     
     /**
