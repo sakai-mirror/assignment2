@@ -94,66 +94,52 @@
 		</form>
 	</div>
 	
-	<script rsf:id="init_ajaxCallbackURL" type="text/javascript">
-	//ajaxCallbackURL - set via producer
-	</script>
-	
 	<script rsf:id="edit-setup-javascript" type="text/javascript">
 	//<![CDATA[
-	 jQuery("ul#assignmentList li.row").css('cursor', 'move');
-	
-	 jQuery("#assignmentList").sortable({items: ">li.row", axis: "y", containment: "parent", update: saveSortables});
-     jQuery("#assignmentList div.widget").hide();
-	  jQuery("#assignmentList li.row").hover(function(){ 
-	  	 if (!jQuery("div.overlayMessage", this).get(0)) {
-	     	jQuery("div.widget", this).show();
-	     }
-	  }, function() {
-	     jQuery("div.widget", this).hide();
-	  });
-	  
-	  jQuery(document).ready(function(){
-			jQuery("input.delete_replace").each(function(){
-				jQuery(this).hide();
-				that = this;
-				jQuery(this).prev("a.assignment_delete")[0].onclick = postFormAjax;
-				jQuery(this).prev("a.assignment_delete").show();
-			});
-		});
-		
-		function postFormAjax() {
-         var params = {};
-         form = jQuery(this).parents("form:first").get(0);
-         li = jQuery(this).parents("li.row:first").get(0);
-         jQuery("input", form).each(function(){params[this.name] = this.value});
-         jQuery.post(form.getAttribute("action") + "?call=ajax", params, function(xml) {
-            body = xml.substring(xml.indexOf('<body'),
-						xml.lastIndexOf('</body>') + 7);
-            div = body.substring(body.indexOf('<div'),
-                  body.lastIndexOf('</div>') + 6);
-            jQuery(li).append('<div class="overlay"></div></div><div class="overlayMessage">' + div + '</div>');
-            jQuery("div.overlay", li).css('opacity',.60);
-            jQuery(".success", li).css('opacity',1);
-            setTimeout(function(){  jQuery(li).fadeOut("slow"); }, 5000);
-         });
-		}
-		
-		function saveSortables() {
-	     serialize = jQuery("#assignmentList").sortable("serialize", {attribute: "className"});
-	     jQuery.ajax({
-	        type: 'get',
-	        url: ajaxCallbackURL,
-	        data: serialize.replace(/\[\]/g, "").replace(/row\ /g,""),
-	        success: function(a){
-               //yay show confirmation
-	        },
-	        error: function(a) {
-	        	return false;
-	        }	        
-	     });
-	  }
-		
-      //]]>
+	jQuery("ul#assignmentList li.row").css('cursor', 'move');
+
+	jQuery("#assignmentList").sortable({items: ">li.row", axis: "y", containment: "parent", update: saveSortables});
+	jQuery("#assignmentList div.widget").hide();
+	jQuery("#assignmentList li.row").hover(function(){ 
+	    if (!jQuery("div.overlayMessage", this).get(0)) {
+	        jQuery("div.widget", this).show();
+	    }
+	}, function() {
+	    jQuery("div.widget", this).hide();
+	});
+
+	jQuery(document).ready(function(){
+	    jQuery("input.delete_replace").each(function(){
+	        jQuery(this).hide();
+	        that = this;
+	        jQuery(this).prev("a.assignment_delete")[0].onclick = postFormAjax;
+	        jQuery(this).prev("a.assignment_delete").show();
+	    });
+	});
+
+	function postFormAjax() {
+	    var params = {};
+	    form = jQuery(this).parents("form:first").get(0);
+	    li = jQuery(this).parents("li.row:first").get(0);
+	    jQuery("input", form).each(function(){params[this.name] = this.value});
+	    jQuery.post(form.getAttribute("action") + "?call=ajax", params, function(xml) {
+	        body = xml.substring(xml.indexOf('<body'),
+	                xml.lastIndexOf('</body>') + 7);
+	        div = body.substring(body.indexOf('<div'),
+	                body.lastIndexOf('</div>') + 6);
+	        jQuery(li).append('<div class="overlay"></div></div><div class="overlayMessage">' + div + '</div>');
+	        jQuery("div.overlay", li).css('opacity',.60);
+	        jQuery(".success", li).css('opacity',1);
+	        setTimeout(function(){  jQuery(li).fadeOut("slow"); }, 5000);
+	    });
+	}
+
+	function saveSortables() {
+	    var serialize = jQuery("#assignmentList").sortable("serialize", {attribute: "className"});
+	    asnn2.saveOrdering(serialize);
+	}
+
+	//]]>
 	</script>
 	
 	</div>

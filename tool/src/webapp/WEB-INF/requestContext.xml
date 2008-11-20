@@ -117,11 +117,6 @@
    </bean>
    
    <bean class="org.sakaiproject.assignment2.tool.producers.RedirectToAssignmentProducer">
-   </bean>
-
-   <bean class="org.sakaiproject.assignment2.tool.producers.fragments.AjaxCallbackProducer">
-	  <property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
-      <property name="sessionManager" ref="org.sakaiproject.tool.api.SessionManager" />
    </bean>	
 
    <bean class="org.sakaiproject.assignment2.tool.producers.AssignmentProducer">
@@ -271,6 +266,10 @@
    
    <bean id="ReleaseFeedbackAction"  class="org.sakaiproject.assignment2.tool.commands.ReleaseFeedbackCommand">
        <property name="assignmentSubmissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
+   </bean>
+   
+   <bean id="ReorderAssignmentsAction"  class="org.sakaiproject.assignment2.tool.commands.ReorderAssignmentsCommand">
+       <property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
    </bean>
     
    <!--  Beans -->

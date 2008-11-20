@@ -25,8 +25,10 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
@@ -476,7 +478,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 		return viewableAssignments;
 	}
 	
-	public void reorderAssignments(Long[] assignmentIds)
+	public void reorderAssignments(List<Long> assignmentIds)
 	{	
 	    if (assignmentIds == null) {
 	        throw new IllegalArgumentException("Null list of assignmentIds passed to reorder.");
@@ -489,30 +491,30 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 
 	    List<Assignment2> allAssigns = dao.findByProperties(Assignment2.class, 
 	            new String[] {"contextId", "removed"}, new Object[]{externalLogic.getCurrentContextId(), false});
-	    List<Long> assignIdsInSite = new ArrayList<Long>();
+
+	    Map<Long, Assignment2> assignIdAssignMap = new HashMap<Long, Assignment2>();
 	    if (allAssigns != null) {
 	        for (Assignment2 assign : allAssigns) {
-	            assignIdsInSite.add(assign.getId());
+	            assignIdAssignMap.put(assign.getId(), assign);
 	        }
 	    }
 
 	    // throw the passed ids into a set to remove duplicates
 	    Set<Long> assignIdSet = new HashSet<Long>();
-	    for (int i = 0; i < assignmentIds.length; i++) {
-	        assignIdSet.add(assignmentIds[i]);
+	    for (Long assignId : assignmentIds) {
+	        assignIdSet.add(assignId);
 	    }
 
 	    // check that there are an equal number in the passed list as there are
 	    // assignments in this site
-	    if (assignIdSet.size() != assignIdsInSite.size()) {
+	    if (assignIdSet.size() != assignIdAssignMap.size()) {
 	        throw new IllegalArgumentException("The number of unique assignment ids passed does not match the num assignments in the site");
 	    }
 
 	    // now make sure all of the passed ids actually exist
-	    for (int i = 0; i < assignmentIds.length; i++) {
-	        Long currId = (Long)assignmentIds[i];
-	        if (!assignIdsInSite.contains(currId)) {
-	            throw new IllegalArgumentException("The assignment id " + currId 
+	    for (Long assignId : assignmentIds) {
+	        if (!assignIdAssignMap.containsKey(assignId)) {
+	            throw new IllegalArgumentException("The assignment id " + assignId 
 	                    + " does not exist in site " + currentContextId);
 	        }
 	    }
@@ -522,9 +524,10 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 	    //so that the index of the array is the new 
 	    //sort index
 	    Set<Assignment2> assignSet = new HashSet<Assignment2>();
-	    for (int i=0; i < assignmentIds.length; i++){
+	    for (int i=0; i < assignmentIds.size(); i++){
 	        //get Assignment
-	        Assignment2 assignment = getAssignmentById(assignmentIds[i]);
+	        Long assignId = assignmentIds.get(i);
+	        Assignment2 assignment = assignIdAssignMap.get(assignId);
 	        if (assignment != null){
 	            //check if we need to update
 	            if (assignment.getSortIndex() != i){

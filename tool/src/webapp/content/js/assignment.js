@@ -207,8 +207,22 @@ function updateDisplayNoAttachments(){
 var asnn2 = asnn2 || {};
 
 (function (jQuery, asnn2) {
+
+    // for reordering of assignments
+    asnn2.saveOrdering = function(serializedString) {
+        serializedString = serializedString.replace(/\[\]/g, "").replace(/row\ /g,"");
+        if (serializedString) {
+            serializedString = serializedString.replace(/&/g,"");
+            var orderedAssignIds = serializedString.split("sortable=");
+            var queries = new Array();
+            queries.push(RSF.renderBinding("ReorderAssignmentsAction.orderedAssignIds",orderedAssignIds));
+            queries.push(RSF.renderActionBinding("ReorderAssignmentsAction.execute"))
+            var body = queries.join("&");
+            jQuery.post(document.URL, body);
+        }
+    }
     
-  //Sorting functions
+    //Sorting functions
     var sortBy; 
     var sortDir; 
     var pStart=0; 
