@@ -86,7 +86,13 @@ public class PagerRenderer {
         comboValues.setValue(new String[] {"5","10","20","50","100","200"});
         select_box.optionlist = comboValues;
 		UIBoundList comboNames = new UIBoundList();
-		comboNames.setValue(new String[] {"Show 5 items", "Show 10 items", "Show 20 items", "Show 50 items", "Show 100 items", "Show 200 items"});
+		comboNames.setValue(new String[] {
+		        messageLocator.getMessage("assignment2.pager.select", 5), 
+		        messageLocator.getMessage("assignment2.pager.select", 10), 
+		        messageLocator.getMessage("assignment2.pager.select", 20), 
+		        messageLocator.getMessage("assignment2.pager.select", 50), 
+		        messageLocator.getMessage("assignment2.pager.select", 100), 
+		        messageLocator.getMessage("assignment2.pager.select", 200)});
 		select_box.optionnames = comboNames;
 		Map attrmap = new HashMap(); 
 		attrmap.put("onchange", "asnn2.changePage(asnn2.pStart);");
