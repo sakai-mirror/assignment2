@@ -43,7 +43,7 @@
 	  <li rsf:id="assignment-row:" class="row">
 		<div class="container">
 			<div class="widget">
-				<a rsf:id="delete-asnn-link" class="assignment_delete"><img src="/sakai-assignment2-tool/content/images/bin_closed.png" /></a>
+				<a rsf:id="delete-asnn-link" class="assignment_delete" onclick="asnn2.removeAsnnDialog(1); return false;"><img src="/sakai-assignment2-tool/content/images/bin_closed.png" /></a>
 				<a rsf:id="assignment_edit">Edit</a>
  				<!-- <form rsf:id="form" method="post" class="innerForm"> -->
  					<!-- <a href="#TB_inline?height=155&amp;width=300&amp;inlineId=confirm-remove&amp;modal=true" class="thickbox">Delete</a> -->
@@ -68,7 +68,7 @@
 	<p rsf:id="no-assignments-message">There are currently no assignments at this location. Click 'Add' to add an assignment.</p>
 	
 	<!-- This is the template for the Confirm Asnn Remove Dialog. -->
-	<div id="remove-assn-dialog" style="display:none">
+	<div id="remove-asnn-dialog" style="display:none">
 		<div class="generalErrors">
 			<ul style="margin:0px;">
 				<li id="msg=assignment2.remove.assn.confirm">Message for user here</li>

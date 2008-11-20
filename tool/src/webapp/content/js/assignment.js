@@ -204,6 +204,64 @@ function updateDisplayNoAttachments(){
     }
 }
 
+/*
+ * Some functions and utilities which may be useful outside of Assignments2
+ */
+var asnn2util = asnn2util || {};
+
+(function (jQuery, asnn2util) {
+	/**
+     * Turns on the 2.x portals background overlay
+     */
+    asnn2util.turnOnPortalOverlay = function() {
+    	jQuery("body", parent.document).append("<div id='portalMask' style='width:100%;height:100%'></div>");
+    	jQuery("#" + iframeId, parent.document).css("z-index", "9001").css("position", "relative").css("background", "#fff");
+    };
+    
+    /**
+     * Turns off the 2.x portal background overlay
+     */
+    asnn2util.turnOffPortalOverlay = function() {
+    	jQuery("#portalMask", parent.document).trigger("unload").unbind().remove();
+        jQuery("#" + iframeId, parent.document).css("z-index", "0");
+    };
+	
+    /**
+     * This opens the jQuery object, hopefully representing a hidden element
+     * somewhere on the page, as a dialog.  In addition to opening as a modal
+     * dialog, it has support for blanking out the background portion of the 
+     * Sakai 2.x Series Portal.
+     * 
+     * @param dialogObj  Should be a jQuery object for the hidden element to
+     * be used as the dialog.
+     */
+    asnn2util.openDialog = function(dialogObj) {
+    	dialogOptions = {
+            resizable: false,
+            width: 500,
+            modal: true,
+            overlay: {
+                opacity: 0.5,
+                background: "#eee"
+            }
+        };
+    	asnn2util.turnOnPortalOverlay();
+    	dialogObj.dialog(dialogOptions).show();
+    };
+    
+    /**
+     * This will close dialog that was opened with asnn2util.openDialog.
+     * 
+     * @param dialogObj The jQuery object representing the element being used
+     * as the modal dialog.
+     */
+    asnn2util.closeDialog = function(dialogObj) {
+    	dialogObj.dialog('destroy');
+        asnn2util.turnOffPortalOverlay();
+    };
+	
+})(jQuery, asnn2util);
+
 var asnn2 = asnn2 || {};
 
 (function (jQuery, asnn2) {
@@ -402,50 +460,29 @@ var asnn2 = asnn2 || {};
         });
     };
     
+    /**
+     * Used to generate the confirmation dialog for When the student clicks
+     * submit on either the Edit Submission or Preview Submission page. 
+     */
     asnn2.studentSubmissionConfirm = function(buttonform) {
-    	asnn2.turnOnPortalOverlay();
         confirmDialog = jQuery('#submit-confirm-dialog');
-        dialogOptions = {
-            resizable: false,
-            width: 500,
-            modal: true,
-            overlay: {
-                opacity: 0.5,
-                background: "#eee"
-            }
-        };
+
         var submitButton = buttonform;
         jQuery('#submission-confirm-button').click( function (event) {
-            confirmDialog.dialog('destroy');
-            asnn2.turnOffPortalOverlay();
+        	asnn2util.closeDialog(confirmDialog);
             submitButton.onclick = function (event) { return true };
             submitButton.click();
         });
 
         jQuery('#submission-cancel-button').click( function (event) {
-            confirmDialog.dialog('destroy');
-            asnn2.turnOffPortalOverlay();
+        	asnn2util.closeDialog(confirmDialog);
         });
 
-        confirmDialog.dialog(dialogOptions).show();
+        asnn2util.openDialog(confirmDialog);
         return false;
     };
     
-    /**
-     * Turns on the 2.x portals background overlay
-     */
-    asnn2.turnOnPortalOverlay = function() {
-    	jQuery("body", parent.document).append("<div id='portalMask' style='width:100%;height:100%'></div>");
-    	jQuery("#" + iframeId, parent.document).css("z-index", "9001").css("position", "relative").css("background", "#fff");
-    };
     
-    /**
-     * Turns off the 2.x portal background overlay
-     */
-    asnn2.turnOffPortalOverlay = function() {
-    	jQuery("#portalMask", parent.document).trigger("unload").unbind().remove();
-        jQuery("#" + iframeId, parent.document).css("z-index", "0");
-    };
     
     /**
      * Aligns the "Apply to Unassigned" box with the grading column 
@@ -457,6 +494,27 @@ var asnn2 = asnn2 || {};
             var applyToUnassigned = jQuery('#unassigned-apply');
             applyToUnassigned.attr("style", "margin-left:" + position.left + "px");
         }
+    };
+    
+    /**
+     * This is used from the Instructor Landing page list.html to put up a
+     * prompt dialog when the assignment delete link (trashcan) is clicked.
+     */
+    asnn2.removeAsnnDialog = function(asnnId) {
+    	alert("Removing Assignment with ID: " + asnnId);
+    	var removeDialog = jQuery('#remove-asnn-dialog');
+    	dialogOptions = {
+                resizable: false,
+                width: 500,
+                modal: true,
+                overlay: {
+                    opacity: 0.5,
+                    background: "#eee"
+                }
+            };
+    	removeDialog.dialog(dialogOptions).show();
+    	
+    	
     };
     
     
