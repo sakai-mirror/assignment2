@@ -255,7 +255,7 @@
    </bean>
    
    <!--  Actions -->
-   <bean id="RemoveAssignmentAction"  class="org.sakaiproject.assignment2.tool.commands.RemoveAssignmentCommand">
+   <bean id="RemoveAssignmentCommand"  class="org.sakaiproject.assignment2.tool.commands.RemoveAssignmentCommand">
        <property name="logic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
        <property name="messages" ref="targettedMessageList" />
    </bean>

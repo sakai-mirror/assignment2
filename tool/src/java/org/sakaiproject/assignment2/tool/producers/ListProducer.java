@@ -23,8 +23,10 @@ package org.sakaiproject.assignment2.tool.producers;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
@@ -46,6 +48,7 @@ import uk.org.ponder.rsf.components.UIInternalLink;
 import uk.org.ponder.rsf.components.UIMessage;
 import uk.org.ponder.rsf.components.UIOutput;
 import uk.org.ponder.rsf.components.decorators.DecoratorList;
+import uk.org.ponder.rsf.components.decorators.UIFreeAttributeDecorator;
 import uk.org.ponder.rsf.components.decorators.UIStyleDecorator;
 import uk.org.ponder.rsf.flow.jsfnav.NavigationCase;
 import uk.org.ponder.rsf.flow.jsfnav.NavigationCaseReporter;
@@ -142,10 +145,9 @@ public class ListProducer implements ViewComponentProducer, NavigationCaseReport
             if (edit_perm) {
                 
                 //UIInternalLink.make(row, "delete-asnn-link", new RemoveAssignmentParams(RemoveAssignmentConfirmProducer.VIEW_ID, assignment.getId()));
-                UIOutput.make(row, "delete-asnn-link");
-                //UIForm form = UIForm.make(row, "form");
-                //UIInput.make(form, "current_assignment", "RemoveAssignmentAction.assignmentId", assignment.getId().toString());
-               // UICommand.make(form, "assignment_delete", "", "RemoveAssignmentAction.execute");
+                UIOutput.make(row, "delete-asnn-link").decorate(
+                        new UIFreeAttributeDecorator("onclick",
+                        "asnn2.removeAsnnDialog("+assignment.getId()+"); return false;"));
                 UIInternalLink.make(row, "assignment_edit",  UIMessage.make("assignment2.list.edit"), 
                         new AssignmentViewParams(AssignmentProducer.VIEW_ID, assignment.getId()));
                 

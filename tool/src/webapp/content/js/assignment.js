@@ -501,20 +501,33 @@ var asnn2 = asnn2 || {};
      * prompt dialog when the assignment delete link (trashcan) is clicked.
      */
     asnn2.removeAsnnDialog = function(asnnId) {
-    	alert("Removing Assignment with ID: " + asnnId);
     	var removeDialog = jQuery('#remove-asnn-dialog');
-    	dialogOptions = {
-                resizable: false,
-                width: 500,
-                modal: true,
-                overlay: {
-                    opacity: 0.5,
-                    background: "#eee"
-                }
-            };
-    	removeDialog.dialog(dialogOptions).show();
     	
+    	jQuery('#page-replace\\:\\:remove-asnn-button').click( function (event)  {
+    		var queries = new Array();
+    		queries.push(RSF.renderBinding("RemoveAssignmentCommand.assignmentId",asnnId));
+    		queries.push(RSF.renderActionBinding("RemoveAssignmentCommand.execute"));
+    		var body = queries.join("&");
+    		//jQuery.post(document.URL, body);
+    		
+    		// Close the dialog
+    		asnn2util.closeDialog(removeDialog);
+    		
+    		// Fade out this assignment
+    		li = jQuery(this).parents("li.row:first").get(0);
+    		jQuery(li).append('<div class="overlay"></div></div><div class="overlayMessage">' + '</div>');
+	        jQuery("div.overlay", li).css('opacity',.60);
+	        jQuery(".success", li).css('opacity',1);
+	        setTimeout(function(){  jQuery(li).fadeOut("slow"); }, 5000);
+    	});
     	
+    	jQuery('#page-replace\\:\\:cancel-remove-asnn-button').click( function (event) {
+    		asnn2util.closeDialog(removeDialog);
+    	});
+    	
+    	asnn2util.openDialog(removeDialog);
+    	
+    	return false;
     };
     
     
