@@ -530,5 +530,12 @@ var asnn2 = asnn2 || {};
     	return false;
     };
     
+    /**
+     * Release all feedback
+     */
+    asnn2.releaseFeedbackDialog = function(submitButtonId) {
+    	alert(submitButtonId);
+    };
+    
     
 })(jQuery, asnn2);

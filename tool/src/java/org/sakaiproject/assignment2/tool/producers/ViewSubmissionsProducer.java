@@ -83,7 +83,7 @@ import uk.org.ponder.rsf.viewstate.ViewParamsReporter;
  * feedback released, etc.
  * 
  * @author rjlowe
- * @author mrwagner
+ * @author wagnermr
  * @author sgithens
  *
  */
@@ -368,6 +368,12 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
             UIInput.make(unassignedForm, "new-grade-value", "GradeAllRemainingAction.grade", "");
             UICommand.make(unassignedForm, "apply-button", "GradeAllRemainingAction.execute");
         }
+        
+        UICommand.make(tofill, "release-feedback-confirm", UIMessage.make("assignment2.dialogs.release_all_feedback.confirm"));
+        UICommand.make(tofill, "release-feedback-cancel", UIMessage.make("assignment2.dialogs.release_all_feedback.cancel"));
+        
+        UICommand.make(tofill, "retract-feedback-confirm", UIMessage.make("assignment2.dialogs.retract_all_feedback.confirm"));
+        UICommand.make(tofill, "retract-feedback-cancel", UIMessage.make("assignment2.dialogs.retract_all_feedback.cancel"));
     }
     
     private void makeReleaseFeedbackLink(UIContainer tofill, ViewSubmissionsViewParams viewparams, List<AssignmentSubmission> submissionsWithHistory) {
@@ -410,7 +416,8 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
             UIInternalLink releaseFeedbackLink = UIInternalLink.make(tofill, 
                     "release-feedback-link", releaseLinkText, viewparams);
             Map<String,String> idmap = new HashMap<String,String>();
-            idmap.put("onclick", "document.getElementById('"+submitAllFeedbackButton.getFullID()+"').click(); return false;");
+          //  idmap.put("onclick", "document.getElementById('"+submitAllFeedbackButton.getFullID()+"').click(); return false;");
+            idmap.put("onclick", "asnn2.releaseFeedbackDialog('"+submitAllFeedbackButton.getFullID()+"'); return false;");
             releaseFeedbackLink.decorate(new UIFreeAttributeDecorator(idmap));
         } else {
             // show a disabled link if no feedback to release or retract
