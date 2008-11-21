@@ -39,6 +39,7 @@ h4 {
 .navIntraTool li span.separator {
     margin-left: 1em;
     margin-right: -.8em;
+    border-left: 1px solid #CCCCCC;  /* ONCOURSE addition */
 }
 
 .itemAction li {
