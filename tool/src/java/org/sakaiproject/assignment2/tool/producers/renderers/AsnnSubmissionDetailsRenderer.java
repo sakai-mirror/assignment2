@@ -122,10 +122,15 @@ public class AsnnSubmissionDetailsRenderer implements BasicProducer {
          * Title and Due Date Information
          */
         if (!assignment.isRemoved()) {
-            UIOutput.make(joint, "heading_status", messageLocator.getMessage("assignment2.student-submit.heading_status", 
-                    new Object[]{ title, currentUser.getDisplayName() }));
+            String submissionHeading;
+            if (!assignment.isRequiresSubmission() || assignment.getSubmissionType() == AssignmentConstants.SUBMIT_NON_ELECTRONIC) {
+                submissionHeading = messageLocator.getMessage("assignment2.student-submit.heading.no_submission", new Object[]{ title, currentUser.getDisplayName() });
+            } else {
+                submissionHeading = messageLocator.getMessage("assignment2.student-submit.heading.submission", new Object[]{ title, currentUser.getDisplayName() });
+            }
+            UIOutput.make(joint, "heading_status", submissionHeading);
         } else {
-            UIVerbatim.make(joint, "heading_status", messageLocator.getMessage("assignment2.student-submit.heading_status.assign_deleted", 
+            UIVerbatim.make(joint, "heading_status", messageLocator.getMessage("assignment2.student-submit.heading.submission.deleted", 
                     new Object[]{ title, currentUser.getDisplayName() }));
         }
 
