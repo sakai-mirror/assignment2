@@ -500,7 +500,7 @@ var asnn2 = asnn2 || {};
      * This is used from the Instructor Landing page list.html to put up a
      * prompt dialog when the assignment delete link (trashcan) is clicked.
      */
-    asnn2.removeAsnnDialog = function(asnnId) {
+    asnn2.removeAsnnDialog = function(asnnId, fadeOutElement) {
     	var removeDialog = jQuery('#remove-asnn-dialog');
     	
     	jQuery('#page-replace\\:\\:remove-asnn-button').click( function (event)  {
@@ -508,17 +508,17 @@ var asnn2 = asnn2 || {};
     		queries.push(RSF.renderBinding("RemoveAssignmentCommand.assignmentId",asnnId));
     		queries.push(RSF.renderActionBinding("RemoveAssignmentCommand.execute"));
     		var body = queries.join("&");
-    		//jQuery.post(document.URL, body);
+    		jQuery.post(document.URL, body);
     		
     		// Close the dialog
     		asnn2util.closeDialog(removeDialog);
     		
     		// Fade out this assignment
-    		li = jQuery(this).parents("li.row:first").get(0);
-    		jQuery(li).append('<div class="overlay"></div></div><div class="overlayMessage">' + '</div>');
-	        jQuery("div.overlay", li).css('opacity',.60);
-	        jQuery(".success", li).css('opacity',1);
-	        setTimeout(function(){  jQuery(li).fadeOut("slow"); }, 5000);
+    		//jQuery(fadeOutElement).append('<div class="overlay"></div></div><div class="overlayMessage">' + '</div>');
+	        //jQuery("div.overlay", fadeOutElement).css('opacity',.60);
+	        //jQuery(".success", fadeOutElement).css('opacity',1);
+	        //setTimeout(function(){  jQuery(fadeOutElement).fadeOut("slow"); }, 5000);
+    		jQuery(fadeOutElement).fadeOut();
     	});
     	
     	jQuery('#page-replace\\:\\:cancel-remove-asnn-button').click( function (event) {

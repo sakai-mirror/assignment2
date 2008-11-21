@@ -147,7 +147,7 @@ public class ListProducer implements ViewComponentProducer, NavigationCaseReport
                 //UIInternalLink.make(row, "delete-asnn-link", new RemoveAssignmentParams(RemoveAssignmentConfirmProducer.VIEW_ID, assignment.getId()));
                 UIOutput.make(row, "delete-asnn-link").decorate(
                         new UIFreeAttributeDecorator("onclick",
-                        "asnn2.removeAsnnDialog("+assignment.getId()+"); return false;"));
+                        "asnn2.removeAsnnDialog("+assignment.getId()+",jQuery(this).parents('li.row:first').get(0)); return false;"));
                 UIInternalLink.make(row, "assignment_edit",  UIMessage.make("assignment2.list.edit"), 
                         new AssignmentViewParams(AssignmentProducer.VIEW_ID, assignment.getId()));
                 
