@@ -38,7 +38,9 @@ import org.sakaiproject.assignment2.tool.producers.StudentAssignmentListProducer
 import org.sakaiproject.user.api.User;
 
 import uk.org.ponder.messageutil.MessageLocator;
+import uk.org.ponder.rsf.components.UICommand;
 import uk.org.ponder.rsf.components.UIContainer;
+import uk.org.ponder.rsf.components.UIForm;
 import uk.org.ponder.rsf.components.UIInternalLink;
 import uk.org.ponder.rsf.components.UIJointContainer;
 import uk.org.ponder.rsf.components.UIMessage;
@@ -201,6 +203,13 @@ public class StudentViewAssignmentRenderer {
         }
         else if (submissionLogic.isSubmissionOpenForStudentForAssignment(currentUser.getId(), assignment.getId())) {
             asnnSubmitEditorRenderer.fillComponents(joint, "assignment-edit-submission:", assignmentSubmission, previewAsStudent, studentSubmissionPreview);
+        }
+        else {
+        	// If this isn't a preview, and the student can't submit, we need
+        	// to make the button so they can return to the list.
+        	UIOutput.make(joint, "student-return-to-list-buttons");
+        	UIForm returnform = UIForm.make(joint, "return-to-list-form", new SimpleViewParameters(StudentAssignmentListProducer.VIEW_ID));
+        	UICommand.make(returnform, "return-button", UIMessage.make("assignment2.student-submission.returntolist"), null);
         }
         
     }
