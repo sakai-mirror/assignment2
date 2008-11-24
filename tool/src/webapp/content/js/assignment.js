@@ -531,19 +531,35 @@ var asnn2 = asnn2 || {};
     };
     
     /**
-     * Release all feedback confirmation dialog
+     * Release/Retract all feedback confirmation dialog
+     * 
+     * This function uses the asnn2 dialog utility. The same function
+     * is used for both releasing and retracting feedback, distinguished by the 
+     * "release" boolean parameter. We just use string substitution to
+     * differentiate the release and retract dialogs. Be careful if you
+     * change the naming conventions!
+     * 
+     * @param submitButtonId - the id of the html element that actually is submitted
+     * @param release - true if you want the "release" dialog; false for the "retract" dialog
      */
-    asnn2.releaseFeedbackDialog = function(submitButtonId) {
-        var confirmDialog = jQuery('#release-feedback-dialog');
+    asnn2.releaseFeedbackDialog = function(submitButtonId, release) {
+        var releaseText;
+        if (release) {
+            releaseText = 'release';
+        } else {
+            releaseText = 'retract';
+        }
+        
+        var confirmDialog = jQuery('#' + releaseText + '-feedback-dialog');
         var submitButton = jQuery('input[id=\'' + submitButtonId + '\']');
-        var confirmButton = jQuery('#page-replace\\:\\:release-feedback-confirm');
+        var confirmButton = jQuery('#page-replace\\:\\:' + releaseText + '-feedback-confirm');
         confirmButton.click( function (event) {
             asnn2util.closeDialog(confirmDialog);
             submitButton.onclick = function (event) { return true };
             submitButton.click();
         });
 
-        var cancelButton = jQuery('#page-replace\\:\\:release-feedback-cancel').click( function (event) {
+        var cancelButton = jQuery('#page-replace\\:\\:' + releaseText + '-feedback-cancel').click( function (event) {
             asnn2util.closeDialog(confirmDialog);
         });
 

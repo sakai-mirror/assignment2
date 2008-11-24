@@ -369,6 +369,9 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
             UICommand.make(unassignedForm, "apply-button", "GradeAllRemainingAction.execute");
         }
         
+        // Confirmation Dialogs
+        // These are only added here for internationalization. They are not part
+        // of a real form.
         UICommand.make(tofill, "release-feedback-confirm", UIMessage.make("assignment2.dialogs.release_all_feedback.confirm"));
         UICommand.make(tofill, "release-feedback-cancel", UIMessage.make("assignment2.dialogs.release_all_feedback.cancel"));
         
@@ -417,7 +420,7 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
                     "release-feedback-link", releaseLinkText, viewparams);
             Map<String,String> idmap = new HashMap<String,String>();
           //  idmap.put("onclick", "document.getElementById('"+submitAllFeedbackButton.getFullID()+"').click(); return false;");
-            idmap.put("onclick", "asnn2.releaseFeedbackDialog('"+submitAllFeedbackButton.getFullID()+"'); return false;");
+            idmap.put("onclick", "asnn2.releaseFeedbackDialog('"+submitAllFeedbackButton.getFullID()+"', " + release + "); return false;");
             releaseFeedbackLink.decorate(new UIFreeAttributeDecorator(idmap));
         } else {
             // show a disabled link if no feedback to release or retract
