@@ -121,6 +121,25 @@
             <input id="" rsf:id="retract-feedback-cancel" accesskey="x" type="button" value="No, Return to Assignment"/>
         </fieldset>
     </div>
+    
+    <div style="display:none" id="release-grades-dialog">
+        <ul style="margin:0;padding:0;display:inline;">
+            <li rsf:id="release-grades-message" class="alertMessage">Are you sure you want to release all student grades?</li>
+        </ul>
+        
+        <p id="checkbox-error" rsf:id="msg=assignment2.dialogs.retract_grades.groups.confirmcheckbox.error" style="display:none;" class="alertMessage">You must select the checkbox to continue!</p>
+        
+        <div rsf:id="confirm-checkbox-area">
+            <input type="checkbox" id="confirm-checkbox"/>
+            <label rsf:id="confirm-checkbox-label" for="confirm-checkbox">Yes, release the grades for all students in the site</label>
+        </div>
+
+        <fieldset class="submit">
+            <input id="" rsf:id="release-grades-confirm" accesskey="s" type="button" class="active" value="Release All Grades"/>
+            <input id="" rsf:id="release-grades-cancel" accesskey="x" type="button" value="Cancel"/>
+        </fieldset>
+    </div>
+    	
 	
 	
 	<script type="text/javascript" rsf:id="defaultSortBy">

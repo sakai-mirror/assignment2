@@ -202,8 +202,10 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
             UIInternalLink releaseGradesLink = UIInternalLink.make(tofill, 
                     "release_grades_link", releaseLinkText, viewparams);
             Map<String,String> idmap = new HashMap<String,String>();
-            idmap.put("onclick", "document.getElementById('"+releaseGradesButton.getFullID()+"').click(); return false;");
+            idmap.put("onclick", "asnn2.releaseGradesDialog('"+releaseGradesButton.getFullID()+"'); return false;");
             releaseGradesLink.decorate(new UIFreeAttributeDecorator(idmap));
+            
+            makeReleaseGradesDialog(gradesReleased, assignment, tofill);
         }
         
         // RELEASE FEEDBACK
@@ -483,6 +485,50 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
             UISelect.make(groupFilterForm, "group_filter", view_filter_values,
                     view_filter_options, "groupId", selectedValue);
         }
+    }
+    
+    private void makeReleaseGradesDialog(boolean gradesReleased, Assignment2 assignment, UIContainer tofill) {
+     // Release Grades Dialog 
+        String releaseGradesTitle;
+        String releaseGradesMessage;
+        String releaseGradesConfirm;
+        String releaseGradesCancel;
+        
+        if (gradesReleased) {
+            // if the grades are already released, the option is "retract"
+            releaseGradesTitle = messageLocator.getMessage("assignment2.dialogs.retract_grades.title");
+            releaseGradesConfirm = messageLocator.getMessage("assignment2.dialogs.retract_grades.confirm");
+            releaseGradesCancel = messageLocator.getMessage("assignment2.dialogs.retract_grades.cancel");
+            if (assignment.getAssignmentGroupSet() == null || assignment.getAssignmentGroupSet().isEmpty()) {
+                // this assignment is not restricted to groups
+                releaseGradesMessage = messageLocator.getMessage("assignment2.dialogs.retract_grades.nogroups.message");
+            } else {
+                // this has groups, so we display a different warning and
+                // require a confirmation checkbox to be clicked
+                releaseGradesMessage = messageLocator.getMessage("assignment2.dialogs.retract_grades.groups.message");
+                UIOutput.make(tofill, "confirm-checkbox-label", messageLocator.getMessage("assignment2.dialogs.retract_grades.groups.confirmcheckbox"));
+                UIOutput.make(tofill, "confirm-checkbox-area");
+            }
+        } else {
+            // the user has the option to release
+            releaseGradesTitle = messageLocator.getMessage("assignment2.dialogs.release_grades.title");
+            releaseGradesConfirm = messageLocator.getMessage("assignment2.dialogs.release_grades.confirm");
+            releaseGradesCancel = messageLocator.getMessage("assignment2.dialogs.release_grades.cancel");
+            if (assignment.getAssignmentGroupSet() == null || assignment.getAssignmentGroupSet().isEmpty()) {
+                // this assignment is not restricted to groups
+                releaseGradesMessage = messageLocator.getMessage("assignment2.dialogs.release_grades.nogroups.message");
+            } else {
+                // this has groups, so we display a different warning and
+                // require a confirmation checkbox to be clicked
+                releaseGradesMessage = messageLocator.getMessage("assignment2.dialogs.release_grades.groups.message");
+                UIOutput.make(tofill, "confirm-checkbox-label", messageLocator.getMessage("assignment2.dialogs.release_grades.groups.confirmcheckbox"));
+                UIOutput.make(tofill, "confirm-checkbox-area");
+            }
+        }
+        
+        UIOutput.make(tofill, "release-grades-message", releaseGradesMessage);
+        UIOutput.make(tofill, "release-grades-confirm", releaseGradesConfirm);
+        UIOutput.make(tofill, "release-grades-cancel", releaseGradesCancel);
     }
 
     public List<NavigationCase> reportNavigationCases() {

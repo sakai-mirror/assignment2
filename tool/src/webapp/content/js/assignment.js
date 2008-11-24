@@ -567,4 +567,38 @@ var asnn2 = asnn2 || {};
         return false;
     };  
     
+    /**
+     * Release/Retract all grades 
+     * 
+     * This function uses the asnn2 dialog utility.  The same function is used for
+     * both releasing and retracting grades. This is because the two cases
+     * are handled by different translations being used in the java code. The
+     * two cases use the same submit button for the form.
+     * 
+     * @param submitButtonId the id of the html element that actually is submitted
+     */
+    asnn2.releaseGradesDialog = function(submitButtonId) {
+        var confirmDialog = jQuery('#release-grades-dialog');
+        var submitButton = jQuery('input[id=\'' + submitButtonId + '\']');
+        var confirmButton = jQuery('#page-replace\\:\\:release-grades-confirm');
+        confirmButton.click( function (event) {
+            var confirmCheckbox = jQuery("#confirm-checkbox").get(0);
+            if (confirmCheckbox && !confirmCheckbox.checked) {
+                jQuery("#page-replace\\:\\:checkbox-error").show();
+            } else {
+                   
+                asnn2util.closeDialog(confirmDialog);
+                submitButton.onclick = function (event) { return true };
+                submitButton.click();
+            }
+        });
+
+        var cancelButton = jQuery('#page-replace\\:\\:release-grades-cancel').click( function (event) {
+            asnn2util.closeDialog(confirmDialog);
+        });
+
+        asnn2util.openDialog(confirmDialog);
+        return false;
+    };
+    
 })(jQuery, asnn2);
