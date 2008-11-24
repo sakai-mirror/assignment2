@@ -531,11 +531,24 @@ var asnn2 = asnn2 || {};
     };
     
     /**
-     * Release all feedback
+     * Release all feedback confirmation dialog
      */
     asnn2.releaseFeedbackDialog = function(submitButtonId) {
-    	alert(submitButtonId);
-    };
-    
+        var confirmDialog = jQuery('#release-feedback-dialog');
+        var submitButton = jQuery('input[id=\'' + submitButtonId + '\']');
+        var confirmButton = jQuery('#page-replace\\:\\:release-feedback-confirm');
+        confirmButton.click( function (event) {
+            asnn2util.closeDialog(confirmDialog);
+            submitButton.onclick = function (event) { return true };
+            submitButton.click();
+        });
+
+        var cancelButton = jQuery('#page-replace\\:\\:release-feedback-cancel').click( function (event) {
+            asnn2util.closeDialog(confirmDialog);
+        });
+
+        asnn2util.openDialog(confirmDialog);
+        return false;
+    };  
     
 })(jQuery, asnn2);
