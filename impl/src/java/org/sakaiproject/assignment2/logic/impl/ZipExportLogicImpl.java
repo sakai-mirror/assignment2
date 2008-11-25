@@ -91,35 +91,29 @@ public class ZipExportLogicImpl implements ZipExportLogic
 	/* (non-Javadoc)
 	 * @see org.sakaiproject.assignment2.tool.handlerhooks.ZipExporterI#getSubmissionsZip(java.io.OutputStream, java.lang.Long)
 	 */
-	public void getSubmissionsZip(OutputStream outputStream, Long assignmentId)
-			throws PermissionException
-	{
-		Assignment2 assignment = assignmentLogic.getAssignmentById(assignmentId);
-		if (log.isDebugEnabled())
-			log.debug(this + ": getSubmissionsZip reference=" + assignmentId);
+	public void getSubmissionsZip(OutputStream outputStream, Long assignmentId)	{
+	    Assignment2 assignment = assignmentLogic.getAssignmentById(assignmentId);
+	    if (log.isDebugEnabled())
+	        log.debug(this + ": getSubmissionsZip reference=" + assignmentId);
 
-		StringBuilder exceptionMessage = new StringBuilder();
-		if (gradebookLogic.isCurrentUserAbleToGrade(assignment.getContextId()))
-		{
-			List<AssignmentSubmission> submissions = assignmentSubmissionLogic
-				.getViewableSubmissionsWithHistoryForAssignmentId(assignment.getId(), null);
-			
-			zipSubmissions(assignment, submissions, outputStream, exceptionMessage);
+	    if (!gradebookLogic.isCurrentUserAbleToGrade(assignment.getContextId())) {
+	        throw new SecurityException("User attempted to download submissions without permission!");
+	    }
 
-			if (exceptionMessage.length() > 0)
-			{
-				// log any error messages
-				if (log.isDebugEnabled())
-					log.debug(this + assignmentId.toString()
-							+ exceptionMessage.toString());
-			}
-		}
+	    List<AssignmentSubmission> submissions = assignmentSubmissionLogic
+	    .getViewableSubmissionsWithHistoryForAssignmentId(assignment.getId(), null);
+
+	    zipSubmissions(assignment, submissions, outputStream);
+
 	} // getSubmissionsZip
 
 	protected void zipSubmissions(Assignment2 assignment,
-			List<AssignmentSubmission> submissionsWithHistory, OutputStream outputStream,
-			StringBuilder exceptionMessage)
+			List<AssignmentSubmission> submissionsWithHistory, OutputStream outputStream)
 	{
+	    if (assignment == null) {
+	        throw new IllegalArgumentException("Null assignment passed to zipSubmissions");
+	    }
+	    
 		String assignmentTitle = assignment.getTitle();
 		String contextId = externalLogic.getCurrentContextId();
 		String currUserId = externalLogic.getCurrentUserId();
@@ -141,7 +135,7 @@ public class ZipExportLogicImpl implements ZipExportLogic
 		        ZipOutputStream out = new ZipOutputStream(outputStream);
 
 		        // create the folder structure - named after the assignment's title
-		        String root = Validator.escapeZipEntry(assignmentTitle) + Entity.SEPARATOR;
+		        String root = escapeFileName(assignmentTitle + "-" + contextId) + Entity.SEPARATOR;
 
 		        if (submissionsWithHistory != null && !submissionsWithHistory.isEmpty())
 		        {
@@ -279,8 +273,10 @@ public class ZipExportLogicImpl implements ZipExportLogic
 		                    }
 		                }
 
-		                // create a grades.csv file into zip
-		                ZipEntry gradesCSVEntry = new ZipEntry(root + assignmentTitle + "-" + contextId + "_" + df_noTime.format(new Date()) + ".csv");
+		                // create a grades.csv file and add to zip
+		                String gradesFileName =  root + Entity.SEPARATOR + escapeFileName(assignmentTitle + "-" + contextId) + ".csv";
+
+		                ZipEntry gradesCSVEntry = new ZipEntry(gradesFileName);
 		                out.putNextEntry(gradesCSVEntry);
 		                byte[] grades = gradesBuilder.toString().getBytes();
 		                out.write(grades);
@@ -296,13 +292,29 @@ public class ZipExportLogicImpl implements ZipExportLogic
 		    }
 		    catch (IOException e)
 		    {
-		        exceptionMessage.append("Cannot establish the IO to create zip file. ");
-		        log
-		        .debug(this
-		                + ": getSubmissionsZip--IOException unable to create the zip file for assignment "
-		                + assignmentTitle);
+		        log.warn(this + ": getSubmissionsZip--IOException unable to create " +
+		        		"the zip file for assignment " + assignmentTitle);
 		    }
 		}
+	}
+	
+	/**
+	 * 
+	 * @param value
+	 * @return the value with spaces replaced with "-" and then encoded via
+	 * {@link Validator.escapeZipEntry}. This is useful for user-supplied text
+	 * (such as the assignment title) so we don't run into trouble with special
+	 * characters
+	 */
+	private String escapeFileName(String value) {
+	    if (value != null) {
+	        // first, replace spaces with "-" for readability
+	        value = value.replaceAll(" ", "-");
+	        // next, escape it properly
+	        value = Validator.escapeZipEntry(value);
+	    }
+	    
+	    return value;
 	}
 
 	private void zipAttachments(ZipOutputStream out, String submittersName,

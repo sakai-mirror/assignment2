@@ -32,7 +32,6 @@ import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.ZipExportLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.tool.params.ZipViewParams;
-import org.sakaiproject.exception.PermissionException;
 
 import uk.org.ponder.rsf.processor.HandlerHook;
 import uk.org.ponder.rsf.viewstate.ViewParameters;
@@ -96,18 +95,15 @@ public class ZipHandlerHook implements HandlerHook
 		}
 
 		Assignment2 assignment = assignmentLogic.getAssignmentById(zvp.assignmentId);
-		String title = URLEncoder.encode(assignment.getTitle());
+		String title = assignment.getTitle() + "-" + assignment.getContextId();
+		// replace spaces with "-" first for readability
+		title = title.replaceAll(" " , "-");
+		title = URLEncoder.encode(title);
 		response.setHeader("Content-disposition", "inline; filename="+ title +".zip");
 		response.setContentType("application/zip");
 
-		try
-		{
-			zipExporter.getSubmissionsZip(resultsOutputStream, zvp.assignmentId);
-		}
-		catch (PermissionException pe)
-		{
-			throw UniversalRuntimeException.accumulate(pe, "User doesn't have permission");
-		}
+		zipExporter.getSubmissionsZip(resultsOutputStream, zvp.assignmentId);
+
 		return true;
 	}
 }
