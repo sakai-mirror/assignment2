@@ -494,9 +494,13 @@ h4.completed_assignment {
 /*
  * Styles for our confirmation dialogs using JQuery UI Dialog
  */
+.ui-dialog {
+	border: solid medium blue;
+}
+ 
 .ui-dialog-container {
+    padding: 20px;
     background-color: white;
-    border: solid thin blue;
 }
 /*
 .ui-dialog-content {
