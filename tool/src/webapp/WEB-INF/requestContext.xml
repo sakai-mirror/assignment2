@@ -44,6 +44,7 @@
         <property name="asnnSubmissionVersion" ref="AssignmentSubmissionVersion" />
         <property name="attachmentListRenderer" ref="AttachmentListRenderer"></property>
         <property name="viewParameters" ref="viewParameters"></property>
+        <property name="submissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic"></property>
     </bean>
     
     <bean id="AsnnSubmissionVersionRenderer"

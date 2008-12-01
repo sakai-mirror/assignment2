@@ -1,8 +1,11 @@
 package org.sakaiproject.assignment2.tool.producers.renderers;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
@@ -83,6 +86,12 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
     private ViewParameters viewParameters;
     public void setViewParameters(ViewParameters viewParameters) {
         this.viewParameters = viewParameters;
+    }
+    
+    // Dependency
+    private AssignmentSubmissionLogic submissionLogic;
+    public void setSubmissionLogic(AssignmentSubmissionLogic submissionLogic) {
+        this.submissionLogic = submissionLogic;
     }
 
     /**
@@ -252,9 +261,10 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
         /* 
          * Render the Instructor's Feedback Materials
          */
-        if (!preview) {
+        if (!preview && !studentPreviewSubmission) {
             AssignmentSubmissionVersion currVersion = assignmentSubmission.getCurrentSubmissionVersion();
             if (currVersion.isDraft() && currVersion.isFeedbackReleased()) {
+                UIOutput.make(joint, "draft-feedback");
                 UIMessage.make(joint, "draft-feedback-header", "assignment2.student-submission.feedback.header");
 
                 UIVerbatim.make(joint, "draft-feedback-text", currVersion.getFeedbackNotes());
@@ -265,6 +275,13 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
                     attachmentListRenderer.makeAttachmentFromFeedbackAttachmentSet(joint, 
                             "draft-feedback-attachment-list:", viewParameters.viewID, 
                             currVersion.getFeedbackAttachSet());
+                }
+                
+                // mark this feedback as viewed
+                if (!currVersion.isFeedbackRead()) {
+                    List<Long> versionIdList = new ArrayList<Long>();
+                    versionIdList.add(currVersion.getId());
+                    submissionLogic.markFeedbackAsViewed(assignmentSubmission.getId(), versionIdList);
                 }
             }
         }
