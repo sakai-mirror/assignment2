@@ -496,18 +496,19 @@ h4.completed_assignment {
  */
 .ui-dialog {
 	border: solid medium blue;
+	background-color: white;
 }
  
 .ui-dialog-container {
-    padding: 20px;
-    background-color: white;
-}
-/*
-.ui-dialog-content {
+    margin: 10px;
     
-    margin: 20px;
 }
-*/
+
+.ui-dialog-content {  
+    margin: 10px;
+    padding: 10px;
+}
+
 
 .ui-dialog-titlebar-close {
     display: none;
