@@ -22,7 +22,9 @@
 package org.sakaiproject.assignment2.tool.producers.renderers;
 
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Locale;
 
@@ -31,6 +33,7 @@ import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
+import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.assignment2.tool.StudentAction;
 import org.sakaiproject.assignment2.tool.beans.AssignmentSubmissionBean;
@@ -169,16 +172,7 @@ public class StudentViewAssignmentRenderer {
         Map<String, String> disabledLinkAttr = new HashMap<String, String>();
         disabledLinkAttr.put("onclick", "return false;");
 
-        // set the textual representation of the submission status
-        String status = "";
-        int statusConstant = AssignmentConstants.SUBMISSION_NOT_STARTED;
-        if (assignmentSubmission != null) {
-            statusConstant = submissionLogic.getSubmissionStatusConstantForCurrentVersion(
-                    assignmentSubmission.getCurrentSubmissionVersion(), assignment.getDueDate());
-            status = messageLocator.getMessage(
-                    "assignment2.student-submit.status." + 
-                    statusConstant);
-        }
+        boolean submissionIsOpen = submissionLogic.isSubmissionOpenForStudentForAssignment(currentUser.getId(), assignment.getId());
         
         /* 
          * If the Student is previewing their submission, only want to show the
@@ -186,12 +180,19 @@ public class StudentViewAssignmentRenderer {
          */
         if (!studentSubmissionPreview) {
             asnnSubmissionDetailsRenderer.fillComponents(joint, "assignment-details:", assignmentSubmission, previewAsStudent);
-        
+
             asnnInstructionsRenderer.fillComponents(joint, "assignment-instructions:", assignment);
-        
+
             // Submission History
             if (!previewAsStudent) {
-                asnnSubmissionHistoryRenderer.fillComponents(joint, "assignment-previous-submissions:", assignmentSubmission);
+                List<AssignmentSubmissionVersion> versionHistory = submissionLogic.getVersionHistoryForSubmission(assignmentSubmission);
+                if (versionHistory != null) {
+                    if (versionHistory.size() == 1 && !submissionIsOpen) {
+                        asnnSubmissionVersionRenderer.fillComponents(joint, "assignment-single-version:", versionHistory.get(0), false);
+                    } else if (versionHistory.size() > 1 || (versionHistory.size() == 1 && !versionHistory.get(0).isDraft())) {
+                        asnnSubmissionHistoryRenderer.fillComponents(joint, "assignment-previous-submissions:", assignmentSubmission);
+                    }
+                }
             }
         }
         else {
@@ -201,7 +202,7 @@ public class StudentViewAssignmentRenderer {
         if (previewAsStudent) {
             asnnSubmitEditorRenderer.fillComponents(joint, "assignment-edit-submission:", assignmentSubmission, true, false);
         }
-        else if (submissionLogic.isSubmissionOpenForStudentForAssignment(currentUser.getId(), assignment.getId())) {
+        else if (submissionIsOpen) {
             asnnSubmitEditorRenderer.fillComponents(joint, "assignment-edit-submission:", assignmentSubmission, previewAsStudent, studentSubmissionPreview);
         }
         else {
