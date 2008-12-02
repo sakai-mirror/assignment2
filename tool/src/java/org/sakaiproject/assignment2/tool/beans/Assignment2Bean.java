@@ -214,12 +214,12 @@ public class Assignment2Bean {
                         new Object[] { assignment.getTitle() }, TargettedMessage.SEVERITY_INFO));
             }
         } else {
-            if (draft) {
+            //if (draft) {
                 //messages.addMessage(new TargettedMessage("assignment2.assignment_save_draft_error"));
-            } else {
+            //} else {
                 //messages.addMessage(new TargettedMessage("assignment2.assignment_post_error"));
-            }
-            return WorkFlowResult.INSTRUCTOR_ASSIGNMENT_FAILURE;
+            //}
+            return WorkFlowResult.INSTRUCTOR_ASSIGNMENT_VALIDATION_FAILURE;
         }
         return WorkFlowResult.INSTRUCTOR_POST_ASSIGNMENT;
     }

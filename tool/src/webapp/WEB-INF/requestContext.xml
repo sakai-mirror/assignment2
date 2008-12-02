@@ -42,6 +42,9 @@
         <property name="messageLocator" ref="messageLocator" />
         <property name="richTextEvolver" ref="richTextEvolver"></property>
         <property name="asnnSubmissionVersion" ref="AssignmentSubmissionVersion" />
+        <property name="attachmentListRenderer" ref="AttachmentListRenderer"></property>
+        <property name="viewParameters" ref="viewParameters"></property>
+        <property name="submissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic"></property>
     </bean>
     
     <bean id="AsnnSubmissionVersionRenderer"
@@ -117,11 +120,6 @@
    </bean>
    
    <bean class="org.sakaiproject.assignment2.tool.producers.RedirectToAssignmentProducer">
-   </bean>
-
-   <bean class="org.sakaiproject.assignment2.tool.producers.fragments.AjaxCallbackProducer">
-	  <property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
-      <property name="sessionManager" ref="org.sakaiproject.tool.api.SessionManager" />
    </bean>	
 
    <bean class="org.sakaiproject.assignment2.tool.producers.AssignmentProducer">
@@ -260,7 +258,7 @@
    </bean>
    
    <!--  Actions -->
-   <bean id="RemoveAssignmentAction"  class="org.sakaiproject.assignment2.tool.commands.RemoveAssignmentCommand">
+   <bean id="RemoveAssignmentCommand"  class="org.sakaiproject.assignment2.tool.commands.RemoveAssignmentCommand">
        <property name="logic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
        <property name="messages" ref="targettedMessageList" />
    </bean>
@@ -271,6 +269,10 @@
    
    <bean id="ReleaseFeedbackAction"  class="org.sakaiproject.assignment2.tool.commands.ReleaseFeedbackCommand">
        <property name="assignmentSubmissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
+   </bean>
+   
+   <bean id="ReorderAssignmentsAction"  class="org.sakaiproject.assignment2.tool.commands.ReorderAssignmentsCommand">
+       <property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
    </bean>
     
    <!--  Beans -->

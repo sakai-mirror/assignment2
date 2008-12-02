@@ -265,6 +265,7 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
 
         //Announcement -  only display if site has the announcements tool
         if (externalLogic.siteHasTool(currentContextId, ExternalLogic.TOOL_ID_ANNC)) {
+            UIOutput.make(form, "add_announcement_container");
             UIBoundBoolean.make(form, "announcement", assignment2OTP + ".hasAnnouncement");
         }
 

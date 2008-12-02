@@ -51,21 +51,20 @@ public class AsnnSubmissionHistoryRenderer implements BasicProducer {
         this.submissionLogic = submissionLogic;
     }
 
-    public void fillComponents(UIContainer parent, String clientID, AssignmentSubmission assignmentSubmission) {
-        UIJointContainer joint = new UIJointContainer(parent, clientID, "asnn2-submission-history-widget:");       
+    public void fillComponents(UIContainer parent, String clientID, AssignmentSubmission assignmentSubmission) {       
 
         Assignment2 assignment = assignmentSubmission.getAssignment();
-        List<AssignmentSubmissionVersion> versionHistory = new ArrayList<AssignmentSubmissionVersion>();
-        versionHistory = submissionLogic.getVersionHistoryForSubmission(assignmentSubmission);
+        List<AssignmentSubmissionVersion> versionHistory = submissionLogic.getVersionHistoryForSubmission(assignmentSubmission);
 
-        if (versionHistory.size() == 1) {
-            AssignmentSubmissionVersion curVersion = versionHistory.get(0);
-            asnnSubmissionVersionRenderer.fillComponents(joint, "single-submission-version:", curVersion, true);
-            List<Long>versionIds = new ArrayList<Long>();
-            versionIds.add(curVersion.getId());
-            submissionLogic.markFeedbackAsViewed(assignmentSubmission.getId(), versionIds);
-        } else if (versionHistory.size() > 1){
+        if (versionHistory.size() >= 1) {
+            // Show the history view if:
+            // 1) there is more than one version or 
+            // 2) there is one submitted version and submission is still open
+            // Do not display history if there is one version and that version is draft.
+            // That info will be displayed in the editor view
+            
             //TODO FIXME We'll have to think about the VERSION 0 logic here
+            UIJointContainer joint = new UIJointContainer(parent, clientID, "asnn2-submission-history-widget:");
             UIOutput.make(joint, "submissions-header");
             UIOutput.make(joint, "multiple-submissions");
             
@@ -73,8 +72,12 @@ public class AsnnSubmissionHistoryRenderer implements BasicProducer {
                 // do not include draft versions in this history display
                 if (!version.isDraft()) {
                     UIBranchContainer versionDiv = UIBranchContainer.make(joint, "submission-version:");
+                    if (version.getSubmittedDate() == null) {
+                        UIMessage.make(versionDiv, "header-text", "assignment2.student-submission.history.version.header.no_submission");
+                    } else {
                     UIMessage.make(versionDiv, "header-text", "assignment2.student-submission.history.version.header", 
                             new Object[] {version.getSubmittedDate().toLocaleString()});
+                    }
                     boolean newfeedback = false;
                     // Make the envelope icons for feedback if necessary
                     if (version.isFeedbackReleased() && version.isFeedbackRead()) {
@@ -84,7 +87,7 @@ public class AsnnSubmissionHistoryRenderer implements BasicProducer {
                     else if (version.isFeedbackReleased()) {
                         UIOutput.make(versionDiv, "new-feedback-img");
                     }
-                    UIContainer versionContainer = asnnSubmissionVersionRenderer.fillComponents(versionDiv, "submission-entry:", version, false);
+                    UIContainer versionContainer = asnnSubmissionVersionRenderer.fillComponents(versionDiv, "submission-entry:", version, true);
                     Map<String,String> stylemap = new HashMap<String,String>();
                     stylemap.put("display", "none");
                     versionContainer.decorate(new UICSSDecorator(stylemap));

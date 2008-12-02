@@ -140,9 +140,6 @@ public class LocalPermissionLogic {
 
             return Boolean.FALSE;
 
-        } else if (AjaxCallbackProducer.VIEW_ID.equals(viewId)) {
-            return Boolean.TRUE;
-
         } else if (FragmentAssignment2SelectProducer.VIEW_ID.equals(viewId)) {
             return permissionLogic.isCurrentUserAbleToEditAssignments(contextId);
         }

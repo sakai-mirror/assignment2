@@ -21,6 +21,8 @@
 
 package org.sakaiproject.assignment2.tool;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment2.tool.params.AssignmentListSortViewParams;
 import org.sakaiproject.assignment2.tool.params.AssignmentViewParams;
 import org.sakaiproject.assignment2.tool.params.SimpleAssignmentViewParams;
@@ -37,6 +39,7 @@ import org.sakaiproject.assignment2.tool.producers.StudentAssignmentListProducer
 import org.sakaiproject.assignment2.tool.producers.StudentSubmitProducer;
 import org.sakaiproject.assignment2.tool.producers.ViewSubmissionsProducer;
 
+import uk.org.ponder.rsf.builtin.UVBProducer;
 import uk.org.ponder.rsf.flow.ARIResult;
 import uk.org.ponder.rsf.flow.ActionResultInterceptor;
 import uk.org.ponder.rsf.viewstate.AnyViewParameters;
@@ -54,7 +57,8 @@ import uk.org.ponder.rsf.viewstate.ViewParamsInterceptor;
  *
  */
 public class Assignment2WorkFlowLogic implements ViewParamsInterceptor, ActionResultInterceptor {
-
+    private static final Log log = LogFactory.getLog(Assignment2WorkFlowLogic.class);
+    
     private LocalPermissionLogic localPermissionLogic;
     public void setLocalPermissionLogic(LocalPermissionLogic localPermissionLogic){
         this.localPermissionLogic = localPermissionLogic;
@@ -136,6 +140,10 @@ public class Assignment2WorkFlowLogic implements ViewParamsInterceptor, ActionRe
             result.resultingView = new SimpleViewParameters(AssignmentProducer.VIEW_ID);
             result.propagateBeans = ARIResult.PROPAGATE;
             break;
+        case INSTRUCTOR_ASSIGNMENT_VALIDATION_FAILURE:
+            result.resultingView = new SimpleViewParameters(AssignmentProducer.VIEW_ID);
+            result.propagateBeans = ARIResult.FLOW_FASTSTART;
+            break;
         case STUDENT_CONTINUE_EDITING_SUBMISSION:
             result.resultingView = new StudentSubmissionParams(StudentSubmitProducer.VIEW_ID, assignmentId, false);
             result.propagateBeans = ARIResult.PROPAGATE;
@@ -147,19 +155,25 @@ public class Assignment2WorkFlowLogic implements ViewParamsInterceptor, ActionRe
         case STUDENT_SAVE_DRAFT_SUBMISSION:
             result.resultingView = new SimpleViewParameters(StudentAssignmentListProducer.VIEW_ID);
             break;
-        case STUDENT_SUBMISSION_FAILURE:
-            break;
         case STUDENT_SUBMIT_SUBMISSION:
             result.resultingView = new SimpleViewParameters(StudentAssignmentListProducer.VIEW_ID);
             break;
+        case STUDENT_SUBMISSION_FAILURE:
         default:
+            log.warn("Unknown/Unhandled WorkFlowResult in Asnn2 Workflow: " + actionReturn);
             break;
         }
     }
     
     public void interceptActionResult(ARIResult result, ViewParameters incoming, Object actionReturn) {
-        if (actionReturn instanceof WorkFlowResult) {
+        if (UVBProducer.VIEW_ID.equals(incoming.viewID)) {
+            log.debug("Ingoring UVB Views in the Asnn2 Action Workflow.");
+        }
+        else if (actionReturn instanceof WorkFlowResult) {
             interceptWorkFlowResult(result, incoming, (WorkFlowResult) actionReturn);
+        }
+        else {
+            log.warn("Unknown Action Return in Asnn2 Workflow: " + actionReturn);
         }
     }
 

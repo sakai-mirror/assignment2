@@ -153,13 +153,9 @@
 		<input rsf:id="save" type="submit" onclick="saveSortables()" value="Save" />
 		<input rsf:id="cancel" type="submit" value="cancel" />
 	</form>
-	
-	
-	
+		
 	<div rsf:id="assignment_empty">There are no Assignments yet</div>
-	<script rsf:id="init_ajaxCallbackURL" type="text/javascript">
-	//ajaxCallbackURL - set via producer
-	</script>
+
 	<script type="text/javascript">
 	  jQuery("#sortable").sortable({items: ">li", axis: "y", containment: "parent", placeholder: "hover"});
 	  function moveUp(img){
@@ -172,17 +168,7 @@
 	  }
 	  function saveSortables() {
 	     serialize = jQuery("#sortable").sortable("serialize", {attribute: "className"});
-	     jQuery.ajax({
-	        type: 'get',
-	        url: ajaxCallbackURL,
-	        data: serialize.replace(/\[\]/g, ""),
-	        success: function(a){
-               //yay show confirmation
-	        },
-	        error: function(a) {
-	        	return false;
-	        }	        
-	     });
+	     asnn2.saveOrdering(serialize);
 	  }
 	</script>
 	<br /><br /><br /><br />

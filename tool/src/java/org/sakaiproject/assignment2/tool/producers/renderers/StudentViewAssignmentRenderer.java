@@ -22,7 +22,9 @@
 package org.sakaiproject.assignment2.tool.producers.renderers;
 
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Locale;
 
@@ -31,6 +33,7 @@ import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
+import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.assignment2.tool.StudentAction;
 import org.sakaiproject.assignment2.tool.beans.AssignmentSubmissionBean;
@@ -38,7 +41,9 @@ import org.sakaiproject.assignment2.tool.producers.StudentAssignmentListProducer
 import org.sakaiproject.user.api.User;
 
 import uk.org.ponder.messageutil.MessageLocator;
+import uk.org.ponder.rsf.components.UICommand;
 import uk.org.ponder.rsf.components.UIContainer;
+import uk.org.ponder.rsf.components.UIForm;
 import uk.org.ponder.rsf.components.UIInternalLink;
 import uk.org.ponder.rsf.components.UIJointContainer;
 import uk.org.ponder.rsf.components.UIMessage;
@@ -149,7 +154,7 @@ public class StudentViewAssignmentRenderer {
         
         if (!previewAsStudent) {
             StudentAction studentAction = submissionBean.determineStudentAction(assignmentSubmission.getUserId(), assignment.getId());
-            UIOutput.make(tofill, "student-submit-heading", messageLocator.getMessage("assignment2.student-assignment-list.action." + studentAction));
+            UIOutput.make(tofill, "student-submit-heading", messageLocator.getMessage("assignment2.student-assignment-list.action." + studentAction.toString().toLowerCase()));
         }
             
         if (assignmentSubmission != null) {
@@ -167,16 +172,7 @@ public class StudentViewAssignmentRenderer {
         Map<String, String> disabledLinkAttr = new HashMap<String, String>();
         disabledLinkAttr.put("onclick", "return false;");
 
-        // set the textual representation of the submission status
-        String status = "";
-        int statusConstant = AssignmentConstants.SUBMISSION_NOT_STARTED;
-        if (assignmentSubmission != null) {
-            statusConstant = submissionLogic.getSubmissionStatusConstantForCurrentVersion(
-                    assignmentSubmission.getCurrentSubmissionVersion(), assignment.getDueDate());
-            status = messageLocator.getMessage(
-                    "assignment2.student-submit.status." + 
-                    statusConstant);
-        }
+        boolean submissionIsOpen = submissionLogic.isSubmissionOpenForStudentForAssignment(currentUser.getId(), assignment.getId());
         
         /* 
          * If the Student is previewing their submission, only want to show the
@@ -184,12 +180,19 @@ public class StudentViewAssignmentRenderer {
          */
         if (!studentSubmissionPreview) {
             asnnSubmissionDetailsRenderer.fillComponents(joint, "assignment-details:", assignmentSubmission, previewAsStudent);
-        
+
             asnnInstructionsRenderer.fillComponents(joint, "assignment-instructions:", assignment);
-        
+
             // Submission History
             if (!previewAsStudent) {
-                asnnSubmissionHistoryRenderer.fillComponents(joint, "assignment-previous-submissions:", assignmentSubmission);
+                List<AssignmentSubmissionVersion> versionHistory = submissionLogic.getVersionHistoryForSubmission(assignmentSubmission);
+                if (versionHistory != null) {
+                    if (versionHistory.size() == 1 && !submissionIsOpen) {
+                        asnnSubmissionVersionRenderer.fillComponents(joint, "assignment-single-version:", versionHistory.get(0), false);
+                    } else if (versionHistory.size() > 1 || (versionHistory.size() == 1 && !versionHistory.get(0).isDraft())) {
+                        asnnSubmissionHistoryRenderer.fillComponents(joint, "assignment-previous-submissions:", assignmentSubmission);
+                    }
+                }
             }
         }
         else {
@@ -199,8 +202,15 @@ public class StudentViewAssignmentRenderer {
         if (previewAsStudent) {
             asnnSubmitEditorRenderer.fillComponents(joint, "assignment-edit-submission:", assignmentSubmission, true, false);
         }
-        else if (submissionLogic.isSubmissionOpenForStudentForAssignment(currentUser.getId(), assignment.getId())) {
+        else if (submissionIsOpen) {
             asnnSubmitEditorRenderer.fillComponents(joint, "assignment-edit-submission:", assignmentSubmission, previewAsStudent, studentSubmissionPreview);
+        }
+        else {
+        	// If this isn't a preview, and the student can't submit, we need
+        	// to make the button so they can return to the list.
+        	UIOutput.make(joint, "student-return-to-list-buttons");
+        	UIForm returnform = UIForm.make(joint, "return-to-list-form", new SimpleViewParameters(StudentAssignmentListProducer.VIEW_ID));
+        	UICommand.make(returnform, "return-button", UIMessage.make("assignment2.student-submission.returntolist"), null);
         }
         
     }

@@ -10,7 +10,6 @@ import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import uk.org.ponder.rsf.components.UIContainer;
 import uk.org.ponder.rsf.components.UIJointContainer;
 import uk.org.ponder.rsf.components.UIMessage;
-import uk.org.ponder.rsf.components.UIOutput;
 import uk.org.ponder.rsf.components.UIVerbatim;
 import uk.org.ponder.rsf.producers.BasicProducer;
 import uk.org.ponder.rsf.viewstate.ViewParameters;
@@ -51,6 +50,8 @@ public class AsnnSubmissionVersionRenderer implements BasicProducer {
      * @param parent
      * @param clientID
      * @param asnnSubVersion
+     * @param multipleVersionDisplay true if this version is being displayed in a multi-version scenario.
+  	 * this will prevent unnecessary repeated headers
      * @param singleVersionDisplay - true if being used in the context of a single
      * version. the heading information is different for multi-version display (ie the history)
      * @return
@@ -65,48 +66,39 @@ public class AsnnSubmissionVersionRenderer implements BasicProducer {
         /*
          * Render the headers
          */
-        // if this is being used in a multiple version context (like the submission history),
-        // don't display the header
-        if (multipleVersionDisplay) {
+        if (!multipleVersionDisplay) {
             UIMessage.make(joint, "submission-header", "assignment2.student-submission.submission.header");
         }
-        
+
         //TODO FIXME time and date of submission here
         
         /*
          * Render the Students Submission Materials
+         * These are not displayed if the version number is 0 - this indicates
+         * feedback without a submission
          */
-        if (submissionType == AssignmentConstants.SUBMIT_ATTACH_ONLY) {
-            // TODO FIXME if the student didn't actually submit any attachments
-            // what should we say
-            UIOutput.make(joint, "submission-attachments-header");
-            attachmentListRenderer.makeAttachmentFromSubmissionAttachmentSet(joint, "submission-attachment-list:", viewParameters.viewID, 
-                    asnnSubVersion.getSubmissionAttachSet());
-        }
-        else if (submissionType == AssignmentConstants.SUBMIT_INLINE_AND_ATTACH) {
-
-            UIOutput.make(joint, "submission-text-header");
-            UIVerbatim.make(joint, "submission-text", asnnSubVersion.getSubmittedText());
-
-            // TODO FIXME if the student didn't actually submit any attachments
-            // what should we say
-            UIOutput.make(joint, "submission-attachments-header");
-            attachmentListRenderer.makeAttachmentFromSubmissionAttachmentSet(joint, "submission-attachment-list:", viewParameters.viewID, 
-                    asnnSubVersion.getSubmissionAttachSet());
-        }
-        else if (submissionType == AssignmentConstants.SUBMIT_INLINE_ONLY) {
-            UIOutput.make(joint, "submission-text-header");
-            UIVerbatim.make(joint, "submission-text", asnnSubVersion.getSubmittedText());
-        }
-        else if (submissionType == AssignmentConstants.SUBMIT_NON_ELECTRONIC) {
-            log.error("I'm not sure if we are supposed to do anything here.");
-        }
-        else {
-            log.error("Trying to render an unknown submission type: " + submissionType);
+        if (asnnSubVersion.getSubmittedVersionNumber() != 0) {
+            if (submissionType == AssignmentConstants.SUBMIT_ATTACH_ONLY || submissionType == AssignmentConstants.SUBMIT_INLINE_AND_ATTACH) {
+                // TODO FIXME if the student didn't actually submit any attachments
+                // what should we say
+                UIMessage.make(joint, "submission-attachments-header", "assignment2.student-submit.submitted_attachments");
+                
+                if (asnnSubVersion.getSubmissionAttachSet() != null && !asnnSubVersion.getSubmissionAttachSet().isEmpty()){
+                    attachmentListRenderer.makeAttachmentFromSubmissionAttachmentSet(joint, "submission-attachment-list:", viewParameters.viewID, 
+                            asnnSubVersion.getSubmissionAttachSet());
+                } else {
+                    UIMessage.make(joint, "no_submitted_attachments", "assignment2.student-submit.no_attachments_submitted");
+                }
+            }
+            
+            if (submissionType == AssignmentConstants.SUBMIT_INLINE_AND_ATTACH || submissionType == AssignmentConstants.SUBMIT_INLINE_ONLY) {
+                UIMessage.make(joint, "submission-text-header", "assignment2.student-submit.submission_text");
+                UIVerbatim.make(joint, "submission-text", asnnSubVersion.getSubmittedText());
+            }
         }
 
         /* 
-         * Render the Instructors Feedback Materials
+         * Render the Instructor's Feedback Materials
          */
         if (asnnSubVersion.isFeedbackReleased()) {
             UIMessage.make(joint, "feedback-header", "assignment2.student-submission.feedback.header");
