@@ -320,6 +320,23 @@ A:hover.breadCrumb {
 	padding-left: 10px;
 }
 
+/** New Table List Page Styles **/
+.assignmentTable {
+	
+}
+
+.assignmentInfoCell {
+	padding-left: 20px;
+}
+
+.assignmentActive {
+	background: transparent url("/sakai-assignment2-tool/content/images/bullet_green.png") no-repeat top left;
+}
+
+.assignmentInactive {
+	background: transparent url("/sakai-assignment2-tool/content/images/bullet_red.png") no-repeat top left;
+}
+
 /** List Page Styles **/
 a.add_assignment {
 	 background: #fff url("/sakai-assignment2-tool/content/images/add.png") no-repeat left center;
@@ -385,7 +402,8 @@ ul#assignmentList h3.left {
 	padding-left: 0;
 }
    
-ul#assignmentList div.left span.duedate {
+/* ul#assignmentList div.left span.duedate { */
+span.duedate {
    display: block;
    padding-left: 30px;
    padding-top: 5px;

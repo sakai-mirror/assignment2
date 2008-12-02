@@ -365,6 +365,7 @@ var asnn2 = asnn2 || {};
 })(jQuery, asnn2);
 
 
+
 /* New Asnn2 functions that are namespaced. Will need to go back
  * and namespace others eventually.
  */
@@ -602,3 +603,16 @@ var asnn2 = asnn2 || {};
     };
     
 })(jQuery, asnn2);
+
+var asnn2listpage = asnn2listpage || {};
+
+(function (jQuery, asnn2listpage) {
+	﻿asnn2listpage.setupAsnnTable = function() {
+		var opts = {
+			selectors: {
+				movables: ".movable"
+			}
+		}
+		fluid.reorderList("#asnn-table-body", opts);
+	};
+})(jQuery, asnn2listpage);
