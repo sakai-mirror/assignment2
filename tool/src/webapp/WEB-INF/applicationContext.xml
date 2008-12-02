@@ -72,7 +72,7 @@
 		via incoming request URL -->
 	<bean parent="requestAddressibleParent">
 		<property name="value"
-			value="RemoveAssignmentAction,GradeAllRemainingAction,MarkFeedbackAsReadAction,Assignment2,Assignment2Bean,AssignmentSubmission,AssignmentSubmissionBean,FilePickerBean,AssignmentSubmissionVersion,uploadBean,MarkTodoBean,ReleaseGradesAction,ReleaseFeedbackAction" />
+			value="RemoveAssignmentCommand,GradeAllRemainingAction,MarkFeedbackAsReadAction,Assignment2,Assignment2Bean,AssignmentSubmission,AssignmentSubmissionBean,FilePickerBean,AssignmentSubmissionVersion,uploadBean,MarkTodoBean,ReleaseGradesAction,ReleaseFeedbackAction,ReorderAssignmentsAction" />
 	</bean>
 
 	<!-- Override the default style of user messages -->

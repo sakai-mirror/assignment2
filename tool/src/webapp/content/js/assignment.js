@@ -204,11 +204,83 @@ function updateDisplayNoAttachments(){
     }
 }
 
+/*
+ * Some functions and utilities which may be useful outside of Assignments2
+ */
+var asnn2util = asnn2util || {};
+
+(function (jQuery, asnn2util) {
+	/**
+     * Turns on the 2.x portals background overlay
+     */
+    asnn2util.turnOnPortalOverlay = function() {
+    	jQuery("body", parent.document).append("<div id='portalMask' style='width:100%;height:100%'></div>");
+    	jQuery("#" + iframeId, parent.document).css("z-index", "9001").css("position", "relative").css("background", "#fff");
+    };
+    
+    /**
+     * Turns off the 2.x portal background overlay
+     */
+    asnn2util.turnOffPortalOverlay = function() {
+    	jQuery("#portalMask", parent.document).trigger("unload").unbind().remove();
+        jQuery("#" + iframeId, parent.document).css("z-index", "0");
+    };
+	
+    /**
+     * This opens the jQuery object, hopefully representing a hidden element
+     * somewhere on the page, as a dialog.  In addition to opening as a modal
+     * dialog, it has support for blanking out the background portion of the 
+     * Sakai 2.x Series Portal.
+     * 
+     * @param dialogObj  Should be a jQuery object for the hidden element to
+     * be used as the dialog.
+     */
+    asnn2util.openDialog = function(dialogObj) {
+    	dialogOptions = {
+            resizable: false,
+            width: 500,
+            modal: true,
+            overlay: {
+                opacity: 0.5,
+                background: "#eee"
+            }
+        };
+    	asnn2util.turnOnPortalOverlay();
+    	dialogObj.dialog(dialogOptions).show();
+    };
+    
+    /**
+     * This will close dialog that was opened with asnn2util.openDialog.
+     * 
+     * @param dialogObj The jQuery object representing the element being used
+     * as the modal dialog.
+     */
+    asnn2util.closeDialog = function(dialogObj) {
+    	dialogObj.dialog('destroy');
+        asnn2util.turnOffPortalOverlay();
+    };
+	
+})(jQuery, asnn2util);
+
 var asnn2 = asnn2 || {};
 
 (function (jQuery, asnn2) {
+
+    // for reordering of assignments
+    asnn2.saveOrdering = function(serializedString) {
+        serializedString = serializedString.replace(/\[\]/g, "").replace(/row\ /g,"");
+        if (serializedString) {
+            serializedString = serializedString.replace(/&/g,"");
+            var orderedAssignIds = serializedString.split("sortable=");
+            var queries = new Array();
+            queries.push(RSF.renderBinding("ReorderAssignmentsAction.orderedAssignIds",orderedAssignIds));
+            queries.push(RSF.renderActionBinding("ReorderAssignmentsAction.execute"))
+            var body = queries.join("&");
+            jQuery.post(document.URL, body);
+        }
+    }
     
-  //Sorting functions
+    //Sorting functions
     var sortBy; 
     var sortDir; 
     var pStart=0; 
@@ -388,37 +460,29 @@ var asnn2 = asnn2 || {};
         });
     };
     
+    /**
+     * Used to generate the confirmation dialog for When the student clicks
+     * submit on either the Edit Submission or Preview Submission page. 
+     */
     asnn2.studentSubmissionConfirm = function(buttonform) {
-    	jQuery("body", parent.document).append("<div id='portalMask' style='width:100%;height:100%'></div>");
-    	jQuery("#" + iframeId, parent.document).css("z-index", "9001").css("position", "relative").css("background", "#fff");
         confirmDialog = jQuery('#submit-confirm-dialog');
-        dialogOptions = {
-            resizable: false,
-            width: 500,
-            modal: true,
-            overlay: {
-                opacity: 0.5,
-                background: "#eee"
-            }
-        };
+
         var submitButton = buttonform;
         jQuery('#submission-confirm-button').click( function (event) {
-            confirmDialog.dialog('destroy');
-            jQuery("#portalMask", parent.document).trigger("unload").unbind().remove();
-            jQuery("#" + iframeId, parent.document).css("z-index", "0");
+        	asnn2util.closeDialog(confirmDialog);
             submitButton.onclick = function (event) { return true };
             submitButton.click();
         });
 
         jQuery('#submission-cancel-button').click( function (event) {
-            confirmDialog.dialog('destroy');
-            jQuery("#portalMask", parent.document).trigger("unload").unbind().remove();
-            jQuery("#" + iframeId, parent.document).css("z-index", "0");
+        	asnn2util.closeDialog(confirmDialog);
         });
 
-        confirmDialog.dialog(dialogOptions).show();
+        asnn2util.openDialog(confirmDialog);
         return false;
     };
+    
+    
     
     /**
      * Aligns the "Apply to Unassigned" box with the grading column 
@@ -432,5 +496,109 @@ var asnn2 = asnn2 || {};
         }
     };
     
+    /**
+     * This is used from the Instructor Landing page list.html to put up a
+     * prompt dialog when the assignment delete link (trashcan) is clicked.
+     */
+    asnn2.removeAsnnDialog = function(asnnId, fadeOutElement) {
+    	var removeDialog = jQuery('#remove-asnn-dialog');
+    	
+    	jQuery('#page-replace\\:\\:remove-asnn-button').click( function (event)  {
+    		var queries = new Array();
+    		queries.push(RSF.renderBinding("RemoveAssignmentCommand.assignmentId",asnnId));
+    		queries.push(RSF.renderActionBinding("RemoveAssignmentCommand.execute"));
+    		var body = queries.join("&");
+    		jQuery.post(document.URL, body);
+    		
+    		// Close the dialog
+    		asnn2util.closeDialog(removeDialog);
+    		
+    		// Fade out this assignment
+    		//jQuery(fadeOutElement).append('<div class="overlay"></div></div><div class="overlayMessage">' + '</div>');
+	        //jQuery("div.overlay", fadeOutElement).css('opacity',.60);
+	        //jQuery(".success", fadeOutElement).css('opacity',1);
+	        //setTimeout(function(){  jQuery(fadeOutElement).fadeOut("slow"); }, 5000);
+    		jQuery(fadeOutElement).fadeOut();
+    	});
+    	
+    	jQuery('#page-replace\\:\\:cancel-remove-asnn-button').click( function (event) {
+    		asnn2util.closeDialog(removeDialog);
+    	});
+    	
+    	asnn2util.openDialog(removeDialog);
+    	
+    	return false;
+    };
+    
+    /**
+     * Release/Retract all feedback confirmation dialog
+     * 
+     * This function uses the asnn2 dialog utility. The same function
+     * is used for both releasing and retracting feedback, distinguished by the 
+     * "release" boolean parameter. We just use string substitution to
+     * differentiate the release and retract dialogs. Be careful if you
+     * change the naming conventions!
+     * 
+     * @param submitButtonId - the id of the html element that actually is submitted
+     * @param release - true if you want the "release" dialog; false for the "retract" dialog
+     */
+    asnn2.releaseFeedbackDialog = function(submitButtonId, release) {
+        var releaseText;
+        if (release) {
+            releaseText = 'release';
+        } else {
+            releaseText = 'retract';
+        }
+        
+        var confirmDialog = jQuery('#' + releaseText + '-feedback-dialog');
+        var submitButton = jQuery('input[id=\'' + submitButtonId + '\']');
+        var confirmButton = jQuery('#page-replace\\:\\:' + releaseText + '-feedback-confirm');
+        confirmButton.click( function (event) {
+            asnn2util.closeDialog(confirmDialog);
+            submitButton.onclick = function (event) { return true };
+            submitButton.click();
+        });
+
+        var cancelButton = jQuery('#page-replace\\:\\:' + releaseText + '-feedback-cancel').click( function (event) {
+            asnn2util.closeDialog(confirmDialog);
+        });
+
+        asnn2util.openDialog(confirmDialog);
+        return false;
+    };  
+    
+    /**
+     * Release/Retract all grades 
+     * 
+     * This function uses the asnn2 dialog utility.  The same function is used for
+     * both releasing and retracting grades. This is because the two cases
+     * are handled by different translations being used in the java code. The
+     * two cases use the same submit button for the form.
+     * 
+     * @param submitButtonId the id of the html element that actually is submitted
+     */
+    asnn2.releaseGradesDialog = function(submitButtonId) {
+        var confirmDialog = jQuery('#release-grades-dialog');
+        var submitButton = jQuery('input[id=\'' + submitButtonId + '\']');
+        var confirmButton = jQuery('#page-replace\\:\\:release-grades-confirm');
+        confirmButton.click( function (event) {
+            var confirmCheckbox = jQuery("#confirm-checkbox").get(0);
+            if (confirmCheckbox && !confirmCheckbox.checked) {
+                jQuery("#page-replace\\:\\:checkbox-error").show();
+            } else {
+                   
+                asnn2util.closeDialog(confirmDialog);
+                submitButton.onclick = function (event) { return true };
+                submitButton.click();
+            }
+        });
+
+        var cancelButton = jQuery('#page-replace\\:\\:release-grades-cancel').click( function (event) {
+            asnn2util.closeDialog(confirmDialog);
+        });
+
+        asnn2util.openDialog(confirmDialog);
+        return false;
+    };
     
 })(jQuery, asnn2);

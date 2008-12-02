@@ -21,7 +21,7 @@
 			<th rsf:id="msg=assignment2.student-submit.points_possible_title">Points Possible</th>	
 			<td rsf:id="points-possible">25</td>
 		</tr>
-		<tr>
+		<tr rsf:id="resubmission-allowed-row">
 			<th rsf:id="msg=assignment2.student-submit.resubmissions_allowed_title">Resubmissions Allowed</th>	
 			<td rsf:id="resubmissions-allowed"></td>
 		</tr>
@@ -60,9 +60,6 @@
 <!--     Assignment Submission History Display Widget                        -->
 <!--                                                                         -->
 <div rsf:id="asnn2-submission-history-widget:" class="versionHistory">
-		<div rsf:id="single-submission-version:">
-		
-		</div>
 		
 		<h3 id="submissions-header" rsf:id="submissions-header">
 			<img src="/sakai-assignment2-tool/content/images/collapse.png" border="0" alt="Open, click to close assignment instruction" style="cursor:pointer" />
@@ -103,6 +100,8 @@
             <img src="page_white_word.png" width="16" height="16"/><a href="">ExampleAttachment.doc</a> (52 KB)
         </li>
     </ul>
+    <span rsf:id="no_submitted_attachments" class="instruction">No attachments yet</span>
+    
     <h4 rsf:id="feedback-header:">Instructor Feedback</h4>
     <div rsf:id="feedback-text" class="textPanel">
         <p>Feedback from the instructor.</p>
@@ -140,6 +139,21 @@
 		<span><a rsf:id="add_submission_attachments" class="thickbox">Add Attachments</a></span>
 	</fieldset>
 	</div>
+	
+	<!-- this is feedback supplied for the draft version -->
+	<div rsf:id="draft-feedback">
+    	<h4 rsf:id="draft-feedback-header:">Instructor Feedback</h4>
+        <div rsf:id="draft-feedback-text" class="textPanel">
+            <p>Feedback from the instructor.</p>
+        </div>
+        <h4 rsf:id="draft-feedback-attachments-header">Feedback Supporting Materials</h4>
+        <ul class="attachList indnt1">
+            <li rsf:id="draft-feedback-attachment-list:">
+                <img src="page_white_word.png" width="16" height="16"/><a href="">ExampleAttachment.doc</a> (52 KB)
+            </li>
+        </ul>
+    </div>
+    
 	<fieldset rsf:id="honor_pledge_fieldset" >
 		<legend rsf:id="msg=assignment2.student-submit.honor_pledge">Honor Pledge</legend>
 		<ol>
@@ -161,7 +175,7 @@
 	</fieldset>													
 	</form>	
 	
-	<div class="submission-confirm-div" style="display:none" id="submit-confirm-dialog">
+	<div style="display:none" id="submit-confirm-dialog">
         <ul style="margin:0;padding:0;display:inline;">
             <li class="alertMessageInline">Are you sure you are ready to send this submission to your instructor?</li>
         </ul>

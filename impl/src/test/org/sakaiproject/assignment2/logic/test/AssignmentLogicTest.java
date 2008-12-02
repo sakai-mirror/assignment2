@@ -20,6 +20,7 @@
  **********************************************************************************/
 package org.sakaiproject.assignment2.logic.test;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
@@ -327,37 +328,53 @@ public class AssignmentLogicTest extends Assignment2TestBase {
 	    // try to reorder assign as TA
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
         try {
-            assignmentLogic.reorderAssignments(new Long[] {});
+            assignmentLogic.reorderAssignments(new ArrayList<Long>());
             fail("Did not catch user trying to reorder assignments w/o permission!");
         } catch (SecurityException se){}
         
         // switch to someone who can reorder
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
 		
+        List<Long> assignIdList = new ArrayList<Long>();
+        assignIdList.add(3L);
+        assignIdList.add(2L);
+        assignIdList.add(1L);
+        
 		// try passing a list w/ a diff # of values than # assign in site
 		try {
-			assignmentLogic.reorderAssignments(new Long[] {3L, 2L, 1L});
+			assignmentLogic.reorderAssignments(assignIdList);
 			fail("Did not catch list w/ 3 passed to setAssignmentSortIndexes when " +
 					"there are 4 assign in site");
 		} catch (IllegalArgumentException iae) {}
 		
 		// try passing a list w/ a duplicate id that results in less than total
 		// # assign in site
+		assignIdList.add(1L);
 		try {
-            assignmentLogic.reorderAssignments(new Long[] {3L, 2L, 1L, 1L});
+            assignmentLogic.reorderAssignments(assignIdList);
             fail("Did not catch list w/ 3 distinct ids (list had a duplicate) passed " +
             		"to setAssignmentSortIndexes when there are 4 assign in site");
         } catch (IllegalArgumentException iae) {}
 		
 		// try passing a list containing a nonexistent id
+        assignIdList = new ArrayList<Long>();
+        assignIdList.add(3L);
+        assignIdList.add(2L);
+        assignIdList.add(125L);
+        assignIdList.add(1L);
 		try {
-            assignmentLogic.reorderAssignments(new Long[] {3L, 2L, 125L, 1L});
+            assignmentLogic.reorderAssignments(assignIdList);
             fail("Did not catch list w/ nonexistent assignment id");
         } catch (IllegalArgumentException iae) {}
         
 		// right now they are in order assign 1 - 4
 		// let's put assign 4 first
-		assignmentLogic.reorderAssignments(new Long[] {testData.a4Id,testData.a1Id,testData.a2Id,testData.a3Id});
+        assignIdList = new ArrayList<Long>();
+        assignIdList.add(testData.a4Id);
+        assignIdList.add(testData.a1Id);
+        assignIdList.add(testData.a2Id);
+        assignIdList.add(testData.a3Id);
+		assignmentLogic.reorderAssignments(assignIdList);
 		// double check that they were updated
 		List<Assignment2> allAssigns = dao.findByProperties(Assignment2.class, new String[] {"contextId","removed"}, new Object[] {AssignmentTestDataLoad.CONTEXT_ID, false});
 		for (Assignment2 assign : allAssigns) {

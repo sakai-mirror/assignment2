@@ -15,24 +15,36 @@
 	    <!-- Assignment Details and Status will go here. -->
 	</div>
 	
-	<div rsf:id="assignment-instructions:">
-	    <!-- Assignment Instructions go here. -->
-	</div>
-	
 	<div rsf:id="assignment-previous-submissions:">
-	    <!-- Students previous submissions will be rendered. It might just -->
-	    <!-- be a single one, or a collapsable tree if there are multiple. -->
+	    <!-- Students previous submissions will be rendered. This is a collapsable tree containing the versions. -->
 	</div>
 
 	<hr class="itemSeparator" rsf:id="previous_submissions_sep"/>
 	
+	<div rsf:id="assignment-instructions:">
+	    <!-- Assignment Instructions go here. -->
+	</div>
+   
     <div rsf:id="assignment-edit-submission:">
         <!-- Rich text editor and/or attachments for editing submission -->
         <!-- and honor pledge and save/cancel buttons. -->
     </div>
+    
+    <div rsf:id="assignment-single-version:">
+    <!-- A single submission version will be displayed text-only. This should -->
+    <!-- never appear at the same time as assignment-edit-submission -->
+    </div>
 	
 	<div rsf:id="student-preview-submission-confirm-buttons">
 		<p>These are the preview submit buttons!</p>
+	</div>
+	
+	<div rsf:id="student-return-to-list-buttons">
+	    <form method="get" rsf:id="return-to-list-form">
+	        <fieldset class="submit">
+                <input rsf:id="return-button" accesskey="s" type="submit" class="active" value="Return to List"/>
+            </fieldset>
+        </form>
 	</div>
 	
 	<!-- 

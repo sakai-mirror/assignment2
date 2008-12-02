@@ -26,28 +26,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
-import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
-import org.sakaiproject.assignment2.tool.params.PagerViewParams;
-import org.sakaiproject.assignment2.tool.producers.ListProducer;
-import org.sakaiproject.assignment2.tool.producers.fragments.AjaxCallbackProducer;
-import org.sakaiproject.assignment2.tool.producers.renderers.PagerRenderer;
+import org.sakaiproject.assignment2.model.Assignment2;
 
 import uk.org.ponder.messageutil.MessageLocator;
 import uk.org.ponder.rsf.components.UIBranchContainer;
 import uk.org.ponder.rsf.components.UICommand;
 import uk.org.ponder.rsf.components.UIContainer;
 import uk.org.ponder.rsf.components.UIForm;
-import uk.org.ponder.rsf.components.UIInput;
 import uk.org.ponder.rsf.components.UIInternalLink;
 import uk.org.ponder.rsf.components.UILink;
 import uk.org.ponder.rsf.components.UIMessage;
 import uk.org.ponder.rsf.components.UIOutput;
-import uk.org.ponder.rsf.components.UIVerbatim;
 import uk.org.ponder.rsf.components.decorators.DecoratorList;
-import uk.org.ponder.rsf.components.decorators.UIFreeAttributeDecorator;
 import uk.org.ponder.rsf.components.decorators.UIRowSpanDecorator;
 import uk.org.ponder.rsf.components.decorators.UIStyleDecorator;
 import uk.org.ponder.rsf.flow.jsfnav.NavigationCase;
@@ -56,9 +48,6 @@ import uk.org.ponder.rsf.view.ComponentChecker;
 import uk.org.ponder.rsf.view.ViewComponentProducer;
 import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
 import uk.org.ponder.rsf.viewstate.ViewParameters;
-import uk.org.ponder.rsf.viewstate.ViewParamsReporter;
-import java.util.Map;
-import java.util.HashMap;
 
 public class ListReorderProducer implements ViewComponentProducer, NavigationCaseReporter{
 
@@ -130,9 +119,6 @@ public class ListReorderProducer implements ViewComponentProducer, NavigationCas
         UIForm form = UIForm.make(tofill, "form");
         UICommand.make(form, "save", messageLocator.getMessage("assignment2.list-reorder.save"), "Assignment2Bean.processSaveReorder");
         UICommand.make(form, "cancel", messageLocator.getMessage("assignment2.list-reorder.cancel"), "Assignment2Bean.processCancelReorder");
-        
-        UIVerbatim.make(tofill, "init_ajaxCallbackURL", "var ajaxCallbackURL = \"" + 
-        		externalLogic.getAssignmentViewUrl(AjaxCallbackProducer.VIEW_ID) + "\";");
     }
     
     public void setAssignmentLogic(AssignmentLogic assignmentLogic) {

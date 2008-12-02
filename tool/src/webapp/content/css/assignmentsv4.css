@@ -494,20 +494,21 @@ h4.completed_assignment {
 /*
  * Styles for our confirmation dialogs using JQuery UI Dialog
  */
+.ui-dialog {
+	border: solid medium blue;
+	background-color: white;
+}
+ 
 .ui-dialog-container {
-    background-color: white;
-    border: solid thin blue;
-}
-/*
-.ui-dialog-content {
+    margin: 10px;
     
-    margin: 20px;
 }
-*/
 
-.submission-confirm-div {
-    
+.ui-dialog-content {  
+    margin: 10px;
+    padding: 10px;
 }
+
 
 .ui-dialog-titlebar-close {
     display: none;
