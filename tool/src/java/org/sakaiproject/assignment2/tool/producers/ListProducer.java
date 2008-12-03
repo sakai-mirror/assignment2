@@ -303,9 +303,11 @@ public class ListProducer implements ViewComponentProducer, NavigationCaseReport
         //Links to settings and reorder
         // Settings page not yet implemented. ASNN-207
         //UIInternalLink.make(tofill, "settings_link", new SimpleViewParameters(SettingsProducer.VIEW_ID));
-        if (edit_perm) {
+        // We are removing access to the "accessible reorder page" for now since
+        // we are making the landing page accessible (and the accessible reorderer is a mess in IE7)
+        /*if (edit_perm) {
             UIInternalLink.make(tofill, "reorder_link", new SimpleViewParameters(ListReorderProducer.VIEW_ID));
-        }
+        }*/
 
     }
     
