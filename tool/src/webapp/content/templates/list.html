@@ -29,36 +29,39 @@
 
 	<br /><br />
 	
-	<table rsf:id="assignmentTable" class="assignmentTable">
+﻿        <!-- TODO FIXME: Something must be cascading against me, as I can't get
+	     the class to take hold, which is why the style is hardcoded on this
+	     table at the moment -->
+	﻿<table id="assignmentTable" rsf:id="assignmentTable" style="border-collapse: collapse; table-layout: fixed; width: 100%;" class="assignmentTable">
 		<thead>
 			<tr>
-				<th id="edit-header"> <!-- Edit and Delete -->
+				<th width="5%" id="edit-header"> <!-- Edit and Delete -->
 				</th>
-				<th id="title-header"> <!-- Assignment Title -->
+				<th width="60%" id="title-header"> <!-- Assignment Title -->
 					<h3>
               			<span rsf:id="msg=assignment2.list.assignments">Assignment</span>
-              			<a rsf:id="add_assignment" href="" class="add_assignment">Add</a> 
+              			<a rsf:id="add_assignment" href="" class="add_assignment">Add</a>
            			</h3>
 				</th>
-				<th id="submissions-header"> <!-- Submissions Total -->
+				<th width="35%" id="submissions-header"> <!-- Submissions Total -->
 					<h3 rsf:id="msg=assignment2.list.submissions_total">Submissions</h3>
 				</th>
 			</tr>
 		</thead>
 		<tbody id="asnn-table-body">
 			<tr class="movable" rsf:id="asnn-row:">
-				<td width="5%"  headers="edit-header" class="assignmentEditCell">
+				<td width="5%" headers="edit-header" class="assignmentEditCell">
 					<div class="assignmentEdits">
 						<a rsf:id="delete-asnn-link" class="assignment_delete" onclick="asnn2.removeAsnnDialog(1); return false;"><img src="/sakai-assignment2-tool/content/images/bin_closed.png" /></a>
 						<a rsf:id="assignment_edit">Edit</a>
 					</div>
 				</td>
-				<td rsf:id="assignmentInfoCell" width="75%" class="assignmentInfoCell" headers="title-header">
+				<td width="60%" rsf:id="assignmentInfoCell" class="assignmentInfoCell demarcatedAsnnDisplay" headers="title-header">
 					<span rsf:id="assignment_title" class="assignment_title">Assignment 1</span>
               		<span rsf:id="draft" class="draft">draft</span>
               		<span class="duedate"><strong rsf:id="msg=assignment2.list.due_date">DUE:</strong><span rsf:id="assignment_row_due"></span></span>
 				</td>
-				<td width="20%" headers="submissions-header">
+				<td width="35%" headers="submissions-header" class="demarcatedAsnnDisplay">
 					<a rsf:id="grade">5/8</a>
               		<span rsf:id="no_submission_req">N/A</span>
 				</td>

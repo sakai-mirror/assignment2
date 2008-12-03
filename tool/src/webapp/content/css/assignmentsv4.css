@@ -320,13 +320,35 @@ A:hover.breadCrumb {
 	padding-left: 10px;
 }
 
-/** New Table List Page Styles **/
-.assignmentTable {
-	
+﻿﻿﻿/** New Table List Page Styles **/
+
+table.assignmentTable {
+	border-collapse: collapse;
+	table-layout: fixed;
+	width: 100%;
 }
+
+
+.assignmentTable > thead > tr > th {
+	text-align: left;
+}
+
+.assignmentTable > tbody > tr > td {
+	height: 3.2em;
+	padding-top: 10px;
+}
+
+.assignmentTable > tbody > tr:hover {
+   background-color: #feffcc;
+}
+
 
 .assignmentInfoCell {
 	padding-left: 20px;
+}
+
+.assignmentInfoCell:hover {
+	background-color: #feffcc;
 }
 
 .assignmentActive {
@@ -337,6 +359,14 @@ A:hover.breadCrumb {
 	background: transparent url("/sakai-assignment2-tool/content/images/bullet_red.png") no-repeat top left;
 }
 
+/*
+ * Currently this is just to put the grew border above the rows with the Asnn
+ * Title and Submissions etc.
+ */
+.demarcatedAsnnDisplay {
+	border-top: 2px solid #DEDEDE;
+}
+
 /** List Page Styles **/
 a.add_assignment {
 	 background: #fff url("/sakai-assignment2-tool/content/images/add.png") no-repeat left center;
@@ -345,6 +375,7 @@ a.add_assignment {
 }
 
 a.assignment_delete {
+
 }
 
 ul#assignmentList {
