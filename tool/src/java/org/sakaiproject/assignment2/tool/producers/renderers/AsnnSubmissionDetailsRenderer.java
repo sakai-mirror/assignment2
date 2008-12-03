@@ -198,11 +198,21 @@ public class AsnnSubmissionDetailsRenderer implements BasicProducer {
          */
         if (assignment.isGraded() && assignment.getGradebookItemId() != null) {
             try {
-                GradebookItem gradebookItem = 
-                    externalGradebookLogic.getGradebookItemById(curContext, 
-                            assignment.getGradebookItemId());
-                UIOutput.make(joint, "points-possible-row");
-                UIOutput.make(joint, "points-possible", gradebookItem.getPointsPossible().toString());      
+                // only display points possible if grade entry by points
+                if (externalGradebookLogic.isGradingByPoints(assignment.getContextId())) {
+                    GradebookItem gradebookItem = 
+                        externalGradebookLogic.getGradebookItemById(curContext, 
+                                assignment.getGradebookItemId());
+                    UIOutput.make(joint, "points-possible-row");
+                    
+                    String pointsDisplay;
+                    if (gradebookItem.getPointsPossible() == null) {
+                        pointsDisplay = messageLocator.getMessage("assignment2.student-submit.points_possible.none");
+                    } else {
+                        pointsDisplay = gradebookItem.getPointsPossible().toString();
+                    }
+                    UIOutput.make(joint, "points-possible", pointsDisplay); 
+                }
 
                 // Render the graded information if it's available.
                 String grade = externalGradebookLogic.getStudentGradeForItem(
