@@ -187,22 +187,9 @@ public class AssignmentSubmissionBean {
      * INSTRUCTOR FUNCTIONS
      */
 
-    public String processActionSaveAndReleaseAllFeedbackForSubmission(){
+    public String processActionSaveAndReleaseFeedbackForSubmission(){
         this.releaseFeedback = true;
         processActionGradeSubmit();
-
-        for (String key : OTPMap.keySet()) {
-            AssignmentSubmission as = OTPMap.get(key);
-            Long subId = as.getId();
-            if (subId == null) {
-                // we need to retrieve the newly created submission
-                AssignmentSubmission sub = submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(
-                        as.getAssignment().getId(), as.getUserId());
-                subId = sub.getId();
-            }
-
-            submissionLogic.releaseOrRetractAllFeedbackForSubmission(subId, true);
-        }
 
         return SUBMIT;
     }
