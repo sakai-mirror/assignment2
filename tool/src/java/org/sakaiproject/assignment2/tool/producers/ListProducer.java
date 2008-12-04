@@ -136,6 +136,7 @@ public class ListProducer implements ViewComponentProducer, NavigationCaseReport
         }
         
         /////////// New Table Version //
+        /*
         if (entries.size() > 0) {
             UIOutput.make(tofill, "assignmentTable");
             if (edit_perm) {
@@ -171,6 +172,7 @@ public class ListProducer implements ViewComponentProducer, NavigationCaseReport
                         new AssignmentViewParams(AssignmentProducer.VIEW_ID, assignment.getId()));
             }
         }
+        */
         /////////// End New Table Version //
      
 

@@ -74,14 +74,14 @@
 	     <div class="container">
            <h3 class="left">
               <span rsf:id="msg=assignment2.list.assignments">Assignment</span>
-             <!--  <a rsf:id="add_assignment" href="" class="add_assignment">Add</a> -->
+              <a rsf:id="add_assignment" href="" class="add_assignment">Add</a>
            </h3>
            <h3 class="right" rsf:id="submissions_total">
               Submissions Graded/Total
            </h3>
          </div>
 	  </li>
-	  <li rsf:id="assignment-row:" class="row">
+	  <li rsf:id="assignment-row:" class="row movable">
 		<div class="container">
 			<div class="widget">
 				<a rsf:id="delete-asnn-link" class="assignment_delete" onclick="asnn2.removeAsnnDialog(1); return false;"><img src="/sakai-assignment2-tool/content/images/bin_closed.png" /></a>
@@ -128,21 +128,12 @@
 	//<![CDATA[
 
 	 
-	jQuery("ul#assignmentList li.row").css('cursor', 'move');
-	jQuery("tr.movable").css('cursor', 'move');
+	
 
 	// OLD List sorting
 	//jQuery("#assignmentList").sortable({items: ">li.row", axis: "y", containment: "parent", update: saveSortables});
 	
-	jQuery(".assignmentEdits").hide();
-	jQuery("tr.movable").hover(
-		function() {
-			jQuery(".assignmentEdits", this).show();
-		},
-		function() {
-			jQuery(".assignmentEdits", this).hide();
-		}
-	);
+	
 	
 	jQuery("#assignmentList div.widget").hide();
 	jQuery("#assignmentList li.row").hover(function(){ 
@@ -185,7 +176,7 @@
 	}
 
 	// Assignment Table
-	asnn2listpage.setupAsnnTable();
+	asnn2listpage.setupAsnnList();
 	
 
 	//]]>
