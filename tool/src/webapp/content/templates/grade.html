@@ -135,7 +135,8 @@
 			<li rsf:id="previous_submissions:">
 				<span rsf:id="previous_date"></span>
 				<span rsf:id="current_version">Current Version</span>
-				<a rsf:id="previous_link" class="thickbox">View Submission</a>
+				﻿<a rsf:id="previous_link" onclick="jQuery(this).siblings('input').get(0).click(); return false;">View Submission</a>
+				<input type="submit" style="display: none" rsf:id="save_and_edit_version_button" value="Save And Edit Another" />
 			</li>
 		</ol>
 		

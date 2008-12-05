@@ -140,6 +140,19 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
         UIVerbatim.make(tofill, "instructions", messageLocator.getMessage("assignment2.assignment_add.instructions", 
                 new Object[]{ reqStar }));
 
+        // DEBUGGING
+            Map asnn2s = assignment2BeanLocator.getDeliveredBeans();
+            System.out.println("ASSN2 BEAN LOCATOR  size: " + asnn2s.size());
+            for (Object key: asnn2s.keySet()) {
+                String otpkey = (String) key;
+                System.out.println(otpkey);
+                Assignment2 asnn = (Assignment2) asnn2s.get(otpkey);
+                System.out.println(asnn.getId() + " | " + asnn.getTitle() + " | " + asnn.getInstructions());
+                System.out.println("ATTACH SIZE: " + asnn.getAssignmentAttachmentRefs().length);
+            }
+        
+        // DEBUGGING
+        
         String assignment2OTP = "Assignment2.";
         String OTPKey = "";
         if (assignmentId != null) {

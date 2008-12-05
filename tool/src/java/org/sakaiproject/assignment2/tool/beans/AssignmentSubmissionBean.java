@@ -57,8 +57,8 @@ public class AssignmentSubmissionBean {
     public static final String SUBMIT = "submit";
     public static final String PREVIEW = "preview";
     public static final String CANCEL = "cancel";
+    public static final String SAVE_AND_EDIT_PREFIX = "SAVE_FEEDBACK_AND_EDIT_VERSION_";
     private static final String FAILURE = "failure";
-    private static final String RELEASE_ALL= "release_all";
 
     public Map<String, Boolean> selectedIds = new HashMap<String, Boolean>();
     public Long assignmentId;
@@ -112,6 +112,21 @@ public class AssignmentSubmissionBean {
     private Boolean resubmitUntil;
     public void setResubmitUntil(Boolean resubmitUntil) {
         this.resubmitUntil = resubmitUntil;
+    }
+    
+    /**
+     * This property is used primarily with the 
+     * {@link AssignmentSubmissionBean.processActionGradeSubmitAndEditAnotherVersion}
+     * to set the next version to edit.
+     */
+    private Long nextVersionIdToEdit;
+    
+    public void setNextVersionIdToEdit(Long nextVersionIdToEdit) {
+        this.nextVersionIdToEdit = nextVersionIdToEdit;
+    }
+    
+    public Long getNextVersionIdToEdit() {
+        return nextVersionIdToEdit;
     }
 
     /*
@@ -187,24 +202,40 @@ public class AssignmentSubmissionBean {
      * INSTRUCTOR FUNCTIONS
      */
 
-    public String processActionSaveAndReleaseAllFeedbackForSubmission(){
+    public String processActionSaveAndReleaseFeedbackForSubmission(){
         this.releaseFeedback = true;
         processActionGradeSubmit();
 
-        for (String key : OTPMap.keySet()) {
-            AssignmentSubmission as = OTPMap.get(key);
-            Long subId = as.getId();
-            if (subId == null) {
-                // we need to retrieve the newly created submission
-                AssignmentSubmission sub = submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(
-                        as.getAssignment().getId(), as.getUserId());
-                subId = sub.getId();
-            }
-
-            submissionLogic.releaseOrRetractAllFeedbackForSubmission(subId, true);
-        }
-
         return SUBMIT;
+    }
+    
+    /**
+     * This action method is primarily used for the "Edit" links on the Grade
+     * page under the History section, where you want to go edit a previous 
+     * version.  This method exists because we are supposed to save any changes
+     * in the feedback on the current screen before going back to edit another
+     * version.  This will do the usual work involved in saving (but NOT 
+     * releasing) the feedback, and then return a formatted string whose first
+     * half is the identifier demarcating this action, and the second part is 
+     * ID of the Version we are going to edit next. This way the version id can
+     * be used in the ActionResultInterceptor.
+     * 
+     * The format will look like this:
+     * 
+     * SAVE_FEEDBACK_AND_EDIT_VERSION_14
+     * 
+     * where 14 is the ID of the next version to edit.  Currently in our DB 
+     * schema the version ID will always be Long.
+     * 
+     * @return
+     */
+    public String processActionGradeSubmitAndEditAnotherVersion() {
+        String saveResult = processActionGradeSubmit();
+        if (FAILURE.equals(saveResult)) {
+            return FAILURE;
+        }
+        
+        return SAVE_AND_EDIT_PREFIX + getNextVersionIdToEdit();
     }
 
     public String processActionGradeSubmit(){

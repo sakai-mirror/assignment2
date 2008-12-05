@@ -365,6 +365,7 @@ var asnn2 = asnn2 || {};
 })(jQuery, asnn2);
 
 
+
 /* New Asnn2 functions that are namespaced. Will need to go back
  * and namespace others eventually.
  */
@@ -602,3 +603,60 @@ var asnn2 = asnn2 || {};
     };
     
 })(jQuery, asnn2);
+
+var asnn2listpage = asnn2listpage || {};
+
+﻿(function (jQuery, asnn2listpage) {
+	
+	function tableVersionSetup() {
+		jQuery(".assignmentEdits").hide();
+		jQuery("tr.movable").hover(
+			function() {
+				jQuery(".assignmentEdits", this).show();
+			},
+			function() {
+				jQuery(".assignmentEdits", this).hide();
+			}
+		);	
+	}
+	
+	function listVersionSetup() {
+		jQuery("ul#assignmentList li.row").css('cursor', 'move');
+		jQuery("tr.movable").css('cursor', 'move');
+	}
+
+    /**
+     *  This is the Fluid event that will be called whenever an Asnn row is
+     *  dropped to a new location.
+     */
+    function onFluidReorder(item, requestedPosition, movables) {
+        alert("I've been refactored");
+    }
+
+    /**
+     *  This is the initialization code for setting up the Fluid Reorderer on
+     *  the Asnns List Instructor Landing page.
+     */
+    function setupFluidReorderer() {
+        var opts = {
+            listeners: {
+                afterMove: onFluidReorder
+            },
+            selectors: {
+                movables: ".movable"
+            }
+        }
+        //fluid.reorderList("#asnn-table-body", opts);
+        fluid.reorderList("#assignmentList", opts)
+    }
+    
+    function setupJQuerySortable() {
+    	jQuery("#assignmentList").sortable({items: ">li.row", axis: "y", containment: "parent", update: saveSortables});
+    }
+
+    asnn2listpage.setupAsnnList = function() {
+    	listVersionSetup();
+        //setupFluidReorderer();
+        //setupJQuerySortable();
+    };
+})(jQuery, asnn2listpage);
