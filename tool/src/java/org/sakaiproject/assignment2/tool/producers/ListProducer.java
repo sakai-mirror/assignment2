@@ -117,10 +117,10 @@ public class ListProducer implements ViewComponentProducer, NavigationCaseReport
         renderPageTop(tofill, edit_perm);
 
         // Add/Edit Links
-        //if (edit_perm){
-        //    UIInternalLink.make(tofill, "add_assignment", UIMessage.make("assignment2.list.add_assignment"),
-        //            new SimpleViewParameters(AssignmentProducer.VIEW_ID));
-        //}
+        if (edit_perm){
+            UIInternalLink.make(tofill, "add_assignment", UIMessage.make("assignment2.list.add_assignment"),
+                    new SimpleViewParameters(AssignmentProducer.VIEW_ID));
+        }
         
         // Only show the submissions/total header if there are actual assignments
         if (entries.size() > 0) {
