@@ -420,6 +420,11 @@ ul#assignmentList li.row div.widget {
    height: 3.2em;
 }
 
+ul#assignmentList > li:first > div {
+   margin-right: 50px;
+   position: relative;
+}
+
 ul#assignmentList li div.container {
    margin-right: 50px;
    position: relative;
