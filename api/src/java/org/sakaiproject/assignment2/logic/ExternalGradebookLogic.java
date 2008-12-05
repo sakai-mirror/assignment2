@@ -341,4 +341,11 @@ public interface ExternalGradebookLogic {
 	 * @throw {@link GradebookItemNotFoundException} if no gradebook item exists with the given gradebookItemId
 	 */
 	public void releaseOrRetractGrades(String contextId, Long gradebookItemId, boolean release);
+	
+	/**
+	 * 
+	 * @param contextId
+	 * @return true if the gradebook is set up for grade entry by points
+	 */
+	public boolean isGradingByPoints(String contextId);
 }

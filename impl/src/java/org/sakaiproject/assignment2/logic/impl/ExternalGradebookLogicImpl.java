@@ -722,4 +722,18 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
                     "No gradebook item exists with the given id " + gradebookItemId, anfe);
 	    }
 	}
+	
+	public boolean isGradingByPoints(String contextId) {
+	    if (contextId == null) {
+	        throw new IllegalArgumentException("Null contextId passed to isGradingByPoints");
+	    }
+	    
+	    boolean gradingByPoints = false;
+	    int gradeType = gradebookService.getGradeEntryType(contextId);
+	    if (gradeType == GradebookService.GRADE_TYPE_POINTS) {
+	        gradingByPoints = true;
+	    }
+	    
+	    return gradingByPoints;
+	}
 }

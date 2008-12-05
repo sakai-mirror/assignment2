@@ -210,6 +210,7 @@ li.alertMessageInline {
 	display: inline;	
 }
 
+
 div.generalErrors li {
 	list-style: none;
 }
@@ -320,6 +321,53 @@ A:hover.breadCrumb {
 	padding-left: 10px;
 }
 
+﻿﻿﻿/** New Table List Page Styles **/
+
+table.assignmentTable {
+	border-collapse: collapse;
+	table-layout: fixed;
+	width: 100%;
+}
+
+
+.assignmentTable > thead > tr > th {
+	text-align: left;
+}
+
+.assignmentTable > tbody > tr > td {
+	height: 3.2em;
+	padding-top: 10px;
+}
+
+.assignmentTable > tbody > tr:hover {
+   background-color: #feffcc;
+}
+
+
+.assignmentInfoCell {
+	padding-left: 20px;
+}
+
+.assignmentInfoCell:hover {
+	background-color: #feffcc;
+}
+
+.assignmentActive {
+	background: transparent url("/sakai-assignment2-tool/content/images/bullet_green.png") no-repeat top left;
+}
+
+.assignmentInactive {
+	background: transparent url("/sakai-assignment2-tool/content/images/bullet_red.png") no-repeat top left;
+}
+
+/*
+ * Currently this is just to put the grew border above the rows with the Asnn
+ * Title and Submissions etc.
+ */
+.demarcatedAsnnDisplay {
+	border-top: 2px solid #DEDEDE;
+}
+
 /** List Page Styles **/
 a.add_assignment {
 	 background: #fff url("/sakai-assignment2-tool/content/images/add.png") no-repeat left center;
@@ -328,6 +376,7 @@ a.add_assignment {
 }
 
 a.assignment_delete {
+
 }
 
 ul#assignmentList {
@@ -366,12 +415,20 @@ ul#assignmentList li.row div.widget {
    padding: 5px 0;
    position: absolute;
    left: -50px;
+   top: -10px;
    width: 100px;
+   height: 3.2em;
+}
+
+ul#assignmentList > li:first > div {
+   margin-right: 50px;
+   position: relative;
 }
 
 ul#assignmentList li div.container {
    margin-right: 50px;
    position: relative;
+   height: 3.2em;
 }
       
 ul#assignmentList div.left,
@@ -385,7 +442,8 @@ ul#assignmentList h3.left {
 	padding-left: 0;
 }
    
-ul#assignmentList div.left span.duedate {
+/* ul#assignmentList div.left span.duedate { */
+span.duedate {
    display: block;
    padding-left: 30px;
    padding-top: 5px;
