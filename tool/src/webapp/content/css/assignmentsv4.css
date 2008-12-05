@@ -414,12 +414,15 @@ ul#assignmentList li.row div.widget {
    padding: 5px 0;
    position: absolute;
    left: -50px;
+   top: -10px;
    width: 100px;
+   height: 3.2em;
 }
 
 ul#assignmentList li div.container {
    margin-right: 50px;
    position: relative;
+   height: 3.2em;
 }
       
 ul#assignmentList div.left,
