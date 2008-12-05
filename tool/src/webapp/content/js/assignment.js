@@ -657,6 +657,6 @@ var asnn2listpage = asnn2listpage || {};
     asnn2listpage.setupAsnnList = function() {
     	listVersionSetup();
         //setupFluidReorderer();
-        setupJQuerySortable();
+        //setupJQuerySortable();
     };
 })(jQuery, asnn2listpage);

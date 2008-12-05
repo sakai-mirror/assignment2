@@ -81,7 +81,7 @@
            </h3>
          </div>
 	  </li>
-	  <li rsf:id="assignment-row:" class="row movable">
+	  <li rsf:id="assignment-row:" class="row">
 		<div class="container">
 			<div class="widget">
 				<a rsf:id="delete-asnn-link" class="assignment_delete" onclick="asnn2.removeAsnnDialog(1); return false;"><img src="/sakai-assignment2-tool/content/images/bin_closed.png" /></a>
@@ -133,7 +133,7 @@
 	
 
 	// OLD List sorting
-	//jQuery("#assignmentList").sortable({items: ">li.row", axis: "y", containment: "parent", update: saveSortables});
+	jQuery("#assignmentList").sortable({items: ">li.row", axis: "y", containment: "parent", update: saveSortables});
 	
 	
 	
