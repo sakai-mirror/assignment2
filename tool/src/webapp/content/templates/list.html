@@ -27,7 +27,7 @@
 		</ul>
 	</div>
 
-	<br /><br />
+	<!-- <br /><br /> -->
 	
 ﻿        <!-- TODO FIXME: Something must be cascading against me, as I can't get
 	     the class to take hold, which is why the style is hardcoded on this
@@ -103,9 +103,11 @@
 	
 	<!-- This is the template for the Confirm Asnn Remove Dialog. -->
 	<div id="remove-asnn-dialog" style="display:none">
-		<ul style="margin:0;padding:0;display:inline;">
-            <li class="alertMessageInline" rsf:id="msg=assignment2.remove.assn.confirm">Are you sure you want to remove the following assignment and any associated submissions?</li>
-        </ul>
+	    <div class="generalErrors">
+	       <ul style="margin:0;padding:0;display:inline;">
+	          <li class="alertMessageInline" rsf:id="msg=assignment2.remove.assn.confirm">Are you sure you want to remove the following assignment and any associated submissions?</li>
+	       </ul>
+	    </div>
 		<table rsf:id="assignment-list-table" class="listHier lines">
 			<tr> 
 				<th rsf:id="msg=assignment2.remove.assn.header.title">Assignment Title</th>
