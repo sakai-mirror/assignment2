@@ -34,7 +34,7 @@ public class GradeViewParams extends SimpleViewParameters implements VerifiableV
 	
 	public Long assignmentId;
 	public String userId;
-	public Long submissionId;
+	public Long versionId;
 	
 	public GradeViewParams(){}
 	
@@ -44,15 +44,15 @@ public class GradeViewParams extends SimpleViewParameters implements VerifiableV
 		this.userId = userId;
 	}
 	
-	public GradeViewParams(String viewId, Long assignmentId, String userId, Long submissionId) {
+	public GradeViewParams(String viewId, Long assignmentId, String userId, Long versionId) {
 		super(viewId);
 		this.assignmentId = assignmentId;
 		this.userId = userId;
-		this.submissionId = submissionId;
+		this.versionId = versionId;
 	}
 	
 	public String getParseSpec(){
-		return super.getParseSpec() + ",@1:assignmentId,@2:userId,submissionId";
+		return super.getParseSpec() + ",@1:assignmentId,@2:userId,versionId";
 	}
 
 	public Boolean verify()

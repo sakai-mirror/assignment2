@@ -129,7 +129,7 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
         }
         Boolean OLD_VERSION = false;
         //Check if we are modifying an older version
-        if (params.submissionId != null){
+        if (params.versionId != null){
             OLD_VERSION = true;
         }
 
@@ -172,8 +172,8 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
         //AssignmentSubmissionVersion OTP Stuff
         String asvOTP = "AssignmentSubmissionVersion.";
         String asvOTPKey = "";
-        if (OLD_VERSION && params.submissionId != null) {
-            asvOTPKey += params.submissionId;
+        if (OLD_VERSION && params.versionId != null) {
+            asvOTPKey += params.versionId;
         }else if (as != null && as.getCurrentSubmissionVersion() != null && as.getCurrentSubmissionVersion().getId() != null) {
             asvOTPKey += as.getCurrentSubmissionVersion().getId();
         } else {
@@ -397,8 +397,8 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
                 } else {
                     //else add link to edit this submission
                     UIInternalLink.make(loop, "previous_link", 
-                            messageLocator.getMessage("assignment2.assignment_grade.view_submission"),
-                            new FragmentViewSubmissionViewParams(FragmentViewSubmissionProducer.VIEW_ID, asv.getId()));
+                            messageLocator.getMessage("assignment2.assignment_grade.feedback.edit"),
+                            new GradeViewParams(GradeProducer.VIEW_ID, as.getAssignment().getId(), as.getUserId(), asv.getId()));
                 }
             }
         }
@@ -439,7 +439,7 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
             GradeViewParams in = (GradeViewParams) incoming;
             outgoing.assignmentId = in.assignmentId;
             outgoing.userId = in.userId;
-            outgoing.submissionId = in.submissionId;
+            outgoing.versionId = in.versionId;
         }
     }
 
