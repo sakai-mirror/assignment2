@@ -35,6 +35,7 @@ import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
+import org.sakaiproject.assignment2.tool.beans.AssignmentSubmissionBean;
 import org.sakaiproject.assignment2.tool.params.FilePickerHelperViewParams;
 import org.sakaiproject.assignment2.tool.params.FragmentViewSubmissionViewParams;
 import org.sakaiproject.assignment2.tool.params.GradeViewParams;
@@ -399,6 +400,10 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
                     UIInternalLink.make(loop, "previous_link", 
                             messageLocator.getMessage("assignment2.assignment_grade.feedback.edit"),
                             new GradeViewParams(GradeProducer.VIEW_ID, as.getAssignment().getId(), as.getUserId(), asv.getId()));
+                    UICommand saveAndEditButton = 
+                        UICommand.make(loop, "save_and_edit_version_button", 
+                                "AssignmentSubmissionBean.processActionGradeSubmitAndEditAnotherVersion");
+                    saveAndEditButton.parameters.add(new UIELBinding("AssignmentSubmissionBean.nextVersionIdToEdit", asv.getId()));
                 }
             }
         }
@@ -430,7 +435,15 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
     }
 
     public void interceptActionResult(ARIResult result, ViewParameters incoming, Object actionReturn) {
-        if (result.resultingView instanceof ViewSubmissionsViewParams) {
+        if (actionReturn instanceof String 
+            && actionReturn != null
+            && ((String)actionReturn).startsWith(AssignmentSubmissionBean.SAVE_AND_EDIT_PREFIX)) {
+            String editNextVersion = (String) actionReturn;
+            editNextVersion = editNextVersion.substring(AssignmentSubmissionBean.SAVE_AND_EDIT_PREFIX.length());
+            GradeViewParams nextParams = (GradeViewParams) incoming.copy();
+            nextParams.versionId = Long.parseLong(editNextVersion);
+            result.resultingView = nextParams;
+        } else if (result.resultingView instanceof ViewSubmissionsViewParams) {
             ViewSubmissionsViewParams outgoing = (ViewSubmissionsViewParams) result.resultingView;
             GradeViewParams in = (GradeViewParams) incoming;
             outgoing.assignmentId = in.assignmentId;
@@ -441,6 +454,7 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
             outgoing.userId = in.userId;
             outgoing.versionId = in.versionId;
         }
+        
     }
 
     public ViewParameters getViewParameters() {
