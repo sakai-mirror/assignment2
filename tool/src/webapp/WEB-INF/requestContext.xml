@@ -131,6 +131,8 @@
       <property name="locale" ref="requestLocale" />
       <property name="assignment2EntityBeanLocator" ref="Assignment2"/>
       <property name="attachmentInputEvolver" ref="AttachmentInputEvolver" />
+      <property name="errorStateManager" ref="errorStateManager" />
+      <property name="statePreservationManager" ref="statePreservationManager" />
    </bean>
    
    <bean class="org.sakaiproject.assignment2.tool.producers.GradeProducer">
