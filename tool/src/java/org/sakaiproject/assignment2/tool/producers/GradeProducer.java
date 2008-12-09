@@ -222,16 +222,24 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
             UIMessage.make(form, "editing_previous_submission", "assignment2.assignment_grade.editing_previous_submission");
         }*/
 
-        //TODO - make these viewparams their own actual view params, not raw
-        UILink.make(form, "view_assignment_instructions", 
-                messageLocator.getMessage("assignment2.assignment_grade.view_assignment_instructions"),
-                externalLogic.getAssignmentViewUrl(FragmentAssignmentInstructionsProducer.VIEW_ID) + "/" + assignment.getId() + "?TB_iframe=true&height=300");
+        // Instructions
+        if (assignment.getInstructions() == null || assignment.getInstructions().equals("")) {
+            UIMessage.make(tofill, "instructions", "assignment2.assignment_grade.no_instructions");
+        }
+        else {
+            UIVerbatim.make(tofill, "instructions", assignment.getInstructions());
+        }
+        if (assignment.getAttachmentSet() != null && !assignment.getAttachmentSet().isEmpty()) {
+            UIOutput.make(tofill, "assignAttachmentsFieldset");
+            attachmentListRenderer.makeAttachmentFromAssignmentAttachmentSet(tofill, "assign_attach_list:", params.viewID, 
+                    assignment.getAttachmentSet());
+        }
 
         // Only display submission info if there has actually been a submission
         if (assignmentSubmissionVersion.getSubmittedDate() != null) {
             // If assignment allows for submitted text
             // This is the rich text editor for instructors to annotate the submission
-            // using red italized text.
+            // using red italicized text.
             if  (assignment.getSubmissionType() == AssignmentConstants.SUBMIT_INLINE_ONLY || 
                     assignment.getSubmissionType() == AssignmentConstants.SUBMIT_INLINE_AND_ATTACH) {
                 UIOutput.make(form, "submitted_text_fieldset");

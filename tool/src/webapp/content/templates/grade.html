@@ -35,8 +35,26 @@
 	
 	<p rsf:id="non-electronic-submission" class="subheading"></p>
 	
-	
-	<a rsf:id="view_assignment_instructions" class="thickbox">View Assignment Instructions</a>
+	<fieldset>
+        <legend>
+            <img src="/sakai-assignment2-tool/content/images/expand.png" border="0" alt="Open, click to close assignment instruction" style="cursor:pointer" 
+                onclick="slideDiv(this)" />
+            <span rsf:id="msg=assignment2.assignment_grade.assignment_instructions" onclick="slideDiv(jQuery(this).prev('img').get(0));" style="cursor:pointer">Instructions!</span>
+        </legend>
+        <div class="asnn_subsection" style="display: none;">
+            <div>
+                <p rsf:id="instructions" class="textPanel">These are my instructions!</p>
+            </div>  
+    
+            <div rsf:id="assignAttachmentsFieldset">
+                <p rsf:id="msg=assignment2.assignment_grade.supporting_materials" class="subgroupHeading">Attachments</p>
+                <ol class="attachList indnt1">
+                    <li rsf:id="assign_attach_list:">
+                    </li>
+                </ol>
+            </div>
+        </div>
+    </fieldset>
 	
 <!-- 
 	<h3 rsf:id="msg=assignment2.assignment_grade.assignment_submission">Assignment Submission</h3>
@@ -63,7 +81,7 @@
 				<img src="/sakai-assignment2-tool/content/images/page_white_word.png" target="_blank" width="16" height="16"/> <a href="">ExampleAttachment.doc</a> (52 KB)
 			</li>
 		</ol>
-        <span rsf:id="no_submitted_attachments" class="instruction no_attachments_yet">No attachments yet</span>
+        <span rsf:id="no_submitted_attachments" id="" class="instruction no_attachments_yet">No attachments yet</span>
 	</fieldset>
 	<fieldset>
 		<legend>
