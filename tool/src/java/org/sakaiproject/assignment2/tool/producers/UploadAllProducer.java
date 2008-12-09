@@ -104,22 +104,15 @@ NavigationCaseReporter, ActionResultInterceptor
     {
         AssignmentViewParams params = (AssignmentViewParams) viewparams;
 
-        // TODO FIXME This doesn't appear to be in the template anymore, can
-        // we remove the code for this link?
         ZipViewParams zvp = new ZipViewParams("zipSubmissions", params.assignmentId);
-        UIInternalLink.make(tofill, "downloadtemplate", UIMessage
-                .make("assignment2.assignment_grade-assignment.downloadall.button"), zvp);
-
-        String uploadOptions = "uploadBean.uploadOptions";
         UIForm upload_form = UIForm.make(tofill, "upload_form");
-        upload_form
-        .addParameter(new UIELBinding(uploadOptions + ".assignmentId", zvp.assignmentId));
+        upload_form.addParameter(new UIELBinding("uploadBean.uploadOptions.assignmentId", zvp.assignmentId));
 
         // Render buttons
         UICommand.make(upload_form, "uploadButton", UIMessage.make("assignment2.uploadall.upload"),
-        "uploadBean.processUploadGradesCSV");
+            "uploadBean.processUploadGradesCSV");
         UICommand.make(upload_form, "cancelButton", UIMessage.make("assignment2.uploadall.cancel"))
-        .setReturn(ViewSubmissionsProducer.VIEW_ID);
+            .setReturn(ViewSubmissionsProducer.VIEW_ID);
     }
 
     public ViewParameters getViewParameters()
