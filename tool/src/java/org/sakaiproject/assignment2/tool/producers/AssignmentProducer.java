@@ -210,6 +210,7 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
                 new Object[]{ reqStar }));
         UIInput openDateField = UIInput.make(form, "open_date:", assignment2OTP + ".openDate");
         dateEvolver.setInvalidDateKey("assignment2.assignment_add.invalid_open_date");
+        dateEvolver.setInvalidTimeKey("assignment2.assignment_add.invalid_open_time");
         dateEvolver.evolveDateInput(openDateField, null);
         UIMessage.make(form, "open_date_instruction", "assignment2.assignment_add.open_date_instruction");
 
@@ -225,6 +226,7 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
         UIOutput require_due_container = UIOutput.make(form, "require_due_date_container");
         UIInput dueDateField = UIInput.make(form, "due_date:", assignment2OTP + ".dueDate");
         dateEvolver.setInvalidDateKey("assignment2.assignment_add.invalid_due_date");
+        dateEvolver.setInvalidTimeKey("assignment2.assignment_add.invalid_due_time");
         dateEvolver.evolveDateInput(dueDateField, (assignment.getDueDate() != null ? assignment.getDueDate() : closeDate));
 
         if (!require_due_date){
@@ -239,6 +241,7 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
         UIOutput require_container = UIOutput.make(form, "accept_until_container");
         UIInput acceptUntilDateField = UIInput.make(form, "accept_until:", assignment2OTP + ".acceptUntilDate");
         dateEvolver.setInvalidDateKey("assignment2.assignment_add.invalid_accept_until_date");
+        dateEvolver.setInvalidTimeKey("assignment2.assignment_add.invalid_accept_until_time");
         dateEvolver.evolveDateInput(acceptUntilDateField, (assignment.getAcceptUntilDate() != null ? assignment.getAcceptUntilDate() : closeDate));
 
         if (!require_date){

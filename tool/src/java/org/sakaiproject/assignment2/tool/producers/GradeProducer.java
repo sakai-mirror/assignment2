@@ -360,6 +360,8 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
                 UIInput acceptUntilDateField = UIInput.make(form, "accept_until:", asOTP + ".resubmitCloseDate");
                 //set dateEvolver
                 dateEvolver.setStyle(FormatAwareDateInputEvolver.DATE_TIME_INPUT);
+                dateEvolver.setInvalidDateKey("assignment2.assignment_grade.resubmission.accept_until_date.invalid");
+                dateEvolver.setInvalidTimeKey("assignment2.assignment_grade.resubmission.accept_until_time.invalid");
                 dateEvolver.evolveDateInput(acceptUntilDateField, resubmitUntil);
             } else {
                 // display text only representation
