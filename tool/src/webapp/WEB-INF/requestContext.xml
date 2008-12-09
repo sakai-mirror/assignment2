@@ -213,7 +213,10 @@
       <property name="group" ref="HTMLViewGroup" />
    </bean>
 
-	<bean id="uploadAllProducer" class="org.sakaiproject.assignment2.tool.producers.UploadAllProducer" />
+	<bean id="uploadAllProducer" class="org.sakaiproject.assignment2.tool.producers.UploadAllProducer" >
+	  <property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
+	  <property name="messageLocator" ref="messageLocator" />
+	</bean>
 	
    <bean class="org.sakaiproject.assignment2.tool.producers.AssignmentDetailProducer">
    	  <property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
