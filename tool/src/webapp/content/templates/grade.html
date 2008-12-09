@@ -67,11 +67,11 @@
 	</fieldset>
 	<fieldset>
 		<legend>
-			<img src="/sakai-assignment2-tool/content/images/expand.png" border="0" alt="Open, click to close assignment instruction" style="cursor:pointer" 
+			<img src="/sakai-assignment2-tool/content/images/collapse.png" border="0" alt="Open, click to close assignment instruction" style="cursor:pointer" 
 				onclick="slideDiv(this)" />
 			<span rsf:id="msg=assignment2.assignment_grade.feedback" onclick="slideDiv(jQuery(this).prev('img').get(0));" style="cursor:pointer">Feedback</span>
 		</legend>
-		<div style="display: none;">
+		<div>
 			<div>
                 <p rsf:id="msg=assignment2.assignment_grade.feedback_notes" class="subgroupHeading">Additional Feedback</p>
 				<textarea  rsf:id="feedback_notes:" name="something" cols="80" rows="20" wrap="virtual"></textarea>
