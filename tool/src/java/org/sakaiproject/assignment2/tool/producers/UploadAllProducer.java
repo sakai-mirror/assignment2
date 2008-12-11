@@ -24,10 +24,13 @@ package org.sakaiproject.assignment2.tool.producers;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.sakaiproject.assignment2.logic.AssignmentLogic;
+import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.tool.params.AssignmentViewParams;
 import org.sakaiproject.assignment2.tool.params.ViewSubmissionsViewParams;
 import org.sakaiproject.assignment2.tool.params.ZipViewParams;
 
+import uk.org.ponder.messageutil.MessageLocator;
 import uk.org.ponder.rsf.components.UIBoundBoolean;
 import uk.org.ponder.rsf.components.UICommand;
 import uk.org.ponder.rsf.components.UIContainer;
@@ -41,6 +44,7 @@ import uk.org.ponder.rsf.flow.jsfnav.NavigationCase;
 import uk.org.ponder.rsf.flow.jsfnav.NavigationCaseReporter;
 import uk.org.ponder.rsf.view.ComponentChecker;
 import uk.org.ponder.rsf.view.ViewComponentProducer;
+import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
 import uk.org.ponder.rsf.viewstate.ViewParameters;
 import uk.org.ponder.rsf.viewstate.ViewParamsReporter;
 
@@ -68,6 +72,18 @@ NavigationCaseReporter, ActionResultInterceptor
     public String getViewID()
     {
         return VIEW_ID;
+    }
+    
+    // Dependency
+    private MessageLocator messageLocator;
+    public void setMessageLocator(MessageLocator messageLocator) {
+        this.messageLocator = messageLocator;
+    }
+    
+    // Dependency
+    private AssignmentLogic assignmentLogic;
+    public void setAssignmentLogic(AssignmentLogic assignmentLogic) {
+        this.assignmentLogic = assignmentLogic;
     }
 
     /*
@@ -103,23 +119,27 @@ NavigationCaseReporter, ActionResultInterceptor
             ComponentChecker checker)
     {
         AssignmentViewParams params = (AssignmentViewParams) viewparams;
+        
+        Assignment2 assignment = assignmentLogic.getAssignmentById(params.assignmentId);
+        
+        // Make BreadCrumbs
+        UIInternalLink.make(tofill, "breadcrumb_asnn_list", 
+                messageLocator.getMessage("assignment2.list.heading"),
+                new SimpleViewParameters(ListProducer.VIEW_ID));
+        UIInternalLink.make(tofill, "breadcrumb_asnn_submissions", 
+                messageLocator.getMessage("assignment2.upload_grades.breadcrumb.back_to_submissions", assignment.getTitle() )
+                , new ViewSubmissionsViewParams(ViewSubmissionsProducer.VIEW_ID, assignment.getId()));
+        
 
-        // TODO FIXME This doesn't appear to be in the template anymore, can
-        // we remove the code for this link?
         ZipViewParams zvp = new ZipViewParams("zipSubmissions", params.assignmentId);
-        UIInternalLink.make(tofill, "downloadtemplate", UIMessage
-                .make("assignment2.assignment_grade-assignment.downloadall.button"), zvp);
-
-        String uploadOptions = "uploadBean.uploadOptions";
         UIForm upload_form = UIForm.make(tofill, "upload_form");
-        upload_form
-        .addParameter(new UIELBinding(uploadOptions + ".assignmentId", zvp.assignmentId));
+        upload_form.addParameter(new UIELBinding("uploadBean.uploadOptions.assignmentId", zvp.assignmentId));
 
         // Render buttons
         UICommand.make(upload_form, "uploadButton", UIMessage.make("assignment2.uploadall.upload"),
-        "uploadBean.processUploadGradesCSV");
+            "uploadBean.processUploadGradesCSV");
         UICommand.make(upload_form, "cancelButton", UIMessage.make("assignment2.uploadall.cancel"))
-        .setReturn(ViewSubmissionsProducer.VIEW_ID);
+            .setReturn(ViewSubmissionsProducer.VIEW_ID);
     }
 
     public ViewParameters getViewParameters()

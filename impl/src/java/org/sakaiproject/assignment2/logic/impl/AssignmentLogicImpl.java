@@ -660,11 +660,11 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 		String newAnncSubject = bundleLogic.getFormattedMessage("assignment2.assignment_annc_subject",
     			new Object[] {updatedAssignment.getTitle()});
     	String newAnncBody = bundleLogic.getFormattedMessage("assignment2.assignment_annc_body",
-    			new Object[] {assignUrl, updatedAssignment.getTitle(), df.format(updatedAssignment.getOpenDate())});
+    			new Object[] {updatedAssignment.getTitle(), df.format(updatedAssignment.getOpenDate())});
     	String updAnncSubject = bundleLogic.getFormattedMessage("assignment2.assignment_annc_subject_edited",
     			new Object[] {updatedAssignment.getTitle()});
-    	String updAnncBody = bundleLogic.getFormattedMessage("assignment2.assignment_annc_subject_edited",
-    			new Object[] {assignUrl, updatedAssignment.getTitle(), df.format(updatedAssignment.getOpenDate())});
+    	String updAnncBody = bundleLogic.getFormattedMessage("assignment2.assignment_annc_body_edited",
+    			new Object[] {updatedAssignment.getTitle(), df.format(updatedAssignment.getOpenDate())});
 		
 		if (originalAssignment == null) {
 			// this was a new assignment
@@ -750,7 +750,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 			eventTitle = bundleLogic.getFormattedMessage("assignment2.schedule_event_title",
 					new Object[] {updatedAssignment.getTitle()});
 			eventDescription = bundleLogic.getFormattedMessage("assignment2.schedule_event_description",
-					new Object[] {assignUrl, updatedAssignment.getTitle(), df.format(updatedAssignment.getDueDate())});
+					new Object[] {updatedAssignment.getTitle(), df.format(updatedAssignment.getDueDate())});
 		}
 		
 		if (originalAssignment == null) {

@@ -108,16 +108,16 @@
 	          <li class="alertMessageInline" rsf:id="msg=assignment2.remove.assn.confirm">Are you sure you want to remove the following assignment and any associated submissions?</li>
 	       </ul>
 	    </div>
-		<table rsf:id="assignment-list-table" class="listHier lines">
+		<table class="listHier lines" > <!--  rsf:id="assignment-list-table" > -->
 			<tr> 
 				<th rsf:id="msg=assignment2.remove.assn.header.title">Assignment Title</th>
 				<th rsf:id="msg=assignment2.remove.assn.header.due">Due</th>
 				<th rsf:id="msg=assignment2.remove.assn.header.submissions">Submissions</th>
 			</tr>
-			<tr rsf:id="asnn-row:">
-				<td class="asnn-title">Homework 1</td>
-				<td class="due">Mar 26, 2008 5:00 pm</td>
-				<td class="submissions">1</td>
+			<tr>
+				<td id="asnn-to-delete-title">Homework 1</td>
+				<td id="asnn-to-delete-due">Mar 26, 2008 5:00 pm</td>
+				<td id="asnn-to-delete-numsubmissions">1</td>
 			</tr>
 		</table>
 		<fieldset class="submit">

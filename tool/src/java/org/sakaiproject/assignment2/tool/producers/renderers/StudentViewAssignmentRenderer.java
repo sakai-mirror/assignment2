@@ -64,7 +64,7 @@ public class StudentViewAssignmentRenderer {
     private static Log log = LogFactory.getLog(StudentViewAssignmentRenderer.class);
 
     private static final String STUDENT_SUBMISSION_DIVID = "student-view-assignment-area:";
-    
+
     // Dependency
     private Locale locale;
     public void setLocale(Locale locale) {
@@ -82,13 +82,13 @@ public class StudentViewAssignmentRenderer {
     public void setSubmissionLogic(AssignmentSubmissionLogic submissionLogic) {
         this.submissionLogic = submissionLogic;
     }
-    
+
     // Dependency
     private AsnnSubmissionDetailsRenderer asnnSubmissionDetailsRenderer;
     public void setAsnnSubmissionDetailsRenderer(AsnnSubmissionDetailsRenderer asnnSubmissionDetailsRenderer) {
         this.asnnSubmissionDetailsRenderer = asnnSubmissionDetailsRenderer;
     }
-    
+
     // Dependency
     private AsnnInstructionsRenderer asnnInstructionsRenderer;
     public void setAsnnInstructionsRenderer(AsnnInstructionsRenderer asnnInstructionsRenderer) {
@@ -100,32 +100,32 @@ public class StudentViewAssignmentRenderer {
     public void setAsnnSubmitEditorRenderer(AsnnSubmitEditorRenderer asnnSubmitEditorRenderer) {
         this.asnnSubmitEditorRenderer = asnnSubmitEditorRenderer;
     }
-    
+
     // Dependency
     private AsnnSubmissionHistoryRenderer asnnSubmissionHistoryRenderer;
     public void setAsnnSubmissionHistoryRenderer(AsnnSubmissionHistoryRenderer asnnSubmissionHistoryRenderer) {
         this.asnnSubmissionHistoryRenderer = asnnSubmissionHistoryRenderer;
     }
-    
+
     // Dependency
     private AsnnSubmissionVersionRenderer asnnSubmissionVersionRenderer;
     public void setAsnnSubmissionVersionRenderer(
             AsnnSubmissionVersionRenderer asnnSubmissionVersionRenderer) {
         this.asnnSubmissionVersionRenderer = asnnSubmissionVersionRenderer;
     }
-    
+
     // Dependency
     private User currentUser;
     public void setCurrentUser(User currentUser) {
         this.currentUser = currentUser;
     }
-    
+
     // Dependency
     private AssignmentSubmissionBean submissionBean;
     public void setAssignmentSubmissionBean(AssignmentSubmissionBean submissionBean) {
         this.submissionBean = submissionBean;
     }
-    
+
     /**
      * It's important to note that the boolean preview on this method is for
      * previewing what the assignment will look like to a student. It is not the
@@ -151,12 +151,12 @@ public class StudentViewAssignmentRenderer {
         } else {
             UIMessage.make(tofill, "breadcrumb", "assignment2.student-assignment-list.heading");
         }
-        
+
         if (!previewAsStudent) {
             StudentAction studentAction = submissionBean.determineStudentAction(assignmentSubmission.getUserId(), assignment.getId());
             UIOutput.make(tofill, "student-submit-heading", messageLocator.getMessage("assignment2.student-assignment-list.action." + studentAction.toString().toLowerCase()));
         }
-            
+
         if (assignmentSubmission != null) {
             assignmentSubmission.setAssignment(assignment);
         }
@@ -172,8 +172,12 @@ public class StudentViewAssignmentRenderer {
         Map<String, String> disabledLinkAttr = new HashMap<String, String>();
         disabledLinkAttr.put("onclick", "return false;");
 
-        boolean submissionIsOpen = submissionLogic.isSubmissionOpenForStudentForAssignment(currentUser.getId(), assignment.getId());
+        boolean submissionIsOpen = false;
+        if (assignment.getId() != null) {
+            submissionIsOpen = submissionLogic.isSubmissionOpenForStudentForAssignment(currentUser.getId(), assignment.getId());
+        }
         
+            
         /* 
          * If the Student is previewing their submission, only want to show the
          * text and attachments of that submission.
@@ -198,7 +202,7 @@ public class StudentViewAssignmentRenderer {
         else {
             asnnSubmissionDetailsRenderer.fillComponents(joint, "assignment-details:", assignmentSubmission, previewAsStudent, true);
         }
-            
+
         if (previewAsStudent) {
             asnnSubmitEditorRenderer.fillComponents(joint, "assignment-edit-submission:", assignmentSubmission, true, false);
         }
@@ -206,12 +210,12 @@ public class StudentViewAssignmentRenderer {
             asnnSubmitEditorRenderer.fillComponents(joint, "assignment-edit-submission:", assignmentSubmission, previewAsStudent, studentSubmissionPreview);
         }
         else {
-        	// If this isn't a preview, and the student can't submit, we need
-        	// to make the button so they can return to the list.
-        	UIOutput.make(joint, "student-return-to-list-buttons");
-        	UIForm returnform = UIForm.make(joint, "return-to-list-form", new SimpleViewParameters(StudentAssignmentListProducer.VIEW_ID));
-        	UICommand.make(returnform, "return-button", UIMessage.make("assignment2.student-submission.returntolist"), null);
+            // If this isn't a preview, and the student can't submit, we need
+            // to make the button so they can return to the list.
+            UIOutput.make(joint, "student-return-to-list-buttons");
+            UIForm returnform = UIForm.make(joint, "return-to-list-form", new SimpleViewParameters(StudentAssignmentListProducer.VIEW_ID));
+            UICommand.make(returnform, "return-button", UIMessage.make("assignment2.student-submission.returntolist"), null);
         }
-        
+
     }
 }
