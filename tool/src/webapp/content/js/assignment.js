@@ -497,12 +497,30 @@ var asnn2 = asnn2 || {};
         }
     };
     
+    
+    
     /**
      * This is used from the Instructor Landing page list.html to put up a
      * prompt dialog when the assignment delete link (trashcan) is clicked.
      */
     asnn2.removeAsnnDialog = function(asnnId, fadeOutElement) {
     	var removeDialog = jQuery('#remove-asnn-dialog');
+    	
+    	// This Regexp will handle the following cases:
+    	// http://149.166.143.211:10080/portal/tool/a5a78a8d-9098-4f01-a634-dc93c791a04e/list
+    	// http://149.166.143.211:10080/portal/tool/a5a78a8d-9098-4f01-a634-dc93c791a04e?panel=Main
+    	var toolurlPat = /\/portal\/tool\/[^?/]*/
+    	
+    	var urlprefix = document.location.toString().match(toolurlPat);
+    	
+    	// TODO FIXME This URL is not guaranteed to have the same prefix. Route
+    	// this through the entity broker
+    	jQuery.getJSON(urlprefix + '/assignmentinfo/' + asnnId, 
+    		function(data) {
+    			jQuery("#asnn-to-delete-title").html(data['title']);
+    			jQuery("#asnn-to-delete-due").html(data['due']);
+    			jQuery("#asnn-to-delete-numsubmissions").html(data['numsubmissions']);
+    	});
     	
     	jQuery('#page-replace\\:\\:remove-asnn-button').click( function (event)  {
     		var queries = new Array();
@@ -514,11 +532,6 @@ var asnn2 = asnn2 || {};
     		// Close the dialog
     		asnn2util.closeDialog(removeDialog);
     		
-    		// Fade out this assignment
-    		//jQuery(fadeOutElement).append('<div class="overlay"></div></div><div class="overlayMessage">' + '</div>');
-	        //jQuery("div.overlay", fadeOutElement).css('opacity',.60);
-	        //jQuery(".success", fadeOutElement).css('opacity',1);
-	        //setTimeout(function(){  jQuery(fadeOutElement).fadeOut("slow"); }, 5000);
     		jQuery(fadeOutElement).fadeOut();
     	});
     	

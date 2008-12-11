@@ -430,6 +430,12 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
 		newItem.setPoints(pointsPossible);
 		newItem.setReleased(releasedToStudents);
 		
+		if (pointsPossible == null) {
+		    newItem.setUngraded(true);
+		} else {
+		    newItem.setUngraded(false);
+		}
+		
 		gradebookService.addAssignment(contextId, newItem);
 		if (log.isDebugEnabled()) log.debug("New gradebook item added to gb via assignment2 tool");
 		

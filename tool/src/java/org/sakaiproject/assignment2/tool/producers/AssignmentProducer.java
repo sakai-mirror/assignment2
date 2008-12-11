@@ -62,6 +62,8 @@ import uk.org.ponder.rsf.components.decorators.DecoratorList;
 import uk.org.ponder.rsf.components.decorators.UIFreeAttributeDecorator;
 import uk.org.ponder.rsf.evolvers.TextInputEvolver;
 import uk.org.ponder.rsf.evolvers.FormatAwareDateInputEvolver;
+import uk.org.ponder.rsf.preservation.StatePreservationManager;
+import uk.org.ponder.rsf.state.support.ErrorStateManager;
 import uk.org.ponder.rsf.view.ComponentChecker;
 import uk.org.ponder.rsf.view.ViewComponentProducer;
 import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
@@ -93,7 +95,9 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
     private Locale locale;
     private EntityBeanLocator assignment2BeanLocator;
     private AttachmentInputEvolver attachmentInputEvolver;
-
+    private ErrorStateManager errorstatemanager;
+    private StatePreservationManager presmanager; // no, not that of OS/2
+    
     /*
      * You can change the date input to accept time as well by uncommenting the lines like this:
      * dateevolver.setStyle(FormatAwareDateInputEvolver.DATE_TIME_INPUT);
@@ -113,6 +117,16 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
         //Get View Params
         AssignmentViewParams params = (AssignmentViewParams) viewparams;
 
+        /**
+         * We are starting our own flow here if there isn't one so we can deep
+         * link into this for creating new assignments. See FlowStateManager 
+         * from RSF for more info.
+         */
+        if (params.flowtoken == null) {
+            params.flowtoken = errorstatemanager.allocateToken();
+            presmanager.preserve(params.flowtoken, true);
+        }
+        
         String currentContextId = externalLogic.getCurrentContextId();
 
         //get Passed assignmentId to pull in for editing if any
@@ -196,6 +210,7 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
                 new Object[]{ reqStar }));
         UIInput openDateField = UIInput.make(form, "open_date:", assignment2OTP + ".openDate");
         dateEvolver.setInvalidDateKey("assignment2.assignment_add.invalid_open_date");
+        dateEvolver.setInvalidTimeKey("assignment2.assignment_add.invalid_open_time");
         dateEvolver.evolveDateInput(openDateField, null);
         UIMessage.make(form, "open_date_instruction", "assignment2.assignment_add.open_date_instruction");
 
@@ -211,6 +226,7 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
         UIOutput require_due_container = UIOutput.make(form, "require_due_date_container");
         UIInput dueDateField = UIInput.make(form, "due_date:", assignment2OTP + ".dueDate");
         dateEvolver.setInvalidDateKey("assignment2.assignment_add.invalid_due_date");
+        dateEvolver.setInvalidTimeKey("assignment2.assignment_add.invalid_due_time");
         dateEvolver.evolveDateInput(dueDateField, (assignment.getDueDate() != null ? assignment.getDueDate() : closeDate));
 
         if (!require_due_date){
@@ -225,6 +241,7 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
         UIOutput require_container = UIOutput.make(form, "accept_until_container");
         UIInput acceptUntilDateField = UIInput.make(form, "accept_until:", assignment2OTP + ".acceptUntilDate");
         dateEvolver.setInvalidDateKey("assignment2.assignment_add.invalid_accept_until_date");
+        dateEvolver.setInvalidTimeKey("assignment2.assignment_add.invalid_accept_until_time");
         dateEvolver.evolveDateInput(acceptUntilDateField, (assignment.getAcceptUntilDate() != null ? assignment.getAcceptUntilDate() : closeDate));
 
         if (!require_date){
@@ -458,5 +475,13 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
     public void setAttachmentInputEvolver(AttachmentInputEvolver attachmentInputEvolver)
     {
         this.attachmentInputEvolver = attachmentInputEvolver;
+    }
+    
+    public void setErrorStateManager(ErrorStateManager errorstatemanager) {
+        this.errorstatemanager = errorstatemanager;
+    }
+
+    public void setStatePreservationManager(StatePreservationManager presmanager) {
+        this.presmanager = presmanager;
     }
 }

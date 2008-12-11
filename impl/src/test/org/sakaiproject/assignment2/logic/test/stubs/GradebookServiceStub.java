@@ -872,4 +872,15 @@ public class GradebookServiceStub implements GradebookService {
 		
 	}
 
+	public List<Assignment> getCalculatingAssignments(String gradebookUid)
+			throws GradebookNotFoundException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public void validateGrade(Long gradebookItemId, String grade) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

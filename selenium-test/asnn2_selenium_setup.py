@@ -9,7 +9,7 @@ like the current_* variables.
 
 Usage:
 
-./asnn2_selenium_setup.py 
+./asnn2_selenium_setup.py
    Update the tests for your local machine.
 
 ./asnn2_selenium_setup.py forcheckin
@@ -21,12 +21,13 @@ import sys
 import re
 import os
 
-current_asnn2_page='/portal/site/usedtools/page/a1d77745-8fbd-49cb-8049-f82df3b482c7'
-current_asnn2_mainframe='Main93edc24cx406bx48a8xb960xd7188a219a0f'
-
 # Replace these two variables for your installation
-new_asnn2_page='/portal/site/usedtools/page/18591cc0-601f-4604-b4bb-44d3d98fc417'
-new_asnn2_mainframe='Main46655112x3373x48a8xbad8x9eb822e1c94c'
+new_asnn2_page='/portal/site/usedtools/page/e53103f8-4179-41b5-bee1-e286ea93034c'
+new_asnn2_mainframe='Maina5a78a8dx9098x4f01xa634xdc93c791a04e'
+
+## DO NOT CHANGE THESE 2 VARIABLES! ##
+current_asnn2_page='/portal/site/usedtools/page/ASNN2_TOOLPAGE_ID'
+current_asnn2_mainframe='MainASNN2_IFRAME_ID'
 
 def main(args):
     if new_asnn2_page == '' or new_asnn2_mainframe == '':
@@ -43,7 +44,7 @@ top of this script. Run again after that.'''
         f = open(file_name)
         content = f.read()
         f.close()
-    
+
         if prepare_checkin == True:
             content = content.replace(new_asnn2_page, current_asnn2_page)
             content = content.replace(new_asnn2_mainframe, current_asnn2_mainframe)
