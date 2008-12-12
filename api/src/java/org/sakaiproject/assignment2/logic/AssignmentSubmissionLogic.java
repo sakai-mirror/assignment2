@@ -109,6 +109,7 @@ public interface AssignmentSubmissionLogic {
 	 * version. if this is an update, will delete any existing attachments associated
 	 * with the version that aren't included in this set
 	 * @throws SecurityException if current user is not allowed to make this submission
+	 * @throws SubmissionClosedException if submission is closed for this assignment
 	 */
 	public void saveStudentSubmission(String userId, Assignment2 assignment, boolean draft, 
 			String submittedText, Set<SubmissionAttachment> subAttachSet);

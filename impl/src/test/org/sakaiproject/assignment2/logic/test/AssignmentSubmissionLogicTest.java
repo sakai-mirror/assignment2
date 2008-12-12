@@ -30,6 +30,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.sakaiproject.assignment2.exception.AssignmentNotFoundException;
+import org.sakaiproject.assignment2.exception.SubmissionClosedException;
 import org.sakaiproject.assignment2.exception.SubmissionNotFoundException;
 import org.sakaiproject.assignment2.exception.VersionNotFoundException;
 import org.sakaiproject.assignment2.model.Assignment2;
@@ -369,7 +370,7 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
     		submissionLogic.saveStudentSubmission(AssignmentTestDataLoad.STUDENT1_UID, 
         			testData.a2, false, "this is my text - revised!", currVersion.getSubmissionAttachSet());
     		fail("submission saved even though not allowed to resubmit!");
-    	} catch (SecurityException se) {}
+    	} catch (SubmissionClosedException sce) {}
     	
     	// allow student to submit one more time
     	existingSub.setNumSubmissionsAllowed(2);

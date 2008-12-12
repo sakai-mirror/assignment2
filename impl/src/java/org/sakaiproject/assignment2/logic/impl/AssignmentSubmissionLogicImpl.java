@@ -37,6 +37,7 @@ import org.hibernate.StaleObjectStateException;
 import org.sakaiproject.assignment2.dao.AssignmentDao;
 import org.sakaiproject.assignment2.exception.AssignmentNotFoundException;
 import org.sakaiproject.assignment2.exception.StaleObjectModificationException;
+import org.sakaiproject.assignment2.exception.SubmissionClosedException;
 import org.sakaiproject.assignment2.exception.SubmissionNotFoundException;
 import org.sakaiproject.assignment2.exception.VersionNotFoundException;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
@@ -212,7 +213,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		if (!isSubmissionOpenForStudentForAssignment(currentUserId, assignment.getId())) {
 			log.warn("User " + currentUserId + " attempted to make a submission " +
 					"but submission for this user for assignment " + assignment.getId() + " is closed.");
-			throw new SecurityException("User " + currentUserId + " attempted to make a submission " +
+			throw new SubmissionClosedException("User " + currentUserId + " attempted to make a submission " +
 					"for closed assignment " + assignment.getId());
 		}
 		

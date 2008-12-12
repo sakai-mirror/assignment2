@@ -97,10 +97,18 @@ public class AsnnSubmissionVersionRenderer implements BasicProducer {
                 // instructor annotations
                 if (asnnSubVersion.isFeedbackReleased()) {
                     UIMessage.make(joint, "submission-text-header", "assignment2.student-submit.submission_text.annotated");
-                    UIVerbatim.make(joint, "submission-text", asnnSubVersion.getAnnotatedText());
+                    if (asnnSubVersion.getAnnotatedText() != null && asnnSubVersion.getAnnotatedText().trim().length() > 0) {
+                        UIVerbatim.make(joint, "submission-text", asnnSubVersion.getAnnotatedText());
+                    } else {
+                        UIMessage.make(joint, "submission-text", "assignment2.student-submit.submission_text.none");
+                    }
                 } else {
                     UIMessage.make(joint, "submission-text-header", "assignment2.student-submit.submission_text");
-                    UIVerbatim.make(joint, "submission-text", asnnSubVersion.getSubmittedText());
+                    if (asnnSubVersion.getSubmittedText() != null && asnnSubVersion.getSubmittedText().trim().length() > 0) {
+                        UIVerbatim.make(joint, "submission-text", asnnSubVersion.getSubmittedText());
+                    } else {
+                        UIMessage.make(joint, "submission-text", "assignment2.student-submit.submission_text.none");
+                    }
                 }
             }
         }
