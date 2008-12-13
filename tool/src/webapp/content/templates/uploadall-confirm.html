@@ -26,25 +26,34 @@
 			</p>
 
 			<table class="listHier lines nolines" cellpadding="0" cellspacing="0">
-			
+			     <thead>
+			         <tr>
+			             <th id="studentid-header" rsf:id="msg=assignment2.upload_grades_confirm.tableheader.studentid">Student ID</th>
+			             <th id="studentname-header" rsf:id="msg=assignment2.upload_grades_confirm.tableheader.studentname">Student Name</th>
+			             <th id="title-header"></th>
+			             <th id="comments-header" rsf:id="msg=assignment2.upload_grades_confirm.tableheader.comments"></th>
+			         </tr>
+			     </thead>
+			     <tbody>
+			         <tr rsf:id="student-row:">
+			             <td headers="page-replace::studentid-header" rsf:id="student-id">earledge</td>
+			             <td headers="page-replace::studentname-header" rsf:id="student-name">Arledge, Earlene</td>
+			             <td headers="page-replace::title-header" rsf:id="grade">90</td>
+			             <td headers="page-replace::comments-header" rsf:id="comments">Nice Work!</td>
+			         </tr>
+			     </tbody>
 			
 			</table>
 
-<!-- 
-			<form method="post" rsf:id="upload_form" enctype="multipart/form-data">
+			<form method="post" rsf:id="finish-form" enctype="multipart/form-data">
 				<div class="highlightPanel">
-					<p class="shorttext">
-						<label rsf:id="msg=assignment2.upload_grades.choose_file" for="file">File:</label>
-						<input type="file" name="file" id="file" class="upload" />
-					</p>
-
 					<p class="act">
-						<input rsf:id="uploadButton" type="submit" name="uploadButton" id="uploadButton" accesskey="s" value="Upload" />
-						<input rsf:id="cancelButton" type="submit" name="cancelButton" id="cancelButton" accesskey="x" value="Cancel" />
+						<input rsf:id="ok-button" type="submit" accesskey="s" value="Ok" />
+						<input rsf:id="cancel-button" type="submit" accesskey="x" value="Back" />
 					</p>
 				</div>
 			</form>
--->
+
 		</div>
 	</body>
 </html>

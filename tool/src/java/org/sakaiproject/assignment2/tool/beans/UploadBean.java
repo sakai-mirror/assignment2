@@ -91,9 +91,44 @@ public class UploadBean
      * The members below are stateful variables used to store the uploaded data
      * while it's verified in the wizard/workflow
      */
-    private Map<String, String> displayIdUserIdMap;
-    List<List<String>> parsedContent;
+    public Map<String, String> displayIdUserIdMap;
+    public List<List<String>> parsedContent;
 
+    /**
+     * Action Method Binding for going back to the Upload after viewing the
+     * parsed contents of the previous upload attempt.  
+     * 
+     * @return
+     */
+    public WorkFlowResult processBackToUpload() {
+        // Clear previous data
+        displayIdUserIdMap = null;
+        parsedContent = null;
+        return WorkFlowResult.UPLOADALL_CSV_BACK_TO_UPLOAD;
+    }
+    
+    /**
+     * Action Method Binding for confirming the save information processing
+     * after viewing the parsed data from the upload.
+     * 
+     * 
+     * @return
+     */
+    public WorkFlowResult processUploadConfirmAndSave() {
+        // Putting in Confirm Dialog ASNN-313
+        List<String> usersNotUpdated = uploadGradesLogic.uploadGrades(displayIdUserIdMap, uploadOptions.assignmentId, parsedContent);
+
+        if (!usersNotUpdated.isEmpty()) {
+            messages.addMessage(new TargettedMessage("assignment2.upload_grades.upload_successful_with_exception",
+                    new Object[] {getListAsString(usersNotUpdated)}, TargettedMessage.SEVERITY_INFO));
+        } else {
+            messages.addMessage(new TargettedMessage("assignment2.upload_grades.upload_successful",
+                    new Object[] {}, TargettedMessage.SEVERITY_INFO));
+        }
+
+        return WorkFlowResult.UPLOADALL_CSV_CONFIRM_AND_SAVE;
+    }
+    
     /**
      * Action Method Binding for the Upload Button on the inital page of the
      * upload workflow/wizard.
@@ -164,23 +199,7 @@ public class UploadBean
             return WorkFlowResult.UPLOADALL_CSV_UPLOAD_FAILURE;
         }
 
-        // let's upload the grades now
-        
-        // Putting in Confirm Dialog ASNN-313
-        /*
-        List<String> usersNotUpdated = uploadGradesLogic.uploadGrades(displayIdUserIdMap, uploadOptions.assignmentId, parsedContent);
-
-        if (!usersNotUpdated.isEmpty()) {
-            messages.addMessage(new TargettedMessage("assignment2.upload_grades.upload_successful_with_exception",
-                    new Object[] {getListAsString(usersNotUpdated)}, TargettedMessage.SEVERITY_INFO));
-        } else {
-            messages.addMessage(new TargettedMessage("assignment2.upload_grades.upload_successful",
-                    new Object[] {}, TargettedMessage.SEVERITY_INFO));
-        }
-        */
-
         // let's proceed with the grade upload
-        //return ViewSubmissionsProducer.VIEW_ID;
         return WorkFlowResult.UPLOADALL_CSV_UPLOAD;
     }
 
