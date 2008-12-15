@@ -10,6 +10,8 @@
     
 	<p class="subheading" rsf:id="due_date">DUE: 09 23, 2008 4:00pm or No due date</p>
 	
+	<p class="alertMessage" rsf:id="submission_closed">Submission is closed</p>
+	
 	<h3 rsf:id="assignment-details-header">Assignment Details</h3>
 
 	<table rsf:id="assignment-details-table" class="itemSummary infoTable" cellspacing="0" summary="Assignment Details">
@@ -161,6 +163,7 @@
 				<span rsf:id="msg=assignment2.req_star" class="reqStar">*</span>
 				<input type="checkbox" rsf:id="honor_pledge" id="honor_pledge" />
 				<label for="honor_pledge" rsf:id="honor_pledge_label">I have neither given nor received aid on this assignment.</label>
+		        <span class="alertMessageInline" style="display: none;" id="honor_pledge_error" rsf:id="msg=assignment2.student-submit.error.honor_pledge_required">You must agree to the honor code!</span>
 			</li>
 		</ol>
 	</fieldset>

@@ -143,6 +143,20 @@ public class AsnnSubmissionDetailsRenderer implements BasicProducer {
                     "assignment2.student-submit.due_date", 
                     new Object[] {df.format(assignment.getDueDate())});
         }
+        
+        // if submission is closed and:
+        // 1) student never made a submission -OR-
+        // 2) student had a submission in progress
+        // display error message indicating that submission is closed
+        if (!previewAsStudent && assignment.isRequiresSubmission() && !assignment.isRemoved() && assignment.getSubmissionType() != AssignmentConstants.SUBMIT_NON_ELECTRONIC) {
+            if (!submissionLogic.isSubmissionOpenForStudentForAssignment(assignmentSubmission.getUserId(), assignment.getId())) {
+                if (assignmentSubmission.getCurrentSubmissionVersion() == null ||
+                        assignmentSubmission.getCurrentSubmissionVersion().getId() == null ||
+                        assignmentSubmission.getCurrentSubmissionVersion().isDraft()) {
+                    UIOutput.make(joint, "submission_closed", messageLocator.getMessage("assignment2.student-submit.submission_closed"));
+                }
+            }
+        }
 
         if (!excludeDetails) {
             renderAssignmentDetails(assignmentSubmission, previewAsStudent,

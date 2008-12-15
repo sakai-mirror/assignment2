@@ -97,7 +97,7 @@ NavigationCaseReporter, ActionResultInterceptor
 		UIInternalLink.make(tofill, "downloadtemplate", UIMessage
 				.make("assignment2.assignment_grade-assignment.downloadall.button"), zvp);
 
-		String uploadOptions = "uploadBean.uploadOptions";
+		String uploadOptions = "UploadBean.uploadOptions";
 		UIForm upload_form = UIForm.make(tofill, "upload_form");
 		upload_form
 				.addParameter(new UIELBinding(uploadOptions + ".assignmentId", zvp.assignmentId));
@@ -110,7 +110,7 @@ NavigationCaseReporter, ActionResultInterceptor
 
 		// Render buttons
 		UICommand.make(upload_form, "uploadButton", UIMessage.make("assignment2.uploadall.upload"),
-				"uploadBean.processUpload");
+				"UploadBean.processUpload");
 		 UICommand.make(upload_form, "cancelButton", UIMessage.make("assignment2.uploadall.cancel"))
 				.setReturn(ViewSubmissionsProducer.VIEW_ID);
 	}*/
@@ -133,11 +133,11 @@ NavigationCaseReporter, ActionResultInterceptor
 
         ZipViewParams zvp = new ZipViewParams("zipSubmissions", params.assignmentId);
         UIForm upload_form = UIForm.make(tofill, "upload_form");
-        upload_form.addParameter(new UIELBinding("uploadBean.uploadOptions.assignmentId", zvp.assignmentId));
+        upload_form.addParameter(new UIELBinding("UploadBean.uploadOptions.assignmentId", zvp.assignmentId));
 
         // Render buttons
         UICommand.make(upload_form, "uploadButton", UIMessage.make("assignment2.uploadall.upload"),
-            "uploadBean.processUploadGradesCSV");
+            "UploadBean.processUploadGradesCSV");
         UICommand.make(upload_form, "cancelButton", UIMessage.make("assignment2.uploadall.cancel"))
             .setReturn(ViewSubmissionsProducer.VIEW_ID);
     }

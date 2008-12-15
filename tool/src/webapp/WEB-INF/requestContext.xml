@@ -222,10 +222,17 @@
       <property name="group" ref="HTMLViewGroup" />
    </bean>
 
-	<bean id="uploadAllProducer" class="org.sakaiproject.assignment2.tool.producers.UploadAllProducer" >
+	<bean class="org.sakaiproject.assignment2.tool.producers.UploadAllProducer" >
 	  <property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
 	  <property name="messageLocator" ref="messageLocator" />
 	</bean>
+	
+	<bean class="org.sakaiproject.assignment2.tool.producers.UploadAllConfirmProducer" >
+	  <property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
+	  <property name="messageLocator" ref="messageLocator" />
+	  <property name="uploadBean" ref="UploadBean" />
+	</bean>
+
 	
    <bean class="org.sakaiproject.assignment2.tool.producers.AssignmentDetailProducer">
    	  <property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
@@ -324,7 +331,7 @@
 		<property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
 	</bean>
 
-	<bean id="uploadBean" class="org.sakaiproject.assignment2.tool.beans.UploadBean">
+	<bean id="UploadBean" class="org.sakaiproject.assignment2.tool.beans.UploadBean">
 		<property name="targettedMessageList" ref="targettedMessageList" />
 		<property name="uploadGradesLogic" ref="org.sakaiproject.assignment2.logic.UploadGradesLogic" />
 		<property name="multipartMap" ref="multipartMap" />

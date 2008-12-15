@@ -216,10 +216,7 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
         if (assignment.isHonorPledge()) {
             UIOutput.make(joint, "honor_pledge_fieldset");
             UIMessage.make(joint, "honor_pledge_label", "assignment2.student-submit.honor_pledge_text");
-            UIBoundBoolean honorPledgeCheckbox = UIBoundBoolean.make(form, "honor_pledge", "#{AssignmentSubmissionBean.honorPledge}");
-            if (studentPreviewSubmission) {
-                honorPledgeCheckbox.decorators = disabledDecoratorList;
-            }
+            UIBoundBoolean.make(form, "honor_pledge", "#{AssignmentSubmissionBean.honorPledge}");
         }
         
         form.parameters.add( new UIELBinding("#{AssignmentSubmissionBean.ASOTPKey}", asOTPKey));
