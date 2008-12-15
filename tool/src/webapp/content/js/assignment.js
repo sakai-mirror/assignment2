@@ -544,7 +544,11 @@ var asnn2 = asnn2 || {};
     		// Close the dialog
     		asnn2util.closeDialog(removeDialog);
     		
-    		jQuery(fadeOutElement).fadeOut();
+    		jQuery("#removed-asnn-msg").clone().show().appendTo(fadeOutElement);
+    		setTimeout( function() {
+    		    jQuery(fadeOutElement).fadeOut();},
+    		    500);
+    		    
     	});
     	
     	jQuery('#page-replace\\:\\:cancel-remove-asnn-button').click( function (event) {
@@ -631,7 +635,7 @@ var asnn2 = asnn2 || {};
 
 var asnn2listpage = asnn2listpage || {};
 
-﻿(function (jQuery, asnn2listpage) {
+(function (jQuery, asnn2listpage) {
 	
 	function tableVersionSetup() {
 		jQuery(".assignmentEdits").hide();
