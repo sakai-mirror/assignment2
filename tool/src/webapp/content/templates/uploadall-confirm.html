@@ -10,26 +10,54 @@
 	<body>
 		<!--  everything outside of rsf:id="page:" is set in Layout.html using outerPageTemplates -->
 		<div rsf:id="page:" class="portletBody">
-			<h3 rsf:id="msg=assignment2.upload_grades.title">Upload All</h3>
-			<div rsf:id="message-for:*">Messages for the user show here</div>
-			<p class="instruction" rsf:id="msg=assignment2.upload_grades.instructions">
-				Select an archive file to upload, choose options, and then
-				click 'Upload' at the bottom.
+			<ul class="breadCrumb">
+				<li><a rsf:id="breadcrumb_asnn_list">Assignment List</a></li>
+				<li><a rsf:id="breadcrumb_asnn_submissions">Submissions for Homework 1</a></li>
+				<li rsf:id="msg=assignment2.upload_grades.title" class="lastCrumb">Upload Grades</li>
+			</ul>
+		
+			<h3 rsf:id="msg=assignment2.upload_grades_confirm.title">Verify Grade Import</h3>
+			
+			<div class="generalErrors">
+                <ul rsf:id="message-for:*" style="margin:0px;">
+                    <li>Message for user here</li>
+                </ul>
+            </div>
+			
+			<p class="instruction" rsf:id="msg=assignment2.upload_grades_confirm.instructions">
+				Below is a display of the contents of your spreadsheet. If you need to make changes, 
+				click the Back button, make changes to your file, and import it again. 
 			</p>
 
-			<form method="post" rsf:id="upload_form" enctype="multipart/form-data">
-				<div class="highlightPanel">
-					<p class="shorttext">
-						<label rsf:id="msg=assignment2.upload_grades.choose_file" for="file">File:</label>
-						<input type="file" name="file" id="file" class="upload" />
-					</p>
+			<table class="listHier lines nolines" cellpadding="0" cellspacing="0">
+			     <thead>
+			         <tr>
+			             <th id="studentid-header" rsf:id="msg=assignment2.upload_grades_confirm.tableheader.studentid">Student ID</th>
+			             <th id="studentname-header" rsf:id="msg=assignment2.upload_grades_confirm.tableheader.studentname">Student Name</th>
+			             <th id="title-header"></th>
+			             <th id="comments-header" rsf:id="msg=assignment2.upload_grades_confirm.tableheader.comments"></th>
+			         </tr>
+			     </thead>
+			     <tbody>
+			         <tr rsf:id="student-row:">
+			             <td headers="page-replace::studentid-header" rsf:id="student-id">earledge</td>
+			             <td headers="page-replace::studentname-header" rsf:id="student-name">Arledge, Earlene</td>
+			             <td headers="page-replace::title-header" rsf:id="grade">90</td>
+			             <td headers="page-replace::comments-header" rsf:id="comments">Nice Work!</td>
+			         </tr>
+			     </tbody>
+			
+			</table>
 
+			<form method="post" rsf:id="finish-form" enctype="multipart/form-data">
+				<div class="highlightPanel">
 					<p class="act">
-						<input rsf:id="uploadButton" type="submit" name="uploadButton" id="uploadButton" accesskey="s" value="Upload" />
-						<input rsf:id="cancelButton" type="submit" name="cancelButton" id="cancelButton" accesskey="x" value="Cancel" />
+						<input rsf:id="ok-button" type="submit" accesskey="s" value="Ok" />
+						<input rsf:id="cancel-button" type="submit" accesskey="x" value="Back" />
 					</p>
 				</div>
 			</form>
+
 		</div>
 	</body>
 </html>

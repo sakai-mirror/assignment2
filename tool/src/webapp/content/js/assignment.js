@@ -466,6 +466,18 @@ var asnn2 = asnn2 || {};
      * submit on either the Edit Submission or Preview Submission page. 
      */
     asnn2.studentSubmissionConfirm = function(buttonform) {
+        // first, let's make sure the user has checked the honor pledge, if needed.
+        // look for the honor pledge checkbox
+        var honor_pledge = jQuery('#page-replace\\:\\:portletBody\\:1\\:assignment-edit-submission\\:\\:honor_pledge').get(0);
+        if (honor_pledge) {
+            if (!honor_pledge.checked) {
+                //display the error and return
+                jQuery('#page-replace\\:\\:portletBody\\:1\\:assignment-edit-submission\\:\\:honor_pledge_error').show();
+                return false;
+            }
+        }
+        
+        // display the confirmation dialog
         confirmDialog = jQuery('#submit-confirm-dialog');
 
         var submitButton = buttonform;
@@ -532,7 +544,11 @@ var asnn2 = asnn2 || {};
     		// Close the dialog
     		asnn2util.closeDialog(removeDialog);
     		
-    		jQuery(fadeOutElement).fadeOut();
+    		jQuery("#removed-asnn-msg").clone().show().appendTo(fadeOutElement);
+    		setTimeout( function() {
+    		    jQuery(fadeOutElement).fadeOut();},
+    		    500);
+    		    
     	});
     	
     	jQuery('#page-replace\\:\\:cancel-remove-asnn-button').click( function (event) {
@@ -619,7 +635,7 @@ var asnn2 = asnn2 || {};
 
 var asnn2listpage = asnn2listpage || {};
 
-﻿(function (jQuery, asnn2listpage) {
+(function (jQuery, asnn2listpage) {
 	
 	function tableVersionSetup() {
 		jQuery(".assignmentEdits").hide();

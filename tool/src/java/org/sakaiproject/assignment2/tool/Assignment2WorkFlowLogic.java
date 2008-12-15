@@ -37,6 +37,8 @@ import org.sakaiproject.assignment2.tool.producers.PreviewAsStudentProducer;
 import org.sakaiproject.assignment2.tool.producers.RedirectToAssignmentProducer;
 import org.sakaiproject.assignment2.tool.producers.StudentAssignmentListProducer;
 import org.sakaiproject.assignment2.tool.producers.StudentSubmitProducer;
+import org.sakaiproject.assignment2.tool.producers.UploadAllConfirmProducer;
+import org.sakaiproject.assignment2.tool.producers.UploadAllProducer;
 import org.sakaiproject.assignment2.tool.producers.ViewSubmissionsProducer;
 
 import uk.org.ponder.rsf.builtin.UVBProducer;
@@ -159,6 +161,31 @@ public class Assignment2WorkFlowLogic implements ViewParamsInterceptor, ActionRe
             result.resultingView = new SimpleViewParameters(StudentAssignmentListProducer.VIEW_ID);
             break;
         case STUDENT_SUBMISSION_FAILURE:
+            break;
+        /*
+         * Upload All as CSV File
+         */
+        case UPLOADALL_CSV_BACK_TO_UPLOAD:
+            if (incoming instanceof AssignmentViewParams) {
+                AssignmentViewParams params = (AssignmentViewParams) incoming;
+                result.resultingView = new AssignmentViewParams(UploadAllProducer.VIEW_ID, params.assignmentId);
+                result.propagateBeans = ARIResult.FLOW_END;
+            }
+            break;
+        case UPLOADALL_CSV_CONFIRM_AND_SAVE:
+            if (incoming instanceof AssignmentViewParams) {
+                AssignmentViewParams params = (AssignmentViewParams) incoming;
+                result.resultingView = new ViewSubmissionsViewParams(ViewSubmissionsProducer.VIEW_ID, params.assignmentId);
+                result.propagateBeans = ARIResult.FLOW_END;
+            }
+            break;
+        case UPLOADALL_CSV_UPLOAD:
+            if (incoming instanceof AssignmentViewParams) {
+                AssignmentViewParams params = (AssignmentViewParams) incoming;
+                result.resultingView = new AssignmentViewParams(UploadAllConfirmProducer.VIEW_ID, params.assignmentId);
+                result.propagateBeans = ARIResult.FLOW_FASTSTART;
+            }
+            break;
         default:
             log.warn("Unknown/Unhandled WorkFlowResult in Asnn2 Workflow: " + actionReturn);
             break;

@@ -27,6 +27,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.sakaiproject.assignment2.exception.SubmissionClosedException;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
@@ -149,16 +150,23 @@ public class AssignmentSubmissionBean {
                         new Object[] { assignment.getTitle() }, TargettedMessage.SEVERITY_ERROR));
                 return WorkFlowResult.STUDENT_SUBMISSION_FAILURE;
             }else {
-                submissionLogic.saveStudentSubmission(assignmentSubmission.getUserId(), assignment, false, 
-                        asv.getSubmittedText(), asv.getSubmissionAttachSet());
-                messages.addMessage(new TargettedMessage("assignment2.student-submit.info.submission_submitted",
-                        new Object[] { assignment.getTitle() }, TargettedMessage.SEVERITY_INFO));
                 
-                // Send out notifications
-                if (assignment.isSendSubmissionNotifications()) {
-                    AssignmentSubmission newSubmission = submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(assignmentId, assignmentSubmission.getUserId());            
-                    notificationBean.notifyStudentThatSubmissionWasAccepted(newSubmission);
-                    notificationBean.notifyInstructorsOfSubmission(newSubmission);
+                try {
+                    submissionLogic.saveStudentSubmission(assignmentSubmission.getUserId(), assignment, false, 
+                            asv.getSubmittedText(), asv.getSubmissionAttachSet());
+                    messages.addMessage(new TargettedMessage("assignment2.student-submit.info.submission_submitted",
+                            new Object[] { assignment.getTitle() }, TargettedMessage.SEVERITY_INFO));
+
+                    // Send out notifications
+                    if (assignment.isSendSubmissionNotifications()) {
+                        AssignmentSubmission newSubmission = submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(assignmentId, assignmentSubmission.getUserId());            
+                        notificationBean.notifyStudentThatSubmissionWasAccepted(newSubmission);
+                        notificationBean.notifyInstructorsOfSubmission(newSubmission);
+                    }
+                } catch (SubmissionClosedException sce) {
+                    messages.addMessage(new TargettedMessage("assignment2.student-submit.error.submission_closed", 
+                            new Object[] {}, TargettedMessage.SEVERITY_ERROR));
+                    return WorkFlowResult.STUDENT_SUBMISSION_FAILURE;
                 }
 
             }
@@ -189,11 +197,17 @@ public class AssignmentSubmissionBean {
             asv.setAssignmentSubmission(assignmentSubmission);
             asv.setDraft(Boolean.TRUE);
 
-            submissionLogic.saveStudentSubmission(assignmentSubmission.getUserId(),
-                    assignmentSubmission.getAssignment(), true, asv.getSubmittedText(),
-                    asv.getSubmissionAttachSet());
-            messages.addMessage(new TargettedMessage("assignment2.student-submit.info.submission_save_draft",
-                    new Object[] { assignment.getTitle() }, TargettedMessage.SEVERITY_INFO));
+            try {
+                submissionLogic.saveStudentSubmission(assignmentSubmission.getUserId(),
+                        assignmentSubmission.getAssignment(), true, asv.getSubmittedText(),
+                        asv.getSubmissionAttachSet());
+                messages.addMessage(new TargettedMessage("assignment2.student-submit.info.submission_save_draft",
+                        new Object[] { assignment.getTitle() }, TargettedMessage.SEVERITY_INFO));
+            } catch (SubmissionClosedException sce) {
+                messages.addMessage(new TargettedMessage("assignment2.student-submit.error.submission_closed",
+                        new Object[] {}, TargettedMessage.SEVERITY_ERROR));
+                return WorkFlowResult.STUDENT_SUBMISSION_FAILURE;
+            }
         }
         return WorkFlowResult.STUDENT_SAVE_DRAFT_SUBMISSION;
     }
