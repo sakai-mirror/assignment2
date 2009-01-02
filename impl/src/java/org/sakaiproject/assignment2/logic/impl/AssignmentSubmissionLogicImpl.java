@@ -749,11 +749,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		 		the assignment level has not been reached
 			 */
 
-			boolean assignmentIsOpen = assignment.getOpenDate().before(new Date()) && 
-			(assignment.getAcceptUntilDate() == null ||
-					(assignment.getAcceptUntilDate() != null && 
-							assignment.getAcceptUntilDate().after(new Date())));
-			
+	
 			int numAllowedOnAssignLevel = assignment.getNumSubmissionsAllowed();
 			Integer numAllowedOnSubLevel = submission != null ? submission.getNumSubmissionsAllowed() : null;
 			
@@ -763,7 +759,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 						&& (numAllowedOnSubLevel > 0 || numAllowedOnSubLevel == AssignmentConstants.UNLIMITED_SUBMISSION);
 			
 
-			if (currNumSubmissions == 0 && assignmentIsOpen) {
+			if (currNumSubmissions == 0 && assignment.isSubmissionOpen()) {
 				numSubmissionsRemaining = determineNumSubmissionRemaining(numAllowedOnAssignLevel, 
 						numAllowedOnSubLevel, currNumSubmissions);
 			} else if (resubmitSettingsOnSubmissionLevel) {
@@ -774,7 +770,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 								numAllowedOnSubLevel, currNumSubmissions);
 				}
 			} else if (resubmitSettingsOnAssignLevel) {
-				if (assignmentIsOpen) { 
+				if (assignment.isSubmissionOpen()) { 
 					numSubmissionsRemaining = determineNumSubmissionRemaining(numAllowedOnAssignLevel, 
 							numAllowedOnSubLevel, currNumSubmissions);
 				} 
