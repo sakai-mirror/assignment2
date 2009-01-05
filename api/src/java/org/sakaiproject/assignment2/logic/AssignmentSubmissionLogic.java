@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.sakaiproject.assignment2.exception.SubmissionClosedException;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
@@ -108,11 +109,19 @@ public interface AssignmentSubmissionLogic {
 	 * @param subAttachSet - the set of SubmissionAttachments associated with the
 	 * version. if this is an update, will delete any existing attachments associated
 	 * with the version that aren't included in this set
+	 * @param saveAsDraftIfClosed if this method is called after submission is
+	 * closed for this student, setting this value to true will save their work
+	 * as a draft. this may be useful if the deadline passed while the student was
+	 * working in the UI so that they do not lose their work. If this is false,
+	 * throws a {@link SubmissionClosedException} when this method is called and 
+	 * submission is closed for this assignment. if you are not taking precautions
+	 * to prevent students from attempting submission on closed assignments, set 
+	 * this to false
 	 * @throws SecurityException if current user is not allowed to make this submission
-	 * @throws SubmissionClosedException if submission is closed for this assignment
+	 * @throws SubmissionClosedException if submission is closed for this assignment and saveAsDraftIfClosed is false
 	 */
 	public void saveStudentSubmission(String userId, Assignment2 assignment, boolean draft, 
-			String submittedText, Set<SubmissionAttachment> subAttachSet);
+			String submittedText, Set<SubmissionAttachment> subAttachSet, boolean saveAsDraftIfClosed);
 	
 	
 	/**

@@ -185,7 +185,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 	}
 	
 	public void saveStudentSubmission(String userId, Assignment2 assignment, boolean draft, 
-			String submittedText, Set<SubmissionAttachment> subAttachSet) {
+			String submittedText, Set<SubmissionAttachment> subAttachSet, boolean saveAsDraftIfClosed) {
 		if (userId == null || assignment == null) {
 			throw new IllegalArgumentException("null userId, or assignment passed to saveAssignmentSubmission");
 		}
@@ -209,12 +209,17 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			throw new SecurityException("User " + currentUserId + " attempted to make a submission " +
 					"without authorization for assignment " + assignment.getId());
 		}
-		
+
 		if (!isSubmissionOpenForStudentForAssignment(currentUserId, assignment.getId())) {
-			log.warn("User " + currentUserId + " attempted to make a submission " +
-					"but submission for this user for assignment " + assignment.getId() + " is closed.");
-			throw new SubmissionClosedException("User " + currentUserId + " attempted to make a submission " +
-					"for closed assignment " + assignment.getId());
+		    if (saveAsDraftIfClosed) {
+		        if (log.isDebugEnabled()) log.debug("Saving submission as draft since submission is closed for this student");
+		        draft = true;
+		    } else {
+		        log.warn("User " + currentUserId + " attempted to make a submission " +
+		                "but submission for this user for assignment " + assignment.getId() + " is closed.");
+		        throw new SubmissionClosedException("User " + currentUserId + " attempted to make a submission " +
+		                "for closed assignment " + assignment.getId());
+		    }
 		}
 		
 		// if there is no current version or the most recent version was submitted, we will need
