@@ -18,6 +18,16 @@
    <bean id="richTextEvolver" class="org.springframework.beans.factory.config.BeanReferenceFactoryBean">
       <property name="targetBeanName" value="sakaiFCKTextEvolver" />
    </bean>
+   
+   <!-- Copy Preserving Flow Beans                                           -->
+   <!-- These beans are used for various flows such as during Assignment     -->
+   <!-- Authoring and Student Submission.  It's important that these beans   -->
+   <!-- have Zero request scope dependencies.                                -->
+   <bean id="StudentSubmissionVersionFlowBean" class="org.sakaiproject.assignment2.tool.beans.StudentSubmissionVersionFlowBean">
+       <property name="assignmentSubmissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic"></property>
+       <property name="assignmentSubmissionVersionCreator" ref="AssignmentSubmissionVersionCreator"></property>
+   </bean>
+   <!-- End Copy Preserving Flow Beans                                       -->
 
 	<!-- Renderers -->
     <bean id="AsnnSubmissionDetailsRenderer" 
@@ -45,6 +55,7 @@
         <property name="attachmentListRenderer" ref="AttachmentListRenderer"></property>
         <property name="viewParameters" ref="viewParameters"></property>
         <property name="submissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic"></property>
+        <property name="studentSubmissionVersionFlowBean" ref="StudentSubmissionVersionFlowBean" />
     </bean>
     
     <bean id="AsnnSubmissionVersionRenderer"
@@ -313,6 +324,16 @@
    	  <property name="assignmentSubmissionEntityBeanLocator" ref="AssignmentSubmission" />
    	  <property name="asvEntityBeanLocator" ref="AssignmentSubmissionVersion" />
       <property name="notificationBean" ref="notificationBean" />
+   </bean>
+   
+   <!-- For Students completing a submission. -->
+   <bean id="StudentSubmissionBean" class="org.sakaiproject.assignment2.tool.beans.StudentSubmissionBean">
+       <property name="submissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
+       <property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
+       <property name="studentSubmissionVersionFlowBean" ref="StudentSubmissionVersionFlowBean"/>
+       <property name="messages" ref="targettedMessageList" />
+       <property name="notificationBean" ref="notificationBean"/>
+       <property name="assignmentSubmissionEntityBeanLocator" ref="AssignmentSubmission"/>
    </bean>
    
    <bean id="FilePickerBean" class="org.sakaiproject.assignment2.tool.beans.FilePickerBean">
