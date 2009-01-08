@@ -72,7 +72,9 @@ public interface AssignmentSubmissionLogic {
 	 * populate the submissionText or submissionAttachmentSet. If the curr user is
 	 * the submitter but feedback has not been released, will not populate
 	 * feedback.  Because of these changes that we don't want to save, the 
-	 * returned version was evicted from the session and is not persistent.
+	 * returned version was evicted from the session and is not persistent. Returns
+	 * null if the version exists but is restricted for this user, such as a
+	 * feedback-only version (submittedVersionNumber = 0) that is not released
 	 * @throws SecurityException if current user is not allowed to view the version
 	 * @throws VersionNotFoundException if no version exists with the given id
 	 */
@@ -268,12 +270,15 @@ public interface AssignmentSubmissionLogic {
 	 * @return a list of all of the AssignmentSubmissionVersions associated with
 	 * the given submission. 
 	 * if the passed submission does not have an id, will return an empty list. 
-	 * list is ordered by submittedVersionNumber
-	 * If the version is draft and the submitter is not 
+	 * list is ordered by submittedVersionNumber.
+	 * If a version is draft and the submitter is not 
 	 * the current user, will not populate the submissionText or 
-	 * submissionAttachmentSet. If the curr user is	the submitter but feedback 
-	 * has not been released, will not populate	feedback. Because of these 
-	 * changes that we don't want to save, the returned submissions were evicted 
+	 * submissionAttachmentSet. 
+	 * 
+	 * If the curr user is the submitter but feedback has not been released, 
+	 * will not populate feedback, and if this version is feedback-only (submittedVersionNumber=0)
+     * and feedback has not been released, this version is not included in the returned list.
+	 * Because of these object modifications that we don't want to save, the returned submissions were evicted 
 	 * from the session and are not persistent.
 	 * 
 	 */

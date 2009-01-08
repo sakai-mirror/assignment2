@@ -27,6 +27,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -117,7 +118,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		AssignmentSubmissionVersion currentVersion = dao.getCurrentSubmissionVersionWithAttachments(submission);
 
 		if (currentVersion != null) {
-			filterOutRestrictedVersionInfo(currentVersion, currentUserId);
+			currentVersion = getFilteredVersion(currentVersion, currentUserId);
 		}
 
 		submission.setCurrentSubmissionVersion(currentVersion);
@@ -148,7 +149,12 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 						submissionVersionId + " for student " + submission.getUserId() + " without authorization");
 			}
 			
-			filterOutRestrictedVersionInfo(version, currentUserId);
+			version = getFilteredVersion(version, currentUserId);
+			if (version == null) {
+			    log.warn("Version with id:" + submissionVersionId + " for curr user: " + 
+			            currentUserId + " was null after it was filtered for restricted information. This" +
+			            		"is possibly due to a submitter trying to access a feedback-only version that has not been released");
+			}
 		}
 		
 		return version;
@@ -1015,6 +1021,9 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 	 * for the curr user. If curr user is the submitter and feedback has not been
 	 * released, we do not want to return feedback. If curr user is not the submitter
 	 * and the version is draft, we do not want to return the submission text and attach.
+	 * if the curr user is the submitter and the history contains a feedback-only
+	 * (submittedVersionNumber=0) version that is not released, this version is removed
+	 * from the history
 	 * this method will also evict the submission and version(s) from session since we do not want
 	 * to accidentally save or re-load these modified objects
 	 * @param submission 
@@ -1035,30 +1044,40 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		// check the version history
 		if (includeHistory) {
 			if (submission.getSubmissionHistorySet() != null && !submission.getSubmissionHistorySet().isEmpty()) {
+			    Set<AssignmentSubmissionVersion> filteredHistorySet = new LinkedHashSet<AssignmentSubmissionVersion>();
 				for (AssignmentSubmissionVersion version : submission.getSubmissionHistorySet()) {
-					filterOutRestrictedVersionInfo(version, currentUserId);
+					version = getFilteredVersion(version, currentUserId);
+					if (version != null) {
+					    filteredHistorySet.add(version);
+					}
 				}
-			}
+	            
+	            submission.setSubmissionHistorySet(filteredHistorySet);
+			}		
 		}
 		
 		// also check the currentVersion
-		if (submission.getCurrentSubmissionVersion() != null) {
-			filterOutRestrictedVersionInfo(submission.getCurrentSubmissionVersion(), currentUserId);
+		AssignmentSubmissionVersion currVersion = submission.getCurrentSubmissionVersion();
+		if (currVersion != null) {
+		    currVersion = getFilteredVersion(submission.getCurrentSubmissionVersion(), currentUserId);
 		}
+		submission.setCurrentSubmissionVersion(currVersion);
 	}
 	
 	/**
+	 * Returns the given version with restricted fields removed. If submitter is
+	 * current user and version is "feedback-only" (submittedVersionNumber = 0)
+	 * that is not released, returns null.
 	 * when retrieving a submission and/or version, some fields may be restricted
 	 * for the curr user. If curr user is the submitter and feedback has not been
 	 * released, we do not want to return feedback. If curr user is not the submitter
 	 * and the version is draft, we do not want to return the submission text and attach.
-	 * this method will also evict the version from session since we do not want
-	 * to accidentally save this modified object
+	 * This method will also evict the version from session since we do not want
+	 * to accidentally save this modified object. 
 	 * @param version 
-	 * want to save the changes we are making
 	 * @param currentUserId
 	 */
-	private void filterOutRestrictedVersionInfo(AssignmentSubmissionVersion version, String currentUserId) {
+	private AssignmentSubmissionVersion getFilteredVersion(AssignmentSubmissionVersion version, String currentUserId) {
 		if (version != null) {
 			
 			// since we may modify the versions before returning them to filter
@@ -1068,13 +1087,21 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			
 			// if the current user is the submitter
 			if (version.getAssignmentSubmission().getUserId().equals(currentUserId)) {
-				if (!version.isFeedbackReleased()) {
-					// do not populate the feedback since not released 
-					version.setFeedbackAttachSet(new HashSet<FeedbackAttachment>());
-					version.setFeedbackNotes("");
-					version.setAnnotatedText("");
-					if (log.isDebugEnabled()) log.debug("Not populating feedback-specific info b/c curr user is submitter and feedback not released");
-				}
+			    if (!version.isFeedbackReleased()) {
+			        if (version.getSubmittedVersionNumber() == 0) {
+			            // this indicates "feedback-only" version and
+			            // we don't want to return this to the submitter
+			            // if it hasn't been released yet
+			            version = null;
+			        } else {
+			            // do not populate the feedback since not released 
+			            version.setFeedbackAttachSet(new HashSet<FeedbackAttachment>());
+			            version.setFeedbackNotes("");
+			            version.setAnnotatedText("");
+			            if (log.isDebugEnabled()) log.debug("Not populating feedback-specific info " +
+			            "b/c curr user is submitter and feedback not released");
+			        }
+			    }
 			} else {
 				// do not populate submission info if still draft
 				if (version.isDraft()) {
@@ -1084,6 +1111,8 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 				}
 			}
 		}
+		
+		return version;
 	}
 	
 	public List<AssignmentSubmissionVersion> getVersionHistoryForSubmission(AssignmentSubmission submission) {
@@ -1106,13 +1135,15 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 
 			List<AssignmentSubmissionVersion> historySet = dao.getVersionHistoryForSubmission(submission);
 			if (historySet != null && !historySet.isEmpty()) {
-				for (AssignmentSubmissionVersion version : historySet) {
-					if (version != null) {					
-						filterOutRestrictedVersionInfo(version, currentUserId);
-						filteredVersionHistory.add(version);
-					}
-
-				}}
+			    for (AssignmentSubmissionVersion version : historySet) {
+			        if (version != null) {					
+			            version = getFilteredVersion(version, currentUserId);
+			            if (version != null) {
+			                filteredVersionHistory.add(version);
+			            }
+			        }
+			    }
+			}
 		} else {
 			if (log.isDebugEnabled()) log.debug("Submission does not exist so no version history retrieved");
 		}
@@ -1355,7 +1386,10 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		        // on a version
 		        if (submission.getSubmissionHistorySet() != null && !submission.getSubmissionHistorySet().isEmpty()) {
 		            filterOutRestrictedInfo(submission, currentUserId, true);
-		            removedSubToDisplay.add(submission);
+		            // if, after filtering, there is at least one version, add to list
+		            if (!submission.getSubmissionHistorySet().isEmpty()) {
+		                removedSubToDisplay.add(submission);
+		            }
 		        }
 		    }
 		    
