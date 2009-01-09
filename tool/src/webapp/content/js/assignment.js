@@ -328,6 +328,25 @@ var asnn2 = asnn2 || {};
         jQuery("a[id='page-replace\:\:gradebook_item_new_helper']").attr("href", modifiedUrl);
     }
     
+    /**
+     * If due date changes and no accept until date has been set, populate
+     * the accept until text field with the new due date. this does not
+     * select the accept until date as "required," it just sets the default
+     * value if someone then goes on to require it
+     */
+    asnn2.populate_accept_until_with_due_date = function() {
+	var require_accept_until = jQuery("input[name='page-replace\:\:require_accept_until']").get(0);
+	if (!require_accept_until.checked) {
+	    // get the due date 
+	    var dueDate = jQuery("input[name='page-replace\:\:due_date\:1\:date-field']").val();
+	    if (dueDate) {
+		var acceptUntilDate = jQuery("input[name='page-replace\:\:accept_until\:1\:date-field']");
+		acceptUntilDate.val(dueDate);
+		acceptUntilDate.change();
+	    }
+	}
+    }
+    
     //Sorting functions
     var sortBy; 
     var sortDir; 
