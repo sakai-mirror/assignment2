@@ -556,7 +556,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 					} else {
 						// we need to filter restricted info from instructor
 						// if this is draft
-						filterOutRestrictedInfo(thisSubmission, externalLogic.getCurrentUserId(), false);
+						filterOutRestrictedInfo(thisSubmission, externalLogic.getCurrentUserId(), includeVersionHistory);
 					}
 
 					viewableSubmissions.add(thisSubmission);
