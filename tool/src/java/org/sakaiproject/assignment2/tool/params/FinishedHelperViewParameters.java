@@ -26,8 +26,6 @@ import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
 /**
  * View parameters for going to the end page of the helper.
  * 
- * TODO FIXME I am not sure what the value parameter below is actually for.
- * 
  * 
  * @author rjlowe
  * @author sgithens
@@ -35,12 +33,22 @@ import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
  */
 public class FinishedHelperViewParameters extends SimpleViewParameters {
 
-    public String value;
+    /**
+     * The name of the gradebook item (most likely just created)
+     */
+    public String gbItemName;
+    
+    /**
+     * The time that the gradebook item is due. "" indicates no due date.
+	 * This value will be the # milliseconds since January 1, 1970 00:00:00 GMT
+     */
+    public String gbItemDueTime;
 
     public FinishedHelperViewParameters() {}
 
-    public FinishedHelperViewParameters(String viewId, String value){
+    public FinishedHelperViewParameters(String viewId, String gbItemName, String gbItemDueTime){
         super(viewId);
-        this.value = value;
+        this.gbItemName = gbItemName;
+        this.gbItemDueTime = gbItemDueTime;
     }
 }

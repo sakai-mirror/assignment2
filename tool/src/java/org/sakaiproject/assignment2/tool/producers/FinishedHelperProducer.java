@@ -120,9 +120,9 @@ public class FinishedHelperProducer implements ViewComponentProducer, ViewParams
             toolSession.removeAttribute(FilePickerHelper.FILE_PICKER_CANCEL);
         }
 
-        if (params.value != null && !params.value.equals("")) {
-            UIVerbatim.make(tofill, "useValue", 
-                    HTMLUtil.emitJavascriptCall("parent.useValue", params.value));
+        if (params.gbItemName != null && !params.gbItemName.equals("")) {
+            UIVerbatim.make(tofill, "finishedGBItemHelper", 
+                    HTMLUtil.emitJavascriptCall("parent.asnn2.finishedGBItemHelper", new String[] {params.gbItemName, params.gbItemDueTime}));
         }
     }
 
