@@ -6,6 +6,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
+import org.sakaiproject.assignment2.tool.beans.AssignmentAuthoringFlowBean;
 import org.sakaiproject.assignment2.tool.beans.AssignmentSubmissionCreator;
 import org.sakaiproject.assignment2.tool.producers.renderers.StudentViewAssignmentRenderer;
 
@@ -42,9 +43,15 @@ public class PreviewAsStudentProducer implements ViewComponentProducer {
     }
     
     // Dependency
-    private EntityBeanLocator assignment2BeanLocator;
-    public void setAssignment2BeanLocator(EntityBeanLocator assignment2BeanLocator) {
-        this.assignment2BeanLocator = assignment2BeanLocator;
+    //private EntityBeanLocator assignment2BeanLocator;
+    //public void setAssignment2BeanLocator(EntityBeanLocator assignment2BeanLocator) {
+    //    this.assignment2BeanLocator = assignment2BeanLocator;
+  // }
+    
+    // Authoring Flow Scope Dependency
+    private AssignmentAuthoringFlowBean assignmentAuthoringFlowBean;
+    public void setAssignmentAuthoringFlowBean(AssignmentAuthoringFlowBean assignmentAuthoringFlowBean) {
+        this.assignmentAuthoringFlowBean = assignmentAuthoringFlowBean;
     }
     
     // Dependency
@@ -56,12 +63,12 @@ public class PreviewAsStudentProducer implements ViewComponentProducer {
     @SuppressWarnings("unchecked")
     public void fillComponents(UIContainer tofill, ViewParameters viewparams,
             ComponentChecker checker) {
-        Assignment2 assignment = null;
-        Collection assignments = assignment2BeanLocator.getDeliveredBeans().values();
-        if (assignments.size() != 1) {
-            log.equals("Wrong number of assignments passed to PreviewAsStudent: " + assignments.size());
-        }
-        assignment = (Assignment2) assignments.toArray()[0];
+        Assignment2 assignment = assignmentAuthoringFlowBean.getAssignment();
+        //Collection assignments = assignment2BeanLocator.getDeliveredBeans().values();
+        //if (assignments.size() != 1) {
+        //    log.equals("Wrong number of assignments passed to PreviewAsStudent: " + assignments.size());
+       // }
+        //assignment = (Assignment2) assignments.toArray()[0];
         
         AssignmentSubmission submission = assignmentSubmissionCreator.create();
         

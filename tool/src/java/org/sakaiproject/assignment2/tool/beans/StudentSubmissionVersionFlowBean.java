@@ -21,13 +21,13 @@ import uk.org.ponder.beanutil.entity.EntityBeanLocator;
  */
 public class StudentSubmissionVersionFlowBean implements BeanLocator {
     
-    // Dependency
+    // Application Scope Dependency
     private AssignmentSubmissionVersionCreator assignmentSubmissionVersionCreator;
     public void setAssignmentSubmissionVersionCreator(AssignmentSubmissionVersionCreator assignmentSubmissionVersionCreator) {
         this.assignmentSubmissionVersionCreator = assignmentSubmissionVersionCreator;
     }
     
-    // Dependency
+    // Service Application Scope Dependency
     private AssignmentSubmissionLogic assignmentSubmissionLogic;
     public void setAssignmentSubmissionLogic(AssignmentSubmissionLogic assignmentSubmissionLogic) {
         this.assignmentSubmissionLogic = assignmentSubmissionLogic;

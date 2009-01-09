@@ -27,6 +27,14 @@
        <property name="assignmentSubmissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic"></property>
        <property name="assignmentSubmissionVersionCreator" ref="AssignmentSubmissionVersionCreator"></property>
    </bean>
+   
+   <bean id="AssignmentAuthoringFlowBean" class="org.sakaiproject.assignment2.tool.beans.AssignmentAuthoringFlowBean">
+       <property name="assignment2Creator" ref="Assignment2Creator" />
+       <property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
+   </bean>
+   
+   <bean id="AssignmentAuthoringOptionsFlowBean" class="org.sakaiproject.assignment2.tool.beans.AssignmentAuthoringOptionsFlowBean">
+   </bean>
    <!-- End Copy Preserving Flow Beans                                       -->
 
 	<!-- Renderers -->
@@ -118,7 +126,8 @@
    </bean>
    
    <bean class="org.sakaiproject.assignment2.tool.producers.PreviewAsStudentProducer">
-       <property name="assignment2BeanLocator" ref="Assignment2" />
+       <!-- <property name="assignment2BeanLocator" ref="Assignment2" /> -->
+       <property name="assignmentAuthoringFlowBean" ref="AssignmentAuthoringFlowBean" />
        <property name="assignmentSubmissionCreator" ref="AssignmentSubmissionCreator" />
        <property name="studentViewAssignmentRenderer" ref="StudentViewAssignmentRenderer" />
    </bean>
@@ -149,10 +158,11 @@
       <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
       <property name="externalGradebookLogic" ref="org.sakaiproject.assignment2.logic.ExternalGradebookLogic" />
       <property name="locale" ref="requestLocale" />
-      <property name="assignment2EntityBeanLocator" ref="Assignment2"/>
+      <!-- <property name="assignment2EntityBeanLocator" ref="Assignment2"/> -->
       <property name="attachmentInputEvolver" ref="AttachmentInputEvolver" />
       <property name="errorStateManager" ref="errorStateManager" />
       <property name="statePreservationManager" ref="statePreservationManager" />
+      <property name="assignmentAuthoringFlowBean" ref="AssignmentAuthoringFlowBean" />
    </bean>
    
    <bean class="org.sakaiproject.assignment2.tool.producers.GradeProducer">
@@ -211,7 +221,6 @@
    <bean class="org.sakaiproject.assignment2.tool.producers.StudentAssignmentListProducer">
       <property name="assignmentSubmissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
       <property name="locale" ref="requestLocale" />
-      <property name="assignment2Bean" ref="Assignment2Bean" />
       <property name="assignmentSubmissionBean" ref="AssignmentSubmissionBean" />
       <property name="externalGradebookLogic" ref="org.sakaiproject.assignment2.logic.ExternalGradebookLogic" />
    </bean>
@@ -308,11 +317,12 @@
    </bean>
     
    <!--  Beans -->
-   <bean id="Assignment2Bean" class="org.sakaiproject.assignment2.tool.beans.Assignment2Bean">
+   <bean id="AssignmentAuthoringBean" class="org.sakaiproject.assignment2.tool.beans.AssignmentAuthoringBean">
    	  <property name="logic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
    	  <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
    	  <property name="messages" ref="targettedMessageList"/>
-   	  <property name="assignment2EntityBeanLocator" ref="Assignment2"/>
+   	  <property name="assignmentAuthoringFlowBean" ref="AssignmentAuthoringFlowBean" />
+   	  <property name="assignmentAuthoringOptionsFlowBean" ref="AssignmentAuthoringOptionsFlowBean" />
    	  <property name="messageLocator" ref="messageLocator" />
 	  <property name="notificationBean" ref="notificationBean" />
    </bean>
