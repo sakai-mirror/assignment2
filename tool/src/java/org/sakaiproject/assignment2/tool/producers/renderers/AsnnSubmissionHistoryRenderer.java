@@ -1,8 +1,10 @@
 package org.sakaiproject.assignment2.tool.producers.renderers;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -50,33 +52,48 @@ public class AsnnSubmissionHistoryRenderer implements BasicProducer {
     public void setSubmissionLogic(AssignmentSubmissionLogic submissionLogic) {
         this.submissionLogic = submissionLogic;
     }
+    
+    // Dependency
+    private Locale locale;
+    public void setLocale(Locale locale) {
+        this.locale = locale;
+    }
 
     public void fillComponents(UIContainer parent, String clientID, AssignmentSubmission assignmentSubmission) {       
 
         Assignment2 assignment = assignmentSubmission.getAssignment();
         List<AssignmentSubmissionVersion> versionHistory = submissionLogic.getVersionHistoryForSubmission(assignmentSubmission);
-
+        
+        DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, locale);
+        
         if (versionHistory.size() >= 1) {
             // Show the history view if:
             // 1) there is more than one version or 
             // 2) there is one submitted version and submission is still open
             // Do not display history if there is one version and that version is draft.
-            // That info will be displayed in the editor view
+            // That info will be displayed in the editor/summary view
             
-            //TODO FIXME We'll have to think about the VERSION 0 logic here
+            // check to see if submission is still open. we only include draft
+            // versions in this display if submission is closed and there is more than one version
+            boolean submissionOpen = submissionLogic.isSubmissionOpenForStudentForAssignment(assignmentSubmission.getUserId(), assignment.getId());
+            boolean includeDraftVersion = !submissionOpen && versionHistory.size() > 1;
+            
             UIJointContainer joint = new UIJointContainer(parent, clientID, "asnn2-submission-history-widget:");
             UIOutput.make(joint, "submissions-header");
             UIOutput.make(joint, "multiple-submissions");
             
             for (AssignmentSubmissionVersion version: versionHistory) {
                 // do not include draft versions in this history display
-                if (!version.isDraft()) {
+                if (!version.isDraft() || includeDraftVersion) {
                     UIBranchContainer versionDiv = UIBranchContainer.make(joint, "submission-version:");
-                    if (version.getSubmittedDate() == null) {
+                    if (version.isDraft()) {
+                        UIMessage.make(versionDiv, "header-text", "assignment2.student-submission.history.version.header.draft",
+                                new Object[] {df.format(version.getStudentSaveDate())});
+                    } else if (version.getSubmittedDate() == null) {
                         UIMessage.make(versionDiv, "header-text", "assignment2.student-submission.history.version.header.no_submission");
                     } else {
-                    UIMessage.make(versionDiv, "header-text", "assignment2.student-submission.history.version.header", 
-                            new Object[] {version.getSubmittedDate().toLocaleString()});
+                        UIMessage.make(versionDiv, "header-text", "assignment2.student-submission.history.version.header", 
+                                new Object[] {df.format(version.getSubmittedDate())});
                     }
                     boolean newfeedback = false;
                     // Make the envelope icons for feedback if necessary
