@@ -324,19 +324,9 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
     	
     	String grade = null;
     	
-    	try {
-    		GradeDefinition gradeDef = gradebookService.getGradeDefinitionForStudentForItem(contextId, gradebookItemId, studentId);
-    		if (gradeDef != null) {
-    			grade = gradeDef.getGrade();
-    		}
-    	} catch (AssessmentNotFoundException anfe) {
-    		// this gradebook item no longer exists, so return a null grade
-    		grade = null;
-    	} catch (GradebookNotFoundException gnfe) {
-    		throw new NoGradebookDataExistsException("No gradebook exists for the given contextId: " + contextId, gnfe);
-    	} catch (SecurityException se) {
-    		throw new SecurityException("User attempted to access the grade for student : " + 
-    				studentId + " for gbItemId: " + gradebookItemId + " without authorization in gb", se);
+    	GradeInformation gradeInfo = getGradeInformationForStudent(contextId, gradebookItemId, studentId);
+    	if (gradeInfo != null) {
+    	    grade = gradeInfo.getGradebookGrade();
     	}
     	
     	return grade;
@@ -349,17 +339,9 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
     	
     	String comment = null;
     	
-    	try {
-    		CommentDefinition commentDef = gradebookService.getAssignmentScoreComment(contextId, gradebookItemId, studentId);
-    		if (commentDef != null) {
-    			comment = commentDef.getCommentText();
-    		}
-    	} catch (AssessmentNotFoundException anfe) {
-    		// this gradebook item no longer exists, so return a null comment
-    		comment = null;
-    	} catch (GradebookNotFoundException gnfe) {
-    		throw new NoGradebookDataExistsException(
-					"No gradebook exists for the given contextId: " + contextId, gnfe);
+    	GradeInformation gradeInfo = getGradeInformationForStudent(contextId, gradebookItemId, studentId);
+    	if (gradeInfo != null) {
+    	    comment = gradeInfo.getGradebookComment();
     	}
     	
     	return comment;
@@ -389,26 +371,43 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
     	gradeInfo.setStudentId(submission.getUserId());
     	
     	if (assignment.isGraded() && assignment.getGradebookItemId() != null) {
-    		try {
-				GradeDefinition gradeDef = gradebookService.getGradeDefinitionForStudentForItem(contextId, assignment.getGradebookItemId(), submission.getUserId());
-				
-				if (gradeDef != null) {
-					gradeInfo.setGradebookGrade(gradeDef.getGrade());
-					gradeInfo.setGradebookGradeReleased(gradeDef.isGradeReleased());
-					gradeInfo.setGradebookComment(gradeDef.getGradeComment());
-				}
-				
-			} catch (AssessmentNotFoundException anfe) {
-				// this gb item no longer exists, so there is no information to populate
-				if (log.isDebugEnabled()) log.debug("gb item with id " + assignment.getGradebookItemId() + " no longer exists, so returning null grade info");
-			} catch (SecurityException se) {
-				throw new SecurityException("User does not have authorization to access " +
-						"grade information for " + submission.getUserId() + " for gb item " + 
-						assignment.getGradebookItemId(), se);
-			}
+    	    gradeInfo = getGradeInformationForStudent(assignment.getContextId(), assignment.getGradebookItemId(), submission.getUserId());
     	}
     	
     	return gradeInfo;
+    }
+    
+    public GradeInformation getGradeInformationForStudent(String contextId, Long gradebookItemId, String studentId) {
+        if (contextId == null || gradebookItemId == null || studentId == null) {
+            throw new IllegalArgumentException("Null data passed to getGradeInformationForStudent. contextId: " + contextId +
+                    " gradebookItemId: " + gradebookItemId + " studentId:" + studentId);
+        }
+        
+        GradeInformation gradeInfo = new GradeInformation();
+        gradeInfo.setStudentId(studentId);
+        
+        try {
+            GradeDefinition gradeDef = gradebookService.getGradeDefinitionForStudentForItem(contextId, gradebookItemId, studentId);
+            
+            if (gradeDef != null) {
+                gradeInfo.setGradebookGrade(gradeDef.getGrade());
+                gradeInfo.setGradebookGradeReleased(gradeDef.isGradeReleased());
+                gradeInfo.setGradebookComment(gradeDef.getGradeComment());
+            }
+            
+        } catch (AssessmentNotFoundException anfe) {
+            // this gb item no longer exists, so there is no information to populate
+            if (log.isDebugEnabled()) log.debug("gb item with id " + gradebookItemId + " no longer exists, so returning null grade info");
+        } catch (SecurityException se) {
+            throw new SecurityException("User does not have authorization to access " +
+                    "grade information for " + studentId + " for gb item " + 
+                    gradebookItemId, se);
+        } catch (GradebookNotFoundException gnfe) {
+            throw new NoGradebookDataExistsException(
+                    "No gradebook exists for the given contextId: " + contextId, gnfe);
+        }
+        
+        return gradeInfo;
     }
 	
 	public Long createGbItemInGradebook(String contextId, String title, Double pointsPossible, Date dueDate,

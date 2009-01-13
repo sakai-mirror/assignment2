@@ -176,7 +176,9 @@ public interface ExternalGradebookLogic {
 	 * @param studentId
 	 * @param gradebookItemId
 	 * @return the grade in the gb for the given gradebookItemId and student. null if no
-	 * grade or if the gb item does not exist
+	 * grade or if the gb item does not exist. 
+	 * @see #getGradeInformationForStudent(String, Long, String) This method is used
+	 * for retrieving comment info. Look here for thrown exceptions
 	 */
 	public String getStudentGradeForItem(String contextId, String studentId, Long gradebookItemId);
 	
@@ -186,7 +188,9 @@ public interface ExternalGradebookLogic {
 	 * @param studentId
 	 * @param gradebookItemId
 	 * @return the grade comment in the gb for the given gradebookItemId and student. null if no
-	 * comment or if the gb item does not exist
+	 * comment or if the gb item does not exist.  
+     * @see #getGradeInformationForStudent(String, Long, String) This method is used
+     * for retrieving grade info. Look here for thrown exceptions
 	 */
 	public String getStudentGradeCommentForItem(String contextId, String studentId, Long gradebookItemId);
 	
@@ -198,11 +202,26 @@ public interface ExternalGradebookLogic {
 	 * @return a GradeInformation object containing the grade information from the
 	 * Gradebook for the given submission's assignment's associated gb item.
 	 * Returns an "empty" GradeInformation object if the assignment is ungraded or
-	 * gb item does not exist
-	 * @throws SecurityException if user is not authorized to view grade info for
-	 * the student for the gb item in the Gradebook tool
+	 * gb item does not exist. 
+     * @see #getGradeInformationForStudent(String, Long, String) This method is used
+     * for retrieving grade info. Look here for thrown exceptions
 	 */
 	public GradeInformation getGradeInformationForSubmission(String contextId, AssignmentSubmission submission);
+	
+	/**
+	 * 
+	 * @param contextId not null
+	 * @param gradebookItemId not null
+	 * @param studentId not null
+	 * @return a GradeInformation object containing the grade information from the
+     * Gradebook for the given studentId and gradebookItemId.
+     * Returns an "empty" GradeInformation object if the gb item does not exist - may
+     * indicate it was deleted from the gradebook tool and the a2 link is stale
+     * @throws SecurityException if user is not authorized to view grade info for
+     * the student for the gb item in the Gradebook tool
+     * @throws GradebookNotFoundException if no gradebook exists in the given contextId
+	 */
+	public GradeInformation getGradeInformationForStudent(String contextId, Long gradebookItemId, String studentId);
 	
 	/**
 	 * Create a gradebook item in the gradebook tool with the given information.

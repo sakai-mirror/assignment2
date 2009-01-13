@@ -8,46 +8,6 @@ function a2SetMainFrameHeight(){
 		jQuery("#" + iframeId, parent.document).height(height);
 	}
 }
-newValue = "";
-function useValue(value){
-   newValue = value;
-}
-function changeValue(){   
-    el = jQuery("select[name='page-replace\:\:gradebook_item-selection']").get(0);
-    if(el){
-        for(i=0;i<el.length;i++){
-            if(el.options[i].text == newValue){
-                el.selectedIndex = i;  
-            }
-        }
-    }
-
-    selectGraded();
-    populateTitleWithGbItemName();
-}
-
-function populateTitleWithGbItemName() {
-    var curr_title = jQuery("input[name='page-replace\:\:title']").get(0).value;
-    if (!curr_title || curr_title == "") {
-        // get the currently selected gb item
-        var gbSelect = jQuery("select[name='page-replace\:\:gradebook_item-selection']").get(0);
-        var gbSelIndex = gbSelect.selectedIndex;
-        if (gbSelIndex != 0) { 
-            var selectedItem = gbSelect.options[gbSelIndex].text;
-            // replace the empty title field with the new_title
-            jQuery("input[name='page-replace\:\:title']").val(selectedItem);
-        }
-    }
-}
-
-function selectGraded() {
-    el = jQuery("select[name='page-replace\:\:gradebook_item-selection']").get(0);
-    if (el.selectedIndex != 0){
-        jQuery("input[type='radio'][id='page-replace\:\:select_graded']").get(0).checked=true;
-    } else {
-        jQuery("input[type='radio'][id='page-replace\:\:select_ungraded']").get(0).checked=true;
-    }
-}
 
 
 groups_toggle = function(){
@@ -115,22 +75,6 @@ function set_accept_until_on_submission_level(){
             jQuery("#accept_until_container").hide();
         }
     }
-}
-
-function update_new_gb_item_helper_url() {
-    var gbUrlWithoutName = jQuery("a[id='page-replace\:\:gradebook_url_without_name']").attr("href");
-    var new_title = jQuery("input[name='page-replace\:\:title']").get(0).value
-    
-    // encode unsafe characters that may be in the assignment title
-   
-    var escaped_title = "";
-    if (new_title) {
-        escaped_title = escape(new_title);
-    }
-    
-    var modifiedUrl = gbUrlWithoutName + "&name=" + escaped_title;
-    
-    jQuery("a[id='page-replace\:\:gradebook_item_new_helper']").attr("href", modifiedUrl);
 }
 
 jQuery(document).ready(function(){
@@ -278,6 +222,110 @@ var asnn2 = asnn2 || {};
             var body = queries.join("&");
             jQuery.post(document.URL, body);
         }
+    }
+    
+    gbItemName = "";
+    gbDueTime = "";
+
+    asnn2.finishedGBItemHelper = function(newGbItemName, newGbDueTime){
+        gbItemName = newGbItemName;
+        gbDueTime = newGbDueTime;
+    }
+    
+    /**
+     * pushes the due date from the "add gradebook item" helper to the due date field on the "Add Assignment" screen
+     */
+    asnn2.populateDueDateWithGBItemDueDate = function() {
+        // will be empty if no due date required
+        if (gbDueTime != "") {
+    	var require_due_date = jQuery("input[name='page-replace\:\:require_due_date']").get(0);
+            var curr_req_due_date = require_due_date.checked;
+            
+            // if it doesn't currently req due date, we will replace it with gb item due date
+            if (!curr_req_due_date) {
+                // enable the due date section
+                require_due_date.checked = true;
+                var due_date_container = jQuery('#page-replace\\:\\:require_due_date_container').get(0);
+                asnn2.showHideByCheckbox(require_due_date, due_date_container);
+                
+                // set the text box holding the date
+                var dueDate = new Date();
+                dueDate.setTime(gbDueTime);
+                var dateInput = jQuery("input[name='page-replace\:\:due_date\:1\:date-field']");
+                dateInput.val(dueDate.toLocaleDateString());
+                dateInput.change(); // need a change event to update the calendar widget
+            }
+        }
+    }
+    
+    /**
+     * automatically select the newly created gb item created via the helper
+     */ 
+    asnn2.populateTitleWithGbItemName = function() {
+        var curr_title = jQuery("input[name='page-replace\:\:title']").get(0).value;
+        if (!curr_title || curr_title == "") {
+            // get the currently selected gb item
+            var gbSelect = jQuery("select[name='page-replace\:\:gradebook_item-selection']").get(0);
+            var gbSelIndex = gbSelect.selectedIndex;
+            if (gbSelIndex != 0) { 
+                var selectedItem = gbSelect.options[gbSelIndex].text;
+                // replace the empty title field with the new_title
+                jQuery("input[name='page-replace\:\:title']").val(selectedItem);
+            }
+        }
+    }
+
+    /**
+     * Select the graded/ungraded radio button depending on whether a gb item
+     * has been selected in the drop down
+     */
+    asnn2.selectGraded = function() {
+        el = jQuery("select[name='page-replace\:\:gradebook_item-selection']").get(0);
+        if (el.selectedIndex != 0){
+            jQuery("input[type='radio'][id='page-replace\:\:select_graded']").get(0).checked=true;
+        } else {
+            jQuery("input[type='radio'][id='page-replace\:\:select_ungraded']").get(0).checked=true;
+        }
+    }
+    
+    /**
+     * change the selected gb item based upon the gbItemName variable
+     */
+    asnn2.changeValue = function(){   
+        el = jQuery("select[name='page-replace\:\:gradebook_item-selection']").get(0);
+        if(el){
+            for(i=0;i<el.length;i++){
+                if(el.options[i].text == gbItemName){
+                    el.selectedIndex = i;  
+                }
+            }
+        }
+
+        asnn2.selectGraded();
+        asnn2.populateTitleWithGbItemName();
+        asnn2.populateDueDateWithGBItemDueDate();
+    }
+    
+    /**
+     * if user has entered an assignment title before clicking the 
+     * "Add Gradebook Item" helper link, this method will add that name
+     * as a parameter so that the helper is auto-populated with the 
+     * assignment title
+     */
+    asnn2.update_new_gb_item_helper_url = function() {
+        var gbUrlWithoutName = jQuery("a[id='page-replace\:\:gradebook_url_without_name']").attr("href");
+        var new_title = jQuery("input[name='page-replace\:\:title']").get(0).value
+        
+        // encode unsafe characters that may be in the assignment title
+       
+        var escaped_title = "";
+        if (new_title) {
+            escaped_title = escape(new_title);
+        }
+        
+        var modifiedUrl = gbUrlWithoutName + "&name=" + escaped_title;
+        
+        jQuery("a[id='page-replace\:\:gradebook_item_new_helper']").attr("href", modifiedUrl);
     }
     
     //Sorting functions

@@ -626,20 +626,48 @@ public class Assignment2 {
 	}
 	
 	/**
-	 * Convenience method for determining if assignment is currently open. Not persisted.
-	 * @return true if the current date is after the open date and before the due date 
-	 * or true if current date is after open date and no due date was set
+	 * Convenience method for determining if assignment is currently open and
+	 * due date has not passed. Not persisted.
+	 * @return true if submission is open for this assignment and the due date
+	 * has not passed (if a due date was set). 
+	 * @see #isSubmissionOpen() isSubmissionOpen(): method used to determine if "submission is open"
 	 */
 	public boolean isOpen() {
 		boolean isOpen = false;
-		// if the current date is after the open date
-		if (openDate.before(new Date())) {
-			// check due date restriction
-			if (dueDate == null || dueDate.after(new Date())) {
-				isOpen = true;
-			}
+		if (isSubmissionOpen()) {
+		    // check to see if the due date has passed
+		    if (dueDate == null) {
+		        // no due date was set
+		        isOpen = true;
+		    } else if (dueDate.after(new Date())) {
+		        // the due date has not passed
+		        isOpen = true;
+		    }
 		}
 		
 		return isOpen;
+	}
+	
+	/**
+	 * Convenience method for determining if this assignment is open for submission.
+	 * Not persisted.
+	 * @return true if the current date is after the open date of this assignment
+	 * and the accept until date has not passed. does not consider due date since
+	 * submission is technically open until the accept until date has passed. any
+	 * submissions after due date are considered "late" but are allowed. 
+	 */
+	public boolean isSubmissionOpen() {
+	    boolean isSubmissionOpen = false;
+	    if (openDate.before(new Date())) {
+	        if (acceptUntilDate == null) {
+	            // no accept until date was set
+	            isSubmissionOpen = true;
+	        } else if (acceptUntilDate.after(new Date())) {
+	            // the accept until date has not passed
+	            isSubmissionOpen = true;
+	        }
+	    }
+	    
+	    return isSubmissionOpen;
 	}
 }

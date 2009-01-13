@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.sakaiproject.assignment2.exception.SubmissionClosedException;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
@@ -71,7 +72,9 @@ public interface AssignmentSubmissionLogic {
 	 * populate the submissionText or submissionAttachmentSet. If the curr user is
 	 * the submitter but feedback has not been released, will not populate
 	 * feedback.  Because of these changes that we don't want to save, the 
-	 * returned version was evicted from the session and is not persistent.
+	 * returned version was evicted from the session and is not persistent. Returns
+	 * null if the version exists but is restricted for this user, such as a
+	 * feedback-only version (submittedVersionNumber = 0) that is not released
 	 * @throws SecurityException if current user is not allowed to view the version
 	 * @throws VersionNotFoundException if no version exists with the given id
 	 */
@@ -108,11 +111,19 @@ public interface AssignmentSubmissionLogic {
 	 * @param subAttachSet - the set of SubmissionAttachments associated with the
 	 * version. if this is an update, will delete any existing attachments associated
 	 * with the version that aren't included in this set
+	 * @param saveAsDraftIfClosed if this method is called after submission is
+	 * closed for this student, setting this value to true will save their work
+	 * as a draft. this may be useful if the deadline passed while the student was
+	 * working in the UI so that they do not lose their work. If this is false,
+	 * throws a {@link SubmissionClosedException} when this method is called and 
+	 * submission is closed for this assignment. if you are not taking precautions
+	 * to prevent students from attempting submission on closed assignments, set 
+	 * this to false
 	 * @throws SecurityException if current user is not allowed to make this submission
-	 * @throws SubmissionClosedException if submission is closed for this assignment
+	 * @throws SubmissionClosedException if submission is closed for this assignment and saveAsDraftIfClosed is false
 	 */
 	public void saveStudentSubmission(String userId, Assignment2 assignment, boolean draft, 
-			String submittedText, Set<SubmissionAttachment> subAttachSet);
+			String submittedText, Set<SubmissionAttachment> subAttachSet, boolean saveAsDraftIfClosed);
 	
 	
 	/**
@@ -259,12 +270,15 @@ public interface AssignmentSubmissionLogic {
 	 * @return a list of all of the AssignmentSubmissionVersions associated with
 	 * the given submission. 
 	 * if the passed submission does not have an id, will return an empty list. 
-	 * list is ordered by submittedVersionNumber
-	 * If the version is draft and the submitter is not 
+	 * list is ordered by submittedVersionNumber.
+	 * If a version is draft and the submitter is not 
 	 * the current user, will not populate the submissionText or 
-	 * submissionAttachmentSet. If the curr user is	the submitter but feedback 
-	 * has not been released, will not populate	feedback. Because of these 
-	 * changes that we don't want to save, the returned submissions were evicted 
+	 * submissionAttachmentSet. 
+	 * 
+	 * If the curr user is the submitter but feedback has not been released, 
+	 * will not populate feedback, and if this version is feedback-only (submittedVersionNumber=0)
+     * and feedback has not been released, this version is not included in the returned list.
+	 * Because of these object modifications that we don't want to save, the returned submissions were evicted 
 	 * from the session and are not persistent.
 	 * 
 	 */

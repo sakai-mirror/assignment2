@@ -150,31 +150,56 @@ public class AssignmentSubmissionBean {
                         new Object[] { assignment.getTitle() }, TargettedMessage.SEVERITY_ERROR));
                 return WorkFlowResult.STUDENT_SUBMISSION_FAILURE;
             }else {
-                
-                try {
-                    submissionLogic.saveStudentSubmission(assignmentSubmission.getUserId(), assignment, false, 
-                            asv.getSubmittedText(), asv.getSubmissionAttachSet());
+
+                submissionLogic.saveStudentSubmission(assignmentSubmission.getUserId(), assignment, false, 
+                        asv.getSubmittedText(), asv.getSubmissionAttachSet(), true);
+
+                // just in case submission closed while the student was working on
+                // it, double check that the current submission isn't still
+                // draft before we take the "success" actions. if the submission was
+                // closed when they hit "submit", the backend saved their submission as draft
+                AssignmentSubmission newSubmission = submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(assignmentId, assignmentSubmission.getUserId());
+
+                if (!newSubmission.getCurrentSubmissionVersion().isDraft()) {
                     messages.addMessage(new TargettedMessage("assignment2.student-submit.info.submission_submitted",
                             new Object[] { assignment.getTitle() }, TargettedMessage.SEVERITY_INFO));
 
                     // Send out notifications
-                    if (assignment.isSendSubmissionNotifications()) {
-                        AssignmentSubmission newSubmission = submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(assignmentId, assignmentSubmission.getUserId());            
+                    if (assignment.isSendSubmissionNotifications()) {                 
                         notificationBean.notifyStudentThatSubmissionWasAccepted(newSubmission);
                         notificationBean.notifyInstructorsOfSubmission(newSubmission);
                     }
-                } catch (SubmissionClosedException sce) {
-                    messages.addMessage(new TargettedMessage("assignment2.student-submit.error.submission_closed", 
-                            new Object[] {}, TargettedMessage.SEVERITY_ERROR));
+                } else {
+                    messages.addMessage(new TargettedMessage("assignment2.student-submit.error.submission_save_draft",
+                            new Object[] { assignment.getTitle() }, TargettedMessage.SEVERITY_ERROR));
                     return WorkFlowResult.STUDENT_SUBMISSION_FAILURE;
                 }
-
             }
         }
         return WorkFlowResult.STUDENT_SUBMIT_SUBMISSION;
     }
 
     public WorkFlowResult processActionPreview(){
+        // save this submission as draft if submission is closed so we don't
+        // lose the student's work. this may happen if the user was working
+        // on their submission in the UI when the assignment closed and then
+        // the student hit "preview"
+        Assignment2 assignment = assignmentLogic.getAssignmentById(assignmentId);
+        if (assignmentId != null){
+            AssignmentSubmission assignmentSubmission = (AssignmentSubmission) asEntityBeanLocator.locateBean(ASOTPKey);
+            assignmentSubmission.setAssignment(assignment);
+
+            if (!submissionLogic.isSubmissionOpenForStudentForAssignment(assignmentSubmission.getUserId(), assignmentId)) {
+                for (String key : asvOTPMap.keySet()) {
+                    AssignmentSubmissionVersion asv = (AssignmentSubmissionVersion) asvOTPMap.get(key);
+
+                    submissionLogic.saveStudentSubmission(assignmentSubmission.getUserId(),
+                            assignmentSubmission.getAssignment(), true, asv.getSubmittedText(),
+                            asv.getSubmissionAttachSet(), true);
+                }
+            }
+        }
+        
         return WorkFlowResult.STUDENT_PREVIEW_SUBMISSION;
     }
     
@@ -200,7 +225,7 @@ public class AssignmentSubmissionBean {
             try {
                 submissionLogic.saveStudentSubmission(assignmentSubmission.getUserId(),
                         assignmentSubmission.getAssignment(), true, asv.getSubmittedText(),
-                        asv.getSubmissionAttachSet());
+                        asv.getSubmissionAttachSet(), true);
                 messages.addMessage(new TargettedMessage("assignment2.student-submit.info.submission_save_draft",
                         new Object[] { assignment.getTitle() }, TargettedMessage.SEVERITY_INFO));
             } catch (SubmissionClosedException sce) {
