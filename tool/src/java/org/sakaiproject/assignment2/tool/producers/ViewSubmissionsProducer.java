@@ -199,6 +199,7 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
 
             UICommand releaseGradesButton = UICommand.make(releaseGradesForm, "release_grades", "ReleaseGradesAction.execute");
 
+            UIOutput.make(tofill, "release_grades_li");
             UIInternalLink releaseGradesLink = UIInternalLink.make(tofill, 
                     "release_grades_link", releaseLinkText, viewparams);
             Map<String,String> idmap = new HashMap<String,String>();

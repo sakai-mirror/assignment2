@@ -7,7 +7,6 @@ import java.io.OutputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -32,7 +31,6 @@ import org.sakaiproject.assignment2.model.AttachmentBase;
 import org.sakaiproject.content.api.ContentResource;
 import org.sakaiproject.entity.api.Entity;
 import org.sakaiproject.entity.api.ResourceProperties;
-import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.exception.ServerOverloadException;
 import org.sakaiproject.user.api.User;
 import org.sakaiproject.util.Validator;
@@ -122,9 +120,7 @@ public class ZipExportLogicImpl implements ZipExportLogic
 		Map<String, User> userIdUserMap = externalLogic.getUserIdUserMap(viewableStudents);
 
 		String formatWithTime = bundle.getString("assignment2.assignment_grade_assignment.downloadall.filename_date_format_with_time");
-		String formatNoTime = bundle.getString("assignment2.assignment_grade_assignment.downloadall.filename_date_format");
 		DateFormat df_withTime = new SimpleDateFormat(formatWithTime, bundle.getLocale());
-		DateFormat df_noTime = new SimpleDateFormat(formatNoTime, bundle.getLocale());
 
 		// only create a file if the file is graded OR the file is ungraded w/ at least one submission
 		if (!assignment.isGraded() && (submissionsWithHistory == null || submissionsWithHistory.isEmpty())) {
@@ -184,11 +180,6 @@ public class ZipExportLogicImpl implements ZipExportLogic
 
 		                                    versionFolderNames.add(versionFolder);
 
-		                                    ZipEntry versionFolderEntry = new ZipEntry(
-		                                            versionFolder + Entity.SEPARATOR);
-		                                    out.putNextEntry(versionFolderEntry);
-		                                    out.closeEntry();
-
 		                                    // inside this folder, we will put the submission info
 		                                    if (version.getSubmittedText() != null && version.getSubmittedText().trim().length() > 0)
 		                                    {
@@ -206,8 +197,7 @@ public class ZipExportLogicImpl implements ZipExportLogic
 
 		                                    // add the submission attachments
 		                                    if (version.getSubmissionAttachSet() != null && !version.getSubmissionAttachSet().isEmpty()) {
-		                                        zipAttachments(out, root + submissionFolder,
-		                                                versionFolder, version.getSubmissionAttachSet());
+		                                        zipAttachments(out, versionFolder, version.getSubmissionAttachSet());
 		                                    }
 		                                }
 		                            }
@@ -274,7 +264,7 @@ public class ZipExportLogicImpl implements ZipExportLogic
 		                }
 
 		                // create a grades.csv file and add to zip
-		                String gradesFileName =  root + Entity.SEPARATOR + escapeFileName(assignmentTitle + "-" + contextId) + ".csv";
+		                String gradesFileName =  root + escapeFileName(assignmentTitle + "-" + contextId) + ".csv";
 
 		                ZipEntry gradesCSVEntry = new ZipEntry(gradesFileName);
 		                out.putNextEntry(gradesCSVEntry);
@@ -317,8 +307,8 @@ public class ZipExportLogicImpl implements ZipExportLogic
 	    return value;
 	}
 
-	private void zipAttachments(ZipOutputStream out, String submittersName,
-	        String sSubAttachmentFolder, Set<? extends AttachmentBase> attachments)
+	private void zipAttachments(ZipOutputStream out, String versionFolder, 
+	        Set<? extends AttachmentBase> attachments)
 	{
 	    int attachedUrlCount = 0;
 	    for (AttachmentBase r : attachments)
@@ -356,7 +346,7 @@ public class ZipExportLogicImpl implements ZipExportLogic
 	                bContent = new BufferedInputStream(content,
 	                        data.length);
 
-	                ZipEntry attachmentEntry = new ZipEntry(sSubAttachmentFolder
+	                ZipEntry attachmentEntry = new ZipEntry(versionFolder
 	                        + Entity.SEPARATOR + displayName);
 	                out.putNextEntry(attachmentEntry);
 	                int bCount = -1;
@@ -371,13 +361,13 @@ public class ZipExportLogicImpl implements ZipExportLogic
 	        catch (IOException e)
 	        {
 	            log	.warn(this + ": getSubmissionsZip--IOException: Problem in " +
-	            		"creating the attachment file: submittersName="
-	                    + submittersName + " attachment reference=" + r);
+	            		"creating the attachment file: parentFolder="
+	                    + versionFolder + " attachment reference=" + r);
 	        }
 	        catch (ServerOverloadException e)
 	        {
 	            log.warn(this + ": getSubmissionsZip--ServerOverloadException: " +
-	            		"submittersName=" + submittersName + " attachment reference=" + r);
+	            		"parentFolder=" + versionFolder + " attachment reference=" + r);
 	        }
 	        finally
 	        {
