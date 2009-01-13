@@ -330,7 +330,7 @@ var asnn2 = asnn2 || {};
     
     /**
      * If due date changes and no accept until date has been set, populate
-     * the accept until text field with the new due date. this does not
+     * the accept until text field with the new due date. This does not
      * select the accept until date as "required," it just sets the default
      * value if someone then goes on to require it
      */
@@ -343,6 +343,23 @@ var asnn2 = asnn2 || {};
 		var acceptUntilDate = jQuery("input[name='page-replace\:\:accept_until\:1\:date-field']");
 		acceptUntilDate.val(dueDate);
 		acceptUntilDate.change();
+	    }
+	}
+    }
+    
+    /**
+     * If due time changes and no accept until has been set, populate the accept until time
+     * with the due time. This does not select the accept until date as "required," it
+     * just sets the default value if someone then goes on to require it.
+     */
+    asnn2.populate_accept_until_time_with_due_time = function() {
+	var require_accept_until = jQuery("input[name='page-replace\:\:require_accept_until']").get(0);
+	if (!require_accept_until.checked) {
+	    // get the due time 
+	    var dueTime = jQuery("input[name='page-replace\:\:due_date\:1\:time-field']").val();
+	    if (dueTime) {
+		var acceptUntilTime = jQuery("input[name='page-replace\:\:accept_until\:1\:time-field']");
+		acceptUntilTime.val(dueTime);
 	    }
 	}
     }

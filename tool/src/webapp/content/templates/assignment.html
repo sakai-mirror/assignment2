@@ -313,6 +313,9 @@ jQuery(document).ready(function(){
     jQuery("input[name='page-replace\:\:due_date\:1\:date-field']").bind("change blur",
             function() { asnn2.populate_accept_until_with_due_date();}
             );
+    jQuery("input[name='page-replace\:\:due_date\:1\:time-field']").bind("change blur",
+            function() { asnn2.populate_accept_until_time_with_due_time();}
+            );
 
 });
 //]]>
