@@ -872,4 +872,11 @@ public class GradebookServiceStub implements GradebookService {
 		
 	}
 
+    public String getLowestPossibleGradeForGbItem(String gradebookUid,
+            Long gradebookItemId)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
 }
