@@ -528,6 +528,7 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
             }
         }
         
+        UIOutput.make(tofill, "release-grades-title", releaseGradesTitle);
         UIOutput.make(tofill, "release-grades-message", releaseGradesMessage);
         UIOutput.make(tofill, "release-grades-confirm", releaseGradesConfirm);
         UIOutput.make(tofill, "release-grades-cancel", releaseGradesCancel);

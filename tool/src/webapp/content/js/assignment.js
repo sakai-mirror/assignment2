@@ -158,7 +158,7 @@ var asnn2util = asnn2util || {};
      * Turns on the 2.x portals background overlay
      */
     asnn2util.turnOnPortalOverlay = function() {
-    	﻿jQuery("body", parent.document).append('<div id="portalMask" style="position:fixed;width:100%;height:100%;"></div>');
+	jQuery("body", parent.document).append('<div id="portalMask" style="position:fixed;width:100%;height:100%;"></div>');
     	jQuery("#" + iframeId, parent.document).css("z-index", "9001").css("position", "relative").css("background", "#fff");
     };
     
@@ -182,7 +182,7 @@ var asnn2util = asnn2util || {};
     asnn2util.openDialog = function(dialogObj) {
     	dialogOptions = {
             resizable: false,
-            width: 500,
+            width: 520,
             modal: true,
             overlay: {
                 opacity: 0.5,
