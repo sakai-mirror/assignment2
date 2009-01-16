@@ -75,7 +75,7 @@ public class PreviewAsStudentProducer implements ViewComponentProducer {
         studentViewAssignmentRenderer.makeStudentView(tofill, "preview-area:", submission, assignment, viewparams, EntityBeanLocator.NEW_PREFIX + "1", true, false);
     
         UIForm form = UIForm.make(tofill, "return-to-edit-form");
-        UICommand editButton = UICommand.make(form, "edit-button", UIMessage.make("assignment2.assignment_preview.edit"), "Assignment2Bean.processActionEdit");
+        UICommand editButton = UICommand.make(form, "edit-button", UIMessage.make("assignment2.assignment_preview.edit"), "AssignmentAuthoringBean.processActionEdit");
     }
 
     public String getViewID() {
