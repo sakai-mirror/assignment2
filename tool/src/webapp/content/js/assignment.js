@@ -243,19 +243,63 @@ var asnn2 = asnn2 || {};
             
             // if it doesn't currently req due date, we will replace it with gb item due date
             if (!curr_req_due_date) {
-                // enable the due date section
-                require_due_date.checked = true;
-                var due_date_container = jQuery('#page-replace\\:\\:require_due_date_container').get(0);
-                asnn2.showHideByCheckbox(require_due_date, due_date_container);
-                
                 // set the text box holding the date
                 var dueDate = new Date();
                 dueDate.setTime(gbDueTime);
                 var dateInput = jQuery("input[name='page-replace\:\:due_date\:1\:date-field']");
-                dateInput.val(dueDate.toLocaleDateString());
+                dateInput.val(dueDate.formatDueDate());
                 dateInput.change(); // need a change event to update the calendar widget
+                
+                // enable the due date section
+                require_due_date.checked = true;
+                var due_date_container = jQuery('#page-replace\\:\\:require_due_date_container').get(0);
+                asnn2.showHideByCheckbox(require_due_date, due_date_container);
             }
         }
+    }
+    
+    /**
+     * Since Windows and Mac display different values for date.toLocaleDateString(),
+     * we need make sure the display is consistently xx/yy/zz format instead
+     * of January 1, 2008 format.  This method will use the PUC_DATE_FORMAT
+     * used by the date picker to define the locale-aware date format we
+     * should use for populating the due date
+     */
+    Date.prototype.formatDueDate = function() {
+	// uses the PUC_DATE_FORMAT variable used by the date widget
+	// as the default format
+	var date = this;
+	var month = (date.getMonth() + 1).toString(); // month is 0-based
+	var day = date.getDate().toString();
+	var fullYear = date.getFullYear().toString();
+	var twoDigitYear = fullYear.substr(2);
+	
+	var dateFormat = PUC_DATE_FORMAT;
+	if (!dateFormat) {
+	    dateFormat = "M/d/yy";
+	}
+
+	var formattedDueDate = dateFormat;
+	// check for use of MM, DD, and YYYY before we replace
+	if (dateFormat.indexOf("MM") != -1) {
+	    formattedDueDate = formattedDueDate.replace("MM", month);
+	} else {
+	    formattedDueDate = formattedDueDate.replace("M", month);
+	}
+	
+	if (dateFormat.indexOf("dd") != -1) {
+	    formattedDueDate = formattedDueDate.replace("dd", day);
+	} else {
+	    formattedDueDate = formattedDueDate.replace("d", day);
+	}
+	
+	if (dateFormat.indexOf("yyyy") != -1) {
+	    formattedDueDate = formattedDueDate.replace("yyyy", fullYear);
+	} else {
+	    formattedDueDate = formattedDueDate.replace("yy", twoDigitYear);
+	}
+	
+	return formattedDueDate;
     }
     
     /**
