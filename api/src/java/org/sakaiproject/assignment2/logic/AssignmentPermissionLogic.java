@@ -23,6 +23,7 @@ package org.sakaiproject.assignment2.logic;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import org.sakaiproject.assignment2.exception.SubmissionNotFoundException;
 import org.sakaiproject.assignment2.model.Assignment2;
@@ -106,6 +107,15 @@ public interface AssignmentPermissionLogic {
 	 * students will be returned
 	 */
 	public List<String> getViewableStudentsForUserForItem(String userId, Assignment2 assignment);
+	
+	/**
+	 * 
+	 * @param userId
+	 * @param assignmentList
+	 * @return a map of Assignment2 object to a list of student uids of the students
+	 * this user is allowed to view for that assignment
+	 */
+	public Map<Assignment2, List<String>> getViewableStudentsForUserForAssignments(String userId, List<Assignment2> assignmentList);
 	
 	/**
 	 * @param userId

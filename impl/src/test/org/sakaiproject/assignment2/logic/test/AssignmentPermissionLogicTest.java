@@ -521,6 +521,112 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
 	   assertTrue(viewableStudents.isEmpty());
    }
    
+   public void testGetViewableStudentsForUserForAssignments() {
+       // try a null userId
+       try {
+           List<Assignment2> assignList = new ArrayList<Assignment2>();
+           assignList.add(testData.a1);
+           permissionLogic.getViewableStudentsForUserForAssignments(null, assignList);
+           fail("did not catch null assignment passed to getViewableStudentsForUserForAssignments");
+       } catch(IllegalArgumentException iae) {}
+       
+       // try a null assignment list - should return an empty map
+       Map<Assignment2, List<String>> assignmentToStudentListMap = 
+           permissionLogic.getViewableStudentsForUserForAssignments(AssignmentTestDataLoad.STUDENT1_UID, null);
+       
+       assertEquals(0, assignmentToStudentListMap.size());
+       
+       // this method should return all assignments with empty lists
+       List<Assignment2> assignList = new ArrayList<Assignment2>();
+       assignList.add(testData.a1);
+       assignList.add(testData.a2);
+       assignList.add(testData.a3);
+       assignList.add(testData.a4);
+       assignmentToStudentListMap = permissionLogic.getViewableStudentsForUserForAssignments(AssignmentTestDataLoad.STUDENT1_UID, assignList);
+       assertEquals(4, assignmentToStudentListMap.size());
+       for (Map.Entry<Assignment2, List<String>> entry : assignmentToStudentListMap.entrySet()) {
+           Assignment2 assign = entry.getKey();
+           List<String> viewableStudents = entry.getValue();
+           if (assign.equals(testData.a1)) {
+               assertEquals(0, viewableStudents.size());
+           } else if (assign.equals(testData.a2)) {
+               assertEquals(0, viewableStudents.size());
+           } else if (assign.equals(testData.a3)) {
+               assertEquals(0, viewableStudents.size());
+           } else if (assign.equals(testData.a4)) {  
+               assertEquals(0, viewableStudents.size());
+           } else {
+               fail("Unknown assignment returned by getViewableStudentsForUserForAssignments");
+           }
+       }
+       
+       // Let's start with ungraded items
+       // instructor should get all students who have the assignment
+       // a1 is restricted to groups, so will return all students in those groups. a2 is not restricted
+       // a3 (graded) is not restricted, so will return all students
+       // a4 (graded) is restricted to group 3
+       assignmentToStudentListMap = permissionLogic.getViewableStudentsForUserForAssignments(AssignmentTestDataLoad.INSTRUCTOR_UID, assignList);
+       assertEquals(4, assignmentToStudentListMap.size());
+       for (Map.Entry<Assignment2, List<String>> entry : assignmentToStudentListMap.entrySet()) {
+           Assignment2 assign = entry.getKey();
+           List<String> viewableStudents = entry.getValue();
+           if (assign.equals(testData.a1)) {
+               assertEquals(2, viewableStudents.size());
+           } else if (assign.equals(testData.a2)) {
+               assertEquals(3, viewableStudents.size());
+           } else if (assign.equals(testData.a3)) {
+               assertEquals(3, viewableStudents.size());
+           } else if (assign.equals(testData.a4)) {  
+               assertEquals(1, viewableStudents.size());
+           } else {
+               fail("Unknown assignment returned by getViewableStudentsForUserForAssignments");
+           }
+       }
+       
+       // the ta should have restrictions on a1
+       // should only get student 1 b/c may only see students in his/her group
+       // should still get 1 for a2
+       assignmentToStudentListMap = permissionLogic.getViewableStudentsForUserForAssignments(AssignmentTestDataLoad.TA_UID, assignList);
+       assertEquals(4, assignmentToStudentListMap.size());
+       for (Map.Entry<Assignment2, List<String>> entry : assignmentToStudentListMap.entrySet()) {
+           Assignment2 assign = entry.getKey();
+           List<String> viewableStudents = entry.getValue();
+           if (assign.equals(testData.a1)) {
+               assertEquals(1, viewableStudents.size());
+           } else if (assign.equals(testData.a2)) {
+               assertEquals(1, viewableStudents.size());
+           } else if (assign.equals(testData.a3)) {
+               assertEquals(1, viewableStudents.size());
+           } else if (assign.equals(testData.a4)) {  
+               assertEquals(0, viewableStudents.size());
+           } else {
+               fail("Unknown assignment returned by getViewableStudentsForUserForAssignments");
+           }
+       }
+
+       // let's add a group restriction to a2 and make sure no students are returned
+       AssignmentGroup groupFora2 = new AssignmentGroup(testData.a2, AssignmentTestDataLoad.GROUP3_NAME);
+       dao.save(groupFora2);
+       // shouldn't get any student back now for a2
+       assignmentToStudentListMap = permissionLogic.getViewableStudentsForUserForAssignments(AssignmentTestDataLoad.TA_UID, assignList);
+       assertEquals(4, assignmentToStudentListMap.size());
+       for (Map.Entry<Assignment2, List<String>> entry : assignmentToStudentListMap.entrySet()) {
+           Assignment2 assign = entry.getKey();
+           List<String> viewableStudents = entry.getValue();
+           if (assign.equals(testData.a1)) {
+               assertEquals(1, viewableStudents.size());
+           } else if (assign.equals(testData.a2)) {
+               assertEquals(0, viewableStudents.size());
+           } else if (assign.equals(testData.a3)) {
+               assertEquals(1, viewableStudents.size());
+           } else if (assign.equals(testData.a4)) {  
+               assertEquals(0, viewableStudents.size());
+           } else {
+               fail("Unknown assignment returned by getViewableStudentsForUserForAssignments");
+           }
+       }
+   }
+   
    public void testGetGradableStudentsForUserForItem() {
        // try passing a null userId
        try {
