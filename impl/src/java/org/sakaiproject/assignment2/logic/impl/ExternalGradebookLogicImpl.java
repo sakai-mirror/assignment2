@@ -741,4 +741,21 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
 	    
 	    return gradingByPoints;
 	}
+	
+	public String getLowestPossibleGradeForGradebookItem(String contextId, Long gradebookItemId) {
+	    if (contextId == null || gradebookItemId == null) {
+	        throw new IllegalArgumentException("Null contextId and/or gradebookItemId " +
+	        		"passed to getLowestPossibleGradeForGradebookItem. contextId:" + 
+	        		contextId + " gradebookItemId:" + gradebookItemId);
+	    }
+	    
+	    String lowestPossibleGrade = null;
+	    try {
+	        lowestPossibleGrade = gradebookService.getLowestPossibleGradeForGbItem(contextId, gradebookItemId);
+	    } catch (AssessmentNotFoundException anfe) {
+	        throw new GradebookItemNotFoundException("No gradebook item found with id: " + gradebookItemId, anfe);
+	    }
+	    
+	    return lowestPossibleGrade;
+	}
 }

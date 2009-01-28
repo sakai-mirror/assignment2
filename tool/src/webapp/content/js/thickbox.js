@@ -4,6 +4,18 @@
  * Copyright (c) 2007 cody lindley
  * Licensed under the MIT License: http://www.opensource.org/licenses/mit-license.php
 */
+
+/*
+ * This is a highly modified Thickbox for use with the Assignments 2 Tool.
+ * 
+ * It uses the Assignments Util Javascript to darken the background of the rest
+ * of the portal, and also makes it so when you click on the background it 
+ * doesn't close automatically.
+ * 
+ * @author rjlowe
+ * @author sgithens
+ * 
+ */
 		  
 var tb_pathToImage = "/sakai-assignment2-tool/content/images/loadingAnimation.gif";
 
@@ -46,15 +58,17 @@ function tb_show(caption, url, imageGroup, tagName) {//function called when the 
 		}else{//all others
 			if(document.getElementById("TB_overlay") === null){
 				jQuery("body").append("<div id='TB_overlay'></div><div id='TB_window'></div>");
-				jQuery("#TB_overlay").click(tb_remove);
+				//jQuery("#TB_overlay").click(tb_remove);
 			}
       //Add portalMask to main portal
       ////
-		jQuery("body", parent.document).append("<div id='portalMask' style='width:100%;height:100%'></div>");		
-		jQuery("#portalMask", parent.document).click(tb_remove);
-		jQuery("#TB_overlay").click(tb_remove);}
+		asnn2util.turnOnPortalOverlay();
+		//jQuery("body", parent.document).append("<div id='portalMask' style='width:100%;height:100%'></div>");		
+		//jQuery("#portalMask", parent.document).click(tb_remove);
+		//jQuery("#TB_overlay").click(tb_remove);
+		}
          // now move our iframe zIndex above the portalMask
-		jQuery("#" + iframeId, parent.document).css("z-index", "9001").css("position", "relative").css("background", "#fff");
+		//jQuery("#" + iframeId, parent.document).css("z-index", "9001").css("position", "relative").css("background", "#fff");
 		
 		//if(tb_detectMacXFF()){
 		//	jQuery("#TB_overlay").addClass("TB_overlayMacFFBGHack");//use png overlay so hide flash
@@ -310,7 +324,8 @@ function tb_remove() {
  	jQuery("#TB_imageOff").unbind("click");
 	jQuery("#TB_closeWindowButton").unbind("click");
 	jQuery("#TB_window").fadeOut("fast",function(){jQuery('#TB_window,#TB_overlay,#TB_HideSelect').trigger("unload").unbind().remove();
-	jQuery("#portalMask", parent.document).trigger("unload").unbind().remove();
+	//jQuery("#portalMask", parent.document).trigger("unload").unbind().remove();
+	asnn2util.turnOffPortalOverlay();
 	});
 	jQuery("#TB_load").remove();
 	if (typeof document.body.style.maxHeight == "undefined") {//if IE 6
@@ -318,7 +333,7 @@ function tb_remove() {
 		jQuery("html").css("overflow","");
 	}
 	//set our iframe back
-	jQuery("#" + iframeId, parent.document).css("z-index", "0");
+	//jQuery("#" + iframeId, parent.document).css("z-index", "0");
 	document.onkeydown = "";
 	document.onkeyup = "";
 	return false;

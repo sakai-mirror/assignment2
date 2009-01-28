@@ -306,6 +306,16 @@ jQuery(document).ready(function(){
 	});
 	var requireSubInput = jQuery("input[name='page-replace\:\:require_submissions']").get(0);
     asnn2.showHideSiblings(requireSubInput.parentNode.parentNode, requireSubInput.checked);
+    
+    // we need to bind this to both the change and blur events since the due date
+    // may be updated via the return from the gb helper or by the calendar widget
+    // or manually entered text
+    jQuery("input[name='page-replace\:\:due_date\:1\:date-field']").bind("change blur",
+            function() { asnn2.populate_accept_until_with_due_date();}
+            );
+    jQuery("input[name='page-replace\:\:due_date\:1\:time-field']").bind("change blur",
+            function() { asnn2.populate_accept_until_time_with_due_time();}
+            );
 
 });
 //]]>

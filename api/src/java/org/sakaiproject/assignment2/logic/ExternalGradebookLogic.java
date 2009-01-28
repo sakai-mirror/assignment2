@@ -367,4 +367,15 @@ public interface ExternalGradebookLogic {
 	 * @return true if the gradebook is set up for grade entry by points
 	 */
 	public boolean isGradingByPoints(String contextId);
+	
+	/**
+	 * 
+	 * @param contextId
+	 * @param gradebookItemId
+	 * @return the lowest possible grade for the gb item with the given
+	 * gradebookItemId in the gradebook. for example, it may return 0 or F or null
+	 * depending on the gradebook and gb item settings
+	 * @throws GradebookItemNotFoundException if no gradebook item exists with the given gradebookItemId
+	 */
+	public String getLowestPossibleGradeForGradebookItem(String contextId, Long gradebookItemId);
 }
