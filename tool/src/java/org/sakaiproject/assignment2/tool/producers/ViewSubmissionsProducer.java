@@ -366,9 +366,10 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
          */
         if (submissions != null && !submissions.isEmpty() && 
                 grade_perm && assignment.isGraded()) {
+            String lowestPossibleGrade = gradebookLogic.getLowestPossibleGradeForGradebookItem(currContextId, assignment.getGradebookItemId());
             UIForm unassignedForm = UIForm.make(tofill, "unassigned-apply-form");
             unassignedForm.addParameter(new UIELBinding("GradeAllRemainingAction.assignmentId", assignment.getId()));
-            UIInput.make(unassignedForm, "new-grade-value", "GradeAllRemainingAction.grade", "");
+            UIInput.make(unassignedForm, "new-grade-value", "GradeAllRemainingAction.grade", lowestPossibleGrade);
             UICommand.make(unassignedForm, "apply-button", "GradeAllRemainingAction.execute");
         }
         
@@ -527,6 +528,7 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
             }
         }
         
+        UIOutput.make(tofill, "release-grades-title", releaseGradesTitle);
         UIOutput.make(tofill, "release-grades-message", releaseGradesMessage);
         UIOutput.make(tofill, "release-grades-confirm", releaseGradesConfirm);
         UIOutput.make(tofill, "release-grades-cancel", releaseGradesCancel);

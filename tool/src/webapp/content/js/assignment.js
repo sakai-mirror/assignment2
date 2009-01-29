@@ -158,7 +158,7 @@ var asnn2util = asnn2util || {};
      * Turns on the 2.x portals background overlay
      */
     asnn2util.turnOnPortalOverlay = function() {
-    	jQuery("body", parent.document).append("<div id='portalMask' style='width:100%;height:100%'></div>");
+	jQuery("body", parent.document).append('<div id="portalMask" style="position:fixed;width:100%;height:100%;"></div>');
     	jQuery("#" + iframeId, parent.document).css("z-index", "9001").css("position", "relative").css("background", "#fff");
     };
     
@@ -182,7 +182,7 @@ var asnn2util = asnn2util || {};
     asnn2util.openDialog = function(dialogObj) {
     	dialogOptions = {
             resizable: false,
-            width: 500,
+            width: 520,
             modal: true,
             overlay: {
                 opacity: 0.5,
@@ -201,6 +201,7 @@ var asnn2util = asnn2util || {};
      */
     asnn2util.closeDialog = function(dialogObj) {
     	dialogObj.dialog('destroy');
+    	// Remove our event handlers so they are created fresh each time.
         asnn2util.turnOffPortalOverlay();
     };
 	
@@ -370,6 +371,42 @@ var asnn2 = asnn2 || {};
         var modifiedUrl = gbUrlWithoutName + "&name=" + escaped_title;
         
         jQuery("a[id='page-replace\:\:gradebook_item_new_helper']").attr("href", modifiedUrl);
+    }
+    
+    /**
+     * If due date changes and no accept until date has been set, populate
+     * the accept until text field with the new due date. This does not
+     * select the accept until date as "required," it just sets the default
+     * value if someone then goes on to require it
+     */
+    asnn2.populate_accept_until_with_due_date = function() {
+	var require_accept_until = jQuery("input[name='page-replace\:\:require_accept_until']").get(0);
+	if (!require_accept_until.checked) {
+	    // get the due date 
+	    var dueDate = jQuery("input[name='page-replace\:\:due_date\:1\:date-field']").val();
+	    if (dueDate) {
+		var acceptUntilDate = jQuery("input[name='page-replace\:\:accept_until\:1\:date-field']");
+		acceptUntilDate.val(dueDate);
+		acceptUntilDate.change();
+	    }
+	}
+    }
+    
+    /**
+     * If due time changes and no accept until has been set, populate the accept until time
+     * with the due time. This does not select the accept until date as "required," it
+     * just sets the default value if someone then goes on to require it.
+     */
+    asnn2.populate_accept_until_time_with_due_time = function() {
+	var require_accept_until = jQuery("input[name='page-replace\:\:require_accept_until']").get(0);
+	if (!require_accept_until.checked) {
+	    // get the due time 
+	    var dueTime = jQuery("input[name='page-replace\:\:due_date\:1\:time-field']").val();
+	    if (dueTime) {
+		var acceptUntilTime = jQuery("input[name='page-replace\:\:accept_until\:1\:time-field']");
+		acceptUntilTime.val(dueTime);
+	    }
+	}
     }
     
     //Sorting functions
@@ -601,57 +638,6 @@ var asnn2 = asnn2 || {};
         }
     };
     
-    
-    
-    /**
-     * This is used from the Instructor Landing page list.html to put up a
-     * prompt dialog when the assignment delete link (trashcan) is clicked.
-     */
-    asnn2.removeAsnnDialog = function(asnnId, fadeOutElement) {
-    	var removeDialog = jQuery('#remove-asnn-dialog');
-    	
-    	// This Regexp will handle the following cases:
-    	// http://149.166.143.211:10080/portal/tool/a5a78a8d-9098-4f01-a634-dc93c791a04e/list
-    	// http://149.166.143.211:10080/portal/tool/a5a78a8d-9098-4f01-a634-dc93c791a04e?panel=Main
-    	var toolurlPat = /\/portal\/tool\/[^?/]*/
-    	
-    	var urlprefix = document.location.toString().match(toolurlPat);
-    	
-    	// TODO FIXME This URL is not guaranteed to have the same prefix. Route
-    	// this through the entity broker
-    	jQuery.getJSON(urlprefix + '/assignmentinfo/' + asnnId, 
-    		function(data) {
-    			jQuery("#asnn-to-delete-title").html(data['title']);
-    			jQuery("#asnn-to-delete-due").html(data['due']);
-    			jQuery("#asnn-to-delete-numsubmissions").html(data['numsubmissions']);
-    	});
-    	
-    	jQuery('#page-replace\\:\\:remove-asnn-button').click( function (event)  {
-    		var queries = new Array();
-    		queries.push(RSF.renderBinding("RemoveAssignmentCommand.assignmentId",asnnId));
-    		queries.push(RSF.renderActionBinding("RemoveAssignmentCommand.execute"));
-    		var body = queries.join("&");
-    		jQuery.post(document.URL, body);
-    		
-    		// Close the dialog
-    		asnn2util.closeDialog(removeDialog);
-    		
-    		jQuery("#removed-asnn-msg").clone().show().appendTo(fadeOutElement);
-    		setTimeout( function() {
-    		    jQuery(fadeOutElement).fadeOut();},
-    		    500);
-    		    
-    	});
-    	
-    	jQuery('#page-replace\\:\\:cancel-remove-asnn-button').click( function (event) {
-    		asnn2util.closeDialog(removeDialog);
-    	});
-    	
-    	asnn2util.openDialog(removeDialog);
-    	
-    	return false;
-    };
-    
     /**
      * Release/Retract all feedback confirmation dialog
      * 
@@ -728,6 +714,8 @@ var asnn2 = asnn2 || {};
 var asnn2listpage = asnn2listpage || {};
 
 (function (jQuery, asnn2listpage) {
+	// Variable to track the current thing being removed so we can fade it out.
+	var currRemoveAsnnFadeoutElement;
 	
 	function tableVersionSetup() {
 		jQuery(".assignmentEdits").hide();
@@ -774,9 +762,71 @@ var asnn2listpage = asnn2listpage || {};
     function setupJQuerySortable() {
     	jQuery("#assignmentList").sortable({items: ">li.row", axis: "y", containment: "parent", update: saveSortables});
     }
+    
+    function setupRemoveDialog() {
+    	var removeDialog = jQuery('#remove-asnn-dialog');
+    	
+    	jQuery('#page-replace\\:\\:remove-asnn-button').click( function (event)  {
+    		var queries = new Array();
+    		queries.push(RSF.renderBinding("RemoveAssignmentCommand.assignmentId",jQuery("#asnn-to-delete-id").html()));
+    		queries.push(RSF.renderActionBinding("RemoveAssignmentCommand.execute"));
+    		var body = queries.join("&");
+    		jQuery.post(document.URL, body);
+    		
+    		// Close the dialog
+    		asnn2util.closeDialog(removeDialog);
+    		
+    		jQuery("#removed-asnn-msg").clone().show().appendTo(currRemoveAsnnFadeoutElement);
+    		setTimeout( function() {
+    		    jQuery(currRemoveAsnnFadeoutElement).fadeOut();},
+    		    500);
+    		    
+    	});
+    	
+    	jQuery('#page-replace\\:\\:cancel-remove-asnn-button').click( function (event) {
+    		asnn2util.closeDialog(removeDialog);
+    		// Setting this to empty to be sure the value doesn't get cached and
+    		// accidentally used for deleting in the future. ASNN-427
+    		jQuery("#asnn-to-delete-id").html('');
+    		jQuery("#asnn-to-delete-title").html('');
+			jQuery("#asnn-to-delete-due").html('');
+			jQuery("#asnn-to-delete-numsubmissions").html('');
+    	});
+    }
+    
+    /**
+     * This is used from the Instructor Landing page list.html to put up a
+     * prompt dialog when the assignment delete link (trashcan) is clicked.
+     */
+    asnn2listpage.removeAsnnDialog = function(asnnId, fadeOutElement) {
+    	currRemoveAsnnFadeoutElement = fadeOutElement;
+    	
+    	var removeDialog = jQuery('#remove-asnn-dialog');
+    	
+    	// This Regexp will handle the following cases:
+    	// http://149.166.143.211:10080/portal/tool/a5a78a8d-9098-4f01-a634-dc93c791a04e/list
+    	// http://149.166.143.211:10080/portal/tool/a5a78a8d-9098-4f01-a634-dc93c791a04e?panel=Main
+    	var toolurlPat = /\/portal\/tool\/[^?/]*/
+    	
+    	var urlprefix = document.location.toString().match(toolurlPat);
+    	
+    	// TODO FIXME This URL is not guaranteed to have the same prefix. Route
+    	// this through the entity broker
+    	jQuery.getJSON(urlprefix + '/assignmentinfo/' + asnnId, 
+    		function(data) {
+    			jQuery("#asnn-to-delete-id").html(asnnId);	
+    			jQuery("#asnn-to-delete-title").html(data['title']);
+    			jQuery("#asnn-to-delete-due").html(data['due']);
+    			jQuery("#asnn-to-delete-numsubmissions").html(data['numsubmissions'].toString());
+    			asnn2util.openDialog(removeDialog);
+    	});
+    	
+    	return false;
+    };
 
     asnn2listpage.setupAsnnList = function() {
     	listVersionSetup();
+    	setupRemoveDialog();
         //setupFluidReorderer();
         //setupJQuerySortable();
     };

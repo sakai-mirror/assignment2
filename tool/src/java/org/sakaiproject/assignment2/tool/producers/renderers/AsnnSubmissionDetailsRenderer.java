@@ -1,6 +1,8 @@
 package org.sakaiproject.assignment2.tool.producers.renderers;
 
 import java.text.DateFormat;
+import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import org.apache.commons.logging.Log;
@@ -10,6 +12,7 @@ import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.GradebookItem;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
+import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.user.api.User;
 
@@ -133,30 +136,52 @@ public class AsnnSubmissionDetailsRenderer implements BasicProducer {
             UIVerbatim.make(joint, "heading_status", messageLocator.getMessage("assignment2.student-submit.heading.submission.deleted", 
                     new Object[]{ title, currentUser.getDisplayName() }));
         }
-
-        if (assignment.getDueDate() == null) {
-            UIMessage.make(joint, "due_date",
-            "assignment2.student-submit.no_due_date");
-        }
-        else {
-            UIMessage.make(joint, "due_date",  
-                    "assignment2.student-submit.due_date", 
-                    new Object[] {df.format(assignment.getDueDate())});
-        }
         
-        // if submission is closed and:
-        // 1) student never made a submission -OR-
-        // 2) student had a submission in progress
-        // display error message indicating that submission is closed
-        if (!previewAsStudent && assignment.isRequiresSubmission() && !assignment.isRemoved() && assignment.getSubmissionType() != AssignmentConstants.SUBMIT_NON_ELECTRONIC) {
+        String dueDateText = null;
+        
+        if (!previewAsStudent && assignment.isRequiresSubmission() && 
+                assignment.getSubmissionType() != AssignmentConstants.SUBMIT_NON_ELECTRONIC) {
             if (!submissionLogic.isSubmissionOpenForStudentForAssignment(assignmentSubmission.getUserId(), assignment.getId())) {
-                if (assignmentSubmission.getCurrentSubmissionVersion() == null ||
-                        assignmentSubmission.getCurrentSubmissionVersion().getId() == null ||
-                        assignmentSubmission.getCurrentSubmissionVersion().isDraft()) {
-                    UIOutput.make(joint, "submission_closed", messageLocator.getMessage("assignment2.student-submit.submission_closed"));
+                
+                // display error message indicating that submission is closed
+                // if submission is closed and:
+                // 1) student never made a submission -OR-
+                // 2) student had a submission in progress
+                if (!assignment.isRemoved()) {
+                    if (assignmentSubmission.getCurrentSubmissionVersion() == null ||
+                            assignmentSubmission.getCurrentSubmissionVersion().getId() == null ||
+                            assignmentSubmission.getCurrentSubmissionVersion().isDraft()) {
+                        UIOutput.make(joint, "submission_closed", messageLocator.getMessage("assignment2.student-submit.submission_closed"));
+                    }
+                }
+
+                // if submission is closed and there is only one submission, we replace the
+                // due date text with "Submitted Jan 3, 2009 5:23 PM" info. If there are
+                // multiple submissions, this timestamp appears in the version history display
+                // so is not necessary here
+                List<AssignmentSubmissionVersion> history = submissionLogic.getVersionHistoryForSubmission(assignmentSubmission);
+                if (history != null && history.size() == 1) {
+                    AssignmentSubmissionVersion version = history.get(0);
+                    if (version.getSubmittedDate() != null) {
+                        dueDateText = messageLocator.getMessage("assignment2.student-submit.submitted_info", 
+                                new Object[]{version.getSubmittedDate()});
+                    }
                 }
             }
         }
+
+        // if dueDateMessage has text already, we must be replacing the due date
+        // with the submission info. otherwise, display the due date
+        if (dueDateText == null) {
+            if (assignment.getDueDate() == null) {
+                dueDateText = messageLocator.getMessage("assignment2.student-submit.no_due_date");
+            } else {
+                dueDateText = messageLocator.getMessage("assignment2.student-submit.due_date", 
+                        new Object[] {df.format(assignment.getDueDate())});
+            }
+        }
+        
+        UIOutput.make(joint, "due_date", dueDateText);
 
         if (!excludeDetails) {
             renderAssignmentDetails(assignmentSubmission, previewAsStudent,

@@ -103,8 +103,9 @@
 	</form>
 	
 	<div style="display:none" id="release-feedback-dialog">
-        <ul style="margin:0;padding:0;display:inline;">
-            <li rsf:id="msg=assignment2.dialogs.release_all_feedback.message" class="alertMessageInline">Are you sure you want to release all student feedback?</li>
+	    	<h3 rsf:id="msg=assignment2.dialogs.release_all_feedback.title">Title for Release Feedback</h3>
+        <ul class="ui-dialog-msg-list">
+            <li rsf:id="msg=assignment2.dialogs.release_all_feedback.message" class="alertMessage">Are you sure you want to release all student feedback?</li>
         </ul>
         <fieldset class="submit">
             <input id="" rsf:id="release-feedback-confirm" accesskey="s" type="button" class="active" value="Yes, Continue"/>
@@ -113,8 +114,9 @@
     </div>
 	
 	<div style="display:none" id="retract-feedback-dialog">
-        <ul style="margin:0;padding:0;display:inline;">
-            <li rsf:id="msg=assignment2.dialogs.retract_all_feedback.message" class="alertMessageInline">Are you sure you want to release all student feedback?</li>
+	    	<h3 rsf:id="msg=assignment2.dialogs.retract_all_feedback.title">Title for Retract Feedback</h3>
+        <ul class="ui-dialog-msg-list">
+            <li rsf:id="msg=assignment2.dialogs.retract_all_feedback.message" class="alertMessage">Are you sure you want to release all student feedback?</li>
         </ul>
         <fieldset class="submit">
             <input id="" rsf:id="retract-feedback-confirm" accesskey="s" type="button" class="active" value="Yes, Continue"/>
@@ -123,7 +125,8 @@
     </div>
     
     <div style="display:none" id="release-grades-dialog">
-        <ul style="margin:0;padding:0;display:inline;">
+        <h3 rsf:id="release-grades-title">Title for Release Grades</h3>
+        <ul class="ui-dialog-msg-list">
             <li rsf:id="release-grades-message" class="alertMessage">Are you sure you want to release all student grades?</li>
         </ul>
         

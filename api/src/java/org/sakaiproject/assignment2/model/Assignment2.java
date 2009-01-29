@@ -652,16 +652,24 @@ public class Assignment2 {
 	 * Convenience method for determining if this assignment is open for submission.
 	 * Not persisted.
 	 * @return true if the current date is after the open date of this assignment
-	 * and the accept until date has not passed. does not consider due date since
-	 * submission is technically open until the accept until date has passed. any
-	 * submissions after due date are considered "late" but are allowed. 
+	 * and the accept until date has not passed. if there is no accept until date,
+	 * checks to see if due date has passed 
 	 */
 	public boolean isSubmissionOpen() {
 	    boolean isSubmissionOpen = false;
 	    if (openDate.before(new Date())) {
 	        if (acceptUntilDate == null) {
-	            // no accept until date was set
-	            isSubmissionOpen = true;
+	            // no accept until date was set, check for due date
+	            if (dueDate != null) {
+	                if (dueDate.after(new Date())) {
+	                    isSubmissionOpen = true;
+	                }
+	            } else {
+	                // if there is no due date and no accept until date
+	                // allow submission indefinitely
+	                isSubmissionOpen = true;
+	            }
+	            
 	        } else if (acceptUntilDate.after(new Date())) {
 	            // the accept until date has not passed
 	            isSubmissionOpen = true;

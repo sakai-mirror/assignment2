@@ -1,4 +1,4 @@
-﻿/* Reset tool styles ========================================*/
+/* Reset tool styles ========================================*/
 
 .reqStar{
 	float: none;
@@ -322,7 +322,7 @@ A:hover.breadCrumb {
 	padding-left: 10px;
 }
 
-﻿﻿﻿/** New Table List Page Styles **/
+/** New Table List Page Styles **/
 
 table.assignmentTable {
 	border-collapse: collapse;
@@ -554,19 +554,18 @@ h4.completed_assignment {
  * Styles for our confirmation dialogs using JQuery UI Dialog
  */
 .ui-dialog {
-	/*border: solid medium blue;*/
+	/*border: solid 1px #0099CC;*/
 	border: solid thin #000; /* ONC customization */
 	background-color: white;
+	padding: 10px;
 }
  
 .ui-dialog-container {
-    margin: 10px;
-    
+
 }
 
 .ui-dialog-content {  
-    margin: 10px;
-    padding: 10px;
+
 }
 
 
@@ -580,4 +579,12 @@ h4.completed_assignment {
 
 .ui-dialog-buttonpane {
     display: none;
+}
+
+.ui-dialog-msg-list {
+	margin:0;
+	padding:0;
+	list-style-type:none;
+	list-style-position: outside; 
+	list-style: none;
 }

@@ -175,6 +175,10 @@ public class ListProducer implements ViewComponentProducer, NavigationCaseReport
         */
         /////////// End New Table Version //
      
+        // get the viewable students for all of the assignments here to be
+        // more efficient
+        Map<Assignment2, List<String>> assignmentViewableStudentsMap = 
+            permissionLogic.getViewableStudentsForUserForAssignments(currUserId, entries);
 
         for (Assignment2 assignment : entries) {
             UIBranchContainer row = UIBranchContainer.make(tofill, "assignment-row:");
@@ -188,7 +192,7 @@ public class ListProducer implements ViewComponentProducer, NavigationCaseReport
                 //UIInternalLink.make(row, "delete-asnn-link", new RemoveAssignmentParams(RemoveAssignmentConfirmProducer.VIEW_ID, assignment.getId()));
                 UIOutput.make(row, "delete-asnn-link").decorate(
                         new UIFreeAttributeDecorator("onclick",
-                        "asnn2.removeAsnnDialog("+assignment.getId()+",jQuery(this).parents('li.row:first').get(0)); return false;"));
+                        "asnn2listpage.removeAsnnDialog("+assignment.getId()+",jQuery(this).parents('li.row:first').get(0)); return false;"));
                 UIInternalLink.make(row, "assignment_edit",  UIMessage.make("assignment2.list.edit"), 
                         new AssignmentViewParams(AssignmentProducer.VIEW_ID, assignment.getId()));
                 
@@ -196,8 +200,11 @@ public class ListProducer implements ViewComponentProducer, NavigationCaseReport
 
             // Tag provider removed for now ASNN-113
             // renderMatrixTagging();
+            
+            // get the viewable students for this assignment
+            List<String> viewableStudents = assignmentViewableStudentsMap.get(assignment);
 
-            renderSubmissionStatusForAssignment(currUserId, assignment, row);
+            renderSubmissionStatusForAssignment(currUserId, assignment, viewableStudents, row);
 
 
             // group restrictions
@@ -251,16 +258,16 @@ public class ListProducer implements ViewComponentProducer, NavigationCaseReport
      * 
      * @param currUserId
      * @param assignment
+     * @param list of student uids that the user is allowed to view for this assignment
      * @param row
      */
     private void renderSubmissionStatusForAssignment(String currUserId,
-            Assignment2 assignment, UIBranchContainer row) {
+            Assignment2 assignment, List<String> viewableStudents, UIBranchContainer row) {
         if (assignment.isRequiresSubmission()) {
             // Submitted/Total display
             int total = 0;
             int withSubmission = 0;
 
-            List<String> viewableStudents = permissionLogic.getViewableStudentsForUserForItem(currUserId, assignment);
             if (viewableStudents != null) {
                 total = viewableStudents.size();
                 if (total > 0) {
