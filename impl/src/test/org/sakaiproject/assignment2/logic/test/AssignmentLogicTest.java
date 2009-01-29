@@ -505,10 +505,10 @@ public class AssignmentLogicTest extends Assignment2TestBase {
 		cal.set(2020, 10, 01);
 		assignment.setDueDate(cal.getTime());
 		assertEquals(assignmentLogic.getStatusForAssignment(assignment), AssignmentConstants.STATUS_OPEN);
-		// now make it due
+		// now make it due. since there is no accept until date, it should be closed
 		cal.set(2007, 10, 01);
 		assignment.setDueDate(cal.getTime());
-		assertEquals(assignmentLogic.getStatusForAssignment(assignment), AssignmentConstants.STATUS_DUE);
+		assertEquals(assignmentLogic.getStatusForAssignment(assignment), AssignmentConstants.STATUS_CLOSED);
 		// add an accept until date in the future
 		cal.set(2020, 10, 01);
 		assignment.setAcceptUntilDate(cal.getTime());

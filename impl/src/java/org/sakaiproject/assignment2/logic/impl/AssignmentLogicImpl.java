@@ -563,7 +563,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 		if (currDate.before(assignment.getOpenDate()))
 			return AssignmentConstants.STATUS_NOT_OPEN;
 		
-		if (assignment.getAcceptUntilDate() != null && currDate.after(assignment.getAcceptUntilDate())) {
+		if (!assignment.isSubmissionOpen()) {
 			return AssignmentConstants.STATUS_CLOSED;
 		}
 		
