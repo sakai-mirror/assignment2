@@ -72,11 +72,6 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
         this.attachmentInputEvolver = attachmentInputEvolver;
     }
     
-    private EntityBeanLocator asnnSubmissionVersionLocator;
-    public void setAsnnSubmissionVersion(EntityBeanLocator asnnSubmissionVersion) {
-		this.asnnSubmissionVersionLocator = asnnSubmissionVersion;
-	}
-    
     // Dependency
     private AttachmentListRenderer attachmentListRenderer;
     public void setAttachmentListRenderer (AttachmentListRenderer attachmentListRenderer) {
@@ -179,7 +174,7 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
         // studentSubmissionPreviewVersion should always use the flow bean 
         // unless it is null.
         AssignmentSubmissionVersion studentSubmissionPreviewVersion = 
-            studentSubmissionVersionFlowBean.getAssignmentSubmissionVersion();
+            (AssignmentSubmissionVersion) studentSubmissionVersionFlowBean.locateBean(asvOTPKey);
         
         //Rich Text Input
         if (assignment.getSubmissionType() == AssignmentConstants.SUBMIT_INLINE_ONLY || 
@@ -217,26 +212,10 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
             if (studentPreviewSubmission || !preview) {
                 String[] attachmentRefs = 
                     studentSubmissionPreviewVersion.getSubmittedAttachmentRefs();
-                //if (studentSubmissionPreviewVersion != null) {
-                //    attachmentRefs = studentSubmissionPreviewVersion.getSubmittedAttachmentRefs();
-                //}
-                //else {
-                //    attachmentRefs = new String[] {};
-                //}
+ 
                 renderSubmittedAttachments(studentPreviewSubmission, asvOTP,
                         asvOTPKey, form, attachmentRefs);
             }
-            //else if (!preview) {
-                //Attachments
-            //    String[] attachmentRefs;
-            //   b if (assignmentSubmission.getCurrentSubmissionVersion().isDraft()) {
-            //        attachmentRefs = assignmentSubmission.getCurrentSubmissionVersion().getSubmittedAttachmentRefs();
-            //    } else {
-            //        attachmentRefs = new String[] {};
-            //    }
-            //    renderSubmittedAttachments(studentPreviewSubmission, asvOTP,
-            //            asvOTPKey, form, attachmentRefs);
-            //}
         }
 
         // attachment only situations will not return any values in the OTP map; thus,
