@@ -229,7 +229,7 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
             //else if (!preview) {
                 //Attachments
             //    String[] attachmentRefs;
-            //    if (assignmentSubmission.getCurrentSubmissionVersion().isDraft()) {
+            //   b if (assignmentSubmission.getCurrentSubmissionVersion().isDraft()) {
             //        attachmentRefs = assignmentSubmission.getCurrentSubmissionVersion().getSubmittedAttachmentRefs();
             //    } else {
             //        attachmentRefs = new String[] {};
