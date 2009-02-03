@@ -102,6 +102,20 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
     }
 
     /**
+     * Renders the actual editing area for the Assignment Submission.  The 
+     * beginning of the method signature is fairly self explanatory, but gets
+     * a bit cabberwonky near the end there.  This is something that we might
+     * want to rethink in the future ( or just leave if everything is going to
+     * be rewritten in JavaScript anyways ).
+     * 
+     * The first boolean, preview, indicates (if true), that this is view is 
+     * actually an Instructor who is authoring the assignment, and just wants to
+     * see what it would look like if the student was completing it.
+     * 
+     * The second boolean, studentPreviewSubmission, indicates (if true), that 
+     * this is a Student actually completing an assignment, but are previewing
+     * their work before submitting (or editing some more).
+     *  
      *  
      * @param parent
      * @param clientID
@@ -128,7 +142,7 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
         asOTP = asOTP + asOTPKey;
         
         String asvOTP = null;
-        if (!preview && !studentPreviewSubmission) {
+        if (!preview) {
             asvOTP = "StudentSubmissionVersionFlowBean.";
         }
         else {
@@ -161,13 +175,11 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
             UIVerbatim.make(form, "required", messageLocator.getMessage("assignment2.student-submit.required"));
         }
         
-        // Student PReview Version. This seriously should only be used when 
-        // Previewing for STudents because the object will come from a flow 
-        // scope bean.
-        AssignmentSubmissionVersion studentSubmissionPreviewVersion = null;
-        if (studentPreviewSubmission) {
-            studentSubmissionPreviewVersion = studentSubmissionVersionFlowBean.getAssignmentSubmissionVersion();
-        }
+        // Because the flow might not be starting on the initial view, the
+        // studentSubmissionPreviewVersion should always use the flow bean 
+        // unless it is null.
+        AssignmentSubmissionVersion studentSubmissionPreviewVersion = 
+            studentSubmissionVersionFlowBean.getAssignmentSubmissionVersion();
         
         //Rich Text Input
         if (assignment.getSubmissionType() == AssignmentConstants.SUBMIT_INLINE_ONLY || 
@@ -194,29 +206,37 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
 
         }
 
-        //Attachment Stuff
+        // Attachment Stuff
         // the editor will only display attachments for the current version if
         // it is a draft. otherwise, the user is working on a new submission
         if (assignment.getSubmissionType() == AssignmentConstants.SUBMIT_ATTACH_ONLY ||
                 assignment.getSubmissionType() == AssignmentConstants.SUBMIT_INLINE_AND_ATTACH){
             UIOutput.make(form, "submit_attachments");
 
-            if (studentPreviewSubmission) {
-                String[] attachmentRefs = studentSubmissionPreviewVersion.getSubmittedAttachmentRefs();
+            
+            if (studentPreviewSubmission || !preview) {
+                String[] attachmentRefs = 
+                    studentSubmissionPreviewVersion.getSubmittedAttachmentRefs();
+                //if (studentSubmissionPreviewVersion != null) {
+                //    attachmentRefs = studentSubmissionPreviewVersion.getSubmittedAttachmentRefs();
+                //}
+                //else {
+                //    attachmentRefs = new String[] {};
+                //}
                 renderSubmittedAttachments(studentPreviewSubmission, asvOTP,
                         asvOTPKey, form, attachmentRefs);
             }
-            else if (!preview) {
+            //else if (!preview) {
                 //Attachments
-                String[] attachmentRefs;
-                if (assignmentSubmission.getCurrentSubmissionVersion().isDraft()) {
-                    attachmentRefs = assignmentSubmission.getCurrentSubmissionVersion().getSubmittedAttachmentRefs();
-                } else {
-                    attachmentRefs = new String[] {};
-                }
-                renderSubmittedAttachments(studentPreviewSubmission, asvOTP,
-                        asvOTPKey, form, attachmentRefs);
-            }
+            //    String[] attachmentRefs;
+            //    if (assignmentSubmission.getCurrentSubmissionVersion().isDraft()) {
+            //        attachmentRefs = assignmentSubmission.getCurrentSubmissionVersion().getSubmittedAttachmentRefs();
+            //    } else {
+            //        attachmentRefs = new String[] {};
+            //    }
+            //    renderSubmittedAttachments(studentPreviewSubmission, asvOTP,
+            //            asvOTPKey, form, attachmentRefs);
+            //}
         }
 
         // attachment only situations will not return any values in the OTP map; thus,
