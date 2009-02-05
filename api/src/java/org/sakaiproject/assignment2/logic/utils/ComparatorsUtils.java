@@ -21,6 +21,7 @@
 
 package org.sakaiproject.assignment2.logic.utils;
 
+import java.text.Collator;
 import java.util.Comparator;
 import java.util.Date;
 
@@ -60,10 +61,7 @@ public class ComparatorsUtils {
 			} else {
 				value = 0;
 			}
-			
-			if (value == 0) {
-				value = sortByTitle(assign1, assign2);
-			}
+
 			return value;
 		}
 	}
@@ -83,9 +81,6 @@ public class ComparatorsUtils {
 	public static class Assignment2OpenDateComparator implements Comparator<Assignment2> {
 		public int compare(Assignment2 assign1, Assignment2 assign2) {
 			int value = assign1.getOpenDate().compareTo(assign2.getOpenDate());
-			if (value == 0) {
-				value = sortByTitle(assign1, assign2);
-			}
 			return value;
 		}
 	}
@@ -95,7 +90,7 @@ public class ComparatorsUtils {
 	 */
 	public static class Assignment2SortIndexComparator implements Comparator<Assignment2> {
 		public int compare(Assignment2 assign1, Assignment2 assign2) {
-			int value = 0;
+			int value;
 
 			if (assign1.getSortIndex() > assign2.getSortIndex()) {
 				value = 1;
@@ -139,9 +134,6 @@ public class ComparatorsUtils {
 				value = 0;
 			}
 
-			if (value == 0) {
-				value = sortByName(submission1, submission2);
-			}
 			return value;
 		}
 	}
@@ -222,10 +214,6 @@ public class ComparatorsUtils {
 			} else {
 				value = 0;
 			}
-
-			if (value == 0) {
-				value = sortByName(submission1, submission2);
-			}
 			
 			return value;
 		}
@@ -234,7 +222,7 @@ public class ComparatorsUtils {
 	private static int sortByTitle(Assignment2 assign1, Assignment2 assign2) {
 		String title1 = assign1.getTitle() != null ? assign1.getTitle() : "";
 		String title2 = assign2.getTitle() != null ? assign2.getTitle() : "";
-		return title1.compareToIgnoreCase(title2);
+		return Collator.getInstance().compare(title1, title2);
 	}
 	
 	private static int sortByName(AssignmentSubmission submission1, AssignmentSubmission submission2) {
@@ -255,7 +243,7 @@ public class ComparatorsUtils {
 			log.error("user with id " + submission2.getUserId() + " not defined");
 		}
 
-		return sortName1.compareToIgnoreCase(sortName2);
+		return Collator.getInstance().compare(sortName1, sortName2);
 	}
 
 }
