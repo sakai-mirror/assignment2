@@ -21,7 +21,6 @@
 
 package org.sakaiproject.assignment2.tool.producers;
 
-import org.sakaiproject.assignment2.tool.beans.AssignmentAuthoringFlowBean;
 import org.sakaiproject.assignment2.tool.params.AssignmentViewParams;
 import org.sakaiproject.assignment2.tool.params.FilePickerHelperViewParams;
 import org.sakaiproject.assignment2.tool.producers.evolvers.AttachmentInputEvolver;
@@ -48,7 +47,6 @@ import uk.org.ponder.rsf.components.UIBoundBoolean;
 import uk.org.ponder.rsf.components.UIBranchContainer;
 import uk.org.ponder.rsf.components.UICommand;
 import uk.org.ponder.rsf.components.UIContainer;
-import uk.org.ponder.rsf.components.UIELBinding;
 import uk.org.ponder.rsf.components.UIForm;
 import uk.org.ponder.rsf.components.UIInput;
 import uk.org.ponder.rsf.components.UIInputMany;
@@ -95,16 +93,10 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
     private ExternalLogic externalLogic;
     private ExternalGradebookLogic externalGradebookLogic;
     private Locale locale;
-    //private EntityBeanLocator assignment2BeanLocator;
+    private EntityBeanLocator assignment2BeanLocator;
     private AttachmentInputEvolver attachmentInputEvolver;
     private ErrorStateManager errorstatemanager;
     private StatePreservationManager presmanager; // no, not that of OS/2
-    
-    // Assignment Authoring Scope Flow Bean
-    private AssignmentAuthoringFlowBean assignmentAuthoringFlowBean;
-    public void setAssignmentAuthoringFlowBean(AssignmentAuthoringFlowBean assignmentAuthoringFlowBean) {
-        this.assignmentAuthoringFlowBean = assignmentAuthoringFlowBean;
-    }
     
     /*
      * You can change the date input to accept time as well by uncommenting the lines like this:
@@ -163,48 +155,40 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
                 new Object[]{ reqStar }));
 
         // DEBUGGING
-        //    Map asnn2s = assignment2BeanLocator.getDeliveredBeans();
-        //    System.out.println("ASSN2 BEAN LOCATOR  size: " + asnn2s.size());
-        //    for (Object key: asnn2s.keySet()) {
-        //        String otpkey = (String) key;
-        //        System.out.println(otpkey);
-        //        Assignment2 asnn = (Assignment2) asnn2s.get(otpkey);
-        //        System.out.println(asnn.getId() + " | " + asnn.getTitle() + " | " + asnn.getInstructions());
-        //        System.out.println("ATTACH SIZE: " + asnn.getAssignmentAttachmentRefs().length);
-        //    }
+            Map asnn2s = assignment2BeanLocator.getDeliveredBeans();
+            System.out.println("ASSN2 BEAN LOCATOR  size: " + asnn2s.size());
+            for (Object key: asnn2s.keySet()) {
+                String otpkey = (String) key;
+                System.out.println(otpkey);
+                Assignment2 asnn = (Assignment2) asnn2s.get(otpkey);
+                System.out.println(asnn.getId() + " | " + asnn.getTitle() + " | " + asnn.getInstructions());
+                System.out.println("ATTACH SIZE: " + asnn.getAssignmentAttachmentRefs().length);
+            }
         
         // DEBUGGING
         
-        // Is there ever a situation where we should use the Assignment2. OTP 
-        // on this page?
-        //String assignment2OTP = "Assignment2.";
-        String assignment2OTP = "AssignmentAuthoringFlowBean.";
+        String assignment2OTP = "Assignment2.";
         String OTPKey = "";
         if (assignmentId != null) {
             OTPKey = assignmentId.toString();
         } else {
             // if we are returning from the preview page
-            //if (assignment2BeanLocator.getDeliveredBeans().size() == 1) {
-            //    OTPKey = (String) assignment2BeanLocator.getDeliveredBeans().keySet().toArray()[0];
-            //}
-            // create new
-            if (assignmentAuthoringFlowBean.getAssignment().getId() != null) {
-                OTPKey = assignmentAuthoringFlowBean.getAssignment().getId()+"";
+            if (assignment2BeanLocator.getDeliveredBeans().size() == 1) {
+                OTPKey = (String) assignment2BeanLocator.getDeliveredBeans().keySet().toArray()[0];
             }
+            // create new
             else {
                 OTPKey = EntityBeanLocator.NEW_PREFIX + "1";
             }
         }
         assignment2OTP += OTPKey;
-        //Assignment2 assignment = (Assignment2)assignment2BeanLocator.locateBean(OTPKey);
-        Assignment2 assignment = (Assignment2) assignmentAuthoringFlowBean.locateBean(OTPKey);
+        Assignment2 assignment = (Assignment2)assignment2BeanLocator.locateBean(OTPKey);
 
         //Initialize js otpkey
         UIVerbatim.make(tofill, "attachment-ajax-init", "otpkey=\"" + org.sakaiproject.util.Web.escapeUrl(OTPKey) + "\";\n" +
                 "fragGBPath=\"" + externalLogic.getAssignmentViewUrl(FragmentAssignment2SelectProducer.VIEW_ID) + "\";");
 
         UIForm form = UIForm.make(tofill, "assignment_form");
-        form.addParameter(new UIELBinding("AssignmentAuthoringOptionsFlowBean.otpkey",OTPKey));
 
         //Setting up Dates
         Calendar cal = Calendar.getInstance();
@@ -236,7 +220,7 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
         DecoratorList display_none_list =  new DecoratorList(new UIFreeAttributeDecorator(attrmap));
 
         Boolean require_due_date = (assignment.getDueDate() != null);
-        UIBoundBoolean require_due = UIBoundBoolean.make(form, "require_due_date", "AssignmentAuthoringOptionsFlowBean.requireDueDate", require_due_date);
+        UIBoundBoolean require_due = UIBoundBoolean.make(form, "require_due_date", "#{Assignment2Bean.requireDueDate}", require_due_date);
         require_due.mustapply = true;
 
         UIOutput require_due_container = UIOutput.make(form, "require_due_date_container");
@@ -251,7 +235,7 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
 
 
         Boolean require_date = (assignment.getAcceptUntilDate() != null);
-        UIBoundBoolean require = UIBoundBoolean.make(form, "require_accept_until", "AssignmentAuthoringOptionsFlowBean.requireAcceptUntil}", require_date);
+        UIBoundBoolean require = UIBoundBoolean.make(form, "require_accept_until", "#{Assignment2Bean.requireAcceptUntil}", require_date);
         require.mustapply = true;
 
         UIOutput require_container = UIOutput.make(form, "accept_until_container");
@@ -418,7 +402,7 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
         };
         Boolean restrictedToGroups = (assignment.getAssignmentGroupSet() != null && !assignment.getAssignmentGroupSet().isEmpty());
         UISelect access = UISelect.make(form, "access_select", access_values, access_labels,
-                "AssignmentAuthoringOptionsFlowBean.restrictedToGroups", restrictedToGroups.toString()).setMessageKeys();
+                "#{Assignment2Bean.restrictedToGroups}", restrictedToGroups.toString()).setMessageKeys();
 
         String accessId = access.getFullID();
 
@@ -439,7 +423,7 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
                 //Update OTP
                 UIBranchContainer groups_row = UIBranchContainer.make(form, "groups_row:");
                 UIBoundBoolean checkbox = UIBoundBoolean.make(groups_row, "group_check",  
-                        "AssignmentAuthoringOptionsFlowBean.selectedIds." + g.getId(), 
+                        "Assignment2Bean.selectedIds." + g.getId(), 
                         (currentGroups == null || !currentGroups.contains(g.getId()) ? Boolean.FALSE : Boolean.TRUE));
                 UIOutput.make(groups_row, "group_label", g.getTitle());
                 UIOutput.make(groups_row, "group_description", g.getDescription());
@@ -450,13 +434,13 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
         UIBoundBoolean.make(form, "sub_notif", assignment2OTP + ".sendSubmissionNotifications");
 
         //Post Buttons
-        UICommand.make(form, "post_assignment", UIMessage.make("assignment2.assignment_add.post"), "AssignmentAuthoringBean.processActionPost");
-        UICommand.make(form, "preview_assignment", UIMessage.make("assignment2.assignment_add.preview"), "AssignmentAuthoringBean.processActionPreview");
+        UICommand.make(form, "post_assignment", UIMessage.make("assignment2.assignment_add.post"), "Assignment2Bean.processActionPost");
+        UICommand.make(form, "preview_assignment", UIMessage.make("assignment2.assignment_add.preview"), "Assignment2Bean.processActionPreview");
 
         if (assignment == null || assignment.getId() == null || assignment.isDraft()){
-            UICommand.make(form, "save_draft", UIMessage.make("assignment2.assignment_add.save_draft"), "AssignmentAuthoringBean.processActionSaveDraft");
+            UICommand.make(form, "save_draft", UIMessage.make("assignment2.assignment_add.save_draft"), "Assignment2Bean.processActionSaveDraft");
         }
-        UICommand.make(form, "cancel_assignment", UIMessage.make("assignment2.assignment_add.cancel_assignment"), "AssignmentAuthoringBean.processActionCancel");
+        UICommand.make(form, "cancel_assignment", UIMessage.make("assignment2.assignment_add.cancel_assignment"), "Assignment2Bean.processActionCancel");
 
     }
 
@@ -484,9 +468,9 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
         this.locale = locale;
     }
 
-    //public void setAssignment2EntityBeanLocator(EntityBeanLocator entityBeanLocator) {
-    //    this.assignment2BeanLocator = entityBeanLocator;
-    //}
+    public void setAssignment2EntityBeanLocator(EntityBeanLocator entityBeanLocator) {
+        this.assignment2BeanLocator = entityBeanLocator;
+    }
 
     public void setAttachmentInputEvolver(AttachmentInputEvolver attachmentInputEvolver)
     {

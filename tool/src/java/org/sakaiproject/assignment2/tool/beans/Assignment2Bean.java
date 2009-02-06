@@ -1,6 +1,6 @@
 /**********************************************************************************
- * $URL: https://source.sakaiproject.org/contrib/assignment2/trunk/tool/src/java/org/sakaiproject/assignment2/tool/beans/Assignment2Bean.java $
- * $Id: Assignment2Bean.java 55216 2008-11-21 22:16:59Z swgithen@mtu.edu $
+ * $URL$
+ * $Id$
  ***********************************************************************************
  *
  * Copyright (c) 2007, 2008 The Sakai Foundation.
@@ -47,69 +47,57 @@ import java.util.Map;
 import java.util.Set;
 import java.util.HashSet;
 
-/**
- * This bean houses the action methods (Post, Draft, Preview, etc) for the 
- * Assignment Authoring Workflow. It uses a FlowScope bean, 
- * AssignmentAuthoringFlowBean, to hold the Assignment2 object being edited
- * and acted upon.
- * 
- * @author sgithens
- *
- */
-public class AssignmentAuthoringBean {
+public class Assignment2Bean {
 
-    // I don't think this needs to be public
-    private Assignment2 assignment = new Assignment2();
+    public Assignment2 assignment = new Assignment2();
+    public Date openDate;
 
-    private static final Log LOG = LogFactory.getLog(AssignmentAuthoringBean.class);
+    private static final Log LOG = LogFactory.getLog(Assignment2Bean.class);
 
-    //private static final String REMOVE = "remove";
+    private static final String REMOVE = "remove";
+    private static final String SAVE_REORDER = "save";
 
-    // Assignment Authoring Flow Scope Bean
-    private AssignmentAuthoringFlowBean assignmentAuthoringFlowBean;
-    public void setAssignmentAuthoringFlowBean(AssignmentAuthoringFlowBean assignmentAuthoringFlowBean) {
-        this.assignmentAuthoringFlowBean = assignmentAuthoringFlowBean;
-    }
-    
-    // Assignment Authoring Flow Scope Bean
-    private AssignmentAuthoringOptionsFlowBean options;
-    public void setAssignmentAuthoringOptionsFlowBean(AssignmentAuthoringOptionsFlowBean assignmentAuthoringOptionsFlowBean) {
-        this.options = assignmentAuthoringOptionsFlowBean;
+    public Long currentAssignmentId;
+
+    private Boolean requireAcceptUntil;
+    public void setRequireAcceptUntil(Boolean requireAcceptUntil) {
+        this.requireAcceptUntil = requireAcceptUntil;
     }
 
-    // Request Scope Dependency
+    public Boolean requireDueDate;
+    public void setRequireDueDate(Boolean requireDueDate) {
+        this.requireDueDate = requireDueDate;
+    }
+
+    public Map<String, Boolean> selectedIds = new HashMap<String, Boolean>();
+    public String restrictedToGroups;
+
     private TargettedMessageList messages;
     public void setMessages(TargettedMessageList messages) {
         this.messages = messages;
     }
 
-    // Service Application Scope Dependency
     private AssignmentLogic logic;
     public void setLogic(AssignmentLogic logic) {
         this.logic = logic;
     }
 
-    
-    
-    //private Map<String, Assignment2> OTPMap;
-    //@SuppressWarnings("unchecked")
-    //public void setAssignment2EntityBeanLocator(EntityBeanLocator entityBeanLocator) {
-    //    this.OTPMap = entityBeanLocator.getDeliveredBeans();
-    //}
+    private Map<String, Assignment2> OTPMap;
+    @SuppressWarnings("unchecked")
+    public void setAssignment2EntityBeanLocator(EntityBeanLocator entityBeanLocator) {
+        this.OTPMap = entityBeanLocator.getDeliveredBeans();
+    }
 
-    // Service Application Scope Dependency
     private ExternalLogic externalLogic;
     public void setExternalLogic(ExternalLogic externalLogic) {
         this.externalLogic = externalLogic;
     }
 
-    // Request Scope Dependency
     private MessageLocator messageLocator;
     public void setMessageLocator (MessageLocator messageLocator) {
         this.messageLocator = messageLocator;
     }
 
-    // Request Scope Dependency
     private NotificationBean notificationBean;
     public void setNotificationBean (NotificationBean notificationBean) {
         this.notificationBean = notificationBean;
@@ -117,39 +105,40 @@ public class AssignmentAuthoringBean {
 
     public WorkFlowResult processActionPost() {
         WorkFlowResult result = WorkFlowResult.INSTRUCTOR_POST_ASSIGNMENT;
+        for (String key : OTPMap.keySet()) {
+            Assignment2 assignment = OTPMap.get(key);
+            result = internalProcessPost(assignment, key, Boolean.FALSE);
 
-        Assignment2 assignment = assignmentAuthoringFlowBean.getAssignment(); //OTPMap.get(key);
-        result = internalProcessPost(assignment, Boolean.FALSE);
-
-        // Notify students
-        if (result.equals(WorkFlowResult.INSTRUCTOR_POST_ASSIGNMENT))
-        {
-            try
+            // Notify students
+            if (result.equals(WorkFlowResult.INSTRUCTOR_POST_ASSIGNMENT))
             {
-                notificationBean.notifyStudentsOfNewAssignment(assignment);
-            }catch (IdUnusedException e)
-            {
-                messages.addMessage(new TargettedMessage("assignment2.student-submit.error.unexpected",
-                        new Object[] {e.getLocalizedMessage()}, TargettedMessage.SEVERITY_ERROR));
-            }catch (UserNotDefinedException e)
-            {
-                messages.addMessage(new TargettedMessage("assignment2.student-submit.error.unexpected",
-                        new Object[] {e.getLocalizedMessage()}, TargettedMessage.SEVERITY_ERROR));
+                try
+                {
+                    notificationBean.notifyStudentsOfNewAssignment(assignment);
+                }catch (IdUnusedException e)
+                {
+                    messages.addMessage(new TargettedMessage("assignment2.student-submit.error.unexpected",
+                            new Object[] {e.getLocalizedMessage()}, TargettedMessage.SEVERITY_ERROR));
+                }catch (UserNotDefinedException e)
+                {
+                    messages.addMessage(new TargettedMessage("assignment2.student-submit.error.unexpected",
+                            new Object[] {e.getLocalizedMessage()}, TargettedMessage.SEVERITY_ERROR));
+                }
             }
         }
         return result;
     }
 
-    private WorkFlowResult internalProcessPost(Assignment2 assignment, Boolean draft){
+    private WorkFlowResult internalProcessPost(Assignment2 assignment, String key, Boolean draft){
         Boolean errorFound = false;
 
         assignment.setDraft(draft);
 
-        if (options.getRequireAcceptUntil() == null || options.getRequireAcceptUntil() == Boolean.FALSE) {
+        if (this.requireAcceptUntil == null || this.requireAcceptUntil == Boolean.FALSE) {
             assignment.setAcceptUntilDate(null);
         }
 
-        if (options.getRequireDueDate() == null || options.getRequireDueDate() == Boolean.FALSE) {
+        if (this.requireDueDate == null || this.requireDueDate == Boolean.FALSE) {
             assignment.setDueDate(null);
         }
 
@@ -161,7 +150,7 @@ public class AssignmentAuthoringBean {
 
         //do groups
         Set<AssignmentGroup> newGroups = new HashSet<AssignmentGroup>();
-        if (options.getRestrictedToGroups() != null && options.getRestrictedToGroups().equals(Boolean.TRUE.toString())){
+        if (this.restrictedToGroups != null && restrictedToGroups.equals(Boolean.TRUE.toString())){
 
             List<String> existingGroups = assignment.getListOfAssociatedGroupReferences();
 
@@ -171,8 +160,8 @@ public class AssignmentAuthoringBean {
             } 
 
             Set<AssignmentGroup> remGroups = new HashSet<AssignmentGroup>();
-            for (String selectedId : options.getSelectedIds().keySet()) {
-                if (options.getSelectedIds().get(selectedId) == Boolean.TRUE) {
+            for (String selectedId : selectedIds.keySet()) {
+                if (selectedIds.get(selectedId) == Boolean.TRUE) {
                     // if it isn't already associated with this assignment, add it
                     if (existingGroups == null || (existingGroups != null && !existingGroups.contains(selectedId))) {
                         AssignmentGroup newGroup = new AssignmentGroup();
@@ -180,7 +169,7 @@ public class AssignmentAuthoringBean {
                         newGroup.setGroupId(selectedId);
                         newGroups.add(newGroup);
                     }
-                } else if (options.getSelectedIds().get(selectedId) == Boolean.FALSE) {
+                } else if (selectedIds.get(selectedId) == Boolean.FALSE) {
                     //then remove the group
                     for (AssignmentGroup ag : newGroups) {
                         if (ag.getGroupId().equals(selectedId)) {
@@ -192,7 +181,7 @@ public class AssignmentAuthoringBean {
             newGroups.removeAll(remGroups);
         }
 
-        if (options.getRestrictedToGroups() != null && options.getRestrictedToGroups().equals(Boolean.TRUE.toString()) && newGroups.size() < 1){
+        if (this.restrictedToGroups != null && restrictedToGroups.equals(Boolean.TRUE.toString()) && newGroups.size() < 1){
             messages.addMessage(new TargettedMessage("assignment2.assignment_post.no_groups"));
             errorFound = true;
         }
@@ -216,8 +205,7 @@ public class AssignmentAuthoringBean {
             if (draft) {
                 messages.addMessage(new TargettedMessage("assignment2.assignment_save_draft",
                         new Object[] { assignment.getTitle() }, TargettedMessage.SEVERITY_INFO));
-            } 
-            else if (options.getOtpkey().startsWith(EntityBeanLocator.NEW_PREFIX)) {
+            } else 	if (key.startsWith(EntityBeanLocator.NEW_PREFIX)) {
                 messages.addMessage(new TargettedMessage("assignment2.assignment_post",
                         new Object[] { assignment.getTitle() }, TargettedMessage.SEVERITY_INFO));
             }
@@ -227,9 +215,9 @@ public class AssignmentAuthoringBean {
             }
         } else {
             //if (draft) {
-            //messages.addMessage(new TargettedMessage("assignment2.assignment_save_draft_error"));
+                //messages.addMessage(new TargettedMessage("assignment2.assignment_save_draft_error"));
             //} else {
-            //messages.addMessage(new TargettedMessage("assignment2.assignment_post_error"));
+                //messages.addMessage(new TargettedMessage("assignment2.assignment_post_error"));
             //}
             return WorkFlowResult.INSTRUCTOR_ASSIGNMENT_VALIDATION_FAILURE;
         }
@@ -239,27 +227,28 @@ public class AssignmentAuthoringBean {
 
     public WorkFlowResult processActionPreview() {
         WorkFlowResult returnCode = WorkFlowResult.INSTRUCTOR_ASSIGNMENT_FAILURE;
-
-        Assignment2 assignment = assignmentAuthoringFlowBean.getAssignment(); // OTPMap.get(key);
-        if (options.getRequireAcceptUntil() == null || Boolean.FALSE.equals(options.getRequireAcceptUntil())) {
-            assignment.setAcceptUntilDate(null);
+        
+        for (String key : OTPMap.keySet()) {
+            Assignment2 assignment = OTPMap.get(key);
+            if (this.requireAcceptUntil == null || Boolean.FALSE.equals(requireAcceptUntil)) {
+                assignment.setAcceptUntilDate(null);
+            }
+            if (this.requireDueDate == null || this.requireDueDate == Boolean.FALSE) {
+                assignment.setDueDate(null);
+            }
+            // TODO FIXME ASNN-295
+            // previewAssignmentBean.setAssignment(assignment);
+            // reviewAssignmentBean.setOTPKey(key);
         }
-        if (options.getRequireDueDate() == null || options.getRequireDueDate() == Boolean.FALSE) {
-            assignment.setDueDate(null);
-        }
-        // TODO FIXME ASNN-295
-        // previewAssignmentBean.setAssignment(assignment);
-        // reviewAssignmentBean.setOTPKey(key);
-
-
+        
         // Validation
-
+       
         // SWG Put this back in.
         // Assignment2Validator validator = new Assignment2Validator();
-        // if (validator.validate(assignment, messages)) {
-        //     returnCode = WorkFlowResult.INSTRUCTOR_PREVIEW_ASSIGNMENT;
-        // }
-
+       // if (validator.validate(assignment, messages)) {
+       //     returnCode = WorkFlowResult.INSTRUCTOR_PREVIEW_ASSIGNMENT;
+       // }
+        
         //return returnCode;
         return WorkFlowResult.INSTRUCTOR_PREVIEW_ASSIGNMENT;
     }
@@ -270,10 +259,10 @@ public class AssignmentAuthoringBean {
 
     public WorkFlowResult processActionSaveDraft() {
         WorkFlowResult result = WorkFlowResult.INSTRUCTOR_SAVE_DRAFT_ASSIGNMENT;
-
-        Assignment2 assignment = assignmentAuthoringFlowBean.getAssignment();
-        result = internalProcessPost(assignment, Boolean.TRUE);
-
+        for (String key : OTPMap.keySet()) {
+            Assignment2 assignment = OTPMap.get(key);
+            result = internalProcessPost(assignment, key, Boolean.TRUE);
+        }
         return result;
     }
 
@@ -301,5 +290,16 @@ public class AssignmentAuthoringBean {
         messages.addMessage(new TargettedMessage("assignment2.assignment_post.duplicate",
                 new Object[] {duplicate.getTitle() }, TargettedMessage.SEVERITY_INFO));
     }
+
+    public String processSaveReorder() {
+        //all action is done via an ajax request actually
+        messages.addMessage(new TargettedMessage("assignment2.assignment_reorder.saved", new Object[]{}, TargettedMessage.SEVERITY_INFO));
+        return SAVE_REORDER;
+    }
+
+    public String processCancelReorder() {
+        return "cancel";
+    }
+
 
 }

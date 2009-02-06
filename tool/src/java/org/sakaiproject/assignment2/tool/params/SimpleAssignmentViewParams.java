@@ -25,7 +25,7 @@ import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.sakaiproject.assignment2.tool.beans.AssignmentAuthoringBean;
+import org.sakaiproject.assignment2.tool.beans.Assignment2Bean;
 import org.sakaiproject.assignment2.tool.producers.StudentSubmitProducer;
 
 /**
@@ -40,7 +40,7 @@ import org.sakaiproject.assignment2.tool.producers.StudentSubmitProducer;
  */
 public class SimpleAssignmentViewParams extends SimpleViewParameters implements VerifiableViewParams{
 
-    private static final Log LOG = LogFactory.getLog(AssignmentAuthoringBean.class);
+    private static final Log LOG = LogFactory.getLog(Assignment2Bean.class);
 
     public Long assignmentId;
 
