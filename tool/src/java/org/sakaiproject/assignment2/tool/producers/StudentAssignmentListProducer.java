@@ -37,7 +37,7 @@ import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.tool.LocalAssignmentLogic;
 import org.sakaiproject.assignment2.tool.StudentAction;
-import org.sakaiproject.assignment2.tool.beans.Assignment2Bean;
+import org.sakaiproject.assignment2.tool.beans.AssignmentAuthoringBean;
 import org.sakaiproject.assignment2.tool.beans.AssignmentSubmissionBean;
 import org.sakaiproject.assignment2.tool.params.AssignmentListSortViewParams;
 import org.sakaiproject.assignment2.tool.params.SimpleAssignmentViewParams;
@@ -84,7 +84,6 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
 
     private AssignmentSubmissionLogic submissionLogic;
     private Locale locale;
-    private Assignment2Bean assignment2Bean;
     private AssignmentSubmissionBean submissionBean;
     private ExternalGradebookLogic externalGradebookLogic;
 
@@ -105,13 +104,6 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
 
         //get parameters
         AssignmentListSortViewParams params = (AssignmentListSortViewParams) viewparams;
-
-
-        //check if we need to duplicate an assignment, params.assignmentIdToDuplicate is not null
-        if (params.assignmentIdToDuplicate != null) {
-            assignment2Bean.createDuplicate(params.assignmentIdToDuplicate);
-            params.assignmentIdToDuplicate = null;
-        }
 
         //get paging data
         //List<Assignment2> entries = assignmentLogic.getViewableAssignments();
@@ -264,10 +256,6 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
 
     public void setLocale(Locale locale) {
         this.locale = locale;
-    }
-
-    public void setAssignment2Bean(Assignment2Bean assignment2Bean) {
-        this.assignment2Bean = assignment2Bean;
     }
     
     public void setAssignmentSubmissionBean(AssignmentSubmissionBean submissionBean) {
