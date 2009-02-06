@@ -711,6 +711,91 @@ var asnn2 = asnn2 || {};
     
 })(jQuery, asnn2);
 
+// This namespace is for the Assignment Authoring and Editing Screen
+var asnn2editpage = asnn2editpage || {};
+
+(function (jQuery, asnn2editpage) {
+    asnn2editpage.validate = function () {
+    	titleMsg = jQuery("#page-replace\\:\\:assignment_title_empty");
+    	nogbMsg = jQuery("#page-replace\\:\\:assignment_graded_no_gb_item");
+    	dueBeforeOpenMsg = jQuery("#page-replace\\:\\:assignment_due_before_open");
+    	acceptBeforeOpenMsg = jQuery("#page-replace\\:\\:assignment_accept_before_open");
+    	acceptBeforeDueMsg = jQuery("#page-replace\\:\\:assignment_accept_before_due");
+    	
+    	/*titleMsg.hide();
+    	nogbMsg.hide();
+    	dueBeforeOpenMsg.hide();
+    	acceptBeforeOpenMsg.hide();
+    	acceptBeforeDueMsg.hide();*/
+    	
+    	// hide all error messages. some may come from the date widget
+    	// built-in validator
+    	jQuery("li.alertMessageInline").hide();
+	
+    	var valid = true;
+    	// Reference: You can see these in  Assignment2Validator.java
+    	
+    	// check for empty title
+    	var title = jQuery("input[name='page-replace\:\:title']").get(0)
+    	if (title.value == '') {
+    	    titleMsg.show();
+    	    valid = false;
+    	}
+    	
+    	//check for graded but no gradebookItemId
+    	var usegb = jQuery("input[id='page-replace\:\:select_graded']").get(0);
+    	var gbitem = jQuery("select[name='page-replace\:\:gradebook_item-selection']").get(0);
+    	if (usegb.checked && gbitem.value == '0') {
+    	    nogbMsg.show();
+    	    valid = false;
+    	}
+    	
+    	var openDateStr = jQuery("#page-replace\\:\\:open_date\\:1\\:true-date").get(0).value;
+    	var acceptDateStr = jQuery("#page-replace\\:\\:accept_until\\:1\\:true-date").get(0).value;
+    	var dueDateStr = jQuery("#page-replace\\:\\:due_date\\:1\\:true-date").get(0).value;
+    	
+    	// if the user requires a due date, we need to validate it against the
+    	// open date
+    	var require_due_date = jQuery("input[name='page-replace\:\:require_due_date']").get(0).checked;
+    	if (require_due_date) {
+    	    // check for due date after open date
+    	    // if the due date is null, we'll let the date widget take care of
+    	    // that validation
+    	    if (dueDateStr != '' && dueDateStr <= openDateStr) {
+    	        dueBeforeOpenMsg.show();
+    	        valid = false;
+    	    }
+    	}
+        
+        // if the user requires an accept until date, we need to validate it
+        // against the open and due dates
+        var require_accept_until = jQuery("input[name='page-replace\:\:require_accept_until']").get(0).checked;
+        if (require_accept_until) {
+            // we'll let the date widget take care of the null and formatting checks           
+            if (require_due_date) {
+                // check for accept until before due date
+                if (acceptDateStr != '' && acceptDateStr < dueDateStr) {
+                    acceptBeforeDueMsg.show();
+                    valid = false;
+                }
+            } else {
+                // check for accept until date before open date
+                if (acceptDateStr != '' && acceptDateStr <= openDateStr) {
+                    acceptBeforeOpenMsg.show();
+                    valid = false;
+                }
+            }
+        }
+    	
+    	if (!valid) {
+    	    window.parent.scrollTo(0,0);
+    	    return false;
+    	}
+    	
+        return true;
+    };
+})(jQuery, asnn2editpage);
+
 var asnn2listpage = asnn2listpage || {};
 
 (function (jQuery, asnn2listpage) {
