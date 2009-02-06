@@ -59,7 +59,6 @@
         <property name="attachmentInputEvolver" ref="AttachmentInputEvolver" />
         <property name="messageLocator" ref="messageLocator" />
         <property name="richTextEvolver" ref="richTextEvolver"></property>
-        <property name="asnnSubmissionVersion" ref="AssignmentSubmissionVersion" />
         <property name="attachmentListRenderer" ref="AttachmentListRenderer"></property>
         <property name="viewParameters" ref="viewParameters"></property>
         <property name="submissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic"></property>
