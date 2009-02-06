@@ -722,12 +722,16 @@ var asnn2editpage = asnn2editpage || {};
     	acceptBeforeOpenMsg = jQuery("#page-replace\\:\\:assignment_accept_before_open");
     	acceptBeforeDueMsg = jQuery("#page-replace\\:\\:assignment_accept_before_due");
     	
-    	titleMsg.hide();
+    	/*titleMsg.hide();
     	nogbMsg.hide();
     	dueBeforeOpenMsg.hide();
     	acceptBeforeOpenMsg.hide();
-    	acceptBeforeDueMsg.hide();
+    	acceptBeforeDueMsg.hide();*/
     	
+    	// hide all error messages. some may come from the date widget
+    	// built-in validator
+    	jQuery("li.alertMessageInline").hide();
+	
     	var valid = true;
     	// Reference: You can see these in  Assignment2Validator.java
     	
@@ -750,32 +754,45 @@ var asnn2editpage = asnn2editpage || {};
     	var acceptDateStr = jQuery("#page-replace\\:\\:accept_until\\:1\\:true-date").get(0).value;
     	var dueDateStr = jQuery("#page-replace\\:\\:due_date\\:1\\:true-date").get(0).value;
     	
-    	// check for due date after open date
-    	if (dueDateStr <= openDateStr) {
-    	    //alert("check for due date after open date");
-    	    dueBeforeOpenMsg.show();
-    	    valid = false;
+    	// if the user requires a due date, we need to validate it against the
+    	// open date
+    	var require_due_date = jQuery("input[name='page-replace\:\:require_due_date']").get(0).checked;
+    	if (require_due_date) {
+    	    // check for due date after open date
+    	    // if the due date is null, we'll let the date widget take care of
+    	    // that validation
+    	    if (dueDateStr != '' && dueDateStr <= openDateStr) {
+    	        dueBeforeOpenMsg.show();
+    	        valid = false;
+    	    }
     	}
-    	
-    	// check for accept until date before open date
-    //	if (acceptDateStr <= openDateStr) {
-    //	    alert("check for accept until date before due date");
-    	//    acceptBeforeOpenMsg.show();
-   // 	//    valid = false;
-    //	}
-    	
-    	// check for due date before or equal to accept until
-   // 	if (dueDateStr >= acceptDateStr) {
-    	//    alert("check for due date before or equal to accept until")
-    //	    acceptBeforeDueMsg.show();
-   /// 	    valid = false;
-    	//}
+        
+        // if the user requires an accept until date, we need to validate it
+        // against the open and due dates
+        var require_accept_until = jQuery("input[name='page-replace\:\:require_accept_until']").get(0).checked;
+        if (require_accept_until) {
+            // we'll let the date widget take care of the null and formatting checks           
+            if (require_due_date) {
+                // check for accept until before due date
+                if (acceptDateStr != '' && acceptDateStr < dueDateStr) {
+                    acceptBeforeDueMsg.show();
+                    valid = false;
+                }
+            } else {
+                // check for accept until date before open date
+                if (acceptDateStr != '' && acceptDateStr <= openDateStr) {
+                    acceptBeforeOpenMsg.show();
+                    valid = false;
+                }
+            }
+        }
     	
     	if (!valid) {
-    	    window.scrollTo(0,0);
+    	    window.parent.scrollTo(0,0);
+    	    return false;
     	}
     	
-        return false;
+        return true;
     };
 })(jQuery, asnn2editpage);
 
