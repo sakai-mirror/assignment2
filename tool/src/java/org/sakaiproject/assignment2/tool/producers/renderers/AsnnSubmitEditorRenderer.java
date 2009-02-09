@@ -10,6 +10,7 @@ import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
+import org.sakaiproject.assignment2.tool.beans.StudentSubmissionVersionFlowBean;
 import org.sakaiproject.assignment2.tool.params.FilePickerHelperViewParams;
 import org.sakaiproject.assignment2.tool.producers.AddAttachmentHelperProducer;
 import org.sakaiproject.assignment2.tool.producers.evolvers.AttachmentInputEvolver;
@@ -71,11 +72,6 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
         this.attachmentInputEvolver = attachmentInputEvolver;
     }
     
-    private EntityBeanLocator asnnSubmissionVersionLocator;
-    public void setAsnnSubmissionVersion(EntityBeanLocator asnnSubmissionVersion) {
-		this.asnnSubmissionVersionLocator = asnnSubmissionVersion;
-	}
-    
     // Dependency
     private AttachmentListRenderer attachmentListRenderer;
     public void setAttachmentListRenderer (AttachmentListRenderer attachmentListRenderer) {
@@ -93,8 +89,28 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
     public void setSubmissionLogic(AssignmentSubmissionLogic submissionLogic) {
         this.submissionLogic = submissionLogic;
     }
+    
+    // Flow Scope Bean for Student Submission
+    private StudentSubmissionVersionFlowBean studentSubmissionVersionFlowBean;
+    public void setStudentSubmissionVersionFlowBean(StudentSubmissionVersionFlowBean studentSubmissionVersionFlowBean) {
+        this.studentSubmissionVersionFlowBean = studentSubmissionVersionFlowBean;
+    }
 
     /**
+     * Renders the actual editing area for the Assignment Submission.  The 
+     * beginning of the method signature is fairly self explanatory, but gets
+     * a bit cabberwonky near the end there.  This is something that we might
+     * want to rethink in the future ( or just leave if everything is going to
+     * be rewritten in JavaScript anyways ).
+     * 
+     * The first boolean, preview, indicates (if true), that this is view is 
+     * actually an Instructor who is authoring the assignment, and just wants to
+     * see what it would look like if the student was completing it.
+     * 
+     * The second boolean, studentPreviewSubmission, indicates (if true), that 
+     * this is a Student actually completing an assignment, but are previewing
+     * their work before submitting (or editing some more).
+     *  
      *  
      * @param parent
      * @param clientID
@@ -120,7 +136,13 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
         }
         asOTP = asOTP + asOTPKey;
         
-        String asvOTP = "AssignmentSubmissionVersion.";
+        String asvOTP = null;
+        if (!preview) {
+            asvOTP = "StudentSubmissionVersionFlowBean.";
+        }
+        else {
+            asvOTP = "AssignmentSubmissionVersion.";
+        }
         String asvOTPKey = "";
         if (assignmentSubmission != null && assignmentSubmission.getCurrentSubmissionVersion() != null 
                 && assignmentSubmission.getCurrentSubmissionVersion().isDraft()) {
@@ -148,13 +170,11 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
             UIVerbatim.make(form, "required", messageLocator.getMessage("assignment2.student-submit.required"));
         }
         
-        // Student PReview Version 
-        AssignmentSubmissionVersion studentSubmissionPreviewVersion = null;
-        if (studentPreviewSubmission) {
-            for (Object versionObj: asnnSubmissionVersionLocator.getDeliveredBeans().values()) {
-                studentSubmissionPreviewVersion = (AssignmentSubmissionVersion) versionObj;
-            }
-        }
+        // Because the flow might not be starting on the initial view, the
+        // studentSubmissionPreviewVersion should always use the flow bean 
+        // unless it is null.
+        AssignmentSubmissionVersion studentSubmissionPreviewVersion = 
+            (AssignmentSubmissionVersion) studentSubmissionVersionFlowBean.locateBean(asvOTPKey);
         
         //Rich Text Input
         if (assignment.getSubmissionType() == AssignmentConstants.SUBMIT_INLINE_ONLY || 
@@ -181,26 +201,18 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
 
         }
 
-        //Attachment Stuff
+        // Attachment Stuff
         // the editor will only display attachments for the current version if
         // it is a draft. otherwise, the user is working on a new submission
         if (assignment.getSubmissionType() == AssignmentConstants.SUBMIT_ATTACH_ONLY ||
                 assignment.getSubmissionType() == AssignmentConstants.SUBMIT_INLINE_AND_ATTACH){
             UIOutput.make(form, "submit_attachments");
 
-            if (studentPreviewSubmission) {
-                String[] attachmentRefs = studentSubmissionPreviewVersion.getSubmittedAttachmentRefs();
-                renderSubmittedAttachments(studentPreviewSubmission, asvOTP,
-                        asvOTPKey, form, attachmentRefs);
-            }
-            else if (!preview) {
-                //Attachments
-                String[] attachmentRefs;
-                if (assignmentSubmission.getCurrentSubmissionVersion().isDraft()) {
-                    attachmentRefs = assignmentSubmission.getCurrentSubmissionVersion().getSubmittedAttachmentRefs();
-                } else {
-                    attachmentRefs = new String[] {};
-                }
+            
+            if (studentPreviewSubmission || !preview) {
+                String[] attachmentRefs = 
+                    studentSubmissionPreviewVersion.getSubmittedAttachmentRefs();
+ 
                 renderSubmittedAttachments(studentPreviewSubmission, asvOTP,
                         asvOTPKey, form, attachmentRefs);
             }
@@ -216,11 +228,11 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
         if (assignment.isHonorPledge()) {
             UIOutput.make(joint, "honor_pledge_fieldset");
             UIMessage.make(joint, "honor_pledge_label", "assignment2.student-submit.honor_pledge_text");
-            UIBoundBoolean.make(form, "honor_pledge", "#{AssignmentSubmissionBean.honorPledge}");
+            UIBoundBoolean.make(form, "honor_pledge", "#{StudentSubmissionBean.honorPledge}");
         }
         
-        form.parameters.add( new UIELBinding("#{AssignmentSubmissionBean.ASOTPKey}", asOTPKey));
-        form.parameters.add( new UIELBinding("#{AssignmentSubmissionBean.assignmentId}", assignment.getId()));
+        form.parameters.add( new UIELBinding("StudentSubmissionBean.ASOTPKey", asOTPKey));
+        form.parameters.add( new UIELBinding("StudentSubmissionBean.assignmentId", assignment.getId()));
 
         /*
          * According to the spec, if a student is editing a submision they will
@@ -230,19 +242,19 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
         
         if (studentPreviewSubmission) {
             submit_button = UICommand.make(form, "submit_button", UIMessage.make("assignment2.student-submit.submit"), 
-            "AssignmentSubmissionBean.processActionSubmit");
+            "StudentSubmissionBean.processActionSubmit");
             save_button = UICommand.make(form, "save_draft_button", UIMessage.make("assignment2.student-submit.save_draft"), 
-            "AssignmentSubmissionBean.processActionSaveDraft");
+            "StudentSubmissionBean.processActionSaveDraft");
             UICommand edit_button = UICommand.make(form, "back_to_edit_button", UIMessage.make("assignment2.student-submit.back_to_edit"),
-            "AssignmentSubmissionBean.processActionBackToEdit");
+            "StudentSubmissionBean.processActionBackToEdit");
             //edit_button.addParameter(new UIELBinding(asvOTP + ".submittedText", hackSubmissionText));
         } else {
             submit_button = UICommand.make(form, "submit_button", UIMessage.make("assignment2.student-submit.submit"), 
-                "AssignmentSubmissionBean.processActionSubmit");
+                "StudentSubmissionBean.processActionSubmit");
             preview_button = UICommand.make(form, "preview_button", UIMessage.make("assignment2.student-submit.preview"), 
-                "AssignmentSubmissionBean.processActionPreview");
+                "StudentSubmissionBean.processActionPreview");
             save_button = UICommand.make(form, "save_draft_button", UIMessage.make("assignment2.student-submit.save_draft"), 
-                "AssignmentSubmissionBean.processActionSaveDraft");
+                "StudentSubmissionBean.processActionSaveDraft");
         }
         // ASNN-288
         //UICommand cancel_button = UICommand.make(form, "cancel_button", UIMessage.make("assignment2.student-submit.cancel"), 

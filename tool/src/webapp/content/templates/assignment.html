@@ -27,6 +27,18 @@
 		</ul>
 	</div>
 	
+	<div class="generalErrors">
+        <div style="display:inline">
+            <ul style="margin:0;padding:0;display:inline;">
+                <li style="display:none" id="assignment_title_empty" rsf:id="msg=assignment2.assignment_title_empty" class="alertMessageInline">Adding an Assignment requires a title.</li>
+                <li style="display:none" id="assignment_graded_no_gb_item" rsf:id="msg=assignment2.assignment_graded_no_gb_item" class="alertMessageInline">You must select a Gradebook Item.</li>
+                <li style="display:none" id="assignment_due_before_open" rsf:id="msg=assignment2.assignment_due_before_open" class="alertMessageInline">The Due Date must be after the Open Date.</li>
+                <li style="display:none" id="assignment_accept_before_open" rsf:id="msg=assignment2.assignment_accept_before_open" class="alertMessageInline">The Accept Until Date must be after the Open Date.</li> 
+                <li style="display:none" id="assignment_accept_before_due" rsf:id="msg=assignment2.assignment_accept_before_due" class="alertMessageInline">The Accept Until Date must be after the Due Date.</li>
+            </ul>
+        </div>
+    </div>
+	
 	<h2 rsf:id="page-title">Add Assignment Title</h2>
 	<p rsf:id="instructions" class="instruction">Complete the form and choose an action below. <span class="reqStar">*</span> Indicates required information.</p>
 
@@ -234,8 +246,8 @@
 	</fieldset>
 	
 	<fieldset class="submit">
-		<input rsf:id="post_assignment" accesskey="s" type="submit" class="active" value="Post"/>
-		<input rsf:id="save_draft" accesskey="d" type="submit" value="Save Draft"/>
+		<input onclick="return validateAsnn()" rsf:id="post_assignment" accesskey="s" type="submit" class="active" value="Post"/>
+		<input onclick="return validateAsnn()" rsf:id="save_draft" accesskey="d" type="submit" value="Save Draft"/>
 		<input rsf:id="preview_assignment" title="Preview Assignment" accesskey="v" type="submit" value="Preview"/> <!-- class="preview_button thickbox" -->
 		<input rsf:id="cancel_assignment" accesskey="x" type="submit" value="Cancel"/>
 	</fieldset>													
@@ -250,6 +262,10 @@
 </script>
 <script type="text/javascript">
 //<![CDATA[
+function validateAsnn() {
+    return asnn2editpage.validate();
+}
+  
 function refresh_ajax(){
 	if(fragGBPath != ""){
 		oldSelect=jQuery("select[name='page-replace\:\:gradebook_item-selection']").get(0).selectedIndex;
