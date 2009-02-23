@@ -3,6 +3,7 @@ package org.sakaiproject.assignment2.tool.beans;
 import org.sakaiproject.assignment2.exception.SubmissionClosedException;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
+import org.sakaiproject.assignment2.logic.ScheduledNotification;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
@@ -25,6 +26,12 @@ public class StudentSubmissionBean {
     private AssignmentLogic assignmentLogic;
     public void setAssignmentLogic(AssignmentLogic assignmentLogic) {
         this.assignmentLogic = assignmentLogic;
+    }
+    
+    // Service Application Scope Dependency
+    private ScheduledNotification scheduledNotification;
+    public void setScheduledNotification(ScheduledNotification scheduledNotification) {
+        this.scheduledNotification = scheduledNotification;
     }
 
     // Flow Scope Bean for Student Submission
@@ -49,12 +56,6 @@ public class StudentSubmissionBean {
     private TargettedMessageList messages;
     public void setMessages(TargettedMessageList messages) {
         this.messages = messages;
-    }
-
-    // Request Scope Dependency
-    private NotificationBean notificationBean;
-    public void setNotificationBean(NotificationBean notificationBean) {
-        this.notificationBean = notificationBean;
     }
 
     // Request Scope Dependency (sort of even though it's declared in App Scope)
@@ -99,9 +100,11 @@ public class StudentSubmissionBean {
 
                 // Send out notifications
                 if (assignment.isSendSubmissionNotifications()) {                 
-                    notificationBean.notifyStudentThatSubmissionWasAccepted(newSubmission);
-                    notificationBean.notifyInstructorsOfSubmission(newSubmission);
+                    scheduledNotification.notifyInstructorsOfSubmission(newSubmission);
                 }
+                
+                // students always get a notification
+                scheduledNotification.notifyStudentThatSubmissionWasAccepted(newSubmission);
             } else {
                 messages.addMessage(new TargettedMessage("assignment2.student-submit.error.submission_save_draft",
                         new Object[] { assignment.getTitle() }, TargettedMessage.SEVERITY_ERROR));

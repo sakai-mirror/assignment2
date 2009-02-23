@@ -56,21 +56,6 @@ public class NotificationBean
 		this.scheduledNotification = scheduledNotification;
 	}
 
-	/**
-	 * This is hideous, we render the messages and hand them off to the email service in the logic layer because
-	 * the tool layer isn't visible to the scheduledInvocation stuff
-	 */
-	
-	public void notifyStudentThatSubmissionWasAccepted(AssignmentSubmission s) 
-	{
-		scheduledNotification.notifyStudentThatSubmissionWasAccepted(s);
-	}
-
-	public void notifyInstructorsOfSubmission(AssignmentSubmission s)
-	{
-		scheduledNotification.notifyInstructorsOfSubmission(s);
-	}
-
 	public void notifyStudentsOfNewAssignment(Assignment2 assignment)
 			throws IdUnusedException, UserNotDefinedException
 	{
