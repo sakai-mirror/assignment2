@@ -169,5 +169,9 @@ public class StudentSubmissionBean {
 
         return WorkFlowResult.STUDENT_SAVE_DRAFT_SUBMISSION;
     }
+    
+    public WorkFlowResult processActionCancel() {
+        return WorkFlowResult.STUDENT_CANCEL_SUBMISSION;
+    }
 
 }

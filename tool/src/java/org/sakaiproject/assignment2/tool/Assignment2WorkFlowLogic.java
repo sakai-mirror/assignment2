@@ -160,6 +160,10 @@ public class Assignment2WorkFlowLogic implements ViewParamsInterceptor, ActionRe
         case STUDENT_SUBMIT_SUBMISSION:
             result.resultingView = new SimpleViewParameters(StudentAssignmentListProducer.VIEW_ID);
             break;
+        case STUDENT_CANCEL_SUBMISSION:
+            result.resultingView = new SimpleViewParameters(StudentAssignmentListProducer.VIEW_ID);
+            result.propagateBeans = ARIResult.FLOW_END;
+            break;
         case STUDENT_SUBMISSION_FAILURE:
             break;
         /*
