@@ -105,6 +105,14 @@ public interface ExternalLogic {
     
     /**
      * 
+     * @param contextId
+     * @return the site title for the site associated with the given
+     * contextId.  Returns null if the Site could not be retrieved.
+     */
+    public String getSiteTitle(String contextId);
+    
+    /**
+     * 
      * @return the title of the Assignment2 tool
      */
     public String getToolTitle();

@@ -323,4 +323,10 @@ public class ExternalLogicStub implements ExternalLogic {
         return null;
     }
 
+    public String getSiteTitle(String contextId)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
 }

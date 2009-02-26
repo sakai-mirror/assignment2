@@ -117,6 +117,16 @@ public class ExternalLogicImpl implements ExternalLogic {
         return site;
     }
     
+    public String getSiteTitle(String contextId) {
+        String siteTitle = null;
+        Site site = getSite(contextId);
+        if (site != null) {
+            siteTitle = site.getTitle();
+        }
+        
+        return siteTitle;
+    }
+    
     public String getToolTitle() {
     	return toolManager.getTool(ExternalLogic.TOOL_ID_ASSIGNMENT2).getTitle();
     }

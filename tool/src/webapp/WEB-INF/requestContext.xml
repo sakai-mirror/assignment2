@@ -360,6 +360,7 @@
 		<property name="zipExporter" ref="org.sakaiproject.assignment2.logic.ZipExportLogic" />
 		<property name="viewparams" ref="viewParameters" />
 		<property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
+		<property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
 	</bean>
 
 	<bean id="UploadBean" class="org.sakaiproject.assignment2.tool.beans.UploadBean">

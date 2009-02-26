@@ -29,9 +29,12 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
+import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.logic.ZipExportLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.tool.params.ZipViewParams;
+import org.sakaiproject.site.api.SiteService;
+import org.sakaiproject.util.Validator;
 
 import uk.org.ponder.rsf.processor.HandlerHook;
 import uk.org.ponder.rsf.viewstate.ViewParameters;
@@ -50,6 +53,7 @@ public class ZipHandlerHook implements HandlerHook
 	private ZipExportLogic zipExporter;
 	private ViewParameters viewparams;
 	private AssignmentLogic assignmentLogic;
+	private ExternalLogic externalLogic;
 
 	public void setResponse(HttpServletResponse response)
 	{
@@ -69,6 +73,11 @@ public class ZipHandlerHook implements HandlerHook
 	public void setAssignmentLogic (AssignmentLogic assignmentLogic)
 	{
 		this.assignmentLogic = assignmentLogic;
+	}
+	
+	public void setExternalLogic (ExternalLogic externalLogic)
+	{
+	    this.externalLogic = externalLogic;
 	}
 
 	public boolean handle()
@@ -95,11 +104,11 @@ public class ZipHandlerHook implements HandlerHook
 		}
 
 		Assignment2 assignment = assignmentLogic.getAssignmentById(zvp.assignmentId);
-		String title = assignment.getTitle() + "-" + assignment.getContextId();
-		// replace spaces with "-" first for readability
-		title = title.replaceAll(" " , "-");
-		title = URLEncoder.encode(title);
-		response.setHeader("Content-disposition", "inline; filename="+ title +".zip");
+		String siteTitle = externalLogic.getSiteTitle(assignment.getContextId());
+		String zipFolderName = assignment.getTitle() + "-" + siteTitle;
+		zipFolderName = zipExporter.escapeZipEntry(zipFolderName, "_");
+
+		response.setHeader("Content-disposition", "inline; filename="+ zipFolderName +".zip");
 		response.setContentType("application/zip");
 
 		zipExporter.getSubmissionsZip(resultsOutputStream, zvp.assignmentId);

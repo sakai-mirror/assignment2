@@ -65,7 +65,20 @@ public class UploadAllConfirmProducer implements ViewComponentProducer, ViewPara
 
         if (uploadBean.parsedContent != null) {
             for (List<String> parts: uploadBean.parsedContent) {
+
+                // make sure there are 4 parts to the content representing
+                // username, student name, grade, grade comment.
+                // it is possible to have grade and/or comment null and we
+                // don't want to hit an IndexOutOfBoundsException during processing
+                // later on
+                if (parts.size() < 4) {
+                    while (parts.size() < 4) {
+                        parts.add("");
+                    }
+                }
+                
                 UIBranchContainer row = UIBranchContainer.make(tofill, "student-row:");
+                
                 UIOutput.make(row, "student-id", parts.get(0));
                 UIOutput.make(row, "student-name", parts.get(1));
                 UIOutput.make(row, "grade", parts.get(2));
