@@ -23,16 +23,22 @@ package org.sakaiproject.assignment2.tool.beans;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.assignment2.exception.AssignmentNotFoundException;
 import org.sakaiproject.assignment2.exception.UploadException;
+import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
+import org.sakaiproject.assignment2.logic.UploadAllLogic;
 import org.sakaiproject.assignment2.logic.UploadGradesLogic;
+import org.sakaiproject.assignment2.logic.UploadAllLogic.UploadInfo;
+import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.UploadAllOptions;
 import org.sakaiproject.assignment2.tool.WorkFlowResult;
-import org.sakaiproject.assignment2.tool.producers.ViewSubmissionsProducer;
+import org.sakaiproject.component.cover.ServerConfigurationService;
 import org.springframework.web.multipart.MultipartFile;
 
 import uk.org.ponder.messageutil.TargettedMessage;
@@ -49,11 +55,11 @@ import uk.org.ponder.messageutil.TargettedMessageList;
  *
  */
 public class UploadBean
-{
+{  
+    private static final Log log = LogFactory.getLog(UploadBean.class);
+    
     private UploadAllOptions uploadOptions;
     private Map<String, MultipartFile> uploads;
-
-    private static final String FAILURE = "failure";
 
     // Property / Dependency
     private TargettedMessageList messages;
@@ -66,6 +72,17 @@ public class UploadBean
     public void setUploadGradesLogic(UploadGradesLogic uploadGradesLogic)
     {
         this.uploadGradesLogic = uploadGradesLogic;
+    }
+
+    private UploadAllLogic uploadAllLogic;
+    public void setUploadAllLogic(UploadAllLogic uploadAllLogic)
+    {
+        this.uploadAllLogic = uploadAllLogic;
+    }
+
+    private AssignmentLogic assignmentLogic;
+    public void setAssignmentLogic(AssignmentLogic assignmentLogic) {
+        this.assignmentLogic = assignmentLogic;
     }
 
     public void setMultipartMap(Map<String, MultipartFile> uploads)
@@ -86,13 +103,80 @@ public class UploadBean
     public void setExternalLogic(ExternalLogic externalLogic) {
         this.externalLogic = externalLogic;
     }
-    
+
     /*
      * The members below are stateful variables used to store the uploaded data
      * while it's verified in the wizard/workflow
      */
     public Map<String, String> displayIdUserIdMap;
     public List<List<String>> parsedContent;
+
+    /**
+     * The user may upload either a zip archive or just the grades csv file.
+     * This method will figure out what they uploaded and redirect to 
+     * the appropriate upload process. 
+     * @return
+     */
+    public WorkFlowResult processUpload() {
+        if (uploadOptions == null || uploadOptions.assignmentId == null ) {
+            messages.addMessage(new TargettedMessage("No assignmentId was passed " +
+                    "in the request to processUploadGradesCSV. Cannot continue.", new Object[] {},
+                    TargettedMessage.SEVERITY_ERROR));
+            return WorkFlowResult.UPLOAD_FAILURE;
+        }
+
+        if (uploads.isEmpty()) 
+        {
+            messages.addMessage(new TargettedMessage("assignment2.uploadall.alert.file_type", new Object[] {},
+                    TargettedMessage.SEVERITY_ERROR));
+            return WorkFlowResult.UPLOAD_FAILURE;
+        }
+        
+
+        Assignment2 assign = assignmentLogic.getAssignmentById(uploadOptions.assignmentId);
+        if (assign == null) {
+            throw new AssignmentNotFoundException("No assignment exists with " +
+                    "the assignmentId passed to the upload via uploadOptions: " + uploadOptions.assignmentId);
+        }
+
+
+        MultipartFile uploadedFile = uploads.get("file");
+        
+        long uploadedFileSize = uploadedFile.getSize();
+        if (uploadedFileSize == 0)
+        {
+            messages.addMessage(new TargettedMessage("assignment2.uploadall.alert.file_type", new Object[] {},
+                    TargettedMessage.SEVERITY_ERROR));
+            return WorkFlowResult.UPLOAD_FAILURE;
+        }
+        
+        // double check that the file doesn't exceed our upload limit
+        String maxFileSizeInMB = ServerConfigurationService.getString("content.upload.max", "1");
+        int maxFileSizeInBytes = 1024 * 1024;
+        try {
+            maxFileSizeInBytes = Integer.parseInt(maxFileSizeInMB) * 1024 * 1024;
+        } catch(NumberFormatException e) {
+            log.warn("Unable to parse content.upload.max retrieved from properties file during upload");
+        }
+        
+        if (uploadedFileSize > maxFileSizeInBytes) {
+            messages.addMessage(new TargettedMessage("assignment2.uploadall.error.file_size", new Object[] {maxFileSizeInMB}, TargettedMessage.SEVERITY_ERROR));
+            return WorkFlowResult.UPLOAD_FAILURE;
+        }
+
+        boolean isZip = "application/zip".equals(uploadedFile.getContentType()) || "application/x-zip-compressed".equals(uploadedFile.getContentType());
+        boolean isCsv = uploadedFile.getOriginalFilename().endsWith(".csv");
+
+        if (isZip) {
+            return processUploadAll(uploadedFile, assign);
+        } else if (isCsv) {
+            return processUploadGradesCSV(uploadedFile, assign);
+        } else {
+            messages.addMessage(new TargettedMessage("assignment2.uploadall.alert.file_type", new Object[] {},
+                    TargettedMessage.SEVERITY_ERROR));
+            return WorkFlowResult.UPLOAD_FAILURE;
+        }
+    }
 
     /**
      * Action Method Binding for going back to the Upload after viewing the
@@ -106,7 +190,7 @@ public class UploadBean
         parsedContent = null;
         return WorkFlowResult.UPLOADALL_CSV_BACK_TO_UPLOAD;
     }
-    
+
     /**
      * Action Method Binding for confirming the save information processing
      * after viewing the parsed data from the upload.
@@ -128,48 +212,42 @@ public class UploadBean
 
         return WorkFlowResult.UPLOADALL_CSV_CONFIRM_AND_SAVE;
     }
-    
+
+    private WorkFlowResult processUploadAll(MultipartFile uploadedFile, Assignment2 assign)
+    {
+        // you should have already done validation on the file at this point
+
+        File newFile = null;
+        try {
+            newFile = File.createTempFile(uploadedFile.getName(), ".zip");
+            uploadedFile.transferTo(newFile);
+        } catch (IOException ioe) {
+            throw new UploadException(ioe.getMessage(), ioe);
+        }
+
+        // try to upload this file
+        try {
+            List<Map<String, String>> uploadInfo = uploadAllLogic.uploadAll(uploadOptions, newFile);
+            addUploadMessages(uploadInfo);
+        } catch (UploadException ue) {
+            if (log.isDebugEnabled()) log.debug("UploadException encountered while attempting to UploadAll for assignment: " + assign.getTitle(), ue);
+            
+            messages.addMessage(new TargettedMessage("assignment2.uploadall.error.failure", new Object[] {assign.getTitle()}));
+            return WorkFlowResult.UPLOAD_FAILURE;
+        }
+
+        return WorkFlowResult.UPLOAD_SUCCESS;
+    }
+
     /**
-     * Action Method Binding for the Upload Button on the inital page of the
+     * Action Method Binding for the Upload Button on the initial page of the
      * upload workflow/wizard.
      * 
      * @return
      */
-    public WorkFlowResult processUploadGradesCSV()
+    private WorkFlowResult processUploadGradesCSV(MultipartFile uploadedFile, Assignment2 assignment)
     {
-        if (uploadOptions == null || uploadOptions.assignmentId == null ) {
-            messages.addMessage(new TargettedMessage("No assignmentId was passed " +
-                    "in the request to processUploadGradesCSV. Cannot continue.", new Object[] {},
-                    TargettedMessage.SEVERITY_ERROR));
-            return WorkFlowResult.UPLOADALL_CSV_UPLOAD_FAILURE;
-        }
-
-        if (uploads.isEmpty()) 
-        {
-            messages.addMessage(new TargettedMessage("assignment2.upload_grades.missing_file", new Object[] {},
-                    TargettedMessage.SEVERITY_ERROR));
-            return WorkFlowResult.UPLOADALL_CSV_UPLOAD_FAILURE;
-        }
-
-        MultipartFile uploadedFile = uploads.get("file");
-
-        if (uploadedFile.getSize() == 0)
-        {
-            messages.addMessage(new TargettedMessage("assignment2.upload_grades.missing_file", new Object[] {},
-                    TargettedMessage.SEVERITY_ERROR));
-            return WorkFlowResult.UPLOADALL_CSV_UPLOAD_FAILURE;
-        }
-
-        if (!uploadedFile.getOriginalFilename().endsWith("csv"))
-        {
-            messages.addMessage(new TargettedMessage("assignment2.upload_grades.not_csv", new Object[] {},
-                    TargettedMessage.SEVERITY_ERROR));
-            return WorkFlowResult.UPLOADALL_CSV_UPLOAD_FAILURE;
-        }
-
-        // now let's parse the content of the file so we can do some validation
-        // on the data before we attempt to save it. 
-        String contextId = externalLogic.getCurrentContextId();
+        // validation on file should have already occurred
 
         File newFile = null;
         try {
@@ -180,7 +258,7 @@ public class UploadBean
         }
 
         // retrieve the displayIdUserId info once and re-use it
-        displayIdUserIdMap = externalLogic.getUserDisplayIdUserIdMapForStudentsInSite(contextId);		
+        displayIdUserIdMap = externalLogic.getUserDisplayIdUserIdMapForStudentsInSite(assignment.getContextId());		
         parsedContent = uploadGradesLogic.getCSVContent(newFile);
 
         // let's check that the students included in the file are actually in the site
@@ -192,7 +270,7 @@ public class UploadBean
         }
 
         // check that the grades are valid
-        List<String> displayIdsWithInvalidGrade = uploadGradesLogic.getStudentsWithInvalidGradesInContent(parsedContent, contextId);
+        List<String> displayIdsWithInvalidGrade = uploadGradesLogic.getStudentsWithInvalidGradesInContent(parsedContent, assignment.getContextId());
         if (displayIdsWithInvalidGrade != null && !displayIdsWithInvalidGrade.isEmpty()) {
             messages.addMessage(new TargettedMessage("assignment2.upload_grades.grades_not_valid", 
                     new Object[] {getListAsString(displayIdsWithInvalidGrade)}, TargettedMessage.SEVERITY_ERROR ));
@@ -218,64 +296,55 @@ public class UploadBean
         return sb.toString();
     }
 
-    /*
-     * **** This is the original code for a full upload. For now, we are only updating grades via the csv
-	 public String processUpload()
-	{
-		MultipartFile upFile = null;
-		boolean isZip = false;
-		if (uploads.isEmpty())
-			messages.addMessage(new TargettedMessage("assignment2.uploadall.alert.zipFile"));
-		else
-		{
-			upFile = uploads.get("file");
-			if (upFile.getSize() == 0)
-			{
-				messages.addMessage(new TargettedMessage("assignment2.uploadall.alert.zipFile"));
-			}
-			else if ("application/zip".equals(upFile.getContentType()))
-			{
-				isZip = true;
-			}
-		}
+    /**
+     * Will add appropriate error/info messages based upon the {@link UploadInfo}
+     * information returned from the upload method
+     * @param uploadInfo
+     */
+    private void addUploadMessages(List<Map<String, String>> uploadInfo) {
 
-		// check that at least 1 option has been selected
-		if ((uploadOptions == null
-				|| (!uploadOptions.feedbackText && !uploadOptions.gradeFile
-						&& !uploadOptions.feedbackAttachments)) && isZip)
-		{
-			messages.addMessage(new TargettedMessage("assignment2.uploadall.alert.choose.element"));
-		}
-		else
-		{
-			try
-			{
-				File f = null;
-				if (isZip)
-				{
-					f = File.createTempFile(upFile.getName(), ".zip");
-					upFile.transferTo(f);
-					updownLogic.uploadAll(uploadOptions, f);
-				}
-				else
-				{
-					f = File.createTempFile(upFile.getName(), ".csv");
-					upFile.transferTo(f);
-					updownLogic.uploadCSV(uploadOptions, f);
-				}
-			}
-			catch (IOException ioe)
-			{
-				messages.addMessage(new TargettedMessage("assignment2.uploadall.exception",
-						new Object[] { ioe.getMessage() }));
-			}
-			catch (UploadException ue)
-			{
-				messages.addMessage(new TargettedMessage("assignment2.uploadall.exception",
-						new Object[] { ue.getMessage() }));
-			}
-		}
+        if (uploadInfo != null) {
+            String totalNumProcessed = "0";
+            String totalNumUpdated = "0";
+            
+            for (Map<String, String> infoMap : uploadInfo) {
+                String info = infoMap.get(UploadAllLogic.UPLOAD_INFO);
+                String param = infoMap.get(UploadAllLogic.UPLOAD_PARAM);
 
-		return ViewSubmissionsProducer.VIEW_ID;
-	}*/
+                if (info.equals(UploadAllLogic.UploadInfo.UNABLE_TO_EXTRACT_USERNAME.toString())) {
+                    messages.addMessage(new TargettedMessage("assignment2.uploadall.error.extract_student",
+                            new Object[] {param}, TargettedMessage.SEVERITY_ERROR));
+                } else if (info.equals(UploadAllLogic.UploadInfo.UNABLE_TO_EXTRACT_VERSION.toString())) {
+                    messages.addMessage(new TargettedMessage("assignment2.uploadall.error.extract_version", 
+                            new Object[] {param}, TargettedMessage.SEVERITY_ERROR));
+                } else if (info.equals(UploadAllLogic.UploadInfo.FEEDBACK_ATTACHMENT_ERROR.toString())) {
+                    messages.addMessage(new TargettedMessage("assignment2.uploadall.error.attach", 
+                            new Object[] {param}, TargettedMessage.SEVERITY_ERROR));
+                } else if (info.equals(UploadAllLogic.UploadInfo.FEEDBACK_FILE_UPLOAD_ERROR.toString())) {
+                    messages.addMessage(new TargettedMessage("assignment2.uploadall.error.fb_notes", 
+                            new Object[] {param}, TargettedMessage.SEVERITY_ERROR));
+                } else if (info.equals(UploadAllLogic.UploadInfo.ANNOTATED_TEXT_UPLOAD_ERROR.toString())) {
+                    messages.addMessage(new TargettedMessage("assignment2.uploadall.error.ann_text", 
+                            new Object[] {param}, TargettedMessage.SEVERITY_ERROR));
+                } else if (info.equals(UploadAllLogic.UploadInfo.NO_GRADING_PERM_FOR_STUDENT.toString())) {
+                    messages.addMessage(new TargettedMessage("assignment2.uploadall.error.grading_perm", 
+                            new Object[] {param}, TargettedMessage.SEVERITY_ERROR));
+                } else if (info.equals(UploadAllLogic.UploadInfo.INVALID_STUDENT_IN_CSV.toString())) {
+                    messages.addMessage(new TargettedMessage("assignment2.uploadall.error.unknown_student_in_csv", 
+                            new Object[] {param}, TargettedMessage.SEVERITY_ERROR));
+                } else if (info.equals(UploadAllLogic.UploadInfo.STUDENT_WITH_INVALID_GRADE_IN_CSV.toString())) {
+                    messages.addMessage(new TargettedMessage("assignment2.uploadall.error.invalid_grade_csv", 
+                            new Object[] {param}, TargettedMessage.SEVERITY_ERROR));
+                } else if (info.equals(UploadAllLogic.UploadInfo.NUM_STUDENTS_UPDATED.toString())) {
+                    totalNumUpdated = param;
+                } else if (info.equals(UploadAllLogic.UploadInfo.NUM_STUDENTS_IDENTIFIED_FOR_UPDATE.toString())) {
+                    totalNumProcessed = param;
+                }
+            }
+
+            // add the success message
+            messages.addMessage(new TargettedMessage("assignment2.uploadall.info.success", 
+                    new Object[] {totalNumProcessed, totalNumUpdated}, TargettedMessage.SEVERITY_INFO ));
+        }
+    }
 }

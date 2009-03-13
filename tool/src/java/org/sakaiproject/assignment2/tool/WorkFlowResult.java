@@ -32,11 +32,13 @@ public enum WorkFlowResult {
     INSTRUCTOR_ASSIGNMENT_VALIDATION_FAILURE,
     
     /*
-     * Uploading Grades as a CSV File
+     * Uploading zip or grades csv file
      */
+    UPLOAD_FAILURE,
+    UPLOAD_SUCCESS,
     UPLOADALL_CSV_UPLOAD,
     UPLOADALL_CSV_UPLOAD_FAILURE,
     UPLOADALL_CSV_CONFIRM_AND_SAVE,
-    UPLOADALL_CSV_BACK_TO_UPLOAD
+    UPLOADALL_CSV_BACK_TO_UPLOAD,
     
 }

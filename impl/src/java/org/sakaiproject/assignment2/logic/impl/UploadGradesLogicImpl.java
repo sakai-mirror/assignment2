@@ -171,7 +171,7 @@ public class UploadGradesLogicImpl implements UploadGradesLogic
 
 					if (displayIdUserIdMap == null || !displayIdUserIdMap.containsKey(displayId)) {
 						// we skip users in the file who aren't in this site
-						log.debug("User with id " + displayId + " is not contained in the given displayIdUserIdMap");
+						if (log.isDebugEnabled()) log.debug("User with id " + displayId + " is not contained in the given displayIdUserIdMap");
 					} else {
 						String userId = displayIdUserIdMap.get(displayId);
 						GradeInformation gradeInfo = new GradeInformation();
@@ -230,44 +230,59 @@ public class UploadGradesLogicImpl implements UploadGradesLogic
 		}
 		return displayIdToGradeMap;
 	}
-    
-    public List<List<String>> getCSVContent(File file) {
-		if (file == null) {
-			throw new IllegalArgumentException("Null file passed to uploadGrades");
-		}
-		
-		if (!file.getName().endsWith(".csv")) {
-			throw new IllegalArgumentException("Uploaded file must be in .csv format");
-		}
-		
-		List<List<String>> csvContent = new ArrayList<List<String>>();
-		
-		try {
-			FileSystemManager fsManager = VFS.getManager();
-			FileObject gradesFile = fsManager.toFileObject(file);
-			FileContent gradesFileContent = gradesFile.getContent();
-			
-			// split the data into lines
-			String[] rows = splitLine(readIntoString(gradesFileContent));
-			
-			// skip the header row
-			for (int rowIndex=1; rowIndex < rows.length; rowIndex++) {
-				List<String> rowContent = new ArrayList<String>();
+	
+	public List<List<String>> getCSVContent(InputStream inputStream) {
+	    if (inputStream == null) {
+	        throw new IllegalArgumentException("Null inputStream passed to getCSVContent");
+	    }
+
+	    List<List<String>> csvContent = new ArrayList<List<String>>();
+
+	    try {
+	        // split the data into lines
+	        String[] rows = splitLine(readIntoString(inputStream));
+
+	        // skip the header row
+	        for (int rowIndex=1; rowIndex < rows.length; rowIndex++) {
+	            List<String> rowContent = new ArrayList<String>();
 	            CSV csv = new CSV();
 	            rowContent = csv.parse(rows[rowIndex]);
-	            
+
 	            if (rowContent != null && !rowContent.isEmpty()) {
-	            	csvContent.add(rowContent);
+	                csvContent.add(rowContent);
 	            }
-			}
-		} catch (FileSystemException fse) {
-			throw new UploadException("There was an error parsing the data in the csv file", fse);
-		} catch (IOException ioe) {
-			throw new UploadException("There was an error parsing the data in the csv file", ioe);
-		}
-		
-		return csvContent;
-    }
+	        }
+	    } catch (FileSystemException fse) {
+	        throw new UploadException("There was an error parsing the data in the csv file", fse);
+	    } catch (IOException ioe) {
+	        throw new UploadException("There was an error parsing the data in the csv file", ioe);
+	    }
+
+	    return csvContent;
+	}
+    
+	public List<List<String>> getCSVContent(File file) {
+	    if (file == null) {
+	        throw new IllegalArgumentException("Null file passed to uploadGrades");
+	    }
+
+	    if (!file.getName().endsWith(".csv")) {
+	        throw new IllegalArgumentException("Uploaded file must be in .csv format");
+	    }
+
+	    List<List<String>> csvContent = new ArrayList<List<String>>();
+
+	    try {
+	        FileSystemManager fsManager = VFS.getManager();
+	        FileObject gradesFile = fsManager.toFileObject(file);
+	        FileContent gradesFileContent = gradesFile.getContent();
+            csvContent = getCSVContent(gradesFileContent.getInputStream());
+	    } catch (FileSystemException fse) {
+	        throw new UploadException("There was an error parsing the data in the csv file", fse);
+	    } 
+
+	    return csvContent;
+	}
     
     public List<String> getInvalidDisplayIdsInContent(Map<String, String> displayIdUserIdMap, List<List<String>> parsedContent) {
     	List<String> displayIdsNotInSite = new ArrayList<String>();
@@ -294,9 +309,28 @@ public class UploadGradesLogicImpl implements UploadGradesLogic
     	return displayIdsAssocWithInvalidGrades;
     }
     
-	private String readIntoString(FileContent fc) throws IOException
+    public List<List<String>> removeStudentsFromContent(List<List<String>> parsedContent, List<String> studentsToRemove) {
+        List<List<String>> revisedContent = new ArrayList<List<String>>();
+        if (parsedContent != null && studentsToRemove != null && !studentsToRemove.isEmpty()) {
+            for (List<String> parsedRow : parsedContent) {
+                // content: [Display ID, Sort Name, Grade, Comments]
+                String displayId = null;
+                
+                if (parsedRow != null && parsedRow.size() > 2) {
+                    displayId = parsedRow.get(0);
+                }
+
+                if (displayId != null && displayId.trim().length() > 0 && !studentsToRemove.contains(displayId)) {
+                    revisedContent.add(parsedRow);
+                }
+            }
+        }
+        
+        return revisedContent;
+    }
+    
+	private String readIntoString(InputStream in) throws IOException
 	{
-		InputStream in = fc.getInputStream();
 		StringBuilder buffer = new StringBuilder();
 		int size = 2048;
 		byte[] data = new byte[size];

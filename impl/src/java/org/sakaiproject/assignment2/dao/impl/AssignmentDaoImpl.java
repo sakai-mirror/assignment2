@@ -393,7 +393,7 @@ public class AssignmentDaoImpl extends HibernateGeneralGenericDao implements Ass
 		    			submissionSet = new HashSet<AssignmentSubmission>(submissionList);
 		    			
 		        		// now retrieve the current version information
-		        		populateCurrentVersion(submissionSet);
+		        		populateCurrentVersionGivenHistory(submissionSet);
 		    		}
 		    	}
 		    	
@@ -669,7 +669,7 @@ public class AssignmentDaoImpl extends HibernateGeneralGenericDao implements Ass
 		        		// get rid of duplicates 
 		        		submissionSet = new HashSet<AssignmentSubmission>(submissionList);
 		        		// now retrieve the current version information
-		        		populateCurrentVersion(submissionSet);
+		        		populateCurrentVersionGivenHistory(submissionSet);
 		    		}
 		    	}
 		    	
@@ -713,5 +713,31 @@ public class AssignmentDaoImpl extends HibernateGeneralGenericDao implements Ass
     	if (obj != null) {
     		getHibernateTemplate().evict(obj);
     	}
+    }
+    
+    private void populateCurrentVersionGivenHistory(Set<AssignmentSubmission> submissionsWithHistory) {
+        
+        if (submissionsWithHistory != null) {
+            for (AssignmentSubmission sub : submissionsWithHistory) {
+                Set<AssignmentSubmissionVersion> versionHistory = sub.getSubmissionHistorySet();
+                AssignmentSubmissionVersion currVersion = getCurrentVersionFromHistory(versionHistory);
+                sub.setCurrentSubmissionVersion(currVersion);
+            }
+        }
+    }
+    
+    private AssignmentSubmissionVersion getCurrentVersionFromHistory(Collection<AssignmentSubmissionVersion> versionHistory) {
+        AssignmentSubmissionVersion currVersion = null;
+        if (versionHistory != null) {
+            for (AssignmentSubmissionVersion ver : versionHistory) {
+                if (currVersion == null) {
+                    currVersion = ver;
+                } else if (currVersion.getSubmittedVersionNumber() < ver.getSubmittedVersionNumber()) {
+                    currVersion = ver;
+                }
+            }
+        }
+        
+        return currVersion;
     }
 }

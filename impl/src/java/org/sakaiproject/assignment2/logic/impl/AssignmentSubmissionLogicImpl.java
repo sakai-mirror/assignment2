@@ -46,15 +46,16 @@ import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
+import org.sakaiproject.assignment2.logic.utils.Assignment2Utils;
 import org.sakaiproject.assignment2.logic.utils.ComparatorsUtils;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.model.FeedbackAttachment;
-import org.sakaiproject.assignment2.model.FeedbackVersion;
 import org.sakaiproject.assignment2.model.SubmissionAttachment;
 import org.sakaiproject.assignment2.model.SubmissionAttachmentBase;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
+import org.sakaiproject.genericdao.api.search.Search;
 import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException;
 
 /**
@@ -235,6 +236,9 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		// retrieve the latest submission for this user and assignment
 		AssignmentSubmission submission = getAssignmentSubmissionForStudentAndAssignment(assignment, userId);
 		AssignmentSubmissionVersion version = null;
+		
+		// clean up submittedText
+		submittedText = Assignment2Utils.cleanupHtmlText(submittedText);
 
 		boolean isAnUpdate = false;
 		
@@ -257,7 +261,8 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			// note: the submittedVersionNumber = 0 is reserved for feedback-only
 			// versions. if the current version is number 0, we need to 
 			// create a new version
-			if (version != null && version.getSubmittedDate() == null && version.getSubmittedVersionNumber() != 0) {
+			if (version != null && version.getSubmittedDate() == null && 
+			        version.getSubmittedVersionNumber() != AssignmentSubmissionVersion.FEEDBACK_ONLY_VERSION_NUMBER) {
 				
 				isAnUpdate = true;
 				
@@ -277,9 +282,9 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			version.setCreatedDate(currentTime);
 			
 			// set the version number for this submission - if this submission
-			// doesn't exist yet, set the version to 1 --> 0 is reserved for feedback before submission
+			// doesn't exist yet, set the version to 1 --> FEEDBACK_ONLY_VERSION_NUMBER is reserved for feedback before submission
 			if (submission.getId() == null) {
-				version.setSubmittedVersionNumber(1);
+				version.setSubmittedVersionNumber(AssignmentSubmissionVersion.FEEDBACK_ONLY_VERSION_NUMBER + 1);
 			} else {
 				version.setSubmittedVersionNumber(dao.getHighestSubmittedVersionNumber(submission) + 1);
 			}
@@ -329,11 +334,13 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			Set<AssignmentSubmission> submissionSet = new HashSet<AssignmentSubmission>();
 			submissionSet.add(submission);
 			
-			if (attachToCreate == null) {
-				attachToCreate = new HashSet<SubmissionAttachmentBase>();
+			// this allows us to avoid the "empty set so nothing to do" warning
+			if (attachToCreate != null && !attachToCreate.isEmpty()) {
+			    dao.saveMixedSet(new Set[] {submissionSet, versionSet, attachToCreate});
+			} else {
+			    dao.saveMixedSet(new Set[] {submissionSet, versionSet});
 			}
-
-			dao.saveMixedSet(new Set[] {submissionSet, versionSet, attachToCreate});
+			
 			if (log.isDebugEnabled()) log.debug("Updated/Added student submission version " + 
 					version.getId() + " for user " + submission.getUserId() + " for assignment " + 
 					submission.getAssignment().getTitle()+ " ID: " + submission.getAssignment().getId());
@@ -353,139 +360,230 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			throw new StaleObjectModificationException("An optimistic locking failure occurred while attempting to update submission version" + version.getId(), sose);
 		}
 	}
+	
+	public Set<String> saveAllInstructorFeedback(Assignment2 assignment, Map<String, Collection<AssignmentSubmissionVersion>> studentUidVersionsMap) {
+	    if (assignment == null) {
+	        throw new IllegalArgumentException("Null assignment passed to saveInstructorFeedback");
+	    }
+	    
+	    Set<String> studentsUpdated = new HashSet<String>();
+
+	    if (studentUidVersionsMap != null && !studentUidVersionsMap.isEmpty()) {
+	        String currUserId = externalLogic.getCurrentUserId();
+	        Date currentTime = new Date();
+
+	        // check to see if all of these students are gradable
+	        List<String> gradableStudents = permissionLogic.getGradableStudentsForUserForItem(currUserId, assignment);
+	        if (gradableStudents == null || gradableStudents.isEmpty()) {
+	            throw new SecurityException("User " + currUserId + " attempted to update feedback for students w/o permission");
+	        }
+	        
+
+	        for (String studentUid : studentUidVersionsMap.keySet()) {
+	            if (!gradableStudents.contains(studentUid)) {
+	                throw new SecurityException("User " + currUserId + " attempted to update " +
+	                        "feedback for student " + studentUid + " w/o permission");
+	            }
+	        }
+
+	        // let's get all of the existing submissions with their version history
+	        // and throw them in a map for easy access
+	        Set<String> students = studentUidVersionsMap.keySet();
+	        Set<AssignmentSubmission> existingSubsWithHistory = dao.getSubmissionsWithVersionHistoryForStudentListAndAssignment(students, assignment);
+	        Map<String, AssignmentSubmission> studentUidSubmissionMap = new HashMap<String, AssignmentSubmission>();
+	        if (existingSubsWithHistory != null) {
+	            for (AssignmentSubmission sub : existingSubsWithHistory) {
+	                studentUidSubmissionMap.put(sub.getUserId(), sub);
+	            }
+	        }
+
+	        // now iterate through all of the versions to update
+	        for (Map.Entry<String, Collection<AssignmentSubmissionVersion>> entry : studentUidVersionsMap.entrySet()) {
+	            String studentUid = entry.getKey();
+	            Collection<AssignmentSubmissionVersion> updatedVersionList = entry.getValue();
+	            for (AssignmentSubmissionVersion updatedVersion : updatedVersionList) {
+	                // evict this object from the session since we are re-retrieving the existing version
+	                dao.evictObject(updatedVersion);
+
+	                if (updatedVersion != null) {
+	                    AssignmentSubmission submission = studentUidSubmissionMap.get(studentUid);
+
+	                    if (submission != null && updatedVersion.getId() == null) {
+	                        Set<AssignmentSubmissionVersion> existingVersions = submission.getSubmissionHistorySet();
+	                        if (existingVersions != null && !existingVersions.isEmpty()) {
+	                            // we need to check for a version with submittedVersionNumber = 0
+	                            // this indicates feedback w/o submission
+	                            for (AssignmentSubmissionVersion ver : existingVersions) {
+	                                if (ver.getSubmittedVersionNumber() == AssignmentSubmissionVersion.FEEDBACK_ONLY_VERSION_NUMBER) {
+	                                    updatedVersion.setId(ver.getId());
+	                                }
+	                            }
+	                        }
+	                    }
+
+	                    if (submission == null) {
+	                        submission = new AssignmentSubmission(assignment, studentUid);
+	                        submission.setCreatedBy(currUserId);
+	                        submission.setCreatedDate(currentTime);
+	                    }
+
+	                    AssignmentSubmissionVersion version = null;
+	                    boolean newVersion = false;
+
+	                    // let's try to retrieve the version to update
+	                    if (updatedVersion.getId() != null) {
+	                        if (submission.getSubmissionHistorySet() != null) {
+	                            for (AssignmentSubmissionVersion existingVersion : submission.getSubmissionHistorySet()) {
+	                                if (existingVersion.getId().equals(updatedVersion.getId())) {
+	                                    version = existingVersion;
+	                                    break;
+	                                }
+	                            }
+	                        }
+
+	                        if (version == null) {
+	                            throw new VersionNotFoundException("No version exists for the " +
+	                                    "given student and assignment with the versionId: " + updatedVersion.getId());
+	                        }
+	                    } else {
+	                        // if null, we should be creating a new version b/c the instructor
+	                        // wants to provide feedback but the student has not made a submission
+	                        version = new AssignmentSubmissionVersion();
+	                        newVersion = true;
+	                    }
+
+                        // clean up the provided text
+                        updatedVersion.setFeedbackNotes(Assignment2Utils.cleanupHtmlText(updatedVersion.getFeedbackNotes()));
+                        updatedVersion.setAnnotatedText(Assignment2Utils.cleanupHtmlText(updatedVersion.getAnnotatedText()));
+
+	                    // identify any attachments that were deleted
+	                    Set<SubmissionAttachmentBase> attachToDelete = identifyAttachmentsToDelete(version.getFeedbackAttachSet(), updatedVersion.getFeedbackAttachSet());
+	                    Set<SubmissionAttachmentBase> attachToCreate = identifyAttachmentsToCreate(version.getFeedbackAttachSet(), updatedVersion.getFeedbackAttachSet());
+
+	                    // check to see if any changes were actually made
+	                    boolean needsSave = false;
+	                    if (valueUpdated(version.getFeedbackNotes(), updatedVersion.getFeedbackNotes()) ||
+	                            valueUpdated(version.getAnnotatedText(), updatedVersion.getAnnotatedText()) ||
+	                            valueUpdated(version.getFeedbackReleasedDate(), updatedVersion.getFeedbackReleasedDate()) ||
+	                            (attachToDelete != null && !attachToDelete.isEmpty()) ||
+	                            (attachToCreate != null && !attachToCreate.isEmpty())) {
+	                        needsSave = true;
+	                    }
+
+	                    // we won't proceed any further if there aren't any changes to save
+	                    if (needsSave) {
+	                        if (newVersion) {
+	                            version.setCreatedBy(currUserId);
+	                            version.setCreatedDate(currentTime);
+	                            version.setDraft(false);
+	                            // the only time an instructor can create a new version is if no
+	                            // submitted version exists. in this case, we always set the
+	                            // submittedVersionNumber to 0 to differentiate it
+	                            version.setSubmittedVersionNumber(AssignmentSubmissionVersion.FEEDBACK_ONLY_VERSION_NUMBER);
+	                        }
+
+	                        version.setAssignmentSubmission(submission);
+	                        version.setAnnotatedText(updatedVersion.getAnnotatedText());
+	                        version.setFeedbackNotes(updatedVersion.getFeedbackNotes());
+	                        version.setFeedbackReleasedDate(updatedVersion.getFeedbackReleasedDate());
+	                        version.setLastFeedbackSubmittedBy(currUserId);
+	                        version.setLastFeedbackDate(currentTime);
+	                        version.setModifiedBy(currUserId);
+	                        version.setModifiedDate(currentTime);
+
+	                        // make sure the version was populated on the FeedbackAttachments
+	                        populateVersionForAttachmentSet(attachToCreate, version);
+	                        populateVersionForAttachmentSet(attachToDelete, version);
+
+	                        // double check that the attachments to create have valid data
+	                        if (attachToCreate != null) {
+	                            for (SubmissionAttachmentBase attach : attachToCreate) {
+	                                if (!attach.isAttachmentValid()) {
+	                                    throw new IllegalArgumentException("The feedbackAttachSet passed to saveInstructorFeedback" +
+	                                            " contained invalid attachment(s). Please ensure all required fields are populated " +
+	                                    " before saving.");
+	                                }
+	                            }
+	                        }
+
+	                        try {
+
+	                            Set<AssignmentSubmissionVersion> versionSet = new HashSet<AssignmentSubmissionVersion>();
+	                            versionSet.add(version);
+
+	                            Set<AssignmentSubmission> submissionSet = new HashSet<AssignmentSubmission>();
+	                            submissionSet.add(submission);
+
+	                            // this will allow us to avoid the warning "empty set so nothing to do"
+	                            if (attachToCreate != null && !attachToCreate.isEmpty()) {
+	                                dao.saveMixedSet(new Set[] {submissionSet, versionSet, attachToCreate});
+	                            } else {
+	                                dao.saveMixedSet(new Set[] {submissionSet, versionSet});
+	                            }
+
+	                            if (log.isDebugEnabled()) log.debug("Updated/Added feedback for version " + 
+	                                    version.getId() + " for user " + submission.getUserId() + " for assignment " + 
+	                                    submission.getAssignment().getTitle()+ " ID: " + submission.getAssignment().getId());
+	                            if (log.isDebugEnabled()) log.debug("Created feedbackAttachments: " + attachToCreate.size());
+
+	                            if (attachToDelete != null && !attachToDelete.isEmpty()) {
+	                                dao.deleteSet(attachToDelete);
+	                                if (log.isDebugEnabled()) log.debug("Removed feedback attachments deleted for updated version " + version.getId() + " by user " + currUserId);
+	                            }
+	                            
+	                            studentsUpdated.add(submission.getUserId());
+
+	                            // evict the original AssignmentSubmission object. for some reason,
+	                            // in the unit tests this object's collections aren't refreshed
+	                            // when they are retrieved after save
+	                            for (AssignmentSubmission sub: submissionSet) {
+	                                dao.evictObject(sub);
+	                            }
+
+	                        } catch (HibernateOptimisticLockingFailureException holfe) {
+	                            if(log.isInfoEnabled()) log.info("An optimistic locking failure occurred while attempting to update submission version" + version.getId());
+	                            throw new StaleObjectModificationException("An optimistic locking failure occurred while attempting to update submission version" + version.getId(), holfe);
+	                        } catch (StaleObjectStateException sose) {
+	                            if(log.isInfoEnabled()) log.info("An optimistic locking failure occurred while attempting to update submission version" + version.getId());
+	                            throw new StaleObjectModificationException("An optimistic locking failure occurred while attempting to update submission version" + version.getId(), sose);
+	                        }
+	                    }
+	                }
+	            }
+	        }
+	    }
+	    
+	    return studentsUpdated;
+	}
 
 	public void saveInstructorFeedback(Long versionId, String studentId, Assignment2 assignment, 
-			Integer numSubmissionsAllowed, Date resubmitCloseDate, String annotatedText, 
-			String feedbackNotes, Date releasedDate, Set<FeedbackAttachment> feedbackAttachSet) {
+			String annotatedText, String feedbackNotes, Date releasedDate, 
+			Set<FeedbackAttachment> feedbackAttachSet) {
 		
 		if (studentId == null || assignment == null) {
-			throw new IllegalArgumentException("Null studentId or assignment passed" +
-					"to saveInstructorFeedback");
+			throw new IllegalArgumentException("Null studentId or assignment passed " +
+					"to saveInstructorFeedback. studentId: " + studentId + " assignment:" + assignment);
 		}
 		
-		Date currentTime = new Date();
-		String currentUserId = externalLogic.getCurrentUserId();
-		
 		if (!permissionLogic.isUserAbleToProvideFeedbackForStudentForAssignment(studentId, assignment)) {
-			throw new SecurityException("User " + currentUserId + 
+			throw new SecurityException("User " + externalLogic.getCurrentUserId() + 
 					" attempted to submit feedback for student " + studentId + " without authorization");
 		}
 		
-		// let's retrieve the student's submission
-		AssignmentSubmission submission = getAssignmentSubmissionForStudentAndAssignment(assignment, studentId);
-		
-		if (submission != null && versionId == null) {
-			// check to see if any versions exist - if they do, we have an error
-			List<AssignmentSubmissionVersion> existingVersions = getVersionHistoryForSubmission(submission);
-			if (existingVersions != null && !existingVersions.isEmpty()) {
-				throw new IllegalArgumentException("Null versionId passed to saveInstructorFeedback " +
-					"even though at least one submission version exists for this student");
-			}
-		}
-		
-		if (submission == null) {
-			submission = new AssignmentSubmission(assignment, studentId);
-			submission.setCreatedBy(currentUserId);
-			submission.setCreatedDate(currentTime);
-		}
-		
-		AssignmentSubmissionVersion version = null;
-		boolean newVersion = false;
-		
-		// let's try to retrieve the version to update
-		if (versionId != null) {
-			version = dao.getAssignmentSubmissionVersionByIdWithAttachments(versionId);
-			if (version != null) {
-				// double check that this version matches the student and assignment
-				if (!(version.getAssignmentSubmission().getUserId().equals(studentId) &&
-						version.getAssignmentSubmission().getAssignment().getId().equals(assignment.getId()))) {
-					throw new IllegalArgumentException("The versionId passed is not" +
-							" associated with the given student and assignment");
-				}
-				
-			} else {
-				throw new IllegalArgumentException("No version exists with the given versionId: " + versionId);
-			}
-		} else {
-			// if null, we should be creating a new version b/c the instructor
-			// wants to provide feedback but the student has not made a submission
-			version = new AssignmentSubmissionVersion();
-			newVersion = true;
-		}
-		
-		if (newVersion) {
-			version.setCreatedBy(currentUserId);
-			version.setCreatedDate(currentTime);
-			version.setDraft(false);
-			// the only time an instructor can create a new version is if no
-			// submitted version exists. in this case, we always set the
-			// submittedVersionNumber to 0 to differentiate it
-			version.setSubmittedVersionNumber(0);
-		}
-		
-		submission.setResubmitCloseDate(resubmitCloseDate);
-		submission.setNumSubmissionsAllowed(numSubmissionsAllowed);
-		submission.setModifiedBy(currentUserId);
-		submission.setModifiedDate(currentTime);
-		
-		version.setAssignmentSubmission(submission);
+		List<AssignmentSubmissionVersion> versionsToUpdate = new ArrayList<AssignmentSubmissionVersion>();
+		AssignmentSubmissionVersion version = new AssignmentSubmissionVersion();
+		version.setId(versionId);
 		version.setAnnotatedText(annotatedText);
+		version.setFeedbackAttachSet(feedbackAttachSet);
 		version.setFeedbackNotes(feedbackNotes);
 		version.setFeedbackReleasedDate(releasedDate);
-		version.setLastFeedbackSubmittedBy(currentUserId);
-		version.setLastFeedbackDate(currentTime);
-		version.setModifiedBy(currentUserId);
-		version.setModifiedDate(currentTime);
 		
-		// identify any attachments that were deleted
-		Set<SubmissionAttachmentBase> attachToDelete = identifyAttachmentsToDelete(version.getFeedbackAttachSet(), feedbackAttachSet);
-		Set<SubmissionAttachmentBase> attachToCreate = identifyAttachmentsToCreate(version.getFeedbackAttachSet(), feedbackAttachSet);
+		versionsToUpdate.add(version);
 		
-		// make sure the version was populated on the FeedbackAttachments
-		populateVersionForAttachmentSet(attachToCreate, version);
-		populateVersionForAttachmentSet(attachToDelete, version);
+		Map<String, Collection<AssignmentSubmissionVersion>> studentIdVersionsMap = new HashMap<String, Collection<AssignmentSubmissionVersion>>();
+		studentIdVersionsMap.put(studentId, versionsToUpdate);
 		
-		// double check that the attachments to create have valid data
-		if (attachToCreate != null) {
-		    for (SubmissionAttachmentBase attach : attachToCreate) {
-		        if (!attach.isAttachmentValid()) {
-		            throw new IllegalArgumentException("The feedbackAttachSet passed to saveInstructorFeedback" +
-                            " contained invalid attachment(s). Please ensure all required fields are populated " +
-                            " before saving.");
-		        }
-		    }
-		}
-
-		try {
-
-			Set<AssignmentSubmissionVersion> versionSet = new HashSet<AssignmentSubmissionVersion>();
-			versionSet.add(version);
-
-			Set<AssignmentSubmission> submissionSet = new HashSet<AssignmentSubmission>();
-			submissionSet.add(submission);
-			
-			if (attachToCreate == null) {
-				attachToCreate = new HashSet<SubmissionAttachmentBase>();
-			}
-
-			dao.saveMixedSet(new Set[] {submissionSet, versionSet, attachToCreate});
-			if (log.isDebugEnabled()) log.debug("Updated/Added feedback for version " + 
-					version.getId() + " for user " + submission.getUserId() + " for assignment " + 
-					submission.getAssignment().getTitle()+ " ID: " + submission.getAssignment().getId());
-			if (log.isDebugEnabled()) log.debug("Created feedbackAttachments: " + attachToCreate.size());
-
-			if (attachToDelete != null && !attachToDelete.isEmpty()) {
-				dao.deleteSet(attachToDelete);
-				if (log.isDebugEnabled()) log.debug("Removed feedback attachments deleted for updated version " + version.getId() + " by user " + currentUserId);
-			}
-
-		} catch (HibernateOptimisticLockingFailureException holfe) {
-			if(log.isInfoEnabled()) log.info("An optimistic locking failure occurred while attempting to update submission version" + version.getId());
-			throw new StaleObjectModificationException("An optimistic locking failure occurred while attempting to update submission version" + version.getId(), holfe);
-		} catch (StaleObjectStateException sose) {
-			if(log.isInfoEnabled()) log.info("An optimistic locking failure occurred while attempting to update submission version" + version.getId());
-			throw new StaleObjectModificationException("An optimistic locking failure occurred while attempting to update submission version" + version.getId(), sose);
-		}
+		saveAllInstructorFeedback(assignment, studentIdVersionsMap);
 	}
 	
 	public List<AssignmentSubmission> getViewableSubmissionsWithHistoryForAssignmentId(Long assignmentId, String filterGroupId) {
@@ -1165,51 +1263,6 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		
 		return submission;
 	}
-
-	public FeedbackVersion getFeedbackByUserIdAndSubmittedDate(String userId, Date submittedDate)
-	{
-		AssignmentSubmissionVersion v = dao.getVersionByUserIdAndSubmittedDate(userId,
-				submittedDate);
-		return v;
-	}
-
-	public void updateFeedbackForVersion(FeedbackVersion feedback)
-	{
-		if (feedback == null)
-			throw new IllegalArgumentException("Feedback cannot be null.");
-		if (feedback.getId() == null)
-			throw new IllegalArgumentException("Cannot update feedback without ID.  Please create a submission version first.");
-
-		AssignmentSubmissionVersion asv = (AssignmentSubmissionVersion) dao.findById(
-				AssignmentSubmissionVersion.class, feedback.getId());
-
-		if (asv == null)
-			throw new IllegalArgumentException("Cannot find submission version with id = " + feedback.getId());
-
-		String currUserId = externalLogic.getCurrentUserId();
-		Date now = new Date();
-		
-		if (feedback.getAnnotatedText() != null)
-			asv.setAnnotatedText(feedback.getAnnotatedText());
-
-		if (feedback.getFeedbackAttachSet() != null)
-		{
-			for (FeedbackAttachment fa : feedback.getFeedbackAttachSet())
-				fa.setSubmissionVersion(asv);
-			dao.saveSet(feedback.getFeedbackAttachSet());
-			asv.setFeedbackAttachSet(feedback.getFeedbackAttachSet());
-		}
-
-		if (feedback.getFeedbackNotes() != null)
-			asv.setFeedbackNotes(feedback.getFeedbackNotes());
-
-		asv.setLastFeedbackDate(now);
-		asv.setLastFeedbackSubmittedBy(currUserId);
-		asv.setModifiedDate(now);
-		asv.setModifiedBy(currUserId);
-
-		dao.update(asv);
-	}
 	
 	public int getNumSubmittedVersions(String studentId, Long assignmentId) {
 		if (studentId == null || assignmentId == null) {
@@ -1334,6 +1387,59 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		}
 	}
 	
+	public void updateStudentResubmissionOptions(Collection<String> studentUids, Assignment2 assign, 
+	        Integer numSubmissionsAllowed, Date resubmitCloseDate) {
+	    if (studentUids == null || assign == null) {
+	        throw new IllegalArgumentException("Null studentUid or assign passed to updateStudentResubmissionOptions." +
+	        		" studentUid:" + studentUids + " assign:" + assign);
+	    }
+	    
+	    if (!permissionLogic.isUserAbleToProvideFeedbackForStudents(studentUids, assign)) {
+	        throw new SecurityException("User attempted to provide feedback for student: " + 
+	                studentUids + " for assignment: " + assign.getId() + " without permission");
+	    }
+	    
+	    Search search = new Search(new String[] {"assignment", "userId"}, new Object[] {assign, studentUids.toArray()});
+	    List<AssignmentSubmission> submissions = dao.findBySearch(AssignmentSubmission.class, search);
+	    
+	    Map<String, AssignmentSubmission> studentUidSubmissionMap = new HashMap<String, AssignmentSubmission>();
+	    if (submissions != null) {
+	        for (AssignmentSubmission sub : submissions) {
+	            studentUidSubmissionMap.put(sub.getUserId(), sub);
+	        }
+	    }
+	    String currUserId = externalLogic.getCurrentUserId();
+	    Date currDate = new Date();
+	    
+	    Set<AssignmentSubmission> subToUpdate = new HashSet<AssignmentSubmission>();
+	    for (String studentUid : studentUids) {
+	        AssignmentSubmission submission = studentUidSubmissionMap.get(studentUid);
+	        if (submission == null) {
+	            submission = new AssignmentSubmission(assign, studentUid);
+	            submission.setCreatedBy(currUserId);
+	            submission.setCreatedDate(currDate);
+	        }
+	        
+	        Integer origNumAllowed = submission.getNumSubmissionsAllowed();
+	        Date origResubmitClose = submission.getResubmitCloseDate();
+
+	        // only save/update if they have actually changed
+	        if (valueUpdated(origNumAllowed, numSubmissionsAllowed) ||
+	                valueUpdated(origResubmitClose, resubmitCloseDate)) {
+	            submission.setNumSubmissionsAllowed(numSubmissionsAllowed);
+	            submission.setResubmitCloseDate(resubmitCloseDate);
+	            submission.setModifiedBy(currUserId);
+	            submission.setModifiedDate(currDate);
+
+	            subToUpdate.add(submission);
+	        }
+	    }
+	    
+	    if (!subToUpdate.isEmpty()) {
+	        dao.saveMixedSet(new Set[] {subToUpdate});
+	    }
+	}
+	
 	public List<AssignmentSubmission> getSubmissionsForCurrentUser() {
 		List<AssignmentSubmission> userSubmissions = new ArrayList<AssignmentSubmission>();
 		
@@ -1416,6 +1522,35 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 	    }
 	    
 	    return filteredStudentIdList;
+	}
+	
+	/**
+	 * 
+	 * @param value1
+	 * @param value2
+	 * @return true if value1 and value2 are not equal. treats null strings as equal to ""
+	 */
+	private boolean valueUpdated(Object value1, Object value2) {
+	    boolean valueChanged = false;
+	    
+	    // we want to make null equivalent to the empty string for comparison
+	    if (value1 instanceof String && value1 == null) {
+	        value1 = "";
+	    }
+	    
+	    if (value2 instanceof String && value2 == null) {
+	        value2 = "";
+	    }
+	    
+	    if (value1 == null && value2 != null) {
+	        valueChanged = true;
+	    } else if (value1 != null && value2 == null) {
+	        valueChanged = true;
+	    } else if (value1 != null && value2 != null && !value1.equals(value2)) {
+	        valueChanged = true;
+	    }
+	    
+	    return valueChanged;
 	}
 	
 }

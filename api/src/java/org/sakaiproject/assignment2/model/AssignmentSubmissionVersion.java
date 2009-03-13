@@ -54,6 +54,18 @@ public class AssignmentSubmissionVersion implements FeedbackVersion {
 	private int optimisticVersion;
 	private Set<FeedbackAttachment> feedbackAttachSet;
 	private Set<SubmissionAttachment> submissionAttachSet;
+	
+	/**
+	 * If an instructor wants to provide feedback but there
+	 * is no submission, {@link #submittedVersionNumber}
+	 * will be {@link #FEEDBACK_ONLY_VERSION_NUMBER}.  
+	 * This value is reserved.  All student versions will
+	 * start with {@link #FEEDBACK_ONLY_VERSION_NUMBER} + 1 and then increment
+	 * with each subsequent version. There may only be one "feedback without
+	 * submission" version.  See {@link #getSubmittedVersionNumber()} for
+	 * more info on this property.
+	 */
+	public static final int FEEDBACK_ONLY_VERSION_NUMBER = 0;
 
 	public AssignmentSubmissionVersion() {
 	}
@@ -85,9 +97,9 @@ public class AssignmentSubmissionVersion implements FeedbackVersion {
 	/**
 	 * 
 	 * @return which version is this? is this the second version of this submission?
-	 * keeps track of which version this is in the submission history. Version 0
+	 * keeps track of which version this is in the submission history. Version {@link #FEEDBACK_ONLY_VERSION_NUMBER}
 	 * is reserved for instructor feedback before a submission. All student submitted
-	 * versions start at 1.
+	 * versions start at {@link #FEEDBACK_ONLY_VERSION_NUMBER} + 1.
 	 */
 	public int getSubmittedVersionNumber() {
 		return submittedVersionNumber; 
@@ -95,9 +107,9 @@ public class AssignmentSubmissionVersion implements FeedbackVersion {
 	
 	/**
 	 * which version is this? is this the second version of this submission?
-	 * keeps track of which version this is in the submission history. Version 0
-	 * is reserved for instructor feedback before a submission. All student submitted
-	 * versions start at 1.
+     * keeps track of which version this is in the submission history. Version {@link #FEEDBACK_ONLY_VERSION_NUMBER}
+     * is reserved for instructor feedback before a submission. All student submitted
+     * versions start at {@link #FEEDBACK_ONLY_VERSION_NUMBER} + 1.
 	 * @param submittedVersionNumber
 	 */
 	public void setSubmittedVersionNumber(int submittedVersionNumber) {

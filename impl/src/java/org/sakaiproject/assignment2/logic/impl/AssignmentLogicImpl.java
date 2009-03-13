@@ -46,6 +46,7 @@ import org.sakaiproject.assignment2.logic.ExternalAnnouncementLogic;
 import org.sakaiproject.assignment2.logic.ExternalCalendarLogic;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
+import org.sakaiproject.assignment2.logic.utils.Assignment2Utils;
 import org.sakaiproject.assignment2.logic.utils.ComparatorsUtils;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentAttachment;
@@ -210,6 +211,9 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 		
     	// trim trailing spaces on title
     	assignment.setTitle(assignment.getTitle().trim());
+    	
+    	// clean up the html string for the instructions
+    	assignment.setInstructions(Assignment2Utils.cleanupHtmlText(assignment.getInstructions()));
 		
 		if (isNewAssignment) {
 

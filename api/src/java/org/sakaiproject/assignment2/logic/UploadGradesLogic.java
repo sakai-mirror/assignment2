@@ -22,6 +22,7 @@
 package org.sakaiproject.assignment2.logic;
 
 import java.io.File;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
@@ -35,9 +36,21 @@ public interface UploadGradesLogic
 	 * @return a list of each row of content that is then parsed into
 	 * a list for the row's content for the given csv file. Assumes your
 	 * file will contain a header row and this header row is not included
-	 * in the returned content.
+	 * in the returned content.  Identical to {@link #getCSVContent(InputStream)}
+	 * except takes a File instead of the InputStream
 	 */
 	public List<List<String>> getCSVContent(File file);
+	
+	/**
+	 * 
+	 * @param inputStream
+	 * @return a list of each row of content that is then parsed into
+     * a list for the row's content for the given csv file. Assumes your
+     * file will contain a header row and this header row is not included
+     * in the returned content.  Identical to {@link #getCSVContent(File)}
+     * except takes a InputStream instead of a File
+	 */
+	public List<List<String>> getCSVContent(InputStream inputStream);
 	
 	/**
 	 * Given the parsed file, will process the content and save the grades and comments.
@@ -75,4 +88,15 @@ public interface UploadGradesLogic
 	 * content before you try to save anything
 	 */
 	public List<String> getStudentsWithInvalidGradesInContent(List<List<String>> parsedContent, String contextId);
+	
+	/**
+	 * 
+	 * @param parsedContent retrieved via one of the getCSVContent methods
+	 * @param studentsToRemove
+	 * @return your parsedContent without the data pertaining to students in the given
+	 * studentsToRemove. useful if you want to filter out students who will cause
+	 * a problem in the grade upload so you can continue and upload the valid
+	 * students and grades 
+	 */
+	public List<List<String>> removeStudentsFromContent(List<List<String>> parsedContent, List<String> studentsToRemove);
 }

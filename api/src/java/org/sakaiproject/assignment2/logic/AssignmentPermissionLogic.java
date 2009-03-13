@@ -183,4 +183,13 @@ public interface AssignmentPermissionLogic {
 	  * this restriction
 	  */
 	 public List<Group> getViewableGroupsForCurrUserForAssignment(Long assignmentId);
+	 
+	 /**
+	  * 
+	  * @param studentUids
+	  * @param assignment
+	  * @return true if the current user is allowed to provide feedback for every
+	  * student in the given collection for the given assignment
+	  */
+	 public boolean isUserAbleToProvideFeedbackForStudents(Collection<String> studentUids, Assignment2 assignment);
 }

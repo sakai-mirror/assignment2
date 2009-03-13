@@ -76,8 +76,10 @@ public class ExternalCalendarLogicImpl implements ExternalCalendarLogic {
     		throw new IllegalArgumentException("null assignmentId passed to addOpenDateAnnouncement");
     	}
     	
-    	if (dueDate == null || eventDescription == null || eventDescription == null) {
-    		throw new IllegalArgumentException("null eventText or dueDate or eventDescription passed to addDueDateToSchedule");
+    	if (dueDate == null || eventDescription == null || eventTitle == null) {
+    		throw new IllegalArgumentException("null eventText or dueDate or eventDescription " +
+    				"passed to addDueDateToSchedule. dueDate:" + dueDate + " eventDescription:" + 
+    				eventDescription + " eventTitle:" + eventTitle);
     	}
     	
     	initializeCalendarServiceData(contextId);

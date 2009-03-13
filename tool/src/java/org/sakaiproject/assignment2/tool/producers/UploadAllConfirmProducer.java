@@ -2,7 +2,10 @@ package org.sakaiproject.assignment2.tool.producers;
 
 import java.util.List;
 
+import org.sakaiproject.assignment2.exception.GradebookItemNotFoundException;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
+import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
+import org.sakaiproject.assignment2.logic.GradebookItem;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.tool.beans.UploadBean;
 import org.sakaiproject.assignment2.tool.params.AssignmentViewParams;
@@ -47,6 +50,12 @@ public class UploadAllConfirmProducer implements ViewComponentProducer, ViewPara
     public void setAssignmentLogic(AssignmentLogic assignmentLogic) {
         this.assignmentLogic = assignmentLogic;
     }
+    
+    // Dependency
+    private ExternalGradebookLogic gradebookLogic;
+    public void setExternalGradebookLogic(ExternalGradebookLogic gradebookLogic) {
+        this.gradebookLogic = gradebookLogic;
+    }
 
     // Property 
     private UploadBean uploadBean;
@@ -62,6 +71,20 @@ public class UploadAllConfirmProducer implements ViewComponentProducer, ViewPara
         AssignmentViewParams params = (AssignmentViewParams) viewparams;
 
         Assignment2 assignment = assignmentLogic.getAssignmentById(params.assignmentId);
+        
+        String titleHeading = assignment.getTitle();
+        if (gradebookLogic.isGradingByPoints(assignment.getContextId())) {
+            // get the points possible for the associated gb item if graded by points
+            // we will append it the assignment name header
+            GradebookItem gradebookItem = gradebookLogic.getGradebookItemById(assignment.getContextId(), assignment.getGradebookItemId());
+            if (gradebookItem == null) {
+                throw new GradebookItemNotFoundException("No gradebook item found with id: " + assignment.getGradebookItemId());
+            }
+            
+            titleHeading += " [" + gradebookItem.getPointsPossible() + "]";
+        }
+        
+        UIOutput.make(tofill, "title-header", titleHeading);
 
         if (uploadBean.parsedContent != null) {
             for (List<String> parts: uploadBean.parsedContent) {

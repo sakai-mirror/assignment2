@@ -217,50 +217,26 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
         
         // DOWNLOAD ALL
         if (grade_perm) {
-            // do not display download all link if assign is ungraded and has non-electronic submission
-            if (assignment.getSubmissionType() == AssignmentConstants.SUBMIT_NON_ELECTRONIC && !assignment.isGraded()) {
-                displayDownloadAll = false;
-            } else {
-                displayDownloadAll = true;
-            }
+            displayDownloadAll = true;
 
-            if (displayDownloadAll) {
-                // only allow download if it is graded or at least one submission
-                // otherwise we display a "disabled" link
-                boolean allowDownload = false;
-                if (assignment.isGraded()) {
-                    allowDownload = true;
-                } else {
-                    List<String> studentIds = new ArrayList<String>();
-                    for (AssignmentSubmission sub : submissions) {
-                        studentIds.add(sub.getUserId());
-                    }
-
-                    int numSubmissions = submissionLogic.getNumStudentsWithASubmission(assignment, studentIds);
-                    if (numSubmissions > 0) {
-                        allowDownload = true;
-                    }
-                }
-
-                if (allowDownload) {
-                    ZipViewParams zvp = new ZipViewParams("zipSubmissions", assignmentId);
-                    UIInternalLink.make(tofill, "downloadall",
-                            UIMessage.make("assignment2.assignment_grade-assignment.downloadall.button"), zvp);
-                } else {
-                    // show a disabled link if no submissions yet 
-                    UIOutput.make(tofill, "downloadall_disabled", messageLocator.getMessage("assignment2.assignment_grade-assignment.downloadall.button"));
-                } 
-            }
+            ZipViewParams zvp = new ZipViewParams("zipSubmissions", assignmentId);
+            UIInternalLink.make(tofill, "downloadall",
+                    UIMessage.make("assignment2.assignment_grade-assignment.downloadall.button"), zvp);
         }
         
         // UPLOAD GRADES
         // upload grades should only appear for graded items
-        if (grade_perm && assignment.isGraded()) {
+        if (grade_perm) {
             displayUploadAll = true;
 
             AssignmentViewParams avp = new AssignmentViewParams("uploadall", assignmentId);
-            UIInternalLink.make(tofill, "uploadall",
-                    UIMessage.make("assignment2.assignment_grade-assignment.uploadall.button"), avp);
+            if (assignment.isGraded()) {
+                UIInternalLink.make(tofill, "uploadall",
+                        UIMessage.make("assignment2.uploadall.breadcrumb.upload.graded"), avp);
+            } else {
+                UIInternalLink.make(tofill, "uploadall",
+                        UIMessage.make("assignment2.uploadall.breadcrumb.upload.ungraded"), avp);
+            }
         }
         
         // handle those pesky separators

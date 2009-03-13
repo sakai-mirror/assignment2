@@ -21,9 +21,11 @@
 
 package org.sakaiproject.assignment2.tool.beans;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -203,9 +205,13 @@ public class AssignmentSubmissionBean {
             }
 
             submissionLogic.saveInstructorFeedback(asv.getId(), assignmentSubmission.getUserId(),
-                    assignmentSubmission.getAssignment(), assignmentSubmission.getNumSubmissionsAllowed(),
-                    assignmentSubmission.getResubmitCloseDate(), asv.getAnnotatedText(), asv.getFeedbackNotes(),
-                    asv.getFeedbackReleasedDate(), asv.getFeedbackAttachSet());
+                    assignmentSubmission.getAssignment(), asv.getAnnotatedText(),
+                    asv.getFeedbackNotes(), asv.getFeedbackReleasedDate(), asv.getFeedbackAttachSet());
+            
+            List<String> studentUids = new ArrayList<String>();
+            studentUids.add(assignmentSubmission.getUserId());
+            submissionLogic.updateStudentResubmissionOptions(studentUids, assignmentSubmission.getAssignment(), 
+                    assignmentSubmission.getNumSubmissionsAllowed(), assignmentSubmission.getResubmitCloseDate());
         }
         return SUBMIT;
     }

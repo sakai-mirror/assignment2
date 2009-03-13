@@ -3,6 +3,8 @@ package org.sakaiproject.assignment2.logic;
 import java.io.OutputStream;
 import java.util.regex.Pattern;
 
+import org.sakaiproject.assignment2.model.Assignment2;
+
 public interface ZipExportLogic
 {
     /**
@@ -59,4 +61,31 @@ public interface ZipExportLogic
      * characters or exceed the length for folder names when decompressing
      */
     public String escapeZipEntry(String value, String replaceSpaces);
+    
+    /**
+     * 
+     * @return the folder name used for the Feedback folder in the download
+     */
+    public String getFeedbackFolderName();
+    
+    /**
+     * 
+     * @return the file name for the feedback comments in the download
+     */
+    public String getFeedbackFileName();
+    
+    /**
+     * 
+     * @return the file name for the annotated submitted text in the download
+     */
+    public String getAnnotatedTextFileName();
+    
+    /**
+     * 
+     * @param assignment
+     * @return the name of the top level folder for this download.
+     * built from the assignment title and site title
+     * for example "My Assignment Title_SP09 MATH 413"
+     */
+    public String getTopLevelFolderName(Assignment2 assignment);
 }

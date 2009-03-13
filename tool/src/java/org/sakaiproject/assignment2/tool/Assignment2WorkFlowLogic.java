@@ -167,7 +167,7 @@ public class Assignment2WorkFlowLogic implements ViewParamsInterceptor, ActionRe
         case STUDENT_SUBMISSION_FAILURE:
             break;
         /*
-         * Upload All as CSV File
+         * Upload CSV or ZIP file
          */
         case UPLOADALL_CSV_BACK_TO_UPLOAD:
             if (incoming instanceof AssignmentViewParams) {
@@ -190,6 +190,19 @@ public class Assignment2WorkFlowLogic implements ViewParamsInterceptor, ActionRe
                 result.propagateBeans = ARIResult.FLOW_FASTSTART;
             }
             break;
+
+        /*
+         * Upload All zip file 
+         */
+        case UPLOAD_SUCCESS:
+            if (incoming instanceof AssignmentViewParams) {
+                AssignmentViewParams params = (AssignmentViewParams) incoming;
+                result.resultingView = new ViewSubmissionsViewParams(ViewSubmissionsProducer.VIEW_ID, params.assignmentId);
+                result.propagateBeans = ARIResult.FLOW_END;
+            }
+            break;
+            
+            
         default:
             log.warn("Unknown/Unhandled WorkFlowResult in Asnn2 Workflow: " + actionReturn);
             break;

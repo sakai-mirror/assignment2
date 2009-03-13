@@ -151,7 +151,7 @@ public interface AssignmentDao extends GeneralGenericDao {
 	/**
 	 * 
 	 * @param submission
-	 * @return set of AssignmentSubmissionVersions associated with the given submission.
+	 * @return list of AssignmentSubmissionVersions associated with the given submission.
 	 * will populate the feedback and submission attachments for each version.
 	 * ordered by submitted version number
 	 */

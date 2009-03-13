@@ -28,13 +28,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.sakaiproject.assignment2.exception.AssignmentNotFoundException;
 import org.sakaiproject.assignment2.exception.SubmissionClosedException;
+import org.sakaiproject.assignment2.exception.SubmissionNotFoundException;
+import org.sakaiproject.assignment2.exception.VersionNotFoundException;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.model.FeedbackAttachment;
-import org.sakaiproject.assignment2.model.FeedbackVersion;
 import org.sakaiproject.assignment2.model.SubmissionAttachment;
+import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 
 /**
  * This is the interface for the AssignmentSubmission object
@@ -128,13 +131,12 @@ public interface AssignmentSubmissionLogic {
 	
 	/**
 	 * Save instructor feedback for a particular version. If student has not made
-	 * a submission, will create the submission and version
+	 * a submission, will create the submission and version. utilizes {@link #saveAllInstructorFeedback(Assignment2, Map)} 
+     * for the save
 	 * @param versionId - id of the version that you want to update. if null, there must
-	 * not be a student submission yet
+	 * not be a student submission yet.
 	 * @param studentId
 	 * @param assignment
-	 * @param numSubmissionsAllowed
-	 * @param resubmitCloseDate
 	 * @param annotatedText
 	 * @param feedbackNotes
 	 * @param releasedDate
@@ -143,8 +145,24 @@ public interface AssignmentSubmissionLogic {
 	 * the given student and assignment
 	 */
 	public void saveInstructorFeedback(Long versionId, String studentId, Assignment2 assignment, 
-			Integer numSubmissionsAllowed, Date resubmitCloseDate, String annotatedText, 
-			String feedbackNotes, Date releasedDate, Set<FeedbackAttachment> feedbackAttachSet);
+			String annotatedText, String feedbackNotes, Date releasedDate, 
+			Set<FeedbackAttachment> feedbackAttachSet);
+	
+	/**
+	 * Save feedback for multiple students for a particular assignment.  Will update
+	 * annotatedText, feedbackNotes, releasedDate, and feedbackAttachSet.  if
+	 * version id is null, will assume you are providing feedback without submission and
+	 * will utilize the version with submittedVersionNumber= {@link AssignmentSubmissionVersion#FEEDBACK_ONLY_VERSION_NUMBER} 
+	 * (reserved for feedback w/o submission).
+	 * @param assignment the assignment you are providing feedback for
+	 * @param studentUidVersionsMap map of the studentUid to the collection of AssignmentSubmissionVersions
+	 * for that student and assignment to update/add
+	 * @return a set of studentUids of the students with updated feedback. if nothing has
+	 * changed, the record is not updated and that student will not be in this set if no updates were required for any of his/her versions
+	 * @throws SecurityException if user is not allowed to submit feedback
+	 * for even one of the students in the studentUidVersionMap. will not update any feedback
+	 */
+	public Set<String> saveAllInstructorFeedback(Assignment2 assignment, Map<String, Collection<AssignmentSubmissionVersion>> studentUidVersionsMap);
 
 	/**
 	 * 
@@ -283,22 +301,6 @@ public interface AssignmentSubmissionLogic {
 	 * 
 	 */
 	public List<AssignmentSubmissionVersion> getVersionHistoryForSubmission(AssignmentSubmission submission);
-
-	/**
-	 * 
-	 * @param userId
-	 * @param submittedDate
-	 * @return
-	 */
-	public FeedbackVersion getFeedbackByUserIdAndSubmittedDate(String userId, Date submittedDate);
-
-	/**
-	 * Update the feedback aspects of a submission version. The submission version is expected to
-	 * exist prior to using this method.
-	 * 
-	 * @param feedback
-	 */
-	public void updateFeedbackForVersion(FeedbackVersion feedback);
 	
 	/**
 	 * 
@@ -359,4 +361,19 @@ public interface AssignmentSubmissionLogic {
 	 * submissions in the current site (ie non-students)
 	 */
 	public List<AssignmentSubmission> getSubmissionsForCurrentUser();
+	
+	/**
+	 * Will set the resubmission options for the given students and assignment. These
+	 * values override the assignment-level resubmission options
+	 * @param studentUidList
+	 * @param assign
+	 * @param numSubmissionsAllowed - the num submissions the student is allowed. for
+	 * unlimited submission, use {@link AssignmentConstants#UNLIMITED_SUBMISSION}
+	 * @param resubmitCloseDate - the date after which submission is no longer allowed.
+	 * leave null if you do not want to restrict by date
+	 * @throws SecurityException if the current user is not allowed to provide feedback for
+	 * even one student in the list. none will be updated
+	 */
+	public void updateStudentResubmissionOptions(Collection<String> studentUidList, Assignment2 assign, 
+            Integer numSubmissionsAllowed, Date resubmitCloseDate);
 }

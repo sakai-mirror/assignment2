@@ -680,5 +680,25 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
 
 	    return viewableGroups;
 	}
+	
+	public boolean isUserAbleToProvideFeedbackForStudents(Collection<String> studentUids, Assignment2 assignment) {
+	    if (assignment == null) {
+	        throw new IllegalArgumentException("Null assignment passed to isUserAbleToProvideFeedbackForStudents");
+	    }
+	    boolean allowed = true;
+	    if (studentUids != null) {
+	        List<String> gradableStudents = getGradableStudentsForUserForItem(externalLogic.getCurrentUserId(), assignment);
+	        if (gradableStudents != null) {
+	            for (String studentUid : studentUids) {
+	                if (!gradableStudents.contains(studentUid)) {
+	                    allowed = false;
+	                    break;
+	                }
+	            }
+	        }
+	    }
+
+	    return allowed;    
+	}
 
 }

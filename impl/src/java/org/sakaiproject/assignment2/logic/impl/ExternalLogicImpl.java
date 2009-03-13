@@ -58,7 +58,7 @@ public class ExternalLogicImpl implements ExternalLogic {
     /**
      * Encoding method to use when URL encoding
      */
-    public static String URL_ENCODING = "UTF-8";
+    public static final String URL_ENCODING = "UTF-8";
     
     private ToolManager toolManager;
     public void setToolManager(ToolManager toolManager) {

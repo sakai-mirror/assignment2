@@ -16,6 +16,7 @@ import java.util.zip.ZipOutputStream;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.assignment2.exception.GradebookItemNotFoundException;
 import org.sakaiproject.assignment2.logic.AssignmentBundleLogic;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
@@ -24,6 +25,7 @@ import org.sakaiproject.assignment2.logic.ExternalContentLogic;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.logic.GradeInformation;
+import org.sakaiproject.assignment2.logic.GradebookItem;
 import org.sakaiproject.assignment2.logic.ZipExportLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
@@ -125,18 +127,17 @@ public class ZipExportLogicImpl implements ZipExportLogic
             throw new IllegalArgumentException("Null assignment passed to zipSubmissions");
         }
 
-        String contextId = externalLogic.getCurrentContextId();
         String currUserId = externalLogic.getCurrentUserId();
-        String siteTitle = externalLogic.getSiteTitle(contextId);
+        String siteTitle = externalLogic.getSiteTitle(assignment.getContextId());
 
         List<String> viewableStudents = permissionLogic.getViewableStudentsForUserForItem(currUserId, assignment);
         Map<String, User> userIdUserMap = externalLogic.getUserIdUserMap(viewableStudents);
 
         String formatWithTime = bundle.getString("assignment2.assignment_grade_assignment.downloadall.filename_date_format_with_time");
         DateFormat df_withTime = new SimpleDateFormat(formatWithTime, bundle.getLocale());
-        String feedbackFolderName = bundle.getString("assignment2.assignment_grade_assignment.downloadall.feedback_folder_name");
-        String feedbackFileName = bundle.getString("assignment2.assignment_grade_assignment.downloadall.filename_feedback_comments") + ".html";
-        String annotatedTextFileName = bundle.getString("assignment2.assignment_grade_assignment.downloadall.filename_annotated_text") + ".html";
+        String feedbackFolderName = getFeedbackFolderName();
+        String feedbackFileName = getFeedbackFileName();
+        String annotatedTextFileName = getAnnotatedTextFileName();
         String submittedTextFileName = bundle.getString("assignment2.assignment_grade_assignment.downloadall.filename_submitted_text") + ".html";
 
         if (submissionsWithHistory == null || submissionsWithHistory.isEmpty()) {
@@ -147,12 +148,11 @@ public class ZipExportLogicImpl implements ZipExportLogic
             {
                 ZipOutputStream out = new ZipOutputStream(outputStream);
 
-                // create the folder structure - named after the assignment's title
-                String root = escapeZipEntry(assignment.getTitle() + "-" + siteTitle, null) + Entity.SEPARATOR;
+                // create the folder structure - named after the assignment's title and site title
+                String root = getTopLevelFolderName(assignment) + Entity.SEPARATOR;
 
                 if (submissionsWithHistory != null && !submissionsWithHistory.isEmpty())
                 {
-                    Pattern studentIdPattern = Pattern.compile("(?<=\\().*(?=\\))");
                     // Create the ZIP file
                     for (AssignmentSubmission s : submissionsWithHistory)
                     {
@@ -179,7 +179,16 @@ public class ZipExportLogicImpl implements ZipExportLogic
                                         // let's add a feedback folder at the top level
                                         addFeedbackToZip(out, version, submissionFolder, feedbackFolderName, feedbackFileName, annotatedTextFileName);
                                     };
-                                    // only include submitted versions
+                                    
+                                    // for draft versions, we add a folder for feedback but don't
+                                    // include any submission info
+                                    if (version.isDraft()) {
+                                        String draftVersionFolder = submissionFolder + Entity.SEPARATOR +
+                                        getInProgressFolderName(version);
+                                        addFeedbackToZip(out, version, draftVersionFolder, feedbackFolderName, feedbackFileName, annotatedTextFileName);
+                                    }
+                                    
+                                    // now add submitted versions
                                     if (version.getSubmittedDate() != null) {
                                         // we will create a folder for each submitted version for
                                         // this student
@@ -228,8 +237,11 @@ public class ZipExportLogicImpl implements ZipExportLogic
     public String escapeZipEntry(String value, String replaceSpaces) {
         if (value != null) {
             if (replaceSpaces != null) {
-                value = value.replaceAll(" ", "_");
+                value = value.replaceAll(" ", replaceSpaces);
             }
+            
+            // the upload has a hard time with !, so get rid of them
+            value = value.replaceAll("!", "");
             
             //truncate long names
             if (value.length() > MAX_FILE_NAME_LENGTH) {
@@ -340,11 +352,24 @@ public class ZipExportLogicImpl implements ZipExportLogic
      * @return a string representation of the grade data in csv format for this assignment
      */
     private String getGradesAsCSVString(String currUserId, Assignment2 assignment, Map<String, User> userIdUserMap) {
+        String assignHeader = assignment.getTitle();
+        if (gradebookLogic.isGradingByPoints(assignment.getContextId())) {
+            // get the points possible for the associated gb item if graded by points
+            // we will append it the assignment name header
+            GradebookItem gradebookItem = gradebookLogic.getGradebookItemById(assignment.getContextId(), assignment.getGradebookItemId());
+            if (gradebookItem == null) {
+                throw new GradebookItemNotFoundException("No gradebook item found with id: " + assignment.getGradebookItemId());
+            }
+            
+            assignHeader += " [" + gradebookItem.getPointsPossible() + "]";
+        }
+        
         // the buffer used to store grade information
         StringBuilder gradesBuilder = new StringBuilder();
+
         gradesBuilder.append(
                 bundle.getFormattedMessage("assignment2.assignment_grade-assignment.downloadall.header",
-                        new Object[] {assignment.getTitle()}))
+                        new Object[] {assignHeader}))
                         .append("\n");
 
         // now iterate through all GRADABLE students in this class to create the grades file
@@ -425,6 +450,13 @@ public class ZipExportLogicImpl implements ZipExportLogic
 
         return versionFolderName;
     }
+    
+    private String getInProgressFolderName(AssignmentSubmissionVersion version) {
+        String inProgressFolderName = bundle.getString("assignment2.assignment_grade_assignment.downloadall.folder.in_progress")
+        + " (" + version.getId() + ")";
+
+        return inProgressFolderName;
+    }
 
     /**
      * 
@@ -488,16 +520,20 @@ public class ZipExportLogicImpl implements ZipExportLogic
         try {
             // only add the annotated text and fb attachments if a version exists
             if (version != null) {
-                if (version.getAnnotatedText() != null && version.getAnnotatedText().trim().length() > 0) {
-                    // create the text file only when annotatedText exists
-                    ZipEntry textEntry = new ZipEntry(versionFeedbackFolder + Entity.SEPARATOR 
-                            + annotatedTextFileName);
-                    out.putNextEntry(textEntry);
-                    byte[] text = version.getSubmittedText().getBytes();
-                    out.write(text);
-                    textEntry.setSize(text.length);
-                    out.closeEntry();
+                // only include annotated text if it isn't a "feedback-only" version
+                if (version.getSubmittedVersionNumber() != AssignmentSubmissionVersion.FEEDBACK_ONLY_VERSION_NUMBER) {
+                    if (version.getAnnotatedText() != null && version.getAnnotatedText().trim().length() > 0) {
+                        // create the text file only when annotatedText exists
+                        ZipEntry textEntry = new ZipEntry(versionFeedbackFolder + Entity.SEPARATOR 
+                                + annotatedTextFileName);
+                        out.putNextEntry(textEntry);
+                        byte[] text = version.getAnnotatedText().getBytes();
+                        out.write(text);
+                        textEntry.setSize(text.length);
+                        out.closeEntry();
+                    }
                 }
+
                 // add any feedback attachments
                 if (version.getFeedbackAttachSet() != null && !version.getFeedbackAttachSet().isEmpty()) {
                     zipAttachments(out, versionFeedbackFolder, version.getFeedbackAttachSet());
@@ -520,5 +556,29 @@ public class ZipExportLogicImpl implements ZipExportLogic
         } catch (IOException ioe) {
             log.error("An I/O Exception occurred while attempting to zip up feedback info", ioe);
         }
+    }
+    
+    public String getFeedbackFolderName() {
+        return bundle.getString("assignment2.assignment_grade_assignment.downloadall.feedback_folder_name");
+    }
+    
+    public String getFeedbackFileName() {
+        return bundle.getString("assignment2.assignment_grade_assignment.downloadall.filename_feedback_comments") + ".html";
+    }
+    
+    public String getAnnotatedTextFileName() {
+        return bundle.getString("assignment2.assignment_grade_assignment.downloadall.filename_annotated_text") + ".html";
+    }
+    
+    public String getTopLevelFolderName(Assignment2 assignment) {
+        if (assignment == null) {
+            throw new IllegalArgumentException("Null assignment passed to getTopLevelFileName");
+        }
+        
+        String assignmentTitle = assignment.getTitle();
+        String siteTitle = externalLogic.getSiteTitle(assignment.getContextId());
+        String topLevelFolderName = escapeZipEntry(assignmentTitle + "-" + siteTitle, "_");
+        
+        return topLevelFolderName;
     }
 }
