@@ -30,6 +30,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.assignment2.exception.GradebookItemNotFoundException;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
@@ -89,6 +92,8 @@ import uk.org.ponder.rsf.viewstate.ViewParamsReporter;
  */
 public class ViewSubmissionsProducer implements ViewComponentProducer, NavigationCaseReporter, ViewParamsReporter, ActionResultInterceptor {
 
+    private static Log log = LogFactory.getLog(ViewSubmissionsProducer.class);
+    
     public static final String VIEW_ID = "viewSubmissions";
     public String getViewID() {
         return VIEW_ID;
@@ -149,7 +154,19 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
 
         // we need to retrieve the history for the release/retract feedback logic
         List<AssignmentSubmission> submissions = submissionLogic.getViewableSubmissionsWithHistoryForAssignmentId(assignmentId, params.groupId);
-
+        
+        // if assign is graded, retrieve the gb item
+        GradebookItem gbItem = null;
+        if (assignment.isGraded() && assignment.getGradebookItemId() != null) {
+            try {
+                gbItem = gradebookLogic.getGradebookItemById(currContextId, assignment.getGradebookItemId());
+            } catch (GradebookItemNotFoundException ginfe) {
+                if (log.isDebugEnabled()) log.debug("Gb item with id: " + assignment.getGradebookItemId() + " no longer exists!");
+                gbItem = null;
+                UIOutput.make(tofill, "no_gb_item", messageLocator.getMessage("assignment2.assignment_grade.gb_item_deleted"));
+            }
+        }
+        
         // get grade info, if appropriate
         Map<String, GradeInformation> studentIdGradeInfoMap = new HashMap<String, GradeInformation>();
         if (submissions != null && assignment.isGraded() && assignment.getGradebookItemId() != null) {
@@ -181,11 +198,11 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
         }
         
         // RELEASE GRADES
-        if (edit_perm && assignment.isGraded()){
+        // don't display this option if the gb item doesn't exist anymore
+        if (edit_perm && assignment.isGraded() && gbItem != null){
             displayReleaseGrades = true;
             
             // determine if grades have been released yet
-            GradebookItem gbItem = gradebookLogic.getGradebookItemById(currContextId, assignment.getGradebookItemId());
             boolean gradesReleased = gbItem.isReleased();
             String releaseLinkText = messageLocator.getMessage("assignment2.assignment_grade-assignment.grades.release");
             if (gradesReleased) {
@@ -224,13 +241,12 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
                     UIMessage.make("assignment2.assignment_grade-assignment.downloadall.button"), zvp);
         }
         
-        // UPLOAD GRADES
-        // upload grades should only appear for graded items
+        // UPLOAD GRADES & FEEDBACK
         if (grade_perm) {
             displayUploadAll = true;
 
             AssignmentViewParams avp = new AssignmentViewParams("uploadall", assignmentId);
-            if (assignment.isGraded()) {
+            if (gbItem != null && assignment.isGraded()) {
                 UIInternalLink.make(tofill, "uploadall",
                         UIMessage.make("assignment2.uploadall.breadcrumb.upload.graded"), avp);
             } else {
@@ -273,9 +289,8 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
         }
         
         if (assignment.isGraded()) {
-            String releasedString;
-            GradebookItem gradebookItem = gradebookLogic.getGradebookItemById(assignment.getContextId(), assignment.getGradebookItemId());
-            if (gradebookItem.isReleased()) {
+            String releasedString; 
+            if (gbItem != null && gbItem.isReleased()) {
                 releasedString = "assignment2.assignment_grade-assignment.tableheader.grade.released";
             } else {
                 releasedString = "assignment2.assignment_grade-assignment.tableheader.grade.not_released";
@@ -339,9 +354,10 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
 
         /*
          * Form for assigning a grade to all submissions without a grade.
+         * Do not allow grading if gbItem is null - it must have been deleted
          */
         if (submissions != null && !submissions.isEmpty() && 
-                grade_perm && assignment.isGraded()) {
+                grade_perm && assignment.isGraded() && gbItem != null) {
             String lowestPossibleGrade = gradebookLogic.getLowestPossibleGradeForGradebookItem(currContextId, assignment.getGradebookItemId());
             UIForm unassignedForm = UIForm.make(tofill, "unassigned-apply-form");
             unassignedForm.addParameter(new UIELBinding("GradeAllRemainingAction.assignmentId", assignment.getId()));

@@ -7,8 +7,10 @@ import java.util.Locale;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.assignment2.exception.GradebookItemNotFoundException;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
+import org.sakaiproject.assignment2.logic.GradeInformation;
 import org.sakaiproject.assignment2.logic.GradebookItem;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
@@ -237,11 +239,19 @@ public class AsnnSubmissionDetailsRenderer implements BasicProducer {
          */
         if (assignment.isGraded() && assignment.getGradebookItemId() != null) {
             try {
-                // only display points possible if grade entry by points
-                if (externalGradebookLogic.isGradingByPoints(assignment.getContextId())) {
-                    GradebookItem gradebookItem = 
+                // make sure this gradebook item still exists
+                GradebookItem gradebookItem;
+                try {
+                    gradebookItem = 
                         externalGradebookLogic.getGradebookItemById(curContext, 
                                 assignment.getGradebookItemId());
+                } catch (GradebookItemNotFoundException ginfe) {
+                    if (log.isDebugEnabled()) log.debug("Student attempting to access assignment " + 
+                            assignment.getId() + " but associated gb item no longer exists!");
+                    gradebookItem = null;
+                }
+                // only display points possible if grade entry by points
+                if (gradebookItem != null && externalGradebookLogic.isGradingByPoints(assignment.getContextId())) {
                     UIOutput.make(joint, "points-possible-row");
                     
                     String pointsDisplay;
@@ -254,15 +264,20 @@ public class AsnnSubmissionDetailsRenderer implements BasicProducer {
                 }
 
                 // Render the graded information if it's available.
-                String grade = externalGradebookLogic.getStudentGradeForItem(
-                        curContext, currentUser.getId(), assignment.getGradebookItemId());
+                String grade = null;
+                String comment = null;
+                if (gradebookItem != null) {
+                    GradeInformation gradeInfo = externalGradebookLogic.getGradeInformationForStudent(curContext, assignment.getGradebookItemId(), currentUser.getId());
+                    if (gradeInfo != null) {
+                        grade = gradeInfo.getGradebookGrade();
+                        comment = gradeInfo.getGradebookComment();
+                    }
+                }
+                
                 if (grade != null) {
                     UIOutput.make(joint, "grade-row");
                     UIOutput.make(joint, "grade", grade);
                 }
-
-                String comment = externalGradebookLogic.getStudentGradeCommentForItem(
-                        curContext, currentUser.getId(), assignment.getGradebookItemId());
 
                 if (comment != null) {
                     UIOutput.make(joint, "comment-row");

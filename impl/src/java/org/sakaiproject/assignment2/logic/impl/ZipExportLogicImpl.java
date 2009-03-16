@@ -352,74 +352,85 @@ public class ZipExportLogicImpl implements ZipExportLogic
      * @return a string representation of the grade data in csv format for this assignment
      */
     private String getGradesAsCSVString(String currUserId, Assignment2 assignment, Map<String, User> userIdUserMap) {
-        String assignHeader = assignment.getTitle();
-        if (gradebookLogic.isGradingByPoints(assignment.getContextId())) {
-            // get the points possible for the associated gb item if graded by points
-            // we will append it the assignment name header
-            GradebookItem gradebookItem = gradebookLogic.getGradebookItemById(assignment.getContextId(), assignment.getGradebookItemId());
-            if (gradebookItem == null) {
-                throw new GradebookItemNotFoundException("No gradebook item found with id: " + assignment.getGradebookItemId());
-            }
-            
-            assignHeader += " [" + gradebookItem.getPointsPossible() + "]";
+        String gradesString = null;
+
+        // double check that gb item exists first
+        GradebookItem gradebookItem;
+        try {
+            gradebookItem = gradebookLogic.getGradebookItemById(assignment.getContextId(), assignment.getGradebookItemId()); 
+        } catch (GradebookItemNotFoundException ginfe) {
+            log.warn("No gradebook item found with id: " + assignment.getGradebookItemId() + ". Grades csv file not included in download");
+            gradesString = null;
+            gradebookItem = null;
         }
-        
-        // the buffer used to store grade information
-        StringBuilder gradesBuilder = new StringBuilder();
 
-        gradesBuilder.append(
-                bundle.getFormattedMessage("assignment2.assignment_grade-assignment.downloadall.header",
-                        new Object[] {assignHeader}))
-                        .append("\n");
+        if (gradebookItem != null) {
+            String assignHeader = assignment.getTitle();
+            if (gradebookLogic.isGradingByPoints(assignment.getContextId())) {
+                // get the points possible for the associated gb item if graded by points.
+                // we will append it the assignment name header
+                assignHeader += " [" + gradebookItem.getPointsPossible() + "]";
+            }
 
-        // now iterate through all GRADABLE students in this class to create the grades file
-        List<String> gradableStudents = permissionLogic.getGradableStudentsForUserForItem(currUserId, assignment);
+            // the buffer used to store grade information
+            StringBuilder gradesBuilder = new StringBuilder();
 
-        // get the grade information
-        Map<String, GradeInformation> userIdGradeMap = gradebookLogic.getGradeInformationForStudents(gradableStudents, assignment.getContextId(), assignment.getGradebookItemId());
+            gradesBuilder.append(
+                    bundle.getFormattedMessage("assignment2.assignment_grade-assignment.downloadall.header",
+                            new Object[] {assignHeader}))
+                            .append("\n");
 
-        for (String studentId : gradableStudents) {
-            // get their User info
-            User student = userIdUserMap.get(studentId);
-            if (student != null) {
-                gradesBuilder.append("\"");
-                gradesBuilder.append(student.getDisplayId());
-                gradesBuilder.append("\"");
-                gradesBuilder.append(",");
-                gradesBuilder.append("\"");
-                gradesBuilder.append(student.getSortName());
-                gradesBuilder.append("\"");
-                gradesBuilder.append(",");
+            // now iterate through all GRADABLE students in this class to create the grades file
+            List<String> gradableStudents = permissionLogic.getGradableStudentsForUserForItem(currUserId, assignment);
 
-                // now check for grade information
-                GradeInformation gradeInfo = userIdGradeMap.get(studentId);
-                if (gradeInfo != null) {
-                    String gradebookGrade = "";
-                    String gradebookComment = "";
+            // get the grade information
+            Map<String, GradeInformation> userIdGradeMap = gradebookLogic.getGradeInformationForStudents(gradableStudents, assignment.getContextId(), assignment.getGradebookItemId());
 
-                    if (gradeInfo.getGradebookGrade() != null) {
-                        gradebookGrade = gradeInfo.getGradebookGrade();
-                    }
-                    if (gradeInfo.getGradebookComment() != null) {
-                        gradebookComment = gradeInfo.getGradebookComment();
-                    }
+            for (String studentId : gradableStudents) {
+                // get their User info
+                User student = userIdUserMap.get(studentId);
+                if (student != null) {
                     gradesBuilder.append("\"");
-                    gradesBuilder.append(gradebookGrade);
+                    gradesBuilder.append(student.getDisplayId());
                     gradesBuilder.append("\"");
                     gradesBuilder.append(",");
                     gradesBuilder.append("\"");
-                    gradesBuilder.append(gradebookComment);
+                    gradesBuilder.append(student.getSortName());
                     gradesBuilder.append("\"");
                     gradesBuilder.append(",");
-                } else {
-                    gradesBuilder.append(",,");
+
+                    // now check for grade information
+                    GradeInformation gradeInfo = userIdGradeMap.get(studentId);
+                    if (gradeInfo != null) {
+                        String gradebookGrade = "";
+                        String gradebookComment = "";
+
+                        if (gradeInfo.getGradebookGrade() != null) {
+                            gradebookGrade = gradeInfo.getGradebookGrade();
+                        }
+                        if (gradeInfo.getGradebookComment() != null) {
+                            gradebookComment = gradeInfo.getGradebookComment();
+                        }
+                        gradesBuilder.append("\"");
+                        gradesBuilder.append(gradebookGrade);
+                        gradesBuilder.append("\"");
+                        gradesBuilder.append(",");
+                        gradesBuilder.append("\"");
+                        gradesBuilder.append(gradebookComment);
+                        gradesBuilder.append("\"");
+                        gradesBuilder.append(",");
+                    } else {
+                        gradesBuilder.append(",,");
+                    }
+
+                    gradesBuilder.append("\n");
                 }
-
-                gradesBuilder.append("\n");
             }
+
+            gradesString = gradesBuilder.toString();
         }
 
-        return gradesBuilder.toString();
+        return gradesString;
     }
 
     /**
