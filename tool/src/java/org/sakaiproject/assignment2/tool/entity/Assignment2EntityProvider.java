@@ -3,6 +3,7 @@ package org.sakaiproject.assignment2.tool.entity;
 import java.util.List;
 import java.util.Map;
 
+import org.azeckoski.reflectutils.DeepUtils;
 import org.sakaiproject.assignment2.exception.AssignmentNotFoundException;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
@@ -64,9 +65,13 @@ CoreEntityProvider, RESTful, RequestStorable {
     }
 
     public Object getEntity(EntityReference ref) {
-        Assignment2 assn = assignmentLogic.getAssignmentByIdWithAssociatedData(new Long(ref.getId()));
+        Assignment2 asnn = assignmentLogic.getAssignmentByIdWithAssociatedData(new Long(ref.getId()));
         
-        return assn;
+        DeepUtils deep = DeepUtils.getInstance();
+        
+        return deep.deepClone(asnn, 3, new String[] {"submissionsSet",
+                "ListOfAssociatedGroupReferences","assignmentGroupSet",
+                "attachmentSet","assignmentAttachmentRefs"});
     }
 
     public void deleteEntity(EntityReference ref, Map<String, Object> params) {
