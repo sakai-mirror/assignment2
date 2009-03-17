@@ -520,16 +520,20 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
 		
 		boolean allowedToGrade = false;
 		
-		String currUserId = externalLogic.getCurrentUserId();
-		
-		try {
-			List<String> gradableStudents = getGradableStudentsForUserForItem(currUserId, assignment);
-			if (gradableStudents != null && gradableStudents.size() > 0) {
-				allowedToGrade = true;
-			}
-		} catch (SecurityException se) {
-			// this user does not have grading privileges, so may not release
-			allowedToGrade = false;
+		if (gradebookLogic.isCurrentUserAbleToGradeAll(assignment.getContextId())) {
+		    allowedToGrade = true;
+		} else {
+		    String currUserId = externalLogic.getCurrentUserId();
+
+		    try {
+		        List<String> gradableStudents = getGradableStudentsForUserForItem(currUserId, assignment);
+		        if (gradableStudents != null && gradableStudents.size() > 0) {
+		            allowedToGrade = true;
+		        }
+		    } catch (SecurityException se) {
+		        // this user does not have grading privileges, so may not release
+		        allowedToGrade = false;
+		    }
 		}
 		
 		return allowedToGrade;
