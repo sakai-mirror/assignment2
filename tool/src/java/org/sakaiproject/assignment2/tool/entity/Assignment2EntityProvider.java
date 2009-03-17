@@ -50,8 +50,9 @@ CoreEntityProvider, RESTful, RequestStorable {
 
     public String createEntity(EntityReference ref, Object entity,
             Map<String, Object> params) {
-        // TODO Auto-generated method stub
-        return null;
+        Assignment2 assignment = (Assignment2) entity;
+        assignmentLogic.saveAssignment(assignment, assignment.getContextId());
+        return assignment.getId().toString();
     }
 
     public Object getSampleEntity() {
@@ -60,8 +61,8 @@ CoreEntityProvider, RESTful, RequestStorable {
 
     public void updateEntity(EntityReference ref, Object entity,
             Map<String, Object> params) {
-        // TODO Auto-generated method stub
-        
+        Assignment2 assignment = (Assignment2) entity;
+        assignmentLogic.saveAssignment(assignment, assignment.getContextId());
     }
 
     public Object getEntity(EntityReference ref) {
@@ -85,11 +86,11 @@ CoreEntityProvider, RESTful, RequestStorable {
     }
 
     public String[] getHandledOutputFormats() {
-        return new String[] {Formats.XML, Formats.JSON};
+        return new String[] {Formats.XML, Formats.JSON, Formats.HTML };
     }
 
     public String[] getHandledInputFormats() {
-        return new String[] {};
+        return new String[] {Formats.XML, Formats.JSON, Formats.HTML };
     }
 
     
