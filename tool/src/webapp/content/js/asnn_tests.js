@@ -17,7 +17,7 @@ asnn2test.run = function() {
     AsnnTests.test("Current user should be no one", function () {
         jqUnit.expect(1);
     
-        jqUnit.stop(true);
+        jqUnit.stop();
 
         jQuery.ajax({
             url: "/direct/session/current.json",
@@ -36,21 +36,24 @@ asnn2test.run = function() {
 
     AsnnTests.test("Log in as Instructor", function () {
         jqUnit.expect(1);
-        //jqUnit.stop(true);
+        jqUnit.stop();
 
         jQuery.ajax({
             url: "/direct/session/new",
             type: "POST",
-            async: false,
             data: {
                 '_username': jQuery("#instid").val(),
                 '_password': jQuery("#instpw").val()
             },
+	    success: function() {
+		jqUnit.start();
+	    }
         });
+	
+	jqUnit.stop();
 
         jQuery.ajax({
             url: "/direct/session/current.json",
-            async: false,
             success: function(data,txtstatus) {
                 jqUnit.start();
                 var session = JSON.parse(data);
@@ -64,21 +67,56 @@ asnn2test.run = function() {
     });
 
     AsnnTests.test("Create and Update Assignment", function () {
+	jqUnit.expect(1);
+	
+	jqUnit.stop();
+	
         jQuery.ajax({
             url: "/direct/assignment2/new",
-            async: false,
+	    type: "POST",
+	    contentType: "application/x-www-form-urlencoded",
             data: {
                 'title': 'A new assignment',
                 'contextId': jQuery("#siteid").val(),
-            }
-            success: function(xmlhttp,data,txtstatus) {
-
-            }
-        });        
-
-    }
+		'openDate': '1237311840000',
+		'hasAnnouncement': false
+            },
+            success: function(data,txtstatus) {
+		jqUnit.start();
+		jqUnit.assertTrue("Back from adding assignment", true);
+            },
+	    failure: function() {
+		jqUnit.start();
+		jqUnit.assertTrue("Error adding assignment", false);
+	    }
+        });
+    });
     
+    AsnnTests.test("Update Asnn Title", function () {
+	jqUnit.expect(1);
+	
+	jqUnit.stop();
+	
+	jQuery.ajax({
+	    url: "/direct/assignment2/22/edit",
+	    type: "POST",
+	    contentType: "application/x-www-form-urlencoded",
+	    data: {
+		title: 'A new title'
+	    },
+	    success: function(data, txtstatus) {
+		jqUnit.start();
+		jqUnit.assertTrue("Renamed Asnn Title", true);		
+	    },
+	    failure: function() {
+		jqUnit.start();
+		jqUnit.assertTrue("Failure renaming AsnnTitle", false);
+	    }
+	});
+
+    });
 };
+
 
 
 })(asnn2test, jQuery); // End Scoped Thing
