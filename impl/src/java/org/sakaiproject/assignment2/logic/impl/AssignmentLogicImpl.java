@@ -659,7 +659,8 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 		// use a date which is related to the current users locale
         DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, bundleLogic.getLocale());
         // create url to point back to this assignment to be included in the description
-        String assignUrl = externalLogic.getAssignmentViewUrl(REDIRECT_ASSIGNMENT_VIEW_ID) + "/" + updatedAssignment.getId();
+        // ASNN-477
+        //String assignUrl = externalLogic.getAssignmentViewUrl(REDIRECT_ASSIGNMENT_VIEW_ID) + "/" + updatedAssignment.getId();
 		
 		String newAnncSubject = bundleLogic.getFormattedMessage("assignment2.assignment_annc_subject",
     			new Object[] {updatedAssignment.getTitle()});
@@ -746,7 +747,8 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 		// use a date which is related to the current users locale
         DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, bundleLogic.getLocale());
 		// create url to point back to this assignment to be included in the description
-        String assignUrl = externalLogic.getAssignmentViewUrl(REDIRECT_ASSIGNMENT_VIEW_ID) + "/" + updatedAssignment.getId();
+        // ASNN-477
+        // String assignUrl = externalLogic.getAssignmentViewUrl(REDIRECT_ASSIGNMENT_VIEW_ID) + "/" + updatedAssignment.getId();
         
 		String eventTitle = "";
 		String eventDescription = "";
