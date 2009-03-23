@@ -156,18 +156,6 @@ public interface AssignmentDao extends GeneralGenericDao {
 	 * ordered by submitted version number
 	 */
 	public List<AssignmentSubmissionVersion> getVersionHistoryForSubmission(final AssignmentSubmission submission);
-
-	/**
-	 * Get a submission version for a user id by the submitted date.
-	 * 
-	 * @param userId
-	 *            [Non-null] The userId to narrow by.
-	 * @param submittedDate
-	 *            [Non-null] The submitted date and time to search for.
-	 * @return The submission version matching user and submitted date. Null if not found.
-	 */
-	public AssignmentSubmissionVersion getVersionByUserIdAndSubmittedDate(final String userId,
-			final Date submittedDate);
 	
 	/**
 	 * 
@@ -216,6 +204,16 @@ public interface AssignmentDao extends GeneralGenericDao {
 	 * history, and currentVersion
 	 */
 	public Set<AssignmentSubmission> getExistingSubmissionsForRemovedAssignments(final String studentId, final String contextId);
+	
+	/**
+	 * 
+	 * @param studentUids
+	 * @param assignment [Non-null]
+	 * @return the most recently submitted AssignmentSubmissionVersion for the given students and assignment.
+	 * if submission does not exist, will not return version for that student. does not
+	 * populate attachments
+	 */
+	public List<AssignmentSubmissionVersion> getCurrentSubmittedVersions(Collection<String> studentUids, Assignment2 assignment);
 	
 	/**
 	 * In the logic, some objects will be returned with

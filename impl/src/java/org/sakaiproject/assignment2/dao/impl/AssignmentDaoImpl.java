@@ -547,31 +547,6 @@ public class AssignmentDaoImpl extends HibernateGeneralGenericDao implements Ass
 
     	return (List<AssignmentSubmissionVersion>)getHibernateTemplate().execute(hc);
     }
-
-    public AssignmentSubmissionVersion getVersionByUserIdAndSubmittedDate(final String userId,
-			final Date submittedDate)
-	{
-		if (userId == null || submittedDate == null)
-		{
-			throw new IllegalArgumentException(
-					"userId and submittedDate must be non-null when looking up version [" + userId
-							+ "," + submittedDate + "]");
-		}
-
-		HibernateCallback hc = new HibernateCallback()
-		{
-			public Object doInHibernate(Session session) throws HibernateException, SQLException
-			{
-				Query query = session.getNamedQuery("findVersionByUserIdAndSubmittedDate");
-				query.setParameter("userId", userId);
-				query.setParameter("submittedDate", submittedDate);
-
-				Object o = query.uniqueResult();
-				return o;
-			}
-		};
-		return (AssignmentSubmissionVersion) getHibernateTemplate().execute(hc);
-	}
     
     public int getNumSubmittedVersions(final String studentId, final Long assignmentId) {
     	if (studentId == null || assignmentId == null) {
@@ -709,6 +684,24 @@ public class AssignmentDaoImpl extends HibernateGeneralGenericDao implements Ass
         
     }
     
+    public List<AssignmentSubmissionVersion> getCurrentSubmittedVersions(Collection<String> studentUids, Assignment2 assignment) {
+        if (assignment == null) {
+            throw new IllegalArgumentException("Null assignment passed to getCurrentSubmittedVersions");
+        }
+        
+        List<AssignmentSubmissionVersion> currentSubVersions = new ArrayList<AssignmentSubmissionVersion>();
+        if (studentUids != null && !studentUids.isEmpty()) {
+            // first, retrieve the ids of the most recent submitted versions
+            List<Long> currVersionIds = getCurrentVersionIdsForStudents(studentUids, assignment);
+            if (currVersionIds != null && !currVersionIds.isEmpty()) {
+                // get the versions
+                currentSubVersions = getAssignmentSubmissionVersionsById(currVersionIds);
+            }
+        }
+        
+        return currentSubVersions;
+    }
+    
     public void evictObject(Object obj) {
     	if (obj != null) {
     		getHibernateTemplate().evict(obj);
@@ -739,5 +732,35 @@ public class AssignmentDaoImpl extends HibernateGeneralGenericDao implements Ass
         }
         
         return currVersion;
+    }
+    
+    private List<Long> getCurrentVersionIdsForStudents(final Collection<String> studentUids, final Assignment2 assignment) {   
+        if (assignment == null) {
+            throw new IllegalArgumentException("Null assignment passed to geetCurrentVersionIdsForStudents");
+        }
+        
+        HibernateCallback hc = new HibernateCallback() {
+            public Object doInHibernate(Session session) throws HibernateException ,SQLException {
+                List<Long> versionIdList = new ArrayList<Long>();
+
+                if (studentUids != null && !studentUids.isEmpty()) {
+                    
+                    List<String> studentUidList = new ArrayList<String>(studentUids);
+                    
+                    Query query = session.getNamedQuery("findCurrentSubmittedVersionIds");
+                    query.setParameter("assignment", assignment);
+
+                    // if submission list is > than the max length allowed in sql, we need
+                    // to cycle through the list
+
+                    versionIdList = queryWithParameterList(query, "studentUidList", studentUidList);
+                }
+
+                return versionIdList;
+            }
+        };
+        
+        return (List<Long>)getHibernateTemplate().execute(hc);
+        
     }
 }

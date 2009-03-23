@@ -376,4 +376,14 @@ public interface AssignmentSubmissionLogic {
 	 */
 	public void updateStudentResubmissionOptions(Collection<String> studentUidList, Assignment2 assign, 
             Integer numSubmissionsAllowed, Date resubmitCloseDate);
+	
+	/**
+	 * 
+	 * @param assignment
+	 * @param studentUids
+	 * @return the number of students from the given studentUids list who have a 
+	 * "new" submission. a submission is "new" if the most recent submitted version does not
+     * have released feedback or, if assignment is graded, there is no grade yet
+	 */
+	public int getNumNewSubmissions(Assignment2 assignment, Collection<String> studentUids);
 }

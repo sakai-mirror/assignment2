@@ -21,6 +21,7 @@
 
 package org.sakaiproject.assignment2.logic;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -326,7 +327,7 @@ public interface ExternalGradebookLogic {
 	 * @throws SecurityException - if the current user is not authorized to
 	 * view grade information for a student in the list for the assoc gb item
 	 */
-	public Map<String, GradeInformation> getGradeInformationForStudents(List<String> studentIdList, String contextId, Long gradebookItemId);
+	public Map<String, GradeInformation> getGradeInformationForStudents(Collection<String> studentIdList, String contextId, Long gradebookItemId);
 	
 	/**
 	 * 

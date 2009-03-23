@@ -803,4 +803,52 @@ public class AssignmentDaoImplTest extends Assignment2DaoTestBase {
         
         
 	}
+	
+	public void testGetCurrentSubmittedVersions() {
+	 // pass a null assignment
+        try {
+            assignmentDao.getCurrentSubmittedVersions(new ArrayList<String>(), null);
+            fail("did not catch null assignment passed to testGetCurrentSubmittedVersions");
+        } catch(IllegalArgumentException iae) {
+        }
+        
+        // null student list - should return empty list
+        List<AssignmentSubmissionVersion> versions = assignmentDao.getCurrentSubmittedVersions(null, testData.a1);
+        assertTrue(versions.isEmpty());
+        
+        // add one real and one "fake" student
+        List<String> studentList = new ArrayList<String>();
+        studentList.add(AssignmentTestDataLoad.STUDENT1_UID);
+        studentList.add("bogusStudent"); // shouldn't cause any problems
+        
+        // there should be 1 version returned
+        versions = assignmentDao.getCurrentSubmittedVersions(studentList, testData.a1);
+        assertEquals(1, versions.size());
+        for (AssignmentSubmissionVersion thisVer : versions) {
+            assertEquals(testData.st1a1CurrVersion.getId(), thisVer.getId());
+        }
+        
+        // add another student with a submission to the list 
+        studentList.add(AssignmentTestDataLoad.STUDENT2_UID);
+        versions = assignmentDao.getCurrentSubmittedVersions(studentList, testData.a1);
+        assertEquals(2, versions.size());
+        for (AssignmentSubmissionVersion thisVer : versions) {
+            if (thisVer.getAssignmentSubmission().getUserId().equals(AssignmentTestDataLoad.STUDENT1_UID)) {
+                assertEquals(testData.st1a1CurrVersion.getId(), thisVer.getId());
+            } else if (thisVer.getAssignmentSubmission().getUserId().equals(AssignmentTestDataLoad.STUDENT2_UID)) {
+                assertEquals(testData.st2a1CurrVersion.getId(), thisVer.getId());
+            } else {
+                fail("Unknown version returned by getCurrentSubmittedVersions");
+            }
+        }
+        
+        // try a version with the most current version a draft. should only return
+        // most recent submitted version - st1a3 should return first version, not second version
+        studentList = new ArrayList<String>();
+        studentList.add(AssignmentTestDataLoad.STUDENT1_UID);
+        versions = assignmentDao.getCurrentSubmittedVersions(studentList, testData.a3);
+        assertEquals(1, versions.size());
+        assertEquals(testData.st1a3FirstVersion.getId(), versions.get(0).getId());
+        
+	}
 }

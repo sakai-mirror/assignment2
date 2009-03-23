@@ -46,6 +46,7 @@ import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
+import org.sakaiproject.assignment2.logic.GradeInformation;
 import org.sakaiproject.assignment2.logic.utils.Assignment2Utils;
 import org.sakaiproject.assignment2.logic.utils.ComparatorsUtils;
 import org.sakaiproject.assignment2.model.Assignment2;
@@ -1279,6 +1280,50 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		}
 		
 		return dao.getNumStudentsWithASubmission(assignment, studentIds);
+	}
+	
+	public int getNumNewSubmissions(Assignment2 assignment, Collection<String> studentUids) {
+	    if (assignment == null) {
+	        throw new IllegalArgumentException("Null assignment passed to getNumNewSubmissions");
+	    }
+	    
+	    // "new" is defined as a student whose most recent submitted version does not
+	    // have released feedback or, if assignment is graded, there is no grade yet
+	    Set<String> newSubmissions = new HashSet<String>();
+
+	    if (studentUids != null && !studentUids.isEmpty()) {
+
+	        // retrieve all of the most recently submitted versions
+	        List<AssignmentSubmissionVersion> currSubVersions = dao.getCurrentSubmittedVersions(studentUids, assignment);
+	        if (currSubVersions != null && !currSubVersions.isEmpty()) {
+	            // identify potentially new versions
+	            Set<String> studentsToCheckForGrade = new HashSet<String>();
+	            for (AssignmentSubmissionVersion version : currSubVersions) {
+	                if (!version.isFeedbackReleased()) {
+	                    newSubmissions.add(version.getAssignmentSubmission().getUserId());
+	                } else {
+	                    // this version has feedback released, so we need to check
+	                    // if it has a grade, if applicable
+	                    studentsToCheckForGrade.add(version.getAssignmentSubmission().getUserId());
+	                }
+	            }
+
+	            if (assignment.isGraded() && !studentsToCheckForGrade.isEmpty()) {
+	                Map<String, GradeInformation> studentGradeInfo = gradebookLogic.getGradeInformationForStudents(studentsToCheckForGrade, assignment.getContextId(), assignment.getGradebookItemId());
+	                if (studentGradeInfo != null) {
+	                    for (Map.Entry<String, GradeInformation> entry : studentGradeInfo.entrySet()) {
+	                        String studentUid = entry.getKey();
+	                        GradeInformation gradeInfo = entry.getValue();
+	                        if (gradeInfo.getGradebookGrade() == null || gradeInfo.getGradebookGrade().equals("")) {
+	                            newSubmissions.add(studentUid);
+	                        }
+	                    }
+	                }
+	            }
+	        }
+	    }
+
+	    return newSubmissions.size();
 	}
 	
 	public void markFeedbackAsViewed(Long submissionId, List<Long> versionIdList) {

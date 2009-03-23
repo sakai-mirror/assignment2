@@ -107,7 +107,17 @@
              where submissionVersion.id = :submissionVersionId]]>
   	</query>
 
-  	<query name="findCurrentVersionIds">
+  	<query name="findCurrentSubmittedVersionIds">
+    <![CDATA[select max(submissionVersion.id) 
+    				 from org.sakaiproject.assignment2.model.AssignmentSubmissionVersion submissionVersion
+    				 join submissionVersion.assignmentSubmission as submission
+             where submission.userId in (:studentUidList)
+             and submissionVersion.submittedDate != null
+             and submission.assignment = :assignment
+    		     group by submissionVersion.assignmentSubmission]]>
+  	</query>
+  	
+  	  	<query name="findCurrentVersionIds">
     <![CDATA[select max(submissionVersion.id) 
     				 from org.sakaiproject.assignment2.model.AssignmentSubmissionVersion submissionVersion
              where submissionVersion.assignmentSubmission in (:submissionList)
@@ -121,13 +131,6 @@
              where submissionVersion.assignmentSubmission = :submission
              order by submissionVersion.submittedVersionNumber desc]]>
   	</query>
-
-	<query name="findVersionByUserIdAndSubmittedDate">
-	<![CDATA[from org.sakaiproject.assignment2.model.AssignmentSubmissionVersion as version
-		left join fetch version.feedbackAttachSet
-		where version.createdBy = :userId
-			and version.submittedDate = :submittedDate]]>
-	</query>
 	
 	<query name="countNumSubmittedVersions">
     <![CDATA[select count(*) from org.sakaiproject.assignment2.model.AssignmentSubmissionVersion submissionVersion

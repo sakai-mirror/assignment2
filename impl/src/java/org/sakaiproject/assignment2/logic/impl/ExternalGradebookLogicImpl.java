@@ -495,7 +495,7 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
 		}
 	}
 
-	public Map<String, GradeInformation> getGradeInformationForStudents(List<String> studentIdList, String contextId, Long gradebookItemId) {
+	public Map<String, GradeInformation> getGradeInformationForStudents(Collection<String> studentIdList, String contextId, Long gradebookItemId) {
 		if (contextId == null || gradebookItemId == null) {
 			throw new IllegalArgumentException("null contextId or gradebookItemId " +
 					"passed to getGradeInformationForStudents. contextId:" + 
@@ -510,7 +510,7 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
 
 			try {
 				List<GradeDefinition>gradeDefs = gradebookService.getGradesForStudentsForItem(contextId, 
-						gradebookItemId, studentIdList);
+						gradebookItemId, new ArrayList<String>(studentIdList));
 
 				if (gradeDefs != null) {
 					for (GradeDefinition gradeDef : gradeDefs) {

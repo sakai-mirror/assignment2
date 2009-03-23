@@ -1646,4 +1646,40 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
         assertEquals(1, subList.size());
 	}
 	
+	public void testGetNumNewSubmissions() {
+	    // try a null assignment
+	    try {
+	        submissionLogic.getNumNewSubmissions(null, new ArrayList<String>());
+	        fail("Did not catch null assignment passed to getNumNewSubmissions");
+	    } catch (IllegalArgumentException iae) {}
+	    
+	    // passing a null list of students shouldn't do anything
+	    assertEquals(0, submissionLogic.getNumNewSubmissions(testData.a1, null));
+	    
+	    // assign 1 should have 2
+	    List<String> students = new ArrayList<String>();
+	    students.add(AssignmentTestDataLoad.STUDENT1_UID);
+	    students.add(AssignmentTestDataLoad.STUDENT2_UID);
+	    students.add(AssignmentTestDataLoad.STUDENT3_UID);
+	    assertEquals(2, submissionLogic.getNumNewSubmissions(testData.a1, students));
+	    
+	    // now, let's release feedback for st1
+	    submissionLogic.releaseOrRetractFeedbackForVersion(testData.st1a1CurrVersion.getId(), true);
+	    // we should only get 1 now
+	    assertEquals(1, submissionLogic.getNumNewSubmissions(testData.a1, students));
+	    
+	    // now let's check a graded assignment
+	    assertEquals(3, submissionLogic.getNumNewSubmissions(testData.a3, students));
+	    
+	    // student 1 has a draft version, so let's release fb on the non-draft one
+	    // and see if he still shows up as having a "new" submission. he already
+	    // has a grade for this one
+	    submissionLogic.releaseOrRetractFeedbackForVersion(testData.st1a3FirstVersion.getId(), true);
+	    assertEquals(2, submissionLogic.getNumNewSubmissions(testData.a3, students));
+	    
+	    // student 2 does not have a grade yet, so releasing fb should not change
+	    // "new" status
+	    submissionLogic.releaseOrRetractFeedbackForVersion(testData.st2a3CurrVersion.getId(), true);
+	    assertEquals(2, submissionLogic.getNumNewSubmissions(testData.a3, students));
+	}
 }

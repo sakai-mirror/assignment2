@@ -33,6 +33,7 @@ import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
+import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.assignment2.tool.DecoratedTaggingProvider;
 import org.sakaiproject.assignment2.tool.params.AssignmentViewParams;
 import org.sakaiproject.assignment2.tool.params.RemoveAssignmentParams;
@@ -263,20 +264,21 @@ public class ListProducer implements ViewComponentProducer, NavigationCaseReport
      */
     private void renderSubmissionStatusForAssignment(String currUserId,
             Assignment2 assignment, List<String> viewableStudents, UIBranchContainer row) {
-        if (assignment.isRequiresSubmission()) {
-            // Submitted/Total display
-            int total = 0;
-            int withSubmission = 0;
+        if (assignment.isRequiresSubmission() && 
+                assignment.getSubmissionType() != AssignmentConstants.SUBMIT_NON_ELECTRONIC) {
+            // In/New display
+            int submitted = 0;
+            int newSubmissions = 0;
 
-            if (viewableStudents != null) {
-                total = viewableStudents.size();
-                if (total > 0) {
-                    withSubmission = submissionLogic.getNumStudentsWithASubmission(assignment, viewableStudents);
+            if (viewableStudents != null && !viewableStudents.isEmpty()) {
+                submitted = submissionLogic.getNumStudentsWithASubmission(assignment, viewableStudents);
+                if (submitted > 0) {
+                    newSubmissions = submissionLogic.getNumNewSubmissions(assignment, viewableStudents);
                 }
             }
 
             UIInternalLink.make(row, "grade", 
-                    messageLocator.getMessage("assignment2.list.submissions_link", new Object[]{ withSubmission, total}), 
+                    messageLocator.getMessage("assignment2.list.submissions_link", new Object[]{ submitted, newSubmissions}), 
                     new ViewSubmissionsViewParams(ViewSubmissionsProducer.VIEW_ID, assignment.getId()));
         } else {
             UIOutput.make(row, "no_submission_req", messageLocator.getMessage("assignment2.list.no_sub_required"));
