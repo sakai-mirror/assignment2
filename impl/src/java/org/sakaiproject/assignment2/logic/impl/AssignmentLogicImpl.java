@@ -173,146 +173,142 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 		return assign;
 	}
 	
-	public void saveAssignment(Assignment2 assignment) {
-		String currentContextId = externalLogic.getCurrentContextId();
-		saveAssignment(assignment, currentContextId);
-	}
-	
-	public void saveAssignment(Assignment2 assignment, String contextId) throws SecurityException, 
-		NoGradebookItemForGradedAssignmentException
+	public void saveAssignment(Assignment2 assignment) throws SecurityException, 
+	NoGradebookItemForGradedAssignmentException
 	{
-		if (assignment == null || contextId == null) {
-			throw new IllegalArgumentException("Null assignment or contextId passed to saveAssignment");
-		}
-		
-		String currentUserId = externalLogic.getCurrentUserId();
-		
-		if (assignment.isGraded() && assignment.getGradebookItemId() == null) {
-			throw new NoGradebookItemForGradedAssignmentException("The assignment to save " + 
-					"was defined as graded but it had a null getGradebookItemId");
-		}
-		
-		if (!permissionLogic.isCurrentUserAbleToEditAssignments(contextId)) {
-			throw new SecurityException("Current user may not save assignment " + assignment.getTitle()
-                    + " because they do not have edit permission");
-		}
-		
-		boolean isNewAssignment = true;
-		Assignment2 existingAssignment = null;
-		
-		// determine if this is a new assignment
-		if (assignment.getId() != null) {
-			// check to see if assignment exists
-			existingAssignment = (Assignment2)dao.getAssignmentByIdWithGroupsAndAttachments(assignment.getId());	
-			if (existingAssignment != null) {
-				isNewAssignment = false;
-			}
-		}
-		
-    	// trim trailing spaces on title
-    	assignment.setTitle(assignment.getTitle().trim());
-    	
-    	// clean up the html string for the instructions
-    	assignment.setInstructions(Assignment2Utils.cleanupHtmlText(assignment.getInstructions()));
-		
-		if (isNewAssignment) {
+	    if (assignment == null || assignment.getContextId() == null) {
+	        throw new IllegalArgumentException("Null assignment or assignment.contextId passed to saveAssignment");
+	    }
 
-        	// identify the next sort index to be used
-        	Integer highestIndex = dao.getHighestSortIndexInSite(contextId);
-        	if (highestIndex != null) {
-        		assignment.setSortIndex(highestIndex + 1);
-        	} else {
-        		assignment.setSortIndex(0);
-        	}
-        	
-        	assignment.setRemoved(false);
-        	assignment.setCreateDate(new Date());
-        	assignment.setCreator(currentUserId);
-        	
-        	Set<AssignmentAttachment> attachSet = new HashSet<AssignmentAttachment>();
-        	if (assignment.getAttachmentSet() != null) {
-        		attachSet = assignment.getAttachmentSet();
-        	}
-        	Set<AssignmentGroup> groupSet = new HashSet<AssignmentGroup>();
-        	if (assignment.getAssignmentGroupSet() != null) {
-        		groupSet = assignment.getAssignmentGroupSet();
-        	}
-        	
-        	// make sure the assignment has been set for the attachments and groups
-        	populateAssignmentForAttachmentAndGroupSets(attachSet, groupSet, assignment);
-        	
-            // ensure that these objects are ready for saving
-            validateAttachmentsAndGroups(attachSet, groupSet);
-        	
-        	Set<Assignment2> assignSet = new HashSet<Assignment2>();
-        	assignSet.add(assignment);
-        	
-        	dao.saveMixedSet(new Set[] {assignSet, attachSet, groupSet});
-        	if(log.isDebugEnabled()) log.debug("Created assignment: " + assignment.getTitle());
-  
-		} else {
-			
-			assignment.setRemoved(false);
-			assignment.setModifiedBy(currentUserId);
-			assignment.setModifiedDate(new Date());
-			
-			Set<AssignmentAttachment> attachToDelete = identifyAttachmentsToDelete(existingAssignment, assignment);
-			Set<AssignmentGroup> groupsToDelete = identifyGroupsToDelete(existingAssignment, assignment);
-			
-			try {
-	        	Set<AssignmentAttachment> attachSet = new HashSet<AssignmentAttachment>();
-	        	if (assignment.getAttachmentSet() != null) {
-	        		attachSet = assignment.getAttachmentSet();
-	        	}
-	        	Set<AssignmentGroup> groupSet = new HashSet<AssignmentGroup>();
-	        	if (assignment.getAssignmentGroupSet() != null) {
-	        		groupSet = assignment.getAssignmentGroupSet();
-	        	}
-	        	
-	        	// make sure the assignment has been set for the attachments and groups
-	        	populateAssignmentForAttachmentAndGroupSets(attachSet, groupSet, assignment);
-	        	
-	        	// ensure that these objects are ready for saving
-	        	validateAttachmentsAndGroups(attachSet, groupSet);
-	        	
-	        	Set<Assignment2> assignSet = new HashSet<Assignment2>();
-	        	assignSet.add(assignment);
-	        	
-	        	dao.saveMixedSet(new Set[] {assignSet, attachSet, groupSet});
-	        	if(log.isDebugEnabled())log.debug("Updated assignment: " + assignment.getTitle() + "with id: " + assignment.getId());
-	            
-	            if ((attachToDelete != null && !attachToDelete.isEmpty()) ||
-	            		(groupsToDelete != null && !groupsToDelete.isEmpty())) {
-	            	dao.deleteMixedSet(new Set[] {attachToDelete, groupsToDelete});
-	            	if(log.isDebugEnabled())log.debug("Attachments and/or groups removed for updated assignment " + assignment.getId());
+	    String currentUserId = externalLogic.getCurrentUserId();
+
+	    if (assignment.isGraded() && assignment.getGradebookItemId() == null) {
+	        throw new NoGradebookItemForGradedAssignmentException("The assignment to save " + 
+	        "was defined as graded but it had a null getGradebookItemId");
+	    }
+
+	    if (!permissionLogic.isCurrentUserAbleToEditAssignments(assignment.getContextId())) {
+	        throw new SecurityException("Current user may not save assignment " + assignment.getTitle()
+	                + " because they do not have edit permission");
+	    }
+
+	    boolean isNewAssignment = true;
+	    Assignment2 existingAssignment = null;
+
+	    // determine if this is a new assignment
+	    if (assignment.getId() != null) {
+	        // check to see if assignment exists
+	        existingAssignment = (Assignment2)dao.getAssignmentByIdWithGroupsAndAttachments(assignment.getId());	
+	        if (existingAssignment != null) {
+	            isNewAssignment = false;
+	        } else {
+	            throw new AssignmentNotFoundException("No assignment exists with id: " + assignment.getId() + " Assignment update failure.");
+	        }
+	    }
+
+	    // trim trailing spaces on title
+	    assignment.setTitle(assignment.getTitle().trim());
+
+	    // clean up the html string for the instructions
+	    assignment.setInstructions(Assignment2Utils.cleanupHtmlText(assignment.getInstructions()));
+
+	    Set<AssignmentAttachment> attachToDelete = new HashSet<AssignmentAttachment>();
+	    Set<AssignmentGroup> groupsToDelete = new HashSet<AssignmentGroup>();
+
+	    if (isNewAssignment) {
+	        // identify the next sort index to be used
+	        Integer highestIndex = dao.getHighestSortIndexInSite(assignment.getContextId());
+	        if (highestIndex != null) {
+	            assignment.setSortIndex(highestIndex + 1);
+	        } else {
+	            assignment.setSortIndex(0);
+	        }
+
+	        assignment.setRemoved(false);
+	        assignment.setCreateDate(new Date());
+	        assignment.setCreator(currentUserId);
+	    } else {
+
+	        assignment.setRemoved(false);
+	        assignment.setModifiedBy(currentUserId);
+	        assignment.setModifiedDate(new Date());
+
+	        attachToDelete = identifyAttachmentsToDelete(existingAssignment, assignment);
+	        groupsToDelete = identifyGroupsToDelete(existingAssignment, assignment);
+	    }
+
+	    try {
+	        Set<AssignmentAttachment> attachSet = new HashSet<AssignmentAttachment>();
+	        if (assignment.getAttachmentSet() != null) {
+	            attachSet = assignment.getAttachmentSet();
+	        }
+	        Set<AssignmentGroup> groupSet = new HashSet<AssignmentGroup>();
+	        if (assignment.getAssignmentGroupSet() != null) {
+	            groupSet = assignment.getAssignmentGroupSet();
+	        }
+
+	        // make sure the assignment has been set for the attachments and groups
+	        populateAssignmentForAttachmentAndGroupSets(attachSet, groupSet, assignment);
+
+	        // ensure that these objects are ready for saving
+	        validateAttachmentsAndGroups(attachSet, groupSet);
+
+	        Set<Assignment2> assignSet = new HashSet<Assignment2>();
+	        assignSet.add(assignment);
+
+	        // to avoid the WARN: Nothing to update messages...
+	        if (!attachSet.isEmpty() && !groupSet.isEmpty()) {
+	            dao.saveMixedSet(new Set[] {assignSet, attachSet, groupSet});
+	        } else if (!attachSet.isEmpty()) {
+	            dao.saveMixedSet(new Set[] {assignSet, attachSet});
+	        } else if (!groupSet.isEmpty()) {
+	            dao.saveMixedSet(new Set[] {assignSet, groupSet});
+	        } else {
+	            dao.saveSet(assignSet);
+	        }
+
+	        if (log.isDebugEnabled()) {
+	            if (isNewAssignment) {
+	                log.debug("Created assignment: " + assignment.getTitle());
+	            } else {
+	                log.debug("Updated assignment: " + assignment.getTitle() + "with id: " + assignment.getId());
 	            }
-			} catch (HibernateOptimisticLockingFailureException holfe) {
-				if(log.isInfoEnabled()) log.info("An optimistic locking failure occurred while attempting to update assignment with id: " + assignment.getId());
-	            throw new StaleObjectModificationException("An optimistic locking failure occurred while attempting to update assignment with id: " + assignment.getId(), holfe);
-			}
-		}
-		
-		// now let's handle the impact on announcements
-		if (externalLogic.siteHasTool(contextId, ExternalLogic.TOOL_ID_ANNC)) {
-			try {
-				saveAssignmentAnnouncement(existingAssignment, assignment);
-			} catch (AnnouncementPermissionException ape) {
-				throw new AnnouncementPermissionException("The current user is not " +
-						"authorized to update announcements in the announcements " +
-						"tool. Any related announcements were NOT updated", ape);
-			}
-		}
-		
-		// now let's handle the impact on the Schedule
-		if (externalLogic.siteHasTool(contextId, ExternalLogic.TOOL_ID_SCHEDULE)) {
-			try {
-				handleDueDateEvent(existingAssignment, assignment);
-			} catch (CalendarPermissionException cpe) {
-				throw new CalendarPermissionException("The current user is not " +
-						"authorized to update events in the Schedule " +
-						"tool. Any related events were NOT updated", cpe);
-			}
-		}
+	        }
+
+	        if (!isNewAssignment) {
+	            if ((attachToDelete != null && !attachToDelete.isEmpty()) ||
+	                    (groupsToDelete != null && !groupsToDelete.isEmpty())) {
+	                dao.deleteMixedSet(new Set[] {attachToDelete, groupsToDelete});
+	                if(log.isDebugEnabled())log.debug("Attachments and/or groups removed for updated assignment " + assignment.getId());
+	            }
+	        }
+	    } catch (HibernateOptimisticLockingFailureException holfe) {
+	        if(log.isInfoEnabled()) log.info("An optimistic locking failure occurred while attempting to update assignment with id: " + assignment.getId());
+	        throw new StaleObjectModificationException("An optimistic locking failure occurred while attempting to update assignment with id: " + assignment.getId(), holfe);
+	    }
+
+
+	    // now let's handle the impact on announcements
+	    if (externalLogic.siteHasTool(assignment.getContextId(), ExternalLogic.TOOL_ID_ANNC)) {
+	        try {
+	            saveAssignmentAnnouncement(existingAssignment, assignment);
+	        } catch (AnnouncementPermissionException ape) {
+	            throw new AnnouncementPermissionException("The current user is not " +
+	                    "authorized to update announcements in the announcements " +
+	                    "tool. Any related announcements were NOT updated", ape);
+	        }
+	    }
+
+	    // now let's handle the impact on the Schedule
+	    if (externalLogic.siteHasTool(assignment.getContextId(), ExternalLogic.TOOL_ID_SCHEDULE)) {
+	        try {
+	            handleDueDateEvent(existingAssignment, assignment);
+	        } catch (CalendarPermissionException cpe) {
+	            throw new CalendarPermissionException("The current user is not " +
+	                    "authorized to update events in the Schedule " +
+	                    "tool. Any related events were NOT updated", cpe);
+	        }
+	    }
 	}
 	
 

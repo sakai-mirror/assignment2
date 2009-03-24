@@ -51,7 +51,7 @@ CoreEntityProvider, RESTful, RequestStorable {
     public String createEntity(EntityReference ref, Object entity,
             Map<String, Object> params) {
         Assignment2 assignment = (Assignment2) entity;
-        assignmentLogic.saveAssignment(assignment, assignment.getContextId());
+        assignmentLogic.saveAssignment(assignment);
         return assignment.getId().toString();
     }
 
@@ -62,7 +62,7 @@ CoreEntityProvider, RESTful, RequestStorable {
     public void updateEntity(EntityReference ref, Object entity,
             Map<String, Object> params) {
         Assignment2 assignment = (Assignment2) entity;
-        assignmentLogic.saveAssignment(assignment, assignment.getContextId());
+        assignmentLogic.saveAssignment(assignment);
     }
 
     public Object getEntity(EntityReference ref) {

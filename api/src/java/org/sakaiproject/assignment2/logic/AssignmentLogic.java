@@ -23,6 +23,7 @@ package org.sakaiproject.assignment2.logic;
 
 import java.util.List;
 
+import org.sakaiproject.assignment2.exception.AssignmentNotFoundException;
 import org.sakaiproject.assignment2.model.Assignment2;
 
 
@@ -52,28 +53,17 @@ public interface AssignmentLogic {
 	public Assignment2 getAssignmentById(Long assignmentId);
 	
 	/**
-	 * Create or update an assignment in the current context
+	 * Create or update an assignment. The contextId must be populated on the assignment
 	 * @param assignment
 	 * the assignment to create or update
 	 * @throws SecurityException -
 	 * user must have "edit" permission to add or update an assignment
 	 * @throws NoGradebookItemForGradedAssignmentException - if the
 	 * assignment is marked as graded but there is no gradebookItemId
+	 * @throws AssignmentNotFoundException if the id associated with the
+	 * assignment object does not exist
 	 */
 	public void saveAssignment(Assignment2 assignment);
-	
-	/**
-	 * Create or update an assignment in the given context
-	 * @param assignment
-	 * the assignment to create or update
-	 * @param contextId - the contextId that this new assignment is associated
-	 * with.
-	 * @throws SecurityException -
-	 * user must have "edit" permission to add or update an assignment
-	 * @throws NoGradebookItemForGradedAssignmentException - if the
-	 * assignment is marked as graded but there is no gradebookItemId
-	 */
-	public void saveAssignment(Assignment2 assignment, String contextId);
 	
 	/**
 	 * Delete an Assignment 
