@@ -29,6 +29,7 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment2.logic.ExternalAnnouncementLogic;
+import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.component.cover.ServerConfigurationService;
 import org.sakaiproject.entity.cover.EntityManager;
 import org.sakaiproject.event.cover.NotificationService;
@@ -37,7 +38,7 @@ import org.sakaiproject.exception.InUseException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.api.Group;
-import org.sakaiproject.site.cover.SiteService;
+import org.sakaiproject.site.api.SiteService;
 import org.sakaiproject.time.api.Time;
 import org.sakaiproject.time.cover.TimeService;
 import org.sakaiproject.announcement.api.AnnouncementChannel;
@@ -55,12 +56,19 @@ import org.sakaiproject.assignment2.exception.AnnouncementPermissionException;
 public class ExternalAnnouncementLogicImpl implements ExternalAnnouncementLogic {
 
     private static Log log = LogFactory.getLog(ExternalAnnouncementLogic.class);
-    
-    private AnnouncementService aService;
-    private AnnouncementChannel announcementChannel;
 
     public void init() {
     	if (log.isDebugEnabled()) log.debug("init");
+    }
+    
+    private ExternalLogic externalLogic;
+    public void setExternalLogic(ExternalLogic externalLogic) {
+        this.externalLogic = externalLogic;
+    }
+    
+    private AnnouncementService anncService;
+    public void setAnnouncementService(AnnouncementService anncService) {
+        this.anncService = anncService;
     }
     
     public String addOpenDateAnnouncement(Collection<String> restrictedGroupIds, String contextId,
@@ -68,8 +76,8 @@ public class ExternalAnnouncementLogicImpl implements ExternalAnnouncementLogic 
     	if (contextId == null) {
     		throw new IllegalArgumentException("null contextId passed to addOpenDateAnnouncement");
     	}
-    	
-    	initializeAnnouncementServiceData(contextId);
+
+        AnnouncementChannel announcementChannel = getAnnouncementChannel(contextId);
     	if (announcementChannel == null) {
     		log.warn("announcementChannel was null when trying to add announcement so no annc added");
     		return null;
@@ -124,7 +132,7 @@ public class ExternalAnnouncementLogicImpl implements ExternalAnnouncementLogic 
     		return null;
     	}
     	
-    	initializeAnnouncementServiceData(contextId);
+    	AnnouncementChannel announcementChannel = getAnnouncementChannel(contextId);
     	if (announcementChannel == null) {
     		log.warn("announcementChannel was null when trying to add announcement so no annc added");
     		return null;
@@ -185,7 +193,7 @@ public class ExternalAnnouncementLogicImpl implements ExternalAnnouncementLogic 
     		return;
     	}
     	
-    	initializeAnnouncementServiceData(contextId);
+    	AnnouncementChannel announcementChannel = getAnnouncementChannel(contextId);
     	if (announcementChannel == null) {
     		log.warn("announcementChannel was null when trying to delete announcement so no annc deleted");
     		return;
@@ -205,16 +213,15 @@ public class ExternalAnnouncementLogicImpl implements ExternalAnnouncementLogic 
 		}
 	}
     
-	private void initializeAnnouncementServiceData(String contextId) {
-		aService = org.sakaiproject.announcement.cover.AnnouncementService.getInstance();
-    	
+	private AnnouncementChannel getAnnouncementChannel(String contextId) {
+	    AnnouncementChannel announcementChannel = null;
     	String channelId = ServerConfigurationService.getString("channel", null);
     	if (channelId == null)
 		{
-			channelId = aService.channelReference(contextId, SiteService.MAIN_CONTAINER);
+			channelId = anncService.channelReference(contextId, SiteService.MAIN_CONTAINER);
 			try
 			{
-				announcementChannel = aService.getAnnouncementChannel(channelId);
+				announcementChannel = anncService.getAnnouncementChannel(channelId);
 			}
 			catch (IdUnusedException e)
 			{
@@ -227,35 +234,38 @@ public class ExternalAnnouncementLogicImpl implements ExternalAnnouncementLogic 
 						"not have permission to access the announcement channel for context: " + contextId, e);
 			}
 		}
+    	
+    	return announcementChannel;
 	}
 	
 	private void addGroupRestrictions(Collection<String> restrictedGroupIds, String contextId, AnnouncementMessageHeaderEdit header) {
-		try
-		{
-			if (restrictedGroupIds != null && !restrictedGroupIds.isEmpty()) {
+	    if (restrictedGroupIds != null && !restrictedGroupIds.isEmpty()) {
 
-				//make a collection of Group objects from the collection of group ref strings
-				Site site = SiteService.getSite(contextId);
-				List<Group> groupRestrictions = new ArrayList<Group>();
-				for (String groupId : restrictedGroupIds)
-				{
-					if (groupId != null) {
-						Group thisGroup = site.getGroup(groupId);
-						if (thisGroup != null) {
-							groupRestrictions.add(thisGroup);
-						}
-					}
-				}
+	        //make a collection of Group objects from the collection of group ref strings
+	        Site site = externalLogic.getSite(contextId);
+	        if (site != null) {
+	            List<Group> groupRestrictions = new ArrayList<Group>();
+	            for (String groupId : restrictedGroupIds)
+	            {
+	                if (groupId != null) {
+	                    Group thisGroup = site.getGroup(groupId);
+	                    if (thisGroup != null) {
+	                        groupRestrictions.add(thisGroup);
+	                    }
+	                }
+	            }
 
-				// set access
-				header.setGroupAccess(groupRestrictions);
-			}
-		}
-		catch (Exception exception)
-		{
-			log.warn("There was an error adding the group restrictions to the announcement");
-			exception.printStackTrace();
-		}
+	            // set access
+	            try {
+                    header.setGroupAccess(groupRestrictions);
+                } catch (PermissionException pe) {
+                    log.warn("There was an error adding the group restrictions to the announcement.", pe);
+                }
+                
+	        } else {
+	            log.warn("There was an error adding the group restrictions to the announcement. Site not found.");
+	        }
+	    }
 	}
 		
 }

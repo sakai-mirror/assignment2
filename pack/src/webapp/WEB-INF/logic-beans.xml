@@ -20,9 +20,13 @@
    </bean>
    
    <bean id="org.sakaiproject.assignment2.logic.ExternalAnnouncementLogic" class="org.sakaiproject.assignment2.logic.impl.ExternalAnnouncementLogicImpl" init-method="init">
+   		<property name="announcementService" ref="org.sakaiproject.announcement.api.AnnouncementService" />
+   		<property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
    </bean>
    
    <bean id="org.sakaiproject.assignment2.logic.ExternalCalendarLogic" class="org.sakaiproject.assignment2.logic.impl.ExternalCalendarLogicImpl" init-method="init">
+   		<property name="calendarService" ref="org.sakaiproject.calendar.api.CalendarService" />
+   		<property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
    </bean>
    
    <bean id="org.sakaiproject.assignment2.logic.ExternalEventLogic" class="org.sakaiproject.assignment2.logic.impl.ExternalEventLogicImpl" init-method="init">

@@ -30,6 +30,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment2.exception.CalendarPermissionException;
 import org.sakaiproject.assignment2.logic.ExternalCalendarLogic;
+import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.calendar.api.Calendar;
 import org.sakaiproject.calendar.api.CalendarEvent;
 import org.sakaiproject.calendar.api.CalendarEventEdit;
@@ -41,7 +42,7 @@ import org.sakaiproject.exception.InUseException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.site.api.Group;
 import org.sakaiproject.site.api.Site;
-import org.sakaiproject.site.cover.SiteService;
+import org.sakaiproject.site.api.SiteService;
 import org.sakaiproject.time.api.TimeRange;
 import org.sakaiproject.time.cover.TimeService;
 
@@ -58,8 +59,15 @@ public class ExternalCalendarLogicImpl implements ExternalCalendarLogic {
     // unfortunately, the following is not externally available from the Sched tool....
     private static final String DEADLINE_EVENT_TYPE = "Deadline"; 
     
-    CalendarService cService;
-    Calendar calendar;
+    private CalendarService calService;
+    public void setCalendarService(CalendarService calService) {
+        this.calService = calService;
+    }
+    
+    private ExternalLogic externalLogic;
+    public void setExternalLogic(ExternalLogic externalLogic) {
+        this.externalLogic = externalLogic;
+    }
     
     public void init() {
     	if (log.isDebugEnabled()) log.debug("init");
@@ -82,7 +90,7 @@ public class ExternalCalendarLogicImpl implements ExternalCalendarLogic {
     				eventDescription + " eventTitle:" + eventTitle);
     	}
     	
-    	initializeCalendarServiceData(contextId);
+    	Calendar calendar = getCalendar(contextId);
     	if (calendar == null) {
     		log.warn("calendar was null when trying to add event so no event added");
     		return null;
@@ -167,7 +175,7 @@ public class ExternalCalendarLogicImpl implements ExternalCalendarLogic {
     	
     	String updatedEventId = eventId;
 
-    	initializeCalendarServiceData(contextId);
+    	Calendar calendar = getCalendar(contextId);
     	if (calendar == null) {
     		log.warn("calendar was null when trying to add event so no event added");
     		updatedEventId = null;
@@ -222,7 +230,7 @@ public class ExternalCalendarLogicImpl implements ExternalCalendarLogic {
     		return;
     	}
     	
-    	initializeCalendarServiceData(contextId);
+    	Calendar calendar = getCalendar(contextId);
     	if (calendar == null) {
     		log.warn("calendar was null when trying to delete event so no event deleted");
     		return;
@@ -247,16 +255,15 @@ public class ExternalCalendarLogicImpl implements ExternalCalendarLogic {
 		}
 	}
     
-	private void initializeCalendarServiceData(String contextId) {
-		cService = org.sakaiproject.calendar.cover.CalendarService.getInstance();
-
+	private Calendar getCalendar(String contextId) {
+	    Calendar calendar = null;
 		String calendarId = ServerConfigurationService.getString("calendar", null);
 		if (calendarId == null)
 		{
-			calendarId = cService.calendarReference(contextId, SiteService.MAIN_CONTAINER);
+			calendarId = calService.calendarReference(contextId, SiteService.MAIN_CONTAINER);
 			try
 			{
-				calendar = cService.getCalendar(calendarId);
+				calendar = calService.getCalendar(calendarId);
 			}
 			catch (IdUnusedException e)
 			{
@@ -274,35 +281,33 @@ public class ExternalCalendarLogicImpl implements ExternalCalendarLogic {
 				calendar = null;
 			}
 		}
+		
+		return calendar;
 	}
 	
 	private List<Group> getGroupRestrictions(Collection<String> restrictedGroupIds, String contextId) {
-		List<Group> groupRestrictions = new ArrayList<Group>();
-		
-		try
-		{
-			if (restrictedGroupIds != null && !restrictedGroupIds.isEmpty()) {
+	    List<Group> groupRestrictions = new ArrayList<Group>();
 
-				//make a collection of Group objects from the collection of group ref strings
-				Site site = SiteService.getSite(contextId);
-				for (String groupId : restrictedGroupIds)
-				{
-					if (groupId != null) {
-						Group thisGroup = site.getGroup(groupId);
-						if (thisGroup != null) {
-							groupRestrictions.add(thisGroup);
-						}
-					}
-				}
-			}
-		}
-		catch (Exception exception)
-		{
-			log.warn("There was an error adding the group restrictions to the announcement");
-			exception.printStackTrace();
-		}
-		
-		return groupRestrictions;
+	    if (restrictedGroupIds != null && !restrictedGroupIds.isEmpty()) {
+
+	        //make a collection of Group objects from the collection of group ref strings
+	        Site site = externalLogic.getSite(contextId);
+	        if (site != null) {
+	            for (String groupId : restrictedGroupIds)
+	            {
+	                if (groupId != null) {
+	                    Group thisGroup = site.getGroup(groupId);
+	                    if (thisGroup != null) {
+	                        groupRestrictions.add(thisGroup);
+	                    }
+	                }
+	            }
+	        } else {
+	            log.warn("There was an error adding the group restrictions to the announcement. Site not found.");
+	        }
+	    }
+
+	    return groupRestrictions;
 	}
     
 		
