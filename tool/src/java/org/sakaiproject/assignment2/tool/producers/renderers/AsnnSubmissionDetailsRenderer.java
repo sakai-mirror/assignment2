@@ -169,6 +169,19 @@ public class AsnnSubmissionDetailsRenderer implements BasicProducer {
                                 new Object[]{version.getSubmittedDate()});
                     }
                 }
+            } 
+            
+            // if current version is draft, display last saved info with the due date
+            if (assignmentSubmission.getCurrentSubmissionVersion() != null &&
+                    assignmentSubmission.getCurrentSubmissionVersion().isDraft()) {
+                if (assignment.getDueDate() == null) {
+                    dueDateText = messageLocator.getMessage("assignment2.student-submit.in_progress.no_due_date", 
+                            new Object[]{df.format(assignmentSubmission.getCurrentSubmissionVersion().getStudentSaveDate())});
+                } else {
+                    dueDateText = messageLocator.getMessage("assignment2.student-submit.in_progress", 
+                            new Object[]{df.format(assignmentSubmission.getCurrentSubmissionVersion().getStudentSaveDate()),
+                            df.format(assignment.getDueDate())});
+                }
             }
         }
 
