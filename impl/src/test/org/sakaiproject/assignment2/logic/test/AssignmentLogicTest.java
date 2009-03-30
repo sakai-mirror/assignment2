@@ -236,7 +236,7 @@ public class AssignmentLogicTest extends Assignment2TestBase {
 		externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
 		List<Assignment2> assignList = assignmentLogic.getViewableAssignments();
 		assertNotNull(assignList);
-		assert(assignList.size() == 4);
+		assertEquals(4, assignList.size());
 
 		// let's try the ta. he/she should only be able to view assignments if
 		// 1) it is ungraded and it is open to the site
@@ -245,18 +245,17 @@ public class AssignmentLogicTest extends Assignment2TestBase {
 		//		gb item in the gb
 
 		// our ta is a member of group 1. assign1 is restricted to group 1 and 2
-		// for a4 (graded), it is restricted to group, but the ta may view the
-		// assignment if he/she is authorized to view the corresponding gb item
+		// for a4 (graded), so ta may only see assigns for group 1 (or unrestricted assigns)
 
 		externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
 		// should return assignment 1, 2, 3, 4
 		assignList = assignmentLogic.getViewableAssignments();
 		assertNotNull(assignList);
-		assertTrue(assignList.size() == 4);
+		assertEquals(3, assignList.size());
 		// let's make sure that these are the right assign
 		for (Assignment2 assign : assignList) {
 			if (assign.getId().equals(testData.a1Id) || assign.getId().equals(testData.a2Id) || 
-					assign.getId().equals(testData.a3Id) || assign.getId().equals(testData.a4Id)) { 
+					assign.getId().equals(testData.a3Id)) { 
 			} else {
 				fail("Invalid assignment returned for TA via getViewableAssignments");
 			}

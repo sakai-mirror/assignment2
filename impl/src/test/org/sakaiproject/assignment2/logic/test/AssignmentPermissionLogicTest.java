@@ -844,6 +844,15 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
        assertTrue(usersAllowedToView.contains(AssignmentTestDataLoad.INSTRUCTOR_UID));
    }
    
+   public void testGetViewableGroupsForCurrentUser() {
+       try {
+           permissionLogic.getViewableGroupsForCurrentUser(null);
+           fail("Did not catch null contextId passed to getViewableGroupsForCurrentUser");
+       } catch (IllegalArgumentException iae) {}
+       
+       
+   }
+   
    public void testGetViewableGroupsForCurrUserForAssignment() {
        // try passing a null
        try {
@@ -894,17 +903,32 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
                fail("Unknown group returned by getViewableGroupsForCurrUserForAssignment");
            }
        }
-       
-       // this method really shouldn't be called with students, but let's see
-       // what happens anyhow
-       
-       // no groups are returned for students!
+  
+       // students should get their own group memberships
        externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT1_UID);
        viewableGroups = permissionLogic.getViewableGroupsForCurrUserForAssignment(testData.a1Id);
-       assertEquals(0, viewableGroups.size());  
+       assertEquals(1, viewableGroups.size());  
        
        viewableGroups = permissionLogic.getViewableGroupsForCurrUserForAssignment(testData.a2Id);
-       assertEquals(0, viewableGroups.size());
+       assertEquals(1, viewableGroups.size());
+       
+   }
+   
+   public void testIsUserAbleToProvideFeedbackForAllStudents() {
+       externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
+       assertTrue(permissionLogic.isUserAbleToProvideFeedbackForAllStudents(AssignmentTestDataLoad.CONTEXT_ID));
+       
+       externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
+       assertFalse(permissionLogic.isUserAbleToProvideFeedbackForAllStudents(AssignmentTestDataLoad.CONTEXT_ID));
+       
+       externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT1_UID);
+       assertFalse(permissionLogic.isUserAbleToProvideFeedbackForAllStudents(AssignmentTestDataLoad.CONTEXT_ID));
+       
+       externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT2_UID);
+       assertFalse(permissionLogic.isUserAbleToProvideFeedbackForAllStudents(AssignmentTestDataLoad.CONTEXT_ID));
+       
+       externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT3_UID);
+       assertFalse(permissionLogic.isUserAbleToProvideFeedbackForAllStudents(AssignmentTestDataLoad.CONTEXT_ID));
        
    }
 }

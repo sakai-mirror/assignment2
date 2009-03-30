@@ -89,7 +89,7 @@ public interface AssignmentSubmissionLogic {
 	 * @param assignmentId
 	 * @param studentId
 	 * @return AssignmentSubmission associated with the given assignmentId and studentId with
-	 * the attachments and submission version history populated.
+	 * the attachments and submission version history populated. Populates currentSubmissionVersion
 	 * will return an empty record if there is no submission info for this student yet. If the curr version 
 	 * is draft and the submitter is not the current user, will not
 	 * populate the submissionText or submissionAttachmentSet. If the curr user is

@@ -175,12 +175,20 @@ public interface AssignmentPermissionLogic {
 	 
 	 /**
 	  * 
+	  * @param contextId
+	  * @return a list of Groups that the current user is allowed to view in
+	  * the given context. If the user has grading privileges, will return the groups
+	  * that the user is able to view in the gradebook. if the user is a student,
+	  * will return their group memberships
+	  */
+	 public List<Group> getViewableGroupsForCurrentUser(String contextId);
+	 
+	 /**
+	  * 
 	  * @param assignmentId
 	  * @return a list of Groups that the current user is allowed
-	  * to view for the given assignment. If the user is allowed to view the
-	  * group in the gradebook, then they can view the group in assignment2. if
-	  * assignment is restricted to groups, will only return viewable groups within
-	  * this restriction
+	  * to view filtered for the given assignment. 
+	  * See {@link #getViewableGroupsForCurrentUser(String)}
 	  */
 	 public List<Group> getViewableGroupsForCurrUserForAssignment(Long assignmentId);
 	 
@@ -192,4 +200,12 @@ public interface AssignmentPermissionLogic {
 	  * student in the given collection for the given assignment
 	  */
 	 public boolean isUserAbleToProvideFeedbackForStudents(Collection<String> studentUids, Assignment2 assignment);
+	 
+	 /**
+	  * 
+	  * @param contextId
+	  * @return true if the current user is allowed to provide feedback without
+	  * restriction for all students in the given context
+	  */
+	 public boolean isUserAbleToProvideFeedbackForAllStudents(String contextId);
 }

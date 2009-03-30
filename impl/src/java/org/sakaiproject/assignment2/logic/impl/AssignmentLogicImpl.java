@@ -54,6 +54,7 @@ import org.sakaiproject.assignment2.model.AssignmentGroup;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.assignment2.taggable.api.AssignmentActivityProducer;
 import org.sakaiproject.exception.PermissionException;
+import org.sakaiproject.site.api.Group;
 import org.sakaiproject.taggable.api.TaggingManager;
 import org.sakaiproject.taggable.api.TaggingProvider;
 import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException;
@@ -414,63 +415,77 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 	{   
 		List<Assignment2> viewableAssignments = new ArrayList<Assignment2>();
 		String contextId = externalLogic.getCurrentContextId();
-		String userId = externalLogic.getCurrentUserId();
 
 		List<Assignment2> allAssignments = dao.getAssignmentsWithGroupsAndAttachments(contextId);
 
 		if (allAssignments != null && !allAssignments.isEmpty()) {
+		    
+		    boolean isUserAbleToGradeAll = permissionLogic.isUserAbleToProvideFeedbackForAllStudents(contextId);
+		    
+		    if (isUserAbleToGradeAll) {
+		        viewableAssignments.addAll(allAssignments);
+		    } else {
 
-			List<Assignment2> gradedAssignments = new ArrayList<Assignment2>();
+		        List<Assignment2> gradedAssignments = new ArrayList<Assignment2>();
+	
+		        boolean isUserAbleToEdit = permissionLogic.isCurrentUserAbleToEditAssignments(contextId);
+		        boolean isUserAStudent = gradebookLogic.isCurrentUserAStudentInGb(contextId);
 
-			// users may view ungraded items if:
-			//  a) it is not restricted to groups
-			//  b) it is restricted, but user has grade all perm
-			//  c) it is restricted, but user is a member of restricted group
-			//  d) it is not draft or user has edit perm
+                List<Group> viewableGroups = permissionLogic.getViewableGroupsForCurrentUser(contextId);
+                List<String> viewableGroupIds = new ArrayList<String>();
+                if (viewableGroups != null) {
+                    for (Group group : viewableGroups) {
+                        viewableGroupIds.add(group.getId());
+                    }
+                }
+                
+		        // users may view ungraded items if:
+		        //  a) it is not restricted to groups
+		        //  b) it is restricted, but user has grade all perm
+		        //  c) it is restricted, but user is a member of restricted group
+		        //  d) it is not draft or user has edit perm
+		        for (Assignment2 assignment : allAssignments) {
+		            if (!assignment.isDraft() || isUserAbleToEdit) {
+		                // students may not view if not open
+		                if (!isUserAStudent || (isUserAStudent && assignment.getOpenDate().before(new Date()))) {
+		                    if (!assignment.isGraded()) {
+		                        if (permissionLogic.isUserAbleToViewUngradedAssignment(assignment, viewableGroupIds)) {
+		                            viewableAssignments.add(assignment);
+		                        } 
 
-			List<String> userGroupIds = externalLogic.getUserMembershipGroupIdList(userId, contextId);	
-			boolean isUserAbleToEdit = permissionLogic.isCurrentUserAbleToEditAssignments(contextId);
-			boolean isUserAStudent = gradebookLogic.isCurrentUserAStudentInGb(contextId);
+		                    } else {
+		                        gradedAssignments.add(assignment);
+		                    }
+		                }
+		            }
+		        }
 
-			for (Assignment2 assignment : allAssignments) {
-				if (!assignment.isDraft() || isUserAbleToEdit) {
-					// students may not view if not open
-					if (!isUserAStudent || (isUserAStudent && assignment.getOpenDate().before(new Date()))) 
-						if (!assignment.isGraded()) {
-							if (permissionLogic.isUserAbleToViewUngradedAssignment(assignment, userGroupIds)) {
-								viewableAssignments.add(assignment);
-							} 
+		        if (gradedAssignments != null && !gradedAssignments.isEmpty()) {
+		            // now, we need to filter the assignments that are associated with
+		            // the gradebook according to grader permissions and populate the
+		            // gradebook data
+		            List<Assignment2> viewableGbAssignments = gradebookLogic.getViewableGradedAssignments(gradedAssignments, contextId);
+		            if (viewableGbAssignments != null) {
 
-						} else {
-							gradedAssignments.add(assignment);
-						}
-				}
-			}
+		                for (Assignment2 assignment : viewableGbAssignments) {
 
-			if (gradedAssignments != null && !gradedAssignments.isEmpty()) {
-				// now, we need to filter the assignments that are associated with
-				// the gradebook according to grader permissions and populate the
-				// gradebook data
-				List<Assignment2> viewableGbAssignments = gradebookLogic.getViewableGradedAssignments(gradedAssignments, externalLogic.getCurrentContextId());
-				if (viewableGbAssignments != null) {
+		                    boolean restrictedToGroups = assignment.getAssignmentGroupSet() != null
+		                    && !assignment.getAssignmentGroupSet().isEmpty();
 
-					for (Assignment2 assignment : viewableGbAssignments) {
-						
-						boolean restrictedToGroups = assignment.getAssignmentGroupSet() != null
-						&& !assignment.getAssignmentGroupSet().isEmpty();
-						
-						// if user is a "student" in terms of the gb, we need to filter the view
-						// by AssignmentGroup restrictions.
-						if (restrictedToGroups && isUserAStudent) {
-							if (permissionLogic.isUserAMemberOfARestrictedGroup(userGroupIds, assignment.getAssignmentGroupSet())) {
-								viewableAssignments.add(assignment);
-							}
-						} else {
-							viewableAssignments.add(assignment);
-						}
-					}
-				}
-			}
+		                    // since the user must not have "grade all" permission
+		                    // if we got to this point, we need to filter the
+		                    // returned assignments if they are restricted to groups
+		                    if (restrictedToGroups) {
+		                        if (permissionLogic.isUserAMemberOfARestrictedGroup(viewableGroupIds, assignment.getAssignmentGroupSet())) {
+		                            viewableAssignments.add(assignment);
+		                        }
+		                    } else {
+		                        viewableAssignments.add(assignment);
+		                    }
+		                }
+		            }
+		        }
+		    }
 		}
 	
 		Collections.sort(viewableAssignments, new ComparatorsUtils.Assignment2SortIndexComparator());

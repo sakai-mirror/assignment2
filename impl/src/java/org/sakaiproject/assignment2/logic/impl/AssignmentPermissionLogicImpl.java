@@ -656,33 +656,59 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
 	                "No assignment exists with id: " + assignmentId);
 	    }
 
-	    // first, we need to identify the viewable groups in the gb. then we will filter
-	    // these based upon whether or not this assignment is restricted to groups.
-	    List<Group> viewableGroupsInGB = gradebookLogic.getViewableGroupsInGradebook(assign.getContextId());
-	    if (viewableGroupsInGB != null && !viewableGroupsInGB.isEmpty()) {
+        // first, we need to identify the viewable groups for this user in this site.
+        // then we'll check the group restrictions for this assignment and
+        // return the groups for this assignment that the user may view
+	    List<Group> allViewableGroups = getViewableGroupsForCurrentUser(assign.getContextId());
+	    
+	    if (allViewableGroups != null && !allViewableGroups.isEmpty()) {
+	        if (assign.getAssignmentGroupSet() != null && !assign.getAssignmentGroupSet().isEmpty()) {
 
-	        if (assign.getAssignmentGroupSet() == null || assign.getAssignmentGroupSet().isEmpty()) {
-	            // there are no group restrictions, so return all viewable
-	            viewableGroups = viewableGroupsInGB;
-	        } else {
-	            // put the groups in a map for easier processing
-	            Map<String, Group> gbGroupIdToGroupMap = new HashMap<String, Group>();
-	            for (Group group : viewableGroupsInGB) {
-	                gbGroupIdToGroupMap.put(group.getId(), group);
-	            }
+	            if (assign.getAssignmentGroupSet() == null || assign.getAssignmentGroupSet().isEmpty()) {
+	                // there are no group restrictions, so return all viewable
+	                viewableGroups = allViewableGroups;
+	            } else {
+	                // put the groups in a map for easier processing
+	                Map<String, Group> gbGroupIdToGroupMap = new HashMap<String, Group>();
+	                for (Group group : allViewableGroups) {
+	                    gbGroupIdToGroupMap.put(group.getId(), group);
+	                }
 
-	            // check to see if this user may view any of the restricted groups
-	            for (AssignmentGroup assignGroup : assign.getAssignmentGroupSet()) {
-	                String groupId = assignGroup.getGroupId();
-	                
-	                if (gbGroupIdToGroupMap.containsKey(groupId)) {
-	                    viewableGroups.add(gbGroupIdToGroupMap.get(groupId));
+	                // check to see if this user may view any of the restricted groups
+	                for (AssignmentGroup assignGroup : assign.getAssignmentGroupSet()) {
+	                    String groupId = assignGroup.getGroupId();
+
+	                    if (gbGroupIdToGroupMap.containsKey(groupId)) {
+	                        viewableGroups.add(gbGroupIdToGroupMap.get(groupId));
+	                    }
 	                }
 	            }
+	        } else {
+	            viewableGroups.addAll(allViewableGroups);
 	        }
 	    }
 
 	    return viewableGroups;
+	}
+	
+	public List<Group> getViewableGroupsForCurrentUser(String contextId) {
+	    if (contextId == null) {
+	        throw new IllegalArgumentException("Null contextId passed to " + this);
+	    }
+	    List<Group> viewableGroups = new ArrayList<Group>();
+	    
+	    // if a grader, return viewable groups in gradebook.
+	    // otherwise, return the user's group membership
+	    if (gradebookLogic.isCurrentUserAbleToGrade(contextId)) {
+	        viewableGroups = gradebookLogic.getViewableGroupsInGradebook(contextId);
+	    } else {
+	       Collection<Group> membership = externalLogic.getUserMemberships(externalLogic.getCurrentUserId(), contextId);
+	       if (membership != null) {
+	           viewableGroups = new ArrayList<Group>(membership);
+	       }
+	    }
+
+        return viewableGroups;
 	}
 	
 	public boolean isUserAbleToProvideFeedbackForStudents(Collection<String> studentUids, Assignment2 assignment) {
@@ -703,6 +729,13 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
 	    }
 
 	    return allowed;    
+	}
+	
+	public boolean isUserAbleToProvideFeedbackForAllStudents(String contextId) {
+	    if (contextId == null) {
+	        throw new IllegalArgumentException("Null contextId passed to " + this);
+	    }
+	    return gradebookLogic.isCurrentUserAbleToGradeAll(contextId);
 	}
 
 }

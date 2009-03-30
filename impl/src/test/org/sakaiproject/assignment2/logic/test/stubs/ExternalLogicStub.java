@@ -146,7 +146,31 @@ public class ExternalLogicStub implements ExternalLogic {
      * @return a collection of the groups that the given user is a member of
      */
     public Collection<Group> getUserMemberships(String userId, String contextId) {
-    	return null; // used for ui
+        Site currSite = new Site();
+        Collection<Group> membership = new ArrayList<Group>();
+        Group group1 = new Group(currSite);
+        group1.setId(AssignmentTestDataLoad.GROUP1_NAME);
+        group1.setReference(AssignmentTestDataLoad.GROUP1_NAME);
+        Group group2 = new Group(currSite);
+        group2.setId(AssignmentTestDataLoad.GROUP2_NAME);
+        group2.setReference(AssignmentTestDataLoad.GROUP2_NAME);
+        Group group3 = new Group(currSite);
+        group3.setId(AssignmentTestDataLoad.GROUP3_NAME);
+        group3.setReference(AssignmentTestDataLoad.GROUP3_NAME);
+        
+        if (userId.equals(AssignmentTestDataLoad.STUDENT1_UID)) {
+            membership.add(group1);
+        } else if (userId.equals(AssignmentTestDataLoad.STUDENT2_UID)) {
+            membership.add(group3);
+        } else if (userId.equals(AssignmentTestDataLoad.STUDENT3_UID)) {
+            // not a member of any groups
+        } else if (userId.equals(AssignmentTestDataLoad.TA_UID)) {
+            membership.add(group1);
+        } else {
+            // not a member of any groups
+        }
+        
+        return membership;
     }
     
     /**
