@@ -122,6 +122,7 @@ public class AsnnSubmissionDetailsRenderer implements BasicProducer {
         UIJointContainer joint = new UIJointContainer(parent, clientID, "assn2-submission-details-widget:");
 
         DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, locale);
+        DateFormat df_short = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, locale);
 
         /***
          * Title and Due Date Information
@@ -133,7 +134,14 @@ public class AsnnSubmissionDetailsRenderer implements BasicProducer {
             } else {
                 submissionHeading = messageLocator.getMessage("assignment2.student-submit.heading.submission", new Object[]{ title, currentUser.getDisplayName() });
             }
-            UIOutput.make(joint, "heading_status", submissionHeading);
+            
+            if (assignmentSubmission.getCurrentSubmissionVersion() != null &&
+                    assignmentSubmission.getCurrentSubmissionVersion().isDraft()) {
+                UIVerbatim.make(joint, "heading_status", messageLocator.getMessage("assignment2.student-submit.heading.in_progress", 
+                        new Object[]{ title, currentUser.getDisplayName(), df_short.format(assignmentSubmission.getCurrentSubmissionVersion().getStudentSaveDate())}));
+            } else {
+                UIOutput.make(joint, "heading_status", submissionHeading);
+            }
         } else {
             UIVerbatim.make(joint, "heading_status", messageLocator.getMessage("assignment2.student-submit.heading.submission.deleted", 
                     new Object[]{ title, currentUser.getDisplayName() }));
@@ -168,19 +176,6 @@ public class AsnnSubmissionDetailsRenderer implements BasicProducer {
                         dueDateText = messageLocator.getMessage("assignment2.student-submit.submitted_info", 
                                 new Object[]{version.getSubmittedDate()});
                     }
-                }
-            } 
-            
-            // if current version is draft, display last saved info with the due date
-            if (assignmentSubmission.getCurrentSubmissionVersion() != null &&
-                    assignmentSubmission.getCurrentSubmissionVersion().isDraft()) {
-                if (assignment.getDueDate() == null) {
-                    dueDateText = messageLocator.getMessage("assignment2.student-submit.in_progress.no_due_date", 
-                            new Object[]{df.format(assignmentSubmission.getCurrentSubmissionVersion().getStudentSaveDate())});
-                } else {
-                    dueDateText = messageLocator.getMessage("assignment2.student-submit.in_progress", 
-                            new Object[]{df.format(assignmentSubmission.getCurrentSubmissionVersion().getStudentSaveDate()),
-                            df.format(assignment.getDueDate())});
                 }
             }
         }

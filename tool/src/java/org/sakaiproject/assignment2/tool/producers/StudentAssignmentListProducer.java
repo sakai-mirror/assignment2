@@ -168,9 +168,10 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
                     .decorate(assnItemDecorator);
             
             /*
-             * if curr submission is draft, let the student know it is in progress
+             * if curr submission is draft, let the student know it is in progress,
+             * but don't display if the assignment has been deleted
              */
-            if (assignmentSubmission.getCurrentSubmissionVersion() != null && 
+            if (!assignment.isRemoved() && assignmentSubmission.getCurrentSubmissionVersion() != null && 
                     assignmentSubmission.getCurrentSubmissionVersion().isDraft()) {
                 UIMessage.make(row, "assignment-in-progress", "assignment2.student-assignment-list.in-progress");
             }
