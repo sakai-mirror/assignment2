@@ -25,7 +25,6 @@ import java.awt.Color;
 import java.text.DateFormat;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Set;
 
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
@@ -35,37 +34,27 @@ import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
-import org.sakaiproject.assignment2.tool.LocalAssignmentLogic;
 import org.sakaiproject.assignment2.tool.StudentAction;
-import org.sakaiproject.assignment2.tool.beans.AssignmentAuthoringBean;
 import org.sakaiproject.assignment2.tool.beans.AssignmentSubmissionBean;
 import org.sakaiproject.assignment2.tool.params.AssignmentListSortViewParams;
 import org.sakaiproject.assignment2.tool.params.SimpleAssignmentViewParams;
-import org.sakaiproject.assignment2.tool.producers.renderers.PagerRenderer;
-import org.sakaiproject.assignment2.tool.producers.renderers.SortHeaderRenderer;
 
-import uk.org.ponder.messageutil.MessageLocator;
 import uk.org.ponder.rsf.components.UIBoundBoolean;
 import uk.org.ponder.rsf.components.UIBranchContainer;
 import uk.org.ponder.rsf.components.UICommand;
 import uk.org.ponder.rsf.components.UIContainer;
 import uk.org.ponder.rsf.components.UIELBinding;
 import uk.org.ponder.rsf.components.UIForm;
-import uk.org.ponder.rsf.components.UIInput;
 import uk.org.ponder.rsf.components.UIInternalLink;
-import uk.org.ponder.rsf.components.UILink;
 import uk.org.ponder.rsf.components.UIMessage;
 import uk.org.ponder.rsf.components.UIOutput;
-import uk.org.ponder.rsf.components.UIVerbatim;
 import uk.org.ponder.rsf.components.decorators.UIColourDecorator;
 import uk.org.ponder.rsf.components.decorators.UIDecorator;
 import uk.org.ponder.rsf.components.decorators.UIFreeAttributeDecorator;
-import uk.org.ponder.rsf.components.decorators.UIStyleDecorator;
 import uk.org.ponder.rsf.view.ComponentChecker;
 import uk.org.ponder.rsf.view.ViewComponentProducer;
 import uk.org.ponder.rsf.viewstate.ViewParameters;
 import uk.org.ponder.rsf.viewstate.ViewParamsReporter;
-import uk.org.ponder.htmlutil.HTMLUtil;
 
 /**
  * This view is responsible for showing the Student Landing page which will have
@@ -178,6 +167,13 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
             UIOutput.make(row, "assignment-title", assignment.getTitle())
                     .decorate(assnItemDecorator);
             
+            /*
+             * if curr submission is draft, let the student know it is in progress
+             */
+            if (assignmentSubmission.getCurrentSubmissionVersion() != null && 
+                    assignmentSubmission.getCurrentSubmissionVersion().isDraft()) {
+                UIMessage.make(row, "assignment-in-progress", "assignment2.student-assignment-list.in-progress");
+            }
             /*
              * If the assignment has been deleted, we are suppose to show this
              * bit of text.
