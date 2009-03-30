@@ -224,6 +224,11 @@ public class AsnnSubmissionDetailsRenderer implements BasicProducer {
 
         // Details Table
         UIOutput.make(joint, "assignment-details-table");
+
+        // use a date which is related to the current users locale
+        DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, locale);
+
+        UIOutput.make(joint, "open-date", df.format(assignment.getOpenDate()));
         
         // Graded?
         if (assignment.isGraded()) {
