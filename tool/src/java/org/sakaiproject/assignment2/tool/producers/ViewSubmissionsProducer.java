@@ -135,14 +135,12 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
         }
         assignmentId = params.assignmentId;
         Assignment2 assignment = assignmentLogic.getAssignmentByIdWithAssociatedData(assignmentId);
-        
-        String currContextId = externalLogic.getCurrentContextId();
 
         //use a date which is related to the current users locale
         DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, locale);
 
         //Edit Permission
-        boolean edit_perm = permissionLogic.isCurrentUserAbleToEditAssignments(externalLogic.getCurrentContextId());
+        boolean edit_perm = permissionLogic.isCurrentUserAbleToEditAssignments(assignment.getContextId());
         boolean grade_perm = permissionLogic.isUserAllowedToProvideFeedbackForAssignment(assignment);
 
         //get parameters
@@ -159,7 +157,7 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
         GradebookItem gbItem = null;
         if (assignment.isGraded() && assignment.getGradebookItemId() != null) {
             try {
-                gbItem = gradebookLogic.getGradebookItemById(currContextId, assignment.getGradebookItemId());
+                gbItem = gradebookLogic.getGradebookItemById(assignment.getContextId(), assignment.getGradebookItemId());
             } catch (GradebookItemNotFoundException ginfe) {
                 if (log.isDebugEnabled()) log.debug("Gb item with id: " + assignment.getGradebookItemId() + " no longer exists!");
                 gbItem = null;
@@ -211,7 +209,7 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
 
             UIForm releaseGradesForm = UIForm.make(tofill, "release_grades_form");
             releaseGradesForm.addParameter(new UIELBinding("ReleaseGradesAction.gradebookItemId", assignment.getGradebookItemId()));
-            releaseGradesForm.addParameter(new UIELBinding("ReleaseGradesAction.curContext", currContextId));
+            releaseGradesForm.addParameter(new UIELBinding("ReleaseGradesAction.curContext", assignment.getContextId()));
             releaseGradesForm.addParameter(new UIELBinding("ReleaseGradesAction.releaseGrades", !gradesReleased));
 
             UICommand releaseGradesButton = UICommand.make(releaseGradesForm, "release_grades", "ReleaseGradesAction.execute");
@@ -358,7 +356,7 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
          */
         if (submissions != null && !submissions.isEmpty() && 
                 grade_perm && assignment.isGraded() && gbItem != null) {
-            String lowestPossibleGrade = gradebookLogic.getLowestPossibleGradeForGradebookItem(currContextId, assignment.getGradebookItemId());
+            String lowestPossibleGrade = gradebookLogic.getLowestPossibleGradeForGradebookItem(assignment.getContextId(), assignment.getGradebookItemId());
             UIForm unassignedForm = UIForm.make(tofill, "unassigned-apply-form");
             unassignedForm.addParameter(new UIELBinding("GradeAllRemainingAction.assignmentId", assignment.getId()));
             UIInput.make(unassignedForm, "new-grade-value", "GradeAllRemainingAction.grade", lowestPossibleGrade);

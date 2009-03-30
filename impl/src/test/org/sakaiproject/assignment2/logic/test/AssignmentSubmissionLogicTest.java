@@ -1569,17 +1569,22 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
 	}
 	
 	public void testGetSubmissionsForCurrentUser() {
+	    try {
+	        submissionLogic.getSubmissionsForCurrentUser(null);
+	        fail("Did not catch null contextId passed to getSubmissionsForCurrentUser");
+	    } catch (IllegalArgumentException iae) {}
+	    
 		// let's try retrieving submissions for a non-student
 		// should throw SecurityException
 		externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
 		try {
-			submissionLogic.getSubmissionsForCurrentUser();
+			submissionLogic.getSubmissionsForCurrentUser(AssignmentTestDataLoad.CONTEXT_ID);
 			fail("Did not catch non-student attempting to retrieve submissions via getSubmissionsForCurrentUser");
 		} catch (SecurityException se) {}
 		
 		// switch to student1 - can view assign 1,2,3
 		externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT1_UID);
-		List<AssignmentSubmission> subList = submissionLogic.getSubmissionsForCurrentUser();
+		List<AssignmentSubmission> subList = submissionLogic.getSubmissionsForCurrentUser(AssignmentTestDataLoad.CONTEXT_ID);
 		assertEquals(3, subList.size());
 		// since none are marked as complete yet, should be ordered by sortIndex
 		// this student only has submissions for assign 1 and 3, but there should
@@ -1594,7 +1599,7 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
 		submissionLogic.markAssignmentsAsCompleted(AssignmentTestDataLoad.STUDENT1_UID, assignIdCompletedMap);
 		
 		// re-retrieve the submissions - should be in different order now
-		subList = submissionLogic.getSubmissionsForCurrentUser();
+		subList = submissionLogic.getSubmissionsForCurrentUser(AssignmentTestDataLoad.CONTEXT_ID);
 		assertEquals(3, subList.size());
 		// should be uncompleted first, then completed
 		assertEquals(testData.a2Id, subList.get(0).getAssignment().getId()); // empty rec
@@ -1603,7 +1608,7 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
 		
 		//let's try another student - can view all assign
 		externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT2_UID);
-		subList = submissionLogic.getSubmissionsForCurrentUser();
+		subList = submissionLogic.getSubmissionsForCurrentUser(AssignmentTestDataLoad.CONTEXT_ID);
 		// only assign 1, 3, and 4 have submissions
 		assertEquals(testData.st2a1Submission.getId(), subList.get(0).getId());
 		assertEquals(testData.a2Id, subList.get(1).getAssignment().getId()); // empty rec
@@ -1617,7 +1622,7 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
 		submissionLogic.markAssignmentsAsCompleted(AssignmentTestDataLoad.STUDENT2_UID, assignIdCompletedMap);
 		
 		// now they should be in a diff order
-		subList = submissionLogic.getSubmissionsForCurrentUser();
+		subList = submissionLogic.getSubmissionsForCurrentUser(AssignmentTestDataLoad.CONTEXT_ID);
 
 		assertEquals(testData.a2Id, subList.get(0).getAssignment().getId()); // empty rec
 		assertEquals(testData.st2a4Submission.getId(), subList.get(1).getId());
@@ -1632,17 +1637,17 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
 		assignmentLogic.deleteAssignment(testData.a2);
 		
 		externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT1_UID);
-        subList = submissionLogic.getSubmissionsForCurrentUser();
+        subList = submissionLogic.getSubmissionsForCurrentUser(AssignmentTestDataLoad.CONTEXT_ID);
         assertEquals(2, subList.size());
         
         // even though st 2 has 4 submissions, the submissions for assign 2 does not
         // have associated versions. so this one should not be returned
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT2_UID);
-        subList = submissionLogic.getSubmissionsForCurrentUser();
+        subList = submissionLogic.getSubmissionsForCurrentUser(AssignmentTestDataLoad.CONTEXT_ID);
         assertEquals(3, subList.size());
         
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT3_UID);
-        subList = submissionLogic.getSubmissionsForCurrentUser();
+        subList = submissionLogic.getSubmissionsForCurrentUser(AssignmentTestDataLoad.CONTEXT_ID);
         assertEquals(1, subList.size());
 	}
 	

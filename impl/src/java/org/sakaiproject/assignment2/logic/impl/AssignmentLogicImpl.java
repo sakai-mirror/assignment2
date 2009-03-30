@@ -323,9 +323,12 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 			throw new IllegalArgumentException("The passed assignment does not have an id. Can only delete persisted assignments");
 		}
 		
-		String currentContextId = externalLogic.getCurrentContextId();
+		if (assignment.getContextId() == null) {
+		    throw new IllegalArgumentException("The passed assignment does not have an " +
+		    		"associated contextId. You may not delete an assignment without a contextId");
+		}
 		
-		if (!permissionLogic.isCurrentUserAbleToEditAssignments(currentContextId)) {
+		if (!permissionLogic.isCurrentUserAbleToEditAssignments(assignment.getContextId())) {
 			if (log.isDebugEnabled()) log.debug("User not authorized to add/delete/update announcements");
 			throw new SecurityException("Current user may not delete assignment " + assignment.getTitle()
                     + " because they do not have edit permission");
@@ -357,13 +360,13 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 			
 			// now remove the announcement, if applicable
 			if (announcementIdToDelete != null) {
-				announcementLogic.deleteOpenDateAnnouncement(announcementIdToDelete, currentContextId);
+				announcementLogic.deleteOpenDateAnnouncement(announcementIdToDelete, assignment.getContextId());
 				if(log.isDebugEnabled()) log.debug("Deleted announcement with id " + announcementIdToDelete + " for assignment " + assignment.getId());
 			}
 			
 			// now remove the event, if applicable
 			if (eventIdToDelete !=  null) {
-				calendarLogic.deleteDueDateEvent(eventIdToDelete, currentContextId);
+				calendarLogic.deleteDueDateEvent(eventIdToDelete, assignment.getContextId());
 				if(log.isDebugEnabled()) log.debug("Deleted event with id " + eventIdToDelete + 
 						" for assignment " + assignment.getId());
 			}
@@ -411,10 +414,13 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 	}
 	
 
-	public List<Assignment2> getViewableAssignments()
+	public List<Assignment2> getViewableAssignments(String contextId)
 	{   
+	    if (contextId == null) {
+	        throw new IllegalArgumentException("null contextId passed to " + this);
+	    }
+	    
 		List<Assignment2> viewableAssignments = new ArrayList<Assignment2>();
-		String contextId = externalLogic.getCurrentContextId();
 
 		List<Assignment2> allAssignments = dao.getAssignmentsWithGroupsAndAttachments(contextId);
 
@@ -493,19 +499,22 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 		return viewableAssignments;
 	}
 	
-	public void reorderAssignments(List<Long> assignmentIds)
+	public void reorderAssignments(List<Long> assignmentIds, String contextId)
 	{	
 	    if (assignmentIds == null) {
 	        throw new IllegalArgumentException("Null list of assignmentIds passed to reorder.");
 	    }
+	    
+	    if (contextId == null) {
+	        throw new IllegalArgumentException("Null contextId passed to " + this);
+	    }
 
-	    String currentContextId = externalLogic.getCurrentContextId();
-	    if (!permissionLogic.isCurrentUserAbleToEditAssignments(currentContextId)) {
+	    if (!permissionLogic.isCurrentUserAbleToEditAssignments(contextId)) {
 	        throw new SecurityException("Unauthorized user attempted to reorder assignments!");
 	    }
 
 	    List<Assignment2> allAssigns = dao.findByProperties(Assignment2.class, 
-	            new String[] {"contextId", "removed"}, new Object[]{externalLogic.getCurrentContextId(), false});
+	            new String[] {"contextId", "removed"}, new Object[]{contextId, false});
 
 	    Map<Long, Assignment2> assignIdAssignMap = new HashMap<Long, Assignment2>();
 	    if (allAssigns != null) {
@@ -530,7 +539,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 	    for (Long assignId : assignmentIds) {
 	        if (!assignIdAssignMap.containsKey(assignId)) {
 	            throw new IllegalArgumentException("The assignment id " + assignId 
-	                    + " does not exist in site " + currentContextId);
+	                    + " does not exist in site " + contextId);
 	        }
 	    }
 
@@ -748,11 +757,12 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 					"saveDueDateEvent must have an id");
 		}
 		
-		if (!permissionLogic.isCurrentUserAbleToEditAssignments(updatedAssignment.getContextId())) {
+	      
+        String contextId = updatedAssignment.getContextId();
+		
+		if (!permissionLogic.isCurrentUserAbleToEditAssignments(contextId)) {
 			throw new SecurityException("Current user is not allowed to edit assignments in context " + updatedAssignment.getContextId());
 		}
-		
-		String contextId = externalLogic.getCurrentContextId();
 		
 		// make the due date locale-aware
 		// use a date which is related to the current users locale

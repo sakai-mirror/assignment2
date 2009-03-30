@@ -269,9 +269,10 @@ public class ExternalLogicStub implements ExternalLogic {
      * 
      * @param gradeableObjectId
      * @param returnViewId
+     * @param contextId
      * @return url to helper
      */
-    public String getUrlForGradebookItemHelper(Long gradeableObjectId, String returnViewId) {
+    public String getUrlForGradebookItemHelper(Long gradeableObjectId, String returnViewId, String contextId) {
     	return null; //used for ui
     }
     
@@ -280,9 +281,10 @@ public class ExternalLogicStub implements ExternalLogic {
      * @param gradeableObjectId
      * @param userId
      * @param returnViewId
+     * @param contextId
      * @return url to helper
      */
-    public String getUrlForGradeGradebookItemHelper(Long gradeableObjectId, String userId, String returnViewId) {
+    public String getUrlForGradeGradebookItemHelper(Long gradeableObjectId, String userId, String returnViewId, String contextId) {
     	return null; //used for ui
     }
     
@@ -315,7 +317,7 @@ public class ExternalLogicStub implements ExternalLogic {
 	}
 
     public String getUrlForGradebookItemHelper(Long gradeableObjectId,
-            String gradebookItemName, String returnViewId)
+            String gradebookItemName, String returnViewId, String contextId)
     {
         // TODO Auto-generated method stub
         return null;

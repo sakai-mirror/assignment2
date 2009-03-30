@@ -86,6 +86,7 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
     private Locale locale;
     private AssignmentSubmissionBean submissionBean;
     private ExternalGradebookLogic externalGradebookLogic;
+    private ExternalLogic externalLogic;
 
     public static final String DEFAULT_SORT_DIR = AssignmentLogic.SORT_DIR_ASC;
     public static final String DEFAULT_OPPOSITE_SORT_DIR = AssignmentLogic.SORT_DIR_DESC;
@@ -104,10 +105,12 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
 
         //get parameters
         AssignmentListSortViewParams params = (AssignmentListSortViewParams) viewparams;
+        
+        String currContextId = externalLogic.getCurrentContextId();
 
         //get paging data
         //List<Assignment2> entries = assignmentLogic.getViewableAssignments();
-        List<AssignmentSubmission> submissionEntries = submissionLogic.getSubmissionsForCurrentUser();
+        List<AssignmentSubmission> submissionEntries = submissionLogic.getSubmissionsForCurrentUser(currContextId);
 
         //Breadcrumbs
         UIMessage.make(tofill, "last_breadcrumb", "assignment2.student-assignment-list.heading");
@@ -265,5 +268,9 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
     public void setExternalGradebookLogic(
             ExternalGradebookLogic externalGradebookLogic) {
         this.externalGradebookLogic = externalGradebookLogic;
+    }
+    
+    public void setExternalLogic(ExternalLogic externalLogic) {
+        this.externalLogic = externalLogic;
     }
 }

@@ -526,13 +526,19 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
        try {
            List<Assignment2> assignList = new ArrayList<Assignment2>();
            assignList.add(testData.a1);
-           permissionLogic.getViewableStudentsForUserForAssignments(null, assignList);
+           permissionLogic.getViewableStudentsForUserForAssignments(null, AssignmentTestDataLoad.CONTEXT_ID, assignList);
            fail("did not catch null assignment passed to getViewableStudentsForUserForAssignments");
        } catch(IllegalArgumentException iae) {}
        
+       // try a null contextId
+       try {
+           permissionLogic.getViewableStudentsForUserForAssignments(AssignmentTestDataLoad.TA_UID, null, new ArrayList<Assignment2>());
+           fail("Did not catch null contextId passed to getViewableStudentsForUserForAssignments");
+       } catch (IllegalArgumentException iae) {}
+       
        // try a null assignment list - should return an empty map
        Map<Assignment2, List<String>> assignmentToStudentListMap = 
-           permissionLogic.getViewableStudentsForUserForAssignments(AssignmentTestDataLoad.STUDENT1_UID, null);
+           permissionLogic.getViewableStudentsForUserForAssignments(AssignmentTestDataLoad.STUDENT1_UID, AssignmentTestDataLoad.CONTEXT_ID, null);
        
        assertEquals(0, assignmentToStudentListMap.size());
        
@@ -542,7 +548,7 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
        assignList.add(testData.a2);
        assignList.add(testData.a3);
        assignList.add(testData.a4);
-       assignmentToStudentListMap = permissionLogic.getViewableStudentsForUserForAssignments(AssignmentTestDataLoad.STUDENT1_UID, assignList);
+       assignmentToStudentListMap = permissionLogic.getViewableStudentsForUserForAssignments(AssignmentTestDataLoad.STUDENT1_UID, AssignmentTestDataLoad.CONTEXT_ID, assignList);
        assertEquals(4, assignmentToStudentListMap.size());
        for (Map.Entry<Assignment2, List<String>> entry : assignmentToStudentListMap.entrySet()) {
            Assignment2 assign = entry.getKey();
@@ -565,7 +571,7 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
        // a1 is restricted to groups, so will return all students in those groups. a2 is not restricted
        // a3 (graded) is not restricted, so will return all students
        // a4 (graded) is restricted to group 3
-       assignmentToStudentListMap = permissionLogic.getViewableStudentsForUserForAssignments(AssignmentTestDataLoad.INSTRUCTOR_UID, assignList);
+       assignmentToStudentListMap = permissionLogic.getViewableStudentsForUserForAssignments(AssignmentTestDataLoad.INSTRUCTOR_UID, AssignmentTestDataLoad.CONTEXT_ID, assignList);
        assertEquals(4, assignmentToStudentListMap.size());
        for (Map.Entry<Assignment2, List<String>> entry : assignmentToStudentListMap.entrySet()) {
            Assignment2 assign = entry.getKey();
@@ -586,7 +592,7 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
        // the ta should have restrictions on a1
        // should only get student 1 b/c may only see students in his/her group
        // should still get 1 for a2
-       assignmentToStudentListMap = permissionLogic.getViewableStudentsForUserForAssignments(AssignmentTestDataLoad.TA_UID, assignList);
+       assignmentToStudentListMap = permissionLogic.getViewableStudentsForUserForAssignments(AssignmentTestDataLoad.TA_UID, AssignmentTestDataLoad.CONTEXT_ID, assignList);
        assertEquals(4, assignmentToStudentListMap.size());
        for (Map.Entry<Assignment2, List<String>> entry : assignmentToStudentListMap.entrySet()) {
            Assignment2 assign = entry.getKey();
@@ -608,7 +614,7 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
        AssignmentGroup groupFora2 = new AssignmentGroup(testData.a2, AssignmentTestDataLoad.GROUP3_NAME);
        dao.save(groupFora2);
        // shouldn't get any student back now for a2
-       assignmentToStudentListMap = permissionLogic.getViewableStudentsForUserForAssignments(AssignmentTestDataLoad.TA_UID, assignList);
+       assignmentToStudentListMap = permissionLogic.getViewableStudentsForUserForAssignments(AssignmentTestDataLoad.TA_UID, AssignmentTestDataLoad.CONTEXT_ID, assignList);
        assertEquals(4, assignmentToStudentListMap.size());
        for (Map.Entry<Assignment2, List<String>> entry : assignmentToStudentListMap.entrySet()) {
            Assignment2 assign = entry.getKey();
@@ -695,23 +701,19 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
    }
    
    public void testIsUserAbleToMakeSubmissionForAssignment() {
-	   // try passing a null contextId
-	   try {
-		   permissionLogic.isUserAbleToMakeSubmissionForAssignment(null, new Assignment2());
-		   fail("did not catch null contextId passed to isUserAbleToMakeSubmissionForAssignment");
-	   } catch (IllegalArgumentException iae) {}
 	   
 	   // try passing a null assignment
 	   try {
-		   permissionLogic.isUserAbleToMakeSubmissionForAssignment(AssignmentTestDataLoad.CONTEXT_ID, null);
+		   permissionLogic.isUserAbleToMakeSubmissionForAssignment(null);
 		   fail("did not catch null assignment passed to isUserAbleToMakeSubmissionForAssignment");
 	   } catch (IllegalArgumentException iae) {}
 	   
 	   // try passing an empty assignment
 	   try {
-		   permissionLogic.isUserAbleToMakeSubmissionForAssignment(AssignmentTestDataLoad.CONTEXT_ID, new Assignment2());
+		   permissionLogic.isUserAbleToMakeSubmissionForAssignment(new Assignment2());
 		   fail("did not catch null fields assoc with assignment passed to isUserAbleToMakeSubmissionForAssignment");
 	   } catch (IllegalArgumentException iae) {}
+
 	   
 	   // TODO - we need to define "who" can submit, so will need to update the tests
 	   // currently there is no check on whether you are a student, guest, instructor, etc
@@ -719,26 +721,26 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
 	   // student 1 is a member of group 1
 	   externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT1_UID);
 	   // should be able to submit for a1, a2, a3
-	   assertTrue(permissionLogic.isUserAbleToMakeSubmissionForAssignment(AssignmentTestDataLoad.CONTEXT_ID, testData.a1));
-	   assertTrue(permissionLogic.isUserAbleToMakeSubmissionForAssignment(AssignmentTestDataLoad.CONTEXT_ID, testData.a2));
-	   assertTrue(permissionLogic.isUserAbleToMakeSubmissionForAssignment(AssignmentTestDataLoad.CONTEXT_ID, testData.a3));
-	   assertFalse(permissionLogic.isUserAbleToMakeSubmissionForAssignment(AssignmentTestDataLoad.CONTEXT_ID, testData.a4));
+	   assertTrue(permissionLogic.isUserAbleToMakeSubmissionForAssignment(testData.a1));
+	   assertTrue(permissionLogic.isUserAbleToMakeSubmissionForAssignment(testData.a2));
+	   assertTrue(permissionLogic.isUserAbleToMakeSubmissionForAssignment(testData.a3));
+	   assertFalse(permissionLogic.isUserAbleToMakeSubmissionForAssignment(testData.a4));
 	   
 	   // student 2 is a member of group 3
 	   externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT2_UID);
 	   // should be able to submit for a1, a2, a3, a4
-	   assertTrue(permissionLogic.isUserAbleToMakeSubmissionForAssignment(AssignmentTestDataLoad.CONTEXT_ID, testData.a1));
-	   assertTrue(permissionLogic.isUserAbleToMakeSubmissionForAssignment(AssignmentTestDataLoad.CONTEXT_ID, testData.a2));
-	   assertTrue(permissionLogic.isUserAbleToMakeSubmissionForAssignment(AssignmentTestDataLoad.CONTEXT_ID, testData.a3));
-	   assertTrue(permissionLogic.isUserAbleToMakeSubmissionForAssignment(AssignmentTestDataLoad.CONTEXT_ID, testData.a4));
+	   assertTrue(permissionLogic.isUserAbleToMakeSubmissionForAssignment(testData.a1));
+	   assertTrue(permissionLogic.isUserAbleToMakeSubmissionForAssignment(testData.a2));
+	   assertTrue(permissionLogic.isUserAbleToMakeSubmissionForAssignment(testData.a3));
+	   assertTrue(permissionLogic.isUserAbleToMakeSubmissionForAssignment(testData.a4));
 	   
 	   // student 3 is not a member of any groups
 	   externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT3_UID);
 	   // should only be able to submit to 2,3
-	   assertFalse(permissionLogic.isUserAbleToMakeSubmissionForAssignment(AssignmentTestDataLoad.CONTEXT_ID, testData.a1));
-	   assertTrue(permissionLogic.isUserAbleToMakeSubmissionForAssignment(AssignmentTestDataLoad.CONTEXT_ID, testData.a2));
-	   assertTrue(permissionLogic.isUserAbleToMakeSubmissionForAssignment(AssignmentTestDataLoad.CONTEXT_ID, testData.a3));
-	   assertFalse(permissionLogic.isUserAbleToMakeSubmissionForAssignment(AssignmentTestDataLoad.CONTEXT_ID, testData.a4));
+	   assertFalse(permissionLogic.isUserAbleToMakeSubmissionForAssignment(testData.a1));
+	   assertTrue(permissionLogic.isUserAbleToMakeSubmissionForAssignment(testData.a2));
+	   assertTrue(permissionLogic.isUserAbleToMakeSubmissionForAssignment(testData.a3));
+	   assertFalse(permissionLogic.isUserAbleToMakeSubmissionForAssignment(testData.a4));
    }
    
    public void testIsUserAllowedToReleaseFeedbackForAssignment() {

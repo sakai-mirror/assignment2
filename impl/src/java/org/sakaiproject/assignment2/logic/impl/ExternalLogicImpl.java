@@ -291,16 +291,16 @@ public class ExternalLogicImpl implements ExternalLogic {
     	return studentsInGroup;
     }
     
-    public String getUrlForGradebookItemHelper(Long gradeableObjectId, String returnViewId) {
+    public String getUrlForGradebookItemHelper(Long gradeableObjectId, String returnViewId, String contextId) {
     	//TODO URL encode this so I can put it as a url parameter
-    	String url = "/direct/gradebook/_/gradebookItem/" + getCurrentContextId();
+    	String url = "/direct/gradebook/_/gradebookItem/" + contextId;
     	String finishedURL = getAssignmentViewUrl(returnViewId);
     	String getParams = "?TB_iframe=true&width=700&height=415&KeepThis=true&finishURL=" + finishedURL;
 	      
     	return url + "/" + (gradeableObjectId != null ? gradeableObjectId : "") + getParams;
     }
     
-    public String getUrlForGradebookItemHelper(Long gradeableObjectId, String gradebookItemName, String returnViewId) {
+    public String getUrlForGradebookItemHelper(Long gradeableObjectId, String gradebookItemName, String returnViewId, String contextId) {
         // encode the params
         try {
             gradebookItemName = URLEncoder.encode(gradebookItemName, URL_ENCODING);
@@ -308,14 +308,14 @@ public class ExternalLogicImpl implements ExternalLogic {
             throw new IllegalStateException("Invalid character encoding specified: " + URL_ENCODING);
         }
         
-        String url = "/direct/gradebook/_/gradebookItem/" + getCurrentContextId();
+        String url = "/direct/gradebook/_/gradebookItem/" + contextId;
         String finishedURL = getAssignmentViewUrl(returnViewId);
         String getParams = "?TB_iframe=true&width=700&height=415&KeepThis=true&finishURL=" + finishedURL + "&name=" + gradebookItemName;
           
         return url + "/" + (gradeableObjectId != null ? gradeableObjectId : "") + getParams;
     }
     
-    public String getUrlForGradeGradebookItemHelper(Long gradeableObjectId, String userId, String returnViewId) {
+    public String getUrlForGradeGradebookItemHelper(Long gradeableObjectId, String userId, String returnViewId, String contextId) {
         // encode the params
         try {
             userId = URLEncoder.encode(userId, URL_ENCODING);
@@ -323,7 +323,7 @@ public class ExternalLogicImpl implements ExternalLogic {
             throw new IllegalStateException("Invalid character encoding specified: " + URL_ENCODING);
         }
         
-    	String url = "/direct/gradebook/_/gradeGradebookItem/" + getCurrentContextId() +
+    	String url = "/direct/gradebook/_/gradeGradebookItem/" + contextId +
     	"/" + gradeableObjectId + "/" + userId; 
     	String finishedURL = getAssignmentViewUrl(returnViewId);
     	String getParams = "?TB_iframe=true&width=700&height=380&KeepThis=true&finishURL=" + finishedURL;

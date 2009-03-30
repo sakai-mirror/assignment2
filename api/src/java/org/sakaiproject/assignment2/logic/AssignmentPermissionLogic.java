@@ -111,11 +111,12 @@ public interface AssignmentPermissionLogic {
 	/**
 	 * 
 	 * @param userId
+	 * @param contextId
 	 * @param assignmentList
 	 * @return a map of Assignment2 object to a list of student uids of the students
 	 * this user is allowed to view for that assignment
 	 */
-	public Map<Assignment2, List<String>> getViewableStudentsForUserForAssignments(String userId, List<Assignment2> assignmentList);
+	public Map<Assignment2, List<String>> getViewableStudentsForUserForAssignments(String userId, String contextId, List<Assignment2> assignmentList);
 	
 	/**
 	 * @param userId
@@ -128,13 +129,12 @@ public interface AssignmentPermissionLogic {
 	
 	/**
 	 * 
-	 * @param contextId
 	 * @param assignment
 	 * @return true if the current user has permission to make a submission for the
 	 * given assignment. only answers permission question. does not check to see
 	 * if assignment is open, if student already submitted, etc
 	 */
-	public boolean isUserAbleToMakeSubmissionForAssignment(String contextId, Assignment2 assignment);
+	public boolean isUserAbleToMakeSubmissionForAssignment(Assignment2 assignment);
 	
 	/**
 	 * 

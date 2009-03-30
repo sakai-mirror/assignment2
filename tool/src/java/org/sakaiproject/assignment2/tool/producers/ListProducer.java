@@ -110,10 +110,11 @@ public class ListProducer implements ViewComponentProducer, NavigationCaseReport
 
         DateFormat df = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, locale);
         //Edit Permission
-        Boolean edit_perm = permissionLogic.isCurrentUserAbleToEditAssignments(externalLogic.getCurrentContextId());
+        String currContextId = externalLogic.getCurrentContextId();
+        Boolean edit_perm = permissionLogic.isCurrentUserAbleToEditAssignments(currContextId);
         String currUserId = externalLogic.getCurrentUserId();
 
-        List<Assignment2> entries = assignmentLogic.getViewableAssignments();
+        List<Assignment2> entries = assignmentLogic.getViewableAssignments(currContextId);
 
         renderPageTop(tofill, edit_perm);
 
@@ -179,7 +180,7 @@ public class ListProducer implements ViewComponentProducer, NavigationCaseReport
         // get the viewable students for all of the assignments here to be
         // more efficient
         Map<Assignment2, List<String>> assignmentViewableStudentsMap = 
-            permissionLogic.getViewableStudentsForUserForAssignments(currUserId, entries);
+            permissionLogic.getViewableStudentsForUserForAssignments(currUserId, currContextId, entries);
 
         for (Assignment2 assignment : entries) {
             UIBranchContainer row = UIBranchContainer.make(tofill, "assignment-row:");

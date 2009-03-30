@@ -134,7 +134,7 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
     			allowed = isUserAbleToViewSubmissionForUngradedAssignment(studentId, assignment);
     		} else {
     			if (assignment.getGradebookItemId() != null) {
-    				allowed = gradebookLogic.isCurrentUserAbleToGradeStudentForItem(externalLogic.getCurrentContextId(), 
+    				allowed = gradebookLogic.isCurrentUserAbleToGradeStudentForItem(assignment.getContextId(), 
     						studentId, assignment.getGradebookItemId());
     			}
     		}
@@ -165,9 +165,8 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
     	if (gradebookLogic.isCurrentUserAbleToGradeAll(assignment.getContextId())) {
     		viewable = true;
     	} else if (gradebookLogic.isCurrentUserAbleToGrade(assignment.getContextId())) {
-    		String currContextId = externalLogic.getCurrentContextId();
-    		List<String> currentUserMemberships = externalLogic.getUserMembershipGroupIdList(externalLogic.getCurrentUserId(), currContextId);
-    		List<String> studentMemberships = externalLogic.getUserMembershipGroupIdList(studentId, currContextId);
+    		List<String> currentUserMemberships = externalLogic.getUserMembershipGroupIdList(externalLogic.getCurrentUserId(), assignment.getContextId());
+    		List<String> studentMemberships = externalLogic.getUserMembershipGroupIdList(studentId, assignment.getContextId());
     		if (userMembershipsOverlap(currentUserMemberships, studentMemberships)) {
     			viewable = true;
     		}
@@ -273,13 +272,15 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
 		return instructorView;
 	}
 	
-	public boolean isUserAbleToMakeSubmissionForAssignment(String contextId, Assignment2 assignment) {
-		if (contextId == null || assignment == null) {
-			throw new IllegalArgumentException("null contextId or assignment passed to isUserAbleToMakeSubmission");
+	public boolean isUserAbleToMakeSubmissionForAssignment(Assignment2 assignment) {
+		if (assignment == null) {
+			throw new IllegalArgumentException("null assignment passed to isUserAbleToMakeSubmission");
 		}
 		
-		if (assignment.getId() == null) {
-			throw new IllegalArgumentException("null data in not-null fields for assignment passed to isUserAbleToMakeSubmission");
+		if (assignment.getId() == null || assignment.getContextId() == null) {
+			throw new IllegalArgumentException("null data in not-null fields for " +
+					"assignment passed to isUserAbleToMakeSubmission: assignment.getId: " + 
+					assignment.getId() + " contextId: " + assignment.getContextId());
 		} 
 		
 		// TODO - how do we handle certain roles that shouldn't be able to submit?
@@ -291,17 +292,18 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
 			userAbleToSubmit = true;
 		} else {
 			// we must obey the gradebook permissions
-			if (gradebookLogic.isCurrentUserAStudentInGb(contextId)) {
+			if (gradebookLogic.isCurrentUserAStudentInGb(assignment.getContextId())) {
 				userAbleToSubmit = true;
 			}
 		}
 		
 		// check to make sure any group restrictions have been upheld
 		if (userAbleToSubmit) {
+		    String currUserId = externalLogic.getCurrentUserId();
 			List<AssignmentGroup> assignGroupRestrictions = 
 				dao.findByProperties(AssignmentGroup.class, new String[] {"assignment"}, new Object[] {assignment});
 			
-			List<String> groupMembershipIds = externalLogic.getUserMembershipGroupIdList(externalLogic.getCurrentUserId(), contextId);
+			List<String> groupMembershipIds = externalLogic.getUserMembershipGroupIdList(currUserId, assignment.getContextId());
 			if (assignGroupRestrictions != null && !assignGroupRestrictions.isEmpty()) {
 				if (!isUserAMemberOfARestrictedGroup(groupMembershipIds, assignGroupRestrictions)) {
 					userAbleToSubmit = false;
@@ -312,14 +314,18 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
 		return userAbleToSubmit;
 	}
 	
-	public Map<Assignment2, List<String>> getViewableStudentsForUserForAssignments(String userId, List<Assignment2> assignmentList) {
+	public Map<Assignment2, List<String>> getViewableStudentsForUserForAssignments(String userId, String contextId, List<Assignment2> assignmentList) {
 	    if (userId == null) {
 	        throw new IllegalArgumentException("Null userId passed to getViewableStudentsForUserForAssignments");
 	    }
 	    
+	    if (contextId == null) {
+	        throw new IllegalArgumentException("Null contextId passed to getViewableStudentsForUserForAssignments");
+	    }
+	    
 	    Map<Assignment2, List<String>> assignToViewableStudentsMap = new HashMap<Assignment2, List<String>>();
 	    if (assignmentList != null) {
-	        assignToViewableStudentsMap = getAvailableStudentsForUserForAssignments(userId, assignmentList, AssignmentConstants.VIEW);
+	        assignToViewableStudentsMap = getAvailableStudentsForUserForAssignments(userId, assignmentList, AssignmentConstants.VIEW, contextId);
 	    }
 	    
 	    return assignToViewableStudentsMap;
@@ -334,7 +340,7 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
 		List<Assignment2> assignmentList = new ArrayList<Assignment2>();
 		assignmentList.add(assignment);
 
-		Map<Assignment2, List<String>> assignIdAvailStudentsMap = getAvailableStudentsForUserForAssignments(userId, assignmentList, AssignmentConstants.VIEW);
+		Map<Assignment2, List<String>> assignIdAvailStudentsMap = getAvailableStudentsForUserForAssignments(userId, assignmentList, AssignmentConstants.VIEW, assignment.getContextId());
 
 		List<String> availStudents = assignIdAvailStudentsMap.get(assignment);
 
@@ -351,7 +357,7 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
 		List<Assignment2> assignmentList = new ArrayList<Assignment2>();
 		assignmentList.add(assignment);
 		
-		Map<Assignment2, List<String>> assignIdAvailStudentsMap = getAvailableStudentsForUserForAssignments(userId, assignmentList, AssignmentConstants.GRADE);
+		Map<Assignment2, List<String>> assignIdAvailStudentsMap = getAvailableStudentsForUserForAssignments(userId, assignmentList, AssignmentConstants.GRADE, assignment.getContextId());
 		List<String> availStudents = assignIdAvailStudentsMap.get(assignment);
 		
 		return availStudents;
@@ -363,14 +369,19 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
 	 * @param assignmentList
 	 * @param gradeOrView - indicate whether you want all the students a user may view or all that the user may grade.
 	 * use {@link AssignmentConstants.GRADE} or {@link AssignmentConstants.VIEW}
+	 * @param contextId 
 	 * @return a map of the Assignment2 object to a list of student uids that
 	 * the given user is allowed to view or grade (based upon the gradeOrView param).
 	 * if the user is not allowed to view any students for an assignment, the assignment
 	 * will be returned with an empty list
 	 */
-	private Map<Assignment2, List<String>> getAvailableStudentsForUserForAssignments(String userId, List<Assignment2> assignmentList, String gradeOrView) {
+	private Map<Assignment2, List<String>> getAvailableStudentsForUserForAssignments(String userId, List<Assignment2> assignmentList, String gradeOrView, String contextId) {
 	    if (userId == null) {
 	        throw new IllegalArgumentException("null userId passed to getAvailableStudentsForUserForItem. userId: " + userId);
+	    }
+	    
+	    if (contextId == null) {
+	        throw new IllegalArgumentException("null contextId passed to " + this);
 	    }
 
 	    if (gradeOrView == null || (!gradeOrView.equals(AssignmentConstants.GRADE) && !gradeOrView.equals(AssignmentConstants.VIEW))) {
@@ -379,7 +390,6 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
 
 	    Map<Assignment2, List<String>> assignToAvailStudentsMap = new HashMap<Assignment2, List<String>>();
 	    
-        String contextId = externalLogic.getCurrentContextId();
         List<String> allStudentsInSite = externalLogic.getStudentsInSite(contextId);
         boolean userAbleToGradeAll = gradebookLogic.isUserAbleToGradeAll(contextId, userId);
         boolean userAbleToGrade = gradebookLogic.isUserAbleToGrade(contextId, userId);

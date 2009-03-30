@@ -27,6 +27,7 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
+import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 
 /**
@@ -47,6 +48,11 @@ public class ReorderAssignmentsCommand {
         this.assignmentLogic = assignmentLogic;
     }
     
+    private ExternalLogic externalLogic;
+    public void setExternalLogic(ExternalLogic externalLogic) {
+        this.externalLogic = externalLogic;
+    }
+    
     // Property
     private String orderedAssignIds;
     /**
@@ -65,6 +71,8 @@ public class ReorderAssignmentsCommand {
         if (orderedAssignIds != null) {
             String[] stringAssignIds = orderedAssignIds.split(",");
             try {
+                // get the contextId
+                String contextId = externalLogic.getCurrentContextId();
                 // convert the strings to longs
                 List<Long> longAssignmentIds = new ArrayList<Long>();
                 for (int i=0; i < stringAssignIds.length; i++){
@@ -73,7 +81,7 @@ public class ReorderAssignmentsCommand {
                         longAssignmentIds.add(Long.valueOf(stringAssignIds[i]));
                     }
                 }
-                assignmentLogic.reorderAssignments(longAssignmentIds);
+                assignmentLogic.reorderAssignments(longAssignmentIds, contextId);
 
                 if (log.isDebugEnabled()) log.debug("Assignments reordered via ReorderAssignmentsCommand");
             } catch (NumberFormatException nfe) {

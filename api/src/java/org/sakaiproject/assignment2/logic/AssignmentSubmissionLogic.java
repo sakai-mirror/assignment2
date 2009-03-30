@@ -346,6 +346,7 @@ public interface AssignmentSubmissionLogic {
 	
 	/**
 	 * 
+	 * @param contextId 
 	 * @return Non-null list.  The AssignmentSubmissions for the current user
 	 * for all of the user's viewable assignments in the current site.
 	 * If no submission exists yet for an assignment that is available to the user, 
@@ -360,7 +361,7 @@ public interface AssignmentSubmissionLogic {
 	 * @throws SecurityException - if the current user is not allowed to make
 	 * submissions in the current site (ie non-students)
 	 */
-	public List<AssignmentSubmission> getSubmissionsForCurrentUser();
+	public List<AssignmentSubmission> getSubmissionsForCurrentUser(String contextId);
 	
 	/**
 	 * Will set the resubmission options for the given students and assignment. These

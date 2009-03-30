@@ -67,8 +67,9 @@ public class ListReorderProducer implements ViewComponentProducer, NavigationCas
     	//use a date which is related to the current users locale
     	DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, locale);
     	
+    	String currContextId = externalLogic.getCurrentContextId();
     	// getViewableAssignments won't return a null object; empty list if nothing found
-        List<Assignment2> entries = assignmentLogic.getViewableAssignments();
+        List<Assignment2> entries = assignmentLogic.getViewableAssignments(currContextId);
         
         UIMessage.make(tofill, "page-title", "assignment2.assignment_list-reorder.title");
         UIMessage.make(tofill, "heading", "assignment2.list.heading");

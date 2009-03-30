@@ -400,7 +400,7 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
                 UIMessage.make("assignment2.assignment_add.gradebook_item_new_helper"),
                 urlWithNameParam);
         // this link will be hidden and used as a base for adding the user-entered title as a param via javascript
-        String urlWithoutNameParam = externalLogic.getUrlForGradebookItemHelper(null, FinishedHelperProducer.VIEWID);
+        String urlWithoutNameParam = externalLogic.getUrlForGradebookItemHelper(null, FinishedHelperProducer.VIEWID, currentContextId);
         UILink.make(form, "gradebook_url_without_name", urlWithoutNameParam);
 
 

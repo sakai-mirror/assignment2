@@ -204,14 +204,13 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		
 		Date currentTime = new Date();
 		String currentUserId = externalLogic.getCurrentUserId();
-		String contextId = externalLogic.getCurrentContextId();
 		
 		if (!currentUserId.equals(userId)) {
 			throw new SecurityException("User " + currentUserId + " attempted to save a submission for " +
 					userId + ". You may only make a submission for yourself!");
 		}
 		
-		if (!permissionLogic.isUserAbleToMakeSubmissionForAssignment(contextId, assignment)) {
+		if (!permissionLogic.isUserAbleToMakeSubmissionForAssignment(assignment)) {
 			log.warn("User " + currentUserId + " attempted to make a submission " +
 					"without authorization for assignment " + assignment.getId());
 			throw new SecurityException("User " + currentUserId + " attempted to make a submission " +
@@ -959,17 +958,16 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			throw new IllegalArgumentException("null assignmentId passed to releaseAllFeedbackForAssignment");
 		}
 
-		String contextId = externalLogic.getCurrentContextId();
 		String currUserId = externalLogic.getCurrentUserId();
 		Date now = new Date();
+	      
+        Assignment2 assignment = (Assignment2) dao.findById(Assignment2.class, assignmentId);
+        if (assignment == null) {
+            throw new AssignmentNotFoundException("Assignment with id " + assignmentId + " does not exist");
+        }
 		
-		if (!gradebookLogic.isCurrentUserAbleToGrade(contextId)) {
+		if (!gradebookLogic.isCurrentUserAbleToGrade(assignment.getContextId())) {
 			throw new SecurityException("User attempted to release feedback for assignment " + assignmentId + " without authorization");
-		}
-		
-		Assignment2 assignment = (Assignment2) dao.findById(Assignment2.class, assignmentId);
-		if (assignment == null) {
-			throw new AssignmentNotFoundException("Assignment with id " + assignmentId + " does not exist");
 		}
 		
 		List<String> gradableStudents = permissionLogic.getGradableStudentsForUserForItem(currUserId, assignment);
@@ -1485,17 +1483,20 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 	    }
 	}
 	
-	public List<AssignmentSubmission> getSubmissionsForCurrentUser() {
+	public List<AssignmentSubmission> getSubmissionsForCurrentUser(String contextId) {
+	    if (contextId == null) {
+	        throw new IllegalArgumentException("Null contextId passed to " + this);
+	    }
+	    
 		List<AssignmentSubmission> userSubmissions = new ArrayList<AssignmentSubmission>();
 		
 		String currentUserId = externalLogic.getCurrentUserId();
-		String currentContextId = externalLogic.getCurrentContextId();
 		
-		if (!permissionLogic.isCurrentUserAbleToSubmit(currentContextId)) {
+		if (!permissionLogic.isCurrentUserAbleToSubmit(contextId)) {
 			throw new SecurityException("Attempt to retrieve submissions for a non-student user");
 		}
 
-		List<Assignment2> viewableAssignments = assignmentLogic.getViewableAssignments();
+		List<Assignment2> viewableAssignments = assignmentLogic.getViewableAssignments(contextId);
 
 		if (viewableAssignments != null) {
 			Set<AssignmentSubmission> existingSubmissions = dao.getSubmissionsForStudentWithVersionHistoryAndAttach(currentUserId, viewableAssignments);
@@ -1528,7 +1529,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 		
 		// now let's add in any submissions that exist for assignments that were
 		// deleted
-		Set<AssignmentSubmission> subForRemovedAssigns = dao.getExistingSubmissionsForRemovedAssignments(currentUserId, currentContextId);
+		Set<AssignmentSubmission> subForRemovedAssigns = dao.getExistingSubmissionsForRemovedAssignments(currentUserId, contextId);
 		Set<AssignmentSubmission> removedSubToDisplay = new HashSet<AssignmentSubmission>();
 		if (subForRemovedAssigns != null) {
 		    for (AssignmentSubmission submission : subForRemovedAssigns) {

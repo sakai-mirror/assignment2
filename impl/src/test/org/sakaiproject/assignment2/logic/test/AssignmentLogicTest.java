@@ -218,6 +218,11 @@ public class AssignmentLogicTest extends Assignment2TestBase {
 		// and group memberships
 		// TODO add scenario with grader permissions for TA
 
+	    try {
+	        assignmentLogic.getViewableAssignments(null);
+	        fail("Did not catch null contextId passed to getViewableAssignments");
+	    } catch (IllegalArgumentException iae) {}
+	    
 		// let's make assignment3 and assignment4 graded
 		testData.a3.setGraded(true);
 		testData.a3.setGradebookItemId(AssignmentTestDataLoad.GB_ITEM1_ID);
@@ -234,7 +239,7 @@ public class AssignmentLogicTest extends Assignment2TestBase {
 
 		// let's start with instructor. he/she should get all of the assignments
 		externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
-		List<Assignment2> assignList = assignmentLogic.getViewableAssignments();
+		List<Assignment2> assignList = assignmentLogic.getViewableAssignments(AssignmentTestDataLoad.CONTEXT_ID);
 		assertNotNull(assignList);
 		assertEquals(4, assignList.size());
 
@@ -249,7 +254,7 @@ public class AssignmentLogicTest extends Assignment2TestBase {
 
 		externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
 		// should return assignment 1, 2, 3, 4
-		assignList = assignmentLogic.getViewableAssignments();
+		assignList = assignmentLogic.getViewableAssignments(AssignmentTestDataLoad.CONTEXT_ID);
 		assertNotNull(assignList);
 		assertEquals(3, assignList.size());
 		// let's make sure that these are the right assign
@@ -265,7 +270,7 @@ public class AssignmentLogicTest extends Assignment2TestBase {
 		// member of group 1
 		externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT1_UID);
 		// should return assignment 1, 2, 3
-		assignList = assignmentLogic.getViewableAssignments();
+		assignList = assignmentLogic.getViewableAssignments(AssignmentTestDataLoad.CONTEXT_ID);
 
 		assertNotNull(assignList);
 		assertEquals(3, assignList.size());
@@ -283,7 +288,7 @@ public class AssignmentLogicTest extends Assignment2TestBase {
 		// member of group 3
 		externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT2_UID);
 		// should return 1, 2, 3, 4
-		assignList = assignmentLogic.getViewableAssignments();
+		assignList = assignmentLogic.getViewableAssignments(AssignmentTestDataLoad.CONTEXT_ID);
 		assertNotNull(assignList);
 		assertTrue(assignList.size() == 4);
 		// let's make sure that these are the right assign
@@ -300,7 +305,7 @@ public class AssignmentLogicTest extends Assignment2TestBase {
 		// not a member of any groups
 		externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT3_UID);
 		// should return 2 and 3
-		assignList = assignmentLogic.getViewableAssignments();
+		assignList = assignmentLogic.getViewableAssignments(AssignmentTestDataLoad.CONTEXT_ID);
 		assertNotNull(assignList);
 		assertTrue(assignList.size() == 2);
 		// let's make sure that these are the right assign
@@ -320,14 +325,20 @@ public class AssignmentLogicTest extends Assignment2TestBase {
 	    
 	    // try to pass a null list
 	    try {
-	        assignmentLogic.reorderAssignments(null);
+	        assignmentLogic.reorderAssignments(null, AssignmentTestDataLoad.CONTEXT_ID);
 	        fail("did not catch null list passed to reorderAssignments");
+	    } catch (IllegalArgumentException iae) {}
+
+	    // try to pass a null contextId
+	    try {
+	        assignmentLogic.reorderAssignments(new ArrayList<Long>(), null);
+	        fail("Did not catch null contextId passed to reoderAssignments");
 	    } catch (IllegalArgumentException iae) {}
 	    
 	    // try to reorder assign as TA
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
         try {
-            assignmentLogic.reorderAssignments(new ArrayList<Long>());
+            assignmentLogic.reorderAssignments(new ArrayList<Long>(), AssignmentTestDataLoad.CONTEXT_ID);
             fail("Did not catch user trying to reorder assignments w/o permission!");
         } catch (SecurityException se){}
         
@@ -341,7 +352,7 @@ public class AssignmentLogicTest extends Assignment2TestBase {
         
 		// try passing a list w/ a diff # of values than # assign in site
 		try {
-			assignmentLogic.reorderAssignments(assignIdList);
+			assignmentLogic.reorderAssignments(assignIdList, AssignmentTestDataLoad.CONTEXT_ID);
 			fail("Did not catch list w/ 3 passed to setAssignmentSortIndexes when " +
 					"there are 4 assign in site");
 		} catch (IllegalArgumentException iae) {}
@@ -350,7 +361,7 @@ public class AssignmentLogicTest extends Assignment2TestBase {
 		// # assign in site
 		assignIdList.add(1L);
 		try {
-            assignmentLogic.reorderAssignments(assignIdList);
+            assignmentLogic.reorderAssignments(assignIdList, AssignmentTestDataLoad.CONTEXT_ID);
             fail("Did not catch list w/ 3 distinct ids (list had a duplicate) passed " +
             		"to setAssignmentSortIndexes when there are 4 assign in site");
         } catch (IllegalArgumentException iae) {}
@@ -362,7 +373,7 @@ public class AssignmentLogicTest extends Assignment2TestBase {
         assignIdList.add(125L);
         assignIdList.add(1L);
 		try {
-            assignmentLogic.reorderAssignments(assignIdList);
+            assignmentLogic.reorderAssignments(assignIdList, AssignmentTestDataLoad.CONTEXT_ID);
             fail("Did not catch list w/ nonexistent assignment id");
         } catch (IllegalArgumentException iae) {}
         
@@ -373,7 +384,7 @@ public class AssignmentLogicTest extends Assignment2TestBase {
         assignIdList.add(testData.a1Id);
         assignIdList.add(testData.a2Id);
         assignIdList.add(testData.a3Id);
-		assignmentLogic.reorderAssignments(assignIdList);
+		assignmentLogic.reorderAssignments(assignIdList, AssignmentTestDataLoad.CONTEXT_ID);
 		// double check that they were updated
 		List<Assignment2> allAssigns = dao.findByProperties(Assignment2.class, new String[] {"contextId","removed"}, new Object[] {AssignmentTestDataLoad.CONTEXT_ID, false});
 		for (Assignment2 assign : allAssigns) {
