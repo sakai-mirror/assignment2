@@ -292,7 +292,12 @@ public class UploadAllLogicImpl implements UploadAllLogic
             }
             
             // now let's proceed with the grade upload!
-            uploadGrades.uploadGrades(displayIdUserIdMap, assignmentId, parsedContent);
+            List<String> ungradableStudents = uploadGrades.uploadGrades(displayIdUserIdMap, assignmentId, parsedContent);
+            if (ungradableStudents != null) {
+                for (String ungradableStudent : ungradableStudents) {
+                    addToUploadInfoMap(uploadInfo, ungradableStudent, UploadInfo.NO_GRADING_PERM_FOR_STUDENT);
+                }
+            }
         }
     }
 

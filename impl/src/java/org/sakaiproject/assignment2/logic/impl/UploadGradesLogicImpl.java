@@ -103,7 +103,7 @@ public class UploadGradesLogicImpl implements UploadGradesLogic
 		String currUserId = externalLogic.getCurrentUserId();
 		
 		// parse the content into GradeInformation records
-		List<GradeInformation> gradeInfoToUpdate = retrieveGradeInfoFromContent(displayIdUserIdMap, assign.getGradebookItemId(), parsedContent);
+		Map<String, GradeInformation> gradeInfoToUpdate = retrieveGradeInfoFromContent(displayIdUserIdMap, assign.getGradebookItemId(), parsedContent);
 		
 		// let's remove any students the user is not authorized to grade from the
 		// list we send the gradebook. this will avoid a SecurityException.
@@ -112,11 +112,14 @@ public class UploadGradesLogicImpl implements UploadGradesLogic
 		List<String> studentsIgnored = new ArrayList<String>();
 		List<GradeInformation> filteredGradeInfoList = new ArrayList<GradeInformation>();
 		
-		for (GradeInformation gradeInfo : gradeInfoToUpdate) {
+		for (Map.Entry<String, GradeInformation> entry : gradeInfoToUpdate.entrySet()) {
+		    String displayId = entry.getKey();
+		    GradeInformation gradeInfo = entry.getValue();
+		    
 			if (gradableStudents.contains(gradeInfo.getStudentId())) {
 				filteredGradeInfoList.add(gradeInfo);
 			} else {
-				studentsIgnored.add(gradeInfo.getStudentId());
+				studentsIgnored.add(displayId);
 			}
 		}
 		
@@ -130,12 +133,20 @@ public class UploadGradesLogicImpl implements UploadGradesLogic
 		return studentsIgnored;
 	}
 	
-	private List<GradeInformation> retrieveGradeInfoFromContent(Map<String, String> displayIdUserIdMap, Long gradebookItemId, List<List<String>> parsedContent) {
+	/**
+	 * 
+	 * @param displayIdUserIdMap
+	 * @param gradebookItemId
+	 * @param parsedContent
+	 * @return a map of the displayId to GradeInformation object for each student extracted from
+	 * the content of the parsed file
+	 */
+	private Map<String, GradeInformation> retrieveGradeInfoFromContent(Map<String, String> displayIdUserIdMap, Long gradebookItemId, List<List<String>> parsedContent) {
 		if (gradebookItemId == null) {
 			throw new IllegalArgumentException("Null gradebookItemId passed to retrieveGradeInfoFromContent");
 		}
 		
-		List<GradeInformation> gradeInfoList = new ArrayList<GradeInformation>();
+		Map<String, GradeInformation> displayIdToGradeInfoMap = new HashMap<String, GradeInformation>();
 
 		if (parsedContent != null && !parsedContent.isEmpty()) {
 
@@ -180,15 +191,20 @@ public class UploadGradesLogicImpl implements UploadGradesLogic
 						gradeInfo.setGradebookGrade(grade);
 						gradeInfo.setGradebookComment(comments);
 	
-						gradeInfoList.add(gradeInfo);
+						displayIdToGradeInfoMap.put(displayId, gradeInfo);
 					}
 				}
 			}
 		}
 		
-		return gradeInfoList;
+		return displayIdToGradeInfoMap;
 	}
 	
+	/**
+	 * 
+	 * @param parsedContent
+	 * @return a list of all of the displayIds included in the content
+	 */
 	private List<String> getDisplayIdListFromContent(List<List<String>> parsedContent) {
 		List<String> displayIdList = new ArrayList<String>();
 		if (parsedContent != null) {
