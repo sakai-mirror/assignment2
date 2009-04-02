@@ -4,13 +4,13 @@
   <parent>
     <artifactId>master</artifactId>
     <groupId>org.sakaiproject</groupId>
-    <version>2.7.0-SNAPSHOT</version>
+    <version>2.6.0RC1-SNAPSHOT</version>
     <relativePath>../master/pom.xml</relativePath>
   </parent>
   <name>Assignment2</name>
   <groupId>org.sakaiproject</groupId>
   <artifactId>sakai-assignment2-base</artifactId>
-  <version>2.7.0-SNAPSHOT</version>
+  <version>2.6.0RC1-SNAPSHOT</version>
   <packaging>pom</packaging>
   <modules>
     <module>api</module>
@@ -30,7 +30,7 @@
 				<groupId>org.sakaiproject.assignment2
 				</groupId>
 				<artifactId>sakai-assignment2-api</artifactId>
-				<version>2.7.0-SNAPSHOT</version>
+				<version>2.6.0RC1-SNAPSHOT</version>
 				<scope>provided</scope>
 			</dependency>
 			<dependency>
@@ -38,7 +38,7 @@
 				</groupId>
 				<artifactId>sakai-assignment2-impl
 				</artifactId>
-				<version>2.7.0-SNAPSHOT</version>
+				<version>2.6.0RC1-SNAPSHOT</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
