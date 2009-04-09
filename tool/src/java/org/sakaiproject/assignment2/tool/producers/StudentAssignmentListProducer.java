@@ -39,6 +39,7 @@ import org.sakaiproject.assignment2.tool.beans.AssignmentSubmissionBean;
 import org.sakaiproject.assignment2.tool.params.AssignmentListSortViewParams;
 import org.sakaiproject.assignment2.tool.params.SimpleAssignmentViewParams;
 
+import uk.org.ponder.messageutil.MessageLocator;
 import uk.org.ponder.rsf.components.UIBoundBoolean;
 import uk.org.ponder.rsf.components.UIBranchContainer;
 import uk.org.ponder.rsf.components.UICommand;
@@ -76,6 +77,7 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
     private AssignmentSubmissionBean submissionBean;
     private ExternalGradebookLogic externalGradebookLogic;
     private ExternalLogic externalLogic;
+    private MessageLocator messageLocator;
 
     public static final String DEFAULT_SORT_DIR = AssignmentLogic.SORT_DIR_ASC;
     public static final String DEFAULT_OPPOSITE_SORT_DIR = AssignmentLogic.SORT_DIR_DESC;
@@ -99,7 +101,7 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
 
         //get paging data
         //List<Assignment2> entries = assignmentLogic.getViewableAssignments();
-        List<AssignmentSubmission> submissionEntries = submissionLogic.getSubmissionsForCurrentUser(currContextId);
+        List<AssignmentSubmission> submissionsWithHistory = submissionLogic.getSubmissionsForCurrentUser(currContextId);
 
         //Breadcrumbs
         UIMessage.make(tofill, "last_breadcrumb", "assignment2.student-assignment-list.heading");
@@ -110,7 +112,7 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
          * If there are no assignments, print out the message String, otherwise,
          * create the table element.
          */
-        if (submissionEntries.size() <= 0) {
+        if (submissionsWithHistory.size() <= 0) {
             UIMessage.make(tofill, "assignment_empty", "assignment2.student-assignment-list.assignment_empty");
             return;
         }
@@ -119,7 +121,7 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
         }
 
         //Fill out Table
-        for (AssignmentSubmission assignmentSubmission : submissionEntries){
+        for (AssignmentSubmission assignmentSubmission : submissionsWithHistory){
             UIBranchContainer row = UIBranchContainer.make(tofill, "assignment-row:");
 
             Assignment2 assignment = assignmentSubmission.getAssignment();
@@ -185,8 +187,26 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
             
             StudentAction availStudentAction = submissionBean.determineStudentAction(assignmentSubmission.getUserId(), assignment.getId());
             
-            UIInternalLink.make(row, "assignment-action-link", UIMessage.make("assignment2.student-assignment-list.action." + availStudentAction.toString().toLowerCase()),  
+            AssignmentSubmissionVersion latestSubmission = assignmentSubmission.retrieveMostRecentSubmission();
+            
+            String actionLinkText;
+            // if there is at least one submission, we display the submitted date/time for the link text
+            if (latestSubmission != null) {
+                actionLinkText = messageLocator.getMessage("assignment2.student-assignment-list.submitted_link", 
+                        df.format(latestSubmission.getSubmittedDate()));
+            } else {
+                actionLinkText = messageLocator.getMessage("assignment2.student-assignment-list.action." + availStudentAction.toString().toLowerCase());
+            }
+            
+            UIInternalLink.make(row, "assignment-action-link", actionLinkText,  
                 new SimpleAssignmentViewParams(StudentSubmitProducer.VIEW_ID, assignment.getId()));
+            
+            // add resubmit link if appropriate
+            if (availStudentAction.equals(StudentAction.VIEW_AND_RESUBMIT)) {
+                UIOutput.make(row, "resubmit-action");
+                UIInternalLink.make(row, "assignment-resubmit-link", UIMessage.make("assignment2.student-assignment-list.resubmit_link"),  
+                        new SimpleAssignmentViewParams(StudentSubmitProducer.VIEW_ID, assignment.getId()));
+            }
             
             // Due date
             if (assignment.getDueDate() != null) {
@@ -269,5 +289,9 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
     
     public void setExternalLogic(ExternalLogic externalLogic) {
         this.externalLogic = externalLogic;
+    }
+    
+    public void setMessageLocator(MessageLocator messageLocator) {
+        this.messageLocator = messageLocator;
     }
 }

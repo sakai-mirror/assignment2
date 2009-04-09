@@ -316,5 +316,27 @@ public class AssignmentSubmission {
 		sb.append(Long.toString(id));
 		return sb.toString();
 	}
+	
+	/**
+	 * *NOTE* Do not use this convenience method unless the submissionHistorySet
+	 * has been initialized on this object or you will end up with a LazyInitializationException
+	 * @return the most recently submitted version.  Ignores drafts. Returns null
+	 * if no version has been submitted yet
+	 */
+	public AssignmentSubmissionVersion retrieveMostRecentSubmission() {
+	    AssignmentSubmissionVersion lastSubmission = null;
+	    if (this.submissionHistorySet != null) {
+	        for (AssignmentSubmissionVersion version : this.submissionHistorySet) {
+	            if (version.getSubmittedDate() != null) {
+	                if (lastSubmission == null || 
+	                        version.getSubmittedDate().after(lastSubmission.getSubmittedDate())) {
+	                    lastSubmission = version;
+	                }
+	            }
+	        }
+	    }
+	    
+	    return lastSubmission;
+	}
 
 }
