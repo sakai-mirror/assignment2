@@ -139,6 +139,7 @@ public class ZipExportLogicImpl implements ZipExportLogic
         String feedbackFileName = getFeedbackFileName();
         String annotatedTextFileName = getAnnotatedTextFileName();
         String submittedTextFileName = bundle.getString("assignment2.assignment_grade_assignment.downloadall.filename_submitted_text") + ".html";
+        String topLevelFolderName = getTopLevelFolderName(assignment);
 
         if (submissionsWithHistory == null || submissionsWithHistory.isEmpty()) {
             if (log.isDebugEnabled()) log.debug("Nothing to download!!");
@@ -149,7 +150,7 @@ public class ZipExportLogicImpl implements ZipExportLogic
                 ZipOutputStream out = new ZipOutputStream(outputStream);
 
                 // create the folder structure - named after the assignment's title and site title
-                String root = getTopLevelFolderName(assignment) + Entity.SEPARATOR;
+                String root = topLevelFolderName + Entity.SEPARATOR;
 
                 if (submissionsWithHistory != null && !submissionsWithHistory.isEmpty())
                 {
@@ -204,13 +205,14 @@ public class ZipExportLogicImpl implements ZipExportLogic
                     }
                 }
                 // create the grades csv file if assign is graded
+                String gradesCsvFileName = null;
                 if (assignment.isGraded() && assignment.getGradebookItemId() != null) {
                     String gradesCSVString = getGradesAsCSVString(currUserId, assignment, userIdUserMap);
 
                     if (gradesCSVString != null && gradesCSVString.length() > 0) {
                         // create a grades.csv file and add to zip
-                        String gradesFile = escapeZipEntry(assignment.getTitle() + "-" + siteTitle, null);
-                        String fullGradesFileName =  root + gradesFile + ".csv";
+                        gradesCsvFileName = escapeZipEntry(assignment.getTitle() + "-" + siteTitle, null) + ".csv";
+                        String fullGradesFileName =  root + gradesCsvFileName;
 
                         ZipEntry gradesCSVEntry = new ZipEntry(fullGradesFileName);
                         out.putNextEntry(gradesCSVEntry);
@@ -220,6 +222,27 @@ public class ZipExportLogicImpl implements ZipExportLogic
                         out.closeEntry();
                     }
                 }
+                
+                // add the "readme" file
+                String readMeFileName = bundle.getString("assignment2.downloadall.readme.filename") + ".txt";
+                String fullReadMePath = root + readMeFileName;
+                ZipEntry readmeEntry = new ZipEntry(fullReadMePath);
+                out.putNextEntry(readmeEntry);
+                
+                // get the text of the readme from the bundle
+                String readmeText; 
+                if (assignment.isGraded()) {
+                    readmeText = bundle.getFormattedMessage("assignment2.downloadall.readme.text.graded", 
+                            new Object[] {topLevelFolderName, gradesCsvFileName, feedbackFolderName, annotatedTextFileName, feedbackFileName});
+                } else {
+                    readmeText = bundle.getFormattedMessage("assignment2.downloadall.readme.text.ungraded", 
+                            new Object[] {topLevelFolderName, feedbackFolderName, annotatedTextFileName, feedbackFileName});
+                }
+
+                byte[] readMe = readmeText.getBytes();
+                out.write(readMe);
+                readmeEntry.setSize(readMe.length);
+                out.closeEntry();
 
                 // Complete the ZIP file
                 out.finish();
