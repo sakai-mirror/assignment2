@@ -54,6 +54,7 @@ import org.sakaiproject.assignment2.model.AssignmentGroup;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.assignment2.taggable.api.AssignmentActivityProducer;
 import org.sakaiproject.exception.PermissionException;
+import org.sakaiproject.genericdao.api.search.Search;
 import org.sakaiproject.site.api.Group;
 import org.sakaiproject.taggable.api.TaggingManager;
 import org.sakaiproject.taggable.api.TaggingProvider;
@@ -863,5 +864,28 @@ public class AssignmentLogicImpl implements AssignmentLogic{
                 }
             }
         }
+	}
+
+	public String getDuplicatedAssignmentTitle(String contextId, String titleToDuplicate) {
+	    if (contextId == null || titleToDuplicate == null) {
+	        throw new IllegalArgumentException("Null contextId or titleToDuplicate passed to getDuplicatedAssignmentTitle." 
+	                + " contextId:" + contextId + " titleToDuplicate:" + titleToDuplicate);
+	    }
+	    // first, get all of the existing assignment titles
+	    Search search = new Search(new String[] {"contextId", "removed"}, new Object[] {contextId, false});
+	    List<Assignment2> allAssigns = dao.findBySearch(Assignment2.class, search);
+	    List<String> existingAssignTitles = new ArrayList<String>();
+	    if (allAssigns != null) {
+	        for (Assignment2 assign : allAssigns) {
+	            existingAssignTitles.add(assign.getTitle());
+	        }
+	    }
+
+	    String duplicatedTitle = Assignment2Utils.getVersionedString(titleToDuplicate);
+	    while (existingAssignTitles.contains(duplicatedTitle)) {
+	        duplicatedTitle = Assignment2Utils.getVersionedString(duplicatedTitle);
+	    }
+
+	    return duplicatedTitle;
 	}
 }

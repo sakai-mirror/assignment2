@@ -163,6 +163,8 @@
       <property name="errorStateManager" ref="errorStateManager" />
       <property name="statePreservationManager" ref="statePreservationManager" />
       <property name="assignmentAuthoringFlowBean" ref="AssignmentAuthoringFlowBean" />
+      <property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
+      <property name="assignment2Creator" ref="Assignment2Creator" />
    </bean>
    
    <bean class="org.sakaiproject.assignment2.tool.producers.GradeProducer">

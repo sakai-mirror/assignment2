@@ -24,6 +24,7 @@ package org.sakaiproject.assignment2.logic;
 import java.util.List;
 
 import org.sakaiproject.assignment2.exception.AssignmentNotFoundException;
+import org.sakaiproject.assignment2.logic.utils.Assignment2Utils;
 import org.sakaiproject.assignment2.model.Assignment2;
 
 
@@ -129,5 +130,20 @@ public interface AssignmentLogic {
 	 * @return a constant equivalent to the assignment's status
 	 */
 	public int getStatusForAssignment(Assignment2 assignment);
+	
+	/**
+	 * 
+	 * @param contextId
+	 * @param titleToDuplicate
+	 * @return a new title duplicated from the given titleToDuplicate for the given contextId.
+	 * The title will be the titleToDuplicate plus a number. 
+	 * For example, if the title is "Persuasive Essay", the returned title would be "Persuasive Essay 1." 
+	 * If the title "Persuasive Essay 1" already exists, try "Persuasive Essay 2", etc. 
+	 * If titleToDuplicate already ends with a space and a number, we will increment 
+	 * that number. So if we are duplicating a title "Homework 1", the duplicated title would 
+	 * be "Homework 2" (and if that exists already "Homework 3", etc).  
+	 * See {@link Assignment2Utils#getVersionedString(String)} for more info
+	 */
+	public String getDuplicatedAssignmentTitle(String contextId, String titleToDuplicate);
 
 }

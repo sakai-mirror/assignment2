@@ -33,6 +33,7 @@ import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
 public class AssignmentViewParams extends SimpleViewParameters {
 
     public Long assignmentId;
+    public Long duplicatedAssignmentId;
 
     public AssignmentViewParams() {}
 
@@ -44,8 +45,14 @@ public class AssignmentViewParams extends SimpleViewParameters {
         super(viewId);
         this.assignmentId = assignmentId;
     }
+    
+    public AssignmentViewParams(String viewId, Long assignmentId, Long duplicatedAssignmentId) {
+        super(viewId);
+        this.assignmentId = assignmentId;
+        this.duplicatedAssignmentId = duplicatedAssignmentId;
+    }
 
     public String getParseSpec() {
-        return super.getParseSpec() + ",@1:assignmentId";
+        return super.getParseSpec() + ",@1:assignmentId,duplicatedAssignmentId";
     }
 }

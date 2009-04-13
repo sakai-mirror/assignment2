@@ -21,11 +21,14 @@
 
 package org.sakaiproject.assignment2.tool.producers;
 
+import org.sakaiproject.assignment2.tool.beans.Assignment2Creator;
 import org.sakaiproject.assignment2.tool.beans.AssignmentAuthoringFlowBean;
 import org.sakaiproject.assignment2.tool.params.AssignmentViewParams;
 import org.sakaiproject.assignment2.tool.params.FilePickerHelperViewParams;
 import org.sakaiproject.assignment2.tool.producers.evolvers.AttachmentInputEvolver;
 import org.sakaiproject.assignment2.tool.producers.fragments.FragmentAssignment2SelectProducer;
+import org.sakaiproject.assignment2.exception.AssignmentNotFoundException;
+import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.GradebookItem;
@@ -94,11 +97,13 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
     private MessageLocator messageLocator;
     private ExternalLogic externalLogic;
     private ExternalGradebookLogic externalGradebookLogic;
+    private AssignmentLogic assignmentLogic;
     private Locale locale;
     //private EntityBeanLocator assignment2BeanLocator;
     private AttachmentInputEvolver attachmentInputEvolver;
     private ErrorStateManager errorstatemanager;
     private StatePreservationManager presmanager; // no, not that of OS/2
+    private Assignment2Creator assignment2Creator;
     
     // Assignment Authoring Scope Flow Bean
     private AssignmentAuthoringFlowBean assignmentAuthoringFlowBean;
@@ -138,8 +143,24 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
         String currentContextId = externalLogic.getCurrentContextId();
 
         //get Passed assignmentId to pull in for editing if any
+        Long duplicatedAssignId = params.duplicatedAssignmentId;
         Long assignmentId = params.assignmentId;
-
+        
+        // we should never have a populated assignmentId and duplicatedAssignmentId, but
+        // just in case, default to duplicated
+        if (duplicatedAssignId != null) {
+            assignmentId = null;
+            Assignment2 dupAssign = assignmentLogic.getAssignmentByIdWithAssociatedData(duplicatedAssignId);
+            if (dupAssign == null) {
+                throw new AssignmentNotFoundException("No assignment exists with id " + duplicatedAssignId);
+            }
+            
+            String newTitle = assignmentLogic.getDuplicatedAssignmentTitle(currentContextId, dupAssign.getTitle());
+            
+            // set the assignment to be this duplicated fellow
+            assignmentAuthoringFlowBean.setAssignment(assignment2Creator.createDuplicate(dupAssign, newTitle));
+        }
+        
         // use a date which is related to the current users locale
         DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, locale);
 
@@ -147,7 +168,12 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
         UIInternalLink.make(tofill, "breadcrumb", 
                 messageLocator.getMessage("assignment2.list.heading"),
                 new SimpleViewParameters(ListProducer.VIEW_ID));
-        if (params.assignmentId != null) {
+        if (params.duplicatedAssignmentId != null) {
+            // Breadcrumb
+            UIMessage.make(tofill, "last_breadcrumb", "assignment2.assignment_add.dup_heading");
+            //Heading messages
+            UIMessage.make(tofill, "page-title", "assignment2.assignment_add.title.duplicate");
+        } else if (params.assignmentId != null) {
             // Breadcrumb
             UIMessage.make(tofill, "last_breadcrumb", "assignment2.assignment_add.edit_heading");
             //Heading messages
@@ -499,5 +525,13 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
 
     public void setStatePreservationManager(StatePreservationManager presmanager) {
         this.presmanager = presmanager;
+    }
+    
+    public void setAssignmentLogic(AssignmentLogic assignmentLogic) {
+        this.assignmentLogic = assignmentLogic;
+    }
+    
+    public void setAssignment2Creator(Assignment2Creator assignment2Creator) {
+        this.assignment2Creator = assignment2Creator;
     }
 }

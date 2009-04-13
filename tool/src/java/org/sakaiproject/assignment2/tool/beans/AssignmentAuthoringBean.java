@@ -281,25 +281,4 @@ public class AssignmentAuthoringBean {
         return WorkFlowResult.INSTRUCTOR_CANCEL_ASSIGNMENT;
     }
 
-    public void createDuplicate(Long assignmentId) {
-        Assignment2Creator creator = new Assignment2Creator();
-        creator.setExternalLogic(externalLogic);
-        creator.setMessageLocator(messageLocator);
-        Assignment2 duplicate = creator.createDuplicate(logic.getAssignmentByIdWithGroupsAndAttachments(assignmentId));
-        try {
-            logic.saveAssignment(duplicate);
-
-        } catch (SecurityException e) {
-            LOG.error(e.getMessage(), e);
-            messages.addMessage(new TargettedMessage("assignment2.assignment_post.security_exception"));
-            return;
-        } catch (AnnouncementPermissionException ape) {
-            if (LOG.isDebugEnabled()) LOG.debug("Announcement could not " +
-            "be updated b/c user does not have perm in annc tool");
-            //TODO display to user?
-        }
-        messages.addMessage(new TargettedMessage("assignment2.assignment_post.duplicate",
-                new Object[] {duplicate.getTitle() }, TargettedMessage.SEVERITY_INFO));
-    }
-
 }

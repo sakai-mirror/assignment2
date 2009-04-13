@@ -197,6 +197,8 @@ public class ListProducer implements ViewComponentProducer, NavigationCaseReport
                         "asnn2listpage.removeAsnnDialog("+assignment.getId()+",jQuery(this).parents('li.row:first').get(0)); return false;"));
                 UIInternalLink.make(row, "assignment_edit",  UIMessage.make("assignment2.list.edit"), 
                         new AssignmentViewParams(AssignmentProducer.VIEW_ID, assignment.getId()));
+                UIInternalLink.make(row, "assignment_duplicate",  UIMessage.make("assignment2.list.duplicate"), 
+                        new AssignmentViewParams(AssignmentProducer.VIEW_ID, null, assignment.getId()));
                 
             }
 

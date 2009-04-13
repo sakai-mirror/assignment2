@@ -69,12 +69,10 @@ public class Assignment2Creator {
         return togo;
     }
 
-    public Assignment2 createDuplicate(Assignment2 assignment) {
+    public Assignment2 createDuplicate(Assignment2 assignment, String newTitle) {
         Assignment2 dup = new Assignment2();
 
-        String newTitle = messageLocator.getMessage("Assignment2Creator.duplicate.title", assignment.getTitle());
-
-        dup.setGradebookItemId(assignment.getGradebookItemId());
+        dup.setGradebookItemId(null);  // we want the user to select a new gb item
         dup.setContextId(assignment.getContextId());
         dup.setTitle(newTitle);
         dup.setDraft(true);
