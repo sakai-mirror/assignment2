@@ -1,5 +1,7 @@
 package org.sakaiproject.assignment2.tool.beans;
 
+import java.util.Date;
+
 import org.sakaiproject.assignment2.exception.SubmissionClosedException;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
@@ -95,8 +97,15 @@ public class StudentSubmissionBean {
             AssignmentSubmission newSubmission = submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(assignmentId, assignmentSubmission.getUserId());
 
             if (!newSubmission.getCurrentSubmissionVersion().isDraft()) {
-                messages.addMessage(new TargettedMessage("assignment2.student-submit.info.submission_submitted",
-                        new Object[] { assignment.getTitle() }, TargettedMessage.SEVERITY_INFO));
+                // add a sucess message.  the message will change depending on 
+                // if this submission is late or not
+                if (assignment.getDueDate() != null && assignment.getDueDate().before(new Date())) {
+                    messages.addMessage(new TargettedMessage("assignment2.student-submit.info.submission_submitted.late",
+                            new Object[] { assignment.getTitle() }, TargettedMessage.SEVERITY_INFO));
+                } else {
+                    messages.addMessage(new TargettedMessage("assignment2.student-submit.info.submission_submitted",
+                            new Object[] { assignment.getTitle() }, TargettedMessage.SEVERITY_INFO));
+                }
 
                 // Send out notifications
                 if (assignment.isSendSubmissionNotifications()) {                 

@@ -83,7 +83,8 @@ public class AsnnSubmissionHistoryRenderer implements BasicProducer {
             UIOutput.make(joint, "multiple-submissions");
             
             for (AssignmentSubmissionVersion version: versionHistory) {
-                // do not include draft versions in this history display
+                // do not include draft versions in this history display unless
+                // submission is closed and there were multiple submissions
                 if (!version.isDraft() || includeDraftVersion) {
                     UIBranchContainer versionDiv = UIBranchContainer.make(joint, "submission-version:");
                     if (version.isDraft()) {
@@ -92,8 +93,13 @@ public class AsnnSubmissionHistoryRenderer implements BasicProducer {
                     } else if (version.getSubmittedDate() == null) {
                         UIMessage.make(versionDiv, "header-text", "assignment2.student-submission.history.version.header.no_submission");
                     } else {
-                        UIMessage.make(versionDiv, "header-text", "assignment2.student-submission.history.version.header", 
-                                new Object[] {df.format(version.getSubmittedDate())});
+                        if (assignment.getDueDate() != null && assignment.getDueDate().before(version.getSubmittedDate())) {
+                            UIMessage.make(versionDiv, "header-text", "assignment2.student-submission.history.version.header.late", 
+                                    new Object[] {df.format(version.getSubmittedDate())});
+                        } else {
+                            UIMessage.make(versionDiv, "header-text", "assignment2.student-submission.history.version.header", 
+                                    new Object[] {df.format(version.getSubmittedDate())});
+                        }
                     }
                     boolean newfeedback = false;
                     // Make the envelope icons for feedback if necessary

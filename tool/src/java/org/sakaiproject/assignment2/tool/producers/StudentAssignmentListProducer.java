@@ -23,6 +23,7 @@ package org.sakaiproject.assignment2.tool.producers;
 
 import java.awt.Color;
 import java.text.DateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -192,8 +193,13 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
             String actionLinkText;
             // if there is at least one submission, we display the submitted date/time for the link text
             if (latestSubmission != null) {
-                actionLinkText = messageLocator.getMessage("assignment2.student-assignment-list.submitted_link", 
-                        df.format(latestSubmission.getSubmittedDate()));
+                if (assignment.getDueDate() != null && assignment.getDueDate().before(latestSubmission.getSubmittedDate())) {
+                    actionLinkText = messageLocator.getMessage("assignment2.student-assignment-list.submitted_link.late", 
+                            df.format(latestSubmission.getSubmittedDate()));
+                } else {
+                    actionLinkText = messageLocator.getMessage("assignment2.student-assignment-list.submitted_link", 
+                            df.format(latestSubmission.getSubmittedDate()));
+                }
             } else {
                 actionLinkText = messageLocator.getMessage("assignment2.student-assignment-list.action." + availStudentAction.toString().toLowerCase());
             }
@@ -211,6 +217,12 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
             // Due date
             if (assignment.getDueDate() != null) {
                 UIOutput.make(row, "assignment_row_due", df.format(assignment.getDueDate())).decorate(assnItemDecorator);
+                // if submission is open and would be late, we add a late flag
+                if (assignment.getDueDate().before(new Date()) && 
+                        (availStudentAction.equals(StudentAction.VIEW_AND_RESUBMIT) || 
+                                availStudentAction.equals(StudentAction.VIEW_AND_SUBMIT))) {
+                    UIMessage.make(row, "assignment_late", "assignment2.student-assignment-list.late").decorate(assnItemDecorator);
+                }
             } 
             else {
                 UIMessage.make(row, "assignment_row_due", "assignment2.student-assignment-list.no_due_date").decorate(assnItemDecorator);
