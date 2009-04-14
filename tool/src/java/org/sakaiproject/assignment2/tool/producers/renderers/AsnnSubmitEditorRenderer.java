@@ -313,7 +313,7 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
         if (!studentPreviewSubmission) {
             UIInternalLink.make(form, "add_submission_attachments", UIMessage.make("assignment2.student-submit.add_attachments"),
                 new FilePickerHelperViewParams(AddAttachmentHelperProducer.VIEWID, Boolean.TRUE, 
-                        Boolean.TRUE, 500, 700, asvOTPKey));
+                        Boolean.TRUE, 500, 700, asvOTPKey, true));
         }
         
         UIOutput.make(form, "no_attachments_yet", messageLocator.getMessage("assignment2.student-submit.no_attachments"));

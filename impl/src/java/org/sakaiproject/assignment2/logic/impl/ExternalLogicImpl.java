@@ -407,4 +407,14 @@ public class ExternalLogicImpl implements ExternalLogic {
     	
     	return userDisplayIdUserIdMap;
     }
+    
+    public String getMyWorkspaceSiteId(String userId) {
+        if (userId == null) {
+            throw new IllegalArgumentException("Null userId passed to getMyWorkspaceSiteId");
+        }
+        
+        String myWorkspaceId = siteService.getUserSiteId(userId);
+        
+        return myWorkspaceId;
+    }
 }

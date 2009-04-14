@@ -66,4 +66,12 @@ public interface ExternalContentLogic {
      * new attachment was created
      */
     public String copyAttachment(String attId, String contextId);
+    
+    /**
+     * 
+     * @param userId
+     * @return the collectionId for the My Workspace content associated with
+     * the given userId.  Returns null if collectionId could not be found.
+     */
+    public String getMyWorkspaceCollectionId(String userId);
 }

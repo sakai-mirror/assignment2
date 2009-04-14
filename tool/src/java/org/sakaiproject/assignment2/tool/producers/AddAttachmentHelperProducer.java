@@ -24,6 +24,8 @@ package org.sakaiproject.assignment2.tool.producers;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.sakaiproject.assignment2.logic.ExternalContentLogic;
+import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.tool.params.FilePickerHelperViewParams;
 import org.sakaiproject.content.api.FilePickerHelper;
 import org.sakaiproject.tool.api.SessionManager;
@@ -72,6 +74,8 @@ public class AddAttachmentHelperProducer implements ViewComponentProducer, ViewP
 
     private SessionManager sessionManager;
     private MessageLocator messageLocator;
+    private ExternalLogic externalLogic;
+    private ExternalContentLogic contentLogic;
 
     public void fillComponents(UIContainer tofill, ViewParameters viewparams, ComponentChecker checker) {
         FilePickerHelperViewParams params = (FilePickerHelperViewParams) viewparams;
@@ -82,6 +86,12 @@ public class AddAttachmentHelperProducer implements ViewComponentProducer, ViewP
         toolSession.setAttribute(FilePickerHelper.FILE_PICKER_TITLE_TEXT, messageLocator.getMessage("assignment2.add_attachment_helper.title"));
         toolSession.setAttribute(FilePickerHelper.FILE_PICKER_INSTRUCTION_TEXT, messageLocator.getMessage("assignment2.add_attachment_helper.instructions"));
         toolSession.setAttribute(FilePickerHelper.FILE_PICKER_MAX_ATTACHMENTS, FilePickerHelper.CARDINALITY_MULTIPLE);
+        // display the "My Workspace" resources instead of the current site's resources
+        if (params.showWorkspace != null && params.showWorkspace) {
+            String currUserId = externalLogic.getCurrentUserId();
+            String myWorkspaceCollectionId = contentLogic.getMyWorkspaceCollectionId(currUserId);
+            toolSession.setAttribute(FilePickerHelper.DEFAULT_COLLECTION_ID, myWorkspaceCollectionId);
+        }
 
         UIOutput.make(tofill, HelperViewParameters.HELPER_ID, "sakai.filepicker");
         UICommand goattach = UICommand.make(tofill, HelperViewParameters.POST_HELPER_BINDING, "#{FilePickerBean.process}");
@@ -107,5 +117,13 @@ public class AddAttachmentHelperProducer implements ViewComponentProducer, ViewP
     public void setMessageLocator(MessageLocator messageLocator)
     {
         this.messageLocator = messageLocator;
+    }
+    
+    public void setExternalLogic(ExternalLogic externalLogic) {
+        this.externalLogic = externalLogic;
+    }
+    
+    public void setExternalContentLogic(ExternalContentLogic contentLogic) {
+        this.contentLogic = contentLogic;
     }
 }

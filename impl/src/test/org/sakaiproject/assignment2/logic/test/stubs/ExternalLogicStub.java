@@ -355,4 +355,10 @@ public class ExternalLogicStub implements ExternalLogic {
         return null;
     }
 
+    public String getMyWorkspaceSiteId(String userId)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
 }

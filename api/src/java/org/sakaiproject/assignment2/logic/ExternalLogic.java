@@ -254,4 +254,11 @@ public interface ExternalLogic {
      * userId for processing
      */
     public Map<String, String> getUserDisplayIdUserIdMapForStudentsInSite(String contextId);
+    
+    /**
+     * 
+     * @param userId
+     * @return the siteId of the My Workspace associated with the given userId
+     */
+    public String getMyWorkspaceSiteId(String userId);
 }

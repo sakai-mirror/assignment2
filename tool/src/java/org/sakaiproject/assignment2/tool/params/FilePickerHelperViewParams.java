@@ -38,6 +38,11 @@ package org.sakaiproject.assignment2.tool.params;
 public class FilePickerHelperViewParams extends ThickboxHelperViewParams {
 
     public String otpkey;
+    /**
+     * true if the file picker should show the user's my workspace instead
+     * of the resources for the current site.
+     */
+    public Boolean showWorkspace;
 
     public FilePickerHelperViewParams() {}
 
@@ -50,9 +55,15 @@ public class FilePickerHelperViewParams extends ThickboxHelperViewParams {
         super(viewId, KeepThis, TB_iframe, height, width);
         this.otpkey = otpkey;
     }
+    
+    public FilePickerHelperViewParams(String viewId, Boolean KeepThis, Boolean TB_iframe, int height, int width, String otpkey, Boolean showWorkspace){
+        super(viewId, KeepThis, TB_iframe, height, width);
+        this.otpkey = otpkey;
+        this.showWorkspace = showWorkspace;
+    }
 
     public String getParseSpec() {
         // include a comma delimited list of the public properties in this class
-        return super.getParseSpec() + ",otpkey";
+        return super.getParseSpec() + ",otpkey,showWorkspace";
     }
 }
