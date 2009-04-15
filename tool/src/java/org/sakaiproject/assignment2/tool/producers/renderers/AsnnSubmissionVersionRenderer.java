@@ -52,8 +52,6 @@ public class AsnnSubmissionVersionRenderer implements BasicProducer {
      * @param asnnSubVersion
      * @param multipleVersionDisplay true if this version is being displayed in a multi-version scenario.
   	 * this will prevent unnecessary repeated headers
-     * @param singleVersionDisplay - true if being used in the context of a single
-     * version. the heading information is different for multi-version display (ie the history)
      * @return
      */
     public UIContainer fillComponents(UIContainer parent, String clientID, AssignmentSubmissionVersion asnnSubVersion, boolean multipleVersionDisplay) {
