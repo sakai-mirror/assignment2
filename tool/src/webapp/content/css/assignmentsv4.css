@@ -270,6 +270,11 @@ li .error p {
 	cursor: pointer;
 }
 
+/* styling for the "current version" indicator */
+.currentEdit {
+    font-style: italic;
+}
+
 
 /* breadcrumb navigation styles */
 .breadCrumb {

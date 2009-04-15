@@ -445,7 +445,18 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
             for (AssignmentSubmissionVersion asv : history){
     
                 UIBranchContainer loop = UIBranchContainer.make(form, "previous_submissions:");
-                UIOutput.make(loop, "previous_date", (asv.getSubmittedDate() != null ? df.format(asv.getSubmittedDate()) : ""));
+                String historyText;
+                if (asv.getSubmittedDate() != null) {
+                    historyText = df.format(asv.getSubmittedDate());
+                } else if (asv.getSubmittedVersionNumber() == AssignmentSubmissionVersion.FEEDBACK_ONLY_VERSION_NUMBER) {
+                    historyText = messageLocator.getMessage("assignment2.assignment_grade.feedback_only_version");
+                } else if (asv.isDraft()) {
+                    historyText = messageLocator.getMessage("assignment2.assignment_grade.in_progress_version");
+                } else {
+                    historyText = "";
+                }
+                
+                UIOutput.make(loop, "previous_date", historyText);
                 if (asvOTPKey.equals(asv.getId().toString())){
                     //we are editing this version
                     UIMessage.make(loop, "current_version", "assignment2.assignment_grade.current_version");

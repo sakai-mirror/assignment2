@@ -116,13 +116,23 @@
              and submission.assignment = :assignment
     		     group by submissionVersion.assignmentSubmission]]>
   	</query>
-  	
-  	  	<query name="findCurrentVersionIds">
-    <![CDATA[select max(submissionVersion.id) 
+
+<!-- returns the ids of the AssignmentSubmissionVersion with the highest id 
+	for each of the given submissions. ignores the "feedback-only" version -->
+	<query name="findLatestStudentVersionIds">
+    <![CDATA[select submissionVersion.assignmentSubmission.id, max(submissionVersion.id) 
     				 from org.sakaiproject.assignment2.model.AssignmentSubmissionVersion submissionVersion
-             where submissionVersion.assignmentSubmission in (:submissionList)
+             where submissionVersion.assignmentSubmission in (:submissionList) and
+             submissionVersion.submittedVersionNumber != 0
     		     group by submissionVersion.assignmentSubmission]]>
-  	</query>
+	</query>
+	
+	<query name="findFeedbackOnlyVersionIds">
+    <![CDATA[select submissionVersion.id 
+    				 from org.sakaiproject.assignment2.model.AssignmentSubmissionVersion submissionVersion
+             where submissionVersion.assignmentSubmission in (:submissionList) and
+             submissionVersion.submittedVersionNumber = 0]]>
+	</query>
 
   	<query name="findVersionHistoryForSubmission">
     <![CDATA[from org.sakaiproject.assignment2.model.AssignmentSubmissionVersion submissionVersion

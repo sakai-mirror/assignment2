@@ -139,24 +139,27 @@ public class ComparatorsUtils {
 	}
 	
 	/**
-	 * static class to sort AssignmentSubmissionVersion objects by createdDate
+	 * static class to sort {@link AssignmentSubmissionVersion}s by their 
+	 * submittedVersionNumber. This indicates the order in which a submission
+	 * was made by the student.  Will return the versions in order starting
+	 * from the most recent student-created version and ending in the feedback-only
+	 * version, if it exists
+	 * 
 	 */
-	public static class VersionCreatedDateComparatorDesc implements Comparator<AssignmentSubmissionVersion>  {
-		public int compare(AssignmentSubmissionVersion version1, AssignmentSubmissionVersion version2) {
-			
-			int value;
-			if (version1.getCreatedDate() != null && version2.getCreatedDate() != null) {
-				value = version2.getCreatedDate().compareTo(version1.getCreatedDate());
-			} else if (version1.getCreatedDate() == null && version2.getCreatedDate() != null) {
-				value = 1;
-			} else if (version1.getCreatedDate() != null && version2.getCreatedDate() == null) {
-				value = -1;
-			} else {
-				value = 0;
-			}
+	public static class VersionHistoryComparatorDesc implements Comparator<AssignmentSubmissionVersion> {
+	    public int compare(AssignmentSubmissionVersion version1, AssignmentSubmissionVersion version2) {
 
-			return value;
-		}
+	        int value;
+	        if (version1.getSubmittedVersionNumber() < version2.getSubmittedVersionNumber()) {
+	            value = 1;
+	        } else if (version1.getSubmittedVersionNumber() > version2.getSubmittedVersionNumber()) {
+	            value = -1;
+	        } else {
+	            value = 0;
+	        }
+
+	        return value;
+	    }
 	}
 	
 	/**
