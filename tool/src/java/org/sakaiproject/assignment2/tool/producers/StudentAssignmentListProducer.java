@@ -24,8 +24,10 @@ package org.sakaiproject.assignment2.tool.producers;
 import java.awt.Color;
 import java.text.DateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
@@ -50,6 +52,7 @@ import uk.org.ponder.rsf.components.UIForm;
 import uk.org.ponder.rsf.components.UIInternalLink;
 import uk.org.ponder.rsf.components.UIMessage;
 import uk.org.ponder.rsf.components.UIOutput;
+import uk.org.ponder.rsf.components.decorators.DecoratorList;
 import uk.org.ponder.rsf.components.decorators.UIColourDecorator;
 import uk.org.ponder.rsf.components.decorators.UIDecorator;
 import uk.org.ponder.rsf.components.decorators.UIFreeAttributeDecorator;
@@ -246,10 +249,30 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
             if (feedbackExists && unreadFeedbackExists) {
                 UIInternalLink.make(row, "unread-feedback-link",
                         new SimpleAssignmentViewParams(StudentSubmitProducer.VIEW_ID, assignment.getId()));
+                
+                // add the alt text to the image
+                Map<String, String> unreadImgAttr = new HashMap<String, String>();
+                String unreadText = messageLocator.getMessage("assignment2.student-assignment-list.icon_text.unread");
+                unreadImgAttr.put("alt", unreadText);
+                unreadImgAttr.put("title", unreadText);
+                DecoratorList unreadDecoratorList = new DecoratorList(new UIFreeAttributeDecorator(unreadImgAttr));
+                
+                UIOutput unreadImg = UIOutput.make(row, "unread-feedback-img");
+                unreadImg.decorators = unreadDecoratorList;
             }
             else if (feedbackExists) {
                 UIInternalLink.make(row, "read-feedback-link",
                         new SimpleAssignmentViewParams(StudentSubmitProducer.VIEW_ID, assignment.getId()));
+
+                // add the alt text to the image
+                Map<String, String> readImgAttr = new HashMap<String, String>();
+                String readText = messageLocator.getMessage("assignment2.student-assignment-list.icon_text.read");
+                readImgAttr.put("alt", readText);
+                readImgAttr.put("title", readText);
+                DecoratorList readDecoratorList = new DecoratorList(new UIFreeAttributeDecorator(readImgAttr));
+
+                UIOutput unreadImg = UIOutput.make(row, "read-feedback-img");
+                unreadImg.decorators = readDecoratorList;
             }
             // else.  TODO FIXME
             // I know you're always supposed to have an ending else

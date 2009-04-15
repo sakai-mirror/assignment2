@@ -37,7 +37,7 @@
 	
 	<fieldset>
         <legend>
-            <img src="/sakai-assignment2-tool/content/images/expand.png" border="0" alt="Open, click to close assignment instruction" style="cursor:pointer" 
+            <img rsf:id="instructions_toggle" src="/sakai-assignment2-tool/content/images/expand.png" border="0" style="cursor:pointer" 
                 onclick="slideDiv(this)" />
             <span rsf:id="msg=assignment2.assignment_grade.assignment_instructions" onclick="slideDiv(jQuery(this).prev('img').get(0));" style="cursor:pointer">Instructions!</span>
         </legend>
@@ -85,7 +85,7 @@
 	</fieldset>
 	<fieldset>
 		<legend>
-			<img src="/sakai-assignment2-tool/content/images/collapse.png" border="0" alt="Open, click to close assignment instruction" style="cursor:pointer" 
+			<img rsf:id="feedback_toggle" src="/sakai-assignment2-tool/content/images/collapse.png" border="0" style="cursor:pointer" 
 				onclick="slideDiv(this)" />
 			<span rsf:id="msg=assignment2.assignment_grade.feedback" onclick="slideDiv(jQuery(this).prev('img').get(0));" style="cursor:pointer">Feedback</span>
 		</legend>
@@ -109,7 +109,7 @@
 	<!-- Allow Resubmissions -->
 	<fieldset rsf:id="resubmission_settings">
 		<legend>
-			<img src="/sakai-assignment2-tool/content/images/expand.png" border="0" alt="Open, click to close assignment instruction" style="cursor:pointer" 
+			<img rsf:id="resubmission_toggle" src="/sakai-assignment2-tool/content/images/expand.png" border="0" style="cursor:pointer" 
 				onclick="slideFieldset(this)" />
 			<span rsf:id="msg=assignment2.assignment_grade.allow_resubmission" onclick="slideFieldset(jQuery(this).prev('img').get(0));" style="cursor:pointer">Resubmissions</span>
 		</legend>
@@ -145,7 +145,7 @@
 	
 	<fieldset rsf:id="submission-history-area">
 		<legend>
-			<img src="/sakai-assignment2-tool/content/images/expand.png" border="0" alt="Open, click to close assignment instruction" style="cursor:pointer" 
+			<img rsf:id="history_toggle" src="/sakai-assignment2-tool/content/images/expand.png" border="0" style="cursor:pointer" 
 				onclick="slideFieldset(this)" />
 			<span rsf:id="msg=assignment2.assignment_grade.history" onclick="slideFieldset(jQuery(this).prev('img').get(0));" style="cursor:pointer">History</span>
 		</legend>

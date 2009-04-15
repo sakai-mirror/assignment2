@@ -575,7 +575,7 @@ var asnn2 = asnn2 || {};
      * If the markup changes, this will need to change as well as it depends
      * on the structure.
      */
-    asnn2.assnSubVersionDiv = function (elementId, feedbackRead, submissionId, versionId) {
+    asnn2.assnSubVersionDiv = function (elementId, feedbackRead, submissionId, versionId, readFBAltText) {
         var escElemId = elementId.replace(/:/g, "\\:");
         var versionHeader = jQuery('#'+escElemId+ ' h3');
         var arrow = versionHeader.find("img:first");
@@ -585,6 +585,8 @@ var asnn2 = asnn2 || {};
             toggle_hideshow(arrow, toggled);
             if (envelope.attr('src') == NEW_FEEDBACK_IMAGE) {
                 envelope.attr('src', READ_FEEDBACK_IMAGE);
+                envelope.attr('alt', readFBAltText);
+                envelope.attr('title', readFBAltText);
                 mark_feedback(submissionId, versionId);
             }
         });

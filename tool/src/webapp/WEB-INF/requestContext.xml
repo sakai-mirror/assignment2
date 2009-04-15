@@ -76,6 +76,7 @@
     	<property name="asnnSubmissionVersionRenderer" ref="AsnnSubmissionVersionRenderer" />
     	<property name="submissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
     	<property name="locale" ref="requestLocale" />
+    	<property name="messageLocator" ref="messageLocator" />
     </bean>
 	
    <bean id="PagerRenderer" class="org.sakaiproject.assignment2.tool.producers.renderers.PagerRenderer">

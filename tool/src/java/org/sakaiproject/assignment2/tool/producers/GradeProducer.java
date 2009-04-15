@@ -24,8 +24,10 @@ package org.sakaiproject.assignment2.tool.producers;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
@@ -64,6 +66,8 @@ import uk.org.ponder.rsf.components.UIMessage;
 import uk.org.ponder.rsf.components.UIOutput;
 import uk.org.ponder.rsf.components.UISelect;
 import uk.org.ponder.rsf.components.UIVerbatim;
+import uk.org.ponder.rsf.components.decorators.DecoratorList;
+import uk.org.ponder.rsf.components.decorators.UIFreeAttributeDecorator;
 import uk.org.ponder.rsf.evolvers.FormatAwareDateInputEvolver;
 import uk.org.ponder.rsf.evolvers.TextInputEvolver;
 import uk.org.ponder.rsf.flow.ARIResult;
@@ -234,6 +238,26 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
             attachmentListRenderer.makeAttachmentFromAssignmentAttachmentSet(tofill, "assign_attach_list:", params.viewID, 
                     assignment.getAttachmentSet());
         }
+        
+        // add the alt text to the toggle for the instructions
+        Map<String, String> instrToggleMap = new HashMap<String, String>();
+        String instrToggleText = messageLocator.getMessage("assignment2.assignment_grade-assignment.assignment_details.instructions.toggle");
+        instrToggleMap.put("alt", instrToggleText);
+        instrToggleMap.put("title", instrToggleText);
+        DecoratorList instructionDecoList = new DecoratorList(new UIFreeAttributeDecorator(instrToggleMap));
+        
+        UIOutput instructionsToggle = UIOutput.make(tofill, "instructions_toggle");
+        instructionsToggle.decorators = instructionDecoList;
+        
+        // now handle the Feedback toggle
+        Map<String, String> fbToggleMap = new HashMap<String, String>();
+        String fbToggleText = messageLocator.getMessage("assignment2.assignment_grade.feedback.toggle");
+        fbToggleMap.put("alt", fbToggleText);
+        fbToggleMap.put("title", fbToggleText);
+        DecoratorList feedbackDecoList = new DecoratorList(new UIFreeAttributeDecorator(fbToggleMap));
+        
+        UIOutput feedbackToggle = UIOutput.make(tofill, "feedback_toggle");
+        feedbackToggle.decorators = feedbackDecoList;
 
         // Only display submission info if there has actually been a submission
         if (assignmentSubmissionVersion.getSubmittedDate() != null) {
@@ -300,6 +324,16 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
         // assignments
         if (assignment.getSubmissionType() != AssignmentConstants.SUBMIT_NON_ELECTRONIC) {
             UIOutput.make(form, "resubmission_settings");
+            
+            // make the toggle
+            Map<String, String> resubToggleMap = new HashMap<String, String>();
+            String resubToggleText = messageLocator.getMessage("assignment2.assignment_grade.allow_resubmission.toggle");
+            resubToggleMap.put("alt", resubToggleText);
+            resubToggleMap.put("title", resubToggleText);
+            DecoratorList resubDecoList = new DecoratorList(new UIFreeAttributeDecorator(resubToggleMap));
+            
+            UIOutput resubmitToggle = UIOutput.make(tofill, "resubmission_toggle");
+            resubmitToggle.decorators = resubDecoList;
             
             Integer current_times_submitted_already = 0;
             if (as != null && as.getSubmissionHistorySet() != null) {
@@ -397,6 +431,16 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
          */
         if (history != null && history.size() > 1) {
             UIOutput.make(form, "submission-history-area");
+            
+            // make the history section toggle
+            Map<String, String> historyToggleMap = new HashMap<String, String>();
+            String histToggleText = messageLocator.getMessage("assignment2.assignment_grade.history.toggle");
+            historyToggleMap.put("alt", histToggleText);
+            historyToggleMap.put("title", histToggleText);
+            DecoratorList histDecoList = new DecoratorList(new UIFreeAttributeDecorator(historyToggleMap));
+            
+            UIOutput historyToggle = UIOutput.make(tofill, "history_toggle");
+            historyToggle.decorators = histDecoList;
             
             for (AssignmentSubmissionVersion asv : history){
     
