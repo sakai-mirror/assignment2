@@ -124,7 +124,7 @@ NavigationCaseReporter, ActionResultInterceptor
     {
         AssignmentViewParams params = (AssignmentViewParams) viewparams;
         
-        Assignment2 assignment = assignmentLogic.getAssignmentById(params.assignmentId);
+        Assignment2 assignment = assignmentLogic.getAssignmentByIdWithAssociatedData(params.assignmentId);
         
         // Make BreadCrumbs
         UIInternalLink.make(tofill, "breadcrumb_asnn_list", 
@@ -133,20 +133,17 @@ NavigationCaseReporter, ActionResultInterceptor
         UIInternalLink.make(tofill, "breadcrumb_asnn_submissions", 
                 messageLocator.getMessage("assignment2.uploadall.breadcrumb.back_to_submissions", assignment.getTitle() )
                 , new ViewSubmissionsViewParams(ViewSubmissionsProducer.VIEW_ID, assignment.getId()));
-        if (assignment.isGraded()) {
+        if (assignment.isGraded() && assignment.getGradebookItemId() != null) {
             UIOutput.make(tofill, "breadcrumb_title", messageLocator.getMessage("assignment2.uploadall.breadcrumb.upload.graded"));
-        } else {
-            UIOutput.make(tofill, "breadcrumb_title", messageLocator.getMessage("assignment2.uploadall.breadcrumb.upload.ungraded"));
-        }
-        
-        if (assignment.isGraded()) {
+            
             UIOutput.make(tofill, "upload_title", messageLocator.getMessage("assignment2.uploadall.title.graded"));
             UIOutput.make(tofill, "uploadInstructions", messageLocator.getMessage("assignment2.uploadall.instructions.graded"));
         } else {
+            UIOutput.make(tofill, "breadcrumb_title", messageLocator.getMessage("assignment2.uploadall.breadcrumb.upload.ungraded"));
+            
             UIOutput.make(tofill, "upload_title", messageLocator.getMessage("assignment2.uploadall.title.ungraded"));
             UIOutput.make(tofill, "uploadInstructions", messageLocator.getMessage("assignment2.uploadall.instructions.ungraded"));
-        }
-        
+        }    
 
         ZipViewParams zvp = new ZipViewParams("zipSubmissions", params.assignmentId);
         UIForm upload_form = UIForm.make(tofill, "upload_form");
@@ -171,7 +168,7 @@ NavigationCaseReporter, ActionResultInterceptor
         }
         
         // Release grades radio buttons
-        if (assignment.isGraded()) {
+        if (assignment.isGraded() && assignment.getGradebookItemId() != null) {
             UIOutput.make(tofill, "release_grades_section");
             String [] release_grades_values = new String[] {
                     Boolean.FALSE.toString(), Boolean.TRUE.toString()

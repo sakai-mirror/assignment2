@@ -164,6 +164,12 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
         //navBarRenderer.makeNavBar(tofill, "navIntraTool:", VIEW_ID);
         //UIMessage.make(tofill, "heading", "assignment2.assignment_grade.heading", new Object[]{assignment.getTitle()});
 
+        // if gbItem is still null at this point, it must no longer exist. display warning
+        // to user
+        if (assignment.isGraded() && assignment.getGradebookItemId() == null) {
+            UIOutput.make(tofill, "no_gb_item", messageLocator.getMessage("assignment2.assignment_grade.gb_item_deleted"));
+        }
+        
         //AssignmentSubmission OTP Stuff
         String asOTP = "AssignmentSubmission.";
         String OTPKey = "";
@@ -293,13 +299,23 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
                 }
             }
         }
+        
+        // if the user has view-only perm and there are no fb attach, don't show the heading
+        if (grade_perm || (assignmentSubmissionVersion.getFeedbackAttachSet() != null && !assignmentSubmissionVersion.getFeedbackAttachSet().isEmpty())) {
+            UIOutput.make(tofill, "attachmentsFieldset");
+        }
 
         if (grade_perm) {
             UIInput feedback_notes = UIInput.make(form, "feedback_notes:", asvOTP + ".feedbackNotes");
             feedback_notes.mustapply = Boolean.TRUE;
             richTextEvolver.evolveTextInput(feedback_notes);
         } else {
-            UIVerbatim.make(form, "feedback_text_no_edit", assignmentSubmissionVersion.getFeedbackNotes());        	
+            if (assignmentSubmissionVersion.getFeedbackNotes() == null || 
+                    "".equals(assignmentSubmissionVersion.getFeedbackNotes().trim())) {
+                UIMessage.make(tofill, "feedback_notes_no_edit", "assignment2.assignment_grade.no_feedback.text-only");
+            } else {
+                UIVerbatim.make(tofill, "feedback_notes_no_edit", assignmentSubmissionVersion.getFeedbackNotes());   
+            }
         }
 
         //Attachments
@@ -335,7 +351,7 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
             UIOutput resubmitToggle = UIOutput.make(tofill, "resubmission_toggle");
             resubmitToggle.decorators = resubDecoList;
             
-            Integer current_times_submitted_already = 0;
+            int current_times_submitted_already = 0;
             if (as != null && as.getSubmissionHistorySet() != null) {
                 current_times_submitted_already = submissionLogic.getNumSubmittedVersions(as.getUserId(), assignmentId);
             }
@@ -378,8 +394,8 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
                 number_submissions_values[0] = "" + AssignmentConstants.UNLIMITED_SUBMISSION;
                 number_submissions_options[0] = messageLocator.getMessage("assignment2.indefinite_resubmit");
                 for (int i=0; i < size; i++){
-                    number_submissions_values[i + 1] = Integer.valueOf(i + current_times_submitted_already).toString();
-                    number_submissions_options[i + 1] = Integer.valueOf(i).toString();
+                    number_submissions_values[i + 1] = (i + current_times_submitted_already) + "";
+                    number_submissions_options[i + 1] = i + "";
                 }
 
                 //Output
@@ -406,19 +422,35 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
                 dateEvolver.setInvalidTimeKey("assignment2.assignment_grade.resubmission.accept_until_time.invalid");
                 dateEvolver.evolveDateInput(acceptUntilDateField, resubmitUntil);
             } else {
-                // display text only representation
-                String totalSubmissions = as.getNumSubmissionsAllowed().toString();
-                if (as.getNumSubmissionsAllowed() == AssignmentConstants.UNLIMITED_SUBMISSION) {
-                    totalSubmissions = messageLocator.getMessage("assignment2.indefinite_resubmit");
+                // display text-only representation
+                UIOutput.make(form, "resubmit_no_change");
+                
+                //Output
+                String currSubmissionMsg = "assignment2.assignment_grade.resubmission.curr_submissions.text-only";
+                if (current_times_submitted_already == 1) {
+                    currSubmissionMsg = "assignment2.assignment_grade.resubmission.curr_submissions.1.text-only";
                 }
-                UIMessage.make(form, "resubmit_no_change", "assignment2.assignment_grade.resubmission_text", 
-                        new Object[] {externalLogic.getUserDisplayName(params.userId), 
-                        current_times_submitted_already, totalSubmissions, 
-                        (as.getResubmitCloseDate() != null ? df.format(as.getResubmitCloseDate()) : "")});
+
+                UIMessage.make(form, "resub_curr_submissions_text", currSubmissionMsg, 
+                        new Object[] { current_times_submitted_already});
+                
+                String numRemainingSubmissionsText;
+                if (numSubmissionsAllowed == AssignmentConstants.UNLIMITED_SUBMISSION) {
+                    numRemainingSubmissionsText = messageLocator.getMessage("assignment2.indefinite_resubmit");
+                } else {
+                    numRemainingSubmissionsText = (numSubmissionsAllowed - current_times_submitted_already) + "";
+                }
+                UIMessage.make(form, "resub_allowed_submissions_text", "assignment2.assignment_grade.resubmission.allow_number.text-only", 
+                       new Object[] {numRemainingSubmissionsText});
+                
+                if (is_require_accept_until) {
+                    UIMessage.make(form, "resub_until_text", "assignment2.assignment_grade.resubmission.accept_until.text-only", 
+                            new Object[] {df.format(resubmitUntil)});
+                }
             }
         }
 
-        if (assignment.isGraded()){
+        if (assignment.isGraded() && assignment.getGradebookItemId() != null){
             gradebookDetailsRenderer.makeGradebookDetails(tofill, "gradebook_details", as, assignmentId, userId);
         }        
 

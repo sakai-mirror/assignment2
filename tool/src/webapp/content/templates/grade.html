@@ -20,6 +20,8 @@
 		<li><a rsf:id="breadcrumb2">View Submissions for "{0}"</a></li>
 		<li rsf:id="last_breadcrumb" class="lastCrumb">Submissions for "{0}"</li>
 	</ul>
+	
+	<p rsf:id="no_gb_item" class="alertMessage">Gb item deleted!</p>
 
 	<div class="generalErrors">
 		<ul rsf:id="message-for:*" style="margin:0px;">
@@ -70,7 +72,6 @@
 					<textarea name="something" cols="80" rows="20" wrap="virtual"></textarea>
 					<!-- this should be the FCKEditor -->
 				</div>
-				<p rsf:id="feedback_text_no_edit"></p>
 			</li>
 		</ol>
 	</fieldset>
@@ -91,12 +92,13 @@
 		</legend>
 		<div>
 			<div>
-                <p rsf:id="msg=assignment2.assignment_grade.feedback_notes" class="subgroupHeading">Additional Feedback</p>
+        <p rsf:id="msg=assignment2.assignment_grade.feedback_notes" class="subgroupHeading">Additional Feedback</p>
 				<textarea  rsf:id="feedback_notes:" name="something" cols="80" rows="20" wrap="virtual"></textarea>
 				<!-- this should be the FCKEditor -->
+				<p rsf:id="feedback_notes_no_edit" class="nothingProvided"></p>
 			</div>	
 
-			<div id="attachmentsFieldset">
+			<div rsf:id="attachmentsFieldset">
 				<p rsf:id="msg=assignment2.assignment_grade.feedback_attachments" class="subgroupHeading">Attachments</p>
 				<ol rsf:id="attachment_list:">
 					<li></li>
@@ -138,7 +140,21 @@
                     </fieldset>
 				</div>
 			</li>
-			<li rsf:id="resubmit_no_change"></li>
+			<li rsf:id="resubmit_no_change">
+	      <fieldset>
+	          <ol>
+	              <li>
+	                  <span rsf:id="resub_curr_submissions_text">This assignment has 2 submissions.</span>
+	              </li>
+	              <li>
+	                  <span rsf:id="resub_allowed_submissions_text">This assignment has 2 submissions.</span>
+	              </li>
+	              <li>
+	                  <span rsf:id="resub_until_text">This assignment has 2 submissions.</span>                   
+	              </li>
+	          </ol>
+	      </fieldset>
+			</li>
 		</ol>
 	</fieldset>
 	<!-- /Allow Resubmissions -->

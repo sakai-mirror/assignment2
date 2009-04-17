@@ -161,8 +161,13 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
             } catch (GradebookItemNotFoundException ginfe) {
                 if (log.isDebugEnabled()) log.debug("Gb item with id: " + assignment.getGradebookItemId() + " no longer exists!");
                 gbItem = null;
-                UIOutput.make(tofill, "no_gb_item", messageLocator.getMessage("assignment2.assignment_grade.gb_item_deleted"));
             }
+        }
+        
+        // if gbItem is still null at this point, it must no longer exist. display warning
+        // to user
+        if (assignment.isGraded() && gbItem == null) {
+            UIOutput.make(tofill, "no_gb_item", messageLocator.getMessage("assignment2.assignment_grade-assignment.gb_item_deleted"));
         }
         
         // get grade info, if appropriate

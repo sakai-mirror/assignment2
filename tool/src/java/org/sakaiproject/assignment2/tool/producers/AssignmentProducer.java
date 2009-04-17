@@ -224,6 +224,12 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
         assignment2OTP += OTPKey;
         //Assignment2 assignment = (Assignment2)assignment2BeanLocator.locateBean(OTPKey);
         Assignment2 assignment = (Assignment2) assignmentAuthoringFlowBean.locateBean(OTPKey);
+        
+        if (assignment.isGraded() && assignment.getGradebookItemId() == null) {
+            // we need to display a message indicating that the gradebook item
+            // assoc with this item no longer exists
+            UIMessage.make(tofill, "no_gb_item", "assignment2.assignment_add.gb_item_deleted");
+        }
 
         //Initialize js otpkey
         UIVerbatim.make(tofill, "attachment-ajax-init", "otpkey=\"" + org.sakaiproject.util.Web.escapeUrl(OTPKey) + "\";\n" +

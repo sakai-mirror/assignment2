@@ -84,7 +84,9 @@ public interface AssignmentLogic {
 	/**
 	 * Returns list of Assignment objects that the given user has permission
 	 * to view or grade. Assignments that the user does not have permission 
-	 * to view or grade will not be returned. 
+	 * to view or grade will not be returned. If assignment is graded and
+	 * associated gb item was deleted, sets the gradebookItemId to null on 
+	 * the assignment object to flag that it needs attention
 	 * @param contextId 
 	 * @return A non-null list of viewable assignments ordered by sort index
 	 */
@@ -102,7 +104,9 @@ public interface AssignmentLogic {
 	/**
 	 * @param assignmentId
 	 * @return the Assignment2 object with the given id and populate associated
-	 * data (ie attachments, groups). Does not include student submission information
+	 * data (ie attachments, groups). Does not include student submission information.
+	 * If graded, checks to see if associated gb item still exists. If it does not,
+	 * sets gradebookItemId to null but leaves graded = true
 	 * @throws AssignmentNotFoundException if no assignment exists with the given id
 	 */
 	public Assignment2 getAssignmentByIdWithAssociatedData(Long assignmentId);

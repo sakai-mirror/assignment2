@@ -48,7 +48,9 @@ public interface ExternalGradebookLogic {
      * that the user is not authorized to view according to the gradebook
      * permissions and return a list of graded assignments that the user is
      * authorized to view. Also populates the gb-specific fields for each
-     * Assignment2 object. Does NOT handle filtering according to AssignmentGroup 
+     * Assignment2 object. If associated gradebook item has been deleted, sets the
+     * gradebookItemId to null on the returned Assignment2 object.
+     * Does NOT handle filtering according to AssignmentGroup 
      * restrictions
      */
 	public List<Assignment2> getViewableGradedAssignments(List<Assignment2> gradedAssignments, String contextId);
@@ -379,4 +381,13 @@ public interface ExternalGradebookLogic {
 	 * @throws GradebookItemNotFoundException if no gradebook item exists with the given gradebookItemId
 	 */
 	public String getLowestPossibleGradeForGradebookItem(String contextId, Long gradebookItemId);
+	
+	/**
+	 * 
+	 * @param gbItemId
+	 * @return true if the gradebook item with the given gbItemId exists in the Gradebook.
+	 * Useful if you want to check if the gradebook item associated with an assignment
+	 * still exists
+	 */
+	public boolean gradebookItemExists(Long gbItemId);
 }

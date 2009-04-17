@@ -275,6 +275,10 @@ li .error p {
     font-style: italic;
 }
 
+.nothingProvided {
+    font-style: italic;
+}
+
 
 /* breadcrumb navigation styles */
 .breadCrumb {

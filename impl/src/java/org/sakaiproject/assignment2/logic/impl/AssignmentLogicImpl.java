@@ -46,6 +46,7 @@ import org.sakaiproject.assignment2.logic.ExternalAnnouncementLogic;
 import org.sakaiproject.assignment2.logic.ExternalCalendarLogic;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
+import org.sakaiproject.assignment2.logic.GradebookItem;
 import org.sakaiproject.assignment2.logic.utils.Assignment2Utils;
 import org.sakaiproject.assignment2.logic.utils.ComparatorsUtils;
 import org.sakaiproject.assignment2.model.Assignment2;
@@ -143,6 +144,13 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 		
 		if (assign == null) {
 			throw new AssignmentNotFoundException("No assignment found with id: " + assignmentId);
+		}
+		
+		// now, check to see if gradebook item still exists, if graded
+		if (assign.isGraded()) {
+		    if (!gradebookLogic.gradebookItemExists(assign.getGradebookItemId())) {
+		        assign.setGradebookItemId(null);
+		    }
 		}
 
 		return assign;
@@ -430,7 +438,23 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 		    boolean isUserAbleToGradeAll = permissionLogic.isUserAbleToProvideFeedbackForAllStudents(contextId);
 		    
 		    if (isUserAbleToGradeAll) {
-		        viewableAssignments.addAll(allAssignments);
+		        // let's check to see if any of the graded assignments' associated
+		        // gradebook items were deleted. we need to flag these assignments.
+		        List<GradebookItem> allGbItems = gradebookLogic.getAllGradebookItems(contextId);
+		        List<Long> gbItemIdList = new ArrayList<Long>();
+		        if (allGbItems != null) {
+		            for (GradebookItem gbItem : allGbItems) {
+		                gbItemIdList.add(gbItem.getGradebookItemId());
+		            }
+		        }
+		        
+		        for (Assignment2 assign : allAssignments) {
+		            if (assign.isGraded() && !gbItemIdList.contains(assign.getGradebookItemId())) {
+		                assign.setGradebookItemId(null);
+		            }
+		            
+		            viewableAssignments.add(assign);
+		        }
 		    } else {
 
 		        List<Assignment2> gradedAssignments = new ArrayList<Assignment2>();
