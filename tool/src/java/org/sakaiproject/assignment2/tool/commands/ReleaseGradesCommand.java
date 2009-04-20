@@ -45,16 +45,25 @@ public class ReleaseGradesCommand {
         return releaseGrades;
     }
     
+    // Property
+    private boolean includeInCourseGrade;
+    public void setIncludeInCourseGrade(boolean includeInCourseGrade) {
+        this.includeInCourseGrade = includeInCourseGrade;
+    }
+    public boolean getIncludeInCourseGrade() {
+        return includeInCourseGrade;
+    }
+    
     public void execute() {
         
         if (gradebookItemId == null) {
-            throw new IllegalArgumentException("Null assignmentId param passed to ReleaseGradesCommand");
+            throw new IllegalArgumentException("Null gradebookItemId param passed to ReleaseGradesCommand");
         }
         
         if (curContext == null) {
             throw new IllegalArgumentException("Null curContext param passed to ReleaseGradesCommand");
         }
         
-        gradebookLogic.releaseOrRetractGrades(curContext, gradebookItemId, releaseGrades);
+        gradebookLogic.releaseOrRetractGrades(curContext, gradebookItemId, releaseGrades, includeInCourseGrade);
     }
 }

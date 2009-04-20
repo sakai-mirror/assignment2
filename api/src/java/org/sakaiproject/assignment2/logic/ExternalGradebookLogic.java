@@ -360,9 +360,11 @@ public interface ExternalGradebookLogic {
 	 * @param contextId
 	 * @param gradebookItemId
 	 * @param release if true, will release grade info. if false, will retract grade info
+	 * @param includeInCourseGrade if true and release is true, will also include grade info in the course
+	 * grade. leave null if you do not want to modify this setting
 	 * @throw {@link GradebookItemNotFoundException} if no gradebook item exists with the given gradebookItemId
 	 */
-	public void releaseOrRetractGrades(String contextId, Long gradebookItemId, boolean release);
+	public void releaseOrRetractGrades(String contextId, Long gradebookItemId, boolean release, Boolean includeInCourseGrade);
 	
 	/**
 	 * 

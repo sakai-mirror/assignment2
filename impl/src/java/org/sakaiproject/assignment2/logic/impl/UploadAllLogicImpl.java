@@ -187,7 +187,7 @@ public class UploadAllLogicImpl implements UploadAllLogic
                     processGrades(assign.getContextId(), options.assignmentId, fileObj, uploadInfo, displayIdUserIdMap);
                     // release the grades
                     if (options.releaseGrades) {
-                        gradebookLogic.releaseOrRetractGrades(assign.getContextId(), assign.getGradebookItemId(), true);
+                        gradebookLogic.releaseOrRetractGrades(assign.getContextId(), assign.getGradebookItemId(), true, null);
                     }
                 }
 

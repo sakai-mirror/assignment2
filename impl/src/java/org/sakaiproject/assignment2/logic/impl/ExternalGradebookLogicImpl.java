@@ -710,7 +710,7 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
 	    }
 	}
 	
-	public void releaseOrRetractGrades(String contextId, Long gradebookItemId, boolean release) {
+	public void releaseOrRetractGrades(String contextId, Long gradebookItemId, boolean release, Boolean includeInCourseGrade) {
 	    if (gradebookItemId == null || contextId == null) {
 	        throw new IllegalArgumentException("Null gradebookItemId passed to releaseOrRetractGrades." +
 	        		"contextId: " + contextId + " gradebookItemId: " + gradebookItemId);
@@ -721,7 +721,10 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
 	        gbAssign.setReleased(release);
 	        if (!release) {
 	            gbAssign.setCounted(false);
+	        } else if (includeInCourseGrade != null){
+	            gbAssign.setCounted(includeInCourseGrade);
 	        }
+	        
 	        gradebookService.updateAssignment(contextId, gbAssign.getName(), gbAssign);
 	        if (log.isDebugEnabled()) log.debug("Gradebook setting released updated to " + release);
 	    } catch (AssessmentNotFoundException anfe) {

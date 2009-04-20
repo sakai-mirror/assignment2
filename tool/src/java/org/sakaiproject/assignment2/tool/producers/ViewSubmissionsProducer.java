@@ -58,6 +58,7 @@ import uk.org.ponder.htmlutil.HTMLUtil;
 import uk.org.ponder.messageutil.MessageLocator;
 import uk.org.ponder.messageutil.TargettedMessage;
 import uk.org.ponder.messageutil.TargettedMessageList;
+import uk.org.ponder.rsf.components.UIBoundBoolean;
 import uk.org.ponder.rsf.components.UIBranchContainer;
 import uk.org.ponder.rsf.components.UICommand;
 import uk.org.ponder.rsf.components.UIContainer;
@@ -213,17 +214,13 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
             }
 
             UIForm releaseGradesForm = UIForm.make(tofill, "release_grades_form");
-            releaseGradesForm.addParameter(new UIELBinding("ReleaseGradesAction.gradebookItemId", assignment.getGradebookItemId()));
-            releaseGradesForm.addParameter(new UIELBinding("ReleaseGradesAction.curContext", assignment.getContextId()));
-            releaseGradesForm.addParameter(new UIELBinding("ReleaseGradesAction.releaseGrades", !gradesReleased));
-
-            UICommand releaseGradesButton = UICommand.make(releaseGradesForm, "release_grades", "ReleaseGradesAction.execute");
+            UICommand releaseGradesButton = UICommand.make(releaseGradesForm, "release_grades");
 
             UIOutput.make(tofill, "release_grades_li");
             UIInternalLink releaseGradesLink = UIInternalLink.make(tofill, 
                     "release_grades_link", releaseLinkText, viewparams);
             Map<String,String> idmap = new HashMap<String,String>();
-            idmap.put("onclick", "asnn2.releaseGradesDialog('"+releaseGradesButton.getFullID()+"'); return false;");
+            idmap.put("onclick", "asnn2.releaseGradesDialog('"+releaseGradesButton.getFullID()+"', '" + assignment.getContextId() + "', '" + assignment.getGradebookItemId() + "', '" + !gradesReleased + "'); return false;");
             releaseGradesLink.decorate(new UIFreeAttributeDecorator(idmap));
             
             makeReleaseGradesDialog(gradesReleased, assignment, tofill);
@@ -521,6 +518,9 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
                 UIOutput.make(tofill, "confirm-checkbox-label", messageLocator.getMessage("assignment2.dialogs.release_grades.groups.confirmcheckbox"));
                 UIOutput.make(tofill, "confirm-checkbox-area");
             }
+            
+            // add the checkbox for also including in course grade
+            UIOutput.make(tofill, "release-grades-counted");
         }
         
         UIOutput.make(tofill, "release-grades-title", releaseGradesTitle);
