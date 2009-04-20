@@ -612,13 +612,13 @@ var asnn2 = asnn2 || {};
         confirmDialog = jQuery('#submit-confirm-dialog');
 
         var submitButton = buttonform;
-        jQuery('#submission-confirm-button').click( function (event) {
+        jQuery('#page-replace\\:\\:portletBody\\:1\\:assignment-edit-submission\\:\\:submission-confirm-button').click( function (event) {
         	asnn2util.closeDialog(confirmDialog);
             submitButton.onclick = function (event) { return true };
             submitButton.click();
         });
 
-        jQuery('#submission-cancel-button').click( function (event) {
+        jQuery('#page-replace\\:\\:portletBody\\:1\\:assignment-edit-submission\\:\\:submission-cancel-button').click( function (event) {
         	asnn2util.closeDialog(confirmDialog);
         });
 
@@ -626,6 +626,29 @@ var asnn2 = asnn2 || {};
         return false;
     };
     
+    /**
+     * Used to generate a confirmation dialog if a user attempts to edit an
+     * assignment that already has submissions
+     */
+    asnn2.editAssignmentConfirm = function(buttonform) {
+        
+        // display the confirmation dialog
+        confirmDialog = jQuery('#edit-assign-confirm-dialog');
+
+        var submitButton = buttonform;
+        jQuery('#page-replace\\:\\:submission-confirm-button').click( function (event) {
+            asnn2util.closeDialog(confirmDialog);
+            submitButton.onclick = function (event) { return true };
+            submitButton.click();
+        });
+
+        jQuery('#page-replace\\:\\:submission-cancel-button').click( function (event) {
+            asnn2util.closeDialog(confirmDialog);
+        });
+
+        asnn2util.openDialog(confirmDialog);
+        return false;
+    };
     
     
     /**

@@ -167,6 +167,7 @@
       <property name="statePreservationManager" ref="statePreservationManager" />
       <property name="assignmentAuthoringFlowBean" ref="AssignmentAuthoringFlowBean" />
       <property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
+      <property name="assignmentSubmissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
       <property name="assignment2Creator" ref="Assignment2Creator" />
    </bean>
    

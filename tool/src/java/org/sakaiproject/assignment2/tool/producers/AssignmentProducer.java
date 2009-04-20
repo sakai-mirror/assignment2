@@ -29,6 +29,7 @@ import org.sakaiproject.assignment2.tool.producers.evolvers.AttachmentInputEvolv
 import org.sakaiproject.assignment2.tool.producers.fragments.FragmentAssignment2SelectProducer;
 import org.sakaiproject.assignment2.exception.AssignmentNotFoundException;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
+import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.GradebookItem;
@@ -98,6 +99,7 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
     private ExternalLogic externalLogic;
     private ExternalGradebookLogic externalGradebookLogic;
     private AssignmentLogic assignmentLogic;
+    private AssignmentSubmissionLogic submissionLogic;
     private Locale locale;
     //private EntityBeanLocator assignment2BeanLocator;
     private AttachmentInputEvolver attachmentInputEvolver;
@@ -482,7 +484,18 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
         UIBoundBoolean.make(form, "sub_notif", assignment2OTP + ".sendSubmissionNotifications");
 
         //Post Buttons
-        UICommand.make(form, "post_assignment", UIMessage.make("assignment2.assignment_add.post"), "AssignmentAuthoringBean.processActionPost");
+        UICommand postAssign = UICommand.make(form, "post_assignment", UIMessage.make("assignment2.assignment_add.post"), "AssignmentAuthoringBean.processActionPost");
+        if (assignment.getId() != null) {
+           List<String> allStudents = externalLogic.getStudentsInSite(currentContextId);
+           int numSubmissions = submissionLogic.getNumStudentsWithASubmission(assignment, allStudents);
+           if (numSubmissions > 0) {
+               // we need to display a warning to the user that they are editing
+               // an assignment with submissions
+               postAssign.decorate(
+                       new UIFreeAttributeDecorator("onclick",
+                               "asnn2.editAssignmentConfirm(this); return false;"));
+           }
+        }
         UICommand.make(form, "preview_assignment", UIMessage.make("assignment2.assignment_add.preview"), "AssignmentAuthoringBean.processActionPreview");
 
         if (assignment == null || assignment.getId() == null || assignment.isDraft()){
@@ -535,6 +548,10 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
     
     public void setAssignmentLogic(AssignmentLogic assignmentLogic) {
         this.assignmentLogic = assignmentLogic;
+    }
+    
+    public void setAssignmentSubmissionLogic(AssignmentSubmissionLogic submissionLogic) {
+        this.submissionLogic = submissionLogic;
     }
     
     public void setAssignment2Creator(Assignment2Creator assignment2Creator) {

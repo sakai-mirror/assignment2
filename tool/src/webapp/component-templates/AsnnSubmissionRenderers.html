@@ -174,22 +174,22 @@
 	</fieldset>
 	<fieldset class="submit">
 		<input type="hidden" rsf:id="submitted_text_for_attach_only" />
-		<input rsf:id="submit_button"  accesskey="s" type="submit" class="active" value="Submit" onclick="return asnn2.studentSubmissionConfirm(this);" />
-		<input rsf:id="back_to_edit_button" type="submit" value="Edit" />
+		<input rsf:id="submit_button"  accesskey="s" type="submit" class="active" value="Submit!" onclick="return asnn2.studentSubmissionConfirm(this);" />
+		<input rsf:id="back_to_edit_button" type="submit" value="Edit!" />
 		<!-- <input rsf:id="preview_button" title="Preview Submission" accesskey="v" type="button" class="preview_button thickbox" value="Preview"/> -->
-		<input rsf:id="preview_button" title="Preview Submission" accesskey="v" type="submit" value="Preview"/>
-		<input rsf:id="save_draft_button" accesskey="d" type="submit" value="Save Draft"/>
-		<input rsf:id="cancel_button" accesskey="x" type="submit" value="Cancel"/>
+		<input rsf:id="preview_button" accesskey="v" type="submit" value="Preview!"/>
+		<input rsf:id="save_draft_button" accesskey="d" type="submit" value="Save Draft!"/>
+		<input rsf:id="cancel_button" accesskey="x" type="submit" value="Cancel!"/>
 	</fieldset>													
 	</form>	
 	
 	<div style="display:none" id="submit-confirm-dialog">
         <ul style="margin:0;padding:0;display:inline;">
-            <li class="alertMessageInline">Are you sure you are ready to send this submission to your instructor?</li>
+            <li class="alertMessageInline" rsf:id="msg=assignment2.student-submit.confirm.msg">Are you sure you want to submit this?!!</li>
         </ul>
         <fieldset class="submit">
-            <input id="submission-confirm-button" accesskey="s" type="button" class="active" value="Yes, Continue"/>
-            <input id="submission-cancel-button" accesskey="x" type="button" value="No, Return to Assignment"/>
+            <input id="submission-confirm-button" accesskey="s" type="button" class="active" rsf:id="msg=assignment2.student-submit.confirm.continue"/>
+            <input id="submission-cancel-button" accesskey="x" type="button" rsf:id="msg=assignment2.student-submit.confirm.cancel"/>
         </fieldset>
     </div>
 </div>
