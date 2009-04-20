@@ -227,7 +227,9 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
         //Assignment2 assignment = (Assignment2)assignment2BeanLocator.locateBean(OTPKey);
         Assignment2 assignment = (Assignment2) assignmentAuthoringFlowBean.locateBean(OTPKey);
         
-        if (assignment.isGraded() && assignment.getGradebookItemId() == null) {
+        // if this is an "edit" scenario, we need to display a warning if the
+        // assignment is graded but doesn't have an assoc gb item
+        if (assignmentId != null && assignment.isGraded() && assignment.getGradebookItemId() == null) {
             // we need to display a message indicating that the gradebook item
             // assoc with this item no longer exists
             UIMessage.make(tofill, "no_gb_item", "assignment2.assignment_add.gb_item_deleted");
