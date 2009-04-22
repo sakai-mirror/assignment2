@@ -301,11 +301,19 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
         sortHeaderRenderer.makeSortingLink(tofill, "tableheader.released", viewparams, 
                 AssignmentSubmissionLogic.SORT_BY_RELEASED, "assignment2.assignment_grade-assignment.tableheader.released");
 
+        // let's retrieve all of the student name info in one call 
+        List<String> studentIdList = new ArrayList<String>();
+        for (AssignmentSubmission as : submissions) {
+            studentIdList.add(as.getUserId());
+        }
+        
+        Map<String, String> studentIdSortNameMap = externalLogic.getUserIdToSortNameMap(studentIdList);
+        
         for (AssignmentSubmission as : submissions) {
             UIBranchContainer row = UIBranchContainer.make(tofill, "row:");
 
             UIInternalLink.make(row, "row_grade_link",
-                    externalLogic.getUserSortName(as.getUserId()),
+                    studentIdSortNameMap.get(as.getUserId()),
                     new GradeViewParams(GradeProducer.VIEW_ID, as.getAssignment().getId(), as.getUserId()));
 
 

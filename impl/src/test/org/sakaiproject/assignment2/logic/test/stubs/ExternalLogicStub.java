@@ -361,4 +361,10 @@ public class ExternalLogicStub implements ExternalLogic {
         return null;
     }
 
+    public Map<String, String> getUserIdToSortNameMap(Collection userIds)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
 }
