@@ -171,6 +171,14 @@
 	<bean parent="handlerHookParent">
 		<property name="value">
 			<bean parent="RSACBridgeProxy">
+				<property name="targetBeanName" value="fluidHandlerHook" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean parent="handlerHookParent">
+		<property name="value">
+			<bean parent="RSACBridgeProxy">
 				<property name="targetBeanName" value="zipHandlerHook" />
 			</bean>
 		</property>

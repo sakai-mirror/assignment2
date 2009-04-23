@@ -77,9 +77,14 @@ public class LocalPermissionLogic {
         String contextId = externalLogic.getCurrentContextId();
         String viewId = viewParams.viewID;
 
-        if (AddAttachmentHelperProducer.VIEWID.equals(viewId)) {
+        /* This first check is special and for our new hybrid pages that need to
+         * go to the content directory for various Fluid interfaces.
+         */
+        if (viewId.equals("content")) {
             return Boolean.TRUE;
-
+        }
+        else if (AddAttachmentHelperProducer.VIEWID.equals(viewId)) {
+            return Boolean.TRUE;
         } else if (RemoveAssignmentConfirmProducer.VIEW_ID.equals(viewId)) {
             return permissionLogic.isCurrentUserAbleToEditAssignments(contextId);
         }
