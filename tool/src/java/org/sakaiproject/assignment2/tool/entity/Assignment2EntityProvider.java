@@ -8,7 +8,10 @@ import java.util.Map;
 import org.azeckoski.reflectutils.DeepUtils;
 import org.sakaiproject.assignment2.exception.AssignmentNotFoundException;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
+import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
+import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
+import org.sakaiproject.assignment2.tool.DisplayUtil;
 import org.sakaiproject.entitybroker.EntityReference;
 import org.sakaiproject.entitybroker.EntityView;
 import org.sakaiproject.entitybroker.entityprovider.CoreEntityProvider;
@@ -36,6 +39,24 @@ CoreEntityProvider, RESTful, RequestStorable {
         this.assignmentLogic = assignmentLogic;
     }
     
+    // Dependency
+    private AssignmentPermissionLogic permissionLogic;
+    public void setPermissionLogic(AssignmentPermissionLogic permissionLogic) {
+        this.permissionLogic = permissionLogic;
+    }
+    
+    // Dependency
+    private ExternalLogic externalLogic;
+    public void setExternalLogic(ExternalLogic externalLogic) {
+        this.externalLogic = externalLogic;
+    }
+    
+    // Dependency
+    private DisplayUtil displayUtil;
+    public void setDisplayUtil(DisplayUtil displayUtil) {
+        this.displayUtil = displayUtil;
+    }
+    
     public static String PREFIX = "assignment2";
     public String getEntityPrefix() {
         return PREFIX;
@@ -43,9 +64,16 @@ CoreEntityProvider, RESTful, RequestStorable {
     
     @EntityCustomAction(action="sitelist", viewKey=EntityView.VIEW_LIST)
     public List getAssignmentListForSite(EntityView view) {
+        String context = "48ff42c3-9da3-4340-a8b8-5c5ad183b1d4";
+        
         List<Assignment2> viewable = assignmentLogic.getViewableAssignments("48ff42c3-9da3-4340-a8b8-5c5ad183b1d4");
         
         List togo = new ArrayList();
+        
+        Map<Assignment2, List<String>> assignmentViewableStudentsMap = 
+            permissionLogic.getViewableStudentsForUserForAssignments(externalLogic.getCurrentUserId(), context, viewable);
+        
+        
         
         for (Assignment2 asnn: viewable) {
             Map asnnmap = new HashMap();
@@ -53,6 +81,12 @@ CoreEntityProvider, RESTful, RequestStorable {
             asnnmap.put("title", asnn.getTitle());
             asnnmap.put("openDate", asnn.getOpenDate());
             asnnmap.put("dueDate", asnn.getDueDate());
+            asnnmap.put("graded", asnn.isGraded());
+            
+            List<String> viewableStudents = assignmentViewableStudentsMap.get(asnn);
+            
+            asnnmap.put("inAndNew", displayUtil.getSubmissionStatusForAssignment(asnn, viewableStudents));
+            
             togo.add(asnnmap);
         }
         

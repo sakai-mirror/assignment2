@@ -27,6 +27,10 @@
 	<bean id="localAssignmentLogic"
 		class="org.sakaiproject.assignment2.tool.LocalAssignmentLogic">
 	</bean>
+    
+    <bean id="DisplayUtil" class="org.sakaiproject.assignment2.tool.DisplayUtil">
+        <property name="submissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
+    </bean>
 
 	<!-- Entity Providers -->
 	<bean id="Assignment2DetailEntityProvider"
@@ -39,7 +43,10 @@
 	<bean parent="org.sakaiproject.entitybroker.entityprovider.AbstractEntityProvider"  
 	    class="org.sakaiproject.assignment2.tool.entity.Assignment2EntityProvider">
 		<property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
-	</bean>
+	    <property name="permissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentPermissionLogic" />
+        <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
+        <property name="displayUtil" ref="DisplayUtil" />
+    </bean>
 
 	<!--  causes every variable to post, even if it hasn't changed since page render -->
 	<bean id="ignoreFossilizedValues"

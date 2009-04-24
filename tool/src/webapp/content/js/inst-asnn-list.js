@@ -106,7 +106,7 @@ asnn2.getAsnnCompData = function () {
   };
 
   var renderFromData = function (obj, index) {
-    var ditto = ['id','title'];
+    var ditto = ['id','title', 'inAndNew'];
     var togo = {};
     for (var i in ditto) {
       togo[ditto[i]] = obj[ditto[i]];
@@ -119,6 +119,12 @@ asnn2.getAsnnCompData = function () {
       target: '/portal/tool/'+sakai.curPlacement+'/assignment?duplicatedAssignmentId='+obj.id,
       linktext: "Duplicate"
     }; 
+    if (obj.graded === true) {
+        togo.gradelink = {
+            target: '/portal/tool/'+sakai.curPlacement+'/viewSubmissions/'+obj.id,
+            linktext: "Grade"
+        }
+    }
     return togo;
   };
 
