@@ -210,6 +210,9 @@
       <property name="locale" ref="requestLocale" />
    </bean>
    
+   <!-- As part of ASNN-466 Replacing this with a more lightweight producer for
+        building up the Fluid powered page. -->
+   
    <bean class="org.sakaiproject.assignment2.tool.producers.ListProducer">
       <property name="messageLocator" ref="messageLocator" />
       <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
@@ -218,7 +221,12 @@
       <property name="submissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
       <property name="locale" ref="requestLocale" />
    </bean>
-
+   
+   <!--
+   <bean class="org.sakaiproject.assignment2.tool.producers.FluidListProducer">
+      
+   </bean>
+-->
    <bean class="org.sakaiproject.assignment2.tool.producers.FinishedHelperProducer">
    	  <property name="sessionManager" ref="org.sakaiproject.tool.api.SessionManager" />
    	  <property name="externalContentLogic" ref="org.sakaiproject.assignment2.logic.ExternalContentLogic" />

@@ -51,7 +51,7 @@ public class FluidHandlerHook implements HandlerHook {
         
         if (viewparams.viewID.equals("list")) {
             try {
-                response.sendRedirect("/portal/tool/"+placement.getId()+"/content/templates/inst-asnn-list.html");
+                response.sendRedirect("/sakai-assignment2-tool/content/templates/inst-asnn-list.jsp?context="+context+"&placement="+placement.getId());
             } catch (IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
