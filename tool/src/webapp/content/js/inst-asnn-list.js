@@ -1,10 +1,12 @@
 var asnn2 = asnn2 || {};
 
+asnn2.livedata = true;
+
 /*
  * Returns an list of Assignment Objects that can be viewed.
  */
 asnn2.getAsnnCompData = function () {
-  return [
+  var designSampleData = [
     {
       id: "1",
       title: "Audio Scriptwriting",
@@ -98,6 +100,44 @@ asnn2.getAsnnCompData = function () {
       inAndNew: "8/0"
     }
   ];
+
+  var dataFromEntity = function (obj, index) {
+    return obj.data; 
+  };
+
+  var renderFromData = function (obj, index) {
+    var ditto = ['id','title'];
+    var togo = {};
+    for (var i in ditto) {
+      togo[ditto[i]] = obj[ditto[i]];
+    } 
+    togo.editlink = { 
+      target: '/portal/tool/'+sakai.curPlacement+'/assignment/'+obj.id,
+      linktext: "Edit" 
+    };
+    togo.duplink = {
+      target: '/portal/tool/'+sakai.curPlacement+'/assignment?duplicatedAssignmentId='+obj.id,
+      linktext: "Duplicate"
+    }; 
+    return togo;
+  };
+
+  var togo = []
+  if (asnn2.livedata === true) {
+    jQuery.ajax({
+      url: "/direct/assignment2/sitelist.json", 
+      async: false, 
+      success: function (payload) {
+        var data = JSON.parse(payload);
+        togo = fluid.transform(data.assignment2_collection, dataFromEntity, renderFromData);
+      }
+    });
+  }
+  else {
+    togo = designSampleData;
+  }
+
+  return togo;
 }
 
 asnn2.setupReordering = function () {

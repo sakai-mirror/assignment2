@@ -35,8 +35,8 @@
 
     <script type="text/javascript" language="JavaScript">
         var sakai = sakai || {};
-        sakai.curPlacement = <%= request.getParameter("placement") %>
-        sakai.curContext = <%= request.getParameter("context") %>
+        sakai.curPlacement = '<%= request.getParameter("placement") %>';
+        sakai.curContext = '<%= request.getParameter("context") %>';
     </script>
 
     <!-- Application Code -->
