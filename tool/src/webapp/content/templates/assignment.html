@@ -39,6 +39,8 @@
         </div>
     </div>
 	
+	<p rsf:id="no_gb_item" class="alertMessage">Gb item deleted!</p>
+	
 	<h2 rsf:id="page-title">Add Assignment Title</h2>
 	<p rsf:id="instructions" class="instruction">Complete the form and choose an action below. <span class="reqStar">*</span> Indicates required information.</p>
 
@@ -250,8 +252,20 @@
 		<input onclick="return validateAsnn()" rsf:id="save_draft" accesskey="d" type="submit" value="Save Draft"/>
 		<input rsf:id="preview_assignment" title="Preview Assignment" accesskey="v" type="submit" value="Preview"/> <!-- class="preview_button thickbox" -->
 		<input rsf:id="cancel_assignment" accesskey="x" type="submit" value="Cancel"/>
-	</fieldset>													
-	</form>
+	</fieldset>
+</form>
+
+	<div style="display: none" id="edit-assign-confirm-dialog">
+		<ul style="margin: 0; padding: 0; display: inline;">
+			<li class="alertMessageInline" rsf:id="msg=assignment2.assignment_add.edit.confirm.msg">Are you	sure you want to submit this?!!</li>
+		</ul>
+		<fieldset class="submit">
+			<input id="submission-confirm-button" accesskey="s" type="button"	class="active"	rsf:id="msg=assignment2.assignment_add.edit.confirm.continue" /> 
+			<input id="submission-cancel-button" accesskey="x" type="button"	rsf:id="msg=assignment2.assignment_add.edit.confirm.cancel" />
+		</fieldset>
+	</div>
+	
+    
 <script type="text/javascript" rsf:id="gradebook_items_data">
 
 </script>

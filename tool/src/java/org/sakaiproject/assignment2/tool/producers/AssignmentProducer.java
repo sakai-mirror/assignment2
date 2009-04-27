@@ -21,11 +21,15 @@
 
 package org.sakaiproject.assignment2.tool.producers;
 
+import org.sakaiproject.assignment2.tool.beans.Assignment2Creator;
 import org.sakaiproject.assignment2.tool.beans.AssignmentAuthoringFlowBean;
 import org.sakaiproject.assignment2.tool.params.AssignmentViewParams;
 import org.sakaiproject.assignment2.tool.params.FilePickerHelperViewParams;
 import org.sakaiproject.assignment2.tool.producers.evolvers.AttachmentInputEvolver;
 import org.sakaiproject.assignment2.tool.producers.fragments.FragmentAssignment2SelectProducer;
+import org.sakaiproject.assignment2.exception.AssignmentNotFoundException;
+import org.sakaiproject.assignment2.logic.AssignmentLogic;
+import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.GradebookItem;
@@ -94,11 +98,14 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
     private MessageLocator messageLocator;
     private ExternalLogic externalLogic;
     private ExternalGradebookLogic externalGradebookLogic;
+    private AssignmentLogic assignmentLogic;
+    private AssignmentSubmissionLogic submissionLogic;
     private Locale locale;
     //private EntityBeanLocator assignment2BeanLocator;
     private AttachmentInputEvolver attachmentInputEvolver;
     private ErrorStateManager errorstatemanager;
     private StatePreservationManager presmanager; // no, not that of OS/2
+    private Assignment2Creator assignment2Creator;
     
     // Assignment Authoring Scope Flow Bean
     private AssignmentAuthoringFlowBean assignmentAuthoringFlowBean;
@@ -138,8 +145,24 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
         String currentContextId = externalLogic.getCurrentContextId();
 
         //get Passed assignmentId to pull in for editing if any
+        Long duplicatedAssignId = params.duplicatedAssignmentId;
         Long assignmentId = params.assignmentId;
-
+        
+        // we should never have a populated assignmentId and duplicatedAssignmentId, but
+        // just in case, default to duplicated
+        if (duplicatedAssignId != null) {
+            assignmentId = null;
+            Assignment2 dupAssign = assignmentLogic.getAssignmentByIdWithAssociatedData(duplicatedAssignId);
+            if (dupAssign == null) {
+                throw new AssignmentNotFoundException("No assignment exists with id " + duplicatedAssignId);
+            }
+            
+            String newTitle = assignmentLogic.getDuplicatedAssignmentTitle(currentContextId, dupAssign.getTitle());
+            
+            // set the assignment to be this duplicated fellow
+            assignmentAuthoringFlowBean.setAssignment(assignment2Creator.createDuplicate(dupAssign, newTitle));
+        }
+        
         // use a date which is related to the current users locale
         DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, locale);
 
@@ -147,7 +170,12 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
         UIInternalLink.make(tofill, "breadcrumb", 
                 messageLocator.getMessage("assignment2.list.heading"),
                 new SimpleViewParameters(ListProducer.VIEW_ID));
-        if (params.assignmentId != null) {
+        if (params.duplicatedAssignmentId != null) {
+            // Breadcrumb
+            UIMessage.make(tofill, "last_breadcrumb", "assignment2.assignment_add.dup_heading");
+            //Heading messages
+            UIMessage.make(tofill, "page-title", "assignment2.assignment_add.title.duplicate");
+        } else if (params.assignmentId != null) {
             // Breadcrumb
             UIMessage.make(tofill, "last_breadcrumb", "assignment2.assignment_add.edit_heading");
             //Heading messages
@@ -198,6 +226,14 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
         assignment2OTP += OTPKey;
         //Assignment2 assignment = (Assignment2)assignment2BeanLocator.locateBean(OTPKey);
         Assignment2 assignment = (Assignment2) assignmentAuthoringFlowBean.locateBean(OTPKey);
+        
+        // if this is an "edit" scenario, we need to display a warning if the
+        // assignment is graded but doesn't have an assoc gb item
+        if (assignmentId != null && assignment.isGraded() && assignment.getGradebookItemId() == null) {
+            // we need to display a message indicating that the gradebook item
+            // assoc with this item no longer exists
+            UIMessage.make(tofill, "no_gb_item", "assignment2.assignment_add.gb_item_deleted");
+        }
 
         //Initialize js otpkey
         UIVerbatim.make(tofill, "attachment-ajax-init", "otpkey=\"" + org.sakaiproject.util.Web.escapeUrl(OTPKey) + "\";\n" +
@@ -450,7 +486,18 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
         UIBoundBoolean.make(form, "sub_notif", assignment2OTP + ".sendSubmissionNotifications");
 
         //Post Buttons
-        UICommand.make(form, "post_assignment", UIMessage.make("assignment2.assignment_add.post"), "AssignmentAuthoringBean.processActionPost");
+        UICommand postAssign = UICommand.make(form, "post_assignment", UIMessage.make("assignment2.assignment_add.post"), "AssignmentAuthoringBean.processActionPost");
+        if (assignment.getId() != null) {
+           List<String> allStudents = externalLogic.getStudentsInSite(currentContextId);
+           int numSubmissions = submissionLogic.getNumStudentsWithASubmission(assignment, allStudents);
+           if (numSubmissions > 0) {
+               // we need to display a warning to the user that they are editing
+               // an assignment with submissions
+               postAssign.decorate(
+                       new UIFreeAttributeDecorator("onclick",
+                               "asnn2.editAssignmentConfirm(this); return false;"));
+           }
+        }
         UICommand.make(form, "preview_assignment", UIMessage.make("assignment2.assignment_add.preview"), "AssignmentAuthoringBean.processActionPreview");
 
         if (assignment == null || assignment.getId() == null || assignment.isDraft()){
@@ -499,5 +546,17 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
 
     public void setStatePreservationManager(StatePreservationManager presmanager) {
         this.presmanager = presmanager;
+    }
+    
+    public void setAssignmentLogic(AssignmentLogic assignmentLogic) {
+        this.assignmentLogic = assignmentLogic;
+    }
+    
+    public void setAssignmentSubmissionLogic(AssignmentSubmissionLogic submissionLogic) {
+        this.submissionLogic = submissionLogic;
+    }
+    
+    public void setAssignment2Creator(Assignment2Creator assignment2Creator) {
+        this.assignment2Creator = assignment2Creator;
     }
 }

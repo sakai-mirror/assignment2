@@ -407,4 +407,29 @@ public class ExternalLogicImpl implements ExternalLogic {
     	
     	return userDisplayIdUserIdMap;
     }
+    
+    public String getMyWorkspaceSiteId(String userId) {
+        if (userId == null) {
+            throw new IllegalArgumentException("Null userId passed to getMyWorkspaceSiteId");
+        }
+        
+        String myWorkspaceId = siteService.getUserSiteId(userId);
+        
+        return myWorkspaceId;
+    }
+    
+    public Map<String, String> getUserIdToSortNameMap(Collection userIds) {      
+        Map<String, String> userIdSortNameMap = new HashMap<String, String>();
+        
+        if (userIds != null) {
+            List<User> users = userDirectoryService.getUsers(userIds);
+            if (users != null) {
+                for (User user : users) {
+                    userIdSortNameMap.put(user.getId(), user.getSortName());
+                }
+            }
+        }
+        
+        return userIdSortNameMap;
+    }
 }

@@ -24,8 +24,10 @@ package org.sakaiproject.assignment2.tool.producers;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
@@ -64,6 +66,8 @@ import uk.org.ponder.rsf.components.UIMessage;
 import uk.org.ponder.rsf.components.UIOutput;
 import uk.org.ponder.rsf.components.UISelect;
 import uk.org.ponder.rsf.components.UIVerbatim;
+import uk.org.ponder.rsf.components.decorators.DecoratorList;
+import uk.org.ponder.rsf.components.decorators.UIFreeAttributeDecorator;
 import uk.org.ponder.rsf.evolvers.FormatAwareDateInputEvolver;
 import uk.org.ponder.rsf.evolvers.TextInputEvolver;
 import uk.org.ponder.rsf.flow.ARIResult;
@@ -160,6 +164,12 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
         //navBarRenderer.makeNavBar(tofill, "navIntraTool:", VIEW_ID);
         //UIMessage.make(tofill, "heading", "assignment2.assignment_grade.heading", new Object[]{assignment.getTitle()});
 
+        // if gbItem is still null at this point, it must no longer exist. display warning
+        // to user
+        if (assignment.isGraded() && assignment.getGradebookItemId() == null) {
+            UIOutput.make(tofill, "no_gb_item", messageLocator.getMessage("assignment2.assignment_grade.gb_item_deleted"));
+        }
+        
         //AssignmentSubmission OTP Stuff
         String asOTP = "AssignmentSubmission.";
         String OTPKey = "";
@@ -234,6 +244,26 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
             attachmentListRenderer.makeAttachmentFromAssignmentAttachmentSet(tofill, "assign_attach_list:", params.viewID, 
                     assignment.getAttachmentSet());
         }
+        
+        // add the alt text to the toggle for the instructions
+        Map<String, String> instrToggleMap = new HashMap<String, String>();
+        String instrToggleText = messageLocator.getMessage("assignment2.assignment_grade-assignment.assignment_details.instructions.toggle");
+        instrToggleMap.put("alt", instrToggleText);
+        instrToggleMap.put("title", instrToggleText);
+        DecoratorList instructionDecoList = new DecoratorList(new UIFreeAttributeDecorator(instrToggleMap));
+        
+        UIOutput instructionsToggle = UIOutput.make(tofill, "instructions_toggle");
+        instructionsToggle.decorators = instructionDecoList;
+        
+        // now handle the Feedback toggle
+        Map<String, String> fbToggleMap = new HashMap<String, String>();
+        String fbToggleText = messageLocator.getMessage("assignment2.assignment_grade.feedback.toggle");
+        fbToggleMap.put("alt", fbToggleText);
+        fbToggleMap.put("title", fbToggleText);
+        DecoratorList feedbackDecoList = new DecoratorList(new UIFreeAttributeDecorator(fbToggleMap));
+        
+        UIOutput feedbackToggle = UIOutput.make(tofill, "feedback_toggle");
+        feedbackToggle.decorators = feedbackDecoList;
 
         // Only display submission info if there has actually been a submission
         if (assignmentSubmissionVersion.getSubmittedDate() != null) {
@@ -269,13 +299,23 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
                 }
             }
         }
+        
+        // if the user has view-only perm and there are no fb attach, don't show the heading
+        if (grade_perm || (assignmentSubmissionVersion.getFeedbackAttachSet() != null && !assignmentSubmissionVersion.getFeedbackAttachSet().isEmpty())) {
+            UIOutput.make(tofill, "attachmentsFieldset");
+        }
 
         if (grade_perm) {
             UIInput feedback_notes = UIInput.make(form, "feedback_notes:", asvOTP + ".feedbackNotes");
             feedback_notes.mustapply = Boolean.TRUE;
             richTextEvolver.evolveTextInput(feedback_notes);
         } else {
-            UIVerbatim.make(form, "feedback_text_no_edit", assignmentSubmissionVersion.getFeedbackNotes());        	
+            if (assignmentSubmissionVersion.getFeedbackNotes() == null || 
+                    "".equals(assignmentSubmissionVersion.getFeedbackNotes().trim())) {
+                UIMessage.make(tofill, "feedback_notes_no_edit", "assignment2.assignment_grade.no_feedback.text-only");
+            } else {
+                UIVerbatim.make(tofill, "feedback_notes_no_edit", assignmentSubmissionVersion.getFeedbackNotes());   
+            }
         }
 
         //Attachments
@@ -301,7 +341,17 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
         if (assignment.getSubmissionType() != AssignmentConstants.SUBMIT_NON_ELECTRONIC) {
             UIOutput.make(form, "resubmission_settings");
             
-            Integer current_times_submitted_already = 0;
+            // make the toggle
+            Map<String, String> resubToggleMap = new HashMap<String, String>();
+            String resubToggleText = messageLocator.getMessage("assignment2.assignment_grade.allow_resubmission.toggle");
+            resubToggleMap.put("alt", resubToggleText);
+            resubToggleMap.put("title", resubToggleText);
+            DecoratorList resubDecoList = new DecoratorList(new UIFreeAttributeDecorator(resubToggleMap));
+            
+            UIOutput resubmitToggle = UIOutput.make(tofill, "resubmission_toggle");
+            resubmitToggle.decorators = resubDecoList;
+            
+            int current_times_submitted_already = 0;
             if (as != null && as.getSubmissionHistorySet() != null) {
                 current_times_submitted_already = submissionLogic.getNumSubmittedVersions(as.getUserId(), assignmentId);
             }
@@ -344,8 +394,8 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
                 number_submissions_values[0] = "" + AssignmentConstants.UNLIMITED_SUBMISSION;
                 number_submissions_options[0] = messageLocator.getMessage("assignment2.indefinite_resubmit");
                 for (int i=0; i < size; i++){
-                    number_submissions_values[i + 1] = Integer.valueOf(i + current_times_submitted_already).toString();
-                    number_submissions_options[i + 1] = Integer.valueOf(i).toString();
+                    number_submissions_values[i + 1] = (i + current_times_submitted_already) + "";
+                    number_submissions_options[i + 1] = i + "";
                 }
 
                 //Output
@@ -372,19 +422,35 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
                 dateEvolver.setInvalidTimeKey("assignment2.assignment_grade.resubmission.accept_until_time.invalid");
                 dateEvolver.evolveDateInput(acceptUntilDateField, resubmitUntil);
             } else {
-                // display text only representation
-                String totalSubmissions = as.getNumSubmissionsAllowed().toString();
-                if (as.getNumSubmissionsAllowed() == AssignmentConstants.UNLIMITED_SUBMISSION) {
-                    totalSubmissions = messageLocator.getMessage("assignment2.indefinite_resubmit");
+                // display text-only representation
+                UIOutput.make(form, "resubmit_no_change");
+                
+                //Output
+                String currSubmissionMsg = "assignment2.assignment_grade.resubmission.curr_submissions.text-only";
+                if (current_times_submitted_already == 1) {
+                    currSubmissionMsg = "assignment2.assignment_grade.resubmission.curr_submissions.1.text-only";
                 }
-                UIMessage.make(form, "resubmit_no_change", "assignment2.assignment_grade.resubmission_text", 
-                        new Object[] {externalLogic.getUserDisplayName(params.userId), 
-                        current_times_submitted_already, totalSubmissions, 
-                        (as.getResubmitCloseDate() != null ? df.format(as.getResubmitCloseDate()) : "")});
+
+                UIMessage.make(form, "resub_curr_submissions_text", currSubmissionMsg, 
+                        new Object[] { current_times_submitted_already});
+                
+                String numRemainingSubmissionsText;
+                if (numSubmissionsAllowed == AssignmentConstants.UNLIMITED_SUBMISSION) {
+                    numRemainingSubmissionsText = messageLocator.getMessage("assignment2.indefinite_resubmit");
+                } else {
+                    numRemainingSubmissionsText = (numSubmissionsAllowed - current_times_submitted_already) + "";
+                }
+                UIMessage.make(form, "resub_allowed_submissions_text", "assignment2.assignment_grade.resubmission.allow_number.text-only", 
+                       new Object[] {numRemainingSubmissionsText});
+                
+                if (is_require_accept_until) {
+                    UIMessage.make(form, "resub_until_text", "assignment2.assignment_grade.resubmission.accept_until.text-only", 
+                            new Object[] {df.format(resubmitUntil)});
+                }
             }
         }
 
-        if (assignment.isGraded()){
+        if (assignment.isGraded() && assignment.getGradebookItemId() != null){
             gradebookDetailsRenderer.makeGradebookDetails(tofill, "gradebook_details", as, assignmentId, userId);
         }        
 
@@ -398,10 +464,31 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
         if (history != null && history.size() > 1) {
             UIOutput.make(form, "submission-history-area");
             
+            // make the history section toggle
+            Map<String, String> historyToggleMap = new HashMap<String, String>();
+            String histToggleText = messageLocator.getMessage("assignment2.assignment_grade.history.toggle");
+            historyToggleMap.put("alt", histToggleText);
+            historyToggleMap.put("title", histToggleText);
+            DecoratorList histDecoList = new DecoratorList(new UIFreeAttributeDecorator(historyToggleMap));
+            
+            UIOutput historyToggle = UIOutput.make(tofill, "history_toggle");
+            historyToggle.decorators = histDecoList;
+            
             for (AssignmentSubmissionVersion asv : history){
     
                 UIBranchContainer loop = UIBranchContainer.make(form, "previous_submissions:");
-                UIOutput.make(loop, "previous_date", (asv.getSubmittedDate() != null ? df.format(asv.getSubmittedDate()) : ""));
+                String historyText;
+                if (asv.getSubmittedDate() != null) {
+                    historyText = df.format(asv.getSubmittedDate());
+                } else if (asv.getSubmittedVersionNumber() == AssignmentSubmissionVersion.FEEDBACK_ONLY_VERSION_NUMBER) {
+                    historyText = messageLocator.getMessage("assignment2.assignment_grade.feedback_only_version");
+                } else if (asv.isDraft()) {
+                    historyText = messageLocator.getMessage("assignment2.assignment_grade.in_progress_version");
+                } else {
+                    historyText = "";
+                }
+                
+                UIOutput.make(loop, "previous_date", historyText);
                 if (asvOTPKey.equals(asv.getId().toString())){
                     //we are editing this version
                     UIMessage.make(loop, "current_version", "assignment2.assignment_grade.current_version");

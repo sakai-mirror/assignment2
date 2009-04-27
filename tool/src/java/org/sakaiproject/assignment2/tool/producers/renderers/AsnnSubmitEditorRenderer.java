@@ -273,9 +273,12 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
             AssignmentSubmissionVersion currVersion = assignmentSubmission.getCurrentSubmissionVersion();
             if (currVersion.isDraft() && currVersion.isFeedbackReleased()) {
                 UIOutput.make(joint, "draft-feedback");
-                UIMessage.make(joint, "draft-feedback-header", "assignment2.student-submission.feedback.header");
-
-                UIVerbatim.make(joint, "draft-feedback-text", currVersion.getFeedbackNotes());
+                
+                String feedbackComment = currVersion.getFeedbackNotes();
+                if (feedbackComment == null || feedbackComment.trim().equals("")) {
+                    feedbackComment = messageLocator.getMessage("assignment2.student-submission.feedback.none");
+                }
+                UIVerbatim.make(joint, "draft-feedback-text", feedbackComment);
 
                 if (assignmentSubmission.getCurrentSubmissionVersion().getFeedbackAttachSet() != null && 
                         assignmentSubmission.getCurrentSubmissionVersion().getFeedbackAttachSet().size() > 0) {
@@ -313,7 +316,7 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
         if (!studentPreviewSubmission) {
             UIInternalLink.make(form, "add_submission_attachments", UIMessage.make("assignment2.student-submit.add_attachments"),
                 new FilePickerHelperViewParams(AddAttachmentHelperProducer.VIEWID, Boolean.TRUE, 
-                        Boolean.TRUE, 500, 700, asvOTPKey));
+                        Boolean.TRUE, 500, 700, asvOTPKey, true));
         }
         
         UIOutput.make(form, "no_attachments_yet", messageLocator.getMessage("assignment2.student-submit.no_attachments"));

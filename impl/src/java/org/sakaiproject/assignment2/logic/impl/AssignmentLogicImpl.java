@@ -46,6 +46,7 @@ import org.sakaiproject.assignment2.logic.ExternalAnnouncementLogic;
 import org.sakaiproject.assignment2.logic.ExternalCalendarLogic;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
+import org.sakaiproject.assignment2.logic.GradebookItem;
 import org.sakaiproject.assignment2.logic.utils.Assignment2Utils;
 import org.sakaiproject.assignment2.logic.utils.ComparatorsUtils;
 import org.sakaiproject.assignment2.model.Assignment2;
@@ -54,6 +55,7 @@ import org.sakaiproject.assignment2.model.AssignmentGroup;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.assignment2.taggable.api.AssignmentActivityProducer;
 import org.sakaiproject.exception.PermissionException;
+import org.sakaiproject.genericdao.api.search.Search;
 import org.sakaiproject.site.api.Group;
 import org.sakaiproject.taggable.api.TaggingManager;
 import org.sakaiproject.taggable.api.TaggingProvider;
@@ -142,6 +144,13 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 		
 		if (assign == null) {
 			throw new AssignmentNotFoundException("No assignment found with id: " + assignmentId);
+		}
+		
+		// now, check to see if gradebook item still exists, if graded
+		if (assign.isGraded()) {
+		    if (!gradebookLogic.gradebookItemExists(assign.getGradebookItemId())) {
+		        assign.setGradebookItemId(null);
+		    }
 		}
 
 		return assign;
@@ -429,7 +438,23 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 		    boolean isUserAbleToGradeAll = permissionLogic.isUserAbleToProvideFeedbackForAllStudents(contextId);
 		    
 		    if (isUserAbleToGradeAll) {
-		        viewableAssignments.addAll(allAssignments);
+		        // let's check to see if any of the graded assignments' associated
+		        // gradebook items were deleted. we need to flag these assignments.
+		        List<GradebookItem> allGbItems = gradebookLogic.getAllGradebookItems(contextId);
+		        List<Long> gbItemIdList = new ArrayList<Long>();
+		        if (allGbItems != null) {
+		            for (GradebookItem gbItem : allGbItems) {
+		                gbItemIdList.add(gbItem.getGradebookItemId());
+		            }
+		        }
+		        
+		        for (Assignment2 assign : allAssignments) {
+		            if (assign.isGraded() && !gbItemIdList.contains(assign.getGradebookItemId())) {
+		                assign.setGradebookItemId(null);
+		            }
+		            
+		            viewableAssignments.add(assign);
+		        }
 		    } else {
 
 		        List<Assignment2> gradedAssignments = new ArrayList<Assignment2>();
@@ -863,5 +888,28 @@ public class AssignmentLogicImpl implements AssignmentLogic{
                 }
             }
         }
+	}
+
+	public String getDuplicatedAssignmentTitle(String contextId, String titleToDuplicate) {
+	    if (contextId == null || titleToDuplicate == null) {
+	        throw new IllegalArgumentException("Null contextId or titleToDuplicate passed to getDuplicatedAssignmentTitle." 
+	                + " contextId:" + contextId + " titleToDuplicate:" + titleToDuplicate);
+	    }
+	    // first, get all of the existing assignment titles
+	    Search search = new Search(new String[] {"contextId", "removed"}, new Object[] {contextId, false});
+	    List<Assignment2> allAssigns = dao.findBySearch(Assignment2.class, search);
+	    List<String> existingAssignTitles = new ArrayList<String>();
+	    if (allAssigns != null) {
+	        for (Assignment2 assign : allAssigns) {
+	            existingAssignTitles.add(assign.getTitle());
+	        }
+	    }
+
+	    String duplicatedTitle = Assignment2Utils.getVersionedString(titleToDuplicate);
+	    while (existingAssignTitles.contains(duplicatedTitle)) {
+	        duplicatedTitle = Assignment2Utils.getVersionedString(duplicatedTitle);
+	    }
+
+	    return duplicatedTitle;
 	}
 }

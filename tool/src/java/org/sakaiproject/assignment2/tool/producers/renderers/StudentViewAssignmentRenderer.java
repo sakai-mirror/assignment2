@@ -192,7 +192,15 @@ public class StudentViewAssignmentRenderer {
                 List<AssignmentSubmissionVersion> versionHistory = submissionLogic.getVersionHistoryForSubmission(assignmentSubmission);
                 if (versionHistory != null) {
                     if (versionHistory.size() == 1 && !submissionIsOpen) {
-                        asnnSubmissionVersionRenderer.fillComponents(joint, "assignment-single-version:", versionHistory.get(0), false);
+                        AssignmentSubmissionVersion singleVersion = versionHistory.get(0);
+                        asnnSubmissionVersionRenderer.fillComponents(joint, "assignment-single-version:", singleVersion, false);
+                        
+                        // we need to mark this feedback as read (if released and unread)
+                        if (singleVersion.isFeedbackReleased() && !singleVersion.isFeedbackRead()) {
+                            List<Long> markRead = new ArrayList<Long>();
+                            markRead.add(singleVersion.getId());
+                            submissionLogic.markFeedbackAsViewed(singleVersion.getAssignmentSubmission().getId(), markRead);
+                        }
                     } else if (versionHistory.size() > 1 || (versionHistory.size() == 1 && !versionHistory.get(0).isDraft())) {
                         asnnSubmissionHistoryRenderer.fillComponents(joint, "assignment-previous-submissions:", assignmentSubmission);
                     }

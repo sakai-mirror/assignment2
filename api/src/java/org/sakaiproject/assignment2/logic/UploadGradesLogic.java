@@ -26,6 +26,7 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
+import org.sakaiproject.assignment2.exception.GradebookItemNotFoundException;
 import org.sakaiproject.assignment2.exception.InvalidGradeForAssignmentException;
 
 public interface UploadGradesLogic
@@ -65,6 +66,8 @@ public interface UploadGradesLogic
 	 * for the given assignment
 	 * @throws InvalidGradeForAssignmentException if a grade contained in the content 
 	 * is not valid
+	 * @throws GradebookItemNotFoundException if the gradebook item associated with the
+	 * assignment does not exist
 	 */
 	public List<String> uploadGrades(Map<String, String> displayIdUserIdMap, Long assignmentId, List<List<String>> parsedContent);
 	

@@ -38,6 +38,7 @@ import org.apache.commons.vfs.FileSystemException;
 import org.apache.commons.vfs.FileSystemManager;
 import org.apache.commons.vfs.VFS;
 import org.sakaiproject.assignment2.exception.AssignmentNotFoundException;
+import org.sakaiproject.assignment2.exception.GradebookItemNotFoundException;
 import org.sakaiproject.assignment2.exception.InvalidGradeForAssignmentException;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
@@ -94,6 +95,10 @@ public class UploadGradesLogicImpl implements UploadGradesLogic
 		if (!assign.isGraded() || assign.getGradebookItemId() == null) {
 			throw new IllegalArgumentException("You may only upload grades for an assignment " +
 			"that is associated with a gradebook item.");
+		}
+		
+		if (!gradebookLogic.gradebookItemExists(assign.getGradebookItemId())) {
+		    throw new GradebookItemNotFoundException("No gradebook item exists with the given id: " + assign.getGradebookItemId());
 		}
 
 		if (!permissionLogic.isUserAllowedToProvideFeedbackForAssignment(assign)) {

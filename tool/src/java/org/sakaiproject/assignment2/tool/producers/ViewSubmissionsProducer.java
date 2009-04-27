@@ -58,6 +58,7 @@ import uk.org.ponder.htmlutil.HTMLUtil;
 import uk.org.ponder.messageutil.MessageLocator;
 import uk.org.ponder.messageutil.TargettedMessage;
 import uk.org.ponder.messageutil.TargettedMessageList;
+import uk.org.ponder.rsf.components.UIBoundBoolean;
 import uk.org.ponder.rsf.components.UIBranchContainer;
 import uk.org.ponder.rsf.components.UICommand;
 import uk.org.ponder.rsf.components.UIContainer;
@@ -161,8 +162,13 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
             } catch (GradebookItemNotFoundException ginfe) {
                 if (log.isDebugEnabled()) log.debug("Gb item with id: " + assignment.getGradebookItemId() + " no longer exists!");
                 gbItem = null;
-                UIOutput.make(tofill, "no_gb_item", messageLocator.getMessage("assignment2.assignment_grade.gb_item_deleted"));
             }
+        }
+        
+        // if gbItem is still null at this point, it must no longer exist. display warning
+        // to user
+        if (assignment.isGraded() && gbItem == null) {
+            UIOutput.make(tofill, "no_gb_item", messageLocator.getMessage("assignment2.assignment_grade-assignment.gb_item_deleted"));
         }
         
         // get grade info, if appropriate
@@ -208,17 +214,13 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
             }
 
             UIForm releaseGradesForm = UIForm.make(tofill, "release_grades_form");
-            releaseGradesForm.addParameter(new UIELBinding("ReleaseGradesAction.gradebookItemId", assignment.getGradebookItemId()));
-            releaseGradesForm.addParameter(new UIELBinding("ReleaseGradesAction.curContext", assignment.getContextId()));
-            releaseGradesForm.addParameter(new UIELBinding("ReleaseGradesAction.releaseGrades", !gradesReleased));
-
-            UICommand releaseGradesButton = UICommand.make(releaseGradesForm, "release_grades", "ReleaseGradesAction.execute");
+            UICommand releaseGradesButton = UICommand.make(releaseGradesForm, "release_grades");
 
             UIOutput.make(tofill, "release_grades_li");
             UIInternalLink releaseGradesLink = UIInternalLink.make(tofill, 
                     "release_grades_link", releaseLinkText, viewparams);
             Map<String,String> idmap = new HashMap<String,String>();
-            idmap.put("onclick", "asnn2.releaseGradesDialog('"+releaseGradesButton.getFullID()+"'); return false;");
+            idmap.put("onclick", "asnn2.releaseGradesDialog('"+releaseGradesButton.getFullID()+"', '" + assignment.getContextId() + "', '" + assignment.getGradebookItemId() + "', '" + !gradesReleased + "'); return false;");
             releaseGradesLink.decorate(new UIFreeAttributeDecorator(idmap));
             
             makeReleaseGradesDialog(gradesReleased, assignment, tofill);
@@ -299,11 +301,19 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
         sortHeaderRenderer.makeSortingLink(tofill, "tableheader.released", viewparams, 
                 AssignmentSubmissionLogic.SORT_BY_RELEASED, "assignment2.assignment_grade-assignment.tableheader.released");
 
+        // let's retrieve all of the student name info in one call 
+        List<String> studentIdList = new ArrayList<String>();
+        for (AssignmentSubmission as : submissions) {
+            studentIdList.add(as.getUserId());
+        }
+        
+        Map<String, String> studentIdSortNameMap = externalLogic.getUserIdToSortNameMap(studentIdList);
+        
         for (AssignmentSubmission as : submissions) {
             UIBranchContainer row = UIBranchContainer.make(tofill, "row:");
 
             UIInternalLink.make(row, "row_grade_link",
-                    externalLogic.getUserSortName(as.getUserId()),
+                    studentIdSortNameMap.get(as.getUserId()),
                     new GradeViewParams(GradeProducer.VIEW_ID, as.getAssignment().getId(), as.getUserId()));
 
 
@@ -516,6 +526,9 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
                 UIOutput.make(tofill, "confirm-checkbox-label", messageLocator.getMessage("assignment2.dialogs.release_grades.groups.confirmcheckbox"));
                 UIOutput.make(tofill, "confirm-checkbox-area");
             }
+            
+            // add the checkbox for also including in course grade
+            UIOutput.make(tofill, "release-grades-counted");
         }
         
         UIOutput.make(tofill, "release-grades-title", releaseGradesTitle);

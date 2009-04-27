@@ -77,9 +77,14 @@ public class LocalPermissionLogic {
         String contextId = externalLogic.getCurrentContextId();
         String viewId = viewParams.viewID;
 
+        /* This first check is special and for our new hybrid pages that need to
+         * go to the content directory for various Fluid interfaces.
+         */
+        // ASNN-466 if (viewId.equals("content")) {
+        //    return Boolean.TRUE;
+       // }
         if (AddAttachmentHelperProducer.VIEWID.equals(viewId)) {
             return Boolean.TRUE;
-
         } else if (RemoveAssignmentConfirmProducer.VIEW_ID.equals(viewId)) {
             return permissionLogic.isCurrentUserAbleToEditAssignments(contextId);
         }
@@ -95,8 +100,8 @@ public class LocalPermissionLogic {
 
         } else if (ListProducer.VIEW_ID.equals(viewId)) {
             return permissionLogic.isUserAbleToAccessInstructorView(contextId);
-
-        } else if (AssignmentInfoDataProducer.VIEW_ID.equals(viewId)) {
+        }
+        else if (AssignmentInfoDataProducer.VIEW_ID.equals(viewId)) {
             // Currently we are only allowing instructors to view the assignment
             // info since it contains the number of submissions. Will plan on 
             // doing better checking of what information users can see in the 

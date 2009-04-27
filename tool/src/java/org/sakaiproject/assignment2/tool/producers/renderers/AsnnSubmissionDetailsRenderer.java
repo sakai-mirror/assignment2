@@ -124,6 +124,9 @@ public class AsnnSubmissionDetailsRenderer implements BasicProducer {
         DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, locale);
         DateFormat df_short = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, locale);
 
+        // get the status of the current version
+        int currStatus = submissionLogic.getSubmissionStatusConstantForCurrentVersion(assignmentSubmission.getCurrentSubmissionVersion(), assignment.getDueDate());
+        
         /***
          * Title and Due Date Information
          */
@@ -135,8 +138,7 @@ public class AsnnSubmissionDetailsRenderer implements BasicProducer {
                 submissionHeading = messageLocator.getMessage("assignment2.student-submit.heading.submission", new Object[]{ title, currentUser.getDisplayName() });
             }
             
-            if (assignmentSubmission.getCurrentSubmissionVersion() != null &&
-                    assignmentSubmission.getCurrentSubmissionVersion().isDraft()) {
+            if (currStatus == AssignmentConstants.SUBMISSION_IN_PROGRESS) {
                 UIVerbatim.make(joint, "heading_status", messageLocator.getMessage("assignment2.student-submit.heading.in_progress", 
                         new Object[]{ title, currentUser.getDisplayName(), df_short.format(assignmentSubmission.getCurrentSubmissionVersion().getStudentSaveDate())}));
             } else {
@@ -158,9 +160,8 @@ public class AsnnSubmissionDetailsRenderer implements BasicProducer {
                 // 1) student never made a submission -OR-
                 // 2) student had a submission in progress
                 if (!assignment.isRemoved()) {
-                    if (assignmentSubmission.getCurrentSubmissionVersion() == null ||
-                            assignmentSubmission.getCurrentSubmissionVersion().getId() == null ||
-                            assignmentSubmission.getCurrentSubmissionVersion().isDraft()) {
+                    if (currStatus == AssignmentConstants.SUBMISSION_NOT_STARTED ||
+                            currStatus == AssignmentConstants.SUBMISSION_IN_PROGRESS) {
                         UIOutput.make(joint, "submission_closed", messageLocator.getMessage("assignment2.student-submit.submission_closed"));
                     }
                 }
@@ -173,8 +174,13 @@ public class AsnnSubmissionDetailsRenderer implements BasicProducer {
                 if (history != null && history.size() == 1) {
                     AssignmentSubmissionVersion version = history.get(0);
                     if (version.getSubmittedDate() != null) {
-                        dueDateText = messageLocator.getMessage("assignment2.student-submit.submitted_info", 
-                                new Object[]{version.getSubmittedDate()});
+                        if (assignment.getDueDate() != null && version.getSubmittedDate().after(assignment.getDueDate())) {
+                            dueDateText = messageLocator.getMessage("assignment2.student-submit.submitted_info.late", 
+                                    new Object[]{df.format(version.getSubmittedDate())});
+                        } else {
+                            dueDateText = messageLocator.getMessage("assignment2.student-submit.submitted_info", 
+                                    new Object[]{df.format(version.getSubmittedDate())});
+                        }
                     }
                 }
             }
@@ -186,12 +192,18 @@ public class AsnnSubmissionDetailsRenderer implements BasicProducer {
             if (assignment.getDueDate() == null) {
                 dueDateText = messageLocator.getMessage("assignment2.student-submit.no_due_date");
             } else {
-                dueDateText = messageLocator.getMessage("assignment2.student-submit.due_date", 
-                        new Object[] {df.format(assignment.getDueDate())});
+                // display something special if the submission is going to be late
+                if (assignment.getDueDate().before(new Date())) {
+                    dueDateText = messageLocator.getMessage("assignment2.student-submit.due_date.late", 
+                            new Object[] {df.format(assignment.getDueDate())});
+                } else {
+                    dueDateText = messageLocator.getMessage("assignment2.student-submit.due_date", 
+                            new Object[] {df.format(assignment.getDueDate())});
+                }
             }
         }
         
-        UIOutput.make(joint, "due_date", dueDateText);
+        UIVerbatim.make(joint, "due_date", dueDateText);
 
         if (!excludeDetails) {
             renderAssignmentDetails(assignmentSubmission, previewAsStudent,

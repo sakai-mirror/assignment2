@@ -136,46 +136,6 @@ public class ListProducer implements ViewComponentProducer, NavigationCaseReport
                 UIMessage.make(tofill, "no-assignments-message", "assignment2.list.assignment_empty");
             }
         }
-        
-        /////////// New Table Version //
-        /*
-        if (entries.size() > 0) {
-            UIOutput.make(tofill, "assignmentTable");
-            if (edit_perm) {
-                UIInternalLink.make(tofill, "add_assignment", UIMessage.make("assignment2.list.add_assignment"),
-                        new SimpleViewParameters(AssignmentProducer.VIEW_ID));
-            }
-        }
-        
-        for (Assignment2 assignment : entries) {
-            UIBranchContainer row = UIBranchContainer.make(tofill, "asnn-row:");
-            
-            UIOutput infoCell = UIOutput.make(row, "assignmentInfoCell");
-            if (assignment.isOpen())
-            {
-                //show active styleclass
-                infoCell.decorators = new DecoratorList(new UIStyleDecorator("assignmentActive"));
-
-            } else {
-                //show inactive styleclass
-                infoCell.decorators = new DecoratorList(new UIStyleDecorator("assignmentInactive"));
-            }
-            UIOutput title = UIOutput.make(row, "assignment_title", (assignment != null) ? assignment.getTitle() : "");
-            
-            renderSubmissionStatusForAssignment(currUserId, assignment, row);
-            
-            renderDueDateOnRow(df, assignment, row);
-            
-            if (edit_perm) {
-                UIOutput.make(row, "delete-asnn-link").decorate(
-                        new UIFreeAttributeDecorator("onclick",
-                        "asnn2.removeAsnnDialog("+assignment.getId()+",jQuery(this).parents('tr.movable:first').get(0)); return false;"));
-                UIInternalLink.make(row, "assignment_edit",  UIMessage.make("assignment2.list.edit"), 
-                        new AssignmentViewParams(AssignmentProducer.VIEW_ID, assignment.getId()));
-            }
-        }
-        */
-        /////////// End New Table Version //
      
         // get the viewable students for all of the assignments here to be
         // more efficient
@@ -197,6 +157,8 @@ public class ListProducer implements ViewComponentProducer, NavigationCaseReport
                         "asnn2listpage.removeAsnnDialog("+assignment.getId()+",jQuery(this).parents('li.row:first').get(0)); return false;"));
                 UIInternalLink.make(row, "assignment_edit",  UIMessage.make("assignment2.list.edit"), 
                         new AssignmentViewParams(AssignmentProducer.VIEW_ID, assignment.getId()));
+                UIInternalLink.make(row, "assignment_duplicate",  UIMessage.make("assignment2.list.duplicate"), 
+                        new AssignmentViewParams(AssignmentProducer.VIEW_ID, null, assignment.getId()));
                 
             }
 

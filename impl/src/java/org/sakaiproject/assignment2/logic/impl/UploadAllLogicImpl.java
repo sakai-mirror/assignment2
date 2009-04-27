@@ -129,7 +129,7 @@ public class UploadAllLogicImpl implements UploadAllLogic
 
         String currUserId = externalLogic.getCurrentUserId();
 
-        Assignment2 assign = assignmentLogic.getAssignmentById(options.assignmentId);
+        Assignment2 assign = assignmentLogic.getAssignmentByIdWithAssociatedData(options.assignmentId);
         if (assign == null) {
             throw new AssignmentNotFoundException("No assignment exists with id " + options.assignmentId);
         }
@@ -179,13 +179,15 @@ public class UploadAllLogicImpl implements UploadAllLogic
                     if (feedbackForStudent != null) {
                         feedbackUploadList.addAll(feedbackForStudent);
                     }
-                } else if (assign.isGraded() && fileObj.getType().equals(FileType.FILE) && 
+                } else if (assign.isGraded() && 
+                        assign.getGradebookItemId() != null &&
+                        fileObj.getType().equals(FileType.FILE) && 
                         fileObj.getName().getExtension().equals("csv")) {
                     // upload the grades csv file
                     processGrades(assign.getContextId(), options.assignmentId, fileObj, uploadInfo, displayIdUserIdMap);
                     // release the grades
                     if (options.releaseGrades) {
-                        gradebookLogic.releaseOrRetractGrades(assign.getContextId(), assign.getGradebookItemId(), true);
+                        gradebookLogic.releaseOrRetractGrades(assign.getContextId(), assign.getGradebookItemId(), true, null);
                     }
                 }
 

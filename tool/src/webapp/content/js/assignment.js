@@ -575,7 +575,7 @@ var asnn2 = asnn2 || {};
      * If the markup changes, this will need to change as well as it depends
      * on the structure.
      */
-    asnn2.assnSubVersionDiv = function (elementId, feedbackRead, submissionId, versionId) {
+    asnn2.assnSubVersionDiv = function (elementId, feedbackRead, submissionId, versionId, readFBAltText) {
         var escElemId = elementId.replace(/:/g, "\\:");
         var versionHeader = jQuery('#'+escElemId+ ' h3');
         var arrow = versionHeader.find("img:first");
@@ -585,6 +585,8 @@ var asnn2 = asnn2 || {};
             toggle_hideshow(arrow, toggled);
             if (envelope.attr('src') == NEW_FEEDBACK_IMAGE) {
                 envelope.attr('src', READ_FEEDBACK_IMAGE);
+                envelope.attr('alt', readFBAltText);
+                envelope.attr('title', readFBAltText);
                 mark_feedback(submissionId, versionId);
             }
         });
@@ -610,13 +612,13 @@ var asnn2 = asnn2 || {};
         confirmDialog = jQuery('#submit-confirm-dialog');
 
         var submitButton = buttonform;
-        jQuery('#submission-confirm-button').click( function (event) {
+        jQuery('#page-replace\\:\\:portletBody\\:1\\:assignment-edit-submission\\:\\:submission-confirm-button').click( function (event) {
         	asnn2util.closeDialog(confirmDialog);
             submitButton.onclick = function (event) { return true };
             submitButton.click();
         });
 
-        jQuery('#submission-cancel-button').click( function (event) {
+        jQuery('#page-replace\\:\\:portletBody\\:1\\:assignment-edit-submission\\:\\:submission-cancel-button').click( function (event) {
         	asnn2util.closeDialog(confirmDialog);
         });
 
@@ -624,6 +626,29 @@ var asnn2 = asnn2 || {};
         return false;
     };
     
+    /**
+     * Used to generate a confirmation dialog if a user attempts to edit an
+     * assignment that already has submissions
+     */
+    asnn2.editAssignmentConfirm = function(buttonform) {
+        
+        // display the confirmation dialog
+        confirmDialog = jQuery('#edit-assign-confirm-dialog');
+
+        var submitButton = buttonform;
+        jQuery('#page-replace\\:\\:submission-confirm-button').click( function (event) {
+            asnn2util.closeDialog(confirmDialog);
+            submitButton.onclick = function (event) { return true };
+            submitButton.click();
+        });
+
+        jQuery('#page-replace\\:\\:submission-cancel-button').click( function (event) {
+            asnn2util.closeDialog(confirmDialog);
+        });
+
+        asnn2util.openDialog(confirmDialog);
+        return false;
+    };
     
     
     /**
@@ -684,8 +709,11 @@ var asnn2 = asnn2 || {};
      * two cases use the same submit button for the form.
      * 
      * @param submitButtonId the id of the html element that actually is submitted
+     * @param contextId the contextId for the submission
+     * @param gradebookItemId the gradebookItemId associated w/ the assignment to release grades
+     * @param release true if you want to release, false if you want to retract grades
      */
-    asnn2.releaseGradesDialog = function(submitButtonId) {
+    asnn2.releaseGradesDialog = function(submitButtonId, contextId, gradebookItemId, release) {
         var confirmDialog = jQuery('#release-grades-dialog');
         var submitButton = jQuery('input[id=\'' + submitButtonId + '\']');
         var confirmButton = jQuery('#page-replace\\:\\:release-grades-confirm');
@@ -694,7 +722,22 @@ var asnn2 = asnn2 || {};
             if (confirmCheckbox && !confirmCheckbox.checked) {
                 jQuery("#page-replace\\:\\:checkbox-error").show();
             } else {
-                   
+                // include the value of the "include in course grade" option 
+                var includeInCourseGrade = false;
+                var includeInGradeEl = jQuery("#release-and-count").get(0);
+                if (includeInGradeEl) {
+                    includeInCourseGrade = includeInGradeEl.checked;
+                }
+                var queries = new Array();
+                queries.push(RSF.renderBinding("ReleaseGradesAction.gradebookItemId", gradebookItemId));
+                queries.push(RSF.renderBinding("ReleaseGradesAction.curContext", contextId));
+                queries.push(RSF.renderBinding("ReleaseGradesAction.releaseGrades",release));
+                queries.push(RSF.renderBinding("ReleaseGradesAction.includeInCourseGrade",includeInCourseGrade));
+                
+                queries.push(RSF.renderActionBinding("ReleaseGradesAction.execute"));
+                var body = queries.join("&");
+                jQuery.post(document.URL, body);
+                
                 asnn2util.closeDialog(confirmDialog);
                 submitButton.onclick = function (event) { return true };
                 submitButton.click();

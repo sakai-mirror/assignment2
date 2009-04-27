@@ -1245,7 +1245,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 			if (log.isDebugEnabled()) log.debug("Submission does not exist so no version history retrieved");
 		}
 		
-		Collections.sort(filteredVersionHistory, new ComparatorsUtils.VersionCreatedDateComparatorDesc());
+		Collections.sort(filteredVersionHistory, new ComparatorsUtils.VersionHistoryComparatorDesc());
 		
 		return filteredVersionHistory;
 	}

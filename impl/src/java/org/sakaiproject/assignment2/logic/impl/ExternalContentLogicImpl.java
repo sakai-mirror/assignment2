@@ -183,4 +183,22 @@ public class ExternalContentLogicImpl implements ExternalContentLogic {
 
         return newAttRef;
     }
+    
+    public String getMyWorkspaceCollectionId(String userId) {
+        if (userId == null) {
+            throw new IllegalArgumentException("Null userId passed to getMyWorkspaceCollectionId");
+        }
+        
+        String collectionId = null;
+        
+        String myWorkspaceSiteId = externalLogic.getMyWorkspaceSiteId(userId);
+        if (myWorkspaceSiteId != null) {
+            collectionId = contentHosting.getSiteCollection(myWorkspaceSiteId);
+        } else {
+            log.warn("No My Workspace site id found for user: " + userId);
+        }
+        
+        return collectionId;
+        
+    }
 }

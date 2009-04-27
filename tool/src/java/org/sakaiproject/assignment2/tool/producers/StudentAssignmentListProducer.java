@@ -23,8 +23,11 @@ package org.sakaiproject.assignment2.tool.producers;
 
 import java.awt.Color;
 import java.text.DateFormat;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
@@ -39,6 +42,7 @@ import org.sakaiproject.assignment2.tool.beans.AssignmentSubmissionBean;
 import org.sakaiproject.assignment2.tool.params.AssignmentListSortViewParams;
 import org.sakaiproject.assignment2.tool.params.SimpleAssignmentViewParams;
 
+import uk.org.ponder.messageutil.MessageLocator;
 import uk.org.ponder.rsf.components.UIBoundBoolean;
 import uk.org.ponder.rsf.components.UIBranchContainer;
 import uk.org.ponder.rsf.components.UICommand;
@@ -48,6 +52,7 @@ import uk.org.ponder.rsf.components.UIForm;
 import uk.org.ponder.rsf.components.UIInternalLink;
 import uk.org.ponder.rsf.components.UIMessage;
 import uk.org.ponder.rsf.components.UIOutput;
+import uk.org.ponder.rsf.components.decorators.DecoratorList;
 import uk.org.ponder.rsf.components.decorators.UIColourDecorator;
 import uk.org.ponder.rsf.components.decorators.UIDecorator;
 import uk.org.ponder.rsf.components.decorators.UIFreeAttributeDecorator;
@@ -76,6 +81,7 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
     private AssignmentSubmissionBean submissionBean;
     private ExternalGradebookLogic externalGradebookLogic;
     private ExternalLogic externalLogic;
+    private MessageLocator messageLocator;
 
     public static final String DEFAULT_SORT_DIR = AssignmentLogic.SORT_DIR_ASC;
     public static final String DEFAULT_OPPOSITE_SORT_DIR = AssignmentLogic.SORT_DIR_DESC;
@@ -99,7 +105,7 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
 
         //get paging data
         //List<Assignment2> entries = assignmentLogic.getViewableAssignments();
-        List<AssignmentSubmission> submissionEntries = submissionLogic.getSubmissionsForCurrentUser(currContextId);
+        List<AssignmentSubmission> submissionsWithHistory = submissionLogic.getSubmissionsForCurrentUser(currContextId);
 
         //Breadcrumbs
         UIMessage.make(tofill, "last_breadcrumb", "assignment2.student-assignment-list.heading");
@@ -110,7 +116,7 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
          * If there are no assignments, print out the message String, otherwise,
          * create the table element.
          */
-        if (submissionEntries.size() <= 0) {
+        if (submissionsWithHistory.size() <= 0) {
             UIMessage.make(tofill, "assignment_empty", "assignment2.student-assignment-list.assignment_empty");
             return;
         }
@@ -119,7 +125,7 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
         }
 
         //Fill out Table
-        for (AssignmentSubmission assignmentSubmission : submissionEntries){
+        for (AssignmentSubmission assignmentSubmission : submissionsWithHistory){
             UIBranchContainer row = UIBranchContainer.make(tofill, "assignment-row:");
 
             Assignment2 assignment = assignmentSubmission.getAssignment();
@@ -185,12 +191,41 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
             
             StudentAction availStudentAction = submissionBean.determineStudentAction(assignmentSubmission.getUserId(), assignment.getId());
             
-            UIInternalLink.make(row, "assignment-action-link", UIMessage.make("assignment2.student-assignment-list.action." + availStudentAction.toString().toLowerCase()),  
+            AssignmentSubmissionVersion latestSubmission = assignmentSubmission.retrieveMostRecentSubmission();
+            
+            String actionLinkText;
+            // if there is at least one submission, we display the submitted date/time for the link text
+            if (latestSubmission != null) {
+                if (assignment.getDueDate() != null && assignment.getDueDate().before(latestSubmission.getSubmittedDate())) {
+                    actionLinkText = messageLocator.getMessage("assignment2.student-assignment-list.submitted_link.late", 
+                            df.format(latestSubmission.getSubmittedDate()));
+                } else {
+                    actionLinkText = messageLocator.getMessage("assignment2.student-assignment-list.submitted_link", 
+                            df.format(latestSubmission.getSubmittedDate()));
+                }
+            } else {
+                actionLinkText = messageLocator.getMessage("assignment2.student-assignment-list.action." + availStudentAction.toString().toLowerCase());
+            }
+            
+            UIInternalLink.make(row, "assignment-action-link", actionLinkText,  
                 new SimpleAssignmentViewParams(StudentSubmitProducer.VIEW_ID, assignment.getId()));
+            
+            // add resubmit link if appropriate
+            if (availStudentAction.equals(StudentAction.VIEW_AND_RESUBMIT)) {
+                UIOutput.make(row, "resubmit-action");
+                UIInternalLink.make(row, "assignment-resubmit-link", UIMessage.make("assignment2.student-assignment-list.resubmit_link"),  
+                        new SimpleAssignmentViewParams(StudentSubmitProducer.VIEW_ID, assignment.getId()));
+            }
             
             // Due date
             if (assignment.getDueDate() != null) {
                 UIOutput.make(row, "assignment_row_due", df.format(assignment.getDueDate())).decorate(assnItemDecorator);
+                // if submission is open and would be late, we add a late flag
+                if (assignment.getDueDate().before(new Date()) && 
+                        (availStudentAction.equals(StudentAction.VIEW_AND_RESUBMIT) || 
+                                availStudentAction.equals(StudentAction.VIEW_AND_SUBMIT))) {
+                    UIMessage.make(row, "assignment_late", "assignment2.student-assignment-list.late").decorate(assnItemDecorator);
+                }
             } 
             else {
                 UIMessage.make(row, "assignment_row_due", "assignment2.student-assignment-list.no_due_date").decorate(assnItemDecorator);
@@ -214,10 +249,30 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
             if (feedbackExists && unreadFeedbackExists) {
                 UIInternalLink.make(row, "unread-feedback-link",
                         new SimpleAssignmentViewParams(StudentSubmitProducer.VIEW_ID, assignment.getId()));
+                
+                // add the alt text to the image
+                Map<String, String> unreadImgAttr = new HashMap<String, String>();
+                String unreadText = messageLocator.getMessage("assignment2.student-assignment-list.icon_text.unread");
+                unreadImgAttr.put("alt", unreadText);
+                unreadImgAttr.put("title", unreadText);
+                DecoratorList unreadDecoratorList = new DecoratorList(new UIFreeAttributeDecorator(unreadImgAttr));
+                
+                UIOutput unreadImg = UIOutput.make(row, "unread-feedback-img");
+                unreadImg.decorators = unreadDecoratorList;
             }
             else if (feedbackExists) {
                 UIInternalLink.make(row, "read-feedback-link",
                         new SimpleAssignmentViewParams(StudentSubmitProducer.VIEW_ID, assignment.getId()));
+
+                // add the alt text to the image
+                Map<String, String> readImgAttr = new HashMap<String, String>();
+                String readText = messageLocator.getMessage("assignment2.student-assignment-list.icon_text.read");
+                readImgAttr.put("alt", readText);
+                readImgAttr.put("title", readText);
+                DecoratorList readDecoratorList = new DecoratorList(new UIFreeAttributeDecorator(readImgAttr));
+
+                UIOutput unreadImg = UIOutput.make(row, "read-feedback-img");
+                unreadImg.decorators = readDecoratorList;
             }
             // else.  TODO FIXME
             // I know you're always supposed to have an ending else
@@ -230,10 +285,13 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
             if (!assignment.isGraded()) {
                 UIMessage.make(row, "grade", "assignment2.student-assignment-list.not-graded").decorate(assnItemDecorator);
             } else {
-                String grade = externalGradebookLogic.getStudentGradeForItem(
-                        assignment.getContextId(), 
-                        assignmentSubmission.getUserId(), 
-                        assignment.getGradebookItemId());
+                String grade = null;
+                if (assignment.getGradebookItemId() != null) {
+                    externalGradebookLogic.getStudentGradeForItem(
+                            assignment.getContextId(), 
+                            assignmentSubmission.getUserId(), 
+                            assignment.getGradebookItemId());
+                }
                 
                 if (grade == null) {
                     UIMessage.make(row, "grade", "assignment2.student-assignment-list.no-grade-yet").decorate(assnItemDecorator);
@@ -269,5 +327,9 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
     
     public void setExternalLogic(ExternalLogic externalLogic) {
         this.externalLogic = externalLogic;
+    }
+    
+    public void setMessageLocator(MessageLocator messageLocator) {
+        this.messageLocator = messageLocator;
     }
 }

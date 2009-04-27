@@ -254,4 +254,18 @@ public interface ExternalLogic {
      * userId for processing
      */
     public Map<String, String> getUserDisplayIdUserIdMapForStudentsInSite(String contextId);
+    
+    /**
+     * 
+     * @param userId
+     * @return the siteId of the My Workspace associated with the given userId
+     */
+    public String getMyWorkspaceSiteId(String userId);
+    
+    /**
+     * 
+     * @param userIds a collection of userIds to retrieve sort name for
+     * @return a map of the user id to sort name for the given userIds
+     */
+    public Map<String, String> getUserIdToSortNameMap(Collection userIds);
 }

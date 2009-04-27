@@ -20,6 +20,8 @@
 		<li><a rsf:id="breadcrumb2">View Submissions for "{0}"</a></li>
 		<li rsf:id="last_breadcrumb" class="lastCrumb">Submissions for "{0}"</li>
 	</ul>
+	
+	<p rsf:id="no_gb_item" class="alertMessage">Gb item deleted!</p>
 
 	<div class="generalErrors">
 		<ul rsf:id="message-for:*" style="margin:0px;">
@@ -37,7 +39,7 @@
 	
 	<fieldset>
         <legend>
-            <img src="/sakai-assignment2-tool/content/images/expand.png" border="0" alt="Open, click to close assignment instruction" style="cursor:pointer" 
+            <img rsf:id="instructions_toggle" src="/sakai-assignment2-tool/content/images/expand.png" border="0" style="cursor:pointer" 
                 onclick="slideDiv(this)" />
             <span rsf:id="msg=assignment2.assignment_grade.assignment_instructions" onclick="slideDiv(jQuery(this).prev('img').get(0));" style="cursor:pointer">Instructions!</span>
         </legend>
@@ -70,7 +72,6 @@
 					<textarea name="something" cols="80" rows="20" wrap="virtual"></textarea>
 					<!-- this should be the FCKEditor -->
 				</div>
-				<p rsf:id="feedback_text_no_edit"></p>
 			</li>
 		</ol>
 	</fieldset>
@@ -85,18 +86,19 @@
 	</fieldset>
 	<fieldset>
 		<legend>
-			<img src="/sakai-assignment2-tool/content/images/collapse.png" border="0" alt="Open, click to close assignment instruction" style="cursor:pointer" 
+			<img rsf:id="feedback_toggle" src="/sakai-assignment2-tool/content/images/collapse.png" border="0" style="cursor:pointer" 
 				onclick="slideDiv(this)" />
 			<span rsf:id="msg=assignment2.assignment_grade.feedback" onclick="slideDiv(jQuery(this).prev('img').get(0));" style="cursor:pointer">Feedback</span>
 		</legend>
 		<div>
 			<div>
-                <p rsf:id="msg=assignment2.assignment_grade.feedback_notes" class="subgroupHeading">Additional Feedback</p>
+        <p rsf:id="msg=assignment2.assignment_grade.feedback_notes" class="subgroupHeading">Additional Feedback</p>
 				<textarea  rsf:id="feedback_notes:" name="something" cols="80" rows="20" wrap="virtual"></textarea>
 				<!-- this should be the FCKEditor -->
+				<p rsf:id="feedback_notes_no_edit" class="nothingProvided"></p>
 			</div>	
 
-			<div id="attachmentsFieldset">
+			<div rsf:id="attachmentsFieldset">
 				<p rsf:id="msg=assignment2.assignment_grade.feedback_attachments" class="subgroupHeading">Attachments</p>
 				<ol rsf:id="attachment_list:">
 					<li></li>
@@ -109,7 +111,7 @@
 	<!-- Allow Resubmissions -->
 	<fieldset rsf:id="resubmission_settings">
 		<legend>
-			<img src="/sakai-assignment2-tool/content/images/expand.png" border="0" alt="Open, click to close assignment instruction" style="cursor:pointer" 
+			<img rsf:id="resubmission_toggle" src="/sakai-assignment2-tool/content/images/expand.png" border="0" style="cursor:pointer" 
 				onclick="slideFieldset(this)" />
 			<span rsf:id="msg=assignment2.assignment_grade.allow_resubmission" onclick="slideFieldset(jQuery(this).prev('img').get(0));" style="cursor:pointer">Resubmissions</span>
 		</legend>
@@ -138,21 +140,35 @@
                     </fieldset>
 				</div>
 			</li>
-			<li rsf:id="resubmit_no_change"></li>
+			<li rsf:id="resubmit_no_change">
+	      <fieldset>
+	          <ol>
+	              <li>
+	                  <span rsf:id="resub_curr_submissions_text">This assignment has 2 submissions.</span>
+	              </li>
+	              <li>
+	                  <span rsf:id="resub_allowed_submissions_text">This assignment has 2 submissions.</span>
+	              </li>
+	              <li>
+	                  <span rsf:id="resub_until_text">This assignment has 2 submissions.</span>                   
+	              </li>
+	          </ol>
+	      </fieldset>
+			</li>
 		</ol>
 	</fieldset>
 	<!-- /Allow Resubmissions -->
 	
 	<fieldset rsf:id="submission-history-area">
 		<legend>
-			<img src="/sakai-assignment2-tool/content/images/expand.png" border="0" alt="Open, click to close assignment instruction" style="cursor:pointer" 
+			<img rsf:id="history_toggle" src="/sakai-assignment2-tool/content/images/expand.png" border="0" style="cursor:pointer" 
 				onclick="slideFieldset(this)" />
 			<span rsf:id="msg=assignment2.assignment_grade.history" onclick="slideFieldset(jQuery(this).prev('img').get(0));" style="cursor:pointer">History</span>
 		</legend>
 		<ol style="display:none">
 			<li rsf:id="previous_submissions:">
 				<span rsf:id="previous_date"></span>
-				<span rsf:id="current_version">Current Version</span>
+				<span rsf:id="current_version" class="currentEdit">Current Version</span>
 				﻿<a rsf:id="previous_link" onclick="jQuery(this).siblings('input').get(0).click(); return false;">View Submission</a>
 				<input type="submit" style="display: none" rsf:id="save_and_edit_version_button" value="Save And Edit Another" />
 			</li>

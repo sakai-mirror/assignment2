@@ -552,5 +552,38 @@ public class AssignmentLogicTest extends Assignment2TestBase {
 		assignment.setDraft(true);
 		assertEquals(assignmentLogic.getStatusForAssignment(assignment), AssignmentConstants.STATUS_DRAFT);
 	}
+	
+	public void testGetDuplicatedAssignmentTitle() {
+	    // try some nulls
+	    try {
+	        assignmentLogic.getDuplicatedAssignmentTitle(null, null);
+	    } catch (IllegalArgumentException iae) {}
+	    try {
+	        assignmentLogic.getDuplicatedAssignmentTitle(AssignmentTestDataLoad.CONTEXT_ID, null);
+	    } catch (IllegalArgumentException iae) {}
+	    
+	    // try duplicating "Assignment 1" title. We already have Assignment 1 thru 4, so
+	    // should return "Assignment 5"
+	    String newTitle = assignmentLogic.getDuplicatedAssignmentTitle(AssignmentTestDataLoad.CONTEXT_ID, AssignmentTestDataLoad.ASSIGN1_TITLE);
+	    assertEquals("Assignment 5", newTitle);
+	    
+	    // now let's pass it something that doesn't have an appended number
+	    newTitle = assignmentLogic.getDuplicatedAssignmentTitle(AssignmentTestDataLoad.CONTEXT_ID, "Essay");
+	    assertEquals("Essay 1", newTitle);
+	    
+	    // what if we do something funky
+	    newTitle = assignmentLogic.getDuplicatedAssignmentTitle(AssignmentTestDataLoad.CONTEXT_ID, "Essay A");
+        assertEquals("Essay A 1", newTitle);
+        
+        newTitle = assignmentLogic.getDuplicatedAssignmentTitle(AssignmentTestDataLoad.CONTEXT_ID, "Essay 16");
+        assertEquals("Essay 17", newTitle);
+        
+        newTitle = assignmentLogic.getDuplicatedAssignmentTitle(AssignmentTestDataLoad.CONTEXT_ID, "I have a 17 inside");
+        assertEquals("I have a 17 inside 1", newTitle);
+        
+        newTitle = assignmentLogic.getDuplicatedAssignmentTitle(AssignmentTestDataLoad.CONTEXT_ID, "I have a 17 inside 1");
+        assertEquals("I have a 17 inside 2", newTitle);
+        
+	}
 
 }

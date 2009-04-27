@@ -76,6 +76,7 @@
     	<property name="asnnSubmissionVersionRenderer" ref="AsnnSubmissionVersionRenderer" />
     	<property name="submissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
     	<property name="locale" ref="requestLocale" />
+    	<property name="messageLocator" ref="messageLocator" />
     </bean>
 	
    <bean id="PagerRenderer" class="org.sakaiproject.assignment2.tool.producers.renderers.PagerRenderer">
@@ -142,6 +143,8 @@
    <bean class="org.sakaiproject.assignment2.tool.producers.AddAttachmentHelperProducer">
       <property name="sessionManager" ref="org.sakaiproject.tool.api.SessionManager" />
       <property name="messageLocator" ref="messageLocator" />
+      <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
+      <property name="externalContentLogic" ref="org.sakaiproject.assignment2.logic.ExternalContentLogic" />
    </bean>
 
    <bean class="org.sakaiproject.assignment2.tool.producers.TaggableHelperProducer">
@@ -163,6 +166,9 @@
       <property name="errorStateManager" ref="errorStateManager" />
       <property name="statePreservationManager" ref="statePreservationManager" />
       <property name="assignmentAuthoringFlowBean" ref="AssignmentAuthoringFlowBean" />
+      <property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
+      <property name="assignmentSubmissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
+      <property name="assignment2Creator" ref="Assignment2Creator" />
    </bean>
    
    <bean class="org.sakaiproject.assignment2.tool.producers.GradeProducer">
@@ -204,6 +210,9 @@
       <property name="locale" ref="requestLocale" />
    </bean>
    
+   <!-- As part of ASNN-466 Replacing this with a more lightweight producer for
+        building up the Fluid powered page. -->
+   
    <bean class="org.sakaiproject.assignment2.tool.producers.ListProducer">
       <property name="messageLocator" ref="messageLocator" />
       <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
@@ -212,7 +221,12 @@
       <property name="submissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
       <property name="locale" ref="requestLocale" />
    </bean>
-
+   
+   <!--
+   <bean class="org.sakaiproject.assignment2.tool.producers.FluidListProducer">
+      
+   </bean>
+-->
    <bean class="org.sakaiproject.assignment2.tool.producers.FinishedHelperProducer">
    	  <property name="sessionManager" ref="org.sakaiproject.tool.api.SessionManager" />
    	  <property name="externalContentLogic" ref="org.sakaiproject.assignment2.logic.ExternalContentLogic" />
@@ -224,6 +238,7 @@
       <property name="assignmentSubmissionBean" ref="AssignmentSubmissionBean" />
       <property name="externalGradebookLogic" ref="org.sakaiproject.assignment2.logic.ExternalGradebookLogic" />
       <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
+      <property name="messageLocator" ref="messageLocator" />
    </bean>
    
    <bean class="org.sakaiproject.assignment2.tool.producers.StudentSubmitProducer">
@@ -356,6 +371,13 @@
 		<property name="timeService" ref="org.sakaiproject.time.api.TimeService" />
 		<property name="scheduledInvocationManager" ref="org.sakaiproject.api.app.scheduler.ScheduledInvocationManager" />
 		<property name="scheduledNotification" ref="org.sakaiproject.assignment2.logic.ScheduledNotification" />
+	</bean>
+
+	<bean id="fluidHandlerHook" class="org.sakaiproject.assignment2.tool.handlerhooks.FluidHandlerHook">
+		<property name="response" ref="httpServletResponseProxy" />
+		<property name="viewparams" ref="viewParameters" />
+		<property name="context" ref="sakai-Context" />
+		<property name="placement" ref="sakai-Placement" />
 	</bean>
 
 	<bean id="zipHandlerHook" class="org.sakaiproject.assignment2.tool.handlerhooks.ZipHandlerHook">

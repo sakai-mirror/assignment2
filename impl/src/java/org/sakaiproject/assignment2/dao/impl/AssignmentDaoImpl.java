@@ -27,6 +27,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -215,29 +216,132 @@ public class AssignmentDaoImpl extends HibernateGeneralGenericDao implements Ass
 		return (AssignmentSubmissionVersion)getHibernateTemplate().execute(hc);
     }
     
+    /**
+     * 
+     * @param submissions
+     * @return a map of the submission id to version id.  will return the version id
+     * of the latest student submission version (ignores feedback-only versions) for
+     * each submission
+     */
+    private Map<Long, Long> getLatestStudentVersionIdsForSubmissions(final Collection<AssignmentSubmission> submissions) { 
+
+        HibernateCallback hc = new HibernateCallback() {
+            public Object doInHibernate(Session session) throws HibernateException ,SQLException {
+
+                Map<Long, Long> submissionIdToVersionIdMap = new HashMap<Long, Long>();
+
+                if (submissions != null && !submissions.isEmpty()) {
+
+                    List<AssignmentSubmission> submissionList = new ArrayList<AssignmentSubmission>(submissions);
+
+                    Query query = session.getNamedQuery("findLatestStudentVersionIds");
+
+                    // if submission list is > than the max length allowed in sql, we need
+                    // to cycle through the list
+
+                    List resultsList = queryWithParameterList(query, "submissionList", submissionList);
+
+                    if (resultsList != null) {
+                        for (Iterator i = resultsList.iterator(); i.hasNext();)
+                        {
+                            Object[] results = (Object[]) i.next();        
+
+                            if (results != null) {
+                                Long submissionId = (Long)results[0];
+                                Long versionId = (Long)results[1];
+                                submissionIdToVersionIdMap.put(submissionId, versionId);
+                            }
+                        }
+                    }
+                }
+                return submissionIdToVersionIdMap;
+            }
+        };
+
+        return (Map<Long, Long>)getHibernateTemplate().execute(hc);
+    }
+    
+    /**
+     * 
+     * @param submissions
+     * @return the ids of the "feedback-only" versions that are associated with
+     * the given submissions.  "feedback-only" is identified by a submittedVersionNumber
+     * of {@link AssignmentSubmissionVersion#FEEDBACK_ONLY_VERSION_NUMBER}
+     */
+    private List<Long> getFeedbackOnlyVersionIdsForSubmissions(final Collection<AssignmentSubmission> submissions) { 
+        HibernateCallback hc = new HibernateCallback() {
+            public Object doInHibernate(Session session) throws HibernateException ,SQLException {
+                List<Long> versionIdList = new ArrayList<Long>();
+
+                if (submissions != null && !submissions.isEmpty()) {
+                    
+                    List<AssignmentSubmission> submissionList = new ArrayList<AssignmentSubmission>(submissions);
+
+                    Query query = session.getNamedQuery("findFeedbackOnlyVersionIds");
+
+                    // if submission list is > than the max length allowed in sql, we need
+                    // to cycle through the list
+
+                    versionIdList = queryWithParameterList(query, "submissionList", submissionList);
+                }
+
+                return versionIdList;
+            }
+        };
+        
+        return (List<Long>)getHibernateTemplate().execute(hc);
+        
+    }
+    
+    /**
+     * 
+     * @param submissions
+     * @return the version ids for the "current version" for the given submissions.
+     * the current version is the version with the highest submittedVersionNumber
+     */
     private List<Long> getCurrentVersionIdsForSubmissions(final Collection<AssignmentSubmission> submissions) {   
-    	HibernateCallback hc = new HibernateCallback() {
-			public Object doInHibernate(Session session) throws HibernateException ,SQLException {
-				List<Long> versionIdList = new ArrayList<Long>();
-
-		    	if (submissions != null && !submissions.isEmpty()) {
-		    		
-		    		List<AssignmentSubmission> submissionList = new ArrayList<AssignmentSubmission>(submissions);
-		    		
-		    		Query query = session.getNamedQuery("findCurrentVersionIds");
-
-		    		// if submission list is > than the max length allowed in sql, we need
-		    		// to cycle through the list
-
-		    		versionIdList = queryWithParameterList(query, "submissionList", submissionList);
-		    	}
-
-		    	return versionIdList;
-			}
-		};
-    	
-		return (List<Long>)getHibernateTemplate().execute(hc);
-    	
+        // identifying the current version efficiently is a bit tricky. we have to
+        // be careful because the versions will not necessarily be created in order. it
+        // is possible for the feedback-only version (with submittedVersionNumber = 0)
+        // to be created *after* the student has made a submission via the upload process.
+        // the goal is to identify the assignmentSubmissionVersion with the highest
+        // submissionVersionNumber.
+        // to limit the queries involved we are going to do this in two steps:
+        // first, identify the most recent student version (ignore fb-only versions).
+        // these versions should be ok retrieving by max(id) if we ignore the fb-only
+        // then, for all of the submissions that didn't have a student version
+        // we are going to check for a fb-only version
+        
+        List<Long> currVersionIds = new ArrayList<Long>();
+        
+        if (submissions != null) {
+            // first, identify the latest student version
+            Map<Long, Long> studentSubIdVersionIdMap = getLatestStudentVersionIdsForSubmissions(submissions);
+            
+            // now, identify all of the submissions that don't have a version yet
+            Set<Long> subIdsWithVersion = new HashSet<Long>();
+            if (studentSubIdVersionIdMap != null) {
+                subIdsWithVersion = studentSubIdVersionIdMap.keySet();
+                // add all of the versions we have found so far
+                currVersionIds.addAll(studentSubIdVersionIdMap.values());
+            }
+            
+            List<AssignmentSubmission> subWithNoVersion = new ArrayList<AssignmentSubmission>();
+            for (AssignmentSubmission sub : submissions) {
+                if (!subIdsWithVersion.contains(sub.getId())) {
+                    subWithNoVersion.add(sub);
+                }
+            }
+            
+            // now see if we have fb-only versions for the submissions that are
+            // left
+            List<Long> fbOnlyVersions = getFeedbackOnlyVersionIdsForSubmissions(subWithNoVersion);
+            if (fbOnlyVersions != null) {
+                currVersionIds.addAll(fbOnlyVersions);
+            }
+        }
+        
+        return currVersionIds;
     }
     
     public List<AssignmentSubmission> getCurrentAssignmentSubmissionsForStudent(final Collection<Assignment2> assignments, final String studentId) {
@@ -417,7 +521,8 @@ public class AssignmentDaoImpl extends HibernateGeneralGenericDao implements Ass
 		    	AssignmentSubmission submission = (AssignmentSubmission) query.uniqueResult();
 		    	
 		    	if (submission != null) {
-		    		setCurrentSubmissionGivenHistory(submission);
+		    		AssignmentSubmissionVersion currVersion = getCurrentVersionFromHistory(submission.getSubmissionHistorySet());
+		    		submission.setCurrentSubmissionVersion(currVersion);
 		    	}
 		    	
 		    	return submission;
@@ -426,30 +531,6 @@ public class AssignmentDaoImpl extends HibernateGeneralGenericDao implements Ass
 		
 		return (AssignmentSubmission)getHibernateTemplate().execute(hc);
     	
-    }
-    
-    /**
-     * given a submission with populated version history, sets the currentVersion to
-     * the version with the highest id 
-     * @param submission
-     */
-    private void setCurrentSubmissionGivenHistory(AssignmentSubmission submission) {
-    	if (submission != null && submission.getSubmissionHistorySet() != null) {
-    		Map<Long, AssignmentSubmissionVersion> versionIdVersionMap = new HashMap<Long, AssignmentSubmissionVersion>();
-    		Long maxVersionId = -1L;
-    		for (AssignmentSubmissionVersion version : submission.getSubmissionHistorySet()) {
-    			if (version != null) {
-    				versionIdVersionMap.put(version.getId(), version);
-    				if (version.getId() > maxVersionId) {
-    					maxVersionId = version.getId();
-    				}
-    			}
-    		}
-    		
-    		if (maxVersionId.longValue() > -1) {
-    			submission.setCurrentSubmissionVersion((AssignmentSubmissionVersion)versionIdVersionMap.get(maxVersionId));
-    		}
-    	}
     }
     
     public AssignmentSubmission getSubmissionWithVersionHistoryById(final Long submissionId) {
@@ -465,7 +546,8 @@ public class AssignmentDaoImpl extends HibernateGeneralGenericDao implements Ass
 		    	AssignmentSubmission submission = (AssignmentSubmission) query.uniqueResult();
 		    	
 		    	if (submission != null) {
-		    		setCurrentSubmissionGivenHistory(submission);
+		    	    AssignmentSubmissionVersion currVersion = getCurrentVersionFromHistory(submission.getSubmissionHistorySet());
+                    submission.setCurrentSubmissionVersion(currVersion);
 		    	}
 		    	
 		    	return submission;
@@ -719,15 +801,19 @@ public class AssignmentDaoImpl extends HibernateGeneralGenericDao implements Ass
         }
     }
     
+    /**
+     * 
+     * @param versionHistory
+     * @return given a version history, returns the version with the highest submittedVersionNumber
+     */
     private AssignmentSubmissionVersion getCurrentVersionFromHistory(Collection<AssignmentSubmissionVersion> versionHistory) {
         AssignmentSubmissionVersion currVersion = null;
         if (versionHistory != null) {
             for (AssignmentSubmissionVersion ver : versionHistory) {
-                if (currVersion == null) {
+                if (currVersion == null ||
+                        currVersion.getSubmittedVersionNumber() < ver.getSubmittedVersionNumber()) {
                     currVersion = ver;
-                } else if (currVersion.getSubmittedVersionNumber() < ver.getSubmittedVersionNumber()) {
-                    currVersion = ver;
-                }
+                } 
             }
         }
         

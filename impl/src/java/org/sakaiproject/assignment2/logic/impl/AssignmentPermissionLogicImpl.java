@@ -123,24 +123,26 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
     }
     
     public boolean isUserAbleToProvideFeedbackForStudentForAssignment(String studentId, Assignment2 assignment) {
-    	if (studentId == null || assignment == null) {
-    		throw new IllegalArgumentException("null parameter passed to isUserAbleToProvideFeedbackForSubmission");
-    	}
-    	
-    	boolean allowed = false;
-    	
-    	if (assignment != null) {
-    		if (!assignment.isGraded()) {
-    			allowed = isUserAbleToViewSubmissionForUngradedAssignment(studentId, assignment);
-    		} else {
-    			if (assignment.getGradebookItemId() != null) {
-    				allowed = gradebookLogic.isCurrentUserAbleToGradeStudentForItem(assignment.getContextId(), 
-    						studentId, assignment.getGradebookItemId());
-    			}
-    		}
-    	}
-    	
-    	return allowed;
+        if (studentId == null || assignment == null) {
+            throw new IllegalArgumentException("null parameter passed to isUserAbleToProvideFeedbackForSubmission");
+        }
+
+        boolean allowed = false;
+
+        if (assignment != null) {
+            if (!assignment.isGraded()) {
+                allowed = isUserAbleToViewSubmissionForUngradedAssignment(studentId, assignment);
+            } else if (assignment.isGraded() && assignment.getGradebookItemId() == null) {
+                // treat this scenario like an "ungraded" assignment since the associated
+                // gb item has been deleted
+                allowed = isUserAbleToViewSubmissionForUngradedAssignment(studentId, assignment);
+            } else {
+                allowed = gradebookLogic.isCurrentUserAbleToGradeStudentForItem(assignment.getContextId(), 
+                        studentId, assignment.getGradebookItemId());
+            }
+        }
+
+        return allowed;
     }
     
     public boolean isUserAbleToProvideFeedbackForSubmission(Long submissionId) {
