@@ -111,6 +111,12 @@ asnn2.getAsnnCompData = function () {
     for (var i in ditto) {
       togo[ditto[i]] = obj[ditto[i]];
     } 
+    if (obj.openDate) {
+      togo.opentext = "Open: " + new Date(obj.openDate).toLocaleString();
+    }
+    if (obj.dueDate) {
+      togo.duetext = "Due: " + new Date(obj.dueDate).toLocaleString();
+    }
     togo.editlink = { 
       target: '/portal/tool/'+sakai.curPlacement+'/assignment/'+obj.id,
       linktext: "Edit" 
@@ -148,6 +154,19 @@ asnn2.getAsnnCompData = function () {
   return togo;
 }
 
+asnn2.selectorMap = [
+  { selector: ".row", id: "row:" },
+  { selector: ".asnnid", id: "id" },
+  { selector: ".asnntitle", id: "title" },
+  { selector: ".gradelink", id: "gradelink"},
+  { selector: ".editlink", id: "editlink" },
+  { selector: ".duplink", id: "duplink" },
+  { selector: ".opendate", id: "opentext" },
+  { selector: ".duedate", id: "duetext" },
+  { selector: ".groups", id: "grouptext" },
+  { selector: ".inAndNew", id: "inAndNew" },
+];
+
 asnn2.setupReordering = function () {
   fluid.reorderList("#asnn-list", {
     selectors : {
@@ -155,34 +174,41 @@ asnn2.setupReordering = function () {
       grabHandle: ".movehandle"
     }
   });
-}
+};
+
+asnn2.renderAsnnList = function(treedata) {
+  if (asnn2.asnnListTemplate) {
+    fluid.reRender(asnn2.asnnListTemplate, jQuery("#asnn-list"), treedata, {cutpoints: asnn2.selectorMap})
+  }
+  else {
+    asnn2.asnnListTemplate = fluid.selfRender(jQuery("#asnn-list"), treedata, {cutpoints: asnn2.selectorMap});
+  }
+};
+
+asnn2.setupRemoveCheckboxes = function () {
+  $("#checkall").bind("change", function(e) {
+    $(".asnncheck").each(function (i) {
+      this.checked = e.currentTarget.checked;
+    });
+  });
+};
+
+/**
+ * Refresh all the actions and listeners on the asnn list table that need to be
+ * setup each time it is rendered.
+ */
+asnn2.refreshAsnnListEvents = function () {
+  asnn2.setupRemoveCheckboxes(); 
+  asnn2.setupReordering();
+
+};
 
 asnn2.initAsnnList = function () {
   var treedata = {
     "row:": asnn2.getAsnnCompData()
   };
 
-  var selectorMap = [
-    { selector: ".row", id: "row:" },
-    { selector: ".asnnid", id: "id" },
-    { selector: ".asnntitle", id: "title" },
-    { selector: ".gradelink", id: "gradelink"},
-    { selector: ".editlink", id: "editlink" },
-    { selector: ".duplink", id: "duplink" },
-    { selector: ".opendate", id: "opentext" },
-    { selector: ".duedate", id: "duetext" },
-    { selector: ".groups", id: "grouptext" },
-    { selector: ".inAndNew", id: "inAndNew" },
-  ];
-
-  var asnnlistTemplate = fluid.selfRender(jQuery("#asnn-list"), treedata, {cutpoints: selectorMap});
-  /*
-  fluid.reorderList("#asnn-list", {
-    selectors: {
-      movables: "[id^=asnnid]"
-    }
-  });
-  */
+  asnn2.renderAsnnList(treedata);
 
   /*
    *  Set up sorting events
@@ -205,8 +231,8 @@ asnn2.initAsnnList = function () {
 
     }
 
-    fluid.reRender(asnnlistTemplate, jQuery("#asnn-list"), newdata, {cutpoints: selectorMap})
-    asnn2.setupReordering();
+    asnn2.renderAsnnList(newdata);
+    asnn2.refreshAsnnListEvents();
   });
 
   /*
@@ -240,22 +266,23 @@ asnn2.initAsnnList = function () {
   /*
    * Set up check all/none control and Remove Button
    */
-  $("#checkall").bind("change", function(e) {
-    $(".asnncheck").each(function (i) {
-      this.checked = e.currentTarget.checked;
-    });
-  });
+  asnn2.setupRemoveCheckboxes();
 
   $("#removebutton").bind("click", function(e) {
     var toremove = [];
 
     $(".asnncheck").each(function (i) {
       if (this.checked) {
-        var asnnid = $(".asnnid", this.parentNode.parentNode);
-        toremove.push(asnnid.text());
+        var asnnid = $(".asnnid", this.parentNode.parentNode).text();
+        toremove.push(asnnid);
+        // TODO: Bulk these delete commands together
+        jQuery.ajax({
+          type: "DELETE",
+          url: "/direct/assignment2/"+asnnid+"/delete"
+        });
+        
       }
     });
-    alert("Removing: " + toremove);
   });
 
 

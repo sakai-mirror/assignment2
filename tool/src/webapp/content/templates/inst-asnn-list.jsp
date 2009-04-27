@@ -83,7 +83,9 @@
           </th>
           <th>
             <span>Assignments</span>
-            <a href="#" onclick="window.location = '/portal/tool/'+sakai.curPlacement+'/assignment'">Add</a>
+            <img src="/sakai-assignment2-tool/content/images/add.png" />
+            <a href="#" onclick="window.location = '/portal/tool/'+sakai.curPlacement+'/assignment'">
+            Add</a>
           </th>
           <th>
             <span>In/New</span>

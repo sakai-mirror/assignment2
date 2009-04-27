@@ -23,6 +23,8 @@ import org.sakaiproject.entitybroker.entityprovider.search.Search;
 import org.sakaiproject.entitybroker.util.AbstractEntityProvider;
 import org.sakaiproject.entitybroker.entityprovider.annotations.EntityCustomAction;
 
+import sun.util.logging.resources.logging;
+
 
 /**
  * Entity Provider for Assn2 assignments.
@@ -151,8 +153,8 @@ CoreEntityProvider, RESTful, RequestStorable {
     }
 
     public void deleteEntity(EntityReference ref, Map<String, Object> params) {
-        // TODO Auto-generated method stub
-        
+        Assignment2 asnn = assignmentLogic.getAssignmentById(new Long(ref.getId()));
+        assignmentLogic.deleteAssignment(asnn);
     }
 
     public List<?> getEntities(EntityReference ref, Search search) {
