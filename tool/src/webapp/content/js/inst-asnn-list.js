@@ -106,7 +106,7 @@ asnn2.getAsnnCompData = function () {
   };
 
   var renderFromData = function (obj, index) {
-    var ditto = ['id','title', 'inAndNew'];
+    var ditto = ['id','title', 'inAndNew', 'sortIndex', 'openDate', 'dueDate'];
     var togo = {};
     for (var i in ditto) {
       togo[ditto[i]] = obj[ditto[i]];
@@ -213,27 +213,33 @@ asnn2.initAsnnList = function () {
   /*
    *  Set up sorting events
    */
-  var reverseSort = false;
-  $("#titlesort").bind("click", function(e) {
-    var newdata;
+  var sortMap = [
+      { selector: "#titlesort", property: "title" },
+      { selector: "#opendatesort", property: "openDate" },
+      { selector: "#duedatesort", property: "dueDate" },
+      { selector: "#instsort", property: "sortIndex" }
+  ];
+  
+  var sortDir = 1;
+  for (var i in sortMap) {
+    var item = sortMap[i];
+    $(item.selector).bind("click", function(e) {
+      // TODO Fix this scoping/closure issue
+      var sortby = item.property;
 
-    if (reverseSort) {
-      newdata = {
-      "row:": asnn2.getAsnnCompData()
-      };
-      reverseSort = false;
-    }
-    else {
-      newdata = {
-      "row:": asnn2.getAsnnCompData().reverse()
-      };
-      reverseSort = true;
+      var newdata = asnn2.getAsnnCompData();
+      newdata.sort(function (arec,brec) {
+        var a = arec[sortby];
+        var b = brec[sortby];
+        return a === b? 0 : ( a > b? sortDir : -sortDir); 
+      });
 
-    }
+      sortDir = sortDir * -1;
 
-    asnn2.renderAsnnList(newdata);
-    asnn2.refreshAsnnListEvents();
-  });
+      asnn2.renderAsnnList({ "row:": newdata });
+      asnn2.refreshAsnnListEvents();
+    });
+  }
 
   /*
    *  Set up inline edits

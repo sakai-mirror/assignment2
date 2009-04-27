@@ -102,6 +102,7 @@ CoreEntityProvider, RESTful, RequestStorable {
             asnnmap.put("openDate", asnn.getOpenDate());
             asnnmap.put("dueDate", asnn.getDueDate());
             asnnmap.put("graded", asnn.isGraded());
+            asnnmap.put("sortIndex", asnn.getSortIndex());
             
             List<String> viewableStudents = assignmentViewableStudentsMap.get(asnn);
             

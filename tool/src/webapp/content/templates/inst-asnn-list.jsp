@@ -71,9 +71,9 @@
     <ul class="sort-bar">
       <li class="sort-item"><a href="#" id="titlesort">Title</a> |</li>
       <li class="sort-item">Restricted To |</li>
-      <li class="sort-item">Open Date |</li>
-      <li class="sort-item">Due Date |</li>
-      <li class="sort-item">Instructor Specified Order</li>
+      <li class="sort-item"><a href="#" id="opendatesort">Open Date</a> |</li>
+      <li class="sort-item"><a href="#" id="duedatesort">Due Date</a> |</li>
+      <li class="sort-item"><a href="#" id="instsort">Instructor Specified Order</a></li>
     </ul>
 
     <table id="asnn-list">
