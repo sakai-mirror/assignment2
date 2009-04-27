@@ -219,7 +219,15 @@ asnn2.initAsnnList = function () {
     },
     listeners: {
       onFinishEdit: function (newValue, oldValue, editNode, viewNode) {
-        //alert("New value is: " + newValue);
+        var asnnid = $(".asnnid", viewNode.parentNode).text();
+        jQuery.ajax({
+          type: "POST",
+          url: "/direct/assignment2/"+asnnid+"/edit",
+          data: {
+            id: asnnid,
+            title: newValue
+          }
+        });
       }
     }
   });
