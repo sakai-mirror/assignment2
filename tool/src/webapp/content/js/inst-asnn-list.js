@@ -131,7 +131,9 @@ asnn2.getAsnnCompData = function () {
   var togo = []
   if (asnn2.livedata === true) {
     jQuery.ajax({
-      url: "/direct/assignment2/sitelist.json", 
+      type: "GET",	
+      url: "/direct/assignment2/sitelist.json",
+      data: "siteid="+sakai.curContext,
       async: false, 
       success: function (payload) {
         var data = JSON.parse(payload);

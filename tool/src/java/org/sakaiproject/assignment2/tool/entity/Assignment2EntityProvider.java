@@ -57,16 +57,34 @@ CoreEntityProvider, RESTful, RequestStorable {
         this.displayUtil = displayUtil;
     }
     
+    private RequestStorage requestStorage;
+    public void setRequestStorage(RequestStorage requestStorage) {
+        this.requestStorage = requestStorage;
+    }
+    
     public static String PREFIX = "assignment2";
     public String getEntityPrefix() {
         return PREFIX;
     }
     
+    /**
+     * This is a custom action for retrieving the Assignment Data we need to 
+     * render the list of assignments for landing pages. Currently this does
+     * require a 'context' or 'siteid', but we should move towards this not
+     * requiring that so it can be used for newer age 3akai things.
+     * 
+     * @param view
+     * @return
+     */
     @EntityCustomAction(action="sitelist", viewKey=EntityView.VIEW_LIST)
-    public List getAssignmentListForSite(EntityView view) {
-        String context = "48ff42c3-9da3-4340-a8b8-5c5ad183b1d4";
+    public List getAssignmentListForSite(EntityView view) {        
+        String context = (String) requestStorage.getStoredValue("siteid");
         
-        List<Assignment2> viewable = assignmentLogic.getViewableAssignments("48ff42c3-9da3-4340-a8b8-5c5ad183b1d4");
+        if (context == null) {
+        	return new ArrayList();
+        }
+        
+        List<Assignment2> viewable = assignmentLogic.getViewableAssignments(context);
         
         List togo = new ArrayList();
         
@@ -148,12 +166,6 @@ CoreEntityProvider, RESTful, RequestStorable {
 
     public String[] getHandledInputFormats() {
         return new String[] {Formats.XML, Formats.JSON, Formats.HTML };
-    }
-
-    
-    RequestStorage requestStorage = null;
-    public void setRequestStorage(RequestStorage requestStorage) {
-        this.requestStorage = requestStorage;
     }
 
 }
