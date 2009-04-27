@@ -223,22 +223,21 @@ asnn2.initAsnnList = function () {
   var sortDir = 1;
   for (var i in sortMap) {
     var item = sortMap[i];
-    $(item.selector).bind("click", function(e) {
-      // TODO Fix this scoping/closure issue
-      var sortby = item.property;
+    $(item.selector).bind("click", function(sortby) {
+      return function (e) {
+        var newdata = asnn2.getAsnnCompData();
+        newdata.sort(function (arec,brec) {
+          var a = arec[sortby];
+          var b = brec[sortby];
+          return a === b? 0 : ( a > b? sortDir : -sortDir); 
+        });
 
-      var newdata = asnn2.getAsnnCompData();
-      newdata.sort(function (arec,brec) {
-        var a = arec[sortby];
-        var b = brec[sortby];
-        return a === b? 0 : ( a > b? sortDir : -sortDir); 
-      });
+        sortDir = sortDir * -1;
 
-      sortDir = sortDir * -1;
-
-      asnn2.renderAsnnList({ "row:": newdata });
-      asnn2.refreshAsnnListEvents();
-    });
+        asnn2.renderAsnnList({ "row:": newdata });
+        asnn2.refreshAsnnListEvents();
+      };
+    }(item.property));
   }
 
   /*
