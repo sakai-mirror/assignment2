@@ -94,6 +94,22 @@ asnn2.setupReordering = function () {
       grabHandle: ".movehandle"
     },
     listeners: {
+      afterMove: function(item,requestedPosition,movables) {
+        var neworder = [];
+        movables.each(function(i, obj) {
+          neworder.push(jQuery('.asnnid',obj).text());
+        });
+        // Stub for reorder Ajax call
+        //alert(neworder);
+        jQuery.ajax({
+          type: "GET", // Grrr
+          url: "/direct/assignment2/reorder.json",
+          data: {
+            "siteid":sakai.curContext,
+            "order":neworder.toString()
+          }
+        });
+      },
       onHover: function(item,state) {
         jQuery('td', item).each(function(i, obj) {
           if (i === 0) {
