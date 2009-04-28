@@ -452,11 +452,13 @@ ul#assignmentList h3.left {
 }
    
 /* ul#assignmentList div.left span.duedate { */
+/* commenting out for now, conflicts with new design ASNN-466 
 span.duedate {
    display: block;
    padding-left: 30px;
    padding-top: 5px;
 }
+*/
 
 ul#assignmentList div.left span.assignment_title {
    padding-left: 20px;

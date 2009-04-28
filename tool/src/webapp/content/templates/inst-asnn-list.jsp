@@ -90,7 +90,7 @@ String getDefaultPortalMatter() {
       <li class="sort-item"><a href="#" id="instsort">Instructor Specified Order</a></li>
     </ul>
 
-    <table id="asnn-list">
+    <table style="border-collapse: collapse" id="asnn-list">
       <thead>
         <tr>
           <th>
@@ -111,7 +111,7 @@ String getDefaultPortalMatter() {
       </thead>
       <tbody id="asnn-list-body">
         <tr class="row">
-          <td><img style="display:none" alt="Move Assignment" src="/sakai-assignment2-tool/content/images/4Arrows.png" class="movehandle" /></td>
+          <td style="width: 40px"><img style="display:none" alt="Move Assignment" src="/sakai-assignment2-tool/content/images/4Arrows.png" class="movehandle" /></td>
           <td><p>
             <span style="display:none" class="asnnid">1</span>
             <span class="asnntitle">Audio Scriptwriting</span><br/>
