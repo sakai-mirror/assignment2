@@ -124,7 +124,10 @@ String getDefaultPortalMatter() {
             <span class="groups">Restricted To: Red Cohort, Yellow Cohort</span>
             </p>
           </td>
-          <td class="inAndNew" >8/4</td>
+          <td>
+            <span class="inAndNew">8/4</span>
+            <a href="" class="inAndNewLink">10/4</a>
+          </td>
           <td><input class="asnncheck" type="checkbox" /></td>
 
         </tr>

@@ -75,6 +75,9 @@ CoreEntityProvider, RESTful, RequestStorable {
      * require a 'context' or 'siteid', but we should move towards this not
      * requiring that so it can be used for newer age 3akai things.
      * 
+     * It's likely this will just be moved to the getEntities method after 
+     * prototyping.
+     * 
      * @param view
      * @return
      */
@@ -103,6 +106,7 @@ CoreEntityProvider, RESTful, RequestStorable {
             asnnmap.put("dueDate", asnn.getDueDate());
             asnnmap.put("graded", asnn.isGraded());
             asnnmap.put("sortIndex", asnn.getSortIndex());
+            asnnmap.put("requiresSubmission", asnn.isRequiresSubmission());
             
             List<String> viewableStudents = assignmentViewableStudentsMap.get(asnn);
             

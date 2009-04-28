@@ -12,11 +12,21 @@ asnn2.getAsnnCompData = function () {
   };
 
   var renderFromData = function (obj, index) {
-    var ditto = ['id','title', 'inAndNew', 'sortIndex', 'openDate', 'dueDate'];
+    var ditto = ['id','title', 'sortIndex', 'openDate', 'dueDate',
+                 'requiresSubmission'];
     var togo = {};
     for (var i in ditto) {
       togo[ditto[i]] = obj[ditto[i]];
     } 
+    if (obj.requiresSubmission === true) {
+      togo.inAndNewLink = {
+        target: '/portal/tool/'+sakai.curPlacement+'/viewSubmissions/'+obj.id,
+        linktext: obj.inAndNew
+      } 
+    }
+    else {
+      togo.inAndNew = obj.inAndNew;
+    }
     if (obj.openDate) {
       togo.opentext = "Open: " + new Date(obj.openDate).toLocaleString();
     }
@@ -74,6 +84,7 @@ asnn2.selectorMap = [
   { selector: ".duedate", id: "duetext" },
   { selector: ".groups", id: "grouptext" },
   { selector: ".inAndNew", id: "inAndNew" },
+  { selector: ".inAndNewLink", id: "inAndNewLink" },
 ];
 
 asnn2.setupReordering = function () {
