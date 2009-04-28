@@ -111,7 +111,7 @@ String getDefaultPortalMatter() {
       </thead>
       <tbody id="asnn-list-body">
         <tr class="row">
-          <td><img alt="Move Assignment" src="/sakai-assignment2-tool/content/images/4Arrows.png" class="movehandle" /></td>
+          <td><img style="display:none" alt="Move Assignment" src="/sakai-assignment2-tool/content/images/4Arrows.png" class="movehandle" /></td>
           <td><p>
             <span style="display:none" class="asnnid">1</span>
             <span class="asnntitle">Audio Scriptwriting</span><br/>

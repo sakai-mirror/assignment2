@@ -92,6 +92,28 @@ asnn2.setupReordering = function () {
     selectors : {
       movables: ".row",
       grabHandle: ".movehandle"
+    },
+    listeners: {
+      onHover: function(item,state) {
+        jQuery('td', item).each(function(i, obj) {
+          if (i === 0) {
+            if (state) {
+              jQuery('img',this).show();
+            }
+            else {
+              jQuery('img',this).hide();
+            }
+          }
+          else {
+            if (state) {
+              jQuery(this).addClass('asnn-hover');
+            } 
+            else {
+              jQuery(this).removeClass('asnn-hover');
+            }
+          }
+        });
+      }
     }
   });
 };
