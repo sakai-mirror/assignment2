@@ -1,11 +1,25 @@
+<%@ page import="org.sakaiproject.component.cover.ServerConfigurationService" %>
 <!DOCTYPE html      PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <title>Assignment List</title>
-    <link media="all" href="../css/tool_base.css" type="text/css" rel="stylesheet" />
-    <link media="all" href="../css/assignmentsv4.css" type="text/css" rel="stylesheet" />
-    <link media="all" href="../css/inst-asnn-list.css" type="text/css" rel="stylesheet" />
+
+<%! // See SakaiRSF class DefaultPortalMatter
+String getDefaultPortalMatter() {
+  String skin = ServerConfigurationService.getString("skin.default");
+  String skinRepo = ServerConfigurationService.getString("skin.repo");
+  String headCssToolBase = "<link href=\"" + skinRepo  
+    + "/tool_base.css\" type=\"text/css\" rel=\"stylesheet\" media=\"all\" />\n";
+  String headCssToolSkin = "<link href=\"" + skinRepo + "/" + skin
+    + "/tool.css\" type=\"text/css\" rel=\"stylesheet\" media=\"all\" />\n";
+  String headCss = headCssToolBase + headCssToolSkin;
+  return headCss;
+}
+%>
+<%= getDefaultPortalMatter() %>
+<link media="all" href="../css/assignmentsv4.css" type="text/css" rel="stylesheet" />
+<link media="all" href="../css/inst-asnn-list.css" type="text/css" rel="stylesheet" />
 
 <!--
     <script type="text/javascript" src="../../../lib/jquery/core/js/jquery.js"></script>
