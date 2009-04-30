@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.azeckoski.reflectutils.DeepUtils;
 import org.sakaiproject.assignment2.exception.AssignmentNotFoundException;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
@@ -34,6 +36,7 @@ import sun.util.logging.resources.logging;
  */
 public class Assignment2EntityProvider extends AbstractEntityProvider implements
 CoreEntityProvider, RESTful, RequestStorable {
+	private static Log log = LogFactory.getLog(Assignment2EntityProvider.class);
 
     // Dependency
     private AssignmentLogic assignmentLogic;
@@ -70,10 +73,41 @@ CoreEntityProvider, RESTful, RequestStorable {
     }
     
     /**
+     * TODO: Change this so it's not a GET
+     * 
+     * @param view
+     */
+    @EntityCustomAction(action="reorder", viewKey=EntityView.VIEW_LIST)
+    public void reorderAssignments(EntityView view) {
+    	String context = (String) requestStorage.getStoredValue("siteid");
+    	String order = (String) requestStorage.getStoredValue("order");
+    	
+    	String[] stringAssignIds = order.split(",");
+        try {
+            // convert the strings to longs
+            List<Long> longAssignmentIds = new ArrayList<Long>();
+            for (int i=0; i < stringAssignIds.length; i++){
+                String idAsString = stringAssignIds[i];
+                if (idAsString != null && idAsString.trim().length() > 0) { 
+                    longAssignmentIds.add(Long.valueOf(stringAssignIds[i]));
+                }
+            }
+            assignmentLogic.reorderAssignments(longAssignmentIds, context);
+
+            if (log.isDebugEnabled()) log.debug("Assignments reordered via Entity Feed");
+        } catch (NumberFormatException nfe) {
+            log.error("Non-numeric value passed to ReorderAssignmentsCommand. No reordering was saved.");
+        }
+    }
+    
+    /**
      * This is a custom action for retrieving the Assignment Data we need to 
      * render the list of assignments for landing pages. Currently this does
      * require a 'context' or 'siteid', but we should move towards this not
      * requiring that so it can be used for newer age 3akai things.
+     * 
+     * It's likely this will just be moved to the getEntities method after 
+     * prototyping.
      * 
      * @param view
      * @return
@@ -103,6 +137,7 @@ CoreEntityProvider, RESTful, RequestStorable {
             asnnmap.put("dueDate", asnn.getDueDate());
             asnnmap.put("graded", asnn.isGraded());
             asnnmap.put("sortIndex", asnn.getSortIndex());
+            asnnmap.put("requiresSubmission", asnn.isRequiresSubmission());
             
             List<String> viewableStudents = assignmentViewableStudentsMap.get(asnn);
             

@@ -6,111 +6,27 @@ asnn2.livedata = true;
  * Returns an list of Assignment Objects that can be viewed.
  */
 asnn2.getAsnnCompData = function () {
-  var designSampleData = [
-    {
-      id: "1",
-      title: "Audio Scriptwriting",
-      editlink: {
-        target: "/whatever/edit/1",
-        linktext: "Edit"
-      },
-      duplink: {
-        target: "/whatever/duplicate/1",
-        linktext: "Duplicate"
-      },
-      gradelink: {
-        target: "/whatever/grade/1",
-        linktext: "Grade"
-      },
-      opentext: "Open: May 6, 2008 3:00 PM",
-      duetext: "Due: May 13, 2008 3:00 PM",
-      grouptext: "Restricted To: Red Cohort, Yellow Cohort",
-      inAndNew: "8/4"
-    },
-    {
-      id: "2",
-      title: "Read Chapter 16 of Friedman",
-      editlink: {
-        target: "/whatever/edit/2",
-        linktext: "Edit"
-      },
-      duplink: {
-        target: "/whatever/duplicate/2",
-        linktext: "Duplicate"
-      },
-      opentext: "Open: Apr 29, 2008 3:00 PM",
-      duetext: "Due: May 6, 2008 3:00 PM",
-      inAndNew: "N/A"
-    },
-    {
-      id: "3",
-      title: "Grant Writing",
-      editlink: {
-        target: "/whatever/edit/3",
-        linktext: "Edit"
-      },
-      duplink: {
-        target: "/whatever/duplicate/3",
-        linktext: "Duplicate"
-      },
-      gradelink: {
-        target: "/whatever/grade/3",
-        linktext: "Grade"
-      },
-      opentext: "Open: Apr 22, 2008 3:00 PM",
-      duetext: "Due: Apr 29, 2008 3:00 PM",
-      inAndNew: "8/0"
-    },
-    {
-      id: "4",
-      title: "Interactive Storytelling",
-      editlink: {
-        target: "/whatever/edit/4",
-        linktext: "Edit"
-      },
-      duplink: {
-        target: "/whatever/duplicate/4",
-        linktext: "Duplicate"
-      },
-      gradelink: {
-        target: "/whatever/grade/4",
-        linktext: "Grade"
-      },
-      opentext: "Open: Apr 15, 2008 3:00 PM",
-      duetext: "Due: Apr 22, 2008 3:00 PM",
-      inAndNew: "8/2"
-    },
-    {
-      id: "5",
-      title: "Professional Writing for Visual Media",
-      editlink: {
-        target: "/whatever/edit/5",
-        linktext: "Edit"
-      },
-      duplink: {
-        target: "/whatever/duplicate/5",
-        linktext: "Duplicate"
-      },
-      gradelink: {
-        target: "/whatever/grade/5",
-        linktext: "Grade"
-      },
-      opentext: "Open: Apr 8, 2008 3:00 PM",
-      duetext: "Due: Apr 15, 2008 3:00 PM",
-      inAndNew: "8/0"
-    }
-  ];
-
+  
   var dataFromEntity = function (obj, index) {
     return obj.data; 
   };
 
   var renderFromData = function (obj, index) {
-    var ditto = ['id','title', 'inAndNew', 'sortIndex', 'openDate', 'dueDate'];
+    var ditto = ['id','title', 'sortIndex', 'openDate', 'dueDate',
+                 'requiresSubmission'];
     var togo = {};
     for (var i in ditto) {
       togo[ditto[i]] = obj[ditto[i]];
     } 
+    if (obj.requiresSubmission === true) {
+      togo.inAndNewLink = {
+        target: '/portal/tool/'+sakai.curPlacement+'/viewSubmissions/'+obj.id,
+        linktext: obj.inAndNew
+      } 
+    }
+    else {
+      togo.inAndNew = obj.inAndNew;
+    }
     if (obj.openDate) {
       togo.opentext = "Open: " + new Date(obj.openDate).toLocaleString();
     }
@@ -139,7 +55,10 @@ asnn2.getAsnnCompData = function () {
     jQuery.ajax({
       type: "GET",	
       url: "/direct/assignment2/sitelist.json",
-      data: "siteid="+sakai.curContext,
+      data: { 
+        'siteid': sakai.curContext,
+        'no-cache': true
+      },
       async: false, 
       success: function (payload) {
         var data = JSON.parse(payload);
@@ -165,6 +84,7 @@ asnn2.selectorMap = [
   { selector: ".duedate", id: "duetext" },
   { selector: ".groups", id: "grouptext" },
   { selector: ".inAndNew", id: "inAndNew" },
+  { selector: ".inAndNewLink", id: "inAndNewLink" },
 ];
 
 asnn2.setupReordering = function () {
@@ -172,6 +92,44 @@ asnn2.setupReordering = function () {
     selectors : {
       movables: ".row",
       grabHandle: ".movehandle"
+    },
+    listeners: {
+      afterMove: function(item,requestedPosition,movables) {
+        var neworder = [];
+        movables.each(function(i, obj) {
+          neworder.push(jQuery('.asnnid',obj).text());
+        });
+        // Stub for reorder Ajax call
+        //alert(neworder);
+        jQuery.ajax({
+          type: "GET", // Grrr
+          url: "/direct/assignment2/reorder.json",
+          data: {
+            "siteid":sakai.curContext,
+            "order":neworder.toString()
+          }
+        });
+      },
+      onHover: function(item,state) {
+        jQuery('td', item).each(function(i, obj) {
+          if (i === 0) {
+            if (state) {
+              jQuery('img',this).show();
+            }
+            else {
+              jQuery('img',this).hide();
+            }
+          }
+          else {
+            if (state) {
+              jQuery(this).addClass('asnn-hover');
+            } 
+            else {
+              jQuery(this).removeClass('asnn-hover');
+            }
+          }
+        });
+      }
     }
   });
 };
@@ -200,8 +158,20 @@ asnn2.setupRemoveCheckboxes = function () {
 asnn2.refreshAsnnListEvents = function () {
   asnn2.setupRemoveCheckboxes(); 
   asnn2.setupReordering();
-
 };
+
+/**
+ * This method will do everything needed to fetch a new copy of the data from the server,
+ * repaint the list area, rehookup all it's events, and render the list using the existing
+ * sort order and options that have changed since first loading the page.
+ */
+asnn2.refreshListPage = function() {
+  var treedata = {
+    "row:": asnn2.getAsnnCompData()
+  };
+  asnn2.renderAsnnList(treedata);
+  asnn2.refreshAsnnListEvents(); 
+}
 
 asnn2.initAsnnList = function () {
   var treedata = {
@@ -285,7 +255,7 @@ asnn2.initAsnnList = function () {
           type: "DELETE",
           url: "/direct/assignment2/"+asnnid+"/delete"
         });
-        
+        asnn2.refreshListPage(); 
       }
     });
   });
