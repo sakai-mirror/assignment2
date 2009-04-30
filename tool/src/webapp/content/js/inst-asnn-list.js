@@ -158,8 +158,20 @@ asnn2.setupRemoveCheckboxes = function () {
 asnn2.refreshAsnnListEvents = function () {
   asnn2.setupRemoveCheckboxes(); 
   asnn2.setupReordering();
-
 };
+
+/**
+ * This method will do everything needed to fetch a new copy of the data from the server,
+ * repaint the list area, rehookup all it's events, and render the list using the existing
+ * sort order and options that have changed since first loading the page.
+ */
+asnn2.refreshListPage = function() {
+  var treedata = {
+    "row:": asnn2.getAsnnCompData()
+  };
+  asnn2.renderAsnnList(treedata);
+  asnn2.refreshAsnnListEvents(); 
+}
 
 asnn2.initAsnnList = function () {
   var treedata = {
@@ -243,7 +255,7 @@ asnn2.initAsnnList = function () {
           type: "DELETE",
           url: "/direct/assignment2/"+asnnid+"/delete"
         });
-        
+        asnn2.refreshListPage(); 
       }
     });
   });
