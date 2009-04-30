@@ -64,7 +64,7 @@ String getDefaultPortalMatter() {
     <ul class="breadCrumb">
       <li class="lastCrumb">Assignment List</li>
     </ul>
-
+<!--
     <ul id="pager-top" class="fl-pager-top flc-pager-top">
       <li value="1" class="fl-pager-pageLink flc-pager-pageLink"><a href="#">1</a></li>
       <li value="2" class="fl-pager-pageLink flc-pager-pageLink"><a href="#">2</a></li>
@@ -80,6 +80,7 @@ String getDefaultPortalMatter() {
           </select></span> per page
       </li>
     </ul>
+-->
 
     <span>Sorted by:</span>
     <ul class="sort-bar">
