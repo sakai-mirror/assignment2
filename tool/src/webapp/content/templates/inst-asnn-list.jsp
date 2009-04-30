@@ -64,23 +64,27 @@ String getDefaultPortalMatter() {
     <ul class="breadCrumb">
       <li class="lastCrumb">Assignment List</li>
     </ul>
-<!--
+<div id="asnn-list-area">
     <ul id="pager-top" class="fl-pager-top flc-pager-top">
-      <li value="1" class="fl-pager-pageLink flc-pager-pageLink"><a href="#">1</a></li>
-      <li value="2" class="fl-pager-pageLink flc-pager-pageLink"><a href="#">2</a></li>
+      <li>
+        <ul class="pager-links flc-pager-links">
+          <li class="fl-pager-pageLink flc-pager-pageLink"><a href="#">1</a></li>
+          <li class="flc-pager-pageLink-disabled">2</li>
+          <li class="fl-pager-pageLink flc-pager-pageLink"><a href="#">3</a></li>
+        </ul>
+      </li>
       <li class="fl-pager-previous flc-pager-previous"><a href="#">&lt; previous</a></li>
       <li class="fl-pager-next flc-pager-next"><a href="#">next &gt;</a></li>
-      <li>
-        Show <span>
-          <select class="flc-pager-page-size">
-            <option value="5">5</option>
-            <option value="10">10</option>
-            <option value="20">20</option>
-            <option value="50">50</option>
-          </select></span> per page
+      <li>Show <span> 
+        <select class="flc-pager-page-size">
+          <option value="5">5</option>
+          <option value="10">10</option>
+          <option value="20">20</option>
+          <option value="50">50</option>
+        </select></span> per page
       </li>
     </ul>
--->
+</div>
 
     <span>Sorted by:</span>
     <ul class="sort-bar">
