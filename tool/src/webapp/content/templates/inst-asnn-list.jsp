@@ -22,30 +22,23 @@ String getDefaultPortalMatter() {
 <link media="all" href="../css/inst-asnn-list.css" type="text/css" rel="stylesheet" />
 
 <!--
-    <script type="text/javascript" src="../../../lib/jquery/core/js/jquery.js"></script>
-    <script type="text/javascript" src="../../../lib/jquery/ui/js/ui.core.js"></script>
-    <script type="text/javascript" src="../../../lib/jquery/ui/js/ui.draggable.js"></script>
-    <script type="text/javascript" src="../../../framework/core/js/jquery.keyboard-a11y.js"></script>
-    <script type="text/javascript" src="../../../lib/jquery/plugins/tooltip/js/jquery.tooltip.js"></script>
-    <script type="text/javascript" src="../../../framework/core/js/Fluid.js"></script>
-    <script type="text/javascript" src="../../../components/inlineEdit/js/InlineEdit.js"></script>
-    <script type="text/javascript" src="../../../framework/core/js/FluidDOMUtilities.js"></script>
-    <script type="text/javascript" src="../../../components/reorderer/js/GeometricManager.js"></script>
-    <script type="text/javascript" src="../../../components/reorderer/js/Reorderer.js"></script>
+    <script type="text/javascript" src="../js/infusion/lib/jquery/core/js/jquery.js"></script>
+    <script type="text/javascript" src="../js/infusion/lib/jquery/ui/js/ui.core.js"></script>
+    <script type="text/javascript" src="../js/infusion/lib/jquery/ui/js/ui.draggable.js"></script>
+    <script type="text/javascript" src="../js/infusion/framework/core/js/jquery.keyboard-a11y.js"></script>
+    <script type="text/javascript" src="../js/infusion/lib/jquery/plugins/tooltip/js/jquery.tooltip.js"></script>
+    <script type="text/javascript" src="../js/infusion/framework/core/js/Fluid.js"></script>
+    <script type="text/javascript" src="../js/infusion/components/inlineEdit/js/InlineEdit.js"></script>
+    <script type="text/javascript" src="../js/infusion/framework/core/js/FluidDOMUtilities.js"></script>
+    <script type="text/javascript" src="../js/infusion/components/reorderer/js/GeometricManager.js"></script>
+    <script type="text/javascript" src="../js/infusion/components/reorderer/js/Reorderer.js"></script>
+    <script type="text/javascript" src="../js/infusion/lib/json/js/json2.js"></script>
+    <script type="text/javascript" src="../js/infusion/framework/core/js/DataBinding.js"></script>
+    <script type="text/javascript" src="../js/infusion/lib/fastXmlPull/js/fastXmlPull.js"></script>
+    <script type="text/javascript" src="../js/infusion/framework/renderer/js/fluidParser.js"></script>
+    <script type="text/javascript" src="../js/infusion/framework/renderer/js/fluidRenderer.js"></script>
+    <script type="text/javascript" src="../js/infusion/components/pager/js/Pager.js"></script> 
 -->
-
-    <!-- More things for the renderer -->
-
-<!--
-    <script type="text/javascript" src="../../../lib/json/js/json2.js"></script>
-    <script type="text/javascript" src="../../../framework/core/js/DataBinding.js"></script>
-    <script type="text/javascript" src="../../../lib/fastXmlPull/js/fastXmlPull.js"></script>
-    <script type="text/javascript" src="../../../framework/renderer/js/fluidParser.js"></script>
-    <script type="text/javascript" src="../../../framework/renderer/js/fluidRenderer.js"></script>
--->
-
-    <!-- Pager -->
-    <!-- <script type="text/javascript" src="../../../components/pager/js/Pager.js"></script> -->
 
     <script type="text/javascript" language="JavaScript">
         var sakai = sakai || {};
@@ -54,7 +47,7 @@ String getDefaultPortalMatter() {
     </script>
 
     <!-- Application Code -->
-    <script src="../js/InfusionAll_r7128.js" type="text/javascript"></script>
+    <script src="../js/InfusionAll_r7132.js" type="text/javascript"></script> 
     <script src="../js/inst-asnn-list.js" type="text/javascript"></script>
 	<script type="text/javascript" language="JavaScript" src="/library/js/headscripts.js"></script>
   </head>

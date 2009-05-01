@@ -236,8 +236,11 @@ asnn2.setupAsnnList = function () {
  */
 asnn2.renderAsnnList = function(asnndata) {
   var data = asnndata || asnn2.pageState.dataArray;
+
+  var dopple = $.extend(true, [], data);
+
   var treedata = {
-    "row:": data
+    "row:": dopple
   };
 
   if (asnn2.asnnListTemplate) {
@@ -248,6 +251,35 @@ asnn2.renderAsnnList = function(asnndata) {
   }
 };
 
+/**
+ * Used to render the Asnn List using a model from the Fluid Pager. This is designed to be 
+ * call from the pager listener and use the pages state to rerender the Asnn List.
+ * @param {pageModel} A Fluid Page Model
+ */
+asnn2.renderAsnnListPage = function(pageModel) {
+  var bounds = asnn2.findPageSlice(pageModel);
+  // TODO: Does Javascript array.slice just copy the references or really make new objects?
+  var torender = []
+  for (var i = bounds[0]; i < bounds[1]+1; i++) {
+    torender.push(asnn2.pageState.dataArray[i]); 
+  }
+  asnn2.renderAsnnList(torender);
+}
+
+/**
+ * Determine the slice to render based off a pageModel.
+ * @param {pageModel} Page model from the Fluid Pager. This is the object model you get whenever it
+ * changes.
+ * @return {Array} An array consisting of the start and end to use. ex. [10,14]
+ */
+asnn2.findPageSlice = function(pageModel) {
+  var start = pageModel.pageIndex * pageModel.pageSize;
+  var end = start + pageModel.pageSize -1;
+  if (end > (pageModel.totalRange-1)) {
+    end = pageModel.totalRange-1;
+  }
+  return [start,end];
+}
 
 
 /**
@@ -267,7 +299,6 @@ asnn2.initAsnnList = function () {
   asnn2.pageState.dataArray = asnn2.getAsnnCompData();
 
   asnn2.renderAsnnList();
-
   asnn2.setupSortLinks();
 
   /*
@@ -308,8 +339,7 @@ asnn2.initAsnnList = function () {
   var pager = fluid.pager("#asnn-list-area", {
     listeners: {
       onModelChange: function (newModel, oldModel) {
-        var something = newModel;
-        alert("Time for rendering: " + JSON.stringify(newModel));
+        asnn2.renderAsnnListPage(newModel);
       }
     },
     dataModel: fakedata,
