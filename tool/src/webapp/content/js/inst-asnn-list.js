@@ -102,7 +102,8 @@ asnn2.pageState = {
   listTemplate: Object(),
   sortTerm: "sortIndex",
   sortDir: 1,
-  dataArray: [] 
+  dataArray: [],
+  pageModel: {}
 }
 
 /*
@@ -114,7 +115,7 @@ asnn2.setupSortLinks = function() {
     var item = asnn2.sortMap[i];
     $(item.selector).bind("click", function(sortby) {
       return function (e) {
-        var newdata = asnn2.getAsnnCompData();
+        var newdata = asnn2.pageState.dataArray;
         newdata.sort(function (arec,brec) {
           var a = arec[sortby];
           var b = brec[sortby];
@@ -123,8 +124,7 @@ asnn2.setupSortLinks = function() {
 
         sortDir = sortDir * -1;
 
-        asnn2.renderAsnnList(newdata);
-        asnn2.setupAsnnList();
+        asnn2.renderAsnnListPage();
       };
     }(item.property));
   }
@@ -256,7 +256,8 @@ asnn2.renderAsnnList = function(asnndata) {
  * call from the pager listener and use the pages state to rerender the Asnn List.
  * @param {pageModel} A Fluid Page Model
  */
-asnn2.renderAsnnListPage = function(pageModel) {
+asnn2.renderAsnnListPage = function(newPageModel) {
+  var pageModel = newPageModel || asnn2.pageState.pageModel;
   var bounds = asnn2.findPageSlice(pageModel);
   // TODO: Does Javascript array.slice just copy the references or really make new objects?
   var torender = []
@@ -264,6 +265,7 @@ asnn2.renderAsnnListPage = function(pageModel) {
     torender.push(asnn2.pageState.dataArray[i]); 
   }
   asnn2.renderAsnnList(torender);
+  asnn2.setupAsnnList(); 
 }
 
 /**
@@ -281,30 +283,22 @@ asnn2.findPageSlice = function(pageModel) {
   return [start,end];
 }
 
-
-/**
- * This method will do everything needed to fetch a new copy of the data from the server,
- * repaint the list area, rehookup all it's events, and render the list using the existing
- * sort order and options that have changed since first loading the page.
- */
-asnn2.refreshListPage = function() {
-  asnn2.renderAsnnList(asnn2.getAsnnCompData());
-  asnn2.setupAsnnList(); 
-}
-
 /**
  * The master init function to be called at the bottom of the HTML page.
  */
 asnn2.initAsnnList = function () {
   asnn2.pageState.dataArray = asnn2.getAsnnCompData();
 
+  // I would like to remove this, but am getting a duplicate attribute error currently
+  // when I first render it in the pager listener.
   asnn2.renderAsnnList();
+
   asnn2.setupSortLinks();
 
   /*
    * Setup the Asnn List Area now that it's rendered.
    */
-  asnn2.setupAsnnList();
+  //asnn2.setupAsnnList();
 
   /*
    * Bind the remove button at the bottom of the screen. 
@@ -321,7 +315,8 @@ asnn2.initAsnnList = function () {
           type: "DELETE",
           url: "/direct/assignment2/"+asnnid+"/delete"
         });
-        asnn2.refreshListPage(); 
+        //TODO Properly refire the pager with an updated model
+        window.location.reload();
       }
     });
   });
@@ -339,6 +334,9 @@ asnn2.initAsnnList = function () {
   var pager = fluid.pager("#asnn-list-area", {
     listeners: {
       onModelChange: function (newModel, oldModel) {
+        // We need to store the pageModel so that the Sorting links can use it when they need
+        // to refresh the list
+        asnn2.pageState.pageModel = newModel;
         asnn2.renderAsnnListPage(newModel);
       }
     },
