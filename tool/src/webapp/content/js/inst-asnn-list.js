@@ -274,7 +274,7 @@ asnn2.renderAsnnListPage = function(pageModel) {
  */
 asnn2.findPageSlice = function(pageModel) {
   var start = pageModel.pageIndex * pageModel.pageSize;
-  var end = start + pageModel.pageSize -1;
+  var end = start + Number(pageModel.pageSize) - 1; // This was getting coerced to String addition
   if (end > (pageModel.totalRange-1)) {
     end = pageModel.totalRange-1;
   }
