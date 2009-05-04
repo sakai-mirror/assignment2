@@ -15,14 +15,14 @@ asnn2.getAsnnCompData = function () {
     var ditto = ['id','title', 'sortIndex', 'openDate', 'dueDate',
                  'requiresSubmission'];
     var togo = {};
-    for (var i in ditto) {
+    for (var i = 0; i < ditto.length; i++) {
       togo[ditto[i]] = obj[ditto[i]];
     } 
     if (obj.requiresSubmission === true) {
       togo.inAndNewLink = {
         target: '/portal/tool/'+sakai.curPlacement+'/viewSubmissions/'+obj.id,
         linktext: obj.inAndNew
-      } 
+      }; 
     }
     else {
       togo.inAndNew = obj.inAndNew;
@@ -45,12 +45,12 @@ asnn2.getAsnnCompData = function () {
         togo.gradelink = {
             target: '/portal/tool/'+sakai.curPlacement+'/viewSubmissions/'+obj.id,
             linktext: "Grade"
-        }
+        };
     }
     return togo;
   };
 
-  var togo = []
+  var togo = [];
   if (asnn2.livedata === true) {
     jQuery.ajax({
       type: "GET",	
@@ -71,7 +71,7 @@ asnn2.getAsnnCompData = function () {
   }
 
   return togo;
-}
+};
 
 asnn2.selectorMap = [
   { selector: ".row", id: "row:" },
@@ -84,7 +84,7 @@ asnn2.selectorMap = [
   { selector: ".duedate", id: "duetext" },
   { selector: ".groups", id: "grouptext" },
   { selector: ".inAndNew", id: "inAndNew" },
-  { selector: ".inAndNewLink", id: "inAndNewLink" },
+  { selector: ".inAndNewLink", id: "inAndNewLink" }
 ];
 
 asnn2.sortMap = [
@@ -104,7 +104,7 @@ asnn2.pageState = {
   sortDir: 1,
   dataArray: [],
   pageModel: {}
-}
+};
 
 /*
  * Initializes the top sorting links.
@@ -128,7 +128,7 @@ asnn2.setupSortLinks = function() {
       };
     }(item.property));
   }
-}
+};
 
 /*
  * The setup functions below each perform some action on the rendered Assignment list,
@@ -214,7 +214,7 @@ asnn2.setupInlineEdits = function () {
       }
     }
   });
-}
+};
 
 /**
  * Refresh all the actions and listeners on the asnn list table that need to be
@@ -244,7 +244,7 @@ asnn2.renderAsnnList = function(asnndata) {
   };
 
   if (asnn2.asnnListTemplate) {
-    fluid.reRender(asnn2.asnnListTemplate, jQuery("#asnn-list"), treedata, {cutpoints: asnn2.selectorMap})
+    fluid.reRender(asnn2.asnnListTemplate, jQuery("#asnn-list"), treedata, {cutpoints: asnn2.selectorMap});
   }
   else {
     asnn2.asnnListTemplate = fluid.selfRender(jQuery("#asnn-list"), treedata, {cutpoints: asnn2.selectorMap});
@@ -260,13 +260,13 @@ asnn2.renderAsnnListPage = function(newPageModel) {
   var pageModel = newPageModel || asnn2.pageState.pageModel;
   var bounds = asnn2.findPageSlice(pageModel);
   // TODO: Does Javascript array.slice just copy the references or really make new objects?
-  var torender = []
+  var torender = [];
   for (var i = bounds[0]; i < bounds[1]+1; i++) {
     torender.push(asnn2.pageState.dataArray[i]); 
   }
   asnn2.renderAsnnList(torender);
   asnn2.setupAsnnList(); 
-}
+};
 
 /**
  * Determine the slice to render based off a pageModel.
@@ -281,7 +281,7 @@ asnn2.findPageSlice = function(pageModel) {
     end = pageModel.totalRange-1;
   }
   return [start,end];
-}
+};
 
 /**
  * The master init function to be called at the bottom of the HTML page.
@@ -326,7 +326,7 @@ asnn2.initAsnnList = function () {
    * Set up the pagers
    */
   // I'm getting a too much recursion error when using my component tree, using a simple array for now.
-  var fakedata = []
+  var fakedata = [];
   for (var i = 0; i < asnn2.pageState.dataArray.length; i++) {
     fakedata.push(i);
   }
@@ -350,4 +350,4 @@ asnn2.initAsnnList = function () {
     }}
   });
 
-}
+};
