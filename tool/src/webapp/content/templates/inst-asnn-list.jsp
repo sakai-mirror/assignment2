@@ -82,10 +82,13 @@ String getDefaultPortalMatter() {
     <span>Sorted by:</span>
     <ul class="sort-bar">
       <li class="sort-item"><a href="#" id="titlesort">Title</a> |</li>
-      <li class="sort-item">Restricted To |</li>
+      <!-- <li class="sort-item">Restricted To |</li> -->
       <li class="sort-item"><a href="#" id="opendatesort">Open Date</a> |</li>
       <li class="sort-item"><a href="#" id="duedatesort">Due Date</a> |</li>
-      <li class="sort-item"><a href="#" id="instsort">Instructor Specified Order</a></li>
+      <li class="sort-item">
+        <a href="#" id="instsort">Instructor Specified Order</a>
+        <img src="/library/image/sakai/sortascending.gif" />
+      </li>
     </ul>
 
     <table style="border-collapse: collapse" id="asnn-list">
@@ -110,7 +113,7 @@ String getDefaultPortalMatter() {
       <tbody id="asnn-list-body">
         <tr class="row">
           <td style="width: 40px"><img style="display:none" alt="Move Assignment" src="/sakai-assignment2-tool/content/images/4Arrows.png" class="movehandle" /></td>
-          <td><p>
+          <td style="asnninfo"><p>
             <span style="display:none" class="asnnid">1</span>
             <span class="asnntitle">Audio Scriptwriting</span><br/>
             <a href="" class="editlink">Edit</a>

@@ -124,6 +124,15 @@ asnn2.setupSortLinks = function() {
 
         sortDir = sortDir * -1;
 
+        jQuery("img", this.parentNode.parentNode).remove();
+        
+        if (sortDir > 0) {
+          jQuery(this).after('<img src="/library/image/sakai/sortascending.gif" />');
+        } 
+        else {
+          jQuery(this).after('<img src="/library/image/sakai/sortdescending.gif" />');
+        }
+
         asnn2.renderAsnnListPage();
       };
     }(item.property));
