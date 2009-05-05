@@ -1,7 +1,10 @@
 package org.sakaiproject.assignment2.tool.commands;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment2.exception.AssignmentNotFoundException;
 import org.sakaiproject.assignment2.exception.InvalidGradeForAssignmentException;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
@@ -21,6 +24,8 @@ import uk.org.ponder.messageutil.TargettedMessageList;
  *
  */
 public class GradeAllRemainingCommand {
+    
+    private static Log log = LogFactory.getLog(GradeAllRemainingCommand.class);
     
     // Dependency
     private AssignmentPermissionLogic permissionLogic;
@@ -78,9 +83,13 @@ public class GradeAllRemainingCommand {
         return grade;
     }
     
+    private String groupIdFilter;
+    public void setGroupIdFilter(String groupIdFilter) {
+        this.groupIdFilter = groupIdFilter;
+    }
+    
     public void execute() {
-        System.out.println("Executing Grade: " + assignmentId + ", " +
-                grade);
+        if (log.isDebugEnabled()) log.debug("Executing Grade: " + assignmentId + ", " + grade);
         
         if (assignmentId == null) {
             throw new IllegalArgumentException("Null assignmentId param passed to GradeAllRemainingAction");
@@ -102,8 +111,21 @@ public class GradeAllRemainingCommand {
         List<String> gradableStudents = permissionLogic.getGradableStudentsForUserForItem(currUserId, assign);
         
         if (gradableStudents != null) {
+            List<String> filteredStudents = new ArrayList<String>();
+            // if the group filter is not null, we only apply the grade to students in that group
+            if (groupIdFilter != null && !"".equals(groupIdFilter)) {
+                List<String> studentsInGroup = externalLogic.getStudentsInGroup(groupIdFilter);
+                for (String student : gradableStudents) {
+                    if (studentsInGroup.contains(student)) {
+                        filteredStudents.add(student);
+                    }
+                }
+            } else {
+                filteredStudents.addAll(gradableStudents);
+            }
+            
             try {
-                gradebookLogic.assignGradeToUngradedStudents(assign.getContextId(), assign.getGradebookItemId(), gradableStudents, grade);
+                gradebookLogic.assignGradeToUngradedStudents(assign.getContextId(), assign.getGradebookItemId(), filteredStudents, grade);
             } catch (InvalidGradeForAssignmentException igfae) {
                 messages.addMessage(new TargettedMessage("assignment2.assignment_grade.assigntoall.invalid_grade",
                         new Object[] { }, TargettedMessage.SEVERITY_ERROR));
