@@ -136,7 +136,7 @@ public class LocalPermissionLogic {
                 SimpleAssignmentViewParams params = (SimpleAssignmentViewParams) viewParams;
 
                 return permissionLogic.isCurrentUserAbleToSubmit(contextId) && 
-                permissionLogic.isUserAbleToViewAssignment(contextId, params.assignmentId);
+                permissionLogic.isUserAbleToViewAssignment(params.assignmentId);
             }
 
             return Boolean.FALSE;
@@ -146,7 +146,7 @@ public class LocalPermissionLogic {
                 ViewSubmissionsViewParams params = (ViewSubmissionsViewParams) viewParams;
 
                 return permissionLogic.isUserAbleToAccessInstructorView(contextId) && 
-                permissionLogic.isUserAbleToViewAssignment(contextId, params.assignmentId);
+                permissionLogic.isUserAbleToViewAssignment(params.assignmentId);
             }
 
             return Boolean.FALSE;
@@ -171,7 +171,7 @@ public class LocalPermissionLogic {
                 AssignmentViewParams params = (AssignmentViewParams) viewParams;
 
                 return permissionLogic.isUserAbleToAccessInstructorView(contextId) && 
-                permissionLogic.isUserAbleToViewAssignment(contextId, params.assignmentId);
+                permissionLogic.isUserAbleToViewAssignment(params.assignmentId);
             }
 
             return Boolean.FALSE;
@@ -180,7 +180,7 @@ public class LocalPermissionLogic {
             if (viewParams instanceof AssignmentViewParams) {
                 AssignmentViewParams params = (AssignmentViewParams) viewParams;
 
-                return permissionLogic.isUserAbleToViewAssignment(contextId, params.assignmentId);
+                return permissionLogic.isUserAbleToViewAssignment(params.assignmentId);
             }
 
             return Boolean.FALSE;
@@ -190,7 +190,7 @@ public class LocalPermissionLogic {
                 ZipViewParams params = (ZipViewParams) viewParams;
 
                 return permissionLogic.isUserAbleToAccessInstructorView(contextId) &&
-                permissionLogic.isUserAbleToViewAssignment(contextId, params.assignmentId);
+                permissionLogic.isUserAbleToViewAssignment(params.assignmentId);
             }
 
             return Boolean.FALSE;

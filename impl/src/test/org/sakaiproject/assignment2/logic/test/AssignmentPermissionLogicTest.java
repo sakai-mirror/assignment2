@@ -22,6 +22,8 @@ package org.sakaiproject.assignment2.logic.test;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -244,117 +246,169 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
 	   assertFalse(permissionLogic.isUserAbleToProvideFeedbackForSubmission(testData.st2a1Submission.getId()));
    }
    
-   public void testIsUserAbleToViewUngradedAssignment() {
-	   // try passing a null assignment
-	   try {
-		   permissionLogic.isUserAbleToViewUngradedAssignment(null, new ArrayList<String>());
-		   fail("Did not catch null assignment passed to isUserAbleToViewUngradedAssignment");
-	   } catch (IllegalArgumentException iae) {}
-	   
-	   // try passing a graded assignment
-	   try {
-		   permissionLogic.isUserAbleToViewUngradedAssignment(testData.a4, new ArrayList<String>());
-		   fail("Did not catch graded assignment passed to isUserAbleToViewUngradedAssignment");
-	   } catch (IllegalArgumentException iae) {}
-	   
-	   // instructors should be able to view all assignments 
-	   externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
-	   assertTrue(permissionLogic.isUserAbleToViewUngradedAssignment(testData.a1, null));
-	   assertTrue(permissionLogic.isUserAbleToViewUngradedAssignment(testData.a2, null));
-	   
-	   // TA should only be able to see assignments that he/she is a member of if restricted
-	   // otherwise, should see all
-
-	   externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
-	   List<String> memberships = externalLogic.getUserMembershipGroupIdList(AssignmentTestDataLoad.TA_UID, AssignmentTestDataLoad.CONTEXT_ID);
-	   // try one that is restricted to a group that ta is a member of
-	   assertTrue(permissionLogic.isUserAbleToViewUngradedAssignment(testData.a1, memberships));
-	   // let's try that same one, but remove the membership
-	   assertFalse(permissionLogic.isUserAbleToViewUngradedAssignment(testData.a1, new ArrayList<String>()));
-	   // this one is not restricted, so should be ok
-	   assertTrue(permissionLogic.isUserAbleToViewUngradedAssignment(testData.a2, memberships));
-	   
-	   // Students will see assignments available to site and those available to groups they
-	   // are a member of
-	   externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT1_UID);
-	   memberships = externalLogic.getUserMembershipGroupIdList(AssignmentTestDataLoad.STUDENT1_UID, AssignmentTestDataLoad.CONTEXT_ID);
-	   // student is a member of a restricted group, so ok
-	   assertTrue(permissionLogic.isUserAbleToViewUngradedAssignment(testData.a1, memberships));
-	   // let's try that same one, but remove the membership
-	   assertFalse(permissionLogic.isUserAbleToViewUngradedAssignment(testData.a1, new ArrayList<String>()));
-	   // this one is not restricted, so should be ok
-	   assertTrue(permissionLogic.isUserAbleToViewUngradedAssignment(testData.a2, memberships));
-	   
-	   // let's set the open date to the future.  student shouldn't be able to view anymore
-	   Calendar cal = Calendar.getInstance();
-	   cal.set(2025, 10, 01);
-
-	   testData.a1.setOpenDate(cal.getTime());
-	   assertFalse(permissionLogic.isUserAbleToViewUngradedAssignment(testData.a1, memberships));
-
-   }
+ 
    
-   public void testIsUserAbleToViewGradedAssignment() {
-	   // try passing a null assignment
-	   try {
-		   permissionLogic.isUserAbleToViewGradedAssignment(null, new ArrayList<String>());
-		   fail("Did not catch null assignment passed to isUserAbleToViewGradedAssignment");
-	   } catch (IllegalArgumentException iae) {}
-	   
-	   // try passing an ungraded assignment
-	   try {
-		   permissionLogic.isUserAbleToViewGradedAssignment(testData.a1, new ArrayList<String>());
-		   fail("Did not catch graded assignment passed to isUserAbleToViewGradedAssignment");
-	   } catch (IllegalArgumentException iae) {}
-	   
-	   // gb item 1 is not released - assoc with a3
-	   // a4 is restricted to group 3
-	   
-	   // instructors should be able to view all assignments 
-	   externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
-	   assertTrue(permissionLogic.isUserAbleToViewGradedAssignment(testData.a3, null));
-	   assertTrue(permissionLogic.isUserAbleToViewGradedAssignment(testData.a4, null));
-	   
-	   // TAs can view all since there are no grader perms
+   public void testFilterViewableAssignments() {
+       // try passing a null contextId
+       try {
+           permissionLogic.filterViewableAssignments(null, new ArrayList<Assignment2>());
+           fail("Did not catch null contextId passed to filterViewableAssignments");
+       } catch (IllegalArgumentException iae) {}
+       
+       // try passing an assignment with a diff contextId
+       Assignment2 assign = new Assignment2();
+       assign.setContextId(AssignmentTestDataLoad.BAD_CONTEXT);
+       List<Assignment2> assignList = new ArrayList<Assignment2>();
+       assignList.add(assign);
+       try {
+           permissionLogic.filterViewableAssignments(AssignmentTestDataLoad.CONTEXT_ID, assignList);
+           fail("did not catch assignment in the list with a different contextId");
+       } catch (IllegalArgumentException iae) {}
+       
+       // instructors should be able to view all assignments 
+       externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
+       assignList = new ArrayList<Assignment2>();
+       testData.a1.setRemoved(false); // I'm not sure why this was set to removed here, but let's
+                                       // ensure it is not removed
+       assignList.add(testData.a1);
+       assignList.add(testData.a2);
+       
+       List<Assignment2> filteredAssigns = permissionLogic.filterViewableAssignments(AssignmentTestDataLoad.CONTEXT_ID, assignList);
+       assertEquals(2, filteredAssigns.size());
 
-	   externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
-	   assertTrue(permissionLogic.isUserAbleToViewGradedAssignment(testData.a3, null));
-	   assertTrue(permissionLogic.isUserAbleToViewGradedAssignment(testData.a4, null));
-	   
-	   // Students will see assignments available to site and those available to groups they
-	   // are a member of. assign must be open
-	   externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT1_UID);
-	   List<String> memberships = externalLogic.getUserMembershipGroupIdList(AssignmentTestDataLoad.STUDENT1_UID, AssignmentTestDataLoad.CONTEXT_ID);
-	   // student is not a member of the restricted group, so cannot view
-	   assertFalse(permissionLogic.isUserAbleToViewGradedAssignment(testData.a4, memberships));
-	   // this gb item hasn't been released yet, but the student can still view it
-	   assertTrue(permissionLogic.isUserAbleToViewGradedAssignment(testData.a3, memberships));
-	   
-	   // switch to student who is a member of group 3
-	   externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT2_UID);
-	   memberships = externalLogic.getUserMembershipGroupIdList(AssignmentTestDataLoad.STUDENT2_UID, AssignmentTestDataLoad.CONTEXT_ID);
-	   
-	   assertTrue(permissionLogic.isUserAbleToViewGradedAssignment(testData.a4, memberships));
-	   
-	   // let's set the open date to the future.  student shouldn't be able to view anymore
-	   Calendar cal = Calendar.getInstance();
-	   cal.set(2025, 10, 01);
+       
+       // TA should only be able to see assignments that he/she is a member of if restricted
+       // otherwise, should see all
 
-	   testData.a4.setOpenDate(cal.getTime());
-	   assertFalse(permissionLogic.isUserAbleToViewGradedAssignment(testData.a4, memberships));
+       externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
+       // a1 is restricted to a group that ta is a member of
+       // a2 is not restricted, so should be ok
+       filteredAssigns = permissionLogic.filterViewableAssignments(AssignmentTestDataLoad.CONTEXT_ID, assignList);
+       assertEquals(2, filteredAssigns.size());
+       
+       // Students will see assignments available to site and those available to groups they
+       // are a member of
+       externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT1_UID);
+       // a1: student is a member of a restricted group, so ok
+       // a2: is not restricted, so should be ok
+       filteredAssigns = permissionLogic.filterViewableAssignments(AssignmentTestDataLoad.CONTEXT_ID, assignList);
+       assertEquals(2, filteredAssigns.size());
+       
+       // student 3 should only have access to assign 2 b/c of group memberships
+       externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT3_UID);
+       filteredAssigns = permissionLogic.filterViewableAssignments(AssignmentTestDataLoad.CONTEXT_ID, assignList);
+       assertEquals(1, filteredAssigns.size());
+       assertEquals(testData.a2Id, filteredAssigns.get(0).getId());
+       
+       // let's set the open date to the future.  student shouldn't be able to view anymore
+       externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT1_UID);
+       Calendar cal = Calendar.getInstance();
+       cal.set(2025, 10, 01);
 
+       testData.a1.setOpenDate(cal.getTime());
+       filteredAssigns = permissionLogic.filterViewableAssignments(AssignmentTestDataLoad.CONTEXT_ID, assignList);
+       assertEquals(1, filteredAssigns.size());
+       assertEquals(testData.a2Id, filteredAssigns.get(0).getId());
+       
+       // let's set the assignment to draft. only instructor should be able to view
+       testData.a1.setDraft(true);
+       // try student
+       filteredAssigns = permissionLogic.filterViewableAssignments(AssignmentTestDataLoad.CONTEXT_ID, assignList);
+       assertEquals(1, filteredAssigns.size());
+       assertEquals(testData.a2Id, filteredAssigns.get(0).getId());
+       
+       externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
+       filteredAssigns = permissionLogic.filterViewableAssignments(AssignmentTestDataLoad.CONTEXT_ID, assignList);
+       assertEquals(1, filteredAssigns.size());
+       assertEquals(testData.a2Id, filteredAssigns.get(0).getId());
+       
+       // instructor should be allowed
+       externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
+       filteredAssigns = permissionLogic.filterViewableAssignments(AssignmentTestDataLoad.CONTEXT_ID, assignList);
+       assertEquals(2, filteredAssigns.size());
+       
+       // let's try out some graded assignment logic
+       
+       // gb item 1 is not released - assoc with a3
+       // a4 is restricted to group 3
+       
+       // instructors should be able to view all assignments 
+       externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
+       assignList = new ArrayList<Assignment2>();
+       assignList.add(testData.a3);
+       assignList.add(testData.a4);
+       filteredAssigns = permissionLogic.filterViewableAssignments(AssignmentTestDataLoad.CONTEXT_ID, assignList);
+       assertEquals(2, filteredAssigns.size());
+       
+       // TAs can view all gb items since there are no grader perms, but he/she can't view
+       // assignments that are restricted to groups they are not in. ta can't view assign 4
+
+       externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
+       filteredAssigns = permissionLogic.filterViewableAssignments(AssignmentTestDataLoad.CONTEXT_ID, assignList);
+       assertEquals(1, filteredAssigns.size());
+       assertEquals(testData.a3Id, filteredAssigns.get(0).getId());
+       
+       // Students will see assignments available to site and those available to groups they
+       // are a member of. assign must be open
+       externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT1_UID);
+       // a4: student is not a member of the restricted group, so cannot view
+       // a3: this gb item hasn't been released yet, but the student can still view it
+       filteredAssigns = permissionLogic.filterViewableAssignments(AssignmentTestDataLoad.CONTEXT_ID, assignList);
+       assertEquals(1, filteredAssigns.size());
+       assertEquals(testData.a3Id, filteredAssigns.get(0).getId());
+       
+       // switch to student who is a member of group 3
+       externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT2_UID);
+       filteredAssigns = permissionLogic.filterViewableAssignments(AssignmentTestDataLoad.CONTEXT_ID, assignList);
+       assertEquals(2, filteredAssigns.size());
+       
+       // let's set the open date to the future.  student shouldn't be able to view anymore
+       cal.set(2025, 10, 01);
+
+       testData.a4.setOpenDate(cal.getTime());
+       filteredAssigns = permissionLogic.filterViewableAssignments(AssignmentTestDataLoad.CONTEXT_ID, assignList);
+       assertEquals(1, filteredAssigns.size());
+       assertEquals(testData.a3Id, filteredAssigns.get(0).getId());
+       
+       // now set a1 as removed and remove the group restrictions to test this. 
+       // only a student w/ a submission should be able to view. st1 has a submission
+       // but st3 does not
+       testData.a4.setRemoved(true);
+       testData.a4.setAssignmentGroupSet(new HashSet<AssignmentGroup>());
+       
+       assignList = new ArrayList<Assignment2>();
+       assignList.add(testData.a4);
+       
+       // instructor
+       externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
+       filteredAssigns = permissionLogic.filterViewableAssignments(AssignmentTestDataLoad.CONTEXT_ID, assignList);
+       assertEquals(0, filteredAssigns.size());
+       
+       // ta
+       externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
+       filteredAssigns = permissionLogic.filterViewableAssignments(AssignmentTestDataLoad.CONTEXT_ID, assignList);
+       assertEquals(0, filteredAssigns.size());
+       
+       // student w/o sub
+       externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT1_UID);
+       filteredAssigns = permissionLogic.filterViewableAssignments(AssignmentTestDataLoad.CONTEXT_ID, assignList);
+       assertEquals(0, filteredAssigns.size());
+       
+       // student with sub
+       externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT2_UID);
+       filteredAssigns = permissionLogic.filterViewableAssignments(AssignmentTestDataLoad.CONTEXT_ID, assignList);
+       assertEquals(1, filteredAssigns.size());
+       
+       testData.a1.setDraft(false);
+       testData.a1.setOpenDate(new Date());
+       testData.a4.setRemoved(false);
    }
    
    public void testIsUserAbleToViewAssignment() {
-	   // try passing a null contextId
-	   try {
-		   permissionLogic.isUserAbleToViewAssignment(null, 12345L);
-		   fail("Did not catch null contextId passed to isUserAbleToViewAssignment");
-	   } catch (IllegalArgumentException iae) {}
 	   
 	   // try passing a null assignmentId
 	   try {
-		   permissionLogic.isUserAbleToViewAssignment(AssignmentTestDataLoad.CONTEXT_ID, null);
+		   permissionLogic.isUserAbleToViewAssignment(null);
 		   fail("Did not catch null assignmentId passed to isUserAbleToViewAssignment");
 	   } catch (IllegalArgumentException iae) {}
 	   
@@ -362,25 +416,25 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
 	   
 	   // instructors should be able to view all assignments 
 	   externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
-	   assertTrue(permissionLogic.isUserAbleToViewAssignment(AssignmentTestDataLoad.CONTEXT_ID, testData.a1Id));
-	   assertTrue(permissionLogic.isUserAbleToViewAssignment(AssignmentTestDataLoad.CONTEXT_ID, testData.a2Id));
+	   assertTrue(permissionLogic.isUserAbleToViewAssignment(testData.a1Id));
+	   assertTrue(permissionLogic.isUserAbleToViewAssignment(testData.a2Id));
 	   
 	   // TA should only be able to see assignments that he/she is a member of if restricted
 	   // otherwise, should see all
 
 	   externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);   
 	   // try one that is restricted to a group that ta is a member of
-	   assertTrue(permissionLogic.isUserAbleToViewAssignment(AssignmentTestDataLoad.CONTEXT_ID, testData.a1Id));
+	   assertTrue(permissionLogic.isUserAbleToViewAssignment(testData.a1Id));
 	   // this one is not restricted, so should be ok
-	   assertTrue(permissionLogic.isUserAbleToViewAssignment(AssignmentTestDataLoad.CONTEXT_ID, testData.a2Id));
+	   assertTrue(permissionLogic.isUserAbleToViewAssignment(testData.a2Id));
 	   
 	   // Students will see assignments available to site and those available to groups they
 	   // are a member of
 	   externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT1_UID);
 	   // student is a member of a restricted group, so ok
-	   assertTrue(permissionLogic.isUserAbleToViewAssignment(AssignmentTestDataLoad.CONTEXT_ID, testData.a1Id));
+	   assertTrue(permissionLogic.isUserAbleToViewAssignment(testData.a1Id));
 	   // this one is not restricted, so should be ok
-	   assertTrue(permissionLogic.isUserAbleToViewAssignment(AssignmentTestDataLoad.CONTEXT_ID, testData.a2Id));
+	   assertTrue(permissionLogic.isUserAbleToViewAssignment(testData.a2Id));
 	   
 	   // let's set the open date to the future.  student shouldn't be able to view anymore
 	   Calendar cal = Calendar.getInstance();
@@ -390,7 +444,7 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
 	   testData.a1 = (Assignment2)dao.findById(Assignment2.class, testData.a1Id);
 	   testData.a1.setOpenDate(cal.getTime());
 	   dao.save(testData.a1);
-	   assertFalse(permissionLogic.isUserAbleToViewAssignment(AssignmentTestDataLoad.CONTEXT_ID, testData.a1Id));
+	   assertFalse(permissionLogic.isUserAbleToViewAssignment(testData.a1Id));
 	   
 	   // now test some graded assignments
 	   // gb item 1 is not released - assoc with a3
@@ -398,26 +452,26 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
 	   
 	   // instructors should be able to view all assignments 
 	   externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
-	   assertTrue(permissionLogic.isUserAbleToViewAssignment(AssignmentTestDataLoad.CONTEXT_ID, testData.a3Id));
-	   assertTrue(permissionLogic.isUserAbleToViewAssignment(AssignmentTestDataLoad.CONTEXT_ID, testData.a4Id));
+	   assertTrue(permissionLogic.isUserAbleToViewAssignment(testData.a3Id));
+	   assertTrue(permissionLogic.isUserAbleToViewAssignment(testData.a4Id));
 	   
 	   // TAs can view all since there are no grader perms
 
 	   externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
-	   assertTrue(permissionLogic.isUserAbleToViewAssignment(AssignmentTestDataLoad.CONTEXT_ID, testData.a3Id));
-	   assertTrue(permissionLogic.isUserAbleToViewAssignment(AssignmentTestDataLoad.CONTEXT_ID, testData.a4Id));
+	   assertTrue(permissionLogic.isUserAbleToViewAssignment(testData.a3Id));
+	   assertFalse(permissionLogic.isUserAbleToViewAssignment(testData.a4Id));
 	   
 	   // Students will see assignments available to site and those available to groups they
 	   // are a member of. assign must be open
 	   externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT1_UID);
 	   // student is not a member of the restricted group, so cannot view
-	   assertFalse(permissionLogic.isUserAbleToViewAssignment(AssignmentTestDataLoad.CONTEXT_ID, testData.a4Id));
+	   assertFalse(permissionLogic.isUserAbleToViewAssignment(testData.a4Id));
 	   // this gb item hasn't been released yet, but student may still view it
-	   assertTrue(permissionLogic.isUserAbleToViewAssignment(AssignmentTestDataLoad.CONTEXT_ID, testData.a3Id));
+	   assertTrue(permissionLogic.isUserAbleToViewAssignment(testData.a3Id));
 	   
 	   // switch to student who is a member of group 3
 	   externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT2_UID);
-	   assertTrue(permissionLogic.isUserAbleToViewAssignment(AssignmentTestDataLoad.CONTEXT_ID, testData.a4Id));
+	   assertTrue(permissionLogic.isUserAbleToViewAssignment(testData.a4Id));
    }
    
    public void testIsUserAMemberOfARestrictedGroup() {

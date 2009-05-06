@@ -1306,7 +1306,8 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 	                }
 	            }
 
-	            if (assignment.isGraded() && !studentsToCheckForGrade.isEmpty()) {
+	            if (assignment.isGraded() && assignment.getGradebookItemId() != null &&
+	                    !studentsToCheckForGrade.isEmpty()) {
 	                Map<String, GradeInformation> studentGradeInfo = gradebookLogic.getGradeInformationForStudents(studentsToCheckForGrade, assignment.getContextId(), assignment.getGradebookItemId());
 	                if (studentGradeInfo != null) {
 	                    for (Map.Entry<String, GradeInformation> entry : studentGradeInfo.entrySet()) {
@@ -1525,27 +1526,6 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 					userSubmissions.add(existingSub);
 				}
 			}
-		}
-		
-		// now let's add in any submissions that exist for assignments that were
-		// deleted
-		Set<AssignmentSubmission> subForRemovedAssigns = dao.getExistingSubmissionsForRemovedAssignments(currentUserId, contextId);
-		Set<AssignmentSubmission> removedSubToDisplay = new HashSet<AssignmentSubmission>();
-		if (subForRemovedAssigns != null) {
-		    for (AssignmentSubmission submission : subForRemovedAssigns) {
-		        // double check that there are associated versions. otherwise, they
-		        // may have just checked this as complete without actually working
-		        // on a version
-		        if (submission.getSubmissionHistorySet() != null && !submission.getSubmissionHistorySet().isEmpty()) {
-		            filterOutRestrictedInfo(submission, currentUserId, true);
-		            // if, after filtering, there is at least one version, add to list
-		            if (!submission.getSubmissionHistorySet().isEmpty()) {
-		                removedSubToDisplay.add(submission);
-		            }
-		        }
-		    }
-		    
-		    userSubmissions.addAll(removedSubToDisplay);
 		}
 		
 		// sort by completed, then by assignment sortIndex

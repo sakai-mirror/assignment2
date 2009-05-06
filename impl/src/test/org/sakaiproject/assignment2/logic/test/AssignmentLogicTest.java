@@ -253,7 +253,7 @@ public class AssignmentLogicTest extends Assignment2TestBase {
 		// for a4 (graded), so ta may only see assigns for group 1 (or unrestricted assigns)
 
 		externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
-		// should return assignment 1, 2, 3, 4
+		// should return assignment 1, 2, 3
 		assignList = assignmentLogic.getViewableAssignments(AssignmentTestDataLoad.CONTEXT_ID);
 		assertNotNull(assignList);
 		assertEquals(3, assignList.size());

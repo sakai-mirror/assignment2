@@ -118,26 +118,45 @@ public class AssignmentDaoImpl extends HibernateGeneralGenericDao implements Ass
     		throw new IllegalArgumentException("Null contextId passed to getAssignmentsWithGroupsAndAttachments");
     	}
     	
-    	HibernateCallback hc = new HibernateCallback() {
-			public Object doInHibernate(Session session) throws HibernateException ,SQLException {
-				Query query = session.getNamedQuery("findAssignmentsWithGroupsAndAttachments");
-		    	query.setParameter("contextId", contextId);
-		    	
-		    	List<Assignment2> assignmentList = query.list();
-		    	
-		    	// we need to remove duplicates but retain order, so put
-		    	// in a LinkedHashSet and then back into a list
-		    	if (assignmentList != null) {
-		    	    Set<Assignment2> assignmentSet = new LinkedHashSet<Assignment2>(assignmentList);
-		    		assignmentList.clear();
-		    		assignmentList.addAll(assignmentSet);
-		    	}
-		    	
-		    	return assignmentList;
-			}
-		};
+    	List<Assignment2> allActiveAssigns = new ArrayList<Assignment2>();
     	
-		return (List<Assignment2>)getHibernateTemplate().execute(hc);
+    	List<Assignment2> allAssigns = getAllAssignmentsWithGroupsAndAttachments(contextId);
+		if (allAssigns != null) {
+		    for (Assignment2 assign : allAssigns) {
+		        if (!assign.isRemoved()) {
+		            allActiveAssigns.add(assign);
+		        }
+		    }
+		}
+    	
+		return allActiveAssigns;
+    }
+    
+    public List<Assignment2> getAllAssignmentsWithGroupsAndAttachments(final String contextId) {
+        if (contextId == null) {
+            throw new IllegalArgumentException("Null contextId passed to getAllAssignmentsWithGroupsAndAttachments");
+        }
+        
+        HibernateCallback hc = new HibernateCallback() {
+            public Object doInHibernate(Session session) throws HibernateException ,SQLException {
+                Query query = session.getNamedQuery("findAllAssignmentsWithGroupsAndAttachments");
+                query.setParameter("contextId", contextId);
+                
+                List<Assignment2> assignmentList = query.list();
+                
+                // we need to remove duplicates but retain order, so put
+                // in a LinkedHashSet and then back into a list
+                if (assignmentList != null) {
+                    Set<Assignment2> assignmentSet = new LinkedHashSet<Assignment2>(assignmentList);
+                    assignmentList.clear();
+                    assignmentList.addAll(assignmentSet);
+                }
+                
+                return assignmentList;
+            }
+        };
+        
+        return (List<Assignment2>)getHibernateTemplate().execute(hc);
     }
     
     public Assignment2 getAssignmentByIdWithGroupsAndAttachments(final Long assignmentId) {

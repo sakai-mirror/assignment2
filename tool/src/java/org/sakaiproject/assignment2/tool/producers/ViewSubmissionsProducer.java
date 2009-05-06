@@ -58,7 +58,6 @@ import uk.org.ponder.htmlutil.HTMLUtil;
 import uk.org.ponder.messageutil.MessageLocator;
 import uk.org.ponder.messageutil.TargettedMessage;
 import uk.org.ponder.messageutil.TargettedMessageList;
-import uk.org.ponder.rsf.components.UIBoundBoolean;
 import uk.org.ponder.rsf.components.UIBranchContainer;
 import uk.org.ponder.rsf.components.UICommand;
 import uk.org.ponder.rsf.components.UIContainer;
@@ -369,6 +368,7 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
             String lowestPossibleGrade = gradebookLogic.getLowestPossibleGradeForGradebookItem(assignment.getContextId(), assignment.getGradebookItemId());
             UIForm unassignedForm = UIForm.make(tofill, "unassigned-apply-form");
             unassignedForm.addParameter(new UIELBinding("GradeAllRemainingAction.assignmentId", assignment.getId()));
+            unassignedForm.addParameter(new UIELBinding("GradeAllRemainingAction.groupIdFilter", params.groupId));
             UIInput.make(unassignedForm, "new-grade-value", "GradeAllRemainingAction.grade", lowestPossibleGrade);
             UICommand.make(unassignedForm, "apply-button", "GradeAllRemainingAction.execute");
         }
