@@ -100,33 +100,44 @@ asnn2.sortMap = [
  */
 asnn2.pageState = {
   listTemplate: Object(),
-  sortTerm: "sortIndex",
-  sortDir: 1,
+  sortby: "sortIndex",
+  sortDir: -1,
   dataArray: [],
   pageModel: {}
 };
 
 /*
  * Initializes the top sorting links.
+ *
+ * For sorting -1 is ascending, and 1 is descending.
  */
 asnn2.setupSortLinks = function() {
-  var sortDir = 1;
   for (var i in asnn2.sortMap) {
     var item = asnn2.sortMap[i];
     $(item.selector).bind("click", function(sortby) {
       return function (e) {
+        /*
+         * If we are sorting by a different term, we want to switch the sort direction back
+         * to ascending, otherwise we'll swap it from the current value.
+         */
+        if (asnn2.pageState.sortby === sortby) {
+          asnn2.pageState.sortDir = asnn2.pageState.sortDir * -1;
+        }
+        else {
+          asnn2.pageState.sortby = sortby;
+          asnn2.pageState.sortDir = -1;
+        }
+
         var newdata = asnn2.pageState.dataArray;
         newdata.sort(function (arec,brec) {
           var a = arec[sortby];
           var b = brec[sortby];
-          return a === b? 0 : ( a > b? sortDir : -sortDir); 
+          return a === b? 0 : ( a > b? -asnn2.pageState.sortDir : asnn2.pageState.sortDir); 
         });
-
-        sortDir = sortDir * -1;
 
         jQuery("img", this.parentNode.parentNode).remove();
         
-        if (sortDir > 0) {
+        if (asnn2.pageState.sortDir < 0) {
           jQuery(this).after('<img src="/library/image/sakai/sortascending.gif" />');
         } 
         else {
