@@ -430,93 +430,11 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 	    }
 	    
 		List<Assignment2> viewableAssignments = new ArrayList<Assignment2>();
-
-		List<Assignment2> allAssignments = dao.getAssignmentsWithGroupsAndAttachments(contextId);
+		// include the removed assignments in case the user is auth to view it
+		List<Assignment2> allAssignments = dao.getAllAssignmentsWithGroupsAndAttachments(contextId);
 
 		if (allAssignments != null && !allAssignments.isEmpty()) {
-		    
-		    boolean isUserAbleToGradeAll = permissionLogic.isUserAbleToProvideFeedbackForAllStudents(contextId);
-		    
-		    if (isUserAbleToGradeAll) {
-		        // let's check to see if any of the graded assignments' associated
-		        // gradebook items were deleted. we need to flag these assignments.
-		        List<GradebookItem> allGbItems = gradebookLogic.getAllGradebookItems(contextId);
-		        List<Long> gbItemIdList = new ArrayList<Long>();
-		        if (allGbItems != null) {
-		            for (GradebookItem gbItem : allGbItems) {
-		                gbItemIdList.add(gbItem.getGradebookItemId());
-		            }
-		        }
-		        
-		        for (Assignment2 assign : allAssignments) {
-		            if (assign.isGraded() && !gbItemIdList.contains(assign.getGradebookItemId())) {
-		                assign.setGradebookItemId(null);
-		            }
-		            
-		            viewableAssignments.add(assign);
-		        }
-		    } else {
-
-		        List<Assignment2> gradedAssignments = new ArrayList<Assignment2>();
-	
-		        boolean isUserAbleToEdit = permissionLogic.isCurrentUserAbleToEditAssignments(contextId);
-		        boolean isUserAStudent = gradebookLogic.isCurrentUserAStudentInGb(contextId);
-
-                List<Group> viewableGroups = permissionLogic.getViewableGroupsForCurrentUser(contextId);
-                List<String> viewableGroupIds = new ArrayList<String>();
-                if (viewableGroups != null) {
-                    for (Group group : viewableGroups) {
-                        viewableGroupIds.add(group.getId());
-                    }
-                }
-                
-		        // users may view ungraded items if:
-		        //  a) it is not restricted to groups
-		        //  b) it is restricted, but user has grade all perm
-		        //  c) it is restricted, but user is a member of restricted group
-		        //  d) it is not draft or user has edit perm
-		        for (Assignment2 assignment : allAssignments) {
-		            if (!assignment.isDraft() || isUserAbleToEdit) {
-		                // students may not view if not open
-		                if (!isUserAStudent || (isUserAStudent && assignment.getOpenDate().before(new Date()))) {
-		                    if (!assignment.isGraded()) {
-		                        if (permissionLogic.isUserAbleToViewUngradedAssignment(assignment, viewableGroupIds)) {
-		                            viewableAssignments.add(assignment);
-		                        } 
-
-		                    } else {
-		                        gradedAssignments.add(assignment);
-		                    }
-		                }
-		            }
-		        }
-
-		        if (gradedAssignments != null && !gradedAssignments.isEmpty()) {
-		            // now, we need to filter the assignments that are associated with
-		            // the gradebook according to grader permissions and populate the
-		            // gradebook data
-		            List<Assignment2> viewableGbAssignments = gradebookLogic.getViewableGradedAssignments(gradedAssignments, contextId);
-		            if (viewableGbAssignments != null) {
-
-		                for (Assignment2 assignment : viewableGbAssignments) {
-
-		                    boolean restrictedToGroups = assignment.getAssignmentGroupSet() != null
-		                    && !assignment.getAssignmentGroupSet().isEmpty();
-
-		                    // since the user must not have "grade all" permission
-		                    // if we got to this point, we need to filter the
-		                    // returned assignments if they are restricted to groups
-		                    if (restrictedToGroups) {
-		                        if (permissionLogic.isUserAMemberOfARestrictedGroup(viewableGroupIds, assignment.getAssignmentGroupSet())) {
-		                            viewableAssignments.add(assignment);
-		                        }
-		                    } else {
-		                        viewableAssignments.add(assignment);
-		                    }
-		                }
-		            }
-		        }
-		    }
+		    viewableAssignments = permissionLogic.filterViewableAssignments(contextId, allAssignments);	    
 		}
 	
 		Collections.sort(viewableAssignments, new ComparatorsUtils.Assignment2SortIndexComparator());

@@ -73,15 +73,6 @@ public interface AssignmentPermissionLogic {
 	public boolean isUserAbleToProvideFeedbackForSubmission(Long submissionId);
 	
 	/**
-	 * @param assignment
-	 * @param groupMembershipIds
-	 * 			a collection of the ids for all of the current user's group memberships for this site
-	 * @return true if the current user is allowed to view the given ungraded
-	 * assignment
-	 */
-	public boolean isUserAbleToViewUngradedAssignment(Assignment2 assignment, Collection<String> groupMembershipIds);
-	
-	/**
 	 * 
 	 * @param groupIdList
 	 * 		a list of the group ids for the user's membership
@@ -153,7 +144,6 @@ public interface AssignmentPermissionLogic {
 	 
 	 /**
 	  * 
-	  * @param contextId
 	  * @param assignmentId
 	  * @return true if the current user has access to this assignment. some scenarios that
 	  * would be false: if user is a student and assignment is restricted to groups outside of student's memberships
@@ -162,7 +152,7 @@ public interface AssignmentPermissionLogic {
 	  * note: if assignment has been removed, only a student with an existing
 	  * submission for that assignment may view the assignment
 	  */
-	 public boolean isUserAbleToViewAssignment(String contextId, Long assignmentId);
+	 public boolean isUserAbleToViewAssignment(Long assignmentId);
 	 
 	 /**
 	  * @param studentId
@@ -208,4 +198,17 @@ public interface AssignmentPermissionLogic {
 	  * restriction for all students in the given context
 	  */
 	 public boolean isUserAbleToProvideFeedbackForAllStudents(String contextId);
+	 
+	 /**
+	  * 
+	  * @param contextId - all assignments in the assignmentList must be associated with this contextId
+	  * @param assignmentList - a collection of Assignment2 objects with the AssignmentGroupSet initialized
+	  * that you want to filter
+	  * @return a filtered set of assignments from the given assignmentList that the current user
+	  * is allowed to view. if an assignment is graded but the associated gb item no longer exists, the
+	  * {@link Assignment2#getGradebookItemId()} will be set to null on the returned assignment and
+	  * it is treated as "ungraded" for determining permission.  if assignment has been removed, only a 
+	  * student with an existing submission for that assignment may view the assignment
+	  */
+	 public List<Assignment2> filterViewableAssignments(String contextId, Collection<Assignment2> assignmentList);
 }

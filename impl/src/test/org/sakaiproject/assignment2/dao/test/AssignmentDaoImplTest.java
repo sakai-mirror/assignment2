@@ -95,10 +95,9 @@ public class AssignmentDaoImplTest extends Assignment2DaoTestBase {
 		assertNotNull(assignments);
 		assertTrue(assignments.isEmpty());
 
-		// now try the valid context - there should be 3 assignments
+		// now try the valid context - there should be 4 assignments
 		assignments = assignmentDao.getAssignmentsWithGroupsAndAttachments(AssignmentTestDataLoad.CONTEXT_ID);
-		assertNotNull(assignments);
-		assertTrue(assignments.size() == 4);
+		assertEquals(4, assignments.size());
 		
 		// for each assignment returned, double check that the attachment and group sets are accurate
 		for (Assignment2 assign : assignments) {
@@ -118,6 +117,48 @@ public class AssignmentDaoImplTest extends Assignment2DaoTestBase {
 			}
 		}
 		
+		// TODO set one of the assignments to "removed" and make sure it isn't returned
+		
+	}
+	
+	public void testGetAllAssignmentsWithGroupsAndAttachments() {
+        // try passing a null contextId
+        try {
+            assignmentDao.getAllAssignmentsWithGroupsAndAttachments(null);
+            fail("did not catch null parameter passed to getAssignmentsWithGroupsAndAttachments");
+        } catch (IllegalArgumentException e) {
+            
+        }
+        
+        // try passing a context that doesn't exist
+        List<Assignment2> assignments = assignmentDao.getAllAssignmentsWithGroupsAndAttachments(AssignmentTestDataLoad.BAD_CONTEXT);
+        assertNotNull(assignments);
+        assertTrue(assignments.isEmpty());
+
+        // now try the valid context - there should be 4 assignments
+        assignments = assignmentDao.getAllAssignmentsWithGroupsAndAttachments(AssignmentTestDataLoad.CONTEXT_ID);
+        assertEquals(4, assignments.size());
+        
+        // for each assignment returned, double check that the attachment and group sets are accurate
+        for (Assignment2 assign : assignments) {
+            if (assign.getId().equals(testData.a1Id)) {
+                assertTrue(assign.getAttachmentSet().size() == 2);
+                assertTrue(assign.getAssignmentGroupSet().size() == 2);
+            } else if (assign.getId().equals(testData.a2Id)) {
+                assertTrue(assign.getAttachmentSet().isEmpty());
+                assertTrue(assign.getAssignmentGroupSet().isEmpty());
+            } else if (assign.getId().equals(testData.a3Id)) {
+                assertNotNull(assign.getAttachmentSet());
+                assertTrue(assign.getAttachmentSet().size() == 1);
+                assertTrue(assign.getAssignmentGroupSet().isEmpty());
+            } else if (assign.getId().equals(testData.a4Id)) {
+                assertTrue(assign.getAttachmentSet().isEmpty());
+                assertTrue(assign.getAssignmentGroupSet().size() == 1);
+            }
+        }
+
+        // now let's delete one of the assignments. should still get 4 back
+        // TODO set one of the assignments to "removed" and make sure it is still returned
 	}
 	
 	public void testGetAssignmentsWithGroupsAndAttachmentsById() {

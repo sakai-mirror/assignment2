@@ -49,10 +49,18 @@ public interface AssignmentDao extends GeneralGenericDao {
 	/**
 	 * 
 	 * @param contextId
-	 * @return all of the assignments in the given site with the associated
-	 * AssignmentGroup and AssignmentAttachment data populated ordered by sortIndex
+	 * @return all of the assignments (not deleted) in the given contextId with the associated
+	 * AssignmentGroup and AssignmentAttachment data populated ordered by sortIndex.
 	 */
 	public List<Assignment2> getAssignmentsWithGroupsAndAttachments(String contextId);
+	
+	/**
+     * 
+     * @param contextId
+     * @return all of the assignments (including any deleted assignments) in the given contextId with the associated
+     * AssignmentGroup and AssignmentAttachment data populated ordered by sortIndex.
+     */
+    public List<Assignment2> getAllAssignmentsWithGroupsAndAttachments(String contextId);
 	
 	/**
 	 * 
