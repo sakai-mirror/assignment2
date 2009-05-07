@@ -33,19 +33,30 @@ asnn2.getAsnnCompData = function () {
     if (obj.dueDate) {
       togo.duetext = "Due: " + new Date(obj.dueDate).toLocaleString();
     }
-    togo.editlink = { 
-      target: '/portal/tool/'+sakai.curPlacement+'/assignment/'+obj.id,
-      linktext: "Edit" 
-    };
-    togo.duplink = {
-      target: '/portal/tool/'+sakai.curPlacement+'/assignment?duplicatedAssignmentId='+obj.id,
-      linktext: "Duplicate"
-    }; 
+   if (obj.canEdit && obj.canEdit === true) {
+      togo.editlink = { 
+        target: '/portal/tool/'+sakai.curPlacement+'/assignment/'+obj.id,
+        linktext: "Edit" 
+      };
+      togo.duplink = {
+        target: '/portal/tool/'+sakai.curPlacement+'/assignment?duplicatedAssignmentId='+obj.id,
+        linktext: "Duplicate"
+      }; 
+    }
     if (obj.graded === true) {
         togo.gradelink = {
             target: '/portal/tool/'+sakai.curPlacement+'/viewSubmissions/'+obj.id,
             linktext: "Grade"
         };
+    }
+    if (obj.attachments.length > 0) {
+        togo.hasAttachments = true;
+    }
+    if (obj.groups && obj.groups.length > 0) {
+        var groupnames = fluid.transform(obj.groups, function(grp,idx) {
+          return " "+grp.title;
+        });
+        togo.grouptext = "Restricted To:" + groupnames.toString(); 
     }
     return togo;
   };
@@ -84,7 +95,8 @@ asnn2.selectorMap = [
   { selector: ".duedate", id: "duetext" },
   { selector: ".groups", id: "grouptext" },
   { selector: ".inAndNew", id: "inAndNew" },
-  { selector: ".inAndNewLink", id: "inAndNewLink" }
+  { selector: ".inAndNewLink", id: "inAndNewLink" },
+  { selector: ".attachments", id: "hasAttachments" }
 ];
 
 asnn2.sortMap = [
