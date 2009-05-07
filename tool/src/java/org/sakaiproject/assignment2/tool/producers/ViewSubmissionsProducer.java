@@ -273,7 +273,7 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
         //UIMessage.make(tofill, "heading", "assignment2.assignment_grade-assignment.heading", new Object[] { assignment.getTitle() });
 
         // now make the "View By Sections/Groups" filter
-        makeViewByGroupFilter(tofill, params);
+        makeViewByGroupFilter(tofill, params, assignment);
         
         //Do Student Table
         sortHeaderRenderer.makeSortingLink(tofill, "tableheader.student", viewparams, 
@@ -432,7 +432,7 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
         }
     }
     
-    private void makeViewByGroupFilter(UIContainer tofill, ViewSubmissionsViewParams params) {
+    private void makeViewByGroupFilter(UIContainer tofill, ViewSubmissionsViewParams params, Assignment2 assignment) {
         List<Group> viewableGroups = permissionLogic.getViewableGroupsForCurrUserForAssignment(assignmentId);
         if (viewableGroups != null && !viewableGroups.isEmpty()) {
             UIForm groupFilterForm = UIForm.make(tofill, "group_filter_form", params);
@@ -457,11 +457,17 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
             }
             
             int numItemsInDropDown = viewableGroups.size();
+            boolean showAllOption = false;
             
-            // if there is more than one viewable group, add the 
-            // "All Sections/Groups option"
-            if (viewableGroups.size() > 1) {
-                numItemsInDropDown++;
+            // if the assignment is restricted to one group, we won't add the "Show All" option
+            if (assignment.getAssignmentGroupSet() == null || assignment.getAssignmentGroupSet().size() != 1) {
+                // if there is more than one viewable group or the user has grade all perm, add the 
+                // "All Sections/Groups option"
+                if (viewableGroups.size() > 1 || 
+                        permissionLogic.isUserAbleToProvideFeedbackForAllStudents(assignment.getContextId())) {
+                    showAllOption = true;
+                    numItemsInDropDown++;
+                }
             }
 
             // Group Ids
@@ -472,7 +478,7 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
             int index = 0;
             
             // the first entry is "All Sections/Groups"
-            if (viewableGroups.size() > 1) {  
+            if (showAllOption) {  
                 view_filter_values[index] = "";
                 view_filter_options[index] = messageLocator.getMessage("assignment2.assignment_grade.filter.all_sections");
                 index++;
