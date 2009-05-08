@@ -23,6 +23,7 @@ package org.sakaiproject.assignment2.tool.producers;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -41,6 +42,7 @@ import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.logic.GradeInformation;
 import org.sakaiproject.assignment2.logic.GradebookItem;
 import org.sakaiproject.assignment2.model.Assignment2;
+import org.sakaiproject.assignment2.model.AssignmentGroup;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
@@ -136,6 +138,29 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
         assignmentId = params.assignmentId;
         Assignment2 assignment = assignmentLogic.getAssignmentByIdWithAssociatedData(assignmentId);
 
+        // let's double check that none of the associated groups were deleted from the site
+        boolean displayGroupDeletionWarning = false;
+        if (assignment.getAssignmentGroupSet() != null && !assignment.getAssignmentGroupSet().isEmpty()) {
+            Collection<Group> siteGroups = externalLogic.getSiteGroups(assignment.getContextId());
+            List<String> groupIds = new ArrayList<String>();
+            if (siteGroups != null) {
+                for (Group group : siteGroups) {
+                    groupIds.add(group.getId());
+                }
+            }
+            
+            for (AssignmentGroup assignGroup : assignment.getAssignmentGroupSet()) {
+                if (!groupIds.contains(assignGroup.getGroupId())) {
+                    displayGroupDeletionWarning = true;
+                    break;
+                }
+            }
+        }
+        
+        if (displayGroupDeletionWarning) {
+            UIOutput.make(tofill, "deleted_group", messageLocator.getMessage("assignment2.assignment_grade-assignment.group_deleted"));
+        }
+        
         //use a date which is related to the current users locale
         DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, locale);
 
@@ -273,7 +298,7 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
         //UIMessage.make(tofill, "heading", "assignment2.assignment_grade-assignment.heading", new Object[] { assignment.getTitle() });
 
         // now make the "View By Sections/Groups" filter
-        makeViewByGroupFilter(tofill, params);
+        makeViewByGroupFilter(tofill, params, assignment);
         
         //Do Student Table
         sortHeaderRenderer.makeSortingLink(tofill, "tableheader.student", viewparams, 
@@ -432,7 +457,7 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
         }
     }
     
-    private void makeViewByGroupFilter(UIContainer tofill, ViewSubmissionsViewParams params) {
+    private void makeViewByGroupFilter(UIContainer tofill, ViewSubmissionsViewParams params, Assignment2 assignment) {
         List<Group> viewableGroups = permissionLogic.getViewableGroupsForCurrUserForAssignment(assignmentId);
         if (viewableGroups != null && !viewableGroups.isEmpty()) {
             UIForm groupFilterForm = UIForm.make(tofill, "group_filter_form", params);
@@ -457,11 +482,17 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
             }
             
             int numItemsInDropDown = viewableGroups.size();
+            boolean showAllOption = false;
             
-            // if there is more than one viewable group, add the 
-            // "All Sections/Groups option"
-            if (viewableGroups.size() > 1) {
-                numItemsInDropDown++;
+            // if the assignment is restricted to one group, we won't add the "Show All" option
+            if (assignment.getAssignmentGroupSet() == null || assignment.getAssignmentGroupSet().size() != 1) {
+                // if there is more than one viewable group or the user has grade all perm, add the 
+                // "All Sections/Groups option"
+                if (viewableGroups.size() > 1 || 
+                        permissionLogic.isUserAbleToProvideFeedbackForAllStudents(assignment.getContextId())) {
+                    showAllOption = true;
+                    numItemsInDropDown++;
+                }
             }
 
             // Group Ids
@@ -472,7 +503,7 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
             int index = 0;
             
             // the first entry is "All Sections/Groups"
-            if (viewableGroups.size() > 1) {  
+            if (showAllOption) {  
                 view_filter_values[index] = "";
                 view_filter_options[index] = messageLocator.getMessage("assignment2.assignment_grade.filter.all_sections");
                 index++;

@@ -1,6 +1,7 @@
 package org.sakaiproject.assignment2.tool.entity;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +14,8 @@ import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
+import org.sakaiproject.assignment2.model.AssignmentAttachment;
+import org.sakaiproject.assignment2.model.AssignmentGroup;
 import org.sakaiproject.assignment2.tool.DisplayUtil;
 import org.sakaiproject.entitybroker.EntityReference;
 import org.sakaiproject.entitybroker.EntityView;
@@ -24,6 +27,7 @@ import org.sakaiproject.entitybroker.entityprovider.extension.RequestStorage;
 import org.sakaiproject.entitybroker.entityprovider.search.Search;
 import org.sakaiproject.entitybroker.util.AbstractEntityProvider;
 import org.sakaiproject.entitybroker.entityprovider.annotations.EntityCustomAction;
+import org.sakaiproject.site.api.Group;
 
 import sun.util.logging.resources.logging;
 
@@ -112,6 +116,7 @@ CoreEntityProvider, RESTful, RequestStorable {
      * @param view
      * @return
      */
+    @SuppressWarnings("unchecked")
     @EntityCustomAction(action="sitelist", viewKey=EntityView.VIEW_LIST)
     public List getAssignmentListForSite(EntityView view) {        
         String context = (String) requestStorage.getStoredValue("siteid");
@@ -127,7 +132,14 @@ CoreEntityProvider, RESTful, RequestStorable {
         Map<Assignment2, List<String>> assignmentViewableStudentsMap = 
             permissionLogic.getViewableStudentsForUserForAssignments(externalLogic.getCurrentUserId(), context, viewable);
         
+        Collection<Group> groups = externalLogic.getSiteGroups(context);
+        Map<String,Group> groupmap = new HashMap<String,Group>();
         
+        for (Group group: groups) {
+            groupmap.put(group.getId(), group);
+        }
+        
+        boolean canEdit = permissionLogic.isCurrentUserAbleToEditAssignments(context);
         
         for (Assignment2 asnn: viewable) {
             Map asnnmap = new HashMap();
@@ -139,9 +151,49 @@ CoreEntityProvider, RESTful, RequestStorable {
             asnnmap.put("sortIndex", asnn.getSortIndex());
             asnnmap.put("requiresSubmission", asnn.isRequiresSubmission());
             
+            // In case assignment has a gradebook item, but that gradebook item
+            // no longer exists.
+            if (asnn.isGraded() && asnn.getGradebookItemId() == null) {
+                asnnmap.put("gbItemMissing", true);
+            }
+            
+            // Can the current user edit this particular assignment. Does not 
+            // include grading. If a user can see this assignment they can grade
+            // it.
+            asnnmap.put("canEdit", canEdit);
+            
             List<String> viewableStudents = assignmentViewableStudentsMap.get(asnn);
             
             asnnmap.put("inAndNew", displayUtil.getSubmissionStatusForAssignment(asnn, viewableStudents));
+            
+            List groupstogo = new ArrayList();
+            // we need to double check that all of the associated groups still exist.
+            // if they don't, we will display an indicator that this assignment needs attention
+            for (AssignmentGroup group: asnn.getAssignmentGroupSet()) {
+                if (groupmap.containsKey(group.getGroupId())) {
+                    Map groupprops = new HashMap();
+                    groupprops.put("groupId", group.getGroupId());
+                    groupprops.put("id", group.getId());
+                    
+                    Group g = groupmap.get(group.getGroupId());
+                    groupprops.put("title",g.getTitle());
+                    groupprops.put("description", g.getDescription());
+                    groupstogo.add(groupprops);
+                } else {
+                    // group was probably deleted, so signal a problem to user
+                    asnnmap.put("groupMissing", true);
+                }
+            }
+            asnnmap.put("groups", groupstogo);
+            
+            List attachstogo = new ArrayList();
+            for (AssignmentAttachment attach: asnn.getAttachmentSet()) {
+                Map attachprops = new HashMap();
+                attachprops.put("id", attach.getId());
+                attachprops.put("attachmentReference", attach.getAttachmentReference());
+                attachstogo.add(attachprops);
+            }
+            asnnmap.put("attachments", attachstogo);
             
             togo.add(asnnmap);
         }

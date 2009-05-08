@@ -201,6 +201,12 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
                 // users with edit perm can view all assigns regardless of draft status.     
                 for (Assignment2 assign : assignmentList) {
                     if (!assign.isRemoved() && (userMayEditAssigns || !assign.isDraft())) {
+                        // double check that the assoc gb item still exists. we will
+                        // set the gradebookItemId to null if it doesn't
+                        if (assign.isGraded() && !gradebookLogic.gradebookItemExists(assign.getGradebookItemId())) {
+                            assign.setGradebookItemId(null);
+                        }
+                            
                         filteredAssignments.add(assign);
                     }
                 }

@@ -115,7 +115,12 @@ String getDefaultPortalMatter() {
           <td style="width: 40px"><img style="display:none" alt="Move Assignment" src="/sakai-assignment2-tool/content/images/4Arrows.png" class="movehandle" /></td>
           <td style="asnninfo"><p>
             <span style="display:none" class="asnnid">1</span>
-            <span class="asnntitle">Audio Scriptwriting</span><br/>
+            <span class="asnntitle">Audio Scriptwriting</span>
+            <img class="attachments" src="/sakai-assignment2-tool/content/images/attach.png" />
+            <img class="needsAttention" src="/../../library/image/sakai/warn.gif" 
+            	alt="There is a problem with this assignment. For additional information, click Edit."
+            	title="There is a problem with this assignment. For additional information, click Edit." />
+            <br/>
             <a href="" class="editlink">Edit</a>
             <a href="" class="duplink">Duplicate</a>
             <a href="" class="gradelink">Grade</a>
