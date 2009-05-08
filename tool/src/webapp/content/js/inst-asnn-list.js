@@ -58,7 +58,7 @@ asnn2.getAsnnCompData = function () {
         });
         togo.grouptext = "Restricted To:" + groupnames.toString(); 
     }
-    if (obj.gbItemMissing) {
+    if (obj.gbItemMissing || obj.groupMissing) {
     	togo.needsAttention = true;
     }
     return togo;

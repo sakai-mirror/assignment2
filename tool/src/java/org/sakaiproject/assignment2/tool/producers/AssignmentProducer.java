@@ -34,9 +34,11 @@ import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.GradebookItem;
 import org.sakaiproject.assignment2.model.Assignment2;
+import org.sakaiproject.assignment2.model.AssignmentGroup;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -468,10 +470,12 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
          * Groups
          */
         Collection<Group> groups = externalLogic.getSiteGroups(currentContextId);
+        List<String> groupIdList = new ArrayList<String>();
         if (groups.size() > 0) {
             UIOutput.make(form, "access-selection-area");
             List<String> currentGroups = assignment.getListOfAssociatedGroupReferences();
             for (Group g : groups){
+                groupIdList.add(g.getId());
                 //Update OTP
                 UIBranchContainer groups_row = UIBranchContainer.make(form, "groups_row:");
                 UIBoundBoolean checkbox = UIBoundBoolean.make(groups_row, "group_check",  
@@ -479,6 +483,23 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
                         (currentGroups == null || !currentGroups.contains(g.getId()) ? Boolean.FALSE : Boolean.TRUE));
                 UIOutput.make(groups_row, "group_label", g.getTitle());
                 UIOutput.make(groups_row, "group_description", g.getDescription());
+            }
+        }
+        
+        if (assignmentId != null && assignment.getAssignmentGroupSet() != null && !assignment.getAssignmentGroupSet().isEmpty()) {
+            // double check that all of the associated groups still exist
+            boolean groupDeleted = false;
+            for (AssignmentGroup assignGroup : assignment.getAssignmentGroupSet()) {
+                if (!groupIdList.contains(assignGroup.getGroupId())) {
+                    groupDeleted = true;
+                    break;
+                }
+            }
+            
+            if (groupDeleted) {
+                // we need to display a message indicating that a group
+                // assoc with this item no longer exists
+                UIMessage.make(tofill, "deleted_group", "assignment2.assignment_add.group_deleted");
             }
         }
 

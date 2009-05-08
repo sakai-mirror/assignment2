@@ -23,6 +23,7 @@ package org.sakaiproject.assignment2.tool.producers;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -41,6 +42,7 @@ import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.logic.GradeInformation;
 import org.sakaiproject.assignment2.logic.GradebookItem;
 import org.sakaiproject.assignment2.model.Assignment2;
+import org.sakaiproject.assignment2.model.AssignmentGroup;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
@@ -136,6 +138,29 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
         assignmentId = params.assignmentId;
         Assignment2 assignment = assignmentLogic.getAssignmentByIdWithAssociatedData(assignmentId);
 
+        // let's double check that none of the associated groups were deleted from the site
+        boolean displayGroupDeletionWarning = false;
+        if (assignment.getAssignmentGroupSet() != null && !assignment.getAssignmentGroupSet().isEmpty()) {
+            Collection<Group> siteGroups = externalLogic.getSiteGroups(assignment.getContextId());
+            List<String> groupIds = new ArrayList<String>();
+            if (siteGroups != null) {
+                for (Group group : siteGroups) {
+                    groupIds.add(group.getId());
+                }
+            }
+            
+            for (AssignmentGroup assignGroup : assignment.getAssignmentGroupSet()) {
+                if (!groupIds.contains(assignGroup.getGroupId())) {
+                    displayGroupDeletionWarning = true;
+                    break;
+                }
+            }
+        }
+        
+        if (displayGroupDeletionWarning) {
+            UIOutput.make(tofill, "deleted_group", messageLocator.getMessage("assignment2.assignment_grade-assignment.group_deleted"));
+        }
+        
         //use a date which is related to the current users locale
         DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, locale);
 

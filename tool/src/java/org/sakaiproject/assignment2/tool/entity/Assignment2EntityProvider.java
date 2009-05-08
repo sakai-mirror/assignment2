@@ -167,16 +167,22 @@ CoreEntityProvider, RESTful, RequestStorable {
             asnnmap.put("inAndNew", displayUtil.getSubmissionStatusForAssignment(asnn, viewableStudents));
             
             List groupstogo = new ArrayList();
+            // we need to double check that all of the associated groups still exist.
+            // if they don't, we will display an indicator that this assignment needs attention
             for (AssignmentGroup group: asnn.getAssignmentGroupSet()) {
-                Map groupprops = new HashMap();
-                groupprops.put("groupId", group.getGroupId());
-                groupprops.put("id", group.getId());
                 if (groupmap.containsKey(group.getGroupId())) {
+                    Map groupprops = new HashMap();
+                    groupprops.put("groupId", group.getGroupId());
+                    groupprops.put("id", group.getId());
+                    
                     Group g = groupmap.get(group.getGroupId());
                     groupprops.put("title",g.getTitle());
                     groupprops.put("description", g.getDescription());
+                    groupstogo.add(groupprops);
+                } else {
+                    // group was probably deleted, so signal a problem to user
+                    asnnmap.put("groupMissing", true);
                 }
-                groupstogo.add(groupprops);
             }
             asnnmap.put("groups", groupstogo);
             
