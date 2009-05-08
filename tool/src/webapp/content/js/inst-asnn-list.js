@@ -58,6 +58,9 @@ asnn2.getAsnnCompData = function () {
         });
         togo.grouptext = "Restricted To:" + groupnames.toString(); 
     }
+    if (obj.gbItemMissing) {
+    	togo.needsAttention = true;
+    }
     return togo;
   };
 
@@ -96,7 +99,8 @@ asnn2.selectorMap = [
   { selector: ".groups", id: "grouptext" },
   { selector: ".inAndNew", id: "inAndNew" },
   { selector: ".inAndNewLink", id: "inAndNewLink" },
-  { selector: ".attachments", id: "hasAttachments" }
+  { selector: ".attachments", id: "hasAttachments" },
+  { selector: ".needsAttention", id: "needsAttention"}
 ];
 
 asnn2.sortMap = [
