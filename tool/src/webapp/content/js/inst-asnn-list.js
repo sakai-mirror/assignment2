@@ -361,8 +361,10 @@ asnn2.renderAsnnListPage = function(newPageModel) {
   for (var i = bounds[0]; i < bounds[1]+1; i++) {
     torender.push(asnn2.pageState.dataArray[i]); 
   }
+  jQuery("#asnn-list").hide();
   asnn2.renderAsnnList(torender);
   asnn2.setupAsnnList(); 
+  jQuery("#asnn-list").show();
 };
 
 /**
