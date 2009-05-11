@@ -32,6 +32,13 @@
 
 /* End Sorting Bar Classes */
 
+/* Pager and Sorting Area */
+.pager-sort-area {
+  /* width: 90%; */
+  /* text-align: center; */
+  border: solid 2px #cccccc;
+  margin: 0 5% 10px 5%;
+}
 
 /* Start Pager Classes */
 .hidden {
@@ -39,8 +46,8 @@
 }
 
 .fl-pager-top, .fl-pager-bottom {
-    padding: 0.5em;
-    background-color: #EEEEEE;
+    /* padding: 0.5em; */
+    /* background-color: #EEEEEE; */
     text-align: center;
 }
 

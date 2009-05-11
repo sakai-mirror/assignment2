@@ -57,6 +57,8 @@ String getDefaultPortalMatter() {
     <ul class="breadCrumb">
       <li class="lastCrumb">Assignment List</li>
     </ul>
+
+<div class="pager-sort-area">
 <div id="asnn-list-area">
     <ul id="pager-top" class="fl-pager-top flc-pager-top">
       <li>
@@ -79,6 +81,7 @@ String getDefaultPortalMatter() {
     </ul>
 </div>
 
+<div style="margin: 0; padding: 5px; border-top: solid 2px #cccccc;">
     <span>Sorted by:</span>
     <ul class="sort-bar">
       <li class="sort-item"><a href="#" id="titlesort">Title</a> |</li>
@@ -90,8 +93,10 @@ String getDefaultPortalMatter() {
         <img src="/library/image/sakai/sortascending.gif" />
       </li>
     </ul>
+</div>
+</div>
 
-    <table style="border-collapse: collapse" id="asnn-list">
+    <table style="display: none; border-collapse: collapse" id="asnn-list">
       <thead>
         <tr>
           <th>
