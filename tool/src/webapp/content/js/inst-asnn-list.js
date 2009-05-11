@@ -6,9 +6,9 @@ asnn2.livedata = true;
  * Returns a list of Assignment Objects that can be viewed.
  */
 asnn2.getAsnnCompData = function () {
-  
+
   var dataFromEntity = function (obj, index) {
-    return obj.data; 
+    return obj.data;
   };
 
   var renderFromData = function (obj, index) {
@@ -17,12 +17,12 @@ asnn2.getAsnnCompData = function () {
     var togo = {};
     for (var i = 0; i < ditto.length; i++) {
       togo[ditto[i]] = obj[ditto[i]];
-    } 
+    }
     if (obj.requiresSubmission === true) {
       togo.inAndNewLink = {
         target: '/portal/tool/'+sakai.curPlacement+'/viewSubmissions/'+obj.id,
         linktext: obj.inAndNew
-      }; 
+      };
     }
     else {
       togo.inAndNew = obj.inAndNew;
@@ -34,14 +34,14 @@ asnn2.getAsnnCompData = function () {
       togo.duetext = "Due: " + new Date(obj.dueDate).toLocaleString();
     }
    if (obj.canEdit && obj.canEdit === true) {
-      togo.editlink = { 
+      togo.editlink = {
         target: '/portal/tool/'+sakai.curPlacement+'/assignment/'+obj.id,
-        linktext: "Edit" 
+        linktext: "Edit"
       };
       togo.duplink = {
         target: '/portal/tool/'+sakai.curPlacement+'/assignment?duplicatedAssignmentId='+obj.id,
         linktext: "Duplicate"
-      }; 
+      };
     }
     if (obj.graded === true) {
         togo.gradelink = {
@@ -56,7 +56,7 @@ asnn2.getAsnnCompData = function () {
         var groupnames = fluid.transform(obj.groups, function(grp,idx) {
           return " "+grp.title;
         });
-        togo.grouptext = "Restricted To:" + groupnames.toString(); 
+        togo.grouptext = "Restricted To:" + groupnames.toString();
     }
     if (obj.gbItemMissing || obj.groupMissing) {
     	togo.needsAttention = true;
@@ -67,13 +67,13 @@ asnn2.getAsnnCompData = function () {
   var togo = [];
   if (asnn2.livedata === true) {
     jQuery.ajax({
-      type: "GET",	
+      type: "GET",
       url: "/direct/assignment2/sitelist.json",
-      data: { 
+      data: {
         'siteid': sakai.curContext,
         'no-cache': true
       },
-      async: false, 
+      async: false,
       success: function (payload) {
         var data = JSON.parse(payload);
         togo = fluid.transform(data.assignment2_collection, dataFromEntity, renderFromData);
@@ -111,7 +111,7 @@ asnn2.sortMap = [
 ];
 
 /*
- * This tracks the current page state, such as what we're sorting by and in what 
+ * This tracks the current page state, such as what we're sorting by and in what
  * order, the cached fluid render template, and the current comp data model array.
  */
 asnn2.pageState = {
@@ -148,14 +148,14 @@ asnn2.setupSortLinks = function() {
         newdata.sort(function (arec,brec) {
           var a = arec[sortby];
           var b = brec[sortby];
-          return a === b? 0 : ( a > b? -asnn2.pageState.sortDir : asnn2.pageState.sortDir); 
+          return a === b? 0 : ( a > b? -asnn2.pageState.sortDir : asnn2.pageState.sortDir);
         });
 
         jQuery("img", this.parentNode.parentNode).remove();
-        
+
         if (asnn2.pageState.sortDir < 0) {
           jQuery(this).after('<img src="/library/image/sakai/sortascending.gif" />');
-        } 
+        }
         else {
           jQuery(this).after('<img src="/library/image/sakai/sortdescending.gif" />');
         }
@@ -181,42 +181,43 @@ asnn2.setupRemoveCheckboxes = function () {
 };
 
 /**
- * A function suitable for use in fluid.transform that will help create an array
- * of just the sortIndex from an array of Assignment objects.
+ * Reorders the pageState data for the moved pageModel and returns the new array
+ * of Assignment ID's in Sort order.
  *
- * @param {Array} Array of Assignment objects
- */
-asnn2.sortIndexFromAsnn = function(obj, index) {
-  return obj.sortIndex;
-}
-
-/**
- * This will reorder the data stored in the page state. What's happening is that
- * we are passing in an Array of integers indicating the new sortIndex order of
- * the current page being displayed. The current page can be calculated using
- * the current pageModel from the state.
- *
- * Once we have that we will create the array of sortIndexes for the current data.
- * We do all of them because at the moment the Asnn2 services require all the 
- * indexes for reordering.
- *
- * After that we will copy the moved indexes to the entire index array for the page.
- * We will then use that master index array in a sort function to reorder the
- * array of Assignments objects. 
- *
- * 1. Get current page slice indices
- * 2. Create sortIndex array of all data
- * 3. Copy the moved indexes over the data at the slice points
- * 4. Re-sort the real data
- * 5. Return the full sortIndex array
- * 
  * @param {Array} Array of numbers with the sortIndex's for the current page.
  * @returns {Array} Array of the entire datasets sortIndex's
  */
 asnn2.reorderData = function (moved) {
   var slice = asnn2.findPageSlice(asnn2.pageState.pageModel);
-  var allSortIdx = fluid.transform(asnn2.pageState.dataArray, asnn2.sortIndexFromAsnn);
-  //TODO Leaving off here 
+  var allIdIdx = fluid.transform(asnn2.pageState.dataArray, function(obj,index) { return obj.id; });
+  var indexesById = {};
+
+  // Copy the reordered page on top of the entire dataset (all pages)
+  for (var i = 0, j = slice[0]; i < moved.length; i++, j++) {
+    allIdIdx[j] = new Number(moved[i]);
+  }
+
+  // Make a new hash using AsnnId's as keys and storing the sortIndex
+  for (var k = 0; k < allIdIdx.length; k++) {
+    indexesById[allIdIdx[k]] = new Number(k);
+  }
+
+  // Update the Sort Indexs on the Assignments stored in Page State
+  for (var m = 0; m < asnn2.pageState.dataArray.length; m++) {
+    var curdata = asnn2.pageState.dataArray[m];
+    curdata.sortIndex = indexesById[curdata.id];
+  }
+
+  // Resort the data packing the page, so it will be correct if we page back and
+  // forth before reloading the data from the server.
+  asnn2.pageState.dataArray.sort(function (a, b) {
+    return a.sortIndex - b.sortIndex;
+  });
+
+  // Return the new order of items. Admittedly this whole method sucks, I'm still
+  // exploring the built-in functionality/methods of JS data structures to find
+  // a better way to do this part.
+  return allIdIdx;
 }
 
 /**
@@ -247,6 +248,7 @@ asnn2.setupReordering = function () {
       movables.each(function(i, obj) {
         neworder.push(jQuery('.asnnid',obj).text());
       });
+      var integralIdx = asnn2.reorderData(neworder);
       // Stub for reorder Ajax call
       //alert(neworder);
       jQuery.ajax({
@@ -254,12 +256,12 @@ asnn2.setupReordering = function () {
         url: "/direct/assignment2/reorder.json",
         data: {
           "siteid":sakai.curContext,
-          "order":neworder.toString()
+          "order": integralIdx.toString()
         }
       });
     };
   }
-  
+
   fluid.reorderList("#asnn-list", {
     selectors : asnnsels,
     listeners: {
@@ -277,7 +279,7 @@ asnn2.setupReordering = function () {
           else {
             if (state) {
               jQuery(this).addClass('asnn-hover');
-            } 
+            }
             else {
               jQuery(this).removeClass('asnn-hover');
             }
@@ -287,6 +289,17 @@ asnn2.setupReordering = function () {
     }
   });
 };
+
+asnn2.getAsnnObj = function(val, prop) {
+  var p = prop || "id";
+  for (var i = 0; i < asnn2.pageState.dataArray.length; i++) {
+    var next = asnn2.pageState.dataArray[i];
+    if (next[p] == val) { // Yes, double equal. Looking at usage in onFinishEdit still for the inline edit
+      return asnn2.pageState.dataArray[i];
+    }
+  }
+  return undefined;
+}
 
 /*
  *  Set up inline edits
@@ -308,6 +321,7 @@ asnn2.setupInlineEdits = function () {
             title: newValue
           }
         });
+        asnn2.getAsnnObj(new Number(asnnid))['title'] = newValue;
       }
     }
   });
@@ -318,7 +332,7 @@ asnn2.setupInlineEdits = function () {
  * setup each time it is rendered.
  */
 asnn2.setupAsnnList = function () {
-  asnn2.setupRemoveCheckboxes(); 
+  asnn2.setupRemoveCheckboxes();
   asnn2.setupReordering();
   asnn2.setupInlineEdits();
 };
@@ -349,7 +363,7 @@ asnn2.renderAsnnList = function(asnndata) {
 };
 
 /**
- * Used to render the Asnn List using a model from the Fluid Pager. This is designed to be 
+ * Used to render the Asnn List using a model from the Fluid Pager. This is designed to be
  * call from the pager listener and use the pages state to rerender the Asnn List.
  * @param {pageModel} A Fluid Page Model
  */
@@ -359,11 +373,11 @@ asnn2.renderAsnnListPage = function(newPageModel) {
   // TODO: Does Javascript array.slice just copy the references or really make new objects?
   var torender = [];
   for (var i = bounds[0]; i < bounds[1]+1; i++) {
-    torender.push(asnn2.pageState.dataArray[i]); 
+    torender.push(asnn2.pageState.dataArray[i]);
   }
   jQuery("#asnn-list").hide();
   asnn2.renderAsnnList(torender);
-  asnn2.setupAsnnList(); 
+  asnn2.setupAsnnList();
   jQuery("#asnn-list").show();
 };
 
@@ -395,7 +409,7 @@ asnn2.initAsnnList = function () {
   asnn2.setupSortLinks();
 
   /*
-   * Bind the remove button at the bottom of the screen. 
+   * Bind the remove button at the bottom of the screen.
    * TODO: Put the confirmation dialog back in.
    */
   $("#removebutton").bind("click", function(e) {
@@ -437,7 +451,7 @@ asnn2.initAsnnList = function () {
     dataModel: fakedata,
     pagerBar: {type: "fluid.pager.pagerBar", options: {
       pageList: {type: "fluid.pager.renderedPageList",
-        options: { 
+        options: {
           linkBody: "a"
         }
       }
