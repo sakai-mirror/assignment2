@@ -8,6 +8,15 @@
   text-align: left;
 }
 
+/*
+ *  These are for the cells like have borders or other decoration and show
+ *  information assignment. The hidden column that only shows up on hover will
+ *  not use this.
+ */
+.asnn-decorated-cell {
+  border-bottom: solid 2px #cccccc;
+}
+
 .asnn-hover {
   background-color: #feffcc;
 }

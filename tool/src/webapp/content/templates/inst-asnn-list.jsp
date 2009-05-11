@@ -9,7 +9,7 @@
 String getDefaultPortalMatter() {
   String skin = ServerConfigurationService.getString("skin.default");
   String skinRepo = ServerConfigurationService.getString("skin.repo");
-  String headCssToolBase = "<link href=\"" + skinRepo  
+  String headCssToolBase = "<link href=\"" + skinRepo
     + "/tool_base.css\" type=\"text/css\" rel=\"stylesheet\" media=\"all\" />\n";
   String headCssToolSkin = "<link href=\"" + skinRepo + "/" + skin
     + "/tool.css\" type=\"text/css\" rel=\"stylesheet\" media=\"all\" />\n";
@@ -37,7 +37,7 @@ String getDefaultPortalMatter() {
     <script type="text/javascript" src="../js/infusion/lib/fastXmlPull/js/fastXmlPull.js"></script>
     <script type="text/javascript" src="../js/infusion/framework/renderer/js/fluidParser.js"></script>
     <script type="text/javascript" src="../js/infusion/framework/renderer/js/fluidRenderer.js"></script>
-    <script type="text/javascript" src="../js/infusion/components/pager/js/Pager.js"></script> 
+    <script type="text/javascript" src="../js/infusion/components/pager/js/Pager.js"></script>
 -->
 
     <script type="text/javascript" language="JavaScript">
@@ -47,7 +47,7 @@ String getDefaultPortalMatter() {
     </script>
 
     <!-- Application Code -->
-    <script src="../js/InfusionAll_r7132.js" type="text/javascript"></script> 
+    <script src="../js/InfusionAll_r7132.js" type="text/javascript"></script>
     <script src="../js/inst-asnn-list.js" type="text/javascript"></script>
 	<script type="text/javascript" language="JavaScript" src="/library/js/headscripts.js"></script>
   </head>
@@ -68,7 +68,7 @@ String getDefaultPortalMatter() {
       </li>
       <li class="fl-pager-previous flc-pager-previous"><a href="#">&lt; previous</a></li>
       <li class="fl-pager-next flc-pager-next"><a href="#">next &gt;</a></li>
-      <li>Show <span> 
+      <li>Show <span>
         <select class="flc-pager-page-size">
           <option value="5">5</option>
           <option value="10">10</option>
@@ -96,16 +96,16 @@ String getDefaultPortalMatter() {
         <tr>
           <th>
           </th>
-          <th>
+          <th class="asnn-decorated-cell">
             <span>Assignments</span>
             <img src="/sakai-assignment2-tool/content/images/add.png" />
             <a href="#" onclick="window.location = '/portal/tool/'+sakai.curPlacement+'/assignment'">
             Add</a>
           </th>
-          <th>
+          <th class="asnn-decorated-cell">
             <span>In/New</span>
           </th>
-          <th>
+          <th class="asnn-decorated-cell">
             <input id="checkall" type="checkbox" />
           </th>
         </tr>
@@ -113,11 +113,11 @@ String getDefaultPortalMatter() {
       <tbody id="asnn-list-body">
         <tr class="row">
           <td style="width: 40px"><img style="display:none" alt="Move Assignment" src="/sakai-assignment2-tool/content/images/4Arrows.png" class="movehandle" /></td>
-          <td style="asnninfo"><p>
+          <td class="asnn-decorated-cell"><p>
             <span style="display:none" class="asnnid">1</span>
             <span class="asnntitle">Audio Scriptwriting</span>
             <img class="attachments" src="/sakai-assignment2-tool/content/images/attach.png" />
-            <img class="needsAttention" src="/../../library/image/sakai/warn.gif" 
+            <img class="needsAttention" src="/../../library/image/sakai/warn.gif"
             	alt="There is a problem with this assignment. For additional information, click Edit."
             	title="There is a problem with this assignment. For additional information, click Edit." />
             <br/>
@@ -130,11 +130,11 @@ String getDefaultPortalMatter() {
             <span class="groups">Restricted To: Red Cohort, Yellow Cohort</span>
             </p>
           </td>
-          <td>
+          <td class="asnn-decorated-cell">
             <span class="inAndNew">8/4</span>
             <a href="" class="inAndNewLink">10/4</a>
           </td>
-          <td><input class="asnncheck" type="checkbox" /></td>
+          <td class="asnn-decorated-cell"><input class="asnncheck" type="checkbox" /></td>
 
         </tr>
       </tbody>
