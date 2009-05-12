@@ -415,14 +415,34 @@ asnn2.initAsnnList = function () {
   var removeDialog = jQuery('#remove-asnn-dialog');
 
   $("#removebutton").bind("click", function(e) {
-
+    var togo = "";
+    $(".asnncheck").each(function (i) {
+      if (this.checked) {
+        var asnnid = $(".asnnid", this.parentNode.parentNode).text();
+        var obj = asnn2.getAsnnObj(asnnid);
+        if (obj.dueDate) {
+          var duedate = new Date(obj.dueDate).toLocaleString();
+        } 
+        else {
+          var duedate = "";
+        }
+        if (obj.inAndNew) {
+          var subs = obj.inAndNew;
+        }
+        else if (obj.inAndNewLink) {
+          var subs = obj.inAndNewLink.linktext;
+        }
+        togo = togo + "<tr><td>"+obj.title+"</td><td>"+duedate+"</td><td>"+subs+"</td></tr>";
+      }
+    });
+    jQuery("#asnn-to-delete").html(togo);
+    asnn2util.openDialog(removeDialog);
   });
 
 
 
   // The remove dialog
   jQuery('#remove-asnn-button').click( function (event)  {
-    alert("Removing!");
 
     var toremove = [];
     $(".asnncheck").each(function (i) {

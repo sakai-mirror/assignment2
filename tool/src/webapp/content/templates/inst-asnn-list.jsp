@@ -44,12 +44,14 @@ String getDefaultPortalMatter() {
         var sakai = sakai || {};
         sakai.curPlacement = '<%= request.getParameter("placement") %>';
         sakai.curContext = '<%= request.getParameter("context") %>';
+        var iframeId = 'Main<%= request.getParameter("placement").replace("-","x") %>';
     </script>
 
     <!-- Application Code -->
+    <script type="text/javascript" language="JavaScript" src="/library/js/headscripts.js"></script>
     <script src="../js/InfusionAll_r7132.js" type="text/javascript"></script>
+    <script src="../js/assignment.js" type="text/javascript"></script>
     <script src="../js/inst-asnn-list.js" type="text/javascript"></script>
-	<script type="text/javascript" language="JavaScript" src="/library/js/headscripts.js"></script>
   </head>
   <body onload="setMainFrameHeight('Main<%= request.getParameter("placement").replace("-","x") %>');">
     <div class="portletBody">
@@ -147,7 +149,7 @@ String getDefaultPortalMatter() {
 
     <input type="button" value="Remove" id="removebutton" />
 
-    !-- This is the template for the Confirm Asnn Remove Dialog. -->
+    <!-- This is the template for the Confirm Asnn Remove Dialog. -->
 	<div id="remove-asnn-dialog" style="display:none">
 	    <div class="generalErrors">
 	       <ul class="ui-dialog-msg-list">
@@ -155,20 +157,20 @@ String getDefaultPortalMatter() {
 	       </ul>
 	    </div>
 		<table class="listHier lines" > <!--  rsf:id="assignment-list-table" > -->
-			<tr>
+			<thead><tr>
 				<th>Assignment Title</th>
 				<th>Due</th>
 				<th>Submissions</th>
-			</tr>
-			<tr id="asnn-to-delete"> <!--
+			</tr></thead>
+			<tbody id="asnn-to-delete"> <!--
 				<td id="asnn-to-delete-title">Homework 1</td>
 				<td id="asnn-to-delete-due">Mar 26, 2008 5:00 pm</td>
 				<td id="asnn-to-delete-numsubmissions">1</td> -->
-			</tr>
+			</tbody>
 		</table>
 		<span style="display:none" id="asnn-to-delete-id"></span>
 		<fieldset class="submit">
-			<input id="remove-asnn-button" accesskey="r" type="button" class="remove-button active" value="Post" />
+			<input id="remove-asnn-button" accesskey="r" type="button" class="remove-button active" value="Remove" />
 			<input id="cancel-remove-asnn-button" class="cancel-button" accesskey="x" type="button" value="Cancel" />
 		</fieldset>
 	</div>
