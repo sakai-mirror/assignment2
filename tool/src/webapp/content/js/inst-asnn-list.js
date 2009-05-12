@@ -412,7 +412,18 @@ asnn2.initAsnnList = function () {
    * Bind the remove button at the bottom of the screen.
    * TODO: Put the confirmation dialog back in.
    */
+  var removeDialog = jQuery('#remove-asnn-dialog');
+
   $("#removebutton").bind("click", function(e) {
+
+  });
+
+
+
+  // The remove dialog
+  jQuery('#remove-asnn-button').click( function (event)  {
+    alert("Removing!");
+
     var toremove = [];
     $(".asnncheck").each(function (i) {
       if (this.checked) {
@@ -427,6 +438,14 @@ asnn2.initAsnnList = function () {
         window.location.reload();
       }
     });
+
+    // Close the dialog
+    asnn2util.closeDialog(removeDialog);
+  });
+
+  jQuery('#cancel-remove-asnn-button').click( function (event) {
+    asnn2util.closeDialog(removeDialog);
+    jQuery("#asnn-to-delete").html('');
   });
 
 

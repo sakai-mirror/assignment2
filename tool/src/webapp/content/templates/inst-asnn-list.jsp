@@ -147,6 +147,32 @@ String getDefaultPortalMatter() {
 
     <input type="button" value="Remove" id="removebutton" />
 
+    !-- This is the template for the Confirm Asnn Remove Dialog. -->
+	<div id="remove-asnn-dialog" style="display:none">
+	    <div class="generalErrors">
+	       <ul class="ui-dialog-msg-list">
+	          <li class="alertMessageInline" >Are you sure you want to remove the following assignments and any associated submissions?</li>
+	       </ul>
+	    </div>
+		<table class="listHier lines" > <!--  rsf:id="assignment-list-table" > -->
+			<tr>
+				<th>Assignment Title</th>
+				<th>Due</th>
+				<th>Submissions</th>
+			</tr>
+			<tr id="asnn-to-delete"> <!--
+				<td id="asnn-to-delete-title">Homework 1</td>
+				<td id="asnn-to-delete-due">Mar 26, 2008 5:00 pm</td>
+				<td id="asnn-to-delete-numsubmissions">1</td> -->
+			</tr>
+		</table>
+		<span style="display:none" id="asnn-to-delete-id"></span>
+		<fieldset class="submit">
+			<input id="remove-asnn-button" accesskey="r" type="button" class="remove-button active" value="Post" />
+			<input id="cancel-remove-asnn-button" class="cancel-button" accesskey="x" type="button" value="Cancel" />
+		</fieldset>
+	</div>
+
     <script type="text/javascript">
       asnn2.initAsnnList();
     </script>
