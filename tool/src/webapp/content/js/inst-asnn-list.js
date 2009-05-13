@@ -314,6 +314,9 @@ asnn2.setupInlineEdits = function () {
       text: ".asnntitle",
       editables: "p"
     },
+    useTooltip : true,
+    tooltipDelay : 500,
+    tooltipText : "Click to edit assignment title",
     listeners: {
       onFinishEdit: function (newValue, oldValue, editNode, viewNode) {
         var asnnid = $(".asnnid", viewNode.parentNode).text();
