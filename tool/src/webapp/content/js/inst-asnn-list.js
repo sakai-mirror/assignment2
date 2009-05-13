@@ -30,11 +30,11 @@ asnn2.getAsnnCompData = function () {
     else {
       togo.inAndNew = obj.inAndNew;
     }
-    if (obj.openDate) {
-      togo.opentext = "Open: " + new Date(obj.openDate).toLocaleString();
+    if (obj.openDateFormatted) {
+      togo.opentext = "Open: " + obj.openDateFormatted;
     }
-    if (obj.dueDate) {
-      togo.duetext = "Due: " + new Date(obj.dueDate).toLocaleString();
+    if (obj.dueDateFormatted) {
+      togo.duetext = "Due: " + obj.dueDateFormatted;
     }
    if (obj.canEdit && obj.canEdit === true) {
       togo.editlink = {
