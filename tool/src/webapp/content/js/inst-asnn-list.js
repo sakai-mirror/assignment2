@@ -45,12 +45,16 @@ asnn2.getAsnnCompData = function () {
         target: '/portal/tool/'+sakai.curPlacement+'/assignment?duplicatedAssignmentId='+obj.id,
         linktext: "Duplicate"
       };
+      togo.sep1 = true;
     }
     if (obj.graded === true) {
         togo.gradelink = {
             target: '/portal/tool/'+sakai.curPlacement+'/viewSubmissions/'+obj.id,
             linktext: "Grade"
         };
+        if (obj.canEdit && obj.canEdit === true) {
+          togo.sep2 = true;
+        }
     }
     if (obj.attachments.length > 0) {
         togo.hasAttachments = true;
@@ -104,7 +108,9 @@ asnn2.selectorMap = [
   { selector: ".inAndNewLink", id: "inAndNewLink" },
   { selector: ".attachments", id: "hasAttachments" },
   { selector: ".needsAttention", id: "needsAttention"},
-  { selector: ".draft", id: "draft"}
+  { selector: ".draft", id: "draft"},
+  { selector: ".sep1", id: "sep1"},
+  { selector: ".sep2", id: "sep2"}
 ];
 
 asnn2.sortMap = [

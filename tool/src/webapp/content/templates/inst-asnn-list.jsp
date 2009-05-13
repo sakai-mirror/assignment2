@@ -130,7 +130,9 @@ String getDefaultPortalMatter() {
             	title="There is a problem with this assignment. For additional information, click Edit." />
             <br/>
             <a href="" class="editlink">Edit</a>
+	    <span class="sep1"> | </span>
             <a href="" class="duplink">Duplicate</a>
+	    <span class="sep2"> | </span>
             <a href="" class="gradelink">Grade</a>
             <br/>
             <span class="opendate">Open: May 6, 2008 3:00 PM</span><br/>
