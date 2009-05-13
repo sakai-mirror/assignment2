@@ -248,33 +248,32 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 	    }
 
 	    try {
-	        Set<AssignmentAttachment> attachSet = new HashSet<AssignmentAttachment>();
-	        if (assignment.getAttachmentSet() != null) {
-	            attachSet = assignment.getAttachmentSet();
-	        }
+
 	        Set<AssignmentGroup> groupSet = new HashSet<AssignmentGroup>();
 	        if (assignment.getAssignmentGroupSet() != null) {
 	            groupSet = assignment.getAssignmentGroupSet();
 	        }
+	        
+	        Set<AssignmentAttachment> attachToCreate = identifyAttachmentsToCreate(existingAssignment, assignment);
 
 	        // make sure the assignment has been set for the attachments and groups
-	        populateAssignmentForAttachmentAndGroupSets(attachSet, groupSet, assignment);
+	        populateAssignmentForAttachmentAndGroupSets(attachToCreate, groupSet, assignment);
 
 	        // ensure that these objects are ready for saving
-	        validateAttachmentsAndGroups(attachSet, groupSet);
+	        validateAttachmentsAndGroups(attachToCreate, groupSet);
 
 	        Set<Assignment2> assignSet = new HashSet<Assignment2>();
 	        assignSet.add(assignment);
 
 	        // to avoid the WARN: Nothing to update messages...
-	        if (!attachSet.isEmpty() && !groupSet.isEmpty()) {
-	            dao.saveMixedSet(new Set[] {assignSet, attachSet, groupSet});
-	        } else if (!attachSet.isEmpty()) {
-	            dao.saveMixedSet(new Set[] {assignSet, attachSet});
+	        if (!attachToCreate.isEmpty() && !groupSet.isEmpty()) {
+	            dao.saveMixedSet(new Set[] {assignSet, attachToCreate, groupSet});
+	        } else if (!attachToCreate.isEmpty()) {
+	            dao.saveMixedSet(new Set[] {assignSet, attachToCreate});
 	        } else if (!groupSet.isEmpty()) {
 	            dao.saveMixedSet(new Set[] {assignSet, groupSet});
 	        } else {
-	            dao.saveSet(assignSet);
+	            dao.save(assignment);
 	        }
 
 	        if (log.isDebugEnabled()) {
@@ -562,11 +561,19 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 	private Set<AssignmentAttachment> identifyAttachmentsToDelete(Assignment2 existingAssign, Assignment2 updatedAssign) {
 		Set<AssignmentAttachment> attachToRemove = new HashSet<AssignmentAttachment>();
 		
+		// make a set of attachment references in case the id wasn't populated
+        // properly
+        Set<String> updatedAttachSetRefs = new HashSet<String>();
+        if (updatedAssign != null && updatedAssign.getAttachmentSet() != null) {
+            for (AssignmentAttachment attach : updatedAssign.getAttachmentSet()) {
+                updatedAttachSetRefs.add(attach.getAttachmentReference());
+            }
+        }
+        
 		if (updatedAssign != null && existingAssign != null && existingAssign.getAttachmentSet() != null) {
 			for (AssignmentAttachment attach : existingAssign.getAttachmentSet()) {
 				if (attach != null) {
-					if (updatedAssign.getAttachmentSet() == null ||
-							!updatedAssign.getAttachmentSet().contains(attach)) {
+					if (!updatedAttachSetRefs.contains(attach.getAttachmentReference())) {
 						// we need to delete this attachment
 						attachToRemove.add(attach);
 						if (log.isDebugEnabled()) log.debug("Attach to remove: " + attach.getAttachmentReference());
@@ -577,6 +584,43 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 		
 		return attachToRemove;
 	}
+	/**
+     * 
+     * @param existingAssignment
+     * @param updatedAssignment
+     * @return a set of attachments associated with the updatedAssignment that do not
+     * currently exist. this is determined by checking to see if there is
+     * already an attachment in the given existingAssignment attachment set with the same
+     * attachmentReference as each attachment in the updatedAssignment. 
+     */
+    private Set<AssignmentAttachment> identifyAttachmentsToCreate(
+            Assignment2 existingAssignment, Assignment2 updatedAssignment)
+    {
+        Set<AssignmentAttachment> attachToCreate = new HashSet<AssignmentAttachment>();
+        
+        // make a set of attachment references in case the id wasn't populated
+        // properly
+        Set<String> existingAttachSetRefs = new HashSet<String>();
+        if (existingAssignment != null &&
+                existingAssignment.getAttachmentSet() != null) {
+            for (AssignmentAttachment attach : existingAssignment.getAttachmentSet()) {
+                existingAttachSetRefs.add(attach.getAttachmentReference());
+            }
+        }
+
+        if (updatedAssignment != null && 
+                updatedAssignment.getAttachmentSet() != null) {
+            for (AssignmentAttachment attach : updatedAssignment.getAttachmentSet()) {
+                if (attach != null) {
+                    if (!existingAttachSetRefs.contains(attach.getAttachmentReference())) {
+                        attachToCreate.add(attach);
+                    }
+                }
+            }
+        }
+
+        return attachToCreate;
+    }
 	
 	private Set<AssignmentGroup> identifyGroupsToDelete(Assignment2 existingAssign, Assignment2 updatedAssign) {
 		Set<AssignmentGroup> groupsToRemove = new HashSet<AssignmentGroup>();
