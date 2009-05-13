@@ -30,11 +30,13 @@ asnn2.getAsnnCompData = function () {
     else {
       togo.inAndNew = obj.inAndNew;
     }
-    if (obj.openDate) {
-      togo.opentext = "Open: " + new Date(obj.openDate).toLocaleString();
+    if (obj.openDateFormatted) {
+      togo.opendatelabel = true;
+      togo.opentext = "Open: " + obj.openDateFormatted;
     }
-    if (obj.dueDate) {
-      togo.duetext = "Due: " + new Date(obj.dueDate).toLocaleString();
+    if (obj.dueDateFormatted) {
+      togo.duedatelabel = true;
+      togo.duetext = "Due: " + obj.dueDateFormatted;
     }
    if (obj.canEdit && obj.canEdit === true) {
       togo.editlink = {
@@ -45,12 +47,16 @@ asnn2.getAsnnCompData = function () {
         target: '/portal/tool/'+sakai.curPlacement+'/assignment?duplicatedAssignmentId='+obj.id,
         linktext: "Duplicate"
       };
+      togo.sep1 = true;
     }
     if (obj.graded === true) {
         togo.gradelink = {
             target: '/portal/tool/'+sakai.curPlacement+'/viewSubmissions/'+obj.id,
             linktext: "Grade"
         };
+        if (obj.canEdit && obj.canEdit === true) {
+          togo.sep2 = true;
+        }
     }
     if (obj.attachments.length > 0) {
         togo.hasAttachments = true;
@@ -59,7 +65,8 @@ asnn2.getAsnnCompData = function () {
         var groupnames = fluid.transform(obj.groups, function(grp,idx) {
           return " "+grp.title;
         });
-        togo.grouptext = "Restricted To:" + groupnames.toString();
+        togo.groupslabel = true;
+        togo.grouptext = groupnames.toString();
     }
     if (obj.gbItemMissing || obj.groupMissing) {
       togo.needsAttention = true;
@@ -104,7 +111,12 @@ asnn2.selectorMap = [
   { selector: ".inAndNewLink", id: "inAndNewLink" },
   { selector: ".attachments", id: "hasAttachments" },
   { selector: ".needsAttention", id: "needsAttention"},
-  { selector: ".draft", id: "draft"}
+  { selector: ".draft", id: "draft"},
+  { selector: ".sep1", id: "sep1"},
+  { selector: ".sep2", id: "sep2"},
+  { selector: ".opendatelabel", id: "opendatelabel" },
+  { selector: ".duedatelabel", id: "duedatelabel" },
+  { selector: ".groupslabel", id: "groupslabel" }
 ];
 
 asnn2.sortMap = [
@@ -314,6 +326,9 @@ asnn2.setupInlineEdits = function () {
       text: ".asnntitle",
       editables: "p"
     },
+    useTooltip : true,
+    tooltipDelay : 500,
+    tooltipText : "Click to edit assignment title",
     listeners: {
       onFinishEdit: function (newValue, oldValue, editNode, viewNode) {
         var asnnid = $(".asnnid", viewNode.parentNode).text();
@@ -424,8 +439,8 @@ asnn2.initAsnnList = function () {
       if (this.checked) {
         var asnnid = $(".asnnid", this.parentNode.parentNode).text();
         var obj = asnn2.getAsnnObj(asnnid);
-        if (obj.dueDate) {
-          var duedate = new Date(obj.dueDate).toLocaleString();
+        if (obj.duetext) {
+          var duedate = obj.duetext;
         }
         else {
           var duedate = "";
@@ -458,13 +473,14 @@ asnn2.initAsnnList = function () {
           type: "DELETE",
           url: "/direct/assignment2/"+asnnid+"/delete"
         });
-        //TODO Properly refire the pager with an updated model
-        window.location.reload();
+
       }
     });
 
-    // Close the dialog
+    //TODO Properly refire the pager with an updated model
     asnn2util.closeDialog(removeDialog);
+    window.location.reload();
+
   });
 
   jQuery('#cancel-remove-asnn-button').click( function (event) {

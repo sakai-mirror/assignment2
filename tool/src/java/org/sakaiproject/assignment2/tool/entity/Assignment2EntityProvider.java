@@ -1,15 +1,19 @@
 package org.sakaiproject.assignment2.tool.entity;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.azeckoski.reflectutils.DeepUtils;
 import org.sakaiproject.assignment2.exception.AssignmentNotFoundException;
+import org.sakaiproject.assignment2.logic.AssignmentBundleLogic;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
@@ -21,8 +25,10 @@ import org.sakaiproject.entitybroker.EntityReference;
 import org.sakaiproject.entitybroker.EntityView;
 import org.sakaiproject.entitybroker.entityprovider.CoreEntityProvider;
 import org.sakaiproject.entitybroker.entityprovider.capabilities.RESTful;
+import org.sakaiproject.entitybroker.entityprovider.capabilities.RequestAware;
 import org.sakaiproject.entitybroker.entityprovider.capabilities.RequestStorable;
 import org.sakaiproject.entitybroker.entityprovider.extension.Formats;
+import org.sakaiproject.entitybroker.entityprovider.extension.RequestGetter;
 import org.sakaiproject.entitybroker.entityprovider.extension.RequestStorage;
 import org.sakaiproject.entitybroker.entityprovider.search.Search;
 import org.sakaiproject.entitybroker.util.AbstractEntityProvider;
@@ -39,7 +45,7 @@ import sun.util.logging.resources.logging;
  *
  */
 public class Assignment2EntityProvider extends AbstractEntityProvider implements
-CoreEntityProvider, RESTful, RequestStorable {
+CoreEntityProvider, RESTful, RequestStorable, RequestAware {
 	private static Log log = LogFactory.getLog(Assignment2EntityProvider.class);
 
     // Dependency
@@ -69,6 +75,16 @@ CoreEntityProvider, RESTful, RequestStorable {
     private RequestStorage requestStorage;
     public void setRequestStorage(RequestStorage requestStorage) {
         this.requestStorage = requestStorage;
+    }
+    
+    private RequestGetter requestGetter;
+    public void setRequestGetter(RequestGetter requestGetter) {
+        this.requestGetter = requestGetter;
+    }
+    
+    private AssignmentBundleLogic assignmentBundleLogic;
+    public void setAssignmentBundleLogic(AssignmentBundleLogic assignmentBundleLogic) {
+        this.assignmentBundleLogic = assignmentBundleLogic;
     }
     
     public static String PREFIX = "assignment2";
@@ -121,8 +137,10 @@ CoreEntityProvider, RESTful, RequestStorable {
     public List getAssignmentListForSite(EntityView view) {        
         String context = (String) requestStorage.getStoredValue("siteid");
         
+        DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, assignmentBundleLogic.getLocale());
+        
         if (context == null) {
-        	return new ArrayList();
+            return new ArrayList();
         }
         
         List<Assignment2> viewable = assignmentLogic.getViewableAssignments(context);
@@ -146,7 +164,13 @@ CoreEntityProvider, RESTful, RequestStorable {
             asnnmap.put("id", asnn.getId());
             asnnmap.put("title", asnn.getTitle());
             asnnmap.put("openDate", asnn.getOpenDate());
+            if (asnn.getOpenDate() != null) {
+                asnnmap.put("openDateFormatted", df.format(asnn.getOpenDate()));
+            }
             asnnmap.put("dueDate", asnn.getDueDate());
+            if (asnn.getDueDate() != null) {
+                asnnmap.put("dueDateFormatted", df.format(asnn.getDueDate()));
+            }
             asnnmap.put("graded", asnn.isGraded());
             asnnmap.put("sortIndex", asnn.getSortIndex());
             asnnmap.put("requiresSubmission", asnn.isRequiresSubmission());
@@ -198,6 +222,12 @@ CoreEntityProvider, RESTful, RequestStorable {
             
             togo.add(asnnmap);
         }
+        
+        // IE Won't stop caching even with the no-cache.
+        HttpServletResponse httpServletResponse = requestGetter.getResponse();
+        httpServletResponse.setHeader("Pragma", "no-cache");
+        httpServletResponse.setHeader("Cache-Control", "max-age=0,no-cache,no-store,must-revalidate,private,post-check=0,pre-check=0,s-max-age=0");
+        httpServletResponse.setDateHeader("Expires", 0 );
         
         return togo;
     }

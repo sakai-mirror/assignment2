@@ -8,6 +8,15 @@
   text-align: left;
 }
 
+.asnntitle {
+  font-weight: bold;
+  font-size: medium;
+}
+
+.opendatelabel, .duedatelabel, .groupslabel, .sortbylabel {
+  font-weight: bold;
+}
+
 /*
  *  These are for the cells like have borders or other decoration and show
  *  information assignment. The hidden column that only shows up on hover will
@@ -26,11 +35,32 @@
 
 /* Start Sorting Bar Classes */
 
+.sort-bar {
+  margin: 0 0 0 2px;
+  padding: 0;
+}
+
 .sort-bar, .sort-item {
   display: inline;
 }
 
-/* End Sorting Bar Classes */
+/* Inline Editing */
+
+.fl-inlineEdit-tooltip {
+    position    : absolute;
+    background  : #CCC;
+    border      : 1px solid #999;
+    font        : normal 75% sans-serif;
+    padding     : 3px 5px;
+}
+
+/* :hover */
+.fl-inlineEdit-invitation {
+    border      : 1px solid #999;
+    background  : lightyellow;
+    cursor      : pointer;
+    /*margin      : -1px;*/
+}
 
 /* Pager and Sorting Area */
 .pager-sort-area {

@@ -84,8 +84,7 @@ String getDefaultPortalMatter() {
 </div>
 
 <div style="margin: 0; padding: 5px; border-top: solid 2px #cccccc;">
-    <span>Sorted by:</span>
-    <ul class="sort-bar">
+    <span class="sortbylabel">Sorted by:</span><ul class="sort-bar">
       <li class="sort-item"><a href="#" id="titlesort">Title</a> |</li>
       <!-- <li class="sort-item">Restricted To |</li> -->
       <li class="sort-item"><a href="#" id="opendatesort">Open Date</a> |</li>
@@ -133,9 +132,12 @@ String getDefaultPortalMatter() {
             <a href="" class="duplink">Duplicate</a>
             <a href="" class="gradelink">Grade</a>
             <br/>
-            <span class="opendate">Open: May 6, 2008 3:00 PM</span><br/>
-            <span class="duedate">Due: May 13, 2008 3:00 PM</span><br/>
-            <span class="groups">Restricted To: Red Cohort, Yellow Cohort</span>
+	    <span class="opendatelabel">Open: </span>
+            <span class="opendate">May 6, 2008 3:00 PM</span><br/>
+	    <span class="duedatelabel">Due: </span>
+            <span class="duedate">May 13, 2008 3:00 PM</span><br/>
+	    <span class="groupslabel">Restricted To: </span>
+            <span class="groups">Red Cohort, Yellow Cohort</span>
             </p>
           </td>
           <td class="asnn-decorated-cell">
