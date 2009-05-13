@@ -300,10 +300,7 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
             }
         }
         
-        // if the user has view-only perm and there are no fb attach, don't show the heading
-        if (grade_perm || (assignmentSubmissionVersion.getFeedbackAttachSet() != null && !assignmentSubmissionVersion.getFeedbackAttachSet().isEmpty())) {
-            UIOutput.make(tofill, "attachmentsFieldset");
-        }
+        UIOutput.make(tofill, "attachmentsFieldset");
 
         if (grade_perm) {
             UIInput feedback_notes = UIInput.make(form, "feedback_notes:", asvOTP + ".feedbackNotes");
