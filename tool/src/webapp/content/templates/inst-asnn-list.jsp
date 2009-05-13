@@ -44,12 +44,14 @@ String getDefaultPortalMatter() {
         var sakai = sakai || {};
         sakai.curPlacement = '<%= request.getParameter("placement") %>';
         sakai.curContext = '<%= request.getParameter("context") %>';
+        var iframeId = 'Main<%= request.getParameter("placement").replace("-","x") %>';
     </script>
 
     <!-- Application Code -->
+    <script type="text/javascript" language="JavaScript" src="/library/js/headscripts.js"></script>
     <script src="../js/InfusionAll_r7132.js" type="text/javascript"></script>
+    <script src="../js/assignment.js" type="text/javascript"></script>
     <script src="../js/inst-asnn-list.js" type="text/javascript"></script>
-	<script type="text/javascript" language="JavaScript" src="/library/js/headscripts.js"></script>
   </head>
   <body onload="setMainFrameHeight('Main<%= request.getParameter("placement").replace("-","x") %>');">
     <div class="portletBody">
@@ -122,6 +124,7 @@ String getDefaultPortalMatter() {
             <span style="display:none" class="asnnid">1</span>
             <span class="asnntitle">Audio Scriptwriting</span>
             <img class="attachments" src="/sakai-assignment2-tool/content/images/attach.png" />
+            <span class="draft">draft</span>
             <img class="needsAttention" src="/../../library/image/sakai/warn.gif"
             	alt="There is a problem with this assignment. For additional information, click Edit."
             	title="There is a problem with this assignment. For additional information, click Edit." />
@@ -146,6 +149,32 @@ String getDefaultPortalMatter() {
     </table>
 
     <input type="button" value="Remove" id="removebutton" />
+
+    <!-- This is the template for the Confirm Asnn Remove Dialog. -->
+	<div id="remove-asnn-dialog" style="display:none">
+	    <div class="generalErrors">
+	       <ul class="ui-dialog-msg-list">
+	          <li class="alertMessageInline" >Are you sure you want to remove the following assignments and any associated submissions?</li>
+	       </ul>
+	    </div>
+		<table class="listHier lines" > <!--  rsf:id="assignment-list-table" > -->
+			<thead><tr>
+				<th>Assignment Title</th>
+				<th>Due</th>
+				<th>Submissions</th>
+			</tr></thead>
+			<tbody id="asnn-to-delete"> <!--
+				<td id="asnn-to-delete-title">Homework 1</td>
+				<td id="asnn-to-delete-due">Mar 26, 2008 5:00 pm</td>
+				<td id="asnn-to-delete-numsubmissions">1</td> -->
+			</tbody>
+		</table>
+		<span style="display:none" id="asnn-to-delete-id"></span>
+		<fieldset class="submit">
+			<input id="remove-asnn-button" accesskey="r" type="button" class="remove-button active" value="Remove" />
+			<input id="cancel-remove-asnn-button" class="cancel-button" accesskey="x" type="button" value="Cancel" />
+		</fieldset>
+	</div>
 
     <script type="text/javascript">
       asnn2.initAsnnList();

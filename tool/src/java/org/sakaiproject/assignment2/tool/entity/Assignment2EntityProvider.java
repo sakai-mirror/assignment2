@@ -150,6 +150,7 @@ CoreEntityProvider, RESTful, RequestStorable {
             asnnmap.put("graded", asnn.isGraded());
             asnnmap.put("sortIndex", asnn.getSortIndex());
             asnnmap.put("requiresSubmission", asnn.isRequiresSubmission());
+            asnnmap.put("draft", asnn.isDraft());
             
             // In case assignment has a gradebook item, but that gradebook item
             // no longer exists.

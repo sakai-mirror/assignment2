@@ -18,6 +18,9 @@ asnn2.getAsnnCompData = function () {
     for (var i = 0; i < ditto.length; i++) {
       togo[ditto[i]] = obj[ditto[i]];
     }
+    if (obj.draft === true) {
+      togo.draft = true;
+    }
     if (obj.requiresSubmission === true) {
       togo.inAndNewLink = {
         target: '/portal/tool/'+sakai.curPlacement+'/viewSubmissions/'+obj.id,
@@ -59,7 +62,7 @@ asnn2.getAsnnCompData = function () {
         togo.grouptext = "Restricted To:" + groupnames.toString();
     }
     if (obj.gbItemMissing || obj.groupMissing) {
-    	togo.needsAttention = true;
+      togo.needsAttention = true;
     }
     return togo;
   };
@@ -100,7 +103,8 @@ asnn2.selectorMap = [
   { selector: ".inAndNew", id: "inAndNew" },
   { selector: ".inAndNewLink", id: "inAndNewLink" },
   { selector: ".attachments", id: "hasAttachments" },
-  { selector: ".needsAttention", id: "needsAttention"}
+  { selector: ".needsAttention", id: "needsAttention"},
+  { selector: ".draft", id: "draft"}
 ];
 
 asnn2.sortMap = [
@@ -412,7 +416,38 @@ asnn2.initAsnnList = function () {
    * Bind the remove button at the bottom of the screen.
    * TODO: Put the confirmation dialog back in.
    */
+  var removeDialog = jQuery('#remove-asnn-dialog');
+
   $("#removebutton").bind("click", function(e) {
+    var togo = "";
+    $(".asnncheck").each(function (i) {
+      if (this.checked) {
+        var asnnid = $(".asnnid", this.parentNode.parentNode).text();
+        var obj = asnn2.getAsnnObj(asnnid);
+        if (obj.dueDate) {
+          var duedate = new Date(obj.dueDate).toLocaleString();
+        }
+        else {
+          var duedate = "";
+        }
+        if (obj.inAndNew) {
+          var subs = obj.inAndNew;
+        }
+        else if (obj.inAndNewLink) {
+          var subs = obj.inAndNewLink.linktext;
+        }
+        togo = togo + "<tr><td>"+obj.title+"</td><td>"+duedate+"</td><td>"+subs+"</td></tr>";
+      }
+    });
+    jQuery("#asnn-to-delete").html(togo);
+    asnn2util.openDialog(removeDialog);
+  });
+
+
+
+  // The remove dialog
+  jQuery('#remove-asnn-button').click( function (event)  {
+
     var toremove = [];
     $(".asnncheck").each(function (i) {
       if (this.checked) {
@@ -427,6 +462,14 @@ asnn2.initAsnnList = function () {
         window.location.reload();
       }
     });
+
+    // Close the dialog
+    asnn2util.closeDialog(removeDialog);
+  });
+
+  jQuery('#cancel-remove-asnn-button').click( function (event) {
+    asnn2util.closeDialog(removeDialog);
+    jQuery("#asnn-to-delete").html('');
   });
 
 
