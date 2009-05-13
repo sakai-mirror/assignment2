@@ -31,9 +31,11 @@ asnn2.getAsnnCompData = function () {
       togo.inAndNew = obj.inAndNew;
     }
     if (obj.openDateFormatted) {
+      togo.opendatelabel = true;
       togo.opentext = "Open: " + obj.openDateFormatted;
     }
     if (obj.dueDateFormatted) {
+      togo.duedatelabel = true;
       togo.duetext = "Due: " + obj.dueDateFormatted;
     }
    if (obj.canEdit && obj.canEdit === true) {
@@ -63,7 +65,8 @@ asnn2.getAsnnCompData = function () {
         var groupnames = fluid.transform(obj.groups, function(grp,idx) {
           return " "+grp.title;
         });
-        togo.grouptext = "Restricted To:" + groupnames.toString();
+        togo.groupslabel = true;
+        togo.grouptext = groupnames.toString();
     }
     if (obj.gbItemMissing || obj.groupMissing) {
       togo.needsAttention = true;
@@ -110,7 +113,10 @@ asnn2.selectorMap = [
   { selector: ".needsAttention", id: "needsAttention"},
   { selector: ".draft", id: "draft"},
   { selector: ".sep1", id: "sep1"},
-  { selector: ".sep2", id: "sep2"}
+  { selector: ".sep2", id: "sep2"},
+  { selector: ".opendatelabel", id: "opendatelabel" },
+  { selector: ".duedatelabel", id: "duedatelabel" },
+  { selector: ".groupslabel", id: "groupslabel" }
 ];
 
 asnn2.sortMap = [

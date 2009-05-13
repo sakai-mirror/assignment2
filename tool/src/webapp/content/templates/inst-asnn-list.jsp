@@ -130,14 +130,15 @@ String getDefaultPortalMatter() {
             	title="There is a problem with this assignment. For additional information, click Edit." />
             <br/>
             <a href="" class="editlink">Edit</a>
-	    <span class="sep1"> | </span>
             <a href="" class="duplink">Duplicate</a>
-	    <span class="sep2"> | </span>
             <a href="" class="gradelink">Grade</a>
             <br/>
-            <span class="opendate">Open: May 6, 2008 3:00 PM</span><br/>
-            <span class="duedate">Due: May 13, 2008 3:00 PM</span><br/>
-            <span class="groups">Restricted To: Red Cohort, Yellow Cohort</span>
+	    <span class="opendatelabel">Open: </span>
+            <span class="opendate">May 6, 2008 3:00 PM</span><br/>
+	    <span class="duedatelabel">Due: </span>
+            <span class="duedate">May 13, 2008 3:00 PM</span><br/>
+	    <span class="groupslabel">Restricted To: </span>
+            <span class="groups">Red Cohort, Yellow Cohort</span>
             </p>
           </td>
           <td class="asnn-decorated-cell">

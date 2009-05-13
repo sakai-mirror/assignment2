@@ -10,6 +10,11 @@
 
 .asnntitle {
   font-weight: bold;
+  font-size: medium;
+}
+
+.opendatelabel, .duedatelabel, .groupslabel {
+  font-weight: bold;
 }
 
 /*
