@@ -124,6 +124,7 @@ String getDefaultPortalMatter() {
             <span style="display:none" class="asnnid">1</span>
             <span class="asnntitle">Audio Scriptwriting</span>
             <img class="attachments" src="/sakai-assignment2-tool/content/images/attach.png" />
+            <span class="draft">draft</span>
             <img class="needsAttention" src="/../../library/image/sakai/warn.gif"
             	alt="There is a problem with this assignment. For additional information, click Edit."
             	title="There is a problem with this assignment. For additional information, click Edit." />

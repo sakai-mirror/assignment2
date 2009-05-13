@@ -18,6 +18,9 @@ asnn2.getAsnnCompData = function () {
     for (var i = 0; i < ditto.length; i++) {
       togo[ditto[i]] = obj[ditto[i]];
     }
+    if (obj.draft === true) {
+      togo.draft = true;
+    }
     if (obj.requiresSubmission === true) {
       togo.inAndNewLink = {
         target: '/portal/tool/'+sakai.curPlacement+'/viewSubmissions/'+obj.id,
@@ -59,7 +62,7 @@ asnn2.getAsnnCompData = function () {
         togo.grouptext = "Restricted To:" + groupnames.toString();
     }
     if (obj.gbItemMissing || obj.groupMissing) {
-    	togo.needsAttention = true;
+      togo.needsAttention = true;
     }
     return togo;
   };
@@ -100,7 +103,8 @@ asnn2.selectorMap = [
   { selector: ".inAndNew", id: "inAndNew" },
   { selector: ".inAndNewLink", id: "inAndNewLink" },
   { selector: ".attachments", id: "hasAttachments" },
-  { selector: ".needsAttention", id: "needsAttention"}
+  { selector: ".needsAttention", id: "needsAttention"},
+  { selector: ".draft", id: "draft"}
 ];
 
 asnn2.sortMap = [
@@ -422,7 +426,7 @@ asnn2.initAsnnList = function () {
         var obj = asnn2.getAsnnObj(asnnid);
         if (obj.dueDate) {
           var duedate = new Date(obj.dueDate).toLocaleString();
-        } 
+        }
         else {
           var duedate = "";
         }

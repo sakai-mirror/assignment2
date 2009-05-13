@@ -464,9 +464,9 @@ ul#assignmentList div.left span.assignment_title {
    padding-left: 20px;
 }
 
-ul#assignmentList div.left span.draft {
-	color: #fa0b12;
-	text-transform: uppercase;
+#asnn-list span.draft {
+  color: #fa0b12;
+  text-transform: uppercase;
 }
 
 ul#assignmentList div.left span.group {
