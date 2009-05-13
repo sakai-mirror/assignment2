@@ -1,5 +1,6 @@
 package org.sakaiproject.assignment2.tool.entity;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -12,6 +13,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.azeckoski.reflectutils.DeepUtils;
 import org.sakaiproject.assignment2.exception.AssignmentNotFoundException;
+import org.sakaiproject.assignment2.logic.AssignmentBundleLogic;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
@@ -80,6 +82,11 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware {
         this.requestGetter = requestGetter;
     }
     
+    private AssignmentBundleLogic assignmentBundleLogic;
+    public void setAssignmentBundleLogic(AssignmentBundleLogic assignmentBundleLogic) {
+        this.assignmentBundleLogic = assignmentBundleLogic;
+    }
+    
     public static String PREFIX = "assignment2";
     public String getEntityPrefix() {
         return PREFIX;
@@ -130,8 +137,10 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware {
     public List getAssignmentListForSite(EntityView view) {        
         String context = (String) requestStorage.getStoredValue("siteid");
         
+        DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, assignmentBundleLogic.getLocale());
+        
         if (context == null) {
-        	return new ArrayList();
+            return new ArrayList();
         }
         
         List<Assignment2> viewable = assignmentLogic.getViewableAssignments(context);
@@ -155,7 +164,13 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware {
             asnnmap.put("id", asnn.getId());
             asnnmap.put("title", asnn.getTitle());
             asnnmap.put("openDate", asnn.getOpenDate());
+            if (asnn.getOpenDate() != null) {
+                asnnmap.put("openDateFormatted", df.format(asnn.getOpenDate()));
+            }
             asnnmap.put("dueDate", asnn.getDueDate());
+            if (asnn.getDueDate() != null) {
+                asnnmap.put("dueDateFormatted", df.format(asnn.getDueDate()));
+            }
             asnnmap.put("graded", asnn.isGraded());
             asnnmap.put("sortIndex", asnn.getSortIndex());
             asnnmap.put("requiresSubmission", asnn.isRequiresSubmission());
