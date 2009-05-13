@@ -433,8 +433,8 @@ asnn2.initAsnnList = function () {
       if (this.checked) {
         var asnnid = $(".asnnid", this.parentNode.parentNode).text();
         var obj = asnn2.getAsnnObj(asnnid);
-        if (obj.dueDate) {
-          var duedate = new Date(obj.dueDate).toLocaleString();
+        if (obj.duetext) {
+          var duedate = obj.duetext;
         }
         else {
           var duedate = "";
@@ -467,13 +467,15 @@ asnn2.initAsnnList = function () {
           type: "DELETE",
           url: "/direct/assignment2/"+asnnid+"/delete"
         });
-        //TODO Properly refire the pager with an updated model
-        window.location.reload();
+
       }
     });
 
+    //TODO Properly refire the pager with an updated model
+    window.location.reload();
+
     // Close the dialog
-    asnn2util.closeDialog(removeDialog);
+    //asnn2util.closeDialog(removeDialog);
   });
 
   jQuery('#cancel-remove-asnn-button').click( function (event) {
