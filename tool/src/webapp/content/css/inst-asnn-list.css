@@ -8,6 +8,10 @@
   text-align: left;
 }
 
+.asnntitle {
+  font-weight: bold;
+}
+
 /*
  *  These are for the cells like have borders or other decoration and show
  *  information assignment. The hidden column that only shows up on hover will
