@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.azeckoski.reflectutils.DeepUtils;
@@ -21,8 +23,10 @@ import org.sakaiproject.entitybroker.EntityReference;
 import org.sakaiproject.entitybroker.EntityView;
 import org.sakaiproject.entitybroker.entityprovider.CoreEntityProvider;
 import org.sakaiproject.entitybroker.entityprovider.capabilities.RESTful;
+import org.sakaiproject.entitybroker.entityprovider.capabilities.RequestAware;
 import org.sakaiproject.entitybroker.entityprovider.capabilities.RequestStorable;
 import org.sakaiproject.entitybroker.entityprovider.extension.Formats;
+import org.sakaiproject.entitybroker.entityprovider.extension.RequestGetter;
 import org.sakaiproject.entitybroker.entityprovider.extension.RequestStorage;
 import org.sakaiproject.entitybroker.entityprovider.search.Search;
 import org.sakaiproject.entitybroker.util.AbstractEntityProvider;
@@ -39,7 +43,7 @@ import sun.util.logging.resources.logging;
  *
  */
 public class Assignment2EntityProvider extends AbstractEntityProvider implements
-CoreEntityProvider, RESTful, RequestStorable {
+CoreEntityProvider, RESTful, RequestStorable, RequestAware {
 	private static Log log = LogFactory.getLog(Assignment2EntityProvider.class);
 
     // Dependency
@@ -69,6 +73,11 @@ CoreEntityProvider, RESTful, RequestStorable {
     private RequestStorage requestStorage;
     public void setRequestStorage(RequestStorage requestStorage) {
         this.requestStorage = requestStorage;
+    }
+    
+    private RequestGetter requestGetter;
+    public void setRequestGetter(RequestGetter requestGetter) {
+        this.requestGetter = requestGetter;
     }
     
     public static String PREFIX = "assignment2";
@@ -198,6 +207,12 @@ CoreEntityProvider, RESTful, RequestStorable {
             
             togo.add(asnnmap);
         }
+        
+        // IE Won't stop caching even with the no-cache.
+        HttpServletResponse httpServletResponse = requestGetter.getResponse();
+        httpServletResponse.setHeader("Pragma", "no-cache");
+        httpServletResponse.setHeader("Cache-Control", "max-age=0,no-cache,no-store,must-revalidate,private,post-check=0,pre-check=0,s-max-age=0");
+        httpServletResponse.setDateHeader("Expires", 0 );
         
         return togo;
     }
