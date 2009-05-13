@@ -472,10 +472,9 @@ asnn2.initAsnnList = function () {
     });
 
     //TODO Properly refire the pager with an updated model
+    asnn2util.closeDialog(removeDialog);
     window.location.reload();
 
-    // Close the dialog
-    //asnn2util.closeDialog(removeDialog);
   });
 
   jQuery('#cancel-remove-asnn-button').click( function (event) {
