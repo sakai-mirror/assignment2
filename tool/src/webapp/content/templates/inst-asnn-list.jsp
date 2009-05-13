@@ -84,8 +84,7 @@ String getDefaultPortalMatter() {
 </div>
 
 <div style="margin: 0; padding: 5px; border-top: solid 2px #cccccc;">
-    <span>Sorted by:</span>
-    <ul class="sort-bar">
+    <span class="sortbylabel">Sorted by:</span><ul class="sort-bar">
       <li class="sort-item"><a href="#" id="titlesort">Title</a> |</li>
       <!-- <li class="sort-item">Restricted To |</li> -->
       <li class="sort-item"><a href="#" id="opendatesort">Open Date</a> |</li>

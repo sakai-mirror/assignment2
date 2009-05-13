@@ -13,7 +13,7 @@
   font-size: medium;
 }
 
-.opendatelabel, .duedatelabel, .groupslabel {
+.opendatelabel, .duedatelabel, .groupslabel, .sortbylabel {
   font-weight: bold;
 }
 
@@ -34,6 +34,11 @@
 
 
 /* Start Sorting Bar Classes */
+
+.sort-bar {
+  margin: 0 0 0 2px;
+  padding: 0;
+}
 
 .sort-bar, .sort-item {
   display: inline;
