@@ -17,6 +17,12 @@
   font-weight: bold;
 }
 
+.asnninfolist {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
 /*
  *  These are for the cells like have borders or other decoration and show
  *  information assignment. The hidden column that only shows up on hover will
