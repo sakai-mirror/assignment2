@@ -63,6 +63,15 @@ asnn2.getAsnnCompData = function () {
           togo.sep2 = true;
         }
     }
+    else if (obj.requiresSubmission === true) {
+        togo.gradelink = {
+            target: '/portal/tool/'+sakai.curPlacement+'/viewSubmissions/'+obj.id,
+            linktext: "Provide Feedback"
+        };
+        if (obj.canEdit && obj.canEdit === true) {
+          togo.sep2 = true;
+        }
+    }
     if (obj.attachments.length > 0) {
         togo.hasAttachments = true;
     }
