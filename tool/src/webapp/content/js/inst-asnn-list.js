@@ -418,27 +418,19 @@ asnn2.findPageSlice = function(pageModel) {
   return [start,end];
 };
 
-/**
- * The master init function to be called at the bottom of the HTML page.
- */
-asnn2.initAsnnList = function () {
-  asnn2.pageState.dataArray = asnn2.getAsnnCompData();
-
-  // I would like to remove this, but am getting a duplicate attribute error currently
-  // when I first render it in the pager listener.
-  asnn2.renderAsnnList();
-
-  asnn2.setupSortLinks();
-
+asnn2.setupRemoveDialog = function() {
   /*
    * Bind the remove button at the bottom of the screen.
    * TODO: Put the confirmation dialog back in.
    */
+
+  jQuery("#removebutton").show();
+
   var removeDialog = jQuery('#remove-asnn-dialog');
 
-  $("#removebutton").bind("click", function(e) {
+  jQuery("#removebutton").bind("click", function(e) {
     var togo = "";
-    $(".asnncheck").each(function (i) {
+    jQuery(".asnncheck").each(function (i) {
       if (this.checked) {
         var asnnid = $(".asnnid", this.parentNode.parentNode).text();
         var obj = asnn2.getAsnnObj(asnnid);
@@ -461,13 +453,10 @@ asnn2.initAsnnList = function () {
     asnn2util.openDialog(removeDialog);
   });
 
-
-
   // The remove dialog
   jQuery('#remove-asnn-button').click( function (event)  {
-
     var toremove = [];
-    $(".asnncheck").each(function (i) {
+    jQuery(".asnncheck").each(function (i) {
       if (this.checked) {
         var asnnid = $(".asnnid", this.parentNode.parentNode).text();
         toremove.push(asnnid);
@@ -490,6 +479,24 @@ asnn2.initAsnnList = function () {
     asnn2util.closeDialog(removeDialog);
     jQuery("#asnn-to-delete").html('');
   });
+}
+
+/**
+ * The master init function to be called at the bottom of the HTML page.
+ */
+asnn2.initAsnnList = function () {
+  asnn2.pageState.dataArray = asnn2.getAsnnCompData();
+
+  // I would like to remove this, but am getting a duplicate attribute error currently
+  // when I first render it in the pager listener.
+  asnn2.renderAsnnList();
+
+  asnn2.setupSortLinks();
+
+  // Remove Dialog
+  if (asnn2.pageState.canEdit === true) {
+    asnn2.setupRemoveDialog();
+  }
 
 
   /*

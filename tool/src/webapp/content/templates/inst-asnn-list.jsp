@@ -150,7 +150,7 @@ String getDefaultPortalMatter() {
       </tbody>
     </table>
 
-    <input type="button" value="Remove" id="removebutton" />
+    <input style="display: none" type="button" value="Remove" id="removebutton" />
 
     <!-- This is the template for the Confirm Asnn Remove Dialog. -->
 	<div id="remove-asnn-dialog" style="display:none">
