@@ -32,11 +32,11 @@ asnn2.getAsnnCompData = function () {
     }
     if (obj.openDateFormatted) {
       togo.opendatelabel = true;
-      togo.opentext = "Open: " + obj.openDateFormatted;
+      togo.opentext = obj.openDateFormatted;
     }
     if (obj.dueDateFormatted) {
       togo.duedatelabel = true;
-      togo.duetext = "Due: " + obj.dueDateFormatted;
+      togo.duetext = obj.dueDateFormatted;
     }
    if (obj.canEdit && obj.canEdit === true) {
       togo.editlink = {
@@ -244,7 +244,7 @@ asnn2.reorderData = function (moved) {
   // exploring the built-in functionality/methods of JS data structures to find
   // a better way to do this part.
   return allIdIdx;
-}
+};
 
 /**
  * This sets up the drag'n'drop hopefully accessible reordering each time the list
@@ -325,7 +325,7 @@ asnn2.getAsnnObj = function(val, prop) {
     }
   }
   return undefined;
-}
+};
 
 /*
  *  Set up inline edits
@@ -453,13 +453,13 @@ asnn2.setupRemoveDialog = function() {
           var duedate = obj.duetext;
         }
         else {
-          var duedate = "";
+          duedate = "";
         }
         if (obj.inAndNew) {
           var subs = obj.inAndNew;
         }
         else if (obj.inAndNewLink) {
-          var subs = obj.inAndNewLink.linktext;
+          subs = obj.inAndNewLink.linktext;
         }
         togo = togo + "<tr><td>"+obj.title+"</td><td>"+duedate+"</td><td>"+subs+"</td></tr>";
       }
@@ -494,7 +494,7 @@ asnn2.setupRemoveDialog = function() {
     asnn2util.closeDialog(removeDialog);
     jQuery("#asnn-to-delete").html('');
   });
-}
+};
 
 /**
  * The master init function to be called at the bottom of the HTML page.
