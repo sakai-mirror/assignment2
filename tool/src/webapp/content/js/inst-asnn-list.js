@@ -474,17 +474,16 @@ asnn2.setupRemoveDialog = function() {
     jQuery(".asnncheck").each(function (i) {
       if (this.checked) {
         var asnnid = $(".asnnid", this.parentNode.parentNode).text();
-        toremove.push(asnnid);
-        // TODO: Bulk these delete commands together
-        jQuery.ajax({
-          type: "DELETE",
-          url: "/direct/assignment2/"+asnnid+"/delete"
-        });
-
+        toremove.push("/direct/assignment2/"+asnnid);
       }
     });
+    jQuery.ajax({
+      type: "DELETE",
+      url: "/direct/batch.json?_refs="+toremove.toString()
+    });
 
-    //TODO Properly refire the pager with an updated model
+    //TODO Properly refire the pager with an updated model rather than just
+    // lazily reload the page.
     asnn2util.closeDialog(removeDialog);
     window.location.reload();
 
