@@ -17,6 +17,38 @@
   font-weight: bold;
 }
 
+.asnninfolist {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+#pager-top {
+  padding: 10px;
+}
+
+#page-list {
+  text-align: left;
+  width: 20%;
+  float: left;
+  padding: 0;
+  margin: 0;
+}
+
+#page-arrows {
+  text-align: center;
+  padding: 0;
+  margin: 0;
+}
+
+#page-size {
+  text-align: right;
+  width: 20%;
+  float: right;
+  padding: 0;
+  margin: 0;
+}
+
 /*
  *  These are for the cells like have borders or other decoration and show
  *  information assignment. The hidden column that only shows up on hover will

@@ -32,11 +32,11 @@ asnn2.getAsnnCompData = function () {
     }
     if (obj.openDateFormatted) {
       togo.opendatelabel = true;
-      togo.opentext = "Open: " + obj.openDateFormatted;
+      togo.opentext = obj.openDateFormatted;
     }
     if (obj.dueDateFormatted) {
       togo.duedatelabel = true;
-      togo.duetext = "Due: " + obj.dueDateFormatted;
+      togo.duetext = obj.dueDateFormatted;
     }
    if (obj.canEdit && obj.canEdit === true) {
       togo.editlink = {
@@ -48,6 +48,11 @@ asnn2.getAsnnCompData = function () {
         linktext: "Duplicate"
       };
       togo.sep1 = true;
+      togo.asnncheck = {
+        value: false
+      };
+      // Set up global edit permissions for rendering move and remove widgets
+      asnn2.pageState.canEdit = true;
     }
     if (obj.graded === true) {
         togo.gradelink = {
@@ -116,7 +121,11 @@ asnn2.selectorMap = [
   { selector: ".sep2", id: "sep2"},
   { selector: ".opendatelabel", id: "opendatelabel" },
   { selector: ".duedatelabel", id: "duedatelabel" },
-  { selector: ".groupslabel", id: "groupslabel" }
+  { selector: ".groupslabel", id: "groupslabel" },
+  { selector: ".addlink", id: "addlink" },
+  { selector: ".addimage", id: "addimage" },
+  { selector: ".asnncheck", id: "asnncheck" },
+  { selector: "#checkall", id: "checkall"}
 ];
 
 asnn2.sortMap = [
@@ -135,7 +144,8 @@ asnn2.pageState = {
   sortby: "sortIndex",
   sortDir: -1,
   dataArray: [],
-  pageModel: {}
+  pageModel: {},
+  canEdit: false
 };
 
 /*
@@ -234,7 +244,7 @@ asnn2.reorderData = function (moved) {
   // exploring the built-in functionality/methods of JS data structures to find
   // a better way to do this part.
   return allIdIdx;
-}
+};
 
 /**
  * This sets up the drag'n'drop hopefully accessible reordering each time the list
@@ -247,7 +257,7 @@ asnn2.setupReordering = function () {
   var asnnsels = {};
   var afterMoveFunc = function(){};
   var allowReorder = true;
-  if (asnn2.pageState.sortDir !== -1 || asnn2.pageState.sortby !== 'sortIndex') {
+  if (asnn2.pageState.sortDir !== -1 || asnn2.pageState.sortby !== 'sortIndex' || asnn2.pageState.canEdit !== true) {
     allowReorder = false;
     asnnsels = {
       movables: ".row",
@@ -315,7 +325,7 @@ asnn2.getAsnnObj = function(val, prop) {
     }
   }
   return undefined;
-}
+};
 
 /*
  *  Set up inline edits
@@ -373,6 +383,14 @@ asnn2.renderAsnnList = function(asnndata) {
     "row:": dopple
   };
 
+  if (asnn2.pageState.canEdit === true) {
+    treedata.addimage = true;
+    treedata.addlink = true;
+    treedata.checkall = {
+      value: false
+    };
+  }
+
   if (asnn2.asnnListTemplate) {
     fluid.reRender(asnn2.asnnListTemplate, jQuery("#asnn-list"), treedata, {cutpoints: asnn2.selectorMap});
   }
@@ -415,6 +433,68 @@ asnn2.findPageSlice = function(pageModel) {
   return [start,end];
 };
 
+asnn2.setupRemoveDialog = function() {
+  /*
+   * Bind the remove button at the bottom of the screen.
+   * TODO: Put the confirmation dialog back in.
+   */
+
+  jQuery("#removebutton").show();
+
+  var removeDialog = jQuery('#remove-asnn-dialog');
+
+  jQuery("#removebutton").bind("click", function(e) {
+    var togo = "";
+    jQuery(".asnncheck").each(function (i) {
+      if (this.checked) {
+        var asnnid = $(".asnnid", this.parentNode.parentNode).text();
+        var obj = asnn2.getAsnnObj(asnnid);
+        if (obj.duetext) {
+          var duedate = obj.duetext;
+        }
+        else {
+          duedate = "";
+        }
+        if (obj.inAndNew) {
+          var subs = obj.inAndNew;
+        }
+        else if (obj.inAndNewLink) {
+          subs = obj.inAndNewLink.linktext;
+        }
+        togo = togo + "<tr><td>"+obj.title+"</td><td>"+duedate+"</td><td>"+subs+"</td></tr>";
+      }
+    });
+    jQuery("#asnn-to-delete").html(togo);
+    asnn2util.openDialog(removeDialog);
+  });
+
+  // The remove dialog
+  jQuery('#remove-asnn-button').click( function (event)  {
+    var toremove = [];
+    jQuery(".asnncheck").each(function (i) {
+      if (this.checked) {
+        var asnnid = $(".asnnid", this.parentNode.parentNode).text();
+        toremove.push("/direct/assignment2/"+asnnid);
+      }
+    });
+    jQuery.ajax({
+      type: "DELETE",
+      url: "/direct/batch.json?_refs="+toremove.toString()
+    });
+
+    //TODO Properly refire the pager with an updated model rather than just
+    // lazily reload the page.
+    asnn2util.closeDialog(removeDialog);
+    window.location.reload();
+
+  });
+
+  jQuery('#cancel-remove-asnn-button').click( function (event) {
+    asnn2util.closeDialog(removeDialog);
+    jQuery("#asnn-to-delete").html('');
+  });
+};
+
 /**
  * The master init function to be called at the bottom of the HTML page.
  */
@@ -427,66 +507,10 @@ asnn2.initAsnnList = function () {
 
   asnn2.setupSortLinks();
 
-  /*
-   * Bind the remove button at the bottom of the screen.
-   * TODO: Put the confirmation dialog back in.
-   */
-  var removeDialog = jQuery('#remove-asnn-dialog');
-
-  $("#removebutton").bind("click", function(e) {
-    var togo = "";
-    $(".asnncheck").each(function (i) {
-      if (this.checked) {
-        var asnnid = $(".asnnid", this.parentNode.parentNode).text();
-        var obj = asnn2.getAsnnObj(asnnid);
-        if (obj.duetext) {
-          var duedate = obj.duetext;
-        }
-        else {
-          var duedate = "";
-        }
-        if (obj.inAndNew) {
-          var subs = obj.inAndNew;
-        }
-        else if (obj.inAndNewLink) {
-          var subs = obj.inAndNewLink.linktext;
-        }
-        togo = togo + "<tr><td>"+obj.title+"</td><td>"+duedate+"</td><td>"+subs+"</td></tr>";
-      }
-    });
-    jQuery("#asnn-to-delete").html(togo);
-    asnn2util.openDialog(removeDialog);
-  });
-
-
-
-  // The remove dialog
-  jQuery('#remove-asnn-button').click( function (event)  {
-
-    var toremove = [];
-    $(".asnncheck").each(function (i) {
-      if (this.checked) {
-        var asnnid = $(".asnnid", this.parentNode.parentNode).text();
-        toremove.push(asnnid);
-        // TODO: Bulk these delete commands together
-        jQuery.ajax({
-          type: "DELETE",
-          url: "/direct/assignment2/"+asnnid+"/delete"
-        });
-
-      }
-    });
-
-    //TODO Properly refire the pager with an updated model
-    asnn2util.closeDialog(removeDialog);
-    window.location.reload();
-
-  });
-
-  jQuery('#cancel-remove-asnn-button').click( function (event) {
-    asnn2util.closeDialog(removeDialog);
-    jQuery("#asnn-to-delete").html('');
-  });
+  // Remove Dialog
+  if (asnn2.pageState.canEdit === true) {
+    asnn2.setupRemoveDialog();
+  }
 
 
   /*

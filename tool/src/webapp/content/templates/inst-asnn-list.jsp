@@ -62,25 +62,25 @@ String getDefaultPortalMatter() {
 
 <div class="pager-sort-area">
 <div id="asnn-list-area">
-    <ul id="pager-top" class="fl-pager-top flc-pager-top">
-      <li>
-        <ul class="pager-links flc-pager-links">
+    <div id="pager-top" class="fl-pager-top flc-pager-top">
+        <ul id="page-list" class="pager-links flc-pager-links">
           <li class="fl-pager-pageLink flc-pager-pageLink"><a href="#">1</a></li>
           <li class="flc-pager-pageLink-disabled">2</li>
           <li class="fl-pager-pageLink flc-pager-pageLink"><a href="#">3</a></li>
         </ul>
-      </li>
-      <li class="fl-pager-previous flc-pager-previous"><a href="#">&lt; previous</a></li>
-      <li class="fl-pager-next flc-pager-next"><a href="#">next &gt;</a></li>
-      <li>Show <span>
+      <p id="page-size">Show <span>
         <select class="flc-pager-page-size">
           <option value="5">5</option>
           <option value="10">10</option>
           <option value="20">20</option>
           <option value="50">50</option>
         </select></span> per page
-      </li>
-    </ul>
+      </p>
+      <p id="page-arrows">
+      <span class="fl-pager-previous flc-pager-previous"><a href="#">&lt; previous</a></span>
+      <span class="fl-pager-next flc-pager-next"><a href="#">next &gt;</a></span>
+      </p>
+    </div>
 </div>
 
 <div style="margin: 0; padding: 5px; border-top: solid 2px #cccccc;">
@@ -104,22 +104,22 @@ String getDefaultPortalMatter() {
           </th>
           <th class="asnn-decorated-cell">
             <span>Assignments</span>
-            <img src="/sakai-assignment2-tool/content/images/add.png" />
-            <a href="#" onclick="window.location = '/portal/tool/'+sakai.curPlacement+'/assignment'">
+            <img class="addimage" src="/sakai-assignment2-tool/content/images/add.png" />
+            <a class="addlink" href="#" onclick="window.location = '/portal/tool/'+sakai.curPlacement+'/assignment'">
             Add</a>
           </th>
           <th class="asnn-decorated-cell">
             <span>In/New</span>
           </th>
           <th class="asnn-decorated-cell">
-            <input id="checkall" type="checkbox" />
+            <input id="checkall" type="checkbox" checked="false"/>
           </th>
         </tr>
       </thead>
       <tbody id="asnn-list-body">
         <tr class="row">
           <td style="width: 40px"><img style="display:none" alt="Move Assignment" src="/sakai-assignment2-tool/content/images/4Arrows.png" class="movehandle" /></td>
-          <td class="asnn-decorated-cell"><p>
+          <td class="asnn-decorated-cell">
             <span style="display:none" class="asnnid">1</span>
             <span class="asnntitle">Audio Scriptwriting</span>
             <img class="attachments" src="/sakai-assignment2-tool/content/images/attach.png" />
@@ -127,18 +127,25 @@ String getDefaultPortalMatter() {
             <img class="needsAttention" src="/../../library/image/sakai/warn.gif"
             	alt="There is a problem with this assignment. For additional information, click Edit."
             	title="There is a problem with this assignment. For additional information, click Edit." />
-            <br/>
+            <div>
             <a href="" class="editlink">Edit</a>
+	    <span class="sep1"> | </span>
             <a href="" class="duplink">Duplicate</a>
+	    <span class="sep2"> | </span>
             <a href="" class="gradelink">Grade</a>
-            <br/>
+	    </div>
+	    <div>
 	    <span class="opendatelabel">Open: </span>
-            <span class="opendate">May 6, 2008 3:00 PM</span><br/>
+            <span class="opendate">May 6, 2008 3:00 PM</span>
+	    </div>
+	    <div>
 	    <span class="duedatelabel">Due: </span>
-            <span class="duedate">May 13, 2008 3:00 PM</span><br/>
+            <span class="duedate">May 13, 2008 3:00 PM</span>
+	    </div>
+	    <div>
 	    <span class="groupslabel">Restricted To: </span>
             <span class="groups">Red Cohort, Yellow Cohort</span>
-            </p>
+	    </div>
           </td>
           <td class="asnn-decorated-cell">
             <span class="inAndNew">8/4</span>
@@ -150,7 +157,7 @@ String getDefaultPortalMatter() {
       </tbody>
     </table>
 
-    <input type="button" value="Remove" id="removebutton" />
+    <input style="display: none" type="button" value="Remove" id="removebutton" />
 
     <!-- This is the template for the Confirm Asnn Remove Dialog. -->
 	<div id="remove-asnn-dialog" style="display:none">
