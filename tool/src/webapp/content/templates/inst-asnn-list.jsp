@@ -85,12 +85,12 @@ String getDefaultPortalMatter() {
 
 <div style="margin: 0; padding: 5px; border-top: solid 2px #cccccc;">
     <span class="sortbylabel">Sorted by:</span><ul class="sort-bar">
-      <li class="sort-item"><a href="#" id="titlesort">Title</a> |</li>
+      <li class="sort-item"><a href="#" class="titlesort">Title</a> |</li>
       <!-- <li class="sort-item">Restricted To |</li> -->
-      <li class="sort-item"><a href="#" id="opendatesort">Open Date</a> |</li>
-      <li class="sort-item"><a href="#" id="duedatesort">Due Date</a> |</li>
+      <li class="sort-item"><a href="#" class="opendatesort">Open Date</a> |</li>
+      <li class="sort-item"><a href="#" class="duedatesort">Due Date</a> |</li>
       <li class="sort-item">
-        <a href="#" id="instsort">Instructor Specified Order</a>
+        <a href="#" class="instsort">Instructor Specified Order</a>
         <img src="/library/image/sakai/sortascending.gif" />
       </li>
     </ul>
@@ -158,6 +158,38 @@ String getDefaultPortalMatter() {
     </table>
 
     <input style="display: none" type="button" value="Remove" id="removebutton" />
+
+  <div class="pager-sort-area">
+<div >
+    <div id="pager-bottom" class="fl-pager-bottom flc-pager-bottom">
+        <ul id="page-list-bottom" class="pager-links flc-pager-links">
+          <li class="fl-pager-pageLink flc-pager-pageLink"><a href="#">1</a></li>
+          <li class="flc-pager-pageLink-disabled">2</li>
+          <li class="fl-pager-pageLink flc-pager-pageLink"><a href="#">3</a></li>
+        </ul>
+      <p id="page-size-bottom">
+	<span class="flc-pager-summary">1-10 of 500 items</span>
+      </p>
+      <p id="page-arrows-bottom">
+      <span class="fl-pager-previous flc-pager-previous"><a href="#">&lt; previous</a></span>
+      <span class="fl-pager-next flc-pager-next"><a href="#">next &gt;</a></span>
+      </p>
+    </div>
+</div>
+
+<div style="margin: 0; padding: 5px; border-top: solid 2px #cccccc;">
+    <span class="sortbylabel">Sorted by:</span><ul class="sort-bar">
+      <li class="sort-item"><a href="#" class="titlesort">Title</a> |</li>
+      <!-- <li class="sort-item">Restricted To |</li> -->
+      <li class="sort-item"><a href="#" class="opendatesort">Open Date</a> |</li>
+      <li class="sort-item"><a href="#" class="duedatesort">Due Date</a> |</li>
+      <li class="sort-item">
+        <a href="#" class="instsort">Instructor Specified Order</a>
+        <img src="/library/image/sakai/sortascending.gif" />
+      </li>
+    </ul>
+</div>
+</div> <!-- end pager-sort-area -->
 
     <!-- This is the template for the Confirm Asnn Remove Dialog. -->
 	<div id="remove-asnn-dialog" style="display:none">

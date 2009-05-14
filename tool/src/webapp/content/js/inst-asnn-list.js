@@ -129,10 +129,10 @@ asnn2.selectorMap = [
 ];
 
 asnn2.sortMap = [
-  { selector: "#titlesort", property: "title" },
-  { selector: "#opendatesort", property: "openDate" },
-  { selector: "#duedatesort", property: "dueDate" },
-  { selector: "#instsort", property: "sortIndex" }
+  { selector: ".titlesort", property: "title" },
+  { selector: ".opendatesort", property: "openDate" },
+  { selector: ".duedatesort", property: "dueDate" },
+  { selector: ".instsort", property: "sortIndex" }
 ];
 
 /*
@@ -146,6 +146,10 @@ asnn2.pageState = {
   dataArray: [],
   pageModel: {},
   canEdit: false
+};
+
+asnn2.updateSortLinks = function() {
+
 };
 
 /*
@@ -177,14 +181,17 @@ asnn2.setupSortLinks = function() {
           return a === b? 0 : ( a > b? -asnn2.pageState.sortDir : asnn2.pageState.sortDir);
         });
 
-        jQuery("img", this.parentNode.parentNode).remove();
+        var newsortclass = jQuery(this).attr('class');
+        jQuery("."+newsortclass).each(function () {
+          jQuery("img", this.parentNode.parentNode).remove();
 
-        if (asnn2.pageState.sortDir < 0) {
-          jQuery(this).after('<img src="/library/image/sakai/sortascending.gif" />');
-        }
-        else {
-          jQuery(this).after('<img src="/library/image/sakai/sortdescending.gif" />');
-        }
+          if (asnn2.pageState.sortDir < 0) {
+            jQuery(this).after('<img src="/library/image/sakai/sortascending.gif" />');
+          }
+          else {
+            jQuery(this).after('<img src="/library/image/sakai/sortdescending.gif" />');
+          }
+        });
 
         asnn2.renderAsnnListPage();
       };
@@ -522,7 +529,8 @@ asnn2.initAsnnList = function () {
     fakedata.push(i);
   }
 
-  var pager = fluid.pager("#asnn-list-area", {
+  //var pager = fluid.pager("#asnn-list-area", {
+  var pager = fluid.pager("body", {
     listeners: {
       onModelChange: function (newModel, oldModel) {
         // We need to store the pageModel so that the Sorting links can use it when they need

@@ -23,11 +23,11 @@
   padding: 0;
 }
 
-#pager-top {
+#pager-top, #pager-bottom {
   padding: 10px;
 }
 
-#page-list {
+#page-list, #page-list-bottom {
   text-align: left;
   width: 20%;
   float: left;
@@ -35,19 +35,36 @@
   margin: 0;
 }
 
-#page-arrows {
+#page-arrows, #page-arrows-bottom {
   text-align: center;
   padding: 0;
   margin: 0;
 }
 
-#page-size {
+#page-size, #page-size-bottom {
   text-align: right;
   width: 20%;
   float: right;
   padding: 0;
   margin: 0;
 }
+
+/* Reordering */
+/*
+.fl-reorderer-movable-dragging {
+  width: 50px;
+  height: 50px;
+  background-color: black;
+  display: block;
+}
+
+.fl-reorderer-movable-avatar {
+  display: block;
+  width: 50px;
+  height: 50px;
+  background-color: black;
+}
+*/
 
 /*
  *  These are for the cells like have borders or other decoration and show
