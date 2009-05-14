@@ -215,7 +215,7 @@ asnn2.setupSortLinks = function() {
  */
 
 asnn2.setupRemoveCheckboxes = function () {
-  $("#checkall").bind("change", function(e) {
+  $("#checkall").bind("click", function(e) {
     $(".asnncheck").each(function (i) {
       this.checked = e.currentTarget.checked;
     });
