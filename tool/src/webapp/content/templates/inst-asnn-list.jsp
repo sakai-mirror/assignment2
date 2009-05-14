@@ -157,7 +157,9 @@ String getDefaultPortalMatter() {
       </tbody>
     </table>
 
-    <input style="display: none" type="button" value="Remove" id="removebutton" />
+    <div style="text-align: right; width: 90%; margin: 20px">
+      <input style="display: none" type="button" value="Remove" id="removebutton" />
+    </div>
 
   <div class="pager-sort-area">
 <div >
