@@ -118,7 +118,9 @@ asnn2.selectorMap = [
   { selector: ".sep2", id: "sep2"},
   { selector: ".opendatelabel", id: "opendatelabel" },
   { selector: ".duedatelabel", id: "duedatelabel" },
-  { selector: ".groupslabel", id: "groupslabel" }
+  { selector: ".groupslabel", id: "groupslabel" },
+  { selector: ".addlink", id: "addlink" },
+  { selector: ".addimage", id: "addimage" }
 ];
 
 asnn2.sortMap = [
@@ -375,6 +377,11 @@ asnn2.renderAsnnList = function(asnndata) {
   var treedata = {
     "row:": dopple
   };
+
+  if (asnn2.pageState.canEdit === true) {
+    treedata.addimage = true;
+    treedata.addlink = true;
+  }
 
   if (asnn2.asnnListTemplate) {
     fluid.reRender(asnn2.asnnListTemplate, jQuery("#asnn-list"), treedata, {cutpoints: asnn2.selectorMap});

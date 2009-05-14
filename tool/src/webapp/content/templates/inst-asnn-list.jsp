@@ -104,8 +104,8 @@ String getDefaultPortalMatter() {
           </th>
           <th class="asnn-decorated-cell">
             <span>Assignments</span>
-            <img src="/sakai-assignment2-tool/content/images/add.png" />
-            <a href="#" onclick="window.location = '/portal/tool/'+sakai.curPlacement+'/assignment'">
+            <img class="addimage" src="/sakai-assignment2-tool/content/images/add.png" />
+            <a class="addlink" href="#" onclick="window.location = '/portal/tool/'+sakai.curPlacement+'/assignment'">
             Add</a>
           </th>
           <th class="asnn-decorated-cell">
