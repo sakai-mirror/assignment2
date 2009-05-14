@@ -48,6 +48,8 @@ asnn2.getAsnnCompData = function () {
         linktext: "Duplicate"
       };
       togo.sep1 = true;
+      // Set up global edit permissions for rendering move and remove widgets
+      asnn2.pageState.canEdit = true;
     }
     if (obj.graded === true) {
         togo.gradelink = {
@@ -135,7 +137,8 @@ asnn2.pageState = {
   sortby: "sortIndex",
   sortDir: -1,
   dataArray: [],
-  pageModel: {}
+  pageModel: {},
+  canEdit: false
 };
 
 /*
@@ -247,7 +250,7 @@ asnn2.setupReordering = function () {
   var asnnsels = {};
   var afterMoveFunc = function(){};
   var allowReorder = true;
-  if (asnn2.pageState.sortDir !== -1 || asnn2.pageState.sortby !== 'sortIndex') {
+  if (asnn2.pageState.sortDir !== -1 || asnn2.pageState.sortby !== 'sortIndex' || asnn2.pageState.canEdit !== true) {
     allowReorder = false;
     asnnsels = {
       movables: ".row",
