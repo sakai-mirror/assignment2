@@ -62,25 +62,25 @@ String getDefaultPortalMatter() {
 
 <div class="pager-sort-area">
 <div id="asnn-list-area">
-    <ul id="pager-top" class="fl-pager-top flc-pager-top">
-      <li>
-        <ul class="pager-links flc-pager-links">
+    <div id="pager-top" class="fl-pager-top flc-pager-top">
+        <ul id="page-list" class="pager-links flc-pager-links">
           <li class="fl-pager-pageLink flc-pager-pageLink"><a href="#">1</a></li>
           <li class="flc-pager-pageLink-disabled">2</li>
           <li class="fl-pager-pageLink flc-pager-pageLink"><a href="#">3</a></li>
         </ul>
-      </li>
-      <li class="fl-pager-previous flc-pager-previous"><a href="#">&lt; previous</a></li>
-      <li class="fl-pager-next flc-pager-next"><a href="#">next &gt;</a></li>
-      <li>Show <span>
+      <p id="page-size">Show <span>
         <select class="flc-pager-page-size">
           <option value="5">5</option>
           <option value="10">10</option>
           <option value="20">20</option>
           <option value="50">50</option>
         </select></span> per page
-      </li>
-    </ul>
+      </p>
+      <p id="page-arrows">
+      <span class="fl-pager-previous flc-pager-previous"><a href="#">&lt; previous</a></span>
+      <span class="fl-pager-next flc-pager-next"><a href="#">next &gt;</a></span>
+      </p>
+    </div>
 </div>
 
 <div style="margin: 0; padding: 5px; border-top: solid 2px #cccccc;">
