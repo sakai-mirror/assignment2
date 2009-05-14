@@ -48,6 +48,9 @@ asnn2.getAsnnCompData = function () {
         linktext: "Duplicate"
       };
       togo.sep1 = true;
+      togo.asnncheck = {
+        value: false
+      };
       // Set up global edit permissions for rendering move and remove widgets
       asnn2.pageState.canEdit = true;
     }
@@ -120,7 +123,9 @@ asnn2.selectorMap = [
   { selector: ".duedatelabel", id: "duedatelabel" },
   { selector: ".groupslabel", id: "groupslabel" },
   { selector: ".addlink", id: "addlink" },
-  { selector: ".addimage", id: "addimage" }
+  { selector: ".addimage", id: "addimage" },
+  { selector: ".asnncheck", id: "asnncheck" },
+  { selector: "#checkall", id: "checkall"}
 ];
 
 asnn2.sortMap = [
@@ -381,6 +386,9 @@ asnn2.renderAsnnList = function(asnndata) {
   if (asnn2.pageState.canEdit === true) {
     treedata.addimage = true;
     treedata.addlink = true;
+    treedata.checkall = {
+      value: false
+    };
   }
 
   if (asnn2.asnnListTemplate) {

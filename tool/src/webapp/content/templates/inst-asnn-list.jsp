@@ -112,7 +112,7 @@ String getDefaultPortalMatter() {
             <span>In/New</span>
           </th>
           <th class="asnn-decorated-cell">
-            <input id="checkall" type="checkbox" />
+            <input id="checkall" type="checkbox" checked="false"/>
           </th>
         </tr>
       </thead>
