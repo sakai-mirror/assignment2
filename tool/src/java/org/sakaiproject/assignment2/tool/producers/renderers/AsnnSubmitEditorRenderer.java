@@ -119,10 +119,6 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
      * @param asvOTP
      */
     public void fillComponents(UIContainer parent, String clientID, AssignmentSubmission assignmentSubmission, boolean preview, boolean studentPreviewSubmission) {
-        // Various Widgets we may need to decorate later.
-        UICommand submit_button = null;
-        UICommand preview_button = null;
-        UICommand save_button = null;
         
         Assignment2 assignment = assignmentSubmission.getAssignment();
         
@@ -238,32 +234,31 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
          * According to the spec, if a student is editing a submision they will
          * see the Submit,Preview, and Save&Exit buttons.  If they are previewing
          * a submission they will see Submit,Edit, and Save&Exit.
+         * Don't display the buttons at all if this is the instructor preview
          */
+        if (!preview) {
+            UIOutput.make(form, "submit_section");
+        }
         
-        if (studentPreviewSubmission) {
-            submit_button = UICommand.make(form, "submit_button", UIMessage.make("assignment2.student-submit.submit"), 
+        if (preview) {
+            // don't display the buttons
+        } else if (studentPreviewSubmission) {
+            UICommand.make(form, "submit_button", UIMessage.make("assignment2.student-submit.submit"), 
             "StudentSubmissionBean.processActionSubmit");
-            save_button = UICommand.make(form, "save_draft_button", UIMessage.make("assignment2.student-submit.save_draft"), 
+            UICommand.make(form, "save_draft_button", UIMessage.make("assignment2.student-submit.save_draft"), 
             "StudentSubmissionBean.processActionSaveDraft");
             UICommand edit_button = UICommand.make(form, "back_to_edit_button", UIMessage.make("assignment2.student-submit.back_to_edit"),
             "StudentSubmissionBean.processActionBackToEdit");
             //edit_button.addParameter(new UIELBinding(asvOTP + ".submittedText", hackSubmissionText));
         } else {
-            submit_button = UICommand.make(form, "submit_button", UIMessage.make("assignment2.student-submit.submit"), 
+            UICommand.make(form, "submit_button", UIMessage.make("assignment2.student-submit.submit"), 
                 "StudentSubmissionBean.processActionSubmit");
-            preview_button = UICommand.make(form, "preview_button", UIMessage.make("assignment2.student-submit.preview"), 
+            UICommand.make(form, "preview_button", UIMessage.make("assignment2.student-submit.preview"), 
                 "StudentSubmissionBean.processActionPreview");
-            save_button = UICommand.make(form, "save_draft_button", UIMessage.make("assignment2.student-submit.save_draft"), 
+            UICommand.make(form, "save_draft_button", UIMessage.make("assignment2.student-submit.save_draft"), 
                 "StudentSubmissionBean.processActionSaveDraft");
             UICommand.make(form, "cancel_button", UIMessage.make("assignment2.student-submit.cancel"), 
             "StudentSubmissionBean.processActionCancel");
-        }
-
-        if (preview) {
-            submit_button.decorators = disabledDecoratorList;
-            preview_button.decorators = disabledDecoratorList;
-            save_button.decorators = disabledDecoratorList;
-            //cancel_button.decorators = disabledDecoratorList;
         }
         
         /* 
