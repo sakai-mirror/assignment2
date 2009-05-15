@@ -1,0 +1,182 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns:rsf="http://ponder.org.uk/rsf" xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+
+   <title rsf:id="msg=assignment2.title">Assignments</title>
+    <link href="/library/skin/tool_base.css" type="text/css" rel="stylesheet" media="all"/>
+    <link href="/library/skin/default/tool.css" type="text/css" rel="stylesheet" media="all"/>
+	<link href="/sakai-assignment2-tool/content/css/assignmentsv4.css" type="text/css" rel="stylesheet" media="all" />
+</head>
+
+<body>
+<!--  everything outside of rsf:id="page:" is set in Layout.html using outerPageTemplates -->
+
+<div rsf:id="page:" class="portletBody">
+
+	<ul class="breadCrumb">
+		<li><a rsf:id="breadcrumb">Assignment List</a></li>
+		<li rsf:id="last_breadcrumb" class="lastCrumb">Submissions for "{0}"</li>
+	</ul>
+
+	<div class="generalErrors">
+		<ul rsf:id="message-for:*" style="margin:0px;">
+			<li>Message for user here</li>
+		</ul>
+	</div>
+	
+		<p rsf:id="no_gb_item" class="alertMessage">Gb item deleted!</p>
+		<p rsf:id="deleted_group" class="alertMessage">Group deleted!</p>
+	
+		<ul class="navIntraTool" rsf:id="navIntraTool">
+			<li rsf:id="release_grades_li">
+				<a rsf:id="release_grades_link">Release Grades</a>
+				<form rsf:id="release_grades_form" style="display: none;">
+				    <input id="release_grades" rsf:id="release_grades" type="submit" />
+				</form>
+				<span rsf:id="release_grades_sep" id="release_grades_sep" class="separator"></span>
+			</li>
+			<li>
+				<a href="" rsf:id="release-feedback-link">Release All Feedback</a>
+				<form rsf:id="release-feedback-form" style="display: none;">
+				    <input id="release_feedback" rsf:id="release_feedback" type="submit" />
+				</form>
+				<span rsf:id="release_feedback_disabled" class="inactive">Release All Feedback</span>
+				<span rsf:id="release_feedback_sep" id="release_feedback_sep" class="separator"></span>
+			</li>
+			<li>
+				<a rsf:id="downloadall">Download All</a>
+				<span rsf:id="downloadall_disabled" class="inactive">Download All</span>
+				<span rsf:id="downloadall_sep" id="downloadall_sep" class="separator"></span>
+			</li>
+			<li> 
+				<a rsf:id="uploadall">Upload All</a>
+			</li>
+		</ul>
+	
+	<br />
+
+	<!-- The view by sections filter -->
+	<div class="viewFilter">
+        
+
+	    <div class="groupFilterContainer">
+        	<form rsf:id="group_filter_form" method="get">
+                <label rsf:id="msg=assignment2.assignment_grade.filter.label" for="group_filter">View</label>
+                <select rsf:id="group_filter" id="group_filter" onchange="this.form.submit();">
+                </select>
+        	</form>
+    	</div>
+    	
+        <div rsf:id="pagerDiv:"></div>
+
+	</div>
+	
+	<table class="listHier lines nolines" cellpadding="0" cellspacing="0" id="sortable"> 
+		<tr> 
+			<th rsf:id="tableheader.student:"></th>
+			<th rsf:id="tableheader.submitted:"></th>
+			<th rsf:id="tableheader.status:"></th>
+			<th rsf:id="tableheader.grade:"></th>
+			<th rsf:id="tableheader.released:"></th>
+		</tr>
+
+		<tr rsf:id="row:"> 
+			<td><a rsf:id="row_grade_link" class="name">Student Name</a></td>
+			<td rsf:id="row_submitted" class="submitDate">&nbsp;</td>
+			<td rsf:id="row_status" class="status">Ungraded</td>
+			<td rsf:id="row_grade" class="grade">&nbsp;</td>
+			<td><img rsf:id="row_released" src="/sakai-assignment2-tool/content/images/check.png" width="16" height="16" border="0" /></td>
+			<td class="skip">
+				<span class="released"></span>
+			</td>
+		</tr>
+
+	</table>
+	<form rsf:id="unassigned-apply-form" method="post">
+	    <div id="unassigned-apply">
+    		<p rsf:id="msg=assignment2.assignment_grade.assigntoall">Apply to all unassigned</p>
+    		<p>
+    			<input rsf:id="new-grade-value" type="text" size="4" value="0" />
+    			<input rsf:id="apply-button" type="submit" value="Apply" />
+    		</p>
+		</div>
+	</form>
+	
+	<div style="display:none" id="release-feedback-dialog">
+	    	<h3 rsf:id="msg=assignment2.dialogs.release_all_feedback.title">Title for Release Feedback</h3>
+        <ul class="ui-dialog-msg-list">
+            <li rsf:id="msg=assignment2.dialogs.release_all_feedback.message" class="alertMessage">Are you sure you want to release all student feedback?</li>
+        </ul>
+        <fieldset class="submit">
+            <input id="" rsf:id="release-feedback-confirm" accesskey="s" type="button" class="active" value="Yes, Continue"/>
+            <input id="" rsf:id="release-feedback-cancel" accesskey="x" type="button" value="No, Return to Assignment"/>
+        </fieldset>
+    </div>
+	
+	<div style="display:none" id="retract-feedback-dialog">
+	    	<h3 rsf:id="msg=assignment2.dialogs.retract_all_feedback.title">Title for Retract Feedback</h3>
+        <ul class="ui-dialog-msg-list">
+            <li rsf:id="msg=assignment2.dialogs.retract_all_feedback.message" class="alertMessage">Are you sure you want to release all student feedback?</li>
+        </ul>
+        <fieldset class="submit">
+            <input id="" rsf:id="retract-feedback-confirm" accesskey="s" type="button" class="active" value="Yes, Continue"/>
+            <input id="" rsf:id="retract-feedback-cancel" accesskey="x" type="button" value="No, Return to Assignment"/>
+        </fieldset>
+    </div>
+    
+    <div style="display:none" id="release-grades-dialog">
+        <h3 rsf:id="release-grades-title">Title for Release Grades</h3>
+        <ul class="ui-dialog-msg-list">
+            <li rsf:id="release-grades-message" class="alertMessage">Are you sure you want to release all student grades?</li>
+        </ul>
+        
+        <div rsf:id="release-grades-counted">
+	        <input id="release-and-count" type="checkbox" />
+					<label for="release-and-count" rsf:id="msg=assignment2.dialogs.release_grades.include_in_course_grade"> Include in Course Grade?</label>
+				</div>
+        
+        <p id="checkbox-error" rsf:id="msg=assignment2.dialogs.retract_grades.groups.confirmcheckbox.error" style="display:none;" class="alertMessage">You must select the checkbox to continue!</p>
+        
+        <div rsf:id="confirm-checkbox-area">
+            <input type="checkbox" id="confirm-checkbox"/>
+            <label rsf:id="confirm-checkbox-label" for="confirm-checkbox">Yes, release the grades for all students in the site</label>
+        </div>
+
+        <fieldset class="submit">
+            <input id="" rsf:id="release-grades-confirm" accesskey="s" type="button" class="active" value="Release All Grades"/>
+            <input id="" rsf:id="release-grades-cancel" accesskey="x" type="button" value="Cancel"/>
+        </fieldset>
+    </div>
+    	
+	
+	
+	<script type="text/javascript" rsf:id="defaultSortBy">
+		defaultSortBy="name"; //done via producer
+	</script>
+<script type="text/javascript">
+//<![CDATA[
+function slide_details(img){
+	jQuery('#assignment_details').toggle();
+	if(img.src.match('collapse')){
+		img.src=img.src.replace(/collapse/, 'expand');
+	}else{
+		img.src=img.src.replace(/expand/, 'collapse');
+	}
+	a2SetMainFrameHeight();
+}
+//]]>
+</script>
+<script type="text/javascript">
+//<![CDATA[
+jQuery(document).ready(function(){
+  // Init position of the Apply to Unassigned grading feature
+    asnn2.alignGrading();
+
+});
+//]]>
+</script>
+	</div>
+</body>
+</html>

@@ -1,0 +1,198 @@
+<div>
+
+<!--                                                                         -->
+<!--     Assignment Submission Detail Headers Widget                         -->
+<!--                                                                         -->
+<div rsf:id="assn2-submission-details-widget:">
+    <h3 rsf:id="heading_status" >
+        Professional Writing for Visual Media Submission for Earlene Arledge
+    </h3>
+    
+	<p class="subheading" rsf:id="due_date">DUE: 09 23, 2008 4:00pm or No due date</p>
+	
+	<p class="alertMessage" rsf:id="submission_closed">Submission is closed</p>
+	
+	<h3 rsf:id="assignment-details-header">Assignment Details</h3>
+
+	<table rsf:id="assignment-details-table" class="itemSummary infoTable" cellspacing="0" summary="Assignment Details">
+		<tr>
+			<th rsf:id="msg=assignment2.student-submit.open_date">Open</th>	
+			<td rsf:id="open-date"></td>
+		</tr>
+		<tr>
+			<th rsf:id="msg=assignment2.student-submit.is_graded_title">Graded?</th>	
+			<td rsf:id="is_graded"></td>
+		</tr>
+		<tr rsf:id="points-possible-row">
+			<th rsf:id="msg=assignment2.student-submit.points_possible_title">Points Possible</th>	
+			<td rsf:id="points-possible">25</td>
+		</tr>
+		<tr rsf:id="resubmission-allowed-row">
+			<th rsf:id="msg=assignment2.student-submit.resubmissions_allowed_title">Resubmissions Allowed</th>	
+			<td rsf:id="resubmissions-allowed"></td>
+		</tr>
+		<tr rsf:id="remaining-resubmissions-row">
+			<th rsf:id="msg=assignment2.student-submit.remaining_resubmissions_allowed_title">Remaining Resubmissions Allowed</th>	
+			<td rsf:id="remaining-resubmissions"></td>
+		</tr>
+		<tr rsf:id="grade-row">
+			<th rsf:id="msg=assignment2.student-submit.grade_title">Grade</th>	
+			<td rsf:id="grade"></td>
+		</tr>
+		<tr rsf:id="comment-row">
+			<th rsf:id="msg=assignment2.student-submit.comments_title">Comments</th>	
+			<td rsf:id="comment"></td>
+		</tr>
+	</table>
+</div>
+
+
+
+<!--                                                                         -->
+<!--     Assignment Instructions Widget                                      -->
+<!--                                                                         -->
+<div rsf:id="assn2-assignment-instructions-widget:">
+    <h4 rsf:id="msg=assignment2.student-submit.instructions_heading">Instructions</h4>
+    <div rsf:id="instructions" class="textPanel"><p>Instructions would go here.</p></div>
+    <h4 rsf:id="attachments-header">Supporting Materials</h4>
+    <ul class="attachList indnt1">
+        <li rsf:id="attachment_list:">
+            <img src="page_white_word.png" width="16" height="16"/><a href="">ExampleAttachment.doc</a> (52 KB)
+        </li>
+    </ul>
+</div>
+
+<!--                                                                         -->
+<!--     Assignment Submission History Display Widget                        -->
+<!--                                                                         -->
+<div rsf:id="asnn2-submission-history-widget:" class="versionHistory">
+		
+		<h3 id="submissions-header" rsf:id="submissions-header">
+			<img rsf:id="history_toggle" src="/sakai-assignment2-tool/content/images/collapse.png" border="0" style="cursor:pointer" />
+		    <span rsf:id="msg=assignment2.student-submission.history.header">Previous Submissions</span>
+		</h3>
+		<div id="multiple-submissions" rsf:id="multiple-submissions">
+		    <div class="versionEntry" id="submission-version:" rsf:id="submission-version:">
+		        <h3>
+		          <img rsf:id="submission_toggle" src="/sakai-assignment2-tool/content/images/expand.png" border="0" style="cursor:pointer" />
+		          <span rsf:id="header-text">Blah blah</span>
+		          <img rsf:id="new-feedback-img" src="/library/image/silk/email.png" />
+		          <img rsf:id="open-feedback-img" src="/library/image/silk/email_open.png" />
+		        </h3>
+		        <div rsf:id="submission-entry:">
+		          <!-- The rendered submission goes here. -->
+		        </div>
+		        <script rsf:id="jsinit" type="text/javascript">
+					
+		        </script>
+		    </div>
+		</div>
+</div>
+
+<!--                                                                         -->
+<!--     Assignment Submission Version Display Widget                        -->
+<!--                                                                         -->
+<div rsf:id="asnn2-submission-version-widget:">
+    <h3 rsf:id="submission-header" >Assignment Submission</h3>
+    <h4 rsf:id="submission-text-header">Submission Text</h4>
+    <div rsf:id="submission-text" class="textPanel">
+        <p>This is the students submission text,
+           possibly annotated by the instructor.
+        </p>
+    </div>
+    <h4 rsf:id="submission-attachments-header">Supporting Materials</h4>
+    <ul class="attachList indnt1">
+        <li rsf:id="submission-attachment-list:">
+            <img src="page_white_word.png" width="16" height="16"/><a href="">ExampleAttachment.doc</a> (52 KB)
+        </li>
+    </ul>
+    <span rsf:id="no_submitted_attachments" class="instruction">No attachments yet</span>
+    
+    <h4 rsf:id="feedback-header:">Instructor Feedback</h4>
+    <div rsf:id="feedback-text" class="textPanel">
+        <p>Feedback from the instructor.</p>
+    </div>
+    <h4 rsf:id="feedback-attachments-header">Feedback Supporting Materials</h4>
+    <ul class="attachList indnt1">
+        <li rsf:id="feedback-attachment-list:">
+            <img src="page_white_word.png" width="16" height="16"/><a href="">ExampleAttachment.doc</a> (52 KB)
+        </li>
+    </ul>
+</div>
+
+<!--                                                                         -->
+<!--     Student Submission Editor                                           -->
+<!--                                                                         -->
+<div rsf:id="asnn2-submit-editor-widget:">
+	<form rsf:id="form" method="post">
+	<h3 rsf:id="msg=assignment2.student-submit.assignment_submission">Assignment Submission</h3>
+	<p class="instruction" rsf:id="submission_instructions">Submission Instructions</p>
+	<p rsf:id="required" class="instruction">An * means required.</p>
+	<fieldset rsf:id="submit_text">
+		<legend rsf:id="msg=assignment2.student-submit.submission_text">Assignment Text</legend>
+		<div rsf:id="text:" >		        
+		    <textarea id="sub_text" rsf:id="text_disabled" name="something" cols="80" rows="20" wrap="virtual"></textarea>
+			<!-- this should be the FCKEditor -->
+		</div>
+	</fieldset>
+	
+	<div rsf:id="submit_attachments">
+	<fieldset id="attachmentsFieldset">
+		<legend rsf:id="msg=assignment2.student-submit.attachments">Attachments</legend>
+		<ol class="fragment-attachments-container" rsf:id="attachment_list:">
+			<li></li>
+		</ol>
+		<span><a rsf:id="add_submission_attachments" class="thickbox">Add Attachments</a></span>
+	</fieldset>
+	</div>
+	
+	<!-- this is feedback supplied for the draft version -->
+	<div rsf:id="draft-feedback">
+			<h3 rsf:id="msg=assignment2.student-submission.feedback.header">My Feedback</h3>
+			<h4 rsf:id="msg=assignment2.student-submission.feedback.notes.header">Instructor Feedback</h4>
+        <div rsf:id="draft-feedback-text" class="textPanel">
+            <p>Feedback from the instructor.</p>
+        </div>
+        <h4 rsf:id="draft-feedback-attachments-header">Feedback Supporting Materials</h4>
+        <ul class="attachList indnt1">
+            <li rsf:id="draft-feedback-attachment-list:">
+                <img src="page_white_word.png" width="16" height="16"/><a href="">ExampleAttachment.doc</a> (52 KB)
+            </li>
+        </ul>
+    </div>
+    
+	<fieldset rsf:id="honor_pledge_fieldset" >
+		<legend rsf:id="msg=assignment2.student-submit.honor_pledge">Honor Pledge</legend>
+		<ol>
+			<li>
+				<span rsf:id="msg=assignment2.req_star" class="reqStar">*</span>
+				<input type="checkbox" rsf:id="honor_pledge" id="honor_pledge" />
+				<label for="honor_pledge" rsf:id="honor_pledge_label">I have neither given nor received aid on this assignment.</label>
+		        <span class="alertMessageInline" style="display: none;" id="honor_pledge_error" rsf:id="msg=assignment2.student-submit.error.honor_pledge_required">You must agree to the honor code!</span>
+			</li>
+		</ol>
+	</fieldset>
+	<fieldset rsf:id="submit_section" class="submit">
+		<input type="hidden" rsf:id="submitted_text_for_attach_only" />
+		<input rsf:id="submit_button"  accesskey="s" type="submit" class="active" value="Submit!" onclick="return asnn2.studentSubmissionConfirm(this);" />
+		<input rsf:id="back_to_edit_button" type="submit" value="Edit!" />
+		<!-- <input rsf:id="preview_button" title="Preview Submission" accesskey="v" type="button" class="preview_button thickbox" value="Preview"/> -->
+		<input rsf:id="preview_button" accesskey="v" type="submit" value="Preview!"/>
+		<input rsf:id="save_draft_button" accesskey="d" type="submit" value="Save Draft!"/>
+		<input rsf:id="cancel_button" accesskey="x" type="submit" value="Cancel!"/>
+	</fieldset>													
+	</form>	
+	
+	<div style="display:none" id="submit-confirm-dialog">
+        <ul style="margin:0;padding:0;display:inline;">
+            <li class="alertMessageInline" rsf:id="msg=assignment2.student-submit.confirm.msg">Are you sure you want to submit this?!!</li>
+        </ul>
+        <fieldset class="submit">
+            <input id="submission-confirm-button" accesskey="s" type="button" class="active" rsf:id="msg=assignment2.student-submit.confirm.continue"/>
+            <input id="submission-cancel-button" accesskey="x" type="button" rsf:id="msg=assignment2.student-submit.confirm.cancel"/>
+        </fieldset>
+    </div>
+</div>
+
+
+</div>

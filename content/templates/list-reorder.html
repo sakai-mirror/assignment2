@@ -1,0 +1,177 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns:rsf="http://ponder.org.uk/rsf" xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+
+   <title rsf:id="page-title">Assignments</title>
+
+	<script type="text/javascript" src="/library/editor/FCKeditor/fckeditor.js"></script> 
+
+	<link href="/library/skin/tool_base.css" type="text/css" rel="stylesheet" media="all"/>
+    <link href="/library/skin/default/tool.css" type="text/css" rel="stylesheet" media="all"/>
+    <script type="text/javascript" language="JavaScript" src="/library/js/jquery.js"></script>
+    <script type="text/javascript" language="JavaScript" src="/sakai-assignment2-tool/content/js/interface.js"></script>
+    <script type="text/javascript" language="JavaScript" src="/sakai-assignment2-tool/content/js/assignment_list-reorder-functions.js"></script>
+    <script type="text/javascript" language="JavaScript" src="/library/js/headscripts.js"></script>
+	<link href="/sakai-assignment2-tool/content/css/assignmentsv4.css" type="text/css" rel="stylesheet" media="all" />
+
+
+</head>
+
+<body>
+
+<div rsf:id="page:" class="portletBody">
+
+<script type="text/javascript" src="/sakai-assignment2-tool/content/js/ui.core.js"></script>
+	<script type="text/javascript" src="/sakai-assignment2-tool/content/js/ui.draggable.js"></script>
+	<script type="text/javascript" src="/sakai-assignment2-tool/content/js/ui.sortable.js"></script>
+
+<style type="text/css">
+   table#reorder {
+      width: 95%;
+   }
+   table#reorder tr td, 
+   table#reorder tr {
+      border: none;
+   }
+   table#reorder tr:hover {
+      background-color: #fff;
+   }
+
+   table#reorder tr.headrow {
+      border: 1px solid #adadad;
+   }
+
+   table#reorder tr th {
+      border: none;
+      height: 1.0em;
+   }
+   
+   table#reorder tr th.holder{
+      display: block;
+      position: relative;
+   }
+   table#reorder tr td {
+      height: 3em;
+   }
+   
+
+   table#reorder tr.row td img {
+      height: 30px;
+      width: 30px;
+   }
+   
+   table#reorder ul#sortable li{
+      border: 1px solid #aeaeae;
+      clear: left;
+      cursor: move;
+      display: block;
+      height: .8em;
+      margin-top: .2em;
+      padding: 1em;
+      position: relative;
+   }
+   
+   .ui-sortable-helper {
+      width: 100%;
+      height: 10px;
+   }
+   
+   .hover {
+      border-top: 3px solid #1b99cb;
+      height: 0;
+      overflow: hidden;
+   }
+   
+   div.container {
+      display: block;
+      position: relative;
+      width: 100%;
+   }
+   
+   div.row_title {
+      position: absolute;
+      right: 66%;
+      width: 34%;      
+   }
+   
+   div.row_open {
+      position: absolute;
+      right: 33%;
+      width: 33%;
+   }
+
+   div.row_due {
+      position: absolute;
+      right: 0;
+      width: 33%;
+   }
+
+</style>
+
+	<ul class="breadCrumb">
+		<li><a rsf:id="breadcrumb">Assignment List</a></li>
+		<li rsf:id="last_breadcrumb" class="lastCrumb">Add Assignment</li>
+	</ul>
+	
+
+	<div class="generalErrors">
+		<ul rsf:id="message-for:*" style="margin:0px;">
+			<li>Message for user here</li>
+		</ul>
+	</div>
+	
+	<table id="reorder" class="listHier lines">
+		<tr class="headrow"> 
+			<th class="attach">&nbsp;</th>
+			<th class="attach">&nbsp;</th>
+			<th class="holder">
+				<div rsf:id="msg=assignment2.list-reorder.assignment_title" class="row_title">Assignment Title</div>
+				<div rsf:id="msg=assignment2.list-reorder.open" class="row_open">Open</div>
+				<div rsf:id="msg=assignment2.list-reorder.due" class="row_due">Due</div>
+			</th>
+		</tr>
+		<tr rsf:id="row:" class="row">
+			<td><img rsf:id="arrow_up" height="25px" width="25px" onclick="moveUp(this);" /></td>
+			<td><img rsf:id="arrow_down" height="25px" width="25px" onclick="moveDown(this);" /></td>
+			<td class="holder" rsf:id="holder">
+				<ul id="sortable">
+					<li rsf:id="assignments:">
+                  <div class="container">
+                     <div rsf:id="row_title" class="row_title"></div>
+                     <div rsf:id="row_open" class="row_open"></div>
+                     <div rsf:id="row_due" class="row_due"></div>
+						</div>
+					</li>
+				</ul>
+			</td>
+		</tr>
+	</table>
+	<br /><br />
+	<form rsf:id="form">
+		<input rsf:id="save" type="submit" onclick="saveSortables()" value="Save" />
+		<input rsf:id="cancel" type="submit" value="cancel" />
+	</form>
+		
+	<div rsf:id="assignment_empty">There are no Assignments yet</div>
+
+	<script type="text/javascript">
+	  jQuery("#sortable").sortable({items: ">li", axis: "y", containment: "parent", placeholder: "hover"});
+	  function moveUp(img){
+	     index = jQuery(img).parents("tr").prevAll("tr").size()-1;
+	     jQuery("ul#sortable li:eq(" + (index - 1) + ")").before(jQuery("ul#sortable li:eq(" + index + ")"));
+	  }
+	  function moveDown(img){
+	     index = jQuery(img).parents("tr").prevAll("tr").size()-1;
+	     jQuery("ul#sortable li:eq(" + (index + 1) + ")").after(jQuery("ul#sortable li:eq(" + index + ")"));	  
+	  }
+	  function saveSortables() {
+	     serialize = jQuery("#sortable").sortable("serialize", {attribute: "className"});
+	     asnn2.saveOrdering(serialize);
+	  }
+	</script>
+	<br /><br /><br /><br />
+</div>
+</body>
+</html>
