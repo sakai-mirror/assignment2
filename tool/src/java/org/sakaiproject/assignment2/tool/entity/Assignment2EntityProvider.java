@@ -229,6 +229,8 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware {
         httpServletResponse.setHeader("Cache-Control", "max-age=0,no-cache,no-store,must-revalidate,private,post-check=0,pre-check=0,s-max-age=0");
         httpServletResponse.setDateHeader("Expires", 0 );
         
+        httpServletResponse.setHeader("x-asnn2-canEdit", canEdit+"");
+        
         return togo;
     }
 
