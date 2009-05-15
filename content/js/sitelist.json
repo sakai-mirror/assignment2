@@ -1,0 +1,144 @@
+{"entityPrefix": "assignment2", "assignment2_collection": [
+{
+  "data": {
+    "openDateFormatted": "May 15, 2009 11:46 AM",
+    "attachments": [],
+    "title": "Assignment the First",
+    "openDate": 1242402360000,
+    "requiresSubmission": true,
+    "dueDate": null,
+    "id": 44,
+    "sortIndex": 1,
+    "groups": [],
+    "draft": false,
+    "inAndNew": "0\/0",
+    "graded": false,
+    "canEdit": true
+  },
+  "displayTitle": "assignment2 : \/assignment2",
+  "entityId": null,
+  "entityProperties": {
+  },
+  "entityReference": "\/assignment2",
+  "entityURL": "http:\/\/localhost:8080\/direct\/assignment2"
+},{
+  "data": {
+    "openDateFormatted": "May 15, 2009 11:46 AM",
+    "attachments": [],
+    "title": "A Second Assignment",
+    "openDate": 1242402360000,
+    "requiresSubmission": true,
+    "dueDate": 1243026000000,
+    "id": 45,
+    "sortIndex": 2,
+    "groups": [],
+    "draft": false,
+    "inAndNew": "0\/0",
+    "graded": false,
+    "canEdit": true,
+    "dueDateFormatted": "May 22, 2009 5:00 PM"
+  },
+  "displayTitle": "assignment2 : \/assignment2",
+  "entityId": null,
+  "entityProperties": {
+  },
+  "entityReference": "\/assignment2",
+  "entityURL": "http:\/\/localhost:8080\/direct\/assignment2"
+},{
+  "data": {
+    "openDateFormatted": "May 15, 2009 1:29 PM",
+    "attachments": [],
+    "title": "Third Third Third!!!",
+    "openDate": 1242408540000,
+    "requiresSubmission": true,
+    "dueDate": 1243026000000,
+    "id": 46,
+    "sortIndex": 3,
+    "groups": [],
+    "draft": false,
+    "inAndNew": "0\/0",
+    "graded": false,
+    "canEdit": true,
+    "dueDateFormatted": "May 22, 2009 5:00 PM"
+  },
+  "displayTitle": "assignment2 : \/assignment2",
+  "entityId": null,
+  "entityProperties": {
+  },
+  "entityReference": "\/assignment2",
+  "entityURL": "http:\/\/localhost:8080\/direct\/assignment2"
+},{
+  "data": {
+    "openDateFormatted": "May 15, 2009 1:30 PM",
+    "attachments": [],
+    "title": "The Fourth Hath Groups!",
+    "openDate": 1242408600000,
+    "requiresSubmission": true,
+    "dueDate": null,
+    "id": 47,
+    "sortIndex": 4,
+    "groups": [
+      {
+        "groupId": "63e856ce-9819-4909-ac84-471c424c5c6e",
+        "title": "My Second Group",
+        "description": "The most second group ever!",
+        "id": 7
+      }
+    ],
+    "draft": false,
+    "inAndNew": "0\/0",
+    "graded": false,
+    "canEdit": true
+  },
+  "displayTitle": "assignment2 : \/assignment2",
+  "entityId": null,
+  "entityProperties": {
+  },
+  "entityReference": "\/assignment2",
+  "entityURL": "http:\/\/localhost:8080\/direct\/assignment2"
+},{
+  "data": {
+    "openDateFormatted": "May 15, 2009 1:33 PM",
+    "attachments": [],
+    "title": "I am number Five",
+    "openDate": 1242408780000,
+    "requiresSubmission": true,
+    "dueDate": null,
+    "id": 48,
+    "sortIndex": 5,
+    "groups": [],
+    "draft": false,
+    "inAndNew": "0\/0",
+    "graded": false,
+    "canEdit": true
+  },
+  "displayTitle": "assignment2 : \/assignment2",
+  "entityId": null,
+  "entityProperties": {
+  },
+  "entityReference": "\/assignment2",
+  "entityURL": "http:\/\/localhost:8080\/direct\/assignment2"
+},{
+  "data": {
+    "openDateFormatted": "May 15, 2009 1:34 PM",
+    "attachments": [],
+    "title": "With number 6 at least we can Page.",
+    "openDate": 1242408840000,
+    "requiresSubmission": false,
+    "dueDate": null,
+    "id": 49,
+    "sortIndex": 6,
+    "groups": [],
+    "draft": false,
+    "inAndNew": "N\/A",
+    "graded": false,
+    "canEdit": true
+  },
+  "displayTitle": "assignment2 : \/assignment2",
+  "entityId": null,
+  "entityProperties": {
+  },
+  "entityReference": "\/assignment2",
+  "entityURL": "http:\/\/localhost:8080\/direct\/assignment2"
+}
+]}
