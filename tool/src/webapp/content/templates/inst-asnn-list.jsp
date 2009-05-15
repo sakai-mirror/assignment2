@@ -102,16 +102,16 @@ String getDefaultPortalMatter() {
         <tr>
           <th>
           </th>
-          <th class="asnn-decorated-cell">
+          <th class="asnn-decorated-heading">
             <span>Assignments</span>
             <img class="addimage" src="/sakai-assignment2-tool/content/images/add.png" />
             <a class="addlink" href="#" onclick="window.location = '/portal/tool/'+sakai.curPlacement+'/assignment'">
             Add</a>
           </th>
-          <th class="asnn-decorated-cell">
+          <th class="asnn-decorated-heading">
             <span>In/New</span>
           </th>
-          <th class="asnn-decorated-cell">
+          <th class="asnn-decorated-heading">
             <input id="checkall" type="checkbox" checked="false"/>
           </th>
         </tr>

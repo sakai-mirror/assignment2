@@ -10,7 +10,7 @@
 
 .asnntitle {
   font-weight: bold;
-  font-size: medium;
+  font-size: 1.2em;
 }
 
 .opendatelabel, .duedatelabel, .groupslabel, .sortbylabel {
@@ -71,8 +71,13 @@
  *  information assignment. The hidden column that only shows up on hover will
  *  not use this.
  */
-.asnn-decorated-cell {
+.asnn-decorated-cell, .asnn-decorated-heading {
   border-bottom: solid 2px #cccccc;
+  padding: 7px 0;
+}
+
+.asnn-decorated-heading {
+  font-size: 1.2em;
 }
 
 .asnn-hover {
