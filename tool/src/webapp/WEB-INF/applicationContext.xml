@@ -40,6 +40,16 @@
 			ref="org.sakaiproject.entitybroker.entityprovider.EntityProviderManager" />
 	</bean>
 	
+	<bean parent="org.sakaiproject.entitybroker.entityprovider.AbstractEntityProvider"
+	     class="org.sakaiproject.assignment2.tool.entity.Assignment2SubmissionEntityProvider">
+		<property name="submissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
+		<property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
+		<property name="externalGradebookLogic" ref="org.sakaiproject.assignment2.logic.ExternalGradebookLogic" />
+	    <property name="permissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentPermissionLogic" />
+	    <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
+	    <property name="assignmentBundleLogic" ref="org.sakaiproject.assignment2.logic.AssignmentBundleLogic" />
+	</bean>
+	
 	<bean parent="org.sakaiproject.entitybroker.entityprovider.AbstractEntityProvider"  
 	    class="org.sakaiproject.assignment2.tool.entity.Assignment2EntityProvider">
 		<property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
