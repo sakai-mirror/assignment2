@@ -51,13 +51,20 @@ asnn2.getAsnnCompData = function () {
       togo.asnncheck = {
         value: false
       };
-      // Set up global edit permissions for rendering move and remove widgets
-      asnn2.pageState.canEdit = true;
     }
     if (obj.graded === true) {
         togo.gradelink = {
             target: '/portal/tool/'+sakai.curPlacement+'/viewSubmissions/'+obj.id,
             linktext: "Grade"
+        };
+        if (obj.canEdit && obj.canEdit === true) {
+          togo.sep2 = true;
+        }
+    }
+    else if (obj.requiresSubmission === true) {
+        togo.gradelink = {
+            target: '/portal/tool/'+sakai.curPlacement+'/viewSubmissions/'+obj.id,
+            linktext: "Provide Feedback"
         };
         if (obj.canEdit && obj.canEdit === true) {
           togo.sep2 = true;
@@ -81,7 +88,7 @@ asnn2.getAsnnCompData = function () {
 
   var togo = [];
   if (asnn2.livedata === true) {
-    jQuery.ajax({
+    var xmlhttp = jQuery.ajax({
       type: "GET",
       url: "/direct/assignment2/sitelist.json",
       data: {
@@ -97,6 +104,11 @@ asnn2.getAsnnCompData = function () {
   }
   else {
     togo = designSampleData;
+  }
+
+  if (xmlhttp.getResponseHeader('x-asnn2-canEdit') === 'true') {
+      // Set up global edit permissions for rendering move and remove widgets
+      asnn2.pageState.canEdit = true;
   }
 
   return togo;
@@ -129,10 +141,10 @@ asnn2.selectorMap = [
 ];
 
 asnn2.sortMap = [
-  { selector: "#titlesort", property: "title" },
-  { selector: "#opendatesort", property: "openDate" },
-  { selector: "#duedatesort", property: "dueDate" },
-  { selector: "#instsort", property: "sortIndex" }
+  { selector: ".titlesort", property: "title" },
+  { selector: ".opendatesort", property: "openDate" },
+  { selector: ".duedatesort", property: "dueDate" },
+  { selector: ".instsort", property: "sortIndex" }
 ];
 
 /*
@@ -146,6 +158,10 @@ asnn2.pageState = {
   dataArray: [],
   pageModel: {},
   canEdit: false
+};
+
+asnn2.updateSortLinks = function() {
+
 };
 
 /*
@@ -177,14 +193,17 @@ asnn2.setupSortLinks = function() {
           return a === b? 0 : ( a > b? -asnn2.pageState.sortDir : asnn2.pageState.sortDir);
         });
 
-        jQuery("img", this.parentNode.parentNode).remove();
+        var newsortclass = jQuery(this).attr('class');
+        jQuery("."+newsortclass).each(function () {
+          jQuery("img", this.parentNode.parentNode).remove();
 
-        if (asnn2.pageState.sortDir < 0) {
-          jQuery(this).after('<img src="/library/image/sakai/sortascending.gif" />');
-        }
-        else {
-          jQuery(this).after('<img src="/library/image/sakai/sortdescending.gif" />');
-        }
+          if (asnn2.pageState.sortDir < 0) {
+            jQuery(this).after('<img src="/library/image/sakai/sortascending.gif" />');
+          }
+          else {
+            jQuery(this).after('<img src="/library/image/sakai/sortdescending.gif" />');
+          }
+        });
 
         asnn2.renderAsnnListPage();
       };
@@ -199,7 +218,7 @@ asnn2.setupSortLinks = function() {
  */
 
 asnn2.setupRemoveCheckboxes = function () {
-  $("#checkall").bind("change", function(e) {
+  $("#checkall").bind("click", function(e) {
     $(".asnncheck").each(function (i) {
       this.checked = e.currentTarget.checked;
     });
@@ -522,7 +541,8 @@ asnn2.initAsnnList = function () {
     fakedata.push(i);
   }
 
-  var pager = fluid.pager("#asnn-list-area", {
+  //var pager = fluid.pager("#asnn-list-area", {
+  var pager = fluid.pager("body", {
     listeners: {
       onModelChange: function (newModel, oldModel) {
         // We need to store the pageModel so that the Sorting links can use it when they need

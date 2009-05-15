@@ -85,12 +85,12 @@ String getDefaultPortalMatter() {
 
 <div style="margin: 0; padding: 5px; border-top: solid 2px #cccccc;">
     <span class="sortbylabel">Sorted by:</span><ul class="sort-bar">
-      <li class="sort-item"><a href="#" id="titlesort">Title</a> |</li>
+      <li class="sort-item"><a href="#" class="titlesort">Title</a> |</li>
       <!-- <li class="sort-item">Restricted To |</li> -->
-      <li class="sort-item"><a href="#" id="opendatesort">Open Date</a> |</li>
-      <li class="sort-item"><a href="#" id="duedatesort">Due Date</a> |</li>
+      <li class="sort-item"><a href="#" class="opendatesort">Open Date</a> |</li>
+      <li class="sort-item"><a href="#" class="duedatesort">Due Date</a> |</li>
       <li class="sort-item">
-        <a href="#" id="instsort">Instructor Specified Order</a>
+        <a href="#" class="instsort">Instructor Specified Order</a>
         <img src="/library/image/sakai/sortascending.gif" />
       </li>
     </ul>
@@ -102,16 +102,16 @@ String getDefaultPortalMatter() {
         <tr>
           <th>
           </th>
-          <th class="asnn-decorated-cell">
+          <th class="asnn-decorated-heading">
             <span>Assignments</span>
             <img class="addimage" src="/sakai-assignment2-tool/content/images/add.png" />
             <a class="addlink" href="#" onclick="window.location = '/portal/tool/'+sakai.curPlacement+'/assignment'">
             Add</a>
           </th>
-          <th class="asnn-decorated-cell">
+          <th class="asnn-decorated-heading">
             <span>In/New</span>
           </th>
-          <th class="asnn-decorated-cell">
+          <th class="asnn-decorated-heading">
             <input id="checkall" type="checkbox" checked="false"/>
           </th>
         </tr>
@@ -119,7 +119,7 @@ String getDefaultPortalMatter() {
       <tbody id="asnn-list-body">
         <tr class="row">
           <td style="width: 40px"><img style="display:none" alt="Move Assignment" src="/sakai-assignment2-tool/content/images/4Arrows.png" class="movehandle" /></td>
-          <td class="asnn-decorated-cell">
+          <td class="asnn-decorated-cell"><p style="margin:0;padding:0;">
             <span style="display:none" class="asnnid">1</span>
             <span class="asnntitle">Audio Scriptwriting</span>
             <img class="attachments" src="/sakai-assignment2-tool/content/images/attach.png" />
@@ -127,6 +127,7 @@ String getDefaultPortalMatter() {
             <img class="needsAttention" src="/../../library/image/sakai/warn.gif"
             	alt="There is a problem with this assignment. For additional information, click Edit."
             	title="There is a problem with this assignment. For additional information, click Edit." />
+	    </p>
             <div>
             <a href="" class="editlink">Edit</a>
 	    <span class="sep1"> | </span>
@@ -157,7 +158,41 @@ String getDefaultPortalMatter() {
       </tbody>
     </table>
 
-    <input style="display: none" type="button" value="Remove" id="removebutton" />
+    <div style="text-align: right; width: 90%; margin: 20px">
+      <input style="display: none" type="button" value="Remove" id="removebutton" />
+    </div>
+
+  <div class="pager-sort-area">
+<div >
+    <div id="pager-bottom" class="fl-pager-bottom flc-pager-bottom">
+        <ul id="page-list-bottom" class="pager-links flc-pager-links">
+          <li class="fl-pager-pageLink flc-pager-pageLink"><a href="#">1</a></li>
+          <li class="flc-pager-pageLink-disabled">2</li>
+          <li class="fl-pager-pageLink flc-pager-pageLink"><a href="#">3</a></li>
+        </ul>
+      <p id="page-size-bottom">
+	<span class="flc-pager-summary">1-10 of 500 items</span>
+      </p>
+      <p id="page-arrows-bottom">
+      <span class="fl-pager-previous flc-pager-previous"><a href="#">&lt; previous</a></span>
+      <span class="fl-pager-next flc-pager-next"><a href="#">next &gt;</a></span>
+      </p>
+    </div>
+</div>
+
+<div style="margin: 0; padding: 5px; border-top: solid 2px #cccccc;">
+    <span class="sortbylabel">Sorted by:</span><ul class="sort-bar">
+      <li class="sort-item"><a href="#" class="titlesort">Title</a> |</li>
+      <!-- <li class="sort-item">Restricted To |</li> -->
+      <li class="sort-item"><a href="#" class="opendatesort">Open Date</a> |</li>
+      <li class="sort-item"><a href="#" class="duedatesort">Due Date</a> |</li>
+      <li class="sort-item">
+        <a href="#" class="instsort">Instructor Specified Order</a>
+        <img src="/library/image/sakai/sortascending.gif" />
+      </li>
+    </ul>
+</div>
+</div> <!-- end pager-sort-area -->
 
     <!-- This is the template for the Confirm Asnn Remove Dialog. -->
 	<div id="remove-asnn-dialog" style="display:none">
