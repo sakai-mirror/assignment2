@@ -51,8 +51,6 @@ asnn2.getAsnnCompData = function () {
       togo.asnncheck = {
         value: false
       };
-      // Set up global edit permissions for rendering move and remove widgets
-      asnn2.pageState.canEdit = true;
     }
     if (obj.graded === true) {
         togo.gradelink = {
@@ -90,7 +88,7 @@ asnn2.getAsnnCompData = function () {
 
   var togo = [];
   if (asnn2.livedata === true) {
-    jQuery.ajax({
+    var xmlhttp = jQuery.ajax({
       type: "GET",
       url: "/direct/assignment2/sitelist.json",
       data: {
@@ -106,6 +104,11 @@ asnn2.getAsnnCompData = function () {
   }
   else {
     togo = designSampleData;
+  }
+
+  if (xmlhttp.getResponseHeader('x-asnn2-canEdit') === 'true') {
+      // Set up global edit permissions for rendering move and remove widgets
+      asnn2.pageState.canEdit = true;
   }
 
   return togo;
