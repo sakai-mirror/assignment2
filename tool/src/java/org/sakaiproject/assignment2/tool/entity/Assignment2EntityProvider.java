@@ -189,7 +189,12 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware {
             
             List<String> viewableStudents = assignmentViewableStudentsMap.get(asnn);
             
-            asnnmap.put("inAndNew", displayUtil.getSubmissionStatusForAssignment(asnn, viewableStudents));
+            Map<String, String> subStatusMap = displayUtil.getSubmissionStatusForAssignment(asnn, viewableStudents);
+            String inAndNewText = subStatusMap.get(DisplayUtil.IN_NEW_DISPLAY);
+            String numSubmissions = subStatusMap.get(DisplayUtil.NUM_SUB);
+            
+            asnnmap.put("inAndNew", inAndNewText);
+            asnnmap.put("numSubmissions", numSubmissions);
             
             List groupstogo = new ArrayList();
             // we need to double check that all of the associated groups still exist.
