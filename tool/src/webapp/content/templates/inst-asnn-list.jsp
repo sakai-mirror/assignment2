@@ -119,7 +119,7 @@ String getDefaultPortalMatter() {
       <tbody id="asnn-list-body">
         <tr class="row">
           <td style="width: 40px"><img style="display:none" alt="Move Assignment" src="/sakai-assignment2-tool/content/images/4Arrows.png" class="movehandle" /></td>
-          <td class="asnn-decorated-cell">
+          <td class="asnn-decorated-cell"><p style="margin:0;padding:0;">
             <span style="display:none" class="asnnid">1</span>
             <span class="asnntitle">Audio Scriptwriting</span>
             <img class="attachments" src="/sakai-assignment2-tool/content/images/attach.png" />
@@ -127,6 +127,7 @@ String getDefaultPortalMatter() {
             <img class="needsAttention" src="/../../library/image/sakai/warn.gif"
             	alt="There is a problem with this assignment. For additional information, click Edit."
             	title="There is a problem with this assignment. For additional information, click Edit." />
+	    </p>
             <div>
             <a href="" class="editlink">Edit</a>
 	    <span class="sep1"> | </span>
