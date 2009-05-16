@@ -331,6 +331,12 @@ asnn2.setupReordering = function () {
           }
         });
       }
+    },
+    avatarCreator: function(item, cssClass, dropWarning) {
+      var asnntitle = jQuery(".asnntitle", item).text();
+      var avatar = jQuery(".asnn-drag-avatar").clone();
+      avatar.html("<p>"+asnntitle+"</p><p>&nbsp;</p>");
+      return avatar;
     }
   });
 };

@@ -220,6 +220,12 @@ String getDefaultPortalMatter() {
 		</fieldset>
 	</div>
 
+<!-- Reorder Avatar -->
+<div class="asnn-drag-avatar" style="display:none">
+  <p class="asnntitle">Assignment Title</p>
+  <p>&nbsp</p>
+</div>
+
     <script type="text/javascript">
       asnn2.initAsnnList();
     </script>
