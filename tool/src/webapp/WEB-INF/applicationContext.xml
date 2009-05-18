@@ -185,7 +185,7 @@
 		<property name="saveMethod"
 			value="org\.sakaiproject\.assignment2\.logic\.AssignmentSubmissionLogic.saveInstructorFeedback" />
 	</bean>
-
+<!-- 
 	<bean parent="handlerHookParent">
 		<property name="value">
 			<bean parent="RSACBridgeProxy">
@@ -193,7 +193,7 @@
 			</bean>
 		</property>
 	</bean>
-
+-->
 	<bean parent="handlerHookParent">
 		<property name="value">
 			<bean parent="RSACBridgeProxy">
