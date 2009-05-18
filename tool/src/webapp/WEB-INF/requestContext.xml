@@ -374,16 +374,6 @@
 		<property name="scheduledNotification" ref="org.sakaiproject.assignment2.logic.ScheduledNotification" />
 	</bean>
 
-<!-- 
-	<bean id="fluidHandlerHook" class="org.sakaiproject.assignment2.tool.handlerhooks.FluidHandlerHook">
-		<property name="response" ref="httpServletResponseProxy" />
-		<property name="request" ref="httpServletRequest" />
-		<property name="viewparams" ref="viewParameters" />
-		<property name="context" ref="sakai-Context" />
-		<property name="placement" ref="sakai-Placement" />
-		<property name="targettedMessageList" ref="targettedMessageList" />
-	</bean>
--->
 	<bean id="zipHandlerHook" class="org.sakaiproject.assignment2.tool.handlerhooks.ZipHandlerHook">
 		<property name="response" ref="httpServletResponseProxy" />
 		<property name="zipExporter" ref="org.sakaiproject.assignment2.logic.ZipExportLogic" />
