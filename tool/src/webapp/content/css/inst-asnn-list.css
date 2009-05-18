@@ -113,17 +113,20 @@
 
 .fl-inlineEdit-tooltip {
     position    : absolute;
-    background  : #CCC;
+    background  : lightyellow;
     border      : 1px solid #999;
-    font        : normal 75% sans-serif;
+    font        : normal 80% sans-serif;
     padding     : 3px 5px;
 }
 
 /* :hover */
 .fl-inlineEdit-invitation {
     border      : 1px solid #999;
-    background  : lightyellow;
+    /* background  : lightyellow; */
+    background  : #fdff8f;
     cursor      : pointer;
+    padding     : 1px;
+    margin      : 1px;
     /*margin      : -1px;*/
 }
 
