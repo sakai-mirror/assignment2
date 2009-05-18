@@ -123,10 +123,10 @@
 .fl-inlineEdit-invitation {
     border      : 1px solid #999;
     /* background  : lightyellow; */
-    background  : #fdff8f;
+    background  : #ccffed;
     cursor      : pointer;
-    padding     : 1px;
-    margin      : 1px;
+    padding     : 1px 1px 0px 1px;
+    margin      : 0px;
     /*margin      : -1px;*/
 }
 
