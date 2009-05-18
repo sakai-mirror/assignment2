@@ -23,6 +23,7 @@ package org.sakaiproject.assignment2.tool.producers;
 
 import uk.org.ponder.rsf.components.UIContainer;
 import uk.org.ponder.rsf.components.UIJointContainer;
+import uk.org.ponder.rsf.components.UILink;
 import uk.org.ponder.rsf.components.UIOutput;
 import uk.org.ponder.rsf.components.UIVerbatim;
 import uk.org.ponder.rsf.producers.NullaryProducer;
@@ -59,9 +60,9 @@ public class LayoutProducer implements NullaryProducer {
                 makeIter3Javascript(tofill);
             }
             else {
-                UIOutput.make(tofill, "infusion-r7132.js");
-                UIOutput.make(tofill, "inst-asnn-list.js");
-                UIOutput.make(tofill, "inst-asnn-list.css");
+                UILink.make(tofill, "infusion-r7132.js");
+                UILink.make(tofill, "inst-asnn-list.js");
+                UILink.make(tofill, "inst-asnn-list.css");
             }
 
             //include the components from the page body into tag "page-replace:"
@@ -87,11 +88,11 @@ public class LayoutProducer implements NullaryProducer {
      * @param tofill
      */
     private void makeIter3Javascript(UIContainer tofill) {
-        UIOutput.make(tofill, "fluid-0.6beta1.js");
-        UIOutput.make(tofill, "ui.sortable.1.5.3.js");
-        UIOutput.make(tofill, "thickbox.js");
-        UIOutput.make(tofill, "jquery.color.js");
-        UIOutput.make(tofill, "thickbox.css");
+        UILink.make(tofill, "fluid-0.6beta1.js");
+        UILink.make(tofill, "ui.sortable.1.5.3.js");
+        UILink.make(tofill, "thickbox.js");
+        UILink.make(tofill, "jquery.color.js");
+        UILink.make(tofill, "thickbox.css");
     }
 
 }
