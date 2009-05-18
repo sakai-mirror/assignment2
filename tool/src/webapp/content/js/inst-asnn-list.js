@@ -503,13 +503,16 @@ asnn2.setupRemoveDialog = function() {
     });
     jQuery.ajax({
       type: "DELETE",
-      url: "/direct/batch.json?_refs="+toremove.toString()
+      url: "/direct/batch.json?_refs="+toremove.toString(),
+      success: function (data) {
+        //TODO Properly refire the pager with an updated model rather than just
+        // lazily reload the page.
+        asnn2util.closeDialog(removeDialog);
+        window.location.reload();
+      }
+      // TODO Handle Failures with a message
     });
 
-    //TODO Properly refire the pager with an updated model rather than just
-    // lazily reload the page.
-    asnn2util.closeDialog(removeDialog);
-    window.location.reload();
 
   });
 
