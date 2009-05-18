@@ -40,6 +40,16 @@
 			ref="org.sakaiproject.entitybroker.entityprovider.EntityProviderManager" />
 	</bean>
 	
+	<bean parent="org.sakaiproject.entitybroker.entityprovider.AbstractEntityProvider"
+	     class="org.sakaiproject.assignment2.tool.entity.Assignment2SubmissionEntityProvider">
+		<property name="submissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
+		<property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
+		<property name="externalGradebookLogic" ref="org.sakaiproject.assignment2.logic.ExternalGradebookLogic" />
+	    <property name="permissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentPermissionLogic" />
+	    <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
+	    <property name="assignmentBundleLogic" ref="org.sakaiproject.assignment2.logic.AssignmentBundleLogic" />
+	</bean>
+	
 	<bean parent="org.sakaiproject.entitybroker.entityprovider.AbstractEntityProvider"  
 	    class="org.sakaiproject.assignment2.tool.entity.Assignment2EntityProvider">
 		<property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
@@ -174,14 +184,6 @@
 			value="org\.sakaiproject\.assignment2\.logic\.AssignmentSubmissionLogic.getSubmissionVersionById" />
 		<property name="saveMethod"
 			value="org\.sakaiproject\.assignment2\.logic\.AssignmentSubmissionLogic.saveInstructorFeedback" />
-	</bean>
-
-	<bean parent="handlerHookParent">
-		<property name="value">
-			<bean parent="RSACBridgeProxy">
-				<property name="targetBeanName" value="fluidHandlerHook" />
-			</bean>
-		</property>
 	</bean>
 
 	<bean parent="handlerHookParent">

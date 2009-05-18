@@ -220,6 +220,7 @@
       <property name="permissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentPermissionLogic" />
       <property name="submissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
       <property name="locale" ref="requestLocale" />
+      <property name="placement" ref="sakai-Placement" />
    </bean>
    
    <!--
@@ -371,13 +372,6 @@
 		<property name="timeService" ref="org.sakaiproject.time.api.TimeService" />
 		<property name="scheduledInvocationManager" ref="org.sakaiproject.api.app.scheduler.ScheduledInvocationManager" />
 		<property name="scheduledNotification" ref="org.sakaiproject.assignment2.logic.ScheduledNotification" />
-	</bean>
-
-	<bean id="fluidHandlerHook" class="org.sakaiproject.assignment2.tool.handlerhooks.FluidHandlerHook">
-		<property name="response" ref="httpServletResponseProxy" />
-		<property name="viewparams" ref="viewParameters" />
-		<property name="context" ref="sakai-Context" />
-		<property name="placement" ref="sakai-Placement" />
 	</bean>
 
 	<bean id="zipHandlerHook" class="org.sakaiproject.assignment2.tool.handlerhooks.ZipHandlerHook">

@@ -23,6 +23,8 @@ package org.sakaiproject.assignment2.tool.producers;
 
 import uk.org.ponder.rsf.components.UIContainer;
 import uk.org.ponder.rsf.components.UIJointContainer;
+import uk.org.ponder.rsf.components.UILink;
+import uk.org.ponder.rsf.components.UIOutput;
 import uk.org.ponder.rsf.components.UIVerbatim;
 import uk.org.ponder.rsf.producers.NullaryProducer;
 import uk.org.ponder.rsf.view.ViewGroup;
@@ -53,6 +55,15 @@ public class LayoutProducer implements NullaryProducer {
                 String frameId = org.sakaiproject.util.Web.escapeJavascript("Main" + org.sakaiproject.tool.cover.ToolManager.getCurrentPlacement().getId());
                 UIVerbatim.make(tofill, "iframeId_init", "var iframeId = \"" + frameId + "\";");
             }
+            
+            if (!viewParameters.viewID.equals(ListProducer.VIEW_ID)) {
+                makeIter3Javascript(tofill);
+            }
+            else {
+                UILink.make(tofill, "infusion-r7132.js");
+                UILink.make(tofill, "inst-asnn-list.js");
+                UILink.make(tofill, "inst-asnn-list.css");
+            }
 
             //include the components from the page body into tag "page-replace:"
             pageproducer.fillComponents(page);
@@ -67,6 +78,21 @@ public class LayoutProducer implements NullaryProducer {
     }
     public void setGroup(ViewGroup group) {
         this.group = group;
+    }
+    
+    /**
+     * This will create the legacy Javascript and CSS imports that a number of
+     * the existing pages require, but we want to exclude for newer dynamic
+     * pages that require bleeding edge versions of javascript libraries.
+     * 
+     * @param tofill
+     */
+    private void makeIter3Javascript(UIContainer tofill) {
+        UILink.make(tofill, "fluid-0.6beta1.js");
+        UILink.make(tofill, "ui.sortable.1.5.3.js");
+        UILink.make(tofill, "thickbox.js");
+        UILink.make(tofill, "jquery.color.js");
+        UILink.make(tofill, "thickbox.css");
     }
 
 }

@@ -189,7 +189,12 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware {
             
             List<String> viewableStudents = assignmentViewableStudentsMap.get(asnn);
             
-            asnnmap.put("inAndNew", displayUtil.getSubmissionStatusForAssignment(asnn, viewableStudents));
+            Map<String, String> subStatusMap = displayUtil.getSubmissionStatusForAssignment(asnn, viewableStudents);
+            String inAndNewText = subStatusMap.get(DisplayUtil.IN_NEW_DISPLAY);
+            String numSubmissions = subStatusMap.get(DisplayUtil.NUM_SUB);
+            
+            asnnmap.put("inAndNew", inAndNewText);
+            asnnmap.put("numSubmissions", numSubmissions);
             
             List groupstogo = new ArrayList();
             // we need to double check that all of the associated groups still exist.
@@ -260,7 +265,26 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware {
     public void updateEntity(EntityReference ref, Object entity,
             Map<String, Object> params) {
         Assignment2 assignment = (Assignment2) entity;
-        assignmentLogic.saveAssignment(assignment);
+        
+        Assignment2 tosave = assignmentLogic.getAssignmentByIdWithAssociatedData(assignment.getId());
+        
+        /*
+         * This is going to be obtuse.  Because Hibernate Model objects are so
+         * different that the models we really want available to RESTful feeds,
+         * and because of the wierd cascade populating, we're going to have to 
+         * have a custom list of things that can be updated by the regular 
+         * REST PUT update operation. The problem right now is that we can't use
+         * the assignment object passed in to the method, because we deepCloned
+         * it without stuff that couldn't be serialized in getEntity.
+         * 
+         * This is not a huge deal necessarily, but something we have to
+         * remember about for now, until we make new model objects for REST
+         * or start using some other metaprogramming paradigm.
+         * 
+         */
+        tosave.setTitle(assignment.getTitle());
+        
+        assignmentLogic.saveAssignment(tosave);
     }
 
     public Object getEntity(EntityReference ref) {

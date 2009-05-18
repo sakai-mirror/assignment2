@@ -41,6 +41,7 @@ import org.sakaiproject.assignment2.tool.params.ViewSubmissionsViewParams;
 import org.sakaiproject.component.cover.ComponentManager;
 import org.sakaiproject.taggable.api.TaggingManager;
 import org.sakaiproject.taggable.api.TaggingProvider;
+import org.sakaiproject.tool.api.Placement;
 
 import uk.org.ponder.messageutil.MessageLocator;
 import uk.org.ponder.rsf.components.UIBranchContainer;
@@ -48,6 +49,7 @@ import uk.org.ponder.rsf.components.UIContainer;
 import uk.org.ponder.rsf.components.UIInternalLink;
 import uk.org.ponder.rsf.components.UIMessage;
 import uk.org.ponder.rsf.components.UIOutput;
+import uk.org.ponder.rsf.components.UIVerbatim;
 import uk.org.ponder.rsf.components.decorators.DecoratorList;
 import uk.org.ponder.rsf.components.decorators.UIFreeAttributeDecorator;
 import uk.org.ponder.rsf.components.decorators.UIStyleDecorator;
@@ -105,7 +107,25 @@ public class ListProducer implements ViewComponentProducer, NavigationCaseReport
     public void setLocale(Locale locale) {
         this.locale = locale;
     }
+    
+    /**
+     * Request Scope Dependency
+     */
+    private Placement placement;
+    public void setPlacement(Placement placement) {
+        this.placement = placement;
+    }
+    
+    public void fillComponents(UIContainer tofill, ViewParameters viewparams, ComponentChecker checker) {
+        UIVerbatim.make(tofill, "asnnlist-decl-js", "var sakai = sakai || {};"
+        + "sakai.curPlacement = '"+placement.getId()+"';"
+        + "sakai.curContext = '"+externalLogic.getCurrentContextId()+"';");
+    }
 
+    
+    /* Old version of fillComponents Before Page Redesing. Keeping this around
+     * for part of an iteration for reference before deleting.
+     
     public void fillComponents(UIContainer tofill, ViewParameters viewparams, ComponentChecker checker) {
 
         DateFormat df = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, locale);
@@ -192,6 +212,7 @@ public class ListProducer implements ViewComponentProducer, NavigationCaseReport
         }
         
     }
+    */
 
     /**
      * Renders the Div for the assignment title, draft, and open status.
@@ -199,6 +220,7 @@ public class ListProducer implements ViewComponentProducer, NavigationCaseReport
      * @param assignment
      * @param row
      */
+    /*
     private void renderLeftContainer(Assignment2 assignment,
             UIBranchContainer row) {
         //TODO FIXME Remove after list version is gone
@@ -214,6 +236,7 @@ public class ListProducer implements ViewComponentProducer, NavigationCaseReport
             divLeftContainer.decorators = new DecoratorList(new UIStyleDecorator("assignInactive"));
         }
     }
+    */
 
     /**
      * Renders the bit of the Assignment Row that says like 2 / 83 if two of the
@@ -225,6 +248,7 @@ public class ListProducer implements ViewComponentProducer, NavigationCaseReport
      * @param list of student uids that the user is allowed to view for this assignment
      * @param row
      */
+    /*
     private void renderSubmissionStatusForAssignment(String currUserId,
             Assignment2 assignment, List<String> viewableStudents, UIBranchContainer row) {
         if (assignment.isRequiresSubmission() && 
@@ -247,6 +271,7 @@ public class ListProducer implements ViewComponentProducer, NavigationCaseReport
             UIOutput.make(row, "no_submission_req", messageLocator.getMessage("assignment2.list.no_sub_required"));
         }
     }
+    */
 
     /**
      * Render the Due Date that appears under the Assignment Title in the List.
@@ -255,6 +280,7 @@ public class ListProducer implements ViewComponentProducer, NavigationCaseReport
      * @param assignment
      * @param row
      */
+    /*
     private void renderDueDateOnRow(DateFormat df, Assignment2 assignment,
             UIBranchContainer row) {
         if (assignment.getDueDate() != null) {
@@ -263,6 +289,7 @@ public class ListProducer implements ViewComponentProducer, NavigationCaseReport
             UIMessage.make(row, "assignment_row_due", "assignment2.list.no_due_date");	
         }
     }
+    */
 
     /**
      * Renders the Breadcrumbs, title, and other stuff at the top of the page.
@@ -270,6 +297,7 @@ public class ListProducer implements ViewComponentProducer, NavigationCaseReport
      * @param tofill
      * @param edit_perm
      */
+    /*
     private void renderPageTop(UIContainer tofill, Boolean edit_perm) {
         //Breadcrumbs
         UIMessage.make(tofill, "last_breadcrumb", "assignment2.list.heading");
@@ -279,11 +307,12 @@ public class ListProducer implements ViewComponentProducer, NavigationCaseReport
         //UIInternalLink.make(tofill, "settings_link", new SimpleViewParameters(SettingsProducer.VIEW_ID));
         // We are removing access to the "accessible reorder page" for now since
         // we are making the landing page accessible (and the accessible reorderer is a mess in IE7)
-        /*if (edit_perm) {
-            UIInternalLink.make(tofill, "reorder_link", new SimpleViewParameters(ListReorderProducer.VIEW_ID));
-        }*/
+        //if (edit_perm) {
+        //    UIInternalLink.make(tofill, "reorder_link", new SimpleViewParameters(ListReorderProducer.VIEW_ID));
+        //}
 
     }
+    */
     
     public List reportNavigationCases() {
         List<NavigationCase> nav= new ArrayList<NavigationCase>();
@@ -291,6 +320,7 @@ public class ListProducer implements ViewComponentProducer, NavigationCaseReport
         return nav;
     }
 
+    /*
     private List<DecoratedTaggingProvider> initDecoratedProviders() {
         TaggingManager taggingManager = (TaggingManager) ComponentManager
         .get("org.sakaiproject.taggable.api.TaggingManager");
@@ -301,6 +331,7 @@ public class ListProducer implements ViewComponentProducer, NavigationCaseReport
         }
         return providers;
     }
+    */
 
     /**
      * Functionality for matrix tagging. Currently on Hold. ASNN-113

@@ -13,7 +13,7 @@ asnn2.getAsnnCompData = function () {
 
   var renderFromData = function (obj, index) {
     var ditto = ['id','title', 'sortIndex', 'openDate', 'dueDate',
-                 'requiresSubmission'];
+                 'requiresSubmission', 'numSubmissions'];
     var togo = {};
     for (var i = 0; i < ditto.length; i++) {
       togo[ditto[i]] = obj[ditto[i]];
@@ -331,6 +331,12 @@ asnn2.setupReordering = function () {
           }
         });
       }
+    },
+    avatarCreator: function(item, cssClass, dropWarning) {
+      var asnntitle = jQuery(".asnntitle", item).text();
+      var avatar = jQuery(".asnn-drag-avatar").clone();
+      avatar.html("<p>"+asnntitle+"</p><p>&nbsp;</p>");
+      return avatar;
     }
   });
 };
@@ -474,12 +480,11 @@ asnn2.setupRemoveDialog = function() {
         else {
           duedate = "";
         }
-        if (obj.inAndNew) {
-          var subs = obj.inAndNew;
+        var subs = "";
+        if (obj.numSubmissions) {
+          subs = obj.numSubmissions;
         }
-        else if (obj.inAndNewLink) {
-          subs = obj.inAndNewLink.linktext;
-        }
+
         togo = togo + "<tr><td>"+obj.title+"</td><td>"+duedate+"</td><td>"+subs+"</td></tr>";
       }
     });
