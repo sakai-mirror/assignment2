@@ -56,13 +56,23 @@ public class LayoutProducer implements NullaryProducer {
                 UIVerbatim.make(tofill, "iframeId_init", "var iframeId = \"" + frameId + "\";");
             }
             
-            if (!viewParameters.viewID.equals(ListProducer.VIEW_ID)) {
-                makeIter3Javascript(tofill);
+            
+            if (viewParameters.viewID.equals(ListProducer.VIEW_ID)){
+                String[] js = new String[] {"../js/InfusionAll_r7132.js","../js/inst-asnn-list.js"};
+                String[] css = new String[] {"../css/inst-asnn-list.css"};
+                for (String jsfile: js) {
+                    UILink.make(tofill, "asnn-js-include:", jsfile);
+                }
+                for (String cssfile: css) {
+                    UILink.make(tofill, "asnn-css-include:", cssfile);
+                }
+            }
+            else if (viewParameters.viewID.equals(ViewSubmissionsProducer.VIEW_ID)) {
+                UILink.make(tofill, "asnn-js-include:", "../js/InfusionAll_r7132.js");
+                UILink.make(tofill, "asnn-js-include:", "../js/submissionview.js");
             }
             else {
-                UILink.make(tofill, "infusion-r7132.js");
-                UILink.make(tofill, "inst-asnn-list.js");
-                UILink.make(tofill, "inst-asnn-list.css");
+                makeIter3Javascript(tofill);
             }
 
             //include the components from the page body into tag "page-replace:"
