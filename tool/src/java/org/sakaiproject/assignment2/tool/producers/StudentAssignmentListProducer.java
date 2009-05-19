@@ -287,7 +287,7 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
             } else {
                 String grade = null;
                 if (assignment.getGradebookItemId() != null) {
-                    externalGradebookLogic.getStudentGradeForItem(
+                    grade = externalGradebookLogic.getStudentGradeForItem(
                             assignment.getContextId(), 
                             assignmentSubmission.getUserId(), 
                             assignment.getGradebookItemId());
