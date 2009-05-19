@@ -268,7 +268,7 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 						// a new gradebook item
 						if (assignDef.isGraded() && assignDef.getAssociatedGbItemName() != null) {
 							Long associatedGbItemId = null;
-							GradebookItem existingItem = gbTitleToItemMap.get(assignDef.getAssociatedGbItemName());
+							GradebookItem existingItem = gbTitleToItemMap.get(assignDef.getAssociatedGbItemName().trim());
 							if (existingItem != null) {
 								// an item exists with this title already - check the points possible
 								if (existingItem.getPointsPossible() == null && assignDef.getAssociatedGbItemPtsPossible() == null) {
