@@ -16,7 +16,7 @@ groups_toggle = function() {
     } else {
         jQuery('li#groups_table_li').show();
     }
-}
+};
 
 function toggle_group_checkboxes(check_all_box) {
     if (check_all_box.checked) {
@@ -83,7 +83,7 @@ jQuery(document).ready(function() {
 
 function slide_submission(img) {
     jQuery(img).parent('h4').next('div').toggle();
-    flip_image(img)
+    flip_image(img);
 }
 function slideFieldset(img) {
     jQuery(img).parent('legend').next('ol').toggle();
@@ -231,7 +231,7 @@ var asnn2 = asnn2 || {};
             var body = queries.join("&");
             jQuery.post(document.URL, body);
         }
-    }
+    };
 
     gbItemName = "";
     gbDueTime = "";
@@ -239,7 +239,7 @@ var asnn2 = asnn2 || {};
     asnn2.finishedGBItemHelper = function(newGbItemName, newGbDueTime) {
         gbItemName = newGbItemName;
         gbDueTime = newGbDueTime;
-    }
+    };
 
     /**
      * pushes the due date from the "add gradebook item" helper to the due date field on the "Add Assignment" screen
@@ -264,7 +264,7 @@ var asnn2 = asnn2 || {};
                 asnn2.showHideByCheckbox(require_due_date, due_date_container);
             }
         }
-    }
+    };
 
     /**
      * Since Windows and Mac display different values for date.toLocaleDateString(),
@@ -308,7 +308,7 @@ var asnn2 = asnn2 || {};
         }
 
         return formattedDueDate;
-    }
+    };
 
     /**
      * automatically select the newly created gb item created via the helper
@@ -325,7 +325,7 @@ var asnn2 = asnn2 || {};
                 jQuery("input[name='page-replace\:\:title']").val(selectedItem);
             }
         }
-    }
+    };
 
     /**
      * Select the graded/ungraded radio button depending on whether a gb item
@@ -338,7 +338,7 @@ var asnn2 = asnn2 || {};
         } else {
             jQuery("input[type='radio'][id='page-replace\:\:select_ungraded']").get(0).checked = true;
         }
-    }
+    };
 
     /**
      * change the selected gb item based upon the gbItemName variable
@@ -356,7 +356,7 @@ var asnn2 = asnn2 || {};
         asnn2.selectGraded();
         asnn2.populateTitleWithGbItemName();
         asnn2.populateDueDateWithGBItemDueDate();
-    }
+    };
 
     /**
      * if user has entered an assignment title before clicking the
@@ -527,7 +527,8 @@ var asnn2 = asnn2 || {};
         var queries = new Array();
         queries.push(RSF.renderBinding("MarkFeedbackAsReadAction.asnnSubId", submissionId));
         queries.push(RSF.renderBinding("MarkFeedbackAsReadAction.asnnSubVersionId", versionId));
-        queries.push(RSF.renderActionBinding("MarkFeedbackAsReadAction.execute")) var body = queries.join("&");
+        queries.push(RSF.renderActionBinding("MarkFeedbackAsReadAction.execute"));
+        var body = queries.join("&");
         jQuery.post(document.URL, body);
     };
 
@@ -578,7 +579,8 @@ var asnn2 = asnn2 || {};
         var escElemId = elementId.replace(/:/g, "\\:");
         var versionHeader = jQuery('#' + escElemId + ' h3');
         var arrow = versionHeader.find("img:first");
-        var toggled = jQuery('#' + escElemId + ' div') var envelope = versionHeader.find("img:last");
+        var toggled = jQuery('#' + escElemId + ' div');
+        var envelope = versionHeader.find("img:last");
         versionHeader.click(function() {
             toggle_hideshow(arrow, toggled);
             if (envelope.attr('src') == NEW_FEEDBACK_IMAGE) {
@@ -783,7 +785,8 @@ var asnn2editpage = asnn2editpage || {};
         var valid = true;
         // Reference: You can see these in  Assignment2Validator.java
         // check for empty title
-        var title = jQuery("input[name='page-replace\:\:title']").get(0) if (title.value == '') {
+        var title = jQuery("input[name='page-replace\:\:title']").get(0);
+        if (title.value == '') {
             titleMsg.show();
             valid = false;
         }
@@ -941,11 +944,11 @@ var asnn2listpage = asnn2listpage || {};
         // This Regexp will handle the following cases:
         // http://149.166.143.211:10080/portal/tool/a5a78a8d-9098-4f01-a634-dc93c791a04e/list
         // http://149.166.143.211:10080/portal/tool/a5a78a8d-9098-4f01-a634-dc93c791a04e?panel=Main
-        var toolurlPat = /\/portal\/tool\/[^?/] * /
+        var toolurlPat = /\/portal\/tool\/[^?/] * /;
 
-            var urlprefix = document.location.toString().match(toolurlPat);
+        var urlprefix = document.location.toString().match(toolurlPat);
 
-            / / TODO FIXME This URL is not guaranteed to have the same prefix.Route
+        // TODO FIXME This URL is not guaranteed to have the same prefix.Route
         // this through the entity broker
         jQuery.getJSON(urlprefix + '/assignmentinfo/' + asnnId,
         function(data) {

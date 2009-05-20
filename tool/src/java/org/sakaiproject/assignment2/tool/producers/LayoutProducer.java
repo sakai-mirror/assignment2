@@ -58,18 +58,11 @@ public class LayoutProducer implements NullaryProducer {
             
             
             if (viewParameters.viewID.equals(ListProducer.VIEW_ID)){
-                String[] js = new String[] {"../js/InfusionAll_r7132.js","../js/inst-asnn-list.js"};
-                String[] css = new String[] {"../css/inst-asnn-list.css"};
-                for (String jsfile: js) {
-                    UILink.make(tofill, "asnn-js-include:", jsfile);
-                }
-                for (String cssfile: css) {
-                    UILink.make(tofill, "asnn-css-include:", cssfile);
-                }
+                UILink.make(tofill, "asnn-js-include:","/sakai-assignment2-tool/content/js/inst-asnn-list.js");
+                UILink.make(tofill, "asnn-css-include:","/sakai-assignment2-tool/content/css/inst-asnn-list.css");
             }
             else if (viewParameters.viewID.equals(ViewSubmissionsProducer.VIEW_ID)) {
-                UILink.make(tofill, "asnn-js-include:", "../js/InfusionAll_r7132.js");
-                UILink.make(tofill, "asnn-js-include:", "../js/submissionview.js");
+                UILink.make(tofill, "asnn-js-include:", "/sakai-assignment2-tool/content/js/submissionview.js");
             }
             else {
                 makeIter3Javascript(tofill);
@@ -98,11 +91,10 @@ public class LayoutProducer implements NullaryProducer {
      * @param tofill
      */
     private void makeIter3Javascript(UIContainer tofill) {
-        UILink.make(tofill, "fluid-0.6beta1.js");
-        UILink.make(tofill, "ui.sortable.1.5.3.js");
-        UILink.make(tofill, "thickbox.js");
-        UILink.make(tofill, "jquery.color.js");
-        UILink.make(tofill, "thickbox.css");
+        //UILink.make(tofill, "fluid-0.6beta1.js");
+        //UILink.make(tofill, "ui.sortable.1.5.3.js");
+        //UILink.make(tofill, "thickbox.js");
+        //UILink.make(tofill, "jquery.color.js");
     }
 
 }
