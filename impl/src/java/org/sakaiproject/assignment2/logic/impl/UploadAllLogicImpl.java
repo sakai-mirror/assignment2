@@ -152,15 +152,27 @@ public class UploadAllLogicImpl implements UploadAllLogic
             
             FileObject zipContents = null;
 
-            // the first file can be ignored. it should be named based upon the
-            // assignment name and site title
-            for (FileObject fileObj : zipFile.findFiles(new FileDepthSelector(1,1)))
-            {
-                String topLevelFolder = zipExportLogic.getTopLevelFolderName(assign);
-                String baseFolderName = fileObj.getName().getBaseName();
-                if (baseFolderName.startsWith(topLevelFolder)) {
-                    zipContents = fileObj;
-                    break;
+            // the parent folder will be named based upon the
+            // assignment name and site title. often, when someone re-zips their
+            // download, it results in another folder being nested with the same name.
+            // so we end up with the structure:
+            // assignmentName_siteId/assignmentName_siteId/Pupil, Polly (polly)...
+            // to handle this scenario, we are going to skip all folders that being with
+            // the top level folder name
+            String topLevelFolder = zipExportLogic.getTopLevelFolderName(assign);
+            String baseFolderName = topLevelFolder;
+            
+            while (baseFolderName.startsWith(topLevelFolder)) {
+                baseFolderName = "";
+                
+                for (FileObject fileObj : zipFile.findFiles(new FileDepthSelector(1,1)))
+                {                
+                    baseFolderName = fileObj.getName().getBaseName();
+                    if (baseFolderName.startsWith(topLevelFolder)) {
+                        zipContents = fileObj;
+                        zipFile = fileObj;
+                        break;
+                    }
                 }
             }
 
