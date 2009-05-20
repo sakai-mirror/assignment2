@@ -7,10 +7,6 @@ asnn2.livedata = true;
  */
 asnn2.getAsnnCompData = function () {
 
-  var dataFromEntity = function (obj, index) {
-    return obj.data;
-  };
-
   var renderFromData = function (obj, index) {
     var ditto = ['id','title', 'sortIndex', 'openDate', 'dueDate',
                  'requiresSubmission', 'numSubmissions'];
@@ -98,7 +94,7 @@ asnn2.getAsnnCompData = function () {
       async: false,
       success: function (payload) {
         var data = JSON.parse(payload);
-        togo = fluid.transform(data.assignment2_collection, dataFromEntity, renderFromData);
+        togo = fluid.transform(data.assignment2_collection, asnn2util.dataFromEntity, renderFromData);
       }
     });
   }
