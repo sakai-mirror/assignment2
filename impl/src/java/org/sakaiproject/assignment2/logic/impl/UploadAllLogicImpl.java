@@ -185,10 +185,9 @@ public class UploadAllLogicImpl implements UploadAllLogic
                         fileObj.getName().getExtension().equals("csv")) {
                     // upload the grades csv file
                     processGrades(assign.getContextId(), options.assignmentId, fileObj, uploadInfo, displayIdUserIdMap);
-                    // release the grades
-                    if (options.releaseGrades) {
-                        gradebookLogic.releaseOrRetractGrades(assign.getContextId(), assign.getGradebookItemId(), true, null);
-                    }
+                    // release/retract the grades
+                    gradebookLogic.releaseOrRetractGrades(assign.getContextId(), assign.getGradebookItemId(), options.releaseGrades, null);
+
                 }
 
             }

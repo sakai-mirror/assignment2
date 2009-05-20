@@ -462,9 +462,9 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 
 	                    // check to see if any changes were actually made
 	                    boolean needsSave = false;
-	                    if (valueUpdated(version.getFeedbackNotes(), updatedVersion.getFeedbackNotes()) ||
-	                            valueUpdated(version.getAnnotatedText(), updatedVersion.getAnnotatedText()) ||
-	                            valueUpdated(version.getFeedbackReleasedDate(), updatedVersion.getFeedbackReleasedDate()) ||
+	                    if (valueUpdated(version.getFeedbackNotes(), updatedVersion.getFeedbackNotes(), true) ||
+	                            valueUpdated(version.getAnnotatedText(), updatedVersion.getAnnotatedText(), true) ||
+	                            valueUpdated(version.getFeedbackReleasedDate(), updatedVersion.getFeedbackReleasedDate(), false) ||
 	                            (attachToDelete != null && !attachToDelete.isEmpty()) ||
 	                            (attachToCreate != null && !attachToCreate.isEmpty())) {
 	                        needsSave = true;
@@ -1468,8 +1468,8 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 	        Date origResubmitClose = submission.getResubmitCloseDate();
 
 	        // only save/update if they have actually changed
-	        if (valueUpdated(origNumAllowed, numSubmissionsAllowed) ||
-	                valueUpdated(origResubmitClose, resubmitCloseDate)) {
+	        if (valueUpdated(origNumAllowed, numSubmissionsAllowed, false) ||
+	                valueUpdated(origResubmitClose, resubmitCloseDate, false)) {
 	            submission.setNumSubmissionsAllowed(numSubmissionsAllowed);
 	            submission.setResubmitCloseDate(resubmitCloseDate);
 	            submission.setModifiedBy(currUserId);
@@ -1554,17 +1554,21 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 	 * 
 	 * @param value1
 	 * @param value2
-	 * @return true if value1 and value2 are not equal. treats null strings as equal to ""
+	 * @param treatNullAsEmptyString treats null values as equal to "". useful
+	 * if you are comparing String properties to treat null and empty string as
+	 * identical values
+	 * @return true if value1 and value2 are not equal. 
 	 */
-	private boolean valueUpdated(Object value1, Object value2) {
+	private boolean valueUpdated(Object value1, Object value2, boolean treatNullAsEmptyString) {
 	    boolean valueChanged = false;
 	    
 	    // we want to make null equivalent to the empty string for comparison
-	    if (value1 instanceof String && value1 == null) {
+	    // in some cases
+	    if (treatNullAsEmptyString && value1 == null) {
 	        value1 = "";
 	    }
 	    
-	    if (value2 instanceof String && value2 == null) {
+	    if (treatNullAsEmptyString && value2 == null) {
 	        value2 = "";
 	    }
 	    
