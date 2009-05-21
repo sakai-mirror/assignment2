@@ -433,7 +433,7 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
 
 
         //Links to gradebook Helper
-        String urlWithNameParam = externalLogic.getUrlForGradebookItemHelper(null, assignment.getTitle(), FinishedHelperProducer.VIEWID);
+        String urlWithNameParam = externalLogic.getUrlForGradebookItemHelper(null, assignment.getTitle(), FinishedHelperProducer.VIEWID, currentContextId, assignment.getDueDate());
         UILink.make(form, "gradebook_item_new_helper",
                 UIMessage.make("assignment2.assignment_add.gradebook_item_new_helper"),
                 urlWithNameParam);
