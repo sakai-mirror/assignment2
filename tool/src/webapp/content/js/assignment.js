@@ -437,7 +437,6 @@ var asnn2 = asnn2 || {};
     	return time;
     }
 
->>>>>>> .merge-right.r60666
     /**
      * If due date changes and no accept until date has been set, populate
      * the accept until text field with the new due date. This does not
