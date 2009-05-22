@@ -22,6 +22,7 @@
 package org.sakaiproject.assignment2.logic;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -223,9 +224,10 @@ public interface ExternalLogic {
      * to have automatically populated
      * @param returnViewId
      * @param contextId
+     * @param dueDate TODO
      * @return url to the "create a gradebook item" helper.
      */
-    public String getUrlForGradebookItemHelper(Long gradeableObjectId, String gradebookItemName, String returnViewId, String contextId);
+    public String getUrlForGradebookItemHelper(Long gradeableObjectId, String gradebookItemName, String returnViewId, String contextId, Date dueDate);
     
     /**
      * 

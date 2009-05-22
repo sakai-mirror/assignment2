@@ -23,6 +23,7 @@ package org.sakaiproject.assignment2.logic.test.stubs;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -317,7 +318,7 @@ public class ExternalLogicStub implements ExternalLogic {
 	}
 
     public String getUrlForGradebookItemHelper(Long gradeableObjectId,
-            String gradebookItemName, String returnViewId, String contextId)
+            String gradebookItemName, String returnViewId, String contextId, Date dueDate)
     {
         // TODO Auto-generated method stub
         return null;

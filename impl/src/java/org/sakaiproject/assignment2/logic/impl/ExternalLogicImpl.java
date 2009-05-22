@@ -24,6 +24,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -300,7 +301,7 @@ public class ExternalLogicImpl implements ExternalLogic {
     	return url + "/" + (gradeableObjectId != null ? gradeableObjectId : "") + getParams;
     }
     
-    public String getUrlForGradebookItemHelper(Long gradeableObjectId, String gradebookItemName, String returnViewId, String contextId) {
+    public String getUrlForGradebookItemHelper(Long gradeableObjectId, String gradebookItemName, String returnViewId, String contextId, Date dueDate) {
         // encode the params
         try {
             gradebookItemName = URLEncoder.encode(gradebookItemName, URL_ENCODING);
@@ -308,9 +309,15 @@ public class ExternalLogicImpl implements ExternalLogic {
             throw new IllegalStateException("Invalid character encoding specified: " + URL_ENCODING);
         }
         
+        String dueDateTime = "";
+        if (dueDate != null) {
+        	dueDateTime = dueDate.getTime() + "";
+        }
+        
         String url = "/direct/gradebook/_/gradebookItem/" + contextId;
         String finishedURL = getAssignmentViewUrl(returnViewId);
-        String getParams = "?TB_iframe=true&width=700&height=415&KeepThis=true&finishURL=" + finishedURL + "&name=" + gradebookItemName;
+        String getParams = "?TB_iframe=true&width=700&height=415&KeepThis=true&finishURL=" + finishedURL + 
+        "&name=" + gradebookItemName + "&dueDateTime=" + dueDateTime;
           
         return url + "/" + (gradeableObjectId != null ? gradeableObjectId : "") + getParams;
     }

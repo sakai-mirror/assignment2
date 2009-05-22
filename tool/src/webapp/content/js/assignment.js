@@ -359,7 +359,7 @@ var asnn2 = asnn2 || {};
      */
     asnn2.update_new_gb_item_helper_url = function() {
         var gbUrlWithoutName = jQuery("a[id='page-replace\:\:gradebook_url_without_name']").attr("href");
-        var new_title = jQuery("input[name='page-replace\:\:title']").get(0).value
+        var new_title = jQuery("input[name='page-replace\:\:title']").get(0).value;
         
         // encode unsafe characters that may be in the assignment title
        
@@ -368,11 +368,76 @@ var asnn2 = asnn2 || {};
             escaped_title = escape(new_title);
         }
         
-        var modifiedUrl = gbUrlWithoutName + "&name=" + escaped_title;
+        // we also want to add the due date, if populated
+        var require_due_date = jQuery("input[name='page-replace\:\:require_due_date']").get(0);
+        var curr_req_due_date = require_due_date.checked;
+        if (curr_req_due_date) {
+        	var dateInput = jQuery("input[name='page-replace\:\:due_date\:1\:date-field']");
+        	var dateVal = dateInput.val();
+        	var time = getInputDateAsTimeString(dateVal);
+        }
+
+        var modifiedUrl = gbUrlWithoutName + "&name=" + escaped_title + "&dueDateTime=" + time;
         
         jQuery("a[id='page-replace\:\:gradebook_item_new_helper']").attr("href", modifiedUrl);
     }
     
+    /**
+     * This method will take in a date as string (most likely from the date picker input)
+     * that is in the PUC_DATE_FORMAT, parse it into pieces and figure out the
+     * equivalent Time value (# milliseconds since yadayada). This format is used
+     * to pass the due date from the "add assignment" screen to the gb helper
+     */
+    function getInputDateAsTimeString(dateString) {
+    	var time = "";
+    	if (dateString) {
+    		// let's see what format is expected and then parse it. i know it's gross...
+    		var dateFormat = PUC_DATE_FORMAT;
+            if (!dateFormat) {
+                dateFormat = "M/d/yy";
+            }
+            
+            // now, let's split this date on '/'
+            var datePieces = dateString.split("/");
+            var dateFormatPieces = dateFormat.split("/");
+            var month;
+            var day;
+            var year;
+            if (datePieces && dateFormatPieces) {
+            	if (datePieces.length === dateFormatPieces.length) {
+            		for (index = 0; index < datePieces.length; index++) {
+            			var formatPiece = dateFormatPieces[index].toLowerCase();
+            			var datePiece = datePieces[index];
+            			if (formatPiece === "m" || formatPiece === "mm") {
+            				month = datePiece;
+            			} else if (formatPiece === "d" || formatPiece === "dd") {
+            				day = datePiece;
+            			} else if (formatPiece === "yy" || formatPiece === "yyyy") {
+            				if (datePiece.length === 4) {
+            					year = datePiece;
+            				} else {
+            					// I know this is bad, but I'm not sure how else to do this...
+            					year = "20" + datePiece;
+            				}
+            			}
+            		}
+            	}
+            }
+            
+            if (month && day && year) {
+            	var newDate = new Date();
+            	newDate.setDate(day);
+            	newDate.setMonth(month-1); // month is 0-based
+            	newDate.setFullYear(year);
+            	
+            	time = newDate.getTime();
+            }
+    	}
+    	
+    	return time;
+    }
+
+>>>>>>> .merge-right.r60666
     /**
      * If due date changes and no accept until date has been set, populate
      * the accept until text field with the new due date. This does not
