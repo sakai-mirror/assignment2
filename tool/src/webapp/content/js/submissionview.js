@@ -3,11 +3,11 @@ var asnn2subview = asnn2subview || {};
 asnn2subview.selectorMap = [
   { selector: ".row", id: "row:" },
   { selector: ".sub-table-header", id: "header:" },
-  { selector: ".student-name", id: "studentName"},
-  { selector: ".submitted-time", id: "submittedDateFormat"},
-  { selector: ".submitted-date", id: "submittedDate"},
-  { selector: ".submission-status", id: "submissionStatus"},
-  { selector: ".grade", id: "grade"},
+  { selector: ".student-name", id: "student-name"},
+  { selector: ".submitted-time", id: "submitted-time"},
+ // { selector: ".submitted-date", id: "submittedDate"},
+  { selector: ".submission-status", id: "submission-status"},
+//  { selector: ".grade", id: "grade"},
   { selector: ".feedback-released", id: "feedbackReleased"}
 ];
 
@@ -40,10 +40,10 @@ asnn2subview.initPager = function(data) {
           type: "fluid.pager.pagerBar",
           options: {
             pageList: {
-               type: "fluid.pager.renderedPageList"
-             //  options: {
-             //    pageStrategy: fluid.pager.gappedPageStrategy(3, 1)
-             //    }
+               type: "fluid.pager.renderedPageList",
+               options: {
+                 pageStrategy: fluid.pager.gappedPageStrategy(3, 1)
+                 }
                }
             }
       };
@@ -51,7 +51,7 @@ asnn2subview.initPager = function(data) {
   var pager = fluid.pager("#submissions-table-area", {
     dataModel: data,
     columnDefs: columnDefs,
-    pagerBar: pagerBarOptions,
+    //pagerBar: pagerBarOptions,
     bodyRenderer: {
       type: "fluid.pager.selfRender",
       options: {
@@ -70,7 +70,7 @@ asnn2subview.init = function() {
 
   jQuery.ajax({
     type: "GET",
-    url: "/direct/assignment2submission.json?asnnid=44",
+    url: "/direct/assignment2submission.json?asnnid=4",
     cache: false,
     success: function (payload) {
       var data = JSON.parse(payload);
