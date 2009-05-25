@@ -77,7 +77,7 @@ asnn2subview.init = function(asnnid) {
 
   jQuery.ajax({
     type: "GET",
-    url: "/direct/assignment2submission.json?asnnid=4",
+    url: "/direct/assignment2submission.json?asnnid="+asnnid,
     cache: false,
     success: function (payload) {
       var data = JSON.parse(payload);

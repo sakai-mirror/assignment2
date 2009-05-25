@@ -65,6 +65,7 @@ import uk.org.ponder.rsf.components.UICommand;
 import uk.org.ponder.rsf.components.UIContainer;
 import uk.org.ponder.rsf.components.UIELBinding;
 import uk.org.ponder.rsf.components.UIForm;
+import uk.org.ponder.rsf.components.UIInitBlock;
 import uk.org.ponder.rsf.components.UIInput;
 import uk.org.ponder.rsf.components.UIInternalLink;
 import uk.org.ponder.rsf.components.UIMessage;
@@ -138,6 +139,8 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
         assignmentId = params.assignmentId;
         Assignment2 assignment = assignmentLogic.getAssignmentByIdWithAssociatedData(assignmentId);
 
+        UIInitBlock.make(tofill, "asnn2subview-init", "asnn2subview.init", assignmentId);
+        
         // let's double check that none of the associated groups were deleted from the site
         boolean displayGroupDeletionWarning = false;
         if (assignment.getAssignmentGroupSet() != null && !assignment.getAssignmentGroupSet().isEmpty()) {

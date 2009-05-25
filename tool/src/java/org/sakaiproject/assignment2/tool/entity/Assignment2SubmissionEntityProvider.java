@@ -169,6 +169,7 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware{
         for (AssignmentSubmission as : submissions) {
             Map submap = new HashMap();
             submap.put("studentName", studentIdSortNameMap.get(as.getUserId()));
+            submap.put("studentId", as.getUserId());
 
             // submission info columns are not displayed for non-electronic assignments
             if (assignment.getSubmissionType() != AssignmentConstants.SUBMIT_NON_ELECTRONIC) {
