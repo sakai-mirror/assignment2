@@ -522,6 +522,7 @@ fluid_1_1 = fluid_1_1 || {};
                                 }
                                 else if (columnDefs.length) {
                                     return expandColumnDefs(filteredRow, expOpts).concat(fluid.explode(filteredRow.row, root));
+                                    //return expandColumnDefs(filteredRow, expOpts);
                                 }
                             }
                             );

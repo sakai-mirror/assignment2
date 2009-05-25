@@ -8,7 +8,7 @@ asnn2subview.selectorMap = [
  // { selector: ".submitted-date", id: "submittedDate"},
   { selector: ".submission-status", id: "submission-status"},
 //  { selector: ".grade", id: "grade"},
-  { selector: ".feedback-released", id: "feedbackReleased"}
+  { selector: ".feedback-released", id: "showFeedbackIcon"}
 ];
 
 asnn2subview.initPager = function(data) {
@@ -30,7 +30,7 @@ asnn2subview.initPager = function(data) {
       sortable: true
     },
     {
-      key: "feedback-released",
+      key: "feedback-released-sort",
       valuebinding: "*.feedbackReleased",
       sortable: true
     }
@@ -66,7 +66,14 @@ asnn2subview.initPager = function(data) {
 
 };
 
-asnn2subview.init = function() {
+asnn2subview.init = function(asnnid) {
+
+  var comptreeFromData = function(obj, idx) {
+    if (obj.feedbackReleased === true) {
+      obj.showFeedbackIcon = true;
+    }
+    return obj;
+  }
 
   jQuery.ajax({
     type: "GET",
