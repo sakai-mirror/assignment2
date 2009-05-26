@@ -514,18 +514,18 @@ fluid_1_1 = fluid_1_1 || {};
                 listeners: {
                     onModelChange: function (newModel, oldModel) {
                         var filtered = overallThat.options.modelFilter(directModel, newModel, overallThat.permutation);
-                        var tree = fluid.transform(filtered,
-                            function (filteredRow) {
+                        var filteredRowTransform = inOptions.filteredRowTransform || function (filteredRow) {
                                 var roots = getRoots(expOpts, overallThat, filteredRow.index);
                                 if (columnDefs === "explode") {
                                     return fluid.explode(filteredRow.row, root);
                                 }
                                 else if (columnDefs.length) {
-                                    return expandColumnDefs(filteredRow, expOpts).concat(fluid.explode(filteredRow.row, root));
                                     //return expandColumnDefs(filteredRow, expOpts);
+                                    var togo = expandColumnDefs(filteredRow, expOpts);
+                                    //alert(JSON.stringify(togo)); return togo;
                                 }
-                            }
-                            );
+                            };
+                        var tree = fluid.transform(filtered, filteredRowTransform);
                         var fullTree = {};
                         fullTree[options.row] = tree;
                         if (typeof(columnDefs) === "object") {
@@ -533,6 +533,7 @@ fluid_1_1 = fluid_1_1 || {};
                         }
                         options.renderOptions = options.renderOptions || {};
                         options.renderOptions.model = expOpts.dataModel;
+alert(JSON.stringify(fullTree));
                         fluid.reRender(template, root, fullTree, options.renderOptions);
                         setModelSortHeaderClass(newModel, expOpts); // TODO, should this not be actually renderable?
                     }
