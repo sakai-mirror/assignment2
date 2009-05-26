@@ -55,6 +55,7 @@ import org.sakaiproject.assignment2.tool.producers.renderers.AttachmentListRende
 import org.sakaiproject.assignment2.tool.producers.renderers.PagerRenderer;
 import org.sakaiproject.assignment2.tool.producers.renderers.SortHeaderRenderer;
 import org.sakaiproject.site.api.Group;
+import org.sakaiproject.tool.api.Placement;
 
 import uk.org.ponder.htmlutil.HTMLUtil;
 import uk.org.ponder.messageutil.MessageLocator;
@@ -125,6 +126,7 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
     private AttachmentListRenderer attachmentListRenderer;
     private AssignmentPermissionLogic permissionLogic;
     private ExternalGradebookLogic gradebookLogic;
+    private Placement placement;
 
     private Long assignmentId;
 
@@ -139,7 +141,7 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
         assignmentId = params.assignmentId;
         Assignment2 assignment = assignmentLogic.getAssignmentByIdWithAssociatedData(assignmentId);
 
-        UIInitBlock.make(tofill, "asnn2subview-init", "asnn2subview.init", assignmentId);
+        UIInitBlock.make(tofill, "asnn2subview-init", "asnn2subview.init", new Object[]{assignmentId, externalLogic.getCurrentContextId(), placement.getId()});
         
         // let's double check that none of the associated groups were deleted from the site
         boolean displayGroupDeletionWarning = false;
@@ -633,5 +635,9 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
 
     public void setExternalGradebookLogic(ExternalGradebookLogic gradebookLogic) {
         this.gradebookLogic = gradebookLogic;
+    }
+    
+    public void setPlacement(Placement placement) {
+        this.placement = placement;
     }
 }
