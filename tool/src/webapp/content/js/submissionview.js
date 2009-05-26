@@ -56,7 +56,7 @@ asnn2subview.initPager = function(data) {
             pageList: {
                type: "fluid.pager.renderedPageList",
                options: {
-                 pageStrategy: fluid.pager.gappedPageStrategy(3, 1)
+                 linkBody: "a"
                  }
                }
             }
@@ -100,11 +100,11 @@ asnn2subview.initPager = function(data) {
   var pager = fluid.pager("#submissions-table-area", {
     dataModel: data,
     columnDefs: columnDefs,
-    //pagerBar: pagerBarOptions,
+    pagerBar: pagerBarOptions,
     bodyRenderer: {
       type: "fluid.pager.selfRender",
       options: {
-    filteredRowTransform : filteredRowTransform,
+        filteredRowTransform : filteredRowTransform,
         selectors: {
           root: ".fl-pager-data"
         },

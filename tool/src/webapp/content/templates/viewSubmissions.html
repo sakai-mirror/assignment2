@@ -147,6 +147,29 @@
    <!-- New Fluid Table -->
    <div id="submissions-table-area">
 
+<div class="pager-sort-area">
+    <div id="pager-top" class="fl-pager-top flc-pager-top">
+        <ul id="page-list" class="pager-links flc-pager-links">
+          <li class="fl-pager-pageLink flc-pager-pageLink"><a href="#">1</a></li>
+          <li class="flc-pager-pageLink-disabled">2</li>
+          <li class="fl-pager-pageLink flc-pager-pageLink"><a href="#">3</a></li>
+        </ul>
+      <p id="page-size">Show <span>
+        <select class="flc-pager-page-size">
+          <option value="5">5</option>
+          <option value="10">10</option>
+          <option value="20">20</option>
+          <option value="50">50</option>
+        </select></span> per page
+      </p>
+      <p id="page-arrows">
+      <span class="fl-pager-previous flc-pager-previous"><a href="#">&lt; previous</a></span>
+      <span class="fl-pager-next flc-pager-next"><a href="#">next &gt;</a></span>
+      </p>
+    </div>
+</div>
+
+<!--
       <div class="flc-pager-top">
          <div class="ssth-border flc-pager-summary">
             Records Total
@@ -158,17 +181,17 @@
          </select>
          <ul class="fl-pager-ui">
             <li><a href="#" class="flc-pager-previous">Prev</a></li>
+            <li><a href="#" class="flc-pager-next">Next</a></li>
             <li>
                <ul class="fl-pager-links pager-links flc-pager-links">
-                  <li class="flc-pager-pageLink"><a href="#">1</a></li>
+                  <li class="fl-pager-pageLink flc-pager-pageLink"><a href="#">1</a></li>
                   <li class="flc-pager-pageLink-disabled">2</li>
-                  <li class="flc-pager-pageLink-skip">...</li>
-                  <li class="flc-pager-pageLink"><a href="#">3</a></li>
+                  <li class="fl-pager-pageLink flc-pager-pageLink"><a href="#">3</a></li>
                </ul>
             </li>
-            <li><a href="#" class="flc-pager-next">Next</a></li>
          </ul>
       </div>
+-->
 
       <table class="listHier lines nolines fl-pager-data" cellpadding="0" cellspacing="0" summary="" xmlns:rsf="http://ponder.org.uk">
          <thead>
