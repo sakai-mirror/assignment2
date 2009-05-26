@@ -96,15 +96,6 @@
 
    </table>
     -->
-   <form rsf:id="unassigned-apply-form" method="post">
-       <div id="unassigned-apply">
-          <p rsf:id="msg=assignment2.assignment_grade.assigntoall">Apply to all unassigned</p>
-          <p>
-             <input rsf:id="new-grade-value" type="text" size="4" value="0" />
-             <input rsf:id="apply-button" type="submit" value="Apply" />
-          </p>
-      </div>
-   </form>
 
 
    <div style="display:none" id="release-feedback-dialog">
@@ -182,11 +173,11 @@
       <table class="fl-pager-data" summary="" xmlns:rsf="http://ponder.org.uk">
          <thead>
              <tr class="sub-table-header">
-                 <th class="flc-pager-sort-header"><a class="student-name" title="Click to sort" href="#">Student Name</a></th>
-                 <th class="flc-pager-sort-header"><a class="submitted-time" title="Click to sort" href="#">Submitted</a></th>
-                 <th class="flc-pager-sort-header"><a class="submission-status" title="Click to sort" href="#">Submission Status</a></th>
-                 <th class="flc-pager-sort-header"><a class="grade" title="Click to sort" href="#">Grade (Released)</a></th>
-                 <th class="flc-pager-sort-header"><a class="feedback-released" title="Click to sort" href="#">Feedback Released?</a></th>
+                 <th class="flc-pager-sort-header"><a class="student-name-sort" title="Click to sort" href="#">Student Name</a></th>
+                 <th class="flc-pager-sort-header"><a class="submitted-time-sort" title="Click to sort" href="#">Submitted</a></th>
+                 <th class="flc-pager-sort-header"><a class="submission-status-sort" title="Click to sort" href="#">Submission Status</a></th>
+                 <th class="flc-pager-sort-header"><a class="grade-sort" title="Click to sort" href="#">Grade (Released)</a></th>
+                 <th class="flc-pager-sort-header"><a class="feedback-released-sort" title="Click to sort" href="#">Feedback Released?</a></th>
              </tr>
          </thead>
 
@@ -195,9 +186,8 @@
                <td><a href="" class="student-grade-link">Steven Githens</a></td>
                <td><span class="submitted-time">Mar 1, 2009 10:31 PM</span></td>
                <td><span class="submission-status">Submitted</span>
-                  <span class="submitted-date">1234</span>
                </td>
-               <td><span class="grade">50</span></td>
+               <td class="grade-td"><span class="grade"></span></td>
                <td>
                  <img class="feedback-released" src="/sakai-assignment2-tool/content/images/check.png" width="16" height="16" border="0" />
                </td>
@@ -206,6 +196,16 @@
      </table>
    </div>
    <!-- End Fluid Table -->
+
+   <form rsf:id="unassigned-apply-form" method="post">
+       <div id="unassigned-apply">
+          <p rsf:id="msg=assignment2.assignment_grade.assigntoall">Apply to all unassigned</p>
+          <p>
+             <input rsf:id="new-grade-value" type="text" size="4" value="0" />
+             <input rsf:id="apply-button" type="submit" value="Apply" />
+          </p>
+      </div>
+   </form>
 
    <script type="text/javascript" rsf:id="defaultSortBy">
       defaultSortBy="name"; //done via producer

@@ -5,28 +5,33 @@ asnn2subview.selectorMap = [
   { selector: ".sub-table-header", id: "header:" },
   { selector: ".student-name", id: "student-name"},
   { selector: ".submitted-time", id: "submitted-time"},
- // { selector: ".submitted-date", id: "submittedDate"},
   { selector: ".submission-status", id: "submission-status"},
-//  { selector: ".grade", id: "grade"},
-  { selector: ".feedback-released", id: "showFeedbackIcon"},
-  { selector: ".student-grade-link", id: "student-grade-link"}
+  { selector: ".grade", id: "grade"},
+  { selector: ".feedback-released", id: "feedback-released"},
+  { selector: ".student-grade-link", id: "student-grade-link"},
+  { selector: ".student-name-sort", id: "student-name-sort" },
+  { selector: ".submitted-time-sort", id: "submitted-time-sort"},
+  { selector: ".submission-status-sort", id: "submission-status-sort"},
+  { selector: ".feedback-released-sort", id: "feedback-released-sort" },
+  { selector: ".grade-td", id: "grade-td" }
 ];
 
 asnn2subview.initPager = function(data) {
+  var graded = true;
 
   var columnDefs = [
     {
-      key: "student-name",
+      key: "student-name-sort",
       valuebinding: "*.studentName",
       sortable: true
     },
     {
-      key: "submitted-time",
+      key: "submitted-time-sort",
       valuebinding: "*.submittedDateFormat",
       sortable: true
     },
     {
-      key: "submission-status",
+      key: "submission-status-sort",
       valuebinding: "*.submissionStatus",
       sortable: true
     },
@@ -36,6 +41,14 @@ asnn2subview.initPager = function(data) {
       sortable: true
     }
   ];
+
+  if (graded === true) {
+    columnDefs.push({
+      key: "grade-sort",
+      valuebinding: "*.grade",
+      sortable: true
+    });
+  }
 
   var pagerBarOptions = {
           type: "fluid.pager.pagerBar",
@@ -59,9 +72,32 @@ asnn2subview.initPager = function(data) {
       { ID: "student-grade-link",
         target: '/portal/tool/'+sakai.curPlacement+'/grade/'+asnn2.curAsnnId+'/'+row.studentId,
         linktext: row.studentName
+      },
+      {
+        ID: "submission-status",
+        value: row.submissionStatus
       }
-      
     ];
+
+    if (row.submittedDateFormat) {
+      togo.push({ ID: "submitted-time",
+        value: row.submittedDateFormat
+      });
+    }
+
+    if (row.feedbackReleased === true) {
+      togo.push({ ID: "feedback-released", value: true});
+    }
+
+    if (graded === true) {
+      togo.push({ ID: "grade-td", value: true});
+    }
+
+    if (row.grade && row.grade !== null) {
+      togo.push({ ID: "grade", value: row.grade});
+    }
+
+
     return togo;
   };
 

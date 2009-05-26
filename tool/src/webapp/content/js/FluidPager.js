@@ -533,7 +533,7 @@ fluid_1_1 = fluid_1_1 || {};
                         }
                         options.renderOptions = options.renderOptions || {};
                         options.renderOptions.model = expOpts.dataModel;
-alert(JSON.stringify(fullTree));
+//alert(JSON.stringify(fullTree));
                         fluid.reRender(template, root, fullTree, options.renderOptions);
                         setModelSortHeaderClass(newModel, expOpts); // TODO, should this not be actually renderable?
                     }
