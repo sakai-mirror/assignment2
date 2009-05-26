@@ -90,10 +90,6 @@ asnn2subview.initPager = function(data) {
     }
 
     if (graded === true) {
-      togo.push({ ID: "grade-td", value: true});
-    }
-
-    if (row.grade && row.grade !== null) {
       togo.push({ ID: "grade", value: row.grade});
     }
 
