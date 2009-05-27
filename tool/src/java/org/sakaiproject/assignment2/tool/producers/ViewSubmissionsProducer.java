@@ -338,6 +338,7 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
         
         Map<String, String> studentIdSortNameMap = externalLogic.getUserIdToSortNameMap(studentIdList);
         
+        /*
         for (AssignmentSubmission as : submissions) {
             UIBranchContainer row = UIBranchContainer.make(tofill, "row:");
 
@@ -388,6 +389,7 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
             //For JS Sorting
             UIOutput.make(row, "released", released);
         }
+        */
 
         /*
          * Form for assigning a grade to all submissions without a grade.
