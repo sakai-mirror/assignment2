@@ -57,6 +57,7 @@ asnn2subview.initPager = function(data) {
                type: "fluid.pager.renderedPageList",
                options: {
                  linkBody: "a"
+                 //pageStrategy: fluid.pager.gappedPageStrategy(3, 1)
                  }
                }
             }
@@ -130,9 +131,9 @@ asnn2subview.init = function(asnnid, contextId, placementId) {
       ID: "student-grade-link",
       target: '/portal/tool/'+sakai.curPlacement+'/grade/'+asnnid+'/'+obj.studentId,
       linktext: obj.studentName
-    }
+    };
     return obj;
-  }
+  };
 
   jQuery.ajax({
     type: "GET",
