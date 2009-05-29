@@ -30,11 +30,32 @@ asnn2subview.subTableRenderer = function (overallThat, inOptions) {
             success: function (payload) {
               var data = JSON.parse(payload);
               togo = fluid.transform(data.assignment2submission_collection, asnn2util.dataFromEntity, asnn2subview.filteredRowTransform);
-              var treedata = { "row:": togo  };
+              var treedata = { 
+                "header:": {
+                  children: [ 
+                    { ID: "student-name-sort",
+                      value: true
+                    },
+                    { ID: "submitted-time-sort",
+                      value: true
+                    },
+                    { ID: "submission-status-sort",
+                      value: true
+                    },
+                    { ID: "feedback-released-sort",
+                      value: true
+                    }
+                  ]
+                 }, 
+                "row:": togo  
+              };
               // Keep this around to test on Fluid Trunk and create a Jira to have more debug information if it's still the same.
               //var treedata = { children: [{ ID: "row:", children: togo }] };
               asnn2subview.renderSubmissions(treedata);
-            }
+            },
+            failure: function() {
+              // TODO We need to handle this
+            } 
           });
         }
       }
@@ -105,7 +126,7 @@ asnn2subview.initPager = function(numSubmissions) {
     fakedata.push(i);
   }
 
-  var pager = fluid.pager("#submissions-table-area", {
+  asnn2subview.pager = fluid.pager("#submissions-table-area", {
     dataModel: fakedata,
     columnDefs: columnDefs,
     pagerBar: pagerBarOptions,
