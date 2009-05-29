@@ -13,8 +13,38 @@ asnn2subview.selectorMap = [
   { selector: ".submitted-time-sort", id: "submitted-time-sort"},
   { selector: ".submission-status-sort", id: "submission-status-sort"},
   { selector: ".feedback-released-sort", id: "feedback-released-sort" },
+  { selector: ".grade-sort", id: "grade-sort" },
+  { selector: ".grade-col-header", id: "grade-col-header" },
   { selector: ".grade-td", id: "grade-td" }
 ];
+
+asnn2subview.getSortHeaderComptree = function() {
+  var tree = {
+      children: [ 
+        { ID: "student-name-sort",
+          value: true
+        },
+        { ID: "submitted-time-sort",
+          value: true
+        },
+        { ID: "submission-status-sort",
+          value: true
+        },
+        { ID: "feedback-released-sort",
+          value: true
+        }
+      ]
+  };
+  if (asnn2subview.graded === true) {
+    tree.children.push({
+      ID: "grade-col-header", value: true
+    });
+    tree.children.push({
+      ID: "grade-sort", value: true
+    });
+  }
+
+};
 
 asnn2subview.subTableRenderer = function (overallThat, inOptions) {
   var that = fluid.initView("asnn2subview.subTableRenderer", overallThat.container, inOptions);
@@ -30,23 +60,9 @@ asnn2subview.subTableRenderer = function (overallThat, inOptions) {
             success: function (payload) {
               var data = JSON.parse(payload);
               togo = fluid.transform(data.assignment2submission_collection, asnn2util.dataFromEntity, asnn2subview.filteredRowTransform);
+               
               var treedata = { 
-                "header:": {
-                  children: [ 
-                    { ID: "student-name-sort",
-                      value: true
-                    },
-                    { ID: "submitted-time-sort",
-                      value: true
-                    },
-                    { ID: "submission-status-sort",
-                      value: true
-                    },
-                    { ID: "feedback-released-sort",
-                      value: true
-                    }
-                  ]
-                 }, 
+                "header:": asnn2subview.getSortHeaderComptree(),
                 "row:": togo  
               };
               // Keep this around to test on Fluid Trunk and create a Jira to have more debug information if it's still the same.
@@ -176,14 +192,14 @@ asnn2subview.filteredRowTransform = function(obj, idx) {
     return togo;
   };
 
-asnn2subview.init = function(asnnid, contextId, placementId, numSubmissions) {
+asnn2subview.init = function(asnnid, contextId, placementId, numSubmissions, graded) {
   sakai.curPlacement = placementId;
   sakai.curContext = contextId;
 
   asnn2.curAsnnId = asnnid;
 
   asnn2subview.asnnid = asnnid;
-  asnn2subview.graded = true;
+  asnn2subview.graded = graded;
   asnn2subview.initPager(numSubmissions);
 /*
   jQuery.ajax({
