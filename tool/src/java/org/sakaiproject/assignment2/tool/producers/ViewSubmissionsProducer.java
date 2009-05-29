@@ -182,7 +182,7 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
         // we need to retrieve the history for the release/retract feedback logic
         List<AssignmentSubmission> submissions = submissionLogic.getViewableSubmissionsWithHistoryForAssignmentId(assignmentId, params.groupId);
         
-        UIInitBlock.make(tofill, "asnn2subview-init", "asnn2subview.init", new Object[]{assignmentId, externalLogic.getCurrentContextId(), placement.getId(), submissions.size()});
+        UIInitBlock.make(tofill, "asnn2subview-init", "asnn2subview.init", new Object[]{assignmentId, externalLogic.getCurrentContextId(), placement.getId(), submissions.size(), assignment.isGraded()});
         
         // if assign is graded, retrieve the gb item
         GradebookItem gbItem = null;
