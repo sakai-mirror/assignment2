@@ -31,6 +31,7 @@ asnn2subview.subTableRenderer = function (overallThat, inOptions) {
               var data = JSON.parse(payload);
               togo = fluid.transform(data.assignment2submission_collection, asnn2util.dataFromEntity, asnn2subview.filteredRowTransform);
               var treedata = { "row:": togo  };
+              // Keep this around to test on Fluid Trunk and create a Jira to have more debug information if it's still the same.
               //var treedata = { children: [{ ID: "row:", children: togo }] };
               asnn2subview.renderSubmissions(treedata);
             }
@@ -49,7 +50,7 @@ asnn2subview.renderSubmissions = function(treedata) {
   else {
     asnn2subview.subListTemplate = fluid.selfRender(jQuery("#asnn-submissions-table"), treedata, {cutpoints: asnn2subview.selectorMap});
   }
-  RSF.getDOMModifyFirer().fire();
+  RSF.getDOMModifyFirer().fireEvent();
 }
 
 asnn2subview.initPager = function(numSubmissions) {
