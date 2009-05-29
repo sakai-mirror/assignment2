@@ -141,7 +141,6 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
         assignmentId = params.assignmentId;
         Assignment2 assignment = assignmentLogic.getAssignmentByIdWithAssociatedData(assignmentId);
 
-        UIInitBlock.make(tofill, "asnn2subview-init", "asnn2subview.init", new Object[]{assignmentId, externalLogic.getCurrentContextId(), placement.getId()});
         
         // let's double check that none of the associated groups were deleted from the site
         boolean displayGroupDeletionWarning = false;
@@ -182,6 +181,8 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
 
         // we need to retrieve the history for the release/retract feedback logic
         List<AssignmentSubmission> submissions = submissionLogic.getViewableSubmissionsWithHistoryForAssignmentId(assignmentId, params.groupId);
+        
+        UIInitBlock.make(tofill, "asnn2subview-init", "asnn2subview.init", new Object[]{assignmentId, externalLogic.getCurrentContextId(), placement.getId(), submissions.size()});
         
         // if assign is graded, retrieve the gb item
         GradebookItem gbItem = null;
