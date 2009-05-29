@@ -56,8 +56,8 @@ asnn2subview.initPager = function(data) {
             pageList: {
                type: "fluid.pager.renderedPageList",
                options: {
-                 linkBody: "a"
-                 //pageStrategy: fluid.pager.gappedPageStrategy(3, 1)
+                 linkBody: "a",
+                 pageStrategy: fluid.pager.gappedPageStrategy(3, 1)
                  }
                }
             }
@@ -101,7 +101,8 @@ asnn2subview.initPager = function(data) {
   var pager = fluid.pager("#submissions-table-area", {
     dataModel: data,
     columnDefs: columnDefs,
-    pagerBar: pagerBarOptions,
+    pagerBar: pagerBarOptions
+/*
     bodyRenderer: {
       type: "fluid.pager.selfRender",
       options: {
@@ -112,12 +113,13 @@ asnn2subview.initPager = function(data) {
         renderOptions: {debugMode: false, cutpoints: asnn2subview.selectorMap}
       }
     }
+*/
 
   });
 
 };
 
-asnn2subview.init = function(asnnid, contextId, placementId) {
+asnn2subview.init = function(asnnid, contextId, placementId, numSubmissions) {
   sakai.curPlacement = placementId;
   sakai.curContext = contextId;
 
@@ -135,6 +137,8 @@ asnn2subview.init = function(asnnid, contextId, placementId) {
     return obj;
   };
 
+  asnn2subview.initPager(togo, numSubmissions);
+/*
   jQuery.ajax({
     type: "GET",
     url: "/direct/assignment2submission.json?asnnid="+asnnid,
@@ -142,8 +146,9 @@ asnn2subview.init = function(asnnid, contextId, placementId) {
     success: function (payload) {
       var data = JSON.parse(payload);
       togo = fluid.transform(data.assignment2submission_collection, asnn2util.dataFromEntity, comptreeFromData);
-      asnn2subview.initPager(togo);
+      asnn2subview.initPager(togo, numSubmissions);
     }
     // TODO Handle the failure case
   });
+*/
 };
