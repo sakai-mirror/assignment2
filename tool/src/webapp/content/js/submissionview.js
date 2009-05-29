@@ -25,7 +25,7 @@ asnn2subview.subTableRenderer = function (overallThat, inOptions) {
         onModelChange: function (newModel, oldModel) {
           jQuery.ajax({
             type: "GET",
-            url: "/direct/assignment2submission.json?asnnid="+asnn2subview.asnnid+"&_start="+newModel.pageIndex+"&_limit="+newModel.pageSize,
+            url: "/direct/assignment2submission.json?asnnid="+asnn2subview.asnnid+"&_start="+(newModel.pageIndex*newModel.pageSize)+"&_limit="+newModel.pageSize,
             cache: false,
             success: function (payload) {
               var data = JSON.parse(payload);
