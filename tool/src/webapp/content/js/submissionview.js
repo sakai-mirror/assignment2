@@ -16,7 +16,43 @@ asnn2subview.selectorMap = [
   { selector: ".grade-td", id: "grade-td" }
 ];
 
-asnn2subview.initPager = function(data) {
+asnn2subview.subTableRenderer = function (overallThat, inOptions) {
+  var that = fluid.initView("asnn2subview.subTableRenderer", overallThat.container, inOptions);
+
+  return {
+    returnedOptions: {
+      listeners: {
+        onModelChange: function (newModel, oldModel) {
+          jQuery.ajax({
+            type: "GET",
+            url: "/direct/assignment2submission.json?asnnid="+asnn2subview.asnnid+"&_start="+newModel.pageIndex+"&_limit="+newModel.pageSize,
+            cache: false,
+            success: function (payload) {
+              var data = JSON.parse(payload);
+              togo = fluid.transform(data.assignment2submission_collection, asnn2util.dataFromEntity, asnn2subview.filteredRowTransform);
+              var treedata = { "row:": togo  };
+              //var treedata = { children: [{ ID: "row:", children: togo }] };
+              asnn2subview.renderSubmissions(treedata);
+            }
+          });
+        }
+      }
+    }
+  };
+
+};
+
+asnn2subview.renderSubmissions = function(treedata) {
+  if (asnn2subview.subListTemplate) {
+    fluid.reRender(asnn2subview.subListTemplate, jQuery("#asnn-submissions-table"), treedata, {cutpoints: asnn2subview.selectorMap});
+  }
+  else {
+    asnn2subview.subListTemplate = fluid.selfRender(jQuery("#asnn-submissions-table"), treedata, {cutpoints: asnn2subview.selectorMap});
+  }
+  RSF.getDOMModifyFirer().fire();
+}
+
+asnn2subview.initPager = function(numSubmissions) {
   var graded = true;
 
   var columnDefs = [
@@ -63,12 +99,32 @@ asnn2subview.initPager = function(data) {
             }
       };
 
-  var filteredRowTransform = function(obj, idx) {
-    //if (obj.feedbackReleased === true) {
-    //  obj.showFeedbackIcon = true;
-    //}
-    //obj.studentGradeLink = {
-    var row = obj.row;
+  var fakedata = [];
+  for (var i = 0; i < numSubmissions; i++) {
+    fakedata.push(i);
+  }
+
+  var pager = fluid.pager("#submissions-table-area", {
+    dataModel: fakedata,
+    columnDefs: columnDefs,
+    pagerBar: pagerBarOptions,
+    bodyRenderer: {
+      type: "asnn2subview.subTableRenderer",
+      options: {
+//        filteredRowTransform : filteredRowTransform,
+        selectors: {
+          root: ".fl-pager-data"
+        },
+        renderOptions: {debugMode: false, cutpoints: asnn2subview.selectorMap}
+      }
+    }
+
+  });
+
+};
+
+asnn2subview.filteredRowTransform = function(obj, idx) {
+    var row = obj;
     var togo = [
       { ID: "student-grade-link",
         target: '/portal/tool/'+sakai.curPlacement+'/grade/'+asnn2.curAsnnId+'/'+row.studentId,
@@ -90,7 +146,7 @@ asnn2subview.initPager = function(data) {
       togo.push({ ID: "feedback-released", value: true});
     }
 
-    if (graded === true) {
+    if (asnn2subview.graded === true) {
       togo.push({ ID: "grade", value: row.grade});
     }
 
@@ -98,46 +154,15 @@ asnn2subview.initPager = function(data) {
     return togo;
   };
 
-  var pager = fluid.pager("#submissions-table-area", {
-    dataModel: data,
-    columnDefs: columnDefs,
-    pagerBar: pagerBarOptions
-/*
-    bodyRenderer: {
-      type: "fluid.pager.selfRender",
-      options: {
-        filteredRowTransform : filteredRowTransform,
-        selectors: {
-          root: ".fl-pager-data"
-        },
-        renderOptions: {debugMode: false, cutpoints: asnn2subview.selectorMap}
-      }
-    }
-*/
-
-  });
-
-};
-
 asnn2subview.init = function(asnnid, contextId, placementId, numSubmissions) {
   sakai.curPlacement = placementId;
   sakai.curContext = contextId;
 
   asnn2.curAsnnId = asnnid;
 
-  var comptreeFromData = function(obj, idx) {
-    if (obj.feedbackReleased === true) {
-      obj.showFeedbackIcon = true;
-    }
-    obj.studentGradeLink = {
-      ID: "student-grade-link",
-      target: '/portal/tool/'+sakai.curPlacement+'/grade/'+asnnid+'/'+obj.studentId,
-      linktext: obj.studentName
-    };
-    return obj;
-  };
-
-  asnn2subview.initPager(togo, numSubmissions);
+  asnn2subview.asnnid = asnnid;
+  asnn2subview.graded = true;
+  asnn2subview.initPager(numSubmissions);
 /*
   jQuery.ajax({
     type: "GET",
