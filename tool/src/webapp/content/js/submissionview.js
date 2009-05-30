@@ -10,15 +10,20 @@ asnn2subview.selectorMap = [
   { selector: ".feedback-released", id: "feedback-released"},
   { selector: ".student-grade-link", id: "student-grade-link"},
   { selector: ".student-name-sort", id: "student-name-sort" },
+  { selector: ".student-name-sort-img", id: "student-name-sort-img" },
   { selector: ".submitted-time-sort", id: "submitted-time-sort"},
+  { selector: ".submitted-time-sort-img", id: "submitted-time-sort-img"},
   { selector: ".submission-status-sort", id: "submission-status-sort"},
+  { selector: ".submission-status-sort-img", id: "submission-status-sort-img"},
   { selector: ".feedback-released-sort", id: "feedback-released-sort" },
+  { selector: ".feedback-released-sort-img", id: "feedback-released-sort-img" },
   { selector: ".grade-sort", id: "grade-sort" },
+  { selector: ".grade-sort-img", id: "grade-sort-img" },
   { selector: ".grade-col-header", id: "grade-col-header" },
   { selector: ".grade-td", id: "grade-td" }
 ];
 
-asnn2subview.getSortHeaderComptree = function() {
+asnn2subview.getSortHeaderComptree = function(newModel) {
   var onSortClick = function(sortBy) {
     return function() {
       var newModel = fluid.copy(asnn2subview.pager.model);
@@ -29,7 +34,16 @@ asnn2subview.getSortHeaderComptree = function() {
       } 
       else {
         newModel.sortDir = -1 * newModel.sortDir;
-      }
+      }        
+      jQuery(".sortimg").remove();
+
+ /*         if (asnn2.pageState.sortDir < 0) {
+            jQuery(this).after('<img src="/library/image/sakai/sortascending.gif" />');
+          }
+          else {
+            jQuery(this).after('<img src="/library/image/sakai/sortdescending.gif" />');
+          }
+*/
       asnn2subview.pager.model = newModel;
       asnn2subview.pager.events.onModelChange.fire(newModel);
     }
@@ -77,6 +91,25 @@ asnn2subview.getSortHeaderComptree = function() {
     });
   }
 
+  if (newModel.sortDir > 0) {
+    var imgsrc = "/library/image/sakai/sortascending.gif";
+  }  
+  else {
+    imgsrc = "/library/image/sakai/sortdescending.gif";
+  }
+
+  if (newModel.sortKey === "studentName") {
+    tree.children.push({ ID: "student-name-sort-img", target: imgsrc });
+  } else if (newModel.sortKey === "submittedTime") {
+    tree.children.push({ ID: "submitted-time-sort-img", target: imgsrc });
+  } else if (newModel.sortKey === "submissionStatus") {
+    tree.children.push({ ID: "submission-status-sort-img", target: imgsrc });
+  } else if (newModel.sortKey === "feedbackReleased") {
+    tree.children.push({ ID: "feedback-released-sort-img", target: imgsrc });
+  } else if (newModel.sortKey === "grade") {
+    tree.children.push({ ID: "grade-sort-img", target: imgsrc });
+  }
+
   return tree;
 };
 
@@ -96,8 +129,8 @@ asnn2subview.subTableRenderer = function (overallThat, inOptions) {
           else {
             // set defaults
             order = "&_order=studentName";
-            //newModel.sortKey = "studentName"; 
-            //newModel.sortDir = 1; 
+            newModel.sortKey = "studentName"; 
+            newModel.sortDir = 1; 
           }
           jQuery.ajax({
             type: "GET",
@@ -108,7 +141,7 @@ asnn2subview.subTableRenderer = function (overallThat, inOptions) {
               togo = fluid.transform(data.assignment2submission_collection, asnn2util.dataFromEntity, asnn2subview.filteredRowTransform);
                
               var treedata = { 
-                "header:": asnn2subview.getSortHeaderComptree(),
+                "header:": asnn2subview.getSortHeaderComptree(newModel),
                 "row:": togo  
               };
               // Keep this around to test on Fluid Trunk and create a Jira to have more debug information if it's still the same.
