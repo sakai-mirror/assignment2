@@ -19,31 +19,65 @@ asnn2subview.selectorMap = [
 ];
 
 asnn2subview.getSortHeaderComptree = function() {
+  var onSortClick = function(sortBy) {
+    return function() {
+      var newModel = fluid.copy(asnn2subview.pager.model);
+      newModel.pageIndex = 0;
+      newModel.sortKey = sortBy;
+      if (!newModel.sortDir) {
+        newModel.sortDir = 1; 
+      } 
+      else {
+        newModel.sortDir = -1 * newModel.sortDir;
+      }
+      asnn2subview.pager.model = newModel;
+      asnn2subview.pager.events.onModelChange.fire(newModel);
+    }
+  };
+
   var tree = {
       children: [ 
         { ID: "student-name-sort",
-          value: true
+          value: true,
+          decorators: [
+            {"jQuery": ["click", onSortClick('studentName')]}
+          ]
         },
         { ID: "submitted-time-sort",
-          value: true
+          value: true,
+          decorators: [
+            {"jQuery": ["click", onSortClick('submittedTime')]}
+          ]
         },
         { ID: "submission-status-sort",
-          value: true
+          value: true,
+          decorators: [
+            {"jQuery": ["click", onSortClick('submissionStatus')]}
+          ]
         },
         { ID: "feedback-released-sort",
-          value: true
+          value: true,
+          decorators: [
+            {"jQuery": ["click", onSortClick('feedbackReleased')]}
+          ]
         }
       ]
   };
+
   if (asnn2subview.graded === true) {
     tree.children.push({
       ID: "grade-col-header", value: true
     });
     tree.children.push({
-      ID: "grade-sort", value: true
+      ID: "grade-sort", 
+      value: true,
+      decorators: [
+        {"jQuery": ["click", onSortClick('grade')]}
+      ]
     });
   }
 
+  return tree;
 };
 
 asnn2subview.subTableRenderer = function (overallThat, inOptions) {
@@ -53,9 +87,21 @@ asnn2subview.subTableRenderer = function (overallThat, inOptions) {
     returnedOptions: {
       listeners: {
         onModelChange: function (newModel, oldModel) {
+          if (newModel.sortKey) {
+            var order = "&_order=" + newModel.sortKey;
+            if (newModel.sortDir < 0) {
+              order = order + "_desc";
+            }
+          } 
+          else {
+            // set defaults
+            order = "&_order=studentName";
+            //newModel.sortKey = "studentName"; 
+            //newModel.sortDir = 1; 
+          }
           jQuery.ajax({
             type: "GET",
-            url: "/direct/assignment2submission.json?asnnid="+asnn2subview.asnnid+"&_start="+(newModel.pageIndex*newModel.pageSize)+"&_limit="+newModel.pageSize,
+            url: "/direct/assignment2submission.json?asnnid="+asnn2subview.asnnid+"&_start="+(newModel.pageIndex*newModel.pageSize)+"&_limit="+newModel.pageSize+order,
             cache: false,
             success: function (payload) {
               var data = JSON.parse(payload);
@@ -115,7 +161,7 @@ asnn2subview.initPager = function(numSubmissions) {
       sortable: true
     }
   ];
-
+/*
   if (graded === true) {
     columnDefs.push({
       key: "grade-sort",
@@ -123,7 +169,7 @@ asnn2subview.initPager = function(numSubmissions) {
       sortable: true
     });
   }
-
+*/
   var pagerBarOptions = {
           type: "fluid.pager.pagerBar",
           options: {
@@ -188,7 +234,6 @@ asnn2subview.filteredRowTransform = function(obj, idx) {
       togo.push({ ID: "grade", value: row.grade});
     }
 
-
     return togo;
   };
 
@@ -199,19 +244,12 @@ asnn2subview.init = function(asnnid, contextId, placementId, numSubmissions, gra
   asnn2.curAsnnId = asnnid;
 
   asnn2subview.asnnid = asnnid;
-  asnn2subview.graded = graded;
+  // TODO Graded is being encoded as a String param for some reason :|
+  if (graded === "true") {
+    asnn2subview.graded = true;
+  }
+  else { 
+    asnn2subview.graded = false;
+  }
   asnn2subview.initPager(numSubmissions);
-/*
-  jQuery.ajax({
-    type: "GET",
-    url: "/direct/assignment2submission.json?asnnid="+asnnid,
-    cache: false,
-    success: function (payload) {
-      var data = JSON.parse(payload);
-      togo = fluid.transform(data.assignment2submission_collection, asnn2util.dataFromEntity, comptreeFromData);
-      asnn2subview.initPager(togo, numSubmissions);
-    }
-    // TODO Handle the failure case
-  });
-*/
 };
