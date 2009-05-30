@@ -192,12 +192,6 @@ var RSF_Calendar = function() {
 // http://www.quirksmode.org/dom/range_intro.html
 // http://the-stickman.com/web-development/javascript/finding-selection-cursor-position-in-a-textarea-in-internet-explorer/ 
 
-function js_CursorPos(start, end) {
-    this.start = start;
-    this.end = end;
-}
-
-/*
 js_getCursorPosition = function(o) {
 	if (o.createTextRange) {
 		var r = document.selection.createRange().duplicate()
@@ -205,9 +199,9 @@ js_getCursorPosition = function(o) {
 		if (r.text == '') return o.value.length
 		return o.value.lastIndexOf(r.text)
 	} else return o.selectionStart
-}
+};
 
-setSelectionStart = function(textArea, cursorPos) {
+js_setCursorPosition = function(textArea, cursorPos) {
     if (document.selection) { // IE…
         var sel = textArea.createTextRange();
         sel.collapse(true);
@@ -219,43 +213,6 @@ setSelectionStart = function(textArea, cursorPos) {
         textArea.selectionEnd = cursorPos;
     }
 };
-*/
-
-function js_getCursorPosition(textArea) {
-    var start = 0;
-    var end = 0;
-    if (document.selection) { // IE…
-        textArea.focus();
-        var sel1 = document.selection.createRange();
-        var sel2 = sel1.duplicate();
-        sel2.moveToElementText(textArea);
-        var selText = sel1.text;
-        sel1.text = "01";
-        var index = sel2.text.indexOf("01");
-        start = js_countTextAreaChars((index == -1) ? sel2.text : sel2.text.substring(0, index));
-        end = js_countTextAreaChars(selText) + start;
-        sel1.moveStart('character', -1);
-        sel1.text = selText;
-    } else if (textArea.selectionStart || (textArea.selectionStart == "0")) { // Mozilla/Netscape…
-        start = textArea.selectionStart;
-        end = textArea.selectionEnd;
-    }
-    return new js_CursorPos(start, end);
-}
-
-function js_setCursorPosition(textArea, cursorPos) {
-    if (document.selection) { // IE…
-        var sel = textArea.createTextRange();
-        sel.collapse(true);
-        sel.moveStart("character", cursorPos.start);
-        sel.moveEnd("character", cursorPos.end - cursorPos.start);
-        sel.select();
-    } else if (textArea.selectionStart || (textArea.selectionStart == "0")) { // Mozilla/Netscape…
-        textArea.selectionStart = cursorPos.start;
-        textArea.selectionEnd = cursorPos.end;
-    }
-    textArea.focus();
-}
 
 
 /** An object coordinating updates of the textual field value. trueDate and
