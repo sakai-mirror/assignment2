@@ -37,13 +37,6 @@ asnn2subview.getSortHeaderComptree = function(newModel) {
       }        
       jQuery(".sortimg").remove();
 
- /*         if (asnn2.pageState.sortDir < 0) {
-            jQuery(this).after('<img src="/library/image/sakai/sortascending.gif" />');
-          }
-          else {
-            jQuery(this).after('<img src="/library/image/sakai/sortdescending.gif" />');
-          }
-*/
       asnn2subview.pager.model = newModel;
       asnn2subview.pager.events.onModelChange.fire(newModel);
     }
@@ -113,6 +106,27 @@ asnn2subview.getSortHeaderComptree = function(newModel) {
   return tree;
 };
 
+/**
+ * Turns the model waiting spinner on and off. 
+ *
+ * @param (boolean) On or Off
+ */
+asnn2subview.spinner = function(ison) {
+  if (!asnn2.pageLoaded || asnn2.pageLoaded === false) {
+    return; // IE blows up if this runs during page load
+  }
+
+  if (ison === true) {
+    jQuery("#spinnerDiv").dialog({
+      modal: true,
+      bgiframe: true
+    }).show();
+  }
+  else {
+    jQuery("#spinnerDiv").dialog('close'); 
+  }
+}
+
 asnn2subview.subTableRenderer = function (overallThat, inOptions) {
   var that = fluid.initView("asnn2subview.subTableRenderer", overallThat.container, inOptions);
 
@@ -132,6 +146,7 @@ asnn2subview.subTableRenderer = function (overallThat, inOptions) {
             newModel.sortKey = "studentName"; 
             newModel.sortDir = 1; 
           }
+          asnn2subview.spinner(true);
           jQuery.ajax({
             type: "GET",
             url: "/direct/assignment2submission.json?asnnid="+asnn2subview.asnnid+"&_start="+(newModel.pageIndex*newModel.pageSize)+"&_limit="+newModel.pageSize+order,
@@ -147,6 +162,7 @@ asnn2subview.subTableRenderer = function (overallThat, inOptions) {
               // Keep this around to test on Fluid Trunk and create a Jira to have more debug information if it's still the same.
               //var treedata = { children: [{ ID: "row:", children: togo }] };
               asnn2subview.renderSubmissions(treedata);
+              asnn2subview.spinner(false);
             },
             failure: function() {
               // TODO We need to handle this

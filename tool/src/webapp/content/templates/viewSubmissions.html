@@ -246,6 +246,10 @@
       </div>
    </form>
 
+   <div style="display: none" id="spinnerDiv">
+     <img src="/sakai-assignment2-tool/content/images/wait_sakai.gif" />
+   </div>  
+
    <script type="text/javascript" rsf:id="defaultSortBy">
       defaultSortBy="name"; //done via producer
    </script>
@@ -268,7 +272,7 @@ var sakai = sakai || {};
 jQuery(document).ready(function(){
   // Init position of the Apply to Unassigned grading feature
     asnn2.alignGrading();
-
+    asnn2.pageLoaded = true;
 });
 //]]>
 </script>
