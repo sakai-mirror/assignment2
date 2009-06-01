@@ -96,15 +96,6 @@
 
    </table>
     -->
-   <form rsf:id="unassigned-apply-form" method="post">
-       <div id="unassigned-apply">
-          <p rsf:id="msg=assignment2.assignment_grade.assigntoall">Apply to all unassigned</p>
-          <p>
-             <input rsf:id="new-grade-value" type="text" size="4" value="0" />
-             <input rsf:id="apply-button" type="submit" value="Apply" />
-          </p>
-      </div>
-   </form>
 
 
    <div style="display:none" id="release-feedback-dialog">
@@ -156,7 +147,30 @@
    <!-- New Fluid Table -->
    <div id="submissions-table-area">
 
-      <div >
+<div class="pager-sort-area">
+    <div id="pager-top" class="fl-pager-top flc-pager-top">
+        <ul id="page-list" class="pager-links flc-pager-links">
+          <li class="fl-pager-pageLink flc-pager-pageLink"><a href="#">1</a></li>
+          <li class="flc-pager-pageLink-disabled">2</li>
+          <li class="fl-pager-pageLink flc-pager-pageLink"><a href="#">3</a></li>
+        </ul>
+      <p id="page-size">Show <span>
+        <select class="flc-pager-page-size">
+          <option value="5">5</option>
+          <option value="10">10</option>
+          <option value="20">20</option>
+          <option value="50">50</option>
+        </select></span> per page
+      </p>
+      <p id="page-arrows">
+      <span class="fl-pager-previous flc-pager-previous"><a href="#">&lt; previous</a></span>
+      <span class="fl-pager-next flc-pager-next"><a href="#">next &gt;</a></span>
+      </p>
+    </div>
+</div>
+
+<!--
+      <div class="flc-pager-top">
          <div class="ssth-border flc-pager-summary">
             Records Total
          </div>
@@ -167,43 +181,54 @@
          </select>
          <ul class="fl-pager-ui">
             <li><a href="#" class="flc-pager-previous">Prev</a></li>
+            <li><a href="#" class="flc-pager-next">Next</a></li>
             <li>
                <ul class="fl-pager-links pager-links flc-pager-links">
-                  <li class="flc-pager-pageLink"><a href="#">1</a></li>
+                  <li class="fl-pager-pageLink flc-pager-pageLink"><a href="#">1</a></li>
                   <li class="flc-pager-pageLink-disabled">2</li>
-                  <!--<li class="flc-pager-pageLink-skip">...</li>
-                  <li class="flc-pager-pageLink"><a href="#">3</a></li>-->
+                  <li class="fl-pager-pageLink flc-pager-pageLink"><a href="#">3</a></li>
                </ul>
             </li>
-            <li><a href="#" class="flc-pager-next">Next</a></li>
          </ul>
       </div>
+-->
 
-      <table class="fl-pager-data" summary="" xmlns:rsf="http://ponder.org.uk">
+      <table class="listHier lines nolines fl-pager-data" cellpadding="0" cellspacing="0" summary="" xmlns:rsf="http://ponder.org.uk">
          <thead>
              <tr class="sub-table-header">
-                 <th class="flc-pager-sort-header"><a class="student-name" title="Click to sort" href="#">Student Name</a></th>
-                 <th class="flc-pager-sort-header"><a class="submitted-time" title="Click to sort" href="#">Submitted</a></th>
-                 <th class="flc-pager-sort-header"><a class="submission-status" title="Click to sort" href="#">Submission Status</a></th>
-                 <th class="flc-pager-sort-header"><a class="grade" title="Click to sort" href="#">Grade (Released)</a></th>
-                 <th class="flc-pager-sort-header"><a class="feedback-released" title="Click to sort" href="#">Feedback Released?</a></th>
+                 <th class="flc-pager-sort-header"><a class="student-name-sort" title="Click to sort" href="#">Student Name</a></th>
+                 <th class="flc-pager-sort-header"><a class="submitted-time-sort" title="Click to sort" href="#">Submitted</a></th>
+                 <th class="flc-pager-sort-header"><a class="submission-status-sort" title="Click to sort" href="#">Submission Status</a></th>
+                 <th class="flc-pager-sort-header"><a class="grade-sort" title="Click to sort" href="#">Grade (Released)</a></th>
+                 <th class="flc-pager-sort-header"><a class="feedback-released-sort" title="Click to sort" href="#">Feedback Released?</a></th>
              </tr>
          </thead>
 
          <tbody>
             <tr class="row" >
-               <td><span class="student-name">Steven Githens</span></td>
+               <td><a href="" class="student-grade-link">Steven Githens</a></td>
                <td><span class="submitted-time">Mar 1, 2009 10:31 PM</span></td>
                <td><span class="submission-status">Submitted</span>
-                  <span class="submitted-date">1234</span>
                </td>
-               <td><span class="grade">50</span></td>
-               <td><img class="feedback-released" src="/sakai-assignment2-tool/content/images/check.png" width="16" height="16" border="0" /></td>
+               <td class="grade"></td>
+               <td>
+                 <img class="feedback-released" src="/sakai-assignment2-tool/content/images/check.png" width="16" height="16" border="0" />
+               </td>
              </tr>
          </tbody>
      </table>
    </div>
    <!-- End Fluid Table -->
+
+   <form rsf:id="unassigned-apply-form" method="post">
+       <div id="unassigned-apply">
+          <p rsf:id="msg=assignment2.assignment_grade.assigntoall">Apply to all unassigned</p>
+          <p>
+             <input rsf:id="new-grade-value" type="text" size="4" value="0" />
+             <input rsf:id="apply-button" type="submit" value="Apply" />
+          </p>
+      </div>
+   </form>
 
    <script type="text/javascript" rsf:id="defaultSortBy">
       defaultSortBy="name"; //done via producer
@@ -222,7 +247,8 @@ function slide_details(img){
 //]]>
 </script>
 <script type="text/javascript">
-//<![CDATA[
+//<![CDATA[ 
+var sakai = sakai || {};
 jQuery(document).ready(function(){
   // Init position of the Apply to Unassigned grading feature
     asnn2.alignGrading();
@@ -230,9 +256,9 @@ jQuery(document).ready(function(){
 });
 //]]>
 </script>
-<script type="text/javascript">
+<script rsf:id="asnn2subview-init" type="text/javascript">
 //<![CDATA[
-asnn2subview.init();
+asnn2subview.init(3);
 //]]>
 </script>
    </div>
