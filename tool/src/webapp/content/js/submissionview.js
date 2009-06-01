@@ -280,6 +280,10 @@ asnn2subview.initPager = function(numSubmissions) {
     asnn2subview.pager.events.onModelChange.fire(newModel);
   });
 
+  if (jQuery('#page-replace\\:\\:group_filter-selection').length === 0) {
+    jQuery('#page-list').show();
+  }
+
 };
 
 asnn2subview.filteredRowTransform = function(obj, idx) {
