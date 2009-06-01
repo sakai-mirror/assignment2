@@ -149,6 +149,9 @@ asnn2subview.subTableRenderer = function (overallThat, inOptions) {
           if (newModel.groupId && newModel.groupId !== "") {
             var groupfilter = "&groupId="+newModel.groupId;
           }
+          else {
+            groupfilter = "";
+          }
           asnn2subview.spinner(true);
           jQuery.ajax({
             type: "GET",
@@ -213,15 +216,15 @@ asnn2subview.initPager = function(numSubmissions) {
       sortable: true
     }
   ];
-/*
-  if (graded === true) {
+
+  if (asnn2subview.graded === true) {
     columnDefs.push({
       key: "grade-sort",
       valuebinding: "*.grade",
       sortable: true
     });
   }
-*/
+
   var pagerBarOptions = {
           type: "fluid.pager.pagerBar",
           options: {
