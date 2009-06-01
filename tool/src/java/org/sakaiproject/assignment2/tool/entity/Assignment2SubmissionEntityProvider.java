@@ -2,6 +2,10 @@ package org.sakaiproject.assignment2.tool.entity;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +29,7 @@ import org.sakaiproject.entitybroker.entityprovider.capabilities.RequestAware;
 import org.sakaiproject.entitybroker.entityprovider.capabilities.RequestStorable;
 import org.sakaiproject.entitybroker.entityprovider.extension.RequestGetter;
 import org.sakaiproject.entitybroker.entityprovider.extension.RequestStorage;
+import org.sakaiproject.entitybroker.entityprovider.search.Order;
 import org.sakaiproject.entitybroker.entityprovider.search.Search;
 import org.sakaiproject.entitybroker.util.AbstractEntityProvider;
 
@@ -34,6 +39,13 @@ import uk.org.ponder.rsf.components.UIOutput;
 
 public class Assignment2SubmissionEntityProvider extends AbstractEntityProvider implements
 CoreEntityProvider, RESTful, RequestStorable, RequestAware{
+    public static final String STUDENT_NAME_PROP = "studentName";
+    public static final String STUDENT_ID_PROP = "studentId";
+    public static final String SUBMITTED_DATE = "submittedDate";
+    public static final String SUBMITTED_DATE_FORMATTED = "submittedDateFormat";
+    public static final String SUBMISSION_STATUS = "submissionStatus";
+    public static final String SUBMISSION_GRADE = "grade";
+    public static final String SUBMISSION_FEEDBACK_RELEASED = "feedbackReleased";
 
     /**
      * Dependency
@@ -42,7 +54,7 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware{
     public void setSubmissionLogic(AssignmentSubmissionLogic submissionLogic) {
         this.submissionLogic = submissionLogic;
     }
-    
+
     /**
      * Dependency
      */
@@ -50,7 +62,7 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware{
     public void setAssignmentLogic(AssignmentLogic assignmentLogic) {
         this.assignmentLogic = assignmentLogic;
     }
-    
+
     /**
      * Dependency
      */
@@ -58,7 +70,7 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware{
     public void setExternalGradebookLogic(ExternalGradebookLogic externalGradebookLogic) {
         this.externalGradebookLogic = externalGradebookLogic;
     }
-    
+
     /**
      * Dependency
      */
@@ -66,7 +78,7 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware{
     public void setExternalLogic(ExternalLogic externalLogic) {
         this.externalLogic = externalLogic;
     }
-    
+
     /**
      * Dependency
      */
@@ -74,7 +86,7 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware{
     public void setPermissionLogic(AssignmentPermissionLogic permissionLogic) {
         this.permissionLogic = permissionLogic;
     }
-    
+
     /**
      * Dependency
      */
@@ -82,7 +94,7 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware{
     public void setRequestStorage(RequestStorage requestStorage) {
         this.requestStorage = requestStorage;
     }
-    
+
     /**
      * Dependency
      */
@@ -90,7 +102,7 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware{
     public void setRequestGetter(RequestGetter requestGetter) {
         this.requestGetter = requestGetter;
     }
-    
+
     /**
      * Dependency
      */
@@ -98,7 +110,7 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware{
     public void setAssignmentBundleLogic(AssignmentBundleLogic assignmentBundleLogic) {
         this.assignmentBundleLogic = assignmentBundleLogic;
     }
-    
+
     public boolean entityExists(String id) {
         // TODO Auto-generated method stub
         return false;
@@ -123,7 +135,7 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware{
     public void updateEntity(EntityReference ref, Object entity,
             Map<String, Object> params) {
         // TODO Auto-generated method stub
-        
+
     }
 
     public Object getEntity(EntityReference ref) {
@@ -133,30 +145,32 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware{
 
     public void deleteEntity(EntityReference ref, Map<String, Object> params) {
         // TODO Auto-generated method stub
-        
+
     }
 
+    @SuppressWarnings("unchecked")
     public List<?> getEntities(EntityReference ref, Search search) {
         Long assignmentId = requestStorage.getStoredValueAsType(Long.class, "asnnid");
-        
+
         DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, assignmentBundleLogic.getLocale());
-        
+
         List togo = new ArrayList();
-        
-        List<AssignmentSubmission> submissions = submissionLogic.getViewableSubmissionsWithHistoryForAssignmentId(assignmentId, null);
-        
+
+        String filterGroupId = requestStorage.getStoredValueAsType(String.class, "groupId");
+        List<AssignmentSubmission> submissions = submissionLogic.getViewableSubmissionsWithHistoryForAssignmentId(assignmentId, filterGroupId);
+
         if (submissions == null) {
             return togo;
         }
-        
+
         // put studentIds in a list
         List<String> studentIdList = new ArrayList<String>();
         for (AssignmentSubmission submission : submissions) {
             studentIdList.add(submission.getUserId());
         }
-        
+
         Assignment2 assignment = assignmentLogic.getAssignmentById(assignmentId);
-        
+
         Map<String, GradeInformation> studentIdGradeInfoMap = new HashMap<String, GradeInformation>();
         if (submissions != null && assignment.isGraded() && assignment.getGradebookItemId() != null) {
             // now retrieve all of the GradeInformation
@@ -165,7 +179,7 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware{
         }
 
         Map<String, String> studentIdSortNameMap = externalLogic.getUserIdToSortNameMap(studentIdList);
-        
+
         for (AssignmentSubmission as : submissions) {
             Map submap = new HashMap();
             submap.put("studentName", studentIdSortNameMap.get(as.getUserId()));
@@ -179,7 +193,7 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware{
                 } else {
                     // We're not addign this to the subject.
                 }
-                
+
                 // set the textual representation of the submission status
                 String status = "";
                 int statusConstant = AssignmentConstants.SUBMISSION_NOT_STARTED;
@@ -213,7 +227,56 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware{
             togo.add(submap);
         }
 
-        return togo;
+        if (search.getOrders() != null && search.getOrders().length > 0) {
+            Order order = search.getOrders()[0];
+            // We can sort by:
+            // studentName, submittedDate, submissionStatus, grade, and feedbackReleased
+            final String orderBy = order.getProperty();
+            final boolean ascending = order.ascending;
+            if (orderBy.equals(STUDENT_NAME_PROP) || orderBy.equals(SUBMITTED_DATE) ||
+                    orderBy.equals(SUBMISSION_STATUS) || 
+                    (orderBy.equals(SUBMISSION_GRADE) && assignment.isGraded()) ||
+                    orderBy.equals(SUBMISSION_FEEDBACK_RELEASED)) {
+                
+                Collections.sort(togo, new Comparator() {
+                    public int compare(Object o1, Object o2) {
+                        Map m1, m2;
+                        if (ascending) {
+                            m1 = (Map) o1;
+                            m2 = (Map) o2;
+                        }
+                        else {
+                            m2 = (Map) o1;
+                            m1 = (Map) o2;
+                        }
+                        if (m1.get(orderBy) instanceof Date) {
+                            return ((Date)m1.get(orderBy)).compareTo(((Date)m2.get(orderBy)));
+                        } 
+                        else if (m1.get(orderBy) instanceof Boolean) {
+                            return ((Boolean)m1.get(orderBy)).compareTo(((Boolean)m2.get(orderBy)));
+                        }
+                        else {
+                            return m1.get(orderBy).toString().compareTo(m2.get(orderBy).toString());
+                        }
+                    }});
+            }
+        }
+        
+        long start = (int) search.getStart();
+        if (start >= togo.size()) {
+            start = togo.size() - 1;
+        }
+        
+        long end = togo.size();
+        
+        if (search.getLimit() > 0) {
+            end = start + search.getLimit();
+            if (end > togo.size()) {
+                end = togo.size();
+            }
+        }
+
+        return togo.subList((int)start, (int)end);
     }
 
     public String[] getHandledOutputFormats() {

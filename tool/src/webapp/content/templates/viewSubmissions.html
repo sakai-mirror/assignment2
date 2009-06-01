@@ -58,22 +58,21 @@
    <br />
 
    <!-- The view by sections filter -->
-<!--
-   <div class="viewFilter">
+
+   <div class="viewFilter" >
 
 
        <div class="groupFilterContainer">
            <form rsf:id="group_filter_form" method="get">
                 <label rsf:id="msg=assignment2.assignment_grade.filter.label" for="group_filter">View</label>
-                <select rsf:id="group_filter" id="group_filter" onchange="this.form.submit();">
+                <select rsf:id="group_filter" id="group_filter">
                 </select>
            </form>
        </div>
 
-        <div rsf:id="pagerDiv:"></div>
 
-   </div>
-
+   </div> 
+<!-- 
    <table class="listHier lines nolines" cellpadding="0" cellspacing="0" id="sortable">
       <tr>
          <th rsf:id="tableheader.student:"></th>
@@ -149,11 +148,12 @@
 
 <div class="pager-sort-area">
     <div id="pager-top" class="fl-pager-top flc-pager-top">
-        <ul id="page-list" class="pager-links flc-pager-links">
-          <li class="fl-pager-pageLink flc-pager-pageLink"><a href="#">1</a></li>
-          <li class="flc-pager-pageLink-disabled">2</li>
-          <li class="fl-pager-pageLink flc-pager-pageLink"><a href="#">3</a></li>
-        </ul>
+      <ul id="page-list" style="display:none" class="fl-pager-links pager-links flc-pager-links">
+        <li class="flc-pager-pageLink"><a href="#">1</a></li>
+        <li class="flc-pager-pageLink-disabled">2</li>
+        <li class="flc-pager-pageLink-skip">...</li>
+        <li class="flc-pager-pageLink"><a href="#">3</a></li>
+      </ul>
       <p id="page-size">Show <span>
         <select class="flc-pager-page-size">
           <option value="5">5</option>
@@ -193,14 +193,29 @@
       </div>
 -->
 
-      <table class="listHier lines nolines fl-pager-data" cellpadding="0" cellspacing="0" summary="" xmlns:rsf="http://ponder.org.uk">
+      <table id="asnn-submissions-table" class="listHier lines nolines fl-pager-data" cellpadding="0" cellspacing="0" summary="" xmlns:rsf="http://ponder.org.uk">
          <thead>
              <tr class="sub-table-header">
-                 <th class="flc-pager-sort-header"><a class="student-name-sort" title="Click to sort" href="#">Student Name</a></th>
-                 <th class="flc-pager-sort-header"><a class="submitted-time-sort" title="Click to sort" href="#">Submitted</a></th>
-                 <th class="flc-pager-sort-header"><a class="submission-status-sort" title="Click to sort" href="#">Submission Status</a></th>
-                 <th class="flc-pager-sort-header"><a class="grade-sort" title="Click to sort" href="#">Grade (Released)</a></th>
-                 <th class="flc-pager-sort-header"><a class="feedback-released-sort" title="Click to sort" href="#">Feedback Released?</a></th>
+                 <th class="flc-pager-sort-header">
+                   <a class="student-name-sort" title="Click to sort" href="#">Student Name</a>
+                   <img class="student-name-sort-img" src="/library/image/sakai/sortascending.gif" />
+                 </th>
+                 <th class="flc-pager-sort-header">
+                   <a class="submitted-time-sort" title="Click to sort" href="#">Submitted</a>
+                   <img class="submitted-time-sort-img" src="/library/image/sakai/sortascending.gif" />
+                 </th>
+                 <th class="flc-pager-sort-header">
+                   <a class="submission-status-sort" title="Click to sort" href="#">Submission Status</a>
+                   <img class="submission-status-sort-img" src="/library/image/sakai/sortascending.gif" />
+                 </th>
+                 <th class="grade-col-header flc-pager-sort-header">
+                   <a class="grade-sort" title="Click to sort" href="#">Grade (Released)</a>
+                   <!-- <img class="grade-sort-img" src="/library/image/sakai/sortascending.gif" /> TODO: Is this a renderer bug?-->
+                 </th>
+                 <th class="flc-pager-sort-header"> 
+                   <a class="feedback-released-sort" title="Click to sort" href="#">Feedback Released?</a>
+                   <img class="feedback-released-sort-img" src="/library/image/sakai/sortascending.gif" />
+                 </th>
              </tr>
          </thead>
 
@@ -217,6 +232,25 @@
              </tr>
          </tbody>
      </table>
+   <div class="pager-sort-area">
+<div >
+    <div id="pager-bottom" class="fl-pager-bottom flc-pager-bottom">
+      <ul id="page-list-bottom" class="fl-pager-links pager-links flc-pager-links">
+        <li class="flc-pager-pageLink"><a href="#">1</a></li>
+        <li class="flc-pager-pageLink-disabled">2</li>
+        <li class="flc-pager-pageLink-skip">...</li>
+        <li class="flc-pager-pageLink"><a href="#">3</a></li>
+      </ul>
+      <p id="page-size-bottom">
+	<span class="flc-pager-summary">1-10 of 500 items</span>
+      </p>
+      <p id="page-arrows-bottom">
+      <span class="fl-pager-previous flc-pager-previous"><a href="#">&lt; previous</a></span>
+      <span class="fl-pager-next flc-pager-next"><a href="#">next &gt;</a></span>
+      </p>
+    </div>
+</div>
+  </div>
    </div>
    <!-- End Fluid Table -->
 
@@ -229,6 +263,10 @@
           </p>
       </div>
    </form>
+
+   <div style="display: none" id="spinnerDiv">
+     <img src="/sakai-assignment2-tool/content/images/wait_sakai.gif" />
+   </div>  
 
    <script type="text/javascript" rsf:id="defaultSortBy">
       defaultSortBy="name"; //done via producer
@@ -252,7 +290,7 @@ var sakai = sakai || {};
 jQuery(document).ready(function(){
   // Init position of the Apply to Unassigned grading feature
     asnn2.alignGrading();
-
+    asnn2.pageLoaded = true;
 });
 //]]>
 </script>

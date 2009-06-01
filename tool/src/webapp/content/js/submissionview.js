@@ -10,13 +10,189 @@ asnn2subview.selectorMap = [
   { selector: ".feedback-released", id: "feedback-released"},
   { selector: ".student-grade-link", id: "student-grade-link"},
   { selector: ".student-name-sort", id: "student-name-sort" },
+  { selector: ".student-name-sort-img", id: "student-name-sort-img" },
   { selector: ".submitted-time-sort", id: "submitted-time-sort"},
+  { selector: ".submitted-time-sort-img", id: "submitted-time-sort-img"},
   { selector: ".submission-status-sort", id: "submission-status-sort"},
+  { selector: ".submission-status-sort-img", id: "submission-status-sort-img"},
   { selector: ".feedback-released-sort", id: "feedback-released-sort" },
+  { selector: ".feedback-released-sort-img", id: "feedback-released-sort-img" },
+  { selector: ".grade-sort", id: "grade-sort" },
+  { selector: ".grade-sort-img", id: "grade-sort-img" },
+  { selector: ".grade-col-header", id: "grade-col-header" },
   { selector: ".grade-td", id: "grade-td" }
 ];
 
-asnn2subview.initPager = function(data) {
+asnn2subview.getSortHeaderComptree = function(newModel) {
+  var onSortClick = function(sortBy) {
+    return function() {
+      var newModel = fluid.copy(asnn2subview.pager.model);
+      newModel.pageIndex = 0;
+      newModel.sortKey = sortBy;
+      if (!newModel.sortDir) {
+        newModel.sortDir = 1; 
+      } 
+      else {
+        newModel.sortDir = -1 * newModel.sortDir;
+      }        
+      jQuery(".sortimg").remove();
+
+      asnn2subview.pager.model = newModel;
+      asnn2subview.pager.events.onModelChange.fire(newModel);
+    }
+  };
+
+  var tree = {
+      children: [ 
+        { ID: "student-name-sort",
+          value: true,
+          decorators: [
+            {"jQuery": ["click", onSortClick('studentName')]}
+          ]
+        },
+        { ID: "submitted-time-sort",
+          value: true,
+          decorators: [
+            {"jQuery": ["click", onSortClick('submittedTime')]}
+          ]
+        },
+        { ID: "submission-status-sort",
+          value: true,
+          decorators: [
+            {"jQuery": ["click", onSortClick('submissionStatus')]}
+          ]
+        },
+        { ID: "feedback-released-sort",
+          value: true,
+          decorators: [
+            {"jQuery": ["click", onSortClick('feedbackReleased')]}
+          ]
+        }
+      ]
+  };
+
+  if (asnn2subview.graded === true) {
+    tree.children.push({
+      ID: "grade-col-header", value: true
+    });
+    tree.children.push({
+      ID: "grade-sort", 
+      value: true,
+      decorators: [
+        {"jQuery": ["click", onSortClick('grade')]}
+      ]
+    });
+  }
+
+  if (newModel.sortDir > 0) {
+    var imgsrc = "/library/image/sakai/sortascending.gif";
+  }  
+  else {
+    imgsrc = "/library/image/sakai/sortdescending.gif";
+  }
+
+  if (newModel.sortKey === "studentName") {
+    tree.children.push({ ID: "student-name-sort-img", target: imgsrc });
+  } else if (newModel.sortKey === "submittedTime") {
+    tree.children.push({ ID: "submitted-time-sort-img", target: imgsrc });
+  } else if (newModel.sortKey === "submissionStatus") {
+    tree.children.push({ ID: "submission-status-sort-img", target: imgsrc });
+  } else if (newModel.sortKey === "feedbackReleased") {
+    tree.children.push({ ID: "feedback-released-sort-img", target: imgsrc });
+  } else if (newModel.sortKey === "grade") {
+    tree.children.push({ ID: "grade-sort-img", target: imgsrc });
+  }
+
+  return tree;
+};
+
+/**
+ * Turns the model waiting spinner on and off. 
+ *
+ * @param (boolean) On or Off
+ */
+asnn2subview.spinner = function(ison) {
+  if (!asnn2.pageLoaded || asnn2.pageLoaded === false) {
+    return; // IE blows up if this runs during page load
+  }
+
+  if (ison === true) {
+    jQuery("#spinnerDiv").dialog({
+      modal: true,
+      bgiframe: true,
+      dialogClass: 'spinnerDialog'
+    }).show();
+  }
+  else {
+    jQuery("#spinnerDiv").dialog('close'); 
+  }
+}
+
+asnn2subview.subTableRenderer = function (overallThat, inOptions) {
+  var that = fluid.initView("asnn2subview.subTableRenderer", overallThat.container, inOptions);
+
+  return {
+    returnedOptions: {
+      listeners: {
+        onModelChange: function (newModel, oldModel) {
+          if (newModel.sortKey) {
+            var order = "&_order=" + newModel.sortKey;
+            if (newModel.sortDir < 0) {
+              order = order + "_desc";
+            }
+          } 
+          else {
+            // set defaults
+            order = "&_order=studentName";
+            newModel.sortKey = "studentName"; 
+            newModel.sortDir = 1; 
+          }
+          if (newModel.groupId && newModel.groupId !== "") {
+            var groupfilter = "&groupId="+newModel.groupId;
+          }
+          else {
+            groupfilter = "";
+          }
+          asnn2subview.spinner(true);
+          jQuery.ajax({
+            type: "GET",
+            url: "/direct/assignment2submission.json?asnnid="+asnn2subview.asnnid+"&_start="+(newModel.pageIndex*newModel.pageSize)+"&_limit="+newModel.pageSize+order+groupfilter,
+            cache: false,
+            success: function (payload) {
+              var data = JSON.parse(payload);
+              togo = fluid.transform(data.assignment2submission_collection, asnn2util.dataFromEntity, asnn2subview.filteredRowTransform);
+               
+              var treedata = { 
+                "header:": asnn2subview.getSortHeaderComptree(newModel),
+                "row:": togo  
+              };
+              // Keep this around to test on Fluid Trunk and create a Jira to have more debug information if it's still the same.
+              //var treedata = { children: [{ ID: "row:", children: togo }] };
+              asnn2subview.renderSubmissions(treedata);
+              asnn2subview.spinner(false);
+            },
+            failure: function() {
+              // TODO We need to handle this
+            } 
+          });
+        }
+      }
+    }
+  };
+
+};
+
+asnn2subview.renderSubmissions = function(treedata) {
+  if (asnn2subview.subListTemplate) {
+    fluid.reRender(asnn2subview.subListTemplate, jQuery("#asnn-submissions-table"), treedata, {cutpoints: asnn2subview.selectorMap});
+  }
+  else {
+    asnn2subview.subListTemplate = fluid.selfRender(jQuery("#asnn-submissions-table"), treedata, {cutpoints: asnn2subview.selectorMap});
+  }
+  RSF.getDOMModifyFirer().fireEvent();
+}
+
+asnn2subview.initPager = function(numSubmissions) {
   var graded = true;
 
   var columnDefs = [
@@ -42,7 +218,7 @@ asnn2subview.initPager = function(data) {
     }
   ];
 
-  if (graded === true) {
+  if (asnn2subview.graded === true) {
     columnDefs.push({
       key: "grade-sort",
       valuebinding: "*.grade",
@@ -56,18 +232,62 @@ asnn2subview.initPager = function(data) {
             pageList: {
                type: "fluid.pager.renderedPageList",
                options: {
-                 linkBody: "a"
+                 linkBody: "a",
+                 pageStrategy: fluid.pager.gappedPageStrategy(3, 1)
                  }
                }
             }
       };
 
-  var filteredRowTransform = function(obj, idx) {
-    //if (obj.feedbackReleased === true) {
-    //  obj.showFeedbackIcon = true;
-    //}
-    //obj.studentGradeLink = {
-    var row = obj.row;
+  var fakedata = [];
+  for (var i = 0; i < numSubmissions; i++) {
+    fakedata.push(i);
+  }
+
+  asnn2subview.pager = fluid.pager("#submissions-table-area", {
+    dataModel: fakedata,
+    columnDefs: columnDefs,
+    pagerBar: pagerBarOptions,
+    bodyRenderer: {
+      type: "asnn2subview.subTableRenderer",
+      options: {
+//        filteredRowTransform : filteredRowTransform,
+        selectors: {
+          root: ".fl-pager-data"
+        },
+        renderOptions: {debugMode: false, cutpoints: asnn2subview.selectorMap}
+      }
+    }
+
+  });
+  
+  // Init Group Filter
+  jQuery('#page-replace\\:\\:group_filter-selection').change(function() {
+    var newModel = fluid.copy(asnn2subview.pager.model);
+   /* newModel.pageIndex = 0;
+    newModel.sortKey = sortBy;
+    if (!newModel.sortDir) {
+      newModel.sortDir = 1; 
+    } 
+    else {
+      newModel.sortDir = -1 * newModel.sortDir;
+    }        
+    jQuery(".sortimg").remove();
+*/
+    newModel.pageIndex = 0;
+    newModel.groupId = jQuery(this).val();
+    asnn2subview.pager.model = newModel;
+    asnn2subview.pager.events.onModelChange.fire(newModel);
+  });
+
+  if (jQuery('#page-replace\\:\\:group_filter-selection').length === 0) {
+    jQuery('#page-list').show();
+  }
+
+};
+
+asnn2subview.filteredRowTransform = function(obj, idx) {
+    var row = obj;
     var togo = [
       { ID: "student-grade-link",
         target: '/portal/tool/'+sakai.curPlacement+'/grade/'+asnn2.curAsnnId+'/'+row.studentId,
@@ -89,60 +309,26 @@ asnn2subview.initPager = function(data) {
       togo.push({ ID: "feedback-released", value: true});
     }
 
-    if (graded === true) {
+    if (asnn2subview.graded === true) {
       togo.push({ ID: "grade", value: row.grade});
     }
-
 
     return togo;
   };
 
-  var pager = fluid.pager("#submissions-table-area", {
-    dataModel: data,
-    columnDefs: columnDefs,
-    pagerBar: pagerBarOptions,
-    bodyRenderer: {
-      type: "fluid.pager.selfRender",
-      options: {
-        filteredRowTransform : filteredRowTransform,
-        selectors: {
-          root: ".fl-pager-data"
-        },
-        renderOptions: {debugMode: false, cutpoints: asnn2subview.selectorMap}
-      }
-    }
-
-  });
-
-};
-
-asnn2subview.init = function(asnnid, contextId, placementId) {
+asnn2subview.init = function(asnnid, contextId, placementId, numSubmissions, graded) {
   sakai.curPlacement = placementId;
   sakai.curContext = contextId;
 
   asnn2.curAsnnId = asnnid;
 
-  var comptreeFromData = function(obj, idx) {
-    if (obj.feedbackReleased === true) {
-      obj.showFeedbackIcon = true;
-    }
-    obj.studentGradeLink = {
-      ID: "student-grade-link",
-      target: '/portal/tool/'+sakai.curPlacement+'/grade/'+asnnid+'/'+obj.studentId,
-      linktext: obj.studentName
-    }
-    return obj;
+  asnn2subview.asnnid = asnnid;
+  // TODO Graded is being encoded as a String param for some reason :|
+  if (graded === "true") {
+    asnn2subview.graded = true;
   }
-
-  jQuery.ajax({
-    type: "GET",
-    url: "/direct/assignment2submission.json?asnnid="+asnnid,
-    cache: false,
-    success: function (payload) {
-      var data = JSON.parse(payload);
-      togo = fluid.transform(data.assignment2submission_collection, asnn2util.dataFromEntity, comptreeFromData);
-      asnn2subview.initPager(togo);
-    }
-    // TODO Handle the failure case
-  });
+  else { 
+    asnn2subview.graded = false;
+  }
+  asnn2subview.initPager(numSubmissions);
 };

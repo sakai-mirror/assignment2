@@ -564,7 +564,8 @@ h4.completed_assignment {
 /*
  * Styles for our confirmation dialogs using JQuery UI Dialog
  */
-/* Start jQuery UI Dialog < 1.7 */
+
+
 .ui-dialog {
 	border: solid 1px #0099CC;
 	background-color: white;
@@ -599,7 +600,15 @@ h4.completed_assignment {
 	list-style-position: outside; 
 	list-style: none;
 }
-/* End jQuery UI Dialog < 1.7 */
+
+/* For the spinner dialog */
+.spinner-dialog {
+  border: 0;
+  opacity: 0.50;
+  filter:alpha(opacity=50);
+  -moz-opacity: 0.50;
+}
+
 
 
 /* Start Asnn Table Classes */
@@ -695,4 +704,17 @@ a.fl-pager-currentPage {
 }
 /* End Fluid Pager Classes */
 
-
+/* Custom Spinner */
+.spinnerDialog {
+  border-width: 0pt;
+  margin: 0pt;
+  padding: 0pt;
+  position: absolute;
+  top: 0pt;
+  left: 0pt;
+  opacity: 0.50;
+  filter:alpha(opacity=50);
+  -moz-opacity: 0.50;
+  background-color: white;
+  /* z-index: 1001;*/
+}

@@ -188,6 +188,31 @@ var RSF_Calendar = function() {
 
     }
 
+// http://javascript.nwbox.com/cursor_position/
+// http://www.quirksmode.org/dom/range_intro.html
+// http://the-stickman.com/web-development/javascript/finding-selection-cursor-position-in-a-textarea-in-internet-explorer/ 
+
+js_getCursorPosition = function(o) {
+	if (o.createTextRange) {
+		var r = document.selection.createRange().duplicate()
+		r.moveEnd('character', o.value.length)
+		if (r.text == '') return o.value.length
+		return o.value.lastIndexOf(r.text)
+	} else return o.selectionStart
+};
+
+js_setCursorPosition = function(textArea, cursorPos) {
+    if (document.selection) { // IE…
+        var sel = textArea.createTextRange();
+        sel.collapse(true);
+        sel.moveStart("character", cursorPos);
+        //sel.moveEnd("character", cursorPos);
+        sel.select();
+    } else if (textArea.selectionStart || (textArea.selectionStart == "0")) { // Mozilla/Netscape…
+        textArea.selectionStart = cursorPos;
+        textArea.selectionEnd = cursorPos;
+    }
+};
 
 
 /** An object coordinating updates of the textual field value. trueDate and
@@ -442,10 +467,10 @@ var RSF_Calendar = function() {
 
     var dateFieldChange = function() {
 
+      var origDateLoc = js_getCursorPosition(dateField);
       updateDateFieldValue(true, dateField.value, datefieldvalue);
-
       datefieldvalue = dateField.value;
-
+      js_setCursorPosition(dateField, origDateLoc);
       };
 
     
@@ -470,9 +495,10 @@ var RSF_Calendar = function() {
 
         YAHOO.log("timeFieldChange");
 
+        var origTimeLoc = js_getCursorPosition(timeField);
         updateTimeFieldValue(true, timeField.value, timefieldvalue);
-
         timefieldvalue = timeField.value;
+        js_setCursorPosition(timeField, origTimeLoc);
 
         };
 
