@@ -119,7 +119,8 @@ asnn2subview.spinner = function(ison) {
   if (ison === true) {
     jQuery("#spinnerDiv").dialog({
       modal: true,
-      bgiframe: true
+      bgiframe: true,
+      dialogClass: 'spinnerDialog'
     }).show();
   }
   else {

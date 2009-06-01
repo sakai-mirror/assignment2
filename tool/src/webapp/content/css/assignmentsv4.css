@@ -704,4 +704,17 @@ a.fl-pager-currentPage {
 }
 /* End Fluid Pager Classes */
 
-
+/* Custom Spinner */
+.spinnerDialog {
+  border-width: 0pt;
+  margin: 0pt;
+  padding: 0pt;
+  position: absolute;
+  top: 0pt;
+  left: 0pt;
+  opacity: 0.50;
+  filter:alpha(opacity=50);
+  -moz-opacity: 0.50;
+  background-color: white;
+  /* z-index: 1001;*/
+}
