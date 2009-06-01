@@ -58,22 +58,21 @@
    <br />
 
    <!-- The view by sections filter -->
-<!--
-   <div class="viewFilter">
+
+   <div class="viewFilter" >
 
 
        <div class="groupFilterContainer">
            <form rsf:id="group_filter_form" method="get">
                 <label rsf:id="msg=assignment2.assignment_grade.filter.label" for="group_filter">View</label>
-                <select rsf:id="group_filter" id="group_filter" onchange="this.form.submit();">
+                <select rsf:id="group_filter" id="group_filter">
                 </select>
            </form>
        </div>
 
-        <div rsf:id="pagerDiv:"></div>
 
-   </div>
-
+   </div> 
+<!-- 
    <table class="listHier lines nolines" cellpadding="0" cellspacing="0" id="sortable">
       <tr>
          <th rsf:id="tableheader.student:"></th>
@@ -149,7 +148,7 @@
 
 <div class="pager-sort-area">
     <div id="pager-top" class="fl-pager-top flc-pager-top">
-      <ul id="page-list" class="fl-pager-links pager-links flc-pager-links">
+      <ul id="page-list" style="display:none" class="fl-pager-links pager-links flc-pager-links">
         <li class="flc-pager-pageLink"><a href="#">1</a></li>
         <li class="flc-pager-pageLink-disabled">2</li>
         <li class="flc-pager-pageLink-skip">...</li>
@@ -211,7 +210,7 @@
                  </th>
                  <th class="grade-col-header flc-pager-sort-header">
                    <a class="grade-sort" title="Click to sort" href="#">Grade (Released)</a>
-                   <img class="grade-sort-img" src="/library/image/sakai/sortascending.gif" />
+                   <!-- <img class="grade-sort-img" src="/library/image/sakai/sortascending.gif" /> TODO: Is this a renderer bug?-->
                  </th>
                  <th class="flc-pager-sort-header"> 
                    <a class="feedback-released-sort" title="Click to sort" href="#">Feedback Released?</a>
@@ -233,6 +232,25 @@
              </tr>
          </tbody>
      </table>
+   <div class="pager-sort-area">
+<div >
+    <div id="pager-bottom" class="fl-pager-bottom flc-pager-bottom">
+      <ul id="page-list-bottom" class="fl-pager-links pager-links flc-pager-links">
+        <li class="flc-pager-pageLink"><a href="#">1</a></li>
+        <li class="flc-pager-pageLink-disabled">2</li>
+        <li class="flc-pager-pageLink-skip">...</li>
+        <li class="flc-pager-pageLink"><a href="#">3</a></li>
+      </ul>
+      <p id="page-size-bottom">
+	<span class="flc-pager-summary">1-10 of 500 items</span>
+      </p>
+      <p id="page-arrows-bottom">
+      <span class="fl-pager-previous flc-pager-previous"><a href="#">&lt; previous</a></span>
+      <span class="fl-pager-next flc-pager-next"><a href="#">next &gt;</a></span>
+      </p>
+    </div>
+</div>
+  </div>
    </div>
    <!-- End Fluid Table -->
 

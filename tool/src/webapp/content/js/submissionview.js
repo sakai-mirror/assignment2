@@ -146,10 +146,13 @@ asnn2subview.subTableRenderer = function (overallThat, inOptions) {
             newModel.sortKey = "studentName"; 
             newModel.sortDir = 1; 
           }
+          if (newModel.groupId && newModel.groupId !== "") {
+            var groupfilter = "&groupId="+newModel.groupId;
+          }
           asnn2subview.spinner(true);
           jQuery.ajax({
             type: "GET",
-            url: "/direct/assignment2submission.json?asnnid="+asnn2subview.asnnid+"&_start="+(newModel.pageIndex*newModel.pageSize)+"&_limit="+newModel.pageSize+order,
+            url: "/direct/assignment2submission.json?asnnid="+asnn2subview.asnnid+"&_start="+(newModel.pageIndex*newModel.pageSize)+"&_limit="+newModel.pageSize+order+groupfilter,
             cache: false,
             success: function (payload) {
               var data = JSON.parse(payload);
@@ -252,6 +255,25 @@ asnn2subview.initPager = function(numSubmissions) {
       }
     }
 
+  });
+  
+  // Init Group Filter
+  jQuery('#page-replace\\:\\:group_filter-selection').change(function() {
+    var newModel = fluid.copy(asnn2subview.pager.model);
+   /* newModel.pageIndex = 0;
+    newModel.sortKey = sortBy;
+    if (!newModel.sortDir) {
+      newModel.sortDir = 1; 
+    } 
+    else {
+      newModel.sortDir = -1 * newModel.sortDir;
+    }        
+    jQuery(".sortimg").remove();
+*/
+    newModel.pageIndex = 0;
+    newModel.groupId = jQuery(this).val();
+    asnn2subview.pager.model = newModel;
+    asnn2subview.pager.events.onModelChange.fire(newModel);
   });
 
 };

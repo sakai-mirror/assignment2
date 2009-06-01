@@ -156,7 +156,8 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware{
 
         List togo = new ArrayList();
 
-        List<AssignmentSubmission> submissions = submissionLogic.getViewableSubmissionsWithHistoryForAssignmentId(assignmentId, null);
+        String filterGroupId = requestStorage.getStoredValueAsType(String.class, "groupId");
+        List<AssignmentSubmission> submissions = submissionLogic.getViewableSubmissionsWithHistoryForAssignmentId(assignmentId, filterGroupId);
 
         if (submissions == null) {
             return togo;
