@@ -306,7 +306,7 @@ public class ZipExportLogicImpl implements ZipExportLogic
                     // for URL content type, encode a redirect to the body URL
                     if (contentType.equalsIgnoreCase(ResourceProperties.TYPE_URL))
                     {
-                        displayName = "attached_URL_" + attachedUrlCount;
+                        displayName = "attached_URL_" + attachedUrlCount + ".txt";
                         attachedUrlCount++;
                     }
 
