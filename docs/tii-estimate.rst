@@ -1,8 +1,46 @@
+Estimate for Assignment2 Turn It In Integration
+===============================================
 
-Configuration and Setup
-=======================
+This document is a engineering design and time estimate for adding Turn It In
+integration to Assignments 2. It's purpose is to fully think out how the 
+integration will be developed, down to the class and method signature level,
+in order to ensure a smooth implementation and at least halfway accurate
+time estimate (compared to the wildly inaccurate time estimates that are 
+typicaly for software development).
 
-Task: Create the DDL for altering the database from our schema changes.
+Overall flow of work
+====================
+
+While some of this work can be done in parallel, this is a list of work
+tasks that need to be done, and the order in which they would be done from
+bottom (service layer) to top ( user interface ).  These areas are fleshed 
+out and described in more detail in the rest of the document.
+
+1. Factor HTTP connections to Turn It In Service out of 
+   org.sakaiproject.contentreview.impl.turnitin.TurnitinReviewServiceImpl.
+   This code currently makes 7 HttpsURLConnection connections to the TII
+   web services endpoint. Because the TII Endpoints and their parameters
+   are very RPC-like with function codes and parameters, these calls are
+   very similar and can be parameterized in a utility class.  This class 
+   will start out in the same build unit and be titled:
+   org.sakaiproject.contentreview.impl.turnitin.TurnitinConnUtil
+   This should bring the TurnitinReviewServiceImpl source much closer down
+   to the magic 1000 lines to make it easier to maintain and add our other
+   modifications too.
+#. Unit Tests for TurnitinConnUtil.
+   Using our demo/test accounts with Turn It In, we should write a unit test
+   that flexes this connection class by creating a course, submitting a few
+   assignments etc. This can be a regular Sakai Test Harness test that
+   runs during the maven build. If the person building the code hasn't put 
+   the necessary properties in the test configuration it should issue a warning,
+   or perhaps actually fail the tests.
+#. Add mechanism for creating TII Classes and Assignments.
+   Currently, each time the queue is processed, for each ContentReviewItem,
+   we attempt to create a class, enroll in it, and create the necessary 
+   assignment for it. This works out ok for each one because the HTTP calls
+   to TII are very cheap and there are no unpleasant side effects if they fail.
+   Also, the same default instructor information is used for each one.
+
 
 Turn In It Admin and Provisioning
 =================================
@@ -47,25 +85,34 @@ ContentReview API.
 
 Task: Create a model notation for specifying the TII options that are present when you add/edit/save
 an assignment.  This could either be a model object, such as TIIOptions, or just a set of Key names
-for a Map of properties.  We don't really want to put this on the Assignment2 object as a property (
-ex. class Assignment2 {
-  private Long id;
-  etc
-  etc
-  TIIOptions tiiOptions;
-}
-)
+for a Map of properties.  We don't really want to put this on the Assignment2 object as a property. For example: 
+
+::
+
+  ex. class Assignment2 {
+    private Long id;
+    etc
+    etc
+    TIIOptions tiiOptions;
+  }
+
 However, it would be better to have an external logic utility to build this up. We might have to do this
 as 2 hibernate queries starting out. Maybe this should be in a properties table too.
 
 Task: Update ER Diagram with Highlighted changes
 
+Database Work and Changes
+-------------------------
+
+Task: Create the DDL for altering the database from our schema changes.
+
 Service Layer
 =============
 
 Task: Saving a new assignment
-1) ContentReviewService.isSiteAcceptable(site), show error if not
-2) Save assignment as usual
+
+1. ContentReviewService.isSiteAcceptable(site), show error if not
+2. Save assignment as usual
    This will require sending in a list of TII properties in addition to the regular save items.
    TODO: Reread Steve Yegge's essay on the the Ultimate Design Pattern
 

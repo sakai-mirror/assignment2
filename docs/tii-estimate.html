@@ -1,0 +1,368 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.5: http://docutils.sourceforge.net/" />
+<title></title>
+<style type="text/css">
+
+/*
+Author: Peter Parente
+Date: 2008/01/22
+Version: 1.0
+Copyright: This stylesheet has been placed in the public domain - free to edit and use for all uses.
+*/
+
+body {
+  font: 100% sans-serif;
+  background: #ffffff;
+  color: black;
+  margin: 2em;
+  padding: 0em 2em;
+}
+
+p.topic-title {
+  font-weight: bold;
+}
+
+table.docinfo {
+  text-align: left;
+  margin: 2em 0em;
+}
+
+a[href] {
+  color: #436976;
+  background-color: transparent;
+}
+
+a.toc-backref {
+  text-decoration: none;
+}
+
+h1 a[href] {
+  color: #003a6b;
+  text-decoration: none;
+  background-color: transparent;
+}
+
+a.strong {
+  font-weight: bold;
+}
+
+img {
+  margin: 0;
+  border: 0;
+}
+
+p {
+  margin: 0.5em 0 1em 0;
+  line-height: 1.5em;
+}
+
+p a:visited {
+  color: purple;
+  background-color: transparent;
+}
+
+p a:active {
+  color: red;
+  background-color: transparent;
+}
+
+a:hover {
+  text-decoration: none;
+}
+
+p img {
+  border: 0;
+  margin: 0;
+}
+
+p.rubric {
+  font-weight: bold;
+  font-style: italic;
+}
+
+h1.title {
+  color: #003a6b;
+  font-size: 250%;
+  margin-bottom: 0em;
+}
+
+h2.subtitle {
+  color: #003a6b;
+  border-bottom: 0px;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #555;
+  background-color: transparent;
+  margin: 0em;
+  padding-top: 0.5em;
+}
+
+h1 {
+  font-size: 160%;
+  margin-bottom: 0.5em;
+  border-bottom: 2px solid #aaa;
+}
+
+h2 {
+  font-size: 140%;
+  margin-bottom: 0.5em;
+  border-bottom: 1px solid #aaa;
+}
+
+h3 {
+  font-size: 130%;
+  margin-bottom: 0.5em;
+}
+
+h4 {
+  font-size: 110%;
+  font-weight: bold;
+  margin-bottom: 0.5em;
+}
+
+h5 {
+  font-size: 105%;
+  font-weight: bold;
+  margin-bottom: 0.5em;
+}
+
+h6 {
+  font-size: 100%;
+  font-weight: bold;
+  margin-bottom: 0.5em;
+}
+
+dt {
+  font-style: italic;
+}
+
+dd {
+  margin-bottom: 1.5em;
+}
+
+div.admonition, div.note, div.tip, div.caution, div.important {
+  margin: 2em 2em;
+  padding: 0em 1em;
+  border-top: 1px solid #aaa;
+  border-left: 1px solid #aaa;
+  border-bottom: 2px solid #555;
+  border-right: 2px solid #555;
+}
+
+div.important {
+  background: transparent url('../images/important.png') 10px 2px no-repeat;
+}
+
+div.caution {
+  background: transparent url('../images/caution.png') 10px 2px no-repeat;
+}
+
+div.note {
+  background: transparent url('../images/note.png') 10px 2px no-repeat;
+}
+
+div.tip {
+  background: transparent url('../images/tip.png') 10px 2px no-repeat;
+}
+
+div.admonition-example {
+  background: transparent url('../images/tip.png') 10px 2px no-repeat;
+}
+
+div.admonition-critical-example {
+  background: transparent url('../images/important.png') 10px 2px no-repeat;
+}
+
+p.admonition-title {
+  font-weight: bold;
+  border-bottom: 1px solid #aaa;
+  padding-left: 30px;
+}
+
+table.docutils {
+  text-align: left;
+  border: 1px solid gray;
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1.5em 0em;
+}
+
+table.docutils caption {
+  font-style: italic;
+}
+
+table.docutils td, table.docutils th {
+  padding: 0.25em 0.5em;
+}
+
+table.docutils th {
+  background-color: #dddddd;
+}
+
+div.sidebar {
+  width: 33%;
+  float: right;
+  margin: 0em 2em;
+  padding: 0em 1em;
+  border-top: 1px solid #aaa;
+  border-left: 1px solid #aaa;
+  border-bottom: 2px solid #555;
+  border-right: 2px solid #555;
+}
+
+p.sidebar-title {
+  margin-bottom: 0em;
+  color: #003a6b;
+  border-bottom: 1px solid #aaa;
+  font-weight: bold;
+}
+
+p.sidebar-subtitle {
+  margin-top: 0em;
+  font-style: italic;
+  color: #003a6b;
+}
+
+</style>
+</head>
+<body>
+<div class="document">
+
+
+<div class="section" id="estimate-for-assignment2-turn-it-in-integration">
+<h1>Estimate for Assignment2 Turn It In Integration</h1>
+<p>This document is a engineering design and time estimate for adding Turn It In
+integration to Assignments 2. It's purpose is to fully think out how the
+integration will be developed, down to the class and method signature level,
+in order to ensure a smooth implementation and at least halfway accurate
+time estimate (compared to the wildly inaccurate time estimates that are
+typicaly for software development).</p>
+</div>
+<div class="section" id="overall-flow-of-work">
+<h1>Overall flow of work</h1>
+<p>While some of this work can be done in parallel, this is a list of work
+tasks that need to be done, and the order in which they would be done from
+bottom (service layer) to top ( user interface ).  These areas are fleshed
+out and described in more detail in the rest of the document.</p>
+<ol class="arabic simple">
+<li>Factor HTTP connections to Turn It In Service out of
+org.sakaiproject.contentreview.impl.turnitin.TurnitinReviewServiceImpl.
+This code currently makes 7 HttpsURLConnection connections to the TII
+web services endpoint. Because the TII Endpoints and their parameters
+are very RPC-like with function codes and parameters, these calls are
+very similar and can be parameterized in a utility class.  This class
+will start out in the same build unit and be titled:
+org.sakaiproject.contentreview.impl.turnitin.TurnitinConnUtil
+This should bring the TurnitinReviewServiceImpl source much closer down
+to the magic 1000 lines to make it easier to maintain and add our other
+modifications too.</li>
+<li>Unit Tests for TurnitinConnUtil.
+Using our demo/test accounts with Turn It In, we should write a unit test
+that flexes this connection class by creating a course, submitting a few
+assignments etc. This can be a regular Sakai Test Harness test that
+runs during the maven build. If the person building the code hasn't put
+the necessary properties in the test configuration it should issue a warning,
+or perhaps actually fail the tests.</li>
+<li>Add mechanism for creating TII Classes and Assignments.
+Currently, each time the queue is processed, for each ContentReviewItem,
+we attempt to create a class, enroll in it, and create the necessary
+assignment for it. This works out ok for each one because the HTTP calls
+to TII are very cheap and there are no unpleasant side effects if they fail.
+Also, the same default instructor information is used for each one.</li>
+</ol>
+</div>
+<div class="section" id="turn-in-it-admin-and-provisioning">
+<h1>Turn In It Admin and Provisioning</h1>
+<p>Task: Determine how we will pick the contact instructor for each TII course. This
+is mostly social engineering and IU process. TII can only have One contact instructor
+per course.  The rest of the provisioning, such as students and courses is already
+implemented in the TII-ContentReview-impl, and while it may need small tweaking
+works pretty good. This may also be a dummy/ghost user?</p>
+</div>
+<div class="section" id="contentreview-impl">
+<h1>ContentReview-Impl</h1>
+<p>Task: Modify and extend the service to specify which instructor account to sync.
+Currently a property controls one user to set as the instructor for the entire
+university.</p>
+<p>Task: Modify and add signatures to ContentReview API to take in settings for the assignment.
+This is likely going to be all the items in the Add/Edit assignment drop down.  This could
+potentially be done, by adding a Map as the last argument for implementation specific
+properties.</p>
+<p>Task: Modify the TurnitinContentImplementation.java to actually use those extra properties.
+Basically this means settings like which Repository to use, time to submit originality report.</p>
+</div>
+<div class="section" id="model-layer">
+<h1>Model Layer</h1>
+<p>Task:  Create a 1:1 table or extra columns on the AssignmentSubmissionAttachment
+object to track the ContentReview/TII/Other review ID. This may also end up being
+a 1:many table if we decide that that a single Attachment can be reviewed by
+multiple things.  This table may have a column that specified the review Type
+such as TII, or generic ContentReview, or Kuali Workflow.</p>
+<p>Task: We anticipate there to be no changes to teh AssignmentSubmissionVersion object,
+unless we decide that the Submitted Text can be reviewed as well.</p>
+<p>Task: For the Assignment2 object and table we will need a custom table to capture
+the TII Assignment specific settings. We have the discussed that this may be able to
+go in the TII-ContentReview-impl area, that would require some more poke throughs in the
+ContentReview API.</p>
+<p>Task: Create a model notation for specifying the TII options that are present when you add/edit/save
+an assignment.  This could either be a model object, such as TIIOptions, or just a set of Key names
+for a Map of properties.  We don't really want to put this on the Assignment2 object as a property. For example:</p>
+<pre class="literal-block">
+ex. class Assignment2 {
+  private Long id;
+  etc
+  etc
+  TIIOptions tiiOptions;
+}
+</pre>
+<p>However, it would be better to have an external logic utility to build this up. We might have to do this
+as 2 hibernate queries starting out. Maybe this should be in a properties table too.</p>
+<p>Task: Update ER Diagram with Highlighted changes</p>
+<div class="section" id="database-work-and-changes">
+<h2>Database Work and Changes</h2>
+<p>Task: Create the DDL for altering the database from our schema changes.</p>
+</div>
+</div>
+<div class="section" id="service-layer">
+<h1>Service Layer</h1>
+<p>Task: Saving a new assignment</p>
+<ol class="arabic simple">
+<li>ContentReviewService.isSiteAcceptable(site), show error if not</li>
+<li>Save assignment as usual
+This will require sending in a list of TII properties in addition to the regular save items.
+TODO: Reread Steve Yegge's essay on the the Ultimate Design Pattern</li>
+</ol>
+<p>Task: Deleting/Editing an assignment
+1) We have no idea yet how changing the properties of a TII assignment will affect TII if assignments
+have already been submitted.
+2) If we use properties to capture the Assignment TII settings, we will include an explicit property detailing
+whether or not TII is in use, rather than depend solely on the absence of a property.</p>
+<p>Task: Fetching an assignment
+1) It seems like we are going to go the properties route, so fetching assignments will now require
+querying for their properties, and setting the options property on the Assignment2 object.</p>
+<p>Task: Make a graph or comparsison of how our versions with match against TII versioning</p>
+<p>Task: Submittting an assignment
+0.5) What do we do if it's text only assignment and they try to use TII??
+1) Save the Submission and Version as usual
+2) Queue the version in ContentReviewService
+3) Figure out if we have to persist the return ID from CRS ourselves or not. Look into that API.</p>
+</div>
+<div class="section" id="gui-layer">
+<h1>GUI Layer</h1>
+<p>Task: Determine exactly the algorithm for calculating the barometers or stacks of
+paper icons for the Instructor Assignment Submissions. The problem is that, there can
+be multiple attachments, etc, and we are not sure how to aggregate those into 1
+value for the student listing submissions screen. May require consulting with Lynn.</p>
+<p>Task: Where will we capture the originality scores. Will we go to the ContentReview
+service each time we need them, or mirror them on the AssignmentSubAttachment objects.
+It could be costly to get them each time. Perhaps we could register a listener so that
+the A2 tables are updated when the quartz job runs.</p>
+</div>
+</div>
+</body>
+</html>
