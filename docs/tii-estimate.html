@@ -249,8 +249,8 @@ typicaly for software development).</p>
 tasks that need to be done, and the order in which they would be done from
 bottom (service layer) to top ( user interface ).  These areas are fleshed
 out and described in more detail in the rest of the document.</p>
-<ol class="arabic simple">
-<li>Factor HTTP connections to Turn It In Service out of
+<ol class="arabic">
+<li><p class="first">CRS-TII: Factor HTTP connections to Turn It In Service out of
 org.sakaiproject.contentreview.impl.turnitin.TurnitinReviewServiceImpl.
 This code currently makes 7 HttpsURLConnection connections to the TII
 web services endpoint. Because the TII Endpoints and their parameters
@@ -260,20 +260,32 @@ will start out in the same build unit and be titled:
 org.sakaiproject.contentreview.impl.turnitin.TurnitinConnUtil
 This should bring the TurnitinReviewServiceImpl source much closer down
 to the magic 1000 lines to make it easier to maintain and add our other
-modifications too.</li>
-<li>Unit Tests for TurnitinConnUtil.
+modifications too.</p>
+</li>
+<li><p class="first">CRS-TII: Unit Tests for TurnitinConnUtil.
 Using our demo/test accounts with Turn It In, we should write a unit test
 that flexes this connection class by creating a course, submitting a few
 assignments etc. This can be a regular Sakai Test Harness test that
 runs during the maven build. If the person building the code hasn't put
 the necessary properties in the test configuration it should issue a warning,
-or perhaps actually fail the tests.</li>
-<li>Add mechanism for creating TII Classes and Assignments.
+or perhaps actually fail the tests.</p>
+</li>
+<li><p class="first">CRS-TII: Add mechanism for creating TII Classes and Assignments.
 Currently, each time the queue is processed, for each ContentReviewItem,
 we attempt to create a class, enroll in it, and create the necessary
 assignment for it. This works out ok for each one because the HTTP calls
 to TII are very cheap and there are no unpleasant side effects if they fail.
-Also, the same default instructor information is used for each one.</li>
+Also, the same default instructor information is used for each one.</p>
+<p>What I imagine we'll need to do is either: Add some method calls to the
+ContentReview API for this functionality, or make a TII Utility Jar
+and create these out of band from the ContentReview Service.</p>
+<dl class="docutils">
+<dt>perhaps something like ::</dt>
+<dd><p class="first last">ContentReviewService.initializeSite(siteId,Properties)
+ContentReviewService.initializeTask(taskId,Properties)</p>
+</dd>
+</dl>
+</li>
 </ol>
 </div>
 <div class="section" id="turn-in-it-admin-and-provisioning">

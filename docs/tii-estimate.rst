@@ -16,7 +16,7 @@ tasks that need to be done, and the order in which they would be done from
 bottom (service layer) to top ( user interface ).  These areas are fleshed 
 out and described in more detail in the rest of the document.
 
-1. Factor HTTP connections to Turn It In Service out of 
+1. CRS-TII: Factor HTTP connections to Turn It In Service out of 
    org.sakaiproject.contentreview.impl.turnitin.TurnitinReviewServiceImpl.
    This code currently makes 7 HttpsURLConnection connections to the TII
    web services endpoint. Because the TII Endpoints and their parameters
@@ -27,19 +27,28 @@ out and described in more detail in the rest of the document.
    This should bring the TurnitinReviewServiceImpl source much closer down
    to the magic 1000 lines to make it easier to maintain and add our other
    modifications too.
-#. Unit Tests for TurnitinConnUtil.
+#. CRS-TII: Unit Tests for TurnitinConnUtil.
    Using our demo/test accounts with Turn It In, we should write a unit test
    that flexes this connection class by creating a course, submitting a few
    assignments etc. This can be a regular Sakai Test Harness test that
    runs during the maven build. If the person building the code hasn't put 
    the necessary properties in the test configuration it should issue a warning,
    or perhaps actually fail the tests.
-#. Add mechanism for creating TII Classes and Assignments.
+#. CRS-TII: Add mechanism for creating TII Classes and Assignments.
    Currently, each time the queue is processed, for each ContentReviewItem,
    we attempt to create a class, enroll in it, and create the necessary 
    assignment for it. This works out ok for each one because the HTTP calls
    to TII are very cheap and there are no unpleasant side effects if they fail.
    Also, the same default instructor information is used for each one.
+   
+   What I imagine we'll need to do is either: Add some method calls to the
+   ContentReview API for this functionality, or make a TII Utility Jar
+   and create these out of band from the ContentReview Service.
+
+   perhaps something like ::
+     ContentReviewService.initializeSite(siteId,Properties)
+     ContentReviewService.initializeTask(taskId,Properties)
+
 
 
 Turn In It Admin and Provisioning
