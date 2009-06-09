@@ -263,7 +263,10 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware{
         }
         
         long start = (int) search.getStart();
-        if (start >= togo.size()) {
+        if (togo.size() == 0) {
+            start = 0;
+        }
+        else if (start >= togo.size()) {
             start = togo.size() - 1;
         }
         
