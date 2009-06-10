@@ -36,6 +36,25 @@ out and described in more detail in the rest of the document.
    This should bring the TurnitinReviewServiceImpl source much closer down
    to the magic 1000 lines to make it easier to maintain and add our other
    modifications too.
+   Estimate: 4 hours
+#. CRS-TII: Add mechanism for creating TII Classes and Assignments.
+   Currently, each time the queue is processed, for each ContentReviewItem,
+   we attempt to create a class, enroll in it, and create the necessary 
+   assignment for it. This works out ok for each one because the HTTP calls
+   to TII are very cheap and there are no unpleasant side effects if they fail.
+   Also, the same default instructor information is used for each one.
+
+   What I imagine we'll need to do is either: Add some method calls to the
+   ContentReview API for this functionality, or make a TII Utility Jar
+   and create these out of band from the ContentReview Service.
+
+   something like ::
+
+     ContentReviewService.initializeSite(siteId,Properties)
+     ContentReviewService.initializeTask(taskId,Properties)
+
+   Estimate: 4 hours
+
 #. CRS-TII: Unit Tests for TurnitinConnUtil.
    Using our demo/test accounts with Turn It In, we should write a unit test
    that flexes this connection class by creating a course, submitting a few
@@ -43,21 +62,8 @@ out and described in more detail in the rest of the document.
    runs during the maven build. If the person building the code hasn't put 
    the necessary properties in the test configuration it should issue a warning,
    or perhaps actually fail the tests.
-#. CRS-TII: Add mechanism for creating TII Classes and Assignments.
-   Currently, each time the queue is processed, for each ContentReviewItem,
-   we attempt to create a class, enroll in it, and create the necessary 
-   assignment for it. This works out ok for each one because the HTTP calls
-   to TII are very cheap and there are no unpleasant side effects if they fail.
-   Also, the same default instructor information is used for each one.
+   Estimate: 4 hours
    
-   What I imagine we'll need to do is either: Add some method calls to the
-   ContentReview API for this functionality, or make a TII Utility Jar
-   and create these out of band from the ContentReview Service.
-
-   perhaps something like ::
-     ContentReviewService.initializeSite(siteId,Properties)
-     ContentReviewService.initializeTask(taskId,Properties)
-
 #. MILESTONE 1:  We should be able to demonstrate, with a set of unit tests and
    JVM Scripts, connecting to our live TII Test Account and creating Sites,
    Tasks (Assignments), and Submissions that match the requirements of those 
@@ -65,6 +71,12 @@ out and described in more detail in the rest of the document.
 
    Note that there appear to be some potential deficiences in the TII API noted
    below that we need check on.
+
+#. Testing: Stub up Asnn2 Integration Test Area.
+   This includes adding an example integration test and the Spring/Maven
+   configuration for it, so we can test the items below.
+   This will use the TestRunner and some scripts.
+   Estimate: 4 hours
 
 #. Model: Add the necessary extra tables and columns for storing the TII integration
    data.  For this bit of the project we've thought about 2 different routes.
@@ -95,23 +107,38 @@ out and described in more detail in the rest of the document.
    from the ContentReviewService to get the scores. If this turns out to be too
    slow in the future, we could mirror/cache them here or somewhere else.
 
+   We will need to add a similar column to A2_ASSIGNMENT_SUBMISSION_VERSION_T as
+   well if we ever decide that we should allow the text to be sumbitted as well.
+
    The following model additions are shown in the following ER sketch. |asnn2erd|
+
+#. Model: Adjust hbm files and dao objects for updated ER above.
+   Estimate: 8 hours
 
 #. Logic: Create an External Logic service for TII. This will have operations such
    as whether TII is available and installed etc. For now that method(s) can be
    a poke through to a sakai.property. In the future, when it needs to take into
    account licensing for multiple campuses etc, more logic can be added.
+   Estimate: 4 hours
+
+#. Logic: Determine contact instructor for each course
+   This will just be a utility function that picks the first instructor from the 
+   Sakai course to use as the main contact. This may use the 
+   section.role.instructor, or the Site Contact from the Site Properties.  
+   Estimate: 4 hours
 
 #. Logic: Assignment2 ID to TII Assignment ID Mapping
    We need to write a bit of utility code to translate back and forth between these 
    two. Turn It In is one of those systems where the human readable title has to be
    unique for all assignments within in a single site.
+   Estimate: 4 hours
 
 #. Logic: Assignment2 CRUD Logic changes
    First, we need to check and make sure TII is available using our ExternalTIILogic.
    
    To start out here, I am going to assume that folks will not be logging into the
    actual www.turnitin.com user interface.
+   Estimate: 18 Hours
 
 #. Logic: Error Checking and Syncing of TII 
    It seems fairly likely that instructors and students will actually be able
@@ -121,7 +148,14 @@ out and described in more detail in the rest of the document.
    class in the www.turnitin.com user interface and changing options
    on the assignments, such as repositories and when to generate originality
    reports.
-     
+
+   Estimate: Black Hole
+
+#. Logic: Assignment Submission Logic
+   Estimate: 8 hours
+
+#. Logic: Reading AssignmentSubmission(Version)s
+   Estimate: 8 hours
 
 #. MILESTONE 2: Demonstration of unit tests/ sakai scripts that flex the logic additions.
    These should show the CRUD capabilities of the Asnn2 Service tables, and
@@ -130,6 +164,7 @@ out and described in more detail in the rest of the document.
 #. UserInterface: Assignment Add/Edit Screen
    Add the extra section of TII options that will conditionally bind and display if
    TII is enabled.
+   Estimate: 8 hours
 
 #. MILESTONE 3: Ability to add TII functionality to an assignment via the Add/Edit
    assignments screen, update, and delete it from the GUI.
@@ -143,8 +178,15 @@ out and described in more detail in the rest of the document.
    The more difficult part of this is determining the auxilary icons and math
    for aggregating them on the assignment level (say if you have multiple 
    submissions and this barometer is for the entire assignment submission).
+   Estimate: 4 hours
 
-#. UserInterface: Score 
+#. UserInterface: Inst View Submission
+   Add a column to the ViewSubmissions table with the barometer icons.
+   Estimate: 8 hours
+
+#. UserInterface: View Assignment Submission Page
+   The barometer is next to the attachments.
+   Estimate: 4 hours
 
 #. MILESTONE 4: From the GUI, submitted assignments are submitted to TII, and their
    scores are available from the GUI.
@@ -158,8 +200,13 @@ Issues with TII API
   generate the originality report, etc.
 * How often do these API's change? How often does the www.turnitin.com 
   user interface change?
+* Even if titles have to be unique, is there really not a unique id
+  specifier for each TII Assignment?
+* Can we disable students from submitting things in the GUI.
+* Ask David Horwitz if Students at Cape Town can log into the turnitin.com 
+  UI
 
-Notes below 
+Other Notes
 ===========
 
 Turn In It Admin and Provisioning
@@ -185,42 +232,6 @@ properties.
 
 Task: Modify the TurnitinContentImplementation.java to actually use those extra properties.
 Basically this means settings like which Repository to use, time to submit originality report.
-
-Model Layer
------------
-
-Task:  Create a 1:1 table or extra columns on the AssignmentSubmissionAttachment
-object to track the ContentReview/TII/Other review ID. This may also end up being
-a 1:many table if we decide that that a single Attachment can be reviewed by 
-multiple things.  This table may have a column that specified the review Type
-such as TII, or generic ContentReview, or Kuali Workflow.
-
-Task: We anticipate there to be no changes to teh AssignmentSubmissionVersion object, 
-unless we decide that the Submitted Text can be reviewed as well.
-
-Task: For the Assignment2 object and table we will need a custom table to capture
-the TII Assignment specific settings. We have the discussed that this may be able to 
-go in the TII-ContentReview-impl area, that would require some more poke throughs in the
-ContentReview API.
-
-Task: Create a model notation for specifying the TII options that are present when you add/edit/save
-an assignment.  This could either be a model object, such as TIIOptions, or just a set of Key names
-for a Map of properties.  We don't really want to put this on the Assignment2 object as a property. For example: 
-
-::
-
-  ex. class Assignment2 {
-    private Long id;
-    etc
-    etc
-    TIIOptions tiiOptions;
-  }
-
-However, it would be better to have an external logic utility to build this up. We might have to do this
-as 2 hibernate queries starting out. Maybe this should be in a properties table too.
-
-Task: Update ER Diagram with Highlighted changes
-
 
 Service Layer
 -------------
