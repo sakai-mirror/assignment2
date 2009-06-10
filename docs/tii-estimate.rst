@@ -8,6 +8,15 @@ in order to ensure a smooth implementation and at least halfway accurate
 time estimate (compared to the wildly inaccurate time estimates that are 
 typicaly for software development).
 
+While we are trying to think about how Grademark integration will factor into
+the designs, the concrete Grademark integration is not part of this 
+document.
+
+A number of short iterative milestones are included to make sure work progresses 
+smoothly. There is an attempt to space out the milestones so that on average they
+can be met within roughly 3 days of the previous milestone (given the project
+schedule).
+
 Overall flow of work
 ====================
 
@@ -49,10 +58,59 @@ out and described in more detail in the rest of the document.
      ContentReviewService.initializeSite(siteId,Properties)
      ContentReviewService.initializeTask(taskId,Properties)
 
+#. MILESTONE 1:  We should be able to demonstrate, with a set of unit tests and
+   JVM Scripts, connecting to our live TII Test Account and creating Sites,
+   Tasks (Assignments), and Submissions that match the requirements of those 
+   that will be submitted from Asnn2.
 
+#. Model: Add the necessary extra tables and columns for storing the TII integration
+   data.  For this bit of the project we've thought about 2 different routes.
+   The first was to use a properties model and add properties table(s) to Asnn2.
+   The use of Properties can be seen on Sakai Users, Sites, and numerous applications
+   mentioned in this `essay
+   <http://steve-yegge.blogspot.com/2008/10/universal-design-pattern.html>`_.   
+   However, because it's likely we'll want to do reporting and other operations on
+   the data, and because there are so many properties and they are very structured,
+   it's likely we will create a table just to hold the options for a TII Assignment.
+   This table will be generic, and could actually be used for things other than
+   Asnn2 if it were possible to use tables across Sakai services.
+
+   This does bring the downside that we are finely coupling things to TII, but
+   there is nothing generic about the TII options in the GUI designs, they are
+   very specific to TII. What will happen, for OOTB installations using Asnn2,
+   is that the extra join to the TII table will simply not happen if the TII 
+   support for Sakai is not enabled.  This also creates a property on the Asnn2
+   model object that is specific to TII, but our model objects are already so
+   customized for hibernate (rather than end-developer use), that this is
+   probably fine, given that we document it well.
+
+   The second change needed is that we will add a ContentReviewItem ID to the
+   A2_SUBMISSION_ATTACH_T table. This will be used for fetching the scores from
+   the content review service.  Unlike the Assignment level TII items, this
+   piece is fairly generic and could play with different ContentReview 
+   implementations in the future.
+
+   The following model additions are shown in the following ER sketch. |asnn2erd|
+
+
+#. Logic: Create an External Logic service for TII. This will have operations such
+   as whether TII is available and installed etc. For now that method(s) can be
+   a poke through to a sakai.property. In the future, when it needs to take into
+   account licensing for multiple campuses etc, more logic can be added.
+
+#. MILESTONE 2: Demonstration of unit tests/ sakai scripts that flex the logic additions.
+
+#. MILESTONE 3: Ability to add TII functionality to an assignment via the Add/Edit
+   assignments screen, update, and delete it from the GUI.
+
+#. MILESTONE 4: From the GUI, submitted assignments are submitted to TII, and their
+   scores are available from the GUI.
+
+Notes below 
+===========
 
 Turn In It Admin and Provisioning
-=================================
+---------------------------------
 
 Task: Determine how we will pick the contact instructor for each TII course. This
 is mostly social engineering and IU process. TII can only have One contact instructor
@@ -61,7 +119,7 @@ implemented in the TII-ContentReview-impl, and while it may need small tweaking
 works pretty good. This may also be a dummy/ghost user?
 
 ContentReview-Impl
-==================
+------------------
 
 Task: Modify and extend the service to specify which instructor account to sync.
 Currently a property controls one user to set as the instructor for the entire 
@@ -76,7 +134,7 @@ Task: Modify the TurnitinContentImplementation.java to actually use those extra 
 Basically this means settings like which Repository to use, time to submit originality report.
 
 Model Layer
-===========
+-----------
 
 Task:  Create a 1:1 table or extra columns on the AssignmentSubmissionAttachment
 object to track the ContentReview/TII/Other review ID. This may also end up being
@@ -110,20 +168,15 @@ as 2 hibernate queries starting out. Maybe this should be in a properties table 
 
 Task: Update ER Diagram with Highlighted changes
 
-Database Work and Changes
--------------------------
-
-Task: Create the DDL for altering the database from our schema changes.
 
 Service Layer
-=============
+-------------
 
 Task: Saving a new assignment
 
 1. ContentReviewService.isSiteAcceptable(site), show error if not
 2. Save assignment as usual
    This will require sending in a list of TII properties in addition to the regular save items.
-   TODO: Reread Steve Yegge's essay on the the Ultimate Design Pattern
 
 Task: Deleting/Editing an assignment
 1) We have no idea yet how changing the properties of a TII assignment will affect TII if assignments
@@ -145,7 +198,7 @@ Task: Submittting an assignment
 
 
 GUI Layer
-=========
+---------
 
 Task: Determine exactly the algorithm for calculating the barometers or stacks of
 paper icons for the Instructor Assignment Submissions. The problem is that, there can
@@ -157,3 +210,6 @@ Task: Where will we capture the originality scores. Will we go to the ContentRev
 service each time we need them, or mirror them on the AssignmentSubAttachment objects.
 It could be costly to get them each time. Perhaps we could register a listener so that
 the A2 tables are updated when the quartz job runs.
+
+.. |asnn2erd| image:: assignment2ERDContentReview.png 
+.. _YeggeUnivPattern: http://steve-yegge.blogspot.com/2008/10/universal-design-pattern.html

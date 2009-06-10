@@ -286,10 +286,37 @@ ContentReviewService.initializeTask(taskId,Properties)</p>
 </dd>
 </dl>
 </li>
+<li><p class="first">Model: Add the necessary extra tables and columns for storing the TII integration
+data.  For this bit of the project we've thought about 2 different routes.
+The first was to use a properties model and add properties table(s) to Asnn2.
+The use of Properties can be seen on Sakai Users, Sites, and numerous applications
+mentioned in this <a class="reference external" href="http://steve-yegge.blogspot.com/2008/10/universal-design-pattern.html">essay</a>.
+However, because it's likely we'll want to do reporting and other operations on
+the data, and because there are so many properties and they are very structured,
+it's likely we will create a table just to hold the options for a TII Assignment.
+This table will be generic, and could actually be used for things other than
+Asnn2 if it were possible to use tables across Sakai services.</p>
+<p>This does bring the downside that we are finely coupling things to TII, but
+there is nothing generic about the TII options in the GUI designs, they are
+very specific to TII. What will happen, for OOTB installations using Asnn2,
+is that the extra join to the TII table will simply not happen if the TII
+support for Sakai is not enabled.  This also creates a property on the Asnn2
+model object that is specific to TII, but our model objects are already so
+customized for hibernate (rather than end-developer use), that this is
+probably fine, given that we document it well.</p>
+<p>The second change needed is that we will add a ContentReviewItem ID to the
+A2_SUBMISSION_ATTACH_T table. This will be used for fetching the scores from
+the content review service.  Unlike the Assignment level TII items, this
+piece is fairly generic and could play with different ContentReview
+implementations in the future.</p>
+<p>The following model additions are shown in the following ER sketch. <img alt="asnn2erd" src="assignment2ERDContentReview.png" /></p>
+</li>
 </ol>
 </div>
+<div class="section" id="notes-below">
+<h1>Notes below</h1>
 <div class="section" id="turn-in-it-admin-and-provisioning">
-<h1>Turn In It Admin and Provisioning</h1>
+<h2>Turn In It Admin and Provisioning</h2>
 <p>Task: Determine how we will pick the contact instructor for each TII course. This
 is mostly social engineering and IU process. TII can only have One contact instructor
 per course.  The rest of the provisioning, such as students and courses is already
@@ -297,7 +324,7 @@ implemented in the TII-ContentReview-impl, and while it may need small tweaking
 works pretty good. This may also be a dummy/ghost user?</p>
 </div>
 <div class="section" id="contentreview-impl">
-<h1>ContentReview-Impl</h1>
+<h2>ContentReview-Impl</h2>
 <p>Task: Modify and extend the service to specify which instructor account to sync.
 Currently a property controls one user to set as the instructor for the entire
 university.</p>
@@ -309,7 +336,7 @@ properties.</p>
 Basically this means settings like which Repository to use, time to submit originality report.</p>
 </div>
 <div class="section" id="model-layer">
-<h1>Model Layer</h1>
+<h2>Model Layer</h2>
 <p>Task:  Create a 1:1 table or extra columns on the AssignmentSubmissionAttachment
 object to track the ContentReview/TII/Other review ID. This may also end up being
 a 1:many table if we decide that that a single Attachment can be reviewed by
@@ -335,13 +362,9 @@ ex. class Assignment2 {
 <p>However, it would be better to have an external logic utility to build this up. We might have to do this
 as 2 hibernate queries starting out. Maybe this should be in a properties table too.</p>
 <p>Task: Update ER Diagram with Highlighted changes</p>
-<div class="section" id="database-work-and-changes">
-<h2>Database Work and Changes</h2>
-<p>Task: Create the DDL for altering the database from our schema changes.</p>
-</div>
 </div>
 <div class="section" id="service-layer">
-<h1>Service Layer</h1>
+<h2>Service Layer</h2>
 <p>Task: Saving a new assignment</p>
 <ol class="arabic simple">
 <li>ContentReviewService.isSiteAcceptable(site), show error if not</li>
@@ -365,7 +388,7 @@ querying for their properties, and setting the options property on the Assignmen
 3) Figure out if we have to persist the return ID from CRS ourselves or not. Look into that API.</p>
 </div>
 <div class="section" id="gui-layer">
-<h1>GUI Layer</h1>
+<h2>GUI Layer</h2>
 <p>Task: Determine exactly the algorithm for calculating the barometers or stacks of
 paper icons for the Instructor Assignment Submissions. The problem is that, there can
 be multiple attachments, etc, and we are not sure how to aggregate those into 1
@@ -374,6 +397,7 @@ value for the student listing submissions screen. May require consulting with Ly
 service each time we need them, or mirror them on the AssignmentSubAttachment objects.
 It could be costly to get them each time. Perhaps we could register a listener so that
 the A2 tables are updated when the quartz job runs.</p>
+</div>
 </div>
 </div>
 </body>
