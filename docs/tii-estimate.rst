@@ -13,9 +13,7 @@ the designs, the concrete Grademark integration is not part of this
 document.
 
 A number of short iterative milestones are included to make sure work progresses 
-smoothly. There is an attempt to space out the milestones so that on average they
-can be met within roughly 3 days of the previous milestone (given the project
-schedule).
+smoothly. 
 
 Overall flow of work
 ====================
