@@ -242,6 +242,13 @@ integration will be developed, down to the class and method signature level,
 in order to ensure a smooth implementation and at least halfway accurate
 time estimate (compared to the wildly inaccurate time estimates that are
 typicaly for software development).</p>
+<p>While we are trying to think about how Grademark integration will factor into
+the designs, the concrete Grademark integration is not part of this
+document.</p>
+<p>A number of short iterative milestones are included to make sure work progresses
+smoothly. There is an attempt to space out the milestones so that on average they
+can be met within roughly 3 days of the previous milestone (given the project
+schedule).</p>
 </div>
 <div class="section" id="overall-flow-of-work">
 <h1>Overall flow of work</h1>
@@ -286,6 +293,13 @@ ContentReviewService.initializeTask(taskId,Properties)</p>
 </dd>
 </dl>
 </li>
+<li><p class="first">MILESTONE 1:  We should be able to demonstrate, with a set of unit tests and
+JVM Scripts, connecting to our live TII Test Account and creating Sites,
+Tasks (Assignments), and Submissions that match the requirements of those
+that will be submitted from Asnn2.</p>
+<p>Note that there appear to be some potential deficiences in the TII API noted
+below that we need check on.</p>
+</li>
 <li><p class="first">Model: Add the necessary extra tables and columns for storing the TII integration
 data.  For this bit of the project we've thought about 2 different routes.
 The first was to use a properties model and add properties table(s) to Asnn2.
@@ -308,10 +322,72 @@ probably fine, given that we document it well.</p>
 A2_SUBMISSION_ATTACH_T table. This will be used for fetching the scores from
 the content review service.  Unlike the Assignment level TII items, this
 piece is fairly generic and could play with different ContentReview
-implementations in the future.</p>
+implementations in the future. For now, we will be usign the bulk fetch
+from the ContentReviewService to get the scores. If this turns out to be too
+slow in the future, we could mirror/cache them here or somewhere else.</p>
 <p>The following model additions are shown in the following ER sketch. <img alt="asnn2erd" src="assignment2ERDContentReview.png" /></p>
 </li>
+<li><p class="first">Logic: Create an External Logic service for TII. This will have operations such
+as whether TII is available and installed etc. For now that method(s) can be
+a poke through to a sakai.property. In the future, when it needs to take into
+account licensing for multiple campuses etc, more logic can be added.</p>
+</li>
+<li><p class="first">Logic: Assignment2 ID to TII Assignment ID Mapping
+We need to write a bit of utility code to translate back and forth between these
+two. Turn It In is one of those systems where the human readable title has to be
+unique for all assignments within in a single site.</p>
+</li>
+<li><p class="first">Logic: Assignment2 CRUD Logic changes
+First, we need to check and make sure TII is available using our ExternalTIILogic.</p>
+<p>To start out here, I am going to assume that folks will not be logging into the
+actual www.turnitin.com user interface.</p>
+</li>
+<li><p class="first">Logic: Error Checking and Syncing of TII
+It seems fairly likely that instructors and students will actually be able
+to log in to www.turnitin.com. If that is the case, and we can't hide
+classes, we will need insidusouly robust error and sync checking all over
+the place to deal with scenerios such as an instructor logging into the
+class in the www.turnitin.com user interface and changing options
+on the assignments, such as repositories and when to generate originality
+reports.</p>
+</li>
+<li><p class="first">MILESTONE 2: Demonstration of unit tests/ sakai scripts that flex the logic additions.
+These should show the CRUD capabilities of the Asnn2 Service tables, and
+also the integration with the ContentReviewService</p>
+</li>
+<li><p class="first">UserInterface: Assignment Add/Edit Screen
+Add the extra section of TII options that will conditionally bind and display if
+TII is enabled.</p>
+</li>
+<li><p class="first">MILESTONE 3: Ability to add TII functionality to an assignment via the Add/Edit
+assignments screen, update, and delete it from the GUI.</p>
+</li>
+<li><p class="first">UserInterface: Score barometers.
+We need these score barometer things. I'm assuming we'll want the same colors that
+appear when logged into www.turnitin.com. Hopefully we can get a reference of all
+the color codes.  Ideally, it would be nice if this were a small javascript
+component that initialized by using the score.</p>
+<p>The more difficult part of this is determining the auxilary icons and math
+for aggregating them on the assignment level (say if you have multiple
+submissions and this barometer is for the entire assignment submission).</p>
+</li>
+<li><p class="first">UserInterface: Score</p>
+</li>
+<li><p class="first">MILESTONE 4: From the GUI, submitted assignments are submitted to TII, and their
+scores are available from the GUI.</p>
+</li>
 </ol>
+</div>
+<div class="section" id="issues-with-tii-api">
+<h1>Issues with TII API</h1>
+<ul class="simple">
+<li>Can the fid=2 (create class) be used for updating classes as well?</li>
+<li>I don't see any options in the API for fid=2 that allow specifying the
+options such as repository, what sources to check against, when to
+generate the originality report, etc.</li>
+<li>How often do these API's change? How often does the www.turnitin.com
+user interface change?</li>
+</ul>
 </div>
 <div class="section" id="notes-below">
 <h1>Notes below</h1>
@@ -369,8 +445,7 @@ as 2 hibernate queries starting out. Maybe this should be in a properties table 
 <ol class="arabic simple">
 <li>ContentReviewService.isSiteAcceptable(site), show error if not</li>
 <li>Save assignment as usual
-This will require sending in a list of TII properties in addition to the regular save items.
-TODO: Reread Steve Yegge's essay on the the Ultimate Design Pattern</li>
+This will require sending in a list of TII properties in addition to the regular save items.</li>
 </ol>
 <p>Task: Deleting/Editing an assignment
 1) We have no idea yet how changing the properties of a TII assignment will affect TII if assignments
@@ -393,10 +468,6 @@ querying for their properties, and setting the options property on the Assignmen
 paper icons for the Instructor Assignment Submissions. The problem is that, there can
 be multiple attachments, etc, and we are not sure how to aggregate those into 1
 value for the student listing submissions screen. May require consulting with Lynn.</p>
-<p>Task: Where will we capture the originality scores. Will we go to the ContentReview
-service each time we need them, or mirror them on the AssignmentSubAttachment objects.
-It could be costly to get them each time. Perhaps we could register a listener so that
-the A2 tables are updated when the quartz job runs.</p>
 </div>
 </div>
 </div>

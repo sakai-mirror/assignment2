@@ -63,6 +63,9 @@ out and described in more detail in the rest of the document.
    Tasks (Assignments), and Submissions that match the requirements of those 
    that will be submitted from Asnn2.
 
+   Note that there appear to be some potential deficiences in the TII API noted
+   below that we need check on.
+
 #. Model: Add the necessary extra tables and columns for storing the TII integration
    data.  For this bit of the project we've thought about 2 different routes.
    The first was to use a properties model and add properties table(s) to Asnn2.
@@ -88,23 +91,73 @@ out and described in more detail in the rest of the document.
    A2_SUBMISSION_ATTACH_T table. This will be used for fetching the scores from
    the content review service.  Unlike the Assignment level TII items, this
    piece is fairly generic and could play with different ContentReview 
-   implementations in the future.
+   implementations in the future. For now, we will be usign the bulk fetch 
+   from the ContentReviewService to get the scores. If this turns out to be too
+   slow in the future, we could mirror/cache them here or somewhere else.
 
    The following model additions are shown in the following ER sketch. |asnn2erd|
-
 
 #. Logic: Create an External Logic service for TII. This will have operations such
    as whether TII is available and installed etc. For now that method(s) can be
    a poke through to a sakai.property. In the future, when it needs to take into
    account licensing for multiple campuses etc, more logic can be added.
 
+#. Logic: Assignment2 ID to TII Assignment ID Mapping
+   We need to write a bit of utility code to translate back and forth between these 
+   two. Turn It In is one of those systems where the human readable title has to be
+   unique for all assignments within in a single site.
+
+#. Logic: Assignment2 CRUD Logic changes
+   First, we need to check and make sure TII is available using our ExternalTIILogic.
+   
+   To start out here, I am going to assume that folks will not be logging into the
+   actual www.turnitin.com user interface.
+
+#. Logic: Error Checking and Syncing of TII 
+   It seems fairly likely that instructors and students will actually be able
+   to log in to www.turnitin.com. If that is the case, and we can't hide
+   classes, we will need insidusouly robust error and sync checking all over
+   the place to deal with scenerios such as an instructor logging into the 
+   class in the www.turnitin.com user interface and changing options
+   on the assignments, such as repositories and when to generate originality
+   reports.
+     
+
 #. MILESTONE 2: Demonstration of unit tests/ sakai scripts that flex the logic additions.
+   These should show the CRUD capabilities of the Asnn2 Service tables, and
+   also the integration with the ContentReviewService
+
+#. UserInterface: Assignment Add/Edit Screen
+   Add the extra section of TII options that will conditionally bind and display if
+   TII is enabled.
 
 #. MILESTONE 3: Ability to add TII functionality to an assignment via the Add/Edit
    assignments screen, update, and delete it from the GUI.
 
+#. UserInterface: Score barometers.
+   We need these score barometer things. I'm assuming we'll want the same colors that
+   appear when logged into www.turnitin.com. Hopefully we can get a reference of all
+   the color codes.  Ideally, it would be nice if this were a small javascript
+   component that initialized by using the score.
+
+   The more difficult part of this is determining the auxilary icons and math
+   for aggregating them on the assignment level (say if you have multiple 
+   submissions and this barometer is for the entire assignment submission).
+
+#. UserInterface: Score 
+
 #. MILESTONE 4: From the GUI, submitted assignments are submitted to TII, and their
    scores are available from the GUI.
+
+Issues with TII API
+===================
+
+* Can the fid=2 (create class) be used for updating classes as well?
+* I don't see any options in the API for fid=2 that allow specifying the 
+  options such as repository, what sources to check against, when to
+  generate the originality report, etc.
+* How often do these API's change? How often does the www.turnitin.com 
+  user interface change?
 
 Notes below 
 ===========
@@ -205,11 +258,6 @@ paper icons for the Instructor Assignment Submissions. The problem is that, ther
 be multiple attachments, etc, and we are not sure how to aggregate those into 1 
 value for the student listing submissions screen. May require consulting with Lynn.
 
-
-Task: Where will we capture the originality scores. Will we go to the ContentReview 
-service each time we need them, or mirror them on the AssignmentSubAttachment objects.
-It could be costly to get them each time. Perhaps we could register a listener so that
-the A2 tables are updated when the quartz job runs.
 
 .. |asnn2erd| image:: assignment2ERDContentReview.png 
 .. _YeggeUnivPattern: http://steve-yegge.blogspot.com/2008/10/universal-design-pattern.html
