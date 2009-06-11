@@ -143,8 +143,13 @@
         </fieldset>
     </div>
 
+  <!-- If there are no gradeable students we just display a message -->
+  <div style="display: none" id="no-students-area">
+    <p>There are no students to grade.</p> 
+  </div>
+
    <!-- New Fluid Table -->
-   <div id="submissions-table-area">
+   <div style="display: none" id="submissions-table-area">
 
 <div class="pager-sort-area">
     <div id="pager-top" class="fl-pager-top flc-pager-top">
@@ -221,9 +226,9 @@
 
          <tbody>
             <tr class="row" >
-               <td><a href="" class="student-grade-link">Steven Githens</a></td>
-               <td><span class="submitted-time">Mar 1, 2009 10:31 PM</span></td>
-               <td><span class="submission-status">Submitted</span>
+               <td><a href="" class="student-grade-link"></a></td>
+               <td><span class="submitted-time"></span></td>
+               <td><span class="submission-status"></span>
                </td>
                <td class="grade"></td>
                <td>

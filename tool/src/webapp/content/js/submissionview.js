@@ -161,6 +161,15 @@ asnn2subview.subTableRenderer = function (overallThat, inOptions) {
             success: function (payload) {
               var data = JSON.parse(payload);
               togo = fluid.transform(data.assignment2submission_collection, asnn2util.dataFromEntity, asnn2subview.filteredRowTransform);
+
+              if (togo.length === 0) {
+                jQuery("#submissions-table-area").hide();
+                jQuery("#no-students-area").show();
+              }
+              else {
+                jQuery("#submissions-table-area").show();
+                jQuery("#no-students-area").hide();
+              }
                
               var treedata = { 
                 "header:": asnn2subview.getSortHeaderComptree(newModel),

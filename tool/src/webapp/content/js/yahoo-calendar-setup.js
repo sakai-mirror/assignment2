@@ -193,24 +193,32 @@ var RSF_Calendar = function() {
 // http://the-stickman.com/web-development/javascript/finding-selection-cursor-position-in-a-textarea-in-internet-explorer/ 
 
 js_getCursorPosition = function(o) {
-	if (o.createTextRange) {
-		var r = document.selection.createRange().duplicate()
-		r.moveEnd('character', o.value.length)
-		if (r.text == '') return o.value.length
-		return o.value.lastIndexOf(r.text)
-	} else return o.selectionStart
+    try {
+	    if (o.createTextRange) {
+            var r = document.selection.createRange().duplicate()
+		    r.moveEnd('character', o.value.length)
+		    if (r.text == '') return o.value.length
+		    return o.value.lastIndexOf(r.text)
+        } else return o.selectionStart
+    } catch (e) {
+        return 0;
+    }
 };
 
 js_setCursorPosition = function(textArea, cursorPos) {
-    if (document.selection) { // IE…
-        var sel = textArea.createTextRange();
-        sel.collapse(true);
-        sel.moveStart("character", cursorPos);
-        //sel.moveEnd("character", cursorPos);
-        sel.select();
-    } else if (textArea.selectionStart || (textArea.selectionStart == "0")) { // Mozilla/Netscape…
-        textArea.selectionStart = cursorPos;
-        textArea.selectionEnd = cursorPos;
+    try {
+       if (document.selection) { // IE…
+           var sel = textArea.createTextRange();
+           sel.collapse(true);
+           sel.moveStart("character", cursorPos);
+           //sel.moveEnd("character", cursorPos);
+           sel.select();
+       } else if (textArea.selectionStart || (textArea.selectionStart == "0")) { // Mozilla/Netscape…
+           textArea.selectionStart = cursorPos;
+           textArea.selectionEnd = cursorPos;
+       }
+    } catch (e) {
+      // TODO What should we do here?
     }
 };
 
