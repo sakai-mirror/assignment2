@@ -192,8 +192,8 @@ out and described in more detail in the rest of the document.
 Issues with TII API
 ===================
 
-* Can the fid=2 (create class) be used for updating classes as well?
-* I don't see any options in the API for fid=2 that allow specifying the 
+* Can the fid=2 and 4(create class and assignment) be used for updating as well?
+* I don't see any options in the API for fid=4 that allow specifying the 
   options such as repository, what sources to check against, when to
   generate the originality report, etc.
 * How often do these API's change? How often does the www.turnitin.com 
