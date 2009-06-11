@@ -97,9 +97,6 @@
 					<!-- this should be the FCKEditor -->
 				</div>
 			</li>
-			<li>
-				
-			</li>
 		</ol>
 	</fieldset>
 	
@@ -117,41 +114,38 @@
 			</li>
 		</ol> -->
 	</fieldset>
-
-	<fieldset>
-		<legend rsf:id="msg=assignment2.assignment_add.grading_legend">Grading</legend>
-		<ol>
-			<li><span rsf:id="graded-radios" />
-				<fieldset>
-					<ol>
-						<li>
-							<input rsf:id="select_ungraded" id="select_ungraded" name="graded" type="radio" /> 
-							<label for="select_ungraded" rsf:id="select_ungraded_label">This assignment is ungraded</label>
-						</li>
-						<li>
-							<input rsf:id="select_graded" id="select_graded" name="graded" type="radio" /> 
-							<label for="select_graded" rsf:id="select_graded_label">This assignment is graded</label>
-							<span rsf:id="msg=assignment2.assignment_add.gradebook_associated"> and is associated with a Gradebook Item:</span> 
-								<select rsf:id="gradebook_item" onchange="asnn2.selectGraded();asnn2.populateTitleWithGbItemName();">
-									<option value="">Select a Gradebook Item</option>
-									<option value="GB Item 1">GB Item 1</option>
-									<option value="GB Item 2">GB Item 2</option>
-									<option value="GB Item 3">GB Item 3</option>
-									<option value="GB Item 4">GB Item 4</option>
-								</select>
-								<p class="indent">
-									<span rsf:id="msg=assignment2.assignment_add.gradebook_or"> -or- </span>
-									<a rsf:id="gradebook_item_new_helper" id="gradebook_item_new_helper" class="thickbox" onclick="asnn2.update_new_gb_item_helper_url();">Create a new Gradebook Item</a>
-									<!-- hidden anchor contains the ref to the gb helper without the name attr -->
-									<a rsf:id="gradebook_url_without_name" id="gradebook_url_without_name" style="display:none;"></a>
-								</p>
-						</li>
-					</ol>
-				</fieldset>
-				<p rsf:id="message-for:gradebook_item"></p>
-			</li>
-		</ol>
-	</fieldset>
+	
+	   <fieldset>
+        <legend rsf:id="msg=assignment2.assignment_add.other_legend">Submission Details</legend>
+        <div style="clear:both">
+            <p class="asnnOptionsLabel">
+                <input id="require_submissions" rsf:id="require_submissions" type="checkbox" />
+                <label for="require_submissions" rsf:id="msg=assignment2.assignment_add.require_submissions"> Require Submissions?</label>
+            </p>
+        </div>
+        <div style="clear:both">
+            <label class="asnnOptionsLabel" rsf:id="msg=assignment2.assignment_add.student_submissions">Submission Format</label>
+            <p class="asnnOptionsEdit">
+                <select rsf:id="submission_type">
+                </select>
+                <p rsf:id="message-for:submission_type"></p>
+            </p>
+        </div>
+        <div style="clear:both">
+            <label class="asnnOptionsLabel" rsf:id="msg=assignment2.assignment_add.allow_number">Number of Submissions</label>
+            <p class="asnnOptionsEdit">
+                <select rsf:id="number_submissions"></select>
+            </p>
+        </div>
+        <div style="clear:both">
+            <p class="asnnOptionsLabel">
+                <input rsf:id="honor_pledge" id="honor_pledge" type="checkbox" />
+                <label for="honor_pledge" rsf:id="msg=assignment2.assignment_add.honor_pledge">Add honor pledge</label>
+            </p>
+            <p class="asnnOptionsEdit">
+            </p>
+        </div>
+    </fieldset>
 	
 	<fieldset>
 		<legend rsf:id="msg=assignment2.assignment_add.availability_details">Availability Details</legend>
@@ -194,51 +188,54 @@
 				</span>
 			</p>
 		</div>
+		<div style="clear:both">
+            <p class="asnnOptionsLabel">
+                <input id="require_accept_until" rsf:id="require_accept_until" type="checkbox" />
+                <label for="require_accept_until" rsf:id="msg=assignment2.assignment_add.require_accept_until">Set Accept Until Date?</label>
+            </p>
+            <p class="asnnOptionsEdit">
+                <span rsf:id="accept_until_container" id="accept_until_container">
+                    <input rsf:id="accept_until:" value="12/31/2007"/>
+                </span>
+                <p rsf:id="message-for:accept_until"></p>   
+            </p>                    
+        </div>
 	</fieldset>
 	
 	<fieldset>
-		<legend rsf:id="msg=assignment2.assignment_add.other_legend">Submission Details</legend>
-	    <div style="clear:both">
-	    	<p class="asnnOptionsLabel">
-				<input id="require_submissions" rsf:id="require_submissions" type="checkbox" />
-				<label for="require_submissions" rsf:id="msg=assignment2.assignment_add.require_submissions"> Require Submissions?</label>
-			</p>
-		</div>
-		<div style="clear:both">
-			<label class="asnnOptionsLabel" rsf:id="msg=assignment2.assignment_add.student_submissions">Submission Format</label>
-			<p class="asnnOptionsEdit">
-				<select rsf:id="submission_type">
-				</select>
-				<p rsf:id="message-for:submission_type"></p>
-			</p>
-		</div>
-		<div style="clear:both">
-			<label class="asnnOptionsLabel" rsf:id="msg=assignment2.assignment_add.allow_number">Number of Submissions</label>
-			<p class="asnnOptionsEdit">
-				<select rsf:id="number_submissions"></select>
-			</p>
-		</div>
-		<div style="clear:both">
-			<p class="asnnOptionsLabel">
-				<input id="require_accept_until" rsf:id="require_accept_until" type="checkbox" />
-				<label for="require_accept_until" rsf:id="msg=assignment2.assignment_add.require_accept_until">Set Accept Until Date?</label>
-			</p>
-			<p class="asnnOptionsEdit">
-				<span rsf:id="accept_until_container" id="accept_until_container">
-					<input rsf:id="accept_until:" value="12/31/2007"/>
-				</span>
-				<p rsf:id="message-for:accept_until"></p>	
-			</p>					
-		</div>
-		<div style="clear:both">
-			<p class="asnnOptionsLabel">
-				<input rsf:id="honor_pledge" id="honor_pledge" type="checkbox" />
-				<label for="honor_pledge" rsf:id="msg=assignment2.assignment_add.honor_pledge">Add honor pledge</label>
-			</p>
-			<p class="asnnOptionsEdit">
-			</p>
-		</div>
-	</fieldset>
+        <legend rsf:id="msg=assignment2.assignment_add.grading_legend">Grading</legend>
+        <ol>
+            <li><span rsf:id="graded-radios" />
+                <fieldset>
+                    <ol>
+                        <li>
+                            <input rsf:id="select_ungraded" id="select_ungraded" name="graded" type="radio" /> 
+                            <label for="select_ungraded" rsf:id="select_ungraded_label">This assignment is ungraded</label>
+                        </li>
+                        <li>
+                            <input rsf:id="select_graded" id="select_graded" name="graded" type="radio" /> 
+                            <label for="select_graded" rsf:id="select_graded_label">This assignment is graded</label>
+                            <span rsf:id="msg=assignment2.assignment_add.gradebook_associated"> and is associated with a Gradebook Item:</span> 
+                                <select rsf:id="gradebook_item" onchange="asnn2.selectGraded();asnn2.populateTitleWithGbItemName();">
+                                    <option value="">Select a Gradebook Item</option>
+                                    <option value="GB Item 1">GB Item 1</option>
+                                    <option value="GB Item 2">GB Item 2</option>
+                                    <option value="GB Item 3">GB Item 3</option>
+                                    <option value="GB Item 4">GB Item 4</option>
+                                </select>
+                                <p class="indent">
+                                    <span rsf:id="msg=assignment2.assignment_add.gradebook_or"> -or- </span>
+                                    <a rsf:id="gradebook_item_new_helper" id="gradebook_item_new_helper" class="thickbox" onclick="asnn2.update_new_gb_item_helper_url();">Create a new Gradebook Item</a>
+                                    <!-- hidden anchor contains the ref to the gb helper without the name attr -->
+                                    <a rsf:id="gradebook_url_without_name" id="gradebook_url_without_name" style="display:none;"></a>
+                                </p>
+                        </li>
+                    </ol>
+                </fieldset>
+                <p rsf:id="message-for:gradebook_item"></p>
+            </li>
+        </ol>
+    </fieldset>
 	
 	<fieldset id="notifications">
 	    <legend rsf:id="msg=assignment2.assignment_add.notification_legend">Submission Notifications</legend>
