@@ -240,8 +240,8 @@ p.sidebar-subtitle {
 integration to Assignments 2. It's purpose is to fully think out how the
 integration will be developed, down to the class and method signature level,
 in order to ensure a smooth implementation and at least halfway accurate
-time estimate (compared to the wildly inaccurate time estimates that are
-typicaly for software development).</p>
+time estimate. This is very much in progress and
+does not contain enough detail for many sections still.</p>
 <p>While we are trying to think about how Grademark integration will factor into
 the designs, the concrete Grademark integration is not part of this
 document.</p>
@@ -297,8 +297,6 @@ Estimate: 4 hours</p>
 JVM Scripts, connecting to our live TII Test Account and creating Sites,
 Tasks (Assignments), and Submissions that match the requirements of those
 that will be submitted from Asnn2.</p>
-<p>Note that there appear to be some potential deficiences in the TII API noted
-below that we need check on.</p>
 </li>
 <li><p class="first">Testing: Stub up Asnn2 Integration Test Area.
 This includes adding an example integration test and the Spring/Maven
@@ -370,7 +368,9 @@ the place to deal with scenerios such as an instructor logging into the
 class in the www.turnitin.com user interface and changing options
 on the assignments, such as repositories and when to generate originality
 reports.</p>
-<p>Estimate: Black Hole</p>
+<p>We are in contact with TII and will be working on what items need to be
+optionally locked down going forward.</p>
+<p>Estimate: Unknown</p>
 </li>
 <li><p class="first">Logic: Assignment Submission Logic
 Estimate: 8 hours</p>
@@ -416,17 +416,14 @@ scores are available from the GUI.</p>
 <div class="section" id="issues-with-tii-api">
 <h1>Issues with TII API</h1>
 <ul class="simple">
-<li>Can the fid=2 and 4(create class and assignment) be used for updating as well?</li>
-<li>I don't see any options in the API for fid=4 that allow specifying the
-options such as repository, what sources to check against, when to
-generate the originality report, etc.</li>
-<li>How often do these API's change? How often does the www.turnitin.com
-user interface change?</li>
-<li>Even if titles have to be unique, is there really not a unique id
-specifier for each TII Assignment?</li>
-<li>Can we disable students from submitting things in the GUI.</li>
-<li>Ask David Horwitz if Students at Cape Town can log into the turnitin.com
-UI</li>
+<li>Upon investigation, the options we need for fid4 with regards to repository,
+when to generate originality reports, etc are available they just aren't in
+the API doc yet.</li>
+<li>Frequency in which the API's change and the UI at www.turnitin.com changes.</li>
+<li>Assignment titles always have to be included in api calls even if using the
+unique id.</li>
+<li>We are currently investaging and working on which areas of the www.turnitin.com
+GUI need to be locked down.</li>
 </ul>
 </div>
 <div class="section" id="other-notes">
