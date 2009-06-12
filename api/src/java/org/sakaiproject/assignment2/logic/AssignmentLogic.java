@@ -63,6 +63,8 @@ public interface AssignmentLogic {
 	 * assignment is marked as graded but there is no gradebookItemId
 	 * @throws AssignmentNotFoundException if the id associated with the
 	 * assignment object does not exist
+	 * @throws InvalidGradebookItemAssociationException if the gradebook item associated
+	 * with the assignment is invalid
 	 */
 	public void saveAssignment(Assignment2 assignment);
 	

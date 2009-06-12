@@ -87,7 +87,7 @@ public class FragmentAssignment2SelectProducer implements ViewComponentProducer,
         DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, locale);
 
         //Get Gradebook Items
-        List<GradebookItem> gradebook_items = externalGradebookLogic.getAllGradebookItems(externalLogic.getCurrentContextId());
+        List<GradebookItem> gradebook_items = externalGradebookLogic.getAllGradebookItems(externalLogic.getCurrentContextId(), false);
 
 
         String[] gradebook_item_labels = new String[gradebook_items.size()+1];

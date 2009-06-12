@@ -115,7 +115,7 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 
 		List<Assignment2> allAssignments = dao.getAssignmentsWithGroupsAndAttachments(contextId);
 		if (allAssignments != null && !allAssignments.isEmpty()) {
-			List<GradebookItem> allGbItems = gradebookLogic.getAllGradebookItems(contextId);
+			List<GradebookItem> allGbItems = gradebookLogic.getAllGradebookItems(contextId, false);
 			Map<Long, GradebookItem> gbIdItemMap = new HashMap<Long, GradebookItem>();
 			if (allGbItems != null) {
 				for (GradebookItem item : allGbItems) {
@@ -212,7 +212,7 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 			if(toolDefinition.getAssignments() != null) {
 
 				// retrieve a list of all of the gb items in this site
-				List<GradebookItem> currGbItems = gradebookLogic.getAllGradebookItems(toContext);
+				List<GradebookItem> currGbItems = gradebookLogic.getAllGradebookItems(toContext, false);
 				// make a map of item title to item
 				Map<String, GradebookItem> gbTitleToItemMap = new HashMap<String, GradebookItem>();
 				if (currGbItems != null) {
@@ -380,7 +380,7 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 		List<GradebookItem> allGbItems = new ArrayList<GradebookItem>();
 		
 		if (gbDataExists) {
-			allGbItems = gradebookLogic.getAllGradebookItems(fromContext);
+			allGbItems = gradebookLogic.getAllGradebookItems(fromContext, true);
 		}
 		
 		Iterator<Assignment> origAssignIter = assignmentService.getAssignmentsForContext(fromContext);

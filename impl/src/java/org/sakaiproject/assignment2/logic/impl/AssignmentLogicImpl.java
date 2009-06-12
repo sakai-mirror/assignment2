@@ -37,6 +37,7 @@ import org.sakaiproject.assignment2.dao.AssignmentDao;
 import org.sakaiproject.assignment2.exception.AnnouncementPermissionException;
 import org.sakaiproject.assignment2.exception.AssignmentNotFoundException;
 import org.sakaiproject.assignment2.exception.CalendarPermissionException;
+import org.sakaiproject.assignment2.exception.InvalidGradebookItemAssociationException;
 import org.sakaiproject.assignment2.exception.NoGradebookItemForGradedAssignmentException;
 import org.sakaiproject.assignment2.exception.StaleObjectModificationException;
 import org.sakaiproject.assignment2.logic.AssignmentBundleLogic;
@@ -189,6 +190,15 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 	    if (assignment == null || assignment.getContextId() == null) {
 	        throw new IllegalArgumentException("Null assignment or assignment.contextId passed to saveAssignment");
 	    }
+	    
+	    // now let's double check the non-null properties have been set
+	    if (assignment.getTitle() == null || 
+	        "".equals(assignment.getTitle().trim()) || 
+	        assignment.getOpenDate() == null) {
+	        
+	        throw new IllegalArgumentException("A non-null property of the assignment was null. title:" + 
+	                assignment.getTitle() + " open date:" + assignment.getOpenDate());
+	    }
 
 	    String currentUserId = externalLogic.getCurrentUserId();
 
@@ -214,6 +224,13 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 	        } else {
 	            throw new AssignmentNotFoundException("No assignment exists with id: " + assignment.getId() + " Assignment update failure.");
 	        }
+	    }
+	    
+	    // check to see if the gradebook item association is valid
+	    if (assignment.isGraded() && !gradebookLogic.isGradebookItemAssociationValid(
+	                    assignment.getContextId(), assignment.getGradebookItemId())) {
+	        throw new InvalidGradebookItemAssociationException("The gradebook item " + assignment.getGradebookItemId() + 
+	                " is not a valid gradebook item to associate with this assignment");
 	    }
 
 	    // trim trailing spaces on title

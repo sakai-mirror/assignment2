@@ -68,18 +68,24 @@ public interface ExternalGradebookLogic {
 	 * 
 	 * @param contextId
 	 * @return a map of gradebook item id to title for all of the gradebook
-	 * items that the current user may view or grade.
+	 * items that the current user may view or grade.  Does not include
+	 * "externally maintained" gradebook items (gb items that are managed by
+	 * tools outside the gradebook like Tests & Quizzes)
 	 */
 	public Map<Long, String> getViewableGradebookItemIdTitleMap(String contextId);
 	
 	/**
-	 * returns a list of GradebookItem objects that represent all of
-	 * the gradebook items currently defined in the gradebook tool
 	 * @param contextId
-	 * @return
+	 * @param includeExternallyMaintained true if you want to include "externally maintained"
+	 * gradebook items in this list. These are gb items that are managed by a tool outside the
+	 * gradebook, such as Test & Quizzes or original Assignments tool.
+	 * In general, you should use false since you should not allow a user to link 
+	 * an assignment with an externally maintained gb item
+	 * @return a list of GradebookItem objects that represent all of
+     * the gradebook items currently defined in the gradebook tool
 	 * @throws SecurityException if user does not have edit or grade perm
 	 */
-	public List<GradebookItem> getAllGradebookItems(String contextId);
+	public List<GradebookItem> getAllGradebookItems(String contextId, boolean includeExternallyMaintained);
 	
 	/**
 	 * returns a list of all groups that the current user is authorized to view
@@ -392,4 +398,14 @@ public interface ExternalGradebookLogic {
 	 * still exists
 	 */
 	public boolean gradebookItemExists(Long gbItemId);
+	
+	/**
+	 * 
+	 * @param contextId
+	 * @param gradebookItemId
+	 * @return true if the given gradebookItemId may be linked to assignments in the given contextId.
+	 * for instance, will return false if the gradebook item is "externally maintained" or the
+	 * gradebook item does not exist in the given context
+	 */
+	public boolean isGradebookItemAssociationValid(String contextId, Long gradebookItemId);
 }
