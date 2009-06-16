@@ -21,6 +21,7 @@
         ADDED_TO_SCHEDULE number(1,0),
         EVENT_ID varchar2(99),
         NUM_SUB_ALLOWED number(10,0) not null,
+        CONTENT_REVIEW_REF varchar2(255),
         CREATOR varchar2(99) not null,
         CREATE_DATE date not null,
         MODIFIED_BY varchar2(99),

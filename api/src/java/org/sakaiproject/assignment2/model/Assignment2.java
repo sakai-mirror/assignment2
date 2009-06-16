@@ -57,6 +57,7 @@ public class Assignment2 {
     private boolean addedToSchedule;
     private String eventId;
     private int numSubmissionsAllowed;
+    private String contentReviewRef;
     private String creator;
     private Date createDate;
     private String modifiedBy;
@@ -420,6 +421,28 @@ public class Assignment2 {
 		this.numSubmissionsAllowed = numSubmissionsAllowed;
 	}
     
+	/**
+	 * 
+	 * @return a reference for the content review service item associated with this
+     *        assignment. if null, assumes no content review service has been enabled
+     *        for this assignment
+	 */
+    public String getContentReviewRef()
+    {
+        return contentReviewRef;
+    }
+
+    /**
+     * a reference for the content review service item associated with this
+     *        assignment. if null, assumes no content review service has been enabled
+     *        for this assignment
+     * @param contentReviewRef
+     */
+    public void setContentReviewRef(String contentReviewRef)
+    {
+        this.contentReviewRef = contentReviewRef;
+    }
+
     /**
      * @return User id of this assignment's creator
      */
