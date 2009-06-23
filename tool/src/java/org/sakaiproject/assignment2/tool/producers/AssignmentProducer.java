@@ -30,6 +30,7 @@ import org.sakaiproject.assignment2.tool.producers.fragments.FragmentAssignment2
 import org.sakaiproject.assignment2.exception.AssignmentNotFoundException;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
+import org.sakaiproject.assignment2.logic.ExternalContentReviewLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.GradebookItem;
@@ -108,6 +109,7 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
     private ErrorStateManager errorstatemanager;
     private StatePreservationManager presmanager; // no, not that of OS/2
     private Assignment2Creator assignment2Creator;
+    private ExternalContentReviewLogic externalContentReviewLogic;
     
     // Assignment Authoring Scope Flow Bean
     private AssignmentAuthoringFlowBean assignmentAuthoringFlowBean;
@@ -526,6 +528,11 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
         }
         UICommand.make(form, "cancel_assignment", UIMessage.make("assignment2.assignment_add.cancel_assignment"), "AssignmentAuthoringBean.processActionCancel");
 
+        // Optional Turnitin Content Review Integration
+        if (externalContentReviewLogic.isContentReviewAvailable()) {
+            UIOutput.make(tofill, "tii_content_review_area");
+            UIBoundBoolean.make(tofill, "use_tii", assignment2OTP + ".properties.USE_TII");
+        }
     }
 
     public ViewParameters getViewParameters() {
@@ -579,5 +586,10 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
     
     public void setAssignment2Creator(Assignment2Creator assignment2Creator) {
         this.assignment2Creator = assignment2Creator;
+    }
+    
+    public void setExternalContentReviewLogic(
+            ExternalContentReviewLogic externalContentReviewLogic) {
+        this.externalContentReviewLogic = externalContentReviewLogic;
     }
 }

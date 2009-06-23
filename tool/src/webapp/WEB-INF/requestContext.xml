@@ -169,6 +169,7 @@
       <property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
       <property name="assignmentSubmissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
       <property name="assignment2Creator" ref="Assignment2Creator" />
+      <property name="externalContentReviewLogic" ref="org.sakaiproject.assignment2.logic.ExternalContentReviewLogic" />
    </bean>
    
    <bean class="org.sakaiproject.assignment2.tool.producers.GradeProducer">

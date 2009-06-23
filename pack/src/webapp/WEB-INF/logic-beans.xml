@@ -76,6 +76,10 @@
    
    <bean id="org.sakaiproject.assignment2.logic.AssignmentBundleLogic" class="org.sakaiproject.assignment2.logic.impl.AssignmentBundleLogicImpl" init-method="init">
    </bean>
+   
+   <bean id="org.sakaiproject.assignment2.logic.ExternalContentReviewLogic" 
+      class="org.sakaiproject.assignment2.logic.impl.ExternalContentReviewLogicImpl">
+   </bean>
 
 	<bean id="org.sakaiproject.assignment2.logic.UploadAllLogic"
 		  class="org.sakaiproject.assignment2.logic.impl.UploadAllLogicImpl">

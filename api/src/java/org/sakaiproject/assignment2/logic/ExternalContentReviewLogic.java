@@ -7,7 +7,7 @@ package org.sakaiproject.assignment2.logic;
  * @author sgithens
  *
  */
-public interface ExternalContentReview {
+public interface ExternalContentReviewLogic {
 
     /**
      * This will determine whether the current site has the ability to use
