@@ -153,6 +153,8 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 		        assign.setGradebookItemId(null);
 		    }
 		}
+		
+		// TODO ASNN-516 Check for ContentReview and populate
 
 		return assign;
 	}
@@ -335,6 +337,9 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 	                    "tool. Any related events were NOT updated", cpe);
 	        }
 	    }
+	    
+	    // TODO ASNN-516 Content Review / Turnitin Integration
+	    
 	}
 	
 
