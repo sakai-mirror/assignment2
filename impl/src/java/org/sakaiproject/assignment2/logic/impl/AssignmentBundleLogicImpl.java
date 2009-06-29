@@ -37,30 +37,30 @@ import org.sakaiproject.util.ResourceLoader;
  */
 public class AssignmentBundleLogicImpl implements AssignmentBundleLogic
 {
-	private static ResourceLoader rb = null;
-	private static Log log = LogFactory.getLog(AssignmentLogicImpl.class);
+    private static ResourceLoader rb = null;
+    private static Log log = LogFactory.getLog(AssignmentLogicImpl.class);
 
-	public void init()
-	{
-		if (log.isDebugEnabled())
-			log.debug("init");
-		// since the field is static, only instantiate of not previously populated
-		// this bean should only be created once but this will ensure an overwritten
-		// assignment doesn't occur.
-		if (rb == null)
-			rb = new ResourceLoader(ASSIGNMENT2_BUNDLE);
-	}
+    public void init()
+    {
+        if (log.isDebugEnabled())
+            log.debug("init");
+        // since the field is static, only instantiate of not previously populated
+        // this bean should only be created once but this will ensure an overwritten
+        // assignment doesn't occur.
+        if (rb == null)
+            rb = new ResourceLoader(ASSIGNMENT2_BUNDLE);
+    }
 
-	public String getString(String key)
-	{
-		return rb.getString(key);
-	}
-	
-	public String getFormattedMessage(String key, Object[] parameters) {
-		return rb.getFormattedMessage(key, parameters);
-	}
-	
-	public Locale getLocale() {
-		return rb.getLocale();
-	}
+    public String getString(String key)
+    {
+        return rb.getString(key);
+    }
+
+    public String getFormattedMessage(String key, Object[] parameters) {
+        return rb.getFormattedMessage(key, parameters);
+    }
+
+    public Locale getLocale() {
+        return rb.getLocale();
+    }
 }

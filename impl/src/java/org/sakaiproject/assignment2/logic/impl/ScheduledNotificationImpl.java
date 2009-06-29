@@ -96,7 +96,7 @@ public class ScheduledNotificationImpl implements ScheduledNotification
     {
         this.digestService = digestService;
     }
-    
+
     private ExternalContentLogic contentLogic;
     public void setExternalContentLogic(ExternalContentLogic contentLogic) {
         this.contentLogic = contentLogic;
@@ -371,13 +371,13 @@ public class ScheduledNotificationImpl implements ScheduledNotification
             {
                 String ref = attachment.getAttachmentReference();
 
-                    AttachmentInformation attach = contentLogic.getAttachmentInformation(ref);
-                    if (attach != null) {
-                        
-                        String resourceLengthDisplay = assignmentBundleLogic.getFormattedMessage(
-                                "noti.submit.attach_size_display", new Object[] {attach.getContentLength()});
-                        content.append(attach.getDisplayName() + " " + resourceLengthDisplay + newline);
-                    }
+                AttachmentInformation attach = contentLogic.getAttachmentInformation(ref);
+                if (attach != null) {
+
+                    String resourceLengthDisplay = assignmentBundleLogic.getFormattedMessage(
+                            "noti.submit.attach_size_display", new Object[] {attach.getContentLength()});
+                    content.append(attach.getDisplayName() + " " + resourceLengthDisplay + newline);
+                }
 
             }
         }
@@ -437,7 +437,7 @@ public class ScheduledNotificationImpl implements ScheduledNotification
             }
 
             if (usersToNotify != null && !usersToNotify.isEmpty()) {
-                
+
                 if (sendAsDigest) {
                     String messageBody = htmlContent(submission);
                     // escape html

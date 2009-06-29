@@ -44,40 +44,40 @@ import org.sakaiproject.exception.TypeException;
 public class ExternalContentLogicImpl implements ExternalContentLogic {
 
     private static Log log = LogFactory.getLog(ExternalContentLogicImpl.class);
-    
+
     private static final String BASE_IMG_PATH= "/library/image/";
 
     private ContentHostingService contentHosting;
     public void setContentHostingService(ContentHostingService contentHosting) {
         this.contentHosting = contentHosting;
     }
-    
+
     private ContentTypeImageService imageService;
     public void setContentTypeImageService(ContentTypeImageService imageService) {
         this.imageService = imageService;
     }
-    
+
     private ExternalLogic externalLogic;
     public void setExternalLogic(ExternalLogic externalLogic) {
         this.externalLogic = externalLogic;
     }
-    
+
     /**
      * Place any code that should run when this class is initialized by spring here
      */
     public void init() {
         if (log.isDebugEnabled()) log.debug("init");
     }
-    
+
     public ContentResource getContentResource(String reference) {
         if (reference == null) {
             throw new IllegalArgumentException("Null reference passed to getContentResource");
         }
-        
+
         ContentResource resource = null;
-        
+
         try {
-           resource = contentHosting.getResource(reference);
+            resource = contentHosting.getResource(reference);
         } catch (TypeException te) {
             log.warn("TypeException thrown when attempting to retrieve ContentResource with ref: " + reference, te);
         } catch (IdUnusedException iue) {
@@ -85,59 +85,59 @@ public class ExternalContentLogicImpl implements ExternalContentLogic {
         } catch (PermissionException pe) {
             log.warn("IdUnusedException thrown when attempting to retrieve ContentResource with ref: " + reference, pe);
         }
-        
+
         return resource;
     }
-    
+
     public String getReferenceCollectionId(String contextId) {
         if (contextId == null) {
             throw new IllegalArgumentException("Null contextId passed to getReferenceCollectionId");
         }
-        
+
         return contentHosting.getSiteCollection(contextId);
     }
-    
+
     public AttachmentInformation getAttachmentInformation(String attachmentReference) {
         if (attachmentReference == null) {
             throw new IllegalArgumentException("Null attachmentReference passed to getAttachmentInformation");
         }
-        
+
         AttachmentInformation attach = null;
-        
+
         // try to retrieve the ContentResource associated with the reference
         ContentResource resource = getContentResource(attachmentReference);
         if (resource != null) {
             attach = new AttachmentInformation();
-            
+
             ResourceProperties properties = resource.getProperties();
-            
+
             // Content Length Display
             String contentLengthProp = properties.getNamePropContentLength();
             String contentLength = properties.getPropertyFormatted(contentLengthProp);
             attach.setContentLength(contentLength);
-            
+
             // Content display name
             String displayNameProp = properties.getNamePropDisplayName();
             String displayName = properties.getProperty(displayNameProp);
             attach.setDisplayName(displayName);
-            
+
             // Content Type
             String contentTypeProp = properties.getNamePropContentType();
             String contentType = properties.getProperty(contentTypeProp);
             attach.setContentType(contentType);
-            
+
             // Content type display icon path
             String imagePath = BASE_IMG_PATH;
             imagePath += imageService.getContentTypeImage(contentType);
             attach.setContentTypeImagePath(imagePath);
-            
+
             // url to the resource
             attach.setUrl(resource.getUrl());
         }
-        
+
         return attach;
     }
-    
+
     public String copyAttachment(String attachmentReference, String contextId) {
         String newAttRef = null;
         if (attachmentReference != null) {
@@ -183,22 +183,22 @@ public class ExternalContentLogicImpl implements ExternalContentLogic {
 
         return newAttRef;
     }
-    
+
     public String getMyWorkspaceCollectionId(String userId) {
         if (userId == null) {
             throw new IllegalArgumentException("Null userId passed to getMyWorkspaceCollectionId");
         }
-        
+
         String collectionId = null;
-        
+
         String myWorkspaceSiteId = externalLogic.getMyWorkspaceSiteId(userId);
         if (myWorkspaceSiteId != null) {
             collectionId = contentHosting.getSiteCollection(myWorkspaceSiteId);
         } else {
             log.warn("No My Workspace site id found for user: " + userId);
         }
-        
+
         return collectionId;
-        
+
     }
 }
