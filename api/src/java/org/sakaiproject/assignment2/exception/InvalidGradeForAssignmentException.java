@@ -28,13 +28,13 @@ package org.sakaiproject.assignment2.exception;
  */
 public class InvalidGradeForAssignmentException extends AssignmentException {
 
-	private static final long serialVersionUID = 6455123022460020730L;
+    private static final long serialVersionUID = 6455123022460020730L;
 
-	public InvalidGradeForAssignmentException(String message) {
+    public InvalidGradeForAssignmentException(String message) {
         super(message);
     }
 
-	public InvalidGradeForAssignmentException(String msg, Throwable t) {
-		super(msg, t);
-	}
+    public InvalidGradeForAssignmentException(String msg, Throwable t) {
+        super(msg, t);
+    }
 }

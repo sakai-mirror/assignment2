@@ -29,13 +29,13 @@ package org.sakaiproject.assignment2.exception;
  */
 public class SubmissionClosedException extends AssignmentException {
 
-	private static final long serialVersionUID = 0L;
+    private static final long serialVersionUID = 0L;
 
-	public SubmissionClosedException(String message) {
+    public SubmissionClosedException(String message) {
         super(message);
     }
 
-	public SubmissionClosedException(String msg, Throwable t) {
-		super(msg, t);
-	}
+    public SubmissionClosedException(String msg, Throwable t) {
+        super(msg, t);
+    }
 }

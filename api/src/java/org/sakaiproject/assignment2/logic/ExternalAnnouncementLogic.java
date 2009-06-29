@@ -33,48 +33,48 @@ import org.sakaiproject.assignment2.exception.AnnouncementPermissionException;
  * @author <a href="mailto:wagnermr@iupui.edu">michelle wagner</a>
  */
 public interface ExternalAnnouncementLogic {
-	
-	/**
-	 * Add an announcement of the given assignment's open date to the 
-	 * Announcements tool
-	 * @param restrictedGroupIds
-	 * @param contextId
-	 * @param announcementSubject
-	 * @param announcementBody
-	 * @param openDate the date after which this announcement will appear in the Annc tool
+
+    /**
+     * Add an announcement of the given assignment's open date to the 
+     * Announcements tool
+     * @param restrictedGroupIds
+     * @param contextId
+     * @param announcementSubject
+     * @param announcementBody
+     * @param openDate the date after which this announcement will appear in the Annc tool
 			if null, defaults to current date and time
-	 * @throws AnnouncementPermissionException
-	 * 		if the current user is not authorized to add an announcement
-	 * @return the id of the newly created announcement
-	 */
-	public String addOpenDateAnnouncement(Collection<String> restrictedGroupIds, String contextId, 
-			String announcementSubject, String announcementBody, Date openDate) throws AnnouncementPermissionException;
-	
-	/**
-	 * Update an announcement for the given assignment. Announcements must be
-	 * updated when the title, group restrictions, or open date of the assignment changes.
-	 * @param announcementId
-	 * @param restrictedGroupIds
-	 * @param contextId
-	 * @param announcementSubject
-	 * @param announcementBody
-	 * @param openDate the date after which this announcement will appear in the Annc tool
+     * @throws AnnouncementPermissionException
+     * 		if the current user is not authorized to add an announcement
+     * @return the id of the newly created announcement
+     */
+    public String addOpenDateAnnouncement(Collection<String> restrictedGroupIds, String contextId, 
+            String announcementSubject, String announcementBody, Date openDate) throws AnnouncementPermissionException;
+
+    /**
+     * Update an announcement for the given assignment. Announcements must be
+     * updated when the title, group restrictions, or open date of the assignment changes.
+     * @param announcementId
+     * @param restrictedGroupIds
+     * @param contextId
+     * @param announcementSubject
+     * @param announcementBody
+     * @param openDate the date after which this announcement will appear in the Annc tool
 			if null, defaults to current date and time
-	 * @throws AnnouncementPermissionException
-	 * 		if the current user is not authorized to update an announcement
-	 * @return the id of the updated announcement
-	 */
-	public String updateOpenDateAnnouncement(String announcementId, Collection<String> restrictedGroupIds, String contextId,
-			String announcementSubject, String announcementBody, Date openDate) 
-		throws AnnouncementPermissionException;
-	
-	/**
-	 * Delete an existing announcement associated with the given assignment.
-	 * @param announcementId
-	 * @param contextId
-	 * @throws AnnouncementPermissionException
-	 * 		if the current user is not authorized to delete an announcement
-	 */
-	public void deleteOpenDateAnnouncement(String announcementId, String contextId) 
-		throws AnnouncementPermissionException;
+     * @throws AnnouncementPermissionException
+     * 		if the current user is not authorized to update an announcement
+     * @return the id of the updated announcement
+     */
+    public String updateOpenDateAnnouncement(String announcementId, Collection<String> restrictedGroupIds, String contextId,
+            String announcementSubject, String announcementBody, Date openDate) 
+    throws AnnouncementPermissionException;
+
+    /**
+     * Delete an existing announcement associated with the given assignment.
+     * @param announcementId
+     * @param contextId
+     * @throws AnnouncementPermissionException
+     * 		if the current user is not authorized to delete an announcement
+     */
+    public void deleteOpenDateAnnouncement(String announcementId, String contextId) 
+    throws AnnouncementPermissionException;
 }

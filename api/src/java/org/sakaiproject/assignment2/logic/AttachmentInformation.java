@@ -40,7 +40,7 @@ public class AttachmentInformation {
 
     public AttachmentInformation() {
     }
-    
+
     /**
      * 
      * @return the reference identifying this attachment 

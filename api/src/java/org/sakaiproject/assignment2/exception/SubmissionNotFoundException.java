@@ -28,13 +28,13 @@ package org.sakaiproject.assignment2.exception;
  */
 public class SubmissionNotFoundException extends AssignmentException {
 
-	private static final long serialVersionUID = 0L;
+    private static final long serialVersionUID = 0L;
 
-	public SubmissionNotFoundException(String message) {
+    public SubmissionNotFoundException(String message) {
         super(message);
     }
 
-	public SubmissionNotFoundException(String msg, Throwable t) {
-		super(msg, t);
-	}
+    public SubmissionNotFoundException(String msg, Throwable t) {
+        super(msg, t);
+    }
 }

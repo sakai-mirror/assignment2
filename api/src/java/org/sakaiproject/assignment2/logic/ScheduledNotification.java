@@ -26,8 +26,8 @@ import org.sakaiproject.assignment2.model.AssignmentSubmission;
 public interface ScheduledNotification extends ScheduledInvocationCommand
 {
 
-	void notifyStudentThatSubmissionWasAccepted(AssignmentSubmission submission);
+    void notifyStudentThatSubmissionWasAccepted(AssignmentSubmission submission);
 
-	void notifyInstructorsOfSubmission(AssignmentSubmission submission);
+    void notifyInstructorsOfSubmission(AssignmentSubmission submission);
 
 }

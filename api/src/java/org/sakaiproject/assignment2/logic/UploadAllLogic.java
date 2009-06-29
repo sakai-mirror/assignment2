@@ -48,7 +48,7 @@ public interface UploadAllLogic
          * The total num students with updated feedback 
          */
         NUM_STUDENTS_UPDATED,
-        
+
         /**
          * The total num students identified for update from the archive.
          * each student will only be updated if there are actual changes
@@ -64,7 +64,7 @@ public interface UploadAllLogic
          */
         STUDENT_WITH_INVALID_GRADE_IN_CSV
     }
-    
+
     /**
      * used to derive the String representation of the {@link UploadInfo}
      * from the map returned by {@link #uploadAll(UploadAllOptions, File)}
@@ -77,23 +77,23 @@ public interface UploadAllLogic
      * is encountered
      */
     public static final String UPLOAD_PARAM = "param";
-    
-	/**
-	 * 
-	 * @param options
-	 * @param file
-	 * @return uploads the feedback derived from the given zip file. if errors are
-	 * encountered along the way, these errors will be added to a List of Maps. The maps
-	 * may also include informational pieces like # students identified for update.  The maps
-	 * consist of two keys: {@link #UPLOAD_INFO} and {{@link #UPLOAD_PARAM}. This
-	 * will allow you to construct meaningful (info or error) messages to display for your user.
-	 * The upload will attempt to continue, if possible, after an error is encountered.
-	 * The reason for the error should be returned in the map unless error is
-	 * so severe it causes failure
-	 * @throws UploadException an exception occurred that prevented the upload
-	 * from continuing
-	 */
-	public List<Map<String, String>> uploadAll(UploadAllOptions options, File file)
-			throws UploadException;
+
+    /**
+     * 
+     * @param options
+     * @param file
+     * @return uploads the feedback derived from the given zip file. if errors are
+     * encountered along the way, these errors will be added to a List of Maps. The maps
+     * may also include informational pieces like # students identified for update.  The maps
+     * consist of two keys: {@link #UPLOAD_INFO} and {{@link #UPLOAD_PARAM}. This
+     * will allow you to construct meaningful (info or error) messages to display for your user.
+     * The upload will attempt to continue, if possible, after an error is encountered.
+     * The reason for the error should be returned in the map unless error is
+     * so severe it causes failure
+     * @throws UploadException an exception occurred that prevented the upload
+     * from continuing
+     */
+    public List<Map<String, String>> uploadAll(UploadAllOptions options, File file)
+    throws UploadException;
 
 }

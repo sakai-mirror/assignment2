@@ -32,43 +32,43 @@ import java.util.Date;
  * @author <a href="mailto:wagnermr@iupui.edu">michelle wagner</a>
  */
 public interface ExternalCalendarLogic {
-	
-	/**
-	 * 
-	 * @param restrictedGroupIds - the ids for any groups that this event is restricted to. 
-	 * null if not restricted to groups
-	 * @param contextId 
-	 * @param eventTitle - the title of the Schedule event
-	 * @param eventDescription - the description of this event
-	 * @param dueDate - the date of this event
-	 * @param assignmentId - the id of the assignment that this event is assoc with
-	 * @return the id of the newly created event in the Schedule/Calendar tool
-	 * @throws CalendarPermissionException if the current user is not authorized
-	 * to add events in the Schedule/Calendar tool
-	 */
-	public String addDueDateToSchedule(Collection<String> restrictedGroupIds, String contextId,
-    		String eventTitle, String eventDescription, Date dueDate, Long assignmentId);
-	
-	/**
-	 * 
-	 * @param eventId - the id of the event to update
-	 * @param restrictedGroupIds - the ids for any groups that this event is restricted to. 
-	 * null if not restricted to groups
-	 * @param contextId
-	 * @param eventTitle - the title of the Schedule event
-	 * @param eventDescription - the description of this event
-	 * @param dueDate - the date of this event
-	 * @param assignmentId - the id of the assignment this event is linked to
-	 * @return the id of the event
-	 */
-	public String updateDueDateEvent(String eventId, Collection<String> restrictedGroupIds, String contextId, 
-			String eventTitle, String eventDescription, Date dueDate, Long assignmentId);
-	
-	/**
-	 * Will remove the given event from the Schedule/Calendar tool
-	 * @param eventId - the id of the event you wish to remove
-	 * @param contextId
-	 */
-	public void deleteDueDateEvent(String eventId, String contextId);
-	
+
+    /**
+     * 
+     * @param restrictedGroupIds - the ids for any groups that this event is restricted to. 
+     * null if not restricted to groups
+     * @param contextId 
+     * @param eventTitle - the title of the Schedule event
+     * @param eventDescription - the description of this event
+     * @param dueDate - the date of this event
+     * @param assignmentId - the id of the assignment that this event is assoc with
+     * @return the id of the newly created event in the Schedule/Calendar tool
+     * @throws CalendarPermissionException if the current user is not authorized
+     * to add events in the Schedule/Calendar tool
+     */
+    public String addDueDateToSchedule(Collection<String> restrictedGroupIds, String contextId,
+            String eventTitle, String eventDescription, Date dueDate, Long assignmentId);
+
+    /**
+     * 
+     * @param eventId - the id of the event to update
+     * @param restrictedGroupIds - the ids for any groups that this event is restricted to. 
+     * null if not restricted to groups
+     * @param contextId
+     * @param eventTitle - the title of the Schedule event
+     * @param eventDescription - the description of this event
+     * @param dueDate - the date of this event
+     * @param assignmentId - the id of the assignment this event is linked to
+     * @return the id of the event
+     */
+    public String updateDueDateEvent(String eventId, Collection<String> restrictedGroupIds, String contextId, 
+            String eventTitle, String eventDescription, Date dueDate, Long assignmentId);
+
+    /**
+     * Will remove the given event from the Schedule/Calendar tool
+     * @param eventId - the id of the event you wish to remove
+     * @param contextId
+     */
+    public void deleteDueDateEvent(String eventId, String contextId);
+
 }

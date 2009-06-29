@@ -25,7 +25,7 @@ public class Assignment2Utils {
 
         return cleanup;
     }
-    
+
     /**
      * 
      * @param existingString
@@ -50,7 +50,7 @@ public class Assignment2Utils {
                     int existingNumber = Integer.parseInt(possibleNumber);
                     if (existingNumber >= 0) {
                         numToAppend = existingNumber + 1;
-                        
+
                         // rebuild the string without the ending version info
                         String unversionedString = "";
                         for (int i = 0; i < stringPieces.length-1; i++) {
@@ -59,17 +59,17 @@ public class Assignment2Utils {
                             }
                             unversionedString += stringPieces[i];
                         }
-                        
+
                         existingString = unversionedString;
                     }
                 } catch (NumberFormatException nfe) {
                     // not an integer so not really versioned
                 }
             } 
-            
+
             duplicatedString = existingString + " " + numToAppend;
         }
-        
+
         return duplicatedString;
     }
 

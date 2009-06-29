@@ -29,13 +29,13 @@ package org.sakaiproject.assignment2.exception;
  */
 public class GradebookItemNotFoundException extends AssignmentException {
 
-	private static final long serialVersionUID = 0L;
+    private static final long serialVersionUID = 0L;
 
-	public GradebookItemNotFoundException(String message) {
+    public GradebookItemNotFoundException(String message) {
         super(message);
     }
 
-	public GradebookItemNotFoundException(String msg, Throwable t) {
-		super(msg, t);
-	}
+    public GradebookItemNotFoundException(String msg, Throwable t) {
+        super(msg, t);
+    }
 }

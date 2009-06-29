@@ -589,8 +589,8 @@ public class Assignment2 {
     public void setOptimisticVersion(int optimisticVersion) {
         this.optimisticVersion = optimisticVersion;
     }
-    
-    
+
+
     /**
      * Unstructured properties for the Assignments Object.  These may or may not
      * be persisted depending on their nature.  Some may be generated at 
@@ -730,6 +730,6 @@ public class Assignment2 {
 
         return isSubmissionOpen;
     }
-    
-    
+
+
 }

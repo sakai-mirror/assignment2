@@ -37,73 +37,73 @@ import org.sakaiproject.importer.api.Importable;
  * This work is largely from UC Berkeley's implementation in the gradebook
  */
 public class XmlImportable implements Importable {
-	private String typeName;
-	private String xmlData;
-	private String guid;
-	private String legacyGroup;
-	private String contextPath;
-	private Importable parent;
+    private String typeName;
+    private String xmlData;
+    private String guid;
+    private String legacyGroup;
+    private String contextPath;
+    private Importable parent;
 
-	public XmlImportable() {
-	}
-	
-	/**
-	 * Create an importable object in one line.
-	 * 
-	 * @param typeName identifies what type of domain data is serialized in the XML
-	 * @param xmlData XML string describing the data itself, suitable for archiving
-	 * or merging
-	 */
-	public XmlImportable(String typeName, String xmlData) {
-		this.typeName = typeName;
-		this.xmlData = xmlData;
-	}
-	
-	public String getTypeName() {
-		return typeName;
-	}
+    public XmlImportable() {
+    }
 
-	public void setTypeName(String typeName) {
-		this.typeName = typeName;
-	}
+    /**
+     * Create an importable object in one line.
+     * 
+     * @param typeName identifies what type of domain data is serialized in the XML
+     * @param xmlData XML string describing the data itself, suitable for archiving
+     * or merging
+     */
+    public XmlImportable(String typeName, String xmlData) {
+        this.typeName = typeName;
+        this.xmlData = xmlData;
+    }
 
-	public String getXmlData() {
-		return xmlData;
-	}
+    public String getTypeName() {
+        return typeName;
+    }
 
-	/**
-	 * Since this class doesn't parse the data, this property could easily be renamed
-	 * "setDataDescription" and this class renamed "StringImportable".
-	 * But since XML is central to our archive / export / merge plans, it seems
-	 * worth advertising that the data can be parsed as such.
-	 * @param xmlData
-	 */
-	public void setXmlData(String xmlData) {
-		this.xmlData = xmlData;
-	}
+    public void setTypeName(String typeName) {
+        this.typeName = typeName;
+    }
 
-	public Importable getParent() {
-		return parent;
-	}
-	public void setParent(Importable parent) {
-		this.parent = parent;
-	}
-	public String getGuid() {
-		return guid;
-	}
-	public void setGuid(String guid) {
-		this.guid = guid;
-	}
-	public String getLegacyGroup() {
-		return legacyGroup;
-	}
-	public void setLegacyGroup(String legacyGroup) {
-		this.legacyGroup = legacyGroup;
-	}
-	public String getContextPath() {
-		return contextPath;
-	}
-	public void setContextPath(String contextPath) {
-		this.contextPath = contextPath;
-	}
+    public String getXmlData() {
+        return xmlData;
+    }
+
+    /**
+     * Since this class doesn't parse the data, this property could easily be renamed
+     * "setDataDescription" and this class renamed "StringImportable".
+     * But since XML is central to our archive / export / merge plans, it seems
+     * worth advertising that the data can be parsed as such.
+     * @param xmlData
+     */
+    public void setXmlData(String xmlData) {
+        this.xmlData = xmlData;
+    }
+
+    public Importable getParent() {
+        return parent;
+    }
+    public void setParent(Importable parent) {
+        this.parent = parent;
+    }
+    public String getGuid() {
+        return guid;
+    }
+    public void setGuid(String guid) {
+        this.guid = guid;
+    }
+    public String getLegacyGroup() {
+        return legacyGroup;
+    }
+    public void setLegacyGroup(String legacyGroup) {
+        this.legacyGroup = legacyGroup;
+    }
+    public String getContextPath() {
+        return contextPath;
+    }
+    public void setContextPath(String contextPath) {
+        this.contextPath = contextPath;
+    }
 }

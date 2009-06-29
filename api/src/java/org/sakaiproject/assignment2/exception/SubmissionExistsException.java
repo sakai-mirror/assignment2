@@ -29,13 +29,13 @@ package org.sakaiproject.assignment2.exception;
  */
 public class SubmissionExistsException extends AssignmentException {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public SubmissionExistsException(String message) {
+    public SubmissionExistsException(String message) {
         super(message);
     }
-	
-	public SubmissionExistsException(String message, Throwable t) {
+
+    public SubmissionExistsException(String message, Throwable t) {
         super(message, t);
     }
 }

@@ -22,32 +22,32 @@
 package org.sakaiproject.assignment2.model;
 
 /**
-* The base attachment object for submission-related attachments
-* 
-* @author <a href="mailto:wagnermr@iupui.edu">michelle wagner</a>
-*/
+ * The base attachment object for submission-related attachments
+ * 
+ * @author <a href="mailto:wagnermr@iupui.edu">michelle wagner</a>
+ */
 public abstract class SubmissionAttachmentBase extends AttachmentBase {
 
-	protected AssignmentSubmissionVersion submissionVersion;
+    protected AssignmentSubmissionVersion submissionVersion;
 
-	/**
-	 * 
-	 * @return the AssignmentSubmissionVersion rec associated with this attachment
-	 */
-	public AssignmentSubmissionVersion getSubmissionVersion() {
-		return submissionVersion;
-	}
+    /**
+     * 
+     * @return the AssignmentSubmissionVersion rec associated with this attachment
+     */
+    public AssignmentSubmissionVersion getSubmissionVersion() {
+        return submissionVersion;
+    }
 
-	/**
-	 * set the AssignmentSubmissionVersion rec associated with this attachment
-	 * @param submissionVersion
-	 */
-	public void setSubmissionVersion(AssignmentSubmissionVersion submissionVersion) {
-		this.submissionVersion = submissionVersion;
-	}
-	
-   // CONVENIENCE METHODS
-    
+    /**
+     * set the AssignmentSubmissionVersion rec associated with this attachment
+     * @param submissionVersion
+     */
+    public void setSubmissionVersion(AssignmentSubmissionVersion submissionVersion) {
+        this.submissionVersion = submissionVersion;
+    }
+
+    // CONVENIENCE METHODS
+
     /**
      * 
      * @return true if all of the properties required for this attachment
@@ -55,15 +55,15 @@ public abstract class SubmissionAttachmentBase extends AttachmentBase {
      */
     public boolean isAttachmentValid() {
         boolean attachmentIsValid = true;
-        
+
         if (this.attachmentReference == null || this.attachmentReference.trim().length() == 0) {
             attachmentIsValid = false;
         }
-        
+
         if (this.submissionVersion == null) {
             attachmentIsValid = false;
         }
-        
+
         return attachmentIsValid;
     }
 

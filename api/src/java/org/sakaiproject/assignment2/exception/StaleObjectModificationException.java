@@ -28,13 +28,13 @@ package org.sakaiproject.assignment2.exception;
  */
 public class StaleObjectModificationException extends AssignmentException {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public StaleObjectModificationException(Throwable t) {
+    public StaleObjectModificationException(Throwable t) {
         super(t);
     }
-	
-	public StaleObjectModificationException(String message, Throwable t) {
+
+    public StaleObjectModificationException(String message, Throwable t) {
         super(message, t);
     }
 }

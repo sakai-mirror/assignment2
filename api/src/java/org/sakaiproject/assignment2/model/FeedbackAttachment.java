@@ -22,20 +22,20 @@
 package org.sakaiproject.assignment2.model;
 
 /**
-* The FeedbackAttachment object.  FeedbackAttachments 
-* are attachments added during grading as part of the grader's feedback on
-* a submission.
-* 
-* @author <a href="mailto:wagnermr@iupui.edu">michelle wagner</a>
-*/
+ * The FeedbackAttachment object.  FeedbackAttachments 
+ * are attachments added during grading as part of the grader's feedback on
+ * a submission.
+ * 
+ * @author <a href="mailto:wagnermr@iupui.edu">michelle wagner</a>
+ */
 public class FeedbackAttachment extends SubmissionAttachmentBase {
 
-	public FeedbackAttachment() {
-		
-	}
-	
-	public FeedbackAttachment(AssignmentSubmissionVersion submissionVersion, String attachmentReference) {
-		this.submissionVersion = submissionVersion;
-		this.attachmentReference = attachmentReference;
-	}
+    public FeedbackAttachment() {
+
+    }
+
+    public FeedbackAttachment(AssignmentSubmissionVersion submissionVersion, String attachmentReference) {
+        this.submissionVersion = submissionVersion;
+        this.attachmentReference = attachmentReference;
+    }
 }

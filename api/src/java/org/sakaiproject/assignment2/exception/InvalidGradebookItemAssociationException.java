@@ -30,13 +30,13 @@ package org.sakaiproject.assignment2.exception;
  */
 public class InvalidGradebookItemAssociationException extends AssignmentException {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public InvalidGradebookItemAssociationException(String message) {
+    public InvalidGradebookItemAssociationException(String message) {
         super(message);
     }
-	
-	public InvalidGradebookItemAssociationException(String message, Throwable t) {
+
+    public InvalidGradebookItemAssociationException(String message, Throwable t) {
         super(message, t);
     }
 }

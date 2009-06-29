@@ -22,20 +22,20 @@
 package org.sakaiproject.assignment2.model;
 
 /**
-* The SubmissionAttachment object.  SubmissionAttachments 
-* are attachments associated with the submitter's submission.
-* 
-* @author <a href="mailto:wagnermr@iupui.edu">michelle wagner</a>
-*/
+ * The SubmissionAttachment object.  SubmissionAttachments 
+ * are attachments associated with the submitter's submission.
+ * 
+ * @author <a href="mailto:wagnermr@iupui.edu">michelle wagner</a>
+ */
 public class SubmissionAttachment extends SubmissionAttachmentBase {
-	
-	public SubmissionAttachment() {
-		
-	}
-	
-	public SubmissionAttachment(AssignmentSubmissionVersion submissionVersion, String attachmentReference) {
-		this.submissionVersion = submissionVersion;
-		this.attachmentReference = attachmentReference;
-	}
+
+    public SubmissionAttachment() {
+
+    }
+
+    public SubmissionAttachment(AssignmentSubmissionVersion submissionVersion, String attachmentReference) {
+        this.submissionVersion = submissionVersion;
+        this.attachmentReference = attachmentReference;
+    }
 
 }

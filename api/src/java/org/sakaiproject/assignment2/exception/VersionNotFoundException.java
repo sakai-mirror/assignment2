@@ -29,13 +29,13 @@ package org.sakaiproject.assignment2.exception;
  *
  */
 public class VersionNotFoundException extends RuntimeException {
-	private static final long serialVersionUID = 0L;
+    private static final long serialVersionUID = 0L;
 
-	public VersionNotFoundException(String message) {
+    public VersionNotFoundException(String message) {
         super(message);
     }
 
-	public VersionNotFoundException(String msg, Throwable t) {
-		super(msg, t);
-	}
+    public VersionNotFoundException(String msg, Throwable t) {
+        super(msg, t);
+    }
 }

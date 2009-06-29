@@ -28,13 +28,13 @@ package org.sakaiproject.assignment2.exception;
  */
 public class NoGradebookDataExistsException extends AssignmentException {
 
-	private static final long serialVersionUID = 0L;
+    private static final long serialVersionUID = 0L;
 
-	public NoGradebookDataExistsException(String message) {
+    public NoGradebookDataExistsException(String message) {
         super(message);
     }
 
-	public NoGradebookDataExistsException(String message, Throwable t) {
+    public NoGradebookDataExistsException(String message, Throwable t) {
         super(message, t);
     }
 }
