@@ -40,23 +40,23 @@ import uk.org.ponder.rsf.viewstate.ViewParamsReporter;
  */
 public class RedirectToAssignmentProducer implements ViewComponentProducer, ViewParamsReporter
 {
-	public static final String VIEWID = AssignmentLogic.REDIRECT_ASSIGNMENT_VIEW_ID;
+    public static final String VIEWID = AssignmentLogic.REDIRECT_ASSIGNMENT_VIEW_ID;
 
-	public String getViewID()
-	{
-		return VIEWID;
-	}
+    public String getViewID()
+    {
+        return VIEWID;
+    }
 
-	public void fillComponents(UIContainer tofill, ViewParameters viewparams,
-			ComponentChecker checker)
-	{
-		SimpleAssignmentViewParams params = (SimpleAssignmentViewParams) viewparams;
+    public void fillComponents(UIContainer tofill, ViewParameters viewparams,
+            ComponentChecker checker)
+    {
+        SimpleAssignmentViewParams params = (SimpleAssignmentViewParams) viewparams;
 
-	}
+    }
 
-	public ViewParameters getViewParameters()
-	{
-		return new SimpleAssignmentViewParams();
-	}
+    public ViewParameters getViewParameters()
+    {
+        return new SimpleAssignmentViewParams();
+    }
 
 }

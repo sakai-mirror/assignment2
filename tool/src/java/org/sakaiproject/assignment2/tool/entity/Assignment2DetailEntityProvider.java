@@ -44,17 +44,17 @@ EntityViewParamsInferrer {
     private Log log = LogFactory.getLog(Assignment2DetailEntityProvider.class);
     public final static String ENTITY_PREFIX = "assignment2_detail";
     private EntityProviderManager entityProviderManager;
-    
+
     public void init() {
         log.info("init()");
         entityProviderManager.registerEntityProvider(this);
     }
-    
+
     public void destroy() {
         log.info("destroy()");
         entityProviderManager.unregisterEntityProvider(this);
     }
-    
+
     public String getEntityPrefix() {
         return ENTITY_PREFIX;
     }
@@ -68,10 +68,10 @@ EntityViewParamsInferrer {
     }
 
     public ViewParameters inferDefaultViewParameters(String reference) {
-    	
-    	IdEntityReference assignmentId = new IdEntityReference(reference);
-    	Long id = Long.parseLong(assignmentId.id);
-    	return new AssignmentViewParams(AssignmentDetailProducer.VIEW_ID, id);
+
+        IdEntityReference assignmentId = new IdEntityReference(reference);
+        Long id = Long.parseLong(assignmentId.id);
+        return new AssignmentViewParams(AssignmentDetailProducer.VIEW_ID, id);
     }
 
     public void setEntityProviderManager(EntityProviderManager entityProviderManager) {

@@ -19,7 +19,7 @@ public enum WorkFlowResult {
     STUDENT_SAVE_DRAFT_SUBMISSION,
     STUDENT_SUBMISSION_FAILURE,
     STUDENT_CANCEL_SUBMISSION,
-    
+
     /*
      * Instructor Assignment Authoring
      */
@@ -30,7 +30,7 @@ public enum WorkFlowResult {
     INSTRUCTOR_ASSIGNMENT_FAILURE,
     INSTRUCTOR_CONTINUE_EDITING_ASSIGNMENT, 
     INSTRUCTOR_ASSIGNMENT_VALIDATION_FAILURE,
-    
+
     /*
      * Uploading zip or grades csv file
      */
@@ -40,5 +40,5 @@ public enum WorkFlowResult {
     UPLOADALL_CSV_UPLOAD_FAILURE,
     UPLOADALL_CSV_CONFIRM_AND_SAVE,
     UPLOADALL_CSV_BACK_TO_UPLOAD,
-    
+
 }

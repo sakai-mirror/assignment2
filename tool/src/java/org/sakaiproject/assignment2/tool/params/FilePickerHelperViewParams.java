@@ -55,7 +55,7 @@ public class FilePickerHelperViewParams extends ThickboxHelperViewParams {
         super(viewId, KeepThis, TB_iframe, height, width);
         this.otpkey = otpkey;
     }
-    
+
     public FilePickerHelperViewParams(String viewId, Boolean KeepThis, Boolean TB_iframe, int height, int width, String otpkey, Boolean showWorkspace){
         super(viewId, KeepThis, TB_iframe, height, width);
         this.otpkey = otpkey;

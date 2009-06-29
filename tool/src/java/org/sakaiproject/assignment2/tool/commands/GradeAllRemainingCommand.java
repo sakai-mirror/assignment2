@@ -24,38 +24,38 @@ import uk.org.ponder.messageutil.TargettedMessageList;
  *
  */
 public class GradeAllRemainingCommand {
-    
+
     private static Log log = LogFactory.getLog(GradeAllRemainingCommand.class);
-    
+
     // Dependency
     private AssignmentPermissionLogic permissionLogic;
     public void setAssignmentPermissionLogic(AssignmentPermissionLogic permissionLogic) {
         this.permissionLogic = permissionLogic;
     }
-    
+
     // Dependency
     private AssignmentLogic assignmentLogic;
     public void setAssignmentLogic(AssignmentLogic assignmentLogic) {
         this.assignmentLogic = assignmentLogic;
     }
-    
+
     // Dependency
     private ExternalGradebookLogic gradebookLogic;
     public void setGradebookLogic(ExternalGradebookLogic gradebookLogic) {
         this.gradebookLogic = gradebookLogic;
     }
-    
+
     // Dependency
     private ExternalLogic externalLogic;
     public void setExternalLogic(ExternalLogic externalLogic) {
         this.externalLogic = externalLogic;
     }
-    
+
     private TargettedMessageList messages;
     public void setMessages(TargettedMessageList messages) {
         this.messages = messages;
     }
-    
+
     // Dependency / Property
     private String curContext;
     public void setCurContext(String curContext) {
@@ -64,7 +64,7 @@ public class GradeAllRemainingCommand {
     public String getCurContext() {
         return curContext;
     }
-    
+
     // Property 
     private Long assignmentId;
     public void setAssignmentId(Long assignmentId) {
@@ -73,7 +73,7 @@ public class GradeAllRemainingCommand {
     public Long getAssignmentId() {
         return assignmentId;
     }
-    
+
     // Property
     private String grade;
     public void setGrade(String grade) {
@@ -82,34 +82,34 @@ public class GradeAllRemainingCommand {
     public String getGrade() {
         return grade;
     }
-    
+
     private String groupIdFilter;
     public void setGroupIdFilter(String groupIdFilter) {
         this.groupIdFilter = groupIdFilter;
     }
-    
+
     public void execute() {
         if (log.isDebugEnabled()) log.debug("Executing Grade: " + assignmentId + ", " + grade);
-        
+
         if (assignmentId == null) {
             throw new IllegalArgumentException("Null assignmentId param passed to GradeAllRemainingAction");
         }
-        
+
         Assignment2 assign = assignmentLogic.getAssignmentById(assignmentId);
-        
+
         if (assign == null) {
             throw new AssignmentNotFoundException("No assignment found for id: " + assignmentId);
         }
-        
+
         if (grade == null || grade.trim().length() == 0) {
             messages.addMessage(new TargettedMessage("assignment2.assignment_grade.assigntoall.invalid_grade",
                     new Object[] { }, TargettedMessage.SEVERITY_ERROR));
             return;
         }
-        
+
         String currUserId = externalLogic.getCurrentUserId();
         List<String> gradableStudents = permissionLogic.getGradableStudentsForUserForItem(currUserId, assign);
-        
+
         if (gradableStudents != null) {
             List<String> filteredStudents = new ArrayList<String>();
             // if the group filter is not null, we only apply the grade to students in that group
@@ -123,7 +123,7 @@ public class GradeAllRemainingCommand {
             } else {
                 filteredStudents.addAll(gradableStudents);
             }
-            
+
             try {
                 gradebookLogic.assignGradeToUngradedStudents(assign.getContextId(), assign.getGradebookItemId(), filteredStudents, grade);
             } catch (InvalidGradeForAssignmentException igfae) {

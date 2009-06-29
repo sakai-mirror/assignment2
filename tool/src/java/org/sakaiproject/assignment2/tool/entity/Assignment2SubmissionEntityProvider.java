@@ -237,7 +237,7 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware{
                     orderBy.equals(SUBMISSION_STATUS) || 
                     (orderBy.equals(SUBMISSION_GRADE) && assignment.isGraded()) ||
                     orderBy.equals(SUBMISSION_FEEDBACK_RELEASED)) {
-                
+
                 Collections.sort(togo, new Comparator() {
                     public int compare(Object o1, Object o2) {
                         Map m1, m2;
@@ -261,7 +261,7 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware{
                     }});
             }
         }
-        
+
         long start = (int) search.getStart();
         if (togo.size() == 0) {
             start = 0;
@@ -269,9 +269,9 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware{
         else if (start >= togo.size()) {
             start = togo.size() - 1;
         }
-        
+
         long end = togo.size();
-        
+
         if (search.getLimit() > 0) {
             end = start + search.getLimit();
             if (end > togo.size()) {

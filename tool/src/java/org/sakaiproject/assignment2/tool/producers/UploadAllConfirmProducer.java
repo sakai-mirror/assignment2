@@ -50,7 +50,7 @@ public class UploadAllConfirmProducer implements ViewComponentProducer, ViewPara
     public void setAssignmentLogic(AssignmentLogic assignmentLogic) {
         this.assignmentLogic = assignmentLogic;
     }
-    
+
     // Dependency
     private ExternalGradebookLogic gradebookLogic;
     public void setExternalGradebookLogic(ExternalGradebookLogic gradebookLogic) {
@@ -71,7 +71,7 @@ public class UploadAllConfirmProducer implements ViewComponentProducer, ViewPara
         AssignmentViewParams params = (AssignmentViewParams) viewparams;
 
         Assignment2 assignment = assignmentLogic.getAssignmentById(params.assignmentId);
-        
+
         String titleHeading = assignment.getTitle();
         if (gradebookLogic.isGradingByPoints(assignment.getContextId())) {
             // get the points possible for the associated gb item if graded by points
@@ -80,10 +80,10 @@ public class UploadAllConfirmProducer implements ViewComponentProducer, ViewPara
             if (gradebookItem == null) {
                 throw new GradebookItemNotFoundException("No gradebook item found with id: " + assignment.getGradebookItemId());
             }
-            
+
             titleHeading += " [" + gradebookItem.getPointsPossible() + "]";
         }
-        
+
         UIOutput.make(tofill, "title-header", titleHeading);
 
         if (uploadBean.parsedContent != null) {
@@ -99,9 +99,9 @@ public class UploadAllConfirmProducer implements ViewComponentProducer, ViewPara
                         parts.add("");
                     }
                 }
-                
+
                 UIBranchContainer row = UIBranchContainer.make(tofill, "student-row:");
-                
+
                 UIOutput.make(row, "student-id", parts.get(0));
                 UIOutput.make(row, "student-name", parts.get(1));
                 UIOutput.make(row, "grade", parts.get(2));
@@ -110,7 +110,7 @@ public class UploadAllConfirmProducer implements ViewComponentProducer, ViewPara
         }
 
         makeBreadcrumbs(tofill, assignment);
-        
+
         UIForm finishForm = UIForm.make(tofill, "finish-form");
         UICommand.make(finishForm, "ok-button", UIMessage.make("assignment2.upload_grades_confirm.button.ok"), "UploadBean.processUploadConfirmAndSave");
         UICommand.make(finishForm, "cancel-button", UIMessage.make("assignment2.upload_grades_confirm.button.back"), "UploadBean.processBackToUpload");

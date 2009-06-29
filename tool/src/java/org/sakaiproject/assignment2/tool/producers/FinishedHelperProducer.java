@@ -104,13 +104,13 @@ public class FinishedHelperProducer implements ViewComponentProducer, ViewParams
 
                 if (attach != null) {
                     String file_size = "(" + attach.getContentLength() + ")";
-                    
+
                     markup += HTMLUtil.emitJavascriptCall("parent.updateAttachments", 
                             new String[]{attach.getContentTypeImagePath(), 
                             attach.getDisplayName(), attach.getUrl(), ref.getId(), file_size});  
                 }
             }
-            
+
             UIVerbatim.make(tofill, "updateAttachments", markup);
             //Here are my references... now emit a JS call to add these references to the UI
             //Then remove the FilePickerBean

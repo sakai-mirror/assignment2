@@ -30,13 +30,13 @@ public class AssignmentAuthoringFlowBean implements BeanLocator {
     public void setAssignment2Creator(Assignment2Creator assignment2Creator) {
         this.assignment2Creator = assignment2Creator;
     }
-    
+
     // Service Application Scope Dependency
     private AssignmentLogic assignmentLogic;
     public void setAssignmentLogic(AssignmentLogic assignmentLogic) {
         this.assignmentLogic = assignmentLogic;
     }
-    
+
     // Property: The Assignment being edited/authored
     private Assignment2 assignment;
     public void setAssignment(Assignment2 assignment) {
@@ -48,7 +48,7 @@ public class AssignmentAuthoringFlowBean implements BeanLocator {
         }
         return assignment;
     }
-    
+
     public Object locateBean(String name) {
         if (assignment == null && name.startsWith(EntityBeanLocator.NEW_PREFIX)) {
             assignment = assignment2Creator.create();
@@ -58,5 +58,5 @@ public class AssignmentAuthoringFlowBean implements BeanLocator {
         }
         return assignment;
     }
-    
+
 }

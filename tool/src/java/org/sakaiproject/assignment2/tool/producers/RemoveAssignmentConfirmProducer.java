@@ -53,22 +53,22 @@ import uk.org.ponder.rsf.viewstate.ViewParamsReporter;
 public class RemoveAssignmentConfirmProducer implements ViewComponentProducer,
 ViewParamsReporter, NavigationCaseReporter {
     public static final String VIEW_ID = "remove-assignment-confirm";
-    
+
     private AssignmentLogic assignmentLogic;
     public void setAssignmentLogic(AssignmentLogic assignmentLogic) {
         this.assignmentLogic = assignmentLogic;
     }
-    
+
     private AssignmentSubmissionLogic submissionLogic;
     public void setSubmissionLogic(AssignmentSubmissionLogic submissionLogic) {
         this.submissionLogic = submissionLogic;
     }
-    
+
     private AssignmentPermissionLogic permissionLogic;
     public void setPermissionLogic(AssignmentPermissionLogic permissionLogic) {
         this.permissionLogic = permissionLogic;
     }
-    
+
     private String curUserId;
     public void setCurUserId(String curUserId) {
         this.curUserId = curUserId;
@@ -77,9 +77,9 @@ ViewParamsReporter, NavigationCaseReporter {
     public void fillComponents(UIContainer tofill, ViewParameters viewparams,
             ComponentChecker checker) {
         RemoveAssignmentParams params = (RemoveAssignmentParams) viewparams;
-        
+
         Assignment2 assignment = assignmentLogic.getAssignmentById(params.assignmentId);
-        
+
         UIOutput.make(tofill, "assignment-list-table");
         UIBranchContainer tablerow = UIBranchContainer.make(tofill, "asnn-row:");
         UIOutput.make(tablerow, "asnn-title", assignment.getTitle());
@@ -88,14 +88,14 @@ ViewParamsReporter, NavigationCaseReporter {
         } else {
             UIOutput.make(tablerow, "due", assignment.getDueDate().toLocaleString()); // TODO FIXME
         }
-            
+
         List<String> viewableStudents = permissionLogic.getViewableStudentsForUserForItem(curUserId, assignment);
         int totalSubmissions = submissionLogic.getNumStudentsWithASubmission(assignment, viewableStudents);
 
         UIOutput.make(tablerow, "submissions", totalSubmissions+"");
-        
+
         UIForm removeForm = UIForm.make(tofill, "confirm-remove-form");
-        
+
     }
 
     public String getViewID() {

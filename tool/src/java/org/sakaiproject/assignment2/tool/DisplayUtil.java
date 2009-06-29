@@ -17,12 +17,12 @@ import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
  *
  */
 public class DisplayUtil {
-    
+
     //private MessageLocator messageLocator;
     //public void setMessageLocator(MessageLocator messageLocator) {
     //    this.messageLocator = messageLocator;
-   // }
-    
+    // }
+
     /**
      * map key used by {@link #getSubmissionStatusForAssignment(Assignment2, List)}.
      * the number of submissions that exist for the given assignment and students.
@@ -35,19 +35,19 @@ public class DisplayUtil {
      * students. if no submission required, set to "N/A"
      */
     public static final String NUM_NEW_SUB = "numNewSub";
-    
+
     /**
      * map key used by {@link #getSubmissionStatusForAssignment(Assignment2, List)}.
      * The In/New display for the UI: total submitted / new submissions.
      * if no submission required, set to "N/A"
      */
     public static final String IN_NEW_DISPLAY = "inNewDisplay";
-    
+
     private AssignmentSubmissionLogic submissionLogic;
     public void setSubmissionLogic(AssignmentSubmissionLogic submissionLogic) {
         this.submissionLogic = submissionLogic;
     }
-    
+
     /**
      * 
      * @param assignment
@@ -57,7 +57,7 @@ public class DisplayUtil {
      * accept submissions, sets all properties to "N/A"
      */
     public Map<String, String> getSubmissionStatusForAssignment(Assignment2 assignment, List<String> viewableStudents) {
-       Map<String, String> subStatusMap = new HashMap<String, String>();
+        Map<String, String> subStatusMap = new HashMap<String, String>();
 
         if (assignment.isRequiresSubmission() && 
                 assignment.getSubmissionType() != AssignmentConstants.SUBMIT_NON_ELECTRONIC) {
@@ -71,7 +71,7 @@ public class DisplayUtil {
                     newSubmissions = submissionLogic.getNumNewSubmissions(assignment, viewableStudents);
                 }
             }
-            
+
             subStatusMap.put(NUM_SUB, submitted + "");
             subStatusMap.put(NUM_NEW_SUB, newSubmissions + "");
             subStatusMap.put(IN_NEW_DISPLAY, submitted + "/" + newSubmissions); // messageLocator.getMessage("assignment2.list.submissions_link", new Object[]{ submitted, newSubmissions});
@@ -81,7 +81,7 @@ public class DisplayUtil {
             subStatusMap.put(NUM_NEW_SUB, notApplicable);
             subStatusMap.put(IN_NEW_DISPLAY, notApplicable);  
         }
-        
+
         return subStatusMap;
     }
 }

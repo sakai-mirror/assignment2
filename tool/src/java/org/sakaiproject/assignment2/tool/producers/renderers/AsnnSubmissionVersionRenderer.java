@@ -51,7 +51,7 @@ public class AsnnSubmissionVersionRenderer implements BasicProducer {
      * @param clientID
      * @param asnnSubVersion
      * @param multipleVersionDisplay true if this version is being displayed in a multi-version scenario.
-  	 * this will prevent unnecessary repeated headers
+     * this will prevent unnecessary repeated headers
      * @return
      */
     public UIContainer fillComponents(UIContainer parent, String clientID, AssignmentSubmissionVersion asnnSubVersion, boolean multipleVersionDisplay) {
@@ -69,7 +69,7 @@ public class AsnnSubmissionVersionRenderer implements BasicProducer {
         }
 
         //TODO FIXME time and date of submission here
-        
+
         /*
          * Render the Students Submission Materials
          * These are not displayed if the version number is 0 - this indicates
@@ -80,7 +80,7 @@ public class AsnnSubmissionVersionRenderer implements BasicProducer {
                 // TODO FIXME if the student didn't actually submit any attachments
                 // what should we say
                 UIMessage.make(joint, "submission-attachments-header", "assignment2.student-submit.submitted_attachments");
-                
+
                 if (asnnSubVersion.getSubmissionAttachSet() != null && !asnnSubVersion.getSubmissionAttachSet().isEmpty()){
                     attachmentListRenderer.makeAttachmentFromSubmissionAttachmentSet(joint, "submission-attachment-list:", viewParameters.viewID, 
                             asnnSubVersion.getSubmissionAttachSet());
@@ -88,7 +88,7 @@ public class AsnnSubmissionVersionRenderer implements BasicProducer {
                     UIMessage.make(joint, "no_submitted_attachments", "assignment2.student-submit.no_attachments_submitted");
                 }
             }
-            
+
             if (submissionType == AssignmentConstants.SUBMIT_INLINE_AND_ATTACH || 
                     submissionType == AssignmentConstants.SUBMIT_INLINE_ONLY) {
                 // if feedback is released, we display the submitted text with
@@ -117,13 +117,13 @@ public class AsnnSubmissionVersionRenderer implements BasicProducer {
         if (asnnSubVersion.isFeedbackReleased()) {
             UIMessage.make(joint, "feedback-header", "assignment2.student-submission.feedback.header");
             String feedbackText = asnnSubVersion.getFeedbackNotes();
-            
+
             if (feedbackText != null && feedbackText.trim().length() > 0) {
                 UIVerbatim.make(joint, "feedback-text", asnnSubVersion.getFeedbackNotes());
             } else {
                 UIMessage.make(joint, "feedback-text", "assignment2.student-submission.feedback.none");
             }
-            
+
             if (asnnSubVersion.getFeedbackAttachSet() != null && 
                     asnnSubVersion.getFeedbackAttachSet().size() > 0) {
                 UIMessage.make(joint, "feedback-attachments-header", "assignment2.student-submission.feedback.materials.header");
@@ -132,7 +132,7 @@ public class AsnnSubmissionVersionRenderer implements BasicProducer {
                         asnnSubVersion.getFeedbackAttachSet());
             }
         }
-        
+
         return joint;
     }
 

@@ -30,7 +30,7 @@ public class AttachmentInputEvolver {
 
     public static final String COMPONENT_ID = "attachment-list:";
     public static final String CORE_ID = "attachment-list-core:";
-    
+
     private ExternalContentLogic contentLogic;
     public void setExternalContentLogic(ExternalContentLogic contentLogic) {
         this.contentLogic = contentLogic;
@@ -45,7 +45,7 @@ public class AttachmentInputEvolver {
     public void setRequestBeanGetter(BeanGetter rbg) {
         this.rbg = rbg;
     }
-    
+
     /**
      * Renders the attachments.  There will be an option to remove them.
      * 
@@ -55,7 +55,7 @@ public class AttachmentInputEvolver {
     public UIJointContainer evolveAttachment(UIInputMany toevolve) {
         return evolveAttachment(toevolve, true);
     }
-    
+
     /**
      * Renders the list of Attachments.  If removable is true, then a link for
      * removing the attachment is rendered as well.
@@ -85,17 +85,17 @@ public class AttachmentInputEvolver {
         for (int i=0; i < limit; ++i) {
             UIBranchContainer row = UIBranchContainer.make(core, "attachment-list-row:", Integer.toString(i));
             String thisvalue = i < value.length ? value[i] : "";
-            
+
             AttachmentInformation attach = contentLogic.getAttachmentInformation(thisvalue);
             if (attach != null) {
                 String fileSizeDisplay = "(" + attach.getContentLength() + ")";
-                
+
                 UILink.make(row, "attachment_image", attach.getContentTypeImagePath());
                 UILink.make(row, "attachment_link", attach.getDisplayName(), attach.getUrl());
                 UIOutput.make(row, "attachment_size", fileSizeDisplay);
-                
+
                 UIBasicListMember.makeBasic(row, "attachment_item", toevolve.getFullID(), i);
-                
+
                 //Add remove link
                 if (removable) {
                     UIVerbatim.make(row, "attachment_remove", 

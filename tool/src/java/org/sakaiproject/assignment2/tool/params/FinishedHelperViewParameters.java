@@ -37,10 +37,10 @@ public class FinishedHelperViewParameters extends SimpleViewParameters {
      * The name of the gradebook item (most likely just created)
      */
     public String gbItemName;
-    
+
     /**
      * The time that the gradebook item is due. "" indicates no due date.
-	 * This value will be the # milliseconds since January 1, 1970 00:00:00 GMT
+     * This value will be the # milliseconds since January 1, 1970 00:00:00 GMT
      */
     public String gbItemDueTime;
 

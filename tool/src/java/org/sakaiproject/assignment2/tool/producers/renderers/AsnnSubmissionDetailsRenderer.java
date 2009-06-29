@@ -103,7 +103,7 @@ public class AsnnSubmissionDetailsRenderer implements BasicProducer {
     public void fillComponents(UIContainer parent, String clientID, AssignmentSubmission assignmentSubmission, boolean previewAsStudent) {
         fillComponents(parent, clientID, assignmentSubmission, previewAsStudent, false);
     }
-    
+
     /**
      * Renders the assignment details at the top of the Student Submission
      * Page(s)
@@ -126,7 +126,7 @@ public class AsnnSubmissionDetailsRenderer implements BasicProducer {
 
         // get the status of the current version
         int currStatus = submissionLogic.getSubmissionStatusConstantForCurrentVersion(assignmentSubmission.getCurrentSubmissionVersion(), assignment.getDueDate());
-        
+
         /***
          * Title and Due Date Information
          */
@@ -137,7 +137,7 @@ public class AsnnSubmissionDetailsRenderer implements BasicProducer {
             } else {
                 submissionHeading = messageLocator.getMessage("assignment2.student-submit.heading.submission", new Object[]{ title, currentUser.getDisplayName() });
             }
-            
+
             if (currStatus == AssignmentConstants.SUBMISSION_IN_PROGRESS) {
                 UIVerbatim.make(joint, "heading_status", messageLocator.getMessage("assignment2.student-submit.heading.in_progress", 
                         new Object[]{ title, currentUser.getDisplayName(), df_short.format(assignmentSubmission.getCurrentSubmissionVersion().getStudentSaveDate())}));
@@ -148,13 +148,13 @@ public class AsnnSubmissionDetailsRenderer implements BasicProducer {
             UIVerbatim.make(joint, "heading_status", messageLocator.getMessage("assignment2.student-submit.heading.submission.deleted", 
                     new Object[]{ title, currentUser.getDisplayName() }));
         }
-        
+
         String dueDateText = null;
-        
+
         if (!previewAsStudent && assignment.isRequiresSubmission() && 
                 assignment.getSubmissionType() != AssignmentConstants.SUBMIT_NON_ELECTRONIC) {
             if (!submissionLogic.isSubmissionOpenForStudentForAssignment(assignmentSubmission.getUserId(), assignment.getId())) {
-                
+
                 // display error message indicating that submission is closed
                 // if submission is closed and:
                 // 1) student never made a submission -OR-
@@ -202,7 +202,7 @@ public class AsnnSubmissionDetailsRenderer implements BasicProducer {
                 }
             }
         }
-        
+
         UIVerbatim.make(joint, "due_date", dueDateText);
 
         if (!excludeDetails) {
@@ -241,7 +241,7 @@ public class AsnnSubmissionDetailsRenderer implements BasicProducer {
         DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, locale);
 
         UIOutput.make(joint, "open-date", df.format(assignment.getOpenDate()));
-        
+
         // Graded?
         if (assignment.isGraded()) {
             UIMessage.make(joint, "is_graded", "assignment2.student-submit.yes_graded");
@@ -278,7 +278,7 @@ public class AsnnSubmissionDetailsRenderer implements BasicProducer {
                 // only display points possible if grade entry by points
                 if (gradebookItem != null && externalGradebookLogic.isGradingByPoints(assignment.getContextId())) {
                     UIOutput.make(joint, "points-possible-row");
-                    
+
                     String pointsDisplay;
                     if (gradebookItem.getPointsPossible() == null) {
                         pointsDisplay = messageLocator.getMessage("assignment2.student-submit.points_possible.none");
@@ -298,7 +298,7 @@ public class AsnnSubmissionDetailsRenderer implements BasicProducer {
                         comment = gradeInfo.getGradebookComment();
                     }
                 }
-                
+
                 if (grade != null) {
                     UIOutput.make(joint, "grade-row");
                     UIOutput.make(joint, "grade", grade);

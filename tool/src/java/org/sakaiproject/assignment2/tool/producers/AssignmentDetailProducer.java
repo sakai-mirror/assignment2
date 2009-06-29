@@ -35,33 +35,33 @@ import org.sakaiproject.assignment2.model.Assignment2;
 
 public class AssignmentDetailProducer implements ViewComponentProducer, ViewParamsReporter {
 
-	public static final String VIEW_ID = "assignment_detail";
-	public String getViewID(){
-		return this.VIEW_ID;
-	}
-	
-	private AssignmentLogic assignmentLogic;
-	
+    public static final String VIEW_ID = "assignment_detail";
+    public String getViewID(){
+        return this.VIEW_ID;
+    }
 
-	public void fillComponents(UIContainer tofill, ViewParameters viewparams, ComponentChecker checker){
-		AssignmentViewParams params = (AssignmentViewParams) viewparams;
-		
-		Assignment2 assignment = assignmentLogic.getAssignmentById(params.assignmentId);
-		
-		UIOutput.make(tofill, "title", assignment.getTitle());
-		UIVerbatim.make(tofill, "instructions", assignment.getInstructions());
-		
-	}
+    private AssignmentLogic assignmentLogic;
 
-	public ViewParameters getViewParameters()
-	{
-		return new AssignmentViewParams();
-	}
 
-	public void setAssignmentLogic(AssignmentLogic assignmentLogic)
-	{
-		this.assignmentLogic = assignmentLogic;
-	}
-	
-	
+    public void fillComponents(UIContainer tofill, ViewParameters viewparams, ComponentChecker checker){
+        AssignmentViewParams params = (AssignmentViewParams) viewparams;
+
+        Assignment2 assignment = assignmentLogic.getAssignmentById(params.assignmentId);
+
+        UIOutput.make(tofill, "title", assignment.getTitle());
+        UIVerbatim.make(tofill, "instructions", assignment.getInstructions());
+
+    }
+
+    public ViewParameters getViewParameters()
+    {
+        return new AssignmentViewParams();
+    }
+
+    public void setAssignmentLogic(AssignmentLogic assignmentLogic)
+    {
+        this.assignmentLogic = assignmentLogic;
+    }
+
+
 }

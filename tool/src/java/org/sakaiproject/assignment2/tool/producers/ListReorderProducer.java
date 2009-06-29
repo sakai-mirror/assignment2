@@ -62,22 +62,22 @@ public class ListReorderProducer implements ViewComponentProducer, NavigationCas
     private ExternalLogic externalLogic;
 
     @SuppressWarnings("unchecked")
-	public void fillComponents(UIContainer tofill, ViewParameters viewparams, ComponentChecker checker) {
+    public void fillComponents(UIContainer tofill, ViewParameters viewparams, ComponentChecker checker) {
 
-    	//use a date which is related to the current users locale
-    	DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, locale);
-    	
-    	String currContextId = externalLogic.getCurrentContextId();
-    	// getViewableAssignments won't return a null object; empty list if nothing found
+        //use a date which is related to the current users locale
+        DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, locale);
+
+        String currContextId = externalLogic.getCurrentContextId();
+        // getViewableAssignments won't return a null object; empty list if nothing found
         List<Assignment2> entries = assignmentLogic.getViewableAssignments(currContextId);
-        
+
         UIMessage.make(tofill, "page-title", "assignment2.assignment_list-reorder.title");
         UIMessage.make(tofill, "heading", "assignment2.list.heading");
-        
-      //Breadcrumbs
+
+        //Breadcrumbs
         UIInternalLink.make(tofill, "breadcrumb", 
-        		messageLocator.getMessage("assignment2.list.heading"),
-        		new SimpleViewParameters(ListProducer.VIEW_ID));
+                messageLocator.getMessage("assignment2.list.heading"),
+                new SimpleViewParameters(ListProducer.VIEW_ID));
         UIMessage.make(tofill, "last_breadcrumb", "assignment2.list-reorder.reorder");
 
         if (entries.size() == 0) {
@@ -87,63 +87,63 @@ public class ListReorderProducer implements ViewComponentProducer, NavigationCas
         int i=0;
         UIOutput holder = null;
         for (Assignment2 assignment : entries){
-        	UIBranchContainer row = UIBranchContainer.make(tofill, "row:");
-        	
-        	if (i > 0) {
-        		UILink.make(row, "arrow_up", "/sakai-assignment2-tool/content/images/bullet_arrow_up.png");
-        	} 
-        	if (i < entries.size() -1 ) {
-        		UILink.make(row, "arrow_down", "/sakai-assignment2-tool/content/images/bullet_arrow_down.png");
-        	}
-        	if (i == 0 || holder == null) {
-        		holder = UIOutput.make(row, "holder");
-        		holder.decorators = new DecoratorList(new UIRowSpanDecorator(entries.size()));
-        	}
-        	
-        	UIBranchContainer assignment_row = UIBranchContainer.make(tofill, "assignments:");
-        	assignment_row.decorators = new DecoratorList(new UIStyleDecorator("sortable_" + assignment.getId().toString()));
-        	
-        	UIOutput.make(assignment_row, "row_title", assignment.getTitle());
-        	if (assignment.getOpenDate() != null) {
-        		UIOutput.make(assignment_row, "row_open", df.format(assignment.getOpenDate()));
-        	} else {
-        		UIMessage.make(assignment_row, "row_open", "assignment2.list-reorder.no_open_date");
-        	}
-        	
-        	if (assignment.getDueDate() != null) {
-        		UIOutput.make(assignment_row, "row_due", df.format(assignment.getDueDate()));
-        	} else {
-        		UIMessage.make(assignment_row, "row_due", "assignment2.list-reorder.no_due_date");
-        	}
-        	i++;
+            UIBranchContainer row = UIBranchContainer.make(tofill, "row:");
+
+            if (i > 0) {
+                UILink.make(row, "arrow_up", "/sakai-assignment2-tool/content/images/bullet_arrow_up.png");
+            } 
+            if (i < entries.size() -1 ) {
+                UILink.make(row, "arrow_down", "/sakai-assignment2-tool/content/images/bullet_arrow_down.png");
+            }
+            if (i == 0 || holder == null) {
+                holder = UIOutput.make(row, "holder");
+                holder.decorators = new DecoratorList(new UIRowSpanDecorator(entries.size()));
+            }
+
+            UIBranchContainer assignment_row = UIBranchContainer.make(tofill, "assignments:");
+            assignment_row.decorators = new DecoratorList(new UIStyleDecorator("sortable_" + assignment.getId().toString()));
+
+            UIOutput.make(assignment_row, "row_title", assignment.getTitle());
+            if (assignment.getOpenDate() != null) {
+                UIOutput.make(assignment_row, "row_open", df.format(assignment.getOpenDate()));
+            } else {
+                UIMessage.make(assignment_row, "row_open", "assignment2.list-reorder.no_open_date");
+            }
+
+            if (assignment.getDueDate() != null) {
+                UIOutput.make(assignment_row, "row_due", df.format(assignment.getDueDate()));
+            } else {
+                UIMessage.make(assignment_row, "row_due", "assignment2.list-reorder.no_due_date");
+            }
+            i++;
         }
         UIForm form = UIForm.make(tofill, "form");
         UICommand.make(form, "save", messageLocator.getMessage("assignment2.list-reorder.save"), "Assignment2Bean.processSaveReorder");
         UICommand.make(form, "cancel", messageLocator.getMessage("assignment2.list-reorder.cancel"), "Assignment2Bean.processCancelReorder");
     }
-    
+
     public void setAssignmentLogic(AssignmentLogic assignmentLogic) {
-    	this.assignmentLogic = assignmentLogic;
+        this.assignmentLogic = assignmentLogic;
     }
-    
+
     public void setLocale(Locale locale) {
-    	this.locale = locale;
+        this.locale = locale;
     }
-	public void setMessageLocator(MessageLocator messageLocator)
-	{
-		this.messageLocator = messageLocator;
-	}
+    public void setMessageLocator(MessageLocator messageLocator)
+    {
+        this.messageLocator = messageLocator;
+    }
 
-	public List reportNavigationCases()
-	{
-		List<NavigationCase> nav = new ArrayList<NavigationCase>();
-		nav.add(new NavigationCase("save", new SimpleViewParameters(ListProducer.VIEW_ID)));
-		nav.add(new NavigationCase("cancel", new SimpleViewParameters(ListProducer.VIEW_ID)));
-		return nav;
-	}
+    public List reportNavigationCases()
+    {
+        List<NavigationCase> nav = new ArrayList<NavigationCase>();
+        nav.add(new NavigationCase("save", new SimpleViewParameters(ListProducer.VIEW_ID)));
+        nav.add(new NavigationCase("cancel", new SimpleViewParameters(ListProducer.VIEW_ID)));
+        return nav;
+    }
 
-	public void setExternalLogic(ExternalLogic externalLogic)
-	{
-		this.externalLogic = externalLogic;
-	}
+    public void setExternalLogic(ExternalLogic externalLogic)
+    {
+        this.externalLogic = externalLogic;
+    }
 }

@@ -34,22 +34,22 @@ import uk.ac.cam.caret.sakai.rsf.helper.HelperViewParameters;
  */
 public class ThickboxHelperViewParams extends HelperViewParameters  {
 
-    
+
     /**
      * I am not sure what this does, but it's in the Thickbox iframe demo.
      */
     public Boolean keepThis;
-    
+
     /**
      * When true tells thickbox to use an iframe for content.
      */
     public Boolean TB_iframe;
-    
+
     /**
      * Height of the thickbox.
      */
     public int height;
-    
+
     /**
      * Width of the iframe.
      */

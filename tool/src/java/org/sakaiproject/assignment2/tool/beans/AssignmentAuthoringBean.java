@@ -70,7 +70,7 @@ public class AssignmentAuthoringBean {
     public void setAssignmentAuthoringFlowBean(AssignmentAuthoringFlowBean assignmentAuthoringFlowBean) {
         this.assignmentAuthoringFlowBean = assignmentAuthoringFlowBean;
     }
-    
+
     // Assignment Authoring Flow Scope Bean
     private AssignmentAuthoringOptionsFlowBean options;
     public void setAssignmentAuthoringOptionsFlowBean(AssignmentAuthoringOptionsFlowBean assignmentAuthoringOptionsFlowBean) {
@@ -89,8 +89,8 @@ public class AssignmentAuthoringBean {
         this.logic = logic;
     }
 
-    
-    
+
+
     //private Map<String, Assignment2> OTPMap;
     //@SuppressWarnings("unchecked")
     //public void setAssignment2EntityBeanLocator(EntityBeanLocator entityBeanLocator) {
@@ -196,19 +196,19 @@ public class AssignmentAuthoringBean {
             messages.addMessage(new TargettedMessage("assignment2.assignment_post.no_groups"));
             errorFound = true;
         } 
-        
+
         // we also need to iterate through all of the existing group associations and
         // remove those whose associated groups no longer exist. these won't show up
         // in the UI
         if (assignment.getAssignmentGroupSet() != null && !assignment.getAssignmentGroupSet().isEmpty()) {
             Set<AssignmentGroup> remGroups = new HashSet<AssignmentGroup>();
-            
+
             Map<String, String> siteGroupToNameMap = externalLogic.getGroupIdToNameMapForSite(assignment.getContextId());           
             Set<String> siteGroupIds = new HashSet<String>();
             if (siteGroupToNameMap != null) {
                 siteGroupIds = siteGroupToNameMap.keySet();
             }
-            
+
             for (AssignmentGroup group : assignment.getAssignmentGroupSet()) {
                 if (!siteGroupIds.contains(group.getGroupId())) {
                     remGroups.add(group);
@@ -216,7 +216,7 @@ public class AssignmentAuthoringBean {
                             group.getGroupId() + " because associated site group no longer exists");
                 }
             }
-            
+
             newGroups.removeAll(remGroups);
         }
         assignment.setAssignmentGroupSet(newGroups);

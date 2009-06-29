@@ -34,32 +34,32 @@ import uk.org.ponder.rsf.viewstate.ViewParameters;
 public class PreviewAsStudentProducer implements ViewComponentProducer {
     public static final String VIEW_ID = "preview-as-student";
     private static final Log log = LogFactory.getLog(PreviewAsStudentProducer.class);
-    
+
     // Dependency
     private StudentViewAssignmentRenderer studentViewAssignmentRenderer;
     public void setStudentViewAssignmentRenderer(
             StudentViewAssignmentRenderer studentViewAssignmentRenderer) {
         this.studentViewAssignmentRenderer = studentViewAssignmentRenderer;
     }
-    
+
     // Dependency
     //private EntityBeanLocator assignment2BeanLocator;
     //public void setAssignment2BeanLocator(EntityBeanLocator assignment2BeanLocator) {
     //    this.assignment2BeanLocator = assignment2BeanLocator;
-  // }
-    
+    // }
+
     // Authoring Flow Scope Dependency
     private AssignmentAuthoringFlowBean assignmentAuthoringFlowBean;
     public void setAssignmentAuthoringFlowBean(AssignmentAuthoringFlowBean assignmentAuthoringFlowBean) {
         this.assignmentAuthoringFlowBean = assignmentAuthoringFlowBean;
     }
-    
+
     // Dependency
     private AssignmentSubmissionCreator assignmentSubmissionCreator;
     public void setAssignmentSubmissionCreator(AssignmentSubmissionCreator assignmentSubmissionCreator) {
         this.assignmentSubmissionCreator = assignmentSubmissionCreator;
     }
-    
+
     @SuppressWarnings("unchecked")
     public void fillComponents(UIContainer tofill, ViewParameters viewparams,
             ComponentChecker checker) {
@@ -67,13 +67,13 @@ public class PreviewAsStudentProducer implements ViewComponentProducer {
         //Collection assignments = assignment2BeanLocator.getDeliveredBeans().values();
         //if (assignments.size() != 1) {
         //    log.equals("Wrong number of assignments passed to PreviewAsStudent: " + assignments.size());
-       // }
+        // }
         //assignment = (Assignment2) assignments.toArray()[0];
-        
+
         AssignmentSubmission submission = assignmentSubmissionCreator.create();
-        
+
         studentViewAssignmentRenderer.makeStudentView(tofill, "preview-area:", submission, assignment, viewparams, EntityBeanLocator.NEW_PREFIX + "1", true, false);
-    
+
         UIForm form = UIForm.make(tofill, "return-to-edit-form");
         UICommand editButton = UICommand.make(form, "edit-button", UIMessage.make("assignment2.assignment_preview.edit"), "AssignmentAuthoringBean.processActionEdit");
     }

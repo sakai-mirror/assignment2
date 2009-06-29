@@ -82,7 +82,7 @@ public class LocalPermissionLogic {
          */
         // ASNN-466 if (viewId.equals("content")) {
         //    return Boolean.TRUE;
-       // }
+        // }
         if (AddAttachmentHelperProducer.VIEWID.equals(viewId)) {
             return Boolean.TRUE;
         } else if (RemoveAssignmentConfirmProducer.VIEW_ID.equals(viewId)) {

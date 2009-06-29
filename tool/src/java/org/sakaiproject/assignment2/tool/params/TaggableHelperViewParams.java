@@ -24,27 +24,27 @@ import uk.ac.cam.caret.sakai.rsf.helper.HelperViewParameters;
 
 public class TaggableHelperViewParams extends HelperViewParameters
 {
-	public String helperId;
-	public String[] values;	
-	public String[] keys;
+    public String helperId;
+    public String[] values;	
+    public String[] keys;
 
-	public TaggableHelperViewParams() {}
-	
-	public TaggableHelperViewParams(String viewId) {
-		super(viewId);
-	}
-	
-	public TaggableHelperViewParams(String viewId, String helperId) {
-		super(viewId);
-		this.helperId = helperId;
-	}
-	
-	public TaggableHelperViewParams(String viewId, String helperId, String[] keys, String[] values) {
-		super(viewId);
-		this.helperId = helperId;
-		this.keys = keys;
-		this.values = values;
-	}
-	
-	
+    public TaggableHelperViewParams() {}
+
+    public TaggableHelperViewParams(String viewId) {
+        super(viewId);
+    }
+
+    public TaggableHelperViewParams(String viewId, String helperId) {
+        super(viewId);
+        this.helperId = helperId;
+    }
+
+    public TaggableHelperViewParams(String viewId, String helperId, String[] keys, String[] values) {
+        super(viewId);
+        this.helperId = helperId;
+        this.keys = keys;
+        this.values = values;
+    }
+
+
 }

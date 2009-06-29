@@ -29,25 +29,25 @@ import org.sakaiproject.assignment2.tool.producers.StudentAssignmentListProducer
 import uk.org.ponder.rsf.viewstate.ViewParameters;
 
 public class Assignment2DefaultViewParameters {
-	//getters setters
-	private AssignmentPermissionLogic permissionLogic;
-	public void setPermissionLogic(AssignmentPermissionLogic permissionLogic) {
-		this.permissionLogic = permissionLogic;
-	}
-	
-	private ExternalLogic externalLogic;
-	public void setExternalLogic(ExternalLogic externalLogic) {
-		this.externalLogic = externalLogic;
-	}
+    //getters setters
+    private AssignmentPermissionLogic permissionLogic;
+    public void setPermissionLogic(AssignmentPermissionLogic permissionLogic) {
+        this.permissionLogic = permissionLogic;
+    }
 
-	public ViewParameters getViewParameters() {
-		AssignmentListSortViewParams viewParams = new AssignmentListSortViewParams(StudentAssignmentListProducer.VIEW_ID);
-		String contextId = externalLogic.getCurrentContextId();
-		
-		if (permissionLogic.isUserAbleToAccessInstructorView(contextId)) {
-			viewParams = new AssignmentListSortViewParams(ListProducer.VIEW_ID);
-		}
-		
-		return viewParams;
-	}
+    private ExternalLogic externalLogic;
+    public void setExternalLogic(ExternalLogic externalLogic) {
+        this.externalLogic = externalLogic;
+    }
+
+    public ViewParameters getViewParameters() {
+        AssignmentListSortViewParams viewParams = new AssignmentListSortViewParams(StudentAssignmentListProducer.VIEW_ID);
+        String contextId = externalLogic.getCurrentContextId();
+
+        if (permissionLogic.isUserAbleToAccessInstructorView(contextId)) {
+            viewParams = new AssignmentListSortViewParams(ListProducer.VIEW_ID);
+        }
+
+        return viewParams;
+    }
 }

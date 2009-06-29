@@ -41,36 +41,36 @@ public class FragmentAssignmentInstructionsProducer implements ViewComponentProd
     public String getViewID() {
         return VIEW_ID;
     }
-    
+
     private AssignmentLogic assignmentLogic;
     private AttachmentListRenderer attachmentListRenderer;
 
     public void fillComponents(UIContainer tofill, ViewParameters viewparams, ComponentChecker checker) {
-    	AssignmentViewParams params = (AssignmentViewParams) viewparams;
+        AssignmentViewParams params = (AssignmentViewParams) viewparams;
 
-    	Assignment2 assignment = assignmentLogic.getAssignmentByIdWithAssociatedData(params.assignmentId);
-    	
-    	UIVerbatim.make(tofill, "assignment_instructions", assignment.getInstructions());
+        Assignment2 assignment = assignmentLogic.getAssignmentByIdWithAssociatedData(params.assignmentId);
+
+        UIVerbatim.make(tofill, "assignment_instructions", assignment.getInstructions());
         attachmentListRenderer.makeAttachmentFromAssignmentAttachmentSet(tofill, "assignment_attachment_list:", params.viewID, 
-        		assignment.getAttachmentSet());
+                assignment.getAttachmentSet());
 
 
     }
-    
+
     public ViewParameters getViewParameters() {
         return new AssignmentViewParams();
     }
-	
-	public String getContentType() {
-		return ContentTypeInfoRegistry.HTML_FRAGMENT;
-	}
 
-	public void setAssignmentLogic(AssignmentLogic assignmentLogic) {
-		this.assignmentLogic = assignmentLogic;
-	}
+    public String getContentType() {
+        return ContentTypeInfoRegistry.HTML_FRAGMENT;
+    }
 
-	public void setAttachmentListRenderer(
-			AttachmentListRenderer attachmentListRenderer) {
-		this.attachmentListRenderer = attachmentListRenderer;
-	}
+    public void setAssignmentLogic(AssignmentLogic assignmentLogic) {
+        this.assignmentLogic = assignmentLogic;
+    }
+
+    public void setAttachmentListRenderer(
+            AttachmentListRenderer attachmentListRenderer) {
+        this.attachmentListRenderer = attachmentListRenderer;
+    }
 }

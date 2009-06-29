@@ -50,7 +50,7 @@ import uk.org.ponder.rsf.viewstate.ViewParameters;
 import uk.org.ponder.rsf.viewstate.ViewParamsReporter;
 
 public class StudentSubmitProducer implements ViewComponentProducer,  ViewParamsReporter {
-    
+
     public static final String VIEW_ID = "student-submit";
     public String getViewID() {
         return VIEW_ID;
@@ -85,7 +85,7 @@ public class StudentSubmitProducer implements ViewComponentProducer,  ViewParams
 
         studentViewAssignmentRenderer.makeStudentView(tofill, "portletBody:", assignmentSubmission, assignment, params, ASOTPKey, Boolean.FALSE, params.previewsubmission); 
 
-        
+
         /* TODO FIXME Marking feedback as viewed. 
          * For now we are doing this here. Eventually this is suppose to be
          * Ajaxy and on a version by version basis. For now, marking them all
@@ -99,13 +99,13 @@ public class StudentSubmitProducer implements ViewComponentProducer,  ViewParams
             versionIds.add(version.getId());
         }
         submissionLogic.markFeedbackAsViewed(assignmentSubmission.getId(), versionIds);
-        */
-        
+         */
+
         //Initialize js otpkey
         UIVerbatim.make(tofill, "attachment-ajax-init", "otpkey=\"" + org.sakaiproject.util.Web.escapeUrl(ASOTPKey) + "\";\n");
 
     }
-    
+
     public ViewParameters getViewParameters() {
         return new StudentSubmissionParams();
     }

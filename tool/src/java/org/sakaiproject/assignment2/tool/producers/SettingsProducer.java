@@ -13,34 +13,34 @@ import uk.org.ponder.rsf.viewstate.ViewParameters;
 
 public class SettingsProducer implements ViewComponentProducer
 {
-	private MessageLocator messageLocator;
-	public void setMessageLocator(MessageLocator messageLocator) {
-		this.messageLocator = messageLocator;
-	}
+    private MessageLocator messageLocator;
+    public void setMessageLocator(MessageLocator messageLocator) {
+        this.messageLocator = messageLocator;
+    }
 
-	public static final String VIEW_ID = "settings";
-	public String getViewID()
-	{
-		return VIEW_ID;
-	}
+    public static final String VIEW_ID = "settings";
+    public String getViewID()
+    {
+        return VIEW_ID;
+    }
 
-	public void fillComponents(UIContainer tofill, ViewParameters viewparams,
-			ComponentChecker checker)
-	{
-		// Breadcrumbs
-		UIInternalLink.make(tofill, "breadcrumb", 
-        		messageLocator.getMessage("assignment2.list.heading"),
-        		new SimpleViewParameters(ListProducer.VIEW_ID));
-		UIMessage.make(tofill, "last_breadcrumb", "assignment2.settings.title");
-		
-		// Main form for the settings
-		UIForm form = UIForm.make(tofill, "settings-form");
-		
-		
-		
-		// Post Buttons
-		UICommand.make(form, "save_settings", UIMessage.make("assignment2.settings.save"), null);
-		UICommand.make(form, "cancel_settings", UIMessage.make("assignment2.settings.cancel"), null);
-	}
+    public void fillComponents(UIContainer tofill, ViewParameters viewparams,
+            ComponentChecker checker)
+    {
+        // Breadcrumbs
+        UIInternalLink.make(tofill, "breadcrumb", 
+                messageLocator.getMessage("assignment2.list.heading"),
+                new SimpleViewParameters(ListProducer.VIEW_ID));
+        UIMessage.make(tofill, "last_breadcrumb", "assignment2.settings.title");
+
+        // Main form for the settings
+        UIForm form = UIForm.make(tofill, "settings-form");
+
+
+
+        // Post Buttons
+        UICommand.make(form, "save_settings", UIMessage.make("assignment2.settings.save"), null);
+        UICommand.make(form, "cancel_settings", UIMessage.make("assignment2.settings.cancel"), null);
+    }
 
 }

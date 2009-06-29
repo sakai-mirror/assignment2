@@ -30,13 +30,13 @@ public class MarkTodoCommand {
             AssignmentSubmissionLogic assignmentSubmissionLogic) {
         this.assignmentSubmissionLogic = assignmentSubmissionLogic;
     }
-    
+
     // Property
     private User currentUser;
     public void setCurrentUser(User currentUser) {
         this.currentUser = currentUser;
     }
-    
+
     // Property
     private Long assignmentId;
     public void setAssignmentId(Long assignmentId) {
@@ -45,7 +45,7 @@ public class MarkTodoCommand {
     public Long getAssignmentId() {
         return assignmentId;
     }
-    
+
     // Property 
     private boolean checkTodo;
     public void setCheckTodo(boolean checkTodo) {
@@ -54,15 +54,15 @@ public class MarkTodoCommand {
     public boolean isCheckTodo() {
         return checkTodo;
     }
-    
+
     // Action Method
     public String markTodo() {
         log.warn("Marking Assignment Item: " + assignmentId + " , " + checkTodo);
-        
+
         Map<Long, Boolean> completed = new HashMap<Long, Boolean>();
         completed.put(assignmentId, new Boolean(checkTodo));
         assignmentSubmissionLogic.markAssignmentsAsCompleted(currentUser.getId(), completed);
-        
+
         return "marked";
     }
 }

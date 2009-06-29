@@ -8,17 +8,17 @@ import uk.org.ponder.rsf.viewstate.ViewParameters;
 public class AjaxResultsProducer implements ViewComponentProducer
 {
 
-	public static final String VIEW_ID = "ajax-results";
-	public String getViewID()
-	{
-		return VIEW_ID;
-	}
+    public static final String VIEW_ID = "ajax-results";
+    public String getViewID()
+    {
+        return VIEW_ID;
+    }
 
-	public void fillComponents(UIContainer tofill, ViewParameters viewparams,
-			ComponentChecker checker)
-	{
-		//do nothing, let the messages render
+    public void fillComponents(UIContainer tofill, ViewParameters viewparams,
+            ComponentChecker checker)
+    {
+        //do nothing, let the messages render
 
-	}
+    }
 
 }

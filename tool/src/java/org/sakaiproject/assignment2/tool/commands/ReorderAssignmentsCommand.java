@@ -41,18 +41,18 @@ import org.sakaiproject.assignment2.model.Assignment2;
 public class ReorderAssignmentsCommand {
 
     private static Log log = LogFactory.getLog(ReorderAssignmentsCommand.class);
-    
+
     // Dependency
     private AssignmentLogic assignmentLogic;
     public void setAssignmentLogic(AssignmentLogic assignmentLogic) {
         this.assignmentLogic = assignmentLogic;
     }
-    
+
     private ExternalLogic externalLogic;
     public void setExternalLogic(ExternalLogic externalLogic) {
         this.externalLogic = externalLogic;
     }
-    
+
     // Property
     private String orderedAssignIds;
     /**
@@ -63,7 +63,7 @@ public class ReorderAssignmentsCommand {
     public void setOrderedAssignIds(String orderedAssignIds) {
         this.orderedAssignIds = orderedAssignIds;
     }
-    
+
     /**
      * The action method.
      */

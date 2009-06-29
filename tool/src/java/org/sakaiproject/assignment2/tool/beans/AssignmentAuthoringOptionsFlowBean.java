@@ -25,43 +25,43 @@ public class AssignmentAuthoringOptionsFlowBean {
     private String otpkey;
     private Map<String, Boolean> selectedIds = new HashMap<String, Boolean>();
     private String restrictedToGroups;
-    
+
     public Boolean getRequireDueDate() {
         return requireDueDate;
     }
-    
+
     public void setRequireDueDate(Boolean requireDueDate) {
         this.requireDueDate = requireDueDate;
     }
-    
+
     public Boolean getRequireAcceptUntil() {
         return requireAcceptUntil;
     }
-    
+
     public void setRequireAcceptUntil(Boolean requireAcceptUntil) {
         this.requireAcceptUntil = requireAcceptUntil;
     }
-    
+
     public Long getCurrentAssignmentId() {
         return currentAssignmentId;
     }
-    
+
     public void setCurrentAssignmentId(Long currentAssignmentId) {
         this.currentAssignmentId = currentAssignmentId;
     }
-    
+
     public Date getOpenDate() {
         return openDate;
     }
-    
+
     public void setOpenDate(Date openDate) {
         this.openDate = openDate;
     }
-    
+
     public String getOtpkey() {
         return otpkey;
     }
-    
+
     public void setOtpkey(String otpkey) {
         this.otpkey = otpkey;
     }
@@ -81,5 +81,5 @@ public class AssignmentAuthoringOptionsFlowBean {
     public void setRestrictedToGroups(String restrictedToGroups) {
         this.restrictedToGroups = restrictedToGroups;
     }
-    
+
 }
