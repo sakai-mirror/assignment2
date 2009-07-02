@@ -55,6 +55,8 @@ import org.sakaiproject.assignment2.model.AssignmentAttachment;
 import org.sakaiproject.assignment2.model.AssignmentGroup;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.assignment2.taggable.api.AssignmentActivityProducer;
+import org.sakaiproject.entitybroker.entityprovider.EntityProvider;
+import org.sakaiproject.entitybroker.entityprovider.EntityProviderManager;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.genericdao.api.search.Search;
 import org.sakaiproject.site.api.Group;
@@ -116,6 +118,11 @@ public class AssignmentLogicImpl implements AssignmentLogic{
     public void setAssignmentActivityProducer(AssignmentActivityProducer assignmentActivityProducer) {
         this.assignmentActivityProducer = assignmentActivityProducer;
     }
+    
+    private EntityProviderManager entityProviderManager;
+    public void setEntityProviderManager(EntityProviderManager entityProviderManager) {
+        this.entityProviderManager = entityProviderManager;
+    }
 
     public void init(){
         if(log.isDebugEnabled()) log.debug("init");
@@ -155,7 +162,8 @@ public class AssignmentLogicImpl implements AssignmentLogic{
         }
 
         // TODO ASNN-516 Check for ContentReview and populate
-
+        
+        
         return assign;
     }
 
@@ -339,6 +347,13 @@ public class AssignmentLogicImpl implements AssignmentLogic{
         }
 
         // TODO ASNN-516 Content Review / Turnitin Integration
+        if (assignment.getProperties().containsKey("USE_TII") && Boolean.parseBoolean((String) assignment.getProperties().get("USE_TII"))) {
+            System.out.println("MWAHAHAHAHAHAH!  Save it to TII!");
+            //EntityProvider turnitinClassProvider = entityProviderManager.getProviderByPrefix("turnitin-class");
+        }
+        else {
+            System.out.println("HWWWAAA? What? Don't save it to TII?");
+        }
 
     }
 

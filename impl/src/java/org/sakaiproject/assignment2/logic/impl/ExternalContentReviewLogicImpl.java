@@ -13,7 +13,7 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
     }
 
     public boolean isContentReviewAvailable() {
-        return false;
+        return true;
     }
 
 }

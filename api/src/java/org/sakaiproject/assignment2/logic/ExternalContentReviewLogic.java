@@ -21,4 +21,5 @@ public interface ExternalContentReviewLogic {
      * @return
      */
     public boolean isContentReviewAvailable();
+
 }

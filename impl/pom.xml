@@ -19,6 +19,14 @@
     <!-- the logic should be deployed as a jar and included in the pack, not to shared -->
     <packaging>jar</packaging>
 	<dependencies>
+    <dependency>
+      <groupId>org.sakaiproject.entitybroker</groupId>
+      <artifactId>entitybroker-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.sakaiproject.entitybroker</groupId>
+      <artifactId>entitybroker-utils</artifactId>
+    </dependency>
 
         <!-- Assignment2 dependencies -->
 		<dependency>
