@@ -203,31 +203,47 @@
 	</fieldset>
     
     <fieldset rsf:id="tii_content_review_area">
-        <legend>Turnitin</legend>
+        <legend rsf:id="msg=assignment2.turnitin.asnnedit.title">Turnitin</legend>
         <ol>
-            <li><input type="checkbox" rsf:id="use_tii" /><label>Use Turnitin</label></li>
             <li>
-                <span>Submit papers to </span>
-                <select>
+                <input type="checkbox" rsf:id="use_tii" />
+                <label rsf:id="msg=assignment2.turnitin.asnnedit.use_turnitin">Use Turnitin</label>
+            </li>
+            <li>
+                <span rsf:id="msg=assignment2.turnitin.asnnedit.submit_papers_to">Submit papers to </span>
+                <select rsf:id="submit_paper_to_repository_select">
                     <option value="">Standard Paper Repository</option>
                 </select>
             </li>
             <li>
-                <span>Generate originality reports </span>
-                <select>
+                <span rsf:id="msg=assignment2.turnitin.asnnedit.generate_originality_reports">Generate originality reports </span>
+                <select rsf:id="rep_gen_speed">
                     <option value="">Immediately - first report is final</option>
                 </select>
             </li>
             <li>
-                <input type="checkbox" /><span>Allow students to see originality reports</span>
+                <input type="checkbox" />
+                <span rsf:id="msg=assignment2.turnitin.asnnedit.allow_students_to_see_originality_reports">Allow students to see originality reports</span>
             </li>
             <li>
-                <span>Check originality against:</span>
+                <span rsf:id="msg=assignment2.turnitin.asnnedit.check_originality_against">Check originality against:</span>
                 <li>
-                    <ol><input type="checkbox" /><span>Student paper repository</span></ol>
-                    <ol><input type="checkbox" /><span>Current and archived internet</span></ol>
-                    <ol><input type="checkbox" /><span>Periodicals, journals, and publications</span></ol>
-                    <ol><input type="checkbox" /><span>Institution-specific repository</span></ol>
+                    <ol>
+                        <input type="checkbox" />
+                        <span rsf:id="msg=assignment2.turnitin.asnnedit.student_paper_repository">Student paper repository</span>
+                    </ol>
+                    <ol>
+                        <input type="checkbox" />
+                        <span rsf:id="msg=assignment2.turnitin.asnnedit.internet_repository">Current and archived internet</span>
+                    </ol>
+                    <ol>
+                        <input type="checkbox" />
+                        <span rsf:id="msg=assignment2.turnitin.asnnedit.journal_repository">Periodicals, journals, and publications</span>
+                    </ol>
+                    <ol>
+                        <input type="checkbox" />
+                        <span rsf:id="msg=assignment2.turnitin.asnnedit.institution_repository">Institution-specific repository</span>
+                    </ol>
                 </li>
             </li>
         </ol>

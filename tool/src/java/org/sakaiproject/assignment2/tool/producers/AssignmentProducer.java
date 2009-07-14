@@ -532,6 +532,31 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
         if (externalContentReviewLogic.isContentReviewAvailable()) {
             UIOutput.make(tofill, "tii_content_review_area");
             UIBoundBoolean.make(tofill, "use_tii", assignment2OTP + ".properties.USE_TII");
+            
+            String[] submitToRepoValues = new String[] {
+                    "1", "2", "0"
+            };
+            
+            String[] submitToRepoLabelKeys = new String[] {
+                    "assignment2.turnitin.asnnedit.standard_paper_repository",
+                    "assignment2.turnitin.asnnedit.institution_paper_repository",
+                    "assignment2.turnitin.asnnedit.no_repository"
+            };
+            
+            UISelect.make(form, "submit_paper_to_repository_select", submitToRepoValues,
+                    submitToRepoLabelKeys, assignment2OTP + ".properties.submit_papers_to").setMessageKeys();
+            
+            String[] reportGenSpeedValues = new String[] {
+                    "0", "1", "2"
+            };
+            
+            String[] reportGenSpeedLabels = new String[] {
+                    "assignment2.turnitin.asnnedit.generate_immediately_first_report_final",
+                    "assignment2.turnitin.asnnedit.generate_immediately_can_overwrite_until_due",
+                    "assignment2.turnitin.asnnedit.generate_on_due_date"
+            };
+            
+            
         }
     }
 
