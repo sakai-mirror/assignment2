@@ -55,8 +55,10 @@ import org.sakaiproject.assignment2.model.AssignmentAttachment;
 import org.sakaiproject.assignment2.model.AssignmentGroup;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.assignment2.taggable.api.AssignmentActivityProducer;
+import org.sakaiproject.entitybroker.EntityReference;
 import org.sakaiproject.entitybroker.entityprovider.EntityProvider;
 import org.sakaiproject.entitybroker.entityprovider.EntityProviderManager;
+import org.sakaiproject.entitybroker.entityprovider.capabilities.CRUDable;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.genericdao.api.search.Search;
 import org.sakaiproject.site.api.Group;
@@ -162,7 +164,12 @@ public class AssignmentLogicImpl implements AssignmentLogic{
         }
 
         // TODO ASNN-516 Check for ContentReview and populate
-        
+        EntityProvider turnitinAsnnProvider = entityProviderManager.getProviderByPrefix("turnitin-assignment");
+        if (turnitinAsnnProvider != null && turnitinAsnnProvider instanceof CRUDable) {
+            CRUDable crudable = (CRUDable) turnitinAsnnProvider;
+            Map tiiopts = (Map) crudable.getEntity(new EntityReference("turnitin-assignment", encodeTIIAsnn2ID(assignmentId)));
+            assign.setProperties(tiiopts); // TODO this should be a map merge and not a complete replacement
+        }
         
         return assign;
     }
@@ -347,14 +354,23 @@ public class AssignmentLogicImpl implements AssignmentLogic{
         }
 
         // TODO ASNN-516 Content Review / Turnitin Integration
-        if (assignment.getProperties().containsKey("USE_TII") && Boolean.parseBoolean((String) assignment.getProperties().get("USE_TII"))) {
-            System.out.println("MWAHAHAHAHAHAH!  Save it to TII!");
-            //EntityProvider turnitinClassProvider = entityProviderManager.getProviderByPrefix("turnitin-class");
-        }
-        else {
-            System.out.println("HWWWAAA? What? Don't save it to TII?");
+        if (assignment.getProperties().containsKey("USE_TII") && ((Boolean) assignment.getProperties().get("USE_TII")).booleanValue()) {
+            log.debug("Going to Create TII Asnn with title: " + encodeTIIAsnn2ID(assignment.getId()));
+            EntityProvider turnitinAsnnProvider = entityProviderManager.getProviderByPrefix("turnitin-assignment");
+            if (turnitinAsnnProvider instanceof CRUDable) {
+                CRUDable crudable = (CRUDable) turnitinAsnnProvider;
+                crudable.createEntity(new EntityReference("turnitin-assignment",encodeTIIAsnn2ID(assignment.getId())), assignment.getProperties(), null);
+            }
         }
 
+    }
+    
+    private String encodeTIIAsnn2ID(Long asnnid) {
+        return "Asnn2 Provisioned " + asnnid;
+    }
+    
+    private Long decodeTIIAsnn2ID(String tiititle) {
+        return Long.parseLong(tiititle.substring(18));
     }
 
 

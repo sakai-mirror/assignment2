@@ -556,6 +556,23 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
                     "assignment2.turnitin.asnnedit.generate_on_due_date"
             };
             
+            UISelect.make(form, "rep_gen_speed", reportGenSpeedValues,
+                    reportGenSpeedLabels, assignment2OTP + ".properties.rep_gen_speed").setMessageKeys();
+            
+            UIBoundBoolean.make(tofill, "allow_students_to_see_originality_checkbox", 
+                    assignment2OTP + ".properties.s_view_report");
+            
+            UIBoundBoolean.make(tofill, "check_against_student_repo_checkbox",
+                    assignment2OTP + ".properties.s_paper_check");
+            
+            UIBoundBoolean.make(tofill, "check_against_internet_repo_checkbox",
+                    assignment2OTP + ".properties.internet_check");
+            
+            UIBoundBoolean.make(tofill, "check_against_journal_repo_checkbox", 
+                    assignment2OTP + ".properties.journal_check");
+            
+            UIBoundBoolean.make(tofill, "check_against_institution_repo_checkbox",
+                    assignment2OTP + ".properties.institution_check");
             
         }
     }
