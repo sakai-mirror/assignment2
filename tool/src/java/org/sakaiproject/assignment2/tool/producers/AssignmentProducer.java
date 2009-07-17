@@ -233,10 +233,13 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
 
         // if this is an "edit" scenario, we need to display a warning if the
         // assignment is graded but doesn't have an assoc gb item
-        if (assignmentId != null && assignment.isGraded() && assignment.getGradebookItemId() == null) {
-            // we need to display a message indicating that the gradebook item
-            // assoc with this item no longer exists
-            UIMessage.make(tofill, "no_gb_item", "assignment2.assignment_add.gb_item_deleted");
+        if (assignmentId != null && assignment.isGraded()) {
+            if (assignment.getGradebookItemId() == null || 
+                    !externalGradebookLogic.gradebookItemExists(assignment.getGradebookItemId())) {
+                // we need to display a message indicating that the gradebook item
+                // assoc with this item no longer exists
+                UIMessage.make(tofill, "no_gb_item", "assignment2.assignment_add.gb_item_deleted");
+            }
         }
 
         //Initialize js otpkey

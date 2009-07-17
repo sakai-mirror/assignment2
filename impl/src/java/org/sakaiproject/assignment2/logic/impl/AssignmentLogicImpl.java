@@ -156,13 +156,6 @@ public class AssignmentLogicImpl implements AssignmentLogic{
             throw new AssignmentNotFoundException("No assignment found with id: " + assignmentId);
         }
 
-        // now, check to see if gradebook item still exists, if graded
-        if (assign.isGraded()) {
-            if (!gradebookLogic.gradebookItemExists(assign.getGradebookItemId())) {
-                assign.setGradebookItemId(null);
-            }
-        }
-
         // TODO ASNN-516 Check for ContentReview and populate
         // check for null entityProviderManager so we don't have to mock it for the unit tests
         if (entityProviderManager != null) {

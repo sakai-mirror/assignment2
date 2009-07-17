@@ -107,8 +107,6 @@ public interface AssignmentLogic {
      * @param assignmentId
      * @return the Assignment2 object with the given id and populate associated
      * data (ie attachments, groups). Does not include student submission information.
-     * If graded, checks to see if associated gb item still exists. If it does not,
-     * sets gradebookItemId to null but leaves graded = true
      * @throws AssignmentNotFoundException if no assignment exists with the given id
      */
     public Assignment2 getAssignmentByIdWithAssociatedData(Long assignmentId);
