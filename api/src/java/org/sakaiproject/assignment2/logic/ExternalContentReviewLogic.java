@@ -1,5 +1,7 @@
 package org.sakaiproject.assignment2.logic;
 
+import org.sakaiproject.assignment2.model.Assignment2;
+
 /**
  * For accessing the systems Content Review System.  An example is a plagiarism
  * checking tool.
@@ -21,5 +23,15 @@ public interface ExternalContentReviewLogic {
      * @return
      */
     public boolean isContentReviewAvailable();
+    
+    /**
+     * Submit the attachment with the given content hosting reference to the content review service
+     * for review
+     * @param userId if null, assumes current user
+     * @param siteId if null, assumes current site
+     * @param assign the assignment that this attachment is associated with
+     * @param attachmentReference the reference for the attachment in content hosting
+     */
+    public void reviewAttachment(String userId, String siteId, Assignment2 assign, String attachmentReference);
 
 }

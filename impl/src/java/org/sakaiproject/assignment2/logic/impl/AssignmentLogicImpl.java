@@ -164,11 +164,14 @@ public class AssignmentLogicImpl implements AssignmentLogic{
         }
 
         // TODO ASNN-516 Check for ContentReview and populate
-        EntityProvider turnitinAsnnProvider = entityProviderManager.getProviderByPrefix("turnitin-assignment");
-        if (turnitinAsnnProvider != null && turnitinAsnnProvider instanceof CRUDable) {
-            CRUDable crudable = (CRUDable) turnitinAsnnProvider;
-            Map tiiopts = (Map) crudable.getEntity(new EntityReference("turnitin-assignment", encodeTIIAsnn2ID(assignmentId)));
-            assign.setProperties(tiiopts); // TODO this should be a map merge and not a complete replacement
+        // check for null entityProviderManager so we don't have to mock it for the unit tests
+        if (entityProviderManager != null) {
+            EntityProvider turnitinAsnnProvider = entityProviderManager.getProviderByPrefix("turnitin-assignment");
+            if (turnitinAsnnProvider != null && turnitinAsnnProvider instanceof CRUDable) {
+                CRUDable crudable = (CRUDable) turnitinAsnnProvider;
+                Map tiiopts = (Map) crudable.getEntity(new EntityReference("turnitin-assignment", encodeTIIAsnn2ID(assignmentId)));
+                assign.setProperties(tiiopts); // TODO this should be a map merge and not a complete replacement
+            }
         }
         
         return assign;

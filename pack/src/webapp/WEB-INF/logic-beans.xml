@@ -49,6 +49,7 @@
       <property name="assignmentBundleLogic" ref="org.sakaiproject.assignment2.logic.AssignmentBundleLogic" />
       <property name="taggingManager" ref="org.sakaiproject.taggable.api.TaggingManager" />
       <property name="assignmentActivityProducer" ref="org.sakaiproject.assignment2.taggable.api.AssignmentActivityProducer" />
+      <property name="entityProviderManager" ref="org.sakaiproject.entitybroker.entityprovider.EntityProviderManager" />
    </bean>
    
    <bean id="org.sakaiproject.assignment2.logic.AssignmentPermissionLogic" class="org.sakaiproject.assignment2.logic.impl.AssignmentPermissionLogicImpl" init-method="init">
@@ -79,6 +80,7 @@
    
    <bean id="org.sakaiproject.assignment2.logic.ExternalContentReviewLogic" 
       class="org.sakaiproject.assignment2.logic.impl.ExternalContentReviewLogicImpl" init-method="init">
+      <property name="contentReviewService" ref="org.sakaiproject.contentreview.service.ContentReviewService" />
    </bean>
 
 	<bean id="org.sakaiproject.assignment2.logic.UploadAllLogic"

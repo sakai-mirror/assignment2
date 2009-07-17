@@ -179,7 +179,16 @@
       <artifactId>commons-vfs</artifactId>
       <version>1.0</version>
     </dependency>
-    
+<!-- for content review integration -->
+    <dependency>
+      <groupId>org.sakaiproject</groupId>
+      <artifactId>sakai-contentreview-model-api</artifactId>
+      <version>${sakai.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.sakaiproject</groupId>
+      <artifactId>sakai-contentreview-service-api</artifactId>
+    </dependency>    
 <!-- testing dependencies -->
 <!--
     <dependency>
