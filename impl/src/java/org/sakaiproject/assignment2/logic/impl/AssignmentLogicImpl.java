@@ -55,6 +55,10 @@ import org.sakaiproject.assignment2.model.AssignmentAttachment;
 import org.sakaiproject.assignment2.model.AssignmentGroup;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.assignment2.taggable.api.AssignmentActivityProducer;
+import org.sakaiproject.entitybroker.EntityReference;
+import org.sakaiproject.entitybroker.entityprovider.EntityProvider;
+import org.sakaiproject.entitybroker.entityprovider.EntityProviderManager;
+import org.sakaiproject.entitybroker.entityprovider.capabilities.CRUDable;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.genericdao.api.search.Search;
 import org.sakaiproject.site.api.Group;
@@ -116,6 +120,11 @@ public class AssignmentLogicImpl implements AssignmentLogic{
     public void setAssignmentActivityProducer(AssignmentActivityProducer assignmentActivityProducer) {
         this.assignmentActivityProducer = assignmentActivityProducer;
     }
+    
+    private EntityProviderManager entityProviderManager;
+    public void setEntityProviderManager(EntityProviderManager entityProviderManager) {
+        this.entityProviderManager = entityProviderManager;
+    }
 
     public void init(){
         if(log.isDebugEnabled()) log.debug("init");
@@ -147,15 +156,17 @@ public class AssignmentLogicImpl implements AssignmentLogic{
             throw new AssignmentNotFoundException("No assignment found with id: " + assignmentId);
         }
 
-        // now, check to see if gradebook item still exists, if graded
-        if (assign.isGraded()) {
-            if (!gradebookLogic.gradebookItemExists(assign.getGradebookItemId())) {
-                assign.setGradebookItemId(null);
+        // TODO ASNN-516 Check for ContentReview and populate
+        // check for null entityProviderManager so we don't have to mock it for the unit tests
+        if (entityProviderManager != null) {
+            EntityProvider turnitinAsnnProvider = entityProviderManager.getProviderByPrefix("turnitin-assignment");
+            if (turnitinAsnnProvider != null && turnitinAsnnProvider instanceof CRUDable) {
+                CRUDable crudable = (CRUDable) turnitinAsnnProvider;
+                Map tiiopts = (Map) crudable.getEntity(new EntityReference("turnitin-assignment", encodeTIIAsnn2ID(assignmentId)));
+                assign.setProperties(tiiopts); // TODO this should be a map merge and not a complete replacement
             }
         }
-
-        // TODO ASNN-516 Check for ContentReview and populate
-
+        
         return assign;
     }
 
@@ -339,7 +350,27 @@ public class AssignmentLogicImpl implements AssignmentLogic{
         }
 
         // TODO ASNN-516 Content Review / Turnitin Integration
+        if (assignment.getProperties().containsKey("USE_TII") && ((Boolean) assignment.getProperties().get("USE_TII")).booleanValue()) {
+            String tiiAsnnTitle = encodeTIIAsnn2ID(assignment.getId());
+            log.debug("Going to Create TII Asnn with title: " + tiiAsnnTitle);
+            EntityProvider turnitinAsnnProvider = entityProviderManager.getProviderByPrefix("turnitin-assignment");
+            if (turnitinAsnnProvider instanceof CRUDable) {
+                CRUDable crudable = (CRUDable) turnitinAsnnProvider;
+                crudable.createEntity(new EntityReference("turnitin-assignment",tiiAsnnTitle), assignment.getProperties(), null);
+                assignment.setContentReviewRef(tiiAsnnTitle);
+                dao.update(assignment);
+                
+            }
+        }
 
+    }
+    
+    private String encodeTIIAsnn2ID(Long asnnid) {
+        return "Asnn2Provisioned" + asnnid;
+    }
+    
+    private Long decodeTIIAsnn2ID(String tiititle) {
+        return Long.parseLong(tiititle.substring(18));
     }
 
 

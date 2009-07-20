@@ -233,10 +233,13 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
 
         // if this is an "edit" scenario, we need to display a warning if the
         // assignment is graded but doesn't have an assoc gb item
-        if (assignmentId != null && assignment.isGraded() && assignment.getGradebookItemId() == null) {
-            // we need to display a message indicating that the gradebook item
-            // assoc with this item no longer exists
-            UIMessage.make(tofill, "no_gb_item", "assignment2.assignment_add.gb_item_deleted");
+        if (assignmentId != null && assignment.isGraded()) {
+            if (assignment.getGradebookItemId() == null || 
+                    !externalGradebookLogic.gradebookItemExists(assignment.getGradebookItemId())) {
+                // we need to display a message indicating that the gradebook item
+                // assoc with this item no longer exists
+                UIMessage.make(tofill, "no_gb_item", "assignment2.assignment_add.gb_item_deleted");
+            }
         }
 
         //Initialize js otpkey
@@ -532,6 +535,48 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
         if (externalContentReviewLogic.isContentReviewAvailable()) {
             UIOutput.make(tofill, "tii_content_review_area");
             UIBoundBoolean.make(tofill, "use_tii", assignment2OTP + ".properties.USE_TII");
+            
+            String[] submitToRepoValues = new String[] {
+                    "1", "2", "0"
+            };
+            
+            String[] submitToRepoLabelKeys = new String[] {
+                    "assignment2.turnitin.asnnedit.standard_paper_repository",
+                    "assignment2.turnitin.asnnedit.institution_paper_repository",
+                    "assignment2.turnitin.asnnedit.no_repository"
+            };
+            
+            UISelect.make(form, "submit_paper_to_repository_select", submitToRepoValues,
+                    submitToRepoLabelKeys, assignment2OTP + ".properties.submit_papers_to").setMessageKeys();
+            
+            String[] reportGenSpeedValues = new String[] {
+                    "0", "1", "2"
+            };
+            
+            String[] reportGenSpeedLabels = new String[] {
+                    "assignment2.turnitin.asnnedit.generate_immediately_first_report_final",
+                    "assignment2.turnitin.asnnedit.generate_immediately_can_overwrite_until_due",
+                    "assignment2.turnitin.asnnedit.generate_on_due_date"
+            };
+            
+            UISelect.make(form, "rep_gen_speed", reportGenSpeedValues,
+                    reportGenSpeedLabels, assignment2OTP + ".properties.rep_gen_speed").setMessageKeys();
+            
+            UIBoundBoolean.make(tofill, "allow_students_to_see_originality_checkbox", 
+                    assignment2OTP + ".properties.s_view_report");
+            
+            UIBoundBoolean.make(tofill, "check_against_student_repo_checkbox",
+                    assignment2OTP + ".properties.s_paper_check");
+            
+            UIBoundBoolean.make(tofill, "check_against_internet_repo_checkbox",
+                    assignment2OTP + ".properties.internet_check");
+            
+            UIBoundBoolean.make(tofill, "check_against_journal_repo_checkbox", 
+                    assignment2OTP + ".properties.journal_check");
+            
+            UIBoundBoolean.make(tofill, "check_against_institution_repo_checkbox",
+                    assignment2OTP + ".properties.institution_check");
+            
         }
     }
 
