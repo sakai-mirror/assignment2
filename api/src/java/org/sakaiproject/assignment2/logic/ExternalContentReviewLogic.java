@@ -3,7 +3,7 @@ package org.sakaiproject.assignment2.logic;
 import java.util.List;
 
 import org.sakaiproject.assignment2.model.Assignment2;
-//import org.sakaiproject.contentreview.model.ContentReviewItem;
+import org.sakaiproject.contentreview.model.ContentReviewItem;
 
 /**
  * For accessing the systems Content Review System.  An example is a plagiarism
@@ -43,7 +43,7 @@ public interface ExternalContentReviewLogic {
      * @param assign
      * @return a list of the {@link ContentReviewItem}s associated with the given assignment
      */
-    //public List<ContentReviewItem> getReviewItemsForAssignment(Assignment2 assign);
+    public List<ContentReviewItem> getReviewItemsForAssignment(Assignment2 assign);
     
     /**
      * 

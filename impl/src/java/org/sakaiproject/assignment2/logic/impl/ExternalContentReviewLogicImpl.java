@@ -12,7 +12,7 @@ import org.sakaiproject.content.api.ContentResource;
 import org.sakaiproject.contentreview.exception.QueueException;
 import org.sakaiproject.contentreview.exception.ReportException;
 import org.sakaiproject.contentreview.exception.SubmissionException;
-//import org.sakaiproject.contentreview.model.ContentReviewItem;
+import org.sakaiproject.contentreview.model.ContentReviewItem;
 import org.sakaiproject.contentreview.service.ContentReviewService;
 
 public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogic {
@@ -54,7 +54,7 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
         }
     }
     
-    /* TODO figure out dependency issue for ContentReviewItem
+
 public List<ContentReviewItem> getReviewItemsForAssignment(Assignment2 assign) {
         if (assign == null) {
             throw new IllegalArgumentException("Null assignment passed to getReviewItemsForAssignment");
@@ -83,7 +83,7 @@ public List<ContentReviewItem> getReviewItemsForAssignment(Assignment2 assign) {
         }
         
         return reviewItems;
-    }*/
+    }
     
     public boolean isAttachmentAcceptableForReview(String attachmentReference) {
         if (attachmentReference == null) {
