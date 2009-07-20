@@ -351,11 +351,15 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 
         // TODO ASNN-516 Content Review / Turnitin Integration
         if (assignment.getProperties().containsKey("USE_TII") && ((Boolean) assignment.getProperties().get("USE_TII")).booleanValue()) {
-            log.debug("Going to Create TII Asnn with title: " + encodeTIIAsnn2ID(assignment.getId()));
+            String tiiAsnnTitle = encodeTIIAsnn2ID(assignment.getId());
+            log.debug("Going to Create TII Asnn with title: " + tiiAsnnTitle);
             EntityProvider turnitinAsnnProvider = entityProviderManager.getProviderByPrefix("turnitin-assignment");
             if (turnitinAsnnProvider instanceof CRUDable) {
                 CRUDable crudable = (CRUDable) turnitinAsnnProvider;
-                crudable.createEntity(new EntityReference("turnitin-assignment",encodeTIIAsnn2ID(assignment.getId())), assignment.getProperties(), null);
+                crudable.createEntity(new EntityReference("turnitin-assignment",tiiAsnnTitle), assignment.getProperties(), null);
+                assignment.setContentReviewRef(tiiAsnnTitle);
+                dao.update(assignment);
+                
             }
         }
 

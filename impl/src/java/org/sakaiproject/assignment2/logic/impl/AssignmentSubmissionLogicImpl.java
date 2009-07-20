@@ -371,7 +371,9 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
         if (!version.isDraft() && assignment.getContentReviewRef() != null && subAttachSet != null) {
             if (contentReviewLogic.isContentReviewAvailable()) {
                 for (SubmissionAttachment att : subAttachSet) {
-                    contentReviewLogic.reviewAttachment(userId, assignment.getContextId(), assignment, att.getAttachmentReference());
+                    if (contentReviewLogic.isAttachmentAcceptableForReview(att.getAttachmentReference())) {
+                        contentReviewLogic.reviewAttachment(userId, assignment.getContextId(), assignment, att.getAttachmentReference());
+                    }
                 }
             }
         }
