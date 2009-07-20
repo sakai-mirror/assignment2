@@ -366,7 +366,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
     }
     
     private String encodeTIIAsnn2ID(Long asnnid) {
-        return "Asnn2 Provisioned " + asnnid;
+        return "Asnn2Provisioned" + asnnid;
     }
     
     private Long decodeTIIAsnn2ID(String tiititle) {
