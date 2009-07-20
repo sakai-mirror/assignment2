@@ -377,7 +377,7 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
          *Grading
          */  
         //Get Gradebook Items
-        List<GradebookItem> gradebook_items = externalGradebookLogic.getAllGradebookItems(currentContextId);
+        List<GradebookItem> gradebook_items = externalGradebookLogic.getAllGradebookItems(currentContextId, false);
         //Get an Assignment for currently selected from the select box
         // by default this the first item on the list returned from the externalGradebookLogic
         // this will be overwritten if we have a pre-existing assignment with an assigned

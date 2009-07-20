@@ -173,7 +173,7 @@ public class ExternalGradebookLogicTest extends Assignment2TestBase {
     public void testGetAllGradebookItems() {
     	// try passing a null contextId
     	try {
-    		gradebookLogic.getAllGradebookItems(null);
+    		gradebookLogic.getAllGradebookItems(null, false);
     		fail("did not catch null contextId passed to getAllGradebookItems");
     	} catch (IllegalArgumentException iae) {}
     	
@@ -182,23 +182,23 @@ public class ExternalGradebookLogicTest extends Assignment2TestBase {
     	
     	// what if we pass a bad contextId? should throw SecurityException
     	try {
-    		gradebookLogic.getAllGradebookItems(AssignmentTestDataLoad.BAD_CONTEXT);
+    		gradebookLogic.getAllGradebookItems(AssignmentTestDataLoad.BAD_CONTEXT, false);
     		fail("Did not catch SecurityException for context that doesn't exist yet");
     	} catch (SecurityException se) {}
     	
     	// should return all gb items for instructor and ta
-    	List<GradebookItem> allItems = gradebookLogic.getAllGradebookItems(AssignmentTestDataLoad.CONTEXT_ID);
+    	List<GradebookItem> allItems = gradebookLogic.getAllGradebookItems(AssignmentTestDataLoad.CONTEXT_ID, false);
     	assertEquals(3, allItems.size());
     	
     	// switch to TA
     	externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
-    	allItems = gradebookLogic.getAllGradebookItems(AssignmentTestDataLoad.CONTEXT_ID);
+    	allItems = gradebookLogic.getAllGradebookItems(AssignmentTestDataLoad.CONTEXT_ID, false);
     	assertEquals(3, allItems.size());
     	
     	// student should throw security exception
     	externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT1_UID);
     	try {
-    		gradebookLogic.getAllGradebookItems(AssignmentTestDataLoad.CONTEXT_ID);
+    		gradebookLogic.getAllGradebookItems(AssignmentTestDataLoad.CONTEXT_ID, false);
     		fail("Did not catch SecurityException for student accessing all gb items");
     	} catch (SecurityException se) {}
     }

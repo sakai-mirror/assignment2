@@ -165,7 +165,7 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
     	}
     	
     	for (Assignment assign : viewableGbItems) {
-    		if (assign != null) {
+    		if (assign != null && !assign.isExternallyMaintained()) {
     			idTitleMap.put(assign.getId(), assign.getName());
     		}
     	}
@@ -173,7 +173,7 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
     	return idTitleMap;
     }
 
-    public List<GradebookItem> getAllGradebookItems(String contextId) {
+    public List<GradebookItem> getAllGradebookItems(String contextId, boolean includeExternallyMaintained) {
     	if (contextId == null) {
     		throw new IllegalArgumentException("null contextId passed to getAllGradebookItems");
     	}
@@ -186,7 +186,7 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
     		if (allGbItems != null) {
 
     			for (Assignment assign : allGbItems) {
-    				if (assign != null) {
+    				if (assign != null && (!assign.isExternallyMaintained() || includeExternallyMaintained)) {
     					GradebookItem item = 
     						new GradebookItem(assign.getId(), assign.getName(), assign.getPoints(), assign.getDueDate(), assign.isReleased());
     					
@@ -771,5 +771,19 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
 	    }
 	    
 	    return gbItemExists;
+	}
+	
+	public boolean isGradebookItemAssociationValid(String contextId, Long gradebookItemId) {
+	    boolean valid = false;
+	    try {
+            Assignment assign = gradebookService.getAssignment(contextId, gradebookItemId);
+            if (!assign.isExternallyMaintained()) {
+                valid = true;
+            } 
+        } catch (AssessmentNotFoundException anfe) {
+            valid = false;
+        }
+        
+        return valid;
 	}
 }
