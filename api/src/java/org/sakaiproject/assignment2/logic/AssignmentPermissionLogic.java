@@ -205,8 +205,7 @@ public interface AssignmentPermissionLogic {
      * @param assignmentList - a collection of Assignment2 objects with the AssignmentGroupSet initialized
      * that you want to filter
      * @return a filtered set of assignments from the given assignmentList that the current user
-     * is allowed to view. if an assignment is graded but the associated gb item no longer exists, the
-     * {@link Assignment2#getGradebookItemId()} will be set to null on the returned assignment and
+     * is allowed to view. if an assignment is graded but the associated gb item no longer exists, 
      * it is treated as "ungraded" for determining permission.  if assignment has been removed, only a 
      * student with an existing submission for that assignment may view the assignment
      */

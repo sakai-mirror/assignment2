@@ -32,6 +32,7 @@ import java.util.Map;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
+import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
@@ -107,6 +108,7 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
     private EntityBeanLocator asvEntityBeanLocator;
     private AssignmentPermissionLogic permissionLogic;
     private AttachmentInputEvolver attachmentInputEvolver;
+    private ExternalGradebookLogic gradebookLogic;
 
 
     /*
@@ -143,6 +145,8 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
 
         //Grade Permission?
         Boolean grade_perm = permissionLogic.isUserAbleToProvideFeedbackForStudentForAssignment(userId, assignment);
+        boolean gbItemExists = assignment.isGraded() && assignment.getGradebookItemId() != null && 
+                gradebookLogic.gradebookItemExists(assignment.getGradebookItemId());
 
         // use a date which is related to the current users locale
         DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, locale);
@@ -166,7 +170,7 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
 
         // if gbItem is still null at this point, it must no longer exist. display warning
         // to user
-        if (assignment.isGraded() && assignment.getGradebookItemId() == null) {
+        if (assignment.isGraded() && !gbItemExists) {
             UIOutput.make(tofill, "no_gb_item", messageLocator.getMessage("assignment2.assignment_grade.gb_item_deleted"));
         }
 
@@ -447,7 +451,7 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
             }
         }
 
-        if (assignment.isGraded() && assignment.getGradebookItemId() != null){
+        if (assignment.isGraded() && gbItemExists){
             gradebookDetailsRenderer.makeGradebookDetails(tofill, "gradebook_details", as, assignmentId, userId);
         }        
 
@@ -598,6 +602,10 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
     public void setAttachmentInputEvolver(AttachmentInputEvolver attachmentInputEvolver)
     {
         this.attachmentInputEvolver = attachmentInputEvolver;
+    }
+    
+    public void setExternalGradebookLogic(ExternalGradebookLogic gradebookLogic) {
+        this.gradebookLogic = gradebookLogic;
     }
 
 }

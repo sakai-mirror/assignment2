@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
+import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.tool.params.AssignmentViewParams;
 import org.sakaiproject.assignment2.tool.params.ViewSubmissionsViewParams;
@@ -89,35 +90,12 @@ NavigationCaseReporter, ActionResultInterceptor
     public void setAssignmentLogic(AssignmentLogic assignmentLogic) {
         this.assignmentLogic = assignmentLogic;
     }
-
-    /*
-     **** This is the original work for upload all. For now, we are only going to upload grades
-	 public void fillComponents(UIContainer tofill, ViewParameters viewparams,
-			ComponentChecker checker)
-	{
-		AssignmentViewParams params = (AssignmentViewParams) viewparams;
-
-		ZipViewParams zvp = new ZipViewParams("zipSubmissions", params.assignmentId);
-		UIInternalLink.make(tofill, "downloadtemplate", UIMessage
-				.make("assignment2.assignment_grade-assignment.downloadall.button"), zvp);
-
-		String uploadOptions = "UploadBean.uploadOptions";
-		UIForm upload_form = UIForm.make(tofill, "upload_form");
-		upload_form
-				.addParameter(new UIELBinding(uploadOptions + ".assignmentId", zvp.assignmentId));
-
-		// Render checkboxes for uploadable elements
-		UIBoundBoolean.make(upload_form, "gradeFile", uploadOptions + ".gradeFile");
-		UIBoundBoolean.make(upload_form, "feedbackText", uploadOptions + ".feedbackText");
-		UIBoundBoolean.make(upload_form, "feedbackAttachments", uploadOptions
-				+ ".feedbackAttachments");
-
-		// Render buttons
-		UICommand.make(upload_form, "uploadButton", UIMessage.make("assignment2.uploadall.upload"),
-				"UploadBean.processUpload");
-		 UICommand.make(upload_form, "cancelButton", UIMessage.make("assignment2.uploadall.cancel"))
-				.setReturn(ViewSubmissionsProducer.VIEW_ID);
-	}*/
+    
+    // Dependency
+    private ExternalGradebookLogic gradebookLogic;
+    public void setExternalGradebookLogic(ExternalGradebookLogic gradebookLogic) {
+        this.gradebookLogic = gradebookLogic;
+    }
 
     public void fillComponents(UIContainer tofill, ViewParameters viewparams,
             ComponentChecker checker)
@@ -168,7 +146,8 @@ NavigationCaseReporter, ActionResultInterceptor
         }
 
         // Release grades radio buttons
-        if (assignment.isGraded() && assignment.getGradebookItemId() != null) {
+        if (assignment.isGraded() && assignment.getGradebookItemId() != null && 
+                gradebookLogic.gradebookItemExists(assignment.getGradebookItemId())) {
             UIOutput.make(tofill, "release_grades_section");
             String [] release_grades_values = new String[] {
                     Boolean.FALSE.toString(), Boolean.TRUE.toString()

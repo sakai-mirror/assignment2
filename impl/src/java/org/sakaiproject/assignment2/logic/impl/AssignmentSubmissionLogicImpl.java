@@ -44,6 +44,7 @@ import org.sakaiproject.assignment2.exception.VersionNotFoundException;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
+import org.sakaiproject.assignment2.logic.ExternalContentReviewLogic;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.logic.GradeInformation;
@@ -91,6 +92,12 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
     private AssignmentLogic assignmentLogic;
     public void setAssignmentLogic(AssignmentLogic assignmentLogic) {
         this.assignmentLogic = assignmentLogic;
+    }
+
+    private ExternalContentReviewLogic contentReviewLogic;
+    public void setContentReviewLogic(ExternalContentReviewLogic contentReviewLogic)
+    {
+        this.contentReviewLogic = contentReviewLogic;
     }
 
     public void init(){
@@ -358,6 +365,17 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
         } catch (StaleObjectStateException sose) {
             if(log.isInfoEnabled()) log.info("An optimistic locking failure occurred while attempting to update submission version" + version.getId());
             throw new StaleObjectModificationException("An optimistic locking failure occurred while attempting to update submission version" + version.getId(), sose);
+        }
+        
+        // ASNN-516 now let's run these attachments through the content review service, if appropriate
+        if (!version.isDraft() && assignment.getContentReviewRef() != null && subAttachSet != null) {
+            if (contentReviewLogic.isContentReviewAvailable()) {
+                for (SubmissionAttachment att : subAttachSet) {
+                    if (contentReviewLogic.isAttachmentAcceptableForReview(att.getAttachmentReference())) {
+                        contentReviewLogic.reviewAttachment(userId, assignment.getContextId(), assignment, att.getAttachmentReference());
+                    }
+                }
+            }
         }
     }
 

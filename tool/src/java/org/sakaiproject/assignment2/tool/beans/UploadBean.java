@@ -31,6 +31,7 @@ import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment2.exception.AssignmentNotFoundException;
 import org.sakaiproject.assignment2.exception.UploadException;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
+import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.logic.UploadAllLogic;
 import org.sakaiproject.assignment2.logic.UploadGradesLogic;
@@ -84,6 +85,11 @@ public class UploadBean
     public void setAssignmentLogic(AssignmentLogic assignmentLogic) {
         this.assignmentLogic = assignmentLogic;
     }
+    
+    private ExternalGradebookLogic gradebookLogic;
+    public void setExternalGradebookLogic(ExternalGradebookLogic gradebookLogic) {
+        this.gradebookLogic = gradebookLogic;
+    }
 
     public void setMultipartMap(Map<String, MultipartFile> uploads)
     {
@@ -130,10 +136,14 @@ public class UploadBean
             throw new AssignmentNotFoundException("No assignment exists with " +
                     "the assignmentId passed to the upload via uploadOptions: " + uploadOptions.assignmentId);
         }
+        
+        boolean gbItemExists = assign.isGraded() && 
+            assign.getGradebookItemId() != null && 
+            gradebookLogic.gradebookItemExists(assign.getGradebookItemId());
 
         if (uploads.isEmpty()) 
         {
-            if (assign.isGraded() && assign.getGradebookItemId() != null) {
+            if (assign.isGraded() && gbItemExists) {
                 messages.addMessage(new TargettedMessage("assignment2.uploadall.alert.file_type.graded", new Object[] {},
                         TargettedMessage.SEVERITY_ERROR));
             } else {
@@ -149,7 +159,7 @@ public class UploadBean
         long uploadedFileSize = uploadedFile.getSize();
         if (uploadedFileSize == 0)
         {
-            if (assign.isGraded() && assign.getGradebookItemId() != null) {
+            if (assign.isGraded() && gbItemExists) {
                 messages.addMessage(new TargettedMessage("assignment2.uploadall.alert.file_type.graded", new Object[] {},
                         TargettedMessage.SEVERITY_ERROR));
             } else {
@@ -183,14 +193,14 @@ public class UploadBean
             if (!assign.isGraded()) {
                 messages.addMessage(new TargettedMessage("assignment2.uploadall.upload_csv.ungraded", new Object[] {maxFileSizeInMB}, TargettedMessage.SEVERITY_ERROR));
                 return WorkFlowResult.UPLOAD_FAILURE;
-            } else if (assign.getGradebookItemId() == null) {
+            } else if (!gbItemExists) {
                 messages.addMessage(new TargettedMessage("assignment2.uploadall.upload_csv.no_gb_item", new Object[] {maxFileSizeInMB}, TargettedMessage.SEVERITY_ERROR));
                 return WorkFlowResult.UPLOAD_FAILURE;
             }
 
             return processUploadGradesCSV(uploadedFile, assign);
         } else {
-            if (assign.isGraded() && assign.getGradebookItemId() != null) {
+            if (assign.isGraded() && gbItemExists) {
                 messages.addMessage(new TargettedMessage("assignment2.uploadall.alert.file_type.graded", new Object[] {},
                         TargettedMessage.SEVERITY_ERROR));
             } else {
