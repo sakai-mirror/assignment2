@@ -100,7 +100,7 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
 
         //get parameters
         AssignmentListSortViewParams params = (AssignmentListSortViewParams) viewparams;
-        
+
         String currContextId = externalLogic.getCurrentContextId();
 
         //get paging data
@@ -129,16 +129,16 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
             UIBranchContainer row = UIBranchContainer.make(tofill, "assignment-row:");
 
             Assignment2 assignment = assignmentSubmission.getAssignment();
-   
+
             boolean assignmentCompleted = assignmentSubmission.isCompleted();
-            
+
             // Todo
             UIForm markTodoForm = UIForm.make(row, "todo-check-form");
             UIBoundBoolean todoCheck = UIBoundBoolean.make(markTodoForm, "todo-checkbox", "MarkTodoBean.checkTodo", assignmentCompleted);
             UICommand hiddenSubmit = UICommand.make(markTodoForm, "submit-button", "MarkTodoBean.markTodo");
             todoCheck.decorate(new UIFreeAttributeDecorator("onclick", "document.getElementById('"+hiddenSubmit.getFullID()+"').click()"));
             hiddenSubmit.addParameter(new UIELBinding("MarkTodoBean.assignmentId", assignment.getId()));
-            
+
             /*
              * TODO FIXME I'm having major issues getting the CSS style to take
              * effect here, so wer are creating this decorated color for now.
@@ -148,7 +148,7 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
              */
             Color decoratedColor = assignmentCompleted ? Color.gray : null;
             UIDecorator assnItemDecorator = new UIColourDecorator(decoratedColor, null);
-            
+
             /*
              * Title and Action Links
              * 
@@ -171,8 +171,8 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
              * 
              */            
             UIOutput.make(row, "assignment-title", assignment.getTitle())
-                    .decorate(assnItemDecorator);
-            
+            .decorate(assnItemDecorator);
+
             /*
              * if curr submission is draft, let the student know it is in progress,
              * but don't display if the assignment has been deleted
@@ -188,11 +188,11 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
             if (assignment.isRemoved()) {
                 UIMessage.make(row, "assignment-deleted", "assignment2.student-assignment-list.assignment-deleted");
             }
-            
+
             StudentAction availStudentAction = submissionBean.determineStudentAction(assignmentSubmission.getUserId(), assignment.getId());
-            
+
             AssignmentSubmissionVersion latestSubmission = assignmentSubmission.retrieveMostRecentSubmission();
-            
+
             String actionLinkText;
             // if there is at least one submission, we display the submitted date/time for the link text
             if (latestSubmission != null) {
@@ -206,17 +206,17 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
             } else {
                 actionLinkText = messageLocator.getMessage("assignment2.student-assignment-list.action." + availStudentAction.toString().toLowerCase());
             }
-            
+
             UIInternalLink.make(row, "assignment-action-link", actionLinkText,  
-                new SimpleAssignmentViewParams(StudentSubmitProducer.VIEW_ID, assignment.getId()));
-            
+                    new SimpleAssignmentViewParams(StudentSubmitProducer.VIEW_ID, assignment.getId()));
+
             // add resubmit link if appropriate
             if (availStudentAction.equals(StudentAction.VIEW_AND_RESUBMIT)) {
                 UIOutput.make(row, "resubmit-action");
                 UIInternalLink.make(row, "assignment-resubmit-link", UIMessage.make("assignment2.student-assignment-list.resubmit_link"),  
                         new SimpleAssignmentViewParams(StudentSubmitProducer.VIEW_ID, assignment.getId()));
             }
-            
+
             // Due date
             if (assignment.getDueDate() != null) {
                 UIOutput.make(row, "assignment_row_due", df.format(assignment.getDueDate())).decorate(assnItemDecorator);
@@ -230,7 +230,7 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
             else {
                 UIMessage.make(row, "assignment_row_due", "assignment2.student-assignment-list.no_due_date").decorate(assnItemDecorator);
             }
-            
+
             /*
              *  Feedback
              */
@@ -245,18 +245,18 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
                     unreadFeedbackExists = true;
                 }
             }
-            
+
             if (feedbackExists && unreadFeedbackExists) {
                 UIInternalLink.make(row, "unread-feedback-link",
                         new SimpleAssignmentViewParams(StudentSubmitProducer.VIEW_ID, assignment.getId()));
-                
+
                 // add the alt text to the image
                 Map<String, String> unreadImgAttr = new HashMap<String, String>();
                 String unreadText = messageLocator.getMessage("assignment2.student-assignment-list.icon_text.unread");
                 unreadImgAttr.put("alt", unreadText);
                 unreadImgAttr.put("title", unreadText);
                 DecoratorList unreadDecoratorList = new DecoratorList(new UIFreeAttributeDecorator(unreadImgAttr));
-                
+
                 UIOutput unreadImg = UIOutput.make(row, "unread-feedback-img");
                 unreadImg.decorators = unreadDecoratorList;
             }
@@ -278,7 +278,7 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
             // I know you're always supposed to have an ending else
             // but I can't think of what to put here at the moment.
             // We should probably put an accessible note.
-            
+
             /*
              * Grade
              */
@@ -292,13 +292,13 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
                             assignmentSubmission.getUserId(), 
                             assignment.getGradebookItemId());
                 }
-                
+
                 if (grade == null) {
                     UIMessage.make(row, "grade", "assignment2.student-assignment-list.no-grade-yet").decorate(assnItemDecorator);
                 } else {
                     UIOutput.make(row, "grade", grade).decorate(assnItemDecorator);
                 }
-                
+
             }
 
         }
@@ -315,7 +315,7 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
     public void setLocale(Locale locale) {
         this.locale = locale;
     }
-    
+
     public void setAssignmentSubmissionBean(AssignmentSubmissionBean submissionBean) {
         this.submissionBean = submissionBean;
     }
@@ -324,11 +324,11 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
             ExternalGradebookLogic externalGradebookLogic) {
         this.externalGradebookLogic = externalGradebookLogic;
     }
-    
+
     public void setExternalLogic(ExternalLogic externalLogic) {
         this.externalLogic = externalLogic;
     }
-    
+
     public void setMessageLocator(MessageLocator messageLocator) {
         this.messageLocator = messageLocator;
     }

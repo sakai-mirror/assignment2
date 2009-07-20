@@ -32,59 +32,59 @@ import org.sakaiproject.user.api.UserNotDefinedException;
 
 public class NotificationBean
 {
-	// injected dependencies
+    // injected dependencies
 
-	private TimeService timeService;
+    private TimeService timeService;
 
-	public void setTimeService(TimeService timeService)
-	{
-		this.timeService = timeService;
-	}
+    public void setTimeService(TimeService timeService)
+    {
+        this.timeService = timeService;
+    }
 
-	private ScheduledInvocationManager scheduledInvocationManager;
+    private ScheduledInvocationManager scheduledInvocationManager;
 
-	public void setScheduledInvocationManager(
-			ScheduledInvocationManager scheduledInvocationManager)
-	{
-		this.scheduledInvocationManager = scheduledInvocationManager;
-	}
+    public void setScheduledInvocationManager(
+            ScheduledInvocationManager scheduledInvocationManager)
+    {
+        this.scheduledInvocationManager = scheduledInvocationManager;
+    }
 
-	private ScheduledNotification scheduledNotification;
+    private ScheduledNotification scheduledNotification;
 
-	public void setScheduledNotification(ScheduledNotification scheduledNotification)
-	{
-		this.scheduledNotification = scheduledNotification;
-	}
+    public void setScheduledNotification(ScheduledNotification scheduledNotification)
+    {
+        this.scheduledNotification = scheduledNotification;
+    }
 
-	public void notifyStudentsOfNewAssignment(Assignment2 assignment)
-			throws IdUnusedException, UserNotDefinedException
-	{
-		String assignmentId = assignment.getId().toString();
-		if (!assignment.isDraft())
-		{
-			Time openTime = timeService.newTime(assignment.getOpenDate().getTime());
-			
-			// Remove any existing notifications for this assignment
-			DelayedInvocation[] fdi = scheduledInvocationManager.findDelayedInvocations("org.sakaiproject.assignment2.logic.ScheduledNotification",
-					assignmentId);
-			if (fdi != null && fdi.length > 0)
-			{
-				for (DelayedInvocation d : fdi)
-				{
-					scheduledInvocationManager.deleteDelayedInvocation(d.uuid);
-				}
-			}
-			// Schedule the new notification
-			if (openTime.after(timeService.newTime()))
-			{
-				scheduledInvocationManager.createDelayedInvocation(openTime,
-						"org.sakaiproject.assignment2.logic.ScheduledNotification",
-						assignmentId);
-			}
-			else
-			{
-				scheduledNotification.execute(assignmentId);
-			}
-		}
-	}
+    public void notifyStudentsOfNewAssignment(Assignment2 assignment)
+    throws IdUnusedException, UserNotDefinedException
+    {
+        String assignmentId = assignment.getId().toString();
+        if (!assignment.isDraft())
+        {
+            Time openTime = timeService.newTime(assignment.getOpenDate().getTime());
+
+            // Remove any existing notifications for this assignment
+            DelayedInvocation[] fdi = scheduledInvocationManager.findDelayedInvocations("org.sakaiproject.assignment2.logic.ScheduledNotification",
+                    assignmentId);
+            if (fdi != null && fdi.length > 0)
+            {
+                for (DelayedInvocation d : fdi)
+                {
+                    scheduledInvocationManager.deleteDelayedInvocation(d.uuid);
+                }
+            }
+            // Schedule the new notification
+            if (openTime.after(timeService.newTime()))
+            {
+                scheduledInvocationManager.createDelayedInvocation(openTime,
+                        "org.sakaiproject.assignment2.logic.ScheduledNotification",
+                        assignmentId);
+            }
+            else
+            {
+                scheduledNotification.execute(assignmentId);
+            }
+        }
+    }
 }

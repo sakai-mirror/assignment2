@@ -106,7 +106,7 @@ public class AssignmentSubmissionBean {
     public void setNotificationBean(NotificationBean notificationBean) {
         this.notificationBean = notificationBean;
     }
-    
+
     private Boolean overrideResubmissionSettings;
     public void setOverrideResubmissionSettings(Boolean overrideResubmissionSettings) {
         this.overrideResubmissionSettings = overrideResubmissionSettings;
@@ -116,23 +116,23 @@ public class AssignmentSubmissionBean {
     public void setResubmitUntil(Boolean resubmitUntil) {
         this.resubmitUntil = resubmitUntil;
     }
-    
+
     /**
      * This property is used primarily with the 
      * {@link AssignmentSubmissionBean.processActionGradeSubmitAndEditAnotherVersion}
      * to set the next version to edit.
      */
     private Long nextVersionIdToEdit;
-    
+
     public void setNextVersionIdToEdit(Long nextVersionIdToEdit) {
         this.nextVersionIdToEdit = nextVersionIdToEdit;
     }
-    
+
     public Long getNextVersionIdToEdit() {
         return nextVersionIdToEdit;
     }
 
-    
+
 
     /*
      * INSTRUCTOR FUNCTIONS
@@ -144,7 +144,7 @@ public class AssignmentSubmissionBean {
 
         return SUBMIT;
     }
-    
+
     /**
      * This action method is primarily used for the "Edit" links on the Grade
      * page under the History section, where you want to go edit a previous 
@@ -170,7 +170,7 @@ public class AssignmentSubmissionBean {
         if (FAILURE.equals(saveResult)) {
             return FAILURE;
         }
-        
+
         return SAVE_AND_EDIT_PREFIX + getNextVersionIdToEdit();
     }
 
@@ -189,7 +189,7 @@ public class AssignmentSubmissionBean {
             if (resubmitUntil == null || Boolean.FALSE.equals(resubmitUntil)) {
                 assignmentSubmission.setResubmitCloseDate(null);
             }
-            
+
             if (overrideResubmissionSettings == null || !overrideResubmissionSettings) {
                 assignmentSubmission.setNumSubmissionsAllowed(null);
                 assignmentSubmission.setResubmitCloseDate(null);
@@ -207,7 +207,7 @@ public class AssignmentSubmissionBean {
             submissionLogic.saveInstructorFeedback(asv.getId(), assignmentSubmission.getUserId(),
                     assignmentSubmission.getAssignment(), asv.getAnnotatedText(),
                     asv.getFeedbackNotes(), asv.getFeedbackReleasedDate(), asv.getFeedbackAttachSet());
-            
+
             List<String> studentUids = new ArrayList<String>();
             studentUids.add(assignmentSubmission.getUserId());
             submissionLogic.updateStudentResubmissionOptions(studentUids, assignmentSubmission.getAssignment(), 
@@ -221,11 +221,11 @@ public class AssignmentSubmissionBean {
             AssignmentSubmission assignmentSubmission = OTPMap.get(key);
             Assignment2 assignment = assignmentLogic.getAssignmentByIdWithAssociatedData(assignmentId);
             assignmentSubmission.setAssignment(assignment);
-           // previewAssignmentSubmissionBean.setAssignmentSubmission(assignmentSubmission);
+            // previewAssignmentSubmissionBean.setAssignmentSubmission(assignmentSubmission);
         }
         for (String key : asvOTPMap.keySet()){
             AssignmentSubmissionVersion asv = asvOTPMap.get(key);
-           // previewAssignmentSubmissionBean.setAssignmentSubmissionVersion(asv);
+            // previewAssignmentSubmissionBean.setAssignmentSubmissionVersion(asv);
         }
         return PREVIEW;
     }
@@ -233,7 +233,7 @@ public class AssignmentSubmissionBean {
     public String processActionCancel() {
         return CANCEL;
     }
-    
+
     public StudentAction determineStudentAction(String studentId, Long assignmentId) {
         boolean isOpenForSubmission = submissionLogic.isSubmissionOpenForStudentForAssignment(
                 studentId, assignmentId);

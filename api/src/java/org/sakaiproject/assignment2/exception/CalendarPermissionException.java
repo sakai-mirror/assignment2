@@ -30,13 +30,13 @@ package org.sakaiproject.assignment2.exception;
  */
 public class CalendarPermissionException extends AssignmentException {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public CalendarPermissionException(String message) {
+    public CalendarPermissionException(String message) {
         super(message);
     }
-	
-	public CalendarPermissionException(String msg, Throwable t) {
-		super(msg, t);
-	}
+
+    public CalendarPermissionException(String msg, Throwable t) {
+        super(msg, t);
+    }
 }

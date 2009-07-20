@@ -82,32 +82,32 @@ public class ListProducer implements ViewComponentProducer, NavigationCaseReport
     public void setMessageLocator(MessageLocator messageLocator) {
         this.messageLocator = messageLocator;
     }
-    
+
     private AssignmentLogic assignmentLogic;
     public void setAssignmentLogic(AssignmentLogic assignmentLogic) {
         this.assignmentLogic = assignmentLogic;
     }
-    
+
     private AssignmentSubmissionLogic submissionLogic;
     public void setSubmissionLogic(AssignmentSubmissionLogic submissionLogic) {
         this.submissionLogic = submissionLogic;
     }
-    
+
     private ExternalLogic externalLogic;
     public void setExternalLogic(ExternalLogic externalLogic) {
         this.externalLogic = externalLogic;
     }
-    
+
     private AssignmentPermissionLogic permissionLogic;
     public void setPermissionLogic(AssignmentPermissionLogic permissionLogic) {
         this.permissionLogic = permissionLogic;
     }
-    
+
     private Locale locale;
     public void setLocale(Locale locale) {
         this.locale = locale;
     }
-    
+
     /**
      * Request Scope Dependency
      */
@@ -115,17 +115,17 @@ public class ListProducer implements ViewComponentProducer, NavigationCaseReport
     public void setPlacement(Placement placement) {
         this.placement = placement;
     }
-    
+
     public void fillComponents(UIContainer tofill, ViewParameters viewparams, ComponentChecker checker) {
         UIVerbatim.make(tofill, "asnnlist-decl-js", "var sakai = sakai || {};"
-        + "sakai.curPlacement = '"+placement.getId()+"';"
-        + "sakai.curContext = '"+externalLogic.getCurrentContextId()+"';");
+                + "sakai.curPlacement = '"+placement.getId()+"';"
+                + "sakai.curContext = '"+externalLogic.getCurrentContextId()+"';");
     }
 
-    
+
     /* Old version of fillComponents Before Page Redesing. Keeping this around
      * for part of an iteration for reference before deleting.
-     
+
     public void fillComponents(UIContainer tofill, ViewParameters viewparams, ComponentChecker checker) {
 
         DateFormat df = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, locale);
@@ -143,7 +143,7 @@ public class ListProducer implements ViewComponentProducer, NavigationCaseReport
             UIInternalLink.make(tofill, "add_assignment", UIMessage.make("assignment2.list.add_assignment"),
                     new SimpleViewParameters(AssignmentProducer.VIEW_ID));
         }
-        
+
         // Only show the submissions/total header if there are actual assignments
         if (entries.size() > 0) {
             UIMessage.make(tofill, "submissions_total", "assignment2.list.submissions_total" );
@@ -156,7 +156,7 @@ public class ListProducer implements ViewComponentProducer, NavigationCaseReport
                 UIMessage.make(tofill, "no-assignments-message", "assignment2.list.assignment_empty");
             }
         }
-     
+
         // get the viewable students for all of the assignments here to be
         // more efficient
         Map<Assignment2, List<String>> assignmentViewableStudentsMap = 
@@ -170,7 +170,7 @@ public class ListProducer implements ViewComponentProducer, NavigationCaseReport
 
             //If Current User has the ability to edit or duplicate the assignment
             if (edit_perm) {
-                
+
                 //UIInternalLink.make(row, "delete-asnn-link", new RemoveAssignmentParams(RemoveAssignmentConfirmProducer.VIEW_ID, assignment.getId()));
                 UIOutput.make(row, "delete-asnn-link").decorate(
                         new UIFreeAttributeDecorator("onclick",
@@ -179,12 +179,12 @@ public class ListProducer implements ViewComponentProducer, NavigationCaseReport
                         new AssignmentViewParams(AssignmentProducer.VIEW_ID, assignment.getId()));
                 UIInternalLink.make(row, "assignment_duplicate",  UIMessage.make("assignment2.list.duplicate"), 
                         new AssignmentViewParams(AssignmentProducer.VIEW_ID, null, assignment.getId()));
-                
+
             }
 
             // Tag provider removed for now ASNN-113
             // renderMatrixTagging();
-            
+
             // get the viewable students for this assignment
             List<String> viewableStudents = assignmentViewableStudentsMap.get(assignment);
 
@@ -210,9 +210,9 @@ public class ListProducer implements ViewComponentProducer, NavigationCaseReport
         if (edit_perm) {
             UIOutput.make(tofill, "edit-setup-javascript");
         }
-        
+
     }
-    */
+     */
 
     /**
      * Renders the Div for the assignment title, draft, and open status.
@@ -236,7 +236,7 @@ public class ListProducer implements ViewComponentProducer, NavigationCaseReport
             divLeftContainer.decorators = new DecoratorList(new UIStyleDecorator("assignInactive"));
         }
     }
-    */
+     */
 
     /**
      * Renders the bit of the Assignment Row that says like 2 / 83 if two of the
@@ -271,7 +271,7 @@ public class ListProducer implements ViewComponentProducer, NavigationCaseReport
             UIOutput.make(row, "no_submission_req", messageLocator.getMessage("assignment2.list.no_sub_required"));
         }
     }
-    */
+     */
 
     /**
      * Render the Due Date that appears under the Assignment Title in the List.
@@ -289,7 +289,7 @@ public class ListProducer implements ViewComponentProducer, NavigationCaseReport
             UIMessage.make(row, "assignment_row_due", "assignment2.list.no_due_date");	
         }
     }
-    */
+     */
 
     /**
      * Renders the Breadcrumbs, title, and other stuff at the top of the page.
@@ -312,8 +312,8 @@ public class ListProducer implements ViewComponentProducer, NavigationCaseReport
         //}
 
     }
-    */
-    
+     */
+
     public List reportNavigationCases() {
         List<NavigationCase> nav= new ArrayList<NavigationCase>();
         nav.add(new NavigationCase("remove", new SimpleViewParameters(AjaxResultsProducer.VIEW_ID)));
@@ -331,7 +331,7 @@ public class ListProducer implements ViewComponentProducer, NavigationCaseReport
         }
         return providers;
     }
-    */
+     */
 
     /**
      * Functionality for matrix tagging. Currently on Hold. ASNN-113
@@ -371,7 +371,7 @@ public class ListProducer implements ViewComponentProducer, NavigationCaseReport
                         }
                 }
         }
-     */
+         */
     }
-    
+
 }

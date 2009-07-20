@@ -28,13 +28,13 @@ package org.sakaiproject.assignment2.exception;
  */
 public class AssignmentNotFoundException extends AssignmentException {
 
-	private static final long serialVersionUID = 0L;
+    private static final long serialVersionUID = 0L;
 
-	public AssignmentNotFoundException(String message) {
+    public AssignmentNotFoundException(String message) {
         super(message);
     }
 
-	public AssignmentNotFoundException(String msg, Throwable t) {
-		super(msg, t);
-	}
+    public AssignmentNotFoundException(String msg, Throwable t) {
+        super(msg, t);
+    }
 }

@@ -13,19 +13,19 @@ import org.sakaiproject.assignment2.logic.ExternalEventLogic;
 public class ExternalEventLogicImpl implements ExternalEventLogic {
 
     private static Log log = LogFactory.getLog(ExternalEventLogicImpl.class);
-    
+
     private org.sakaiproject.event.api.EventTrackingService eventTrackingService;
     public void setEventTrackingService(org.sakaiproject.event.api.EventTrackingService eventTrackingService) {
-    	this.eventTrackingService = eventTrackingService;
+        this.eventTrackingService = eventTrackingService;
     }
 
     /**
      * Place any code that should run when this class is initialized by spring here
      */
     public void init() {
-    	if (log.isDebugEnabled()) log.debug("init");
+        if (log.isDebugEnabled()) log.debug("init");
     }
-    
+
     public void postEvent(String message, String objectReference) {
         Event event = eventTrackingService.newEvent(message, objectReference, true);
         eventTrackingService.post(event);

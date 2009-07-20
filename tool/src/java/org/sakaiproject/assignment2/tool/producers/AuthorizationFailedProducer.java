@@ -29,17 +29,17 @@ import uk.org.ponder.rsf.viewstate.ViewParameters;
 
 public class AuthorizationFailedProducer implements ViewComponentProducer
 {
-	  public static final String VIEWID = "authorizationFailed";
-	  
-	  public String getViewID() {
-	    return VIEWID;
-	  }
+    public static final String VIEWID = "authorizationFailed";
 
-	public void fillComponents(UIContainer tofill, ViewParameters viewparams,
-			ComponentChecker checker) {
+    public String getViewID() {
+        return VIEWID;
+    }
 
-		//Really do nothing here except echo
-		UIMessage.make(tofill, "permissions_error", "assignment2.authorizationFailed.permissions_error");
-		
-	}
+    public void fillComponents(UIContainer tofill, ViewParameters viewparams,
+            ComponentChecker checker) {
+
+        //Really do nothing here except echo
+        UIMessage.make(tofill, "permissions_error", "assignment2.authorizationFailed.permissions_error");
+
+    }
 }

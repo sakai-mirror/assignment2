@@ -29,37 +29,37 @@ import uk.org.ponder.rsf.viewstate.ViewParamsReporter;
  */
 public class AssignmentInfoDataProducer implements DataView , ViewParamsReporter {
     public static final String VIEW_ID = "assignmentinfo";
-    
+
     // Dependency
     private AssignmentLogic assignmentLogic;
     public void setAssignmentLogic(AssignmentLogic assignmentLogic) {
         this.assignmentLogic = assignmentLogic;
     }
-    
+
     // Dependency
     private AssignmentSubmissionLogic assignmentSubmissionLogic;
     public void setAssignmentSubmissionLogic(AssignmentSubmissionLogic assignmentSubmissionLogic) {
         this.assignmentSubmissionLogic = assignmentSubmissionLogic;
     }
-    
+
     // Dependency
     private AssignmentPermissionLogic assignmentPermissionLogic;
     public void setAssignmentPermissionLogic(AssignmentPermissionLogic assignmentPermissionLogic) {
         this.assignmentPermissionLogic = assignmentPermissionLogic;
     }
-    
+
     // Dependency
     private Locale locale;
     public void setLocale(Locale locale) {
         this.locale = locale;
     }
-    
+
     // Dependency
     private MessageLocator messageLocator;
     public void setMessageLocator(MessageLocator messageLocator) {
         this.messageLocator = messageLocator;
     }
-    
+
     // Property
     private String currUserId;
     public void setCurrUserId(String currUserId) {
@@ -71,11 +71,11 @@ public class AssignmentInfoDataProducer implements DataView , ViewParamsReporter
         if (params.assignmentId == null) {
             return new Object[] {};
         }
-        
+
         DateFormat df = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, locale);
-        
+
         Assignment2 assignment = assignmentLogic.getAssignmentById(params.assignmentId);
-        
+
         Map data = new HashMap();
         data.put("id", assignment.getId());
         data.put("title", assignment.getTitle());
@@ -86,7 +86,7 @@ public class AssignmentInfoDataProducer implements DataView , ViewParamsReporter
             data.put("due", messageLocator.getMessage("assignment2.list.no_due_date"));
         }
         data.put("numsubmissions", getNumberOfSubmissions(assignment));
-        
+
         return data;
     }
 
@@ -106,7 +106,7 @@ public class AssignmentInfoDataProducer implements DataView , ViewParamsReporter
                 withSubmission = assignmentSubmissionLogic.getNumStudentsWithASubmission(assignment, viewableStudents);
             }
         }
-        
+
         return withSubmission;
     }
 

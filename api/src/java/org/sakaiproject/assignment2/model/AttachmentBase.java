@@ -29,79 +29,79 @@ package org.sakaiproject.assignment2.model;
  */
 public abstract class AttachmentBase {
 
-	protected Long id;
-	protected String attachmentReference;
-	private int optimisticVersion;
+    protected Long id;
+    protected String attachmentReference;
+    private int optimisticVersion;
 
-	/**
-	 * @return the id of this assignment attachment
-	 */
-	public Long getId() {
-		return id;
-	}
+    /**
+     * @return the id of this assignment attachment
+     */
+    public Long getId() {
+        return id;
+    }
 
-	/**
-	 * set the the id of this assignment attachment
-	 * @param id
-	 */
-	public void setId(Long id) {
-		this.id = id;
-	}
+    /**
+     * set the the id of this assignment attachment
+     * @param id
+     */
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	/**
-	 * 
-	 * @return the reference to this attachment
-	 */
-	public String getAttachmentReference() {
-		return attachmentReference;
-	}
+    /**
+     * 
+     * @return the reference to this attachment
+     */
+    public String getAttachmentReference() {
+        return attachmentReference;
+    }
 
-	/**
-	 * set the reference to this attachment
-	 * @param attachmentReference
-	 */
-	public void setAttachmentReference(String attachmentReference) {
-		this.attachmentReference = attachmentReference;
-	}
-    
+    /**
+     * set the reference to this attachment
+     * @param attachmentReference
+     */
+    public void setAttachmentReference(String attachmentReference) {
+        this.attachmentReference = attachmentReference;
+    }
+
     /**
      * 
      * @return version stored for hibernate's automatic optimistic concurrency control.
      * this is not related to any of the submission version data for assignment2
      */
     public int getOptimisticVersion() {
-    	return optimisticVersion;
+        return optimisticVersion;
     }
-    
+
     /**
      * version stored for hibernate's automatic optimistic concurrency control.
      * this is not related to any of the submission version data for assignment2
      * @param optimisticVersion
      */
     public void setOptimisticVersion(int optimisticVersion) {
-    	this.optimisticVersion = optimisticVersion;
+        this.optimisticVersion = optimisticVersion;
     }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (null == obj) return false;
-		if (!(obj instanceof AttachmentBase)) return false;
-		else {
-			AttachmentBase compAttach = (AttachmentBase) obj;
-			if (this.id == null || compAttach.id == null) {
-				return false;
-			}
-			if (null == this.id || null == compAttach.id) return false;
-			else return (
-					this.id.equals(compAttach.id)
-			);
-		}
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (null == obj) return false;
+        if (!(obj instanceof AttachmentBase)) return false;
+        else {
+            AttachmentBase compAttach = (AttachmentBase) obj;
+            if (this.id == null || compAttach.id == null) {
+                return false;
+            }
+            if (null == this.id || null == compAttach.id) return false;
+            else return (
+                    this.id.equals(compAttach.id)
+            );
+        }
+    }
 
-	@Override
-	public int hashCode() {
-		if (null == this.id) return super.hashCode();
-		String hashStr = this.getClass().getName() + ":" + this.id.hashCode();
-		return hashStr.hashCode();
-	}
+    @Override
+    public int hashCode() {
+        if (null == this.id) return super.hashCode();
+        String hashStr = this.getClass().getName() + ":" + this.id.hashCode();
+        return hashStr.hashCode();
+    }
 }

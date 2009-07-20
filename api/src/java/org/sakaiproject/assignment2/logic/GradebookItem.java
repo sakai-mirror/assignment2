@@ -37,109 +37,109 @@ public class GradebookItem {
     private Date dueDate;
     private String externalId;
     private boolean released;
-    
+
     public GradebookItem() {
-    	
+
     }
-    
-	public GradebookItem(Long gradebookItemId, String title,
-			Double pointsPossible, Date dueDate, boolean released) {
-		this.gradebookItemId = gradebookItemId;
-		this.title = title;
-		this.pointsPossible = pointsPossible;
-		this.dueDate = dueDate;
-		this.released = released;
-	}
 
-	/**
-	 * 
-	 * @return the id for this gradebook item
-	 */
-	public Long getGradebookItemId() {
-		return gradebookItemId;
-	}
+    public GradebookItem(Long gradebookItemId, String title,
+            Double pointsPossible, Date dueDate, boolean released) {
+        this.gradebookItemId = gradebookItemId;
+        this.title = title;
+        this.pointsPossible = pointsPossible;
+        this.dueDate = dueDate;
+        this.released = released;
+    }
 
-	/**
-	 * set the gradebookItemId for this gradebook item
-	 * @param gradebookItemId
-	 */
-	public void setGradebookItemId(Long gradebookItemId) {
-		this.gradebookItemId = gradebookItemId;
-	}
+    /**
+     * 
+     * @return the id for this gradebook item
+     */
+    public Long getGradebookItemId() {
+        return gradebookItemId;
+    }
 
-	/**
-	 * 
-	 * @return the title of this gradebook item
-	 */
-	public String getTitle() {
-		return title;
-	}
+    /**
+     * set the gradebookItemId for this gradebook item
+     * @param gradebookItemId
+     */
+    public void setGradebookItemId(Long gradebookItemId) {
+        this.gradebookItemId = gradebookItemId;
+    }
 
-	/**
-	 * set the title of this gradebook item
-	 * @param title
-	 */
-	public void setTitle(String title) {
-		this.title = title;
-	}
+    /**
+     * 
+     * @return the title of this gradebook item
+     */
+    public String getTitle() {
+        return title;
+    }
 
-	/**
-	 * 
-	 * @return the points possible for this gradebook item
-	 */
-	public Double getPointsPossible() {
-		return pointsPossible;
-	}
+    /**
+     * set the title of this gradebook item
+     * @param title
+     */
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
-	/**
-	 * set the points possible for this gradebook item
-	 * @param pointsPossible
-	 */
-	public void setPointsPossible(Double pointsPossible) {
-		this.pointsPossible = pointsPossible;
-	}
+    /**
+     * 
+     * @return the points possible for this gradebook item
+     */
+    public Double getPointsPossible() {
+        return pointsPossible;
+    }
 
-	/**
-	 * 
-	 * @return the due date for this gradebook item
-	 */
-	public Date getDueDate() {
-		return dueDate;
-	}
+    /**
+     * set the points possible for this gradebook item
+     * @param pointsPossible
+     */
+    public void setPointsPossible(Double pointsPossible) {
+        this.pointsPossible = pointsPossible;
+    }
 
-	/**
-	 * set the due date for this gradebook item
-	 * @param dueDate
-	 */
-	public void setDueDate(Date dueDate) {
-		this.dueDate = dueDate;
-	}
+    /**
+     * 
+     * @return the due date for this gradebook item
+     */
+    public Date getDueDate() {
+        return dueDate;
+    }
 
-	/**
-	 * 
-	 * @return the id representing the external maintainer of this gb item.
-	 * used ONLY for import from old assignments tool
-	 */
-	public String getExternalId()
-	{
-		return externalId;
-	}
+    /**
+     * set the due date for this gradebook item
+     * @param dueDate
+     */
+    public void setDueDate(Date dueDate) {
+        this.dueDate = dueDate;
+    }
 
-	/**
-	 * the id representing the external maintainer of this gb item.
-	 * used ONLY for import from old assignments tool
-	 * @param externalId
-	 */
-	public void setExternalId(String externalId)
-	{
-		this.externalId = externalId;
-	}
+    /**
+     * 
+     * @return the id representing the external maintainer of this gb item.
+     * used ONLY for import from old assignments tool
+     */
+    public String getExternalId()
+    {
+        return externalId;
+    }
 
-	/**
-	 * 
-	 * @return true if the grades in this gradebook item have been released
-	 * to the students
-	 */
+    /**
+     * the id representing the external maintainer of this gb item.
+     * used ONLY for import from old assignments tool
+     * @param externalId
+     */
+    public void setExternalId(String externalId)
+    {
+        this.externalId = externalId;
+    }
+
+    /**
+     * 
+     * @return true if the grades in this gradebook item have been released
+     * to the students
+     */
     public boolean isReleased()
     {
         return released;

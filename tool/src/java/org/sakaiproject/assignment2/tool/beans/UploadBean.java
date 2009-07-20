@@ -57,7 +57,7 @@ import uk.org.ponder.messageutil.TargettedMessageList;
 public class UploadBean
 {  
     private static final Log log = LogFactory.getLog(UploadBean.class);
-    
+
     private UploadAllOptions uploadOptions;
     private Map<String, MultipartFile> uploads;
 
@@ -130,7 +130,7 @@ public class UploadBean
             throw new AssignmentNotFoundException("No assignment exists with " +
                     "the assignmentId passed to the upload via uploadOptions: " + uploadOptions.assignmentId);
         }
-        
+
         if (uploads.isEmpty()) 
         {
             if (assign.isGraded() && assign.getGradebookItemId() != null) {
@@ -145,7 +145,7 @@ public class UploadBean
 
 
         MultipartFile uploadedFile = uploads.get("file");
-        
+
         long uploadedFileSize = uploadedFile.getSize();
         if (uploadedFileSize == 0)
         {
@@ -158,7 +158,7 @@ public class UploadBean
             }
             return WorkFlowResult.UPLOAD_FAILURE;
         }
-        
+
         // double check that the file doesn't exceed our upload limit
         String maxFileSizeInMB = ServerConfigurationService.getString("content.upload.max", "1");
         int maxFileSizeInBytes = 1024 * 1024;
@@ -167,7 +167,7 @@ public class UploadBean
         } catch(NumberFormatException e) {
             log.warn("Unable to parse content.upload.max retrieved from properties file during upload");
         }
-        
+
         if (uploadedFileSize > maxFileSizeInBytes) {
             messages.addMessage(new TargettedMessage("assignment2.uploadall.error.file_size", new Object[] {maxFileSizeInMB}, TargettedMessage.SEVERITY_ERROR));
             return WorkFlowResult.UPLOAD_FAILURE;
@@ -187,7 +187,7 @@ public class UploadBean
                 messages.addMessage(new TargettedMessage("assignment2.uploadall.upload_csv.no_gb_item", new Object[] {maxFileSizeInMB}, TargettedMessage.SEVERITY_ERROR));
                 return WorkFlowResult.UPLOAD_FAILURE;
             }
-            
+
             return processUploadGradesCSV(uploadedFile, assign);
         } else {
             if (assign.isGraded() && assign.getGradebookItemId() != null) {
@@ -254,7 +254,7 @@ public class UploadBean
             addUploadMessages(uploadInfo);
         } catch (UploadException ue) {
             if (log.isDebugEnabled()) log.debug("UploadException encountered while attempting to UploadAll for assignment: " + assign.getTitle(), ue);
-            
+
             messages.addMessage(new TargettedMessage("assignment2.uploadall.error.failure", new Object[] {assign.getTitle()}));
             return WorkFlowResult.UPLOAD_FAILURE;
         }
@@ -329,7 +329,7 @@ public class UploadBean
         if (uploadInfo != null) {
             String totalNumProcessed = "0";
             String totalNumUpdated = "0";
-            
+
             for (Map<String, String> infoMap : uploadInfo) {
                 String info = infoMap.get(UploadAllLogic.UPLOAD_INFO);
                 String param = infoMap.get(UploadAllLogic.UPLOAD_PARAM);

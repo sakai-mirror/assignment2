@@ -10,14 +10,14 @@ import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
  *
  */
 public class ReleaseGradesCommand {
-    
+
     // Dependency
     private ExternalGradebookLogic gradebookLogic;
     public void setGradebookLogic(ExternalGradebookLogic gradebookLogic) {
         this.gradebookLogic = gradebookLogic;
     }
-    
-    
+
+
     // Dependency / Property
     private String curContext;
     public void setCurContext(String curContext) {
@@ -26,7 +26,7 @@ public class ReleaseGradesCommand {
     public String getCurContext() {
         return curContext;
     }
-    
+
     // Property 
     private Long gradebookItemId;
     public void setGradebookItemId(Long gradebookItemId) {
@@ -35,7 +35,7 @@ public class ReleaseGradesCommand {
     public Long getGradebookItemId() {
         return gradebookItemId;
     }
-    
+
     // Property
     private boolean releaseGrades;
     public void setReleaseGrades(boolean releaseGrades) {
@@ -44,7 +44,7 @@ public class ReleaseGradesCommand {
     public boolean getReleaseGrades() {
         return releaseGrades;
     }
-    
+
     // Property
     private boolean includeInCourseGrade;
     public void setIncludeInCourseGrade(boolean includeInCourseGrade) {
@@ -53,17 +53,17 @@ public class ReleaseGradesCommand {
     public boolean getIncludeInCourseGrade() {
         return includeInCourseGrade;
     }
-    
+
     public void execute() {
-        
+
         if (gradebookItemId == null) {
             throw new IllegalArgumentException("Null gradebookItemId param passed to ReleaseGradesCommand");
         }
-        
+
         if (curContext == null) {
             throw new IllegalArgumentException("Null curContext param passed to ReleaseGradesCommand");
         }
-        
+
         gradebookLogic.releaseOrRetractGrades(curContext, gradebookItemId, releaseGrades, includeInCourseGrade);
     }
 }

@@ -56,7 +56,7 @@ import org.sakaiproject.util.FormattedText;
 public class UploadAllLogicImpl implements UploadAllLogic
 {
     private static final Log log = LogFactory.getLog(UploadAllLogicImpl.class);
-    
+
     /**
      * a ;-delimited list of file names of files that should not be
      * added as feedback attachments
@@ -107,7 +107,7 @@ public class UploadAllLogicImpl implements UploadAllLogic
     public void setAssignmentPermissionLogic(AssignmentPermissionLogic permissionLogic) {
         this.permissionLogic = permissionLogic;
     }
-    
+
     public ExternalGradebookLogic gradebookLogic;
     public void setExternalGradebookLogic(ExternalGradebookLogic gradebookLogic) {
         this.gradebookLogic = gradebookLogic;
@@ -139,7 +139,7 @@ public class UploadAllLogicImpl implements UploadAllLogic
         // construct the pattern for extracting the identifying info from the
         // folder names here so we don't have to do it repeatedly
         Pattern pattern = Pattern.compile(ZipExportLogic.FILE_NAME_REGEX);
-        
+
         Map<String, String> displayIdUserIdMap = externalLogic.getUserDisplayIdUserIdMapForStudentsInSite(assign.getContextId());
 
         List<StudentFeedbackWrapper> feedbackUploadList = new ArrayList<StudentFeedbackWrapper>();
@@ -149,7 +149,7 @@ public class UploadAllLogicImpl implements UploadAllLogic
             FileSystemManager fsManager = VFS.getManager();
             FileObject zipFile = fsManager.toFileObject(file);
             zipFile = fsManager.createFileSystem("zip", zipFile);
-            
+
             FileObject zipContents = null;
 
             // the parent folder will be named based upon the
@@ -161,10 +161,10 @@ public class UploadAllLogicImpl implements UploadAllLogic
             // the top level folder name
             String topLevelFolder = zipExportLogic.getTopLevelFolderName(assign);
             String baseFolderName = topLevelFolder;
-            
+
             while (baseFolderName.startsWith(topLevelFolder)) {
                 baseFolderName = "";
-                
+
                 for (FileObject fileObj : zipFile.findFiles(new FileDepthSelector(1,1)))
                 {                
                     baseFolderName = fileObj.getName().getBaseName();
@@ -176,11 +176,11 @@ public class UploadAllLogicImpl implements UploadAllLogic
                 }
             }
 
-            
+
             if (zipContents == null || !zipContents.getType().equals(FileType.FOLDER)) {
                 throw new UploadException("Could not extract top level folder for upload.");
             }
-            
+
             // iterate through the student folders (and the grades.csv file, if graded and included)
             for (FileObject fileObj : zipContents.findFiles(new FileDepthSelector(1,1)))
             {
@@ -203,7 +203,7 @@ public class UploadAllLogicImpl implements UploadAllLogic
                 }
 
             }
-            
+
             if (log.isDebugEnabled()) log.debug("Num feedback versions to update:" + feedbackUploadList.size());
 
         } catch (FileSystemException e) {
@@ -230,7 +230,7 @@ public class UploadAllLogicImpl implements UploadAllLogic
                             updatedVersion.setAnnotatedText(fbWrapper.annotatedText);
                             updatedVersion.setFeedbackAttachSet(fbWrapper.feedbackAttachments);
                             updatedVersion.setId(fbWrapper.submissionVersionId);
-                            
+
                             if (options.releaseFeedback) {
                                 updatedVersion.setFeedbackReleasedDate(now);
                             }
@@ -249,20 +249,20 @@ public class UploadAllLogicImpl implements UploadAllLogic
                 }
             }
         }
-        
+
         addToUploadInfoMap(uploadInfo, studentUidVersionsMap.size() + "", UploadInfo.NUM_STUDENTS_IDENTIFIED_FOR_UPDATE);
 
         // now let's do the actual update
         if (!studentUidVersionsMap.isEmpty()) {
             Set<String> studentsUpdated = submissionLogic.saveAllInstructorFeedback(assign, studentUidVersionsMap);
             if (studentsUpdated != null) {
-            	addToUploadInfoMap(uploadInfo, studentsUpdated.size() + "", UploadInfo.NUM_STUDENTS_UPDATED);
+                addToUploadInfoMap(uploadInfo, studentsUpdated.size() + "", UploadInfo.NUM_STUDENTS_UPDATED);
             }
         }
 
         return uploadInfo;
     }
-    
+
     private void processGrades(String contextId, Long assignmentId, FileObject gradesCsvFile, 
             List<Map<String, String>> uploadInfo, Map<String, String> displayIdUserIdMap) {
         if (gradesCsvFile != null) {
@@ -299,11 +299,11 @@ public class UploadAllLogicImpl implements UploadAllLogic
                 // remove these students from the file
                 studentsToRemove.addAll(studentsWithInvalidGrade);
             }
-            
+
             if (!studentsToRemove.isEmpty()) {
                 parsedContent = uploadGrades.removeStudentsFromContent(parsedContent, studentsToRemove);
             }
-            
+
             // now let's proceed with the grade upload!
             List<String> ungradableStudents = uploadGrades.uploadGrades(displayIdUserIdMap, assignmentId, parsedContent);
             if (ungradableStudents != null) {
@@ -593,7 +593,7 @@ public class UploadAllLogicImpl implements UploadAllLogic
 
         return fullFileName;
     }
-    
+
     /**
      * 
      * @param file
@@ -614,7 +614,7 @@ public class UploadAllLogicImpl implements UploadAllLogic
         if (!fileNamesToAvoid.contains(fileName)) {
             fileValid = true;
         }
-        
+
         return fileValid;
     }
 }

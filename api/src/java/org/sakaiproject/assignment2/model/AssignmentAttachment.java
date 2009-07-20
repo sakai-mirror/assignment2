@@ -30,34 +30,34 @@ package org.sakaiproject.assignment2.model;
  */
 public class AssignmentAttachment extends AttachmentBase {
 
-	private Assignment2 assignment;
+    private Assignment2 assignment;
 
-	public AssignmentAttachment() {
-	}
+    public AssignmentAttachment() {
+    }
 
-	public AssignmentAttachment(Assignment2 assignment, String attachmentReference) {
-		this.attachmentReference = attachmentReference;
-		this.assignment = assignment;
-	}
+    public AssignmentAttachment(Assignment2 assignment, String attachmentReference) {
+        this.attachmentReference = attachmentReference;
+        this.assignment = assignment;
+    }
 
-	/**
-	 * 
-	 * @return the assignment that this attachment is associated with
-	 */
-	public Assignment2 getAssignment() {
-		return assignment;
-	}
+    /**
+     * 
+     * @return the assignment that this attachment is associated with
+     */
+    public Assignment2 getAssignment() {
+        return assignment;
+    }
 
-	/**
-	 * set the assignment that this attachment is associated with
-	 * @param assignment
-	 */
-	public void setAssignment(Assignment2 assignment) {
-		this.assignment = assignment;
-	}
+    /**
+     * set the assignment that this attachment is associated with
+     * @param assignment
+     */
+    public void setAssignment(Assignment2 assignment) {
+        this.assignment = assignment;
+    }
 
-// CONVENIENCE METHODS
-    
+    // CONVENIENCE METHODS
+
     /**
      * 
      * @return true if all of the properties required for this attachment
@@ -65,15 +65,15 @@ public class AssignmentAttachment extends AttachmentBase {
      */
     public boolean isAttachmentValid() {
         boolean attachmentIsValid = true;
-        
+
         if (this.attachmentReference == null || this.attachmentReference.trim().length() == 0) {
             attachmentIsValid = false;
         }
-        
+
         if (this.assignment == null) {
             attachmentIsValid = false;
         }
-        
+
         return attachmentIsValid;
     }
 }

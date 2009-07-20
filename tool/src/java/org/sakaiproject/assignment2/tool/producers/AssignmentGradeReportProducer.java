@@ -41,21 +41,21 @@ public class AssignmentGradeReportProducer implements ViewComponentProducer, Vie
     private PagerRenderer pagerRenderer;
 
     public void fillComponents(UIContainer tofill, ViewParameters viewparams, ComponentChecker checker) {
-    	PagerViewParams pagerparams = (PagerViewParams) viewparams;
-    	
-    	Integer total_count = 0;
-    	
+        PagerViewParams pagerparams = (PagerViewParams) viewparams;
+
+        Integer total_count = 0;
+
         UIMessage.make(tofill, "page-title", "assignment2.assignment_grade-report.title");
         pagerRenderer.makePager(tofill, "pagerDiv:", VIEW_ID, pagerparams, total_count);
         UIMessage.make(tofill, "heading", "assignment2.assignment_grade-report.heading");
-        
+
     }
 
     public ViewParameters getViewParameters(){
-    	return new PagerViewParams();
+        return new PagerViewParams();
     }
-    
+
     public void setPagerRenderer(PagerRenderer pagerRenderer) {
-    	this.pagerRenderer = pagerRenderer;
+        this.pagerRenderer = pagerRenderer;
     }
 }

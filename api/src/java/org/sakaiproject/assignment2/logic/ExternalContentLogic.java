@@ -30,7 +30,7 @@ import org.sakaiproject.content.api.ContentResource;
  * @author Sakai App Builder -AZ
  */
 public interface ExternalContentLogic {
-    
+
     /**
      * @param reference 
      * @return an AttachmentInformation object populated with useful data from
@@ -38,7 +38,7 @@ public interface ExternalContentLogic {
      * Returns null if there was a problem retrieving the associated ContentResource
      */
     public AttachmentInformation getAttachmentInformation(String reference);
-    
+
     /**
      * 
      * @param reference non-null
@@ -46,15 +46,15 @@ public interface ExternalContentLogic {
      * Returns null if unable to retrieve resource
      */
     public ContentResource getContentResource(String reference);
-    
-    
+
+
     /**
      * @param contextId non-null
      * @return the collection id of the root collection for this site id
      */
     public String getReferenceCollectionId(String contextId);
-    
-    
+
+
     /**
      * Given the reference to an existing attachment and contextId of the site
      * you want the new attachment to be associated with, saves a copy of the
@@ -66,7 +66,7 @@ public interface ExternalContentLogic {
      * new attachment was created
      */
     public String copyAttachment(String attId, String contextId);
-    
+
     /**
      * 
      * @param userId

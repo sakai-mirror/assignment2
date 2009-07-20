@@ -28,61 +28,61 @@ import org.sakaiproject.taggable.api.TaggableActivityProducer;
 
 public class AssignmentActivityImpl implements TaggableActivity {
 
-	protected Assignment2 assignment;
+    protected Assignment2 assignment;
 
-	protected TaggableActivityProducer producer;
+    protected TaggableActivityProducer producer;
 
-	public AssignmentActivityImpl(Assignment2 assignment,
-			TaggableActivityProducer producer) {
-		this.assignment = assignment;
-		this.producer = producer;
-	}
+    public AssignmentActivityImpl(Assignment2 assignment,
+            TaggableActivityProducer producer) {
+        this.assignment = assignment;
+        this.producer = producer;
+    }
 
-	public boolean equals(Object object) {
-		if (object instanceof TaggableActivity) {
-			TaggableActivity activity = (TaggableActivity) object;
-			return activity.getReference().equals(this.getReference());
-		}
-		return false;
-	}
+    public boolean equals(Object object) {
+        if (object instanceof TaggableActivity) {
+            TaggableActivity activity = (TaggableActivity) object;
+            return activity.getReference().equals(this.getReference());
+        }
+        return false;
+    }
 
-	public String getContext() {
-		return assignment.getContextId();
-	}
+    public String getContext() {
+        return assignment.getContextId();
+    }
 
-	public String getDescription() {
-		return assignment.getInstructions();
-	}
+    public String getDescription() {
+        return assignment.getInstructions();
+    }
 
-	public Object getObject() {
-		return assignment;
-	}
+    public Object getObject() {
+        return assignment;
+    }
 
-	public TaggableActivityProducer getProducer() {
-		return producer;
-	}
+    public TaggableActivityProducer getProducer() {
+        return producer;
+    }
 
-	public String getReference() {
-		return assignment.getReference();
-	}
+    public String getReference() {
+        return assignment.getReference();
+    }
 
-	public String getTitle() {
-		return assignment.getTitle();
-	}
+    public String getTitle() {
+        return assignment.getTitle();
+    }
 
-	public String getActivityDetailUrl()
-	{
-		//TODO use constants
-		// the assignment2_detail part is in tool...maybe it can be moved elsewhere?
-		
-		String url = ServerConfigurationService.getServerUrl() + 
-			"/direct/assignment2_detail/" + Long.toString(assignment.getId());
-		return url;
-	}
-	
-	public String getTypeName()
-	{
-		return producer.getName();
-	}
-	
+    public String getActivityDetailUrl()
+    {
+        //TODO use constants
+        // the assignment2_detail part is in tool...maybe it can be moved elsewhere?
+
+        String url = ServerConfigurationService.getServerUrl() + 
+        "/direct/assignment2_detail/" + Long.toString(assignment.getId());
+        return url;
+    }
+
+    public String getTypeName()
+    {
+        return producer.getName();
+    }
+
 }

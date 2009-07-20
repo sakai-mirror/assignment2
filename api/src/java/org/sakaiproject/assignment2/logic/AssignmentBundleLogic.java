@@ -29,18 +29,18 @@ import java.util.Locale;
  * @author <a href="mailto:rjlowe@iupui.edu">ryan lowe</a>
  */
 public interface AssignmentBundleLogic {
-	
-	/** Path to bundle messages */
-	public static final String ASSIGNMENT2_BUNDLE = "messages";
-	
-	public String getString(String key);
-	
-	public String getFormattedMessage(String key, Object[] parameters);
-	
-	/**
-	 * 
-	 * @return user's preferred locale
-	 */
-	public Locale getLocale();
-	
+
+    /** Path to bundle messages */
+    public static final String ASSIGNMENT2_BUNDLE = "messages";
+
+    public String getString(String key);
+
+    public String getFormattedMessage(String key, Object[] parameters);
+
+    /**
+     * 
+     * @return user's preferred locale
+     */
+    public Locale getLocale();
+
 }

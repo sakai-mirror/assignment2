@@ -5,27 +5,27 @@ import java.util.Set;
 
 public interface FeedbackVersion
 {
-	Long getId();
+    Long getId();
 
-	String getAnnotatedText();
+    String getAnnotatedText();
 
-	String getAnnotatedTextFormatted();
+    String getAnnotatedTextFormatted();
 
-	String getLastFeedbackSubmittedBy();
+    String getLastFeedbackSubmittedBy();
 
-	Date getLastFeedbackDate();
+    Date getLastFeedbackDate();
 
-	Set<FeedbackAttachment> getFeedbackAttachSet();
+    Set<FeedbackAttachment> getFeedbackAttachSet();
 
-	String getFeedbackNotes();
+    String getFeedbackNotes();
 
-	void setAnnotatedText(String annotatedText);
+    void setAnnotatedText(String annotatedText);
 
-	void setLastFeedbackSubmittedBy(String feedbackSubmittedBy);
+    void setLastFeedbackSubmittedBy(String feedbackSubmittedBy);
 
-	void setLastFeedbackDate(Date feebackDate);
+    void setLastFeedbackDate(Date feebackDate);
 
-	void setFeedbackAttachSet(Set<FeedbackAttachment> feedbackAttachSet);
+    void setFeedbackAttachSet(Set<FeedbackAttachment> feedbackAttachSet);
 
-	void setFeedbackNotes(String feedbackNotes);
+    void setFeedbackNotes(String feedbackNotes);
 }

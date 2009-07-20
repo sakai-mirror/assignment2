@@ -55,8 +55,8 @@ public class LayoutProducer implements NullaryProducer {
                 String frameId = org.sakaiproject.util.Web.escapeJavascript("Main" + org.sakaiproject.tool.cover.ToolManager.getCurrentPlacement().getId());
                 UIVerbatim.make(tofill, "iframeId_init", "var iframeId = \"" + frameId + "\";");
             }
-            
-            
+
+
             if (viewParameters.viewID.equals(ListProducer.VIEW_ID)){
                 UILink.make(tofill, "asnn-js-include:","/sakai-assignment2-tool/content/js/inst-asnn-list.js");
                 UILink.make(tofill, "asnn-css-include:","/sakai-assignment2-tool/content/css/inst-asnn-list.css");
@@ -82,7 +82,7 @@ public class LayoutProducer implements NullaryProducer {
     public void setGroup(ViewGroup group) {
         this.group = group;
     }
-    
+
     /**
      * This will create the legacy Javascript and CSS imports that a number of
      * the existing pages require, but we want to exclude for newer dynamic

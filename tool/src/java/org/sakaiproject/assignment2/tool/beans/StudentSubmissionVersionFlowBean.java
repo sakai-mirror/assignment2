@@ -20,19 +20,19 @@ import uk.org.ponder.beanutil.entity.EntityBeanLocator;
  *
  */
 public class StudentSubmissionVersionFlowBean implements BeanLocator {
-    
+
     // Application Scope Dependency
     private AssignmentSubmissionVersionCreator assignmentSubmissionVersionCreator;
     public void setAssignmentSubmissionVersionCreator(AssignmentSubmissionVersionCreator assignmentSubmissionVersionCreator) {
         this.assignmentSubmissionVersionCreator = assignmentSubmissionVersionCreator;
     }
-    
+
     // Service Application Scope Dependency
     private AssignmentSubmissionLogic assignmentSubmissionLogic;
     public void setAssignmentSubmissionLogic(AssignmentSubmissionLogic assignmentSubmissionLogic) {
         this.assignmentSubmissionLogic = assignmentSubmissionLogic;
     }
-    
+
     // Property
     private AssignmentSubmissionVersion assignmentSubmissionVersion;
     public void setAssignmentSubmissionVersion(AssignmentSubmissionVersion assignmentSubmissionVersion) {
@@ -41,7 +41,7 @@ public class StudentSubmissionVersionFlowBean implements BeanLocator {
     public AssignmentSubmissionVersion getAssignmentSubmissionVersion() {
         return assignmentSubmissionVersion;
     }
-    
+
     public Object locateBean(String name) {
         if (assignmentSubmissionVersion == null && name.startsWith(EntityBeanLocator.NEW_PREFIX)) {
             assignmentSubmissionVersion = assignmentSubmissionVersionCreator.create();

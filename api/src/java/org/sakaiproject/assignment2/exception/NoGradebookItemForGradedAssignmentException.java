@@ -29,13 +29,13 @@ package org.sakaiproject.assignment2.exception;
  */
 public class NoGradebookItemForGradedAssignmentException extends AssignmentException {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public NoGradebookItemForGradedAssignmentException(String message) {
+    public NoGradebookItemForGradedAssignmentException(String message) {
         super(message);
     }
-	
-	public NoGradebookItemForGradedAssignmentException(String message, Throwable t) {
+
+    public NoGradebookItemForGradedAssignmentException(String message, Throwable t) {
         super(message, t);
     }
 }

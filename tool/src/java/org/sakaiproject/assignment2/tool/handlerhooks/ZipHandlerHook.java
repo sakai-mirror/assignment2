@@ -48,71 +48,71 @@ import uk.org.ponder.util.UniversalRuntimeException;
  */
 public class ZipHandlerHook implements HandlerHook
 {
-	private static Log log = LogFactory.getLog(ZipHandlerHook.class);
-	private HttpServletResponse response;
-	private ZipExportLogic zipExporter;
-	private ViewParameters viewparams;
-	private AssignmentLogic assignmentLogic;
-	private ExternalLogic externalLogic;
+    private static Log log = LogFactory.getLog(ZipHandlerHook.class);
+    private HttpServletResponse response;
+    private ZipExportLogic zipExporter;
+    private ViewParameters viewparams;
+    private AssignmentLogic assignmentLogic;
+    private ExternalLogic externalLogic;
 
-	public void setResponse(HttpServletResponse response)
-	{
-		this.response = response;
-	}
+    public void setResponse(HttpServletResponse response)
+    {
+        this.response = response;
+    }
 
-	public void setZipExporter(ZipExportLogic zipExporter)
-	{
-		this.zipExporter = zipExporter;
-	}
+    public void setZipExporter(ZipExportLogic zipExporter)
+    {
+        this.zipExporter = zipExporter;
+    }
 
-	public void setViewparams(ViewParameters viewparams)
-	{
-		this.viewparams = viewparams;
-	}
+    public void setViewparams(ViewParameters viewparams)
+    {
+        this.viewparams = viewparams;
+    }
 
-	public void setAssignmentLogic (AssignmentLogic assignmentLogic)
-	{
-		this.assignmentLogic = assignmentLogic;
-	}
-	
-	public void setExternalLogic (ExternalLogic externalLogic)
-	{
-	    this.externalLogic = externalLogic;
-	}
+    public void setAssignmentLogic (AssignmentLogic assignmentLogic)
+    {
+        this.assignmentLogic = assignmentLogic;
+    }
 
-	public boolean handle()
-	{
-		ZipViewParams zvp;
-		if (viewparams instanceof ZipViewParams)
-		{
-			zvp = (ZipViewParams) viewparams;
-		}
-		else
-		{
-			return false;
-		}
-		log.debug("Handling zip");
-		OutputStream resultsOutputStream = null;
-		try
-		{
-			resultsOutputStream = response.getOutputStream();
-		}
-		catch (IOException ioe)
-		{
-			throw UniversalRuntimeException.accumulate(ioe,
-					"Unable to get response stream for Download All Zip");
-		}
+    public void setExternalLogic (ExternalLogic externalLogic)
+    {
+        this.externalLogic = externalLogic;
+    }
 
-		Assignment2 assignment = assignmentLogic.getAssignmentById(zvp.assignmentId);
-		String siteTitle = externalLogic.getSiteTitle(assignment.getContextId());
-		String zipFolderName = assignment.getTitle() + "-" + siteTitle;
-		zipFolderName = zipExporter.escapeZipEntry(zipFolderName, "_");
+    public boolean handle()
+    {
+        ZipViewParams zvp;
+        if (viewparams instanceof ZipViewParams)
+        {
+            zvp = (ZipViewParams) viewparams;
+        }
+        else
+        {
+            return false;
+        }
+        log.debug("Handling zip");
+        OutputStream resultsOutputStream = null;
+        try
+        {
+            resultsOutputStream = response.getOutputStream();
+        }
+        catch (IOException ioe)
+        {
+            throw UniversalRuntimeException.accumulate(ioe,
+            "Unable to get response stream for Download All Zip");
+        }
 
-		response.setHeader("Content-disposition", "inline; filename="+ zipFolderName +".zip");
-		response.setContentType("application/zip");
+        Assignment2 assignment = assignmentLogic.getAssignmentById(zvp.assignmentId);
+        String siteTitle = externalLogic.getSiteTitle(assignment.getContextId());
+        String zipFolderName = assignment.getTitle() + "-" + siteTitle;
+        zipFolderName = zipExporter.escapeZipEntry(zipFolderName, "_");
 
-		zipExporter.getSubmissionsZip(resultsOutputStream, zvp.assignmentId);
+        response.setHeader("Content-disposition", "inline; filename="+ zipFolderName +".zip");
+        response.setContentType("application/zip");
 
-		return true;
-	}
+        zipExporter.getSubmissionsZip(resultsOutputStream, zvp.assignmentId);
+
+        return true;
+    }
 }

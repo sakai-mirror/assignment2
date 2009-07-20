@@ -60,7 +60,7 @@ public class ExternalLogicImpl implements ExternalLogic {
      * Encoding method to use when URL encoding
      */
     public static final String URL_ENCODING = "UTF-8";
-    
+
     private ToolManager toolManager;
     public void setToolManager(ToolManager toolManager) {
         this.toolManager = toolManager;
@@ -88,25 +88,25 @@ public class ExternalLogicImpl implements ExternalLogic {
 
     private SectionAwareness sectionAwareness;
     public void setSectionAwareness(SectionAwareness sectionAwareness) {
-    	this.sectionAwareness = sectionAwareness;
+        this.sectionAwareness = sectionAwareness;
     }
 
     /**
      * Place any code that should run when this class is initialized by spring here
      */
     public void init() {
-    	if (log.isDebugEnabled()) log.debug("init");
+        if (log.isDebugEnabled()) log.debug("init");
     }
-    
+
     public String getCurrentContextId() {
-    	if (toolManager != null && toolManager.getCurrentPlacement() != null && toolManager.getCurrentPlacement().getContext() != null){
-    		return toolManager.getCurrentPlacement().getContext();
-    		
-    	} else {
-    		return null;
-    	}
+        if (toolManager != null && toolManager.getCurrentPlacement() != null && toolManager.getCurrentPlacement().getContext() != null){
+            return toolManager.getCurrentPlacement().getContext();
+
+        } else {
+            return null;
+        }
     }
-    
+
     public Site getSite(String contextId) {
         Site site = null;
         try {
@@ -114,22 +114,22 @@ public class ExternalLogicImpl implements ExternalLogic {
         } catch (IdUnusedException iue) {
             log.warn("IdUnusedException attempting to find site with id: " + contextId);
         }
-        
+
         return site;
     }
-    
+
     public String getSiteTitle(String contextId) {
         String siteTitle = null;
         Site site = getSite(contextId);
         if (site != null) {
             siteTitle = site.getTitle();
         }
-        
+
         return siteTitle;
     }
-    
+
     public String getToolTitle() {
-    	return toolManager.getTool(ExternalLogic.TOOL_ID_ASSIGNMENT2).getTitle();
+        return toolManager.getTool(ExternalLogic.TOOL_ID_ASSIGNMENT2).getTitle();
     }
 
     public String getCurrentUserId() {
@@ -155,71 +155,71 @@ public class ExternalLogicImpl implements ExternalLogic {
         // clean up the string
         return FormattedText.processFormattedText(userSubmittedString, new StringBuilder(), true, false);            
     }
-    
+
     public String getAssignmentViewUrl(String viewId) {
-    	return ServerConfigurationService.getToolUrl() + Entity.SEPARATOR
-    	+ toolManager.getCurrentPlacement().getId() + Entity.SEPARATOR + viewId;
+        return ServerConfigurationService.getToolUrl() + Entity.SEPARATOR
+        + toolManager.getCurrentPlacement().getId() + Entity.SEPARATOR + viewId;
     }
-    
+
     public Collection<Group> getSiteGroups(String contextId) {
-    	try {
-	    	Site s = siteService.getSite(contextId);
-	    	return s.getGroups();
-    	} catch (IdUnusedException e){
-    	    log.warn("IdUnusedException attempting to find site with id: " + contextId);
-    		return new ArrayList<Group>();
-    	}
+        try {
+            Site s = siteService.getSite(contextId);
+            return s.getGroups();
+        } catch (IdUnusedException e){
+            log.warn("IdUnusedException attempting to find site with id: " + contextId);
+            return new ArrayList<Group>();
+        }
     }
-    
+
     public Collection<Group> getUserMemberships(String userId, String contextId) {
-    	if (userId == null || contextId == null) {
-    		throw new IllegalArgumentException("Null userId or contextId passed to getUserMemberships");
-    	}
-    	try {
-	    	Site s = siteService.getSite(contextId);
-	    	return s.getGroupsWithMember(userId);
-    	} catch (IdUnusedException e){
-    	    log.error("IdUnusedException attempting to find site with id: " + contextId);
-    		return new ArrayList<Group>();
-    	}
+        if (userId == null || contextId == null) {
+            throw new IllegalArgumentException("Null userId or contextId passed to getUserMemberships");
+        }
+        try {
+            Site s = siteService.getSite(contextId);
+            return s.getGroupsWithMember(userId);
+        } catch (IdUnusedException e){
+            log.error("IdUnusedException attempting to find site with id: " + contextId);
+            return new ArrayList<Group>();
+        }
     }
-    
+
     public List<String> getUserMembershipGroupIdList(String userId, String contextId) {
-    	if (userId == null || contextId == null) {
-    		throw new IllegalArgumentException("Null userId or contextId passed to getUserMembershipGroupIdList");
-    	}
-    	List<Group> memberships = new ArrayList<Group>(getUserMemberships(userId, contextId));
-    	List<String> groupIds = new ArrayList<String>();
-    	if (memberships != null) {
-    		for (Group group : memberships) {
-    			if (group != null) {
-    				groupIds.add(group.getId());
-    			}
-    		}
-    	}
-    	
-    	return groupIds;
+        if (userId == null || contextId == null) {
+            throw new IllegalArgumentException("Null userId or contextId passed to getUserMembershipGroupIdList");
+        }
+        List<Group> memberships = new ArrayList<Group>(getUserMemberships(userId, contextId));
+        List<String> groupIds = new ArrayList<String>();
+        if (memberships != null) {
+            for (Group group : memberships) {
+                if (group != null) {
+                    groupIds.add(group.getId());
+                }
+            }
+        }
+
+        return groupIds;
     }
-    
+
     public Map<String, String> getGroupIdToNameMapForSite(String contextId) {
-    	if (contextId == null) {
-    		throw new IllegalArgumentException("Null contextId passed to getGroupIdToNameMapForSite");
-    	}
-    	
-    	Collection<Group> siteGroups = getSiteGroups(contextId);
-    	
-    	Map<String, String> groupIdToNameMap = new HashMap<String, String>();
-    	if (siteGroups != null && !siteGroups.isEmpty()) {
-			for (Group siteGroup : siteGroups) {
-				if (siteGroup != null) {
-					groupIdToNameMap.put(siteGroup.getId(), siteGroup.getTitle());
-				}
-			}
-		}
-    	
-    	return groupIdToNameMap;
+        if (contextId == null) {
+            throw new IllegalArgumentException("Null contextId passed to getGroupIdToNameMapForSite");
+        }
+
+        Collection<Group> siteGroups = getSiteGroups(contextId);
+
+        Map<String, String> groupIdToNameMap = new HashMap<String, String>();
+        if (siteGroups != null && !siteGroups.isEmpty()) {
+            for (Group siteGroup : siteGroups) {
+                if (siteGroup != null) {
+                    groupIdToNameMap.put(siteGroup.getId(), siteGroup.getTitle());
+                }
+            }
+        }
+
+        return groupIdToNameMap;
     }
-    
+
     public boolean siteHasTool(String contextId, String toolId) {
         boolean siteHasTool = false;
         try {
@@ -232,34 +232,34 @@ public class ExternalLogicImpl implements ExternalLogic {
         }
         return siteHasTool;
     }
-    
+
     public List<String> getInstructorsInSite(String contextId) {
         if (contextId == null) {
             throw new IllegalArgumentException("Null contextId passed to getInstructorsInSite");
         }
-        
+
         return getUsersInRoleInSite(Role.INSTRUCTOR, contextId);
     }
-    
+
     public List<String> getTAsInSite(String contextId) {
         if (contextId == null) {
             throw new IllegalArgumentException("Null contextId passed to getTAsInSite");
         }
-        
+
         return getUsersInRoleInSite(Role.TA, contextId);
     }
-    
+
     public List<String> getStudentsInSite(String contextId) {
-    	if (contextId == null) {
-    		throw new IllegalArgumentException("Null contextId passed to getStudentsInSite");
-    	}
-    	
-    	return getUsersInRoleInSite(Role.STUDENT, contextId);
+        if (contextId == null) {
+            throw new IllegalArgumentException("Null contextId passed to getStudentsInSite");
+        }
+
+        return getUsersInRoleInSite(Role.STUDENT, contextId);
     }
-    
+
     private List<String> getUsersInRoleInSite(Role role, String contextId) {   
         List<String> usersInRole = new ArrayList<String>();
-        
+
         List<ParticipationRecord> participants = sectionAwareness.getSiteMembersInRole(contextId, role);
         if (participants != null) {
             for (ParticipationRecord part : participants) {
@@ -269,38 +269,38 @@ public class ExternalLogicImpl implements ExternalLogic {
                 }
             }
         }
-        
+
         return usersInRole;
     }
-    
+
     public List<String> getStudentsInGroup(String groupId) {
-    	if (groupId == null) {
-    		throw new IllegalArgumentException("null groupId passed to getStudentsInSection");
-    		
-    	}
-    	
-    	List<String> studentsInGroup = new ArrayList<String>();
-    	
-    	List<ParticipationRecord> participants = sectionAwareness.getSectionMembersInRole(groupId, Role.STUDENT);
-    	for (ParticipationRecord part : participants) {
-			if (part != null) {
-				String studentId = part.getUser().getUserUid();
-				studentsInGroup.add(studentId);
-			}
-		}
-    	
-    	return studentsInGroup;
+        if (groupId == null) {
+            throw new IllegalArgumentException("null groupId passed to getStudentsInSection");
+
+        }
+
+        List<String> studentsInGroup = new ArrayList<String>();
+
+        List<ParticipationRecord> participants = sectionAwareness.getSectionMembersInRole(groupId, Role.STUDENT);
+        for (ParticipationRecord part : participants) {
+            if (part != null) {
+                String studentId = part.getUser().getUserUid();
+                studentsInGroup.add(studentId);
+            }
+        }
+
+        return studentsInGroup;
     }
-    
+
     public String getUrlForGradebookItemHelper(Long gradeableObjectId, String returnViewId, String contextId) {
-    	//TODO URL encode this so I can put it as a url parameter
-    	String url = "/direct/gradebook/_/gradebookItem/" + contextId;
-    	String finishedURL = getAssignmentViewUrl(returnViewId);
-    	String getParams = "?TB_iframe=true&width=700&height=415&KeepThis=true&finishURL=" + finishedURL;
-	      
-    	return url + "/" + (gradeableObjectId != null ? gradeableObjectId : "") + getParams;
+        //TODO URL encode this so I can put it as a url parameter
+        String url = "/direct/gradebook/_/gradebookItem/" + contextId;
+        String finishedURL = getAssignmentViewUrl(returnViewId);
+        String getParams = "?TB_iframe=true&width=700&height=415&KeepThis=true&finishURL=" + finishedURL;
+
+        return url + "/" + (gradeableObjectId != null ? gradeableObjectId : "") + getParams;
     }
-    
+
     public String getUrlForGradebookItemHelper(Long gradeableObjectId, String gradebookItemName, String returnViewId, String contextId, Date dueDate) {
         // encode the params
         try {
@@ -308,20 +308,20 @@ public class ExternalLogicImpl implements ExternalLogic {
         } catch (UnsupportedEncodingException e) {
             throw new IllegalStateException("Invalid character encoding specified: " + URL_ENCODING);
         }
-        
+
         String dueDateTime = "";
         if (dueDate != null) {
-        	dueDateTime = dueDate.getTime() + "";
+            dueDateTime = dueDate.getTime() + "";
         }
-        
+
         String url = "/direct/gradebook/_/gradebookItem/" + contextId;
         String finishedURL = getAssignmentViewUrl(returnViewId);
         String getParams = "?TB_iframe=true&width=700&height=415&KeepThis=true&finishURL=" + finishedURL + 
         "&name=" + gradebookItemName + "&dueDateTime=" + dueDateTime;
-          
+
         return url + "/" + (gradeableObjectId != null ? gradeableObjectId : "") + getParams;
     }
-    
+
     public String getUrlForGradeGradebookItemHelper(Long gradeableObjectId, String userId, String returnViewId, String contextId) {
         // encode the params
         try {
@@ -329,17 +329,17 @@ public class ExternalLogicImpl implements ExternalLogic {
         } catch (UnsupportedEncodingException e) {
             throw new IllegalStateException("Invalid character encoding specified: " + URL_ENCODING);
         }
-        
-    	String url = "/direct/gradebook/_/gradeGradebookItem/" + contextId +
-    	"/" + gradeableObjectId + "/" + userId; 
-    	String finishedURL = getAssignmentViewUrl(returnViewId);
-    	String getParams = "?TB_iframe=true&width=700&height=380&KeepThis=true&finishURL=" + finishedURL;
-    
-    	return url + getParams;
+
+        String url = "/direct/gradebook/_/gradeGradebookItem/" + contextId +
+        "/" + gradeableObjectId + "/" + userId; 
+        String finishedURL = getAssignmentViewUrl(returnViewId);
+        String getParams = "?TB_iframe=true&width=700&height=380&KeepThis=true&finishURL=" + finishedURL;
+
+        return url + getParams;
     }
 
-	public String getUserSortName(String userId) {
-	    String userSortName = ", ";
+    public String getUserSortName(String userId) {
+        String userSortName = ", ";
         try {
             User user = userDirectoryService.getUser(userId);
             userSortName = user.getSortName();
@@ -349,85 +349,85 @@ public class ExternalLogicImpl implements ExternalLogic {
 
         return userSortName;
     }
-	
-	public String getUserEmail(String userId) {
-	    String userEmail = null;
 
-	    try {
-	        User user = userDirectoryService.getUser(userId);
-	        userEmail =  user.getEmail();
-	    } catch (UserNotDefinedException ex) {
-	        log.error("Could not get user from userId: " + userId + "Returning null email address.", ex);
-	    }
+    public String getUserEmail(String userId) {
+        String userEmail = null;
 
-	    return userEmail;
-	}
+        try {
+            User user = userDirectoryService.getUser(userId);
+            userEmail =  user.getEmail();
+        } catch (UserNotDefinedException ex) {
+            log.error("Could not get user from userId: " + userId + "Returning null email address.", ex);
+        }
 
-	public User getUser(String userId)
-	{
-	    User user = null;
-	    
-	    try {
-	        user = userDirectoryService.getUser(userId);
-	    } catch (UserNotDefinedException ex) {
-	        log.error("Could not get user from userId: " + userId, ex);
-	    }
-
-	    return user;
-	}
-	
-	public Map<String, User> getUserIdUserMap(List<String> userIds) {
-		Map<String, User> userIdUserMap = new HashMap<String, User>();
-		if (userIds != null) {
-			List<User> userList = new ArrayList<User>();
-			userList = userDirectoryService.getUsers(userIds);
-			
-			if (userList != null) {
-				for (User user : userList) {
-					userIdUserMap.put(user.getId(), user);
-				}
-			}
-		}
-		
-		return userIdUserMap;
-	}
-	
-    public Map<String, String> getUserDisplayIdUserIdMapForStudentsInSite(String contextId) {
-    	if (contextId == null) {
-    		throw new IllegalArgumentException("Null contextId passed to getUserDisplayIdUserIdMapForStudentsInSite");
-    	}
-    	
-    	Map<String, String> userDisplayIdUserIdMap = new HashMap<String, String>();
-
-    	List<String> allStudentsInSite = getStudentsInSite(contextId);
-    	
-    	if (allStudentsInSite != null) {
-			List<User> userList = new ArrayList<User>();
-			userList = userDirectoryService.getUsers(allStudentsInSite);
-			
-			if (userList != null) {
-				for (User user : userList) {
-					userDisplayIdUserIdMap.put(user.getDisplayId(), user.getId());
-				}
-			}
-		}
-    	
-    	return userDisplayIdUserIdMap;
+        return userEmail;
     }
-    
+
+    public User getUser(String userId)
+    {
+        User user = null;
+
+        try {
+            user = userDirectoryService.getUser(userId);
+        } catch (UserNotDefinedException ex) {
+            log.error("Could not get user from userId: " + userId, ex);
+        }
+
+        return user;
+    }
+
+    public Map<String, User> getUserIdUserMap(List<String> userIds) {
+        Map<String, User> userIdUserMap = new HashMap<String, User>();
+        if (userIds != null) {
+            List<User> userList = new ArrayList<User>();
+            userList = userDirectoryService.getUsers(userIds);
+
+            if (userList != null) {
+                for (User user : userList) {
+                    userIdUserMap.put(user.getId(), user);
+                }
+            }
+        }
+
+        return userIdUserMap;
+    }
+
+    public Map<String, String> getUserDisplayIdUserIdMapForStudentsInSite(String contextId) {
+        if (contextId == null) {
+            throw new IllegalArgumentException("Null contextId passed to getUserDisplayIdUserIdMapForStudentsInSite");
+        }
+
+        Map<String, String> userDisplayIdUserIdMap = new HashMap<String, String>();
+
+        List<String> allStudentsInSite = getStudentsInSite(contextId);
+
+        if (allStudentsInSite != null) {
+            List<User> userList = new ArrayList<User>();
+            userList = userDirectoryService.getUsers(allStudentsInSite);
+
+            if (userList != null) {
+                for (User user : userList) {
+                    userDisplayIdUserIdMap.put(user.getDisplayId(), user.getId());
+                }
+            }
+        }
+
+        return userDisplayIdUserIdMap;
+    }
+
     public String getMyWorkspaceSiteId(String userId) {
         if (userId == null) {
             throw new IllegalArgumentException("Null userId passed to getMyWorkspaceSiteId");
         }
-        
+
         String myWorkspaceId = siteService.getUserSiteId(userId);
-        
+
         return myWorkspaceId;
     }
-    
+
     public Map<String, String> getUserIdToSortNameMap(Collection userIds) {      
         Map<String, String> userIdSortNameMap = new HashMap<String, String>();
-        
+
         if (userIds != null) {
             List<User> users = userDirectoryService.getUsers(userIds);
             if (users != null) {
@@ -436,7 +436,7 @@ public class ExternalLogicImpl implements ExternalLogic {
                 }
             }
         }
-        
+
         return userIdSortNameMap;
     }
 }

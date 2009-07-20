@@ -25,13 +25,13 @@ import uk.org.ponder.rsf.viewstate.ViewParameters;
  *
  */
 public class AsnnInstructionsRenderer implements BasicProducer {
-    
+
     // Dependency
     private ViewParameters viewParameters;
     public void setViewParameters(ViewParameters viewParameters) {
         this.viewParameters = viewParameters;
     }
-    
+
     // Dependency
     private AttachmentListRenderer attachmentListRenderer;
     public void setAttachmentListRenderer (AttachmentListRenderer attachmentListRenderer) {
@@ -65,7 +65,7 @@ public class AsnnInstructionsRenderer implements BasicProducer {
             UIMessage.make(joint, "attachments-header", "assignment2.student-submit.additional_resources");
 
             Set<AssignmentAttachment> attachments = (assignment != null) ? assignment.getAttachmentSet() : null;
-            
+
             // TODO FIXME Why does this require the viewid?
             attachmentListRenderer.makeAttachmentFromAssignmentAttachmentSet(joint, "attachment_list:", viewParameters.viewID, 
                     attachments);

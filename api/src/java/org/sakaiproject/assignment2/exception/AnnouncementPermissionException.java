@@ -30,13 +30,13 @@ package org.sakaiproject.assignment2.exception;
  */
 public class AnnouncementPermissionException extends AssignmentException {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public AnnouncementPermissionException(String message) {
+    public AnnouncementPermissionException(String message) {
         super(message);
     }
-	
-	public AnnouncementPermissionException(String msg, Throwable t) {
-		super(msg, t);
-	}
+
+    public AnnouncementPermissionException(String msg, Throwable t) {
+        super(msg, t);
+    }
 }

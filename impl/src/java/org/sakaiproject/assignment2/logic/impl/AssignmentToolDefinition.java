@@ -27,24 +27,24 @@ import org.sakaiproject.assignment2.logic.entity.AssignmentDefinition;
 
 
 public class AssignmentToolDefinition extends VersionedExternalizable implements Externalizable {	
-	private static final long serialVersionUID = 1L;
-	public static final String EXTERNALIZABLE_VERSION = "1";
+    private static final long serialVersionUID = 1L;
+    public static final String EXTERNALIZABLE_VERSION = "1";
 
-	private Collection<AssignmentDefinition> assignments;
-	
+    private Collection<AssignmentDefinition> assignments;
+
     public AssignmentToolDefinition() {
-	}
-	
-	public String getExternalizableVersion() {
-		return EXTERNALIZABLE_VERSION;
-	}
+    }
 
-	public Collection<AssignmentDefinition> getAssignments() {
-		return assignments;
-	}
-	
-	public void setAssignments(Collection<AssignmentDefinition> assignments) {
-		this.assignments = assignments;
-	}
-	
+    public String getExternalizableVersion() {
+        return EXTERNALIZABLE_VERSION;
+    }
+
+    public Collection<AssignmentDefinition> getAssignments() {
+        return assignments;
+    }
+
+    public void setAssignments(Collection<AssignmentDefinition> assignments) {
+        this.assignments = assignments;
+    }
+
 }

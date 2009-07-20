@@ -38,55 +38,55 @@ import uk.org.ponder.rsf.components.UIOutput;
 
 
 public class GradebookDetailsRenderer {
-	private ExternalLogic externalLogic;
-	public void setExternalLogic(ExternalLogic externalLogic) {
-		this.externalLogic = externalLogic;
-	}
-	
-	private AssignmentLogic assignmentLogic;
-	public void setAssignmentLogic(AssignmentLogic assignmentLogic) {
-		this.assignmentLogic = assignmentLogic;
-	}
-	
-	private AssignmentPermissionLogic permissionLogic;
-	public void setPermissionLogic(AssignmentPermissionLogic permissionLogic) {
-		this.permissionLogic = permissionLogic;
-	}
-	
-	private ExternalGradebookLogic gradebookLogic;
-	public void setExternalGradebookLogic(ExternalGradebookLogic gradebookLogic) {
-		this.gradebookLogic = gradebookLogic;
-	}
-	
-	public void makeGradebookDetails(UIContainer tofill, String divID, AssignmentSubmission as, Long assignmentId, String userId){
-		
-		UIJointContainer joint = new UIJointContainer(tofill, divID, "gradebook_details:", ""+1);
-		
-		Assignment2 assignment = assignmentLogic.getAssignmentByIdWithAssociatedData(assignmentId);
-	      //Grade Permission
+    private ExternalLogic externalLogic;
+    public void setExternalLogic(ExternalLogic externalLogic) {
+        this.externalLogic = externalLogic;
+    }
+
+    private AssignmentLogic assignmentLogic;
+    public void setAssignmentLogic(AssignmentLogic assignmentLogic) {
+        this.assignmentLogic = assignmentLogic;
+    }
+
+    private AssignmentPermissionLogic permissionLogic;
+    public void setPermissionLogic(AssignmentPermissionLogic permissionLogic) {
+        this.permissionLogic = permissionLogic;
+    }
+
+    private ExternalGradebookLogic gradebookLogic;
+    public void setExternalGradebookLogic(ExternalGradebookLogic gradebookLogic) {
+        this.gradebookLogic = gradebookLogic;
+    }
+
+    public void makeGradebookDetails(UIContainer tofill, String divID, AssignmentSubmission as, Long assignmentId, String userId){
+
+        UIJointContainer joint = new UIJointContainer(tofill, divID, "gradebook_details:", ""+1);
+
+        Assignment2 assignment = assignmentLogic.getAssignmentByIdWithAssociatedData(assignmentId);
+        //Grade Permission
         Boolean grade_perm = permissionLogic.isUserAbleToProvideFeedbackForStudentForAssignment(userId, assignment);
-        
-    	//Grading Helper Link
-		String url = externalLogic.getUrlForGradeGradebookItemHelper(assignment.getGradebookItemId(), userId, FinishedHelperProducer.VIEWID, assignment.getContextId());
-                
-		if (grade_perm) {
-			UILink.make(joint, "gradebook_grading_helper",
-        		UIMessage.make("assignment2.assignment_grade.gradebook_grade"),
-        		url);
-		}
-		
-		// retrieve the grade information
-		String grade = "";
-		String gradeComment = "";
-		if (as != null && as.getAssignment() != null && as.getAssignment().isGraded()) {
-			GradeInformation gradeInfo = gradebookLogic.getGradeInformationForSubmission(assignment.getContextId(), as);
-			if (gradeInfo != null) {
-				grade = gradeInfo.getGradebookGrade();
-				gradeComment = gradeInfo.getGradebookComment();
-			}
-		}
-     
+
+        //Grading Helper Link
+        String url = externalLogic.getUrlForGradeGradebookItemHelper(assignment.getGradebookItemId(), userId, FinishedHelperProducer.VIEWID, assignment.getContextId());
+
+        if (grade_perm) {
+            UILink.make(joint, "gradebook_grading_helper",
+                    UIMessage.make("assignment2.assignment_grade.gradebook_grade"),
+                    url);
+        }
+
+        // retrieve the grade information
+        String grade = "";
+        String gradeComment = "";
+        if (as != null && as.getAssignment() != null && as.getAssignment().isGraded()) {
+            GradeInformation gradeInfo = gradebookLogic.getGradeInformationForSubmission(assignment.getContextId(), as);
+            if (gradeInfo != null) {
+                grade = gradeInfo.getGradebookGrade();
+                gradeComment = gradeInfo.getGradebookComment();
+            }
+        }
+
         UIOutput.make(joint, "gradebook_grade", (as!= null && grade != null ? grade : ""));
         UIOutput.make(joint, "gradebook_comment", (as != null && gradeComment != null ? gradeComment : ""));
-	}
+    }
 }

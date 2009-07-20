@@ -134,21 +134,21 @@ public class AttachmentListRenderer {
 
         for (String ref : refSet){
             UIJointContainer joint = new UIJointContainer(tofill, divID, "attachments:", ""+(i++));
-                
-                //TODO FIXME For some reason, when there are no attachments, we 
-                // still getting a single item in the Set<String> ref that is 
-                // just an empty string.  This is on previewing an assignment.
-                // To reproduce, just put in a title and hit preview.
-                if (ref != null && !ref.equals("")) {
-                    AttachmentInformation attach = contentLogic.getAttachmentInformation(ref);
-                    if (attach != null) {
-                        String file_size = "(" + attach.getContentLength() + ")";
 
-                        UILink.make(joint, "attachment_image", attach.getContentTypeImagePath());
-                        UILink.make(joint, "attachment_link", attach.getDisplayName(), attach.getUrl());  
-                        UIOutput.make(joint, "attachment_size", file_size);
-                    }
+            //TODO FIXME For some reason, when there are no attachments, we 
+            // still getting a single item in the Set<String> ref that is 
+            // just an empty string.  This is on previewing an assignment.
+            // To reproduce, just put in a title and hit preview.
+            if (ref != null && !ref.equals("")) {
+                AttachmentInformation attach = contentLogic.getAttachmentInformation(ref);
+                if (attach != null) {
+                    String file_size = "(" + attach.getContentLength() + ")";
+
+                    UILink.make(joint, "attachment_image", attach.getContentTypeImagePath());
+                    UILink.make(joint, "attachment_link", attach.getDisplayName(), attach.getUrl());  
+                    UIOutput.make(joint, "attachment_size", file_size);
                 }
+            }
 
         } //Ending for loop
     }

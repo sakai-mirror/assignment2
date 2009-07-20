@@ -44,22 +44,22 @@ import org.sakaiproject.user.api.User;
  * Methods only used by the ui are not implemented
  */
 public class ExternalLogicStub implements ExternalLogic {
-	
-	private String currentUserUid;
-	
-	/**
+
+    private String currentUserUid;
+
+    /**
      * @return the current sakai user id (not username)
      */
     public String getCurrentUserId() {
-    	//return authn.getUserUid();
+        //return authn.getUserUid();
         if (currentUserUid == null) {
             currentUserUid = AssignmentTestDataLoad.INSTRUCTOR_UID;
         }
-    	return currentUserUid;
+        return currentUserUid;
     }
-    
+
     public void setCurrentUserId(String currentUserUid) {
-    	this.currentUserUid = currentUserUid;
+        this.currentUserUid = currentUserUid;
     }
 
     /**
@@ -70,22 +70,22 @@ public class ExternalLogicStub implements ExternalLogic {
      * @return display name (probably firstname lastname) or "----------" (10 hyphens) if none found
      */
     public String getUserDisplayName(String userId) {
-    	return "Artichoke, Arty";
+        return "Artichoke, Arty";
     }
 
     /**
      * @return the current location id of the current user
      */
     public String getCurrentLocationId() {
-    	return AssignmentTestDataLoad.CONTEXT_ID;
+        return AssignmentTestDataLoad.CONTEXT_ID;
     }
-    
+
     /**
      * 
      * @return the current context for the current user
      */
     public String getCurrentContextId() {
-    	return AssignmentTestDataLoad.CONTEXT_ID;
+        return AssignmentTestDataLoad.CONTEXT_ID;
     }
 
     /**
@@ -96,7 +96,7 @@ public class ExternalLogicStub implements ExternalLogic {
      * @return true if the user has admin access, false otherwise
      */
     public boolean isUserAdmin(String userId) {
-    	return false; 
+        return false; 
     }
 
     /**
@@ -106,16 +106,16 @@ public class ExternalLogicStub implements ExternalLogic {
      * @return a cleaned up string which is now safe
      */
     public String cleanupUserStrings(String userSubmittedString) {
-    	return null; // used for ui
+        return null; // used for ui
     }
-    
+
     /**
      * Returns URL to viewId pass in
      * @param viewId of view to build path to
      * @return a url path to the vie
      */
     public String getAssignmentViewUrl(String viewId) {
-    	return null; // used for ui
+        return null; // used for ui
     }
 
     /**
@@ -124,24 +124,24 @@ public class ExternalLogicStub implements ExternalLogic {
      */
     public Collection<Group> getSiteGroups(String contextId) {
         Site currSite = new Site();
-    	Group group1 = new Group(currSite);
-    	group1.setId(AssignmentTestDataLoad.GROUP1_NAME);
-    	group1.setReference(AssignmentTestDataLoad.GROUP1_NAME);
-    	Group group2 = new Group(currSite);
+        Group group1 = new Group(currSite);
+        group1.setId(AssignmentTestDataLoad.GROUP1_NAME);
+        group1.setReference(AssignmentTestDataLoad.GROUP1_NAME);
+        Group group2 = new Group(currSite);
         group2.setId(AssignmentTestDataLoad.GROUP2_NAME);
         group2.setReference(AssignmentTestDataLoad.GROUP2_NAME);
         Group group3 = new Group(currSite);
         group3.setId(AssignmentTestDataLoad.GROUP3_NAME);
         group3.setReference(AssignmentTestDataLoad.GROUP3_NAME);
-        
+
         Collection<Group> siteGroups = new ArrayList<Group>();
         siteGroups.add((Group) group1);
         siteGroups.add((Group) group2);
         siteGroups.add((Group) group3);
-        
+
         return siteGroups;    
     }
-    
+
     /**
      * 
      * @return a collection of the groups that the given user is a member of
@@ -158,7 +158,7 @@ public class ExternalLogicStub implements ExternalLogic {
         Group group3 = new Group(currSite);
         group3.setId(AssignmentTestDataLoad.GROUP3_NAME);
         group3.setReference(AssignmentTestDataLoad.GROUP3_NAME);
-        
+
         if (userId.equals(AssignmentTestDataLoad.STUDENT1_UID)) {
             membership.add(group1);
         } else if (userId.equals(AssignmentTestDataLoad.STUDENT2_UID)) {
@@ -170,49 +170,49 @@ public class ExternalLogicStub implements ExternalLogic {
         } else {
             // not a member of any groups
         }
-        
+
         return membership;
     }
-    
+
     /**
      * 
      * @return list of the group ids of the groups that the given user is
      * a member of
      */
     public List<String> getUserMembershipGroupIdList(String userId, String contextId) {
-    	List<String> groupIdList = new ArrayList<String>();
+        List<String> groupIdList = new ArrayList<String>();
 
-    	if (userId.equals(AssignmentTestDataLoad.STUDENT1_UID)) {
-    		groupIdList.add(AssignmentTestDataLoad.GROUP1_NAME);
-    	} else if (userId.equals(AssignmentTestDataLoad.STUDENT2_UID)) {
-    		groupIdList.add(AssignmentTestDataLoad.GROUP3_NAME);
-    	} else if (userId.equals(AssignmentTestDataLoad.STUDENT3_UID)) {
-    		// not a member of any groups
-    	} else if (userId.equals(AssignmentTestDataLoad.TA_UID)) {
-    		groupIdList.add(AssignmentTestDataLoad.GROUP1_NAME);
-    	} else {
-    		// not a member of any groups
-    	}
-    	
-    	return groupIdList;
+        if (userId.equals(AssignmentTestDataLoad.STUDENT1_UID)) {
+            groupIdList.add(AssignmentTestDataLoad.GROUP1_NAME);
+        } else if (userId.equals(AssignmentTestDataLoad.STUDENT2_UID)) {
+            groupIdList.add(AssignmentTestDataLoad.GROUP3_NAME);
+        } else if (userId.equals(AssignmentTestDataLoad.STUDENT3_UID)) {
+            // not a member of any groups
+        } else if (userId.equals(AssignmentTestDataLoad.TA_UID)) {
+            groupIdList.add(AssignmentTestDataLoad.GROUP1_NAME);
+        } else {
+            // not a member of any groups
+        }
+
+        return groupIdList;
     }
-    
+
     /**
      * 
      * @return a map of group id to group name for all of the sections/groups
      * associated with the current site
      */
     public Map<String, String> getGroupIdToNameMapForSite(String contextId) {
-    	return null; //used for ui
+        return null; //used for ui
     }
-    
+
     /**
      * @param contextId
      * @param toolId
      * @return true if tool with the given toolId exists in the site with the given siteId
      */
     public boolean siteHasTool(String contextId, String toolId) {
-    	return false; //used for ui
+        return false; //used for ui
     }
 
     /**
@@ -221,51 +221,51 @@ public class ExternalLogicStub implements ExternalLogic {
      * @return String of path for <img> tag for resource image type icon
      */
     public String getContentTypeImagePath(ContentResource contentReference) {
-    	return null; //used for ui
+        return null; //used for ui
     }
-    
+
     /**
      * 
      * @param contextId
      * @return a list of the student Ids of all of the students in the given site
      */
     public List<String> getStudentsInSite(String contextId) {
-    	if (contextId == null) {
-    		throw new IllegalArgumentException("Null contextId passed to getStudentsInSite");
-    	}
-    	List<String> studentsInSite = new ArrayList<String>();
-    	
-    	studentsInSite.add(AssignmentTestDataLoad.STUDENT1_UID);
-    	studentsInSite.add(AssignmentTestDataLoad.STUDENT2_UID);
-    	studentsInSite.add(AssignmentTestDataLoad.STUDENT3_UID);
-    	
-    	return studentsInSite;
+        if (contextId == null) {
+            throw new IllegalArgumentException("Null contextId passed to getStudentsInSite");
+        }
+        List<String> studentsInSite = new ArrayList<String>();
+
+        studentsInSite.add(AssignmentTestDataLoad.STUDENT1_UID);
+        studentsInSite.add(AssignmentTestDataLoad.STUDENT2_UID);
+        studentsInSite.add(AssignmentTestDataLoad.STUDENT3_UID);
+
+        return studentsInSite;
     }
-    
+
     /**
      * 
      * @param groupId
      * @return a list of the student ids of students in the Group with the given groupId  
      */
     public List<String> getStudentsInGroup(String groupId) {
-    	if (groupId == null) {
-    		throw new IllegalArgumentException("null groupId passed to getStudentsInSection");
-    		
-    	}
-    	
-    	List<String> studentsInGroup = new ArrayList<String>();
+        if (groupId == null) {
+            throw new IllegalArgumentException("null groupId passed to getStudentsInSection");
 
-    	if (groupId.equals(AssignmentTestDataLoad.GROUP1_NAME)) {
-    	    studentsInGroup.add(AssignmentTestDataLoad.STUDENT1_UID);
-    	} else if (groupId.equals(AssignmentTestDataLoad.GROUP2_NAME)) {
-    		// none
-    	} else if (groupId.equals(AssignmentTestDataLoad.GROUP3_NAME)) {
-    	    studentsInGroup.add(AssignmentTestDataLoad.STUDENT2_UID);
-    	}
-    	
-    	return studentsInGroup;
+        }
+
+        List<String> studentsInGroup = new ArrayList<String>();
+
+        if (groupId.equals(AssignmentTestDataLoad.GROUP1_NAME)) {
+            studentsInGroup.add(AssignmentTestDataLoad.STUDENT1_UID);
+        } else if (groupId.equals(AssignmentTestDataLoad.GROUP2_NAME)) {
+            // none
+        } else if (groupId.equals(AssignmentTestDataLoad.GROUP3_NAME)) {
+            studentsInGroup.add(AssignmentTestDataLoad.STUDENT2_UID);
+        }
+
+        return studentsInGroup;
     }
-    
+
     /**
      * 
      * @param gradeableObjectId
@@ -274,9 +274,9 @@ public class ExternalLogicStub implements ExternalLogic {
      * @return url to helper
      */
     public String getUrlForGradebookItemHelper(Long gradeableObjectId, String returnViewId, String contextId) {
-    	return null; //used for ui
+        return null; //used for ui
     }
-    
+
     /**
      * 
      * @param gradeableObjectId
@@ -286,36 +286,36 @@ public class ExternalLogicStub implements ExternalLogic {
      * @return url to helper
      */
     public String getUrlForGradeGradebookItemHelper(Long gradeableObjectId, String userId, String returnViewId, String contextId) {
-    	return null; //used for ui
+        return null; //used for ui
     }
-    
-	public String getUserSortName(String userId) {
-		return getUserDisplayName(userId);
-	}
-	
-	public String getToolTitle() {
-		return "Assignment2";
-	}
-	public User getUser(String userId)
-	{
-		return null;
-	}
-	
-	public String getReadableFileSize(int sizeVal) {
-		return null;
-	}
 
-	public Map<String, User> getUserIdUserMap(List<String> userIds)
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
+    public String getUserSortName(String userId) {
+        return getUserDisplayName(userId);
+    }
 
-	public Map<String, String> getUserDisplayIdUserIdMapForStudentsInSite(String contextId)
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
+    public String getToolTitle() {
+        return "Assignment2";
+    }
+    public User getUser(String userId)
+    {
+        return null;
+    }
+
+    public String getReadableFileSize(int sizeVal) {
+        return null;
+    }
+
+    public Map<String, User> getUserIdUserMap(List<String> userIds)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public Map<String, String> getUserDisplayIdUserIdMapForStudentsInSite(String contextId)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
     public String getUrlForGradebookItemHelper(Long gradeableObjectId,
             String gradebookItemName, String returnViewId, String contextId, Date dueDate)

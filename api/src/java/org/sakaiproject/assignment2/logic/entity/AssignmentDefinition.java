@@ -29,7 +29,7 @@ import java.util.List;
  * import/export
  */
 public class AssignmentDefinition implements Serializable {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
     private String title;
     private int sortIndex;
@@ -51,174 +51,174 @@ public class AssignmentDefinition implements Serializable {
 
     private List<String> groupRestrictionGroupTitles;
     private List<String> attachmentReferences;
-    
+
 
     public AssignmentDefinition() {
     }
 
 
-	public String getTitle() {
-		return title;
-	}
+    public String getTitle() {
+        return title;
+    }
 
 
-	public void setTitle(String title) {
-		this.title = title;
-	}
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
 
-	public int getSortIndex() {
-		return sortIndex;
-	}
+    public int getSortIndex() {
+        return sortIndex;
+    }
 
 
-	public void setSortIndex(int sortIndex) {
-		this.sortIndex = sortIndex;
-	}
+    public void setSortIndex(int sortIndex) {
+        this.sortIndex = sortIndex;
+    }
 
 
-	public Date getOpenDate() {
-		return openDate;
-	}
+    public Date getOpenDate() {
+        return openDate;
+    }
 
 
-	public void setOpenDate(Date openDate) {
-		this.openDate = openDate;
-	}
+    public void setOpenDate(Date openDate) {
+        this.openDate = openDate;
+    }
 
 
-	public Date getAcceptUntilDate() {
-		return acceptUntilDate;
-	}
+    public Date getAcceptUntilDate() {
+        return acceptUntilDate;
+    }
 
 
-	public void setAcceptUntilDate(Date acceptUntilDate) {
-		this.acceptUntilDate = acceptUntilDate;
-	}
+    public void setAcceptUntilDate(Date acceptUntilDate) {
+        this.acceptUntilDate = acceptUntilDate;
+    }
 
 
-	public String getAssociatedGbItemName() {
-		return associatedGbItemName;
-	}
+    public String getAssociatedGbItemName() {
+        return associatedGbItemName;
+    }
 
 
-	public void setAssociatedGbItemName(String associatedGbItemName) {
-		this.associatedGbItemName = associatedGbItemName;
-	}
-	
+    public void setAssociatedGbItemName(String associatedGbItemName) {
+        this.associatedGbItemName = associatedGbItemName;
+    }
 
 
-	public Double getAssociatedGbItemPtsPossible() {
-		return associatedGbItemPtsPossible;
-	}
+
+    public Double getAssociatedGbItemPtsPossible() {
+        return associatedGbItemPtsPossible;
+    }
 
 
-	public void setAssociatedGbItemPtsPossible(Double associatedGbItemPtsPossible) {
-		this.associatedGbItemPtsPossible = associatedGbItemPtsPossible;
-	}
+    public void setAssociatedGbItemPtsPossible(Double associatedGbItemPtsPossible) {
+        this.associatedGbItemPtsPossible = associatedGbItemPtsPossible;
+    }
 
 
-	public boolean isGraded() {
-		return graded;
-	}
+    public boolean isGraded() {
+        return graded;
+    }
 
 
-	public void setGraded(boolean graded) {
-		this.graded = graded;
-	}
+    public void setGraded(boolean graded) {
+        this.graded = graded;
+    }
 
 
-	public boolean isDraft() {
-		return draft;
-	}
+    public boolean isDraft() {
+        return draft;
+    }
 
 
-	public void setDraft(boolean draft) {
-		this.draft = draft;
-	}
+    public void setDraft(boolean draft) {
+        this.draft = draft;
+    }
 
 
-	public Date getDueDate() {
-		return dueDate;
-	}
+    public Date getDueDate() {
+        return dueDate;
+    }
 
 
-	public void setDueDate(Date dueDate) {
-		this.dueDate = dueDate;
-	}
+    public void setDueDate(Date dueDate) {
+        this.dueDate = dueDate;
+    }
 
 
-	public boolean isHonorPledge() {
-		return honorPledge;
-	}
+    public boolean isHonorPledge() {
+        return honorPledge;
+    }
 
 
-	public void setHonorPledge(boolean honorPledge) {
-		this.honorPledge = honorPledge;
-	}
+    public void setHonorPledge(boolean honorPledge) {
+        this.honorPledge = honorPledge;
+    }
 
 
-	public String getInstructions() {
-		return instructions;
-	}
+    public String getInstructions() {
+        return instructions;
+    }
 
 
-	public void setInstructions(String instructions) {
-		this.instructions = instructions;
-	}
+    public void setInstructions(String instructions) {
+        this.instructions = instructions;
+    }
 
 
-	public boolean isHasAnnouncement() {
-		return hasAnnouncement;
-	}
+    public boolean isHasAnnouncement() {
+        return hasAnnouncement;
+    }
 
 
-	public void setHasAnnouncement(boolean hasAnnouncement) {
-		this.hasAnnouncement = hasAnnouncement;
-	}
-	
-
-	public boolean isAddedToSchedule()
-	{
-		return addedToSchedule;
-	}
+    public void setHasAnnouncement(boolean hasAnnouncement) {
+        this.hasAnnouncement = hasAnnouncement;
+    }
 
 
-	public void setAddedToSchedule(boolean addedToSchedule)
-	{
-		this.addedToSchedule = addedToSchedule;
-	}
+    public boolean isAddedToSchedule()
+    {
+        return addedToSchedule;
+    }
 
 
-	public int getNumSubmissionsAllowed() {
-		return numSubmissionsAllowed;
-	}
+    public void setAddedToSchedule(boolean addedToSchedule)
+    {
+        this.addedToSchedule = addedToSchedule;
+    }
 
 
-	public void setNumSubmissionsAllowed(int numSubmissionsAllowed) {
-		this.numSubmissionsAllowed = numSubmissionsAllowed;
-	}
+    public int getNumSubmissionsAllowed() {
+        return numSubmissionsAllowed;
+    }
 
 
-	public boolean isSendSubmissionNotifications() {
-		return sendSubmissionNotifications;
-	}
+    public void setNumSubmissionsAllowed(int numSubmissionsAllowed) {
+        this.numSubmissionsAllowed = numSubmissionsAllowed;
+    }
 
 
-	public void setSendSubmissionNotifications(boolean sendSubmissionNotifications) {
-		this.sendSubmissionNotifications = sendSubmissionNotifications;
-	}
+    public boolean isSendSubmissionNotifications() {
+        return sendSubmissionNotifications;
+    }
 
 
-	public int getSubmissionType() {
-		return submissionType;
-	}
+    public void setSendSubmissionNotifications(boolean sendSubmissionNotifications) {
+        this.sendSubmissionNotifications = sendSubmissionNotifications;
+    }
 
 
-	public void setSubmissionType(int submissionType) {
-		this.submissionType = submissionType;
-	}
-	
+    public int getSubmissionType() {
+        return submissionType;
+    }
+
+
+    public void setSubmissionType(int submissionType) {
+        this.submissionType = submissionType;
+    }
+
     public boolean isRequiresSubmission()
     {
         return requiresSubmission;
@@ -231,24 +231,24 @@ public class AssignmentDefinition implements Serializable {
     }
 
 
-	public List<String> getGroupRestrictionGroupTitles() {
-		return groupRestrictionGroupTitles;
-	}
+    public List<String> getGroupRestrictionGroupTitles() {
+        return groupRestrictionGroupTitles;
+    }
 
 
-	public void setGroupRestrictionGroupTitles(
-			List<String> groupRestrictionGroupTitles) {
-		this.groupRestrictionGroupTitles = groupRestrictionGroupTitles;
-	}
+    public void setGroupRestrictionGroupTitles(
+            List<String> groupRestrictionGroupTitles) {
+        this.groupRestrictionGroupTitles = groupRestrictionGroupTitles;
+    }
 
 
-	public List<String> getAttachmentReferences() {
-		return attachmentReferences;
-	}
+    public List<String> getAttachmentReferences() {
+        return attachmentReferences;
+    }
 
 
-	public void setAttachmentReferences(List<String> attachmentReferences) {
-		this.attachmentReferences = attachmentReferences;
-	}
+    public void setAttachmentReferences(List<String> attachmentReferences) {
+        this.attachmentReferences = attachmentReferences;
+    }
 
 }

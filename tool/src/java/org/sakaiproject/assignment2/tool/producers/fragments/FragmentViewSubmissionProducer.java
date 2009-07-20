@@ -41,41 +41,41 @@ public class FragmentViewSubmissionProducer implements ViewComponentProducer, Vi
     public String getViewID() {
         return VIEW_ID;
     }
-    
+
     private AssignmentSubmissionLogic submissionLogic;
     private AttachmentListRenderer attachmentListRenderer;
 
     public void fillComponents(UIContainer tofill, ViewParameters viewparams, ComponentChecker checker) {
-    	FragmentViewSubmissionViewParams params = (FragmentViewSubmissionViewParams) viewparams;
+        FragmentViewSubmissionViewParams params = (FragmentViewSubmissionViewParams) viewparams;
 
-    	AssignmentSubmissionVersion asv = submissionLogic.getSubmissionVersionById(params.submissionVersionId);
+        AssignmentSubmissionVersion asv = submissionLogic.getSubmissionVersionById(params.submissionVersionId);
 
-    	if (asv.getFeedbackReleasedDate() != null) {
-    		UIVerbatim.make(tofill, "submitted_text", asv.getAnnotatedTextFormatted());
-    	} else {
-    		UIVerbatim.make(tofill, "submitted_text", asv.getSubmittedText());
-    	}
-    	
+        if (asv.getFeedbackReleasedDate() != null) {
+            UIVerbatim.make(tofill, "submitted_text", asv.getAnnotatedTextFormatted());
+        } else {
+            UIVerbatim.make(tofill, "submitted_text", asv.getSubmittedText());
+        }
+
         attachmentListRenderer.makeAttachmentFromSubmissionAttachmentSet(tofill, "assignment_attachment_list:", params.viewID, 
-        		asv.getSubmissionAttachSet());
+                asv.getSubmissionAttachSet());
 
 
     }
-    
+
     public ViewParameters getViewParameters() {
         return new FragmentViewSubmissionViewParams();
     }
-	
-	public String getContentType() {
-		return ContentTypeInfoRegistry.HTML_FRAGMENT;
-	}
 
-	public void setAttachmentListRenderer(
-			AttachmentListRenderer attachmentListRenderer) {
-		this.attachmentListRenderer = attachmentListRenderer;
-	}
+    public String getContentType() {
+        return ContentTypeInfoRegistry.HTML_FRAGMENT;
+    }
 
-	public void setSubmissionLogic(AssignmentSubmissionLogic submissionLogic) {
-		this.submissionLogic = submissionLogic;
-	}
+    public void setAttachmentListRenderer(
+            AttachmentListRenderer attachmentListRenderer) {
+        this.attachmentListRenderer = attachmentListRenderer;
+    }
+
+    public void setSubmissionLogic(AssignmentSubmissionLogic submissionLogic) {
+        this.submissionLogic = submissionLogic;
+    }
 }

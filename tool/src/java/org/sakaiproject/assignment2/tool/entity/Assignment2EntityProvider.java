@@ -46,52 +46,52 @@ import sun.util.logging.resources.logging;
  */
 public class Assignment2EntityProvider extends AbstractEntityProvider implements
 CoreEntityProvider, RESTful, RequestStorable, RequestAware {
-	private static Log log = LogFactory.getLog(Assignment2EntityProvider.class);
+    private static Log log = LogFactory.getLog(Assignment2EntityProvider.class);
 
     // Dependency
     private AssignmentLogic assignmentLogic;
     public void setAssignmentLogic(AssignmentLogic assignmentLogic) {
         this.assignmentLogic = assignmentLogic;
     }
-    
+
     // Dependency
     private AssignmentPermissionLogic permissionLogic;
     public void setPermissionLogic(AssignmentPermissionLogic permissionLogic) {
         this.permissionLogic = permissionLogic;
     }
-    
+
     // Dependency
     private ExternalLogic externalLogic;
     public void setExternalLogic(ExternalLogic externalLogic) {
         this.externalLogic = externalLogic;
     }
-    
+
     // Dependency
     private DisplayUtil displayUtil;
     public void setDisplayUtil(DisplayUtil displayUtil) {
         this.displayUtil = displayUtil;
     }
-    
+
     private RequestStorage requestStorage;
     public void setRequestStorage(RequestStorage requestStorage) {
         this.requestStorage = requestStorage;
     }
-    
+
     private RequestGetter requestGetter;
     public void setRequestGetter(RequestGetter requestGetter) {
         this.requestGetter = requestGetter;
     }
-    
+
     private AssignmentBundleLogic assignmentBundleLogic;
     public void setAssignmentBundleLogic(AssignmentBundleLogic assignmentBundleLogic) {
         this.assignmentBundleLogic = assignmentBundleLogic;
     }
-    
+
     public static String PREFIX = "assignment2";
     public String getEntityPrefix() {
         return PREFIX;
     }
-    
+
     /**
      * TODO: Change this so it's not a GET
      * 
@@ -99,10 +99,10 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware {
      */
     @EntityCustomAction(action="reorder", viewKey=EntityView.VIEW_LIST)
     public void reorderAssignments(EntityView view) {
-    	String context = (String) requestStorage.getStoredValue("siteid");
-    	String order = (String) requestStorage.getStoredValue("order");
-    	
-    	String[] stringAssignIds = order.split(",");
+        String context = (String) requestStorage.getStoredValue("siteid");
+        String order = (String) requestStorage.getStoredValue("order");
+
+        String[] stringAssignIds = order.split(",");
         try {
             // convert the strings to longs
             List<Long> longAssignmentIds = new ArrayList<Long>();
@@ -119,7 +119,7 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware {
             log.error("Non-numeric value passed to ReorderAssignmentsCommand. No reordering was saved.");
         }
     }
-    
+
     /**
      * This is a custom action for retrieving the Assignment Data we need to 
      * render the list of assignments for landing pages. Currently this does
@@ -136,29 +136,29 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware {
     @EntityCustomAction(action="sitelist", viewKey=EntityView.VIEW_LIST)
     public List getAssignmentListForSite(EntityView view) {        
         String context = (String) requestStorage.getStoredValue("siteid");
-        
+
         DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, assignmentBundleLogic.getLocale());
-        
+
         if (context == null) {
             return new ArrayList();
         }
-        
+
         List<Assignment2> viewable = assignmentLogic.getViewableAssignments(context);
-        
+
         List togo = new ArrayList();
-        
+
         Map<Assignment2, List<String>> assignmentViewableStudentsMap = 
             permissionLogic.getViewableStudentsForUserForAssignments(externalLogic.getCurrentUserId(), context, viewable);
-        
+
         Collection<Group> groups = externalLogic.getSiteGroups(context);
         Map<String,Group> groupmap = new HashMap<String,Group>();
-        
+
         for (Group group: groups) {
             groupmap.put(group.getId(), group);
         }
-        
+
         boolean canEdit = permissionLogic.isCurrentUserAbleToEditAssignments(context);
-        
+
         for (Assignment2 asnn: viewable) {
             Map asnnmap = new HashMap();
             asnnmap.put("id", asnn.getId());
@@ -175,27 +175,27 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware {
             asnnmap.put("sortIndex", asnn.getSortIndex());
             asnnmap.put("requiresSubmission", asnn.isRequiresSubmission());
             asnnmap.put("draft", asnn.isDraft());
-            
+
             // In case assignment has a gradebook item, but that gradebook item
             // no longer exists.
             if (asnn.isGraded() && asnn.getGradebookItemId() == null) {
                 asnnmap.put("gbItemMissing", true);
             }
-            
+
             // Can the current user edit this particular assignment. Does not 
             // include grading. If a user can see this assignment they can grade
             // it.
             asnnmap.put("canEdit", canEdit);
-            
+
             List<String> viewableStudents = assignmentViewableStudentsMap.get(asnn);
-            
+
             Map<String, String> subStatusMap = displayUtil.getSubmissionStatusForAssignment(asnn, viewableStudents);
             String inAndNewText = subStatusMap.get(DisplayUtil.IN_NEW_DISPLAY);
             String numSubmissions = subStatusMap.get(DisplayUtil.NUM_SUB);
-            
+
             asnnmap.put("inAndNew", inAndNewText);
             asnnmap.put("numSubmissions", numSubmissions);
-            
+
             List groupstogo = new ArrayList();
             // we need to double check that all of the associated groups still exist.
             // if they don't, we will display an indicator that this assignment needs attention
@@ -204,7 +204,7 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware {
                     Map groupprops = new HashMap();
                     groupprops.put("groupId", group.getGroupId());
                     groupprops.put("id", group.getId());
-                    
+
                     Group g = groupmap.get(group.getGroupId());
                     groupprops.put("title",g.getTitle());
                     groupprops.put("description", g.getDescription());
@@ -215,7 +215,7 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware {
                 }
             }
             asnnmap.put("groups", groupstogo);
-            
+
             List attachstogo = new ArrayList();
             for (AssignmentAttachment attach: asnn.getAttachmentSet()) {
                 Map attachprops = new HashMap();
@@ -224,18 +224,18 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware {
                 attachstogo.add(attachprops);
             }
             asnnmap.put("attachments", attachstogo);
-            
+
             togo.add(asnnmap);
         }
-        
+
         // IE Won't stop caching even with the no-cache.
         HttpServletResponse httpServletResponse = requestGetter.getResponse();
         httpServletResponse.setHeader("Pragma", "no-cache");
         httpServletResponse.setHeader("Cache-Control", "max-age=0,no-cache,no-store,must-revalidate,private,post-check=0,pre-check=0,s-max-age=0");
         httpServletResponse.setDateHeader("Expires", 0 );
-        
+
         httpServletResponse.setHeader("x-asnn2-canEdit", canEdit+"");
-        
+
         return togo;
     }
 
@@ -265,9 +265,9 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware {
     public void updateEntity(EntityReference ref, Object entity,
             Map<String, Object> params) {
         Assignment2 assignment = (Assignment2) entity;
-        
+
         Assignment2 tosave = assignmentLogic.getAssignmentByIdWithAssociatedData(assignment.getId());
-        
+
         /*
          * This is going to be obtuse.  Because Hibernate Model objects are so
          * different that the models we really want available to RESTful feeds,
@@ -283,15 +283,15 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware {
          * 
          */
         tosave.setTitle(assignment.getTitle());
-        
+
         assignmentLogic.saveAssignment(tosave);
     }
 
     public Object getEntity(EntityReference ref) {
         Assignment2 asnn = assignmentLogic.getAssignmentByIdWithAssociatedData(new Long(ref.getId()));
-        
+
         DeepUtils deep = DeepUtils.getInstance();
-        
+
         return deep.deepClone(asnn, 3, new String[] {"submissionsSet",
                 "ListOfAssociatedGroupReferences","assignmentGroupSet",
                 "attachmentSet","assignmentAttachmentRefs"});

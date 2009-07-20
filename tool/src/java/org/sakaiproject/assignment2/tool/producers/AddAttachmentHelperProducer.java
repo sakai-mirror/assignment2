@@ -118,11 +118,11 @@ public class AddAttachmentHelperProducer implements ViewComponentProducer, ViewP
     {
         this.messageLocator = messageLocator;
     }
-    
+
     public void setExternalLogic(ExternalLogic externalLogic) {
         this.externalLogic = externalLogic;
     }
-    
+
     public void setExternalContentLogic(ExternalContentLogic contentLogic) {
         this.contentLogic = contentLogic;
     }

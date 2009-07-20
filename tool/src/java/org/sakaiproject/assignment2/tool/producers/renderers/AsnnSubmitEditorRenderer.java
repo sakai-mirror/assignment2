@@ -53,43 +53,43 @@ import uk.org.ponder.rsf.viewstate.ViewParameters;
  *
  */
 public class AsnnSubmitEditorRenderer implements BasicProducer {
-    
+
     // Dependency
     private MessageLocator messageLocator;
     public void setMessageLocator(MessageLocator messageLocator) {
         this.messageLocator = messageLocator;
     }
-    
+
     // Dependency
     private TextInputEvolver richTextEvolver;
     public void setRichTextEvolver(TextInputEvolver richTextEvolver) {
         this.richTextEvolver = richTextEvolver;
     }
-    
+
     // Dependency
     private AttachmentInputEvolver attachmentInputEvolver;
     public void setAttachmentInputEvolver(AttachmentInputEvolver attachmentInputEvolver){
         this.attachmentInputEvolver = attachmentInputEvolver;
     }
-    
+
     // Dependency
     private AttachmentListRenderer attachmentListRenderer;
     public void setAttachmentListRenderer (AttachmentListRenderer attachmentListRenderer) {
         this.attachmentListRenderer = attachmentListRenderer;
     }
-    
+
     // Dependency
     private ViewParameters viewParameters;
     public void setViewParameters(ViewParameters viewParameters) {
         this.viewParameters = viewParameters;
     }
-    
+
     // Dependency
     private AssignmentSubmissionLogic submissionLogic;
     public void setSubmissionLogic(AssignmentSubmissionLogic submissionLogic) {
         this.submissionLogic = submissionLogic;
     }
-    
+
     // Flow Scope Bean for Student Submission
     private StudentSubmissionVersionFlowBean studentSubmissionVersionFlowBean;
     public void setStudentSubmissionVersionFlowBean(StudentSubmissionVersionFlowBean studentSubmissionVersionFlowBean) {
@@ -119,9 +119,9 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
      * @param asvOTP
      */
     public void fillComponents(UIContainer parent, String clientID, AssignmentSubmission assignmentSubmission, boolean preview, boolean studentPreviewSubmission) {
-        
+
         Assignment2 assignment = assignmentSubmission.getAssignment();
-        
+
         UIJointContainer joint = new UIJointContainer(parent, clientID, "asnn2-submit-editor-widget:");
         String asOTP = "AssignmentSubmission.";
         String asOTPKey = "";
@@ -131,7 +131,7 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
             asOTPKey += EntityBeanLocator.NEW_PREFIX + "1";
         }
         asOTP = asOTP + asOTPKey;
-        
+
         String asvOTP = null;
         if (!preview) {
             asvOTP = "StudentSubmissionVersionFlowBean.";
@@ -147,40 +147,40 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
             asvOTPKey += EntityBeanLocator.NEW_PREFIX + "1";
         }
         asvOTP = asvOTP + asvOTPKey;
-        
+
         //For preview, get a decorated list of disabled="disabled"
         Map<String, String> disabledAttr = new HashMap<String, String>();
         disabledAttr.put("disabled", "disabled");
         DecoratorList disabledDecoratorList = new DecoratorList(new UIFreeAttributeDecorator(disabledAttr));
-        
+
         UIForm form = UIForm.make(joint, "form");
-        
+
         // Fill in with submission type specific instructions
         // If this is a Student Preview, we dont' want these instruction headers
         // per the design spec.
         if (!studentPreviewSubmission) {
             UIOutput.make(form, "submission_instructions", messageLocator.getMessage("assignment2.student-submit.instructions." + assignment.getSubmissionType())); 
         }
-            
+
         if (assignment.isHonorPledge()) {
             UIVerbatim.make(form, "required", messageLocator.getMessage("assignment2.student-submit.required"));
         }
-        
+
         // Because the flow might not be starting on the initial view, the
         // studentSubmissionPreviewVersion should always use the flow bean 
         // unless it is null.
         AssignmentSubmissionVersion studentSubmissionPreviewVersion = 
             (AssignmentSubmissionVersion) studentSubmissionVersionFlowBean.locateBean(asvOTPKey);
-        
+
         //Rich Text Input
         if (assignment.getSubmissionType() == AssignmentConstants.SUBMIT_INLINE_ONLY || 
                 assignment.getSubmissionType() == AssignmentConstants.SUBMIT_INLINE_AND_ATTACH){
 
             UIOutput.make(form, "submit_text");
-            
+
             if (studentPreviewSubmission) {
                 // TODO FIXME This is being duplicated
-            	UIVerbatim make = UIVerbatim.make(form, "text:", studentSubmissionPreviewVersion.getSubmittedText());
+                UIVerbatim make = UIVerbatim.make(form, "text:", studentSubmissionPreviewVersion.getSubmittedText());
             }
             else if (!preview) {
                 UIInput text = UIInput.make(form, "text:", asvOTP + ".submittedText");
@@ -193,7 +193,7 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
                 UIInput text_disabled = UIInput.make(form, "text_disabled",asvOTP + ".submittedText");
                 text_disabled.decorators = disabledDecoratorList;
             }
-            
+
 
         }
 
@@ -204,11 +204,11 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
                 assignment.getSubmissionType() == AssignmentConstants.SUBMIT_INLINE_AND_ATTACH){
             UIOutput.make(form, "submit_attachments");
 
-            
+
             if (studentPreviewSubmission || !preview) {
                 String[] attachmentRefs = 
                     studentSubmissionPreviewVersion.getSubmittedAttachmentRefs();
- 
+
                 renderSubmittedAttachments(studentPreviewSubmission, asvOTP,
                         asvOTPKey, form, attachmentRefs);
             }
@@ -226,7 +226,7 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
             UIMessage.make(joint, "honor_pledge_label", "assignment2.student-submit.honor_pledge_text");
             UIBoundBoolean.make(form, "honor_pledge", "#{StudentSubmissionBean.honorPledge}");
         }
-        
+
         form.parameters.add( new UIELBinding("StudentSubmissionBean.ASOTPKey", asOTPKey));
         form.parameters.add( new UIELBinding("StudentSubmissionBean.assignmentId", assignment.getId()));
 
@@ -239,7 +239,7 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
         if (!preview) {
             UIOutput.make(form, "submit_section");
         }
-        
+
         if (preview) {
             // don't display the buttons
         } else if (studentPreviewSubmission) {
@@ -252,15 +252,15 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
             //edit_button.addParameter(new UIELBinding(asvOTP + ".submittedText", hackSubmissionText));
         } else {
             UICommand.make(form, "submit_button", UIMessage.make("assignment2.student-submit.submit"), 
-                "StudentSubmissionBean.processActionSubmit");
+            "StudentSubmissionBean.processActionSubmit");
             UICommand.make(form, "preview_button", UIMessage.make("assignment2.student-submit.preview"), 
-                "StudentSubmissionBean.processActionPreview");
+            "StudentSubmissionBean.processActionPreview");
             UICommand.make(form, "save_draft_button", UIMessage.make("assignment2.student-submit.save_draft"), 
-                "StudentSubmissionBean.processActionSaveDraft");
+            "StudentSubmissionBean.processActionSaveDraft");
             UICommand.make(form, "cancel_button", UIMessage.make("assignment2.student-submit.cancel"), 
             "StudentSubmissionBean.processActionCancel");
         }
-        
+
         /* 
          * Render the Instructor's Feedback Materials
          */
@@ -268,7 +268,7 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
             AssignmentSubmissionVersion currVersion = assignmentSubmission.getCurrentSubmissionVersion();
             if (currVersion.isDraft() && currVersion.isFeedbackReleased()) {
                 UIOutput.make(joint, "draft-feedback");
-                
+
                 String feedbackComment = currVersion.getFeedbackNotes();
                 if (feedbackComment == null || feedbackComment.trim().equals("")) {
                     feedbackComment = messageLocator.getMessage("assignment2.student-submission.feedback.none");
@@ -282,7 +282,7 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
                             "draft-feedback-attachment-list:", viewParameters.viewID, 
                             currVersion.getFeedbackAttachSet());
                 }
-                
+
                 // mark this feedback as viewed
                 if (!currVersion.isFeedbackRead()) {
                     List<Long> versionIdList = new ArrayList<Long>();
@@ -310,10 +310,10 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
 
         if (!studentPreviewSubmission) {
             UIInternalLink.make(form, "add_submission_attachments", UIMessage.make("assignment2.student-submit.add_attachments"),
-                new FilePickerHelperViewParams(AddAttachmentHelperProducer.VIEWID, Boolean.TRUE, 
-                        Boolean.TRUE, 500, 700, asvOTPKey, true));
+                    new FilePickerHelperViewParams(AddAttachmentHelperProducer.VIEWID, Boolean.TRUE, 
+                            Boolean.TRUE, 500, 700, asvOTPKey, true));
         }
-        
+
         UIOutput.make(form, "no_attachments_yet", messageLocator.getMessage("assignment2.student-submit.no_attachments"));
     }
 

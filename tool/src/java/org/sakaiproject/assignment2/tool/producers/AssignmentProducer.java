@@ -30,6 +30,7 @@ import org.sakaiproject.assignment2.tool.producers.fragments.FragmentAssignment2
 import org.sakaiproject.assignment2.exception.AssignmentNotFoundException;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
+import org.sakaiproject.assignment2.logic.ExternalContentReviewLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.GradebookItem;
@@ -108,13 +109,14 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
     private ErrorStateManager errorstatemanager;
     private StatePreservationManager presmanager; // no, not that of OS/2
     private Assignment2Creator assignment2Creator;
-    
+    private ExternalContentReviewLogic externalContentReviewLogic;
+
     // Assignment Authoring Scope Flow Bean
     private AssignmentAuthoringFlowBean assignmentAuthoringFlowBean;
     public void setAssignmentAuthoringFlowBean(AssignmentAuthoringFlowBean assignmentAuthoringFlowBean) {
         this.assignmentAuthoringFlowBean = assignmentAuthoringFlowBean;
     }
-    
+
     /*
      * You can change the date input to accept time as well by uncommenting the lines like this:
      * dateevolver.setStyle(FormatAwareDateInputEvolver.DATE_TIME_INPUT);
@@ -143,13 +145,13 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
             params.flowtoken = errorstatemanager.allocateToken();
             presmanager.preserve(params.flowtoken, true);
         }
-        
+
         String currentContextId = externalLogic.getCurrentContextId();
 
         //get Passed assignmentId to pull in for editing if any
         Long duplicatedAssignId = params.duplicatedAssignmentId;
         Long assignmentId = params.assignmentId;
-        
+
         // we should never have a populated assignmentId and duplicatedAssignmentId, but
         // just in case, default to duplicated
         if (duplicatedAssignId != null) {
@@ -158,13 +160,13 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
             if (dupAssign == null) {
                 throw new AssignmentNotFoundException("No assignment exists with id " + duplicatedAssignId);
             }
-            
+
             String newTitle = assignmentLogic.getDuplicatedAssignmentTitle(currentContextId, dupAssign.getTitle());
-            
+
             // set the assignment to be this duplicated fellow
             assignmentAuthoringFlowBean.setAssignment(assignment2Creator.createDuplicate(dupAssign, newTitle));
         }
-        
+
         // use a date which is related to the current users locale
         DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, locale);
 
@@ -202,9 +204,9 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
         //        System.out.println(asnn.getId() + " | " + asnn.getTitle() + " | " + asnn.getInstructions());
         //        System.out.println("ATTACH SIZE: " + asnn.getAssignmentAttachmentRefs().length);
         //    }
-        
+
         // DEBUGGING
-        
+
         // Is there ever a situation where we should use the Assignment2. OTP 
         // on this page?
         //String assignment2OTP = "Assignment2.";
@@ -228,7 +230,7 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
         assignment2OTP += OTPKey;
         //Assignment2 assignment = (Assignment2)assignment2BeanLocator.locateBean(OTPKey);
         Assignment2 assignment = (Assignment2) assignmentAuthoringFlowBean.locateBean(OTPKey);
-        
+
         // if this is an "edit" scenario, we need to display a warning if the
         // assignment is graded but doesn't have an assoc gb item
         if (assignmentId != null && assignment.isGraded() && assignment.getGradebookItemId() == null) {
@@ -363,7 +365,7 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
         attachmentInputEvolver.evolveAttachment(attachmentInput);
 
         UIOutput.make(form, "no_attachments_yet", messageLocator.getMessage("assignment2.assignment_add.no_attachments"));
-        
+
         UIInternalLink.make(form, "add_attachments", UIMessage.make("assignment2.assignment_add.add_attachments"),
                 new FilePickerHelperViewParams(AddAttachmentHelperProducer.VIEWID, Boolean.TRUE, 
                         Boolean.TRUE, 500, 700, OTPKey));
@@ -416,8 +418,8 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
                 Boolean.TRUE.toString(), Boolean.FALSE.toString()
         };
         String [] grading_labels = new String[] {
-               "assignment2.assignment_add.assignment_graded",
-               "assignment2.assignment_add.assignment_ungraded"
+                "assignment2.assignment_add.assignment_graded",
+                "assignment2.assignment_add.assignment_ungraded"
         };
         UISelect grading_select = UISelect.make(form, "graded-radios", 
                 grading_values, grading_labels, assignment2OTP + ".graded").setMessageKeys();
@@ -485,7 +487,7 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
                 UIOutput.make(groups_row, "group_description", g.getDescription());
             }
         }
-        
+
         if (assignmentId != null && assignment.getAssignmentGroupSet() != null && !assignment.getAssignmentGroupSet().isEmpty()) {
             // double check that all of the associated groups still exist
             boolean groupDeleted = false;
@@ -495,7 +497,7 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
                     break;
                 }
             }
-            
+
             if (groupDeleted) {
                 // we need to display a message indicating that a group
                 // assoc with this item no longer exists
@@ -509,15 +511,15 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
         //Post Buttons
         UICommand postAssign = UICommand.make(form, "post_assignment", UIMessage.make("assignment2.assignment_add.post"), "AssignmentAuthoringBean.processActionPost");
         if (assignment.getId() != null) {
-           List<String> allStudents = externalLogic.getStudentsInSite(currentContextId);
-           int numSubmissions = submissionLogic.getNumStudentsWithASubmission(assignment, allStudents);
-           if (numSubmissions > 0) {
-               // we need to display a warning to the user that they are editing
-               // an assignment with submissions
-               postAssign.decorate(
-                       new UIFreeAttributeDecorator("onclick",
-                               "asnn2.editAssignmentConfirm(this); return false;"));
-           }
+            List<String> allStudents = externalLogic.getStudentsInSite(currentContextId);
+            int numSubmissions = submissionLogic.getNumStudentsWithASubmission(assignment, allStudents);
+            if (numSubmissions > 0) {
+                // we need to display a warning to the user that they are editing
+                // an assignment with submissions
+                postAssign.decorate(
+                        new UIFreeAttributeDecorator("onclick",
+                        "asnn2.editAssignmentConfirm(this); return false;"));
+            }
         }
         UICommand.make(form, "preview_assignment", UIMessage.make("assignment2.assignment_add.preview"), "AssignmentAuthoringBean.processActionPreview");
 
@@ -526,6 +528,11 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
         }
         UICommand.make(form, "cancel_assignment", UIMessage.make("assignment2.assignment_add.cancel_assignment"), "AssignmentAuthoringBean.processActionCancel");
 
+        // Optional Turnitin Content Review Integration
+        if (externalContentReviewLogic.isContentReviewAvailable()) {
+            UIOutput.make(tofill, "tii_content_review_area");
+            UIBoundBoolean.make(tofill, "use_tii", assignment2OTP + ".properties.USE_TII");
+        }
     }
 
     public ViewParameters getViewParameters() {
@@ -560,7 +567,7 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
     {
         this.attachmentInputEvolver = attachmentInputEvolver;
     }
-    
+
     public void setErrorStateManager(ErrorStateManager errorstatemanager) {
         this.errorstatemanager = errorstatemanager;
     }
@@ -568,16 +575,21 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
     public void setStatePreservationManager(StatePreservationManager presmanager) {
         this.presmanager = presmanager;
     }
-    
+
     public void setAssignmentLogic(AssignmentLogic assignmentLogic) {
         this.assignmentLogic = assignmentLogic;
     }
-    
+
     public void setAssignmentSubmissionLogic(AssignmentSubmissionLogic submissionLogic) {
         this.submissionLogic = submissionLogic;
     }
-    
+
     public void setAssignment2Creator(Assignment2Creator assignment2Creator) {
         this.assignment2Creator = assignment2Creator;
+    }
+
+    public void setExternalContentReviewLogic(
+            ExternalContentReviewLogic externalContentReviewLogic) {
+        this.externalContentReviewLogic = externalContentReviewLogic;
     }
 }

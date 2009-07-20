@@ -19,19 +19,19 @@ import uk.org.ponder.messageutil.TargettedMessageList;
  */
 public class RemoveAssignmentCommand {
     private static final Log LOG = LogFactory.getLog(RemoveAssignmentCommand.class);
-    
+
     // Dependency
     private TargettedMessageList messages;
     public void setMessages(TargettedMessageList messages) {
         this.messages = messages;
     }
-    
+
     // Dependency
     private AssignmentLogic logic;
     public void setLogic(AssignmentLogic logic) {
         this.logic = logic;
     }
-    
+
     // Property
     private Long assignmentId;
     public void setAssignmentId(Long assignmentId) {
@@ -40,7 +40,7 @@ public class RemoveAssignmentCommand {
     public Long getAssignmentId() {
         return assignmentId;
     }
-    
+
     public String execute() {
         if (assignmentId != null) {
             try {

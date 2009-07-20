@@ -29,7 +29,7 @@ public class StudentSubmissionBean {
     public void setAssignmentLogic(AssignmentLogic assignmentLogic) {
         this.assignmentLogic = assignmentLogic;
     }
-    
+
     // Service Application Scope Dependency
     private ScheduledNotification scheduledNotification;
     public void setScheduledNotification(ScheduledNotification scheduledNotification) {
@@ -111,7 +111,7 @@ public class StudentSubmissionBean {
                 if (assignment.isSendSubmissionNotifications()) {                 
                     scheduledNotification.notifyInstructorsOfSubmission(newSubmission);
                 }
-                
+
                 // students always get a notification
                 scheduledNotification.notifyStudentThatSubmissionWasAccepted(newSubmission);
             } else {
@@ -178,7 +178,7 @@ public class StudentSubmissionBean {
 
         return WorkFlowResult.STUDENT_SAVE_DRAFT_SUBMISSION;
     }
-    
+
     public WorkFlowResult processActionCancel() {
         return WorkFlowResult.STUDENT_CANCEL_SUBMISSION;
     }

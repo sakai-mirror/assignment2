@@ -14,26 +14,26 @@ import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
  *
  */
 public class AssignmentSubmissionVersionTest extends Assignment2TestBase {
-    
+
     /**
      * @see org.springframework.test.AbstractTransactionalSpringContextTests#onSetUpInTransaction()
      */
     protected void onSetUpInTransaction() throws Exception {
-            super.onSetUpInTransaction();
+        super.onSetUpInTransaction();
     }
-    
+
     public void testIsFeedBackReleased() throws Exception {
         AssignmentSubmissionVersion asv = new AssignmentSubmissionVersion();
         asv.setFeedbackReleasedDate(new Date());
-        
+
         // Make sure the feedback has been released for a moment
         Thread.sleep(1000);
-        
+
         assertTrue(asv.isFeedbackReleased());
-        
+
         AssignmentSubmissionVersion asvNoFeedback = new AssignmentSubmissionVersion();
-        
+
         assertFalse(asvNoFeedback.isFeedbackReleased());
     }
-    
+
 }

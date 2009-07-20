@@ -34,122 +34,122 @@ import org.sakaiproject.assignment2.model.Assignment2;
  * @author <a href="mailto:wagnermr@iupui.edu">michelle wagner</a>
  */
 public interface AssignmentLogic {
-	// sorting information
+    // sorting information
     public static final String SORT_DIR_ASC = "asc";
     public static final String SORT_DIR_DESC = "desc";
     public static final String SORT_BY_INDEX = "sortIndex";
     public static final String SORT_BY_TITLE = "title";
     public static final String SORT_BY_OPEN = "openDate";
     public static final String SORT_BY_DUE = "dueDate";
-    
-    public static final String REDIRECT_ASSIGNMENT_VIEW_ID = "redirectAssignmentViewId";
-	
-	/**
-	 * 
-	 * @param assignmentId
-	 * @return Returns the Assignment based on its assignmentId. Does not populate
-	 * the AssignmentAttachments and AssignmentGroups
-	 * @throws AssignmentNotFoundException if no assignment exists with the given id
-	 */
-	public Assignment2 getAssignmentById(Long assignmentId);
-	
-	/**
-	 * Create or update an assignment. The contextId must be populated on the assignment
-	 * @param assignment
-	 * the assignment to create or update
-	 * @throws SecurityException -
-	 * user must have "edit" permission to add or update an assignment
-	 * @throws NoGradebookItemForGradedAssignmentException - if the
-	 * assignment is marked as graded but there is no gradebookItemId
-	 * @throws AssignmentNotFoundException if the id associated with the
-	 * assignment object does not exist
-	 * @throws InvalidGradebookItemAssociationException if the gradebook item associated
-	 * with the assignment is invalid
-	 */
-	public void saveAssignment(Assignment2 assignment);
-	
-	/**
-	 * Delete an Assignment 
-	 * note: no assignments are actually deleted; the "removed" property
-	 * will be set to true
-	 * @param assignment
-	 * 			the Assignment to delete
-	 * @throws SecurityException - user must have "edit" permission
-	 * @throws AnnouncmentPermissionException if the user does not have
-	 * permission to delete announcements - assignment will be 'deleted' regardless
-	 * @throws CalendarPermissionException if the user does not have
-	 * permission to delete events in the Schedule tool - assignment will be
-	 * 'deleted' regardless
-	 */	
-	public void deleteAssignment(Assignment2 assignment);
-	
-	/**
-	 * Returns list of Assignment objects that the given user has permission
-	 * to view or grade. Assignments that the user does not have permission 
-	 * to view or grade will not be returned. If assignment is graded and
-	 * associated gb item was deleted, sets the gradebookItemId to null on 
-	 * the assignment object to flag that it needs attention
-	 * @param contextId 
-	 * @return A non-null list of viewable assignments ordered by sort index
-	 */
-	public List<Assignment2> getViewableAssignments(String contextId);
-	
-	/**
-	 * Reorder the assignments in your site. The array of assignment ids must
-	 * represent all of the assignments in your site
-	 * @param assignmentIds - an array of Long assignment ids that are ordered in the
-	 * order that you would like the assignments in the site to appear. 
-	 * @param contextId 
-	 */
-	public void reorderAssignments(List<Long> assignmentIds, String contextId);
-	
-	/**
-	 * @param assignmentId
-	 * @return the Assignment2 object with the given id and populate associated
-	 * data (ie attachments, groups). Does not include student submission information.
-	 * If graded, checks to see if associated gb item still exists. If it does not,
-	 * sets gradebookItemId to null but leaves graded = true
-	 * @throws AssignmentNotFoundException if no assignment exists with the given id
-	 */
-	public Assignment2 getAssignmentByIdWithAssociatedData(Long assignmentId);
-	
-	/** 
-	 * @param assignmentId
-	 * @return the Assignment2 object with the given id and populate the
-	 * associated AssignmentGroups
-	 * @throws AssignmentNotFoundException if no assignment exists with the given id
-	 */
-	public Assignment2 getAssignmentByIdWithGroups(Long assignmentId);
-	
-	/**
-	 * @param assignmentId
-	 * @return the Assignment2 object with the given id and populate the
-	 * associated AssignmentGroups and AssignmentAttachments
-	 * @throws AssignmentNotFoundException if no assignment exists with the given id
-	 */
-	public Assignment2 getAssignmentByIdWithGroupsAndAttachments(Long assignmentId);
 
-	/**
-	 * Uses the open, due, and accept until dates to determine the current status
-	 * of the given assignment
-	 * @param assignment
-	 * @return a constant equivalent to the assignment's status
-	 */
-	public int getStatusForAssignment(Assignment2 assignment);
-	
-	/**
-	 * 
-	 * @param contextId
-	 * @param titleToDuplicate
-	 * @return a new title duplicated from the given titleToDuplicate for the given contextId.
-	 * The title will be the titleToDuplicate plus a number. 
-	 * For example, if the title is "Persuasive Essay", the returned title would be "Persuasive Essay 1." 
-	 * If the title "Persuasive Essay 1" already exists, try "Persuasive Essay 2", etc. 
-	 * If titleToDuplicate already ends with a space and a number, we will increment 
-	 * that number. So if we are duplicating a title "Homework 1", the duplicated title would 
-	 * be "Homework 2" (and if that exists already "Homework 3", etc).  
-	 * See {@link Assignment2Utils#getVersionedString(String)} for more info
-	 */
-	public String getDuplicatedAssignmentTitle(String contextId, String titleToDuplicate);
+    public static final String REDIRECT_ASSIGNMENT_VIEW_ID = "redirectAssignmentViewId";
+
+    /**
+     * 
+     * @param assignmentId
+     * @return Returns the Assignment based on its assignmentId. Does not populate
+     * the AssignmentAttachments and AssignmentGroups
+     * @throws AssignmentNotFoundException if no assignment exists with the given id
+     */
+    public Assignment2 getAssignmentById(Long assignmentId);
+
+    /**
+     * Create or update an assignment. The contextId must be populated on the assignment
+     * @param assignment
+     * the assignment to create or update
+     * @throws SecurityException -
+     * user must have "edit" permission to add or update an assignment
+     * @throws NoGradebookItemForGradedAssignmentException - if the
+     * assignment is marked as graded but there is no gradebookItemId
+     * @throws AssignmentNotFoundException if the id associated with the
+     * assignment object does not exist
+     * @throws InvalidGradebookItemAssociationException if the gradebook item associated
+     * with the assignment is invalid
+     */
+    public void saveAssignment(Assignment2 assignment);
+
+    /**
+     * Delete an Assignment 
+     * note: no assignments are actually deleted; the "removed" property
+     * will be set to true
+     * @param assignment
+     * 			the Assignment to delete
+     * @throws SecurityException - user must have "edit" permission
+     * @throws AnnouncmentPermissionException if the user does not have
+     * permission to delete announcements - assignment will be 'deleted' regardless
+     * @throws CalendarPermissionException if the user does not have
+     * permission to delete events in the Schedule tool - assignment will be
+     * 'deleted' regardless
+     */	
+    public void deleteAssignment(Assignment2 assignment);
+
+    /**
+     * Returns list of Assignment objects that the given user has permission
+     * to view or grade. Assignments that the user does not have permission 
+     * to view or grade will not be returned. If assignment is graded and
+     * associated gb item was deleted, sets the gradebookItemId to null on 
+     * the assignment object to flag that it needs attention
+     * @param contextId 
+     * @return A non-null list of viewable assignments ordered by sort index
+     */
+    public List<Assignment2> getViewableAssignments(String contextId);
+
+    /**
+     * Reorder the assignments in your site. The array of assignment ids must
+     * represent all of the assignments in your site
+     * @param assignmentIds - an array of Long assignment ids that are ordered in the
+     * order that you would like the assignments in the site to appear. 
+     * @param contextId 
+     */
+    public void reorderAssignments(List<Long> assignmentIds, String contextId);
+
+    /**
+     * @param assignmentId
+     * @return the Assignment2 object with the given id and populate associated
+     * data (ie attachments, groups). Does not include student submission information.
+     * If graded, checks to see if associated gb item still exists. If it does not,
+     * sets gradebookItemId to null but leaves graded = true
+     * @throws AssignmentNotFoundException if no assignment exists with the given id
+     */
+    public Assignment2 getAssignmentByIdWithAssociatedData(Long assignmentId);
+
+    /** 
+     * @param assignmentId
+     * @return the Assignment2 object with the given id and populate the
+     * associated AssignmentGroups
+     * @throws AssignmentNotFoundException if no assignment exists with the given id
+     */
+    public Assignment2 getAssignmentByIdWithGroups(Long assignmentId);
+
+    /**
+     * @param assignmentId
+     * @return the Assignment2 object with the given id and populate the
+     * associated AssignmentGroups and AssignmentAttachments
+     * @throws AssignmentNotFoundException if no assignment exists with the given id
+     */
+    public Assignment2 getAssignmentByIdWithGroupsAndAttachments(Long assignmentId);
+
+    /**
+     * Uses the open, due, and accept until dates to determine the current status
+     * of the given assignment
+     * @param assignment
+     * @return a constant equivalent to the assignment's status
+     */
+    public int getStatusForAssignment(Assignment2 assignment);
+
+    /**
+     * 
+     * @param contextId
+     * @param titleToDuplicate
+     * @return a new title duplicated from the given titleToDuplicate for the given contextId.
+     * The title will be the titleToDuplicate plus a number. 
+     * For example, if the title is "Persuasive Essay", the returned title would be "Persuasive Essay 1." 
+     * If the title "Persuasive Essay 1" already exists, try "Persuasive Essay 2", etc. 
+     * If titleToDuplicate already ends with a space and a number, we will increment 
+     * that number. So if we are duplicating a title "Homework 1", the duplicated title would 
+     * be "Homework 2" (and if that exists already "Homework 3", etc).  
+     * See {@link Assignment2Utils#getVersionedString(String)} for more info
+     */
+    public String getDuplicatedAssignmentTitle(String contextId, String titleToDuplicate);
 
 }

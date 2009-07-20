@@ -29,39 +29,39 @@ import org.sakaiproject.assignment2.tool.beans.AssignmentAuthoringBean;
 import org.sakaiproject.assignment2.tool.producers.GradeProducer;
 
 public class GradeViewParams extends SimpleViewParameters implements VerifiableViewParams {
-	
-	private static final Log LOG = LogFactory.getLog(AssignmentAuthoringBean.class);
-	
-	public Long assignmentId;
-	public String userId;
-	public Long versionId;
-	
-	public GradeViewParams(){}
-	
-	public GradeViewParams(String viewId, Long assignmentId, String userId){
-		super(viewId);
-		this.assignmentId = assignmentId;
-		this.userId = userId;
-	}
-	
-	public GradeViewParams(String viewId, Long assignmentId, String userId, Long versionId) {
-		super(viewId);
-		this.assignmentId = assignmentId;
-		this.userId = userId;
-		this.versionId = versionId;
-	}
-	
-	public String getParseSpec(){
-		return super.getParseSpec() + ",@1:assignmentId,@2:userId,versionId";
-	}
 
-	public Boolean verify()
-	{
-		if (GradeProducer.VIEW_ID.equals(this.viewID) && (this.assignmentId == null || this.userId == null)) {
-			LOG.error("Null assignmentId or userId in viewparameters while attempting to load GradeProducer");
-			return Boolean.FALSE;
-		}
-		return Boolean.TRUE;
-	}
-	
+    private static final Log LOG = LogFactory.getLog(AssignmentAuthoringBean.class);
+
+    public Long assignmentId;
+    public String userId;
+    public Long versionId;
+
+    public GradeViewParams(){}
+
+    public GradeViewParams(String viewId, Long assignmentId, String userId){
+        super(viewId);
+        this.assignmentId = assignmentId;
+        this.userId = userId;
+    }
+
+    public GradeViewParams(String viewId, Long assignmentId, String userId, Long versionId) {
+        super(viewId);
+        this.assignmentId = assignmentId;
+        this.userId = userId;
+        this.versionId = versionId;
+    }
+
+    public String getParseSpec(){
+        return super.getParseSpec() + ",@1:assignmentId,@2:userId,versionId";
+    }
+
+    public Boolean verify()
+    {
+        if (GradeProducer.VIEW_ID.equals(this.viewID) && (this.assignmentId == null || this.userId == null)) {
+            LOG.error("Null assignmentId or userId in viewparameters while attempting to load GradeProducer");
+            return Boolean.FALSE;
+        }
+        return Boolean.TRUE;
+    }
+
 }

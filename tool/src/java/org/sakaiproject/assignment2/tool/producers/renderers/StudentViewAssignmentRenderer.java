@@ -176,8 +176,8 @@ public class StudentViewAssignmentRenderer {
         if (assignment.getId() != null) {
             submissionIsOpen = submissionLogic.isSubmissionOpenForStudentForAssignment(currentUser.getId(), assignment.getId());
         }
-        
-            
+
+
         /* 
          * If the Student is previewing their submission, only want to show the
          * text and attachments of that submission.
@@ -194,7 +194,7 @@ public class StudentViewAssignmentRenderer {
                     if (versionHistory.size() == 1 && !submissionIsOpen) {
                         AssignmentSubmissionVersion singleVersion = versionHistory.get(0);
                         asnnSubmissionVersionRenderer.fillComponents(joint, "assignment-single-version:", singleVersion, false);
-                        
+
                         // we need to mark this feedback as read (if released and unread)
                         if (singleVersion.isFeedbackReleased() && !singleVersion.isFeedbackRead()) {
                             List<Long> markRead = new ArrayList<Long>();

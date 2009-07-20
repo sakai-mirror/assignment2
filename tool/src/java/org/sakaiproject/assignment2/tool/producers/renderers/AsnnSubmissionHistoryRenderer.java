@@ -55,13 +55,13 @@ public class AsnnSubmissionHistoryRenderer implements BasicProducer {
     public void setSubmissionLogic(AssignmentSubmissionLogic submissionLogic) {
         this.submissionLogic = submissionLogic;
     }
-    
+
     // Dependency
     private Locale locale;
     public void setLocale(Locale locale) {
         this.locale = locale;
     }
-    
+
     private MessageLocator messageLocator;
     public void setMessageLocator(MessageLocator messageLocator) {
         this.messageLocator = messageLocator;
@@ -71,25 +71,25 @@ public class AsnnSubmissionHistoryRenderer implements BasicProducer {
 
         Assignment2 assignment = assignmentSubmission.getAssignment();
         List<AssignmentSubmissionVersion> versionHistory = submissionLogic.getVersionHistoryForSubmission(assignmentSubmission);
-        
+
         DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, locale);
-        
+
         if (versionHistory.size() >= 1) {
             // Show the history view if:
             // 1) there is more than one version or 
             // 2) there is one submitted version and submission is still open
             // Do not display history if there is one version and that version is draft.
             // That info will be displayed in the editor/summary view
-            
+
             // check to see if submission is still open. we only include draft
             // versions in this display if submission is closed and there is more than one version
             boolean submissionOpen = submissionLogic.isSubmissionOpenForStudentForAssignment(assignmentSubmission.getUserId(), assignment.getId());
             boolean includeDraftVersion = !submissionOpen && versionHistory.size() > 1;
-            
+
             UIJointContainer joint = new UIJointContainer(parent, clientID, "asnn2-submission-history-widget:");
             UIOutput.make(joint, "submissions-header");
             UIOutput.make(joint, "multiple-submissions");
-            
+
             // add alt text to the expand/collapse img for history section
             Map<String, String> histSectionAltText = new HashMap<String, String>();
             String histHoverText = messageLocator.getMessage("assignment2.student-submission.history.header.toggle");
@@ -98,7 +98,7 @@ public class AsnnSubmissionHistoryRenderer implements BasicProducer {
             DecoratorList altTextDecoratorList = new DecoratorList(new UIFreeAttributeDecorator(histSectionAltText));
             UIOutput histToggle = UIOutput.make(joint, "history_toggle");
             histToggle.decorators = altTextDecoratorList;
-            
+
             // add alt text to the expand/collapse img for individual submissions
             Map<String, String> subAltText = new HashMap<String, String>();
             String subHoverText = messageLocator.getMessage("assignment2.student-submission.history.version.header.toggle");
@@ -107,7 +107,7 @@ public class AsnnSubmissionHistoryRenderer implements BasicProducer {
             DecoratorList subTextDecoratorList = new DecoratorList(new UIFreeAttributeDecorator(subAltText));
             UIOutput subToggle = UIOutput.make(joint, "submission_toggle");
             subToggle.decorators = subTextDecoratorList;
-            
+
             for (AssignmentSubmissionVersion version: versionHistory) {
                 // do not include draft versions in this history display unless
                 // submission is closed and there were multiple submissions
@@ -130,12 +130,12 @@ public class AsnnSubmissionHistoryRenderer implements BasicProducer {
                     boolean newfeedback = false;
                     String feedbackReadText = messageLocator.getMessage("assignment2.student-submission.feedback.read");
                     String feedbackUnreadText = messageLocator.getMessage("assignment2.student-submission.feedback.unread");
-                    
+
                     // Make the envelope icons for feedback if necessary
                     if (version.isFeedbackReleased() && version.isFeedbackRead()) {
                         UIOutput readFBImg = UIOutput.make(versionDiv, "open-feedback-img");
                         newfeedback = true;
-                        
+
                         // add alt text to this image
                         Map<String, String> readFBMap = new HashMap<String, String>();
                         readFBMap.put("alt", feedbackReadText);
@@ -145,7 +145,7 @@ public class AsnnSubmissionHistoryRenderer implements BasicProducer {
                     }
                     else if (version.isFeedbackReleased()) {
                         UIOutput unreadFBImg = UIOutput.make(versionDiv, "new-feedback-img");
-                        
+
                         // add alt text to this image
                         Map<String, String> unreadFBMap = new HashMap<String, String>();
                         unreadFBMap.put("alt", feedbackUnreadText);
@@ -153,7 +153,7 @@ public class AsnnSubmissionHistoryRenderer implements BasicProducer {
                         DecoratorList unreadFBDecoratorList = new DecoratorList(new UIFreeAttributeDecorator(unreadFBMap));
                         unreadFBImg.decorators = unreadFBDecoratorList;
                     }
-                    
+
                     UIContainer versionContainer = asnnSubmissionVersionRenderer.fillComponents(versionDiv, "submission-entry:", version, true);
                     Map<String,String> stylemap = new HashMap<String,String>();
                     stylemap.put("display", "none");

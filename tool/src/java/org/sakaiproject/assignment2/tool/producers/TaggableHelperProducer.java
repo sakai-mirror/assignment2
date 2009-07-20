@@ -38,42 +38,42 @@ import uk.org.ponder.rsf.viewstate.ViewParamsReporter;
 
 public class TaggableHelperProducer implements ViewComponentProducer, ViewParamsReporter
 {
-	public static final String VIEWID = "TaggableHelperProducer";
-	
-	private SessionManager sessionManager;
+    public static final String VIEWID = "TaggableHelperProducer";
 
-	public String getViewID()
-	{
-		return VIEWID;
-	}
+    private SessionManager sessionManager;
 
-	public void fillComponents(UIContainer tofill, ViewParameters viewparams,
-			ComponentChecker checker)
-	{
-		TaggableHelperViewParams params = (TaggableHelperViewParams)viewparams;
-		
-		ToolSession toolSession = sessionManager.getCurrentToolSession();
-		for (int i=0; i<params.keys.length; i++) {
-			toolSession.setAttribute(params.keys[i], params.values[i]);
-		}
-		
-		UILink.make(tofill, HelperViewParameters.HELPER_ID, params.helperId);
+    public String getViewID()
+    {
+        return VIEWID;
+    }
 
-	    //UICommand help = UICommand.make(tofill, HelperViewParameters.POST_HELPER_BINDING, "", null);
-	    //help.parameters = new ParameterList();
-	    //for (int i=0; i<params.keys.length; i++) {
-	    //	help.parameters.add(new UIParameter(params.keys[0], params.values[0]));
-	    //}
-	}
+    public void fillComponents(UIContainer tofill, ViewParameters viewparams,
+            ComponentChecker checker)
+    {
+        TaggableHelperViewParams params = (TaggableHelperViewParams)viewparams;
 
-	public ViewParameters getViewParameters()
-	{
-		return new TaggableHelperViewParams();
-	}
+        ToolSession toolSession = sessionManager.getCurrentToolSession();
+        for (int i=0; i<params.keys.length; i++) {
+            toolSession.setAttribute(params.keys[i], params.values[i]);
+        }
 
-	public void setSessionManager(SessionManager sessionManager)
-	{
-		this.sessionManager = sessionManager;
-	}
+        UILink.make(tofill, HelperViewParameters.HELPER_ID, params.helperId);
+
+        //UICommand help = UICommand.make(tofill, HelperViewParameters.POST_HELPER_BINDING, "", null);
+        //help.parameters = new ParameterList();
+        //for (int i=0; i<params.keys.length; i++) {
+        //	help.parameters.add(new UIParameter(params.keys[0], params.values[0]));
+        //}
+    }
+
+    public ViewParameters getViewParameters()
+    {
+        return new TaggableHelperViewParams();
+    }
+
+    public void setSessionManager(SessionManager sessionManager)
+    {
+        this.sessionManager = sessionManager;
+    }
 
 }

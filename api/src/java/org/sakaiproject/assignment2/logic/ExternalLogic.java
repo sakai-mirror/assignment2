@@ -36,7 +36,7 @@ import org.sakaiproject.user.api.User;
  * @author Sakai App Builder -AZ
  */
 public interface ExternalLogic {
-    
+
     //tool ids for external tools that we integrate with
     /**
      * the tool id for Sakai's Schedule/Calendar tool
@@ -59,7 +59,7 @@ public interface ExternalLogic {
      * @return the current sakai user id (not username)
      */
     public String getCurrentUserId();
-    
+
     /**
      * 
      * @param userId
@@ -82,20 +82,20 @@ public interface ExternalLogic {
      * @return the user's sort name as defined in the User object
      */
     public String getUserSortName(String userId);
-    
+
     /**
      * 
      * @param userId
      * @return the email address associated with this userId. Returns null if not found.
      */
     public String getUserEmail(String userId);
-    
+
     /**
      * 
      * @return the current context for the current user
      */
     public String getCurrentContextId();
-    
+
     /**
      * 
      * @param contextId
@@ -103,7 +103,7 @@ public interface ExternalLogic {
      * Returns null if the Site could not be retrieved.
      */
     public Site getSite(String contextId);
-    
+
     /**
      * 
      * @param contextId
@@ -111,7 +111,7 @@ public interface ExternalLogic {
      * contextId.  Returns null if the Site could not be retrieved.
      */
     public String getSiteTitle(String contextId);
-    
+
     /**
      * 
      * @return the title of the Assignment2 tool
@@ -134,7 +134,7 @@ public interface ExternalLogic {
      * @return a cleaned up string which is now safe
      */
     public String cleanupUserStrings(String userSubmittedString);
-    
+
     /**
      * Returns URL to viewId pass in
      * @param viewId of view to build path to
@@ -148,7 +148,7 @@ public interface ExternalLogic {
      * @return a collection of Groups associated with the given contextId
      */
     public Collection getSiteGroups(String contextId);
-    
+
     /**
      * @param userId
      * @param contextId
@@ -156,7 +156,7 @@ public interface ExternalLogic {
      * in the given contextId
      */
     public Collection getUserMemberships(String userId, String contextId);
-    
+
     /**
      * @param userId
      * @param contextId
@@ -164,28 +164,28 @@ public interface ExternalLogic {
      * a member of in the given contextId
      */
     public List<String> getUserMembershipGroupIdList(String userId, String contextId);
-    
+
     /**
      * @param currentContextId
      * @return a map of group id to group name for all of the sections/groups
      * associated with the given contextId
      */
     public Map<String, String> getGroupIdToNameMapForSite(String currentContextId);
-    
+
     /**
      * @param contextId
      * @param toolId
      * @return true if tool with the given toolId exists in the site with the given siteId
      */
     public boolean siteHasTool(String contextId, String toolId);
-    
+
     /**
      * 
      * @param contextId
      * @return a list of userIds of members of this site with a "student"-type role
      */
     public List<String> getStudentsInSite(String contextId);
-    
+
     /**
      * 
      * @param contextId
@@ -193,21 +193,21 @@ public interface ExternalLogic {
      * 
      */
     public List<String> getTAsInSite(String contextId);
-    
+
     /**
      * 
      * @param contextId
      * @return a list of userIds of members of this site with an "instructor"-type role
      */
     public List<String> getInstructorsInSite(String contextId);
-    
+
     /**
      * 
      * @param groupId
      * @return a list of the student ids of students in the Group with the given groupId  
      */
     public List<String> getStudentsInGroup(String groupId);
-    
+
     /**
      * 
      * @param gradeableObjectId
@@ -216,7 +216,7 @@ public interface ExternalLogic {
      * @return url to helper
      */
     public String getUrlForGradebookItemHelper(Long gradeableObjectId, String returnViewId, String contextId);
-    
+
     /**
      * 
      * @param gradeableObjectId
@@ -228,7 +228,7 @@ public interface ExternalLogic {
      * @return url to the "create a gradebook item" helper.
      */
     public String getUrlForGradebookItemHelper(Long gradeableObjectId, String gradebookItemName, String returnViewId, String contextId, Date dueDate);
-    
+
     /**
      * 
      * @param gradeableObjectId
@@ -238,7 +238,7 @@ public interface ExternalLogic {
      * @return url to helper
      */
     public String getUrlForGradeGradebookItemHelper(Long gradeableObjectId, String userId, String returnViewId, String contextId);
-    
+
     /**
      * 
      * @param userIds
@@ -246,7 +246,7 @@ public interface ExternalLogic {
      * User object
      */
     public Map<String, User> getUserIdUserMap(List<String> userIds);
-    
+
     /**
      * 
      * @param contextId
@@ -256,14 +256,14 @@ public interface ExternalLogic {
      * userId for processing
      */
     public Map<String, String> getUserDisplayIdUserIdMapForStudentsInSite(String contextId);
-    
+
     /**
      * 
      * @param userId
      * @return the siteId of the My Workspace associated with the given userId
      */
     public String getMyWorkspaceSiteId(String userId);
-    
+
     /**
      * 
      * @param userIds a collection of userIds to retrieve sort name for

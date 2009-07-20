@@ -45,34 +45,34 @@ import org.sakaiproject.assignment2.dao.AssignmentDao;
  */
 public class PreloadTestData {
 
-	private static Log log = LogFactory.getLog(PreloadTestData.class);
+    private static Log log = LogFactory.getLog(PreloadTestData.class);
 
-	private AssignmentDao assignmentDao;
-	public void setAssignmentDao(AssignmentDao assignmentDao) {
-		this.assignmentDao = assignmentDao;
-	}
+    private AssignmentDao assignmentDao;
+    public void setAssignmentDao(AssignmentDao assignmentDao) {
+        this.assignmentDao = assignmentDao;
+    }
 
-	private AssignmentTestDataLoad atdl;
-	/**
-	 * @return the test data loading class with copies of all saved objects
-	 */
-	public AssignmentTestDataLoad getAtdl() {
-		return atdl;
-	}
+    private AssignmentTestDataLoad atdl;
+    /**
+     * @return the test data loading class with copies of all saved objects
+     */
+    public AssignmentTestDataLoad getAtdl() {
+        return atdl;
+    }
 
-	public void init() {
-		log.info("INIT");
-		preloadDB();
-	}
+    public void init() {
+        log.info("INIT");
+        preloadDB();
+    }
 
-	/**
-	 * Preload the data
-	 */
-	public void preloadDB(){
-		log.info("preloading DB...");
-		
-		
-		atdl = new AssignmentTestDataLoad();
-		atdl.createTestData(assignmentDao);
-	}
+    /**
+     * Preload the data
+     */
+    public void preloadDB(){
+        log.info("preloading DB...");
+
+
+        atdl = new AssignmentTestDataLoad();
+        atdl.createTestData(assignmentDao);
+    }
 }

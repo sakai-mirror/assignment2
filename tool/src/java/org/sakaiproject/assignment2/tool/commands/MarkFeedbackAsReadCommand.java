@@ -22,7 +22,7 @@ public class MarkFeedbackAsReadCommand {
     public void setSubmissionLogic(AssignmentSubmissionLogic submissionLogic) {
         this.submissionLogic = submissionLogic;
     }
-    
+
     // Property 
     private Long asnnSubId;
     public void setAsnnSubId(Long asnnSubId) {
@@ -31,7 +31,7 @@ public class MarkFeedbackAsReadCommand {
     public Long getAsnnSubId() {
         return asnnSubId;
     }
-    
+
     // Property
     private Long asnnSubVersionId;
     public void setAsnnSubVersionId(Long asnnSubVersionId) {
@@ -40,7 +40,7 @@ public class MarkFeedbackAsReadCommand {
     public Long getAsnnSubVersionId() {
         return asnnSubVersionId;
     }
-    
+
     /**
      * The action method.
      */

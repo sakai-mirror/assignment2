@@ -45,7 +45,7 @@ public class AssignmentViewParams extends SimpleViewParameters {
         super(viewId);
         this.assignmentId = assignmentId;
     }
-    
+
     public AssignmentViewParams(String viewId, Long assignmentId, Long duplicatedAssignmentId) {
         super(viewId);
         this.assignmentId = assignmentId;
