@@ -125,4 +125,19 @@ public class AssignmentConstants {
     public static final String REFERENCE_ROOT = "asgn2";
     public static final String ASSIGNMENT_TYPE = "a";
     public static final String SUBMISSION_TYPE = "s";
+    
+    // Properties for ContentReviewService integration
+    /**
+     * The score received upon review
+     */
+    public final static String PROP_REVIEW_SCORE = "review_score";
+    /**
+     * The url to the icon representing the review score
+     */
+    public final static String PROP_REVIEW_ICON_URL = "review_icon_url";
+    /**
+     * The url to the report constructed for the user for the review
+     */
+    public final static String PROP_REVIEW_URL = "review_url";
+
 }

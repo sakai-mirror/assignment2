@@ -1,13 +1,20 @@
 package org.sakaiproject.assignment2.logic.impl;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.HashSet;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment2.logic.ExternalContentLogic;
 import org.sakaiproject.assignment2.logic.ExternalContentReviewLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
+import org.sakaiproject.assignment2.model.SubmissionAttachment;
+import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.component.cover.ComponentManager;
 import org.sakaiproject.content.api.ContentResource;
 import org.sakaiproject.contentreview.exception.QueueException;
@@ -120,6 +127,99 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
      */
     private String getTaskId(Assignment2 assign) {
         return "Asnn2 Provisioned " + assign.getId();
+    }
+    
+    public void populateReviewProperties(Assignment2 assignment, Collection<SubmissionAttachment> attachments, boolean instructorView) {
+        if (assignment == null) {
+            throw new IllegalArgumentException("Null assignment passed to populateReviewProperties");
+        }
+
+        if (attachments != null && !attachments.isEmpty()) {
+            // let's get all of the review items for this assignment
+            List<ContentReviewItem> allReviewItems = getReviewItemsForAssignment(assignment);
+            // put these items into a map of the attachment reference to the review item for easier access
+            Map<String, ContentReviewItem> attRefReviewItemMap = new HashMap<String, ContentReviewItem>();
+            if (allReviewItems != null) {
+                for (ContentReviewItem reviewItem : allReviewItems) {
+                    attRefReviewItemMap.put(reviewItem.getContentId(), reviewItem);
+                }
+            }
+
+            // now let's iterate through the passed attachments and populate the
+            // properties, if appropriate
+            for (SubmissionAttachment attach : attachments) {
+                if (attRefReviewItemMap.containsKey(attach.getAttachmentReference())) {
+                    ContentReviewItem reviewItem = attRefReviewItemMap.get(attach.getAttachmentReference());
+                    populateProperties(reviewItem, attach, instructorView);
+                }
+            }
+        }
+    }
+    
+    /**
+     * Populates the properties from this review item on the given attach
+     * @param reviewItem
+     * @param attach
+     * @param instructorView true if this is for the instructor view. false if for student view
+     */
+    private void populateProperties(ContentReviewItem reviewItem, SubmissionAttachment attach, boolean instructorView) {
+        if (reviewItem == null || attach == null || !reviewItem.getContentId().equals(attach.getAttachmentReference())) {
+            throw new IllegalArgumentException("invalid params passed to populateProperties");
+        }
+        
+        Map properties = attach.getProperties() != null ? attach.getProperties() : new HashMap();
+        properties.put(AssignmentConstants.PROP_REVIEW_SCORE, reviewItem.getReviewScore());
+        properties.put(AssignmentConstants.PROP_REVIEW_ICON_URL, reviewItem.getIconUrl());
+
+        // now retrieve the report url
+        String reportUrl = getReportUrl(attach.getAttachmentReference(), instructorView);
+        if (reportUrl != null) {
+            properties.put(AssignmentConstants.PROP_REVIEW_URL, reportUrl);
+        }
+
+        attach.setProperties(properties);
+    }
+    
+    public String getReportUrl(String attachmentReference, boolean instructorView) {
+        if (attachmentReference == null) {
+            throw new IllegalArgumentException("Null attachmentReference passed to getReportUrl");
+        }
+        
+        String reportUrl = null;
+        
+        if (instructorView) {
+            try
+            {
+                reportUrl = contentReview.getReviewReportInstructor(attachmentReference);
+            }
+            catch (QueueException e)
+            {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            catch (ReportException e)
+            {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        } else {
+            try
+            {
+                reportUrl = contentReview.getReviewReportStudent(attachmentReference);
+            }
+            catch (QueueException e)
+            {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            catch (ReportException e)
+            {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+        
+        return reportUrl;
     }
 
 }

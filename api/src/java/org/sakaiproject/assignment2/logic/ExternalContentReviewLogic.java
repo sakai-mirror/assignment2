@@ -1,8 +1,10 @@
 package org.sakaiproject.assignment2.logic;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.sakaiproject.assignment2.model.Assignment2;
+import org.sakaiproject.assignment2.model.SubmissionAttachment;
 import org.sakaiproject.contentreview.model.ContentReviewItem;
 
 /**
@@ -51,5 +53,24 @@ public interface ExternalContentReviewLogic {
      * the review service
      */
     public boolean isAttachmentAcceptableForReview(String attachmentReference);
+    
+    /**
+     * 
+     * @param assignment
+     * @param attachments set of {@link SubmissionAttachment}s for the given assignment that you
+     * want to retrieve review info for (ie score, icon url, etc)
+     * @param instructorView true if this report is for the instructor view. false if this is
+     * for the student view
+     */
+    public void populateReviewProperties(Assignment2 assignment, Collection<SubmissionAttachment> attachments, boolean instructorView);
 
+    /**
+     * 
+     * @param attachmentReference
+     * @param instructorView true if you want the report for an instructor. false if
+     * you want the report for the student
+     * @return the url of the review report for the given attachmentReference. Returns
+     * null if url cannot be retrieved
+     */
+    public String getReportUrl(String attachmentReference, boolean instructorView);
 }

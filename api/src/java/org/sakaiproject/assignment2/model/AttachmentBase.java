@@ -21,6 +21,8 @@
 
 package org.sakaiproject.assignment2.model;
 
+import java.util.Map;
+
 
 /**
  * The AttachmentBase object.  All attachments extend this object
@@ -32,6 +34,7 @@ public abstract class AttachmentBase {
     protected Long id;
     protected String attachmentReference;
     private int optimisticVersion;
+    private Map properties;
 
     /**
      * @return the id of this assignment attachment
@@ -80,6 +83,30 @@ public abstract class AttachmentBase {
      */
     public void setOptimisticVersion(int optimisticVersion) {
         this.optimisticVersion = optimisticVersion;
+    }
+    
+    // Properties not persisted on this object
+    
+    /**
+     * 
+     * @return Unstructured properties for the attachments.  These may or may not
+     * be persisted depending on their nature.  Some may be generated at 
+     * runtime.
+     */
+    public Map getProperties()
+    {
+        return properties;
+    }
+
+    /**
+     * Unstructured properties for the attachments.  These may or may not
+     * be persisted depending on their nature.  Some may be generated at 
+     * runtime.
+     * @param properties
+     */
+    public void setProperties(Map properties)
+    {
+        this.properties = properties;
     }
 
     @Override
