@@ -80,7 +80,6 @@
    
    <bean id="org.sakaiproject.assignment2.logic.ExternalContentReviewLogic" 
       class="org.sakaiproject.assignment2.logic.impl.ExternalContentReviewLogicImpl" init-method="init">
-      <property name="contentReviewService" ref="org.sakaiproject.contentreview.service.ContentReviewService" />
       <property name="externalContentLogic" ref="org.sakaiproject.assignment2.logic.ExternalContentLogic" />
    </bean>
 

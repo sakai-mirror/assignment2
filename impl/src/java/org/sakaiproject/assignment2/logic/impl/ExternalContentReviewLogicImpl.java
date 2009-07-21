@@ -8,6 +8,7 @@ import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment2.logic.ExternalContentLogic;
 import org.sakaiproject.assignment2.logic.ExternalContentReviewLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
+import org.sakaiproject.component.cover.ComponentManager;
 import org.sakaiproject.content.api.ContentResource;
 import org.sakaiproject.contentreview.exception.QueueException;
 import org.sakaiproject.contentreview.exception.ReportException;
@@ -31,10 +32,20 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
 
     public void init(){
         if(log.isDebugEnabled()) log.debug("init");
+        //if no contentReviewService was set try discovering it
+        if (contentReview == null)
+        {
+            contentReview = (ContentReviewService) ComponentManager.get(ContentReviewService.class.getName());
+        }
     }
 
     public boolean isContentReviewAvailable() {
-        return true;
+        boolean available = false;
+        if (contentReview != null) {
+            available = true;
+        }
+        
+        return available;
     }
     
     public void reviewAttachment(String userId, String siteId, Assignment2 assign, String attachmentReference) {
