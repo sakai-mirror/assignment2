@@ -95,7 +95,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
     }
 
     private ExternalContentReviewLogic contentReviewLogic;
-    public void setContentReviewLogic(ExternalContentReviewLogic contentReviewLogic)
+    public void setExternalContentReviewLogic(ExternalContentReviewLogic contentReviewLogic)
     {
         this.contentReviewLogic = contentReviewLogic;
     }
@@ -372,7 +372,8 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
             if (contentReviewLogic.isContentReviewAvailable()) {
                 for (SubmissionAttachment att : subAttachSet) {
                     if (contentReviewLogic.isAttachmentAcceptableForReview(att.getAttachmentReference())) {
-                        contentReviewLogic.reviewAttachment(userId, assignment.getContextId(), assignment, att.getAttachmentReference());
+                        if (log.isDebugEnabled()) log.debug("Adding attachment " + att.getAttachmentReference() + " to review queue for student " + userId);
+                        contentReviewLogic.reviewAttachment(userId, assignment, att.getAttachmentReference());
                     }
                 }
             }

@@ -32,11 +32,10 @@ public interface ExternalContentReviewLogic {
      * for review. To minimize errors, check {@link #isAttachmentAcceptableForReview(String)} before
      * calling this method
      * @param userId if null, assumes current user
-     * @param siteId if null, assumes current site
      * @param assign the assignment that this attachment is associated with
      * @param attachmentReference the reference for the attachment in content hosting
      */
-    public void reviewAttachment(String userId, String siteId, Assignment2 assign, String attachmentReference);
+    public void reviewAttachment(String userId, Assignment2 assign, String attachmentReference);
     
     /**
      * 
