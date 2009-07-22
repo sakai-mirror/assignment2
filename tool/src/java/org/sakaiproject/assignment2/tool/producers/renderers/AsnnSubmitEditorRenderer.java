@@ -13,6 +13,7 @@ import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.assignment2.tool.beans.StudentSubmissionVersionFlowBean;
 import org.sakaiproject.assignment2.tool.params.FilePickerHelperViewParams;
 import org.sakaiproject.assignment2.tool.producers.AddAttachmentHelperProducer;
+import org.sakaiproject.assignment2.tool.producers.ViewSubmissionsProducer;
 import org.sakaiproject.assignment2.tool.producers.evolvers.AttachmentInputEvolver;
 
 import uk.org.ponder.beanutil.entity.EntityBeanLocator;
@@ -153,143 +154,159 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
         disabledAttr.put("disabled", "disabled");
         DecoratorList disabledDecoratorList = new DecoratorList(new UIFreeAttributeDecorator(disabledAttr));
 
-        UIForm form = UIForm.make(joint, "form");
+        // for single file upload
+        if (assignment.getSubmissionType() == AssignmentConstants.SUBMIT_SINGLE_UPLOADED_FILE_ONLY)
+        {
+        	UIForm singleFileUploadform = UIForm.make(joint, "single_file_upload_form");
 
-        // Fill in with submission type specific instructions
-        // If this is a Student Preview, we dont' want these instruction headers
-        // per the design spec.
-        if (!studentPreviewSubmission) {
-            UIOutput.make(form, "submission_instructions", messageLocator.getMessage("assignment2.student-submit.instructions." + assignment.getSubmissionType())); 
+        	singleFileUploadform.parameters.add( new UIELBinding("StudentSubmissionBean.ASOTPKey", asOTPKey));
+	        singleFileUploadform.parameters.add( new UIELBinding("StudentSubmissionBean.assignmentId", assignment.getId()));
+	        
+        	UICommand.make(singleFileUploadform, "single_file_submit_button", UIMessage.make("assignment2.student-submit.submit"), 
+            "StudentSubmissionBean.processActionSingleFileUploadSubmit");
+            UICommand.make(singleFileUploadform, "single_file_cancel_button", UIMessage.make("assignment2.student-submit.cancel"), 
+            "StudentSubmissionBean.processActionSingleFileUploadCancel").setReturn(ViewSubmissionsProducer.VIEW_ID);
         }
+        else
+        {
+	        UIForm form = UIForm.make(joint, "form");
+	
+	        // Fill in with submission type specific instructions
+	        // If this is a Student Preview, we dont' want these instruction headers
+	        // per the design spec.
+	        if (!studentPreviewSubmission) {
+	            UIOutput.make(form, "submission_instructions", messageLocator.getMessage("assignment2.student-submit.instructions." + assignment.getSubmissionType())); 
+	        }
+	
+	        if (assignment.isHonorPledge()) {
+	            UIVerbatim.make(form, "required", messageLocator.getMessage("assignment2.student-submit.required"));
+	        }
+	
+	        // Because the flow might not be starting on the initial view, the
+	        // studentSubmissionPreviewVersion should always use the flow bean 
+	        // unless it is null.
+	        AssignmentSubmissionVersion studentSubmissionPreviewVersion = 
+	            (AssignmentSubmissionVersion) studentSubmissionVersionFlowBean.locateBean(asvOTPKey);
+	
+	        //Rich Text Input
+	        if (assignment.getSubmissionType() == AssignmentConstants.SUBMIT_INLINE_ONLY || 
+	                assignment.getSubmissionType() == AssignmentConstants.SUBMIT_INLINE_AND_ATTACH){
+	
+	            UIOutput.make(form, "submit_text");
+	
+	            if (studentPreviewSubmission) {
+	                // TODO FIXME This is being duplicated
+	                UIVerbatim make = UIVerbatim.make(form, "text:", studentSubmissionPreviewVersion.getSubmittedText());
+	            }
+	            else if (!preview) {
+	                UIInput text = UIInput.make(form, "text:", asvOTP + ".submittedText");
+	                text.mustapply = Boolean.TRUE;
+	                richTextEvolver.evolveTextInput(text);
+	            } 
+	            else {
+	                //disable textarea
+	                UIInput text = UIInput.make(form, "text:", asvOTP + ".submittedText");
+	                UIInput text_disabled = UIInput.make(form, "text_disabled",asvOTP + ".submittedText");
+	                text_disabled.decorators = disabledDecoratorList;
+	            }
+	
+	
+	        }
+	
+	        // Attachment Stuff
+	        // the editor will only display attachments for the current version if
+	        // it is a draft. otherwise, the user is working on a new submission
+	        if (assignment.getSubmissionType() == AssignmentConstants.SUBMIT_ATTACH_ONLY ||
+	                assignment.getSubmissionType() == AssignmentConstants.SUBMIT_INLINE_AND_ATTACH){
+	            UIOutput.make(form, "submit_attachments");
+	
+	
+	            if (studentPreviewSubmission || !preview) {
+	                String[] attachmentRefs = 
+	                    studentSubmissionPreviewVersion.getSubmittedAttachmentRefs();
+	
+	                renderSubmittedAttachments(studentPreviewSubmission, asvOTP,
+	                        asvOTPKey, form, attachmentRefs);
+	            }
+	        }
+	
+	        // attachment only situations will not return any values in the OTP map; thus,
+	        // we won't enter the processing loop in processActionSubmit (and nothing will be saved)
+	        // this will force rsf to bind the otp mapping
+	        if (assignment.getSubmissionType() == AssignmentConstants.SUBMIT_ATTACH_ONLY) {
+	            UIInput.make(form, "submitted_text_for_attach_only", asvOTP + ".submittedText");
+	        }
 
-        if (assignment.isHonorPledge()) {
-            UIVerbatim.make(form, "required", messageLocator.getMessage("assignment2.student-submit.required"));
-        }
-
-        // Because the flow might not be starting on the initial view, the
-        // studentSubmissionPreviewVersion should always use the flow bean 
-        // unless it is null.
-        AssignmentSubmissionVersion studentSubmissionPreviewVersion = 
-            (AssignmentSubmissionVersion) studentSubmissionVersionFlowBean.locateBean(asvOTPKey);
-
-        //Rich Text Input
-        if (assignment.getSubmissionType() == AssignmentConstants.SUBMIT_INLINE_ONLY || 
-                assignment.getSubmissionType() == AssignmentConstants.SUBMIT_INLINE_AND_ATTACH){
-
-            UIOutput.make(form, "submit_text");
-
-            if (studentPreviewSubmission) {
-                // TODO FIXME This is being duplicated
-                UIVerbatim make = UIVerbatim.make(form, "text:", studentSubmissionPreviewVersion.getSubmittedText());
-            }
-            else if (!preview) {
-                UIInput text = UIInput.make(form, "text:", asvOTP + ".submittedText");
-                text.mustapply = Boolean.TRUE;
-                richTextEvolver.evolveTextInput(text);
-            } 
-            else {
-                //disable textarea
-                UIInput text = UIInput.make(form, "text:", asvOTP + ".submittedText");
-                UIInput text_disabled = UIInput.make(form, "text_disabled",asvOTP + ".submittedText");
-                text_disabled.decorators = disabledDecoratorList;
-            }
-
-
-        }
-
-        // Attachment Stuff
-        // the editor will only display attachments for the current version if
-        // it is a draft. otherwise, the user is working on a new submission
-        if (assignment.getSubmissionType() == AssignmentConstants.SUBMIT_ATTACH_ONLY ||
-                assignment.getSubmissionType() == AssignmentConstants.SUBMIT_INLINE_AND_ATTACH){
-            UIOutput.make(form, "submit_attachments");
-
-
-            if (studentPreviewSubmission || !preview) {
-                String[] attachmentRefs = 
-                    studentSubmissionPreviewVersion.getSubmittedAttachmentRefs();
-
-                renderSubmittedAttachments(studentPreviewSubmission, asvOTP,
-                        asvOTPKey, form, attachmentRefs);
-            }
-        }
-
-        // attachment only situations will not return any values in the OTP map; thus,
-        // we won't enter the processing loop in processActionSubmit (and nothing will be saved)
-        // this will force rsf to bind the otp mapping
-        if (assignment.getSubmissionType() == AssignmentConstants.SUBMIT_ATTACH_ONLY) {
-            UIInput.make(form, "submitted_text_for_attach_only", asvOTP + ".submittedText");
-        }
-
-        if (assignment.isHonorPledge()) {
-            UIOutput.make(joint, "honor_pledge_fieldset");
-            UIMessage.make(joint, "honor_pledge_label", "assignment2.student-submit.honor_pledge_text");
-            UIBoundBoolean.make(form, "honor_pledge", "#{StudentSubmissionBean.honorPledge}");
-        }
-
-        form.parameters.add( new UIELBinding("StudentSubmissionBean.ASOTPKey", asOTPKey));
-        form.parameters.add( new UIELBinding("StudentSubmissionBean.assignmentId", assignment.getId()));
-
-        /*
-         * According to the spec, if a student is editing a submision they will
-         * see the Submit,Preview, and Save&Exit buttons.  If they are previewing
-         * a submission they will see Submit,Edit, and Save&Exit.
-         * Don't display the buttons at all if this is the instructor preview
-         */
-        if (!preview) {
-            UIOutput.make(form, "submit_section");
-        }
-
-        if (preview) {
-            // don't display the buttons
-        } else if (studentPreviewSubmission) {
-            UICommand.make(form, "submit_button", UIMessage.make("assignment2.student-submit.submit"), 
-            "StudentSubmissionBean.processActionSubmit");
-            UICommand.make(form, "save_draft_button", UIMessage.make("assignment2.student-submit.save_draft"), 
-            "StudentSubmissionBean.processActionSaveDraft");
-            UICommand edit_button = UICommand.make(form, "back_to_edit_button", UIMessage.make("assignment2.student-submit.back_to_edit"),
-            "StudentSubmissionBean.processActionBackToEdit");
-            //edit_button.addParameter(new UIELBinding(asvOTP + ".submittedText", hackSubmissionText));
-        } else {
-            UICommand.make(form, "submit_button", UIMessage.make("assignment2.student-submit.submit"), 
-            "StudentSubmissionBean.processActionSubmit");
-            UICommand.make(form, "preview_button", UIMessage.make("assignment2.student-submit.preview"), 
-            "StudentSubmissionBean.processActionPreview");
-            UICommand.make(form, "save_draft_button", UIMessage.make("assignment2.student-submit.save_draft"), 
-            "StudentSubmissionBean.processActionSaveDraft");
-            UICommand.make(form, "cancel_button", UIMessage.make("assignment2.student-submit.cancel"), 
-            "StudentSubmissionBean.processActionCancel");
-        }
-
-        /* 
-         * Render the Instructor's Feedback Materials
-         */
-        if (!preview && !studentPreviewSubmission) {
-            AssignmentSubmissionVersion currVersion = assignmentSubmission.getCurrentSubmissionVersion();
-            if (currVersion.isDraft() && currVersion.isFeedbackReleased()) {
-                UIOutput.make(joint, "draft-feedback");
-
-                String feedbackComment = currVersion.getFeedbackNotes();
-                if (feedbackComment == null || feedbackComment.trim().equals("")) {
-                    feedbackComment = messageLocator.getMessage("assignment2.student-submission.feedback.none");
-                }
-                UIVerbatim.make(joint, "draft-feedback-text", feedbackComment);
-
-                if (assignmentSubmission.getCurrentSubmissionVersion().getFeedbackAttachSet() != null && 
-                        assignmentSubmission.getCurrentSubmissionVersion().getFeedbackAttachSet().size() > 0) {
-                    UIMessage.make(joint, "draft-feedback-attachments-header", "assignment2.student-submission.feedback.materials.header");
-                    attachmentListRenderer.makeAttachmentFromFeedbackAttachmentSet(joint, 
-                            "draft-feedback-attachment-list:", viewParameters.viewID, 
-                            currVersion.getFeedbackAttachSet());
-                }
-
-                // mark this feedback as viewed
-                if (!currVersion.isFeedbackRead()) {
-                    List<Long> versionIdList = new ArrayList<Long>();
-                    versionIdList.add(currVersion.getId());
-                    submissionLogic.markFeedbackAsViewed(assignmentSubmission.getId(), versionIdList);
-                }
-            }
+	        if (assignment.isHonorPledge()) {
+	            UIOutput.make(joint, "honor_pledge_fieldset");
+	            UIMessage.make(joint, "honor_pledge_label", "assignment2.student-submit.honor_pledge_text");
+	            UIBoundBoolean.make(form, "honor_pledge", "#{StudentSubmissionBean.honorPledge}");
+	        }
+	
+	        form.parameters.add( new UIELBinding("StudentSubmissionBean.ASOTPKey", asOTPKey));
+	        form.parameters.add( new UIELBinding("StudentSubmissionBean.assignmentId", assignment.getId()));
+	
+	        /*
+	         * According to the spec, if a student is editing a submision they will
+	         * see the Submit,Preview, and Save&Exit buttons.  If they are previewing
+	         * a submission they will see Submit,Edit, and Save&Exit.
+	         * Don't display the buttons at all if this is the instructor preview
+	         */
+	        if (!preview) {
+	            UIOutput.make(form, "submit_section");
+	        }
+	
+	        if (preview) {
+	            // don't display the buttons
+	        } else if (studentPreviewSubmission) {
+	            UICommand.make(form, "submit_button", UIMessage.make("assignment2.student-submit.submit"), 
+	            "StudentSubmissionBean.processActionSubmit");
+	            UICommand.make(form, "save_draft_button", UIMessage.make("assignment2.student-submit.save_draft"), 
+	            "StudentSubmissionBean.processActionSaveDraft");
+	            UICommand edit_button = UICommand.make(form, "back_to_edit_button", UIMessage.make("assignment2.student-submit.back_to_edit"),
+	            "StudentSubmissionBean.processActionBackToEdit");
+	            //edit_button.addParameter(new UIELBinding(asvOTP + ".submittedText", hackSubmissionText));
+	        } else {
+	            UICommand.make(form, "submit_button", UIMessage.make("assignment2.student-submit.submit"), 
+	            "StudentSubmissionBean.processActionSubmit");
+	            UICommand.make(form, "preview_button", UIMessage.make("assignment2.student-submit.preview"), 
+	            "StudentSubmissionBean.processActionPreview");
+	            UICommand.make(form, "save_draft_button", UIMessage.make("assignment2.student-submit.save_draft"), 
+	            "StudentSubmissionBean.processActionSaveDraft");
+	            UICommand.make(form, "cancel_button", UIMessage.make("assignment2.student-submit.cancel"), 
+	            "StudentSubmissionBean.processActionCancel");
+	        }
+	
+	        /* 
+	         * Render the Instructor's Feedback Materials
+	         */
+	        if (!preview && !studentPreviewSubmission) {
+	            AssignmentSubmissionVersion currVersion = assignmentSubmission.getCurrentSubmissionVersion();
+	            if (currVersion.isDraft() && currVersion.isFeedbackReleased()) {
+	                UIOutput.make(joint, "draft-feedback");
+	
+	                String feedbackComment = currVersion.getFeedbackNotes();
+	                if (feedbackComment == null || feedbackComment.trim().equals("")) {
+	                    feedbackComment = messageLocator.getMessage("assignment2.student-submission.feedback.none");
+	                }
+	                UIVerbatim.make(joint, "draft-feedback-text", feedbackComment);
+	
+	                if (assignmentSubmission.getCurrentSubmissionVersion().getFeedbackAttachSet() != null && 
+	                        assignmentSubmission.getCurrentSubmissionVersion().getFeedbackAttachSet().size() > 0) {
+	                    UIMessage.make(joint, "draft-feedback-attachments-header", "assignment2.student-submission.feedback.materials.header");
+	                    attachmentListRenderer.makeAttachmentFromFeedbackAttachmentSet(joint, 
+	                            "draft-feedback-attachment-list:", viewParameters.viewID, 
+	                            currVersion.getFeedbackAttachSet());
+	                }
+	
+	                // mark this feedback as viewed
+	                if (!currVersion.isFeedbackRead()) {
+	                    List<Long> versionIdList = new ArrayList<Long>();
+	                    versionIdList.add(currVersion.getId());
+	                    submissionLogic.markFeedbackAsViewed(assignmentSubmission.getId(), versionIdList);
+	                }
+	            }
+	        }
         }
 
     }

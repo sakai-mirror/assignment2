@@ -367,6 +367,9 @@
        <property name="messages" ref="targettedMessageList" />
        <property name="assignmentSubmissionEntityBeanLocator" ref="AssignmentSubmission"/>
        <property name="scheduledNotification" ref="org.sakaiproject.assignment2.logic.ScheduledNotification" />
+	   <property name="multipartMap" ref="multipartMap" />
+	   <property name="serverConfigurationService" ref="org.sakaiproject.component.api.ServerConfigurationService" />
+	   <property name="contentHostingService" ref="org.sakaiproject.content.api.ContentHostingService" />
    </bean>
    
    <bean id="FilePickerBean" class="org.sakaiproject.assignment2.tool.beans.FilePickerBean">

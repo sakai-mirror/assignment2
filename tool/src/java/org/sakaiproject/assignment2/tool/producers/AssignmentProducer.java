@@ -330,13 +330,15 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
                 String.valueOf(AssignmentConstants.SUBMIT_INLINE_ONLY),
                 String.valueOf(AssignmentConstants.SUBMIT_ATTACH_ONLY),
                 String.valueOf(AssignmentConstants.SUBMIT_INLINE_AND_ATTACH),
-                String.valueOf(AssignmentConstants.SUBMIT_NON_ELECTRONIC)
+                String.valueOf(AssignmentConstants.SUBMIT_NON_ELECTRONIC),
+                String.valueOf(AssignmentConstants.SUBMIT_SINGLE_UPLOADED_FILE_ONLY)
         };
         String[] submisison_type_labels = new String[] {
                 "assignment2.submission_type." + String.valueOf(AssignmentConstants.SUBMIT_INLINE_ONLY),
                 "assignment2.submission_type." + String.valueOf(AssignmentConstants.SUBMIT_ATTACH_ONLY),
                 "assignment2.submission_type." + String.valueOf(AssignmentConstants.SUBMIT_INLINE_AND_ATTACH),
-                "assignment2.submission_type." + String.valueOf(AssignmentConstants.SUBMIT_NON_ELECTRONIC)
+                "assignment2.submission_type." + String.valueOf(AssignmentConstants.SUBMIT_NON_ELECTRONIC),
+                "assignment2.submission_type." + String.valueOf(AssignmentConstants.SUBMIT_SINGLE_UPLOADED_FILE_ONLY)
         };
         UISelect.make(form, "submission_type", submission_type_values,
                 submisison_type_labels, assignment2OTP + ".submissionType").setMessageKeys();

@@ -417,6 +417,8 @@ public class ImportExportLogicImpl implements ImportExportLogic {
                 newAssnDef.setSubmissionType(AssignmentConstants.SUBMIT_NON_ELECTRONIC);
             } else if (oContent.getTypeOfSubmission() == Assignment.TEXT_ONLY_ASSIGNMENT_SUBMISSION) {
                 newAssnDef.setSubmissionType(AssignmentConstants.SUBMIT_INLINE_ONLY);
+            } else if (oContent.getTypeOfSubmission() == Assignment.SINGLE_ATTACHMENT_SUBMISSION) {
+                newAssnDef.setSubmissionType(AssignmentConstants.SUBMIT_SINGLE_UPLOADED_FILE_ONLY);
             } else {
                 // default to text and attachments
                 newAssnDef.setSubmissionType(AssignmentConstants.SUBMIT_INLINE_AND_ATTACH);

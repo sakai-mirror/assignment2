@@ -74,6 +74,10 @@ public class AssignmentConstants {
      * Submissions will be non-electronic
      */
     public final static int SUBMIT_NON_ELECTRONIC = 3;
+    /**
+     * Submissions will be single uploaded file only
+     */
+    public final static int SUBMIT_SINGLE_UPLOADED_FILE_ONLY = 4;
 
     // Assignment status
     /**

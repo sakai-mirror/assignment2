@@ -1,23 +1,51 @@
 package org.sakaiproject.assignment2.tool.beans;
 
+import java.io.IOException;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.HashSet;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment2.exception.SubmissionClosedException;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
 import org.sakaiproject.assignment2.logic.ScheduledNotification;
+import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.tool.WorkFlowResult;
+import org.sakaiproject.authz.api.SecurityAdvisor;
+import org.sakaiproject.authz.api.SecurityAdvisor.SecurityAdvice;
+import org.sakaiproject.authz.cover.SecurityService;
+import org.springframework.web.multipart.MultipartFile;
+import org.sakaiproject.component.api.ComponentManager;
+import org.sakaiproject.component.api.ServerConfigurationService;
+import org.sakaiproject.content.api.ContentResource;
+import org.sakaiproject.content.api.ResourceTypeRegistry;
+import org.sakaiproject.entity.api.Reference;
+import org.sakaiproject.entity.api.ResourceProperties;
+import org.sakaiproject.entity.api.ResourcePropertiesEdit;
+import org.sakaiproject.entity.cover.EntityManager;
+import org.sakaiproject.exception.PermissionException;
+import org.sakaiproject.tool.api.ToolSession;
+import org.sakaiproject.tool.cover.SessionManager;
+import org.sakaiproject.tool.cover.ToolManager;
+import org.sakaiproject.util.Validator;
 
 import uk.org.ponder.beanutil.entity.EntityBeanLocator;
 import uk.org.ponder.messageutil.TargettedMessage;
 import uk.org.ponder.messageutil.TargettedMessageList;
 
 
+
 public class StudentSubmissionBean {
 
+    private static final Log log = LogFactory.getLog(StudentSubmissionBean.class);
+    
     // Service Application Scope Dependency
     private AssignmentSubmissionLogic submissionLogic;
     public void setSubmissionLogic(AssignmentSubmissionLogic submissionLogic) {
@@ -66,6 +94,26 @@ public class StudentSubmissionBean {
     public void setAssignmentSubmissionEntityBeanLocator(EntityBeanLocator entityBeanLocator) {
         this.asEntityBeanLocator = entityBeanLocator;
     }
+    
+
+    private Map<String, MultipartFile> uploads;
+    public void setMultipartMap(Map<String, MultipartFile> uploads)
+    {
+        this.uploads = uploads;
+    }
+    
+    private ContentHostingService contentHostingService;
+    public void setContentHostingService(ContentHostingService contentHostingService)
+    {
+        this.contentHostingService = contentHostingService;
+    }
+    
+    private ServerConfigurationService serverConfigurationService;
+    public void setContentHostingService(ServerConfigurationService serverConfigurationService)
+    {
+        this.serverConfigurationService = serverConfigurationService;
+    }
+
 
     /*
      * STUDENT FUNCTIONS
@@ -123,7 +171,7 @@ public class StudentSubmissionBean {
 
         return WorkFlowResult.STUDENT_SUBMIT_SUBMISSION;
     }
-
+    
     public WorkFlowResult processActionPreview(){
         // save this submission as draft if submission is closed so we don't
         // lose the student's work. this may happen if the user was working
@@ -181,6 +229,194 @@ public class StudentSubmissionBean {
 
     public WorkFlowResult processActionCancel() {
         return WorkFlowResult.STUDENT_CANCEL_SUBMISSION;
+    }
+    
+    // for single file upload type
+    // submit by uploading
+    public WorkFlowResult processActionSingleFileUploadSubmit()
+    {
+        if (assignmentId == null){
+            return WorkFlowResult.STUDENT_SUBMISSION_FAILURE;
+        }
+    	
+        Assignment2 assignment = assignmentLogic.getAssignmentById(assignmentId);
+		AssignmentSubmissionVersion asv = studentSubmissionVersionFlowBean.getAssignmentSubmissionVersion();
+
+    	MultipartFile uploadedFile = uploads.get("file");
+
+        long uploadedFileSize = uploadedFile.getSize();
+        if (uploadedFileSize == 0)
+        {
+            messages.addMessage(new TargettedMessage("assignment2.student-submission.single-uploaded-file.alert.choose_file", new Object[] {},
+                        TargettedMessage.SEVERITY_ERROR));
+            return WorkFlowResult.STUDENT_SUBMISSION_FAILURE;
+        }
+        
+        // double check that the file doesn't exceed our upload limit
+        String maxFileSizeInMB = serverConfigurationService.getString("content.upload.max", "1");
+        int maxFileSizeInBytes = 1024 * 1024;
+        try {
+            maxFileSizeInBytes = Integer.parseInt(maxFileSizeInMB) * maxFileSizeInBytes;
+        } catch(NumberFormatException e) {
+            log.warn("Unable to parse content.upload.max retrieved from properties file during upload");
+        }
+
+        if (uploadedFileSize > maxFileSizeInBytes) {
+            messages.addMessage(new TargettedMessage("assignment2.uploadall.error.file_size", new Object[] {maxFileSizeInMB}, TargettedMessage.SEVERITY_ERROR));
+            return WorkFlowResult.STUDENT_SUBMISSION_FAILURE;
+        }
+        
+        // add submission
+        AssignmentSubmission assignmentSubmission = (AssignmentSubmission) asEntityBeanLocator.locateBean(ASOTPKey);
+
+        //check whether honor pledge was added if required
+        submissionLogic.saveStudentSubmission(assignmentSubmission.getUserId(), assignment, false, 
+             asv.getSubmittedText(), asv.getSubmissionAttachSet(), true);
+
+		if (uploadedFile.getName() == null || uploadedFile.getName().length() == 0)
+		{
+			messages.addMessage(new TargettedMessage("assignment2.uploadall.error.file_size", new Object[] {maxFileSizeInMB}, TargettedMessage.SEVERITY_ERROR));
+		}
+	    else if (uploadedFile.getName().length() > 0)
+		{
+			String filename = Validator.getFileName(uploadedFile.getName());
+			try
+			{
+				byte[] bytes = uploadedFile.getBytes();
+				String contentType = uploadedFile.getContentType();
+		
+				if(bytes.length >= maxFileSizeInBytes)
+				{
+					messages.addMessage(new TargettedMessage("assignment2.student-submission.single-uploaded-file.alert.big_file", new Object[]{ maxFileSizeInBytes }, TargettedMessage.SEVERITY_ERROR));
+					// addAlert(state, hrb.getString("size") + " " + max_file_size_mb + "MB " + hrb.getString("exceeded2"));
+				}
+				else if(bytes.length > 0)
+				{
+					// we just want the file name part - strip off any drive and path stuff
+					String name = Validator.getFileName(filename);
+					String resourceId = Validator.escapeResourceName(name);
+		
+					// make a set of properties to add for the new resource
+					ResourcePropertiesEdit props = contentHostingService.newResourceProperties();
+					props.addProperty(ResourceProperties.PROP_DISPLAY_NAME, name);
+					props.addProperty(ResourceProperties.PROP_DESCRIPTION, filename);
+		
+					// make an attachment resource for this URL
+					try
+					{
+						String siteId = ToolManager.getCurrentPlacement().getContext();
+		
+						String toolName = "Assignment";
+						
+						// add attachment
+						enableSecurityAdvisor();
+						ContentResource attachment = contentHostingService.addAttachmentResource(resourceId, siteId, toolName, contentType, bytes, props);
+						disableSecurityAdvisors();
+						
+						Set<String> attachments = new HashSet<String>();;
+						try
+						{
+							Reference ref = EntityManager.newReference(contentHostingService.getReference(attachment.getId()));
+							attachments.add(ref.getReference());
+						}
+						catch(Exception ee)
+					    {
+							log.warn(this + "doAttachUpload cannot find reference for " + attachment.getId() + ee.getMessage());
+						}
+						asv.setSubmittedAttachmentRefs((String[]) attachments.toArray());
+					}
+					catch (PermissionException e)
+					{
+						messages.addMessage(new TargettedMessage("assignment2.student-submission.single-uploaded-file.alert.notpermis4", new Object[]{name}, TargettedMessage.SEVERITY_ERROR));
+					}
+					catch(RuntimeException e)
+					{
+						if(contentHostingService.ID_LENGTH_EXCEPTION.equals(e.getMessage()))
+						{
+							// couldn't we just truncate the resource-id instead of rejecting the upload?
+							messages.addMessage(new TargettedMessage("assignment2.student-submission.single-uploaded-file.alert.toolong", new Object[]{name}, TargettedMessage.SEVERITY_ERROR));
+						}
+						else
+						{
+							log.debug(this + ".doAttachupload ***** Runtime Exception ***** " + e.getMessage());
+							messages.addMessage(new TargettedMessage("assignment2.student-submission.single-uploaded-file.alert.failed", new Object[]{name}, TargettedMessage.SEVERITY_ERROR));
+						}
+					}
+					catch(Exception ignore)
+					{
+						// other exceptions should be caught earlier
+						log.debug(this + ".doAttachupload ***** Unknown Exception ***** " + ignore.getMessage());
+					}
+				}
+			}
+			catch (IOException ioException)
+			{
+				log.debug(this + ".doAttachupload ioException" + ioException.getMessage());
+			}
+		}
+			
+
+        // just in case submission closed while the student was working on
+        // it, double check that the current submission isn't still
+        // draft before we take the "success" actions. if the submission was
+        // closed when they hit "submit", the back end saved their submission as draft
+        AssignmentSubmission newSubmission = submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(assignmentId, assignmentSubmission.getUserId());
+
+        if (!newSubmission.getCurrentSubmissionVersion().isDraft()) {
+            // add a success message.  the message will change depending on 
+            // if this submission is late or not
+            if (assignment.getDueDate() != null && assignment.getDueDate().before(new Date())) {
+                messages.addMessage(new TargettedMessage("assignment2.student-submit.info.submission_submitted.late",
+                        new Object[] { assignment.getTitle() }, TargettedMessage.SEVERITY_INFO));
+            } else {
+                messages.addMessage(new TargettedMessage("assignment2.student-submit.info.submission_submitted",
+                        new Object[] { assignment.getTitle() }, TargettedMessage.SEVERITY_INFO));
+            }
+
+            // Send out notifications
+            if (assignment.isSendSubmissionNotifications()) {                 
+                scheduledNotification.notifyInstructorsOfSubmission(newSubmission);
+            }
+
+            // students always get a notification
+            scheduledNotification.notifyStudentThatSubmissionWasAccepted(newSubmission);
+        } else {
+        	  messages.addMessage(new TargettedMessage("assignment2.student-submit.error.submission_save_draft",
+                      new Object[] { assignment.getTitle() }, TargettedMessage.SEVERITY_ERROR));
+              return WorkFlowResult.STUDENT_SUBMISSION_FAILURE;
+        }
+    	return WorkFlowResult.STUDENT_SUBMIT_SUBMISSION;
+    }
+    
+    // cancel submission
+    public WorkFlowResult processActionSingleFileUploadCancel()
+    {
+    	return WorkFlowResult.STUDENT_CANCEL_SUBMISSION;
+    }
+    
+    /**
+     * remove all security advisors
+     */
+    protected void disableSecurityAdvisors()
+    {
+    	// remove all security advisors
+    	SecurityService.clearAdvisors();
+    }
+
+    /**
+     * Establish a security advisor to allow the "embedded" azg work to occur
+     * with no need for additional security permissions.
+     */
+    protected void enableSecurityAdvisor()
+    {
+      // put in a security advisor so we can create citationAdmin site without need
+      // of further permissions
+      SecurityService.pushAdvisor(new SecurityAdvisor() {
+        public SecurityAdvice isAllowed(String userId, String function, String reference)
+        {
+          return SecurityAdvice.ALLOWED;
+        }
+      });
     }
 
 }

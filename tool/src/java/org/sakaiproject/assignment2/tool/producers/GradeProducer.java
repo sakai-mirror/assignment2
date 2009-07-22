@@ -293,7 +293,8 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
 
             //If assignment allows for submitted attachments, display the attachment section
             if (assignment.getSubmissionType() == AssignmentConstants.SUBMIT_ATTACH_ONLY ||
-                    assignment.getSubmissionType() == AssignmentConstants.SUBMIT_INLINE_AND_ATTACH) {
+                    assignment.getSubmissionType() == AssignmentConstants.SUBMIT_INLINE_AND_ATTACH ||
+                    assignment.getSubmissionType() == AssignmentConstants.SUBMIT_SINGLE_UPLOADED_FILE_ONLY) {
                 UIOutput.make(tofill, "submitted_attachments_fieldset");
                 if (assignmentSubmissionVersion.getSubmissionAttachSet() != null && !assignmentSubmissionVersion.getSubmissionAttachSet().isEmpty()){
                     attachmentListRenderer.makeAttachmentFromSubmissionAttachmentSet(tofill, "submitted_attachment_list:", params.viewID, 

@@ -537,6 +537,13 @@ ul#assignmentList li.row div.overlayMessage .success {
     margin-bottom: 10px;
 }
 
+/*
+ * Single File Attachments
+ */
+#singleAttachmentFieldset ol {
+    margin-bottom: 10px;
+}
+
 /* 
  *  Student Assignment List and Landing Page
  */

@@ -183,6 +183,20 @@
 	</fieldset>													
 	</form>	
 	
+	<form method="post" rsf:id="single_file_upload_form" enctype="multipart/form-data">
+		<div class="highlightPanel">
+			<p class="shorttext">
+				<label rsf:id="msg=assignment2.stuent-submission.single-uploaded-file.choose_file" for="file">Choose a file: </label>
+				<input type="file" name="file" id="file" class="upload" />
+			</p>
+			
+			<p class="act">
+				<input rsf:id="single_file_submit_button" type="submit" name="single_file_submit_button" id="single_file_submit_button" accesskey="s" value="Upload" />
+				<input rsf:id="single_file_cancel_button" type="submit" name="single_file_cancel_button" id="single_file_cancel_button" accesskey="x" value="Cancel" />
+			</p>
+		</div>
+	</form>
+	
 	<div style="display:none" id="submit-confirm-dialog">
         <ul style="margin:0;padding:0;display:inline;">
             <li class="alertMessageInline" rsf:id="msg=assignment2.student-submit.confirm.msg">Are you sure you want to submit this?!!</li>
