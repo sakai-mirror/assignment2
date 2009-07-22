@@ -226,6 +226,11 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
             UIMessage.make(joint, "honor_pledge_label", "assignment2.student-submit.honor_pledge_text");
             UIBoundBoolean.make(form, "honor_pledge", "#{StudentSubmissionBean.honorPledge}");
         }
+        
+        // display plagiarism check warning
+        if (assignment.isContentReviewEnabled()) {
+            UIMessage.make(joint, "plagiarism_check", "assignment2.student-submit.plagiarism_warning");
+        }
 
         form.parameters.add( new UIELBinding("StudentSubmissionBean.ASOTPKey", asOTPKey));
         form.parameters.add( new UIELBinding("StudentSubmissionBean.assignmentId", assignment.getId()));

@@ -368,7 +368,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
         }
         
         // ASNN-516 now let's run these attachments through the content review service, if appropriate
-        if (!version.isDraft() && assignment.getContentReviewRef() != null && subAttachSet != null) {
+        if (!version.isDraft() && assignment.isContentReviewEnabled() && subAttachSet != null) {
             if (contentReviewLogic.isContentReviewAvailable()) {
                 for (SubmissionAttachment att : subAttachSet) {
                     if (contentReviewLogic.isAttachmentAcceptableForReview(att.getAttachmentReference())) {

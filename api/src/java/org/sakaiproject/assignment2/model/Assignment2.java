@@ -731,5 +731,18 @@ public class Assignment2 {
         return isSubmissionOpen;
     }
 
-
+    /**
+     * 
+     * @return true if plagiarism checking (via ContentReviewService) has
+     * been enabled for this assignment
+     */
+    public boolean isContentReviewEnabled() {
+        boolean enabled = false;
+        if (this.contentReviewRef != null && 
+                this.contentReviewRef.trim().length() > 0) {
+            enabled = true;
+        }
+        
+        return enabled;
+    }
 }
