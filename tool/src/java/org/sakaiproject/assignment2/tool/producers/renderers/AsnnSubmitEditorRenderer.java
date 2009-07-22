@@ -160,6 +160,7 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
         	UIForm singleFileUploadform = UIForm.make(joint, "single_file_upload_form");
 
         	singleFileUploadform.parameters.add( new UIELBinding("StudentSubmissionBean.ASOTPKey", asOTPKey));
+        	singleFileUploadform.parameters.add( new UIELBinding("StudentSubmissionBean.ASVOTPKey", asvOTPKey));
 	        singleFileUploadform.parameters.add( new UIELBinding("StudentSubmissionBean.assignmentId", assignment.getId()));
 	        
         	UICommand.make(singleFileUploadform, "single_file_submit_button", UIMessage.make("assignment2.student-submit.submit"), 

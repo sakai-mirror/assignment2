@@ -17,12 +17,13 @@ import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
+import org.sakaiproject.assignment2.model.SubmissionAttachment;
 import org.sakaiproject.assignment2.tool.WorkFlowResult;
 import org.sakaiproject.authz.api.SecurityAdvisor;
 import org.sakaiproject.authz.api.SecurityAdvisor.SecurityAdvice;
 import org.sakaiproject.authz.cover.SecurityService;
 import org.springframework.web.multipart.MultipartFile;
-import org.sakaiproject.component.api.ComponentManager;
+import org.sakaiproject.component.cover.ComponentManager;
 import org.sakaiproject.component.api.ServerConfigurationService;
 import org.sakaiproject.content.api.ContentResource;
 import org.sakaiproject.content.api.ResourceTypeRegistry;
@@ -81,6 +82,7 @@ public class StudentSubmissionBean {
 
     // Property Binding
     public String ASOTPKey;
+    public String ASVOTPKey;
 
     // Request Scope Dependency
     private TargettedMessageList messages;
@@ -102,17 +104,9 @@ public class StudentSubmissionBean {
         this.uploads = uploads;
     }
     
-    private ContentHostingService contentHostingService;
-    public void setContentHostingService(ContentHostingService contentHostingService)
-    {
-        this.contentHostingService = contentHostingService;
-    }
-    
-    private ServerConfigurationService serverConfigurationService;
-    public void setContentHostingService(ServerConfigurationService serverConfigurationService)
-    {
-        this.serverConfigurationService = serverConfigurationService;
-    }
+    private ContentHostingService contentHostingService = (ContentHostingService) ComponentManager.get(ContentHostingService.class.getName());
+   
+    private ServerConfigurationService serverConfigurationService = (ServerConfigurationService) ComponentManager.get(ServerConfigurationService.class.getName());
 
 
     /*
@@ -231,8 +225,10 @@ public class StudentSubmissionBean {
         return WorkFlowResult.STUDENT_CANCEL_SUBMISSION;
     }
     
-    // for single file upload type
-    // submit by uploading
+    /**
+     * For single file update only
+     * @return
+     */
     public WorkFlowResult processActionSingleFileUploadSubmit()
     {
         if (assignmentId == null){
@@ -240,7 +236,11 @@ public class StudentSubmissionBean {
         }
     	
         Assignment2 assignment = assignmentLogic.getAssignmentById(assignmentId);
+        // add submission
+        AssignmentSubmission assignmentSubmission = (AssignmentSubmission) asEntityBeanLocator.locateBean(ASOTPKey);
+        AssignmentSubmissionVersion studentSubmissionPreviewVersion = (AssignmentSubmissionVersion) studentSubmissionVersionFlowBean.locateBean(ASVOTPKey);
 		AssignmentSubmissionVersion asv = studentSubmissionVersionFlowBean.getAssignmentSubmissionVersion();
+		Set<SubmissionAttachment> attachments = new HashSet<SubmissionAttachment>();
 
     	MultipartFile uploadedFile = uploads.get("file");
 
@@ -266,20 +266,13 @@ public class StudentSubmissionBean {
             return WorkFlowResult.STUDENT_SUBMISSION_FAILURE;
         }
         
-        // add submission
-        AssignmentSubmission assignmentSubmission = (AssignmentSubmission) asEntityBeanLocator.locateBean(ASOTPKey);
-
-        //check whether honor pledge was added if required
-        submissionLogic.saveStudentSubmission(assignmentSubmission.getUserId(), assignment, false, 
-             asv.getSubmittedText(), asv.getSubmissionAttachSet(), true);
-
-		if (uploadedFile.getName() == null || uploadedFile.getName().length() == 0)
+		if (uploadedFile.getOriginalFilename() == null || uploadedFile.getOriginalFilename().length() == 0)
 		{
 			messages.addMessage(new TargettedMessage("assignment2.uploadall.error.file_size", new Object[] {maxFileSizeInMB}, TargettedMessage.SEVERITY_ERROR));
 		}
-	    else if (uploadedFile.getName().length() > 0)
+	    else if (uploadedFile.getOriginalFilename().length() > 0)
 		{
-			String filename = Validator.getFileName(uploadedFile.getName());
+			String filename = Validator.getFileName(uploadedFile.getOriginalFilename());
 			try
 			{
 				byte[] bytes = uploadedFile.getBytes();
@@ -313,17 +306,22 @@ public class StudentSubmissionBean {
 						ContentResource attachment = contentHostingService.addAttachmentResource(resourceId, siteId, toolName, contentType, bytes, props);
 						disableSecurityAdvisors();
 						
-						Set<String> attachments = new HashSet<String>();;
 						try
 						{
 							Reference ref = EntityManager.newReference(contentHostingService.getReference(attachment.getId()));
-							attachments.add(ref.getReference());
+							SubmissionAttachment sAttachment = new SubmissionAttachment();
+							sAttachment.setAttachmentReference(ref.getReference());
+							sAttachment.setSubmissionVersion(asv);
+							
+							// only one attachment/per student is needed for this pupose
+							attachments.add(sAttachment);
 						}
 						catch(Exception ee)
 					    {
-							log.warn(this + "doAttachUpload cannot find reference for " + attachment.getId() + ee.getMessage());
+							log.warn(this + "processActionSingleFileUploadSubmit cannot find reference for " + attachment.getId() + ee.getMessage());
 						}
-						asv.setSubmittedAttachmentRefs((String[]) attachments.toArray());
+						
+						
 					}
 					catch (PermissionException e)
 					{
@@ -338,20 +336,28 @@ public class StudentSubmissionBean {
 						}
 						else
 						{
-							log.debug(this + ".doAttachupload ***** Runtime Exception ***** " + e.getMessage());
+							log.debug(this + ".processActionSingleFileUploadSubmit ***** Runtime Exception ***** " + e.getMessage());
 							messages.addMessage(new TargettedMessage("assignment2.student-submission.single-uploaded-file.alert.failed", new Object[]{name}, TargettedMessage.SEVERITY_ERROR));
 						}
 					}
 					catch(Exception ignore)
 					{
 						// other exceptions should be caught earlier
-						log.debug(this + ".doAttachupload ***** Unknown Exception ***** " + ignore.getMessage());
+						log.debug(this + ".processActionSingleFileUploadSubmit ***** Unknown Exception ***** " + ignore.getMessage());
 					}
+					
+			        //save the submission
+			        submissionLogic.saveStudentSubmission(assignmentSubmission.getUserId(), assignment, false, 
+			             "", attachments, true);
 				}
 			}
 			catch (IOException ioException)
 			{
-				log.debug(this + ".doAttachupload ioException" + ioException.getMessage());
+				log.debug(this + ".processActionSingleFileUploadSubmit ioException" + ioException.getMessage());
+			}
+			catch (Exception exception)
+			{
+				log.debug(this + ".processActionSingleFileUploadSubmit " + exception.getMessage());
 			}
 		}
 			
