@@ -537,6 +537,41 @@ ul#assignmentList li.row div.overlayMessage .success {
     margin-bottom: 10px;
 }
 
+/* The content review status display */
+.reviewReport {
+    margin-left: 10px;
+}
+
+.reviewReportStatus {
+    border: black solid 1px;
+}
+
+.reportStatus0, .reportStatus1, .reportStatus2, .reportStatus3, .reportStatus4 {
+    color:black !important;
+    padding-left:5px;
+    padding-right:5px;
+}
+
+.reportStatus0 {
+    border-right: blue 15px solid;
+}
+
+.reportStatus1 {
+    border-right: green 15px solid;
+}
+
+.reportStatus2 {
+    border-right: yellow 15px solid;
+}
+
+.reportStatus3 {
+    border-right: orange 15px solid;
+}
+
+.reportStatus4 {
+    border-right: red 15px solid;
+}
+
 /* 
  *  Student Assignment List and Landing Page
  */

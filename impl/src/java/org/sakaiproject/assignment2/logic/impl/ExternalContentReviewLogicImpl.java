@@ -162,10 +162,27 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
             // now let's iterate through the passed attachments and populate the
             // properties, if appropriate
             for (SubmissionAttachment attach : attachments) {
+                ContentReviewItem reviewItem = new ContentReviewItem(attach.getAttachmentReference());
+                
                 if (attRefReviewItemMap.containsKey(attach.getAttachmentReference())) {
-                    ContentReviewItem reviewItem = attRefReviewItemMap.get(attach.getAttachmentReference());
-                    populateProperties(reviewItem, attach, instructorView);
+                    reviewItem = attRefReviewItemMap.get(attach.getAttachmentReference());
+                } else {
+                    // check to see if this has been submitted yet. The call to getReviewItems only
+                    // returns successfully submitted review items. we want to know if
+                    // this attachment encountered an error along the way
+                    try
+                    {
+                        Long status = contentReview.getReviewStatus(attach.getAttachmentReference());
+                        reviewItem.setStatus(status);
+                    }
+                    catch (QueueException e)
+                    {
+                        if (log.isDebugEnabled()) log.debug("Attempt to retrieve status for attachment that has not been queued");
+                        // this attachment has not been submitted so leave ContentReviewItem empty
+                    }
                 }
+                
+                populateProperties(reviewItem, attach, instructorView);
             }
         }
     }
@@ -177,32 +194,31 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
      * @param instructorView true if this is for the instructor view. false if for student view
      */
     private void populateProperties(ContentReviewItem reviewItem, SubmissionAttachment attach, boolean instructorView) {
-        if (reviewItem == null || attach == null) {
-            throw new IllegalArgumentException("null reviewItem or attach passed to " +
-                    "populateProperties. reviewItem: " + reviewItem + " attach: " + attach);
-        }
+        if (reviewItem != null && attach != null) {
 
-        Map properties = attach.getProperties() != null ? attach.getProperties() : new HashMap();
-        String reviewScore = reviewItem.getReviewScore() != null ? reviewItem.getReviewScore() + "%" : "";
-        properties.put(AssignmentConstants.PROP_REVIEW_SCORE, reviewScore);
-        properties.put(AssignmentConstants.PROP_REVIEW_ICON_URL, reviewItem.getIconUrl());
-        
-        String reviewStatus = determineReviewStatus(reviewItem.getStatus());
-        properties.put(AssignmentConstants.PROP_REVIEW_STATUS, reviewStatus);
+            Map properties = attach.getProperties() != null ? attach.getProperties() : new HashMap();
 
-        if (reviewStatus != null) {
-            if (reviewStatus.equals(AssignmentConstants.REVIEW_STATUS_SUCCESS)) {
-                // now retrieve the report url if status shows it exists
-                String reportUrl = getReportUrl(attach.getAttachmentReference(), instructorView);
-                if (reportUrl != null) {
-                    properties.put(AssignmentConstants.PROP_REVIEW_URL, reportUrl);
+            String reviewStatus = determineReviewStatus(reviewItem.getStatus());
+            properties.put(AssignmentConstants.PROP_REVIEW_STATUS, reviewStatus);
+
+            if (reviewStatus != null) {
+                if (reviewStatus.equals(AssignmentConstants.REVIEW_STATUS_SUCCESS)) {
+                    String reviewScore = reviewItem.getReviewScore() != null ? reviewItem.getReviewScore() + "%" : "";
+                    properties.put(AssignmentConstants.PROP_REVIEW_SCORE, reviewScore);
+                    properties.put(AssignmentConstants.PROP_REVIEW_ICON_URL, reviewItem.getIconUrl());
+                    
+                    // now retrieve the report url if status shows it exists
+                    String reportUrl = getReportUrl(attach.getAttachmentReference(), instructorView);
+                    if (reportUrl != null) {
+                        properties.put(AssignmentConstants.PROP_REVIEW_URL, reportUrl);
+                    }
+                } else if (reviewStatus.equals(AssignmentConstants.REVIEW_STATUS_ERROR)) {
+                    properties.put(AssignmentConstants.PROP_REVIEW_ERROR_CODE, reviewItem.getStatus());
                 }
-            } else if (reviewStatus.equals(AssignmentConstants.REVIEW_STATUS_ERROR)) {
-                properties.put(AssignmentConstants.PROP_REVIEW_ERROR_CODE, reviewItem.getStatus());
             }
-        }
 
-        attach.setProperties(properties);
+            attach.setProperties(properties);
+        }
     }
     
     /**

@@ -22,7 +22,6 @@
 package org.sakaiproject.assignment2.tool.producers.renderers;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -172,6 +171,7 @@ public class AttachmentListRenderer {
                         
                         // we may need to display plagiarism checking results
                         if (properties.containsKey(AssignmentConstants.PROP_REVIEW_STATUS)) {
+                            UIOutput.make(joint, "review_report_info");
                             String status = (String)properties.get(AssignmentConstants.PROP_REVIEW_STATUS);
                             if (status.equals(AssignmentConstants.REVIEW_STATUS_ERROR)) {
                                 String errorText = contentReviewLogic.getErrorMessage((Long)properties.get(AssignmentConstants.PROP_REVIEW_ERROR_CODE));
@@ -180,17 +180,18 @@ public class AttachmentListRenderer {
                                 errorDisplayDecorators.add(new UITooltipDecorator(errorText));
                                 errorDisplay.decorators = errorDisplayDecorators;
                             } else if (status.equals(AssignmentConstants.REVIEW_STATUS_SUCCESS)) {
+                                // create the container
+                                UIOutput.make(joint, "review_report_status");
+                                
+                                String score = (String)(properties.get(AssignmentConstants.PROP_REVIEW_SCORE));
+                                String statusCssClass = getCssClassForReviewScore(score);
+                                
                                 // create the link
-                                UILink reportLink = UILink.make(joint, "review_report_link", (String)properties.get(AssignmentConstants.PROP_REVIEW_URL));
+                                UILink reportLink = UILink.make(joint, "review_report_link", score, (String)properties.get(AssignmentConstants.PROP_REVIEW_URL));
                                 DecoratorList reportLinkDecorators = new DecoratorList();
                                 reportLinkDecorators.add(new UITooltipDecorator("Click to view originality report"));
+                                reportLinkDecorators.add(new UIFreeAttributeDecorator("class", statusCssClass));
                                 reportLink.decorators = reportLinkDecorators;
-
-                                UIOutput.make(joint, "review_percent", (String)(properties.get(AssignmentConstants.PROP_REVIEW_SCORE)));
-                                UIOutput statusImg = UIOutput.make(joint, "review_status_img");
-                                DecoratorList statusImgDecorators = new DecoratorList();
-                                statusImgDecorators.add(new UIFreeAttributeDecorator("src", (String)properties.get(AssignmentConstants.PROP_REVIEW_ICON_URL)));
-                                statusImg.decorators = statusImgDecorators;
                                 
                             }
                         }
@@ -199,6 +200,39 @@ public class AttachmentListRenderer {
             }
 
         } //Ending for loop
+    }
+    
+    /**
+     * Given the score in the {@link AssignmentConstants#PROP_REVIEW_SCORE} property,
+     * returns the appropriate style class for displaying this score
+     * @param score
+     * @return
+     */
+    private String getCssClassForReviewScore(String score) {
+        String cssClass = "reportStatus4";
+        if (score != null) {
+            // strip out the %
+            String modScore = score.replace("%", "");
+            try {
+                long scoreAsNum = Long.parseLong(modScore);
+                if (scoreAsNum == 0) {
+                    cssClass = "reportStatus0";
+                } else if (scoreAsNum < 25) {
+                    cssClass = "reportStatus1";
+                } else if (scoreAsNum < 50) {
+                    cssClass = "reportStatus2";
+                } else if (scoreAsNum < 75) {
+                    cssClass = "reportStatus3";
+                } else {
+                    cssClass = "reportStatus4";
+                }
+            } catch (NumberFormatException nfe) {
+                // default to worst case
+                cssClass = "reportStatus4";
+            }
+        }
+        
+        return cssClass;
     }
 
 }
