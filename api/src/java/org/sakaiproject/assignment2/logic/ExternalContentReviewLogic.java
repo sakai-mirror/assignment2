@@ -103,4 +103,6 @@ public interface ExternalContentReviewLogic {
      * returns an internationalized error message representing the error textually
      */
     public String getErrorMessage(Long errorCode);
+    
+    public String getTaskId(Assignment2 assign);
 }

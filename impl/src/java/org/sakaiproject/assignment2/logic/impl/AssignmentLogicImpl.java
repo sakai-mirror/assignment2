@@ -45,6 +45,7 @@ import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
 import org.sakaiproject.assignment2.logic.ExternalAnnouncementLogic;
 import org.sakaiproject.assignment2.logic.ExternalCalendarLogic;
+import org.sakaiproject.assignment2.logic.ExternalContentReviewLogic;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.logic.GradebookItem;
@@ -125,6 +126,11 @@ public class AssignmentLogicImpl implements AssignmentLogic{
     public void setEntityProviderManager(EntityProviderManager entityProviderManager) {
         this.entityProviderManager = entityProviderManager;
     }
+    
+    private ExternalContentReviewLogic externalContentReviewLogic;
+    public void setExternalContentReviewLogic(ExternalContentReviewLogic externalContentReviewLogic) {
+        this.externalContentReviewLogic = externalContentReviewLogic;
+    }
 
     public void init(){
         if(log.isDebugEnabled()) log.debug("init");
@@ -158,14 +164,14 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 
         // TODO ASNN-516 Check for ContentReview and populate
         // check for null entityProviderManager so we don't have to mock it for the unit tests
-        if (entityProviderManager != null) {
-            EntityProvider turnitinAsnnProvider = entityProviderManager.getProviderByPrefix("turnitin-assignment");
-            if (turnitinAsnnProvider != null && turnitinAsnnProvider instanceof CRUDable) {
-                CRUDable crudable = (CRUDable) turnitinAsnnProvider;
-                Map tiiopts = (Map) crudable.getEntity(new EntityReference("turnitin-assignment", encodeTIIAsnn2ID(assignmentId)));
-                assign.setProperties(tiiopts); // TODO this should be a map merge and not a complete replacement
-            }
-        }
+        //if (entityProviderManager != null) {
+        //    EntityProvider turnitinAsnnProvider = entityProviderManager.getProviderByPrefix("turnitin-assignment");
+        //    if (turnitinAsnnProvider != null && turnitinAsnnProvider instanceof CRUDable) {
+        //        CRUDable crudable = (CRUDable) turnitinAsnnProvider;
+        //        Map tiiopts = (Map) crudable.getEntity(new EntityReference("turnitin-assignment", externalContentReviewLogic.getTaskId(assign)));
+        //        assign.setProperties(tiiopts); // TODO this should be a map merge and not a complete replacement
+        //    }
+        //}
         
         return assign;
     }
@@ -351,28 +357,21 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 
         // TODO ASNN-516 Content Review / Turnitin Integration
         if (assignment.getProperties().containsKey("USE_TII") && ((Boolean) assignment.getProperties().get("USE_TII")).booleanValue()) {
-            String tiiAsnnTitle = encodeTIIAsnn2ID(assignment.getId());
+            String tiiAsnnTitle = externalContentReviewLogic.getTaskId(assignment);
             log.debug("Going to Create TII Asnn with title: " + tiiAsnnTitle);
-            EntityProvider turnitinAsnnProvider = entityProviderManager.getProviderByPrefix("turnitin-assignment");
-            if (turnitinAsnnProvider instanceof CRUDable) {
-                CRUDable crudable = (CRUDable) turnitinAsnnProvider;
-                crudable.createEntity(new EntityReference("turnitin-assignment",tiiAsnnTitle), assignment.getProperties(), null);
-                assignment.setContentReviewRef(tiiAsnnTitle);
-                dao.update(assignment);
-                
-            }
+            //EntityProvider turnitinAsnnProvider = entityProviderManager.getProviderByPrefix("turnitin-assignment");
+            //if (turnitinAsnnProvider instanceof CRUDable) {
+            //    CRUDable crudable = (CRUDable) turnitinAsnnProvider;
+            //    crudable.createEntity(new EntityReference("turnitin-assignment",tiiAsnnTitle), assignment.getProperties(), null);
+            //    assignment.setContentReviewRef(tiiAsnnTitle);
+            //    dao.update(assignment);
+            //    
+            //}
+            assignment.setContentReviewRef(tiiAsnnTitle);
+            dao.update(assignment);
         }
 
     }
-    
-    private String encodeTIIAsnn2ID(Long asnnid) {
-        return "Asnn2Provisioned" + asnnid;
-    }
-    
-    private Long decodeTIIAsnn2ID(String tiititle) {
-        return Long.parseLong(tiititle.substring(18));
-    }
-
 
     public void deleteAssignment(Assignment2 assignment) throws SecurityException, AnnouncementPermissionException
     {

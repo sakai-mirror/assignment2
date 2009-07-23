@@ -139,8 +139,8 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
      * @return the "taskId" required by the {@link ContentReviewService} to uniquely
      * identify this assignment in the service
      */
-    private String getTaskId(Assignment2 assign) {
-        return "Asnn2 Provisioned " + assign.getId();
+    public String getTaskId(Assignment2 assign) {
+        return "/assignment2/" + assign.getId();
     }
     
     public void populateReviewProperties(Assignment2 assignment, Collection<SubmissionAttachment> attachments, boolean instructorView) {
