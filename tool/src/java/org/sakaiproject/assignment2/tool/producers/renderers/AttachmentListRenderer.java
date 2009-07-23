@@ -29,12 +29,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment2.logic.AttachmentInformation;
 import org.sakaiproject.assignment2.logic.ExternalContentLogic;
-import org.sakaiproject.assignment2.logic.ExternalContentReviewLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentAttachment;
 import org.sakaiproject.assignment2.model.FeedbackAttachment;
 import org.sakaiproject.assignment2.model.SubmissionAttachment;
-import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 
 import uk.org.ponder.beanutil.entity.EntityBeanLocator;
 import uk.org.ponder.rsf.components.UIContainer;
@@ -42,9 +40,6 @@ import uk.org.ponder.rsf.components.UIJointContainer;
 import uk.org.ponder.rsf.components.UILink;
 import uk.org.ponder.rsf.components.UIMessage;
 import uk.org.ponder.rsf.components.UIOutput;
-import uk.org.ponder.rsf.components.decorators.DecoratorList;
-import uk.org.ponder.rsf.components.decorators.UIFreeAttributeDecorator;
-import uk.org.ponder.rsf.components.decorators.UITooltipDecorator;
 
 /**
  * Contains a number of convenience methods for rendering different kinds of
@@ -75,9 +70,9 @@ public class AttachmentListRenderer {
         this.assignment2EntityBeanLocator = assignment2EntityBeanLocator;
     }
     
-    private ExternalContentReviewLogic contentReviewLogic;
-    public void setExternalContentReviewLogic(ExternalContentReviewLogic contentReviewLogic) {
-        this.contentReviewLogic = contentReviewLogic;
+    private ReviewStatusRenderer reviewStatusRenderer;
+    public void setReviewStatusRenderer(ReviewStatusRenderer reviewStatusRenderer) {
+        this.reviewStatusRenderer = reviewStatusRenderer;
     }
 
     /**
@@ -165,74 +160,15 @@ public class AttachmentListRenderer {
                     UILink.make(joint, "attachment_link", attach.getDisplayName(), attach.getUrl());  
                     UIOutput.make(joint, "attachment_size", file_size);
                     
-                    // check for properties
+                    // ASNN-516 check for properties
                     Map properties = attRefPropertiesMap.get(ref);
-                    if (properties != null && !properties.isEmpty()) {
-                        
-                        // we may need to display plagiarism checking results
-                        if (properties.containsKey(AssignmentConstants.PROP_REVIEW_STATUS)) {
-                            UIOutput.make(joint, "review_report_info");
-                            String status = (String)properties.get(AssignmentConstants.PROP_REVIEW_STATUS);
-                            if (status.equals(AssignmentConstants.REVIEW_STATUS_ERROR)) {
-                                String errorText = contentReviewLogic.getErrorMessage((Long)properties.get(AssignmentConstants.PROP_REVIEW_ERROR_CODE));
-                                UIOutput errorDisplay = UIOutput.make(joint, "review_error");
-                                DecoratorList errorDisplayDecorators = new DecoratorList();
-                                errorDisplayDecorators.add(new UITooltipDecorator(errorText));
-                                errorDisplay.decorators = errorDisplayDecorators;
-                            } else if (status.equals(AssignmentConstants.REVIEW_STATUS_SUCCESS)) {
-                                // create the container
-                                UIOutput.make(joint, "review_report_status");
-                                
-                                String score = (String)(properties.get(AssignmentConstants.PROP_REVIEW_SCORE));
-                                String statusCssClass = getCssClassForReviewScore(score);
-                                
-                                // create the link
-                                UILink reportLink = UILink.make(joint, "review_report_link", score, (String)properties.get(AssignmentConstants.PROP_REVIEW_URL));
-                                DecoratorList reportLinkDecorators = new DecoratorList();
-                                reportLinkDecorators.add(new UITooltipDecorator("Click to view originality report"));
-                                reportLinkDecorators.add(new UIFreeAttributeDecorator("class", statusCssClass));
-                                reportLink.decorators = reportLinkDecorators;
-                                
-                            }
-                        }
+                    if (properties != null) {
+                        reviewStatusRenderer.makeReviewStatusIndicator(joint, "review_report:", properties);
                     }
                 }
             }
 
         } //Ending for loop
-    }
-    
-    /**
-     * Given the score in the {@link AssignmentConstants#PROP_REVIEW_SCORE} property,
-     * returns the appropriate style class for displaying this score
-     * @param score
-     * @return
-     */
-    private String getCssClassForReviewScore(String score) {
-        String cssClass = "reportStatus4";
-        if (score != null) {
-            // strip out the %
-            String modScore = score.replace("%", "");
-            try {
-                long scoreAsNum = Long.parseLong(modScore);
-                if (scoreAsNum == 0) {
-                    cssClass = "reportStatus0";
-                } else if (scoreAsNum < 25) {
-                    cssClass = "reportStatus1";
-                } else if (scoreAsNum < 50) {
-                    cssClass = "reportStatus2";
-                } else if (scoreAsNum < 75) {
-                    cssClass = "reportStatus3";
-                } else {
-                    cssClass = "reportStatus4";
-                }
-            } catch (NumberFormatException nfe) {
-                // default to worst case
-                cssClass = "reportStatus4";
-            }
-        }
-        
-        return cssClass;
     }
 
 }
