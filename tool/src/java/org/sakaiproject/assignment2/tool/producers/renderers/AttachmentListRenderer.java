@@ -21,17 +21,21 @@
 
 package org.sakaiproject.assignment2.tool.producers.renderers;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment2.logic.AttachmentInformation;
 import org.sakaiproject.assignment2.logic.ExternalContentLogic;
+import org.sakaiproject.assignment2.logic.ExternalContentReviewLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentAttachment;
 import org.sakaiproject.assignment2.model.FeedbackAttachment;
 import org.sakaiproject.assignment2.model.SubmissionAttachment;
+import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 
 import uk.org.ponder.beanutil.entity.EntityBeanLocator;
 import uk.org.ponder.rsf.components.UIContainer;
@@ -39,6 +43,9 @@ import uk.org.ponder.rsf.components.UIJointContainer;
 import uk.org.ponder.rsf.components.UILink;
 import uk.org.ponder.rsf.components.UIMessage;
 import uk.org.ponder.rsf.components.UIOutput;
+import uk.org.ponder.rsf.components.decorators.DecoratorList;
+import uk.org.ponder.rsf.components.decorators.UIFreeAttributeDecorator;
+import uk.org.ponder.rsf.components.decorators.UITooltipDecorator;
 
 /**
  * Contains a number of convenience methods for rendering different kinds of
@@ -68,6 +75,11 @@ public class AttachmentListRenderer {
     public void setAssignment2EntityBeanLocator(EntityBeanLocator assignment2EntityBeanLocator) {
         this.assignment2EntityBeanLocator = assignment2EntityBeanLocator;
     }
+    
+    private ExternalContentReviewLogic contentReviewLogic;
+    public void setExternalContentReviewLogic(ExternalContentReviewLogic contentReviewLogic) {
+        this.contentReviewLogic = contentReviewLogic;
+    }
 
     /**
      * Use this for rendering attachments from an Assignment2 assignment
@@ -79,60 +91,66 @@ public class AttachmentListRenderer {
      * @param aaSet
      */
     public void makeAttachmentFromAssignmentAttachmentSet(UIContainer tofill, String divID, String currentViewID, Set<AssignmentAttachment> aaSet) {
-        Set<String> refSet = new HashSet<String>();
+        Map<String, Map> attRefPropertiesMap = new HashMap<String, Map>();
         if (aaSet != null){
             for (AssignmentAttachment aa : aaSet) {
-                refSet.add(aa.getAttachmentReference());
+                attRefPropertiesMap.put(aa.getAttachmentReference(), aa.getProperties());
             }
         }
-        makeAttachment(tofill, divID, currentViewID, refSet);
+        makeAttachment(tofill, divID, currentViewID, attRefPropertiesMap);
     }
 
     public void makeAttachmentFromAssignment2OTPAttachmentSet(UIContainer tofill, String divID, String currentViewID, String a2OTPKey) {
         Assignment2 assignment = (Assignment2)assignment2EntityBeanLocator.locateBean(a2OTPKey);
-        Set<String> refSet = new HashSet<String>();
+        Map<String, Map> attRefPropertiesMap = new HashMap<String, Map>();
         if (assignment != null && assignment.getAttachmentSet() != null){
             for (AssignmentAttachment aa : assignment.getAttachmentSet()) {
-                refSet.add(aa.getAttachmentReference());
+                attRefPropertiesMap.put(aa.getAttachmentReference(), aa.getProperties());
             }
         }
-        makeAttachment(tofill, divID, currentViewID, refSet);
+        makeAttachment(tofill, divID, currentViewID, attRefPropertiesMap);
     }
 
     public void makeAttachmentFromSubmissionAttachmentSet(UIContainer tofill, String divID, String currentViewID,
             Set<SubmissionAttachment> asaSet) {
-        Set<String> refSet = new HashSet<String>();
+        Map<String, Map> attRefPropertiesMap = new HashMap<String, Map>();
         if (asaSet != null) {
             for (SubmissionAttachment asa : asaSet) {
-                refSet.add(asa.getAttachmentReference());
+                attRefPropertiesMap.put(asa.getAttachmentReference(), asa.getProperties());
             }
         }
-        makeAttachment(tofill, divID, currentViewID, refSet);
+        makeAttachment(tofill, divID, currentViewID, attRefPropertiesMap);
     }
 
     public void makeAttachmentFromFeedbackAttachmentSet(UIContainer tofill, String divID, String currentViewID,
             Set<FeedbackAttachment> afaSet) {
-        Set<String> refSet = new HashSet<String>();
+        Map<String, Map> attRefPropertiesMap = new HashMap<String, Map>();
         if (afaSet != null) {
             for (FeedbackAttachment afa : afaSet) {
-                refSet.add(afa.getAttachmentReference());
+                attRefPropertiesMap.put(afa.getAttachmentReference(), afa.getProperties());
             }
         }
-        makeAttachment(tofill, divID, currentViewID, refSet);
+        makeAttachment(tofill, divID, currentViewID, attRefPropertiesMap);
     }
 
-
-    public void makeAttachment(UIContainer tofill, String divID, String currentViewID, Set<String> refSet) {
+    /**
+     * 
+     * @param tofill
+     * @param divID
+     * @param currentViewID
+     * @param attRefPropertiesMap a map of the attachment reference to its associated properties map
+     */
+    private void makeAttachment(UIContainer tofill, String divID, String currentViewID, Map<String, Map> attRefPropertiesMap) {
 
 
         int i = 1;
-        if (refSet.size() == 0) {
+        if (attRefPropertiesMap.size() == 0) {
             UIJointContainer joint = new UIJointContainer(tofill, divID, "attachments:", ""+1);
             UIMessage.make(joint, "no_attachments_yet", "assignment2.no_attachments_yet");
             return;
         }
 
-        for (String ref : refSet){
+        for (String ref : attRefPropertiesMap.keySet()){
             UIJointContainer joint = new UIJointContainer(tofill, divID, "attachments:", ""+(i++));
 
             //TODO FIXME For some reason, when there are no attachments, we 
@@ -147,6 +165,36 @@ public class AttachmentListRenderer {
                     UILink.make(joint, "attachment_image", attach.getContentTypeImagePath());
                     UILink.make(joint, "attachment_link", attach.getDisplayName(), attach.getUrl());  
                     UIOutput.make(joint, "attachment_size", file_size);
+                    
+                    // check for properties
+                    Map properties = attRefPropertiesMap.get(ref);
+                    if (properties != null && !properties.isEmpty()) {
+                        
+                        // we may need to display plagiarism checking results
+                        if (properties.containsKey(AssignmentConstants.PROP_REVIEW_STATUS)) {
+                            String status = (String)properties.get(AssignmentConstants.PROP_REVIEW_STATUS);
+                            if (status.equals(AssignmentConstants.REVIEW_STATUS_ERROR)) {
+                                String errorText = contentReviewLogic.getErrorMessage((Long)properties.get(AssignmentConstants.PROP_REVIEW_ERROR_CODE));
+                                UIOutput errorDisplay = UIOutput.make(joint, "review_error");
+                                DecoratorList errorDisplayDecorators = new DecoratorList();
+                                errorDisplayDecorators.add(new UITooltipDecorator(errorText));
+                                errorDisplay.decorators = errorDisplayDecorators;
+                            } else if (status.equals(AssignmentConstants.REVIEW_STATUS_SUCCESS)) {
+                                // create the link
+                                UILink reportLink = UILink.make(joint, "review_report_link", (String)properties.get(AssignmentConstants.PROP_REVIEW_URL));
+                                DecoratorList reportLinkDecorators = new DecoratorList();
+                                reportLinkDecorators.add(new UITooltipDecorator("Click to view originality report"));
+                                reportLink.decorators = reportLinkDecorators;
+
+                                UIOutput.make(joint, "review_percent", (String)(properties.get(AssignmentConstants.PROP_REVIEW_SCORE)));
+                                UIOutput statusImg = UIOutput.make(joint, "review_status_img");
+                                DecoratorList statusImgDecorators = new DecoratorList();
+                                statusImgDecorators.add(new UIFreeAttributeDecorator("src", (String)properties.get(AssignmentConstants.PROP_REVIEW_ICON_URL)));
+                                statusImg.decorators = statusImgDecorators;
+                                
+                            }
+                        }
+                    }
                 }
             }
 

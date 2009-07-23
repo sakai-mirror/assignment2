@@ -2,6 +2,7 @@ package org.sakaiproject.assignment2.tool.producers.renderers;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.assignment2.logic.ExternalContentReviewLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
@@ -40,6 +41,11 @@ public class AsnnSubmissionVersionRenderer implements BasicProducer {
     private AttachmentListRenderer attachmentListRenderer;
     public void setAttachmentListRenderer (AttachmentListRenderer attachmentListRenderer) {
         this.attachmentListRenderer = attachmentListRenderer;
+    }
+    
+    private ExternalContentReviewLogic contentReviewLogic;
+    public void setExternalContentReviewLogic(ExternalContentReviewLogic contentReviewLogic) {
+        this.contentReviewLogic = contentReviewLogic;
     }
 
     /**
@@ -82,6 +88,9 @@ public class AsnnSubmissionVersionRenderer implements BasicProducer {
                 UIMessage.make(joint, "submission-attachments-header", "assignment2.student-submit.submitted_attachments");
 
                 if (asnnSubVersion.getSubmissionAttachSet() != null && !asnnSubVersion.getSubmissionAttachSet().isEmpty()){
+                    if (assignment.isContentReviewEnabled()) {
+                        contentReviewLogic.populateReviewProperties(assignment, asnnSubVersion.getSubmissionAttachSet(), false);
+                    }
                     attachmentListRenderer.makeAttachmentFromSubmissionAttachmentSet(joint, "submission-attachment-list:", viewParameters.viewID, 
                             asnnSubVersion.getSubmissionAttachSet());
                 } else {

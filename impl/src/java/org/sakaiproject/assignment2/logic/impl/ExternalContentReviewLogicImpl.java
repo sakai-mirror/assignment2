@@ -29,6 +29,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.assignment2.logic.AssignmentBundleLogic;
 import org.sakaiproject.assignment2.logic.ExternalContentLogic;
 import org.sakaiproject.assignment2.logic.ExternalContentReviewLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
@@ -47,14 +48,8 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
     private static Log log = LogFactory.getLog(ExternalContentReviewLogicImpl.class);
 
     private ContentReviewService contentReview;
-    public void setContentReviewService(ContentReviewService contentReview) {
-        this.contentReview = contentReview;
-    }
-
     private ExternalContentLogic contentLogic;
-    public void setExternalContentLogic(ExternalContentLogic contentLogic) {
-        this.contentLogic = contentLogic;
-    }
+    private AssignmentBundleLogic bundleLogic;
 
     public void init(){
         if(log.isDebugEnabled()) log.debug("init");
@@ -182,21 +177,56 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
      * @param instructorView true if this is for the instructor view. false if for student view
      */
     private void populateProperties(ContentReviewItem reviewItem, SubmissionAttachment attach, boolean instructorView) {
-        if (reviewItem == null || attach == null || !reviewItem.getContentId().equals(attach.getAttachmentReference())) {
-            throw new IllegalArgumentException("invalid params passed to populateProperties");
+        if (reviewItem == null || attach == null) {
+            throw new IllegalArgumentException("null reviewItem or attach passed to " +
+                    "populateProperties. reviewItem: " + reviewItem + " attach: " + attach);
         }
-        
-        Map properties = attach.getProperties() != null ? attach.getProperties() : new HashMap();
-        properties.put(AssignmentConstants.PROP_REVIEW_SCORE, reviewItem.getReviewScore());
-        properties.put(AssignmentConstants.PROP_REVIEW_ICON_URL, reviewItem.getIconUrl());
 
-        // now retrieve the report url
-        String reportUrl = getReportUrl(attach.getAttachmentReference(), instructorView);
-        if (reportUrl != null) {
-            properties.put(AssignmentConstants.PROP_REVIEW_URL, reportUrl);
+        Map properties = attach.getProperties() != null ? attach.getProperties() : new HashMap();
+        String reviewScore = reviewItem.getReviewScore() != null ? reviewItem.getReviewScore() + "%" : "";
+        properties.put(AssignmentConstants.PROP_REVIEW_SCORE, reviewScore);
+        properties.put(AssignmentConstants.PROP_REVIEW_ICON_URL, reviewItem.getIconUrl());
+        
+        String reviewStatus = determineReviewStatus(reviewItem.getStatus());
+        properties.put(AssignmentConstants.PROP_REVIEW_STATUS, reviewStatus);
+
+        if (reviewStatus != null) {
+            if (reviewStatus.equals(AssignmentConstants.REVIEW_STATUS_SUCCESS)) {
+                // now retrieve the report url if status shows it exists
+                String reportUrl = getReportUrl(attach.getAttachmentReference(), instructorView);
+                if (reportUrl != null) {
+                    properties.put(AssignmentConstants.PROP_REVIEW_URL, reportUrl);
+                }
+            } else if (reviewStatus.equals(AssignmentConstants.REVIEW_STATUS_ERROR)) {
+                properties.put(AssignmentConstants.PROP_REVIEW_ERROR_CODE, reviewItem.getStatus());
+            }
         }
 
         attach.setProperties(properties);
+    }
+    
+    /**
+     * 
+     * @param contentReviewStatus
+     * @return given the status returned by the ContentReviewService, translates
+     * this into an assignment2 status 
+     */
+    private String determineReviewStatus(Long contentReviewStatus) {
+        String reviewStatus;
+
+        if (contentReviewStatus == null) {
+            reviewStatus = AssignmentConstants.REVIEW_STATUS_NONE;
+        } else if (contentReviewStatus.equals(ContentReviewItem.NOT_SUBMITTED_CODE)) {
+            reviewStatus = AssignmentConstants.REVIEW_STATUS_NONE;
+        } else if (contentReviewStatus.equals(ContentReviewItem.SUBMITTED_AWAITING_REPORT_CODE)) {
+            reviewStatus = AssignmentConstants.REVIEW_STATUS_PENDING;
+        } else if (contentReviewStatus.equals(ContentReviewItem.SUBMITTED_REPORT_AVAILABLE_CODE)) {
+            reviewStatus = AssignmentConstants.REVIEW_STATUS_SUCCESS;
+        } else {
+            reviewStatus = AssignmentConstants.REVIEW_STATUS_ERROR;
+        }
+
+        return reviewStatus;
     }
     
     public String getReportUrl(String attachmentReference, boolean instructorView) {
@@ -241,6 +271,43 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
         }
         
         return reportUrl;
+    }
+    
+    public String getErrorMessage(Long errorCode) {
+        String errorMessage = null;
+        if (errorCode != null) {
+            if (errorCode.equals(ContentReviewItem.REPORT_ERROR_NO_RETRY_CODE)) {
+                errorMessage = bundleLogic.getString("assignment2.content_review.error.REPORT_ERROR_NO_RETRY_CODE");
+            } else if (errorCode.equals(ContentReviewItem.REPORT_ERROR_RETRY_CODE)) {
+                errorMessage = bundleLogic.getString("assignment2.content_review.error.REPORT_ERROR_RETRY_CODE");
+            } else if (errorCode.equals(ContentReviewItem.SUBMISSION_ERROR_NO_RETRY_CODE)) {
+                errorMessage = bundleLogic.getString("assignment2.content_review.error.SUBMISSION_ERROR_NO_RETRY_CODE");
+            } else if (errorCode.equals(ContentReviewItem.SUBMISSION_ERROR_RETRY_CODE)) {
+                errorMessage = bundleLogic.getString("assignment2.content_review.error.SUBMISSION_ERROR_RETRY_CODE");
+            } else if (errorCode.equals(ContentReviewItem.SUBMISSION_ERROR_RETRY_EXCEEDED)) {
+                errorMessage = bundleLogic.getString("assignment2.content_review.error.SUBMISSION_ERROR_RETRY_EXCEEDED");
+            } else if (errorCode.equals(ContentReviewItem.SUBMISSION_ERROR_USER_DETAILS_CODE)) {
+                errorMessage = bundleLogic.getString("assignment2.content_review.error.SUBMISSION_ERROR_USER_DETAILS_CODE");
+            }
+        }
+        
+        if (errorMessage == null) {
+            errorMessage = bundleLogic.getString("assignment2.content_review.error");
+        }
+        
+        return errorMessage;
+    }
+    
+    public void setExternalContentLogic(ExternalContentLogic contentLogic) {
+        this.contentLogic = contentLogic;
+    }
+    
+    public void setContentReviewService(ContentReviewService contentReview) {
+        this.contentReview = contentReview;
+    }
+    
+    public void setAssignmentBundleLogic(AssignmentBundleLogic bundleLogic) {
+        this.bundleLogic = bundleLogic;
     }
 
 }

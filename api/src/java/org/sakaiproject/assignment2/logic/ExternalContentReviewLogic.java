@@ -26,6 +26,7 @@ import java.util.List;
 
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.SubmissionAttachment;
+import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.contentreview.model.ContentReviewItem;
 
 /**
@@ -94,4 +95,12 @@ public interface ExternalContentReviewLogic {
      * null if url cannot be retrieved
      */
     public String getReportUrl(String attachmentReference, boolean instructorView);
+    
+    /**
+     * 
+     * @param errorCode
+     * @return given the code from the {@link AssignmentConstants#PROP_REVIEW_ERROR_CODE} property,
+     * returns an internationalized error message representing the error textually
+     */
+    public String getErrorMessage(Long errorCode);
 }

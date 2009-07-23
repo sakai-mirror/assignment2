@@ -609,6 +609,14 @@ h4.completed_assignment {
   -moz-opacity: 0.50;
 }
 
+/* The content review status display */
+.reviewReport {
+  margin-left:10px;
+}
+
+.reviewReportStatus {
+  margin-left: 10px;
+}
 
 
 /* Start Asnn Table Classes */
@@ -717,3 +725,5 @@ a.fl-pager-currentPage {
   background-color: white;
   /* z-index: 1001;*/
 }
+
+
