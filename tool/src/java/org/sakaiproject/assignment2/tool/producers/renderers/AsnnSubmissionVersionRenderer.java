@@ -76,7 +76,7 @@ public class AsnnSubmissionVersionRenderer implements BasicProducer {
          * feedback without a submission
          */
         if (asnnSubVersion.getSubmittedVersionNumber() != 0) {
-            if (submissionType == AssignmentConstants.SUBMIT_ATTACH_ONLY || submissionType == AssignmentConstants.SUBMIT_INLINE_AND_ATTACH) {
+            if (submissionType == AssignmentConstants.SUBMIT_ATTACH_ONLY || submissionType == AssignmentConstants.SUBMIT_INLINE_AND_ATTACH || submissionType == AssignmentConstants.SUBMIT_SINGLE_UPLOADED_FILE_ONLY) {
                 // TODO FIXME if the student didn't actually submit any attachments
                 // what should we say
                 UIMessage.make(joint, "submission-attachments-header", "assignment2.student-submit.submitted_attachments");

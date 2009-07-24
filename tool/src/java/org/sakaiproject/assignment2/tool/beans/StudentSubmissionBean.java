@@ -310,7 +310,7 @@ public class StudentSubmissionBean {
 						{
 							Reference ref = EntityManager.newReference(contentHostingService.getReference(attachment.getId()));
 							SubmissionAttachment sAttachment = new SubmissionAttachment();
-							sAttachment.setAttachmentReference(ref.getReference());
+							sAttachment.setAttachmentReference(ref.getId());
 							sAttachment.setSubmissionVersion(asv);
 							
 							// only one attachment/per student is needed for this pupose
