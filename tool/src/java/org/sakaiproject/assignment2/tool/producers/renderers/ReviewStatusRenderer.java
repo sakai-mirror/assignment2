@@ -64,7 +64,7 @@ public class ReviewStatusRenderer {
                     // create the container
                     UIOutput.make(joint, "review_report_status");
                     
-                    String score = (String)(properties.get(AssignmentConstants.PROP_REVIEW_SCORE));
+                    String score = (String)(properties.get(AssignmentConstants.PROP_REVIEW_SCORE_DISPLAY));
                     String statusCssClass = getCssClassForReviewScore(score);
                     
                     // create the link

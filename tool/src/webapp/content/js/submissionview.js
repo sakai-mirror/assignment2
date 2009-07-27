@@ -7,6 +7,9 @@ asnn2subview.selectorMap = [
   { selector: ".submitted-time", id: "submitted-time"},
   { selector: ".submission-status", id: "submission-status"},
   { selector: ".grade", id: "grade"},
+  { selector: ".review-score", id: "review-score"},
+  { selector: ".review-error", id: "review-error"},
+  { selector: ".review-multiple", id: "review-multiple"},
   { selector: ".feedback-released", id: "feedback-released"},
   { selector: ".student-grade-link", id: "student-grade-link"},
   { selector: ".student-name-sort", id: "student-name-sort" },
@@ -15,12 +18,15 @@ asnn2subview.selectorMap = [
   { selector: ".submitted-time-sort-img", id: "submitted-time-sort-img"},
   { selector: ".submission-status-sort", id: "submission-status-sort"},
   { selector: ".submission-status-sort-img", id: "submission-status-sort-img"},
+  { selector: ".submission-report-sort", id: "submission-report-sort" },
+  { selector: ".submission-report-sort-img", id: "submission-report-sort-img" },
   { selector: ".feedback-released-sort", id: "feedback-released-sort" },
   { selector: ".feedback-released-sort-img", id: "feedback-released-sort-img" },
   { selector: ".grade-sort", id: "grade-sort" },
   { selector: ".grade-sort-img", id: "grade-sort-img" },
   { selector: ".grade-col-header", id: "grade-col-header" },
-  { selector: ".grade-td", id: "grade-td" }
+  { selector: ".grade-td", id: "grade-td" },
+  { selector: ".report-col-header", id: "report-col-header" }
 ];
 
 asnn2subview.getSortHeaderComptree = function(newModel) {
@@ -83,6 +89,19 @@ asnn2subview.getSortHeaderComptree = function(newModel) {
       ]
     });
   }
+  
+  if (asnn2subview.reviewEnabled === true) {
+      tree.children.push({
+        ID: "report-col-header", value: true
+      });
+      /*tree.children.push({
+        ID: "submission-report-sort", 
+        value: true,
+        decorators: [
+          {"jQuery": ["click", onSortClick('report')]}
+        ]
+      });*/
+    }
 
   if (newModel.sortDir > 0) {
     var imgsrc = "/library/image/sakai/sortascending.gif";
@@ -321,11 +340,29 @@ asnn2subview.filteredRowTransform = function(obj, idx) {
     if (asnn2subview.graded === true) {
       togo.push({ ID: "grade", value: row.grade});
     }
+    
+    if (asnn2subview.reviewEnabled === true) {
+      if (row.reviewStatus) {
+        togo.push({ ID: "review-status", value: row.reviewStatus});
+        togo.push({ ID: "review-score", 
+                    linktext: row.reviewScore,
+                    target: row.reviewScoreLink});
+      }
+      
+      if (row.reviewMultiple) {
+        togo.push({ ID: "review-multiple", value: row.reviewMultiple});
+      }
+      
+      if (row.reviewError) {
+        togo.push({ ID: "review-error", 
+                    value: row.reviewError});
+      }
+    }
 
     return togo;
   };
 
-asnn2subview.init = function(asnnid, contextId, placementId, numSubmissions, graded) {
+asnn2subview.init = function(asnnid, contextId, placementId, numSubmissions, graded, reviewEnabled) {
   sakai.curPlacement = placementId;
   sakai.curContext = contextId;
 
@@ -338,6 +375,11 @@ asnn2subview.init = function(asnnid, contextId, placementId, numSubmissions, gra
   }
   else { 
     asnn2subview.graded = false;
+  }
+  if (reviewEnabled === "true") {
+    asnn2subview.reviewEnabled = true;
+  } else {
+    asnn2subview.reviewEnabled = false;
   }
   asnn2subview.initPager(numSubmissions);
 };

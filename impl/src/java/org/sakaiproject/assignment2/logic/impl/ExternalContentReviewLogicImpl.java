@@ -203,9 +203,10 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
 
             if (reviewStatus != null) {
                 if (reviewStatus.equals(AssignmentConstants.REVIEW_STATUS_SUCCESS)) {
-                    String reviewScore = reviewItem.getReviewScore() != null ? reviewItem.getReviewScore() + "%" : "";
-                    properties.put(AssignmentConstants.PROP_REVIEW_SCORE, reviewScore);
-                    properties.put(AssignmentConstants.PROP_REVIEW_ICON_URL, reviewItem.getIconUrl());
+                    if (reviewItem.getReviewScore() != null) {
+                        properties.put(AssignmentConstants.PROP_REVIEW_SCORE_DISPLAY, reviewItem.getReviewScore() + "%");
+                        properties.put(AssignmentConstants.PROP_REVIEW_SCORE, reviewItem.getReviewScore());
+                    }
                     
                     // now retrieve the report url if status shows it exists
                     String reportUrl = getReportUrl(attach.getAttachmentReference(), instructorView);

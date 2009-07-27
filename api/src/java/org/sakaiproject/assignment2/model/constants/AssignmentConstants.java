@@ -128,13 +128,14 @@ public class AssignmentConstants {
     
     // Properties for ContentReviewService integration
     /**
-     * The score received upon review. String
+     * The score received upon review for display. String
+     */
+    public final static String PROP_REVIEW_SCORE_DISPLAY = "review_score_display";
+    
+    /**
+     * The numeric (Integer) representation of the review score
      */
     public final static String PROP_REVIEW_SCORE = "review_score";
-    /**
-     * The url to the icon representing the review score
-     */
-    public final static String PROP_REVIEW_ICON_URL = "review_icon_url";
     /**
      * The url to the report constructed for the user for the review
      */
@@ -147,7 +148,7 @@ public class AssignmentConstants {
     public final static String PROP_REVIEW_ERROR_CODE = "review_error_code";
     /**
      * Indicates the status of the review: {@link #REVIEW_STATUS_ERROR},
-     * {@link #REVIEW_STATUS_NONE}, {@link #REVIEW_STATUS_SUCCESS}
+     * {@link #REVIEW_STATUS_NONE}, {@link #REVIEW_STATUS_SUCCESS}, {@link #REVIEW_STATUS_PENDING}
      */
     public final static String PROP_REVIEW_STATUS = "review_status";
     

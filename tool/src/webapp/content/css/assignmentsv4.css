@@ -539,7 +539,7 @@ ul#assignmentList li.row div.overlayMessage .success {
 
 /* The content review status display */
 .reviewReport {
-    margin-left: 10px;
+    /*margin-left: 10px;*/
 }
 
 .reviewReportStatus {
