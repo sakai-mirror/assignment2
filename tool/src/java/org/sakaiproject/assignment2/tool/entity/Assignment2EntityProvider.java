@@ -214,6 +214,8 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware {
 
             asnnmap.put("inAndNew", inAndNewText);
             asnnmap.put("numSubmissions", numSubmissions);
+            
+            asnnmap.put("reviewEnabled", asnn.isContentReviewEnabled());
 
             List groupstogo = new ArrayList();
             // we need to double check that all of the associated groups still exist.

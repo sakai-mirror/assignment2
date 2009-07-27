@@ -79,6 +79,10 @@ asnn2.getAsnnCompData = function () {
     if (obj.gbItemMissing || obj.groupMissing) {
       togo.needsAttention = true;
     }
+    if (obj.reviewEnabled) {
+      togo.reviewEnabled = true;
+    }
+    
     return togo;
   };
 
@@ -133,6 +137,7 @@ asnn2.selectorMap = [
   { selector: ".addlink", id: "addlink" },
   { selector: ".addimage", id: "addimage" },
   { selector: ".asnncheck", id: "asnncheck" },
+  { selector: ".reviewEnabled", id: "reviewEnabled" },
   { selector: "#checkall", id: "checkall"}
 ];
 
