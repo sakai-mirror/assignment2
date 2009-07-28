@@ -84,4 +84,30 @@ public class DisplayUtil {
 
         return subStatusMap;
     }
+    
+    /**
+     * Given the score in the {@link AssignmentConstants#PROP_REVIEW_SCORE} property,
+     * returns the appropriate style class for displaying this score. Used only
+     * if content review is enabled
+     * @param score
+     * @return
+     */
+    public static String getCssClassForReviewScore(Integer score) {
+        String cssClass = "reportStatus4";
+        if (score != null) {
+            if (score == 0) {
+                cssClass = "reportStatus0";
+            } else if (score < 25) {
+                cssClass = "reportStatus1";
+            } else if (score < 50) {
+                cssClass = "reportStatus2";
+            } else if (score < 75) {
+                cssClass = "reportStatus3";
+            } else {
+                cssClass = "reportStatus4";
+            }
+        }
+
+        return cssClass;
+    }
 }

@@ -24,6 +24,7 @@ import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.model.SubmissionAttachment;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
+import org.sakaiproject.assignment2.tool.DisplayUtil;
 import org.sakaiproject.assignment2.tool.params.GradeViewParams;
 import org.sakaiproject.assignment2.tool.producers.GradeProducer;
 import org.sakaiproject.entitybroker.EntityReference;
@@ -257,9 +258,6 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware{
                     
                     if (reviewedAttach.size() > 1) {
                         submap.put("reviewMultiple", true);
-                        submap.put("reviewError", false);
-                        submap.put("reviewStatus", false);
-                        submap.put("reviewScore", false);
                     } else if (reviewedAttach.size() == 1) {
                         // we need to either display an error indicator
                         // or a score
@@ -274,9 +272,18 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware{
                         } else if (status.equals(AssignmentConstants.REVIEW_STATUS_SUCCESS)) {
                             String score = (String)properties.get(AssignmentConstants.PROP_REVIEW_SCORE_DISPLAY);
                             String link = (String)properties.get(AssignmentConstants.PROP_REVIEW_URL);
-                            submap.put("reviewStatus", true);
                             submap.put("reviewScore", score);
                             submap.put("reviewScoreLink", link);
+                            submap.put("reviewError", false);
+                            submap.put("reviewPending", false);
+                            
+                            Integer scoreAsNum = (Integer)properties.get(AssignmentConstants.PROP_REVIEW_SCORE);
+                            String styleClass = DisplayUtil.getCssClassForReviewScore(scoreAsNum);
+                            submap.put("reviewScoreClass", styleClass);
+                        } else if (status.equals(AssignmentConstants.REVIEW_STATUS_PENDING)) {
+                            submap.put("reviewPending", true);
+                            submap.put("reviewError", false);
+                            submap.put("reviewScore", assignmentBundleLogic.getString("assignment2.content_review.pending.display"));
                         }
                     } 
                 }

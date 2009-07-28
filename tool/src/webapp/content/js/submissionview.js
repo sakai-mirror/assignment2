@@ -10,6 +10,7 @@ asnn2subview.selectorMap = [
   { selector: ".review-score", id: "review-score"},
   { selector: ".review-error", id: "review-error"},
   { selector: ".review-multiple", id: "review-multiple"},
+  { selector: ".review-pending", id: "review-pending"},
   { selector: ".feedback-released", id: "feedback-released"},
   { selector: ".student-grade-link", id: "student-grade-link"},
   { selector: ".student-name-sort", id: "student-name-sort" },
@@ -342,11 +343,23 @@ asnn2subview.filteredRowTransform = function(obj, idx) {
     }
     
     if (asnn2subview.reviewEnabled === true) {
-      if (row.reviewStatus) {
-        togo.push({ ID: "review-status", value: row.reviewStatus});
+      if (row.reviewScore && !row.reviewPending) {
         togo.push({ ID: "review-score", 
                     linktext: row.reviewScore,
-                    target: row.reviewScoreLink});
+                    target: row.reviewScoreLink,
+                    decorators: {
+                    type: "addClass",
+                    classes: row.reviewScoreClass
+                    }
+          });
+      } else if (row.reviewScore && row.reviewPending) {
+        togo.push({ ID: "review-pending", 
+                    value: row.reviewScore,
+                    decorators: {
+                    type: "addClass",
+                    classes: "reportStatusPending"
+                    }
+          });
       }
       
       if (row.reviewMultiple) {
@@ -382,4 +395,5 @@ asnn2subview.init = function(asnnid, contextId, placementId, numSubmissions, gra
     asnn2subview.reviewEnabled = false;
   }
   asnn2subview.initPager(numSubmissions);
+
 };

@@ -25,6 +25,7 @@ import java.util.Map;
 
 import org.sakaiproject.assignment2.logic.ExternalContentReviewLogic;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
+import org.sakaiproject.assignment2.tool.DisplayUtil;
 
 import uk.org.ponder.messageutil.MessageLocator;
 import uk.org.ponder.rsf.components.UIContainer;
@@ -66,20 +67,19 @@ public class ReviewStatusRenderer {
                     // create the container
                     UIOutput.make(joint, "review_report_status");
                     
-                    String score = (String)(properties.get(AssignmentConstants.PROP_REVIEW_SCORE_DISPLAY));
-                    String statusCssClass = getCssClassForReviewScore(score);
+                    Integer scoreAsNum = (Integer)(properties.get(AssignmentConstants.PROP_REVIEW_SCORE));
+                    String statusCssClass = DisplayUtil.getCssClassForReviewScore(scoreAsNum);
+                    
+                    String scoreAsString = (String)(properties.get(AssignmentConstants.PROP_REVIEW_SCORE_DISPLAY));
                     
                     // create the link
-                    UILink reportLink = UILink.make(joint, "review_report_link", score, (String)properties.get(AssignmentConstants.PROP_REVIEW_URL));
+                    UILink reportLink = UILink.make(joint, "review_report_link", scoreAsString, (String)properties.get(AssignmentConstants.PROP_REVIEW_URL));
                     DecoratorList reportLinkDecorators = new DecoratorList();
                     reportLinkDecorators.add(new UITooltipDecorator(messageLocator.getMessage("assignment2.content_review.report_link")));
                     reportLinkDecorators.add(new UIFreeAttributeDecorator("class", statusCssClass));
                     reportLink.decorators = reportLinkDecorators;
                     
-                } else if (status.equals(AssignmentConstants.REVIEW_STATUS_PENDING)) {
-                    // create the container
-                    UIOutput.make(joint, "review_report_status");
-                    
+                } else if (status.equals(AssignmentConstants.REVIEW_STATUS_PENDING)) {                 
                     UIOutput pendingDisplay = UIOutput.make(joint, "review_pending", messageLocator.getMessage("assignment2.content_review.pending.display"));
                     DecoratorList pendingDeco = new DecoratorList();
                     pendingDeco.add(new UITooltipDecorator(messageLocator.getMessage("assignment2.content_review.pending.info")));
@@ -89,38 +89,7 @@ public class ReviewStatusRenderer {
         }
     }
     
-    /**
-     * Given the score in the {@link AssignmentConstants#PROP_REVIEW_SCORE} property,
-     * returns the appropriate style class for displaying this score
-     * @param score
-     * @return
-     */
-    private String getCssClassForReviewScore(String score) {
-        String cssClass = "reportStatus4";
-        if (score != null) {
-            // strip out the %
-            String modScore = score.replace("%", "");
-            try {
-                long scoreAsNum = Long.parseLong(modScore);
-                if (scoreAsNum == 0) {
-                    cssClass = "reportStatus0";
-                } else if (scoreAsNum < 25) {
-                    cssClass = "reportStatus1";
-                } else if (scoreAsNum < 50) {
-                    cssClass = "reportStatus2";
-                } else if (scoreAsNum < 75) {
-                    cssClass = "reportStatus3";
-                } else {
-                    cssClass = "reportStatus4";
-                }
-            } catch (NumberFormatException nfe) {
-                // default to worst case
-                cssClass = "reportStatus4";
-            }
-        }
-        
-        return cssClass;
-    }
+
     
     public void setExternalContentReviewLogic(ExternalContentReviewLogic contentReviewLogic) {
         this.contentReviewLogic = contentReviewLogic;
