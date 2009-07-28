@@ -543,33 +543,36 @@ ul#assignmentList li.row div.overlayMessage .success {
 }
 
 .reviewReportStatus {
-    border: black solid 1px;
+    border: #BCBCBC solid 1px;
 }
 
 .reportStatus0, .reportStatus1, .reportStatus2, .reportStatus3, .reportStatus4 {
     color:black !important;
-    padding-left:5px;
-    padding-right:5px;
+    padding-left:8px;
+    padding-right:8px;
+    margin-right: -5px;  /* to compensate for extra padding in IE7 */
+    padding-bottom:1px;  /* to compensate for the border sticking out */
+    padding-top:1px;  /* to compensate for the border sticking out */
 }
 
 .reportStatus0 {
-    border-right: blue 15px solid;
+    border-right: #006699 15px solid;
 }
 
 .reportStatus1 {
-    border-right: green 15px solid;
+    border-right: #7BAC30 15px solid;
 }
 
 .reportStatus2 {
-    border-right: yellow 15px solid;
+    border-right: #FFFF33 15px solid;
 }
 
 .reportStatus3 {
-    border-right: orange 15px solid;
+    border-right: #E79134 15px solid;
 }
 
 .reportStatus4 {
-    border-right: red 15px solid;
+    border-right: #AD000E 15px solid;
 }
 
 /* 
