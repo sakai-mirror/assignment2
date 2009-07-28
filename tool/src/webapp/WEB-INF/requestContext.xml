@@ -89,6 +89,7 @@
       
    <bean id="ReviewStatusRenderer" class="org.sakaiproject.assignment2.tool.producers.renderers.ReviewStatusRenderer">
       <property name="externalContentReviewLogic" ref="org.sakaiproject.assignment2.logic.ExternalContentReviewLogic" />
+      <property name="messageLocator" ref="messageLocator" />
    </bean>
    
    <bean id="AttachmentListRenderer" class="org.sakaiproject.assignment2.tool.producers.renderers.AttachmentListRenderer">

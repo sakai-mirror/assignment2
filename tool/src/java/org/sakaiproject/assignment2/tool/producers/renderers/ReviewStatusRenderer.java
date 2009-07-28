@@ -26,6 +26,7 @@ import java.util.Map;
 import org.sakaiproject.assignment2.logic.ExternalContentReviewLogic;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 
+import uk.org.ponder.messageutil.MessageLocator;
 import uk.org.ponder.rsf.components.UIContainer;
 import uk.org.ponder.rsf.components.UIJointContainer;
 import uk.org.ponder.rsf.components.UILink;
@@ -43,6 +44,7 @@ import uk.org.ponder.rsf.components.decorators.UITooltipDecorator;
 public class ReviewStatusRenderer {
     
     private ExternalContentReviewLogic contentReviewLogic;
+    private MessageLocator messageLocator;
 
     public void makeReviewStatusIndicator(UIContainer tofill, String divID, Map properties){
 
@@ -70,10 +72,18 @@ public class ReviewStatusRenderer {
                     // create the link
                     UILink reportLink = UILink.make(joint, "review_report_link", score, (String)properties.get(AssignmentConstants.PROP_REVIEW_URL));
                     DecoratorList reportLinkDecorators = new DecoratorList();
-                    reportLinkDecorators.add(new UITooltipDecorator("Click to view originality report"));
+                    reportLinkDecorators.add(new UITooltipDecorator(messageLocator.getMessage("assignment2.content_review.report_link")));
                     reportLinkDecorators.add(new UIFreeAttributeDecorator("class", statusCssClass));
                     reportLink.decorators = reportLinkDecorators;
                     
+                } else if (status.equals(AssignmentConstants.REVIEW_STATUS_PENDING)) {
+                    // create the container
+                    UIOutput.make(joint, "review_report_status");
+                    
+                    UIOutput pendingDisplay = UIOutput.make(joint, "review_pending", messageLocator.getMessage("assignment2.content_review.pending.display"));
+                    DecoratorList pendingDeco = new DecoratorList();
+                    pendingDeco.add(new UITooltipDecorator(messageLocator.getMessage("assignment2.content_review.pending.info")));
+                    pendingDisplay.decorators = pendingDeco;
                 }
             }
         }
@@ -114,5 +124,9 @@ public class ReviewStatusRenderer {
     
     public void setExternalContentReviewLogic(ExternalContentReviewLogic contentReviewLogic) {
         this.contentReviewLogic = contentReviewLogic;
+    }
+    
+    public void setMessageLocator(MessageLocator messageLocator) {
+        this.messageLocator = messageLocator;
     }
 }

@@ -546,7 +546,7 @@ ul#assignmentList li.row div.overlayMessage .success {
     border: #BCBCBC solid 1px;
 }
 
-.reportStatus0, .reportStatus1, .reportStatus2, .reportStatus3, .reportStatus4 {
+.reportStatus0, .reportStatus1, .reportStatus2, .reportStatus3, .reportStatus4, .reportStatusPending {
     color:black !important;
     padding-left:8px;
     padding-right:8px;
@@ -573,6 +573,10 @@ ul#assignmentList li.row div.overlayMessage .success {
 
 .reportStatus4 {
     border-right: #AD000E 15px solid;
+}
+
+.reportStatusPending {
+  border-right: #C5C5C4 15px solid;
 }
 
 /* 
