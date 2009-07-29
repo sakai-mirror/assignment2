@@ -358,6 +358,12 @@ public class AsnnSubmissionDetailsRenderer implements BasicProducer {
                 }
                 UIOutput.make(joint, "remaining-resubmissions", numAllowedDisplay);
             }
+            
+            // only display the originality checking info if it is enabled for this assignment
+            if (!previewAsStudent && assignment.isContentReviewEnabled()) { 
+                UIOutput.make(joint, "plagiarism-check-row");
+                UIMessage.make(joint, "plagiarism-check-enabled", "assignment2.student-submit.plagiarism.enabled");
+            }
         }
     }
 
