@@ -32,6 +32,7 @@ import java.util.Map;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
+import org.sakaiproject.assignment2.logic.ExternalContentReviewLogic;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
@@ -109,6 +110,7 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
     private AssignmentPermissionLogic permissionLogic;
     private AttachmentInputEvolver attachmentInputEvolver;
     private ExternalGradebookLogic gradebookLogic;
+    private ExternalContentReviewLogic contentReviewLogic;
 
 
     /*
@@ -296,6 +298,11 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
                     assignment.getSubmissionType() == AssignmentConstants.SUBMIT_INLINE_AND_ATTACH) {
                 UIOutput.make(tofill, "submitted_attachments_fieldset");
                 if (assignmentSubmissionVersion.getSubmissionAttachSet() != null && !assignmentSubmissionVersion.getSubmissionAttachSet().isEmpty()){
+                    
+                    if (assignment.isContentReviewEnabled()) {
+                        contentReviewLogic.populateReviewProperties(assignment, assignmentSubmissionVersion.getSubmissionAttachSet(), true);
+                    }
+                    
                     attachmentListRenderer.makeAttachmentFromSubmissionAttachmentSet(tofill, "submitted_attachment_list:", params.viewID, 
                             assignmentSubmissionVersion.getSubmissionAttachSet());
                 } else {
@@ -606,6 +613,10 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
     
     public void setExternalGradebookLogic(ExternalGradebookLogic gradebookLogic) {
         this.gradebookLogic = gradebookLogic;
+    }
+    
+    public void setExternalContentReviewLogic(ExternalContentReviewLogic contentReviewLogic) {
+        this.contentReviewLogic = contentReviewLogic;
     }
 
 }

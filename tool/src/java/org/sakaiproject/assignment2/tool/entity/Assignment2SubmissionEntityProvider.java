@@ -9,17 +9,22 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.sakaiproject.assignment2.logic.AssignmentBundleLogic;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
+import org.sakaiproject.assignment2.logic.ExternalContentReviewLogic;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.logic.GradeInformation;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
+import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
+import org.sakaiproject.assignment2.model.SubmissionAttachment;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
+import org.sakaiproject.assignment2.tool.DisplayUtil;
 import org.sakaiproject.assignment2.tool.params.GradeViewParams;
 import org.sakaiproject.assignment2.tool.producers.GradeProducer;
 import org.sakaiproject.entitybroker.EntityReference;
@@ -110,6 +115,11 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware{
     public void setAssignmentBundleLogic(AssignmentBundleLogic assignmentBundleLogic) {
         this.assignmentBundleLogic = assignmentBundleLogic;
     }
+    
+    private ExternalContentReviewLogic contentReviewLogic;
+    public void setExternalContentReviewLogic(ExternalContentReviewLogic contentReviewLogic) {
+        this.contentReviewLogic = contentReviewLogic;
+    }
 
     public boolean entityExists(String id) {
         // TODO Auto-generated method stub
@@ -179,6 +189,10 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware{
         }
 
         Map<String, String> studentIdSortNameMap = externalLogic.getUserIdToSortNameMap(studentIdList);
+        
+        if (assignment.isContentReviewEnabled()) {
+            populateReviewProperties(assignment, submissions);
+        }
 
         for (AssignmentSubmission as : submissions) {
             Map submap = new HashMap();
@@ -222,6 +236,67 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware{
             }
             else {
                 submap.put("feedbackReleased", false);
+            }
+            
+            if (assignment.isContentReviewEnabled()) {
+                // content review is enabled, so we need to figure out what to display for the 
+                // review column
+                AssignmentSubmissionVersion currVersion = as.getCurrentSubmissionVersion();
+                Set<SubmissionAttachment> submittedAttachSet = 
+                    currVersion != null ? currVersion.getSubmissionAttachSet() : null;
+                if (submittedAttachSet != null && submittedAttachSet.size() > 0) {
+                    // iterate through the attachments to see if any were reviewed
+                    List<SubmissionAttachment> reviewedAttach = new ArrayList<SubmissionAttachment>();
+                    
+                    // get the informational text associated with the different options
+                    String reportLinkInfo = assignmentBundleLogic.getString("assignment2.content_review.report_link");
+                    String reviewPendingInfo = assignmentBundleLogic.getString("assignment2.content_review.pending.info");
+                    String reviewPendingScoreDisplay = assignmentBundleLogic.getString("assignment2.content_review.pending.display");   
+                    String reviewMultipleInfo = assignmentBundleLogic.getString("assignment2.content_review.multiple_reports");
+                    
+                    for (SubmissionAttachment attach : submittedAttachSet) {
+                        if (attach.getProperties() != null) {
+                            String status = (String)attach.getProperties().get(AssignmentConstants.PROP_REVIEW_STATUS);
+                            if (status != null && !status.equals(AssignmentConstants.REVIEW_STATUS_NONE)) {
+                                reviewedAttach.add(attach);
+                            }
+                        }
+                    }
+                    
+                    if (reviewedAttach.size() > 1) {
+                        submap.put("reviewMultiple", true);
+                        submap.put("reviewMultipleInfo", reviewMultipleInfo);
+                    } else if (reviewedAttach.size() == 1) {
+                        // we need to either display an error indicator
+                        // or a score
+                        SubmissionAttachment attach = reviewedAttach.get(0);
+                        Map properties = attach.getProperties();
+                        String status = (String)attach.getProperties().get(AssignmentConstants.PROP_REVIEW_STATUS);
+                        if (status.equals(AssignmentConstants.REVIEW_STATUS_ERROR)) {
+                            submap.put("reviewError", true);
+                            Long statusErrorCode = (Long)attach.getProperties().get(AssignmentConstants.PROP_REVIEW_ERROR_CODE);
+                            String errorMsg = contentReviewLogic.getErrorMessage(statusErrorCode);
+                            submap.put("reviewErrorMsg", errorMsg);
+                        } else if (status.equals(AssignmentConstants.REVIEW_STATUS_SUCCESS)) {
+                            String score = (String)properties.get(AssignmentConstants.PROP_REVIEW_SCORE_DISPLAY);
+                            String link = (String)properties.get(AssignmentConstants.PROP_REVIEW_URL);
+                            submap.put("reviewScore", score);
+                            submap.put("reviewScoreLink", link);
+                            submap.put("reviewError", false);
+                            submap.put("reviewPending", false);
+                            submap.put("reviewScoreLinkInfo", reportLinkInfo);
+                            
+                            Integer scoreAsNum = (Integer)properties.get(AssignmentConstants.PROP_REVIEW_SCORE);
+                            String styleClass = DisplayUtil.getCssClassForReviewScore(scoreAsNum);
+                            submap.put("reviewScoreClass", styleClass);
+                        } else if (status.equals(AssignmentConstants.REVIEW_STATUS_PENDING)) {
+                            submap.put("reviewPending", true);
+                            submap.put("reviewError", false);
+                            submap.put("reviewScore", reviewPendingScoreDisplay);
+                            submap.put("reviewPendingText", reviewPendingInfo);
+                        }
+                    } 
+                }
             }
 
             togo.add(submap);
@@ -280,6 +355,27 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware{
         }
 
         return togo.subList((int)start, (int)end);
+    }
+    
+    private void populateReviewProperties(Assignment2 assign, List<AssignmentSubmission> submissions) {
+        if (assign == null) {
+            throw new IllegalArgumentException("Null assign passed to populateReviewProperties");
+        }
+        Map<String, Set<SubmissionAttachment>> studentIdAttachListMap = new HashMap<String, Set<SubmissionAttachment>>();
+        
+        if (submissions != null && !submissions.isEmpty()) {
+            // collect all of the attachments for review
+            List<SubmissionAttachment> attachToReview = new ArrayList<SubmissionAttachment>();
+            for (AssignmentSubmission submission : submissions) {
+                AssignmentSubmissionVersion currVersion = submission.getCurrentSubmissionVersion();
+                if (currVersion != null && currVersion.getSubmissionAttachSet() != null) {
+                    attachToReview.addAll(currVersion.getSubmissionAttachSet());
+                }
+            }
+            
+            // populate the review properties on the attachments
+            contentReviewLogic.populateReviewProperties(assign, attachToReview, true);
+        }
     }
 
     public String[] getHandledOutputFormats() {

@@ -21,7 +21,8 @@
 
 package org.sakaiproject.assignment2.tool.producers.renderers;
 
-import java.util.HashSet;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
@@ -68,6 +69,11 @@ public class AttachmentListRenderer {
     public void setAssignment2EntityBeanLocator(EntityBeanLocator assignment2EntityBeanLocator) {
         this.assignment2EntityBeanLocator = assignment2EntityBeanLocator;
     }
+    
+    private ReviewStatusRenderer reviewStatusRenderer;
+    public void setReviewStatusRenderer(ReviewStatusRenderer reviewStatusRenderer) {
+        this.reviewStatusRenderer = reviewStatusRenderer;
+    }
 
     /**
      * Use this for rendering attachments from an Assignment2 assignment
@@ -79,60 +85,66 @@ public class AttachmentListRenderer {
      * @param aaSet
      */
     public void makeAttachmentFromAssignmentAttachmentSet(UIContainer tofill, String divID, String currentViewID, Set<AssignmentAttachment> aaSet) {
-        Set<String> refSet = new HashSet<String>();
+        Map<String, Map> attRefPropertiesMap = new HashMap<String, Map>();
         if (aaSet != null){
             for (AssignmentAttachment aa : aaSet) {
-                refSet.add(aa.getAttachmentReference());
+                attRefPropertiesMap.put(aa.getAttachmentReference(), aa.getProperties());
             }
         }
-        makeAttachment(tofill, divID, currentViewID, refSet);
+        makeAttachment(tofill, divID, currentViewID, attRefPropertiesMap);
     }
 
     public void makeAttachmentFromAssignment2OTPAttachmentSet(UIContainer tofill, String divID, String currentViewID, String a2OTPKey) {
         Assignment2 assignment = (Assignment2)assignment2EntityBeanLocator.locateBean(a2OTPKey);
-        Set<String> refSet = new HashSet<String>();
+        Map<String, Map> attRefPropertiesMap = new HashMap<String, Map>();
         if (assignment != null && assignment.getAttachmentSet() != null){
             for (AssignmentAttachment aa : assignment.getAttachmentSet()) {
-                refSet.add(aa.getAttachmentReference());
+                attRefPropertiesMap.put(aa.getAttachmentReference(), aa.getProperties());
             }
         }
-        makeAttachment(tofill, divID, currentViewID, refSet);
+        makeAttachment(tofill, divID, currentViewID, attRefPropertiesMap);
     }
 
     public void makeAttachmentFromSubmissionAttachmentSet(UIContainer tofill, String divID, String currentViewID,
             Set<SubmissionAttachment> asaSet) {
-        Set<String> refSet = new HashSet<String>();
+        Map<String, Map> attRefPropertiesMap = new HashMap<String, Map>();
         if (asaSet != null) {
             for (SubmissionAttachment asa : asaSet) {
-                refSet.add(asa.getAttachmentReference());
+                attRefPropertiesMap.put(asa.getAttachmentReference(), asa.getProperties());
             }
         }
-        makeAttachment(tofill, divID, currentViewID, refSet);
+        makeAttachment(tofill, divID, currentViewID, attRefPropertiesMap);
     }
 
     public void makeAttachmentFromFeedbackAttachmentSet(UIContainer tofill, String divID, String currentViewID,
             Set<FeedbackAttachment> afaSet) {
-        Set<String> refSet = new HashSet<String>();
+        Map<String, Map> attRefPropertiesMap = new HashMap<String, Map>();
         if (afaSet != null) {
             for (FeedbackAttachment afa : afaSet) {
-                refSet.add(afa.getAttachmentReference());
+                attRefPropertiesMap.put(afa.getAttachmentReference(), afa.getProperties());
             }
         }
-        makeAttachment(tofill, divID, currentViewID, refSet);
+        makeAttachment(tofill, divID, currentViewID, attRefPropertiesMap);
     }
 
-
-    public void makeAttachment(UIContainer tofill, String divID, String currentViewID, Set<String> refSet) {
+    /**
+     * 
+     * @param tofill
+     * @param divID
+     * @param currentViewID
+     * @param attRefPropertiesMap a map of the attachment reference to its associated properties map
+     */
+    private void makeAttachment(UIContainer tofill, String divID, String currentViewID, Map<String, Map> attRefPropertiesMap) {
 
 
         int i = 1;
-        if (refSet.size() == 0) {
+        if (attRefPropertiesMap.size() == 0) {
             UIJointContainer joint = new UIJointContainer(tofill, divID, "attachments:", ""+1);
             UIMessage.make(joint, "no_attachments_yet", "assignment2.no_attachments_yet");
             return;
         }
 
-        for (String ref : refSet){
+        for (String ref : attRefPropertiesMap.keySet()){
             UIJointContainer joint = new UIJointContainer(tofill, divID, "attachments:", ""+(i++));
 
             //TODO FIXME For some reason, when there are no attachments, we 
@@ -147,6 +159,12 @@ public class AttachmentListRenderer {
                     UILink.make(joint, "attachment_image", attach.getContentTypeImagePath());
                     UILink.make(joint, "attachment_link", attach.getDisplayName(), attach.getUrl());  
                     UIOutput.make(joint, "attachment_size", file_size);
+                    
+                    // ASNN-516 check for properties
+                    Map properties = attRefPropertiesMap.get(ref);
+                    if (properties != null) {
+                        reviewStatusRenderer.makeReviewStatusIndicator(joint, "review_report:", properties);
+                    }
                 }
             }
 

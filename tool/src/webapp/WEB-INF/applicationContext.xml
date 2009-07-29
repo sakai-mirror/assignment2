@@ -48,6 +48,7 @@
 	    <property name="permissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentPermissionLogic" />
 	    <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
 	    <property name="assignmentBundleLogic" ref="org.sakaiproject.assignment2.logic.AssignmentBundleLogic" />
+        <property name="externalContentReviewLogic" ref="org.sakaiproject.assignment2.logic.ExternalContentReviewLogic" />
 	</bean>
 	
 	<bean parent="org.sakaiproject.entitybroker.entityprovider.AbstractEntityProvider"  
@@ -99,7 +100,7 @@
 		parent="templateContributorParent">
 		<property name="baseDirectory" value="component-templates/" />
 		<property name="templateNames"
-			value="AsnnSubmissionRenderers,Pager,SortHeader,AttachmentList,GradebookDetails,StudentViewAssignment,AttachmentEvolver,MarkupEditor" />
+			value="AsnnSubmissionRenderers,Pager,SortHeader,AttachmentList,GradebookDetails,StudentViewAssignment,AttachmentEvolver,MarkupEditor,ReviewStatus" />
 	</bean>
 
 	<!-- Override the default style of user messages -->

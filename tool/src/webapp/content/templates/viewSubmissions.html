@@ -217,6 +217,10 @@
                    <a class="grade-sort" title="Click to sort" href="#">Grade (Released)</a>
                    <!-- <img class="grade-sort-img" src="/library/image/sakai/sortascending.gif" /> TODO: Is this a renderer bug?-->
                  </th>
+                 <th class="report-col-header flc-pager-sort-header">Report 
+                   <!-- <a class="submission-report-sort" title="Click to sort" href="#">Report</a>
+                   <img class="submission-report-sort-img" src="/library/image/sakai/sortascending.gif" />-->
+                 </th>
                  <th class="flc-pager-sort-header"> 
                    <a class="feedback-released-sort" title="Click to sort" href="#">Feedback Released?</a>
                    <img class="feedback-released-sort-img" src="/library/image/sakai/sortascending.gif" />
@@ -230,6 +234,12 @@
                <td><span class="submitted-time"></span></td>
                <td><span class="submission-status"></span>
                </td>
+               <td>
+                 <a class="review-score" target="_blank">review percentage</a>
+                 <span class="review-pending">review percentage</span>
+                 <img class="review-error" src="/../../library/image/silk/error.png" />
+                 <img class="review-multiple" src="/../../library/image/silk/page_white_stack.png" />
+               </td>
                <td class="grade"></td>
                <td>
                  <img class="feedback-released" src="/sakai-assignment2-tool/content/images/check.png" width="16" height="16" border="0" />
@@ -238,7 +248,7 @@
          </tbody>
      </table>
    <div class="pager-sort-area">
-<div >
+<div>
     <div id="pager-bottom" class="fl-pager-bottom flc-pager-bottom">
       <ul id="page-list-bottom" class="fl-pager-links pager-links flc-pager-links">
         <li class="flc-pager-pageLink"><a href="#">1</a></li>

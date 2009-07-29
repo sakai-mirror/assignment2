@@ -50,6 +50,7 @@
       <property name="taggingManager" ref="org.sakaiproject.taggable.api.TaggingManager" />
       <property name="assignmentActivityProducer" ref="org.sakaiproject.assignment2.taggable.api.AssignmentActivityProducer" />
       <property name="entityProviderManager" ref="org.sakaiproject.entitybroker.entityprovider.EntityProviderManager" />
+      <property name="externalContentReviewLogic" ref="org.sakaiproject.assignment2.logic.ExternalContentReviewLogic" />
    </bean>
    
    <bean id="org.sakaiproject.assignment2.logic.AssignmentPermissionLogic" class="org.sakaiproject.assignment2.logic.impl.AssignmentPermissionLogicImpl" init-method="init">
@@ -64,6 +65,7 @@
       <property name="externalGradebookLogic" ref="org.sakaiproject.assignment2.logic.ExternalGradebookLogic" />
       <property name="permissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentPermissionLogic" />
       <property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
+      <property name="externalContentReviewLogic" ref="org.sakaiproject.assignment2.logic.ExternalContentReviewLogic" />
    </bean>
    
    <bean id="org.sakaiproject.assignment2.logic.ImportExportLogic" class="org.sakaiproject.assignment2.logic.impl.ImportExportLogicImpl" init-method="init">
@@ -80,8 +82,8 @@
    
    <bean id="org.sakaiproject.assignment2.logic.ExternalContentReviewLogic" 
       class="org.sakaiproject.assignment2.logic.impl.ExternalContentReviewLogicImpl" init-method="init">
-      <property name="contentReviewService" ref="org.sakaiproject.contentreview.service.ContentReviewService" />
       <property name="externalContentLogic" ref="org.sakaiproject.assignment2.logic.ExternalContentLogic" />
+      <property name="assignmentBundleLogic" ref="org.sakaiproject.assignment2.logic.AssignmentBundleLogic" />
    </bean>
 
 	<bean id="org.sakaiproject.assignment2.logic.UploadAllLogic"

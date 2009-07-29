@@ -35,7 +35,11 @@
 			<th rsf:id="msg=assignment2.student-submit.remaining_resubmissions_allowed_title">Remaining Resubmissions Allowed</th>	
 			<td rsf:id="remaining-resubmissions"></td>
 		</tr>
-		<tr rsf:id="grade-row">
+        <tr rsf:id="plagiarism-check-row">
+          <th rsf:id="msg=assignment2.student-submit.plagiarism.check">Checked for plagiarism??</th>
+          <td rsf:id="plagiarism-check-enabled"></td>
+        </tr>
+        <tr rsf:id="grade-row">
 			<th rsf:id="msg=assignment2.student-submit.grade_title">Grade</th>	
 			<td rsf:id="grade"></td>
 		</tr>
@@ -172,6 +176,9 @@
 			</li>
 		</ol>
 	</fieldset>
+	
+	<p rsf:id="plagiarism_check" class="alertMessage">Beware!  This will be checked for plagiarism!! </p>
+	
 	<fieldset rsf:id="submit_section" class="submit">
 		<input type="hidden" rsf:id="submitted_text_for_attach_only" />
 		<input rsf:id="submit_button"  accesskey="s" type="submit" class="active" value="Submit!" onclick="return asnn2.studentSubmissionConfirm(this);" />

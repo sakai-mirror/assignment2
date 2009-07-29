@@ -69,6 +69,7 @@
     	class="org.sakaiproject.assignment2.tool.producers.renderers.AsnnSubmissionVersionRenderer">
     	<property name="attachmentListRenderer" ref="AttachmentListRenderer"></property>
     	<property name="viewParameters" ref="viewParameters"></property>
+        <property name="externalContentReviewLogic" ref="org.sakaiproject.assignment2.logic.ExternalContentReviewLogic"></property>
     </bean>
     
     <bean id="AsnnSubmissionHistoryRenderer"
@@ -85,9 +86,16 @@
    
    <bean id="SortHeaderRenderer" class="org.sakaiproject.assignment2.tool.producers.renderers.SortHeaderRenderer" />
    
+      
+   <bean id="ReviewStatusRenderer" class="org.sakaiproject.assignment2.tool.producers.renderers.ReviewStatusRenderer">
+      <property name="externalContentReviewLogic" ref="org.sakaiproject.assignment2.logic.ExternalContentReviewLogic" />
+      <property name="messageLocator" ref="messageLocator" />
+   </bean>
+   
    <bean id="AttachmentListRenderer" class="org.sakaiproject.assignment2.tool.producers.renderers.AttachmentListRenderer">
    	  <property name="externalContentLogic" ref="org.sakaiproject.assignment2.logic.ExternalContentLogic" />
    	  <property name="assignment2EntityBeanLocator" ref="Assignment2"/>
+      <property name="reviewStatusRenderer" ref="ReviewStatusRenderer" />
    </bean>
    
    <bean id="GradebookDetailsRenderer" class="org.sakaiproject.assignment2.tool.producers.renderers.GradebookDetailsRenderer">
@@ -186,6 +194,7 @@
       <property name="permissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentPermissionLogic" />
       <property name="attachmentInputEvolver" ref="AttachmentInputEvolver" />
       <property name="externalGradebookLogic" ref="org.sakaiproject.assignment2.logic.ExternalGradebookLogic" />
+      <property name="externalContentReviewLogic" ref="org.sakaiproject.assignment2.logic.ExternalContentReviewLogic"></property>
    </bean>
 
    <bean class="org.sakaiproject.assignment2.tool.producers.ViewSubmissionsProducer">

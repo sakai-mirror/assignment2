@@ -53,9 +53,11 @@ import uk.org.ponder.rsf.components.UIInternalLink;
 import uk.org.ponder.rsf.components.UIMessage;
 import uk.org.ponder.rsf.components.UIOutput;
 import uk.org.ponder.rsf.components.decorators.DecoratorList;
+import uk.org.ponder.rsf.components.decorators.UIAlternativeTextDecorator;
 import uk.org.ponder.rsf.components.decorators.UIColourDecorator;
 import uk.org.ponder.rsf.components.decorators.UIDecorator;
 import uk.org.ponder.rsf.components.decorators.UIFreeAttributeDecorator;
+import uk.org.ponder.rsf.components.decorators.UITooltipDecorator;
 import uk.org.ponder.rsf.view.ComponentChecker;
 import uk.org.ponder.rsf.view.ViewComponentProducer;
 import uk.org.ponder.rsf.viewstate.ViewParameters;
@@ -187,6 +189,14 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
              */
             if (assignment.isRemoved()) {
                 UIMessage.make(row, "assignment-deleted", "assignment2.student-assignment-list.assignment-deleted");
+            }
+            
+            if (assignment.isContentReviewEnabled()) {
+                UIOutput reviewIndicator = UIOutput.make(row, "review-enabled");
+                DecoratorList reviewDeco = new DecoratorList();
+                reviewDeco.add(new UITooltipDecorator(messageLocator.getMessage("assignment2.student-assignment-list.review_enabled")));
+                reviewDeco.add(new UIAlternativeTextDecorator(messageLocator.getMessage("assignment2.student-assignment-list.review_enabled")));
+                reviewIndicator.decorators = reviewDeco;
             }
 
             StudentAction availStudentAction = submissionBean.determineStudentAction(assignmentSubmission.getUserId(), assignment.getId());
