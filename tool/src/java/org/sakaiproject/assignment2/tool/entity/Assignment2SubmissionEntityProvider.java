@@ -247,6 +247,13 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware{
                 if (submittedAttachSet != null && submittedAttachSet.size() > 0) {
                     // iterate through the attachments to see if any were reviewed
                     List<SubmissionAttachment> reviewedAttach = new ArrayList<SubmissionAttachment>();
+                    
+                    // get the informational text associated with the different options
+                    String reportLinkInfo = assignmentBundleLogic.getString("assignment2.content_review.report_link");
+                    String reviewPendingInfo = assignmentBundleLogic.getString("assignment2.content_review.pending.info");
+                    String reviewPendingScoreDisplay = assignmentBundleLogic.getString("assignment2.content_review.pending.display");   
+                    String reviewMultipleInfo = assignmentBundleLogic.getString("assignment2.content_review.multiple_reports");
+                    
                     for (SubmissionAttachment attach : submittedAttachSet) {
                         if (attach.getProperties() != null) {
                             String status = (String)attach.getProperties().get(AssignmentConstants.PROP_REVIEW_STATUS);
@@ -258,6 +265,7 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware{
                     
                     if (reviewedAttach.size() > 1) {
                         submap.put("reviewMultiple", true);
+                        submap.put("reviewMultipleInfo", reviewMultipleInfo);
                     } else if (reviewedAttach.size() == 1) {
                         // we need to either display an error indicator
                         // or a score
@@ -276,6 +284,7 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware{
                             submap.put("reviewScoreLink", link);
                             submap.put("reviewError", false);
                             submap.put("reviewPending", false);
+                            submap.put("reviewScoreLinkInfo", reportLinkInfo);
                             
                             Integer scoreAsNum = (Integer)properties.get(AssignmentConstants.PROP_REVIEW_SCORE);
                             String styleClass = DisplayUtil.getCssClassForReviewScore(scoreAsNum);
@@ -283,7 +292,8 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware{
                         } else if (status.equals(AssignmentConstants.REVIEW_STATUS_PENDING)) {
                             submap.put("reviewPending", true);
                             submap.put("reviewError", false);
-                            submap.put("reviewScore", assignmentBundleLogic.getString("assignment2.content_review.pending.display"));
+                            submap.put("reviewScore", reviewPendingScoreDisplay);
+                            submap.put("reviewPendingText", reviewPendingInfo);
                         }
                     } 
                 }

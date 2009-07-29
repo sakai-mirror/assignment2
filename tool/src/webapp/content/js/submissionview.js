@@ -347,28 +347,52 @@ asnn2subview.filteredRowTransform = function(obj, idx) {
         togo.push({ ID: "review-score", 
                     linktext: row.reviewScore,
                     target: row.reviewScoreLink,
-                    decorators: {
-                    type: "addClass",
-                    classes: row.reviewScoreClass
-                    }
+                    decorators: [
+                     {
+                        attrs: {title: row.reviewScoreLinkInfo}
+                      },
+                      {
+                        type: "addClass",
+                        classes: row.reviewScoreClass
+                      }
+                    ]
           });
       } else if (row.reviewScore && row.reviewPending) {
         togo.push({ ID: "review-pending", 
                     value: row.reviewScore,
-                    decorators: {
-                    type: "addClass",
-                    classes: "reportStatusPending"
-                    }
+                    
+                    decorators: [
+                     {
+                        attrs: {title: row.reviewPendingText}
+                      },
+                      {
+                        type: "addClass",
+                        classes: "reportStatusPending"
+                      }
+                    ]
           });
       }
       
       if (row.reviewMultiple) {
-        togo.push({ ID: "review-multiple", value: row.reviewMultiple});
+        togo.push({ ID: "review-multiple", 
+                    value: row.reviewMultiple,
+                    decorators: [
+                       {
+                         attrs: {title: row.reviewMultipleInfo, alt: row.reviewMultipleInfo}
+                       }
+                    ]
+        });
       }
       
       if (row.reviewError) {
         togo.push({ ID: "review-error", 
-                    value: row.reviewError});
+                    value: row.reviewError,
+                    decorators: [
+                      {
+                        attrs: {title: row.reviewErrorMsg, alt: row.reviewErrorMsg}
+                      }
+                    ]
+        });
       }
     }
 
