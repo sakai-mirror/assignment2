@@ -56,14 +56,14 @@
 					<ol>
 						<li rsf:id="access_row:">
 							<input rsf:id="access_choice" id="access_choice" type="radio" />
-							<label for="access_choice" rsf:id="access_label">Display to site</label>
+							<label for="access_choice" rsf:id="access_label">Display to site!</label>
 						</li>
 						<li id="groups_table_li" class="indent">
 							<table id="groupTable" class="listHier lines" cellpadding="0" cellspacing="0" border="0">
 								<tr>
 									<th><input type="checkbox" title="Select all" onclick="toggle_group_checkboxes(this)" /></th>
-									<th>Title</th>
-									<th>Description</th>
+									<th rsf:id="msg=assignment2.assignment_add.sections.title">Title!</th>
+									<th rsf:id="msg=assignment2.assignment_add.sections.description">Description!</th>
 								</tr>
 								<tr rsf:id="groups_row:">
 									<td>
@@ -146,6 +146,60 @@
             </p>
         </div>
     </fieldset>
+    
+        <fieldset rsf:id="tii_content_review_area" id="">
+        <legend rsf:id="msg=assignment2.turnitin.asnnedit.title">Turnitin</legend>
+        <div style="clear:both">
+            <p class="asnnOptionsLabel">
+              <input type="checkbox" rsf:id="use_tii" id="use_tii" />
+              <label for="use_tii" rsf:id="msg=assignment2.turnitin.asnnedit.use_turnitin" id="">Use Turnitin</label>
+            </p>
+        </div>
+        <div id="tii_properties" style="clear:both">
+          <ol class="asnnOptionsSubsection">
+              <li rsf:id="submit_to_options">
+                  <span rsf:id="msg=assignment2.turnitin.asnnedit.submit_papers_to">Submit papers to </span>
+                  <select rsf:id="submit_paper_to_repository_select">
+                      <option value="">Standard Paper Repository!</option>
+                  </select>
+              </li>
+              <li rsf:id="submit_to_single_repository">
+                  <span rsf:id="submit_to_repository">Submitting to this repo!</span>
+              </li>
+              <li>
+                  <span rsf:id="msg=assignment2.turnitin.asnnedit.generate_originality_reports">Generate originality reports </span>
+                  <select rsf:id="rep_gen_speed">
+                      <option value="">Immediately - first report is final!</option>
+                  </select>
+              </li>
+              <li>
+                  <input type="checkbox" rsf:id="allow_students_to_see_originality_checkbox" id="allow_students_to_see_originality_checkbox" />
+                  <label for="allow_students_to_see_originality_checkbox" rsf:id="msg=assignment2.turnitin.asnnedit.allow_students_to_see_originality_reports">Allow students to see originality reports</label>
+              </li>
+              <li>
+                  <span rsf:id="msg=assignment2.turnitin.asnnedit.check_originality_against">Check originality against:</span>
+                  <ol>
+                      <li>
+                          <input type="checkbox" rsf:id="check_against_student_repo_checkbox" id="check_against_student_repo_checkbox" />
+                          <label for="check_against_student_repo_checkbox" rsf:id="msg=assignment2.turnitin.asnnedit.student_paper_repository">Student paper repository</label>
+                      </li>
+                      <li>
+                          <input type="checkbox" rsf:id="check_against_internet_repo_checkbox" id="check_against_internet_repo_checkbox" />
+                          <label for="check_against_internet_repo_checkbox"  rsf:id="msg=assignment2.turnitin.asnnedit.internet_repository">Current and archived internet</label>
+                      </li>
+                      <li>
+                          <input type="checkbox" rsf:id="check_against_journal_repo_checkbox" id="check_against_journal_repo_checkbox" />
+                          <label for="check_against_journal_repo_checkbox" rsf:id="msg=assignment2.turnitin.asnnedit.journal_repository">Periodicals, journals, and publications</label>
+                      </li>
+                      <li>
+                          <input type="checkbox" rsf:id="check_against_institution_repo_checkbox" id="check_against_institution_repo_checkbox" />
+                          <label for="check_against_institution_repo_checkbox" rsf:id="check_institution_repo_text">Institution-specific repository!</label>
+                      </li>
+                  </ol>
+              </li>
+          </ol>
+        </div>
+    </fieldset>
 	
 	<fieldset>
 		<legend rsf:id="msg=assignment2.assignment_add.availability_details">Availability Details</legend>
@@ -201,53 +255,6 @@
             </p>                    
         </div>
 	</fieldset>
-    
-    <fieldset rsf:id="tii_content_review_area">
-        <legend rsf:id="msg=assignment2.turnitin.asnnedit.title">Turnitin</legend>
-        <ol>
-            <li>
-                <input type="checkbox" rsf:id="use_tii" />
-                <label rsf:id="msg=assignment2.turnitin.asnnedit.use_turnitin">Use Turnitin</label>
-            </li>
-            <li>
-                <span rsf:id="msg=assignment2.turnitin.asnnedit.submit_papers_to">Submit papers to </span>
-                <select rsf:id="submit_paper_to_repository_select">
-                    <option value="">Standard Paper Repository</option>
-                </select>
-            </li>
-            <li>
-                <span rsf:id="msg=assignment2.turnitin.asnnedit.generate_originality_reports">Generate originality reports </span>
-                <select rsf:id="rep_gen_speed">
-                    <option value="">Immediately - first report is final</option>
-                </select>
-            </li>
-            <li>
-                <input type="checkbox" rsf:id="allow_students_to_see_originality_checkbox"/>
-                <span rsf:id="msg=assignment2.turnitin.asnnedit.allow_students_to_see_originality_reports">Allow students to see originality reports</span>
-            </li>
-            <li>
-                <span rsf:id="msg=assignment2.turnitin.asnnedit.check_originality_against">Check originality against:</span>
-                <li>
-                    <ol>
-                        <input type="checkbox" rsf:id="check_against_student_repo_checkbox" />
-                        <span rsf:id="msg=assignment2.turnitin.asnnedit.student_paper_repository">Student paper repository</span>
-                    </ol>
-                    <ol>
-                        <input type="checkbox" rsf:id="check_against_internet_repo_checkbox"/>
-                        <span rsf:id="msg=assignment2.turnitin.asnnedit.internet_repository">Current and archived internet</span>
-                    </ol>
-                    <ol>
-                        <input type="checkbox" rsf:id="check_against_journal_repo_checkbox"/>
-                        <span rsf:id="msg=assignment2.turnitin.asnnedit.journal_repository">Periodicals, journals, and publications</span>
-                    </ol>
-                    <ol>
-                        <input type="checkbox" rsf:id="check_against_institution_repo_checkbox"/>
-                        <span rsf:id="msg=assignment2.turnitin.asnnedit.institution_repository">Institution-specific repository</span>
-                    </ol>
-                </li>
-            </li>
-        </ol>
-    </fieldset>
 	
 	<fieldset>
         <legend rsf:id="msg=assignment2.assignment_add.grading_legend">Grading</legend>
@@ -376,11 +383,22 @@ jQuery(document).ready(function(){
 	asnn2.showHideByCheckbox(accept_until, accept_until_container);
 	
 	// Require Submissions checkbox
+    var tii_content = jQuery('#page-replace\\:\\:tii_content_review_area').get(0);
 	jQuery("input[name='page-replace\:\:require_submissions']").click(function(){
 		asnn2.showHideSiblings(this.parentNode.parentNode, this.checked);
+
+    	// if this assignment does not require submission, hide the TII display
+        if (tii_content) {
+          asnn2.showHideByCheckbox(this, tii_content);
+        }
 	});
 	var requireSubInput = jQuery("input[name='page-replace\:\:require_submissions']").get(0);
     asnn2.showHideSiblings(requireSubInput.parentNode.parentNode, requireSubInput.checked);
+
+    // show/hide the turnitin section upon load
+    if (tii_content) {
+      asnn2.showHideByCheckbox(requireSubInput, tii_content);
+    }
     
     // we need to bind this to both the change and blur events since the due date
     // may be updated via the return from the gb helper or by the calendar widget
@@ -394,6 +412,15 @@ jQuery(document).ready(function(){
 
     // Make sure the title is focused on load.
     jQuery("input[name='page-replace\:\:title']").focus();
+
+    // Init TII area
+    var tii_options = jQuery('#tii_properties').get(0);
+    var tii = jQuery("input[name='page-replace\:\:use_tii']").get(0);
+    jQuery(tii).click(function(){
+        asnn2.showHideByCheckbox(this, tii_options);
+    });
+    // initialize the TII display
+    asnn2.showHideByCheckbox(tii, tii_options);
 });
 //]]>
 </script>

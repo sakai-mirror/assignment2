@@ -23,6 +23,11 @@
 		<property name="submissionLogic"
 			ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
 	</bean>
+    
+    <bean id="localTurnitinLogic"
+        class="org.sakaiproject.assignment2.tool.LocalTurnitinLogic">
+        <property name="serverConfigurationService" ref="org.sakaiproject.component.api.ServerConfigurationService" />
+    </bean>
 
 	<bean id="localAssignmentLogic"
 		class="org.sakaiproject.assignment2.tool.LocalAssignmentLogic">

@@ -26,6 +26,7 @@ import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentGroup;
 import org.sakaiproject.assignment2.model.AssignmentAttachment;
+import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.assignment2.tool.WorkFlowResult;
 import org.sakaiproject.assignment2.tool.beans.Assignment2Validator;
 import org.sakaiproject.user.api.UserNotDefinedException;
@@ -191,7 +192,21 @@ public class AssignmentAuthoringBean {
             }
             newGroups.removeAll(remGroups);
         }
-
+        
+        boolean turnitinEnabled = (Boolean)assignment.getProperties().get("USE_TII");
+        if (turnitinEnabled) {
+            if (!assignment.isRequiresSubmission()) {
+                // we need to turn off turnitin since assignment doesn't accept submissions. the
+                // turnitin section was hidden via javascript
+                assignment.getProperties().put("USE_TII", false);
+            } else if (assignment.getSubmissionType() != AssignmentConstants.SUBMIT_ATTACH_ONLY &&
+                    assignment.getSubmissionType() != AssignmentConstants.SUBMIT_INLINE_AND_ATTACH) {
+                // double check that this assignment is set up to accept attachments
+                messages.addMessage(new TargettedMessage("assignment2.turnitin.asnnedit.error.submission_type"));
+                errorFound = true;
+            }
+        }
+    
         if (options.getRestrictedToGroups() != null && options.getRestrictedToGroups().equals(Boolean.TRUE.toString()) && newGroups.size() < 1){
             messages.addMessage(new TargettedMessage("assignment2.assignment_post.no_groups"));
             errorFound = true;
