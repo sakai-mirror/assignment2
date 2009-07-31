@@ -21,6 +21,7 @@
 
 package org.sakaiproject.assignment2.tool.producers;
 
+import org.sakaiproject.assignment2.tool.LocalTurnitinLogic;
 import org.sakaiproject.assignment2.tool.beans.Assignment2Creator;
 import org.sakaiproject.assignment2.tool.beans.AssignmentAuthoringFlowBean;
 import org.sakaiproject.assignment2.tool.params.AssignmentViewParams;
@@ -110,6 +111,7 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
     private StatePreservationManager presmanager; // no, not that of OS/2
     private Assignment2Creator assignment2Creator;
     private ExternalContentReviewLogic externalContentReviewLogic;
+    private LocalTurnitinLogic localTurnitinLogic;
 
     // Assignment Authoring Scope Flow Bean
     private AssignmentAuthoringFlowBean assignmentAuthoringFlowBean;
@@ -536,19 +538,46 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
             UIOutput.make(tofill, "tii_content_review_area");
             UIBoundBoolean.make(tofill, "use_tii", assignment2OTP + ".properties.USE_TII");
             
-            String[] submitToRepoValues = new String[] {
-                    "1", "2", "0"
-            };
+            // Submit papers to repository
+            String repoRestriction = localTurnitinLogic.getSubmissionRepositoryRestriction();
+            String institutionalRepoName = localTurnitinLogic.getInstitutionalRepositoryName();
             
-            String[] submitToRepoLabelKeys = new String[] {
-                    "assignment2.turnitin.asnnedit.standard_paper_repository",
-                    "assignment2.turnitin.asnnedit.institution_paper_repository",
-                    "assignment2.turnitin.asnnedit.no_repository"
-            };
+            if (repoRestriction == null) {
+                UIOutput.make(tofill, "submit_to_options");
+                String[] submitToRepoValues = new String[] {
+                        LocalTurnitinLogic.VALUE_STANDARD_REPO, 
+                        LocalTurnitinLogic.VALUE_INSTITUTION_REPO, 
+                        LocalTurnitinLogic.VALUE_NO_REPO
+                };
+                
+                String instRepoLabel = institutionalRepoName != null ? 
+                        institutionalRepoName : messageLocator.getMessage("assignment2.turnitin.asnnedit.option.institution_paper_repository");
+
+                String[] submitToRepoLabels = new String[] {
+                        messageLocator.getMessage("assignment2.turnitin.asnnedit.option.standard_paper_repository"),
+                        instRepoLabel,
+                        messageLocator.getMessage("assignment2.turnitin.asnnedit.option.no_repository")
+                };
+
+                UISelect.make(form, "submit_paper_to_repository_select", submitToRepoValues,
+                        submitToRepoLabels, assignment2OTP + ".properties.submit_papers_to");
+            } else {
+                // we are not giving the user the option to set a repository for submissions
+                UIOutput.make(tofill, "submit_to_single_repository");
+                if (LocalTurnitinLogic.VALUE_NO_REPO.equals(repoRestriction)) {
+                    UIMessage.make(tofill, "submit_to_repository", "assignment2.turnitin.asnnedit.submit.no_repo");
+                } else if (LocalTurnitinLogic.VALUE_STANDARD_REPO.equals(repoRestriction)) {
+                    UIMessage.make(tofill, "submit_to_repository", "assignment2.turnitin.asnnedit.submit.standard_repo");
+                } else if (LocalTurnitinLogic.VALUE_INSTITUTION_REPO.equals(repoRestriction)) {
+                    if (institutionalRepoName == null) {
+                        UIMessage.make(tofill, "submit_to_repository", "assignment2.turnitin.asnnedit.submit.inst_repo.no_name");
+                    } else {
+                        UIMessage.make(tofill, "submit_to_repository", "assignment2.turnitin.asnnedit.submit.inst_repo.name", new Object[] {institutionalRepoName});
+                    }
+                }
+            }
             
-            UISelect.make(form, "submit_paper_to_repository_select", submitToRepoValues,
-                    submitToRepoLabelKeys, assignment2OTP + ".properties.submit_papers_to").setMessageKeys();
-            
+            // When to generate reports
             String[] reportGenSpeedValues = new String[] {
                     "0", "1", "2"
             };
@@ -576,6 +605,15 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
             
             UIBoundBoolean.make(tofill, "check_against_institution_repo_checkbox",
                     assignment2OTP + ".properties.institution_check");
+            
+            String instRepoText;
+            if (institutionalRepoName == null) {
+                instRepoText = messageLocator.getMessage("assignment2.turnitin.asnnedit.institution_repository");
+            } else {
+                instRepoText = institutionalRepoName;
+            }
+            
+            UIOutput.make(tofill, "check_institution_repo_text", instRepoText);
             
         }
     }
@@ -636,5 +674,9 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
     public void setExternalContentReviewLogic(
             ExternalContentReviewLogic externalContentReviewLogic) {
         this.externalContentReviewLogic = externalContentReviewLogic;
+    }
+    
+    public void setLocalTurnitinLogic(LocalTurnitinLogic localTurnitinLogic) {
+        this.localTurnitinLogic = localTurnitinLogic;
     }
 }
