@@ -21,6 +21,8 @@
 
 package org.sakaiproject.assignment2.logic.impl;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -42,6 +44,8 @@ import org.sakaiproject.contentreview.exception.ReportException;
 import org.sakaiproject.contentreview.exception.SubmissionException;
 import org.sakaiproject.contentreview.model.ContentReviewItem;
 import org.sakaiproject.contentreview.service.ContentReviewService;
+
+import uk.org.ponder.arrayutil.ArrayUtil;
 
 public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogic {
 
@@ -326,5 +330,106 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
     public void setAssignmentBundleLogic(AssignmentBundleLogic bundleLogic) {
         this.bundleLogic = bundleLogic;
     }
+    
+    public void populateAssignmentPropertiesFromAssignment(Assignment2 assign) {
+        if (assign.getContentReviewRef() == null || assign.getContentReviewRef().equals("")) {
+            return;
+        }
+        else {
+            assign.getProperties().put("USE_TII", new Boolean(true));
+        }
+        
+        Method getAsnnMethod = null;
+        
+        try {
+            getAsnnMethod = this.contentReview.getClass().getMethod("getAssignment", 
+                    java.lang.String.class, java.lang.String.class);
+        } catch (SecurityException e) {
+            log.error(e); 
+            return;
+        } catch (NoSuchMethodException e) {
+            log.error(e);
+            return;
+        }
+        
+        Map asnnmap = null;
+        try {
+            asnnmap = (Map) getAsnnMethod.invoke(contentReview, assign.getContextId(),
+                    assign.getContentReviewRef());
+        } catch (Exception e) {
+            log.error(e);
+        }
+        
+        Map asnnobj = (Map) asnnmap.get("object");
+        assign.getProperties().put("submit_papers_to",asnnobj.get("repository"));
+        assign.getProperties().put("rep_gen_speed",asnnobj.get("generate"));
+        if (asnnobj.get("searchpapers").equals("0")) {
+             assign.getProperties().put("s_paper_check", new Boolean(false));
+        }
+        else {
+            assign.getProperties().put("s_paper_check", new Boolean(true));
+        }
+        
+        if (asnnobj.get("searchinternet").equals("0")) {
+            assign.getProperties().put("internet_check", new Boolean(false));
+       }
+       else {
+           assign.getProperties().put("internet_check", new Boolean(true));
+       }
+        
+        if (asnnobj.get("searchjournals").equals("0")) {
+            assign.getProperties().put("journal_check", new Boolean(false));
+       }
+       else {
+           assign.getProperties().put("journal_check", new Boolean(true));
+       }
+        
+        
+        //, "", "", "institution_check"
+    }
+
+    public void createAssignment(Assignment2 assign) {
+        Method createAsnnMethod = null;
+        try {
+            createAsnnMethod = this.contentReview.getClass().getMethod("createAssignment",
+                    java.lang.String.class, java.lang.String.class, java.util.Map.class);
+        } catch (SecurityException e) {
+            log.error(e);
+            return;
+        } catch (NoSuchMethodException e) {
+            log.error(e);
+            return;
+        }
+        
+        Map opts = new HashMap();
+        
+        String[] tiioptKeys = new String[] { "submit_papers_to", "rep_gen_speed",
+                "s_paper_check", "internet_check", "journal_check", "institution_check"
+        };
+
+        for (Object key: assign.getProperties().keySet()) {
+            if (ArrayUtil.contains(tiioptKeys, key)) {
+                if (assign.getProperties().get(key) instanceof Boolean) {
+                    if (((Boolean) assign.getProperties().get(key)).booleanValue()) {
+                        opts.put(key, "1");
+                    }
+                    else {
+                        opts.put(key, "0");
+                    }
+                }
+                else {
+                    opts.put(key.toString(), assign.getProperties().get(key).toString());
+                }
+            }
+        }
+        
+        try {
+            createAsnnMethod.invoke(contentReview, assign.getContextId(), 
+                    this.getTaskId(assign), opts);
+        } catch (Exception e) {
+            log.error(e);
+        }
+    }
+    
 
 }

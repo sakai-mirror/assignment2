@@ -105,4 +105,8 @@ public interface ExternalContentReviewLogic {
     public String getErrorMessage(Long errorCode);
     
     public String getTaskId(Assignment2 assign);
+    
+    public void createAssignment(Assignment2 assing);
+    
+    public void populateAssignmentPropertiesFromAssignment(Assignment2 assign);
 }
