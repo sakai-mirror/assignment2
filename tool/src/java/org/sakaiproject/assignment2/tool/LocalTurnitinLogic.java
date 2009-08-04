@@ -23,6 +23,7 @@ package org.sakaiproject.assignment2.tool;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.component.api.ServerConfigurationService;
 
 
@@ -37,49 +38,19 @@ public class LocalTurnitinLogic {
     private ServerConfigurationService serverConfigurationService;
 
     /**
-     * if you want to restrict how your content is submitted to a repository, 
-     * include this property in sakai.properties. Possible values are {@link #VALUE_NO_REPO}, 
-     * {@link #VALUE_INSTITUTION_REPO}, {@link #VALUE_STANDARD_REPO}.
-     * If you do not include this property, all three options will be available
-     * to your users.
-     */
-    public static final String PROP_SUBMIT_TO_REPO = "turnitin.repository.setting";
-    
-    /**
-     * use this option if you do not want submissions saved to a repository.
-     */
-    public static final String VALUE_NO_REPO = "0";
-    /**
-     * use this option if you want submissions saved only to your institutional repository.
-     */
-    public static final String VALUE_INSTITUTION_REPO = "1";
-    /**
-     * use this option if you want all submissions saved to the content review service's
-     * standard repository. This generally means that submissions from your institutions
-     * can be used to check plagiarism at other institutions.
-     */
-    public static final String VALUE_STANDARD_REPO = "2";
-    
-    /**
-     * Optional property to set the name of your institutional repository most likely
-     * for use in the UI
-     */
-    public static final String PROP_INSTITUTION_REPO_NAME = "turnitin.repository.institutional.name";
-
-    /**
      * 
      * @return the submission repository restriction set via sakai.properties. possible values
-     * are {@link #VALUE_NO_REPO}, {@link #VALUE_INSTITUTION_REPO}, {@link #VALUE_STANDARD_REPO}.
+     * are {@link AssignmentConstants#TII_VALUE_NO_REPO}, {@link AssignmentConstants#TII_VALUE_INSTITUTION_REPO}, {@link AssignmentConstants#TII_VALUE_STANDARD_REPO}.
      * Returns null if there is no restriction on the submission repository.
      */
     public String getSubmissionRepositoryRestriction() {
         // we return null if the property does not exist or is not valid
         String submissionRepoSetting = null;
-        String propertyVal = serverConfigurationService.getString(PROP_SUBMIT_TO_REPO);
+        String propertyVal = serverConfigurationService.getString(AssignmentConstants.TII_PROP_SUBMIT_TO_REPO);
         if (propertyVal != null && 
-                (propertyVal.equals(VALUE_NO_REPO) || 
-                 propertyVal.equals(VALUE_INSTITUTION_REPO) ||
-                 propertyVal.equals(VALUE_STANDARD_REPO))) {
+                (propertyVal.equals(AssignmentConstants.TII_VALUE_NO_REPO) || 
+                 propertyVal.equals(AssignmentConstants.TII_VALUE_INSTITUTION_REPO) ||
+                 propertyVal.equals(AssignmentConstants.TII_VALUE_STANDARD_REPO))) {
             submissionRepoSetting = propertyVal;
         }
         
@@ -93,7 +64,7 @@ public class LocalTurnitinLogic {
      */
     public String getInstitutionalRepositoryName() {
         String repoName = null;
-        String prop = serverConfigurationService.getString(PROP_INSTITUTION_REPO_NAME);
+        String prop = serverConfigurationService.getString(AssignmentConstants.TII_PROP_INSTITUTION_REPO_NAME);
         if (prop != null && !"".equals(prop.trim())) {
             repoName = prop;
         }

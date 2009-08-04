@@ -545,9 +545,9 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
             if (repoRestriction == null) {
                 UIOutput.make(tofill, "submit_to_options");
                 String[] submitToRepoValues = new String[] {
-                        LocalTurnitinLogic.VALUE_STANDARD_REPO, 
-                        LocalTurnitinLogic.VALUE_INSTITUTION_REPO, 
-                        LocalTurnitinLogic.VALUE_NO_REPO
+                        AssignmentConstants.TII_VALUE_STANDARD_REPO, 
+                        AssignmentConstants.TII_VALUE_INSTITUTION_REPO, 
+                        AssignmentConstants.TII_VALUE_NO_REPO
                 };
                 
                 String instRepoLabel = institutionalRepoName != null ? 
@@ -564,11 +564,11 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
             } else {
                 // we are not giving the user the option to set a repository for submissions
                 UIOutput.make(tofill, "submit_to_single_repository");
-                if (LocalTurnitinLogic.VALUE_NO_REPO.equals(repoRestriction)) {
+                if (AssignmentConstants.TII_VALUE_NO_REPO.equals(repoRestriction)) {
                     UIMessage.make(tofill, "submit_to_repository", "assignment2.turnitin.asnnedit.submit.no_repo");
-                } else if (LocalTurnitinLogic.VALUE_STANDARD_REPO.equals(repoRestriction)) {
+                } else if (AssignmentConstants.TII_VALUE_STANDARD_REPO.equals(repoRestriction)) {
                     UIMessage.make(tofill, "submit_to_repository", "assignment2.turnitin.asnnedit.submit.standard_repo");
-                } else if (LocalTurnitinLogic.VALUE_INSTITUTION_REPO.equals(repoRestriction)) {
+                } else if (AssignmentConstants.TII_VALUE_INSTITUTION_REPO.equals(repoRestriction)) {
                     if (institutionalRepoName == null) {
                         UIMessage.make(tofill, "submit_to_repository", "assignment2.turnitin.asnnedit.submit.inst_repo.no_name");
                     } else {
