@@ -220,6 +220,12 @@ div.generalErrors li.alertMessageInline {
 	display: block;	
 }
 
+.informationalMessage {
+  border-color: #1b65b1;
+  background-image:url('/sakai-assignment2-tool/content/images/informational.png');
+  color: #1b65b1;
+}
+
 .messages {
 	xbackground: url("/sakai-assignment2-tool/content/images/error-arrow.png") no-repeat .5em 0;
 	xcolor: #fff;

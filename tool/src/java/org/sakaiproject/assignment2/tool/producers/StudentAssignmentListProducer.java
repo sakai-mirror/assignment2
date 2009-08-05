@@ -190,14 +190,6 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
             if (assignment.isRemoved()) {
                 UIMessage.make(row, "assignment-deleted", "assignment2.student-assignment-list.assignment-deleted");
             }
-            
-            if (assignment.isContentReviewEnabled()) {
-                UIOutput reviewIndicator = UIOutput.make(row, "review-enabled");
-                DecoratorList reviewDeco = new DecoratorList();
-                reviewDeco.add(new UITooltipDecorator(messageLocator.getMessage("assignment2.student-assignment-list.review_enabled")));
-                reviewDeco.add(new UIAlternativeTextDecorator(messageLocator.getMessage("assignment2.student-assignment-list.review_enabled")));
-                reviewIndicator.decorators = reviewDeco;
-            }
 
             StudentAction availStudentAction = submissionBean.determineStudentAction(assignmentSubmission.getUserId(), assignment.getId());
 

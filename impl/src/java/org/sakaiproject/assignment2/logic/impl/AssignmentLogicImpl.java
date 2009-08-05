@@ -172,6 +172,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
         //        assign.setProperties(tiiopts); // TODO this should be a map merge and not a complete replacement
         //    }
         //}
+        externalContentReviewLogic.populateAssignmentPropertiesFromAssignment(assign);
         
         return assign;
     }
@@ -359,14 +360,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
         if (assignment.getProperties().containsKey("USE_TII") && ((Boolean) assignment.getProperties().get("USE_TII")).booleanValue()) {
             String tiiAsnnTitle = externalContentReviewLogic.getTaskId(assignment);
             log.debug("Going to Create TII Asnn with title: " + tiiAsnnTitle);
-            //EntityProvider turnitinAsnnProvider = entityProviderManager.getProviderByPrefix("turnitin-assignment");
-            //if (turnitinAsnnProvider instanceof CRUDable) {
-            //    CRUDable crudable = (CRUDable) turnitinAsnnProvider;
-            //    crudable.createEntity(new EntityReference("turnitin-assignment",tiiAsnnTitle), assignment.getProperties(), null);
-            //    assignment.setContentReviewRef(tiiAsnnTitle);
-            //    dao.update(assignment);
-            //    
-            //}
+            externalContentReviewLogic.createAssignment(assignment);
             assignment.setContentReviewRef(tiiAsnnTitle);
             dao.update(assignment);
         }

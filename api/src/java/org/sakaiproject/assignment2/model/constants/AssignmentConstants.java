@@ -172,5 +172,40 @@ public class AssignmentConstants {
      * The item was successfully reviewed
      */
     public final static String REVIEW_STATUS_SUCCESS = "review_success";
+    
+    /* These properties are specific to content review implementation using Turnitin */
+    /**
+     * This property is specific to Turnitin implementation of ContentReview.
+     * if you want to restrict how your content is submitted to a repository, 
+     * include this property in sakai.properties. Possible values are {@link #VALUE_NO_REPO}, 
+     * {@link #VALUE_INSTITUTION_REPO}, {@link #VALUE_STANDARD_REPO}.
+     * 
+     */
+    public static final String TII_PROP_SUBMIT_TO_REPO = "turnitin.repository.setting";
+    
+    /**
+     * possible value for {@link #TII_PROP_SUBMIT_TO_REPO}.
+     * use this option if you do not want submissions saved to a repository.
+     */
+    public static final String TII_VALUE_NO_REPO = "0";
+    /**
+     * possible value for {@link #TII_PROP_SUBMIT_TO_REPO}.
+     * use this option if you want submissions saved only to your institutional repository.
+     */
+    public static final String TII_VALUE_INSTITUTION_REPO = "1";
+    /**
+     * possible value for {@link #TII_PROP_SUBMIT_TO_REPO}.
+     * use this option if you want all submissions saved to the content review
+     * standard repository. This generally means that submissions from your institution
+     * can be used to check plagiarism at other institutions.
+     */
+    public static final String TII_VALUE_STANDARD_REPO = "2";
+    
+    /**
+     * This property is specific to Turnitin implementation of ContentReview.
+     * Optional property to set the name of your institutional repository (most likely
+     * for use in the UI)
+     */
+    public static final String TII_PROP_INSTITUTION_REPO_NAME = "turnitin.repository.institutional.name";
 
 }

@@ -67,6 +67,12 @@
       <version>${sakai.spring.version}</version>
       <scope>provided</scope>
     </dependency>
+        <!-- PonderUtilCore for ArrayUtils -->
+        <dependency>
+            <groupId>uk.org.ponder</groupId>
+            <artifactId>ponderutilcore</artifactId>
+            <version>1.2.4</version>
+        </dependency>
     <dependency>
       <groupId>${sakai.hibernate.groupId}</groupId>
       <artifactId>${sakai.hibernate.artifactId}</artifactId>
