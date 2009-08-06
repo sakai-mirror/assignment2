@@ -102,6 +102,9 @@ asnn2subview.getSortHeaderComptree = function(newModel) {
           {"jQuery": ["click", onSortClick('report')]}
         ]
       });*/
+    } else {
+      // hide the associated tds
+      jQuery('td.report_info').hide();
     }
 
   if (newModel.sortDir > 0) {

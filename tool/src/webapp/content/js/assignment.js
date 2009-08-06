@@ -861,13 +861,23 @@ var asnn2 = asnn2 || {};
 
                 queries.push(RSF.renderActionBinding("ReleaseGradesAction.execute"));
                 var body = queries.join("&");
-                jQuery.post(document.URL, body);
 
-                asnn2util.closeDialog(confirmDialog);
-                submitButton.onclick = function(event) {
-                    return true
-                };
-                submitButton.click();
+                jQuery.ajax({
+                  type: "POST",
+                  url: document.URL,
+                  data: body,
+                  cache: false,
+                  success: function () {
+                    asnn2util.closeDialog(confirmDialog);
+                    submitButton.onclick = function(event) {
+                      return true;
+                    };
+                    submitButton.click();
+                },
+                  failure: function() {
+                  // TODO We need to handle this
+                  } 
+                });
             }
         });
 
