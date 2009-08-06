@@ -28,6 +28,7 @@ import org.sakaiproject.assignment2.logic.impl.AssignmentLogicImpl;
 import org.sakaiproject.assignment2.logic.impl.AssignmentPermissionLogicImpl;
 import org.sakaiproject.assignment2.logic.impl.AssignmentSubmissionLogicImpl;
 import org.sakaiproject.assignment2.logic.impl.ExternalAnnouncementLogicImpl;
+import org.sakaiproject.assignment2.logic.impl.ExternalContentReviewLogicImpl;
 import org.sakaiproject.assignment2.logic.impl.ExternalGradebookLogicImpl;
 import org.sakaiproject.assignment2.logic.test.stubs.ExternalLogicStub;
 import org.sakaiproject.assignment2.logic.test.stubs.GradebookServiceStub;
@@ -55,6 +56,7 @@ public abstract class Assignment2TestBase extends AbstractTransactionalSpringCon
     protected AssignmentSubmissionLogicImpl submissionLogic;
     protected AssignmentPermissionLogicImpl permissionLogic;
     protected AssignmentBundleLogic bundleLogic;
+    protected ExternalContentReviewLogicImpl contentReviewLogic;
 
     protected GradebookServiceStub gradebookService;
 
@@ -93,7 +95,9 @@ public abstract class Assignment2TestBase extends AbstractTransactionalSpringCon
         gradebookLogic.setExternalLogic(externalLogic);
 
         announcementLogic = new ExternalAnnouncementLogicImpl();
-
+        
+        contentReviewLogic = new ExternalContentReviewLogicImpl();
+        
         permissionLogic = new AssignmentPermissionLogicImpl();
         permissionLogic.setDao(dao);
         permissionLogic.setExternalGradebookLogic(gradebookLogic);
@@ -106,6 +110,7 @@ public abstract class Assignment2TestBase extends AbstractTransactionalSpringCon
         assignmentLogic.setExternalLogic(externalLogic);
         assignmentLogic.setPermissionLogic(permissionLogic);
         assignmentLogic.setAssignmentBundleLogic(bundleLogic);
+        assignmentLogic.setExternalContentReviewLogic(contentReviewLogic);
 
 
         submissionLogic = new AssignmentSubmissionLogicImpl();
