@@ -350,12 +350,15 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
         } catch (NoSuchMethodException e) {
             log.error(e);
             return;
-        }
+        } 
         
         Map asnnmap = null;
         try {
             asnnmap = (Map) getAsnnMethod.invoke(contentReview, assign.getContextId(),
                     assign.getContentReviewRef());
+        } catch (InvocationTargetException e) {
+            log.error(e);
+            log.error(e.getCause());
         } catch (Exception e) {
             log.error(e);
         }
@@ -426,6 +429,9 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
         try {
             createAsnnMethod.invoke(contentReview, assign.getContextId(), 
                     this.getTaskId(assign), opts);
+        } catch (InvocationTargetException e) {
+            log.error(e);
+            log.error(e.getCause());
         } catch (Exception e) {
             log.error(e);
         }
