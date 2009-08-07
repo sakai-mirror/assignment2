@@ -84,6 +84,7 @@
       class="org.sakaiproject.assignment2.logic.impl.ExternalContentReviewLogicImpl" init-method="init">
       <property name="externalContentLogic" ref="org.sakaiproject.assignment2.logic.ExternalContentLogic" />
       <property name="assignmentBundleLogic" ref="org.sakaiproject.assignment2.logic.AssignmentBundleLogic" />
+      <property name="idManager" ref="org.sakaiproject.id.api.IdManager" />
    </bean>
 
 	<bean id="org.sakaiproject.assignment2.logic.UploadAllLogic"

@@ -44,6 +44,7 @@ import org.sakaiproject.contentreview.exception.ReportException;
 import org.sakaiproject.contentreview.exception.SubmissionException;
 import org.sakaiproject.contentreview.model.ContentReviewItem;
 import org.sakaiproject.contentreview.service.ContentReviewService;
+import org.sakaiproject.id.api.IdManager;
 
 import uk.org.ponder.arrayutil.ArrayUtil;
 
@@ -54,6 +55,11 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
     private ContentReviewService contentReview;
     private ExternalContentLogic contentLogic;
     private AssignmentBundleLogic bundleLogic;
+    
+    private IdManager idManager;
+    public void setIdManager(IdManager idManager) {
+        this.idManager = idManager;
+    }
 
     public void init(){
         if(log.isDebugEnabled()) log.debug("init");
@@ -144,7 +150,12 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
      * identify this assignment in the service
      */
     public String getTaskId(Assignment2 assign) {
-        return "/assignment2/" + assign.getId();
+        if (assign.getContentReviewRef() == null || assign.getContentReviewRef().equals("")) {
+            return "/asnn2contentreview/" + idManager.createUuid();
+        }
+        else {
+            return assign.getContentReviewRef();
+        }
     }
     
     public void populateReviewProperties(Assignment2 assignment, Collection<SubmissionAttachment> attachments, boolean instructorView) {
@@ -365,7 +376,7 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
         
         Map asnnobj = (Map) asnnmap.get("object");
         assign.getProperties().put("submit_papers_to",asnnobj.get("repository"));
-        assign.getProperties().put("rep_gen_speed",asnnobj.get("generate"));
+        assign.getProperties().put("report_gen_speed",asnnobj.get("generate"));
         if (asnnobj.get("searchpapers").equals("0")) {
              assign.getProperties().put("s_paper_check", new Boolean(false));
         }
@@ -406,7 +417,7 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
         
         Map opts = new HashMap();
         
-        String[] tiioptKeys = new String[] { "submit_papers_to", "rep_gen_speed",
+        String[] tiioptKeys = new String[] { "submit_papers_to", "report_gen_speed",
                 "s_paper_check", "internet_check", "journal_check", "institution_check"
         };
 
@@ -431,7 +442,9 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
                     this.getTaskId(assign), opts);
         } catch (InvocationTargetException e) {
             log.error(e);
-            log.error(e.getCause());
+            log.error("Error creating assignment for context: " + assign.getContextId()
+               + " with taskId: " + this.getTaskId(assign),
+            e.getCause());
         } catch (Exception e) {
             log.error(e);
         }
