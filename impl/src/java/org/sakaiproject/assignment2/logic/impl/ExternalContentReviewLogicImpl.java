@@ -404,6 +404,14 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
         else {
             assign.getProperties().put("institution_check", new Boolean(true));
         }
+        
+        if (asnnobj.get("sviewreports").equals("0")) {
+            assign.getProperties().put("s_view_report", new Boolean(false));
+        }
+        else {
+            assign.getProperties().put("s_view_report", new Boolean(true));
+        }
+        
 
         
         
@@ -426,7 +434,7 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
         Map opts = new HashMap();
         
         String[] tiioptKeys = new String[] { "submit_papers_to", "report_gen_speed",
-                "s_paper_check", "internet_check", "journal_check", "institution_check"
+                "s_paper_check", "internet_check", "journal_check", "institution_check", "s_view_report"
         };
 
         for (Object key: assign.getProperties().keySet()) {
