@@ -83,6 +83,9 @@ public interface ExternalContentReviewLogic {
      * want to retrieve review info for (ie score, icon url, etc)
      * @param instructorView true if this report is for the instructor view. false if this is
      * for the student view
+     * Populates properties related to content review on the given attachments. If you
+     * pass instructorView = false and the assignment is set up with the option 
+     * prohibiting students from viewing the reports, the properties will not be populated
      */
     public void populateReviewProperties(Assignment2 assignment, Collection<SubmissionAttachment> attachments, boolean instructorView);
 
