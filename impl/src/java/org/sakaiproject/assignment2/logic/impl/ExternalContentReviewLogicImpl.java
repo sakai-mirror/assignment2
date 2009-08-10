@@ -378,25 +378,33 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
         assign.getProperties().put("submit_papers_to",asnnobj.get("repository"));
         assign.getProperties().put("report_gen_speed",asnnobj.get("generate"));
         if (asnnobj.get("searchpapers").equals("0")) {
-             assign.getProperties().put("s_paper_check", new Boolean(false));
+            assign.getProperties().put("s_paper_check", new Boolean(false));
         }
         else {
             assign.getProperties().put("s_paper_check", new Boolean(true));
         }
-        
+
         if (asnnobj.get("searchinternet").equals("0")) {
             assign.getProperties().put("internet_check", new Boolean(false));
-       }
-       else {
-           assign.getProperties().put("internet_check", new Boolean(true));
-       }
-        
+        }
+        else {
+            assign.getProperties().put("internet_check", new Boolean(true));
+        }
+
         if (asnnobj.get("searchjournals").equals("0")) {
             assign.getProperties().put("journal_check", new Boolean(false));
-       }
-       else {
-           assign.getProperties().put("journal_check", new Boolean(true));
-       }
+        }
+        else {
+            assign.getProperties().put("journal_check", new Boolean(true));
+        }
+        
+        if (asnnobj.get("searchinstitution").equals("0")) {
+            assign.getProperties().put("institution_check", new Boolean(false));
+        }
+        else {
+            assign.getProperties().put("institution_check", new Boolean(true));
+        }
+
         
         
         //, "", "", "institution_check"
