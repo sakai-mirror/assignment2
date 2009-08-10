@@ -589,7 +589,7 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
             };
             
             UISelect.make(form, "rep_gen_speed", reportGenSpeedValues,
-                    reportGenSpeedLabels, assignment2OTP + ".properties.rep_gen_speed").setMessageKeys();
+                    reportGenSpeedLabels, assignment2OTP + ".properties.report_gen_speed").setMessageKeys();
             
             UIBoundBoolean.make(tofill, "allow_students_to_see_originality_checkbox", 
                     assignment2OTP + ".properties.s_view_report");
