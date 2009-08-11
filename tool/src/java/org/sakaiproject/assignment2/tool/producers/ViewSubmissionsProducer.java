@@ -37,6 +37,7 @@ import org.sakaiproject.assignment2.exception.GradebookItemNotFoundException;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
+import org.sakaiproject.assignment2.logic.ExternalContentReviewLogic;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.logic.GradeInformation;
@@ -126,6 +127,7 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
     private AttachmentListRenderer attachmentListRenderer;
     private AssignmentPermissionLogic permissionLogic;
     private ExternalGradebookLogic gradebookLogic;
+    private ExternalContentReviewLogic contentReviewLogic;
     private Placement placement;
 
     private Long assignmentId;
@@ -140,7 +142,8 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
         }
         assignmentId = params.assignmentId;
         Assignment2 assignment = assignmentLogic.getAssignmentByIdWithAssociatedData(assignmentId);
-
+        
+        boolean contentReviewEnabled = assignment.isContentReviewEnabled() && contentReviewLogic.isContentReviewAvailable();
 
         // let's double check that none of the associated groups were deleted from the site
         boolean displayGroupDeletionWarning = false;
@@ -182,7 +185,9 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
         // we need to retrieve the history for the release/retract feedback logic
         List<AssignmentSubmission> submissions = submissionLogic.getViewableSubmissionsWithHistoryForAssignmentId(assignmentId, params.groupId);
 
-        UIInitBlock.make(tofill, "asnn2subview-init", "asnn2subview.init", new Object[]{assignmentId, externalLogic.getCurrentContextId(), placement.getId(), submissions.size(), assignment.isGraded(), assignment.isContentReviewEnabled()});
+        UIInitBlock.make(tofill, "asnn2subview-init", "asnn2subview.init", 
+                new Object[]{assignmentId, externalLogic.getCurrentContextId(), 
+                placement.getId(), submissions.size(), assignment.isGraded(), contentReviewEnabled});
 
         // if assign is graded, retrieve the gb item
         GradebookItem gbItem = null;
@@ -640,6 +645,10 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
 
     public void setExternalGradebookLogic(ExternalGradebookLogic gradebookLogic) {
         this.gradebookLogic = gradebookLogic;
+    }
+    
+    public void setExternalContentReviewLogic(ExternalContentReviewLogic contentReviewLogic) {
+        this.contentReviewLogic = contentReviewLogic;
     }
 
     public void setPlacement(Placement placement) {

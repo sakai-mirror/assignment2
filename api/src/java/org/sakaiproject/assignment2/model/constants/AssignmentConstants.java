@@ -175,6 +175,10 @@ public class AssignmentConstants {
     
     /* These properties are specific to content review implementation using Turnitin */
     /**
+     * Set this property to true if you want to turn on the Turnitin option for assignment2
+     */
+    public static final String TII_ENABLED = "turnitin.enable.assignment2";
+    /**
      * This property is specific to Turnitin implementation of ContentReview.
      * if you want to restrict how your content is submitted to a repository, 
      * include this property in sakai.properties. Possible values are {@link #VALUE_NO_REPO}, 

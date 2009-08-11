@@ -9,6 +9,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment2.exception.GradebookItemNotFoundException;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
+import org.sakaiproject.assignment2.logic.ExternalContentReviewLogic;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.GradeInformation;
 import org.sakaiproject.assignment2.logic.GradebookItem;
@@ -98,6 +99,11 @@ public class AsnnSubmissionDetailsRenderer implements BasicProducer {
     private AssignmentSubmissionLogic submissionLogic;
     public void setSubmissionLogic(AssignmentSubmissionLogic submissionLogic) {
         this.submissionLogic = submissionLogic;
+    }
+    
+    private ExternalContentReviewLogic contentReviewLogic;
+    public void setExternalContentReviewLogic(ExternalContentReviewLogic contentReviewLogic) {
+        this.contentReviewLogic = contentReviewLogic;
     }
 
     public void fillComponents(UIContainer parent, String clientID, AssignmentSubmission assignmentSubmission, boolean previewAsStudent) {
@@ -360,7 +366,7 @@ public class AsnnSubmissionDetailsRenderer implements BasicProducer {
             }
             
             // only display the originality checking info if it is enabled for this assignment
-            if (!previewAsStudent && assignment.isContentReviewEnabled()) { 
+            if (!previewAsStudent && assignment.isContentReviewEnabled() && contentReviewLogic.isContentReviewAvailable()) { 
                 UIOutput.make(joint, "plagiarism-check-row");
                 UIMessage.make(joint, "plagiarism-check-enabled", "assignment2.student-submit.plagiarism.enabled");
             }

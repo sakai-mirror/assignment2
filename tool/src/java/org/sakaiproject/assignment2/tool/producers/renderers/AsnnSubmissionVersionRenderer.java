@@ -88,7 +88,7 @@ public class AsnnSubmissionVersionRenderer implements BasicProducer {
                 UIMessage.make(joint, "submission-attachments-header", "assignment2.student-submit.submitted_attachments");
 
                 if (asnnSubVersion.getSubmissionAttachSet() != null && !asnnSubVersion.getSubmissionAttachSet().isEmpty()){
-                    if (assignment.isContentReviewEnabled()) {
+                    if (assignment.isContentReviewEnabled() && contentReviewLogic.isContentReviewAvailable()) {
                         contentReviewLogic.populateReviewProperties(assignment, asnnSubVersion.getSubmissionAttachSet(), false);
                     }
                     attachmentListRenderer.makeAttachmentFromSubmissionAttachmentSet(joint, "submission-attachment-list:", viewParameters.viewID, 

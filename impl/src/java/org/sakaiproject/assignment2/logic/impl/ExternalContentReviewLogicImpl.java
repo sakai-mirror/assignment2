@@ -37,6 +37,7 @@ import org.sakaiproject.assignment2.logic.ExternalContentReviewLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.SubmissionAttachment;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
+import org.sakaiproject.component.api.ServerConfigurationService;
 import org.sakaiproject.component.cover.ComponentManager;
 import org.sakaiproject.content.api.ContentResource;
 import org.sakaiproject.contentreview.exception.QueueException;
@@ -55,6 +56,7 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
     private ContentReviewService contentReview;
     private ExternalContentLogic contentLogic;
     private AssignmentBundleLogic bundleLogic;
+    private ServerConfigurationService serverConfigurationService;
     
     private IdManager idManager;
     public void setIdManager(IdManager idManager) {
@@ -73,7 +75,11 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
     public boolean isContentReviewAvailable() {
         boolean available = false;
         if (contentReview != null) {
-            available = true;
+            // check and see if Turnitin was enabled
+            String turnitinEnabled = serverConfigurationService.getString(AssignmentConstants.TII_ENABLED, "false");
+            if ("true".equals(turnitinEnabled)) {
+                available = true;
+            }
         }
 
         return available;
@@ -353,18 +359,6 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
         return errorMessage;
     }
     
-    public void setExternalContentLogic(ExternalContentLogic contentLogic) {
-        this.contentLogic = contentLogic;
-    }
-    
-    public void setContentReviewService(ContentReviewService contentReview) {
-        this.contentReview = contentReview;
-    }
-    
-    public void setAssignmentBundleLogic(AssignmentBundleLogic bundleLogic) {
-        this.bundleLogic = bundleLogic;
-    }
-    
     public void populateAssignmentPropertiesFromAssignment(Assignment2 assign) {
         if (assign.getContentReviewRef() == null || assign.getContentReviewRef().equals("")) {
             return;
@@ -489,5 +483,20 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
         }
     }
     
+    public void setExternalContentLogic(ExternalContentLogic contentLogic) {
+        this.contentLogic = contentLogic;
+    }
+    
+    public void setContentReviewService(ContentReviewService contentReview) {
+        this.contentReview = contentReview;
+    }
+    
+    public void setAssignmentBundleLogic(AssignmentBundleLogic bundleLogic) {
+        this.bundleLogic = bundleLogic;
+    }
+    
+    public void setServerConfigurationService(ServerConfigurationService serverConfigurationService) {
+        this.serverConfigurationService = serverConfigurationService;
+    }
 
 }

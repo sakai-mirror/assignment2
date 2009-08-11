@@ -85,6 +85,7 @@
       <property name="externalContentLogic" ref="org.sakaiproject.assignment2.logic.ExternalContentLogic" />
       <property name="assignmentBundleLogic" ref="org.sakaiproject.assignment2.logic.AssignmentBundleLogic" />
       <property name="idManager" ref="org.sakaiproject.id.api.IdManager" />
+      <property name="serverConfigurationService" ref="org.sakaiproject.component.api.ServerConfigurationService" />
    </bean>
 
 	<bean id="org.sakaiproject.assignment2.logic.UploadAllLogic"
