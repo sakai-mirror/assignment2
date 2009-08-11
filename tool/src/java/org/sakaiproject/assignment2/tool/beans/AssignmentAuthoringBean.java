@@ -205,6 +205,17 @@ public class AssignmentAuthoringBean {
                 messages.addMessage(new TargettedMessage("assignment2.turnitin.asnnedit.error.submission_type"));
                 errorFound = true;
             }
+            
+            // now, check to see if the user wants to generate reports related to due date
+            // but there is no due date
+            if (assignment.getProperties().containsKey("report_gen_speed") && 
+                    ("2".equals(assignment.getProperties().get("report_gen_speed")) ||
+                     "1".equals(assignment.getProperties().get("report_gen_speed")))) {
+                if (assignment.getDueDate() == null) {
+                    messages.addMessage(new TargettedMessage("assignment2.turnitin.asnnedit.error.due_date"));
+                    errorFound = true;
+                }
+            }
         }
     
         if (options.getRestrictedToGroups() != null && options.getRestrictedToGroups().equals(Boolean.TRUE.toString()) && newGroups.size() < 1){
