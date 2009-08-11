@@ -46,6 +46,7 @@
     	<property name="locale" ref="requestLocale"></property>
     	<property name="messageLocator" ref="messageLocator"></property>
     	<property name="submissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic"></property>
+        <property name="externalContentReviewLogic" ref="org.sakaiproject.assignment2.logic.ExternalContentReviewLogic"></property>
     </bean>	
     
     <bean id="AsnnInstructionsRenderer"
@@ -63,6 +64,7 @@
         <property name="viewParameters" ref="viewParameters"></property>
         <property name="submissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic"></property>
         <property name="studentSubmissionVersionFlowBean" ref="StudentSubmissionVersionFlowBean" />
+        <property name="externalContentReviewLogic" ref="org.sakaiproject.assignment2.logic.ExternalContentReviewLogic"></property>
     </bean>
     
     <bean id="AsnnSubmissionVersionRenderer"
@@ -210,6 +212,7 @@
       <property name="attachmentListRenderer" ref="AttachmentListRenderer" />
       <property name="permissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentPermissionLogic" />
       <property name="externalGradebookLogic" ref="org.sakaiproject.assignment2.logic.ExternalGradebookLogic" />
+      <property name="externalContentReviewLogic" ref="org.sakaiproject.assignment2.logic.ExternalContentReviewLogic"></property>
       <property name="placement" ref="sakai-Placement"></property>
    </bean>
    

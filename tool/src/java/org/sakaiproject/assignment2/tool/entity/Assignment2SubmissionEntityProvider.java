@@ -190,7 +190,9 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware{
 
         Map<String, String> studentIdSortNameMap = externalLogic.getUserIdToSortNameMap(studentIdList);
         
-        if (assignment.isContentReviewEnabled()) {
+        boolean contentReviewEnabled = assignment.isContentReviewEnabled() && contentReviewLogic.isContentReviewAvailable();
+        
+        if (contentReviewEnabled) {
             populateReviewProperties(assignment, submissions);
         }
 
@@ -238,7 +240,7 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware{
                 submap.put("feedbackReleased", false);
             }
             
-            if (assignment.isContentReviewEnabled()) {
+            if (contentReviewEnabled) {
                 // content review is enabled, so we need to figure out what to display for the 
                 // review column
                 AssignmentSubmissionVersion currVersion = as.getCurrentSubmissionVersion();

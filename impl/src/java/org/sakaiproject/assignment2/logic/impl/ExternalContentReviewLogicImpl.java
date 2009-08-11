@@ -37,6 +37,7 @@ import org.sakaiproject.assignment2.logic.ExternalContentReviewLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.SubmissionAttachment;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
+import org.sakaiproject.component.api.ServerConfigurationService;
 import org.sakaiproject.component.cover.ComponentManager;
 import org.sakaiproject.content.api.ContentResource;
 import org.sakaiproject.contentreview.exception.QueueException;
@@ -55,6 +56,7 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
     private ContentReviewService contentReview;
     private ExternalContentLogic contentLogic;
     private AssignmentBundleLogic bundleLogic;
+    private ServerConfigurationService serverConfigurationService;
     
     private IdManager idManager;
     public void setIdManager(IdManager idManager) {
@@ -73,7 +75,11 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
     public boolean isContentReviewAvailable() {
         boolean available = false;
         if (contentReview != null) {
-            available = true;
+            // check and see if Turnitin was enabled
+            String turnitinEnabled = serverConfigurationService.getString(AssignmentConstants.TII_ENABLED, "false");
+            if ("true".equals(turnitinEnabled)) {
+                available = true;
+            }
         }
 
         return available;
@@ -164,40 +170,61 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
         }
 
         if (attachments != null && !attachments.isEmpty()) {
-            // let's get all of the review items for this assignment
-            List<ContentReviewItem> allReviewItems = getReviewItemsForAssignment(assignment);
-            // put these items into a map of the attachment reference to the review item for easier access
-            Map<String, ContentReviewItem> attRefReviewItemMap = new HashMap<String, ContentReviewItem>();
-            if (allReviewItems != null) {
-                for (ContentReviewItem reviewItem : allReviewItems) {
-                    attRefReviewItemMap.put(reviewItem.getContentId(), reviewItem);
+
+            boolean populateReports;
+            if (instructorView) {
+                populateReports = true;
+            } else {
+                // if this isn't the instructor view, we need to check and see if the assignment
+                // allows students to view the reports
+                if (assignment.getProperties() == null || assignment.getProperties().isEmpty()) {
+                    populateAssignmentPropertiesFromAssignment(assignment);
+                }
+
+                if (assignment.getProperties() != null && assignment.getProperties().containsKey("s_view_report") && 
+                        (Boolean)assignment.getProperties().get("s_view_report")) {
+                    populateReports = true;
+                } else {
+                    populateReports = false;
                 }
             }
 
-            // now let's iterate through the passed attachments and populate the
-            // properties, if appropriate
-            for (SubmissionAttachment attach : attachments) {
-                ContentReviewItem reviewItem = new ContentReviewItem(attach.getAttachmentReference());
-                
-                if (attRefReviewItemMap.containsKey(attach.getAttachmentReference())) {
-                    reviewItem = attRefReviewItemMap.get(attach.getAttachmentReference());
-                } else {
-                    // check to see if this has been submitted yet. The call to getReviewItems only
-                    // returns successfully submitted review items. we want to know if
-                    // this attachment encountered an error along the way
-                    try
-                    {
-                        Long status = contentReview.getReviewStatus(attach.getAttachmentReference());
-                        reviewItem.setStatus(status);
-                    }
-                    catch (QueueException e)
-                    {
-                        if (log.isDebugEnabled()) log.debug("Attempt to retrieve status for attachment that has not been queued");
-                        // this attachment has not been submitted so leave ContentReviewItem empty
+            if (populateReports) {
+                // let's get all of the review items for this assignment
+                List<ContentReviewItem> allReviewItems = getReviewItemsForAssignment(assignment);
+                // put these items into a map of the attachment reference to the review item for easier access
+                Map<String, ContentReviewItem> attRefReviewItemMap = new HashMap<String, ContentReviewItem>();
+                if (allReviewItems != null) {
+                    for (ContentReviewItem reviewItem : allReviewItems) {
+                        attRefReviewItemMap.put(reviewItem.getContentId(), reviewItem);
                     }
                 }
-                
-                populateProperties(reviewItem, attach, instructorView);
+
+                // now let's iterate through the passed attachments and populate the
+                // properties
+                for (SubmissionAttachment attach : attachments) {
+                    ContentReviewItem reviewItem = new ContentReviewItem(attach.getAttachmentReference());
+
+                    if (attRefReviewItemMap.containsKey(attach.getAttachmentReference())) {
+                        reviewItem = attRefReviewItemMap.get(attach.getAttachmentReference());
+                    } else {
+                        // check to see if this has been submitted yet. The call to getReviewItems only
+                        // returns successfully submitted review items. we want to know if
+                        // this attachment encountered an error along the way
+                        try
+                        {
+                            Long status = contentReview.getReviewStatus(attach.getAttachmentReference());
+                            reviewItem.setStatus(status);
+                        }
+                        catch (QueueException e)
+                        {
+                            if (log.isDebugEnabled()) log.debug("Attempt to retrieve status for attachment that has not been queued");
+                            // this attachment has not been submitted so leave ContentReviewItem empty
+                        }
+                    }
+
+                    populateProperties(assignment, reviewItem, attach, instructorView);
+                }
             }
         }
     }
@@ -208,9 +235,11 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
      * @param attach
      * @param instructorView true if this is for the instructor view. false if for student view
      */
-    private void populateProperties(ContentReviewItem reviewItem, SubmissionAttachment attach, boolean instructorView) {
+    private void populateProperties(Assignment2 assign, ContentReviewItem reviewItem, SubmissionAttachment attach, boolean instructorView) {
+        if (assign == null) {
+            throw new IllegalArgumentException("Null assign passed to populateProperties");
+        }
         if (reviewItem != null && attach != null) {
-
             Map properties = attach.getProperties() != null ? attach.getProperties() : new HashMap();
 
             String reviewStatus = determineReviewStatus(reviewItem.getStatus());
@@ -328,18 +357,6 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
         }
         
         return errorMessage;
-    }
-    
-    public void setExternalContentLogic(ExternalContentLogic contentLogic) {
-        this.contentLogic = contentLogic;
-    }
-    
-    public void setContentReviewService(ContentReviewService contentReview) {
-        this.contentReview = contentReview;
-    }
-    
-    public void setAssignmentBundleLogic(AssignmentBundleLogic bundleLogic) {
-        this.bundleLogic = bundleLogic;
     }
     
     public void populateAssignmentPropertiesFromAssignment(Assignment2 assign) {
@@ -466,5 +483,20 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
         }
     }
     
+    public void setExternalContentLogic(ExternalContentLogic contentLogic) {
+        this.contentLogic = contentLogic;
+    }
+    
+    public void setContentReviewService(ContentReviewService contentReview) {
+        this.contentReview = contentReview;
+    }
+    
+    public void setAssignmentBundleLogic(AssignmentBundleLogic bundleLogic) {
+        this.bundleLogic = bundleLogic;
+    }
+    
+    public void setServerConfigurationService(ServerConfigurationService serverConfigurationService) {
+        this.serverConfigurationService = serverConfigurationService;
+    }
 
 }

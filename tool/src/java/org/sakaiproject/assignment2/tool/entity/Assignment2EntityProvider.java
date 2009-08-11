@@ -16,6 +16,7 @@ import org.sakaiproject.assignment2.exception.AssignmentNotFoundException;
 import org.sakaiproject.assignment2.logic.AssignmentBundleLogic;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
+import org.sakaiproject.assignment2.logic.ExternalContentReviewLogic;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.logic.GradebookItem;
@@ -93,6 +94,11 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware {
     private AssignmentBundleLogic assignmentBundleLogic;
     public void setAssignmentBundleLogic(AssignmentBundleLogic assignmentBundleLogic) {
         this.assignmentBundleLogic = assignmentBundleLogic;
+    }
+    
+    private ExternalContentReviewLogic contentReviewLogic;
+    public void setExternalContentReviewLogic(ExternalContentReviewLogic contentReviewLogic) {
+        this.contentReviewLogic = contentReviewLogic;
     }
 
     public static String PREFIX = "assignment2";
@@ -174,7 +180,8 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware {
         for (Group group: groups) {
             groupmap.put(group.getId(), group);
         }
-
+        
+        boolean contentReviewAvailable = contentReviewLogic.isContentReviewAvailable(); 
         boolean canEdit = permissionLogic.isCurrentUserAbleToEditAssignments(context);
 
         for (Assignment2 asnn: viewable) {
@@ -215,7 +222,7 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware {
             asnnmap.put("inAndNew", inAndNewText);
             asnnmap.put("numSubmissions", numSubmissions);
             
-            asnnmap.put("reviewEnabled", asnn.isContentReviewEnabled());
+            asnnmap.put("reviewEnabled", contentReviewAvailable && asnn.isContentReviewEnabled());
 
             List groupstogo = new ArrayList();
             // we need to double check that all of the associated groups still exist.

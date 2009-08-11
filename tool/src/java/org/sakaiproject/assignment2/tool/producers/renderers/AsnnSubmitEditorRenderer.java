@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
+import org.sakaiproject.assignment2.logic.ExternalContentReviewLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
@@ -88,6 +89,11 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
     private AssignmentSubmissionLogic submissionLogic;
     public void setSubmissionLogic(AssignmentSubmissionLogic submissionLogic) {
         this.submissionLogic = submissionLogic;
+    }
+    
+    private ExternalContentReviewLogic contentReviewLogic;
+    public void setExternalContentReviewLogic(ExternalContentReviewLogic contentReviewLogic) {
+        this.contentReviewLogic = contentReviewLogic;
     }
 
     // Flow Scope Bean for Student Submission
@@ -228,7 +234,7 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
         }
         
         // display plagiarism check warning
-        if (assignment.isContentReviewEnabled()) {
+        if (assignment.isContentReviewEnabled() && contentReviewLogic.isContentReviewAvailable()) {
             UIMessage.make(joint, "plagiarism_check", "assignment2.student-submit.plagiarism_warning");
         }
 

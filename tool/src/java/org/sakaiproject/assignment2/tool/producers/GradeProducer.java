@@ -149,6 +149,9 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
         Boolean grade_perm = permissionLogic.isUserAbleToProvideFeedbackForStudentForAssignment(userId, assignment);
         boolean gbItemExists = assignment.isGraded() && assignment.getGradebookItemId() != null && 
                 gradebookLogic.gradebookItemExists(assignment.getGradebookItemId());
+        
+        // check to see if content review is enabled for this assignment
+        boolean contentReviewEnabled = assignment.isContentReviewEnabled() && contentReviewLogic.isContentReviewAvailable();
 
         // use a date which is related to the current users locale
         DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, locale);
@@ -299,7 +302,7 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
                 UIOutput.make(tofill, "submitted_attachments_fieldset");
                 if (assignmentSubmissionVersion.getSubmissionAttachSet() != null && !assignmentSubmissionVersion.getSubmissionAttachSet().isEmpty()){
                     
-                    if (assignment.isContentReviewEnabled()) {
+                    if (contentReviewEnabled) {
                         contentReviewLogic.populateReviewProperties(assignment, assignmentSubmissionVersion.getSubmissionAttachSet(), true);
                     }
                     
