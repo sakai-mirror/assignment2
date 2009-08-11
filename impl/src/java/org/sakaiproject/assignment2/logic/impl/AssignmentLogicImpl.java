@@ -172,7 +172,9 @@ public class AssignmentLogicImpl implements AssignmentLogic{
         //        assign.setProperties(tiiopts); // TODO this should be a map merge and not a complete replacement
         //    }
         //}
-        externalContentReviewLogic.populateAssignmentPropertiesFromAssignment(assign);
+        if (externalContentReviewLogic.isContentReviewAvailable()) {
+            externalContentReviewLogic.populateAssignmentPropertiesFromAssignment(assign);
+        }
         
         return assign;
     }

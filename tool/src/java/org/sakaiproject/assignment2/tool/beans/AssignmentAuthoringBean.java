@@ -193,7 +193,7 @@ public class AssignmentAuthoringBean {
             newGroups.removeAll(remGroups);
         }
         
-        boolean turnitinEnabled = (Boolean)assignment.getProperties().get("USE_TII");
+        boolean turnitinEnabled = assignment.getProperties().containsKey("USE_TII") && (Boolean)assignment.getProperties().get("USE_TII");
         if (turnitinEnabled) {
             if (!assignment.isRequiresSubmission()) {
                 // we need to turn off turnitin since assignment doesn't accept submissions. the
