@@ -277,6 +277,11 @@ asnn2subview.initPager = function(numSubmissions) {
   }
 
   asnn2subview.pager = fluid.pager("#submissions-table-area", {
+    model: {
+      pageIndex: undefined,
+      pageSize: 200,
+      totalRange: undefined
+    },
     dataModel: fakedata,
     columnDefs: columnDefs,
     pagerBar: pagerBarOptions,
