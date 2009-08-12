@@ -1,5 +1,7 @@
 var asnn2subview = asnn2subview || {};
 
+var asnn2subviewList ="";
+
 asnn2subview.selectorMap = [
   { selector: ".row", id: "row:" },
   { selector: ".sub-table-header", id: "header:" },
@@ -183,6 +185,7 @@ asnn2subview.subTableRenderer = function (overallThat, inOptions) {
             cache: false,
             success: function (payload) {
               var data = JSON.parse(payload);
+              asnn2subviewList = data.assignment2submission_collection;
               togo = fluid.transform(data.assignment2submission_collection, asnn2util.dataFromEntity, asnn2subview.filteredRowTransform);
 
               if (togo.length === 0) {
@@ -320,9 +323,19 @@ asnn2subview.initPager = function(numSubmissions) {
 
 asnn2subview.filteredRowTransform = function(obj, idx) {
     var row = obj;
+    var prevStudentId = "";
+    var nextStudentId = "";
+    if (idx >= 0 && idx < asnn2subviewList.length-1)
+    {
+    	nextStudentId = asnn2subviewList[idx+1].data.studentId;
+    }
+   	if (idx > 0 && idx <= asnn2subviewList.length)
+    {
+    	prevStudentId = asnn2subviewList[idx-1].data.studentId;
+    }
     var togo = [
       { ID: "student-grade-link",
-        target: '/portal/tool/'+sakai.curPlacement+'/grade/'+asnn2.curAsnnId+'/'+row.studentId,
+        target: '/portal/tool/'+sakai.curPlacement+'/grade/'+asnn2.curAsnnId+'/'+row.studentId+'/'+prevStudentId+'/'+nextStudentId,
         linktext: row.studentName
       },
       {
