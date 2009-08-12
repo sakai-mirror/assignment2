@@ -193,7 +193,7 @@ public class AssignmentAuthoringBean {
             newGroups.removeAll(remGroups);
         }
         
-        boolean turnitinEnabled = (Boolean)assignment.getProperties().get("USE_TII");
+        boolean turnitinEnabled = assignment.getProperties().containsKey("USE_TII") && (Boolean)assignment.getProperties().get("USE_TII");
         if (turnitinEnabled) {
             if (!assignment.isRequiresSubmission()) {
                 // we need to turn off turnitin since assignment doesn't accept submissions. the
@@ -204,6 +204,17 @@ public class AssignmentAuthoringBean {
                 // double check that this assignment is set up to accept attachments
                 messages.addMessage(new TargettedMessage("assignment2.turnitin.asnnedit.error.submission_type"));
                 errorFound = true;
+            }
+            
+            // now, check to see if the user wants to generate reports related to due date
+            // but there is no due date
+            if (assignment.getProperties().containsKey("report_gen_speed") && 
+                    ("2".equals(assignment.getProperties().get("report_gen_speed")) ||
+                     "1".equals(assignment.getProperties().get("report_gen_speed")))) {
+                if (assignment.getDueDate() == null) {
+                    messages.addMessage(new TargettedMessage("assignment2.turnitin.asnnedit.error.due_date"));
+                    errorFound = true;
+                }
             }
         }
     
