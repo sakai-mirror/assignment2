@@ -423,6 +423,15 @@ jQuery(document).ready(function(){
     // initialize the TII display
     asnn2.showHideByCheckbox(tii, tii_options);
 
+    // we may also need to display/hide tii options based upon the submission type setting
+    var subTypeSelect = jQuery("select[name='page-replace::submission_type-selection']");
+    // the allowed options are "Text and Attachments" and "Attachments only"
+    var allowedOptions = new Array("1","2");
+    jQuery(subTypeSelect).change(function(){
+      asnn2.showHideBySelect(this, allowedOptions, tii_content);
+    });
+    asnn2.showHideBySelect(subTypeSelect, allowedOptions, tii_content);
+
     asnn2.showHideGradeSettingError();
 });
 //]]>

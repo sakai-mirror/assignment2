@@ -690,6 +690,35 @@ var asnn2 = asnn2 || {};
         }
     };
     
+    /**
+     * @param selectElem
+     * @param selectOptions array of values such that, if selectElem is set to one of these values, 
+     * we show the given areaElem. if the value of the selectElem is not included in this array, we hide the areaElem.
+     * @param areaElem
+     */
+    asnn2.showHideBySelect = function(selectElem, selectOptions, areaElem) {
+      var selectObj = jQuery(selectElem);
+      var areaObj = jQuery(areaElem);
+
+      var displayArea = false;
+      
+      var selectValue = selectObj.val();
+      if (selectOptions) {
+        for (index in selectOptions) {
+          if (selectValue === selectOptions[index]) {
+            displayArea = true;
+            break;
+          }
+        }
+      }
+      
+      if (displayArea) {
+        areaObj.show();
+      } else {
+        areaObj.hide();
+      }
+    }
+    
     asnn2.showHideGradeSettingError = function() {
         var graded = jQuery("input[type='radio'][id='page-replace\:\:select_graded']").get(0).checked;
         var errorIndicator = jQuery("#page-replace\\:\\:gradingSelectionError");

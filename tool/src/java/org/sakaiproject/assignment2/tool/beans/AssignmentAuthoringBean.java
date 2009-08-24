@@ -201,9 +201,11 @@ public class AssignmentAuthoringBean {
                 assignment.getProperties().put("USE_TII", false);
             } else if (assignment.getSubmissionType() != AssignmentConstants.SUBMIT_ATTACH_ONLY &&
                     assignment.getSubmissionType() != AssignmentConstants.SUBMIT_INLINE_AND_ATTACH) {
-                // double check that this assignment is set up to accept attachments
-                messages.addMessage(new TargettedMessage("assignment2.turnitin.asnnedit.error.submission_type"));
-                errorFound = true;
+                // double check that this assignment is set up to accept attachments. if not, turn TII off
+                // (this is done via javascript in the UI)
+                assignment.getProperties().put("USE_TII", false);
+                //messages.addMessage(new TargettedMessage("assignment2.turnitin.asnnedit.error.submission_type"));
+                //errorFound = true;
             }
             
             // now, check to see if the user wants to generate reports related to due date
