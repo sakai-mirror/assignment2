@@ -412,6 +412,7 @@ var asnn2 = asnn2 || {};
         asnn2.selectGraded();
         asnn2.populateTitleWithGbItemName();
         asnn2.populateDueDateWithGBItemDueDate();
+        asnn2.showHideGradeSettingError();
     };
 
     /**
@@ -679,11 +680,32 @@ var asnn2 = asnn2 || {};
      * the area.
      */
     asnn2.showHideByCheckbox = function(checkboxElem, areaElem) {
-        var area = jQuery(areaElem);
-        if (checkboxElem.checked) {
-            area.show();
+        if (checkboxElem && areaElem) {
+            var area = jQuery(areaElem);
+            if (checkboxElem.checked) {
+                area.show();
+            } else {
+                area.hide();
+            }
+        }
+    };
+    
+    asnn2.showHideGradeSettingError = function() {
+        var graded = jQuery("input[type='radio'][id='page-replace\:\:select_graded']").get(0).checked;
+        var errorIndicator = jQuery("#page-replace\\:\\:gradingSelectionError");
+        if (graded) {
+            // we need to see if a gradebook item was selected
+            var gbItemSelect = jQuery("select[name='page-replace\:\:gradebook_item-selection']");
+            var selectedItem = gbItemSelect.val();
+            
+            if (!selectedItem || selectedItem === "0") {
+                // display the error indicator
+                errorIndicator.show();
+            } else {
+                errorIndicator.hide();
+            }
         } else {
-            area.hide();
+            errorIndicator.hide();
         }
     };
 

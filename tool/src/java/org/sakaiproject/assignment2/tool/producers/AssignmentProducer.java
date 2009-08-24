@@ -69,7 +69,9 @@ import uk.org.ponder.rsf.components.UISelectChoice;
 import uk.org.ponder.rsf.components.UISelectLabel;
 import uk.org.ponder.rsf.components.UIVerbatim;
 import uk.org.ponder.rsf.components.decorators.DecoratorList;
+import uk.org.ponder.rsf.components.decorators.UIAlternativeTextDecorator;
 import uk.org.ponder.rsf.components.decorators.UIFreeAttributeDecorator;
+import uk.org.ponder.rsf.components.decorators.UITooltipDecorator;
 import uk.org.ponder.rsf.evolvers.TextInputEvolver;
 import uk.org.ponder.rsf.evolvers.FormatAwareDateInputEvolver;
 import uk.org.ponder.rsf.preservation.StatePreservationManager;
@@ -233,11 +235,16 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
         //Assignment2 assignment = (Assignment2)assignment2BeanLocator.locateBean(OTPKey);
         Assignment2 assignment = (Assignment2) assignmentAuthoringFlowBean.locateBean(OTPKey);
 
+        // make the no gb item error msg. it will be hidden by default
+        UIMessage gbErrorMsg = UIMessage.make(tofill, "assignment_graded_no_gb_item", "assignment2.assignment_graded_no_gb_item");
+        
         // if this is an "edit" scenario, we need to display a warning if the
         // assignment is graded but doesn't have an assoc gb item
-        if (assignmentId != null && assignment.isGraded()) {
-            if (assignment.getGradebookItemId() == null || 
-                    !externalGradebookLogic.gradebookItemExists(assignment.getGradebookItemId())) {
+        if (assignment.isGraded()) {
+            if (assignment.getGradebookItemId() == null) {
+                // display the "select a gb item" msg
+                gbErrorMsg.decorate(new UIFreeAttributeDecorator("style", "display: block;"));
+            } else if(!externalGradebookLogic.gradebookItemExists(assignment.getGradebookItemId())) {
                 // we need to display a message indicating that the gradebook item
                 // assoc with this item no longer exists
                 UIMessage.make(tofill, "no_gb_item", "assignment2.assignment_add.gb_item_deleted");
@@ -448,7 +455,12 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
         String urlWithoutNameParam = externalLogic.getUrlForGradebookItemHelper(null, FinishedHelperProducer.VIEWID, currentContextId);
         UILink.make(form, "gradebook_url_without_name", urlWithoutNameParam);
 
-
+        // Error indicator if assignment graded but no gb item selected
+        UIOutput gradingErrorIndicator = UIOutput.make(tofill, "gradingSelectionError");
+        String errorInfo = messageLocator.getMessage("assignment2.assignment_graded_no_gb_item");
+        gradingErrorIndicator.decorate(new UIAlternativeTextDecorator(errorInfo));
+        gradingErrorIndicator.decorate(new UITooltipDecorator(errorInfo));
+        
         /******
          * Access
          */

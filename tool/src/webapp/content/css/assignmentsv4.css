@@ -226,6 +226,11 @@ div.generalErrors li.alertMessageInline {
   color: #1b65b1;
 }
 
+.inlineErrorIndicator {
+    padding-left: 1em;
+    vertical-align: middle;
+ }
+
 .messages {
 	xbackground: url("/sakai-assignment2-tool/content/images/error-arrow.png") no-repeat .5em 0;
 	xcolor: #fff;

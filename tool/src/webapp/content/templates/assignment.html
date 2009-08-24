@@ -31,7 +31,7 @@
         <div style="display:inline">
             <ul style="margin:0;padding:0;display:inline;">
                 <li style="display:none" id="assignment_title_empty" rsf:id="msg=assignment2.assignment_title_empty" class="alertMessageInline">Adding an Assignment requires a title.</li>
-                <li style="display:none" id="assignment_graded_no_gb_item" rsf:id="msg=assignment2.assignment_graded_no_gb_item" class="alertMessageInline">You must select a Gradebook Item.</li>
+                <li style="display:none" id="assignment_graded_no_gb_item" rsf:id="assignment_graded_no_gb_item" class="alertMessageInline">You must select a Gradebook Item.</li>
                 <li style="display:none" id="assignment_due_before_open" rsf:id="msg=assignment2.assignment_due_before_open" class="alertMessageInline">The Due Date must be after the Open Date.</li>
                 <li style="display:none" id="assignment_accept_before_open" rsf:id="msg=assignment2.assignment_accept_before_open" class="alertMessageInline">The Accept Until Date must be after the Open Date.</li> 
                 <li style="display:none" id="assignment_accept_before_due" rsf:id="msg=assignment2.assignment_accept_before_due" class="alertMessageInline">The Accept Until Date must be after the Due Date.</li>
@@ -263,20 +263,21 @@
                 <fieldset>
                     <ol>
                         <li>
-                            <input rsf:id="select_ungraded" id="select_ungraded" name="graded" type="radio" /> 
+                            <input rsf:id="select_ungraded" id="select_ungraded" name="graded" type="radio" onchange="asnn2.showHideGradeSettingError();"/> 
                             <label for="select_ungraded" rsf:id="select_ungraded_label">This assignment is ungraded</label>
                         </li>
                         <li>
-                            <input rsf:id="select_graded" id="select_graded" name="graded" type="radio" /> 
+                            <input rsf:id="select_graded" id="select_graded" name="graded" type="radio" onchange="asnn2.showHideGradeSettingError();"/> 
                             <label for="select_graded" rsf:id="select_graded_label">This assignment is graded</label>
                             <span rsf:id="msg=assignment2.assignment_add.gradebook_associated"> and is associated with a Gradebook Item:</span> 
-                                <select rsf:id="gradebook_item" onchange="asnn2.selectGraded();asnn2.populateTitleWithGbItemName();">
+                                <select rsf:id="gradebook_item" onchange="asnn2.selectGraded();asnn2.populateTitleWithGbItemName();asnn2.showHideGradeSettingError();">
                                     <option value="">Select a Gradebook Item</option>
                                     <option value="GB Item 1">GB Item 1</option>
                                     <option value="GB Item 2">GB Item 2</option>
                                     <option value="GB Item 3">GB Item 3</option>
                                     <option value="GB Item 4">GB Item 4</option>
                                 </select>
+                                <img rsf:id="gradingSelectionError" id="gradingSelectionError" class="inlineErrorIndicator" src="/../../library/image/sakai/warn.gif" />
                                 <p class="indent">
                                     <span rsf:id="msg=assignment2.assignment_add.gradebook_or"> -or- </span>
                                     <a rsf:id="gradebook_item_new_helper" id="gradebook_item_new_helper" class="thickbox" onclick="asnn2.update_new_gb_item_helper_url();">Create a new Gradebook Item</a>
@@ -421,6 +422,8 @@ jQuery(document).ready(function(){
     });
     // initialize the TII display
     asnn2.showHideByCheckbox(tii, tii_options);
+
+    asnn2.showHideGradeSettingError();
 });
 //]]>
 </script>
