@@ -90,6 +90,7 @@ public class Assignment2Creator {
         dup.setRemoved(false);
         dup.setNumSubmissionsAllowed(assignment.getNumSubmissionsAllowed());
         dup.setRequiresSubmission(assignment.isRequiresSubmission());
+        dup.setProperties(assignment.getProperties());
 
         // let's duplicate the attachments and group restrictions
         Set<AssignmentGroup> assignGroupSet = new HashSet<AssignmentGroup>();
