@@ -548,44 +548,46 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
         // Optional Turnitin Content Review Integration
         if (externalContentReviewLogic.isContentReviewAvailable()) {
             UIOutput.make(tofill, "tii_content_review_area");
-            UIBoundBoolean.make(tofill, "use_tii", assignment2OTP + ".properties.USE_TII");
-            
+            UIBoundBoolean.make(form, "use_tii", assignment2OTP + ".properties.USE_TII");
+
             // Submit papers to repository
-            String repoRestriction = localTurnitinLogic.getSubmissionRepositoryRestriction();
+            List<String> repoOptions = localTurnitinLogic.getSubmissionRepositoryOptions();
             String institutionalRepoName = localTurnitinLogic.getInstitutionalRepositoryName();
-            
-            if (repoRestriction == null) {
-                UIOutput.make(tofill, "submit_to_options");
-                String[] submitToRepoValues = new String[] {
-                        AssignmentConstants.TII_VALUE_STANDARD_REPO, 
-                        AssignmentConstants.TII_VALUE_INSTITUTION_REPO, 
-                        AssignmentConstants.TII_VALUE_NO_REPO
-                };
-                
-                String instRepoLabel = institutionalRepoName != null ? 
-                        institutionalRepoName : messageLocator.getMessage("assignment2.turnitin.asnnedit.option.institution_paper_repository");
-
-                String[] submitToRepoLabels = new String[] {
-                        messageLocator.getMessage("assignment2.turnitin.asnnedit.option.standard_paper_repository"),
-                        instRepoLabel,
-                        messageLocator.getMessage("assignment2.turnitin.asnnedit.option.no_repository")
-                };
-
-                UISelect.make(form, "submit_paper_to_repository_select", submitToRepoValues,
-                        submitToRepoLabels, assignment2OTP + ".properties.submit_papers_to");
-            } else {
-                // we are not giving the user the option to set a repository for submissions
-                UIOutput.make(tofill, "submit_to_single_repository");
-                if (AssignmentConstants.TII_VALUE_NO_REPO.equals(repoRestriction)) {
-                    UIMessage.make(tofill, "submit_to_repository", "assignment2.turnitin.asnnedit.submit.no_repo");
-                } else if (AssignmentConstants.TII_VALUE_STANDARD_REPO.equals(repoRestriction)) {
-                    UIMessage.make(tofill, "submit_to_repository", "assignment2.turnitin.asnnedit.submit.standard_repo");
-                } else if (AssignmentConstants.TII_VALUE_INSTITUTION_REPO.equals(repoRestriction)) {
-                    if (institutionalRepoName == null) {
-                        UIMessage.make(tofill, "submit_to_repository", "assignment2.turnitin.asnnedit.submit.inst_repo.no_name");
-                    } else {
-                        UIMessage.make(tofill, "submit_to_repository", "assignment2.turnitin.asnnedit.submit.inst_repo.name", new Object[] {institutionalRepoName});
+            if (repoOptions != null && !repoOptions.isEmpty()) {
+                if (repoOptions.size() == 1) {
+                    String repoRestriction = repoOptions.get(0);
+                    // we are not giving the user the option to set a repository for submissions
+                    UIOutput.make(tofill, "submit_to_single_repository");
+                    if (AssignmentConstants.TII_VALUE_NO_REPO.equals(repoRestriction)) {
+                        UIMessage.make(tofill, "submit_to_repository", "assignment2.turnitin.asnnedit.submit.no_repo");
+                    } else if (AssignmentConstants.TII_VALUE_STANDARD_REPO.equals(repoRestriction)) {
+                        UIMessage.make(tofill, "submit_to_repository", "assignment2.turnitin.asnnedit.submit.standard_repo");
+                    } else if (AssignmentConstants.TII_VALUE_INSTITUTION_REPO.equals(repoRestriction)) {
+                        if (institutionalRepoName == null) {
+                            UIMessage.make(tofill, "submit_to_repository", "assignment2.turnitin.asnnedit.submit.inst_repo.no_name");
+                        } else {
+                            UIMessage.make(tofill, "submit_to_repository", "assignment2.turnitin.asnnedit.submit.inst_repo.name", new Object[] {institutionalRepoName});
+                        }
                     }
+                } else {
+                    UIOutput.make(tofill, "submit_to_options");
+
+                    String[] submitToRepoValues = new String[repoOptions.size()];
+                    String[] submitToRepoLabels = new String[repoOptions.size()];
+
+                    for (int i=0; i < repoOptions.size(); i++) {
+                        String option = repoOptions.get(i);
+                        submitToRepoValues[i] = option;
+                        submitToRepoLabels[i] = messageLocator.getMessage("assignment2.turnitin.asnnedit.option." + option);
+
+                        if (institutionalRepoName != null && 
+                                AssignmentConstants.TII_VALUE_INSTITUTION_REPO.equals(option)) {
+                            submitToRepoLabels[i] = institutionalRepoName;
+                        }
+                    }
+
+                    UISelect.make(form, "submit_paper_to_repository_select", submitToRepoValues,
+                            submitToRepoLabels, assignment2OTP + ".properties.submit_papers_to");
                 }
             }
             
@@ -603,19 +605,19 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
             UISelect.make(form, "rep_gen_speed", reportGenSpeedValues,
                     reportGenSpeedLabels, assignment2OTP + ".properties.report_gen_speed").setMessageKeys();
             
-            UIBoundBoolean.make(tofill, "allow_students_to_see_originality_checkbox", 
+            UIBoundBoolean.make(form, "allow_students_to_see_originality_checkbox", 
                     assignment2OTP + ".properties.s_view_report");
             
-            UIBoundBoolean.make(tofill, "check_against_student_repo_checkbox",
+            UIBoundBoolean.make(form, "check_against_student_repo_checkbox",
                     assignment2OTP + ".properties.s_paper_check");
             
-            UIBoundBoolean.make(tofill, "check_against_internet_repo_checkbox",
+            UIBoundBoolean.make(form, "check_against_internet_repo_checkbox",
                     assignment2OTP + ".properties.internet_check");
             
-            UIBoundBoolean.make(tofill, "check_against_journal_repo_checkbox", 
+            UIBoundBoolean.make(form, "check_against_journal_repo_checkbox", 
                     assignment2OTP + ".properties.journal_check");
             
-            UIBoundBoolean.make(tofill, "check_against_institution_repo_checkbox",
+            UIBoundBoolean.make(form, "check_against_institution_repo_checkbox",
                     assignment2OTP + ".properties.institution_check");
             
             String instRepoText;
