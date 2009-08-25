@@ -805,6 +805,12 @@ var asnn2 = asnn2 || {};
      */
     asnn2.editAssignmentConfirm = function(buttonform) {
 
+        // validate the form before we pop up the confirmation
+       var valid = asnn2editpage.validate();
+        if (!valid) {
+          return false;
+        }
+      
         // display the confirmation dialog
         confirmDialog = jQuery('#edit-assign-confirm-dialog');
 
@@ -952,7 +958,8 @@ var asnn2editpage = asnn2editpage || {};
         dueBeforeOpenMsg = jQuery("#page-replace\\:\\:assignment_due_before_open");
         acceptBeforeOpenMsg = jQuery("#page-replace\\:\\:assignment_accept_before_open");
         acceptBeforeDueMsg = jQuery("#page-replace\\:\\:assignment_accept_before_due");
-
+        checkAgainstMsg = jQuery("#page-replace\\:\\:assignment_check_against");
+        
         /*titleMsg.hide();
             nogbMsg.hide();
             dueBeforeOpenMsg.hide();
@@ -1015,6 +1022,21 @@ var asnn2editpage = asnn2editpage || {};
                     valid = false;
                 }
             }
+        }
+        
+        // validate the turnitin options ASNN-516
+        var useTiiOption = jQuery("input[name='page-replace\:\:use_tii']").get(0);
+        if (useTiiOption && useTiiOption.checked) {
+          // see if at least one checkbox was checked for the "check against" option
+          if (jQuery("input[name='page-replace\:\:check_against_student_repo_checkbox']").is(':checked') ||
+              jQuery("input[name='page-replace\:\:check_against_internet_repo_checkbox']").is(':checked') ||
+              jQuery("input[name='page-replace\:\:check_against_journal_repo_checkbox']").is(':checked') ||
+              jQuery("input[name='page-replace\:\:check_against_institution_repo_checkbox']").is(':checked')) {
+            // we want at least one to be checked
+          } else {
+            valid = false;
+            checkAgainstMsg.show();
+          }
         }
 
         if (!valid) {

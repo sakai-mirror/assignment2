@@ -745,4 +745,21 @@ public class Assignment2 {
         
         return enabled;
     }
+    
+    /**
+     * 
+     * @return true if this assignment accepts attachment submissions. This
+     * is a convenience method to determine if the assignment accepts attachments
+     * as an option for submission.  The assignment may also accept other forms
+     * of submission.
+     */
+    public boolean acceptsAttachments() {
+        boolean acceptsAttachments = false;
+        if (this.submissionType == AssignmentConstants.SUBMIT_INLINE_AND_ATTACH ||
+                this.submissionType == AssignmentConstants.SUBMIT_ATTACH_ONLY) {
+            acceptsAttachments = true;
+        }
+        
+        return acceptsAttachments;
+    }
 }

@@ -45,7 +45,7 @@ public class Assignment2Validator  {
     /**
      * Validates the Assignment2 object. Currently checks to make sure there
      * is a title, some grading constraints, and some due date and accept date
-     * constraints.
+     * constraints. Also checks Turnitin options, if enabled.
      * 
      * @param assignment The assignment to validate.
      * @param messages The message list to add any error/success messages to.
@@ -95,6 +95,35 @@ public class Assignment2Validator  {
                 && assignment.getAcceptUntilDate().before(assignment.getDueDate())) {
             messages.addMessage(new TargettedMessage("assignment2.assignment_accept_before_due"));
             valid = false;
+        }
+        
+        // Validate the turnitin options ASNN-516
+        boolean turnitinEnabled = assignment.getProperties().containsKey("USE_TII") && (Boolean)assignment.getProperties().get("USE_TII");
+        if (turnitinEnabled) {     
+            // check to see if the user wants to generate reports related to due date
+            // but there is no due date
+            if (assignment.getProperties().containsKey("report_gen_speed") && 
+                    ("2".equals(assignment.getProperties().get("report_gen_speed")) ||
+                     "1".equals(assignment.getProperties().get("report_gen_speed")))) {
+                if (assignment.getDueDate() == null) {
+                    messages.addMessage(new TargettedMessage("assignment2.turnitin.asnnedit.error.due_date"));
+                    valid = false;
+                }
+            }
+            
+            // make sure the user has selected at least one option to check against
+            boolean checkOptionSelected = false;
+            if ((assignment.getProperties().containsKey("s_paper_check") && (Boolean) assignment.getProperties().get("s_paper_check")) ||
+                    (assignment.getProperties().containsKey("internet_check") && (Boolean) assignment.getProperties().get("internet_check")) ||
+                    (assignment.getProperties().containsKey("journal_check") && (Boolean) assignment.getProperties().get("journal_check")) ||
+                    (assignment.getProperties().containsKey("institution_check") && (Boolean) assignment.getProperties().get("institution_check"))) {
+                checkOptionSelected = true;
+            } 
+            
+            if (!checkOptionSelected) {
+                messages.addMessage(new TargettedMessage("assignment2.turnitin.asnnedit.error.check_against"));
+                valid = false;
+            }
         }
 
         return valid;
