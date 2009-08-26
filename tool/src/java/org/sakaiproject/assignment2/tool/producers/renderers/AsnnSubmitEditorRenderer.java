@@ -208,8 +208,10 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
         // it is a draft. otherwise, the user is working on a new submission
         if (assignment.getSubmissionType() == AssignmentConstants.SUBMIT_ATTACH_ONLY ||
                 assignment.getSubmissionType() == AssignmentConstants.SUBMIT_INLINE_AND_ATTACH){
-            UIOutput.make(form, "submit_attachments");
-
+            UIOutput attachSection = UIOutput.make(form, "submit_attachments");
+            if (assignment.isContentReviewEnabled()) {
+                attachSection.decorate(new UIFreeAttributeDecorator("class", "messageConfirmation"));
+            }
 
             if (studentPreviewSubmission || !preview) {
                 String[] attachmentRefs = 
