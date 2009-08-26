@@ -96,7 +96,7 @@ form ol {
 form li, .asnn_subsection {
 	list-style: none;
 	margin: 0 .5em .5em 15px;
-	padding: 2px;
+	padding-top: 2px;
 }
 
 form li.activefield {
@@ -107,7 +107,6 @@ form li label {
 	/* display: block;
 	float: left; */
 	margin-right: .5em;
-	margin-top: .3em;
 	text-align: left;
 	width: 14em;
 }
@@ -613,6 +612,18 @@ h4.completed_assignment {
 /* If you update the margin on .asnnOptionsLabel, make sure you update this one as well */
 .asnnOptionsSubsection {
   margin-left: 2em;
+}
+
+.asnnOptionsSubsection ol {
+    margin-top: 3px;
+}
+
+.asnnOptionsSubsection ol li {
+  margin-top : 3px;
+  }
+
+.asnnOption {
+  margin-top: 4px;
 }
 
 /*

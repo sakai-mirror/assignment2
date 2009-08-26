@@ -585,9 +585,24 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
                             submitToRepoLabels[i] = institutionalRepoName;
                         }
                     }
+                    
+                    // if this property hasn't been set yet, set the first one in the list as selected
+                    String selectedValue;
+                    if (assignment.getProperties().containsKey("submit_papers_to")) {
+                        selectedValue = (String)assignment.getProperties().get("submit_papers_to");
+                    } else {
+                        selectedValue = repoOptions.get(0);
+                    }
 
-                    UISelect.make(form, "submit_paper_to_repository_select", submitToRepoValues,
-                            submitToRepoLabels, assignment2OTP + ".properties.submit_papers_to");
+                    UISelect repo_select = UISelect.make(form, "submit_to_repo_radios", submitToRepoValues,
+                            submitToRepoLabels, assignment2OTP + ".properties.submit_papers_to", selectedValue);
+                    
+                    String repo_select_id = repo_select.getFullID();
+                    for (int i=0; i < repoOptions.size(); i++) {
+                        UIBranchContainer repo_option = UIBranchContainer.make(form, "submit_papers_to:");
+                        UISelectChoice.make(repo_option, "submit_to_option", repo_select_id, i);
+                        UISelectLabel.make(repo_option, "submit_to_label", repo_select_id, i);
+                    }
                 }
             }
             
