@@ -607,18 +607,35 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
             }
             
             // When to generate reports
+            // although the service allows for a value of "1" --> Generate report immediately but overwrite until due date,
+            // this doesn't make sense for assignment2. We limit the UI to 0 - Immediately
+            // or 2 - On Due Date
             String[] reportGenSpeedValues = new String[] {
-                    "0", "1", "2"
+                    "0", "2"
             };
             
             String[] reportGenSpeedLabels = new String[] {
-                    "assignment2.turnitin.asnnedit.generate_immediately_first_report_final",
-                    "assignment2.turnitin.asnnedit.generate_immediately_can_overwrite_until_due",
-                    "assignment2.turnitin.asnnedit.generate_on_due_date"
+                    "assignment2.turnitin.asnnedit.generate_originality_reports.immediate",
+                    "assignment2.turnitin.asnnedit.generate_originality_reports.on_due_date"
             };
             
-            UISelect.make(form, "rep_gen_speed", reportGenSpeedValues,
-                    reportGenSpeedLabels, assignment2OTP + ".properties.report_gen_speed").setMessageKeys();
+         // if this property hasn't been set yet, set the first one in the list as selected
+            String selectedValue;
+            if (assignment.getProperties().containsKey("report_gen_speed")) {
+                selectedValue = (String)assignment.getProperties().get("report_gen_speed");
+            } else {
+                selectedValue = reportGenSpeedValues[0];
+            }
+            
+            UISelect gen_reports_select = UISelect.make(form, "generate_report_radios", reportGenSpeedValues,
+                    reportGenSpeedLabels, assignment2OTP + ".properties.report_gen_speed", selectedValue).setMessageKeys();
+            
+            String gen_reports_select_id = gen_reports_select.getFullID();
+            for (int i=0; i < reportGenSpeedValues.length; i++) {
+                UIBranchContainer gen_reports_option = UIBranchContainer.make(form, "generate_reports:");
+                UISelectChoice.make(gen_reports_option, "generate_report_option", gen_reports_select_id, i);
+                UISelectLabel.make(gen_reports_option, "generate_report_label", gen_reports_select_id, i);
+            }
             
             UIBoundBoolean.make(form, "allow_students_to_see_originality_checkbox", 
                     assignment2OTP + ".properties.s_view_report");

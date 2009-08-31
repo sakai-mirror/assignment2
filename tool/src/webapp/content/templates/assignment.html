@@ -167,10 +167,14 @@
                   <span rsf:id="submit_to_repository" class="instruction">Submitting to this repo!</span>
               </li>
               <li>
-                  <span rsf:id="msg=assignment2.turnitin.asnnedit.generate_originality_reports">Generate originality reports </span>
-                  <select rsf:id="rep_gen_speed">
-                      <option value="">Immediately - first report is final!</option>
-                  </select>
+                  <div rsf:id="msg=assignment2.turnitin.asnnedit.generate_originality_reports" class="asnnOption">Generate Originality Reports! </div>
+                  <span rsf:id="generate_report_radios" />
+                  <ol>
+                    <li rsf:id="generate_reports:">
+                      <input rsf:id="generate_report_option" id="generate_report_option" type="radio" /> 
+                      <label for="generate_report_option" rsf:id="generate_report_label">Immediately</label>
+                    </li>
+                  </ol>
               </li>
               <li>
                   <input type="checkbox" rsf:id="allow_students_to_see_originality_checkbox" id="allow_students_to_see_originality_checkbox" />
