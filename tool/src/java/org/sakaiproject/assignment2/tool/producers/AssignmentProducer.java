@@ -631,11 +631,12 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
                     reportGenSpeedLabels, assignment2OTP + ".properties.report_gen_speed", selectedValue).setMessageKeys();
             
             String gen_reports_select_id = gen_reports_select.getFullID();
-            for (int i=0; i < reportGenSpeedValues.length; i++) {
-                UIBranchContainer gen_reports_option = UIBranchContainer.make(form, "generate_reports:");
-                UISelectChoice.make(gen_reports_option, "generate_report_option", gen_reports_select_id, i);
-                UISelectLabel.make(gen_reports_option, "generate_report_label", gen_reports_select_id, i);
-            }
+            
+            UISelectChoice.make(form, "gen_report_immediately", gen_reports_select_id, 0);
+            UISelectLabel.make(form, "gen_report_immediately_label", gen_reports_select_id, 0);
+
+            UISelectChoice.make(form, "gen_report_on_due_date", gen_reports_select_id, 1);
+            UISelectLabel.make(form, "gen_report_on_due_date_label", gen_reports_select_id, 1);
             
             UIBoundBoolean.make(form, "allow_students_to_see_originality_checkbox", 
                     assignment2OTP + ".properties.s_view_report");

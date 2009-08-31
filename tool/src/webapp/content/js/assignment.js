@@ -1046,6 +1046,30 @@ var asnn2editpage = asnn2editpage || {};
 
         return true;
     };
+    
+    asnn2editpage.tii_dueDateOptions = function() {
+      var tii_content = jQuery('#page-replace\\:\\:tii_content_review_area').get(0);
+      if (tii_content) {
+        // check to see if user has set a due date
+        var require_due_date = jQuery("input[name='page-replace\:\:require_due_date']").get(0);
+        var no_due_date_warning = jQuery("#page-replace\\:\\:gen_reports_no_due_date");
+        var gen_report_on_due_date = jQuery("input[type='radio'][id='page-replace\:\:gen_report_on_due_date']");
+        
+        if (require_due_date && require_due_date.checked) {
+          // there is a due date, so we enable the due date radio and hide the warning
+          no_due_date_warning.hide();
+          gen_report_on_due_date.removeAttr("disabled");
+        } else {
+          // otherwise, hide the warning, disable the due date option, and select the immediate option
+          no_due_date_warning.show();
+          gen_report_on_due_date.attr("disabled","disabled");
+          var gen_report_immediately = jQuery("input[type='radio'][id='page-replace\:\:gen_report_immediately']");
+          gen_report_immediately.attr("checked", "checked");
+        }
+        
+      }
+    };
+    
 })(jQuery, asnn2editpage);
 
 var asnn2listpage = asnn2listpage || {};

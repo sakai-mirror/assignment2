@@ -170,10 +170,14 @@
                   <div rsf:id="msg=assignment2.turnitin.asnnedit.generate_originality_reports" class="asnnOption">Generate Originality Reports! </div>
                   <span rsf:id="generate_report_radios" />
                   <ol>
-                    <li rsf:id="generate_reports:">
-                      <input rsf:id="generate_report_option" id="generate_report_option" type="radio" /> 
-                      <label for="generate_report_option" rsf:id="generate_report_label">Immediately</label>
-                    </li>
+                      <li>
+                          <input rsf:id="gen_report_immediately" id="gen_report_immediately" name="gen_reports" type="radio" />
+                          <label for="gen_report_immediately" rsf:id="gen_report_immediately_label">Immediately!</label><span rsf:id="msg=assignment2.turnitin.asnnedit.generate_originality_reports.no_due_date" id="gen_reports_no_due_date">No due date was set!</span>
+                      </li>
+                      <li>
+                          <input rsf:id="gen_report_on_due_date" id="gen_report_on_due_date" name="gen_reports" type="radio" onchange="asnn2.showHideGradeSettingError();"/> 
+                          <label for="gen_report_on_due_date" rsf:id="gen_report_on_due_date_label">On due date!</label>
+                      </li>
                   </ol>
               </li>
               <li>
@@ -374,6 +378,7 @@ jQuery(document).ready(function(){
     var due_date = jQuery("input[name='page-replace\:\:require_due_date']").get(0);
     jQuery(due_date).click(function(){
         asnn2.showHideByCheckbox(this, due_date_container);
+        asnn2editpage.tii_dueDateOptions();
     });
 
     asnn2.showHideByCheckbox(due_date, due_date_container);
@@ -403,6 +408,7 @@ jQuery(document).ready(function(){
     // show/hide the turnitin section upon load
     if (tii_content) {
       asnn2.showHideByCheckbox(requireSubInput, tii_content);
+      asnn2editpage.tii_dueDateOptions();
     }
     
     // we need to bind this to both the change and blur events since the due date
