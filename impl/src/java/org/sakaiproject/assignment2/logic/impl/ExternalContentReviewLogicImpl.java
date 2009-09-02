@@ -50,6 +50,7 @@ import org.sakaiproject.contentreview.service.ContentReviewService;
 import org.sakaiproject.id.api.IdManager;
 
 import uk.org.ponder.arrayutil.ArrayUtil;
+import uk.org.ponder.util.UniversalRuntimeException;
 
 public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogic {
 
@@ -486,8 +487,9 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
             log.error("Error creating assignment for context: " + assign.getContextId()
                + " with taskId: " + this.getTaskId(assign),
             e.getCause());
+            throw UniversalRuntimeException.accumulate(e.getCause());
         } catch (Exception e) {
-            log.error(e);
+            throw UniversalRuntimeException.accumulate(e);
         }
     }
     
