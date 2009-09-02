@@ -23,6 +23,8 @@ package org.sakaiproject.assignment2.logic.impl;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -468,6 +470,12 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
                     opts.put(key.toString(), assign.getProperties().get(key).toString());
                 }
             }
+        }
+        
+        if (assign.getDueDate() != null) {
+            SimpleDateFormat dform = ((SimpleDateFormat) DateFormat.getDateInstance());
+            dform.applyPattern("yyyyMMdd");
+            opts.put("dtdue", dform.format(assign.getDueDate()));
         }
         
         try {
