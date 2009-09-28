@@ -31,6 +31,7 @@ import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment2.exception.AssignmentNotFoundException;
 import org.sakaiproject.assignment2.exception.UploadException;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
+import org.sakaiproject.assignment2.logic.ExternalContentLogic;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.logic.UploadAllLogic;
@@ -89,6 +90,11 @@ public class UploadBean
     private ExternalGradebookLogic gradebookLogic;
     public void setExternalGradebookLogic(ExternalGradebookLogic gradebookLogic) {
         this.gradebookLogic = gradebookLogic;
+    }
+    
+    private ExternalContentLogic externalContentLogic;
+    public void setExternalContentLogic(ExternalContentLogic externalContentLogic) {
+        this.externalContentLogic = externalContentLogic;
     }
 
     public void setMultipartMap(Map<String, MultipartFile> uploads)
@@ -170,13 +176,8 @@ public class UploadBean
         }
 
         // double check that the file doesn't exceed our upload limit
-        String maxFileSizeInMB = ServerConfigurationService.getString("content.upload.max", "1");
-        int maxFileSizeInBytes = 1024 * 1024;
-        try {
-            maxFileSizeInBytes = Integer.parseInt(maxFileSizeInMB) * 1024 * 1024;
-        } catch(NumberFormatException e) {
-            log.warn("Unable to parse content.upload.max retrieved from properties file during upload");
-        }
+        int maxFileSizeInMB = externalContentLogic.getMaxUploadFileSizeInMB();     
+        int maxFileSizeInBytes = maxFileSizeInMB * 1024 * 1024;
 
         if (uploadedFileSize > maxFileSizeInBytes) {
             messages.addMessage(new TargettedMessage("assignment2.uploadall.error.file_size", new Object[] {maxFileSizeInMB}, TargettedMessage.SEVERITY_ERROR));

@@ -74,4 +74,10 @@ public interface ExternalContentLogic {
      * the given userId.  Returns null if collectionId could not be found.
      */
     public String getMyWorkspaceCollectionId(String userId);
+    
+    /**
+     * get the integer of maximum upload file size in MB
+     * @return the integer in MB; default to be 1
+     */
+    public int getMaxUploadFileSizeInMB();
 }

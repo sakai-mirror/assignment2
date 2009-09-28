@@ -28,6 +28,7 @@ import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.content.api.ContentResource;
 import org.sakaiproject.content.api.ContentTypeImageService;
+import org.sakaiproject.component.api.ServerConfigurationService;
 import org.sakaiproject.entity.api.ResourceProperties;
 import org.sakaiproject.exception.IdInvalidException;
 import org.sakaiproject.exception.IdUnusedException;
@@ -50,6 +51,11 @@ public class ExternalContentLogicImpl implements ExternalContentLogic {
     private ContentHostingService contentHosting;
     public void setContentHostingService(ContentHostingService contentHosting) {
         this.contentHosting = contentHosting;
+    }
+    
+    private ServerConfigurationService serverConfigurationService;
+    public void setServerConfigurationService(ServerConfigurationService serverConfigurationService) {
+        this.serverConfigurationService = serverConfigurationService;
     }
 
     private ContentTypeImageService imageService;
@@ -200,5 +206,17 @@ public class ExternalContentLogicImpl implements ExternalContentLogic {
 
         return collectionId;
 
+    }
+    
+    public int getMaxUploadFileSizeInMB()
+    {
+    	int rv = 1;
+    	String rvString = serverConfigurationService.getString("content.upload.max", "1");
+        try {
+            rv = Integer.parseInt(rvString);
+        } catch(NumberFormatException e) {
+            log.warn(this + ":getMaxUploadFileSizeInMB: Unable to parse content.upload.max retrieved from properties file");
+        }
+        return rv;
     }
 }

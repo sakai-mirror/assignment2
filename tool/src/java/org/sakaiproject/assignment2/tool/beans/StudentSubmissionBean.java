@@ -12,6 +12,8 @@ import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment2.exception.SubmissionClosedException;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
+import org.sakaiproject.assignment2.logic.ExternalContentLogic;
+import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.logic.ScheduledNotification;
 import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.assignment2.model.Assignment2;
@@ -24,7 +26,6 @@ import org.sakaiproject.authz.api.SecurityAdvisor.SecurityAdvice;
 import org.sakaiproject.authz.cover.SecurityService;
 import org.springframework.web.multipart.MultipartFile;
 import org.sakaiproject.component.cover.ComponentManager;
-import org.sakaiproject.component.api.ServerConfigurationService;
 import org.sakaiproject.content.api.ContentResource;
 import org.sakaiproject.content.api.ResourceTypeRegistry;
 import org.sakaiproject.entity.api.Reference;
@@ -64,7 +65,19 @@ public class StudentSubmissionBean {
     public void setScheduledNotification(ScheduledNotification scheduledNotification) {
         this.scheduledNotification = scheduledNotification;
     }
-
+    
+    // Service Application Scope Dependency
+    private ExternalContentLogic externalContentLogic;
+    public void setExternalContentLogic(ExternalContentLogic externalContentLogic) {
+        this.externalContentLogic = externalContentLogic;
+    }
+    
+    // Service Application Scope Dependency
+    private ExternalLogic externalLogic;
+    public void setExternalLogic(ExternalLogic externalLogic) {
+        this.externalLogic = externalLogic;
+    }
+    
     // Flow Scope Bean for Student Submission
     private StudentSubmissionVersionFlowBean studentSubmissionVersionFlowBean;
     public void setStudentSubmissionVersionFlowBean(StudentSubmissionVersionFlowBean studentSubmissionVersionFlowBean) {
@@ -104,10 +117,11 @@ public class StudentSubmissionBean {
         this.uploads = uploads;
     }
     
-    private ContentHostingService contentHostingService = (ContentHostingService) ComponentManager.get(ContentHostingService.class.getName());
-   
-    private ServerConfigurationService serverConfigurationService = (ServerConfigurationService) ComponentManager.get(ServerConfigurationService.class.getName());
-
+    private ContentHostingService contentHostingService;
+    public void setContentHostingService(ContentHostingService contentHostingService)
+    {
+    	this.contentHostingService = contentHostingService;
+    }
 
     /*
      * STUDENT FUNCTIONS
@@ -253,13 +267,8 @@ public class StudentSubmissionBean {
         }
         
         // double check that the file doesn't exceed our upload limit
-        String maxFileSizeInMB = serverConfigurationService.getString("content.upload.max", "1");
-        int maxFileSizeInBytes = 1024 * 1024;
-        try {
-            maxFileSizeInBytes = Integer.parseInt(maxFileSizeInMB) * maxFileSizeInBytes;
-        } catch(NumberFormatException e) {
-            log.warn("Unable to parse content.upload.max retrieved from properties file during upload");
-        }
+        int maxFileSizeInMB = externalContentLogic.getMaxUploadFileSizeInMB();
+        int maxFileSizeInBytes = maxFileSizeInMB * 1024 * 1024;
 
         if (uploadedFileSize > maxFileSizeInBytes) {
             messages.addMessage(new TargettedMessage("assignment2.uploadall.error.file_size", new Object[] {maxFileSizeInMB}, TargettedMessage.SEVERITY_ERROR));
@@ -297,31 +306,19 @@ public class StudentSubmissionBean {
 					// make an attachment resource for this URL
 					try
 					{
-						String siteId = ToolManager.getCurrentPlacement().getContext();
+						String siteId = externalLogic.getCurrentContextId();
 		
-						String toolName = "Assignment";
+						String toolName = externalLogic.getToolTitle();
 						
 						// add attachment
-						enableSecurityAdvisor();
 						ContentResource attachment = contentHostingService.addAttachmentResource(resourceId, siteId, toolName, contentType, bytes, props);
 						disableSecurityAdvisors();
 						
-						try
-						{
-							Reference ref = EntityManager.newReference(contentHostingService.getReference(attachment.getId()));
-							SubmissionAttachment sAttachment = new SubmissionAttachment();
-							sAttachment.setAttachmentReference(ref.getId());
-							sAttachment.setSubmissionVersion(asv);
-							
-							// only one attachment/per student is needed for this pupose
-							attachments.add(sAttachment);
-						}
-						catch(Exception ee)
-					    {
-							log.warn(this + "processActionSingleFileUploadSubmit cannot find reference for " + attachment.getId() + ee.getMessage());
-						}
-						
-						
+						Reference ref = EntityManager.newReference(contentHostingService.getReference(attachment.getId()));
+						SubmissionAttachment sAttachment = new SubmissionAttachment();
+						sAttachment.setAttachmentReference(ref.getId());
+						sAttachment.setSubmissionVersion(asv);
+					
 					}
 					catch (PermissionException e)
 					{
@@ -339,11 +336,6 @@ public class StudentSubmissionBean {
 							log.debug(this + ".processActionSingleFileUploadSubmit ***** Runtime Exception ***** " + e.getMessage());
 							messages.addMessage(new TargettedMessage("assignment2.student-submission.single-uploaded-file.alert.failed", new Object[]{name}, TargettedMessage.SEVERITY_ERROR));
 						}
-					}
-					catch(Exception ignore)
-					{
-						// other exceptions should be caught earlier
-						log.debug(this + ".processActionSingleFileUploadSubmit ***** Unknown Exception ***** " + ignore.getMessage());
 					}
 					
 			        //save the submission
