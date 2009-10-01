@@ -641,17 +641,28 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
             UIBoundBoolean.make(form, "allow_students_to_see_originality_checkbox", 
                     assignment2OTP + ".properties.s_view_report");
             
+            
+            // set the checkboxes to default to true
+            boolean checkPaperRepo = assignment.getProperties().containsKey("s_paper_check") ? 
+                    (Boolean)assignment.getProperties().get("s_paper_check") : true;
+            boolean checkInternetRepo = assignment.getProperties().containsKey("internet_check") ? 
+                    (Boolean)assignment.getProperties().get("internet_check") : true;
+            boolean checkJournalRepo = assignment.getProperties().containsKey("journal_check") ? 
+                    (Boolean)assignment.getProperties().get("journal_check") : true;
+            boolean checkInstRepo = assignment.getProperties().containsKey("institution_check") ? 
+                    (Boolean)assignment.getProperties().get("institution_check") : true;
+            
             UIBoundBoolean.make(form, "check_against_student_repo_checkbox",
-                    assignment2OTP + ".properties.s_paper_check");
+                    assignment2OTP + ".properties.s_paper_check", checkPaperRepo);
             
             UIBoundBoolean.make(form, "check_against_internet_repo_checkbox",
-                    assignment2OTP + ".properties.internet_check");
+                    assignment2OTP + ".properties.internet_check", checkInternetRepo);
             
             UIBoundBoolean.make(form, "check_against_journal_repo_checkbox", 
-                    assignment2OTP + ".properties.journal_check");
+                    assignment2OTP + ".properties.journal_check", checkJournalRepo);
             
             UIBoundBoolean.make(form, "check_against_institution_repo_checkbox",
-                    assignment2OTP + ".properties.institution_check");
+                    assignment2OTP + ".properties.institution_check", checkInstRepo);
             
             String instRepoText;
             if (institutionalRepoName == null) {
