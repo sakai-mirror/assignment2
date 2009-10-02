@@ -233,6 +233,10 @@ div.generalErrors li.alertMessageInline {
     vertical-align: middle;
  }
 
+.inlineMessage {
+    margin-left: 1em;
+}
+
 .messages {
 	xbackground: url("/sakai-assignment2-tool/content/images/error-arrow.png") no-repeat .5em 0;
 	xcolor: #fff;

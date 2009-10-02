@@ -1070,6 +1070,26 @@ var asnn2editpage = asnn2editpage || {};
       }
     };
     
+    asnn2editpage.tii_attachWarning = function() {
+        var tii_content = jQuery('#page-replace\\:\\:tii_content_review_area').get(0);
+        if (tii_content) {
+            // check to see if tii is enabled
+            var useTiiOption = jQuery("input[name='page-replace\:\:use_tii']").get(0);
+            var attach_warning = jQuery("#page-replace\\:\\:tii_attach_warning");
+            if (useTiiOption && useTiiOption.checked) {
+                // check to see if assignment is set to accept text & attachments
+                var submission_method = jQuery("select[name='page-replace\:\:submission_type-selection']");   
+                if (submission_method.val() === '2') {
+                    attach_warning.show();
+                } else {
+                    attach_warning.hide();
+                } 
+            } else {
+                attach_warning.hide();
+            }
+        }
+    };
+    
 })(jQuery, asnn2editpage);
 
 var asnn2listpage = asnn2listpage || {};
