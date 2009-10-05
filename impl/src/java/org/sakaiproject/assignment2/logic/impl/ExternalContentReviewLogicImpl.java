@@ -363,11 +363,8 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
     }
     
     public void populateAssignmentPropertiesFromAssignment(Assignment2 assign) {
-        if (assign.getContentReviewRef() == null || assign.getContentReviewRef().equals("")) {
+        if (!assign.isContentReviewEnabled() || assign.getContentReviewRef() == null || assign.getContentReviewRef().equals("")) {
             return;
-        }
-        else {
-            assign.getProperties().put("USE_TII", new Boolean(true));
         }
         
         Method getAsnnMethod = null;

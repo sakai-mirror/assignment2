@@ -548,7 +548,7 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
         // Optional Turnitin Content Review Integration
         if (externalContentReviewLogic.isContentReviewAvailable()) {
             UIOutput.make(tofill, "tii_content_review_area");
-            UIBoundBoolean.make(form, "use_tii", assignment2OTP + ".properties.USE_TII");
+            UIBoundBoolean.make(form, "use_tii", assignment2OTP + ".contentReviewEnabled");
 
             // Submit papers to repository
             List<String> repoOptions = localTurnitinLogic.getSubmissionRepositoryOptions();

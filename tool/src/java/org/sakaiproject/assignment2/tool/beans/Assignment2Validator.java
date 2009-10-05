@@ -98,8 +98,7 @@ public class Assignment2Validator  {
         }
         
         // Validate the turnitin options ASNN-516
-        boolean turnitinEnabled = assignment.getProperties().containsKey("USE_TII") && (Boolean)assignment.getProperties().get("USE_TII");
-        if (turnitinEnabled) {     
+        if (assignment.isContentReviewEnabled()) {     
             // check to see if the user wants to generate reports related to due date
             // but there is no due date
             if (assignment.getProperties().containsKey("report_gen_speed") && 
