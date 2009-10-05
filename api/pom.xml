@@ -61,8 +61,8 @@
 <!-- end for scheduled notifications -->
 
     <dependency>
-      <groupId>org.sakaiproject</groupId>
-      <artifactId>sakai-contentreview-model-api</artifactId>
+      <groupId>org.sakaiproject.contentreview</groupId>
+      <artifactId>contentreview-model-api</artifactId>
       <version>${sakai.version}</version>
     </dependency>
 
