@@ -186,7 +186,7 @@ li fieldset ol li p.instruction {
 }
 
 .viewFilter {
-    margin-bottom: 8px;
+    margin-bottom: 15px;
     margin-right: 5px;
 }
 
@@ -795,4 +795,17 @@ a.fl-pager-currentPage {
   /* z-index: 1001;*/
 }
 
+.unassigned-apply {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
 
+.unassigned-apply-button {
+    padding: 3px;
+}
+
+#no-students-area {
+    clear: both;
+    font-style: italic;
+    margin-top:65px; 
+}

@@ -465,11 +465,11 @@ asnn2.setupRemoveDialog = function() {
    * TODO: Put the confirmation dialog back in.
    */
 
-  jQuery("#removebutton").show();
+  jQuery(".removebutton").show();
 
   var removeDialog = jQuery('#remove-asnn-dialog');
 
-  jQuery("#removebutton").bind("click", function(e) {
+  jQuery(".removebutton").bind("click", function(e) {
     var togo = "";
     jQuery(".asnncheck").each(function (i) {
       if (this.checked) {

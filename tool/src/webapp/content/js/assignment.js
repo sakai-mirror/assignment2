@@ -580,9 +580,6 @@ var asnn2 = asnn2 || {};
         format = format.replace(/\{2\}/, jQuery("table#sortable tr:gt(0)").size());
         jQuery("div.pagerDiv div.pagerInstruction").html(format);
 
-        // align the grading box
-        asnn2.alignGrading();
-
     };
 
     asnn2.initializeSorting = function() {
@@ -829,18 +826,6 @@ var asnn2 = asnn2 || {};
 
         asnn2util.openDialog(confirmDialog);
         return false;
-    };
-
-    /**
-     * Aligns the "Apply to Unassigned" box with the grading column
-     */
-    asnn2.alignGrading = function() {
-        var p = jQuery("td.grade:first");
-        var position = p.position();
-        if (position) {
-            var applyToUnassigned = jQuery('#unassigned-apply');
-            applyToUnassigned.attr("style", "margin-left:" + position.left + "px");
-        }
     };
 
     /**

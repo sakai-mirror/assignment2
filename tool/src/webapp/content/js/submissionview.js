@@ -224,6 +224,9 @@ asnn2subview.renderSubmissions = function(treedata) {
     asnn2subview.subListTemplate = fluid.selfRender(jQuery("#asnn-submissions-table"), treedata, {cutpoints: asnn2subview.selectorMap});
   }
   RSF.getDOMModifyFirer().fireEvent();
+  
+  
+  asnn2subview.alignGrading();
 }
 
 asnn2subview.initPager = function(numSubmissions) {
@@ -323,6 +326,18 @@ asnn2subview.initPager = function(numSubmissions) {
     jQuery('#page-list').show();
   }
 
+};
+
+/**
+ * Aligns the "Apply to Unassigned" box with the grading column
+ */
+asnn2subview.alignGrading = function() {
+    var p = jQuery("td.grade:first");
+    var position = p.position();
+    if (position) {
+        var applyToUnassigned = jQuery('div.unassigned-apply');
+        applyToUnassigned.attr("style", "margin-left:" + position.left + "px");
+    }
 };
 
 asnn2subview.filteredRowTransform = function(obj, idx) {
