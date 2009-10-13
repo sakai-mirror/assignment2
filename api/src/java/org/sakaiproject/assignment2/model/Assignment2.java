@@ -59,6 +59,7 @@ public class Assignment2 {
     private boolean addedToSchedule;
     private String eventId;
     private int numSubmissionsAllowed;
+    private boolean contentReviewEnabled;
     private String contentReviewRef;
     private String creator;
     private Date createDate;
@@ -423,6 +424,25 @@ public class Assignment2 {
     public void setNumSubmissionsAllowed(int numSubmissionsAllowed) {
         this.numSubmissionsAllowed = numSubmissionsAllowed;
     }
+    
+    /**
+     * 
+     * @return true if plagiarism checking (via ContentReviewService) has
+     * been enabled for this assignment
+     */
+    public boolean isContentReviewEnabled() {  
+        return contentReviewEnabled;
+    }
+
+    /**
+     * true if plagiarism checking (via ContentReviewService) has
+     * been enabled for this assignment
+     * @param contentReviewEnabled
+     */
+    public void setContentReviewEnabled(boolean contentReviewEnabled)
+    {
+        this.contentReviewEnabled = contentReviewEnabled;
+    }
 
     /**
      * 
@@ -730,19 +750,21 @@ public class Assignment2 {
 
         return isSubmissionOpen;
     }
-
+    
     /**
      * 
-     * @return true if plagiarism checking (via ContentReviewService) has
-     * been enabled for this assignment
+     * @return true if this assignment accepts attachment submissions. This
+     * is a convenience method to determine if the assignment accepts attachments
+     * as an option for submission.  The assignment may also accept other forms
+     * of submission.
      */
-    public boolean isContentReviewEnabled() {
-        boolean enabled = false;
-        if (this.contentReviewRef != null && 
-                this.contentReviewRef.trim().length() > 0) {
-            enabled = true;
+    public boolean acceptsAttachments() {
+        boolean acceptsAttachments = false;
+        if (this.submissionType == AssignmentConstants.SUBMIT_INLINE_AND_ATTACH ||
+                this.submissionType == AssignmentConstants.SUBMIT_ATTACH_ONLY) {
+            acceptsAttachments = true;
         }
         
-        return enabled;
+        return acceptsAttachments;
     }
 }

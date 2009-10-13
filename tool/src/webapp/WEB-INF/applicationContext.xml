@@ -54,6 +54,11 @@
 	    <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
 	    <property name="assignmentBundleLogic" ref="org.sakaiproject.assignment2.logic.AssignmentBundleLogic" />
         <property name="externalContentReviewLogic" ref="org.sakaiproject.assignment2.logic.ExternalContentReviewLogic" />
+       <!--  <property name="submissionTableViewStateHolder">
+            <bean parent="RSACBridgeProxy">
+                <property name="targetBeanName" value="SubmissionTableViewStateHolder" />
+            </bean>
+        </property> -->
 	</bean>
 	
 	<bean parent="org.sakaiproject.entitybroker.entityprovider.AbstractEntityProvider"  
@@ -127,14 +132,12 @@
 		<property name="contentTypeSpec" value="HTML,HTML-FRAGMENT" />
 	</bean>
 
-	<!-- The beans listed here are session beans, currently we have none. :) -->
-	<!-- 
+	<!-- The beans listed here are session beans, currently we have one. :| -->
 	<bean id="myBeanScope" parent="beanScopeParent">
 		<property name="copyPreservingBeans"
-			value="" />
+			value="SubmissionTableViewStateHolder" />
 		<property name="exclusive" value="true" />
 	</bean>
-	-->
 	
 	  <!-- The beans which will be preserved across a flow via simple instance
 			copying -->
@@ -216,4 +219,6 @@
 		<property name="guardMethod" value="Assignment2Validator.assignment" />
 		</bean>
 	-->
+	
+	
 </beans>

@@ -412,6 +412,7 @@ var asnn2 = asnn2 || {};
         asnn2.selectGraded();
         asnn2.populateTitleWithGbItemName();
         asnn2.populateDueDateWithGBItemDueDate();
+        asnn2.showHideGradeSettingError();
     };
 
     /**
@@ -579,9 +580,6 @@ var asnn2 = asnn2 || {};
         format = format.replace(/\{2\}/, jQuery("table#sortable tr:gt(0)").size());
         jQuery("div.pagerDiv div.pagerInstruction").html(format);
 
-        // align the grading box
-        asnn2.alignGrading();
-
     };
 
     asnn2.initializeSorting = function() {
@@ -679,11 +677,61 @@ var asnn2 = asnn2 || {};
      * the area.
      */
     asnn2.showHideByCheckbox = function(checkboxElem, areaElem) {
-        var area = jQuery(areaElem);
-        if (checkboxElem.checked) {
-            area.show();
+        if (checkboxElem && areaElem) {
+            var area = jQuery(areaElem);
+            if (checkboxElem.checked) {
+                area.show();
+            } else {
+                area.hide();
+            }
+        }
+    };
+    
+    /**
+     * @param selectElem
+     * @param selectOptions array of values such that, if selectElem is set to one of these values, 
+     * we show the given areaElem. if the value of the selectElem is not included in this array, we hide the areaElem.
+     * @param areaElem
+     */
+    asnn2.showHideBySelect = function(selectElem, selectOptions, areaElem) {
+      var selectObj = jQuery(selectElem);
+      var areaObj = jQuery(areaElem);
+
+      var displayArea = false;
+      
+      var selectValue = selectObj.val();
+      if (selectOptions) {
+        for (index in selectOptions) {
+          if (selectValue === selectOptions[index]) {
+            displayArea = true;
+            break;
+          }
+        }
+      }
+      
+      if (displayArea) {
+        areaObj.show();
+      } else {
+        areaObj.hide();
+      }
+    }
+    
+    asnn2.showHideGradeSettingError = function() {
+        var graded = jQuery("input[type='radio'][id='page-replace\:\:select_graded']").get(0).checked;
+        var errorIndicator = jQuery("#page-replace\\:\\:gradingSelectionError");
+        if (graded) {
+            // we need to see if a gradebook item was selected
+            var gbItemSelect = jQuery("select[name='page-replace\:\:gradebook_item-selection']");
+            var selectedItem = gbItemSelect.val();
+            
+            if (!selectedItem || selectedItem === "0") {
+                // display the error indicator
+                errorIndicator.show();
+            } else {
+                errorIndicator.hide();
+            }
         } else {
-            area.hide();
+            errorIndicator.hide();
         }
     };
 
@@ -754,6 +802,12 @@ var asnn2 = asnn2 || {};
      */
     asnn2.editAssignmentConfirm = function(buttonform) {
 
+        // validate the form before we pop up the confirmation
+       var valid = asnn2editpage.validate();
+        if (!valid) {
+          return false;
+        }
+      
         // display the confirmation dialog
         confirmDialog = jQuery('#edit-assign-confirm-dialog');
 
@@ -772,18 +826,6 @@ var asnn2 = asnn2 || {};
 
         asnn2util.openDialog(confirmDialog);
         return false;
-    };
-
-    /**
-     * Aligns the "Apply to Unassigned" box with the grading column
-     */
-    asnn2.alignGrading = function() {
-        var p = jQuery("td.grade:first");
-        var position = p.position();
-        if (position) {
-            var applyToUnassigned = jQuery('#unassigned-apply');
-            applyToUnassigned.attr("style", "margin-left:" + position.left + "px");
-        }
     };
 
     /**
@@ -901,7 +943,8 @@ var asnn2editpage = asnn2editpage || {};
         dueBeforeOpenMsg = jQuery("#page-replace\\:\\:assignment_due_before_open");
         acceptBeforeOpenMsg = jQuery("#page-replace\\:\\:assignment_accept_before_open");
         acceptBeforeDueMsg = jQuery("#page-replace\\:\\:assignment_accept_before_due");
-
+        checkAgainstMsg = jQuery("#page-replace\\:\\:assignment_check_against");
+        
         /*titleMsg.hide();
             nogbMsg.hide();
             dueBeforeOpenMsg.hide();
@@ -965,6 +1008,21 @@ var asnn2editpage = asnn2editpage || {};
                 }
             }
         }
+        
+        // validate the turnitin options ASNN-516
+        var useTiiOption = jQuery("input[name='page-replace\:\:use_tii']").get(0);
+        if (useTiiOption && useTiiOption.checked) {
+          // see if at least one checkbox was checked for the "check against" option
+          if (jQuery("input[name='page-replace\:\:check_against_student_repo_checkbox']").is(':checked') ||
+              jQuery("input[name='page-replace\:\:check_against_internet_repo_checkbox']").is(':checked') ||
+              jQuery("input[name='page-replace\:\:check_against_journal_repo_checkbox']").is(':checked') ||
+              jQuery("input[name='page-replace\:\:check_against_institution_repo_checkbox']").is(':checked')) {
+            // we want at least one to be checked
+          } else {
+            valid = false;
+            checkAgainstMsg.show();
+          }
+        }
 
         if (!valid) {
             window.parent.scrollTo(0, 0);
@@ -973,6 +1031,50 @@ var asnn2editpage = asnn2editpage || {};
 
         return true;
     };
+    
+    asnn2editpage.tii_dueDateOptions = function() {
+      var tii_content = jQuery('#page-replace\\:\\:tii_content_review_area').get(0);
+      if (tii_content) {
+        // check to see if user has set a due date
+        var require_due_date = jQuery("input[name='page-replace\:\:require_due_date']").get(0);
+        var no_due_date_warning = jQuery("#page-replace\\:\\:gen_reports_no_due_date");
+        var gen_report_on_due_date = jQuery("input[type='radio'][id='page-replace\:\:gen_report_on_due_date']");
+        
+        if (require_due_date && require_due_date.checked) {
+          // there is a due date, so we enable the due date radio and hide the warning
+          no_due_date_warning.hide();
+          gen_report_on_due_date.removeAttr("disabled");
+        } else {
+          // otherwise, hide the warning, disable the due date option, and select the immediate option
+          no_due_date_warning.show();
+          gen_report_on_due_date.attr("disabled","disabled");
+          var gen_report_immediately = jQuery("input[type='radio'][id='page-replace\:\:gen_report_immediately']");
+          gen_report_immediately.attr("checked", "checked");
+        }
+        
+      }
+    };
+    
+    asnn2editpage.tii_attachWarning = function() {
+        var tii_content = jQuery('#page-replace\\:\\:tii_content_review_area').get(0);
+        if (tii_content) {
+            // check to see if tii is enabled
+            var useTiiOption = jQuery("input[name='page-replace\:\:use_tii']").get(0);
+            var attach_warning = jQuery("#page-replace\\:\\:tii_attach_warning");
+            if (useTiiOption && useTiiOption.checked) {
+                // check to see if assignment is set to accept text & attachments
+                var submission_method = jQuery("select[name='page-replace\:\:submission_type-selection']");   
+                if (submission_method.val() === '2') {
+                    attach_warning.show();
+                } else {
+                    attach_warning.hide();
+                } 
+            } else {
+                attach_warning.hide();
+            }
+        }
+    };
+    
 })(jQuery, asnn2editpage);
 
 var asnn2listpage = asnn2listpage || {};

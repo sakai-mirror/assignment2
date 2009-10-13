@@ -359,10 +359,10 @@ public class AssignmentLogicImpl implements AssignmentLogic{
         }
 
         // TODO ASNN-516 Content Review / Turnitin Integration
-        if (assignment.getProperties().containsKey("USE_TII") && ((Boolean) assignment.getProperties().get("USE_TII")).booleanValue()) {
+        if (assignment.isContentReviewEnabled()) {
             String tiiAsnnTitle = externalContentReviewLogic.getTaskId(assignment);
             assignment.setContentReviewRef(tiiAsnnTitle);
-            log.debug("Going to Create TII Asnn with title: " + tiiAsnnTitle);
+            log.debug("Going to Create/Update TII Asnn with title: " + tiiAsnnTitle);
             externalContentReviewLogic.createAssignment(assignment);
             dao.update(assignment);
         }

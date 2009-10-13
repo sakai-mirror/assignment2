@@ -21,6 +21,7 @@
         ADDED_TO_SCHEDULE tinyint null,
         EVENT_ID varchar(99) null,
         NUM_SUB_ALLOWED int not null,
+        CONTENT_REVIEW_ENABLED tinyint null,
         CONTENT_REVIEW_REF varchar(255) null,
         CREATOR varchar(99) not null,
         CREATE_DATE datetime not null,

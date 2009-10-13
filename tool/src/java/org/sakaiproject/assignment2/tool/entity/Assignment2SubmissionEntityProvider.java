@@ -25,6 +25,8 @@ import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.model.SubmissionAttachment;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.assignment2.tool.DisplayUtil;
+import org.sakaiproject.assignment2.tool.beans.SubmissionTableViewState;
+import org.sakaiproject.assignment2.tool.beans.SubmissionTableViewStateHolder;
 import org.sakaiproject.assignment2.tool.params.GradeViewParams;
 import org.sakaiproject.assignment2.tool.producers.GradeProducer;
 import org.sakaiproject.entitybroker.EntityReference;
@@ -107,6 +109,7 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware{
     public void setRequestGetter(RequestGetter requestGetter) {
         this.requestGetter = requestGetter;
     }
+    
 
     /**
      * Dependency
@@ -129,6 +132,12 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware{
     public final static String PREFIX = "assignment2submission";
     public String getEntityPrefix() {
         return PREFIX;
+    }
+    
+    private SubmissionTableViewStateHolder submissionTableViewStateHolder;
+    public void setSubmissionTableViewStateHolder(
+            SubmissionTableViewStateHolder submissionTableViewStateHolder) {
+        this.submissionTableViewStateHolder = submissionTableViewStateHolder;
     }
 
     public String createEntity(EntityReference ref, Object entity,
@@ -161,12 +170,38 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware{
     @SuppressWarnings("unchecked")
     public List<?> getEntities(EntityReference ref, Search search) {
         Long assignmentId = requestStorage.getStoredValueAsType(Long.class, "asnnid");
+        String filterGroupId = requestStorage.getStoredValueAsType(String.class, "groupId");
+        Boolean firstcall = requestStorage.getStoredValueAsType(java.lang.Boolean.class, "firstcall" );
+        
+        String orderByTest = null;
+        if (search.getOrders() != null && search.getOrders().length > 0) {
+            orderByTest = search.getOrders()[0].getProperty();
+        }
+        /*
+        SubmissionTableViewState curViewState = new SubmissionTableViewState(assignmentId, filterGroupId, orderByTest, search.getStart(), search.getLimit() );
+        
+        if (firstcall != null && assignmentId != null) {
+            if (firstcall.booleanValue()) {
+                submissionTableViewStateHolder.setSubmissionTableViewState(curViewState);
+            }
+            else {
+                curViewState = submissionTableViewStateHolder.getSubmissionTableViewState(assignmentId);
+                filterGroupId = curViewState.getGroupId();
+                search.setOrders(new Order[] {new Order(curViewState.getOrderBy())});
+                search.setLimit(curViewState.getSize());
+                search.setStart(curViewState.getStart());
+            }
+        } 
+        */
+        
 
         DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, assignmentBundleLogic.getLocale());
 
         List togo = new ArrayList();
 
-        String filterGroupId = requestStorage.getStoredValueAsType(String.class, "groupId");
+        //System.out.println("IS THIS THE FIRST CALL?: " + requestStorage.getStoredValueAsType(java.lang.Boolean.class, "firstcall" ));
+        
+        
         List<AssignmentSubmission> submissions = submissionLogic.getViewableSubmissionsWithHistoryForAssignmentId(assignmentId, filterGroupId);
 
         if (submissions == null) {
@@ -356,6 +391,9 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware{
             }
         }
 
+        requestGetter.getResponse().setHeader("x-asnn2-pageSize", search.getLimit()+"");
+        requestGetter.getResponse().setHeader("x-asnn2-pageIndex", (start / search.getLimit())+"");
+        
         return togo.subList((int)start, (int)end);
     }
     

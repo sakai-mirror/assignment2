@@ -69,7 +69,9 @@ import uk.org.ponder.rsf.components.UISelectChoice;
 import uk.org.ponder.rsf.components.UISelectLabel;
 import uk.org.ponder.rsf.components.UIVerbatim;
 import uk.org.ponder.rsf.components.decorators.DecoratorList;
+import uk.org.ponder.rsf.components.decorators.UIAlternativeTextDecorator;
 import uk.org.ponder.rsf.components.decorators.UIFreeAttributeDecorator;
+import uk.org.ponder.rsf.components.decorators.UITooltipDecorator;
 import uk.org.ponder.rsf.evolvers.TextInputEvolver;
 import uk.org.ponder.rsf.evolvers.FormatAwareDateInputEvolver;
 import uk.org.ponder.rsf.preservation.StatePreservationManager;
@@ -233,11 +235,16 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
         //Assignment2 assignment = (Assignment2)assignment2BeanLocator.locateBean(OTPKey);
         Assignment2 assignment = (Assignment2) assignmentAuthoringFlowBean.locateBean(OTPKey);
 
+        // make the no gb item error msg. it will be hidden by default
+        UIMessage gbErrorMsg = UIMessage.make(tofill, "assignment_graded_no_gb_item", "assignment2.assignment_graded_no_gb_item");
+        
         // if this is an "edit" scenario, we need to display a warning if the
         // assignment is graded but doesn't have an assoc gb item
-        if (assignmentId != null && assignment.isGraded()) {
-            if (assignment.getGradebookItemId() == null || 
-                    !externalGradebookLogic.gradebookItemExists(assignment.getGradebookItemId())) {
+        if (assignment.isGraded()) {
+            if (assignment.getGradebookItemId() == null) {
+                // display the "select a gb item" msg
+                gbErrorMsg.decorate(new UIFreeAttributeDecorator("style", "display: block;"));
+            } else if(!externalGradebookLogic.gradebookItemExists(assignment.getGradebookItemId())) {
                 // we need to display a message indicating that the gradebook item
                 // assoc with this item no longer exists
                 UIMessage.make(tofill, "no_gb_item", "assignment2.assignment_add.gb_item_deleted");
@@ -448,7 +455,12 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
         String urlWithoutNameParam = externalLogic.getUrlForGradebookItemHelper(null, FinishedHelperProducer.VIEWID, currentContextId);
         UILink.make(form, "gradebook_url_without_name", urlWithoutNameParam);
 
-
+        // Error indicator if assignment graded but no gb item selected
+        UIOutput gradingErrorIndicator = UIOutput.make(tofill, "gradingSelectionError");
+        String errorInfo = messageLocator.getMessage("assignment2.assignment_graded_no_gb_item");
+        gradingErrorIndicator.decorate(new UIAlternativeTextDecorator(errorInfo));
+        gradingErrorIndicator.decorate(new UITooltipDecorator(errorInfo));
+        
         /******
          * Access
          */
@@ -536,75 +548,121 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
         // Optional Turnitin Content Review Integration
         if (externalContentReviewLogic.isContentReviewAvailable()) {
             UIOutput.make(tofill, "tii_content_review_area");
-            UIBoundBoolean.make(tofill, "use_tii", assignment2OTP + ".properties.USE_TII");
-            
+            UIBoundBoolean.make(form, "use_tii", assignment2OTP + ".contentReviewEnabled");
+
             // Submit papers to repository
-            String repoRestriction = localTurnitinLogic.getSubmissionRepositoryRestriction();
+            List<String> repoOptions = localTurnitinLogic.getSubmissionRepositoryOptions();
             String institutionalRepoName = localTurnitinLogic.getInstitutionalRepositoryName();
-            
-            if (repoRestriction == null) {
-                UIOutput.make(tofill, "submit_to_options");
-                String[] submitToRepoValues = new String[] {
-                        AssignmentConstants.TII_VALUE_STANDARD_REPO, 
-                        AssignmentConstants.TII_VALUE_INSTITUTION_REPO, 
-                        AssignmentConstants.TII_VALUE_NO_REPO
-                };
-                
-                String instRepoLabel = institutionalRepoName != null ? 
-                        institutionalRepoName : messageLocator.getMessage("assignment2.turnitin.asnnedit.option.institution_paper_repository");
+            if (repoOptions != null && !repoOptions.isEmpty()) {
+                if (repoOptions.size() == 1) {
+                    String repoRestriction = repoOptions.get(0);
+                    // we are not giving the user the option to set a repository for submissions
+                    UIOutput.make(tofill, "submit_to_single_repository");
+                    if (AssignmentConstants.TII_VALUE_NO_REPO.equals(repoRestriction)) {
+                        UIMessage.make(tofill, "submit_to_repository", "assignment2.turnitin.asnnedit.submit.no_repo");
+                    } else if (AssignmentConstants.TII_VALUE_STANDARD_REPO.equals(repoRestriction)) {
+                        UIMessage.make(tofill, "submit_to_repository", "assignment2.turnitin.asnnedit.submit.standard_repo");
+                    } else if (AssignmentConstants.TII_VALUE_INSTITUTION_REPO.equals(repoRestriction)) {
+                        if (institutionalRepoName == null) {
+                            UIMessage.make(tofill, "submit_to_repository", "assignment2.turnitin.asnnedit.submit.inst_repo.no_name");
+                        } else {
+                            UIMessage.make(tofill, "submit_to_repository", "assignment2.turnitin.asnnedit.submit.inst_repo.name", new Object[] {institutionalRepoName});
+                        }
+                    }
+                } else {
+                    UIOutput.make(tofill, "submit_to_options");
 
-                String[] submitToRepoLabels = new String[] {
-                        messageLocator.getMessage("assignment2.turnitin.asnnedit.option.standard_paper_repository"),
-                        instRepoLabel,
-                        messageLocator.getMessage("assignment2.turnitin.asnnedit.option.no_repository")
-                };
+                    String[] submitToRepoValues = new String[repoOptions.size()];
+                    String[] submitToRepoLabels = new String[repoOptions.size()];
 
-                UISelect.make(form, "submit_paper_to_repository_select", submitToRepoValues,
-                        submitToRepoLabels, assignment2OTP + ".properties.submit_papers_to");
-            } else {
-                // we are not giving the user the option to set a repository for submissions
-                UIOutput.make(tofill, "submit_to_single_repository");
-                if (AssignmentConstants.TII_VALUE_NO_REPO.equals(repoRestriction)) {
-                    UIMessage.make(tofill, "submit_to_repository", "assignment2.turnitin.asnnedit.submit.no_repo");
-                } else if (AssignmentConstants.TII_VALUE_STANDARD_REPO.equals(repoRestriction)) {
-                    UIMessage.make(tofill, "submit_to_repository", "assignment2.turnitin.asnnedit.submit.standard_repo");
-                } else if (AssignmentConstants.TII_VALUE_INSTITUTION_REPO.equals(repoRestriction)) {
-                    if (institutionalRepoName == null) {
-                        UIMessage.make(tofill, "submit_to_repository", "assignment2.turnitin.asnnedit.submit.inst_repo.no_name");
+                    for (int i=0; i < repoOptions.size(); i++) {
+                        String option = repoOptions.get(i);
+                        submitToRepoValues[i] = option;
+                        submitToRepoLabels[i] = messageLocator.getMessage("assignment2.turnitin.asnnedit.option." + option);
+
+                        if (institutionalRepoName != null && 
+                                AssignmentConstants.TII_VALUE_INSTITUTION_REPO.equals(option)) {
+                            submitToRepoLabels[i] = institutionalRepoName;
+                        }
+                    }
+                    
+                    // if this property hasn't been set yet, set the first one in the list as selected
+                    String selectedValue;
+                    if (assignment.getProperties().containsKey("submit_papers_to")) {
+                        selectedValue = (String)assignment.getProperties().get("submit_papers_to");
                     } else {
-                        UIMessage.make(tofill, "submit_to_repository", "assignment2.turnitin.asnnedit.submit.inst_repo.name", new Object[] {institutionalRepoName});
+                        selectedValue = repoOptions.get(0);
+                    }
+
+                    UISelect repo_select = UISelect.make(form, "submit_to_repo_radios", submitToRepoValues,
+                            submitToRepoLabels, assignment2OTP + ".properties.submit_papers_to", selectedValue);
+                    
+                    String repo_select_id = repo_select.getFullID();
+                    for (int i=0; i < repoOptions.size(); i++) {
+                        UIBranchContainer repo_option = UIBranchContainer.make(form, "submit_papers_to:");
+                        UISelectChoice.make(repo_option, "submit_to_option", repo_select_id, i);
+                        UISelectLabel.make(repo_option, "submit_to_label", repo_select_id, i);
                     }
                 }
             }
             
             // When to generate reports
+            // although the service allows for a value of "1" --> Generate report immediately but overwrite until due date,
+            // this doesn't make sense for assignment2. We limit the UI to 0 - Immediately
+            // or 2 - On Due Date
             String[] reportGenSpeedValues = new String[] {
-                    "0", "1", "2"
+                    "0", "2"
             };
             
             String[] reportGenSpeedLabels = new String[] {
-                    "assignment2.turnitin.asnnedit.generate_immediately_first_report_final",
-                    "assignment2.turnitin.asnnedit.generate_immediately_can_overwrite_until_due",
-                    "assignment2.turnitin.asnnedit.generate_on_due_date"
+                    "assignment2.turnitin.asnnedit.generate_originality_reports.immediate",
+                    "assignment2.turnitin.asnnedit.generate_originality_reports.on_due_date"
             };
             
-            UISelect.make(form, "rep_gen_speed", reportGenSpeedValues,
-                    reportGenSpeedLabels, assignment2OTP + ".properties.report_gen_speed").setMessageKeys();
+         // if this property hasn't been set yet, set the first one in the list as selected
+            String selectedValue;
+            if (assignment.getProperties().containsKey("report_gen_speed")) {
+                selectedValue = (String)assignment.getProperties().get("report_gen_speed");
+            } else {
+                selectedValue = reportGenSpeedValues[0];
+            }
             
-            UIBoundBoolean.make(tofill, "allow_students_to_see_originality_checkbox", 
+            UISelect gen_reports_select = UISelect.make(form, "generate_report_radios", reportGenSpeedValues,
+                    reportGenSpeedLabels, assignment2OTP + ".properties.report_gen_speed", selectedValue).setMessageKeys();
+            
+            String gen_reports_select_id = gen_reports_select.getFullID();
+            
+            UISelectChoice.make(form, "gen_report_immediately", gen_reports_select_id, 0);
+            UISelectLabel.make(form, "gen_report_immediately_label", gen_reports_select_id, 0);
+
+            UISelectChoice.make(form, "gen_report_on_due_date", gen_reports_select_id, 1);
+            UISelectLabel.make(form, "gen_report_on_due_date_label", gen_reports_select_id, 1);
+            
+            UIBoundBoolean.make(form, "allow_students_to_see_originality_checkbox", 
                     assignment2OTP + ".properties.s_view_report");
             
-            UIBoundBoolean.make(tofill, "check_against_student_repo_checkbox",
-                    assignment2OTP + ".properties.s_paper_check");
             
-            UIBoundBoolean.make(tofill, "check_against_internet_repo_checkbox",
-                    assignment2OTP + ".properties.internet_check");
+            // set the checkboxes to default to true
+            boolean checkPaperRepo = assignment.getProperties().containsKey("s_paper_check") ? 
+                    (Boolean)assignment.getProperties().get("s_paper_check") : true;
+            boolean checkInternetRepo = assignment.getProperties().containsKey("internet_check") ? 
+                    (Boolean)assignment.getProperties().get("internet_check") : true;
+            boolean checkJournalRepo = assignment.getProperties().containsKey("journal_check") ? 
+                    (Boolean)assignment.getProperties().get("journal_check") : true;
+            boolean checkInstRepo = assignment.getProperties().containsKey("institution_check") ? 
+                    (Boolean)assignment.getProperties().get("institution_check") : true;
             
-            UIBoundBoolean.make(tofill, "check_against_journal_repo_checkbox", 
-                    assignment2OTP + ".properties.journal_check");
+            UIBoundBoolean.make(form, "check_against_student_repo_checkbox",
+                    assignment2OTP + ".properties.s_paper_check", checkPaperRepo);
             
-            UIBoundBoolean.make(tofill, "check_against_institution_repo_checkbox",
-                    assignment2OTP + ".properties.institution_check");
+            UIBoundBoolean.make(form, "check_against_internet_repo_checkbox",
+                    assignment2OTP + ".properties.internet_check", checkInternetRepo);
+            
+            UIBoundBoolean.make(form, "check_against_journal_repo_checkbox", 
+                    assignment2OTP + ".properties.journal_check", checkJournalRepo);
+            
+            UIBoundBoolean.make(form, "check_against_institution_repo_checkbox",
+                    assignment2OTP + ".properties.institution_check", checkInstRepo);
             
             String instRepoText;
             if (institutionalRepoName == null) {

@@ -23,6 +23,8 @@ package org.sakaiproject.assignment2.logic.impl;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -48,6 +50,7 @@ import org.sakaiproject.contentreview.service.ContentReviewService;
 import org.sakaiproject.id.api.IdManager;
 
 import uk.org.ponder.arrayutil.ArrayUtil;
+import uk.org.ponder.util.UniversalRuntimeException;
 
 public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogic {
 
@@ -360,11 +363,8 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
     }
     
     public void populateAssignmentPropertiesFromAssignment(Assignment2 assign) {
-        if (assign.getContentReviewRef() == null || assign.getContentReviewRef().equals("")) {
+        if (!assign.isContentReviewEnabled() || assign.getContentReviewRef() == null || assign.getContentReviewRef().equals("")) {
             return;
-        }
-        else {
-            assign.getProperties().put("USE_TII", new Boolean(true));
         }
         
         Method getAsnnMethod = null;
@@ -470,6 +470,12 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
             }
         }
         
+        if (assign.getDueDate() != null) {
+            SimpleDateFormat dform = ((SimpleDateFormat) DateFormat.getDateInstance());
+            dform.applyPattern("yyyyMMdd");
+            opts.put("dtdue", dform.format(assign.getDueDate()));
+        }
+        
         try {
             createAsnnMethod.invoke(contentReview, assign.getContextId(), 
                     this.getTaskId(assign), opts);
@@ -478,8 +484,9 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
             log.error("Error creating assignment for context: " + assign.getContextId()
                + " with taskId: " + this.getTaskId(assign),
             e.getCause());
+            throw UniversalRuntimeException.accumulate(e.getCause());
         } catch (Exception e) {
-            log.error(e);
+            throw UniversalRuntimeException.accumulate(e);
         }
     }
     

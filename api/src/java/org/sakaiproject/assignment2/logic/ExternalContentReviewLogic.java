@@ -109,6 +109,11 @@ public interface ExternalContentReviewLogic {
     
     public String getTaskId(Assignment2 assign);
     
+    /**
+     * Given an assignment, will create the corresponding assignment via the ContentReviewService.  If
+     * the assignment already exists in ContentReview, will update the existing assignment.
+     * @param assing
+     */
     public void createAssignment(Assignment2 assing);
     
     public void populateAssignmentPropertiesFromAssignment(Assignment2 assign);

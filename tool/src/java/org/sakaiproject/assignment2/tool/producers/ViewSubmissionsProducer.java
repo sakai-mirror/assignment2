@@ -405,12 +405,8 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
          */
         if (submissions != null && !submissions.isEmpty() && 
                 grade_perm && assignment.isGraded() && gbItemExists) {
-            String lowestPossibleGrade = gradebookLogic.getLowestPossibleGradeForGradebookItem(assignment.getContextId(), assignment.getGradebookItemId());
-            UIForm unassignedForm = UIForm.make(tofill, "unassigned-apply-form");
-            unassignedForm.addParameter(new UIELBinding("GradeAllRemainingAction.assignmentId", assignment.getId()));
-            unassignedForm.addParameter(new UIELBinding("GradeAllRemainingAction.groupIdFilter", params.groupId));
-            UIInput.make(unassignedForm, "new-grade-value", "GradeAllRemainingAction.grade", lowestPossibleGrade);
-            UICommand.make(unassignedForm, "apply-button", "GradeAllRemainingAction.execute");
+            createApplyToUngradedWidget(assignment, tofill, params, "unassigned-apply-form0:");
+            createApplyToUngradedWidget(assignment, tofill, params, "unassigned-apply-form1:");
         }
 
         // Confirmation Dialogs
@@ -581,6 +577,15 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
         UIOutput.make(tofill, "release-grades-message", releaseGradesMessage);
         UIOutput.make(tofill, "release-grades-confirm", releaseGradesConfirm);
         UIOutput.make(tofill, "release-grades-cancel", releaseGradesCancel);
+    }
+    
+    private void createApplyToUngradedWidget(Assignment2 assignment, UIContainer tofill, ViewSubmissionsViewParams params, String containerId) {
+        String lowestPossibleGrade = gradebookLogic.getLowestPossibleGradeForGradebookItem(assignment.getContextId(), assignment.getGradebookItemId());
+        UIForm unassignedForm = UIForm.make(tofill, containerId);
+        unassignedForm.addParameter(new UIELBinding("GradeAllRemainingAction.assignmentId", assignment.getId()));
+        unassignedForm.addParameter(new UIELBinding("GradeAllRemainingAction.groupIdFilter", params.groupId));
+        UIInput.make(unassignedForm, "new-grade-value", "GradeAllRemainingAction.grade", lowestPossibleGrade);
+        UICommand.make(unassignedForm, "apply-button", messageLocator.getMessage("assignment2.assignment_grade.assigntoall"), "GradeAllRemainingAction.execute");
     }
 
     public List<NavigationCase> reportNavigationCases() {

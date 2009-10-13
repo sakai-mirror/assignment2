@@ -182,7 +182,12 @@ public class AssignmentConstants {
      * This property is specific to Turnitin implementation of ContentReview.
      * if you want to restrict how your content is submitted to a repository, 
      * include this property in sakai.properties. Possible values are {@link #VALUE_NO_REPO}, 
-     * {@link #VALUE_INSTITUTION_REPO}, {@link #VALUE_STANDARD_REPO}.
+     * {@link #VALUE_INSTITUTION_REPO}, {@link #VALUE_STANDARD_REPO}. If this property is
+     * not included, will default to all three options. Set using the list approach in sakai.properties:
+     * ie, to include the "no repo" and "standard repo" options only, use: 
+     * turnitin.repository.setting.count=2
+     * turnitin.repository.setting.1 = 0
+     * turnitin.repository.setting.2 = 2
      * 
      */
     public static final String TII_PROP_SUBMIT_TO_REPO = "turnitin.repository.setting";

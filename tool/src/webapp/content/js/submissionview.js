@@ -158,6 +158,7 @@ asnn2subview.subTableRenderer = function (overallThat, inOptions) {
     returnedOptions: {
       listeners: {
         onModelChange: function (newModel, oldModel) {
+          var firstcall = false;
           if (newModel.sortKey) {
             var order = "&_order=" + newModel.sortKey;
             if (newModel.sortDir < 0) {
@@ -169,6 +170,7 @@ asnn2subview.subTableRenderer = function (overallThat, inOptions) {
             order = "&_order=studentName";
             newModel.sortKey = "studentName"; 
             newModel.sortDir = 1; 
+            firstcall = true;
           }
           if (newModel.groupId && newModel.groupId !== "") {
             var groupfilter = "&groupId="+newModel.groupId;
@@ -179,7 +181,7 @@ asnn2subview.subTableRenderer = function (overallThat, inOptions) {
           asnn2subview.spinner(true);
           jQuery.ajax({
             type: "GET",
-            url: "/direct/assignment2submission.json?asnnid="+asnn2subview.asnnid+"&_start="+(newModel.pageIndex*newModel.pageSize)+"&_limit="+newModel.pageSize+order+groupfilter,
+            url: "/direct/assignment2submission.json?asnnid="+asnn2subview.asnnid+"&_start="+(newModel.pageIndex*newModel.pageSize)+"&_limit="+newModel.pageSize+order+groupfilter+"&firstcall="+firstcall,
             cache: false,
             success: function (payload) {
               var data = JSON.parse(payload);
@@ -222,6 +224,9 @@ asnn2subview.renderSubmissions = function(treedata) {
     asnn2subview.subListTemplate = fluid.selfRender(jQuery("#asnn-submissions-table"), treedata, {cutpoints: asnn2subview.selectorMap});
   }
   RSF.getDOMModifyFirer().fireEvent();
+  
+  
+  asnn2subview.alignGrading();
 }
 
 asnn2subview.initPager = function(numSubmissions) {
@@ -321,6 +326,18 @@ asnn2subview.initPager = function(numSubmissions) {
     jQuery('#page-list').show();
   }
 
+};
+
+/**
+ * Aligns the "Apply to Unassigned" box with the grading column
+ */
+asnn2subview.alignGrading = function() {
+    var p = jQuery("td.grade:first");
+    var position = p.position();
+    if (position) {
+        var applyToUnassigned = jQuery('div.unassigned-apply');
+        applyToUnassigned.attr("style", "margin-left:" + position.left + "px");
+    }
 };
 
 asnn2subview.filteredRowTransform = function(obj, idx) {

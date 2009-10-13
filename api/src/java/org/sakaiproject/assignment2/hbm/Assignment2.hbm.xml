@@ -91,9 +91,12 @@
         <property name="numSubmissionsAllowed" type="integer" >
             <column name="NUM_SUB_ALLOWED" not-null="true" />
         </property>
+        <!-- true if content review has been enabled for this assignment -->
+        <property name="contentReviewEnabled" type="boolean">
+        	<column name="CONTENT_REVIEW_ENABLED" />
+        </property>
         <!-- a reference for the content review service item associated with this
-             assignment. if null, assumes no content review service has been enabled
-             for this assignment -->
+             assignment -->
         <property name="contentReviewRef" type="java.lang.String" >
             <column name="CONTENT_REVIEW_REF" length="255" not-null="false" />
         </property>

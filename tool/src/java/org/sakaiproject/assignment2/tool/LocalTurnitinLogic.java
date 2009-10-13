@@ -21,6 +21,9 @@
 
 package org.sakaiproject.assignment2.tool;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
@@ -39,22 +42,33 @@ public class LocalTurnitinLogic {
 
     /**
      * 
-     * @return the submission repository restriction set via sakai.properties. possible values
+     * @return the submission repository options available. possible values
      * are {@link AssignmentConstants#TII_VALUE_NO_REPO}, {@link AssignmentConstants#TII_VALUE_INSTITUTION_REPO}, {@link AssignmentConstants#TII_VALUE_STANDARD_REPO}.
-     * Returns null if there is no restriction on the submission repository.
+     * Returns all three options if no preference was set in sakai.properties
      */
-    public String getSubmissionRepositoryRestriction() {
-        // we return null if the property does not exist or is not valid
-        String submissionRepoSetting = null;
-        String propertyVal = serverConfigurationService.getString(AssignmentConstants.TII_PROP_SUBMIT_TO_REPO);
-        if (propertyVal != null && 
-                (propertyVal.equals(AssignmentConstants.TII_VALUE_NO_REPO) || 
-                 propertyVal.equals(AssignmentConstants.TII_VALUE_INSTITUTION_REPO) ||
-                 propertyVal.equals(AssignmentConstants.TII_VALUE_STANDARD_REPO))) {
-            submissionRepoSetting = propertyVal;
+    public List<String> getSubmissionRepositoryOptions() {
+        List<String> submissionRepoSettings = new ArrayList<String>();
+        String[] propertyValues = serverConfigurationService.getStrings(AssignmentConstants.TII_PROP_SUBMIT_TO_REPO);
+        if (propertyValues != null && propertyValues.length > 0) {
+            for (int i=0; i < propertyValues.length; i++) {
+                String propertyVal = propertyValues[i];
+                if (propertyVal.equals(AssignmentConstants.TII_VALUE_NO_REPO) || 
+                        propertyVal.equals(AssignmentConstants.TII_VALUE_INSTITUTION_REPO) ||
+                        propertyVal.equals(AssignmentConstants.TII_VALUE_STANDARD_REPO)) {
+                    submissionRepoSettings.add(propertyVal);
+                }
+            }
         }
-        
-        return submissionRepoSetting;
+
+        // if there are still no valid settings in the list at this point, use the default
+        if (submissionRepoSettings.isEmpty()) {
+            // add all three
+            submissionRepoSettings.add(AssignmentConstants.TII_VALUE_NO_REPO);
+            submissionRepoSettings.add(AssignmentConstants.TII_VALUE_INSTITUTION_REPO);
+            submissionRepoSettings.add(AssignmentConstants.TII_VALUE_STANDARD_REPO);
+        }
+
+        return submissionRepoSettings;
     }
     
     /**

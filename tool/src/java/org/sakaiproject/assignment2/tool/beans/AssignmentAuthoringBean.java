@@ -21,32 +21,27 @@
 
 package org.sakaiproject.assignment2.tool.beans;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.assignment2.exception.AnnouncementPermissionException;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentGroup;
-import org.sakaiproject.assignment2.model.AssignmentAttachment;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.assignment2.tool.WorkFlowResult;
-import org.sakaiproject.assignment2.tool.beans.Assignment2Validator;
-import org.sakaiproject.user.api.UserNotDefinedException;
-import org.sakaiproject.assignment2.exception.AnnouncementPermissionException;
-import org.sakaiproject.assignment2.exception.StaleObjectModificationException;
 import org.sakaiproject.exception.IdUnusedException;
+import org.sakaiproject.user.api.UserNotDefinedException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import uk.org.ponder.beanutil.entity.EntityBeanLocator;
 import uk.org.ponder.messageutil.MessageLocator;
 import uk.org.ponder.messageutil.TargettedMessage;
 import uk.org.ponder.messageutil.TargettedMessageList;
-
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.HashSet;
 
 /**
  * This bean houses the action methods (Post, Draft, Preview, etc) for the 
@@ -193,28 +188,16 @@ public class AssignmentAuthoringBean {
             newGroups.removeAll(remGroups);
         }
         
-        boolean turnitinEnabled = assignment.getProperties().containsKey("USE_TII") && (Boolean)assignment.getProperties().get("USE_TII");
-        if (turnitinEnabled) {
+        // Turnitin options ASNN-516
+        if (assignment.isContentReviewEnabled()) {
             if (!assignment.isRequiresSubmission()) {
                 // we need to turn off turnitin since assignment doesn't accept submissions. the
                 // turnitin section was hidden via javascript
-                assignment.getProperties().put("USE_TII", false);
-            } else if (assignment.getSubmissionType() != AssignmentConstants.SUBMIT_ATTACH_ONLY &&
-                    assignment.getSubmissionType() != AssignmentConstants.SUBMIT_INLINE_AND_ATTACH) {
-                // double check that this assignment is set up to accept attachments
-                messages.addMessage(new TargettedMessage("assignment2.turnitin.asnnedit.error.submission_type"));
-                errorFound = true;
-            }
-            
-            // now, check to see if the user wants to generate reports related to due date
-            // but there is no due date
-            if (assignment.getProperties().containsKey("report_gen_speed") && 
-                    ("2".equals(assignment.getProperties().get("report_gen_speed")) ||
-                     "1".equals(assignment.getProperties().get("report_gen_speed")))) {
-                if (assignment.getDueDate() == null) {
-                    messages.addMessage(new TargettedMessage("assignment2.turnitin.asnnedit.error.due_date"));
-                    errorFound = true;
-                }
+                assignment.setContentReviewEnabled(false);
+            } else if (!assignment.acceptsAttachments()) {
+                // double check that this assignment is set up to accept attachments. if not, turn TII off
+                // (this is done via javascript in the UI)
+                assignment.setContentReviewEnabled(false);
             }
         }
     

@@ -4,9 +4,7 @@
 <head>
    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 
-   <title rsf:id="msg=assignment2.title">Assignments</title>
-    <link href="/library/skin/tool_base.css" type="text/css" rel="stylesheet" media="all"/>
-    <link href="/library/skin/default/tool.css" type="text/css" rel="stylesheet" media="all"/>
+    <title rsf:id="msg=assignment2.title">Assignments</title>
 	<link href="/sakai-assignment2-tool/content/css/assignmentsv4.css" type="text/css" rel="stylesheet" media="all" />
 </head>
 
@@ -31,10 +29,11 @@
         <div style="display:inline">
             <ul style="margin:0;padding:0;display:inline;">
                 <li style="display:none" id="assignment_title_empty" rsf:id="msg=assignment2.assignment_title_empty" class="alertMessageInline">Adding an Assignment requires a title.</li>
-                <li style="display:none" id="assignment_graded_no_gb_item" rsf:id="msg=assignment2.assignment_graded_no_gb_item" class="alertMessageInline">You must select a Gradebook Item.</li>
+                <li style="display:none" id="assignment_graded_no_gb_item" rsf:id="assignment_graded_no_gb_item" class="alertMessageInline">You must select a Gradebook Item.</li>
                 <li style="display:none" id="assignment_due_before_open" rsf:id="msg=assignment2.assignment_due_before_open" class="alertMessageInline">The Due Date must be after the Open Date.</li>
                 <li style="display:none" id="assignment_accept_before_open" rsf:id="msg=assignment2.assignment_accept_before_open" class="alertMessageInline">The Accept Until Date must be after the Open Date.</li> 
                 <li style="display:none" id="assignment_accept_before_due" rsf:id="msg=assignment2.assignment_accept_before_due" class="alertMessageInline">The Accept Until Date must be after the Due Date.</li>
+                <li style="display:none" id="assignment_check_against" rsf:id="msg=assignment2.turnitin.asnnedit.error.check_against" class="alertMessageInline">You must check at least one thing to check against!</li>
             </ul>
         </div>
     </div>
@@ -49,36 +48,32 @@
 	
 	<fieldset rsf:id="access-selection-area">
 		<legend rsf:id="access_legend">Access</legend>
-		<ol>
-			<li>
-				<span rsf:id="access_select" />
-				<fieldset>
-					<ol>
-						<li rsf:id="access_row:">
-							<input rsf:id="access_choice" id="access_choice" type="radio" />
-							<label for="access_choice" rsf:id="access_label">Display to site!</label>
-						</li>
-						<li id="groups_table_li" class="indent">
-							<table id="groupTable" class="listHier lines" cellpadding="0" cellspacing="0" border="0">
-								<tr>
-									<th><input type="checkbox" title="Select all" onclick="toggle_group_checkboxes(this)" /></th>
-									<th rsf:id="msg=assignment2.assignment_add.sections.title">Title!</th>
-									<th rsf:id="msg=assignment2.assignment_add.sections.description">Description!</th>
-								</tr>
-								<tr rsf:id="groups_row:">
-									<td>
-										<input rsf:id="group_check" type="checkbox" />
-									</td>
-									<td>
-										<label rsf:id="group_label">Blue Cohort</label>	
-									</td>
-									<td rsf:id="group_description">Group Description</td>
-								</tr>
-							</table></li>
-					</ol>
-				</fieldset>
-			</li>
-		</ol>
+		<span rsf:id="access_select" />
+		<fieldset>
+			<ol>
+				<li rsf:id="access_row:">
+					<input rsf:id="access_choice" id="access_choice" type="radio" />
+					<label for="access_choice" rsf:id="access_label">Display to site!</label>
+				</li>
+				<li id="groups_table_li" class="indent">
+					<table id="groupTable" class="listHier lines" cellpadding="0" cellspacing="0" border="0">
+						<tr>
+							<th><input type="checkbox" title="Select all" onclick="toggle_group_checkboxes(this)" /></th>
+							<th rsf:id="msg=assignment2.assignment_add.sections.title">Title!</th>
+							<th rsf:id="msg=assignment2.assignment_add.sections.description">Description!</th>
+						</tr>
+						<tr rsf:id="groups_row:">
+							<td>
+								<input rsf:id="group_check" type="checkbox" />
+							</td>
+							<td>
+								<label rsf:id="group_label">Blue Cohort</label>	
+							</td>
+							<td rsf:id="group_description">Group Description</td>
+						</tr>
+					</table></li>
+			</ol>
+		</fieldset>
 	</fieldset>
 	
 	<fieldset>
@@ -117,13 +112,13 @@
 	
 	   <fieldset>
         <legend rsf:id="msg=assignment2.assignment_add.other_legend">Submission Details</legend>
-        <div style="clear:both">
+        <div style="clear:both" class="asnnOption">
             <p class="asnnOptionsLabel">
                 <input id="require_submissions" rsf:id="require_submissions" type="checkbox" />
                 <label for="require_submissions" rsf:id="msg=assignment2.assignment_add.require_submissions"> Require Submissions?</label>
             </p>
         </div>
-        <div style="clear:both">
+        <div style="clear:both" class="asnnOption">
             <label class="asnnOptionsLabel" rsf:id="msg=assignment2.assignment_add.student_submissions">Submission Format</label>
             <p class="asnnOptionsEdit">
                 <select rsf:id="submission_type">
@@ -131,13 +126,13 @@
                 <p rsf:id="message-for:submission_type"></p>
             </p>
         </div>
-        <div style="clear:both">
+        <div style="clear:both" class="asnnOption">
             <label class="asnnOptionsLabel" rsf:id="msg=assignment2.assignment_add.allow_number">Number of Submissions</label>
             <p class="asnnOptionsEdit">
                 <select rsf:id="number_submissions"></select>
             </p>
         </div>
-        <div style="clear:both">
+        <div style="clear:both" class="asnnOption">
             <p class="asnnOptionsLabel">
                 <input rsf:id="honor_pledge" id="honor_pledge" type="checkbox" />
                 <label for="honor_pledge" rsf:id="msg=assignment2.assignment_add.honor_pledge">Add honor pledge</label>
@@ -147,30 +142,45 @@
         </div>
     </fieldset>
     
-        <fieldset rsf:id="tii_content_review_area" id="">
+      <fieldset rsf:id="tii_content_review_area" id="">
         <legend rsf:id="msg=assignment2.turnitin.asnnedit.title">Turnitin</legend>
         <div style="clear:both">
-            <p class="asnnOptionsLabel">
+            <p class="asnnOptionsSubsection">
               <input type="checkbox" rsf:id="use_tii" id="use_tii" />
               <label for="use_tii" rsf:id="msg=assignment2.turnitin.asnnedit.use_turnitin" id="">Use Turnitin</label>
+        			<span class="inlineMessage messageConfirmation" style="display: none;" id="tii_attach_warning" rsf:id="msg=assignment2.turnitin.asnnedit.attachment.warning">Turnitin supports attachments only. Reports will not be generated for text-only submissions!!</span>
             </p>
+            
         </div>
-        <div id="tii_properties" style="clear:both">
+        <div id="tii_properties" style="clear:both; display: none;">
           <ol class="asnnOptionsSubsection">
+              
               <li rsf:id="submit_to_options">
-                  <span rsf:id="msg=assignment2.turnitin.asnnedit.submit_papers_to">Submit papers to </span>
-                  <select rsf:id="submit_paper_to_repository_select">
-                      <option value="">Standard Paper Repository!</option>
-                  </select>
+                <div rsf:id="msg=assignment2.turnitin.asnnedit.submit_papers_to" class="asnnOption">Submit papers to </div>
+                <span rsf:id="submit_to_repo_radios" />
+                <ol>
+                  <li rsf:id="submit_papers_to:">
+                    <input rsf:id="submit_to_option" id="submit_to_option" type="radio" /> 
+                    <label for="submit_to_option" rsf:id="submit_to_label">No repo</label>
+                  </li>
+                </ol>
               </li>
               <li rsf:id="submit_to_single_repository">
-                  <span rsf:id="submit_to_repository">Submitting to this repo!</span>
+                  <span rsf:id="submit_to_repository" class="instruction">Submitting to this repo!</span>
               </li>
               <li>
-                  <span rsf:id="msg=assignment2.turnitin.asnnedit.generate_originality_reports">Generate originality reports </span>
-                  <select rsf:id="rep_gen_speed">
-                      <option value="">Immediately - first report is final!</option>
-                  </select>
+                  <div rsf:id="msg=assignment2.turnitin.asnnedit.generate_originality_reports" class="asnnOption">Generate Originality Reports! </div>
+                  <span rsf:id="generate_report_radios" />
+                  <ol>
+                      <li>
+                          <input rsf:id="gen_report_immediately" id="gen_report_immediately" name="gen_reports" type="radio" />
+                          <label for="gen_report_immediately" rsf:id="gen_report_immediately_label">Immediately!</label><span rsf:id="msg=assignment2.turnitin.asnnedit.generate_originality_reports.no_due_date" id="gen_reports_no_due_date">No due date was set!</span>
+                      </li>
+                      <li>
+                          <input rsf:id="gen_report_on_due_date" id="gen_report_on_due_date" name="gen_reports" type="radio" onchange="asnn2.showHideGradeSettingError();"/> 
+                          <label for="gen_report_on_due_date" rsf:id="gen_report_on_due_date_label">On due date!</label>
+                      </li>
+                  </ol>
               </li>
               <li>
                   <input type="checkbox" rsf:id="allow_students_to_see_originality_checkbox" id="allow_students_to_see_originality_checkbox" />
@@ -263,20 +273,21 @@
                 <fieldset>
                     <ol>
                         <li>
-                            <input rsf:id="select_ungraded" id="select_ungraded" name="graded" type="radio" /> 
+                            <input rsf:id="select_ungraded" id="select_ungraded" name="graded" type="radio" onchange="asnn2.showHideGradeSettingError();"/> 
                             <label for="select_ungraded" rsf:id="select_ungraded_label">This assignment is ungraded</label>
                         </li>
                         <li>
-                            <input rsf:id="select_graded" id="select_graded" name="graded" type="radio" /> 
+                            <input rsf:id="select_graded" id="select_graded" name="graded" type="radio" onchange="asnn2.showHideGradeSettingError();"/> 
                             <label for="select_graded" rsf:id="select_graded_label">This assignment is graded</label>
                             <span rsf:id="msg=assignment2.assignment_add.gradebook_associated"> and is associated with a Gradebook Item:</span> 
-                                <select rsf:id="gradebook_item" onchange="asnn2.selectGraded();asnn2.populateTitleWithGbItemName();">
+                                <select rsf:id="gradebook_item" onchange="asnn2.selectGraded();asnn2.populateTitleWithGbItemName();asnn2.showHideGradeSettingError();">
                                     <option value="">Select a Gradebook Item</option>
                                     <option value="GB Item 1">GB Item 1</option>
                                     <option value="GB Item 2">GB Item 2</option>
                                     <option value="GB Item 3">GB Item 3</option>
                                     <option value="GB Item 4">GB Item 4</option>
                                 </select>
+                                <img rsf:id="gradingSelectionError" id="gradingSelectionError" class="inlineErrorIndicator" src="/../../library/image/sakai/warn.gif" />
                                 <p class="indent">
                                     <span rsf:id="msg=assignment2.assignment_add.gradebook_or"> -or- </span>
                                     <a rsf:id="gradebook_item_new_helper" id="gradebook_item_new_helper" class="thickbox" onclick="asnn2.update_new_gb_item_helper_url();">Create a new Gradebook Item</a>
@@ -309,7 +320,7 @@
 
 	<div style="display: none" id="edit-assign-confirm-dialog">
 		<ul style="margin: 0; padding: 0; display: inline;">
-			<li class="alertMessageInline" rsf:id="msg=assignment2.assignment_add.edit.confirm.msg">Are you	sure you want to submit this?!!</li>
+			<li class="alertMessage" rsf:id="msg=assignment2.assignment_add.edit.confirm.msg">Are you	sure you want to submit this?!!</li>
 		</ul>
 		<fieldset class="submit">
 			<input id="submission-confirm-button" accesskey="s" type="button"	class="active"	rsf:id="msg=assignment2.assignment_add.edit.confirm.continue" /> 
@@ -369,6 +380,7 @@ jQuery(document).ready(function(){
     var due_date = jQuery("input[name='page-replace\:\:require_due_date']").get(0);
     jQuery(due_date).click(function(){
         asnn2.showHideByCheckbox(this, due_date_container);
+        asnn2editpage.tii_dueDateOptions();
     });
 
     asnn2.showHideByCheckbox(due_date, due_date_container);
@@ -398,6 +410,7 @@ jQuery(document).ready(function(){
     // show/hide the turnitin section upon load
     if (tii_content) {
       asnn2.showHideByCheckbox(requireSubInput, tii_content);
+      asnn2editpage.tii_dueDateOptions();
     }
     
     // we need to bind this to both the change and blur events since the due date
@@ -418,9 +431,27 @@ jQuery(document).ready(function(){
     var tii = jQuery("input[name='page-replace\:\:use_tii']").get(0);
     jQuery(tii).click(function(){
         asnn2.showHideByCheckbox(this, tii_options);
+        asnn2editpage.tii_attachWarning(); // display the warning about text submissions if appropriate
     });
     // initialize the TII display
     asnn2.showHideByCheckbox(tii, tii_options);
+
+    // we may also need to display/hide tii options based upon the submission type setting
+    if (tii_content) {
+      var subTypeSelect = jQuery("select[name='page-replace::submission_type-selection']");
+      // the allowed options are "Text and Attachments" and "Attachments only"
+      var allowedOptions = new Array("1","2");
+      jQuery(subTypeSelect).change(function(){
+        asnn2.showHideBySelect(this, allowedOptions, tii_content);
+        asnn2editpage.tii_attachWarning(); // display the warning about text submissions if appropriate
+      });
+      asnn2.showHideBySelect(subTypeSelect, allowedOptions, tii_content);
+
+   		// if tii enabled and submission accepts text and attachments, display warning
+      asnn2editpage.tii_attachWarning();
+    }
+
+    asnn2.showHideGradeSettingError();
 });
 //]]>
 </script>
