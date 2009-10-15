@@ -166,7 +166,7 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
         	UICommand.make(singleFileUploadform, "single_file_submit_button", UIMessage.make("assignment2.student-submit.submit"), 
             "StudentSubmissionBean.processActionSingleFileUploadSubmit");
             UICommand.make(singleFileUploadform, "single_file_cancel_button", UIMessage.make("assignment2.student-submit.cancel"), 
-            "StudentSubmissionBean.processActionSingleFileUploadCancel").setReturn(ViewSubmissionsProducer.VIEW_ID);
+            "StudentSubmissionBean.processActionSingleFileUploadCancel");
         }
         else
         {

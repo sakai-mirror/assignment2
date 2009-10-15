@@ -363,12 +363,13 @@
    <bean id="StudentSubmissionBean" class="org.sakaiproject.assignment2.tool.beans.StudentSubmissionBean">
        <property name="submissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
        <property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
+       <property name="uploadSingleFileLogic" ref="org.sakaiproject.assignment2.logic.UploadSingleFileLogic" />
        <property name="studentSubmissionVersionFlowBean" ref="StudentSubmissionVersionFlowBean"/>
        <property name="messages" ref="targettedMessageList" />
        <property name="assignmentSubmissionEntityBeanLocator" ref="AssignmentSubmission"/>
        <property name="scheduledNotification" ref="org.sakaiproject.assignment2.logic.ScheduledNotification" />
 	   <property name="multipartMap" ref="multipartMap" />
-	   <property name="contentHostingService" ref="org.sakaiproject.content.api.ContentHostingService" />
+   	  <property name="externalContentLogic" ref="org.sakaiproject.assignment2.logic.ExternalContentLogic" />
    </bean>
    
    <bean id="FilePickerBean" class="org.sakaiproject.assignment2.tool.beans.FilePickerBean">

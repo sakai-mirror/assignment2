@@ -119,11 +119,9 @@
     
     <!-- for integration with gradebook -->
     <dependency>
-      <groupId>org.sakaiproject</groupId>
-      <artifactId>sakai-gradebook-service-api</artifactId>
-      <version>${sakai.version}</version>
+      <groupId>org.sakaiproject.edu-services.gradebook</groupId>
+      <artifactId>gradebook-service-api</artifactId>
     </dependency>
-    
     <!-- Required for announcements integration -->
     <dependency>
       <groupId>org.sakaiproject</groupId>
@@ -145,11 +143,10 @@
     
 <!--  sections integration -->
     <dependency>
-      <groupId>org.sakaiproject</groupId>
-      <artifactId>sakai-sections-api</artifactId>
-      <version>${sakai.version}</version>
+      <groupId>org.sakaiproject.edu-services.sections</groupId>
+      <artifactId>sections-api</artifactId>
+      <type>jar</type>
     </dependency>
-    
     <!--  for the import/export -->
     <dependency>
       <groupId>com.thoughtworks.xstream</groupId>
@@ -181,13 +178,13 @@
     </dependency>
 <!-- for content review integration -->
     <dependency>
-      <groupId>org.sakaiproject</groupId>
-      <artifactId>sakai-contentreview-model-api</artifactId>
+      <groupId>org.sakaiproject.contentreview</groupId>
+      <artifactId>contentreview-model-api</artifactId>
       <version>${sakai.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.sakaiproject</groupId>
-      <artifactId>sakai-contentreview-service-api</artifactId>
+      <groupId>org.sakaiproject.contentreview</groupId>
+      <artifactId>contentreview-service-api</artifactId>
     </dependency>    
 <!-- testing dependencies -->
 <!--

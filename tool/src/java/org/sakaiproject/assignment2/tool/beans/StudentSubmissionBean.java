@@ -2,6 +2,7 @@ package org.sakaiproject.assignment2.tool.beans;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -13,19 +14,14 @@ import org.sakaiproject.assignment2.exception.SubmissionClosedException;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
 import org.sakaiproject.assignment2.logic.ExternalContentLogic;
-import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.logic.ScheduledNotification;
-import org.sakaiproject.content.api.ContentHostingService;
+import org.sakaiproject.assignment2.logic.UploadSingleFileLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.model.SubmissionAttachment;
 import org.sakaiproject.assignment2.tool.WorkFlowResult;
-import org.sakaiproject.authz.api.SecurityAdvisor;
-import org.sakaiproject.authz.api.SecurityAdvisor.SecurityAdvice;
-import org.sakaiproject.authz.cover.SecurityService;
 import org.springframework.web.multipart.MultipartFile;
-import org.sakaiproject.component.cover.ComponentManager;
 import org.sakaiproject.content.api.ContentResource;
 import org.sakaiproject.content.api.ResourceTypeRegistry;
 import org.sakaiproject.entity.api.Reference;
@@ -49,11 +45,16 @@ public class StudentSubmissionBean {
     private static final Log log = LogFactory.getLog(StudentSubmissionBean.class);
     
     // Service Application Scope Dependency
+    private UploadSingleFileLogic uploadSingleFileLogic;
+    public void setUploadSingleFileLogic(UploadSingleFileLogic uploadSingleFileLogic) {
+        this.uploadSingleFileLogic = uploadSingleFileLogic;
+    }
+    
     private AssignmentSubmissionLogic submissionLogic;
     public void setSubmissionLogic(AssignmentSubmissionLogic submissionLogic) {
         this.submissionLogic = submissionLogic;
     }
-
+    
     // Service Application Scope Dependency
     private AssignmentLogic assignmentLogic;
     public void setAssignmentLogic(AssignmentLogic assignmentLogic) {
@@ -70,12 +71,6 @@ public class StudentSubmissionBean {
     private ExternalContentLogic externalContentLogic;
     public void setExternalContentLogic(ExternalContentLogic externalContentLogic) {
         this.externalContentLogic = externalContentLogic;
-    }
-    
-    // Service Application Scope Dependency
-    private ExternalLogic externalLogic;
-    public void setExternalLogic(ExternalLogic externalLogic) {
-        this.externalLogic = externalLogic;
     }
     
     // Flow Scope Bean for Student Submission
@@ -115,12 +110,6 @@ public class StudentSubmissionBean {
     public void setMultipartMap(Map<String, MultipartFile> uploads)
     {
         this.uploads = uploads;
-    }
-    
-    private ContentHostingService contentHostingService;
-    public void setContentHostingService(ContentHostingService contentHostingService)
-    {
-    	this.contentHostingService = contentHostingService;
     }
 
     /*
@@ -248,173 +237,91 @@ public class StudentSubmissionBean {
         if (assignmentId == null){
             return WorkFlowResult.STUDENT_SUBMISSION_FAILURE;
         }
-    	
+        
         Assignment2 assignment = assignmentLogic.getAssignmentById(assignmentId);
-        // add submission
         AssignmentSubmission assignmentSubmission = (AssignmentSubmission) asEntityBeanLocator.locateBean(ASOTPKey);
         AssignmentSubmissionVersion studentSubmissionPreviewVersion = (AssignmentSubmissionVersion) studentSubmissionVersionFlowBean.locateBean(ASVOTPKey);
 		AssignmentSubmissionVersion asv = studentSubmissionVersionFlowBean.getAssignmentSubmissionVersion();
-		Set<SubmissionAttachment> attachments = new HashSet<SubmissionAttachment>();
-
-    	MultipartFile uploadedFile = uploads.get("file");
-
-        long uploadedFileSize = uploadedFile.getSize();
-        if (uploadedFileSize == 0)
+		
+        // handle the file upload
+        List<String> uploadErrors = uploadSingleFileLogic.uploadSingleFile(assignment, assignmentSubmission, studentSubmissionPreviewVersion, asv, uploads);
+        if (uploadErrors != null && !uploadErrors.isEmpty())
         {
-            messages.addMessage(new TargettedMessage("assignment2.student-submission.single-uploaded-file.alert.choose_file", new Object[] {},
-                        TargettedMessage.SEVERITY_ERROR));
-            return WorkFlowResult.STUDENT_SUBMISSION_FAILURE;
-        }
-        
-        // double check that the file doesn't exceed our upload limit
-        int maxFileSizeInMB = externalContentLogic.getMaxUploadFileSizeInMB();
-        int maxFileSizeInBytes = maxFileSizeInMB * 1024 * 1024;
-
-        if (uploadedFileSize > maxFileSizeInBytes) {
-            messages.addMessage(new TargettedMessage("assignment2.uploadall.error.file_size", new Object[] {maxFileSizeInMB}, TargettedMessage.SEVERITY_ERROR));
-            return WorkFlowResult.STUDENT_SUBMISSION_FAILURE;
-        }
-        
-		if (uploadedFile.getOriginalFilename() == null || uploadedFile.getOriginalFilename().length() == 0)
-		{
-			messages.addMessage(new TargettedMessage("assignment2.uploadall.error.file_size", new Object[] {maxFileSizeInMB}, TargettedMessage.SEVERITY_ERROR));
-		}
-	    else if (uploadedFile.getOriginalFilename().length() > 0)
-		{
-			String filename = Validator.getFileName(uploadedFile.getOriginalFilename());
-			try
-			{
-				byte[] bytes = uploadedFile.getBytes();
-				String contentType = uploadedFile.getContentType();
-		
-				if(bytes.length >= maxFileSizeInBytes)
-				{
-					messages.addMessage(new TargettedMessage("assignment2.student-submission.single-uploaded-file.alert.big_file", new Object[]{ maxFileSizeInBytes }, TargettedMessage.SEVERITY_ERROR));
-					// addAlert(state, hrb.getString("size") + " " + max_file_size_mb + "MB " + hrb.getString("exceeded2"));
+        	for(String error:uploadErrors)
+        	{
+        		if (error.equals(UploadSingleFileLogic.UploadSingleFileInfo.EMPTY_FILE.toString()))
+        		{
+        			 messages.addMessage(new TargettedMessage("assignment2.student-submission.single-uploaded-file.alert.choose_file", new Object[] {}, TargettedMessage.SEVERITY_ERROR));
+        		}
+        		else if (error.equals(UploadSingleFileLogic.UploadSingleFileInfo.EXCEED_MAX_UPLOAD_FILE_SIZE.toString()))
+        		{
+        			messages.addMessage(new TargettedMessage("assignment2.uploadall.error.file_size", new Object[] {externalContentLogic.getMaxUploadFileSizeInMB()}, TargettedMessage.SEVERITY_ERROR));	
+        		}
+        		else if (error.equals(UploadSingleFileLogic.UploadSingleFileInfo.EMPTY_FILE_TITLE.toString()))
+        		{
+        			messages.addMessage(new TargettedMessage("assignment2.uploadall.error.file_size", new Object[] {}, TargettedMessage.SEVERITY_ERROR));
+        		}
+        		else if (error.equals(UploadSingleFileLogic.UploadSingleFileInfo.NO_PERMISSION_TO_ADD_ATTACHMENT.toString()))
+        		{
+        			messages.addMessage(new TargettedMessage("assignment2.student-submission.single-uploaded-file.alert.notpermis4", new Object[]{}, TargettedMessage.SEVERITY_ERROR));
+        		}
+        		else if (error.equals(UploadSingleFileLogic.UploadSingleFileInfo.FILE_NAME_TOO_LONG.toString()))
+        		{
+        			messages.addMessage(new TargettedMessage("assignment2.student-submission.single-uploaded-file.alert.toolong", new Object[]{}, TargettedMessage.SEVERITY_ERROR));
+        		} 
+        		else if (error.equals(UploadSingleFileLogic.UploadSingleFileInfo.IO_EXCEPTION.toString()))
+        		{
+        			messages.addMessage(new TargettedMessage("assignment2.student-submission.single-uploaded-file.alert.IO.failed", new Object[]{}, TargettedMessage.SEVERITY_ERROR));
 				}
-				else if(bytes.length > 0)
+        		else if (error.equals(UploadSingleFileLogic.UploadSingleFileInfo.GENERAL_EXCEPTION.toString()))
 				{
-					// we just want the file name part - strip off any drive and path stuff
-					String name = Validator.getFileName(filename);
-					String resourceId = Validator.escapeResourceName(name);
-		
-					// make a set of properties to add for the new resource
-					ResourcePropertiesEdit props = contentHostingService.newResourceProperties();
-					props.addProperty(ResourceProperties.PROP_DISPLAY_NAME, name);
-					props.addProperty(ResourceProperties.PROP_DESCRIPTION, filename);
-		
-					// make an attachment resource for this URL
-					try
-					{
-						String siteId = externalLogic.getCurrentContextId();
-		
-						String toolName = externalLogic.getToolTitle();
-						
-						// add attachment
-						ContentResource attachment = contentHostingService.addAttachmentResource(resourceId, siteId, toolName, contentType, bytes, props);
-						disableSecurityAdvisors();
-						
-						Reference ref = EntityManager.newReference(contentHostingService.getReference(attachment.getId()));
-						SubmissionAttachment sAttachment = new SubmissionAttachment();
-						sAttachment.setAttachmentReference(ref.getId());
-						sAttachment.setSubmissionVersion(asv);
-					
-					}
-					catch (PermissionException e)
-					{
-						messages.addMessage(new TargettedMessage("assignment2.student-submission.single-uploaded-file.alert.notpermis4", new Object[]{name}, TargettedMessage.SEVERITY_ERROR));
-					}
-					catch(RuntimeException e)
-					{
-						if(contentHostingService.ID_LENGTH_EXCEPTION.equals(e.getMessage()))
-						{
-							// couldn't we just truncate the resource-id instead of rejecting the upload?
-							messages.addMessage(new TargettedMessage("assignment2.student-submission.single-uploaded-file.alert.toolong", new Object[]{name}, TargettedMessage.SEVERITY_ERROR));
-						}
-						else
-						{
-							log.debug(this + ".processActionSingleFileUploadSubmit ***** Runtime Exception ***** " + e.getMessage());
-							messages.addMessage(new TargettedMessage("assignment2.student-submission.single-uploaded-file.alert.failed", new Object[]{name}, TargettedMessage.SEVERITY_ERROR));
-						}
-					}
-					
-			        //save the submission
-			        submissionLogic.saveStudentSubmission(assignmentSubmission.getUserId(), assignment, false, 
-			             "", attachments, true);
+        			messages.addMessage(new TargettedMessage("assignment2.student-submission.single-uploaded-file.alert.failed", new Object[]{}, TargettedMessage.SEVERITY_ERROR));
 				}
-			}
-			catch (IOException ioException)
-			{
-				log.debug(this + ".processActionSingleFileUploadSubmit ioException" + ioException.getMessage());
-			}
-			catch (Exception exception)
-			{
-				log.debug(this + ".processActionSingleFileUploadSubmit " + exception.getMessage());
 			}
 		}
 			
-
-        // just in case submission closed while the student was working on
-        // it, double check that the current submission isn't still
-        // draft before we take the "success" actions. if the submission was
-        // closed when they hit "submit", the back end saved their submission as draft
-        AssignmentSubmission newSubmission = submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(assignmentId, assignmentSubmission.getUserId());
-
-        if (!newSubmission.getCurrentSubmissionVersion().isDraft()) {
-            // add a success message.  the message will change depending on 
-            // if this submission is late or not
-            if (assignment.getDueDate() != null && assignment.getDueDate().before(new Date())) {
-                messages.addMessage(new TargettedMessage("assignment2.student-submit.info.submission_submitted.late",
-                        new Object[] { assignment.getTitle() }, TargettedMessage.SEVERITY_INFO));
-            } else {
-                messages.addMessage(new TargettedMessage("assignment2.student-submit.info.submission_submitted",
-                        new Object[] { assignment.getTitle() }, TargettedMessage.SEVERITY_INFO));
-            }
-
-            // Send out notifications
-            if (assignment.isSendSubmissionNotifications()) {                 
-                scheduledNotification.notifyInstructorsOfSubmission(newSubmission);
-            }
-
-            // students always get a notification
-            scheduledNotification.notifyStudentThatSubmissionWasAccepted(newSubmission);
-        } else {
-        	  messages.addMessage(new TargettedMessage("assignment2.student-submit.error.submission_save_draft",
-                      new Object[] { assignment.getTitle() }, TargettedMessage.SEVERITY_ERROR));
-              return WorkFlowResult.STUDENT_SUBMISSION_FAILURE;
+        if (messages == null || messages.size() == 0)
+        {
+	        // just in case submission closed while the student was working on
+	        // it, double check that the current submission isn't still
+	        // draft before we take the "success" actions. if the submission was
+	        // closed when they hit "submit", the back end saved their submission as draft
+	        AssignmentSubmission newSubmission = submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(assignmentId, assignmentSubmission.getUserId());
+	
+	        if (!newSubmission.getCurrentSubmissionVersion().isDraft()) {
+	            // add a success message.  the message will change depending on 
+	            // if this submission is late or not
+	            if (assignment.getDueDate() != null && assignment.getDueDate().before(new Date())) {
+	                messages.addMessage(new TargettedMessage("assignment2.student-submit.info.submission_submitted.late",
+	                        new Object[] { assignment.getTitle() }, TargettedMessage.SEVERITY_INFO));
+	            } else {
+	                messages.addMessage(new TargettedMessage("assignment2.student-submit.info.submission_submitted",
+	                        new Object[] { assignment.getTitle() }, TargettedMessage.SEVERITY_INFO));
+	            }
+	
+	            // Send out notifications
+	            if (assignment.isSendSubmissionNotifications()) {                 
+	                scheduledNotification.notifyInstructorsOfSubmission(newSubmission);
+	            }
+	
+	            // students always get a notification
+	            scheduledNotification.notifyStudentThatSubmissionWasAccepted(newSubmission);
+	            
+	            return WorkFlowResult.STUDENT_SUBMIT_SUBMISSION;
+	        } else {
+	        	  messages.addMessage(new TargettedMessage("assignment2.student-submit.error.submission_save_draft",
+	                      new Object[] { assignment.getTitle() }, TargettedMessage.SEVERITY_ERROR));
+	        	  return WorkFlowResult.STUDENT_SUBMISSION_FAILURE;
+	        }
         }
-    	return WorkFlowResult.STUDENT_SUBMIT_SUBMISSION;
+        
+        return WorkFlowResult.STUDENT_SUBMISSION_FAILURE;
     }
     
     // cancel submission
     public WorkFlowResult processActionSingleFileUploadCancel()
     {
     	return WorkFlowResult.STUDENT_CANCEL_SUBMISSION;
-    }
-    
-    /**
-     * remove all security advisors
-     */
-    protected void disableSecurityAdvisors()
-    {
-    	// remove all security advisors
-    	SecurityService.clearAdvisors();
-    }
-
-    /**
-     * Establish a security advisor to allow the "embedded" azg work to occur
-     * with no need for additional security permissions.
-     */
-    protected void enableSecurityAdvisor()
-    {
-      // put in a security advisor so we can create citationAdmin site without need
-      // of further permissions
-      SecurityService.pushAdvisor(new SecurityAdvisor() {
-        public SecurityAdvice isAllowed(String userId, String function, String reference)
-        {
-          return SecurityAdvice.ALLOWED;
-        }
-      });
     }
 
 }

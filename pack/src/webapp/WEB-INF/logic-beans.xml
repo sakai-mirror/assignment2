@@ -98,6 +98,17 @@
 
 	</bean> 
 	
+	<bean id="org.sakaiproject.assignment2.logic.UploadSingleFileLogic"
+		  class="org.sakaiproject.assignment2.logic.impl.UploadSingleFileLogicImpl">
+		<property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
+		<property name="assignmentSubmissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
+		<property name="contentHostingService" ref="org.sakaiproject.content.api.ContentHostingService" />
+		<property name="securityService" ref="org.sakaiproject.authz.api.SecurityService" />
+		<property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
+		<property name="externalContentLogic" ref="org.sakaiproject.assignment2.logic.ExternalContentLogic" />
+
+	</bean> 
+	
 	<bean id="org.sakaiproject.assignment2.logic.UploadGradesLogic"
 		  class="org.sakaiproject.assignment2.logic.impl.UploadGradesLogicImpl">
 		<property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
