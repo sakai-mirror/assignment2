@@ -161,10 +161,6 @@ asnn2.pageState = {
   canEdit: false
 };
 
-asnn2.updateSortLinks = function() {
-
-};
-
 /*
  * Initializes the top sorting links.
  *
@@ -402,7 +398,16 @@ asnn2.setupAsnnList = function () {
  */
 asnn2.renderAsnnList = function(asnndata) {
   var data = asnndata || asnn2.pageState.dataArray;
-
+  /*
+  alert("Hiding all ");
+  asnn2.toggleTableControls(false,false);
+  alert("Showing sorting");
+  asnn2.toggleTableControls(false,true);
+  alert("Showing paging");
+  asnn2.toggleTableControls(true,false);
+  alert("Showing all");
+  asnn2.toggleTableControls(true,true);
+  */
   var dopple = $.extend(true, [], data);
 
   var treedata = {
@@ -424,6 +429,40 @@ asnn2.renderAsnnList = function(asnndata) {
     asnn2.asnnListTemplate = fluid.selfRender(jQuery("#asnn-list"), treedata, {cutpoints: asnn2.selectorMap});
   }
 };
+
+/**
+ * This will change the display state of the header and footer sorting/paging
+ * controls. This is necessary sometimes we want to change whether one of them
+ * is displayed based on the number of current assignments.
+ * 
+ * These parameters should both be boolean values indicating whether the 
+ * particular portions should be shown or hidden.
+ */
+asnn2.toggleTableControls = function(showPager,showSorting) {
+  if (showPager === true) {
+    jQuery("#top-pager-area").show();
+  }
+  else {
+    jQuery("#top-pager-area").hide();
+  }
+  
+  if (showSorting === true) {
+    jQuery("#top-sort-area").show();
+    jQuery("#bottom-sort-area").show();
+  }
+  else {
+    jQuery("#top-sort-area").hide();
+    jQuery("#bottom-sort-area").hide();
+  }
+  
+  if (showPager === false && showSorting === false) {
+    jQuery(".pager-sort-area").hide();
+  }
+  else {
+    jQuery(".pager-sort-area").show();
+  }
+  
+}
 
 /**
  * Used to render the Asnn List using a model from the Fluid Pager. This is designed to be
@@ -550,7 +589,6 @@ asnn2.initAsnnList = function () {
     fakedata.push(i);
   }
 
-  //var pager = fluid.pager("#asnn-list-area", {
   var pager = fluid.pager("body", {
     listeners: {
       onModelChange: function (newModel, oldModel) {
