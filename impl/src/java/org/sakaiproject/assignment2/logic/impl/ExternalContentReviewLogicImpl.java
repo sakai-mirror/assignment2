@@ -391,48 +391,47 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
             log.error(e);
         }
         
-        Map asnnobj = (Map) asnnmap.get("object");
-        assign.getProperties().put("submit_papers_to",asnnobj.get("repository"));
-        assign.getProperties().put("report_gen_speed",asnnobj.get("generate"));
-        if (asnnobj.get("searchpapers").equals("0")) {
-            assign.getProperties().put("s_paper_check", new Boolean(false));
+        if (asnnmap.containsKey(AssignmentConstants.TII_RETCODE_RCODE)) {
+            assign.getProperties().put(AssignmentConstants.TII_RETCODE_RCODE, 
+                    asnnmap.get(AssignmentConstants.TII_RETCODE_RCODE));
         }
         else {
-            assign.getProperties().put("s_paper_check", new Boolean(true));
+            assign.getProperties().put(AssignmentConstants.TII_RETCODE_RCODE, "-1");
         }
-
-        if (asnnobj.get("searchinternet").equals("0")) {
-            assign.getProperties().put("internet_check", new Boolean(false));
+        
+        if (asnnmap.containsKey(AssignmentConstants.TII_RETCODE_RMESSAGE)) {
+            assign.getProperties().put(AssignmentConstants.TII_RETCODE_RMESSAGE, 
+                    asnnmap.get(AssignmentConstants.TII_RETCODE_RMESSAGE));
+        }
+        
+        if (asnnmap.containsKey(AssignmentConstants.TII_RETCODE_OBJECT)) {
+            Map asnnobj = (Map) asnnmap.get(AssignmentConstants.TII_RETCODE_OBJECT);
+            assign.getProperties().put(AssignmentConstants.TII_RETCODE_SUBMIT_PAPERS_TO,
+                    asnnobj.get(AssignmentConstants.TII_API_PARAM_REPOSITORY));
+            assign.getProperties().put(AssignmentConstants.TII_RETCODE_REPORT_GEN_SPEED,
+                    asnnobj.get(AssignmentConstants.TII_API_PARAM_GENERATE));
+            
+            setTurnitinBooleanOption(asnnobj, AssignmentConstants.TII_RETCODE_SEARCHPAPERS, 
+                    assign, AssignmentConstants.TII_API_PARAM_S_PAPER_CHECK);
+            setTurnitinBooleanOption(asnnobj, AssignmentConstants.TII_RETCODE_SEARCHINTERNET, 
+                    assign, AssignmentConstants.TII_API_PARAM_INTERNET_CHECK);
+            setTurnitinBooleanOption(asnnobj, AssignmentConstants.TII_RETCODE_SEARCHJOURNALS, 
+                    assign, AssignmentConstants.TII_API_PARAM_JOURNAL_CHECK);
+            setTurnitinBooleanOption(asnnobj, AssignmentConstants.TII_RETCODE_SEARCHINSTITUTION, 
+                    assign, AssignmentConstants.TII_API_PARAM_INSTITUTION_CHECK);
+            setTurnitinBooleanOption(asnnobj, AssignmentConstants.TII_RETCODE_SVIEWREPORTS, 
+                    assign, AssignmentConstants.TII_API_PARAM_S_VIEW_REPORT);
+        }
+        
+    }
+    
+    private void setTurnitinBooleanOption(Map asnnobj, String mapname, Assignment2 assign, String propname) {
+        if (asnnobj.containsKey(mapname) && asnnobj.get(mapname).equals("1")) {
+            assign.getProperties().put(propname, new Boolean(true));
         }
         else {
-            assign.getProperties().put("internet_check", new Boolean(true));
+            assign.getProperties().put(propname, new Boolean(false));
         }
-
-        if (asnnobj.get("searchjournals").equals("0")) {
-            assign.getProperties().put("journal_check", new Boolean(false));
-        }
-        else {
-            assign.getProperties().put("journal_check", new Boolean(true));
-        }
-        
-        if (asnnobj.get("searchinstitution").equals("0")) {
-            assign.getProperties().put("institution_check", new Boolean(false));
-        }
-        else {
-            assign.getProperties().put("institution_check", new Boolean(true));
-        }
-        
-        if (asnnobj.get("sviewreports").equals("0")) {
-            assign.getProperties().put("s_view_report", new Boolean(false));
-        }
-        else {
-            assign.getProperties().put("s_view_report", new Boolean(true));
-        }
-        
-
-        
-        
-        //, "", "", "institution_check"
     }
 
     public void createAssignment(Assignment2 assign) {
