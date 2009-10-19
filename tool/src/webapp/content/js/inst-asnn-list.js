@@ -158,7 +158,8 @@ asnn2.pageState = {
   sortDir: -1,
   dataArray: [],
   pageModel: {},
-  canEdit: false
+  canEdit: false,
+  minPageSize: 5  // This needs to be in sync with the html template currently.§
 };
 
 /*
@@ -398,16 +399,19 @@ asnn2.setupAsnnList = function () {
  */
 asnn2.renderAsnnList = function(asnndata) {
   var data = asnndata || asnn2.pageState.dataArray;
-  /*
-  alert("Hiding all ");
-  asnn2.toggleTableControls(false,false);
-  alert("Showing sorting");
-  asnn2.toggleTableControls(false,true);
-  alert("Showing paging");
-  asnn2.toggleTableControls(true,false);
-  alert("Showing all");
-  asnn2.toggleTableControls(true,true);
-  */
+  
+  var showSorting = true;
+  if (data.length <= 1) {
+    showSorting = false;
+  }
+  
+  var showPaging = true;
+  if (data.length <= asnn2.pageState.minPageSize) {
+    showPaging = false;
+  }
+  
+  asnn2.toggleTableControls(showPaging,showSorting);
+  
   var dopple = $.extend(true, [], data);
 
   var treedata = {
