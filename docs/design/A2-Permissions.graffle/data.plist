@@ -18,7 +18,7 @@
 	<key>GuidesVisible</key>
 	<string>YES</string>
 	<key>ImageCounter</key>
-	<integer>56</integer>
+	<integer>57</integer>
 	<key>ImageLinkBack</key>
 	<array>
 		<dict/>
@@ -37,10 +37,10 @@
 	</array>
 	<key>ImageList</key>
 	<array>
+		<string>image56.tiff</string>
 		<string>image55.tiff</string>
 		<string>image54.tiff</string>
 		<string>image53.tiff</string>
-		<string>image52.tiff</string>
 		<string>image43.tiff</string>
 		<string>image42.tiff</string>
 		<string>image41.tiff</string>
@@ -58,7 +58,7 @@
 	<key>MasterSheets</key>
 	<array/>
 	<key>ModificationDate</key>
-	<string>2009-10-05 12:33:43 -0400</string>
+	<string>2009-10-19 12:55:39 -0400</string>
 	<key>Modifier</key>
 	<string>Kris</string>
 	<key>NotesVisible</key>
@@ -87,7 +87,7 @@
 		<key>NSPaperName</key>
 		<array>
 			<string>string</string>
-			<string>9D243F17-2F57-4C42-B70A-3B2D65D3D3EB</string>
+			<string>CD031C4D-20CE-49E6-8966-951E4E88D165</string>
 		</array>
 		<key>NSPaperSize</key>
 		<array>
@@ -1779,7 +1779,7 @@
 					<array>
 						<dict>
 							<key>Bounds</key>
-							<string>{{732.963, 320}, {66.6999, 19.0002}}</string>
+							<string>{{732.963, 320}, {66.6996, 19.0002}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -2228,7 +2228,7 @@
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{799.663, 262.001}, {49.3382, 26}}</string>
+							<string>{{799.663, 262.001}, {49.3384, 26}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -2623,7 +2623,7 @@
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{514.5, 262.001}, {64.7304, 26}}</string>
+							<string>{{514.5, 262.001}, {64.7302, 26}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -3018,7 +3018,7 @@
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{514.5, 320}, {64.7304, 19.0002}}</string>
+							<string>{{514.5, 320}, {64.7302, 19.0002}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -3850,7 +3850,7 @@
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{514.5, 163}, {64.7304, 23}}</string>
+							<string>{{514.5, 163}, {64.7302, 23}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -3904,7 +3904,7 @@
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{799.663, 210}, {49.3382, 26}}</string>
+							<string>{{799.663, 210}, {49.3384, 26}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -4299,7 +4299,7 @@
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{358.5, 378}, {77.999, 28.0002}}</string>
+							<string>{{358.5, 378}, {77.999, 28.0004}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -5156,7 +5156,7 @@
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{579.23, 210}, {85.0314, 26}}</string>
+							<string>{{579.23, 210}, {85.0316, 26}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -5211,8 +5211,8 @@
 								lJKEhIQNTlNN
 								dXRhYmxlRGF0
 								YQCEhAZOU0Rh
-								dGEAlJmB8wqE
-								B1syODAzY11y
+								dGEAlJmBvwuE
+								B1szMDA3Y11y
 								dGZkAAAAAAMA
 								AAAEAAAAAgAA
 								AC4uFwAAAF9f
@@ -5221,9 +5221,9 @@
 								QF9fEwAAAF9f
 								QFByZWZlcnJl
 								ZE5hbWVAX18B
-								AAAALjoKAAAb
+								AAAALgYLAAAb
 								AAAAGwAAACYA
-								AAABAAAAMgoA
+								AAABAAAA/goA
 								AAAAAAAAAAAA
 								AAAAAAAAAAAA
 								AAAAAAAAAAAA
@@ -5281,26 +5281,26 @@
 								AAAAAAAAAAAA
 								AAAAAAAAAAAA
 								AAAAAAAAAAAA
-								AAAAAAAAABAA
-								EAARAv8MAP/+
+								AAAAAAAAABIA
+								EgARAv8MAP/+
 								AAAASAAAAEgA
-								AAAAAAAAEAAQ
+								AAAAAAAAEgAS
 								AAAAAAAeAAEA
-								CgAAAAAAEAAQ
-								ggAAAAOaAAAA
+								CgAAAAAAEgAS
+								ggAAAARmAAAA
 								AQAAAAAAAAAA
 								AAAAAAAAAAEA
 								AAAAAAAAAAAA
 								AAAAAEAAAAAA
 								AAAAAAAAAAAA
 								AAAAAAAAAAAA
-								EAAQAAADAAAA
+								EgASAAADAAAA
 								AAAAAABWcmF3
 								IAAAAAAAAAAA
 								AAAAAGFwcGwA
-								AAQAAAAEAAAQ
-								ABAASAAAAEgA
-								AAAAAwAAAQAA
+								AAQAAAAEAAAS
+								ABIASAAAAEgA
+								AAAAA8wAAQAA
 								AAAAAAAAAAAA
 								AAAAAAAAAAAA
 								AAAAAAAAAAAA
@@ -5320,157 +5320,180 @@
 								////////////
 								////////////
 								////////////
-								////////////
-								/////9nZ2XV1
-								dWNjY2NjY2Nj
-								Y2NjY2NjY2Nj
-								Y2NjY2NjY3Z2
-								dtnZ2f//////
-								//////7+/mpq
-								asbGxv//////
+								/////////3Bw
+								cBUVFVBQUP//
 								////////////
 								////////////
-								/8PDw21tbf7+
-								/v////////v7
-								+2RkZM/Pz/X1
-								9fX19fX19fX1
-								9fX19fX19fX1
-								9fX19crKymdn
-								Z/v7+///////
-								/+/v725ubsvL
-								y/Hx8fHx8fHx
-								8fHx8fHx8fHx
-								8fHx8fHx8cvL
-								y3BwcO/v7///
-								/////+7u7nd3
-								d83Nzezs7Ozs
-								7Ozs7Ozs7Ozs
-								7Ozs7Ozs7Ozs
-								7M3NzXp6eu7u
-								7v///////+7u
-								7oCAgM/Pz9fX
-								19fX19fX19fX
-								19fX19fX19fX
-								19fX18/Pz4SE
-								hO7u7v//////
-								/+7u7oqKitLS
-								0uDg4ODg4ODg
-								4ODg4ODg4ODg
-								4ODg4ODg4NLS
-								0o2Nje7u7v//
-								/////+7u7pSU
-								lNTU1Ojo6Ojo
-								6Ojo6Ojo6Ojo
-								6Ojo6Ojo6Ojo
-								6NXV1ZaWlu7u
-								7v///////+7u
-								7p6entfX1/Hx
-								8fHx8fHx8fHx
-								8fHx8fHx8fHx
-								8fHx8djY2J+f
-								n+7u7v//////
-								/+7u7qWlpeXl
-								5f//////////
 								////////////
-								/////////+bm
-								5qmpqe7u7v//
-								//////v7+46O
-								jsrKyvPz8/Pz
-								8/Pz8/Pz8/Pz
-								8/Pz8/Pz8/Pz
-								883NzZCQkPv7
-								+/////////39
-								/crKynt7e3V1
+								////////////
+								/////83NzQIC
+								AgcHB9fX1///
+								////////////
+								/////9TV5mhr
+								pUdJkkdJkkdJ
+								kkdJkkdJkkdJ
+								kkdJkRAQIAAA
+								AGxsdP//////
+								////////////
+								//7+/j9Tmo6i
+								zsje9Mje9Mje
+								9Mje9Mje9Mje
+								9HuJlgAAABca
+								Ij9Rlv7+/v//
+								////////////
+								//v7+xo7lVye
+								4bHR8bHR8bHR
+								8bHR8bHR8abE
+								4g8RFAEBAUN3
+								rBs7lfv7+///
+								////////////
+								/+/v7x9EnVKV
+								2EBMWTdCTXeP
+								p6rN8KrN8EhW
+								ZQAAAEZUY1CX
+								3h9EnO/v7///
+								////////////
+								/+7u7iJMpFOZ
+								32N5jwAAAA4R
+								FJi73YakwgIC
+								AxEVGJu/4lOZ
+								3yNNpO7u7v//
+								////////////
+								/+7u7iZVq1ec
+								4l+h5BotPwAA
+								ACI6URYlNAAA
+								AEFvnF+h5Fab
+								4ChWrO7u7v//
+								////////////
+								/+7u7itfs1uf
+								4muq6GCY0AcL
+								DwAAAAAAACI2
+								Smuq6Guq6Fyf
+								4yxgs+7u7v//
+								////////////
+								/+7u7i9ou2Ci
+								5Hey7ney7ktx
+								lwAAAAcKDmug
+								1Xey7ney7mGi
+								5DFpu+7u7v//
+								////////////
+								/+7u7jNxwmam
+								5oK784K784K7
+								8yk7TE1ukIK7
+								84K784K782Sl
+								5jZzw+7u7v//
+								////////////
+								/+7u7lmGvIa7
+								9qHW/6HW/6HW
+								/5bI7qHW/qHW
+								/6HW/6HW/4e7
+								9F+Kvu7u7v//
+								////////////
+								//v7+36Ik5e/
+								1rbq9bbq9bbq
+								9bbq9bbq9bbq
+								9bbq9bbq9ZrA
+								1oGKlPv7+///
+								////////////
+								//39/crKynt7
+								e3V1dXV1dXV1
 								dXV1dXV1dXV1
-								dXV1dXV1dXV1
-								dXV1dXt7e8rK
-								yv39/f//////
+								dXV1dXV1dXt7
+								e8rKyv39/f//
+								////////////
 								//////39/fLy
 								8t3d3dzc3Nzc
 								3Nzc3Nzc3Nzc
 								3Nzc3N3d3fLy
 								8v39/f//////
-								/wAHAK4AcAAH
-								AAEAAQADAAMA
-								BAAAAA0ADAAQ
-								ABAAEAC6ALoA
-								KAAHAAMQUXVp
-								Y2tUaW1lqiBh
-								bmQgYQAAKAAI
-								AAQNIGRlY29t
-								cHJlc3NvcgAo
-								AAkAAB9hcmUg
-								bmVlZGVkIHRv
-								IHNlZSB0aGlz
-								IHBpY3R1cmUu
-								AAAAoQDgA9QA
-								AAAAAAAD0GFw
-								cGwCAAAAbW50
-								clJHQiBYWVog
-								B9kACQAKAAgA
-								BwAxYWNzcEFQ
-								UEwAAAAAAAAA
+								////////////
+								////////////
+								//7+/v7+/v7+
+								/v7+/v7+/v7+
+								/v7+/v7+/v//
+								////////////
+								/////////wAH
+								AK4AcAAHAAEA
+								AQADAAMABAAA
+								AA0ADAAQABIA
+								EgC6ALoAKAAI
+								AAQQUXVpY2tU
+								aW1lqiBhbmQg
+								YQAAKAAJAAUN
+								IGRlY29tcHJl
+								c3NvcgAoAAoA
+								AB9hcmUgbmVl
+								ZGVkIHRvIHNl
+								ZSB0aGlzIHBp
+								Y3R1cmUuAAAA
+								oQDgA9QAAAAA
+								AAAD0GFwcGwC
+								AAAAbW50clJH
+								QiBYWVogB9kA
+								CQAKAAgABwAx
+								YWNzcEFQUEwA
 								AAAAAAAAAAAA
 								AAAAAAAAAAAA
-								APbWAAEAAAAA
-								0y1hcHBsAAAA
+								AAAAAAAAAPbW
+								AAEAAAAA0y1h
+								cHBsAAAAAAAA
 								AAAAAAAAAAAA
 								AAAAAAAAAAAA
 								AAAAAAAAAAAA
 								AAAAAAAAAAAA
-								AAAAAAAAAAAO
-								clhZWgAAASwA
-								AAAUZ1hZWgAA
-								AUAAAAAUYlhZ
-								WgAAAVQAAAAU
-								d3RwdAAAAWgA
-								AAAUY2hhZAAA
-								AXwAAAAsclRS
-								QwAAAagAAAAO
-								Z1RSQwAAAbgA
-								AAAOYlRSQwAA
-								AcgAAAAOdmNn
-								dAAAAdgAAAAw
-								bmRpbgAAAggA
-								AAA4ZGVzYwAA
-								AkAAAABnZHNj
-								bQAAAqgAAADc
-								bW1vZAAAA4QA
-								AAAoY3BydAAA
-								A6wAAAAkWFla
-								IAAAAAAAAHd6
-								AAA/WgAAAjdY
-								WVogAAAAAAAA
-								WLAAAKwFAAAW
-								X1hZWiAAAAAA
-								AAAmrAAAFMMA
-								ALqNWFlaIAAA
-								AAAAAPJoAAEA
-								AAABEuFzZjMy
-								AAAAAAABDGcA
-								AAYE///zlgAA
-								B9sAAP0h///7
-								wf///cIAAAOi
-								AADDRWN1cnYA
-								AAAAAAAAAQHN
-								AABjdXJ2AAAA
-								AAAAAAEBzQAA
-								Y3VydgAAAAAA
-								AAABAc0AAHZj
-								Z3QAAAAAAAAA
-								AQAA0XQAAAAA
-								AAEAAAAA0XQA
-								AAAAAAEAAAAA
+								AAAAAAAOclhZ
+								WgAAASwAAAAU
+								Z1hZWgAAAUAA
+								AAAUYlhZWgAA
+								AVQAAAAUd3Rw
+								dAAAAWgAAAAU
+								Y2hhZAAAAXwA
+								AAAsclRSQwAA
+								AagAAAAOZ1RS
+								QwAAAbgAAAAO
+								YlRSQwAAAcgA
+								AAAOdmNndAAA
+								AdgAAAAwbmRp
+								bgAAAggAAAA4
+								ZGVzYwAAAkAA
+								AABnZHNjbQAA
+								AqgAAADcbW1v
+								ZAAAA4QAAAAo
+								Y3BydAAAA6wA
+								AAAkWFlaIAAA
+								AAAAAHd6AAA/
+								WgAAAjdYWVog
+								AAAAAAAAWLAA
+								AKwFAAAWX1hZ
+								WiAAAAAAAAAm
+								rAAAFMMAALqN
+								WFlaIAAAAAAA
+								APJoAAEAAAAB
+								EuFzZjMyAAAA
+								AAABDGcAAAYE
+								///zlgAAB9sA
+								AP0h///7wf//
+								/cIAAAOiAADD
+								RWN1cnYAAAAA
+								AAAAAQHNAABj
+								dXJ2AAAAAAAA
+								AAEBzQAAY3Vy
+								dgAAAAAAAAAB
+								Ac0AAHZjZ3QA
+								AAAAAAAAAQAA
 								0XQAAAAAAAEA
-								AG5kaW4AAAAA
-								AAAAMAAAo8AA
-								AFfAAABKwAAA
-								nIAAACaXAAAT
-								WwAAUEAAAFTA
-								AAIzMwACMzMA
-								AjMzZGVzYwAA
-								AAAAAAANREVM
-								TCAzMDA3V0ZQ
+								AAAA0XQAAAAA
+								AAEAAAAA0XQA
+								AAAAAAEAAG5k
+								aW4AAAAAAAAA
+								MAAAo8AAAFfA
+								AABKwAAAnIAA
+								ACaXAAATWwAA
+								UEAAAFTAAAIz
+								MwACMzMAAjMz
+								ZGVzYwAAAAAA
+								AAANREVMTCAz
+								MDA3V0ZQAAAA
 								AAAAAAAAAAAA
 								AAAAAAAAAAAA
 								AAAAAAAAAAAA
@@ -5479,73 +5502,73 @@
 								AAAAAAAAAAAA
 								AAAAAAAAAAAA
 								AAAAAAAAAAAA
-								AAAAAAAAAABt
-								bHVjAAAAAAAA
-								AA8AAAAMbmJO
-								TwAAABgAAADE
-								c3ZTRQAAABgA
-								AADEZmlGSQAA
-								ABgAAADEZGFE
-								SwAAABgAAADE
-								emhDTgAAABgA
-								AADEZnJGUgAA
-								ABgAAADEamFK
-								UAAAABgAAADE
-								ZW5VUwAAABgA
-								AADEcHRCUgAA
-								ABgAAADEZXNF
-								UwAAABgAAADE
-								emhUVwAAABgA
-								AADEa29LUgAA
-								ABgAAADEZGVE
+								AAAAAABtbHVj
+								AAAAAAAAAA8A
+								AAAMbmJOTwAA
+								ABgAAADEc3ZT
 								RQAAABgAAADE
-								bmxOTAAAABgA
-								AADEaXRJVAAA
-								ABgAAADEAEQA
-								RQBMAEwAIAAz
-								ADAAMAA3AFcA
-								RgBQbW1vZAAA
-								AAAAABCsAABA
-								FkczODXAsP9w
+								ZmlGSQAAABgA
+								AADEZGFESwAA
+								ABgAAADEemhD
+								TgAAABgAAADE
+								ZnJGUgAAABgA
+								AADEamFKUAAA
+								ABgAAADEZW5V
+								UwAAABgAAADE
+								cHRCUgAAABgA
+								AADEZXNFUwAA
+								ABgAAADEemhU
+								VwAAABgAAADE
+								a29LUgAAABgA
+								AADEZGVERQAA
+								ABgAAADEbmxO
+								TAAAABgAAADE
+								aXRJVAAAABgA
+								AADEAEQARQBM
+								AEwAIAAzADAA
+								MAA3AFcARgBQ
+								bW1vZAAAAAAA
+								ABCsAABAFkcz
+								ODXAsP9wAAAA
 								AAAAAAAAAAAA
-								AAAAAAAAAHRl
-								eHQAAAAAQ29w
-								eXJpZ2h0IEFw
-								cGxlLCBJbmMu
-								LCAyMDA5AACh
-								AOAABAAAAAIA
-								/wEAAAATAAAA
-								UGFzdGVkIEdy
-								YXBoaWMucGlj
-								dAEAAAATAAAA
-								UGFzdGVkIEdy
-								YXBoaWMucGlj
-								dAEAAAAeAAAA
-								AQAAAAIAAAAu
-								LhAAAAAAAAAA
-								tgEAAAIAAAAB
-								AAAAhoaGkoSW
-								lhBOU1BhcmFn
-								cmFwaFN0eWxl
-								hpKEhIQQTlNQ
-								YXJhZ3JhcGhT
-								dHlsZQCUhARD
-								Q0BTBACEhIQH
-								TlNBcnJheQCU
-								mQyShISECU5T
-								VGV4dFRhYgCU
-								hAJDZgAchpKE
-								p6QAOIaShKek
-								AFSGkoSnpABw
-								hpKEp6QAgYwA
-								hpKEp6QAgagA
-								hpKEp6QAgcQA
-								hpKEp6QAgeAA
-								hpKEp6QAgfwA
-								hpKEp6QAgRgB
-								hpKEp6QAgTQB
-								hpKEp6QAgVAB
-								hoYAhoaG
+								AAAAAHRleHQA
+								AAAAQ29weXJp
+								Z2h0IEFwcGxl
+								LCBJbmMuLCAy
+								MDA5AAChAOAA
+								BAAAAAIA/wEA
+								AAATAAAAUGFz
+								dGVkIEdyYXBo
+								aWMucGljdAEA
+								AAATAAAAUGFz
+								dGVkIEdyYXBo
+								aWMucGljdAEA
+								AAAeAAAAAQAA
+								AAIAAAAuLhAA
+								AAAAAAAAtgEA
+								AAIAAAABAAAA
+								hoaGkoSWlhBO
+								U1BhcmFncmFw
+								aFN0eWxlhpKE
+								hIQQTlNQYXJh
+								Z3JhcGhTdHls
+								ZQCUhARDQ0BT
+								BACEhIQHTlNB
+								cnJheQCUmQyS
+								hISECU5TVGV4
+								dFRhYgCUhAJD
+								ZgAchpKEp6QA
+								OIaShKekAFSG
+								koSnpABwhpKE
+								p6QAgYwAhpKE
+								p6QAgagAhpKE
+								p6QAgcQAhpKE
+								p6QAgeAAhpKE
+								p6QAgfwAhpKE
+								p6QAgRgBhpKE
+								p6QAgTQBhpKE
+								p6QAgVABhoYA
+								hoaG
 								</data>
 							</dict>
 						</dict>
@@ -5969,7 +5992,7 @@
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{732.963, 163}, {66.6999, 23}}</string>
+							<string>{{732.963, 163}, {66.6996, 23}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -6023,7 +6046,7 @@
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{664.262, 186}, {68.7014, 24}}</string>
+							<string>{{664.262, 186}, {68.7015, 24}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -6441,7 +6464,7 @@
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{664.262, 262.001}, {68.7014, 26}}</string>
+							<string>{{664.262, 262.001}, {68.7015, 26}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -6836,7 +6859,7 @@
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{664.262, 320}, {68.7014, 19.0002}}</string>
+							<string>{{664.262, 320}, {68.7015, 19.0002}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -8121,7 +8144,7 @@
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{799.663, 186}, {49.3382, 24}}</string>
+							<string>{{799.663, 186}, {49.3384, 24}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -8495,7 +8518,7 @@
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{799.663, 378}, {49.3382, 28.0001}}</string>
+							<string>{{799.663, 378}, {49.3384, 28.0004}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -8537,7 +8560,7 @@
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{514.5, 378}, {64.7304, 28.0002}}</string>
+							<string>{{514.5, 378}, {64.7302, 28.0004}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -9039,7 +9062,7 @@
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{664.262, 378}, {68.7014, 28.0002}}</string>
+							<string>{{664.262, 378}, {68.7015, 28.0004}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -9081,7 +9104,7 @@
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{732.963, 339}, {66.6999, 38.9998}}</string>
+							<string>{{732.963, 339}, {66.6996, 38.9998}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -9894,7 +9917,7 @@
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{514.5, 236}, {64.7304, 26.001}}</string>
+							<string>{{514.5, 236}, {64.7302, 26.001}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -10289,7 +10312,7 @@
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{579.23, 320}, {85.0314, 19.0002}}</string>
+							<string>{{579.23, 320}, {85.0316, 19.0002}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -11961,7 +11984,7 @@
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{664.262, 339}, {68.7014, 38.9998}}</string>
+							<string>{{664.262, 339}, {68.7015, 38.9998}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -12356,7 +12379,7 @@
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{514.5, 186}, {64.7304, 24}}</string>
+							<string>{{514.5, 186}, {64.7302, 24}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -12774,7 +12797,7 @@
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{664.262, 163}, {68.7014, 23}}</string>
+							<string>{{664.262, 163}, {68.7015, 23}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -12828,7 +12851,7 @@
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{732.963, 288.001}, {66.6999, 31.9989}}</string>
+							<string>{{732.963, 288.001}, {66.6996, 31.9989}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -13641,7 +13664,7 @@
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{732.963, 262.001}, {66.6999, 26}}</string>
+							<string>{{732.963, 262.001}, {66.6996, 26}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -14036,7 +14059,7 @@
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{275, 378}, {83.4999, 28.0002}}</string>
+							<string>{{275, 378}, {83.4999, 28.0004}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -14078,7 +14101,7 @@
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{579.23, 236}, {85.0314, 26.001}}</string>
+							<string>{{579.23, 236}, {85.0316, 26.001}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -14893,7 +14916,7 @@
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{732.963, 186}, {66.6999, 24}}</string>
+							<string>{{732.963, 186}, {66.6996, 24}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -15729,7 +15752,7 @@
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{664.262, 236}, {68.7014, 26.001}}</string>
+							<string>{{664.262, 236}, {68.7015, 26.001}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -16521,7 +16544,7 @@
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{579.23, 186}, {85.0314, 24}}</string>
+							<string>{{579.23, 186}, {85.0316, 24}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -16918,7 +16941,7 @@
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{436.499, 378}, {78.0009, 28.0002}}</string>
+							<string>{{436.499, 378}, {78.0009, 28.0004}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -17420,7 +17443,7 @@
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{732.963, 236}, {66.6999, 26.001}}</string>
+							<string>{{732.963, 236}, {66.6996, 26.001}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -17815,7 +17838,7 @@
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{579.23, 378}, {85.0314, 28.0002}}</string>
+							<string>{{579.23, 378}, {85.0316, 28.0004}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -17857,7 +17880,7 @@
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{579.23, 339}, {85.0314, 38.9998}}</string>
+							<string>{{579.23, 339}, {85.0316, 38.9998}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -18252,7 +18275,7 @@
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{799.663, 236}, {49.3382, 26.001}}</string>
+							<string>{{799.663, 236}, {49.3384, 26.001}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -18689,7 +18712,7 @@
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{664.262, 288.001}, {68.7014, 31.9989}}</string>
+							<string>{{664.262, 288.001}, {68.7015, 31.9989}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -19084,7 +19107,7 @@
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{579.23, 262.001}, {85.0314, 26}}</string>
+							<string>{{579.23, 262.001}, {85.0316, 26}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -19502,7 +19525,7 @@
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{76.9702, 378}, {198.03, 28.0002}}</string>
+							<string>{{76.9702, 378}, {198.03, 28.0004}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -19544,7 +19567,7 @@
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{799.663, 320}, {49.3382, 19.0002}}</string>
+							<string>{{799.663, 320}, {49.3384, 19.0002}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -19939,7 +19962,7 @@
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{799.663, 163}, {49.3382, 23}}</string>
+							<string>{{799.663, 163}, {49.3384, 23}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -19993,7 +20016,7 @@
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{664.262, 210}, {68.7014, 26}}</string>
+							<string>{{664.262, 210}, {68.7015, 26}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -20388,7 +20411,7 @@
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{799.663, 288.001}, {49.3382, 31.9989}}</string>
+							<string>{{799.663, 288.001}, {49.3384, 31.9989}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -20837,7 +20860,7 @@
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{514.5, 288.001}, {64.7304, 31.9989}}</string>
+							<string>{{514.5, 288.001}, {64.7302, 31.9989}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -21232,7 +21255,7 @@
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{514.5, 210}, {64.7304, 26}}</string>
+							<string>{{514.5, 210}, {64.7302, 26}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -22045,7 +22068,7 @@
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{579.23, 163}, {85.0314, 23}}</string>
+							<string>{{579.23, 163}, {85.0316, 23}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -22517,7 +22540,7 @@
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{514.5, 339}, {64.7304, 38.9998}}</string>
+							<string>{{514.5, 339}, {64.7302, 38.9998}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -22912,7 +22935,7 @@
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{732.963, 210}, {66.6999, 26}}</string>
+							<string>{{732.963, 210}, {66.6996, 26}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -23330,7 +23353,7 @@
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{579.23, 288.001}, {85.0314, 31.9989}}</string>
+							<string>{{579.23, 288.001}, {85.0316, 31.9989}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -23748,7 +23771,7 @@
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{732.963, 378}, {66.6999, 28.0001}}</string>
+							<string>{{732.963, 378}, {66.6996, 28.0004}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -23929,7 +23952,7 @@ assigned groups only}</string>
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{799.663, 339}, {49.3382, 38.9998}}</string>
+							<string>{{799.663, 339}, {49.3384, 38.9998}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -25570,254 +25593,7 @@ assigned groups only}</string>
 					<array>
 						<dict>
 							<key>Bounds</key>
-							<string>{{52.9, 79.0002}, {72.8, 23}}</string>
-							<key>Class</key>
-							<string>ShapedGraphic</string>
-							<key>FontInfo</key>
-							<dict>
-								<key>Font</key>
-								<string>Helvetica-Bold</string>
-								<key>Size</key>
-								<real>14</real>
-							</dict>
-							<key>ID</key>
-							<integer>5</integer>
-							<key>Shape</key>
-							<string>Rectangle</string>
-							<key>Style</key>
-							<dict>
-								<key>fill</key>
-								<dict>
-									<key>Color</key>
-									<dict>
-										<key>b</key>
-										<string>0.874525</string>
-										<key>g</key>
-										<string>0.874525</string>
-										<key>r</key>
-										<string>0.874525</string>
-									</dict>
-								</dict>
-							</dict>
-							<key>Text</key>
-							<dict>
-								<key>Align</key>
-								<integer>0</integer>
-								<key>Text</key>
-								<string>{\rtf1\ansi\ansicpg1252\cocoartf1038\cocoasubrtf110
-{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
-{\colortbl;\red255\green255\blue255;}
-\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
-
-\f0\b\fs28 \cf0 Note #}</string>
-							</dict>
-						</dict>
-						<dict>
-							<key>Bounds</key>
-							<string>{{125.7, 164}, {766, 48}}</string>
-							<key>Class</key>
-							<string>ShapedGraphic</string>
-							<key>FontInfo</key>
-							<dict>
-								<key>Font</key>
-								<string>Helvetica</string>
-								<key>Size</key>
-								<real>12</real>
-							</dict>
-							<key>ID</key>
-							<integer>2839</integer>
-							<key>Shape</key>
-							<string>Rectangle</string>
-							<key>Style</key>
-							<dict/>
-							<key>Text</key>
-							<dict>
-								<key>Align</key>
-								<integer>0</integer>
-								<key>Text</key>
-								<string>{\rtf1\ansi\ansicpg1252\cocoartf1038\cocoasubrtf110
-{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
-{\colortbl;\red255\green255\blue255;}
-\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
-
-\f0\b\fs24 \cf0 Can submit assignments:\
-\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
-
-\b0 \cf0 - The system will display the 'View Details and Submit' link for an assignment on the SV: Assignment List screen (SVAL-1) to the role(s) with this permission.}</string>
-							</dict>
-						</dict>
-						<dict>
-							<key>Bounds</key>
-							<string>{{52.9, 290}, {72.8, 50}}</string>
-							<key>Class</key>
-							<string>ShapedGraphic</string>
-							<key>FontInfo</key>
-							<dict>
-								<key>Font</key>
-								<string>Helvetica</string>
-								<key>Size</key>
-								<real>12</real>
-							</dict>
-							<key>ID</key>
-							<integer>2845</integer>
-							<key>Shape</key>
-							<string>Rectangle</string>
-							<key>Style</key>
-							<dict/>
-							<key>Text</key>
-							<dict>
-								<key>Align</key>
-								<integer>0</integer>
-								<key>Text</key>
-								<string>{\rtf1\ansi\ansicpg1252\cocoartf1038\cocoasubrtf110
-{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
-{\colortbl;\red255\green255\blue255;}
-\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
-
-\f0\fs24 \cf0 5}</string>
-							</dict>
-						</dict>
-						<dict>
-							<key>Bounds</key>
-							<string>{{125.7, 544}, {766, 109}}</string>
-							<key>Class</key>
-							<string>ShapedGraphic</string>
-							<key>FontInfo</key>
-							<dict>
-								<key>Font</key>
-								<string>Helvetica</string>
-								<key>Size</key>
-								<real>12</real>
-							</dict>
-							<key>ID</key>
-							<integer>2852</integer>
-							<key>Shape</key>
-							<string>Rectangle</string>
-							<key>Style</key>
-							<dict/>
-							<key>Text</key>
-							<dict>
-								<key>Align</key>
-								<integer>0</integer>
-								<key>Text</key>
-								<string>{\rtf1\ansi\ansicpg1252\cocoartf1038\cocoasubrtf110
-{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
-{\colortbl;\red255\green255\blue255;}
-\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
-
-\f0\b\fs24 \cf0 Can grade submissions from:\
-\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
-
-\b0 \cf0 - This Gradebook permission controls whether or not the role(s) with this permission can enter a grade and comments for a submission.  \
-- If there is no Gradebook in the site, the system will not display this permission.\
-- Roles with the 'Custom (Edit)' link have the section.role.ta permission and the gradebook.gradeSection permission.\
-- If the Instructor clicks the 'Custom (Edit)' link, the system will display the Gradebook's 'Edit Grader Permissions' helper (GPH-1) \
-- Roles with the 'All Students' setting may enter grades and comments for any student in the class.\
-- Roles with the 'None' setting may not enter grades or comments for any submissions.}</string>
-							</dict>
-						</dict>
-						<dict>
-							<key>Bounds</key>
-							<string>{{125.7, 250}, {766, 40}}</string>
-							<key>Class</key>
-							<string>ShapedGraphic</string>
-							<key>FontInfo</key>
-							<dict>
-								<key>Font</key>
-								<string>Helvetica</string>
-								<key>Size</key>
-								<real>12</real>
-							</dict>
-							<key>ID</key>
-							<integer>2843</integer>
-							<key>Shape</key>
-							<string>Rectangle</string>
-							<key>Style</key>
-							<dict/>
-							<key>Text</key>
-							<dict>
-								<key>Align</key>
-								<integer>0</integer>
-								<key>Text</key>
-								<string>{\rtf1\ansi\ansicpg1252\cocoartf1038\cocoasubrtf110
-{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
-{\colortbl;\red255\green255\blue255;}
-\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
-
-\f0\b\fs24 \cf0 Can edit assignments:\
-\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
-
-\b0 \cf0 - The system will display the 'Edit' link on the Assignment List screen (AL-1) to the role(s) with this permission.}</string>
-							</dict>
-						</dict>
-						<dict>
-							<key>Bounds</key>
-							<string>{{52.9, 164}, {72.8, 48}}</string>
-							<key>Class</key>
-							<string>ShapedGraphic</string>
-							<key>FontInfo</key>
-							<dict>
-								<key>Font</key>
-								<string>Helvetica</string>
-								<key>Size</key>
-								<real>12</real>
-							</dict>
-							<key>ID</key>
-							<integer>2840</integer>
-							<key>Shape</key>
-							<string>Rectangle</string>
-							<key>Style</key>
-							<dict/>
-							<key>Text</key>
-							<dict>
-								<key>Align</key>
-								<integer>0</integer>
-								<key>Text</key>
-								<string>{\rtf1\ansi\ansicpg1252\cocoartf1038\cocoasubrtf110
-{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
-{\colortbl;\red255\green255\blue255;}
-\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
-
-\f0\fs24 \cf0 2}</string>
-							</dict>
-						</dict>
-						<dict>
-							<key>Bounds</key>
-							<string>{{125.7, 212}, {766, 38}}</string>
-							<key>Class</key>
-							<string>ShapedGraphic</string>
-							<key>FontInfo</key>
-							<dict>
-								<key>Font</key>
-								<string>Helvetica</string>
-								<key>Size</key>
-								<real>12</real>
-							</dict>
-							<key>ID</key>
-							<integer>2842</integer>
-							<key>Shape</key>
-							<string>Rectangle</string>
-							<key>Style</key>
-							<dict/>
-							<key>Text</key>
-							<dict>
-								<key>Align</key>
-								<integer>0</integer>
-								<key>Text</key>
-								<string>{\rtf1\ansi\ansicpg1252\cocoartf1038\cocoasubrtf110
-{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
-{\colortbl;\red255\green255\blue255;}
-\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
-
-\f0\b\fs24 \cf0 Can add assignments:\
-\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
-
-\b0 \cf0 - The system will display the 'Add' link on the Assignment List screen (AL-1) to the role(s) with this permission.}</string>
-							</dict>
-						</dict>
-						<dict>
-							<key>Bounds</key>
-							<string>{{125.7, 340}, {766, 53}}</string>
+							<string>{{125.7, 354}, {766, 53}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -25851,7 +25627,38 @@ assigned groups only}</string>
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{52.9, 393}, {72.8, 151}}</string>
+							<string>{{52.9, 178}, {72.8, 48}}</string>
+							<key>Class</key>
+							<string>ShapedGraphic</string>
+							<key>FontInfo</key>
+							<dict>
+								<key>Font</key>
+								<string>Helvetica</string>
+								<key>Size</key>
+								<real>12</real>
+							</dict>
+							<key>ID</key>
+							<integer>2840</integer>
+							<key>Shape</key>
+							<string>Rectangle</string>
+							<key>Style</key>
+							<dict/>
+							<key>Text</key>
+							<dict>
+								<key>Align</key>
+								<integer>0</integer>
+								<key>Text</key>
+								<string>{\rtf1\ansi\ansicpg1252\cocoartf1038\cocoasubrtf110
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+
+\f0\fs24 \cf0 2}</string>
+							</dict>
+						</dict>
+						<dict>
+							<key>Bounds</key>
+							<string>{{52.9, 407}, {72.8, 151}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -25882,7 +25689,137 @@ assigned groups only}</string>
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{52.9, 340}, {72.8, 53}}</string>
+							<string>{{125.7, 264}, {766, 40}}</string>
+							<key>Class</key>
+							<string>ShapedGraphic</string>
+							<key>FontInfo</key>
+							<dict>
+								<key>Font</key>
+								<string>Helvetica</string>
+								<key>Size</key>
+								<real>12</real>
+							</dict>
+							<key>ID</key>
+							<integer>2843</integer>
+							<key>Shape</key>
+							<string>Rectangle</string>
+							<key>Style</key>
+							<dict/>
+							<key>Text</key>
+							<dict>
+								<key>Align</key>
+								<integer>0</integer>
+								<key>Text</key>
+								<string>{\rtf1\ansi\ansicpg1252\cocoartf1038\cocoasubrtf110
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+
+\f0\b\fs24 \cf0 Can edit assignments:\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+
+\b0 \cf0 - The system will display the 'Edit' link on the Assignment List screen (AL-1) to the role(s) with this permission.}</string>
+							</dict>
+						</dict>
+						<dict>
+							<key>Bounds</key>
+							<string>{{52.9, 140}, {72.8, 38}}</string>
+							<key>Class</key>
+							<string>ShapedGraphic</string>
+							<key>FontInfo</key>
+							<dict>
+								<key>Font</key>
+								<string>Helvetica</string>
+								<key>Size</key>
+								<real>12</real>
+							</dict>
+							<key>ID</key>
+							<integer>11</integer>
+							<key>Shape</key>
+							<string>Rectangle</string>
+							<key>Style</key>
+							<dict/>
+							<key>Text</key>
+							<dict>
+								<key>Align</key>
+								<integer>0</integer>
+								<key>Text</key>
+								<string>{\rtf1\ansi\ansicpg1252\cocoartf1038\cocoasubrtf110
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+
+\f0\fs24 \cf0 1}</string>
+							</dict>
+						</dict>
+						<dict>
+							<key>Bounds</key>
+							<string>{{52.9, 226}, {72.8, 38}}</string>
+							<key>Class</key>
+							<string>ShapedGraphic</string>
+							<key>FontInfo</key>
+							<dict>
+								<key>Font</key>
+								<string>Helvetica</string>
+								<key>Size</key>
+								<real>12</real>
+							</dict>
+							<key>ID</key>
+							<integer>2841</integer>
+							<key>Shape</key>
+							<string>Rectangle</string>
+							<key>Style</key>
+							<dict/>
+							<key>Text</key>
+							<dict>
+								<key>Align</key>
+								<integer>0</integer>
+								<key>Text</key>
+								<string>{\rtf1\ansi\ansicpg1252\cocoartf1038\cocoasubrtf110
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+
+\f0\fs24 \cf0 3}</string>
+							</dict>
+						</dict>
+						<dict>
+							<key>Bounds</key>
+							<string>{{125.7, 226}, {766, 38}}</string>
+							<key>Class</key>
+							<string>ShapedGraphic</string>
+							<key>FontInfo</key>
+							<dict>
+								<key>Font</key>
+								<string>Helvetica</string>
+								<key>Size</key>
+								<real>12</real>
+							</dict>
+							<key>ID</key>
+							<integer>2842</integer>
+							<key>Shape</key>
+							<string>Rectangle</string>
+							<key>Style</key>
+							<dict/>
+							<key>Text</key>
+							<dict>
+								<key>Align</key>
+								<integer>0</integer>
+								<key>Text</key>
+								<string>{\rtf1\ansi\ansicpg1252\cocoartf1038\cocoasubrtf110
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+
+\f0\b\fs24 \cf0 Can add assignments:\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+
+\b0 \cf0 - The system will display the 'Add' link on the Assignment List screen (AL-1) to the role(s) with this permission.}</string>
+							</dict>
+						</dict>
+						<dict>
+							<key>Bounds</key>
+							<string>{{52.9, 354}, {72.8, 53}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -25913,7 +25850,7 @@ assigned groups only}</string>
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{125.7, 79.0002}, {766, 23}}</string>
+							<string>{{125.7, 79.0001}, {766, 23}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -25957,7 +25894,72 @@ assigned groups only}</string>
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{125.7, 102}, {766, 23.9999}}</string>
+							<string>{{52.9, 304}, {72.8, 50}}</string>
+							<key>Class</key>
+							<string>ShapedGraphic</string>
+							<key>FontInfo</key>
+							<dict>
+								<key>Font</key>
+								<string>Helvetica</string>
+								<key>Size</key>
+								<real>12</real>
+							</dict>
+							<key>ID</key>
+							<integer>2845</integer>
+							<key>Shape</key>
+							<string>Rectangle</string>
+							<key>Style</key>
+							<dict/>
+							<key>Text</key>
+							<dict>
+								<key>Align</key>
+								<integer>0</integer>
+								<key>Text</key>
+								<string>{\rtf1\ansi\ansicpg1252\cocoartf1038\cocoasubrtf110
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+
+\f0\fs24 \cf0 5}</string>
+							</dict>
+						</dict>
+						<dict>
+							<key>Bounds</key>
+							<string>{{125.7, 140}, {766, 38}}</string>
+							<key>Class</key>
+							<string>ShapedGraphic</string>
+							<key>FontInfo</key>
+							<dict>
+								<key>Font</key>
+								<string>Helvetica</string>
+								<key>Size</key>
+								<real>12</real>
+							</dict>
+							<key>ID</key>
+							<integer>12</integer>
+							<key>Shape</key>
+							<string>Rectangle</string>
+							<key>Style</key>
+							<dict/>
+							<key>Text</key>
+							<dict>
+								<key>Align</key>
+								<integer>0</integer>
+								<key>Text</key>
+								<string>{\rtf1\ansi\ansicpg1252\cocoartf1038\cocoasubrtf110
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+
+\f0\b\fs24 \cf0 Can read assignments:\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+
+\b0 \cf0 - The system will display the list of assignments on the Assignment List screen (AL-1) to the role(s) with this permission.}</string>
+							</dict>
+						</dict>
+						<dict>
+							<key>Bounds</key>
+							<string>{{125.7, 102}, {766, 37.9999}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -25983,108 +25985,12 @@ assigned groups only}</string>
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
 
-\f0\fs24 \cf0 The user accessed this screen by clicking 'Assignments' from the list of tools on the left.}</string>
+\f0\fs24 \cf0 Users with the site.upd permission accessed this screen by clicking 'Assignments' from the list of tools on the left and then 'Permissions' from the list of links at the top of the frame.}</string>
 							</dict>
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{52.9, 102}, {72.8, 23.9999}}</string>
-							<key>Class</key>
-							<string>ShapedGraphic</string>
-							<key>FontInfo</key>
-							<dict>
-								<key>Font</key>
-								<string>Helvetica</string>
-								<key>Size</key>
-								<real>12</real>
-							</dict>
-							<key>ID</key>
-							<integer>9</integer>
-							<key>Shape</key>
-							<string>Rectangle</string>
-							<key>Style</key>
-							<dict/>
-							<key>Text</key>
-							<dict>
-								<key>Align</key>
-								<integer>0</integer>
-								<key>Text</key>
-								<string>{\rtf1\ansi\ansicpg1252\cocoartf1038\cocoasubrtf110
-{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
-{\colortbl;\red255\green255\blue255;}
-\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
-
-\f0\fs24 \cf0 N/A}</string>
-							</dict>
-						</dict>
-						<dict>
-							<key>Bounds</key>
-							<string>{{52.9, 126}, {72.8, 37.9999}}</string>
-							<key>Class</key>
-							<string>ShapedGraphic</string>
-							<key>FontInfo</key>
-							<dict>
-								<key>Font</key>
-								<string>Helvetica</string>
-								<key>Size</key>
-								<real>12</real>
-							</dict>
-							<key>ID</key>
-							<integer>11</integer>
-							<key>Shape</key>
-							<string>Rectangle</string>
-							<key>Style</key>
-							<dict/>
-							<key>Text</key>
-							<dict>
-								<key>Align</key>
-								<integer>0</integer>
-								<key>Text</key>
-								<string>{\rtf1\ansi\ansicpg1252\cocoartf1038\cocoasubrtf110
-{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
-{\colortbl;\red255\green255\blue255;}
-\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
-
-\f0\fs24 \cf0 1}</string>
-							</dict>
-						</dict>
-						<dict>
-							<key>Bounds</key>
-							<string>{{125.7, 290}, {766, 50}}</string>
-							<key>Class</key>
-							<string>ShapedGraphic</string>
-							<key>FontInfo</key>
-							<dict>
-								<key>Font</key>
-								<string>Helvetica</string>
-								<key>Size</key>
-								<real>12</real>
-							</dict>
-							<key>ID</key>
-							<integer>2846</integer>
-							<key>Shape</key>
-							<string>Rectangle</string>
-							<key>Style</key>
-							<dict/>
-							<key>Text</key>
-							<dict>
-								<key>Align</key>
-								<integer>0</integer>
-								<key>Text</key>
-								<string>{\rtf1\ansi\ansicpg1252\cocoartf1038\cocoasubrtf110
-{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
-{\colortbl;\red255\green255\blue255;}
-\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
-
-\f0\b\fs24 \cf0 Can remove assignments:\
-\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
-
-\b0 \cf0 - The system will display the 'Remove' buttons and the column of checkboxes on the Assignment List screen (AL-1) to the role(s) with this permission.}</string>
-							</dict>
-						</dict>
-						<dict>
-							<key>Bounds</key>
-							<string>{{125.7, 393}, {766, 151}}</string>
+							<string>{{125.7, 407}, {766, 151}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -26126,7 +26032,7 @@ assigned groups only}</string>
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{52.9, 250}, {72.8, 40}}</string>
+							<string>{{52.9, 264}, {72.8, 40}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -26157,7 +26063,7 @@ assigned groups only}</string>
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{52.9, 212}, {72.8, 38}}</string>
+							<string>{{52.9, 102}, {72.8, 37.9999}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -26168,7 +26074,7 @@ assigned groups only}</string>
 								<real>12</real>
 							</dict>
 							<key>ID</key>
-							<integer>2841</integer>
+							<integer>9</integer>
 							<key>Shape</key>
 							<string>Rectangle</string>
 							<key>Style</key>
@@ -26183,27 +26089,40 @@ assigned groups only}</string>
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
 
-\f0\fs24 \cf0 3}</string>
+\f0\fs24 \cf0 N/A}</string>
 							</dict>
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{125.7, 126}, {766, 37.9999}}</string>
+							<string>{{52.9, 79.0001}, {72.8, 23}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
 							<dict>
 								<key>Font</key>
-								<string>Helvetica</string>
+								<string>Helvetica-Bold</string>
 								<key>Size</key>
-								<real>12</real>
+								<real>14</real>
 							</dict>
 							<key>ID</key>
-							<integer>12</integer>
+							<integer>5</integer>
 							<key>Shape</key>
 							<string>Rectangle</string>
 							<key>Style</key>
-							<dict/>
+							<dict>
+								<key>fill</key>
+								<dict>
+									<key>Color</key>
+									<dict>
+										<key>b</key>
+										<string>0.874525</string>
+										<key>g</key>
+										<string>0.874525</string>
+										<key>r</key>
+										<string>0.874525</string>
+									</dict>
+								</dict>
+							</dict>
 							<key>Text</key>
 							<dict>
 								<key>Align</key>
@@ -26214,15 +26133,12 @@ assigned groups only}</string>
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
 
-\f0\b\fs24 \cf0 Can read assignments:\
-\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
-
-\b0 \cf0 - The system will display the list of assignments on the Assignment List screen (AL-1) to the role(s) with this permission.}</string>
+\f0\b\fs28 \cf0 Note #}</string>
 							</dict>
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{52.9, 544}, {72.8, 109}}</string>
+							<string>{{125.7, 178}, {766, 48}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -26233,7 +26149,7 @@ assigned groups only}</string>
 								<real>12</real>
 							</dict>
 							<key>ID</key>
-							<integer>2851</integer>
+							<integer>2839</integer>
 							<key>Shape</key>
 							<string>Rectangle</string>
 							<key>Style</key>
@@ -26248,15 +26164,52 @@ assigned groups only}</string>
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
 
-\f0\fs24 \cf0 8}</string>
+\f0\b\fs24 \cf0 Can submit assignments:\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+
+\b0 \cf0 - The system will display the 'View Details and Submit' link for an assignment on the SV: Assignment List screen (SVAL-1) to the role(s) with this permission.}</string>
+							</dict>
+						</dict>
+						<dict>
+							<key>Bounds</key>
+							<string>{{125.7, 304}, {766, 50}}</string>
+							<key>Class</key>
+							<string>ShapedGraphic</string>
+							<key>FontInfo</key>
+							<dict>
+								<key>Font</key>
+								<string>Helvetica</string>
+								<key>Size</key>
+								<real>12</real>
+							</dict>
+							<key>ID</key>
+							<integer>2846</integer>
+							<key>Shape</key>
+							<string>Rectangle</string>
+							<key>Style</key>
+							<dict/>
+							<key>Text</key>
+							<dict>
+								<key>Align</key>
+								<integer>0</integer>
+								<key>Text</key>
+								<string>{\rtf1\ansi\ansicpg1252\cocoartf1038\cocoasubrtf110
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+
+\f0\b\fs24 \cf0 Can remove assignments:\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+
+\b0 \cf0 - The system will display the 'Remove' buttons and the column of checkboxes on the Assignment List screen (AL-1) to the role(s) with this permission.}</string>
 							</dict>
 						</dict>
 					</array>
 					<key>GridH</key>
 					<array>
 						<array>
-							<integer>5</integer>
 							<integer>6</integer>
+							<integer>5</integer>
 						</array>
 						<array>
 							<integer>10</integer>
@@ -26267,12 +26220,12 @@ assigned groups only}</string>
 							<integer>12</integer>
 						</array>
 						<array>
-							<integer>2839</integer>
 							<integer>2840</integer>
+							<integer>2839</integer>
 						</array>
 						<array>
-							<integer>2842</integer>
 							<integer>2841</integer>
+							<integer>2842</integer>
 						</array>
 						<array>
 							<integer>2843</integer>
@@ -26289,38 +26242,32 @@ assigned groups only}</string>
 						<array>
 							<integer>2849</integer>
 							<integer>2850</integer>
-						</array>
-						<array>
-							<integer>2852</integer>
-							<integer>2851</integer>
 						</array>
 						<array/>
 					</array>
 					<key>GridV</key>
 					<array>
 						<array>
-							<integer>5</integer>
-							<integer>2845</integer>
 							<integer>2840</integer>
 							<integer>2849</integer>
-							<integer>2847</integer>
-							<integer>9</integer>
 							<integer>11</integer>
-							<integer>2844</integer>
 							<integer>2841</integer>
-							<integer>2851</integer>
+							<integer>2847</integer>
+							<integer>2845</integer>
+							<integer>2844</integer>
+							<integer>9</integer>
+							<integer>5</integer>
 						</array>
 						<array>
-							<integer>2839</integer>
-							<integer>2852</integer>
+							<integer>2848</integer>
 							<integer>2843</integer>
 							<integer>2842</integer>
-							<integer>2848</integer>
 							<integer>6</integer>
-							<integer>10</integer>
-							<integer>2846</integer>
-							<integer>2850</integer>
 							<integer>12</integer>
+							<integer>10</integer>
+							<integer>2850</integer>
+							<integer>2839</integer>
+							<integer>2846</integer>
 						</array>
 						<array/>
 					</array>
@@ -26477,13 +26424,13 @@ assigned groups only}</string>
 			<array>
 				<dict>
 					<key>Bounds</key>
-					<string>{{52.9, 278}, {834, 205}}</string>
+					<string>{{46.9, 366}, {835, 205}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>ID</key>
-					<integer>2858</integer>
+					<integer>2859</integer>
 					<key>ImageID</key>
-					<integer>52</integer>
+					<integer>56</integer>
 					<key>Shape</key>
 					<string>Rectangle</string>
 					<key>Style</key>
@@ -26502,7 +26449,7 @@ assigned groups only}</string>
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{52.9, 238}, {838.8, 24}}</string>
+					<string>{{52.9, 321}, {838.8, 24}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>ID</key>
@@ -26636,7 +26583,7 @@ assigned groups only}</string>
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{52.9, 102}, {72.8, 48}}</string>
+							<string>{{52.9, 102}, {72.8, 113}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -26662,12 +26609,12 @@ assigned groups only}</string>
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
 
-\f0\fs24 \cf0 10}</string>
+\f0\fs24 \cf0 8}</string>
 							</dict>
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{125.7, 102}, {766, 48}}</string>
+							<string>{{125.7, 102}, {766, 113}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -26679,6 +26626,45 @@ assigned groups only}</string>
 							</dict>
 							<key>ID</key>
 							<integer>12</integer>
+							<key>Shape</key>
+							<string>Rectangle</string>
+							<key>Style</key>
+							<dict/>
+							<key>Text</key>
+							<dict>
+								<key>Align</key>
+								<integer>0</integer>
+								<key>Text</key>
+								<string>{\rtf1\ansi\ansicpg1252\cocoartf1038\cocoasubrtf110
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+
+\f0\b\fs24 \cf0 Can grade submissions from:\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+
+\b0 \cf0 - This Gradebook permission controls whether or not the role(s) with this permission can enter a grade and comments for a submission.  \
+- If there is no Gradebook in the site, the system will not display this permission.\
+- Roles with the 'Custom (Edit)' link have the section.role.ta permission and the gradebook.gradeSection permission.\
+- If the Instructor clicks the 'Custom (Edit)' link, the system will display the Gradebook's 'Edit Grader Permissions' helper (GPH-1) \
+- Roles with the 'All Students' setting may enter grades and comments for any student in the class.\
+- Roles with the 'None' setting may not enter grades or comments for any submissions.}</string>
+							</dict>
+						</dict>
+						<dict>
+							<key>Bounds</key>
+							<string>{{125.7, 215}, {766, 50.0002}}</string>
+							<key>Class</key>
+							<string>ShapedGraphic</string>
+							<key>FontInfo</key>
+							<dict>
+								<key>Font</key>
+								<string>Helvetica</string>
+								<key>Size</key>
+								<real>12</real>
+							</dict>
+							<key>ID</key>
+							<integer>2839</integer>
 							<key>Shape</key>
 							<string>Rectangle</string>
 							<key>Style</key>
@@ -26701,7 +26687,7 @@ assigned groups only}</string>
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{125.7, 150}, {766, 37}}</string>
+							<string>{{52.9, 215}, {72.8, 50.0002}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -26712,7 +26698,38 @@ assigned groups only}</string>
 								<real>12</real>
 							</dict>
 							<key>ID</key>
-							<integer>2839</integer>
+							<integer>2840</integer>
+							<key>Shape</key>
+							<string>Rectangle</string>
+							<key>Style</key>
+							<dict/>
+							<key>Text</key>
+							<dict>
+								<key>Align</key>
+								<integer>0</integer>
+								<key>Text</key>
+								<string>{\rtf1\ansi\ansicpg1252\cocoartf1038\cocoasubrtf110
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+
+\f0\fs24 \cf0 9}</string>
+							</dict>
+						</dict>
+						<dict>
+							<key>Bounds</key>
+							<string>{{125.7, 265}, {766, 37}}</string>
+							<key>Class</key>
+							<string>ShapedGraphic</string>
+							<key>FontInfo</key>
+							<dict>
+								<key>Font</key>
+								<string>Helvetica</string>
+								<key>Size</key>
+								<real>12</real>
+							</dict>
+							<key>ID</key>
+							<integer>2860</integer>
 							<key>Shape</key>
 							<string>Rectangle</string>
 							<key>Style</key>
@@ -26735,7 +26752,7 @@ assigned groups only}</string>
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{52.9, 150}, {72.8, 37}}</string>
+							<string>{{52.9, 265}, {72.8, 37}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -26746,7 +26763,7 @@ assigned groups only}</string>
 								<real>12</real>
 							</dict>
 							<key>ID</key>
-							<integer>2840</integer>
+							<integer>2861</integer>
 							<key>Shape</key>
 							<string>Rectangle</string>
 							<key>Style</key>
@@ -26761,7 +26778,7 @@ assigned groups only}</string>
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
 
-\f0\fs24 \cf0 11}</string>
+\f0\fs24 \cf0 10}</string>
 							</dict>
 						</dict>
 					</array>
@@ -26779,6 +26796,10 @@ assigned groups only}</string>
 							<integer>2839</integer>
 							<integer>2840</integer>
 						</array>
+						<array>
+							<integer>2860</integer>
+							<integer>2861</integer>
+						</array>
 						<array/>
 					</array>
 					<key>GridV</key>
@@ -26787,11 +26808,13 @@ assigned groups only}</string>
 							<integer>5</integer>
 							<integer>11</integer>
 							<integer>2840</integer>
+							<integer>2861</integer>
 						</array>
 						<array>
 							<integer>6</integer>
 							<integer>12</integer>
 							<integer>2839</integer>
+							<integer>2860</integer>
 						</array>
 						<array/>
 					</array>
@@ -36242,7 +36265,7 @@ assigned groups only}</string>
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{820.068, 186}, {59.6989, 24}}</string>
+							<string>{{820.068, 186}, {59.6987, 24}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -36616,7 +36639,7 @@ assigned groups only}</string>
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{820.068, 210}, {59.6989, 26}}</string>
+							<string>{{820.068, 210}, {59.6987, 26}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -37011,7 +37034,7 @@ assigned groups only}</string>
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{820.068, 163}, {59.6989, 23}}</string>
+							<string>{{820.068, 163}, {59.6987, 23}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -38319,7 +38342,7 @@ assigned groups only}</string>
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{820.068, 236}, {59.6989, 26.001}}</string>
+							<string>{{820.068, 236}, {59.6987, 26.001}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -40359,7 +40382,7 @@ assigned groups only}</string>
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{820.068, 262.001}, {59.6989, 26}}</string>
+							<string>{{820.068, 262.001}, {59.6987, 26}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -44071,7 +44094,7 @@ assigned groups only}</string>
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{820.068, 288.001}, {59.6989, 31.9989}}</string>
+							<string>{{820.068, 288.001}, {59.6987, 31.9989}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -47737,7 +47760,7 @@ assigned groups only}</string>
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{820.068, 320}, {59.6989, 19.0002}}</string>
+							<string>{{820.068, 320}, {59.6987, 19.0002}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -49823,7 +49846,7 @@ assigned groups only}</string>
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{820.068, 339}, {59.6989, 38.9998}}</string>
+							<string>{{820.068, 339}, {59.6987, 38.9998}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -53136,7 +53159,7 @@ assigned groups only}</string>
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{820.068, 378}, {59.6989, 36.1081}}</string>
+							<string>{{820.068, 378}, {59.6987, 36.1081}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -56640,7 +56663,7 @@ assigned groups only}</string>
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{820.068, 414.108}, {59.6989, 30.9997}}</string>
+							<string>{{820.068, 414.108}, {59.6987, 30.9997}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -57171,43 +57194,13 @@ assigned groups only}</string>
 			<key>GraphicsList</key>
 			<array>
 				<dict>
-					<key>Bounds</key>
-					<string>{{369, 625}, {16, 16}}</string>
-					<key>Class</key>
-					<string>ShapedGraphic</string>
-					<key>ID</key>
-					<integer>4592</integer>
-					<key>ImageID</key>
-					<integer>39</integer>
-					<key>Shape</key>
-					<string>Rectangle</string>
-					<key>Style</key>
-					<dict>
-						<key>fill</key>
-						<dict>
-							<key>Draws</key>
-							<string>NO</string>
-						</dict>
-						<key>shadow</key>
-						<dict>
-							<key>Draws</key>
-							<string>NO</string>
-						</dict>
-						<key>stroke</key>
-						<dict>
-							<key>Draws</key>
-							<string>NO</string>
-						</dict>
-					</dict>
-				</dict>
-				<dict>
 					<key>Class</key>
 					<string>TableGroup</string>
 					<key>Graphics</key>
 					<array>
 						<dict>
 							<key>Bounds</key>
-							<string>{{52.9, 162}, {72.8, 36.9999}}</string>
+							<string>{{125.7, 444}, {791.3, 110}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -57218,38 +57211,7 @@ assigned groups only}</string>
 								<real>12</real>
 							</dict>
 							<key>ID</key>
-							<integer>2840</integer>
-							<key>Shape</key>
-							<string>Rectangle</string>
-							<key>Style</key>
-							<dict/>
-							<key>Text</key>
-							<dict>
-								<key>Align</key>
-								<integer>0</integer>
-								<key>Text</key>
-								<string>{\rtf1\ansi\ansicpg1252\cocoartf1038\cocoasubrtf110
-{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
-{\colortbl;\red255\green255\blue255;}
-\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
-
-\f0\fs24 \cf0 2}</string>
-							</dict>
-						</dict>
-						<dict>
-							<key>Bounds</key>
-							<string>{{125.7, 389}, {791.3, 108}}</string>
-							<key>Class</key>
-							<string>ShapedGraphic</string>
-							<key>FontInfo</key>
-							<dict>
-								<key>Font</key>
-								<string>Helvetica</string>
-								<key>Size</key>
-								<real>12</real>
-							</dict>
-							<key>ID</key>
-							<integer>2846</integer>
+							<integer>2848</integer>
 							<key>Shape</key>
 							<string>Rectangle</string>
 							<key>Style</key>
@@ -57274,7 +57236,7 @@ assigned groups only}</string>
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{52.9, 264}, {72.8, 125}}</string>
+							<string>{{52.9, 211}, {72.8, 39}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -57285,7 +57247,7 @@ assigned groups only}</string>
 								<real>12</real>
 							</dict>
 							<key>ID</key>
-							<integer>2844</integer>
+							<integer>2841</integer>
 							<key>Shape</key>
 							<string>Rectangle</string>
 							<key>Style</key>
@@ -57300,12 +57262,12 @@ assigned groups only}</string>
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
 
-\f0\fs24 \cf0 4}</string>
+\f0\fs24 \cf0 2}</string>
 							</dict>
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{52.9, 389}, {72.8, 108}}</string>
+							<string>{{52.9, 102}, {72.8, 22}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -57316,7 +57278,7 @@ assigned groups only}</string>
 								<real>12</real>
 							</dict>
 							<key>ID</key>
-							<integer>2845</integer>
+							<integer>9</integer>
 							<key>Shape</key>
 							<string>Rectangle</string>
 							<key>Style</key>
@@ -57331,174 +57293,12 @@ assigned groups only}</string>
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
 
-\f0\fs24 \cf0 5}</string>
+\f0\fs24 \cf0 N/A}</string>
 							</dict>
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{125.7, 199}, {791.3, 65}}</string>
-							<key>Class</key>
-							<string>ShapedGraphic</string>
-							<key>FontInfo</key>
-							<dict>
-								<key>Font</key>
-								<string>Helvetica</string>
-								<key>Size</key>
-								<real>12</real>
-							</dict>
-							<key>ID</key>
-							<integer>2842</integer>
-							<key>Shape</key>
-							<string>Rectangle</string>
-							<key>Style</key>
-							<dict/>
-							<key>Text</key>
-							<dict>
-								<key>Align</key>
-								<integer>0</integer>
-								<key>Text</key>
-								<string>{\rtf1\ansi\ansicpg1252\cocoartf1038\cocoasubrtf110
-{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
-{\colortbl;\red255\green255\blue255;}
-\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
-
-\f0\b\fs24 \cf0 Select a Grader to Edit\
-\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
-
-\b0 \cf0 - Upon clicking the 'Select a grader to edit' drop-down, the system will display the list of users that have the section.role.ta permission and the gradebook.gradeSection permission.\
-- Upon selecting a user from the drop-down, the system will display all rules associated with that user.}</string>
-							</dict>
-						</dict>
-						<dict>
-							<key>Bounds</key>
-							<string>{{125.7, 102}, {791.3, 22}}</string>
-							<key>Class</key>
-							<string>ShapedGraphic</string>
-							<key>FontInfo</key>
-							<dict>
-								<key>Font</key>
-								<string>Helvetica</string>
-								<key>Size</key>
-								<real>12</real>
-							</dict>
-							<key>ID</key>
-							<integer>10</integer>
-							<key>Shape</key>
-							<string>Rectangle</string>
-							<key>Style</key>
-							<dict/>
-							<key>Text</key>
-							<dict>
-								<key>Align</key>
-								<integer>0</integer>
-								<key>Text</key>
-								<string>{\rtf1\ansi\ansicpg1252\cocoartf1038\cocoasubrtf110
-{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
-{\colortbl;\red255\green255\blue255;}
-\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
-
-\f0\fs24 \cf0 The user access this screen by clicking the 'Custom (Edit)' link from the A2 Permissions screen (AP-1).}</string>
-							</dict>
-						</dict>
-						<dict>
-							<key>Bounds</key>
-							<string>{{52.9, 497}, {72.8, 110}}</string>
-							<key>Class</key>
-							<string>ShapedGraphic</string>
-							<key>FontInfo</key>
-							<dict>
-								<key>Font</key>
-								<string>Helvetica</string>
-								<key>Size</key>
-								<real>12</real>
-							</dict>
-							<key>ID</key>
-							<integer>2847</integer>
-							<key>Shape</key>
-							<string>Rectangle</string>
-							<key>Style</key>
-							<dict/>
-							<key>Text</key>
-							<dict>
-								<key>Align</key>
-								<integer>0</integer>
-								<key>Text</key>
-								<string>{\rtf1\ansi\ansicpg1252\cocoartf1038\cocoasubrtf110
-{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
-{\colortbl;\red255\green255\blue255;}
-\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
-
-\f0\fs24 \cf0 6}</string>
-							</dict>
-						</dict>
-						<dict>
-							<key>Bounds</key>
-							<string>{{52.9, 607}, {72.8, 51}}</string>
-							<key>Class</key>
-							<string>ShapedGraphic</string>
-							<key>FontInfo</key>
-							<dict>
-								<key>Font</key>
-								<string>Helvetica</string>
-								<key>Size</key>
-								<real>12</real>
-							</dict>
-							<key>ID</key>
-							<integer>2849</integer>
-							<key>Shape</key>
-							<string>Rectangle</string>
-							<key>Style</key>
-							<dict/>
-							<key>Text</key>
-							<dict>
-								<key>Align</key>
-								<integer>0</integer>
-								<key>Text</key>
-								<string>{\rtf1\ansi\ansicpg1252\cocoartf1038\cocoasubrtf110
-{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
-{\colortbl;\red255\green255\blue255;}
-\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
-
-\f0\fs24 \cf0 7}</string>
-							</dict>
-						</dict>
-						<dict>
-							<key>Bounds</key>
-							<string>{{125.7, 124}, {791.3, 37.9999}}</string>
-							<key>Class</key>
-							<string>ShapedGraphic</string>
-							<key>FontInfo</key>
-							<dict>
-								<key>Font</key>
-								<string>Helvetica</string>
-								<key>Size</key>
-								<real>12</real>
-							</dict>
-							<key>ID</key>
-							<integer>12</integer>
-							<key>Shape</key>
-							<string>Rectangle</string>
-							<key>Style</key>
-							<dict/>
-							<key>Text</key>
-							<dict>
-								<key>Align</key>
-								<integer>0</integer>
-								<key>Text</key>
-								<string>{\rtf1\ansi\ansicpg1252\cocoartf1038\cocoasubrtf110
-{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
-{\colortbl;\red255\green255\blue255;}
-\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
-
-\f0\b\fs24 \cf0 Esc key or close\
-\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
-
-\b0 \cf0 - Upon clicking the 'close' link, the system will clear any changes, close the helper window and return the user to the A2 Permissions screen (AP-1).}</string>
-							</dict>
-						</dict>
-						<dict>
-							<key>Bounds</key>
-							<string>{{125.7, 162}, {791.3, 36.9999}}</string>
+							<string>{{125.7, 174}, {791.3, 36.9999}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -57524,59 +57324,15 @@ assigned groups only}</string>
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
 
-\f0\b\fs24 \cf0 Message\
+\f0\b\fs24 \cf0 Esc key or close\
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
 
-\b0 \cf0 - The system will display the following message to the user: "You are editing Gradebook permissions"}</string>
+\b0 \cf0 - Upon clicking the 'close' link, the system will clear any changes, close the helper window and return the user to the A2 Permissions screen (AP-1).}</string>
 							</dict>
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{52.9, 79.0002}, {72.8, 23}}</string>
-							<key>Class</key>
-							<string>ShapedGraphic</string>
-							<key>FontInfo</key>
-							<dict>
-								<key>Font</key>
-								<string>Helvetica-Bold</string>
-								<key>Size</key>
-								<real>14</real>
-							</dict>
-							<key>ID</key>
-							<integer>5</integer>
-							<key>Shape</key>
-							<string>Rectangle</string>
-							<key>Style</key>
-							<dict>
-								<key>fill</key>
-								<dict>
-									<key>Color</key>
-									<dict>
-										<key>b</key>
-										<string>0.874525</string>
-										<key>g</key>
-										<string>0.874525</string>
-										<key>r</key>
-										<string>0.874525</string>
-									</dict>
-								</dict>
-							</dict>
-							<key>Text</key>
-							<dict>
-								<key>Align</key>
-								<integer>0</integer>
-								<key>Text</key>
-								<string>{\rtf1\ansi\ansicpg1252\cocoartf1038\cocoasubrtf110
-{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
-{\colortbl;\red255\green255\blue255;}
-\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
-
-\f0\b\fs28 \cf0 Note #}</string>
-							</dict>
-						</dict>
-						<dict>
-							<key>Bounds</key>
-							<string>{{125.7, 607}, {791.3, 51}}</string>
+							<string>{{52.9, 124}, {72.8, 49.9998}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -57587,7 +57343,7 @@ assigned groups only}</string>
 								<real>12</real>
 							</dict>
 							<key>ID</key>
-							<integer>2850</integer>
+							<integer>11</integer>
 							<key>Shape</key>
 							<string>Rectangle</string>
 							<key>Style</key>
@@ -57602,47 +57358,7 @@ assigned groups only}</string>
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
 
-\f0\b\fs24 \cf0 Delete a Rule\
-\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
-
-\b0 \cf0 - If an instructor clicks the delete a rule icon (     ), then the system will remove that rule for the associated user and the change will take place once the instructor clicks 'Save Changes'.}</string>
-							</dict>
-						</dict>
-						<dict>
-							<key>Bounds</key>
-							<string>{{125.7, 264}, {791.3, 125}}</string>
-							<key>Class</key>
-							<string>ShapedGraphic</string>
-							<key>FontInfo</key>
-							<dict>
-								<key>Font</key>
-								<string>Helvetica</string>
-								<key>Size</key>
-								<real>12</real>
-							</dict>
-							<key>ID</key>
-							<integer>2843</integer>
-							<key>Shape</key>
-							<string>Rectangle</string>
-							<key>Style</key>
-							<dict/>
-							<key>Text</key>
-							<dict>
-								<key>Align</key>
-								<integer>0</integer>
-								<key>Text</key>
-								<string>{\rtf1\ansi\ansicpg1252\cocoartf1038\cocoasubrtf110
-{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
-{\colortbl;\red255\green255\blue255;}
-\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
-
-\f0\b\fs24 \cf0 Permission\
-\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
-
-\b0 \cf0 - The permissions that may be granted to a grader are 'Grade' or 'View'.\
-- If a user does not have the 'Grade' or 'View' permissions, then the system will not display the 'Gradebook Details' section on the View Student's Submission screen (VSS-1).\
-- If a user has the 'Grade' permission, then the system will display an editable 'Gradebook Details' section on the View Student's Submission screen (VSS-1) for the group(s) and/or the category or categories the user has permission to grade.\
-- If a user has the 'View' permission, then the system will display a non-editable 'Gradebook Details' section on the View Student's Submission screen (VSS-1) for the group(s) and/or the category or categories the user has permission to view.}</string>
+\f0\fs24 \cf0 N/A}</string>
 							</dict>
 						</dict>
 						<dict>
@@ -57691,7 +57407,7 @@ assigned groups only}</string>
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{52.9, 102}, {72.8, 22}}</string>
+							<string>{{125.7, 102}, {791.3, 22}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -57702,7 +57418,7 @@ assigned groups only}</string>
 								<real>12</real>
 							</dict>
 							<key>ID</key>
-							<integer>9</integer>
+							<integer>10</integer>
 							<key>Shape</key>
 							<string>Rectangle</string>
 							<key>Style</key>
@@ -57717,12 +57433,12 @@ assigned groups only}</string>
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
 
-\f0\fs24 \cf0 N/A}</string>
+\f0\fs24 \cf0 The user accessed this screen by clicking the 'Custom (Edit)' link from the A2 Permissions screen (AP-1).}</string>
 							</dict>
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{125.7, 497}, {791.3, 110}}</string>
+							<string>{{52.9, 174}, {72.8, 36.9999}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -57733,43 +57449,7 @@ assigned groups only}</string>
 								<real>12</real>
 							</dict>
 							<key>ID</key>
-							<integer>2848</integer>
-							<key>Shape</key>
-							<string>Rectangle</string>
-							<key>Style</key>
-							<dict/>
-							<key>Text</key>
-							<dict>
-								<key>Align</key>
-								<integer>0</integer>
-								<key>Text</key>
-								<string>{\rtf1\ansi\ansicpg1252\cocoartf1038\cocoasubrtf110
-{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
-{\colortbl;\red255\green255\blue255;}
-\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
-
-\f0\b\fs24 \cf0 Group Selector\
-\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
-
-\b0 \cf0 - The options available from the Groups drop-down are 'All Sections/Groups' and then a list of each group that has been created by the instructor or the system.\
-- If a user has permission to grade or view All Sections/Groups, then the user will see a 'Grade' link for all assignments that are linked to gradebook items.  If the user's permissions have been restricted by categories, see the Category Selector permission notes.\
-- if a user has permission to grade or view one or more individual sections or groups, then the user will only see the 'Grade' link for an assignment that accepts submissions from the users in the groups the user has permission to grade or view.}</string>
-							</dict>
-						</dict>
-						<dict>
-							<key>Bounds</key>
-							<string>{{52.9, 124}, {72.8, 37.9999}}</string>
-							<key>Class</key>
-							<string>ShapedGraphic</string>
-							<key>FontInfo</key>
-							<dict>
-								<key>Font</key>
-								<string>Helvetica</string>
-								<key>Size</key>
-								<real>12</real>
-							</dict>
-							<key>ID</key>
-							<integer>11</integer>
+							<integer>2840</integer>
 							<key>Shape</key>
 							<string>Rectangle</string>
 							<key>Style</key>
@@ -57789,7 +57469,7 @@ assigned groups only}</string>
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{52.9, 199}, {72.8, 65}}</string>
+							<string>{{125.7, 250}, {791.3, 70}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -57800,7 +57480,146 @@ assigned groups only}</string>
 								<real>12</real>
 							</dict>
 							<key>ID</key>
-							<integer>2841</integer>
+							<integer>2843</integer>
+							<key>Shape</key>
+							<string>Rectangle</string>
+							<key>Style</key>
+							<dict/>
+							<key>Text</key>
+							<dict>
+								<key>Align</key>
+								<integer>0</integer>
+								<key>Text</key>
+								<string>{\rtf1\ansi\ansicpg1252\cocoartf1038\cocoasubrtf110
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+
+\f0\b\fs24 \cf0 Select a Grader to Edit\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+
+\b0 \cf0 - Upon clicking the 'Select a grader to edit' drop-down, the system will display the list of users that have the section.role.ta permission and the gradebook.gradeSection permission.\
+- Upon selecting a user from the drop-down, the system will display all rules associated with that user.}</string>
+							</dict>
+						</dict>
+						<dict>
+							<key>Bounds</key>
+							<string>{{125.7, 124}, {791.3, 49.9998}}</string>
+							<key>Class</key>
+							<string>ShapedGraphic</string>
+							<key>FontInfo</key>
+							<dict>
+								<key>Font</key>
+								<string>Helvetica</string>
+								<key>Size</key>
+								<real>12</real>
+							</dict>
+							<key>ID</key>
+							<integer>12</integer>
+							<key>Shape</key>
+							<string>Rectangle</string>
+							<key>Style</key>
+							<dict/>
+							<key>Text</key>
+							<dict>
+								<key>Align</key>
+								<integer>0</integer>
+								<key>Text</key>
+								<string>{\rtf1\ansi\ansicpg1252\cocoartf1038\cocoasubrtf110
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+
+\f0\b\fs24 \cf0 Default Permissions\
+
+\b0 - By default, the AI/TA role and librarian+ role will have permission to grade those students in his/her assigned group(s).  To change the default permissions, users with the site.upd permission may add Grader Permissions as described below.}</string>
+							</dict>
+						</dict>
+						<dict>
+							<key>Bounds</key>
+							<string>{{125.7, 320}, {791.3, 124}}</string>
+							<key>Class</key>
+							<string>ShapedGraphic</string>
+							<key>FontInfo</key>
+							<dict>
+								<key>Font</key>
+								<string>Helvetica</string>
+								<key>Size</key>
+								<real>12</real>
+							</dict>
+							<key>ID</key>
+							<integer>2846</integer>
+							<key>Shape</key>
+							<string>Rectangle</string>
+							<key>Style</key>
+							<dict/>
+							<key>Text</key>
+							<dict>
+								<key>Align</key>
+								<integer>0</integer>
+								<key>Text</key>
+								<string>{\rtf1\ansi\ansicpg1252\cocoartf1038\cocoasubrtf110
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+
+\f0\b\fs24 \cf0 Permission\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+
+\b0 \cf0 - The permissions that may be granted to a grader are 'Grade' or 'View'.\
+- If a user does not have the 'Grade' or 'View' permissions, then the system will not display the 'Gradebook Details' section on the View Student's Submission screen (VSS-1).\
+- If a user has the 'Grade' permission, then the system will display an editable 'Gradebook Details' section on the View Student's Submission screen (VSS-1) for the group(s) and/or the category or categories the user has permission to grade.\
+- If a user has the 'View' permission, then the system will display a non-editable 'Gradebook Details' section on the View Student's Submission screen (VSS-1) for the group(s) and/or the category or categories the user has permission to view.}</string>
+							</dict>
+						</dict>
+						<dict>
+							<key>Bounds</key>
+							<string>{{125.7, 211}, {791.3, 39}}</string>
+							<key>Class</key>
+							<string>ShapedGraphic</string>
+							<key>FontInfo</key>
+							<dict>
+								<key>Font</key>
+								<string>Helvetica</string>
+								<key>Size</key>
+								<real>12</real>
+							</dict>
+							<key>ID</key>
+							<integer>2842</integer>
+							<key>Shape</key>
+							<string>Rectangle</string>
+							<key>Style</key>
+							<dict/>
+							<key>Text</key>
+							<dict>
+								<key>Align</key>
+								<integer>0</integer>
+								<key>Text</key>
+								<string>{\rtf1\ansi\ansicpg1252\cocoartf1038\cocoasubrtf110
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+
+\f0\b\fs24 \cf0 Message\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+
+\b0 \cf0 - The system will display the following message to the user: "You are editing Gradebook permissions"}</string>
+							</dict>
+						</dict>
+						<dict>
+							<key>Bounds</key>
+							<string>{{52.9, 250}, {72.8, 70}}</string>
+							<key>Class</key>
+							<string>ShapedGraphic</string>
+							<key>FontInfo</key>
+							<dict>
+								<key>Font</key>
+								<string>Helvetica</string>
+								<key>Size</key>
+								<real>12</real>
+							</dict>
+							<key>ID</key>
+							<integer>2844</integer>
 							<key>Shape</key>
 							<string>Rectangle</string>
 							<key>Style</key>
@@ -57818,70 +57637,170 @@ assigned groups only}</string>
 \f0\fs24 \cf0 3}</string>
 							</dict>
 						</dict>
+						<dict>
+							<key>Bounds</key>
+							<string>{{52.9, 320}, {72.8, 124}}</string>
+							<key>Class</key>
+							<string>ShapedGraphic</string>
+							<key>FontInfo</key>
+							<dict>
+								<key>Font</key>
+								<string>Helvetica</string>
+								<key>Size</key>
+								<real>12</real>
+							</dict>
+							<key>ID</key>
+							<integer>2845</integer>
+							<key>Shape</key>
+							<string>Rectangle</string>
+							<key>Style</key>
+							<dict/>
+							<key>Text</key>
+							<dict>
+								<key>Align</key>
+								<integer>0</integer>
+								<key>Text</key>
+								<string>{\rtf1\ansi\ansicpg1252\cocoartf1038\cocoasubrtf110
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+
+\f0\fs24 \cf0 4}</string>
+							</dict>
+						</dict>
+						<dict>
+							<key>Bounds</key>
+							<string>{{52.9, 79.0002}, {72.8, 23}}</string>
+							<key>Class</key>
+							<string>ShapedGraphic</string>
+							<key>FontInfo</key>
+							<dict>
+								<key>Font</key>
+								<string>Helvetica-Bold</string>
+								<key>Size</key>
+								<real>14</real>
+							</dict>
+							<key>ID</key>
+							<integer>5</integer>
+							<key>Shape</key>
+							<string>Rectangle</string>
+							<key>Style</key>
+							<dict>
+								<key>fill</key>
+								<dict>
+									<key>Color</key>
+									<dict>
+										<key>b</key>
+										<string>0.874525</string>
+										<key>g</key>
+										<string>0.874525</string>
+										<key>r</key>
+										<string>0.874525</string>
+									</dict>
+								</dict>
+							</dict>
+							<key>Text</key>
+							<dict>
+								<key>Align</key>
+								<integer>0</integer>
+								<key>Text</key>
+								<string>{\rtf1\ansi\ansicpg1252\cocoartf1038\cocoasubrtf110
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+
+\f0\b\fs28 \cf0 Note #}</string>
+							</dict>
+						</dict>
+						<dict>
+							<key>Bounds</key>
+							<string>{{52.9, 444}, {72.8, 110}}</string>
+							<key>Class</key>
+							<string>ShapedGraphic</string>
+							<key>FontInfo</key>
+							<dict>
+								<key>Font</key>
+								<string>Helvetica</string>
+								<key>Size</key>
+								<real>12</real>
+							</dict>
+							<key>ID</key>
+							<integer>2847</integer>
+							<key>Shape</key>
+							<string>Rectangle</string>
+							<key>Style</key>
+							<dict/>
+							<key>Text</key>
+							<dict>
+								<key>Align</key>
+								<integer>0</integer>
+								<key>Text</key>
+								<string>{\rtf1\ansi\ansicpg1252\cocoartf1038\cocoasubrtf110
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+
+\f0\fs24 \cf0 5}</string>
+							</dict>
+						</dict>
 					</array>
 					<key>GridH</key>
 					<array>
 						<array>
-							<integer>5</integer>
 							<integer>6</integer>
+							<integer>5</integer>
 						</array>
 						<array>
-							<integer>10</integer>
 							<integer>9</integer>
+							<integer>10</integer>
 						</array>
 						<array>
-							<integer>12</integer>
 							<integer>11</integer>
+							<integer>12</integer>
 						</array>
 						<array>
-							<integer>2840</integer>
 							<integer>2839</integer>
+							<integer>2840</integer>
 						</array>
 						<array>
-							<integer>2842</integer>
 							<integer>2841</integer>
+							<integer>2842</integer>
 						</array>
 						<array>
-							<integer>2844</integer>
 							<integer>2843</integer>
+							<integer>2844</integer>
 						</array>
 						<array>
 							<integer>2846</integer>
 							<integer>2845</integer>
 						</array>
 						<array>
-							<integer>2847</integer>
 							<integer>2848</integer>
-						</array>
-						<array>
-							<integer>2849</integer>
-							<integer>2850</integer>
+							<integer>2847</integer>
 						</array>
 						<array/>
 					</array>
 					<key>GridV</key>
 					<array>
 						<array>
+							<integer>2841</integer>
+							<integer>9</integer>
+							<integer>11</integer>
 							<integer>2840</integer>
 							<integer>2844</integer>
 							<integer>2845</integer>
-							<integer>2847</integer>
-							<integer>2849</integer>
 							<integer>5</integer>
-							<integer>9</integer>
-							<integer>11</integer>
-							<integer>2841</integer>
+							<integer>2847</integer>
 						</array>
 						<array>
+							<integer>2848</integer>
+							<integer>2839</integer>
+							<integer>6</integer>
+							<integer>10</integer>
+							<integer>2843</integer>
+							<integer>12</integer>
 							<integer>2846</integer>
 							<integer>2842</integer>
-							<integer>10</integer>
-							<integer>12</integer>
-							<integer>2839</integer>
-							<integer>2850</integer>
-							<integer>2843</integer>
-							<integer>6</integer>
-							<integer>2848</integer>
 						</array>
 						<array/>
 					</array>
@@ -58037,13 +57956,43 @@ assigned groups only}</string>
 			<key>GraphicsList</key>
 			<array>
 				<dict>
+					<key>Bounds</key>
+					<string>{{369, 226}, {16, 16}}</string>
+					<key>Class</key>
+					<string>ShapedGraphic</string>
+					<key>ID</key>
+					<integer>4592</integer>
+					<key>ImageID</key>
+					<integer>39</integer>
+					<key>Shape</key>
+					<string>Rectangle</string>
+					<key>Style</key>
+					<dict>
+						<key>fill</key>
+						<dict>
+							<key>Draws</key>
+							<string>NO</string>
+						</dict>
+						<key>shadow</key>
+						<dict>
+							<key>Draws</key>
+							<string>NO</string>
+						</dict>
+						<key>stroke</key>
+						<dict>
+							<key>Draws</key>
+							<string>NO</string>
+						</dict>
+					</dict>
+				</dict>
+				<dict>
 					<key>Class</key>
 					<string>TableGroup</string>
 					<key>Graphics</key>
 					<array>
 						<dict>
 							<key>Bounds</key>
-							<string>{{52.9, 79.0002}, {72.8, 23}}</string>
+							<string>{{52.9, 81}, {72.8, 23}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -58087,7 +58036,7 @@ assigned groups only}</string>
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{125.7, 79.0002}, {791.3, 23}}</string>
+							<string>{{125.7, 81}, {791.3, 23}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -58131,7 +58080,7 @@ assigned groups only}</string>
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{52.9, 102}, {72.8, 45}}</string>
+							<string>{{52.9, 104}, {72.8, 104}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -58157,12 +58106,12 @@ assigned groups only}</string>
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
 
-\f0\fs24 \cf0 8}</string>
+\f0\fs24 \cf0 6}</string>
 							</dict>
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{125.7, 102}, {791.3, 45}}</string>
+							<string>{{125.7, 104}, {791.3, 104}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -58188,15 +58137,17 @@ assigned groups only}</string>
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
 
-\f0\b\fs24 \cf0 Add a Rule\
+\f0\b\fs24 \cf0 Group Selector\
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
 
-\b0 \cf0 - If an instructor clicks 'Add a rule', then the system will add a new rule for the associated user with the following default settings: Permission: View, Category: All Categories, and Sections/Groups: All Sections/Groups.}</string>
+\b0 \cf0 - The options available from the Groups drop-down are 'All Sections/Groups' and then a list of each group that has been created by the instructor or the system.\
+- If a user has permission to grade or view All Sections/Groups, then the user will see a 'Grade' link for all assignments that are linked to gradebook items.  If the user's permissions have been restricted by categories, see the Category Selector permission notes.\
+- if a user has permission to grade or view one or more individual sections or groups, then the user will only see the 'Grade' link for an assignment that accepts submissions from the users in the groups the user has permission to grade or view.}</string>
 							</dict>
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{125.7, 147}, {791.3, 51}}</string>
+							<string>{{125.7, 208}, {791.3, 51}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -58222,15 +58173,15 @@ assigned groups only}</string>
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
 
-\f0\b\fs24 \cf0 Save Changes\
+\f0\b\fs24 \cf0 Delete a Rule\
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
 
-\b0 \cf0 - Upon clicking 'Save Changes', the system will save any changes made to the rules for each user edited, close the helper window, and return the user to the A2 Permissions screen (AP-1).}</string>
+\b0 \cf0 - If an instructor clicks the delete a rule icon (     ), then the system will remove that rule for the associated user and the change will take place once the instructor clicks 'Save Changes'.}</string>
 							</dict>
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{52.9, 147}, {72.8, 51}}</string>
+							<string>{{52.9, 208}, {72.8, 51}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -58256,12 +58207,12 @@ assigned groups only}</string>
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
 
-\f0\fs24 \cf0 9}</string>
+\f0\fs24 \cf0 7}</string>
 							</dict>
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{52.9, 198}, {72.8, 51}}</string>
+							<string>{{52.9, 259}, {72.8, 51}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -58287,12 +58238,12 @@ assigned groups only}</string>
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
 
-\f0\fs24 \cf0 10}</string>
+\f0\fs24 \cf0 8}</string>
 							</dict>
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{125.7, 198}, {791.3, 51}}</string>
+							<string>{{125.7, 259}, {791.3, 51}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -58304,6 +58255,136 @@ assigned groups only}</string>
 							</dict>
 							<key>ID</key>
 							<integer>2858</integer>
+							<key>Shape</key>
+							<string>Rectangle</string>
+							<key>Style</key>
+							<dict/>
+							<key>Text</key>
+							<dict>
+								<key>Align</key>
+								<integer>0</integer>
+								<key>Text</key>
+								<string>{\rtf1\ansi\ansicpg1252\cocoartf1038\cocoasubrtf110
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+
+\f0\b\fs24 \cf0 Add a Rule\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+
+\b0 \cf0 - If an instructor clicks 'Add a rule', then the system will add a new rule for the associated user with the following default settings: Permission: View, Category: All Categories, and Sections/Groups: All Sections/Groups.}</string>
+							</dict>
+						</dict>
+						<dict>
+							<key>Bounds</key>
+							<string>{{52.9, 310}, {72.8, 51}}</string>
+							<key>Class</key>
+							<string>ShapedGraphic</string>
+							<key>FontInfo</key>
+							<dict>
+								<key>Font</key>
+								<string>Helvetica</string>
+								<key>Size</key>
+								<real>12</real>
+							</dict>
+							<key>ID</key>
+							<integer>2859</integer>
+							<key>Shape</key>
+							<string>Rectangle</string>
+							<key>Style</key>
+							<dict/>
+							<key>Text</key>
+							<dict>
+								<key>Align</key>
+								<integer>0</integer>
+								<key>Text</key>
+								<string>{\rtf1\ansi\ansicpg1252\cocoartf1038\cocoasubrtf110
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+
+\f0\fs24 \cf0 9}</string>
+							</dict>
+						</dict>
+						<dict>
+							<key>Bounds</key>
+							<string>{{125.7, 310}, {791.3, 51}}</string>
+							<key>Class</key>
+							<string>ShapedGraphic</string>
+							<key>FontInfo</key>
+							<dict>
+								<key>Font</key>
+								<string>Helvetica</string>
+								<key>Size</key>
+								<real>12</real>
+							</dict>
+							<key>ID</key>
+							<integer>2860</integer>
+							<key>Shape</key>
+							<string>Rectangle</string>
+							<key>Style</key>
+							<dict/>
+							<key>Text</key>
+							<dict>
+								<key>Align</key>
+								<integer>0</integer>
+								<key>Text</key>
+								<string>{\rtf1\ansi\ansicpg1252\cocoartf1038\cocoasubrtf110
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+
+\f0\b\fs24 \cf0 Save Changes\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+
+\b0 \cf0 - Upon clicking 'Save Changes', the system will save any changes made to the rules for each user edited, close the helper window, and return the user to the A2 Permissions screen (AP-1).}</string>
+							</dict>
+						</dict>
+						<dict>
+							<key>Bounds</key>
+							<string>{{52.9, 361}, {72.8, 51}}</string>
+							<key>Class</key>
+							<string>ShapedGraphic</string>
+							<key>FontInfo</key>
+							<dict>
+								<key>Font</key>
+								<string>Helvetica</string>
+								<key>Size</key>
+								<real>12</real>
+							</dict>
+							<key>ID</key>
+							<integer>4593</integer>
+							<key>Shape</key>
+							<string>Rectangle</string>
+							<key>Style</key>
+							<dict/>
+							<key>Text</key>
+							<dict>
+								<key>Align</key>
+								<integer>0</integer>
+								<key>Text</key>
+								<string>{\rtf1\ansi\ansicpg1252\cocoartf1038\cocoasubrtf110
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+
+\f0\fs24 \cf0 10}</string>
+							</dict>
+						</dict>
+						<dict>
+							<key>Bounds</key>
+							<string>{{125.7, 361}, {791.3, 51}}</string>
+							<key>Class</key>
+							<string>ShapedGraphic</string>
+							<key>FontInfo</key>
+							<dict>
+								<key>Font</key>
+								<string>Helvetica</string>
+								<key>Size</key>
+								<real>12</real>
+							</dict>
+							<key>ID</key>
+							<integer>4594</integer>
 							<key>Shape</key>
 							<string>Rectangle</string>
 							<key>Style</key>
@@ -58343,6 +58424,14 @@ assigned groups only}</string>
 							<integer>2857</integer>
 							<integer>2858</integer>
 						</array>
+						<array>
+							<integer>2859</integer>
+							<integer>2860</integer>
+						</array>
+						<array>
+							<integer>4593</integer>
+							<integer>4594</integer>
+						</array>
 						<array/>
 					</array>
 					<key>GridV</key>
@@ -58352,12 +58441,16 @@ assigned groups only}</string>
 							<integer>2851</integer>
 							<integer>2856</integer>
 							<integer>2857</integer>
+							<integer>2859</integer>
+							<integer>4593</integer>
 						</array>
 						<array>
 							<integer>6</integer>
 							<integer>2852</integer>
 							<integer>2855</integer>
 							<integer>2858</integer>
+							<integer>2860</integer>
+							<integer>4594</integer>
 						</array>
 						<array/>
 					</array>
@@ -58477,11 +58570,11 @@ assigned groups only}</string>
 	<key>WindowInfo</key>
 	<dict>
 		<key>CurrentSheet</key>
-		<integer>6</integer>
+		<integer>0</integer>
 		<key>ExpandedCanvases</key>
 		<array/>
 		<key>Frame</key>
-		<string>{{261, 223}, {1227, 795}}</string>
+		<string>{{703, 342}, {1227, 795}}</string>
 		<key>ListView</key>
 		<true/>
 		<key>OutlineWidth</key>
