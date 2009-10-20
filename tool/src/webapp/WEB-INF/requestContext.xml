@@ -217,13 +217,6 @@
    <bean class="org.sakaiproject.assignment2.tool.producers.AssignmentGradeReportProducer">
    </bean>
 
-   <bean class="org.sakaiproject.assignment2.tool.producers.ListReorderProducer">
-   	  <property name="messageLocator" ref="messageLocator" />
-   	  <property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
-   	  <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
-      <property name="locale" ref="requestLocale" />
-   </bean>
-   
    <!-- As part of ASNN-466 Replacing this with a more lightweight producer for
         building up the Fluid powered page. -->
    

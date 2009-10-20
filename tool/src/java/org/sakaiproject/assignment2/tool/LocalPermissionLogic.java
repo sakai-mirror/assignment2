@@ -107,10 +107,8 @@ public class LocalPermissionLogic {
             // doing better checking of what information users can see in the 
             // future from the JSON feed, so folks can make mashups.
             return permissionLogic.isCurrentUserAbleToEditAssignments(contextId);
-        } else if (ListReorderProducer.VIEW_ID.equals(viewId)) {
-            return permissionLogic.isCurrentUserAbleToEditAssignments(contextId);
-
-        } else if (AssignmentProducer.VIEW_ID.equals(viewId)) {
+        }
+        else if (AssignmentProducer.VIEW_ID.equals(viewId)) {
             return permissionLogic.isCurrentUserAbleToEditAssignments(contextId);
 
         } else if (FinishedHelperProducer.VIEWID.equals(viewId)) {
