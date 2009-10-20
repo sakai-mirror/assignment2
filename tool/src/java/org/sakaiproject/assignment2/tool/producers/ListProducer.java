@@ -23,15 +23,10 @@ package org.sakaiproject.assignment2.tool.producers;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
-import org.sakaiproject.assignment2.logic.AssignmentLogic;
-import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
-import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.tool.api.Placement;
 
-import uk.org.ponder.messageutil.MessageLocator;
 import uk.org.ponder.rsf.components.UIContainer;
 import uk.org.ponder.rsf.components.UIVerbatim;
 import uk.org.ponder.rsf.flow.jsfnav.NavigationCase;
