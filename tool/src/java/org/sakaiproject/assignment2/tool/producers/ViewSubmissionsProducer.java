@@ -103,9 +103,6 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
     public static final String DEFAULT_OPPOSITE_SORT_DIR = AssignmentLogic.SORT_DIR_DESC;
     public static final String DEFAULT_SORT_BY = AssignmentSubmissionLogic.SORT_BY_NAME;
 
-    private String current_sort_by = DEFAULT_SORT_BY;
-    private String current_sort_dir = DEFAULT_SORT_DIR;
-
     //images
     public static final String BULLET_UP_IMG_SRC = "/sakai-assignment2-tool/content/images/bullet_arrow_up.png";
     public static final String BULLET_DOWN_IMG_SRC = "/sakai-assignment2-tool/content/images/bullet_arrow_down.png";
@@ -116,7 +113,6 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
     private TargettedMessageList messages;
     private ExternalLogic externalLogic;
     private Locale locale;
-    private AttachmentListRenderer attachmentListRenderer;
     private AssignmentPermissionLogic permissionLogic;
     private ExternalGradebookLogic gradebookLogic;
     private ExternalContentReviewLogic contentReviewLogic;
@@ -170,8 +166,7 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
         //get parameters
         if (params.sort_by == null) params.sort_by = DEFAULT_SORT_BY;
         if (params.sort_dir == null) params.sort_dir = DEFAULT_SORT_DIR;
-        current_sort_by = params.sort_by;
-        current_sort_dir = params.sort_dir;
+
         UIVerbatim.make(tofill, "defaultSortBy", HTMLUtil.emitJavascriptVar("defaultSortBy", DEFAULT_SORT_BY));
 
         // we need to retrieve the history for the release/retract feedback logic
@@ -539,10 +534,6 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
 
     public void setLocale(Locale locale) {
         this.locale = locale;
-    }
-
-    public void setAttachmentListRenderer(AttachmentListRenderer attachmentListRenderer){
-        this.attachmentListRenderer = attachmentListRenderer;
     }
 
     public void setPermissionLogic(AssignmentPermissionLogic permissionLogic) {
