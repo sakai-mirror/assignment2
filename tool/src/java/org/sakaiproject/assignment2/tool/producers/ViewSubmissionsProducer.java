@@ -50,7 +50,6 @@ import org.sakaiproject.assignment2.tool.params.AssignmentViewParams;
 import org.sakaiproject.assignment2.tool.params.ViewSubmissionsViewParams;
 import org.sakaiproject.assignment2.tool.params.ZipViewParams;
 import org.sakaiproject.assignment2.tool.producers.renderers.AttachmentListRenderer;
-import org.sakaiproject.assignment2.tool.producers.renderers.PagerRenderer;
 import org.sakaiproject.site.api.Group;
 import org.sakaiproject.tool.api.Placement;
 
@@ -111,7 +110,6 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
     public static final String BULLET_UP_IMG_SRC = "/sakai-assignment2-tool/content/images/bullet_arrow_up.png";
     public static final String BULLET_DOWN_IMG_SRC = "/sakai-assignment2-tool/content/images/bullet_arrow_down.png";
 
-    private PagerRenderer pagerRenderer;
     private MessageLocator messageLocator;
     private AssignmentLogic assignmentLogic;
     private AssignmentSubmissionLogic submissionLogic;
@@ -300,9 +298,6 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
         }
 
         UIMessage.make(tofill, "page-title", "assignment2.assignment_grade-assignment.title");
-        //navBarRenderer.makeNavBar(tofill, "navIntraTool:", VIEW_ID);
-        pagerRenderer.makePager(tofill, "pagerDiv:", VIEW_ID, viewparams, submissions.size());
-        //UIMessage.make(tofill, "heading", "assignment2.assignment_grade-assignment.heading", new Object[] { assignment.getTitle() });
 
         // now make the "View By Sections/Groups" filter
         makeViewByGroupFilter(tofill, params, assignment);
@@ -524,10 +519,6 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
 
     public void setMessageLocator(MessageLocator messageLocator) {
         this.messageLocator = messageLocator;
-    }
-
-    public void setPagerRenderer(PagerRenderer pagerRenderer){
-        this.pagerRenderer = pagerRenderer;
     }
 
     public void setAssignmentLogic(AssignmentLogic assignmentLogic) {

@@ -22,7 +22,6 @@
 package org.sakaiproject.assignment2.tool.producers;
 
 import org.sakaiproject.assignment2.tool.params.PagerViewParams;
-import org.sakaiproject.assignment2.tool.producers.renderers.PagerRenderer;
 
 import uk.org.ponder.rsf.components.UIContainer;
 import uk.org.ponder.rsf.components.UIMessage;
@@ -38,15 +37,13 @@ public class AssignmentGradeReportProducer implements ViewComponentProducer, Vie
         return VIEW_ID;
     }
 
-    private PagerRenderer pagerRenderer;
-
     public void fillComponents(UIContainer tofill, ViewParameters viewparams, ComponentChecker checker) {
         PagerViewParams pagerparams = (PagerViewParams) viewparams;
 
         Integer total_count = 0;
 
         UIMessage.make(tofill, "page-title", "assignment2.assignment_grade-report.title");
-        pagerRenderer.makePager(tofill, "pagerDiv:", VIEW_ID, pagerparams, total_count);
+        //pagerRenderer.makePager(tofill, "pagerDiv:", VIEW_ID, pagerparams, total_count);
         UIMessage.make(tofill, "heading", "assignment2.assignment_grade-report.heading");
 
     }
@@ -55,7 +52,4 @@ public class AssignmentGradeReportProducer implements ViewComponentProducer, Vie
         return new PagerViewParams();
     }
 
-    public void setPagerRenderer(PagerRenderer pagerRenderer) {
-        this.pagerRenderer = pagerRenderer;
-    }
 }

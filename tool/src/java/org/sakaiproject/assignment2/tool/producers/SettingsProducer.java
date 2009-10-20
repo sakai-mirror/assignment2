@@ -36,8 +36,6 @@ public class SettingsProducer implements ViewComponentProducer
         // Main form for the settings
         UIForm form = UIForm.make(tofill, "settings-form");
 
-
-
         // Post Buttons
         UICommand.make(form, "save_settings", UIMessage.make("assignment2.settings.save"), null);
         UICommand.make(form, "cancel_settings", UIMessage.make("assignment2.settings.cancel"), null);
