@@ -60,8 +60,6 @@
    <!-- The view by sections filter -->
 
    <div class="viewFilter" >
-
-
        <div class="groupFilterContainer">
            <form rsf:id="group_filter_form" method="get">
                 <label rsf:id="msg=assignment2.assignment_grade.filter.label" for="group_filter">View</label>
@@ -69,33 +67,7 @@
                 </select>
            </form>
        </div>
-
-
    </div> 
-<!-- 
-   <table class="listHier lines nolines" cellpadding="0" cellspacing="0" id="sortable">
-      <tr>
-         <th rsf:id="tableheader.student:"></th>
-         <th rsf:id="tableheader.submitted:"></th>
-         <th rsf:id="tableheader.status:"></th>
-         <th rsf:id="tableheader.grade:"></th>
-         <th rsf:id="tableheader.released:"></th>
-      </tr>
-
-      <tr rsf:id="row:">
-         <td><a rsf:id="row_grade_link" class="name">Student Name</a></td>
-         <td rsf:id="row_submitted" class="submitDate">&nbsp;</td>
-         <td rsf:id="row_status" class="status">Ungraded</td>
-         <td rsf:id="row_grade" class="grade">&nbsp;</td>
-         <td><img rsf:id="row_released" src="/sakai-assignment2-tool/content/images/check.png" width="16" height="16" border="0" /></td>
-         <td class="skip">
-            <span class="released"></span>
-         </td>
-      </tr>
-
-   </table>
-    -->
-
 
    <div style="display:none" id="release-feedback-dialog">
           <h3 rsf:id="msg=assignment2.dialogs.release_all_feedback.title">Title for Release Feedback</h3>
@@ -175,37 +147,14 @@
     </div>
 </div>
 
-<!--
-      <div class="flc-pager-top">
-         <div class="ssth-border flc-pager-summary">
-            Records Total
-         </div>
-         <select class="pager-page-size flc-pager-page-size">
-            <option value="5">View 5 Per Page</option>
-            <option value="10">View 10 Per Page</option>
-            <option value="20">View 20 Per Page</option>
-         </select>
-         <ul class="fl-pager-ui">
-            <li><a href="#" class="flc-pager-previous">Prev</a></li>
-            <li><a href="#" class="flc-pager-next">Next</a></li>
-            <li>
-               <ul class="fl-pager-links pager-links flc-pager-links">
-                  <li class="fl-pager-pageLink flc-pager-pageLink"><a href="#">1</a></li>
-                  <li class="flc-pager-pageLink-disabled">2</li>
-                  <li class="fl-pager-pageLink flc-pager-pageLink"><a href="#">3</a></li>
-               </ul>
-            </li>
-         </ul>
+    <form rsf:id="unassigned-apply-form0:" method="post">
+       <div class="unassigned-apply">
+          <p>
+             <input rsf:id="new-grade-value" type="text" size="4" value="0" />
+             <input rsf:id="apply-button" id="apply-button" type="submit" value="Apply" class="unassigned-apply-button"/>
+          </p>
       </div>
--->
-			<form rsf:id="unassigned-apply-form0:" method="post">
-	       <div class="unassigned-apply">
-	          <p>
-	             <input rsf:id="new-grade-value" type="text" size="4" value="0" />
-	             <input rsf:id="apply-button" id="apply-button" type="submit" value="Apply" class="unassigned-apply-button"/>
-	          </p>
-	      </div>
-	    </form>
+    </form>
 
       <table id="asnn-submissions-table" class="listHier lines nolines fl-pager-data" cellpadding="0" cellspacing="0" summary="" xmlns:rsf="http://ponder.org.uk">
          <thead>
@@ -276,7 +225,7 @@
         <li class="flc-pager-pageLink"><a href="#">3</a></li>
       </ul>
       <p id="page-size-bottom">
-	<span class="flc-pager-summary">1-10 of 500 items</span>
+    <span class="flc-pager-summary">1-10 of 500 items</span>
       </p>
       <p id="page-arrows-bottom">
       <span class="fl-pager-previous flc-pager-previous"><a href="#">&lt; previous</a></span>

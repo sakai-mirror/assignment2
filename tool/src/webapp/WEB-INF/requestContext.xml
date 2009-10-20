@@ -87,10 +87,7 @@
    <bean id="PagerRenderer" class="org.sakaiproject.assignment2.tool.producers.renderers.PagerRenderer">
       <property name="messageLocator" ref="messageLocator" />
    </bean>
-   
-   <bean id="SortHeaderRenderer" class="org.sakaiproject.assignment2.tool.producers.renderers.SortHeaderRenderer" />
-   
-      
+
    <bean id="ReviewStatusRenderer" class="org.sakaiproject.assignment2.tool.producers.renderers.ReviewStatusRenderer">
       <property name="externalContentReviewLogic" ref="org.sakaiproject.assignment2.logic.ExternalContentReviewLogic" />
       <property name="messageLocator" ref="messageLocator" />
@@ -210,7 +207,6 @@
       <property name="messages" ref="targettedMessageList" />
       <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
       <property name="locale" ref="requestLocale" />
-      <property name="sortHeaderRenderer" ref="SortHeaderRenderer" />
       <property name="attachmentListRenderer" ref="AttachmentListRenderer" />
       <property name="permissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentPermissionLogic" />
       <property name="externalGradebookLogic" ref="org.sakaiproject.assignment2.logic.ExternalGradebookLogic" />
