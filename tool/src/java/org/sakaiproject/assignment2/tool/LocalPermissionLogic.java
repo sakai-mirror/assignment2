@@ -123,10 +123,8 @@ public class LocalPermissionLogic {
 
             return Boolean.FALSE;
 
-        } else if (SettingsProducer.VIEW_ID.equals(viewId)) {
-            return Boolean.TRUE;         
-
-        } else if (StudentAssignmentListProducer.VIEW_ID.equals(viewId)) {
+        } 
+        else if (StudentAssignmentListProducer.VIEW_ID.equals(viewId)) {
             return permissionLogic.isCurrentUserAbleToSubmit(contextId);
 
         } else if (StudentSubmitProducer.VIEW_ID.equals(viewId)) {
