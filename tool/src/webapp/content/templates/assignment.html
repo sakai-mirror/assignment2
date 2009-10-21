@@ -144,15 +144,24 @@
     
       <fieldset rsf:id="tii_content_review_area" id="">
         <legend rsf:id="msg=assignment2.turnitin.asnnedit.title">Turnitin</legend>
-        <div style="clear:both">
+
+        <div rsf:id="tii_errors" class="generalErrors">
+          <div style="display:inline">
+            <ul style="margin:0;padding:0;display:inline;">
+              <li rsf:id="tii_errormsg:" class="alertMessageInline">My apologies, but there seems to have been an error. Please note the time/date and the server you are on (located in the footer) and contact the support center for assistance resolving this problem.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div id="tii_enabled_area" rsf:id="tii_enabled_area" style="clear:both">
             <p class="asnnOptionsSubsection">
               <input type="checkbox" rsf:id="use_tii" id="use_tii" />
               <label for="use_tii" rsf:id="msg=assignment2.turnitin.asnnedit.use_turnitin" id="">Use Turnitin</label>
-        			<span class="inlineMessage messageConfirmation" style="display: none;" id="tii_attach_warning" rsf:id="msg=assignment2.turnitin.asnnedit.attachment.warning">Turnitin supports attachments only. Reports will not be generated for text-only submissions!!</span>
+              <span class="inlineMessage messageConfirmation" style="display: none;" id="tii_attach_warning" rsf:id="msg=assignment2.turnitin.asnnedit.attachment.warning">Turnitin supports attachments only. Reports will not be generated for text-only submissions!!</span>
             </p>
             
         </div>
-        <div id="tii_properties" style="clear:both; display: none;">
+        <div id="tii_properties" rsf:id="tii_properties" style="clear:both; display: none;">
           <ol class="asnnOptionsSubsection">
               
               <li rsf:id="submit_to_options">
@@ -427,7 +436,7 @@ jQuery(document).ready(function(){
     jQuery("input[name='page-replace\:\:title']").focus();
 
     // Init TII area
-    var tii_options = jQuery('#tii_properties').get(0);
+    var tii_options = jQuery('#page-replace\\:\\:tii_properties').get(0);
     var tii = jQuery("input[name='page-replace\:\:use_tii']").get(0);
     jQuery(tii).click(function(){
         asnn2.showHideByCheckbox(this, tii_options);
