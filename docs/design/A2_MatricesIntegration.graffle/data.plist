@@ -78,7 +78,7 @@
 	<key>MasterSheets</key>
 	<array/>
 	<key>ModificationDate</key>
-	<string>2009-10-21 08:55:57 -0400</string>
+	<string>2009-10-21 11:51:14 -0400</string>
 	<key>Modifier</key>
 	<string>Kris</string>
 	<key>NotesVisible</key>
@@ -107,7 +107,7 @@
 		<key>NSPaperName</key>
 		<array>
 			<string>string</string>
-			<string>E2F5CF68-8084-4181-BC8D-62BF17DA7E91</string>
+			<string>00814FF9-72D0-4AC8-AE64-31ACC600554C</string>
 		</array>
 		<key>NSPaperSize</key>
 		<array>
@@ -13869,7 +13869,7 @@
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{126.8, 212}, {766, 146}}</string>
+							<string>{{126.8, 212}, {766, 161}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -13899,12 +13899,12 @@
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
 
 \b0 \cf0 - To link an assignment to a matrix cell, the user will select the checkbox in the desired cell.  \
-- To remove a link to a matrix cell, prior to the occurrence of the first submission of a cell by a participant, the user may deselect the checkbox in the desired cell.  \
+- To remove a link to a matrix cell, prior to the occurrence of the first assignment or cell submission by a participant, the user may deselect the checkbox in the desired cell.  \
 \
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
 
 \b \cf0 Note: 
-\b0 Once feedback has been provided or an evaluation has occurred, the user may no longer remove a link to a matrix cell.\cf2 \
+\b0 Once the assignment has a submission or the linked cell has been submitted by one or more participants, the user may no longer remove the link to the matrix cell.\cf2 \
 \
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
 \cf0 - Instructors can associate their assignment with any cell regardless of the current status of the cell.\cf2 \
@@ -13916,7 +13916,7 @@
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{54, 212}, {72.8, 146}}</string>
+							<string>{{54, 212}, {72.8, 161}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -13947,7 +13947,7 @@
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{54, 358}, {72.8, 46}}</string>
+							<string>{{54, 373}, {72.8, 46}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -13978,7 +13978,7 @@
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{126.8, 358}, {766, 46}}</string>
+							<string>{{126.8, 373}, {766, 46}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -14010,7 +14010,7 @@
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{54, 404}, {72.8, 34}}</string>
+							<string>{{54, 419}, {72.8, 34}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -14041,7 +14041,7 @@
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{126.8, 404}, {766, 34}}</string>
+							<string>{{126.8, 419}, {766, 34}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -22510,11 +22510,11 @@
 						AGUAYgB1AGMAaABlAHQATQBTAIQB
 						ZgygAKABoACgAIaShJaWB05TQ29s
 						b3KGkoStoAKhg83MTD6Dq6qqPoO8
-						uzs/AYaGlwIIkoSYmQSStpKEraAB
-						oQAAAAGGkpmShJubBACEnZkMkp6S
-						oJKhkqKSo5KkkqWSppKnkqiSqZKq
-						hgCGkrOStJKrkoStoAGhg7W0ND6D
-						q6qqPoO9vDw/AYaGhg==
+						uzs/AYaGlwIIkoSYmQSSq5KEraAB
+						oYO1tDQ+g6uqqj6Dvbw8PwGGkpmS
+						hJubBACEnZkMkp6SoJKhkqKSo5Kk
+						kqWSppKnkqiSqZKqhgCGkrOStJK2
+						koStoAGhAAAAAYaGhg==
 						</data>
 						<key>Text</key>
 						<string>{\rtf1\ansi\ansicpg1252\cocoartf1038\cocoasubrtf110
@@ -24781,7 +24781,7 @@
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
 
-\f0\fs24 \cf0 The user accessed this screen by clicking 'Create/Edit Matrix Links' link from the Assignment List screen.}</string>
+\f0\fs24 \cf0 The user accessed this screen by clicking the 'Learn How to Hop' link from the Matrices: View Linked Items screen (MVLI-1).}</string>
 							</dict>
 						</dict>
 						<dict>
@@ -35099,7 +35099,7 @@
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{54, 97.0001}, {72.8, 32.9999}}</string>
+							<string>{{54, 97.0001}, {72.8, 24}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -35130,7 +35130,7 @@
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{126.8, 97.0001}, {766, 32.9999}}</string>
+							<string>{{126.8, 97.0001}, {766, 24}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -35156,12 +35156,12 @@
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
 
-\f0\fs24 \cf0 The user accessed this screen by clicking the 'New Really Fun Matrix! &gt; Row: Hopping; Column: Beginning ' link from the Assignment List screen.}</string>
+\f0\fs24 \cf0 The user accessed this screen by clicking the 'Row: Hopping; Column: Beginning ' link from the SV: View Linked Items screen (VLI-1).}</string>
 							</dict>
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{54, 130}, {72.8, 36}}</string>
+							<string>{{54, 121}, {72.8, 36}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -35192,7 +35192,7 @@
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{126.8, 130}, {766, 36}}</string>
+							<string>{{126.8, 121}, {766, 36}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -35224,7 +35224,7 @@
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{54, 166}, {72.8, 24}}</string>
+							<string>{{54, 157}, {72.8, 24}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -35255,7 +35255,7 @@
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{126.8, 166}, {766, 24}}</string>
+							<string>{{126.8, 157}, {766, 24}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -35287,7 +35287,7 @@
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{126.8, 190}, {766, 47.9998}}</string>
+							<string>{{126.8, 181}, {766, 47.9998}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -35319,7 +35319,7 @@
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{54, 190}, {72.8, 47.9998}}</string>
+							<string>{{54, 181}, {72.8, 47.9998}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -41643,10 +41643,10 @@ My career (professional identity)-Intellectual Growth}</string>
 						dABNAFMAhAFmDKAAoAGgAKAAhpKE
 						lpYHTlNDb2xvcoaShK2gAqGDzcxM
 						PoOrqqo+g7y7Oz8BhoaXAgeShJiZ
-						BJK2koStoAGhAAAAAYaSmZKEm5sE
-						AISdmQySnpKgkqGSopKjkqSSpZKm
-						kqeSqJKpkqqGAIaSs5K0kquShK2g
-						AaGDtbQ0PoOrqqo+g728PD8BhoaG
+						BJKrkoStoAGhg7W0ND6Dq6qqPoO9
+						vDw/AYaSmZKEm5sEAISdmQySnpKg
+						kqGSopKjkqSSpZKmkqeSqJKpkqqG
+						AIaSs5K0kraShK2gAaEAAAABhoaG
 						</data>
 						<key>Text</key>
 						<string>{\rtf1\ansi\ansicpg1252\cocoartf1038\cocoasubrtf110
@@ -41996,11 +41996,11 @@ My career (professional identity)-Intellectual Growth}</string>
 						AGUAYgB1AGMAaABlAHQATQBTAIQB
 						ZgygAKABoACgAIaShJaWB05TQ29s
 						b3KGkoStoAKhg83MTD6Dq6qqPoO8
-						uzs/AYaGlwIIkoSYmQSStpKEraAB
-						oQAAAAGGkpmShJubBACEnZkMkp6S
-						oJKhkqKSo5KkkqWSppKnkqiSqZKq
-						hgCGkrOStJKrkoStoAGhg7W0ND6D
-						q6qqPoO9vDw/AYaGhg==
+						uzs/AYaGlwIIkoSYmQSSq5KEraAB
+						oYO1tDQ+g6uqqj6Dvbw8PwGGkpmS
+						hJubBACEnZkMkp6SoJKhkqKSo5Kk
+						kqWSppKnkqiSqZKqhgCGkrOStJK2
+						koStoAGhAAAAAYaGhg==
 						</data>
 						<key>Text</key>
 						<string>{\rtf1\ansi\ansicpg1252\cocoartf1038\cocoasubrtf110
@@ -48077,11 +48077,11 @@ My career (professional identity)-Intellectual Growth}</string>
 	<key>WindowInfo</key>
 	<dict>
 		<key>CurrentSheet</key>
-		<integer>20</integer>
+		<integer>0</integer>
 		<key>ExpandedCanvases</key>
 		<array/>
 		<key>Frame</key>
-		<string>{{953, 596}, {1271, 917}}</string>
+		<string>{{642, 625}, {1271, 917}}</string>
 		<key>ListView</key>
 		<true/>
 		<key>OutlineWidth</key>
