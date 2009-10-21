@@ -46,15 +46,10 @@ import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentGroup;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
-import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
-import org.sakaiproject.assignment2.tool.LocalAssignmentLogic;
 import org.sakaiproject.assignment2.tool.params.AssignmentViewParams;
-import org.sakaiproject.assignment2.tool.params.GradeViewParams;
 import org.sakaiproject.assignment2.tool.params.ViewSubmissionsViewParams;
 import org.sakaiproject.assignment2.tool.params.ZipViewParams;
 import org.sakaiproject.assignment2.tool.producers.renderers.AttachmentListRenderer;
-import org.sakaiproject.assignment2.tool.producers.renderers.PagerRenderer;
-import org.sakaiproject.assignment2.tool.producers.renderers.SortHeaderRenderer;
 import org.sakaiproject.site.api.Group;
 import org.sakaiproject.tool.api.Placement;
 
@@ -62,7 +57,6 @@ import uk.org.ponder.htmlutil.HTMLUtil;
 import uk.org.ponder.messageutil.MessageLocator;
 import uk.org.ponder.messageutil.TargettedMessage;
 import uk.org.ponder.messageutil.TargettedMessageList;
-import uk.org.ponder.rsf.components.UIBranchContainer;
 import uk.org.ponder.rsf.components.UICommand;
 import uk.org.ponder.rsf.components.UIContainer;
 import uk.org.ponder.rsf.components.UIELBinding;
@@ -109,22 +103,16 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
     public static final String DEFAULT_OPPOSITE_SORT_DIR = AssignmentLogic.SORT_DIR_DESC;
     public static final String DEFAULT_SORT_BY = AssignmentSubmissionLogic.SORT_BY_NAME;
 
-    private String current_sort_by = DEFAULT_SORT_BY;
-    private String current_sort_dir = DEFAULT_SORT_DIR;
-
     //images
     public static final String BULLET_UP_IMG_SRC = "/sakai-assignment2-tool/content/images/bullet_arrow_up.png";
     public static final String BULLET_DOWN_IMG_SRC = "/sakai-assignment2-tool/content/images/bullet_arrow_down.png";
 
-    private PagerRenderer pagerRenderer;
     private MessageLocator messageLocator;
     private AssignmentLogic assignmentLogic;
     private AssignmentSubmissionLogic submissionLogic;
     private TargettedMessageList messages;
     private ExternalLogic externalLogic;
     private Locale locale;
-    private SortHeaderRenderer sortHeaderRenderer;
-    private AttachmentListRenderer attachmentListRenderer;
     private AssignmentPermissionLogic permissionLogic;
     private ExternalGradebookLogic gradebookLogic;
     private ExternalContentReviewLogic contentReviewLogic;
@@ -178,8 +166,7 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
         //get parameters
         if (params.sort_by == null) params.sort_by = DEFAULT_SORT_BY;
         if (params.sort_dir == null) params.sort_dir = DEFAULT_SORT_DIR;
-        current_sort_by = params.sort_by;
-        current_sort_dir = params.sort_dir;
+
         UIVerbatim.make(tofill, "defaultSortBy", HTMLUtil.emitJavascriptVar("defaultSortBy", DEFAULT_SORT_BY));
 
         // we need to retrieve the history for the release/retract feedback logic
@@ -306,98 +293,15 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
         }
 
         UIMessage.make(tofill, "page-title", "assignment2.assignment_grade-assignment.title");
-        //navBarRenderer.makeNavBar(tofill, "navIntraTool:", VIEW_ID);
-        pagerRenderer.makePager(tofill, "pagerDiv:", VIEW_ID, viewparams, submissions.size());
-        //UIMessage.make(tofill, "heading", "assignment2.assignment_grade-assignment.heading", new Object[] { assignment.getTitle() });
 
         // now make the "View By Sections/Groups" filter
         makeViewByGroupFilter(tofill, params, assignment);
-
-        //Do Student Table
-        sortHeaderRenderer.makeSortingLink(tofill, "tableheader.student", viewparams, 
-                AssignmentSubmissionLogic.SORT_BY_NAME, "assignment2.assignment_grade-assignment.tableheader.student");
-
-        if (assignment.getSubmissionType() != AssignmentConstants.SUBMIT_NON_ELECTRONIC) {
-            sortHeaderRenderer.makeSortingLink(tofill, "tableheader.status", viewparams, 
-                    LocalAssignmentLogic.SORT_BY_STATUS, "assignment2.assignment_grade-assignment.tableheader.status");
-            sortHeaderRenderer.makeSortingLink(tofill, "tableheader.submitted", viewparams, 
-                    AssignmentSubmissionLogic.SORT_BY_SUBMIT_DATE, "assignment2.assignment_grade-assignment.tableheader.submitted");
-
-        }
-
-        if (assignment.isGraded() && gbItemExists) {
-            String releasedString; 
-            if (gbItem != null && gbItem.isReleased()) {
-                releasedString = "assignment2.assignment_grade-assignment.tableheader.grade.released";
-            } else {
-                releasedString = "assignment2.assignment_grade-assignment.tableheader.grade.not_released";
-            }
-            sortHeaderRenderer.makeSortingLink(tofill, "tableheader.grade", viewparams, 
-                    LocalAssignmentLogic.SORT_BY_GRADE, releasedString);
-        }
-        sortHeaderRenderer.makeSortingLink(tofill, "tableheader.released", viewparams, 
-                AssignmentSubmissionLogic.SORT_BY_RELEASED, "assignment2.assignment_grade-assignment.tableheader.released");
 
         // let's retrieve all of the student name info in one call 
         List<String> studentIdList = new ArrayList<String>();
         for (AssignmentSubmission as : submissions) {
             studentIdList.add(as.getUserId());
         }
-
-       // Map<String, String> studentIdSortNameMap = externalLogic.getUserIdToSortNameMap(studentIdList);
-
-        /*
-        for (AssignmentSubmission as : submissions) {
-            UIBranchContainer row = UIBranchContainer.make(tofill, "row:");
-
-            UIInternalLink.make(row, "row_grade_link",
-                    studentIdSortNameMap.get(as.getUserId()),
-                    new GradeViewParams(GradeProducer.VIEW_ID, as.getAssignment().getId(), as.getUserId()));
-
-
-            // submission info columns are not displayed for non-electronic assignments
-            if (assignment.getSubmissionType() != AssignmentConstants.SUBMIT_NON_ELECTRONIC) {
-                if (as.getCurrentSubmissionVersion() != null && as.getCurrentSubmissionVersion().getSubmittedDate() != null){
-                    UIOutput.make(row, "row_submitted", df.format(as.getCurrentSubmissionVersion().getSubmittedDate()));
-                } else {
-                    UIOutput.make(row, "row_submitted", "");
-                }
-
-                // set the textual representation of the submission status
-                String status = "";
-                int statusConstant = AssignmentConstants.SUBMISSION_NOT_STARTED;
-                if (as != null) {
-                    statusConstant = submissionLogic.getSubmissionStatusConstantForCurrentVersion(
-                            as.getCurrentSubmissionVersion(), assignment.getDueDate());
-                    status = messageLocator.getMessage(
-                            "assignment2.assignment_grade-assignment.submission_status." + 
-                            statusConstant);
-                }
-
-                UIOutput.make(row, "row_status", status);
-            }
-
-            if (assignment.isGraded()) {
-                String grade = "";
-                GradeInformation gradeInfo = studentIdGradeInfoMap.get(as.getUserId());
-                if (gradeInfo != null) {
-                    grade = gradeInfo.getGradebookGrade();
-                }
-                UIOutput.make(row, "row_grade", grade);
-            }
-
-            String released = "0";
-            if (as.getCurrentSubmissionVersion() != null)  {
-                if (as.getCurrentSubmissionVersion().isFeedbackReleased()) {
-                    UIOutput.make(row, "row_released");
-                    released += 1;
-                }
-            }
-
-            //For JS Sorting
-            UIOutput.make(row, "released", released);
-        }
-         */
 
         /*
          * Form for assigning a grade to all submissions without a grade.
@@ -612,10 +516,6 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
         this.messageLocator = messageLocator;
     }
 
-    public void setPagerRenderer(PagerRenderer pagerRenderer){
-        this.pagerRenderer = pagerRenderer;
-    }
-
     public void setAssignmentLogic(AssignmentLogic assignmentLogic) {
         this.assignmentLogic = assignmentLogic;
     }
@@ -634,14 +534,6 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
 
     public void setLocale(Locale locale) {
         this.locale = locale;
-    }
-
-    public void setSortHeaderRenderer(SortHeaderRenderer sortHeaderRenderer) {
-        this.sortHeaderRenderer = sortHeaderRenderer;
-    }
-
-    public void setAttachmentListRenderer(AttachmentListRenderer attachmentListRenderer){
-        this.attachmentListRenderer = attachmentListRenderer;
     }
 
     public void setPermissionLogic(AssignmentPermissionLogic permissionLogic) {

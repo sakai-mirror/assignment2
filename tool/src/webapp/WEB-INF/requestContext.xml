@@ -83,14 +83,7 @@
     	<property name="locale" ref="requestLocale" />
     	<property name="messageLocator" ref="messageLocator" />
     </bean>
-	
-   <bean id="PagerRenderer" class="org.sakaiproject.assignment2.tool.producers.renderers.PagerRenderer">
-      <property name="messageLocator" ref="messageLocator" />
-   </bean>
-   
-   <bean id="SortHeaderRenderer" class="org.sakaiproject.assignment2.tool.producers.renderers.SortHeaderRenderer" />
-   
-      
+
    <bean id="ReviewStatusRenderer" class="org.sakaiproject.assignment2.tool.producers.renderers.ReviewStatusRenderer">
       <property name="externalContentReviewLogic" ref="org.sakaiproject.assignment2.logic.ExternalContentReviewLogic" />
       <property name="messageLocator" ref="messageLocator" />
@@ -144,14 +137,7 @@
        <property name="assignmentSubmissionCreator" ref="AssignmentSubmissionCreator" />
        <property name="studentViewAssignmentRenderer" ref="StudentViewAssignmentRenderer" />
    </bean>
-   
-   <bean class="org.sakaiproject.assignment2.tool.producers.RemoveAssignmentConfirmProducer">
-       <property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
-       <property name="curUserId" ref="sakai-UserID" />
-       <property name="permissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentPermissionLogic" />
-       <property name="submissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />  
-   </bean>
-   
+
    <bean class="org.sakaiproject.assignment2.tool.producers.AddAttachmentHelperProducer">
       <property name="sessionManager" ref="org.sakaiproject.tool.api.SessionManager" />
       <property name="messageLocator" ref="messageLocator" />
@@ -203,15 +189,12 @@
    </bean>
 
    <bean class="org.sakaiproject.assignment2.tool.producers.ViewSubmissionsProducer">
-      <property name="pagerRenderer" ref="PagerRenderer" />
       <property name="messageLocator" ref="messageLocator" />
       <property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
       <property name="assignmentSubmissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
       <property name="messages" ref="targettedMessageList" />
       <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
       <property name="locale" ref="requestLocale" />
-      <property name="sortHeaderRenderer" ref="SortHeaderRenderer" />
-      <property name="attachmentListRenderer" ref="AttachmentListRenderer" />
       <property name="permissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentPermissionLogic" />
       <property name="externalGradebookLogic" ref="org.sakaiproject.assignment2.logic.ExternalGradebookLogic" />
       <property name="externalContentReviewLogic" ref="org.sakaiproject.assignment2.logic.ExternalContentReviewLogic"></property>
@@ -221,23 +204,11 @@
    <bean class="org.sakaiproject.assignment2.tool.producers.AssignmentGradeReportProducer">
    </bean>
 
-   <bean class="org.sakaiproject.assignment2.tool.producers.ListReorderProducer">
-   	  <property name="messageLocator" ref="messageLocator" />
-   	  <property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
-   	  <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
-      <property name="locale" ref="requestLocale" />
-   </bean>
-   
    <!-- As part of ASNN-466 Replacing this with a more lightweight producer for
         building up the Fluid powered page. -->
    
    <bean class="org.sakaiproject.assignment2.tool.producers.ListProducer">
-      <property name="messageLocator" ref="messageLocator" />
       <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
-      <property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
-      <property name="permissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentPermissionLogic" />
-      <property name="submissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
-      <property name="locale" ref="requestLocale" />
       <property name="placement" ref="sakai-Placement" />
    </bean>
    
@@ -294,13 +265,6 @@
    <bean class="org.sakaiproject.assignment2.tool.producers.AssignmentDetailProducer">
    	  <property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
    </bean>
-
-<!-- Not yet fully implemented ASNN-207 -->
-<!-- 
-   <bean class="org.sakaiproject.assignment2.tool.producers.SettingsProducer">
-     <property name="messageLocator" ref="messageLocator" />
-   </bean>
--->
 
    <!--  AJAX Fragment Producers -->
    <bean class="org.sakaiproject.assignment2.tool.producers.AjaxResultsProducer">

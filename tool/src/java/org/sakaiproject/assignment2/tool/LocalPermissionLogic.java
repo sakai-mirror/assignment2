@@ -85,8 +85,6 @@ public class LocalPermissionLogic {
         // }
         if (AddAttachmentHelperProducer.VIEWID.equals(viewId)) {
             return Boolean.TRUE;
-        } else if (RemoveAssignmentConfirmProducer.VIEW_ID.equals(viewId)) {
-            return permissionLogic.isCurrentUserAbleToEditAssignments(contextId);
         }
         else if (PreviewAsStudentProducer.VIEW_ID.equals(viewId)) {
             return permissionLogic.isCurrentUserAbleToEditAssignments(contextId);
@@ -107,10 +105,8 @@ public class LocalPermissionLogic {
             // doing better checking of what information users can see in the 
             // future from the JSON feed, so folks can make mashups.
             return permissionLogic.isCurrentUserAbleToEditAssignments(contextId);
-        } else if (ListReorderProducer.VIEW_ID.equals(viewId)) {
-            return permissionLogic.isCurrentUserAbleToEditAssignments(contextId);
-
-        } else if (AssignmentProducer.VIEW_ID.equals(viewId)) {
+        }
+        else if (AssignmentProducer.VIEW_ID.equals(viewId)) {
             return permissionLogic.isCurrentUserAbleToEditAssignments(contextId);
 
         } else if (FinishedHelperProducer.VIEWID.equals(viewId)) {
@@ -125,10 +121,8 @@ public class LocalPermissionLogic {
 
             return Boolean.FALSE;
 
-        } else if (SettingsProducer.VIEW_ID.equals(viewId)) {
-            return Boolean.TRUE;         
-
-        } else if (StudentAssignmentListProducer.VIEW_ID.equals(viewId)) {
+        } 
+        else if (StudentAssignmentListProducer.VIEW_ID.equals(viewId)) {
             return permissionLogic.isCurrentUserAbleToSubmit(contextId);
 
         } else if (StudentSubmitProducer.VIEW_ID.equals(viewId)) {

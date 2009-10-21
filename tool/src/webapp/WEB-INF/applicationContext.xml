@@ -111,7 +111,7 @@
 		parent="templateContributorParent">
 		<property name="baseDirectory" value="component-templates/" />
 		<property name="templateNames"
-			value="AsnnSubmissionRenderers,Pager,SortHeader,AttachmentList,GradebookDetails,StudentViewAssignment,AttachmentEvolver,MarkupEditor,ReviewStatus" />
+			value="AsnnSubmissionRenderers,SortHeader,AttachmentList,GradebookDetails,StudentViewAssignment,AttachmentEvolver,MarkupEditor,ReviewStatus" />
 	</bean>
 
 	<!-- Override the default style of user messages -->

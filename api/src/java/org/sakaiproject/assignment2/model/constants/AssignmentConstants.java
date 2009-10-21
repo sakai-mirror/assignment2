@@ -174,10 +174,12 @@ public class AssignmentConstants {
     public final static String REVIEW_STATUS_SUCCESS = "review_success";
     
     /* These properties are specific to content review implementation using Turnitin */
+    
     /**
      * Set this property to true if you want to turn on the Turnitin option for assignment2
      */
     public static final String TII_ENABLED = "turnitin.enable.assignment2";
+    
     /**
      * This property is specific to Turnitin implementation of ContentReview.
      * if you want to restrict how your content is submitted to a repository, 
@@ -216,5 +218,24 @@ public class AssignmentConstants {
      * for use in the UI)
      */
     public static final String TII_PROP_INSTITUTION_REPO_NAME = "turnitin.repository.institutional.name";
+
+    public static final String TII_RETCODE_RCODE = "rcode";
+    public static final String TII_RETCODE_RMESSAGE = "rmessage";
+    public static final String TII_RETCODE_OBJECT = "object";
+    public static final String TII_RETCODE_SUBMIT_PAPERS_TO = "submit_papers_to";
+    public static final String TII_RETCODE_REPORT_GEN_SPEED = "report_gen_speed";
+    public static final String TII_RETCODE_SEARCHPAPERS = "searchpapers";
+    public static final String TII_RETCODE_SEARCHINTERNET = "searchinternet";
+    public static final String TII_RETCODE_SEARCHJOURNALS = "searchjournals";
+    public static final String TII_RETCODE_SEARCHINSTITUTION = "searchinstitution";
+    public static final String TII_RETCODE_SVIEWREPORTS = "sviewreports";
+
+    public static final String TII_API_PARAM_REPOSITORY = "repository";
+    public static final String TII_API_PARAM_GENERATE = "generate";
+    public static final String TII_API_PARAM_S_PAPER_CHECK = "s_paper_check";
+    public static final String TII_API_PARAM_INTERNET_CHECK = "internet_check";
+    public static final String TII_API_PARAM_JOURNAL_CHECK = "journal_check";
+    public static final String TII_API_PARAM_INSTITUTION_CHECK = "institution_check";
+    public static final String TII_API_PARAM_S_VIEW_REPORT = "s_view_report";
 
 }
