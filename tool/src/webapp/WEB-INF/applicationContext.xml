@@ -37,13 +37,6 @@
         <property name="submissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
     </bean>
 
-	<!-- Entity Providers -->
-	<bean id="Assignment2DetailEntityProvider"
-		class="org.sakaiproject.assignment2.tool.entity.Assignment2DetailEntityProvider"
-		init-method="init" destroy-method="destroy">
-		<property name="entityProviderManager"
-			ref="org.sakaiproject.entitybroker.entityprovider.EntityProviderManager" />
-	</bean>
 	
 	<bean parent="org.sakaiproject.entitybroker.entityprovider.AbstractEntityProvider"
 	     class="org.sakaiproject.assignment2.tool.entity.Assignment2SubmissionEntityProvider">

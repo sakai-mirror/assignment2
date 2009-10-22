@@ -75,9 +75,11 @@ public class AssignmentActivityImpl implements TaggableActivity {
         //TODO use constants
         // the assignment2_detail part is in tool...maybe it can be moved elsewhere?
 
-        String url = ServerConfigurationService.getServerUrl() + 
-        "/direct/assignment2_detail/" + Long.toString(assignment.getId());
-        return url;
+        //String url = ServerConfigurationService.getServerUrl() + 
+        //"/direct/assignment2_detail/" + Long.toString(assignment.getId());
+        
+        //TODO
+        return "";
     }
 
     public String getTypeName()
