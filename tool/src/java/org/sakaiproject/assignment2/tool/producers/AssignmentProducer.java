@@ -555,6 +555,8 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
     }
 
     /**
+     * Renders the Turnitin Fieldset
+     * 
      * @param tofill
      * @param assignment2OTP
      * @param assignment
@@ -564,24 +566,29 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
             Assignment2 assignment, UIForm form) {
         Map props = assignment.getProperties();
 
-        if (!props.containsKey(AssignmentConstants.TII_RETCODE_RCODE)) {
+        UIOutput.make(tofill, "tii_content_review_area");
+        
+        // If a Turnitin assignment has already been created for this assignment,
+        // then we except there to be some sort of return code from the call
+        // that would have been made to populate the properties.
+        if (!props.containsKey(AssignmentConstants.TII_RETCODE_RCODE) && assignment.isContentReviewEnabled()) {
             UIOutput.make(tofill, "tii_errors");
             UIMessage.make(tofill, "tii_errormsg:", "assignment2.turnitin.error.service_not_available");
             return;
         }
-        
-        int rcode = Integer.parseInt(props.get(AssignmentConstants.TII_RETCODE_RCODE).toString());
-        if (rcode > 99) {
-            UIOutput.make(tofill, "tii_errors");
-            UIMessage.make(tofill, "tii_errormsg:", "assignment2.turnitin.error.general_rcode_error");
-            log.error("Unable to fill in TII area on Add/Edit Asnn because of rcode: " + rcode);
-            return;
+        else if (assignment.isContentReviewEnabled()) {
+            int rcode = Integer.parseInt(props.get(AssignmentConstants.TII_RETCODE_RCODE).toString());
+            if (rcode > 99) {
+                UIOutput.make(tofill, "tii_errors");
+                UIMessage.make(tofill, "tii_errormsg:", "assignment2.turnitin.error.general_rcode_error");
+                log.error("Unable to fill in TII area on Add/Edit Asnn because of rcode: " + rcode);
+                return;
+            }
         }
-        
+
         UIOutput.make(tofill, "tii_enabled_area");
         UIOutput.make(tofill, "tii_properties");
-        
-        UIOutput.make(tofill, "tii_content_review_area");
+
         UIBoundBoolean.make(form, "use_tii", assignment2OTP + ".contentReviewEnabled");
 
         // Submit papers to repository
