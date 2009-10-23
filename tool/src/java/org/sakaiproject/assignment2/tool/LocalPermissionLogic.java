@@ -92,10 +92,6 @@ public class LocalPermissionLogic {
         else if (AjaxResultsProducer.VIEW_ID.equals(viewId)) {
             return Boolean.TRUE;
 
-        } else if (AssignmentDetailProducer.VIEW_ID.equals(viewId)) {
-            // used by entity broker
-            return Boolean.TRUE;
-
         } else if (ListProducer.VIEW_ID.equals(viewId)) {
             return permissionLogic.isUserAbleToAccessInstructorView(contextId);
         }

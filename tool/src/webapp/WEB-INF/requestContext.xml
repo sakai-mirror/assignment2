@@ -261,11 +261,6 @@
 	  <property name="externalGradebookLogic" ref="org.sakaiproject.assignment2.logic.ExternalGradebookLogic" /> 
 	</bean>
 
-	
-   <bean class="org.sakaiproject.assignment2.tool.producers.AssignmentDetailProducer">
-   	  <property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
-   </bean>
-
    <!--  AJAX Fragment Producers -->
    <bean class="org.sakaiproject.assignment2.tool.producers.AjaxResultsProducer">
    </bean>
