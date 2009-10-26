@@ -161,15 +161,6 @@ public class LocalPermissionLogic {
 
             return Boolean.FALSE;
 
-        } else if (FragmentAssignmentInstructionsProducer.VIEW_ID.equals(viewId)) {
-            if (viewParams instanceof AssignmentViewParams) {
-                AssignmentViewParams params = (AssignmentViewParams) viewParams;
-
-                return permissionLogic.isUserAbleToViewAssignment(params.assignmentId);
-            }
-
-            return Boolean.FALSE;
-
         } else if ("zipSubmissions".equals(viewId)) {
             if (viewParams instanceof ZipViewParams) {
                 ZipViewParams params = (ZipViewParams) viewParams;

@@ -281,11 +281,6 @@
    	  <property name="gradebookDetailsRenderer" ref="GradebookDetailsRenderer" />
    	  <property name="assignmentSubmissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
    </bean>
-   
-   <bean class="org.sakaiproject.assignment2.tool.producers.fragments.FragmentAssignmentInstructionsProducer">
-   	  <property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
-   	  <property name="attachmentListRenderer" ref="AttachmentListRenderer" />
-   </bean>
 
    <!--  Actions -->
    <bean id="RemoveAssignmentCommand"  class="org.sakaiproject.assignment2.tool.commands.RemoveAssignmentCommand">

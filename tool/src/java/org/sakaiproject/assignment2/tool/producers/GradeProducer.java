@@ -43,7 +43,6 @@ import org.sakaiproject.assignment2.tool.beans.AssignmentSubmissionBean;
 import org.sakaiproject.assignment2.tool.params.FilePickerHelperViewParams;
 import org.sakaiproject.assignment2.tool.params.GradeViewParams;
 import org.sakaiproject.assignment2.tool.params.ViewSubmissionsViewParams;
-import org.sakaiproject.assignment2.tool.producers.fragments.FragmentAssignmentInstructionsProducer;
 import org.sakaiproject.assignment2.tool.producers.fragments.FragmentGradebookDetailsProducer;
 import org.sakaiproject.assignment2.tool.producers.fragments.FragmentSubmissionGradePreviewProducer;
 import org.sakaiproject.assignment2.tool.producers.evolvers.AttachmentInputEvolver;
