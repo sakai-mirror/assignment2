@@ -89,10 +89,7 @@ public class LocalPermissionLogic {
         else if (PreviewAsStudentProducer.VIEW_ID.equals(viewId)) {
             return permissionLogic.isCurrentUserAbleToEditAssignments(contextId);
         }
-        else if (AjaxResultsProducer.VIEW_ID.equals(viewId)) {
-            return Boolean.TRUE;
-
-        } else if (ListProducer.VIEW_ID.equals(viewId)) {
+        else if (ListProducer.VIEW_ID.equals(viewId)) {
             return permissionLogic.isUserAbleToAccessInstructorView(contextId);
         }
         else if (AssignmentInfoDataProducer.VIEW_ID.equals(viewId)) {
