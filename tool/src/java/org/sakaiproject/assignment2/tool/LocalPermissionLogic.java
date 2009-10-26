@@ -151,8 +151,6 @@ public class LocalPermissionLogic {
         } else if (FragmentSubmissionGradePreviewProducer.VIEW_ID.equals(viewId)) {
             //TODO - RYAN!  Remove this producer!
             return Boolean.FALSE;
-        } else if (FragmentViewSubmissionProducer.VIEW_ID.equals(viewId)) {
-            return Boolean.TRUE;
         } else if (UploadAllProducer.VIEW_ID.equals(viewId) || UploadAllConfirmProducer.VIEW_ID.equals(viewId)) {
             if (viewParams instanceof AssignmentViewParams) {
                 AssignmentViewParams params = (AssignmentViewParams) viewParams;

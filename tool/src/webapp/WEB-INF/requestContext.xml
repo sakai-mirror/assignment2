@@ -286,12 +286,7 @@
    	  <property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
    	  <property name="attachmentListRenderer" ref="AttachmentListRenderer" />
    </bean>
-   
-   <bean class="org.sakaiproject.assignment2.tool.producers.fragments.FragmentViewSubmissionProducer">
-      <property name="submissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
-   	  <property name="attachmentListRenderer" ref="AttachmentListRenderer" />
-   </bean>
-   
+
    <!--  Actions -->
    <bean id="RemoveAssignmentCommand"  class="org.sakaiproject.assignment2.tool.commands.RemoveAssignmentCommand">
        <property name="logic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
