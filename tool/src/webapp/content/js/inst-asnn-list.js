@@ -159,7 +159,7 @@ asnn2.pageState = {
   dataArray: [],
   pageModel: {},
   canEdit: false,
-  minPageSize: 5  // This needs to be in sync with the html template currently.§
+  minPageSize: 5  // This needs to be in sync with the html template currently.ï¿½
 };
 
 /*
@@ -399,18 +399,24 @@ asnn2.setupAsnnList = function () {
  */
 asnn2.renderAsnnList = function(asnndata) {
   var data = asnndata || asnn2.pageState.dataArray;
+  var totalNumAssignments = asnn2.pageState.dataArray.length;
   
   var showSorting = true;
-  if (data.length <= 1) {
+  if (totalNumAssignments <= 1) {
     showSorting = false;
   }
   
   var showPaging = true;
-  if (data.length <= asnn2.pageState.minPageSize) {
+  if (totalNumAssignments <= asnn2.pageState.minPageSize) {
     showPaging = false;
   }
   
   asnn2.toggleTableControls(showPaging,showSorting);
+  
+  // we don't render the table or remove buttons and do render some informational
+  // text if no assignments exist yet
+  var asnnExist = totalNumAssignments > 0;
+  asnn2.toggleNoAssignments(asnnExist);
   
   var dopple = $.extend(true, [], data);
 
@@ -445,9 +451,11 @@ asnn2.renderAsnnList = function(asnndata) {
 asnn2.toggleTableControls = function(showPager,showSorting) {
   if (showPager === true) {
     jQuery("#top-pager-area").show();
+    jQuery("#bottom-pager-area").show();
   }
   else {
     jQuery("#top-pager-area").hide();
+    jQuery("#bottom-pager-area").hide();
   }
   
   if (showSorting === true) {
@@ -469,6 +477,24 @@ asnn2.toggleTableControls = function(showPager,showSorting) {
 }
 
 /**
+ * If there are no assignments, we don't want to display the assignments table
+ * or the remove buttons. We do display an alternate section that includes
+ * an informational message about how to add assignments.
+ * @param assignmentsExist
+ */
+asnn2.toggleNoAssignments = function(assignmentsExist) {
+    if (assignmentsExist) {
+        jQuery(".removeAsnn").show();
+        jQuery("#asnn-list").show();
+        jQuery("#noAsnn").hide();
+    } else {
+        jQuery(".removeAsnn").hide();
+        jQuery("#asnn-list").hide();
+        jQuery("#noAsnn").show();
+    }
+}
+
+/**
  * Used to render the Asnn List using a model from the Fluid Pager. This is designed to be
  * call from the pager listener and use the pages state to rerender the Asnn List.
  * @param {pageModel} A Fluid Page Model
@@ -484,7 +510,10 @@ asnn2.renderAsnnListPage = function(newPageModel) {
   jQuery("#asnn-list").hide();
   asnn2.renderAsnnList(torender);
   asnn2.setupAsnnList();
-  jQuery("#asnn-list").show();
+  
+  if (asnn2.pageState.dataArray.length > 0) {
+      jQuery("#asnn-list").show();
+  }
 };
 
 /**

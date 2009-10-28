@@ -161,3 +161,16 @@ a.fl-pager-currentPage {
 }
 */
 /* End Fluid Pager Classes */
+
+/* No assignments section */
+.noAsnnInfo {
+    color: #5E5E5E;
+    padding: 1.2em;
+}
+
+.noAsnnHeading {
+    font-weight: bold;
+    font-size: 1.2em;
+}
+
+

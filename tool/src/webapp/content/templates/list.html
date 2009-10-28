@@ -29,7 +29,7 @@
     </ul>
   </div>
 
-  <div class="pager-sort-area">
+  <div class="pager-sort-area" style="display: none;">
     <div id="top-pager-area" style="border-bottom: solid 2px #cccccc;">
       <div id="pager-top" class="fl-pager-top flc-pager-top">
           <ul id="page-list" class="pager-links flc-pager-links">
@@ -53,7 +53,7 @@
     </div>
 
     <!-- <div id="top-sort-area" style="margin: 0; padding: 5px; border-top: solid 2px #cccccc;"> -->
-    <div id="top-sort-area" style="margin: 0; padding: 5px;">
+    <div id="top-sort-area" style="display: none; margin: 0; padding: 5px;">
       <span class="sortbylabel">Sorted by:</span><ul class="sort-bar">
         <li class="sort-item"><a href="#" class="titlesort">Title</a> |</li>
         <!-- <li class="sort-item">Restricted To |</li> -->
@@ -69,6 +69,13 @@
 
   <div class="removeAsnn">
     <input style="display: none" type="button" value="Remove" class="removebutton" />
+  </div>
+  
+  <div id="noAsnn" style="display: none;">
+ 		<span class="noAsnnHeading">Assignments</span>
+    <img class="addimage" src="/sakai-assignment2-tool/content/images/add.png" />
+    <a class="addlink noAsnnHeading" href="#" onclick="window.location = '/portal/tool/'+sakai.curPlacement+'/assignment'">Add</a>
+    <div class="noAsnnInfo">There are currently no assignments at this location.  Click 'Add' to add an assignment.</div>
   </div>
 
   <table style="display: none; border-collapse: collapse" id="asnn-list">
@@ -139,8 +146,8 @@
     <input style="display: none" type="button" value="Remove" class="removebutton" />
   </div>
 
-  <div class="pager-sort-area">
-    <div id="bottom-pager-area">
+  <div class="pager-sort-area" style="display: none;">
+    <div id="bottom-pager-area" style="border-bottom: solid 2px #cccccc;">
       <div id="pager-bottom" class="fl-pager-bottom flc-pager-bottom">
         <ul id="page-list-bottom" class="pager-links flc-pager-links">
           <li class="fl-pager-pageLink flc-pager-pageLink"><a href="#">1</a></li>
@@ -157,7 +164,7 @@
       </div>
     </div>
 
-    <div id="bottom-sort-area" style="margin: 0; padding: 5px; border-top: solid 2px #cccccc;">
+    <div id="bottom-sort-area" style="display:none; margin: 0; padding: 5px;">
       <span class="sortbylabel">Sorted by:</span>
       <ul class="sort-bar">
         <li class="sort-item"><a href="#" class="titlesort">Title</a> |</li>
