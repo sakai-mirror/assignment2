@@ -173,4 +173,7 @@ a.fl-pager-currentPage {
     font-size: 1.2em;
 }
 
-
+.generalErrors {
+    margin-left: 40px;
+    margin-bottom: 15px;
+}
