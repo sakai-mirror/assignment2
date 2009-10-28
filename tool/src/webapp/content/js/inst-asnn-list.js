@@ -411,12 +411,21 @@ asnn2.renderAsnnList = function(asnndata) {
     showPaging = false;
   }
   
-  asnn2.toggleTableControls(showPaging,showSorting);
+  // if the number of assignments displayed on this page is less than the minimum
+  // for the pager, hide the top remove button
+  var showTopRemoveButton = true;
+  if (data.length <= asnn2.pageState.minPageSize) {
+      showTopRemoveButton = false;
+  }
   
   // we don't render the table or remove buttons and do render some informational
   // text if no assignments exist yet
   var asnnExist = totalNumAssignments > 0;
   asnn2.toggleNoAssignments(asnnExist);
+  
+  // make sure you call toggleNoAssignments first or it will override
+  // your showTopRemoveButton logic
+  asnn2.toggleTableControls(showPaging,showSorting,showTopRemoveButton);
   
   var dopple = $.extend(true, [], data);
 
@@ -445,10 +454,10 @@ asnn2.renderAsnnList = function(asnndata) {
  * controls. This is necessary sometimes we want to change whether one of them
  * is displayed based on the number of current assignments.
  * 
- * These parameters should both be boolean values indicating whether the 
+ * These parameters should all be boolean values indicating whether the 
  * particular portions should be shown or hidden.
  */
-asnn2.toggleTableControls = function(showPager,showSorting) {
+asnn2.toggleTableControls = function(showPager,showSorting,showTopRemove) {
   if (showPager === true) {
     jQuery("#top-pager-area").show();
     jQuery("#bottom-pager-area").show();
@@ -474,6 +483,11 @@ asnn2.toggleTableControls = function(showPager,showSorting) {
     jQuery(".pager-sort-area").show();
   }
   
+  if (showTopRemove === true) {
+      jQuery("#top-remove-button").show();
+  } else {
+      jQuery("#top-remove-button").hide();
+  }
 }
 
 /**
