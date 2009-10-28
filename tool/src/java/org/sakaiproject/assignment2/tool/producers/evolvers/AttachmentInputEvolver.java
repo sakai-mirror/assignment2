@@ -101,7 +101,7 @@ public class AttachmentInputEvolver {
                     UIVerbatim.make(row, "attachment_remove", 
                             "<a href=\"#\" " +
                             "onclick=\"" +
-                            "removeAttachment(this);updateDisplayNoAttachments();" +
+                            "asnn2.removeAttachment(this);" +
                             "\">" +
                             messageLocator.getMessage("assignment2.remove") +
                     "</a>");
@@ -110,24 +110,30 @@ public class AttachmentInputEvolver {
 
         }
 
-        if (limit == 0) {
+        // A few notes about this attachment functionality.  Currently all
+        // the demo items are added in the javascript/html in AttachmentEvolver.html
+        // and asnn2.updateAttachments javascript. It's a bit odd and fragile,
+        // especially if the input names ever change.
+        //if (limit == 0) {
             //output "demo" row, with styleClass of skip
-            UIBranchContainer row = UIBranchContainer.make(core, "attachment-list-row:", Integer.toString(0));
-            UILink.make(row, "attachment_image", "image.jpg");
-            UILink.make(row, "attachment_link", "demo", "demo.html");
+            UIBranchContainer row = UIBranchContainer.make(togo, "attachment-list-demo:", Integer.toString(0));
+            //UILink.make(row, "attachment_image", "image.jpg");
+            //UILink.make(row, "attachment_link", "demo", "demo.html");
             //UIOutput.make(row, "attachment_item", "demo");
-            UIBasicListMember.makeBasic(row, "attachment_item", toevolve.getFullID(), 0);
-            UIOutput.make(row, "attachment_size", "demo");
+            //UIBasicListMember.makeBasic(row, "attachment_item", toevolve.getFullID(), 0);
+            //UIOutput.make(row, "attachment_size", "demo");
             //Add remove link
+            /*
             UIVerbatim.make(row, "attachment_remove", 
                     "<a href=\"#\" " +
                     "onclick=\"" +
-                    "removeAttachment(this);updateDisplayNoAttachments();" +
+                    "asnn2.removeAttachment(this);" +
                     "\">" +
                     messageLocator.getMessage("assignment2.remove") +
             "</a>");
             row.decorators = new DecoratorList(new UIStyleDecorator("skip"));
-        }
+            */
+        //}
 
         return togo;
     }
