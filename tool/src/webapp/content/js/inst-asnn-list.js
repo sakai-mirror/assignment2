@@ -645,6 +645,11 @@ asnn2.initAsnnList = function () {
         asnn2.renderAsnnListPage();
       }
     },
+    model: {
+      pageIndex: undefined,
+      pageSize: 50,
+      totalRange: undefined
+    },
     dataModel: fakedata,
     pagerBar: {type: "fluid.pager.pagerBar", options: {
       pageList: {type: "fluid.pager.renderedPageList",

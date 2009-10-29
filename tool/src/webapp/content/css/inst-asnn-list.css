@@ -26,7 +26,7 @@
     text-align: right; 
     width: 92%; 
     margin-top: 20px; 
-    margin-left: 23px; 
+    margin-left: 2.3em; 
 }
 
 /* Reordering */
@@ -65,6 +65,10 @@
 .asnn-decorated-cell, .asnn-decorated-heading {
   border-bottom: solid 2px #cccccc;
   padding: 7px 0;
+}
+
+.asnn-title-cell {
+    width: 75%;
 }
 
 .asnn-decorated-heading {
