@@ -647,7 +647,7 @@ asnn2.initAsnnList = function () {
     },
     model: {
       pageIndex: undefined,
-      pageSize: 50,
+      pageSize: 200,
       totalRange: undefined
     },
     dataModel: fakedata,
