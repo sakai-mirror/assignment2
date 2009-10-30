@@ -9,22 +9,32 @@
     <span rsf:id="no_attachments_yet" class="instruction no_attachments_yet">No attachments yet</span>
     
     <ol rsf:id="attachment-list-core:">
-    	<li rsf:id="attachment-list-row:">
-    		<img rsf:id="attachment_image" width="16" height="16"/> 
-    		<a rsf:id="attachment_link" target="_blank">ExampleAttachment.doc</a>
-    		<input class="skip" rsf:id="attachment_item" />
-    		<span rsf:id="attachment_size">(52 KB)</span>
-    		<span rsf:id="attachment_remove">Remove</span>
-    	</li>
+        <li rsf:id="attachment-list-row:">
+            <img rsf:id="attachment_image" width="16" height="16"/> 
+            <a rsf:id="attachment_link" target="_blank">ExampleAttachment.doc</a>
+            <input class="skip" rsf:id="attachment_item" />
+            <span rsf:id="attachment_size">(52 KB)</span>
+            <span rsf:id="attachment_remove">Remove</span>
+        </li>
     </ol>
     
+    <ol>
+        <li id="attachment-list-demo:" rsf:id="attachment-list-demo:" class="skip">
+            <img  width="16" height="16" src="http://localhost:8080/sakai-assignment2-tool/component-templates/image.jpg"/> 
+            <a  href="http://localhost:8080/sakai-assignment2-tool/component-templates/demo.html" target="_blank">demo</a>
+            <input  value="" class="skip" name=""/>
+            <span >demo</span>
+            <span ><a href="#" onclick="asnn2.removeAttachment(this);">Remove</a></span>
+        </li>
+    </ol>
+
     <span rsf:id="attachments-input" />
     
     <script type="text/javascript">
     //<![CDATA[
         jQuery(document).ready(function(){
           // Init the "No attachments" text
-            updateDisplayNoAttachments();
+            asnn2.updateDisplayNoAttachments();
         });
     //]]>
     </script>

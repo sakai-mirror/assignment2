@@ -159,7 +159,7 @@ asnn2.pageState = {
   dataArray: [],
   pageModel: {},
   canEdit: false,
-  minPageSize: 5  // This needs to be in sync with the html template currently.§
+  minPageSize: 5  // This needs to be in sync with the html template currently.ï¿½
 };
 
 /*
@@ -399,18 +399,33 @@ asnn2.setupAsnnList = function () {
  */
 asnn2.renderAsnnList = function(asnndata) {
   var data = asnndata || asnn2.pageState.dataArray;
+  var totalNumAssignments = asnn2.pageState.dataArray.length;
   
   var showSorting = true;
-  if (data.length <= 1) {
+  if (totalNumAssignments <= 1) {
     showSorting = false;
   }
   
   var showPaging = true;
-  if (data.length <= asnn2.pageState.minPageSize) {
+  if (totalNumAssignments <= asnn2.pageState.minPageSize) {
     showPaging = false;
   }
   
-  asnn2.toggleTableControls(showPaging,showSorting);
+  // if the number of assignments displayed on this page is less than the minimum
+  // for the pager, hide the top remove button
+  var showTopRemoveButton = true;
+  if (data.length <= asnn2.pageState.minPageSize) {
+      showTopRemoveButton = false;
+  }
+  
+  // we don't render the table or remove buttons and do render some informational
+  // text if no assignments exist yet
+  var asnnExist = totalNumAssignments > 0;
+  asnn2.toggleNoAssignments(asnnExist);
+  
+  // make sure you call toggleNoAssignments first or it will override
+  // your showTopRemoveButton logic
+  asnn2.toggleTableControls(showPaging,showSorting,showTopRemoveButton);
   
   var dopple = $.extend(true, [], data);
 
@@ -439,15 +454,17 @@ asnn2.renderAsnnList = function(asnndata) {
  * controls. This is necessary sometimes we want to change whether one of them
  * is displayed based on the number of current assignments.
  * 
- * These parameters should both be boolean values indicating whether the 
+ * These parameters should all be boolean values indicating whether the 
  * particular portions should be shown or hidden.
  */
-asnn2.toggleTableControls = function(showPager,showSorting) {
+asnn2.toggleTableControls = function(showPager,showSorting,showTopRemove) {
   if (showPager === true) {
     jQuery("#top-pager-area").show();
+    jQuery("#bottom-pager-area").show();
   }
   else {
     jQuery("#top-pager-area").hide();
+    jQuery("#bottom-pager-area").hide();
   }
   
   if (showSorting === true) {
@@ -466,6 +483,29 @@ asnn2.toggleTableControls = function(showPager,showSorting) {
     jQuery(".pager-sort-area").show();
   }
   
+  if (showTopRemove === true) {
+      jQuery("#top-remove-button").show();
+  } else {
+      jQuery("#top-remove-button").hide();
+  }
+}
+
+/**
+ * If there are no assignments, we don't want to display the assignments table
+ * or the remove buttons. We do display an alternate section that includes
+ * an informational message about how to add assignments.
+ * @param assignmentsExist
+ */
+asnn2.toggleNoAssignments = function(assignmentsExist) {
+    if (assignmentsExist) {
+        jQuery(".removeAsnn").show();
+        jQuery("#asnn-list").show();
+        jQuery("#noAsnn").hide();
+    } else {
+        jQuery(".removeAsnn").hide();
+        jQuery("#asnn-list").hide();
+        jQuery("#noAsnn").show();
+    }
 }
 
 /**
@@ -484,7 +524,10 @@ asnn2.renderAsnnListPage = function(newPageModel) {
   jQuery("#asnn-list").hide();
   asnn2.renderAsnnList(torender);
   asnn2.setupAsnnList();
-  jQuery("#asnn-list").show();
+  
+  if (asnn2.pageState.dataArray.length > 0) {
+      jQuery("#asnn-list").show();
+  }
 };
 
 /**
@@ -601,6 +644,11 @@ asnn2.initAsnnList = function () {
         asnn2.pageState.pageModel = newModel;
         asnn2.renderAsnnListPage();
       }
+    },
+    model: {
+      pageIndex: undefined,
+      pageSize: 200,
+      totalRange: undefined
     },
     dataModel: fakedata,
     pagerBar: {type: "fluid.pager.pagerBar", options: {

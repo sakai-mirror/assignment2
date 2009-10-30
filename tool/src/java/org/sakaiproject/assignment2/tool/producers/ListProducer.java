@@ -46,7 +46,7 @@ import uk.org.ponder.rsf.viewstate.ViewParameters;
  * @author sgithens
  *
  */
-public class ListProducer implements ViewComponentProducer, NavigationCaseReporter, DefaultView {
+public class ListProducer implements ViewComponentProducer, DefaultView {
 
     public static final String VIEW_ID = "list";
 
@@ -68,13 +68,6 @@ public class ListProducer implements ViewComponentProducer, NavigationCaseReport
         UIVerbatim.make(tofill, "asnnlist-decl-js", "var sakai = sakai || {};"
                 + "sakai.curPlacement = '"+placement.getId()+"';"
                 + "sakai.curContext = '"+externalLogic.getCurrentContextId()+"';");
-    }
-
-    @SuppressWarnings("unchecked")
-    public List reportNavigationCases() {
-        List<NavigationCase> nav= new ArrayList<NavigationCase>();
-        nav.add(new NavigationCase("remove", new SimpleViewParameters(AjaxResultsProducer.VIEW_ID)));
-        return nav;
     }
 
 }

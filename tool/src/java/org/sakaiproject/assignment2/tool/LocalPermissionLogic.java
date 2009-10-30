@@ -89,14 +89,7 @@ public class LocalPermissionLogic {
         else if (PreviewAsStudentProducer.VIEW_ID.equals(viewId)) {
             return permissionLogic.isCurrentUserAbleToEditAssignments(contextId);
         }
-        else if (AjaxResultsProducer.VIEW_ID.equals(viewId)) {
-            return Boolean.TRUE;
-
-        } else if (AssignmentDetailProducer.VIEW_ID.equals(viewId)) {
-            // used by entity broker
-            return Boolean.TRUE;
-
-        } else if (ListProducer.VIEW_ID.equals(viewId)) {
+        else if (ListProducer.VIEW_ID.equals(viewId)) {
             return permissionLogic.isUserAbleToAccessInstructorView(contextId);
         }
         else if (AssignmentInfoDataProducer.VIEW_ID.equals(viewId)) {
@@ -158,23 +151,12 @@ public class LocalPermissionLogic {
         } else if (FragmentSubmissionGradePreviewProducer.VIEW_ID.equals(viewId)) {
             //TODO - RYAN!  Remove this producer!
             return Boolean.FALSE;
-        } else if (FragmentViewSubmissionProducer.VIEW_ID.equals(viewId)) {
-            return Boolean.TRUE;
         } else if (UploadAllProducer.VIEW_ID.equals(viewId) || UploadAllConfirmProducer.VIEW_ID.equals(viewId)) {
             if (viewParams instanceof AssignmentViewParams) {
                 AssignmentViewParams params = (AssignmentViewParams) viewParams;
 
                 return permissionLogic.isUserAbleToAccessInstructorView(contextId) && 
                 permissionLogic.isUserAbleToViewAssignment(params.assignmentId);
-            }
-
-            return Boolean.FALSE;
-
-        } else if (FragmentAssignmentInstructionsProducer.VIEW_ID.equals(viewId)) {
-            if (viewParams instanceof AssignmentViewParams) {
-                AssignmentViewParams params = (AssignmentViewParams) viewParams;
-
-                return permissionLogic.isUserAbleToViewAssignment(params.assignmentId);
             }
 
             return Boolean.FALSE;

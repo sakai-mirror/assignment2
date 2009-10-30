@@ -26,7 +26,7 @@
     text-align: right; 
     width: 92%; 
     margin-top: 20px; 
-    margin-left: 23px; 
+    margin-left: 2.3em; 
 }
 
 /* Reordering */
@@ -65,6 +65,10 @@
 .asnn-decorated-cell, .asnn-decorated-heading {
   border-bottom: solid 2px #cccccc;
   padding: 7px 0;
+}
+
+.asnn-title-cell {
+    width: 75%;
 }
 
 .asnn-decorated-heading {
@@ -161,3 +165,19 @@ a.fl-pager-currentPage {
 }
 */
 /* End Fluid Pager Classes */
+
+/* No assignments section */
+.noAsnnInfo {
+    color: #5E5E5E;
+    padding: 1.2em;
+}
+
+.noAsnnHeading {
+    font-weight: bold;
+    font-size: 1.2em;
+}
+
+.generalErrors {
+    margin-left: 40px;
+    margin-bottom: 15px;
+}

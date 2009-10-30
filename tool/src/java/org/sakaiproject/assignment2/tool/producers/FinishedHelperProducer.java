@@ -105,7 +105,7 @@ public class FinishedHelperProducer implements ViewComponentProducer, ViewParams
                 if (attach != null) {
                     String file_size = "(" + attach.getContentLength() + ")";
 
-                    markup += HTMLUtil.emitJavascriptCall("parent.updateAttachments", 
+                    markup += HTMLUtil.emitJavascriptCall("parent.asnn2.updateAttachments", 
                             new String[]{attach.getContentTypeImagePath(), 
                             attach.getDisplayName(), attach.getUrl(), ref.getId(), file_size});  
                 }

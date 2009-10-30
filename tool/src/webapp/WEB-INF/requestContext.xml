@@ -261,15 +261,8 @@
 	  <property name="externalGradebookLogic" ref="org.sakaiproject.assignment2.logic.ExternalGradebookLogic" /> 
 	</bean>
 
-	
-   <bean class="org.sakaiproject.assignment2.tool.producers.AssignmentDetailProducer">
-   	  <property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
-   </bean>
-
    <!--  AJAX Fragment Producers -->
-   <bean class="org.sakaiproject.assignment2.tool.producers.AjaxResultsProducer">
-   </bean>
-   
+
    <bean class="org.sakaiproject.assignment2.tool.producers.fragments.FragmentSubmissionGradePreviewProducer">
       <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
       <property name="attachmentListRenderer" ref="AttachmentListRenderer" />
@@ -288,17 +281,7 @@
    	  <property name="gradebookDetailsRenderer" ref="GradebookDetailsRenderer" />
    	  <property name="assignmentSubmissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
    </bean>
-   
-   <bean class="org.sakaiproject.assignment2.tool.producers.fragments.FragmentAssignmentInstructionsProducer">
-   	  <property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
-   	  <property name="attachmentListRenderer" ref="AttachmentListRenderer" />
-   </bean>
-   
-   <bean class="org.sakaiproject.assignment2.tool.producers.fragments.FragmentViewSubmissionProducer">
-      <property name="submissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
-   	  <property name="attachmentListRenderer" ref="AttachmentListRenderer" />
-   </bean>
-   
+
    <!--  Actions -->
    <bean id="RemoveAssignmentCommand"  class="org.sakaiproject.assignment2.tool.commands.RemoveAssignmentCommand">
        <property name="logic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />

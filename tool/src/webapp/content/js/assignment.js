@@ -103,48 +103,41 @@ function flip_image(img) {
     }
 }
 
-function updateAttachments(imgsrc, filename, link, ref, filesize) {
-    //Check if current last row is "demo"
-    if (jQuery("#attachmentsFieldset ol:first li:last").hasClass("skip")) {
-        newRow = jQuery("#attachmentsFieldset ol:first li:last").get(0);
+var asnn2 = asnn2 || {};
+
+(function(jQuery, asnn2) {
+
+    asnn2.updateAttachments = function(imgsrc, filename, link, ref, filesize) {
+        newRow = jQuery('#page-replace\\:\\:attachment_list\\:1\\:attachment-list-demo\\:0\\:').clone(true); //.appendTo("#attachmentsFieldset ol:first").get(0);
         jQuery(newRow).removeClass("skip");
-    } else {
-        newRow = jQuery("#attachmentsFieldset ol:first li:last").clone(true).appendTo("#attachmentsFieldset ol:first").get(0);
+        jQuery(newRow).removeAttr("id");
+        jQuery("img", newRow).attr("src", imgsrc);
+        jQuery("a:first", newRow).attr("href", link);
+        jQuery("a:first", newRow).html(filename);
+        jQuery("input", newRow).attr("value", ref);
+        jQuery("input", newRow).attr("name", 'page-replace::attachment_list:1:attachments-input');
+        jQuery("span:first", newRow).html(filesize);
+    
+        jQuery(newRow).appendTo("#attachmentsFieldset ol:first").get(0);
+        
+        asnn2.updateDisplayNoAttachments();
     }
-    jQuery("img", newRow).attr("src", imgsrc);
-    jQuery("a:first", newRow).attr("href", link);
-    jQuery("a:first", newRow).html(filename);
-    jQuery("input", newRow).attr("value", ref);
-    jQuery("span:first", newRow).html(filesize);
-
-    updateDisplayNoAttachments();
-}
-
-function removeAttachment(attach) {
-    // we need to leave at least one "skipped" demo for use for new attachments
-    var li = jQuery("#attachmentsFieldset li");
-    if (li.size() <= 1) {
-        // this is the only one in the list, so we need to just
-        // change it to "skipped"
-        jQuery(attach).parent('span').parent('li').addClass("skip");
-    } else {
+    
+    asnn2.removeAttachment = function(attach) {
         jQuery(attach).parent('span').parent('li').remove();
+        asnn2.updateDisplayNoAttachments();
     }
-}
-
-function updateDisplayNoAttachments() {
-    var li = jQuery("#attachmentsFieldset li").get(0);
-    if (li) {
-        var skipped = jQuery("#attachmentsFieldset ol:first li:last").hasClass("skip");
-        if (skipped) {
-            jQuery("span.no_attachments_yet").show();
-        } else {
+    
+    asnn2.updateDisplayNoAttachments = function() {
+        var li = jQuery("#attachmentsFieldset ol:first li").get(0);
+        if (li) {
             jQuery("span.no_attachments_yet").hide();
+        } else {
+            jQuery("span.no_attachments_yet").show();
         }
-    } else {
-        jQuery("span.no_attachments_yet").show();
     }
-}
+    
+})(jQuery, asnn2);
 
 /*
  * Some functions and utilities which may be useful outside of Assignments2

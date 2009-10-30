@@ -29,7 +29,6 @@ import org.sakaiproject.assignment2.tool.params.SimpleAssignmentViewParams;
 import org.sakaiproject.assignment2.tool.params.StudentSubmissionParams;
 import org.sakaiproject.assignment2.tool.params.VerifiableViewParams;
 import org.sakaiproject.assignment2.tool.params.ViewSubmissionsViewParams;
-import org.sakaiproject.assignment2.tool.producers.AssignmentDetailProducer;
 import org.sakaiproject.assignment2.tool.producers.AssignmentProducer;
 import org.sakaiproject.assignment2.tool.producers.ListProducer;
 import org.sakaiproject.assignment2.tool.producers.AuthorizationFailedProducer;
@@ -70,12 +69,6 @@ public class Assignment2WorkFlowLogic implements ViewParamsInterceptor, ActionRe
     public AnyViewParameters adjustViewParameters(ViewParameters incoming) {
         if (AuthorizationFailedProducer.VIEWID.equals(incoming.viewID)) {
             //Always return incoming if we are going to the Authorization Failed Page
-            return incoming;
-        }
-
-        if (AssignmentDetailProducer.VIEW_ID.equals(incoming.viewID)) {
-            //This is a entitybroker "helper" that is always visible
-            //TODO make sure that this is always visible
             return incoming;
         }
 
