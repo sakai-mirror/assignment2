@@ -19,21 +19,23 @@
     </ol>
     
     <ol>
-        <li id="attachment-list-demo:" rsf:id="attachment-list-demo:" class="skip">
+        <li id="attachment-list-demo" class="skip">
             <img  width="16" height="16" src="http://localhost:8080/sakai-assignment2-tool/component-templates/image.jpg"/> 
             <a  href="http://localhost:8080/sakai-assignment2-tool/component-templates/demo.html" target="_blank">demo</a>
-            <input  value="" class="skip" name=""/>
+            <input value="" class="skip" name=""/>
             <span >demo</span>
             <span ><a href="#" onclick="asnn2.removeAttachment(this);">Remove</a></span>
         </li>
     </ol>
-
+    <span style="display:none" rsf:id="attachments-binding-id" class="attachments-binding-id"></span>
     <span rsf:id="attachments-input" />
     
     <script type="text/javascript">
     //<![CDATA[
         jQuery(document).ready(function(){
           // Init the "No attachments" text
+            //var demoattach = jQuery("#attachment_item_demo").get(0);
+            asnn2.attachmentItemBinding = jQuery(".attachments-binding-id").text();
             asnn2.updateDisplayNoAttachments();
         });
     //]]>

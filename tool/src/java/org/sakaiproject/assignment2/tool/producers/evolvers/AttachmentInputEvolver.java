@@ -116,11 +116,12 @@ public class AttachmentInputEvolver {
         // especially if the input names ever change.
         //if (limit == 0) {
             //output "demo" row, with styleClass of skip
-            UIBranchContainer row = UIBranchContainer.make(togo, "attachment-list-demo:", Integer.toString(0));
+            //UIBranchContainer row = UIBranchContainer.make(togo, "attachment-list-demo:", Integer.toString(0));
             //UILink.make(row, "attachment_image", "image.jpg");
             //UILink.make(row, "attachment_link", "demo", "demo.html");
             //UIOutput.make(row, "attachment_item", "demo");
-            //UIBasicListMember.makeBasic(row, "attachment_item", toevolve.getFullID(), 0);
+            //UIBasicListMember.makeBasic(togo, "attachment_item_demo", toevolve.getFullID(), 0);
+            UIOutput.make(togo, "attachments-binding-id", toevolve.getFullID());
             //UIOutput.make(row, "attachment_size", "demo");
             //Add remove link
             /*
