@@ -108,14 +108,14 @@ var asnn2 = asnn2 || {};
 (function(jQuery, asnn2) {
 
     asnn2.updateAttachments = function(imgsrc, filename, link, ref, filesize) {
-        newRow = jQuery('#page-replace\\:\\:attachment_list\\:1\\:attachment-list-demo\\:0\\:').clone(true); //.appendTo("#attachmentsFieldset ol:first").get(0);
+        newRow = jQuery('#attachment-list-demo').clone(true); //.appendTo("#attachmentsFieldset ol:first").get(0);
         jQuery(newRow).removeClass("skip");
         jQuery(newRow).removeAttr("id");
         jQuery("img", newRow).attr("src", imgsrc);
         jQuery("a:first", newRow).attr("href", link);
         jQuery("a:first", newRow).html(filename);
         jQuery("input", newRow).attr("value", ref);
-        jQuery("input", newRow).attr("name", 'page-replace::attachment_list:1:attachments-input');
+        jQuery("input", newRow).attr("name", asnn2.attachmentItemBinding);
         jQuery("span:first", newRow).html(filesize);
     
         jQuery(newRow).appendTo("#attachmentsFieldset ol:first").get(0);
