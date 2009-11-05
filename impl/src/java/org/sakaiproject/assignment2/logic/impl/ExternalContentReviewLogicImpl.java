@@ -349,7 +349,7 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
             } else if (errorCode.equals(ContentReviewItem.SUBMISSION_ERROR_RETRY_CODE)) {
                 errorMessage = bundleLogic.getString("assignment2.content_review.error.SUBMISSION_ERROR_RETRY_CODE");
             } else if (errorCode.equals(ContentReviewItem.SUBMISSION_ERROR_RETRY_EXCEEDED)) {
-                errorMessage = bundleLogic.getString("assignment2.content_review.error.SUBMISSION_ERROR_RETRY_EXCEEDED");
+                errorMessage = bundleLogic.getString("assignment2.content_review.error.SUBMISSION_ERROR_RETRY_EXCEEDED_CODE");
             } else if (errorCode.equals(ContentReviewItem.SUBMISSION_ERROR_USER_DETAILS_CODE)) {
                 errorMessage = bundleLogic.getString("assignment2.content_review.error.SUBMISSION_ERROR_USER_DETAILS_CODE");
             }
