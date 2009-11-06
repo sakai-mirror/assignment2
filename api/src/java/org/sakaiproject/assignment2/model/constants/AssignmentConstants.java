@@ -195,6 +195,12 @@ public class AssignmentConstants {
     public static final String TII_PROP_SUBMIT_TO_REPO = "turnitin.repository.setting";
     
     /**
+     * The default value for the {@link #TII_PROP_SUBMIT_TO_REPO}. Possible values are:
+     * {@link #TII_VALUE_INSTITUTION_REPO}, {@link #TII_VALUE_NO_REPO}, {@link #TII_VALUE_STANDARD_REPO}
+     */
+    public static final String TII_PROP_DEFAULT_SUBMIT_TO_REPO = "turnitin.repository.setting.value";
+    
+    /**
      * possible value for {@link #TII_PROP_SUBMIT_TO_REPO}.
      * use this option if you do not want submissions saved to a repository.
      */
