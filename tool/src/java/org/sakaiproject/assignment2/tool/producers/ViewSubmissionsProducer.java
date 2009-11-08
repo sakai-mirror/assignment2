@@ -50,8 +50,11 @@ import org.sakaiproject.assignment2.tool.params.AssignmentViewParams;
 import org.sakaiproject.assignment2.tool.params.ViewSubmissionsViewParams;
 import org.sakaiproject.assignment2.tool.params.ZipViewParams;
 import org.sakaiproject.assignment2.tool.producers.renderers.AttachmentListRenderer;
+import org.sakaiproject.assignment2.tool.entity.Assignment2SubmissionEntityProvider;
 import org.sakaiproject.site.api.Group;
 import org.sakaiproject.tool.api.Placement;
+import org.sakaiproject.tool.api.SessionManager;
+import org.sakaiproject.tool.api.ToolSession;
 
 import uk.org.ponder.htmlutil.HTMLUtil;
 import uk.org.ponder.messageutil.MessageLocator;
@@ -117,6 +120,7 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
     private ExternalGradebookLogic gradebookLogic;
     private ExternalContentReviewLogic contentReviewLogic;
     private Placement placement;
+    private SessionManager sessionManager;
 
     private Long assignmentId;
 
@@ -172,9 +176,29 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
         // we need to retrieve the history for the release/retract feedback logic
         List<AssignmentSubmission> submissions = submissionLogic.getViewableSubmissionsWithHistoryForAssignmentId(assignmentId, params.groupId);
 
+       
+        // The following is some code to populate the sort order/page size, if
+        // it's already been put in session state by the entity provider.
+        Long pagesize = null;
+        String orderBy = null;
+        Boolean ascending = null;
+        ToolSession toolSession = sessionManager.getCurrentToolSession();
+        if (toolSession.getAttribute(Assignment2SubmissionEntityProvider.SUBMISSIONVIEW_SESSION_ATTR) != null) {
+            Map attr = (Map) toolSession.getAttribute(Assignment2SubmissionEntityProvider.SUBMISSIONVIEW_SESSION_ATTR);
+            if (attr.containsKey(Assignment2SubmissionEntityProvider.SUBMISSIONVIEW_SESSION_ATTR_PAGE_SIZE)) {
+                pagesize = (Long) attr.get(Assignment2SubmissionEntityProvider.SUBMISSIONVIEW_SESSION_ATTR_PAGE_SIZE);
+            }
+            if (attr.containsKey(Assignment2SubmissionEntityProvider.SUBMISSIONVIEW_SESSION_ATTR_ORDER_BY)) {
+                orderBy = (String) attr.get(Assignment2SubmissionEntityProvider.SUBMISSIONVIEW_SESSION_ATTR_ORDER_BY);
+            }
+            if (attr.containsKey(Assignment2SubmissionEntityProvider.SUBMISSIONVIEW_SESSION_ATTR_ASCENDING)) {
+                ascending = (Boolean) attr.get(Assignment2SubmissionEntityProvider.SUBMISSIONVIEW_SESSION_ATTR_ASCENDING);
+            }
+        }
+        
         UIInitBlock.make(tofill, "asnn2subview-init", "asnn2subview.init", 
                 new Object[]{assignmentId, externalLogic.getCurrentContextId(), 
-                placement.getId(), submissions.size(), assignment.isGraded(), contentReviewEnabled});
+                placement.getId(), submissions.size(), assignment.isGraded(), contentReviewEnabled, pagesize, orderBy, ascending});
 
         // if assign is graded, retrieve the gb item
         GradebookItem gbItem = null;
@@ -550,5 +574,9 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
 
     public void setPlacement(Placement placement) {
         this.placement = placement;
+    }
+    
+    public void setSessionManager(SessionManager sessionManager) {
+        this.sessionManager = sessionManager;
     }
 }

@@ -39,6 +39,9 @@ import org.sakaiproject.entitybroker.entityprovider.extension.RequestStorage;
 import org.sakaiproject.entitybroker.entityprovider.search.Order;
 import org.sakaiproject.entitybroker.entityprovider.search.Search;
 import org.sakaiproject.entitybroker.util.AbstractEntityProvider;
+import org.sakaiproject.tool.api.Session;
+import org.sakaiproject.tool.api.SessionManager;
+import org.sakaiproject.tool.api.ToolSession;
 
 import uk.org.ponder.rsf.components.UIBranchContainer;
 import uk.org.ponder.rsf.components.UIInternalLink;
@@ -46,6 +49,12 @@ import uk.org.ponder.rsf.components.UIOutput;
 
 public class Assignment2SubmissionEntityProvider extends AbstractEntityProvider implements
 CoreEntityProvider, RESTful, RequestStorable, RequestAware{
+    
+    public static final String SUBMISSIONVIEW_SESSION_ATTR_ASCENDING = "ascending";
+    public static final String SUBMISSIONVIEW_SESSION_ATTR_ORDER_BY = "orderBy";
+    public static final String SUBMISSIONVIEW_SESSION_ATTR_PAGE_SIZE = "pageSize";
+    public static final String SUBMISSIONVIEW_SESSION_ATTR = "x-asnn2-submissionview";
+    
     public static final String STUDENT_NAME_PROP = "studentName";
     public static final String STUDENT_ID_PROP = "studentId";
     public static final String SUBMITTED_DATE = "submittedDate";
@@ -119,6 +128,14 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware{
         this.assignmentBundleLogic = assignmentBundleLogic;
     }
     
+    /**
+     * Dependency
+     */
+    private SessionManager sessionManager;
+    public void setSessionManager(SessionManager sessionManager) {
+        this.sessionManager = sessionManager;
+    }
+    
     private ExternalContentReviewLogic contentReviewLogic;
     public void setExternalContentReviewLogic(ExternalContentReviewLogic contentReviewLogic) {
         this.contentReviewLogic = contentReviewLogic;
@@ -171,7 +188,7 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware{
     public List<?> getEntities(EntityReference ref, Search search) {
         Long assignmentId = requestStorage.getStoredValueAsType(Long.class, "asnnid");
         String filterGroupId = requestStorage.getStoredValueAsType(String.class, "groupId");
-        Boolean firstcall = requestStorage.getStoredValueAsType(java.lang.Boolean.class, "firstcall" );
+        String placementId = requestStorage.getStoredValueAsType(String.class, "placementId");
         
         String orderByTest = null;
         if (search.getOrders() != null && search.getOrders().length > 0) {
@@ -198,9 +215,6 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware{
         DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, assignmentBundleLogic.getLocale());
 
         List togo = new ArrayList();
-
-        //System.out.println("IS THIS THE FIRST CALL?: " + requestStorage.getStoredValueAsType(java.lang.Boolean.class, "firstcall" ));
-        
         
         List<AssignmentSubmission> submissions = submissionLogic.getViewableSubmissionsWithHistoryForAssignmentId(assignmentId, filterGroupId);
 
@@ -339,21 +353,25 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware{
             togo.add(submap);
         }
 
+        String orderBy = null;
+        Boolean ascending = null;
         if (search.getOrders() != null && search.getOrders().length > 0) {
             Order order = search.getOrders()[0];
             // We can sort by:
             // studentName, submittedDate, submissionStatus, grade, and feedbackReleased
-            final String orderBy = order.getProperty();
-            final boolean ascending = order.ascending;
-            if (orderBy.equals(STUDENT_NAME_PROP) || orderBy.equals(SUBMITTED_DATE) ||
-                    orderBy.equals(SUBMISSION_STATUS) || 
-                    (orderBy.equals(SUBMISSION_GRADE) && assignment.isGraded()) ||
-                    orderBy.equals(SUBMISSION_FEEDBACK_RELEASED)) {
+            final String orderByComp = order.getProperty();
+            orderBy = orderByComp;
+            final boolean ascendingComp = order.ascending;
+            ascending = ascendingComp;
+            if (orderByComp.equals(STUDENT_NAME_PROP) || orderByComp.equals(SUBMITTED_DATE) ||
+                    orderByComp.equals(SUBMISSION_STATUS) || 
+                    (orderByComp.equals(SUBMISSION_GRADE) && assignment.isGraded()) ||
+                    orderByComp.equals(SUBMISSION_FEEDBACK_RELEASED)) {
 
                 Collections.sort(togo, new Comparator() {
                     public int compare(Object o1, Object o2) {
                         Map m1, m2;
-                        if (ascending) {
+                        if (ascendingComp) {
                             m1 = (Map) o1;
                             m2 = (Map) o2;
                         }
@@ -361,14 +379,14 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware{
                             m2 = (Map) o1;
                             m1 = (Map) o2;
                         }
-                        if (m1.get(orderBy) instanceof Date) {
-                            return ((Date)m1.get(orderBy)).compareTo(((Date)m2.get(orderBy)));
+                        if (m1.get(orderByComp) instanceof Date) {
+                            return ((Date)m1.get(orderByComp)).compareTo(((Date)m2.get(orderByComp)));
                         } 
-                        else if (m1.get(orderBy) instanceof Boolean) {
-                            return ((Boolean)m1.get(orderBy)).compareTo(((Boolean)m2.get(orderBy)));
+                        else if (m1.get(orderByComp) instanceof Boolean) {
+                            return ((Boolean)m1.get(orderByComp)).compareTo(((Boolean)m2.get(orderByComp)));
                         }
                         else {
-                            return m1.get(orderBy).toString().compareTo(m2.get(orderBy).toString());
+                            return m1.get(orderByComp).toString().compareTo(m2.get(orderByComp).toString());
                         }
                     }});
             }
@@ -393,6 +411,16 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware{
 
         requestGetter.getResponse().setHeader("x-asnn2-pageSize", search.getLimit()+"");
         requestGetter.getResponse().setHeader("x-asnn2-pageIndex", (start / search.getLimit())+"");
+        
+        if (placementId != null) {
+            Session session = sessionManager.getCurrentSession();
+            ToolSession toolSession = session.getToolSession(placementId);
+            Map attr = new HashMap();
+            attr.put(SUBMISSIONVIEW_SESSION_ATTR_PAGE_SIZE, search.getLimit());
+            attr.put(SUBMISSIONVIEW_SESSION_ATTR_ORDER_BY, orderBy);
+            attr.put(SUBMISSIONVIEW_SESSION_ATTR_ASCENDING, ascending);
+            toolSession.setAttribute(SUBMISSIONVIEW_SESSION_ATTR, attr);
+        }
         
         return togo.subList((int)start, (int)end);
     }

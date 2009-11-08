@@ -47,6 +47,7 @@
 	    <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
 	    <property name="assignmentBundleLogic" ref="org.sakaiproject.assignment2.logic.AssignmentBundleLogic" />
         <property name="externalContentReviewLogic" ref="org.sakaiproject.assignment2.logic.ExternalContentReviewLogic" />
+        <property name="sessionManager" ref="org.sakaiproject.tool.api.SessionManager" />
        <!--  <property name="submissionTableViewStateHolder">
             <bean parent="RSACBridgeProxy">
                 <property name="targetBeanName" value="SubmissionTableViewStateHolder" />
