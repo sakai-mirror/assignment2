@@ -632,7 +632,8 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
                 if (assignment.getProperties().containsKey("submit_papers_to")) {
                     selectedValue = (String)assignment.getProperties().get("submit_papers_to");
                 } else {
-                    selectedValue = repoOptions.get(0);
+                    // retrieve the default setting from sakai.properties
+                   selectedValue = localTurnitinLogic.getDefaultSubmissionRepository();
                 }
 
                 UISelect repo_select = UISelect.make(form, "submit_to_repo_radios", submitToRepoValues,

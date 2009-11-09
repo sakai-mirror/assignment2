@@ -153,25 +153,22 @@ asnn2subview.spinner = function(ison) {
 
 asnn2subview.subTableRenderer = function (overallThat, inOptions) {
   var that = fluid.initView("asnn2subview.subTableRenderer", overallThat.container, inOptions);
-
   return {
     returnedOptions: {
       listeners: {
         onModelChange: function (newModel, oldModel) {
-          var firstcall = false;
-          if (newModel.sortKey) {
-            var order = "&_order=" + newModel.sortKey;
-            if (newModel.sortDir < 0) {
-              order = order + "_desc";
-            }
-          } 
-          else {
-            // set defaults
-            order = "&_order=studentName";
-            newModel.sortKey = "studentName"; 
-            newModel.sortDir = 1; 
-            firstcall = true;
+          if (!newModel.sortKey) {
+            newModel.sortKey = "studentName";
           }
+          if (!newModel.sortDir) {
+            newModel.sortDir = 1; 
+          }
+          
+          var order = "&_order=" + newModel.sortKey;
+          if (newModel.sortDir && newModel.sortDir < 0) {
+            order = order + "_desc";
+          }
+
           if (newModel.groupId && newModel.groupId !== "") {
             var groupfilter = "&groupId="+newModel.groupId;
           }
@@ -181,7 +178,7 @@ asnn2subview.subTableRenderer = function (overallThat, inOptions) {
           asnn2subview.spinner(true);
           jQuery.ajax({
             type: "GET",
-            url: "/direct/assignment2submission.json?asnnid="+asnn2subview.asnnid+"&_start="+(newModel.pageIndex*newModel.pageSize)+"&_limit="+newModel.pageSize+order+groupfilter+"&firstcall="+firstcall,
+            url: "/direct/assignment2submission.json?asnnid="+asnn2subview.asnnid+"&placementId="+sakai.curPlacement+"&_start="+(newModel.pageIndex*newModel.pageSize)+"&_limit="+newModel.pageSize+order+groupfilter,
             cache: false,
             success: function (payload) {
               var data = JSON.parse(payload);
@@ -229,7 +226,7 @@ asnn2subview.renderSubmissions = function(treedata) {
   asnn2subview.alignGrading();
 }
 
-asnn2subview.initPager = function(numSubmissions) {
+asnn2subview.initPager = function(numSubmissions, curPageSize, curOrderBy, curAscending) {
   var graded = true;
 
   var columnDefs = [
@@ -280,12 +277,18 @@ asnn2subview.initPager = function(numSubmissions) {
   for (var i = 0; i < numSubmissions; i++) {
     fakedata.push(i);
   }
-
+  
+  if (!curPageSize) {
+    curPageSize = 200;
+  }
+  
   asnn2subview.pager = fluid.pager("#submissions-table-area", {
     model: {
       pageIndex: undefined,
-      pageSize: 200,
-      totalRange: undefined
+      pageSize: curPageSize,
+      totalRange: undefined,
+      sortKey: curOrderBy,
+      sortDir: curAscending
     },
     dataModel: fakedata,
     columnDefs: columnDefs,
@@ -306,16 +309,6 @@ asnn2subview.initPager = function(numSubmissions) {
   // Init Group Filter
   jQuery('#page-replace\\:\\:group_filter-selection').change(function() {
     var newModel = fluid.copy(asnn2subview.pager.model);
-   /* newModel.pageIndex = 0;
-    newModel.sortKey = sortBy;
-    if (!newModel.sortDir) {
-      newModel.sortDir = 1; 
-    } 
-    else {
-      newModel.sortDir = -1 * newModel.sortDir;
-    }        
-    jQuery(".sortimg").remove();
-*/
     newModel.pageIndex = 0;
     newModel.groupId = jQuery(this).val();
     asnn2subview.pager.model = newModel;
@@ -424,7 +417,7 @@ asnn2subview.filteredRowTransform = function(obj, idx) {
     return togo;
   };
 
-asnn2subview.init = function(asnnid, contextId, placementId, numSubmissions, graded, reviewEnabled) {
+asnn2subview.init = function(asnnid, contextId, placementId, numSubmissions, graded, reviewEnabled, curPageSize, curOrderBy, curAscending) {
   sakai.curPlacement = placementId;
   sakai.curContext = contextId;
 
@@ -443,6 +436,14 @@ asnn2subview.init = function(asnnid, contextId, placementId, numSubmissions, gra
   } else {
     asnn2subview.reviewEnabled = false;
   }
-  asnn2subview.initPager(numSubmissions);
+  
+  if (curAscending === "false" || curAscending === false) {
+    curAscending = -1;
+  }
+  else { // Default to ascending
+    curAscending = 1;
+  }
+  
+  asnn2subview.initPager(numSubmissions, curPageSize, curOrderBy, curAscending);
 
 };

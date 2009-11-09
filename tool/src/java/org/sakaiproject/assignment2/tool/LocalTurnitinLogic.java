@@ -73,6 +73,15 @@ public class LocalTurnitinLogic {
     
     /**
      * 
+     * @return the default repository setting from sakai.properties. Returns {@link AssignmentConstants#TII_VALUE_NO_REPO} if no property is set
+     */
+    public String getDefaultSubmissionRepository() {
+        String defaultRepo = serverConfigurationService.getString(AssignmentConstants.TII_PROP_DEFAULT_SUBMIT_TO_REPO, AssignmentConstants.TII_VALUE_NO_REPO);
+        return defaultRepo;
+    }
+    
+    /**
+     * 
      * @return Returns the value for the institutional repository name set in sakai.properties.
      * Returns null if no value was set.
      */
