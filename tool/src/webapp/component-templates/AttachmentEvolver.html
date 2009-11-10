@@ -1,0 +1,46 @@
+<html>
+<head>
+</head>
+<body>
+<!--  Everything besides the li should go away -->
+<form>
+<div rsf:id="attachment-list:">
+
+    <span rsf:id="no_attachments_yet" class="instruction no_attachments_yet">No attachments yet</span>
+    
+    <ol rsf:id="attachment-list-core:">
+        <li rsf:id="attachment-list-row:">
+            <img rsf:id="attachment_image" width="16" height="16"/> 
+            <a rsf:id="attachment_link" target="_blank">ExampleAttachment.doc</a>
+            <input class="skip" rsf:id="attachment_item" />
+            <span rsf:id="attachment_size">(52 KB)</span>
+            <span rsf:id="attachment_remove">Remove</span>
+        </li>
+    </ol>
+    
+    <ol>
+        <li id="attachment-list-demo" class="skip">
+            <img  width="16" height="16" src=""/> 
+            <a  href="" target="_blank">demo</a>
+            <input value="" class="skip" name=""/>
+            <span >demo</span>
+            <span ><a href="#" onclick="asnn2.removeAttachment(this);">Remove</a></span>
+        </li>
+    </ol>
+    <span style="display:none" rsf:id="attachments-binding-id" class="attachments-binding-id"></span>
+    <span rsf:id="attachments-input" />
+    
+    <script type="text/javascript">
+    //<![CDATA[
+        jQuery(document).ready(function(){
+          // Init the "No attachments" text
+            //var demoattach = jQuery("#attachment_item_demo").get(0);
+            asnn2.attachmentItemBinding = jQuery(".attachments-binding-id").text();
+            asnn2.updateDisplayNoAttachments();
+        });
+    //]]>
+    </script>
+</div>
+</form>
+</body>
+</html>
