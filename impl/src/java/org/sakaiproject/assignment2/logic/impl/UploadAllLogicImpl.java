@@ -196,10 +196,7 @@ public class UploadAllLogicImpl implements UploadAllLogic
                         fileObj.getType().equals(FileType.FILE) && 
                         fileObj.getName().getExtension().equals("csv")) {
                     // upload the grades csv file
-                    processGrades(assign.getContextId(), options.assignmentId, fileObj, uploadInfo, displayIdUserIdMap);
-                    // release/retract the grades
-                    gradebookLogic.releaseOrRetractGrades(assign.getContextId(), assign.getGradebookItemId(), options.releaseGrades, null);
-
+                    processGrades(assign.getContextId(), options, fileObj, uploadInfo, displayIdUserIdMap);
                 }
 
             }
@@ -263,7 +260,7 @@ public class UploadAllLogicImpl implements UploadAllLogic
         return uploadInfo;
     }
 
-    private void processGrades(String contextId, Long assignmentId, FileObject gradesCsvFile, 
+    private void processGrades(String contextId, UploadAllOptions options, FileObject gradesCsvFile, 
             List<Map<String, String>> uploadInfo, Map<String, String> displayIdUserIdMap) {
         if (gradesCsvFile != null) {
             // first, parse out the content
@@ -305,7 +302,7 @@ public class UploadAllLogicImpl implements UploadAllLogic
             }
 
             // now let's proceed with the grade upload!
-            List<String> ungradableStudents = uploadGrades.uploadGrades(displayIdUserIdMap, assignmentId, parsedContent);
+            List<String> ungradableStudents = uploadGrades.uploadGrades(displayIdUserIdMap, options, parsedContent);
             if (ungradableStudents != null) {
                 for (String ungradableStudent : ungradableStudents) {
                     addToUploadInfoMap(uploadInfo, ungradableStudent, UploadInfo.NO_GRADING_PERM_FOR_STUDENT);
