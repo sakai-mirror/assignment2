@@ -29,6 +29,7 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment2.exception.AnnouncementPermissionException;
+import org.sakaiproject.assignment2.exception.ContentReviewException;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
@@ -242,7 +243,11 @@ public class AssignmentAuthoringBean {
                 if (LOG.isDebugEnabled()) LOG.debug("Announcement could not " +
                 "be updated b/c user does not have perm in annc tool");
                 //TODO display to user?
+            } catch (ContentReviewException cre) {
+                messages.addMessage(new TargettedMessage("assignment2.turnitin.error.unable_to_save_tii",
+                        new Object[] { assignment.getTitle() }, TargettedMessage.SEVERITY_ERROR));
             }
+            
 
             //set Messages
             if (draft) {

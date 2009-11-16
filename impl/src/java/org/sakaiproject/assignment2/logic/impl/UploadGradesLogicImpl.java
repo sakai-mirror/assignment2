@@ -48,6 +48,7 @@ import org.sakaiproject.assignment2.logic.GradeInformation;
 import org.sakaiproject.assignment2.exception.UploadException;
 import org.sakaiproject.assignment2.logic.UploadGradesLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
+import org.sakaiproject.assignment2.model.UploadAllOptions;
 
 /**
  * Functionality for uploading grades via a csv file
@@ -81,15 +82,15 @@ public class UploadGradesLogicImpl implements UploadGradesLogic
         this.externalLogic = externalLogic;
     }
 
-    public List<String> uploadGrades(Map<String, String> displayIdUserIdMap, Long assignmentId, List<List<String>> parsedContent)
+    public List<String> uploadGrades(Map<String, String> displayIdUserIdMap, UploadAllOptions options, List<List<String>> parsedContent)
     {
-        if (assignmentId == null) {
-            throw new IllegalArgumentException("Null assignmentId passed to uploadGrades");
+        if (options == null || options.assignmentId == null) {
+            throw new IllegalArgumentException("No assignmentId available in options passed to uploadGrades. Either options or options.assignmentId is null");
         }
 
-        Assignment2 assign = assnLogic.getAssignmentById(assignmentId);
+        Assignment2 assign = assnLogic.getAssignmentById(options.assignmentId);
         if (assign == null) {
-            throw new AssignmentNotFoundException("No assignment exists with id: " + assignmentId);
+            throw new AssignmentNotFoundException("No assignment exists with id: " + options.assignmentId);
         }
 
         if (!assign.isGraded() || assign.getGradebookItemId() == null) {
@@ -134,6 +135,9 @@ public class UploadGradesLogicImpl implements UploadGradesLogic
         } catch (InvalidGradeForAssignmentException igfae) {
             throw new InvalidGradeForAssignmentException(igfae.getMessage(), igfae);
         }
+        
+        // set the released status for this gradebook item
+        gradebookLogic.releaseOrRetractGrades(assign.getContextId(), assign.getGradebookItemId(), options.releaseGrades, null);
 
         return studentsIgnored;
     }

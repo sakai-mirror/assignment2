@@ -33,6 +33,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.assignment2.exception.ContentReviewException;
 import org.sakaiproject.assignment2.logic.AssignmentBundleLogic;
 import org.sakaiproject.assignment2.logic.ExternalContentLogic;
 import org.sakaiproject.assignment2.logic.ExternalContentReviewLogic;
@@ -469,9 +470,14 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
             }
         }
         
+        SimpleDateFormat dform = ((SimpleDateFormat) DateFormat.getDateInstance());
+        dform.applyPattern("yyyyMMdd");
+        
+        if (assign.getOpenDate() != null) {
+            opts.put("dtstart", dform.format(assign.getOpenDate()));
+        }
+        
         if (assign.getDueDate() != null) {
-            SimpleDateFormat dform = ((SimpleDateFormat) DateFormat.getDateInstance());
-            dform.applyPattern("yyyyMMdd");
             opts.put("dtdue", dform.format(assign.getDueDate()));
         }
         
@@ -479,13 +485,12 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
             createAsnnMethod.invoke(contentReview, assign.getContextId(), 
                     this.getTaskId(assign), opts);
         } catch (InvocationTargetException e) {
-            log.error(e);
-            log.error("Error creating assignment for context: " + assign.getContextId()
-               + " with taskId: " + this.getTaskId(assign),
-            e.getCause());
-            throw UniversalRuntimeException.accumulate(e.getCause());
+            String errormsg = "Error creating assignment for context: " + assign.getContextId()
+            + " with taskId: " + this.getTaskId(assign);
+            log.error(errormsg, e.getCause());
+            throw new ContentReviewException(errormsg, e.getCause());
         } catch (Exception e) {
-            throw UniversalRuntimeException.accumulate(e);
+            throw new ContentReviewException("Unknown exception trying to save TII Exception", e);
         }
     }
     

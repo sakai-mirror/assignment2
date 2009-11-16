@@ -233,7 +233,7 @@ public class UploadBean
      */
     public WorkFlowResult processUploadConfirmAndSave() {
         // Putting in Confirm Dialog ASNN-313
-        List<String> usersNotUpdated = uploadGradesLogic.uploadGrades(displayIdUserIdMap, uploadOptions.assignmentId, parsedContent);
+        List<String> usersNotUpdated = uploadGradesLogic.uploadGrades(displayIdUserIdMap, uploadOptions, parsedContent);
 
         if (!usersNotUpdated.isEmpty()) {
             messages.addMessage(new TargettedMessage("assignment2.upload_grades.upload_successful_with_exception",

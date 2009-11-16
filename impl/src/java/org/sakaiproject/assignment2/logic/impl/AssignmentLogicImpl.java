@@ -37,6 +37,7 @@ import org.sakaiproject.assignment2.dao.AssignmentDao;
 import org.sakaiproject.assignment2.exception.AnnouncementPermissionException;
 import org.sakaiproject.assignment2.exception.AssignmentNotFoundException;
 import org.sakaiproject.assignment2.exception.CalendarPermissionException;
+import org.sakaiproject.assignment2.exception.ContentReviewException;
 import org.sakaiproject.assignment2.exception.InvalidGradebookItemAssociationException;
 import org.sakaiproject.assignment2.exception.NoGradebookItemForGradedAssignmentException;
 import org.sakaiproject.assignment2.exception.StaleObjectModificationException;
@@ -363,8 +364,13 @@ public class AssignmentLogicImpl implements AssignmentLogic{
             String tiiAsnnTitle = externalContentReviewLogic.getTaskId(assignment);
             assignment.setContentReviewRef(tiiAsnnTitle);
             log.debug("Going to Create/Update TII Asnn with title: " + tiiAsnnTitle);
-            externalContentReviewLogic.createAssignment(assignment);
-            dao.update(assignment);
+            try {
+                externalContentReviewLogic.createAssignment(assignment);
+                dao.update(assignment);
+            } catch (ContentReviewException cre) {
+                throw new ContentReviewException("The assignments was saved, " +
+                 "but Turnitin information was unable to be updated", cre);
+            }
         }
 
     }
