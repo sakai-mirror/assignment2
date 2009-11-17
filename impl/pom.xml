@@ -162,9 +162,8 @@
       <version>1.2.1</version>
     </dependency>
     <dependency>
-      <groupId>org.sakaiproject</groupId>
-      <artifactId>sakai-import-api</artifactId>
-      <version>${sakai.version}</version>
+      <groupId>org.sakaiproject.common</groupId>
+      <artifactId>archive-api</artifactId>
     </dependency>
 <!--  for importing from the original assignments tool -->
     <dependency>
