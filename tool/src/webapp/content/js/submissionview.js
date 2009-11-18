@@ -417,7 +417,7 @@ asnn2subview.filteredRowTransform = function(obj, idx) {
     return togo;
   };
 
-asnn2subview.init = function(asnnid, contextId, placementId, numSubmissions, graded, reviewEnabled, curPageSize, curOrderBy, curAscending) {
+asnn2subview.init = function(asnnid, contextId, placementId, numSubmissions, graded, reviewEnabled, curPageSize, curOrderBy, curAscending, gradesReleased) {
   sakai.curPlacement = placementId;
   sakai.curContext = contextId;
 
@@ -427,6 +427,14 @@ asnn2subview.init = function(asnnid, contextId, placementId, numSubmissions, gra
   // TODO Graded is being encoded as a String param for some reason :|
   if (graded === "true") {
     asnn2subview.graded = true;
+    
+    // this is a bit of a hack to change the heading on the grade column depending
+    // on the released status of the gradebook item
+    if (gradesReleased == "true") {
+        jQuery("a.grade-sort").html("Grade (Released)");
+    } else {
+        jQuery("a.grade-sort").html("Grade (Not Released)");
+    }
   }
   else { 
     asnn2subview.graded = false;

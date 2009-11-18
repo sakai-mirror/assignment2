@@ -195,18 +195,16 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
                 ascending = (Boolean) attr.get(Assignment2SubmissionEntityProvider.SUBMISSIONVIEW_SESSION_ATTR_ASCENDING);
             }
         }
-        
-        UIInitBlock.make(tofill, "asnn2subview-init", "asnn2subview.init", 
-                new Object[]{assignmentId, externalLogic.getCurrentContextId(), 
-                placement.getId(), submissions.size(), assignment.isGraded(), contentReviewEnabled, pagesize, orderBy, ascending});
 
         // if assign is graded, retrieve the gb item
         GradebookItem gbItem = null;
         boolean gbItemExists = false;
+        boolean gradesReleased = false;
         if (assignment.isGraded() && assignment.getGradebookItemId() != null) {
             try {
                 gbItem = gradebookLogic.getGradebookItemById(assignment.getContextId(), assignment.getGradebookItemId());
                 gbItemExists = true;
+                gradesReleased = gbItem.isReleased();
             } catch (GradebookItemNotFoundException ginfe) {
                 if (log.isDebugEnabled()) log.debug("Gb item with id: " + assignment.getGradebookItemId() + " no longer exists!");
                 gbItem = null;
@@ -218,6 +216,11 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
         if (assignment.isGraded() && !gbItemExists) {
             UIOutput.make(tofill, "no_gb_item", messageLocator.getMessage("assignment2.assignment_grade-assignment.gb_item_deleted"));
         }
+        
+        
+        UIInitBlock.make(tofill, "asnn2subview-init", "asnn2subview.init", 
+                new Object[]{assignmentId, externalLogic.getCurrentContextId(), 
+                placement.getId(), submissions.size(), assignment.isGraded(), contentReviewEnabled, pagesize, orderBy, ascending, gradesReleased});
 
         // get grade info, if appropriate
         Map<String, GradeInformation> studentIdGradeInfoMap = new HashMap<String, GradeInformation>();
@@ -255,7 +258,6 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
             displayReleaseGrades = true;
 
             // determine if grades have been released yet
-            boolean gradesReleased = gbItem.isReleased();
             String releaseLinkText = messageLocator.getMessage("assignment2.assignment_grade-assignment.grades.release");
             if (gradesReleased) {
                 releaseLinkText = messageLocator.getMessage("assignment2.assignment_grade-assignment.grades.retract");
