@@ -67,6 +67,7 @@
         <property name="submissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic"></property>
         <property name="studentSubmissionVersionFlowBean" ref="StudentSubmissionVersionFlowBean" />
         <property name="externalContentReviewLogic" ref="org.sakaiproject.assignment2.logic.ExternalContentReviewLogic"></property>
+        <property name="localTurnitinLogic" ref="localTurnitinLogic" />
     </bean>
     
     <bean id="AsnnSubmissionVersionRenderer"

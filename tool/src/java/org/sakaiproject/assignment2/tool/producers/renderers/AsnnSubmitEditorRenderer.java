@@ -11,6 +11,7 @@ import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
+import org.sakaiproject.assignment2.tool.LocalTurnitinLogic;
 import org.sakaiproject.assignment2.tool.beans.StudentSubmissionVersionFlowBean;
 import org.sakaiproject.assignment2.tool.params.FilePickerHelperViewParams;
 import org.sakaiproject.assignment2.tool.producers.AddAttachmentHelperProducer;
@@ -28,6 +29,7 @@ import uk.org.ponder.rsf.components.UIInput;
 import uk.org.ponder.rsf.components.UIInputMany;
 import uk.org.ponder.rsf.components.UIInternalLink;
 import uk.org.ponder.rsf.components.UIJointContainer;
+import uk.org.ponder.rsf.components.UILink;
 import uk.org.ponder.rsf.components.UIMessage;
 import uk.org.ponder.rsf.components.UIOutput;
 import uk.org.ponder.rsf.components.UIVerbatim;
@@ -83,6 +85,12 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
     private ViewParameters viewParameters;
     public void setViewParameters(ViewParameters viewParameters) {
         this.viewParameters = viewParameters;
+    }
+    
+    // Dependency
+    private LocalTurnitinLogic localTurnitinLogic;
+    public void setLocalTurnitinLogic(LocalTurnitinLogic localTurnitinLogic) {
+        this.localTurnitinLogic = localTurnitinLogic;
     }
 
     // Dependency
@@ -241,6 +249,12 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
                 UIMessage.make(joint, "plagiarism_check", "assignment2.turnitin.submit.warning.inst_and_student");
             } else {
                 UIMessage.make(joint, "plagiarism_check", "assignment2.turnitin.submit.warning.inst_only");
+            }
+            
+            String fileRequirementsUrl = localTurnitinLogic.getSupportedFormatsUrl();
+            if (fileRequirementsUrl != null) {
+                UIOutput.make(joint, "plagiarism_file_req_section");
+                UILink.make(joint, "plagiarism_file_req", messageLocator.getMessage("assignment2.turnitin.file_requirements"), fileRequirementsUrl);
             }
         }
 

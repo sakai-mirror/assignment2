@@ -588,6 +588,12 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
 
         UIOutput.make(tofill, "tii_enabled_area");
         UIOutput.make(tofill, "tii_properties");
+        
+        // add the supported formats link, if specified in sakai.properties
+        String supportedFormatsUrl = localTurnitinLogic.getSupportedFormatsUrl();
+        if (supportedFormatsUrl != null) {
+            UILink.make(tofill, "tii_supported_formats", messageLocator.getMessage("assignment2.turnitin.asnnedit.supported_formats"), supportedFormatsUrl);
+        }
 
         UIBoundBoolean.make(form, "use_tii", assignment2OTP + ".contentReviewEnabled");
 

@@ -224,6 +224,12 @@ public class AssignmentConstants {
      * for use in the UI)
      */
     public static final String TII_PROP_INSTITUTION_REPO_NAME = "turnitin.repository.institutional.name";
+    
+    /**
+     * Optional property in sakai.properties to add a url link from the UI that points to a page
+     * containing the requirements for attachments to be accepted by turnitin
+     */
+    public static final String TII_PROP_FILE_REQUIREMENTS_URL = "turnitin.file.requirements.url";
 
     public static final String TII_RETCODE_RCODE = "rcode";
     public static final String TII_RETCODE_RMESSAGE = "rmessage";

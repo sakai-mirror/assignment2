@@ -814,3 +814,8 @@ a.fl-pager-currentPage {
     font-style: italic;
     margin-top:65px; 
 }
+
+.supported_formats_link {
+    font-size: .9em;
+    margin-left: 3px;
+}
