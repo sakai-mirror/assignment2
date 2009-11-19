@@ -709,9 +709,14 @@ var asnn2 = asnn2 || {};
       }
     }
     
+    /**
+     * Display a special warning to indicate that the assignment is marked as graded but no item selected
+     */
     asnn2.showHideGradeSettingError = function() {
         var graded = jQuery("input[type='radio'][id='page-replace\:\:select_graded']").get(0).checked;
-        var errorIndicator = jQuery("#page-replace\\:\\:gradingSelectionError");
+        var gradingSection = jQuery("#grading_section");
+        var gradingWarningText = jQuery("#page-replace\\:\\:grading_warning");
+        var gradingOptions = jQuery("#grading_options");
         if (graded) {
             // we need to see if a gradebook item was selected
             var gbItemSelect = jQuery("select[name='page-replace\:\:gradebook_item-selection']");
@@ -719,12 +724,18 @@ var asnn2 = asnn2 || {};
             
             if (!selectedItem || selectedItem === "0") {
                 // display the error indicator
-                errorIndicator.show();
+                gradingSection.addClass("messageConfirmation");
+                gradingWarningText.show();
+                gradingOptions.addClass("messageContentPadding");
             } else {
-                errorIndicator.hide();
+                gradingSection.removeClass("messageConfirmation");
+                gradingWarningText.hide();
+                gradingOptions.removeClass("messageContentPadding");
             }
         } else {
-            errorIndicator.hide();
+            gradingSection.removeClass("messageConfirmation");
+            gradingWarningText.hide();
+            gradingOptions.removeClass("messageContentPadding");
         }
     };
 
