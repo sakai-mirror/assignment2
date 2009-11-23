@@ -34,6 +34,7 @@ import org.sakaiproject.assignment2.test.AssignmentTestDataLoad;
 import org.sakaiproject.service.gradebook.shared.AssessmentNotFoundException;
 import org.sakaiproject.service.gradebook.shared.Assignment;
 import org.sakaiproject.service.gradebook.shared.AssignmentHasIllegalPointsException;
+import org.sakaiproject.service.gradebook.shared.CategoryDefinition;
 import org.sakaiproject.service.gradebook.shared.CommentDefinition;
 import org.sakaiproject.service.gradebook.shared.ConflictingAssignmentNameException;
 import org.sakaiproject.service.gradebook.shared.ConflictingExternalIdException;
@@ -874,6 +875,12 @@ public class GradebookServiceStub implements GradebookService {
 
     public String getLowestPossibleGradeForGbItem(String gradebookUid,
             Long gradebookItemId)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public List<CategoryDefinition> getCategoryDefinitions(String gradebookUid)
     {
         // TODO Auto-generated method stub
         return null;
