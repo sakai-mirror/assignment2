@@ -1,0 +1,191 @@
+<html>
+<head>
+<style type="text/css">
+pre {font-family: monospace;}
+</style>
+</head>
+<body>
+
+<div>
+<h1>Creating a new Assignment</h1>
+<pre>
+2009-11-23 13:02:50,205 DEBUG http-8080-Processor22 org.sakaiproject.turnitin.util.TurnitinAPIUtil.apicalltrace - Starting TII CALL:
+aid = 12345
+assign = /asnn2contentreview/d1a1da81-d2a7-48de-bc76-3b8558bc5029
+assignid = /asnn2contentreview/d1a1da81-d2a7-48de-bc76-3b8558bc5029
+cid = tiitestsite-12347
+ctl = tiitestsite-12347
+diagnostic = 0
+encrypt = 0
+fcmd = 7
+fid = 4
+gmtime = 20091123180
+said = 67890
+src = 9
+uem = sgithens@googlemail.com
+ufn = Sakai
+uid = admin
+uln = Administrator
+username = Sakai Administrator
+utp = 2
+md5 = 26cd8d2bf00769307ea675a4c44a8ff6
+2009-11-23 13:02:50,505 DEBUG http-8080-Processor22 org.sakaiproject.turnitin.util.TurnitinAPIUtil.apicalltrace - Turnitin Result Payload: {rmessage=Assignment does not exist in Turnitin database for this class.  The assignment may have been deleted., rcode=206}
+
+2009-11-23 13:02:50,641 DEBUG http-8080-Processor22 org.sakaiproject.turnitin.util.TurnitinAPIUtil.apicalltrace - Starting TII CALL:
+aid = 12345
+assign = /asnn2contentreview/d1a1da81-d2a7-48de-bc76-3b8558bc5029
+assignid = /asnn2contentreview/d1a1da81-d2a7-48de-bc76-3b8558bc5029
+cid = tiitestsite-12347
+ctl = tiitestsite-12347
+diagnostic = 0
+dtdue = 20091122
+dtstart = 20091122
+encrypt = 0
+fcmd = 2
+fid = 4
+gmtime = 20091123180
+institution_check = 1
+internet_check = 1
+journal_check = 1
+report_gen_speed = 0
+s_paper_check = 1
+s_view_report = 0
+said = 67890
+src = 9
+submit_papers_to = 0
+uem = sgithens@googlemail.com
+ufn = Sakai
+uid = admin
+uln = Administrator
+username = Sakai Administrator
+utp = 2
+md5 = 5f1701f78218d9432e676ca0a9c1a044
+2009-11-23 13:02:50,932 DEBUG http-8080-Processor22 org.sakaiproject.contentreview.impl.turnitin.TurnitinReviewServiceImpl - Create FirstDate Assignment successful
+2009-11-23 13:02:50,932 DEBUG http-8080-Processor22 org.sakaiproject.contentreview.impl.turnitin.TurnitinReviewServiceImpl - tii returned Successful!. Code: 41
+
+
+2009-11-23 13:02:52,066 DEBUG http-8080-Processor22 org.sakaiproject.turnitin.util.TurnitinAPIUtil.apicalltrace - Starting TII CALL:
+aid = 12345
+assign = /asnn2contentreview/d1a1da81-d2a7-48de-bc76-3b8558bc5029
+assignid = /asnn2contentreview/d1a1da81-d2a7-48de-bc76-3b8558bc5029
+cid = tiitestsite-12347
+ctl = tiitestsite-12347
+diagnostic = 0
+dtdue = 20100422
+dtstart = 20091123
+encrypt = 0
+fcmd = 3
+fid = 4
+gmtime = 20091123180
+institution_check = 1
+internet_check = 1
+journal_check = 1
+report_gen_speed = 0
+s_paper_check = 1
+s_view_report = 0
+said = 67890
+src = 9
+submit_papers_to = 0
+uem = sgithens@googlemail.com
+ufn = Sakai
+uid = admin
+uln = Administrator
+username = Sakai Administrator
+utp = 2
+md5 = 25d675b16e0e8d2f532e24f680134429
+2009-11-23 13:02:52,494 DEBUG http-8080-Processor22 org.sakaiproject.contentreview.impl.turnitin.TurnitinReviewServiceImpl - Create Assignment successful
+2009-11-23 13:02:52,494 DEBUG http-8080-Processor22 org.sakaiproject.contentreview.impl.turnitin.TurnitinReviewServiceImpl - tii returned Successful!. Code: 42
+</pre>
+</div>
+
+<div>
+<h1>Loading an existing assignment</h1>
+<pre>
+2009-11-23 13:13:32,401 DEBUG http-8080-Processor22 org.sakaiproject.turnitin.util.TurnitinAPIUtil.apicalltrace - Starting TII CALL:
+aid = 12345
+assign = /asnn2contentreview/30d19d66-8584-4b1a-a831-25d387c4b15a
+assignid = /asnn2contentreview/30d19d66-8584-4b1a-a831-25d387c4b15a
+cid = tiitestsite-12347
+ctl = tiitestsite-12347
+diagnostic = 0
+encrypt = 0
+fcmd = 7
+fid = 4
+gmtime = 20091123181
+said = 67890
+src = 9
+uem = sgithens@googlemail.com
+ufn = Sakai
+uid = admin
+uln = Administrator
+username = Sakai Administrator
+utp = 2
+md5 = bcfcb780ddc4fa9f96ac2d8b98ad694d
+2009-11-23 13:13:32,763 DEBUG http-8080-Processor22 org.sakaiproject.turnitin.util.TurnitinAPIUtil.apicalltrace - Turnitin Result Payload: {object={assign=/asnn2contentreview/30d19d66-8584-4b1a-a831-25d387c4b15a, maxpoints=0, dtstart=2009-11-13 00:00:00-08, dtdue=2010-04-12 23:59:59-07, dtpost=2010-04-12 23:59:59-07, ainst=null, userubrics=0, draft=0, generate=0, sviewreports=0, latesubmissions=0, repository=0, searchpapers=1, searchinternet=1, searchjournals=1, searchinstitution=1, anon=0}, rcode=85, rmessage=Successful!}
+</pre>
+</div>
+
+<div>
+<h1>Editing an existing assignment</h1>
+<pre>
+2009-11-23 13:15:40,037 DEBUG http-8080-Processor25 org.sakaiproject.turnitin.util.TurnitinAPIUtil.apicalltrace - Starting TII CALL:
+aid = 12345
+assign = /asnn2contentreview/30d19d66-8584-4b1a-a831-25d387c4b15a
+assignid = /asnn2contentreview/30d19d66-8584-4b1a-a831-25d387c4b15a
+cid = tiitestsite-12347
+ctl = tiitestsite-12347
+diagnostic = 0
+encrypt = 0
+fcmd = 7
+fid = 4
+gmtime = 20091123181
+said = 67890
+src = 9
+uem = sgithens@googlemail.com
+ufn = Sakai
+uid = admin
+uln = Administrator
+username = Sakai Administrator
+utp = 2
+md5 = bcfcb780ddc4fa9f96ac2d8b98ad694d
+2009-11-23 13:15:40,233 DEBUG http-8080-Processor25 org.sakaiproject.turnitin.util.TurnitinAPIUtil.apicalltrace - Turnitin Result Payload: {object={assign=/asnn2contentreview/30d19d66-8584-4b1a-a831-25d387c4b15a, maxpoints=0, dtstart=2009-11-13 00:00:00-08, dtdue=2010-04-12 23:59:59-07, dtpost=2010-04-12 23:59:59-07, ainst=null, userubrics=0, draft=0, generate=0, sviewreports=0, latesubmissions=0, repository=0, searchpapers=1, searchinternet=1, searchjournals=1, searchinstitution=1, anon=0}, rcode=85, rmessage=Successful!}
+2009-11-23 13:15:40,233 DEBUG http-8080-Processor25 org.sakaiproject.contentreview.impl.turnitin.TurnitinReviewServiceImpl - Assign title is /asnn2contentreview/30d19d66-8584-4b1a-a831-25d387c4b15a
+
+
+2009-11-23 13:15:40,370 DEBUG http-8080-Processor25 org.sakaiproject.turnitin.util.TurnitinAPIUtil.apicalltrace - Starting TII CALL:
+aid = 12345
+assign = /asnn2contentreview/30d19d66-8584-4b1a-a831-25d387c4b15a
+assignid = /asnn2contentreview/30d19d66-8584-4b1a-a831-25d387c4b15a
+cid = tiitestsite-12347
+ctl = tiitestsite-12347
+diagnostic = 0
+dtdue = 20100422
+dtstart = 20091113
+encrypt = 0
+fcmd = 3
+fid = 4
+gmtime = 20091123181
+institution_check = 1
+internet_check = 0
+journal_check = 1
+report_gen_speed = 0
+s_paper_check = 1
+s_view_report = 0
+said = 67890
+src = 9
+submit_papers_to = 0
+uem = sgithens@googlemail.com
+ufn = Sakai
+uid = admin
+uln = Administrator
+username = Sakai Administrator
+utp = 2
+md5 = 8e4f4c6e4eed8aae5957d809558912c5
+2009-11-23 13:15:40,673 DEBUG http-8080-Processor25 org.sakaiproject.contentreview.impl.turnitin.TurnitinReviewServiceImpl - Create Assignment successful
+2009-11-23 13:15:40,673 DEBUG http-8080-Processor25 org.sakaiproject.contentreview.impl.turnitin.TurnitinReviewServiceImpl - tii returned Successful!. Code: 42
+
+</pre>
+</div>
+
+</body>
+</html>
