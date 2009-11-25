@@ -80,7 +80,7 @@ asnn2subview.getSortHeaderComptree = function(newModel) {
 
   if (asnn2subview.graded === true) {
     tree.children.push({
-      ID: "grade-col-header", value: true
+      ID: "grade-col-header"
     });
     tree.children.push({
       ID: "grade-sort", 
