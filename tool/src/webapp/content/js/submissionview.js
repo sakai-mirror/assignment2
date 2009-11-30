@@ -1,8 +1,9 @@
 var asnn2subview = asnn2subview || {};
 
+/*
 asnn2subview.selectorMap = [
   { selector: ".row", id: "row:" },
-  { selector: ".sub-table-header", id: "header:" },
+  { selector: ".sub-table-header", id: "sub-table-header:" },
   { selector: ".student-name", id: "student-name"},
   { selector: ".submitted-time", id: "submitted-time"},
   { selector: ".submission-status", id: "submission-status"},
@@ -29,6 +30,25 @@ asnn2subview.selectorMap = [
   { selector: ".grade-td", id: "grade-td" },
   { selector: ".report-col-header", id: "report-col-header" }
 ];
+*/
+
+asnn2subview.classSelectors = ["row:", "sub-table-header:", "student-name",
+  "submitted-time", "submission-status", "grade", "review-score", "review-error",
+  "review-multiple", "review-pending", "feedback-released", "student-grade-link",
+  "student-name-sort", "student-name-sort-img", "submitted-time-sort", 
+  "submitted-time-sort-img", "submission-status-sort", "submission-status-sort-img",
+  "submission-report-sort", "submission-report-sort-img", "feedback-released-sort",
+  "feedback-released-sort-img", "grade-sort", "grade-sort-img", "grade-col-header",
+  "grade-td", "report-col-header" ];
+
+asnn2subview.selectorMap = fluid.transform(asnn2subview.classSelectors, function (obj, idx) {
+  var cssClass = "."+obj;
+  if (cssClass.slice(cssClass.length-1)===":") {
+    cssClass = cssClass.slice(0,cssClass.length-1);
+  }
+  return { selector: cssClass, id: obj };
+});
+
 
 asnn2subview.getSortHeaderComptree = function(newModel) {
   var onSortClick = function(sortBy) {
@@ -194,7 +214,7 @@ asnn2subview.subTableRenderer = function (overallThat, inOptions) {
               }
                
               var treedata = { 
-                "header:": asnn2subview.getSortHeaderComptree(newModel),
+                "sub-table-header:": asnn2subview.getSortHeaderComptree(newModel),
                 "row:": togo  
               };
               // Keep this around to test on Fluid Trunk and create a Jira to have more debug information if it's still the same.
