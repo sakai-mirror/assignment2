@@ -379,6 +379,23 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware{
                             m2 = (Map) o1;
                             m1 = (Map) o2;
                         }
+                        if (orderByComp.equals(SUBMISSION_GRADE)) {
+                            boolean useDouble = true;
+                            Double d1 = null;
+                            Double d2 = null;
+                            try {
+                                d1 = Double.parseDouble((String) m1.get(orderByComp));
+                                d2 = Double.parseDouble((String) m2.get(orderByComp));
+                            } catch (NumberFormatException e) {
+                                useDouble = false;
+                            }
+                            if (d1 != null && d2 != null && useDouble) {
+                                return d1.compareTo(d2);
+                            } 
+                            else {
+                                return m1.get(orderByComp).toString().compareTo(m2.get(orderByComp).toString());
+                            }
+                        }
                         if (m1.get(orderByComp) instanceof Date) {
                             return ((Date)m1.get(orderByComp)).compareTo(((Date)m2.get(orderByComp)));
                         } 
