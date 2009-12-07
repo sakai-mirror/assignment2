@@ -132,7 +132,7 @@ public class AsnnSubmissionDetailsRenderer implements BasicProducer {
 
         // get the status of the current version
         int currStatus = submissionLogic.getSubmissionStatusConstantForCurrentVersion(assignmentSubmission.getCurrentSubmissionVersion(), assignment.getDueDate());
-
+        boolean submissionIsOpenForStudent = submissionLogic.isSubmissionOpenForStudentForAssignment(assignmentSubmission.getUserId(), assignment.getId());
         /***
          * Title and Due Date Information
          */
@@ -159,7 +159,7 @@ public class AsnnSubmissionDetailsRenderer implements BasicProducer {
 
         if (!previewAsStudent && assignment.isRequiresSubmission() && 
                 assignment.getSubmissionType() != AssignmentConstants.SUBMIT_NON_ELECTRONIC) {
-            if (!submissionLogic.isSubmissionOpenForStudentForAssignment(assignmentSubmission.getUserId(), assignment.getId())) {
+            if (!submissionIsOpenForStudent) {
 
                 // display error message indicating that submission is closed
                 // if submission is closed and:
@@ -198,8 +198,8 @@ public class AsnnSubmissionDetailsRenderer implements BasicProducer {
             if (assignment.getDueDate() == null) {
                 dueDateText = messageLocator.getMessage("assignment2.student-submit.no_due_date");
             } else {
-                // display something special if the submission is going to be late
-                if (assignment.getDueDate().before(new Date())) {
+                // display something special if the submission is open and is going to be late
+                if (submissionIsOpenForStudent && assignment.getDueDate().before(new Date())) {
                     dueDateText = messageLocator.getMessage("assignment2.student-submit.due_date.late", 
                             new Object[] {df.format(assignment.getDueDate())});
                 } else {
