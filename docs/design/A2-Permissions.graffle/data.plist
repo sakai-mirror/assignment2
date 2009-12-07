@@ -5,7 +5,7 @@
 	<key>ApplicationVersion</key>
 	<array>
 		<string>com.omnigroup.OmniGrafflePro</string>
-		<string>138.9.0.117994</string>
+		<string>138.12.0.121252</string>
 	</array>
 	<key>CreationDate</key>
 	<string>2009-07-22 13:23:42 -0400</string>
@@ -58,7 +58,7 @@
 	<key>MasterSheets</key>
 	<array/>
 	<key>ModificationDate</key>
-	<string>2009-10-19 12:55:39 -0400</string>
+	<string>2009-11-23 13:08:54 -0500</string>
 	<key>Modifier</key>
 	<string>Kris</string>
 	<key>NotesVisible</key>
@@ -87,7 +87,7 @@
 		<key>NSPaperName</key>
 		<array>
 			<string>string</string>
-			<string>CD031C4D-20CE-49E6-8966-951E4E88D165</string>
+			<string>48915BF1-6EF0-4FD6-A270-37FA4FE86EAD</string>
 		</array>
 		<key>NSPaperSize</key>
 		<array>
@@ -1497,8 +1497,8 @@
 					<integer>208</integer>
 					<key>Points</key>
 					<array>
-						<string>{76.9701, 407}</string>
-						<string>{849, 407}</string>
+						<string>{76.9701, 413}</string>
+						<string>{849, 413}</string>
 					</array>
 					<key>Style</key>
 					<dict>
@@ -2228,7 +2228,7 @@
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{799.663, 262.001}, {49.3384, 26}}</string>
+							<string>{{799.663, 262.001}, {49.3386, 26}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -3450,7 +3450,7 @@
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
 
-\f0\fs24 \cf0 Can remove assignments}</string>
+\f0\fs24 \cf0 Remove assignments}</string>
 							</dict>
 						</dict>
 						<dict>
@@ -3904,7 +3904,7 @@
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{799.663, 210}, {49.3384, 26}}</string>
+							<string>{{799.663, 210}, {49.3386, 26}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -4299,7 +4299,7 @@
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{358.5, 378}, {77.999, 28.0004}}</string>
+							<string>{{358.5, 378}, {77.9991, 35.0001}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -4336,8 +4336,10 @@
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
 
-\f0\fs24 \cf0 All Students}</string>
+\f0\fs24 \cf0 All}</string>
 							</dict>
+							<key>TextPlacement</key>
+							<integer>0</integer>
 						</dict>
 						<dict>
 							<key>Bounds</key>
@@ -5156,7 +5158,7 @@
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{579.23, 210}, {85.0316, 26}}</string>
+							<string>{{579.23, 210}, {85.0317, 26}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -6046,7 +6048,7 @@
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{664.262, 186}, {68.7015, 24}}</string>
+							<string>{{664.262, 186}, {68.7014, 24}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -6464,7 +6466,7 @@
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{664.262, 262.001}, {68.7015, 26}}</string>
+							<string>{{664.262, 262.001}, {68.7014, 26}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -6859,7 +6861,7 @@
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{664.262, 320}, {68.7015, 19.0002}}</string>
+							<string>{{664.262, 320}, {68.7014, 19.0002}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -8144,7 +8146,7 @@
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{799.663, 186}, {49.3384, 24}}</string>
+							<string>{{799.663, 186}, {49.3386, 24}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -8518,7 +8520,7 @@
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{799.663, 378}, {49.3384, 28.0004}}</string>
+							<string>{{799.663, 378}, {49.3386, 35.0001}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -8557,10 +8559,12 @@
 
 \f0\fs24 \cf0 None}</string>
 							</dict>
+							<key>TextPlacement</key>
+							<integer>0</integer>
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{514.5, 378}, {64.7302, 28.0004}}</string>
+							<string>{{514.5, 378}, {64.7302, 35.0001}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -8599,6 +8603,8 @@
 
 \f0\fs24 \cf0 None}</string>
 							</dict>
+							<key>TextPlacement</key>
+							<integer>0</integer>
 						</dict>
 						<dict>
 							<key>Bounds</key>
@@ -8639,7 +8645,7 @@
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
 
-\f0\fs24 \cf0 Can read assignments}</string>
+\f0\fs24 \cf0 Read assignments}</string>
 							</dict>
 						</dict>
 						<dict>
@@ -9062,7 +9068,7 @@
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{664.262, 378}, {68.7015, 28.0004}}</string>
+							<string>{{664.262, 378}, {68.7014, 35.0001}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -9101,6 +9107,8 @@
 
 \f0\fs24 \cf0 None}</string>
 							</dict>
+							<key>TextPlacement</key>
+							<integer>0</integer>
 						</dict>
 						<dict>
 							<key>Bounds</key>
@@ -10312,7 +10320,7 @@
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{579.23, 320}, {85.0316, 19.0002}}</string>
+							<string>{{579.23, 320}, {85.0317, 19.0002}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -11984,7 +11992,7 @@
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{664.262, 339}, {68.7015, 38.9998}}</string>
+							<string>{{664.262, 339}, {68.7014, 38.9998}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -12797,7 +12805,7 @@
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{664.262, 163}, {68.7015, 23}}</string>
+							<string>{{664.262, 163}, {68.7014, 23}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -12882,366 +12890,6 @@
 							<dict>
 								<key>Align</key>
 								<integer>0</integer>
-								<key>RTFD</key>
-								<data>
-								BAtzdHJlYW10
-								eXBlZIHoA4QB
-								QISEhBJOU0F0
-								dHJpYnV0ZWRT
-								dHJpbmcAhIQI
-								TlNPYmplY3QA
-								hZKEhIQITlNT
-								dHJpbmcBlIQB
-								KwPvv7yGhAJp
-								SQEBkoSEhAxO
-								U0RpY3Rpb25h
-								cnkAlIQBaQKS
-								hJaWDE5TQXR0
-								YWNobWVudIaS
-								hISEEE5TVGV4
-								dEF0dGFjaG1l
-								bnQAlIQCY0AA
-								hISEDU5TRmls
-								ZVdyYXBwZXIu
-								lJKEhIQNTlNN
-								dXRhYmxlRGF0
-								YQCEhAZOU0Rh
-								dGEAlJmB8wqE
-								B1syODAzY11y
-								dGZkAAAAAAMA
-								AAAEAAAAAgAA
-								AC4uFwAAAF9f
-								QFVURjhQcmVm
-								ZXJyZWROYW1l
-								QF9fEwAAAF9f
-								QFByZWZlcnJl
-								ZE5hbWVAX18B
-								AAAALjoKAAAb
-								AAAAGwAAACYA
-								AAABAAAAMgoA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAABAA
-								EAARAv8MAP/+
-								AAAASAAAAEgA
-								AAAAAAAAEAAQ
-								AAAAAAAeAAEA
-								CgAAAAAAEAAQ
-								ggAAAAOaAAAA
-								AQAAAAAAAAAA
-								AAAAAAAAAAEA
-								AAAAAAAAAAAA
-								AAAAAEAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								EAAQAAADAAAA
-								AAAAAABWcmF3
-								IAAAAAAAAAAA
-								AAAAAGFwcGwA
-								AAQAAAAEAAAQ
-								ABAASAAAAEgA
-								AAAAAwAAAQAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAABj/////
-								////////////
-								////////////
-								////////////
-								////////////
-								////////////
-								////////////
-								////////////
-								////////////
-								////////////
-								////////////
-								////////////
-								////////////
-								////////////
-								////////////
-								////////////
-								////////////
-								/////9nZ2XV1
-								dWNjY2NjY2Nj
-								Y2NjY2NjY2Nj
-								Y2NjY2NjY3Z2
-								dtnZ2f//////
-								//////7+/mpq
-								asbGxv//////
-								////////////
-								////////////
-								/8PDw21tbf7+
-								/v////////v7
-								+2RkZM/Pz/X1
-								9fX19fX19fX1
-								9fX19fX19fX1
-								9fX19crKymdn
-								Z/v7+///////
-								/+/v725ubsvL
-								y/Hx8fHx8fHx
-								8fHx8fHx8fHx
-								8fHx8fHx8cvL
-								y3BwcO/v7///
-								/////+7u7nd3
-								d83Nzezs7Ozs
-								7Ozs7Ozs7Ozs
-								7Ozs7Ozs7Ozs
-								7M3NzXp6eu7u
-								7v///////+7u
-								7oCAgM/Pz9fX
-								19fX19fX19fX
-								19fX19fX19fX
-								19fX18/Pz4SE
-								hO7u7v//////
-								/+7u7oqKitLS
-								0uDg4ODg4ODg
-								4ODg4ODg4ODg
-								4ODg4ODg4NLS
-								0o2Nje7u7v//
-								/////+7u7pSU
-								lNTU1Ojo6Ojo
-								6Ojo6Ojo6Ojo
-								6Ojo6Ojo6Ojo
-								6NXV1ZaWlu7u
-								7v///////+7u
-								7p6entfX1/Hx
-								8fHx8fHx8fHx
-								8fHx8fHx8fHx
-								8fHx8djY2J+f
-								n+7u7v//////
-								/+7u7qWlpeXl
-								5f//////////
-								////////////
-								/////////+bm
-								5qmpqe7u7v//
-								//////v7+46O
-								jsrKyvPz8/Pz
-								8/Pz8/Pz8/Pz
-								8/Pz8/Pz8/Pz
-								883NzZCQkPv7
-								+/////////39
-								/crKynt7e3V1
-								dXV1dXV1dXV1
-								dXV1dXV1dXV1
-								dXV1dXt7e8rK
-								yv39/f//////
-								//////39/fLy
-								8t3d3dzc3Nzc
-								3Nzc3Nzc3Nzc
-								3Nzc3N3d3fLy
-								8v39/f//////
-								/wAHAK4AcAAH
-								AAEAAQADAAMA
-								BAAAAA0ADAAQ
-								ABAAEAC6ALoA
-								KAAHAAMQUXVp
-								Y2tUaW1lqiBh
-								bmQgYQAAKAAI
-								AAQNIGRlY29t
-								cHJlc3NvcgAo
-								AAkAAB9hcmUg
-								bmVlZGVkIHRv
-								IHNlZSB0aGlz
-								IHBpY3R1cmUu
-								AAAAoQDgA9QA
-								AAAAAAAD0GFw
-								cGwCAAAAbW50
-								clJHQiBYWVog
-								B9kACQAKAAgA
-								BwAxYWNzcEFQ
-								UEwAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								APbWAAEAAAAA
-								0y1hcHBsAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAO
-								clhZWgAAASwA
-								AAAUZ1hZWgAA
-								AUAAAAAUYlhZ
-								WgAAAVQAAAAU
-								d3RwdAAAAWgA
-								AAAUY2hhZAAA
-								AXwAAAAsclRS
-								QwAAAagAAAAO
-								Z1RSQwAAAbgA
-								AAAOYlRSQwAA
-								AcgAAAAOdmNn
-								dAAAAdgAAAAw
-								bmRpbgAAAggA
-								AAA4ZGVzYwAA
-								AkAAAABnZHNj
-								bQAAAqgAAADc
-								bW1vZAAAA4QA
-								AAAoY3BydAAA
-								A6wAAAAkWFla
-								IAAAAAAAAHd6
-								AAA/WgAAAjdY
-								WVogAAAAAAAA
-								WLAAAKwFAAAW
-								X1hZWiAAAAAA
-								AAAmrAAAFMMA
-								ALqNWFlaIAAA
-								AAAAAPJoAAEA
-								AAABEuFzZjMy
-								AAAAAAABDGcA
-								AAYE///zlgAA
-								B9sAAP0h///7
-								wf///cIAAAOi
-								AADDRWN1cnYA
-								AAAAAAAAAQHN
-								AABjdXJ2AAAA
-								AAAAAAEBzQAA
-								Y3VydgAAAAAA
-								AAABAc0AAHZj
-								Z3QAAAAAAAAA
-								AQAA0XQAAAAA
-								AAEAAAAA0XQA
-								AAAAAAEAAAAA
-								0XQAAAAAAAEA
-								AG5kaW4AAAAA
-								AAAAMAAAo8AA
-								AFfAAABKwAAA
-								nIAAACaXAAAT
-								WwAAUEAAAFTA
-								AAIzMwACMzMA
-								AjMzZGVzYwAA
-								AAAAAAANREVM
-								TCAzMDA3V0ZQ
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAABt
-								bHVjAAAAAAAA
-								AA8AAAAMbmJO
-								TwAAABgAAADE
-								c3ZTRQAAABgA
-								AADEZmlGSQAA
-								ABgAAADEZGFE
-								SwAAABgAAADE
-								emhDTgAAABgA
-								AADEZnJGUgAA
-								ABgAAADEamFK
-								UAAAABgAAADE
-								ZW5VUwAAABgA
-								AADEcHRCUgAA
-								ABgAAADEZXNF
-								UwAAABgAAADE
-								emhUVwAAABgA
-								AADEa29LUgAA
-								ABgAAADEZGVE
-								RQAAABgAAADE
-								bmxOTAAAABgA
-								AADEaXRJVAAA
-								ABgAAADEAEQA
-								RQBMAEwAIAAz
-								ADAAMAA3AFcA
-								RgBQbW1vZAAA
-								AAAAABCsAABA
-								FkczODXAsP9w
-								AAAAAAAAAAAA
-								AAAAAAAAAHRl
-								eHQAAAAAQ29w
-								eXJpZ2h0IEFw
-								cGxlLCBJbmMu
-								LCAyMDA5AACh
-								AOAABAAAAAIA
-								/wEAAAATAAAA
-								UGFzdGVkIEdy
-								YXBoaWMucGlj
-								dAEAAAATAAAA
-								UGFzdGVkIEdy
-								YXBoaWMucGlj
-								dAEAAAAeAAAA
-								AQAAAAIAAAAu
-								LhAAAAAAAAAA
-								tgEAAAIAAAAB
-								AAAAhoaGkoSW
-								lhBOU1BhcmFn
-								cmFwaFN0eWxl
-								hpKEhIQQTlNQ
-								YXJhZ3JhcGhT
-								dHlsZQCUhARD
-								Q0BTBACEhIQH
-								TlNBcnJheQCU
-								mQyShISECU5T
-								VGV4dFRhYgCU
-								hAJDZgAchpKE
-								p6QAOIaShKek
-								AFSGkoSnpABw
-								hpKEp6QAgYwA
-								hpKEp6QAgagA
-								hpKEp6QAgcQA
-								hpKEp6QAgeAA
-								hpKEp6QAgfwA
-								hpKEp6QAgRgB
-								hpKEp6QAgTQB
-								hpKEp6QAgVAB
-								hoYAhoaG
-								</data>
 							</dict>
 						</dict>
 						<dict>
@@ -13695,371 +13343,11 @@
 							<dict>
 								<key>Align</key>
 								<integer>0</integer>
-								<key>RTFD</key>
-								<data>
-								BAtzdHJlYW10
-								eXBlZIHoA4QB
-								QISEhBJOU0F0
-								dHJpYnV0ZWRT
-								dHJpbmcAhIQI
-								TlNPYmplY3QA
-								hZKEhIQITlNT
-								dHJpbmcBlIQB
-								KwPvv7yGhAJp
-								SQEBkoSEhAxO
-								U0RpY3Rpb25h
-								cnkAlIQBaQKS
-								hJaWDE5TQXR0
-								YWNobWVudIaS
-								hISEEE5TVGV4
-								dEF0dGFjaG1l
-								bnQAlIQCY0AA
-								hISEDU5TRmls
-								ZVdyYXBwZXIu
-								lJKEhIQNTlNN
-								dXRhYmxlRGF0
-								YQCEhAZOU0Rh
-								dGEAlJmB8wqE
-								B1syODAzY11y
-								dGZkAAAAAAMA
-								AAAEAAAAAgAA
-								AC4uFwAAAF9f
-								QFVURjhQcmVm
-								ZXJyZWROYW1l
-								QF9fEwAAAF9f
-								QFByZWZlcnJl
-								ZE5hbWVAX18B
-								AAAALjoKAAAb
-								AAAAGwAAACYA
-								AAABAAAAMgoA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAABAA
-								EAARAv8MAP/+
-								AAAASAAAAEgA
-								AAAAAAAAEAAQ
-								AAAAAAAeAAEA
-								CgAAAAAAEAAQ
-								ggAAAAOaAAAA
-								AQAAAAAAAAAA
-								AAAAAAAAAAEA
-								AAAAAAAAAAAA
-								AAAAAEAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								EAAQAAADAAAA
-								AAAAAABWcmF3
-								IAAAAAAAAAAA
-								AAAAAGFwcGwA
-								AAQAAAAEAAAQ
-								ABAASAAAAEgA
-								AAAAAwAAAQAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAABj/////
-								////////////
-								////////////
-								////////////
-								////////////
-								////////////
-								////////////
-								////////////
-								////////////
-								////////////
-								////////////
-								////////////
-								////////////
-								////////////
-								////////////
-								////////////
-								////////////
-								/////9nZ2XV1
-								dWNjY2NjY2Nj
-								Y2NjY2NjY2Nj
-								Y2NjY2NjY3Z2
-								dtnZ2f//////
-								//////7+/mpq
-								asbGxv//////
-								////////////
-								////////////
-								/8PDw21tbf7+
-								/v////////v7
-								+2RkZM/Pz/X1
-								9fX19fX19fX1
-								9fX19fX19fX1
-								9fX19crKymdn
-								Z/v7+///////
-								/+/v725ubsvL
-								y/Hx8fHx8fHx
-								8fHx8fHx8fHx
-								8fHx8fHx8cvL
-								y3BwcO/v7///
-								/////+7u7nd3
-								d83Nzezs7Ozs
-								7Ozs7Ozs7Ozs
-								7Ozs7Ozs7Ozs
-								7M3NzXp6eu7u
-								7v///////+7u
-								7oCAgM/Pz9fX
-								19fX19fX19fX
-								19fX19fX19fX
-								19fX18/Pz4SE
-								hO7u7v//////
-								/+7u7oqKitLS
-								0uDg4ODg4ODg
-								4ODg4ODg4ODg
-								4ODg4ODg4NLS
-								0o2Nje7u7v//
-								/////+7u7pSU
-								lNTU1Ojo6Ojo
-								6Ojo6Ojo6Ojo
-								6Ojo6Ojo6Ojo
-								6NXV1ZaWlu7u
-								7v///////+7u
-								7p6entfX1/Hx
-								8fHx8fHx8fHx
-								8fHx8fHx8fHx
-								8fHx8djY2J+f
-								n+7u7v//////
-								/+7u7qWlpeXl
-								5f//////////
-								////////////
-								/////////+bm
-								5qmpqe7u7v//
-								//////v7+46O
-								jsrKyvPz8/Pz
-								8/Pz8/Pz8/Pz
-								8/Pz8/Pz8/Pz
-								883NzZCQkPv7
-								+/////////39
-								/crKynt7e3V1
-								dXV1dXV1dXV1
-								dXV1dXV1dXV1
-								dXV1dXt7e8rK
-								yv39/f//////
-								//////39/fLy
-								8t3d3dzc3Nzc
-								3Nzc3Nzc3Nzc
-								3Nzc3N3d3fLy
-								8v39/f//////
-								/wAHAK4AcAAH
-								AAEAAQADAAMA
-								BAAAAA0ADAAQ
-								ABAAEAC6ALoA
-								KAAHAAMQUXVp
-								Y2tUaW1lqiBh
-								bmQgYQAAKAAI
-								AAQNIGRlY29t
-								cHJlc3NvcgAo
-								AAkAAB9hcmUg
-								bmVlZGVkIHRv
-								IHNlZSB0aGlz
-								IHBpY3R1cmUu
-								AAAAoQDgA9QA
-								AAAAAAAD0GFw
-								cGwCAAAAbW50
-								clJHQiBYWVog
-								B9kACQAKAAgA
-								BwAxYWNzcEFQ
-								UEwAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								APbWAAEAAAAA
-								0y1hcHBsAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAO
-								clhZWgAAASwA
-								AAAUZ1hZWgAA
-								AUAAAAAUYlhZ
-								WgAAAVQAAAAU
-								d3RwdAAAAWgA
-								AAAUY2hhZAAA
-								AXwAAAAsclRS
-								QwAAAagAAAAO
-								Z1RSQwAAAbgA
-								AAAOYlRSQwAA
-								AcgAAAAOdmNn
-								dAAAAdgAAAAw
-								bmRpbgAAAggA
-								AAA4ZGVzYwAA
-								AkAAAABnZHNj
-								bQAAAqgAAADc
-								bW1vZAAAA4QA
-								AAAoY3BydAAA
-								A6wAAAAkWFla
-								IAAAAAAAAHd6
-								AAA/WgAAAjdY
-								WVogAAAAAAAA
-								WLAAAKwFAAAW
-								X1hZWiAAAAAA
-								AAAmrAAAFMMA
-								ALqNWFlaIAAA
-								AAAAAPJoAAEA
-								AAABEuFzZjMy
-								AAAAAAABDGcA
-								AAYE///zlgAA
-								B9sAAP0h///7
-								wf///cIAAAOi
-								AADDRWN1cnYA
-								AAAAAAAAAQHN
-								AABjdXJ2AAAA
-								AAAAAAEBzQAA
-								Y3VydgAAAAAA
-								AAABAc0AAHZj
-								Z3QAAAAAAAAA
-								AQAA0XQAAAAA
-								AAEAAAAA0XQA
-								AAAAAAEAAAAA
-								0XQAAAAAAAEA
-								AG5kaW4AAAAA
-								AAAAMAAAo8AA
-								AFfAAABKwAAA
-								nIAAACaXAAAT
-								WwAAUEAAAFTA
-								AAIzMwACMzMA
-								AjMzZGVzYwAA
-								AAAAAAANREVM
-								TCAzMDA3V0ZQ
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAABt
-								bHVjAAAAAAAA
-								AA8AAAAMbmJO
-								TwAAABgAAADE
-								c3ZTRQAAABgA
-								AADEZmlGSQAA
-								ABgAAADEZGFE
-								SwAAABgAAADE
-								emhDTgAAABgA
-								AADEZnJGUgAA
-								ABgAAADEamFK
-								UAAAABgAAADE
-								ZW5VUwAAABgA
-								AADEcHRCUgAA
-								ABgAAADEZXNF
-								UwAAABgAAADE
-								emhUVwAAABgA
-								AADEa29LUgAA
-								ABgAAADEZGVE
-								RQAAABgAAADE
-								bmxOTAAAABgA
-								AADEaXRJVAAA
-								ABgAAADEAEQA
-								RQBMAEwAIAAz
-								ADAAMAA3AFcA
-								RgBQbW1vZAAA
-								AAAAABCsAABA
-								FkczODXAsP9w
-								AAAAAAAAAAAA
-								AAAAAAAAAHRl
-								eHQAAAAAQ29w
-								eXJpZ2h0IEFw
-								cGxlLCBJbmMu
-								LCAyMDA5AACh
-								AOAABAAAAAIA
-								/wEAAAATAAAA
-								UGFzdGVkIEdy
-								YXBoaWMucGlj
-								dAEAAAATAAAA
-								UGFzdGVkIEdy
-								YXBoaWMucGlj
-								dAEAAAAeAAAA
-								AQAAAAIAAAAu
-								LhAAAAAAAAAA
-								tgEAAAIAAAAB
-								AAAAhoaGkoSW
-								lhBOU1BhcmFn
-								cmFwaFN0eWxl
-								hpKEhIQQTlNQ
-								YXJhZ3JhcGhT
-								dHlsZQCUhARD
-								Q0BTBACEhIQH
-								TlNBcnJheQCU
-								mQyShISECU5T
-								VGV4dFRhYgCU
-								hAJDZgAchpKE
-								p6QAOIaShKek
-								AFSGkoSnpABw
-								hpKEp6QAgYwA
-								hpKEp6QAgagA
-								hpKEp6QAgcQA
-								hpKEp6QAgeAA
-								hpKEp6QAgfwA
-								hpKEp6QAgRgB
-								hpKEp6QAgTQB
-								hpKEp6QAgVAB
-								hoYAhoaG
-								</data>
 							</dict>
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{275, 378}, {83.4999, 28.0004}}</string>
+							<string>{{275, 378}, {83.4999, 35.0002}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -14096,12 +13384,16 @@
 {\colortbl;\red255\green255\blue255;\red0\green0\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
 
-\f0\fs24 \cf0 Custom (\cf2 \ul \ulc2 Edit\cf0 \ulnone )}</string>
+\f0\fs24 \cf0 All \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+\cf2 \ul \ulc2 Customize}</string>
 							</dict>
+							<key>TextPlacement</key>
+							<integer>0</integer>
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{579.23, 236}, {85.0316, 26.001}}</string>
+							<string>{{579.23, 236}, {85.0317, 26.001}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -15752,7 +15044,7 @@
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{664.262, 236}, {68.7015, 26.001}}</string>
+							<string>{{664.262, 236}, {68.7014, 26.001}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -16544,7 +15836,7 @@
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{579.23, 186}, {85.0316, 24}}</string>
+							<string>{{579.23, 186}, {85.0317, 24}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -16941,7 +16233,7 @@
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{436.499, 378}, {78.0009, 28.0004}}</string>
+							<string>{{436.499, 378}, {78.0009, 35.0001}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -16978,8 +16270,10 @@
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
 
-\f0\fs24 \cf0 All Students}</string>
+\f0\fs24 \cf0 All}</string>
 							</dict>
+							<key>TextPlacement</key>
+							<integer>0</integer>
 						</dict>
 						<dict>
 							<key>Bounds</key>
@@ -17438,7 +16732,7 @@
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
 
-\f0\fs24 \cf0 Can submit assignments}</string>
+\f0\fs24 \cf0 Submit assignments}</string>
 							</dict>
 						</dict>
 						<dict>
@@ -17474,371 +16768,11 @@
 							<dict>
 								<key>Align</key>
 								<integer>0</integer>
-								<key>RTFD</key>
-								<data>
-								BAtzdHJlYW10
-								eXBlZIHoA4QB
-								QISEhBJOU0F0
-								dHJpYnV0ZWRT
-								dHJpbmcAhIQI
-								TlNPYmplY3QA
-								hZKEhIQITlNT
-								dHJpbmcBlIQB
-								KwPvv7yGhAJp
-								SQEBkoSEhAxO
-								U0RpY3Rpb25h
-								cnkAlIQBaQKS
-								hJaWDE5TQXR0
-								YWNobWVudIaS
-								hISEEE5TVGV4
-								dEF0dGFjaG1l
-								bnQAlIQCY0AA
-								hISEDU5TRmls
-								ZVdyYXBwZXIu
-								lJKEhIQNTlNN
-								dXRhYmxlRGF0
-								YQCEhAZOU0Rh
-								dGEAlJmB8wqE
-								B1syODAzY11y
-								dGZkAAAAAAMA
-								AAAEAAAAAgAA
-								AC4uFwAAAF9f
-								QFVURjhQcmVm
-								ZXJyZWROYW1l
-								QF9fEwAAAF9f
-								QFByZWZlcnJl
-								ZE5hbWVAX18B
-								AAAALjoKAAAb
-								AAAAGwAAACYA
-								AAABAAAAMgoA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAABAA
-								EAARAv8MAP/+
-								AAAASAAAAEgA
-								AAAAAAAAEAAQ
-								AAAAAAAeAAEA
-								CgAAAAAAEAAQ
-								ggAAAAOaAAAA
-								AQAAAAAAAAAA
-								AAAAAAAAAAEA
-								AAAAAAAAAAAA
-								AAAAAEAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								EAAQAAADAAAA
-								AAAAAABWcmF3
-								IAAAAAAAAAAA
-								AAAAAGFwcGwA
-								AAQAAAAEAAAQ
-								ABAASAAAAEgA
-								AAAAAwAAAQAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAABj/////
-								////////////
-								////////////
-								////////////
-								////////////
-								////////////
-								////////////
-								////////////
-								////////////
-								////////////
-								////////////
-								////////////
-								////////////
-								////////////
-								////////////
-								////////////
-								////////////
-								/////9nZ2XV1
-								dWNjY2NjY2Nj
-								Y2NjY2NjY2Nj
-								Y2NjY2NjY3Z2
-								dtnZ2f//////
-								//////7+/mpq
-								asbGxv//////
-								////////////
-								////////////
-								/8PDw21tbf7+
-								/v////////v7
-								+2RkZM/Pz/X1
-								9fX19fX19fX1
-								9fX19fX19fX1
-								9fX19crKymdn
-								Z/v7+///////
-								/+/v725ubsvL
-								y/Hx8fHx8fHx
-								8fHx8fHx8fHx
-								8fHx8fHx8cvL
-								y3BwcO/v7///
-								/////+7u7nd3
-								d83Nzezs7Ozs
-								7Ozs7Ozs7Ozs
-								7Ozs7Ozs7Ozs
-								7M3NzXp6eu7u
-								7v///////+7u
-								7oCAgM/Pz9fX
-								19fX19fX19fX
-								19fX19fX19fX
-								19fX18/Pz4SE
-								hO7u7v//////
-								/+7u7oqKitLS
-								0uDg4ODg4ODg
-								4ODg4ODg4ODg
-								4ODg4ODg4NLS
-								0o2Nje7u7v//
-								/////+7u7pSU
-								lNTU1Ojo6Ojo
-								6Ojo6Ojo6Ojo
-								6Ojo6Ojo6Ojo
-								6NXV1ZaWlu7u
-								7v///////+7u
-								7p6entfX1/Hx
-								8fHx8fHx8fHx
-								8fHx8fHx8fHx
-								8fHx8djY2J+f
-								n+7u7v//////
-								/+7u7qWlpeXl
-								5f//////////
-								////////////
-								/////////+bm
-								5qmpqe7u7v//
-								//////v7+46O
-								jsrKyvPz8/Pz
-								8/Pz8/Pz8/Pz
-								8/Pz8/Pz8/Pz
-								883NzZCQkPv7
-								+/////////39
-								/crKynt7e3V1
-								dXV1dXV1dXV1
-								dXV1dXV1dXV1
-								dXV1dXt7e8rK
-								yv39/f//////
-								//////39/fLy
-								8t3d3dzc3Nzc
-								3Nzc3Nzc3Nzc
-								3Nzc3N3d3fLy
-								8v39/f//////
-								/wAHAK4AcAAH
-								AAEAAQADAAMA
-								BAAAAA0ADAAQ
-								ABAAEAC6ALoA
-								KAAHAAMQUXVp
-								Y2tUaW1lqiBh
-								bmQgYQAAKAAI
-								AAQNIGRlY29t
-								cHJlc3NvcgAo
-								AAkAAB9hcmUg
-								bmVlZGVkIHRv
-								IHNlZSB0aGlz
-								IHBpY3R1cmUu
-								AAAAoQDgA9QA
-								AAAAAAAD0GFw
-								cGwCAAAAbW50
-								clJHQiBYWVog
-								B9kACQAKAAgA
-								BwAxYWNzcEFQ
-								UEwAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								APbWAAEAAAAA
-								0y1hcHBsAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAO
-								clhZWgAAASwA
-								AAAUZ1hZWgAA
-								AUAAAAAUYlhZ
-								WgAAAVQAAAAU
-								d3RwdAAAAWgA
-								AAAUY2hhZAAA
-								AXwAAAAsclRS
-								QwAAAagAAAAO
-								Z1RSQwAAAbgA
-								AAAOYlRSQwAA
-								AcgAAAAOdmNn
-								dAAAAdgAAAAw
-								bmRpbgAAAggA
-								AAA4ZGVzYwAA
-								AkAAAABnZHNj
-								bQAAAqgAAADc
-								bW1vZAAAA4QA
-								AAAoY3BydAAA
-								A6wAAAAkWFla
-								IAAAAAAAAHd6
-								AAA/WgAAAjdY
-								WVogAAAAAAAA
-								WLAAAKwFAAAW
-								X1hZWiAAAAAA
-								AAAmrAAAFMMA
-								ALqNWFlaIAAA
-								AAAAAPJoAAEA
-								AAABEuFzZjMy
-								AAAAAAABDGcA
-								AAYE///zlgAA
-								B9sAAP0h///7
-								wf///cIAAAOi
-								AADDRWN1cnYA
-								AAAAAAAAAQHN
-								AABjdXJ2AAAA
-								AAAAAAEBzQAA
-								Y3VydgAAAAAA
-								AAABAc0AAHZj
-								Z3QAAAAAAAAA
-								AQAA0XQAAAAA
-								AAEAAAAA0XQA
-								AAAAAAEAAAAA
-								0XQAAAAAAAEA
-								AG5kaW4AAAAA
-								AAAAMAAAo8AA
-								AFfAAABKwAAA
-								nIAAACaXAAAT
-								WwAAUEAAAFTA
-								AAIzMwACMzMA
-								AjMzZGVzYwAA
-								AAAAAAANREVM
-								TCAzMDA3V0ZQ
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAAAA
-								AAAAAAAAAABt
-								bHVjAAAAAAAA
-								AA8AAAAMbmJO
-								TwAAABgAAADE
-								c3ZTRQAAABgA
-								AADEZmlGSQAA
-								ABgAAADEZGFE
-								SwAAABgAAADE
-								emhDTgAAABgA
-								AADEZnJGUgAA
-								ABgAAADEamFK
-								UAAAABgAAADE
-								ZW5VUwAAABgA
-								AADEcHRCUgAA
-								ABgAAADEZXNF
-								UwAAABgAAADE
-								emhUVwAAABgA
-								AADEa29LUgAA
-								ABgAAADEZGVE
-								RQAAABgAAADE
-								bmxOTAAAABgA
-								AADEaXRJVAAA
-								ABgAAADEAEQA
-								RQBMAEwAIAAz
-								ADAAMAA3AFcA
-								RgBQbW1vZAAA
-								AAAAABCsAABA
-								FkczODXAsP9w
-								AAAAAAAAAAAA
-								AAAAAAAAAHRl
-								eHQAAAAAQ29w
-								eXJpZ2h0IEFw
-								cGxlLCBJbmMu
-								LCAyMDA5AACh
-								AOAABAAAAAIA
-								/wEAAAATAAAA
-								UGFzdGVkIEdy
-								YXBoaWMucGlj
-								dAEAAAATAAAA
-								UGFzdGVkIEdy
-								YXBoaWMucGlj
-								dAEAAAAeAAAA
-								AQAAAAIAAAAu
-								LhAAAAAAAAAA
-								tgEAAAIAAAAB
-								AAAAhoaGkoSW
-								lhBOU1BhcmFn
-								cmFwaFN0eWxl
-								hpKEhIQQTlNQ
-								YXJhZ3JhcGhT
-								dHlsZQCUhARD
-								Q0BTBACEhIQH
-								TlNBcnJheQCU
-								mQyShISECU5T
-								VGV4dFRhYgCU
-								hAJDZgAchpKE
-								p6QAOIaShKek
-								AFSGkoSnpABw
-								hpKEp6QAgYwA
-								hpKEp6QAgagA
-								hpKEp6QAgcQA
-								hpKEp6QAgeAA
-								hpKEp6QAgfwA
-								hpKEp6QAgRgB
-								hpKEp6QAgTQB
-								hpKEp6QAgVAB
-								hoYAhoaG
-								</data>
 							</dict>
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{579.23, 378}, {85.0316, 28.0004}}</string>
+							<string>{{579.23, 378}, {85.0317, 35.0001}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -17875,12 +16809,16 @@
 {\colortbl;\red255\green255\blue255;\red0\green0\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
 
-\f0\fs24 \cf0 Custom (\cf2 \ul \ulc2 Edit\cf0 \ulnone )}</string>
+\f0\fs24 \cf0 All \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+\cf2 \ul \ulc2 Customize}</string>
 							</dict>
+							<key>TextPlacement</key>
+							<integer>0</integer>
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{579.23, 339}, {85.0316, 38.9998}}</string>
+							<string>{{579.23, 339}, {85.0317, 38.9998}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -18275,7 +17213,7 @@
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{799.663, 236}, {49.3384, 26.001}}</string>
+							<string>{{799.663, 236}, {49.3386, 26.001}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -18707,12 +17645,12 @@
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
 
-\f0\fs24 \cf0 Can add feedback}</string>
+\f0\fs24 \cf0 Add feedback}</string>
 							</dict>
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{664.262, 288.001}, {68.7015, 31.9989}}</string>
+							<string>{{664.262, 288.001}, {68.7014, 31.9989}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -19107,7 +18045,7 @@
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{579.23, 262.001}, {85.0316, 26}}</string>
+							<string>{{579.23, 262.001}, {85.0317, 26}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -19525,7 +18463,7 @@
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{76.9702, 378}, {198.03, 28.0004}}</string>
+							<string>{{76.9702, 378}, {198.03, 35.0001}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -19567,7 +18505,7 @@
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{799.663, 320}, {49.3384, 19.0002}}</string>
+							<string>{{799.663, 320}, {49.3386, 19.0002}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -19962,7 +18900,7 @@
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{799.663, 163}, {49.3384, 23}}</string>
+							<string>{{799.663, 163}, {49.3386, 23}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -20016,7 +18954,7 @@
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{664.262, 210}, {68.7015, 26}}</string>
+							<string>{{664.262, 210}, {68.7014, 26}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -20411,7 +19349,7 @@
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{799.663, 288.001}, {49.3384, 31.9989}}</string>
+							<string>{{799.663, 288.001}, {49.3386, 31.9989}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -22068,7 +21006,7 @@
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{579.23, 163}, {85.0316, 23}}</string>
+							<string>{{579.23, 163}, {85.0317, 23}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -23353,7 +22291,7 @@
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{579.23, 288.001}, {85.0316, 31.9989}}</string>
+							<string>{{579.23, 288.001}, {85.0317, 31.9989}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -23771,7 +22709,7 @@
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{732.963, 378}, {66.6996, 28.0004}}</string>
+							<string>{{732.963, 378}, {66.6996, 35.0001}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -23810,6 +22748,8 @@
 
 \f0\fs24 \cf0 None}</string>
 							</dict>
+							<key>TextPlacement</key>
+							<integer>0</integer>
 						</dict>
 						<dict>
 							<key>Bounds</key>
@@ -23947,12 +22887,12 @@ assigned groups only}</string>
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
 
-\f0\fs24 \cf0 Can add assignments}</string>
+\f0\fs24 \cf0 Add assignments}</string>
 							</dict>
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{799.663, 339}, {49.3384, 38.9998}}</string>
+							<string>{{799.663, 339}, {49.3386, 38.9998}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -24384,12 +23324,12 @@ assigned groups only}</string>
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
 
-\f0\fs24 \cf0 Can edit assignments}</string>
+\f0\fs24 \cf0 Edit assignments}</string>
 							</dict>
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{358.5, 339}, {77.9991, 38.9998}}</string>
+							<string>{{358.5, 339}, {77.999, 38.9998}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -26653,7 +25593,7 @@ assigned groups only}</string>
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{125.7, 215}, {766, 50.0002}}</string>
+							<string>{{125.7, 215}, {766, 50.0001}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -26687,7 +25627,7 @@ assigned groups only}</string>
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{52.9, 215}, {72.8, 50.0002}}</string>
+							<string>{{52.9, 215}, {72.8, 50.0001}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -27456,7 +26396,7 @@ assigned groups only}</string>
 			<key>CanvasOrigin</key>
 			<string>{0, 0}</string>
 			<key>ColumnAlign</key>
-			<integer>1</integer>
+			<integer>2</integer>
 			<key>ColumnSpacing</key>
 			<real>36</real>
 			<key>DisplayScale</key>
@@ -27468,6 +26408,56 @@ assigned groups only}</string>
 					<string>Group</string>
 					<key>Graphics</key>
 					<array>
+						<dict>
+							<key>Bounds</key>
+							<string>{{749.93, 317.105}, {67, 15}}</string>
+							<key>Class</key>
+							<string>ShapedGraphic</string>
+							<key>FitText</key>
+							<string>YES</string>
+							<key>Flow</key>
+							<string>Resize</string>
+							<key>ID</key>
+							<integer>4689</integer>
+							<key>Shape</key>
+							<string>Rectangle</string>
+							<key>Style</key>
+							<dict>
+								<key>fill</key>
+								<dict>
+									<key>Draws</key>
+									<string>NO</string>
+								</dict>
+								<key>shadow</key>
+								<dict>
+									<key>Draws</key>
+									<string>NO</string>
+								</dict>
+								<key>stroke</key>
+								<dict>
+									<key>Draws</key>
+									<string>NO</string>
+								</dict>
+							</dict>
+							<key>Text</key>
+							<dict>
+								<key>Align</key>
+								<integer>0</integer>
+								<key>Pad</key>
+								<integer>0</integer>
+								<key>Text</key>
+								<string>{\rtf1\ansi\ansicpg1252\cocoartf1038\cocoasubrtf110
+{\fonttbl\f0\fnil\fcharset0 TrebuchetMS;}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue238;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+
+\f0\fs24 \cf2 \ul \ulc2 Remove rule}</string>
+								<key>VerticalPad</key>
+								<integer>0</integer>
+							</dict>
+							<key>Wrap</key>
+							<string>NO</string>
+						</dict>
 						<dict>
 							<key>Class</key>
 							<string>Group</string>
@@ -27491,7 +26481,7 @@ assigned groups only}</string>
 										</dict>
 									</dict>
 									<key>ID</key>
-									<integer>4637</integer>
+									<integer>4691</integer>
 									<key>Shape</key>
 									<string>Rectangle</string>
 									<key>Style</key>
@@ -27545,7 +26535,7 @@ assigned groups only}</string>
 										<real>12</real>
 									</dict>
 									<key>ID</key>
-									<integer>4638</integer>
+									<integer>4692</integer>
 									<key>Shape</key>
 									<string>Circle</string>
 									<key>Style</key>
@@ -27571,7 +26561,7 @@ assigned groups only}</string>
 								</dict>
 							</array>
 							<key>ID</key>
-							<integer>4636</integer>
+							<integer>4690</integer>
 						</dict>
 						<dict>
 							<key>Bounds</key>
@@ -27590,7 +26580,7 @@ assigned groups only}</string>
 								<real>12</real>
 							</dict>
 							<key>ID</key>
-							<integer>4639</integer>
+							<integer>4693</integer>
 							<key>Shape</key>
 							<string>Rectangle</string>
 							<key>Style</key>
@@ -27636,7 +26626,7 @@ assigned groups only}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>ID</key>
-							<integer>4640</integer>
+							<integer>4694</integer>
 							<key>ImageID</key>
 							<integer>42</integer>
 							<key>Shape</key>
@@ -27662,11 +26652,11 @@ assigned groups only}</string>
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{184.832, 256.82}, {590.169, 24}}</string>
+							<string>{{184.832, 256.82}, {632.098, 24}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>ID</key>
-							<integer>4641</integer>
+							<integer>4695</integer>
 							<key>Shape</key>
 							<string>Rectangle</string>
 							<key>Style</key>
@@ -27725,7 +26715,7 @@ assigned groups only}</string>
 										</dict>
 									</dict>
 									<key>ID</key>
-									<integer>4643</integer>
+									<integer>4697</integer>
 									<key>Shape</key>
 									<string>Rectangle</string>
 									<key>Style</key>
@@ -27779,7 +26769,7 @@ assigned groups only}</string>
 										<real>12</real>
 									</dict>
 									<key>ID</key>
-									<integer>4644</integer>
+									<integer>4698</integer>
 									<key>Shape</key>
 									<string>Circle</string>
 									<key>Style</key>
@@ -27805,7 +26795,7 @@ assigned groups only}</string>
 								</dict>
 							</array>
 							<key>ID</key>
-							<integer>4642</integer>
+							<integer>4696</integer>
 						</dict>
 						<dict>
 							<key>Bounds</key>
@@ -27817,7 +26807,7 @@ assigned groups only}</string>
 							<key>Flow</key>
 							<string>Resize</string>
 							<key>ID</key>
-							<integer>4645</integer>
+							<integer>4699</integer>
 							<key>Shape</key>
 							<string>Rectangle</string>
 							<key>Style</key>
@@ -27863,7 +26853,7 @@ assigned groups only}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>ID</key>
-							<integer>4646</integer>
+							<integer>4700</integer>
 							<key>ImageID</key>
 							<integer>41</integer>
 							<key>Shape</key>
@@ -27894,7 +26884,7 @@ assigned groups only}</string>
 							<array>
 								<dict>
 									<key>Bounds</key>
-									<string>{{367.832, 425.124}, {23.8695, 22.962}}</string>
+									<string>{{348.664, 425.124}, {23.8695, 22.962}}</string>
 									<key>Class</key>
 									<string>ShapedGraphic</string>
 									<key>FontInfo</key>
@@ -27910,7 +26900,7 @@ assigned groups only}</string>
 										</dict>
 									</dict>
 									<key>ID</key>
-									<integer>4648</integer>
+									<integer>4702</integer>
 									<key>Shape</key>
 									<string>Rectangle</string>
 									<key>Style</key>
@@ -27944,7 +26934,7 @@ assigned groups only}</string>
 								</dict>
 								<dict>
 									<key>Bounds</key>
-									<string>{{368.373, 425.124}, {22.7873, 22.962}}</string>
+									<string>{{349.205, 425.124}, {22.7873, 22.962}}</string>
 									<key>Class</key>
 									<string>ShapedGraphic</string>
 									<key>FontInfo</key>
@@ -27964,7 +26954,7 @@ assigned groups only}</string>
 										<real>12</real>
 									</dict>
 									<key>ID</key>
-									<integer>4649</integer>
+									<integer>4703</integer>
 									<key>Shape</key>
 									<string>Circle</string>
 									<key>Style</key>
@@ -27990,7 +26980,7 @@ assigned groups only}</string>
 								</dict>
 							</array>
 							<key>ID</key>
-							<integer>4647</integer>
+							<integer>4701</integer>
 						</dict>
 						<dict>
 							<key>Class</key>
@@ -28015,7 +27005,7 @@ assigned groups only}</string>
 										</dict>
 									</dict>
 									<key>ID</key>
-									<integer>4651</integer>
+									<integer>4705</integer>
 									<key>Shape</key>
 									<string>Rectangle</string>
 									<key>Style</key>
@@ -28069,7 +27059,7 @@ assigned groups only}</string>
 										<real>12</real>
 									</dict>
 									<key>ID</key>
-									<integer>4652</integer>
+									<integer>4706</integer>
 									<key>Shape</key>
 									<string>Circle</string>
 									<key>Style</key>
@@ -28095,7 +27085,7 @@ assigned groups only}</string>
 								</dict>
 							</array>
 							<key>ID</key>
-							<integer>4650</integer>
+							<integer>4704</integer>
 						</dict>
 						<dict>
 							<key>Class</key>
@@ -28120,7 +27110,7 @@ assigned groups only}</string>
 										</dict>
 									</dict>
 									<key>ID</key>
-									<integer>4654</integer>
+									<integer>4708</integer>
 									<key>Shape</key>
 									<string>Rectangle</string>
 									<key>Style</key>
@@ -28174,7 +27164,7 @@ assigned groups only}</string>
 										<real>12</real>
 									</dict>
 									<key>ID</key>
-									<integer>4655</integer>
+									<integer>4709</integer>
 									<key>Shape</key>
 									<string>Circle</string>
 									<key>Style</key>
@@ -28200,7 +27190,7 @@ assigned groups only}</string>
 								</dict>
 							</array>
 							<key>ID</key>
-							<integer>4653</integer>
+							<integer>4707</integer>
 						</dict>
 						<dict>
 							<key>Class</key>
@@ -28209,7 +27199,7 @@ assigned groups only}</string>
 							<array>
 								<dict>
 									<key>Bounds</key>
-									<string>{{751.131, 313.124}, {23.8695, 22.962}}</string>
+									<string>{{812.761, 336.605}, {23.8695, 22.962}}</string>
 									<key>Class</key>
 									<string>ShapedGraphic</string>
 									<key>FontInfo</key>
@@ -28225,7 +27215,7 @@ assigned groups only}</string>
 										</dict>
 									</dict>
 									<key>ID</key>
-									<integer>4657</integer>
+									<integer>4711</integer>
 									<key>Shape</key>
 									<string>Rectangle</string>
 									<key>Style</key>
@@ -28259,7 +27249,7 @@ assigned groups only}</string>
 								</dict>
 								<dict>
 									<key>Bounds</key>
-									<string>{{751.672, 313.124}, {22.7873, 22.962}}</string>
+									<string>{{813.302, 336.605}, {22.7873, 22.962}}</string>
 									<key>Class</key>
 									<string>ShapedGraphic</string>
 									<key>FontInfo</key>
@@ -28279,7 +27269,7 @@ assigned groups only}</string>
 										<real>12</real>
 									</dict>
 									<key>ID</key>
-									<integer>4658</integer>
+									<integer>4712</integer>
 									<key>Shape</key>
 									<string>Circle</string>
 									<key>Style</key>
@@ -28305,7 +27295,7 @@ assigned groups only}</string>
 								</dict>
 							</array>
 							<key>ID</key>
-							<integer>4656</integer>
+							<integer>4710</integer>
 						</dict>
 						<dict>
 							<key>Class</key>
@@ -28330,7 +27320,7 @@ assigned groups only}</string>
 										</dict>
 									</dict>
 									<key>ID</key>
-									<integer>4660</integer>
+									<integer>4714</integer>
 									<key>Shape</key>
 									<string>Rectangle</string>
 									<key>Style</key>
@@ -28384,7 +27374,7 @@ assigned groups only}</string>
 										<real>12</real>
 									</dict>
 									<key>ID</key>
-									<integer>4661</integer>
+									<integer>4715</integer>
 									<key>Shape</key>
 									<string>Circle</string>
 									<key>Style</key>
@@ -28410,7 +27400,7 @@ assigned groups only}</string>
 								</dict>
 							</array>
 							<key>ID</key>
-							<integer>4659</integer>
+							<integer>4713</integer>
 						</dict>
 						<dict>
 							<key>Class</key>
@@ -28435,7 +27425,7 @@ assigned groups only}</string>
 										</dict>
 									</dict>
 									<key>ID</key>
-									<integer>4663</integer>
+									<integer>4717</integer>
 									<key>Shape</key>
 									<string>Rectangle</string>
 									<key>Style</key>
@@ -28489,7 +27479,7 @@ assigned groups only}</string>
 										<real>12</real>
 									</dict>
 									<key>ID</key>
-									<integer>4664</integer>
+									<integer>4718</integer>
 									<key>Shape</key>
 									<string>Circle</string>
 									<key>Style</key>
@@ -28515,7 +27505,7 @@ assigned groups only}</string>
 								</dict>
 							</array>
 							<key>ID</key>
-							<integer>4662</integer>
+							<integer>4716</integer>
 						</dict>
 						<dict>
 							<key>Class</key>
@@ -28540,7 +27530,7 @@ assigned groups only}</string>
 										</dict>
 									</dict>
 									<key>ID</key>
-									<integer>4666</integer>
+									<integer>4720</integer>
 									<key>Shape</key>
 									<string>Rectangle</string>
 									<key>Style</key>
@@ -28594,7 +27584,7 @@ assigned groups only}</string>
 										<real>12</real>
 									</dict>
 									<key>ID</key>
-									<integer>4667</integer>
+									<integer>4721</integer>
 									<key>Shape</key>
 									<string>Circle</string>
 									<key>Style</key>
@@ -28620,116 +27610,11 @@ assigned groups only}</string>
 								</dict>
 							</array>
 							<key>ID</key>
-							<integer>4665</integer>
-						</dict>
-						<dict>
-							<key>Class</key>
-							<string>Group</string>
-							<key>Graphics</key>
-							<array>
-								<dict>
-									<key>Bounds</key>
-									<string>{{775.001, 136.301}, {23.8695, 22.962}}</string>
-									<key>Class</key>
-									<string>ShapedGraphic</string>
-									<key>FontInfo</key>
-									<dict>
-										<key>Color</key>
-										<dict>
-											<key>b</key>
-											<string>1</string>
-											<key>g</key>
-											<string>1</string>
-											<key>r</key>
-											<string>1</string>
-										</dict>
-									</dict>
-									<key>ID</key>
-									<integer>4669</integer>
-									<key>Shape</key>
-									<string>Rectangle</string>
-									<key>Style</key>
-									<dict>
-										<key>fill</key>
-										<dict>
-											<key>Draws</key>
-											<string>NO</string>
-										</dict>
-										<key>shadow</key>
-										<dict>
-											<key>Draws</key>
-											<string>NO</string>
-										</dict>
-										<key>stroke</key>
-										<dict>
-											<key>Draws</key>
-											<string>NO</string>
-										</dict>
-									</dict>
-									<key>Text</key>
-									<dict>
-										<key>Text</key>
-										<string>{\rtf1\ansi\ansicpg1252\cocoartf1038\cocoasubrtf110
-{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
-{\colortbl;\red255\green255\blue255;}
-\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\qc\pardirnatural
-
-\f0\b\fs24 \cf1 1}</string>
-									</dict>
-								</dict>
-								<dict>
-									<key>Bounds</key>
-									<string>{{775.542, 136.301}, {22.7873, 22.962}}</string>
-									<key>Class</key>
-									<string>ShapedGraphic</string>
-									<key>FontInfo</key>
-									<dict>
-										<key>Color</key>
-										<dict>
-											<key>b</key>
-											<string>1</string>
-											<key>g</key>
-											<string>1</string>
-											<key>r</key>
-											<string>1</string>
-										</dict>
-										<key>Font</key>
-										<string>TrebuchetMS-Bold</string>
-										<key>Size</key>
-										<real>12</real>
-									</dict>
-									<key>ID</key>
-									<integer>4670</integer>
-									<key>Shape</key>
-									<string>Circle</string>
-									<key>Style</key>
-									<dict>
-										<key>fill</key>
-										<dict>
-											<key>Color</key>
-											<dict>
-												<key>b</key>
-												<string>0</string>
-												<key>g</key>
-												<string>0</string>
-												<key>r</key>
-												<string>0</string>
-											</dict>
-										</dict>
-										<key>shadow</key>
-										<dict>
-											<key>Beneath</key>
-											<string>YES</string>
-										</dict>
-									</dict>
-								</dict>
-							</array>
-							<key>ID</key>
-							<integer>4668</integer>
+							<integer>4719</integer>
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{273.832, 426.605}, {89, 20}}</string>
+							<string>{{273.832, 426.605}, {67, 20}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -28740,7 +27625,7 @@ assigned groups only}</string>
 								<real>12</real>
 							</dict>
 							<key>ID</key>
-							<integer>4671</integer>
+							<integer>4722</integer>
 							<key>ImageID</key>
 							<integer>29</integer>
 							<key>Shape</key>
@@ -28771,7 +27656,7 @@ assigned groups only}</string>
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\qc\pardirnatural
 
-\f0\fs24 \cf0 Clear Changes}</string>
+\f0\fs24 \cf0 Cancel}</string>
 								<key>VerticalPad</key>
 								<integer>0</integer>
 							</dict>
@@ -28789,7 +27674,7 @@ assigned groups only}</string>
 								<real>12</real>
 							</dict>
 							<key>ID</key>
-							<integer>4672</integer>
+							<integer>4723</integer>
 							<key>ImageID</key>
 							<integer>29</integer>
 							<key>Shape</key>
@@ -28835,7 +27720,7 @@ assigned groups only}</string>
 							<key>Flow</key>
 							<string>Resize</string>
 							<key>ID</key>
-							<integer>4673</integer>
+							<integer>4724</integer>
 							<key>Shape</key>
 							<string>Rectangle</string>
 							<key>Style</key>
@@ -28881,7 +27766,7 @@ assigned groups only}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>ID</key>
-							<integer>4674</integer>
+							<integer>4725</integer>
 							<key>ImageID</key>
 							<integer>40</integer>
 							<key>Shape</key>
@@ -28911,7 +27796,7 @@ assigned groups only}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>ID</key>
-							<integer>4675</integer>
+							<integer>4726</integer>
 							<key>ImageID</key>
 							<integer>39</integer>
 							<key>Shape</key>
@@ -28941,7 +27826,7 @@ assigned groups only}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>ID</key>
-							<integer>4676</integer>
+							<integer>4727</integer>
 							<key>ImageID</key>
 							<integer>38</integer>
 							<key>Shape</key>
@@ -28971,7 +27856,7 @@ assigned groups only}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>ID</key>
-							<integer>4677</integer>
+							<integer>4728</integer>
 							<key>ImageID</key>
 							<integer>37</integer>
 							<key>Shape</key>
@@ -29005,7 +27890,7 @@ assigned groups only}</string>
 							<key>Flow</key>
 							<string>Resize</string>
 							<key>ID</key>
-							<integer>4678</integer>
+							<integer>4729</integer>
 							<key>Shape</key>
 							<string>Rectangle</string>
 							<key>Style</key>
@@ -29051,7 +27936,7 @@ assigned groups only}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>ID</key>
-							<integer>4679</integer>
+							<integer>4730</integer>
 							<key>ImageID</key>
 							<integer>36</integer>
 							<key>Shape</key>
@@ -29092,7 +27977,7 @@ assigned groups only}</string>
 								<real>12</real>
 							</dict>
 							<key>ID</key>
-							<integer>4680</integer>
+							<integer>4731</integer>
 							<key>Shape</key>
 							<string>Rectangle</string>
 							<key>Style</key>
@@ -29132,7 +28017,7 @@ assigned groups only}</string>
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{184, 188.5}, {591.001, 56}}</string>
+							<string>{{184, 188.5}, {644.347, 56}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FitText</key>
@@ -29152,7 +28037,7 @@ assigned groups only}</string>
 								</dict>
 							</dict>
 							<key>ID</key>
-							<integer>4681</integer>
+							<integer>4732</integer>
 							<key>Shape</key>
 							<string>Rectangle</string>
 							<key>Style</key>
@@ -29209,7 +28094,7 @@ assigned groups only}</string>
 								<real>13</real>
 							</dict>
 							<key>ID</key>
-							<integer>4682</integer>
+							<integer>4733</integer>
 							<key>Shape</key>
 							<string>Rectangle</string>
 							<key>Style</key>
@@ -29251,7 +28136,7 @@ assigned groups only}</string>
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{673, 140.004}, {102.001, 15.5552}}</string>
+							<string>{{726.346, 140.005}, {102.001, 15.5552}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -29271,7 +28156,7 @@ assigned groups only}</string>
 								<real>12</real>
 							</dict>
 							<key>ID</key>
-							<integer>4683</integer>
+							<integer>4734</integer>
 							<key>Shape</key>
 							<string>Rectangle</string>
 							<key>Style</key>
@@ -29313,7 +28198,7 @@ assigned groups only}</string>
 							<key>AllowConnections</key>
 							<string>NO</string>
 							<key>Bounds</key>
-							<string>{{177.999, 135.435}, {607.251, 24.6954}}</string>
+							<string>{{177.652, 135.435}, {650.694, 24.6954}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -29329,7 +28214,7 @@ assigned groups only}</string>
 								</dict>
 							</dict>
 							<key>ID</key>
-							<integer>4684</integer>
+							<integer>4735</integer>
 							<key>Shape</key>
 							<string>Rectangle</string>
 							<key>Style</key>
@@ -29360,11 +28245,11 @@ assigned groups only}</string>
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{176.5, 132.86}, {610.75, 327.14}}</string>
+							<string>{{176.5, 132.86}, {655.5, 327.14}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>ID</key>
-							<integer>4685</integer>
+							<integer>4736</integer>
 							<key>Shape</key>
 							<string>Rectangle</string>
 							<key>Style</key>
@@ -29392,7 +28277,112 @@ assigned groups only}</string>
 						</dict>
 					</array>
 					<key>ID</key>
-					<integer>4635</integer>
+					<integer>4688</integer>
+				</dict>
+				<dict>
+					<key>Class</key>
+					<string>Group</string>
+					<key>Graphics</key>
+					<array>
+						<dict>
+							<key>Bounds</key>
+							<string>{{819, 117.043}, {23.8695, 22.962}}</string>
+							<key>Class</key>
+							<string>ShapedGraphic</string>
+							<key>FontInfo</key>
+							<dict>
+								<key>Color</key>
+								<dict>
+									<key>b</key>
+									<string>1</string>
+									<key>g</key>
+									<string>1</string>
+									<key>r</key>
+									<string>1</string>
+								</dict>
+							</dict>
+							<key>ID</key>
+							<integer>4669</integer>
+							<key>Shape</key>
+							<string>Rectangle</string>
+							<key>Style</key>
+							<dict>
+								<key>fill</key>
+								<dict>
+									<key>Draws</key>
+									<string>NO</string>
+								</dict>
+								<key>shadow</key>
+								<dict>
+									<key>Draws</key>
+									<string>NO</string>
+								</dict>
+								<key>stroke</key>
+								<dict>
+									<key>Draws</key>
+									<string>NO</string>
+								</dict>
+							</dict>
+							<key>Text</key>
+							<dict>
+								<key>Text</key>
+								<string>{\rtf1\ansi\ansicpg1252\cocoartf1038\cocoasubrtf110
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\qc\pardirnatural
+
+\f0\b\fs24 \cf1 1}</string>
+							</dict>
+						</dict>
+						<dict>
+							<key>Bounds</key>
+							<string>{{819.541, 117.043}, {22.7873, 22.962}}</string>
+							<key>Class</key>
+							<string>ShapedGraphic</string>
+							<key>FontInfo</key>
+							<dict>
+								<key>Color</key>
+								<dict>
+									<key>b</key>
+									<string>1</string>
+									<key>g</key>
+									<string>1</string>
+									<key>r</key>
+									<string>1</string>
+								</dict>
+								<key>Font</key>
+								<string>TrebuchetMS-Bold</string>
+								<key>Size</key>
+								<real>12</real>
+							</dict>
+							<key>ID</key>
+							<integer>4670</integer>
+							<key>Shape</key>
+							<string>Circle</string>
+							<key>Style</key>
+							<dict>
+								<key>fill</key>
+								<dict>
+									<key>Color</key>
+									<dict>
+										<key>b</key>
+										<string>0</string>
+										<key>g</key>
+										<string>0</string>
+										<key>r</key>
+										<string>0</string>
+									</dict>
+								</dict>
+								<key>shadow</key>
+								<dict>
+									<key>Beneath</key>
+									<string>YES</string>
+								</dict>
+							</dict>
+						</dict>
+					</array>
+					<key>ID</key>
+					<integer>4668</integer>
 				</dict>
 				<dict>
 					<key>Bounds</key>
@@ -57298,7 +56288,7 @@ assigned groups only}</string>
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{125.7, 174}, {791.3, 36.9999}}</string>
+							<string>{{125.7, 174}, {791.3, 37}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -57332,7 +56322,7 @@ assigned groups only}</string>
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{52.9, 124}, {72.8, 49.9998}}</string>
+							<string>{{52.9, 124}, {72.8, 49.9999}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -57438,7 +56428,7 @@ assigned groups only}</string>
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{52.9, 174}, {72.8, 36.9999}}</string>
+							<string>{{52.9, 174}, {72.8, 37}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -57504,7 +56494,7 @@ assigned groups only}</string>
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{125.7, 124}, {791.3, 49.9998}}</string>
+							<string>{{125.7, 124}, {791.3, 49.9999}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -57531,8 +56521,9 @@ assigned groups only}</string>
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
 
 \f0\b\fs24 \cf0 Default Permissions\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
 
-\b0 - By default, the AI/TA role and librarian+ role will have permission to grade those students in his/her assigned group(s).  To change the default permissions, users with the site.upd permission may add Grader Permissions as described below.}</string>
+\b0 \cf0 - By default, the AI/TA role and librarian+ role will have permission to grade those students in his/her assigned group(s).  To change the default permissions, users with the site.upd permission may add Grader Permissions as described below.}</string>
 							</dict>
 						</dict>
 						<dict>
@@ -58570,11 +57561,11 @@ assigned groups only}</string>
 	<key>WindowInfo</key>
 	<dict>
 		<key>CurrentSheet</key>
-		<integer>0</integer>
+		<integer>5</integer>
 		<key>ExpandedCanvases</key>
 		<array/>
 		<key>Frame</key>
-		<string>{{703, 342}, {1227, 795}}</string>
+		<string>{{319, 176}, {1227, 795}}</string>
 		<key>ListView</key>
 		<true/>
 		<key>OutlineWidth</key>
