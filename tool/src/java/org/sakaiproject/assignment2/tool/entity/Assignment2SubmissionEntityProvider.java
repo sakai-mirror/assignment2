@@ -396,6 +396,16 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware{
                                 return m1.get(orderByComp).toString().compareTo(m2.get(orderByComp).toString());
                             }
                         }
+                        // handle null data
+                        if (m1.get(orderByComp) == null && m2.get(orderByComp) == null) {
+                            return 0;
+                        }
+                        if (m1.get(orderByComp) == null && m2.get(orderByComp) != null) {
+                            return -1;
+                        }
+                        if (m1.get(orderByComp) != null && m2.get(orderByComp) == null) {
+                            return 1;
+                        }
                         if (m1.get(orderByComp) instanceof Date) {
                             return ((Date)m1.get(orderByComp)).compareTo(((Date)m2.get(orderByComp)));
                         } 

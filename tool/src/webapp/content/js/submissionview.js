@@ -60,7 +60,7 @@ asnn2subview.getSortHeaderComptree = function(newModel) {
         { ID: "submitted-time-sort",
           value: true,
           decorators: [
-            {"jQuery": ["click", onSortClick('submittedTime')]}
+            {"jQuery": ["click", onSortClick('submittedDate')]}
           ]
         },
         { ID: "submission-status-sort",
@@ -116,7 +116,7 @@ asnn2subview.getSortHeaderComptree = function(newModel) {
 
   if (newModel.sortKey === "studentName") {
     tree.children.push({ ID: "student-name-sort-img", target: imgsrc });
-  } else if (newModel.sortKey === "submittedTime") {
+  } else if (newModel.sortKey === "submittedDate") {
     tree.children.push({ ID: "submitted-time-sort-img", target: imgsrc });
   } else if (newModel.sortKey === "submissionStatus") {
     tree.children.push({ ID: "submission-status-sort-img", target: imgsrc });
