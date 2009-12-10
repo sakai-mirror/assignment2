@@ -183,7 +183,9 @@ public class UploadBean
             return WorkFlowResult.UPLOAD_FAILURE;
         }
 
-        boolean isZip = "application/zip".equals(uploadedFile.getContentType()) || "application/x-zip-compressed".equals(uploadedFile.getContentType());
+        boolean isZip = "application/zip".equals(uploadedFile.getContentType()) || 
+            "application/x-zip-compressed".equals(uploadedFile.getContentType()) ||
+            "application/x-zip".equals(uploadedFile.getContentType());
         boolean isCsv = uploadedFile.getOriginalFilename().endsWith(".csv");
 
         if (isZip) {
