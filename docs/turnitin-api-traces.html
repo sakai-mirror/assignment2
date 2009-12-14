@@ -5,9 +5,16 @@ pre {font-family: monospace;}
 </style>
 </head>
 <body>
-
 <div>
-<h1>Creating a new Assignment</h1>
+<ul>
+  <li><a href="#newasnn">Creating a new Assignment</a></li>
+  <li><a href="#loadasnn">Loading an existing assignment</a></li>
+  <li><a href="#editasnn">Editing an existing assignment</a></li>
+  <li><a href="#submitasnn">Submitting an assignment</a></li>
+</ul>
+</div>
+<div>
+<h1><a name="newasnn">Creating a new Assignment</a></h1>
 <pre>
 2009-11-23 13:02:50,205 DEBUG http-8080-Processor22 org.sakaiproject.turnitin.util.TurnitinAPIUtil.apicalltrace - Starting TII CALL:
 aid = 12345
@@ -99,7 +106,7 @@ md5 = 25d675b16e0e8d2f532e24f680134429
 </div>
 
 <div>
-<h1>Loading an existing assignment</h1>
+<h1><a name="loadasnn">Loading an existing assignment</a></h1>
 <pre>
 2009-11-23 13:13:32,401 DEBUG http-8080-Processor22 org.sakaiproject.turnitin.util.TurnitinAPIUtil.apicalltrace - Starting TII CALL:
 aid = 12345
@@ -126,7 +133,7 @@ md5 = bcfcb780ddc4fa9f96ac2d8b98ad694d
 </div>
 
 <div>
-<h1>Editing an existing assignment</h1>
+<h1><a name="editasnn">Editing an existing assignment</a></h1>
 <pre>
 2009-11-23 13:15:40,037 DEBUG http-8080-Processor25 org.sakaiproject.turnitin.util.TurnitinAPIUtil.apicalltrace - Starting TII CALL:
 aid = 12345
@@ -186,6 +193,40 @@ md5 = 8e4f4c6e4eed8aae5957d809558912c5
 
 </pre>
 </div>
+
+<div>
+<h1><a name="submitasnn">Submitting an assignment</a></h1>
+<pre>
+Starting Multipart TII CALL:
+aid = 12345
+assign = /asnn2contentreview/4f96fcbc-8c33-4723-81ca-c1fb0f10084a
+assignid = /asnn2contentreview/4f96fcbc-8c33-4723-81ca-c1fb0f10084a
+cid = f8e283d3-18a0-4f40-800b-88d66538b10b
+ctl = f8e283d3-18a0-4f40-800b-88d66538b10b
+diagnostic = 0
+dis = 0
+encrypt = 0
+fcmd = 2
+fid = 5
+gmtime = 20091214215
+ptl = octest9:euler.doc
+ptype = 2
+resource_obj = ContentHostingResource: /attachment/f8e283d3-18a0-4f40-800b-88d66538b10b/Assignment2/b2219d3b-c105-44cf-8a66-e38df1039981/euler.doc
+said = 67890
+src = 9
+tem = f8e283d3-18a0-4f40-800b-88d66538b10b_56021@tiisakai.com
+uem = blash@blash.org
+ufn = octest
+uid = 663fd854-edbc-4227-a90e-b84e8af638b1
+uln = 9
+utp = 1
+md5 = 597eebe3bbfcd5834fd421ce62337c41
+2009-12-14 16:58:10,349 DEBUG http-8080-Processor24 org.sakaiproject.contentreview.impl.turnitin.TurnitinReviewServiceImpl - Submission not successful: Invalid file type! Valid types are: MS Word (DOC, DOCX), Acrobat PDF, PostScript, Text, HTML, WordPerfect (WPD) and Rich Text Format.  Please make sure the format of your file is one of the valid file types.
+</pre>
+
+</div>
+
+
 
 </body>
 </html>
