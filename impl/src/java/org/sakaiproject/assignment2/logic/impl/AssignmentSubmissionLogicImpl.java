@@ -1552,6 +1552,15 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 
         return userSubmissions;
     }
+    
+    public AssignmentSubmissionVersion getCurrentVersionFromHistory(Collection<AssignmentSubmissionVersion> versionHistory) {
+        AssignmentSubmissionVersion currVersion = null;
+        if (versionHistory != null) {
+            currVersion = dao.getCurrentVersionFromHistory(versionHistory);
+        }
+        
+        return currVersion;
+    }
 
     private List<String> filterStudentsByGroupMembership(List<String> fullStudentIdList, String filterGroupId) {
         List<String> filteredStudentIdList = new ArrayList<String>();

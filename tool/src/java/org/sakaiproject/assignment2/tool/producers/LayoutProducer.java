@@ -64,6 +64,9 @@ public class LayoutProducer implements NullaryProducer {
             else if (viewParameters.viewID.equals(ViewSubmissionsProducer.VIEW_ID)) {
                 UILink.make(tofill, "asnn-js-include:", "/sakai-assignment2-tool/content/js/submissionview.js");
             }
+            else if (viewParameters.viewID.equals(GradeProducer.VIEW_ID)) {
+                UILink.make(tofill, "asnn-js-include:","/sakai-assignment2-tool/content/js/grade-student.js");
+            }
             else {
                 makeIter3Javascript(tofill);
             }

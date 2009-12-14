@@ -37,45 +37,6 @@ function update_resubmit_until() {
     }
 }
 
-function override_submission_settings() {
-    override_checkbox = jQuery("input:checkbox[@name='page-replace\:\:override_settings']").get(0);
-
-    if (override_checkbox) {
-        if (override_checkbox.checked) {
-            // change text back to normal
-            jQuery("#override_settings_container").removeClass("inactive");
-
-            // enable all of the form elements
-            jQuery("select[@name='page-replace\:\:resubmission_additional-selection']").removeAttr("disabled");
-            jQuery("input:checkbox[@name='page-replace\:\:require_accept_until']").removeAttr("disabled");
-            // TODO - get the rsf date widget to work when these are disabled -it
-            // is throwing syntax error upon submission
-            //jQuery("input[@name='page-replace\:\:accept_until\:1\:date-field']").removeAttr("disabled");
-            //jQuery("input[@name='page-replace\:\:accept_until\:1\:time-field']").removeAttr("disabled");
-        } else {
-            // gray out the text
-            jQuery("#override_settings_container").addClass("inactive");
-
-            // disable all form elements
-            jQuery("select[@name='page-replace\:\:resubmission_additional-selection']").attr("disabled", "disabled");
-            jQuery("input:checkbox[@name='page-replace\:\:require_accept_until']").attr("disabled", "disabled");
-            // jQuery("input[@name='page-replace\:\:accept_until\:1\:date-field']").attr("disabled","disabled");
-            //jQuery("input[@name='page-replace\:\:accept_until\:1\:time-field']").attr("disabled","disabled");
-        }
-    }
-}
-
-function set_accept_until_on_submission_level() {
-    el = jQuery("input:checkbox[@name='page-replace\:\:require_accept_until']").get(0);
-    if (el) {
-        if (el.checked) {
-            jQuery("#accept_until_container").show();
-        } else {
-            jQuery("#accept_until_container").hide();
-        }
-    }
-}
-
 jQuery(document).ready(function() {
     update_resubmit_until();
     asnn2.initializeSorting();
@@ -83,25 +44,19 @@ jQuery(document).ready(function() {
 
 function slide_submission(img) {
     jQuery(img).parent('h4').next('div').toggle();
-    flip_image(img);
+    asnn2.flip_image(img);
 }
 function slideFieldset(img) {
     jQuery(img).parent('legend').next('ol').toggle();
-    flip_image(img);
+    asnn2.flip_image(img);
     a2SetMainFrameHeight();
 }
 function slideDiv(img) {
     jQuery(img).parent('legend').next('div').toggle();
-    flip_image(img);
+    asnn2.flip_image(img);
     a2SetMainFrameHeight();
 }
-function flip_image(img) {
-    if (img.src.match('collapse')) {
-        img.src = img.src.replace(/collapse/, 'expand');
-    } else {
-        img.src = img.src.replace(/expand/, 'collapse');
-    }
-}
+
 
 var asnn2 = asnn2 || {};
 
@@ -134,6 +89,36 @@ var asnn2 = asnn2 || {};
             jQuery("span.no_attachments_yet").hide();
         } else {
             jQuery("span.no_attachments_yet").show();
+        }
+    }
+    
+    /**
+     * toggle the first sibling of the toggleHeader with the given classSelector
+     * @param sectionSelector jQuery selector of the sibling element you want to toggle
+     * @param toggleHeader the header that does the toggling. we will use it to
+     * flip the img, if applicable
+     */
+    asnn2.toggleSubsection = function(sectionSelector, toggleHeader) {
+        var toggle = jQuery(toggleHeader);
+        
+        var subsection = toggle.next(sectionSelector);
+        subsection.toggle();
+        
+        // now see if the expand/collapse img was used and needs to be toggled, as well
+        var images = toggle.children('img');
+        if (images.length > 0) {
+            img = images.get(0);
+            asnn2.flip_image(img);
+        }    
+    }
+    
+    asnn2.flip_image = function(img) {
+        if (img) {
+            if (img.src.match('collapse')) {
+                img.src = img.src.replace(/collapse/, 'expand');
+            } else {
+                img.src = img.src.replace(/expand/, 'collapse');
+            }
         }
     }
     

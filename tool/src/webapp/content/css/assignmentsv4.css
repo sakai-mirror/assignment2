@@ -176,7 +176,7 @@ li fieldset ol li p.instruction {
 
 .subgroupHeading {
     font-weight: bold;
-    margin-top: 5px;
+    margin-top: 10px;
     margin-bottom: 8px;
     font-size: 98%;
 }
@@ -818,4 +818,19 @@ a.fl-pager-currentPage {
 .supported_formats_link {
     font-size: .9em;
     margin-left: 3px;
+}
+
+/* this is a toggle-able header for showing/hiding different sections on the screen */
+.toggleHeader {
+    background: #EEEEEE;
+    padding:3px 7px;
+    font-size:1.05em;
+    margin-top:10px;
+    cursor:pointer;
+}
+
+/* this is section will normally appear directly below the toggle header */
+.subsection1 {
+    margin-left: 10px;
+    margin-top:9px;
 }

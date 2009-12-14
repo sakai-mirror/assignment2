@@ -387,4 +387,14 @@ public interface AssignmentSubmissionLogic {
      * have released feedback or, if assignment is graded, there is no grade yet
      */
     public int getNumNewSubmissions(Assignment2 assignment, Collection<String> studentUids);
+    
+    /**
+     * 
+     * @param versionHistory
+     * @return given the version history, returns the "current" version. This translates into
+     * the version with the highest {@link AssignmentSubmissionVersion#getSubmittedVersionNumber()} and
+     * may be draft. If the versionHistory is null, returns null.  If you already have the history,
+     * use this method to avoid unnecessary db calls
+     */
+    public AssignmentSubmissionVersion getCurrentVersionFromHistory(Collection<AssignmentSubmissionVersion> versionHistory);
 }
