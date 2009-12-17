@@ -190,7 +190,7 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
         String asvOTP = "AssignmentSubmissionVersion.";
 
         //Initialize js otpkey
-        UIVerbatim.make(tofill, "attachment-ajax-init", "otpkey=\"" + /*org.sakaiproject.util.Web.escapeUrl(asvOTPKey) + "\";\n" +*/
+        UIVerbatim.make(tofill, "attachment-ajax-init", /*"otpkey=\"" + org.sakaiproject.util.Web.escapeUrl(asvOTPKey) + "\";\n" +*/
                 "userId=\"" + userId + "\";\n" +
                 "assignmentId=\"" + assignmentId + "\";\n" +
                 "fragGBDetailsPath=\"" + externalLogic.getAssignmentViewUrl(FragmentGradebookDetailsProducer.VIEW_ID) + "\";");
@@ -507,13 +507,17 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
             richTextEvolver.evolveTextInput(feedback_notes);
             
             // Feedback Attachments
-            UIInternalLink.make(versionContainer, "add_attachments:", UIMessage.make("assignment2.assignment_grade.add_feedback_attach"),
+            String elementId = version.getId() != null ? version.getId() + "" : null;
+            UIInternalLink addAttachLink = UIInternalLink.make(versionContainer, "add_attachments:", UIMessage.make("assignment2.assignment_grade.add_feedback_attach"),
                     new FilePickerHelperViewParams(AddAttachmentHelperProducer.VIEWID, Boolean.TRUE, 
                             Boolean.TRUE, 500, 700, otpKey));
 
+            addAttachLink.decorate(new UIFreeAttributeDecorator("onclick", attachmentInputEvolver.getOnclickMarkupForAddAttachmentEvent(elementId)));
+
             UIInputMany attachmentInput = UIInputMany.make(versionContainer, "attachment_list:", otpKey + ".feedbackAttachmentRefs", 
                     version.getFeedbackAttachmentRefs());
-            attachmentInputEvolver.evolveAttachment(attachmentInput);
+            
+            attachmentInputEvolver.evolveAttachment(attachmentInput, elementId);
 
             UIOutput.make(versionContainer, "no_attachments_yet", messageLocator.getMessage("assignment2.assignment_grade.no_feedback_attach"));
         }

@@ -337,12 +337,13 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
             String[] attachmentRefs) {
         UIInputMany attachmentInput = UIInputMany.make(form, "attachment_list:", asvOTP + ".submittedAttachmentRefs", 
                 attachmentRefs);
-        attachmentInputEvolver.evolveAttachment(attachmentInput, !studentPreviewSubmission);
+        attachmentInputEvolver.evolveAttachment(attachmentInput, !studentPreviewSubmission, null);
 
         if (!studentPreviewSubmission) {
-            UIInternalLink.make(form, "add_submission_attachments", UIMessage.make("assignment2.student-submit.add_attachments"),
+            UIInternalLink addAttachLink = UIInternalLink.make(form, "add_submission_attachments", UIMessage.make("assignment2.student-submit.add_attachments"),
                     new FilePickerHelperViewParams(AddAttachmentHelperProducer.VIEWID, Boolean.TRUE, 
                             Boolean.TRUE, 500, 700, asvOTPKey, true));
+            addAttachLink.decorate(new UIFreeAttributeDecorator("onclick", attachmentInputEvolver.getOnclickMarkupForAddAttachmentEvent(null)));
         }
 
         UIOutput.make(form, "no_attachments_yet", messageLocator.getMessage("assignment2.student-submit.no_attachments"));

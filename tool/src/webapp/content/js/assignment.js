@@ -73,7 +73,12 @@ var asnn2 = asnn2 || {};
         jQuery("input", newRow).attr("name", asnn2.attachmentItemBinding);
         jQuery("span:first", newRow).html(filesize);
     
-        jQuery(newRow).appendTo("#attachmentsFieldset ol:first").get(0);
+        // if there are multiple "Add Attachments" sections on the page,
+        // we need a way to uniquely identify which section this new attachment
+        // will be appended to. We will use the global var asnn2.attachmentItemListSelector
+        // to uniquely identify the parent list 
+        var attachList = jQuery(asnn2.attachmentItemListSelector);
+        jQuery(newRow).appendTo(attachList);
         
         asnn2.updateDisplayNoAttachments();
     }
@@ -90,6 +95,19 @@ var asnn2 = asnn2 || {};
         } else {
             jQuery("span.no_attachments_yet").show();
         }
+    }
+    
+    /**
+     * sets the asnn2.attachmentItemBinding variable with the value of the element
+     * with the given attachBindingSelector. This variable is used to set the appropriate
+     * binding when adding an attachment if we have multiple "Add attachments" sections
+     * on the screen.  Also sets the attachmentItemListSelector. This variable is used
+     * to identify which attachment section should be updated when we come back from the helper
+     */
+    asnn2.updateAttachmentVariables = function(attachBindingSelector, attachmentItemListSelector) {
+       var attachBinding = jQuery(attachBindingSelector);
+       asnn2.attachmentItemBinding = attachBinding.text();
+       asnn2.attachmentItemListSelector = attachmentItemListSelector;
     }
     
     /**
