@@ -80,20 +80,22 @@ var asnn2 = asnn2 || {};
         var attachList = jQuery(asnn2.attachmentItemListSelector);
         jQuery(newRow).appendTo(attachList);
         
-        asnn2.updateDisplayNoAttachments();
+        // we may need to hide the "No attachments" message
+        attachList.prev(".no_attachments_yet").hide();
+        
     }
     
     asnn2.removeAttachment = function(attach) {
-        jQuery(attach).parent('span').parent('li').remove();
-        asnn2.updateDisplayNoAttachments();
-    }
-    
-    asnn2.updateDisplayNoAttachments = function() {
-        var li = jQuery("#attachmentsFieldset ol:first li").get(0);
-        if (li) {
-            jQuery("span.no_attachments_yet").hide();
-        } else {
-            jQuery("span.no_attachments_yet").show();
+        var attachment = jQuery(attach).parent('span').parent('li');
+        var parentList = attachment.parent('ol');
+        //remove the attachment
+        attachment.remove();
+        
+        // we may need to display the "no attachments" message, so let's find out
+        // if there are any attachments left
+        if (parentList.children().length === 0) {
+            // display the "no attach" message
+            parentList.prev(".no_attachments_yet").show();
         }
     }
     

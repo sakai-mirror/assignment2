@@ -140,7 +140,7 @@ public class AttachmentListRenderer {
         int i = 1;
         if (attRefPropertiesMap.size() == 0) {
             UIJointContainer joint = new UIJointContainer(tofill, divID, "attachments:", ""+1);
-            UIMessage.make(joint, "no_attachments_yet", "assignment2.no_attachments_yet");
+            UIMessage.make(joint, "no_attachments_list", "assignment2.no_attachments_yet");
             return;
         }
 

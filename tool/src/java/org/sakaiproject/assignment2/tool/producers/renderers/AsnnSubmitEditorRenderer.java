@@ -346,7 +346,10 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
             addAttachLink.decorate(new UIFreeAttributeDecorator("onclick", attachmentInputEvolver.getOnclickMarkupForAddAttachmentEvent(null)));
         }
 
-        UIOutput.make(form, "no_attachments_yet", messageLocator.getMessage("assignment2.student-submit.no_attachments"));
+        UIOutput noAttach = UIOutput.make(form, "no_attachments_yet", messageLocator.getMessage("assignment2.student-submit.no_attachments"));
+        if (attachmentRefs != null && attachmentRefs.length > 0) {
+            noAttach.decorate(new UIFreeAttributeDecorator("style", "display: none;"));
+        }
     }
 
     public void fillComponents(UIContainer parent, String clientID) {

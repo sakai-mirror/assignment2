@@ -467,17 +467,13 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
             if (assignment.getSubmissionType() == AssignmentConstants.SUBMIT_ATTACH_ONLY ||
                     assignment.getSubmissionType() == AssignmentConstants.SUBMIT_INLINE_AND_ATTACH) {
                 UIOutput.make(versionContainer, "submitted_attachments_fieldset");
-                if (version.getSubmissionAttachSet() != null && !version.getSubmissionAttachSet().isEmpty()){
-                    
-                    if (contentReviewEnabled) {
-                        contentReviewLogic.populateReviewProperties(assignment, version.getSubmissionAttachSet(), true);
-                    }
-                    
-                    attachmentListRenderer.makeAttachmentFromSubmissionAttachmentSet(versionContainer, "submitted_attachment_list:", params.viewID, 
-                            version.getSubmissionAttachSet());
-                } else {
-                    UIOutput.make(versionContainer, "no_submitted_attachments", messageLocator.getMessage("assignment2.assignment_grade.no_attachments_submitted"));
+
+                if (contentReviewEnabled && version.getSubmissionAttachSet() != null && !version.getSubmissionAttachSet().isEmpty()) {
+                    contentReviewLogic.populateReviewProperties(assignment, version.getSubmissionAttachSet(), true);
                 }
+
+                attachmentListRenderer.makeAttachmentFromSubmissionAttachmentSet(versionContainer, "submitted_attachment_list:", params.viewID, 
+                        version.getSubmissionAttachSet());
             }
         }
     }
@@ -519,7 +515,10 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
             
             attachmentInputEvolver.evolveAttachment(attachmentInput, elementId);
 
-            UIOutput.make(versionContainer, "no_attachments_yet", messageLocator.getMessage("assignment2.assignment_grade.no_feedback_attach"));
+            UIOutput noAttach = UIOutput.make(versionContainer, "no_attachments_yet", messageLocator.getMessage("assignment2.assignment_grade.no_feedback_attach"));
+            if (version.getFeedbackAttachSet() != null && !version.getFeedbackAttachSet().isEmpty()) {
+                noAttach.decorate(new UIFreeAttributeDecorator("style", "display:none;"));
+            }
         }
     }
     

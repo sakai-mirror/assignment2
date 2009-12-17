@@ -379,7 +379,10 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
         attachmentInput.mustapply = true;
         attachmentInputEvolver.evolveAttachment(attachmentInput, null);
 
-        UIOutput.make(form, "no_attachments_yet", messageLocator.getMessage("assignment2.assignment_add.no_attachments"));
+        UIOutput noAttach = UIOutput.make(form, "no_attachments_yet", messageLocator.getMessage("assignment2.assignment_add.no_attachments"));
+        if (assignment.getAssignmentAttachmentRefs() != null && assignment.getAssignmentAttachmentRefs().length > 0) {
+            noAttach.decorate(new UIFreeAttributeDecorator("style", "display:none;"));
+        }
 
         UIInternalLink addAttachLink = UIInternalLink.make(form, "add_attachments", UIMessage.make("assignment2.assignment_add.add_attachments"),
                 new FilePickerHelperViewParams(AddAttachmentHelperProducer.VIEWID, Boolean.TRUE, 
