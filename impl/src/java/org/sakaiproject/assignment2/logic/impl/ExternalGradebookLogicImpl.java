@@ -43,7 +43,6 @@ import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.component.cover.ComponentManager;
 import org.sakaiproject.service.gradebook.shared.AssessmentNotFoundException;
 import org.sakaiproject.service.gradebook.shared.Assignment;
-import org.sakaiproject.service.gradebook.shared.CommentDefinition;
 import org.sakaiproject.service.gradebook.shared.GradeDefinition;
 import org.sakaiproject.service.gradebook.shared.GradebookFrameworkService;
 import org.sakaiproject.service.gradebook.shared.GradebookNotFoundException;
@@ -357,26 +356,6 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
         }
 
         return gradebookService.isUserAbleToGradeItemForStudent(contextId, gradebookItemId, studentId);
-    }
-
-    public GradeInformation getGradeInformationForSubmission(String contextId, AssignmentSubmission submission) {
-        if (contextId == null || submission == null) {
-            throw new IllegalArgumentException("null contextId or submission passed to populateAllGradeInfoForSubmission");
-        }
-
-        Assignment2 assignment = submission.getAssignment();
-        if (assignment == null) {
-            throw new IllegalArgumentException("Null assignment associated with submission passed to getGradeInfoForSubmission");
-        }
-
-        GradeInformation gradeInfo = new GradeInformation();
-        gradeInfo.setStudentId(submission.getUserId());
-
-        if (assignment.isGraded() && assignment.getGradebookItemId() != null) {
-            gradeInfo = getGradeInformationForStudent(assignment.getContextId(), assignment.getGradebookItemId(), submission.getUserId());
-        }
-
-        return gradeInfo;
     }
 
     public GradeInformation getGradeInformationForStudent(String contextId, Long gradebookItemId, String studentId) {
@@ -733,18 +712,27 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
         }
     }
 
-    public boolean isGradingByPoints(String contextId) {
+    public int getGradebookGradeEntryType(String contextId) {
         if (contextId == null) {
-            throw new IllegalArgumentException("Null contextId passed to isGradingByPoints");
+            throw new IllegalArgumentException("Null contextId passed to getGradebookGradeEntryType");
         }
 
-        boolean gradingByPoints = false;
-        int gradeType = gradebookService.getGradeEntryType(contextId);
-        if (gradeType == GradebookService.GRADE_TYPE_POINTS) {
-            gradingByPoints = true;
+        int gradeEntryType;
+        
+        int gbGradeType = gradebookService.getGradeEntryType(contextId);
+        if (gbGradeType == GradebookService.GRADE_TYPE_POINTS) {
+            gradeEntryType = ENTRY_BY_POINTS;
+        } else if (gbGradeType == GradebookService.GRADE_TYPE_PERCENTAGE) {
+            gradeEntryType = ENTRY_BY_PERCENT;
+        } else if (gbGradeType == GradebookService.GRADE_TYPE_LETTER) {
+            gradeEntryType = ENTRY_BY_LETTER;
+        } else {
+            // default to points
+            log.warn("Unknown grade entry type returned by the gradebook");
+            gradeEntryType = ENTRY_BY_POINTS;
         }
 
-        return gradingByPoints;
+        return gradeEntryType;
     }
 
     public String getLowestPossibleGradeForGradebookItem(String contextId, Long gradebookItemId) {

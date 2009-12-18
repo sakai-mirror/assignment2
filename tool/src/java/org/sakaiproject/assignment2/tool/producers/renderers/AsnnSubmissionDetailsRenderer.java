@@ -282,7 +282,7 @@ public class AsnnSubmissionDetailsRenderer implements BasicProducer {
                     gradebookItem = null;
                 }
                 // only display points possible if grade entry by points
-                if (gradebookItem != null && externalGradebookLogic.isGradingByPoints(assignment.getContextId())) {
+                if (gradebookItem != null && externalGradebookLogic.getGradebookGradeEntryType(assignment.getContextId()) == ExternalGradebookLogic.ENTRY_BY_POINTS) {
                     UIOutput.make(joint, "points-possible-row");
 
                     String pointsDisplay;

@@ -901,27 +901,27 @@ public class ExternalGradebookLogicTest extends Assignment2TestBase {
     	} catch (SecurityException se) {}*/
     }
 
-    public void testGetGradeInformationForSubmission() {
+    public void testGetGradeInformationForStudent() {
         // let's try some nulls
         try {
-            gradebookLogic.getGradeInformationForSubmission(null, new AssignmentSubmission());
-            fail("did not catch null contextId passed to getGradeInformationForSubmission");
+            gradebookLogic.getGradeInformationForStudent(null, 123L, AssignmentTestDataLoad.STUDENT1_UID);
+            fail("did not catch null contextId passed to getGradeInformationForStudent");
         } catch (IllegalArgumentException iae) {}
 
         try {
-            gradebookLogic.getGradeInformationForSubmission(AssignmentTestDataLoad.CONTEXT_ID, null);
-            fail("did not catch null submission passed to getGradeInformationForSubmission");
+            gradebookLogic.getGradeInformationForStudent(AssignmentTestDataLoad.CONTEXT_ID, null, AssignmentTestDataLoad.STUDENT1_UID);
+            fail("did not catch null gb item id passed to getGradeInformationForStudent");
+        } catch (IllegalArgumentException iae) {}
+        
+        try {
+            gradebookLogic.getGradeInformationForStudent(AssignmentTestDataLoad.CONTEXT_ID, 123L, null);
+            fail("did not catch null student id passed to getGradeInformationForStudent");
         } catch (IllegalArgumentException iae) {}
 
         // become an instructor
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
-        // try an ungraded submission
-        GradeInformation gradeInfo = gradebookLogic.getGradeInformationForSubmission(AssignmentTestDataLoad.CONTEXT_ID, testData.st1a1Submission);
-        assertNull(gradeInfo.getGradebookGrade());
-        assertNull(gradeInfo.getGradebookComment());
 
-        // now try a graded one
-        gradeInfo = gradebookLogic.getGradeInformationForSubmission(AssignmentTestDataLoad.CONTEXT_ID, testData.st1a3Submission);
+        GradeInformation gradeInfo = gradebookLogic.getGradeInformationForStudent(AssignmentTestDataLoad.CONTEXT_ID, AssignmentTestDataLoad.GB_ITEM1_ID, AssignmentTestDataLoad.STUDENT1_UID);
         assertFalse(gradeInfo.isGradebookGradeReleased());
         assertEquals(AssignmentTestDataLoad.st1a3Grade.toString(), gradeInfo.getGradebookGrade());
         assertEquals(AssignmentTestDataLoad.st1a3Comment, gradeInfo.getGradebookComment());

@@ -181,7 +181,6 @@
       <property name="locale" ref="requestLocale" />
       <property name="attachmentListRenderer" ref="AttachmentListRenderer" />
       <property name="submissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
-      <property name="gradebookDetailsRenderer" ref="GradebookDetailsRenderer" />
       <property name="asvEntityBeanLocator" ref="AssignmentSubmissionVersion" />
       <property name="permissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentPermissionLogic" />
       <property name="attachmentInputEvolver" ref="AttachmentInputEvolver" />
@@ -321,6 +320,7 @@
    	  <property name="assignmentSubmissionEntityBeanLocator" ref="AssignmentSubmission" />
    	  <property name="asvEntityBeanLocator" ref="AssignmentSubmissionVersion" />
       <property name="notificationBean" ref="notificationBean" />
+      <property name="externalGradebookLogic" ref="org.sakaiproject.assignment2.logic.ExternalGradebookLogic" />
    </bean>
    
    <!-- For Students completing a submission. -->

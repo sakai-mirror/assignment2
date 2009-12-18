@@ -162,9 +162,20 @@
 	<!-- /Allow Resubmissions -->
 	
 	<!-- Grading Stuff -->
-	<div id="gradebook-details-container">
-	<fieldset rsf:id="gradebook_details:" class="highlightPanel">
-	</fieldset>
+	<div rsf:id="gradebook-details-container">
+    <h4 rsf:id="msg=assignment2.assignment_grade.gradebook_details" class="subgroupHeading">Gradebook Stuff</h4>
+    <div  class="gradingSection indnt1">
+      <div>
+        <label for="grade_input" rsf:id="grade_input_label" class="gradingLabel">Grade</label>
+        <input type="text" size="10" maxlength="8" rsf:id="grade_input" id="grade_input" class="gradeInput" />
+        <span rsf:id="grade_input_appender">(Out of X) or %</span>
+      </div>
+      <div>
+        <!--  for some reason, you can't use a label tag for a textarea -->
+        <p rsf:id="msg=assignment2.gradebook.grading.comments" class="gradingLabel">Comment</p>
+        <textarea rsf:id="grade_comment_input" id="grade_comment_input" cols="80" rows="5" wrap="virtual"></textarea>
+      </div>
+    </div>
 	</div>
 	<!-- /End Grading Stuff -->
 	
@@ -183,24 +194,6 @@
 </script>
 <script type="text/javascript">
 //<![CDATA[
-function refresh_ajax(){
-	if(fragGBDetailsPath != ""){
-		old = jQuery("#gradebook-details-container fieldset").html();
-		jQuery.ajax({
-			type: "get",
-			cache: false,
-			url: fragGBDetailsPath + "?assignmentId=" + assignmentId + "&userId=" + userId,
-			success: function(html){
-    		    if (old != null) {
-    				jQuery("#gradebook-details-container").html(html.substring(html.indexOf('<div>') + 5, html.lastIndexOf('</div>')));
-    				tb_init('a.thickbox, area.thickbox, input.thickbox');
-    				if (old != jQuery("#gradebook-details-container fieldset").html())
-    					highlight(jQuery("#gradebook-details-container fieldset"));
-    		    }
-			}
-		});
-	}
-}
 
 jQuery(document).ready(function(){
     // initialize the toggles on the page

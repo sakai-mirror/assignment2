@@ -389,7 +389,7 @@ public class ZipExportLogicImpl implements ZipExportLogic
 
         if (gradebookItem != null) {
             String assignHeader = assignment.getTitle();
-            if (gradebookLogic.isGradingByPoints(assignment.getContextId())) {
+            if (gradebookLogic.getGradebookGradeEntryType(assignment.getContextId()) == ExternalGradebookLogic.ENTRY_BY_POINTS) {
                 // get the points possible for the associated gb item if graded by points.
                 // we will append it the assignment name header
                 assignHeader += " [" + gradebookItem.getPointsPossible() + "]";

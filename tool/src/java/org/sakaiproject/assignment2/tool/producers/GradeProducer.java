@@ -33,6 +33,8 @@ import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
 import org.sakaiproject.assignment2.logic.ExternalContentReviewLogic;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
+import org.sakaiproject.assignment2.logic.GradeInformation;
+import org.sakaiproject.assignment2.logic.GradebookItem;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
@@ -100,7 +102,6 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
     private Locale locale;
     private AttachmentListRenderer attachmentListRenderer;
     private AssignmentSubmissionLogic submissionLogic;
-    private GradebookDetailsRenderer gradebookDetailsRenderer;
     private EntityBeanLocator asvEntityBeanLocator;
     private AssignmentPermissionLogic permissionLogic;
     private AttachmentInputEvolver attachmentInputEvolver;
@@ -415,7 +416,7 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
          * Grading via the Gradebook Section
          */
         if (assignment.isGraded() && gbItemExists){
-            gradebookDetailsRenderer.makeGradebookDetails(tofill, "gradebook_details", as, assignmentId, userId);
+            makeGradebookGradingSection(tofill, form, assignment, as.getUserId(), !grade_perm);
         }        
 
         form.parameters.add(new UIELBinding("#{AssignmentSubmissionBean.assignmentId}", assignmentId));
@@ -560,6 +561,54 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
         UIOutput feedbackDetails = UIOutput.make(versionContainer, "versionFeedback");
         if (!expand) {
             feedbackDetails.decorate(new UIFreeAttributeDecorator("style", "display:none;"));
+        }
+    }
+    
+    private void makeGradebookGradingSection(UIContainer tofill, UIForm form, Assignment2 assignment, String studentId, boolean readOnly) {
+        if (assignment == null || assignment.getGradebookItemId() == null) {
+            return;
+        }
+        
+        UIOutput.make(tofill, "gradebook-details-container");
+        
+        int gradeEntryType = gradebookLogic.getGradebookGradeEntryType(assignment.getContextId());
+        String inputLabel;
+        String inputAppender;
+        if (gradeEntryType == ExternalGradebookLogic.ENTRY_BY_POINTS) {
+            inputLabel = messageLocator.getMessage("assignment2.gradebook.grading.points");
+            // get the points possible
+            GradebookItem gbItem = gradebookLogic.getGradebookItemById(assignment.getContextId(), assignment.getGradebookItemId());
+            inputAppender = messageLocator.getMessage("assignment2.gradebook.grading.points.appender", gbItem.getPointsPossible());
+        } else if (gradeEntryType == ExternalGradebookLogic.ENTRY_BY_PERCENT) {
+            inputLabel = messageLocator.getMessage("assignment2.gradebook.grading.percent");
+            inputAppender = messageLocator.getMessage("assignment2.gradebook.grading.percent.appender");
+        } else if (gradeEntryType == ExternalGradebookLogic.ENTRY_BY_LETTER) {
+            inputLabel = messageLocator.getMessage("assignment2.gradebook.grading.letter");
+            inputAppender = null;
+        } else {
+            inputLabel = messageLocator.getMessage("assignment2.gradebook.grading.unknown");
+            inputAppender = null;
+        }
+        
+        // get the grade information for this student from the gradebook
+        String grade = "";
+        String gradeComment = "";
+        GradeInformation gradeInfo = gradebookLogic.getGradeInformationForStudent(assignment.getContextId(), assignment.getGradebookItemId(), studentId);
+        if (gradeInfo != null) {
+            grade = gradeInfo.getGradebookGrade();
+            gradeComment = gradeInfo.getGradebookComment();
+        }
+        
+        UIOutput.make(tofill, "grade_input_label", inputLabel);
+        UIOutput.make(tofill, "grade_input_appender", inputAppender);
+        UIInput gradeInput = UIInput.make(form, "grade_input", "#{AssignmentSubmissionBean.grade}", grade);
+        if (readOnly) {
+            gradeInput.decorate(new UIFreeAttributeDecorator("disabled", "disabled"));
+        }
+
+        UIInput commentInput = UIInput.make(form, "grade_comment_input", "#{AssignmentSubmissionBean.gradeComment}", gradeComment);
+        if (readOnly) {
+            commentInput.decorate(new UIFreeAttributeDecorator("disabled", "disabled"));
         }
     }
     
@@ -719,10 +768,6 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
 
     public void setSubmissionLogic(AssignmentSubmissionLogic submissionLogic) {
         this.submissionLogic = submissionLogic;
-    }
-
-    public void setGradebookDetailsRenderer(GradebookDetailsRenderer gradebookDetailsRenderer){
-        this.gradebookDetailsRenderer = gradebookDetailsRenderer;
     }
 
     public void setAsvEntityBeanLocator(EntityBeanLocator asvEntityBeanLocator) {
