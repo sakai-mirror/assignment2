@@ -52,10 +52,8 @@
     </dependency>
     <!-- for scheduled notifications -->
     <dependency>
-      <groupId>org.sakaiproject</groupId>
-      <artifactId>sakai-scheduler-api</artifactId>
-      <version>${sakai.version}</version>
-      <scope>provided</scope>
+      <groupId>org.sakaiproject.scheduler</groupId>
+      <artifactId>scheduler-api</artifactId>
     </dependency>
 <!-- end for scheduled notifications -->
 

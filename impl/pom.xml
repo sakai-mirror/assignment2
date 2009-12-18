@@ -118,10 +118,8 @@
     
     <!-- notifications -->
     <dependency>
-      <groupId>org.sakaiproject</groupId>
-      <artifactId>sakai-scheduler-api</artifactId>
-      <version>${sakai.version}</version>
-      <scope>provided</scope>
+      <groupId>org.sakaiproject.scheduler</groupId>
+      <artifactId>scheduler-api</artifactId>
     </dependency>
     
     <!-- for integration with gradebook -->
@@ -248,10 +246,11 @@
       <version>1.2_Java1.3</version>
     </dependency>
     <dependency>
-      <groupId>org.sakaiproject</groupId>
-      <artifactId>sakai-mock</artifactId>
-      <version>${sakai.version}</version>
-    </dependency>
+       <groupId>org.sakaiproject.mock</groupId>
+       <artifactId>sakai-mock</artifactId>
+       <version>${sakai.sakai-mock.version}</version>
+       <scope>test</scope>
+   </dependency>
 
 
     </dependencies>
