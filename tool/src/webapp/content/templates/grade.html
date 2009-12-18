@@ -55,6 +55,52 @@
     </div>
   </div>
   
+  <!-- Override Assignment-Level Settings Section -->
+  
+  <div class="toggleHeader" rsf:id="resubmission_toggle_section">
+    <img rsf:id="resubmission_toggle" src="/sakai-assignment2-tool/content/images/expand.png" border="0" />
+    <span rsf:id="msg=assignment2.assignment_grade.allow_resubmission">Resubmissions!!!</span>
+  </div>
+  <div id="resubmissionSection" style="display: none;" class="subsection1 toggleSubsection" >
+    <div rsf:id="resubmit_change">
+      <input id="override_settings" rsf:id="override_settings" type="checkbox" />
+      <label for="override_settings" rsf:id="msg=assignment2.assignment_grade.override_settings">Override assignment-level settings?</label>
+      <div id="override_settings_container">
+          <ol>
+              <li>
+                  <span rsf:id="resubmission_curr_submissions">This assignment has 2 submissions.</span>
+              </li>
+              <li>
+                  <label rsf:id="msg=assignment2.assignment_grade.resubmission_allow_number">Additional Allowed Submissions Blah</label>
+                  <select rsf:id="resubmission_additional"></select>
+              </li>
+              <li>
+                  <input id="require_accept_until" rsf:id="require_accept_until" type="checkbox" />
+                  <label for="require_accept_until" rsf:id="msg=assignment2.assignment_grade.resubmission_accept_until">Set Accept Until Date? Blah</label>
+                  <span id="accept_until_container">
+                      <input id="accept_until" rsf:id="accept_until:" value="12/31/2007"/>
+                  </span>                      
+              </li>
+          </ol>
+        </div>
+      </div>
+      <div rsf:id="resubmit_no_change">
+        <ol>
+            <li>
+                <span rsf:id="resub_curr_submissions_text">This assignment has 2 submissions.</span>
+            </li>
+            <li>
+                <span rsf:id="resub_allowed_submissions_text">This assignment has 2 submissions.</span>
+            </li>
+            <li>
+                <span rsf:id="resub_until_text">This assignment has 2 submissions.</span>                   
+            </li>
+        </ol>
+      </div>
+  </div>
+
+  <!-- /Allow Resubmissions -->
+  
   <!-- Feedback Section -->
 
   <div rsf:id="feedback_section:">
@@ -114,52 +160,6 @@
     </div>
 
   </div>
-
-	<!-- Override Assignment-Level Settings Section -->
-  
-	<div class="toggleHeader" rsf:id="resubmission_toggle_section">
-      <img rsf:id="resubmission_toggle" src="/sakai-assignment2-tool/content/images/expand.png" border="0" />
-      <span rsf:id="msg=assignment2.assignment_grade.allow_resubmission">Resubmissions</span>
-  </div>
-  <div id="resubmissionSection" style="display: none;" class="subsection1 toggleSubsection" >
-    <div rsf:id="resubmit_change">
-      <input id="override_settings" rsf:id="override_settings" type="checkbox" />
-      <label for="override_settings" rsf:id="msg=assignment2.assignment_grade.override_settings">Override assignment-level settings?</label>
-      <div id="override_settings_container">
-          <ol>
-              <li>
-                  <span rsf:id="resubmission_curr_submissions">This assignment has 2 submissions.</span>
-              </li>
-              <li>
-                  <label rsf:id="msg=assignment2.assignment_grade.resubmission_allow_number">Additional Allowed Submissions Blah</label>
-                  <select rsf:id="resubmission_additional"></select>
-              </li>
-              <li>
-                  <input id="require_accept_until" rsf:id="require_accept_until" type="checkbox" />
-                  <label for="require_accept_until" rsf:id="msg=assignment2.assignment_grade.resubmission_accept_until">Set Accept Until Date? Blah</label>
-                  <span id="accept_until_container">
-                      <input id="accept_until" rsf:id="accept_until:" value="12/31/2007"/>
-                  </span>                      
-              </li>
-          </ol>
-        </div>
-      </div>
-      <div rsf:id="resubmit_no_change">
-        <ol>
-            <li>
-                <span rsf:id="resub_curr_submissions_text">This assignment has 2 submissions.</span>
-            </li>
-            <li>
-                <span rsf:id="resub_allowed_submissions_text">This assignment has 2 submissions.</span>
-            </li>
-            <li>
-                <span rsf:id="resub_until_text">This assignment has 2 submissions.</span>                   
-            </li>
-        </ol>
-      </div>
-  </div>
-
-	<!-- /Allow Resubmissions -->
 	
 	<!-- Grading Stuff -->
 	<div rsf:id="gradebook-details-container">
