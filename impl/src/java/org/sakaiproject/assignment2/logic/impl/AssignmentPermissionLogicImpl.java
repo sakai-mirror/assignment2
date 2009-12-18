@@ -164,7 +164,7 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
         } else if (gradebookLogic.isCurrentUserAbleToGrade(assignment.getContextId())) {
             List<String> currentUserMemberships = externalLogic.getUserMembershipGroupIdList(externalLogic.getCurrentUserId(), assignment.getContextId());
             List<String> studentMemberships = externalLogic.getUserMembershipGroupIdList(studentId, assignment.getContextId());
-            if (userMembershipsOverlap(currentUserMemberships, studentMemberships)) {
+            if (listMembershipsOverlap(currentUserMemberships, studentMemberships)) {
                 viewable = true;
             }
         }
@@ -250,6 +250,21 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
                                         }
                                     }
                                 }
+                            } else if (userMayGrade && assign.isGraded()) {
+                                // via the gradebook grader permissions, it is possible that the TA may not be a member
+                                // of the group but is allowed to grade students in the associated gb item.
+                                // to determine if this assignment is viewable, we need to see if the students in
+                                // the restricted groups overlaps with the students the ta is allowed to grade for
+                                // the associated gb item
+                               Map<String, String> studentToFunctionMap = gradebookLogic.getViewableStudentsForGradedItemMap(currUserId, contextId, assign.getGradebookItemId());
+                               if (studentToFunctionMap != null && !studentToFunctionMap.isEmpty()) {
+                                   // now we need to get the students in the restricted groups
+                                   List<String> assignStudents = getAllAvailableStudentsGivenGroupRestrictions(contextId, assign.getAssignmentGroupSet());
+                                   boolean studentsInCommon = listMembershipsOverlap(assignStudents, new ArrayList<String>(studentToFunctionMap.keySet()));
+                                   if (studentsInCommon) {
+                                       filteredAssignments.add(assign);
+                                   }
+                               }
                             }
                         }
                     }
@@ -511,15 +526,15 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
     }
 
     /**
-     * Given 2 lists of group ids, will return true if any of the group ids overlap
-     * @param user1GroupIds
-     * @param user2GroupIds
+     * Given 2 lists, will return true if any of the elements in the two lists overlap
+     * @param list1
+     * @param list2
      * @return
      */
-    private boolean userMembershipsOverlap(List<String> user1GroupIds, List<String> user2GroupIds) {
-        if (user1GroupIds != null && user2GroupIds != null ) {
-            for (String user1Group : user1GroupIds) {
-                if (user1Group != null && user2GroupIds.contains(user1Group)) {
+    private boolean listMembershipsOverlap(List<String> list1, List<String> list2) {
+        if (list1 != null && list2 != null ) {
+            for (String element : list1) {
+                if (element != null && list2.contains(element)) {
                     return true;
                 }
             }

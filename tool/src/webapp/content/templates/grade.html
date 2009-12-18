@@ -96,10 +96,17 @@
       <!--  Feedback Attachments -->
       <div id="attachmentsFieldset">
         <h4 rsf:id="msg=assignment2.assignment_grade.feedback_attachments" class="subgroupHeading">Attachments</h4>
+        <!-- for read-only view of attachments -->
+        <ol class="attachList indnt1" rsf:id="feedback_attach_read_only">
+          <li rsf:id="feedback_attachment_list:">
+            <img src="/sakai-assignment2-tool/content/images/page_white_word.png" target="_blank" width="16" height="16"/> <a href="">ExampleAttachment.doc</a> (52 KB)
+          </li>
+        </ol>
+        <!-- editable view of attachments -->
         <ol rsf:id="attachment_list:">
           <li></li>
         </ol>
-        <span class="indnt1">
+        <span class="indnt1" rsf:id="add_attach">
           <img src="/../../library/image/silk/attach.png" />
           <a rsf:id="add_attachments:" class="thickbox">Add Attachments</a>
         </span>

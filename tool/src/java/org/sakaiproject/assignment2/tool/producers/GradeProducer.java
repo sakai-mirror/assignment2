@@ -490,12 +490,18 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
         UIOutput.make(versionContainer, "attachmentsFieldset");
 
         if (readOnly) {
+            // Feedback Notes
             if (version.getFeedbackNotes() == null || 
                     "".equals(version.getFeedbackNotes().trim())) {
                 UIMessage.make(versionContainer, "feedback_notes_no_edit", "assignment2.assignment_grade.no_feedback.text-only");
             } else {
                 UIVerbatim.make(versionContainer, "feedback_notes_no_edit", version.getFeedbackNotes());   
             }
+            // Feedback Attachments
+            UIOutput.make(versionContainer, "feedback_attach_read_only");
+            attachmentListRenderer.makeAttachmentFromFeedbackAttachmentSet(versionContainer, 
+                    "feedback_attachment_list:", null, 
+                    version.getFeedbackAttachSet());
         } else {
             // Feedback Notes
             UIInput feedback_notes = UIInput.make(versionContainer, "feedback_notes:", otpKey + ".feedbackNotes");
@@ -503,6 +509,7 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
             richTextEvolver.evolveTextInput(feedback_notes);
             
             // Feedback Attachments
+            UIOutput.make(versionContainer, "add_attach");
             String elementId = version.getId() != null ? version.getId() + "" : null;
             UIInternalLink addAttachLink = UIInternalLink.make(versionContainer, "add_attachments:", UIMessage.make("assignment2.assignment_grade.add_feedback_attach"),
                     new FilePickerHelperViewParams(AddAttachmentHelperProducer.VIEWID, Boolean.TRUE, 
