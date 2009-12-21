@@ -239,7 +239,16 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
         Assignment2 assignment = (Assignment2) assignmentAuthoringFlowBean.locateBean(OTPKey);
 
         // make the no gb item error msg. it will be hidden by default
-        UIMessage gbErrorMsg = UIMessage.make(tofill, "assignment_graded_no_gb_item", "assignment2.assignment_graded_no_gb_item");
+        UIMessage gbErrorMsg;
+        if (duplicatedAssignId != null)
+        {
+            // if this is a duplicate scenario, use an alternate error message
+            gbErrorMsg = UIMessage.make(tofill, "assignment_graded_no_gb_item", "assignment2.assignment_add.graded_no_gb_item_duplicate");
+        }
+        else
+        {
+            gbErrorMsg = UIMessage.make(tofill, "assignment_graded_no_gb_item", "assignment2.assignment_graded_no_gb_item");
+        }
         
         // if this is an "edit" scenario, we need to display a warning if the
         // assignment is graded but doesn't have an assoc gb item
