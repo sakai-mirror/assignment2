@@ -471,7 +471,7 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
         }
         
         SimpleDateFormat dform = ((SimpleDateFormat) DateFormat.getDateInstance());
-        dform.applyPattern("yyyyMMdd");
+        dform.applyPattern("yyyy-MM-dd HH:mm:ss");
         
         if (assign.getOpenDate() != null) {
             opts.put("dtstart", dform.format(assign.getOpenDate()));
