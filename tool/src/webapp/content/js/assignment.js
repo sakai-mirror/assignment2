@@ -770,26 +770,32 @@ var asnn2 = asnn2 || {};
     };
 
     /**
-     * Used to generate the confirmation dialog for When the student clicks
-     * submit on either the Edit Submission or Preview Submission page.
+     * Used to generate the confirmation dialog for different choices on the
+     * student submission screen (ie submitting or cancelling submission)
+     * @param the form button that was clicked
+     * @param dialogSelector jQuery selector for identifying the correct dialog to show
+     * @param requireHonorPledge true if the honor pledge needs to be check before proceeding
+     * 
      */
-    asnn2.studentSubmissionConfirm = function(buttonform) {
+    asnn2.studentActionConfirm = function(buttonform, dialogSelector, requireHonorPledge) {
         // first, let's make sure the user has checked the honor pledge, if needed.
-        // look for the honor pledge checkbox
-        var honor_pledge = jQuery('#page-replace\\:\\:portletBody\\:1\\:assignment-edit-submission\\:\\:honor_pledge').get(0);
-        if (honor_pledge) {
-            if (!honor_pledge.checked) {
-                //display the error and return
-                jQuery('#page-replace\\:\\:portletBody\\:1\\:assignment-edit-submission\\:\\:honor_pledge_error').show();
-                return false;
+        if (requireHonorPledge) {
+            // look for the honor pledge checkbox
+            var honor_pledge = jQuery('#page-replace\\:\\:portletBody\\:1\\:assignment-edit-submission\\:\\:honor_pledge').get(0);
+            if (honor_pledge) {
+                if (!honor_pledge.checked) {
+                    //display the error and return
+                    jQuery('#page-replace\\:\\:portletBody\\:1\\:assignment-edit-submission\\:\\:honor_pledge_error').show();
+                    return false;
+                }
             }
         }
 
         // display the confirmation dialog
-        confirmDialog = jQuery('#submit-confirm-dialog');
+        confirmDialog = jQuery(dialogSelector);
 
         var submitButton = buttonform;
-        jQuery('#page-replace\\:\\:portletBody\\:1\\:assignment-edit-submission\\:\\:submission-confirm-button').click(function(event) {
+        jQuery('input.submission-confirm-button').click(function(event) {
             asnn2util.closeDialog(confirmDialog);
             submitButton.onclick = function(event) {
                 return true
@@ -797,8 +803,10 @@ var asnn2 = asnn2 || {};
             submitButton.click();
         });
 
-        jQuery('#page-replace\\:\\:portletBody\\:1\\:assignment-edit-submission\\:\\:submission-cancel-button').click(function(event) {
+        jQuery('input.submission-cancel-button').click(function(event) {
             asnn2util.closeDialog(confirmDialog);
+            // clear the onclick event on the confirm button
+            jQuery('input.submission-confirm-button').unbind('click');
         });
 
         asnn2util.openDialog(confirmDialog);
