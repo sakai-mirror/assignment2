@@ -108,7 +108,7 @@ public class AttachmentInputEvolver {
                     UIVerbatim.make(row, "attachment_remove", 
                             "<a href=\"#\" " +
                             "onclick=\"" +
-                            "asnn2.removeAttachment(this);" +
+                            "asnn2.removeAttachmentConfirm(this);" +
                             "\">" +
                             messageLocator.getMessage("assignment2.remove") +
                     "</a>");

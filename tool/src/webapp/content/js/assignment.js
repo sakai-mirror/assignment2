@@ -804,6 +804,30 @@ var asnn2 = asnn2 || {};
         asnn2util.openDialog(confirmDialog);
         return false;
     };
+    
+    /**
+     * Used to generate the confirmation dialog for when a user removes an attachment
+     */
+    asnn2.removeAttachmentConfirm = function(thisAttachment) {
+
+        // display the confirmation dialog
+        confirmDialog = jQuery('#remove-attachment-confirm-dialog');
+
+        jQuery('input.att-delete-confirm-button').click(function(event) {
+            asnn2util.closeDialog(confirmDialog);
+            asnn2.removeAttachment(thisAttachment);
+        });
+
+        jQuery('input.att-delete-cancel-button').click(function(event) {
+            asnn2util.closeDialog(confirmDialog);
+            // clear the onclick event on the confirm button or else removing
+            // a different attachment will take this one too
+            jQuery('input.att-delete-confirm-button').unbind('click');
+        });
+
+        asnn2util.openDialog(confirmDialog);
+        return false;
+    };
 
     /**
      * Used to generate a confirmation dialog if a user attempts to edit an

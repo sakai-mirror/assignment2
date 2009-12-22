@@ -24,12 +24,19 @@
             <a  href="" target="_blank">demo</a>
             <input value="" class="skip" name=""/>
             <span >demo</span>
-            <span ><a href="#" onclick="asnn2.removeAttachment(this);">Remove</a></span>
+            <span ><a href="#" onclick="asnn2.removeAttachmentConfirm(this);">Remove</a></span>
         </li>
     </ol>
     <span style="display:none" rsf:id="attachments-binding-id"></span>
     <span rsf:id="attachments-input" />
-
+    
+    <div style="display:none" id="remove-attachment-confirm-dialog">
+        <p class="alertMessageInline" rsf:id="msg=assignment2.dialogs.att_delete.msg">Are you sure you want to delete this attachment?!!</p>
+        <div class="dialog-submit">
+            <input class="att-delete-confirm-button active" accesskey="s" type="button" rsf:id="msg=assignment2.dialogs.att_delete.confirm"/>
+            <input class="att-delete-cancel-button" accesskey="x" type="button" rsf:id="msg=assignment2.dialogs.att_delete.cancel"/>
+        </div>
+    </div>
 </div>
 </form>
 </body>
