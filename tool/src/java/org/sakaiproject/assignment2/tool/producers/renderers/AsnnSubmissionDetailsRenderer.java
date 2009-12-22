@@ -132,7 +132,15 @@ public class AsnnSubmissionDetailsRenderer implements BasicProducer {
 
         // get the status of the current version
         int currStatus = submissionLogic.getSubmissionStatusConstantForCurrentVersion(assignmentSubmission.getCurrentSubmissionVersion(), assignment.getDueDate());
-        boolean submissionIsOpenForStudent = submissionLogic.isSubmissionOpenForStudentForAssignment(assignmentSubmission.getUserId(), assignment.getId());
+        boolean submissionIsOpenForStudent;
+        
+        // if this is a preview, we will show the instructor what it looks like when open
+        if (previewAsStudent) {
+            submissionIsOpenForStudent = true;
+        } else {
+            submissionIsOpenForStudent = submissionLogic.isSubmissionOpenForStudentForAssignment(assignmentSubmission.getUserId(), assignment.getId());
+        }
+        
         /***
          * Title and Due Date Information
          */
