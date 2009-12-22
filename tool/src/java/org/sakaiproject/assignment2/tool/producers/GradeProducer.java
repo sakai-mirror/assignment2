@@ -728,6 +728,7 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
             ViewSubmissionsViewParams outgoing = (ViewSubmissionsViewParams) result.resultingView;
             GradeViewParams in = (GradeViewParams) incoming;
             outgoing.assignmentId = in.assignmentId;
+            outgoing.pageIndex = in.viewSubPageIndex;
         } else if (result.resultingView instanceof GradeViewParams) {
             GradeViewParams outgoing = (GradeViewParams) result.resultingView;
             GradeViewParams in = (GradeViewParams) incoming;

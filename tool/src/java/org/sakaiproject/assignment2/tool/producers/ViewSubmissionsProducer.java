@@ -220,7 +220,7 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
         
         UIInitBlock.make(tofill, "asnn2subview-init", "asnn2subview.init", 
                 new Object[]{assignmentId, externalLogic.getCurrentContextId(), 
-                placement.getId(), submissions.size(), assignment.isGraded(), contentReviewEnabled, pagesize, orderBy, ascending, gradesReleased});
+                placement.getId(), submissions.size(), assignment.isGraded(), contentReviewEnabled, pagesize, orderBy, ascending, gradesReleased, params.pageIndex});
 
         // get grade info, if appropriate
         Map<String, GradeInformation> studentIdGradeInfoMap = new HashMap<String, GradeInformation>();
