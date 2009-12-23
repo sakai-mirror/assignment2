@@ -328,9 +328,9 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
                 numSubmissionsAllowed = as.getNumSubmissionsAllowed();
                 resubmitUntil = as.getResubmitCloseDate();
             } else {
-                // otherwise, populate the fields with the assignment-level settings
+                // otherwise, populate the fields with the assignment-level due date, not the accept until ( ONC-2206 )
                 numSubmissionsAllowed = assignment.getNumSubmissionsAllowed();
-                resubmitUntil = assignment.getAcceptUntilDate();
+                resubmitUntil = assignment.getDueDate();
             }
 
             // if resubmit is still null, throw the current date and time in there
@@ -373,6 +373,9 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
 
                 UISelect.make(form, "resubmission_additional", number_submissions_values, number_submissions_options, 
                         asOTP + ".numSubmissionsAllowed", numSubmissionsAllowed + "");
+                
+                DateFormat df2 = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, locale);
+                UIMessage.make(tofill, "original_due_date", "assignment2.assignment_grade.original_due_date", new Object[] {df2.format(assignment.getDueDate())});
 
                 UIBoundBoolean require = UIBoundBoolean.make(form, "require_accept_until", "#{AssignmentSubmissionBean.resubmitUntil}", is_require_accept_until);
                 require.mustapply = true;
