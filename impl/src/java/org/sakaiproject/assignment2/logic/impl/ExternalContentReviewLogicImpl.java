@@ -381,7 +381,7 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
             return;
         } 
         
-        Map asnnmap = null;
+        Map asnnmap = new HashMap();
         try {
             asnnmap = (Map) getAsnnMethod.invoke(contentReview, assign.getContextId(),
                     assign.getContentReviewRef());
