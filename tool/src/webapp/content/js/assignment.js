@@ -798,7 +798,10 @@ var asnn2 = asnn2 || {};
         jQuery('input.submission-confirm-button').click(function(event) {
             asnn2util.closeDialog(confirmDialog);
             submitButton.onclick = function(event) {
-                return true
+                // hide the buttons at the bottom of the page to prevent
+                // user from hitting them again while the button click request is processed
+                jQuery('#page-replace\\:\\:portletBody\\:1\\:assignment-edit-submission\\:\\:submit_section').hide();
+                return true;
             };
             submitButton.click();
         });
