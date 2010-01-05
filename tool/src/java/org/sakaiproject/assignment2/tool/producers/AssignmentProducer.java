@@ -562,7 +562,7 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
         UICommand.make(form, "cancel_assignment", UIMessage.make("assignment2.assignment_add.cancel_assignment"), "AssignmentAuthoringBean.processActionCancel");
 
         // Optional Turnitin Content Review Integration
-        if (externalContentReviewLogic.isContentReviewAvailable()) {
+        if (externalContentReviewLogic.isContentReviewAvailable(assignment.getContextId())) {
             renderTurnitinArea(tofill, assignment2OTP, assignment, form);
         }
     }

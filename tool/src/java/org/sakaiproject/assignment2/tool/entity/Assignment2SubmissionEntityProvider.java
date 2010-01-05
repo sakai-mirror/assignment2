@@ -239,7 +239,7 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware{
 
         Map<String, String> studentIdSortNameMap = externalLogic.getUserIdToSortNameMap(studentIdList);
         
-        boolean contentReviewEnabled = assignment.isContentReviewEnabled() && contentReviewLogic.isContentReviewAvailable();
+        boolean contentReviewEnabled = assignment.isContentReviewEnabled() && contentReviewLogic.isContentReviewAvailable(assignment.getContextId());
         
         if (contentReviewEnabled) {
             populateReviewProperties(assignment, submissions);

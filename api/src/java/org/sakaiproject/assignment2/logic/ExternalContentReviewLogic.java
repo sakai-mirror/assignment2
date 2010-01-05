@@ -39,15 +39,20 @@ import org.sakaiproject.contentreview.model.ContentReviewItem;
 public interface ExternalContentReviewLogic {
 
     /**
-     * This will determine whether the current site has the ability to use
+     * This will determine whether the given site has the ability to use
      * the Content Review Service.
+     * @param siteId non-null
      * 
-     * This will most likely be looking at the current site on the request 
-     * thread. There will be another version for passing in a site, reference,
-     * or other 3akai like thing to determine if that object/resource has
-     * the ability to use Content Review.
-     * 
-     * @return
+     * @return true if the site with the given siteId has the ability to use
+     * the Content Review Service
+     */
+    public boolean isContentReviewAvailable(String siteId);
+    
+    /**
+     * This will determine whether the current site has the ability to use the
+     * Content Review Service
+     * @return true if the current site has the ability to use the Content 
+     * Review Service
      */
     public boolean isContentReviewAvailable();
     

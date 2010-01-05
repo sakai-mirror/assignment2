@@ -146,7 +146,7 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
                 gradebookLogic.gradebookItemExists(assignment.getGradebookItemId());
         
         // check to see if content review is enabled for this assignment
-        boolean contentReviewEnabled = assignment.isContentReviewEnabled() && contentReviewLogic.isContentReviewAvailable();
+        boolean contentReviewEnabled = assignment.isContentReviewEnabled() && contentReviewLogic.isContentReviewAvailable(assignment.getContextId());
 
         // use a date which is related to the current users locale
         DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, locale);

@@ -214,12 +214,10 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
         // Attachment Stuff
         // the editor will only display attachments for the current version if
         // it is a draft. otherwise, the user is working on a new submission
+        UIOutput attachSection = null;
         if (assignment.getSubmissionType() == AssignmentConstants.SUBMIT_ATTACH_ONLY ||
                 assignment.getSubmissionType() == AssignmentConstants.SUBMIT_INLINE_AND_ATTACH){
-            UIOutput attachSection = UIOutput.make(form, "submit_attachments");
-            if (assignment.isContentReviewEnabled()) {
-                attachSection.decorate(new UIFreeAttributeDecorator("class", "messageConfirmation"));
-            }
+            attachSection = UIOutput.make(form, "submit_attachments");
 
             if (studentPreviewSubmission || !preview) {
                 String[] attachmentRefs = 
@@ -244,7 +242,11 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
         }
         
         // display plagiarism check warning
-        if (assignment.isContentReviewEnabled() && contentReviewLogic.isContentReviewAvailable()) {
+        if (assignment.isContentReviewEnabled() && contentReviewLogic.isContentReviewAvailable(assignment.getContextId())) {
+            if (attachSection != null) {
+                attachSection.decorate(new UIFreeAttributeDecorator("class", "messageConfirmation"));
+            }
+            
             if (assignment.getProperties().containsKey("s_view_report") && (Boolean)assignment.getProperties().get("s_view_report")) {
                 UIMessage.make(joint, "plagiarism_check", "assignment2.turnitin.submit.warning.inst_and_student");
             } else {
