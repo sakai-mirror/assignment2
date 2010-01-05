@@ -322,6 +322,8 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
             int numSubmissionsAllowed;
             Date resubmitUntil;
             boolean is_require_accept_until = false;
+            boolean render_resubmission_date = false;
+            Date dueDate;
 
             if (as.getNumSubmissionsAllowed() != null) {
                 // this student already has an override, so use these settings
@@ -331,11 +333,32 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
                 // otherwise, populate the fields with the assignment-level due date, not the accept until ( ONC-2206 )
                 numSubmissionsAllowed = assignment.getNumSubmissionsAllowed();
                 resubmitUntil = assignment.getDueDate();
+                if (resubmitUntil==null)
+                {
+                    // this means there is no due date, so try the accept until date
+                    resubmitUntil = assignment.getAcceptUntilDate();
+                }
             }
 
+            dueDate = assignment.getDueDate();
+            if (dueDate!=null)
+            {
+                render_resubmission_date = true;
+            }
+            else if (dueDate==null && assignment.getAcceptUntilDate()!=null)
+            {
+                dueDate = assignment.getAcceptUntilDate();
+                render_resubmission_date = true;
+            }
+            
             // if resubmit is still null, throw the current date and time in there
             // it will only show up if the user clicks the "Set accept until" checkbox
-            if (resubmitUntil == null) {
+            if (resubmitUntil == null && dueDate!=null) {
+                resubmitUntil = dueDate;
+                is_require_accept_until = false;
+            }
+            else if (resubmitUntil == null && dueDate==null) 
+            {
                 resubmitUntil = new Date();
                 is_require_accept_until = false;
             } else {
@@ -373,19 +396,24 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
 
                 UISelect.make(form, "resubmission_additional", number_submissions_values, number_submissions_options, 
                         asOTP + ".numSubmissionsAllowed", numSubmissionsAllowed + "");
-                
-                DateFormat df2 = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, locale);
-                UIMessage.make(tofill, "original_due_date", "assignment2.assignment_grade.original_due_date", new Object[] {df2.format(assignment.getDueDate())});
 
-                UIBoundBoolean require = UIBoundBoolean.make(form, "require_accept_until", "#{AssignmentSubmissionBean.resubmitUntil}", is_require_accept_until);
-                require.mustapply = true;
+                if (render_resubmission_date)
+                {
+                    UIOutput.make(tofill, "resubmission_dates");
 
-                UIInput acceptUntilDateField = UIInput.make(form, "accept_until:", asOTP + ".resubmitCloseDate");
-                //set dateEvolver
-                dateEvolver.setStyle(FormatAwareDateInputEvolver.DATE_TIME_INPUT);
-                dateEvolver.setInvalidDateKey("assignment2.assignment_grade.resubmission.accept_until_date.invalid");
-                dateEvolver.setInvalidTimeKey("assignment2.assignment_grade.resubmission.accept_until_time.invalid");
-                dateEvolver.evolveDateInput(acceptUntilDateField, resubmitUntil);
+                    DateFormat df2 = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, locale);
+                    UIMessage.make(tofill, "original_due_date", "assignment2.assignment_grade.original_due_date", new Object[] {df2.format(dueDate)});
+
+                    UIBoundBoolean require = UIBoundBoolean.make(form, "require_accept_until", "#{AssignmentSubmissionBean.resubmitUntil}", is_require_accept_until);
+                    require.mustapply = true;
+
+                    UIInput acceptUntilDateField = UIInput.make(form, "accept_until:", asOTP + ".resubmitCloseDate");
+                    //set dateEvolver
+                    dateEvolver.setStyle(FormatAwareDateInputEvolver.DATE_TIME_INPUT);
+                    dateEvolver.setInvalidDateKey("assignment2.assignment_grade.resubmission.accept_until_date.invalid");
+                    dateEvolver.setInvalidTimeKey("assignment2.assignment_grade.resubmission.accept_until_time.invalid");
+                    dateEvolver.evolveDateInput(acceptUntilDateField, resubmitUntil);
+                }
             } else {
                 // display text-only representation
                 UIOutput.make(form, "resubmit_no_change");
