@@ -323,6 +323,7 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
             Date resubmitUntil;
             boolean is_require_accept_until = false;
             boolean render_resubmission_date = false;
+            boolean accept_until_label = false;
             Date dueDate;
 
             if (as.getNumSubmissionsAllowed() != null) {
@@ -349,6 +350,7 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
             {
                 dueDate = assignment.getAcceptUntilDate();
                 render_resubmission_date = true;
+                accept_until_label = true;
             }
             
             // if resubmit is still null, throw the current date and time in there
@@ -402,7 +404,14 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
                     UIOutput.make(tofill, "resubmission_dates");
 
                     DateFormat df2 = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, locale);
-                    UIMessage.make(tofill, "original_due_date", "assignment2.assignment_grade.original_due_date", new Object[] {df2.format(dueDate)});
+                    if (accept_until_label)
+                    {
+                        UIMessage.make(tofill, "original_due_date", "assignment2.assignment_grade.accept_until_date", new Object[] {df2.format(dueDate)});
+                    }
+                    else
+                    {
+                        UIMessage.make(tofill, "original_due_date", "assignment2.assignment_grade.original_due_date", new Object[] {df2.format(dueDate)});
+                    }
 
                     UIBoundBoolean require = UIBoundBoolean.make(form, "require_accept_until", "#{AssignmentSubmissionBean.resubmitUntil}", is_require_accept_until);
                     require.mustapply = true;
