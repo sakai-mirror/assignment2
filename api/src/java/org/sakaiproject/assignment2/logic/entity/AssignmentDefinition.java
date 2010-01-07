@@ -23,6 +23,7 @@ package org.sakaiproject.assignment2.logic.entity;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Object to model Assignment2 data that will be used for
@@ -48,9 +49,11 @@ public class AssignmentDefinition implements Serializable {
     private boolean sendSubmissionNotifications;
     private int submissionType;
     private boolean requiresSubmission;
+    private boolean contentReviewEnabled;
 
     private List<String> groupRestrictionGroupTitles;
     private List<String> attachmentReferences;
+    private Map properties;
 
 
     public AssignmentDefinition() {
@@ -231,6 +234,18 @@ public class AssignmentDefinition implements Serializable {
     }
 
 
+    public boolean isContentReviewEnabled()
+    {
+        return contentReviewEnabled;
+    }
+
+
+    public void setContentReviewEnabled(boolean contentReviewEnabled)
+    {
+        this.contentReviewEnabled = contentReviewEnabled;
+    }
+
+
     public List<String> getGroupRestrictionGroupTitles() {
         return groupRestrictionGroupTitles;
     }
@@ -249,6 +264,18 @@ public class AssignmentDefinition implements Serializable {
 
     public void setAttachmentReferences(List<String> attachmentReferences) {
         this.attachmentReferences = attachmentReferences;
+    }
+
+
+    public Map getProperties()
+    {
+        return properties;
+    }
+
+
+    public void setProperties(Map properties)
+    {
+        this.properties = properties;
     }
 
 }

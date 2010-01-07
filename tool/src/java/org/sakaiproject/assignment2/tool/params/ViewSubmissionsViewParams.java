@@ -30,6 +30,7 @@ public class ViewSubmissionsViewParams extends SortPagerViewParams implements Ve
     private static final Log LOG = LogFactory.getLog(ViewSubmissionsViewParams.class);
 
     public Long assignmentId;
+    public int pageIndex = 0;
 
     /**
      * optionally filter the view by group membership. null if you
@@ -67,9 +68,15 @@ public class ViewSubmissionsViewParams extends SortPagerViewParams implements Ve
         this.assignmentId = assignmentId;
     }
 
+    public ViewSubmissionsViewParams(String viewId, String sort_by, String sort_dir, int currentStart, int currentCount, Long assignmentId, int pageIndex) {
+        super(viewId, sort_by, sort_dir, currentStart, currentCount);
+        this.assignmentId = assignmentId;
+        this.pageIndex = pageIndex;
+    }
+    
     public String getParseSpec() {
         // include a comma delimited list of the public properties in this class
-        return super.getParseSpec() + ",@1:assignmentId,groupId,";
+        return super.getParseSpec() + ",@1:assignmentId,groupId,pageIndex";
     }
 
     public Boolean verify()

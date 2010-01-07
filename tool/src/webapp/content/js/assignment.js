@@ -37,45 +37,6 @@ function update_resubmit_until() {
     }
 }
 
-function override_submission_settings() {
-    override_checkbox = jQuery("input:checkbox[@name='page-replace\:\:override_settings']").get(0);
-
-    if (override_checkbox) {
-        if (override_checkbox.checked) {
-            // change text back to normal
-            jQuery("#override_settings_container").removeClass("inactive");
-
-            // enable all of the form elements
-            jQuery("select[@name='page-replace\:\:resubmission_additional-selection']").removeAttr("disabled");
-            jQuery("input:checkbox[@name='page-replace\:\:require_accept_until']").removeAttr("disabled");
-            // TODO - get the rsf date widget to work when these are disabled -it
-            // is throwing syntax error upon submission
-            //jQuery("input[@name='page-replace\:\:accept_until\:1\:date-field']").removeAttr("disabled");
-            //jQuery("input[@name='page-replace\:\:accept_until\:1\:time-field']").removeAttr("disabled");
-        } else {
-            // gray out the text
-            jQuery("#override_settings_container").addClass("inactive");
-
-            // disable all form elements
-            jQuery("select[@name='page-replace\:\:resubmission_additional-selection']").attr("disabled", "disabled");
-            jQuery("input:checkbox[@name='page-replace\:\:require_accept_until']").attr("disabled", "disabled");
-            // jQuery("input[@name='page-replace\:\:accept_until\:1\:date-field']").attr("disabled","disabled");
-            //jQuery("input[@name='page-replace\:\:accept_until\:1\:time-field']").attr("disabled","disabled");
-        }
-    }
-}
-
-function set_accept_until_on_submission_level() {
-    el = jQuery("input:checkbox[@name='page-replace\:\:require_accept_until']").get(0);
-    if (el) {
-        if (el.checked) {
-            jQuery("#accept_until_container").show();
-        } else {
-            jQuery("#accept_until_container").hide();
-        }
-    }
-}
-
 jQuery(document).ready(function() {
     update_resubmit_until();
     asnn2.initializeSorting();
@@ -83,25 +44,19 @@ jQuery(document).ready(function() {
 
 function slide_submission(img) {
     jQuery(img).parent('h4').next('div').toggle();
-    flip_image(img);
+    asnn2.flip_image(img);
 }
 function slideFieldset(img) {
     jQuery(img).parent('legend').next('ol').toggle();
-    flip_image(img);
+    asnn2.flip_image(img);
     a2SetMainFrameHeight();
 }
 function slideDiv(img) {
     jQuery(img).parent('legend').next('div').toggle();
-    flip_image(img);
+    asnn2.flip_image(img);
     a2SetMainFrameHeight();
 }
-function flip_image(img) {
-    if (img.src.match('collapse')) {
-        img.src = img.src.replace(/collapse/, 'expand');
-    } else {
-        img.src = img.src.replace(/expand/, 'collapse');
-    }
-}
+
 
 var asnn2 = asnn2 || {};
 
@@ -118,22 +73,72 @@ var asnn2 = asnn2 || {};
         jQuery("input", newRow).attr("name", asnn2.attachmentItemBinding);
         jQuery("span:first", newRow).html(filesize);
     
-        jQuery(newRow).appendTo("#attachmentsFieldset ol:first").get(0);
+        // if there are multiple "Add Attachments" sections on the page,
+        // we need a way to uniquely identify which section this new attachment
+        // will be appended to. We will use the global var asnn2.attachmentItemListSelector
+        // to uniquely identify the parent list 
+        var attachList = jQuery(asnn2.attachmentItemListSelector);
+        jQuery(newRow).appendTo(attachList);
         
-        asnn2.updateDisplayNoAttachments();
+        // we may need to hide the "No attachments" message
+        attachList.prev(".no_attachments_yet").hide();
+        
     }
     
     asnn2.removeAttachment = function(attach) {
-        jQuery(attach).parent('span').parent('li').remove();
-        asnn2.updateDisplayNoAttachments();
+        var attachment = jQuery(attach).parent('span').parent('li');
+        var parentList = attachment.parent('ol');
+        //remove the attachment
+        attachment.remove();
+        
+        // we may need to display the "no attachments" message, so let's find out
+        // if there are any attachments left
+        if (parentList.children().length === 0) {
+            // display the "no attach" message
+            parentList.prev(".no_attachments_yet").show();
+        }
     }
     
-    asnn2.updateDisplayNoAttachments = function() {
-        var li = jQuery("#attachmentsFieldset ol:first li").get(0);
-        if (li) {
-            jQuery("span.no_attachments_yet").hide();
-        } else {
-            jQuery("span.no_attachments_yet").show();
+    /**
+     * sets the asnn2.attachmentItemBinding variable with the value of the element
+     * with the given attachBindingSelector. This variable is used to set the appropriate
+     * binding when adding an attachment if we have multiple "Add attachments" sections
+     * on the screen.  Also sets the attachmentItemListSelector. This variable is used
+     * to identify which attachment section should be updated when we come back from the helper
+     */
+    asnn2.updateAttachmentVariables = function(attachBindingSelector, attachmentItemListSelector) {
+       var attachBinding = jQuery(attachBindingSelector);
+       asnn2.attachmentItemBinding = attachBinding.text();
+       asnn2.attachmentItemListSelector = attachmentItemListSelector;
+    }
+    
+    /**
+     * toggle the first sibling of the toggleHeader with the given classSelector
+     * @param sectionSelector jQuery selector of the sibling element you want to toggle
+     * @param toggleHeader the header that does the toggling. we will use it to
+     * flip the img, if applicable
+     */
+    asnn2.toggleSubsection = function(sectionSelector, toggleHeader) {
+        var toggle = jQuery(toggleHeader);
+        
+        var subsection = toggle.next(sectionSelector);
+        subsection.toggle();
+        
+        // now see if the expand/collapse img was used and needs to be toggled, as well
+        var images = toggle.children('img');
+        if (images.length > 0) {
+            img = images.get(0);
+            asnn2.flip_image(img);
+        }    
+    }
+    
+    asnn2.flip_image = function(img) {
+        if (img) {
+            if (img.src.match('collapse')) {
+                img.src = img.src.replace(/collapse/, 'expand');
+            } else {
+                img.src = img.src.replace(/expand/, 'collapse');
+            }
         }
     }
     
@@ -765,35 +770,70 @@ var asnn2 = asnn2 || {};
     };
 
     /**
-     * Used to generate the confirmation dialog for When the student clicks
-     * submit on either the Edit Submission or Preview Submission page.
+     * Used to generate the confirmation dialog for different choices on the
+     * student submission screen (ie submitting or cancelling submission)
+     * @param the form button that was clicked
+     * @param dialogSelector jQuery selector for identifying the correct dialog to show
+     * @param requireHonorPledge true if the honor pledge needs to be check before proceeding
+     * 
      */
-    asnn2.studentSubmissionConfirm = function(buttonform) {
+    asnn2.studentActionConfirm = function(buttonform, dialogSelector, requireHonorPledge) {
         // first, let's make sure the user has checked the honor pledge, if needed.
-        // look for the honor pledge checkbox
-        var honor_pledge = jQuery('#page-replace\\:\\:portletBody\\:1\\:assignment-edit-submission\\:\\:honor_pledge').get(0);
-        if (honor_pledge) {
-            if (!honor_pledge.checked) {
-                //display the error and return
-                jQuery('#page-replace\\:\\:portletBody\\:1\\:assignment-edit-submission\\:\\:honor_pledge_error').show();
-                return false;
+        if (requireHonorPledge) {
+            // look for the honor pledge checkbox
+            var honor_pledge = jQuery('#page-replace\\:\\:portletBody\\:1\\:assignment-edit-submission\\:\\:honor_pledge').get(0);
+            if (honor_pledge) {
+                if (!honor_pledge.checked) {
+                    //display the error and return
+                    jQuery('#page-replace\\:\\:portletBody\\:1\\:assignment-edit-submission\\:\\:honor_pledge_error').show();
+                    return false;
+                }
             }
         }
 
         // display the confirmation dialog
-        confirmDialog = jQuery('#submit-confirm-dialog');
+        confirmDialog = jQuery(dialogSelector);
 
         var submitButton = buttonform;
-        jQuery('#page-replace\\:\\:portletBody\\:1\\:assignment-edit-submission\\:\\:submission-confirm-button').click(function(event) {
+        jQuery('input.submission-confirm-button').click(function(event) {
             asnn2util.closeDialog(confirmDialog);
             submitButton.onclick = function(event) {
-                return true
+                // hide the buttons at the bottom of the page to prevent
+                // user from hitting them again while the button click request is processed
+                jQuery('#page-replace\\:\\:portletBody\\:1\\:assignment-edit-submission\\:\\:submit_section').hide();
+                return true;
             };
             submitButton.click();
         });
 
-        jQuery('#page-replace\\:\\:portletBody\\:1\\:assignment-edit-submission\\:\\:submission-cancel-button').click(function(event) {
+        jQuery('input.submission-cancel-button').click(function(event) {
             asnn2util.closeDialog(confirmDialog);
+            // clear the onclick event on the confirm button
+            jQuery('input.submission-confirm-button').unbind('click');
+        });
+
+        asnn2util.openDialog(confirmDialog);
+        return false;
+    };
+    
+    /**
+     * Used to generate the confirmation dialog for when a user removes an attachment
+     */
+    asnn2.removeAttachmentConfirm = function(thisAttachment) {
+
+        // display the confirmation dialog
+        confirmDialog = jQuery('#remove-attachment-confirm-dialog');
+
+        jQuery('input.att-delete-confirm-button').click(function(event) {
+            asnn2util.closeDialog(confirmDialog);
+            asnn2.removeAttachment(thisAttachment);
+        });
+
+        jQuery('input.att-delete-cancel-button').click(function(event) {
+            asnn2util.closeDialog(confirmDialog);
+            // clear the onclick event on the confirm button or else removing
+            // a different attachment will take this one too
+            jQuery('input.att-delete-confirm-button').unbind('click');
         });
 
         asnn2util.openDialog(confirmDialog);

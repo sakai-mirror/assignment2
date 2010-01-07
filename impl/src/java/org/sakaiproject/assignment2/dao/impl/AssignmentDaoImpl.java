@@ -825,7 +825,7 @@ public class AssignmentDaoImpl extends HibernateGeneralGenericDao implements Ass
      * @param versionHistory
      * @return given a version history, returns the version with the highest submittedVersionNumber
      */
-    private AssignmentSubmissionVersion getCurrentVersionFromHistory(Collection<AssignmentSubmissionVersion> versionHistory) {
+    public AssignmentSubmissionVersion getCurrentVersionFromHistory(Collection<AssignmentSubmissionVersion> versionHistory) {
         AssignmentSubmissionVersion currVersion = null;
         if (versionHistory != null) {
             for (AssignmentSubmissionVersion ver : versionHistory) {

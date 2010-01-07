@@ -37,6 +37,7 @@ import org.sakaiproject.assignment2.exception.ContentReviewException;
 import org.sakaiproject.assignment2.logic.AssignmentBundleLogic;
 import org.sakaiproject.assignment2.logic.ExternalContentLogic;
 import org.sakaiproject.assignment2.logic.ExternalContentReviewLogic;
+import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.SubmissionAttachment;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
@@ -49,9 +50,9 @@ import org.sakaiproject.contentreview.exception.SubmissionException;
 import org.sakaiproject.contentreview.model.ContentReviewItem;
 import org.sakaiproject.contentreview.service.ContentReviewService;
 import org.sakaiproject.id.api.IdManager;
+import org.sakaiproject.site.api.Site;
 
 import uk.org.ponder.arrayutil.ArrayUtil;
-import uk.org.ponder.util.UniversalRuntimeException;
 
 public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogic {
 
@@ -61,6 +62,7 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
     private ExternalContentLogic contentLogic;
     private AssignmentBundleLogic bundleLogic;
     private ServerConfigurationService serverConfigurationService;
+    private ExternalLogic externalLogic;
     
     private IdManager idManager;
     public void setIdManager(IdManager idManager) {
@@ -76,17 +78,32 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
         }
     }
 
-    public boolean isContentReviewAvailable() {
+    public boolean isContentReviewAvailable(String siteId) {
+        if (siteId == null) {
+            throw new IllegalArgumentException("Null siteId passed to isContentReviewAvailable");
+        }
+        
         boolean available = false;
         if (contentReview != null) {
             // check and see if Turnitin was enabled
             String turnitinEnabled = serverConfigurationService.getString(AssignmentConstants.TII_ENABLED, "false");
             if ("true".equals(turnitinEnabled)) {
-                available = true;
+                // we need to see if it was enabled at the site level
+                Site site = externalLogic.getSite(siteId);
+                if (site != null && contentReview.isSiteAcceptable(site)) {
+                    available = true;
+                } else {
+                    available = false;
+                }
             }
         }
 
         return available;
+    }
+    
+    public boolean isContentReviewAvailable() {
+        String siteId = externalLogic.getCurrentContextId();
+        return isContentReviewAvailable(siteId);
     }
 
     public void reviewAttachment(String userId, Assignment2 assign, String attachmentReference) {
@@ -381,7 +398,7 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
             return;
         } 
         
-        Map asnnmap = null;
+        Map asnnmap = new HashMap();
         try {
             asnnmap = (Map) getAsnnMethod.invoke(contentReview, assign.getContextId(),
                     assign.getContentReviewRef());
@@ -471,7 +488,7 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
         }
         
         SimpleDateFormat dform = ((SimpleDateFormat) DateFormat.getDateInstance());
-        dform.applyPattern("yyyyMMdd");
+        dform.applyPattern("yyyy-MM-dd HH:mm:ss");
         
         if (assign.getOpenDate() != null) {
             opts.put("dtstart", dform.format(assign.getOpenDate()));
@@ -508,6 +525,10 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
     
     public void setServerConfigurationService(ServerConfigurationService serverConfigurationService) {
         this.serverConfigurationService = serverConfigurationService;
+    }
+    
+    public void setExternalLogic(ExternalLogic externalLogic) {
+        this.externalLogic = externalLogic;
     }
 
 }

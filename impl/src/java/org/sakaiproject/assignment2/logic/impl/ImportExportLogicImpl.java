@@ -41,6 +41,7 @@ import org.sakaiproject.assignment2.exception.AnnouncementPermissionException;
 import org.sakaiproject.assignment2.exception.CalendarPermissionException;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.ExternalContentLogic;
+import org.sakaiproject.assignment2.logic.ExternalContentReviewLogic;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.logic.GradebookItem;
@@ -93,6 +94,11 @@ public class ImportExportLogicImpl implements ImportExportLogic {
     private ExternalContentLogic contentLogic;
     public void setExternalContentLogic(ExternalContentLogic contentLogic) {
         this.contentLogic = contentLogic;
+    }
+    
+    private ExternalContentReviewLogic contentReviewLogic;
+    public void setExternalContentReviewLogic(ExternalContentReviewLogic contentReviewLogic) {
+        this.contentReviewLogic = contentReviewLogic;
     }
 
     public void init(){
@@ -200,6 +206,14 @@ public class ImportExportLogicImpl implements ImportExportLogic {
             }
         }
         assignDef.setGroupRestrictionGroupTitles(associatedGroupNames);
+        
+        // if content review is enabled, we need to retrieve the properties
+        if (assignment.isContentReviewEnabled()) {
+            // populate the properties
+            contentReviewLogic.populateAssignmentPropertiesFromAssignment(assignment);
+            assignDef.setContentReviewEnabled(assignment.isContentReviewEnabled());
+            assignDef.setProperties(assignment.getProperties());
+        }
 
         return assignDef;
     }
@@ -259,6 +273,10 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 
                         // title doesn't have to be unique
                         newAssignment.setTitle(assignDef.getTitle());
+                        
+                        // content review settings
+                        newAssignment.setContentReviewEnabled(assignDef.isContentReviewEnabled());
+                        newAssignment.setProperties(assignDef.getProperties());
 
                         // if this item is graded, we need to link it up to a 
                         // corresponding gb item. first, we will check to see if

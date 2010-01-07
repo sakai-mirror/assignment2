@@ -369,7 +369,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
         
         // ASNN-516 now let's run these attachments through the content review service, if appropriate
         if (!version.isDraft() && assignment.isContentReviewEnabled() && subAttachSet != null) {
-            if (contentReviewLogic.isContentReviewAvailable()) {
+            if (contentReviewLogic.isContentReviewAvailable(assignment.getContextId())) {
                 for (SubmissionAttachment att : subAttachSet) {
                     if (contentReviewLogic.isAttachmentAcceptableForReview(att.getAttachmentReference())) {
                         if (log.isDebugEnabled()) log.debug("Adding attachment " + att.getAttachmentReference() + " to review queue for student " + userId);
@@ -1551,6 +1551,15 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
         Collections.sort(userSubmissions, new ComparatorsUtils.SubmissionCompletedSortOrderComparator());
 
         return userSubmissions;
+    }
+    
+    public AssignmentSubmissionVersion getCurrentVersionFromHistory(Collection<AssignmentSubmissionVersion> versionHistory) {
+        AssignmentSubmissionVersion currVersion = null;
+        if (versionHistory != null) {
+            currVersion = dao.getCurrentVersionFromHistory(versionHistory);
+        }
+        
+        return currVersion;
     }
 
     private List<String> filterStudentsByGroupMembership(List<String> fullStudentIdList, String filterGroupId) {

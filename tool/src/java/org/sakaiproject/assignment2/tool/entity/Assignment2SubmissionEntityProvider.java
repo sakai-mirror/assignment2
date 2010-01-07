@@ -239,7 +239,7 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware{
 
         Map<String, String> studentIdSortNameMap = externalLogic.getUserIdToSortNameMap(studentIdList);
         
-        boolean contentReviewEnabled = assignment.isContentReviewEnabled() && contentReviewLogic.isContentReviewAvailable();
+        boolean contentReviewEnabled = assignment.isContentReviewEnabled() && contentReviewLogic.isContentReviewAvailable(assignment.getContextId());
         
         if (contentReviewEnabled) {
             populateReviewProperties(assignment, submissions);
@@ -378,6 +378,33 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware{
                         else {
                             m2 = (Map) o1;
                             m1 = (Map) o2;
+                        }
+                        if (orderByComp.equals(SUBMISSION_GRADE)) {
+                            boolean useDouble = true;
+                            Double d1 = null;
+                            Double d2 = null;
+                            try {
+                                d1 = Double.parseDouble((String) m1.get(orderByComp));
+                                d2 = Double.parseDouble((String) m2.get(orderByComp));
+                            } catch (NumberFormatException e) {
+                                useDouble = false;
+                            }
+                            if (d1 != null && d2 != null && useDouble) {
+                                return d1.compareTo(d2);
+                            } 
+                            else {
+                                return m1.get(orderByComp).toString().compareTo(m2.get(orderByComp).toString());
+                            }
+                        }
+                        // handle null data
+                        if (m1.get(orderByComp) == null && m2.get(orderByComp) == null) {
+                            return 0;
+                        }
+                        if (m1.get(orderByComp) == null && m2.get(orderByComp) != null) {
+                            return -1;
+                        }
+                        if (m1.get(orderByComp) != null && m2.get(orderByComp) == null) {
+                            return 1;
                         }
                         if (m1.get(orderByComp) instanceof Date) {
                             return ((Date)m1.get(orderByComp)).compareTo(((Date)m2.get(orderByComp)));

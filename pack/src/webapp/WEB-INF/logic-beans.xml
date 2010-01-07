@@ -75,6 +75,7 @@
       <property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
       <property name="externalContentLogic" ref="org.sakaiproject.assignment2.logic.ExternalContentLogic" />
       <property name="assignmentService" ref="org.sakaiproject.assignment.api.AssignmentService" />
+      <property name="externalContentReviewLogic" ref="org.sakaiproject.assignment2.logic.ExternalContentReviewLogic" />
    </bean>
    
    <bean id="org.sakaiproject.assignment2.logic.AssignmentBundleLogic" class="org.sakaiproject.assignment2.logic.impl.AssignmentBundleLogicImpl" init-method="init">
@@ -86,6 +87,7 @@
       <property name="assignmentBundleLogic" ref="org.sakaiproject.assignment2.logic.AssignmentBundleLogic" />
       <property name="idManager" ref="org.sakaiproject.id.api.IdManager" />
       <property name="serverConfigurationService" ref="org.sakaiproject.component.api.ServerConfigurationService" />
+      <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
    </bean>
 
 	<bean id="org.sakaiproject.assignment2.logic.UploadAllLogic"

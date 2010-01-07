@@ -11,6 +11,7 @@ import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
+import org.sakaiproject.assignment2.tool.LocalTurnitinLogic;
 import org.sakaiproject.assignment2.tool.beans.StudentSubmissionVersionFlowBean;
 import org.sakaiproject.assignment2.tool.params.FilePickerHelperViewParams;
 import org.sakaiproject.assignment2.tool.producers.AddAttachmentHelperProducer;
@@ -28,6 +29,7 @@ import uk.org.ponder.rsf.components.UIInput;
 import uk.org.ponder.rsf.components.UIInputMany;
 import uk.org.ponder.rsf.components.UIInternalLink;
 import uk.org.ponder.rsf.components.UIJointContainer;
+import uk.org.ponder.rsf.components.UILink;
 import uk.org.ponder.rsf.components.UIMessage;
 import uk.org.ponder.rsf.components.UIOutput;
 import uk.org.ponder.rsf.components.UIVerbatim;
@@ -83,6 +85,12 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
     private ViewParameters viewParameters;
     public void setViewParameters(ViewParameters viewParameters) {
         this.viewParameters = viewParameters;
+    }
+    
+    // Dependency
+    private LocalTurnitinLogic localTurnitinLogic;
+    public void setLocalTurnitinLogic(LocalTurnitinLogic localTurnitinLogic) {
+        this.localTurnitinLogic = localTurnitinLogic;
     }
 
     // Dependency
@@ -206,12 +214,10 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
         // Attachment Stuff
         // the editor will only display attachments for the current version if
         // it is a draft. otherwise, the user is working on a new submission
+        UIOutput attachSection = null;
         if (assignment.getSubmissionType() == AssignmentConstants.SUBMIT_ATTACH_ONLY ||
                 assignment.getSubmissionType() == AssignmentConstants.SUBMIT_INLINE_AND_ATTACH){
-            UIOutput attachSection = UIOutput.make(form, "submit_attachments");
-            if (assignment.isContentReviewEnabled()) {
-                attachSection.decorate(new UIFreeAttributeDecorator("class", "messageConfirmation"));
-            }
+            attachSection = UIOutput.make(form, "submit_attachments");
 
             if (studentPreviewSubmission || !preview) {
                 String[] attachmentRefs = 
@@ -236,11 +242,21 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
         }
         
         // display plagiarism check warning
-        if (assignment.isContentReviewEnabled() && contentReviewLogic.isContentReviewAvailable()) {
+        if (assignment.isContentReviewEnabled() && contentReviewLogic.isContentReviewAvailable(assignment.getContextId())) {
+            if (attachSection != null) {
+                attachSection.decorate(new UIFreeAttributeDecorator("class", "messageConfirmation"));
+            }
+            
             if (assignment.getProperties().containsKey("s_view_report") && (Boolean)assignment.getProperties().get("s_view_report")) {
                 UIMessage.make(joint, "plagiarism_check", "assignment2.turnitin.submit.warning.inst_and_student");
             } else {
                 UIMessage.make(joint, "plagiarism_check", "assignment2.turnitin.submit.warning.inst_only");
+            }
+            
+            String fileRequirementsUrl = localTurnitinLogic.getSupportedFormatsUrl();
+            if (fileRequirementsUrl != null) {
+                UIOutput.make(joint, "plagiarism_file_req_section");
+                UILink.make(joint, "plagiarism_file_req", messageLocator.getMessage("assignment2.turnitin.file_requirements"), fileRequirementsUrl);
             }
         }
 
@@ -323,15 +339,19 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
             String[] attachmentRefs) {
         UIInputMany attachmentInput = UIInputMany.make(form, "attachment_list:", asvOTP + ".submittedAttachmentRefs", 
                 attachmentRefs);
-        attachmentInputEvolver.evolveAttachment(attachmentInput, !studentPreviewSubmission);
+        attachmentInputEvolver.evolveAttachment(attachmentInput, !studentPreviewSubmission, null);
 
         if (!studentPreviewSubmission) {
-            UIInternalLink.make(form, "add_submission_attachments", UIMessage.make("assignment2.student-submit.add_attachments"),
+            UIInternalLink addAttachLink = UIInternalLink.make(form, "add_submission_attachments", UIMessage.make("assignment2.student-submit.add_attachments"),
                     new FilePickerHelperViewParams(AddAttachmentHelperProducer.VIEWID, Boolean.TRUE, 
                             Boolean.TRUE, 500, 700, asvOTPKey, true));
+            addAttachLink.decorate(new UIFreeAttributeDecorator("onclick", attachmentInputEvolver.getOnclickMarkupForAddAttachmentEvent(null)));
         }
 
-        UIOutput.make(form, "no_attachments_yet", messageLocator.getMessage("assignment2.student-submit.no_attachments"));
+        UIOutput noAttach = UIOutput.make(form, "no_attachments_yet", messageLocator.getMessage("assignment2.student-submit.no_attachments"));
+        if (attachmentRefs != null && attachmentRefs.length > 0) {
+            noAttach.decorate(new UIFreeAttributeDecorator("style", "display: none;"));
+        }
     }
 
     public void fillComponents(UIContainer parent, String clientID) {

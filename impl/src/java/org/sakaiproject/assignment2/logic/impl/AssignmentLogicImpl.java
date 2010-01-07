@@ -173,7 +173,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
         //        assign.setProperties(tiiopts); // TODO this should be a map merge and not a complete replacement
         //    }
         //}
-        if (externalContentReviewLogic.isContentReviewAvailable()) {
+        if (externalContentReviewLogic.isContentReviewAvailable(assign.getContextId())) {
             externalContentReviewLogic.populateAssignmentPropertiesFromAssignment(assign);
         }
         
@@ -722,15 +722,15 @@ public class AssignmentLogicImpl implements AssignmentLogic{
         // create url to point back to this assignment to be included in the description
         // ASNN-477
         //String assignUrl = externalLogic.getAssignmentViewUrl(REDIRECT_ASSIGNMENT_VIEW_ID) + "/" + updatedAssignment.getId();
-
+        String toolTitle = externalLogic.getToolTitle();
         String newAnncSubject = bundleLogic.getFormattedMessage("assignment2.assignment_annc_subject",
                 new Object[] {updatedAssignment.getTitle()});
         String newAnncBody = bundleLogic.getFormattedMessage("assignment2.assignment_annc_body",
-                new Object[] {updatedAssignment.getTitle(), df.format(updatedAssignment.getOpenDate())});
+                new Object[] {updatedAssignment.getTitle(), df.format(updatedAssignment.getOpenDate()), toolTitle});
         String updAnncSubject = bundleLogic.getFormattedMessage("assignment2.assignment_annc_subject_edited",
                 new Object[] {updatedAssignment.getTitle()});
         String updAnncBody = bundleLogic.getFormattedMessage("assignment2.assignment_annc_body_edited",
-                new Object[] {updatedAssignment.getTitle(), df.format(updatedAssignment.getOpenDate())});
+                new Object[] {updatedAssignment.getTitle(), df.format(updatedAssignment.getOpenDate()), toolTitle});
 
         if (originalAssignment == null) {
             // this was a new assignment
@@ -815,10 +815,11 @@ public class AssignmentLogicImpl implements AssignmentLogic{
         String eventTitle = "";
         String eventDescription = "";
         if (updatedAssignment.getDueDate() != null) {
+            String toolTitle = externalLogic.getToolTitle();
             eventTitle = bundleLogic.getFormattedMessage("assignment2.schedule_event_title",
                     new Object[] {updatedAssignment.getTitle()});
             eventDescription = bundleLogic.getFormattedMessage("assignment2.schedule_event_description",
-                    new Object[] {updatedAssignment.getTitle(), df.format(updatedAssignment.getDueDate())});
+                    new Object[] {updatedAssignment.getTitle(), df.format(updatedAssignment.getDueDate()), toolTitle});
         }
 
         if (originalAssignment == null) {

@@ -181,7 +181,7 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware {
             groupmap.put(group.getId(), group);
         }
         
-        boolean contentReviewAvailable = contentReviewLogic.isContentReviewAvailable(); 
+        boolean contentReviewAvailable = contentReviewLogic.isContentReviewAvailable(context); 
         boolean canEdit = permissionLogic.isCurrentUserAbleToEditAssignments(context);
 
         for (Assignment2 asnn: viewable) {

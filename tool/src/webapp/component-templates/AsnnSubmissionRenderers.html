@@ -142,6 +142,9 @@
 	
 	<div rsf:id="submit_attachments">
     <span rsf:id="plagiarism_check" class="messageContent">Beware!  This will be checked for plagiarism!! </span>
+    <div rsf:id="plagiarism_file_req_section">
+      <a rsf:id="plagiarism_file_req" target="_blank">Supported Formats!</a>
+    </div>
 	<fieldset id="attachmentsFieldset">
 		<legend rsf:id="msg=assignment2.student-submit.attachments">Attachments</legend>
 		<ol class="fragment-attachments-container" rsf:id="attachment_list:">
@@ -178,25 +181,31 @@
 		</ol>
 	</fieldset>
 	
-	<fieldset rsf:id="submit_section" class="submit">
+	<fieldset rsf:id="submit_section" id="submit_section" class="submit">
 		<input type="hidden" rsf:id="submitted_text_for_attach_only" />
-		<input rsf:id="submit_button"  accesskey="s" type="submit" class="active" value="Submit!" onclick="return asnn2.studentSubmissionConfirm(this);" />
+		<input rsf:id="submit_button"  accesskey="s" type="submit" class="active" value="Submit!" onclick="return asnn2.studentActionConfirm(this,'#submit-confirm-dialog',true);" />
 		<input rsf:id="back_to_edit_button" type="submit" value="Edit!" />
 		<!-- <input rsf:id="preview_button" title="Preview Submission" accesskey="v" type="button" class="preview_button thickbox" value="Preview"/> -->
 		<input rsf:id="preview_button" accesskey="v" type="submit" value="Preview!"/>
 		<input rsf:id="save_draft_button" accesskey="d" type="submit" value="Save Draft!"/>
-		<input rsf:id="cancel_button" accesskey="x" type="submit" value="Cancel!"/>
+		<input rsf:id="cancel_button" accesskey="x" type="submit" value="Cancel!" onclick="return asnn2.studentActionConfirm(this,'#submit-cancel-dialog',false);"/>
 	</fieldset>													
 	</form>	
 	
 	<div style="display:none" id="submit-confirm-dialog">
-        <ul style="margin:0;padding:0;display:inline;">
-            <li class="alertMessageInline" rsf:id="msg=assignment2.student-submit.confirm.msg">Are you sure you want to submit this?!!</li>
-        </ul>
-        <fieldset class="submit">
-            <input id="submission-confirm-button" accesskey="s" type="button" class="active" rsf:id="msg=assignment2.student-submit.confirm.continue"/>
-            <input id="submission-cancel-button" accesskey="x" type="button" rsf:id="msg=assignment2.student-submit.confirm.cancel"/>
-        </fieldset>
+       <p class="alertMessageInline" rsf:id="msg=assignment2.student-submit.confirm.msg">Are you sure you want to submit this?!!</p>
+        <div class="dialog-submit">
+            <input class="submission-confirm-button active" accesskey="s" type="button" rsf:id="msg=assignment2.student-submit.confirm.continue"/>
+            <input class="submission-cancel-button" accesskey="x" type="button" rsf:id="msg=assignment2.student-submit.confirm.cancel"/>
+        </div>
+    </div>
+    
+    <div style="display:none" id="submit-cancel-dialog">
+        <p class="alertMessageInline" rsf:id="msg=assignment2.dialogs.student_submit_cancel.msg">Are you sure you want to submit this?!!</p>
+        <div class="dialog-submit">
+            <input class="submission-confirm-button active" accesskey="s" type="button" rsf:id="msg=assignment2.dialogs.student_submit_cancel.confirm"/>
+            <input class="submission-cancel-button" accesskey="x" type="button" rsf:id="msg=assignment2.dialogs.student_submit_cancel.cancel"/> 
+        </div>
     </div>
 </div>
 
