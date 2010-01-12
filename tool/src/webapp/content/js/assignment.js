@@ -62,6 +62,22 @@ var asnn2 = asnn2 || {};
 
 (function(jQuery, asnn2) {
 
+    asnn2.closeThickboxHelper = function() {
+        tb_remove();
+        // This really only happens in IE8/CompatMode on Windows Vista
+        if (jQuery.browser.msie) {
+            jQuery("textarea").each(function(){
+                if (FCKeditorAPI != null){
+                    editor = FCKeditorAPI.GetInstance(this.id);
+                    if (editor != null) {
+                        editor.Focus();
+                    }
+                }
+            });
+        }
+    };
+
+
     asnn2.updateAttachments = function(imgsrc, filename, link, ref, filesize) {
         newRow = jQuery('#attachment-list-demo').clone(true); //.appendTo("#attachmentsFieldset ol:first").get(0);
         jQuery(newRow).removeClass("skip");
