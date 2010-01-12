@@ -646,7 +646,9 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
         }
         
         UIOutput.make(tofill, "grade_input_label", inputLabel);
-        UIOutput.make(tofill, "grade_input_appender", inputAppender);
+        if (inputAppender != null) {
+            UIOutput.make(tofill, "grade_input_appender", inputAppender);
+        }
         UIInput gradeInput = UIInput.make(form, "grade_input", "#{AssignmentSubmissionBean.grade}", grade);
         if (readOnly) {
             gradeInput.decorate(new UIFreeAttributeDecorator("disabled", "disabled"));
