@@ -50,6 +50,7 @@ public class GradebookItem {
         this.pointsPossible = pointsPossible;
         this.dueDate = dueDate;
         this.released = released;
+        this.ungraded = ungraded;
     }
 
     /**
