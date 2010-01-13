@@ -318,7 +318,7 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
                 current_times_submitted_already = submissionLogic.getNumSubmittedVersions(as.getUserId(), assignmentId);
             }
 
-            boolean is_override = (as.getNumSubmissionsAllowed() != null);
+            boolean is_override = (as.getNumSubmissionsAllowed() != null || as.getResubmitCloseDate() != null);
             int numSubmissionsAllowed;
             Date resubmitUntil;
             boolean is_require_accept_until = false;
@@ -326,7 +326,7 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
             boolean accept_until_label = false;
             Date dueDate;
 
-            if (as.getNumSubmissionsAllowed() != null) {
+            if (is_override) {
                 // this student already has an override, so use these settings
                 numSubmissionsAllowed = as.getNumSubmissionsAllowed();
                 resubmitUntil = as.getResubmitCloseDate();
@@ -339,6 +339,10 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
                     // this means there is no due date, so try the accept until date
                     resubmitUntil = assignment.getAcceptUntilDate();
                 }
+            }
+            
+            if (as.getResubmitCloseDate() != null) {
+                is_require_accept_until = true;
             }
 
             dueDate = assignment.getDueDate();
@@ -357,14 +361,10 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
             // it will only show up if the user clicks the "Set accept until" checkbox
             if (resubmitUntil == null && dueDate!=null) {
                 resubmitUntil = dueDate;
-                is_require_accept_until = false;
             }
             else if (resubmitUntil == null && dueDate==null) 
             {
                 resubmitUntil = new Date();
-                is_require_accept_until = false;
-            } else {
-                is_require_accept_until = true;
             }
 
             as.setNumSubmissionsAllowed(numSubmissionsAllowed);
@@ -395,9 +395,13 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
                         new Object[] { current_times_submitted_already});
 
                 UIVerbatim.make(form, "addtl_sub_label", messageLocator.getMessage("assignment2.assignment_grade.resubmission_allow_number"));
+                
+                // things get tricky if the num submissions allowed is less than the curr number of submissions
+                // (hopefully no one would do that but just in case!)
+                int numSubmissionsSelectValue = current_times_submitted_already > numSubmissionsAllowed ? current_times_submitted_already : numSubmissionsAllowed;
 
                 UISelect.make(form, "resubmission_additional", number_submissions_values, number_submissions_options, 
-                        asOTP + ".numSubmissionsAllowed", numSubmissionsAllowed + "");
+                        asOTP + ".numSubmissionsAllowed", numSubmissionsSelectValue + "");
 
                 if (render_resubmission_date)
                 {
@@ -406,10 +410,12 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
                     DateFormat df2 = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, locale);
                     if (accept_until_label)
                     {
+                        UIMessage.make(tofill, "extend_accept_until", "assignment2.assignment_grade.resubmission.extend.accept_until");
                         UIMessage.make(tofill, "original_due_date", "assignment2.assignment_grade.accept_until_date", new Object[] {df2.format(dueDate)});
                     }
                     else
                     {
+                        UIMessage.make(tofill, "extend_accept_until", "assignment2.assignment_grade.resubmission.extend.due_date");
                         UIMessage.make(tofill, "original_due_date", "assignment2.assignment_grade.original_due_date", new Object[] {df2.format(dueDate)});
                     }
 
@@ -640,7 +646,9 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
         }
         
         UIOutput.make(tofill, "grade_input_label", inputLabel);
-        UIOutput.make(tofill, "grade_input_appender", inputAppender);
+        if (inputAppender != null) {
+            UIOutput.make(tofill, "grade_input_appender", inputAppender);
+        }
         UIInput gradeInput = UIInput.make(form, "grade_input", "#{AssignmentSubmissionBean.grade}", grade);
         if (readOnly) {
             gradeInput.decorate(new UIFreeAttributeDecorator("disabled", "disabled"));
