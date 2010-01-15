@@ -724,11 +724,11 @@ public class AssignmentLogicImpl implements AssignmentLogic{
         //String assignUrl = externalLogic.getAssignmentViewUrl(REDIRECT_ASSIGNMENT_VIEW_ID) + "/" + updatedAssignment.getId();
         String toolTitle = externalLogic.getToolTitle();
         String newAnncSubject = bundleLogic.getFormattedMessage("assignment2.assignment_annc_subject",
-                new Object[] {updatedAssignment.getTitle()});
+                new Object[] {toolTitle, updatedAssignment.getTitle()});
         String newAnncBody = bundleLogic.getFormattedMessage("assignment2.assignment_annc_body",
                 new Object[] {updatedAssignment.getTitle(), df.format(updatedAssignment.getOpenDate()), toolTitle});
         String updAnncSubject = bundleLogic.getFormattedMessage("assignment2.assignment_annc_subject_edited",
-                new Object[] {updatedAssignment.getTitle()});
+                new Object[] {toolTitle, updatedAssignment.getTitle()});
         String updAnncBody = bundleLogic.getFormattedMessage("assignment2.assignment_annc_body_edited",
                 new Object[] {updatedAssignment.getTitle(), df.format(updatedAssignment.getOpenDate()), toolTitle});
 
@@ -817,7 +817,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
         if (updatedAssignment.getDueDate() != null) {
             String toolTitle = externalLogic.getToolTitle();
             eventTitle = bundleLogic.getFormattedMessage("assignment2.schedule_event_title",
-                    new Object[] {updatedAssignment.getTitle()});
+                    new Object[] {toolTitle, updatedAssignment.getTitle()});
             eventDescription = bundleLogic.getFormattedMessage("assignment2.schedule_event_description",
                     new Object[] {updatedAssignment.getTitle(), df.format(updatedAssignment.getDueDate()), toolTitle});
         }
