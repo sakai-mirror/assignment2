@@ -142,6 +142,11 @@ public class AssignmentLogicImpl implements AssignmentLogic{
         if (assignmentId == null) {
             throw new IllegalArgumentException("Null assignmentId passed to getAssignmentById");
         }
+        
+        // make sure the user can access the assignment object
+        if (!permissionLogic.isUserAbleToViewAssignment(assignmentId)) {
+            throw new SecurityException("User attempted to access assignment with id " + assignmentId + " without permission");
+        }
 
         Assignment2 assign = (Assignment2) dao.findById(Assignment2.class, assignmentId);
 
@@ -156,7 +161,12 @@ public class AssignmentLogicImpl implements AssignmentLogic{
         if (assignmentId == null) {
             throw new IllegalArgumentException("Null assignmentId passed to getAssignmentByIdWithAssociatedData");
         }
-        // first, retrieve Assignment2 object
+        
+        // make sure the user can access the assignment object
+        if (!permissionLogic.isUserAbleToViewAssignment(assignmentId)) {
+            throw new SecurityException("User attempted to access assignment with id " + assignmentId + " without permission");
+        }
+        // retrieve Assignment2 object
         Assignment2 assign = (Assignment2) dao.getAssignmentByIdWithGroupsAndAttachments(assignmentId);
 
         if (assign == null) {
@@ -180,22 +190,14 @@ public class AssignmentLogicImpl implements AssignmentLogic{
         return assign;
     }
 
-    public Assignment2 getAssignmentByIdWithGroups(Long assignmentId) {
-        if (assignmentId == null) {
-            throw new IllegalArgumentException("Null assignmentId passed to getAssignmentByIdWithGroups");
-        }
-
-        Assignment2 assign = (Assignment2) dao.getAssignmentByIdWithGroups(assignmentId);
-        if (assign == null) {
-            throw new AssignmentNotFoundException("No assignment found with id: " + assignmentId);
-        }
-
-        return assign;
-    }
-
     public Assignment2 getAssignmentByIdWithGroupsAndAttachments(Long assignmentId) {
         if (assignmentId == null) {
             throw new IllegalArgumentException("Null assignmentId passed to getAssignmentByIdWithGroupsAndAttachments");
+        }
+        
+        // make sure the user can access the assignment object
+        if (!permissionLogic.isUserAbleToViewAssignment(assignmentId)) {
+            throw new SecurityException("User attempted to access assignment with id " + assignmentId + " without permission");
         }
 
         Assignment2 assign = (Assignment2) dao.getAssignmentByIdWithGroupsAndAttachments(assignmentId);

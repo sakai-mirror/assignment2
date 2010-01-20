@@ -57,7 +57,15 @@ public class AssignmentLogicTest extends Assignment2TestBase {
             fail("did not catch null id passed to getAssignmentById");
         } catch (IllegalArgumentException iae) {
         }
+        
+        // try retrieving the assignment w/o permission
+        externalLogic.setCurrentUserId("random");
+        try {
+            assignmentLogic.getAssignmentById(testData.a1Id);
+            fail("Did not catch invalid user attempting to access assignment via getAssignmentById");
+        } catch (SecurityException se) {}
 
+        externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
         // try a bogus id
         try {
             assignmentLogic.getAssignmentById(12345L);
@@ -206,7 +214,7 @@ public class AssignmentLogicTest extends Assignment2TestBase {
         assignmentLogic.deleteAssignment(testData.a1);
 
         // let's double check that it still exists. it should just have removed = true now
-        Assignment2 deletedAssign = assignmentLogic.getAssignmentById(testData.a1Id);
+        Assignment2 deletedAssign = dao.getAssignmentByIdWithGroupsAndAttachments(testData.a1Id);
         assertNotNull(deletedAssign);
         assertTrue(deletedAssign.isRemoved());
 
@@ -408,6 +416,15 @@ public class AssignmentLogicTest extends Assignment2TestBase {
             assignmentLogic.getAssignmentByIdWithAssociatedData(null);
             fail("Did not catch null assignment id passed to getAssignmentByIdWithAssociatedData");
         } catch (IllegalArgumentException iae) {}
+        
+     // try retrieving the assignment w/o permission
+        externalLogic.setCurrentUserId("random");
+        try {
+            assignmentLogic.getAssignmentById(testData.a1Id);
+            fail("Did not catch invalid user attempting to access assignment via getAssignmentById");
+        } catch (SecurityException se) {}
+
+        externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
 
         // start with instructor
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
@@ -435,32 +452,21 @@ public class AssignmentLogicTest extends Assignment2TestBase {
         assertTrue(assign.getAttachmentSet().size() == 2); 	
     }
 
-    public void testGetAssignmentByIdWithGroups() throws Exception {
-        // try passing a null id
-        try {
-            assignmentLogic.getAssignmentByIdWithGroups(null);
-            fail("Did not catch null assignment id passed to getAssignmentByIdWithGroups");
-        } catch (IllegalArgumentException iae) {}
-
-        // try passing an id that doesn't exist 
-        try {
-            assignmentLogic.getAssignmentByIdWithGroups(12345L);
-            fail("did not catch non-existent assignmentId passed to getAssignmentByIdWithGroups");
-        }
-        catch (AssignmentNotFoundException anfe) {}
-
-        // try a valid item
-        Assignment2 assign = assignmentLogic.getAssignmentByIdWithGroups(testData.a1Id);
-        assertTrue(assign.getId().equals(testData.a1Id));
-        assertTrue(assign.getAssignmentGroupSet().size() == 2);	
-    }
-
     public void testGetAssignmentByIdWithGroupsAndAttachments() throws Exception {
         // try passing a null id
         try {
             assignmentLogic.getAssignmentByIdWithGroupsAndAttachments(null);
             fail("Did not catch null assignment id passed to getAssignmentByIdWithGroupsAndAttachments");
         } catch (IllegalArgumentException iae) {}
+        
+        // try retrieving the assignment w/o permission
+        externalLogic.setCurrentUserId("random");
+        try {
+            assignmentLogic.getAssignmentById(testData.a1Id);
+            fail("Did not catch invalid user attempting to access assignment via getAssignmentById");
+        } catch (SecurityException se) {}
+
+        externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
 
         // try passing an id that doesn't exist 
         try {
