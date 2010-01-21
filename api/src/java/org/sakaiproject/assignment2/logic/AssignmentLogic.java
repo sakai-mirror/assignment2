@@ -22,10 +22,12 @@
 package org.sakaiproject.assignment2.logic;
 
 import java.util.List;
+import java.util.Map;
 
 import org.sakaiproject.assignment2.exception.AssignmentNotFoundException;
 import org.sakaiproject.assignment2.logic.utils.Assignment2Utils;
 import org.sakaiproject.assignment2.model.Assignment2;
+import org.sakaiproject.assignment2.service.model.AssignmentDefinition;
 
 
 /**
@@ -146,5 +148,16 @@ public interface AssignmentLogic {
      * See {@link Assignment2Utils#getVersionedString(String)} for more info
      */
     public String getDuplicatedAssignmentTitle(String contextId, String titleToDuplicate);
+    
+    /**
+     * 
+     * @param assignment
+     * @param gbIdItemMap
+     * @param groupIdToTitleMap
+     * @return a populated {@link AssignmentDefinition} object based upon the information
+     * provided via the assignment, gbIdItemMap, and groupIdToTitleMap
+     */
+    public AssignmentDefinition getAssignmentDefinition(Assignment2 assignment, Map<Long, GradebookItem> gbIdItemMap,
+            Map<String, String> groupIdToTitleMap);
 
 }

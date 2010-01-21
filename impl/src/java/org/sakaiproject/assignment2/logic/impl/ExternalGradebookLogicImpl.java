@@ -151,25 +151,23 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
         }
     }
 
-    public Map<Long, String> getViewableGradebookItemIdTitleMap(String contextId) {
+    public List<GradebookItem> getViewableGradebookItems(String contextId) {
         if (contextId == null) {
             throw new IllegalArgumentException("Null contextId passed to getViewableGradebookItemIdTitleMap");
         }
 
-        List<Assignment> viewableGbItems = gradebookService.getViewableAssignmentsForCurrentUser(contextId);
+        List<Assignment> gbAssignments = gradebookService.getViewableAssignmentsForCurrentUser(contextId);
+        List<GradebookItem> viewableGbItems = new ArrayList<GradebookItem>();
 
-        Map<Long, String> idTitleMap = new HashMap<Long, String>();
-        if (viewableGbItems == null || viewableGbItems.isEmpty()) {
-            return idTitleMap;
-        }
-
-        for (Assignment assign : viewableGbItems) {
-            if (assign != null && !assign.isExternallyMaintained()) {
-                idTitleMap.put(assign.getId(), assign.getName());
+        if (gbAssignments != null) {
+            for (Assignment assign : gbAssignments) {
+                if (assign != null && !assign.isExternallyMaintained()) {
+                    viewableGbItems.add(getGradebookItem(assign));
+                }
             }
         }
 
-        return idTitleMap;
+        return viewableGbItems;
     }
 
     public List<GradebookItem> getAllGradebookItems(String contextId, boolean includeExternallyMaintained) {
@@ -186,12 +184,7 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
 
                 for (Assignment assign : allGbItems) {
                     if (assign != null && (!assign.isExternallyMaintained() || includeExternallyMaintained)) {
-                        GradebookItem item = 
-                            new GradebookItem(assign.getId(), assign.getName(), assign.getPoints(), assign.getDueDate(), assign.isReleased(), assign.getUngraded());
-
-                        if (assign.isExternallyMaintained()) {
-                            item.setExternalId(assign.getExternalId());
-                        }
+                        GradebookItem item = getGradebookItem(assign);
 
                         gradebookItems.add(item);
                     }
@@ -439,8 +432,7 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
 
         try {
             Assignment assign = gradebookService.getAssignment(contextId, gradebookItemId);
-            gradebookItem = new GradebookItem(assign.getId(), assign.getName(), 
-                    assign.getPoints(), assign.getDueDate(), assign.isReleased(), assign.getUngraded());
+            gradebookItem = getGradebookItem(assign);
         } catch (AssessmentNotFoundException anfe) {
             throw new GradebookItemNotFoundException ("No gradebook item exists with gradebookItemId " 
                     + gradebookItemId + " in context " + contextId, anfe);
@@ -635,8 +627,15 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
             allowed = true;
         } else if (isCurrentUserAbleToGrade(contextId) || isCurrentUserAStudentInGb(contextId)) {
             // check to see if this assignment is among the viewable assign for this user
-            Map<Long, String> gbItemIdToTitleMap = getViewableGradebookItemIdTitleMap(contextId);
-            if (gbItemIdToTitleMap.containsKey(gradebookItemId)) {
+            List<GradebookItem> viewableGbItems = getViewableGradebookItems(contextId);
+            List<Long> gbItemIds = new ArrayList<Long>();
+            if (viewableGbItems != null) {
+                for (GradebookItem gbItem : viewableGbItems) {
+                    gbItemIds.add(gbItem.getGradebookItemId());
+                }
+            }
+
+            if (gbItemIds.contains(gradebookItemId)) {
                 allowed = true;
             }
         } 
@@ -773,5 +772,26 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
         }
 
         return valid;
+    }
+    
+    /**
+     * 
+     * @param gbAssignment
+     * @return the {@link GradebookItem} representing the given gradebook {@link Assignment}.
+     * Returns null if gbAssignment is null
+     */
+    private GradebookItem getGradebookItem(Assignment gbAssignment) {
+        GradebookItem gbItem = null;
+        if (gbAssignment != null) {
+            gbItem = new GradebookItem(gbAssignment.getId(), gbAssignment.getName(), 
+                    gbAssignment.getPoints(), gbAssignment.getDueDate(), gbAssignment.isReleased(), 
+                    gbAssignment.getUngraded());
+            
+            if (gbAssignment.isExternallyMaintained()) {
+                gbItem.setExternalId(gbAssignment.getExternalId());
+            }
+        }
+        
+        return gbItem;
     }
 }
