@@ -28,10 +28,11 @@ import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment2.exception.AssignmentNotFoundException;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.service.model.AssignmentDefinition;
+import org.sakaiproject.assignment2.test.Assignment2TestBase;
 import org.sakaiproject.assignment2.test.AssignmentTestDataLoad;
 
 
-public class Assignment2ServiceTest extends Assignment2ServiceTestBase {
+public class Assignment2ServiceTest extends Assignment2TestBase {
 
     private static final Log log = LogFactory.getLog(Assignment2ServiceTest.class);
 

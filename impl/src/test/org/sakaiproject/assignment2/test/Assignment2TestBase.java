@@ -18,7 +18,7 @@
  * limitations under the License.
  *
  **********************************************************************************/
-package org.sakaiproject.assignment2.logic.test;
+package org.sakaiproject.assignment2.test;
 
 
 import org.sakaiproject.assignment2.dao.AssignmentDao;
@@ -32,6 +32,7 @@ import org.sakaiproject.assignment2.logic.impl.ExternalContentReviewLogicImpl;
 import org.sakaiproject.assignment2.logic.impl.ExternalGradebookLogicImpl;
 import org.sakaiproject.assignment2.logic.test.stubs.ExternalLogicStub;
 import org.sakaiproject.assignment2.logic.test.stubs.GradebookServiceStub;
+import org.sakaiproject.assignment2.service.impl.Assignment2ServiceImpl;
 import org.sakaiproject.assignment2.test.AssignmentTestDataLoad;
 import org.sakaiproject.assignment2.test.PreloadTestData;
 import org.springframework.test.AbstractTransactionalSpringContextTests;
@@ -57,10 +58,9 @@ public abstract class Assignment2TestBase extends AbstractTransactionalSpringCon
     protected AssignmentPermissionLogicImpl permissionLogic;
     protected AssignmentBundleLogic bundleLogic;
     protected ExternalContentReviewLogicImpl contentReviewLogic;
-
     protected GradebookServiceStub gradebookService;
-
     protected ExternalLogicStub externalLogic;
+    protected Assignment2ServiceImpl assignment2Service;
 
     protected void onSetUpBeforeTransaction() throws Exception {
 
@@ -120,6 +120,11 @@ public abstract class Assignment2TestBase extends AbstractTransactionalSpringCon
         submissionLogic.setPermissionLogic(permissionLogic);
         submissionLogic.setAssignmentLogic(assignmentLogic);
 
+        assignment2Service = new Assignment2ServiceImpl();
+        assignment2Service.setAssignmentLogic(assignmentLogic);
+        assignment2Service.setAssignmentPermissionLogic(permissionLogic);
+        assignment2Service.setExternalGradebookLogic(gradebookLogic);
+        assignment2Service.setExternalLogic(externalLogic);
     }
 
     /**

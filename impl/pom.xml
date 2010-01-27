@@ -62,10 +62,8 @@
         <version>0.9.17</version>
     </dependency>
     <dependency>
-      <groupId>${sakai.spring.groupId}</groupId>
-      <artifactId>${sakai.spring.artifactId}</artifactId>
-      <version>2.0.6</version>
-      <scope>provided</scope>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring</artifactId>
     </dependency>
     
     <!-- PonderUtilCore for ArrayUtils -->
@@ -200,10 +198,10 @@
     </dependency>
 -->
     <dependency>
-        <groupId>org.springframework</groupId>
-        <artifactId>spring-test</artifactId>
-        <version>2.5.6.SEC01</version>
-        <scope>test</scope>
+      <groupId>${sakai.spring.groupId}</groupId>
+      <artifactId>${sakai.spring.test.artifactId}</artifactId>
+      <version>${sakai.spring.test.version}</version>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>hsqldb</groupId>
@@ -223,7 +221,6 @@
     <dependency>
       <groupId>cglib</groupId>
       <artifactId>cglib-nodep</artifactId>
-      <version>2.1_3</version>
     </dependency>
     <dependency>
       <groupId>commons-codec</groupId>

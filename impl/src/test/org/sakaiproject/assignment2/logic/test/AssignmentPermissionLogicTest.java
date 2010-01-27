@@ -29,6 +29,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.assignment2.test.Assignment2TestBase;
 import org.sakaiproject.assignment2.test.AssignmentTestDataLoad;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentGroup;
@@ -44,6 +45,19 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
      */
     protected void onSetUpInTransaction() throws Exception {
         super.onSetUpInTransaction();
+        
+        // refresh the assign data before you begin the tests.  sometimes it gets cranky if you don't
+        dao.evictObject(testData.a1);
+        testData.a1 = dao.getAssignmentByIdWithGroupsAndAttachments(testData.a1Id);
+        
+        dao.evictObject(testData.a2);
+        testData.a2 = dao.getAssignmentByIdWithGroupsAndAttachments(testData.a2Id);
+        
+        dao.evictObject(testData.a3);
+        testData.a3 = dao.getAssignmentByIdWithGroupsAndAttachments(testData.a3Id);
+        
+        dao.evictObject(testData.a4);
+        testData.a4 = dao.getAssignmentByIdWithGroupsAndAttachments(testData.a4Id);
     }
 
     public void testIsCurrentUserAbleToEditAssignments() {
@@ -267,9 +281,8 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
 
         // instructors should be able to view all assignments 
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
+        
         assignList = new ArrayList<Assignment2>();
-        testData.a1.setRemoved(false); // I'm not sure why this was set to removed here, but let's
-        // ensure it is not removed
         assignList.add(testData.a1);
         assignList.add(testData.a2);
 
