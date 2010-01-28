@@ -12,6 +12,7 @@ import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
+import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 
 import uk.org.ponder.messageutil.MessageLocator;
 import uk.org.ponder.rsf.components.UIBranchContainer;
@@ -112,21 +113,23 @@ public class AsnnSubmissionHistoryRenderer implements BasicProducer {
                 // do not include draft versions in this history display unless
                 // submission is closed and there were multiple submissions
                 if (!version.isDraft() || includeDraftVersion) {
+                    // get status of this version
+                    int status = submissionLogic.getSubmissionStatusForVersion(version, assignment.getDueDate(), assignmentSubmission.getResubmitCloseDate());
+                    
                     UIBranchContainer versionDiv = UIBranchContainer.make(joint, "submission-version:");
-                    if (version.isDraft()) {
+                    if (status == AssignmentConstants.SUBMISSION_IN_PROGRESS) {
                         UIMessage.make(versionDiv, "header-text", "assignment2.student-submission.history.version.header.draft",
                                 new Object[] {df.format(version.getStudentSaveDate())});
-                    } else if (version.getSubmittedDate() == null) {
+                    } else if (status == AssignmentConstants.SUBMISSION_NOT_STARTED) {
                         UIMessage.make(versionDiv, "header-text", "assignment2.student-submission.history.version.header.no_submission");
-                    } else {
-                        if (assignment.getDueDate() != null && assignment.getDueDate().before(version.getSubmittedDate())) {
-                            UIMessage.make(versionDiv, "header-text", "assignment2.student-submission.history.version.header.late", 
-                                    new Object[] {df.format(version.getSubmittedDate())});
-                        } else {
-                            UIMessage.make(versionDiv, "header-text", "assignment2.student-submission.history.version.header", 
-                                    new Object[] {df.format(version.getSubmittedDate())});
-                        }
-                    }
+                    } else if (status == AssignmentConstants.SUBMISSION_LATE) {
+                        UIMessage.make(versionDiv, "header-text", "assignment2.student-submission.history.version.header.late", 
+                                new Object[] {df.format(version.getSubmittedDate())});
+                    } else if (status == AssignmentConstants.SUBMISSION_SUBMITTED) {
+                        UIMessage.make(versionDiv, "header-text", "assignment2.student-submission.history.version.header", 
+                                new Object[] {df.format(version.getSubmittedDate())});
+                    } 
+                    
                     boolean newfeedback = false;
                     String feedbackReadText = messageLocator.getMessage("assignment2.student-submission.feedback.read");
                     String feedbackUnreadText = messageLocator.getMessage("assignment2.student-submission.feedback.unread");

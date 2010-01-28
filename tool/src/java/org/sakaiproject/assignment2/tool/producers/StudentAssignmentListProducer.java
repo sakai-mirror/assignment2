@@ -37,6 +37,7 @@ import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
+import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.assignment2.tool.StudentAction;
 import org.sakaiproject.assignment2.tool.beans.AssignmentSubmissionBean;
 import org.sakaiproject.assignment2.tool.params.AssignmentListSortViewParams;
@@ -198,7 +199,8 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
             String actionLinkText;
             // if there is at least one submission, we display the submitted date/time for the link text
             if (latestSubmission != null) {
-                if (assignment.getDueDate() != null && assignment.getDueDate().before(latestSubmission.getSubmittedDate())) {
+                int latestSubmissionStatus = submissionLogic.getSubmissionStatusForVersion(latestSubmission, assignment.getDueDate(), assignmentSubmission.getResubmitCloseDate());
+                if (latestSubmissionStatus == AssignmentConstants.SUBMISSION_LATE) {
                     actionLinkText = messageLocator.getMessage("assignment2.student-assignment-list.submitted_link.late", 
                             df.format(latestSubmission.getSubmittedDate()));
                 } else {
@@ -218,12 +220,21 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
                 UIInternalLink.make(row, "assignment-resubmit-link", UIMessage.make("assignment2.student-assignment-list.resubmit_link"),  
                         new SimpleAssignmentViewParams(StudentSubmitProducer.VIEW_ID, assignment.getId()));
             }
+            
+            // the student may have a different due date for this assignment if the
+            // instructor revised their due date
+            Date studentDueDate;
+            if (assignmentSubmission.getResubmitCloseDate() != null) {
+                studentDueDate = assignmentSubmission.getResubmitCloseDate();
+            } else {
+                studentDueDate = assignment.getDueDate();
+            }
 
             // Due date
-            if (assignment.getDueDate() != null) {
-                UIOutput.make(row, "assignment_row_due", df.format(assignment.getDueDate())).decorate(assnItemDecorator);
+            if (studentDueDate != null) {
+                UIOutput.make(row, "assignment_row_due", df.format(studentDueDate)).decorate(assnItemDecorator);
                 // if submission is open and would be late, we add a late flag
-                if (assignment.getDueDate().before(new Date()) && 
+                if (studentDueDate.before(new Date()) && 
                         (availStudentAction.equals(StudentAction.VIEW_AND_RESUBMIT) || 
                                 availStudentAction.equals(StudentAction.VIEW_AND_SUBMIT))) {
                     UIMessage.make(row, "assignment_late", "assignment2.student-assignment-list.late").decorate(assnItemDecorator);

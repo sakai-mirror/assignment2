@@ -711,28 +711,38 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
                     AssignmentSubmission currSubmission = (AssignmentSubmission)assignmentIdToSubmissionMap.get(assign.getId());
                     AssignmentSubmissionVersion currVersion = currSubmission != null ? 
                             currSubmission.getCurrentSubmissionVersion() : null;
+                    Date submissionDueDate = currSubmission != null ? currSubmission.getResubmitCloseDate() : null;
 
-                            Integer status = getSubmissionStatusConstantForCurrentVersion(currVersion, assign.getDueDate());
-                            assignToStatusMap.put(assign, status);
+                    Integer status = getSubmissionStatusForVersion(currVersion, assign.getDueDate(), submissionDueDate);
+                    assignToStatusMap.put(assign, status);
                 }
             }
         }
 
         return assignToStatusMap;
     }
-
-    public Integer getSubmissionStatusConstantForCurrentVersion(AssignmentSubmissionVersion currentVersion,
-            Date dueDate) {
+    
+    public Integer getSubmissionStatusForVersion(AssignmentSubmissionVersion version, Date assignDueDate, Date submissionDueDate) {
+        
         int status = AssignmentConstants.SUBMISSION_NOT_STARTED;
-
-        if (currentVersion == null) {
+        
+        // the student's due date will be the assignment due date unless the instructor
+        // has extended the due date for this single student
+        Date studentDueDate;
+        if (submissionDueDate != null) {
+            studentDueDate = submissionDueDate;
+        } else {
+            studentDueDate = assignDueDate;
+        }
+        
+        if (version == null) {
             status = AssignmentConstants.SUBMISSION_NOT_STARTED;
-        } else if (currentVersion.getId() == null) {
+        } else if (version.getId() == null) {
             status = AssignmentConstants.SUBMISSION_NOT_STARTED;
-        } else if (currentVersion.isDraft()) {
+        } else if (version.isDraft()) {
             status = AssignmentConstants.SUBMISSION_IN_PROGRESS;
-        } else if (currentVersion.getSubmittedDate() != null) {
-            if (dueDate != null && dueDate.before(currentVersion.getSubmittedDate())) {
+        } else if (version.getSubmittedDate() != null) {
+            if (studentDueDate != null && studentDueDate.before(version.getSubmittedDate())) {
                 status = AssignmentConstants.SUBMISSION_LATE;
             } else {
                 status = AssignmentConstants.SUBMISSION_SUBMITTED;
