@@ -4,7 +4,7 @@
 <!--     Assignment Submission Detail Headers Widget                         -->
 <!--                                                                         -->
 <div rsf:id="assn2-submission-details-widget:">
-    <h3 rsf:id="heading_status" >
+    <h3 rsf:id="heading_status" class="submissionHeading">
         Professional Writing for Visual Media Submission for Earlene Arledge
     </h3>
     
@@ -56,14 +56,16 @@
 <!--     Assignment Instructions Widget                                      -->
 <!--                                                                         -->
 <div rsf:id="assn2-assignment-instructions-widget:">
-    <h4 rsf:id="msg=assignment2.student-submit.instructions_heading">Instructions</h4>
-    <div rsf:id="instructions" class="textPanel"><p>Instructions would go here.</p></div>
-    <h4 rsf:id="attachments-header">Supporting Materials</h4>
-    <ul class="attachList indnt1">
-        <li rsf:id="attachment_list:">
-            <img src="page_white_word.png" width="16" height="16"/><a href="">ExampleAttachment.doc</a> (52 KB)
-        </li>
-    </ul>
+    <h3 rsf:id="msg=assignment2.student-submit.instructions_heading">Instructions</h3>
+    <div rsf:id="instructions" class="studentSubsection"><p>Instructions would go here.</p></div>
+    <h3 rsf:id="attachments-header">Supporting Materials</h3>
+    <div class="studentSubsection">
+      <ul class=" attachList">
+          <li rsf:id="attachment_list:">
+              <img src="page_white_word.png" width="16" height="16"/><a href="">ExampleAttachment.doc</a> (52 KB)
+          </li>
+      </ul>
+    </div>
 </div>
 
 <!--                                                                         -->
@@ -130,56 +132,70 @@
 <div rsf:id="asnn2-submit-editor-widget:">
 	<form rsf:id="form" method="post">
 	<h3 rsf:id="msg=assignment2.student-submit.assignment_submission">Assignment Submission</h3>
-	<p class="instruction" rsf:id="submission_instructions">Submission Instructions</p>
-	<p rsf:id="required" class="instruction">An * means required.</p>
-	<fieldset rsf:id="submit_text">
-		<legend rsf:id="msg=assignment2.student-submit.submission_text">Assignment Text</legend>
-		<div rsf:id="text:" >		        
-		    <textarea id="sub_text" rsf:id="text_disabled" name="something" cols="80" rows="20" wrap="virtual"></textarea>
-			<!-- this should be the FCKEditor -->
-		</div>
-	</fieldset>
-	
-	<div rsf:id="submit_attachments">
-    <span rsf:id="plagiarism_check" class="messageContent">Beware!  This will be checked for plagiarism!! </span>
-    <div rsf:id="plagiarism_file_req_section">
-      <a rsf:id="plagiarism_file_req" target="_blank">Supported Formats!</a>
-    </div>
-	<fieldset id="attachmentsFieldset">
-		<legend rsf:id="msg=assignment2.student-submit.attachments">Attachments</legend>
-		<ol class="fragment-attachments-container" rsf:id="attachment_list:">
-			<li></li>
-		</ol>
-		<span><a rsf:id="add_submission_attachments" class="thickbox">Add Attachments</a></span>
-	</fieldset>
-	</div>
-	
-	<!-- this is feedback supplied for the draft version -->
-	<div rsf:id="draft-feedback">
-			<h3 rsf:id="msg=assignment2.student-submission.feedback.header">My Feedback</h3>
-			<h4 rsf:id="msg=assignment2.student-submission.feedback.notes.header">Instructor Feedback</h4>
-        <div rsf:id="draft-feedback-text" class="textPanel">
-            <p>Feedback from the instructor.</p>
-        </div>
-        <h4 rsf:id="draft-feedback-attachments-header">Feedback Supporting Materials</h4>
-        <ul class="attachList indnt1">
-            <li rsf:id="draft-feedback-attachment-list:">
-                <img src="page_white_word.png" width="16" height="16"/><a href="">ExampleAttachment.doc</a> (52 KB)
-            </li>
-        </ul>
-    </div>
+  <div class="studentSubsection">
+  	<p class="instruction" rsf:id="submission_instructions">Submission Instructions</p>
+  	<p rsf:id="required" class="instruction">An * means required.</p>
+  	<fieldset rsf:id="submit_text">
+  		<legend rsf:id="msg=assignment2.student-submit.submission_text">Assignment Text</legend>
+  		<div rsf:id="text:" >
+  		    <textarea id="sub_text" rsf:id="text_disabled" name="something" cols="80" rows="20" wrap="virtual"></textarea>
+  			<!-- this should be the FCKEditor -->
+  		</div>
+  	</fieldset>
+  	
+  	<div rsf:id="submit_attachments">
+      <span rsf:id="plagiarism_check" class="messageContent">Beware!  This will be checked for plagiarism!! </span>
+      <div rsf:id="plagiarism_file_req_section">
+        <a rsf:id="plagiarism_file_req" target="_blank">Supported Formats!</a>
+      </div>
+  	<fieldset id="attachmentsFieldset">
+  		<legend rsf:id="msg=assignment2.student-submit.attachments">Attachments</legend>
+  		<ol class="fragment-attachments-container" rsf:id="attachment_list:">
+  			<li></li>
+  		</ol>
+  		<span class="indnt1"><a rsf:id="add_submission_attachments" class="thickbox">Add Attachments</a></span>
+  	</fieldset>
+  	</div>
+  	
+  	<!-- this is feedback supplied for the draft version -->
+  	<div rsf:id="draft-feedback">
+  			<h3 rsf:id="msg=assignment2.student-submission.feedback.header">My Feedback</h3>
+  			<h4 rsf:id="msg=assignment2.student-submission.feedback.notes.header">Instructor Feedback</h4>
+          <div rsf:id="draft-feedback-text" class="textPanel">
+              <p>Feedback from the instructor.</p>
+          </div>
+          <h4 rsf:id="draft-feedback-attachments-header">Feedback Supporting Materials</h4>
+          <ul class="attachList indnt1">
+              <li rsf:id="draft-feedback-attachment-list:">
+                  <img src="page_white_word.png" width="16" height="16"/><a href="">ExampleAttachment.doc</a> (52 KB)
+              </li>
+          </ul>
+      </div>
+  </div>
     
-	<fieldset rsf:id="honor_pledge_fieldset" >
-		<legend rsf:id="msg=assignment2.student-submit.honor_pledge">Honor Pledge</legend>
-		<ol>
-			<li>
-				<span rsf:id="msg=assignment2.req_star" class="reqStar">*</span>
-				<input type="checkbox" rsf:id="honor_pledge" id="honor_pledge" />
-				<label for="honor_pledge" rsf:id="honor_pledge_label">I have neither given nor received aid on this assignment.</label>
-		        <span class="alertMessageInline" style="display: none;" id="honor_pledge_error" rsf:id="msg=assignment2.student-submit.error.honor_pledge_required">You must agree to the honor code!</span>
-			</li>
-		</ol>
-	</fieldset>
+  <div rsf:id="honor_pledge_fieldset">
+    <span rsf:id="msg=assignment2.req_star" class="reqStar">*</span>
+    <input type="checkbox" rsf:id="honor_pledge" id="honor_pledge" class="honor_pledge" />
+    <label for="honor_pledge">
+      <span rsf:id="msg=assignment2.student-submit.honor_pledge" class="honorPledgeLabel">HONOR PLEDGE!:</span>
+      <span rsf:id="msg=assignment2.student-submit.honor_pledge_text">
+        I have neither given nor received aid on this assignment!!
+      </span>
+      <span class="messageError" style="display: none;" id="honor_pledge_error" rsf:id="msg=assignment2.student-submit.error.honor_pledge_required">You must agree to the honor code!</span>
+    </label>
+  </div>
+  
+  <script type="text/javascript">
+//<![CDATA[
+    var honorPledgeCheckbox = jQuery("input:checkbox[class='honor_pledge']");
+    honorPledgeCheckbox.click(function () { 
+      honorPledgeElem = honorPledgeCheckbox.get(0);
+      if (honorPledgeElem && honorPledgeElem.checked) {
+       jQuery("#page-replace\\:\\:portletBody\\:1\\:assignment-edit-submission\\:\\:honor_pledge_error").hide();
+      }
+    });
+  //]]>
+  </script>
 	
 	<fieldset rsf:id="submit_section" id="submit_section" class="submit">
 		<input type="hidden" rsf:id="submitted_text_for_attach_only" />

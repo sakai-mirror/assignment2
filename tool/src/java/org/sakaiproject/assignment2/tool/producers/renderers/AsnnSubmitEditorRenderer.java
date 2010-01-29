@@ -20,7 +20,6 @@ import org.sakaiproject.assignment2.tool.producers.evolvers.AttachmentInputEvolv
 import uk.org.ponder.beanutil.entity.EntityBeanLocator;
 import uk.org.ponder.messageutil.MessageLocator;
 import uk.org.ponder.rsf.components.UIBoundBoolean;
-import uk.org.ponder.rsf.components.UIBoundString;
 import uk.org.ponder.rsf.components.UICommand;
 import uk.org.ponder.rsf.components.UIContainer;
 import uk.org.ponder.rsf.components.UIELBinding;
@@ -237,7 +236,6 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
 
         if (assignment.isHonorPledge()) {
             UIOutput.make(joint, "honor_pledge_fieldset");
-            UIMessage.make(joint, "honor_pledge_label", "assignment2.student-submit.honor_pledge_text");
             UIBoundBoolean.make(form, "honor_pledge", "#{StudentSubmissionBean.honorPledge}");
         }
         
