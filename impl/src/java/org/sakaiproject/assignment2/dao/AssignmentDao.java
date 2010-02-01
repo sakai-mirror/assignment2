@@ -91,7 +91,9 @@ public interface AssignmentDao extends GeneralGenericDao {
     /**
      * 
      * @param submission
-     * @return returns the current submission version for the given AssignmentSubmission and userId
+     * @return returns the current submission version for the given AssignmentSubmission. If a feedback-only
+     * version exists, it will only be defined as the "current" version if no other versions
+     * exist. Otherwise, the most recent student version (this could be draft) will be returned
      */
     public AssignmentSubmissionVersion getCurrentSubmissionVersionWithAttachments(AssignmentSubmission submission);
 
