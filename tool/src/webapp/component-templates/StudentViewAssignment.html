@@ -18,8 +18,6 @@
 	<div rsf:id="assignment-previous-submissions:">
 	    <!-- Students previous submissions will be rendered. This is a collapsable tree containing the versions. -->
 	</div>
-
-	<hr class="itemSeparator" rsf:id="previous_submissions_sep"/>
 	
 	<div rsf:id="assignment-instructions:">
 	    <!-- Assignment Instructions go here. -->
@@ -46,6 +44,15 @@
             </fieldset>
         </form>
 	</div>
+    
+<script type="text/javascript">
+//<![CDATA[
+    // initialize the collapsible toggles
+    jQuery("div.toggleHeader").click(function () { 
+        asnn2.toggleSubsection(".toggleSubsection", this);
+    });
+  //]]>
+  </script>
 	
 	<!-- 
 	<fieldset>

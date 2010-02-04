@@ -35,6 +35,8 @@
     
     <bean id="DisplayUtil" class="org.sakaiproject.assignment2.tool.DisplayUtil">
         <property name="submissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
+        <property name="messageLocator" ref="messageLocator" />
+        <property name="assignmentBundleLogic" ref="org.sakaiproject.assignment2.logic.AssignmentBundleLogic" />
     </bean>
 
 	
