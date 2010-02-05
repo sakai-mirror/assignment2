@@ -80,7 +80,7 @@ public class AddAttachmentHelperProducer implements ViewComponentProducer, ViewP
     public void fillComponents(UIContainer tofill, ViewParameters viewparams, ComponentChecker checker) {
         FilePickerHelperViewParams params = (FilePickerHelperViewParams) viewparams;
 
-
+System.out.println("ADD ATTACHMENT HELPER!!");
         //parameters for helper
         ToolSession toolSession = sessionManager.getCurrentToolSession();
         toolSession.setAttribute(FilePickerHelper.FILE_PICKER_TITLE_TEXT, messageLocator.getMessage("assignment2.add_attachment_helper.title"));
