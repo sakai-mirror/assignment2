@@ -1,8 +1,6 @@
 package org.sakaiproject.assignment2.tool.producers.renderers;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
@@ -75,11 +73,11 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
     public void setAttachmentInputEvolver(AttachmentInputEvolver attachmentInputEvolver){
         this.attachmentInputEvolver = attachmentInputEvolver;
     }
-
+    
     // Dependency
-    private AttachmentListRenderer attachmentListRenderer;
-    public void setAttachmentListRenderer (AttachmentListRenderer attachmentListRenderer) {
-        this.attachmentListRenderer = attachmentListRenderer;
+    private AsnnInstructionsRenderer asnnInstructionsRenderer;
+    public void setAsnnInstructionsRenderer(AsnnInstructionsRenderer asnnInstructionsRenderer) {
+        this.asnnInstructionsRenderer = asnnInstructionsRenderer;
     }
 
     // Dependency
@@ -198,7 +196,18 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
                 // since we are rendering the toggle, let's identify the submission editing section
                 // with css classes
                 editSubmissionContainer.decorate(new UIFreeAttributeDecorator("class", "subsection1 toggleSubsection"));
+                
+                if (!expand) {
+                    editSubmissionContainer.decorate(new UIFreeAttributeDecorator("style", "display: none;"));
+                }
             }
+        }
+        
+        // display instructions if it isn't the student preview. they do display if student is editing
+        // or instructor is previewing
+        if (!studentPreviewSubmission) {
+            // render the instructions
+            asnnInstructionsRenderer.makeInstructions(joint, "assignment-instructions-edit:", assignment, false, false, false);
         }
 
         // Because the flow might not be starting on the initial view, the

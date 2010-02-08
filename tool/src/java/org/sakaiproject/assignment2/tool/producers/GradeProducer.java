@@ -47,6 +47,7 @@ import org.sakaiproject.assignment2.tool.params.ViewSubmissionsViewParams;
 import org.sakaiproject.assignment2.tool.producers.evolvers.AttachmentInputEvolver;
 import org.sakaiproject.assignment2.tool.producers.fragments.FragmentGradebookDetailsProducer;
 import org.sakaiproject.assignment2.tool.producers.fragments.FragmentSubmissionGradePreviewProducer;
+import org.sakaiproject.assignment2.tool.producers.renderers.AsnnInstructionsRenderer;
 import org.sakaiproject.assignment2.tool.producers.renderers.AttachmentListRenderer;
 
 import uk.org.ponder.beanutil.entity.EntityBeanLocator;
@@ -108,6 +109,7 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
     private ExternalGradebookLogic gradebookLogic;
     private ExternalContentReviewLogic contentReviewLogic;
     private DisplayUtil displayUtil;
+    private AsnnInstructionsRenderer asnnInstructionsRenderer;
 
 
     /*
@@ -205,7 +207,8 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
         } 
 
         // Instructions
-        UIOutput instructionsToggleSection = UIOutput.make(tofill, "instructions_toggle_section");
+        asnnInstructionsRenderer.makeInstructions(tofill, "assignment-instructions:", assignment, true, true, false);
+        /*UIOutput instructionsToggleSection = UIOutput.make(tofill, "instructions_toggle_section");
         instructionsToggleSection.decorate(new UITooltipDecorator(toggleHoverText));
         if (assignment.getInstructions() == null || assignment.getInstructions().equals("")) {
             UIMessage.make(tofill, "instructions", "assignment2.assignment_grade.no_instructions");
@@ -222,7 +225,7 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
 
         // add the alt text to the toggle for the instructions
         UIOutput instructionsToggle = UIOutput.make(tofill, "instructions_toggle");
-        instructionsToggle.decorate(new UIAlternativeTextDecorator(toggleHoverText));
+        instructionsToggle.decorate(new UIAlternativeTextDecorator(toggleHoverText));*/
 
         
         /**
@@ -783,6 +786,10 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
     
     public void setDisplayUtil(DisplayUtil displayUtil) {
         this.displayUtil = displayUtil;
+    }
+    
+    public void setAsnnInstructionsRenderer(AsnnInstructionsRenderer asnnInstructionsRenderer) {
+        this.asnnInstructionsRenderer = asnnInstructionsRenderer;
     }
 
 }

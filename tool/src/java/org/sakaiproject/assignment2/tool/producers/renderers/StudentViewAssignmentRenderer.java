@@ -185,16 +185,26 @@ public class StudentViewAssignmentRenderer {
         if (!studentSubmissionPreview) {
             asnnSubmissionDetailsRenderer.fillComponents(joint, "assignment-details:", assignmentSubmission, previewAsStudent);
 
-            asnnInstructionsRenderer.fillComponents(joint, "assignment-instructions:", assignment);
+            //asnnInstructionsRenderer.makeInstructions(joint, "assignment-instructions:", assignment, false, false, false);
 
             // Submission History
             if (!previewAsStudent) {
                 List<AssignmentSubmissionVersion> versionHistory = submissionLogic.getVersionHistoryForSubmission(assignmentSubmission);
-                if (versionHistory != null) {
+                if (versionHistory == null || versionHistory.isEmpty()) {
+                    // we display the instructions w/o the toggle if sub closed
+                    if (assignment.getSubmissionType() == AssignmentConstants.SUBMIT_NON_ELECTRONIC ||
+                            !submissionIsOpen) {
+                        asnnInstructionsRenderer.makeInstructions(joint, "assignment-instructions-no-submission:", assignment, false, false, false);
+                    }
+                    
+                } else {
                     if (versionHistory.size() == 1 && !submissionIsOpen) {
                         AssignmentSubmissionVersion singleVersion = versionHistory.get(0);
                         asnnSubmissionVersionRenderer.fillComponents(joint, "assignment-single-version:", singleVersion, false);
 
+                        // make the instructions with the toggle bar
+                        asnnInstructionsRenderer.makeInstructions(joint, "assignment-instructions-single-version:", assignment, true, true, false);
+                        
                         // we need to mark this feedback as read (if released and unread)
                         if (singleVersion.isFeedbackReleased() && !singleVersion.isFeedbackRead()) {
                             List<Long> markRead = new ArrayList<Long>();

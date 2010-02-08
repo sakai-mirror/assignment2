@@ -51,23 +51,6 @@
 </div>
 
 
-
-<!--                                                                         -->
-<!--     Assignment Instructions Widget                                      -->
-<!--                                                                         -->
-<div rsf:id="assn2-assignment-instructions-widget:">
-    <h3 rsf:id="msg=assignment2.student-submit.instructions_heading">Instructions</h3>
-    <div rsf:id="instructions" class="studentSubsection"><p>Instructions would go here.</p></div>
-    <h3 rsf:id="attachments-header">Supporting Materials</h3>
-    <div class="studentSubsection">
-      <ul class=" attachList">
-          <li rsf:id="attachment_list:">
-              <img src="page_white_word.png" width="16" height="16"/><a href="">ExampleAttachment.doc</a> (52 KB)
-          </li>
-      </ul>
-    </div>
-</div>
-
 <!--                                                                         -->
 <!--     Assignment Submission History Display Widget                        -->
 <!--                                                                         -->
@@ -81,6 +64,10 @@
               <img rsf:id="version_feedback_img" src="/sakai-assignment2-tool/content/images/expand.png" border="0" />
             </div>
             <div rsf:id="versionInformation" class="subsection1 toggleSubsection">
+            
+              <div rsf:id="assignment-instructions-toggle:">
+                  <!-- Assignment Instructions go here. -->
+              </div>
                 <div rsf:id="submission-entry:">
                   <!-- The rendered submission goes here. -->
                 </div>
@@ -96,6 +83,9 @@
 <!--     Assignment Submission Version Display Widget                        -->
 <!--                                                                         -->
 <div rsf:id="asnn2-submission-version-widget:">
+    <div rsf:id="assignment-instructions-single-version:">
+      <!-- Assignment Instructions go here. -->
+    </div>
     <h3 rsf:id="submission-header" >Assignment Submission</h3>
     <h4 rsf:id="submission-text-header">Submission Text</h4>
     <div rsf:id="submission-text" class="textPanel">
@@ -132,8 +122,11 @@
       <img rsf:id="resubmit_toggle_img" src="/sakai-assignment2-tool/content/images/expand.png" border="0" />
       <span rsf:id="msg=assignment2.student-submit.toggle.resubmit">RESUBMIT</span>
     </div>
-
+    
     <div rsf:id="edit_submission">
+      <div rsf:id="assignment-instructions-edit:">
+         <!-- Assignment Instructions go here. -->
+      </div>
     	<h3 rsf:id="msg=assignment2.student-submit.assignment_submission">Assignment Submission</h3>
       <div class="studentSubsection">
       	<p class="instruction" rsf:id="submission_instructions">Submission Instructions</p>
