@@ -5,7 +5,7 @@
 	<key>ApplicationVersion</key>
 	<array>
 		<string>com.omnigroup.OmniGrafflePro</string>
-		<string>138.9.0.117994</string>
+		<string>138.12.0.121252</string>
 	</array>
 	<key>CreationDate</key>
 	<string>2009-09-24 08:56:59 -0400</string>
@@ -64,7 +64,7 @@
 	<key>MasterSheets</key>
 	<array/>
 	<key>ModificationDate</key>
-	<string>2009-10-20 14:18:29 -0400</string>
+	<string>2010-02-04 11:17:43 -0500</string>
 	<key>Modifier</key>
 	<string>Kris</string>
 	<key>NotesVisible</key>
@@ -93,7 +93,7 @@
 		<key>NSPaperName</key>
 		<array>
 			<string>string</string>
-			<string>0AB51077-DE3B-4F39-BC83-D4BDD0B6A529</string>
+			<string>D3C47F56-0D53-4734-B592-CA15D7B0DB4E</string>
 		</array>
 		<key>NSPaperSize</key>
 		<array>
@@ -492,7 +492,7 @@
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{259, 110.235}, {163, 18.7009}}</string>
+					<string>{{259, 110.235}, {108, 18.7009}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FontInfo</key>
@@ -543,7 +543,7 @@
 {\colortbl;\red255\green255\blue255;\red45\green85\blue188;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
 
-\f0\fs28 \cf2 \ul \ulc2 Notification Preferences}</string>
+\f0\fs28 \cf2 \ul \ulc2 My Preferences}</string>
 						<key>VerticalPad</key>
 						<integer>0</integer>
 					</dict>
@@ -5268,7 +5268,7 @@ Receive Notifications\
 \b \
 
 \b0 - Upon clicking 'Receive Notifications', the system will begin sending the user an email notification for each submission made that he/she has permission to view.\
-- The method of notification that the user receives will depend on what the user has selected from the Notification Preferences screen (NP-1).  \
+- The method of notification that the user receives will depend on what the user has selected from the My Preferences screen (MP-1).  \
 }</string>
 					</dict>
 					<key>TextPlacement</key>
@@ -5830,7 +5830,7 @@ Submission Notification Preferences\
 {\colortbl;\red255\green255\blue255;\red85\green85\blue85;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
 
-\f0\fs24 \cf2 First, you must choose to receive notification of submissions for one or more assignments by clicking 'Notify Me' beneath the Assignment's title on the Assignment List screen.  Then choose below how you would like to receive the notifications.}</string>
+\f0\fs24 \cf2 Choose the appropriate option below to set your notification preferences.  Then, to receive notifications for a specific assignment, check the box next to "Receive Notifications" located beneath the assignment's title on the Assignment List.}</string>
 						<key>VerticalPad</key>
 						<integer>0</integer>
 					</dict>
@@ -5961,7 +5961,7 @@ Submission Notification Preferences\
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{259, 110.235}, {164, 18.7009}}</string>
+					<string>{{259, 110.235}, {108, 18.7009}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FontInfo</key>
@@ -6012,7 +6012,7 @@ Submission Notification Preferences\
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
 
-\f0\fs28 \cf0 Notification Preferences}</string>
+\f0\fs28 \cf0 My Preferences}</string>
 						<key>VerticalPad</key>
 						<integer>0</integer>
 					</dict>
@@ -6528,7 +6528,7 @@ Submission Notification Preferences\
 			<key>RowSpacing</key>
 			<real>36</real>
 			<key>SheetTitle</key>
-			<string>Notification Preferences (NP-1)</string>
+			<string>My Preferences (MP-1)</string>
 			<key>UniqueID</key>
 			<integer>2</integer>
 			<key>VPages</key>
@@ -15683,7 +15683,7 @@ Sample_attachment.doc (1KB)\
 		<key>ExpandedCanvases</key>
 		<array/>
 		<key>Frame</key>
-		<string>{{774, 446}, {1337, 944}}</string>
+		<string>{{774, 447}, {1337, 944}}</string>
 		<key>ListView</key>
 		<true/>
 		<key>OutlineWidth</key>
@@ -15703,7 +15703,7 @@ Sample_attachment.doc (1KB)\
 		<key>ZoomValues</key>
 		<array>
 			<array>
-				<string>Notification Preferences (NP-1)</string>
+				<string>My Preferences (MP-1)</string>
 				<real>1</real>
 				<real>1</real>
 			</array>
