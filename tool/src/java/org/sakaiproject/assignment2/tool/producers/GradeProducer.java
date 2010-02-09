@@ -48,6 +48,7 @@ import org.sakaiproject.assignment2.tool.producers.evolvers.AttachmentInputEvolv
 import org.sakaiproject.assignment2.tool.producers.fragments.FragmentGradebookDetailsProducer;
 import org.sakaiproject.assignment2.tool.producers.fragments.FragmentSubmissionGradePreviewProducer;
 import org.sakaiproject.assignment2.tool.producers.renderers.AsnnInstructionsRenderer;
+import org.sakaiproject.assignment2.tool.producers.renderers.AsnnToggleRenderer;
 import org.sakaiproject.assignment2.tool.producers.renderers.AttachmentListRenderer;
 
 import uk.org.ponder.beanutil.entity.EntityBeanLocator;
@@ -65,9 +66,7 @@ import uk.org.ponder.rsf.components.UIMessage;
 import uk.org.ponder.rsf.components.UIOutput;
 import uk.org.ponder.rsf.components.UISelect;
 import uk.org.ponder.rsf.components.UIVerbatim;
-import uk.org.ponder.rsf.components.decorators.UIAlternativeTextDecorator;
 import uk.org.ponder.rsf.components.decorators.UIFreeAttributeDecorator;
-import uk.org.ponder.rsf.components.decorators.UITooltipDecorator;
 import uk.org.ponder.rsf.evolvers.FormatAwareDateInputEvolver;
 import uk.org.ponder.rsf.evolvers.TextInputEvolver;
 import uk.org.ponder.rsf.flow.ARIResult;
@@ -111,7 +110,10 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
     private DisplayUtil displayUtil;
     private AsnnInstructionsRenderer asnnInstructionsRenderer;
 
-
+    private AsnnToggleRenderer toggleRenderer;
+    public void setAsnnToggleRenderer(AsnnToggleRenderer toggleRenderer) {
+        this.toggleRenderer = toggleRenderer;
+    }
     /*
      * You can change the date input to accept time as well by uncommenting the lines like this:
      * dateevolver.setStyle(FormatAwareDateInputEvolver.DATE_TIME_INPUT);
@@ -291,7 +293,7 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
 
                     // make the toggle for each version
                     boolean expand = versionToExpand != null && versionToExpand.equals(version.getId());
-                    displayUtil.makeVersionToggle(versionContainer, version, assignment.getDueDate(), as.getResubmitCloseDate(), expand, false);
+                    makeVersionToggle(versionContainer, version, assignment.getDueDate(), as.getResubmitCloseDate(), expand);
 
                     makeFeedbackOnSubmissionSection(versionContainer, otpKey, params, version, assignment, !grade_perm, contentReviewEnabled);
                     makeAdditionalFeedbackSection(versionContainer, otpKey, version, !grade_perm);
@@ -306,12 +308,10 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
         // assignments
         if (assignment.getSubmissionType() != AssignmentConstants.SUBMIT_NON_ELECTRONIC) {
             UIOutput.make(form, "resubmission_settings");
-
-            UIOutput resubmitToggleSection = UIOutput.make(tofill, "resubmission_toggle_section");
-            resubmitToggleSection.decorate(new UITooltipDecorator(toggleHoverText));
             
-            UIOutput resubmitToggle = UIOutput.make(tofill, "resubmission_toggle");
-            resubmitToggle.decorate(new UIAlternativeTextDecorator(toggleHoverText));
+            String overrideHeading = messageLocator.getMessage("assignment2.assignment_grade.allow_resubmission");
+            toggleRenderer.makeToggle(tofill, "resubmission_toggle_section:", null, 
+                    true, overrideHeading, toggleHoverText, false, false, false, false, null);
 
             int current_times_submitted_already = 0;
             if (as != null && as.getSubmissionHistorySet() != null) {
@@ -729,6 +729,36 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
             outgoing.versionId = in.versionId;
         }
 
+    }
+    
+    /**
+     * creates the toggle for displaying the submission history
+     * @param versionContainer
+     * @param version
+     * @param assignDueDate
+     * @param submissionDueDate {@link AssignmentSubmission#getResubmitCloseDate()} for this version
+     * @param expand true if this toggle should be expanded
+     * @param feedbackReleasedIndicator true if you want to render the feedback released indicator
+     */
+    public void makeVersionToggle(UIBranchContainer versionContainer, AssignmentSubmissionVersion version, 
+            Date assignDueDate, Date submissionDueDate, boolean expand) {
+        String toggleHoverText = messageLocator.getMessage("assignment2.version.toggle.hover");
+       
+        // figure out the status so we can determine what the heading should be
+        int status = submissionLogic.getSubmissionStatusForVersion(version, assignDueDate, submissionDueDate);
+        String headerText;
+        if (version.getSubmittedVersionNumber() == AssignmentSubmissionVersion.FEEDBACK_ONLY_VERSION_NUMBER) {
+            headerText = messageLocator.getMessage("assignment2.version.toggle.status.feedback_only_version");
+        } else {
+            headerText = displayUtil.getVersionStatusText(status, version.getStudentSaveDate(), version.getSubmittedDate());
+        }
+        
+        toggleRenderer.makeToggle(versionContainer, "version_toggle:", null, true, headerText, toggleHoverText, expand, version.isFeedbackReleased(), false, false, null);
+        
+        UIOutput versionDetails = UIOutput.make(versionContainer, "versionInformation");
+        if (!expand) {
+            versionDetails.decorate(new UIFreeAttributeDecorator("style", "display:none;"));
+        }
     }
 
     public ViewParameters getViewParameters() {

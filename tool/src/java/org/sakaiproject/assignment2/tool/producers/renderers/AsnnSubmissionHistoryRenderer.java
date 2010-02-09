@@ -1,6 +1,7 @@
 package org.sakaiproject.assignment2.tool.producers.renderers;
 
 import java.text.DateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -15,7 +16,7 @@ import uk.org.ponder.rsf.components.UIBranchContainer;
 import uk.org.ponder.rsf.components.UIContainer;
 import uk.org.ponder.rsf.components.UIJointContainer;
 import uk.org.ponder.rsf.components.UIOutput;
-import uk.org.ponder.rsf.components.UIVerbatim;
+import uk.org.ponder.rsf.components.decorators.UIFreeAttributeDecorator;
 import uk.org.ponder.rsf.producers.BasicProducer;
 
 /**
@@ -65,6 +66,11 @@ public class AsnnSubmissionHistoryRenderer implements BasicProducer {
         this.displayUtil = displayUtil;
     }
     
+    private AsnnToggleRenderer toggleRenderer;
+    public void setAsnnToggleRenderer(AsnnToggleRenderer toggleRenderer) {
+        this.toggleRenderer = toggleRenderer;
+    }
+    
     // Dependency
     private AsnnInstructionsRenderer asnnInstructionsRenderer;
     public void setAsnnInstructionsRenderer(AsnnInstructionsRenderer asnnInstructionsRenderer) {
@@ -100,23 +106,54 @@ public class AsnnSubmissionHistoryRenderer implements BasicProducer {
                 if (!version.isDraft() || includeDraftVersion) {
                     UIBranchContainer versionDiv = UIBranchContainer.make(joint, "submission-version:");
                     
-                    displayUtil.makeVersionToggle(versionDiv, version, assignment.getDueDate(), 
-                            assignmentSubmission.getResubmitCloseDate(), false, version.isFeedbackReleased());
-                    
-                    String feedbackReadText = messageLocator.getMessage("assignment2.student-submission.feedback.read");
+                    makeVersionToggle(versionDiv, version, assignment.getDueDate(), 
+                            assignmentSubmission.getResubmitCloseDate(), false, assignmentSubmission.getId(), version.getId());
 
-                    UIContainer versionContainer = asnnSubmissionVersionRenderer.fillComponents(versionDiv, "submission-entry:", version, true);
-                    //Map<String,String> stylemap = new HashMap<String,String>();
-                    //stylemap.put("display", "none");
-                    //versionContainer.decorate(new UICSSDecorator(stylemap));
-                    UIVerbatim.make(versionDiv, "jsinit", "asnn2.assnSubVersionDiv('" +
-                            versionDiv.getFullID()+"',"+(version.isFeedbackReleased() && version.isFeedbackRead())+
-                            ",'"+assignmentSubmission.getId()+"','"+
-                            version.getId()+"','"+feedbackReadText+"');");
+                    asnnSubmissionVersionRenderer.fillComponents(versionDiv, "submission-entry:", version, true);
                     
                     asnnInstructionsRenderer.makeInstructions(versionDiv, "assignment-instructions-toggle:", assignment, true, false, false);
                 }
             }
+        }
+    }
+    
+    /**
+     * creates the toggle for displaying the submission history
+     * @param versionContainer
+     * @param version
+     * @param assignDueDate
+     * @param submissionDueDate {@link AssignmentSubmission#getResubmitCloseDate()} for this version
+     * @param expand true if this toggle should be expanded
+     */
+    private void makeVersionToggle(UIBranchContainer versionContainer, AssignmentSubmissionVersion version, 
+            Date assignDueDate, Date submissionDueDate, boolean expand, Long submissionId, Long versionId) {
+        String toggleHoverText = messageLocator.getMessage("assignment2.version.toggle.hover");
+        
+        // figure out the status so we can determine what the heading should be
+        int status = submissionLogic.getSubmissionStatusForVersion(version, assignDueDate, submissionDueDate);
+        String headerText;
+        if (version.getSubmittedVersionNumber() == AssignmentSubmissionVersion.FEEDBACK_ONLY_VERSION_NUMBER) {
+            headerText = messageLocator.getMessage("assignment2.version.toggle.status.feedback_only_version");
+        } else {
+            headerText = displayUtil.getVersionStatusText(status, version.getStudentSaveDate(), version.getSubmittedDate());
+        }
+        
+        boolean feedbackExists = version.isFeedbackReleased();
+        boolean feedbackRead = version.isFeedbackRead();
+        String fbReadText = messageLocator.getMessage("assignment2.toggle.indicator.feedback.read");
+        StringBuilder onclickEvent = new StringBuilder();
+        onclickEvent.append("asnn2.readFeedback(this,");
+        onclickEvent.append(submissionId + ",");
+        onclickEvent.append(versionId + ",");
+        onclickEvent.append("'" + fbReadText + "'");
+        onclickEvent.append(");");
+        
+        toggleRenderer.makeToggle(versionContainer, "version_toggle:", null, true, headerText, toggleHoverText, 
+                expand, false, feedbackExists && feedbackRead, feedbackExists && !feedbackRead, onclickEvent.toString());
+        
+        UIOutput versionDetails = UIOutput.make(versionContainer, "versionInformation");
+        if (!expand) {
+            versionDetails.decorate(new UIFreeAttributeDecorator("style", "display:none;"));
         }
     }
 

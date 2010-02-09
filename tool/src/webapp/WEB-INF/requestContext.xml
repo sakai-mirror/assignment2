@@ -56,6 +56,12 @@
         <property name="attachmentListRenderer" ref="AttachmentListRenderer"></property>
         <property name="viewParameters" ref="viewParameters"></property>
         <property name="messageLocator" ref="messageLocator" />
+        <property name="asnnToggleRenderer" ref="AsnnToggleRenderer"></property>
+    </bean>
+    
+    <bean id="AsnnToggleRenderer"
+        class="org.sakaiproject.assignment2.tool.producers.renderers.AsnnToggleRenderer">
+        <property name="messageLocator" ref="messageLocator" />
     </bean>
     
     <bean id="AsnnSubmitEditorRenderer"
@@ -69,6 +75,7 @@
         <property name="externalContentReviewLogic" ref="org.sakaiproject.assignment2.logic.ExternalContentReviewLogic"></property>
         <property name="localTurnitinLogic" ref="localTurnitinLogic" />
         <property name="asnnInstructionsRenderer" ref="AsnnInstructionsRenderer"></property>
+        <property name="asnnToggleRenderer" ref="AsnnToggleRenderer"></property>
 
     </bean>
     
@@ -87,6 +94,7 @@
     	<property name="messageLocator" ref="messageLocator" />
       <property name="displayUtil" ref="DisplayUtil" />
       <property name="asnnInstructionsRenderer" ref="AsnnInstructionsRenderer"></property>
+      <property name="asnnToggleRenderer" ref="AsnnToggleRenderer"></property>
     </bean>
 
    <bean id="ReviewStatusRenderer" class="org.sakaiproject.assignment2.tool.producers.renderers.ReviewStatusRenderer">
@@ -192,6 +200,7 @@
       <property name="externalContentReviewLogic" ref="org.sakaiproject.assignment2.logic.ExternalContentReviewLogic"></property>
       <property name="displayUtil" ref="DisplayUtil" />
       <property name="asnnInstructionsRenderer" ref="AsnnInstructionsRenderer"></property>
+      <property name="asnnToggleRenderer" ref="AsnnToggleRenderer"></property>
    </bean>
 
    <bean class="org.sakaiproject.assignment2.tool.producers.ViewSubmissionsProducer">

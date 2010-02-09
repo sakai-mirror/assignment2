@@ -9,7 +9,6 @@ import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
-import org.sakaiproject.assignment2.tool.DisplayUtil;
 import org.sakaiproject.assignment2.tool.LocalTurnitinLogic;
 import org.sakaiproject.assignment2.tool.beans.StudentSubmissionVersionFlowBean;
 import org.sakaiproject.assignment2.tool.params.FilePickerHelperViewParams;
@@ -32,7 +31,6 @@ import uk.org.ponder.rsf.components.UIMessage;
 import uk.org.ponder.rsf.components.UIOutput;
 import uk.org.ponder.rsf.components.UIVerbatim;
 import uk.org.ponder.rsf.components.decorators.DecoratorList;
-import uk.org.ponder.rsf.components.decorators.UIAlternativeTextDecorator;
 import uk.org.ponder.rsf.components.decorators.UIFreeAttributeDecorator;
 import uk.org.ponder.rsf.evolvers.TextInputEvolver;
 import uk.org.ponder.rsf.producers.BasicProducer;
@@ -78,6 +76,12 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
     private AsnnInstructionsRenderer asnnInstructionsRenderer;
     public void setAsnnInstructionsRenderer(AsnnInstructionsRenderer asnnInstructionsRenderer) {
         this.asnnInstructionsRenderer = asnnInstructionsRenderer;
+    }
+    
+    // Dependency
+    private AsnnToggleRenderer toggleRenderer;
+    public void setAsnnToggleRenderer(AsnnToggleRenderer toggleRenderer) {
+        this.toggleRenderer = toggleRenderer;
     }
 
     // Dependency
@@ -185,13 +189,12 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
         if (!studentPreviewSubmission && !preview) {
             if (submissionLogic.getNumSubmittedVersions(assignmentSubmission.getUserId(), assignment.getId()) > 0) {
                 // render the resubmit toggle
-                UIOutput.make(joint, "resubmit_toggle");
-                UIOutput img = UIOutput.make(joint, "resubmit_toggle_img");
+                String heading = messageLocator.getMessage("assignment2.student-submit.toggle.resubmit");
+                String hoverText = messageLocator.getMessage("assignment2.student-submit.hover.resubmit");
                 // TODO - figure out when to expand and when to collapse
-                boolean expand = false;
-                String img_location = expand ? DisplayUtil.EXPAND_IMAGE_URL : DisplayUtil.COLLAPSE_IMAGE_URL;
-                img.decorate(new UIFreeAttributeDecorator("src", img_location));
-                img.decorate(new UIAlternativeTextDecorator(messageLocator.getMessage("assignment2.student-submit.hover.resubmit")));
+                boolean expand = false; 
+                
+                toggleRenderer.makeToggle(joint, "resubmit_toggle:", "resubmit_toggle", true, heading, hoverText, expand, false, false, false, null);
                 
                 // since we are rendering the toggle, let's identify the submission editing section
                 // with css classes
