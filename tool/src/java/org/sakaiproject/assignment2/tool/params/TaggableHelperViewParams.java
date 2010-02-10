@@ -20,9 +20,11 @@
  **********************************************************************************/
 package org.sakaiproject.assignment2.tool.params;
 
-import uk.ac.cam.caret.sakai.rsf.helper.HelperViewParameters;
+import org.sakaiproject.assignment2.tool.taggable.DebugHelperViewParameters;
 
-public class TaggableHelperViewParams extends HelperViewParameters
+//import uk.ac.cam.caret.sakai.rsf.helper.HelperViewParameters;
+
+public class TaggableHelperViewParams extends DebugHelperViewParameters
 {
     public String helperId;
     public String[] values;	

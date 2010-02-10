@@ -13,6 +13,19 @@
 		<property name="errorStyleClass" value="alertMessageInline" />
 		</bean>
 	-->
+	
+	<bean id="debugHelperHandlerHookBeanProxy" parent="RSACBridgeProxy">
+    <property name="targetBeanName" value="debugHelperHandlerHookBean"/>
+  </bean>
+	
+	<bean parent="handlerHookParent">
+    <property name="value">
+        <bean class="org.sakaiproject.assignment2.tool.taggable.DebugHelperHandlerHook">
+          <property name="viewParametersProxy" ref="viewParametersProxy" />
+          <property name="helperHandlerHookBean" ref="debugHelperHandlerHookBeanProxy" />
+        </bean>
+    </property>
+  </bean>
 
 	<bean id="LocalPermissionLogic"
 		class="org.sakaiproject.assignment2.tool.LocalPermissionLogic">
