@@ -210,7 +210,7 @@ public class StudentViewAssignmentRenderer {
                             submissionLogic.markFeedbackAsViewed(singleVersion.getAssignmentSubmission().getId(), markRead);
                         }
                     } else if (versionHistory.size() > 1 || (versionHistory.size() == 1 && !versionHistory.get(0).isDraft())) {
-                        asnnSubmissionHistoryRenderer.fillComponents(joint, "assignment-previous-submissions:", assignmentSubmission);
+                        asnnSubmissionHistoryRenderer.fillComponents(joint, "assignment-previous-submissions:", assignmentSubmission, true);
                     }
                 }
             }
