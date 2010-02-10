@@ -148,39 +148,34 @@
       </div>
     </div>
     
-  <div rsf:id="honor_pledge_fieldset" class="honorPledgeSection">
-    <span rsf:id="msg=assignment2.req_star" class="reqStar">*</span>
-    <input type="checkbox" rsf:id="honor_pledge" id="honor_pledge" class="honor_pledge" />
-    <label for="honor_pledge">
-      <span rsf:id="msg=assignment2.student-submit.honor_pledge" class="honorPledgeLabel">HONOR PLEDGE!:</span>
-      <span rsf:id="msg=assignment2.student-submit.honor_pledge_text">
-        I have neither given nor received aid on this assignment!!
-      </span>
-      <span class="messageError" style="display: none;" id="honor_pledge_error" rsf:id="msg=assignment2.student-submit.error.honor_pledge_required">You must agree to the honor code!</span>
-    </label>
-  </div>
-  
-  <script type="text/javascript">
-//<![CDATA[
-    var honorPledgeCheckbox = jQuery("input:checkbox[class='honor_pledge']");
-    honorPledgeCheckbox.click(function () { 
-      honorPledgeElem = honorPledgeCheckbox.get(0);
-      if (honorPledgeElem && honorPledgeElem.checked) {
-       jQuery("#page-replace\\:\\:portletBody\\:1\\:assignment-edit-submission\\:\\:honor_pledge_error").hide();
-      }
-    });
-  //]]>
-  </script>
-	
-	<fieldset rsf:id="submit_section" id="submit_section" class="submit">
-		<input type="hidden" rsf:id="submitted_text_for_attach_only" />
-		<input rsf:id="submit_button"  accesskey="s" type="submit" class="active" value="Submit!" onclick="return asnn2.studentActionConfirm(this,'#submit-confirm-dialog',true);" />
-		<input rsf:id="back_to_edit_button" type="submit" value="Edit!" />
-		<!-- <input rsf:id="preview_button" title="Preview Submission" accesskey="v" type="button" class="preview_button thickbox" value="Preview"/> -->
-		<input rsf:id="preview_button" accesskey="v" type="submit" value="Preview!"/>
-		<input rsf:id="save_draft_button" accesskey="d" type="submit" value="Save Draft!"/>
-		<input rsf:id="cancel_button" accesskey="x" type="submit" value="Cancel!" onclick="return asnn2.studentActionConfirm(this,'#submit-cancel-dialog',false);"/>
-	</fieldset>													
+  <div rsf:id="submission_info" id="">
+      <div rsf:id="honor_pledge_fieldset" class="honorPledgeSection">
+        <span rsf:id="msg=assignment2.req_star" class="reqStar">*</span>
+        <input type="checkbox" rsf:id="honor_pledge" id="honor_pledge" class="honor_pledge" />
+        <label for="honor_pledge">
+          <span rsf:id="msg=assignment2.student-submit.honor_pledge" class="honorPledgeLabel">HONOR PLEDGE!:</span>
+          <span rsf:id="msg=assignment2.student-submit.honor_pledge_text">
+            I have neither given nor received aid on this assignment!!
+          </span>
+          <span class="messageError" style="display: none;" id="honor_pledge_error" rsf:id="msg=assignment2.student-submit.error.honor_pledge_required">You must agree to the honor code!</span>
+        </label>
+      </div>
+    	
+    	<fieldset rsf:id="submit_section" id="submit_section" class="submit">
+    		<input type="hidden" rsf:id="submitted_text_for_attach_only" />
+    		<input rsf:id="submit_button"  accesskey="s" type="submit" class="active" value="Submit!" onclick="return asnn2.studentActionConfirm(this,'#submit-confirm-dialog',true);" />
+    		<input rsf:id="back_to_edit_button" type="submit" value="Edit!" />
+    		<!-- <input rsf:id="preview_button" title="Preview Submission" accesskey="v" type="button" class="preview_button thickbox" value="Preview"/> -->
+    		<input rsf:id="preview_button" accesskey="v" type="submit" value="Preview!"/>
+    		<input rsf:id="save_draft_button" accesskey="d" type="submit" value="Save Draft!"/>
+    		<input rsf:id="cancel_button" accesskey="x" type="submit" value="Cancel!" onclick="return asnn2.studentActionConfirm(this,'#submit-cancel-dialog',false);"/>
+    	</fieldset>
+    </div>
+
+    <fieldset class="submit" rsf:id="view_only_section" id="">
+      <input rsf:id="return_to_list_button" accesskey="v" type="submit" value="Return to list!"/>
+    </fieldset>
+
 	</form>	
 	
 	<div style="display:none" id="submit-confirm-dialog">
@@ -198,7 +193,27 @@
             <input class="submission-cancel-button" accesskey="x" type="button" rsf:id="msg=assignment2.dialogs.student_submit_cancel.cancel"/> 
         </div>
     </div>
+    
+  <script type="text/javascript">
+  //<![CDATA[
+    var honorPledgeCheckbox = jQuery("input:checkbox[class='honor_pledge']");
+    honorPledgeCheckbox.click(function () { 
+      honorPledgeElem = honorPledgeCheckbox.get(0);
+      if (honorPledgeElem && honorPledgeElem.checked) {
+       jQuery("#page-replace\\:\\:portletBody\\:1\\:assignment-edit-submission\\:\\:honor_pledge_error").hide();
+      }
+    });
+
+    var resubmitToggle = jQuery("#resubmit_toggle");
+    resubmitToggle.click(function () {
+        // show the submission buttons and hide the "Return to List" button
+        var submitSection = jQuery("#page-replace\\:\\:portletBody\\:1\\:assignment-edit-submission\\:\\:submission_info");
+        var viewOnlySection = jQuery("#page-replace\\:\\:portletBody\\:1\\:assignment-edit-submission\\:\\:view_only_section");
+        submitSection.show();
+        viewOnlySection.hide();
+    });
+  //]]>
+  </script>
+          
 </div>
-
-
 </div>

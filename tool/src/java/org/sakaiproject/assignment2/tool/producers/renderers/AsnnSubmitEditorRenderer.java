@@ -185,22 +185,27 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
         
         UIOutput editSubmissionContainer = UIOutput.make(form, "edit_submission");
         
+        boolean displayResubmitToggle = false;
+        boolean resubmitToggleExpanded = false;
+        
         // if this is a resubmission and not a preview view, display a resubmission toggle
         if (!studentPreviewSubmission && !preview) {
             if (submissionLogic.getNumSubmittedVersions(assignmentSubmission.getUserId(), assignment.getId()) > 0) {
                 // render the resubmit toggle
+                displayResubmitToggle = true;
+                
                 String heading = messageLocator.getMessage("assignment2.student-submit.toggle.resubmit");
                 String hoverText = messageLocator.getMessage("assignment2.student-submit.hover.resubmit");
                 // TODO - figure out when to expand and when to collapse
-                boolean expand = false; 
+                resubmitToggleExpanded = false; 
                 
-                toggleRenderer.makeToggle(joint, "resubmit_toggle:", "resubmit_toggle", true, heading, hoverText, expand, false, false, false, null);
+                toggleRenderer.makeToggle(joint, "resubmit_toggle:", "resubmit_toggle", true, heading, hoverText, resubmitToggleExpanded, false, false, false, null);
                 
                 // since we are rendering the toggle, let's identify the submission editing section
                 // with css classes
                 editSubmissionContainer.decorate(new UIFreeAttributeDecorator("class", "subsection1 toggleSubsection"));
                 
-                if (!expand) {
+                if (!resubmitToggleExpanded) {
                     editSubmissionContainer.decorate(new UIFreeAttributeDecorator("style", "display: none;"));
                 }
             }
@@ -295,35 +300,42 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
         form.parameters.add( new UIELBinding("StudentSubmissionBean.ASOTPKey", asOTPKey));
         form.parameters.add( new UIELBinding("StudentSubmissionBean.assignmentId", assignment.getId()));
 
-        /*
-         * According to the spec, if a student is editing a submision they will
-         * see the Submit,Preview, and Save&Exit buttons.  If they are previewing
-         * a submission they will see Submit,Edit, and Save&Exit.
-         * Don't display the buttons at all if this is the instructor preview
-         */
-        if (!preview) {
-            UIOutput.make(form, "submit_section");
-        }
+        // this section contains the honor pledge and the submit buttons. if this
+        // is a resubmit scenario, we are going to hide these options initially. if preview,
+        // we just hide the buttons within this section
+        UIOutput submissionSection = UIOutput.make(form, "submission_info");
 
         if (preview) {
-            // don't display the buttons
-        } else if (studentPreviewSubmission) {
-            UICommand.make(form, "submit_button", UIMessage.make("assignment2.student-submit.submit"), 
-            "StudentSubmissionBean.processActionSubmit");
-            UICommand.make(form, "save_draft_button", UIMessage.make("assignment2.student-submit.save_draft"), 
-            "StudentSubmissionBean.processActionSaveDraft");
-            UICommand edit_button = UICommand.make(form, "back_to_edit_button", UIMessage.make("assignment2.student-submit.back_to_edit"),
-            "StudentSubmissionBean.processActionBackToEdit");
-            //edit_button.addParameter(new UIELBinding(asvOTP + ".submittedText", hackSubmissionText));
+            // don't display the buttons at all for instructor preview
         } else {
+            UIOutput.make(form, "submit_section");
+            
             UICommand.make(form, "submit_button", UIMessage.make("assignment2.student-submit.submit"), 
             "StudentSubmissionBean.processActionSubmit");
-            UICommand.make(form, "preview_button", UIMessage.make("assignment2.student-submit.preview"), 
-            "StudentSubmissionBean.processActionPreview");
             UICommand.make(form, "save_draft_button", UIMessage.make("assignment2.student-submit.save_draft"), 
             "StudentSubmissionBean.processActionSaveDraft");
-            UICommand.make(form, "cancel_button", UIMessage.make("assignment2.student-submit.cancel"), 
-            "StudentSubmissionBean.processActionCancel");
+            
+            if (studentPreviewSubmission) {
+                UICommand.make(form, "back_to_edit_button", UIMessage.make("assignment2.student-submit.back_to_edit"),
+                "StudentSubmissionBean.processActionBackToEdit");
+            } else {
+                UICommand.make(form, "preview_button", UIMessage.make("assignment2.student-submit.preview"), 
+                "StudentSubmissionBean.processActionPreview");
+
+                UICommand.make(form, "cancel_button", UIMessage.make("assignment2.student-submit.cancel"), 
+                "StudentSubmissionBean.processActionCancel");
+            }
+            
+            if (displayResubmitToggle && !resubmitToggleExpanded) {
+                // render the "Return to List" button. this only appears if this is a resubmission
+                UIOutput.make(form, "view_only_section");
+                UICommand.make(form, "return_to_list_button", UIMessage.make("assignment2.student-submit.return_to_list"), 
+                        "StudentSubmissionBean.processActionCancel");
+                
+                // since this is a resubmit scenario, we hide the honor pledge and
+                // submission buttons until they expand the resubmit toggle
+                submissionSection.decorate(new UIFreeAttributeDecorator("style", "display: none;"));
+            }
         }
 
     }

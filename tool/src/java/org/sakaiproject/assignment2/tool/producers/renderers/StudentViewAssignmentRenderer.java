@@ -185,8 +185,6 @@ public class StudentViewAssignmentRenderer {
         if (!studentSubmissionPreview) {
             asnnSubmissionDetailsRenderer.fillComponents(joint, "assignment-details:", assignmentSubmission, previewAsStudent);
 
-            //asnnInstructionsRenderer.makeInstructions(joint, "assignment-instructions:", assignment, false, false, false);
-
             // Submission History
             if (!previewAsStudent) {
                 List<AssignmentSubmissionVersion> versionHistory = submissionLogic.getVersionHistoryForSubmission(assignmentSubmission);
