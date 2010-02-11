@@ -133,9 +133,10 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
      * @param clientID
      * @param assignmentSubmission
      * @param preview
-     * @param asvOTP
+     * @param resubmit true if this is a resubmit scenario and that section should be highlighted
      */
-    public void fillComponents(UIContainer parent, String clientID, AssignmentSubmission assignmentSubmission, boolean preview, boolean studentPreviewSubmission) {
+    public void fillComponents(UIContainer parent, String clientID, AssignmentSubmission assignmentSubmission, 
+            boolean preview, boolean studentPreviewSubmission, boolean resubmit) {
 
         Assignment2 assignment = assignmentSubmission.getAssignment();
 
@@ -186,7 +187,7 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
         UIOutput editSubmissionContainer = UIOutput.make(form, "edit_submission");
         
         boolean displayResubmitToggle = false;
-        boolean resubmitToggleExpanded = false;
+        boolean resubmitToggleExpanded = resubmit;
         
         // if this is a resubmission and not a preview view, display a resubmission toggle
         if (!studentPreviewSubmission && !preview) {
@@ -196,8 +197,6 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
                 
                 String heading = messageLocator.getMessage("assignment2.student-submit.toggle.resubmit");
                 String hoverText = messageLocator.getMessage("assignment2.student-submit.hover.resubmit");
-                // TODO - figure out when to expand and when to collapse
-                resubmitToggleExpanded = false; 
                 
                 toggleRenderer.makeToggle(joint, "resubmit_toggle:", "resubmit_toggle", true, heading, hoverText, resubmitToggleExpanded, false, false, false, null);
                 

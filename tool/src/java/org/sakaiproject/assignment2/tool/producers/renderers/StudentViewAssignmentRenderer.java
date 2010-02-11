@@ -138,9 +138,11 @@ public class StudentViewAssignmentRenderer {
      * @param params
      * @param ASOTPKey
      * @param previewAsStudent
+     * @param resubmit true if the student clicked the "Resubmit" link to get here
      */
     public void makeStudentView(UIContainer tofill, String divID, AssignmentSubmission assignmentSubmission, 
-            Assignment2 assignment, ViewParameters params, String ASOTPKey, Boolean previewAsStudent, Boolean studentSubmissionPreview) {
+            Assignment2 assignment, ViewParameters params, String ASOTPKey, Boolean previewAsStudent, Boolean studentSubmissionPreview,
+            boolean resubmit) {
         /**
          * Breadcrumbs
          */
@@ -210,7 +212,8 @@ public class StudentViewAssignmentRenderer {
                             submissionLogic.markFeedbackAsViewed(singleVersion.getAssignmentSubmission().getId(), markRead);
                         }
                     } else if (versionHistory.size() > 1 || (versionHistory.size() == 1 && !versionHistory.get(0).isDraft())) {
-                        asnnSubmissionHistoryRenderer.fillComponents(joint, "assignment-previous-submissions:", assignmentSubmission, true);
+                        // only expand feedback if the student didn't click "resubmit"
+                        asnnSubmissionHistoryRenderer.fillComponents(joint, "assignment-previous-submissions:", assignmentSubmission, !resubmit);
                     }
                 }
             }
@@ -220,10 +223,10 @@ public class StudentViewAssignmentRenderer {
         }
 
         if (previewAsStudent) {
-            asnnSubmitEditorRenderer.fillComponents(joint, "assignment-edit-submission:", assignmentSubmission, true, false);
+            asnnSubmitEditorRenderer.fillComponents(joint, "assignment-edit-submission:", assignmentSubmission, true, false, false);
         }
         else if (submissionIsOpen) {
-            asnnSubmitEditorRenderer.fillComponents(joint, "assignment-edit-submission:", assignmentSubmission, previewAsStudent, studentSubmissionPreview);
+            asnnSubmitEditorRenderer.fillComponents(joint, "assignment-edit-submission:", assignmentSubmission, previewAsStudent, studentSubmissionPreview, resubmit);
         }
         else {
             // If this isn't a preview, and the student can't submit, we need
