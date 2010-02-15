@@ -22,7 +22,6 @@
 package org.sakaiproject.assignment2.taggable.impl;
 
 import org.sakaiproject.assignment2.model.Assignment2;
-import org.sakaiproject.component.cover.ServerConfigurationService;
 import org.sakaiproject.taggable.api.TaggableActivity;
 import org.sakaiproject.taggable.api.TaggableActivityProducer;
 
