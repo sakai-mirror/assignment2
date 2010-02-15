@@ -64,8 +64,8 @@
 	</filter>
 	<filter-mapping>
 	    <filter-name>sakai.request</filter-name>
-	    <url-pattern>/faces/*</url-pattern>
-	    <!-- <servlet-name>sakai.assignment2</servlet-name> -->
+	   <!--  <url-pattern>/faces/*</url-pattern>  -->
+	    <servlet-name>sakai.assignment2</servlet-name>
 	    <dispatcher>REQUEST</dispatcher>
 	    <dispatcher>FORWARD</dispatcher>
 	    <dispatcher>INCLUDE</dispatcher>
@@ -79,6 +79,25 @@
 		<listener-class>org.sakaiproject.util.ContextLoaderListener</listener-class>
 	</listener>
 
+    <!-- Helper Debug Servlet -->
+    <!-- 
+    <servlet>
+        <servlet-name>asnn2.matrixlink</servlet-name>
+        <servlet-class>org.sakaiproject.assignment2.tool.taggable.OSPHelperServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>asnn2.matrixlink</servlet-name>
+        <url-pattern>/matrixlink/*</url-pattern>
+    </servlet-mapping>
+    <filter-mapping>
+        <filter-name>sakai.request</filter-name>
+        <servlet-name>asnn2.matrixlink</servlet-name>
+        <dispatcher>REQUEST</dispatcher>
+        <dispatcher>FORWARD</dispatcher>
+        <dispatcher>INCLUDE</dispatcher>
+    </filter-mapping>
+-->
+
 	<!-- tool servlet -->
 	<servlet>
 		<!-- servlet name must match tool.id in tools xml file -->
@@ -87,7 +106,8 @@
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>sakai.assignment2</servlet-name>
-		<url-pattern>/faces/*</url-pattern>
+	<!-- 	<url-pattern>/faces/*</url-pattern> -->
+	<url-pattern>/*</url-pattern>
 	</servlet-mapping>  
 
 </web-app>

@@ -18,9 +18,9 @@ public class DebugHelperHandlerHook implements HandlerHook {
   public boolean handle() {
     System.out.println("THEVIEW: " + viewParametersProxy.viewID);
     String[] pathInfo = hhhb.getPathInfo();
-    System.out.println(pathInfo[0]);
+    //System.out.println(pathInfo[0]);
     
-    if (pathInfo[0].equals("osp.matrix.link.helper")) {
+    if (pathInfo.length > 0 && pathInfo[0].equals("osp.matrix.link.helper")) {
         return hhhb.handle();
     }
     else if (viewParametersProxy.get() instanceof DebugHelperViewParameters) {

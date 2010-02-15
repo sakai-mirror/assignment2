@@ -73,6 +73,7 @@ public class DebugHelperHandlerHookBean {
   private ActiveToolManager activeToolManager;
   private BaseURLProvider bup;
   private String[] pathInfo;
+  private static int loadedcount = 0;
 
   public boolean handle() {
     System.out.println("DOING ASNN2 TAGGABLE DEBUG HELPRE!!!!!!!");
@@ -101,7 +102,7 @@ public class DebugHelperHandlerHookBean {
       return handleHelperHelper(pathBeyondViewID);
     }
     */
-
+loadedcount = 0;
     return handleHelperStart();
   }
 
@@ -169,12 +170,23 @@ public class DebugHelperHandlerHookBean {
     contextPath += "osp.matrix.link.helper";
     //String helperPathInfo = pathInfo[0] + "/" + pathInfo[1];
     String helperPathInfo = "";
-    
+   
+    //System.out.println("NOT REMOVING NATIVE URL!");
     request.removeAttribute(Tool.NATIVE_URL);
 
+    System.out.println("What the fuck is this: " + helperTool.getClass().getCanonicalName());
+    
     // this is the forward call
     try {
-      helperTool.help(request, response, contextPath, helperPathInfo);
+      //helperTool.help(request, response, contextPath, helperPathInfo);
+      // Test based off debug tracing
+      if (loadedcount == 0) {
+          helperTool.help(request, response, contextPath, null);
+          loadedcount++;
+      }
+      else {
+          helperTool.help(request, response, contextPath, "/jsfLinkScaffolding");
+      }
     }
     catch (ToolException e) {
       throw UniversalRuntimeException.accumulate(e,
