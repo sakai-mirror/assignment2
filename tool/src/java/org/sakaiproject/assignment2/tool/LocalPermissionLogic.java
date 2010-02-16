@@ -173,7 +173,17 @@ public class LocalPermissionLogic {
 
         } else if (TaggableHelperProducer.VIEWID.equals(viewId)) {
             return permissionLogic.isUserAbleToAccessInstructorView(contextId);
-        }
+            
+        } else if (ViewAssignmentProducer.VIEW_ID.equals(viewId)) {
+            if (viewParams instanceof SimpleAssignmentViewParams) {
+                SimpleAssignmentViewParams params = (SimpleAssignmentViewParams) viewParams;
+
+                return permissionLogic.isUserAbleToViewAssignment(params.assignmentId);
+            }
+
+            return Boolean.FALSE;
+
+        } 
 
         //Here are some RSF Generic always true viewIds
 

@@ -276,6 +276,16 @@
 	  <property name="uploadBean" ref="UploadBean" />
 	  <property name="externalGradebookLogic" ref="org.sakaiproject.assignment2.logic.ExternalGradebookLogic" /> 
 	</bean>
+  
+  <bean class="org.sakaiproject.assignment2.tool.producers.ViewAssignmentProducer">
+       <property name="locale" ref="requestLocale" />
+       <property name="messageLocator" ref="messageLocator" />
+       <property name="asnnInstructionsRenderer" ref="AsnnInstructionsRenderer"></property>
+       <property name="assignmentPermissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentPermissionLogic" />
+       <property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
+       <property name="externalGradebookLogic" ref="org.sakaiproject.assignment2.logic.ExternalGradebookLogic" />
+       <property name="externalContentReviewLogic" ref="org.sakaiproject.assignment2.logic.ExternalContentReviewLogic" />
+   </bean>
 
    <!--  AJAX Fragment Producers -->
 
