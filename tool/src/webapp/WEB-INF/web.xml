@@ -64,8 +64,8 @@
 	</filter>
 	<filter-mapping>
 	    <filter-name>sakai.request</filter-name>
-	   <!--  <url-pattern>/faces/*</url-pattern>  -->
-	    <servlet-name>sakai.assignment2</servlet-name>
+	    <url-pattern>/faces/*</url-pattern>
+	    <!-- <servlet-name>sakai.assignment2</servlet-name> -->
 	    <dispatcher>REQUEST</dispatcher>
 	    <dispatcher>FORWARD</dispatcher>
 	    <dispatcher>INCLUDE</dispatcher>
@@ -106,8 +106,8 @@
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>sakai.assignment2</servlet-name>
-	<!-- 	<url-pattern>/faces/*</url-pattern> -->
-	<url-pattern>/*</url-pattern>
+	<url-pattern>/faces/*</url-pattern>
+	<!-- <url-pattern>/*</url-pattern> -->
 	</servlet-mapping>  
 
 </web-app>

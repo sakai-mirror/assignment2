@@ -4,6 +4,12 @@
 
 
 <beans>
+  <!-- ASNN-609 -->
+  <bean id="httpServletFactory"
+    class="org.sakaiproject.assignment2.tool.taggable.DebugSakaiHttpServletFactory">
+    <property name="entityReference" ref="sakai-UrlEntityReference"/>
+  </bean>
+
 <bean class="org.sakaiproject.assignment2.tool.producers.OSPHelperTestProducer" />
 
     <bean id="SubmissionTableViewStateHolder" class="org.sakaiproject.assignment2.tool.beans.SubmissionTableViewStateHolder" />

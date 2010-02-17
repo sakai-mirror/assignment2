@@ -174,18 +174,21 @@ loadedcount = 0;
     //System.out.println("NOT REMOVING NATIVE URL!");
     request.removeAttribute(Tool.NATIVE_URL);
 
-    System.out.println("What the fuck is this: " + helperTool.getClass().getCanonicalName());
     
     // this is the forward call
     try {
       //helperTool.help(request, response, contextPath, helperPathInfo);
       // Test based off debug tracing
       if (loadedcount == 0) {
+    	  
           helperTool.help(request, response, contextPath, null);
+          //request.removeAttribute(Tool.NATIVE_URL);
           loadedcount++;
       }
       else {
+    	  //TODO What happens if we try not removing the native Tool URL here?
           helperTool.help(request, response, contextPath, "/jsfLinkScaffolding");
+          //request.removeAttribute(Tool.NATIVE_URL);
       }
     }
     catch (ToolException e) {

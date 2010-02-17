@@ -44,7 +44,8 @@ public class OSPHelperTestProducer implements ViewComponentProducer {
         // This is copied from my local instance, need to change if prototyping
         // on a difference box.
         String activityRef = 
-            "/assignment/a/usedtools/4f7e695e-556a-4038-ad02-c4f24c6e47e8";
+            //"/assignment/a/usedtools/4f7e695e-556a-4038-ad02-c4f24c6e47e8";
+        "/assignment/a/usedtools/2a4f82db-0b4b-4be6-b7cf-fe9c3debcf6a";
 
         TaggingManager taggingManager = (TaggingManager) ComponentManager
         .get("org.sakaiproject.taggable.api.TaggingManager");
