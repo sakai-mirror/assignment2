@@ -6,8 +6,7 @@
 <beans>
   <!-- ASNN-609 -->
   <bean id="httpServletFactory"
-    class="org.sakaiproject.assignment2.tool.taggable.DebugSakaiHttpServletFactory">
-    <property name="entityReference" ref="sakai-UrlEntityReference"/>
+    class="org.sakaiproject.assignment2.tool.taggable.Asnn2HttpServletFactory">
   </bean>
 
 <bean class="org.sakaiproject.assignment2.tool.producers.OSPHelperTestProducer" />
