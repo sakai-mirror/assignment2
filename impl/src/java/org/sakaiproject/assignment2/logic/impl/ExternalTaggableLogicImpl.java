@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment2.logic.ExternalTaggableLogic;
 import org.sakaiproject.component.cover.ComponentManager;
 import org.sakaiproject.taggable.api.TaggableActivityProducer;
@@ -20,20 +22,25 @@ import org.sakaiproject.taggable.api.TaggingProvider;
  */
 public class ExternalTaggableLogicImpl implements ExternalTaggableLogic {
 
-
+    private static Log log = LogFactory.getLog(ExternalTaggableLogicImpl.class);
 	private TaggingManager taggingManager = null;
 	private TaggableActivityProducer activityProducer = null;
 
 	public ExternalTaggableLogicImpl() {
 		// TODO Auto-generated constructor stub
 	}
+	
+    /**
+     * Place any code that should run when this class is initialized by spring here
+     */
+    public void init() {
+        if (log.isDebugEnabled()) log.debug("init");
+    }
 
-	@Override
 	public boolean isTaggable() {
 		return getTaggingManager().isTaggable();
 	}
 
-	@Override
 	public TaggableActivityProducer getMyProducer() {
 		if (activityProducer == null) {
 			activityProducer = (TaggableActivityProducer) ComponentManager.get(
@@ -42,7 +49,6 @@ public class ExternalTaggableLogicImpl implements ExternalTaggableLogic {
 		return activityProducer;		 
 	}
 
-	@Override
 	public List<TaggingProvider> getProviders() {
 		return getTaggingManager().getProviders();
 	}	
@@ -55,7 +61,6 @@ public class ExternalTaggableLogicImpl implements ExternalTaggableLogic {
 		return taggingManager;
 	}
 
-	@Override
 	public List<TaggingHelperInfo> getActivityHelperInfo(String activityRef) {
 		List<TaggingHelperInfo> activityHelpers = new ArrayList<TaggingHelperInfo>();
 		for (TaggingProvider provider : getProviders()) {
@@ -80,7 +85,6 @@ public class ExternalTaggableLogicImpl implements ExternalTaggableLogic {
 		return returnMap;
 	}
 
-	@Override
 	public boolean isSiteAssociated(String context) {
 		boolean isAllowed = false;
 		for (TaggingProvider provider : getProviders()) {
