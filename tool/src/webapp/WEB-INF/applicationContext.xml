@@ -66,6 +66,7 @@
         <property name="assignmentBundleLogic" ref="org.sakaiproject.assignment2.logic.AssignmentBundleLogic" />
         <property name="externalGradebookLogic" ref="org.sakaiproject.assignment2.logic.ExternalGradebookLogic" />
         <property name="externalContentReviewLogic" ref="org.sakaiproject.assignment2.logic.ExternalContentReviewLogic" />
+        <property name="externalTaggableLogic" ref="org.sakaiproject.assignment2.logic.ExternalTaggableLogic" />
     </bean>
 
 	<!--  causes every variable to post, even if it hasn't changed since page render -->

@@ -34,7 +34,7 @@ asnn2.getAsnnCompData = function () {
       togo.duedatelabel = true;
       togo.duetext = obj.dueDateFormatted;
     }
-   if (obj.canEdit && obj.canEdit === true) {
+    if (obj.canEdit && obj.canEdit === true) {
       togo.editlink = {
         target: '/portal/tool/'+sakai.curPlacement+'/assignment/'+obj.id,
         linktext: "Edit"
@@ -47,6 +47,13 @@ asnn2.getAsnnCompData = function () {
       togo.asnncheck = {
         value: false
       };
+    }
+    if (obj.canMatrixLink && obj.canMatrixLink === true) {
+      togo.matrixlink = {
+        target: 'http://localhost:8080/portal/tool/55caaf13-470a-47d8-b1d5-62363a39bcfa/TaggableHelperProducer?values=%2Fassignment%2Fa%2Fusedtools%2F2a4f82db-0b4b-4be6-b7cf-fe9c3debcf6a&helperId=osp.matrix.link&keys=activityRef',
+        linktext: "Create/Edit Matrix Links"
+      };
+      togo.sep0 = true;
     }
     if (obj.graded === true) {
         togo.gradelink = {
@@ -120,6 +127,7 @@ asnn2.selectorMap = [
   { selector: ".asnntitle", id: "title" },
   { selector: ".gradelink", id: "gradelink"},
   { selector: ".editlink", id: "editlink" },
+  { selector: ".matrixlink", id: "matrixlink" },
   { selector: ".duplink", id: "duplink" },
   { selector: ".opendate", id: "opentext" },
   { selector: ".duedate", id: "duetext" },
@@ -129,6 +137,7 @@ asnn2.selectorMap = [
   { selector: ".attachments", id: "hasAttachments" },
   { selector: ".needsAttention", id: "needsAttention"},
   { selector: ".draft", id: "draft"},
+  { selector: ".sep0", id: "sep0"},
   { selector: ".sep1", id: "sep1"},
   { selector: ".sep2", id: "sep2"},
   { selector: ".opendatelabel", id: "opendatelabel" },

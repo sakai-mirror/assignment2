@@ -57,7 +57,7 @@ public class TaggableHelperProducer implements ViewComponentProducer, ViewParams
             toolSession.setAttribute(params.keys[i], params.values[i]);
         }
 
-        UILink.make(tofill, HelperViewParameters.HELPER_ID, params.helperId);
+        UIOutput.make(tofill, HelperViewParameters.HELPER_ID, params.helperId);
 
         //UICommand help = UICommand.make(tofill, HelperViewParameters.POST_HELPER_BINDING, "", null);
         //help.parameters = new ParameterList();

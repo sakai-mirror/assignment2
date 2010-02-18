@@ -19,6 +19,7 @@ import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
 import org.sakaiproject.assignment2.logic.ExternalContentReviewLogic;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
+import org.sakaiproject.assignment2.logic.ExternalTaggableLogic;
 import org.sakaiproject.assignment2.logic.GradebookItem;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentAttachment;
@@ -79,6 +80,12 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware {
     private DisplayUtil displayUtil;
     public void setDisplayUtil(DisplayUtil displayUtil) {
         this.displayUtil = displayUtil;
+    }
+    
+    // Dependency
+    private ExternalTaggableLogic taggableLogic;
+    public void setExternalTaggableLogic(ExternalTaggableLogic taggableLogic) {
+    	this.taggableLogic = taggableLogic;
     }
 
     private RequestStorage requestStorage;
@@ -183,6 +190,7 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware {
         
         boolean contentReviewAvailable = contentReviewLogic.isContentReviewAvailable(context); 
         boolean canEdit = permissionLogic.isCurrentUserAbleToEditAssignments(context);
+        boolean canMatrixLink = taggableLogic.isSiteAssociated(context);
         
         // TODO - use the service for entity work
        filterRestrictedAssignmentInfo(viewable, context);
@@ -215,6 +223,9 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware {
             // include grading. If a user can see this assignment they can grade
             // it.
             asnnmap.put("canEdit", canEdit);
+            
+            // Create/Edit Matrix Links
+            asnnmap.put("canMatrixLink", canMatrixLink);
 
             List<String> viewableStudents = assignmentViewableStudentsMap.get(asnn);
 
