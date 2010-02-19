@@ -293,6 +293,10 @@
        <property name="assignmentPermissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentPermissionLogic" />
        <property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
        <property name="submissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
+       <property name="asnnSubmissionVersionRenderer" ref="AsnnSubmissionVersionRenderer"></property>
+       <property name="messageLocator" ref="messageLocator"></property>
+       <property name="displayUtil" ref="DisplayUtil" />
+       <property name="asnnToggleRenderer" ref="AsnnToggleRenderer"></property>
    </bean>
 
    <!--  AJAX Fragment Producers -->

@@ -36,9 +36,14 @@ import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
+import org.sakaiproject.assignment2.tool.DisplayUtil;
 import org.sakaiproject.assignment2.tool.params.ViewSubmissionParams;
 import org.sakaiproject.assignment2.tool.producers.renderers.AsnnInstructionsRenderer;
+import org.sakaiproject.assignment2.tool.producers.renderers.AsnnSubmissionVersionRenderer;
+import org.sakaiproject.assignment2.tool.producers.renderers.AsnnToggleRenderer;
 
+import uk.org.ponder.messageutil.MessageLocator;
+import uk.org.ponder.rsf.components.UIBranchContainer;
 import uk.org.ponder.rsf.components.UIContainer;
 import uk.org.ponder.rsf.components.UIMessage;
 import uk.org.ponder.rsf.components.UIOutput;
@@ -66,6 +71,10 @@ public class ViewStudentSubmissionProducer implements ViewComponentProducer, Vie
     private AssignmentPermissionLogic permissionLogic;
     private AsnnInstructionsRenderer asnnInstructionsRenderer;
     private AssignmentSubmissionLogic submissionLogic;
+    private AsnnSubmissionVersionRenderer asnnSubmissionVersionRenderer;
+    private MessageLocator messageLocator;
+    private DisplayUtil displayUtil;
+    private AsnnToggleRenderer toggleRenderer;
 
     public void fillComponents(UIContainer tofill, ViewParameters viewparams, ComponentChecker checker) {
           // Get Params
@@ -106,6 +115,22 @@ public class ViewStudentSubmissionProducer implements ViewComponentProducer, Vie
           
           UIOutput.make(tofill, "title", assignment.getTitle());
           
+          String dueDate;
+          if (assignmentSubmission.getResubmitCloseDate()!=null)
+          {
+              dueDate = messageLocator.getMessage("assignment2.view-submission.due_date", new Object[]{df.format(assignmentSubmission.getResubmitCloseDate())});
+          }
+          else if (assignment.getDueDate()!=null)
+          {
+              dueDate = messageLocator.getMessage("assignment2.view-submission.due_date", new Object[]{df.format(assignment.getDueDate())});
+          }
+          else
+          {
+              dueDate = messageLocator.getMessage("assignment2.view-submission.no_due_date");
+          }
+          
+          UIOutput.make(tofill, "dueDate", dueDate);
+          
           // These are checks to display various statuses if there are no submissions for this page
           List<AssignmentSubmissionVersion> submittedVersions = new ArrayList<AssignmentSubmissionVersion>();
           if (assignment.getSubmissionType() == AssignmentConstants.SUBMIT_NON_ELECTRONIC)
@@ -139,6 +164,25 @@ public class ViewStudentSubmissionProducer implements ViewComponentProducer, Vie
           }
           
           asnnInstructionsRenderer.makeInstructions(tofill, "instructions:", assignment, false, false, false);
+          
+          if (!submittedVersions.isEmpty())
+          {
+              for (AssignmentSubmissionVersion single : submittedVersions)
+              {
+                  // figure out the status so we can determine what the heading should be
+                  int status = submissionLogic.getSubmissionStatusForVersion(single, assignment.getDueDate(), assignmentSubmission.getResubmitCloseDate());
+                  String headerText;
+                  if (single.getSubmittedVersionNumber() == AssignmentSubmissionVersion.FEEDBACK_ONLY_VERSION_NUMBER) {
+                      headerText = messageLocator.getMessage("assignment2.version.toggle.status.feedback_only_version");
+                  } else {
+                      headerText = displayUtil.getVersionStatusText(status, single.getStudentSaveDate(), single.getSubmittedDate());
+                  }
+                  String toggleHoverText = messageLocator.getMessage("assignment2.version.toggle.hover");
+                  UIBranchContainer versionDiv = UIBranchContainer.make(tofill, "toggle-wrapper:");
+                  toggleRenderer.makeToggle(versionDiv, "version_toggle:", null, true, headerText, toggleHoverText, false, false, false, false, null);
+                  asnnSubmissionVersionRenderer.fillComponents(versionDiv, "submission:", single, true);
+              }
+          }
     }
 
     public ViewParameters getViewParameters() {
@@ -163,5 +207,21 @@ public class ViewStudentSubmissionProducer implements ViewComponentProducer, Vie
 
     public void setSubmissionLogic(AssignmentSubmissionLogic submissionLogic) {
         this.submissionLogic = submissionLogic;
+    }
+    
+    public void setAsnnSubmissionVersionRenderer(AsnnSubmissionVersionRenderer asnnSubmissionVersionRenderer) {
+        this.asnnSubmissionVersionRenderer = asnnSubmissionVersionRenderer;
+    }
+    
+    public void setMessageLocator(MessageLocator messageLocator) {
+        this.messageLocator = messageLocator;
+    }
+    
+    public void setDisplayUtil(DisplayUtil displayUtil) {
+        this.displayUtil = displayUtil;
+    }
+    
+    public void setAsnnToggleRenderer(AsnnToggleRenderer toggleRenderer) {
+        this.toggleRenderer = toggleRenderer;
     }
 }

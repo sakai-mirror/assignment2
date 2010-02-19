@@ -16,12 +16,31 @@
 <div rsf:id="page:" class="portletBody">
     <h3 rsf:id="title">Assignment Title!!!</h3>
     
+    <p rsf:id="dueDate" class="subheading">Date stuff!!!!!!</p>
     <p rsf:id="submissionStatus" class="subheading">This assignment has not been submitted!!!!!!</p>
     
     <!--  Instructions section -->
     <div rsf:id="instructions:">
         <!-- Assignment Instructions go here. -->
     </div>
+    
+    <div rsf:id="toggle-wrapper:">
+        <div rsf:id="version_toggle:"/>
+        <div class="subsection1 toggleSubsection" style="display: none;">
+            <!--  Submissions section -->
+            <div rsf:id="submission:">
+                <!-- Submissions go here. -->
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+  //<![CDATA[
+    // initialize the collapsible toggles
+    jQuery("div.toggleHeader").click(function () { 
+        asnn2.toggleSubsection(".toggleSubsection", this);
+    });
+  //]]>
+  </script>
 </div>
 </body>
 </html>
