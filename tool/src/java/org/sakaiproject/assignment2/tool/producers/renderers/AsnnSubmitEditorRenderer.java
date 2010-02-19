@@ -83,6 +83,11 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
     public void setAsnnToggleRenderer(AsnnToggleRenderer toggleRenderer) {
         this.toggleRenderer = toggleRenderer;
     }
+    
+    private AsnnTagsRenderer tagsRenderer;
+    public void setAsnnTagsRenderer(AsnnTagsRenderer tagsRenderer) {
+        this.tagsRenderer = tagsRenderer;
+    }
 
     // Dependency
     private ViewParameters viewParameters;
@@ -336,6 +341,8 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
                 submissionSection.decorate(new UIFreeAttributeDecorator("style", "display: none;"));
             }
         }
+        
+        tagsRenderer.makeTagInformation(joint, "tagging-info:", assignment);
 
     }
 

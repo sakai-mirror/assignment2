@@ -2,6 +2,7 @@ package org.sakaiproject.assignment2.tool.producers.renderers;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
 import org.sakaiproject.assignment2.logic.ExternalContentReviewLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
@@ -21,8 +22,10 @@ import uk.org.ponder.rsf.viewstate.ViewParameters;
  * there are multiple submissions.  It includes the title, student name, 
  * submission date, and then the text/attachments of the submission.
  * 
- * If there is feedback from the Instructor for this version that will be 
- * rendered as well.
+ * If there is feedback from the Instructor for this version, that will be 
+ * rendered if the feedback is released or the current user has grading privileges
+ * for this student and assignment
+ * 
  * 
  * 
  * @author sgithens
@@ -47,6 +50,11 @@ public class AsnnSubmissionVersionRenderer implements BasicProducer {
     public void setExternalContentReviewLogic(ExternalContentReviewLogic contentReviewLogic) {
         this.contentReviewLogic = contentReviewLogic;
     }
+    
+    private AssignmentPermissionLogic permissionLogic;
+    public void setAssignmentPermissionLogic(AssignmentPermissionLogic permissionLogic) {
+        this.permissionLogic = permissionLogic;
+    }
 
     /**
      * Renders the Submission Version in the parent container in element with 
@@ -66,6 +74,7 @@ public class AsnnSubmissionVersionRenderer implements BasicProducer {
         AssignmentSubmission assignmentSubmssion = asnnSubVersion.getAssignmentSubmission();
         Assignment2 assignment = assignmentSubmssion.getAssignment();
         int submissionType = assignment.getSubmissionType();
+        boolean userCanGrade = permissionLogic.isUserAbleToProvideFeedbackForStudentForAssignment(assignmentSubmssion.getUserId(), assignment);
 
         /*
          * Render the headers
@@ -100,9 +109,9 @@ public class AsnnSubmissionVersionRenderer implements BasicProducer {
 
             if (submissionType == AssignmentConstants.SUBMIT_INLINE_AND_ATTACH || 
                     submissionType == AssignmentConstants.SUBMIT_INLINE_ONLY) {
-                // if feedback is released, we display the submitted text with
+                // if feedback is released or user has grading privileges for this student, we display the submitted text with
                 // instructor annotations
-                if (asnnSubVersion.isFeedbackReleased()) {
+                if (userCanGrade || asnnSubVersion.isFeedbackReleased()) {
                     UIMessage.make(joint, "submission-text-header", "assignment2.student-submit.submission_text.annotated");
                     if (asnnSubVersion.getAnnotatedText() != null && asnnSubVersion.getAnnotatedText().trim().length() > 0) {
                         UIVerbatim.make(joint, "submission-text", asnnSubVersion.getAnnotatedText());
@@ -121,9 +130,10 @@ public class AsnnSubmissionVersionRenderer implements BasicProducer {
         }
 
         /* 
-         * Render the Instructor's Feedback Materials
+         * Render the Instructor's Feedback Materials if feedback is released
+         * or current user has grading privileges
          */
-        if (asnnSubVersion.isFeedbackReleased()) {
+        if (userCanGrade || asnnSubVersion.isFeedbackReleased()) {
             UIMessage.make(joint, "feedback-header", "assignment2.student-submission.feedback.header");
             String feedbackText = asnnSubVersion.getFeedbackNotes();
 

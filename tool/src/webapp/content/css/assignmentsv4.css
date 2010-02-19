@@ -851,3 +851,18 @@ h3.mainHeading {
     margin: 0;
     font-size: 1.2em;
 }
+
+/* Tagging display */
+.tagTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 10px 0px;
+}
+.tagTable th, td {
+    padding: 3px;
+}
+.tagTable th {
+    font-weight: bold;
+    text-align: left;
+    border-bottom: #C0C0C0 solid 3px;
+}
