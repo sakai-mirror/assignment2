@@ -30,6 +30,7 @@ import org.sakaiproject.assignment2.tool.params.AssignmentViewParams;
 import org.sakaiproject.assignment2.tool.params.FragmentGradebookDetailsViewParams;
 import org.sakaiproject.assignment2.tool.params.GradeViewParams;
 import org.sakaiproject.assignment2.tool.params.SimpleAssignmentViewParams;
+import org.sakaiproject.assignment2.tool.params.ViewSubmissionParams;
 import org.sakaiproject.assignment2.tool.params.ViewSubmissionsViewParams;
 import org.sakaiproject.assignment2.tool.params.ZipViewParams;
 
@@ -183,7 +184,17 @@ public class LocalPermissionLogic {
 
             return Boolean.FALSE;
 
-        } 
+        }
+        else if (ViewStudentSubmissionProducer.VIEW_ID.equals(viewId)) {
+        if (viewParams instanceof ViewSubmissionParams) {
+            ViewSubmissionParams params = (ViewSubmissionParams) viewParams;
+            
+            return permissionLogic.isUserAbleToViewStudentSubmissionForAssignment(params.userId, params.assignmentId);
+        }
+
+        return Boolean.FALSE;
+
+    } 
 
         //Here are some RSF Generic always true viewIds
 
