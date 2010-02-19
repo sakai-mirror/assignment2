@@ -3,6 +3,18 @@
 	"http://www.springframework.org/dtd/spring-beans.dtd">
 
 <beans>
+    <bean id="asnnHelperHandlerHookBeanProxy" parent="RSACBridgeProxy">
+        <property name="targetBeanName" value="asnnHelperHandlerHookBean"/>
+    </bean>
+    
+    <bean parent="handlerHookParent">
+        <property name="value">
+            <bean class="org.sakaiproject.assignment2.tool.handlerhooks.HelperHandlerHook">
+                <property name="viewParametersProxy" ref="viewParametersProxy" />
+                <property name="helperHandlerHookBean" ref="asnnHelperHandlerHookBeanProxy" />
+            </bean>
+        </property>
+    </bean>
 
 	<!--   
 		<bean id="messageRenderer" class="org.sakaiproject.assignment2.tool.beans.Assignments2MessageRenderer">

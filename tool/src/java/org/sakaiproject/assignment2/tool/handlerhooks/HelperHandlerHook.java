@@ -14,7 +14,12 @@ public class HelperHandlerHook implements HandlerHook {
   private HelperHandlerHookBean hhhb;
 
   public boolean handle() {
-    if (viewParametersProxy.get() instanceof HelperViewParameters) {
+    // ASNN-521
+    String[] pathInfo = hhhb.getPathInfo();
+    if (pathInfo.length > 0 && pathInfo[0].equals("osp.matrix.link.helper")) {
+      return hhhb.handle();
+    }
+    else if (viewParametersProxy.get() instanceof HelperViewParameters) {
       return hhhb.handle();
     }
     else return false;

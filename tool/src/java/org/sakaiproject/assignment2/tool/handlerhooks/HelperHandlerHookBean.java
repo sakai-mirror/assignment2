@@ -74,8 +74,10 @@ public class HelperHandlerHookBean {
   private ActiveToolManager activeToolManager;
   private BaseURLProvider bup;
   private String[] pathInfo;
+  private static int loadedcount = 0;
 
   public boolean handle() {
+    System.out.println("DOING ASNN2 TAGGABLE DEBUG HELPRE!!!!!!!");
     String viewID = viewParameters.viewID;
     Logger.log.info("Handling view: " + viewID);
 
@@ -88,6 +90,11 @@ public class HelperHandlerHookBean {
       Logger.log.info("pathInfo: " + pathInfo + " pathBeyondViewID: "
           + pathBeyondViewID);
     }
+    
+    if (pathInfo[0].equals("osp.matrix.link.helper")) {
+        return handleHelperHelper(pathBeyondViewID);
+    }
+    /*
     if (pathBeyondViewID.startsWith(HELPER_FINISHED_PATH)) {
       return handleHelperDone();
     }
@@ -95,7 +102,8 @@ public class HelperHandlerHookBean {
     if (pathBeyondViewID.startsWith(IN_HELPER_PATH)) {
       return handleHelperHelper(pathBeyondViewID);
     }
-
+    */
+loadedcount = 0;
     return handleHelperStart();
   }
 
@@ -147,9 +155,10 @@ public class HelperHandlerHookBean {
     Logger.log.info("Handling helper in view: " + viewParameters.viewID
         + " pathBeyondViewID: " + pathBeyondViewID);
 
-    String helperId = (String) tsh.getTokenState(TOKEN_STATE_PREFIX
-        + viewParameters.viewID + HelperViewParameters.HELPER_ID);
-
+    //String helperId = (String) tsh.getTokenState(TOKEN_STATE_PREFIX
+    //    + viewParameters.viewID + DebugHelperViewParameters.HELPER_ID);
+    String helperId = "osp.matrix.link";
+    
     ActiveTool helperTool = activeToolManager.getActiveTool(helperId);
 
     String baseUrl = bup.getBaseURL();
@@ -157,15 +166,31 @@ public class HelperHandlerHookBean {
     int hostEnd = baseUrl.indexOf('/', hostStart);
 
     String contextPath = baseUrl.substring(hostEnd);
-    contextPath += viewParameters.viewID;
-    contextPath += IN_HELPER_PATH;
-    String helperPathInfo = pathInfo[0] + "/" + pathInfo[1];
-
+    //contextPath += viewParameters.viewID;
+    //contextPath += IN_HELPER_PATH;
+    contextPath += "osp.matrix.link.helper";
+    //String helperPathInfo = pathInfo[0] + "/" + pathInfo[1];
+    String helperPathInfo = "";
+   
+    //System.out.println("NOT REMOVING NATIVE URL!");
     request.removeAttribute(Tool.NATIVE_URL);
 
+    
     // this is the forward call
     try {
-      helperTool.help(request, response, contextPath, helperPathInfo);
+      //helperTool.help(request, response, contextPath, helperPathInfo);
+      // Test based off debug tracing
+      if (loadedcount == 0) {
+        
+          helperTool.help(request, response, contextPath, null);
+          //request.removeAttribute(Tool.NATIVE_URL);
+          loadedcount++;
+      }
+      else {
+        //TODO What happens if we try not removing the native Tool URL here?
+          helperTool.help(request, response, contextPath, "/jsfLinkScaffolding");
+          //request.removeAttribute(Tool.NATIVE_URL);
+      }
     }
     catch (ToolException e) {
       throw UniversalRuntimeException.accumulate(e,
@@ -215,8 +240,8 @@ public class HelperHandlerHookBean {
     // Hack to know if we're in the helper
     tsh.putTokenState(IN_HELPER_INDICATOR, IN_HELPER_INDICATOR);
     
-    String helperToolPath = bup.getBaseURL() + viewParameters.viewID
-        + IN_HELPER_PATH;
+    String helperToolPath = bup.getBaseURL() + "osp.matrix.link.helper"; // + viewParameters.viewID
+        // SWG + IN_HELPER_PATH;
     tsh.putTokenState(helperId.getValue() + Tool.HELPER_DONE_URL, bup
         .getBaseURL()
         + viewParameters.viewID + HELPER_FINISHED_PATH);
@@ -251,6 +276,10 @@ public class HelperHandlerHookBean {
   public void setHttpServletRequest(HttpServletRequest httpServletRequest) {
     this.request = httpServletRequest;
   }
+  
+  public HttpServletRequest getHttpServletRequest() {
+      return this.request;
+    }
 
   public void setHttpServletResponse(HttpServletResponse response) {
     this.response = response;
@@ -284,6 +313,10 @@ public class HelperHandlerHookBean {
   public void setPathInfo(String[] pathInfo) {
     this.pathInfo = pathInfo;
   }
+  
+  public String[] getPathInfo() {
+    return pathInfo;
+}
   
   public void setAriProcessor(ARI2Processor ari2p) {
     this.ariprocessor = ari2p;
