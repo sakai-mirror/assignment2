@@ -1,5 +1,7 @@
 package org.sakaiproject.assignment2.tool.handlerhooks;
 
+import org.sakaiproject.assignment2.tool.params.TaggableHelperViewParams;
+
 import uk.ac.cam.caret.sakai.rsf.helper.HelperViewParameters;
 import uk.org.ponder.rsf.processor.HandlerHook;
 import uk.org.ponder.rsf.viewstate.ViewParameters;
@@ -19,7 +21,7 @@ public class HelperHandlerHook implements HandlerHook {
     if (pathInfo.length > 0 && pathInfo[0].equals("osp.matrix.link.helper")) {
       return hhhb.handle();
     }
-    else if (viewParametersProxy.get() instanceof HelperViewParameters) {
+    else if (viewParametersProxy.get() instanceof TaggableHelperViewParams) {
       return hhhb.handle();
     }
     else return false;

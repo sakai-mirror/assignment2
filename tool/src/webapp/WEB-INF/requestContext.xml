@@ -450,5 +450,10 @@
     <property name="pathInfo" ref="requestPathInfo" />
     <property name="ariProcessor" ref="actionResultInterceptorProcessor" />
     </bean>
+    
+    <!-- ASNN-512 -->
+    <bean id="httpServletFactory"
+    class="org.sakaiproject.assignment2.tool.handlerhooks.Asnn2HttpServletFactory">
+    </bean>
 
 </beans>
