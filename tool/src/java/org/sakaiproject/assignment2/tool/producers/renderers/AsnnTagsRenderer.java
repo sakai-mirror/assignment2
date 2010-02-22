@@ -40,7 +40,9 @@ import uk.org.ponder.rsf.components.decorators.UITooltipDecorator;
 import uk.org.ponder.rsf.producers.BasicProducer;
 
 /**
- * Renders the section that display the tags associated with a given assignment
+ * Renders the section that displays the tags associated with a given assignment.
+ * This renderer is smart enough to not display this section if this site is
+ * not taggable or no tags exist, so you don't need to check beforehand.
  *
  */
 public class AsnnTagsRenderer implements BasicProducer {

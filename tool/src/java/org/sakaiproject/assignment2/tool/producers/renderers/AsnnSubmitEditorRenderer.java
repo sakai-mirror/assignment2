@@ -220,6 +220,9 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
         if (!studentPreviewSubmission) {
             // render the instructions
             asnnInstructionsRenderer.makeInstructions(joint, "assignment-instructions-edit:", assignment, false, false, false);
+            
+            // render the assignment tags
+            tagsRenderer.makeTagInformation(joint, "tagging-info-edit:", assignment);
         }
 
         // Because the flow might not be starting on the initial view, the
@@ -341,9 +344,6 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
                 submissionSection.decorate(new UIFreeAttributeDecorator("style", "display: none;"));
             }
         }
-        
-        tagsRenderer.makeTagInformation(joint, "tagging-info:", assignment);
-
     }
 
     /**
