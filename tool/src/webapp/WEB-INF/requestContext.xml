@@ -305,6 +305,7 @@
        <property name="messageLocator" ref="messageLocator"></property>
        <property name="displayUtil" ref="DisplayUtil" />
        <property name="asnnToggleRenderer" ref="AsnnToggleRenderer"></property>
+       <property name="externalGradebookLogic" ref="org.sakaiproject.assignment2.logic.ExternalGradebookLogic" />
    </bean>
 
    <!--  AJAX Fragment Producers -->

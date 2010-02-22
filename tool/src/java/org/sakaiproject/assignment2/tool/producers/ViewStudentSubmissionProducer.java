@@ -29,9 +29,12 @@ import java.util.Locale;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment2.exception.AssignmentNotFoundException;
+import org.sakaiproject.assignment2.exception.GradebookItemNotFoundException;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
+import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
+import org.sakaiproject.assignment2.logic.GradebookItem;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
@@ -75,6 +78,7 @@ public class ViewStudentSubmissionProducer implements ViewComponentProducer, Vie
     private MessageLocator messageLocator;
     private DisplayUtil displayUtil;
     private AsnnToggleRenderer toggleRenderer;
+    private ExternalGradebookLogic gradebookLogic;
 
     public void fillComponents(UIContainer tofill, ViewParameters viewparams, ComponentChecker checker) {
           // Get Params
@@ -113,8 +117,11 @@ public class ViewStudentSubmissionProducer implements ViewComponentProducer, Vie
           // use a date which is related to the current users locale
           DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, locale);
           
+          // title
           UIOutput.make(tofill, "title", assignment.getTitle());
           
+          // due date. individual level due date is used if it exists, otherwise use the assignment level due date
+          // if no due date at all, use a message to explain there is no due date on the assignment
           String dueDate;
           if (assignmentSubmission.getResubmitCloseDate()!=null)
           {
@@ -163,6 +170,85 @@ public class ViewStudentSubmissionProducer implements ViewComponentProducer, Vie
               }
           }
           
+          // assignment details
+          boolean instructorView = permissionLogic.isUserAbleToAccessInstructorView(assignment.getContextId());
+          
+          UIOutput.make(tofill, "open-date", df.format(assignment.getOpenDate()));
+
+          // Grading
+          // We include whether this assignment is graded and, if it is,
+          // we include points possible if it is graded by points.
+          String gradedString = assignment.isGraded() ?  messageLocator.getMessage("assignment2.details.graded.yes") :
+              messageLocator.getMessage("assignment2.details.graded.no");
+          UIOutput.make(tofill, "is-graded", gradedString);
+          
+          if (assignment.isGraded() && assignment.getGradebookItemId() != null) {
+              // make sure this gradebook item still exists
+              GradebookItem gradebookItem;
+              try {
+                  gradebookItem = 
+                      gradebookLogic.getGradebookItemById(assignment.getContextId(), 
+                              assignment.getGradebookItemId());
+              } catch (GradebookItemNotFoundException ginfe) {
+                  if (log.isDebugEnabled()) log.debug("Attempt to access assignment " + 
+                          assignment.getId() + " but associated gb item no longer exists!");
+                  gradebookItem = null;
+              }
+              // only display points possible if grade entry by points
+              if (gradebookItem != null && gradebookLogic.getGradebookGradeEntryType(assignment.getContextId()) == ExternalGradebookLogic.ENTRY_BY_POINTS) {
+                  UIOutput.make(tofill, "points-possible-row");
+
+                  String pointsDisplay;
+                  if (gradebookItem.getPointsPossible() == null) {
+                      pointsDisplay = messageLocator.getMessage("assignment2.details.gradebook.points_possible.none");
+                  } else {
+                      pointsDisplay = gradebookItem.getPointsPossible().toString();
+                  }
+                  UIOutput.make(tofill, "points-possible", pointsDisplay); 
+              }
+          }
+          
+          // if this assignment requires submission, we'll see if resubmission is allowed
+          if (assignment.isRequiresSubmission()) {
+              UIOutput.make(tofill, "resubmission-allowed-row");
+              String resubmissionAllowedString;
+              // try to use individual level first
+              if (assignmentSubmission.getNumSubmissionsAllowed()!=null)
+              {
+                  UIOutput.make(tofill, "assign-num-submissions-allowed-row");
+                  if (submissionLogic.getNumberOfRemainingSubmissionsForStudent(studentUserId, assignmentId) > 0 || assignmentSubmission.getNumSubmissionsAllowed() == AssignmentConstants.UNLIMITED_SUBMISSION)
+                  {
+                      resubmissionAllowedString = messageLocator.getMessage("assignment2.details.resubmission.allowed.yes");
+                  }
+                  else
+                  {
+                      resubmissionAllowedString = messageLocator.getMessage("assignment2.details.resubmission.allowed.no");
+                  }
+                  
+                  if (assignmentSubmission.getNumSubmissionsAllowed() == AssignmentConstants.UNLIMITED_SUBMISSION) {
+                      UIOutput.make(tofill, "assign-num-submissions-allowed", messageLocator.getMessage("assignment2.details.resubmission.unlimited"));
+                  } else {
+                      UIOutput.make(tofill, "assign-num-submissions-allowed", assignmentSubmission.getNumSubmissionsAllowed() + "");
+                  }
+              }
+              else if (assignment.getNumSubmissionsAllowed() > 1 || 
+                      assignment.getNumSubmissionsAllowed() == AssignmentConstants.UNLIMITED_SUBMISSION) {
+                  UIOutput.make(tofill, "assign-num-submissions-allowed-row");
+                  resubmissionAllowedString = messageLocator.getMessage("assignment2.details.resubmission.allowed.yes");
+                  
+                  if (assignment.getNumSubmissionsAllowed() == AssignmentConstants.UNLIMITED_SUBMISSION) {
+                      UIOutput.make(tofill, "assign-num-submissions-allowed", messageLocator.getMessage("assignment2.details.resubmission.unlimited"));
+                  } else {
+                      UIOutput.make(tofill, "assign-num-submissions-allowed", assignment.getNumSubmissionsAllowed() + "");
+                  }
+              } else {
+                  resubmissionAllowedString = messageLocator.getMessage("assignment2.details.resubmission.allowed.no");
+              }
+              
+              UIOutput.make(tofill, "resubmissions-allowed", resubmissionAllowedString);
+          }
+          
+          // instructions widget
           asnnInstructionsRenderer.makeInstructions(tofill, "instructions:", assignment, false, false, false);
           
           if (!submittedVersions.isEmpty())
@@ -223,5 +309,9 @@ public class ViewStudentSubmissionProducer implements ViewComponentProducer, Vie
     
     public void setAsnnToggleRenderer(AsnnToggleRenderer toggleRenderer) {
         this.toggleRenderer = toggleRenderer;
+    }
+    
+    public void setExternalGradebookLogic(ExternalGradebookLogic gradebookLogic) {
+        this.gradebookLogic = gradebookLogic;
     }
 }
