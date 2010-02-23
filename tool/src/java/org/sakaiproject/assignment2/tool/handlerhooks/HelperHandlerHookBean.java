@@ -6,6 +6,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.sakaiproject.assignment2.tool.producers.ListProducer;
 import org.sakaiproject.tool.api.ActiveTool;
 import org.sakaiproject.tool.api.ActiveToolManager;
 import org.sakaiproject.tool.api.Tool;
@@ -34,6 +35,7 @@ import uk.org.ponder.rsf.viewstate.BaseURLProvider;
 import uk.org.ponder.rsf.viewstate.ViewParamUtil;
 import uk.org.ponder.rsf.viewstate.ViewParameters;
 import uk.org.ponder.rsf.viewstate.ViewStateHandler;
+import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
 import uk.org.ponder.stringutil.URLUtil;
 import uk.org.ponder.util.Logger;
 import uk.org.ponder.util.UniversalRuntimeException;
@@ -94,11 +96,11 @@ public class HelperHandlerHookBean {
     if (pathInfo[0].equals("osp.matrix.link.helper")) {
         return handleHelperHelper(pathBeyondViewID);
     }
-    /*
+    
     if (pathBeyondViewID.startsWith(HELPER_FINISHED_PATH)) {
       return handleHelperDone();
     }
-
+    /*
     if (pathBeyondViewID.startsWith(IN_HELPER_PATH)) {
       return handleHelperHelper(pathBeyondViewID);
     }
@@ -141,6 +143,10 @@ loadedcount = 0;
     ARIResult ariresult = ari.interpretActionResult(viewParameters, beanReturn);
     ariprocessor.interceptActionResult(ariresult, originParams, ariresult);
     String urlToRedirectTo = ViewParamUtil.getAnyFullURL(ariresult.resultingView, vsh);
+    
+    // ASNN-521 Hardcoding for now
+    urlToRedirectTo = ViewParamUtil.getAnyFullURL(new SimpleViewParameters(ListProducer.VIEW_ID), vsh);
+    
     try {
       response.sendRedirect(urlToRedirectTo);
     }

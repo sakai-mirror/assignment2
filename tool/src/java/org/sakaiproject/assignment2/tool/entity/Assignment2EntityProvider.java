@@ -197,6 +197,7 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware {
 
         for (Assignment2 asnn: viewable) {
             Map asnnmap = new HashMap();
+            asnnmap.put("ref", asnn.getReference());
             asnnmap.put("id", asnn.getId());
             asnnmap.put("title", asnn.getTitle());
             asnnmap.put("openDate", asnn.getOpenDate());

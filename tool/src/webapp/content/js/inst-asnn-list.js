@@ -50,7 +50,8 @@ asnn2.getAsnnCompData = function () {
     }
     if (obj.canMatrixLink && obj.canMatrixLink === true) {
       togo.matrixlink = {
-        target: 'http://localhost:8080/portal/tool/55caaf13-470a-47d8-b1d5-62363a39bcfa/TaggableHelperProducer?values=%2Fassignment%2Fa%2Fusedtools%2F2a4f82db-0b4b-4be6-b7cf-fe9c3debcf6a&helperId=osp.matrix.link&keys=activityRef',
+        target: '/portal/tool/'+sakai.curPlacement+'/TaggableHelperProducer?values=%2Fassignment%2Fa%2Fusedtools%2F2a4f82db-0b4b-4be6-b7cf-fe9c3debcf6a&helperId=osp.matrix.link&keys=activityRef',
+        //target: '/portal/tool/'+sakai.curPlacement+'/TaggableHelperProducer?helperId=osp.matrix.link&keys=activityRef&values='+obj.ref,  
         linktext: "Create/Edit Matrix Links"
       };
       togo.sep0 = true;
