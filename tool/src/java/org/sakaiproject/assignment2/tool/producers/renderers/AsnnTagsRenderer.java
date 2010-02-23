@@ -88,7 +88,7 @@ public class AsnnTagsRenderer implements BasicProducer {
                     for (Tag tag : tags) {
                         UIOutput.make(providerContainer, "tag-data-row:");
                         for (TagColumn column : tags.getColumns()) {
-                            UIVerbatim.make(providerContainer, "tag-data:", stripJqueryInclude(tag.getField(column)));
+                            UIVerbatim.make(providerContainer, "tag-data:", stripLibraries(tag.getField(column)));
                         }
                     }
                 }
@@ -112,17 +112,18 @@ public class AsnnTagsRenderer implements BasicProducer {
      * TODO: find a more robust method for handling this!
      * The tag field returned includes html for creating a link and thickbox for
      * display from assignment2. Unfortunately, this html also includes an old
-     * version of jquery that breaks some of our stuff since we use a newer version.
-     * For now, let's just strip out the <script> tag that is including the old jquery
-     * version and let the link use our jquery version
+     * version of jquery and a version of thickbox.js that each collide with
+     * the versions of these libraries that we are using.
+     * For now, let's just strip out the jquery and thickbox script tags to use
+     * assignment2's versions
      * @param html
      * @return
      */
-    private String stripJqueryInclude(String html) {
-        String jQueryInclude = "<script type=\"text/javascript\" language=\"JavaScript\" src=\"http://149.166.143.191:8080/osp-common-tool/js/jquery-1.2.1.js\"></script>";
-        if (html != null && html.indexOf(jQueryInclude) != -1) {
-            // strip this line from the html to avoid colliding versions of jquery
-            html = html.replaceAll(jQueryInclude, "");
+    private String stripLibraries(String html) {
+        String librariesInclude = "<script type=\"text/javascript\" language=\"JavaScript\" src=\"http://149.166.143.191:8080/osp-common-tool/js/jquery-1.2.1.js\"></script><script type=\"text/javascript\" language=\"JavaScript\"src=\"http://149.166.143.191:8080/osp-common-tool/js/thickbox.js\"></script><link href=\"http://149.166.143.191:8080/osp-common-tool/css/thickbox.css\" type=\"text/css\"rel=\"stylesheet\" media=\"all\" />";
+        if (html != null && html.indexOf(librariesInclude) != -1) {
+            // strip this line from the html to avoid colliding versions
+            html = html.replaceAll(librariesInclude, "");
         }
         
         return html;
