@@ -36,7 +36,7 @@ import uk.org.ponder.rsf.components.UIContainer;
 import uk.org.ponder.rsf.components.UIJointContainer;
 import uk.org.ponder.rsf.components.UIOutput;
 import uk.org.ponder.rsf.components.UIVerbatim;
-import uk.org.ponder.rsf.components.decorators.UITooltipDecorator;
+import uk.org.ponder.rsf.components.decorators.UIFreeAttributeDecorator;
 import uk.org.ponder.rsf.producers.BasicProducer;
 
 /**
@@ -76,10 +76,9 @@ public class AsnnTagsRenderer implements BasicProducer {
                     UIOutput.make(providerContainer, "provider-heading", provider.getName());
                     UIOutput.make(providerContainer, "provider-instruction", provider.getSimpleTextLabel());
                     UIOutput description = UIOutput.make(providerContainer, "provider-description", provider.getHelpLabel());
-                    description.decorate(new UITooltipDecorator(provider.getHelpDescription()));
-
+                    description.decorate(new UIFreeAttributeDecorator("title", provider.getHelpDescription()));
+                    
                     // make the tag table for this provider
-
                     // first, render the headers
                     for (TagColumn column : tags.getColumns()) {
                         UIOutput.make(providerContainer, "tag-heading:", column.getDisplayName());
@@ -89,7 +88,7 @@ public class AsnnTagsRenderer implements BasicProducer {
                     for (Tag tag : tags) {
                         UIOutput.make(providerContainer, "tag-data-row:");
                         for (TagColumn column : tags.getColumns()) {
-                            UIVerbatim.make(providerContainer, "tag-data:", tag.getField(column));
+                            UIVerbatim.make(providerContainer, "tag-data:", stripJqueryInclude(tag.getField(column)));
                         }
                     }
                 }
@@ -107,6 +106,26 @@ public class AsnnTagsRenderer implements BasicProducer {
     
     public void setAssignmentActivityProducer(AssignmentActivityProducer activityProducer) {
         this.activityProducer = activityProducer;
+    }
+    
+    /**
+     * TODO: find a more robust method for handling this!
+     * The tag field returned includes html for creating a link and thickbox for
+     * display from assignment2. Unfortunately, this html also includes an old
+     * version of jquery that breaks some of our stuff since we use a newer version.
+     * For now, let's just strip out the <script> tag that is including the old jquery
+     * version and let the link use our jquery version
+     * @param html
+     * @return
+     */
+    private String stripJqueryInclude(String html) {
+        String jQueryInclude = "<script type=\"text/javascript\" language=\"JavaScript\" src=\"http://149.166.143.191:8080/osp-common-tool/js/jquery-1.2.1.js\"></script>";
+        if (html != null && html.indexOf(jQueryInclude) != -1) {
+            // strip this line from the html to avoid colliding versions of jquery
+            html = html.replaceAll(jQueryInclude, "");
+        }
+        
+        return html;
     }
 
 }

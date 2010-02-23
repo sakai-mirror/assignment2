@@ -853,8 +853,11 @@ h3.mainHeading {
 }
 
 /* Tagging display */
+#tag_header {
+    margin-top: 15px;
+}
 .tagTable {
-    width: 100%;
+    width: 98%;
     border-collapse: collapse;
     margin: 10px 0px;
 }
@@ -866,3 +869,18 @@ h3.mainHeading {
     text-align: left;
     border-bottom: #C0C0C0 solid 3px;
 }
+a.tagDescription {
+    font-size:0.9em;
+    margin-left: 7px;
+}
+
+/* jQuery tooltip */
+#tooltip {
+    position: absolute;
+    z-index: 3000;
+    border: 2px dotted #777;
+    background-color: #eee;
+    padding: 5px;
+}
+#tooltip h3, #tooltip div { margin: 0; }
+
