@@ -34,6 +34,7 @@ import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.tool.StudentAction;
+import org.sakaiproject.util.FormattedText;
 
 import uk.org.ponder.beanutil.entity.EntityBeanLocator;
 import uk.org.ponder.messageutil.TargettedMessage;
@@ -231,6 +232,30 @@ public class AssignmentSubmissionBean {
         for (String key : asvOTPMap.keySet()){
 
             AssignmentSubmissionVersion asv = asvOTPMap.get(key);
+            
+            // validate the input text from the WYSIWYG editors
+            if (asv.getFeedbackNotes() != null) {
+                StringBuilder alertMsg = new StringBuilder();
+                asv.setFeedbackNotes(FormattedText.processFormattedText(asv.getFeedbackNotes(), 
+                        alertMsg, true, true));
+                
+                if (alertMsg != null && alertMsg.length() > 0) {
+                    messages.addMessage(new TargettedMessage("assignment2.assignment_grade.error.feedback_notes", 
+                            new Object[] {alertMsg.toString()}));
+                    return FAILURE;
+                }
+            }
+            if (asv.getAnnotatedText() != null) {
+                StringBuilder alertMsg = new StringBuilder();
+                asv.setAnnotatedText(FormattedText.processFormattedText(asv.getAnnotatedText(), 
+                        alertMsg, true, true));
+                
+                if (alertMsg != null && alertMsg.length() > 0) {
+                    messages.addMessage(new TargettedMessage("assignment2.assignment_grade.error.annotated_text", 
+                            new Object[] {alertMsg.toString()}));
+                    return FAILURE;
+                }
+            }
 
             asv.setAssignmentSubmission(assignmentSubmission);
             if (this.releaseFeedback != null && asv.getFeedbackReleasedDate() == null) {
