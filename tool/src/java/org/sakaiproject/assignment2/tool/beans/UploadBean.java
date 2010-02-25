@@ -265,6 +265,9 @@ public class UploadBean
             newFile = File.createTempFile(uploadedFile.getName(), ".zip");
             uploadedFile.transferTo(newFile);
         } catch (IOException ioe) {
+            if (newFile != null) {
+                newFile.delete();
+            }
             throw new UploadException(ioe.getMessage(), ioe);
         }
 
@@ -277,6 +280,10 @@ public class UploadBean
 
             messages.addMessage(new TargettedMessage("assignment2.uploadall.error.failure", new Object[] {assign.getTitle()}));
             return WorkFlowResult.UPLOAD_FAILURE;
+        } finally {
+            if (newFile != null) {
+                newFile.delete();
+            }
         }
 
         return WorkFlowResult.UPLOAD_SUCCESS;
@@ -303,6 +310,9 @@ public class UploadBean
         // retrieve the displayIdUserId info once and re-use it
         displayIdUserIdMap = externalLogic.getUserDisplayIdUserIdMapForStudentsInSite(assignment.getContextId());		
         parsedContent = uploadGradesLogic.getCSVContent(newFile);
+        
+        // delete the file
+        newFile.delete();
         
         // ensure that there is not an unreasonable number of rows compared to
         // the number of students in the site
