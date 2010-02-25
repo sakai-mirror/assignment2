@@ -26,7 +26,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import org.sakaiproject.content.api.ContentResource;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.user.api.User;
 
@@ -117,16 +116,7 @@ public interface ExternalLogic {
      * @return the title of the Assignment2 tool
      */
     public String getToolTitle();
-
-    /**
-     * Check if this user has super admin access
-     * 
-     * @param userId
-     *            the internal user id (not username)
-     * @return true if the user has admin access, false otherwise
-     */
-    public boolean isUserAdmin(String userId);
-
+    
     /**
      * Cleans up the users submitted strings to protect us from XSS
      * 

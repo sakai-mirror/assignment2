@@ -32,9 +32,6 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
-import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
-import org.sakaiproject.authz.api.FunctionManager;
-import org.sakaiproject.authz.api.SecurityService;
 import org.sakaiproject.component.api.ServerConfigurationService;
 import org.sakaiproject.entity.api.Entity;
 import org.sakaiproject.exception.IdUnusedException;
@@ -68,11 +65,6 @@ public class ExternalLogicImpl implements ExternalLogic {
         this.toolManager = toolManager;
     }
 
-    private SecurityService securityService;
-    public void setSecurityService(SecurityService securityService) {
-        this.securityService = securityService;
-    }
-
     private SessionManager sessionManager;
     public void setSessionManager(SessionManager sessionManager) {
         this.sessionManager = sessionManager;
@@ -93,11 +85,6 @@ public class ExternalLogicImpl implements ExternalLogic {
         this.sectionAwareness = sectionAwareness;
     }
     
-    private FunctionManager functionManager;
-    public void setFunctionManager(FunctionManager functionManager) {
-        this.functionManager = functionManager;
-    }
-    
     private ServerConfigurationService serverConfigurationService;
     public void setServerConfigurationService(ServerConfigurationService serverConfigurationService) {
         this.serverConfigurationService = serverConfigurationService;
@@ -108,22 +95,6 @@ public class ExternalLogicImpl implements ExternalLogic {
      */
     public void init() {
         if (log.isDebugEnabled()) log.debug("init");
-        
-        registerPermissions();
-    }
-    
-    /**
-     * Register the various permissions
-     */
-    protected void registerPermissions() {
-        // register Sakai permissions for this tool
-        functionManager.registerFunction(AssignmentConstants.PERMISSION_ADD_ASSIGNMENTS);
-        functionManager.registerFunction(AssignmentConstants.PERMISSION_EDIT_ASSIGNMENTS);
-        functionManager.registerFunction(AssignmentConstants.PERMISSION_SUBMIT);
-        functionManager.registerFunction(AssignmentConstants.PERMISSION_ALL_GROUPS);
-        functionManager.registerFunction(AssignmentConstants.PERMISSION_MANAGE_SUBMISSIONS);
-        functionManager.registerFunction(AssignmentConstants.PERMISSION_VIEW_ASSIGNMENTS);
-        functionManager.registerFunction(AssignmentConstants.PERMISSION_REMOVE_ASSIGNMENTS);
     }
 
     public String getCurrentContextId() {
@@ -173,10 +144,6 @@ public class ExternalLogicImpl implements ExternalLogic {
         }
 
         return "----------";
-    }
-
-    public boolean isUserAdmin(String userId) {
-        return securityService.isSuperUser(userId);
     }
 
     public String cleanupUserStrings(String userSubmittedString) {
