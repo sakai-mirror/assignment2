@@ -25,6 +25,40 @@ package org.sakaiproject.assignment2.model.constants;
  * @author <a href="mailto:wagnermr@iupui.edu">michelle wagner</a>
  */
 public class AssignmentConstants {
+    
+    public static final String
+        /**
+         * User may view assignments
+         */
+        PERMISSION_VIEW_ASSIGNMENTS = "asnn2.assignment.read",
+        /**
+         * User may make submissions to assignments
+         */
+        PERMISSION_SUBMIT = "asnn2.submit",
+        /**
+         * User may add new assignments
+         */
+        PERMISSION_ADD_ASSIGNMENTS = "asnn2.assignment.new",
+        /**
+         * User may edit existing assignments
+         */
+        PERMISSION_EDIT_ASSIGNMENTS = "asnn2.assignment.edit",
+        /**
+         * User may delete existing assignments
+         */
+        PERMISSION_REMOVE_ASSIGNMENTS = "asnn2.assignment.delete",
+        /**
+         * User may view and provide feedback on assignment submissions
+         */
+        PERMISSION_MANAGE_SUBMISSIONS = "asnn2.submissions.manage",
+        /**
+         * User may view and act on all students and all groups in the site in 
+         * accordance with the other permissions that have been assigned to this role.
+         * Without this permission, users may only view or act on assignments that are released
+         * to his/her group and/or act on submissions if they were submitted by a user
+         * in his/her group, if applicable
+         */
+        PERMISSION_ALL_GROUPS = "asnn2.all.groups";
 
     /**
      * Used to indicate that the assignment may only be viewed, not graded by

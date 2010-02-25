@@ -32,8 +32,10 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
+import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
+import org.sakaiproject.authz.api.FunctionManager;
 import org.sakaiproject.authz.api.SecurityService;
-import org.sakaiproject.component.cover.ServerConfigurationService;
+import org.sakaiproject.component.api.ServerConfigurationService;
 import org.sakaiproject.entity.api.Entity;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.section.api.SectionAwareness;
@@ -90,12 +92,38 @@ public class ExternalLogicImpl implements ExternalLogic {
     public void setSectionAwareness(SectionAwareness sectionAwareness) {
         this.sectionAwareness = sectionAwareness;
     }
+    
+    private FunctionManager functionManager;
+    public void setFunctionManager(FunctionManager functionManager) {
+        this.functionManager = functionManager;
+    }
+    
+    private ServerConfigurationService serverConfigurationService;
+    public void setServerConfigurationService(ServerConfigurationService serverConfigurationService) {
+        this.serverConfigurationService = serverConfigurationService;
+    }
 
     /**
      * Place any code that should run when this class is initialized by spring here
      */
     public void init() {
         if (log.isDebugEnabled()) log.debug("init");
+        
+        registerPermissions();
+    }
+    
+    /**
+     * Register the various permissions
+     */
+    protected void registerPermissions() {
+        // register Sakai permissions for this tool
+        functionManager.registerFunction(AssignmentConstants.PERMISSION_ADD_ASSIGNMENTS);
+        functionManager.registerFunction(AssignmentConstants.PERMISSION_EDIT_ASSIGNMENTS);
+        functionManager.registerFunction(AssignmentConstants.PERMISSION_SUBMIT);
+        functionManager.registerFunction(AssignmentConstants.PERMISSION_ALL_GROUPS);
+        functionManager.registerFunction(AssignmentConstants.PERMISSION_MANAGE_SUBMISSIONS);
+        functionManager.registerFunction(AssignmentConstants.PERMISSION_VIEW_ASSIGNMENTS);
+        functionManager.registerFunction(AssignmentConstants.PERMISSION_REMOVE_ASSIGNMENTS);
     }
 
     public String getCurrentContextId() {
@@ -157,7 +185,7 @@ public class ExternalLogicImpl implements ExternalLogic {
     }
 
     public String getAssignmentViewUrl(String viewId) {
-        return ServerConfigurationService.getToolUrl() + Entity.SEPARATOR
+        return serverConfigurationService.getToolUrl() + Entity.SEPARATOR
         + toolManager.getCurrentPlacement().getId() + Entity.SEPARATOR + viewId;
     }
 
