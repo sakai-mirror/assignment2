@@ -112,6 +112,17 @@ public class ZipHandlerHook implements HandlerHook
         response.setContentType("application/zip");
 
         zipExporter.getSubmissionsZip(resultsOutputStream, zvp.assignmentId);
+        
+        if (resultsOutputStream != null) {
+            try
+            {
+                resultsOutputStream.close();
+            }
+            catch (IOException e)
+            {
+                log.warn("IOException attempting to close resultsOutputStream while downloading zip file");
+            }
+        }
 
         return true;
     }

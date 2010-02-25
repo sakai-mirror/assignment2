@@ -145,9 +145,10 @@ public class ZipExportLogicImpl implements ZipExportLogic
             if (log.isDebugEnabled()) log.debug("Nothing to download!!");
         } else {
 
+            ZipOutputStream out = null;
             try
             {
-                ZipOutputStream out = new ZipOutputStream(outputStream);
+                out = new ZipOutputStream(outputStream);
 
                 // create the folder structure - named after the assignment's title and site title
                 String root = topLevelFolderName + Entity.SEPARATOR;
@@ -243,16 +244,26 @@ public class ZipExportLogicImpl implements ZipExportLogic
                 out.write(readMe);
                 readmeEntry.setSize(readMe.length);
                 out.closeEntry();
-
-                // Complete the ZIP file
-                out.finish();
-                out.flush();
-                out.close();
             }
             catch (IOException e)
             {
                 log.warn(this + ": getSubmissionsZip--IOException unable to create " +
                         "the zip file for assignment " + assignment.getTitle());
+            } finally {
+                // Complete the ZIP file
+                if (out != null) {
+                    try {
+                        out.finish();
+                        out.flush();
+                    } catch (IOException e) {
+                        // tried
+                    }
+                    try {
+                        out.close();
+                    } catch (IOException e) {
+                        // tried
+                    }
+                }
             }
         }
     }

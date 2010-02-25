@@ -21,9 +21,11 @@
 
 package org.sakaiproject.assignment2.logic.impl;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -49,6 +51,7 @@ import org.sakaiproject.assignment2.exception.UploadException;
 import org.sakaiproject.assignment2.logic.UploadGradesLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.UploadAllOptions;
+import org.sakaiproject.component.api.ServerConfigurationService;
 
 /**
  * Functionality for uploading grades via a csv file
@@ -80,6 +83,11 @@ public class UploadGradesLogicImpl implements UploadGradesLogic
     public void setExternalLogic(ExternalLogic externalLogic)
     {
         this.externalLogic = externalLogic;
+    }
+    
+    private ServerConfigurationService serverConfigurationService;
+    public void setServerConfigurationService(ServerConfigurationService serverConfigurationService) {
+        this.serverConfigurationService = serverConfigurationService;
     }
 
     public List<String> uploadGrades(Map<String, String> displayIdUserIdMap, UploadAllOptions options, List<List<String>> parsedContent)
@@ -265,13 +273,13 @@ public class UploadGradesLogicImpl implements UploadGradesLogic
 
         try {
             // split the data into lines
-            String[] rows = splitLine(readIntoString(inputStream));
+            List<String> rows = csvtoArray(inputStream);
 
             // skip the header row
-            for (int rowIndex=1; rowIndex < rows.length; rowIndex++) {
+            for (int rowIndex=1; rowIndex < rows.size(); rowIndex++) {
                 List<String> rowContent = new ArrayList<String>();
                 CSV csv = new CSV();
-                rowContent = csv.parse(rows[rowIndex]);
+                rowContent = csv.parse(rows.get(rowIndex));
 
                 if (rowContent != null && !rowContent.isEmpty()) {
                     csvContent.add(rowContent);
@@ -281,6 +289,17 @@ public class UploadGradesLogicImpl implements UploadGradesLogic
             throw new UploadException("There was an error parsing the data in the csv file", fse);
         } catch (IOException ioe) {
             throw new UploadException("There was an error parsing the data in the csv file", ioe);
+        } finally {
+            if (inputStream != null) {
+                try
+                {
+                    inputStream.close();
+                }
+                catch (IOException e)
+                {
+                    log.warn(("IOException while closing InputStream while parsing CSV content"));
+                }
+            }
         }
 
         return csvContent;
@@ -353,37 +372,40 @@ public class UploadGradesLogicImpl implements UploadGradesLogic
 
         return revisedContent;
     }
-
-    private String readIntoString(InputStream in) throws IOException
-    {
-        StringBuilder buffer = new StringBuilder();
-        int size = 2048;
-        byte[] data = new byte[size];
-
-        while ((size = in.read(data, 0, data.length)) > 0)
-            buffer.append(new String(data, 0, size));
-
-        return buffer.toString();
+    
+    public int getGradesMaxFileSize() {
+        int maxFileSizeInMB;
+        try {
+            maxFileSizeInMB = serverConfigurationService.getInt(UploadGradesLogic.FILE_UPLOAD_MAX_PROP, 
+                    UploadGradesLogic.FILE_UPLOAD_MAX_DEFAULT);
+        } catch (NumberFormatException nfe) {
+            if (log.isDebugEnabled()) log.debug("Invalid property set for gradebook max file size");
+            maxFileSizeInMB = UploadGradesLogic.FILE_UPLOAD_MAX_DEFAULT;
+        }
+        
+        return maxFileSizeInMB;
     }
 
     /**
-     * Splits a String into an array of lines based on predictable line endings.
-     * 
-     * @param result
-     * @return
+     * converts an input stream to a List consisting of Strings
+     * representing a line
+     *
+     * @param inputStream
+     * @return a List consisting of Strings representing a line
      */
-    private String[] splitLine(String result)
-    {
-        if (result == null)
-            return null;
-        String[] lines = null;
-        if (result.contains("\r\n"))
-            lines = result.split("\r\n");
-        else if (result.contains("\r"))
-            lines = result.split("\r");
-        else if (result.contains("\n"))
-            lines = result.split("\n");
-        return lines;
+    private List<String> csvtoArray(InputStream inputStream) throws IOException{
+        List<String> contents = new ArrayList<String>();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+        String line;
+        while((line = reader.readLine())!=null){
+            if (line.replaceAll(",", "").replaceAll("\"", "").equals("")) {
+                continue;
+            }
+            
+            contents.add(line);
+        }
+        return contents;
+
     }
 
     ////////////////////////////////////////////////////////////////////

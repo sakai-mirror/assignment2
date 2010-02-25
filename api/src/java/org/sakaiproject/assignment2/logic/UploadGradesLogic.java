@@ -33,6 +33,16 @@ import org.sakaiproject.assignment2.model.UploadAllOptions;
 public interface UploadGradesLogic
 {
     /**
+     * Optional property for sakai.properties to set the file size limit (in MB) for
+     * the grades csv file.  Defaults to {@link #FILE_UPLOAD_MAX_DEFAULT}
+     */
+    public static final String FILE_UPLOAD_MAX_PROP = "assignment2.grade.upload.max";
+    /**
+     * The default max file size, in MB, for a spreadsheet upload.
+     */
+    public static final int FILE_UPLOAD_MAX_DEFAULT = 1;
+    
+    /**
      * 
      * @param file
      * @return a list of each row of content that is then parsed into
@@ -105,4 +115,11 @@ public interface UploadGradesLogic
      * students and grades 
      */
     public List<List<String>> removeStudentsFromContent(List<List<String>> parsedContent, List<String> studentsToRemove);
+    
+    /**
+     * 
+     * @return the file size limit, in MB, for the grades csv file. Derived from the
+     * sakai.properties value for {@link #FILE_UPLOAD_MAX_PROP}. Defaults to {@value #FILE_UPLOAD_MAX_DEFAULT}.
+     */
+    public int getGradesMaxFileSize();
 }

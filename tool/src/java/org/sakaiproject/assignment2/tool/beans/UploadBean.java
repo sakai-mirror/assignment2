@@ -191,6 +191,14 @@ public class UploadBean
         if (isZip) {
             return processUploadAll(uploadedFile, assign);
         } else if (isCsv) {
+            // we have a separate limit for the size of the csv file
+            int maxGradesFileSize = uploadGradesLogic.getGradesMaxFileSize();
+            long maxGradesSizeInBytes = 1024L * 1024L * maxGradesFileSize; 
+            if (uploadedFileSize > maxGradesSizeInBytes) {
+                messages.addMessage(new TargettedMessage("assignment2.upload_grades.error.file_size", 
+                        new Object[] {maxGradesFileSize}, TargettedMessage.SEVERITY_ERROR));
+                return WorkFlowResult.UPLOAD_FAILURE;
+            }
             // make sure this assignment is graded and the gradebook item still exists
             if (!assign.isGraded()) {
                 messages.addMessage(new TargettedMessage("assignment2.uploadall.upload_csv.ungraded", new Object[] {maxFileSizeInMB}, TargettedMessage.SEVERITY_ERROR));
@@ -295,6 +303,16 @@ public class UploadBean
         // retrieve the displayIdUserId info once and re-use it
         displayIdUserIdMap = externalLogic.getUserDisplayIdUserIdMapForStudentsInSite(assignment.getContextId());		
         parsedContent = uploadGradesLogic.getCSVContent(newFile);
+        
+        // ensure that there is not an unreasonable number of rows compared to
+        // the number of students in the site
+        int numStudentsInSite = displayIdUserIdMap.size();
+        int numRowsInUpload = parsedContent.size();
+        if (numRowsInUpload > (numStudentsInSite + 50)) {
+            messages.addMessage(new TargettedMessage("assignment2.upload_grades.too_many_rows", 
+                    new Object[] {numRowsInUpload, numStudentsInSite}, TargettedMessage.SEVERITY_ERROR ));
+            return WorkFlowResult.UPLOADALL_CSV_UPLOAD_FAILURE;
+        }
 
         // let's check that the students included in the file are actually in the site
         List<String> invalidDisplayIds = uploadGradesLogic.getInvalidDisplayIdsInContent(displayIdUserIdMap, parsedContent);
@@ -369,6 +387,12 @@ public class UploadBean
                             new Object[] {param}, TargettedMessage.SEVERITY_ERROR));
                 } else if (info.equals(UploadAllLogic.UploadInfo.STUDENT_WITH_INVALID_GRADE_IN_CSV.toString())) {
                     messages.addMessage(new TargettedMessage("assignment2.uploadall.error.invalid_grade_csv", 
+                            new Object[] {param}, TargettedMessage.SEVERITY_ERROR));
+                } else if (info.equals(UploadAllLogic.UploadInfo.INVALID_NUM_ROWS_IN_CSV.toString())) {
+                    messages.addMessage(new TargettedMessage("assignment2.uploadall.error.invalid_grade_csv", 
+                            new Object[] {param}, TargettedMessage.SEVERITY_ERROR));
+                } else if (info.equals(UploadAllLogic.UploadInfo.CSV_FILE_TOO_LARGE.toString())) {
+                    messages.addMessage(new TargettedMessage("assignment2.uploadall.error.grades_csv_file_size", 
                             new Object[] {param}, TargettedMessage.SEVERITY_ERROR));
                 } else if (info.equals(UploadAllLogic.UploadInfo.NUM_STUDENTS_UPDATED.toString())) {
                     totalNumUpdated = param;
