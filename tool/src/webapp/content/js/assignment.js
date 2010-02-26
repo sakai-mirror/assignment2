@@ -699,6 +699,8 @@ var asnn2 = asnn2 || {};
                 area.hide();
             }
         }
+        
+        a2SetMainFrameHeight();
     };
     
     /**
