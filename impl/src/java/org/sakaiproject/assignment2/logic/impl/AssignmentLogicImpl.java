@@ -56,14 +56,11 @@ import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentAttachment;
 import org.sakaiproject.assignment2.model.AssignmentGroup;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
+import org.sakaiproject.assignment2.service.model.AssignmentDefinition;
 import org.sakaiproject.assignment2.taggable.api.AssignmentActivityProducer;
-import org.sakaiproject.entitybroker.EntityReference;
-import org.sakaiproject.entitybroker.entityprovider.EntityProvider;
 import org.sakaiproject.entitybroker.entityprovider.EntityProviderManager;
-import org.sakaiproject.entitybroker.entityprovider.capabilities.CRUDable;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.genericdao.api.search.Search;
-import org.sakaiproject.site.api.Group;
 import org.sakaiproject.taggable.api.TaggingManager;
 import org.sakaiproject.taggable.api.TaggingProvider;
 import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException;
@@ -263,6 +260,14 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 
         // clean up the html string for the instructions
         assignment.setInstructions(Assignment2Utils.cleanupHtmlText(assignment.getInstructions()));
+        
+        // double check that content review is available for this assignment
+        if (assignment.isContentReviewEnabled()) {
+            if (!externalContentReviewLogic.isContentReviewAvailable(assignment.getContextId())) {
+                if (log.isDebugEnabled()) log.debug("Content review turned off b/c not available in this site");
+                assignment.setContentReviewEnabled(false);
+            }
+        }
 
         Set<AssignmentAttachment> attachToDelete = new HashSet<AssignmentAttachment>();
         Set<AssignmentGroup> groupsToDelete = new HashSet<AssignmentGroup>();
@@ -931,4 +936,69 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 
         return duplicatedTitle;
     }
+    
+    public AssignmentDefinition getAssignmentDefinition(Assignment2 assignment, Map<Long, GradebookItem> gbIdItemMap,
+            Map<String, String> groupIdToTitleMap) {
+        if (assignment == null) {
+            throw new IllegalArgumentException("Null assignment passed to getAssignmentDefinition");
+        }
+
+        AssignmentDefinition assignDef = new AssignmentDefinition();
+        assignDef.setId(assignment.getId());
+        assignDef.setAcceptUntilDate(assignment.getAcceptUntilDate());
+        assignDef.setDraft(assignment.isDraft());
+        assignDef.setDueDate(assignment.getDueDate());
+        assignDef.setHasAnnouncement(assignment.getHasAnnouncement());
+        assignDef.setHonorPledge(assignment.isHonorPledge());
+        assignDef.setInstructions(assignment.getInstructions());
+        assignDef.setSendSubmissionNotifications(assignment.isSendSubmissionNotifications());
+        assignDef.setNumSubmissionsAllowed(assignment.getNumSubmissionsAllowed());
+        assignDef.setOpenDate(assignment.getOpenDate());
+        assignDef.setSortIndex(assignment.getSortIndex());
+        assignDef.setSubmissionType(assignment.getSubmissionType());
+        assignDef.setTitle(assignment.getTitle());
+        assignDef.setGraded(assignment.isGraded());
+        assignDef.setRequiresSubmission(assignment.isRequiresSubmission());
+        assignDef.setContentReviewEnabled(assignment.isContentReviewEnabled());
+
+        // if it is graded, we need to retrieve the name of the associated gb item
+        if (assignment.isGraded() && assignment.getGradebookItemId() != null &&
+                gbIdItemMap != null) {
+            GradebookItem gbItem = (GradebookItem)gbIdItemMap.get(assignment.getGradebookItemId());
+            if (gbItem != null) {
+                assignDef.setAssociatedGbItemName(gbItem.getTitle());
+                assignDef.setAssociatedGbItemPtsPossible(gbItem.getPointsPossible());
+            }
+        }
+
+        // we need to make a list of the attachment references
+        List<String> attachRefList = new ArrayList<String>();
+        if (assignment.getAttachmentSet() != null) {
+            for (AssignmentAttachment attach : assignment.getAttachmentSet()) {
+                if (attach != null) {
+                    attachRefList.add(attach.getAttachmentReference());
+                }
+            }
+        }
+        assignDef.setAttachmentReferences(attachRefList);
+
+        // we need to make a list of the group names
+        List<String> associatedGroupNames = new ArrayList<String>();
+        if (assignment.getAssignmentGroupSet() != null && groupIdToTitleMap != null) {
+            for (AssignmentGroup aGroup : assignment.getAssignmentGroupSet()) {
+                if (aGroup != null) {
+                    String groupName = (String)groupIdToTitleMap.get(aGroup.getGroupId());
+                    if (groupName != null) {
+                        associatedGroupNames.add(groupName);
+                    }
+                }
+            }
+        }
+        assignDef.setGroupRestrictionGroupTitles(associatedGroupNames);
+
+        assignDef.setProperties(assignment.getProperties());
+
+        return assignDef;
+    }
+
 }

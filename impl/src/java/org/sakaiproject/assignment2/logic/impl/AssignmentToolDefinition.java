@@ -23,7 +23,7 @@ package org.sakaiproject.assignment2.logic.impl;
 import java.io.Externalizable;
 import java.util.Collection;
 
-import org.sakaiproject.assignment2.logic.entity.AssignmentDefinition;
+import org.sakaiproject.assignment2.service.model.AssignmentDefinition;
 
 
 public class AssignmentToolDefinition extends VersionedExternalizable implements Externalizable {	

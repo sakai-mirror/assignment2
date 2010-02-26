@@ -58,5 +58,12 @@
 			<ref bean="org.sakaiproject.assignment2.logic.AssignmentBundleLogic" />
 		</property>
 	</bean>
+  
+  <bean id="org.sakaiproject.assignment2.service.api.Assignment2Service" class="org.sakaiproject.assignment2.service.impl.Assignment2ServiceImpl" init-method="init">
+      <property name="assignmentPermissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentPermissionLogic" />
+      <property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
+      <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
+      <property name="externalGradebookLogic" ref="org.sakaiproject.assignment2.logic.ExternalGradebookLogic" />
+   </bean>
 
 </beans>

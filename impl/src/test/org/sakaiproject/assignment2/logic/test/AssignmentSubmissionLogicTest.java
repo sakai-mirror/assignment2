@@ -40,6 +40,7 @@ import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.model.FeedbackAttachment;
 import org.sakaiproject.assignment2.model.SubmissionAttachment;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
+import org.sakaiproject.assignment2.test.Assignment2TestBase;
 import org.sakaiproject.assignment2.test.AssignmentTestDataLoad;
 
 
@@ -50,7 +51,19 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
      */
     protected void onSetUpInTransaction() throws Exception {
         super.onSetUpInTransaction();
-
+        
+        // refresh the assign data before you begin the tests.  sometimes it gets cranky
+        dao.evictObject(testData.a1);
+        testData.a1 = dao.getAssignmentByIdWithGroupsAndAttachments(testData.a1Id);
+        
+        dao.evictObject(testData.a2);
+        testData.a2 = dao.getAssignmentByIdWithGroupsAndAttachments(testData.a2Id);
+        
+        dao.evictObject(testData.a3);
+        testData.a3 = dao.getAssignmentByIdWithGroupsAndAttachments(testData.a3Id);
+        
+        dao.evictObject(testData.a4);
+        testData.a4 = dao.getAssignmentByIdWithGroupsAndAttachments(testData.a4Id);
     }
 
     public void testGetAssignmentSubmissionById() {

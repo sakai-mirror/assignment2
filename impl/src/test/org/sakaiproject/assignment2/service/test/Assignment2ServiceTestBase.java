@@ -1,6 +1,6 @@
 /**********************************************************************************
- * $URL$
- * $Id$
+ * $URL: https://source.sakaiproject.org/contrib/assignment2/trunk/impl/src/test/org/sakaiproject/assignment2/logic/test/Assignment2TestBase.java $
+ * $Id: Assignment2TestBase.java 62342 2009-08-06 14:26:54Z wagnermr@iupui.edu $
  ***********************************************************************************
  *
  * Copyright (c) 2007 The Sakai Foundation.
@@ -18,7 +18,7 @@
  * limitations under the License.
  *
  **********************************************************************************/
-package org.sakaiproject.assignment2.logic.test;
+package org.sakaiproject.assignment2.service.test;
 
 
 import org.sakaiproject.assignment2.dao.AssignmentDao;
@@ -32,6 +32,7 @@ import org.sakaiproject.assignment2.logic.impl.ExternalContentReviewLogicImpl;
 import org.sakaiproject.assignment2.logic.impl.ExternalGradebookLogicImpl;
 import org.sakaiproject.assignment2.logic.test.stubs.ExternalLogicStub;
 import org.sakaiproject.assignment2.logic.test.stubs.GradebookServiceStub;
+import org.sakaiproject.assignment2.service.impl.Assignment2ServiceImpl;
 import org.sakaiproject.assignment2.test.AssignmentTestDataLoad;
 import org.sakaiproject.assignment2.test.PreloadTestData;
 import org.springframework.test.AbstractTransactionalSpringContextTests;
@@ -45,7 +46,7 @@ import org.springframework.test.AbstractTransactionalSpringContextTests;
  * is set in the hibernate.properties file in the "hibernate.properties.dir" directory.
  *
  */
-public abstract class Assignment2TestBase extends AbstractTransactionalSpringContextTests {
+public abstract class Assignment2ServiceTestBase extends AbstractTransactionalSpringContextTests {
     protected AssignmentDao dao;
     protected AssignmentTestDataLoad testData;
 
@@ -57,10 +58,10 @@ public abstract class Assignment2TestBase extends AbstractTransactionalSpringCon
     protected AssignmentPermissionLogicImpl permissionLogic;
     protected AssignmentBundleLogic bundleLogic;
     protected ExternalContentReviewLogicImpl contentReviewLogic;
-
-    protected GradebookServiceStub gradebookService;
-
+    protected Assignment2ServiceImpl assignment2Service;
     protected ExternalLogicStub externalLogic;
+    
+    protected GradebookServiceStub gradebookService;
 
     protected void onSetUpBeforeTransaction() throws Exception {
 
@@ -119,6 +120,12 @@ public abstract class Assignment2TestBase extends AbstractTransactionalSpringCon
         submissionLogic.setExternalLogic(externalLogic);
         submissionLogic.setPermissionLogic(permissionLogic);
         submissionLogic.setAssignmentLogic(assignmentLogic);
+        
+        assignment2Service = new Assignment2ServiceImpl();
+        assignment2Service.setAssignmentLogic(assignmentLogic);
+        assignment2Service.setAssignmentPermissionLogic(permissionLogic);
+        assignment2Service.setExternalGradebookLogic(gradebookLogic);
+        assignment2Service.setExternalLogic(externalLogic);
 
     }
 

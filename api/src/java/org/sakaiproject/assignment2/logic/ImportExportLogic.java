@@ -23,7 +23,7 @@ package org.sakaiproject.assignment2.logic;
 
 import java.util.List;
 
-import org.sakaiproject.assignment2.logic.entity.AssignmentDefinition;
+import org.sakaiproject.assignment2.service.model.AssignmentDefinition;
 
 
 /**

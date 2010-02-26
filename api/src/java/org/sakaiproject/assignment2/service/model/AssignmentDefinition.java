@@ -18,7 +18,7 @@
  * limitations under the License.
  *
  **********************************************************************************/
-package org.sakaiproject.assignment2.logic.entity;
+package org.sakaiproject.assignment2.service.model;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -27,11 +27,13 @@ import java.util.Map;
 
 /**
  * Object to model Assignment2 data that will be used for
- * import/export
+ * public consumption (via the service) and import/export.
  */
 public class AssignmentDefinition implements Serializable {
+    
     private static final long serialVersionUID = 1L;
 
+    private Long id;
     private String title;
     private int sortIndex;
     private Date openDate;
@@ -59,22 +61,52 @@ public class AssignmentDefinition implements Serializable {
     public AssignmentDefinition() {
     }
 
+    /**
+     * 
+     * @return the id of the Assignment2 object this definition represents
+     */
+    public Long getId() {
+        return id;
+    }
 
+    /**
+     * the id of the Assignment2 object this definition represents
+     * @param id
+     */
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    /**
+     * 
+     * @return the title of the assignment
+     */
     public String getTitle() {
         return title;
     }
 
-
+    /**
+     * the title of the assignment
+     * @param title
+     */
     public void setTitle(String title) {
         this.title = title;
     }
 
-
+    /**
+     * 
+     * @return the index representing the position of this assignment in the
+     * student view of the assignment listing
+     */
     public int getSortIndex() {
         return sortIndex;
     }
 
-
+    /**
+     * the index representing the position of this assignment in the
+     * student view of the assignment listing
+     * @param sortIndex
+     */
     public void setSortIndex(int sortIndex) {
         this.sortIndex = sortIndex;
     }
@@ -90,6 +122,16 @@ public class AssignmentDefinition implements Serializable {
     }
 
 
+    public Date getDueDate() {
+        return dueDate;
+    }
+
+
+    public void setDueDate(Date dueDate) {
+        this.dueDate = dueDate;
+    }
+    
+    
     public Date getAcceptUntilDate() {
         return acceptUntilDate;
     }
@@ -108,7 +150,6 @@ public class AssignmentDefinition implements Serializable {
     public void setAssociatedGbItemName(String associatedGbItemName) {
         this.associatedGbItemName = associatedGbItemName;
     }
-
 
 
     public Double getAssociatedGbItemPtsPossible() {
@@ -138,16 +179,6 @@ public class AssignmentDefinition implements Serializable {
 
     public void setDraft(boolean draft) {
         this.draft = draft;
-    }
-
-
-    public Date getDueDate() {
-        return dueDate;
-    }
-
-
-    public void setDueDate(Date dueDate) {
-        this.dueDate = dueDate;
     }
 
 

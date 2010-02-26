@@ -80,12 +80,12 @@ public interface ExternalGradebookLogic {
     /**
      * 
      * @param contextId
-     * @return a map of gradebook item id to title for all of the gradebook
+     * @return a list of {@link GradebookItem}s representing all of the gradebook
      * items that the current user may view or grade.  Does not include
      * "externally maintained" gradebook items (gb items that are managed by
      * tools outside the gradebook like Tests & Quizzes)
      */
-    public Map<Long, String> getViewableGradebookItemIdTitleMap(String contextId);
+    public List<GradebookItem> getViewableGradebookItems(String contextId);
 
     /**
      * @param contextId

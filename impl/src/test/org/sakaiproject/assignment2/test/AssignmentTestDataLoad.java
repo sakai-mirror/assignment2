@@ -163,10 +163,7 @@ public class AssignmentTestDataLoad {
         a4 = createGenericAssignment2Object(ASSIGN4_TITLE, 3, true);
         a4.setGradebookItemId(GB_ITEM2_ID);
 
-        a1Id = a1.getId();
-        a2Id = a2.getId();
-        a3Id = a3.getId();
-        a4Id = a4.getId();
+        
 
         Set<AssignmentAttachment> attachFora1 = new HashSet<AssignmentAttachment>();
         Set<AssignmentAttachment> attachFora2 = new HashSet<AssignmentAttachment>();
