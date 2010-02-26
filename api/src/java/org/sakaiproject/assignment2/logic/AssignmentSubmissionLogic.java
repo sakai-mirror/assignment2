@@ -208,15 +208,15 @@ public interface AssignmentSubmissionLogic {
 
     /**
      * 
-     * @param currentVersion
-     * @param dueDate - due date for the associated assignment. if null, assumes
-     * no due date
-     * @return the constant equivalent for the given submission's status 
-     * ie In Progress, Submitted, etc based upon the passed currentVersion. will
-     * return the constant for "Not started" if currentVersion is null
+     * @param version the version you are determining status for
+     * @param assignDueDate the due date for this assignment
+     * @param submissionDueDate if the submission due date has been extended for this student,
+     * pass in the {@link AssignmentSubmission#getResubmitCloseDate()} here. Leave null if no override was set.
+     * @return the constant equivalent for the given version's status 
+     * ie {@link AssignmentConstants#SUBMISSION_IN_PROGRESS}, {@link AssignmentConstants#SUBMISSION_SUBMITTED}, etc 
+     * based upon the passed version. will return {@link AssignmentConstants#SUBMISSION_NOT_STARTED} if version is null
      */
-    public Integer getSubmissionStatusConstantForCurrentVersion(AssignmentSubmissionVersion currentVersion,
-            Date dueDate);
+    public Integer getSubmissionStatusForVersion(AssignmentSubmissionVersion version, Date assignDueDate, Date submissionDueDate);
 
     /**
      * 

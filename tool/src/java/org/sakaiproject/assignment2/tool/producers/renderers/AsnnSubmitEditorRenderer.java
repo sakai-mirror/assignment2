@@ -11,6 +11,7 @@ import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
+import org.sakaiproject.assignment2.tool.DisplayUtil;
 import org.sakaiproject.assignment2.tool.LocalTurnitinLogic;
 import org.sakaiproject.assignment2.tool.beans.StudentSubmissionVersionFlowBean;
 import org.sakaiproject.assignment2.tool.params.FilePickerHelperViewParams;
@@ -20,7 +21,6 @@ import org.sakaiproject.assignment2.tool.producers.evolvers.AttachmentInputEvolv
 import uk.org.ponder.beanutil.entity.EntityBeanLocator;
 import uk.org.ponder.messageutil.MessageLocator;
 import uk.org.ponder.rsf.components.UIBoundBoolean;
-import uk.org.ponder.rsf.components.UIBoundString;
 import uk.org.ponder.rsf.components.UICommand;
 import uk.org.ponder.rsf.components.UIContainer;
 import uk.org.ponder.rsf.components.UIELBinding;
@@ -34,6 +34,7 @@ import uk.org.ponder.rsf.components.UIMessage;
 import uk.org.ponder.rsf.components.UIOutput;
 import uk.org.ponder.rsf.components.UIVerbatim;
 import uk.org.ponder.rsf.components.decorators.DecoratorList;
+import uk.org.ponder.rsf.components.decorators.UIAlternativeTextDecorator;
 import uk.org.ponder.rsf.components.decorators.UIFreeAttributeDecorator;
 import uk.org.ponder.rsf.evolvers.TextInputEvolver;
 import uk.org.ponder.rsf.producers.BasicProducer;
@@ -179,6 +180,26 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
         if (assignment.isHonorPledge()) {
             UIVerbatim.make(form, "required", messageLocator.getMessage("assignment2.student-submit.required"));
         }
+        
+        UIOutput editSubmissionContainer = UIOutput.make(form, "edit_submission");
+        
+        // if this is a resubmission and not a preview view, display a resubmission toggle
+        if (!studentPreviewSubmission && !preview) {
+            if (submissionLogic.getNumSubmittedVersions(assignmentSubmission.getUserId(), assignment.getId()) > 0) {
+                // render the resubmit toggle
+                UIOutput.make(joint, "resubmit_toggle");
+                UIOutput img = UIOutput.make(joint, "resubmit_toggle_img");
+                // TODO - figure out when to expand and when to collapse
+                boolean expand = false;
+                String img_location = expand ? DisplayUtil.EXPAND_IMAGE_URL : DisplayUtil.COLLAPSE_IMAGE_URL;
+                img.decorate(new UIFreeAttributeDecorator("src", img_location));
+                img.decorate(new UIAlternativeTextDecorator(messageLocator.getMessage("assignment2.student-submit.hover.resubmit")));
+                
+                // since we are rendering the toggle, let's identify the submission editing section
+                // with css classes
+                editSubmissionContainer.decorate(new UIFreeAttributeDecorator("class", "subsection1 toggleSubsection"));
+            }
+        }
 
         // Because the flow might not be starting on the initial view, the
         // studentSubmissionPreviewVersion should always use the flow bean 
@@ -237,7 +258,6 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
 
         if (assignment.isHonorPledge()) {
             UIOutput.make(joint, "honor_pledge_fieldset");
-            UIMessage.make(joint, "honor_pledge_label", "assignment2.student-submit.honor_pledge_text");
             UIBoundBoolean.make(form, "honor_pledge", "#{StudentSubmissionBean.honorPledge}");
         }
         
@@ -292,37 +312,6 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
             "StudentSubmissionBean.processActionSaveDraft");
             UICommand.make(form, "cancel_button", UIMessage.make("assignment2.student-submit.cancel"), 
             "StudentSubmissionBean.processActionCancel");
-        }
-
-        /* 
-         * Render the Instructor's Feedback Materials
-         */
-        if (!preview && !studentPreviewSubmission) {
-            AssignmentSubmissionVersion currVersion = assignmentSubmission.getCurrentSubmissionVersion();
-            if (currVersion.isDraft() && currVersion.isFeedbackReleased()) {
-                UIOutput.make(joint, "draft-feedback");
-
-                String feedbackComment = currVersion.getFeedbackNotes();
-                if (feedbackComment == null || feedbackComment.trim().equals("")) {
-                    feedbackComment = messageLocator.getMessage("assignment2.student-submission.feedback.none");
-                }
-                UIVerbatim.make(joint, "draft-feedback-text", feedbackComment);
-
-                if (assignmentSubmission.getCurrentSubmissionVersion().getFeedbackAttachSet() != null && 
-                        assignmentSubmission.getCurrentSubmissionVersion().getFeedbackAttachSet().size() > 0) {
-                    UIMessage.make(joint, "draft-feedback-attachments-header", "assignment2.student-submission.feedback.materials.header");
-                    attachmentListRenderer.makeAttachmentFromFeedbackAttachmentSet(joint, 
-                            "draft-feedback-attachment-list:", viewParameters.viewID, 
-                            currVersion.getFeedbackAttachSet());
-                }
-
-                // mark this feedback as viewed
-                if (!currVersion.isFeedbackRead()) {
-                    List<Long> versionIdList = new ArrayList<Long>();
-                    versionIdList.add(currVersion.getId());
-                    submissionLogic.markFeedbackAsViewed(assignmentSubmission.getId(), versionIdList);
-                }
-            }
         }
 
     }

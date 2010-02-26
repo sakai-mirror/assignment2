@@ -210,29 +210,15 @@ public class AssignmentDaoImpl extends HibernateGeneralGenericDao implements Ass
         if (submission == null || submission.getId() == null) {
             throw new IllegalArgumentException("null submission or submission w/o id passed to getSubmissionVersionForUserIdWithAttachments");
         }
-
-        HibernateCallback hc = new HibernateCallback() {
-            public Object doInHibernate(Session session) throws HibernateException ,SQLException {
-                AssignmentSubmissionVersion currentVersion = null;
-
-                String queryString = "select max(submissionVersion.id) " +
-                "from AssignmentSubmissionVersion as submissionVersion " +
-                "where submissionVersion.assignmentSubmission = :submission";
-
-                Query query = session.createQuery(queryString);
-                query.setParameter("submission", submission);
-
-                Long submissionVersionId = (Long) query.uniqueResult();
-
-                if (submissionVersionId != null) {
-                    currentVersion = getAssignmentSubmissionVersionByIdWithAttachments(submissionVersionId);
-                }
-
-                return currentVersion;
-            }
-        };
-
-        return (AssignmentSubmissionVersion)getHibernateTemplate().execute(hc);
+        
+        // since it is possible that a student creates a draft version and then the instructor
+        // provides feedback prior to the draft being submitted, let's retrieve all of the versions.
+        // it isn't safe to just grab the max(id)
+        
+        List<AssignmentSubmissionVersion> history = getVersionHistoryForSubmission(submission);
+        AssignmentSubmissionVersion currVersion = getCurrentVersionFromHistory(history);
+        
+        return currVersion;
     }
 
     /**

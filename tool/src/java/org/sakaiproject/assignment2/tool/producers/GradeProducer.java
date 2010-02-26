@@ -39,6 +39,7 @@ import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
+import org.sakaiproject.assignment2.tool.DisplayUtil;
 import org.sakaiproject.assignment2.tool.beans.AssignmentSubmissionBean;
 import org.sakaiproject.assignment2.tool.params.FilePickerHelperViewParams;
 import org.sakaiproject.assignment2.tool.params.GradeViewParams;
@@ -47,7 +48,6 @@ import org.sakaiproject.assignment2.tool.producers.evolvers.AttachmentInputEvolv
 import org.sakaiproject.assignment2.tool.producers.fragments.FragmentGradebookDetailsProducer;
 import org.sakaiproject.assignment2.tool.producers.fragments.FragmentSubmissionGradePreviewProducer;
 import org.sakaiproject.assignment2.tool.producers.renderers.AttachmentListRenderer;
-import org.sakaiproject.assignment2.tool.producers.renderers.GradebookDetailsRenderer;
 
 import uk.org.ponder.beanutil.entity.EntityBeanLocator;
 import uk.org.ponder.messageutil.MessageLocator;
@@ -107,10 +107,7 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
     private AttachmentInputEvolver attachmentInputEvolver;
     private ExternalGradebookLogic gradebookLogic;
     private ExternalContentReviewLogic contentReviewLogic;
-    
-    // The images were named incorrectly, so the expand is actually the collapse.  Annoying, I know.
-    private final String COLLAPSE_IMAGE_URL = "/sakai-assignment2-tool/content/images/expand.png";
-    private final String EXPAND_IMAGE_URL = "/sakai-assignment2-tool/content/images/collapse.png";
+    private DisplayUtil displayUtil;
 
 
     /*
@@ -238,10 +235,10 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
         // set the status at the top of the page
         if (assignment.getSubmissionType() != AssignmentConstants.SUBMIT_NON_ELECTRONIC) {
             AssignmentSubmissionVersion currVersion = submissionLogic.getCurrentVersionFromHistory(versionHistory);
-            int statusConstant = submissionLogic.getSubmissionStatusConstantForCurrentVersion(currVersion, assignment.getDueDate());
+            int statusConstant = submissionLogic.getSubmissionStatusForVersion(currVersion, assignment.getDueDate(), as.getResubmitCloseDate());
             Date studentSaveDate = currVersion != null ? currVersion.getStudentSaveDate() : null;
             Date submittedDate = currVersion != null ? currVersion.getSubmittedDate() : null;
-            String statusText = getVersionStatusText(statusConstant, studentSaveDate, submittedDate);
+            String statusText = displayUtil.getVersionStatusText(statusConstant, studentSaveDate, submittedDate);
             UIOutput.make(form, "status", statusText);
         }
         
@@ -275,7 +272,7 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
             }  
             
             UIBranchContainer versionContainer = UIBranchContainer.make(form, "feedback_section:");
-            UIOutput.make(versionContainer, "versionFeedback");
+            UIOutput.make(versionContainer, "versionInformation");
             makeAdditionalFeedbackSection(versionContainer, otpKey, versionToDisplay, !grade_perm);
         
         } else {
@@ -291,7 +288,7 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
 
                     // make the toggle for each version
                     boolean expand = versionToExpand != null && versionToExpand.equals(version.getId());
-                    makeVersionToggle(versionContainer, version, assignment.getDueDate(), expand, toggleHoverText);
+                    displayUtil.makeVersionToggle(versionContainer, version, assignment.getDueDate(), as.getResubmitCloseDate(), expand, false);
 
                     makeFeedbackOnSubmissionSection(versionContainer, otpKey, params, version, assignment, !grade_perm, contentReviewEnabled);
                     makeAdditionalFeedbackSection(versionContainer, otpKey, version, !grade_perm);
@@ -576,39 +573,6 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
         }
     }
     
-    /**
-     * creates the toggle for displaying the submission history
-     * @param versionContainer
-     * @param version
-     * @param assignDueDate
-     * @param expand
-     */
-    private void makeVersionToggle(UIBranchContainer versionContainer, AssignmentSubmissionVersion version, Date assignDueDate, boolean expand, String toggleHoverText) {
-        UIOutput toggle = UIOutput.make(versionContainer, "version_toggle");
-        toggle.decorate(new UITooltipDecorator(toggleHoverText));
-        
-        // make the image
-        UIOutput img = UIOutput.make(versionContainer, "version_toggle_img");
-        String img_location = expand ? EXPAND_IMAGE_URL : COLLAPSE_IMAGE_URL;
-        img.decorate(new UIFreeAttributeDecorator("src", img_location));
-        img.decorate(new UIAlternativeTextDecorator(toggleHoverText));
-        
-        // figure out the status so we can determine what the heading should be
-        int status = submissionLogic.getSubmissionStatusConstantForCurrentVersion(version, assignDueDate);
-        String headerText;
-        if (version.getSubmittedVersionNumber() == AssignmentSubmissionVersion.FEEDBACK_ONLY_VERSION_NUMBER) {
-            headerText = messageLocator.getMessage("assignment2.assignment_grade.feedback_only_version");
-        } else {
-            headerText = getVersionStatusText(status, version.getStudentSaveDate(), version.getSubmittedDate());
-        }
-        
-        UIOutput.make(versionContainer, "version_toggle_heading", headerText);
-        
-        UIOutput feedbackDetails = UIOutput.make(versionContainer, "versionFeedback");
-        if (!expand) {
-            feedbackDetails.decorate(new UIFreeAttributeDecorator("style", "display:none;"));
-        }
-    }
     
     private void makeGradebookGradingSection(UIContainer tofill, UIForm form, Assignment2 assignment, String studentId, boolean readOnly) {
         if (assignment == null || assignment.getGradebookItemId() == null) {
@@ -726,29 +690,6 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
         
         return feedbackOnlyVersion;
     }
-    
-    /**
-     * 
-     * @param statusConstant
-     * @param studentSaveDate
-     * @param submittedDate
-     * @return the internationalized text describing the given status
-     */
-    private String getVersionStatusText(int statusConstant, Date studentSaveDate, Date submittedDate) {
-        DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, locale);
-        String statusText = messageLocator.getMessage("assignment2.assignment_grade.status.not_started");
-        if (statusConstant == AssignmentConstants.SUBMISSION_NOT_STARTED) {
-            statusText =  messageLocator.getMessage("assignment2.assignment_grade.status.not_started");
-        } else if (statusConstant == AssignmentConstants.SUBMISSION_IN_PROGRESS) {
-            statusText =  messageLocator.getMessage("assignment2.assignment_grade.status.draft", df.format(studentSaveDate));
-        } else if (statusConstant == AssignmentConstants.SUBMISSION_SUBMITTED) {
-            statusText =  messageLocator.getMessage("assignment2.assignment_grade.status.submitted", df.format(submittedDate));
-        } else if (statusConstant == AssignmentConstants.SUBMISSION_LATE) {
-            statusText =  messageLocator.getMessage("assignment2.assignment_grade.status.submitted.late", df.format(submittedDate));
-        }
-        
-        return statusText;
-    }
 
     public List<NavigationCase> reportNavigationCases() {
         List<NavigationCase> nav= new ArrayList<NavigationCase>();
@@ -838,6 +779,10 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
     
     public void setExternalContentReviewLogic(ExternalContentReviewLogic contentReviewLogic) {
         this.contentReviewLogic = contentReviewLogic;
+    }
+    
+    public void setDisplayUtil(DisplayUtil displayUtil) {
+        this.displayUtil = displayUtil;
     }
 
 }

@@ -82,8 +82,8 @@ public class FragmentSubmissionGradePreviewProducer implements ViewComponentProd
         String status = "";
         int statusConstant = AssignmentConstants.SUBMISSION_NOT_STARTED;
         if (as != null) {
-            statusConstant = submissionLogic.getSubmissionStatusConstantForCurrentVersion(
-                    as.getCurrentSubmissionVersion(), assignment.getDueDate());
+            statusConstant = submissionLogic.getSubmissionStatusForVersion(
+                    as.getCurrentSubmissionVersion(), assignment.getDueDate(), as.getResubmitCloseDate());
             status = messageLocator.getMessage(
                     "assignment2.assignment_grade-assignment.submission_status." + 
                     statusConstant);

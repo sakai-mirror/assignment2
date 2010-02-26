@@ -130,8 +130,17 @@ public class AsnnSubmissionDetailsRenderer implements BasicProducer {
         DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, locale);
         DateFormat df_short = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, locale);
 
+        // we may have been passed an empty assignmentSubmission object (except for assignment and userId),
+        // so let's retrieve the real thing
+        if (assignmentSubmission.getId() == null) {
+            AssignmentSubmission subFromDb = submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(assignment.getId(), assignmentSubmission.getUserId());
+            if (subFromDb != null) {
+                assignmentSubmission = subFromDb;
+            }
+        }
+        
         // get the status of the current version
-        int currStatus = submissionLogic.getSubmissionStatusConstantForCurrentVersion(assignmentSubmission.getCurrentSubmissionVersion(), assignment.getDueDate());
+        int currStatus = submissionLogic.getSubmissionStatusForVersion(assignmentSubmission.getCurrentSubmissionVersion(), assignment.getDueDate(), assignmentSubmission.getResubmitCloseDate());
         boolean submissionIsOpenForStudent;
         
         // if this is a preview, we will show the instructor what it looks like when open
@@ -163,6 +172,16 @@ public class AsnnSubmissionDetailsRenderer implements BasicProducer {
                     new Object[]{ title, currentUser.getDisplayName() }));
         }
 
+        // figure out this student's due date. it may be different if the instructor
+        // extended their submission privileges
+        Date studentDueDate;
+        if (assignmentSubmission != null && assignmentSubmission.getResubmitCloseDate() != null) {
+            studentDueDate = assignmentSubmission.getResubmitCloseDate();
+        } else {
+            studentDueDate = assignment.getDueDate();
+        }
+        
+
         String dueDateText = null;
 
         if (!previewAsStudent && assignment.isRequiresSubmission() && 
@@ -188,7 +207,7 @@ public class AsnnSubmissionDetailsRenderer implements BasicProducer {
                 if (history != null && history.size() == 1) {
                     AssignmentSubmissionVersion version = history.get(0);
                     if (version.getSubmittedDate() != null) {
-                        if (assignment.getDueDate() != null && version.getSubmittedDate().after(assignment.getDueDate())) {
+                        if (studentDueDate != null && version.getSubmittedDate().after(studentDueDate)) {
                             dueDateText = messageLocator.getMessage("assignment2.student-submit.submitted_info.late", 
                                     new Object[]{df.format(version.getSubmittedDate())});
                         } else {
@@ -203,16 +222,16 @@ public class AsnnSubmissionDetailsRenderer implements BasicProducer {
         // if dueDateMessage has text already, we must be replacing the due date
         // with the submission info. otherwise, display the due date
         if (dueDateText == null) {
-            if (assignment.getDueDate() == null) {
+            if (studentDueDate == null) {
                 dueDateText = messageLocator.getMessage("assignment2.student-submit.no_due_date");
             } else {
                 // display something special if the submission is open and is going to be late
-                if (submissionIsOpenForStudent && assignment.getDueDate().before(new Date())) {
+                if (submissionIsOpenForStudent && studentDueDate.before(new Date())) {
                     dueDateText = messageLocator.getMessage("assignment2.student-submit.due_date.late", 
-                            new Object[] {df.format(assignment.getDueDate())});
+                            new Object[] {df.format(studentDueDate)});
                 } else {
                     dueDateText = messageLocator.getMessage("assignment2.student-submit.due_date", 
-                            new Object[] {df.format(assignment.getDueDate())});
+                            new Object[] {df.format(studentDueDate)});
                 }
             }
         }

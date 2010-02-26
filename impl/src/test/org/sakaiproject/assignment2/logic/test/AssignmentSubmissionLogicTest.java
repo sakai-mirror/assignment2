@@ -874,7 +874,7 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
         assertTrue(status.equals(AssignmentConstants.SUBMISSION_NOT_STARTED));
     }
 
-    public void testGetSubmissionStatusConstantForCurrentVersion() {
+    public void testGetSubmissionStatusForVersion() {
 
         // can be in progress, not started, or submitted
         // due date has passed
@@ -883,27 +883,31 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
         cal.set(2005, 10, 01);
         Date dueDate = cal.getTime();
 
-        Integer status = submissionLogic.getSubmissionStatusConstantForCurrentVersion(testData.st1a3CurrVersion, dueDate);
-        assertTrue(status.equals(AssignmentConstants.SUBMISSION_IN_PROGRESS));
+        Integer status = submissionLogic.getSubmissionStatusForVersion(testData.st1a3CurrVersion, dueDate, null);
+        assertEquals(AssignmentConstants.SUBMISSION_IN_PROGRESS, status.intValue());
         // empty submission 
-        status = submissionLogic.getSubmissionStatusConstantForCurrentVersion(new AssignmentSubmissionVersion(), dueDate);
-        assertTrue(status.equals(AssignmentConstants.SUBMISSION_NOT_STARTED));
+        status = submissionLogic.getSubmissionStatusForVersion(new AssignmentSubmissionVersion(), dueDate, null);
+        assertEquals(AssignmentConstants.SUBMISSION_NOT_STARTED, status.intValue());
         // null submission
-        status = submissionLogic.getSubmissionStatusConstantForCurrentVersion(null, dueDate);
-        assertTrue(status.equals(AssignmentConstants.SUBMISSION_NOT_STARTED));
+        status = submissionLogic.getSubmissionStatusForVersion(null, dueDate, null);
+        assertEquals(AssignmentConstants.SUBMISSION_NOT_STARTED, status.intValue());
         // let's try one that is submitted
-        status = submissionLogic.getSubmissionStatusConstantForCurrentVersion(testData.st1a1CurrVersion, dueDate);
-        assertTrue(status.equals(AssignmentConstants.SUBMISSION_LATE));
+        status = submissionLogic.getSubmissionStatusForVersion(testData.st1a1CurrVersion, dueDate, null);
+        assertEquals(AssignmentConstants.SUBMISSION_LATE, status.intValue());
+        
+        // it shouldn't be late if we extend the due date for this student
+        status = submissionLogic.getSubmissionStatusForVersion(testData.st1a1CurrVersion, dueDate, new Date());
+        assertEquals(AssignmentConstants.SUBMISSION_SUBMITTED, status.intValue());
 
         // try submitted one with null due Date
-        status = submissionLogic.getSubmissionStatusConstantForCurrentVersion(testData.st1a1CurrVersion, null);
-        assertTrue(status.equals(AssignmentConstants.SUBMISSION_SUBMITTED));
+        status = submissionLogic.getSubmissionStatusForVersion(testData.st1a1CurrVersion, null, null);
+        assertEquals(AssignmentConstants.SUBMISSION_SUBMITTED, status.intValue());
 
         // try a due date in the future
         cal.set(2020, 10, 1);
         dueDate = cal.getTime();
-        status = submissionLogic.getSubmissionStatusConstantForCurrentVersion(testData.st1a1CurrVersion, dueDate);
-        assertTrue(status.equals(AssignmentConstants.SUBMISSION_SUBMITTED));
+        status = submissionLogic.getSubmissionStatusForVersion(testData.st1a1CurrVersion, dueDate, null);
+        assertEquals(AssignmentConstants.SUBMISSION_SUBMITTED, status.intValue());
     }
 
     public void testGetNumberOfRemainingSubmissionsForStudent() {
