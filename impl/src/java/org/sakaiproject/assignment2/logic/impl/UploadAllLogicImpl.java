@@ -263,11 +263,23 @@ public class UploadAllLogicImpl implements UploadAllLogic
     private void processGrades(String contextId, UploadAllOptions options, FileObject gradesCsvFile, 
             List<Map<String, String>> uploadInfo, Map<String, String> displayIdUserIdMap) {
         if (gradesCsvFile != null) {
-            // first, parse out the content
+            // parse out the content
             List<List<String>> parsedContent;
             try
             {
-                parsedContent = uploadGrades.getCSVContent(gradesCsvFile.getContent().getInputStream());
+                FileContent content = gradesCsvFile.getContent();
+                
+                // first, we need to make sure the grades csv file doesn't exceed the max size
+                int maxFileSize = uploadGrades.getGradesMaxFileSize();
+                long maxFileSizeInBytes = maxFileSize * 1024L * 1024L;
+
+                if (content.getSize() > maxFileSizeInBytes) {
+                    addToUploadInfoMap(uploadInfo, maxFileSize + "", UploadInfo.CSV_FILE_TOO_LARGE);
+                    // don't do any more processing
+                    return;
+                }
+
+                parsedContent = uploadGrades.getCSVContent(content.getInputStream());
             }
             catch (FileSystemException e)
             {
@@ -275,6 +287,16 @@ public class UploadAllLogicImpl implements UploadAllLogic
             }
 
             List<String> studentsToRemove = new ArrayList<String>();
+            
+            // ensure that there is not an unreasonable number of rows compared to
+            // the number of students in the site
+            int numStudentsInSite = displayIdUserIdMap.size();
+            int numRowsInUpload = parsedContent.size();
+            if (numRowsInUpload > (numStudentsInSite + 50)) {
+                addToUploadInfoMap(uploadInfo, numRowsInUpload + "", UploadInfo.INVALID_NUM_ROWS_IN_CSV);
+                // don't do any more processing
+                return;
+            }
 
             // we need to do some validation on this file first
             List<String> invalidStudents = uploadGrades.getInvalidDisplayIdsInContent(displayIdUserIdMap, parsedContent);

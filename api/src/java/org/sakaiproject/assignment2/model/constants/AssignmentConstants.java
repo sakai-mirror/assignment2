@@ -207,16 +207,16 @@ public class AssignmentConstants {
     public static final String TII_VALUE_NO_REPO = "0";
     /**
      * possible value for {@link #TII_PROP_SUBMIT_TO_REPO}.
-     * use this option if you want submissions saved only to your institutional repository.
-     */
-    public static final String TII_VALUE_INSTITUTION_REPO = "1";
-    /**
-     * possible value for {@link #TII_PROP_SUBMIT_TO_REPO}.
      * use this option if you want all submissions saved to the content review
      * standard repository. This generally means that submissions from your institution
      * can be used to check plagiarism at other institutions.
      */
-    public static final String TII_VALUE_STANDARD_REPO = "2";
+    public static final String TII_VALUE_STANDARD_REPO = "1";
+    /**
+     * possible value for {@link #TII_PROP_SUBMIT_TO_REPO}.
+     * use this option if you want submissions saved only to your institutional repository.
+     */
+    public static final String TII_VALUE_INSTITUTION_REPO = "2";
     
     /**
      * This property is specific to Turnitin implementation of ContentReview.

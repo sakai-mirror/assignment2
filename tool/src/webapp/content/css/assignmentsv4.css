@@ -833,6 +833,12 @@ a.fl-pager-currentPage {
     cursor:pointer;
 }
 
+.toggleHeaderNoBar {
+    background:none;
+    font-weight:bold;
+    padding-left:0;
+}
+
 /* this is section will normally appear directly below the toggle header */
 .subsection1 {
     margin-left: 10px;

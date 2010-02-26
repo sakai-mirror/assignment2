@@ -333,7 +333,7 @@ asnn2.setupReordering = function () {
     avatarCreator: function(item, cssClass, dropWarning) {
       var asnntitle = jQuery(".asnntitle", item).text();
       var avatar = jQuery(".asnn-drag-avatar").clone();
-      avatar.html("<p>"+asnntitle+"</p><p>&nbsp;</p>");
+      avatar.html("<p>"+asnntitle.escapeHTML()+"</p><p>&nbsp;</p>");
       return avatar;
     }
   });
@@ -598,7 +598,7 @@ asnn2.setupRemoveDialog = function() {
           subs = obj.numSubmissions;
         }
 
-        togo = togo + "<tr><td>"+obj.title+"</td><td>"+duedate+"</td><td>"+subs+"</td></tr>";
+        togo = togo + "<tr><td>"+obj.title.escapeHTML()+"</td><td>"+duedate+"</td><td>"+subs+"</td></tr>";
       }
     });
     jQuery("#asnn-to-delete").html(togo);
@@ -634,6 +634,20 @@ asnn2.setupRemoveDialog = function() {
     jQuery("#asnn-to-delete").html('');
   });
 };
+
+/**
+ * An extension of the String class that will escape html characters since
+ * we frequently render html instead of just text and can't trust the text
+ */
+String.prototype.escapeHTML = function () {
+    return(
+            this.replace(/&/g,'&amp;').
+            replace(/>/g,'&gt;').
+            replace(/</g,'&lt;').
+            replace(/"/g,'&quot;')
+    );
+};
+
 
 /**
  * The master init function to be called at the bottom of the HTML page.

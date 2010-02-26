@@ -83,7 +83,7 @@ public class StudentSubmitProducer implements ViewComponentProducer,  ViewParams
         //Now do submission stuff
         AssignmentSubmission assignmentSubmission = (AssignmentSubmission) assignmentSubmissionBeanLocator.locateBean(ASOTPKey); 
 
-        studentViewAssignmentRenderer.makeStudentView(tofill, "portletBody:", assignmentSubmission, assignment, params, ASOTPKey, Boolean.FALSE, params.previewsubmission); 
+        studentViewAssignmentRenderer.makeStudentView(tofill, "portletBody:", assignmentSubmission, assignment, params, ASOTPKey, Boolean.FALSE, params.previewsubmission, params.resubmit); 
 
 
         /* TODO FIXME Marking feedback as viewed. 

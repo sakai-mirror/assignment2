@@ -9,16 +9,9 @@ import java.util.Map;
 import org.sakaiproject.assignment2.logic.AssignmentBundleLogic;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
-import org.sakaiproject.assignment2.model.AssignmentSubmission;
-import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 
 import uk.org.ponder.messageutil.MessageLocator;
-import uk.org.ponder.rsf.components.UIBranchContainer;
-import uk.org.ponder.rsf.components.UIOutput;
-import uk.org.ponder.rsf.components.decorators.UIAlternativeTextDecorator;
-import uk.org.ponder.rsf.components.decorators.UIFreeAttributeDecorator;
-import uk.org.ponder.rsf.components.decorators.UITooltipDecorator;
 
 /**
  * A central location for some display formatting, since some of display 
@@ -29,14 +22,6 @@ import uk.org.ponder.rsf.components.decorators.UITooltipDecorator;
  *
  */
 public class DisplayUtil {
-
-    
-    // The images were named incorrectly, so the expand is actually the collapse.  Annoying, I know.
-    public static final String COLLAPSE_IMAGE_URL = "/sakai-assignment2-tool/content/images/expand.png";
-    public static final String EXPAND_IMAGE_URL = "/sakai-assignment2-tool/content/images/collapse.png";
-    // images that indictes read/unread feedback status
-    public static final String FEEDBACK_READ_IMAGE_URL = "/library/image/silk/email_open.png";
-    public static final String FEEDBACK_UNREAD_IMAGE_URL = "/library/image/silk/email.png";
 
     /**
      * map key used by {@link #getSubmissionStatusForAssignment(Assignment2, List)}.
@@ -134,55 +119,6 @@ public class DisplayUtil {
         }
 
         return cssClass;
-    }
-    
-    /**
-     * creates the toggle for displaying the submission history
-     * @param versionContainer
-     * @param version
-     * @param assignDueDate
-     * @param submissionDueDate {@link AssignmentSubmission#getResubmitCloseDate()} for this version
-     * @param expand true if this toggle should be expanded
-     * @param toggleHoverText text that will appear when you hover over the toggle
-     * @param includeFeedbackIndicator true if you want to render the feedback read/unread indicator
-     */
-    public void makeVersionToggle(UIBranchContainer versionContainer, AssignmentSubmissionVersion version, 
-            Date assignDueDate, Date submissionDueDate, boolean expand, boolean includeFeedbackIndicator) {
-        String toggleHoverText = messageLocator.getMessage("assignment2.version.toggle.hover");
-        UIOutput toggle = UIOutput.make(versionContainer, "version_toggle");
-        toggle.decorate(new UITooltipDecorator(toggleHoverText));
-        
-        // make the image
-        UIOutput img = UIOutput.make(versionContainer, "version_toggle_img");
-        String img_location = expand ? EXPAND_IMAGE_URL : COLLAPSE_IMAGE_URL;
-        img.decorate(new UIFreeAttributeDecorator("src", img_location));
-        img.decorate(new UIAlternativeTextDecorator(toggleHoverText));
-        
-        // figure out the status so we can determine what the heading should be
-        int status = submissionLogic.getSubmissionStatusForVersion(version, assignDueDate, submissionDueDate);
-        String headerText;
-        if (version.getSubmittedVersionNumber() == AssignmentSubmissionVersion.FEEDBACK_ONLY_VERSION_NUMBER) {
-            headerText = messageLocator.getMessage("assignment2.version.toggle.status.feedback_only_version");
-        } else {
-            headerText = getVersionStatusText(status, version.getStudentSaveDate(), version.getSubmittedDate());
-        }
-        
-        UIOutput.make(versionContainer, "version_toggle_heading", headerText);
-        
-        UIOutput versionDetails = UIOutput.make(versionContainer, "versionInformation");
-        if (!expand) {
-            versionDetails.decorate(new UIFreeAttributeDecorator("style", "display:none;"));
-        }
-        
-        // render the feedback indicator, if appropriate.
-        if (includeFeedbackIndicator) {
-            String feedbackHover = version.isFeedbackRead() ? messageLocator.getMessage("assignment2.version.toggle.feedback.read") : 
-                messageLocator.getMessage("assignment2.version.toggle.feedback.unread");
-            UIOutput feedbackImage = UIOutput.make(versionContainer, "version_feedback_img");
-            String feedbackImageLocation = version.isFeedbackRead() ? FEEDBACK_READ_IMAGE_URL : FEEDBACK_UNREAD_IMAGE_URL;
-            feedbackImage.decorate(new UIFreeAttributeDecorator("src", feedbackImageLocation));
-            feedbackImage.decorate(new UIAlternativeTextDecorator(feedbackHover));
-        }
     }
     
     /**

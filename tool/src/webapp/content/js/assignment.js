@@ -699,6 +699,8 @@ var asnn2 = asnn2 || {};
                 area.hide();
             }
         }
+        
+        a2SetMainFrameHeight();
     };
     
     /**
@@ -784,6 +786,29 @@ var asnn2 = asnn2 || {};
             }
         });
     };
+    
+    /**
+     * @param toggleElement the toggle element that contains the image to swap
+     * @param submissionId the submissionId to mark read
+     * @param versoinId the versionId to mark read
+     * @param readFBAltText the alt text that will replace the original text
+     * Will swap the unread feedback image to the read image and mark the
+     * feedback as read via an ajax call
+     */
+    asnn2.readFeedback = function(toggleElement, submissionId, versionId, readFBAltText) {
+        var toggle = jQuery(toggleElement);
+        // try to find the unread fb img
+        toggle.children('img').each(function() {
+            if (this.src.match(NEW_FEEDBACK_IMAGE)) {
+                var fbImg = jQuery(this);
+                fbImg.attr('src', READ_FEEDBACK_IMAGE);
+                fbImg.attr('alt', readFBAltText);
+                fbImg.attr('title', readFBAltText);
+                mark_feedback(submissionId, versionId);
+            }
+        });
+    };
+    
 
     /**
      * Used to generate the confirmation dialog for different choices on the

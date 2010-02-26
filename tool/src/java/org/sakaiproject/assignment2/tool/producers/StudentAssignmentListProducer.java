@@ -42,6 +42,7 @@ import org.sakaiproject.assignment2.tool.StudentAction;
 import org.sakaiproject.assignment2.tool.beans.AssignmentSubmissionBean;
 import org.sakaiproject.assignment2.tool.params.AssignmentListSortViewParams;
 import org.sakaiproject.assignment2.tool.params.SimpleAssignmentViewParams;
+import org.sakaiproject.assignment2.tool.params.StudentSubmissionParams;
 
 import uk.org.ponder.messageutil.MessageLocator;
 import uk.org.ponder.rsf.components.UIBoundBoolean;
@@ -218,7 +219,7 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
             if (availStudentAction.equals(StudentAction.VIEW_AND_RESUBMIT)) {
                 UIOutput.make(row, "resubmit-action");
                 UIInternalLink.make(row, "assignment-resubmit-link", UIMessage.make("assignment2.student-assignment-list.resubmit_link"),  
-                        new SimpleAssignmentViewParams(StudentSubmitProducer.VIEW_ID, assignment.getId()));
+                        new StudentSubmissionParams(StudentSubmitProducer.VIEW_ID, assignment.getId(), false, false, true));
             }
             
             // the student may have a different due date for this assignment if the

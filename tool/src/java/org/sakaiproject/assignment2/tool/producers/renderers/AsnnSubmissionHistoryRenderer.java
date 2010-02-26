@@ -2,28 +2,21 @@ package org.sakaiproject.assignment2.tool.producers.renderers;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
 
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
-import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.assignment2.tool.DisplayUtil;
 
 import uk.org.ponder.messageutil.MessageLocator;
 import uk.org.ponder.rsf.components.UIBranchContainer;
 import uk.org.ponder.rsf.components.UIContainer;
 import uk.org.ponder.rsf.components.UIJointContainer;
-import uk.org.ponder.rsf.components.UIMessage;
 import uk.org.ponder.rsf.components.UIOutput;
-import uk.org.ponder.rsf.components.UIVerbatim;
-import uk.org.ponder.rsf.components.decorators.DecoratorList;
-import uk.org.ponder.rsf.components.decorators.UICSSDecorator;
 import uk.org.ponder.rsf.components.decorators.UIFreeAttributeDecorator;
 import uk.org.ponder.rsf.producers.BasicProducer;
 
@@ -73,8 +66,27 @@ public class AsnnSubmissionHistoryRenderer implements BasicProducer {
     public void setDisplayUtil(DisplayUtil displayUtil) {
         this.displayUtil = displayUtil;
     }
+    
+    private AsnnToggleRenderer toggleRenderer;
+    public void setAsnnToggleRenderer(AsnnToggleRenderer toggleRenderer) {
+        this.toggleRenderer = toggleRenderer;
+    }
+    
+    // Dependency
+    private AsnnInstructionsRenderer asnnInstructionsRenderer;
+    public void setAsnnInstructionsRenderer(AsnnInstructionsRenderer asnnInstructionsRenderer) {
+        this.asnnInstructionsRenderer = asnnInstructionsRenderer;
+    }
 
-    public void fillComponents(UIContainer parent, String clientID, AssignmentSubmission assignmentSubmission) {       
+    /**
+     * 
+     * @param parent
+     * @param clientID
+     * @param assignmentSubmission
+     * @param expandFeedback true if the most recent version with unread feedback should be expanded
+     * and marked as read
+     */
+    public void fillComponents(UIContainer parent, String clientID, AssignmentSubmission assignmentSubmission, boolean expandFeedback) {       
 
         Assignment2 assignment = assignmentSubmission.getAssignment();
         List<AssignmentSubmissionVersion> versionHistory = submissionLogic.getVersionHistoryForSubmission(assignmentSubmission);
@@ -96,6 +108,11 @@ public class AsnnSubmissionHistoryRenderer implements BasicProducer {
             UIJointContainer joint = new UIJointContainer(parent, clientID, "asnn2-submission-history-widget:");
             UIOutput.make(joint, "submissions-header");
             UIOutput.make(joint, "multiple-submissions");
+            
+            Long versionIdToExpand = null;
+            if (expandFeedback) {
+                versionIdToExpand = determineVersionToExpand(versionHistory);
+            }
 
             for (AssignmentSubmissionVersion version: versionHistory) {
                 // do not include draft versions in this history display unless
@@ -103,22 +120,122 @@ public class AsnnSubmissionHistoryRenderer implements BasicProducer {
                 if (!version.isDraft() || includeDraftVersion) {
                     UIBranchContainer versionDiv = UIBranchContainer.make(joint, "submission-version:");
                     
-                    displayUtil.makeVersionToggle(versionDiv, version, assignment.getDueDate(), 
-                            assignmentSubmission.getResubmitCloseDate(), false, version.isFeedbackReleased());
+                    // the feedback indicator will change depending upon whether or not this version is expanded
+                    // and marked as read
+                    boolean expand = false;
+                    boolean showFeedbackAsRead = false;
+                    if (versionIdToExpand != null && versionIdToExpand.equals(version.getId())) {
+                        // expand this feedback
+                        expand = true;
+                        showFeedbackAsRead = true;
+                        // mark this feedback version as read
+                        List<Long> versionIdList = new ArrayList<Long>();
+                        versionIdList.add(version.getId());
+                        submissionLogic.markFeedbackAsViewed(assignmentSubmission.getId(), versionIdList);
+                    }
                     
-                    String feedbackReadText = messageLocator.getMessage("assignment2.student-submission.feedback.read");
+                    makeVersionToggle(versionDiv, version, assignment.getDueDate(), 
+                            assignmentSubmission.getResubmitCloseDate(), expand, assignmentSubmission.getId(), version.getId(), showFeedbackAsRead);
 
-                    UIContainer versionContainer = asnnSubmissionVersionRenderer.fillComponents(versionDiv, "submission-entry:", version, true);
-                    //Map<String,String> stylemap = new HashMap<String,String>();
-                    //stylemap.put("display", "none");
-                    //versionContainer.decorate(new UICSSDecorator(stylemap));
-                    UIVerbatim.make(versionDiv, "jsinit", "asnn2.assnSubVersionDiv('" +
-                            versionDiv.getFullID()+"',"+(version.isFeedbackReleased() && version.isFeedbackRead())+
-                            ",'"+assignmentSubmission.getId()+"','"+
-                            version.getId()+"','"+feedbackReadText+"');");
+                    asnnSubmissionVersionRenderer.fillComponents(versionDiv, "submission-entry:", version, true);
+                    
+                    asnnInstructionsRenderer.makeInstructions(versionDiv, "assignment-instructions-toggle:", assignment, true, false, false);
                 }
             }
         }
+    }
+    
+    /**
+     * creates the toggle for displaying the submission history
+     * @param versionContainer
+     * @param version
+     * @param assignDueDate
+     * @param submissionDueDate {@link AssignmentSubmission#getResubmitCloseDate()} for this version
+     * @param expand true if this toggle should be expanded
+     * @param submissionId
+     * @param versionId
+     * @param showFeedbackAsRead true if you want this version's fb to show up as read, even if the
+     * parameters on the version don't agree. this may be because we are expanding this version and
+     * marking it as read as it displays
+     */
+    private void makeVersionToggle(UIBranchContainer versionContainer, AssignmentSubmissionVersion version, 
+            Date assignDueDate, Date submissionDueDate, boolean expand, Long submissionId, Long versionId, boolean showFeedbackAsRead) {
+        String toggleHoverText = messageLocator.getMessage("assignment2.version.toggle.hover");
+        
+        // figure out the status so we can determine what the heading should be
+        int status = submissionLogic.getSubmissionStatusForVersion(version, assignDueDate, submissionDueDate);
+        String headerText;
+        if (version.getSubmittedVersionNumber() == AssignmentSubmissionVersion.FEEDBACK_ONLY_VERSION_NUMBER) {
+            headerText = messageLocator.getMessage("assignment2.version.toggle.status.feedback_only_version");
+        } else {
+            headerText = displayUtil.getVersionStatusText(status, version.getStudentSaveDate(), version.getSubmittedDate());
+        }
+        
+        // figure out which indicator we need to display on the toggle
+        boolean displayFeedbackRead = false;
+        boolean displayFeedbackUnread = false;
+        
+        if (showFeedbackAsRead) {
+            displayFeedbackRead = true;
+            displayFeedbackUnread = false;
+        } else {
+            boolean feedbackExists = version.isFeedbackReleased();
+            boolean feedbackRead = version.isFeedbackRead();
+            
+            if (feedbackExists && feedbackRead) {
+                displayFeedbackRead = true;
+                displayFeedbackUnread = false;
+            } else if (feedbackExists && !feedbackRead) {
+                displayFeedbackRead = false;
+                displayFeedbackUnread = true;
+            } else {
+                displayFeedbackRead = false;
+                displayFeedbackUnread = false;
+            }
+        }
+        
+        // if we have unread feedback, add an onclick event to the toggle
+        String onclickEvent = null;
+        if (displayFeedbackUnread) {
+            String fbReadText = messageLocator.getMessage("assignment2.toggle.indicator.feedback.read");
+            
+            StringBuilder sb = new StringBuilder();
+            sb.append("asnn2.readFeedback(this,");
+            sb.append(submissionId + ",");
+            sb.append(versionId + ",");
+            sb.append("'" + fbReadText + "'");
+            sb.append(");");
+            onclickEvent = sb.toString();
+        }
+        
+        
+        toggleRenderer.makeToggle(versionContainer, "version_toggle:", null, true, headerText, toggleHoverText, 
+                expand, false, displayFeedbackRead, displayFeedbackUnread, onclickEvent);
+        
+        UIOutput versionDetails = UIOutput.make(versionContainer, "versionInformation");
+        if (!expand) {
+            versionDetails.decorate(new UIFreeAttributeDecorator("style", "display:none;"));
+        }
+    }
+    
+    /**
+     * 
+     * @param versionHistory
+     * @return the id of the most recent version with unread released feedback
+     */
+    private Long determineVersionToExpand(List<AssignmentSubmissionVersion> versionHistory) {
+        Long versionIdToExpand = null;
+        if (versionHistory != null) {
+            // the versions should be in submitted descending order, so pick the first one
+            for (AssignmentSubmissionVersion version : versionHistory) {
+                if (version.isFeedbackReleased() && !version.isFeedbackRead()) {
+                    versionIdToExpand = version.getId();
+                    break;
+                }
+            }
+        }
+        
+        return versionIdToExpand;
     }
 
     public void fillComponents(UIContainer parent, String clientID) {

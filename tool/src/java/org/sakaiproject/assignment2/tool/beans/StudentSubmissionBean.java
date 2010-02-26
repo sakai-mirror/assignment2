@@ -10,6 +10,7 @@ import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.tool.WorkFlowResult;
+import org.sakaiproject.util.FormattedText;
 
 import uk.org.ponder.beanutil.entity.EntityBeanLocator;
 import uk.org.ponder.messageutil.TargettedMessage;
@@ -79,7 +80,11 @@ public class StudentSubmissionBean {
         Assignment2 assignment = assignmentLogic.getAssignmentById(assignmentId);
 
         AssignmentSubmissionVersion asv = studentSubmissionVersionFlowBean.getAssignmentSubmissionVersion();
-
+        
+        if (!cleanUpSubmission(asv)) {
+            return WorkFlowResult.STUDENT_SUBMISSION_FAILURE;
+        }
+        
         //check whether honor pledge was added if required
         if (assignment.isHonorPledge() && !(this.honorPledge != null && Boolean.TRUE.equals(honorPledge))) {
             messages.addMessage(new TargettedMessage("assignment2.student-submit.error.honor_pledge_required",
@@ -133,9 +138,14 @@ public class StudentSubmissionBean {
         if (assignmentId != null) {
             AssignmentSubmission assignmentSubmission = (AssignmentSubmission) asEntityBeanLocator.locateBean(ASOTPKey);
             assignmentSubmission.setAssignment(assignment);
-
+            
+            AssignmentSubmissionVersion asv = (AssignmentSubmissionVersion) studentSubmissionVersionFlowBean.getAssignmentSubmissionVersion();
+            
+            if (!cleanUpSubmission(asv)) {
+                return WorkFlowResult.STUDENT_SUBMISSION_FAILURE;
+            }
+            
             if (!submissionLogic.isSubmissionOpenForStudentForAssignment(assignmentSubmission.getUserId(), assignmentId)) {
-                AssignmentSubmissionVersion asv = (AssignmentSubmissionVersion) studentSubmissionVersionFlowBean.getAssignmentSubmissionVersion();
 
                 submissionLogic.saveStudentSubmission(assignmentSubmission.getUserId(),
                         assignmentSubmission.getAssignment(), true, asv.getSubmittedText(),
@@ -163,6 +173,10 @@ public class StudentSubmissionBean {
 
         asv.setAssignmentSubmission(assignmentSubmission);
         asv.setDraft(Boolean.TRUE);
+        
+        if (!cleanUpSubmission(asv)) {
+            return WorkFlowResult.STUDENT_SUBMISSION_FAILURE;
+        }
 
         try {
             submissionLogic.saveStudentSubmission(assignmentSubmission.getUserId(),
@@ -181,6 +195,31 @@ public class StudentSubmissionBean {
 
     public WorkFlowResult processActionCancel() {
         return WorkFlowResult.STUDENT_CANCEL_SUBMISSION;
+    }
+    
+    /**
+     * 
+     * @param version
+     * @return true if the text supplied by WYSIWYG editors on the version is
+     * valid. false if the text contains malicious tags or attributes that need
+     * to be addressed before submission can proceed. Strips the text of extraneous
+     * whitespace, as well
+     */
+    private boolean cleanUpSubmission(AssignmentSubmissionVersion version) {
+        boolean textValid = true;
+        if (version != null) {
+            StringBuilder alertMsg = new StringBuilder();
+            if (version.getSubmittedText() != null) {
+                version.setSubmittedText(FormattedText.
+                        processFormattedText(version.getSubmittedText(), alertMsg, true, true));
+                if (alertMsg != null && alertMsg.length() > 0) {
+                    messages.addMessage(new TargettedMessage("assignment2.student-submit.error.submitted_text", new Object[] {alertMsg.toString()}));
+                    textValid = false;
+                }
+            }
+        }
+        
+        return textValid;
     }
 
 }
