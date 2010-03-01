@@ -34,6 +34,11 @@ public class ViewSubmissionParams extends SimpleViewParameters implements Verifi
 
     public Long assignmentId;
     public String userId;
+    
+    // when an assignment is tagged, there may be expanded permissions for viewing its submissions. we
+    // use this optional reference to go back and see if the user should have expanded
+    // permissions to view this submission
+    public String tagReference;
 
     public ViewSubmissionParams(){}
 
@@ -44,7 +49,7 @@ public class ViewSubmissionParams extends SimpleViewParameters implements Verifi
     }
 
     public String getParseSpec(){
-        return super.getParseSpec() + ",@1:assignmentId,@2:userId";
+        return super.getParseSpec() + ",@1:assignmentId,@2:userId,tagReference";
     }
 
     public Boolean verify()
