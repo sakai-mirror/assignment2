@@ -34,8 +34,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment2.dao.AssignmentDao;
 import org.sakaiproject.assignment2.exception.AssignmentNotFoundException;
-import org.sakaiproject.assignment2.exception.NoGradebookItemForGradedAssignmentException;
 import org.sakaiproject.assignment2.exception.SubmissionNotFoundException;
+import org.sakaiproject.assignment2.logic.AssignmentAuthzLogic;
 import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
@@ -72,12 +72,81 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
     public void setExternalGradebookLogic(ExternalGradebookLogic gradebookLogic) {
         this.gradebookLogic = gradebookLogic;
     }
-
-    public boolean isCurrentUserAbleToEditAssignments(String contextId) {
+    
+    private AssignmentAuthzLogic authz;
+    public void setAssignmentAuthzLogic(AssignmentAuthzLogic authz) {
+        this.authz = authz;
+    }
+    
+    public boolean isUserAllowedToEditAllAssignments(String contextId) {
         if (contextId == null) {
-            throw new IllegalArgumentException("null contextId passed to isCurrentUserAbleToEditAssignments");
+            throw new IllegalArgumentException("Null contextId passed to isUserAllowedToEditAllAssignments");
         }
-        return gradebookLogic.isCurrentUserAbleToEdit(contextId);
+        
+        return authz.userHasEditPermission(contextId) && authz.userHasAllGroupsPermission(contextId);
+    }
+    
+    public boolean isUserAllowedToEditAssignment(Assignment2 assignment) {
+        if (assignment == null || assignment.getContextId() == null) {
+            throw new IllegalArgumentException("Null assignment or contextId passed to isUserAllowedToEditAssignment");
+        }
+        
+        String currUserId = externalLogic.getCurrentUserId();
+        
+        return isUserAllowedToTakeActionOnAssignment(currUserId, assignment, AssignmentConstants.PERMISSION_EDIT_ASSIGNMENTS);
+    }
+    
+    public boolean isUserAllowedToAddAssignments(String contextId) {
+        if (contextId == null) {
+            throw new IllegalArgumentException("Null contextId passed to isUserAllowedToAddAssignments");
+        }
+        
+        return authz.userHasAddPermission(contextId);
+    }
+    
+    public boolean isUserAllowedToDeleteAssignment(Assignment2 assignment) {
+        if (assignment == null) {
+            throw new IllegalArgumentException("Null assignment passed to isUserAllowedToDeleteAssignment");
+        }
+        
+        String currUserId = externalLogic.getCurrentUserId();
+        
+        return isUserAllowedToTakeActionOnAssignment(currUserId, assignment, AssignmentConstants.PERMISSION_REMOVE_ASSIGNMENTS);
+    }
+    
+    /**
+     * 
+     * @param userId
+     * @param assignment
+     * @param permission the realm permission that you are checking for this assignment. ie {@link AssignmentConstants#PERMISSION_EDIT_ASSIGNMENTS}
+     * @return true if the user has permission to take the given action (described by
+     * the permission parameter) for the given assignment. If the user does have permission,
+     * will also ensure the user has this permission for all groups. If not, will check to
+     * see if user is a member of a restricted group
+     */
+    private boolean isUserAllowedToTakeActionOnAssignment(String userId, Assignment2 assignment, String permission) {
+        if (assignment == null || permission == null) {
+            throw new IllegalArgumentException("Null assignment or permission passed to " +
+                    "isUserAllowedToTakeActionOnAssignment. assignment:" + " permission:" + permission);
+        }
+        
+        boolean allowed = false;
+        
+        boolean userHasPermission = authz.userHasPermission(userId, assignment.getContextId(), permission);
+        if (userHasPermission) {
+            // we need to see if this permission applies to all groups
+            boolean userHasAllGroups = authz.userHasAllGroupsPermission(userId, assignment.getContextId());
+            if (userHasAllGroups) {
+                allowed = true;
+            } else if (assignment.getAssignmentGroupSet() != null && !assignment.getAssignmentGroupSet().isEmpty()){
+                // if this assignment is restricted to groups, you must be a member of the
+                // group to take action on it
+                List<String> groupMembershipIds = externalLogic.getUserMembershipGroupIdList(userId, assignment.getContextId());
+                allowed = isUserAMemberOfARestrictedGroup(groupMembershipIds, assignment.getAssignmentGroupSet());
+            }
+        }
+        
+        return allowed;
     }
 
     public boolean isUserAbleToViewStudentSubmissionForAssignment(String studentId, Long assignmentId) {
@@ -301,8 +370,10 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
 
         boolean instructorView = false;
 
-        if (gradebookLogic.isCurrentUserAbleToEdit(contextId) ||
-                gradebookLogic.isCurrentUserAbleToGrade(contextId)) {
+        if (authz.userHasEditPermission(contextId) || 
+                authz.userHasAddPermission(contextId) ||
+                authz.userHasDeletePermission(contextId) || 
+                authz.userHasManageSubmissionsPermission(contextId)) {
             instructorView = true;
         }
 

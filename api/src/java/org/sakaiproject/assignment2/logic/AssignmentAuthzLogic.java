@@ -21,6 +21,7 @@
 
 package org.sakaiproject.assignment2.logic;
 
+import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 
 /**
  * This interface is used for Assignment2-specific authorization based upon
@@ -61,10 +62,42 @@ public interface AssignmentAuthzLogic {
     public boolean userHasAllGroupsPermission(String contextId);
     
     /**
+     * @param userId
+     * @param contextId
+     * @return true if the given user's role permissions are for all groups
+     */
+    public boolean userHasAllGroupsPermission(String userId, String contextId);
+    
+    /**
      * 
      * @param contextId
      * @return true if the current user's role has permission to submit assignments
      */
     public boolean userHasSubmitPermission(String contextId);
+    
+    /**
+     * 
+     * @param contextId
+     * @return true if the current user's role has permission to manage submissions
+     * (ie view, provide feedback, etc)
+     */
+    public boolean userHasManageSubmissionsPermission(String contextId);
+    
+    /**
+     * 
+     * @param contextId
+     * @param permission sakai realm permission such as {@link AssignmentConstants#PERMISSION_ADD_ASSIGNMENTS}
+     * @return true if the current user's role has the given permission in the given contextId
+     */
+    public boolean userHasPermission(String contextId, String permission);
+    
+    /**
+     * 
+     * @param userId
+     * @param contextId
+     * @param permission sakai realm permission such as {@link AssignmentConstants#PERMISSION_ADD_ASSIGNMENTS}
+     * @return true if the given user's role has the given permission in the given contextId
+     */
+    public boolean userHasPermission(String userId, String contextId, String permission);
 
 }

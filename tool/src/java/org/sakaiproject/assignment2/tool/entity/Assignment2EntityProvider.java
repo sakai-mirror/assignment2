@@ -182,7 +182,8 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware {
         }
         
         boolean contentReviewAvailable = contentReviewLogic.isContentReviewAvailable(context); 
-        boolean canEdit = permissionLogic.isCurrentUserAbleToEditAssignments(context);
+        // need to add in add, edit, and delete to the provider
+        boolean canEdit = true; //permissionLogic.isCurrentUserAbleToEditAssignments(context);
         
         // TODO - use the service for entity work
        filterRestrictedAssignmentInfo(viewable, context);

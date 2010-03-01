@@ -21,9 +21,10 @@
 
 package org.sakaiproject.assignment2.tool;
 
+import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
-import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
+import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.tool.producers.*;
 import org.sakaiproject.assignment2.tool.producers.fragments.*;
 import org.sakaiproject.assignment2.tool.params.AssignmentViewParams;
@@ -59,10 +60,10 @@ public class LocalPermissionLogic {
     public void setExternalLogic(ExternalLogic externalLogic) {
         this.externalLogic = externalLogic;
     }
-
-    private AssignmentSubmissionLogic submissionLogic;
-    public void setSubmissionLogic(AssignmentSubmissionLogic submissionLogic) {
-        this.submissionLogic = submissionLogic;
+    
+    private AssignmentLogic assignmentLogic;
+    public void setAssignmentLogic(AssignmentLogic assignmentLogic) {
+        this.assignmentLogic = assignmentLogic;
     }
 
     /**
@@ -87,7 +88,15 @@ public class LocalPermissionLogic {
             return Boolean.TRUE;
         }
         else if (PreviewAsStudentProducer.VIEW_ID.equals(viewId)) {
-            return permissionLogic.isCurrentUserAbleToEditAssignments(contextId);
+            // the instructor may preview new assignments if they have the add
+            // perm but they can only preview existing assignments if they may
+            // edit that assignment
+            if (viewParams instanceof SimpleAssignmentViewParams) {
+                SimpleAssignmentViewParams params = (SimpleAssignmentViewParams) viewParams;
+                return isUserAllowedToAddNewOrEditExistingAssignment(params.assignmentId, contextId);
+            }
+            
+            return Boolean.FALSE;
         }
         else if (ListProducer.VIEW_ID.equals(viewId)) {
             return permissionLogic.isUserAbleToAccessInstructorView(contextId);
@@ -97,10 +106,17 @@ public class LocalPermissionLogic {
             // info since it contains the number of submissions. Will plan on 
             // doing better checking of what information users can see in the 
             // future from the JSON feed, so folks can make mashups.
-            return permissionLogic.isCurrentUserAbleToEditAssignments(contextId);
+            return permissionLogic.isUserAbleToAccessInstructorView(contextId);
         }
         else if (AssignmentProducer.VIEW_ID.equals(viewId)) {
-            return permissionLogic.isCurrentUserAbleToEditAssignments(contextId);
+            // permission to view this screen depends upon whether this is an add
+            // or edit scenario
+            if (viewParams instanceof AssignmentViewParams) {
+                AssignmentViewParams params = (AssignmentViewParams) viewParams;
+                return isUserAllowedToAddNewOrEditExistingAssignment(params.assignmentId, contextId);
+            }
+            
+            return Boolean.FALSE;
 
         } else if (FinishedHelperProducer.VIEWID.equals(viewId)) {
             return Boolean.TRUE;
@@ -139,7 +155,9 @@ public class LocalPermissionLogic {
             return Boolean.FALSE;
 
         } else if (FragmentAssignment2SelectProducer.VIEW_ID.equals(viewId)) {
-            return permissionLogic.isCurrentUserAbleToEditAssignments(contextId);
+            // TODO: it isn't clear what permission you should have for this one,
+            // so defaulting to add perm
+            return permissionLogic.isUserAllowedToAddAssignments(contextId);
         }
         else if (FragmentGradebookDetailsProducer.VIEW_ID.equals(viewId)) {
             if (viewParams instanceof FragmentGradebookDetailsViewParams) {
@@ -183,6 +201,29 @@ public class LocalPermissionLogic {
 
         //else just say No
         return Boolean.FALSE;
+    }
+    
+    /**
+     * 
+     * @param assignId if null, assumes add scenario
+     * @param contextId
+     * @return depending upon whether or not the assignId is null, will return true
+     * if the current user has permission to add a new assignment (if assignId) or edit
+     * an existing assignment (if assignId is not null)
+     */
+    private boolean isUserAllowedToAddNewOrEditExistingAssignment(Long assignId, String contextId) {
+        if (assignId == null) {
+            // add assignment scenario
+            return permissionLogic.isUserAllowedToAddAssignments(contextId);
+        } else {
+            // we are editing
+            if (permissionLogic.isUserAllowedToEditAllAssignments(contextId)) {
+                return true;
+            } else {
+                Assignment2 assign = assignmentLogic.getAssignmentById(assignId);
+                return permissionLogic.isUserAllowedToEditAssignment(assign);
+            }
+        }
     }
 
 }

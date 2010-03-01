@@ -229,11 +229,6 @@ public class AssignmentLogicImpl implements AssignmentLogic{
             "was defined as graded but it had a null getGradebookItemId");
         }
 
-        if (!permissionLogic.isCurrentUserAbleToEditAssignments(assignment.getContextId())) {
-            throw new SecurityException("Current user may not save assignment " + assignment.getTitle()
-                    + " because they do not have edit permission");
-        }
-
         boolean isNewAssignment = true;
         Assignment2 existingAssignment = null;
 
@@ -246,6 +241,16 @@ public class AssignmentLogicImpl implements AssignmentLogic{
             } else {
                 throw new AssignmentNotFoundException("No assignment exists with id: " + assignment.getId() + " Assignment update failure.");
             }
+        }
+        
+        // if it is a new assignment, check to see if user is allowed to add assignments
+        // in this context. otherwise, ensure the user may edit this assignment
+        if (isNewAssignment && !permissionLogic.isUserAllowedToAddAssignments(assignment.getContextId())) {
+            throw new SecurityException("Current user may not save assignment " + assignment.getTitle()
+                    + " because they do not have add permission");
+        } else if (!isNewAssignment && !permissionLogic.isUserAllowedToEditAssignment(assignment)) {
+            throw new SecurityException("Current user may not edit assignment " + assignment.getTitle()
+                    + " because they do not have edit permission");
         }
 
         // check to see if the gradebook item association is valid
@@ -397,7 +402,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
             "associated contextId. You may not delete an assignment without a contextId");
         }
 
-        if (!permissionLogic.isCurrentUserAbleToEditAssignments(assignment.getContextId())) {
+        if (!permissionLogic.isUserAllowedToDeleteAssignment(assignment)) {
             if (log.isDebugEnabled()) log.debug("User not authorized to add/delete/update announcements");
             throw new SecurityException("Current user may not delete assignment " + assignment.getTitle()
                     + " because they do not have edit permission");
@@ -512,7 +517,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
             throw new IllegalArgumentException("Null contextId passed to " + this);
         }
 
-        if (!permissionLogic.isCurrentUserAbleToEditAssignments(contextId)) {
+        if (!permissionLogic.isUserAllowedToEditAllAssignments(contextId)) {
             throw new SecurityException("Unauthorized user attempted to reorder assignments!");
         }
 
@@ -706,7 +711,8 @@ public class AssignmentLogicImpl implements AssignmentLogic{
      * Given the originalAssignment and the updated (or newly created) version, will determine if an
      * announcement needs to be added, updated, or deleted. Announcements are updated
      * if there is a change in title, open date, or group restrictions. They are
-     * deleted if the assignment is changed to draft status. 
+     * deleted if the assignment is changed to draft status. Does not re-check permissions, so
+     * make sure you are authorized to update assignments if you call this method.
      * @param originalAssignmentWithGroups - original assignment with the group info populated
      * @param updatedAssignment - updated (or newly created) assignment with the group info populated
      */
@@ -717,10 +723,6 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 
         if (updatedAssignment.getId() == null) {
             throw new IllegalArgumentException("The updatedAssignment passed to saveAssignmentAnnouncement must have an id");
-        }
-
-        if (!permissionLogic.isCurrentUserAbleToEditAssignments(updatedAssignment.getContextId())) {
-            throw new SecurityException("Current user is not allowed to edit assignments in context " + updatedAssignment.getContextId());
         }
 
         // make the open date locale-aware
@@ -791,7 +793,8 @@ public class AssignmentLogicImpl implements AssignmentLogic{
      * Schedule tool.  Events are updated upon a change in the due date, title, or
      * group restrictions for the assignment.  Events are deleted if the assignment
      * is deleted, changed to draft status, or the due date is removed.  will also
-     * add event when appropriate
+     * add event when appropriate. Does not re-check permissions, so
+     * make sure you are authorized to update assignments if you call this method.
      * @param originalAssignment - null if "updatedAssignment" is newly created
      * @param updatedAssignment
      */
@@ -807,10 +810,6 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 
 
         String contextId = updatedAssignment.getContextId();
-
-        if (!permissionLogic.isCurrentUserAbleToEditAssignments(contextId)) {
-            throw new SecurityException("Current user is not allowed to edit assignments in context " + updatedAssignment.getContextId());
-        }
 
         // make the due date locale-aware
         // use a date which is related to the current users locale

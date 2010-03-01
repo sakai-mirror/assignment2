@@ -28,6 +28,7 @@ import java.util.Map;
 import org.sakaiproject.assignment2.exception.SubmissionNotFoundException;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentGroup;
+import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.site.api.Group;
 
 /**
@@ -39,11 +40,31 @@ import org.sakaiproject.site.api.Group;
 public interface AssignmentPermissionLogic {
 
     /**
-     * @param contextId
-     * 		the context id of the site
-     * @return true if the current user is allowed to edit assignments
+     * @param assignment
+     * @return true if the current user has permission to edit the given assignment
      */
-    public boolean isCurrentUserAbleToEditAssignments(String contextId);
+    public boolean isUserAllowedToEditAssignment(Assignment2 assignment);
+    
+    /**
+     * 
+     * @param contextId
+     * @return true if current user is allowed to edit all assignments in the
+     * given context
+     */
+    public boolean isUserAllowedToEditAllAssignments(String contextId);
+    
+    /**
+     * @param contextId
+     * @return true if the current user has permission to add assignments in the given context
+     */
+    public boolean isUserAllowedToAddAssignments(String contextId);
+    
+    /**
+     * 
+     * @param assignment
+     * @return true if current user has permission to delete this assignment
+     */
+    public boolean isUserAllowedToDeleteAssignment(Assignment2 assignment);
 
     /**
      * 
@@ -84,9 +105,13 @@ public interface AssignmentPermissionLogic {
 
     /**
      * 
-     * @return true if the user has either grading or editing permission for the
-     * assignments in the given context id and will thus be able to access
-     * the "instructor view" for the assignments tool. 
+     * @return true if the user has at least one of the following permissions:
+     * {@link AssignmentConstants#PERMISSION_ADD_ASSIGNMENTS},
+     * {@link AssignmentConstants#PERMISSION_EDIT_ASSIGNMENTS},
+     * {@link AssignmentConstants#PERMISSION_REMOVE_ASSIGNMENTS}, or
+     * {@link AssignmentConstants#PERMISSION_MANAGE_SUBMISSIONS} 
+     *
+     * This will allow the user to access the "instructor view" for the assignments tool. 
      */
     public boolean isUserAbleToAccessInstructorView(String contextId);
 

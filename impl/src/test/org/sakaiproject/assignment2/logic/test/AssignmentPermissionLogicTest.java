@@ -60,26 +60,61 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
         testData.a4 = dao.getAssignmentByIdWithGroupsAndAttachments(testData.a4Id);
     }
 
-    public void testIsCurrentUserAbleToEditAssignments() {
-        // try passing a null contextId
+    public void testIsUserAllowedToEditAssignment() {
+        // try passing a null assignment
         try {
-            permissionLogic.isCurrentUserAbleToEditAssignments(null);
-            fail("did not catch null contextId passed to isCurrentUserAbleToEditAssignments");
+            permissionLogic.isUserAllowedToEditAssignment(null);
+            fail("did not catch null assignment passed to isUserAllowedToEditAssignment");
         } catch (IllegalArgumentException iae) {}
 
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
 
-        // try a context that doesn't exist
-        assertFalse(permissionLogic.isCurrentUserAbleToEditAssignments(AssignmentTestDataLoad.BAD_CONTEXT));
-
         // only instructors should be able to edit assignments
-        assertTrue(permissionLogic.isCurrentUserAbleToEditAssignments(AssignmentTestDataLoad.CONTEXT_ID));
+        assertTrue(permissionLogic.isUserAllowedToEditAssignment(testData.a1));
 
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
-        assertFalse(permissionLogic.isCurrentUserAbleToEditAssignments(AssignmentTestDataLoad.CONTEXT_ID));
+        assertFalse(permissionLogic.isUserAllowedToEditAssignment(testData.a1));
 
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT1_UID);
-        assertFalse(permissionLogic.isCurrentUserAbleToEditAssignments(AssignmentTestDataLoad.CONTEXT_ID));
+        assertFalse(permissionLogic.isUserAllowedToEditAssignment(testData.a1));
+    }
+    
+    public void testIsUserAllowedToAddAssignments() {
+        // try passing a null contextId
+        try {
+            permissionLogic.isUserAllowedToAddAssignments(null);
+            fail("did not catch null contextId passed to isUserAllowedToAddAssignments");
+        } catch (IllegalArgumentException iae) {}
+
+        externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
+
+        // only instructors should be able to add assignments
+        assertTrue(permissionLogic.isUserAllowedToAddAssignments(AssignmentTestDataLoad.CONTEXT_ID));
+
+        externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
+        assertFalse(permissionLogic.isUserAllowedToAddAssignments(AssignmentTestDataLoad.CONTEXT_ID));
+
+        externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT1_UID);
+        assertFalse(permissionLogic.isUserAllowedToAddAssignments(AssignmentTestDataLoad.CONTEXT_ID));
+    }
+    
+    public void testIsUserAllowedToDeleteAssignment() {
+        // try passing a null assignment
+        try {
+            permissionLogic.isUserAllowedToDeleteAssignment(null);
+            fail("did not catch null assignment passed to isUserAllowedToDeleteAssignment");
+        } catch (IllegalArgumentException iae) {}
+
+        externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
+
+        // only instructors should be able to delete assignments
+        assertTrue(permissionLogic.isUserAllowedToDeleteAssignment(testData.a1));
+
+        externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
+        assertFalse(permissionLogic.isUserAllowedToDeleteAssignment(testData.a1));
+
+        externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT1_UID);
+        assertFalse(permissionLogic.isUserAllowedToDeleteAssignment(testData.a1));
     }
 
     public void testIsUserAbleToViewStudentSubmissionForAssignment() {

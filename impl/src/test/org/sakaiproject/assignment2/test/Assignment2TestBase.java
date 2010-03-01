@@ -30,6 +30,7 @@ import org.sakaiproject.assignment2.logic.impl.AssignmentSubmissionLogicImpl;
 import org.sakaiproject.assignment2.logic.impl.ExternalAnnouncementLogicImpl;
 import org.sakaiproject.assignment2.logic.impl.ExternalContentReviewLogicImpl;
 import org.sakaiproject.assignment2.logic.impl.ExternalGradebookLogicImpl;
+import org.sakaiproject.assignment2.logic.test.stubs.AssignmentAuthzLogicStub;
 import org.sakaiproject.assignment2.logic.test.stubs.ExternalLogicStub;
 import org.sakaiproject.assignment2.logic.test.stubs.GradebookServiceStub;
 import org.sakaiproject.assignment2.service.impl.Assignment2ServiceImpl;
@@ -61,6 +62,7 @@ public abstract class Assignment2TestBase extends AbstractTransactionalSpringCon
     protected GradebookServiceStub gradebookService;
     protected ExternalLogicStub externalLogic;
     protected Assignment2ServiceImpl assignment2Service;
+    protected AssignmentAuthzLogicStub authz;
 
     protected void onSetUpBeforeTransaction() throws Exception {
 
@@ -98,10 +100,14 @@ public abstract class Assignment2TestBase extends AbstractTransactionalSpringCon
         
         contentReviewLogic = new ExternalContentReviewLogicImpl();
         
+        authz = new AssignmentAuthzLogicStub();
+        authz.setExternalLogic(externalLogic);
+        
         permissionLogic = new AssignmentPermissionLogicImpl();
         permissionLogic.setDao(dao);
         permissionLogic.setExternalGradebookLogic(gradebookLogic);
         permissionLogic.setExternalLogic(externalLogic);
+        permissionLogic.setAssignmentAuthzLogic(authz);
 
         assignmentLogic = new AssignmentLogicImpl();
         assignmentLogic.setDao(dao);

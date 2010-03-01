@@ -19,51 +19,19 @@
  *
  **********************************************************************************/
 
-package org.sakaiproject.assignment2.logic.impl;
+package org.sakaiproject.assignment2.logic.test.stubs;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment2.logic.AssignmentAuthzLogic;
-import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
+import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
-import org.sakaiproject.authz.api.FunctionManager;
-import org.sakaiproject.authz.api.SecurityService;
-import org.sakaiproject.site.api.SiteService;
+import org.sakaiproject.assignment2.test.AssignmentTestDataLoad;
+
 
 /**
- * Used for Assignment2-specific authorization based upon
- * the fine-grained site-scoped Sakai permissions. This is solely used for
- * answering questions based upon these Sakai permissions and is not meant
- * for use outside the logic layer. For more situation-specific
- * permission answers, use the {@link AssignmentPermissionLogic}
+ * Stub class used for answering security questions for assignmen2 testing
  */
-public class AssignmentAuthzLogicImpl implements AssignmentAuthzLogic
+public class AssignmentAuthzLogicStub implements AssignmentAuthzLogic
 {
-    private static Log log = LogFactory.getLog(AssignmentAuthzLogicImpl.class);
-    
-    private FunctionManager functionManager;
-    private SecurityService securityService;
-    private SiteService siteService;
-
-    public void init() {
-        if (log.isDebugEnabled()) log.debug("init");
-        
-        registerPermissions();
-    }
-    
-    /**
-     * Register the assignment2 permissions
-     */
-    protected void registerPermissions() {
-        // register Sakai permissions for this tool
-        functionManager.registerFunction(AssignmentConstants.PERMISSION_ADD_ASSIGNMENTS);
-        functionManager.registerFunction(AssignmentConstants.PERMISSION_EDIT_ASSIGNMENTS);
-        functionManager.registerFunction(AssignmentConstants.PERMISSION_SUBMIT);
-        functionManager.registerFunction(AssignmentConstants.PERMISSION_ALL_GROUPS);
-        functionManager.registerFunction(AssignmentConstants.PERMISSION_MANAGE_SUBMISSIONS);
-        functionManager.registerFunction(AssignmentConstants.PERMISSION_VIEW_ASSIGNMENTS);
-        functionManager.registerFunction(AssignmentConstants.PERMISSION_REMOVE_ASSIGNMENTS);
-    }
     
     public boolean userHasAddPermission(String contextId) {
         return userHasPermission(contextId, AssignmentConstants.PERMISSION_ADD_ASSIGNMENTS);
@@ -89,29 +57,49 @@ public class AssignmentAuthzLogicImpl implements AssignmentAuthzLogic
         return userHasPermission(contextId, AssignmentConstants.PERMISSION_SUBMIT);
     }
     
-    public boolean userHasManageSubmissionsPermission(String contextId) {
+    public boolean userHasManageSubmissionsPermission(String contextId)
+    {
         return userHasPermission(contextId, AssignmentConstants.PERMISSION_MANAGE_SUBMISSIONS);
     }
     
     public boolean userHasPermission(String contextId, String permission) {
-        return securityService.unlock(permission, siteService.siteReference(contextId));
+        return unlock(externalLogic.getCurrentUserId(), permission);
     }
     
     public boolean userHasPermission(String userId, String contextId, String permission) {
-        return securityService.unlock(userId, permission, siteService.siteReference(contextId));
+        return unlock(userId, permission);
     }
     
-    /* Dependencies */
-
-    public void setFunctionManager(FunctionManager functionManager) {
-        this.functionManager = functionManager;
+    private boolean unlock(String userId, String permission) {
+        if (userId.equals(AssignmentTestDataLoad.INSTRUCTOR_UID)) {
+            if (permission.equals(AssignmentConstants.PERMISSION_SUBMIT)) {
+                return false;
+            } else {
+                return true;
+            }
+        } else if (userId.equals(AssignmentTestDataLoad.STUDENT1_UID) || 
+                userId.equals(AssignmentTestDataLoad.STUDENT2_UID) ||
+                userId.equals(AssignmentTestDataLoad.STUDENT3_UID)) {
+            if (permission.equals(AssignmentConstants.PERMISSION_SUBMIT) || 
+                    permission.equals(AssignmentConstants.PERMISSION_VIEW_ASSIGNMENTS)) {
+                return true;
+            } else {
+                return false;
+            }
+        } else if (userId.equals(AssignmentTestDataLoad.TA_UID)) {
+            if (permission.equals(AssignmentConstants.PERMISSION_MANAGE_SUBMISSIONS) ||
+                    permission.equals(AssignmentConstants.PERMISSION_VIEW_ASSIGNMENTS)) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+        
+        return false;
     }
     
-    public void setSecurityService(SecurityService securityService) {
-        this.securityService = securityService;
-    }
-    
-    public void setSiteService(SiteService siteService) {
-        this.siteService = siteService;
+    private ExternalLogic externalLogic;
+    public void setExternalLogic(ExternalLogic externalLogic) {
+        this.externalLogic = externalLogic;
     }
 }

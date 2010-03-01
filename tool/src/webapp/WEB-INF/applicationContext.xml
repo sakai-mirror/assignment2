@@ -20,8 +20,8 @@
 			ref="org.sakaiproject.assignment2.logic.AssignmentPermissionLogic" />
 		<property name="externalLogic"
 			ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
-		<property name="submissionLogic"
-			ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
+		<property name="assignmentLogic"
+			ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
 	</bean>
     
     <bean id="localTurnitinLogic"

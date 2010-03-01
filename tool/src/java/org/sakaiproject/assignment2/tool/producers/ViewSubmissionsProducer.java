@@ -164,7 +164,7 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
         DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, locale);
 
         //Edit Permission
-        boolean edit_perm = permissionLogic.isCurrentUserAbleToEditAssignments(assignment.getContextId());
+        boolean edit_perm = permissionLogic.isUserAllowedToEditAssignment(assignment);
         boolean grade_perm = permissionLogic.isUserAllowedToProvideFeedbackForAssignment(assignment);
 
         //get parameters
