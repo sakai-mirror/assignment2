@@ -122,7 +122,7 @@ public class AssignmentConstants {
      */
     public final static int SUBMISSION_LATE = 3;	
 
-    public static final String REFERENCE_ROOT = "asgn2";
+    public static final String REFERENCE_ROOT = "asnn2";
     public static final String ASSIGNMENT_TYPE = "a";
     public static final String SUBMISSION_TYPE = "s";
     

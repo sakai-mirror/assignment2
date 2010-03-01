@@ -196,8 +196,7 @@ AssignmentActivityProducer {
     public void init() {
         logger.info("init()");
 
-        //TODO Removing support for Assignment2 tagging until helpers get fixed
-        //taggingManager.registerProducer(this);
+        taggingManager.registerProducer(this);
     }
 
     protected String parseAuthor(String itemRef) {
