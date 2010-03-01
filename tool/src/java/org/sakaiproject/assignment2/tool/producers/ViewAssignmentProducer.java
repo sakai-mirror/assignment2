@@ -77,11 +77,11 @@ public class ViewAssignmentProducer implements ViewComponentProducer, ViewParams
             return;
         }
         
-        if (!permissionLogic.isUserAbleToViewAssignment(assignmentId)) {
+        if (!permissionLogic.isUserAbleToViewAssignment(assignmentId, params.tagReference)) {
             throw new SecurityException("Attempt to view assignment without permission");
         }
 
-        Assignment2 assignment = assignmentLogic.getAssignmentByIdWithAssociatedData(assignmentId);
+        Assignment2 assignment = assignmentLogic.getAssignmentByIdWithAssociatedData(assignmentId, params.tagReference);
 
         // use a date which is related to the current users locale
         DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, locale);

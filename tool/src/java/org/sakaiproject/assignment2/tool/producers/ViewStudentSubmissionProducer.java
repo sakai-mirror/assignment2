@@ -89,7 +89,7 @@ public class ViewStudentSubmissionProducer implements ViewComponentProducer, Vie
               //handle error
               return;
           }
-          if (!permissionLogic.isUserAbleToViewStudentSubmissionForAssignment(studentUserId, assignmentId))
+          if (!permissionLogic.isUserAbleToViewStudentSubmissionForAssignment(studentUserId, assignmentId, params.tagReference))
           {
               // user is not allowed to view the submission for this studentId
               throw new SecurityException("Attempt to view a submission without permission");
@@ -98,7 +98,7 @@ public class ViewStudentSubmissionProducer implements ViewComponentProducer, Vie
           Assignment2 assignment;
           try
           {
-              assignment = assignmentLogic.getAssignmentByIdWithAssociatedData(assignmentId);
+              assignment = assignmentLogic.getAssignmentByIdWithAssociatedData(assignmentId, params.tagReference);
           }
           catch (AssignmentNotFoundException anfe)
           {
@@ -107,7 +107,7 @@ public class ViewStudentSubmissionProducer implements ViewComponentProducer, Vie
               return;
           }
           
-          AssignmentSubmission assignmentSubmission = submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(assignmentId, studentUserId);
+          AssignmentSubmission assignmentSubmission = submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(assignmentId, studentUserId, params.tagReference);
           
           // make sure the assignment is set correctly in the assignmentSubmission object, or it make cause problems later
           if (assignmentSubmission != null) {

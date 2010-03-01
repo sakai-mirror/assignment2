@@ -155,12 +155,15 @@ public class AssignmentLogicImpl implements AssignmentLogic{
     }
 
     public Assignment2 getAssignmentByIdWithAssociatedData(Long assignmentId) {
+    	return getAssignmentByIdWithAssociatedData(assignmentId, null);
+    }
+    public Assignment2 getAssignmentByIdWithAssociatedData(Long assignmentId, String taggableRef) {
         if (assignmentId == null) {
             throw new IllegalArgumentException("Null assignmentId passed to getAssignmentByIdWithAssociatedData");
         }
         
         // make sure the user can access the assignment object
-        if (!permissionLogic.isUserAbleToViewAssignment(assignmentId)) {
+        if (!permissionLogic.isUserAbleToViewAssignment(assignmentId, taggableRef)) {
             throw new SecurityException("User attempted to access assignment with id " + assignmentId + " without permission");
         }
         // retrieve Assignment2 object

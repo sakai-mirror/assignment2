@@ -179,7 +179,7 @@ public class LocalPermissionLogic {
             if (viewParams instanceof SimpleAssignmentViewParams) {
                 SimpleAssignmentViewParams params = (SimpleAssignmentViewParams) viewParams;
 
-                return permissionLogic.isUserAbleToViewAssignment(params.assignmentId);
+                return permissionLogic.isUserAbleToViewAssignment(params.assignmentId, params.tagReference);
             }
 
             return Boolean.FALSE;
@@ -189,7 +189,7 @@ public class LocalPermissionLogic {
         if (viewParams instanceof ViewSubmissionParams) {
             ViewSubmissionParams params = (ViewSubmissionParams) viewParams;
             
-            return permissionLogic.isUserAbleToViewStudentSubmissionForAssignment(params.userId, params.assignmentId);
+            return permissionLogic.isUserAbleToViewStudentSubmissionForAssignment(params.userId, params.assignmentId, params.tagReference);
         }
 
         return Boolean.FALSE;

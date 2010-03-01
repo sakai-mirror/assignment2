@@ -61,5 +61,23 @@ public interface ExternalTaggableLogic {
 	 * @param activityRefs List of Activity (assignment) references
 	 * @return
 	 */
-	public Map<String, List<TaggingHelperInfo>> getActivityHelperInfo(String siteId, List<String> activityRefs);	
+	public Map<String, List<TaggingHelperInfo>> getActivityHelperInfo(String siteId, List<String> activityRefs);
+	
+	/**
+	 * Determine if the user is able to retrieve activity information
+	 * @param activityRef Reference of the activity (assignment)
+	 * @param currentUser Id of the current user
+	 * @param taggedItem Reference of the item that will help determine the permissions
+	 * @return
+	 */
+	public boolean canGetActivity(String activityRef, String currentUser, String taggedItem);
+	
+	/**
+	 * Determine if the user is able to retrieve item information (assignment submissions)
+	 * @param itemRef Reference of the item (submission)
+	 * @param currentUser Id of the current user
+	 * @param taggedItem Reference of the item that will help determine the permissions
+	 * @return
+	 */
+	public boolean canGetItem(String itemRef, String currentUser, String taggedItem);
 }

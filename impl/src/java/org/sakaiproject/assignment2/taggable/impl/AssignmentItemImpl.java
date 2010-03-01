@@ -25,6 +25,7 @@ import java.util.Date;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.component.cover.ServerConfigurationService;
 import org.sakaiproject.exception.IdUnusedException;
@@ -42,7 +43,7 @@ public class AssignmentItemImpl implements TaggableItem {
     private static final Log logger = LogFactory
     .getLog(AssignmentItemImpl.class);
 
-    private static ResourceLoader rb = new ResourceLoader("assignment");
+    private static ResourceLoader rb = new ResourceLoader("messages");
 
     protected static final String ITEM_REF_SEPARATOR = "@";
 
@@ -100,9 +101,17 @@ public class AssignmentItemImpl implements TaggableItem {
 
     public String getItemDetailUrl()
     {
-        // TODO Auto-generated method stub
-        return null;
+    	Assignment2 assignment = submission.getAssignment();
+    	String siteId = assignment.getContextId();
+    	String placement = getSite(siteId).getToolForCommonId("sakai.assignment2").getId();
+    	String url = ServerConfigurationService.getToolUrl() + "/" + placement + 
+    		"/view-submission/" + Long.toString(assignment.getId()) + "/" + userId;
+        return url;
     }
+    
+    public String getItemDetailPrivateUrl(){
+		return getItemDetailUrl();
+	}
 
     public String getIconUrl()
     {
@@ -128,7 +137,7 @@ public class AssignmentItemImpl implements TaggableItem {
     public String getItemDetailUrlParams()
     {
         // TODO Auto-generated method stub
-        return null;
+        return "?";
     }
 
     public Date getLastModifiedDate()

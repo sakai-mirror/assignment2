@@ -170,6 +170,10 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
     }
 
     public AssignmentSubmission getCurrentSubmissionByAssignmentIdAndStudentId(Long assignmentId, String studentId) {
+    	return getCurrentSubmissionByAssignmentIdAndStudentId(assignmentId, studentId, null);
+    }
+    
+    public AssignmentSubmission getCurrentSubmissionByAssignmentIdAndStudentId(Long assignmentId, String studentId, String taggableRef) {
         if (assignmentId == null || studentId == null) {
             throw new IllegalArgumentException("Null assignmentId or userId passed to getCurrentSubmissionByAssignmentAndUser");
         }
@@ -182,7 +186,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
             throw new AssignmentNotFoundException("No assignment found with id: " + assignmentId);
         }
 
-        if (!permissionLogic.isUserAbleToViewStudentSubmissionForAssignment(studentId, assignment.getId())) {
+        if (!permissionLogic.isUserAbleToViewStudentSubmissionForAssignment(studentId, assignment.getId(), taggableRef)) {
             throw new SecurityException("Current user " + currentUserId + " is not allowed to view submission for " + studentId + " for assignment " + assignment.getId());
         }
 

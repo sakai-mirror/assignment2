@@ -24,7 +24,6 @@ package org.sakaiproject.assignment2.taggable.impl;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -41,6 +40,7 @@ import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.assignment2.taggable.api.AssignmentActivityProducer;
 import org.sakaiproject.authz.api.SecurityService;
+import org.sakaiproject.entity.api.Entity;
 import org.sakaiproject.entity.api.EntityManager;
 import org.sakaiproject.entity.api.Reference;
 import org.sakaiproject.site.api.SiteService;
@@ -70,17 +70,6 @@ AssignmentActivityProducer {
 
     protected AssignmentSubmissionLogic assignmentSubmissionLogic;
 
-
-    public boolean allowGetItems(TaggableActivity activity,
-            TaggingProvider provider) {
-        // We aren't picky about the provider, so ignore that argument.
-        // Only allow this if the user can grade submissions
-        //return assignmentDao.allowGradeSubmission(activity.getReference());
-        //return assignmentPermissionLogic.isUserAbleToProvideFeedbackForSubmission(submissionId);
-        Assignment2 assignment = (Assignment2) activity.getObject();
-        return assignmentPermissionLogic.isUserAllowedToProvideFeedbackForAssignment(assignment);
-    }
-
     public boolean allowRemoveTags(TaggableActivity activity) {
         Assignment2 assignment = (Assignment2) activity.getObject();
         return assignmentPermissionLogic.isCurrentUserAbleToEditAssignments(assignment.getContextId());
@@ -97,7 +86,7 @@ AssignmentActivityProducer {
     }
 
     public boolean checkReference(String ref) {
-        return ref.startsWith(AssignmentConstants.REFERENCE_ROOT);
+        return ref.startsWith(Entity.SEPARATOR + AssignmentConstants.REFERENCE_ROOT);
     }
 
     public List<TaggableActivity> getActivities(String context,
@@ -141,52 +130,6 @@ AssignmentActivityProducer {
         return new AssignmentItemImpl(assignmentSubmission, userId,
                 new AssignmentActivityImpl(
                         assignmentSubmission.getAssignment(), this));
-    }
-
-    public TaggableItem getItem(String itemRef, TaggingProvider provider) {
-        // We aren't picky about the provider, so ignore that argument.
-        TaggableItem item = null;
-        if (checkReference(itemRef)) {
-            AssignmentSubmission submission = assignmentDao.getSubmissionWithVersionHistoryById(parseSubmissionRef(itemRef));
-            item = new AssignmentItemImpl(submission, parseAuthor(itemRef),
-                    new AssignmentActivityImpl(submission.getAssignment(),
-                            this));
-        }
-        return item;
-    }
-
-    public List<TaggableItem> getItems(TaggableActivity activity,
-            String userId, TaggingProvider provider) {
-        // We aren't picky about the provider, so ignore that argument.
-        List<TaggableItem> returned = new ArrayList<TaggableItem>();
-        Assignment2 assignment = (Assignment2) activity.getObject();
-        AssignmentSubmission submission = assignmentDao.getSubmissionWithVersionHistoryForStudentAndAssignment(
-                userId, assignment);
-        if (submission != null) {
-            TaggableItem item = new AssignmentItemImpl(submission, userId,
-                    activity);
-            returned.add(item);
-        }
-        return returned;
-    }
-
-    public List<TaggableItem> getItems(TaggableActivity activity,
-            TaggingProvider provider) {
-        // We aren't picky about the provider, so ignore that argument.
-        List<TaggableItem> items = new ArrayList<TaggableItem>();
-        Assignment2 assignment = (Assignment2) activity.getObject();
-        /*
-         * If you're not allowed to grade submissions, you shouldn't be able to
-         * look at submission items. It seems that anybody is allowed to get any
-         * submissions.
-         */
-        if (allowGetItems(activity, provider)) {
-            for (Iterator<AssignmentSubmission> i = assignmentSubmissionLogic.getViewableSubmissionsForAssignmentId(assignment.getId(), null).iterator(); i.hasNext();) {
-                AssignmentSubmission submission = i.next();
-                items.add(new AssignmentItemImpl(submission, submission.getUserId(), activity));
-            }
-        }
-        return items;
     }
 
     public String getName() {
@@ -239,20 +182,38 @@ AssignmentActivityProducer {
         this.assignmentPermissionLogic = assignmentPermissionLogic;
     }
 
-    public void setAssignmentBundleLogic(AssignmentBundleLogic assignmentBundleLogic) {
+    public void setAssignmentSubmissionLogic(
+			AssignmentSubmissionLogic assignmentSubmissionLogic) {
+		this.assignmentSubmissionLogic = assignmentSubmissionLogic;
+	}
+
+	public void setAssignmentBundleLogic(AssignmentBundleLogic assignmentBundleLogic) {
         this.assignmentBundleLogic = assignmentBundleLogic;
     }
 
-    public boolean allowGetItems(TaggableActivity arg0, TaggingProvider arg1, boolean arg2)
+    public boolean allowGetItems(TaggableActivity activity, TaggingProvider provider, boolean getMyItemsOnly, String taggedItem)
     {
-        // TODO Auto-generated method stub
-        return false;
+    	// We aren't picky about the provider, so ignore that argument.
+        // Only allow this if the user can grade submissions
+        //return assignmentDao.allowGradeSubmission(activity.getReference());
+        //return assignmentPermissionLogic.isUserAbleToProvideFeedbackForSubmission(submissionId);
+        Assignment2 assignment = (Assignment2) activity.getObject();
+        return assignmentPermissionLogic.isUserAllowedToProvideFeedbackForAssignment(assignment);
     }
 
-    public TaggableItem getItem(String arg0, TaggingProvider arg1, boolean arg2)
+    public TaggableItem getItem(String itemRef, TaggingProvider provider, boolean getMyItemsOnly, String taggedItem)
     {
-        // TODO Auto-generated method stub
-        return null;
+        TaggableItem item = null;
+        if (checkReference(itemRef)) {
+        	boolean allowed = provider.allowGetItem(itemRef, userDirectoryService.getCurrentUser().getId(), taggedItem);
+        	if (allowed) {
+        		AssignmentSubmission submission = assignmentDao.getSubmissionWithVersionHistoryById(parseSubmissionRef(itemRef));
+        		item = new AssignmentItemImpl(submission, parseAuthor(itemRef),
+        				new AssignmentActivityImpl(submission.getAssignment(),
+        						this));
+        	}
+        }
+        return item;
     }
 
     public String getItemPermissionOverride()
@@ -261,31 +222,58 @@ AssignmentActivityProducer {
         return null;
     }
 
-    public List<TaggableItem> getItems(TaggableActivity arg0, TaggingProvider arg1,
-            boolean arg2)
+    public List<TaggableItem> getItems(TaggableActivity activity, TaggingProvider provider,
+            boolean getMyItemsOnly, String taggedItem)
     {
-        // TODO Auto-generated method stub
-        return null;
+    	// We aren't picky about the provider, so ignore that argument.
+        List<TaggableItem> items = new ArrayList<TaggableItem>();
+        Assignment2 assignment = (Assignment2) activity.getObject();
+        /*
+         * If you're not allowed to grade submissions, you shouldn't be able to
+         * look at submission items. It seems that anybody is allowed to get any
+         * submissions.
+         */
+        boolean allowed = provider.allowGetItems(new String[]{}, userDirectoryService.getCurrentUser().getId(), taggedItem);
+        if (allowed) {
+            for (Iterator<AssignmentSubmission> i = assignmentSubmissionLogic.getViewableSubmissionsForAssignmentId(assignment.getId(), null).iterator(); i.hasNext();) {
+                AssignmentSubmission submission = i.next();
+                items.add(new AssignmentItemImpl(submission, submission.getUserId(), activity));
+            }
+        }
+        return items;
     }
 
-    public List<TaggableItem> getItems(TaggableActivity arg0, String arg1,
-            TaggingProvider arg2, boolean arg3)
+    public List<TaggableItem> getItems(TaggableActivity activity, String userId,
+            TaggingProvider provider, boolean getMyItemsOnly, String taggedItem)
     {
-        // TODO Auto-generated method stub
-        return null;
+    	// We aren't picky about the provider, so ignore that argument.
+        List<TaggableItem> returned = new ArrayList<TaggableItem>();
+        Assignment2 assignment = (Assignment2) activity.getObject();
+        
+        boolean allowed = provider.allowGetItems(new String[]{}, userDirectoryService.getCurrentUser().getId(), taggedItem);
+        if (allowed) {
+        	AssignmentSubmission submission = assignmentDao.getSubmissionWithVersionHistoryForStudentAndAssignment(
+        			userId, assignment);
+        	if (submission != null) {
+        		TaggableItem item = new AssignmentItemImpl(submission, userId,
+        				activity);
+        		returned.add(item);
+        	}
+        }
+        return returned;
     }
 
-    public boolean hasSubmissions(TaggableActivity arg0, TaggingProvider arg1,
-            boolean arg2)
+    public boolean hasSubmissions(TaggableActivity activity, TaggingProvider provider,
+            boolean getMyItemsOnly, String taggedItem)
     {
-        // TODO Auto-generated method stub
-        return false;
+    	List<TaggableItem> items = getItems(activity, provider, getMyItemsOnly, taggedItem);
+		return items.size() > 0;
     }
 
-    public boolean hasSubmissions(TaggableActivity arg0, String arg1,
-            TaggingProvider arg2, boolean arg3)
+    public boolean hasSubmissions(TaggableActivity activity, String userId,
+            TaggingProvider provider, boolean getMyItemsOnly, String taggedItem)
     {
-        // TODO Auto-generated method stub
-        return false;
+    	List<TaggableItem> items = getItems(activity, userId, provider, getMyItemsOnly, taggedItem);
+		return items.size() > 0;
     }
 }

@@ -117,6 +117,17 @@ public interface AssignmentLogic {
      * @throws SecurityException if current user is not allowed to access assignment info
      */
     public Assignment2 getAssignmentByIdWithAssociatedData(Long assignmentId);
+    
+    /**
+     * @param assignmentId
+     * @param taggableRef Essentially just a passthrough value that gets used in permission lookups
+     * @return the Assignment2 object with the given id and populate associated
+     * data (ie attachments, groups). Also populates ContentReview information, if applicable.
+     * Does not include student submission information.
+     * @throws AssignmentNotFoundException if no assignment exists with the given id
+     * @throws SecurityException if current user is not allowed to access assignment info
+     */
+    public Assignment2 getAssignmentByIdWithAssociatedData(Long assignmentId, String taggableRef);
 
     /**
      * @param assignmentId
