@@ -93,7 +93,7 @@ public class LocalPermissionLogic {
             // edit that assignment
             if (viewParams instanceof SimpleAssignmentViewParams) {
                 SimpleAssignmentViewParams params = (SimpleAssignmentViewParams) viewParams;
-                return isUserAllowedToAddNewOrEditExistingAssignment(params.assignmentId, contextId);
+                return isUserAllowedToAddOrEditAssignment(params.assignmentId, contextId);
             }
             
             return Boolean.FALSE;
@@ -113,7 +113,7 @@ public class LocalPermissionLogic {
             // or edit scenario
             if (viewParams instanceof AssignmentViewParams) {
                 AssignmentViewParams params = (AssignmentViewParams) viewParams;
-                return isUserAllowedToAddNewOrEditExistingAssignment(params.assignmentId, contextId);
+                return isUserAllowedToAddOrEditAssignment(params.assignmentId, contextId);
             }
             
             return Boolean.FALSE;
@@ -208,10 +208,10 @@ public class LocalPermissionLogic {
      * @param assignId if null, assumes add scenario
      * @param contextId
      * @return depending upon whether or not the assignId is null, will return true
-     * if the current user has permission to add a new assignment (if assignId) or edit
+     * if the current user has permission to add a new assignment (if assignId is null) or edit
      * an existing assignment (if assignId is not null)
      */
-    private boolean isUserAllowedToAddNewOrEditExistingAssignment(Long assignId, String contextId) {
+    private boolean isUserAllowedToAddOrEditAssignment(Long assignId, String contextId) {
         if (assignId == null) {
             // add assignment scenario
             return permissionLogic.isUserAllowedToAddAssignments(contextId);

@@ -38,7 +38,54 @@ import org.sakaiproject.site.api.Group;
  * @author <a href="mailto:wagnermr@iupui.edu">michelle wagner</a>
  */
 public interface AssignmentPermissionLogic {
-
+    
+    /**
+     * 
+     * @param contextId
+     * @param permissions a list of the permissions you want to check for in this context.
+     * (see {@link AssignmentAuthzLogic#getSiteLevelPermissions()} for allowed values.
+     * if null, will return all site-level permissions
+     * @return a map of the permission to true/false indicating whether the current
+     * user has this permission. Only permissions returned by {@link AssignmentAuthzLogic#getSiteLevelPermissions()}
+     * will be considered and returned
+     */
+    public Map<String, Boolean> getPermissionsForSite(String contextId, List<String> permissions);
+    
+    /**
+     * 
+     * @param assignments
+     * @param permissions a list of the permissions you want to check for each assignment.
+     * (see {@link AssignmentAuthzLogic#getAssignmentLevelPermissions()} for allowed values.
+     * if null, will return all assignment-level permissions
+     * @return a map of the assignment id to a map of the permission to a true/false value indicating
+     * whether the current user has that permission for this assignment 
+     * (ie <assignmentId <{@link AssignmentConstants#PERMISSION_EDIT_ASSIGNMENTS}, TRUE>).
+     * Only permissions returned by {@link AssignmentAuthzLogic#getAssignmentLevelPermissions()}
+     * will be considered and returned
+     */
+    public Map<Long, Map<String, Boolean>> getPermissionsForAssignments(List<Assignment2> assignments, List<String> permissions);
+    
+    /**
+     * @param contextId
+     * @return true if the current user has permission to add assignments in the given context.
+     * Note that this does not mean that a user is allowed to add any assignment. This just
+     * answers the general question, "Does this user have any sort of add assignment permission 
+     * in this site?"  If you want to know if a user may add a specific assignment, see
+     * {@link AssignmentPermissionLogic#isUserAllowedToAddAssignment(Assignment2)}
+     */
+    public boolean isUserAllowedToAddAssignments(String contextId);
+    
+    /**
+     * 
+     * @param assignment
+     * @return true if the current user is allowed to add the given assignment. Users without
+     * the "all groups" permission are not allowed to add assignments that aren't restricted
+     * to that user's groups. If you want an answer to the general question,"Does
+     * this user have any sort of add assignment permission in this site?" use
+     * {@link AssignmentPermissionLogic#isUserAllowedToAddAssignments(String)}
+     */
+    public boolean isUserAllowedToAddAssignment(Assignment2 assignment);
+    
     /**
      * @param assignment
      * @return true if the current user has permission to edit the given assignment
@@ -52,12 +99,6 @@ public interface AssignmentPermissionLogic {
      * given context
      */
     public boolean isUserAllowedToEditAllAssignments(String contextId);
-    
-    /**
-     * @param contextId
-     * @return true if the current user has permission to add assignments in the given context
-     */
-    public boolean isUserAllowedToAddAssignments(String contextId);
     
     /**
      * 

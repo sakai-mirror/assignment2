@@ -93,7 +93,7 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
         
         String currUserId = externalLogic.getCurrentUserId();
         
-        return isUserAllowedToTakeActionOnAssignment(currUserId, assignment, AssignmentConstants.PERMISSION_EDIT_ASSIGNMENTS);
+        return isUserAllowedToTakeActionOnAssignment(currUserId, assignment, AssignmentConstants.PERMISSION_EDIT_ASSIGNMENTS, null);
     }
     
     public boolean isUserAllowedToAddAssignments(String contextId) {
@@ -104,6 +104,17 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
         return authz.userHasAddPermission(contextId);
     }
     
+    public boolean isUserAllowedToAddAssignment(Assignment2 assignment) {
+        if (assignment == null) {
+            throw new IllegalArgumentException("Null assignment passed to isUserAllowedToAddAssignment");
+        }
+        
+        String currUserId = externalLogic.getCurrentUserId();
+        
+        return isUserAllowedToTakeActionOnAssignment(currUserId, assignment, 
+                AssignmentConstants.PERMISSION_ADD_ASSIGNMENTS, null);
+    }
+    
     public boolean isUserAllowedToDeleteAssignment(Assignment2 assignment) {
         if (assignment == null) {
             throw new IllegalArgumentException("Null assignment passed to isUserAllowedToDeleteAssignment");
@@ -111,7 +122,71 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
         
         String currUserId = externalLogic.getCurrentUserId();
         
-        return isUserAllowedToTakeActionOnAssignment(currUserId, assignment, AssignmentConstants.PERMISSION_REMOVE_ASSIGNMENTS);
+        return isUserAllowedToTakeActionOnAssignment(currUserId, assignment, AssignmentConstants.PERMISSION_REMOVE_ASSIGNMENTS, null);
+    }
+    
+    public Map<String, Boolean> getPermissionsForSite(String contextId, List<String> permissions) {
+        if (contextId == null) {
+            throw new IllegalArgumentException("Null contextId passed to getPermissionsForSite");
+        }
+        
+        Map<String, Boolean> sitePerms = new HashMap<String, Boolean>();
+        
+        List<String> allSitePerms = authz.getSiteLevelPermissions();
+        
+        // if passed permissions list is null, default to return all site-level permissions
+        if (permissions == null) {
+            permissions = allSitePerms;
+        }
+        
+        if (permissions != null) {
+            String currUserId = externalLogic.getCurrentUserId();
+            
+            for (String permission : permissions) {
+                if (allSitePerms.contains(permission)) {
+                    boolean hasPerm = authz.userHasPermission(currUserId, contextId, permission);
+                    sitePerms.put(permission, hasPerm);
+                }
+            }
+        }
+        
+        return sitePerms;
+    }
+    
+    public Map<Long, Map<String, Boolean>> getPermissionsForAssignments(List<Assignment2> assignments, List<String> permissions) {
+        
+        Map<Long, Map<String, Boolean>> permissionMap = new HashMap<Long, Map<String,Boolean>>();
+        
+        if (assignments != null && !assignments.isEmpty()) {
+            String currUserId = externalLogic.getCurrentUserId();
+            String contextId = assignments.get(0).getContextId();
+            List<String> groupMembershipIds = externalLogic.getUserMembershipGroupIdList(currUserId, contextId);
+
+            // if permissions is null, we return all assignment-level permissions
+            List<String> assignPermissions = authz.getAssignmentLevelPermissions();
+            if (permissions == null) {
+                permissions = assignPermissions;
+            }
+            
+            // now let's find the perms for the individual assignments
+            for (Assignment2 assign : assignments) {
+                Map<String, Boolean> assignPerms = new HashMap<String, Boolean>();
+                for (String permission : permissions) {
+                    if (permission != null) {
+                        if (assignPermissions.contains(permission)) {
+                            // we are checking perm for this assignment
+                            boolean hasPermission = isUserAllowedToTakeActionOnAssignment(currUserId, assign, 
+                                    permission, groupMembershipIds);
+                            assignPerms.put(permission, hasPermission);
+                        }
+                    }
+                }
+                
+                permissionMap.put(assign.getId(), assignPerms);
+            }
+        }
+        
+        return permissionMap;
     }
     
     /**
@@ -119,12 +194,15 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
      * @param userId
      * @param assignment
      * @param permission the realm permission that you are checking for this assignment. ie {@link AssignmentConstants#PERMISSION_EDIT_ASSIGNMENTS}
+     * @param groupMembershipIds if null, will assume this method needs to look them up. pass in an
+     * empty list to avoid this call.
      * @return true if the user has permission to take the given action (described by
      * the permission parameter) for the given assignment. If the user does have permission,
      * will also ensure the user has this permission for all groups. If not, will check to
      * see if user is a member of a restricted group
      */
-    private boolean isUserAllowedToTakeActionOnAssignment(String userId, Assignment2 assignment, String permission) {
+    private boolean isUserAllowedToTakeActionOnAssignment(String userId, Assignment2 assignment, 
+            String permission, List<String> groupMembershipIds) {
         if (assignment == null || permission == null) {
             throw new IllegalArgumentException("Null assignment or permission passed to " +
                     "isUserAllowedToTakeActionOnAssignment. assignment:" + " permission:" + permission);
@@ -134,19 +212,71 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
         
         boolean userHasPermission = authz.userHasPermission(userId, assignment.getContextId(), permission);
         if (userHasPermission) {
-            // we need to see if this permission applies to all groups
-            boolean userHasAllGroups = authz.userHasAllGroupsPermission(userId, assignment.getContextId());
-            if (userHasAllGroups) {
-                allowed = true;
-            } else if (assignment.getAssignmentGroupSet() != null && !assignment.getAssignmentGroupSet().isEmpty()){
-                // if this assignment is restricted to groups, you must be a member of the
-                // group to take action on it
-                List<String> groupMembershipIds = externalLogic.getUserMembershipGroupIdList(userId, assignment.getContextId());
-                allowed = isUserAMemberOfARestrictedGroup(groupMembershipIds, assignment.getAssignmentGroupSet());
-            }
+            // we need to see if this permission applies given the group restrictions and all groups permission
+            allowed = userHasGroupPermission(userId, permission, assignment, groupMembershipIds);
         }
         
         return allowed;
+    }
+
+    
+    /**
+     * 
+     * @param userId
+     * @param permission
+     * @param assignment
+     * @param groupMembershipIds leave null if you want this method to retrieve the group memberships for this user for you
+     * @return true if the user has group permission for the given assignment. the
+     * permissions grant different privileges based upon whether or not the user
+     * has the {@link AssignmentConstants#PERMISSION_ALL_GROUPS} permission and
+     * the group restrictions that may or may not exist for the given assignment.
+     * This method will figure that out for you.
+     */
+    private boolean userHasGroupPermission(String userId, String permission, Assignment2 assignment, List<String> groupMembershipIds) {
+        boolean hasPermissionForGroup = false;
+        
+        boolean userHasAllGroups = authz.userHasAllGroupsPermission(userId, assignment.getContextId());
+        if (userHasAllGroups) {
+            hasPermissionForGroup = true;
+        } else if (authz.getPermissionsForAtLeastOneOrNoGroups().contains(permission) &&
+                (assignment.getAssignmentGroupSet() == null || assignment.getAssignmentGroupSet().isEmpty())) {
+            // user has permission if there are no groups or they are a member of at least one group
+            hasPermissionForGroup = true;
+            
+        } else if (assignment.getAssignmentGroupSet() != null && !assignment.getAssignmentGroupSet().isEmpty()){
+            // if this assignment is restricted to groups, you must be a member of the
+            // group to take action on it
+            if (groupMembershipIds == null) {
+                groupMembershipIds = externalLogic.getUserMembershipGroupIdList(userId, assignment.getContextId());
+            }
+            
+            if (authz.getPermissionsThatRequireOneGroup().contains(permission) ||
+                    authz.getPermissionsForAtLeastOneOrNoGroups().contains(permission)) {
+                // the user only needs to be a member of one of the groups
+                hasPermissionForGroup = isUserAMemberOfARestrictedGroup(groupMembershipIds, assignment.getAssignmentGroupSet());
+            
+            } else if (authz.getPermissionsThatRequireAllGroups().contains(permission)){
+                // you must be a member of every associated group
+                boolean memberOfAllGroups = true;
+                for (AssignmentGroup assignGroup : assignment.getAssignmentGroupSet()) {
+                    if (!groupMembershipIds.contains(assignGroup.getGroupId())) {
+                        memberOfAllGroups = false;
+                    }
+                }
+                
+                if (memberOfAllGroups) {
+                    hasPermissionForGroup = true;
+                }
+            } else {
+                // unknown permission if we get to this point, so return false
+                hasPermissionForGroup = false;
+            }
+        } else {
+            // unknown scenario so return false
+            hasPermissionForGroup = false;
+        }
+        
+        return hasPermissionForGroup;
     }
 
     public boolean isUserAbleToViewStudentSubmissionForAssignment(String studentId, Long assignmentId) {

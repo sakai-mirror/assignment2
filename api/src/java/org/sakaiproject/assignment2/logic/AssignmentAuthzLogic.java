@@ -21,6 +21,8 @@
 
 package org.sakaiproject.assignment2.logic;
 
+import java.util.List;
+
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 
 /**
@@ -32,6 +34,65 @@ import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
  *
  */
 public interface AssignmentAuthzLogic {
+    
+    /**
+     * permissions that are considered assignment-level permissions and
+     * should be checked for group access
+     */
+    public static final String[] assignmentLevelPermissions = {
+        AssignmentConstants.PERMISSION_ADD_ASSIGNMENTS,
+        AssignmentConstants.PERMISSION_EDIT_ASSIGNMENTS,
+        AssignmentConstants.PERMISSION_MANAGE_SUBMISSIONS,
+        AssignmentConstants.PERMISSION_REMOVE_ASSIGNMENTS,
+        AssignmentConstants.PERMISSION_SUBMIT,
+        AssignmentConstants.PERMISSION_VIEW_ASSIGNMENTS
+    };
+    
+    /**
+     * permissions that are considered site-level permissions and
+     * do not need to be checked for group access
+     */
+    public static final String[] siteLevelPermissions = {
+        AssignmentConstants.PERMISSION_ALL_GROUPS
+    };
+    
+    // The following 3 groups should represent all of the permissions except for
+    // "All Groups".  No permission should be in more than one of these 3 categories:
+    /**
+     * 
+     * Assignment permissions that require the user to either
+     * have {@link AssignmentConstants#PERMISSION_ALL_GROUPS} or they must be
+     * a member of every group associated with the assignment to have permission.
+     * If the assignment is not restricted to groups, the user will not have
+     * permission without the "all groups" permission.
+     */
+    public static final String[] permissionsThatRequireAllGroups = {
+            AssignmentConstants.PERMISSION_ADD_ASSIGNMENTS, 
+            AssignmentConstants.PERMISSION_EDIT_ASSIGNMENTS, 
+            AssignmentConstants.PERMISSION_REMOVE_ASSIGNMENTS};
+    
+    /**
+     * Assignment permissions that require the user to either
+     * have {@link AssignmentConstants#PERMISSION_ALL_GROUPS} or they must be
+     * a member of at least one of the groups associated with the assignment
+     * to have permission. If the assignment is not restricted to groups, the
+     * user will not have permission without the "all groups" permission.
+     */
+    public static final String[] permissionsThatRequireOneGroup = {
+            AssignmentConstants.PERMISSION_MANAGE_SUBMISSIONS};
+    
+    /**
+     * Assignment permissions that, if assignment is restricted to groups, require the user to either
+     * have {@link AssignmentConstants#PERMISSION_ALL_GROUPS} or they must be
+     * a member of at least one of the groups associated with the assignment
+     * to have permission. If the assignment is not restricted to groups, the
+     * user WILL have permission without the "all groups" permission.
+     */
+    public static final String[] permissionsForAtLeastOneOrNoGroups = {
+            AssignmentConstants.PERMISSION_SUBMIT,
+            AssignmentConstants.PERMISSION_VIEW_ASSIGNMENTS};
+    
+    //////  END GROUPINGS
     
     /**
      * 
@@ -99,5 +160,48 @@ public interface AssignmentAuthzLogic {
      * @return true if the given user's role has the given permission in the given contextId
      */
     public boolean userHasPermission(String userId, String contextId, String permission);
+    
+    /**
+     * 
+     * @return a list of the permissions that are considered assignment-level permissions and
+     * should be checked for group access
+     */
+    public List<String> getAssignmentLevelPermissions();
+    
+    /**
+     * 
+     * @return a list of the permissions that are considered site-level and do
+     * not need to be checked for group access
+     */
+    public List<String> getSiteLevelPermissions();
 
+    /**
+     * 
+     * @return a list of assignment permissions that require the user to either
+     * have {@link AssignmentConstants#PERMISSION_ALL_GROUPS} or they must be
+     * a member of every group associated with the assignment to have permission.
+     * If the assignment is not restricted to groups, the user will not have
+     * permission without the "all groups" permission.
+     */
+    public List<String> getPermissionsThatRequireAllGroups();
+    
+    /**
+     * 
+     * @return a list of assignment permissions that require the user to either
+     * have {@link AssignmentConstants#PERMISSION_ALL_GROUPS} or they must be
+     * a member of at least one of the groups associated with the assignment
+     * to have permission. If the assignment is not restricted to groups, the
+     * user will not have permission without the "all groups" permission.
+     */
+    public List<String> getPermissionsThatRequireOneGroup();
+    
+    /**
+     * 
+     * @return a list of assignment permissions that, if assignment is restricted to groups, 
+     * require the user to either have {@link AssignmentConstants#PERMISSION_ALL_GROUPS} or they must be
+     * a member of at least one of the groups associated with the assignment
+     * to have permission. If the assignment is not restricted to groups, the
+     * user WILL have permission without the "all groups" permission.
+     */
+    public List<String> getPermissionsForAtLeastOneOrNoGroups();
 }

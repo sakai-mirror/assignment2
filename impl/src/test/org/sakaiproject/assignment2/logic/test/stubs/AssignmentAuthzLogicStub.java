@@ -21,6 +21,9 @@
 
 package org.sakaiproject.assignment2.logic.test.stubs;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.sakaiproject.assignment2.logic.AssignmentAuthzLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
@@ -28,10 +31,11 @@ import org.sakaiproject.assignment2.test.AssignmentTestDataLoad;
 
 
 /**
- * Stub class used for answering security questions for assignmen2 testing
+ * Stub class used for answering security questions for assignment2 testing
  */
 public class AssignmentAuthzLogicStub implements AssignmentAuthzLogic
 {
+
     
     public boolean userHasAddPermission(String contextId) {
         return userHasPermission(contextId, AssignmentConstants.PERMISSION_ADD_ASSIGNMENTS);
@@ -70,6 +74,56 @@ public class AssignmentAuthzLogicStub implements AssignmentAuthzLogic
         return unlock(userId, permission);
     }
     
+    public List<String> getAssignmentLevelPermissions() {
+        List<String> assignmentPerms = new ArrayList<String>();
+        for (int i=0; i < assignmentLevelPermissions.length; i++) {
+            assignmentPerms.add(assignmentLevelPermissions[i]);
+        }
+        
+        return assignmentPerms;
+    }
+    
+    public List<String> getSiteLevelPermissions() {
+        List<String> sitePerms = new ArrayList<String>();
+        for (int i=0; i < siteLevelPermissions.length; i++) {
+            sitePerms.add(siteLevelPermissions[i]);
+        }
+        
+        return sitePerms;
+    }
+    
+    public List<String> getPermissionsThatRequireAllGroups() {
+        List<String> permsWithAllGroups = new ArrayList<String>();
+        for (int i=0; i < permissionsThatRequireAllGroups.length; i++) {
+            permsWithAllGroups.add(permissionsThatRequireAllGroups[i]);
+        }
+        
+        return permsWithAllGroups;
+    }
+    
+    public List<String> getPermissionsThatRequireOneGroup() {
+        List<String> permsWithOneGroup = new ArrayList<String>();
+        for (int i=0; i < permissionsThatRequireOneGroup.length; i++) {
+            permsWithOneGroup.add(permissionsThatRequireOneGroup[i]);
+        }
+        return permsWithOneGroup;
+    }
+    
+    public List<String> getPermissionsForAtLeastOneOrNoGroups() {
+        List<String> oneOrNoGroups = new ArrayList<String>();
+        for (int i=0; i < permissionsForAtLeastOneOrNoGroups.length; i++) {
+            oneOrNoGroups.add(permissionsForAtLeastOneOrNoGroups[i]);
+        }
+        
+        return oneOrNoGroups;
+    }
+    
+    private ExternalLogic externalLogic;
+    public void setExternalLogic(ExternalLogic externalLogic) {
+        this.externalLogic = externalLogic;
+    }
+    
+    
     private boolean unlock(String userId, String permission) {
         if (userId.equals(AssignmentTestDataLoad.INSTRUCTOR_UID)) {
             if (permission.equals(AssignmentConstants.PERMISSION_SUBMIT)) {
@@ -87,19 +141,14 @@ public class AssignmentAuthzLogicStub implements AssignmentAuthzLogic
                 return false;
             }
         } else if (userId.equals(AssignmentTestDataLoad.TA_UID)) {
-            if (permission.equals(AssignmentConstants.PERMISSION_MANAGE_SUBMISSIONS) ||
-                    permission.equals(AssignmentConstants.PERMISSION_VIEW_ASSIGNMENTS)) {
-                return true;
-            } else {
+            if (permission.equals(AssignmentConstants.PERMISSION_SUBMIT) ||
+                    permission.equals(AssignmentConstants.PERMISSION_ALL_GROUPS)) {
                 return false;
+            } else {
+                return true;
             }
         }
         
         return false;
-    }
-    
-    private ExternalLogic externalLogic;
-    public void setExternalLogic(ExternalLogic externalLogic) {
-        this.externalLogic = externalLogic;
     }
 }

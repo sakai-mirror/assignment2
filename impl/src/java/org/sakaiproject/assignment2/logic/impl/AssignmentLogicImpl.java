@@ -245,7 +245,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
         
         // if it is a new assignment, check to see if user is allowed to add assignments
         // in this context. otherwise, ensure the user may edit this assignment
-        if (isNewAssignment && !permissionLogic.isUserAllowedToAddAssignments(assignment.getContextId())) {
+        if (isNewAssignment && !permissionLogic.isUserAllowedToAddAssignment(assignment)) {
             throw new SecurityException("Current user may not save assignment " + assignment.getTitle()
                     + " because they do not have add permission");
         } else if (!isNewAssignment && !permissionLogic.isUserAllowedToEditAssignment(assignment)) {

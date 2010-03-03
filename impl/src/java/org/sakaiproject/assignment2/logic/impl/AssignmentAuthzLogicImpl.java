@@ -21,6 +21,9 @@
 
 package org.sakaiproject.assignment2.logic.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment2.logic.AssignmentAuthzLogic;
@@ -100,6 +103,51 @@ public class AssignmentAuthzLogicImpl implements AssignmentAuthzLogic
     public boolean userHasPermission(String userId, String contextId, String permission) {
         return securityService.unlock(userId, permission, siteService.siteReference(contextId));
     }
+    
+    public List<String> getAssignmentLevelPermissions() {
+        List<String> assignmentPerms = new ArrayList<String>();
+        for (int i=0; i < assignmentLevelPermissions.length; i++) {
+            assignmentPerms.add(assignmentLevelPermissions[i]);
+        }
+        
+        return assignmentPerms;
+    }
+    
+    public List<String> getSiteLevelPermissions() {
+        List<String> sitePerms = new ArrayList<String>();
+        for (int i=0; i < siteLevelPermissions.length; i++) {
+            sitePerms.add(siteLevelPermissions[i]);
+        }
+        
+        return sitePerms;
+    }
+    
+    public List<String> getPermissionsThatRequireAllGroups() {
+        List<String> permsWithAllGroups = new ArrayList<String>();
+        for (int i=0; i < permissionsThatRequireAllGroups.length; i++) {
+            permsWithAllGroups.add(permissionsThatRequireAllGroups[i]);
+        }
+        
+        return permsWithAllGroups;
+    }
+    
+    public List<String> getPermissionsThatRequireOneGroup() {
+        List<String> permsWithOneGroup = new ArrayList<String>();
+        for (int i=0; i < permissionsThatRequireOneGroup.length; i++) {
+            permsWithOneGroup.add(permissionsThatRequireOneGroup[i]);
+        }
+        return permsWithOneGroup;
+    }
+    
+    public List<String> getPermissionsForAtLeastOneOrNoGroups() {
+        List<String> oneOrNoGroups = new ArrayList<String>();
+        for (int i=0; i < permissionsForAtLeastOneOrNoGroups.length; i++) {
+            oneOrNoGroups.add(permissionsForAtLeastOneOrNoGroups[i]);
+        }
+        
+        return oneOrNoGroups;
+    }
+
     
     /* Dependencies */
 
