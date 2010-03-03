@@ -17,7 +17,7 @@ asnn2.getAsnnCompData = function () {
     if (obj.draft === true) {
       togo.draft = true;
     }
-    if (obj.requiresSubmission === true) {
+    if (obj.requiresSubmission === true && (obj.canGrade && obj.canGrade === true)) {
       togo.inAndNewLink = {
         target: '/portal/tool/'+sakai.curPlacement+'/viewSubmissions/'+obj.id,
         linktext: obj.inAndNew

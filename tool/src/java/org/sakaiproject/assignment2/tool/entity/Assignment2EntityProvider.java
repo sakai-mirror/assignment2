@@ -248,14 +248,19 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware {
             asnnmap.put("canAdd", canAdd);
 
             List<String> viewableStudents = assignmentViewableStudentsMap.get(asnn);
-
-            Map<String, String> subStatusMap = displayUtil.getSubmissionStatusForAssignment(asnn, viewableStudents);
-            String inAndNewText = subStatusMap.get(DisplayUtil.IN_NEW_DISPLAY);
-            String numSubmissions = subStatusMap.get(DisplayUtil.NUM_SUB);
+            
+            // The in/new column needs to display something different if the user can't grade this one
+            String inAndNewText;
+            if (canGrade) {
+                Map<String, String> subStatusMap = displayUtil.getSubmissionStatusForAssignment(asnn, viewableStudents);
+                inAndNewText = subStatusMap.get(DisplayUtil.IN_NEW_DISPLAY);
+                String numSubmissions = subStatusMap.get(DisplayUtil.NUM_SUB);
+                asnnmap.put("numSubmissions", numSubmissions);
+            } else {
+                inAndNewText = assignmentBundleLogic.getString("assignment2.list.in_new.no_grade_perm");
+            }
 
             asnnmap.put("inAndNew", inAndNewText);
-            asnnmap.put("numSubmissions", numSubmissions);
-            
             asnnmap.put("reviewEnabled", contentReviewAvailable && asnn.isContentReviewEnabled());
 
             List groupstogo = new ArrayList();
