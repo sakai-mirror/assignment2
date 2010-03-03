@@ -201,6 +201,7 @@
       <property name="displayUtil" ref="DisplayUtil" />
       <property name="asnnInstructionsRenderer" ref="AsnnInstructionsRenderer"></property>
       <property name="asnnToggleRenderer" ref="AsnnToggleRenderer"></property>
+	  <property name="sessionManager"	ref="org.sakaiproject.tool.api.SessionManager" />
    </bean>
 
    <bean class="org.sakaiproject.assignment2.tool.producers.ViewSubmissionsProducer">

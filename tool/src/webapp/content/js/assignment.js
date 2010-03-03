@@ -1016,6 +1016,56 @@ var asnn2 = asnn2 || {};
         return false;
     };
 
+	/**
+	 * Save/Release/Clear grading information for submission when navigation to previous submitter
+	 *
+	 * This function uses the asnn2 dialog utility.
+	 *
+	 * @param submitButtonId the id of the html element that actually is submitted
+	 * @param contextId the contextId for the submission
+	 * @param gradebookItemId the gradebookItemId associated w/ the assignment to release grades
+	 * @param release true if you want to release, false if you want to retract grades
+	 */
+	asnn2.saveGradingPreviousDialog = function(submitButtonId, contextId, gradebookItemId, release) {
+	    var saveGradingDialog = jQuery('#save-grading-previous-dialog');
+	    var saveButton = jQuery('#page-replace\\:\\:save-grading-previous-save');
+	    saveButton.click(function(event) {
+	        
+	    });
+	
+	    var clearButton = jQuery('#page-replace\\:\\:saving-grading-previous-clear').click(function(event) {
+	        asnn2util.closeDialog(saveGradingDialog);
+	    });
+	
+	    asnn2util.openDialog(saveGradingDialog);
+	    return false;
+	};
+
+	/**
+	 * Save/Release/Clear grading information for submission when navigation to next submitter
+	 *
+	 * This function uses the asnn2 dialog utility.
+	 *
+	 * @param submitButtonId the id of the html element that actually is submitted
+	 * @param contextId the contextId for the submission
+	 * @param gradebookItemId the gradebookItemId associated w/ the assignment to release grades
+	 * @param release true if you want to release, false if you want to retract grades
+	 */
+	asnn2.saveGradingNextDialog = function(submitButtonId, contextId, gradebookItemId, release) {
+	    var saveGradingDialog = jQuery('#save-grading-next-dialog');
+	    var saveButton = jQuery('#page-replace\\:\\:save-grading-next-save');
+	    saveButton.click(function(event) {
+	        
+	    });
+	
+	    var clearButton = jQuery('#page-replace\\:\\:save-grading-next-clear').click(function(event) {
+	        asnn2util.closeDialog(saveGradingDialog);
+	    });
+	
+	    asnn2util.openDialog(saveGradingDialog);
+	    return false;
+	};
+	
 })(jQuery, asnn2);
 
 // This namespace is for the Assignment Authoring and Editing Screen

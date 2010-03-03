@@ -28,11 +28,44 @@
 			<li>Message for user here</li>
 		</ul>
 	</div>
+	
+	<div style="display:none" id="save-grading-previous-dialog">
+        <h3 rsf:id="save-grading-previous-title">Title for Save Grading</h3>
+        <ul class="ui-dialog-msg-list">
+            <li rsf:id="save-grading-previous-message" class="alertMessage">You have unsaved changes. Would you like to save your changes?</li>
+        </ul>
+        <fieldset class="submit">
+            <input id="" rsf:id="save-grading-previous-save" accesskey="s" type="button" class="active" value="Save"/>
+            <input id="" rsf:id="save-grading-previous-saveAndRelease" accesskey="r" type="button" class="active" value="Save and Release Feedback"/>
+            <input id="" rsf:id="save-grading-previous-clear" accesskey="x" type="button" value="Clear"/>
+        </fieldset>
+    </div>
 
+	<div style="display:none" id="save-grading-next-dialog">
+        <h3 rsf:id="save-grading-next-title">Title for Save Grading</h3>
+        <ul class="ui-dialog-msg-list">
+            <li rsf:id="save-grading-next-message" class="alertMessage">You have unsaved changes. Would you like to save your changes?</li>
+        </ul>
+        <fieldset class="submit">
+            <input id="" rsf:id="save-grading-next-save" accesskey="s" type="button" class="active" value="Save"/>
+            <input id="" rsf:id="save-grading-next-saveAndRelease" accesskey="r" type="button" class="active" value="Save and Release Feedback"/>
+            <input id="" rsf:id="save-grading-next-clear" accesskey="x" type="button" value="Clear"/>
+        </fieldset>
+    </div>
 	<form rsf:id="form" method="post">
 
 	<h3 rsf:id="heading">Submission for Name</h3>
-
+	<div class="pager-sort-area">
+    	<div id="pager-top" class="fl-pager-top flc-pager-top">
+    		<a rsf:id="previous_link">Previous</a>
+			<span rsf:id="previous_disabled" class="inactive">Previous</span>
+			<span class="separator">|</span>
+			<span rsf:id="current">Current User</span>
+			<span class="separator">|</span>
+    		<a rsf:id="next_link">Next</a>
+			<span rsf:id="next_disabled" class="inactive">Next</span>
+		</div>
+	</div>
 	<p rsf:id="status" class="subheading"></p>
 	
 	<p rsf:id="non-electronic-submission" class="subheading"></p>

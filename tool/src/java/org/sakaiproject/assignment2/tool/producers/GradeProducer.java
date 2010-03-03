@@ -24,8 +24,10 @@ package org.sakaiproject.assignment2.tool.producers;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
@@ -50,6 +52,8 @@ import org.sakaiproject.assignment2.tool.producers.fragments.FragmentSubmissionG
 import org.sakaiproject.assignment2.tool.producers.renderers.AsnnInstructionsRenderer;
 import org.sakaiproject.assignment2.tool.producers.renderers.AsnnToggleRenderer;
 import org.sakaiproject.assignment2.tool.producers.renderers.AttachmentListRenderer;
+import org.sakaiproject.tool.api.SessionManager;
+import org.sakaiproject.tool.api.ToolSession;
 
 import uk.org.ponder.beanutil.entity.EntityBeanLocator;
 import uk.org.ponder.messageutil.MessageLocator;
@@ -78,6 +82,7 @@ import uk.org.ponder.rsf.view.ViewComponentProducer;
 import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
 import uk.org.ponder.rsf.viewstate.ViewParameters;
 import uk.org.ponder.rsf.viewstate.ViewParamsReporter;
+import org.sakaiproject.assignment2.tool.entity.Assignment2SubmissionEntityProvider;
 
 /**
  * This view is for grading a submission from a student. Typically you get to it
@@ -109,6 +114,12 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
     private ExternalContentReviewLogic contentReviewLogic;
     private DisplayUtil displayUtil;
     private AsnnInstructionsRenderer asnnInstructionsRenderer;
+    private SessionManager sessionManager;
+    
+    public void setSessionManager(SessionManager sessionManager)
+    {
+        this.sessionManager = sessionManager;
+    }
 
     private AsnnToggleRenderer toggleRenderer;
     public void setAsnnToggleRenderer(AsnnToggleRenderer toggleRenderer) {
@@ -137,6 +148,50 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
             //handle error
             return;
         }
+        ToolSession ts = sessionManager.getCurrentToolSession();
+		if (ts != null)
+		{
+			Map t = (Map) ts.getAttribute(Assignment2SubmissionEntityProvider.SUBMISSIONVIEW_SESSION_ATTR);
+			if (t != null && t.containsKey(Assignment2SubmissionEntityProvider.SORTED_SUBMISSION_STUDENT_IDS))
+			{
+				List<String> submissionStudentIds = (List<String>) t.get(Assignment2SubmissionEntityProvider.SORTED_SUBMISSION_STUDENT_IDS);
+				int position = submissionStudentIds.indexOf(userId);
+				if (position != -1) {
+					if (position > 0) {
+						// has previous
+						UIInternalLink previousLink = UIInternalLink.make(tofill, 
+			                    "previous_link", messageLocator.getMessage("assignment2.assignment_grade.previous"), params);
+						previousLink.decorate(
+		                        new UIFreeAttributeDecorator("onclick",
+		                        "asnn2.saveGradingPreviousDialog(this); return false;"));
+
+			            makeSaveGradingPreviousDialog(tofill);
+					}
+					else {
+			            // show a disabled Previous link
+			            UIOutput.make(tofill, "previous_disabled", messageLocator.getMessage("assignment2.assignment_grade.previous"));
+			        }
+					
+					// current student
+					UIOutput.make(tofill, "current", externalLogic.getUserDisplayName(userId));
+					
+					if (position < (submissionStudentIds.size()-1)) {
+						// has next
+						UIInternalLink nextLink = UIInternalLink.make(tofill, 
+			                    "next_link", messageLocator.getMessage("assignment2.assignment_grade.next"), params);
+						nextLink.decorate(
+		                        new UIFreeAttributeDecorator("onclick",
+		                        "asnn2.saveGradingNextDialog(this); return false;"));
+
+			            makeSaveGradingNextDialog(tofill);
+					}
+					else {
+						// show a disabled Next link
+			            UIOutput.make(tofill, "next_disabled", messageLocator.getMessage("assignment2.assignment_grade.next"));
+					}
+				}
+			}
+		}
 
         AssignmentSubmission as = submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(assignmentId, userId);
         Assignment2 assignment = assignmentLogic.getAssignmentByIdWithAssociatedData(assignmentId);
@@ -474,6 +529,30 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
             //UICommand.make(form, "preview", UIMessage.make("assignment2.assignment_grade.preview"), "#{AssignmentSubmissionBean.processActionGradePreview}");
             UICommand.make(form, "cancel", UIMessage.make("assignment2.assignment_grade.cancel"), "#{AssignmentSubmissionBean.processActionCancel}");
         }
+        
+     /*   List<AssignmentSubmission> submissions = submissionLogic.getViewableSubmissionsWithHistoryForAssignmentId(assignmentId, params.groupId);
+        UIInitBlock.make(form, "asnn2gradeview-init", "asnn2gradeview.init", 
+                new Object[]{assignmentId, externalLogic.getCurrentContextId(), 
+                placement.getId(), submissions.size(), assignment.isGraded(), contentReviewEnabled, 1, orderBy, ascending, gradesReleased, params.pageIndex});
+*/
+    }
+    
+    private void makeSaveGradingPreviousDialog(UIContainer tofill) {
+        // save grading confirmation dialog
+        UIOutput.make(tofill, "save-grading-previous-title", messageLocator.getMessage("assignment2.dialogs.save_grading.title"));
+        UIOutput.make(tofill, "save-grading-previous-message", messageLocator.getMessage("assignment2.dialogs.save_grading.message"));
+        UIOutput.make(tofill, "save-grading-previous-save", messageLocator.getMessage("assignment2.dialogs.save_grading.save"));
+        UIOutput.make(tofill, "save-grading-previous-saveAndRelease", messageLocator.getMessage("assignment2.dialogs.save_grading.saveAndRelease"));
+        UIOutput.make(tofill, "save-grading-previous-clear", messageLocator.getMessage("assignment2.dialogs.save_grading.clear"));
+    }
+    
+    private void makeSaveGradingNextDialog(UIContainer tofill) {
+        // save grading confirmation dialog
+        UIOutput.make(tofill, "save-grading-next-title", messageLocator.getMessage("assignment2.dialogs.save_grading.title"));
+        UIOutput.make(tofill, "save-grading-next-message", messageLocator.getMessage("assignment2.dialogs.save_grading.message"));
+        UIOutput.make(tofill, "save-grading-next-save", messageLocator.getMessage("assignment2.dialogs.save_grading.save"));
+        UIOutput.make(tofill, "save-grading-next-saveAndRelease", messageLocator.getMessage("assignment2.dialogs.save_grading.saveAndRelease"));
+        UIOutput.make(tofill, "save-grading-next-clear", messageLocator.getMessage("assignment2.dialogs.save_grading.clear"));
     }
     
     /**

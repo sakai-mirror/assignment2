@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Vector;
 
 import org.sakaiproject.assignment2.logic.AssignmentBundleLogic;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
@@ -62,6 +63,7 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware{
     public static final String SUBMISSION_STATUS = "submissionStatus";
     public static final String SUBMISSION_GRADE = "grade";
     public static final String SUBMISSION_FEEDBACK_RELEASED = "feedbackReleased";
+    public static final String SORTED_SUBMISSION_STUDENT_IDS = "sorted_submission_student_ids";
 
     /**
      * Dependency
@@ -451,6 +453,15 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware{
             attr.put(SUBMISSIONVIEW_SESSION_ATTR_PAGE_SIZE, search.getLimit());
             attr.put(SUBMISSIONVIEW_SESSION_ATTR_ORDER_BY, orderBy);
             attr.put(SUBMISSIONVIEW_SESSION_ATTR_ASCENDING, ascending);
+            
+            /* construct the whole user id list*/
+            List<String> studentIds = new Vector<String> ();
+            for (int index = 0; index < togo.size(); index++)
+            {
+            	Map m = (Map) togo.get(index);
+            	studentIds.add((String) m.get("studentId"));
+            }
+            attr.put(SORTED_SUBMISSION_STUDENT_IDS, studentIds);
             toolSession.setAttribute(SUBMISSIONVIEW_SESSION_ATTR, attr);
         }
         
