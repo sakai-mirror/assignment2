@@ -95,6 +95,15 @@ public class LocalTurnitinLogic {
         return repoName;
     }
     
+    /**
+     * 
+     * @return the url for the document containing the supported format information for
+     * an attachment to be accepted by turnitin. Null if no property was set.
+     */
+    public String getSupportedFormatsUrl() {
+        return serverConfigurationService.getString(AssignmentConstants.TII_PROP_FILE_REQUIREMENTS_URL, null);
+    }
+    
     public void setServerConfigurationService(ServerConfigurationService serverConfigurationService) {
         this.serverConfigurationService = serverConfigurationService;
     }

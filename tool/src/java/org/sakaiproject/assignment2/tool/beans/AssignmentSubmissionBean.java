@@ -24,25 +24,17 @@ package org.sakaiproject.assignment2.tool.beans;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-import org.sakaiproject.assignment2.exception.SubmissionClosedException;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
+import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
-import org.sakaiproject.assignment2.model.FeedbackAttachment;
-import org.sakaiproject.assignment2.model.SubmissionAttachment;
 import org.sakaiproject.assignment2.tool.StudentAction;
-import org.sakaiproject.assignment2.tool.WorkFlowResult;
-import org.sakaiproject.exception.IdUnusedException;
-import org.sakaiproject.exception.PermissionException;
-import org.sakaiproject.exception.TypeException;
-import org.sakaiproject.user.api.UserNotDefinedException;
+import org.sakaiproject.util.FormattedText;
 
 import uk.org.ponder.beanutil.entity.EntityBeanLocator;
 import uk.org.ponder.messageutil.TargettedMessage;
@@ -83,6 +75,11 @@ public class AssignmentSubmissionBean {
     public void setSubmissionLogic(AssignmentSubmissionLogic submissionLogic) {
         this.submissionLogic = submissionLogic;
     }
+    
+    private ExternalGradebookLogic gradebookLogic;
+    public void setExternalGradebookLogic(ExternalGradebookLogic gradebookLogic) {
+        this.gradebookLogic = gradebookLogic;
+    }
 
     private Map<String, AssignmentSubmission> OTPMap;
     private EntityBeanLocator asEntityBeanLocator;
@@ -115,6 +112,16 @@ public class AssignmentSubmissionBean {
     private Boolean resubmitUntil;
     public void setResubmitUntil(Boolean resubmitUntil) {
         this.resubmitUntil = resubmitUntil;
+    }
+    
+    private String grade;
+    public void setGrade(String grade) {
+        this.grade = grade;
+    }
+    
+    private String gradeComment;
+    public void setGradeComment(String gradeComment) {
+        this.gradeComment = gradeComment;
     }
 
     /**
@@ -180,6 +187,33 @@ public class AssignmentSubmissionBean {
         }
         Assignment2 assignment = assignmentLogic.getAssignmentById(assignmentId);
         AssignmentSubmission assignmentSubmission = new AssignmentSubmission(assignment, userId);
+        
+        // validate the grade entry first
+        boolean allowedToGradeInGB = false;
+        if (assignment.isGraded() && gradebookLogic.gradebookItemExists(assignment.getGradebookItemId())) {
+            allowedToGradeInGB = gradebookLogic.isCurrentUserAbleToGradeStudentForItem(assignment.getContextId(), 
+                    assignmentSubmission.getUserId(), assignment.getGradebookItemId());
+        }
+        
+        if (allowedToGradeInGB) {
+            boolean gradeValid = gradebookLogic.isGradeValid(assignment.getContextId(), grade);
+            if (!gradeValid) {
+                int gradeEntryType = gradebookLogic.getGradebookGradeEntryType(assignment.getContextId());
+                String errorMessageRef;
+                if (gradeEntryType == ExternalGradebookLogic.ENTRY_BY_POINTS) {
+                    errorMessageRef = "assignment2.gradebook.grading.points.error";
+                } else if (gradeEntryType == ExternalGradebookLogic.ENTRY_BY_PERCENT) {
+                    errorMessageRef = "assignment2.gradebook.grading.percent.error";
+                } else if (gradeEntryType == ExternalGradebookLogic.ENTRY_BY_LETTER) {
+                    errorMessageRef = "assignment2.gradebook.grading.letter.error";
+                } else {
+                    errorMessageRef = "assignment2.gradebook.grading.unknown.error";
+                }
+                
+                messages.addMessage(new TargettedMessage(errorMessageRef, new Object[] {}, TargettedMessage.SEVERITY_ERROR));
+                return FAILURE;
+            }
+        }
 
         for (String key : OTPMap.keySet()){
             assignmentSubmission = OTPMap.get(key);
@@ -198,6 +232,30 @@ public class AssignmentSubmissionBean {
         for (String key : asvOTPMap.keySet()){
 
             AssignmentSubmissionVersion asv = asvOTPMap.get(key);
+            
+            // validate the input text from the WYSIWYG editors
+            if (asv.getFeedbackNotes() != null) {
+                StringBuilder alertMsg = new StringBuilder();
+                asv.setFeedbackNotes(FormattedText.processFormattedText(asv.getFeedbackNotes(), 
+                        alertMsg, true, true));
+                
+                if (alertMsg != null && alertMsg.length() > 0) {
+                    messages.addMessage(new TargettedMessage("assignment2.assignment_grade.error.feedback_notes", 
+                            new Object[] {alertMsg.toString()}));
+                    return FAILURE;
+                }
+            }
+            if (asv.getAnnotatedText() != null) {
+                StringBuilder alertMsg = new StringBuilder();
+                asv.setAnnotatedText(FormattedText.processFormattedText(asv.getAnnotatedText(), 
+                        alertMsg, true, true));
+                
+                if (alertMsg != null && alertMsg.length() > 0) {
+                    messages.addMessage(new TargettedMessage("assignment2.assignment_grade.error.annotated_text", 
+                            new Object[] {alertMsg.toString()}));
+                    return FAILURE;
+                }
+            }
 
             asv.setAssignmentSubmission(assignmentSubmission);
             if (this.releaseFeedback != null && asv.getFeedbackReleasedDate() == null) {
@@ -213,6 +271,13 @@ public class AssignmentSubmissionBean {
             submissionLogic.updateStudentResubmissionOptions(studentUids, assignmentSubmission.getAssignment(), 
                     assignmentSubmission.getNumSubmissionsAllowed(), assignmentSubmission.getResubmitCloseDate());
         }
+        
+        if (allowedToGradeInGB) {
+            // save the grade and comments
+            gradebookLogic.saveGradeAndCommentForStudent(assignment.getContextId(), 
+                    assignment.getGradebookItemId(), assignmentSubmission.getUserId(), grade, gradeComment);
+        }
+        
         return SUBMIT;
     }
 

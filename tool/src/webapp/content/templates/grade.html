@@ -37,149 +37,136 @@
 	
 	<p rsf:id="non-electronic-submission" class="subheading"></p>
 	
-	<fieldset>
-        <legend>
-            <img rsf:id="instructions_toggle" src="/sakai-assignment2-tool/content/images/expand.png" border="0" style="cursor:pointer" 
-                onclick="slideDiv(this)" />
-            <span rsf:id="msg=assignment2.assignment_grade.assignment_instructions" onclick="slideDiv(jQuery(this).prev('img').get(0));" style="cursor:pointer">Instructions!</span>
-        </legend>
-        <div class="asnn_subsection" style="display: none;">
-            <div>
-                <p rsf:id="instructions" class="textPanel">These are my instructions!</p>
-            </div>  
-    
-            <div rsf:id="assignAttachmentsFieldset">
-                <p rsf:id="msg=assignment2.assignment_grade.supporting_materials" class="subgroupHeading">Attachments</p>
-                <ol class="attachList indnt1">
-                    <li rsf:id="assign_attach_list:">
-                    </li>
-                </ol>
-            </div>
+  <!--  Instructions section -->
+  <div rsf:id="assignment-instructions:">
+      <!-- Assignment Instructions go here. -->
+  </div>
+  
+  <!-- Override Assignment-Level Settings Section -->
+  
+  <div rsf:id="resubmission_toggle_section:">
+    <!-- toggle header -->
+  </div>
+  <div id="resubmissionSection" style="display: none;" class="subsection1 toggleSubsection" >
+    <div rsf:id="resubmit_change">
+      <input id="override_settings" rsf:id="override_settings" type="checkbox" />
+      <label for="override_settings" rsf:id="msg=assignment2.assignment_grade.override_settings">Override assignment-level settings?</label>
+      <div id="override_settings_container">
+          <ol>
+              <li>
+                  <span rsf:id="resubmission_curr_submissions">This assignment has 2 submissions.</span>
+              </li>
+              <li>
+                  <label rsf:id="msg=assignment2.assignment_grade.resubmission_allow_number">Additional Allowed Submissions Blah</label>
+                  <select rsf:id="resubmission_additional"></select>
+              </li>
+              <li>
+                  <span rsf:id="original_due_date">Original Due Date: 3/25/09 5:00 PM!!!!!!!!!!!!!!!</span>
+              </li>
+              <li rsf:id="resubmission_dates">
+                
+                  <input id="require_accept_until" rsf:id="require_accept_until" type="checkbox" />
+                  <label for="require_accept_until" rsf:id="extend_accept_until">Set Accept Until Date? Blah</label>
+                  <span id="accept_until_container">
+                      <span id="resubmission_due_section">
+                        <input id="accept_until" rsf:id="accept_until:" value="12/31/2007"/>
+                      </span>
+                      <span id="resubmission_due_read_only"></span>
+                  </span>                      
+              </li>
+          </ol>
         </div>
-    </fieldset>
-	
-<!-- 
-	<h3 rsf:id="msg=assignment2.assignment_grade.assignment_submission">Assignment Submission</h3>
-	<p rsf:id="current_is_draft" class="infoPanel">Current Submission In Progress</p>
-	<p rsf:id="editing_previous_submission" class="infoPanel">Currently Editing a Previous Submission</p>
--->
-	<fieldset rsf:id="submitted_text_fieldset">
-		<legend rsf:id="msg=assignment2.assignment_grade.annotated_submitted_text">Inline Text</legend>
-		<ol>
-			<li>
-				<label rsf:id="msg=assignment2.assignment_grade.feedback_instructions" class="block instruction">Below is the submission from a student. You can insert comments into this text by clicking in the box, then type your comments. Comments surrounded by double curly braces, {{<span class="highlight">like this</span>}}, will appear red to the student.</label>
-				<div rsf:id="feedback_text:">
-					<textarea name="something" cols="80" rows="20" wrap="virtual"></textarea>
-					<!-- this should be the FCKEditor -->
-				</div>
-			</li>
-		</ol>
-	</fieldset>
-	<fieldset rsf:id="submitted_attachments_fieldset">
-		<legend rsf:id="msg=assignment2.assignment_grade.submitted_attachments">Attachments</legend>
-		<ol class="attachList indnt1">
-			<li rsf:id="submitted_attachment_list:">
-				<img src="/sakai-assignment2-tool/content/images/page_white_word.png" target="_blank" width="16" height="16"/> <a href="">ExampleAttachment.doc</a> (52 KB)
-			</li>
-		</ol>
-        <span rsf:id="no_submitted_attachments" id="" class="instruction no_attachments_yet">No attachments yet</span>
-	</fieldset>
-	<fieldset>
-		<legend>
-			<img rsf:id="feedback_toggle" src="/sakai-assignment2-tool/content/images/collapse.png" border="0" style="cursor:pointer" 
-				onclick="slideDiv(this)" />
-			<span rsf:id="msg=assignment2.assignment_grade.feedback" onclick="slideDiv(jQuery(this).prev('img').get(0));" style="cursor:pointer">Feedback</span>
-		</legend>
-		<div>
-			<div>
-        <p rsf:id="msg=assignment2.assignment_grade.feedback_notes" class="subgroupHeading">Additional Feedback</p>
-				<textarea  rsf:id="feedback_notes:" name="something" cols="80" rows="20" wrap="virtual"></textarea>
-				<!-- this should be the FCKEditor -->
-				<p rsf:id="feedback_notes_no_edit" class="nothingProvided"></p>
-			</div>	
+      </div>
+      <div rsf:id="resubmit_no_change">
+        <ol>
+            <li>
+                <span rsf:id="resub_curr_submissions_text">This assignment has 2 submissions.</span>
+            </li>
+            <li>
+                <span rsf:id="resub_allowed_submissions_text">This assignment has 2 submissions.</span>
+            </li>
+            <li>
+                <span rsf:id="resub_until_text">This assignment has 2 submissions.</span>                   
+            </li>
+        </ol>
+      </div>
+  </div>
 
-			<div id="attachmentsFieldset">
-				<p rsf:id="msg=assignment2.assignment_grade.feedback_attachments" class="subgroupHeading">Attachments</p>
-				<ol rsf:id="attachment_list:">
-					<li></li>
-				</ol>
-				<span><a rsf:id="add_attachments" class="thickbox">Add Attachments</a></span>
-			</div>
-		</div>
-	</fieldset>
+  <!-- /Allow Resubmissions -->
+  
+  <!-- Feedback Section -->
 
-	<!-- Allow Resubmissions -->
-	<fieldset rsf:id="resubmission_settings">
-		<legend>
-			<img rsf:id="resubmission_toggle" src="/sakai-assignment2-tool/content/images/expand.png" border="0" style="cursor:pointer" 
-				onclick="slideFieldset(this)" />
-			<span rsf:id="msg=assignment2.assignment_grade.allow_resubmission" onclick="slideFieldset(jQuery(this).prev('img').get(0));" style="cursor:pointer">Resubmissions</span>
-		</legend>
-		<ol style="display:none">
-			<li rsf:id="resubmit_change">
-                <input id="override_settings" rsf:id="override_settings" type="checkbox" />
-                <label for="override_settings" rsf:id="msg=assignment2.assignment_grade.override_settings">Override assignment-level settings?</label>
-                <div id="override_settings_container">
-                    <fieldset>
-                        <ol>
-                            <li>
-                                <span rsf:id="resubmission_curr_submissions">This assignment has 2 submissions.</span>
-                            </li>
-                            <li>
-                                <label rsf:id="msg=assignment2.assignment_grade.resubmission_allow_number">Additional Allowed Submissions Blah</label>
-                                <select rsf:id="resubmission_additional"></select>
-                            </li>
-                            <li>
-                                <input id="require_accept_until" rsf:id="require_accept_until" type="checkbox" />
-                                <label for="require_accept_until" rsf:id="msg=assignment2.assignment_grade.resubmission_accept_until">Set Accept Until Date? Blah</label>
-                                <span id="accept_until_container">
-                                    <input id="accept_until" rsf:id="accept_until:" value="12/31/2007"/>
-                                </span>                      
-                            </li>
-                        </ol>
-                    </fieldset>
-				</div>
-			</li>
-			<li rsf:id="resubmit_no_change">
-	      <fieldset>
-	          <ol>
-	              <li>
-	                  <span rsf:id="resub_curr_submissions_text">This assignment has 2 submissions.</span>
-	              </li>
-	              <li>
-	                  <span rsf:id="resub_allowed_submissions_text">This assignment has 2 submissions.</span>
-	              </li>
-	              <li>
-	                  <span rsf:id="resub_until_text">This assignment has 2 submissions.</span>                   
-	              </li>
-	          </ol>
-	      </fieldset>
-			</li>
-		</ol>
-	</fieldset>
-	<!-- /Allow Resubmissions -->
-	
-	<fieldset rsf:id="submission-history-area">
-		<legend>
-			<img rsf:id="history_toggle" src="/sakai-assignment2-tool/content/images/expand.png" border="0" style="cursor:pointer" 
-				onclick="slideFieldset(this)" />
-			<span rsf:id="msg=assignment2.assignment_grade.history" onclick="slideFieldset(jQuery(this).prev('img').get(0));" style="cursor:pointer">History</span>
-		</legend>
-		<ol style="display:none">
-			<li rsf:id="previous_submissions:">
-				<span rsf:id="previous_date"></span>
-				<span rsf:id="current_version" class="currentEdit">Current Version</span>
-				﻿<a rsf:id="previous_link" onclick="jQuery(this).siblings('input').get(0).click(); return false;">View Submission</a>
-				<input type="submit" style="display: none" rsf:id="save_and_edit_version_button" value="Save And Edit Another" />
-			</li>
-		</ol>
-		
-	</fieldset>
+  <div rsf:id="feedback_section:">
+    
+    <div class="toggleHeader" rsf:id="version_toggle:">
+    </div>
+    
+    <div rsf:id="versionInformation" class="subsection1 toggleSubsection">
+      <!-- Inline Comments for submitted text -->
+      <div rsf:id="submitted_text_fieldset">
+        <h4 rsf:id="msg=assignment2.assignment_grade.annotated_submitted_text" class="subgroupHeading">Inline Text</h4>
+        <p rsf:id="inline_feedback_instructions" class="block instruction">Below is the submission from a student. You can insert comments into this text by clicking in the box, then type your comments.</p>
+        <div rsf:id="feedback_text:">
+        	<textarea name="something" cols="80" rows="20" wrap="virtual"></textarea>
+        	<!-- this should be the FCKEditor -->
+        </div>
+    	</div>
+      
+      <!-- Submitted Attachments -->
+    	<div rsf:id="submitted_attachments_fieldset">
+    		<h4 rsf:id="msg=assignment2.assignment_grade.submitted_attachments" class="subgroupHeading">Attachments</h4>
+    		<ol class="attachList indnt1">
+    			<li rsf:id="submitted_attachment_list:">
+    				<img src="/sakai-assignment2-tool/content/images/page_white_word.png" target="_blank" width="16" height="16"/> <a href="">ExampleAttachment.doc</a> (52 KB)
+    			</li>
+    		</ol>
+    	</div>
+      
+      <!--  Additional Feedback Notes -->
+      <div>
+        <h4 rsf:id="msg=assignment2.assignment_grade.feedback_notes" class="subgroupHeading">Additional Feedback</h4>
+        <textarea  rsf:id="feedback_notes:" name="something" cols="80" rows="20" wrap="virtual"></textarea>
+        <!-- this should be the FCKEditor -->
+        <p rsf:id="feedback_notes_no_edit" class="nothingProvided"></p>
+      </div>	
+      
+      <!--  Feedback Attachments -->
+      <div id="attachmentsFieldset">
+        <h4 rsf:id="msg=assignment2.assignment_grade.feedback_attachments" class="subgroupHeading">Attachments</h4>
+        <!-- for read-only view of attachments -->
+        <ol class="attachList indnt1" rsf:id="feedback_attach_read_only">
+          <li rsf:id="feedback_attachment_list:">
+            <img src="/sakai-assignment2-tool/content/images/page_white_word.png" target="_blank" width="16" height="16"/> <a href="">ExampleAttachment.doc</a> (52 KB)
+          </li>
+        </ol>
+        <!-- editable view of attachments -->
+        <ol rsf:id="attachment_list:">
+          <li></li>
+        </ol>
+        <span class="indnt1" rsf:id="add_attach">
+          <img src="/../../library/image/silk/attach.png" />
+          <a rsf:id="add_attachments:" class="thickbox">Add Attachments</a>
+        </span>
+      </div>
+    </div>
+
+  </div>
 	
 	<!-- Grading Stuff -->
-	<div id="gradebook-details-container">
-	<fieldset rsf:id="gradebook_details:" class="highlightPanel">
-	</fieldset>
+	<div rsf:id="gradebook-details-container">
+    <h4 rsf:id="msg=assignment2.assignment_grade.gradebook_details" class="subgroupHeading">Gradebook Stuff</h4>
+    <div  class="gradingSection indnt1">
+      <div>
+        <label for="grade_input" rsf:id="grade_input_label" class="gradingLabel">Grade</label>
+        <input type="text" size="10" maxlength="8" rsf:id="grade_input" id="grade_input" class="gradeInput" />
+        <span rsf:id="grade_input_appender">(Out of X) or %</span>
+      </div>
+      <div>
+        <!--  for some reason, you can't use a label tag for a textarea -->
+        <p rsf:id="msg=assignment2.gradebook.grading.comments" class="gradingLabel">Comment</p>
+        <textarea rsf:id="grade_comment_input" id="grade_comment_input" cols="80" rows="5" wrap="virtual"></textarea>
+      </div>
+    </div>
 	</div>
 	<!-- /End Grading Stuff -->
 	
@@ -198,37 +185,26 @@
 </script>
 <script type="text/javascript">
 //<![CDATA[
-function refresh_ajax(){
-	if(fragGBDetailsPath != ""){
-		old = jQuery("#gradebook-details-container fieldset").html();
-		jQuery.ajax({
-			type: "get",
-			cache: false,
-			url: fragGBDetailsPath + "?assignmentId=" + assignmentId + "&userId=" + userId,
-			success: function(html){
-    		    if (old != null) {
-    				jQuery("#gradebook-details-container").html(html.substring(html.indexOf('<div>') + 5, html.lastIndexOf('</div>')));
-    				tb_init('a.thickbox, area.thickbox, input.thickbox');
-    				if (old != jQuery("#gradebook-details-container fieldset").html())
-    					highlight(jQuery("#gradebook-details-container fieldset"));
-    		    }
-			}
-		});
-	}
-}
 
 jQuery(document).ready(function(){
+    // initialize the toggles on the page
+    jQuery("div.toggleHeader").click(function () { 
+       asnn2.toggleSubsection(".toggleSubsection", this);
+     });
+    
     //Init override assignment-level resubmission checkbox
-    jQuery("input[name='page-replace\:\:override_settings']").each(function(){
-        this.onclick = override_submission_settings;
+    jQuery("input[name='page-replace\:\:override_settings']").click(function(){
+        asnn2gradeview.override_submission_settings();;
     });
-    override_submission_settings();
+    asnn2gradeview.override_submission_settings();
     
     //Init resubmission set accept until checkbox
-    jQuery("input[name='page-replace\:\:require_accept_until']").each(function(){
-        this.onclick = set_accept_until_on_submission_level;
+    jQuery("input[name='page-replace\:\:require_accept_until']").click(function(){
+        asnn2gradeview.set_accept_until_on_submission_level();
     });
-    set_accept_until_on_submission_level();
+    asnn2gradeview.set_accept_until_on_submission_level();
+
+    
 });
 
 // See ASNN-300

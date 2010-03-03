@@ -41,11 +41,12 @@ import org.sakaiproject.assignment2.exception.AnnouncementPermissionException;
 import org.sakaiproject.assignment2.exception.CalendarPermissionException;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.ExternalContentLogic;
+import org.sakaiproject.assignment2.logic.ExternalContentReviewLogic;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.logic.GradebookItem;
 import org.sakaiproject.assignment2.logic.ImportExportLogic;
-import org.sakaiproject.assignment2.logic.entity.AssignmentDefinition;
+import org.sakaiproject.assignment2.service.model.AssignmentDefinition;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentAttachment;
 import org.sakaiproject.assignment2.model.AssignmentGroup;
@@ -94,6 +95,11 @@ public class ImportExportLogicImpl implements ImportExportLogic {
     public void setExternalContentLogic(ExternalContentLogic contentLogic) {
         this.contentLogic = contentLogic;
     }
+    
+    private ExternalContentReviewLogic contentReviewLogic;
+    public void setExternalContentReviewLogic(ExternalContentReviewLogic contentReviewLogic) {
+        this.contentReviewLogic = contentReviewLogic;
+    }
 
     public void init(){
         if(log.isDebugEnabled()) log.debug("init");
@@ -123,85 +129,23 @@ public class ImportExportLogicImpl implements ImportExportLogic {
                 }
             }
 
-            Map<String, String> groupIdToTitleMap = new HashMap<String, String>();
-            Collection<Group> groups = externalLogic.getSiteGroups(contextId);
-            if (groups != null) {
-                for (Group group : groups) {
-                    if (group != null) {
-                        groupIdToTitleMap.put(group.getId(), group.getTitle());
-                    }
-                }
-            }
+            Map<String, String> groupIdToTitleMap = externalLogic.getGroupIdToNameMapForSite(contextId);
+            
+            boolean contentReviewAvailable = contentReviewLogic.isContentReviewAvailable(contextId);
 
             for (Assignment2 assign : allAssignments) {
                 if (assign != null) {
-                    AssignmentDefinition assignDef = getAssignmentDefinition(assign, gbIdItemMap, groupIdToTitleMap);
+                    if (assign.isContentReviewEnabled() && contentReviewAvailable) {
+                        contentReviewLogic.populateAssignmentPropertiesFromAssignment(assign);
+                    }
+                    
+                    AssignmentDefinition assignDef = assignmentLogic.getAssignmentDefinition(assign, gbIdItemMap, groupIdToTitleMap);
                     assignList.add(assignDef);
                 }
             }
         }
 
         return assignList;
-    }
-
-    private AssignmentDefinition getAssignmentDefinition(Assignment2 assignment, Map<Long, GradebookItem> gbIdItemMap,
-            Map<String, String> groupIdToTitleMap) {
-        if (assignment == null) {
-            throw new IllegalArgumentException("Null assignment passed to getAssignmentDefinition");
-        }
-
-        AssignmentDefinition assignDef = new AssignmentDefinition();
-        assignDef.setAcceptUntilDate(assignment.getAcceptUntilDate());
-        assignDef.setDraft(assignment.isDraft());
-        assignDef.setDueDate(assignment.getDueDate());
-        assignDef.setHasAnnouncement(assignment.getHasAnnouncement());
-        assignDef.setHonorPledge(assignment.isHonorPledge());
-        assignDef.setInstructions(assignment.getInstructions());
-        assignDef.setSendSubmissionNotifications(assignment.isSendSubmissionNotifications());
-        assignDef.setNumSubmissionsAllowed(assignment.getNumSubmissionsAllowed());
-        assignDef.setOpenDate(assignment.getOpenDate());
-        assignDef.setSortIndex(assignment.getSortIndex());
-        assignDef.setSubmissionType(assignment.getSubmissionType());
-        assignDef.setTitle(assignment.getTitle());
-        assignDef.setGraded(assignment.isGraded());
-        assignDef.setRequiresSubmission(assignment.isRequiresSubmission());
-
-        // if it is graded, we need to retrieve the name of the associated gb item
-        if (assignment.isGraded() && assignment.getGradebookItemId() != null &&
-                gbIdItemMap != null) {
-            GradebookItem gbItem = (GradebookItem)gbIdItemMap.get(assignment.getGradebookItemId());
-            if (gbItem != null) {
-                assignDef.setAssociatedGbItemName(gbItem.getTitle());
-                assignDef.setAssociatedGbItemPtsPossible(gbItem.getPointsPossible());
-            }
-        }
-
-        // we need to make a list of the attachment references
-        List<String> attachRefList = new ArrayList<String>();
-        if (assignment.getAttachmentSet() != null) {
-            for (AssignmentAttachment attach : assignment.getAttachmentSet()) {
-                if (attach != null) {
-                    attachRefList.add(attach.getAttachmentReference());
-                }
-            }
-        }
-        assignDef.setAttachmentReferences(attachRefList);
-
-        // we need to make a list of the group names
-        List<String> associatedGroupNames = new ArrayList<String>();
-        if (assignment.getAssignmentGroupSet() != null && groupIdToTitleMap != null) {
-            for (AssignmentGroup aGroup : assignment.getAssignmentGroupSet()) {
-                if (aGroup != null) {
-                    String groupName = (String)groupIdToTitleMap.get(aGroup.getGroupId());
-                    if (groupName != null) {
-                        associatedGroupNames.add(groupName);
-                    }
-                }
-            }
-        }
-        assignDef.setGroupRestrictionGroupTitles(associatedGroupNames);
-
-        return assignDef;
     }
 
     public void mergeAssignmentToolDefinitionXml(String toContext, String fromAssignmentToolXml) {
@@ -231,6 +175,9 @@ public class ImportExportLogicImpl implements ImportExportLogic {
                         groupTitleGroupMap.put(group.getTitle(), group);
                     }
                 }
+                
+                // check to see if contentReview is available for this site
+                boolean contentReviewAvailable = contentReviewLogic.isContentReviewAvailable(toContext);
 
                 // we will iterate through all of the assignments to be imported
                 for (AssignmentDefinition assignDef : toolDefinition.getAssignments()) {
@@ -259,6 +206,14 @@ public class ImportExportLogicImpl implements ImportExportLogic {
 
                         // title doesn't have to be unique
                         newAssignment.setTitle(assignDef.getTitle());
+                        
+                        // content review settings
+                        if (contentReviewAvailable) {
+                            newAssignment.setContentReviewEnabled(assignDef.isContentReviewEnabled());
+                            newAssignment.setProperties(assignDef.getProperties());
+                        } else {
+                            newAssignment.setContentReviewEnabled(false);
+                        }
 
                         // if this item is graded, we need to link it up to a 
                         // corresponding gb item. first, we will check to see if

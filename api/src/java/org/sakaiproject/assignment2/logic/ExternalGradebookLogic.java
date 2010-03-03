@@ -40,6 +40,19 @@ import org.sakaiproject.site.api.Group;
  * @author <a href="mailto:wagnermr@iupui.edu">michelle wagner</a>
  */
 public interface ExternalGradebookLogic {
+    
+    /**
+     * Gradebook grade entry is by points
+     */
+    public static int ENTRY_BY_POINTS = 0;
+    /**
+     * Gradebook grade entry is by percentage
+     */
+    public static int ENTRY_BY_PERCENT = 1;
+    /**
+     * Gradebook grade entry is by letter
+     */
+    public static int ENTRY_BY_LETTER = 2;
 
     /** 
      * @param gradedAssignments
@@ -67,12 +80,12 @@ public interface ExternalGradebookLogic {
     /**
      * 
      * @param contextId
-     * @return a map of gradebook item id to title for all of the gradebook
+     * @return a list of {@link GradebookItem}s representing all of the gradebook
      * items that the current user may view or grade.  Does not include
      * "externally maintained" gradebook items (gb items that are managed by
      * tools outside the gradebook like Tests & Quizzes)
      */
-    public Map<Long, String> getViewableGradebookItemIdTitleMap(String contextId);
+    public List<GradebookItem> getViewableGradebookItems(String contextId);
 
     /**
      * @param contextId
@@ -202,20 +215,6 @@ public interface ExternalGradebookLogic {
      * for retrieving grade info. Look here for thrown exceptions
      */
     public String getStudentGradeCommentForItem(String contextId, String studentId, Long gradebookItemId);
-
-
-    /**
-     * 
-     * @param contextId
-     * @param submission
-     * @return a GradeInformation object containing the grade information from the
-     * Gradebook for the given submission's assignment's associated gb item.
-     * Returns an "empty" GradeInformation object if the assignment is ungraded or
-     * gb item does not exist. 
-     * @see #getGradeInformationForStudent(String, Long, String) This method is used
-     * for retrieving grade info. Look here for thrown exceptions
-     */
-    public GradeInformation getGradeInformationForSubmission(String contextId, AssignmentSubmission submission);
 
     /**
      * 
@@ -375,9 +374,10 @@ public interface ExternalGradebookLogic {
     /**
      * 
      * @param contextId
-     * @return true if the gradebook is set up for grade entry by points
+     * @return {@link #ENTRY_BY_POINTS}, {@link #ENTRY_BY_PERCENT}, or {@link #ENTRY_BY_LETTER} to represent
+     * the grade entry type for the gradebook in the given contextId
      */
-    public boolean isGradingByPoints(String contextId);
+    public int getGradebookGradeEntryType(String contextId);
 
     /**
      * 

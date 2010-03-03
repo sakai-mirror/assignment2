@@ -243,4 +243,50 @@ AssignmentActivityProducer {
     public void setAssignmentBundleLogic(AssignmentBundleLogic assignmentBundleLogic) {
         this.assignmentBundleLogic = assignmentBundleLogic;
     }
+
+    public boolean allowGetItems(TaggableActivity arg0, TaggingProvider arg1, boolean arg2)
+    {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    public TaggableItem getItem(String arg0, TaggingProvider arg1, boolean arg2)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public String getItemPermissionOverride()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public List<TaggableItem> getItems(TaggableActivity arg0, TaggingProvider arg1,
+            boolean arg2)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public List<TaggableItem> getItems(TaggableActivity arg0, String arg1,
+            TaggingProvider arg2, boolean arg3)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public boolean hasSubmissions(TaggableActivity arg0, TaggingProvider arg1,
+            boolean arg2)
+    {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    public boolean hasSubmissions(TaggableActivity arg0, String arg1,
+            TaggingProvider arg2, boolean arg3)
+    {
+        // TODO Auto-generated method stub
+        return false;
+    }
 }

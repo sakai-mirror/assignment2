@@ -22,10 +22,12 @@
 package org.sakaiproject.assignment2.logic;
 
 import java.util.List;
+import java.util.Map;
 
 import org.sakaiproject.assignment2.exception.AssignmentNotFoundException;
 import org.sakaiproject.assignment2.logic.utils.Assignment2Utils;
 import org.sakaiproject.assignment2.model.Assignment2;
+import org.sakaiproject.assignment2.service.model.AssignmentDefinition;
 
 
 /**
@@ -50,6 +52,7 @@ public interface AssignmentLogic {
      * @return Returns the Assignment based on its assignmentId. Does not populate
      * the AssignmentAttachments and AssignmentGroups
      * @throws AssignmentNotFoundException if no assignment exists with the given id
+     * @throws SecurityException if current user is not allowed to access assignment info
      */
     public Assignment2 getAssignmentById(Long assignmentId);
 
@@ -80,6 +83,7 @@ public interface AssignmentLogic {
      * @throws CalendarPermissionException if the user does not have
      * permission to delete events in the Schedule tool - assignment will be
      * 'deleted' regardless
+     * @throws SecurityException if current user is not allowed to access assignment info
      */	
     public void deleteAssignment(Assignment2 assignment);
 
@@ -100,24 +104,19 @@ public interface AssignmentLogic {
      * @param assignmentIds - an array of Long assignment ids that are ordered in the
      * order that you would like the assignments in the site to appear. 
      * @param contextId 
+     * @throws SecurityException if current user does not have permission to edit assignments
      */
     public void reorderAssignments(List<Long> assignmentIds, String contextId);
 
     /**
      * @param assignmentId
      * @return the Assignment2 object with the given id and populate associated
-     * data (ie attachments, groups). Does not include student submission information.
+     * data (ie attachments, groups). Also populates ContentReview information, if applicable.
+     * Does not include student submission information.
      * @throws AssignmentNotFoundException if no assignment exists with the given id
+     * @throws SecurityException if current user is not allowed to access assignment info
      */
     public Assignment2 getAssignmentByIdWithAssociatedData(Long assignmentId);
-
-    /** 
-     * @param assignmentId
-     * @return the Assignment2 object with the given id and populate the
-     * associated AssignmentGroups
-     * @throws AssignmentNotFoundException if no assignment exists with the given id
-     */
-    public Assignment2 getAssignmentByIdWithGroups(Long assignmentId);
 
     /**
      * @param assignmentId
@@ -149,5 +148,16 @@ public interface AssignmentLogic {
      * See {@link Assignment2Utils#getVersionedString(String)} for more info
      */
     public String getDuplicatedAssignmentTitle(String contextId, String titleToDuplicate);
+    
+    /**
+     * 
+     * @param assignment
+     * @param gbIdItemMap
+     * @param groupIdToTitleMap
+     * @return a populated {@link AssignmentDefinition} object based upon the information
+     * provided via the assignment, gbIdItemMap, and groupIdToTitleMap
+     */
+    public AssignmentDefinition getAssignmentDefinition(Assignment2 assignment, Map<Long, GradebookItem> gbIdItemMap,
+            Map<String, String> groupIdToTitleMap);
 
 }

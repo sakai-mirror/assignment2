@@ -37,6 +37,7 @@ import org.sakaiproject.assignment2.dao.AssignmentDao;
 import org.sakaiproject.assignment2.exception.AnnouncementPermissionException;
 import org.sakaiproject.assignment2.exception.AssignmentNotFoundException;
 import org.sakaiproject.assignment2.exception.CalendarPermissionException;
+import org.sakaiproject.assignment2.exception.ContentReviewException;
 import org.sakaiproject.assignment2.exception.InvalidGradebookItemAssociationException;
 import org.sakaiproject.assignment2.exception.NoGradebookItemForGradedAssignmentException;
 import org.sakaiproject.assignment2.exception.StaleObjectModificationException;
@@ -55,14 +56,11 @@ import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentAttachment;
 import org.sakaiproject.assignment2.model.AssignmentGroup;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
+import org.sakaiproject.assignment2.service.model.AssignmentDefinition;
 import org.sakaiproject.assignment2.taggable.api.AssignmentActivityProducer;
-import org.sakaiproject.entitybroker.EntityReference;
-import org.sakaiproject.entitybroker.entityprovider.EntityProvider;
 import org.sakaiproject.entitybroker.entityprovider.EntityProviderManager;
-import org.sakaiproject.entitybroker.entityprovider.capabilities.CRUDable;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.genericdao.api.search.Search;
-import org.sakaiproject.site.api.Group;
 import org.sakaiproject.taggable.api.TaggingManager;
 import org.sakaiproject.taggable.api.TaggingProvider;
 import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException;
@@ -141,6 +139,11 @@ public class AssignmentLogicImpl implements AssignmentLogic{
         if (assignmentId == null) {
             throw new IllegalArgumentException("Null assignmentId passed to getAssignmentById");
         }
+        
+        // make sure the user can access the assignment object
+        if (!permissionLogic.isUserAbleToViewAssignment(assignmentId)) {
+            throw new SecurityException("User attempted to access assignment with id " + assignmentId + " without permission");
+        }
 
         Assignment2 assign = (Assignment2) dao.findById(Assignment2.class, assignmentId);
 
@@ -155,7 +158,12 @@ public class AssignmentLogicImpl implements AssignmentLogic{
         if (assignmentId == null) {
             throw new IllegalArgumentException("Null assignmentId passed to getAssignmentByIdWithAssociatedData");
         }
-        // first, retrieve Assignment2 object
+        
+        // make sure the user can access the assignment object
+        if (!permissionLogic.isUserAbleToViewAssignment(assignmentId)) {
+            throw new SecurityException("User attempted to access assignment with id " + assignmentId + " without permission");
+        }
+        // retrieve Assignment2 object
         Assignment2 assign = (Assignment2) dao.getAssignmentByIdWithGroupsAndAttachments(assignmentId);
 
         if (assign == null) {
@@ -172,29 +180,21 @@ public class AssignmentLogicImpl implements AssignmentLogic{
         //        assign.setProperties(tiiopts); // TODO this should be a map merge and not a complete replacement
         //    }
         //}
-        if (externalContentReviewLogic.isContentReviewAvailable()) {
+        if (externalContentReviewLogic.isContentReviewAvailable(assign.getContextId())) {
             externalContentReviewLogic.populateAssignmentPropertiesFromAssignment(assign);
         }
         
         return assign;
     }
 
-    public Assignment2 getAssignmentByIdWithGroups(Long assignmentId) {
-        if (assignmentId == null) {
-            throw new IllegalArgumentException("Null assignmentId passed to getAssignmentByIdWithGroups");
-        }
-
-        Assignment2 assign = (Assignment2) dao.getAssignmentByIdWithGroups(assignmentId);
-        if (assign == null) {
-            throw new AssignmentNotFoundException("No assignment found with id: " + assignmentId);
-        }
-
-        return assign;
-    }
-
     public Assignment2 getAssignmentByIdWithGroupsAndAttachments(Long assignmentId) {
         if (assignmentId == null) {
             throw new IllegalArgumentException("Null assignmentId passed to getAssignmentByIdWithGroupsAndAttachments");
+        }
+        
+        // make sure the user can access the assignment object
+        if (!permissionLogic.isUserAbleToViewAssignment(assignmentId)) {
+            throw new SecurityException("User attempted to access assignment with id " + assignmentId + " without permission");
         }
 
         Assignment2 assign = (Assignment2) dao.getAssignmentByIdWithGroupsAndAttachments(assignmentId);
@@ -260,6 +260,14 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 
         // clean up the html string for the instructions
         assignment.setInstructions(Assignment2Utils.cleanupHtmlText(assignment.getInstructions()));
+        
+        // double check that content review is available for this assignment
+        if (assignment.isContentReviewEnabled()) {
+            if (!externalContentReviewLogic.isContentReviewAvailable(assignment.getContextId())) {
+                if (log.isDebugEnabled()) log.debug("Content review turned off b/c not available in this site");
+                assignment.setContentReviewEnabled(false);
+            }
+        }
 
         Set<AssignmentAttachment> attachToDelete = new HashSet<AssignmentAttachment>();
         Set<AssignmentGroup> groupsToDelete = new HashSet<AssignmentGroup>();
@@ -363,8 +371,13 @@ public class AssignmentLogicImpl implements AssignmentLogic{
             String tiiAsnnTitle = externalContentReviewLogic.getTaskId(assignment);
             assignment.setContentReviewRef(tiiAsnnTitle);
             log.debug("Going to Create/Update TII Asnn with title: " + tiiAsnnTitle);
-            externalContentReviewLogic.createAssignment(assignment);
-            dao.update(assignment);
+            try {
+                externalContentReviewLogic.createAssignment(assignment);
+                dao.update(assignment);
+            } catch (ContentReviewException cre) {
+                throw new ContentReviewException("The assignments was saved, " +
+                 "but Turnitin information was unable to be updated", cre);
+            }
         }
 
     }
@@ -716,15 +729,15 @@ public class AssignmentLogicImpl implements AssignmentLogic{
         // create url to point back to this assignment to be included in the description
         // ASNN-477
         //String assignUrl = externalLogic.getAssignmentViewUrl(REDIRECT_ASSIGNMENT_VIEW_ID) + "/" + updatedAssignment.getId();
-
+        String toolTitle = externalLogic.getToolTitle();
         String newAnncSubject = bundleLogic.getFormattedMessage("assignment2.assignment_annc_subject",
-                new Object[] {updatedAssignment.getTitle()});
+                new Object[] {toolTitle, updatedAssignment.getTitle()});
         String newAnncBody = bundleLogic.getFormattedMessage("assignment2.assignment_annc_body",
-                new Object[] {updatedAssignment.getTitle(), df.format(updatedAssignment.getOpenDate())});
+                new Object[] {updatedAssignment.getTitle(), df.format(updatedAssignment.getOpenDate()), toolTitle});
         String updAnncSubject = bundleLogic.getFormattedMessage("assignment2.assignment_annc_subject_edited",
-                new Object[] {updatedAssignment.getTitle()});
+                new Object[] {toolTitle, updatedAssignment.getTitle()});
         String updAnncBody = bundleLogic.getFormattedMessage("assignment2.assignment_annc_body_edited",
-                new Object[] {updatedAssignment.getTitle(), df.format(updatedAssignment.getOpenDate())});
+                new Object[] {updatedAssignment.getTitle(), df.format(updatedAssignment.getOpenDate()), toolTitle});
 
         if (originalAssignment == null) {
             // this was a new assignment
@@ -809,10 +822,11 @@ public class AssignmentLogicImpl implements AssignmentLogic{
         String eventTitle = "";
         String eventDescription = "";
         if (updatedAssignment.getDueDate() != null) {
+            String toolTitle = externalLogic.getToolTitle();
             eventTitle = bundleLogic.getFormattedMessage("assignment2.schedule_event_title",
-                    new Object[] {updatedAssignment.getTitle()});
+                    new Object[] {toolTitle, updatedAssignment.getTitle()});
             eventDescription = bundleLogic.getFormattedMessage("assignment2.schedule_event_description",
-                    new Object[] {updatedAssignment.getTitle(), df.format(updatedAssignment.getDueDate())});
+                    new Object[] {updatedAssignment.getTitle(), df.format(updatedAssignment.getDueDate()), toolTitle});
         }
 
         if (originalAssignment == null) {
@@ -922,4 +936,69 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 
         return duplicatedTitle;
     }
+    
+    public AssignmentDefinition getAssignmentDefinition(Assignment2 assignment, Map<Long, GradebookItem> gbIdItemMap,
+            Map<String, String> groupIdToTitleMap) {
+        if (assignment == null) {
+            throw new IllegalArgumentException("Null assignment passed to getAssignmentDefinition");
+        }
+
+        AssignmentDefinition assignDef = new AssignmentDefinition();
+        assignDef.setId(assignment.getId());
+        assignDef.setAcceptUntilDate(assignment.getAcceptUntilDate());
+        assignDef.setDraft(assignment.isDraft());
+        assignDef.setDueDate(assignment.getDueDate());
+        assignDef.setHasAnnouncement(assignment.getHasAnnouncement());
+        assignDef.setHonorPledge(assignment.isHonorPledge());
+        assignDef.setInstructions(assignment.getInstructions());
+        assignDef.setSendSubmissionNotifications(assignment.isSendSubmissionNotifications());
+        assignDef.setNumSubmissionsAllowed(assignment.getNumSubmissionsAllowed());
+        assignDef.setOpenDate(assignment.getOpenDate());
+        assignDef.setSortIndex(assignment.getSortIndex());
+        assignDef.setSubmissionType(assignment.getSubmissionType());
+        assignDef.setTitle(assignment.getTitle());
+        assignDef.setGraded(assignment.isGraded());
+        assignDef.setRequiresSubmission(assignment.isRequiresSubmission());
+        assignDef.setContentReviewEnabled(assignment.isContentReviewEnabled());
+
+        // if it is graded, we need to retrieve the name of the associated gb item
+        if (assignment.isGraded() && assignment.getGradebookItemId() != null &&
+                gbIdItemMap != null) {
+            GradebookItem gbItem = (GradebookItem)gbIdItemMap.get(assignment.getGradebookItemId());
+            if (gbItem != null) {
+                assignDef.setAssociatedGbItemName(gbItem.getTitle());
+                assignDef.setAssociatedGbItemPtsPossible(gbItem.getPointsPossible());
+            }
+        }
+
+        // we need to make a list of the attachment references
+        List<String> attachRefList = new ArrayList<String>();
+        if (assignment.getAttachmentSet() != null) {
+            for (AssignmentAttachment attach : assignment.getAttachmentSet()) {
+                if (attach != null) {
+                    attachRefList.add(attach.getAttachmentReference());
+                }
+            }
+        }
+        assignDef.setAttachmentReferences(attachRefList);
+
+        // we need to make a list of the group names
+        List<String> associatedGroupNames = new ArrayList<String>();
+        if (assignment.getAssignmentGroupSet() != null && groupIdToTitleMap != null) {
+            for (AssignmentGroup aGroup : assignment.getAssignmentGroupSet()) {
+                if (aGroup != null) {
+                    String groupName = (String)groupIdToTitleMap.get(aGroup.getGroupId());
+                    if (groupName != null) {
+                        associatedGroupNames.add(groupName);
+                    }
+                }
+            }
+        }
+        assignDef.setGroupRestrictionGroupTitles(associatedGroupNames);
+
+        assignDef.setProperties(assignment.getProperties());
+
+        return assignDef;
+    }
+
 }

@@ -84,12 +84,7 @@ public class FinishedHelperProducer implements ViewComponentProducer, ViewParams
         // except call frame resize because the parent document window may have changed
 
         UIVerbatim.make(tofill, "sizeFrame",
-                HTMLUtil.emitJavascriptCall("parent.a2SetMainFrameHeight",
-                        new String[] {org.sakaiproject.util.Web.escapeJavascript(
-                                "Main" + org.sakaiproject.tool.cover.ToolManager.getCurrentPlacement().getId())
-                }
-                )
-        );
+                HTMLUtil.emitJavascriptCall("parent.a2SetMainFrameHeight", new String[] {}));
 
         //check session for attachment refs returned from a file picker helper
         ToolSession toolSession = sessionManager.getCurrentToolSession();

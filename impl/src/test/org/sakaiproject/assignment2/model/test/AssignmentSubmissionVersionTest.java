@@ -2,7 +2,7 @@ package org.sakaiproject.assignment2.model.test;
 
 import java.util.Date;
 
-import org.sakaiproject.assignment2.logic.test.Assignment2TestBase;
+import org.sakaiproject.assignment2.test.Assignment2TestBase;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 
 /**

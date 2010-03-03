@@ -35,6 +35,8 @@
     
     <bean id="DisplayUtil" class="org.sakaiproject.assignment2.tool.DisplayUtil">
         <property name="submissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
+        <property name="messageLocator" ref="messageLocator" />
+        <property name="assignmentBundleLogic" ref="org.sakaiproject.assignment2.logic.AssignmentBundleLogic" />
     </bean>
 
 	
@@ -105,7 +107,7 @@
 		parent="templateContributorParent">
 		<property name="baseDirectory" value="component-templates/" />
 		<property name="templateNames"
-			value="AsnnSubmissionRenderers,SortHeader,AttachmentList,GradebookDetails,StudentViewAssignment,AttachmentEvolver,MarkupEditor,ReviewStatus" />
+			value="AsnnSubmissionRenderers,SortHeader,AttachmentList,GradebookDetails,StudentViewAssignment,AttachmentEvolver,MarkupEditor,ReviewStatus,AssignmentInstructions,ToggleHeader" />
 	</bean>
 
 	<!-- Override the default style of user messages -->

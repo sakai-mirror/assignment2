@@ -43,7 +43,6 @@ import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.component.cover.ComponentManager;
 import org.sakaiproject.service.gradebook.shared.AssessmentNotFoundException;
 import org.sakaiproject.service.gradebook.shared.Assignment;
-import org.sakaiproject.service.gradebook.shared.CommentDefinition;
 import org.sakaiproject.service.gradebook.shared.GradeDefinition;
 import org.sakaiproject.service.gradebook.shared.GradebookFrameworkService;
 import org.sakaiproject.service.gradebook.shared.GradebookNotFoundException;
@@ -152,25 +151,23 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
         }
     }
 
-    public Map<Long, String> getViewableGradebookItemIdTitleMap(String contextId) {
+    public List<GradebookItem> getViewableGradebookItems(String contextId) {
         if (contextId == null) {
             throw new IllegalArgumentException("Null contextId passed to getViewableGradebookItemIdTitleMap");
         }
 
-        List<Assignment> viewableGbItems = gradebookService.getViewableAssignmentsForCurrentUser(contextId);
+        List<Assignment> gbAssignments = gradebookService.getViewableAssignmentsForCurrentUser(contextId);
+        List<GradebookItem> viewableGbItems = new ArrayList<GradebookItem>();
 
-        Map<Long, String> idTitleMap = new HashMap<Long, String>();
-        if (viewableGbItems == null || viewableGbItems.isEmpty()) {
-            return idTitleMap;
-        }
-
-        for (Assignment assign : viewableGbItems) {
-            if (assign != null && !assign.isExternallyMaintained()) {
-                idTitleMap.put(assign.getId(), assign.getName());
+        if (gbAssignments != null) {
+            for (Assignment assign : gbAssignments) {
+                if (assign != null && !assign.isExternallyMaintained()) {
+                    viewableGbItems.add(getGradebookItem(assign));
+                }
             }
         }
 
-        return idTitleMap;
+        return viewableGbItems;
     }
 
     public List<GradebookItem> getAllGradebookItems(String contextId, boolean includeExternallyMaintained) {
@@ -187,12 +184,7 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
 
                 for (Assignment assign : allGbItems) {
                     if (assign != null && (!assign.isExternallyMaintained() || includeExternallyMaintained)) {
-                        GradebookItem item = 
-                            new GradebookItem(assign.getId(), assign.getName(), assign.getPoints(), assign.getDueDate(), assign.isReleased());
-
-                        if (assign.isExternallyMaintained()) {
-                            item.setExternalId(assign.getExternalId());
-                        }
+                        GradebookItem item = getGradebookItem(assign);
 
                         gradebookItems.add(item);
                     }
@@ -359,26 +351,6 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
         return gradebookService.isUserAbleToGradeItemForStudent(contextId, gradebookItemId, studentId);
     }
 
-    public GradeInformation getGradeInformationForSubmission(String contextId, AssignmentSubmission submission) {
-        if (contextId == null || submission == null) {
-            throw new IllegalArgumentException("null contextId or submission passed to populateAllGradeInfoForSubmission");
-        }
-
-        Assignment2 assignment = submission.getAssignment();
-        if (assignment == null) {
-            throw new IllegalArgumentException("Null assignment associated with submission passed to getGradeInfoForSubmission");
-        }
-
-        GradeInformation gradeInfo = new GradeInformation();
-        gradeInfo.setStudentId(submission.getUserId());
-
-        if (assignment.isGraded() && assignment.getGradebookItemId() != null) {
-            gradeInfo = getGradeInformationForStudent(assignment.getContextId(), assignment.getGradebookItemId(), submission.getUserId());
-        }
-
-        return gradeInfo;
-    }
-
     public GradeInformation getGradeInformationForStudent(String contextId, Long gradebookItemId, String studentId) {
         if (contextId == null || gradebookItemId == null || studentId == null) {
             throw new IllegalArgumentException("Null data passed to getGradeInformationForStudent. contextId: " + contextId +
@@ -460,8 +432,7 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
 
         try {
             Assignment assign = gradebookService.getAssignment(contextId, gradebookItemId);
-            gradebookItem = new GradebookItem(assign.getId(), assign.getName(), 
-                    assign.getPoints(), assign.getDueDate(), assign.isReleased());
+            gradebookItem = getGradebookItem(assign);
         } catch (AssessmentNotFoundException anfe) {
             throw new GradebookItemNotFoundException ("No gradebook item exists with gradebookItemId " 
                     + gradebookItemId + " in context " + contextId, anfe);
@@ -656,8 +627,15 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
             allowed = true;
         } else if (isCurrentUserAbleToGrade(contextId) || isCurrentUserAStudentInGb(contextId)) {
             // check to see if this assignment is among the viewable assign for this user
-            Map<Long, String> gbItemIdToTitleMap = getViewableGradebookItemIdTitleMap(contextId);
-            if (gbItemIdToTitleMap.containsKey(gradebookItemId)) {
+            List<GradebookItem> viewableGbItems = getViewableGradebookItems(contextId);
+            List<Long> gbItemIds = new ArrayList<Long>();
+            if (viewableGbItems != null) {
+                for (GradebookItem gbItem : viewableGbItems) {
+                    gbItemIds.add(gbItem.getGradebookItemId());
+                }
+            }
+
+            if (gbItemIds.contains(gradebookItemId)) {
                 allowed = true;
             }
         } 
@@ -733,18 +711,27 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
         }
     }
 
-    public boolean isGradingByPoints(String contextId) {
+    public int getGradebookGradeEntryType(String contextId) {
         if (contextId == null) {
-            throw new IllegalArgumentException("Null contextId passed to isGradingByPoints");
+            throw new IllegalArgumentException("Null contextId passed to getGradebookGradeEntryType");
         }
 
-        boolean gradingByPoints = false;
-        int gradeType = gradebookService.getGradeEntryType(contextId);
-        if (gradeType == GradebookService.GRADE_TYPE_POINTS) {
-            gradingByPoints = true;
+        int gradeEntryType;
+        
+        int gbGradeType = gradebookService.getGradeEntryType(contextId);
+        if (gbGradeType == GradebookService.GRADE_TYPE_POINTS) {
+            gradeEntryType = ENTRY_BY_POINTS;
+        } else if (gbGradeType == GradebookService.GRADE_TYPE_PERCENTAGE) {
+            gradeEntryType = ENTRY_BY_PERCENT;
+        } else if (gbGradeType == GradebookService.GRADE_TYPE_LETTER) {
+            gradeEntryType = ENTRY_BY_LETTER;
+        } else {
+            // default to points
+            log.warn("Unknown grade entry type returned by the gradebook");
+            gradeEntryType = ENTRY_BY_POINTS;
         }
 
-        return gradingByPoints;
+        return gradeEntryType;
     }
 
     public String getLowestPossibleGradeForGradebookItem(String contextId, Long gradebookItemId) {
@@ -785,5 +772,26 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
         }
 
         return valid;
+    }
+    
+    /**
+     * 
+     * @param gbAssignment
+     * @return the {@link GradebookItem} representing the given gradebook {@link Assignment}.
+     * Returns null if gbAssignment is null
+     */
+    private GradebookItem getGradebookItem(Assignment gbAssignment) {
+        GradebookItem gbItem = null;
+        if (gbAssignment != null) {
+            gbItem = new GradebookItem(gbAssignment.getId(), gbAssignment.getName(), 
+                    gbAssignment.getPoints(), gbAssignment.getDueDate(), gbAssignment.isReleased(), 
+                    gbAssignment.getUngraded());
+            
+            if (gbAssignment.isExternallyMaintained()) {
+                gbItem.setExternalId(gbAssignment.getExternalId());
+            }
+        }
+        
+        return gbItem;
     }
 }

@@ -1,12 +1,17 @@
 package org.sakaiproject.assignment2.tool;
 
+import java.text.DateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.sakaiproject.assignment2.logic.AssignmentBundleLogic;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
+
+import uk.org.ponder.messageutil.MessageLocator;
 
 /**
  * A central location for some display formatting, since some of display 
@@ -17,11 +22,6 @@ import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
  *
  */
 public class DisplayUtil {
-
-    //private MessageLocator messageLocator;
-    //public void setMessageLocator(MessageLocator messageLocator) {
-    //    this.messageLocator = messageLocator;
-    // }
 
     /**
      * map key used by {@link #getSubmissionStatusForAssignment(Assignment2, List)}.
@@ -46,6 +46,16 @@ public class DisplayUtil {
     private AssignmentSubmissionLogic submissionLogic;
     public void setSubmissionLogic(AssignmentSubmissionLogic submissionLogic) {
         this.submissionLogic = submissionLogic;
+    }
+    
+    private MessageLocator messageLocator;
+    public void setMessageLocator(MessageLocator messageLocator) {
+        this.messageLocator = messageLocator;
+    }
+    
+    private AssignmentBundleLogic bundleLogic;
+    public void setAssignmentBundleLogic(AssignmentBundleLogic bundleLogic) {
+        this.bundleLogic = bundleLogic;
     }
 
     /**
@@ -109,5 +119,28 @@ public class DisplayUtil {
         }
 
         return cssClass;
+    }
+    
+    /**
+     * 
+     * @param statusConstant
+     * @param studentSaveDate
+     * @param submittedDate
+     * @return the internationalized text describing the given status
+     */
+    public String getVersionStatusText(int statusConstant, Date studentSaveDate, Date submittedDate) {
+        DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, bundleLogic.getLocale());
+        String statusText = messageLocator.getMessage("assignment2.version.toggle.status.not_started");
+        if (statusConstant == AssignmentConstants.SUBMISSION_NOT_STARTED) {
+            statusText =  messageLocator.getMessage("assignment2.version.toggle.status.not_started");
+        } else if (statusConstant == AssignmentConstants.SUBMISSION_IN_PROGRESS) {
+            statusText =  messageLocator.getMessage("assignment2.version.toggle.status.draft", df.format(studentSaveDate));
+        } else if (statusConstant == AssignmentConstants.SUBMISSION_SUBMITTED) {
+            statusText =  messageLocator.getMessage("assignment2.version.toggle.status.submitted", df.format(submittedDate));
+        } else if (statusConstant == AssignmentConstants.SUBMISSION_LATE) {
+            statusText =  messageLocator.getMessage("assignment2.version.toggle.status.submitted.late", df.format(submittedDate));
+        }
+        
+        return statusText;
     }
 }

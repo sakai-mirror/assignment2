@@ -21,6 +21,8 @@
 
 package org.sakaiproject.assignment2.taggable.impl;
 
+import java.util.Date;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
@@ -118,5 +120,41 @@ public class AssignmentItemImpl implements TaggableItem {
     public int hashCode()
     {
         return this.getReference().hashCode();
+    }
+
+    public String getItemDetailUrlParams()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public Date getLastModifiedDate()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public String getOwner()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public String getSiteTitle()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public String getTypeName()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public boolean getUseDecoration()
+    {
+        // TODO Auto-generated method stub
+        return false;
     }
 }

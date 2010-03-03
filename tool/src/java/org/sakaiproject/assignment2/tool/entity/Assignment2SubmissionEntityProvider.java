@@ -239,7 +239,7 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware{
 
         Map<String, String> studentIdSortNameMap = externalLogic.getUserIdToSortNameMap(studentIdList);
         
-        boolean contentReviewEnabled = assignment.isContentReviewEnabled() && contentReviewLogic.isContentReviewAvailable();
+        boolean contentReviewEnabled = assignment.isContentReviewEnabled() && contentReviewLogic.isContentReviewAvailable(assignment.getContextId());
         
         if (contentReviewEnabled) {
             populateReviewProperties(assignment, submissions);
@@ -263,8 +263,8 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware{
                 String status = "";
                 int statusConstant = AssignmentConstants.SUBMISSION_NOT_STARTED;
                 if (as != null) {
-                    statusConstant = submissionLogic.getSubmissionStatusConstantForCurrentVersion(
-                            as.getCurrentSubmissionVersion(), assignment.getDueDate());
+                    statusConstant = submissionLogic.getSubmissionStatusForVersion(
+                            as.getCurrentSubmissionVersion(), assignment.getDueDate(), as.getResubmitCloseDate());
                     status = assignmentBundleLogic.getString(
                             "assignment2.assignment_grade-assignment.submission_status." + 
                             statusConstant);
@@ -379,6 +379,38 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware{
                             m2 = (Map) o1;
                             m1 = (Map) o2;
                         }
+                        
+                        // handle null data
+                        if (m1.get(orderByComp) == null && m2.get(orderByComp) == null) {
+                            return 0;
+                        }
+                        if (m1.get(orderByComp) == null && m2.get(orderByComp) != null) {
+                            return -1;
+                        }
+                        if (m1.get(orderByComp) != null && m2.get(orderByComp) == null) {
+                            return 1;
+                        }
+                        
+                        if (orderByComp.equals(SUBMISSION_GRADE)) {
+                            boolean useDouble = true;
+                            Double d1 = null;
+                            Double d2 = null;
+                            String grade1 = m1.get(orderByComp) != null ? m1.get(orderByComp).toString() : "";
+                            String grade2 = m2.get(orderByComp) != null ? m2.get(orderByComp).toString() : "";
+                            try {
+                                d1 = Double.parseDouble(grade1);
+                                d2 = Double.parseDouble(grade2);
+                            } catch (NumberFormatException e) {
+                                useDouble = false;
+                            }
+                            if (d1 != null && d2 != null && useDouble) {
+                                return d1.compareTo(d2);
+                            } 
+                            else {
+                                return grade1.compareTo(grade2);
+                            }
+                        }
+                        
                         if (m1.get(orderByComp) instanceof Date) {
                             return ((Date)m1.get(orderByComp)).compareTo(((Date)m2.get(orderByComp)));
                         } 

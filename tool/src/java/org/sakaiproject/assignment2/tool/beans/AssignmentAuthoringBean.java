@@ -29,6 +29,7 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment2.exception.AnnouncementPermissionException;
+import org.sakaiproject.assignment2.exception.ContentReviewException;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
@@ -37,6 +38,7 @@ import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.assignment2.tool.WorkFlowResult;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.user.api.UserNotDefinedException;
+import org.sakaiproject.util.FormattedText;
 
 import uk.org.ponder.beanutil.entity.EntityBeanLocator;
 import uk.org.ponder.messageutil.MessageLocator;
@@ -148,6 +150,9 @@ public class AssignmentAuthoringBean {
         if (options.getRequireDueDate() == null || options.getRequireDueDate() == Boolean.FALSE) {
             assignment.setDueDate(null);
         }
+        
+        // make sure all input from WYSIWYG editors has been cleaned
+        errorFound = !cleanUpAssignment(assignment);
 
         //Since in the UI, the select box bound to the gradebookItemId is always present
         // we need to manually remove this value if the assignment is ungraded
@@ -242,7 +247,11 @@ public class AssignmentAuthoringBean {
                 if (LOG.isDebugEnabled()) LOG.debug("Announcement could not " +
                 "be updated b/c user does not have perm in annc tool");
                 //TODO display to user?
+            } catch (ContentReviewException cre) {
+                messages.addMessage(new TargettedMessage("assignment2.turnitin.error.unable_to_save_tii",
+                        new Object[] { assignment.getTitle() }, TargettedMessage.SEVERITY_ERROR));
             }
+            
 
             //set Messages
             if (draft) {
@@ -279,6 +288,12 @@ public class AssignmentAuthoringBean {
         if (options.getRequireDueDate() == null || options.getRequireDueDate() == Boolean.FALSE) {
             assignment.setDueDate(null);
         }
+        
+        // check for malicious tags before rendering the preview
+        if (!cleanUpAssignment(assignment)) {
+            return WorkFlowResult.INSTRUCTOR_CONTINUE_EDITING_ASSIGNMENT;
+        }
+        
         // TODO FIXME ASNN-295
         // previewAssignmentBean.setAssignment(assignment);
         // reviewAssignmentBean.setOTPKey(key);
@@ -311,6 +326,31 @@ public class AssignmentAuthoringBean {
 
     public WorkFlowResult processActionCancel() {
         return WorkFlowResult.INSTRUCTOR_CANCEL_ASSIGNMENT;
+    }
+    
+    /**
+     * 
+     * @param version
+     * @return true if the text supplied by WYSIWYG editors on the assignment is
+     * valid. false if the text contains malicious tags or attributes that need
+     * to be addressed before any action (ie preview, saving) can proceed. Strips the text of extraneous
+     * whitespace, as well
+     */
+    private boolean cleanUpAssignment(Assignment2 assignment) {
+        boolean textValid = true;
+        if (assignment != null) {
+            StringBuilder alertMsg = new StringBuilder();
+            if (assignment.getInstructions() != null) {
+                assignment.setInstructions(FormattedText.
+                        processFormattedText(assignment.getInstructions(), alertMsg, true, true));
+                if (alertMsg != null && alertMsg.length() > 0) {
+                    messages.addMessage(new TargettedMessage("assignment2.error.assignment_instructions", new Object[] {alertMsg.toString()}));
+                    textValid = false;
+                }
+            }
+        }
+        
+        return textValid;
     }
 
 }

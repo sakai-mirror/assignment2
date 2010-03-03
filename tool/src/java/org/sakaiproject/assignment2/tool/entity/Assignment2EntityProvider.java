@@ -181,8 +181,11 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware {
             groupmap.put(group.getId(), group);
         }
         
-        boolean contentReviewAvailable = contentReviewLogic.isContentReviewAvailable(); 
+        boolean contentReviewAvailable = contentReviewLogic.isContentReviewAvailable(context); 
         boolean canEdit = permissionLogic.isCurrentUserAbleToEditAssignments(context);
+        
+        // TODO - use the service for entity work
+       filterRestrictedAssignmentInfo(viewable, context);
 
         for (Assignment2 asnn: viewable) {
             Map asnnmap = new HashMap();
@@ -317,6 +320,11 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware {
 
     public Object getEntity(EntityReference ref) {
         Assignment2 asnn = assignmentLogic.getAssignmentByIdWithAssociatedData(new Long(ref.getId()));
+        
+        // TODO use the service methods
+        List<Assignment2> assignList = new ArrayList<Assignment2>();
+        assignList.add(asnn);
+        filterRestrictedAssignmentInfo(assignList, asnn.getContextId());
 
         DeepUtils deep = DeepUtils.getInstance();
 
@@ -341,6 +349,24 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware {
 
     public String[] getHandledInputFormats() {
         return new String[] {Formats.XML, Formats.JSON, Formats.HTML };
+    }
+    
+    /**
+     * Until we have time to rework the EntityProviders to utilize the service AssignmentDefinition,
+     * we will manually filter the assignments here
+     * @param assignList
+     */
+    private void filterRestrictedAssignmentInfo(List<Assignment2> assignList, String context) {
+        if (assignList != null) {
+            boolean filterRestrictedInfo = !permissionLogic.isUserAbleToAccessInstructorView(context);
+            if (filterRestrictedInfo) {
+                // non-instructors cannot view the accept until date or properties
+                for (Assignment2 assign : assignList) {
+                    assign.setProperties(null);
+                    assign.setAcceptUntilDate(null);
+                }
+            }
+        }
     }
 
 }

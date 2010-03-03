@@ -32,6 +32,7 @@ import org.sakaiproject.assignment2.logic.GradebookItem;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
+import org.sakaiproject.assignment2.test.Assignment2TestBase;
 import org.sakaiproject.assignment2.test.AssignmentTestDataLoad;
 import org.sakaiproject.site.api.Group;
 
@@ -135,10 +136,10 @@ public class ExternalGradebookLogicTest extends Assignment2TestBase {
     	}*/
     }
 
-    public void testGetViewableGradebookItemIdTitleMap() {
+    public void testGetViewableGradebookItems() {
         // try a null contextId
         try {
-            gradebookLogic.getViewableGradebookItemIdTitleMap(null);
+            gradebookLogic.getViewableGradebookItems(null);
             fail("did not catch null contextId passed to testGetViewableGradebookItemIdTitleMap");
         } catch (IllegalArgumentException iae) {}
 
@@ -146,27 +147,50 @@ public class ExternalGradebookLogicTest extends Assignment2TestBase {
 
         // start out as the instructor
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
-        Map<Long, String> goIdTitleMap = gradebookLogic.getViewableGradebookItemIdTitleMap(AssignmentTestDataLoad.CONTEXT_ID);
-        assertEquals(3, goIdTitleMap.size());
-        assertTrue(goIdTitleMap.get(AssignmentTestDataLoad.GB_ITEM1_ID).equals(AssignmentTestDataLoad.GB_ITEM1_NAME));
-        assertTrue(goIdTitleMap.get(AssignmentTestDataLoad.GB_ITEM2_ID).equals(AssignmentTestDataLoad.GB_ITEM2_NAME));
-        assertTrue(goIdTitleMap.get(AssignmentTestDataLoad.GB_ITEM3_ID).equals(AssignmentTestDataLoad.GB_ITEM3_NAME));
+        List<GradebookItem> gbItems = gradebookLogic.getViewableGradebookItems(AssignmentTestDataLoad.CONTEXT_ID);
+        assertEquals(3, gbItems.size());
+        for (GradebookItem gbItem : gbItems) {
+            if (gbItem.getGradebookItemId().equals(AssignmentTestDataLoad.GB_ITEM1_ID)) {
+                assertEquals(gbItem.getTitle(), AssignmentTestDataLoad.GB_ITEM1_NAME);
+            } else if (gbItem.getGradebookItemId().equals(AssignmentTestDataLoad.GB_ITEM2_ID)) {
+                assertEquals(gbItem.getTitle(), AssignmentTestDataLoad.GB_ITEM2_NAME);
+            } else if (gbItem.getGradebookItemId().equals(AssignmentTestDataLoad.GB_ITEM3_ID)) {
+                assertEquals(gbItem.getTitle(), AssignmentTestDataLoad.GB_ITEM3_NAME);
+            } else {
+                fail ("Unknown gb item returned by getViewableGradebookItems");
+            }
+        }
 
         // try a ta
         //TODO grader perms
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
-        goIdTitleMap = gradebookLogic.getViewableGradebookItemIdTitleMap(AssignmentTestDataLoad.CONTEXT_ID);
-        assertEquals(3, goIdTitleMap.size());
-        assertTrue(goIdTitleMap.get(AssignmentTestDataLoad.GB_ITEM1_ID).equals(AssignmentTestDataLoad.GB_ITEM1_NAME));
-        assertTrue(goIdTitleMap.get(AssignmentTestDataLoad.GB_ITEM2_ID).equals(AssignmentTestDataLoad.GB_ITEM2_NAME));
-        assertTrue(goIdTitleMap.get(AssignmentTestDataLoad.GB_ITEM3_ID).equals(AssignmentTestDataLoad.GB_ITEM3_NAME));
+        gbItems = gradebookLogic.getViewableGradebookItems(AssignmentTestDataLoad.CONTEXT_ID);
+        assertEquals(3, gbItems.size());
+        for (GradebookItem gbItem : gbItems) {
+            if (gbItem.getGradebookItemId().equals(AssignmentTestDataLoad.GB_ITEM1_ID)) {
+                assertEquals(gbItem.getTitle(), AssignmentTestDataLoad.GB_ITEM1_NAME);
+            } else if (gbItem.getGradebookItemId().equals(AssignmentTestDataLoad.GB_ITEM2_ID)) {
+                assertEquals(gbItem.getTitle(), AssignmentTestDataLoad.GB_ITEM2_NAME);
+            } else if (gbItem.getGradebookItemId().equals(AssignmentTestDataLoad.GB_ITEM3_ID)) {
+                assertEquals(gbItem.getTitle(), AssignmentTestDataLoad.GB_ITEM3_NAME);
+            } else {
+                fail ("Unknown gb item returned by getViewableGradebookItems");
+            }
+        }
 
         // now try a student - should only get released items
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT1_UID);
-        goIdTitleMap = gradebookLogic.getViewableGradebookItemIdTitleMap(AssignmentTestDataLoad.CONTEXT_ID);
-        assertEquals(2, goIdTitleMap.size());
-        assertTrue(goIdTitleMap.get(AssignmentTestDataLoad.GB_ITEM2_ID).equals(AssignmentTestDataLoad.GB_ITEM2_NAME));
-        assertTrue(goIdTitleMap.get(AssignmentTestDataLoad.GB_ITEM3_ID).equals(AssignmentTestDataLoad.GB_ITEM3_NAME));
+        gbItems = gradebookLogic.getViewableGradebookItems(AssignmentTestDataLoad.CONTEXT_ID);
+        assertEquals(2, gbItems.size());
+        for (GradebookItem gbItem : gbItems) {
+            if (gbItem.getGradebookItemId().equals(AssignmentTestDataLoad.GB_ITEM2_ID)) {
+                assertEquals(gbItem.getTitle(), AssignmentTestDataLoad.GB_ITEM2_NAME);
+            } else if (gbItem.getGradebookItemId().equals(AssignmentTestDataLoad.GB_ITEM3_ID)) {
+                assertEquals(gbItem.getTitle(), AssignmentTestDataLoad.GB_ITEM3_NAME);
+            } else {
+                fail ("Unknown gb item returned by getViewableGradebookItems");
+            }
+        }
 
     }
 
@@ -901,27 +925,27 @@ public class ExternalGradebookLogicTest extends Assignment2TestBase {
     	} catch (SecurityException se) {}*/
     }
 
-    public void testGetGradeInformationForSubmission() {
+    public void testGetGradeInformationForStudent() {
         // let's try some nulls
         try {
-            gradebookLogic.getGradeInformationForSubmission(null, new AssignmentSubmission());
-            fail("did not catch null contextId passed to getGradeInformationForSubmission");
+            gradebookLogic.getGradeInformationForStudent(null, 123L, AssignmentTestDataLoad.STUDENT1_UID);
+            fail("did not catch null contextId passed to getGradeInformationForStudent");
         } catch (IllegalArgumentException iae) {}
 
         try {
-            gradebookLogic.getGradeInformationForSubmission(AssignmentTestDataLoad.CONTEXT_ID, null);
-            fail("did not catch null submission passed to getGradeInformationForSubmission");
+            gradebookLogic.getGradeInformationForStudent(AssignmentTestDataLoad.CONTEXT_ID, null, AssignmentTestDataLoad.STUDENT1_UID);
+            fail("did not catch null gb item id passed to getGradeInformationForStudent");
+        } catch (IllegalArgumentException iae) {}
+        
+        try {
+            gradebookLogic.getGradeInformationForStudent(AssignmentTestDataLoad.CONTEXT_ID, 123L, null);
+            fail("did not catch null student id passed to getGradeInformationForStudent");
         } catch (IllegalArgumentException iae) {}
 
         // become an instructor
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
-        // try an ungraded submission
-        GradeInformation gradeInfo = gradebookLogic.getGradeInformationForSubmission(AssignmentTestDataLoad.CONTEXT_ID, testData.st1a1Submission);
-        assertNull(gradeInfo.getGradebookGrade());
-        assertNull(gradeInfo.getGradebookComment());
 
-        // now try a graded one
-        gradeInfo = gradebookLogic.getGradeInformationForSubmission(AssignmentTestDataLoad.CONTEXT_ID, testData.st1a3Submission);
+        GradeInformation gradeInfo = gradebookLogic.getGradeInformationForStudent(AssignmentTestDataLoad.CONTEXT_ID, AssignmentTestDataLoad.GB_ITEM1_ID, AssignmentTestDataLoad.STUDENT1_UID);
         assertFalse(gradeInfo.isGradebookGradeReleased());
         assertEquals(AssignmentTestDataLoad.st1a3Grade.toString(), gradeInfo.getGradebookGrade());
         assertEquals(AssignmentTestDataLoad.st1a3Comment, gradeInfo.getGradebookComment());

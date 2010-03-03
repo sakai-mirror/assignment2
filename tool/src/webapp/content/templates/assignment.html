@@ -141,84 +141,7 @@
             </p>
         </div>
     </fieldset>
-    
-      <fieldset rsf:id="tii_content_review_area" id="">
-        <legend rsf:id="msg=assignment2.turnitin.asnnedit.title">Turnitin</legend>
 
-        <div rsf:id="tii_errors" class="generalErrors">
-          <div style="display:inline">
-            <ul style="margin:0;padding:0;display:inline;">
-              <li rsf:id="tii_errormsg:" class="alertMessageInline">My apologies, but there seems to have been an error. Please note the time/date and the server you are on (located in the footer) and contact the support center for assistance resolving this problem.</li>
-            </ul>
-          </div>
-        </div>
-
-        <div id="tii_enabled_area" rsf:id="tii_enabled_area" style="clear:both">
-            <p class="asnnOptionsSubsection">
-              <input type="checkbox" rsf:id="use_tii" id="use_tii" />
-              <label for="use_tii" rsf:id="msg=assignment2.turnitin.asnnedit.use_turnitin" id="">Use Turnitin</label>
-              <span class="inlineMessage messageConfirmation" style="display: none;" id="tii_attach_warning" rsf:id="msg=assignment2.turnitin.asnnedit.attachment.warning">Turnitin supports attachments only. Reports will not be generated for text-only submissions!!</span>
-            </p>
-            
-        </div>
-        <div id="tii_properties" rsf:id="tii_properties" style="clear:both; display: none;">
-          <ol class="asnnOptionsSubsection">
-              
-              <li rsf:id="submit_to_options">
-                <div rsf:id="msg=assignment2.turnitin.asnnedit.submit_papers_to" class="asnnOption">Submit papers to </div>
-                <span rsf:id="submit_to_repo_radios" />
-                <ol>
-                  <li rsf:id="submit_papers_to:">
-                    <input rsf:id="submit_to_option" id="submit_to_option" type="radio" /> 
-                    <label for="submit_to_option" rsf:id="submit_to_label">No repo</label>
-                  </li>
-                </ol>
-              </li>
-              <li rsf:id="submit_to_single_repository">
-                  <span rsf:id="submit_to_repository" class="instruction">Submitting to this repo!</span>
-              </li>
-              <li>
-                  <div rsf:id="msg=assignment2.turnitin.asnnedit.generate_originality_reports" class="asnnOption">Generate Originality Reports! </div>
-                  <span rsf:id="generate_report_radios" />
-                  <ol>
-                      <li>
-                          <input rsf:id="gen_report_immediately" id="gen_report_immediately" name="gen_reports" type="radio" />
-                          <label for="gen_report_immediately" rsf:id="gen_report_immediately_label">Immediately!</label><span rsf:id="msg=assignment2.turnitin.asnnedit.generate_originality_reports.no_due_date" id="gen_reports_no_due_date">No due date was set!</span>
-                      </li>
-                      <li>
-                          <input rsf:id="gen_report_on_due_date" id="gen_report_on_due_date" name="gen_reports" type="radio" onchange="asnn2.showHideGradeSettingError();"/> 
-                          <label for="gen_report_on_due_date" rsf:id="gen_report_on_due_date_label">On due date!</label>
-                      </li>
-                  </ol>
-              </li>
-              <li>
-                  <input type="checkbox" rsf:id="allow_students_to_see_originality_checkbox" id="allow_students_to_see_originality_checkbox" />
-                  <label for="allow_students_to_see_originality_checkbox" rsf:id="msg=assignment2.turnitin.asnnedit.allow_students_to_see_originality_reports">Allow students to see originality reports</label>
-              </li>
-              <li>
-                  <span rsf:id="msg=assignment2.turnitin.asnnedit.check_originality_against">Check originality against:</span>
-                  <ol>
-                      <li>
-                          <input type="checkbox" rsf:id="check_against_student_repo_checkbox" id="check_against_student_repo_checkbox" />
-                          <label for="check_against_student_repo_checkbox" rsf:id="msg=assignment2.turnitin.asnnedit.student_paper_repository">Student paper repository</label>
-                      </li>
-                      <li>
-                          <input type="checkbox" rsf:id="check_against_internet_repo_checkbox" id="check_against_internet_repo_checkbox" />
-                          <label for="check_against_internet_repo_checkbox"  rsf:id="msg=assignment2.turnitin.asnnedit.internet_repository">Current and archived internet</label>
-                      </li>
-                      <li>
-                          <input type="checkbox" rsf:id="check_against_journal_repo_checkbox" id="check_against_journal_repo_checkbox" />
-                          <label for="check_against_journal_repo_checkbox" rsf:id="msg=assignment2.turnitin.asnnedit.journal_repository">Periodicals, journals, and publications</label>
-                      </li>
-                      <li>
-                          <input type="checkbox" rsf:id="check_against_institution_repo_checkbox" id="check_against_institution_repo_checkbox" />
-                          <label for="check_against_institution_repo_checkbox" rsf:id="check_institution_repo_text">Institution-specific repository!</label>
-                      </li>
-                  </ol>
-              </li>
-          </ol>
-        </div>
-    </fieldset>
 	
 	<fieldset>
 		<legend rsf:id="msg=assignment2.assignment_add.availability_details">Availability Details</legend>
@@ -280,13 +203,17 @@
         <ol>
             <li><span rsf:id="graded-radios" />
                 <fieldset>
-                    <ol>
+                    <div id="grading_section">
+                      <span style="display:none;" class="messageContent" rsf:id="msg=assignment2.assignment_add.grading_warning" id="grading_warning">
+                      If this assignment will be graded, select an existing Gradebook item or create a new one. Otherwise, select 'This assignment is not graded'.!!!!!!!!!!!!!!!
+                      </span>
+                      <ol id="grading_options">
                         <li>
-                            <input rsf:id="select_ungraded" id="select_ungraded" name="graded" type="radio" onchange="asnn2.showHideGradeSettingError();"/> 
+                            <input rsf:id="select_ungraded" id="select_ungraded" name="graded" type="radio" onclick="asnn2.showHideGradeSettingError();"/> 
                             <label for="select_ungraded" rsf:id="select_ungraded_label">This assignment is ungraded</label>
                         </li>
                         <li>
-                            <input rsf:id="select_graded" id="select_graded" name="graded" type="radio" onchange="asnn2.showHideGradeSettingError();"/> 
+                            <input rsf:id="select_graded" id="select_graded" name="graded" type="radio" onclick="asnn2.showHideGradeSettingError();"/> 
                             <label for="select_graded" rsf:id="select_graded_label">This assignment is graded</label>
                             <span rsf:id="msg=assignment2.assignment_add.gradebook_associated"> and is associated with a Gradebook Item:</span> 
                                 <select rsf:id="gradebook_item" onchange="asnn2.selectGraded();asnn2.populateTitleWithGbItemName();asnn2.showHideGradeSettingError();">
@@ -296,7 +223,7 @@
                                     <option value="GB Item 3">GB Item 3</option>
                                     <option value="GB Item 4">GB Item 4</option>
                                 </select>
-                                <img rsf:id="gradingSelectionError" id="gradingSelectionError" class="inlineErrorIndicator" src="/../../library/image/sakai/warn.gif" />
+                                
                                 <p class="indent">
                                     <span rsf:id="msg=assignment2.assignment_add.gradebook_or"> -or- </span>
                                     <a rsf:id="gradebook_item_new_helper" id="gradebook_item_new_helper" class="thickbox" onclick="asnn2.update_new_gb_item_helper_url();">Create a new Gradebook Item</a>
@@ -305,6 +232,7 @@
                                 </p>
                         </li>
                     </ol>
+                  </div>
                 </fieldset>
                 <p rsf:id="message-for:gradebook_item"></p>
             </li>
@@ -318,6 +246,85 @@
     		<label for="sub_notif" rsf:id="msg=assignment2.assignment_add.notification">Send email notifications for student submissions</label>
 		</div>
 	</fieldset>
+	
+	<fieldset rsf:id="tii_content_review_area" id="">
+        <legend rsf:id="msg=assignment2.turnitin.asnnedit.title">Turnitin</legend>
+
+        <div rsf:id="tii_errors" class="generalErrors">
+          <div style="display:inline">
+            <ul style="margin:0;padding:0;display:inline;">
+              <li rsf:id="tii_errormsg:" class="alertMessageInline">My apologies, but there seems to have been an error. Please note the time/date and the server you are on (located in the footer) and contact the support center for assistance resolving this problem.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div id="tii_enabled_area" rsf:id="tii_enabled_area" style="clear:both">
+            <p class="asnnOptionsSubsection">
+              <input type="checkbox" rsf:id="use_tii" id="use_tii" />
+              <label for="use_tii" rsf:id="msg=assignment2.turnitin.asnnedit.use_turnitin" id="">Use Turnitin</label>
+              <a rsf:id="tii_supported_formats" class="supported_formats_link" target="_blank">Supported Formats!</a>
+              <span class="inlineMessage messageConfirmation" style="display: none;" id="tii_attach_warning" rsf:id="msg=assignment2.turnitin.asnnedit.attachment.warning">Turnitin supports attachments only. Reports will not be generated for text-only submissions!!</span>
+            </p>
+            
+        </div>
+        <div id="tii_properties" rsf:id="tii_properties" style="clear:both; display: none;">
+          <ol class="asnnOptionsSubsection">
+              
+              <li rsf:id="submit_to_options">
+                <div rsf:id="msg=assignment2.turnitin.asnnedit.submit_papers_to" class="asnnOption">Submit papers to </div>
+                <span rsf:id="submit_to_repo_radios" />
+                <ol>
+                  <li rsf:id="submit_papers_to:">
+                    <input rsf:id="submit_to_option" id="submit_to_option" type="radio" /> 
+                    <label for="submit_to_option" rsf:id="submit_to_label">No repo</label>
+                  </li>
+                </ol>
+              </li>
+              <li rsf:id="submit_to_single_repository">
+                  <span rsf:id="submit_to_repository" class="instruction">Submitting to this repo!</span>
+              </li>
+              <li>
+                  <div rsf:id="msg=assignment2.turnitin.asnnedit.generate_originality_reports" class="asnnOption">Generate Originality Reports! </div>
+                  <span rsf:id="generate_report_radios" />
+                  <ol>
+                      <li>
+                          <input rsf:id="gen_report_immediately" id="gen_report_immediately" name="gen_reports" type="radio" />
+                          <label for="gen_report_immediately" rsf:id="gen_report_immediately_label">Immediately!</label>
+                      </li>
+                      <li>
+                          <input rsf:id="gen_report_on_due_date" id="gen_report_on_due_date" name="gen_reports" type="radio" onchange="asnn2.showHideGradeSettingError();"/> 
+                          <label for="gen_report_on_due_date" rsf:id="gen_report_on_due_date_label">On due date!</label><span rsf:id="msg=assignment2.turnitin.asnnedit.generate_originality_reports.no_due_date" id="gen_reports_no_due_date" class="messageConfirmation">No due date was set!</span>
+                      </li>
+                  </ol>
+              </li>
+              <li>
+                  <input type="checkbox" rsf:id="allow_students_to_see_originality_checkbox" id="allow_students_to_see_originality_checkbox" />
+                  <label for="allow_students_to_see_originality_checkbox" rsf:id="msg=assignment2.turnitin.asnnedit.allow_students_to_see_originality_reports">Allow students to see originality reports</label>
+              </li>
+              <li>
+                  <span rsf:id="msg=assignment2.turnitin.asnnedit.check_originality_against">Check originality against:</span>
+                  <ol>
+                      <li>
+                          <input type="checkbox" rsf:id="check_against_student_repo_checkbox" id="check_against_student_repo_checkbox" />
+                          <label for="check_against_student_repo_checkbox" rsf:id="msg=assignment2.turnitin.asnnedit.student_paper_repository">Student paper repository</label>
+                      </li>
+                      <li>
+                          <input type="checkbox" rsf:id="check_against_internet_repo_checkbox" id="check_against_internet_repo_checkbox" />
+                          <label for="check_against_internet_repo_checkbox"  rsf:id="msg=assignment2.turnitin.asnnedit.internet_repository">Current and archived internet</label>
+                      </li>
+                      <li>
+                          <input type="checkbox" rsf:id="check_against_journal_repo_checkbox" id="check_against_journal_repo_checkbox" />
+                          <label for="check_against_journal_repo_checkbox" rsf:id="msg=assignment2.turnitin.asnnedit.journal_repository">Periodicals, journals, and publications</label>
+                      </li>
+                      <li>
+                          <input type="checkbox" rsf:id="check_against_institution_repo_checkbox" id="check_against_institution_repo_checkbox" />
+                          <label for="check_against_institution_repo_checkbox" rsf:id="check_institution_repo_text">Institution-specific repository!</label>
+                      </li>
+                  </ol>
+              </li>
+          </ol>
+        </div>
+    </fieldset>
 	
 	<fieldset class="submit">
 		<input onclick="return validateAsnn()" rsf:id="post_assignment" accesskey="s" type="submit" class="active" value="Post"/>

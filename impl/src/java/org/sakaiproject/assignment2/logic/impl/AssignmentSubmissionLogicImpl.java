@@ -369,7 +369,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
         
         // ASNN-516 now let's run these attachments through the content review service, if appropriate
         if (!version.isDraft() && assignment.isContentReviewEnabled() && subAttachSet != null) {
-            if (contentReviewLogic.isContentReviewAvailable()) {
+            if (contentReviewLogic.isContentReviewAvailable(assignment.getContextId())) {
                 for (SubmissionAttachment att : subAttachSet) {
                     if (contentReviewLogic.isAttachmentAcceptableForReview(att.getAttachmentReference())) {
                         if (log.isDebugEnabled()) log.debug("Adding attachment " + att.getAttachmentReference() + " to review queue for student " + userId);
@@ -711,28 +711,38 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
                     AssignmentSubmission currSubmission = (AssignmentSubmission)assignmentIdToSubmissionMap.get(assign.getId());
                     AssignmentSubmissionVersion currVersion = currSubmission != null ? 
                             currSubmission.getCurrentSubmissionVersion() : null;
+                    Date submissionDueDate = currSubmission != null ? currSubmission.getResubmitCloseDate() : null;
 
-                            Integer status = getSubmissionStatusConstantForCurrentVersion(currVersion, assign.getDueDate());
-                            assignToStatusMap.put(assign, status);
+                    Integer status = getSubmissionStatusForVersion(currVersion, assign.getDueDate(), submissionDueDate);
+                    assignToStatusMap.put(assign, status);
                 }
             }
         }
 
         return assignToStatusMap;
     }
-
-    public Integer getSubmissionStatusConstantForCurrentVersion(AssignmentSubmissionVersion currentVersion,
-            Date dueDate) {
+    
+    public Integer getSubmissionStatusForVersion(AssignmentSubmissionVersion version, Date assignDueDate, Date submissionDueDate) {
+        
         int status = AssignmentConstants.SUBMISSION_NOT_STARTED;
-
-        if (currentVersion == null) {
+        
+        // the student's due date will be the assignment due date unless the instructor
+        // has extended the due date for this single student
+        Date studentDueDate;
+        if (submissionDueDate != null) {
+            studentDueDate = submissionDueDate;
+        } else {
+            studentDueDate = assignDueDate;
+        }
+        
+        if (version == null) {
             status = AssignmentConstants.SUBMISSION_NOT_STARTED;
-        } else if (currentVersion.getId() == null) {
+        } else if (version.getId() == null) {
             status = AssignmentConstants.SUBMISSION_NOT_STARTED;
-        } else if (currentVersion.isDraft()) {
+        } else if (version.isDraft()) {
             status = AssignmentConstants.SUBMISSION_IN_PROGRESS;
-        } else if (currentVersion.getSubmittedDate() != null) {
-            if (dueDate != null && dueDate.before(currentVersion.getSubmittedDate())) {
+        } else if (version.getSubmittedDate() != null) {
+            if (studentDueDate != null && studentDueDate.before(version.getSubmittedDate())) {
                 status = AssignmentConstants.SUBMISSION_LATE;
             } else {
                 status = AssignmentConstants.SUBMISSION_SUBMITTED;
@@ -1551,6 +1561,15 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
         Collections.sort(userSubmissions, new ComparatorsUtils.SubmissionCompletedSortOrderComparator());
 
         return userSubmissions;
+    }
+    
+    public AssignmentSubmissionVersion getCurrentVersionFromHistory(Collection<AssignmentSubmissionVersion> versionHistory) {
+        AssignmentSubmissionVersion currVersion = null;
+        if (versionHistory != null) {
+            currVersion = dao.getCurrentVersionFromHistory(versionHistory);
+        }
+        
+        return currVersion;
     }
 
     private List<String> filterStudentsByGroupMembership(List<String> fullStudentIdList, String filterGroupId) {

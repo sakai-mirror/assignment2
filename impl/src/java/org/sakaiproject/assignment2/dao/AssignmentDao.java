@@ -91,7 +91,9 @@ public interface AssignmentDao extends GeneralGenericDao {
     /**
      * 
      * @param submission
-     * @return returns the current submission version for the given AssignmentSubmission and userId
+     * @return returns the current submission version for the given AssignmentSubmission. If a feedback-only
+     * version exists, it will only be defined as the "current" version if no other versions
+     * exist. Otherwise, the most recent student version (this could be draft) will be returned
      */
     public AssignmentSubmissionVersion getCurrentSubmissionVersionWithAttachments(AssignmentSubmission submission);
 
@@ -223,6 +225,13 @@ public interface AssignmentDao extends GeneralGenericDao {
      */
     public List<AssignmentSubmissionVersion> getCurrentSubmittedVersions(Collection<String> studentUids, Assignment2 assignment);
 
+    /**
+     * 
+     * @param versionHistory
+     * @return given a version history, returns the version with the highest submittedVersionNumber
+     */
+    public AssignmentSubmissionVersion getCurrentVersionFromHistory(Collection<AssignmentSubmissionVersion> versionHistory);
+    
     /**
      * In the logic, some objects will be returned with
      * modified fields (that are not meant to be saved). For example, the feedback

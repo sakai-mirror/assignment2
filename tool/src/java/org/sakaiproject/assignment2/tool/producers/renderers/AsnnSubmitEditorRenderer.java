@@ -1,8 +1,6 @@
 package org.sakaiproject.assignment2.tool.producers.renderers;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
@@ -11,6 +9,7 @@ import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
+import org.sakaiproject.assignment2.tool.LocalTurnitinLogic;
 import org.sakaiproject.assignment2.tool.beans.StudentSubmissionVersionFlowBean;
 import org.sakaiproject.assignment2.tool.params.FilePickerHelperViewParams;
 import org.sakaiproject.assignment2.tool.producers.AddAttachmentHelperProducer;
@@ -19,7 +18,6 @@ import org.sakaiproject.assignment2.tool.producers.evolvers.AttachmentInputEvolv
 import uk.org.ponder.beanutil.entity.EntityBeanLocator;
 import uk.org.ponder.messageutil.MessageLocator;
 import uk.org.ponder.rsf.components.UIBoundBoolean;
-import uk.org.ponder.rsf.components.UIBoundString;
 import uk.org.ponder.rsf.components.UICommand;
 import uk.org.ponder.rsf.components.UIContainer;
 import uk.org.ponder.rsf.components.UIELBinding;
@@ -28,6 +26,7 @@ import uk.org.ponder.rsf.components.UIInput;
 import uk.org.ponder.rsf.components.UIInputMany;
 import uk.org.ponder.rsf.components.UIInternalLink;
 import uk.org.ponder.rsf.components.UIJointContainer;
+import uk.org.ponder.rsf.components.UILink;
 import uk.org.ponder.rsf.components.UIMessage;
 import uk.org.ponder.rsf.components.UIOutput;
 import uk.org.ponder.rsf.components.UIVerbatim;
@@ -72,17 +71,29 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
     public void setAttachmentInputEvolver(AttachmentInputEvolver attachmentInputEvolver){
         this.attachmentInputEvolver = attachmentInputEvolver;
     }
-
+    
     // Dependency
-    private AttachmentListRenderer attachmentListRenderer;
-    public void setAttachmentListRenderer (AttachmentListRenderer attachmentListRenderer) {
-        this.attachmentListRenderer = attachmentListRenderer;
+    private AsnnInstructionsRenderer asnnInstructionsRenderer;
+    public void setAsnnInstructionsRenderer(AsnnInstructionsRenderer asnnInstructionsRenderer) {
+        this.asnnInstructionsRenderer = asnnInstructionsRenderer;
+    }
+    
+    // Dependency
+    private AsnnToggleRenderer toggleRenderer;
+    public void setAsnnToggleRenderer(AsnnToggleRenderer toggleRenderer) {
+        this.toggleRenderer = toggleRenderer;
     }
 
     // Dependency
     private ViewParameters viewParameters;
     public void setViewParameters(ViewParameters viewParameters) {
         this.viewParameters = viewParameters;
+    }
+    
+    // Dependency
+    private LocalTurnitinLogic localTurnitinLogic;
+    public void setLocalTurnitinLogic(LocalTurnitinLogic localTurnitinLogic) {
+        this.localTurnitinLogic = localTurnitinLogic;
     }
 
     // Dependency
@@ -122,9 +133,10 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
      * @param clientID
      * @param assignmentSubmission
      * @param preview
-     * @param asvOTP
+     * @param resubmit true if this is a resubmit scenario and that section should be highlighted
      */
-    public void fillComponents(UIContainer parent, String clientID, AssignmentSubmission assignmentSubmission, boolean preview, boolean studentPreviewSubmission) {
+    public void fillComponents(UIContainer parent, String clientID, AssignmentSubmission assignmentSubmission, 
+            boolean preview, boolean studentPreviewSubmission, boolean resubmit) {
 
         Assignment2 assignment = assignmentSubmission.getAssignment();
 
@@ -171,6 +183,39 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
         if (assignment.isHonorPledge()) {
             UIVerbatim.make(form, "required", messageLocator.getMessage("assignment2.student-submit.required"));
         }
+        
+        UIOutput editSubmissionContainer = UIOutput.make(form, "edit_submission");
+        
+        boolean displayResubmitToggle = false;
+        boolean resubmitToggleExpanded = resubmit;
+        
+        // if this is a resubmission and not a preview view, display a resubmission toggle
+        if (!studentPreviewSubmission && !preview) {
+            if (submissionLogic.getNumSubmittedVersions(assignmentSubmission.getUserId(), assignment.getId()) > 0) {
+                // render the resubmit toggle
+                displayResubmitToggle = true;
+                
+                String heading = messageLocator.getMessage("assignment2.student-submit.toggle.resubmit");
+                String hoverText = messageLocator.getMessage("assignment2.student-submit.hover.resubmit");
+                
+                toggleRenderer.makeToggle(joint, "resubmit_toggle:", "resubmit_toggle", true, heading, hoverText, resubmitToggleExpanded, false, false, false, null);
+                
+                // since we are rendering the toggle, let's identify the submission editing section
+                // with css classes
+                editSubmissionContainer.decorate(new UIFreeAttributeDecorator("class", "subsection1 toggleSubsection"));
+                
+                if (!resubmitToggleExpanded) {
+                    editSubmissionContainer.decorate(new UIFreeAttributeDecorator("style", "display: none;"));
+                }
+            }
+        }
+        
+        // display instructions if it isn't the student preview. they do display if student is editing
+        // or instructor is previewing
+        if (!studentPreviewSubmission) {
+            // render the instructions
+            asnnInstructionsRenderer.makeInstructions(joint, "assignment-instructions-edit:", assignment, false, false, false);
+        }
 
         // Because the flow might not be starting on the initial view, the
         // studentSubmissionPreviewVersion should always use the flow bean 
@@ -206,12 +251,10 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
         // Attachment Stuff
         // the editor will only display attachments for the current version if
         // it is a draft. otherwise, the user is working on a new submission
+        UIOutput attachSection = null;
         if (assignment.getSubmissionType() == AssignmentConstants.SUBMIT_ATTACH_ONLY ||
                 assignment.getSubmissionType() == AssignmentConstants.SUBMIT_INLINE_AND_ATTACH){
-            UIOutput attachSection = UIOutput.make(form, "submit_attachments");
-            if (assignment.isContentReviewEnabled()) {
-                attachSection.decorate(new UIFreeAttributeDecorator("class", "messageConfirmation"));
-            }
+            attachSection = UIOutput.make(form, "submit_attachments");
 
             if (studentPreviewSubmission || !preview) {
                 String[] attachmentRefs = 
@@ -231,81 +274,66 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
 
         if (assignment.isHonorPledge()) {
             UIOutput.make(joint, "honor_pledge_fieldset");
-            UIMessage.make(joint, "honor_pledge_label", "assignment2.student-submit.honor_pledge_text");
             UIBoundBoolean.make(form, "honor_pledge", "#{StudentSubmissionBean.honorPledge}");
         }
         
         // display plagiarism check warning
-        if (assignment.isContentReviewEnabled() && contentReviewLogic.isContentReviewAvailable()) {
+        if (assignment.isContentReviewEnabled() && contentReviewLogic.isContentReviewAvailable(assignment.getContextId())) {
+            if (attachSection != null) {
+                attachSection.decorate(new UIFreeAttributeDecorator("class", "messageConfirmation"));
+            }
+            
             if (assignment.getProperties().containsKey("s_view_report") && (Boolean)assignment.getProperties().get("s_view_report")) {
                 UIMessage.make(joint, "plagiarism_check", "assignment2.turnitin.submit.warning.inst_and_student");
             } else {
                 UIMessage.make(joint, "plagiarism_check", "assignment2.turnitin.submit.warning.inst_only");
+            }
+            
+            String fileRequirementsUrl = localTurnitinLogic.getSupportedFormatsUrl();
+            if (fileRequirementsUrl != null) {
+                UIOutput.make(joint, "plagiarism_file_req_section");
+                UILink.make(joint, "plagiarism_file_req", messageLocator.getMessage("assignment2.turnitin.file_requirements"), fileRequirementsUrl);
             }
         }
 
         form.parameters.add( new UIELBinding("StudentSubmissionBean.ASOTPKey", asOTPKey));
         form.parameters.add( new UIELBinding("StudentSubmissionBean.assignmentId", assignment.getId()));
 
-        /*
-         * According to the spec, if a student is editing a submision they will
-         * see the Submit,Preview, and Save&Exit buttons.  If they are previewing
-         * a submission they will see Submit,Edit, and Save&Exit.
-         * Don't display the buttons at all if this is the instructor preview
-         */
-        if (!preview) {
-            UIOutput.make(form, "submit_section");
-        }
+        // this section contains the honor pledge and the submit buttons. if this
+        // is a resubmit scenario, we are going to hide these options initially. if preview,
+        // we just hide the buttons within this section
+        UIOutput submissionSection = UIOutput.make(form, "submission_info");
 
         if (preview) {
-            // don't display the buttons
-        } else if (studentPreviewSubmission) {
-            UICommand.make(form, "submit_button", UIMessage.make("assignment2.student-submit.submit"), 
-            "StudentSubmissionBean.processActionSubmit");
-            UICommand.make(form, "save_draft_button", UIMessage.make("assignment2.student-submit.save_draft"), 
-            "StudentSubmissionBean.processActionSaveDraft");
-            UICommand edit_button = UICommand.make(form, "back_to_edit_button", UIMessage.make("assignment2.student-submit.back_to_edit"),
-            "StudentSubmissionBean.processActionBackToEdit");
-            //edit_button.addParameter(new UIELBinding(asvOTP + ".submittedText", hackSubmissionText));
+            // don't display the buttons at all for instructor preview
         } else {
+            UIOutput.make(form, "submit_section");
+            
             UICommand.make(form, "submit_button", UIMessage.make("assignment2.student-submit.submit"), 
             "StudentSubmissionBean.processActionSubmit");
-            UICommand.make(form, "preview_button", UIMessage.make("assignment2.student-submit.preview"), 
-            "StudentSubmissionBean.processActionPreview");
             UICommand.make(form, "save_draft_button", UIMessage.make("assignment2.student-submit.save_draft"), 
             "StudentSubmissionBean.processActionSaveDraft");
-            UICommand.make(form, "cancel_button", UIMessage.make("assignment2.student-submit.cancel"), 
-            "StudentSubmissionBean.processActionCancel");
-        }
+            
+            if (studentPreviewSubmission) {
+                UICommand.make(form, "back_to_edit_button", UIMessage.make("assignment2.student-submit.back_to_edit"),
+                "StudentSubmissionBean.processActionBackToEdit");
+            } else {
+                UICommand.make(form, "preview_button", UIMessage.make("assignment2.student-submit.preview"), 
+                "StudentSubmissionBean.processActionPreview");
 
-        /* 
-         * Render the Instructor's Feedback Materials
-         */
-        if (!preview && !studentPreviewSubmission) {
-            AssignmentSubmissionVersion currVersion = assignmentSubmission.getCurrentSubmissionVersion();
-            if (currVersion.isDraft() && currVersion.isFeedbackReleased()) {
-                UIOutput.make(joint, "draft-feedback");
-
-                String feedbackComment = currVersion.getFeedbackNotes();
-                if (feedbackComment == null || feedbackComment.trim().equals("")) {
-                    feedbackComment = messageLocator.getMessage("assignment2.student-submission.feedback.none");
-                }
-                UIVerbatim.make(joint, "draft-feedback-text", feedbackComment);
-
-                if (assignmentSubmission.getCurrentSubmissionVersion().getFeedbackAttachSet() != null && 
-                        assignmentSubmission.getCurrentSubmissionVersion().getFeedbackAttachSet().size() > 0) {
-                    UIMessage.make(joint, "draft-feedback-attachments-header", "assignment2.student-submission.feedback.materials.header");
-                    attachmentListRenderer.makeAttachmentFromFeedbackAttachmentSet(joint, 
-                            "draft-feedback-attachment-list:", viewParameters.viewID, 
-                            currVersion.getFeedbackAttachSet());
-                }
-
-                // mark this feedback as viewed
-                if (!currVersion.isFeedbackRead()) {
-                    List<Long> versionIdList = new ArrayList<Long>();
-                    versionIdList.add(currVersion.getId());
-                    submissionLogic.markFeedbackAsViewed(assignmentSubmission.getId(), versionIdList);
-                }
+                UICommand.make(form, "cancel_button", UIMessage.make("assignment2.student-submit.cancel"), 
+                "StudentSubmissionBean.processActionCancel");
+            }
+            
+            if (displayResubmitToggle && !resubmitToggleExpanded) {
+                // render the "Return to List" button. this only appears if this is a resubmission
+                UIOutput.make(form, "view_only_section");
+                UICommand.make(form, "return_to_list_button", UIMessage.make("assignment2.student-submit.return_to_list"), 
+                        "StudentSubmissionBean.processActionCancel");
+                
+                // since this is a resubmit scenario, we hide the honor pledge and
+                // submission buttons until they expand the resubmit toggle
+                submissionSection.decorate(new UIFreeAttributeDecorator("style", "display: none;"));
             }
         }
 
@@ -323,15 +351,19 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
             String[] attachmentRefs) {
         UIInputMany attachmentInput = UIInputMany.make(form, "attachment_list:", asvOTP + ".submittedAttachmentRefs", 
                 attachmentRefs);
-        attachmentInputEvolver.evolveAttachment(attachmentInput, !studentPreviewSubmission);
+        attachmentInputEvolver.evolveAttachment(attachmentInput, !studentPreviewSubmission, null);
 
         if (!studentPreviewSubmission) {
-            UIInternalLink.make(form, "add_submission_attachments", UIMessage.make("assignment2.student-submit.add_attachments"),
+            UIInternalLink addAttachLink = UIInternalLink.make(form, "add_submission_attachments", UIMessage.make("assignment2.student-submit.add_attachments"),
                     new FilePickerHelperViewParams(AddAttachmentHelperProducer.VIEWID, Boolean.TRUE, 
                             Boolean.TRUE, 500, 700, asvOTPKey, true));
+            addAttachLink.decorate(new UIFreeAttributeDecorator("onclick", attachmentInputEvolver.getOnclickMarkupForAddAttachmentEvent(null)));
         }
 
-        UIOutput.make(form, "no_attachments_yet", messageLocator.getMessage("assignment2.student-submit.no_attachments"));
+        UIOutput noAttach = UIOutput.make(form, "no_attachments_yet", messageLocator.getMessage("assignment2.student-submit.no_attachments"));
+        if (attachmentRefs != null && attachmentRefs.length > 0) {
+            noAttach.decorate(new UIFreeAttributeDecorator("style", "display: none;"));
+        }
     }
 
     public void fillComponents(UIContainer parent, String clientID) {

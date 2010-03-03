@@ -239,7 +239,16 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
         Assignment2 assignment = (Assignment2) assignmentAuthoringFlowBean.locateBean(OTPKey);
 
         // make the no gb item error msg. it will be hidden by default
-        UIMessage gbErrorMsg = UIMessage.make(tofill, "assignment_graded_no_gb_item", "assignment2.assignment_graded_no_gb_item");
+        UIMessage gbErrorMsg;
+        if (duplicatedAssignId != null)
+        {
+            // if this is a duplicate scenario, use an alternate error message
+            gbErrorMsg = UIMessage.make(tofill, "assignment_graded_no_gb_item", "assignment2.assignment_add.graded_no_gb_item_duplicate");
+        }
+        else
+        {
+            gbErrorMsg = UIMessage.make(tofill, "assignment_graded_no_gb_item", "assignment2.assignment_graded_no_gb_item");
+        }
         
         // if this is an "edit" scenario, we need to display a warning if the
         // assignment is graded but doesn't have an assoc gb item
@@ -377,13 +386,17 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
         UIInputMany attachmentInput = UIInputMany.make(form, "attachment_list:", assignment2OTP + ".assignmentAttachmentRefs", 
                 assignment.getAssignmentAttachmentRefs());
         attachmentInput.mustapply = true;
-        attachmentInputEvolver.evolveAttachment(attachmentInput);
+        attachmentInputEvolver.evolveAttachment(attachmentInput, null);
 
-        UIOutput.make(form, "no_attachments_yet", messageLocator.getMessage("assignment2.assignment_add.no_attachments"));
+        UIOutput noAttach = UIOutput.make(form, "no_attachments_yet", messageLocator.getMessage("assignment2.assignment_add.no_attachments"));
+        if (assignment.getAssignmentAttachmentRefs() != null && assignment.getAssignmentAttachmentRefs().length > 0) {
+            noAttach.decorate(new UIFreeAttributeDecorator("style", "display:none;"));
+        }
 
-        UIInternalLink.make(form, "add_attachments", UIMessage.make("assignment2.assignment_add.add_attachments"),
+        UIInternalLink addAttachLink = UIInternalLink.make(form, "add_attachments", UIMessage.make("assignment2.assignment_add.add_attachments"),
                 new FilePickerHelperViewParams(AddAttachmentHelperProducer.VIEWID, Boolean.TRUE, 
                         Boolean.TRUE, 500, 700, OTPKey));
+        addAttachLink.decorate(new UIFreeAttributeDecorator("onclick", attachmentInputEvolver.getOnclickMarkupForAddAttachmentEvent(null)));
 
         /********
          * Require Submissions
@@ -549,7 +562,7 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
         UICommand.make(form, "cancel_assignment", UIMessage.make("assignment2.assignment_add.cancel_assignment"), "AssignmentAuthoringBean.processActionCancel");
 
         // Optional Turnitin Content Review Integration
-        if (externalContentReviewLogic.isContentReviewAvailable()) {
+        if (externalContentReviewLogic.isContentReviewAvailable(assignment.getContextId())) {
             renderTurnitinArea(tofill, assignment2OTP, assignment, form);
         }
     }
@@ -588,6 +601,12 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
 
         UIOutput.make(tofill, "tii_enabled_area");
         UIOutput.make(tofill, "tii_properties");
+        
+        // add the supported formats link, if specified in sakai.properties
+        String supportedFormatsUrl = localTurnitinLogic.getSupportedFormatsUrl();
+        if (supportedFormatsUrl != null) {
+            UILink.make(tofill, "tii_supported_formats", messageLocator.getMessage("assignment2.turnitin.asnnedit.supported_formats"), supportedFormatsUrl);
+        }
 
         UIBoundBoolean.make(form, "use_tii", assignment2OTP + ".contentReviewEnabled");
 

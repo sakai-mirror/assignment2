@@ -164,7 +164,7 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
         } else if (gradebookLogic.isCurrentUserAbleToGrade(assignment.getContextId())) {
             List<String> currentUserMemberships = externalLogic.getUserMembershipGroupIdList(externalLogic.getCurrentUserId(), assignment.getContextId());
             List<String> studentMemberships = externalLogic.getUserMembershipGroupIdList(studentId, assignment.getContextId());
-            if (userMembershipsOverlap(currentUserMemberships, studentMemberships)) {
+            if (listMembershipsOverlap(currentUserMemberships, studentMemberships)) {
                 viewable = true;
             }
         }
@@ -209,43 +209,61 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
                 // check for a student or grader
                 boolean userIsStudent = gradebookLogic.isCurrentUserAStudentInGb(contextId);
                 boolean userMayGrade = gradebookLogic.isCurrentUserAbleToGrade(contextId);
-                List<String> userMemberships = externalLogic.getUserMembershipGroupIdList(currUserId, contextId);
+                
+                if (userIsStudent || userMayGrade) {
+                    List<String> userMemberships = externalLogic.getUserMembershipGroupIdList(currUserId, contextId);
 
-                for (Assignment2 assign: assignmentList) {
-                    // you must have edit perm to see draft assigns, so if we have gotten to this
-                    // point, don't allow drafts
-                    if (!assign.isDraft()) {
-                        boolean assignIsOpen = assign.getOpenDate().before(new Date());
+                    for (Assignment2 assign: assignmentList) {
+                        // you must have edit perm to see draft assigns, so if we have gotten to this
+                        // point, don't allow drafts
+                        if (!assign.isDraft()) {
+                            boolean assignIsOpen = assign.getOpenDate().before(new Date());
 
-                        if (assign.isRemoved()) {
-                            // student may view removed assignment if they have made a submission
-                            if (userIsStudent) {
-                                int numSubmissions = dao.getNumSubmittedVersions(currUserId, assign.getId());
-                                if (numSubmissions > 0) {
-                                    filteredAssignments.add(assign);
+                            if (assign.isRemoved()) {
+                                // student may view removed assignment if they have made a submission
+                                if (userIsStudent) {
+                                    int numSubmissions = dao.getNumSubmittedVersions(currUserId, assign.getId());
+                                    if (numSubmissions > 0) {
+                                        filteredAssignments.add(assign);
+                                    }
                                 }
-                            }
-                        } else if ((userIsStudent && assignIsOpen) || userMayGrade) {
-                            // we need to check group restrictions
-                            boolean groupSettingsValid = false;
-                            if (assign.getAssignmentGroupSet() != null && !assign.getAssignmentGroupSet().isEmpty()) {
-                                groupSettingsValid = isUserAMemberOfARestrictedGroup(userMemberships, assign.getAssignmentGroupSet());
-                            } else {
-                                groupSettingsValid = true;
-                            }
-
-                            if (groupSettingsValid) {
-                                // TA may view all ungraded assignments if they pass the group restrictions. 
-                                // students may view all assigns regardless of grading since they pass the group restrictions
-                                if (!assign.isGraded() || userIsStudent) {
-                                    filteredAssignments.add(assign);
+                            } else if ((userIsStudent && assignIsOpen) || userMayGrade) {
+                                // we need to check group restrictions
+                                boolean groupSettingsValid = false;
+                                if (assign.getAssignmentGroupSet() != null && !assign.getAssignmentGroupSet().isEmpty()) {
+                                    groupSettingsValid = isUserAMemberOfARestrictedGroup(userMemberships, assign.getAssignmentGroupSet());
                                 } else {
-                                    // check to see if can view assign in gradebook
-                                    // if gradebook item no longer exists, we treat it as ungraded
-                                    if (!gradebookLogic.gradebookItemExists(assign.getGradebookItemId())) {
+                                    groupSettingsValid = true;
+                                }
+
+                                if (groupSettingsValid) {
+                                    // TA may view all ungraded assignments if they pass the group restrictions. 
+                                    // students may view all assigns regardless of grading since they pass the group restrictions
+                                    if (!assign.isGraded() || userIsStudent) {
                                         filteredAssignments.add(assign);
                                     } else {
-                                        if (gradebookLogic.isCurrentUserAbleToViewGradebookItem(contextId, assign.getGradebookItemId())) {
+                                        // check to see if can view assign in gradebook
+                                        // if gradebook item no longer exists, we treat it as ungraded
+                                        if (!gradebookLogic.gradebookItemExists(assign.getGradebookItemId())) {
+                                            filteredAssignments.add(assign);
+                                        } else {
+                                            if (gradebookLogic.isCurrentUserAbleToViewGradebookItem(contextId, assign.getGradebookItemId())) {
+                                                filteredAssignments.add(assign);
+                                            }
+                                        }
+                                    }
+                                } else if (userMayGrade && assign.isGraded()) {
+                                    // via the gradebook grader permissions, it is possible that the TA may not be a member
+                                    // of the group but is allowed to grade students in the associated gb item.
+                                    // to determine if this assignment is viewable, we need to see if the students in
+                                    // the restricted groups overlaps with the students the ta is allowed to grade for
+                                    // the associated gb item
+                                    Map<String, String> studentToFunctionMap = gradebookLogic.getViewableStudentsForGradedItemMap(currUserId, contextId, assign.getGradebookItemId());
+                                    if (studentToFunctionMap != null && !studentToFunctionMap.isEmpty()) {
+                                        // now we need to get the students in the restricted groups
+                                        List<String> assignStudents = getAllAvailableStudentsGivenGroupRestrictions(contextId, assign.getAssignmentGroupSet());
+                                        boolean studentsInCommon = listMembershipsOverlap(assignStudents, new ArrayList<String>(studentToFunctionMap.keySet()));
+                                        if (studentsInCommon) {
                                             filteredAssignments.add(assign);
                                         }
                                     }
@@ -511,15 +529,15 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
     }
 
     /**
-     * Given 2 lists of group ids, will return true if any of the group ids overlap
-     * @param user1GroupIds
-     * @param user2GroupIds
+     * Given 2 lists, will return true if any of the elements in the two lists overlap
+     * @param list1
+     * @param list2
      * @return
      */
-    private boolean userMembershipsOverlap(List<String> user1GroupIds, List<String> user2GroupIds) {
-        if (user1GroupIds != null && user2GroupIds != null ) {
-            for (String user1Group : user1GroupIds) {
-                if (user1Group != null && user2GroupIds.contains(user1Group)) {
+    private boolean listMembershipsOverlap(List<String> list1, List<String> list2) {
+        if (list1 != null && list2 != null ) {
+            for (String element : list1) {
+                if (element != null && list2.contains(element)) {
                     return true;
                 }
             }

@@ -1,8 +1,9 @@
 var asnn2subview = asnn2subview || {};
 
+/*
 asnn2subview.selectorMap = [
   { selector: ".row", id: "row:" },
-  { selector: ".sub-table-header", id: "header:" },
+  { selector: ".sub-table-header", id: "sub-table-header:" },
   { selector: ".student-name", id: "student-name"},
   { selector: ".submitted-time", id: "submitted-time"},
   { selector: ".submission-status", id: "submission-status"},
@@ -29,6 +30,25 @@ asnn2subview.selectorMap = [
   { selector: ".grade-td", id: "grade-td" },
   { selector: ".report-col-header", id: "report-col-header" }
 ];
+*/
+
+asnn2subview.classSelectors = ["row:", "sub-table-header:", "student-name",
+  "submitted-time", "submission-status", "grade", "review-score", "review-error",
+  "review-multiple", "review-pending", "feedback-released", "student-grade-link",
+  "student-name-sort", "student-name-sort-img", "submitted-time-sort", 
+  "submitted-time-sort-img", "submission-status-sort", "submission-status-sort-img",
+  "submission-report-sort", "submission-report-sort-img", "feedback-released-sort",
+  "feedback-released-sort-img", "grade-sort", "grade-sort-img", "grade-col-header",
+  "grade-td", "report-col-header" ];
+
+asnn2subview.selectorMap = fluid.transform(asnn2subview.classSelectors, function (obj, idx) {
+  var cssClass = "."+obj;
+  if (cssClass.slice(cssClass.length-1)===":") {
+    cssClass = cssClass.slice(0,cssClass.length-1);
+  }
+  return { selector: cssClass, id: obj };
+});
+
 
 asnn2subview.getSortHeaderComptree = function(newModel) {
   var onSortClick = function(sortBy) {
@@ -60,7 +80,7 @@ asnn2subview.getSortHeaderComptree = function(newModel) {
         { ID: "submitted-time-sort",
           value: true,
           decorators: [
-            {"jQuery": ["click", onSortClick('submittedTime')]}
+            {"jQuery": ["click", onSortClick('submittedDate')]}
           ]
         },
         { ID: "submission-status-sort",
@@ -80,7 +100,7 @@ asnn2subview.getSortHeaderComptree = function(newModel) {
 
   if (asnn2subview.graded === true) {
     tree.children.push({
-      ID: "grade-col-header", value: true
+      ID: "grade-col-header"
     });
     tree.children.push({
       ID: "grade-sort", 
@@ -116,7 +136,7 @@ asnn2subview.getSortHeaderComptree = function(newModel) {
 
   if (newModel.sortKey === "studentName") {
     tree.children.push({ ID: "student-name-sort-img", target: imgsrc });
-  } else if (newModel.sortKey === "submittedTime") {
+  } else if (newModel.sortKey === "submittedDate") {
     tree.children.push({ ID: "submitted-time-sort-img", target: imgsrc });
   } else if (newModel.sortKey === "submissionStatus") {
     tree.children.push({ ID: "submission-status-sort-img", target: imgsrc });
@@ -194,7 +214,7 @@ asnn2subview.subTableRenderer = function (overallThat, inOptions) {
               }
                
               var treedata = { 
-                "header:": asnn2subview.getSortHeaderComptree(newModel),
+                "sub-table-header:": asnn2subview.getSortHeaderComptree(newModel),
                 "row:": togo  
               };
               // Keep this around to test on Fluid Trunk and create a Jira to have more debug information if it's still the same.
@@ -226,7 +246,7 @@ asnn2subview.renderSubmissions = function(treedata) {
   asnn2subview.alignGrading();
 }
 
-asnn2subview.initPager = function(numSubmissions, curPageSize, curOrderBy, curAscending) {
+asnn2subview.initPager = function(numSubmissions, curPageSize, curOrderBy, curAscending, pageIndex) {
   var graded = true;
 
   var columnDefs = [
@@ -284,7 +304,7 @@ asnn2subview.initPager = function(numSubmissions, curPageSize, curOrderBy, curAs
   
   asnn2subview.pager = fluid.pager("#submissions-table-area", {
     model: {
-      pageIndex: undefined,
+      pageIndex: pageIndex,
       pageSize: curPageSize,
       totalRange: undefined,
       sortKey: curOrderBy,
@@ -337,7 +357,7 @@ asnn2subview.filteredRowTransform = function(obj, idx) {
     var row = obj;
     var togo = [
       { ID: "student-grade-link",
-        target: '/portal/tool/'+sakai.curPlacement+'/grade/'+asnn2.curAsnnId+'/'+row.studentId,
+        target: '/portal/tool/'+sakai.curPlacement+'/grade/'+asnn2.curAsnnId+'/'+row.studentId+'?viewSubPageIndex='+asnn2subview.pager.model.pageIndex,
         linktext: row.studentName
       },
       {
@@ -417,7 +437,7 @@ asnn2subview.filteredRowTransform = function(obj, idx) {
     return togo;
   };
 
-asnn2subview.init = function(asnnid, contextId, placementId, numSubmissions, graded, reviewEnabled, curPageSize, curOrderBy, curAscending) {
+asnn2subview.init = function(asnnid, contextId, placementId, numSubmissions, graded, reviewEnabled, curPageSize, curOrderBy, curAscending, gradesReleased, pageIndex) {
   sakai.curPlacement = placementId;
   sakai.curContext = contextId;
 
@@ -427,6 +447,14 @@ asnn2subview.init = function(asnnid, contextId, placementId, numSubmissions, gra
   // TODO Graded is being encoded as a String param for some reason :|
   if (graded === "true") {
     asnn2subview.graded = true;
+    
+    // this is a bit of a hack to change the heading on the grade column depending
+    // on the released status of the gradebook item
+    if (gradesReleased == "true") {
+        jQuery("a.grade-sort").html("Grade (Released)");
+    } else {
+        jQuery("a.grade-sort").html("Grade (Not Released)");
+    }
   }
   else { 
     asnn2subview.graded = false;
@@ -444,6 +472,6 @@ asnn2subview.init = function(asnnid, contextId, placementId, numSubmissions, gra
     curAscending = 1;
   }
   
-  asnn2subview.initPager(numSubmissions, curPageSize, curOrderBy, curAscending);
+  asnn2subview.initPager(numSubmissions, curPageSize, curOrderBy, curAscending, pageIndex);
 
 };

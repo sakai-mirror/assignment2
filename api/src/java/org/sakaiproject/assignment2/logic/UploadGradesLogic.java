@@ -28,9 +28,20 @@ import java.util.Map;
 
 import org.sakaiproject.assignment2.exception.GradebookItemNotFoundException;
 import org.sakaiproject.assignment2.exception.InvalidGradeForAssignmentException;
+import org.sakaiproject.assignment2.model.UploadAllOptions;
 
 public interface UploadGradesLogic
 {
+    /**
+     * Optional property for sakai.properties to set the file size limit (in MB) for
+     * the grades csv file.  Defaults to {@link #FILE_UPLOAD_MAX_DEFAULT}
+     */
+    public static final String FILE_UPLOAD_MAX_PROP = "assignment2.grade.upload.max";
+    /**
+     * The default max file size, in MB, for a spreadsheet upload.
+     */
+    public static final int FILE_UPLOAD_MAX_DEFAULT = 1;
+    
     /**
      * 
      * @param file
@@ -57,11 +68,13 @@ public interface UploadGradesLogic
      * Given the parsed file, will process the content and save the grades and comments.
      * @param displayIdUserIdMap - map of displayId to userId for all of the students
      * in the site. if a student in the content is not found in this map, it is skipped
-     * @param assignmentId
+     * @param options {@link UploadAllOptions} associated with this upload
      * @param parsedContent file content returned by {@link #getCSVContent(File)}
      * @return a list of displayIds of students from the file who were not updated
      * because the current user does not have grading perm for that particular student.
-     * the user must have some kind of grading privileges, though, or SecurityException is thrown
+     * the user must have some kind of grading privileges, though, or SecurityException is thrown.
+     * Will use the options parameter to determine if the grades should be released or retracted for
+     * the associated gradebook item.
      * @throws SecurityException if current user does not have general grading permission
      * for the given assignment
      * @throws InvalidGradeForAssignmentException if a grade contained in the content 
@@ -69,7 +82,7 @@ public interface UploadGradesLogic
      * @throws GradebookItemNotFoundException if the gradebook item associated with the
      * assignment does not exist
      */
-    public List<String> uploadGrades(Map<String, String> displayIdUserIdMap, Long assignmentId, List<List<String>> parsedContent);
+    public List<String> uploadGrades(Map<String, String> displayIdUserIdMap, UploadAllOptions options, List<List<String>> parsedContent);
 
     /**
      * @param displayIdUserIdMap - map for converting the displayId to the
@@ -102,4 +115,11 @@ public interface UploadGradesLogic
      * students and grades 
      */
     public List<List<String>> removeStudentsFromContent(List<List<String>> parsedContent, List<String> studentsToRemove);
+    
+    /**
+     * 
+     * @return the file size limit, in MB, for the grades csv file. Derived from the
+     * sakai.properties value for {@link #FILE_UPLOAD_MAX_PROP}. Defaults to {@value #FILE_UPLOAD_MAX_DEFAULT}.
+     */
+    public int getGradesMaxFileSize();
 }

@@ -176,7 +176,7 @@ li fieldset ol li p.instruction {
 
 .subgroupHeading {
     font-weight: bold;
-    margin-top: 5px;
+    margin-top: 10px;
     margin-bottom: 8px;
     font-size: 98%;
 }
@@ -220,6 +220,11 @@ div.generalErrors li.alertMessageInline {
 
 .messageContent {
     font-weight: bold;
+}
+
+.messageContentPadding {
+    padding-top: 10px;
+    padding-bottom: 10px;
 }
 
 .informationalMessage {
@@ -670,6 +675,10 @@ h4.completed_assignment {
 	list-style: none;
 }
 
+.dialog-submit {
+    margin-top: 15px;
+}
+
 /* For the spinner dialog */
 .spinner-dialog {
   border: 0;
@@ -808,4 +817,30 @@ a.fl-pager-currentPage {
     clear: both;
     font-style: italic;
     margin-top:65px; 
+}
+
+.supported_formats_link {
+    font-size: .9em;
+    margin-left: 3px;
+}
+
+/* this is a toggle-able header for showing/hiding different sections on the screen */
+.toggleHeader {
+    background: #EEEEEE;
+    padding:3px 7px;
+    font-size:1.05em;
+    margin-top:10px;
+    cursor:pointer;
+}
+
+.toggleHeaderNoBar {
+    background:none;
+    font-weight:bold;
+    padding-left:0;
+}
+
+/* this is section will normally appear directly below the toggle header */
+.subsection1 {
+    margin-left: 10px;
+    margin-top:9px;
 }

@@ -37,18 +37,20 @@ public class GradebookItem {
     private Date dueDate;
     private String externalId;
     private boolean released;
+    private boolean ungraded;
 
     public GradebookItem() {
 
     }
 
     public GradebookItem(Long gradebookItemId, String title,
-            Double pointsPossible, Date dueDate, boolean released) {
+            Double pointsPossible, Date dueDate, boolean released, boolean ungraded) {
         this.gradebookItemId = gradebookItemId;
         this.title = title;
         this.pointsPossible = pointsPossible;
         this.dueDate = dueDate;
         this.released = released;
+        this.ungraded = ungraded;
     }
 
     /**
@@ -153,5 +155,23 @@ public class GradebookItem {
     public void setReleased(boolean released)
     {
         this.released = released;
+    }
+
+    /**
+     * 
+     * @return true if the gradebook item is "ungraded"
+     */
+    public boolean isUngraded()
+    {
+        return ungraded;
+    }
+
+    /**
+     * true if the gradebook item is "ungraded"
+     * @param ungraded
+     */
+    public void setUngraded(boolean ungraded)
+    {
+        this.ungraded = ungraded;
     }
 }

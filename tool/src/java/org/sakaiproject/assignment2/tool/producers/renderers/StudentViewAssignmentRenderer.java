@@ -138,9 +138,11 @@ public class StudentViewAssignmentRenderer {
      * @param params
      * @param ASOTPKey
      * @param previewAsStudent
+     * @param resubmit true if the student clicked the "Resubmit" link to get here
      */
     public void makeStudentView(UIContainer tofill, String divID, AssignmentSubmission assignmentSubmission, 
-            Assignment2 assignment, ViewParameters params, String ASOTPKey, Boolean previewAsStudent, Boolean studentSubmissionPreview) {
+            Assignment2 assignment, ViewParameters params, String ASOTPKey, Boolean previewAsStudent, Boolean studentSubmissionPreview,
+            boolean resubmit) {
         /**
          * Breadcrumbs
          */
@@ -185,16 +187,24 @@ public class StudentViewAssignmentRenderer {
         if (!studentSubmissionPreview) {
             asnnSubmissionDetailsRenderer.fillComponents(joint, "assignment-details:", assignmentSubmission, previewAsStudent);
 
-            asnnInstructionsRenderer.fillComponents(joint, "assignment-instructions:", assignment);
-
             // Submission History
             if (!previewAsStudent) {
                 List<AssignmentSubmissionVersion> versionHistory = submissionLogic.getVersionHistoryForSubmission(assignmentSubmission);
-                if (versionHistory != null) {
+                if (versionHistory == null || versionHistory.isEmpty()) {
+                    // we display the instructions w/o the toggle if sub closed
+                    if (assignment.getSubmissionType() == AssignmentConstants.SUBMIT_NON_ELECTRONIC ||
+                            !submissionIsOpen) {
+                        asnnInstructionsRenderer.makeInstructions(joint, "assignment-instructions-no-submission:", assignment, false, false, false);
+                    }
+                    
+                } else {
                     if (versionHistory.size() == 1 && !submissionIsOpen) {
                         AssignmentSubmissionVersion singleVersion = versionHistory.get(0);
                         asnnSubmissionVersionRenderer.fillComponents(joint, "assignment-single-version:", singleVersion, false);
 
+                        // make the instructions with the toggle bar
+                        asnnInstructionsRenderer.makeInstructions(joint, "assignment-instructions-single-version:", assignment, true, true, false);
+                        
                         // we need to mark this feedback as read (if released and unread)
                         if (singleVersion.isFeedbackReleased() && !singleVersion.isFeedbackRead()) {
                             List<Long> markRead = new ArrayList<Long>();
@@ -202,7 +212,8 @@ public class StudentViewAssignmentRenderer {
                             submissionLogic.markFeedbackAsViewed(singleVersion.getAssignmentSubmission().getId(), markRead);
                         }
                     } else if (versionHistory.size() > 1 || (versionHistory.size() == 1 && !versionHistory.get(0).isDraft())) {
-                        asnnSubmissionHistoryRenderer.fillComponents(joint, "assignment-previous-submissions:", assignmentSubmission);
+                        // only expand feedback if the student didn't click "resubmit"
+                        asnnSubmissionHistoryRenderer.fillComponents(joint, "assignment-previous-submissions:", assignmentSubmission, !resubmit);
                     }
                 }
             }
@@ -212,10 +223,10 @@ public class StudentViewAssignmentRenderer {
         }
 
         if (previewAsStudent) {
-            asnnSubmitEditorRenderer.fillComponents(joint, "assignment-edit-submission:", assignmentSubmission, true, false);
+            asnnSubmitEditorRenderer.fillComponents(joint, "assignment-edit-submission:", assignmentSubmission, true, false, false);
         }
         else if (submissionIsOpen) {
-            asnnSubmitEditorRenderer.fillComponents(joint, "assignment-edit-submission:", assignmentSubmission, previewAsStudent, studentSubmissionPreview);
+            asnnSubmitEditorRenderer.fillComponents(joint, "assignment-edit-submission:", assignmentSubmission, previewAsStudent, studentSubmissionPreview, resubmit);
         }
         else {
             // If this isn't a preview, and the student can't submit, we need

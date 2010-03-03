@@ -62,7 +62,17 @@ public interface UploadAllLogic
         /**
          * A student's grade in the grades csv file is invalid
          */
-        STUDENT_WITH_INVALID_GRADE_IN_CSV
+        STUDENT_WITH_INVALID_GRADE_IN_CSV,
+        /**
+         * Based on the number of students in the site, the number of rows
+         * in the grades csv file is unreasonable
+         */
+        INVALID_NUM_ROWS_IN_CSV,
+        /**
+         * The size of the included grades csv file exceeds the limit
+         */
+        CSV_FILE_TOO_LARGE
+        
     }
 
     /**
