@@ -184,11 +184,12 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware {
         
         boolean contentReviewAvailable = contentReviewLogic.isContentReviewAvailable(context);
         
-        // retrieve the edit, grade, and delete permissions for each assignment
+        // retrieve the edit, grade, add, and delete permissions for each assignment. The add perm will determine if user can duplicate.
         List<String> permissions = new ArrayList<String>();
         permissions.add(AssignmentConstants.PERMISSION_EDIT_ASSIGNMENTS);
         permissions.add(AssignmentConstants.PERMISSION_MANAGE_SUBMISSIONS);
         permissions.add(AssignmentConstants.PERMISSION_REMOVE_ASSIGNMENTS);
+        permissions.add(AssignmentConstants.PERMISSION_ADD_ASSIGNMENTS);
         
         Map<Long, Map<String, Boolean>> assignPermMap = permissionLogic.getPermissionsForAssignments(viewable, permissions);
         
@@ -223,6 +224,7 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware {
             boolean canEdit= false;
             boolean canGrade= false;
             boolean canDelete= false;
+            boolean canAdd = false;
             
             Map<String, Boolean> permMap = assignPermMap.get(asnn.getId());
             if (permMap != null) {
@@ -235,11 +237,15 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware {
                 if (permMap.containsKey(AssignmentConstants.PERMISSION_REMOVE_ASSIGNMENTS)) {
                     canDelete = permMap.get(AssignmentConstants.PERMISSION_REMOVE_ASSIGNMENTS);
                 }
+                if (permMap.containsKey(AssignmentConstants.PERMISSION_ADD_ASSIGNMENTS)) {
+                    canAdd = permMap.get(AssignmentConstants.PERMISSION_ADD_ASSIGNMENTS);
+                }
                 
             }
             asnnmap.put("canEdit", canEdit);
             asnnmap.put("canDelete", canDelete);
             asnnmap.put("canGrade", canGrade);
+            asnnmap.put("canAdd", canAdd);
 
             List<String> viewableStudents = assignmentViewableStudentsMap.get(asnn);
 
@@ -290,7 +296,13 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware {
         httpServletResponse.setHeader("Cache-Control", "max-age=0,no-cache,no-store,must-revalidate,private,post-check=0,pre-check=0,s-max-age=0");
         httpServletResponse.setDateHeader("Expires", 0 );
 
-        httpServletResponse.setHeader("x-asnn2-canEdit", permissionLogic.isUserAllowedToEditAllAssignments(context)+"");
+        boolean canReorder = permissionLogic.isUserAllowedToEditAllAssignments(context);
+        boolean canAdd = permissionLogic.isUserAllowedToAddAssignments(context);
+        boolean canDelete = permissionLogic.isUserAllowedToDeleteAssignments(context);
+
+        httpServletResponse.setHeader("x-asnn2-canReorder", canReorder+"");
+        httpServletResponse.setHeader("x-asnn2-canAdd", canAdd+"");
+        httpServletResponse.setHeader("x-asnn2-canDelete", canDelete+"");
 
         return togo;
     }

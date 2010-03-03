@@ -39,14 +39,18 @@ asnn2.getAsnnCompData = function () {
         target: '/portal/tool/'+sakai.curPlacement+'/assignment/'+obj.id,
         linktext: "Edit"
       };
+   }
+   if (obj.canAdd && obj.canAdd === true) {
       togo.duplink = {
         target: '/portal/tool/'+sakai.curPlacement+'/assignment?duplicatedAssignmentId='+obj.id,
         linktext: "Duplicate"
       };
       togo.sep1 = true;
-      togo.asnncheck = {
-        value: false
-      };
+    }
+    if (obj.canDelete && obj.canDelete === true) {
+        togo.asnncheck = {
+                value: false
+        };
     }
     if (obj.canGrade && obj.canGrade === true) {
         if (obj.graded === true) {
@@ -103,10 +107,20 @@ asnn2.getAsnnCompData = function () {
   else {
     togo = designSampleData;
   }
-
-  if (xmlhttp.getResponseHeader('x-asnn2-canEdit') === 'true') {
-      // Set up global edit permissions for rendering move and remove widgets
-      asnn2.pageState.canEdit = true;
+  
+  if (xmlhttp.getResponseHeader('x-asnn2-canReorder') === 'true') {
+      // Set up permission for the reorder widget
+      asnn2.pageState.canReorder = true;
+  }
+  
+  if (xmlhttp.getResponseHeader('x-asnn2-canAdd') === 'true') {
+      // Set up global add permission for adding assignments
+      asnn2.pageState.canAdd = true;
+  }
+  
+  if (xmlhttp.getResponseHeader('x-asnn2-canDelete') === 'true') {
+      // Set up global add permission for deleting assignments
+      asnn2.pageState.canDelete = true;
   }
 
   return togo;
@@ -156,7 +170,9 @@ asnn2.pageState = {
   sortDir: -1,
   dataArray: [],
   pageModel: {},
-  canEdit: false,
+  canReorder: false,
+  canAdd: false,
+  canDelete: false,
   minPageSize: 5  // This needs to be in sync with the html template currently.�
 };
 
@@ -272,7 +288,7 @@ asnn2.setupReordering = function () {
   var asnnsels = {};
   var afterMoveFunc = function(){};
   var allowReorder = true;
-  if (asnn2.pageState.sortDir !== -1 || asnn2.pageState.sortby !== 'sortIndex' || asnn2.pageState.canEdit !== true) {
+  if (asnn2.pageState.sortDir !== -1 || asnn2.pageState.sortby !== 'sortIndex' || asnn2.pageState.canReorder !== true) {
     allowReorder = false;
     asnnsels = {
       movables: ".row",
@@ -441,12 +457,15 @@ asnn2.renderAsnnList = function(asnndata) {
     "row:": dopple
   };
 
-  if (asnn2.pageState.canEdit === true) {
+  if (asnn2.pageState.canAdd === true) {
     treedata.addimage = true;
     treedata.addlink = true;
-    treedata.checkall = {
-      value: false
-    };
+  }
+  
+  if (asnn2.pageState.canDelete === true) {
+      treedata.checkall = {
+              value: false
+      };
   }
 
   if (asnn2.asnnListTemplate) {
@@ -660,7 +679,7 @@ asnn2.initAsnnList = function () {
   asnn2.setupSortLinks();
 
   // Remove Dialog
-  if (asnn2.pageState.canEdit === true) {
+  if (asnn2.pageState.canDelete === true) {
     asnn2.setupRemoveDialog();
   }
 
