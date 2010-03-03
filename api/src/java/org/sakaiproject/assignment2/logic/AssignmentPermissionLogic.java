@@ -103,9 +103,23 @@ public interface AssignmentPermissionLogic {
     /**
      * 
      * @param assignment
-     * @return true if current user has permission to delete this assignment
+     * @return true if the current user is allowed to delete the given assignment. Users without
+     * the "all groups" permission are not allowed to delete assignments that aren't restricted
+     * to that user's groups. If you want an answer to the general question,"Does
+     * this user have any sort of delete assignment permission in this site?" use
+     * {@link AssignmentPermissionLogic#isUserAllowedToDeleteAssignments(String)}
      */
     public boolean isUserAllowedToDeleteAssignment(Assignment2 assignment);
+    
+    /**
+     * @param contextId
+     * @return true if the current user has permission to delete assignments in the given context.
+     * Note that this does not mean that a user is allowed to delete any assignment. This just
+     * answers the general question, "Does this user have any sort of delete assignment permission 
+     * in this site?"  If you want to know if a user may delete a specific assignment, see
+     * {@link AssignmentPermissionLogic#isUserAllowedToDeleteAssignment(Assignment2)}
+     */
+    public boolean isUserAllowedToDeleteAssignments(String contextId);
 
     /**
      * 

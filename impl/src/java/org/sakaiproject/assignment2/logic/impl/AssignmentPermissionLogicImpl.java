@@ -115,6 +115,14 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
                 AssignmentConstants.PERMISSION_ADD_ASSIGNMENTS, null);
     }
     
+    public boolean isUserAllowedToDeleteAssignments(String contextId) {
+        if (contextId == null) {
+            throw new IllegalArgumentException("Null contextId passed to isUserAllowedToDeleteAssignments");
+        }
+        
+        return authz.userHasDeletePermission(contextId);
+    }
+    
     public boolean isUserAllowedToDeleteAssignment(Assignment2 assignment) {
         if (assignment == null) {
             throw new IllegalArgumentException("Null assignment passed to isUserAllowedToDeleteAssignment");

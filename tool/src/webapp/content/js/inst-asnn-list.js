@@ -48,22 +48,20 @@ asnn2.getAsnnCompData = function () {
         value: false
       };
     }
-    if (obj.graded === true) {
-        togo.gradelink = {
-            target: '/portal/tool/'+sakai.curPlacement+'/viewSubmissions/'+obj.id,
-            linktext: "Grade"
-        };
-        if (obj.canEdit && obj.canEdit === true) {
-          togo.sep2 = true;
+    if (obj.canGrade && obj.canGrade === true) {
+        if (obj.graded === true) {
+            togo.gradelink = {
+                target: '/portal/tool/'+sakai.curPlacement+'/viewSubmissions/'+obj.id,
+                linktext: "Grade"
+            };
+            togo.sep2 = true;
         }
-    }
-    else if (obj.requiresSubmission === true) {
-        togo.gradelink = {
-            target: '/portal/tool/'+sakai.curPlacement+'/viewSubmissions/'+obj.id,
-            linktext: "Provide Feedback"
-        };
-        if (obj.canEdit && obj.canEdit === true) {
-          togo.sep2 = true;
+        else if (obj.requiresSubmission === true) {
+            togo.gradelink = {
+                target: '/portal/tool/'+sakai.curPlacement+'/viewSubmissions/'+obj.id,
+                linktext: "Provide Feedback"
+            };
+            togo.sep2 = true;
         }
     }
     if (obj.attachments.length > 0) {

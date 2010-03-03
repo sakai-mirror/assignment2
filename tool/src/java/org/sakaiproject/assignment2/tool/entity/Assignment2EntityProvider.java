@@ -23,6 +23,7 @@ import org.sakaiproject.assignment2.logic.GradebookItem;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentAttachment;
 import org.sakaiproject.assignment2.model.AssignmentGroup;
+import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.assignment2.tool.DisplayUtil;
 import org.sakaiproject.entitybroker.EntityReference;
 import org.sakaiproject.entitybroker.EntityView;
@@ -181,9 +182,15 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware {
             groupmap.put(group.getId(), group);
         }
         
-        boolean contentReviewAvailable = contentReviewLogic.isContentReviewAvailable(context); 
-        // need to add in add, edit, and delete to the provider
-        boolean canEdit = true; //permissionLogic.isCurrentUserAbleToEditAssignments(context);
+        boolean contentReviewAvailable = contentReviewLogic.isContentReviewAvailable(context);
+        
+        // retrieve the edit, grade, and delete permissions for each assignment
+        List<String> permissions = new ArrayList<String>();
+        permissions.add(AssignmentConstants.PERMISSION_EDIT_ASSIGNMENTS);
+        permissions.add(AssignmentConstants.PERMISSION_MANAGE_SUBMISSIONS);
+        permissions.add(AssignmentConstants.PERMISSION_REMOVE_ASSIGNMENTS);
+        
+        Map<Long, Map<String, Boolean>> assignPermMap = permissionLogic.getPermissionsForAssignments(viewable, permissions);
         
         // TODO - use the service for entity work
        filterRestrictedAssignmentInfo(viewable, context);
@@ -212,10 +219,27 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware {
                 asnnmap.put("gbItemMissing", true);
             }
 
-            // Can the current user edit this particular assignment. Does not 
-            // include grading. If a user can see this assignment they can grade
-            // it.
+            // Permissions for this particular assignment
+            boolean canEdit= false;
+            boolean canGrade= false;
+            boolean canDelete= false;
+            
+            Map<String, Boolean> permMap = assignPermMap.get(asnn.getId());
+            if (permMap != null) {
+                if (permMap.containsKey(AssignmentConstants.PERMISSION_EDIT_ASSIGNMENTS)) {
+                    canEdit = permMap.get(AssignmentConstants.PERMISSION_EDIT_ASSIGNMENTS);
+                }
+                if (permMap.containsKey(AssignmentConstants.PERMISSION_MANAGE_SUBMISSIONS)) {
+                    canGrade = permMap.get(AssignmentConstants.PERMISSION_MANAGE_SUBMISSIONS);
+                }
+                if (permMap.containsKey(AssignmentConstants.PERMISSION_REMOVE_ASSIGNMENTS)) {
+                    canDelete = permMap.get(AssignmentConstants.PERMISSION_REMOVE_ASSIGNMENTS);
+                }
+                
+            }
             asnnmap.put("canEdit", canEdit);
+            asnnmap.put("canDelete", canDelete);
+            asnnmap.put("canGrade", canGrade);
 
             List<String> viewableStudents = assignmentViewableStudentsMap.get(asnn);
 
@@ -266,7 +290,7 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware {
         httpServletResponse.setHeader("Cache-Control", "max-age=0,no-cache,no-store,must-revalidate,private,post-check=0,pre-check=0,s-max-age=0");
         httpServletResponse.setDateHeader("Expires", 0 );
 
-        httpServletResponse.setHeader("x-asnn2-canEdit", canEdit+"");
+        httpServletResponse.setHeader("x-asnn2-canEdit", permissionLogic.isUserAllowedToEditAllAssignments(context)+"");
 
         return togo;
     }
