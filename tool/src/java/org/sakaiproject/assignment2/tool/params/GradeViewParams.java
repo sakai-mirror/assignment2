@@ -34,6 +34,8 @@ public class GradeViewParams extends SimpleViewParameters implements VerifiableV
 
     public Long assignmentId;
     public String userId;
+    public String prevUserId;
+    public String nextUserId;
     public Long versionId;
     public int viewSubPageIndex; // This is so we can return to the same page on the View Submissions.
 
@@ -52,12 +54,14 @@ public class GradeViewParams extends SimpleViewParameters implements VerifiableV
         this.versionId = versionId;
     }
     
-    public GradeViewParams(String viewId, Long assignmentId, String userId, Long versionId, int viewSubPageIndex) {
+    public GradeViewParams(String viewId, Long assignmentId, String userId, Long versionId, int viewSubPageIndex, String prevUserId, String nextUserId) {
         super(viewId);
         this.assignmentId = assignmentId;
         this.userId = userId;
         this.versionId = versionId;
         this.viewSubPageIndex = viewSubPageIndex;
+        this.prevUserId = prevUserId;
+        this.nextUserId = nextUserId;
     }
 
     public String getParseSpec(){
@@ -71,6 +75,16 @@ public class GradeViewParams extends SimpleViewParameters implements VerifiableV
             return Boolean.FALSE;
         }
         return Boolean.TRUE;
+    }
+    
+    public void setPrevUserId(String prevUserId)
+    {
+    	this.prevUserId = prevUserId;
+    }
+    
+    public void setNextUserId(String nextUserId)
+    {
+    	this.nextUserId = nextUserId;
     }
 
 }

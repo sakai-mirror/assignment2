@@ -1015,25 +1015,31 @@ var asnn2 = asnn2 || {};
         asnn2util.openDialog(confirmDialog);
         return false;
     };
-
+    
 	/**
 	 * Save/Release/Clear grading information for submission when navigation to previous submitter
 	 *
 	 * This function uses the asnn2 dialog utility.
-	 *
-	 * @param submitButtonId the id of the html element that actually is submitted
-	 * @param contextId the contextId for the submission
-	 * @param gradebookItemId the gradebookItemId associated w/ the assignment to release grades
-	 * @param release true if you want to release, false if you want to retract grades
 	 */
-	asnn2.saveGradingPreviousDialog = function(submitButtonId, contextId, gradebookItemId, release) {
+	asnn2.saveGradingPreviousDialog = function() {
 	    var saveGradingDialog = jQuery('#save-grading-previous-dialog');
-	    var saveButton = jQuery('#page-replace\\:\\:save-grading-previous-save');
-	    saveButton.click(function(event) {
-	        
+	    var saveButton = jQuery('#page-replace\\:\\:save-grading-previous-save').click(function(event) {
+	        asnn2util.closeDialog(saveGradingDialog);
+	        var formSubmit = document.getElementById("page-replace::submit");
+        	var option = document.getElementById("page-replace::submitOption");
+        	option.value="prevSave";
+	        formSubmit.click();
+	    });
+	    
+	    var saveButton = jQuery('#page-replace\\:\\:save-grading-previous-saveAndRelease').click(function(event) {
+	        asnn2util.closeDialog(saveGradingDialog);
+	        var formSubmit = document.getElementById("page-replace::submit");
+        	var option = document.getElementById("page-replace::submitOption");
+        	option.value="prevRelease";
+	        formSubmit.click();
 	    });
 	
-	    var clearButton = jQuery('#page-replace\\:\\:saving-grading-previous-clear').click(function(event) {
+	    var clearButton = jQuery('#page-replace\\:\\:save-grading-previous-clear').click(function(event) {
 	        asnn2util.closeDialog(saveGradingDialog);
 	    });
 	
@@ -1045,17 +1051,23 @@ var asnn2 = asnn2 || {};
 	 * Save/Release/Clear grading information for submission when navigation to next submitter
 	 *
 	 * This function uses the asnn2 dialog utility.
-	 *
-	 * @param submitButtonId the id of the html element that actually is submitted
-	 * @param contextId the contextId for the submission
-	 * @param gradebookItemId the gradebookItemId associated w/ the assignment to release grades
-	 * @param release true if you want to release, false if you want to retract grades
 	 */
-	asnn2.saveGradingNextDialog = function(submitButtonId, contextId, gradebookItemId, release) {
+	asnn2.saveGradingNextDialog = function() {
 	    var saveGradingDialog = jQuery('#save-grading-next-dialog');
-	    var saveButton = jQuery('#page-replace\\:\\:save-grading-next-save');
-	    saveButton.click(function(event) {
-	        
+	    var saveButton = jQuery('#page-replace\\:\\:save-grading-next-save').click(function(event) {
+	        asnn2util.closeDialog(saveGradingDialog);
+	        var formSubmit = document.getElementById("page-replace::submit");
+        	var option = document.getElementById("page-replace::submitOption");
+        	option.value="nextSave";
+	        formSubmit.click();
+	    });
+	    
+	    var saveButton = jQuery('#page-replace\\:\\:save-grading-next-saveAndRelease').click(function(event) {
+	        asnn2util.closeDialog(saveGradingDialog);
+	        var formSubmit = document.getElementById("page-replace::submit");
+        	var option = document.getElementById("page-replace::submitOption");
+        	option.value="nextRelease";
+	        formSubmit.click();
 	    });
 	
 	    var clearButton = jQuery('#page-replace\\:\\:save-grading-next-clear').click(function(event) {

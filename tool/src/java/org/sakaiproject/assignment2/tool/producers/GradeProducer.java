@@ -148,6 +148,7 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
             //handle error
             return;
         }
+        
         ToolSession ts = sessionManager.getCurrentToolSession();
 		if (ts != null)
 		{
@@ -163,7 +164,7 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
 			                    "previous_link", messageLocator.getMessage("assignment2.assignment_grade.previous"), params);
 						previousLink.decorate(
 		                        new UIFreeAttributeDecorator("onclick",
-		                        "asnn2.saveGradingPreviousDialog(this); return false;"));
+		                        "asnn2.saveGradingPreviousDialog(); return false;"));
 
 			            makeSaveGradingPreviousDialog(tofill);
 					}
@@ -181,7 +182,7 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
 			                    "next_link", messageLocator.getMessage("assignment2.assignment_grade.next"), params);
 						nextLink.decorate(
 		                        new UIFreeAttributeDecorator("onclick",
-		                        "asnn2.saveGradingNextDialog(this); return false;"));
+		                        "asnn2.saveGradingNextDialog(); return false;"));
 
 			            makeSaveGradingNextDialog(tofill);
 					}
@@ -192,7 +193,7 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
 				}
 			}
 		}
-
+		
         AssignmentSubmission as = submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(assignmentId, userId);
         Assignment2 assignment = assignmentLogic.getAssignmentByIdWithAssociatedData(assignmentId);
 
@@ -257,7 +258,7 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
          * Begin the Form
          */
         UIForm form = UIForm.make(tofill, "form");
-
+  
         // if this assignment requires non-electronic submission, there is no submission status
         if (assignment.getSubmissionType() == AssignmentConstants.SUBMIT_NON_ELECTRONIC) {
             UIMessage.make(form, "non-electronic-submission", "assignment2.assignment_grade.nonelectronic_sub");
@@ -522,6 +523,8 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
 
         form.parameters.add(new UIELBinding("#{AssignmentSubmissionBean.assignmentId}", assignmentId));
         form.parameters.add(new UIELBinding("#{AssignmentSubmissionBean.userId}", userId));
+     // hidden field for group id
+        UIInput.make(form, "submitOption", "#{AssignmentSubmissionBean.submitOption}", "submit");
         if (grade_perm){
             UICommand.make(form, "release_feedback", UIMessage.make("assignment2.assignment_grade.release_feedback"),
             "#{AssignmentSubmissionBean.processActionSaveAndReleaseFeedbackForSubmission}");
@@ -777,8 +780,8 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
         List<NavigationCase> nav= new ArrayList<NavigationCase>();
         nav.add(new NavigationCase("release_all", new GradeViewParams(
                 GradeProducer.VIEW_ID, null, null)));
-        nav.add(new NavigationCase("submit", new ViewSubmissionsViewParams(
-                ViewSubmissionsProducer.VIEW_ID)));
+        nav.add(new NavigationCase("submit", new GradeViewParams(
+                GradeProducer.VIEW_ID, null, null)));
         nav.add(new NavigationCase("preview", new SimpleViewParameters(
                 FragmentSubmissionGradePreviewProducer.VIEW_ID)));
         nav.add(new NavigationCase("cancel", new ViewSubmissionsViewParams(
@@ -804,8 +807,19 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
             GradeViewParams outgoing = (GradeViewParams) result.resultingView;
             GradeViewParams in = (GradeViewParams) incoming;
             outgoing.assignmentId = in.assignmentId;
-            outgoing.userId = in.userId;
-            outgoing.versionId = in.versionId;
+            if (AssignmentSubmissionBean.SUBMIT_PREV.equals(actionReturn))
+            {
+            	outgoing.userId = in.prevUserId;
+            }
+            else if (AssignmentSubmissionBean.SUBMIT_NEXT.equals(actionReturn))
+            {
+            	outgoing.userId = in.nextUserId;
+            }
+            else
+            {
+            	outgoing.userId = in.userId;
+                outgoing.versionId = in.versionId;
+            }
         }
 
     }
