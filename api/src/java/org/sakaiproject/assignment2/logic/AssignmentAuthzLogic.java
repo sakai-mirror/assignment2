@@ -147,6 +147,13 @@ public interface AssignmentAuthzLogic {
     /**
      * 
      * @param contextId
+     * @return true if the current user's role has permission to view assignments
+     */
+    public boolean userHasViewAssignmentPermission(String contextId);
+    
+    /**
+     * 
+     * @param contextId
      * @param permission sakai realm permission such as {@link AssignmentConstants#PERMISSION_ADD_ASSIGNMENTS}
      * @return true if the current user's role has the given permission in the given contextId
      */

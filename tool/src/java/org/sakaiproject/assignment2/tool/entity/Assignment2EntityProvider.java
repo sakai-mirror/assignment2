@@ -400,7 +400,7 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware {
      */
     private void filterRestrictedAssignmentInfo(List<Assignment2> assignList, String context) {
         if (assignList != null) {
-            boolean filterRestrictedInfo = !permissionLogic.isUserAbleToAccessInstructorView(context);
+            boolean filterRestrictedInfo = !permissionLogic.isUserAllowedToAccessInstructorView(context);
             if (filterRestrictedInfo) {
                 // non-instructors cannot view the accept until date or properties
                 for (Assignment2 assign : assignList) {

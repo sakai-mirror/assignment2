@@ -22,7 +22,9 @@
 package org.sakaiproject.assignment2.logic.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -32,6 +34,7 @@ import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.authz.api.FunctionManager;
 import org.sakaiproject.authz.api.SecurityService;
 import org.sakaiproject.site.api.SiteService;
+import org.sakaiproject.user.api.User;
 
 /**
  * Used for Assignment2-specific authorization based upon
@@ -96,6 +99,10 @@ public class AssignmentAuthzLogicImpl implements AssignmentAuthzLogic
         return userHasPermission(contextId, AssignmentConstants.PERMISSION_MANAGE_SUBMISSIONS);
     }
     
+    public boolean userHasViewAssignmentPermission(String contextId) {
+        return userHasPermission(contextId, AssignmentConstants.PERMISSION_VIEW_ASSIGNMENTS);
+    }
+    
     public boolean userHasPermission(String contextId, String permission) {
         return securityService.unlock(permission, siteService.siteReference(contextId));
     }
@@ -146,6 +153,22 @@ public class AssignmentAuthzLogicImpl implements AssignmentAuthzLogic
         }
         
         return oneOrNoGroups;
+    }
+    
+    public Map<String, User> getUsersWithPermission(String contextId, String permission) {
+        if (contextId == null || permission == null) {
+            throw new IllegalArgumentException("Null contextId (" + contextId + ") or permission" +
+                    " ("+ permission + ") passed to getUsersWithPermission");
+        }
+        
+        Map<String, User> userIdUserMap = new HashMap<String, User>();
+        
+        List<User> usersWithPerm = securityService.unlockUsers(permission, siteService.siteReference(contextId));
+        for (User user : usersWithPerm) {
+            userIdUserMap.put(user.getId(), user);
+        }
+        
+        return userIdUserMap;
     }
 
     

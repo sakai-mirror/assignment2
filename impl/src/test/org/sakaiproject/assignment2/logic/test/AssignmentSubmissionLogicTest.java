@@ -87,11 +87,6 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
         assertTrue(submission.getUserId().equals(AssignmentTestDataLoad.STUDENT2_UID));
         submission = submissionLogic.getAssignmentSubmissionById(testData.st2a4Submission.getId());
         assertTrue(submission.getUserId().equals(AssignmentTestDataLoad.STUDENT2_UID));
-
-        // will throw SecurityException if currentUser isn't auth to view submission
-        // let's try a TA
-        // should be able to view student 1's submission
-        externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
         submission = submissionLogic.getAssignmentSubmissionById(testData.st1a3Submission.getId());
         assertNotNull(submission);
         assertTrue(submission.getUserId().equals(AssignmentTestDataLoad.STUDENT1_UID));
@@ -99,9 +94,23 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
         assertTrue(submission.getCurrentSubmissionVersion().getSubmittedText().equals(""));
         assertTrue(submission.getCurrentSubmissionVersion().getSubmissionAttachSet().isEmpty());
 
+        // will throw SecurityException if currentUser isn't auth to view submission
+        // let's try a TA
+        // should be able to view student 1's submission for assignment 1
+        externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
+        submission = submissionLogic.getAssignmentSubmissionById(testData.st1a1Submission.getId());
+        assertNotNull(submission);
+        assertTrue(submission.getUserId().equals(AssignmentTestDataLoad.STUDENT1_UID));
+
         // should get a SecurityException trying to get st2
         try {
             submission = submissionLogic.getAssignmentSubmissionById(testData.st2a1Submission.getId());
+            fail("did not catch TA was trying to access a submission w/o authorization!");
+        } catch (SecurityException se) {}
+        
+        // should get a SecurityException trying to get st1 in a3
+        try {
+            submission = submissionLogic.getAssignmentSubmissionById(testData.st1a3Submission.getId());
             fail("did not catch TA was trying to access a submission w/o authorization!");
         } catch (SecurityException se) {}
 
@@ -143,26 +152,7 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
         assertTrue(version.getAssignmentSubmission().getUserId().equals(AssignmentTestDataLoad.STUDENT1_UID));
         version = submissionLogic.getSubmissionVersionById(testData.st2a4CurrVersion.getId());
         assertTrue(version.getAssignmentSubmission().getUserId().equals(AssignmentTestDataLoad.STUDENT2_UID));
-
-        // ta should be restricted
-        externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
-        // let's start with ungraded - should be able to view student 1 but not student 2
-        version = submissionLogic.getSubmissionVersionById(testData.st1a1CurrVersion.getId());
-        assertTrue(version.getAssignmentSubmission().getUserId().equals(AssignmentTestDataLoad.STUDENT1_UID));
-        // student 2 should throw SecurityException
-        try {
-            version = submissionLogic.getSubmissionVersionById(testData.st2a4CurrVersion.getId());
-            fail("Did not catch TA accessing st2 version w/o authorization");
-        } catch (SecurityException se) { }
-
-        // let's try a graded item
-        // TODO grader perms 
-        version = submissionLogic.getSubmissionVersionById(testData.st1a3FirstVersion.getId());
-        assertTrue(version.getAssignmentSubmission().getUserId().equals(AssignmentTestDataLoad.STUDENT1_UID));
-        assertTrue(version.getFeedbackAttachSet().isEmpty());
-        assertTrue(version.getSubmissionAttachSet().isEmpty());
-
-        // now let's double check that the ta can't see student submission details when it is
+        // now let's double check that the instructor can't see student submission details when it is
         // draft...
         version = submissionLogic.getSubmissionVersionById(testData.st1a3CurrVersion.getId());
         assertTrue(version.getAssignmentSubmission().getUserId().equals(AssignmentTestDataLoad.STUDENT1_UID));
@@ -172,14 +162,33 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
         assertTrue(version.getSubmissionAttachSet().isEmpty());
         assertTrue(version.getSubmittedText().equals(""));
 
+        // ta should be restricted
+        externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
+        // should be able to view student 1 but not student 2
+        version = submissionLogic.getSubmissionVersionById(testData.st1a1CurrVersion.getId());
+        assertTrue(version.getAssignmentSubmission().getUserId().equals(AssignmentTestDataLoad.STUDENT1_UID));
+        // student 2 should throw SecurityException
+        try {
+            version = submissionLogic.getSubmissionVersionById(testData.st2a4CurrVersion.getId());
+            fail("Did not catch TA accessing st2 version w/o authorization");
+        } catch (SecurityException se) { }
+
+        // let's try an assignment w/o groups. ta shouldn't have any access
+        try {
+            version = submissionLogic.getSubmissionVersionById(testData.st1a3FirstVersion.getId());
+            fail("Did not catch TA accessing st2 version w/o authorization");
+        } catch (SecurityException se) { }
+
+        try {
+            version = submissionLogic.getSubmissionVersionById(testData.st1a3CurrVersion.getId());
+            fail("Did not catch TA accessing st2 version w/o authorization");
+        } catch (SecurityException se) { }
 
         // now make sure ta can't see st 3
         try {
             version = submissionLogic.getSubmissionVersionById(testData.st3a3CurrVersion.getId());
             fail("ta should not be able to access st3's submission for a3!");
         } catch (SecurityException se) {}
-
-        // TODO grader permissions
 
         // student may see their own submission
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT1_UID);
@@ -252,15 +261,11 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
             fail("Ta should not have authorization to retrieve submission for st2 through getCurrentSubmissionByAssignmentIdAndStudentId");
         } catch (SecurityException se) {}
 
-        // graded assignments
-        // get a currentVersion that is draft and make sure submission info is not populated
-        submission = submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(testData.a3Id, AssignmentTestDataLoad.STUDENT1_UID);
-        assertEquals(AssignmentTestDataLoad.STUDENT1_UID, submission.getUserId());
-        assertEquals(testData.st1a3CurrVersion.getId(), submission.getCurrentSubmissionVersion().getId());
-        assertTrue(submission.getCurrentSubmissionVersion().getSubmissionAttachSet().isEmpty());
-        assertEquals("", submission.getCurrentSubmissionVersion().getSubmittedText());
-
-        // TODO grader permissions
+        // shouldn't have access to this one either
+        try {
+            submission = submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(testData.a3Id, AssignmentTestDataLoad.STUDENT1_UID);
+            fail("Ta should not have authorization to retrieve submission for st2 through getCurrentSubmissionByAssignmentIdAndStudentId");
+        } catch (SecurityException se) {}
 
         // now switch to a student
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT1_UID);

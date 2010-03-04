@@ -83,12 +83,12 @@ AssignmentActivityProducer {
 
     public boolean allowRemoveTags(TaggableActivity activity) {
         Assignment2 assignment = (Assignment2) activity.getObject();
-        return assignmentPermissionLogic.isUserAllowedToEditAssignment(assignment);
+        return assignmentPermissionLogic.isUserAllowedToEditAssignment(assignment, null);
     }
 
     public boolean allowRemoveTags(TaggableItem item) {
         AssignmentSubmission subm = (AssignmentSubmission)item.getObject();
-        return assignmentPermissionLogic.isUserAbleToProvideFeedbackForSubmission(subm.getId());
+        return assignmentPermissionLogic.isUserAllowedToManageSubmission(subm.getId());
     }
 
     public boolean allowTransferCopyTags(TaggableActivity activity) {

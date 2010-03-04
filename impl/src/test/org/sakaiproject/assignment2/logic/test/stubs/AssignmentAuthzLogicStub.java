@@ -66,6 +66,11 @@ public class AssignmentAuthzLogicStub implements AssignmentAuthzLogic
         return userHasPermission(contextId, AssignmentConstants.PERMISSION_MANAGE_SUBMISSIONS);
     }
     
+    public boolean userHasViewAssignmentPermission(String contextId)
+    {
+        return userHasPermission(contextId, AssignmentConstants.PERMISSION_VIEW_ASSIGNMENTS);
+    }
+    
     public boolean userHasPermission(String contextId, String permission) {
         return unlock(externalLogic.getCurrentUserId(), permission);
     }
@@ -151,4 +156,5 @@ public class AssignmentAuthzLogicStub implements AssignmentAuthzLogic
         
         return false;
     }
+
 }

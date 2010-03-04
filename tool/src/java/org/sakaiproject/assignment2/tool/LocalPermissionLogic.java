@@ -99,14 +99,14 @@ public class LocalPermissionLogic {
             return Boolean.FALSE;
         }
         else if (ListProducer.VIEW_ID.equals(viewId)) {
-            return permissionLogic.isUserAbleToAccessInstructorView(contextId);
+            return permissionLogic.isUserAllowedToAccessInstructorView(contextId);
         }
         else if (AssignmentInfoDataProducer.VIEW_ID.equals(viewId)) {
             // Currently we are only allowing instructors to view the assignment
             // info since it contains the number of submissions. Will plan on 
             // doing better checking of what information users can see in the 
             // future from the JSON feed, so folks can make mashups.
-            return permissionLogic.isUserAbleToAccessInstructorView(contextId);
+            return permissionLogic.isUserAllowedToAccessInstructorView(contextId);
         }
         else if (AssignmentProducer.VIEW_ID.equals(viewId)) {
             // permission to view this screen depends upon whether this is an add
@@ -125,7 +125,7 @@ public class LocalPermissionLogic {
             if (viewParams instanceof GradeViewParams)
             {
                 GradeViewParams params = (GradeViewParams) viewParams;
-                return permissionLogic.isUserAbleToViewStudentSubmissionForAssignment(params.userId, params.assignmentId);
+                return permissionLogic.isUserAllowedToViewSubmissionForAssignment(params.userId, params.assignmentId);
             } 
 
             return Boolean.FALSE;
@@ -148,7 +148,7 @@ public class LocalPermissionLogic {
             if (viewParams instanceof ViewSubmissionsViewParams) {
                 ViewSubmissionsViewParams params = (ViewSubmissionsViewParams) viewParams;
 
-                return permissionLogic.isUserAbleToAccessInstructorView(contextId) && 
+                return permissionLogic.isUserAllowedToAccessInstructorView(contextId) && 
                 permissionLogic.isUserAbleToViewAssignment(params.assignmentId);
             }
 
@@ -162,7 +162,7 @@ public class LocalPermissionLogic {
         else if (FragmentGradebookDetailsProducer.VIEW_ID.equals(viewId)) {
             if (viewParams instanceof FragmentGradebookDetailsViewParams) {
                 FragmentGradebookDetailsViewParams params = (FragmentGradebookDetailsViewParams) viewParams;
-                return permissionLogic.isUserAbleToViewStudentSubmissionForAssignment(params.userId, params.assignmentId);
+                return permissionLogic.isUserAllowedToViewSubmissionForAssignment(params.userId, params.assignmentId);
             }
 
             return Boolean.FALSE;
@@ -173,7 +173,7 @@ public class LocalPermissionLogic {
             if (viewParams instanceof AssignmentViewParams) {
                 AssignmentViewParams params = (AssignmentViewParams) viewParams;
 
-                return permissionLogic.isUserAbleToAccessInstructorView(contextId) && 
+                return permissionLogic.isUserAllowedToAccessInstructorView(contextId) && 
                 permissionLogic.isUserAbleToViewAssignment(params.assignmentId);
             }
 
@@ -183,14 +183,14 @@ public class LocalPermissionLogic {
             if (viewParams instanceof ZipViewParams) {
                 ZipViewParams params = (ZipViewParams) viewParams;
 
-                return permissionLogic.isUserAbleToAccessInstructorView(contextId) &&
+                return permissionLogic.isUserAllowedToAccessInstructorView(contextId) &&
                 permissionLogic.isUserAbleToViewAssignment(params.assignmentId);
             }
 
             return Boolean.FALSE;
 
         } else if (TaggableHelperProducer.VIEWID.equals(viewId)) {
-            return permissionLogic.isUserAbleToAccessInstructorView(contextId);
+            return permissionLogic.isUserAllowedToAccessInstructorView(contextId);
         }
 
         //Here are some RSF Generic always true viewIds
@@ -221,7 +221,7 @@ public class LocalPermissionLogic {
                 return true;
             } else {
                 Assignment2 assign = assignmentLogic.getAssignmentById(assignId);
-                return permissionLogic.isUserAllowedToEditAssignment(assign);
+                return permissionLogic.isUserAllowedToEditAssignment(assign, null);
             }
         }
     }

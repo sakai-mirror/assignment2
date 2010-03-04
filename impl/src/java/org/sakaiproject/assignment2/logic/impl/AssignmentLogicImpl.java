@@ -245,10 +245,10 @@ public class AssignmentLogicImpl implements AssignmentLogic{
         
         // if it is a new assignment, check to see if user is allowed to add assignments
         // in this context. otherwise, ensure the user may edit this assignment
-        if (isNewAssignment && !permissionLogic.isUserAllowedToAddAssignment(assignment)) {
+        if (isNewAssignment && !permissionLogic.isUserAllowedToAddAssignment(assignment, null)) {
             throw new SecurityException("Current user may not save assignment " + assignment.getTitle()
                     + " because they do not have add permission");
-        } else if (!isNewAssignment && !permissionLogic.isUserAllowedToEditAssignment(assignment)) {
+        } else if (!isNewAssignment && !permissionLogic.isUserAllowedToEditAssignment(assignment, null)) {
             throw new SecurityException("Current user may not edit assignment " + assignment.getTitle()
                     + " because they do not have edit permission");
         }
@@ -402,10 +402,9 @@ public class AssignmentLogicImpl implements AssignmentLogic{
             "associated contextId. You may not delete an assignment without a contextId");
         }
 
-        if (!permissionLogic.isUserAllowedToDeleteAssignment(assignment)) {
-            if (log.isDebugEnabled()) log.debug("User not authorized to add/delete/update announcements");
+        if (!permissionLogic.isUserAllowedToDeleteAssignment(assignment, null)) {
             throw new SecurityException("Current user may not delete assignment " + assignment.getTitle()
-                    + " because they do not have edit permission");
+                    + " because they do not have delete permission");
         }
 
         assignment.setRemoved(true);

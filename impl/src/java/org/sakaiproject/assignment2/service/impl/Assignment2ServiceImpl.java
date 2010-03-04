@@ -161,7 +161,7 @@ public class Assignment2ServiceImpl implements Assignment2Service {
         if (assignDef != null) {
             // if the current user does not have full privileges for this assignment,
             // we may need to set some of the properties to null
-            if (!permissionLogic.isUserAbleToAccessInstructorView(contextId)) {
+            if (!permissionLogic.isUserAllowedToAccessInstructorView(contextId)) {
                 assignDef.setAcceptUntilDate(null);
                 // for now, restrict all of the properties
                 assignDef.setProperties(new HashMap());

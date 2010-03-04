@@ -408,23 +408,23 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
     public void testIsUserAllowedToEditAssignment() {
         // try passing a null assignment
         try {
-            permissionLogic.isUserAllowedToEditAssignment(null);
+            permissionLogic.isUserAllowedToEditAssignment(null, null);
             fail("did not catch null assignment passed to isUserAllowedToEditAssignment");
         } catch (IllegalArgumentException iae) {}
 
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
 
         // only instructors should be able to edit assignments
-        assertTrue(permissionLogic.isUserAllowedToEditAssignment(testData.a1));
+        assertTrue(permissionLogic.isUserAllowedToEditAssignment(testData.a1, null));
 
         // TAs can only edit assignments that are only restricted to their own group(s)
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
-        assertFalse(permissionLogic.isUserAllowedToEditAssignment(testData.a1));
+        assertFalse(permissionLogic.isUserAllowedToEditAssignment(testData.a1, null));
         // assignment2 doesn't have groups, so TA shouldn't have permission
-        assertFalse(permissionLogic.isUserAllowedToEditAssignment(testData.a2));
+        assertFalse(permissionLogic.isUserAllowedToEditAssignment(testData.a2, null));
 
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT1_UID);
-        assertFalse(permissionLogic.isUserAllowedToEditAssignment(testData.a1));
+        assertFalse(permissionLogic.isUserAllowedToEditAssignment(testData.a1, null));
     }
     
     public void testIsUserAllowedToEditAllAssignments() {
@@ -463,73 +463,187 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
     public void testIsUserAllowedToAddAssignment() {
         // try passing a null contextId
         try {
-            permissionLogic.isUserAllowedToAddAssignment(null);
+            permissionLogic.isUserAllowedToAddAssignment(null, null);
             fail("did not catch null assignment passed to isUserAllowedToAddAssignment");
         } catch (IllegalArgumentException iae) {}
 
         // test out all of the group restriction scenarios
         Assignment2 assignWithNoGroups = new Assignment2();
+        assignWithNoGroups.setOpenDate(new Date());
         
         Assignment2 assignWithExtraGroups = new Assignment2();
+        assignWithExtraGroups.setOpenDate(new Date());
         Set<AssignmentGroup> groups1and2 = new HashSet<AssignmentGroup>();
         groups1and2.add(new AssignmentGroup(assignWithExtraGroups, AssignmentTestDataLoad.GROUP1_NAME));
         groups1and2.add(new AssignmentGroup(assignWithExtraGroups, AssignmentTestDataLoad.GROUP2_NAME));
         assignWithExtraGroups.setAssignmentGroupSet(groups1and2);
         
         Assignment2 assignWithGroup1 = new Assignment2();
+        assignWithGroup1.setOpenDate(new Date());
         Set<AssignmentGroup> group1 = new HashSet<AssignmentGroup>();
         group1.add(new AssignmentGroup(assignWithExtraGroups, AssignmentTestDataLoad.GROUP1_NAME));
         assignWithGroup1.setAssignmentGroupSet(group1);
         
         // instructors should have access to everything
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
-        assertTrue(permissionLogic.isUserAllowedToAddAssignment(assignWithNoGroups));
-        assertTrue(permissionLogic.isUserAllowedToAddAssignment(assignWithExtraGroups));
-        assertTrue(permissionLogic.isUserAllowedToAddAssignment(assignWithGroup1));
+        assertTrue(permissionLogic.isUserAllowedToAddAssignment(assignWithNoGroups, null));
+        assertTrue(permissionLogic.isUserAllowedToAddAssignment(assignWithExtraGroups, null));
+        assertTrue(permissionLogic.isUserAllowedToAddAssignment(assignWithGroup1, null));
         
         // TAs should only be able to add an assignment restricted to only group 1
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
-        assertFalse(permissionLogic.isUserAllowedToAddAssignment(assignWithNoGroups));
-        assertFalse(permissionLogic.isUserAllowedToAddAssignment(assignWithExtraGroups));
-        assertTrue(permissionLogic.isUserAllowedToAddAssignment(assignWithGroup1));
+        assertFalse(permissionLogic.isUserAllowedToAddAssignment(assignWithNoGroups, null));
+        assertFalse(permissionLogic.isUserAllowedToAddAssignment(assignWithExtraGroups, null));
+        assertTrue(permissionLogic.isUserAllowedToAddAssignment(assignWithGroup1, null));
         
         // students can't add at all
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT1_UID);
-        assertFalse(permissionLogic.isUserAllowedToAddAssignment(assignWithNoGroups));
-        assertFalse(permissionLogic.isUserAllowedToAddAssignment(assignWithExtraGroups));
-        assertFalse(permissionLogic.isUserAllowedToAddAssignment(assignWithGroup1));
+        assertFalse(permissionLogic.isUserAllowedToAddAssignment(assignWithNoGroups, null));
+        assertFalse(permissionLogic.isUserAllowedToAddAssignment(assignWithExtraGroups, null));
+        assertFalse(permissionLogic.isUserAllowedToAddAssignment(assignWithGroup1, null));
     }
     
     public void testIsUserAllowedToDeleteAssignment() {
         // try passing a null assignment
         try {
-            permissionLogic.isUserAllowedToDeleteAssignment(null);
+            permissionLogic.isUserAllowedToDeleteAssignment(null, null);
             fail("did not catch null assignment passed to isUserAllowedToDeleteAssignment");
         } catch (IllegalArgumentException iae) {}
 
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
-        assertTrue(permissionLogic.isUserAllowedToDeleteAssignment(testData.a1));
+        assertTrue(permissionLogic.isUserAllowedToDeleteAssignment(testData.a1, null));
 
         // TAs can only delete assignments that are only available to his/her group(s)
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
-        assertFalse(permissionLogic.isUserAllowedToDeleteAssignment(testData.a1));
+        assertFalse(permissionLogic.isUserAllowedToDeleteAssignment(testData.a1, null));
         // assignment2 doesn't have groups, so TA shouldn't have permission
-        assertFalse(permissionLogic.isUserAllowedToDeleteAssignment(testData.a2));
+        assertFalse(permissionLogic.isUserAllowedToDeleteAssignment(testData.a2, null));
 
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT1_UID);
-        assertFalse(permissionLogic.isUserAllowedToDeleteAssignment(testData.a1));
+        assertFalse(permissionLogic.isUserAllowedToDeleteAssignment(testData.a1, null));
+    }
+    
+    public void testIsUserAllowedToViewAssignment() {
+        try {
+            permissionLogic.isUserAllowedToViewAssignment(null, null);
+            fail("Did not catch null assignment passed to isUserAllowedToViewAssignment");
+        } catch (IllegalArgumentException iae) {}
+        
+        // start out as an instructor
+        externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
+        // as-is, should be able to view all of the assignments
+        assertTrue(permissionLogic.isUserAllowedToViewAssignment(testData.a1, null));
+        assertTrue(permissionLogic.isUserAllowedToViewAssignment(testData.a2, null));
+        assertTrue(permissionLogic.isUserAllowedToViewAssignment(testData.a3, null));
+        assertTrue(permissionLogic.isUserAllowedToViewAssignment(testData.a4, null));
+        
+        // TA may view all assignments but 4 b/c not in the group
+        externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
+        assertTrue(permissionLogic.isUserAllowedToViewAssignment(testData.a1, null));
+        assertTrue(permissionLogic.isUserAllowedToViewAssignment(testData.a2, null));
+        assertTrue(permissionLogic.isUserAllowedToViewAssignment(testData.a3, null));
+        assertFalse(permissionLogic.isUserAllowedToViewAssignment(testData.a4, null));
+        
+        // Student 1 may view 1,2,3 b/c of group memberships
+        externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT1_UID);
+        assertTrue(permissionLogic.isUserAllowedToViewAssignment(testData.a1, null));
+        assertTrue(permissionLogic.isUserAllowedToViewAssignment(testData.a2, null));
+        assertTrue(permissionLogic.isUserAllowedToViewAssignment(testData.a3, null));
+        assertFalse(permissionLogic.isUserAllowedToViewAssignment(testData.a4, null));
+        
+        // Student 2 may view 1,2,3,4 b/c of group memberships
+        externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT2_UID);
+        assertTrue(permissionLogic.isUserAllowedToViewAssignment(testData.a1, null));
+        assertTrue(permissionLogic.isUserAllowedToViewAssignment(testData.a2, null));
+        assertTrue(permissionLogic.isUserAllowedToViewAssignment(testData.a3, null));
+        assertTrue(permissionLogic.isUserAllowedToViewAssignment(testData.a4, null));
+        
+        // Student 3 may only view 2 & 3 b/c not in any groups
+        externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT3_UID);
+        assertFalse(permissionLogic.isUserAllowedToViewAssignment(testData.a1, null));
+        assertTrue(permissionLogic.isUserAllowedToViewAssignment(testData.a2, null));
+        assertTrue(permissionLogic.isUserAllowedToViewAssignment(testData.a3, null));
+        assertFalse(permissionLogic.isUserAllowedToViewAssignment(testData.a4, null));
+        
+        // now let's set an assignment to draft and make sure only select users may
+        // view it
+        testData.a1.setDraft(true);
+        // instructor can still edit a1, so may view draft
+        externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
+        assertTrue(permissionLogic.isUserAllowedToViewAssignment(testData.a1, null));
+        // TA cannot edit a1 b/c is restricted to other groups, so can't view draft
+        externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
+        assertFalse(permissionLogic.isUserAllowedToViewAssignment(testData.a1, null));
+        // students may not view it
+        externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT1_UID);
+        assertFalse(permissionLogic.isUserAllowedToViewAssignment(testData.a1, null));
+        externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT2_UID);
+        assertFalse(permissionLogic.isUserAllowedToViewAssignment(testData.a1, null));
+        externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT3_UID);
+        assertFalse(permissionLogic.isUserAllowedToViewAssignment(testData.a1, null));
+        
+        testData.a1.setDraft(false);
+        
+        // now let's double check what happens if assignment is deleted
+        testData.a1.setRemoved(true);
+        // only students with submission should be able to view it
+        externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
+        assertFalse(permissionLogic.isUserAllowedToViewAssignment(testData.a1, null));
+        externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
+        assertFalse(permissionLogic.isUserAllowedToViewAssignment(testData.a1, null));
+        // students 1 and 2 have submissions to a1 so should see it
+        externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT1_UID);
+        assertTrue(permissionLogic.isUserAllowedToViewAssignment(testData.a1, null));
+        externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT2_UID);
+        assertTrue(permissionLogic.isUserAllowedToViewAssignment(testData.a1, null));
+        externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT3_UID);
+        assertFalse(permissionLogic.isUserAllowedToViewAssignment(testData.a1, null));
+        
+        testData.a1.setRemoved(false);
+        
+        // try an assignment with no group restrictions and no submissions
+        testData.a2.setRemoved(true);
+        externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
+        assertFalse(permissionLogic.isUserAllowedToViewAssignment(testData.a2, null));
+        externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
+        assertFalse(permissionLogic.isUserAllowedToViewAssignment(testData.a2, null));
+        externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT1_UID);
+        assertFalse(permissionLogic.isUserAllowedToViewAssignment(testData.a2, null));
+        externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT2_UID);
+        assertFalse(permissionLogic.isUserAllowedToViewAssignment(testData.a2, null));
+        externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT3_UID);
+        assertFalse(permissionLogic.isUserAllowedToViewAssignment(testData.a2, null));
+        
+        testData.a2.setRemoved(false);
+        
+        // let's see what happens if assignment isn't open
+        Calendar cal = Calendar.getInstance();
+        cal.set(2025, 10, 01);
+
+        testData.a1.setOpenDate(cal.getTime());
+        // instructor and ta may view it but not the students
+        externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
+        assertTrue(permissionLogic.isUserAllowedToViewAssignment(testData.a1, null));
+        externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
+        assertTrue(permissionLogic.isUserAllowedToViewAssignment(testData.a1, null));
+        externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT1_UID);
+        assertFalse(permissionLogic.isUserAllowedToViewAssignment(testData.a1, null));
+        externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT2_UID);
+        assertFalse(permissionLogic.isUserAllowedToViewAssignment(testData.a1, null));
+        externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT3_UID);
+        assertFalse(permissionLogic.isUserAllowedToViewAssignment(testData.a1, null));
     }
 
     public void testIsUserAbleToViewStudentSubmissionForAssignment() {
         // try passing a null studentId
         try {
-            permissionLogic.isUserAbleToViewStudentSubmissionForAssignment(null, 12345L);
+            permissionLogic.isUserAllowedToViewSubmissionForAssignment(null, 12345L);
             fail("Did not catch null student passed to isUserAbleToViewStudentSubmissionForAssignment");
         } catch (IllegalArgumentException iae) {}
 
         // try passing a null assignment
         try {
-            permissionLogic.isUserAbleToViewStudentSubmissionForAssignment(AssignmentTestDataLoad.STUDENT1_UID, null);
+            permissionLogic.isUserAllowedToViewSubmissionForAssignment(AssignmentTestDataLoad.STUDENT1_UID, null);
             fail("Did not catch null assignment passed to isUserAbleToViewStudentSubmissionForAssignment");
         } catch (IllegalArgumentException iae) {}
 
@@ -546,156 +660,175 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
         // let's start with an ungraded assignment 
         // instructor should be able to view any student
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
-        assertTrue(permissionLogic.isUserAbleToViewStudentSubmissionForAssignment(
+        assertTrue(permissionLogic.isUserAllowedToViewSubmissionForAssignment(
                 AssignmentTestDataLoad.STUDENT1_UID, testData.a2Id));
-        assertTrue(permissionLogic.isUserAbleToViewStudentSubmissionForAssignment(
+        assertTrue(permissionLogic.isUserAllowedToViewSubmissionForAssignment(
                 AssignmentTestDataLoad.STUDENT2_UID, testData.a2Id));
-        assertTrue(permissionLogic.isUserAbleToViewStudentSubmissionForAssignment(
+        assertTrue(permissionLogic.isUserAllowedToViewSubmissionForAssignment(
                 AssignmentTestDataLoad.STUDENT3_UID, testData.a2Id));
         // switch to TA
-        // ta may only view members in his/her group
+        // ta may only view assignments restricted to his/her group 
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
-        assertTrue(permissionLogic.isUserAbleToViewStudentSubmissionForAssignment(
+        assertTrue(permissionLogic.isUserAllowedToViewSubmissionForAssignment(
+                AssignmentTestDataLoad.STUDENT1_UID, testData.a1Id));
+        assertFalse(permissionLogic.isUserAllowedToViewSubmissionForAssignment(
+                AssignmentTestDataLoad.STUDENT2_UID, testData.a1Id));
+        assertFalse(permissionLogic.isUserAllowedToViewSubmissionForAssignment(
+                AssignmentTestDataLoad.STUDENT3_UID, testData.a1Id));
+        
+        assertFalse(permissionLogic.isUserAllowedToViewSubmissionForAssignment(
                 AssignmentTestDataLoad.STUDENT1_UID, testData.a2Id));
-        assertFalse(permissionLogic.isUserAbleToViewStudentSubmissionForAssignment(
+        assertFalse(permissionLogic.isUserAllowedToViewSubmissionForAssignment(
                 AssignmentTestDataLoad.STUDENT2_UID, testData.a2Id));
-        assertFalse(permissionLogic.isUserAbleToViewStudentSubmissionForAssignment(
+        assertFalse(permissionLogic.isUserAllowedToViewSubmissionForAssignment(
                 AssignmentTestDataLoad.STUDENT3_UID, testData.a2Id));
+        
+        assertFalse(permissionLogic.isUserAllowedToViewSubmissionForAssignment(
+                AssignmentTestDataLoad.STUDENT1_UID, testData.a3Id));
+        assertFalse(permissionLogic.isUserAllowedToViewSubmissionForAssignment(
+                AssignmentTestDataLoad.STUDENT2_UID, testData.a3Id));
+        assertFalse(permissionLogic.isUserAllowedToViewSubmissionForAssignment(
+                AssignmentTestDataLoad.STUDENT3_UID, testData.a3Id));
+        
+        assertFalse(permissionLogic.isUserAllowedToViewSubmissionForAssignment(
+                AssignmentTestDataLoad.STUDENT1_UID, testData.a4Id));
+        assertFalse(permissionLogic.isUserAllowedToViewSubmissionForAssignment(
+                AssignmentTestDataLoad.STUDENT2_UID, testData.a4Id));
+        assertFalse(permissionLogic.isUserAllowedToViewSubmissionForAssignment(
+                AssignmentTestDataLoad.STUDENT3_UID, testData.a4Id));
 
         // now consider a graded assignment. with no grader perms, the same rules
         // as above apply
         // instructor should be able to view any student
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
-        assertTrue(permissionLogic.isUserAbleToViewStudentSubmissionForAssignment(
+        assertTrue(permissionLogic.isUserAllowedToViewSubmissionForAssignment(
                 AssignmentTestDataLoad.STUDENT1_UID, testData.a3Id));
-        assertTrue(permissionLogic.isUserAbleToViewStudentSubmissionForAssignment(
+        assertTrue(permissionLogic.isUserAllowedToViewSubmissionForAssignment(
                 AssignmentTestDataLoad.STUDENT2_UID, testData.a3Id));
-        assertTrue(permissionLogic.isUserAbleToViewStudentSubmissionForAssignment(
+        assertTrue(permissionLogic.isUserAllowedToViewSubmissionForAssignment(
                 AssignmentTestDataLoad.STUDENT3_UID, testData.a3Id));
-        // switch to TA
-        // ta may only view members in his/her group
-        externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
-        assertTrue(permissionLogic.isUserAbleToViewStudentSubmissionForAssignment(
-                AssignmentTestDataLoad.STUDENT1_UID, testData.a3Id));
-        assertFalse(permissionLogic.isUserAbleToViewStudentSubmissionForAssignment(
-                AssignmentTestDataLoad.STUDENT2_UID, testData.a3Id));
-        assertFalse(permissionLogic.isUserAbleToViewStudentSubmissionForAssignment(
-                AssignmentTestDataLoad.STUDENT3_UID, testData.a3Id));
-
-        // TODO - check grader permissions!!
 
         // user may view their own submission
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT1_UID);
-        assertTrue(permissionLogic.isUserAbleToViewStudentSubmissionForAssignment(AssignmentTestDataLoad.STUDENT1_UID, testData.a1Id));
+        assertTrue(permissionLogic.isUserAllowedToViewSubmissionForAssignment(AssignmentTestDataLoad.STUDENT1_UID, testData.a1Id));
         // but they may not view others
-        assertFalse(permissionLogic.isUserAbleToViewStudentSubmissionForAssignment(AssignmentTestDataLoad.STUDENT2_UID, testData.a1Id));
+        assertFalse(permissionLogic.isUserAllowedToViewSubmissionForAssignment(AssignmentTestDataLoad.STUDENT2_UID, testData.a1Id));
     }
-
-    public void testIsUserAbleToProvideFeedbackForStudentForAssignment() {
+    
+    public void testIsUserAllowedToManageSubmission() {
         // pass null studentId
         try {
-            permissionLogic.isUserAbleToProvideFeedbackForStudentForAssignment(null, new Assignment2());
-            fail("did not catch null studentId passed to isUserAbleToProvideFeedbackForStudentForAssignment");
+            permissionLogic.isUserAllowedToManageSubmission(null, testData.a1);
+            fail("did not catch null assignment passed to isUserAllowedToManageSubmission");
         } catch(IllegalArgumentException iae) {}
         // pass null assignment
         try {
-            permissionLogic.isUserAbleToProvideFeedbackForStudentForAssignment(AssignmentTestDataLoad.STUDENT1_UID, null);
-            fail("did not catch null assignment passed to isUserAbleToProvideFeedbackForStudentForAssignment");
+            permissionLogic.isUserAllowedToManageSubmission(AssignmentTestDataLoad.STUDENT1_UID, null);
+            fail("did not catch null assignment passed to isUserAllowedToManageSubmission");
         } catch(IllegalArgumentException iae) {}
 
-        // start with an ungraded item
-        // instructor should be able to submit feedback for any student
+        // instructor should be able to manage all student submissions
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
-        assertTrue(permissionLogic.isUserAbleToProvideFeedbackForStudentForAssignment(
-                AssignmentTestDataLoad.STUDENT1_UID, testData.a2));
-        assertTrue(permissionLogic.isUserAbleToProvideFeedbackForStudentForAssignment(
+        assertTrue(permissionLogic.isUserAllowedToManageSubmission(
+                 AssignmentTestDataLoad.STUDENT1_UID, testData.a2));
+        assertTrue(permissionLogic.isUserAllowedToManageSubmission(
                 AssignmentTestDataLoad.STUDENT2_UID, testData.a2));
-        assertTrue(permissionLogic.isUserAbleToProvideFeedbackForStudentForAssignment(
+        assertTrue(permissionLogic.isUserAllowedToManageSubmission(
                 AssignmentTestDataLoad.STUDENT3_UID, testData.a2));
+        assertTrue(permissionLogic.isUserAllowedToManageSubmission(
+                AssignmentTestDataLoad.STUDENT1_UID, testData.a3));
+        assertTrue(permissionLogic.isUserAllowedToManageSubmission(
+                AssignmentTestDataLoad.STUDENT2_UID, testData.a3));
+        assertTrue(permissionLogic.isUserAllowedToManageSubmission(
+                AssignmentTestDataLoad.STUDENT3_UID, testData.a3));
+        
         // switch to TA
-        // ta may only submit feedback for students in his/her group
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
-        assertTrue(permissionLogic.isUserAbleToProvideFeedbackForStudentForAssignment(
+        // a1 is restricted to group 1, so ta has some privileges
+        assertTrue(permissionLogic.isUserAllowedToManageSubmission(
+                AssignmentTestDataLoad.STUDENT1_UID, testData.a1));
+        assertFalse(permissionLogic.isUserAllowedToManageSubmission(
+                AssignmentTestDataLoad.STUDENT2_UID, testData.a1));
+        assertFalse(permissionLogic.isUserAllowedToManageSubmission(
+                AssignmentTestDataLoad.STUDENT3_UID, testData.a1));
+        // a2 and a3 are not restricted to groups, so ta does not have any privileges
+        assertFalse(permissionLogic.isUserAllowedToManageSubmission(
                 AssignmentTestDataLoad.STUDENT1_UID, testData.a2));
-        assertFalse(permissionLogic.isUserAbleToProvideFeedbackForStudentForAssignment(
+        assertFalse(permissionLogic.isUserAllowedToManageSubmission(
                 AssignmentTestDataLoad.STUDENT2_UID, testData.a2));
-        assertFalse(permissionLogic.isUserAbleToProvideFeedbackForStudentForAssignment(
+        assertFalse(permissionLogic.isUserAllowedToManageSubmission(
                 AssignmentTestDataLoad.STUDENT3_UID, testData.a2));
-
-        // now consider a graded assignment. with no grader perms, the same rules
-        // as above apply
-        // instructor should be able to submit feedback for any student
-        externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
-        assertTrue(permissionLogic.isUserAbleToProvideFeedbackForStudentForAssignment(
+        assertFalse(permissionLogic.isUserAllowedToManageSubmission(
                 AssignmentTestDataLoad.STUDENT1_UID, testData.a3));
-        assertTrue(permissionLogic.isUserAbleToProvideFeedbackForStudentForAssignment(
+        assertFalse(permissionLogic.isUserAllowedToManageSubmission(
                 AssignmentTestDataLoad.STUDENT2_UID, testData.a3));
-        assertTrue(permissionLogic.isUserAbleToProvideFeedbackForStudentForAssignment(
+        assertFalse(permissionLogic.isUserAllowedToManageSubmission(
                 AssignmentTestDataLoad.STUDENT3_UID, testData.a3));
-        // switch to TA
-        // ta may only submit feedback for members in his/her group
-        externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
-        assertTrue(permissionLogic.isUserAbleToProvideFeedbackForStudentForAssignment(
-                AssignmentTestDataLoad.STUDENT1_UID, testData.a3));
-        assertFalse(permissionLogic.isUserAbleToProvideFeedbackForStudentForAssignment(
-                AssignmentTestDataLoad.STUDENT2_UID, testData.a3));
-        assertFalse(permissionLogic.isUserAbleToProvideFeedbackForStudentForAssignment(
-                AssignmentTestDataLoad.STUDENT3_UID, testData.a3));
-
-        // TODO check a gb assignment with grader perms. use one with View only perm
+        // a4 is restricted to a different group, so TA has no privileges
+        assertFalse(permissionLogic.isUserAllowedToManageSubmission(
+                AssignmentTestDataLoad.STUDENT1_UID, testData.a4));
+        assertFalse(permissionLogic.isUserAllowedToManageSubmission(
+                AssignmentTestDataLoad.STUDENT2_UID, testData.a4));
+        assertFalse(permissionLogic.isUserAllowedToManageSubmission(
+                AssignmentTestDataLoad.STUDENT3_UID, testData.a4));
 
         // students should not be able to submit feedback at all
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT1_UID);
-        assertFalse(permissionLogic.isUserAbleToProvideFeedbackForStudentForAssignment(AssignmentTestDataLoad.STUDENT1_UID, testData.a1));
-        assertFalse(permissionLogic.isUserAbleToProvideFeedbackForStudentForAssignment(AssignmentTestDataLoad.STUDENT2_UID, testData.a1));
+        assertFalse(permissionLogic.isUserAllowedToManageSubmission(
+                AssignmentTestDataLoad.STUDENT1_UID, testData.a1));
+        assertFalse(permissionLogic.isUserAllowedToManageSubmission(
+                AssignmentTestDataLoad.STUDENT2_UID, testData.a1));
+        assertFalse(permissionLogic.isUserAllowedToManageSubmission(
+                AssignmentTestDataLoad.STUDENT3_UID, testData.a1));
     }
 
     public void testIsUserAbleToProvideFeedbackForSubmission() {
         // pass null submissionId
         try {
-            permissionLogic.isUserAbleToProvideFeedbackForSubmission(null);
+            permissionLogic.isUserAllowedToManageSubmission(null);
             fail("did not catch null submissionId passed to isUserAbleToProvideFeedbackForSubmission");
         } catch(IllegalArgumentException iae) {}
 
         // start with an ungraded item
         // instructor should be able to submit feedback for any student
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
-        assertTrue(permissionLogic.isUserAbleToProvideFeedbackForSubmission(
+        assertTrue(permissionLogic.isUserAllowedToManageSubmission(
                 testData.st1a1Submission.getId()));
-        assertTrue(permissionLogic.isUserAbleToProvideFeedbackForSubmission(
+        assertTrue(permissionLogic.isUserAllowedToManageSubmission(
                 testData.st2a1Submission.getId()));
 
         // switch to TA
         // ta may only submit feedback for students in his/her Group
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
-        assertTrue(permissionLogic.isUserAbleToProvideFeedbackForSubmission(
+        assertTrue(permissionLogic.isUserAllowedToManageSubmission(
                 testData.st1a1Submission.getId()));
-        assertFalse(permissionLogic.isUserAbleToProvideFeedbackForSubmission(
+        assertFalse(permissionLogic.isUserAllowedToManageSubmission(
                 testData.st2a1Submission.getId()));
 
         // now consider a graded assignment. with no grader perms, the same rules
         // as above apply
         // instructor should be able to submit feedback for any student
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
-        assertTrue(permissionLogic.isUserAbleToProvideFeedbackForSubmission(
+        assertTrue(permissionLogic.isUserAllowedToManageSubmission(
                 testData.st1a3Submission.getId()));
-        assertTrue(permissionLogic.isUserAbleToProvideFeedbackForSubmission(
+        assertTrue(permissionLogic.isUserAllowedToManageSubmission(
                 testData.st2a3Submission.getId()));
 
         // switch to TA
-        // ta may only submit feedback for members in his/her group
+        // ta may only submit feedback for members in his/her group for assignments
+        // restricted to his/her group(s)
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
-        assertTrue(permissionLogic.isUserAbleToProvideFeedbackForSubmission(
+        assertTrue(permissionLogic.isUserAllowedToManageSubmission(
+                testData.st1a1Submission.getId()));
+        assertFalse(permissionLogic.isUserAllowedToManageSubmission(
                 testData.st1a3Submission.getId()));
-        assertFalse(permissionLogic.isUserAbleToProvideFeedbackForSubmission(
+        assertFalse(permissionLogic.isUserAllowedToManageSubmission(
                 testData.st2a3Submission.getId()));
-
-        // TODO check a gb assignment with grader perms. use one with View only perm
 
         // students should not be able to submit feedback at all
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT1_UID);
-        assertFalse(permissionLogic.isUserAbleToProvideFeedbackForSubmission(testData.st1a1Submission.getId()));
-        assertFalse(permissionLogic.isUserAbleToProvideFeedbackForSubmission(testData.st2a1Submission.getId()));
+        assertFalse(permissionLogic.isUserAllowedToManageSubmission(testData.st1a1Submission.getId()));
+        assertFalse(permissionLogic.isUserAllowedToManageSubmission(testData.st2a1Submission.getId()));
     }
 
 
@@ -824,6 +957,7 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
         // now set a1 as removed and remove the group restrictions to test this. 
         // only a student w/ a submission should be able to view. st1 has a submission
         // but st3 does not
+        testData.a4.setOpenDate(new Date());
         testData.a4.setRemoved(true);
         testData.a4.setAssignmentGroupSet(new HashSet<AssignmentGroup>());
 
@@ -947,23 +1081,23 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
 
     }
 
-    public void testIsUserAbleToAccessInstructorView() {
+    public void testIsUserAllowedToAccessInstructorView() {
         // pass in a null contextId
         try {
-            permissionLogic.isUserAbleToAccessInstructorView(null);
+            permissionLogic.isUserAllowedToAccessInstructorView(null);
             fail("Did not catch null contextId passed to isUserAbleToAccessInstructorView");
         } catch (IllegalArgumentException iae) {
 
         }
         // only instructors and tas should have access to the non-student view
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
-        assertTrue(permissionLogic.isUserAbleToAccessInstructorView(AssignmentTestDataLoad.CONTEXT_ID));
+        assertTrue(permissionLogic.isUserAllowedToAccessInstructorView(AssignmentTestDataLoad.CONTEXT_ID));
 
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
-        assertTrue(permissionLogic.isUserAbleToAccessInstructorView(AssignmentTestDataLoad.CONTEXT_ID));
+        assertTrue(permissionLogic.isUserAllowedToAccessInstructorView(AssignmentTestDataLoad.CONTEXT_ID));
 
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT1_UID);
-        assertFalse(permissionLogic.isUserAbleToAccessInstructorView(AssignmentTestDataLoad.CONTEXT_ID));
+        assertFalse(permissionLogic.isUserAllowedToAccessInstructorView(AssignmentTestDataLoad.CONTEXT_ID));
     }
 
     public void testGetViewableStudentsForUserForItem() {
@@ -1209,43 +1343,46 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
 
         // try passing a null assignment
         try {
-            permissionLogic.isUserAbleToMakeSubmissionForAssignment(null);
+            permissionLogic.isUserAllowedToMakeSubmissionForAssignment(null);
             fail("did not catch null assignment passed to isUserAbleToMakeSubmissionForAssignment");
         } catch (IllegalArgumentException iae) {}
 
-        // try passing an empty assignment
-        try {
-            permissionLogic.isUserAbleToMakeSubmissionForAssignment(new Assignment2());
-            fail("did not catch null fields assoc with assignment passed to isUserAbleToMakeSubmissionForAssignment");
-        } catch (IllegalArgumentException iae) {}
+        // instructor and TA should not be able to submit
+        externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
+        assertFalse(permissionLogic.isUserAllowedToMakeSubmissionForAssignment(testData.a1));
+        assertFalse(permissionLogic.isUserAllowedToMakeSubmissionForAssignment(testData.a2));
+        assertFalse(permissionLogic.isUserAllowedToMakeSubmissionForAssignment(testData.a3));
+        assertFalse(permissionLogic.isUserAllowedToMakeSubmissionForAssignment(testData.a4));
 
-
-        // TODO - we need to define "who" can submit, so will need to update the tests
-        // currently there is no check on whether you are a student, guest, instructor, etc
-        // let's just test students for now
+        externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
+        assertFalse(permissionLogic.isUserAllowedToMakeSubmissionForAssignment(testData.a1));
+        assertFalse(permissionLogic.isUserAllowedToMakeSubmissionForAssignment(testData.a2));
+        assertFalse(permissionLogic.isUserAllowedToMakeSubmissionForAssignment(testData.a3));
+        assertFalse(permissionLogic.isUserAllowedToMakeSubmissionForAssignment(testData.a4));
+        
         // student 1 is a member of group 1
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT1_UID);
         // should be able to submit for a1, a2, a3
-        assertTrue(permissionLogic.isUserAbleToMakeSubmissionForAssignment(testData.a1));
-        assertTrue(permissionLogic.isUserAbleToMakeSubmissionForAssignment(testData.a2));
-        assertTrue(permissionLogic.isUserAbleToMakeSubmissionForAssignment(testData.a3));
-        assertFalse(permissionLogic.isUserAbleToMakeSubmissionForAssignment(testData.a4));
+        assertTrue(permissionLogic.isUserAllowedToMakeSubmissionForAssignment(testData.a1));
+        assertTrue(permissionLogic.isUserAllowedToMakeSubmissionForAssignment(testData.a2));
+        assertTrue(permissionLogic.isUserAllowedToMakeSubmissionForAssignment(testData.a3));
+        assertFalse(permissionLogic.isUserAllowedToMakeSubmissionForAssignment(testData.a4));
 
         // student 2 is a member of group 3
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT2_UID);
         // should be able to submit for a1, a2, a3, a4
-        assertTrue(permissionLogic.isUserAbleToMakeSubmissionForAssignment(testData.a1));
-        assertTrue(permissionLogic.isUserAbleToMakeSubmissionForAssignment(testData.a2));
-        assertTrue(permissionLogic.isUserAbleToMakeSubmissionForAssignment(testData.a3));
-        assertTrue(permissionLogic.isUserAbleToMakeSubmissionForAssignment(testData.a4));
+        assertTrue(permissionLogic.isUserAllowedToMakeSubmissionForAssignment(testData.a1));
+        assertTrue(permissionLogic.isUserAllowedToMakeSubmissionForAssignment(testData.a2));
+        assertTrue(permissionLogic.isUserAllowedToMakeSubmissionForAssignment(testData.a3));
+        assertTrue(permissionLogic.isUserAllowedToMakeSubmissionForAssignment(testData.a4));
 
         // student 3 is not a member of any groups
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT3_UID);
         // should only be able to submit to 2,3
-        assertFalse(permissionLogic.isUserAbleToMakeSubmissionForAssignment(testData.a1));
-        assertTrue(permissionLogic.isUserAbleToMakeSubmissionForAssignment(testData.a2));
-        assertTrue(permissionLogic.isUserAbleToMakeSubmissionForAssignment(testData.a3));
-        assertFalse(permissionLogic.isUserAbleToMakeSubmissionForAssignment(testData.a4));
+        assertFalse(permissionLogic.isUserAllowedToMakeSubmissionForAssignment(testData.a1));
+        assertTrue(permissionLogic.isUserAllowedToMakeSubmissionForAssignment(testData.a2));
+        assertTrue(permissionLogic.isUserAllowedToMakeSubmissionForAssignment(testData.a3));
+        assertFalse(permissionLogic.isUserAllowedToMakeSubmissionForAssignment(testData.a4));
     }
 
     public void testIsUserAllowedToReleaseFeedbackForAssignment() {
@@ -1421,21 +1558,70 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
 
     }
 
-    public void testIsUserAbleToProvideFeedbackForAllStudents() {
+    public void testIsUserAllowedToManageAllSubmissions() {
+        try {
+            permissionLogic.isUserAllowedToManageAllSubmissions(null);
+            fail("did not catch null contextId passed to isUserAllowedToManageAllSubmissions");
+        } catch (IllegalArgumentException iae) {}
+        
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
-        assertTrue(permissionLogic.isUserAbleToProvideFeedbackForAllStudents(AssignmentTestDataLoad.CONTEXT_ID));
+        assertTrue(permissionLogic.isUserAllowedToManageAllSubmissions(AssignmentTestDataLoad.CONTEXT_ID));
 
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
-        assertFalse(permissionLogic.isUserAbleToProvideFeedbackForAllStudents(AssignmentTestDataLoad.CONTEXT_ID));
+        assertFalse(permissionLogic.isUserAllowedToManageAllSubmissions(AssignmentTestDataLoad.CONTEXT_ID));
 
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT1_UID);
-        assertFalse(permissionLogic.isUserAbleToProvideFeedbackForAllStudents(AssignmentTestDataLoad.CONTEXT_ID));
+        assertFalse(permissionLogic.isUserAllowedToManageAllSubmissions(AssignmentTestDataLoad.CONTEXT_ID));
 
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT2_UID);
-        assertFalse(permissionLogic.isUserAbleToProvideFeedbackForAllStudents(AssignmentTestDataLoad.CONTEXT_ID));
+        assertFalse(permissionLogic.isUserAllowedToManageAllSubmissions(AssignmentTestDataLoad.CONTEXT_ID));
 
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT3_UID);
-        assertFalse(permissionLogic.isUserAbleToProvideFeedbackForAllStudents(AssignmentTestDataLoad.CONTEXT_ID));
+        assertFalse(permissionLogic.isUserAllowedToManageAllSubmissions(AssignmentTestDataLoad.CONTEXT_ID));
 
+    }
+    
+    public void testIsUserAllowedToManageSubmissionsForAssignment() {
+        try {
+            permissionLogic.isUserAllowedToManageSubmissionsForAssignment(null, null);
+            fail("Did not catch null assignment passed to isUserAllowedToManageSubmissionsForAssignment");
+        } catch (IllegalArgumentException iae) {}
+        
+        externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
+        assertTrue(permissionLogic.isUserAllowedToManageSubmissionsForAssignment(testData.a1, null));
+        assertTrue(permissionLogic.isUserAllowedToManageSubmissionsForAssignment(testData.a2, null));
+        assertTrue(permissionLogic.isUserAllowedToManageSubmissionsForAssignment(testData.a3, null));
+        assertTrue(permissionLogic.isUserAllowedToManageSubmissionsForAssignment(testData.a4, null));
+        
+        // tas can only manage submissions for assignments that are restricted to group(s) they
+        // are a member of
+        externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
+        assertTrue(permissionLogic.isUserAllowedToManageSubmissionsForAssignment(testData.a1, null));
+        assertFalse(permissionLogic.isUserAllowedToManageSubmissionsForAssignment(testData.a2, null));
+        assertFalse(permissionLogic.isUserAllowedToManageSubmissionsForAssignment(testData.a3, null));
+        assertFalse(permissionLogic.isUserAllowedToManageSubmissionsForAssignment(testData.a4, null));
+        
+        // double check that the students can't do anything
+        externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT1_UID);
+        assertFalse(permissionLogic.isUserAllowedToManageSubmissionsForAssignment(testData.a1, null));
+        assertFalse(permissionLogic.isUserAllowedToManageSubmissionsForAssignment(testData.a2, null));
+        assertFalse(permissionLogic.isUserAllowedToManageSubmissionsForAssignment(testData.a3, null));
+        assertFalse(permissionLogic.isUserAllowedToManageSubmissionsForAssignment(testData.a4, null));
+    }
+    
+    public void testIsUserAllowedToManageSubmissions() {
+        try {
+            permissionLogic.isUserAllowedToManageSubmissions(null);
+            fail("Did not catch null contextId passed to isUserAllowedToManageSubmissions");
+        } catch (IllegalArgumentException iae) {}
+        
+        externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
+        assertTrue(permissionLogic.isUserAllowedToManageSubmissions(AssignmentTestDataLoad.CONTEXT_ID));
+        
+        externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
+        assertTrue(permissionLogic.isUserAllowedToManageSubmissions(AssignmentTestDataLoad.CONTEXT_ID));
+        
+        externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT1_UID);
+        assertFalse(permissionLogic.isUserAllowedToManageSubmissions(AssignmentTestDataLoad.CONTEXT_ID));
     }
 }

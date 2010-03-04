@@ -141,8 +141,6 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
         AssignmentSubmission as = submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(assignmentId, userId);
         Assignment2 assignment = assignmentLogic.getAssignmentByIdWithAssociatedData(assignmentId);
 
-        //Grade Permission?
-        boolean grade_perm = permissionLogic.isUserAbleToProvideFeedbackForStudentForAssignment(userId, assignment);
         boolean gbItemExists = assignment.isGraded() && assignment.getGradebookItemId() != null && 
                 gradebookLogic.gradebookItemExists(assignment.getGradebookItemId());
         
@@ -210,24 +208,6 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
 
         // Instructions
         asnnInstructionsRenderer.makeInstructions(tofill, "assignment-instructions:", assignment, true, true, false);
-        /*UIOutput instructionsToggleSection = UIOutput.make(tofill, "instructions_toggle_section");
-        instructionsToggleSection.decorate(new UITooltipDecorator(toggleHoverText));
-        if (assignment.getInstructions() == null || assignment.getInstructions().equals("")) {
-            UIMessage.make(tofill, "instructions", "assignment2.assignment_grade.no_instructions");
-        }
-        else {
-            UIVerbatim.make(tofill, "instructions", assignment.getInstructions());
-        }
-        
-        if (assignment.getAttachmentSet() != null && !assignment.getAttachmentSet().isEmpty()) {
-            UIOutput.make(tofill, "assignAttachmentsFieldset");
-            attachmentListRenderer.makeAttachmentFromAssignmentAttachmentSet(tofill, "assign_attach_list:", params.viewID, 
-                    assignment.getAttachmentSet());
-        }
-
-        // add the alt text to the toggle for the instructions
-        UIOutput instructionsToggle = UIOutput.make(tofill, "instructions_toggle");
-        instructionsToggle.decorate(new UIAlternativeTextDecorator(toggleHoverText));*/
 
         
         /**
@@ -278,7 +258,7 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
             
             UIBranchContainer versionContainer = UIBranchContainer.make(form, "feedback_section:");
             UIOutput.make(versionContainer, "versionInformation");
-            makeAdditionalFeedbackSection(versionContainer, otpKey, versionToDisplay, !grade_perm);
+            makeAdditionalFeedbackSection(versionContainer, otpKey, versionToDisplay, false);
         
         } else {
             // we will display the toggle-able sections
@@ -295,8 +275,8 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
                     boolean expand = versionToExpand != null && versionToExpand.equals(version.getId());
                     makeVersionToggle(versionContainer, version, assignment.getDueDate(), as.getResubmitCloseDate(), expand);
 
-                    makeFeedbackOnSubmissionSection(versionContainer, otpKey, params, version, assignment, !grade_perm, contentReviewEnabled);
-                    makeAdditionalFeedbackSection(versionContainer, otpKey, version, !grade_perm);
+                    makeFeedbackOnSubmissionSection(versionContainer, otpKey, params, version, assignment, false, contentReviewEnabled);
+                    makeAdditionalFeedbackSection(versionContainer, otpKey, version, false);
                 }
             }
         }
@@ -370,7 +350,10 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
             as.setNumSubmissionsAllowed(numSubmissionsAllowed);
             as.setResubmitCloseDate(resubmitUntil);
 
-            if (grade_perm) {
+            // I am leaving the readonly piece in here in case someone wants to use it in the 
+            // future, but with the permissions restructure, there is now no need for it
+            boolean readOnly = false;
+            if (!readOnly) {
                 UIBoundBoolean.make(form, "override_settings", "#{AssignmentSubmissionBean.overrideResubmissionSettings}", is_override);
 
                 UIOutput.make(form, "resubmit_change");
@@ -462,18 +445,23 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
          * Grading via the Gradebook Section
          */
         if (assignment.isGraded() && gbItemExists){
-            makeGradebookGradingSection(tofill, form, assignment, as.getUserId(), !grade_perm);
+            String viewOrGrade = gradebookLogic.getGradeViewPermissionForCurrentUserForStudentForItem(
+                    assignment.getContextId(), as.getUserId(), assignment.getGradebookItemId());
+            if (viewOrGrade != null) {
+                makeGradebookGradingSection(tofill, form, assignment, as.getUserId(), viewOrGrade.equals(AssignmentConstants.VIEW));
+            }
+            
         }        
 
         form.parameters.add(new UIELBinding("#{AssignmentSubmissionBean.assignmentId}", assignmentId));
         form.parameters.add(new UIELBinding("#{AssignmentSubmissionBean.userId}", userId));
-        if (grade_perm){
-            UICommand.make(form, "release_feedback", UIMessage.make("assignment2.assignment_grade.release_feedback"),
-            "#{AssignmentSubmissionBean.processActionSaveAndReleaseFeedbackForSubmission}");
-            UICommand.make(form, "submit", UIMessage.make("assignment2.assignment_grade.submit"), "#{AssignmentSubmissionBean.processActionGradeSubmit}");
-            //UICommand.make(form, "preview", UIMessage.make("assignment2.assignment_grade.preview"), "#{AssignmentSubmissionBean.processActionGradePreview}");
-            UICommand.make(form, "cancel", UIMessage.make("assignment2.assignment_grade.cancel"), "#{AssignmentSubmissionBean.processActionCancel}");
-        }
+
+        UICommand.make(form, "release_feedback", UIMessage.make("assignment2.assignment_grade.release_feedback"),
+        "#{AssignmentSubmissionBean.processActionSaveAndReleaseFeedbackForSubmission}");
+        UICommand.make(form, "submit", UIMessage.make("assignment2.assignment_grade.submit"), "#{AssignmentSubmissionBean.processActionGradeSubmit}");
+        //UICommand.make(form, "preview", UIMessage.make("assignment2.assignment_grade.preview"), "#{AssignmentSubmissionBean.processActionGradePreview}");
+        UICommand.make(form, "cancel", UIMessage.make("assignment2.assignment_grade.cancel"), "#{AssignmentSubmissionBean.processActionCancel}");
+
     }
     
     /**

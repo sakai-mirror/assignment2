@@ -64,7 +64,7 @@ public class GradebookDetailsRenderer {
 
         Assignment2 assignment = assignmentLogic.getAssignmentByIdWithAssociatedData(assignmentId);
         //Grade Permission
-        Boolean grade_perm = permissionLogic.isUserAbleToProvideFeedbackForStudentForAssignment(userId, assignment);
+        Boolean grade_perm = gradebookLogic.isCurrentUserAbleToGradeStudentForItem(assignment.getContextId(), as.getUserId(), assignment.getGradebookItemId());
 
         //Grading Helper Link
         String url = externalLogic.getUrlForGradeGradebookItemHelper(assignment.getGradebookItemId(), userId, FinishedHelperProducer.VIEWID, assignment.getContextId());
