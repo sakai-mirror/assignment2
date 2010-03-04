@@ -1027,7 +1027,7 @@ var asnn2 = asnn2 || {};
 	        asnn2util.closeDialog(saveGradingDialog);
 	        var formSubmit = document.getElementById("page-replace::submit");
         	var option = document.getElementById("page-replace::submitOption");
-        	option.value="prevSave";
+        	option.value="submit_prev";
 	        formSubmit.click();
 	    });
 	    
@@ -1035,7 +1035,7 @@ var asnn2 = asnn2 || {};
 	        asnn2util.closeDialog(saveGradingDialog);
 	        var formSubmit = document.getElementById("page-replace::submit");
         	var option = document.getElementById("page-replace::submitOption");
-        	option.value="prevRelease";
+        	option.value="release_prev";
 	        formSubmit.click();
 	    });
 	
@@ -1058,7 +1058,7 @@ var asnn2 = asnn2 || {};
 	        asnn2util.closeDialog(saveGradingDialog);
 	        var formSubmit = document.getElementById("page-replace::submit");
         	var option = document.getElementById("page-replace::submitOption");
-        	option.value="nextSave";
+        	option.value="submit_next";
 	        formSubmit.click();
 	    });
 	    
@@ -1066,7 +1066,7 @@ var asnn2 = asnn2 || {};
 	        asnn2util.closeDialog(saveGradingDialog);
 	        var formSubmit = document.getElementById("page-replace::submit");
         	var option = document.getElementById("page-replace::submitOption");
-        	option.value="nextRelease";
+        	option.value="release_next";
 	        formSubmit.click();
 	    });
 	

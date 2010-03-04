@@ -138,6 +138,12 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
         this.dateEvolver = dateEvolver;
     }
 
+    private AssignmentSubmissionBean assignmentSubmissionBean;
+    public void setAssignmentSubmissionBean(AssignmentSubmissionBean assignmentSubmissionBean)
+    {
+    	this.assignmentSubmissionBean = assignmentSubmissionBean;
+    }
+    
     public void fillComponents(UIContainer tofill, ViewParameters viewparams, ComponentChecker checker) {
 
         //Get Params
@@ -149,49 +155,38 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
             return;
         }
         
-        ToolSession ts = sessionManager.getCurrentToolSession();
-		if (ts != null)
+        if (getNavigationSubmissionUserId("prev", userId) != null) {
+			// has previous
+			UIInternalLink previousLink = UIInternalLink.make(tofill, 
+                    "previous_link", messageLocator.getMessage("assignment2.assignment_grade.previous"), params);
+			previousLink.decorate(
+                    new UIFreeAttributeDecorator("onclick",
+                    "asnn2.saveGradingPreviousDialog(); return false;"));
+
+            makeSaveGradingPreviousDialog(tofill);
+		}
+		else {
+            // show a disabled Previous link
+            UIOutput.make(tofill, "previous_disabled", messageLocator.getMessage("assignment2.assignment_grade.previous"));
+		}
+					
+		// current student
+		UIOutput.make(tofill, "current", externalLogic.getUserDisplayName(userId));
+					
+		if (getNavigationSubmissionUserId("next", userId) != null)
 		{
-			Map t = (Map) ts.getAttribute(Assignment2SubmissionEntityProvider.SUBMISSIONVIEW_SESSION_ATTR);
-			if (t != null && t.containsKey(Assignment2SubmissionEntityProvider.SORTED_SUBMISSION_STUDENT_IDS))
-			{
-				List<String> submissionStudentIds = (List<String>) t.get(Assignment2SubmissionEntityProvider.SORTED_SUBMISSION_STUDENT_IDS);
-				int position = submissionStudentIds.indexOf(userId);
-				if (position != -1) {
-					if (position > 0) {
-						// has previous
-						UIInternalLink previousLink = UIInternalLink.make(tofill, 
-			                    "previous_link", messageLocator.getMessage("assignment2.assignment_grade.previous"), params);
-						previousLink.decorate(
-		                        new UIFreeAttributeDecorator("onclick",
-		                        "asnn2.saveGradingPreviousDialog(); return false;"));
+			// has next
+				UIInternalLink nextLink = UIInternalLink.make(tofill, 
+	                    "next_link", messageLocator.getMessage("assignment2.assignment_grade.next"), params);
+				nextLink.decorate(
+                        new UIFreeAttributeDecorator("onclick",
+                        "asnn2.saveGradingNextDialog(); return false;"));
 
-			            makeSaveGradingPreviousDialog(tofill);
-					}
-					else {
-			            // show a disabled Previous link
-			            UIOutput.make(tofill, "previous_disabled", messageLocator.getMessage("assignment2.assignment_grade.previous"));
-			        }
-					
-					// current student
-					UIOutput.make(tofill, "current", externalLogic.getUserDisplayName(userId));
-					
-					if (position < (submissionStudentIds.size()-1)) {
-						// has next
-						UIInternalLink nextLink = UIInternalLink.make(tofill, 
-			                    "next_link", messageLocator.getMessage("assignment2.assignment_grade.next"), params);
-						nextLink.decorate(
-		                        new UIFreeAttributeDecorator("onclick",
-		                        "asnn2.saveGradingNextDialog(); return false;"));
-
-			            makeSaveGradingNextDialog(tofill);
-					}
-					else {
-						// show a disabled Next link
-			            UIOutput.make(tofill, "next_disabled", messageLocator.getMessage("assignment2.assignment_grade.next"));
-					}
-				}
-			}
+	            makeSaveGradingNextDialog(tofill);
+		}
+		else {
+			// show a disabled Next link
+            UIOutput.make(tofill, "next_disabled", messageLocator.getMessage("assignment2.assignment_grade.next"));
 		}
 		
         AssignmentSubmission as = submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(assignmentId, userId);
@@ -528,7 +523,7 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
         if (grade_perm){
             UICommand.make(form, "release_feedback", UIMessage.make("assignment2.assignment_grade.release_feedback"),
             "#{AssignmentSubmissionBean.processActionSaveAndReleaseFeedbackForSubmission}");
-            UICommand.make(form, "submit", UIMessage.make("assignment2.assignment_grade.submit"), "#{AssignmentSubmissionBean.processActionGradeSubmit}");
+            UICommand.make(form, "submit", UIMessage.make("assignment2.assignment_grade.submit"), "#{AssignmentSubmissionBean.processActionGradeSubmitOption}");
             //UICommand.make(form, "preview", UIMessage.make("assignment2.assignment_grade.preview"), "#{AssignmentSubmissionBean.processActionGradePreview}");
             UICommand.make(form, "cancel", UIMessage.make("assignment2.assignment_grade.cancel"), "#{AssignmentSubmissionBean.processActionCancel}");
         }
@@ -807,13 +802,13 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
             GradeViewParams outgoing = (GradeViewParams) result.resultingView;
             GradeViewParams in = (GradeViewParams) incoming;
             outgoing.assignmentId = in.assignmentId;
-            if (AssignmentSubmissionBean.SUBMIT_PREV.equals(actionReturn))
+            if (AssignmentSubmissionBean.SUBMIT_PREV.equals(actionReturn) || AssignmentSubmissionBean.RELEASE_PREV.equals(actionReturn))
             {
-            	outgoing.userId = in.prevUserId;
+            	outgoing.userId = getNavigationSubmissionUserId("prev", in.userId);
             }
-            else if (AssignmentSubmissionBean.SUBMIT_NEXT.equals(actionReturn))
+            else if (AssignmentSubmissionBean.SUBMIT_NEXT.equals(actionReturn) || AssignmentSubmissionBean.RELEASE_NEXT.equals(actionReturn))
             {
-            	outgoing.userId = in.nextUserId;
+            	outgoing.userId = getNavigationSubmissionUserId("next", in.userId);
             }
             else
             {
@@ -915,4 +910,30 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
         this.asnnInstructionsRenderer = asnnInstructionsRenderer;
     }
 
+    /**
+     * get previous or next submission user id depending on the current user id position in the sorted submission list
+     * @param prevOrNext
+     * @param userId
+     * @return
+     */
+    private String getNavigationSubmissionUserId(String prevOrNext, String userId)
+    {
+    	ToolSession ts = sessionManager.getCurrentToolSession();
+		if (ts != null)
+		{
+        	Map t = (Map) ts.getAttribute(Assignment2SubmissionEntityProvider.SUBMISSIONVIEW_SESSION_ATTR);
+			if (t != null && t.containsKey(Assignment2SubmissionEntityProvider.SORTED_SUBMISSION_STUDENT_IDS))
+			{
+				List<String> submissionStudentIds = (List<String>) t.get(Assignment2SubmissionEntityProvider.SORTED_SUBMISSION_STUDENT_IDS);
+				int position = submissionStudentIds.indexOf(userId);
+				if ("prev".equals(prevOrNext)) {
+					return position > 1 ? submissionStudentIds.get(position-1):null;
+				}
+				else if ("next".equals(prevOrNext)) {
+					return position < (submissionStudentIds.size()-1) && position > -1? submissionStudentIds.get(position+1) : null;
+				}
+			}
+		}
+		return null;
+    }
 }

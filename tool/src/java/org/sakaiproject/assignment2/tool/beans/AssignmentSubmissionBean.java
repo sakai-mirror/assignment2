@@ -52,6 +52,8 @@ public class AssignmentSubmissionBean {
     public static final String SUBMIT = "submit";
     public static final String SUBMIT_PREV = "submit_prev";
     public static final String SUBMIT_NEXT = "submit_next";
+    public static final String RELEASE_PREV = "release_prev";
+    public static final String RELEASE_NEXT = "release_next";
     public static final String PREVIEW = "preview";
     public static final String CANCEL = "cancel";
     public static final String SAVE_AND_EDIT_PREFIX = "SAVE_FEEDBACK_AND_EDIT_VERSION_";
@@ -159,28 +161,19 @@ public class AssignmentSubmissionBean {
         return SUBMIT;
     }
     
-    public String processActionSaveAndReleaseFeedbackForSubmissionNext(){
-        this.releaseFeedback = true;
-        processActionGradeSubmit();
-
-        return SUBMIT_NEXT;
-    }
-    
-    public String processActionSaveAndReleaseFeedbackForSubmissionPrev(){
-        this.releaseFeedback = true;
-        processActionGradeSubmit();
-
-        return SUBMIT_PREV;
-    }
-    
-    public String processActionGradeSubmitNext(){
-    	processActionGradeSubmit();
-    	return SUBMIT_NEXT;
-    }
-    
-    public String processActionGradeSubmitPrev(){
-    	processActionGradeSubmit();
-    	return SUBMIT_PREV;
+    public String processActionGradeSubmitOption()
+    {
+    	if (RELEASE_NEXT.equals(submitOption) || RELEASE_PREV.equals(submitOption))
+    	{
+    	    processActionSaveAndReleaseFeedbackForSubmission();
+    	}
+    	else
+    	{
+    		processActionGradeSubmit();
+    	}
+	    
+	    return submitOption;
+    	
     }
 
     /**
