@@ -27,7 +27,6 @@ import org.sakaiproject.assignment2.exception.UploadException;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
-import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.logic.UploadAllLogic;
 import org.sakaiproject.assignment2.logic.UploadGradesLogic;
@@ -106,11 +105,6 @@ public class UploadAllLogicImpl implements UploadAllLogic
     public AssignmentPermissionLogic permissionLogic;
     public void setAssignmentPermissionLogic(AssignmentPermissionLogic permissionLogic) {
         this.permissionLogic = permissionLogic;
-    }
-
-    public ExternalGradebookLogic gradebookLogic;
-    public void setExternalGradebookLogic(ExternalGradebookLogic gradebookLogic) {
-        this.gradebookLogic = gradebookLogic;
     }
 
     public List<Map<String, String>> uploadAll(UploadAllOptions options, File file) throws UploadException

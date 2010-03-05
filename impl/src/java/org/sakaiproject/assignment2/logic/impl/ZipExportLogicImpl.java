@@ -92,7 +92,7 @@ public class ZipExportLogicImpl implements ZipExportLogic
         if (log.isDebugEnabled())
             log.debug(this + ": getSubmissionsZip reference=" + assignmentId);
 
-        if (!gradebookLogic.isCurrentUserAbleToGrade(assignment.getContextId())) {
+        if (!permissionLogic.isUserAllowedToManageSubmissionsForAssignment(null, assignment, null)) {
             throw new SecurityException("User attempted to download submissions without permission!");
         }
 
@@ -414,9 +414,12 @@ public class ZipExportLogicImpl implements ZipExportLogic
                             new Object[] {assignHeader}))
                             .append("\n");
 
-            // now iterate through all GRADABLE students in this class to create the grades file
-            List<String> gradableStudents = gradebookLogic.getGradableStudentsForGradebookItem(currUserId, assignment.getContextId(), assignment.getGradebookItemId());
-
+            // first, retrieve all of the students that this user can manage for this assignment
+            List<String> manageableStudents = permissionLogic.getViewableStudentsForAssignment(currUserId, assignment);
+            // filter the manageable students to only include gradable ones
+            List<String> gradableStudents = gradebookLogic.getGradableStudents(currUserId, 
+                    assignment.getContextId(), assignment.getGradebookItemId(), manageableStudents);
+            
             // get the grade information
             Map<String, GradeInformation> userIdGradeMap = gradebookLogic.getGradeInformationForStudents(gradableStudents, assignment.getContextId(), assignment.getGradebookItemId());
 

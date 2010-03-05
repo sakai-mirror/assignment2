@@ -38,7 +38,6 @@ import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.logic.GradeInformation;
 import org.sakaiproject.assignment2.logic.GradebookItem;
 import org.sakaiproject.assignment2.model.Assignment2;
-import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.component.cover.ComponentManager;
 import org.sakaiproject.service.gradebook.shared.AssessmentNotFoundException;
@@ -816,5 +815,31 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
         }
         
         return gbItem;
+    }
+    
+    public List<String> getGradableStudents(String userId, String contextId, Long gradebookItemId, List<String> students) {
+        if (contextId == null || gradebookItemId == null) {
+            throw new IllegalArgumentException("Null contextId (" + contextId + ") or gradebookItemId (" + ") passed to filterGradableStudents");
+        }
+        
+        if (userId == null) {
+            userId = externalLogic.getCurrentUserId();
+        }
+        
+        List<String> gradableStudents = new ArrayList<String>();
+        if (students != null && !students.isEmpty()) {
+            List<String> gradableInGb = getGradableStudentsForGradebookItem(userId, contextId, gradebookItemId);
+            
+            // filter the students to only include gradable ones
+            if (gradableInGb != null) {
+                for (String student : students) {
+                    if (gradableInGb.contains(student)) {
+                        gradableStudents.add(student);
+                    }
+                }
+            }
+        }
+        
+        return gradableStudents;
     }
 }

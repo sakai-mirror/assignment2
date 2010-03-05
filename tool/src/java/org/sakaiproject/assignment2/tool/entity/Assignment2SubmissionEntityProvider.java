@@ -232,9 +232,12 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware{
 
         Map<String, GradeInformation> studentIdGradeInfoMap = new HashMap<String, GradeInformation>();
         if (submissions != null && assignment.isGraded() && assignment.getGradebookItemId() != null) {
+            // now let's filter this list by the gradable students to avoid a security exception
+            List<String> gradableStudents = externalGradebookLogic.getGradableStudents(
+                    null, assignment.getContextId(), assignment.getGradebookItemId(), studentIdList);
             // now retrieve all of the GradeInformation
             studentIdGradeInfoMap = externalGradebookLogic.getGradeInformationForStudents(
-                    studentIdList, assignment.getContextId(), assignment.getGradebookItemId());
+                    gradableStudents, assignment.getContextId(), assignment.getGradebookItemId());
         }
 
         Map<String, String> studentIdSortNameMap = externalLogic.getUserIdToSortNameMap(studentIdList);

@@ -108,9 +108,14 @@ public class GradeAllRemainingCommand {
         }
 
         String currUserId = externalLogic.getCurrentUserId();
-        List<String> gradableStudents = gradebookLogic.getGradableStudentsForGradebookItem(currUserId, assign.getContextId(), assign.getGradebookItemId());
+        
+        // first, we need to retrieve all of the students that the current user may manage
+        // for this assignment
+        List<String> availableStudents = permissionLogic.getViewableStudentsForAssignment(currUserId, assign);
+        // now we filter this to only include students are also gradable in the gradebook
+        List<String> gradableStudents = gradebookLogic.getGradableStudents(currUserId, assign.getContextId(), assign.getGradebookItemId(), availableStudents);
 
-        if (gradableStudents != null) {
+        if (gradableStudents != null && !gradableStudents.isEmpty()) {
             List<String> filteredStudents = new ArrayList<String>();
             // if the group filter is not null, we only apply the grade to students in that group
             if (groupIdFilter != null && !"".equals(groupIdFilter)) {

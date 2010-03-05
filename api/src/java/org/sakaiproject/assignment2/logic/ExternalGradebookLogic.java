@@ -420,4 +420,14 @@ public interface ExternalGradebookLogic {
      * gradebook item does not exist in the given context
      */
     public boolean isGradebookItemAssociationValid(String contextId, Long gradebookItemId);
+    
+    /**
+     * 
+     * @param userId userId to check for grading privileges. if null, will use current user
+     * @param contextId
+     * @param gradebookItemId
+     * @param students list of userIds for the students you want to filter
+     * @return a filtered list of students that the given user has permission to grade in the gradebook
+     */
+    public List<String> getGradableStudents(String userId, String contextId, Long gradebookItemId, List<String> students);
 }
