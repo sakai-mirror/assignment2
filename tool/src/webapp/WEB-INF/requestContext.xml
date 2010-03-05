@@ -182,6 +182,7 @@
       <property name="assignment2Creator" ref="Assignment2Creator" />
       <property name="externalContentReviewLogic" ref="org.sakaiproject.assignment2.logic.ExternalContentReviewLogic" />
       <property name="localTurnitinLogic" ref="localTurnitinLogic" />
+      <property name="assignmentPermissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentPermissionLogic" />
    </bean>
    
    <bean class="org.sakaiproject.assignment2.tool.producers.GradeProducer">
@@ -372,7 +373,8 @@
 		<property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
 		<property name="uploadAllLogic" ref="org.sakaiproject.assignment2.logic.UploadAllLogic" />
 		<property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
-        <property name="externalGradebookLogic" ref="org.sakaiproject.assignment2.logic.ExternalGradebookLogic" />
+    <property name="externalGradebookLogic" ref="org.sakaiproject.assignment2.logic.ExternalGradebookLogic" />
+    <property name="assignmentPermissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentPermissionLogic" />
 	</bean>
 	
 	<bean id="MarkTodoBean" class="org.sakaiproject.assignment2.tool.commands.MarkTodoCommand">

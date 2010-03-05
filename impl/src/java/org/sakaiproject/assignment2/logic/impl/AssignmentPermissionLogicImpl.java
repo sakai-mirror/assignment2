@@ -609,7 +609,7 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
                 
             } else {
                 // first, we will retrieve all of the users with submission privileges in this site
-                List<String> usersWithSubmitPerm = authz.getUsersWithPermission(contextId, AssignmentConstants.PERMISSION_SUBMIT);
+                List<String> usersWithSubmitPerm = getSubmittersInSite(contextId);
 
                 if (usersWithSubmitPerm != null && !usersWithSubmitPerm.isEmpty()) {
 
@@ -850,6 +850,14 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
         }
 
         return allowed;
+    }
+    
+    public List<String> getSubmittersInSite(String contextId) {
+        if (contextId == null) {
+            throw new IllegalArgumentException("Null contextId passed to getSubmittersInSite");
+        }
+        
+        return authz.getUsersWithPermission(contextId, AssignmentConstants.PERMISSION_SUBMIT);
     }
 
 }

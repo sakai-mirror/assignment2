@@ -32,6 +32,7 @@ import org.sakaiproject.assignment2.tool.producers.evolvers.AttachmentInputEvolv
 import org.sakaiproject.assignment2.tool.producers.fragments.FragmentAssignment2SelectProducer;
 import org.sakaiproject.assignment2.exception.AssignmentNotFoundException;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
+import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
 import org.sakaiproject.assignment2.logic.ExternalContentReviewLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
@@ -109,6 +110,7 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
     private ExternalGradebookLogic externalGradebookLogic;
     private AssignmentLogic assignmentLogic;
     private AssignmentSubmissionLogic submissionLogic;
+    private AssignmentPermissionLogic permissionLogic;
     private Locale locale;
     //private EntityBeanLocator assignment2BeanLocator;
     private AttachmentInputEvolver attachmentInputEvolver;
@@ -544,7 +546,7 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
         //Post Buttons
         UICommand postAssign = UICommand.make(form, "post_assignment", UIMessage.make("assignment2.assignment_add.post"), "AssignmentAuthoringBean.processActionPost");
         if (assignment.getId() != null) {
-            List<String> allStudents = externalLogic.getStudentsInSite(currentContextId);
+            List<String> allStudents = permissionLogic.getSubmittersInSite(assignment.getContextId());
             int numSubmissions = submissionLogic.getNumStudentsWithASubmission(assignment, allStudents);
             if (numSubmissions > 0) {
                 // we need to display a warning to the user that they are editing
@@ -795,5 +797,9 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
     
     public void setLocalTurnitinLogic(LocalTurnitinLogic localTurnitinLogic) {
         this.localTurnitinLogic = localTurnitinLogic;
+    }
+    
+    public void setAssignmentPermissionLogic(AssignmentPermissionLogic permissionLogic) {
+        this.permissionLogic = permissionLogic;
     }
 }

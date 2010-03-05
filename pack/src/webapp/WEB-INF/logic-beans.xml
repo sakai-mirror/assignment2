@@ -10,7 +10,6 @@
       <property name="siteService" ref="org.sakaiproject.site.api.SiteService" />
       <property name="toolManager" ref="org.sakaiproject.tool.api.ToolManager" />
       <property name="userDirectoryService" ref="org.sakaiproject.user.api.UserDirectoryService" />
-      <property name="sectionAwareness" ref="org.sakaiproject.section.api.SectionAwareness"/>
       <property name="serverConfigurationService" ref="org.sakaiproject.component.api.ServerConfigurationService" />
    </bean>
    

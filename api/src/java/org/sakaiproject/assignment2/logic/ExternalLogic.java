@@ -170,28 +170,6 @@ public interface ExternalLogic {
     public boolean siteHasTool(String contextId, String toolId);
 
     /**
-     * 
-     * @param contextId
-     * @return a list of userIds of members of this site with a "student"-type role
-     */
-    public List<String> getStudentsInSite(String contextId);
-
-    /**
-     * 
-     * @param contextId
-     * @return a list of userIds of members of this site with a "TA"-type role
-     * 
-     */
-    public List<String> getTAsInSite(String contextId);
-
-    /**
-     * 
-     * @param contextId
-     * @return a list of userIds of members of this site with an "instructor"-type role
-     */
-    public List<String> getInstructorsInSite(String contextId);
-
-    /**
      * @param contextId
      * @param groupId
      * @return a list of the user ids of users in the Group with the given groupId  
@@ -239,13 +217,13 @@ public interface ExternalLogic {
 
     /**
      * 
-     * @param contextId
-     * @return a map of the displayId to userId for all of the students in the
-     * given site. Useful for display scenarios that require use of the displayId
+     * @param userIds
+     * @return a map of the displayId to userId for the given users. 
+     * Useful for display scenarios that require use of the displayId
      * (such as upload and download) that we need to convert to the equivalent
      * userId for processing
      */
-    public Map<String, String> getUserDisplayIdUserIdMapForStudentsInSite(String contextId);
+    public Map<String, String> getUserDisplayIdUserIdMapForUsers(List<String> userIds);
 
     /**
      * 

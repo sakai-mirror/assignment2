@@ -37,9 +37,6 @@ import org.sakaiproject.authz.api.Member;
 import org.sakaiproject.component.api.ServerConfigurationService;
 import org.sakaiproject.entity.api.Entity;
 import org.sakaiproject.exception.IdUnusedException;
-import org.sakaiproject.section.api.SectionAwareness;
-import org.sakaiproject.section.api.coursemanagement.ParticipationRecord;
-import org.sakaiproject.section.api.facade.Role;
 import org.sakaiproject.site.api.Group;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.api.SiteService;
@@ -80,11 +77,6 @@ public class ExternalLogicImpl implements ExternalLogic {
     private UserDirectoryService userDirectoryService;
     public void setUserDirectoryService(UserDirectoryService userDirectoryService) {
         this.userDirectoryService = userDirectoryService;
-    }
-
-    private SectionAwareness sectionAwareness;
-    public void setSectionAwareness(SectionAwareness sectionAwareness) {
-        this.sectionAwareness = sectionAwareness;
     }
     
     private ServerConfigurationService serverConfigurationService;
@@ -230,46 +222,6 @@ public class ExternalLogicImpl implements ExternalLogic {
         return siteHasTool;
     }
 
-    public List<String> getInstructorsInSite(String contextId) {
-        if (contextId == null) {
-            throw new IllegalArgumentException("Null contextId passed to getInstructorsInSite");
-        }
-
-        return getUsersInRoleInSite(Role.INSTRUCTOR, contextId);
-    }
-
-    public List<String> getTAsInSite(String contextId) {
-        if (contextId == null) {
-            throw new IllegalArgumentException("Null contextId passed to getTAsInSite");
-        }
-
-        return getUsersInRoleInSite(Role.TA, contextId);
-    }
-
-    public List<String> getStudentsInSite(String contextId) {
-        if (contextId == null) {
-            throw new IllegalArgumentException("Null contextId passed to getStudentsInSite");
-        }
-
-        return getUsersInRoleInSite(Role.STUDENT, contextId);
-    }
-
-    private List<String> getUsersInRoleInSite(Role role, String contextId) {   
-        List<String> usersInRole = new ArrayList<String>();
-
-        List<ParticipationRecord> participants = sectionAwareness.getSiteMembersInRole(contextId, role);
-        if (participants != null) {
-            for (ParticipationRecord part : participants) {
-                if (part != null) {
-                    String studentId = part.getUser().getUserUid();
-                    usersInRole.add(studentId);
-                }
-            }
-        }
-
-        return usersInRole;
-    }
-
     public List<String> getUsersInGroup(String contextId, String groupId) {
         if (groupId == null) {
             throw new IllegalArgumentException("null groupId passed to getStudentsInSection");
@@ -395,18 +347,12 @@ public class ExternalLogicImpl implements ExternalLogic {
         return userIdUserMap;
     }
 
-    public Map<String, String> getUserDisplayIdUserIdMapForStudentsInSite(String contextId) {
-        if (contextId == null) {
-            throw new IllegalArgumentException("Null contextId passed to getUserDisplayIdUserIdMapForStudentsInSite");
-        }
-
+    public Map<String, String> getUserDisplayIdUserIdMapForUsers(List<String> userIds) {
         Map<String, String> userDisplayIdUserIdMap = new HashMap<String, String>();
 
-        List<String> allStudentsInSite = getStudentsInSite(contextId);
-
-        if (allStudentsInSite != null) {
+        if (userIds != null) {
             List<User> userList = new ArrayList<User>();
-            userList = userDirectoryService.getUsers(allStudentsInSite);
+            userList = userDirectoryService.getUsers(userIds);
 
             if (userList != null) {
                 for (User user : userList) {

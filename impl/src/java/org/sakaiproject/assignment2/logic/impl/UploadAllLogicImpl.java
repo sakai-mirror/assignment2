@@ -140,7 +140,8 @@ public class UploadAllLogicImpl implements UploadAllLogic
         // folder names here so we don't have to do it repeatedly
         Pattern pattern = Pattern.compile(ZipExportLogic.FILE_NAME_REGEX);
 
-        Map<String, String> displayIdUserIdMap = externalLogic.getUserDisplayIdUserIdMapForStudentsInSite(assign.getContextId());
+        List<String> submitters = permissionLogic.getSubmittersInSite(assign.getContextId());
+        Map<String, String> displayIdUserIdMap = externalLogic.getUserDisplayIdUserIdMapForUsers(submitters);
 
         List<StudentFeedbackWrapper> feedbackUploadList = new ArrayList<StudentFeedbackWrapper>();
 

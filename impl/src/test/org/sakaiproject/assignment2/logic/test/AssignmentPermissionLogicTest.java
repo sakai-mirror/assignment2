@@ -1643,4 +1643,24 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT1_UID);
         assertFalse(permissionLogic.isUserAllowedToManageSubmissions(null, AssignmentTestDataLoad.CONTEXT_ID));
     }
+    
+    public void testGetSubmittersInSite() {
+        try {
+            permissionLogic.getSubmittersInSite(null);
+            fail("did not catch null contextId passed to getSubmittersInSite");
+        } catch (IllegalArgumentException iae) {}
+        
+        List<String> submitters = permissionLogic.getSubmittersInSite(AssignmentTestDataLoad.CONTEXT_ID);
+        assertEquals(3, submitters.size());
+        
+        for (String user : submitters) {
+            if (user.equals(AssignmentTestDataLoad.STUDENT1_UID) ||
+                    user.equals(AssignmentTestDataLoad.STUDENT2_UID) ||
+                    user.equals(AssignmentTestDataLoad.STUDENT3_UID)) {
+                // these should be there
+            } else {
+                fail("Non-submitter returned by getSubmittersInSite: " + user);
+            }
+        }
+    }
 }

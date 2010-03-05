@@ -331,4 +331,12 @@ public interface AssignmentPermissionLogic {
      * student with an existing submission for that assignment may view the assignment
      */
     public List<Assignment2> filterViewableAssignments(String contextId, Collection<Assignment2> assignmentList);
+    
+    /**
+     * 
+     * @param contextId
+     * @return a list of the userIds of users who have submission privileges in 
+     * the given context
+     */
+    public List<String> getSubmittersInSite(String contextId);
 }
