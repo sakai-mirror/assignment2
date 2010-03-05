@@ -28,10 +28,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
+import org.sakaiproject.authz.api.Member;
 import org.sakaiproject.component.api.ServerConfigurationService;
 import org.sakaiproject.entity.api.Entity;
 import org.sakaiproject.exception.IdUnusedException;
@@ -268,23 +270,29 @@ public class ExternalLogicImpl implements ExternalLogic {
         return usersInRole;
     }
 
-    public List<String> getStudentsInGroup(String groupId) {
+    public List<String> getUsersInGroup(String contextId, String groupId) {
         if (groupId == null) {
             throw new IllegalArgumentException("null groupId passed to getStudentsInSection");
-
         }
 
-        List<String> studentsInGroup = new ArrayList<String>();
-
-        List<ParticipationRecord> participants = sectionAwareness.getSectionMembersInRole(groupId, Role.STUDENT);
-        for (ParticipationRecord part : participants) {
-            if (part != null) {
-                String studentId = part.getUser().getUserUid();
-                studentsInGroup.add(studentId);
+        List<String> usersInGroup = new ArrayList<String>();
+        
+        Site site = getSite(contextId);
+        if (site == null) {
+            log.error("Error retrieving site with contextId:" + contextId);
+        } else {
+            Group group = site.getGroup(groupId);
+            if (group != null) {
+                Set<Member> members = group.getMembers();
+                if (members != null) {
+                    for (Member member : members) {
+                        usersInGroup.add(member.getUserId());
+                    }
+                }
             }
         }
 
-        return studentsInGroup;
+        return usersInGroup;
     }
 
     public String getUrlForGradebookItemHelper(Long gradeableObjectId, String returnViewId, String contextId) {

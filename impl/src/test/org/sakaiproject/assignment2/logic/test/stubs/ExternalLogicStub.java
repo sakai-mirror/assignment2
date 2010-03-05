@@ -368,4 +368,30 @@ public class ExternalLogicStub implements ExternalLogic {
         return null;
     }
 
+    @Override
+    public List<String> getUsersInGroup(String contextId, String groupId)
+    {
+        
+        List<String> allUsers = new ArrayList<String>();
+        allUsers.add(AssignmentTestDataLoad.INSTRUCTOR_UID);
+        allUsers.add(AssignmentTestDataLoad.TA_UID);
+        allUsers.add(AssignmentTestDataLoad.STUDENT1_UID);
+        allUsers.add(AssignmentTestDataLoad.STUDENT2_UID);
+        allUsers.add(AssignmentTestDataLoad.STUDENT3_UID);
+        
+        List<String> usersInGroup = new ArrayList<String>();
+        for (String user : allUsers) {
+            List<String> groupMemberships = getUserMembershipGroupIdList(user, AssignmentTestDataLoad.CONTEXT_ID);
+            if (groupMemberships != null) {
+                for (String userGroupId : groupMemberships) {
+                    if (userGroupId.equals(groupId)) {
+                        usersInGroup.add(user);
+                    }
+                }
+            }
+        }
+        
+        return usersInGroup;
+    }
+
 }

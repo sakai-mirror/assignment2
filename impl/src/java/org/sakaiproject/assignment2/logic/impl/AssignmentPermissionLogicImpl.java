@@ -37,7 +37,6 @@ import org.sakaiproject.assignment2.exception.AssignmentNotFoundException;
 import org.sakaiproject.assignment2.exception.SubmissionNotFoundException;
 import org.sakaiproject.assignment2.logic.AssignmentAuthzLogic;
 import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
-import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentGroup;
@@ -67,129 +66,151 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
     public void setExternalLogic(ExternalLogic externalLogic) {
         this.externalLogic = externalLogic;
     }
-
-    private ExternalGradebookLogic gradebookLogic;
-    public void setExternalGradebookLogic(ExternalGradebookLogic gradebookLogic) {
-        this.gradebookLogic = gradebookLogic;
-    }
     
     private AssignmentAuthzLogic authz;
     public void setAssignmentAuthzLogic(AssignmentAuthzLogic authz) {
         this.authz = authz;
     }
     
-    public boolean isUserAllowedToEditAllAssignments(String contextId) {
+    public boolean isUserAllowedToEditAllAssignments(String userId, String contextId) {
         if (contextId == null) {
             throw new IllegalArgumentException("Null contextId passed to isUserAllowedToEditAllAssignments");
         }
         
-        return authz.userHasEditPermission(contextId) && authz.userHasAllGroupsPermission(contextId);
+        return authz.userHasEditPermission(userId, contextId) && 
+        authz.userHasAllGroupsPermission(userId, contextId);
     }
     
-    public boolean isUserAllowedToEditAssignment(Assignment2 assignment, List<String> groupMembershipIds) {
-        if (assignment == null || assignment.getContextId() == null) {
+    public boolean isUserAllowedToEditAssignment(String userId, Assignment2 assignment, List<String> groupMembershipIds) {
+        if (assignment == null) {
             throw new IllegalArgumentException("Null assignment or contextId passed to isUserAllowedToEditAssignment");
         }
         
-        String currUserId = externalLogic.getCurrentUserId();
+        if (userId == null) {
+            userId = externalLogic.getCurrentUserId();
+        }
         
-        return isUserAllowedToTakeActionOnAssignment(currUserId, assignment, AssignmentConstants.PERMISSION_EDIT_ASSIGNMENTS, null);
+        return isUserAllowedToTakeActionOnAssignment(userId, assignment, AssignmentConstants.PERMISSION_EDIT_ASSIGNMENTS, null);
     }
     
-    public boolean isUserAllowedToAddAssignments(String contextId) {
+    public boolean isUserAllowedToAddAssignments(String userId, String contextId) {
         if (contextId == null) {
             throw new IllegalArgumentException("Null contextId passed to isUserAllowedToAddAssignments");
         }
         
-        return authz.userHasAddPermission(contextId);
+        return authz.userHasAddPermission(userId, contextId);
     }
     
-    public boolean isUserAllowedToAddAssignment(Assignment2 assignment, List<String> groupMembershipIds) {
+    public boolean isUserAllowedToAddAssignment(String userId, Assignment2 assignment, List<String> groupMembershipIds) {
         if (assignment == null) {
             throw new IllegalArgumentException("Null assignment passed to isUserAllowedToAddAssignment");
         }
         
-        String currUserId = externalLogic.getCurrentUserId();
+        if (userId == null) {
+            userId = externalLogic.getCurrentUserId();
+        }
         
-        return isUserAllowedToTakeActionOnAssignment(currUserId, assignment, 
+        return isUserAllowedToTakeActionOnAssignment(userId, assignment, 
                 AssignmentConstants.PERMISSION_ADD_ASSIGNMENTS, null);
     }
     
-    public boolean isUserAllowedToDeleteAssignments(String contextId) {
+    public boolean isUserAllowedToDeleteAssignments(String userId, String contextId) {
         if (contextId == null) {
             throw new IllegalArgumentException("Null contextId passed to isUserAllowedToDeleteAssignments");
         }
         
-        return authz.userHasDeletePermission(contextId);
+        return authz.userHasDeletePermission(userId, contextId);
     }
     
-    public boolean isUserAllowedToDeleteAssignment(Assignment2 assignment, List<String> groupMembershipIds) {
+    public boolean isUserAllowedToDeleteAssignment(String userId, Assignment2 assignment, List<String> groupMembershipIds) {
         if (assignment == null) {
             throw new IllegalArgumentException("Null assignment passed to isUserAllowedToDeleteAssignment");
         }
         
-        String currUserId = externalLogic.getCurrentUserId();
+        if (userId == null) {
+            userId = externalLogic.getCurrentUserId();
+        }
         
-        return isUserAllowedToTakeActionOnAssignment(currUserId, assignment, AssignmentConstants.PERMISSION_REMOVE_ASSIGNMENTS, null);
+        return isUserAllowedToTakeActionOnAssignment(userId, assignment, AssignmentConstants.PERMISSION_REMOVE_ASSIGNMENTS, null);
     }
     
-    public boolean isUserAllowedToManageAllSubmissions(String contextId) {
+    public boolean isUserAllowedToManageAllSubmissions(String userId, String contextId) {
         if (contextId == null) {
             throw new IllegalArgumentException("Null contextId passed to isUserAllowedToManageAllSubmissions");
         }
         
-        return authz.userHasManageSubmissionsPermission(contextId) && authz.userHasAllGroupsPermission(contextId);
+        return authz.userHasManageSubmissionsPermission(userId, contextId) && 
+        authz.userHasAllGroupsPermission(userId, contextId);
     }
     
-    public boolean isUserAllowedToManageSubmissions(String contextId) {
+    public boolean isUserAllowedToManageSubmissions(String userId, String contextId) {
         if (contextId == null) {
             throw new IllegalArgumentException("Null contextId passed to isUserAllowedToManageAllSubmissions");
         }
         
-        return authz.userHasManageSubmissionsPermission(contextId);
+        return authz.userHasManageSubmissionsPermission(userId, contextId);
     }
     
-    public boolean isUserAllowedToManageSubmissionsForAssignment(Assignment2 assignment, List<String> groupMembershipIds) {
+    public boolean isUserAllowedToManageSubmissionsForAssignment(String userId, Assignment2 assignment, List<String> groupMembershipIds) {
         if (assignment == null) {
             throw new IllegalArgumentException("Null assignment passed to isUserAllowedToManageSubmissionsForAssignment");
         }
         
-        String currUserId = externalLogic.getCurrentUserId();
+        if (userId == null) {
+            userId = externalLogic.getCurrentUserId();
+        }
         
-        return isUserAllowedToTakeActionOnAssignment(currUserId, assignment, 
+        return isUserAllowedToTakeActionOnAssignment(userId, assignment, 
                 AssignmentConstants.PERMISSION_MANAGE_SUBMISSIONS, groupMembershipIds);
     }
     
-    public boolean isUserAllowedToViewAssignment(Assignment2 assignment, List<String> groupMembershipIds) {
+    public boolean isUserAllowedToViewAssignment(String userId, Assignment2 assignment, List<String> groupMembershipIds) {
         if (assignment == null) {
             throw new IllegalArgumentException("Null assignment passed to isUserAllowedToViewAssignment");
         }
         
         boolean allowed = false;
         
-        String currUserId = externalLogic.getCurrentUserId();
+        if (userId == null) {
+            userId = externalLogic.getCurrentUserId();
+        }
         
         // viewing an assignment is a little more complicated because you may view the assignment
         // if you have view, submit, manage submissions, delete, or edit perm for it
-        boolean hasViewPerm =  isUserAllowedToTakeActionOnAssignment(currUserId, assignment, 
+        boolean hasViewPerm =  isUserAllowedToTakeActionOnAssignment(userId, assignment, 
                 AssignmentConstants.PERMISSION_VIEW_ASSIGNMENTS, groupMembershipIds);
         if (hasViewPerm) {
             allowed = true;
-        } else if (isUserAllowedToManageSubmissionsForAssignment(assignment, groupMembershipIds)) {
+        } else if (isUserAllowedToManageSubmissionsForAssignment(userId, assignment, groupMembershipIds)) {
             allowed = true;
-        } else if (isUserAllowedToEditAssignment(assignment, groupMembershipIds)) {
+        } else if (isUserAllowedToEditAssignment(userId, assignment, groupMembershipIds)) {
             allowed = true;
-        } else if (isUserAllowedToTakeActionOnAssignment(currUserId, assignment, AssignmentConstants.PERMISSION_SUBMIT, groupMembershipIds)) {
+        } else if (isUserAllowedToTakeActionOnAssignment(userId, assignment, AssignmentConstants.PERMISSION_SUBMIT, groupMembershipIds)) {
             // student has submission privileges for this assignment.
             // BUT this does not indicate that submission is actually open.
             allowed = true;
-        } else if (isUserAllowedToDeleteAssignment(assignment, groupMembershipIds)){
+        } else if (isUserAllowedToDeleteAssignment(userId, assignment, groupMembershipIds)){
             allowed = true;
         } else {
             allowed = false;
         }
         
         return allowed;
+    }
+    
+
+    public boolean isUserAllowedToViewAssignment(Long assignmentId) {
+        if (assignmentId == null) {
+            throw new IllegalArgumentException("Null assignmentId passed to isUserAbleToViewAssignment");
+        }
+
+        // retrieve the assignment
+        Assignment2 assign = dao.getAssignmentByIdWithGroups(assignmentId);
+        if (assign == null) {
+            throw new AssignmentNotFoundException("No assignment found with id " + assignmentId);
+        }
+
+        return isUserAllowedToViewAssignment(null, assign, null);
     }
     
     public Map<String, Boolean> getPermissionsForSite(String contextId, List<String> permissions) {
@@ -245,7 +266,7 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
                             boolean hasPermission;
                             // the ability to view an assignment isn't straightforward, so call the specific method
                             if (permission.equals(AssignmentConstants.PERMISSION_VIEW_ASSIGNMENTS)) {
-                                hasPermission = isUserAllowedToViewAssignment(assign, groupMembershipIds);
+                                hasPermission = isUserAllowedToViewAssignment(currUserId, assign, groupMembershipIds);
                             } else {
                                 hasPermission = isUserAllowedToTakeActionOnAssignment(currUserId, assign, 
                                         permission, groupMembershipIds);
@@ -387,7 +408,7 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
         return hasPermissionForGroup;
     }
     
-    public boolean isUserAllowedToManageSubmission(String studentId, Assignment2 assignment) {
+    public boolean isUserAllowedToManageSubmission(String userId, String studentId, Assignment2 assignment) {
         if (studentId == null || assignment == null) {
             throw new IllegalArgumentException("Null contextId, studentId or assignmentId passed to" +
                     " isUserAllowedToViewSubmissionForAssignment. studentId:" + studentId + " assignment:" + assignment);
@@ -395,12 +416,12 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
         
         boolean allowed = false;
         
-        if (isUserAllowedToManageAllSubmissions(assignment.getContextId())) {
+        if (isUserAllowedToManageAllSubmissions(userId, assignment.getContextId())) {
             allowed = true;
         } else {
             String currUserId = externalLogic.getCurrentUserId();
             List<String> currentUserMemberships = externalLogic.getUserMembershipGroupIdList(currUserId, assignment.getContextId());
-            if (isUserAllowedToManageSubmissionsForAssignment(assignment, currentUserMemberships)) {
+            if (isUserAllowedToManageSubmissionsForAssignment(userId, assignment, currentUserMemberships)) {
                 // double check that the student is in one of the curr user's groups
                 List<String> studentMemberships = externalLogic.getUserMembershipGroupIdList(studentId, assignment.getContextId());
                 if (listMembershipsOverlap(currentUserMemberships, studentMemberships)) {
@@ -413,31 +434,33 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
                 allowed = false;
             }
         }
-        
-        
+
         return allowed;
     }
 
-    public boolean isUserAllowedToViewSubmissionForAssignment(String studentId, Long assignmentId) {
+    public boolean isUserAllowedToViewSubmissionForAssignment(String userId, String studentId, Long assignmentId) {
         if (studentId == null || assignmentId == null) {
             throw new IllegalArgumentException("Null studentId or assignmentId passed to isUserAbleToViewStudentSubmissionForAssignment");
         }
 
         boolean viewable = false;
         
-        String currUserId = externalLogic.getCurrentUserId();
-        if (currUserId.equals(studentId)) {
+        if (userId == null) {
+            userId = externalLogic.getCurrentUserId();
+        }
+
+        if (userId.equals(studentId)) {
             viewable = true;
         } else {
             // we need to make sure this assignment wasn't deleted
             Assignment2 assign = dao.getAssignmentByIdWithGroups(assignmentId);
-            viewable = isUserAllowedToManageSubmission(studentId, assign);
+            viewable = isUserAllowedToManageSubmission(userId, studentId, assign);
         }
 
         return viewable;	
     }
 
-    public boolean isUserAllowedToManageSubmission(Long submissionId) {
+    public boolean isUserAllowedToManageSubmission(String userId, Long submissionId) {
         if (submissionId == null) {
             throw new IllegalArgumentException("Null submissionId passed to isUserAbleToProvideFeedbackForSubmission");
         }
@@ -447,7 +470,15 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
             throw new SubmissionNotFoundException("No submission exists with id: " + submissionId);
         }
 
-        return isUserAllowedToManageSubmission(submission.getUserId(), submission.getAssignment());
+        return isUserAllowedToManageSubmission(userId, submission.getUserId(), submission.getAssignment());
+    }
+    
+    public boolean isUserAllowedToSubmit(String userId, String contextId) {
+        if (contextId == null) {
+            throw new IllegalArgumentException("Null contextId passed to isUserAllowedToSubmit");
+        }
+        
+        return authz.userHasSubmitPermission(userId, contextId);
     }
 
 
@@ -504,207 +535,143 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
         return false;
     }
 
-    public boolean isUserAllowedToAccessInstructorView(String contextId) {
+    public boolean isUserAllowedToAccessInstructorView(String userId, String contextId) {
         if (contextId == null) {
             throw new IllegalArgumentException("null contextId passed to isUserAbleToAccessInstructorView");
         }
 
         boolean instructorView = false;
+        
+        if (userId == null) {
+            userId = externalLogic.getCurrentUserId();
+        }
 
-        if (authz.userHasEditPermission(contextId) || 
-                authz.userHasAddPermission(contextId) ||
-                authz.userHasDeletePermission(contextId) || 
-                authz.userHasManageSubmissionsPermission(contextId)) {
+        if (authz.userHasEditPermission(userId, contextId) || 
+                authz.userHasAddPermission(userId, contextId) ||
+                authz.userHasDeletePermission(userId, contextId) || 
+                authz.userHasManageSubmissionsPermission(userId, contextId)) {
             instructorView = true;
         }
 
         return instructorView;
     }
 
-    public boolean isUserAllowedToMakeSubmissionForAssignment(Assignment2 assignment) {
+    public boolean isUserAllowedToMakeSubmissionForAssignment(String userId, Assignment2 assignment) {
         if (assignment == null) {
             throw new IllegalArgumentException("null assignment passed to isUserAbleToMakeSubmission");
         }
 
         return isUserAllowedToTakeActionOnAssignment(externalLogic.getCurrentUserId(), assignment, AssignmentConstants.PERMISSION_SUBMIT, null);
     }
-
-    public Map<Assignment2, List<String>> getViewableStudentsForUserForAssignments(String userId, String contextId, List<Assignment2> assignmentList) {
-        if (userId == null) {
-            throw new IllegalArgumentException("Null userId passed to getViewableStudentsForUserForAssignments");
+    
+    public boolean isUserAllowedToMakeSubmissionForAssignmentId(String userId, Long assignmentId) {
+        if (assignmentId == null) {
+            throw new IllegalArgumentException("Null assignmentId passed to isUserAllowedToMakeSubmissionForAssignment");
         }
-
-        if (contextId == null) {
-            throw new IllegalArgumentException("Null contextId passed to getViewableStudentsForUserForAssignments");
-        }
-
-        Map<Assignment2, List<String>> assignToViewableStudentsMap = new HashMap<Assignment2, List<String>>();
-        if (assignmentList != null) {
-            assignToViewableStudentsMap = getAvailableStudentsForUserForAssignments(userId, assignmentList, AssignmentConstants.VIEW, contextId);
-        }
-
-        return assignToViewableStudentsMap;
+        
+        Assignment2 assign = dao.getAssignmentByIdWithGroups(assignmentId);
+        return isUserAllowedToMakeSubmissionForAssignment(userId, assign);
     }
 
-    public List<String> getViewableStudentsForUserForItem(String userId, Assignment2 assignment) {
-        if (assignment == null || userId == null) {
-            throw new IllegalArgumentException("null assignment or userId passed to " +
-                    "getViewableStudentsForUserForItem. userId: " + userId + " assignment: " + assignment);
+    public List<String> getViewableStudentsForAssignment(String userId, Assignment2 assignment) {
+        if (assignment == null) {
+            throw new IllegalArgumentException("null assignment passed to getViewableStudentsForAssignment");
         }
 
         List<Assignment2> assignmentList = new ArrayList<Assignment2>();
         assignmentList.add(assignment);
 
-        Map<Assignment2, List<String>> assignIdAvailStudentsMap = getAvailableStudentsForUserForAssignments(userId, assignmentList, AssignmentConstants.VIEW, assignment.getContextId());
+        Map<Assignment2, List<String>> assignIdAvailStudentsMap = getViewableStudentsForAssignments(userId, assignment.getContextId(), assignmentList);
 
         List<String> availStudents = assignIdAvailStudentsMap.get(assignment);
 
         return availStudents;
     }
 
-    public List<String> getGradableStudentsForUserForItem(String userId, Assignment2 assignment) {
-        if (assignment == null || userId == null) {
-            throw new IllegalArgumentException("null assignment or userId passed " +
-                    "to getGradableStudentsForUserForItem. " +
-                    "userId: " + userId + " assignment: " + assignment);
-        }
-
-        List<Assignment2> assignmentList = new ArrayList<Assignment2>();
-        assignmentList.add(assignment);
-
-        Map<Assignment2, List<String>> assignIdAvailStudentsMap = getAvailableStudentsForUserForAssignments(userId, assignmentList, AssignmentConstants.GRADE, assignment.getContextId());
-        List<String> availStudents = assignIdAvailStudentsMap.get(assignment);
-
-        return availStudents;
-    }
-
-    /**
-     * 
-     * @param userId
-     * @param assignmentList
-     * @param gradeOrView - indicate whether you want all the students a user may view or all that the user may grade.
-     * use {@link AssignmentConstants.GRADE} or {@link AssignmentConstants.VIEW}
-     * @param contextId 
-     * @return a map of the Assignment2 object to a list of student uids that
-     * the given user is allowed to view or grade (based upon the gradeOrView param).
-     * if the user is not allowed to view any students for an assignment, the assignment
-     * will be returned with an empty list
-     */
-    private Map<Assignment2, List<String>> getAvailableStudentsForUserForAssignments(String userId, List<Assignment2> assignmentList, String gradeOrView, String contextId) {
-        if (userId == null) {
-            throw new IllegalArgumentException("null userId passed to getAvailableStudentsForUserForItem. userId: " + userId);
-        }
-
+    public Map<Assignment2, List<String>> getViewableStudentsForAssignments(String userId, String contextId, List<Assignment2> assignmentList) {
         if (contextId == null) {
-            throw new IllegalArgumentException("null contextId passed to " + this);
-        }
-
-        if (gradeOrView == null || (!gradeOrView.equals(AssignmentConstants.GRADE) && !gradeOrView.equals(AssignmentConstants.VIEW))) {
-            throw new IllegalArgumentException("Invalid gradeOrView " + gradeOrView + " passed to getAvailableStudentsForUserForItem");
+            throw new IllegalArgumentException("null contextId passed to getAvailableStudentsForUserForItem.");
         }
 
         Map<Assignment2, List<String>> assignToAvailStudentsMap = new HashMap<Assignment2, List<String>>();
-
-        List<String> allStudentsInSite = externalLogic.getStudentsInSite(contextId);
-        boolean userAbleToGradeAll = gradebookLogic.isUserAbleToGradeAll(contextId, userId);
-        boolean userAbleToGrade = gradebookLogic.isUserAbleToGrade(contextId, userId);
+        
+        if (userId == null) {
+            userId = externalLogic.getCurrentUserId();
+        }
 
         if (assignmentList != null && !assignmentList.isEmpty()) {
-
-            for (Assignment2 assignment : assignmentList) {
-                List<String> availStudents = new ArrayList<String>();
-
-                if (!assignment.isRemoved()) {
-
-                    List<AssignmentGroup> assignGroupRestrictions = 
-                        dao.findByProperties(AssignmentGroup.class, new String[] {"assignment"}, new Object[] {assignment});
-
-                    // if user may grade all, then return all of the students who have this assignment.
-                    // we need to check for group restrictions
-                    if (userAbleToGradeAll) {
-                        if (assignGroupRestrictions == null || assignGroupRestrictions.isEmpty()) {
-                            availStudents.addAll(allStudentsInSite);
-                        } else {
-                            availStudents = getAllAvailableStudentsGivenGroupRestrictions(
-                                    contextId, assignGroupRestrictions);
-                        }
-
-                    } else if(userAbleToGrade) {
-                        // if assignment is ungraded or associated gb item has been deleted,
-                        // we treat this assignment as ungraded
-                        boolean treatAsUngraded = false;
-                        if (assignment.isGraded() && assignment.getGradebookItemId() != null) {
-                            // double check that gb item still exists
-                            if (!gradebookLogic.gradebookItemExists(assignment.getGradebookItemId())) {
-                                treatAsUngraded = true;
-                            } else {
-                                // we need to get the students who are viewable in the gb
-                                List<String> viewableInGb = new ArrayList<String>();
-                                Map<String, String> studentIdFunctionMap = 
-                                    gradebookLogic.getViewableStudentsForGradedItemMap(userId, contextId, assignment.getGradebookItemId());
-                                if (studentIdFunctionMap != null) {
-                                    if (gradeOrView.equals(AssignmentConstants.VIEW)) {
-                                        viewableInGb.addAll(studentIdFunctionMap.keySet());
-                                    } else {
-                                        for (Map.Entry<String, String> entry : studentIdFunctionMap.entrySet()) {
-                                            String studentId = entry.getKey();
-                                            String function = entry.getValue();
-                                            if (studentId != null && function != null
-                                                    && function.equals(AssignmentConstants.GRADE)) {
-                                                viewableInGb.add(studentId);
-                                            }
-                                        }
-                                    }
-                                }
-
-                                // now we need to filter out the ones who aren't associated w/ this assignment
-                                if (assignGroupRestrictions == null || assignGroupRestrictions.isEmpty()) {
-                                    availStudents.addAll(viewableInGb);
-                                } else {
-                                    List<String> availForAssign = getAllAvailableStudentsGivenGroupRestrictions(
-                                            contextId, assignGroupRestrictions);
-                                    if (availForAssign != null && !availForAssign.isEmpty()) {
-                                        for (String studentId : availForAssign) {
-                                            if (studentId != null && viewableInGb.contains(studentId)) {
-                                                availStudents.add(studentId);
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        } else {
-                            treatAsUngraded = true;
-                        }
-
-                        if (treatAsUngraded) {
-                            // if there are no restrictions, return students in user's group(s)
-                            if (assignGroupRestrictions == null || assignGroupRestrictions.isEmpty()) {
-                                Set<String> sharedStudents = getStudentsInUsersGroups(userId, contextId);
-                                if (sharedStudents != null) {
-                                    availStudents.addAll(sharedStudents);
-                                }
-                            } else {
-                                // otherwise, only return students in his/her group if it is one
-                                // of the group restrictions
-                                List<String> memberships = externalLogic.getUserMembershipGroupIdList(userId, contextId);
-                                if (memberships != null && !memberships.isEmpty()) {
-                                    for (AssignmentGroup group : assignGroupRestrictions) {
-                                        if (group != null && memberships.contains(group.getGroupId())) {
-                                            availStudents.addAll(externalLogic.getStudentsInGroup(group.getGroupId()));
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }     
+            
+            if (!authz.userHasManageSubmissionsPermission(userId, contextId)) {
+                // user can't view any students, so let's send them back with empty lists
+                for (Assignment2 assign : assignmentList) {
+                    assignToAvailStudentsMap.put(assign, new ArrayList<String>());
                 }
+                
+            } else {
+                // first, we will retrieve all of the users with submission privileges in this site
+                List<String> usersWithSubmitPerm = authz.getUsersWithPermission(contextId, AssignmentConstants.PERMISSION_SUBMIT);
 
-                assignToAvailStudentsMap.put(assignment, availStudents);
+                if (usersWithSubmitPerm != null && !usersWithSubmitPerm.isEmpty()) {
+
+                    boolean userMayManageAll = isUserAllowedToManageAllSubmissions(userId, contextId);
+
+                    List<String> userGroupMemberships = new ArrayList<String>();
+                    // if the user does not have the "manage all" perm, we are going
+                    // to need their group memberships
+                    if (!userMayManageAll) {
+                        userGroupMemberships = externalLogic.getUserMembershipGroupIdList(userId, contextId);
+                    }
+
+                    // once we retrieve the group membership, put it in a map so we can reuse it
+                    Map<String, List<String>> groupToMembershipMap = new HashMap<String, List<String>>();
+
+                    for (Assignment2 assign : assignmentList) {
+                        List<String> availStudents = new ArrayList<String>();
+
+                        if (!assign.isRemoved()) {
+                            if (userMayManageAll) {
+                                // we need to filter the available submitters based
+                                // on group restrictions, if applicable
+                                List<String> filteredSubmitters = filterSubmittersGivenGroupRestrictions(
+                                        contextId, usersWithSubmitPerm, assign.getAssignmentGroupSet(), groupToMembershipMap);
+                                if (filteredSubmitters != null) {
+                                    availStudents.addAll(filteredSubmitters);
+                                }
+
+                            } else {
+                                // user doesn't have manage all perm
+                                if (isUserAllowedToManageSubmissionsForAssignment(userId, assign, userGroupMemberships)) {
+                                    // we need to filter the available submitters based
+                                    // on group restrictions, if applicable
+                                    List<String> filteredSubmitters = filterSubmittersGivenGroupRestrictions(
+                                            contextId, usersWithSubmitPerm, assign.getAssignmentGroupSet(), groupToMembershipMap);
+                                    if (filteredSubmitters != null) {
+                                        // start with the assignment groups that the user is a member of
+                                        Set<String> groupsToCheck = getSharedListMembers(
+                                                assign.getListOfAssociatedGroupReferences(), userGroupMemberships);
+
+                                        // now retrieve all of the users in those groups
+                                        Set<String> usersInGroups = getUsersInGroups(contextId, groupsToCheck, groupToMembershipMap);
+
+                                        // now let's filter that based upon our filteredSubmitters
+                                        Set<String> viewableStudents = getSharedListMembers(usersInGroups, filteredSubmitters);
+                                        availStudents.addAll(viewableStudents);
+                                    }
+                                }
+
+                            }
+                        }
+
+                        assignToAvailStudentsMap.put(assign, availStudents);
+                    }
+                }
             }
         }
 
         return assignToAvailStudentsMap;
     }
+    
+ 
 
     /**
      * Given 2 lists, will return true if any of the elements in the two lists overlap
@@ -724,102 +691,80 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
         return false;
     }
 
-    private Set<String> getStudentsInUsersGroups(String userId, String contextId) {
-        // get the user's memberships
-        List<String> groupMemberships = externalLogic.getUserMembershipGroupIdList(userId, contextId);
-
-        // use a set to eliminate group overlap with duplicate students
-        Set<String> sharedStudents = new HashSet<String>();
-        if (groupMemberships != null) {
-            for (String groupId : groupMemberships) {
+    private Set<String> getUsersInGroups(String contextId, Collection<String> groupIds, Map<String, List<String>> groupMembershipMap) {
+        // use a set to eliminate group overlap with duplicate users
+        Set<String> sharedMembers = new HashSet<String>();
+        if (groupIds != null) {
+            for (String groupId : groupIds) {
                 if (groupId != null) {
-                    List<String> students = externalLogic.getStudentsInGroup(groupId);
-                    if (students != null) {
-                        sharedStudents.addAll(students);
+                    List<String> members;
+                    if (groupMembershipMap.containsKey(groupId)) {
+                        members = groupMembershipMap.get(groupId);
+                    } else {
+                        members = externalLogic.getUsersInGroup(contextId, groupId);
                     }
+                    
+                    sharedMembers.addAll(members);
                 }
             }
-
         }
 
-        return sharedStudents;
+        return sharedMembers;
     }
-
-    public boolean isUserAllowedToProvideFeedbackForAssignment(Assignment2 assignment) {
-        // returns true if user is authorized to grade at least one student for
-        // this assignment
-        if (assignment == null) {
-            throw new IllegalArgumentException("null assignment passed to isUserAllowedToProvideFeedbackForAssignment");
-        }
-
-        boolean allowedToGrade = false;
-
-        if (gradebookLogic.isCurrentUserAbleToGradeAll(assignment.getContextId())) {
-            allowedToGrade = true;
-        } else {
-            String currUserId = externalLogic.getCurrentUserId();
-
-            try {
-                List<String> gradableStudents = getGradableStudentsForUserForItem(currUserId, assignment);
-                if (gradableStudents != null && gradableStudents.size() > 0) {
-                    allowedToGrade = true;
+    
+    private Set<String> getSharedListMembers(Collection<String> list1, Collection<String> list2) {
+        // use a set to get rid of duplicates
+        Set<String> sharedMembers = new HashSet<String>();
+        if (list1 != null && list2 != null) {
+            for (String member : list1) {
+                if (list2.contains(member)) {
+                    sharedMembers.add(member);
                 }
-            } catch (SecurityException se) {
-                // this user does not have grading privileges, so may not release
-                allowedToGrade = false;
             }
         }
-
-        return allowedToGrade;
-    }
-
-    public boolean isCurrentUserAbleToSubmit(String contextId) {
-        return gradebookLogic.isCurrentUserAStudentInGb(contextId);
+        
+        return sharedMembers;
     }
 
     /**
      * 
-     * @param contextId
-     * @param assignGroupRestrictions
-     * @return a list of all of the students who are able to view this assignment
-     * given any group restrictions
+     * @param siteSubmitters userIds of submitters in the site
+     * @param assignGroupRestrictions {@link AssignmentGroup} group restrictions for the assignment
+     * @param groupIdMembershipMap a map to cut down on calls to retrieve memberships.
+     * will check here first to see if we already have found the group membership
+     * @return a list of userIds for users who have access to the assignment based upon
+     * the given assignGroupRestrictions
      */
-    private List<String> getAllAvailableStudentsGivenGroupRestrictions(String contextId, Collection<AssignmentGroup> assignGroupRestrictions) {
-        List<String> allStudentsForAssign = new ArrayList<String>();
+    private List<String> filterSubmittersGivenGroupRestrictions(String contextId, List<String> siteSubmitters, 
+            Collection<AssignmentGroup> assignGroupRestrictions, Map<String, List<String>> groupIdMembershipMap) {
+        List<String> assignmentSubmitters = new ArrayList<String>();
 
-        // if there are group restrictions, only a subset of all of the students in the
-        // class will be available for this assignment
+        // if there are group restrictions, only a subset of all of the submitters in the
+        // site will be available for this assignment
         if (assignGroupRestrictions == null || assignGroupRestrictions.isEmpty()) {
-            allStudentsForAssign = externalLogic.getStudentsInSite(contextId);
+            assignmentSubmitters = siteSubmitters;
         } else {
-            // use a set to make sure students only appear once, even if they
+            // use a Set to make sure users only appear once, even if they
             // are in multiple groups
-            Set<String> studentsInRestrictedGroups = new HashSet<String>();
+            Set<String> groupUsers = new HashSet<String>();
+            
             for (AssignmentGroup group : assignGroupRestrictions) {
-                if (group != null) {
-                    studentsInRestrictedGroups.addAll(externalLogic.getStudentsInGroup(group.getGroupId()));
+                List<String> groupMembers;
+                if (groupIdMembershipMap.containsKey(group.getGroupId())) {
+                    groupMembers = groupIdMembershipMap.get(group.getGroupId());
+                } else {
+                    groupMembers = externalLogic.getUsersInGroup(contextId, group.getGroupId());
+                    groupIdMembershipMap.put(group.getGroupId(), groupMembers);
+                }
+                if (groupMembers != null) {
+                    groupUsers.addAll(groupMembers);
                 }
             }
 
-            allStudentsForAssign.addAll(studentsInRestrictedGroups);
+            assignmentSubmitters.addAll(getSharedListMembers(groupUsers, siteSubmitters));
         }
 
-        return allStudentsForAssign;
-    }
-
-    public boolean isUserAbleToViewAssignment(Long assignmentId) {
-        if (assignmentId == null) {
-            throw new IllegalArgumentException("Null assignmentId passed to isUserAbleToViewAssignment");
-        }
-        boolean allowed = false;
-
-        // retrieve the assignment
-        Assignment2 assign = dao.getAssignmentByIdWithGroups(assignmentId);
-        if (assign == null) {
-            throw new AssignmentNotFoundException("No assignment found with id " + assignmentId);
-        }
-
-        return isUserAllowedToViewAssignment(assign, null);
+        return assignmentSubmitters;
     }
 
     public List<String> getUsersAllowedToViewStudentForAssignment(String studentId, Assignment2 assignment) {
@@ -829,21 +774,11 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
 
         List<String> usersAllowedToViewStudent = new ArrayList<String>();
 
-        // identify all of the instructors in this site
-        Set<String> instructorsAndTas = new HashSet<String>();
-        List<String> instructors = externalLogic.getInstructorsInSite(assignment.getContextId());
-        List<String> tas = externalLogic.getTAsInSite(assignment.getContextId());
+        // identify all of the users who are able to manage submissions
+        List<String> submissionManagers = authz.getUsersWithPermission(assignment.getContextId(), AssignmentConstants.PERMISSION_MANAGE_SUBMISSIONS);
 
-        if (instructors != null) {
-            instructorsAndTas.addAll(instructors);
-        }
-
-        if (tas != null) {
-            instructorsAndTas.addAll(tas);
-        }
-
-        for (String userId : instructorsAndTas) {
-            List<String> viewableStudents = getViewableStudentsForUserForItem(userId, assignment);
+        for (String userId : submissionManagers) {
+            List<String> viewableStudents = getViewableStudentsForAssignment(userId, assignment);
             if (viewableStudents != null && viewableStudents.contains(studentId)) {
                 usersAllowedToViewStudent.add(userId);
             }
@@ -852,64 +787,44 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
         return usersAllowedToViewStudent;
     }
 
-    public List<Group> getViewableGroupsForCurrUserForAssignment(Long assignmentId) {
-        List<Group> viewableGroups = new ArrayList<Group>();
-
-        Assignment2 assign = dao.getAssignmentByIdWithGroups(assignmentId);
+    public List<Group> getViewableGroupsForAssignment(String userId, Assignment2 assign) {
         if (assign == null) {
-            throw new AssignmentNotFoundException("getViewableGroupsForCurrUserForAssignment: " +
-                    "No assignment exists with id: " + assignmentId);
+            throw new IllegalArgumentException("Null assignmentId passed to getViewableGroupsForAssignment");
         }
 
-        // first, we need to identify the viewable groups for this user in this site.
-        // then we'll check the group restrictions for this assignment and
-        // return the groups for this assignment that the user may view
-        List<Group> allViewableGroups = getViewableGroupsForCurrentUser(assign.getContextId());
+        if (userId == null) {
+            userId = externalLogic.getCurrentUserId();
+        }
 
-        if (allViewableGroups != null && !allViewableGroups.isEmpty()) {
-            if (assign.getAssignmentGroupSet() != null && !assign.getAssignmentGroupSet().isEmpty()) {
+        List<Group> viewableGroups = new ArrayList<Group>();
+        
+        Collection<Group> allGroupsInSite = externalLogic.getSiteGroups(assign.getContextId());
+        Map<String, Group> siteGroupIdGroupMap = new HashMap<String, Group>();
+        if (allGroupsInSite != null) {
+            for (Group group : allGroupsInSite) {
+                siteGroupIdGroupMap.put(group.getId(), group);
+            }
 
-                if (assign.getAssignmentGroupSet() == null || assign.getAssignmentGroupSet().isEmpty()) {
-                    // there are no group restrictions, so return all viewable
-                    viewableGroups = allViewableGroups;
-                } else {
-                    // put the groups in a map for easier processing
-                    Map<String, Group> gbGroupIdToGroupMap = new HashMap<String, Group>();
-                    for (Group group : allViewableGroups) {
-                        gbGroupIdToGroupMap.put(group.getId(), group);
-                    }
+            List<String> userGroupIds = new ArrayList<String>();
+            // the user may view all groups
+            if (authz.userHasAllGroupsPermission(userId, assign.getContextId())) {
+                userGroupIds.addAll(siteGroupIdGroupMap.keySet());
+            } else {
+                // the user may only view his/her own groups
+                userGroupIds.addAll(externalLogic.getUserMembershipGroupIdList(userId, assign.getContextId()));
+            }
 
-                    // check to see if this user may view any of the restricted groups
-                    for (AssignmentGroup assignGroup : assign.getAssignmentGroupSet()) {
-                        String groupId = assignGroup.getGroupId();
-
-                        if (gbGroupIdToGroupMap.containsKey(groupId)) {
-                            viewableGroups.add(gbGroupIdToGroupMap.get(groupId));
-                        }
-                    }
+            // now let's filter these if assignment is restricted to groups
+            if (assign.getAssignmentGroupSet() == null || assign.getAssignmentGroupSet().isEmpty()) {
+                for (String groupId : userGroupIds) {
+                    viewableGroups.add(siteGroupIdGroupMap.get(groupId));
                 }
             } else {
-                viewableGroups.addAll(allViewableGroups);
-            }
-        }
-
-        return viewableGroups;
-    }
-
-    public List<Group> getViewableGroupsForCurrentUser(String contextId) {
-        if (contextId == null) {
-            throw new IllegalArgumentException("Null contextId passed to " + this);
-        }
-        List<Group> viewableGroups = new ArrayList<Group>();
-
-        // if a grader, return viewable groups in gradebook.
-        // otherwise, return the user's group membership
-        if (gradebookLogic.isCurrentUserAbleToGrade(contextId)) {
-            viewableGroups = gradebookLogic.getViewableGroupsInGradebook(contextId);
-        } else {
-            Collection<Group> membership = externalLogic.getUserMemberships(externalLogic.getCurrentUserId(), contextId);
-            if (membership != null) {
-                viewableGroups = new ArrayList<Group>(membership);
+                for (AssignmentGroup assignGroup : assign.getAssignmentGroupSet()) {
+                    if (userGroupIds.contains(assignGroup.getGroupId())) {
+                        viewableGroups.add(siteGroupIdGroupMap.get(assignGroup.getGroupId()));
+                    }
+                }
             }
         }
 
@@ -922,7 +837,8 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
         }
         boolean allowed = true;
         if (studentUids != null) {
-            List<String> gradableStudents = getGradableStudentsForUserForItem(externalLogic.getCurrentUserId(), assignment);
+            String currUserId = externalLogic.getCurrentUserId();
+            List<String> gradableStudents = getViewableStudentsForAssignment(currUserId, assignment);
             if (gradableStudents != null) {
                 for (String studentUid : studentUids) {
                     if (!gradableStudents.contains(studentUid)) {
@@ -933,7 +849,7 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
             }
         }
 
-        return allowed;    
+        return allowed;
     }
 
 }

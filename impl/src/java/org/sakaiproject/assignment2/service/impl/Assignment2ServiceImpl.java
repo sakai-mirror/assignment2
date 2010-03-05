@@ -76,7 +76,7 @@ public class Assignment2ServiceImpl implements Assignment2Service {
             throw new IllegalArgumentException("Null assignmentId passed to getAssignmentById");
         }
         
-        if (!permissionLogic.isUserAbleToViewAssignment(assignmentId)) {
+        if (!permissionLogic.isUserAllowedToViewAssignment(assignmentId)) {
             throw new SecurityException("User attempted to view assignment with id " + assignmentId + " without permission");
         }
 
@@ -161,7 +161,7 @@ public class Assignment2ServiceImpl implements Assignment2Service {
         if (assignDef != null) {
             // if the current user does not have full privileges for this assignment,
             // we may need to set some of the properties to null
-            if (!permissionLogic.isUserAllowedToAccessInstructorView(contextId)) {
+            if (!permissionLogic.isUserAllowedToAccessInstructorView(null, contextId)) {
                 assignDef.setAcceptUntilDate(null);
                 // for now, restrict all of the properties
                 assignDef.setProperties(new HashMap());

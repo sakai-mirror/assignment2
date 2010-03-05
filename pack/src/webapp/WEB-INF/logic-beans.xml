@@ -61,7 +61,6 @@
    
    <bean id="org.sakaiproject.assignment2.logic.AssignmentPermissionLogic" class="org.sakaiproject.assignment2.logic.impl.AssignmentPermissionLogicImpl" init-method="init">
       <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
-      <property name="externalGradebookLogic" ref="org.sakaiproject.assignment2.logic.ExternalGradebookLogic" />
       <property name="dao" ref="org.sakaiproject.assignment2.dao.AssignmentDao" />
       <property name="assignmentAuthzLogic" ref="org.sakaiproject.assignment2.logic.AssignmentAuthzLogic" />
    </bean>

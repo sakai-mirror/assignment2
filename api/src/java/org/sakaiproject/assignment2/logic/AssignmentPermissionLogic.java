@@ -66,133 +66,147 @@ public interface AssignmentPermissionLogic {
     public Map<Long, Map<String, Boolean>> getPermissionsForAssignments(Collection<Assignment2> assignments, Collection<String> permissions);
     
     /**
+     * @param userId userId to check. If null, will retrieve the current user.
      * @param contextId
-     * @return true if the current user has permission to add assignments in the given context.
+     * @return true if the user has permission to add assignments in the given context.
      * Note that this does not mean that a user is allowed to add any assignment. This just
      * answers the general question, "Does this user have any sort of add assignment permission 
      * in this site?"  If you want to know if a user may add a specific assignment, see
-     * {@link AssignmentPermissionLogic#isUserAllowedToAddAssignment(Assignment2, List)}
+     * {@link AssignmentPermissionLogic#isUserAllowedToAddAssignment(String, Assignment2, List)}
      */
-    public boolean isUserAllowedToAddAssignments(String contextId);
+    public boolean isUserAllowedToAddAssignments(String userId, String contextId);
     
     /**
      * 
+     * @param userId userId to check. If null, will retrieve the current user.
      * @param assignment
      * @param groupMembershipIds the group memberships for this user. leave null if you
      * want the method to look it up for you
-     * @return true if the current user is allowed to add the given assignment. Users without
+     * @return true if the user is allowed to add the given assignment. Users without
      * the "all groups" permission are not allowed to add assignments that aren't restricted
      * to that user's groups. If you want an answer to the general question,"Does
      * this user have any sort of add assignment permission in this site?" use
-     * {@link AssignmentPermissionLogic#isUserAllowedToAddAssignments(String)}
+     * {@link AssignmentPermissionLogic#isUserAllowedToAddAssignments(String, String)}
      */
-    public boolean isUserAllowedToAddAssignment(Assignment2 assignment, List<String> groupMembershipIds);
+    public boolean isUserAllowedToAddAssignment(String userId, Assignment2 assignment, List<String> groupMembershipIds);
     
     /**
+     * @param userId userId to check. If null, will retrieve the current user.
      * @param assignment
      * @param groupMembershipIds the group memberships for this user. leave null if you
      * want the method to look it up for you
-     * @return true if the current user has permission to edit the given assignment
+     * @return true if the user has permission to edit the given assignment
      */
-    public boolean isUserAllowedToEditAssignment(Assignment2 assignment, List<String> groupMembershipIds);
+    public boolean isUserAllowedToEditAssignment(String userId, Assignment2 assignment, List<String> groupMembershipIds);
     
     /**
      * 
+     * @param userId userId to check. If null, will retrieve the current user.
      * @param contextId
-     * @return true if current user is allowed to edit all assignments in the
+     * @return true if user is allowed to edit all assignments in the
      * given context
      */
-    public boolean isUserAllowedToEditAllAssignments(String contextId);
+    public boolean isUserAllowedToEditAllAssignments(String userId, String contextId);
     
     /**
      * 
+     * @param userId userId to check. If null, will retrieve the current user.
      * @param assignment
      * @param groupMembershipIds the group memberships for this user. leave null if you
      * want the method to look it up for you
-     * @return true if the current user is allowed to delete the given assignment. Users without
+     * @return true if the user is allowed to delete the given assignment. Users without
      * the "all groups" permission are not allowed to delete assignments that aren't restricted
      * to that user's groups. If you want an answer to the general question,"Does
      * this user have any sort of delete assignment permission in this site?" use
-     * {@link AssignmentPermissionLogic#isUserAllowedToDeleteAssignments(String)}
+     * {@link AssignmentPermissionLogic#isUserAllowedToDeleteAssignments(String, String)}
      */
-    public boolean isUserAllowedToDeleteAssignment(Assignment2 assignment, List<String> groupMembershipIds);
+    public boolean isUserAllowedToDeleteAssignment(String userId, Assignment2 assignment, List<String> groupMembershipIds);
     
     /**
+     * @param userId userId to check. If null, will retrieve the current user.
      * @param contextId
-     * @return true if the current user has permission to delete assignments in the given context.
+     * @return true if the user has permission to delete assignments in the given context.
      * Note that this does not mean that a user is allowed to delete any assignment. This just
      * answers the general question, "Does this user have any sort of delete assignment permission 
      * in this site?"  If you want to know if a user may delete a specific assignment, see
-     * {@link AssignmentPermissionLogic#isUserAllowedToDeleteAssignment(Assignment2, List)}
+     * {@link AssignmentPermissionLogic#isUserAllowedToDeleteAssignment(String, Assignment2, List)}
      */
-    public boolean isUserAllowedToDeleteAssignments(String contextId);
+    public boolean isUserAllowedToDeleteAssignments(String userId, String contextId);
     
     /**
      * 
+     * @param userId userId to check. If null, will retrieve the current user.
      * @param assignment
      * @param groupMembershipIds the group memberships for this user. leave null if you
      * want the method to look it up for you
-     * @return true if the current user has permission to view this assignment
+     * @return true if the user has permission to view this assignment
      */
-    public boolean isUserAllowedToViewAssignment(Assignment2 assignment, List<String> groupMembershipIds);
+    public boolean isUserAllowedToViewAssignment(String userId, Assignment2 assignment, List<String> groupMembershipIds);
 
     
     /**
      * 
+     * @param userId userId to check. If null, will retrieve the current user.
      * @param contextId
-     * @return true if the current user is allowed to manage all submissions
+     * @return true if the user is allowed to manage all submissions
      * in the given context (ie view submission, provide feedback, release feedback, etc)
      */
-    public boolean isUserAllowedToManageAllSubmissions(String contextId);
+    public boolean isUserAllowedToManageAllSubmissions(String userId, String contextId);
     
     /**
      * 
+     * @param userId userId to check. If null, will retrieve the current user.
      * @param assignment
      * @param groupMembershipIds the group memberships for this user. leave null if you
      * want the method to look it up for you
-     * @return true if the current user is allowed to manage submissions (ie view, provide feedback, etc)
+     * @return true if the user is allowed to manage submissions (ie view, provide feedback, etc)
      * for the given assignment. If you want an answer to the general question,"Does
      * this user have any sort of submission management permission in this site?" use
-     * {@link AssignmentPermissionLogic#isUserAllowedToManageSubmissions(String)}
+     * {@link AssignmentPermissionLogic#isUserAllowedToManageSubmissions(String, String)}
      */
-    public boolean isUserAllowedToManageSubmissionsForAssignment(Assignment2 assignment, List<String> groupMembershipIds);
+    public boolean isUserAllowedToManageSubmissionsForAssignment(String userId, Assignment2 assignment, List<String> groupMembershipIds);
     
     /**
+     * @param userId userId to check. If null, will retrieve the current user.
      * @param contextId
-     * @return true if the current user has permission to manage submissions (ie view, provide feedback, etc) in the given context.
+     * @return true if the user has permission to manage submissions (ie view, provide feedback, etc) in the given context.
      * Note that this does not mean that a user is allowed to manage any submission in the site. This just
      * answers the general question, "Does this user have any sort of submission management permission 
      * in this site?"  If you want to know if a user may manage submissions for a specific assignment, see
-     * {@link AssignmentPermissionLogic#isUserAllowedToManageSubmissionsForAssignment(Assignment2, List)}
+     * {@link AssignmentPermissionLogic#isUserAllowedToManageSubmissionsForAssignment(String, Assignment2, List)}
      */
-    public boolean isUserAllowedToManageSubmissions(String contextId);
+    public boolean isUserAllowedToManageSubmissions(String userId, String contextId);
+    
+
+    /**
+     * 
+     * @param userId userId to check. If null, will retrieve the current user.
+     * @param submissionId
+     * @return true if the user is allowed to manage (ie provide feedback for, view, etc) the
+     * AssignmentSubmission associated with the given submissionId
+     * @throws SubmissionNotFoundException if no submission exists with the given submissionId
+     */
+    public boolean isUserAllowedToManageSubmission(String userId, Long submissionId);
     
     /**
      * 
+     * @param userId userId to check. If null, will retrieve the current user.
      * @param studentId
      * @param assignment
      * @return true if the current user is allowed to manage the submission (ie view, provide feedback, etc)
      * for the given studentId and assignment
      */
-    public boolean isUserAllowedToManageSubmission(String studentId, Assignment2 assignment);
+    public boolean isUserAllowedToManageSubmission(String userId, String studentId, Assignment2 assignment);
 
     /**
      * 
+     * @param userId userId to check. If null, will retrieve the current user.
      * @param studentId
      * @param assignmentId
-     * @return true if the current user is allowed to view the given student's
+     * @return true if the user is allowed to view the given student's
      * submission for the given assignment
      */
-    public boolean isUserAllowedToViewSubmissionForAssignment(String studentId, Long assignmentId);
-
-    /**
-     * 
-     * @param submissionId
-     * @return true if the current user is allowed to manage (ie provide feedback for, view, etc) the
-     * AssignmentSubmission associated with the given submissionId
-     * @throws SubmissionNotFoundException if no submission exists with the given submissionId
-     */
-    public boolean isUserAllowedToManageSubmission(Long submissionId);
+    public boolean isUserAllowedToViewSubmissionForAssignment(String userId, String studentId, Long assignmentId);
 
     /**
      * 
@@ -206,6 +220,7 @@ public interface AssignmentPermissionLogic {
 
     /**
      * 
+     * @param userId userId to check. If null, will retrieve the current user.
      * @return true if the user has at least one of the following permissions:
      * {@link AssignmentConstants#PERMISSION_ADD_ASSIGNMENTS},
      * {@link AssignmentConstants#PERMISSION_EDIT_ASSIGNMENTS},
@@ -214,59 +229,56 @@ public interface AssignmentPermissionLogic {
      *
      * This will allow the user to access the "instructor view" for the assignments tool. 
      */
-    public boolean isUserAllowedToAccessInstructorView(String contextId);
+    public boolean isUserAllowedToAccessInstructorView(String userId, String contextId);
 
     /**
-     * @param userId
+     * @param userId userId that you are retrieving the students for. 
+     * if null will use the current user
      * @param assignment
-     * @return a list of student ids that the current user is able to view
-     * for the given assignment. if assignment has been removed, no 
-     * students will be returned
+     * @return a list of userIds for the assignment's submitters
+     * that this user is allowed to manage (ie view submission, provide feedback, etc)
      */
-    public List<String> getViewableStudentsForUserForItem(String userId, Assignment2 assignment);
+    public List<String> getViewableStudentsForAssignment(String userId, Assignment2 assignment);
 
     /**
      * 
-     * @param userId
+     * @param userId if null, will use the current user
      * @param contextId
      * @param assignmentList
-     * @return a map of Assignment2 object to a list of student uids of the students
-     * this user is allowed to view for that assignment
+     * @return a map of Assignment2 object to a list of userIds for the assignment's submitters
+     * that this user is allowed to manage (ie view submission, provide feedback, etc)
      */
-    public Map<Assignment2, List<String>> getViewableStudentsForUserForAssignments(String userId, String contextId, List<Assignment2> assignmentList);
-
-    /**
-     * @param userId
-     * @param assignment
-     * @return a list of student ids that the current user is able to submit
-     * feedback for on the given assignment. if assignment has been removed,
-     * no students will be returned
-     */
-    public List<String> getGradableStudentsForUserForItem(String userId, Assignment2 assignment);
+    public Map<Assignment2, List<String>> getViewableStudentsForAssignments(String userId, String contextId, List<Assignment2> assignmentList);
 
     /**
      * 
+     * @param userId if null will use the current user
+     * @param contextId
+     * @return true if the user has submission privileges in the given contextId. To
+     * determine if the user is allowed to submit for a specific assignment, see
+     * {@link #isUserAllowedToMakeSubmissionForAssignment(String, Assignment2)}
+     */
+    public boolean isUserAllowedToSubmit(String userId, String contextId);
+    
+    /**
+     * 
+     * @param userId userId to check. If null, will retrieve the current user.
      * @param assignment
      * @return true if the current user has permission to make a submission for the
      * given assignment. only answers permission question. does not check to see
      * if assignment is open, if student already submitted, etc
      */
-    public boolean isUserAllowedToMakeSubmissionForAssignment(Assignment2 assignment);
-
+    public boolean isUserAllowedToMakeSubmissionForAssignment(String userId, Assignment2 assignment);
+    
     /**
      * 
-     * @param assignment
-     * @return true if the current user is authorized to submit feedback (not just view) for
-     * at least one submission associated with the given assignment
+     * @param userId userId to check. If null, will retrieve the current user.
+     * @param assignmentId
+     * @return true if the current user has permission to make a submission for the
+     * given assignment. only answers permission question. does not check to see
+     * if assignment is open, if student already submitted, etc
      */
-    public boolean isUserAllowedToProvideFeedbackForAssignment(Assignment2 assignment);
-
-    /**
-     * @param contextId
-     * @return true if the current user is a "student" according to the gradebook's definition
-     * and is allowed to make submissions for assignments in this site
-     */
-    public boolean isCurrentUserAbleToSubmit(String contextId);
+    public boolean isUserAllowedToMakeSubmissionForAssignmentId(String userId, Long assignmentId);
 
     /**
      * 
@@ -277,7 +289,7 @@ public interface AssignmentPermissionLogic {
      * note: if assignment has been removed, only a student with an existing
      * submission for that assignment may view the assignment. 
      */
-    public boolean isUserAbleToViewAssignment(Long assignmentId);
+    public boolean isUserAllowedToViewAssignment(Long assignmentId);
 
     /**
      * @param studentId
@@ -289,23 +301,15 @@ public interface AssignmentPermissionLogic {
     public List<String> getUsersAllowedToViewStudentForAssignment(String studentId, Assignment2 assignment);
 
     /**
-     * 
-     * @param contextId
-     * @return a list of Groups that the current user is allowed to view in
-     * the given context. If the user has grading privileges, will return the groups
-     * that the user is able to view in the gradebook. if the user is a student,
-     * will return their group memberships
+     * @param userId if null, will use the current user
+     * @param assignment make sure AssignmentGroups are populated
+     * @return a list of Groups that the user is allowed
+     * to view.  If the user has {@link AssignmentConstants#PERMISSION_ALL_GROUPS} 
+     * in this site, they may view all groups. Otherwise, will return user's own 
+     * memberships. The returned groups will be filtered if the assignment itself 
+     * is restricted to groups.
      */
-    public List<Group> getViewableGroupsForCurrentUser(String contextId);
-
-    /**
-     * 
-     * @param assignmentId
-     * @return a list of Groups that the current user is allowed
-     * to view filtered for the given assignment. 
-     * See {@link #getViewableGroupsForCurrentUser(String)}
-     */
-    public List<Group> getViewableGroupsForCurrUserForAssignment(Long assignmentId);
+    public List<Group> getViewableGroupsForAssignment(String userId, Assignment2 assign);
 
     /**
      * 

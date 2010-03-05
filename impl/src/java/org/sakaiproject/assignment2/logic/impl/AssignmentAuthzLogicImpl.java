@@ -22,9 +22,7 @@
 package org.sakaiproject.assignment2.logic.impl;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -71,36 +69,67 @@ public class AssignmentAuthzLogicImpl implements AssignmentAuthzLogic
         functionManager.registerFunction(AssignmentConstants.PERMISSION_REMOVE_ASSIGNMENTS);
     }
     
-    public boolean userHasAddPermission(String contextId) {
-        return userHasPermission(contextId, AssignmentConstants.PERMISSION_ADD_ASSIGNMENTS);
+    public boolean userHasAddPermission(String userId, String contextId) {
+        String permission = AssignmentConstants.PERMISSION_ADD_ASSIGNMENTS;
+        if (userId == null) {
+            return userHasPermission(contextId, permission);
+        } else {
+            return userHasPermission(userId, contextId, permission);
+        }
     }
     
-    public boolean userHasEditPermission(String contextId) {
-        return userHasPermission(contextId, AssignmentConstants.PERMISSION_EDIT_ASSIGNMENTS);
+    public boolean userHasEditPermission(String userId, String contextId) {
+        String permission = AssignmentConstants.PERMISSION_EDIT_ASSIGNMENTS;
+        if (userId == null) {
+            return userHasPermission(contextId, permission);
+        } else {
+            return userHasPermission(userId, contextId, permission);
+        }
     }
     
-    public boolean userHasDeletePermission(String contextId) {
-        return userHasPermission(contextId, AssignmentConstants.PERMISSION_REMOVE_ASSIGNMENTS);
-    }
-    
-    public boolean userHasAllGroupsPermission(String contextId) {
-        return userHasPermission(contextId, AssignmentConstants.PERMISSION_ALL_GROUPS);
+    public boolean userHasDeletePermission(String userId, String contextId) {
+        String permission = AssignmentConstants.PERMISSION_REMOVE_ASSIGNMENTS;
+        if (userId == null) {
+            return userHasPermission(contextId, permission);
+        } else {
+            return userHasPermission(userId, contextId, permission);
+        }
     }
     
     public boolean userHasAllGroupsPermission(String userId, String contextId) {
-        return userHasPermission(userId, contextId, AssignmentConstants.PERMISSION_ALL_GROUPS);
+        String permission = AssignmentConstants.PERMISSION_ALL_GROUPS;
+        if (userId == null) {
+            return userHasPermission(contextId, permission);
+        } else {
+            return userHasPermission(userId, contextId, permission);
+        }
     }
     
-    public boolean userHasSubmitPermission(String contextId) {
-        return userHasPermission(contextId, AssignmentConstants.PERMISSION_SUBMIT);
+    public boolean userHasSubmitPermission(String userId, String contextId) {
+        String permission = AssignmentConstants.PERMISSION_SUBMIT;
+        if (userId == null) {
+            return userHasPermission(contextId, permission);
+        } else {
+            return userHasPermission(userId, contextId, permission);
+        }
     }
     
-    public boolean userHasManageSubmissionsPermission(String contextId) {
-        return userHasPermission(contextId, AssignmentConstants.PERMISSION_MANAGE_SUBMISSIONS);
+    public boolean userHasManageSubmissionsPermission(String userId, String contextId) {
+        String permission = AssignmentConstants.PERMISSION_MANAGE_SUBMISSIONS;
+        if (userId == null) {
+            return userHasPermission(contextId, permission);
+        } else {
+            return userHasPermission(userId, contextId, permission);
+        }
     }
     
-    public boolean userHasViewAssignmentPermission(String contextId) {
-        return userHasPermission(contextId, AssignmentConstants.PERMISSION_VIEW_ASSIGNMENTS);
+    public boolean userHasViewAssignmentPermission(String userId, String contextId) {
+        String permission = AssignmentConstants.PERMISSION_VIEW_ASSIGNMENTS;
+        if (userId == null) {
+            return userHasPermission(contextId, permission);
+        } else {
+            return userHasPermission(userId, contextId, permission);
+        }
     }
     
     public boolean userHasPermission(String contextId, String permission) {
@@ -155,20 +184,22 @@ public class AssignmentAuthzLogicImpl implements AssignmentAuthzLogic
         return oneOrNoGroups;
     }
     
-    public Map<String, User> getUsersWithPermission(String contextId, String permission) {
+    public List<String> getUsersWithPermission(String contextId, String permission) {
         if (contextId == null || permission == null) {
             throw new IllegalArgumentException("Null contextId (" + contextId + ") or permission" +
                     " ("+ permission + ") passed to getUsersWithPermission");
         }
         
-        Map<String, User> userIdUserMap = new HashMap<String, User>();
+        List<String> userIds = new ArrayList<String>();
         
         List<User> usersWithPerm = securityService.unlockUsers(permission, siteService.siteReference(contextId));
-        for (User user : usersWithPerm) {
-            userIdUserMap.put(user.getId(), user);
+        if (usersWithPerm != null) {
+            for (User user : usersWithPerm) {
+                userIds.add(user.getId());
+            }
         }
         
-        return userIdUserMap;
+        return userIds;
     }
 
     

@@ -208,7 +208,7 @@ public class UploadAllLogicImpl implements UploadAllLogic
         }
 
         // now let's iterate through the feedback wrappers and create the map
-        List<String> gradableStudents = permissionLogic.getGradableStudentsForUserForItem(currUserId, assign);
+        List<String> manageableStudents = permissionLogic.getViewableStudentsForAssignment(currUserId, assign);
         Map<String, Collection<AssignmentSubmissionVersion>> studentUidVersionsMap = new HashMap<String, Collection<AssignmentSubmissionVersion>>();
         Date now = new Date();
         if (feedbackUploadList != null) {
@@ -218,7 +218,7 @@ public class UploadAllLogicImpl implements UploadAllLogic
                     if (studentUid != null) {
                         // check to see if the current user is auth to update
                         // feedback for this student
-                        if (!gradableStudents.contains(studentUid)) {
+                        if (!manageableStudents.contains(studentUid)) {
                             // we will add this error and skip this student
                             addToUploadInfoMap(uploadInfo, studentUid, UploadInfo.NO_GRADING_PERM_FOR_STUDENT);
                         } else {

@@ -173,7 +173,7 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware {
         List togo = new ArrayList();
 
         Map<Assignment2, List<String>> assignmentViewableStudentsMap = 
-            permissionLogic.getViewableStudentsForUserForAssignments(externalLogic.getCurrentUserId(), context, viewable);
+            permissionLogic.getViewableStudentsForAssignments(externalLogic.getCurrentUserId(), context, viewable);
 
         Collection<Group> groups = externalLogic.getSiteGroups(context);
         Map<String,Group> groupmap = new HashMap<String,Group>();
@@ -301,9 +301,9 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware {
         httpServletResponse.setHeader("Cache-Control", "max-age=0,no-cache,no-store,must-revalidate,private,post-check=0,pre-check=0,s-max-age=0");
         httpServletResponse.setDateHeader("Expires", 0 );
 
-        boolean canReorder = permissionLogic.isUserAllowedToEditAllAssignments(context);
-        boolean canAdd = permissionLogic.isUserAllowedToAddAssignments(context);
-        boolean canDelete = permissionLogic.isUserAllowedToDeleteAssignments(context);
+        boolean canReorder = permissionLogic.isUserAllowedToEditAllAssignments(null, context);
+        boolean canAdd = permissionLogic.isUserAllowedToAddAssignments(null, context);
+        boolean canDelete = permissionLogic.isUserAllowedToDeleteAssignments(null, context);
 
         httpServletResponse.setHeader("x-asnn2-canReorder", canReorder+"");
         httpServletResponse.setHeader("x-asnn2-canAdd", canAdd+"");
@@ -400,7 +400,7 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware {
      */
     private void filterRestrictedAssignmentInfo(List<Assignment2> assignList, String context) {
         if (assignList != null) {
-            boolean filterRestrictedInfo = !permissionLogic.isUserAllowedToAccessInstructorView(context);
+            boolean filterRestrictedInfo = !permissionLogic.isUserAllowedToAccessInstructorView(null, context);
             if (filterRestrictedInfo) {
                 // non-instructors cannot view the accept until date or properties
                 for (Assignment2 assign : assignList) {

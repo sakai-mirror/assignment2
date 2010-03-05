@@ -37,38 +37,34 @@ public class AssignmentAuthzLogicStub implements AssignmentAuthzLogic
 {
 
     
-    public boolean userHasAddPermission(String contextId) {
-        return userHasPermission(contextId, AssignmentConstants.PERMISSION_ADD_ASSIGNMENTS);
+    public boolean userHasAddPermission(String userId, String contextId) {
+        return userHasPermission(userId, contextId, AssignmentConstants.PERMISSION_ADD_ASSIGNMENTS);
     }
     
-    public boolean userHasEditPermission(String contextId) {
-        return userHasPermission(contextId, AssignmentConstants.PERMISSION_EDIT_ASSIGNMENTS);
+    public boolean userHasEditPermission(String userId, String contextId) {
+        return userHasPermission(userId, contextId, AssignmentConstants.PERMISSION_EDIT_ASSIGNMENTS);
     }
     
-    public boolean userHasDeletePermission(String contextId) {
-        return userHasPermission(contextId, AssignmentConstants.PERMISSION_REMOVE_ASSIGNMENTS);
-    }
-    
-    public boolean userHasAllGroupsPermission(String contextId) {
-        return userHasPermission(contextId, AssignmentConstants.PERMISSION_ALL_GROUPS);
+    public boolean userHasDeletePermission(String userId, String contextId) {
+        return userHasPermission(userId, contextId, AssignmentConstants.PERMISSION_REMOVE_ASSIGNMENTS);
     }
     
     public boolean userHasAllGroupsPermission(String userId, String contextId) {
         return userHasPermission(userId, contextId, AssignmentConstants.PERMISSION_ALL_GROUPS);
     }
     
-    public boolean userHasSubmitPermission(String contextId) {
-        return userHasPermission(contextId, AssignmentConstants.PERMISSION_SUBMIT);
+    public boolean userHasSubmitPermission(String userId, String contextId) {
+        return userHasPermission(userId, contextId, AssignmentConstants.PERMISSION_SUBMIT);
     }
     
-    public boolean userHasManageSubmissionsPermission(String contextId)
+    public boolean userHasManageSubmissionsPermission(String userId, String contextId)
     {
-        return userHasPermission(contextId, AssignmentConstants.PERMISSION_MANAGE_SUBMISSIONS);
+        return userHasPermission(userId, contextId, AssignmentConstants.PERMISSION_MANAGE_SUBMISSIONS);
     }
     
-    public boolean userHasViewAssignmentPermission(String contextId)
+    public boolean userHasViewAssignmentPermission(String userId, String contextId)
     {
-        return userHasPermission(contextId, AssignmentConstants.PERMISSION_VIEW_ASSIGNMENTS);
+        return userHasPermission(userId, contextId, AssignmentConstants.PERMISSION_VIEW_ASSIGNMENTS);
     }
     
     public boolean userHasPermission(String contextId, String permission) {
@@ -130,6 +126,9 @@ public class AssignmentAuthzLogicStub implements AssignmentAuthzLogic
     
     
     private boolean unlock(String userId, String permission) {
+        if (userId == null) {
+            userId = externalLogic.getCurrentUserId();
+        }
         if (userId.equals(AssignmentTestDataLoad.INSTRUCTOR_UID)) {
             if (permission.equals(AssignmentConstants.PERMISSION_SUBMIT)) {
                 return false;
@@ -155,6 +154,25 @@ public class AssignmentAuthzLogicStub implements AssignmentAuthzLogic
         }
         
         return false;
+    }
+
+    public List<String> getUsersWithPermission(String contextId, String permission)
+    {
+        List<String> allUsers = new ArrayList<String>();
+        allUsers.add(AssignmentTestDataLoad.INSTRUCTOR_UID);
+        allUsers.add(AssignmentTestDataLoad.TA_UID);
+        allUsers.add(AssignmentTestDataLoad.STUDENT1_UID);
+        allUsers.add(AssignmentTestDataLoad.STUDENT2_UID);
+        allUsers.add(AssignmentTestDataLoad.STUDENT3_UID);
+        
+        List<String> usersWithPermission = new ArrayList<String>();
+        for (String user : allUsers) {
+            if (userHasPermission(user, AssignmentTestDataLoad.CONTEXT_ID, permission)) {
+                usersWithPermission.add(user);
+            }
+        }
+        
+        return usersWithPermission;
     }
 
 }

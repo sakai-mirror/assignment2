@@ -96,66 +96,66 @@ public interface AssignmentAuthzLogic {
     
     /**
      * 
+     * @param userId userId to check. If null, will use the current user.
      * @param contextId
-     * @return true if the current user's role has the "add assignments" permission
+     * @return true if the user's role has the "add assignments" permission
      */
-    public boolean userHasAddPermission(String contextId);
+    public boolean userHasAddPermission(String userId, String contextId);
     
     /**
      * 
+     * @param userId userId to check. If null, will use the current user.
      * @param contextId
-     * @return true if the current user's role has the "edit assignments" permission
+     * @return true if the user's role has the "edit assignments" permission
      */
-    public boolean userHasEditPermission(String contextId);
+    public boolean userHasEditPermission(String userId, String contextId);
     
     /**
      * 
+     * @param userId userId to check. If null, will use the current user.
      * @param contextId
-     * @return true if the current user's role has the "delete assignments" permission
+     * @return true if the user's role has the "delete assignments" permission
      */
-    public boolean userHasDeletePermission(String contextId);
+    public boolean userHasDeletePermission(String userId, String contextId);
     
     /**
      * 
+     * @param userId userId to check. If null, will use the current user.
      * @param contextId
-     * @return true if the current user's role permissions are for all groups
-     */
-    public boolean userHasAllGroupsPermission(String contextId);
-    
-    /**
-     * @param userId
-     * @param contextId
-     * @return true if the given user's role permissions are for all groups
+     * @return true if the user's role permissions are for all groups
      */
     public boolean userHasAllGroupsPermission(String userId, String contextId);
     
     /**
      * 
+     * @param userId userId to check. If null, will use the current user.
      * @param contextId
-     * @return true if the current user's role has permission to submit assignments
+     * @return true if the user's role has permission to submit assignments
      */
-    public boolean userHasSubmitPermission(String contextId);
+    public boolean userHasSubmitPermission(String userId, String contextId);
     
     /**
      * 
+     * @param userId userId to check. If null, will use the current user.
      * @param contextId
-     * @return true if the current user's role has permission to manage submissions
+     * @return true if the user's role has permission to manage submissions
      * (ie view, provide feedback, etc)
      */
-    public boolean userHasManageSubmissionsPermission(String contextId);
+    public boolean userHasManageSubmissionsPermission(String userId, String contextId);
     
     /**
      * 
+     * @param userId userId to check. If null, will use the current user.
      * @param contextId
-     * @return true if the current user's role has permission to view assignments
+     * @return true if the user's role has permission to view assignments
      */
-    public boolean userHasViewAssignmentPermission(String contextId);
+    public boolean userHasViewAssignmentPermission(String userId, String contextId);
     
     /**
      * 
      * @param contextId
      * @param permission sakai realm permission such as {@link AssignmentConstants#PERMISSION_ADD_ASSIGNMENTS}
-     * @return true if the current user's role has the given permission in the given contextId
+     * @return true if the user's role has the given permission in the given contextId
      */
     public boolean userHasPermission(String contextId, String permission);
     
@@ -211,4 +211,12 @@ public interface AssignmentAuthzLogic {
      * user WILL have permission without the "all groups" permission.
      */
     public List<String> getPermissionsForAtLeastOneOrNoGroups();
+    
+    /**
+     * 
+     * @param contextId
+     * @param permission
+     * @return a list of userIds of users in the given contextId with the given permission
+     */
+    public List<String> getUsersWithPermission(String contextId, String permission);
 }

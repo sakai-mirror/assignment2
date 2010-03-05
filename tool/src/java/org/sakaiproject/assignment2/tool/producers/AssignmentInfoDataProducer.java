@@ -99,7 +99,7 @@ public class AssignmentInfoDataProducer implements DataView , ViewParamsReporter
         int total = 0;
         int withSubmission = 0;
 
-        List<String> viewableStudents = assignmentPermissionLogic.getViewableStudentsForUserForItem(currUserId, assignment);
+        List<String> viewableStudents = assignmentPermissionLogic.getViewableStudentsForAssignment(currUserId, assignment);
         if (viewableStudents != null) {
             total = viewableStudents.size();
             if (total > 0) {

@@ -134,40 +134,21 @@ public class AssignmentLogicImpl implements AssignmentLogic{
         if(log.isDebugEnabled()) log.debug("init");
     }
 
-    public Assignment2 getAssignmentById(Long assignmentId)
-    {
-        if (assignmentId == null) {
-            throw new IllegalArgumentException("Null assignmentId passed to getAssignmentById");
-        }
-        
-        // make sure the user can access the assignment object
-        if (!permissionLogic.isUserAbleToViewAssignment(assignmentId)) {
-            throw new SecurityException("User attempted to access assignment with id " + assignmentId + " without permission");
-        }
-
-        Assignment2 assign = (Assignment2) dao.findById(Assignment2.class, assignmentId);
-
-        if (assign == null) {
-            throw new AssignmentNotFoundException("No assignment found with id: " + assignmentId);
-        }
-
-        return assign;
-    }
-
     public Assignment2 getAssignmentByIdWithAssociatedData(Long assignmentId) {
         if (assignmentId == null) {
             throw new IllegalArgumentException("Null assignmentId passed to getAssignmentByIdWithAssociatedData");
         }
         
-        // make sure the user can access the assignment object
-        if (!permissionLogic.isUserAbleToViewAssignment(assignmentId)) {
-            throw new SecurityException("User attempted to access assignment with id " + assignmentId + " without permission");
-        }
         // retrieve Assignment2 object
         Assignment2 assign = (Assignment2) dao.getAssignmentByIdWithGroupsAndAttachments(assignmentId);
 
         if (assign == null) {
             throw new AssignmentNotFoundException("No assignment found with id: " + assignmentId);
+        }
+        
+        // make sure the user can access the assignment object
+        if (!permissionLogic.isUserAllowedToViewAssignment(null, assign, null)) {
+            throw new SecurityException("User attempted to access assignment with id " + assignmentId + " without permission");
         }
 
         // TODO ASNN-516 Check for ContentReview and populate
@@ -187,13 +168,13 @@ public class AssignmentLogicImpl implements AssignmentLogic{
         return assign;
     }
 
-    public Assignment2 getAssignmentByIdWithGroupsAndAttachments(Long assignmentId) {
+    public Assignment2 getAssignmentById(Long assignmentId) {
         if (assignmentId == null) {
             throw new IllegalArgumentException("Null assignmentId passed to getAssignmentByIdWithGroupsAndAttachments");
         }
         
         // make sure the user can access the assignment object
-        if (!permissionLogic.isUserAbleToViewAssignment(assignmentId)) {
+        if (!permissionLogic.isUserAllowedToViewAssignment(assignmentId)) {
             throw new SecurityException("User attempted to access assignment with id " + assignmentId + " without permission");
         }
 
@@ -245,10 +226,10 @@ public class AssignmentLogicImpl implements AssignmentLogic{
         
         // if it is a new assignment, check to see if user is allowed to add assignments
         // in this context. otherwise, ensure the user may edit this assignment
-        if (isNewAssignment && !permissionLogic.isUserAllowedToAddAssignment(assignment, null)) {
+        if (isNewAssignment && !permissionLogic.isUserAllowedToAddAssignment(null, assignment, null)) {
             throw new SecurityException("Current user may not save assignment " + assignment.getTitle()
                     + " because they do not have add permission");
-        } else if (!isNewAssignment && !permissionLogic.isUserAllowedToEditAssignment(assignment, null)) {
+        } else if (!isNewAssignment && !permissionLogic.isUserAllowedToEditAssignment(null, assignment, null)) {
             throw new SecurityException("Current user may not edit assignment " + assignment.getTitle()
                     + " because they do not have edit permission");
         }
@@ -402,7 +383,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
             "associated contextId. You may not delete an assignment without a contextId");
         }
 
-        if (!permissionLogic.isUserAllowedToDeleteAssignment(assignment, null)) {
+        if (!permissionLogic.isUserAllowedToDeleteAssignment(null, assignment, null)) {
             throw new SecurityException("Current user may not delete assignment " + assignment.getTitle()
                     + " because they do not have delete permission");
         }
@@ -516,7 +497,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
             throw new IllegalArgumentException("Null contextId passed to " + this);
         }
 
-        if (!permissionLogic.isUserAllowedToEditAllAssignments(contextId)) {
+        if (!permissionLogic.isUserAllowedToEditAllAssignments(null, contextId)) {
             throw new SecurityException("Unauthorized user attempted to reorder assignments!");
         }
 

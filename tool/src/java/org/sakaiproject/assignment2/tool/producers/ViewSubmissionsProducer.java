@@ -164,8 +164,8 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
         DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, locale);
 
         //Edit Permission
-        boolean edit_perm = permissionLogic.isUserAllowedToEditAssignment(assignment, null);
-        boolean grade_perm = permissionLogic.isUserAllowedToProvideFeedbackForAssignment(assignment);
+        boolean edit_perm = permissionLogic.isUserAllowedToEditAssignment(null, assignment, null);
+        boolean grade_perm = permissionLogic.isUserAllowedToManageSubmissionsForAssignment(null, assignment, null);
 
         //get parameters
         if (params.sort_by == null) params.sort_by = DEFAULT_SORT_BY;
@@ -399,7 +399,7 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
     }
 
     private void makeViewByGroupFilter(UIContainer tofill, ViewSubmissionsViewParams params, Assignment2 assignment) {
-        List<Group> viewableGroups = permissionLogic.getViewableGroupsForCurrUserForAssignment(assignmentId);
+        List<Group> viewableGroups = permissionLogic.getViewableGroupsForAssignment(null, assignment);
         if (viewableGroups != null && !viewableGroups.isEmpty()) {
             UIForm groupFilterForm = UIForm.make(tofill, "group_filter_form", params);
 
@@ -430,7 +430,7 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
                 // if there is more than one viewable group or the user has grade all perm, add the 
                 // "All Sections/Groups option"
                 if (viewableGroups.size() > 1 || 
-                        permissionLogic.isUserAllowedToManageAllSubmissions(assignment.getContextId())) {
+                        permissionLogic.isUserAllowedToManageAllSubmissions(null, assignment.getContextId())) {
                     showAllOption = true;
                     numItemsInDropDown++;
                 }

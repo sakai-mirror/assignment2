@@ -253,6 +253,29 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
 
         return studentIdAssnFunctionMap;
     }
+    
+    public List<String> getGradableStudentsForGradebookItem(String userId, String contextId, Long gradebookItemId) {
+        if (userId == null || contextId == null || gradebookItemId == null) {
+            throw new IllegalArgumentException("Null userId (" + userId + "), contextId (" + "), " +
+                    "or gradebookItemId (" + gradebookItemId + ") passed to getGradableStudentsForGradebookItem");
+        }
+        
+        Map<String, String> studentIdViewGradeMap = 
+            getViewableStudentsForGradedItemMap(userId, contextId, gradebookItemId);
+        List<String> gradableStudents = new ArrayList<String>();
+        if (studentIdViewGradeMap != null) {
+            for (Map.Entry<String, String> entry : studentIdViewGradeMap.entrySet()) {
+                String studentId = entry.getKey();
+                String viewOrGrade = entry.getValue();
+                
+                if (viewOrGrade != null && viewOrGrade.equals(AssignmentConstants.GRADE)) {
+                    gradableStudents.add(studentId);
+                }
+            }
+        }
+        
+        return gradableStudents;
+    }
 
     public boolean isCurrentUserAbleToEdit(String contextId) {
         return gradebookService.currentUserHasEditPerm(contextId);

@@ -760,14 +760,12 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
         // we should get 1 student back for a1 b/c only allowed to view group 1
         subList = submissionLogic.getViewableSubmissionsWithHistoryForAssignmentId(testData.a1Id, null);
         assertTrue(subList.size() == 1);
-        // we should still get 1 for a2 b/c no group restrictions for this assign
+        // there are no group restrictions, so TA may not view any students in a2 or a3
         subList = submissionLogic.getViewableSubmissionsWithHistoryForAssignmentId(testData.a2Id, null);
-        assertTrue(subList.size() == 1);
-        // we should still get 1 for a2 b/c no group restrictions for this assign
+        assertEquals(0, subList.size());
         subList = submissionLogic.getViewableSubmissionsWithHistoryForAssignmentId(testData.a3Id, null);
-        assertTrue(subList.size() == 1);
-        //TODO grader permissions
-        // should return no students
+        assertEquals(0, subList.size());
+        // a4 is restricted to a different group than the ta's so no students
         subList = submissionLogic.getViewableSubmissionsWithHistoryForAssignmentId(testData.a4Id, null);
         assertTrue(subList.isEmpty());
 
@@ -825,16 +823,13 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
         // we should get 1 student back for a1 b/c only allowed to view group 1
         subList = submissionLogic.getViewableSubmissionsForAssignmentId(testData.a1Id, null);
         assertTrue(subList.size() == 1);
-        // we should still get 1 for a2 b/c no group restrictions for this assign
+        // ta cannot access a2, a3, or a4 b/c no group restrictions or not a member of a restricted group
         subList = submissionLogic.getViewableSubmissionsForAssignmentId(testData.a2Id, null);
-        assertTrue(subList.size() == 1);
-        // we should still get 1 for a2 b/c no group restrictions for this assign
+        assertEquals(0, subList.size());
         subList = submissionLogic.getViewableSubmissionsForAssignmentId(testData.a3Id, null);
-        assertTrue(subList.size() == 1);
-        //TODO grader permissions
-        // should return no students
+        assertEquals(0, subList.size());
         subList = submissionLogic.getViewableSubmissionsForAssignmentId(testData.a4Id, null);
-        assertTrue(subList.isEmpty());
+        assertEquals(0, subList.size());
 
         // students should get SecurityException
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT1_UID);

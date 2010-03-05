@@ -122,6 +122,18 @@ public interface ExternalGradebookLogic {
     public Map<String, String> getViewableStudentsForGradedItemMap(String userId, String contextId, Long gradebookItemId);
 
     /**
+     * 
+     * @param userId
+     * @param contextId
+     * @param gradebookItemId
+     * @return a list of the userIds of the students that the given user is allowed to
+     * GRADE for the given gradebookItemId. Does not include students that the user may
+     * only view.  Convenience method that utilizes {@link #getViewableStudentsForGradedItemMap(String, String, Long)}
+     * to extract the gradable students
+     */
+    public List<String> getGradableStudentsForGradebookItem(String userId, String contextId, Long gradebookItemId);
+    
+    /**
      * @param contextId
      * @return true if the current user is authorized to edit the gradebook
      */

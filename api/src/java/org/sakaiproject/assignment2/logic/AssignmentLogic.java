@@ -46,15 +46,6 @@ public interface AssignmentLogic {
 
     public static final String REDIRECT_ASSIGNMENT_VIEW_ID = "redirectAssignmentViewId";
 
-    /**
-     * 
-     * @param assignmentId
-     * @return Returns the Assignment based on its assignmentId. Does not populate
-     * the AssignmentAttachments and AssignmentGroups
-     * @throws AssignmentNotFoundException if no assignment exists with the given id
-     * @throws SecurityException if current user is not allowed to access assignment info
-     */
-    public Assignment2 getAssignmentById(Long assignmentId);
 
     /**
      * Create or update an assignment. The contextId must be populated on the assignment
@@ -123,8 +114,10 @@ public interface AssignmentLogic {
      * @return the Assignment2 object with the given id and populate the
      * associated AssignmentGroups and AssignmentAttachments
      * @throws AssignmentNotFoundException if no assignment exists with the given id
+     * @throws SecurityException if the current user is not allowed to view the
+     * given assignment
      */
-    public Assignment2 getAssignmentByIdWithGroupsAndAttachments(Long assignmentId);
+    public Assignment2 getAssignmentById(Long assignmentId);
 
     /**
      * Uses the open, due, and accept until dates to determine the current status

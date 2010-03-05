@@ -130,7 +130,7 @@ public class ZipExportLogicImpl implements ZipExportLogic
         String currUserId = externalLogic.getCurrentUserId();
         String siteTitle = externalLogic.getSiteTitle(assignment.getContextId());
 
-        List<String> viewableStudents = permissionLogic.getViewableStudentsForUserForItem(currUserId, assignment);
+        List<String> viewableStudents = permissionLogic.getViewableStudentsForAssignment(currUserId, assignment);
         Map<String, User> userIdUserMap = externalLogic.getUserIdUserMap(viewableStudents);
 
         String formatWithTime = bundle.getString("assignment2.assignment_grade_assignment.downloadall.filename_date_format_with_time");
@@ -415,7 +415,7 @@ public class ZipExportLogicImpl implements ZipExportLogic
                             .append("\n");
 
             // now iterate through all GRADABLE students in this class to create the grades file
-            List<String> gradableStudents = permissionLogic.getGradableStudentsForUserForItem(currUserId, assignment);
+            List<String> gradableStudents = gradebookLogic.getGradableStudentsForGradebookItem(currUserId, assignment.getContextId(), assignment.getGradebookItemId());
 
             // get the grade information
             Map<String, GradeInformation> userIdGradeMap = gradebookLogic.getGradeInformationForStudents(gradableStudents, assignment.getContextId(), assignment.getGradebookItemId());

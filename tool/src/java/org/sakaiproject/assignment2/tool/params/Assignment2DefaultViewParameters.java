@@ -44,7 +44,7 @@ public class Assignment2DefaultViewParameters {
         AssignmentListSortViewParams viewParams = new AssignmentListSortViewParams(StudentAssignmentListProducer.VIEW_ID);
         String contextId = externalLogic.getCurrentContextId();
 
-        if (permissionLogic.isUserAllowedToAccessInstructorView(contextId)) {
+        if (permissionLogic.isUserAllowedToAccessInstructorView(null, contextId)) {
             viewParams = new AssignmentListSortViewParams(ListProducer.VIEW_ID);
         }
 

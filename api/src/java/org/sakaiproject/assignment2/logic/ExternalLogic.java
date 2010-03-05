@@ -192,11 +192,11 @@ public interface ExternalLogic {
     public List<String> getInstructorsInSite(String contextId);
 
     /**
-     * 
+     * @param contextId
      * @param groupId
-     * @return a list of the student ids of students in the Group with the given groupId  
+     * @return a list of the user ids of users in the Group with the given groupId  
      */
-    public List<String> getStudentsInGroup(String groupId);
+    public List<String> getUsersInGroup(String contextId, String groupId);
 
     /**
      * 

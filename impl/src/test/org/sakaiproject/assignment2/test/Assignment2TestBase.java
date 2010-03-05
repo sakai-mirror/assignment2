@@ -105,7 +105,6 @@ public abstract class Assignment2TestBase extends AbstractTransactionalSpringCon
         
         permissionLogic = new AssignmentPermissionLogicImpl();
         permissionLogic.setDao(dao);
-        permissionLogic.setExternalGradebookLogic(gradebookLogic);
         permissionLogic.setExternalLogic(externalLogic);
         permissionLogic.setAssignmentAuthzLogic(authz);
 
