@@ -1,117 +1,144 @@
 var asnn2 = asnn2 || {};
 
-asnn2.livedata = true;
-
 /**
  * Returns a list of Assignment Objects that can be viewed.
  */
-asnn2.getAsnnCompData = function () {
 
-  var renderFromData = function (obj, index) {
-    var ditto = ['id','title', 'sortIndex', 'openDate', 'dueDate',
-                 'requiresSubmission', 'numSubmissions'];
-    var togo = {};
-    for (var i = 0; i < ditto.length; i++) {
-      togo[ditto[i]] = obj[ditto[i]];
-    }
-    if (obj.draft === true) {
-      togo.draft = true;
-    }
-    if (obj.requiresSubmission === true) {
-      togo.inAndNewLink = {
-        target: '/portal/tool/'+sakai.curPlacement+'/viewSubmissions/'+obj.id,
-        linktext: obj.inAndNew
-      };
-    }
-    else {
-      togo.inAndNew = obj.inAndNew;
-    }
-    if (obj.openDateFormatted) {
-      togo.opendatelabel = true;
-      togo.opentext = obj.openDateFormatted;
-    }
-    if (obj.dueDateFormatted) {
-      togo.duedatelabel = true;
-      togo.duetext = obj.dueDateFormatted;
-    }
-   if (obj.canEdit && obj.canEdit === true) {
-      togo.editlink = {
-        target: '/portal/tool/'+sakai.curPlacement+'/assignment/'+obj.id,
-        linktext: "Edit"
-      };
-      togo.duplink = {
-        target: '/portal/tool/'+sakai.curPlacement+'/assignment?duplicatedAssignmentId='+obj.id,
-        linktext: "Duplicate"
-      };
-      togo.sep1 = true;
-      togo.asnncheck = {
-        value: false
-      };
-    }
-    if (obj.graded === true) {
-        togo.gradelink = {
-            target: '/portal/tool/'+sakai.curPlacement+'/viewSubmissions/'+obj.id,
-            linktext: "Grade"
-        };
-        if (obj.canEdit && obj.canEdit === true) {
-          togo.sep2 = true;
-        }
-    }
-    else if (obj.requiresSubmission === true) {
-        togo.gradelink = {
-            target: '/portal/tool/'+sakai.curPlacement+'/viewSubmissions/'+obj.id,
-            linktext: "Provide Feedback"
-        };
-        if (obj.canEdit && obj.canEdit === true) {
-          togo.sep2 = true;
-        }
-    }
-    if (obj.attachments.length > 0) {
-        togo.hasAttachments = true;
-    }
-    if (obj.groups && obj.groups.length > 0) {
-        var groupnames = fluid.transform(obj.groups, function(grp,idx) {
-          return " "+grp.title;
-        });
-        togo.groupslabel = true;
-        togo.grouptext = groupnames.toString();
-    }
-    if (obj.gbItemMissing || obj.groupMissing) {
-      togo.needsAttention = true;
-    }
-    if (obj.reviewEnabled) {
-      togo.reviewEnabled = true;
-    }
-    
-    return togo;
-  };
+/**
+ * This copies the properties from the JSON Entity feed into our render tree
+ * Assignment that we want to keep available and unchanged.
+ */
+asnn2.copyDefaultAsnnObjProperties = function(togo, obj) {
+  var ditto = ['id','title', 'sortIndex', 'openDate', 'dueDate',
+               'requiresSubmission', 'numSubmissions'];
+  
+  for (var i = 0; i < ditto.length; i++) {
+    togo[ditto[i]] = obj[ditto[i]];
+  }
+};
 
-  var togo = [];
-  if (asnn2.livedata === true) {
-    var xmlhttp = jQuery.ajax({
-      type: "GET",
-      url: "/direct/assignment2/sitelist.json",
-      data: {
-        'siteid': sakai.curContext,
-        'no-cache': true
-      },
-      async: false,
-      success: function (payload) {
-        var data = JSON.parse(payload);
-        togo = fluid.transform(data.assignment2_collection, asnn2util.dataFromEntity, renderFromData);
-      }
+/**
+ * This adds common items to the togo render leaf from the data obj, so that
+ * they can be shared between the Assignment List view, and the Reorder Student
+ * View. This includes the things like Open, Due, Restricted, etc.
+ */
+asnn2.addCommonAsnnListReadOnlyRenderObjects = function (togo, obj) {
+  if (obj.draft === true) {
+    togo.draft = true;
+  }
+  if (obj.openDateFormatted) {
+    togo.opendatelabel = true;
+    togo.opentext = obj.openDateFormatted;
+  }
+  if (obj.dueDateFormatted) {
+    togo.duedatelabel = true;
+    togo.duetext = obj.dueDateFormatted;
+  }
+  if (obj.attachments.length > 0) {
+    togo.hasAttachments = true;
+  }
+  if (obj.groups && obj.groups.length > 0) {
+    var groupnames = fluid.transform(obj.groups, function(grp,idx) {
+      return " "+grp.title;
     });
+    togo.groupslabel = true;
+    togo.grouptext = groupnames.toString();
+  }
+  if (obj.gbItemMissing || obj.groupMissing) {
+    togo.needsAttention = true;
+  }
+  if (obj.reviewEnabled) {
+    togo.reviewEnabled = true;
+  }
+};
+
+/**
+ * This function fits a transform, and expects to take the raw filtered data
+ * from the Assignment Entity feed and builds a component tree for the 
+ * Assignment List view to be fed into the Fluid Renderer.
+ */
+asnn2.buildListRenderTreeFromData = function (obj, index) {
+  var togo = {};
+  
+  asnn2.copyDefaultAsnnObjProperties(togo, obj);
+  
+  asnn2.addCommonAsnnListReadOnlyRenderObjects(togo, obj);
+  
+  if (obj.requiresSubmission === true) {
+    togo.inAndNewLink = {
+      target: '/portal/tool/'+sakai.curPlacement+'/viewSubmissions/'+obj.id,
+      linktext: obj.inAndNew
+    };
   }
   else {
-    togo = designSampleData;
+    togo.inAndNew = obj.inAndNew;
   }
-
-  if (xmlhttp.getResponseHeader('x-asnn2-canEdit') === 'true') {
-      // Set up global edit permissions for rendering move and remove widgets
-      asnn2.pageState.canEdit = true;
+  if (obj.canEdit && obj.canEdit === true) {
+    togo.editlink = {
+      target: '/portal/tool/'+sakai.curPlacement+'/assignment/'+obj.id,
+      linktext: "Edit"
+    };
+    togo.duplink = {
+      target: '/portal/tool/'+sakai.curPlacement+'/assignment?duplicatedAssignmentId='+obj.id,
+      linktext: "Duplicate"
+    };
+    togo.sep1 = true;
+    togo.asnncheck = {
+      value: false
+    };
   }
-
+  if (obj.graded === true) {
+      togo.gradelink = {
+          target: '/portal/tool/'+sakai.curPlacement+'/viewSubmissions/'+obj.id,
+          linktext: "Grade"
+      };
+      if (obj.canEdit && obj.canEdit === true) {
+        togo.sep2 = true;
+      }
+  }
+  else if (obj.requiresSubmission === true) {
+      togo.gradelink = {
+          target: '/portal/tool/'+sakai.curPlacement+'/viewSubmissions/'+obj.id,
+          linktext: "Provide Feedback"
+      };
+      if (obj.canEdit && obj.canEdit === true) {
+        togo.sep2 = true;
+      }
+  }
+  
   return togo;
+};
+  
+asnn2.getRawJSONSiteList = function () {
+  var togo = {}
+  var xmlhttp = jQuery.ajax({
+    type: "GET",
+    url: "/direct/assignment2/sitelist.json",
+    data: {
+      'siteid': sakai.curContext,
+      'no-cache': true
+    },
+    async: false,
+    success: function (payload) {
+      togo = JSON.parse(payload);
+    }
+  });
+  
+  /*
+   * This doesn't really belong here, maybe we should return this as well as the
+   * data feed.
+   */
+  if (asnn2.pageState && xmlhttp.getResponseHeader('x-asnn2-canEdit') === 'true') {
+    // Set up global edit permissions for rendering move and remove widgets
+    asnn2.pageState.canEdit = true;
+  }
+  
+  return togo;
+};
+
+asnn2.getAsnnCompData = function () {
+  return fluid.transform(asnn2.getRawJSONSiteList().assignment2_collection, 
+      asnn2util.dataFromEntity, asnn2.buildListRenderTreeFromData);
 };
 
 asnn2.selectorMap = [

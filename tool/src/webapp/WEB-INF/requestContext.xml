@@ -298,6 +298,12 @@
    	  <property name="assignmentSubmissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
    </bean>
 
+   <bean class="org.sakaiproject.assignment2.tool.producers.ReorderStudentViewProducer">
+       <property name="messageLocator" ref="messageLocator" />
+       <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
+       <property name="placement" ref="sakai-Placement" />
+   </bean> 
+
    <!--  Actions -->
    <bean id="RemoveAssignmentCommand"  class="org.sakaiproject.assignment2.tool.commands.RemoveAssignmentCommand">
        <property name="logic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
