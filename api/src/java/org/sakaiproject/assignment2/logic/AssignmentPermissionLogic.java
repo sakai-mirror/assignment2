@@ -72,7 +72,7 @@ public interface AssignmentPermissionLogic {
      * Note that this does not mean that a user is allowed to add any assignment. This just
      * answers the general question, "Does this user have any sort of add assignment permission 
      * in this site?"  If you want to know if a user may add a specific assignment, see
-     * {@link AssignmentPermissionLogic#isUserAllowedToAddAssignment(String, Assignment2, List)}
+     * {@link AssignmentPermissionLogic#isUserAllowedToAddAssignment(String, Assignment2, List, Map)}
      */
     public boolean isUserAllowedToAddAssignments(String userId, String contextId);
     
@@ -82,22 +82,30 @@ public interface AssignmentPermissionLogic {
      * @param assignment
      * @param groupMembershipIds the group memberships for this user. leave null if you
      * want the method to look it up for you
+     * @param authzPermissions optional - if you have already looked up the authz permissions
+     * for this user, you can optionally pass them here. this will avoid extra look-ups if
+     * a permission is already in this map. Map of permission name (ie {@link AssignmentConstants#PERMISSION_ADD_ASSIGNMENTS}
+     * to Boolean true/false
      * @return true if the user is allowed to add the given assignment. Users without
      * the "all groups" permission are not allowed to add assignments that aren't restricted
      * to that user's groups. If you want an answer to the general question,"Does
      * this user have any sort of add assignment permission in this site?" use
      * {@link AssignmentPermissionLogic#isUserAllowedToAddAssignments(String, String)}
      */
-    public boolean isUserAllowedToAddAssignment(String userId, Assignment2 assignment, List<String> groupMembershipIds);
+    public boolean isUserAllowedToAddAssignment(String userId, Assignment2 assignment, List<String> groupMembershipIds, Map<String, Boolean> authzPermissions);
     
     /**
      * @param userId userId to check. If null, will retrieve the current user.
      * @param assignment
      * @param groupMembershipIds the group memberships for this user. leave null if you
      * want the method to look it up for you
+     * @param authzPermissions optional - if you have already looked up the authz permissions
+     * for this user, you can optionally pass them here. this will avoid extra look-ups if
+     * a permission is already in this map. Map of permission name (ie {@link AssignmentConstants#PERMISSION_ADD_ASSIGNMENTS}
+     * to Boolean true/false
      * @return true if the user has permission to edit the given assignment
      */
-    public boolean isUserAllowedToEditAssignment(String userId, Assignment2 assignment, List<String> groupMembershipIds);
+    public boolean isUserAllowedToEditAssignment(String userId, Assignment2 assignment, List<String> groupMembershipIds, Map<String, Boolean> authzPermissions);
     
     /**
      * 
@@ -114,13 +122,17 @@ public interface AssignmentPermissionLogic {
      * @param assignment
      * @param groupMembershipIds the group memberships for this user. leave null if you
      * want the method to look it up for you
+     * @param authzPermissions optional - if you have already looked up the authz permissions
+     * for this user, you can optionally pass them here. this will avoid extra look-ups if
+     * a permission is already in this map. Map of permission name (ie {@link AssignmentConstants#PERMISSION_ADD_ASSIGNMENTS}
+     * to Boolean true/false
      * @return true if the user is allowed to delete the given assignment. Users without
      * the "all groups" permission are not allowed to delete assignments that aren't restricted
      * to that user's groups. If you want an answer to the general question,"Does
      * this user have any sort of delete assignment permission in this site?" use
      * {@link AssignmentPermissionLogic#isUserAllowedToDeleteAssignments(String, String)}
      */
-    public boolean isUserAllowedToDeleteAssignment(String userId, Assignment2 assignment, List<String> groupMembershipIds);
+    public boolean isUserAllowedToDeleteAssignment(String userId, Assignment2 assignment, List<String> groupMembershipIds, Map<String, Boolean> authzPermissions);
     
     /**
      * @param userId userId to check. If null, will retrieve the current user.
@@ -129,7 +141,7 @@ public interface AssignmentPermissionLogic {
      * Note that this does not mean that a user is allowed to delete any assignment. This just
      * answers the general question, "Does this user have any sort of delete assignment permission 
      * in this site?"  If you want to know if a user may delete a specific assignment, see
-     * {@link AssignmentPermissionLogic#isUserAllowedToDeleteAssignment(String, Assignment2, List)}
+     * {@link AssignmentPermissionLogic#isUserAllowedToDeleteAssignment(String, Assignment2, List, Map)}
      */
     public boolean isUserAllowedToDeleteAssignments(String userId, String contextId);
     
@@ -139,9 +151,13 @@ public interface AssignmentPermissionLogic {
      * @param assignment
      * @param groupMembershipIds the group memberships for this user. leave null if you
      * want the method to look it up for you
+     * @param authzPermissions optional - if you have already looked up the authz permissions
+     * for this user, you can optionally pass them here. this will avoid extra look-ups if
+     * a permission is already in this map. Map of permission name (ie {@link AssignmentConstants#PERMISSION_ADD_ASSIGNMENTS}
+     * to Boolean true/false
      * @return true if the user has permission to view this assignment
      */
-    public boolean isUserAllowedToViewAssignment(String userId, Assignment2 assignment, List<String> groupMembershipIds);
+    public boolean isUserAllowedToViewAssignment(String userId, Assignment2 assignment, List<String> groupMembershipIds, Map<String, Boolean> authzPermissions);
 
     
     /**
@@ -159,12 +175,16 @@ public interface AssignmentPermissionLogic {
      * @param assignment
      * @param groupMembershipIds the group memberships for this user. leave null if you
      * want the method to look it up for you
+     * @param authzPermissions optional - if you have already looked up the authz permissions
+     * for this user, you can optionally pass them here. this will avoid extra look-ups if
+     * a permission is already in this map. Map of permission name (ie {@link AssignmentConstants#PERMISSION_ADD_ASSIGNMENTS}
+     * to Boolean true/false
      * @return true if the user is allowed to manage submissions (ie view, provide feedback, etc)
      * for the given assignment. If you want an answer to the general question,"Does
      * this user have any sort of submission management permission in this site?" use
      * {@link AssignmentPermissionLogic#isUserAllowedToManageSubmissions(String, String)}
      */
-    public boolean isUserAllowedToManageSubmissionsForAssignment(String userId, Assignment2 assignment, List<String> groupMembershipIds);
+    public boolean isUserAllowedToManageSubmissionsForAssignment(String userId, Assignment2 assignment, List<String> groupMembershipIds, Map<String, Boolean> authzPermissions);
     
     /**
      * @param userId userId to check. If null, will retrieve the current user.
@@ -173,7 +193,7 @@ public interface AssignmentPermissionLogic {
      * Note that this does not mean that a user is allowed to manage any submission in the site. This just
      * answers the general question, "Does this user have any sort of submission management permission 
      * in this site?"  If you want to know if a user may manage submissions for a specific assignment, see
-     * {@link AssignmentPermissionLogic#isUserAllowedToManageSubmissionsForAssignment(String, Assignment2, List)}
+     * {@link AssignmentPermissionLogic#isUserAllowedToManageSubmissionsForAssignment(String, Assignment2, List, Map)}
      */
     public boolean isUserAllowedToManageSubmissions(String userId, String contextId);
     

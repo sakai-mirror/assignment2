@@ -995,7 +995,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
             throw new AssignmentNotFoundException("Assignment with id " + assignmentId + " does not exist");
         }
 
-        if (!permissionLogic.isUserAllowedToManageSubmissionsForAssignment(currUserId, assignment, null)) {
+        if (!permissionLogic.isUserAllowedToManageSubmissionsForAssignment(currUserId, assignment, null, null)) {
             throw new SecurityException("User attempted to release feedback for assignment " + assignmentId + " without authorization");
         }
 
@@ -1337,6 +1337,18 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 
                 if (assignment.isGraded() && assignment.getGradebookItemId() != null &&
                         !studentsToCheckForGrade.isEmpty()) {
+                    
+                    // we need to filter this list to only include students the user is
+                    // allowed to grade in the gradebook or we will hit a security exception
+                    if (!gradebookLogic.isCurrentUserAbleToGradeAll(assignment.getContextId())) {
+                        List<String> filteredStudents = gradebookLogic.getGradableStudents(externalLogic.getCurrentUserId(), 
+                            assignment.getContextId(), assignment.getGradebookItemId(), studentsToCheckForGrade);
+                        if (filteredStudents == null) {
+                            studentsToCheckForGrade = new HashSet<String>();
+                        } else {
+                            studentsToCheckForGrade = new HashSet<String>(filteredStudents);
+                        }
+                    }
                     Map<String, GradeInformation> studentGradeInfo = gradebookLogic.getGradeInformationForStudents(studentsToCheckForGrade, assignment.getContextId(), assignment.getGradebookItemId());
                     if (studentGradeInfo != null) {
                         for (Map.Entry<String, GradeInformation> entry : studentGradeInfo.entrySet()) {

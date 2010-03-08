@@ -147,7 +147,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
         }
         
         // make sure the user can access the assignment object
-        if (!permissionLogic.isUserAllowedToViewAssignment(null, assign, null)) {
+        if (!permissionLogic.isUserAllowedToViewAssignment(null, assign, null, null)) {
             throw new SecurityException("User attempted to access assignment with id " + assignmentId + " without permission");
         }
 
@@ -226,10 +226,10 @@ public class AssignmentLogicImpl implements AssignmentLogic{
         
         // if it is a new assignment, check to see if user is allowed to add assignments
         // in this context. otherwise, ensure the user may edit this assignment
-        if (isNewAssignment && !permissionLogic.isUserAllowedToAddAssignment(null, assignment, null)) {
+        if (isNewAssignment && !permissionLogic.isUserAllowedToAddAssignment(null, assignment, null, null)) {
             throw new SecurityException("Current user may not save assignment " + assignment.getTitle()
                     + " because they do not have add permission");
-        } else if (!isNewAssignment && !permissionLogic.isUserAllowedToEditAssignment(null, assignment, null)) {
+        } else if (!isNewAssignment && !permissionLogic.isUserAllowedToEditAssignment(null, assignment, null, null)) {
             throw new SecurityException("Current user may not edit assignment " + assignment.getTitle()
                     + " because they do not have edit permission");
         }
@@ -383,7 +383,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
             "associated contextId. You may not delete an assignment without a contextId");
         }
 
-        if (!permissionLogic.isUserAllowedToDeleteAssignment(null, assignment, null)) {
+        if (!permissionLogic.isUserAllowedToDeleteAssignment(null, assignment, null, null)) {
             throw new SecurityException("Current user may not delete assignment " + assignment.getTitle()
                     + " because they do not have delete permission");
         }

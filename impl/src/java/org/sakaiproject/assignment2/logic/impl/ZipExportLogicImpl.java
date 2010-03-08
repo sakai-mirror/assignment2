@@ -92,7 +92,7 @@ public class ZipExportLogicImpl implements ZipExportLogic
         if (log.isDebugEnabled())
             log.debug(this + ": getSubmissionsZip reference=" + assignmentId);
 
-        if (!permissionLogic.isUserAllowedToManageSubmissionsForAssignment(null, assignment, null)) {
+        if (!permissionLogic.isUserAllowedToManageSubmissionsForAssignment(null, assignment, null, null)) {
             throw new SecurityException("User attempted to download submissions without permission!");
         }
 

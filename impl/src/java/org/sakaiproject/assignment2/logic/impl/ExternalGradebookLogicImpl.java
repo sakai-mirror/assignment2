@@ -817,7 +817,7 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
         return gbItem;
     }
     
-    public List<String> getGradableStudents(String userId, String contextId, Long gradebookItemId, List<String> students) {
+    public List<String> getGradableStudents(String userId, String contextId, Long gradebookItemId, Collection<String> students) {
         if (contextId == null || gradebookItemId == null) {
             throw new IllegalArgumentException("Null contextId (" + contextId + ") or gradebookItemId (" + ") passed to filterGradableStudents");
         }
