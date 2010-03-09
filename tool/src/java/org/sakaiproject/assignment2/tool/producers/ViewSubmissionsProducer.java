@@ -46,6 +46,7 @@ import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentGroup;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
+import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.assignment2.tool.params.AssignmentViewParams;
 import org.sakaiproject.assignment2.tool.params.ViewSubmissionsViewParams;
 import org.sakaiproject.assignment2.tool.params.ZipViewParams;
@@ -215,7 +216,7 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
 
             if (userMayViewGbItem) {
                 // user may grade if there is at least one gradable student among the submissions
-                List<String> gradableStudents = gradebookLogic.getGradableStudents(currUserId, assignment.getContextId(), assignment.getGradebookItemId(), studentIdList);
+                List<String> gradableStudents = (List<String>) gradebookLogic.filterStudentsForGradebookItem(currUserId, assignment.getContextId(), assignment.getGradebookItemId(), AssignmentConstants.GRADE, studentIdList);
                 userMayGrade = gradableStudents != null && !gradableStudents.isEmpty();
                 userMayReleaseGrades = gradebookLogic.isCurrentUserAbleToEdit(assignment.getContextId());
 

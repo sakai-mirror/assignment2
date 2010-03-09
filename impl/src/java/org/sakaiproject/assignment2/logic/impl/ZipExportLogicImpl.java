@@ -31,6 +31,7 @@ import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.model.AttachmentBase;
+import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.content.api.ContentResource;
 import org.sakaiproject.entity.api.Entity;
 import org.sakaiproject.entity.api.ResourceProperties;
@@ -417,13 +418,13 @@ public class ZipExportLogicImpl implements ZipExportLogic
             // first, retrieve all of the students that this user can manage for this assignment
             List<String> manageableStudents = permissionLogic.getViewableStudentsForAssignment(currUserId, assignment);
             // filter the manageable students to only include gradable ones
-            List<String> gradableStudents = gradebookLogic.getGradableStudents(currUserId, 
-                    assignment.getContextId(), assignment.getGradebookItemId(), manageableStudents);
+            manageableStudents = (List<String>) gradebookLogic.filterStudentsForGradebookItem(currUserId, 
+                    assignment.getContextId(), assignment.getGradebookItemId(), AssignmentConstants.GRADE, manageableStudents);
             
             // get the grade information
-            Map<String, GradeInformation> userIdGradeMap = gradebookLogic.getGradeInformationForStudents(gradableStudents, assignment.getContextId(), assignment.getGradebookItemId());
+            Map<String, GradeInformation> userIdGradeMap = gradebookLogic.getGradeInformationForStudents(manageableStudents, assignment.getContextId(), assignment.getGradebookItemId());
 
-            for (String studentId : gradableStudents) {
+            for (String studentId : manageableStudents) {
                 // get their User info
                 User student = userIdUserMap.get(studentId);
                 if (student != null) {

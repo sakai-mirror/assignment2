@@ -817,29 +817,42 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
         return gbItem;
     }
     
-    public List<String> getGradableStudents(String userId, String contextId, Long gradebookItemId, Collection<String> students) {
+    public Collection<String> filterStudentsForGradebookItem(String userId, String contextId, Long gradebookItemId, String viewOrGrade, Collection<String> students) {
         if (contextId == null || gradebookItemId == null) {
             throw new IllegalArgumentException("Null contextId (" + contextId + ") or gradebookItemId (" + ") passed to filterGradableStudents");
+        }
+        
+        if (viewOrGrade == null || (!viewOrGrade.equals(AssignmentConstants.VIEW) && 
+                !viewOrGrade.equals(AssignmentConstants.GRADE))) {
+            throw new IllegalArgumentException("Invalid valid passed for viewOrGrade to filterStudentsForGradebookItem: " + viewOrGrade);
         }
         
         if (userId == null) {
             userId = externalLogic.getCurrentUserId();
         }
         
-        List<String> gradableStudents = new ArrayList<String>();
+        List<String> filteredStudents = new ArrayList<String>();
         if (students != null && !students.isEmpty()) {
-            List<String> gradableInGb = getGradableStudentsForGradebookItem(userId, contextId, gradebookItemId);
+            Map<String, String> studentViewGradeMap = getViewableStudentsForGradedItemMap(userId, contextId, gradebookItemId);
             
-            // filter the students to only include gradable ones
-            if (gradableInGb != null) {
+            // filter the students according to the view/grade param
+            if (studentViewGradeMap != null) {
                 for (String student : students) {
-                    if (gradableInGb.contains(student)) {
-                        gradableStudents.add(student);
+                    if (studentViewGradeMap.containsKey(student)) {
+                        String permission = studentViewGradeMap.get(student);
+                        if (permission != null) {
+                            if (viewOrGrade.equals(AssignmentConstants.GRADE) && 
+                                    permission.equals(AssignmentConstants.GRADE)) {
+                                filteredStudents.add(student);
+                            } else if (viewOrGrade.equals(AssignmentConstants.VIEW)){
+                                filteredStudents.add(student);
+                            }
+                        }
                     }
                 }
             }
         }
         
-        return gradableStudents;
+        return filteredStudents;
     }
 }

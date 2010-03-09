@@ -1339,16 +1339,13 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
                         !studentsToCheckForGrade.isEmpty()) {
                     
                     // we need to filter this list to only include students the user is
-                    // allowed to grade in the gradebook or we will hit a security exception
+                    // allowed to view or grade in the gradebook or we will hit a security exception
                     if (!gradebookLogic.isCurrentUserAbleToGradeAll(assignment.getContextId())) {
-                        List<String> filteredStudents = gradebookLogic.getGradableStudents(externalLogic.getCurrentUserId(), 
-                            assignment.getContextId(), assignment.getGradebookItemId(), studentsToCheckForGrade);
-                        if (filteredStudents == null) {
-                            studentsToCheckForGrade = new HashSet<String>();
-                        } else {
-                            studentsToCheckForGrade = new HashSet<String>(filteredStudents);
-                        }
+                        studentsToCheckForGrade = (Set<String>) gradebookLogic.filterStudentsForGradebookItem(externalLogic.getCurrentUserId(), 
+                                assignment.getContextId(), assignment.getGradebookItemId(), 
+                                AssignmentConstants.VIEW, studentsToCheckForGrade);
                     }
+                
                     Map<String, GradeInformation> studentGradeInfo = gradebookLogic.getGradeInformationForStudents(studentsToCheckForGrade, assignment.getContextId(), assignment.getGradebookItemId());
                     if (studentGradeInfo != null) {
                         for (Map.Entry<String, GradeInformation> entry : studentGradeInfo.entrySet()) {

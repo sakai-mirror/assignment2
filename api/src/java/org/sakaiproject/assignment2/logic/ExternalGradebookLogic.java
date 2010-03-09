@@ -31,6 +31,7 @@ import org.sakaiproject.assignment2.exception.InvalidGradeForAssignmentException
 import org.sakaiproject.assignment2.exception.NoGradebookDataExistsException;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
+import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.site.api.Group;
 
 /**
@@ -426,8 +427,12 @@ public interface ExternalGradebookLogic {
      * @param userId userId to check for grading privileges. if null, will use current user
      * @param contextId
      * @param gradebookItemId
+     * @param viewOrGrade {@link AssignmentConstants#VIEW} or {@link AssignmentConstants#GRADE} to
+     * specify if you want the students the user may just grade or if you want all that are viewable
+     * in the gradebook
      * @param students list of userIds for the students you want to filter
-     * @return a filtered list of students that the given user has permission to grade in the gradebook
+     * @return a filtered list of students that the given user has permission to view or grade in the gradebook
+     * for the given gradebook item depending on your passed viewOrGrade param
      */
-    public List<String> getGradableStudents(String userId, String contextId, Long gradebookItemId, Collection<String> students);
+    public Collection<String> filterStudentsForGradebookItem(String userId, String contextId, Long gradebookItemId, String viewOrGrade, Collection<String> students);
 }
