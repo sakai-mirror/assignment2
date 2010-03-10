@@ -156,7 +156,7 @@ public class LocalPermissionLogic {
         } else if (FragmentAssignment2SelectProducer.VIEW_ID.equals(viewId)) {
             // TODO: it isn't clear what permission you should have for this one,
             // so defaulting to add perm
-            return permissionLogic.isUserAllowedToAddAssignments(null, contextId);
+            return permissionLogic.isUserAllowedToAddAssignments(null, contextId, null);
         }
         else if (FragmentGradebookDetailsProducer.VIEW_ID.equals(viewId)) {
             if (viewParams instanceof FragmentGradebookDetailsViewParams) {
@@ -213,7 +213,7 @@ public class LocalPermissionLogic {
     private boolean isUserAllowedToAddOrEditAssignment(Long assignId, String contextId) {
         if (assignId == null) {
             // add assignment scenario
-            return permissionLogic.isUserAllowedToAddAssignments(null, contextId);
+            return permissionLogic.isUserAllowedToAddAssignments(null, contextId, null);
         } else {
             // we are editing
             if (permissionLogic.isUserAllowedToEditAllAssignments(null, contextId)) {

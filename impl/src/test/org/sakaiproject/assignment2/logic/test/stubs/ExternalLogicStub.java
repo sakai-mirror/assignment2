@@ -326,6 +326,7 @@ public class ExternalLogicStub implements ExternalLogic {
         List<String> allUsers = new ArrayList<String>();
         allUsers.add(AssignmentTestDataLoad.INSTRUCTOR_UID);
         allUsers.add(AssignmentTestDataLoad.TA_UID);
+        allUsers.add(AssignmentTestDataLoad.TA_WITH_NO_GROUPS);
         allUsers.add(AssignmentTestDataLoad.STUDENT1_UID);
         allUsers.add(AssignmentTestDataLoad.STUDENT2_UID);
         allUsers.add(AssignmentTestDataLoad.STUDENT3_UID);

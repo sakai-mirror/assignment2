@@ -307,8 +307,8 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware {
         httpServletResponse.setDateHeader("Expires", 0 );
 
         boolean canReorder = permissionLogic.isUserAllowedToEditAllAssignments(null, context);
-        boolean canAdd = permissionLogic.isUserAllowedToAddAssignments(null, context);
-        boolean canDelete = permissionLogic.isUserAllowedToDeleteAssignments(null, context);
+        boolean canAdd = permissionLogic.isUserAllowedToAddAssignments(null, context, null);
+        boolean canDelete = permissionLogic.isUserAllowedToDeleteAssignments(null, context, null);
 
         httpServletResponse.setHeader("x-asnn2-canReorder", canReorder+"");
         httpServletResponse.setHeader("x-asnn2-canAdd", canAdd+"");

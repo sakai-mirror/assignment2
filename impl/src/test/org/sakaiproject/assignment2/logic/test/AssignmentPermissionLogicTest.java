@@ -75,8 +75,18 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
             Boolean hasPerm = sitePerms.get(perm);
             if (perm.equals(AssignmentConstants.PERMISSION_ALL_GROUPS)) {
                 assertTrue(hasPerm);
+            } else if (perm.equals(AssignmentConstants.PERMISSION_ADD_ASSIGNMENTS)) {
+                assertTrue(hasPerm);
+            } else if (perm.equals(AssignmentConstants.PERMISSION_EDIT_ASSIGNMENTS)) {
+                assertTrue(hasPerm);
+            } else if (perm.equals(AssignmentConstants.PERMISSION_MANAGE_SUBMISSIONS)) {
+                assertTrue(hasPerm);
+            } else if (perm.equals(AssignmentConstants.PERMISSION_REMOVE_ASSIGNMENTS)) {
+                assertTrue(hasPerm);
+            } else if (perm.equals(AssignmentConstants.PERMISSION_SUBMIT)) {
+                assertFalse(hasPerm);
             } else {
-                fail("Unknown permission returned from getPermissionsForSite");
+                fail("Unknown permission returned from getPermissionsForSite:" + perm);
             }
         }
 
@@ -86,6 +96,39 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
         for (String perm : allSitePerms) {
             Boolean hasPerm = sitePerms.get(perm);
             if (perm.equals(AssignmentConstants.PERMISSION_ALL_GROUPS)) {
+                assertFalse(hasPerm);
+            } else if (perm.equals(AssignmentConstants.PERMISSION_ADD_ASSIGNMENTS)) {
+                assertTrue(hasPerm);
+            } else if (perm.equals(AssignmentConstants.PERMISSION_EDIT_ASSIGNMENTS)) {
+                assertTrue(hasPerm);
+            } else if (perm.equals(AssignmentConstants.PERMISSION_MANAGE_SUBMISSIONS)) {
+                assertTrue(hasPerm);
+            } else if (perm.equals(AssignmentConstants.PERMISSION_REMOVE_ASSIGNMENTS)) {
+                assertTrue(hasPerm);
+            } else if (perm.equals(AssignmentConstants.PERMISSION_SUBMIT)) {
+                assertFalse(hasPerm);
+            } else {
+                fail("Unknown permission returned from getPermissionsForSite");
+            }
+        }
+        
+        // the TA with no groups doesn't have add, edit, etc
+        externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_WITH_NO_GROUPS);
+        sitePerms = permissionLogic.getPermissionsForSite(AssignmentTestDataLoad.CONTEXT_ID, null);
+        assertEquals(allSitePerms.size(), sitePerms.size());
+        for (String perm : allSitePerms) {
+            Boolean hasPerm = sitePerms.get(perm);
+            if (perm.equals(AssignmentConstants.PERMISSION_ALL_GROUPS)) {
+                assertFalse(hasPerm);
+            } else if (perm.equals(AssignmentConstants.PERMISSION_ADD_ASSIGNMENTS)) {
+                assertFalse(hasPerm);
+            } else if (perm.equals(AssignmentConstants.PERMISSION_EDIT_ASSIGNMENTS)) {
+                assertFalse(hasPerm);
+            } else if (perm.equals(AssignmentConstants.PERMISSION_MANAGE_SUBMISSIONS)) {
+                assertFalse(hasPerm);
+            } else if (perm.equals(AssignmentConstants.PERMISSION_REMOVE_ASSIGNMENTS)) {
+                assertFalse(hasPerm);
+            } else if (perm.equals(AssignmentConstants.PERMISSION_SUBMIT)) {
                 assertFalse(hasPerm);
             } else {
                 fail("Unknown permission returned from getPermissionsForSite");
@@ -99,6 +142,60 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
             Boolean hasPerm = sitePerms.get(perm);
             if (perm.equals(AssignmentConstants.PERMISSION_ALL_GROUPS)) {
                 assertFalse(hasPerm);
+            } else if (perm.equals(AssignmentConstants.PERMISSION_ADD_ASSIGNMENTS)) {
+                assertFalse(hasPerm);
+            } else if (perm.equals(AssignmentConstants.PERMISSION_EDIT_ASSIGNMENTS)) {
+                assertFalse(hasPerm);
+            } else if (perm.equals(AssignmentConstants.PERMISSION_MANAGE_SUBMISSIONS)) {
+                assertFalse(hasPerm);
+            } else if (perm.equals(AssignmentConstants.PERMISSION_REMOVE_ASSIGNMENTS)) {
+                assertFalse(hasPerm);
+            } else if (perm.equals(AssignmentConstants.PERMISSION_SUBMIT)) {
+                assertTrue(hasPerm);
+            } else {
+                fail("Unknown permission returned from getPermissionsForSite");
+            }
+        }
+        
+        externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT2_UID);
+        sitePerms = permissionLogic.getPermissionsForSite(AssignmentTestDataLoad.CONTEXT_ID, null);
+        assertEquals(allSitePerms.size(), sitePerms.size());
+        for (String perm : allSitePerms) {
+            Boolean hasPerm = sitePerms.get(perm);
+            if (perm.equals(AssignmentConstants.PERMISSION_ALL_GROUPS)) {
+                assertFalse(hasPerm);
+            } else if (perm.equals(AssignmentConstants.PERMISSION_ADD_ASSIGNMENTS)) {
+                assertFalse(hasPerm);
+            } else if (perm.equals(AssignmentConstants.PERMISSION_EDIT_ASSIGNMENTS)) {
+                assertFalse(hasPerm);
+            } else if (perm.equals(AssignmentConstants.PERMISSION_MANAGE_SUBMISSIONS)) {
+                assertFalse(hasPerm);
+            } else if (perm.equals(AssignmentConstants.PERMISSION_REMOVE_ASSIGNMENTS)) {
+                assertFalse(hasPerm);
+            } else if (perm.equals(AssignmentConstants.PERMISSION_SUBMIT)) {
+                assertTrue(hasPerm);
+            } else {
+                fail("Unknown permission returned from getPermissionsForSite");
+            }
+        }
+        
+        externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT3_UID);
+        sitePerms = permissionLogic.getPermissionsForSite(AssignmentTestDataLoad.CONTEXT_ID, null);
+        assertEquals(allSitePerms.size(), sitePerms.size());
+        for (String perm : allSitePerms) {
+            Boolean hasPerm = sitePerms.get(perm);
+            if (perm.equals(AssignmentConstants.PERMISSION_ALL_GROUPS)) {
+                assertFalse(hasPerm);
+            } else if (perm.equals(AssignmentConstants.PERMISSION_ADD_ASSIGNMENTS)) {
+                assertFalse(hasPerm);
+            } else if (perm.equals(AssignmentConstants.PERMISSION_EDIT_ASSIGNMENTS)) {
+                assertFalse(hasPerm);
+            } else if (perm.equals(AssignmentConstants.PERMISSION_MANAGE_SUBMISSIONS)) {
+                assertFalse(hasPerm);
+            } else if (perm.equals(AssignmentConstants.PERMISSION_REMOVE_ASSIGNMENTS)) {
+                assertFalse(hasPerm);
+            } else if (perm.equals(AssignmentConstants.PERMISSION_SUBMIT)) {
+                assertTrue(hasPerm);
             } else {
                 fail("Unknown permission returned from getPermissionsForSite");
             }
@@ -125,12 +222,6 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
         assertEquals(1, sitePerms.size());
         assertTrue(sitePerms.containsKey(AssignmentConstants.PERMISSION_ALL_GROUPS));
         assertFalse(sitePerms.get(AssignmentConstants.PERMISSION_ALL_GROUPS));
-
-        // try perms that aren't site-level
-        permsToCheck = authz.getAssignmentLevelPermissions();
-        externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
-        sitePerms = permissionLogic.getPermissionsForSite(AssignmentTestDataLoad.CONTEXT_ID, permsToCheck);
-        assertEquals(0, sitePerms.size());
 
     }
 
@@ -471,30 +562,33 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
     public void testIsUserAllowedToAddAssignments() {
         // try passing a null contextId
         try {
-            permissionLogic.isUserAllowedToAddAssignments(null, null);
+            permissionLogic.isUserAllowedToAddAssignments(null, null, null);
             fail("did not catch null contextId passed to isUserAllowedToAddAssignments");
         } catch (IllegalArgumentException iae) {}
 
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
-        assertTrue(permissionLogic.isUserAllowedToAddAssignments(null, AssignmentTestDataLoad.CONTEXT_ID));
+        assertTrue(permissionLogic.isUserAllowedToAddAssignments(null, AssignmentTestDataLoad.CONTEXT_ID, null));
 
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
-        assertTrue(permissionLogic.isUserAllowedToAddAssignments(null, AssignmentTestDataLoad.CONTEXT_ID));
+        assertTrue(permissionLogic.isUserAllowedToAddAssignments(null, AssignmentTestDataLoad.CONTEXT_ID, null));
+        
+        // now let's fake that the TA isn't in any groups
+        assertFalse(permissionLogic.isUserAllowedToAddAssignments(null, AssignmentTestDataLoad.CONTEXT_ID, new ArrayList<String>()));
 
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT1_UID);
-        assertFalse(permissionLogic.isUserAllowedToAddAssignments(null, AssignmentTestDataLoad.CONTEXT_ID));
+        assertFalse(permissionLogic.isUserAllowedToAddAssignments(null, AssignmentTestDataLoad.CONTEXT_ID, null));
         
         // make sure this still works if we pass in the userId
         assertTrue(permissionLogic.isUserAllowedToAddAssignments(
-                AssignmentTestDataLoad.INSTRUCTOR_UID, AssignmentTestDataLoad.CONTEXT_ID));
+                AssignmentTestDataLoad.INSTRUCTOR_UID, AssignmentTestDataLoad.CONTEXT_ID, null));
         assertTrue(permissionLogic.isUserAllowedToAddAssignments(
-                AssignmentTestDataLoad.TA_UID, AssignmentTestDataLoad.CONTEXT_ID));
+                AssignmentTestDataLoad.TA_UID, AssignmentTestDataLoad.CONTEXT_ID, null));
         assertFalse(permissionLogic.isUserAllowedToAddAssignments(
-                AssignmentTestDataLoad.STUDENT1_UID, AssignmentTestDataLoad.CONTEXT_ID));
+                AssignmentTestDataLoad.STUDENT1_UID, AssignmentTestDataLoad.CONTEXT_ID, null));
         assertFalse(permissionLogic.isUserAllowedToAddAssignments(
-                AssignmentTestDataLoad.STUDENT2_UID, AssignmentTestDataLoad.CONTEXT_ID));
+                AssignmentTestDataLoad.STUDENT2_UID, AssignmentTestDataLoad.CONTEXT_ID, null));
         assertFalse(permissionLogic.isUserAllowedToAddAssignments(
-                AssignmentTestDataLoad.STUDENT3_UID, AssignmentTestDataLoad.CONTEXT_ID));
+                AssignmentTestDataLoad.STUDENT3_UID, AssignmentTestDataLoad.CONTEXT_ID, null));
     }
 
     public void testIsUserAllowedToAddAssignment() {
@@ -587,28 +681,28 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
     public void testIsUserAllowedToDeleteAssignments() {
         // try passing a null argument
         try {
-            permissionLogic.isUserAllowedToDeleteAssignments(AssignmentTestDataLoad.INSTRUCTOR_UID, null);
+            permissionLogic.isUserAllowedToDeleteAssignments(AssignmentTestDataLoad.INSTRUCTOR_UID, null, null);
             fail("Did not catch null contextId passed to isUserAllowedToDeleteAssignments");
         } catch (IllegalArgumentException iae) {}
 
         // first, let's check if specifying a userId is correct
-        assertTrue(permissionLogic.isUserAllowedToDeleteAssignments(AssignmentTestDataLoad.INSTRUCTOR_UID, AssignmentTestDataLoad.CONTEXT_ID));
-        assertTrue(permissionLogic.isUserAllowedToDeleteAssignments(AssignmentTestDataLoad.TA_UID, AssignmentTestDataLoad.CONTEXT_ID));
-        assertFalse(permissionLogic.isUserAllowedToDeleteAssignments(AssignmentTestDataLoad.STUDENT1_UID, AssignmentTestDataLoad.CONTEXT_ID));
-        assertFalse(permissionLogic.isUserAllowedToDeleteAssignments(AssignmentTestDataLoad.STUDENT2_UID, AssignmentTestDataLoad.CONTEXT_ID));
-        assertFalse(permissionLogic.isUserAllowedToDeleteAssignments(AssignmentTestDataLoad.STUDENT3_UID, AssignmentTestDataLoad.CONTEXT_ID));
+        assertTrue(permissionLogic.isUserAllowedToDeleteAssignments(AssignmentTestDataLoad.INSTRUCTOR_UID, AssignmentTestDataLoad.CONTEXT_ID, null));
+        assertTrue(permissionLogic.isUserAllowedToDeleteAssignments(AssignmentTestDataLoad.TA_UID, AssignmentTestDataLoad.CONTEXT_ID, null));
+        assertFalse(permissionLogic.isUserAllowedToDeleteAssignments(AssignmentTestDataLoad.STUDENT1_UID, AssignmentTestDataLoad.CONTEXT_ID, null));
+        assertFalse(permissionLogic.isUserAllowedToDeleteAssignments(AssignmentTestDataLoad.STUDENT2_UID, AssignmentTestDataLoad.CONTEXT_ID, null));
+        assertFalse(permissionLogic.isUserAllowedToDeleteAssignments(AssignmentTestDataLoad.STUDENT3_UID, AssignmentTestDataLoad.CONTEXT_ID, null));
 
         // now let's try to leave userId null and set the current user
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
-        assertTrue(permissionLogic.isUserAllowedToDeleteAssignments(null, AssignmentTestDataLoad.CONTEXT_ID));
+        assertTrue(permissionLogic.isUserAllowedToDeleteAssignments(null, AssignmentTestDataLoad.CONTEXT_ID, null));
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
-        assertTrue(permissionLogic.isUserAllowedToDeleteAssignments(null, AssignmentTestDataLoad.CONTEXT_ID));
+        assertTrue(permissionLogic.isUserAllowedToDeleteAssignments(null, AssignmentTestDataLoad.CONTEXT_ID, null));
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT1_UID);
-        assertFalse(permissionLogic.isUserAllowedToDeleteAssignments(null, AssignmentTestDataLoad.CONTEXT_ID));
+        assertFalse(permissionLogic.isUserAllowedToDeleteAssignments(null, AssignmentTestDataLoad.CONTEXT_ID, null));
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT2_UID);
-        assertFalse(permissionLogic.isUserAllowedToDeleteAssignments(null, AssignmentTestDataLoad.CONTEXT_ID));
+        assertFalse(permissionLogic.isUserAllowedToDeleteAssignments(null, AssignmentTestDataLoad.CONTEXT_ID, null));
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT3_UID);
-        assertFalse(permissionLogic.isUserAllowedToDeleteAssignments(null, AssignmentTestDataLoad.CONTEXT_ID));
+        assertFalse(permissionLogic.isUserAllowedToDeleteAssignments(null, AssignmentTestDataLoad.CONTEXT_ID, null));
     }
 
     public void testIsUserAllowedToViewAssignment() {
@@ -1451,17 +1545,17 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
     public void testIsUserAllowedToSubmit() {
         // only students may submit
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
-        assertFalse(permissionLogic.isUserAllowedToSubmit(null, AssignmentTestDataLoad.CONTEXT_ID));
+        assertFalse(permissionLogic.isUserAllowedToSubmit(null, AssignmentTestDataLoad.CONTEXT_ID, null));
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
-        assertFalse(permissionLogic.isUserAllowedToSubmit(null, AssignmentTestDataLoad.CONTEXT_ID));
+        assertFalse(permissionLogic.isUserAllowedToSubmit(null, AssignmentTestDataLoad.CONTEXT_ID, null));
 
         // now try the students
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT1_UID);
-        assertTrue(permissionLogic.isUserAllowedToSubmit(null, AssignmentTestDataLoad.CONTEXT_ID));
+        assertTrue(permissionLogic.isUserAllowedToSubmit(null, AssignmentTestDataLoad.CONTEXT_ID, null));
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT2_UID);
-        assertTrue(permissionLogic.isUserAllowedToSubmit(null, AssignmentTestDataLoad.CONTEXT_ID));
+        assertTrue(permissionLogic.isUserAllowedToSubmit(null, AssignmentTestDataLoad.CONTEXT_ID, null));
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT3_UID);
-        assertTrue(permissionLogic.isUserAllowedToSubmit(null, AssignmentTestDataLoad.CONTEXT_ID));
+        assertTrue(permissionLogic.isUserAllowedToSubmit(null, AssignmentTestDataLoad.CONTEXT_ID, null));
     }
 
     public void testGetUsersAllowedToViewStudentForAssignment() {
@@ -1630,18 +1724,18 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
 
     public void testIsUserAllowedToManageSubmissions() {
         try {
-            permissionLogic.isUserAllowedToManageSubmissions(null, null);
+            permissionLogic.isUserAllowedToManageSubmissions(null, null, null);
             fail("Did not catch null contextId passed to isUserAllowedToManageSubmissions");
         } catch (IllegalArgumentException iae) {}
 
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
-        assertTrue(permissionLogic.isUserAllowedToManageSubmissions(null, AssignmentTestDataLoad.CONTEXT_ID));
+        assertTrue(permissionLogic.isUserAllowedToManageSubmissions(null, AssignmentTestDataLoad.CONTEXT_ID, null));
 
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
-        assertTrue(permissionLogic.isUserAllowedToManageSubmissions(null, AssignmentTestDataLoad.CONTEXT_ID));
+        assertTrue(permissionLogic.isUserAllowedToManageSubmissions(null, AssignmentTestDataLoad.CONTEXT_ID, null));
 
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT1_UID);
-        assertFalse(permissionLogic.isUserAllowedToManageSubmissions(null, AssignmentTestDataLoad.CONTEXT_ID));
+        assertFalse(permissionLogic.isUserAllowedToManageSubmissions(null, AssignmentTestDataLoad.CONTEXT_ID, null));
     }
     
     public void testGetSubmittersInSite() {
@@ -1662,5 +1756,31 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
                 fail("Non-submitter returned by getSubmittersInSite: " + user);
             }
         }
+    }
+    
+    public void testIsUserAllowedForAllGroups() {
+        try {
+            permissionLogic.isUserAllowedForAllGroups(null, null);
+            fail("Did not catch null contextId passed to isUserAllowedForAllGroups");
+        } catch (IllegalArgumentException iae) {}
+        
+        // let's see if it works by passing in the userId
+        assertTrue(permissionLogic.isUserAllowedForAllGroups(AssignmentTestDataLoad.INSTRUCTOR_UID, AssignmentTestDataLoad.CONTEXT_ID));
+        assertFalse(permissionLogic.isUserAllowedForAllGroups(AssignmentTestDataLoad.TA_UID, AssignmentTestDataLoad.CONTEXT_ID));
+        assertFalse(permissionLogic.isUserAllowedForAllGroups(AssignmentTestDataLoad.STUDENT1_UID, AssignmentTestDataLoad.CONTEXT_ID));
+        assertFalse(permissionLogic.isUserAllowedForAllGroups(AssignmentTestDataLoad.STUDENT2_UID, AssignmentTestDataLoad.CONTEXT_ID));
+        assertFalse(permissionLogic.isUserAllowedForAllGroups(AssignmentTestDataLoad.STUDENT3_UID, AssignmentTestDataLoad.CONTEXT_ID));
+        
+        // now use the current user
+        externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
+        assertTrue(permissionLogic.isUserAllowedForAllGroups(null, AssignmentTestDataLoad.CONTEXT_ID));
+        externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
+        assertFalse(permissionLogic.isUserAllowedForAllGroups(null, AssignmentTestDataLoad.CONTEXT_ID));
+        externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT1_UID);
+        assertFalse(permissionLogic.isUserAllowedForAllGroups(null, AssignmentTestDataLoad.CONTEXT_ID));
+        externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT2_UID);
+        assertFalse(permissionLogic.isUserAllowedForAllGroups(null, AssignmentTestDataLoad.CONTEXT_ID));
+        externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT3_UID);
+        assertFalse(permissionLogic.isUserAllowedForAllGroups(null, AssignmentTestDataLoad.CONTEXT_ID));
     }
 }

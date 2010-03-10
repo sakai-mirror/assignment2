@@ -36,8 +36,9 @@ import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 public interface AssignmentAuthzLogic {
     
     /**
-     * permissions that are considered assignment-level permissions and
-     * should be checked for group access
+     * permissions that may have assignment-level privileges and
+     * should be checked for group access. Used to answer questions
+     * like "Does this user have permission to edit this assignment?"
      */
     public static final String[] assignmentLevelPermissions = {
         AssignmentConstants.PERMISSION_ADD_ASSIGNMENTS,
@@ -49,11 +50,19 @@ public interface AssignmentAuthzLogic {
     };
     
     /**
-     * permissions that are considered site-level permissions and
-     * do not need to be checked for group access
+     * permissions that may have site-level privileges. Used to answer
+     * questions like "Does this user have general permission to add assignments
+     * in this site?" Though a user may have general permission, this does
+     * not guarantee that they can perform this action on every assignment
+     * in the site.
      */
     public static final String[] siteLevelPermissions = {
-        AssignmentConstants.PERMISSION_ALL_GROUPS
+        AssignmentConstants.PERMISSION_ALL_GROUPS,
+        AssignmentConstants.PERMISSION_ADD_ASSIGNMENTS,
+        AssignmentConstants.PERMISSION_EDIT_ASSIGNMENTS,
+        AssignmentConstants.PERMISSION_MANAGE_SUBMISSIONS,
+        AssignmentConstants.PERMISSION_REMOVE_ASSIGNMENTS,
+        AssignmentConstants.PERMISSION_SUBMIT
     };
     
     // The following 3 groups should represent all of the permissions except for

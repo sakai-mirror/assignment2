@@ -43,7 +43,7 @@ public interface AssignmentPermissionLogic {
      * 
      * @param contextId
      * @param permissions a list of the permissions you want to check for in this context.
-     * (see {@link AssignmentAuthzLogic#getSiteLevelPermissions()} for allowed values.
+     * see {@link AssignmentAuthzLogic#getSiteLevelPermissions()} for allowed values.
      * if null, will return all site-level permissions
      * @return a map of the permission to true/false indicating whether the current
      * user has this permission. Only permissions returned by {@link AssignmentAuthzLogic#getSiteLevelPermissions()}
@@ -66,15 +66,29 @@ public interface AssignmentPermissionLogic {
     public Map<Long, Map<String, Boolean>> getPermissionsForAssignments(Collection<Assignment2> assignments, Collection<String> permissions);
     
     /**
+     * 
+     * @param userId if null, will use the current user
+     * @param contextId
+     * @return true if the given user has permission generically for all groups in the
+     * given site
+     */
+    public boolean isUserAllowedForAllGroups(String userId, String contextId);
+    
+    /**
      * @param userId userId to check. If null, will retrieve the current user.
      * @param contextId
+     * @param groupMemberships the user's group memberships. leave null if you want
+     * this method to look them up for you. will only be needed if the user does
+     * not have "all groups" access
      * @return true if the user has permission to add assignments in the given context.
+     * if the user does not have "all groups" access, he/she must be a member of at least
+     * one group to have add permission for this site.
      * Note that this does not mean that a user is allowed to add any assignment. This just
      * answers the general question, "Does this user have any sort of add assignment permission 
      * in this site?"  If you want to know if a user may add a specific assignment, see
      * {@link AssignmentPermissionLogic#isUserAllowedToAddAssignment(String, Assignment2, List, Map)}
      */
-    public boolean isUserAllowedToAddAssignments(String userId, String contextId);
+    public boolean isUserAllowedToAddAssignments(String userId, String contextId, List<String> groupMemberships);
     
     /**
      * 
@@ -90,7 +104,7 @@ public interface AssignmentPermissionLogic {
      * the "all groups" permission are not allowed to add assignments that aren't restricted
      * to that user's groups. If you want an answer to the general question,"Does
      * this user have any sort of add assignment permission in this site?" use
-     * {@link AssignmentPermissionLogic#isUserAllowedToAddAssignments(String, String)}
+     * {@link AssignmentPermissionLogic#isUserAllowedToAddAssignments(String, String, List)}
      */
     public boolean isUserAllowedToAddAssignment(String userId, Assignment2 assignment, List<String> groupMembershipIds, Map<String, Boolean> authzPermissions);
     
@@ -130,20 +144,23 @@ public interface AssignmentPermissionLogic {
      * the "all groups" permission are not allowed to delete assignments that aren't restricted
      * to that user's groups. If you want an answer to the general question,"Does
      * this user have any sort of delete assignment permission in this site?" use
-     * {@link AssignmentPermissionLogic#isUserAllowedToDeleteAssignments(String, String)}
+     * {@link AssignmentPermissionLogic#isUserAllowedToDeleteAssignments(String, String, List)}
      */
     public boolean isUserAllowedToDeleteAssignment(String userId, Assignment2 assignment, List<String> groupMembershipIds, Map<String, Boolean> authzPermissions);
     
     /**
      * @param userId userId to check. If null, will retrieve the current user.
      * @param contextId
+     * @param groupMembershipIds the group memberships for this user. leave null if you
+     * want the method to look it up for you. will only be needed if the user does not
+     * have {@link AssignmentConstants#PERMISSION_ALL_GROUPS}
      * @return true if the user has permission to delete assignments in the given context.
      * Note that this does not mean that a user is allowed to delete any assignment. This just
      * answers the general question, "Does this user have any sort of delete assignment permission 
      * in this site?"  If you want to know if a user may delete a specific assignment, see
      * {@link AssignmentPermissionLogic#isUserAllowedToDeleteAssignment(String, Assignment2, List, Map)}
      */
-    public boolean isUserAllowedToDeleteAssignments(String userId, String contextId);
+    public boolean isUserAllowedToDeleteAssignments(String userId, String contextId, List<String> groupMembershipIds);
     
     /**
      * 
@@ -182,20 +199,23 @@ public interface AssignmentPermissionLogic {
      * @return true if the user is allowed to manage submissions (ie view, provide feedback, etc)
      * for the given assignment. If you want an answer to the general question,"Does
      * this user have any sort of submission management permission in this site?" use
-     * {@link AssignmentPermissionLogic#isUserAllowedToManageSubmissions(String, String)}
+     * {@link AssignmentPermissionLogic#isUserAllowedToManageSubmissions(String, String, List)}
      */
     public boolean isUserAllowedToManageSubmissionsForAssignment(String userId, Assignment2 assignment, List<String> groupMembershipIds, Map<String, Boolean> authzPermissions);
     
     /**
      * @param userId userId to check. If null, will retrieve the current user.
      * @param contextId
+     * @param groupMembershipIds the group memberships for this user. leave null if you
+     * want the method to look it up for you. will only be needed if the user does not
+     * have {@link AssignmentConstants#PERMISSION_ALL_GROUPS}
      * @return true if the user has permission to manage submissions (ie view, provide feedback, etc) in the given context.
      * Note that this does not mean that a user is allowed to manage any submission in the site. This just
      * answers the general question, "Does this user have any sort of submission management permission 
      * in this site?"  If you want to know if a user may manage submissions for a specific assignment, see
      * {@link AssignmentPermissionLogic#isUserAllowedToManageSubmissionsForAssignment(String, Assignment2, List, Map)}
      */
-    public boolean isUserAllowedToManageSubmissions(String userId, String contextId);
+    public boolean isUserAllowedToManageSubmissions(String userId, String contextId, List<String> groupMembershipIds);
     
 
     /**
@@ -274,11 +294,14 @@ public interface AssignmentPermissionLogic {
      * 
      * @param userId if null will use the current user
      * @param contextId
+     * @param groupMembershipIds the group memberships for this user. leave null if you
+     * want the method to look it up for you. will only be needed if the user does not
+     * have {@link AssignmentConstants#PERMISSION_ALL_GROUPS}
      * @return true if the user has submission privileges in the given contextId. To
      * determine if the user is allowed to submit for a specific assignment, see
      * {@link #isUserAllowedToMakeSubmissionForAssignment(String, Assignment2)}
      */
-    public boolean isUserAllowedToSubmit(String userId, String contextId);
+    public boolean isUserAllowedToSubmit(String userId, String contextId, List<String> groupMembershipIds);
     
     /**
      * 

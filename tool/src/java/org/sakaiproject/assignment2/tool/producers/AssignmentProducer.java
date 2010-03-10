@@ -156,6 +156,7 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
         }
 
         String currentContextId = externalLogic.getCurrentContextId();
+        String currUserId = externalLogic.getCurrentUserId();
 
         //get Passed assignmentId to pull in for editing if any
         Long duplicatedAssignId = params.duplicatedAssignmentId;
@@ -502,31 +503,47 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
         /******
          * Access
          */
+        
+        /**
+         * If a user has add or edit permission but not all groups, they may only create/edit
+         * assignments that are restricted to his/her groups. The assignment cannot be
+         * for all students.
+         */
+        
+        boolean userHasAllGroups = permissionLogic.isUserAllowedForAllGroups(currUserId, currentContextId);
         UIMessage.make(form, "access_legend", "assignment2.assignment_add.access_legend");
-        String[] access_values = new String[] {
-                Boolean.FALSE.toString(),
-                Boolean.TRUE.toString()
-        };
-        String[] access_labels = new String[] {
-                "assignment2.assignment_add.access.not_restricted",
-                "assignment2.assignment_add.access.restricted"
-        };
-        Boolean restrictedToGroups = (assignment.getAssignmentGroupSet() != null && !assignment.getAssignmentGroupSet().isEmpty());
-        UISelect access = UISelect.make(form, "access_select", access_values, access_labels,
-                "AssignmentAuthoringOptionsFlowBean.restrictedToGroups", restrictedToGroups.toString()).setMessageKeys();
 
-        String accessId = access.getFullID();
+        // we only give the user the option to allow for all students if they
+        // have all groups permission
+        if (userHasAllGroups) {
+            String[] access_values = new String[] {
+                    Boolean.FALSE.toString(),
+                    Boolean.TRUE.toString()
+            };
+            String[] access_labels = new String[] {
+                    "assignment2.assignment_add.access.not_restricted",
+                    "assignment2.assignment_add.access.restricted"
+            };
+            Boolean restrictedToGroups = (assignment.getAssignmentGroupSet() != null && !assignment.getAssignmentGroupSet().isEmpty());
+            UISelect access = UISelect.make(form, "access_select", access_values, access_labels,
+                    "AssignmentAuthoringOptionsFlowBean.restrictedToGroups", restrictedToGroups.toString()).setMessageKeys();
 
-        for (int i=0; i < access_values.length; i++) {
-            UIBranchContainer access_row = UIBranchContainer.make(form, "access_row:");
-            UISelectChoice.make(access_row, "access_choice", accessId, i);
-            UISelectLabel.make(access_row, "access_label", accessId, i);
+            String accessId = access.getFullID();
+            for (int i=0; i < access_values.length; i++) {
+                UIBranchContainer access_row = UIBranchContainer.make(form, "access_row:");
+                UISelectChoice.make(access_row, "access_choice", accessId, i);
+                UISelectLabel.make(access_row, "access_label", accessId, i);
+            }
+        } else {
+            UIOutput.make(tofill, "access_groups_only");
+            form.addParameter(new UIELBinding("AssignmentAuthoringOptionsFlowBean.restrictedToGroups",true));
+            
         }
 
         /**
          * Groups
          */
-        Collection<Group> groups = externalLogic.getSiteGroups(currentContextId);
+        Collection<Group> groups = permissionLogic.getViewableGroupsForAssignment(currUserId, assignment);
         List<String> groupIdList = new ArrayList<String>();
         if (groups.size() > 0) {
             UIOutput.make(form, "access-selection-area");

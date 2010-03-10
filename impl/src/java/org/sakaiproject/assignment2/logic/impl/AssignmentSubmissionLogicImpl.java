@@ -1531,7 +1531,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 
         String currentUserId = externalLogic.getCurrentUserId();
 
-        if (!permissionLogic.isUserAllowedToSubmit(currentUserId, contextId)) {
+        if (!permissionLogic.isUserAllowedToSubmit(currentUserId, contextId, null)) {
             throw new SecurityException("Attempt to retrieve submissions for a non-student user");
         }
 

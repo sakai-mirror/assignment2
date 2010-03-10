@@ -72,9 +72,25 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
         this.authz = authz;
     }
     
+    public boolean isUserAllowedForAllGroups(String userId, String contextId) {
+        if (contextId == null) {
+            throw new IllegalArgumentException("Null contextId passed to isUserAllowedToEditAllAssignments");
+        }
+        
+        if (userId == null) {
+            userId = externalLogic.getCurrentUserId();
+        }
+        
+        return authz.userHasAllGroupsPermission(userId, contextId);
+    }
+    
     public boolean isUserAllowedToEditAllAssignments(String userId, String contextId) {
         if (contextId == null) {
             throw new IllegalArgumentException("Null contextId passed to isUserAllowedToEditAllAssignments");
+        }
+        
+        if (userId == null) {
+            userId = externalLogic.getCurrentUserId();
         }
         
         return authz.userHasEditPermission(userId, contextId) && 
@@ -93,12 +109,16 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
         return isUserAllowedToTakeActionOnAssignment(userId, assignment, AssignmentConstants.PERMISSION_EDIT_ASSIGNMENTS, null, authzPermissions);
     }
     
-    public boolean isUserAllowedToAddAssignments(String userId, String contextId) {
+    public boolean isUserAllowedToAddAssignments(String userId, String contextId, List<String> groupMemberships) {
         if (contextId == null) {
             throw new IllegalArgumentException("Null contextId passed to isUserAllowedToAddAssignments");
         }
         
-        return authz.userHasAddPermission(userId, contextId);
+        if (userId == null) {
+            userId = externalLogic.getCurrentUserId();
+        }
+        
+        return isUserAllowedToTakeActionInSite(userId, contextId, AssignmentConstants.PERMISSION_ADD_ASSIGNMENTS, groupMemberships);
     }
     
     public boolean isUserAllowedToAddAssignment(String userId, Assignment2 assignment, List<String> groupMembershipIds, Map<String, Boolean> authzPermissions) {
@@ -114,12 +134,16 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
                 AssignmentConstants.PERMISSION_ADD_ASSIGNMENTS, null, authzPermissions);
     }
     
-    public boolean isUserAllowedToDeleteAssignments(String userId, String contextId) {
+    public boolean isUserAllowedToDeleteAssignments(String userId, String contextId, List<String> groupMembershipIds) {
         if (contextId == null) {
             throw new IllegalArgumentException("Null contextId passed to isUserAllowedToDeleteAssignments");
         }
         
-        return authz.userHasDeletePermission(userId, contextId);
+        if (userId == null) {
+            userId = externalLogic.getCurrentUserId();
+        }
+        
+        return isUserAllowedToTakeActionInSite(userId, contextId, AssignmentConstants.PERMISSION_REMOVE_ASSIGNMENTS, groupMembershipIds);
     }
     
     public boolean isUserAllowedToDeleteAssignment(String userId, Assignment2 assignment, List<String> groupMembershipIds, Map<String, Boolean> authzPermissions) {
@@ -143,12 +167,16 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
         authz.userHasAllGroupsPermission(userId, contextId);
     }
     
-    public boolean isUserAllowedToManageSubmissions(String userId, String contextId) {
+    public boolean isUserAllowedToManageSubmissions(String userId, String contextId, List<String> groupMembershipIds) {
         if (contextId == null) {
             throw new IllegalArgumentException("Null contextId passed to isUserAllowedToManageAllSubmissions");
         }
         
-        return authz.userHasManageSubmissionsPermission(userId, contextId);
+        if (userId == null) {
+            userId = externalLogic.getCurrentUserId();
+        }
+        
+        return isUserAllowedToTakeActionInSite(userId, contextId, AssignmentConstants.PERMISSION_MANAGE_SUBMISSIONS, groupMembershipIds);
     }
     
     public boolean isUserAllowedToManageSubmissionsForAssignment(String userId, Assignment2 assignment, List<String> groupMembershipIds, Map<String, Boolean> authzPermissions) {
@@ -230,9 +258,20 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
         if (permissions != null) {
             String currUserId = externalLogic.getCurrentUserId();
             
+            List<String> groupMembershipIds = new ArrayList<String>();
+            if (!authz.userHasAllGroupsPermission(currUserId, contextId)) {
+                groupMembershipIds = externalLogic.getUserMembershipGroupIdList(currUserId, contextId);
+            }
+            
             for (String permission : permissions) {
                 if (allSitePerms.contains(permission)) {
-                    boolean hasPerm = authz.userHasPermission(currUserId, contextId, permission);
+                    boolean hasPerm;
+                    if (permission.equals(AssignmentConstants.PERMISSION_ALL_GROUPS)) {
+                        hasPerm = authz.userHasAllGroupsPermission(currUserId, contextId);
+                    } else {
+                        hasPerm = isUserAllowedToTakeActionInSite(currUserId, contextId, permission, groupMembershipIds);
+                    }
+                    
                     sitePerms.put(permission, hasPerm);
                 }
             }
@@ -302,6 +341,42 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
         }
         
         return permissionMap;
+    }
+    
+    private boolean isUserAllowedToTakeActionInSite(String userId, String contextId, 
+            String permission, List<String> groupMembershipIds) {
+        if (permission == null || contextId == null) {
+            throw new IllegalArgumentException("Null contextId or permission passed to " +
+                    "isUserAllowedToTakeActionInSite. contextId:" + contextId + " permission:" + permission);
+        }
+        boolean allowed = false;
+
+        // depending on the permission, the user may need to be a member of at least one
+        // group to have general permission in this site.  for example, a user only has
+        // "add assignments" privileges if he/she has "all groups" or is a member of at
+        // least one group
+
+        if (authz.userHasPermission(userId, contextId, permission)) {
+            // in some scenarios, the user's group membership will come into play
+            if (authz.getPermissionsThatRequireAllGroups().contains(permission) ||
+                    authz.getPermissionsThatRequireOneGroup().contains(permission)) {
+                if (authz.userHasAllGroupsPermission(userId, contextId)) {
+                    allowed = true;
+                } else {
+                    if (groupMembershipIds == null) {
+                        groupMembershipIds = externalLogic.getUserMembershipGroupIdList(userId, contextId);
+                    }
+
+                    if (groupMembershipIds != null && !groupMembershipIds.isEmpty()) {
+                        allowed = true;
+                    }
+                }
+            } else if (authz.getPermissionsForAtLeastOneOrNoGroups().contains(permission)) {
+                allowed = true;
+            }
+        }
+
+        return allowed; 
     }
     
     /**
@@ -513,12 +588,16 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
         return isUserAllowedToManageSubmission(userId, submission.getUserId(), submission.getAssignment());
     }
     
-    public boolean isUserAllowedToSubmit(String userId, String contextId) {
+    public boolean isUserAllowedToSubmit(String userId, String contextId, List<String> groupMembershipIds) {
         if (contextId == null) {
             throw new IllegalArgumentException("Null contextId passed to isUserAllowedToSubmit");
         }
         
-        return authz.userHasSubmitPermission(userId, contextId);
+        if (userId == null) {
+            userId = externalLogic.getCurrentUserId();
+        }
+        
+        return isUserAllowedToTakeActionInSite(userId, contextId, AssignmentConstants.PERMISSION_SUBMIT, groupMembershipIds);
     }
 
 
