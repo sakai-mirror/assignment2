@@ -52,15 +52,16 @@
         </fieldset>
     </div>
     <form name="gradeForm" rsf:id="form" method="post">
+    <input name="gradingInfoChanged" id="gradingInfoChanged" rsf:id="gradingInfoChanged" type="hidden" value="false" />
 	<h3 rsf:id="heading">Submission for Name</h3>
 	<div class="pager-sort-area">
     	<div id="pager-top" class="fl-pager-top flc-pager-top">
-    		<a rsf:id="previous_link">Previous</a>
+    		<a rsf:id="previous_link" onclick="if (getChange()=='true'){asnn2.saveGradingPreviousDialog(); return false;}">Previous</a>
 			<span rsf:id="previous_disabled" class="inactive">Previous</span>
 			<span class="separator">|</span>
 			<span rsf:id="current">Current User</span>
 			<span class="separator">|</span>
-    		<a rsf:id="next_link">Next</a>
+    		<a rsf:id="next_link" onclick="if (getChange()=='true'){asnn2.saveGradingNextDialog(); return false;}" >Next</a>
 			<span rsf:id="next_disabled" class="inactive">Next</span>
 		</div>
 	</div>
@@ -138,7 +139,7 @@
         <h4 rsf:id="msg=assignment2.assignment_grade.annotated_submitted_text" class="subgroupHeading">Inline Text</h4>
         <p rsf:id="inline_feedback_instructions" class="block instruction">Below is the submission from a student. You can insert comments into this text by clicking in the box, then type your comments.</p>
         <div rsf:id="feedback_text:">
-        	<textarea name="something" cols="80" rows="20" wrap="virtual"></textarea>
+        	<textarea name="feedback_inline" id="feedback_inline" cols="80" rows="20" wrap="virtual"></textarea>
         	<!-- this should be the FCKEditor -->
         </div>
     	</div>
@@ -156,7 +157,7 @@
       <!--  Additional Feedback Notes -->
       <div>
         <h4 rsf:id="msg=assignment2.assignment_grade.feedback_notes" class="subgroupHeading">Additional Feedback</h4>
-        <textarea  rsf:id="feedback_notes:" name="something" cols="80" rows="20" wrap="virtual"></textarea>
+        <textarea  rsf:id="feedback_notes:" name="feedback_notes" id="feedback_notes" cols="80" rows="20" wrap="virtual"></textarea>
         <!-- this should be the FCKEditor -->
         <p rsf:id="feedback_notes_no_edit" class="nothingProvided"></p>
       </div>	
@@ -219,6 +220,7 @@
 //<![CDATA[
 
 jQuery(document).ready(function(){
+	var change = false;
     // initialize the toggles on the page
     jQuery("div.toggleHeader").click(function () { 
        asnn2.toggleSubsection(".toggleSubsection", this);
@@ -236,8 +238,18 @@ jQuery(document).ready(function(){
     });
     asnn2gradeview.set_accept_until_on_submission_level();
 
-    
+    jQuery("input[type=text],input[type=checkbox],input[type=radio],select,.thickbox").click(function(){
+        window.change = "true";
+    });
+
 });
+
+var change = false;
+
+function getChange()
+{
+    return change;
+}
 
 // See ASNN-300
 //function FCKeditor_OnComplete( editorInstance )

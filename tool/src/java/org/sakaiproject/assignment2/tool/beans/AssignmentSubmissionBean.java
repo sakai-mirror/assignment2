@@ -163,17 +163,16 @@ public class AssignmentSubmissionBean {
     
     public String processActionGradeSubmitOption()
     {
+    	String rv = "";
     	if (RELEASE_NEXT.equals(submitOption) || RELEASE_PREV.equals(submitOption))
     	{
-    	    processActionSaveAndReleaseFeedbackForSubmission();
+    	    rv = processActionSaveAndReleaseFeedbackForSubmission();
     	}
     	else
     	{
-    		processActionGradeSubmit();
+    		rv = processActionGradeSubmit();
     	}
-	    
-	    return submitOption;
-    	
+    	return submitOption;
     }
 
     /**

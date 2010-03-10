@@ -147,21 +147,21 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
     public void fillComponents(UIContainer tofill, ViewParameters viewparams, ComponentChecker checker) {
 
         //Get Params
-        GradeViewParams params = (GradeViewParams) viewparams;
+    	GradeViewParams params = (GradeViewParams) viewparams;
         String userId = params.userId;
         Long assignmentId = params.assignmentId;
-        if (assignmentId == null || userId == null){
+        if (params.assignmentId == null || params.userId == null){
             //handle error
             return;
         }
-        
-        if (getNavigationSubmissionUserId("prev", userId) != null) {
-			// has previous
+        /*****************begin constructing the navigation links *************************/
+        String prevUserId = getNavigationSubmissionUserId("prev", userId);
+        if ( prevUserId != null) {
+        	// has previous user
+        	GradeViewParams prevParams = new GradeViewParams(GradeProducer.VIEW_ID, (GradeViewParams) viewparams);
+            prevParams.userId = prevUserId;
 			UIInternalLink previousLink = UIInternalLink.make(tofill, 
-                    "previous_link", messageLocator.getMessage("assignment2.assignment_grade.previous"), params);
-			previousLink.decorate(
-                    new UIFreeAttributeDecorator("onclick",
-                    "asnn2.saveGradingPreviousDialog(); return false;"));
+                    "previous_link", messageLocator.getMessage("assignment2.assignment_grade.previous"), prevParams);
 
             makeSaveGradingPreviousDialog(tofill);
 		}
@@ -172,22 +172,23 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
 					
 		// current student
 		UIOutput.make(tofill, "current", externalLogic.getUserDisplayName(userId));
-					
-		if (getNavigationSubmissionUserId("next", userId) != null)
+		
+		String nextUserId = getNavigationSubmissionUserId("next", userId);
+		if (nextUserId != null)
 		{
-			// has next
-				UIInternalLink nextLink = UIInternalLink.make(tofill, 
-	                    "next_link", messageLocator.getMessage("assignment2.assignment_grade.next"), params);
-				nextLink.decorate(
-                        new UIFreeAttributeDecorator("onclick",
-                        "asnn2.saveGradingNextDialog(); return false;"));
+			// has next user
+			GradeViewParams nextParams = new GradeViewParams(GradeProducer.VIEW_ID, (GradeViewParams) viewparams);
+	        nextParams.userId = nextUserId;
+			UIInternalLink nextLink = UIInternalLink.make(tofill, 
+                    "next_link", messageLocator.getMessage("assignment2.assignment_grade.next"), nextParams);
 
-	            makeSaveGradingNextDialog(tofill);
+            makeSaveGradingNextDialog(tofill);
 		}
 		else {
 			// show a disabled Next link
             UIOutput.make(tofill, "next_disabled", messageLocator.getMessage("assignment2.assignment_grade.next"));
 		}
+		 /*****************end of construct the navigation links *************************/
 		
         AssignmentSubmission as = submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(assignmentId, userId);
         Assignment2 assignment = assignmentLogic.getAssignmentByIdWithAssociatedData(assignmentId);
@@ -214,11 +215,11 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
                 messageLocator.getMessage("assignment2.assignment_grade-assignment.heading", new Object[] { assignment.getTitle()}),
                 new ViewSubmissionsViewParams(ViewSubmissionsProducer.VIEW_ID, assignment.getId()));
         UIMessage.make(tofill, "last_breadcrumb", "assignment2.assignment_grade.heading", 
-                new Object[]{assignment.getTitle(), externalLogic.getUserDisplayName(params.userId)});
+                new Object[]{assignment.getTitle(), externalLogic.getUserDisplayName(userId)});
 
         //Heading messages
         UIMessage.make(tofill, "heading", "assignment2.assignment_grade.heading", 
-                new Object[]{assignment.getTitle(), externalLogic.getUserDisplayName(params.userId)});
+                new Object[]{assignment.getTitle(), externalLogic.getUserDisplayName(userId)});
         UIMessage.make(tofill, "page-title", "assignment2.assignment_grade.title");
         //navBarRenderer.makeNavBar(tofill, "navIntraTool:", VIEW_ID);
         //UIMessage.make(tofill, "heading", "assignment2.assignment_grade.heading", new Object[]{assignment.getTitle()});
@@ -507,6 +508,9 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
                             new Object[] {df.format(resubmitUntil)});
                 }
             }
+            
+            // a hidden field to detect any grading information changes
+            UIInput.make(form, "gradingInfoChanged", null, "false");
         }
 
         /**
@@ -518,7 +522,7 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
 
         form.parameters.add(new UIELBinding("#{AssignmentSubmissionBean.assignmentId}", assignmentId));
         form.parameters.add(new UIELBinding("#{AssignmentSubmissionBean.userId}", userId));
-     // hidden field for group id
+        // hidden field for group id
         UIInput.make(form, "submitOption", "#{AssignmentSubmissionBean.submitOption}", "submit");
         if (grade_perm){
             UICommand.make(form, "release_feedback", UIMessage.make("assignment2.assignment_grade.release_feedback"),
@@ -639,7 +643,7 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
                     new FilePickerHelperViewParams(AddAttachmentHelperProducer.VIEWID, Boolean.TRUE, 
                             Boolean.TRUE, 500, 700, otpKey));
 
-            addAttachLink.decorate(new UIFreeAttributeDecorator("onclick", attachmentInputEvolver.getOnclickMarkupForAddAttachmentEvent(elementId)));
+            addAttachLink.decorate(new UIFreeAttributeDecorator("onclick", attachmentInputEvolver.getOnclickMarkupForAddAttachmentEvent(elementId)+"document.getElementById('page-replace::gradingInfoChanged').value='true';"));
 
             UIInputMany attachmentInput = UIInputMany.make(versionContainer, "attachment_list:", otpKey + ".feedbackAttachmentRefs", 
                     version.getFeedbackAttachmentRefs());
@@ -927,7 +931,7 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
 				List<String> submissionStudentIds = (List<String>) t.get(Assignment2SubmissionEntityProvider.SORTED_SUBMISSION_STUDENT_IDS);
 				int position = submissionStudentIds.indexOf(userId);
 				if ("prev".equals(prevOrNext)) {
-					return position > 1 ? submissionStudentIds.get(position-1):null;
+					return position > 0 ? submissionStudentIds.get(position-1):null;
 				}
 				else if ("next".equals(prevOrNext)) {
 					return position < (submissionStudentIds.size()-1) && position > -1? submissionStudentIds.get(position+1) : null;
