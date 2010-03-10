@@ -162,11 +162,16 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware {
         
         // let's grab all of the gradebook items to see if we need to flag any
         // graded assignments b/c their associated gb item was deleted
-        List<GradebookItem> existingGbItems = gradebookLogic.getAllGradebookItems(context, false);
+        // first, we need to check authz or the gradebook will throw a security exception when
+        // we try to retrieve the gb info
+        boolean userMayViewGbItems = gradebookLogic.isCurrentUserAbleToEdit(context) || gradebookLogic.isCurrentUserAbleToGrade(context);
         List<Long> existingGbItemIds = new ArrayList<Long>();
-        if (existingGbItems != null) {
-            for (GradebookItem gbItem : existingGbItems) {
-                existingGbItemIds.add(gbItem.getGradebookItemId());
+        if (userMayViewGbItems) {
+            List<GradebookItem> existingGbItems = gradebookLogic.getAllGradebookItems(context, false);
+            if (existingGbItems != null) {
+                for (GradebookItem gbItem : existingGbItems) {
+                    existingGbItemIds.add(gbItem.getGradebookItemId());
+                }
             }
         }
 
@@ -215,7 +220,7 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware {
 
             // In case assignment has a gradebook item, but that gradebook item
             // no longer exists.
-            if (asnn.isGraded() && (asnn.getGradebookItemId() == null || 
+            if (userMayViewGbItems && asnn.isGraded() && (asnn.getGradebookItemId() == null || 
                     !existingGbItemIds.contains(asnn.getGradebookItemId()))) {
                 asnnmap.put("gbItemMissing", true);
             }
