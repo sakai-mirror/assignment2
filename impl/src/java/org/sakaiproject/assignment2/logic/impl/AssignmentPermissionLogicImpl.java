@@ -983,5 +983,13 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
         
         return authz.getUsersWithPermission(contextId, AssignmentConstants.PERMISSION_SUBMIT);
     }
+    
+    public boolean isUserAllowedToUpdateSite(String contextId) {
+        if (contextId == null) {
+            throw new IllegalArgumentException("Null contextId passed to isUserAllowedToUpdateSite");
+        }
+        
+        return authz.userHasPermission(contextId, "site.upd");
+    }
 
 }

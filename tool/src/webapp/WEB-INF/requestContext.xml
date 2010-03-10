@@ -277,6 +277,10 @@
 	  <property name="uploadBean" ref="UploadBean" />
 	  <property name="externalGradebookLogic" ref="org.sakaiproject.assignment2.logic.ExternalGradebookLogic" /> 
 	</bean>
+  
+  <bean class="org.sakaiproject.assignment2.tool.producers.PermissionsProducer">
+      <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
+   </bean>
 
    <!--  AJAX Fragment Producers -->
 

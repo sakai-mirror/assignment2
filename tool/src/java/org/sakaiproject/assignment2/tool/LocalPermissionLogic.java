@@ -190,6 +190,9 @@ public class LocalPermissionLogic {
 
         } else if (TaggableHelperProducer.VIEWID.equals(viewId)) {
             return permissionLogic.isUserAllowedToAccessInstructorView(null, contextId);
+        
+        } else if (PermissionsProducer.VIEW_ID.equals(viewId)) {
+            return permissionLogic.isUserAllowedToUpdateSite(contextId);
         }
 
         //Here are some RSF Generic always true viewIds

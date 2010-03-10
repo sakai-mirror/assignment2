@@ -382,4 +382,11 @@ public interface AssignmentPermissionLogic {
      * the given context
      */
     public List<String> getSubmittersInSite(String contextId);
+    
+    /**
+     * 
+     * @param contextId
+     * @return true if the current user has site.upd privileges for the given site
+     */
+    public boolean isUserAllowedToUpdateSite(String contextId);
 }
