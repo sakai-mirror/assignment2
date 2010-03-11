@@ -40,9 +40,17 @@ asnn2.reorder.renderList = function() {
 
 asnn2.reorder.rebalanceSelects = function() {
   var selects = jQuery("#asnn-list-body select")
-  
+  var count = 0;
   selects.each(function(index, ele) {
-    jQuery(this).val((index+1)+"");
+    jQuery(this).prev().val((index)+"");
+    jQuery(this).val((index)+"");
+    
+    var togo = []
+    jQuery("#asnn-list-body .asnnid").each(function() {
+        togo.push($(this).text());
+    });
+    
+    jQuery(".asnn-order").val(togo.toString());
   });
 };
 
@@ -55,12 +63,23 @@ asnn2.initReorderStudentView = function() {
   selects.each(function(idx) {
     var obj = $(this);
     for (var i = 0; i < len; i++) {
-      obj.append('<option value="'+ (i+1) +'">   '+ (i+1) +'   </option>');
+      obj.append('<option value="'+ (i) +'">   '+ (i+1) +'   </option>');
     }
     obj.change(function() {
-      //alert(obj.parent().parent().get(0).tagName);
-      asnn2.reorder.curReorderer.requestMovement(jQuery(obj.parent().parent().get(0)), 
-          jQuery(jQuery(".row").get(obj.val())));
+      var curPos = parseInt($(this).prev().val());
+      var newPos = parseInt($(this).val());
+      var pos = -1;
+      if (newPos > curPos)
+        pos = 1;
+      
+      asnn2.reorder.curReorderer.requestMovement(
+          {
+              element: jQuery(jQuery(".row").get($(this).val())),
+              lockedelem: null,
+              position: pos
+          }, 
+          jQuery(obj.parent().parent().get(0))
+      );
       //alert("selected: " + obj.val());
       asnn2.reorder.rebalanceSelects();
     });

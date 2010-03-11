@@ -29,6 +29,7 @@
     <p rsf:id="msg=assignment2.reorder-student-view.instructions" class="instruction">Drag and drop the assignment to the desired location or use the List Order drop-down menu to set the desired order, then click Save.</p>
     
     <form rsf:id="reorder-form">
+        <input type="hidden" rsf:id="asnn-order" class="asnn-order" />
         <fieldset class="submit">
             <input rsf:id="save-reorder-top" accesskey="s" type="submit" value="Save"/>
             <input rsf:id="cancel-reorder-top" accesskey="x" type="submit" value="Cancel"/>
@@ -52,6 +53,7 @@
             <tbody id="asnn-list-body">
                 <tr class="row">
                     <td class="asnn-decorated-cell">
+                        <input type="hidden" />
                         <select>
                         </select>
                     </td>

@@ -164,8 +164,7 @@ asnn2.selectorMap = [
   { selector: ".addlink", id: "addlink" },
   { selector: ".addimage", id: "addimage" },
   { selector: ".asnncheck", id: "asnncheck" },
-  { selector: ".reviewEnabled", id: "reviewEnabled" },
-  { selector: "#checkall", id: "checkall"}
+  { selector: ".reviewEnabled", id: "reviewEnabled" }
 ];
 
 asnn2.sortMap = [
@@ -250,122 +249,6 @@ asnn2.setupRemoveCheckboxes = function () {
   });
 };
 
-/**
- * Reorders the pageState data for the moved pageModel and returns the new array
- * of Assignment ID's in Sort order.
- *
- * @param {Array} Array of numbers with the sortIndex's for the current page.
- * @returns {Array} Array of the entire datasets sortIndex's
- */
-asnn2.reorderData = function (moved) {
-  var slice = asnn2.findPageSlice(asnn2.pageState.pageModel);
-  var allIdIdx = fluid.transform(asnn2.pageState.dataArray, function(obj,index) { return obj.id; });
-  var indexesById = {};
-
-  // Copy the reordered page on top of the entire dataset (all pages)
-  for (var i = 0, j = slice[0]; i < moved.length; i++, j++) {
-    allIdIdx[j] = new Number(moved[i]);
-  }
-
-  // Make a new hash using AsnnId's as keys and storing the sortIndex
-  for (var k = 0; k < allIdIdx.length; k++) {
-    indexesById[allIdIdx[k]] = new Number(k);
-  }
-
-  // Update the Sort Indexs on the Assignments stored in Page State
-  for (var m = 0; m < asnn2.pageState.dataArray.length; m++) {
-    var curdata = asnn2.pageState.dataArray[m];
-    curdata.sortIndex = indexesById[curdata.id];
-  }
-
-  // Resort the data packing the page, so it will be correct if we page back and
-  // forth before reloading the data from the server.
-  asnn2.pageState.dataArray.sort(function (a, b) {
-    return a.sortIndex - b.sortIndex;
-  });
-
-  // Return the new order of items. Admittedly this whole method sucks, I'm still
-  // exploring the built-in functionality/methods of JS data structures to find
-  // a better way to do this part.
-  return allIdIdx;
-};
-
-/**
- * This sets up the drag'n'drop hopefully accessible reordering each time the list
- * is paged or refreshed.
- *
- * Because the page can be sorted many different ways, we only want the reordering to
- * be available when it is sorted by Instructor Specified Order in Ascending Order.
- */
-asnn2.setupReordering = function () {
-  var asnnsels = {};
-  var afterMoveFunc = function(){};
-  var allowReorder = true;
-  if (asnn2.pageState.sortDir !== -1 || asnn2.pageState.sortby !== 'sortIndex' || asnn2.pageState.canEdit !== true) {
-    allowReorder = false;
-    asnnsels = {
-      movables: ".row",
-      grabHandle: ".dummy"
-    };
-  }
-  else {
-    asnnsels = {
-      movables: ".row",
-      grabHandle: ".movehandle"
-    };
-    afterMoveFunc = function(item,requestedPosition,movables) {
-      var neworder = [];
-      movables.each(function(i, obj) {
-        neworder.push(jQuery('.asnnid',obj).text());
-      });
-      var integralIdx = asnn2.reorderData(neworder);
-      // Stub for reorder Ajax call
-      //alert(neworder);
-      jQuery.ajax({
-        type: "GET", // Grrr
-        url: "/direct/assignment2/reorder.json",
-        data: {
-          "siteid":sakai.curContext,
-          "order": integralIdx.toString()
-        }
-      });
-    };
-  }
-
-  fluid.reorderList("#asnn-list", {
-    selectors : asnnsels,
-    listeners: {
-      afterMove: afterMoveFunc,
-      onHover: function(item,state) {
-        jQuery('td', item).each(function(i, obj) {
-          if (i === 0) {
-            if (state && allowReorder === true) {
-              jQuery('img',this).show();
-            }
-            else {
-              jQuery('img',this).hide();
-            }
-          }
-          else {
-            if (state) {
-              jQuery(this).addClass('asnn-hover');
-            }
-            else {
-              jQuery(this).removeClass('asnn-hover');
-            }
-          }
-        });
-      }
-    },
-    avatarCreator: function(item, cssClass, dropWarning) {
-      var asnntitle = jQuery(".asnntitle", item).text();
-      var avatar = jQuery(".asnn-drag-avatar").clone();
-      avatar.html("<p>"+asnntitle.escapeHTML()+"</p><p>&nbsp;</p>");
-      return avatar;
-    }
-  });
-};
-
 asnn2.getAsnnObj = function(val, prop) {
   var p = prop || "id";
   for (var i = 0; i < asnn2.pageState.dataArray.length; i++) {
@@ -412,7 +295,6 @@ asnn2.setupInlineEdits = function () {
  */
 asnn2.setupAsnnList = function () {
   asnn2.setupRemoveCheckboxes();
-  asnn2.setupReordering();
   asnn2.setupInlineEdits();
 };
 
@@ -470,14 +352,6 @@ asnn2.renderAsnnList = function(asnndata) {
     "row:": dopple
   };
 
-  if (asnn2.pageState.canEdit === true) {
-    treedata.addimage = true;
-    treedata.addlink = true;
-    treedata.checkall = {
-      value: false
-    };
-  }
-
   if (asnn2.asnnListTemplate) {
     fluid.reRender(asnn2.asnnListTemplate, jQuery("#asnn-list"), treedata, {cutpoints: asnn2.selectorMap});
   }
@@ -506,7 +380,6 @@ asnn2.toggleTableControls = function(showPager,showSorting,showTopRemove,showPag
   
   if (showSorting === true) {
     jQuery("#top-sort-area").show();
-    jQuery("#bottom-sort-area").show();
   }
   else {
     jQuery("#top-sort-area").hide();
@@ -552,11 +425,11 @@ asnn2.toggleTableControls = function(showPager,showSorting,showTopRemove,showPag
 asnn2.toggleNoAssignments = function(assignmentsExist) {
     if (assignmentsExist) {
         jQuery(".removeAsnn").show();
-        jQuery("#asnn-list").show();
+        jQuery("#asnn-list-table").show();
         jQuery("#noAsnn").hide();
     } else {
         jQuery(".removeAsnn").hide();
-        jQuery("#asnn-list").hide();
+        jQuery("#asnn-list-table").hide();
         jQuery("#noAsnn").show();
     }
 }
@@ -653,7 +526,6 @@ asnn2.setupRemoveDialog = function() {
       // TODO Handle Failures with a message
     });
 
-
   });
 
   jQuery('#cancel-remove-asnn-button').click( function (event) {
@@ -688,11 +560,10 @@ asnn2.initAsnnList = function () {
 
   asnn2.setupSortLinks();
 
-  // Remove Dialog
   if (asnn2.pageState.canEdit === true) {
     asnn2.setupRemoveDialog();
+    jQuery("#checkall").show();
   }
-
 
   /*
    * Set up the pagers
@@ -718,13 +589,31 @@ asnn2.initAsnnList = function () {
       totalRange: undefined
     },
     dataModel: fakedata,
-    pagerBar: {type: "fluid.pager.pagerBar", options: {
-      pageList: {type: "fluid.pager.renderedPageList",
-        options: {
-          linkBody: "a"
-        }
-      }
-    }}
+    pagerBar: {type: "fluid.pager.pagerBar"}
   });
 
+  // All these pager buttons are temporary while I'm ripping the page apart 
+  // to implement this next set of UI changes.
+  
+  // First and Last buttons
+  jQuery(".fl-pager-firstpage").click(function() {
+    pager.events.initiatePageChange.fire({pageIndex: 0});
+  });
+  
+  jQuery(".fl-pager-lastpage").click(function() {
+    var model = pager.model;
+    // SWG The below is cut n pasted. Should put in a jira request to have it be
+    // reusable in the fluid pager and not private since it's a useful utility.
+    var last = Math.min(model.totalRange, (model.pageIndex + 1) * model.pageSize);
+    pager.events.initiatePageChange.fire({pageIndex: last});
+  });
+  
+  jQuery("#previous-bottom").click(function() {
+    pager.events.initiatePageChange.fire({relativePage: -1});
+  });
+  
+  jQuery("#next-bottom").click(function() {
+    pager.events.initiatePageChange.fire({relativePage: +1});
+  });
+    
 };
