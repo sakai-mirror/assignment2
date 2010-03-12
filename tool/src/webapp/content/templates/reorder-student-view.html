@@ -32,14 +32,14 @@
         <input type="hidden" rsf:id="asnn-order" class="asnn-order" />
         <fieldset class="submit">
             <input rsf:id="save-reorder-top" accesskey="s" type="submit" value="Save"/>
-            <input rsf:id="cancel-reorder-top" accesskey="x" type="submit" value="Cancel"/>
+            <input onclick="return asnn2.reorder.validateCancel()" rsf:id="cancel-reorder-top" accesskey="x" type="submit" value="Cancel"/>
         </fieldset>
         
-        <table style="display: none; border-collapse: collapse" id="reorder-list">
+        <table style="width: 95%; display: none; border-collapse: collapse" id="reorder-list">
             <thead>
-                <tr>
+                <tr style="text-align: left">
                     <th class="asnn-decorated-heading">
-                        <span>List Order!</span>
+                        <span>List Order</span>
                     </th>
                     <th class="asnn-decorated-heading">
                         <span>Assignments</span>
@@ -54,7 +54,7 @@
                 <tr class="row">
                     <td class="asnn-decorated-cell">
                         <input type="hidden" />
-                        <select>
+                        <select style="width: 60px;">
                         </select>
                     </td>
                     <td class="asnn-decorated-cell asnn-title-cell reorderhandle">
@@ -93,11 +93,24 @@
     
         <fieldset class="submit">
             <input rsf:id="save-reorder-bottom" accesskey="s" type="submit" value="Save"/>
-            <input rsf:id="cancel-reorder-bottom" accesskey="x" type="submit" value="Cancel"/>
+            <input onclick="return validateCancel()" rsf:id="cancel-reorder-bottom" class="cancel-reorder-bottom" accesskey="x" type="submit" value="Cancel"/>
         </fieldset>
     </form>
+    
+    <div style="display: none" id="cancel-confirm-dialog">
+        <ul style="margin: 0; padding: 0; display: inline;">
+            <li class="alertMessage" rsf:id="msg=assignment2.reorder-student-view.precancel-confirm">Are you   sure you want to submit this?!!</li>
+        </ul>
+        <fieldset class="submit">
+            <input class="cancel-confirm-button active" id="cancel-confirm-button" accesskey="s" type="button" rsf:id="msg=assignment2.assignment_add.edit.confirm.continue" /> 
+            <input class="cancel-cancel-button" id="cancel-cancel-button" accesskey="x" type="button"    rsf:id="msg=assignment2.assignment_add.edit.confirm.cancel" />
+        </fieldset>
+    </div>
   
     <script type="text/javascript">
+    function validateCancel() {
+      return asnn2.reorder.validateCancel();
+  }
         asnn2.initReorderStudentView();
     </script>
   </div>

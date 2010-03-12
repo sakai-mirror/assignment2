@@ -54,6 +54,33 @@ asnn2.reorder.rebalanceSelects = function() {
   });
 };
 
+// If the user has made changes and is canceling, double check with them.
+asnn2.reorder.validateCancel = function() {
+  if (asnn2.reorder.initialOrder === jQuery(".asnn-order").val()) {
+    return true;
+  } else {
+    var confirmDialog = jQuery("#cancel-confirm-dialog");
+    
+    jQuery('.cancel-confirm-button').click(function(event) {
+        var submitButton = jQuery('.cancel-reorder-bottom').get(0);
+        asnn2util.closeDialog(confirmDialog);
+        submitButton.onclick = function(event) {
+            return true;
+        };
+        //submitButton.unbind('click');
+        submitButton.click();
+    });
+
+    jQuery('.cancel-cancel-button').click(function(event) {
+        asnn2util.closeDialog(confirmDialog);
+        jQuery('.cancel-confirm-button').unbind('click');
+    });
+
+    asnn2util.openDialog(confirmDialog);
+    return false;
+  }
+}
+
 asnn2.initReorderStudentView = function() {
   asnn2.reorder.renderList();
   
@@ -80,11 +107,14 @@ asnn2.initReorderStudentView = function() {
           }, 
           jQuery(obj.parent().parent().get(0))
       );
-      //alert("selected: " + obj.val());
       asnn2.reorder.rebalanceSelects();
     });
   });
+  
   asnn2.reorder.rebalanceSelects();
+  
+  // Cache initial value so we through up a confirm cancel dialog if changed.
+  asnn2.reorder.initialOrder = jQuery(".asnn-order").val();
   
   asnn2.reorder.curReorderer = fluid.reorderList("#reorder-list", {
     selectors: {
@@ -98,8 +128,5 @@ asnn2.initReorderStudentView = function() {
     }
   });  
   
-  
   jQuery("#reorder-list").show();
-  
-  
 };
