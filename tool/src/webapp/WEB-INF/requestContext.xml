@@ -321,6 +321,7 @@
    <bean id="ReorderAssignmentsAction"  class="org.sakaiproject.assignment2.tool.commands.ReorderAssignmentsCommand">
        <property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
        <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
+       <property name="messages" ref="targettedMessageList"/>
    </bean>
     
    <!--  Beans -->

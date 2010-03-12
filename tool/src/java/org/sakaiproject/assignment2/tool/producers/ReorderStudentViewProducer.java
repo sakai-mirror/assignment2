@@ -44,8 +44,8 @@ public class ReorderStudentViewProducer implements ViewComponentProducer {
         UICommand.make(form, "save-reorder-top", UIMessage.make("assignment2.reorder-student-view.save"), "ReorderAssignmentsAction.execute");
         UICommand.make(form, "save-reorder-bottom", UIMessage.make("assignment2.reorder-student-view.save"), "ReorderAssignmentsAction.execute");
         
-        UICommand.make(form, "cancel-reorder-top", UIMessage.make("assignment2.reorder-student-view.cancel"), null);
-        UICommand.make(form, "cancel-reorder-bottom", UIMessage.make("assignment2.reorder-student-view.cancel"), null);
+        UICommand.make(form, "cancel-reorder-top", UIMessage.make("assignment2.reorder-student-view.cancel"), "ReorderAssignmentsAction.cancel");
+        UICommand.make(form, "cancel-reorder-bottom", UIMessage.make("assignment2.reorder-student-view.cancel"), "ReorderAssignmentsAction.cancel");
 
     }
 

@@ -29,6 +29,10 @@ import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
+import org.sakaiproject.assignment2.tool.WorkFlowResult;
+
+import uk.org.ponder.messageutil.TargettedMessage;
+import uk.org.ponder.messageutil.TargettedMessageList;
 
 /**
  * This is an action bean that reorders the
@@ -52,6 +56,12 @@ public class ReorderAssignmentsCommand {
     public void setExternalLogic(ExternalLogic externalLogic) {
         this.externalLogic = externalLogic;
     }
+    
+    // Request Scope Dependency
+    private TargettedMessageList messages;
+    public void setMessages(TargettedMessageList messages) {
+        this.messages = messages;
+    }
 
     // Property
     private String orderedAssignIds;
@@ -67,7 +77,7 @@ public class ReorderAssignmentsCommand {
     /**
      * The action method.
      */
-    public void execute() {
+    public WorkFlowResult execute() {
         if (orderedAssignIds != null) {
             String[] stringAssignIds = orderedAssignIds.split(",");
             try {
@@ -84,9 +94,19 @@ public class ReorderAssignmentsCommand {
                 assignmentLogic.reorderAssignments(longAssignmentIds, contextId);
 
                 if (log.isDebugEnabled()) log.debug("Assignments reordered via ReorderAssignmentsCommand");
+                
+                messages.addMessage(new TargettedMessage(
+                        "assignment2.reorder-student-view.saveconfirmation", 
+                        new Object[] {}, TargettedMessage.SEVERITY_INFO));
             } catch (NumberFormatException nfe) {
                 log.error("Non-numeric value passed to ReorderAssignmentsCommand. No reordering was saved.");
             }
         }
+        
+        return WorkFlowResult.REORDER_STUDENT_VIEW_SAVE;
+    }
+    
+    public WorkFlowResult cancel() {
+        return WorkFlowResult.REORDER_STUDENT_VIEW_CANCEL;
     }
 }
