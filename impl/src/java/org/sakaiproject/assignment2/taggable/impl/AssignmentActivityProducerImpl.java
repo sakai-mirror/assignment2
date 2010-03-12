@@ -205,9 +205,10 @@ AssignmentActivityProducer {
     {
         TaggableItem item = null;
         if (checkReference(itemRef)) {
-        	boolean allowed = provider.allowGetItem(itemRef, userDirectoryService.getCurrentUser().getId(), taggedItem);
+        	AssignmentSubmission submission = assignmentDao.getSubmissionWithVersionHistoryById(parseSubmissionRef(itemRef));
+        	boolean allowed = provider.allowGetItem(submission.getAssignment().getReference(), 
+        			itemRef, userDirectoryService.getCurrentUser().getId(), taggedItem);
         	if (allowed) {
-        		AssignmentSubmission submission = assignmentDao.getSubmissionWithVersionHistoryById(parseSubmissionRef(itemRef));
         		item = new AssignmentItemImpl(submission, parseAuthor(itemRef),
         				new AssignmentActivityImpl(submission.getAssignment(),
         						this));
@@ -233,7 +234,7 @@ AssignmentActivityProducer {
          * look at submission items. It seems that anybody is allowed to get any
          * submissions.
          */
-        boolean allowed = provider.allowGetItems(new String[]{}, userDirectoryService.getCurrentUser().getId(), taggedItem);
+        boolean allowed = provider.allowGetItems(activity.getReference(), new String[]{}, userDirectoryService.getCurrentUser().getId(), taggedItem);
         if (allowed) {
             for (Iterator<AssignmentSubmission> i = assignmentSubmissionLogic.getViewableSubmissionsForAssignmentId(assignment.getId(), null).iterator(); i.hasNext();) {
                 AssignmentSubmission submission = i.next();
@@ -250,7 +251,7 @@ AssignmentActivityProducer {
         List<TaggableItem> returned = new ArrayList<TaggableItem>();
         Assignment2 assignment = (Assignment2) activity.getObject();
         
-        boolean allowed = provider.allowGetItems(new String[]{}, userDirectoryService.getCurrentUser().getId(), taggedItem);
+        boolean allowed = provider.allowGetItems(activity.getReference(), new String[]{}, userDirectoryService.getCurrentUser().getId(), taggedItem);
         if (allowed) {
         	AssignmentSubmission submission = assignmentDao.getSubmissionWithVersionHistoryForStudentAndAssignment(
         			userId, assignment);

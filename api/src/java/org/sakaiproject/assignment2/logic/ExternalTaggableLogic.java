@@ -74,10 +74,11 @@ public interface ExternalTaggableLogic {
 	
 	/**
 	 * Determine if the user is able to retrieve item information (assignment submissions)
+	 * @param activityRef Reference of the activity (assignment)
 	 * @param itemRef Reference of the item (submission)
 	 * @param currentUser Id of the current user
 	 * @param taggedItem Reference of the item that will help determine the permissions
 	 * @return
 	 */
-	public boolean canGetItem(String itemRef, String currentUser, String taggedItem);
+	public boolean canGetItem(String activityRef, String itemRef, String currentUser, String taggedItem);
 }

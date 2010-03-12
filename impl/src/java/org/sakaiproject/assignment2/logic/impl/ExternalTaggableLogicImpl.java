@@ -107,11 +107,11 @@ public class ExternalTaggableLogicImpl implements ExternalTaggableLogic {
 		return canGetActivity;
 	}
 	
-	public boolean canGetItem(String itemRef, String currentUser, String taggedItem) {
+	public boolean canGetItem(String activityRef, String itemRef, String currentUser, String taggedItem) {
 		boolean canGetItem = false;
 		List<TaggingProvider> providers = getProviders();
 		for (TaggingProvider provider : providers) {
-			canGetItem = provider.allowGetItem(itemRef, currentUser, taggedItem);
+			canGetItem = provider.allowGetItem(activityRef, itemRef, currentUser, taggedItem);
 			if (canGetItem) 
 				break;
 		}

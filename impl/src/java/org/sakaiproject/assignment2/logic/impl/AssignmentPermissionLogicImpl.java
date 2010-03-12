@@ -95,7 +95,7 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
         	if (externalTaggableLogic.isTaggable() && externalTaggableLogic.isSiteAssociated(assignment.getContextId())) {
         		//Get the submission, but only to use the reference
         		AssignmentSubmission submission = dao.getSubmissionWithVersionHistoryForStudentAndAssignment(studentId, assignment);
-        		viewable = externalTaggableLogic.canGetItem(submission.getReference(), externalLogic.getCurrentUserId(), taggableRef);
+        		viewable = externalTaggableLogic.canGetItem(assignment.getReference(), submission.getReference(), externalLogic.getCurrentUserId(), taggableRef);
         	}
         }
     	return viewable;
