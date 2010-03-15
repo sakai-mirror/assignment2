@@ -154,6 +154,14 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
             //handle error
             return;
         }
+
+        AssignmentSubmission as = submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(assignmentId, userId);
+        Assignment2 assignment = assignmentLogic.getAssignmentByIdWithAssociatedData(assignmentId);
+        
+        // the "Return to List" link
+        UIInternalLink.make(tofill, "returnToList_link", messageLocator.getMessage("assignment2.assignment_grade.returnToList", new Object[] { assignment.getTitle()}), 
+        		new ViewSubmissionsViewParams(ViewSubmissionsProducer.VIEW_ID, assignment.getId()));
+        
         /*****************begin constructing the navigation links *************************/
         String prevUserId = getNavigationSubmissionUserId("prev", userId);
         if ( prevUserId != null) {
@@ -169,7 +177,6 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
             // show a disabled Previous link
             UIOutput.make(tofill, "previous_disabled", messageLocator.getMessage("assignment2.assignment_grade.previous"));
 		}
-					
 		// current student
 		UIOutput.make(tofill, "current", externalLogic.getUserDisplayName(userId));
 		
@@ -189,9 +196,6 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
             UIOutput.make(tofill, "next_disabled", messageLocator.getMessage("assignment2.assignment_grade.next"));
 		}
 		 /*****************end of construct the navigation links *************************/
-		
-        AssignmentSubmission as = submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(assignmentId, userId);
-        Assignment2 assignment = assignmentLogic.getAssignmentByIdWithAssociatedData(assignmentId);
 
         //Grade Permission?
         boolean grade_perm = permissionLogic.isUserAbleToProvideFeedbackForStudentForAssignment(userId, assignment);
