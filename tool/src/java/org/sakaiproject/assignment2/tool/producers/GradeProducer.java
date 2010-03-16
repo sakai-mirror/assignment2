@@ -48,6 +48,7 @@ import org.sakaiproject.assignment2.tool.producers.evolvers.AttachmentInputEvolv
 import org.sakaiproject.assignment2.tool.producers.fragments.FragmentGradebookDetailsProducer;
 import org.sakaiproject.assignment2.tool.producers.fragments.FragmentSubmissionGradePreviewProducer;
 import org.sakaiproject.assignment2.tool.producers.renderers.AsnnInstructionsRenderer;
+import org.sakaiproject.assignment2.tool.producers.renderers.AsnnTagsRenderer;
 import org.sakaiproject.assignment2.tool.producers.renderers.AsnnToggleRenderer;
 import org.sakaiproject.assignment2.tool.producers.renderers.AttachmentListRenderer;
 
@@ -109,6 +110,7 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
     private ExternalContentReviewLogic contentReviewLogic;
     private DisplayUtil displayUtil;
     private AsnnInstructionsRenderer asnnInstructionsRenderer;
+    private AsnnTagsRenderer tagsRenderer;
 
     private AsnnToggleRenderer toggleRenderer;
     public void setAsnnToggleRenderer(AsnnToggleRenderer toggleRenderer) {
@@ -210,24 +212,9 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
 
         // Instructions
         asnnInstructionsRenderer.makeInstructions(tofill, "assignment-instructions:", assignment, true, true, false);
-        /*UIOutput instructionsToggleSection = UIOutput.make(tofill, "instructions_toggle_section");
-        instructionsToggleSection.decorate(new UITooltipDecorator(toggleHoverText));
-        if (assignment.getInstructions() == null || assignment.getInstructions().equals("")) {
-            UIMessage.make(tofill, "instructions", "assignment2.assignment_grade.no_instructions");
-        }
-        else {
-            UIVerbatim.make(tofill, "instructions", assignment.getInstructions());
-        }
-        
-        if (assignment.getAttachmentSet() != null && !assignment.getAttachmentSet().isEmpty()) {
-            UIOutput.make(tofill, "assignAttachmentsFieldset");
-            attachmentListRenderer.makeAttachmentFromAssignmentAttachmentSet(tofill, "assign_attach_list:", params.viewID, 
-                    assignment.getAttachmentSet());
-        }
 
-        // add the alt text to the toggle for the instructions
-        UIOutput instructionsToggle = UIOutput.make(tofill, "instructions_toggle");
-        instructionsToggle.decorate(new UIAlternativeTextDecorator(toggleHoverText));*/
+        // Tagging info, if appropriate
+        tagsRenderer.makeTagInformation(tofill, "tagging-info-grading:", assignment);
 
         
         /**
@@ -820,6 +807,10 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
     
     public void setAsnnInstructionsRenderer(AsnnInstructionsRenderer asnnInstructionsRenderer) {
         this.asnnInstructionsRenderer = asnnInstructionsRenderer;
+    }
+    
+    public void setAsnnTagsRenderer(AsnnTagsRenderer tagsRenderer) {
+        this.tagsRenderer = tagsRenderer;
     }
 
 }

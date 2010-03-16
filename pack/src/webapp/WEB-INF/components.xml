@@ -17,8 +17,6 @@
 	<bean id="org.sakaiproject.assignment2.logic.entity.AssignmentEntityProducer"
 		class="org.sakaiproject.assignment2.logic.entity.AssignmentEntityProducer"
 		init-method="init">
-		<property name="label" value="assignment2"/>
-		<property name="referenceRoot" value="asgn2" />
 		<property name="externalGradebookLogic" ref="org.sakaiproject.assignment2.logic.ExternalGradebookLogic" />
 		<property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
 		<property name="importExportLogic" ref="org.sakaiproject.assignment2.logic.ImportExportLogic" />
@@ -38,6 +36,9 @@
 		</property>
 		<property name="assignmentPermissionLogic">
 			<ref bean="org.sakaiproject.assignment2.logic.AssignmentPermissionLogic" />
+		</property>
+		<property name="assignmentSubmissionLogic">
+			<ref bean="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
 		</property>
 		<property name="entityManager">
 			<ref bean="org.sakaiproject.entity.api.EntityManager"/>

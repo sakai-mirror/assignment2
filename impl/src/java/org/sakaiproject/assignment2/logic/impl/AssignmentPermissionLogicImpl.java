@@ -34,11 +34,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment2.dao.AssignmentDao;
 import org.sakaiproject.assignment2.exception.AssignmentNotFoundException;
-import org.sakaiproject.assignment2.exception.NoGradebookItemForGradedAssignmentException;
 import org.sakaiproject.assignment2.exception.SubmissionNotFoundException;
 import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
+import org.sakaiproject.assignment2.logic.ExternalTaggableLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentGroup;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
@@ -72,7 +72,12 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
     public void setExternalGradebookLogic(ExternalGradebookLogic gradebookLogic) {
         this.gradebookLogic = gradebookLogic;
     }
-
+    
+	private ExternalTaggableLogic externalTaggableLogic;
+	public void setExternalTaggableLogic(ExternalTaggableLogic externalTaggableLogic) {
+		this.externalTaggableLogic = externalTaggableLogic;
+	}
+	
     public boolean isCurrentUserAbleToEditAssignments(String contextId) {
         if (contextId == null) {
             throw new IllegalArgumentException("null contextId passed to isCurrentUserAbleToEditAssignments");
@@ -80,6 +85,22 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
         return gradebookLogic.isCurrentUserAbleToEdit(contextId);
     }
 
+    public boolean isUserAbleToViewStudentSubmissionForAssignment(String studentId, Long assignmentId, String taggableRef) {
+    	boolean viewable = isUserAbleToViewStudentSubmissionForAssignment(studentId, assignmentId);
+    	if (!viewable && taggableRef != null) {
+    		Assignment2 assignment = (Assignment2)dao.findById(Assignment2.class, assignmentId);
+            if (assignment == null) {
+                throw new AssignmentNotFoundException("No assignment found with id: " + assignmentId + " found in isUserAbleToViewStudentSubmissionForAssignment");
+            }
+        	if (externalTaggableLogic.isTaggable() && externalTaggableLogic.isSiteAssociated(assignment.getContextId())) {
+        		//Get the submission, but only to use the reference
+        		AssignmentSubmission submission = dao.getSubmissionWithVersionHistoryForStudentAndAssignment(studentId, assignment);
+        		viewable = externalTaggableLogic.canGetItem(assignment.getReference(), submission.getReference(), externalLogic.getCurrentUserId(), taggableRef);
+        	}
+        }
+    	return viewable;
+    }
+    
     public boolean isUserAbleToViewStudentSubmissionForAssignment(String studentId, Long assignmentId) {
         if (studentId == null || assignmentId == null) {
             throw new IllegalArgumentException("Null studentId or assignmentId passed to isUserAbleToViewStudentSubmissionForAssignment");
@@ -629,6 +650,19 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
         return allStudentsForAssign;
     }
 
+    public boolean isUserAbleToViewAssignment(Long assignmentId, String taggableRef) {
+    	boolean allowed = isUserAbleToViewAssignment(assignmentId);
+    	if (!allowed && taggableRef != null) {
+    		Assignment2 assign = dao.getAssignmentByIdWithGroups(assignmentId);
+        	if (assign == null) {
+                throw new AssignmentNotFoundException("No assignment found with id " + assignmentId);
+            }
+        	if (externalTaggableLogic.isTaggable() && externalTaggableLogic.isSiteAssociated(assign.getContextId())) {
+        		allowed = externalTaggableLogic.canGetActivity(assign.getReference(), externalLogic.getCurrentUserId(), taggableRef);
+        	}
+        }
+    	return allowed;
+    }
     public boolean isUserAbleToViewAssignment(Long assignmentId) {
         if (assignmentId == null) {
             throw new IllegalArgumentException("Null assignmentId passed to isUserAbleToViewAssignment");

@@ -1,6 +1,6 @@
 /**********************************************************************************
- * $URL$
- * $Id$
+ * $URL: https://source.sakaiproject.org/contrib/assignment2/branches/ASNN-521/tool/src/java/org/sakaiproject/assignment2/tool/params/GradeViewParams.java $
+ * $Id: GradeViewParams.java 65451 2009-12-22 18:38:43Z swgithen@mtu.edu $
  ***********************************************************************************
  *
  * Copyright (c) 2007, 2008 The Sakai Foundation.
@@ -21,51 +21,44 @@
 
 package org.sakaiproject.assignment2.tool.params;
 
+import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment2.tool.beans.AssignmentAuthoringBean;
+import org.sakaiproject.assignment2.tool.producers.ViewStudentSubmissionProducer;
 
-import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
-
-/**
- * This view params is for navigating to the apparently student view of an 
- * assignment, though I'm guessing other views may use it as well.
- * 
- * It implements VerifiableViewParams, to allow for auditing/validating itself.
- * 
- * @author rjlowe
- * @author sgithens
- *
- */
-public class SimpleAssignmentViewParams extends SimpleViewParameters implements VerifiableViewParams{
+public class ViewSubmissionParams extends SimpleViewParameters implements VerifiableViewParams {
 
     private static final Log LOG = LogFactory.getLog(AssignmentAuthoringBean.class);
 
     public Long assignmentId;
-    // when an assignment is tagged, there may be expanded permissions for viewing it. we
+    public String userId;
+    
+    // when an assignment is tagged, there may be expanded permissions for viewing its submissions. we
     // use this optional reference to go back and see if the user should have expanded
-    // permissions to view this assignment
+    // permissions to view this submission
     public String tagReference;
 
-    public SimpleAssignmentViewParams() {}
+    public ViewSubmissionParams(){}
 
-    public SimpleAssignmentViewParams(String viewId, Long assignmentId){
+    public ViewSubmissionParams(String viewId, Long assignmentId, String userId){
         super(viewId);
         this.assignmentId = assignmentId;
+        this.userId = userId;
     }
 
-    public String getParseSpec() {
-        return super.getParseSpec() + ",@1:assignmentId,tagReference";
+    public String getParseSpec(){
+        return super.getParseSpec() + ",@1:assignmentId,@2:userId,tagReference";
     }
 
     public Boolean verify()
     {
-        // SWG TODO FIXME
-        // if (StudentSubmitProducer.VIEW_ID.equals(this.viewID) && this.assignmentId == null){
-        //     LOG.error("Null assignmentId in viewparamters while attempting to load StudentSubmitProducer");
-        //     return Boolean.FALSE;
-        // }
-
+        if (ViewStudentSubmissionProducer.VIEW_ID.equals(this.viewID) && (this.assignmentId == null || this.userId == null)) {
+            LOG.error("Null assignmentId or userId in viewparameters while attempting to load ViewStudentSubmissionProducer");
+            return Boolean.FALSE;
+        }
         return Boolean.TRUE;
     }
+
 }

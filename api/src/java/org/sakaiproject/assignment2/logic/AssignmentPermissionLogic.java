@@ -53,6 +53,16 @@ public interface AssignmentPermissionLogic {
      * submission for the given assignment
      */
     public boolean isUserAbleToViewStudentSubmissionForAssignment(String studentId, Long assignmentId);
+    
+    /**
+     * 
+     * @param studentId
+     * @param assignmentId
+     * @param taggableRef
+     * @return true if the current user is allowed to view the given student's
+     * submission for the given assignment
+     */
+    public boolean isUserAbleToViewStudentSubmissionForAssignment(String studentId, Long assignmentId, String taggableRef);
 
     /**
      * 
@@ -153,6 +163,19 @@ public interface AssignmentPermissionLogic {
      * submission for that assignment may view the assignment
      */
     public boolean isUserAbleToViewAssignment(Long assignmentId);
+    
+    /**
+     * 
+     * @param assignmentId
+     * @param taggableRef
+     * @return true if the current user has access to this assignment. some scenarios that
+     * would be false: if user is a student and assignment is restricted to groups outside of student's memberships
+     * or not open;
+     * if user is TA but does not have grading privileges for the assign's associated gb item;
+     * note: if assignment has been removed, only a student with an existing
+     * submission for that assignment may view the assignment
+     */
+    public boolean isUserAbleToViewAssignment(Long assignmentId, String taggableRef);
 
     /**
      * @param studentId
