@@ -487,6 +487,9 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
             }
         }
         
+        // ONC-2486
+        opts.put("late_accept_flag", "1");
+        
         SimpleDateFormat dform = ((SimpleDateFormat) DateFormat.getDateInstance());
         dform.applyPattern("yyyy-MM-dd HH:mm:ss");
         
