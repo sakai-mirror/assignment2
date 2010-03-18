@@ -18,7 +18,7 @@
 	<key>GuidesVisible</key>
 	<string>YES</string>
 	<key>ImageCounter</key>
-	<integer>66</integer>
+	<integer>70</integer>
 	<key>ImageLinkBack</key>
 	<array>
 		<dict/>
@@ -37,10 +37,10 @@
 	</array>
 	<key>ImageList</key>
 	<array>
-		<string>image65.tiff</string>
-		<string>image63.tiff</string>
-		<string>image62.tiff</string>
-		<string>image61.tiff</string>
+		<string>image69.tiff</string>
+		<string>image68.tiff</string>
+		<string>image67.tiff</string>
+		<string>image66.tiff</string>
 		<string>image43.tiff</string>
 		<string>image42.tiff</string>
 		<string>image41.tiff</string>
@@ -58,7 +58,7 @@
 	<key>MasterSheets</key>
 	<array/>
 	<key>ModificationDate</key>
-	<string>2010-02-11 15:15:40 -0500</string>
+	<string>2010-02-25 14:26:49 -0500</string>
 	<key>Modifier</key>
 	<string>Kris</string>
 	<key>NotesVisible</key>
@@ -87,7 +87,7 @@
 		<key>NSPaperName</key>
 		<array>
 			<string>string</string>
-			<string>11F411C0-A13F-48CC-A4FE-88C740B89159</string>
+			<string>F4235F80-591B-466B-A662-B21D633FD046</string>
 		</array>
 		<key>NSPaperSize</key>
 		<array>
@@ -10341,7 +10341,7 @@ Groups \
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
 
-\f0\fs24 \cf0 View submissions}</string>
+\f0\fs24 \cf0 Manage submissions}</string>
 					</dict>
 				</dict>
 				<dict>
@@ -10775,7 +10775,7 @@ Groups \
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
 
-\f0\fs24 \cf0 Grade submissions from }</string>
+\f0\fs24 \cf0 Grader permission settings }</string>
 					</dict>
 					<key>TextPlacement</key>
 					<integer>0</integer>
@@ -13912,10 +13912,9 @@ Groups \
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
 
-\f0\b\fs24 \cf0 View Submissions:\
-\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+\f0\b\fs24 \cf0 Manage Submissions:\
 
-\b0 \cf0 - The system will display the 'Grade' or 'Provide Feedback' link on the Assignment List screen (AL-1).\
+\b0 - The system will display the 'Grade' or 'Provide Feedback' link on the Assignment List screen (AL-1).\
 - The system will display the 'Feedback' and 'Feedback Attachments' sections and the 'Save' and 'Save and Release Feedback' buttons on the View Student's Submission screen (VSS-1) . }</string>
 							</dict>
 						</dict>
@@ -14010,9 +14009,8 @@ Groups \
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
 
 \f0\b\fs24 \cf0 Edit assignments:\
-\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
 
-\b0 \cf0 - The system will display the 'Edit' link on the Assignment List screen (AL-1) to the role(s) with this permission.}</string>
+\b0 - The system will display the 'Edit' link on the Assignment List screen (AL-1) to the role(s) with this permission.}</string>
 							</dict>
 						</dict>
 						<dict>
@@ -14106,9 +14104,8 @@ Groups \
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
 
 \f0\b\fs24 \cf0 Add assignments:\
-\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
 
-\b0 \cf0 - The system will display the 'Add' link on the Assignment List screen (AL-1) to the role(s) with this permission.}</string>
+\b0 - The system will display the 'Add' link on the Assignment List screen (AL-1) to the role(s) with this permission.}</string>
 							</dict>
 						</dict>
 						<dict>
@@ -14246,9 +14243,8 @@ Groups \
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
 
 \f0\b\fs24 \cf0 Read assignments:\
-\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
 
-\b0 \cf0 - The system will display the list of assignments on the Assignment List screen (AL-1 or SVAL-1) to the role(s) with this permission.}</string>
+\b0 - The system will display the list of assignments on the Assignment List screen (AL-1 or SVAL-1) to the role(s) with this permission.}</string>
 							</dict>
 						</dict>
 						<dict>
@@ -14311,13 +14307,11 @@ Groups \
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
 
 \f0\b\fs24 \cf0 View All Groups:\
-\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
 
-\b0 \cf0 - The system will permit the role(s) with this permission to view and act on all students and all groups in the site in accordance with the other permissions that have been assigned to this role (e.g., Add, Edit, Remove).\
+\b0 - The system will permit the role(s) with this permission to view and act on all students and all groups in the site in accordance with the other permissions that have been assigned to this role (e.g., Add, Edit, Remove).\
 \
-\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
 
-\b \cf0 Note\'b9:
+\b Note\'b9:
 \b0  Users in role(s) that are not assigned this permission may only view or act on an assignment if it is released to the group in which he/she is a member.  If the assignment is released to multiple groups and the user is not a member of every group, then the user will not have permission to view or act on the assignment.\
 
 \b Note\'b2: 
@@ -14459,9 +14453,8 @@ Groups \
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
 
 \f0\b\fs24 \cf0 Submit assignments:\
-\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
 
-\b0 \cf0 - The system will provide the ability to submit assignments.}</string>
+\b0 - The system will provide the ability to submit assignments.}</string>
 							</dict>
 						</dict>
 						<dict>
@@ -14493,9 +14486,8 @@ Groups \
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
 
 \f0\b\fs24 \cf0 Remove assignments:\
-\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
 
-\b0 \cf0 - The system will display a column of checkboxes along with 'Remove' buttons on the Assignment List screen (AL-1) to the role(s) with this permission.}</string>
+\b0 - The system will display a column of checkboxes along with 'Remove' buttons on the Assignment List screen (AL-1) to the role(s) with this permission.}</string>
 							</dict>
 						</dict>
 					</array>
@@ -14868,17 +14860,15 @@ Groups \
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
 
-\f0\b\fs24 \cf0 Grade submissions from:\
-\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+\f0\b\fs24 \cf0 Grader permission settings:\
 
-\b0 \cf0 - If there is no Gradebook in the site, the system will not display this permission.\
+\b0 - If there is no Gradebook in the site, the system will not display this permission.\
 - This Gradebook permission controls whether or not the role(s) with some variation of this permission can enter a grade and comments for student submissions.  \
 - The system will display the 'Customize' link for roles with the section.role.ta permission and the gradebook.gradeSection permission.\
 - By default, if groups exist in the site, the system will display 'Assigned Groups' for role(s) with the section.role.ta and gradebook.gradeSection permissions.  Role(s) with these permissions will have permission to enter a grade and comments for submissions from students in the user's assigned group(s).  If groups do not exist for the site, the system will display 'None' and the 'Customize' link beneath 'None'.\
 \
-\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
 
-\b \cf0 Note: 
+\b Note: 
 \b0 The instructor may increase or limit the scope of these permissions by clicking the 'Customize' link.\
 \
 - If the Instructor clicks the 'Customize' link, the system will display the Gradebook's Edit Grader Permissions' helper (GPH-1).\
@@ -14915,9 +14905,8 @@ Groups \
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
 
 \f0\b\fs24 \cf0 Save\
-\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
 
-\b0 \cf0 - Upon clicking Save, the system will save the changes to the permissions, return the user to the Assignment List screen (AL-1) and display the following confirmation message to the instructor: "Your changes to the permissions were saved successfully."}</string>
+\b0 - Upon clicking Save, the system will save the changes to the permissions, return the user to the Assignment List screen (AL-1) and display the following confirmation message to the instructor: "Your changes to the permissions were saved successfully."}</string>
 							</dict>
 						</dict>
 						<dict>
@@ -14980,9 +14969,8 @@ Groups \
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
 
 \f0\b\fs24 \cf0 Cancel\
-\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
 
-\b0 \cf0 - Upon clicking Cancel, the system will return the user to the Assignment List screen (AL-1) without saving any changes.}</string>
+\b0 - Upon clicking Cancel, the system will return the user to the Assignment List screen (AL-1) without saving any changes.}</string>
 							</dict>
 						</dict>
 						<dict>
@@ -15206,13 +15194,13 @@ Groups \
 			<array>
 				<dict>
 					<key>Bounds</key>
-					<string>{{54, 412.721}, {733, 188}}</string>
+					<string>{{54, 435}, {735, 189}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>ID</key>
-					<integer>2875</integer>
+					<integer>2877</integer>
 					<key>ImageID</key>
-					<integer>62</integer>
+					<integer>67</integer>
 					<key>Shape</key>
 					<string>Rectangle</string>
 					<key>Style</key>
@@ -15231,13 +15219,13 @@ Groups \
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{54, 120.14}, {835, 219}}</string>
+					<string>{{54, 119.14}, {836, 220}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>ID</key>
-					<integer>2874</integer>
+					<integer>2876</integer>
 					<key>ImageID</key>
-					<integer>61</integer>
+					<integer>66</integer>
 					<key>Shape</key>
 					<string>Rectangle</string>
 					<key>Style</key>
@@ -15486,13 +15474,13 @@ Groups \
 			<array>
 				<dict>
 					<key>Bounds</key>
-					<string>{{54, 409}, {746, 203}}</string>
+					<string>{{54, 413}, {747, 203}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>ID</key>
-					<integer>2876</integer>
+					<integer>2878</integer>
 					<key>ImageID</key>
-					<integer>65</integer>
+					<integer>69</integer>
 					<key>Shape</key>
 					<string>Rectangle</string>
 					<key>Style</key>
@@ -15511,13 +15499,13 @@ Groups \
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{54, 121}, {695, 189}}</string>
+					<string>{{54, 123}, {698, 189}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>ID</key>
-					<integer>2874</integer>
+					<integer>2877</integer>
 					<key>ImageID</key>
-					<integer>63</integer>
+					<integer>68</integer>
 					<key>Shape</key>
 					<string>Rectangle</string>
 					<key>Style</key>
@@ -15833,7 +15821,7 @@ Groups \
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{172, 225}, {735, 91.9998}}</string>
+							<string>{{172, 225}, {735, 92}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -15861,9 +15849,8 @@ Groups \
 
 \f0\fs24 \cf0 - Read assignments\
 \
-\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
 
-\b \cf0 Note\'b9: 
+\b Note\'b9: 
 \b0 By default, the system will display assignments that have been released to all and/or to the user's assigned group(s).  The system will not display assignments that have been released to a group of which the user is not a member.\
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
 
@@ -15979,7 +15966,7 @@ Groups \
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{52.9, 225}, {119.1, 91.9998}}</string>
+							<string>{{52.9, 225}, {119.1, 92}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -16079,7 +16066,7 @@ Groups \
 \f0\fs24 \cf0 - Add assignments AND/OR\
 - Edit assignments AND/OR \
 - Remove assignments AND/OR\
-- View Submissions\
+- Manage Submissions\
 \
 
 \b Note: 
@@ -16291,7 +16278,7 @@ Groups \
 {\colortbl;\red255\green255\blue255;}
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
 
-\f0\fs24 \cf0 - View Submissions\
+\f0\fs24 \cf0 - Manage Submissions\
 \
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
 
@@ -16584,7 +16571,7 @@ Groups \
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{52.9, 97.0008}, {130.1, 89.9996}}</string>
+							<string>{{52.9, 97.0008}, {130.1, 89.9994}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -16641,7 +16628,7 @@ Groups \
 {\colortbl;\red255\green255\blue255;}
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
 
-\f0\fs24 \cf0 - View Submissions\
+\f0\fs24 \cf0 - Manage Submissions\
 - Instructor must select 'Send email notifications for student submissions' from Add/Edit Assignment screen (AA-1 or EA-1)\
 \
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
@@ -16656,7 +16643,7 @@ Groups \
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{52.9, 187}, {130.1, 90}}</string>
+							<string>{{52.9, 187}, {130.1, 89.9998}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -16731,7 +16718,7 @@ Groups \
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{183, 97.0008}, {735, 89.9996}}</string>
+							<string>{{183, 97.0008}, {735, 89.9994}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -16757,7 +16744,7 @@ Groups \
 {\colortbl;\red255\green255\blue255;}
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
 
-\f0\fs24 \cf0 - View Submissions\
+\f0\fs24 \cf0 - Manage Submissions\
 \
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
 
@@ -16802,7 +16789,7 @@ Groups \
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{183, 421}, {735, 63.9996}}</string>
+							<string>{{183, 421}, {735, 63.9998}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -16828,7 +16815,7 @@ Groups \
 {\colortbl;\red255\green255\blue255;}
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
 
-\f0\fs24 \cf0 - View Submissions\
+\f0\fs24 \cf0 - Manage Submissions\
 \
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
 
@@ -16842,7 +16829,7 @@ Groups \
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{183, 187}, {735, 90}}</string>
+							<string>{{183, 187}, {735, 89.9998}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -16882,7 +16869,7 @@ Groups \
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{183, 485}, {735, 76}}</string>
+							<string>{{183, 485}, {735, 76.0002}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -16908,7 +16895,7 @@ Groups \
 {\colortbl;\red255\green255\blue255;}
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
 
-\f0\fs24 \cf0 - View Submissions\
+\f0\fs24 \cf0 - Manage Submissions\
 \
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
 
@@ -16953,7 +16940,7 @@ Groups \
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{52.9, 421}, {130.1, 63.9996}}</string>
+							<string>{{52.9, 421}, {130.1, 63.9998}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -16984,7 +16971,7 @@ Groups \
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{52.9, 485}, {130.1, 76}}</string>
+							<string>{{52.9, 485}, {130.1, 76.0002}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -17550,7 +17537,7 @@ Groups \
 {\colortbl;\red255\green255\blue255;}
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
 
-\f0\fs24 \cf0 - View Submissions}</string>
+\f0\fs24 \cf0 - Manage Submissions}</string>
 							</dict>
 						</dict>
 						<dict>
@@ -17612,7 +17599,7 @@ Groups \
 {\colortbl;\red255\green255\blue255;}
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
 
-\f0\fs24 \cf0 - View Submissions\
+\f0\fs24 \cf0 - Manage Submissions\
 \
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
 
@@ -17651,7 +17638,7 @@ Groups \
 {\colortbl;\red255\green255\blue255;}
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
 
-\f0\fs24 \cf0 - View Submissions\
+\f0\fs24 \cf0 - Manage Submissions\
 \
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
 
@@ -17691,12 +17678,11 @@ Groups \
 {\colortbl;\red255\green255\blue255;}
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
 
-\f0\fs24 \cf0 - View Submissions AND\
+\f0\fs24 \cf0 - Manage Submissions AND\
 - View All Groups\
 \
-\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
 
-\b \cf0 Note: 
+\b Note: 
 \b0 If a user does not have the 'View All Groups' permission, then the user will see his/her assigned groups listed in the View drop-down.}</string>
 							</dict>
 						</dict>
@@ -18096,7 +18082,7 @@ Groups \
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
 
 \b \cf0 Note\'b3: 
-\b0 Please note that the system will be looking at the 'View Submissions' and 'View All Groups' permissions to determine which students to display to the user and then the system will look for the gradebook.gradeAll or gradebook.gradeSection permission to determine if the user has permission to view the grades for the students that are shown.}</string>
+\b0 Please note that the system will be looking at the 'Manage Submissions' and 'View All Groups' permissions to determine which students to display to the user and then the system will look for the gradebook.gradeAll or gradebook.gradeSection permission to determine if the user has permission to view the grades for the students that are shown.}</string>
 							</dict>
 						</dict>
 						<dict>
@@ -18140,7 +18126,7 @@ Groups \
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
 
 \b \cf0 Note\'b3: 
-\b0 Please note that the system will be looking at the 'View Submissions' and 'View All Groups' permissions to determine which students to display to the user and then the system will look for the gradebook.gradeAll or gradebook.gradeSection permission to determine if the user has permission to view the grades for the students that are shown.}</string>
+\b0 Please note that the system will be looking at the 'Manage Submissions' and 'View All Groups' permissions to determine which students to display to the user and then the system will look for the gradebook.gradeAll or gradebook.gradeSection permission to determine if the user has permission to view the grades for the students that are shown.}</string>
 							</dict>
 						</dict>
 						<dict>
@@ -18259,7 +18245,7 @@ Groups \
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
 
 \b \cf0 Note\'b3: 
-\b0 Please note that the system will be looking at the 'View Submissions' and 'View All Groups' permissions to determine which students to display to the user and then the system will look for the gradebook.gradeAll or gradebook.gradeSection permission to determine if the user has permission to view the grades for those students.}</string>
+\b0 Please note that the system will be looking at the 'Manage Submissions' and 'View All Groups' permissions to determine which students to display to the user and then the system will look for the gradebook.gradeAll or gradebook.gradeSection permission to determine if the user has permission to view the grades for those students.}</string>
 							</dict>
 						</dict>
 						<dict>
@@ -21499,7 +21485,7 @@ Groups \
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{799.663, 262.001}, {49.34, 26}}</string>
+							<string>{{799.663, 262.001}, {49.3402, 26}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -23198,7 +23184,7 @@ Groups \
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{799.663, 210}, {49.34, 26}}</string>
+							<string>{{799.663, 210}, {49.3402, 26}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -23593,7 +23579,7 @@ Groups \
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{358.5, 378}, {77.999, 35.0005}}</string>
+							<string>{{358.5, 378}, {77.999, 35.0007}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -27440,7 +27426,7 @@ Groups \
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{799.663, 186}, {49.34, 24}}</string>
+							<string>{{799.663, 186}, {49.3402, 24}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -27814,7 +27800,7 @@ Groups \
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{799.663, 378}, {49.34, 35.0006}}</string>
+							<string>{{799.663, 378}, {49.3402, 35.0007}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -27858,7 +27844,7 @@ Groups \
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{514.5, 378}, {64.7302, 35.0006}}</string>
+							<string>{{514.5, 378}, {64.7302, 35.0007}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -28362,7 +28348,7 @@ Groups \
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{664.262, 378}, {68.7014, 35.0006}}</string>
+							<string>{{664.262, 378}, {68.7014, 35.0007}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -33338,7 +33324,7 @@ Groups \
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{275, 378}, {83.4999, 35.0006}}</string>
+							<string>{{275, 378}, {83.4999, 35.0007}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -36224,7 +36210,7 @@ Groups \
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{436.499, 378}, {78.0009, 35.0005}}</string>
+							<string>{{436.499, 378}, {78.0009, 35.0007}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -37123,7 +37109,7 @@ Groups \
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{579.23, 378}, {85.0317, 35.0006}}</string>
+							<string>{{579.23, 378}, {85.0317, 35.0007}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -37587,7 +37573,7 @@ Groups \
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{799.663, 236}, {49.34, 26.001}}</string>
+							<string>{{799.663, 236}, {49.3402, 26.001}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -38019,7 +38005,7 @@ Groups \
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
 
-\f0\fs24 \cf0 View submissions}</string>
+\f0\fs24 \cf0 Manage submissions}</string>
 							</dict>
 						</dict>
 						<dict>
@@ -38837,7 +38823,7 @@ Groups \
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{76.9702, 378}, {198.03, 35.0006}}</string>
+							<string>{{76.9702, 378}, {198.03, 35.0007}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -38874,14 +38860,14 @@ Groups \
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
 
-\f0\fs24 \cf0 Grade submissions from}</string>
+\f0\fs24 \cf0 Grader permission settings}</string>
 							</dict>
 							<key>TextPlacement</key>
 							<integer>0</integer>
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{799.663, 320}, {49.34, 19.0002}}</string>
+							<string>{{799.663, 320}, {49.3402, 19.0002}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -39276,7 +39262,7 @@ Groups \
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{799.663, 163}, {49.34, 23}}</string>
+							<string>{{799.663, 163}, {49.3402, 23}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -39725,7 +39711,7 @@ Groups \
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{799.663, 288.001}, {49.34, 31.9989}}</string>
+							<string>{{799.663, 288.001}, {49.3402, 31.9989}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -43085,7 +43071,7 @@ Groups \
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{732.963, 378}, {66.6996, 35.0006}}</string>
+							<string>{{732.963, 378}, {66.6996, 35.0007}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -43267,7 +43253,7 @@ Groups \
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{799.663, 339}, {49.34, 38.9998}}</string>
+							<string>{{799.663, 339}, {49.3402, 38.9998}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>FontInfo</key>
@@ -45137,9 +45123,8 @@ Groups \
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
 
 \f0\b\fs24 \cf0 Esc key or close\
-\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
 
-\b0 \cf0 - Upon clicking the 'close' link, the system will clear any changes, close the helper window and return the user to the Permissions screen (P-1).}</string>
+\b0 - Upon clicking the 'close' link, the system will clear any changes, close the helper window and return the user to the Permissions screen (P-1).}</string>
 							</dict>
 						</dict>
 						<dict>
@@ -45308,9 +45293,8 @@ Groups \
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
 
 \f0\b\fs24 \cf0 Select a Grader to Edit\
-\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
 
-\b0 \cf0 - Upon clicking the 'Select a grader to edit' drop-down, the system will display the list of users that have the section.role.ta permission and the gradebook.gradeSection permission.\
+\b0 - Upon clicking the 'Select a grader to edit' drop-down, the system will display the list of users that have the section.role.ta permission and the gradebook.gradeSection permission.\
 - Upon selecting a user from the drop-down, the system will display all rules associated with that user.}</string>
 							</dict>
 						</dict>
@@ -45343,9 +45327,8 @@ Groups \
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
 
 \f0\b\fs24 \cf0 Default Permissions\
-\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
 
-\b0 \cf0 - By default, users in role(s) with the section.role.ta permission and the gradebook.gradeSection permission have permission to grade submissions from students in his/her assigned groups.  To change the default permissions, users with the site.upd permission may add Grader Permissions as described below.}</string>
+\b0 - By default, users in role(s) with the section.role.ta permission and the gradebook.gradeSection permission have permission to grade submissions from students in his/her assigned groups.  To change the default permissions, users with the site.upd permission may add Grader Permissions as described below.}</string>
 							</dict>
 						</dict>
 						<dict>
@@ -45377,9 +45360,8 @@ Groups \
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
 
 \f0\b\fs24 \cf0 Permission\
-\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
 
-\b0 \cf0 - By default, users in role(s) with the section.role.ta permission and the gradebook.gradeSection permission have permission to grade submissions from students in his/her assigned groups.  To change the default permissions, users with the site.upd permission may add Grader Permissions as described below.
+\b0 - By default, users in role(s) with the section.role.ta permission and the gradebook.gradeSection permission have permission to grade submissions from students in his/her assigned groups.  To change the default permissions, users with the site.upd permission may add Grader Permissions as described below.
 \b \
 
 \b0 - If an instructor wishes to increase or limit the scope of a TA's grading permissions, he/she can do so via the Grader permissions.
@@ -45397,10 +45379,9 @@ Groups \
        indicating that the user should have permission to view and/or grade all student submissions.  By selecting a '&lt;Specified Group&gt;', the \
        instructor is indicating that the user should have permission to grade submissions from students in the specified group.\
 \
-\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
 
-\b \cf0 Note: 
-\b0 These permissions work hand-in-hand with the Assignments Beta permissions.  The system will first check the View Submissions permission to see if the user has permission to view submissions in Assignments Beta.  The system will then check the View All Groups permission to determine which student submissions to display to the user.  The system will then check the Gradebook permissions and, if they exist, the Grader permissions, to determine if the user has permission to grade a student's submission.}</string>
+\b Note: 
+\b0 These permissions work hand-in-hand with the Assignments Beta permissions.  The system will first check the Manage Submissions permission to see if the user has permission to view submissions in Assignments Beta.  The system will then check the View All Groups permission to determine which student submissions to display to the user.  The system will then check the Gradebook permissions and, if they exist, the Grader permissions, to determine if the user has permission to grade a student's submission.}</string>
 							</dict>
 						</dict>
 						<dict>
@@ -45432,9 +45413,8 @@ Groups \
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
 
 \f0\b\fs24 \cf0 Message\
-\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
 
-\b0 \cf0 - The system will display the following message to the user: "You are editing Gradebook permissions"}</string>
+\b0 - The system will display the following message to the user: "You are editing Gradebook permissions"}</string>
 							</dict>
 						</dict>
 						<dict>
@@ -45751,7 +45731,7 @@ Groups \
 			<array>
 				<dict>
 					<key>Bounds</key>
-					<string>{{369, 122}, {16, 16}}</string>
+					<string>{{366, 122}, {16, 16}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>ID</key>
@@ -45900,10 +45880,9 @@ Groups \
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
 
-\f0\b\fs24 \cf0 Delete a Rule\
-\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+\f0\b\fs24 \cf0 Remove rule\
 
-\b0 \cf0 - If an instructor clicks the delete a rule icon (     ), then the system will remove that rule for the associated user and the change will take place once the instructor clicks 'Save Changes'.}</string>
+\b0 - If an instructor clicks the remove rule icon (     ) or 'Remove rule' link, then the system will remove that rule for the associated user and the change will take place once the instructor clicks 'Save Changes'.}</string>
 							</dict>
 						</dict>
 						<dict>
@@ -45996,10 +45975,9 @@ Groups \
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
 
-\f0\b\fs24 \cf0 Add a Rule\
-\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+\f0\b\fs24 \cf0 Add a rule\
 
-\b0 \cf0 - If an instructor clicks 'Add a rule', then the system will add a new rule for the associated user with the following default settings: Permission: View, Category: All Categories, and Sections/Groups: All Sections/Groups.}</string>
+\b0 - If an instructor clicks 'Add a rule', then the system will add a new rule for the associated user with the following default settings: Permission: View, Category: All Categories, and Sections/Groups: All Sections/Groups.}</string>
 							</dict>
 						</dict>
 						<dict>
@@ -46062,9 +46040,8 @@ Groups \
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
 
 \f0\b\fs24 \cf0 Save Changes\
-\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
 
-\b0 \cf0 - Upon clicking 'Save Changes', the system will save any changes made to the rules for each user edited, close the helper window, and return the user to the Permissions screen (P-1).}</string>
+\b0 - Upon clicking 'Save Changes', the system will save any changes made to the rules for each user edited, close the helper window, and return the user to the Permissions screen (P-1).}</string>
 							</dict>
 						</dict>
 						<dict>
@@ -46126,10 +46103,9 @@ Groups \
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
 
-\f0\b\fs24 \cf0 Clear Changes\
-\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+\f0\b\fs24 \cf0 Cancel\
 
-\b0 \cf0 - Upon clicking 'Clear Changes', the system will clear any changes made to the rules for each user edited, close the helper window, and return the user to the Permissions screen (P-1).}</string>
+\b0 - Upon clicking 'Cancel', the system will clear any changes made to the rules for each user edited, close the helper window, and return the user to the Permissions screen (P-1).}</string>
 							</dict>
 						</dict>
 					</array>
@@ -46291,11 +46267,11 @@ Groups \
 	<key>WindowInfo</key>
 	<dict>
 		<key>CurrentSheet</key>
-		<integer>0</integer>
+		<integer>4</integer>
 		<key>ExpandedCanvases</key>
 		<array/>
 		<key>Frame</key>
-		<string>{{1290, 452}, {1109, 1117}}</string>
+		<string>{{702, 437}, {1109, 1117}}</string>
 		<key>ListView</key>
 		<true/>
 		<key>OutlineWidth</key>
