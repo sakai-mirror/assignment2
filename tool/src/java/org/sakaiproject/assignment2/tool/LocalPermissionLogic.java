@@ -101,6 +101,9 @@ public class LocalPermissionLogic {
         else if (ListProducer.VIEW_ID.equals(viewId)) {
             return permissionLogic.isUserAllowedToAccessInstructorView(null, contextId);
         }
+        else if (ReorderStudentViewProducer.VIEW_ID.equals(viewId)) {
+            return permissionLogic.isCurrentUserAbleToEditAssignments(contextId);
+        }
         else if (AssignmentInfoDataProducer.VIEW_ID.equals(viewId)) {
             // Currently we are only allowing instructors to view the assignment
             // info since it contains the number of submissions. Will plan on 

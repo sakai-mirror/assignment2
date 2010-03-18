@@ -30,14 +30,19 @@
   </div>
 
   <div class="pager-sort-area" style="display: none;">
-    <div id="top-pager-area" style="border-bottom: solid 2px #cccccc;">
+    <div id="top-pager-area" style="background: #f1f1f1;">
       <div id="pager-top" class="fl-pager-top flc-pager-top">
-          <ul id="page-list" class="pager-links flc-pager-links">
-            <li class="fl-pager-pageLink flc-pager-pageLink"><a href="#">1</a></li>
-            <li class="flc-pager-pageLink-disabled">2</li>
-            <li class="fl-pager-pageLink flc-pager-pageLink"><a href="#">3</a></li>
-          </ul>
-        <p id="page-size">Show <span>
+        <p style="text-align: left; float: left; width: 40%">
+          <img class="addimage" src="/sakai-assignment2-tool/content/images/add.png" />
+          <a class="addlink" href="#" onclick="window.location = '/portal/tool/'+sakai.curPlacement+'/assignment'">
+          Add</a>
+          <span> | </span> 
+          <img class="addimage" src="/library/image/silk/arrow_switch.png" />
+          <a class="addlink" href="#" onclick="window.location = '/portal/tool/'+sakai.curPlacement+'/reorder-student-view'">
+          Reorder Student View</a>
+        </p>
+        <p style="text-align: right; float: right; width: 40%;">
+          Show <span>
           <select class="flc-pager-page-size">
             <option value="5">5 per page</option>
             <option value="10">10 per page</option>
@@ -48,10 +53,10 @@
             <option value="200">200 per page</option>
             <option value="15000">All</option>
           </select></span>
-        </p>
-        <p id="page-arrows">
-        <span class="fl-pager-previous flc-pager-previous"><a href="#">&lt; previous</a></span>
-        <span class="fl-pager-next flc-pager-next"><a href="#">next &gt;</a></span>
+          <span class="fl-pager-firstpage"><img src="/library/image/silk/resultset_first.png" /></span>
+          <span class="flc-pager-previous"><img src="/library/image/silk/resultset_previous.png" /></span>
+          <span class="flc-pager-next"><img src="/library/image/silk/resultset_next.png" /></span>
+          <span class="fl-pager-lastpage"><img src="/library/image/silk/resultset_last.png" /></span>
         </p>
         <!-- since we optionally render the float:left items, adding a spacer div to keep things from looking funky -->
         <div style="clear:both;"></div>
@@ -59,22 +64,7 @@
     </div>
 
     <!-- <div id="top-sort-area" style="margin: 0; padding: 5px; border-top: solid 2px #cccccc;"> -->
-    <div id="top-sort-area" style="display: none; margin: 0; padding: 5px;">
-      <span class="sortbylabel">Sorted by:</span><ul class="sort-bar">
-        <li class="sort-item"><a href="#" class="titlesort">Title</a> |</li>
-        <!-- <li class="sort-item">Restricted To |</li> -->
-        <li class="sort-item"><a href="#" class="opendatesort">Open Date</a> |</li>
-        <li class="sort-item"><a href="#" class="duedatesort">Due Date</a> |</li>
-        <li class="sort-item">
-          <a href="#" class="instsort">Instructor Specified Order</a>
-          <img src="/library/image/sakai/sortascending.gif" />
-        </li>
-      </ul>
-    </div>
-  </div>
-
-  <div class="removeAsnn" id="top-remove-button">
-    <input style="display: none" type="button" value="Remove" class="removebutton" />
+    
   </div>
   
   <div id="noAsnn" style="display: none;">
@@ -84,28 +74,35 @@
     <div class="noAsnnInfo">There are currently no assignments at this location.  Click 'Add' to add an assignment.</div>
   </div>
 
-  <table style="display: none; border-collapse: collapse" id="asnn-list">
+  <table style="display: none; border-collapse: collapse" id="asnn-list-table"> 
     <thead>
       <tr>
-        <th>
+        <th class="asnn-decorated-heading">
+          <span style="font-size: 1.2em;">Assignments</span>
+          <br/>
+          <div id="top-sort-area" style="display: none; margin: 0; padding: 0px;">
+            <span class="sortbylabel">Sorted by:</span>
+            <ul class="sort-bar">
+              <li class="sort-item"><a href="#" class="titlesort">Title</a> |</li>
+              <li class="sort-item"><a href="#" class="opendatesort">Open Date</a> |</li>
+              <li class="sort-item"><a href="#" class="duedatesort">Due Date</a> |</li>
+              <li class="sort-item">
+                <a href="#" class="instsort">Instructor Specified Order</a>
+                <img src="/library/image/sakai/sortascending.gif" />
+              </li>
+            </ul>
+          </div>
         </th>
         <th class="asnn-decorated-heading">
-          <span>Assignments</span>
-          <img class="addimage" src="/sakai-assignment2-tool/content/images/add.png" />
-          <a class="addlink" href="#" onclick="window.location = '/portal/tool/'+sakai.curPlacement+'/assignment'">
-          Add</a>
+          <span style="font-size: 1.2em;">In/New</span>
         </th>
-        <th class="asnn-decorated-heading">
-          <span>In/New</span>
-        </th>
-        <th class="asnn-decorated-heading">
-          <input id="checkall" type="checkbox" checked="false"/>
+        <th style="vertical-align: middle" class="asnn-decorated-heading">
+          <input style="display: none;" id="checkall" type="checkbox"/>
         </th>
       </tr>
     </thead>
-    <tbody id="asnn-list-body">
+    <tbody id="asnn-list">
       <tr class="row">
-        <td style="width: 40px"><img style="display:none" alt="Move Assignment" src="/sakai-assignment2-tool/content/images/4Arrows.png" class="movehandle" /></td>
         <td class="asnn-decorated-cell asnn-title-cell"><p style="margin:0;padding:0;">
           <span style="display:none" class="asnnid">1</span>
           <span class="asnntitle">Audio Scriptwriting</span>
@@ -152,38 +149,18 @@
     <input style="display: none" type="button" value="Remove" class="removebutton" />
   </div>
 
-  <div class="pager-sort-area" style="display: none;">
-    <div id="bottom-pager-area" style="border-bottom: solid 2px #cccccc;">
+  <div class="pager-sort-area" style="background: #f1f1f1; display: none;">
+    <div id="bottom-pager-area" >
       <div id="pager-bottom" class="fl-pager-bottom flc-pager-bottom">
-        <ul id="page-list-bottom" class="pager-links flc-pager-links">
-          <li class="fl-pager-pageLink flc-pager-pageLink"><a href="#">1</a></li>
-          <li class="flc-pager-pageLink-disabled">2</li>
-          <li class="fl-pager-pageLink flc-pager-pageLink"><a href="#">3</a></li>
-        </ul>
-        <p id="page-size-bottom">
+        <p id="page-size-bottom" style="width: 40%;">
           <span class="flc-pager-summary">1-10 of 500 items</span>
+          <span class="fl-pager-firstpage"><img src="/library/image/silk/resultset_first.png" /></span>
+          <span id="previous-bottom" ><img src="/library/image/silk/resultset_previous.png" /></span>
+          <span id="next-bottom" ><img src="/library/image/silk/resultset_next.png" /></span>
+          <span class="fl-pager-lastpage"><img src="/library/image/silk/resultset_last.png" /></span>
         </p>
-        <p id="page-arrows-bottom">
-          <span class="fl-pager-previous flc-pager-previous"><a href="#">&lt; previous</a></span>
-          <span class="fl-pager-next flc-pager-next"><a href="#">next &gt;</a></span>
-        </p>
-        <!-- since we optionally render the float:left items, adding a spacer div to keep things from looking funky -->
-        <div style="clear:both;"></div>
       </div>
-    </div>
-
-    <div id="bottom-sort-area" style="display:none; margin: 0; padding: 5px;">
-      <span class="sortbylabel">Sorted by:</span>
-      <ul class="sort-bar">
-        <li class="sort-item"><a href="#" class="titlesort">Title</a> |</li>
-        <!-- <li class="sort-item">Restricted To |</li> -->
-        <li class="sort-item"><a href="#" class="opendatesort">Open Date</a> |</li>
-        <li class="sort-item"><a href="#" class="duedatesort">Due Date</a> |</li>
-        <li class="sort-item">
-          <a href="#" class="instsort">Instructor Specified Order</a>
-          <img src="/library/image/sakai/sortascending.gif" />
-        </li>
-      </ul>
+      <div style="clear:both;"></div>
     </div>
   </div> <!-- end pager-sort-area -->
 
@@ -211,12 +188,6 @@
       <input id="remove-asnn-button" accesskey="r" type="button" class="remove-button active" value="Remove" />
       <input id="cancel-remove-asnn-button" class="cancel-button" accesskey="x" type="button" value="Cancel" />
     </fieldset>
-  </div>
-
-  <!-- Reorder Avatar -->
-  <div class="asnn-drag-avatar" style="display:none">
-    <p class="asnntitle">Assignment Title</p>
-    <p>&nbsp;</p>
   </div>
 
   <script type="text/javascript">

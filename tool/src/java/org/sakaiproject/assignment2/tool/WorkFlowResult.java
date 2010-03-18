@@ -41,4 +41,9 @@ public enum WorkFlowResult {
     UPLOADALL_CSV_CONFIRM_AND_SAVE,
     UPLOADALL_CSV_BACK_TO_UPLOAD,
 
+    /*
+     * Reordering Student View
+     */
+    REORDER_STUDENT_VIEW_SAVE,
+    REORDER_STUDENT_VIEW_CANCEL,
 }
