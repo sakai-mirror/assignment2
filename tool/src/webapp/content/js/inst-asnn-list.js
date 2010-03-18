@@ -409,14 +409,6 @@ asnn2.toggleTableControls = function(showPager,showSorting,showTopRemove,showPag
       jQuery("#top-remove-button").hide();
   }
   
-  if (showPagerArrows === true) {
-      jQuery('#page-arrows').show();
-      jQuery('#page-arrows-bottom').show();
-  } else {
-      jQuery('#page-arrows').hide();
-      jQuery('#page-arrows-bottom').hide();
-  }
-  
   if (showPageNum === true) {
       jQuery('#page-list').show();
       jQuery('#page-list-bottom').show();

@@ -29,8 +29,8 @@
     </ul>
   </div>
 
-  <div class="pager-sort-area" style="display: none;">
-    <div id="top-pager-area" style="background: #f1f1f1;">
+  <div> 
+    <div style="background: #f1f1f1;">
       <div id="pager-top" class="fl-pager-top flc-pager-top">
         <p style="text-align: left; float: left; width: 40%">
           <img class="addimage" src="/sakai-assignment2-tool/content/images/add.png" />
@@ -41,7 +41,7 @@
           <a class="addlink" href="#" onclick="window.location = '/portal/tool/'+sakai.curPlacement+'/reorder-student-view'">
           Reorder Student View</a>
         </p>
-        <p style="text-align: right; float: right; width: 40%;">
+        <p id="top-pager-area" style="text-align: right; float: right; width: 40%;">
           Show <span>
           <select class="flc-pager-page-size">
             <option value="5">5 per page</option>
@@ -62,15 +62,10 @@
         <div style="clear:both;"></div>
       </div>
     </div>
-
-    <!-- <div id="top-sort-area" style="margin: 0; padding: 5px; border-top: solid 2px #cccccc;"> -->
-    
   </div>
   
   <div id="noAsnn" style="display: none;">
- 		<span class="noAsnnHeading">Assignments</span>
-    <img class="addimage" src="/sakai-assignment2-tool/content/images/add.png" />
-    <a class="addlink noAsnnHeading" href="#" onclick="window.location = '/portal/tool/'+sakai.curPlacement+'/assignment'">Add</a>
+    <span class="noAsnnHeading">Assignments</span>
     <div class="noAsnnInfo">There are currently no assignments at this location.  Click 'Add' to add an assignment.</div>
   </div>
 
