@@ -33,7 +33,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.authz.api.SecurityService;
-import org.sakaiproject.component.cover.ServerConfigurationService;
+import org.sakaiproject.component.api.ServerConfigurationService;
 import org.sakaiproject.entity.api.Entity;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.section.api.SectionAwareness;
@@ -89,6 +89,11 @@ public class ExternalLogicImpl implements ExternalLogic {
     private SectionAwareness sectionAwareness;
     public void setSectionAwareness(SectionAwareness sectionAwareness) {
         this.sectionAwareness = sectionAwareness;
+    }
+    
+    private ServerConfigurationService serverConfigurationService;
+    public void setServerConfigurationService(ServerConfigurationService serverConfigurationService) {
+        this.serverConfigurationService = serverConfigurationService;
     }
 
     /**
@@ -157,7 +162,7 @@ public class ExternalLogicImpl implements ExternalLogic {
     }
 
     public String getAssignmentViewUrl(String viewId) {
-        return ServerConfigurationService.getToolUrl() + Entity.SEPARATOR
+        return serverConfigurationService.getToolUrl() + Entity.SEPARATOR
         + toolManager.getCurrentPlacement().getId() + Entity.SEPARATOR + viewId;
     }
 
@@ -438,5 +443,9 @@ public class ExternalLogicImpl implements ExternalLogic {
         }
 
         return userIdSortNameMap;
+    }
+    
+    public String getServerUrl() {
+        return serverConfigurationService.getServerUrl();
     }
 }

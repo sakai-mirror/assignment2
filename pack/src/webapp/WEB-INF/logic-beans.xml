@@ -12,6 +12,7 @@
       <property name="toolManager" ref="org.sakaiproject.tool.api.ToolManager" />
       <property name="userDirectoryService" ref="org.sakaiproject.user.api.UserDirectoryService" />
       <property name="sectionAwareness" ref="org.sakaiproject.section.api.SectionAwareness"/>
+      <property name="serverConfigurationService" ref="org.sakaiproject.component.api.ServerConfigurationService" />
    </bean>
    
    <bean id="org.sakaiproject.assignment2.logic.ExternalGradebookLogic" class="org.sakaiproject.assignment2.logic.impl.ExternalGradebookLogicImpl" init-method="init">
