@@ -21,16 +21,21 @@
 
 package org.sakaiproject.assignment2.tool;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
+import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.assignment2.tool.producers.*;
 import org.sakaiproject.assignment2.tool.producers.fragments.*;
 import org.sakaiproject.assignment2.tool.params.AssignmentViewParams;
 import org.sakaiproject.assignment2.tool.params.FragmentGradebookDetailsViewParams;
 import org.sakaiproject.assignment2.tool.params.GradeViewParams;
 import org.sakaiproject.assignment2.tool.params.SimpleAssignmentViewParams;
+import org.sakaiproject.assignment2.tool.params.ViewSubmissionParams;
 import org.sakaiproject.assignment2.tool.params.ViewSubmissionsViewParams;
 import org.sakaiproject.assignment2.tool.params.ZipViewParams;
 
@@ -102,7 +107,7 @@ public class LocalPermissionLogic {
             return permissionLogic.isUserAllowedToAccessInstructorView(null, contextId);
         }
         else if (ReorderStudentViewProducer.VIEW_ID.equals(viewId)) {
-            return permissionLogic.isCurrentUserAbleToEditAssignments(contextId);
+            return permissionLogic.isUserAllowedToEditAllAssignments(null, contextId);
         }
         else if (AssignmentInfoDataProducer.VIEW_ID.equals(viewId)) {
             // Currently we are only allowing instructors to view the assignment
@@ -128,14 +133,15 @@ public class LocalPermissionLogic {
             if (viewParams instanceof GradeViewParams)
             {
                 GradeViewParams params = (GradeViewParams) viewParams;
-                return permissionLogic.isUserAllowedToViewSubmissionForAssignment(null, params.userId, params.assignmentId);
+                return permissionLogic.isUserAllowedToViewSubmissionForAssignment(null, params.userId, params.assignmentId, null);
             } 
 
             return Boolean.FALSE;
 
         } 
         else if (StudentAssignmentListProducer.VIEW_ID.equals(viewId)) {
-            return !permissionLogic.isUserAllowedToAccessInstructorView(null, contextId);
+            return permissionLogic.isUserAllowedToSubmit(null, contextId, null) && 
+            !permissionLogic.isUserAllowedToAccessInstructorView(null, contextId);
 
         } else if (StudentSubmitProducer.VIEW_ID.equals(viewId)) {
             if (viewParams instanceof SimpleAssignmentViewParams) {
@@ -151,7 +157,7 @@ public class LocalPermissionLogic {
                 ViewSubmissionsViewParams params = (ViewSubmissionsViewParams) viewParams;
 
                 return permissionLogic.isUserAllowedToAccessInstructorView(null, contextId) && 
-                permissionLogic.isUserAllowedToViewAssignment(params.assignmentId);
+                permissionLogic.isUserAllowedToViewAssignment(params.assignmentId, null);
             }
 
             return Boolean.FALSE;
@@ -164,7 +170,7 @@ public class LocalPermissionLogic {
         else if (FragmentGradebookDetailsProducer.VIEW_ID.equals(viewId)) {
             if (viewParams instanceof FragmentGradebookDetailsViewParams) {
                 FragmentGradebookDetailsViewParams params = (FragmentGradebookDetailsViewParams) viewParams;
-                return permissionLogic.isUserAllowedToViewSubmissionForAssignment(null, params.userId, params.assignmentId);
+                return permissionLogic.isUserAllowedToViewSubmissionForAssignment(null, params.userId, params.assignmentId, null);
             }
 
             return Boolean.FALSE;
@@ -176,7 +182,7 @@ public class LocalPermissionLogic {
                 AssignmentViewParams params = (AssignmentViewParams) viewParams;
 
                 return permissionLogic.isUserAllowedToAccessInstructorView(null, contextId) && 
-                permissionLogic.isUserAllowedToViewAssignment(params.assignmentId);
+                permissionLogic.isUserAllowedToViewAssignment(params.assignmentId, null);
             }
 
             return Boolean.FALSE;
@@ -186,7 +192,7 @@ public class LocalPermissionLogic {
                 ZipViewParams params = (ZipViewParams) viewParams;
 
                 return permissionLogic.isUserAllowedToAccessInstructorView(null, contextId) &&
-                permissionLogic.isUserAllowedToViewAssignment(params.assignmentId);
+                permissionLogic.isUserAllowedToViewAssignment(params.assignmentId, null);
             }
 
             return Boolean.FALSE;
@@ -196,7 +202,31 @@ public class LocalPermissionLogic {
         
         } else if (PermissionsProducer.VIEW_ID.equals(viewId)) {
             return permissionLogic.isUserAllowedToUpdateSite(contextId);
+            
+        } else if (ViewAssignmentProducer.VIEW_ID.equals(viewId)) {
+            if (viewParams instanceof SimpleAssignmentViewParams) {
+                SimpleAssignmentViewParams params = (SimpleAssignmentViewParams) viewParams;
+
+                Map<String, Object> optionalParams = new HashMap<String, Object>();
+                optionalParams.put(AssignmentConstants.TAGGABLE_REF_KEY, params.tagReference);
+                return permissionLogic.isUserAllowedToViewAssignment(params.assignmentId, optionalParams);
+            }
+
+            return Boolean.FALSE;
+
         }
+        else if (ViewStudentSubmissionProducer.VIEW_ID.equals(viewId)) {
+        if (viewParams instanceof ViewSubmissionParams) {
+            ViewSubmissionParams params = (ViewSubmissionParams) viewParams;
+            Map<String, Object> optionalParams = new HashMap<String, Object>();
+            optionalParams.put(AssignmentConstants.TAGGABLE_REF_KEY, params.tagReference);
+            
+            return permissionLogic.isUserAllowedToViewSubmissionForAssignment(null, params.userId, params.assignmentId, optionalParams);
+        }
+
+        return Boolean.FALSE;
+
+    } 
 
         //Here are some RSF Generic always true viewIds
 

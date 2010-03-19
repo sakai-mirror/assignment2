@@ -88,6 +88,9 @@ public interface AssignmentSubmissionLogic {
      * 
      * @param assignmentId
      * @param studentId
+     * @param optionalParameters in special situations, you may need to pass additional information
+     * (such as the tag reference) to successfully retrieve the submission. leave null if this is
+     * a normal scenario
      * @return AssignmentSubmission associated with the given assignmentId and studentId with
      * the attachments and submission version history populated. Populates currentSubmissionVersion
      * will return an empty record if there is no submission info for this student yet. If the curr version 
@@ -99,8 +102,8 @@ public interface AssignmentSubmissionLogic {
      * @throws SecurityException if current user not allowed to view student's submission
      * @throws AssignmentNotFoundException if no assignment exists with the given assignmentId
      */
-    public AssignmentSubmission getCurrentSubmissionByAssignmentIdAndStudentId(Long assignmentId, String studentId);
-
+    public AssignmentSubmission getCurrentSubmissionByAssignmentIdAndStudentId(Long assignmentId, String studentId, Map<String, Object> optionalParameters);
+    
     /**
      * Create or update an AssignmentSubmission and AssignmentSubmissionVersion.
      * Will retrieve the current submission and determine whether a new submission

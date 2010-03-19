@@ -137,7 +137,7 @@ public class UploadBean
             return WorkFlowResult.UPLOAD_FAILURE;
         }
 
-        Assignment2 assign = assignmentLogic.getAssignmentByIdWithAssociatedData(uploadOptions.assignmentId);
+        Assignment2 assign = assignmentLogic.getAssignmentByIdWithAssociatedData(uploadOptions.assignmentId, null);
         if (assign == null) {
             throw new AssignmentNotFoundException("No assignment exists with " +
                     "the assignmentId passed to the upload via uploadOptions: " + uploadOptions.assignmentId);

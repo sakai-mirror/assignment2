@@ -156,9 +156,18 @@ public class AssignmentConstants {
      */
     public final static int SUBMISSION_LATE = 3;	
 
-    public static final String REFERENCE_ROOT = "asgn2";
+    public static final String REFERENCE_ROOT = "asnn2";
     public static final String ASSIGNMENT_TYPE = "a";
     public static final String SUBMISSION_TYPE = "s";
+    
+    // Optional properties that may be passed via a map to several methods
+    
+    /**
+     * Key used to pass a taggable reference to handle the scenario where
+     * a tagged assignment or submission may be exposed to users via expanded permissions
+     * due to this tag
+     */
+    public static final String TAGGABLE_REF_KEY = "taggableRef";
     
     // Properties for ContentReviewService integration
     /**

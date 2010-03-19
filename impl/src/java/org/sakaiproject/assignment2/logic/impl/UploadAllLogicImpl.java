@@ -123,7 +123,7 @@ public class UploadAllLogicImpl implements UploadAllLogic
 
         String currUserId = externalLogic.getCurrentUserId();
 
-        Assignment2 assign = assignmentLogic.getAssignmentByIdWithAssociatedData(options.assignmentId);
+        Assignment2 assign = assignmentLogic.getAssignmentByIdWithAssociatedData(options.assignmentId, null);
         if (assign == null) {
             throw new AssignmentNotFoundException("No assignment exists with id " + options.assignmentId);
         }

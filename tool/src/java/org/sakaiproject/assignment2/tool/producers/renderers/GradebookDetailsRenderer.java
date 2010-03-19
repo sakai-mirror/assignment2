@@ -62,7 +62,7 @@ public class GradebookDetailsRenderer {
 
         UIJointContainer joint = new UIJointContainer(tofill, divID, "gradebook_details:", ""+1);
 
-        Assignment2 assignment = assignmentLogic.getAssignmentByIdWithAssociatedData(assignmentId);
+        Assignment2 assignment = assignmentLogic.getAssignmentByIdWithAssociatedData(assignmentId, null);
         //Grade Permission
         Boolean grade_perm = gradebookLogic.isCurrentUserAbleToGradeStudentForItem(assignment.getContextId(), as.getUserId(), assignment.getGradebookItemId());
 

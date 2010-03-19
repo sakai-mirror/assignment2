@@ -398,14 +398,14 @@ public class AssignmentLogicTest extends Assignment2TestBase {
     public void testGetAssignmentByIdWithAssociatedData() throws Exception {
         // try passing a null id
         try {
-            assignmentLogic.getAssignmentByIdWithAssociatedData(null);
+            assignmentLogic.getAssignmentByIdWithAssociatedData(null, null);
             fail("Did not catch null assignment id passed to getAssignmentByIdWithAssociatedData");
         } catch (IllegalArgumentException iae) {}
         
      // try retrieving the assignment w/o permission
         externalLogic.setCurrentUserId("random");
         try {
-            assignmentLogic.getAssignmentByIdWithAssociatedData(testData.a1Id);
+            assignmentLogic.getAssignmentByIdWithAssociatedData(testData.a1Id, null);
             fail("Did not catch invalid user attempting to access assignment via getAssignmentById");
         } catch (SecurityException se) {}
 
@@ -416,13 +416,13 @@ public class AssignmentLogicTest extends Assignment2TestBase {
 
         // try passing an id that doesn't exist 
         try {
-            assignmentLogic.getAssignmentByIdWithAssociatedData(12345L);
+            assignmentLogic.getAssignmentByIdWithAssociatedData(12345L, null);
             fail("did not catch non-existent assignmentId passed to getAssignmentByIdWithAssociatedData");
         }
         catch (AssignmentNotFoundException anfe) {}
 
         // let's try to retrieve a graded item now
-        Assignment2 assign = assignmentLogic.getAssignmentByIdWithAssociatedData(testData.a4Id);
+        Assignment2 assign = assignmentLogic.getAssignmentByIdWithAssociatedData(testData.a4Id, null);
         assertNotNull(assign);
         assertTrue(assign.getId().equals(testData.a4Id));
 
@@ -431,7 +431,7 @@ public class AssignmentLogicTest extends Assignment2TestBase {
         assertTrue(assign.getAttachmentSet().isEmpty());
 
         // try an ungraded item
-        assign = assignmentLogic.getAssignmentByIdWithAssociatedData(testData.a1Id);
+        assign = assignmentLogic.getAssignmentByIdWithAssociatedData(testData.a1Id, null);
         assertTrue(assign.getId().equals(testData.a1Id));
         assertTrue(assign.getAssignmentGroupSet().size() == 2);
         assertTrue(assign.getAttachmentSet().size() == 2); 	

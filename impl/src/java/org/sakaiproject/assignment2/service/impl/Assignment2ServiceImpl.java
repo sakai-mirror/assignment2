@@ -76,11 +76,11 @@ public class Assignment2ServiceImpl implements Assignment2Service {
             throw new IllegalArgumentException("Null assignmentId passed to getAssignmentById");
         }
         
-        if (!permissionLogic.isUserAllowedToViewAssignment(assignmentId)) {
+        if (!permissionLogic.isUserAllowedToViewAssignment(assignmentId, null)) {
             throw new SecurityException("User attempted to view assignment with id " + assignmentId + " without permission");
         }
 
-        Assignment2 assign = assignmentLogic.getAssignmentByIdWithAssociatedData(assignmentId);
+        Assignment2 assign = assignmentLogic.getAssignmentByIdWithAssociatedData(assignmentId, null);
         
         // the method above should already throw this exception, but just in case that changes...
         if (assign == null) {

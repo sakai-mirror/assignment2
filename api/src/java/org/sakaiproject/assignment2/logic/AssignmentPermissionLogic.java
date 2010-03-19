@@ -172,10 +172,12 @@ public interface AssignmentPermissionLogic {
      * for this user, you can optionally pass them here. this will avoid extra look-ups if
      * a permission is already in this map. Map of permission name (ie {@link AssignmentConstants#PERMISSION_ADD_ASSIGNMENTS}
      * to Boolean true/false
+     * @param optionalParameters in special situations, you may need to pass additional information
+     * (such as the tag reference) to answer this question. leave null if you just need
+     * the default question answered
      * @return true if the user has permission to view this assignment
      */
-    public boolean isUserAllowedToViewAssignment(String userId, Assignment2 assignment, List<String> groupMembershipIds, Map<String, Boolean> authzPermissions);
-
+    public boolean isUserAllowedToViewAssignment(String userId, Assignment2 assignment, List<String> groupMembershipIds, Map<String, Boolean> authzPermissions, Map<String, Object> optionalParameters);
     
     /**
      * 
@@ -243,10 +245,13 @@ public interface AssignmentPermissionLogic {
      * @param userId userId to check. If null, will retrieve the current user.
      * @param studentId
      * @param assignmentId
+     * @param optionalParameters in special situations, you may need to pass additional information
+     * (such as the tag reference) to answer this question. leave null if you just need
+     * the default question answered
      * @return true if the user is allowed to view the given student's
      * submission for the given assignment
      */
-    public boolean isUserAllowedToViewSubmissionForAssignment(String userId, String studentId, Long assignmentId);
+    public boolean isUserAllowedToViewSubmissionForAssignment(String userId, String studentId, Long assignmentId, Map<String, Object> optionalParameters);
 
     /**
      * 
@@ -326,13 +331,16 @@ public interface AssignmentPermissionLogic {
     /**
      * 
      * @param assignmentId
+     * @param optionalParameters in special situations, you may need to pass additional information
+     * (such as the tag reference) to answer this question. leave null if you just need
+     * the default question answered
      * @return true if the current user has access to this assignment. some scenarios that
      * would be false: if user is a student and assignment is restricted to groups outside of student's memberships
      * or not open; if user is TA but is not a member of any of the assignment's restricted groups
      * note: if assignment has been removed, only a student with an existing
      * submission for that assignment may view the assignment. 
      */
-    public boolean isUserAllowedToViewAssignment(Long assignmentId);
+    public boolean isUserAllowedToViewAssignment(Long assignmentId, Map<String, Object> optionalParameters);
 
     /**
      * @param studentId

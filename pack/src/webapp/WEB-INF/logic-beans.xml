@@ -62,6 +62,7 @@
       <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
       <property name="dao" ref="org.sakaiproject.assignment2.dao.AssignmentDao" />
       <property name="assignmentAuthzLogic" ref="org.sakaiproject.assignment2.logic.AssignmentAuthzLogic" />
+      <property name="externalTaggableLogic" ref="org.sakaiproject.assignment2.logic.ExternalTaggableLogic" />
    </bean>
    
    <bean id="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" class="org.sakaiproject.assignment2.logic.impl.AssignmentSubmissionLogicImpl" init-method="init">
@@ -135,4 +136,7 @@
 		<property name="assignmentBundleLogic" ref="org.sakaiproject.assignment2.logic.AssignmentBundleLogic" />
 		<property name="assignmentPermissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentPermissionLogic" />
 	</bean>
+  
+  <bean id="org.sakaiproject.assignment2.logic.ExternalTaggableLogic" class="org.sakaiproject.assignment2.logic.impl.ExternalTaggableLogicImpl" init-method="init">
+   </bean>
 </beans>

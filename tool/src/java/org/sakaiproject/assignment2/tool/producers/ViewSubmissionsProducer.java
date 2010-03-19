@@ -134,7 +134,7 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
             return;
         }
         assignmentId = params.assignmentId;
-        Assignment2 assignment = assignmentLogic.getAssignmentByIdWithAssociatedData(assignmentId);
+        Assignment2 assignment = assignmentLogic.getAssignmentByIdWithAssociatedData(assignmentId, null);
         
         String currUserId = externalLogic.getCurrentUserId();
         

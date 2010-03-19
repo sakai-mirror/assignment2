@@ -212,35 +212,35 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
     public void testGetCurrentSubmissionByAssignmentIdAndStudentId() {
         // try passing a null assignmentId
         try {
-            submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(null, AssignmentTestDataLoad.STUDENT1_UID);
+            submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(null, AssignmentTestDataLoad.STUDENT1_UID, null);
             fail("did not handle null assignmentId passed to testGetCurrentSubmissionByAssignmentIdAndStudentId");
         } catch (IllegalArgumentException iae) {}
         // try passing a null studentId
         try {
-            submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(testData.a1Id, null);
+            submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(testData.a1Id, null, null);
             fail("did not handle null studentId passed to testGetCurrentSubmissionByAssignmentIdAndStudentId");
         } catch (IllegalArgumentException iae) {}
 
         // pass an assignmentId that doesn't exist
         try {
-            submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(12345L, AssignmentTestDataLoad.STUDENT1_UID);
+            submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(12345L, AssignmentTestDataLoad.STUDENT1_UID, null);
             fail("did not catch non-existent id passed to getCurrentSubmissionByAssignmentIdAndStudentId");
         } catch (AssignmentNotFoundException anfe) {}
 
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
 
         // try to get one for a student who hasn't made a submission yet
-        AssignmentSubmission submission = submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(testData.a2Id, AssignmentTestDataLoad.STUDENT1_UID);
+        AssignmentSubmission submission = submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(testData.a2Id, AssignmentTestDataLoad.STUDENT1_UID, null);
         assertTrue(submission.getUserId().equals(AssignmentTestDataLoad.STUDENT1_UID));
         assertNull(submission.getId()); // this should be an "empty rec"
 
         // try one for a student with multiple versions
-        submission = submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(testData.a1Id, AssignmentTestDataLoad.STUDENT2_UID);
+        submission = submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(testData.a1Id, AssignmentTestDataLoad.STUDENT2_UID, null);
         assertTrue(submission.getUserId().equals(AssignmentTestDataLoad.STUDENT2_UID));
         assertTrue(submission.getCurrentSubmissionVersion().getId().equals(testData.st2a1CurrVersion.getId()));
 
         // get a currentVersion that is draft and make sure submission info is not populated
-        submission = submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(testData.a3Id, AssignmentTestDataLoad.STUDENT1_UID);
+        submission = submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(testData.a3Id, AssignmentTestDataLoad.STUDENT1_UID, null);
         assertTrue(submission.getUserId().equals(AssignmentTestDataLoad.STUDENT1_UID));
         assertTrue(submission.getCurrentSubmissionVersion().getId().equals(testData.st1a3CurrVersion.getId()));
         assertTrue(submission.getCurrentSubmissionVersion().getSubmissionAttachSet().isEmpty());
@@ -252,25 +252,25 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
         // now, switch to a ta
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
         // should only have access to student 1 b/c in group 1
-        submission = submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(testData.a1Id, AssignmentTestDataLoad.STUDENT1_UID);
+        submission = submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(testData.a1Id, AssignmentTestDataLoad.STUDENT1_UID, null);
         assertEquals(AssignmentTestDataLoad.STUDENT1_UID, submission.getUserId());
         assertEquals(testData.st1a1CurrVersion.getId(), submission.getCurrentSubmissionVersion().getId());
 
         try {
-            submission = submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(testData.a1Id, AssignmentTestDataLoad.STUDENT2_UID);
+            submission = submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(testData.a1Id, AssignmentTestDataLoad.STUDENT2_UID, null);
             fail("Ta should not have authorization to retrieve submission for st2 through getCurrentSubmissionByAssignmentIdAndStudentId");
         } catch (SecurityException se) {}
 
         // shouldn't have access to this one either
         try {
-            submission = submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(testData.a3Id, AssignmentTestDataLoad.STUDENT1_UID);
+            submission = submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(testData.a3Id, AssignmentTestDataLoad.STUDENT1_UID, null);
             fail("Ta should not have authorization to retrieve submission for st2 through getCurrentSubmissionByAssignmentIdAndStudentId");
         } catch (SecurityException se) {}
 
         // now switch to a student
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT1_UID);
         // should be able to retrieve own submission
-        submission = submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(testData.a3Id, AssignmentTestDataLoad.STUDENT1_UID);
+        submission = submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(testData.a3Id, AssignmentTestDataLoad.STUDENT1_UID, null);
         assertEquals(AssignmentTestDataLoad.STUDENT1_UID, submission.getUserId());
         assertEquals(testData.st1a3CurrVersion.getId(), submission.getCurrentSubmissionVersion().getId());
         // this is a draft, so check that the submission info is populated for student
@@ -279,7 +279,7 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
 
         // double check that student can't view others
         try {
-            submission = submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(testData.a1Id, AssignmentTestDataLoad.STUDENT2_UID);
+            submission = submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(testData.a1Id, AssignmentTestDataLoad.STUDENT2_UID, null);
             fail("Did not catch student accessing another student via getCurrentSubmissionByAssignmentIdAndStudentId");
         } catch (SecurityException se) {}
     }
@@ -1579,7 +1579,7 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
         studentUids.add(AssignmentTestDataLoad.STUDENT1_UID);
         submissionLogic.updateStudentResubmissionOptions(studentUids, testData.a2, numSubmissionsAllowed, resubmitClose);
 
-        AssignmentSubmission sub = submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(testData.a2Id, AssignmentTestDataLoad.STUDENT1_UID);
+        AssignmentSubmission sub = submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(testData.a2Id, AssignmentTestDataLoad.STUDENT1_UID, null);
         assertEquals(numSubmissionsAllowed, sub.getNumSubmissionsAllowed());
         assertEquals(resubmitClose, sub.getResubmitCloseDate());
         assertEquals(0, sub.getSubmissionHistorySet().size());

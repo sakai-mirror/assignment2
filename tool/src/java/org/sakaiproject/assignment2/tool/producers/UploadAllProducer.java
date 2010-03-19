@@ -102,7 +102,7 @@ NavigationCaseReporter, ActionResultInterceptor
     {
         AssignmentViewParams params = (AssignmentViewParams) viewparams;
 
-        Assignment2 assignment = assignmentLogic.getAssignmentByIdWithAssociatedData(params.assignmentId);
+        Assignment2 assignment = assignmentLogic.getAssignmentByIdWithAssociatedData(params.assignmentId, null);
 
         // Make BreadCrumbs
         UIInternalLink.make(tofill, "breadcrumb_asnn_list", 

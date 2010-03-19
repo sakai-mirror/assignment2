@@ -25,8 +25,12 @@ import java.util.Date;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.component.cover.ServerConfigurationService;
+import org.sakaiproject.exception.IdUnusedException;
+import org.sakaiproject.site.api.Site;
+import org.sakaiproject.site.cover.SiteService;
 import org.sakaiproject.taggable.api.TaggableActivity;
 import org.sakaiproject.taggable.api.TaggableItem;
 import org.sakaiproject.user.api.User;
@@ -39,7 +43,7 @@ public class AssignmentItemImpl implements TaggableItem {
     private static final Log logger = LogFactory
     .getLog(AssignmentItemImpl.class);
 
-    private static ResourceLoader rb = new ResourceLoader("assignment");
+    private static ResourceLoader rb = new ResourceLoader("messages");
 
     protected static final String ITEM_REF_SEPARATOR = "@";
 
@@ -97,9 +101,17 @@ public class AssignmentItemImpl implements TaggableItem {
 
     public String getItemDetailUrl()
     {
-        // TODO Auto-generated method stub
-        return null;
+    	Assignment2 assignment = submission.getAssignment();
+    	String siteId = assignment.getContextId();
+    	String placement = getSite(siteId).getToolForCommonId("sakai.assignment2").getId();
+    	String url = ServerConfigurationService.getToolUrl() + "/" + placement + 
+    		"/view-submission/" + Long.toString(assignment.getId()) + "/" + userId;
+        return url;
     }
+    
+    public String getItemDetailPrivateUrl(){
+		return getItemDetailUrl();
+	}
 
     public String getIconUrl()
     {
@@ -125,36 +137,53 @@ public class AssignmentItemImpl implements TaggableItem {
     public String getItemDetailUrlParams()
     {
         // TODO Auto-generated method stub
-        return null;
+        return "?";
     }
 
     public Date getLastModifiedDate()
     {
-        // TODO Auto-generated method stub
-        return null;
+    	return submission.getModifiedDate();
     }
 
     public String getOwner()
     {
-        // TODO Auto-generated method stub
-        return null;
+    	String subUserId = submission.getUserId();
+    	String owner = subUserId;
+    	try {    		
+			User user = UserDirectoryService.getUser(subUserId);
+			owner = user.getDisplayName();
+		} catch (UserNotDefinedException e) {
+			logger.warn("Unable to get display name from user id: " + subUserId, e);
+		}
+    	return owner;
     }
 
     public String getSiteTitle()
     {
-        // TODO Auto-generated method stub
-        return null;
+    	String siteId = ((AssignmentSubmission)getObject()).getAssignment().getContextId();
+		String title = getSite(siteId).getTitle();
+		
+        return title;
     }
 
     public String getTypeName()
     {
-        // TODO Auto-generated method stub
-        return null;
+    	return rb.getString("service_name");
     }
 
     public boolean getUseDecoration()
     {
-        // TODO Auto-generated method stub
-        return false;
+    	//TODO: not for sure about this one
+        return true;
     }
+    
+	private Site getSite(String siteId) {
+		Site site = null;
+		try {
+			site = SiteService.getSite(siteId);
+		} catch (IdUnusedException e) {
+			logger.error("Unable to get Site object from site id: " + siteId, e);
+		}
+		return site;
+	}
 }

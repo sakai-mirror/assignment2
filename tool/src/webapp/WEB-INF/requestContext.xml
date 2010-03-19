@@ -64,6 +64,12 @@
         <property name="messageLocator" ref="messageLocator" />
     </bean>
     
+    <bean id="AsnnTagsRenderer"
+        class="org.sakaiproject.assignment2.tool.producers.renderers.AsnnTagsRenderer">
+        <property name="externalTaggableLogic" ref="org.sakaiproject.assignment2.logic.ExternalTaggableLogic" />
+        <property name="assignmentActivityProducer" ref="org.sakaiproject.assignment2.taggable.api.AssignmentActivityProducer" />
+    </bean>
+    
     <bean id="AsnnSubmitEditorRenderer"
         class="org.sakaiproject.assignment2.tool.producers.renderers.AsnnSubmitEditorRenderer">
         <property name="attachmentInputEvolver" ref="AttachmentInputEvolver" />
@@ -76,14 +82,15 @@
         <property name="localTurnitinLogic" ref="localTurnitinLogic" />
         <property name="asnnInstructionsRenderer" ref="AsnnInstructionsRenderer"></property>
         <property name="asnnToggleRenderer" ref="AsnnToggleRenderer"></property>
-
+        <property name="asnnTagsRenderer" ref="AsnnTagsRenderer"></property>
     </bean>
     
     <bean id="AsnnSubmissionVersionRenderer"
     	class="org.sakaiproject.assignment2.tool.producers.renderers.AsnnSubmissionVersionRenderer">
     	<property name="attachmentListRenderer" ref="AttachmentListRenderer"></property>
     	<property name="viewParameters" ref="viewParameters"></property>
-        <property name="externalContentReviewLogic" ref="org.sakaiproject.assignment2.logic.ExternalContentReviewLogic"></property>
+      <property name="externalContentReviewLogic" ref="org.sakaiproject.assignment2.logic.ExternalContentReviewLogic"></property>
+      <property name="assignmentPermissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentPermissionLogic" />
     </bean>
     
     <bean id="AsnnSubmissionHistoryRenderer"
@@ -202,6 +209,7 @@
       <property name="displayUtil" ref="DisplayUtil" />
       <property name="asnnInstructionsRenderer" ref="AsnnInstructionsRenderer"></property>
       <property name="asnnToggleRenderer" ref="AsnnToggleRenderer"></property>
+      <property name="asnnTagsRenderer" ref="AsnnTagsRenderer"></property>
    </bean>
 
    <bean class="org.sakaiproject.assignment2.tool.producers.ViewSubmissionsProducer">
@@ -280,6 +288,29 @@
   
   <bean class="org.sakaiproject.assignment2.tool.producers.PermissionsProducer">
       <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
+   </bean>
+
+  <bean class="org.sakaiproject.assignment2.tool.producers.ViewAssignmentProducer">
+       <property name="locale" ref="requestLocale" />
+       <property name="messageLocator" ref="messageLocator" />
+       <property name="asnnInstructionsRenderer" ref="AsnnInstructionsRenderer"></property>
+       <property name="assignmentPermissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentPermissionLogic" />
+       <property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
+       <property name="externalGradebookLogic" ref="org.sakaiproject.assignment2.logic.ExternalGradebookLogic" />
+       <property name="externalContentReviewLogic" ref="org.sakaiproject.assignment2.logic.ExternalContentReviewLogic" />
+   </bean>
+   
+   <bean class="org.sakaiproject.assignment2.tool.producers.ViewStudentSubmissionProducer">
+       <property name="locale" ref="requestLocale" />
+       <property name="asnnInstructionsRenderer" ref="AsnnInstructionsRenderer"></property>
+       <property name="assignmentPermissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentPermissionLogic" />
+       <property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
+       <property name="submissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
+       <property name="asnnSubmissionVersionRenderer" ref="AsnnSubmissionVersionRenderer"></property>
+       <property name="messageLocator" ref="messageLocator"></property>
+       <property name="displayUtil" ref="DisplayUtil" />
+       <property name="asnnToggleRenderer" ref="AsnnToggleRenderer"></property>
+       <property name="externalGradebookLogic" ref="org.sakaiproject.assignment2.logic.ExternalGradebookLogic" />
    </bean>
 
    <!--  AJAX Fragment Producers -->
@@ -411,5 +442,32 @@
 	<!-- Validators -->
 	<bean id="Assignment2Validator" class="org.sakaiproject.assignment2.tool.beans.Assignment2Validator" />
 
+    <!-- ASNN-521 -->
+    <bean id="asnnHelperHandlerHookBean"
+    class="org.sakaiproject.assignment2.tool.handlerhooks.HelperHandlerHookBean"
+    lazy-init="true">
+    <property name="activeToolManager"
+      ref="org.sakaiproject.tool.api.ActiveToolManager" />
+    <property name="actionResultInterpreter"
+      ref="actionResultInterpreter" />
+    <property name="beanLocator" ref="requestBeanLocator" />
+    <property name="beanModelAlterer" ref="DARApplier" />
+    <property name="httpServletRequest" ref="httpServletRequest" />
+    <property name="httpServletResponse" ref="httpServletResponse" />
+    <property name="statePreservationManager"
+      ref="statePreservationManager" />
+    <property name="tokenStateHolder" ref="flowTokenStateHolder" />
+    <property name="viewParameters" ref="viewParameters" />
+    <property name="viewResolver" ref="viewResolver" />
+    <property name="viewStateHandler" ref="viewStateHandler" />
+    <property name="baseURLProvider" ref="baseURLProvider" />
+    <property name="pathInfo" ref="requestPathInfo" />
+    <property name="ariProcessor" ref="actionResultInterceptorProcessor" />
+    </bean>
+    
+    <!-- ASNN-512 -->
+    <bean id="httpServletFactory"
+    class="org.sakaiproject.assignment2.tool.handlerhooks.Asnn2HttpServletFactory">
+    </bean>
 
 </beans>

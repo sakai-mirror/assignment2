@@ -133,7 +133,7 @@ public class AsnnSubmissionDetailsRenderer implements BasicProducer {
         // we may have been passed an empty assignmentSubmission object (except for assignment and userId),
         // so let's retrieve the real thing
         if (!previewAsStudent && assignmentSubmission.getId() == null) {
-            AssignmentSubmission subFromDb = submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(assignment.getId(), assignmentSubmission.getUserId());
+            AssignmentSubmission subFromDb = submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(assignment.getId(), assignmentSubmission.getUserId(), null);
             if (subFromDb != null) {
                 assignmentSubmission = subFromDb;
             }

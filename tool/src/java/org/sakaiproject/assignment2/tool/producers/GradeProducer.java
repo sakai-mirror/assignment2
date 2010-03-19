@@ -48,6 +48,7 @@ import org.sakaiproject.assignment2.tool.producers.evolvers.AttachmentInputEvolv
 import org.sakaiproject.assignment2.tool.producers.fragments.FragmentGradebookDetailsProducer;
 import org.sakaiproject.assignment2.tool.producers.fragments.FragmentSubmissionGradePreviewProducer;
 import org.sakaiproject.assignment2.tool.producers.renderers.AsnnInstructionsRenderer;
+import org.sakaiproject.assignment2.tool.producers.renderers.AsnnTagsRenderer;
 import org.sakaiproject.assignment2.tool.producers.renderers.AsnnToggleRenderer;
 import org.sakaiproject.assignment2.tool.producers.renderers.AttachmentListRenderer;
 
@@ -109,6 +110,7 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
     private ExternalContentReviewLogic contentReviewLogic;
     private DisplayUtil displayUtil;
     private AsnnInstructionsRenderer asnnInstructionsRenderer;
+    private AsnnTagsRenderer tagsRenderer;
 
     private AsnnToggleRenderer toggleRenderer;
     public void setAsnnToggleRenderer(AsnnToggleRenderer toggleRenderer) {
@@ -138,8 +140,8 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
             return;
         }
 
-        AssignmentSubmission as = submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(assignmentId, userId);
-        Assignment2 assignment = assignmentLogic.getAssignmentByIdWithAssociatedData(assignmentId);
+        AssignmentSubmission as = submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(assignmentId, userId, null);
+        Assignment2 assignment = assignmentLogic.getAssignmentByIdWithAssociatedData(assignmentId, null);
 
         boolean gbItemExists = assignment.isGraded() && assignment.getGradebookItemId() != null && 
                 gradebookLogic.gradebookItemExists(assignment.getGradebookItemId());
@@ -208,6 +210,9 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
 
         // Instructions
         asnnInstructionsRenderer.makeInstructions(tofill, "assignment-instructions:", assignment, true, true, false);
+
+        // Tagging info, if appropriate
+        tagsRenderer.makeTagInformation(tofill, "tagging-info-grading:", assignment);
 
         
         /**
@@ -808,6 +813,10 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
     
     public void setAsnnInstructionsRenderer(AsnnInstructionsRenderer asnnInstructionsRenderer) {
         this.asnnInstructionsRenderer = asnnInstructionsRenderer;
+    }
+    
+    public void setAsnnTagsRenderer(AsnnTagsRenderer tagsRenderer) {
+        this.tagsRenderer = tagsRenderer;
     }
 
 }

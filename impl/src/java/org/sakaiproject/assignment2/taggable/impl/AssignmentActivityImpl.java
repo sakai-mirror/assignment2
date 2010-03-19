@@ -21,13 +21,21 @@
 
 package org.sakaiproject.assignment2.taggable.impl;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.component.cover.ServerConfigurationService;
+import org.sakaiproject.exception.IdUnusedException;
+import org.sakaiproject.site.api.Site;
+import org.sakaiproject.site.cover.SiteService;
 import org.sakaiproject.taggable.api.TaggableActivity;
 import org.sakaiproject.taggable.api.TaggableActivityProducer;
 
 public class AssignmentActivityImpl implements TaggableActivity {
 
+	private static final Log logger = LogFactory
+    	.getLog(AssignmentActivityImpl.class);
+	
     protected Assignment2 assignment;
 
     protected TaggableActivityProducer producer;
@@ -72,19 +80,29 @@ public class AssignmentActivityImpl implements TaggableActivity {
 
     public String getActivityDetailUrl()
     {
-        //TODO use constants
-        // the assignment2_detail part is in tool...maybe it can be moved elsewhere?
-
-        //String url = ServerConfigurationService.getServerUrl() + 
-        //"/direct/assignment2_detail/" + Long.toString(assignment.getId());
+        //http://localhost:8080/tool/070a6228-96c3-42d0-9c55-4569c9eea900/view-assignment/1/
         
-        //TODO
-        return "";
+    	String siteId = assignment.getContextId();
+    	String placement = getSite(siteId).getToolForCommonId("sakai.assignment2").getId();
+    	String url = ServerConfigurationService.getToolUrl() + "/" + placement + 
+    		"/view-assignment/" + Long.toString(assignment.getId());
+    	
+        return url;
     }
 
     public String getTypeName()
     {
         return producer.getName();
     }
+    
+    private Site getSite(String siteId) {
+		Site site = null;
+		try {
+			site = SiteService.getSite(siteId);
+		} catch (IdUnusedException e) {
+			logger.error("Unable to get Site object from site id: " + siteId, e);
+		}
+		return site;
+	}
 
 }

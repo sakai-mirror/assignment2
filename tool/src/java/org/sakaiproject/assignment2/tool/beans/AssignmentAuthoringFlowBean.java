@@ -54,7 +54,7 @@ public class AssignmentAuthoringFlowBean implements BeanLocator {
             assignment = assignment2Creator.create();
         }
         else if (assignment == null) {
-            assignment = assignmentLogic.getAssignmentByIdWithAssociatedData(new Long(name)); 
+            assignment = assignmentLogic.getAssignmentByIdWithAssociatedData(new Long(name), null); 
         }
         return assignment;
     }

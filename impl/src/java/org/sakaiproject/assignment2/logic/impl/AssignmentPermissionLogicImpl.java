@@ -38,6 +38,7 @@ import org.sakaiproject.assignment2.exception.SubmissionNotFoundException;
 import org.sakaiproject.assignment2.logic.AssignmentAuthzLogic;
 import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
+import org.sakaiproject.assignment2.logic.ExternalTaggableLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentGroup;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
@@ -70,6 +71,11 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
     private AssignmentAuthzLogic authz;
     public void setAssignmentAuthzLogic(AssignmentAuthzLogic authz) {
         this.authz = authz;
+    }
+    
+    private ExternalTaggableLogic taggableLogic;
+    public void setExternalTaggableLogic(ExternalTaggableLogic taggableLogic) {
+        this.taggableLogic = taggableLogic;
     }
     
     public boolean isUserAllowedForAllGroups(String userId, String contextId) {
@@ -192,7 +198,7 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
                 AssignmentConstants.PERMISSION_MANAGE_SUBMISSIONS, groupMembershipIds, authzPermissions);
     }
     
-    public boolean isUserAllowedToViewAssignment(String userId, Assignment2 assignment, List<String> groupMembershipIds, Map<String, Boolean> authzPermissions) {
+    public boolean isUserAllowedToViewAssignment(String userId, Assignment2 assignment, List<String> groupMembershipIds, Map<String, Boolean> authzPermissions, Map<String, Object> optionalParameters) {
         if (assignment == null) {
             throw new IllegalArgumentException("Null assignment passed to isUserAllowedToViewAssignment");
         }
@@ -223,11 +229,25 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
             allowed = false;
         }
         
+        // if still not allowed, let's check for the optional parameters that may
+        // override our default permission questions
+        if (!allowed) {
+            if (optionalParameters != null) {
+                // check for a tag
+                String tagReference = (String)optionalParameters.get(AssignmentConstants.TAGGABLE_REF_KEY);
+                if (tagReference != null) {
+                    if (taggableLogic.isTaggable() && taggableLogic.isSiteAssociated(assignment.getContextId())) {
+                        allowed = taggableLogic.canGetActivity(assignment.getReference(), userId, tagReference);
+                    }
+                }
+            }
+        }
+        
         return allowed;
     }
     
 
-    public boolean isUserAllowedToViewAssignment(Long assignmentId) {
+    public boolean isUserAllowedToViewAssignment(Long assignmentId, Map<String, Object> optionalParameters) {
         if (assignmentId == null) {
             throw new IllegalArgumentException("Null assignmentId passed to isUserAbleToViewAssignment");
         }
@@ -238,7 +258,7 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
             throw new AssignmentNotFoundException("No assignment found with id " + assignmentId);
         }
 
-        return isUserAllowedToViewAssignment(null, assign, null, null);
+        return isUserAllowedToViewAssignment(null, assign, null, null, optionalParameters);
     }
     
     public Map<String, Boolean> getPermissionsForSite(String contextId, List<String> permissions) {
@@ -325,7 +345,7 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
                             if (authzPermission) {
                                 // the ability to view an assignment isn't straightforward, so call the specific method
                                 if (permission.equals(AssignmentConstants.PERMISSION_VIEW_ASSIGNMENTS)) {
-                                    hasPermission = isUserAllowedToViewAssignment(currUserId, assign, groupMembershipIds, authzPermMap);
+                                    hasPermission = isUserAllowedToViewAssignment(currUserId, assign, groupMembershipIds, authzPermMap, null);
                                 } else {
                                     hasPermission = isUserAllowedToTakeActionOnAssignment(currUserId, assign, 
                                             permission, groupMembershipIds, authzPermMap);
@@ -553,7 +573,7 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
         return allowed;
     }
 
-    public boolean isUserAllowedToViewSubmissionForAssignment(String userId, String studentId, Long assignmentId) {
+    public boolean isUserAllowedToViewSubmissionForAssignment(String userId, String studentId, Long assignmentId, Map<String, Object> optionalParameters) {
         if (studentId == null || assignmentId == null) {
             throw new IllegalArgumentException("Null studentId or assignmentId passed to isUserAbleToViewStudentSubmissionForAssignment");
         }
@@ -564,12 +584,33 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
             userId = externalLogic.getCurrentUserId();
         }
 
+        Assignment2 assign = null;
+        
         if (userId.equals(studentId)) {
             viewable = true;
         } else {
             // we need to make sure this assignment wasn't deleted
-            Assignment2 assign = dao.getAssignmentByIdWithGroups(assignmentId);
+            assign = dao.getAssignmentByIdWithGroups(assignmentId);
             viewable = isUserAllowedToManageSubmission(userId, studentId, assign);
+        }
+        
+        // if still not viewable, check the optionalParameters to see if this
+        // is a special situation with expanded permissions
+        if (!viewable && optionalParameters != null) {
+            // check for a tag
+            String tagReference = (String) optionalParameters.get(AssignmentConstants.TAGGABLE_REF_KEY);
+            if (tagReference != null) {
+                if (taggableLogic.isTaggable()) {
+                    if (assign == null) {
+                        assign = dao.getAssignmentByIdWithGroups(assignmentId);
+                    }
+                    if (taggableLogic.isSiteAssociated(assign.getContextId())) {
+                        //Get the submission for the reference
+                        String submissionRef = dao.getSubmissionReference(studentId, assign);
+                        viewable = taggableLogic.canGetItem(assign.getReference(), submissionRef, userId, tagReference);
+                    }
+                }
+            }
         }
 
         return viewable;	

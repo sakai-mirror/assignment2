@@ -83,6 +83,11 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
     public void setAsnnToggleRenderer(AsnnToggleRenderer toggleRenderer) {
         this.toggleRenderer = toggleRenderer;
     }
+    
+    private AsnnTagsRenderer tagsRenderer;
+    public void setAsnnTagsRenderer(AsnnTagsRenderer tagsRenderer) {
+        this.tagsRenderer = tagsRenderer;
+    }
 
     // Dependency
     private ViewParameters viewParameters;
@@ -215,6 +220,9 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
         if (!studentPreviewSubmission) {
             // render the instructions
             asnnInstructionsRenderer.makeInstructions(joint, "assignment-instructions-edit:", assignment, false, false, false);
+            
+            // render the assignment tags
+            tagsRenderer.makeTagInformation(joint, "tagging-info-edit:", assignment);
         }
 
         // Because the flow might not be starting on the initial view, the

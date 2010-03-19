@@ -99,7 +99,7 @@ public class StudentSubmissionBean {
             // it, double check that the current submission isn't still
             // draft before we take the "success" actions. if the submission was
             // closed when they hit "submit", the backend saved their submission as draft
-            AssignmentSubmission newSubmission = submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(assignmentId, assignmentSubmission.getUserId());
+            AssignmentSubmission newSubmission = submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(assignmentId, assignmentSubmission.getUserId(), null);
 
             if (!newSubmission.getCurrentSubmissionVersion().isDraft()) {
                 // add a sucess message.  the message will change depending on 

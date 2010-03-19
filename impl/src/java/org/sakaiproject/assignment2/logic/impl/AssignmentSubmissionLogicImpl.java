@@ -120,7 +120,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 
         Assignment2 assignment = submission.getAssignment();
 
-        if (!permissionLogic.isUserAllowedToViewSubmissionForAssignment(null, submission.getUserId(), assignment.getId())) {
+        if (!permissionLogic.isUserAllowedToViewSubmissionForAssignment(null, submission.getUserId(), assignment.getId(), null)) {
             throw new SecurityException("user" + currentUserId + " attempted to view submission with id " + submissionId + " but is not authorized");
         }
 
@@ -153,7 +153,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
             Assignment2 assignment = submission.getAssignment();
 
             // ensure that the current user is authorized to view this user for this assignment
-            if (!permissionLogic.isUserAllowedToViewSubmissionForAssignment(null, submission.getUserId(), assignment.getId())) {
+            if (!permissionLogic.isUserAllowedToViewSubmissionForAssignment(null, submission.getUserId(), assignment.getId(), null)) {
                 throw new SecurityException("User " + currentUserId + " attempted to access the version " + 
                         submissionVersionId + " for student " + submission.getUserId() + " without authorization");
             }
@@ -169,7 +169,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
         return version;
     }
 
-    public AssignmentSubmission getCurrentSubmissionByAssignmentIdAndStudentId(Long assignmentId, String studentId) {
+    public AssignmentSubmission getCurrentSubmissionByAssignmentIdAndStudentId(Long assignmentId, String studentId, Map<String, Object> optionalParameters) {
         if (assignmentId == null || studentId == null) {
             throw new IllegalArgumentException("Null assignmentId or userId passed to getCurrentSubmissionByAssignmentAndUser");
         }
@@ -182,7 +182,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
             throw new AssignmentNotFoundException("No assignment found with id: " + assignmentId);
         }
 
-        if (!permissionLogic.isUserAllowedToViewSubmissionForAssignment(null, studentId, assignment.getId())) {
+        if (!permissionLogic.isUserAllowedToViewSubmissionForAssignment(null, studentId, assignment.getId(), optionalParameters)) {
             throw new SecurityException("Current user " + currentUserId + " is not allowed to view submission for " + studentId + " for assignment " + assignment.getId());
         }
 
@@ -1248,7 +1248,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 
         List<AssignmentSubmissionVersion> filteredVersionHistory = new ArrayList<AssignmentSubmissionVersion>();
 
-        if (!permissionLogic.isUserAllowedToViewSubmissionForAssignment(null, submission.getUserId(), submission.getAssignment().getId())) {
+        if (!permissionLogic.isUserAllowedToViewSubmissionForAssignment(null, submission.getUserId(), submission.getAssignment().getId(), null)) {
             throw new SecurityException("User " + externalLogic.getCurrentUserId() +
                     " attempted to access version history for student " + submission.getUserId() +
             " without authorization!");

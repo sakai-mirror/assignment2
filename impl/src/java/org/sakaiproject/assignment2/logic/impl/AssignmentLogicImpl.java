@@ -133,8 +133,16 @@ public class AssignmentLogicImpl implements AssignmentLogic{
     public void init(){
         if(log.isDebugEnabled()) log.debug("init");
     }
-
+    
     public Assignment2 getAssignmentByIdWithAssociatedData(Long assignmentId) {
+        if (assignmentId == null) {
+            throw new IllegalArgumentException("Null assignmentId passed to getAssignmentByIdWithAssociatedData");
+        }
+        
+        return getAssignmentByIdWithAssociatedData(assignmentId, null);
+    }
+
+    public Assignment2 getAssignmentByIdWithAssociatedData(Long assignmentId, Map<String, Object> optionalParameters) {
         if (assignmentId == null) {
             throw new IllegalArgumentException("Null assignmentId passed to getAssignmentByIdWithAssociatedData");
         }
@@ -147,7 +155,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
         }
         
         // make sure the user can access the assignment object
-        if (!permissionLogic.isUserAllowedToViewAssignment(null, assign, null, null)) {
+        if (!permissionLogic.isUserAllowedToViewAssignment(null, assign, null, null, optionalParameters)) {
             throw new SecurityException("User attempted to access assignment with id " + assignmentId + " without permission");
         }
 
@@ -174,7 +182,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
         }
         
         // make sure the user can access the assignment object
-        if (!permissionLogic.isUserAllowedToViewAssignment(assignmentId)) {
+        if (!permissionLogic.isUserAllowedToViewAssignment(assignmentId, null)) {
             throw new SecurityException("User attempted to access assignment with id " + assignmentId + " without permission");
         }
 

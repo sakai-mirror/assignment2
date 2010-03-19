@@ -284,7 +284,7 @@ public class AssignmentSubmissionBean {
     public String processActionGradePreview(){
         for (String key : OTPMap.keySet()){
             AssignmentSubmission assignmentSubmission = OTPMap.get(key);
-            Assignment2 assignment = assignmentLogic.getAssignmentByIdWithAssociatedData(assignmentId);
+            Assignment2 assignment = assignmentLogic.getAssignmentByIdWithAssociatedData(assignmentId, null);
             assignmentSubmission.setAssignment(assignment);
             // previewAssignmentSubmissionBean.setAssignmentSubmission(assignmentSubmission);
         }

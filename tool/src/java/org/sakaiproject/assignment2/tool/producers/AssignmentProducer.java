@@ -166,7 +166,7 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
         // just in case, default to duplicated
         if (duplicatedAssignId != null) {
             assignmentId = null;
-            Assignment2 dupAssign = assignmentLogic.getAssignmentByIdWithAssociatedData(duplicatedAssignId);
+            Assignment2 dupAssign = assignmentLogic.getAssignmentByIdWithAssociatedData(duplicatedAssignId, null);
             if (dupAssign == null) {
                 throw new AssignmentNotFoundException("No assignment exists with id " + duplicatedAssignId);
             }
