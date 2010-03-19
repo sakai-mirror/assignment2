@@ -64,6 +64,11 @@ public class AsnnTagsRenderer implements BasicProducer {
             return;
         }
         
+        // we don't render tag information for new assignments
+        if (assignment == null || assignment.getId() == null) {
+            return;
+        }
+        
         UIJointContainer mainContainer = new UIJointContainer(tofill, divID, "assn2-assignment-tags-widget:");
         
         // retrieve the available providers
