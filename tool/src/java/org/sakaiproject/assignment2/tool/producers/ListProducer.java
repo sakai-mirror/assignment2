@@ -21,24 +21,17 @@
 
 package org.sakaiproject.assignment2.tool.producers;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
-import org.sakaiproject.tool.api.Placement;
+import org.sakaiproject.assignment2.tool.params.AssignmentViewParams;
 
 import uk.org.ponder.rsf.components.UIContainer;
-import uk.org.ponder.rsf.components.UILink;
+import uk.org.ponder.rsf.components.UIInternalLink;
 import uk.org.ponder.rsf.components.UIMessage;
 import uk.org.ponder.rsf.components.UIOutput;
-import uk.org.ponder.rsf.components.UIVerbatim;
-import uk.org.ponder.rsf.flow.jsfnav.NavigationCase;
-import uk.org.ponder.rsf.flow.jsfnav.NavigationCaseReporter;
 import uk.org.ponder.rsf.view.ComponentChecker;
 import uk.org.ponder.rsf.view.DefaultView;
 import uk.org.ponder.rsf.view.ViewComponentProducer;
-import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
 import uk.org.ponder.rsf.viewstate.ViewParameters;
 
 /**
@@ -62,11 +55,6 @@ public class ListProducer implements ViewComponentProducer, DefaultView {
     public void setExternalLogic(ExternalLogic externalLogic) {
         this.externalLogic = externalLogic;
     }
-
-    private Placement placement;
-    public void setPlacement(Placement placement) {
-        this.placement = placement;
-    }
     
     private AssignmentPermissionLogic permissionLogic;
     public void setAssignmentPermissionLogic(AssignmentPermissionLogic permissionLogic) {
@@ -74,6 +62,8 @@ public class ListProducer implements ViewComponentProducer, DefaultView {
     }
 
     public void fillComponents(UIContainer tofill, ViewParameters viewparams, ComponentChecker checker) {
+        
+        // render the tool-level action links
         String currContextId = externalLogic.getCurrentContextId();
         String currUserId = externalLogic.getCurrentUserId();
         
@@ -86,20 +76,23 @@ public class ListProducer implements ViewComponentProducer, DefaultView {
             // the Add, Reorder, and Permissions links
             if (add) {
                 UIOutput.make(tofill, "add_action");
-                UILink.make(tofill, "add_link", UIMessage.make("assignment2.list.add_assignment"), "/portal/tool/" + placement.getId() +"/assignment");
+                UIInternalLink.make(tofill, "add_link", UIMessage.make("assignment2.list.add_assignment"), 
+                        new AssignmentViewParams(AssignmentProducer.VIEW_ID));
             }
             if (reorder) {
                 UIOutput.make(tofill, "reorder_action");
-                UILink.make(tofill, "reorder_link", UIMessage.make("assignment2.list.reorder"), "/portal/tool/" + placement.getId() +"/reorder-student-view");
-                
+                UIInternalLink.make(tofill, "reorder_link", UIMessage.make("assignment2.list.reorder"), 
+                        new AssignmentViewParams(ReorderStudentViewProducer.VIEW_ID));
+
                 if (add) {
                     UIOutput.make(tofill, "sep0");
                 }
             }
             if (siteUpd) {
                 UIOutput.make(tofill, "permissions_action");
-                UILink.make(tofill, "permissions_link", UIMessage.make("assignment2.list.permissions"), "/portal/tool/" + placement.getId() +"/permissions");
-                
+                UIInternalLink.make(tofill, "permissions_link", UIMessage.make("assignment2.list.permissions"), 
+                        new AssignmentViewParams(PermissionsProducer.VIEW_ID));
+
                 if (add || reorder) {
                     UIOutput.make(tofill, "sep1");
                 }

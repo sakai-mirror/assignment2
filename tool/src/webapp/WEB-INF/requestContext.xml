@@ -235,7 +235,6 @@
    
    <bean class="org.sakaiproject.assignment2.tool.producers.ListProducer">
       <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
-      <property name="placement" ref="sakai-Placement" />
       <property name="assignmentPermissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentPermissionLogic" />
    </bean>
    
