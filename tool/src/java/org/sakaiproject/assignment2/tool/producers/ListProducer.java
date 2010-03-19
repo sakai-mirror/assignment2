@@ -77,10 +77,6 @@ public class ListProducer implements ViewComponentProducer, DefaultView {
         String currContextId = externalLogic.getCurrentContextId();
         String currUserId = externalLogic.getCurrentUserId();
         
-        UIVerbatim.make(tofill, "asnnlist-decl-js", "var sakai = sakai || {};"
-                + "sakai.curPlacement = '"+placement.getId()+"';"
-                + "sakai.curContext = '"+currContextId+"';");
-        
         boolean add = permissionLogic.isUserAllowedToAddAssignments(currUserId, currContextId, null);
         boolean reorder = permissionLogic.isUserAllowedToEditAllAssignments(currUserId, currContextId);
         boolean siteUpd = permissionLogic.isUserAllowedToUpdateSite(currContextId);

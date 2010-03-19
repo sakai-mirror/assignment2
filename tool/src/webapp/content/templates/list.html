@@ -13,11 +13,6 @@
 </head>
 <body>
   <div class="portletBody" rsf:id="page:">
-  <script rsf:id="asnnlist-decl-js" type="text/javascript" language="JavaScript">
-    var sakai = sakai || {};
-    sakai.curPlacement = 'x';
-    sakai.curContext = 'y';
-  </script>
 
   <ul class="breadCrumb">
     <li class="lastCrumb">Assignment List</li>
@@ -32,7 +27,7 @@
   <div> 
     <div style="background: #f1f1f1;">
       <div id="pager-top" class="fl-pager-top flc-pager-top">
-        <p rsf:id="actionBar" style="text-align: left; float: left; width: 40%">
+        <p id="actionBar" style="text-align: left; float: left; width: 40%">
           <span rsf:id="add_action">
               <img class="actionImage" src="/sakai-assignment2-tool/content/images/add.png" />
               <a rsf:id="add_link" class="actionLink" href="#" onclick="window.location = '/portal/tool/'+sakai.curPlacement+'/assignment'">
