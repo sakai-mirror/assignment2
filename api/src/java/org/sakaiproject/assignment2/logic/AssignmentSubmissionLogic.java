@@ -102,6 +102,24 @@ public interface AssignmentSubmissionLogic {
     public AssignmentSubmission getCurrentSubmissionByAssignmentIdAndStudentId(Long assignmentId, String studentId);
 
     /**
+     * 
+     * @param assignmentId
+     * @param studentId
+     * @param taggableRef
+     * @return AssignmentSubmission associated with the given assignmentId and studentId with
+     * the attachments and submission version history populated. Populates currentSubmissionVersion
+     * will return an empty record if there is no submission info for this student yet. If the curr version 
+     * is draft and the submitter is not the current user, will not
+     * populate the submissionText or submissionAttachmentSet. If the current user is
+     * the submitter but feedback has not been released, will not populate
+     * feedback.  Because of these changes that we don't want to save, the 
+     * returned submission was evicted from the session and is not persistent.
+     * @throws SecurityException if current user not allowed to view student's submission
+     * @throws AssignmentNotFoundException if no assignment exists with the given assignmentId
+     */
+    public AssignmentSubmission getCurrentSubmissionByAssignmentIdAndStudentId(Long assignmentId, String studentId, String taggableRef);
+    
+    /**
      * Create or update an AssignmentSubmission and AssignmentSubmissionVersion.
      * Will retrieve the current submission and determine whether a new submission
      * and/or version is required.  Versions are updated until they are submitted.

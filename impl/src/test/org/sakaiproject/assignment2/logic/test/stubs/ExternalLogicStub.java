@@ -368,4 +368,11 @@ public class ExternalLogicStub implements ExternalLogic {
         return null;
     }
 
+    @Override
+    public String getServerUrl()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
 }

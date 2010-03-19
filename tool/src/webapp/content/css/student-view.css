@@ -1,8 +1,3 @@
-h3.submissionHeading {
-    font-weight: normal;
-    margin: 0;
-    font-size: 1.2em;
-}
 
 .studentSubsection {
     margin: 10px;
@@ -15,4 +10,21 @@ h3.submissionHeading {
 
 .honorPledgeSection {
     margin-top: 10px;
+}
+
+.header {
+height:auto;
+padding-top:8px !important;
+}
+.headerSortUp {
+background: url(../images/sortascending.gif) no-repeat left;
+background-position: 40px;
+height:auto;
+padding-top:8px !important;
+}
+.headerSortDown {
+background: url(../images/sortdescending.gif) no-repeat left;
+background-position: 40px;
+height:auto;
+padding-top:8px !important;
 }

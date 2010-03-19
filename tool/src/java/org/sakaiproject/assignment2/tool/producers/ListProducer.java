@@ -54,20 +54,8 @@ public class ListProducer implements ViewComponentProducer, DefaultView {
         return VIEW_ID;
     }
 
-    private ExternalLogic externalLogic;
-    public void setExternalLogic(ExternalLogic externalLogic) {
-        this.externalLogic = externalLogic;
-    }
-
-    private Placement placement;
-    public void setPlacement(Placement placement) {
-        this.placement = placement;
-    }
-
     public void fillComponents(UIContainer tofill, ViewParameters viewparams, ComponentChecker checker) {
-        UIVerbatim.make(tofill, "asnnlist-decl-js", "var sakai = sakai || {};"
-                + "sakai.curPlacement = '"+placement.getId()+"';"
-                + "sakai.curContext = '"+externalLogic.getCurrentContextId()+"';");
+
     }
 
 }

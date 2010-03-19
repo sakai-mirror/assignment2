@@ -21,8 +21,9 @@
 package org.sakaiproject.assignment2.tool.params;
 
 import uk.ac.cam.caret.sakai.rsf.helper.HelperViewParameters;
+import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
 
-public class TaggableHelperViewParams extends HelperViewParameters
+public class TaggableHelperViewParams extends SimpleViewParameters // ASNN-521HelperViewParameters
 {
     public String helperId;
     public String[] values;	

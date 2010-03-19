@@ -21,10 +21,12 @@
 
 package org.sakaiproject.assignment2.tool.producers;
 
+import org.sakaiproject.assignment2.logic.ExternalLogic;
+import org.sakaiproject.tool.api.Placement;
+
 import uk.org.ponder.rsf.components.UIContainer;
 import uk.org.ponder.rsf.components.UIJointContainer;
 import uk.org.ponder.rsf.components.UILink;
-import uk.org.ponder.rsf.components.UIOutput;
 import uk.org.ponder.rsf.components.UIVerbatim;
 import uk.org.ponder.rsf.producers.NullaryProducer;
 import uk.org.ponder.rsf.view.ViewGroup;
@@ -32,16 +34,23 @@ import uk.org.ponder.rsf.view.support.ViewGroupResolver;
 import uk.org.ponder.rsf.viewstate.ViewParameters;
 
 
-public class LayoutProducer implements NullaryProducer {
-
+/**
+ * This inherited producer forms the shell for all the rest of
+ * the producers in Assignments 2, so they merely need to render
+ * the body. At the moment this is where you need to specify extra
+ * javascript files that certain producers need to include.
+ * 
+ * @author rjlowe
+ * @author sgithens
+ *
+ */
+public class LayoutProducer implements NullaryProducer { 
     private NullaryProducer pageproducer;
-    public void setPageProducer(NullaryProducer pageproducer) {
-        this.pageproducer = pageproducer;
-    }
-
     private ViewGroupResolver viewGroupResolver;
     private ViewParameters viewParameters;
     private ViewGroup group;
+    private ExternalLogic externalLogic;
+    private Placement placement;
 
     public void fillComponents(UIContainer tofill) {
 
@@ -55,11 +64,21 @@ public class LayoutProducer implements NullaryProducer {
                 String frameId = org.sakaiproject.util.Web.escapeJavascript("Main" + org.sakaiproject.tool.cover.ToolManager.getCurrentPlacement().getId());
                 UIVerbatim.make(tofill, "iframeId_init", "var iframeId = \"" + frameId + "\";");
             }
+            
+            UIVerbatim.make(tofill, "sakai-location-decl-js", "var sakai = sakai || {};"
+                    + "sakai.curPlacement = '"+placement.getId()+"';"
+                    + "sakai.curContext = '"+externalLogic.getCurrentContextId()+"';");
 
 
             if (viewParameters.viewID.equals(ListProducer.VIEW_ID)){
                 UILink.make(tofill, "asnn-js-include:","/sakai-assignment2-tool/content/js/inst-asnn-list.js");
                 UILink.make(tofill, "asnn-css-include:","/sakai-assignment2-tool/content/css/inst-asnn-list.css");
+            }
+            
+            if (viewParameters.viewID.equals(ReorderStudentViewProducer.VIEW_ID)) {
+                UILink.make(tofill, "asnn-js-include:","/sakai-assignment2-tool/content/js/inst-asnn-list.js");
+                UILink.make(tofill, "asnn-css-include:","/sakai-assignment2-tool/content/css/inst-asnn-list.css");
+                UILink.make(tofill, "asnn-js-include:","/sakai-assignment2-tool/content/js/reorder-student-view.js");
             }
             else if (viewParameters.viewID.equals(ViewSubmissionsProducer.VIEW_ID)) {
                 UILink.make(tofill, "asnn-js-include:", "/sakai-assignment2-tool/content/js/submissionview.js");
@@ -68,12 +87,15 @@ public class LayoutProducer implements NullaryProducer {
                 UILink.make(tofill, "asnn-js-include:","/sakai-assignment2-tool/content/js/grade-student.js");
                 UILink.make(tofill, "asnn-css-include:","/sakai-assignment2-tool/content/css/grade-student.css");
             }
-            else if (viewParameters.viewID.equals(StudentSubmitProducer.VIEW_ID) ||
-                    viewParameters.viewID.equals(StudentAssignmentListProducer.VIEW_ID)) {
+            else if (viewParameters.viewID.equals(StudentSubmitProducer.VIEW_ID)) {
                 UILink.make(tofill, "asnn-css-include:","/sakai-assignment2-tool/content/css/student-view.css");
             }
-            else {
-                makeIter3Javascript(tofill);
+            else if (AssignmentProducer.VIEW_ID.equals(viewParameters.viewID)) {
+                UILink.make(tofill, "asnn-js-include:","/sakai-assignment2-tool/content/js/thickbox.js");
+            }else if (StudentAssignmentListProducer.VIEW_ID.equals(viewParameters.viewID)){
+            	UILink.make(tofill, "asnn-css-include:","/sakai-assignment2-tool/content/css/student-view.css");
+                UILink.make(tofill, "asnn-js-include:","/sakai-assignment2-tool/content/js/stdnt-asnn-list.js");
+                UILink.make(tofill, "asnn-js-include:","/sakai-assignment2-tool/content/js/jquery.tablesorter.js");
             }
 
             //include the components from the page body into tag "page-replace:"
@@ -84,25 +106,25 @@ public class LayoutProducer implements NullaryProducer {
     public void setViewGroupResolver(ViewGroupResolver viewGroupResolver) {
         this.viewGroupResolver = viewGroupResolver;
     }
+    
     public void setViewParameters(ViewParameters viewParameters) {
         this.viewParameters = viewParameters;
     }
+    
     public void setGroup(ViewGroup group) {
         this.group = group;
     }
+    
+    public void setExternalLogic(ExternalLogic externalLogic) {
+        this.externalLogic = externalLogic;
+    }
 
-    /**
-     * This will create the legacy Javascript and CSS imports that a number of
-     * the existing pages require, but we want to exclude for newer dynamic
-     * pages that require bleeding edge versions of javascript libraries.
-     * 
-     * @param tofill
-     */
-    private void makeIter3Javascript(UIContainer tofill) {
-        //UILink.make(tofill, "fluid-0.6beta1.js");
-        //UILink.make(tofill, "ui.sortable.1.5.3.js");
-        //UILink.make(tofill, "thickbox.js");
-        //UILink.make(tofill, "jquery.color.js");
+    public void setPlacement(Placement placement) {
+        this.placement = placement;
+    }
+    
+    public void setPageProducer(NullaryProducer pageproducer) {
+        this.pageproducer = pageproducer;
     }
 
 }

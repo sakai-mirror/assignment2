@@ -12,6 +12,7 @@
       <property name="toolManager" ref="org.sakaiproject.tool.api.ToolManager" />
       <property name="userDirectoryService" ref="org.sakaiproject.user.api.UserDirectoryService" />
       <property name="sectionAwareness" ref="org.sakaiproject.section.api.SectionAwareness"/>
+      <property name="serverConfigurationService" ref="org.sakaiproject.component.api.ServerConfigurationService" />
    </bean>
    
    <bean id="org.sakaiproject.assignment2.logic.ExternalGradebookLogic" class="org.sakaiproject.assignment2.logic.impl.ExternalGradebookLogicImpl" init-method="init">
@@ -57,6 +58,7 @@
       <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
       <property name="externalGradebookLogic" ref="org.sakaiproject.assignment2.logic.ExternalGradebookLogic" />
       <property name="dao" ref="org.sakaiproject.assignment2.dao.AssignmentDao" />
+      <property name="externalTaggableLogic" ref="org.sakaiproject.assignment2.logic.ExternalTaggableLogic" />
    </bean>
    
    <bean id="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" class="org.sakaiproject.assignment2.logic.impl.AssignmentSubmissionLogicImpl" init-method="init">
@@ -132,4 +134,7 @@
 		<property name="assignmentBundleLogic" ref="org.sakaiproject.assignment2.logic.AssignmentBundleLogic" />
 		<property name="assignmentPermissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentPermissionLogic" />
 	</bean>
+  
+  <bean id="org.sakaiproject.assignment2.logic.ExternalTaggableLogic" class="org.sakaiproject.assignment2.logic.impl.ExternalTaggableLogicImpl" init-method="init">
+   </bean>
 </beans>
