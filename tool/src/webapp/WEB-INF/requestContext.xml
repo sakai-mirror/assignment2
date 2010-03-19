@@ -68,6 +68,7 @@
         class="org.sakaiproject.assignment2.tool.producers.renderers.AsnnTagsRenderer">
         <property name="externalTaggableLogic" ref="org.sakaiproject.assignment2.logic.ExternalTaggableLogic" />
         <property name="assignmentActivityProducer" ref="org.sakaiproject.assignment2.taggable.api.AssignmentActivityProducer" />
+        <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
     </bean>
     
     <bean id="AsnnSubmitEditorRenderer"

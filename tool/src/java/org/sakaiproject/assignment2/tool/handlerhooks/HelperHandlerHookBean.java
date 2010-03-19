@@ -79,7 +79,6 @@ public class HelperHandlerHookBean {
   private static int loadedcount = 0;
 
   public boolean handle() {
-    System.out.println("DOING ASNN2 TAGGABLE DEBUG HELPRE!!!!!!!");
     String viewID = viewParameters.viewID;
     Logger.log.info("Handling view: " + viewID);
 

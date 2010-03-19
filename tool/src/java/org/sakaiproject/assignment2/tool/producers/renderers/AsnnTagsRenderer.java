@@ -22,6 +22,7 @@ package org.sakaiproject.assignment2.tool.producers.renderers;
 
 import java.util.List;
 
+import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.logic.ExternalTaggableLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.taggable.api.AssignmentActivityProducer;
@@ -49,6 +50,7 @@ public class AsnnTagsRenderer implements BasicProducer {
     
     private ExternalTaggableLogic taggableLogic;
     private AssignmentActivityProducer activityProducer;
+    private ExternalLogic externalLogic;
     
     /**
      * 
@@ -108,10 +110,14 @@ public class AsnnTagsRenderer implements BasicProducer {
         this.activityProducer = activityProducer;
     }
     
+    public void setExternalLogic(ExternalLogic externalLogic) {
+        this.externalLogic = externalLogic;
+    }
+    
     /**
      * TODO: find a more robust method for handling this!
      * The tag field returned includes html for creating a link and thickbox for
-     * display from assignment2. Unfortunately, this html also includes an old
+     * display from assignment2. Unfortunately, this html also includes a
      * version of jquery and a version of thickbox.js that each collide with
      * the versions of these libraries that we are using.
      * For now, let's just strip out the jquery and thickbox script tags to use
@@ -120,11 +126,32 @@ public class AsnnTagsRenderer implements BasicProducer {
      * @return
      */
     private String stripLibraries(String html) {
-        String librariesInclude = "<script type=\"text/javascript\" language=\"JavaScript\" src=\"http://149.166.143.191:8080/osp-common-tool/js/jquery-1.2.1.js\"></script><script type=\"text/javascript\" language=\"JavaScript\"src=\"http://149.166.143.191:8080/osp-common-tool/js/thickbox.js\"></script><link href=\"http://149.166.143.191:8080/osp-common-tool/css/thickbox.css\" type=\"text/css\"rel=\"stylesheet\" media=\"all\" />";
-        if (html != null && html.indexOf(librariesInclude) != -1) {
+        String serverUrl = externalLogic.getServerUrl();
+        
+        StringBuilder jQueryInclude = new StringBuilder();
+        jQueryInclude.append("<script type=\"text/javascript\" language=\"JavaScript\" src=\"");
+        jQueryInclude.append(serverUrl);
+        jQueryInclude.append("/library/js/jquery-ui-latest/js/jquery.min.js\"></script>");
+        
+        if (html != null && html.indexOf(jQueryInclude.toString()) != -1) {
             // strip this line from the html to avoid colliding versions
-            html = html.replaceAll(librariesInclude, "");
+            html = html.replaceAll(jQueryInclude.toString(), "");
         }
+        
+        // the thickbox seems to be working properly now, so commenting out
+        
+        /*StringBuilder thickboxInclude = new StringBuilder();
+        thickboxInclude.append("<script type=\"text/javascript\" language=\"JavaScript\"src=\"");
+        thickboxInclude.append(serverUrl);
+        thickboxInclude.append("/osp-common-tool/js/thickbox.js\"></script>");
+        thickboxInclude.append("<link href=\"");
+        thickboxInclude.append(serverUrl);
+        thickboxInclude.append("/osp-common-tool/css/thickbox.css\" type=\"text/css\"rel=\"stylesheet\" media=\"all\" />");
+        
+        if (html != null && html.indexOf(thickboxInclude.toString()) != -1) {
+            // strip this line from the html to avoid colliding versions
+            html = html.replaceAll(thickboxInclude.toString(), "");
+        }*/
         
         return html;
     }

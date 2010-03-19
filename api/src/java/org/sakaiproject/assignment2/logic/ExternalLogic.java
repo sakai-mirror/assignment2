@@ -238,4 +238,10 @@ public interface ExternalLogic {
      * @return a map of the user id to sort name for the given userIds
      */
     public Map<String, String> getUserIdToSortNameMap(Collection userIds);
+    
+    /**
+     * 
+     * @return the server url for this instance
+     */
+    public String getServerUrl();
 }

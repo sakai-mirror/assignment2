@@ -388,4 +388,8 @@ public class ExternalLogicImpl implements ExternalLogic {
 
         return userIdSortNameMap;
     }
+    
+    public String getServerUrl() {
+        return serverConfigurationService.getServerUrl();
+    }
 }
