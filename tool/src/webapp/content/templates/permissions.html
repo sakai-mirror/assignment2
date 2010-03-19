@@ -21,13 +21,35 @@
     </ul>
   </div>
 
-
-
-    <h3 rsf:id="msg=assignment2.permissions.title">Permissions!</h3>
-    <p rsf:id="instructions" class="instruction">Permissions instructions go here</p>
+  <h3 rsf:id="msg=assignment2.permissions.title">Permissions!</h3>
+  <p rsf:id="instructions" class="instruction">Permissions instructions go here</p>
       
-      <form rsf:id="form" method="post">
-      </form>
+  <form rsf:id="form" method="post">
+    <div rsf:id="perm_container:">
+    <table class="listHier lines">
+      <tr rsf:id="roles:">
+        <th>Permissions</th>
+        <th>Instructor</th>
+        <th>Teaching Assistant</th>
+        <th>Student</th>
+      </tr>
+      <tr>
+        <td>Read assignments</td>
+        <td><input type="checkbox" /></td>
+        <td><input type="checkbox" /></td>
+        <td><input type="checkbox" /></td>
+      </tr>
+      <tr>
+        <td>Add assignments</td>
+        <td><input type="checkbox" /></td>
+        <td><input type="checkbox" /></td>
+        <td><input type="checkbox" /></td>
+      </tr>
+      
+      
+    </table>
+    </div>
+  </form>
 
 </div>
 </body>

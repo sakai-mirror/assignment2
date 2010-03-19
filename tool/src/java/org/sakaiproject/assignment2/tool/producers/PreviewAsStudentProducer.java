@@ -8,6 +8,8 @@ import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.tool.beans.AssignmentAuthoringFlowBean;
 import org.sakaiproject.assignment2.tool.beans.AssignmentSubmissionCreator;
+import org.sakaiproject.assignment2.tool.params.SimpleAssignmentViewParams;
+import org.sakaiproject.assignment2.tool.params.StudentSubmissionParams;
 import org.sakaiproject.assignment2.tool.producers.renderers.StudentViewAssignmentRenderer;
 
 import uk.org.ponder.beanutil.entity.EntityBeanLocator;
@@ -19,6 +21,7 @@ import uk.org.ponder.rsf.components.UIMessage;
 import uk.org.ponder.rsf.view.ComponentChecker;
 import uk.org.ponder.rsf.view.ViewComponentProducer;
 import uk.org.ponder.rsf.viewstate.ViewParameters;
+import uk.org.ponder.rsf.viewstate.ViewParamsReporter;
 
 /**
  * This renders the "Preview As Student" view for Instructors editing
@@ -31,7 +34,7 @@ import uk.org.ponder.rsf.viewstate.ViewParameters;
  * @author sgithens
  *
  */
-public class PreviewAsStudentProducer implements ViewComponentProducer {
+public class PreviewAsStudentProducer implements ViewComponentProducer, ViewParamsReporter {
     public static final String VIEW_ID = "preview-as-student";
     private static final Log log = LogFactory.getLog(PreviewAsStudentProducer.class);
 
@@ -80,6 +83,10 @@ public class PreviewAsStudentProducer implements ViewComponentProducer {
 
     public String getViewID() {
         return VIEW_ID;
+    }
+    
+    public ViewParameters getViewParameters() {
+        return new SimpleAssignmentViewParams();
     }
 
 }

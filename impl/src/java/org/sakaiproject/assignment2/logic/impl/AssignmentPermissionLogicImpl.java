@@ -43,7 +43,9 @@ import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentGroup;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
+import org.sakaiproject.authz.api.Role;
 import org.sakaiproject.site.api.Group;
+import org.sakaiproject.site.api.Site;
 
 /**
  * This is the implementation for logic to answer common permissions questions
@@ -1031,6 +1033,36 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
         }
         
         return authz.userHasPermission(contextId, "site.upd");
+    }
+    
+    public Map<Role, Map<String, Boolean>> getRoleFunctionMap(String contextId) {
+        if (contextId == null) {
+            throw new IllegalArgumentException("Null contextId passed to getRoleFunctionMap");
+        }
+        
+        Map<Role, Map<String, Boolean>> roleFunctionMap = new HashMap<Role, Map<String,Boolean>>();
+        
+        Site site = externalLogic.getSite(contextId);
+        if (site != null) {
+            Set<Role> roles = site.getRoles();
+            if (roles != null) {
+                for (Role role : roles) {
+                    Map<String, Boolean> functionAllowedMap = new HashMap<String, Boolean>();
+                    Set<String> allowedFunctions = role.getAllowedFunctions();
+                    for (String permission : authz.getAllPermissions()) {
+                        if (allowedFunctions != null && allowedFunctions.contains(permission)) {
+                            functionAllowedMap.put(permission, true);
+                        } else {
+                            functionAllowedMap.put(permission, false);
+                        }
+                    }
+                    
+                    roleFunctionMap.put(role, functionAllowedMap);
+                }
+            }
+        }
+        
+        return roleFunctionMap;
     }
 
 }

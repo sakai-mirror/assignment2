@@ -35,7 +35,19 @@ import org.sakaiproject.assignment2.test.AssignmentTestDataLoad;
  */
 public class AssignmentAuthzLogicStub implements AssignmentAuthzLogic
 {
+    
+    public List<String> getAllPermissions() {
+        List<String> allPerms = new ArrayList<String>();
+        allPerms.add(AssignmentConstants.PERMISSION_VIEW_ASSIGNMENTS);
+        allPerms.add(AssignmentConstants.PERMISSION_SUBMIT);
+        allPerms.add(AssignmentConstants.PERMISSION_ADD_ASSIGNMENTS);
+        allPerms.add(AssignmentConstants.PERMISSION_EDIT_ASSIGNMENTS);
+        allPerms.add(AssignmentConstants.PERMISSION_REMOVE_ASSIGNMENTS);
+        allPerms.add(AssignmentConstants.PERMISSION_MANAGE_SUBMISSIONS);
+        allPerms.add(AssignmentConstants.PERMISSION_ALL_GROUPS);
 
+        return allPerms;
+    }
     
     public boolean userHasAddPermission(String userId, String contextId) {
         return userHasPermission(userId, contextId, AssignmentConstants.PERMISSION_ADD_ASSIGNMENTS);

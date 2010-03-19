@@ -29,6 +29,7 @@ import org.sakaiproject.assignment2.exception.SubmissionNotFoundException;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentGroup;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
+import org.sakaiproject.authz.api.Role;
 import org.sakaiproject.site.api.Group;
 
 /**
@@ -397,4 +398,12 @@ public interface AssignmentPermissionLogic {
      * @return true if the current user has site.upd privileges for the given site
      */
     public boolean isUserAllowedToUpdateSite(String contextId);
+    
+    /**
+     * 
+     * @param contextId
+     * @return a map of the Roles in this context to a map of the permission to true/false depending
+     * upon whether that role has that assignment2 permission.
+     */
+    public Map<Role, Map<String, Boolean>> getRoleFunctionMap(String contextId);
 }

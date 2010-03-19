@@ -118,3 +118,11 @@ body {
     margin-left: 40px;
     margin-bottom: 15px;
 }
+
+.actionLink {
+    font-size: 1.1em;
+}
+
+.actionImage {
+    vertical-align: bottom;
+}

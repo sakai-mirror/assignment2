@@ -21,13 +21,23 @@
 
 package org.sakaiproject.assignment2.tool.producers;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.tool.params.AssignmentViewParams;
+import org.sakaiproject.authz.api.Role;
 
+import uk.org.ponder.messageutil.MessageLocator;
+import uk.org.ponder.rsf.components.UIBranchContainer;
 import uk.org.ponder.rsf.components.UIContainer;
+import uk.org.ponder.rsf.components.UIForm;
 import uk.org.ponder.rsf.components.UIMessage;
+import uk.org.ponder.rsf.components.UIOutput;
 import uk.org.ponder.rsf.view.ComponentChecker;
 import uk.org.ponder.rsf.view.ViewComponentProducer;
 import uk.org.ponder.rsf.viewstate.ViewParameters;
@@ -49,6 +59,8 @@ public class PermissionsProducer implements ViewComponentProducer, ViewParamsRep
     
     // Dependencies
     private ExternalLogic externalLogic;
+    private AssignmentPermissionLogic permissionLogic;
+    private MessageLocator messageLocator;
 
     @SuppressWarnings("unchecked")
     public void fillComponents(UIContainer tofill, ViewParameters viewparams, ComponentChecker checker) {
@@ -61,6 +73,21 @@ public class PermissionsProducer implements ViewComponentProducer, ViewParamsRep
         String siteId = currContextId;
         UIMessage.make(tofill, "instructions", "assignment2.permissions.instructions", new Object[] {toolTitle, siteTitle, siteId});
         
+        /**
+         * Begin the Form
+         */
+        UIForm form = UIForm.make(tofill, "form");
+        
+        UIBranchContainer permContainer = UIBranchContainer.make(form, "perm_container:");
+        
+        // get the role/permission information
+        Map<Role, Map<String, Boolean>> roleFunctionMap = permissionLogic.getRoleFunctionMap(currContextId);
+        List<Role> orderedRoles = new ArrayList<Role>(roleFunctionMap.keySet());
+        
+        UIOutput.make(permContainer, "roles:", messageLocator.getMessage("assignment2.permissions.perm.heading"));
+        for (Role role : orderedRoles) {
+            UIOutput.make(permContainer, "roles:", role.getId());
+        }
     }
 
 
@@ -71,6 +98,14 @@ public class PermissionsProducer implements ViewComponentProducer, ViewParamsRep
 
     public void setExternalLogic(ExternalLogic externalLogic) {
         this.externalLogic = externalLogic;
+    }
+    
+    public void setAssignmentPermissionLogic(AssignmentPermissionLogic permissionLogic) {
+        this.permissionLogic = permissionLogic;
+    }
+    
+    public void setMessageLocator(MessageLocator messageLocator) {
+        this.messageLocator = messageLocator;
     }
 
 }

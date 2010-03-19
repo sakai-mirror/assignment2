@@ -103,6 +103,12 @@ public interface AssignmentAuthzLogic {
     
     //////  END GROUPINGS
     
+   /**
+    * 
+    * @return a list of all of the assignment2 permissions (functions)
+    */
+    public List<String> getAllPermissions();
+    
     /**
      * 
      * @param userId userId to check. If null, will use the current user.

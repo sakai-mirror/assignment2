@@ -11,7 +11,13 @@ label .reqStar {
 }
 
 table.listHier{
-	width: 100%;
+	width: 98%;
+}
+
+.listHier th {
+    /* remove the border on the left and right of the th tags */
+    border-left: none;
+    border-right: none;
 }
 
 /* extends the sakai highlight class */

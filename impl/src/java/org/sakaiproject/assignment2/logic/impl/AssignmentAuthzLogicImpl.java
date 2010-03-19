@@ -60,13 +60,21 @@ public class AssignmentAuthzLogicImpl implements AssignmentAuthzLogic
      */
     protected void registerPermissions() {
         // register Sakai permissions for this tool
-        functionManager.registerFunction(AssignmentConstants.PERMISSION_ADD_ASSIGNMENTS);
-        functionManager.registerFunction(AssignmentConstants.PERMISSION_EDIT_ASSIGNMENTS);
-        functionManager.registerFunction(AssignmentConstants.PERMISSION_SUBMIT);
-        functionManager.registerFunction(AssignmentConstants.PERMISSION_ALL_GROUPS);
-        functionManager.registerFunction(AssignmentConstants.PERMISSION_MANAGE_SUBMISSIONS);
-        functionManager.registerFunction(AssignmentConstants.PERMISSION_VIEW_ASSIGNMENTS);
-        functionManager.registerFunction(AssignmentConstants.PERMISSION_REMOVE_ASSIGNMENTS);
+        for (String permission : getAllPermissions()) {
+            functionManager.registerFunction(permission);}
+    }
+    
+    public List<String> getAllPermissions() {
+        List<String> allPerms = new ArrayList<String>();
+        allPerms.add(AssignmentConstants.PERMISSION_VIEW_ASSIGNMENTS);
+        allPerms.add(AssignmentConstants.PERMISSION_SUBMIT);
+        allPerms.add(AssignmentConstants.PERMISSION_ADD_ASSIGNMENTS);
+        allPerms.add(AssignmentConstants.PERMISSION_EDIT_ASSIGNMENTS);
+        allPerms.add(AssignmentConstants.PERMISSION_REMOVE_ASSIGNMENTS);
+        allPerms.add(AssignmentConstants.PERMISSION_MANAGE_SUBMISSIONS);
+        allPerms.add(AssignmentConstants.PERMISSION_ALL_GROUPS);
+
+        return allPerms;
     }
     
     public boolean userHasAddPermission(String userId, String contextId) {

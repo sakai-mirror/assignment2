@@ -64,7 +64,13 @@ asnn2.buildListRenderTreeFromData = function (obj, index) {
   
   asnn2.addCommonAsnnListReadOnlyRenderObjects(togo, obj);
   
-  if (obj.requiresSubmission === true) {
+  var canEdit = obj.canEdit && obj.canEdit === true;
+  var canAdd = obj.canAdd && obj.canAdd === true;
+  var canDelete = obj.canDelete && obj.canDelete === true;
+  var canEditMatrix = obj.canMatrixLink && obj.canMatrixLink === true;
+  var canGrade = obj.canGrade && obj.canGrade === true;
+  
+  if (obj.requiresSubmission === true && canGrade) {
     togo.inAndNewLink = {
       target: '/portal/tool/'+sakai.curPlacement+'/viewSubmissions/'+obj.id,
       linktext: obj.inAndNew
@@ -73,45 +79,58 @@ asnn2.buildListRenderTreeFromData = function (obj, index) {
   else {
     togo.inAndNew = obj.inAndNew;
   }
-  if (obj.canEdit && obj.canEdit === true) {
+  
+  if (canEdit) {
     togo.editlink = {
       target: '/portal/tool/'+sakai.curPlacement+'/assignment/'+obj.id,
       linktext: "Edit"
     };
+  }
+  
+  if (canAdd) {
     togo.duplink = {
       target: '/portal/tool/'+sakai.curPlacement+'/assignment?duplicatedAssignmentId='+obj.id,
       linktext: "Duplicate"
     };
-    togo.sep1 = true;
-    togo.asnncheck = {
-      value: false
-    };
+    if (canEdit) {
+        togo.sep0 = true;
+    }
   }
-  if (obj.canMatrixLink && obj.canMatrixLink === true) {
+  
+  if (canEditMatrix) {
     togo.matrixlink = {
       //target: '/portal/tool/'+sakai.curPlacement+'/TaggableHelperProducer?values=%2Fassignment%2Fa%2Fusedtools%2F2a4f82db-0b4b-4be6-b7cf-fe9c3debcf6a&helperId=osp.matrix.link&keys=activityRef',
       target: '/portal/tool/'+sakai.curPlacement+'/TaggableHelperProducer?helperId=osp.matrix.link&keys=activityRef&values='+obj.ref,
       linktext: "Create/Edit Matrix Links"
     };
-    togo.sep0 = true;
+    
+    if (canEdit || canAdd) {
+        togo.sep1 = true;
+    }
   }
-  if (obj.graded === true) {
+  if (obj.graded === true && canGrade) {
       togo.gradelink = {
           target: '/portal/tool/'+sakai.curPlacement+'/viewSubmissions/'+obj.id,
           linktext: "Grade"
       };
-      if (obj.canEdit && obj.canEdit === true) {
+      if (canEdit || canAdd || canEditMatrix) {
         togo.sep2 = true;
       }
   }
-  else if (obj.requiresSubmission === true) {
+  else if (obj.requiresSubmission === true && canGrade) {
       togo.gradelink = {
           target: '/portal/tool/'+sakai.curPlacement+'/viewSubmissions/'+obj.id,
           linktext: "Provide Feedback"
       };
-      if (obj.canEdit && obj.canEdit === true) {
-        togo.sep2 = true;
+      if (canEdit || canAdd || canEditMatrix) {
+          togo.sep2 = true;
       }
+  }
+  
+  if (canDelete) {
+      togo.asnncheck = {
+         value: false
+      };
   }
   
   return togo;
@@ -136,9 +155,9 @@ asnn2.getRawJSONSiteList = function () {
    * This doesn't really belong here, maybe we should return this as well as the
    * data feed.
    */
-  if (asnn2.pageState && xmlhttp.getResponseHeader('x-asnn2-canEdit') === 'true') {
-    // Set up global edit permissions for rendering move and remove widgets
-    asnn2.pageState.canEdit = true;
+  if (asnn2.pageState && xmlhttp.getResponseHeader('x-asnn2-canDelete') === 'true') {
+    // Set up global permissions for rendering remove widget
+    asnn2.pageState.canDelete = true;
   }
   
   return togo;
@@ -194,7 +213,7 @@ asnn2.pageState = {
   sortDir: -1,
   dataArray: [],
   pageModel: {},
-  canEdit: false,
+  canDelete: false,
   minPageSize: 5  // This needs to be in sync with the html template currently.�
 };
 
@@ -562,7 +581,7 @@ asnn2.initAsnnList = function () {
 
   asnn2.setupSortLinks();
 
-  if (asnn2.pageState.canEdit === true) {
+  if (asnn2.pageState.canDelete === true) {
     asnn2.setupRemoveDialog();
     jQuery("#checkall").show();
   }

@@ -236,6 +236,7 @@
    <bean class="org.sakaiproject.assignment2.tool.producers.ListProducer">
       <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
       <property name="placement" ref="sakai-Placement" />
+      <property name="assignmentPermissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentPermissionLogic" />
    </bean>
    
    <!--
@@ -288,7 +289,9 @@
 	</bean>
   
   <bean class="org.sakaiproject.assignment2.tool.producers.PermissionsProducer">
+      <property name="messageLocator" ref="messageLocator" />
       <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
+      <property name="assignmentPermissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentPermissionLogic" />
    </bean>
 
   <bean class="org.sakaiproject.assignment2.tool.producers.ViewAssignmentProducer">
