@@ -233,8 +233,6 @@
         building up the Fluid powered page. -->
    
    <bean class="org.sakaiproject.assignment2.tool.producers.ListProducer">
-      <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
-      <property name="placement" ref="sakai-Placement" />
    </bean>
    
    <!--
@@ -271,6 +269,8 @@
       <property name="viewGroupResolver" ref="viewGroupResolver"/>
       <property name="viewParameters" ref="viewParameters"/>
       <property name="group" ref="HTMLViewGroup" />
+      <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
+      <property name="placement" ref="sakai-Placement" />
    </bean>
 
 	<bean class="org.sakaiproject.assignment2.tool.producers.UploadAllProducer" >
@@ -332,8 +332,6 @@
 
    <bean class="org.sakaiproject.assignment2.tool.producers.ReorderStudentViewProducer">
        <property name="messageLocator" ref="messageLocator" />
-       <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
-       <property name="placement" ref="sakai-Placement" />
    </bean> 
 
    <!--  Actions -->

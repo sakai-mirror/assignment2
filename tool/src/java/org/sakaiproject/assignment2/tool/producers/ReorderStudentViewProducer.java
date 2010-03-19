@@ -21,17 +21,10 @@ public class ReorderStudentViewProducer implements ViewComponentProducer {
     public static final String VIEW_ID = "reorder-student-view";
     
     private MessageLocator messageLocator;
-    private ExternalLogic externalLogic;
-    private Placement placement;
 
     @Override
     public void fillComponents(UIContainer tofill, ViewParameters viewparams,
-            ComponentChecker checker) {
-        
-        UIVerbatim.make(tofill, "asnnlist-decl-js", "var sakai = sakai || {};"
-                + "sakai.curPlacement = '"+placement.getId()+"';"
-                + "sakai.curContext = '"+externalLogic.getCurrentContextId()+"';");
-    
+            ComponentChecker checker) {    
         
         //Breadcrumbs
         UIInternalLink.make(tofill, "breadcrumb", 
@@ -56,14 +49,6 @@ public class ReorderStudentViewProducer implements ViewComponentProducer {
     
     public void setMessageLocator(MessageLocator messageLocator) {
         this.messageLocator = messageLocator;
-    }
-    
-    public void setExternalLogic(ExternalLogic externalLogic) {
-        this.externalLogic = externalLogic;
-    }
-
-    public void setPlacement(Placement placement) {
-        this.placement = placement;
     }
     
 }
