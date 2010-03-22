@@ -1017,60 +1017,29 @@ var asnn2 = asnn2 || {};
     };
     
 	/**
-	 * Save/Release/Clear grading information for submission when navigation to previous submitter
+	 * Save/Release/Clear grading information for submission and navigate
 	 *
 	 * This function uses the asnn2 dialog utility.
 	 */
-	asnn2.saveGradingPreviousDialog = function() {
-	    var saveGradingDialog = jQuery('#save-grading-previous-dialog');
-	    var saveButton = jQuery('#page-replace\\:\\:save-grading-previous-save').click(function(event) {
+	asnn2.saveGradingDialog = function(direction) {
+	    var saveGradingDialog = jQuery('#save-grading-dialog');
+	    var saveButton = jQuery('#page-replace\\:\\:save-grading-save').click(function(event) {
 	        asnn2util.closeDialog(saveGradingDialog);
 	        var formSubmit = document.getElementById("page-replace::submit");
         	var option = document.getElementById("page-replace::submitOption");
-        	option.value="submit_prev";
+        	option.value="submit_" + direction;
 	        formSubmit.click();
 	    });
 	    
-	    var saveButton = jQuery('#page-replace\\:\\:save-grading-previous-saveAndRelease').click(function(event) {
+	    var saveButton = jQuery('#page-replace\\:\\:save-grading-saveAndRelease').click(function(event) {
 	        asnn2util.closeDialog(saveGradingDialog);
 	        var formSubmit = document.getElementById("page-replace::submit");
         	var option = document.getElementById("page-replace::submitOption");
-        	option.value="release_prev";
+        	option.value="release_" + direction;
 	        formSubmit.click();
 	    });
 	
-	    var clearButton = jQuery('#page-replace\\:\\:save-grading-previous-clear').click(function(event) {
-	        asnn2util.closeDialog(saveGradingDialog);
-	    });
-	
-	    asnn2util.openDialog(saveGradingDialog);
-	    return false;
-	};
-
-	/**
-	 * Save/Release/Clear grading information for submission when navigation to next submitter
-	 *
-	 * This function uses the asnn2 dialog utility.
-	 */
-	asnn2.saveGradingNextDialog = function() {
-	    var saveGradingDialog = jQuery('#save-grading-next-dialog');
-	    var saveButton = jQuery('#page-replace\\:\\:save-grading-next-save').click(function(event) {
-	        asnn2util.closeDialog(saveGradingDialog);
-	        var formSubmit = document.getElementById("page-replace::submit");
-        	var option = document.getElementById("page-replace::submitOption");
-        	option.value="submit_next";
-	        formSubmit.click();
-	    });
-	    
-	    var saveButton = jQuery('#page-replace\\:\\:save-grading-next-saveAndRelease').click(function(event) {
-	        asnn2util.closeDialog(saveGradingDialog);
-	        var formSubmit = document.getElementById("page-replace::submit");
-        	var option = document.getElementById("page-replace::submitOption");
-        	option.value="release_next";
-	        formSubmit.click();
-	    });
-	
-	    var clearButton = jQuery('#page-replace\\:\\:save-grading-next-clear').click(function(event) {
+	    var clearButton = jQuery('#page-replace\\:\\:save-grading-clear').click(function(event) {
 	        asnn2util.closeDialog(saveGradingDialog);
 	    });
 	

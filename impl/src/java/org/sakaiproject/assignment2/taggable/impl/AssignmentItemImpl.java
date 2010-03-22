@@ -157,4 +157,10 @@ public class AssignmentItemImpl implements TaggableItem {
         // TODO Auto-generated method stub
         return false;
     }
+    
+	public String getItemDetailPrivateUrl()
+	{
+		// TODO 
+		return "";
+	}
 }

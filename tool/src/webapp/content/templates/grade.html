@@ -28,42 +28,31 @@
 			<li>Message for user here</li>
 		</ul>
 	</div>
-	<div style="display:none" id="save-grading-previous-dialog">
-        <h3 rsf:id="save-grading-previous-title">Save Grading for Previous Assignment</h3>
+	<div style="display:none" id="save-grading-dialog">
+        <h3 rsf:id="save-grading-title">Save Grading for Previous Assignment</h3>
         <ul class="ui-dialog-msg-list">
-            <li rsf:id="save-grading-previous-message" class="alertMessage">You have unsaved changes. Would you like to save your changes?</li>
+            <li rsf:id="save-grading-message" class="alertMessage">You have unsaved changes. Would you like to save your changes?</li>
         </ul>
         <fieldset class="submit">
-            <input id="" rsf:id="save-grading-previous-save" accesskey="s" type="button" class="active" value="Save"/>
-            <input id="" rsf:id="save-grading-previous-saveAndRelease" accesskey="r" type="button" class="active" value="Save and Release Feedback"/>
-            <input id="" rsf:id="save-grading-previous-clear" accesskey="x" type="button" value="Clear"/>
-        </fieldset>
-    </div>
-
-	<div style="display:none" id="save-grading-next-dialog">
-        <h3 rsf:id="save-grading-next-title">Title for Save Grading</h3>
-        <ul class="ui-dialog-msg-list">
-            <li rsf:id="save-grading-next-message" class="alertMessage">You have unsaved changes. Would you like to save your changes?</li>
-        </ul>
-        <fieldset class="submit">
-            <input id="" rsf:id="save-grading-next-save" accesskey="s" type="button" class="active" value="Save"/>
-            <input id="" rsf:id="save-grading-next-saveAndRelease" accesskey="r" type="button" class="active" value="Save and Release Feedback"/>
-            <input id="" rsf:id="save-grading-next-clear" accesskey="x" type="button" value="Clear"/>
+            <input id="" rsf:id="save-grading-save" accesskey="s" type="button" class="active" value="Save"/>
+            <input id="" rsf:id="save-grading-saveAndRelease" accesskey="r" type="button" class="active" value="Save and Release Feedback"/>
+            <input id="" rsf:id="save-grading-clear" accesskey="x" type="button" value="Clear"/>
         </fieldset>
     </div>
     <form name="gradeForm" rsf:id="form" method="post">
     <input name="gradingInfoChanged" id="gradingInfoChanged" rsf:id="gradingInfoChanged" type="hidden" value="false" />
+    <input name="numSubmittedVersions" id="numSubmittedVersions" rsf:id="numSubmittedVersions" type="hidden" value="" />
 	<h3 rsf:id="heading">Submission for Name</h3>
 	<div class="pager-sort-area">
     	<div id="pager-top" class="fl-pager-top flc-pager-top">
-    		<a rsf:id="returnToList_link">Return to Submission List</a>
+    		<a id = "returnToList_link" rsf:id="returnToList_link">Return to Submission List</a>
     		<br/>
-    		<a rsf:id="previous_link" onclick="if (getChange()=='true'){asnn2.saveGradingPreviousDialog(); return false;}">Previous</a>
+    		<a id="previous_link" rsf:id="previous_link" >Previous</a>
 			<span rsf:id="previous_disabled" class="inactive">Previous</span>
 			<span class="separator">|</span>
 			<span rsf:id="current">Current User</span>
 			<span class="separator">|</span>
-    		<a rsf:id="next_link" onclick="if (getChange()=='true'){asnn2.saveGradingNextDialog(); return false;}" >Next</a>
+    		<a id="next_link" rsf:id="next_link" >Next</a>
 			<span rsf:id="next_disabled" class="inactive">Next</span>
 		</div>
 	</div>
@@ -140,8 +129,8 @@
       <div rsf:id="submitted_text_fieldset">
         <h4 rsf:id="msg=assignment2.assignment_grade.annotated_submitted_text" class="subgroupHeading">Inline Text</h4>
         <p rsf:id="inline_feedback_instructions" class="block instruction">Below is the submission from a student. You can insert comments into this text by clicking in the box, then type your comments.</p>
-        <div rsf:id="feedback_text:">
-        	<textarea name="feedback_inline" id="feedback_inline" cols="80" rows="20" wrap="virtual"></textarea>
+        <div id="feedback_text" >
+        	<textarea rsf:id="feedback_text:" name="feedback_text" id="feedback_text" cols="80" rows="20" wrap="virtual"></textarea>
         	<!-- this should be the FCKEditor -->
         </div>
     	</div>
@@ -157,7 +146,7 @@
     	</div>
       
       <!--  Additional Feedback Notes -->
-      <div>
+      <div id="feedback_notes">
         <h4 rsf:id="msg=assignment2.assignment_grade.feedback_notes" class="subgroupHeading">Additional Feedback</h4>
         <textarea  rsf:id="feedback_notes:" name="feedback_notes" id="feedback_notes" cols="80" rows="20" wrap="virtual"></textarea>
         <!-- this should be the FCKEditor -->
@@ -198,7 +187,7 @@
       <div>
         <!--  for some reason, you can't use a label tag for a textarea -->
         <p rsf:id="msg=assignment2.gradebook.grading.comments" class="gradingLabel">Comment</p>
-        <textarea rsf:id="grade_comment_input" id="grade_comment_input" cols="80" rows="5" wrap="virtual"></textarea>
+        <textarea rsf:id="grade_comment_input" id="grade_comment_input" name="grade_comment_input" cols="80" rows="5" wrap="virtual"></textarea>
       </div>
     </div>
 	</div>
@@ -239,19 +228,134 @@ jQuery(document).ready(function(){
         asnn2gradeview.set_accept_until_on_submission_level();
     });
     asnn2gradeview.set_accept_until_on_submission_level();
+	
+    jQuery('#page-replace\\:\\:previous_link').click(function() {
+		var gradingChanged = isGradingChanged();
+    	var numSubmittedVersions = $('#page-replace\\:\\:numSubmittedVersions').val();	
+		if (gradingChanged)
+		{
+			asnn2.saveGradingDialog("previous"); 
+			return false;
+		}
+	});
 
-    jQuery("input[type=text],input[type=checkbox],input[type=radio],select,.thickbox").click(function(){
-        window.change = "true";
-    });
+    jQuery('#page-replace\\:\\:next_link').click(function() {
+		var gradingChanged = isGradingChanged();
+    	var numSubmittedVersions = $('#page-replace\\:\\:numSubmittedVersions').val();	
+		if (gradingChanged)
+		{
+			asnn2.saveGradingDialog("next"); 
+			return false;
+		}
+	});
 
+    jQuery('#page-replace\\:\\:returnToList_link').click(function() {
+		var gradingChanged = isGradingChanged();
+    	var numSubmittedVersions = $('#page-replace\\:\\:numSubmittedVersions').val();	
+		if (gradingChanged)
+		{
+			asnn2.saveGradingDialog("returnToList"); 
+			return false;
+		}
+	});
+
+    function isGradingChanged()
+    {
+    	var gradingChanged = false;
+    	
+    	var currentFeedbackText = $('#feedback_text').find('iframe').contents().find('iframe').contents().find('body').html();
+		currentFeedbackText = trimHtmlInput(currentFeedbackText, false);
+    	var previousFeedbackText = $("input[name='page-replace\:\:feedback_section\:\:feedback_text\:1\:input-fossil']").val();
+    	previousFeedbackText = trimHtmlInput(previousFeedbackText, true);
+    	if (currentFeedbackText == null && previousFeedbackText != null
+    			|| currentFeedbackText != null && previousFeedbackText == null
+    			|| currentFeedbackText != previousFeedbackText)
+    	{
+    		gradingChanged = true;
+    	}
+
+    	if (!gradingChanged)
+    	{
+    		// whether the feedback notes changed
+    		var currentFeedbackNotes = $('#feedback_notes').find('iframe').contents().find('iframe').contents().find('body').html();
+			currentFeedbackNotes = trimHtmlInput(currentFeedbackNotes,false);
+    		var previousFeedbackNotes = $("input[name='page-replace\:\:feedback_section\:\:feedback_notes\:1\:input-fossil']").val();
+    		previousFeedbackNotes = trimHtmlInput(previousFeedbackNotes,true);
+    		if (currentFeedbackNotes == null && previousFeedbackNotes != null
+    				|| currentFeedbackNotes != null && previousFeedbackNotes == null
+    				|| currentFeedbackNotes != previousFeedbackNotes)
+    		{
+    			gradingChanged = true;
+    		}
+
+    		// attachments changes?
+    		
+    		if (!gradingChanged)
+    		{
+    			// whether the grading points changed
+    			var currentGradePoints = $("input[name='page-replace\:\:grade_input']").val();
+				currentGradePoints=trimHtmlInput(currentGradePoints,false);
+    			var previousGradePoints = $("input[name='page-replace\:\:grade_input-fossil']").val();
+    			previousGradePoints = trimHtmlInput(previousGradePoints,true);
+    			if (currentGradePoints == null && previousGradePoints != null
+    				|| currentGradePoints != null && previousGradePoints == null
+    				|| currentGradePoints != previousGradePoints)
+    			{
+    				gradingChanged = true;
+    			}
+    			if (!gradingChanged)
+    			{
+    				// whether the grading comments changed
+    				var currentGradeComment = $('#page-replace\\:\\:grade_comment_input').val();
+    				currentGradeComment=trimHtmlInput(currentGradeComment,false);
+    				var previousGradeComment = $("input[name='page-replace\:\:grade_comment_input-fossil']").val();
+    				previousGradeComment = trimHtmlInput(previousGradeComment,true);
+    				if (currentGradeComment == null && previousGradeComment != null
+    					|| currentGradeComment != null && previousGradeComment == null
+    					|| currentGradeComment != previousGradeComment)
+    				{
+    					gradingChanged = true;
+    				}
+    			}
+    		}
+    	}
+
+    	return gradingChanged;
+    };
+
+    function trimHtmlInput(inputString, isPreviousValue)
+    {
+        var rv = inputString;
+        if (rv != null)
+        {
+            // replace all breaks
+        	rv = rv.replace("<br>", "<br/>");
+			if (isPreviousValue && (rv.indexOf("jstring#{") != -1 || rv.indexOf("istring#{") != -1))
+			{   
+				// the hidden fossile text value are of format jstring#{.....}value
+	        	rv = rv.substring(inputString.indexOf("}")+1);
+			}
+			// if end with 
+	        if (rv.endsWith("<br>"))
+	        {
+	            var index = rv.lastIndexOf("<br>");
+	            rv = rv.substring(0, index);
+	        }
+	        if (rv.endsWith("<br/>"))
+	        {
+	            var index = rv.lastIndexOf("<br/>");
+	            rv = rv.substring(0, index);
+	        }
+    	}
+        return rv;
+    };
+
+    String.prototype.endsWith = function(str)
+    {
+        return (this.match(str+"$")==str)
+    }
+    
 });
-
-var change = false;
-
-function getChange()
-{
-    return change;
-}
 
 // See ASNN-300
 //function FCKeditor_OnComplete( editorInstance )

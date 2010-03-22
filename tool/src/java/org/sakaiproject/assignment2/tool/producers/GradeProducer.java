@@ -158,6 +158,8 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
         AssignmentSubmission as = submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(assignmentId, userId);
         Assignment2 assignment = assignmentLogic.getAssignmentByIdWithAssociatedData(assignmentId);
         
+        makeSaveGradingDialog(tofill);
+        
         // the "Return to List" link
         UIInternalLink.make(tofill, "returnToList_link", messageLocator.getMessage("assignment2.assignment_grade.returnToList", new Object[] { assignment.getTitle()}), 
         		new ViewSubmissionsViewParams(ViewSubmissionsProducer.VIEW_ID, assignment.getId()));
@@ -170,8 +172,6 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
             prevParams.userId = prevUserId;
 			UIInternalLink previousLink = UIInternalLink.make(tofill, 
                     "previous_link", messageLocator.getMessage("assignment2.assignment_grade.previous"), prevParams);
-
-            makeSaveGradingPreviousDialog(tofill);
 		}
 		else {
             // show a disabled Previous link
@@ -188,8 +188,6 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
 	        nextParams.userId = nextUserId;
 			UIInternalLink nextLink = UIInternalLink.make(tofill, 
                     "next_link", messageLocator.getMessage("assignment2.assignment_grade.next"), nextParams);
-
-            makeSaveGradingNextDialog(tofill);
 		}
 		else {
 			// show a disabled Next link
@@ -312,6 +310,8 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
         // * there is at least one submission
         
         int numSubmittedVersions = getNumSubmittedVersions(versionHistory);
+    	// a hidden field for version numbers
+        UIInput.make(form, "numSubmittedVersions", null, String.valueOf(numSubmittedVersions));
         
         if (numSubmittedVersions == 0 || assignment.getSubmissionType() == AssignmentConstants.SUBMIT_NON_ELECTRONIC) {
 
@@ -337,6 +337,7 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
             makeAdditionalFeedbackSection(versionContainer, otpKey, versionToDisplay, !grade_perm);
         
         } else {
+        	
             // we will display the toggle-able sections
             // figure out which version(s) should be expanded in the UI. the rest will be collapsed
             Long versionToExpand = getVersionToExpand(versionHistory);
@@ -543,22 +544,13 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
 */
     }
     
-    private void makeSaveGradingPreviousDialog(UIContainer tofill) {
+    private void makeSaveGradingDialog(UIContainer tofill) {
         // save grading confirmation dialog
-        UIOutput.make(tofill, "save-grading-previous-title", messageLocator.getMessage("assignment2.dialogs.save_grading.title"));
-        UIOutput.make(tofill, "save-grading-previous-message", messageLocator.getMessage("assignment2.dialogs.save_grading.message"));
-        UIOutput.make(tofill, "save-grading-previous-save", messageLocator.getMessage("assignment2.dialogs.save_grading.save"));
-        UIOutput.make(tofill, "save-grading-previous-saveAndRelease", messageLocator.getMessage("assignment2.dialogs.save_grading.saveAndRelease"));
-        UIOutput.make(tofill, "save-grading-previous-clear", messageLocator.getMessage("assignment2.dialogs.save_grading.clear"));
-    }
-    
-    private void makeSaveGradingNextDialog(UIContainer tofill) {
-        // save grading confirmation dialog
-        UIOutput.make(tofill, "save-grading-next-title", messageLocator.getMessage("assignment2.dialogs.save_grading.title"));
-        UIOutput.make(tofill, "save-grading-next-message", messageLocator.getMessage("assignment2.dialogs.save_grading.message"));
-        UIOutput.make(tofill, "save-grading-next-save", messageLocator.getMessage("assignment2.dialogs.save_grading.save"));
-        UIOutput.make(tofill, "save-grading-next-saveAndRelease", messageLocator.getMessage("assignment2.dialogs.save_grading.saveAndRelease"));
-        UIOutput.make(tofill, "save-grading-next-clear", messageLocator.getMessage("assignment2.dialogs.save_grading.clear"));
+        UIOutput.make(tofill, "save-grading-title", messageLocator.getMessage("assignment2.dialogs.save_grading.title"));
+        UIOutput.make(tofill, "save-grading-message", messageLocator.getMessage("assignment2.dialogs.save_grading.message"));
+        UIOutput.make(tofill, "save-grading-save", messageLocator.getMessage("assignment2.dialogs.save_grading.save"));
+        UIOutput.make(tofill, "save-grading-saveAndRelease", messageLocator.getMessage("assignment2.dialogs.save_grading.saveAndRelease"));
+        UIOutput.make(tofill, "save-grading-clear", messageLocator.getMessage("assignment2.dialogs.save_grading.clear"));
     }
     
     /**
@@ -636,6 +628,7 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
                     version.getFeedbackAttachSet());
         } else {
             // Feedback Notes
+        	UIOutput feedback_notes_div = UIOutput.make(versionContainer, "feedback_notes_div:", otpKey + ".feedbackNotes");
             UIInput feedback_notes = UIInput.make(versionContainer, "feedback_notes:", otpKey + ".feedbackNotes");
             feedback_notes.mustapply = Boolean.TRUE;
             richTextEvolver.evolveTextInput(feedback_notes);
@@ -789,6 +782,10 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
                 FragmentSubmissionGradePreviewProducer.VIEW_ID)));
         nav.add(new NavigationCase("cancel", new ViewSubmissionsViewParams(
                 ViewSubmissionsProducer.VIEW_ID)));
+        nav.add(new NavigationCase(AssignmentSubmissionBean.SUBMIT_RETURNTOLIST, new ViewSubmissionsViewParams(
+                ViewSubmissionsProducer.VIEW_ID)));
+        nav.add(new NavigationCase(AssignmentSubmissionBean.RELEASE_RETURNTOLIST, new ViewSubmissionsViewParams(
+                ViewSubmissionsProducer.VIEW_ID)));
         return nav;
     }
 
@@ -807,22 +804,33 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
             outgoing.assignmentId = in.assignmentId;
             outgoing.pageIndex = in.viewSubPageIndex;
         } else if (result.resultingView instanceof GradeViewParams) {
-            GradeViewParams outgoing = (GradeViewParams) result.resultingView;
-            GradeViewParams in = (GradeViewParams) incoming;
-            outgoing.assignmentId = in.assignmentId;
-            if (AssignmentSubmissionBean.SUBMIT_PREV.equals(actionReturn) || AssignmentSubmissionBean.RELEASE_PREV.equals(actionReturn))
+        	if (AssignmentSubmissionBean.SUBMIT_RETURNTOLIST.equals(actionReturn) || AssignmentSubmissionBean.RELEASE_RETURNTOLIST.equals(actionReturn))
             {
-            	outgoing.userId = getNavigationSubmissionUserId("prev", in.userId);
+        		// return to the list view
+        		ViewSubmissionsViewParams outgoing = new ViewSubmissionsViewParams();
+                GradeViewParams in = (GradeViewParams) incoming;
+                outgoing.assignmentId = in.assignmentId;
+                outgoing.pageIndex = in.viewSubPageIndex;
             }
-            else if (AssignmentSubmissionBean.SUBMIT_NEXT.equals(actionReturn) || AssignmentSubmissionBean.RELEASE_NEXT.equals(actionReturn))
-            {
-            	outgoing.userId = getNavigationSubmissionUserId("next", in.userId);
-            }
-            else
-            {
-            	outgoing.userId = in.userId;
-                outgoing.versionId = in.versionId;
-            }
+        	else
+        	{
+	            GradeViewParams outgoing = (GradeViewParams) result.resultingView;
+	            GradeViewParams in = (GradeViewParams) incoming;
+	            outgoing.assignmentId = in.assignmentId;
+	            if (AssignmentSubmissionBean.SUBMIT_PREV.equals(actionReturn) || AssignmentSubmissionBean.RELEASE_PREV.equals(actionReturn))
+	            {
+	            	outgoing.userId = getNavigationSubmissionUserId("prev", in.userId);
+	            }
+	            else if (AssignmentSubmissionBean.SUBMIT_NEXT.equals(actionReturn) || AssignmentSubmissionBean.RELEASE_NEXT.equals(actionReturn))
+	            {
+	            	outgoing.userId = getNavigationSubmissionUserId("next", in.userId);
+	            }
+	            else
+	            {
+	            	outgoing.userId = in.userId;
+	                outgoing.versionId = in.versionId;
+	            }
+        	}
         }
 
     }

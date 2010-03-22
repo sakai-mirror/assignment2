@@ -142,6 +142,12 @@ AssignmentActivityProducer {
                 new AssignmentActivityImpl(
                         assignmentSubmission.getAssignment(), this));
     }
+    
+    public TaggableItem getItem(String itemRef, TaggingProvider provider, boolean getMyItemOnly, String taggedItem)
+    {
+    	// TODO
+    	return null;
+    }
 
     public TaggableItem getItem(String itemRef, TaggingProvider provider) {
         // We aren't picky about the provider, so ignore that argument.
@@ -189,6 +195,18 @@ AssignmentActivityProducer {
         return items;
     }
 
+    public List<TaggableItem> getItems(TaggableActivity activity, String userId,
+			TaggingProvider provider, boolean getMyItemsOnly, String taggedItem)
+	{
+    	return null;
+	}
+    
+    public List<TaggableItem> getItems(TaggableActivity activity,
+			TaggingProvider provider, boolean getMyItemsOnly, String taggedItem)
+	{
+    	return null;
+	}
+    
     public String getName() {
         return assignmentBundleLogic.getString("service_name");
     }
@@ -249,6 +267,11 @@ AssignmentActivityProducer {
         // TODO Auto-generated method stub
         return false;
     }
+    public boolean allowGetItems(TaggableActivity activity, TaggingProvider provider, boolean getMyItemsOnly, String taggedItem)
+    {
+    	// TODO
+    	return false;
+    }
 
     public TaggableItem getItem(String arg0, TaggingProvider arg1, boolean arg2)
     {
@@ -283,8 +306,14 @@ AssignmentActivityProducer {
         return false;
     }
 
-    public boolean hasSubmissions(TaggableActivity arg0, String arg1,
-            TaggingProvider arg2, boolean arg3)
+	public boolean hasSubmissions(TaggableActivity activity,
+			TaggingProvider provider, boolean getMyItemsOnly, String taggedItem)
+    {
+        // TODO Auto-generated method stub
+        return false;
+    }
+	public boolean hasSubmissions(TaggableActivity activity, String userId,
+			TaggingProvider provider, boolean getMyItemsOnly, String taggedItem)
     {
         // TODO Auto-generated method stub
         return false;
