@@ -25,30 +25,17 @@
   <p rsf:id="instructions" class="instruction">Permissions instructions go here</p>
       
   <form rsf:id="form" method="post">
-    <div rsf:id="perm_container:">
+
     <table class="listHier lines">
-      <tr rsf:id="roles:">
-        <th>Permissions</th>
-        <th>Instructor</th>
-        <th>Teaching Assistant</th>
-        <th>Student</th>
-      </tr>
       <tr>
-        <td>Read assignments</td>
-        <td><input type="checkbox" /></td>
-        <td><input type="checkbox" /></td>
-        <td><input type="checkbox" /></td>
+        <th rsf:id="roles:">Permissions</th>
       </tr>
-      <tr>
-        <td>Add assignments</td>
-        <td><input type="checkbox" /></td>
-        <td><input type="checkbox" /></td>
-        <td><input type="checkbox" /></td>
+      <tr rsf:id="perms:">
+        <td rsf:id="perm_name">Read assignments</td>
+        <td rsf:id="has_perm:"><input rsf:id="perm_checkbox" type="checkbox" /></td>
       </tr>
-      
-      
     </table>
-    </div>
+
   </form>
 
 </div>

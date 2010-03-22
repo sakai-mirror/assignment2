@@ -1064,5 +1064,9 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
         
         return roleFunctionMap;
     }
+    
+    public List<String> getPermissionFunctions() {
+        return authz.getAllPermissions();
+    }
 
 }

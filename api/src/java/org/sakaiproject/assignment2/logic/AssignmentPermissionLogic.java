@@ -406,4 +406,11 @@ public interface AssignmentPermissionLogic {
      * upon whether that role has that assignment2 permission.
      */
     public Map<Role, Map<String, Boolean>> getRoleFunctionMap(String contextId);
+    
+    /**
+     * 
+     * @return {@link AssignmentAuthzLogic#getAllPermissions()}. This list will be
+     * ordered.
+     */
+    public List<String> getPermissionFunctions();
 }

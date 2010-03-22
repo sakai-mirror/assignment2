@@ -22,6 +22,7 @@
 package org.sakaiproject.assignment2.tool.producers;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -33,6 +34,7 @@ import org.sakaiproject.assignment2.tool.params.AssignmentViewParams;
 import org.sakaiproject.authz.api.Role;
 
 import uk.org.ponder.messageutil.MessageLocator;
+import uk.org.ponder.rsf.components.UIBoundBoolean;
 import uk.org.ponder.rsf.components.UIBranchContainer;
 import uk.org.ponder.rsf.components.UIContainer;
 import uk.org.ponder.rsf.components.UIForm;
@@ -78,15 +80,35 @@ public class PermissionsProducer implements ViewComponentProducer, ViewParamsRep
          */
         UIForm form = UIForm.make(tofill, "form");
         
-        UIBranchContainer permContainer = UIBranchContainer.make(form, "perm_container:");
+        
         
         // get the role/permission information
         Map<Role, Map<String, Boolean>> roleFunctionMap = permissionLogic.getRoleFunctionMap(currContextId);
         List<Role> orderedRoles = new ArrayList<Role>(roleFunctionMap.keySet());
+        Collections.sort(orderedRoles);
         
-        UIOutput.make(permContainer, "roles:", messageLocator.getMessage("assignment2.permissions.perm.heading"));
+        
+        UIOutput.make(form, "roles:", messageLocator.getMessage("assignment2.permissions.perm.heading"));
         for (Role role : orderedRoles) {
-            UIOutput.make(permContainer, "roles:", role.getId());
+            UIOutput.make(form, "roles:", role.getId());
+        }
+
+        List<String> orderedPermissions = permissionLogic.getPermissionFunctions();
+        for (String perm : orderedPermissions) {
+            UIBranchContainer permRow = UIBranchContainer.make(form, "perms:");
+            UIMessage.make(permRow, "perm_name", "desc-" + perm);
+            // now iterate through the roles and retrieve whether or not that role
+            // has the perm
+            for (Role role : orderedRoles) {
+                UIBranchContainer perm_checkboxes = UIBranchContainer.make(permRow, "has_perm:");
+                Map<String, Boolean> functionMap = roleFunctionMap.get(role);
+                boolean hasPerm = false;
+                if (functionMap != null && functionMap.containsKey(perm)) {
+                    hasPerm = functionMap.get(perm);
+                }
+                
+                UIBoundBoolean.make(perm_checkboxes, "perm_checkbox", hasPerm);
+            }
         }
     }
 
