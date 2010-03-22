@@ -59,6 +59,29 @@ public class AssignmentConstants {
          * in his/her group, if applicable
          */
         PERMISSION_ALL_GROUPS = "asnn2.all.groups";
+    
+    // Gradebook permission functions
+    public static final String
+        /**
+         * Gradebook realm permission that gives the user permission to grade
+         * all students in the gradebook
+         */
+        GB_PERMISSION_GRADE_ALL = "gradebook.gradeAll",
+        /**
+         * Gradebook realm permission that gives the user permission to grade
+         * students in his/her section only
+         */
+        GB_PERMISSION_GRADE_SECTION = "gradebook.gradeSection",
+        /**
+         * Gradebook realm permission that gives the user permission to view their
+         * own grades in the gradebook
+         */
+        GB_PERMISSION_VIEW_OWN_GRADES = "gradebook.viewOwnGrades",
+        /**
+         * Gradebook realm permission that gives the user permission to edit
+         * gradebook assignments
+         */
+        GB_PERMISSION_EDIT = "gradebook.editAssignments";
 
     /**
      * Used to indicate that the assignment may only be viewed, not graded by

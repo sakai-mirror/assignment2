@@ -30,6 +30,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
+import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.assignment2.tool.params.AssignmentViewParams;
 import org.sakaiproject.authz.api.Role;
 
@@ -83,7 +84,7 @@ public class PermissionsProducer implements ViewComponentProducer, ViewParamsRep
         
         
         // get the role/permission information
-        Map<Role, Map<String, Boolean>> roleFunctionMap = permissionLogic.getRoleFunctionMap(currContextId);
+        Map<Role, Map<String, Boolean>> roleFunctionMap = permissionLogic.getRoleFunctionMap(currContextId, true);
         List<Role> orderedRoles = new ArrayList<Role>(roleFunctionMap.keySet());
         Collections.sort(orderedRoles);
         
@@ -93,7 +94,7 @@ public class PermissionsProducer implements ViewComponentProducer, ViewParamsRep
             UIOutput.make(form, "roles:", role.getId());
         }
 
-        List<String> orderedPermissions = permissionLogic.getPermissionFunctions();
+        List<String> orderedPermissions = permissionLogic.getAssignment2PermissionFunctions();
         for (String perm : orderedPermissions) {
             UIBranchContainer permRow = UIBranchContainer.make(form, "perms:");
             UIMessage.make(permRow, "perm_name", "desc-" + perm);
@@ -108,6 +109,38 @@ public class PermissionsProducer implements ViewComponentProducer, ViewParamsRep
                 }
                 
                 UIBoundBoolean.make(perm_checkboxes, "perm_checkbox", hasPerm);
+            }
+        }
+        
+        // now we may need to include a final row that contains the gradebook grading permission
+        // information
+        if (externalLogic.siteHasTool(currContextId, ExternalLogic.TOOL_ID_GRADEBOOK)) {
+            UIOutput.make(form, "gradebook_perm");
+            
+            boolean displayTAFootnote = false;
+            
+            for (Role role : orderedRoles) {
+                UIBranchContainer grade_perms = UIBranchContainer.make(form, "gb_has_perm:");
+                Map<String, Boolean> functionMap = roleFunctionMap.get(role);
+
+                // default to none
+                String perm_level = messageLocator.getMessage("assignment2.permissions.grade.none");
+                if (functionMap != null) {
+                    if (functionMap.containsKey(AssignmentConstants.GB_PERMISSION_GRADE_ALL) &&
+                            functionMap.get(AssignmentConstants.GB_PERMISSION_GRADE_ALL)) {
+                        perm_level = messageLocator.getMessage("assignment2.permissions.grade.all");
+                    } else if (functionMap.containsKey(AssignmentConstants.GB_PERMISSION_GRADE_SECTION) &&
+                            functionMap.get(AssignmentConstants.GB_PERMISSION_GRADE_SECTION)) {
+                        perm_level = messageLocator.getMessage("assignment2.permissions.grade.groups");
+                        displayTAFootnote = true;
+                    }
+                }
+                
+                UIOutput.make(grade_perms, "gb_perm_desc", perm_level);
+            }
+            
+            if (displayTAFootnote) {
+                UIMessage.make(form, "grading_footnote", "assignment2.permissions.ta_footnote");
             }
         }
     }

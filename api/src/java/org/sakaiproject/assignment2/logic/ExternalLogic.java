@@ -50,9 +50,13 @@ public interface ExternalLogic {
      */
     public final static String TOOL_ID_OLD_ASSIGN = "sakai.assignment.grades";
     /**
-     * the tool if for this Assignment tool
+     * the tool id for this Assignment tool
      */
     public final static String TOOL_ID_ASSIGNMENT2 = "sakai.assignment2";
+    /**
+     * the tool id for Sakai's gradebook tool
+     */
+    public final static String TOOL_ID_GRADEBOOK = "sakai.gradebook.tool";
 
     /**
      * @return the current sakai user id (not username)

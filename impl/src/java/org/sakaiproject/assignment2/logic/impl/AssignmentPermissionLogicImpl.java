@@ -1035,7 +1035,7 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
         return authz.userHasPermission(contextId, "site.upd");
     }
     
-    public Map<Role, Map<String, Boolean>> getRoleFunctionMap(String contextId) {
+    public Map<Role, Map<String, Boolean>> getRoleFunctionMap(String contextId, boolean includeGradebookFunctions) {
         if (contextId == null) {
             throw new IllegalArgumentException("Null contextId passed to getRoleFunctionMap");
         }
@@ -1057,6 +1057,16 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
                         }
                     }
                     
+                    if (includeGradebookFunctions) {
+                        for (String permission : getGradebookPermissionFunctions()) {
+                            if (allowedFunctions != null && allowedFunctions.contains(permission)) {
+                                functionAllowedMap.put(permission, true);
+                            } else {
+                                functionAllowedMap.put(permission, false);
+                            }
+                        }
+                    }
+                    
                     roleFunctionMap.put(role, functionAllowedMap);
                 }
             }
@@ -1065,8 +1075,17 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
         return roleFunctionMap;
     }
     
-    public List<String> getPermissionFunctions() {
+    public List<String> getAssignment2PermissionFunctions() {
         return authz.getAllPermissions();
     }
-
+    
+    private List<String> getGradebookPermissionFunctions() {
+        List<String> gbFunctions = new ArrayList<String>();
+        gbFunctions.add(AssignmentConstants.GB_PERMISSION_EDIT);
+        gbFunctions.add(AssignmentConstants.GB_PERMISSION_GRADE_ALL);
+        gbFunctions.add(AssignmentConstants.GB_PERMISSION_GRADE_SECTION);
+        gbFunctions.add(AssignmentConstants.GB_PERMISSION_VIEW_OWN_GRADES);
+        
+        return gbFunctions;
+    }
 }
