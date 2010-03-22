@@ -394,6 +394,12 @@
        <property name="scheduledNotification" ref="org.sakaiproject.assignment2.logic.ScheduledNotification" />
    </bean>
    
+   <!-- For the permissions screen -->
+   <bean id="PermissionsBean" class="org.sakaiproject.assignment2.tool.beans.PermissionsBean">
+      <property name="assignmentPermissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentPermissionLogic" />
+      <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
+    </bean>
+   
    <bean id="FilePickerBean" class="org.sakaiproject.assignment2.tool.beans.FilePickerBean">
    </bean>
 

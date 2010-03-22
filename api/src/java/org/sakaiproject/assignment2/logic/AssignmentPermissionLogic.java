@@ -410,6 +410,14 @@ public interface AssignmentPermissionLogic {
     public Map<Role, Map<String, Boolean>> getRoleFunctionMap(String contextId, boolean includeGradebookFunctions);
     
     /**
+     * Update the permissions for the given contextId
+     * @param contextId
+     * @param roleIdFunctionMap map of the roleId (ie Student, Instructor, etc) to a map of
+     * the function (ie asnn2.submit) to true/false representing whether that role has permission
+     */
+    public void savePermissions(String contextId, Map<String, Map<String, Boolean>> roleIdFunctionMap);
+    
+    /**
      * 
      * @return {@link AssignmentAuthzLogic#getAllPermissions()}. This list will be
      * ordered.

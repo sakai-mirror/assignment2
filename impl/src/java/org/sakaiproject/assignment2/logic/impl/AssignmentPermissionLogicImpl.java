@@ -1075,6 +1075,56 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
         return roleFunctionMap;
     }
     
+    public void savePermissions(String contextId, Map<String, Map<String, Boolean>> roleIdFunctionMap) {
+        if (contextId == null) {
+            throw new IllegalArgumentException("Null contextId passed to savePermissions");
+        }
+        
+        if (roleIdFunctionMap != null) {
+        
+            Site site = externalLogic.getSite(contextId);
+            if (site == null) {
+                log.error("No site exists with the given contextId: " + contextId);
+                return;
+            }
+            
+            List<String> a2Functions = getAssignment2PermissionFunctions();
+            AuthzGroup edit;
+            Set<Role> roles = site.getRoles();
+            if (roles != null) {
+                for (Role role : roles) {
+                    // try to get the permissions to update from the map
+                    List<String> allowFunctions = new ArrayList<String>();
+                    List<String> disallowFunctions = new ArrayList<String>();
+                    if (roleIdFunctionMap.containsKey(role.getId())) {
+                        Map<String, Boolean> permMap = roleIdFunctionMap.get(role.getId());
+                        for (Map.Entry<String, Boolean> entry : permMap.entrySet()) {
+                            String function = entry.getKey();
+                            boolean hasPerm = entry.getValue();
+                            
+                            // make sure we are only updating a2 functions
+                            if (a2Functions.contains(function)) {
+                                if (hasPerm) {
+                                    allowFunctions.add(function);
+                                } else {
+                                    disallowFunctions.add(function);
+                                }
+                            }
+                        }
+                    }
+                    
+                    if (!allowFunctions.isEmpty()) {
+                        role.allowFunctions(allowFunctions);
+                    }
+                    
+                    if (!disallowFunctions.isEmpty()) {
+                        role.disallowFunctions(disallowFunctions);
+                    }
+                }
+            }
+        }
+    }
+    
     public List<String> getAssignment2PermissionFunctions() {
         return authz.getAllPermissions();
     }

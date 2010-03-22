@@ -46,4 +46,10 @@ public enum WorkFlowResult {
      */
     REORDER_STUDENT_VIEW_SAVE,
     REORDER_STUDENT_VIEW_CANCEL,
+    
+    /*
+     * Permissions screen
+     */
+    PERMISSIONS_SAVE,
+    PERMISSIONS_CANCEL
 }

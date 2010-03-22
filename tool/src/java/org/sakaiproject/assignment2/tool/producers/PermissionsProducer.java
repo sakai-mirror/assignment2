@@ -31,12 +31,15 @@ import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
+import org.sakaiproject.assignment2.tool.beans.PermissionsBean;
 import org.sakaiproject.assignment2.tool.params.AssignmentViewParams;
 import org.sakaiproject.authz.api.Role;
 
+import uk.org.ponder.beanutil.PathUtil;
 import uk.org.ponder.messageutil.MessageLocator;
 import uk.org.ponder.rsf.components.UIBoundBoolean;
 import uk.org.ponder.rsf.components.UIBranchContainer;
+import uk.org.ponder.rsf.components.UICommand;
 import uk.org.ponder.rsf.components.UIContainer;
 import uk.org.ponder.rsf.components.UIForm;
 import uk.org.ponder.rsf.components.UIMessage;
@@ -80,9 +83,7 @@ public class PermissionsProducer implements ViewComponentProducer, ViewParamsRep
          * Begin the Form
          */
         UIForm form = UIForm.make(tofill, "form");
-        
-        
-        
+
         // get the role/permission information
         Map<Role, Map<String, Boolean>> roleFunctionMap = permissionLogic.getRoleFunctionMap(currContextId, true);
         List<Role> orderedRoles = new ArrayList<Role>(roleFunctionMap.keySet());
@@ -107,8 +108,8 @@ public class PermissionsProducer implements ViewComponentProducer, ViewParamsRep
                 if (functionMap != null && functionMap.containsKey(perm)) {
                     hasPerm = functionMap.get(perm);
                 }
-                
-                UIBoundBoolean.make(perm_checkboxes, "perm_checkbox", hasPerm);
+                String encodedPath = PathUtil.composePath("PermissionsBean.permissionsMap", role.getId() + PermissionsBean.ROLE_FUNCTION_SEPARATOR + perm);
+                UIBoundBoolean.make(perm_checkboxes, "perm_checkbox", encodedPath, hasPerm);
             }
         }
         
@@ -143,6 +144,10 @@ public class PermissionsProducer implements ViewComponentProducer, ViewParamsRep
                 UIMessage.make(form, "grading_footnote", "assignment2.permissions.ta_footnote");
             }
         }
+        
+        // Make the buttons
+        UICommand.make(form, "post_perms", messageLocator.getMessage("assignment2.permissions.save"), "PermissionsBean.savePermissions");
+        UICommand.make(form, "cancel_perms", messageLocator.getMessage("assignment2.permissions.cancel"), "PermissionsBean.cancelPermissions");
     }
 
 
