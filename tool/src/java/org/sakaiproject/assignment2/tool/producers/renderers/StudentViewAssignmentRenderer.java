@@ -88,6 +88,18 @@ public class StudentViewAssignmentRenderer {
     public void setAsnnSubmissionDetailsRenderer(AsnnSubmissionDetailsRenderer asnnSubmissionDetailsRenderer) {
         this.asnnSubmissionDetailsRenderer = asnnSubmissionDetailsRenderer;
     }
+    
+    // Dependency
+    private AsnnDetailsRenderer asnnDetailsRenderer;
+    public void setAsnnDetailsRenderer(AsnnDetailsRenderer asnnDetailsRenderer) {
+        this.asnnDetailsRenderer = asnnDetailsRenderer;
+    }
+    
+    // Dependency
+    private GradeDetailsRenderer gradeDetailsRenderer;
+    public void setGradeDetailsRenderer(GradeDetailsRenderer gradeDetailsRenderer) {
+        this.gradeDetailsRenderer = gradeDetailsRenderer;
+    }
 
     // Dependency
     private AsnnInstructionsRenderer asnnInstructionsRenderer;
@@ -202,8 +214,15 @@ public class StudentViewAssignmentRenderer {
                         AssignmentSubmissionVersion singleVersion = versionHistory.get(0);
                         asnnSubmissionVersionRenderer.fillComponents(joint, "assignment-single-version:", singleVersion, false);
 
+                        // assignment details with toggle bar
+                        asnnDetailsRenderer.fillComponents(joint, "assignment-details-single-version:", assignmentSubmission, previewAsStudent, true);
                         // make the instructions with the toggle bar
                         asnnInstructionsRenderer.makeInstructions(joint, "assignment-instructions-single-version:", assignment, true, true, false);
+                        
+                        if (singleVersion.isFeedbackReleased())
+                        {
+                            gradeDetailsRenderer.fillComponents(joint, "grade-details-single-version:", assignmentSubmission, false);
+                        }
                         
                         // we need to mark this feedback as read (if released and unread)
                         if (singleVersion.isFeedbackReleased() && !singleVersion.isFeedbackRead()) {
@@ -214,6 +233,10 @@ public class StudentViewAssignmentRenderer {
                     } else if (versionHistory.size() > 1 || (versionHistory.size() == 1 && !versionHistory.get(0).isDraft())) {
                         // only expand feedback if the student didn't click "resubmit"
                         asnnSubmissionHistoryRenderer.fillComponents(joint, "assignment-previous-submissions:", assignmentSubmission, !resubmit);
+                        // assignment details with toggle bar
+                        asnnDetailsRenderer.fillComponents(joint, "assignment-details-previous-version:", assignmentSubmission, previewAsStudent, true);
+                        asnnInstructionsRenderer.makeInstructions(joint, "assignment-instructions-previous-version:", assignment, true, true, false);
+                        gradeDetailsRenderer.fillComponents(joint, "grade-details-previous-version:", assignmentSubmission, false);
                     }
                 }
             }
@@ -225,8 +248,17 @@ public class StudentViewAssignmentRenderer {
         if (previewAsStudent) {
             asnnSubmitEditorRenderer.fillComponents(joint, "assignment-edit-submission:", assignmentSubmission, true, false, false);
         }
-        else if (submissionIsOpen) {
+        else if (submissionIsOpen && resubmit) {
             asnnSubmitEditorRenderer.fillComponents(joint, "assignment-edit-submission:", assignmentSubmission, previewAsStudent, studentSubmissionPreview, resubmit);
+        }
+        else if (submissionIsOpen && !resubmit) {
+            // If this isn't a preview, and the student CAN submit, we need
+            // to make the button so they can return to the list and route
+            // to a page where they may resubmit their assignment
+            UIOutput.make(joint, "student-return-to-list-buttons");
+            UIForm returnform = UIForm.make(joint, "return-to-list-form", new SimpleViewParameters(StudentAssignmentListProducer.VIEW_ID));
+            UICommand.make(returnform, "resubmit-button", UIMessage.make("assignment2.student-submission.resubmit"), null);
+            UICommand.make(returnform, "return-button", UIMessage.make("assignment2.student-submission.returntolist"), null);
         }
         else {
             // If this isn't a preview, and the student can't submit, we need

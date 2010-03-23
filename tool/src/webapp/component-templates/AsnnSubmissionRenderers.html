@@ -55,21 +55,27 @@
 <!--     Assignment Submission History Display Widget                        -->
 <!--                                                                         -->
 <div rsf:id="asnn2-submission-history-widget:" class="versionHistory">
-		
+    <div rsf:id="grade-details-previous-version:">
+        <!-- Grade Details go here. -->
+    </div>
 		<div id="multiple-submissions" rsf:id="multiple-submissions">
 		    <div id="submission-version:" rsf:id="submission-version:">
             <div rsf:id="version_toggle:">
             </div>
             <div rsf:id="versionInformation" class="subsection1 toggleSubsection">
             
-              <div rsf:id="assignment-instructions-toggle:">
-                  <!-- Assignment Instructions go here. -->
-              </div>
+              
                 <div rsf:id="submission-entry:">
                   <!-- The rendered submission goes here. -->
                 </div>
             </div>
         </div>
+    </div>
+    <div rsf:id="assignment-details-previous-version:">
+        <!-- Assignment Details go here. -->
+    </div>
+    <div rsf:id="assignment-instructions-previous-version:">
+        <!-- Assignment Instructions go here. -->
     </div>
 </div>
 
@@ -77,11 +83,29 @@
 <!--     Assignment Submission Version Display Widget                        -->
 <!--                                                                         -->
 <div rsf:id="asnn2-submission-version-widget:">
-    <div rsf:id="assignment-instructions-single-version:">
-      <!-- Assignment Instructions go here. -->
+    <div rsf:id="grade-details-single-version:">
+        <!-- Grade Details go here. -->
     </div>
+    <div rsf:id="feedback_toggle:">
+        <!-- feedback toggle header -->
+    </div>
+    <div rsf:id="feedbackSection" class="toggleSubsection">
+    <h4 rsf:id="feedback-header:">Instructor Feedback</h4>
+    <div rsf:id="feedback-text" class="textPanel">
+        <p>Feedback from the instructor.</p>
+    </div>
+    <h4 rsf:id="feedback-attachments-header">Feedback Supporting Materials</h4>
+    <!-- this text will always be None when it is actually rendered -->
+    <div rsf:id="feedback-attachments-text" class="textPanel">
+        <p>None</p>
+    </div>
+    <ul class="attachList indnt1">
+        <li rsf:id="feedback-attachment-list:">
+            <img src="page_white_word.png" width="16" height="16"/><a href="">ExampleAttachment.doc</a> (52 KB)
+        </li>
+    </ul>
     <h3 rsf:id="submission-header" >Assignment Submission</h3>
-    <h4 rsf:id="submission-text-header">Submission Text</h4>
+    <h4 rsf:id="submission-text-header">Submitted Text</h4>
     <div rsf:id="submission-text" class="textPanel">
         <p>This is the students submission text,
            possibly annotated by the instructor.
@@ -94,17 +118,13 @@
         </li>
     </ul>
     <span rsf:id="no_submitted_attachments" class="instruction">No attachments yet</span>
-    
-    <h4 rsf:id="feedback-header:">Instructor Feedback</h4>
-    <div rsf:id="feedback-text" class="textPanel">
-        <p>Feedback from the instructor.</p>
     </div>
-    <h4 rsf:id="feedback-attachments-header">Feedback Supporting Materials</h4>
-    <ul class="attachList indnt1">
-        <li rsf:id="feedback-attachment-list:">
-            <img src="page_white_word.png" width="16" height="16"/><a href="">ExampleAttachment.doc</a> (52 KB)
-        </li>
-    </ul>
+    <div rsf:id="assignment-details-single-version:">
+        <!-- Assignment Details go here. -->
+    </div>
+    <div rsf:id="assignment-instructions-single-version:">
+        <!-- Assignment Instructions go here. -->
+    </div>
 </div>
 
 <!--                                                                         -->
@@ -218,5 +238,75 @@
   //]]>
   </script>
           
+</div>
+
+<!--                                                                         -->
+<!--     Assignment Details                                                  -->
+<!--                                                                         -->
+<div rsf:id="assn2-details-widget:">
+<div rsf:id="details_toggle_section:">
+<!-- this is for the collapsible toggle for displaying the assignment details -->
+</div>
+        
+        <div rsf:id="detailsSection" class="toggleSubsection">
+        <h3 rsf:id="assignment-details-header">Assignment Details</h3>
+        <table rsf:id="assignment-details-table" class="itemSummary infoTable" cellspacing="0" summary="Assignment Details">
+                <tr>
+                        <th rsf:id="msg=assignment2.student-submit.open_date">Open</th> 
+                        <td rsf:id="open-date"></td>
+                </tr>
+                <tr>
+                        <th rsf:id="msg=assignment2.student-submit.is_graded_title">Graded?</th>        
+                        <td rsf:id="is_graded"></td>
+                </tr>
+                <tr rsf:id="points-possible-row">
+                        <th rsf:id="msg=assignment2.student-submit.points_possible_title">Points Possible</th>  
+                        <td rsf:id="points-possible">25</td>
+                </tr>
+                <tr rsf:id="resubmission-allowed-row">
+                        <th rsf:id="msg=assignment2.student-submit.resubmissions_allowed_title">Resubmissions Allowed</th>      
+                        <td rsf:id="resubmissions-allowed"></td>
+                </tr>
+                <tr rsf:id="remaining-resubmissions-row">
+                        <th rsf:id="msg=assignment2.student-submit.remaining_resubmissions_allowed_title">Remaining Resubmissions Allowed</th>  
+                        <td rsf:id="remaining-resubmissions"></td>
+                </tr>
+        <tr rsf:id="plagiarism-check-row">
+          <th rsf:id="msg=assignment2.student-submit.plagiarism.check">Checked for plagiarism??</th>
+          <td rsf:id="plagiarism-check-enabled"></td>
+        </tr>
+        <tr rsf:id="grade-row">
+                        <th rsf:id="msg=assignment2.student-submit.grade_title">Grade</th>      
+                        <td rsf:id="grade"></td>
+                </tr>
+                <tr rsf:id="comment-row">
+                        <th rsf:id="msg=assignment2.student-submit.comments_title">Comments</th>        
+                        <td rsf:id="comment"></td>
+                </tr>
+        </table>
+        </div>
+</div>
+
+<!--                                                                         -->
+<!--     Grade Details                                                       -->
+<!--                                                                         -->
+<div rsf:id="grade-details-widget:">
+<div rsf:id="grade_toggle_section:">
+<!-- this is for the collapsible toggle for displaying the assignment details -->
+</div>
+        
+        <div rsf:id="gradeSection" class="toggleSubsection">
+        <h3 rsf:id="grade-details-header">Grade Details</h3>
+        <table rsf:id="grade-details-table" class="itemSummary infoTable" cellspacing="0" summary="Grade Details">
+        <tr rsf:id="grade-row">
+                        <th rsf:id="msg=assignment2.student-submit.grade_title">Grade</th>      
+                        <td rsf:id="grade"></td>
+                </tr>
+                <tr rsf:id="comment-row">
+                        <th rsf:id="msg=assignment2.student-submit.comments_title">Comments</th>        
+                        <td rsf:id="comment"></td>
+                </tr>
+        </table>
+        </div>
 </div>
 </div>

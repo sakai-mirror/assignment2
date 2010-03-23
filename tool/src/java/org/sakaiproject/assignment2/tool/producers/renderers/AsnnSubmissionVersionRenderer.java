@@ -9,10 +9,13 @@ import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 
+import uk.org.ponder.messageutil.MessageLocator;
 import uk.org.ponder.rsf.components.UIContainer;
 import uk.org.ponder.rsf.components.UIJointContainer;
 import uk.org.ponder.rsf.components.UIMessage;
+import uk.org.ponder.rsf.components.UIOutput;
 import uk.org.ponder.rsf.components.UIVerbatim;
+import uk.org.ponder.rsf.components.decorators.UIFreeAttributeDecorator;
 import uk.org.ponder.rsf.producers.BasicProducer;
 import uk.org.ponder.rsf.viewstate.ViewParameters;
 
@@ -55,6 +58,18 @@ public class AsnnSubmissionVersionRenderer implements BasicProducer {
     public void setAssignmentPermissionLogic(AssignmentPermissionLogic permissionLogic) {
         this.permissionLogic = permissionLogic;
     }
+    
+    // Dependency
+    private MessageLocator messageLocator;
+    public void setMessageLocator(MessageLocator messageLocator) {
+        this.messageLocator = messageLocator;
+    }
+    
+    // Dependency
+    private AsnnToggleRenderer toggleRenderer;
+    public void setAsnnToggleRenderer(AsnnToggleRenderer toggleRenderer) {
+        this.toggleRenderer = toggleRenderer;
+    }
 
     /**
      * Renders the Submission Version in the parent container in element with 
@@ -75,12 +90,20 @@ public class AsnnSubmissionVersionRenderer implements BasicProducer {
         Assignment2 assignment = assignmentSubmssion.getAssignment();
         int submissionType = assignment.getSubmissionType();
         boolean userCanGrade = permissionLogic.isUserAbleToProvideFeedbackForStudentForAssignment(assignmentSubmssion.getUserId(), assignment);
+        
+        if (asnnSubVersion.isFeedbackReleased()) {
+            String hoverText = messageLocator.getMessage("assignment2.student-submission.feedback.toggle.hover");
+            String heading = messageLocator.getMessage("assignment2.student-submission.feedback.toggle.header");
 
-        /*
-         * Render the headers
-         */
-        if (!multipleVersionDisplay) {
-            UIMessage.make(joint, "submission-header", "assignment2.student-submission.submission.header");
+            toggleRenderer.makeToggle(joint, "feedback_toggle:", null, true, 
+                    heading, hoverText, false, false, false, false, null);
+        }
+        
+        UIOutput feedbackSection = UIOutput.make(joint, "feedbackSection");
+        if (asnnSubVersion.isFeedbackReleased()) {
+            // everything below the toggle is a subsection
+            feedbackSection.decorate(new UIFreeAttributeDecorator("class", "toggleSubsection subsection1"));
+            feedbackSection.decorate(new UIFreeAttributeDecorator("style", "display: none;"));
         }
 
         //TODO FIXME time and date of submission here
@@ -149,6 +172,11 @@ public class AsnnSubmissionVersionRenderer implements BasicProducer {
                 attachmentListRenderer.makeAttachmentFromFeedbackAttachmentSet(joint, 
                         "feedback-attachment-list:", viewParameters.viewID, 
                         asnnSubVersion.getFeedbackAttachSet());
+            }
+            else
+            {
+                UIMessage.make(joint, "feedback-attachments-header", "assignment2.student-submission.feedback.materials.header");
+                UIMessage.make(joint, "feedback-attachments-text", "assignment2.student-submission.feedback.none");
             }
         }
 
