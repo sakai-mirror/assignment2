@@ -26,6 +26,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -36,6 +37,7 @@ import org.sakaiproject.assignment2.dao.AssignmentDao;
 import org.sakaiproject.assignment2.exception.AssignmentNotFoundException;
 import org.sakaiproject.assignment2.exception.SubmissionNotFoundException;
 import org.sakaiproject.assignment2.logic.AssignmentAuthzLogic;
+import org.sakaiproject.assignment2.logic.AssignmentBundleLogic;
 import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.logic.ExternalTaggableLogic;
@@ -43,9 +45,8 @@ import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentGroup;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
-import org.sakaiproject.authz.api.Role;
 import org.sakaiproject.site.api.Group;
-import org.sakaiproject.site.api.Site;
+import org.sakaiproject.util.ResourceLoader;
 
 /**
  * This is the implementation for logic to answer common permissions questions
@@ -1035,107 +1036,21 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
         return authz.userHasPermission(contextId, "site.upd");
     }
     
-    public Map<Role, Map<String, Boolean>> getRoleFunctionMap(String contextId, boolean includeGradebookFunctions) {
-        if (contextId == null) {
-            throw new IllegalArgumentException("Null contextId passed to getRoleFunctionMap");
-        }
-        
-        Map<Role, Map<String, Boolean>> roleFunctionMap = new HashMap<Role, Map<String,Boolean>>();
-        
-        Site site = externalLogic.getSite(contextId);
-        if (site != null) {
-            Set<Role> roles = site.getRoles();
-            if (roles != null) {
-                for (Role role : roles) {
-                    Map<String, Boolean> functionAllowedMap = new HashMap<String, Boolean>();
-                    Set<String> allowedFunctions = role.getAllowedFunctions();
-                    for (String permission : authz.getAllPermissions()) {
-                        if (allowedFunctions != null && allowedFunctions.contains(permission)) {
-                            functionAllowedMap.put(permission, true);
-                        } else {
-                            functionAllowedMap.put(permission, false);
-                        }
-                    }
-                    
-                    if (includeGradebookFunctions) {
-                        for (String permission : getGradebookPermissionFunctions()) {
-                            if (allowedFunctions != null && allowedFunctions.contains(permission)) {
-                                functionAllowedMap.put(permission, true);
-                            } else {
-                                functionAllowedMap.put(permission, false);
-                            }
-                        }
-                    }
-                    
-                    roleFunctionMap.put(role, functionAllowedMap);
-                }
-            }
-        }
-        
-        return roleFunctionMap;
-    }
-    
-    public void savePermissions(String contextId, Map<String, Map<String, Boolean>> roleIdFunctionMap) {
-        if (contextId == null) {
-            throw new IllegalArgumentException("Null contextId passed to savePermissions");
-        }
-        
-        if (roleIdFunctionMap != null) {
-        
-            Site site = externalLogic.getSite(contextId);
-            if (site == null) {
-                log.error("No site exists with the given contextId: " + contextId);
-                return;
-            }
-            
-            List<String> a2Functions = getAssignment2PermissionFunctions();
-            AuthzGroup edit;
-            Set<Role> roles = site.getRoles();
-            if (roles != null) {
-                for (Role role : roles) {
-                    // try to get the permissions to update from the map
-                    List<String> allowFunctions = new ArrayList<String>();
-                    List<String> disallowFunctions = new ArrayList<String>();
-                    if (roleIdFunctionMap.containsKey(role.getId())) {
-                        Map<String, Boolean> permMap = roleIdFunctionMap.get(role.getId());
-                        for (Map.Entry<String, Boolean> entry : permMap.entrySet()) {
-                            String function = entry.getKey();
-                            boolean hasPerm = entry.getValue();
-                            
-                            // make sure we are only updating a2 functions
-                            if (a2Functions.contains(function)) {
-                                if (hasPerm) {
-                                    allowFunctions.add(function);
-                                } else {
-                                    disallowFunctions.add(function);
-                                }
-                            }
-                        }
-                    }
-                    
-                    if (!allowFunctions.isEmpty()) {
-                        role.allowFunctions(allowFunctions);
-                    }
-                    
-                    if (!disallowFunctions.isEmpty()) {
-                        role.disallowFunctions(disallowFunctions);
-                    }
-                }
-            }
-        }
-    }
-    
     public List<String> getAssignment2PermissionFunctions() {
         return authz.getAllPermissions();
     }
     
-    private List<String> getGradebookPermissionFunctions() {
-        List<String> gbFunctions = new ArrayList<String>();
-        gbFunctions.add(AssignmentConstants.GB_PERMISSION_EDIT);
-        gbFunctions.add(AssignmentConstants.GB_PERMISSION_GRADE_ALL);
-        gbFunctions.add(AssignmentConstants.GB_PERMISSION_GRADE_SECTION);
-        gbFunctions.add(AssignmentConstants.GB_PERMISSION_VIEW_OWN_GRADES);
+    public Map<String, String> getAssignment2PermissionDescriptions() {
+        // get the resource loader object
+        ResourceLoader pRb = new ResourceLoader(AssignmentBundleLogic.ASSIGNMENT2_BUNDLE_PERMISSIONS);
+        HashMap<String, String> pRbValues = new HashMap<String, String>();
+        for (Iterator iKeys = pRb.keySet().iterator();iKeys.hasNext();)
+        {
+            String key = (String) iKeys.next();
+            pRbValues.put(key, (String) pRb.get(key));
+            
+        }
         
-        return gbFunctions;
+        return pRbValues;
     }
 }

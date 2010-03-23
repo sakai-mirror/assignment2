@@ -401,26 +401,15 @@ public interface AssignmentPermissionLogic {
     
     /**
      * 
-     * @param contextId
-     * @param includeGradebookFunctions set to true if you want to include the gradebook permissions
-     * as well as the assignment2 permissions
-     * @return a map of the Roles in this context to a map of the permission to true/false depending
-     * upon whether that role has that assignment2 permission.
-     */
-    public Map<Role, Map<String, Boolean>> getRoleFunctionMap(String contextId, boolean includeGradebookFunctions);
-    
-    /**
-     * Update the permissions for the given contextId
-     * @param contextId
-     * @param roleIdFunctionMap map of the roleId (ie Student, Instructor, etc) to a map of
-     * the function (ie asnn2.submit) to true/false representing whether that role has permission
-     */
-    public void savePermissions(String contextId, Map<String, Map<String, Boolean>> roleIdFunctionMap);
-    
-    /**
-     * 
      * @return {@link AssignmentAuthzLogic#getAllPermissions()}. This list will be
      * ordered.
      */
     public List<String> getAssignment2PermissionFunctions();
+    
+    /**
+     * 
+     * @return a map of the bundle key to its description for the assignment2 permissions
+     * (found in permissions.properties)
+     */
+    public Map<String, String> getAssignment2PermissionDescriptions();
 }

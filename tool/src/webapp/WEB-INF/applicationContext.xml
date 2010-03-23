@@ -112,7 +112,7 @@
 		via incoming request URL -->
 	<bean parent="requestAddressibleParent">
 		<property name="value"
-			value="AssignmentAuthoringOptionsFlowBean, AssignmentAuthoringBean, AssignmentAuthoringFlowBean, StudentSubmissionBean,RemoveAssignmentCommand,StudentSubmissionVersionFlowBean,GradeAllRemainingAction,MarkFeedbackAsReadAction,Assignment2,AssignmentSubmission,AssignmentSubmissionBean,FilePickerBean,AssignmentSubmissionVersion,UploadBean,MarkTodoBean,ReleaseGradesAction,ReleaseFeedbackAction,ReorderAssignmentsAction,PermissionsBean" />
+			value="AssignmentAuthoringOptionsFlowBean, AssignmentAuthoringBean, AssignmentAuthoringFlowBean, StudentSubmissionBean,RemoveAssignmentCommand,StudentSubmissionVersionFlowBean,GradeAllRemainingAction,MarkFeedbackAsReadAction,Assignment2,AssignmentSubmission,AssignmentSubmissionBean,FilePickerBean,AssignmentSubmissionVersion,UploadBean,MarkTodoBean,ReleaseGradesAction,ReleaseFeedbackAction,ReorderAssignmentsAction" />
 	</bean>
 
 	<!-- Override the default style of user messages -->

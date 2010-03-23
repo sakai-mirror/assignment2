@@ -57,6 +57,9 @@ public interface ExternalLogic {
      * the tool id for Sakai's gradebook tool
      */
     public final static String TOOL_ID_GRADEBOOK = "sakai.gradebook.tool";
+    
+        
+    public final static String NO_LOCATION = "noLocationAvailable";
 
     /**
      * @return the current sakai user id (not username)
@@ -98,6 +101,8 @@ public interface ExternalLogic {
      * @return the current context for the current user
      */
     public String getCurrentContextId();
+    
+    public String getCurrentLocationId();
 
     /**
      * 
