@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
+import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.authz.api.PermissionsHelper;
 import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.tool.api.ToolSession;
@@ -50,7 +51,7 @@ public class PermissionsProducer implements ViewComponentProducer, ViewParamsRep
         session.setAttribute(PermissionsHelper.DESCRIPTION, 
                 messageLocator.getMessage("assignment2.permissions.instructions", 
                         new Object[] {externalLogic.getToolTitle(), siteTitle, siteId}) );
-        session.setAttribute(PermissionsHelper.PREFIX, "asnn2.");
+        session.setAttribute(PermissionsHelper.PREFIX, AssignmentConstants.PERMISSION_PREFIX);
         
         // set up the permission descriptions
         session.setAttribute("permissionDescriptions", permissionLogic.getAssignment2PermissionDescriptions()); 

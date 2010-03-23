@@ -28,29 +28,33 @@ public class AssignmentConstants {
     
     public static final String
         /**
+         * The prefix for assignment2 permissions
+         */
+        PERMISSION_PREFIX = "asnn2",
+        /**
          * User may view assignments
          */
-        PERMISSION_VIEW_ASSIGNMENTS = "asnn2.assignment.read",
+        PERMISSION_VIEW_ASSIGNMENTS = PERMISSION_PREFIX + ".assignment.read",
         /**
          * User may make submissions to assignments
          */
-        PERMISSION_SUBMIT = "asnn2.submit",
+        PERMISSION_SUBMIT = PERMISSION_PREFIX + ".submit",
         /**
          * User may add new assignments
          */
-        PERMISSION_ADD_ASSIGNMENTS = "asnn2.assignment.new",
+        PERMISSION_ADD_ASSIGNMENTS = PERMISSION_PREFIX + ".assignment.new",
         /**
          * User may edit existing assignments
          */
-        PERMISSION_EDIT_ASSIGNMENTS = "asnn2.assignment.edit",
+        PERMISSION_EDIT_ASSIGNMENTS = PERMISSION_PREFIX + ".assignment.edit",
         /**
          * User may delete existing assignments
          */
-        PERMISSION_REMOVE_ASSIGNMENTS = "asnn2.assignment.delete",
+        PERMISSION_REMOVE_ASSIGNMENTS = PERMISSION_PREFIX + ".assignment.delete",
         /**
          * User may view and provide feedback on assignment submissions
          */
-        PERMISSION_MANAGE_SUBMISSIONS = "asnn2.submissions.manage",
+        PERMISSION_MANAGE_SUBMISSIONS = PERMISSION_PREFIX + ".submissions.manage",
         /**
          * User may view and act on all students and all groups in the site in 
          * accordance with the other permissions that have been assigned to this role.
@@ -58,7 +62,7 @@ public class AssignmentConstants {
          * to his/her group and/or act on submissions if they were submitted by a user
          * in his/her group, if applicable
          */
-        PERMISSION_ALL_GROUPS = "asnn2.all.groups";
+        PERMISSION_ALL_GROUPS = PERMISSION_PREFIX + ".all.groups";
     
     // Gradebook permission functions
     public static final String
