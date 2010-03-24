@@ -17,6 +17,8 @@
       <property name="functionManager" ref="org.sakaiproject.authz.api.FunctionManager" />
       <property name="siteService" ref="org.sakaiproject.site.api.SiteService" />
       <property name="securityService" ref="org.sakaiproject.authz.api.SecurityService" />
+      <property name="authzGroupService" ref="org.sakaiproject.authz.api.AuthzGroupService" />
+      <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
    </bean>
    
    <bean id="org.sakaiproject.assignment2.logic.ExternalGradebookLogic" class="org.sakaiproject.assignment2.logic.impl.ExternalGradebookLogicImpl" init-method="init">

@@ -22,15 +22,19 @@
 package org.sakaiproject.assignment2.logic.impl;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment2.logic.AssignmentAuthzLogic;
 import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
+import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
+import org.sakaiproject.authz.api.AuthzGroupService;
 import org.sakaiproject.authz.api.FunctionManager;
 import org.sakaiproject.authz.api.SecurityService;
+import org.sakaiproject.site.api.Group;
 import org.sakaiproject.site.api.SiteService;
 import org.sakaiproject.user.api.User;
 
@@ -48,6 +52,8 @@ public class AssignmentAuthzLogicImpl implements AssignmentAuthzLogic
     private FunctionManager functionManager;
     private SecurityService securityService;
     private SiteService siteService;
+    private AuthzGroupService authzGroupService;
+    private ExternalLogic externalLogic;
 
     public void init() {
         if (log.isDebugEnabled()) log.debug("init");
@@ -141,11 +147,33 @@ public class AssignmentAuthzLogicImpl implements AssignmentAuthzLogic
     }
     
     public boolean userHasPermission(String contextId, String permission) {
-        return securityService.unlock(permission, siteService.siteReference(contextId));
+        boolean hasPerm = securityService.unlock(permission, siteService.siteReference(contextId));
+        
+        // if they don't have perm for the site, check for group permission (unless they
+        // are checking all groups perm)
+        if (!hasPerm && !AssignmentConstants.PERMISSION_ALL_GROUPS.equals(permission)) {
+            Collection<Group> allowedGroups = getGroupsAllowedForUser(null, contextId, permission);
+            if (allowedGroups != null && !allowedGroups.isEmpty()) {
+                hasPerm = true;
+            }
+        }
+        
+        return hasPerm;
     }
     
     public boolean userHasPermission(String userId, String contextId, String permission) {
-        return securityService.unlock(userId, permission, siteService.siteReference(contextId));
+        boolean hasPerm = securityService.unlock(userId, permission, siteService.siteReference(contextId));
+
+        // if they don't have perm for the site, check for group permission (unless they
+        // are checking all groups perm)
+        if (!hasPerm && !AssignmentConstants.PERMISSION_ALL_GROUPS.equals(permission)) {
+            Collection<Group> allowedGroups = getGroupsAllowedForUser(userId, contextId, permission);
+            if (allowedGroups != null && !allowedGroups.isEmpty()) {
+                hasPerm = true;
+            }
+        }
+
+        return hasPerm;
     }
     
     public List<String> getAssignmentLevelPermissions() {
@@ -209,6 +237,41 @@ public class AssignmentAuthzLogicImpl implements AssignmentAuthzLogic
         
         return userIds;
     }
+    
+    private Collection<Group> getGroupsAllowedForUser(String userId, String context, String function) {
+        Collection<Group> allowedGroups = new ArrayList<Group>();
+        
+        // no need to check if they are looking for the all groups perm
+        if (!AssignmentConstants.PERMISSION_ALL_GROUPS.equals(function)) {
+            // first, get the groups in this context (site)
+            Collection<Group> allGroups = externalLogic.getSiteGroups(context);
+            if (allGroups != null && !allGroups.isEmpty()) {
+                if (userId == null) {
+                    userId = externalLogic.getCurrentUserId();
+                }
+
+                // put these in a list to filter
+                Collection<String> groupRefs = new ArrayList<String>();
+                for (Group group : allGroups) {
+                    groupRefs.add(group.getReference());
+                }
+
+                // filter out the groups with permission
+                groupRefs = authzGroupService.getAuthzGroupsIsAllowed(userId, function, groupRefs);
+
+                // now go back and get the equivalent group
+                if (groupRefs != null && !groupRefs.isEmpty()) {
+                    for (Group group : allGroups) {
+                        if (groupRefs.contains(group.getReference())) {
+                            allowedGroups.add(group);
+                        }
+                    }
+                }
+            }
+        }
+
+        return allowedGroups;
+    }
 
     
     /* Dependencies */
@@ -223,5 +286,13 @@ public class AssignmentAuthzLogicImpl implements AssignmentAuthzLogic
     
     public void setSiteService(SiteService siteService) {
         this.siteService = siteService;
+    }
+    
+    public void setAuthzGroupService(AuthzGroupService authzGroupService) {
+        this.authzGroupService = authzGroupService;
+    }
+    
+    public void setExternalLogic(ExternalLogic externalLogic) {
+        this.externalLogic = externalLogic;
     }
 }
