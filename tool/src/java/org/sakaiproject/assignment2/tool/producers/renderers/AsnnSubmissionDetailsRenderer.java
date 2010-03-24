@@ -101,6 +101,7 @@ public class AsnnSubmissionDetailsRenderer implements BasicProducer {
         this.submissionLogic = submissionLogic;
     }
     
+    // Dependency
     private ExternalContentReviewLogic contentReviewLogic;
     public void setExternalContentReviewLogic(ExternalContentReviewLogic contentReviewLogic) {
         this.contentReviewLogic = contentReviewLogic;
@@ -238,11 +239,8 @@ public class AsnnSubmissionDetailsRenderer implements BasicProducer {
 
         UIVerbatim.make(joint, "due_date", dueDateText);
 
-        if (!excludeDetails) {
-            renderAssignmentDetails(assignmentSubmission, previewAsStudent,
-                    assignment, joint);
-        }
-
+        // Removed the call to renderAssignmentDetails here and leaving the function, in case we still need it.
+        // Assignment Details can be found in AsnnDetailsRenderer.java
     }
 
     /**
