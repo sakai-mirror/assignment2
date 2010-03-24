@@ -232,7 +232,7 @@ public interface ExternalLogic {
      * (such as upload and download) that we need to convert to the equivalent
      * userId for processing
      */
-    public Map<String, String> getUserDisplayIdUserIdMapForUsers(List<String> userIds);
+    public Map<String, String> getUserDisplayIdUserIdMapForUsers(Collection<String> userIds);
 
     /**
      * 

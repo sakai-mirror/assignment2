@@ -24,12 +24,12 @@ package org.sakaiproject.assignment2.logic;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.sakaiproject.assignment2.exception.SubmissionNotFoundException;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentGroup;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
-import org.sakaiproject.authz.api.Role;
 import org.sakaiproject.site.api.Group;
 
 /**
@@ -387,10 +387,10 @@ public interface AssignmentPermissionLogic {
     /**
      * 
      * @param contextId
-     * @return a list of the userIds of users who have submission privileges in 
+     * @return a set of the userIds of users who have submission privileges in 
      * the given context
      */
-    public List<String> getSubmittersInSite(String contextId);
+    public Set<String> getSubmittersInSite(String contextId);
     
     /**
      * 

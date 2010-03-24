@@ -22,6 +22,7 @@
 package org.sakaiproject.assignment2.logic;
 
 import java.util.List;
+import java.util.Set;
 
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 
@@ -231,7 +232,7 @@ public interface AssignmentAuthzLogic {
      * 
      * @param contextId
      * @param permission
-     * @return a list of userIds of users in the given contextId with the given permission
+     * @return a set of userIds of users in the given contextId with the given permission
      */
-    public List<String> getUsersWithPermission(String contextId, String permission);
+    public Set<String> getUsersWithPermission(String contextId, String permission);
 }

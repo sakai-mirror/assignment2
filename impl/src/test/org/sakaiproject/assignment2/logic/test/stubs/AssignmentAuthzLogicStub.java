@@ -22,7 +22,9 @@
 package org.sakaiproject.assignment2.logic.test.stubs;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.sakaiproject.assignment2.logic.AssignmentAuthzLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
@@ -168,7 +170,7 @@ public class AssignmentAuthzLogicStub implements AssignmentAuthzLogic
         return false;
     }
 
-    public List<String> getUsersWithPermission(String contextId, String permission)
+    public Set<String> getUsersWithPermission(String contextId, String permission)
     {
         List<String> allUsers = new ArrayList<String>();
         allUsers.add(AssignmentTestDataLoad.INSTRUCTOR_UID);
@@ -178,7 +180,7 @@ public class AssignmentAuthzLogicStub implements AssignmentAuthzLogic
         allUsers.add(AssignmentTestDataLoad.STUDENT2_UID);
         allUsers.add(AssignmentTestDataLoad.STUDENT3_UID);
         
-        List<String> usersWithPermission = new ArrayList<String>();
+        Set<String> usersWithPermission = new HashSet<String>();
         for (String user : allUsers) {
             if (userHasPermission(user, AssignmentTestDataLoad.CONTEXT_ID, permission)) {
                 usersWithPermission.add(user);

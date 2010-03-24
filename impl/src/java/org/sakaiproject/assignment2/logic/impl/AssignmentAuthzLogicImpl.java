@@ -23,7 +23,9 @@ package org.sakaiproject.assignment2.logic.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -220,22 +222,31 @@ public class AssignmentAuthzLogicImpl implements AssignmentAuthzLogic
         return oneOrNoGroups;
     }
     
-    public List<String> getUsersWithPermission(String contextId, String permission) {
+    public Set<String> getUsersWithPermission(String contextId, String permission) {
         if (contextId == null || permission == null) {
             throw new IllegalArgumentException("Null contextId (" + contextId + ") or permission" +
                     " ("+ permission + ") passed to getUsersWithPermission");
         }
         
-        List<String> userIds = new ArrayList<String>();
+        Collection<String> groupRefs = new ArrayList<String>();
         
-        List<User> usersWithPerm = securityService.unlockUsers(permission, siteService.siteReference(contextId));
-        if (usersWithPerm != null) {
-            for (User user : usersWithPerm) {
-                userIds.add(user.getId());
+        // first, add the site
+        groupRefs.add(siteService.siteReference(contextId));
+        
+        // now check for site groups
+        Collection<Group> siteGroups = externalLogic.getSiteGroups(contextId);
+        if (siteGroups != null) {
+            for (Group group : siteGroups) {
+                groupRefs.add(group.getReference());
             }
         }
         
-        return userIds;
+        Set<String> userIdsWithPerm = authzGroupService.getUsersIsAllowed(permission, groupRefs);
+        if (userIdsWithPerm == null) {
+            userIdsWithPerm = new HashSet<String>();
+        }
+        
+        return userIdsWithPerm;
     }
     
     private Collection<Group> getGroupsAllowedForUser(String userId, String context, String function) {

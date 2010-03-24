@@ -772,7 +772,7 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
                 
             } else {
                 // first, we will retrieve all of the users with submission privileges in this site
-                List<String> usersWithSubmitPerm = getSubmittersInSite(contextId);
+                Set<String> usersWithSubmitPerm = getSubmittersInSite(contextId);
 
                 if (usersWithSubmitPerm != null && !usersWithSubmitPerm.isEmpty()) {
 
@@ -903,14 +903,14 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
      * @return a list of userIds for users who have access to the assignment based upon
      * the given assignGroupRestrictions
      */
-    private List<String> filterSubmittersGivenGroupRestrictions(String contextId, List<String> siteSubmitters, 
+    private List<String> filterSubmittersGivenGroupRestrictions(String contextId, Collection<String> siteSubmitters, 
             Collection<AssignmentGroup> assignGroupRestrictions, Map<String, List<String>> groupIdMembershipMap) {
         List<String> assignmentSubmitters = new ArrayList<String>();
 
         // if there are group restrictions, only a subset of all of the submitters in the
         // site will be available for this assignment
-        if (assignGroupRestrictions == null || assignGroupRestrictions.isEmpty()) {
-            assignmentSubmitters = siteSubmitters;
+        if (assignGroupRestrictions == null || assignGroupRestrictions.isEmpty() && siteSubmitters != null) {
+            assignmentSubmitters.addAll(siteSubmitters);
         } else {
             // use a Set to make sure users only appear once, even if they
             // are in multiple groups
@@ -943,7 +943,7 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
         List<String> usersAllowedToViewStudent = new ArrayList<String>();
 
         // identify all of the users who are able to manage submissions
-        List<String> submissionManagers = authz.getUsersWithPermission(assignment.getContextId(), AssignmentConstants.PERMISSION_MANAGE_SUBMISSIONS);
+        Set<String> submissionManagers = authz.getUsersWithPermission(assignment.getContextId(), AssignmentConstants.PERMISSION_MANAGE_SUBMISSIONS);
 
         for (String userId : submissionManagers) {
             List<String> viewableStudents = getViewableStudentsForAssignment(userId, assignment);
@@ -1020,7 +1020,7 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
         return allowed;
     }
     
-    public List<String> getSubmittersInSite(String contextId) {
+    public Set<String> getSubmittersInSite(String contextId) {
         if (contextId == null) {
             throw new IllegalArgumentException("Null contextId passed to getSubmittersInSite");
         }

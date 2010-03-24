@@ -360,7 +360,7 @@ public class ExternalLogicImpl implements ExternalLogic {
         return userIdUserMap;
     }
 
-    public Map<String, String> getUserDisplayIdUserIdMapForUsers(List<String> userIds) {
+    public Map<String, String> getUserDisplayIdUserIdMapForUsers(Collection<String> userIds) {
         Map<String, String> userDisplayIdUserIdMap = new HashMap<String, String>();
 
         if (userIds != null) {

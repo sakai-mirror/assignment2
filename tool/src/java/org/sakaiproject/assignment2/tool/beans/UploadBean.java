@@ -25,6 +25,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -314,7 +315,7 @@ public class UploadBean
         }
 
         // retrieve the displayIdUserId info once and re-use it
-        List<String> submitters = permissionLogic.getSubmittersInSite(assignment.getContextId());
+        Set<String> submitters = permissionLogic.getSubmittersInSite(assignment.getContextId());
         displayIdUserIdMap = externalLogic.getUserDisplayIdUserIdMapForUsers(submitters);
         parsedContent = uploadGradesLogic.getCSVContent(newFile);
         

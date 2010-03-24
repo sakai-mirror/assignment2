@@ -347,7 +347,7 @@ public class ExternalLogicStub implements ExternalLogic {
     }
 
     @Override
-    public Map<String, String> getUserDisplayIdUserIdMapForUsers(List<String> userIds)
+    public Map<String, String> getUserDisplayIdUserIdMapForUsers(Collection<String> userIds)
     {
         // TODO Auto-generated method stub
         return null;

@@ -1744,7 +1744,7 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
             fail("did not catch null contextId passed to getSubmittersInSite");
         } catch (IllegalArgumentException iae) {}
         
-        List<String> submitters = permissionLogic.getSubmittersInSite(AssignmentTestDataLoad.CONTEXT_ID);
+        Set<String> submitters = permissionLogic.getSubmittersInSite(AssignmentTestDataLoad.CONTEXT_ID);
         assertEquals(3, submitters.size());
         
         for (String user : submitters) {

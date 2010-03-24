@@ -51,6 +51,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.lang.String;
 
 import uk.org.ponder.beanutil.entity.EntityBeanLocator;
@@ -583,7 +584,7 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
         //Post Buttons
         UICommand postAssign = UICommand.make(form, "post_assignment", UIMessage.make("assignment2.assignment_add.post"), "AssignmentAuthoringBean.processActionPost");
         if (assignment.getId() != null) {
-            List<String> allStudents = permissionLogic.getSubmittersInSite(assignment.getContextId());
+            Set<String> allStudents = permissionLogic.getSubmittersInSite(assignment.getContextId());
             int numSubmissions = submissionLogic.getNumStudentsWithASubmission(assignment, allStudents);
             if (numSubmissions > 0) {
                 // we need to display a warning to the user that they are editing
