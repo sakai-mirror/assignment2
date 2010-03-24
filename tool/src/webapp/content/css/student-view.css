@@ -17,13 +17,13 @@ height:auto;
 padding-top:8px !important;
 }
 .headerSortUp {
-background: url(../images/sortascending.gif) no-repeat left;
+background: url(/library/image/sakai/sortascending.gif) no-repeat left;
 background-position: 40px;
 height:auto;
 padding-top:8px !important;
 }
 .headerSortDown {
-background: url(../images/sortdescending.gif) no-repeat left;
+background: url(/library/image/sakai/sortdescending.gif) no-repeat left;
 background-position: 40px;
 height:auto;
 padding-top:8px !important;
