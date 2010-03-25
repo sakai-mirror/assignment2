@@ -8,6 +8,7 @@ import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
+import org.sakaiproject.assignment2.tool.HtmlDiffUtil;
 
 import uk.org.ponder.rsf.components.UIContainer;
 import uk.org.ponder.rsf.components.UIJointContainer;
@@ -114,7 +115,8 @@ public class AsnnSubmissionVersionRenderer implements BasicProducer {
                 if (userCanGrade || asnnSubVersion.isFeedbackReleased()) {
                     UIMessage.make(joint, "submission-text-header", "assignment2.student-submit.submission_text.annotated");
                     if (asnnSubVersion.getAnnotatedText() != null && asnnSubVersion.getAnnotatedText().trim().length() > 0) {
-                        UIVerbatim.make(joint, "submission-text", asnnSubVersion.getAnnotatedText());
+                        HtmlDiffUtil differ = new HtmlDiffUtil();
+                        UIVerbatim.make(joint, "submission-text", differ.diffHtml(asnnSubVersion.getSubmittedText(), asnnSubVersion.getAnnotatedText()));
                     } else {
                         UIMessage.make(joint, "submission-text", "assignment2.student-submit.submission_text.none");
                     }
