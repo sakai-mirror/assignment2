@@ -185,7 +185,7 @@ public class StudentViewAssignmentRenderer {
          * text and attachments of that submission.
          */
         if (!studentSubmissionPreview) {
-            asnnSubmissionDetailsRenderer.fillComponents(joint, "assignment-details:", assignmentSubmission, previewAsStudent);
+            asnnSubmissionDetailsRenderer.fillComponents(joint, "assignment-status:", assignmentSubmission, previewAsStudent);
 
             // Submission History
             if (!previewAsStudent) {
@@ -219,7 +219,7 @@ public class StudentViewAssignmentRenderer {
             }
         }
         else {
-            asnnSubmissionDetailsRenderer.fillComponents(joint, "assignment-details:", assignmentSubmission, previewAsStudent, true);
+            asnnSubmissionDetailsRenderer.fillComponents(joint, "assignment-status:", assignmentSubmission, previewAsStudent, true);
         }
 
         if (previewAsStudent) {

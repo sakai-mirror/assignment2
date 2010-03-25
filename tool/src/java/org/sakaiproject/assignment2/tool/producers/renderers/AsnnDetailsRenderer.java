@@ -67,10 +67,11 @@ public class AsnnDetailsRenderer implements BasicProducer {
      * @param clientID
      * @param assignmentSubmission
      * @param previewAsStudent
+     * @param expandToggle true if this section should be expanded
      * @param excludeDetails If this is true, we only render the Title/Name and
      * due date, but leave off the table with Graded, Submission Status etc.
      */
-    public void fillComponents(UIContainer parent, String clientID, AssignmentSubmission assignmentSubmission, boolean previewAsStudent, boolean includeToggle) {
+    public void fillComponents(UIContainer parent, String clientID, AssignmentSubmission assignmentSubmission, boolean previewAsStudent, boolean includeToggle, boolean expandToggle) {
         /***
          * Assignment Details including:
          *   - Graded?
@@ -91,7 +92,7 @@ public class AsnnDetailsRenderer implements BasicProducer {
             String heading = messageLocator.getMessage("assignment2.details.heading");
 
             toggleRenderer.makeToggle(joint, "details_toggle_section:", null, true, 
-                    heading, hoverText, false, false, false, false, null);
+                    heading, hoverText, expandToggle, false, false, false, null);
         } else {
             UIMessage.make(joint, "assignment-details-header", "assignment2.student-submit.details_title");
         }
