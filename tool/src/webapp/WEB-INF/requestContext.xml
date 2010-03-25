@@ -51,25 +51,6 @@
         <property name="externalContentReviewLogic" ref="org.sakaiproject.assignment2.logic.ExternalContentReviewLogic"></property>
     </bean>	
     
-    <bean id="AsnnDetailsRenderer" 
-        class="org.sakaiproject.assignment2.tool.producers.renderers.AsnnDetailsRenderer">
-        <property name="currentUser" ref="sakai-User"></property>
-        <property name="locale" ref="requestLocale"></property>
-        <property name="messageLocator" ref="messageLocator"></property>
-        <property name="submissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic"></property>
-        <property name="externalContentReviewLogic" ref="org.sakaiproject.assignment2.logic.ExternalContentReviewLogic"></property>
-        <property name="asnnToggleRenderer" ref="AsnnToggleRenderer"></property>
-    </bean> 
-    
-    <bean id="GradeDetailsRenderer" 
-        class="org.sakaiproject.assignment2.tool.producers.renderers.GradeDetailsRenderer">
-        <property name="curContext" ref="sakai-Context"></property>
-        <property name="currentUser" ref="sakai-User"></property>
-        <property name="externalGradebookLogic" ref="org.sakaiproject.assignment2.logic.ExternalGradebookLogic"></property>
-        <property name="messageLocator" ref="messageLocator"></property>
-        <property name="asnnToggleRenderer" ref="AsnnToggleRenderer"></property>
-    </bean> 
-    
     <bean id="AsnnInstructionsRenderer"
         class="org.sakaiproject.assignment2.tool.producers.renderers.AsnnInstructionsRenderer">
         <property name="attachmentListRenderer" ref="AttachmentListRenderer"></property>
@@ -109,10 +90,8 @@
     	class="org.sakaiproject.assignment2.tool.producers.renderers.AsnnSubmissionVersionRenderer">
     	<property name="attachmentListRenderer" ref="AttachmentListRenderer"></property>
     	<property name="viewParameters" ref="viewParameters"></property>
-        <property name="externalContentReviewLogic" ref="org.sakaiproject.assignment2.logic.ExternalContentReviewLogic"></property>
-        <property name="assignmentPermissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentPermissionLogic" />
-        <property name="messageLocator" ref="messageLocator" />
-        <property name="asnnToggleRenderer" ref="AsnnToggleRenderer"></property>
+      <property name="externalContentReviewLogic" ref="org.sakaiproject.assignment2.logic.ExternalContentReviewLogic"></property>
+      <property name="assignmentPermissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentPermissionLogic" />
     </bean>
     
     <bean id="AsnnSubmissionHistoryRenderer"
@@ -121,8 +100,9 @@
     	<property name="submissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
     	<property name="locale" ref="requestLocale" />
     	<property name="messageLocator" ref="messageLocator" />
-        <property name="displayUtil" ref="DisplayUtil" />
-        <property name="asnnToggleRenderer" ref="AsnnToggleRenderer"></property>
+      <property name="displayUtil" ref="DisplayUtil" />
+      <property name="asnnInstructionsRenderer" ref="AsnnInstructionsRenderer"></property>
+      <property name="asnnToggleRenderer" ref="AsnnToggleRenderer"></property>
     </bean>
 
    <bean id="ReviewStatusRenderer" class="org.sakaiproject.assignment2.tool.producers.renderers.ReviewStatusRenderer">
@@ -148,8 +128,6 @@
       <property name="messageLocator" ref="messageLocator" />
       <property name="submissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
       <property name="asnnSubmissionDetailsRenderer" ref="AsnnSubmissionDetailsRenderer" />
-      <property name="asnnDetailsRenderer" ref="AsnnDetailsRenderer" />
-      <property name="gradeDetailsRenderer" ref="GradeDetailsRenderer" />
       <property name="asnnInstructionsRenderer" ref="AsnnInstructionsRenderer"></property>
       <property name="asnnSubmitEditorRenderer" ref="AsnnSubmitEditorRenderer"></property>
       <property name="asnnSubmissionHistoryRenderer" ref="AsnnSubmissionHistoryRenderer"></property>

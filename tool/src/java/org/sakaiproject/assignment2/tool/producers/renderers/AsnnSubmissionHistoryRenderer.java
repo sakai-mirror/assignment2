@@ -57,22 +57,25 @@ public class AsnnSubmissionHistoryRenderer implements BasicProducer {
         this.locale = locale;
     }
 
-    // Dependency
     private MessageLocator messageLocator;
     public void setMessageLocator(MessageLocator messageLocator) {
         this.messageLocator = messageLocator;
     }
     
-    // Dependency
     private DisplayUtil displayUtil;
     public void setDisplayUtil(DisplayUtil displayUtil) {
         this.displayUtil = displayUtil;
     }
     
-    // Dependency
     private AsnnToggleRenderer toggleRenderer;
     public void setAsnnToggleRenderer(AsnnToggleRenderer toggleRenderer) {
         this.toggleRenderer = toggleRenderer;
+    }
+    
+    // Dependency
+    private AsnnInstructionsRenderer asnnInstructionsRenderer;
+    public void setAsnnInstructionsRenderer(AsnnInstructionsRenderer asnnInstructionsRenderer) {
+        this.asnnInstructionsRenderer = asnnInstructionsRenderer;
     }
 
     /**
@@ -130,16 +133,13 @@ public class AsnnSubmissionHistoryRenderer implements BasicProducer {
                         versionIdList.add(version.getId());
                         submissionLogic.markFeedbackAsViewed(assignmentSubmission.getId(), versionIdList);
                     }
-                    else if (versionHistory.get(0).getId() == version.getId())
-                    {
-                        // this makes sure the first submission is expanded on the page load
-                        expand = true;
-                    }
                     
                     makeVersionToggle(versionDiv, version, assignment.getDueDate(), 
                             assignmentSubmission.getResubmitCloseDate(), expand, assignmentSubmission.getId(), version.getId(), showFeedbackAsRead);
 
                     asnnSubmissionVersionRenderer.fillComponents(versionDiv, "submission-entry:", version, true);
+                    
+                    asnnInstructionsRenderer.makeInstructions(versionDiv, "assignment-instructions-toggle:", assignment, true, false, false);
                 }
             }
         }
