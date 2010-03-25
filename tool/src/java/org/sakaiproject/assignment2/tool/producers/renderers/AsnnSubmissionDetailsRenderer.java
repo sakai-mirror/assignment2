@@ -153,23 +153,13 @@ public class AsnnSubmissionDetailsRenderer implements BasicProducer {
         /***
          * Title and Due Date Information
          */
-        if (!assignment.isRemoved()) {
-            String submissionHeading;
-            if (!assignment.isRequiresSubmission() || assignment.getSubmissionType() == AssignmentConstants.SUBMIT_NON_ELECTRONIC) {
-                submissionHeading = messageLocator.getMessage("assignment2.student-submit.heading.no_submission", new Object[]{ title, currentUser.getDisplayName() });
-            } else {
-                submissionHeading = messageLocator.getMessage("assignment2.student-submit.heading.submission", new Object[]{ title, currentUser.getDisplayName() });
-            }
-
-            if (currStatus == AssignmentConstants.SUBMISSION_IN_PROGRESS) {
-                UIVerbatim.make(joint, "heading_status", messageLocator.getMessage("assignment2.student-submit.heading.in_progress", 
-                        new Object[]{ title, currentUser.getDisplayName(), df_short.format(assignmentSubmission.getCurrentSubmissionVersion().getStudentSaveDate())}));
-            } else {
-                UIOutput.make(joint, "heading_status", submissionHeading);
-            }
-        } else {
-            UIVerbatim.make(joint, "heading_status", messageLocator.getMessage("assignment2.student-submit.heading.submission.deleted", 
-                    new Object[]{ title, currentUser.getDisplayName() }));
+        
+        UIOutput.make(joint, "heading_title", title);
+        if (assignment.isRemoved()) {
+            UIMessage.make(joint, "heading_status", messageLocator.getMessage("assignment2.student-submit.heading.submission.deleted"));
+        } else if (currStatus == AssignmentConstants.SUBMISSION_IN_PROGRESS) {
+            UIVerbatim.make(joint, "heading_draft", messageLocator.getMessage("assignment2.student-submit.heading.in_progress", 
+                    new Object[]{ df_short.format(assignmentSubmission.getCurrentSubmissionVersion().getStudentSaveDate())}));
         }
 
         // figure out this student's due date. it may be different if the instructor
