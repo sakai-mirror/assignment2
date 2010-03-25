@@ -1,3 +1,16 @@
+/* Daisy Diff */
+span.diff-html-removed {
+  background-color: yellow;
+  text-decoration: line-through;
+}
+
+span.diff-html-added {
+  background-color: yellow;
+}
+
+span.diff-html-changed {
+  background-color: yellow;
+}
 
 /* Reset tool styles ========================================*/
 
