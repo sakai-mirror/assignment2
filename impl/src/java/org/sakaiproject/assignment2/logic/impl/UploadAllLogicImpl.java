@@ -27,7 +27,6 @@ import org.sakaiproject.assignment2.exception.UploadException;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
-import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.logic.UploadAllLogic;
 import org.sakaiproject.assignment2.logic.UploadGradesLogic;
@@ -108,11 +107,6 @@ public class UploadAllLogicImpl implements UploadAllLogic
         this.permissionLogic = permissionLogic;
     }
 
-    public ExternalGradebookLogic gradebookLogic;
-    public void setExternalGradebookLogic(ExternalGradebookLogic gradebookLogic) {
-        this.gradebookLogic = gradebookLogic;
-    }
-
     public List<Map<String, String>> uploadAll(UploadAllOptions options, File file) throws UploadException
     {
         if (options == null) {
@@ -140,7 +134,8 @@ public class UploadAllLogicImpl implements UploadAllLogic
         // folder names here so we don't have to do it repeatedly
         Pattern pattern = Pattern.compile(ZipExportLogic.FILE_NAME_REGEX);
 
-        Map<String, String> displayIdUserIdMap = externalLogic.getUserDisplayIdUserIdMapForStudentsInSite(assign.getContextId());
+        Set<String> submitters = permissionLogic.getSubmittersInSite(assign.getContextId());
+        Map<String, String> displayIdUserIdMap = externalLogic.getUserDisplayIdUserIdMapForUsers(submitters);
 
         List<StudentFeedbackWrapper> feedbackUploadList = new ArrayList<StudentFeedbackWrapper>();
 
@@ -208,7 +203,7 @@ public class UploadAllLogicImpl implements UploadAllLogic
         }
 
         // now let's iterate through the feedback wrappers and create the map
-        List<String> gradableStudents = permissionLogic.getGradableStudentsForUserForItem(currUserId, assign);
+        List<String> manageableStudents = permissionLogic.getViewableStudentsForAssignment(currUserId, assign);
         Map<String, Collection<AssignmentSubmissionVersion>> studentUidVersionsMap = new HashMap<String, Collection<AssignmentSubmissionVersion>>();
         Date now = new Date();
         if (feedbackUploadList != null) {
@@ -218,7 +213,7 @@ public class UploadAllLogicImpl implements UploadAllLogic
                     if (studentUid != null) {
                         // check to see if the current user is auth to update
                         // feedback for this student
-                        if (!gradableStudents.contains(studentUid)) {
+                        if (!manageableStudents.contains(studentUid)) {
                             // we will add this error and skip this student
                             addToUploadInfoMap(uploadInfo, studentUid, UploadInfo.NO_GRADING_PERM_FOR_STUDENT);
                         } else {

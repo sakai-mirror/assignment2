@@ -70,14 +70,25 @@ AssignmentActivityProducer {
 
     protected AssignmentSubmissionLogic assignmentSubmissionLogic;
 
+
+    public boolean allowGetItems(TaggableActivity activity,
+            TaggingProvider provider) {
+        // We aren't picky about the provider, so ignore that argument.
+        // Only allow this if the user can grade submissions
+        //return assignmentDao.allowGradeSubmission(activity.getReference());
+        //return assignmentPermissionLogic.isUserAbleToProvideFeedbackForSubmission(submissionId);
+        Assignment2 assignment = (Assignment2) activity.getObject();
+        return assignmentPermissionLogic.isUserAllowedToManageSubmissionsForAssignment(null, assignment, null, null);
+    }
+
     public boolean allowRemoveTags(TaggableActivity activity) {
         Assignment2 assignment = (Assignment2) activity.getObject();
-        return assignmentPermissionLogic.isCurrentUserAbleToEditAssignments(assignment.getContextId());
+        return assignmentPermissionLogic.isUserAllowedToDeleteAssignment(null, assignment, null, null);
     }
 
     public boolean allowRemoveTags(TaggableItem item) {
         AssignmentSubmission subm = (AssignmentSubmission)item.getObject();
-        return assignmentPermissionLogic.isUserAbleToProvideFeedbackForSubmission(subm.getId());
+        return assignmentPermissionLogic.isUserAllowedToManageSubmission(null, subm.getId());
     }
 
     public boolean allowTransferCopyTags(TaggableActivity activity) {
@@ -198,7 +209,7 @@ AssignmentActivityProducer {
         //return assignmentDao.allowGradeSubmission(activity.getReference());
         //return assignmentPermissionLogic.isUserAbleToProvideFeedbackForSubmission(submissionId);
         Assignment2 assignment = (Assignment2) activity.getObject();
-        return assignmentPermissionLogic.isUserAllowedToProvideFeedbackForAssignment(assignment);
+        return assignmentPermissionLogic.isUserAllowedToManageSubmissionsForAssignment(null, assignment, null, null);
     }
 
     public TaggableItem getItem(String itemRef, TaggingProvider provider, boolean getMyItemsOnly, String taggedItem)

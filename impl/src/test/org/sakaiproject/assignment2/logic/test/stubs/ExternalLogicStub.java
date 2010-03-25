@@ -89,17 +89,6 @@ public class ExternalLogicStub implements ExternalLogic {
     }
 
     /**
-     * Check if this user has super admin access
-     * 
-     * @param userId
-     *            the internal user id (not username)
-     * @return true if the user has admin access, false otherwise
-     */
-    public boolean isUserAdmin(String userId) {
-        return false; 
-    }
-
-    /**
      * Cleans up the users submitted strings to protect us from XSS
      * 
      * @param userSubmittedString any string from the user which could be dangerous
@@ -226,24 +215,6 @@ public class ExternalLogicStub implements ExternalLogic {
 
     /**
      * 
-     * @param contextId
-     * @return a list of the student Ids of all of the students in the given site
-     */
-    public List<String> getStudentsInSite(String contextId) {
-        if (contextId == null) {
-            throw new IllegalArgumentException("Null contextId passed to getStudentsInSite");
-        }
-        List<String> studentsInSite = new ArrayList<String>();
-
-        studentsInSite.add(AssignmentTestDataLoad.STUDENT1_UID);
-        studentsInSite.add(AssignmentTestDataLoad.STUDENT2_UID);
-        studentsInSite.add(AssignmentTestDataLoad.STUDENT3_UID);
-
-        return studentsInSite;
-    }
-
-    /**
-     * 
      * @param groupId
      * @return a list of the student ids of students in the Group with the given groupId  
      */
@@ -311,12 +282,6 @@ public class ExternalLogicStub implements ExternalLogic {
         return null;
     }
 
-    public Map<String, String> getUserDisplayIdUserIdMapForStudentsInSite(String contextId)
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
     public String getUrlForGradebookItemHelper(Long gradeableObjectId,
             String gradebookItemName, String returnViewId, String contextId, Date dueDate)
     {
@@ -324,24 +289,10 @@ public class ExternalLogicStub implements ExternalLogic {
         return null;
     }
 
-    public List<String> getInstructorsInSite(String contextId)
-    {
-        List<String> taList = new ArrayList<String>();
-        taList.add(AssignmentTestDataLoad.INSTRUCTOR_UID);
-        return taList;
-    }
-
     public Site getSite(String contextId)
     {
         // TODO Auto-generated method stub
         return null;
-    }
-
-    public List<String> getTAsInSite(String contextId)
-    {
-        List<String> taList = new ArrayList<String>();
-        taList.add(AssignmentTestDataLoad.TA_UID);
-        return taList;
     }
 
     public String getUserEmail(String userId)
@@ -369,6 +320,39 @@ public class ExternalLogicStub implements ExternalLogic {
     }
 
     @Override
+    public List<String> getUsersInGroup(String contextId, String groupId)
+    {
+        
+        List<String> allUsers = new ArrayList<String>();
+        allUsers.add(AssignmentTestDataLoad.INSTRUCTOR_UID);
+        allUsers.add(AssignmentTestDataLoad.TA_UID);
+        allUsers.add(AssignmentTestDataLoad.TA_WITH_NO_GROUPS);
+        allUsers.add(AssignmentTestDataLoad.STUDENT1_UID);
+        allUsers.add(AssignmentTestDataLoad.STUDENT2_UID);
+        allUsers.add(AssignmentTestDataLoad.STUDENT3_UID);
+        
+        List<String> usersInGroup = new ArrayList<String>();
+        for (String user : allUsers) {
+            List<String> groupMemberships = getUserMembershipGroupIdList(user, AssignmentTestDataLoad.CONTEXT_ID);
+            if (groupMemberships != null) {
+                for (String userGroupId : groupMemberships) {
+                    if (userGroupId.equals(groupId)) {
+                        usersInGroup.add(user);
+                    }
+                }
+            }
+        }
+        
+        return usersInGroup;
+    }
+
+    @Override
+    public Map<String, String> getUserDisplayIdUserIdMapForUsers(Collection<String> userIds)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    
     public String getServerUrl()
     {
         // TODO Auto-generated method stub

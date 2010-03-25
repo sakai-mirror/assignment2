@@ -31,6 +31,7 @@ import org.sakaiproject.assignment2.exception.InvalidGradeForAssignmentException
 import org.sakaiproject.assignment2.exception.NoGradebookDataExistsException;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
+import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.site.api.Group;
 
 /**
@@ -121,6 +122,18 @@ public interface ExternalGradebookLogic {
      */
     public Map<String, String> getViewableStudentsForGradedItemMap(String userId, String contextId, Long gradebookItemId);
 
+    /**
+     * 
+     * @param userId
+     * @param contextId
+     * @param gradebookItemId
+     * @return a list of the userIds of the students that the given user is allowed to
+     * GRADE for the given gradebookItemId. Does not include students that the user may
+     * only view.  Convenience method that utilizes {@link #getViewableStudentsForGradedItemMap(String, String, Long)}
+     * to extract the gradable students
+     */
+    public List<String> getGradableStudentsForGradebookItem(String userId, String contextId, Long gradebookItemId);
+    
     /**
      * @param contextId
      * @return true if the current user is authorized to edit the gradebook
@@ -408,4 +421,18 @@ public interface ExternalGradebookLogic {
      * gradebook item does not exist in the given context
      */
     public boolean isGradebookItemAssociationValid(String contextId, Long gradebookItemId);
+    
+    /**
+     * 
+     * @param userId userId to check for grading privileges. if null, will use current user
+     * @param contextId
+     * @param gradebookItemId
+     * @param viewOrGrade {@link AssignmentConstants#VIEW} or {@link AssignmentConstants#GRADE} to
+     * specify if you want the students the user may just grade or if you want all that are viewable
+     * in the gradebook
+     * @param students list of userIds for the students you want to filter
+     * @return a filtered list of students that the given user has permission to view or grade in the gradebook
+     * for the given gradebook item depending on your passed viewOrGrade param
+     */
+    public Collection<String> filterStudentsForGradebookItem(String userId, String contextId, Long gradebookItemId, String viewOrGrade, Collection<String> students);
 }

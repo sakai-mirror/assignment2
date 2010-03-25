@@ -22,7 +22,9 @@
 package org.sakaiproject.assignment2.tool.producers;
 
 import java.text.DateFormat;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -77,16 +79,19 @@ public class ViewAssignmentProducer implements ViewComponentProducer, ViewParams
             return;
         }
         
-        if (!permissionLogic.isUserAbleToViewAssignment(assignmentId, params.tagReference)) {
+        Map<String, Object> optionalParamMap = new HashMap<String, Object>();
+        optionalParamMap.put(AssignmentConstants.TAGGABLE_REF_KEY, params.tagReference);
+        if (!permissionLogic.isUserAllowedToViewAssignment(assignmentId, optionalParamMap)) {
             throw new SecurityException("Attempt to view assignment without permission");
         }
 
-        Assignment2 assignment = assignmentLogic.getAssignmentByIdWithAssociatedData(assignmentId, params.tagReference);
+        Assignment2 assignment = assignmentLogic.getAssignmentByIdWithAssociatedData(assignmentId, optionalParamMap);
 
         // use a date which is related to the current users locale
         DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, locale);
-
-        boolean instructorView = permissionLogic.isUserAbleToAccessInstructorView(assignment.getContextId());
+        
+        // we only display some fields if user may edit this assignment
+        boolean instructorView = permissionLogic.isUserAllowedToEditAssignment(null, assignment, null, null);
         
         UIOutput.make(tofill, "title", assignment.getTitle());
         

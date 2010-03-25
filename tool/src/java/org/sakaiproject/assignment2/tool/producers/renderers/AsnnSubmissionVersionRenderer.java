@@ -89,7 +89,7 @@ public class AsnnSubmissionVersionRenderer implements BasicProducer {
         AssignmentSubmission assignmentSubmssion = asnnSubVersion.getAssignmentSubmission();
         Assignment2 assignment = assignmentSubmssion.getAssignment();
         int submissionType = assignment.getSubmissionType();
-        boolean userCanGrade = permissionLogic.isUserAbleToProvideFeedbackForStudentForAssignment(assignmentSubmssion.getUserId(), assignment);
+        boolean userCanGrade = permissionLogic.isUserAllowedToManageSubmission(null, assignmentSubmssion.getUserId(), assignment);
         
         if (asnnSubVersion.isFeedbackReleased()) {
             String hoverText = messageLocator.getMessage("assignment2.student-submission.feedback.toggle.hover");

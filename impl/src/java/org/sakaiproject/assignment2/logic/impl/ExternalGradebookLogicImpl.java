@@ -38,7 +38,6 @@ import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.logic.GradeInformation;
 import org.sakaiproject.assignment2.logic.GradebookItem;
 import org.sakaiproject.assignment2.model.Assignment2;
-import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.component.cover.ComponentManager;
 import org.sakaiproject.service.gradebook.shared.AssessmentNotFoundException;
@@ -252,6 +251,29 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
         }
 
         return studentIdAssnFunctionMap;
+    }
+    
+    public List<String> getGradableStudentsForGradebookItem(String userId, String contextId, Long gradebookItemId) {
+        if (userId == null || contextId == null || gradebookItemId == null) {
+            throw new IllegalArgumentException("Null userId (" + userId + "), contextId (" + "), " +
+                    "or gradebookItemId (" + gradebookItemId + ") passed to getGradableStudentsForGradebookItem");
+        }
+        
+        Map<String, String> studentIdViewGradeMap = 
+            getViewableStudentsForGradedItemMap(userId, contextId, gradebookItemId);
+        List<String> gradableStudents = new ArrayList<String>();
+        if (studentIdViewGradeMap != null) {
+            for (Map.Entry<String, String> entry : studentIdViewGradeMap.entrySet()) {
+                String studentId = entry.getKey();
+                String viewOrGrade = entry.getValue();
+                
+                if (viewOrGrade != null && viewOrGrade.equals(AssignmentConstants.GRADE)) {
+                    gradableStudents.add(studentId);
+                }
+            }
+        }
+        
+        return gradableStudents;
     }
 
     public boolean isCurrentUserAbleToEdit(String contextId) {
@@ -793,5 +815,44 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
         }
         
         return gbItem;
+    }
+    
+    public Collection<String> filterStudentsForGradebookItem(String userId, String contextId, Long gradebookItemId, String viewOrGrade, Collection<String> students) {
+        if (contextId == null || gradebookItemId == null) {
+            throw new IllegalArgumentException("Null contextId (" + contextId + ") or gradebookItemId (" + ") passed to filterGradableStudents");
+        }
+        
+        if (viewOrGrade == null || (!viewOrGrade.equals(AssignmentConstants.VIEW) && 
+                !viewOrGrade.equals(AssignmentConstants.GRADE))) {
+            throw new IllegalArgumentException("Invalid valid passed for viewOrGrade to filterStudentsForGradebookItem: " + viewOrGrade);
+        }
+        
+        if (userId == null) {
+            userId = externalLogic.getCurrentUserId();
+        }
+        
+        List<String> filteredStudents = new ArrayList<String>();
+        if (students != null && !students.isEmpty()) {
+            Map<String, String> studentViewGradeMap = getViewableStudentsForGradedItemMap(userId, contextId, gradebookItemId);
+            
+            // filter the students according to the view/grade param
+            if (studentViewGradeMap != null) {
+                for (String student : students) {
+                    if (studentViewGradeMap.containsKey(student)) {
+                        String permission = studentViewGradeMap.get(student);
+                        if (permission != null) {
+                            if (viewOrGrade.equals(AssignmentConstants.GRADE) && 
+                                    permission.equals(AssignmentConstants.GRADE)) {
+                                filteredStudents.add(student);
+                            } else if (viewOrGrade.equals(AssignmentConstants.VIEW)){
+                                filteredStudents.add(student);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
+        return filteredStudents;
     }
 }

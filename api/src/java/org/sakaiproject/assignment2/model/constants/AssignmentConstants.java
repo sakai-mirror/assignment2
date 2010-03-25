@@ -25,6 +25,44 @@ package org.sakaiproject.assignment2.model.constants;
  * @author <a href="mailto:wagnermr@iupui.edu">michelle wagner</a>
  */
 public class AssignmentConstants {
+    
+    public static final String
+        /**
+         * The prefix for assignment2 permissions
+         */
+        PERMISSION_PREFIX = "asnn2",
+        /**
+         * User may view assignments
+         */
+        PERMISSION_VIEW_ASSIGNMENTS = PERMISSION_PREFIX + ".assignment.read",
+        /**
+         * User may make submissions to assignments
+         */
+        PERMISSION_SUBMIT = PERMISSION_PREFIX + ".submit",
+        /**
+         * User may add new assignments
+         */
+        PERMISSION_ADD_ASSIGNMENTS = PERMISSION_PREFIX + ".assignment.new",
+        /**
+         * User may edit existing assignments
+         */
+        PERMISSION_EDIT_ASSIGNMENTS = PERMISSION_PREFIX + ".assignment.edit",
+        /**
+         * User may delete existing assignments
+         */
+        PERMISSION_REMOVE_ASSIGNMENTS = PERMISSION_PREFIX + ".assignment.delete",
+        /**
+         * User may view and provide feedback on assignment submissions
+         */
+        PERMISSION_MANAGE_SUBMISSIONS = PERMISSION_PREFIX + ".submissions.manage",
+        /**
+         * User may view and act on all students and all groups in the site in 
+         * accordance with the other permissions that have been assigned to this role.
+         * Without this permission, users may only view or act on assignments that are released
+         * to his/her group and/or act on submissions if they were submitted by a user
+         * in his/her group, if applicable
+         */
+        PERMISSION_ALL_GROUPS = PERMISSION_PREFIX + ".all.groups";
 
     /**
      * Used to indicate that the assignment may only be viewed, not graded by
@@ -125,6 +163,15 @@ public class AssignmentConstants {
     public static final String REFERENCE_ROOT = "asnn2";
     public static final String ASSIGNMENT_TYPE = "a";
     public static final String SUBMISSION_TYPE = "s";
+    
+    // Optional properties that may be passed via a map to several methods
+    
+    /**
+     * Key used to pass a taggable reference to handle the scenario where
+     * a tagged assignment or submission may be exposed to users via expanded permissions
+     * due to this tag
+     */
+    public static final String TAGGABLE_REF_KEY = "taggableRef";
     
     // Properties for ContentReviewService integration
     /**

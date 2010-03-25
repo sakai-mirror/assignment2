@@ -12,6 +12,7 @@ import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
+import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 
 import uk.org.ponder.messageutil.TargettedMessage;
 import uk.org.ponder.messageutil.TargettedMessageList;
@@ -108,20 +109,25 @@ public class GradeAllRemainingCommand {
         }
 
         String currUserId = externalLogic.getCurrentUserId();
-        List<String> gradableStudents = permissionLogic.getGradableStudentsForUserForItem(currUserId, assign);
+        
+        // first, we need to retrieve all of the students that the current user may manage
+        // for this assignment
+        List<String> availableStudents = permissionLogic.getViewableStudentsForAssignment(currUserId, assign);
+        // now we filter this to only include students are also gradable in the gradebook
+        availableStudents = (List<String>) gradebookLogic.filterStudentsForGradebookItem(currUserId, assign.getContextId(), assign.getGradebookItemId(), AssignmentConstants.GRADE, availableStudents);
 
-        if (gradableStudents != null) {
+        if (availableStudents != null && !availableStudents.isEmpty()) {
             List<String> filteredStudents = new ArrayList<String>();
             // if the group filter is not null, we only apply the grade to students in that group
             if (groupIdFilter != null && !"".equals(groupIdFilter)) {
-                List<String> studentsInGroup = externalLogic.getStudentsInGroup(groupIdFilter);
-                for (String student : gradableStudents) {
+                List<String> studentsInGroup = externalLogic.getUsersInGroup(assign.getContextId(), groupIdFilter);
+                for (String student : availableStudents) {
                     if (studentsInGroup.contains(student)) {
                         filteredStudents.add(student);
                     }
                 }
             } else {
-                filteredStudents.addAll(gradableStudents);
+                filteredStudents.addAll(availableStudents);
             }
 
             try {

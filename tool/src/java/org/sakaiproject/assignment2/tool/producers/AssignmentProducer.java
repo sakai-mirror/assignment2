@@ -32,6 +32,7 @@ import org.sakaiproject.assignment2.tool.producers.evolvers.AttachmentInputEvolv
 import org.sakaiproject.assignment2.tool.producers.fragments.FragmentAssignment2SelectProducer;
 import org.sakaiproject.assignment2.exception.AssignmentNotFoundException;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
+import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
 import org.sakaiproject.assignment2.logic.ExternalContentReviewLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
@@ -50,6 +51,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.lang.String;
 
 import uk.org.ponder.beanutil.entity.EntityBeanLocator;
@@ -109,6 +111,7 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
     private ExternalGradebookLogic externalGradebookLogic;
     private AssignmentLogic assignmentLogic;
     private AssignmentSubmissionLogic submissionLogic;
+    private AssignmentPermissionLogic permissionLogic;
     private Locale locale;
     //private EntityBeanLocator assignment2BeanLocator;
     private AttachmentInputEvolver attachmentInputEvolver;
@@ -154,6 +157,7 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
         }
 
         String currentContextId = externalLogic.getCurrentContextId();
+        String currUserId = externalLogic.getCurrentUserId();
 
         //get Passed assignmentId to pull in for editing if any
         Long duplicatedAssignId = params.duplicatedAssignmentId;
@@ -406,105 +410,141 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
         /********
          *Grading
          */  
-        //Get Gradebook Items
-        List<GradebookItem> gradebook_items = externalGradebookLogic.getAllGradebookItems(currentContextId, false);
-        //Get an Assignment for currently selected from the select box
-        // by default this the first item on the list returned from the externalGradebookLogic
-        // this will be overwritten if we have a pre-existing assignment with an assigned
-        // item
-        GradebookItem currentSelected = null;
-        for (GradebookItem gi : gradebook_items){
-            if (gi.getGradebookItemId().equals(assignment.getGradebookItemId())){
-                currentSelected = gi;
+        boolean userMayAddGbItems = externalGradebookLogic.isCurrentUserAbleToEdit(currentContextId);
+        boolean userMayViewGbItems = userMayAddGbItems || externalGradebookLogic.isCurrentUserAbleToGrade(currentContextId);
+        
+        // if a user does not have permission to view gb items but they are allowed to add/edit
+        // assignments here, we need to modify the grading section
+        
+        if (!userMayViewGbItems) {
+            // if it is a new assignment or an existing ungraded item, we will
+            // mark it as ungraded. if it is already marked as graded, the user
+            // can't view or edit the grading settings
+            String messageToDisplay;
+            if (assignment.isGraded()) {
+                messageToDisplay = "assignment2.assignment_add.grading.cannot_edit";
+            } else {
+                messageToDisplay = "assignment2.assignment_add.assignment_ungraded";
             }
-        }
+            
+            UIMessage.make(tofill, "cannot_edit_grading", messageToDisplay);
+            
+        } else {
+            UIOutput.make(tofill, "grade_settings");
+            //Get Gradebook Items
+            List<GradebookItem> gradebook_items = externalGradebookLogic.getAllGradebookItems(currentContextId, false);
 
-        String[] gradebook_item_labels = new String[gradebook_items.size()+1];
-        String[] gradebook_item_values = new String[gradebook_items.size()+1];
-        gradebook_item_values[0] = "0";
-        gradebook_item_labels[0] = messageLocator.getMessage("assignment2.assignment_add.gradebook_item_select");
-        String js_gradebook_items_data = "var gradebook_items_date = {\n";
-        js_gradebook_items_data += "0: \"" + messageLocator.getMessage("assignment2.assignment_add.gradebook_item_not_selected") + "\"\n";
-        for (int i=1; i <= gradebook_items.size(); i++) {
-            //Fill out select options
-            gradebook_item_labels[i] = gradebook_items.get(i-1).getTitle();
-            gradebook_item_values[i] = gradebook_items.get(i-1).getGradebookItemId().toString();
+            String[] gradebook_item_labels = new String[gradebook_items.size()+1];
+            String[] gradebook_item_values = new String[gradebook_items.size()+1];
+            gradebook_item_values[0] = "0";
+            gradebook_item_labels[0] = messageLocator.getMessage("assignment2.assignment_add.gradebook_item_select");
+            String js_gradebook_items_data = "var gradebook_items_date = {\n";
+            js_gradebook_items_data += "0: \"" + messageLocator.getMessage("assignment2.assignment_add.gradebook_item_not_selected") + "\"\n";
+            for (int i=1; i <= gradebook_items.size(); i++) {
+                //Fill out select options
+                gradebook_item_labels[i] = gradebook_items.get(i-1).getTitle();
+                gradebook_item_values[i] = gradebook_items.get(i-1).getGradebookItemId().toString();
 
-            //store js hash of id => due_date string
-            js_gradebook_items_data += "," + gradebook_items.get(i-1).getGradebookItemId().toString();
-            if(gradebook_items.get(i-1).getDueDate() != null){
-                js_gradebook_items_data += ":\"" + df.format(gradebook_items.get(i-1).getDueDate()) + "\"\n";
-            }else{
-                js_gradebook_items_data += ":\"" + messageLocator.getMessage("assignment2.assignment_add.gradebook_item_no_due_date") + "\"\n";
+                //store js hash of id => due_date string
+                js_gradebook_items_data += "," + gradebook_items.get(i-1).getGradebookItemId().toString();
+                if(gradebook_items.get(i-1).getDueDate() != null){
+                    js_gradebook_items_data += ":\"" + df.format(gradebook_items.get(i-1).getDueDate()) + "\"\n";
+                }else{
+                    js_gradebook_items_data += ":\"" + messageLocator.getMessage("assignment2.assignment_add.gradebook_item_no_due_date") + "\"\n";
+                }
             }
+            js_gradebook_items_data += "}";
+            UISelect.make(form, "gradebook_item",gradebook_item_values, gradebook_item_labels, assignment2OTP + ".gradebookItemId"); 
+
+            //Radio Buttons for Grading
+            String [] grading_values = new String[] {
+                    Boolean.TRUE.toString(), Boolean.FALSE.toString()
+            };
+            String [] grading_labels = new String[] {
+                    "assignment2.assignment_add.assignment_graded",
+                    "assignment2.assignment_add.assignment_ungraded"
+            };
+            UISelect grading_select = UISelect.make(form, "graded-radios", 
+                    grading_values, grading_labels, assignment2OTP + ".graded").setMessageKeys();
+            String grading_select_id = grading_select.getFullID();
+            UISelectChoice.make(form, "select_graded", grading_select_id, 0);
+            UISelectLabel.make(form, "select_graded_label", grading_select_id, 0);
+
+            UISelectChoice.make(form, "select_ungraded", grading_select_id, 1);
+            UISelectLabel.make(form, "select_ungraded_label", grading_select_id, 1);
+
+            //Output the JS vars
+            UIVerbatim.make(tofill, "gradebook_items_data", js_gradebook_items_data);
+
+
+            //Links to gradebook Helper
+            if (externalGradebookLogic.isCurrentUserAbleToEdit(currentContextId)) {
+                UIOutput.make(tofill, "create_new_gb_item");
+                String urlWithNameParam = externalLogic.getUrlForGradebookItemHelper(null, assignment.getTitle(), FinishedHelperProducer.VIEWID, currentContextId, assignment.getDueDate());
+                UILink.make(form, "gradebook_item_new_helper",
+                        UIMessage.make("assignment2.assignment_add.gradebook_item_new_helper"),
+                        urlWithNameParam);
+                // this link will be hidden and used as a base for adding the user-entered title as a param via javascript
+                String urlWithoutNameParam = externalLogic.getUrlForGradebookItemHelper(null, FinishedHelperProducer.VIEWID, currentContextId);
+                UILink.make(form, "gradebook_url_without_name", urlWithoutNameParam);
+                
+                // the text of the gb warning is different if the user cannot add gb items
+                UIMessage.make(tofill, "grading_warning", "assignment2.assignment_add.grading_warning");
+            } else {
+                UIMessage.make(tofill, "grading_warning", "assignment2.assignment_add.grading_warning.no_add");
+            }
+
+            // Error indicator if assignment graded but no gb item selected
+            UIOutput gradingErrorIndicator = UIOutput.make(tofill, "gradingSelectionError");
+            String errorInfo = messageLocator.getMessage("assignment2.assignment_graded_no_gb_item");
+            gradingErrorIndicator.decorate(new UIAlternativeTextDecorator(errorInfo));
+            gradingErrorIndicator.decorate(new UITooltipDecorator(errorInfo));
         }
-        js_gradebook_items_data += "}";
-        UISelect.make(form, "gradebook_item",gradebook_item_values, gradebook_item_labels, assignment2OTP + ".gradebookItemId"); 
-
-        //Radio Buttons for Grading
-        String [] grading_values = new String[] {
-                Boolean.TRUE.toString(), Boolean.FALSE.toString()
-        };
-        String [] grading_labels = new String[] {
-                "assignment2.assignment_add.assignment_graded",
-                "assignment2.assignment_add.assignment_ungraded"
-        };
-        UISelect grading_select = UISelect.make(form, "graded-radios", 
-                grading_values, grading_labels, assignment2OTP + ".graded").setMessageKeys();
-        String grading_select_id = grading_select.getFullID();
-        UISelectChoice.make(form, "select_graded", grading_select_id, 0);
-        UISelectLabel.make(form, "select_graded_label", grading_select_id, 0);
-
-        UISelectChoice.make(form, "select_ungraded", grading_select_id, 1);
-        UISelectLabel.make(form, "select_ungraded_label", grading_select_id, 1);
-
-        //Output the JS vars
-        UIVerbatim.make(tofill, "gradebook_items_data", js_gradebook_items_data);
-
-
-        //Links to gradebook Helper
-        String urlWithNameParam = externalLogic.getUrlForGradebookItemHelper(null, assignment.getTitle(), FinishedHelperProducer.VIEWID, currentContextId, assignment.getDueDate());
-        UILink.make(form, "gradebook_item_new_helper",
-                UIMessage.make("assignment2.assignment_add.gradebook_item_new_helper"),
-                urlWithNameParam);
-        // this link will be hidden and used as a base for adding the user-entered title as a param via javascript
-        String urlWithoutNameParam = externalLogic.getUrlForGradebookItemHelper(null, FinishedHelperProducer.VIEWID, currentContextId);
-        UILink.make(form, "gradebook_url_without_name", urlWithoutNameParam);
-
-        // Error indicator if assignment graded but no gb item selected
-        UIOutput gradingErrorIndicator = UIOutput.make(tofill, "gradingSelectionError");
-        String errorInfo = messageLocator.getMessage("assignment2.assignment_graded_no_gb_item");
-        gradingErrorIndicator.decorate(new UIAlternativeTextDecorator(errorInfo));
-        gradingErrorIndicator.decorate(new UITooltipDecorator(errorInfo));
         
         /******
          * Access
          */
+        
+        /**
+         * If a user has add or edit permission but not all groups, they may only create/edit
+         * assignments that are restricted to his/her groups. The assignment cannot be
+         * for all students.
+         */
+        
+        boolean userHasAllGroups = permissionLogic.isUserAllowedForAllGroups(currUserId, currentContextId);
         UIMessage.make(form, "access_legend", "assignment2.assignment_add.access_legend");
-        String[] access_values = new String[] {
-                Boolean.FALSE.toString(),
-                Boolean.TRUE.toString()
-        };
-        String[] access_labels = new String[] {
-                "assignment2.assignment_add.access.not_restricted",
-                "assignment2.assignment_add.access.restricted"
-        };
-        Boolean restrictedToGroups = (assignment.getAssignmentGroupSet() != null && !assignment.getAssignmentGroupSet().isEmpty());
-        UISelect access = UISelect.make(form, "access_select", access_values, access_labels,
-                "AssignmentAuthoringOptionsFlowBean.restrictedToGroups", restrictedToGroups.toString()).setMessageKeys();
 
-        String accessId = access.getFullID();
+        // we only give the user the option to allow for all students if they
+        // have all groups permission
+        if (userHasAllGroups) {
+            String[] access_values = new String[] {
+                    Boolean.FALSE.toString(),
+                    Boolean.TRUE.toString()
+            };
+            String[] access_labels = new String[] {
+                    "assignment2.assignment_add.access.not_restricted",
+                    "assignment2.assignment_add.access.restricted"
+            };
+            Boolean restrictedToGroups = (assignment.getAssignmentGroupSet() != null && !assignment.getAssignmentGroupSet().isEmpty());
+            UISelect access = UISelect.make(form, "access_select", access_values, access_labels,
+                    "AssignmentAuthoringOptionsFlowBean.restrictedToGroups", restrictedToGroups.toString()).setMessageKeys();
 
-        for (int i=0; i < access_values.length; i++) {
-            UIBranchContainer access_row = UIBranchContainer.make(form, "access_row:");
-            UISelectChoice.make(access_row, "access_choice", accessId, i);
-            UISelectLabel.make(access_row, "access_label", accessId, i);
+            String accessId = access.getFullID();
+            for (int i=0; i < access_values.length; i++) {
+                UIBranchContainer access_row = UIBranchContainer.make(form, "access_row:");
+                UISelectChoice.make(access_row, "access_choice", accessId, i);
+                UISelectLabel.make(access_row, "access_label", accessId, i);
+            }
+        } else {
+            UIOutput.make(tofill, "access_groups_only");
+            form.addParameter(new UIELBinding("AssignmentAuthoringOptionsFlowBean.restrictedToGroups",true));
+            
         }
 
         /**
          * Groups
          */
-        Collection<Group> groups = externalLogic.getSiteGroups(currentContextId);
+        Collection<Group> groups = permissionLogic.getViewableGroupsForAssignment(currUserId, assignment);
         List<String> groupIdList = new ArrayList<String>();
         if (groups.size() > 0) {
             UIOutput.make(form, "access-selection-area");
@@ -544,7 +584,7 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
         //Post Buttons
         UICommand postAssign = UICommand.make(form, "post_assignment", UIMessage.make("assignment2.assignment_add.post"), "AssignmentAuthoringBean.processActionPost");
         if (assignment.getId() != null) {
-            List<String> allStudents = externalLogic.getStudentsInSite(currentContextId);
+            Set<String> allStudents = permissionLogic.getSubmittersInSite(assignment.getContextId());
             int numSubmissions = submissionLogic.getNumStudentsWithASubmission(assignment, allStudents);
             if (numSubmissions > 0) {
                 // we need to display a warning to the user that they are editing
@@ -795,5 +835,9 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
     
     public void setLocalTurnitinLogic(LocalTurnitinLogic localTurnitinLogic) {
         this.localTurnitinLogic = localTurnitinLogic;
+    }
+    
+    public void setAssignmentPermissionLogic(AssignmentPermissionLogic permissionLogic) {
+        this.permissionLogic = permissionLogic;
     }
 }

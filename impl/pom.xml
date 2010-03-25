@@ -147,12 +147,6 @@
       <version>${sakai.version}</version>
     </dependency>
     
-<!--  sections integration -->
-    <dependency>
-      <groupId>org.sakaiproject.edu-services.sections</groupId>
-      <artifactId>sections-api</artifactId>
-    </dependency>
-    
     <!--  for the import/export -->
     <dependency>
       <groupId>com.thoughtworks.xstream</groupId>

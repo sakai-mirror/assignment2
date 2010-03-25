@@ -24,6 +24,7 @@ import org.sakaiproject.assignment2.logic.GradebookItem;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentAttachment;
 import org.sakaiproject.assignment2.model.AssignmentGroup;
+import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.assignment2.tool.DisplayUtil;
 import org.sakaiproject.entitybroker.EntityReference;
 import org.sakaiproject.entitybroker.EntityView;
@@ -168,18 +169,23 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware {
         
         // let's grab all of the gradebook items to see if we need to flag any
         // graded assignments b/c their associated gb item was deleted
-        List<GradebookItem> existingGbItems = gradebookLogic.getAllGradebookItems(context, false);
+        // first, we need to check authz or the gradebook will throw a security exception when
+        // we try to retrieve the gb info
+        boolean userMayViewGbItems = gradebookLogic.isCurrentUserAbleToEdit(context) || gradebookLogic.isCurrentUserAbleToGrade(context);
         List<Long> existingGbItemIds = new ArrayList<Long>();
-        if (existingGbItems != null) {
-            for (GradebookItem gbItem : existingGbItems) {
-                existingGbItemIds.add(gbItem.getGradebookItemId());
+        if (userMayViewGbItems) {
+            List<GradebookItem> existingGbItems = gradebookLogic.getAllGradebookItems(context, false);
+            if (existingGbItems != null) {
+                for (GradebookItem gbItem : existingGbItems) {
+                    existingGbItemIds.add(gbItem.getGradebookItemId());
+                }
             }
         }
 
         List togo = new ArrayList();
 
         Map<Assignment2, List<String>> assignmentViewableStudentsMap = 
-            permissionLogic.getViewableStudentsForUserForAssignments(externalLogic.getCurrentUserId(), context, viewable);
+            permissionLogic.getViewableStudentsForAssignments(externalLogic.getCurrentUserId(), context, viewable);
 
         Collection<Group> groups = externalLogic.getSiteGroups(context);
         Map<String,Group> groupmap = new HashMap<String,Group>();
@@ -188,9 +194,18 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware {
             groupmap.put(group.getId(), group);
         }
         
-        boolean contentReviewAvailable = contentReviewLogic.isContentReviewAvailable(context); 
-        boolean canEdit = permissionLogic.isCurrentUserAbleToEditAssignments(context);
+        boolean contentReviewAvailable = contentReviewLogic.isContentReviewAvailable(context);
         boolean canMatrixLink = taggableLogic.isSiteAssociated(context);
+        
+        // retrieve the edit, grade, add, and delete permissions for each assignment. 
+        // The add perm will determine if user can duplicate.
+        List<String> permissions = new ArrayList<String>();
+        permissions.add(AssignmentConstants.PERMISSION_EDIT_ASSIGNMENTS);
+        permissions.add(AssignmentConstants.PERMISSION_MANAGE_SUBMISSIONS);
+        permissions.add(AssignmentConstants.PERMISSION_REMOVE_ASSIGNMENTS);
+        permissions.add(AssignmentConstants.PERMISSION_ADD_ASSIGNMENTS);
+        
+        Map<Long, Map<String, Boolean>> assignPermMap = permissionLogic.getPermissionsForAssignments(viewable, permissions);
         
         // TODO - use the service for entity work
        filterRestrictedAssignmentInfo(viewable, context);
@@ -215,28 +230,55 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware {
 
             // In case assignment has a gradebook item, but that gradebook item
             // no longer exists.
-            if (asnn.isGraded() && (asnn.getGradebookItemId() == null || 
+            if (userMayViewGbItems && asnn.isGraded() && (asnn.getGradebookItemId() == null || 
                     !existingGbItemIds.contains(asnn.getGradebookItemId()))) {
                 asnnmap.put("gbItemMissing", true);
             }
 
-            // Can the current user edit this particular assignment. Does not 
-            // include grading. If a user can see this assignment they can grade
-            // it.
-            asnnmap.put("canEdit", canEdit);
+            // Permissions for this particular assignment
+            boolean canEdit= false;
+            boolean canGrade= false;
+            boolean canDelete= false;
+            boolean canAdd = false;
             
+            Map<String, Boolean> permMap = assignPermMap.get(asnn.getId());
+            if (permMap != null) {
+                if (permMap.containsKey(AssignmentConstants.PERMISSION_EDIT_ASSIGNMENTS)) {
+                    canEdit = permMap.get(AssignmentConstants.PERMISSION_EDIT_ASSIGNMENTS);
+                }
+                if (permMap.containsKey(AssignmentConstants.PERMISSION_MANAGE_SUBMISSIONS)) {
+                    canGrade = permMap.get(AssignmentConstants.PERMISSION_MANAGE_SUBMISSIONS);
+                }
+                if (permMap.containsKey(AssignmentConstants.PERMISSION_REMOVE_ASSIGNMENTS)) {
+                    canDelete = permMap.get(AssignmentConstants.PERMISSION_REMOVE_ASSIGNMENTS);
+                }
+                if (permMap.containsKey(AssignmentConstants.PERMISSION_ADD_ASSIGNMENTS)) {
+                    canAdd = permMap.get(AssignmentConstants.PERMISSION_ADD_ASSIGNMENTS);
+                }
+                
+            }
+            asnnmap.put("canEdit", canEdit);
+            asnnmap.put("canDelete", canDelete);
+            asnnmap.put("canGrade", canGrade);
+            asnnmap.put("canAdd", canAdd);
+
             // Create/Edit Matrix Links
             asnnmap.put("canMatrixLink", canMatrixLink);
 
             List<String> viewableStudents = assignmentViewableStudentsMap.get(asnn);
-
-            Map<String, String> subStatusMap = displayUtil.getSubmissionStatusForAssignment(asnn, viewableStudents);
-            String inAndNewText = subStatusMap.get(DisplayUtil.IN_NEW_DISPLAY);
-            String numSubmissions = subStatusMap.get(DisplayUtil.NUM_SUB);
+            
+            // The in/new column needs to display something different if the user can't grade this one
+            String inAndNewText;
+            if (canGrade) {
+                Map<String, String> subStatusMap = displayUtil.getSubmissionStatusForAssignment(asnn, viewableStudents);
+                inAndNewText = subStatusMap.get(DisplayUtil.IN_NEW_DISPLAY);
+                String numSubmissions = subStatusMap.get(DisplayUtil.NUM_SUB);
+                asnnmap.put("numSubmissions", numSubmissions);
+            } else {
+                inAndNewText = assignmentBundleLogic.getString("assignment2.list.in_new.no_grade_perm");
+            }
 
             asnnmap.put("inAndNew", inAndNewText);
-            asnnmap.put("numSubmissions", numSubmissions);
-            
             asnnmap.put("reviewEnabled", contentReviewAvailable && asnn.isContentReviewEnabled());
 
             List groupstogo = new ArrayList();
@@ -277,7 +319,8 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware {
         httpServletResponse.setHeader("Cache-Control", "max-age=0,no-cache,no-store,must-revalidate,private,post-check=0,pre-check=0,s-max-age=0");
         httpServletResponse.setDateHeader("Expires", 0 );
 
-        httpServletResponse.setHeader("x-asnn2-canEdit", canEdit+"");
+        boolean canDelete = permissionLogic.isUserAllowedToDeleteAssignments(null, context, null);
+        httpServletResponse.setHeader("x-asnn2-canDelete", canDelete+"");
 
         return togo;
     }
@@ -370,7 +413,7 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware {
      */
     private void filterRestrictedAssignmentInfo(List<Assignment2> assignList, String context) {
         if (assignList != null) {
-            boolean filterRestrictedInfo = !permissionLogic.isUserAbleToAccessInstructorView(context);
+            boolean filterRestrictedInfo = !permissionLogic.isUserAllowedToAccessInstructorView(null, context);
             if (filterRestrictedInfo) {
                 // non-instructors cannot view the accept until date or properties
                 for (Assignment2 assign : assignList) {

@@ -1,17 +1,12 @@
 package org.sakaiproject.assignment2.tool.producers;
 
-import org.sakaiproject.assignment2.logic.ExternalLogic;
-import org.sakaiproject.tool.api.Placement;
-
 import uk.org.ponder.messageutil.MessageLocator;
 import uk.org.ponder.rsf.components.UICommand;
 import uk.org.ponder.rsf.components.UIContainer;
-import uk.org.ponder.rsf.components.UIELBinding;
 import uk.org.ponder.rsf.components.UIForm;
 import uk.org.ponder.rsf.components.UIInput;
 import uk.org.ponder.rsf.components.UIInternalLink;
 import uk.org.ponder.rsf.components.UIMessage;
-import uk.org.ponder.rsf.components.UIVerbatim;
 import uk.org.ponder.rsf.view.ComponentChecker;
 import uk.org.ponder.rsf.view.ViewComponentProducer;
 import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
@@ -22,7 +17,6 @@ public class ReorderStudentViewProducer implements ViewComponentProducer {
     
     private MessageLocator messageLocator;
 
-    @Override
     public void fillComponents(UIContainer tofill, ViewParameters viewparams,
             ComponentChecker checker) {    
         
@@ -42,7 +36,6 @@ public class ReorderStudentViewProducer implements ViewComponentProducer {
 
     }
 
-    @Override
     public String getViewID() {
         return VIEW_ID;
     }
