@@ -226,7 +226,10 @@ public class LocalPermissionLogic {
 
         return Boolean.FALSE;
 
-    } 
+        } else if(ImportAssignmentsProducer.VIEW_ID.equals(viewId)){
+        	return permissionLogic.isUserAllowedToAddAssignments(null, contextId, null)
+        	&& permissionLogic.isUserAllowedForAllGroups(null, contextId);
+        }
 
         //Here are some RSF Generic always true viewIds
 

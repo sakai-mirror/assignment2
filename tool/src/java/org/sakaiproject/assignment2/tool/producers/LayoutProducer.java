@@ -97,6 +97,8 @@ public class LayoutProducer implements NullaryProducer {
             	UILink.make(tofill, "asnn-css-include:","/sakai-assignment2-tool/content/css/student-view.css");
                 UILink.make(tofill, "asnn-js-include:","/sakai-assignment2-tool/content/js/stdnt-asnn-list.js");
                 UILink.make(tofill, "asnn-js-include:","/sakai-assignment2-tool/content/js/jquery.tablesorter.js");
+            }else if(ImportAssignmentsProducer.VIEW_ID.equals(viewParameters.viewID)){
+            	UILink.make(tofill, "asnn-js-include:","/sakai-assignment2-tool/content/js/import-assignments.js");
             }
 
             //include the components from the page body into tag "page-replace:"

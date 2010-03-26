@@ -172,6 +172,10 @@
    
    <bean class="org.sakaiproject.assignment2.tool.producers.RedirectToAssignmentProducer">
    </bean>	
+	<bean class="org.sakaiproject.assignment2.tool.producers.ImportAssignmentsProducer">
+		<property name="messageLocator" ref="messageLocator" />
+		<property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
+	</bean>
 
    <bean class="org.sakaiproject.assignment2.tool.producers.AssignmentProducer">
       <property name="richTextEvolver" ref="richTextEvolver" />
@@ -363,6 +367,12 @@
        <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
        <property name="messages" ref="targettedMessageList"/>
    </bean>
+    
+    <bean id="ImportAssignmentsAction"  class="org.sakaiproject.assignment2.tool.commands.ImportAssignmentsCommand">
+    	<property name="importExportLogic" ref="org.sakaiproject.assignment2.logic.ImportExportLogic" />
+    	<property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
+    	<property name="messages" ref="targettedMessageList"/>
+    </bean>
     
    <!--  Beans -->
    <bean id="AssignmentAuthoringBean" class="org.sakaiproject.assignment2.tool.beans.AssignmentAuthoringBean">

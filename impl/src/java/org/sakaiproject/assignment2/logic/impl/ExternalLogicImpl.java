@@ -405,4 +405,18 @@ public class ExternalLogicImpl implements ExternalLogic {
     public String getServerUrl() {
         return serverConfigurationService.getServerUrl();
     }
+    
+    public List<Site> getUserSitesWithAssignments(){
+    	List<Site> returnList = new ArrayList<Site>();
+    	List<Site> userSites = siteService.getSites(SiteService.SelectionType.UPDATE, null, null, 
+				null, SiteService.SortType.TITLE_ASC, null);
+    	
+    	for(Site site : userSites){
+    		if(siteHasTool(site.getId(), ExternalLogic.TOOL_ID_OLD_ASSIGN)){
+    			returnList.add(site);
+    		}    		
+    	}
+    	
+    	return returnList;
+    }
 }
