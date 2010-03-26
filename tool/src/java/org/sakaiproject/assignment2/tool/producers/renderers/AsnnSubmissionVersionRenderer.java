@@ -80,9 +80,9 @@ public class AsnnSubmissionVersionRenderer implements BasicProducer {
         /*
          * Render the headers
          */
-        if (!multipleVersionDisplay) {
+        /*if (!multipleVersionDisplay) {
             UIMessage.make(joint, "submission-header", "assignment2.student-submission.submission.header");
-        }
+        }*/
 
         //TODO FIXME time and date of submission here
 

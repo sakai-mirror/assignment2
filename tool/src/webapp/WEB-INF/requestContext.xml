@@ -153,6 +153,7 @@
       <property name="asnnSubmissionVersionRenderer" ref="AsnnSubmissionVersionRenderer"></property>
       <property name="currentUser" ref="sakai-User"></property>
       <property name="assignmentSubmissionBean" ref="AssignmentSubmissionBean" />
+      <property name="asnnDetailsRenderer" ref="AsnnDetailsRenderer"></property>
    </bean>   
    
    <bean id="AttachmentInputEvolver" class="org.sakaiproject.assignment2.tool.producers.evolvers.AttachmentInputEvolver">
