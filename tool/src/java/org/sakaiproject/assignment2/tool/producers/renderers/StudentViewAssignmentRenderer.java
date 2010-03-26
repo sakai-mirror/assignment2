@@ -232,7 +232,7 @@ public class StudentViewAssignmentRenderer {
                         // make the instructions and details with the toggle bar at the bottom
                         // of the screen
                         asnnInstructionsRenderer.makeInstructions(joint, "asnn-instructions-bottom:", assignment, true, true, false);
-                        asnnDetailsRenderer.fillComponents(joint, "asnn-details-bottom:", assignmentSubmission, false, true, true);
+                        asnnDetailsRenderer.fillComponents(joint, "asnn-details-bottom:", assignmentSubmission, false, true, false);
                     }
                 }
             }

@@ -111,6 +111,8 @@
     	<property name="viewParameters" ref="viewParameters"></property>
       <property name="externalContentReviewLogic" ref="org.sakaiproject.assignment2.logic.ExternalContentReviewLogic"></property>
       <property name="assignmentPermissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentPermissionLogic" />
+      <property name="messageLocator" ref="messageLocator" />
+      <property name="asnnToggleRenderer" ref="AsnnToggleRenderer"></property>
     </bean>
     
     <bean id="AsnnSubmissionHistoryRenderer"

@@ -101,7 +101,9 @@ public class AsnnDetailsRenderer implements BasicProducer {
         if (includeToggle) {
             // everything below the toggle is a subsection
             detailsSection.decorate(new UIFreeAttributeDecorator("class", "toggleSubsection subsection1"));
-            detailsSection.decorate(new UIFreeAttributeDecorator("style", "display: none;"));
+            if (!expandToggle) {
+                detailsSection.decorate(new UIFreeAttributeDecorator("style", "display: none;"));
+            }
 
             // display a different heading for the attachments
             UIMessage.make(joint, "toggle_attach_heading", "assignment2.instructions.attachments");
