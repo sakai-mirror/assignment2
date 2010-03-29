@@ -68,67 +68,46 @@ public class GradeDetailsRenderer implements BasicProducer {
          */
 
         Assignment2 assignment = assignmentSubmission.getAssignment();
-        //String title = assignment.getTitle();
-        
-        UIJointContainer joint = new UIJointContainer(parent, clientID, "grade-details-widget:");
-        
-        // Title
-        if (includeToggle) {
-            String hoverText = messageLocator.getMessage("grade.details.toggle.hover");
-            String heading = messageLocator.getMessage("grade.details.heading");
 
-            toggleRenderer.makeToggle(joint, "grade_toggle_section:", null, true, 
-                    heading, hoverText, false, false, false, false, null);
-        } else {
-            UIMessage.make(joint, "grade-details-header", "assignment2.student-submit.grade_details_title");
-        }
-        
-        UIOutput gradeSection = UIOutput.make(joint, "gradeSection");
-          if (includeToggle) {
-              // everything below the toggle is a subsection
-              gradeSection.decorate(new UIFreeAttributeDecorator("class", "toggleSubsection subsection1"));
-              gradeSection.decorate(new UIFreeAttributeDecorator("style", "display: none;"));
-          }
-
-          // Details Table
-          UIOutput.make(joint, "grade-details-table");
-        /*
-         * Points possible : Display if the assignment is 
-         *
-         *  1) graded 
-         *  2) associated with a gradebook item
-         *  3) gradebook entry type is "Points"
-         *  
-         *  TODO FIXME Needs checks for whether the graded item is point based 
-         *  (rather than percentage, pass/fail, etc). We are still working on 
-         *  the best way to integrate this with the gradebook a reasonable
-         *  amount of coupling.
-         */
         if (assignment.isGraded() && assignment.getGradebookItemId() != null) {
-            try {
-                // make sure this gradebook item still exists
-                GradebookItem gradebookItem;
-                try {
-                    gradebookItem = 
-                        externalGradebookLogic.getGradebookItemById(curContext, 
-                                assignment.getGradebookItemId());
-                } catch (GradebookItemNotFoundException ginfe) {
-                    if (log.isDebugEnabled()) log.debug("Student attempting to access assignment " + 
-                            assignment.getId() + " but associated gb item no longer exists!");
-                    gradebookItem = null;
-                }
-                // only display points possible if grade entry by points
-                if (gradebookItem != null && externalGradebookLogic.getGradebookGradeEntryType(assignment.getContextId()) == ExternalGradebookLogic.ENTRY_BY_POINTS) {
-                    UIOutput.make(joint, "points-possible-row");
 
-                    String pointsDisplay;
-                    if (gradebookItem.getPointsPossible() == null) {
-                        pointsDisplay = messageLocator.getMessage("assignment2.student-submit.points_possible.none");
-                    } else {
-                        pointsDisplay = gradebookItem.getPointsPossible().toString();
-                    }
-                    UIOutput.make(joint, "points-possible", pointsDisplay); 
+            // make sure this gradebook item still exists
+            GradebookItem gradebookItem;
+            try {
+                gradebookItem = 
+                    externalGradebookLogic.getGradebookItemById(curContext, 
+                            assignment.getGradebookItemId());
+            } catch (GradebookItemNotFoundException ginfe) {
+                if (log.isDebugEnabled()) log.debug("Student attempting to access assignment " + 
+                        assignment.getId() + " but associated gb item no longer exists!");
+                gradebookItem = null;
+            }
+
+            // only display grade info if released
+            if (gradebookItem != null && gradebookItem.isReleased()) {
+
+                UIJointContainer joint = new UIJointContainer(parent, clientID, "grade-details-widget:");
+
+                // Title
+                if (includeToggle) {
+                    String hoverText = messageLocator.getMessage("grade.details.toggle.hover");
+                    String heading = messageLocator.getMessage("assignment2.grade.details.heading");
+
+                    toggleRenderer.makeToggle(joint, "grade_toggle_section:", null, true, 
+                            heading, hoverText, false, false, false, false, null);
+                } else {
+                    UIMessage.make(joint, "grade-details-header", "assignment2.grade.details.heading");
                 }
+
+                UIOutput gradeSection = UIOutput.make(joint, "gradeSection");
+                if (includeToggle) {
+                    // everything below the toggle is a subsection
+                    gradeSection.decorate(new UIFreeAttributeDecorator("class", "toggleSubsection subsection1"));
+                    gradeSection.decorate(new UIFreeAttributeDecorator("style", "display: none;"));
+                }
+
+                // Details Table
+                UIOutput.make(joint, "grade-details-table");
 
                 // Render the graded information if it's available.
                 String grade = null;
@@ -148,7 +127,7 @@ public class GradeDetailsRenderer implements BasicProducer {
                 else
                 {
                     UIOutput.make(joint, "grade-row");
-                    UIOutput.make(joint, "grade", messageLocator.getMessage("assignment2.student-submit.grade.na"));
+                    UIMessage.make(joint, "grade", "assignment2.grade.details.grade.none");
                 }
 
                 if (comment != null) {
@@ -158,14 +137,8 @@ public class GradeDetailsRenderer implements BasicProducer {
                 else
                 {
                     UIOutput.make(joint, "comment-row");
-                    UIOutput.make(joint, "comment", messageLocator.getMessage("assignment2.student-submit.grade.none"));
+                    UIMessage.make(joint, "comment", "assignment2.grade.details.comments.none");
                 }
-
-            } catch (IllegalArgumentException iae) {
-                log.warn("Trying to look up grade object that doesn't exist" 
-                        + "context: " + curContext 
-                        + " gradeObjectId: " + assignment.getGradebookItemId() 
-                        + "asnnId: " + assignment.getId());
             }
         }
     }

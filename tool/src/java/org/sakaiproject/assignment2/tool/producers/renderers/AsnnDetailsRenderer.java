@@ -5,8 +5,11 @@ import java.util.Locale;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.assignment2.exception.GradebookItemNotFoundException;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
 import org.sakaiproject.assignment2.logic.ExternalContentReviewLogic;
+import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
+import org.sakaiproject.assignment2.logic.GradebookItem;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
@@ -51,6 +54,12 @@ public class AsnnDetailsRenderer implements BasicProducer {
     private ExternalContentReviewLogic contentReviewLogic;
     public void setExternalContentReviewLogic(ExternalContentReviewLogic contentReviewLogic) {
         this.contentReviewLogic = contentReviewLogic;
+    }
+    
+    // Dependency
+    private ExternalGradebookLogic gradebookLogic;
+    public void setExternalGradebookLogic(ExternalGradebookLogic gradebookLogic) {
+        this.gradebookLogic = gradebookLogic;
     }
     
     // Dependency
@@ -120,12 +129,34 @@ public class AsnnDetailsRenderer implements BasicProducer {
         // Graded?
         if (assignment.isGraded()) {
             UIMessage.make(joint, "is_graded", "assignment2.student-submit.yes_graded");
+            
+            // check to see if we should display points possible
+            if (assignment.getGradebookItemId() != null && 
+                    gradebookLogic.getGradebookGradeEntryType(assignment.getContextId()) == ExternalGradebookLogic.ENTRY_BY_POINTS) {
+                // try to retrieve the gb item
+                try {
+                    GradebookItem gbItem = gradebookLogic.getGradebookItemById(assignment.getContextId(), assignment.getGradebookItemId());
+                    if (gbItem != null) {
+                        UIOutput.make(joint, "points-possible-row");
+
+                        String pointsDisplay;
+                        if (gbItem.getPointsPossible() == null) {
+                            pointsDisplay = messageLocator.getMessage("assignment2.student-submit.points_possible.none");
+                        } else {
+                            pointsDisplay = gbItem.getPointsPossible().toString();
+                        }
+                        UIOutput.make(joint, "points-possible", pointsDisplay); 
+                    }
+                } catch (GradebookItemNotFoundException ginfe) {
+                    // don't display anything b/c the gb item was likely deleted
+                    if (log.isDebugEnabled()) log.debug("Student attempting to access assignment " + 
+                            assignment.getId() + " but associated gb item no longer exists!");
+                }
+            }
         }
         else {
             UIMessage.make(joint, "is_graded", "assignment2.student-submit.no_graded");
         }
-
-        // moved the grade stuff to GradeDetailsRenderer.java
 
         /*
          * Resubmissions Allowed

@@ -119,6 +119,11 @@ public class StudentViewAssignmentRenderer {
     public void setAsnnDetailsRenderer(AsnnDetailsRenderer asnnDetailsRenderer) {
         this.asnnDetailsRenderer = asnnDetailsRenderer;
     }
+    
+    private GradeDetailsRenderer gradeDetailsRenderer;
+    public void setGradeDetailsRenderer(GradeDetailsRenderer gradeDetailsRenderer) {
+        this.gradeDetailsRenderer = gradeDetailsRenderer;
+    }
 
     // Dependency
     private User currentUser;
@@ -199,6 +204,12 @@ public class StudentViewAssignmentRenderer {
                 asnnDetailsRenderer.fillComponents(joint, "assignment-details-top:", assignmentSubmission, false, false, false);
                 
             } else {
+                
+                // display grade information, if appropriate
+                if (assignment.isGraded()) {
+                    gradeDetailsRenderer.fillComponents(joint, "grade-details-top:", assignmentSubmission, false);
+                }
+                
                 List<AssignmentSubmissionVersion> versionHistory = submissionLogic.getVersionHistoryForSubmission(assignmentSubmission);
 
                 if (versionHistory.size() == 1 && !submissionIsOpen) {
