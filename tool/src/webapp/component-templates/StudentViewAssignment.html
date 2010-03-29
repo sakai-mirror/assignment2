@@ -14,10 +14,6 @@
 	<div rsf:id="assignment-status:">
 	    <!-- Assignment Status will go here. -->
 	</div>
-    
-  <div rsf:id="grade-details-top:">
-    <!-- Grade Details go here. -->
-  </div>
       
   <div rsf:id="assignment-details-top:">
       <!-- Assignment Details go here. -->
@@ -25,6 +21,10 @@
     
   <div rsf:id="assignment-instructions-top:">
       <!-- Assignment Instructions go here.-->
+  </div>
+  
+  <div rsf:id="grade-details-top:">
+    <!-- Grade Details go here. -->
   </div>
 	
 	<div rsf:id="assignment-previous-submissions:">
@@ -53,10 +53,11 @@
 		<p>These are the preview submit buttons!</p>
 	</div>
 	
-	<div rsf:id="student-return-to-list-buttons">
-	    <form method="get" rsf:id="return-to-list-form">
-	        <fieldset class="submit">
+	<div rsf:id="view-submission-buttons">
+	    <form method="get" rsf:id="view-submission-form">
+	          <fieldset class="submit">
                 <input rsf:id="return-button" accesskey="s" type="submit" class="active" value="Return to List"/>
+                <input rsf:id="resubmit-button" accesskey="s" type="submit" class="active" value="Resubmit assignment!"/>
             </fieldset>
         </form>
 	</div>

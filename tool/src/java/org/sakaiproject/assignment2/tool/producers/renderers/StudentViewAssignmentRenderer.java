@@ -190,6 +190,7 @@ public class StudentViewAssignmentRenderer {
             submissionIsOpen = submissionLogic.isSubmissionOpenForStudentForAssignment(currentUser.getId(), assignment.getId());
         }
 
+        boolean resubmissionIsOpen = false;
 
         /* 
          * If the Student is previewing their submission, only want to show the
@@ -246,6 +247,18 @@ public class StudentViewAssignmentRenderer {
                         asnnDetailsRenderer.fillComponents(joint, "asnn-details-bottom:", assignmentSubmission, false, true, false);
                     }
                 }
+                
+                // determine if this is a resubmission scenario. we will use
+                // this in combination with the resubmit param to determine if
+                // we display the resubmission editor or just the button to resubmit
+                if (submissionIsOpen && versionHistory != null) {
+                    for (AssignmentSubmissionVersion ver : versionHistory) {
+                        if (ver.getSubmittedDate() != null) {
+                            resubmissionIsOpen = true;
+                            break;
+                        }
+                    }
+                }
             }
         }
         else {
@@ -254,16 +267,23 @@ public class StudentViewAssignmentRenderer {
 
         if (previewAsStudent) {
             asnnSubmitEditorRenderer.fillComponents(joint, "assignment-edit-submission:", assignmentSubmission, true, false, false);
-        }
-        else if (submissionIsOpen) {
+        } else if (resubmissionIsOpen && !resubmit) {
+            // if resubmission is open but we didn't get here via a resubmit link,
+            // don't display the editor. just display the resubmit button
+            UIOutput.make(joint, "view-submission-buttons");
+            UIForm returnform = UIForm.make(joint, "view-submission-form");
+            UICommand.make(returnform, "return-button", UIMessage.make("assignment2.student-submission.returntolist"), "StudentSubmissionBean.processActionCancel");
+            UICommand.make(returnform, "resubmit-button", UIMessage.make("assignment2.student-submission.resubmit"), "StudentSubmissionBean.processActionResubmit");
+            
+        } else if (submissionIsOpen) {
             asnnSubmitEditorRenderer.fillComponents(joint, "assignment-edit-submission:", assignmentSubmission, previewAsStudent, studentSubmissionPreview, resubmit);
         }
         else {
-            // If this isn't a preview, and the student can't submit, we need
-            // to make the button so they can return to the list.
-            UIOutput.make(joint, "student-return-to-list-buttons");
-            UIForm returnform = UIForm.make(joint, "return-to-list-form", new SimpleViewParameters(StudentAssignmentListProducer.VIEW_ID));
-            UICommand.make(returnform, "return-button", UIMessage.make("assignment2.student-submission.returntolist"), null);
+            // If this isn't a preview, and the student can't resubmit, just
+            // render the "Return to List" button
+            UIOutput.make(joint, "view-submission-buttons");
+            UIForm returnform = UIForm.make(joint, "view-submission-form");
+            UICommand.make(returnform, "return-button", UIMessage.make("assignment2.student-submission.returntolist"), "StudentSubmissionBean.processActionCancel");
         }
 
     }
