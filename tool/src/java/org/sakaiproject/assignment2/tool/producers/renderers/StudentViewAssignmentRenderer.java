@@ -166,8 +166,7 @@ public class StudentViewAssignmentRenderer {
         }
 
         if (!previewAsStudent) {
-            StudentAction studentAction = submissionBean.determineStudentAction(assignmentSubmission.getUserId(), assignment.getId());
-            UIOutput.make(tofill, "student-submit-heading", messageLocator.getMessage("assignment2.student-assignment-list.action." + studentAction.toString().toLowerCase()));
+            UIOutput.make(tofill, "student-submit-heading", assignment.getTitle());
         }
 
         if (assignmentSubmission != null) {
