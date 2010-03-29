@@ -554,11 +554,14 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
         
         boolean allowed = false;
         
+        if (userId == null) {
+            userId = externalLogic.getCurrentUserId();
+        }
+        
         if (isUserAllowedToManageAllSubmissions(userId, assignment.getContextId())) {
             allowed = true;
         } else {
-            String currUserId = externalLogic.getCurrentUserId();
-            List<String> currentUserMemberships = externalLogic.getUserMembershipGroupIdList(currUserId, assignment.getContextId());
+            List<String> currentUserMemberships = externalLogic.getUserMembershipGroupIdList(userId, assignment.getContextId());
             if (isUserAllowedToManageSubmissionsForAssignment(userId, assignment, currentUserMemberships, null)) {
                 // double check that the student is in one of the curr user's groups
                 List<String> studentMemberships = externalLogic.getUserMembershipGroupIdList(studentId, assignment.getContextId());
@@ -723,8 +726,12 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
         if (assignment == null) {
             throw new IllegalArgumentException("null assignment passed to isUserAbleToMakeSubmission");
         }
+        
+        if (userId == null) {
+            userId = externalLogic.getCurrentUserId();
+        }
 
-        return isUserAllowedToTakeActionOnAssignment(externalLogic.getCurrentUserId(), assignment, AssignmentConstants.PERMISSION_SUBMIT, null, null);
+        return isUserAllowedToTakeActionOnAssignment(userId, assignment, AssignmentConstants.PERMISSION_SUBMIT, null, null);
     }
     
     public boolean isUserAllowedToMakeSubmissionForAssignmentId(String userId, Long assignmentId) {

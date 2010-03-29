@@ -1510,6 +1510,14 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
         assertTrue(permissionLogic.isUserAllowedToMakeSubmissionForAssignment(null, testData.a2));
         assertTrue(permissionLogic.isUserAllowedToMakeSubmissionForAssignment(null, testData.a3));
         assertFalse(permissionLogic.isUserAllowedToMakeSubmissionForAssignment(null, testData.a4));
+        
+        // make sure it works if we pass the userId as a param
+        assertFalse(permissionLogic.isUserAllowedToMakeSubmissionForAssignment(AssignmentTestDataLoad.INSTRUCTOR_UID, testData.a4));
+        assertFalse(permissionLogic.isUserAllowedToMakeSubmissionForAssignment(AssignmentTestDataLoad.TA_UID, testData.a4));
+        assertFalse(permissionLogic.isUserAllowedToMakeSubmissionForAssignment(AssignmentTestDataLoad.STUDENT1_UID, testData.a4));
+        assertTrue(permissionLogic.isUserAllowedToMakeSubmissionForAssignment(AssignmentTestDataLoad.STUDENT2_UID, testData.a4));
+        assertFalse(permissionLogic.isUserAllowedToMakeSubmissionForAssignment(AssignmentTestDataLoad.STUDENT3_UID, testData.a4));
+        
     }
 
     /*public void testIsUserAllowedToReleaseFeedbackForAssignment() {
