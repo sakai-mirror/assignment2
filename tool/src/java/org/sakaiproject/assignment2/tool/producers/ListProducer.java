@@ -70,8 +70,9 @@ public class ListProducer implements ViewComponentProducer, DefaultView {
         boolean add = permissionLogic.isUserAllowedToAddAssignments(currUserId, currContextId, null);
         boolean reorder = permissionLogic.isUserAllowedToEditAllAssignments(currUserId, currContextId);
         boolean siteUpd = permissionLogic.isUserAllowedToUpdateSite(currContextId);
+        boolean allGoups = permissionLogic.isUserAllowedForAllGroups(currUserId, currContextId);
         
-        if (add || reorder || siteUpd) {
+        if (add || reorder || siteUpd || (add && allGoups)) {
             UIOutput.make(tofill, "actionBar");
             // the Add, Reorder, and Permissions links
             if (add) {
@@ -88,13 +89,23 @@ public class ListProducer implements ViewComponentProducer, DefaultView {
                     UIOutput.make(tofill, "sep0");
                 }
             }
+            if (add && allGoups) {
+                UIOutput.make(tofill, "import_action");
+                UIInternalLink.make(tofill, "import_link", UIMessage.make("assignment2.list.import_assignments"), 
+                        new AssignmentViewParams(ImportAssignmentsProducer.VIEW_ID));
+                if(reorder){
+                	UIOutput.make(tofill, "sep1");
+                }else if(add){
+                	UIOutput.make(tofill, "sep0");
+                }
+            }
             if (siteUpd) {
                 UIOutput.make(tofill, "permissions_action");
                 UIInternalLink.make(tofill, "permissions_link", UIMessage.make("assignment2.list.permissions"), 
                         new AssignmentViewParams(PermissionsProducer.VIEW_ID));
 
                 if (add || reorder) {
-                    UIOutput.make(tofill, "sep1");
+                    UIOutput.make(tofill, "sep2");
                 }
             }
         }

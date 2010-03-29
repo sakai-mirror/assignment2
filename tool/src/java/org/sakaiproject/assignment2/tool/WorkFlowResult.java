@@ -47,4 +47,10 @@ public enum WorkFlowResult {
      */
     REORDER_STUDENT_VIEW_SAVE,
     REORDER_STUDENT_VIEW_CANCEL,
+    
+    /*
+     * Import Assignments View
+     */
+    IMPORT_ASSIGNMENTS_VIEW_IMPORT,
+    IMPORT_ASSIGNMENTS_VIEW_CANCEL,
 }

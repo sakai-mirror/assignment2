@@ -27,7 +27,7 @@
   <div> 
     <div style="background: #f1f1f1;">
       <div id="pager-top" class="fl-pager-top flc-pager-top">
-        <p id="actionBar" style="text-align: left; float: left; width: 40%">
+        <p id="actionBar" style="text-align: left; float: left; width: 60%">
           <span rsf:id="add_action">
               <img class="actionImage" src="/sakai-assignment2-tool/content/images/add.png" />
               <a rsf:id="add_link" class="actionLink" href="#" onclick="window.location = '/portal/tool/'+sakai.curPlacement+'/assignment'">
@@ -39,8 +39,14 @@
               <a rsf:id="reorder_link" class="actionLink" href="#" onclick="window.location = '/portal/tool/'+sakai.curPlacement+'/reorder-student-view'">
               Reorder Student View!</a>
           </span>
-          <span rsf:id="permissions_action">
+          <span rsf:id="import_action">
               <span rsf:id="sep1"> | </span>
+              <img class="actionImage" src="/library/image/silk/arrow_left.png" />
+              <a rsf:id="import_link" class="actionLink" href="#" onclick="window.location = '/portal/tool/'+sakai.curPlacement+'/import-assignments'">
+              Import from Assignments!</a>
+          </span>
+          <span rsf:id="permissions_action">
+              <span rsf:id="sep2"> | </span>
               <img class="actionImage" src="/library/image/silk/lock.png" />
               <a rsf:id="permissions_link" class="actionLink" href="#" onclick="window.location = '/portal/tool/'+sakai.curPlacement+'/permissions'">
               Permissions!</a>

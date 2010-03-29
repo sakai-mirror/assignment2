@@ -205,6 +205,12 @@ public class Assignment2WorkFlowLogic implements ViewParamsInterceptor, ActionRe
         case REORDER_STUDENT_VIEW_CANCEL:
             result.resultingView = new SimpleViewParameters(ListProducer.VIEW_ID);
             break;
+        case IMPORT_ASSIGNMENTS_VIEW_IMPORT:
+            result.resultingView = new SimpleViewParameters(ListProducer.VIEW_ID);
+            break;
+        case IMPORT_ASSIGNMENTS_VIEW_CANCEL:
+            result.resultingView = new SimpleViewParameters(ListProducer.VIEW_ID);
+            break;
 
         default:
             log.warn("Unknown/Unhandled WorkFlowResult in Asnn2 Workflow: " + actionReturn);

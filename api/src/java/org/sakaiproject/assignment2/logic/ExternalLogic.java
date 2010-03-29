@@ -253,4 +253,13 @@ public interface ExternalLogic {
      * @return the server url for this instance
      */
     public String getServerUrl();
+    
+    /**
+     * 
+     * @return
+     * This function will return a list of sites the current user has access to and which sites
+     * have the original assignments tool and where the user has administrative access (ie. site.upd)
+     */
+    public List<Site> getUserSitesWithAssignments();
+    
 }

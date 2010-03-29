@@ -359,4 +359,7 @@ public class ExternalLogicStub implements ExternalLogic {
         return null;
     }
 
+    public List getUserSitesWithAssignments(){
+    	return null;
+    }
 }
