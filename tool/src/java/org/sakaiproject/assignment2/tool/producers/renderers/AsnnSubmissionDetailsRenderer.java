@@ -153,23 +153,13 @@ public class AsnnSubmissionDetailsRenderer implements BasicProducer {
         /***
          * Title and Due Date Information
          */
-        if (!assignment.isRemoved()) {
-            String submissionHeading;
-            if (!assignment.isRequiresSubmission() || assignment.getSubmissionType() == AssignmentConstants.SUBMIT_NON_ELECTRONIC) {
-                submissionHeading = messageLocator.getMessage("assignment2.student-submit.heading.no_submission", new Object[]{ title, currentUser.getDisplayName() });
-            } else {
-                submissionHeading = messageLocator.getMessage("assignment2.student-submit.heading.submission", new Object[]{ title, currentUser.getDisplayName() });
-            }
-
-            if (currStatus == AssignmentConstants.SUBMISSION_IN_PROGRESS) {
-                UIVerbatim.make(joint, "heading_status", messageLocator.getMessage("assignment2.student-submit.heading.in_progress", 
-                        new Object[]{ title, currentUser.getDisplayName(), df_short.format(assignmentSubmission.getCurrentSubmissionVersion().getStudentSaveDate())}));
-            } else {
-                UIOutput.make(joint, "heading_status", submissionHeading);
-            }
-        } else {
-            UIVerbatim.make(joint, "heading_status", messageLocator.getMessage("assignment2.student-submit.heading.submission.deleted", 
-                    new Object[]{ title, currentUser.getDisplayName() }));
+        
+        UIOutput.make(joint, "heading_title", title);
+        if (assignment.isRemoved()) {
+            UIMessage.make(joint, "heading_status", "assignment2.student-submit.heading.submission.deleted");
+        } else if (currStatus == AssignmentConstants.SUBMISSION_IN_PROGRESS) {
+            UIVerbatim.make(joint, "heading_draft", messageLocator.getMessage("assignment2.student-submit.heading.in_progress", 
+                    new Object[]{ df_short.format(assignmentSubmission.getCurrentSubmissionVersion().getStudentSaveDate())}));
         }
 
         // figure out this student's due date. it may be different if the instructor
@@ -238,166 +228,8 @@ public class AsnnSubmissionDetailsRenderer implements BasicProducer {
 
         UIVerbatim.make(joint, "due_date", dueDateText);
 
-        if (!excludeDetails) {
-            renderAssignmentDetails(assignmentSubmission, previewAsStudent,
-                    assignment, joint);
-        }
+        
 
-    }
-
-    /**
-     * @param assignmentSubmission
-     * @param previewAsStudent
-     * @param assignment
-     * @param joint
-     */
-    private void renderAssignmentDetails(
-            AssignmentSubmission assignmentSubmission,
-            boolean previewAsStudent, Assignment2 assignment,
-            UIJointContainer joint) {
-        /***
-         * Assignment Details including:
-         *   - Graded?
-         *   - Points Possible
-         *   - Resubmissions Allowed
-         *   - Remaining Resubmissions Allowed
-         *   - Grade
-         *   - Comments
-         */
-        // Title
-        UIMessage.make(joint, "assignment-details-header", "assignment2.student-submit.details_title");
-
-        // Details Table
-        UIOutput.make(joint, "assignment-details-table");
-
-        // use a date which is related to the current users locale
-        DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, locale);
-
-        UIOutput.make(joint, "open-date", df.format(assignment.getOpenDate()));
-
-        // Graded?
-        if (assignment.isGraded()) {
-            UIMessage.make(joint, "is_graded", "assignment2.student-submit.yes_graded");
-        }
-        else {
-            UIMessage.make(joint, "is_graded", "assignment2.student-submit.no_graded");
-        }
-
-        /*
-         * Points possible : Display if the assignment is 
-         *
-         *  1) graded 
-         *  2) associated with a gradebook item
-         *  3) gradebook entry type is "Points"
-         *  
-         *  TODO FIXME Needs checks for whether the graded item is point based 
-         *  (rather than percentage, pass/fail, etc). We are still working on 
-         *  the best way to integrate this with the gradebook a reasonable
-         *  amount of coupling.
-         */
-        if (assignment.isGraded() && assignment.getGradebookItemId() != null) {
-            try {
-                // make sure this gradebook item still exists
-                GradebookItem gradebookItem;
-                try {
-                    gradebookItem = 
-                        externalGradebookLogic.getGradebookItemById(curContext, 
-                                assignment.getGradebookItemId());
-                } catch (GradebookItemNotFoundException ginfe) {
-                    if (log.isDebugEnabled()) log.debug("Student attempting to access assignment " + 
-                            assignment.getId() + " but associated gb item no longer exists!");
-                    gradebookItem = null;
-                }
-                // only display points possible if grade entry by points
-                if (gradebookItem != null && externalGradebookLogic.getGradebookGradeEntryType(assignment.getContextId()) == ExternalGradebookLogic.ENTRY_BY_POINTS) {
-                    UIOutput.make(joint, "points-possible-row");
-
-                    String pointsDisplay;
-                    if (gradebookItem.getPointsPossible() == null) {
-                        pointsDisplay = messageLocator.getMessage("assignment2.student-submit.points_possible.none");
-                    } else {
-                        pointsDisplay = gradebookItem.getPointsPossible().toString();
-                    }
-                    UIOutput.make(joint, "points-possible", pointsDisplay); 
-                }
-
-                // Render the graded information if it's available.
-                String grade = null;
-                String comment = null;
-                if (gradebookItem != null) {
-                    GradeInformation gradeInfo = externalGradebookLogic.getGradeInformationForStudent(curContext, assignment.getGradebookItemId(), currentUser.getId());
-                    if (gradeInfo != null) {
-                        grade = gradeInfo.getGradebookGrade();
-                        comment = gradeInfo.getGradebookComment();
-                    }
-                }
-
-                if (grade != null) {
-                    UIOutput.make(joint, "grade-row");
-                    UIOutput.make(joint, "grade", grade);
-                }
-
-                if (comment != null) {
-                    UIOutput.make(joint, "comment-row");
-                    UIOutput.make(joint, "comment", comment);
-                }
-
-            } catch (IllegalArgumentException iae) {
-                log.warn("Trying to look up grade object that doesn't exist" 
-                        + "context: " + curContext 
-                        + " gradeObjectId: " + assignment.getGradebookItemId() 
-                        + "asnnId: " + assignment.getId());
-            }
-        }
-
-        /*
-         * Resubmissions Allowed
-         * Only display the resubmission information if this assignment requires submission
-         */
-        if (assignment.isRequiresSubmission()) {
-            UIOutput.make(joint, "resubmission-allowed-row");
-            boolean resubmissionAllowed = false;
-            Integer subLevelNumSubmissions = assignmentSubmission.getNumSubmissionsAllowed();
-            if (subLevelNumSubmissions != null) {
-                if (subLevelNumSubmissions.equals(AssignmentConstants.UNLIMITED_SUBMISSION) ||
-                        subLevelNumSubmissions.intValue() > 1) {
-                    resubmissionAllowed = true;
-                }
-            } else {
-                if (assignment.getNumSubmissionsAllowed() > 1 || 
-                        assignment.getNumSubmissionsAllowed() == AssignmentConstants.UNLIMITED_SUBMISSION) {
-                    resubmissionAllowed = true;
-                }
-            }
-
-            if (resubmissionAllowed) {
-                UIMessage.make(joint, "resubmissions-allowed", "assignment2.student-submit.resubmissions_allowed");
-            }
-            else {
-                UIMessage.make(joint, "resubmissions-allowed", "assignment2.student-submit.resubmissions_not_allowed");
-            }
-
-            /*
-             * Remaining resubmissions allowed
-             */
-            if (!previewAsStudent && resubmissionAllowed) {
-                UIOutput.make(joint, "remaining-resubmissions-row");
-                int numSubmissionsAllowed = submissionLogic.getNumberOfRemainingSubmissionsForStudent(currentUser.getId(), assignment.getId());
-                String numAllowedDisplay;
-                if (numSubmissionsAllowed == AssignmentConstants.UNLIMITED_SUBMISSION) {
-                    numAllowedDisplay = messageLocator.getMessage("assignment2.indefinite_resubmit");
-                } else {
-                    numAllowedDisplay = "" + numSubmissionsAllowed;
-                }
-                UIOutput.make(joint, "remaining-resubmissions", numAllowedDisplay);
-            }
-            
-            // only display the originality checking info if it is enabled for this assignment
-            if (!previewAsStudent && assignment.isContentReviewEnabled() && contentReviewLogic.isContentReviewAvailable(assignment.getContextId())) { 
-                UIOutput.make(joint, "plagiarism-check-row");
-                UIMessage.make(joint, "plagiarism-check-enabled", "assignment2.student-submit.plagiarism.enabled");
-            }
-        }
     }
 
     public void fillComponents(UIContainer parent, String clientID) {

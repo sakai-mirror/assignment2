@@ -10,10 +10,13 @@ import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.assignment2.tool.HtmlDiffUtil;
 
+import uk.org.ponder.messageutil.MessageLocator;
 import uk.org.ponder.rsf.components.UIContainer;
 import uk.org.ponder.rsf.components.UIJointContainer;
 import uk.org.ponder.rsf.components.UIMessage;
+import uk.org.ponder.rsf.components.UIOutput;
 import uk.org.ponder.rsf.components.UIVerbatim;
+import uk.org.ponder.rsf.components.decorators.UIFreeAttributeDecorator;
 import uk.org.ponder.rsf.producers.BasicProducer;
 import uk.org.ponder.rsf.viewstate.ViewParameters;
 
@@ -56,6 +59,16 @@ public class AsnnSubmissionVersionRenderer implements BasicProducer {
     public void setAssignmentPermissionLogic(AssignmentPermissionLogic permissionLogic) {
         this.permissionLogic = permissionLogic;
     }
+    
+    private MessageLocator messageLocator;
+    public void setMessageLocator(MessageLocator messageLocator) {
+        this.messageLocator = messageLocator;
+    }
+    
+    private AsnnToggleRenderer toggleRenderer;
+    public void setAsnnToggleRenderer(AsnnToggleRenderer toggleRenderer) {
+        this.toggleRenderer = toggleRenderer;
+    }
 
     /**
      * Renders the Submission Version in the parent container in element with 
@@ -76,12 +89,22 @@ public class AsnnSubmissionVersionRenderer implements BasicProducer {
         Assignment2 assignment = assignmentSubmssion.getAssignment();
         int submissionType = assignment.getSubmissionType();
         boolean userCanGrade = permissionLogic.isUserAllowedToManageSubmission(null, assignmentSubmssion.getUserId(), assignment);
-
-        /*
-         * Render the headers
-         */
+        
+        UIOutput feedbackSection = UIOutput.make(joint, "feedbackSection");
+        
+        // If this is a single version display and feedback is released, we add
+        // an Assignment Feedback header
         if (!multipleVersionDisplay) {
-            UIMessage.make(joint, "submission-header", "assignment2.student-submission.submission.header");
+            if (asnnSubVersion.isFeedbackReleased()) {
+                String hoverText = messageLocator.getMessage("assignment2.student-submission.feedback.toggle.hover");
+                String heading = messageLocator.getMessage("assignment2.student-submission.feedback.toggle.header");
+
+                toggleRenderer.makeToggle(joint, "feedback_toggle:", null, true, 
+                        heading, hoverText, true, false, false, false, null);
+                
+                // everything below the toggle is a subsection
+                feedbackSection.decorate(new UIFreeAttributeDecorator("class", "toggleSubsection subsection1"));
+            }
         }
 
         //TODO FIXME time and date of submission here

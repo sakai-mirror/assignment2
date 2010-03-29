@@ -159,6 +159,10 @@ public class Assignment2WorkFlowLogic implements ViewParamsInterceptor, ActionRe
             break;
         case STUDENT_SUBMISSION_FAILURE:
             break;
+        case STUDENT_RESUBMIT:
+            result.resultingView = new StudentSubmissionParams(StudentSubmitProducer.VIEW_ID, assignmentId, false, false, true);
+            result.propagateBeans = ARIResult.FLOW_END;
+            break;
             /*
              * Upload CSV or ZIP file
              */

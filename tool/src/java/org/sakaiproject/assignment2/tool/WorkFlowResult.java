@@ -19,6 +19,7 @@ public enum WorkFlowResult {
     STUDENT_SAVE_DRAFT_SUBMISSION,
     STUDENT_SUBMISSION_FAILURE,
     STUDENT_CANCEL_SUBMISSION,
+    STUDENT_RESUBMIT,
 
     /*
      * Instructor Assignment Authoring

@@ -113,6 +113,17 @@ public class StudentViewAssignmentRenderer {
             AsnnSubmissionVersionRenderer asnnSubmissionVersionRenderer) {
         this.asnnSubmissionVersionRenderer = asnnSubmissionVersionRenderer;
     }
+    
+    // Dependency
+    private AsnnDetailsRenderer asnnDetailsRenderer;
+    public void setAsnnDetailsRenderer(AsnnDetailsRenderer asnnDetailsRenderer) {
+        this.asnnDetailsRenderer = asnnDetailsRenderer;
+    }
+    
+    private GradeDetailsRenderer gradeDetailsRenderer;
+    public void setGradeDetailsRenderer(GradeDetailsRenderer gradeDetailsRenderer) {
+        this.gradeDetailsRenderer = gradeDetailsRenderer;
+    }
 
     // Dependency
     private User currentUser;
@@ -155,8 +166,7 @@ public class StudentViewAssignmentRenderer {
         }
 
         if (!previewAsStudent) {
-            StudentAction studentAction = submissionBean.determineStudentAction(assignmentSubmission.getUserId(), assignment.getId());
-            UIOutput.make(tofill, "student-submit-heading", messageLocator.getMessage("assignment2.student-assignment-list.action." + studentAction.toString().toLowerCase()));
+            UIOutput.make(tofill, "student-submit-heading", assignment.getTitle());
         }
 
         if (assignmentSubmission != null) {
@@ -179,61 +189,100 @@ public class StudentViewAssignmentRenderer {
             submissionIsOpen = submissionLogic.isSubmissionOpenForStudentForAssignment(currentUser.getId(), assignment.getId());
         }
 
+        boolean resubmissionIsOpen = false;
 
         /* 
          * If the Student is previewing their submission, only want to show the
          * text and attachments of that submission.
          */
         if (!studentSubmissionPreview) {
-            asnnSubmissionDetailsRenderer.fillComponents(joint, "assignment-details:", assignmentSubmission, previewAsStudent);
+            asnnSubmissionDetailsRenderer.fillComponents(joint, "assignment-status:", assignmentSubmission, previewAsStudent);
 
             // Submission History
-            if (!previewAsStudent) {
+            if (previewAsStudent) {
+                // display the assignment details at the top
+                asnnDetailsRenderer.fillComponents(joint, "assignment-details-top:", assignmentSubmission, false, false, false);
+                
+            } else {
+                
+                // display grade information, if appropriate
+                if (assignment.isGraded()) {
+                    gradeDetailsRenderer.fillComponents(joint, "grade-details-top:", assignmentSubmission, false);
+                }
+                
                 List<AssignmentSubmissionVersion> versionHistory = submissionLogic.getVersionHistoryForSubmission(assignmentSubmission);
-                if (versionHistory == null || versionHistory.isEmpty()) {
-                    // we display the instructions w/o the toggle if sub closed
-                    if (assignment.getSubmissionType() == AssignmentConstants.SUBMIT_NON_ELECTRONIC ||
-                            !submissionIsOpen) {
-                        asnnInstructionsRenderer.makeInstructions(joint, "assignment-instructions-no-submission:", assignment, false, false, false);
-                    }
-                    
-                } else {
-                    if (versionHistory.size() == 1 && !submissionIsOpen) {
-                        AssignmentSubmissionVersion singleVersion = versionHistory.get(0);
-                        asnnSubmissionVersionRenderer.fillComponents(joint, "assignment-single-version:", singleVersion, false);
 
-                        // make the instructions with the toggle bar
-                        asnnInstructionsRenderer.makeInstructions(joint, "assignment-instructions-single-version:", assignment, true, true, false);
-                        
-                        // we need to mark this feedback as read (if released and unread)
-                        if (singleVersion.isFeedbackReleased() && !singleVersion.isFeedbackRead()) {
-                            List<Long> markRead = new ArrayList<Long>();
-                            markRead.add(singleVersion.getId());
-                            submissionLogic.markFeedbackAsViewed(singleVersion.getAssignmentSubmission().getId(), markRead);
+                if (versionHistory.size() == 1 && !submissionIsOpen) {
+                    AssignmentSubmissionVersion singleVersion = versionHistory.get(0);
+                    asnnSubmissionVersionRenderer.fillComponents(joint, "assignment-single-version:", singleVersion, false);
+
+                    // we need to mark this feedback as read (if released and unread)
+                    if (singleVersion.isFeedbackReleased() && !singleVersion.isFeedbackRead()) {
+                        List<Long> markRead = new ArrayList<Long>();
+                        markRead.add(singleVersion.getId());
+                        submissionLogic.markFeedbackAsViewed(singleVersion.getAssignmentSubmission().getId(), markRead);
+                    }
+                } else if (versionHistory.size() > 1 || (versionHistory.size() == 1 && !versionHistory.get(0).isDraft())) {
+                    // only expand feedback if the student didn't click "resubmit"
+                    asnnSubmissionHistoryRenderer.fillComponents(joint, "assignment-previous-submissions:", assignmentSubmission, !resubmit);
+                }
+
+                
+                // logic for displaying the assignment details and instructions
+                if (versionHistory == null || versionHistory.isEmpty()) {
+                    asnnDetailsRenderer.fillComponents(joint, "assignment-details-top:", assignmentSubmission, false, false, false);
+                    // only display these instructions if submission is closed. the editor will display them if open
+                    if (!submissionIsOpen) {
+                        asnnInstructionsRenderer.makeInstructions(joint, "assignment-instructions-top:", assignment, false, false, false);
+                    }
+                } else {
+                    if (resubmit || submissionIsOpen) {
+                        // just display the details b/c the editor will display the instructions
+                        asnnDetailsRenderer.fillComponents(joint, "assignment-details-top:", assignmentSubmission, false, false, false);
+                    } else if (!submissionIsOpen && !resubmit){
+                        // make the instructions and details with the toggle bar at the bottom
+                        // of the screen
+                        asnnInstructionsRenderer.makeInstructions(joint, "asnn-instructions-bottom:", assignment, true, true, false);
+                        asnnDetailsRenderer.fillComponents(joint, "asnn-details-bottom:", assignmentSubmission, false, true, false);
+                    }
+                }
+                
+                // determine if this is a resubmission scenario. we will use
+                // this in combination with the resubmit param to determine if
+                // we display the resubmission editor or just the button to resubmit
+                if (submissionIsOpen && versionHistory != null) {
+                    for (AssignmentSubmissionVersion ver : versionHistory) {
+                        if (ver.getSubmittedDate() != null) {
+                            resubmissionIsOpen = true;
+                            break;
                         }
-                    } else if (versionHistory.size() > 1 || (versionHistory.size() == 1 && !versionHistory.get(0).isDraft())) {
-                        // only expand feedback if the student didn't click "resubmit"
-                        asnnSubmissionHistoryRenderer.fillComponents(joint, "assignment-previous-submissions:", assignmentSubmission, !resubmit);
                     }
                 }
             }
         }
         else {
-            asnnSubmissionDetailsRenderer.fillComponents(joint, "assignment-details:", assignmentSubmission, previewAsStudent, true);
+            asnnSubmissionDetailsRenderer.fillComponents(joint, "assignment-status:", assignmentSubmission, previewAsStudent, true);
         }
 
         if (previewAsStudent) {
             asnnSubmitEditorRenderer.fillComponents(joint, "assignment-edit-submission:", assignmentSubmission, true, false, false);
-        }
-        else if (submissionIsOpen) {
+        } else if (resubmissionIsOpen && !resubmit) {
+            // if resubmission is open but we didn't get here via a resubmit link,
+            // don't display the editor. just display the resubmit button
+            UIOutput.make(joint, "view-submission-buttons");
+            UIForm returnform = UIForm.make(joint, "view-submission-form");
+            UICommand.make(returnform, "return-button", UIMessage.make("assignment2.student-submission.returntolist"), "StudentSubmissionBean.processActionCancel");
+            UICommand.make(returnform, "resubmit-button", UIMessage.make("assignment2.student-submission.resubmit"), "StudentSubmissionBean.processActionResubmit");
+            
+        } else if (submissionIsOpen) {
             asnnSubmitEditorRenderer.fillComponents(joint, "assignment-edit-submission:", assignmentSubmission, previewAsStudent, studentSubmissionPreview, resubmit);
         }
         else {
-            // If this isn't a preview, and the student can't submit, we need
-            // to make the button so they can return to the list.
-            UIOutput.make(joint, "student-return-to-list-buttons");
-            UIForm returnform = UIForm.make(joint, "return-to-list-form", new SimpleViewParameters(StudentAssignmentListProducer.VIEW_ID));
-            UICommand.make(returnform, "return-button", UIMessage.make("assignment2.student-submission.returntolist"), null);
+            // If this isn't a preview, and the student can't resubmit, just
+            // render the "Return to List" button
+            UIOutput.make(joint, "view-submission-buttons");
+            UIForm returnform = UIForm.make(joint, "view-submission-form");
+            UICommand.make(returnform, "return-button", UIMessage.make("assignment2.student-submission.returntolist"), "StudentSubmissionBean.processActionCancel");
         }
 
     }

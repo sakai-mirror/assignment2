@@ -197,6 +197,10 @@ public class StudentSubmissionBean {
         return WorkFlowResult.STUDENT_CANCEL_SUBMISSION;
     }
     
+    public WorkFlowResult processActionResubmit() {
+        return WorkFlowResult.STUDENT_RESUBMIT;
+    }
+    
     /**
      * 
      * @param version
