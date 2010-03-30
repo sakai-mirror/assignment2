@@ -63,18 +63,13 @@ public interface AssignmentLogic {
     public void saveAssignment(Assignment2 assignment);
 
     /**
-     * Delete an Assignment 
+     * Delete an Assignment. This method will also remove the following associations:
+     * announcements, schedule items, and tags. If an error is encountered while
+     * removing an association, the deletion of the assignment will continue. 
      * note: no assignments are actually deleted; the "removed" property
      * will be set to true
-     * @param assignment
-     * 			the Assignment to delete
-     * @throws SecurityException - user must have "edit" permission
-     * @throws AnnouncmentPermissionException if the user does not have
-     * permission to delete announcements - assignment will be 'deleted' regardless
-     * @throws CalendarPermissionException if the user does not have
-     * permission to delete events in the Schedule tool - assignment will be
-     * 'deleted' regardless
-     * @throws SecurityException if current user is not allowed to access assignment info
+     * @param assignment the Assignment to delete
+     * @throws SecurityException if user is not allowed to delete this assignment
      */	
     public void deleteAssignment(Assignment2 assignment);
 

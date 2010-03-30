@@ -395,6 +395,27 @@ public class AssignmentLogicImpl implements AssignmentLogic{
             throw new SecurityException("Current user may not delete assignment " + assignment.getTitle()
                     + " because they do not have delete permission");
         }
+        
+        // we remove the tags first because it will check for "delete" permission
+        // while removing the tags, and users can't delete items that have already
+        // been deleted.
+        // only process if taggingManager != null --> this is for the unit
+        // tests to run without mocking up all the tagging stuff
+        if (taggingManager != null) {
+            try {
+                if (taggingManager.isTaggable()) {
+                    for (TaggingProvider provider : taggingManager
+                            .getProviders()) {
+                        provider.removeTags(assignmentActivityProducer
+                                .getActivity(assignment));
+                    }
+                }
+            }
+            catch (PermissionException pe) {
+                log.warn("The current user is not authorized to remove tags in the assignment tool, " +
+                        "but the associated assignment was deleted", pe);
+            }
+        }
 
         assignment.setRemoved(true);
         assignment.setModifiedBy(externalLogic.getCurrentUserId());
@@ -422,35 +443,24 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 
             // now remove the announcement, if applicable
             if (announcementIdToDelete != null) {
-                announcementLogic.deleteOpenDateAnnouncement(announcementIdToDelete, assignment.getContextId());
-                if(log.isDebugEnabled()) log.debug("Deleted announcement with id " + announcementIdToDelete + " for assignment " + assignment.getId());
+                try {
+                    announcementLogic.deleteOpenDateAnnouncement(announcementIdToDelete, assignment.getContextId());
+                    if(log.isDebugEnabled()) log.debug("Deleted announcement with id " + announcementIdToDelete + " for assignment " + assignment.getId());
+                } catch (AnnouncementPermissionException ape) {
+                    log.warn("The current user is not authorized to remove announcements in the annc tool, " +
+                    "but the linked assignment was deleted");
+                }
             }
 
             // now remove the event, if applicable
             if (eventIdToDelete !=  null) {
-                calendarLogic.deleteDueDateEvent(eventIdToDelete, assignment.getContextId());
-                if(log.isDebugEnabled()) log.debug("Deleted event with id " + eventIdToDelete + 
-                        " for assignment " + assignment.getId());
-            }
-
-            //clean up tags...
-            // only process if taggingManager != null --> this is for the unit
-            // tests to run without mocking up all the tagging stuff
-            if (taggingManager != null) {
-                try
-                {
-                    if (taggingManager.isTaggable()) {
-                        for (TaggingProvider provider : taggingManager
-                                .getProviders()) {
-                            provider.removeTags(assignmentActivityProducer
-                                    .getActivity(assignment));
-                        }
-                    }
-                }
-                catch (PermissionException pe)
-                {
-                    throw new SecurityException("The current user is not authorized to remove tags in the assignment tool, " +
-                            "but the assignment was deleted", pe);
+                try {
+                    calendarLogic.deleteDueDateEvent(eventIdToDelete, assignment.getContextId());
+                    if(log.isDebugEnabled()) log.debug("Deleted event with id " + eventIdToDelete + 
+                            " for assignment " + assignment.getId());
+                } catch (CalendarPermissionException cpe) {
+                    log.warn("The current user is not authorized to remove events in the Schedule tool, " +
+                    "but the associated assignment was deleted");
                 }
             }
         } catch (HibernateOptimisticLockingFailureException holfe) {
@@ -458,21 +468,8 @@ public class AssignmentLogicImpl implements AssignmentLogic{
             "while attempting to update an assignment");
             throw new StaleObjectModificationException("Locking failure occurred " +
                     "while removing assignment with id: " + assignment.getId(), holfe);
-        } catch (AnnouncementPermissionException ape) {
-            if(log.isDebugEnabled()) log.debug("The current user is not authorized to " +
-                    "remove announcements in the annc tool, " +
-            "but the assignment was deleted");
-            throw new AnnouncementPermissionException("The current user is not authorized " +
-                    "to remove announcements in the annc tool, " +
-                    "but the assignment was deleted", ape);
-        } catch (CalendarPermissionException cpe) {
-            if(log.isDebugEnabled()) log.debug("The current user is not authorized " +
-                    "to remove events in the Schedule tool, " +
-            "but the assignment was deleted");
-            throw new CalendarPermissionException("The current user is not authorized " +
-                    "to remove events in the Schedule tool, " +
-                    "but the assignment was deleted", cpe);
-        }
+        } 
+        
     }
 
 
