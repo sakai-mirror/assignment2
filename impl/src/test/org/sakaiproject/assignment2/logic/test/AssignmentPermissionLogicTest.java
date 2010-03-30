@@ -494,6 +494,15 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
                 }
             }
         }
+        
+        // now let's make sure you can't pass an assignment with a different contextId
+        Assignment2 bogusAssign = new Assignment2();
+        bogusAssign.setContextId(AssignmentTestDataLoad.BAD_CONTEXT);
+        allAssigns.add(bogusAssign);
+        try {
+            permissionLogic.getPermissionsForAssignments(allAssigns, null);
+            fail("Did not catch assignment included for a different context");
+        } catch (IllegalArgumentException iae) {}
 
     }
 

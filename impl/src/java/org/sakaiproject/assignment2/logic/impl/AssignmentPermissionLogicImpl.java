@@ -332,6 +332,10 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
             
             // now let's find the perms for the individual assignments
             for (Assignment2 assign : assignments) {
+                if (!assign.getContextId().equals(contextId)) {
+                    throw new IllegalArgumentException("The assignments passed to getPermissionsForAssignments have different contexts.");
+                }
+                
                 Map<String, Boolean> assignPerms = new HashMap<String, Boolean>();
                 for (String permission : permissions) {
                     if (permission != null) {
