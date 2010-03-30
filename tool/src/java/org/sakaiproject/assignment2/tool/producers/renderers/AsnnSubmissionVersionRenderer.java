@@ -135,8 +135,14 @@ public class AsnnSubmissionVersionRenderer implements BasicProducer {
                     submissionType == AssignmentConstants.SUBMIT_INLINE_ONLY) {
                 // if feedback is released or user has grading privileges for this student, we display the submitted text with
                 // instructor annotations
+            	String heading;
+            	UIOutput submittedTextSection = UIOutput.make(joint, "submittet_text_toggle");                
+                // everything below the toggle is a subsection
+                submittedTextSection.decorate(new UIFreeAttributeDecorator("class", "toggleSubsection"));
+                
                 if (userCanGrade || asnnSubVersion.isFeedbackReleased()) {
-                    UIMessage.make(joint, "submission-text-header", "assignment2.student-submit.submission_text.annotated");
+                	heading = messageLocator.getMessage("assignment2.student-submit.submission_text.annotated");
+                    
                     if (asnnSubVersion.getAnnotatedText() != null && asnnSubVersion.getAnnotatedText().trim().length() > 0) {
                         HtmlDiffUtil differ = new HtmlDiffUtil();
                         UIVerbatim.make(joint, "submission-text", differ.diffHtml(asnnSubVersion.getSubmittedText(), asnnSubVersion.getAnnotatedText()));
@@ -144,13 +150,16 @@ public class AsnnSubmissionVersionRenderer implements BasicProducer {
                         UIMessage.make(joint, "submission-text", "assignment2.student-submit.submission_text.none");
                     }
                 } else {
-                    UIMessage.make(joint, "submission-text-header", "assignment2.student-submit.submission_text");
+                	heading = messageLocator.getMessage("assignment2.student-submit.submission_text");
                     if (asnnSubVersion.getSubmittedText() != null && asnnSubVersion.getSubmittedText().trim().length() > 0) {
                         UIVerbatim.make(joint, "submission-text", asnnSubVersion.getSubmittedText());
                     } else {
                         UIMessage.make(joint, "submission-text", "assignment2.student-submit.submission_text.none");
                     }
                 }
+                
+                toggleRenderer.makeToggle(joint, "submitted_text_toggle_header:", null, false, 
+                		heading, "", true, false, false, false, null);
             }
         }
 
