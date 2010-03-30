@@ -995,7 +995,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
             throw new AssignmentNotFoundException("Assignment with id " + assignmentId + " does not exist");
         }
 
-        if (!permissionLogic.isUserAllowedToManageSubmissionsForAssignment(currUserId, assignment, null, null)) {
+        if (!permissionLogic.isUserAllowedToManageSubmissionsForAssignment(currUserId, assignment, null)) {
             throw new SecurityException("User attempted to release feedback for assignment " + assignmentId + " without authorization");
         }
 

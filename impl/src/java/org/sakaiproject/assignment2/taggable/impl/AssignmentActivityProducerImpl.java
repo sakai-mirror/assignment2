@@ -78,12 +78,12 @@ AssignmentActivityProducer {
         //return assignmentDao.allowGradeSubmission(activity.getReference());
         //return assignmentPermissionLogic.isUserAbleToProvideFeedbackForSubmission(submissionId);
         Assignment2 assignment = (Assignment2) activity.getObject();
-        return assignmentPermissionLogic.isUserAllowedToManageSubmissionsForAssignment(null, assignment, null, null);
+        return assignmentPermissionLogic.isUserAllowedToManageSubmissionsForAssignment(null, assignment, null);
     }
 
     public boolean allowRemoveTags(TaggableActivity activity) {
         Assignment2 assignment = (Assignment2) activity.getObject();
-        return assignmentPermissionLogic.isUserAllowedToDeleteAssignment(null, assignment, null, null);
+        return assignmentPermissionLogic.isUserAllowedToDeleteAssignment(null, assignment, null);
     }
 
     public boolean allowRemoveTags(TaggableItem item) {
@@ -209,7 +209,7 @@ AssignmentActivityProducer {
         //return assignmentDao.allowGradeSubmission(activity.getReference());
         //return assignmentPermissionLogic.isUserAbleToProvideFeedbackForSubmission(submissionId);
         Assignment2 assignment = (Assignment2) activity.getObject();
-        return assignmentPermissionLogic.isUserAllowedToManageSubmissionsForAssignment(null, assignment, null, null);
+        return assignmentPermissionLogic.isUserAllowedToManageSubmissionsForAssignment(null, assignment, null);
     }
 
     public TaggableItem getItem(String itemRef, TaggingProvider provider, boolean getMyItemsOnly, String taggedItem)

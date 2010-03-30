@@ -201,7 +201,7 @@ public class StudentViewAssignmentRenderer {
             // Submission History
             if (previewAsStudent) {
                 // display the assignment details at the top
-                asnnDetailsRenderer.fillComponents(joint, "assignment-details-top:", assignmentSubmission, false, false, false);
+                asnnDetailsRenderer.fillComponents(joint, "assignment-details-top:", assignmentSubmission, true, false, false);
                 
             } else {
                 

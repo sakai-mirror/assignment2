@@ -259,7 +259,7 @@ public class LocalPermissionLogic {
                 return true;
             } else {
                 Assignment2 assign = assignmentLogic.getAssignmentById(assignId);
-                return permissionLogic.isUserAllowedToEditAssignment(null, assign, null, null);
+                return permissionLogic.isUserAllowedToEditAssignment(null, assign, null);
             }
         }
     }

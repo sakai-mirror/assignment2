@@ -91,7 +91,7 @@ public class ViewAssignmentProducer implements ViewComponentProducer, ViewParams
         DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, locale);
         
         // we only display some fields if user may edit this assignment
-        boolean instructorView = permissionLogic.isUserAllowedToEditAssignment(null, assignment, null, null);
+        boolean instructorView = permissionLogic.isUserAllowedToEditAssignment(null, assignment, null);
         
         UIOutput.make(tofill, "title", assignment.getTitle());
         

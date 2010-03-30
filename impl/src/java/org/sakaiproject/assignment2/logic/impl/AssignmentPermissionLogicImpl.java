@@ -106,7 +106,7 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
         authz.userHasAllGroupsPermission(userId, contextId);
     }
     
-    public boolean isUserAllowedToEditAssignment(String userId, Assignment2 assignment, List<String> groupMembershipIds, Map<String, Boolean> authzPermissions) {
+    public boolean isUserAllowedToEditAssignment(String userId, Assignment2 assignment, List<String> groupMembershipIds) {
         if (assignment == null) {
             throw new IllegalArgumentException("Null assignment or contextId passed to isUserAllowedToEditAssignment");
         }
@@ -115,7 +115,7 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
             userId = externalLogic.getCurrentUserId();
         }
         
-        return isUserAllowedToTakeActionOnAssignment(userId, assignment, AssignmentConstants.PERMISSION_EDIT_ASSIGNMENTS, null, authzPermissions);
+        return isUserAllowedToTakeActionOnAssignment(userId, assignment, AssignmentConstants.PERMISSION_EDIT_ASSIGNMENTS, null, null);
     }
     
     public boolean isUserAllowedToAddAssignments(String userId, String contextId, List<String> groupMemberships) {
@@ -130,7 +130,7 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
         return isUserAllowedToTakeActionInSite(userId, contextId, AssignmentConstants.PERMISSION_ADD_ASSIGNMENTS, groupMemberships);
     }
     
-    public boolean isUserAllowedToAddAssignment(String userId, Assignment2 assignment, List<String> groupMembershipIds, Map<String, Boolean> authzPermissions) {
+    public boolean isUserAllowedToAddAssignment(String userId, Assignment2 assignment, List<String> groupMembershipIds) {
         if (assignment == null) {
             throw new IllegalArgumentException("Null assignment passed to isUserAllowedToAddAssignment");
         }
@@ -140,7 +140,7 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
         }
         
         return isUserAllowedToTakeActionOnAssignment(userId, assignment, 
-                AssignmentConstants.PERMISSION_ADD_ASSIGNMENTS, null, authzPermissions);
+                AssignmentConstants.PERMISSION_ADD_ASSIGNMENTS, null, null);
     }
     
     public boolean isUserAllowedToDeleteAssignments(String userId, String contextId, List<String> groupMembershipIds) {
@@ -155,7 +155,7 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
         return isUserAllowedToTakeActionInSite(userId, contextId, AssignmentConstants.PERMISSION_REMOVE_ASSIGNMENTS, groupMembershipIds);
     }
     
-    public boolean isUserAllowedToDeleteAssignment(String userId, Assignment2 assignment, List<String> groupMembershipIds, Map<String, Boolean> authzPermissions) {
+    public boolean isUserAllowedToDeleteAssignment(String userId, Assignment2 assignment, List<String> groupMembershipIds) {
         if (assignment == null) {
             throw new IllegalArgumentException("Null assignment passed to isUserAllowedToDeleteAssignment");
         }
@@ -164,7 +164,7 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
             userId = externalLogic.getCurrentUserId();
         }
         
-        return isUserAllowedToTakeActionOnAssignment(userId, assignment, AssignmentConstants.PERMISSION_REMOVE_ASSIGNMENTS, null, authzPermissions);
+        return isUserAllowedToTakeActionOnAssignment(userId, assignment, AssignmentConstants.PERMISSION_REMOVE_ASSIGNMENTS, null, null);
     }
     
     public boolean isUserAllowedToManageAllSubmissions(String userId, String contextId) {
@@ -188,7 +188,7 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
         return isUserAllowedToTakeActionInSite(userId, contextId, AssignmentConstants.PERMISSION_MANAGE_SUBMISSIONS, groupMembershipIds);
     }
     
-    public boolean isUserAllowedToManageSubmissionsForAssignment(String userId, Assignment2 assignment, List<String> groupMembershipIds, Map<String, Boolean> authzPermissions) {
+    public boolean isUserAllowedToManageSubmissionsForAssignment(String userId, Assignment2 assignment, List<String> groupMembershipIds) {
         if (assignment == null) {
             throw new IllegalArgumentException("Null assignment passed to isUserAllowedToManageSubmissionsForAssignment");
         }
@@ -198,10 +198,10 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
         }
         
         return isUserAllowedToTakeActionOnAssignment(userId, assignment, 
-                AssignmentConstants.PERMISSION_MANAGE_SUBMISSIONS, groupMembershipIds, authzPermissions);
+                AssignmentConstants.PERMISSION_MANAGE_SUBMISSIONS, groupMembershipIds, null);
     }
     
-    public boolean isUserAllowedToViewAssignment(String userId, Assignment2 assignment, List<String> groupMembershipIds, Map<String, Boolean> authzPermissions, Map<String, Object> optionalParameters) {
+    public boolean isUserAllowedToViewAssignment(String userId, Assignment2 assignment, List<String> groupMembershipIds, Map<String, Object> optionalParameters) {
         if (assignment == null) {
             throw new IllegalArgumentException("Null assignment passed to isUserAllowedToViewAssignment");
         }
@@ -215,18 +215,18 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
         // viewing an assignment is a little more complicated because you may view the assignment
         // if you have view, submit, manage submissions, delete, or edit perm for it
         boolean hasViewPerm =  isUserAllowedToTakeActionOnAssignment(userId, assignment, 
-                AssignmentConstants.PERMISSION_VIEW_ASSIGNMENTS, groupMembershipIds, authzPermissions);
+                AssignmentConstants.PERMISSION_VIEW_ASSIGNMENTS, groupMembershipIds, null);
         if (hasViewPerm) {
             allowed = true;
-        } else if (isUserAllowedToManageSubmissionsForAssignment(userId, assignment, groupMembershipIds, authzPermissions)) {
+        } else if (isUserAllowedToManageSubmissionsForAssignment(userId, assignment, groupMembershipIds)) {
             allowed = true;
-        } else if (isUserAllowedToEditAssignment(userId, assignment, groupMembershipIds, authzPermissions)) {
-            allowed = true;
-        } else if (isUserAllowedToTakeActionOnAssignment(userId, assignment, AssignmentConstants.PERMISSION_SUBMIT, groupMembershipIds, authzPermissions)) {
+        } else if (isUserAllowedToMakeSubmissionForAssignment(userId, assignment)) {
             // student has submission privileges for this assignment.
             // BUT this does not indicate that submission is actually open.
             allowed = true;
-        } else if (isUserAllowedToDeleteAssignment(userId, assignment, groupMembershipIds, authzPermissions)){
+        } else if (isUserAllowedToEditAssignment(userId, assignment, groupMembershipIds)) {
+            allowed = true;
+        } else if (isUserAllowedToDeleteAssignment(userId, assignment, groupMembershipIds)){
             allowed = true;
         } else {
             allowed = false;
@@ -261,7 +261,7 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
             throw new AssignmentNotFoundException("No assignment found with id " + assignmentId);
         }
 
-        return isUserAllowedToViewAssignment(null, assign, null, null, optionalParameters);
+        return isUserAllowedToViewAssignment(null, assign, null, optionalParameters);
     }
     
     public Map<String, Boolean> getPermissionsForSite(String contextId, List<String> permissions) {
@@ -348,7 +348,7 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
                             if (authzPermission) {
                                 // the ability to view an assignment isn't straightforward, so call the specific method
                                 if (permission.equals(AssignmentConstants.PERMISSION_VIEW_ASSIGNMENTS)) {
-                                    hasPermission = isUserAllowedToViewAssignment(currUserId, assign, groupMembershipIds, authzPermMap, null);
+                                    hasPermission = isUserAllowedToViewAssignment(currUserId, assign, groupMembershipIds, null);
                                 } else {
                                     hasPermission = isUserAllowedToTakeActionOnAssignment(currUserId, assign, 
                                             permission, groupMembershipIds, authzPermMap);
@@ -562,7 +562,7 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
             allowed = true;
         } else {
             List<String> currentUserMemberships = externalLogic.getUserMembershipGroupIdList(userId, assignment.getContextId());
-            if (isUserAllowedToManageSubmissionsForAssignment(userId, assignment, currentUserMemberships, null)) {
+            if (isUserAllowedToManageSubmissionsForAssignment(userId, assignment, currentUserMemberships)) {
                 // double check that the student is in one of the curr user's groups
                 List<String> studentMemberships = externalLogic.getUserMembershipGroupIdList(studentId, assignment.getContextId());
                 if (listMembershipsOverlap(currentUserMemberships, studentMemberships)) {
@@ -815,7 +815,7 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
 
                             } else {
                                 // user doesn't have manage all perm
-                                if (isUserAllowedToManageSubmissionsForAssignment(userId, assign, userGroupMemberships, authzPermMap)) {
+                                if (isUserAllowedToManageSubmissionsForAssignment(userId, assign, userGroupMemberships)) {
                                     // we need to filter the available submitters based
                                     // on group restrictions, if applicable
                                     List<String> filteredSubmitters = filterSubmittersGivenGroupRestrictions(
