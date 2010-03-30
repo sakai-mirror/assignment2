@@ -71,21 +71,21 @@ public class LayoutProducer implements NullaryProducer {
 
 
             if (viewParameters.viewID.equals(ListProducer.VIEW_ID)){
-                UILink.make(tofill, "asnn-js-include:","/sakai-assignment2-tool/content/js/inst-asnn-list.js");
-                UILink.make(tofill, "asnn-css-include:","/sakai-assignment2-tool/content/css/inst-asnn-list.css");
+                UILink.make(tofill, "asnn-js-include:","/sakai-assignment2-tool/content/js/list.js");
+                UILink.make(tofill, "asnn-css-include:","/sakai-assignment2-tool/content/css/list.css");
             }
             
             if (viewParameters.viewID.equals(ReorderStudentViewProducer.VIEW_ID)) {
-                UILink.make(tofill, "asnn-js-include:","/sakai-assignment2-tool/content/js/inst-asnn-list.js");
-                UILink.make(tofill, "asnn-css-include:","/sakai-assignment2-tool/content/css/inst-asnn-list.css");
+                UILink.make(tofill, "asnn-js-include:","/sakai-assignment2-tool/content/js/list.js");
+                UILink.make(tofill, "asnn-css-include:","/sakai-assignment2-tool/content/css/list.css");
                 UILink.make(tofill, "asnn-js-include:","/sakai-assignment2-tool/content/js/reorder-student-view.js");
             }
             else if (viewParameters.viewID.equals(ViewSubmissionsProducer.VIEW_ID)) {
-                UILink.make(tofill, "asnn-js-include:", "/sakai-assignment2-tool/content/js/submissionview.js");
+                UILink.make(tofill, "asnn-js-include:", "/sakai-assignment2-tool/content/js/viewSubmissions.js");
             }
             else if (viewParameters.viewID.equals(GradeProducer.VIEW_ID)) {
-                UILink.make(tofill, "asnn-js-include:","/sakai-assignment2-tool/content/js/grade-student.js");
-                UILink.make(tofill, "asnn-css-include:","/sakai-assignment2-tool/content/css/grade-student.css");
+                UILink.make(tofill, "asnn-js-include:","/sakai-assignment2-tool/content/js/grade.js");
+                UILink.make(tofill, "asnn-css-include:","/sakai-assignment2-tool/content/css/grade.css");
                 UILink.make(tofill, "asnn-js-include:","/sakai-assignment2-tool/content/js/thickbox.js");
             }
             else if (viewParameters.viewID.equals(StudentSubmitProducer.VIEW_ID)) {
@@ -96,7 +96,7 @@ public class LayoutProducer implements NullaryProducer {
                 UILink.make(tofill, "asnn-js-include:","/sakai-assignment2-tool/content/js/thickbox.js");
             }else if (StudentAssignmentListProducer.VIEW_ID.equals(viewParameters.viewID)){
             	UILink.make(tofill, "asnn-css-include:","/sakai-assignment2-tool/content/css/student-view.css");
-                UILink.make(tofill, "asnn-js-include:","/sakai-assignment2-tool/content/js/stdnt-asnn-list.js");
+                UILink.make(tofill, "asnn-js-include:","/sakai-assignment2-tool/content/js/student-assignment-list.js");
                 UILink.make(tofill, "asnn-js-include:","/sakai-assignment2-tool/content/js/jquery.tablesorter.js");
             }else if(ImportAssignmentsProducer.VIEW_ID.equals(viewParameters.viewID)){
             	UILink.make(tofill, "asnn-js-include:","/sakai-assignment2-tool/content/js/import-assignments.js");
