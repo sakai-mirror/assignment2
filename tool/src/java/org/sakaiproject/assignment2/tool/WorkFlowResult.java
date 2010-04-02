@@ -53,4 +53,9 @@ public enum WorkFlowResult {
      */
     IMPORT_ASSIGNMENTS_VIEW_IMPORT,
     IMPORT_ASSIGNMENTS_VIEW_CANCEL,
+    
+    /*
+     * Grader Permissions View
+     */
+    GRADER_PERMISSIONS_CANCEL
 }

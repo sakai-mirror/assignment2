@@ -26,6 +26,7 @@ import java.util.Map;
 
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
+import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
@@ -69,6 +70,11 @@ public class LocalPermissionLogic {
     private AssignmentLogic assignmentLogic;
     public void setAssignmentLogic(AssignmentLogic assignmentLogic) {
         this.assignmentLogic = assignmentLogic;
+    }
+    
+    private ExternalGradebookLogic gradebookLogic;
+    public void setExternalGradebookLogic(ExternalGradebookLogic gradebookLogic) {
+        this.gradebookLogic = gradebookLogic;
     }
 
     /**
@@ -203,6 +209,9 @@ public class LocalPermissionLogic {
         } else if (PermissionsProducer.VIEW_ID.equals(viewId)) {
             return permissionLogic.isUserAllowedToUpdateSite(contextId);
             
+        } else if (GraderPermissionsProducer.VIEW_ID.equals(viewId)) {
+            return gradebookLogic.isCurrentUserAbleToEdit(contextId);
+ 
         } else if (ViewAssignmentProducer.VIEW_ID.equals(viewId)) {
             if (viewParams instanceof SimpleAssignmentViewParams) {
                 SimpleAssignmentViewParams params = (SimpleAssignmentViewParams) viewParams;

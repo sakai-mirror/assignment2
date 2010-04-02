@@ -22,6 +22,7 @@
 package org.sakaiproject.assignment2.tool.producers;
 
 import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
+import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.tool.params.AssignmentViewParams;
 
@@ -60,7 +61,12 @@ public class ListProducer implements ViewComponentProducer, DefaultView {
     public void setAssignmentPermissionLogic(AssignmentPermissionLogic permissionLogic) {
         this.permissionLogic = permissionLogic;
     }
-
+    
+    private ExternalGradebookLogic gradebookLogic;
+    public void setExternalGradebookLogic(ExternalGradebookLogic gradebookLogic) {
+        this.gradebookLogic = gradebookLogic;
+    }
+    
     public void fillComponents(UIContainer tofill, ViewParameters viewparams, ComponentChecker checker) {
         
         // render the tool-level action links
@@ -106,6 +112,16 @@ public class ListProducer implements ViewComponentProducer, DefaultView {
 
                 if (add || reorder) {
                     UIOutput.make(tofill, "sep2");
+                }
+            }
+            
+            if (gradebookLogic.isCurrentUserAbleToEdit(currContextId) && externalLogic.siteHasTool(currContextId, ExternalLogic.TOOL_ID_GRADEBOOK)) {
+                UIOutput.make(tofill, "grading_action");
+                UIInternalLink.make(tofill, "grading_link", UIMessage.make("assignment2.grader-perms.page_title"), 
+                        new AssignmentViewParams(GraderPermissionsProducer.VIEW_ID));
+                
+                if (add || reorder || siteUpd) {
+                    UIOutput.make(tofill, "sep3");
                 }
             }
         }

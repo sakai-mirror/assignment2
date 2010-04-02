@@ -264,6 +264,7 @@
    <bean class="org.sakaiproject.assignment2.tool.producers.ListProducer">
       <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
       <property name="assignmentPermissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentPermissionLogic" />
+      <property name="externalGradebookLogic" ref="org.sakaiproject.assignment2.logic.ExternalGradebookLogic" />
    </bean>
    
    <!--
@@ -345,6 +346,12 @@
        <property name="displayUtil" ref="DisplayUtil" />
        <property name="asnnToggleRenderer" ref="AsnnToggleRenderer"></property>
        <property name="externalGradebookLogic" ref="org.sakaiproject.assignment2.logic.ExternalGradebookLogic" />
+   </bean>
+   
+   <bean class="org.sakaiproject.assignment2.tool.producers.GraderPermissionsProducer">
+      <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
+      <property name="externalGradebookLogic" ref="org.sakaiproject.assignment2.logic.ExternalGradebookLogic" />
+      <property name="serverConfigurationService" ref="org.sakaiproject.component.api.ServerConfigurationService" />
    </bean>
 
    <!--  AJAX Fragment Producers -->
@@ -430,6 +437,9 @@
    </bean>
    
    <bean id="FilePickerBean" class="org.sakaiproject.assignment2.tool.beans.FilePickerBean">
+   </bean>
+   
+   <bean id="GraderPermissionsBean" class="org.sakaiproject.assignment2.tool.beans.GraderPermissionsBean">
    </bean>
 
 	<bean id="notificationBean" class="org.sakaiproject.assignment2.tool.beans.NotificationBean">

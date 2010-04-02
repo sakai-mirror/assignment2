@@ -64,6 +64,20 @@ public class AssignmentConstants {
          */
         PERMISSION_ALL_GROUPS = PERMISSION_PREFIX + ".all.groups";
 
+    /*
+     * Sakai.properties options
+     * 
+     */
+    
+    /**
+     * If true, will include a link to edit the gradebook grader permissions from
+     * assignment2.  Defaults to false.  The functionality for allowing access
+     * to gradebook grader permissions via a helper was not added until after 2.7 gradebook,
+     * so don't include this property unless you have a customized gradebook or are
+     * post-2.7.  See SAK-18299
+     */
+    public final static String PROP_GRADER_PERMISSIONS_HELPER = "assignment2.grader.perm.helper";
+    
     /**
      * Used to indicate that the assignment may only be viewed, not graded by
      * the specified user

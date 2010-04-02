@@ -21,10 +21,13 @@
 
 package org.sakaiproject.assignment2.logic;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
+import org.sakaiproject.authz.api.Role;
 
 /**
  * This interface is used for Assignment2-specific authorization based upon
@@ -235,4 +238,13 @@ public interface AssignmentAuthzLogic {
      * @return a set of userIds of users in the given contextId with the given permission
      */
     public Set<String> getUsersWithPermission(String contextId, String permission);
+    
+    /**
+     * 
+     * @param contextId
+     * @param functions a collection of the functions you want to look up for each role
+     * @return a map of all of your site {@link Role}s to a map of the function to true/false if that
+     * role has the permission in the given contextId
+     */
+    public Map<Role, Map<String, Boolean>> getRolePermissionsForSite(String contextId, Collection<String> functions);
 }

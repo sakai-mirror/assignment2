@@ -40,6 +40,7 @@ import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.site.api.Group;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.api.SiteService;
+import org.sakaiproject.site.api.ToolConfiguration;
 import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.tool.api.ToolManager;
 import org.sakaiproject.user.api.User;
@@ -267,6 +268,29 @@ public class ExternalLogicImpl implements ExternalLogic {
         String getParams = "?TB_iframe=true&width=700&height=415&KeepThis=true&finishURL=" + finishedURL;
 
         return url + "/" + (gradeableObjectId != null ? gradeableObjectId : "") + getParams;
+    }
+    
+    
+    public String getGraderPermissionsUrl(String contextId) {
+        StringBuilder url = new StringBuilder();
+        
+        Site site = getSite(contextId);
+        if (site != null) {
+            // we need to retrieve the placement of the gradebook tool
+            ToolConfiguration gbToolConfig = site.getToolForCommonId(TOOL_ID_GRADEBOOK);
+            if (gbToolConfig != null) {
+                String gbPlacement = gbToolConfig.getId();
+                
+                // now build the url
+                url.append(serverConfigurationService.getToolUrl());
+                url.append(Entity.SEPARATOR);
+                url.append(gbPlacement);
+                url.append(Entity.SEPARATOR);
+                url.append("sakai.gradebook.permissions.helper/graderRules");
+            }
+        }
+        
+        return url.toString();
     }
 
     public String getUrlForGradebookItemHelper(Long gradeableObjectId, String gradebookItemName, String returnViewId, String contextId, Date dueDate) {

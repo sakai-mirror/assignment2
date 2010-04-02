@@ -22,14 +22,17 @@
 package org.sakaiproject.assignment2.logic.test.stubs;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.sakaiproject.assignment2.logic.AssignmentAuthzLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.assignment2.test.AssignmentTestDataLoad;
+import org.sakaiproject.authz.api.Role;
 
 
 /**
@@ -188,6 +191,14 @@ public class AssignmentAuthzLogicStub implements AssignmentAuthzLogic
         }
         
         return usersWithPermission;
+    }
+
+    @Override
+    public Map<Role, Map<String, Boolean>> getRolePermissionsForSite(String contextId,
+            Collection<String> functions)
+    {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

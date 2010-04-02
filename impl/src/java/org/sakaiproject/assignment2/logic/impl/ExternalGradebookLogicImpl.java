@@ -33,12 +33,14 @@ import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment2.exception.GradebookItemNotFoundException;
 import org.sakaiproject.assignment2.exception.InvalidGradeForAssignmentException;
 import org.sakaiproject.assignment2.exception.NoGradebookDataExistsException;
+import org.sakaiproject.assignment2.logic.AssignmentAuthzLogic;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.logic.GradeInformation;
 import org.sakaiproject.assignment2.logic.GradebookItem;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
+import org.sakaiproject.authz.api.Role;
 import org.sakaiproject.component.cover.ComponentManager;
 import org.sakaiproject.service.gradebook.shared.AssessmentNotFoundException;
 import org.sakaiproject.service.gradebook.shared.Assignment;
@@ -72,6 +74,11 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
     private ExternalLogic externalLogic;
     public void setExternalLogic(ExternalLogic externalLogic) {
         this.externalLogic = externalLogic;
+    }
+    
+    private AssignmentAuthzLogic authzLogic;
+    public void setAssignmentAuthzLogic(AssignmentAuthzLogic authzLogic) {
+        this.authzLogic = authzLogic;
     }
 
     public List<Assignment2> getViewableGradedAssignments(List<Assignment2> gradedAssignments, String contextId) {
@@ -854,5 +861,20 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
         }
         
         return filteredStudents;
+    }
+    
+    public Map<Role, Map<String, Boolean>> getGradebookPermissionsForRoles(String contextId) {
+        if (contextId == null) {
+            throw new IllegalArgumentException("Null contextId passed to getGradebookPermissionsForRoles");
+        }
+        
+        List<String> gradebookPerms = new ArrayList<String>();
+        gradebookPerms.add(GB_EDIT);
+        gradebookPerms.add(GB_GRADE_ALL);
+        gradebookPerms.add(GB_GRADE_SECTION);
+        gradebookPerms.add(GB_VIEW_OWN_GRADES);
+        gradebookPerms.add(GB_TA);
+        
+        return authzLogic.getRolePermissionsForSite(contextId, gradebookPerms);
     }
 }

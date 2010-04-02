@@ -362,4 +362,12 @@ public class ExternalLogicStub implements ExternalLogic {
     public List getUserSitesWithAssignments(){
     	return null;
     }
+
+    @Override
+    public String getGraderPermissionsUrl(String contextId)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
 }

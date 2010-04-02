@@ -23,8 +23,11 @@ package org.sakaiproject.assignment2.logic.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
@@ -35,8 +38,10 @@ import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.authz.api.AuthzGroupService;
 import org.sakaiproject.authz.api.FunctionManager;
+import org.sakaiproject.authz.api.Role;
 import org.sakaiproject.authz.api.SecurityService;
 import org.sakaiproject.site.api.Group;
+import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.api.SiteService;
 import org.sakaiproject.user.api.User;
 
@@ -282,6 +287,40 @@ public class AssignmentAuthzLogicImpl implements AssignmentAuthzLogic
         }
 
         return allowedGroups;
+    }
+    
+    public Map<Role, Map<String, Boolean>> getRolePermissionsForSite(String contextId, Collection<String> functions) {
+        if (contextId == null) {
+            throw new IllegalArgumentException("Null contextId passed to getRolePermissions");
+        }
+        Map<Role, Map<String, Boolean>> rolePermissionMap = new HashMap<Role, Map<String,Boolean>>();
+
+        if (functions != null) {
+            Site site = externalLogic.getSite(contextId);
+            if (site != null) {
+                Set<Role> siteRoles = site.getRoles();
+                if (siteRoles != null) {
+                    // sort the roles
+                    List<Role> orderedRoles = new ArrayList<Role>(siteRoles);
+                    Collections.sort(orderedRoles);
+                    for (Role role : orderedRoles) {
+                        Map<String, Boolean> permissionMap = new HashMap<String, Boolean>();
+                        Set<String> allowedFunctions = role.getAllowedFunctions();
+                        for (String function : functions) {
+                            if (allowedFunctions != null && allowedFunctions.contains(function)) {
+                                permissionMap.put(function, true);
+                            } else {
+                                permissionMap.put(function, false);
+                            }
+                        }
+
+                        rolePermissionMap.put(role, permissionMap);
+                    }
+                }
+            }
+        }
+
+        return rolePermissionMap;
     }
 
     

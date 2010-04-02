@@ -32,6 +32,7 @@ import org.sakaiproject.assignment2.exception.NoGradebookDataExistsException;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
+import org.sakaiproject.authz.api.Role;
 import org.sakaiproject.site.api.Group;
 
 /**
@@ -54,6 +55,31 @@ public interface ExternalGradebookLogic {
      * Gradebook grade entry is by letter
      */
     public static int ENTRY_BY_LETTER = 2;
+    
+    /**
+     * Realm permission for editing in the gradebook tool
+     */
+    public static final String GB_EDIT = "gradebook.editAssignments";
+    
+    /**
+     * Realm permission to grade all in the gradebook tool
+     */
+    public static final String GB_GRADE_ALL = "gradebook.gradeAll";
+    
+    /**
+     * Realm permission for grading by section in the gradebook tool
+     */
+    public static final String GB_GRADE_SECTION = "gradebook.gradeSection";
+    
+    /**
+     * Realm permission for viewing your own grades in the gradebook tool
+     */
+    public static final String GB_VIEW_OWN_GRADES = "gradebook.viewOwnGrades";
+    
+    /**
+     * Realm permission that identifies a "TA" who may have overridden grader permissions
+     */
+    public static final String GB_TA = "section.role.ta";
 
     /** 
      * @param gradedAssignments
@@ -435,4 +461,12 @@ public interface ExternalGradebookLogic {
      * for the given gradebook item depending on your passed viewOrGrade param
      */
     public Collection<String> filterStudentsForGradebookItem(String userId, String contextId, Long gradebookItemId, String viewOrGrade, Collection<String> students);
+
+    /**
+     * 
+     * @param contextId
+     * @return a map of the Roles in the given contextId to a map of the gradebook permissions
+     * to true/false if that role has the given permission
+     */
+    public Map<Role, Map<String, Boolean>> getGradebookPermissionsForRoles(String contextId);
 }

@@ -262,4 +262,11 @@ public interface ExternalLogic {
      */
     public List<Site> getUserSitesWithAssignments();
     
+    /**
+     * @param contextId
+     * @return url for accessing the gradebook grader permissions helper. this
+     * will only work if there is a gradebook tool in this site
+     */
+    public String getGraderPermissionsUrl(String contextId);
+    
 }

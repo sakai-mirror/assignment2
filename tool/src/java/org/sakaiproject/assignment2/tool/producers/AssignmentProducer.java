@@ -478,7 +478,7 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
 
 
             //Links to gradebook Helper
-            if (externalGradebookLogic.isCurrentUserAbleToEdit(currentContextId)) {
+            if (userMayAddGbItems) {
                 UIOutput.make(tofill, "create_new_gb_item");
                 String urlWithNameParam = externalLogic.getUrlForGradebookItemHelper(null, assignment.getTitle(), FinishedHelperProducer.VIEWID, currentContextId, assignment.getDueDate());
                 UILink.make(form, "gradebook_item_new_helper",
