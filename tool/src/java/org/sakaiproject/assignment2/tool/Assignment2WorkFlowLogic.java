@@ -124,7 +124,7 @@ public class Assignment2WorkFlowLogic implements ViewParamsInterceptor, ActionRe
             result.propagateBeans = ARIResult.FLOW_END;
             break;
         case INSTRUCTOR_PREVIEW_ASSIGNMENT:
-            result.resultingView = new SimpleViewParameters(PreviewAsStudentProducer.VIEW_ID);
+            result.resultingView = new SimpleAssignmentViewParams(PreviewAsStudentProducer.VIEW_ID, assignmentId);
             result.propagateBeans = ARIResult.FLOW_FASTSTART;
             break;
         case INSTRUCTOR_SAVE_DRAFT_ASSIGNMENT:
@@ -158,6 +158,10 @@ public class Assignment2WorkFlowLogic implements ViewParamsInterceptor, ActionRe
             result.propagateBeans = ARIResult.FLOW_END;
             break;
         case STUDENT_SUBMISSION_FAILURE:
+            break;
+        case STUDENT_RESUBMIT:
+            result.resultingView = new StudentSubmissionParams(StudentSubmitProducer.VIEW_ID, assignmentId, false, false, true);
+            result.propagateBeans = ARIResult.FLOW_END;
             break;
             /*
              * Upload CSV or ZIP file
@@ -200,6 +204,17 @@ public class Assignment2WorkFlowLogic implements ViewParamsInterceptor, ActionRe
             break;
         case REORDER_STUDENT_VIEW_CANCEL:
             result.resultingView = new SimpleViewParameters(ListProducer.VIEW_ID);
+            break;
+        case IMPORT_ASSIGNMENTS_VIEW_IMPORT:
+            result.resultingView = new SimpleViewParameters(ListProducer.VIEW_ID);
+            break;
+        case IMPORT_ASSIGNMENTS_VIEW_CANCEL:
+            result.resultingView = new SimpleViewParameters(ListProducer.VIEW_ID);
+            break;
+            
+        case GRADER_PERMISSIONS_CANCEL:
+            result.resultingView = new SimpleViewParameters(ListProducer.VIEW_ID);
+            result.propagateBeans = ARIResult.FLOW_END;
             break;
 
         default:

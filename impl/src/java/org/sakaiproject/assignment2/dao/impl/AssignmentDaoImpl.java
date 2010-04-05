@@ -46,6 +46,7 @@ import org.sakaiproject.assignment2.exception.VersionNotFoundException;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
+import org.sakaiproject.genericdao.api.search.Search;
 import org.sakaiproject.genericdao.hibernate.HibernateGeneralGenericDao;
 import org.springframework.orm.hibernate3.HibernateCallback;
 
@@ -853,5 +854,22 @@ public class AssignmentDaoImpl extends HibernateGeneralGenericDao implements Ass
 
         return (List<Long>)getHibernateTemplate().execute(hc);
 
+    }
+    
+    public String getSubmissionReference (String userId, Assignment2 assignment) {
+        if (userId == null || assignment == null) {
+            throw new IllegalArgumentException("Null userId (" + userId + ") or assignment (" + assignment + ") passed to getSubmissionReference");
+        }
+        
+        String submissionReference = null;
+        
+        Search search = new Search(new String[] {"assignment", "userId"}, new Object[] {assignment, userId});
+        AssignmentSubmission submission = this.findOneBySearch(AssignmentSubmission.class, search);
+        
+        if (submission != null) {
+            submissionReference = submission.getReference();
+        }
+        
+        return submissionReference;
     }
 }

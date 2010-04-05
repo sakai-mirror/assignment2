@@ -26,7 +26,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import org.sakaiproject.content.api.ContentResource;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.user.api.User;
 
@@ -51,9 +50,16 @@ public interface ExternalLogic {
      */
     public final static String TOOL_ID_OLD_ASSIGN = "sakai.assignment.grades";
     /**
-     * the tool if for this Assignment tool
+     * the tool id for this Assignment tool
      */
     public final static String TOOL_ID_ASSIGNMENT2 = "sakai.assignment2";
+    /**
+     * the tool id for Sakai's gradebook tool
+     */
+    public final static String TOOL_ID_GRADEBOOK = "sakai.gradebook.tool";
+    
+        
+    public final static String NO_LOCATION = "noLocationAvailable";
 
     /**
      * @return the current sakai user id (not username)
@@ -95,6 +101,8 @@ public interface ExternalLogic {
      * @return the current context for the current user
      */
     public String getCurrentContextId();
+    
+    public String getCurrentLocationId();
 
     /**
      * 
@@ -117,16 +125,7 @@ public interface ExternalLogic {
      * @return the title of the Assignment2 tool
      */
     public String getToolTitle();
-
-    /**
-     * Check if this user has super admin access
-     * 
-     * @param userId
-     *            the internal user id (not username)
-     * @return true if the user has admin access, false otherwise
-     */
-    public boolean isUserAdmin(String userId);
-
+    
     /**
      * Cleans up the users submitted strings to protect us from XSS
      * 
@@ -180,33 +179,11 @@ public interface ExternalLogic {
     public boolean siteHasTool(String contextId, String toolId);
 
     /**
-     * 
      * @param contextId
-     * @return a list of userIds of members of this site with a "student"-type role
-     */
-    public List<String> getStudentsInSite(String contextId);
-
-    /**
-     * 
-     * @param contextId
-     * @return a list of userIds of members of this site with a "TA"-type role
-     * 
-     */
-    public List<String> getTAsInSite(String contextId);
-
-    /**
-     * 
-     * @param contextId
-     * @return a list of userIds of members of this site with an "instructor"-type role
-     */
-    public List<String> getInstructorsInSite(String contextId);
-
-    /**
-     * 
      * @param groupId
-     * @return a list of the student ids of students in the Group with the given groupId  
+     * @return a list of the user ids of users in the Group with the given groupId  
      */
-    public List<String> getStudentsInGroup(String groupId);
+    public List<String> getUsersInGroup(String contextId, String groupId);
 
     /**
      * 
@@ -249,13 +226,13 @@ public interface ExternalLogic {
 
     /**
      * 
-     * @param contextId
-     * @return a map of the displayId to userId for all of the students in the
-     * given site. Useful for display scenarios that require use of the displayId
+     * @param userIds
+     * @return a map of the displayId to userId for the given users. 
+     * Useful for display scenarios that require use of the displayId
      * (such as upload and download) that we need to convert to the equivalent
      * userId for processing
      */
-    public Map<String, String> getUserDisplayIdUserIdMapForStudentsInSite(String contextId);
+    public Map<String, String> getUserDisplayIdUserIdMapForUsers(Collection<String> userIds);
 
     /**
      * 
@@ -276,4 +253,20 @@ public interface ExternalLogic {
      * @return the server url for this instance
      */
     public String getServerUrl();
+    
+    /**
+     * 
+     * @return
+     * This function will return a list of sites the current user has access to and which sites
+     * have the original assignments tool and where the user has administrative access (ie. site.upd)
+     */
+    public List<Site> getUserSitesWithAssignments();
+    
+    /**
+     * @param contextId
+     * @return url for accessing the gradebook grader permissions helper. this
+     * will only work if there is a gradebook tool in this site
+     */
+    public String getGraderPermissionsUrl(String contextId);
+    
 }

@@ -32,6 +32,8 @@ public interface AssignmentBundleLogic {
 
     /** Path to bundle messages */
     public static final String ASSIGNMENT2_BUNDLE = "messages";
+    
+    public static final String ASSIGNMENT2_BUNDLE_PERMISSIONS = "permissions";
 
     public String getString(String key);
 

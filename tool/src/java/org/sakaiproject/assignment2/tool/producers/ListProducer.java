@@ -21,20 +21,18 @@
 
 package org.sakaiproject.assignment2.tool.producers;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
+import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
-import org.sakaiproject.tool.api.Placement;
+import org.sakaiproject.assignment2.tool.params.AssignmentViewParams;
 
 import uk.org.ponder.rsf.components.UIContainer;
-import uk.org.ponder.rsf.components.UIVerbatim;
-import uk.org.ponder.rsf.flow.jsfnav.NavigationCase;
-import uk.org.ponder.rsf.flow.jsfnav.NavigationCaseReporter;
+import uk.org.ponder.rsf.components.UIInternalLink;
+import uk.org.ponder.rsf.components.UIMessage;
+import uk.org.ponder.rsf.components.UIOutput;
 import uk.org.ponder.rsf.view.ComponentChecker;
 import uk.org.ponder.rsf.view.DefaultView;
 import uk.org.ponder.rsf.view.ViewComponentProducer;
-import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
 import uk.org.ponder.rsf.viewstate.ViewParameters;
 
 /**
@@ -54,8 +52,79 @@ public class ListProducer implements ViewComponentProducer, DefaultView {
         return VIEW_ID;
     }
 
+    private ExternalLogic externalLogic;
+    public void setExternalLogic(ExternalLogic externalLogic) {
+        this.externalLogic = externalLogic;
+    }
+    
+    private AssignmentPermissionLogic permissionLogic;
+    public void setAssignmentPermissionLogic(AssignmentPermissionLogic permissionLogic) {
+        this.permissionLogic = permissionLogic;
+    }
+    
+    private ExternalGradebookLogic gradebookLogic;
+    public void setExternalGradebookLogic(ExternalGradebookLogic gradebookLogic) {
+        this.gradebookLogic = gradebookLogic;
+    }
+    
     public void fillComponents(UIContainer tofill, ViewParameters viewparams, ComponentChecker checker) {
+        
+        // render the tool-level action links
+        String currContextId = externalLogic.getCurrentContextId();
+        String currUserId = externalLogic.getCurrentUserId();
+        
+        boolean add = permissionLogic.isUserAllowedToAddAssignments(currUserId, currContextId, null);
+        boolean reorder = permissionLogic.isUserAllowedToEditAllAssignments(currUserId, currContextId);
+        boolean siteUpd = permissionLogic.isUserAllowedToUpdateSite(currContextId);
+        boolean allGoups = permissionLogic.isUserAllowedForAllGroups(currUserId, currContextId);
+        
+        if (add || reorder || siteUpd || (add && allGoups)) {
+            UIOutput.make(tofill, "actionBar");
+            // the Add, Reorder, and Permissions links
+            if (add) {
+                UIOutput.make(tofill, "add_action");
+                UIInternalLink.make(tofill, "add_link", UIMessage.make("assignment2.list.add_assignment"), 
+                        new AssignmentViewParams(AssignmentProducer.VIEW_ID));
+            }
+            if (reorder) {
+                UIOutput.make(tofill, "reorder_action");
+                UIInternalLink.make(tofill, "reorder_link", UIMessage.make("assignment2.list.reorder"), 
+                        new AssignmentViewParams(ReorderStudentViewProducer.VIEW_ID));
 
+                if (add) {
+                    UIOutput.make(tofill, "sep0");
+                }
+            }
+            if (add && allGoups) {
+                UIOutput.make(tofill, "import_action");
+                UIInternalLink.make(tofill, "import_link", UIMessage.make("assignment2.list.import_assignments"), 
+                        new AssignmentViewParams(ImportAssignmentsProducer.VIEW_ID));
+                if(reorder){
+                	UIOutput.make(tofill, "sep1");
+                }else if(add){
+                	UIOutput.make(tofill, "sep0");
+                }
+            }
+            if (siteUpd) {
+                UIOutput.make(tofill, "permissions_action");
+                UIInternalLink.make(tofill, "permissions_link", UIMessage.make("assignment2.list.permissions"), 
+                        new AssignmentViewParams(PermissionsProducer.VIEW_ID));
+
+                if (add || reorder) {
+                    UIOutput.make(tofill, "sep2");
+                }
+            }
+            
+            if (gradebookLogic.isCurrentUserAbleToEdit(currContextId) && externalLogic.siteHasTool(currContextId, ExternalLogic.TOOL_ID_GRADEBOOK)) {
+                UIOutput.make(tofill, "grading_action");
+                UIInternalLink.make(tofill, "grading_link", UIMessage.make("assignment2.grader-perms.page_title"), 
+                        new AssignmentViewParams(GraderPermissionsProducer.VIEW_ID));
+                
+                if (add || reorder || siteUpd) {
+                    UIOutput.make(tofill, "sep3");
+                }
+            }
+        }
     }
 
 }

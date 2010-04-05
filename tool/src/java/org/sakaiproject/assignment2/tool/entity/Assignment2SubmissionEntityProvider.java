@@ -229,12 +229,28 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware{
         }
 
         Assignment2 assignment = assignmentLogic.getAssignmentById(assignmentId);
+        
+        String currUserId = externalLogic.getCurrentUserId();
 
         Map<String, GradeInformation> studentIdGradeInfoMap = new HashMap<String, GradeInformation>();
         if (submissions != null && assignment.isGraded() && assignment.getGradebookItemId() != null) {
+            // we need to filter this list by the students that this user may view or grade
+            // to avoid a security exception
+            Map<String, String> viewGradeMap = externalGradebookLogic.getViewableStudentsForGradedItemMap(currUserId, 
+                    assignment.getContextId(), assignment.getGradebookItemId());
+            List<String> gradableStudents = new ArrayList<String>();
+            for (AssignmentSubmission submission : submissions) {
+                String viewOrGrade = viewGradeMap.get(submission.getUserId());
+                if (viewOrGrade != null && 
+                   (viewOrGrade.equals(AssignmentConstants.VIEW) || 
+                    viewOrGrade.equals(AssignmentConstants.GRADE))) {
+                    gradableStudents.add(submission.getUserId());
+                }
+            }
+            
             // now retrieve all of the GradeInformation
             studentIdGradeInfoMap = externalGradebookLogic.getGradeInformationForStudents(
-                    studentIdList, assignment.getContextId(), assignment.getGradebookItemId());
+                    gradableStudents, assignment.getContextId(), assignment.getGradebookItemId());
         }
 
         Map<String, String> studentIdSortNameMap = externalLogic.getUserIdToSortNameMap(studentIdList);

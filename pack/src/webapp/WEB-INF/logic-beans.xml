@@ -6,18 +6,25 @@
    
      <!-- create a logic bean, give it the dao from above and some sakai services -->
    <bean id="org.sakaiproject.assignment2.logic.ExternalLogic" class="org.sakaiproject.assignment2.logic.impl.ExternalLogicImpl" init-method="init">
-      <property name="securityService" ref="org.sakaiproject.authz.api.SecurityService" />
       <property name="sessionManager" ref="org.sakaiproject.tool.api.SessionManager" />
       <property name="siteService" ref="org.sakaiproject.site.api.SiteService" />
       <property name="toolManager" ref="org.sakaiproject.tool.api.ToolManager" />
       <property name="userDirectoryService" ref="org.sakaiproject.user.api.UserDirectoryService" />
-      <property name="sectionAwareness" ref="org.sakaiproject.section.api.SectionAwareness"/>
       <property name="serverConfigurationService" ref="org.sakaiproject.component.api.ServerConfigurationService" />
+   </bean>
+   
+   <bean id="org.sakaiproject.assignment2.logic.AssignmentAuthzLogic" class="org.sakaiproject.assignment2.logic.impl.AssignmentAuthzLogicImpl" init-method="init">
+      <property name="functionManager" ref="org.sakaiproject.authz.api.FunctionManager" />
+      <property name="siteService" ref="org.sakaiproject.site.api.SiteService" />
+      <property name="securityService" ref="org.sakaiproject.authz.api.SecurityService" />
+      <property name="authzGroupService" ref="org.sakaiproject.authz.api.AuthzGroupService" />
+      <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
    </bean>
    
    <bean id="org.sakaiproject.assignment2.logic.ExternalGradebookLogic" class="org.sakaiproject.assignment2.logic.impl.ExternalGradebookLogicImpl" init-method="init">
    		<property name="gradebookService" ref="org_sakaiproject_service_gradebook_GradebookService" />
    		<property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
+      <property name="assignmentAuthzLogic" ref="org.sakaiproject.assignment2.logic.AssignmentAuthzLogic" />
    </bean>
    
    <bean id="org.sakaiproject.assignment2.logic.ExternalAnnouncementLogic" class="org.sakaiproject.assignment2.logic.impl.ExternalAnnouncementLogicImpl" init-method="init">
@@ -56,8 +63,8 @@
    
    <bean id="org.sakaiproject.assignment2.logic.AssignmentPermissionLogic" class="org.sakaiproject.assignment2.logic.impl.AssignmentPermissionLogicImpl" init-method="init">
       <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
-      <property name="externalGradebookLogic" ref="org.sakaiproject.assignment2.logic.ExternalGradebookLogic" />
       <property name="dao" ref="org.sakaiproject.assignment2.dao.AssignmentDao" />
+      <property name="assignmentAuthzLogic" ref="org.sakaiproject.assignment2.logic.AssignmentAuthzLogic" />
       <property name="externalTaggableLogic" ref="org.sakaiproject.assignment2.logic.ExternalTaggableLogic" />
    </bean>
    
@@ -102,8 +109,6 @@
 		<property name="zipExportLogic" ref="org.sakaiproject.assignment2.logic.ZipExportLogic" />
 		<property name="uploadGradesLogic" ref="org.sakaiproject.assignment2.logic.UploadGradesLogic" />
 		<property name="assignmentPermissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentPermissionLogic" />
-		<property name="externalGradebookLogic" ref="org.sakaiproject.assignment2.logic.ExternalGradebookLogic" />
-
 	</bean> 
 	
 	<bean id="org.sakaiproject.assignment2.logic.UploadGradesLogic"

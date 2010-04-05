@@ -55,6 +55,7 @@ public class AssignmentTestDataLoad {
 
     public static final String INSTRUCTOR_UID = "instructorUid";
     public static final String TA_UID = "taUid";
+    public static final String TA_WITH_NO_GROUPS = "taWithNoGroups";
     public static final String STUDENT1_UID = "student1";
     public static final String STUDENT2_UID = "student2";
     public static final String STUDENT3_UID = "student3";

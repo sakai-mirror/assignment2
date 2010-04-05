@@ -125,13 +125,16 @@ public class AsnnSubmissionHistoryRenderer implements BasicProducer {
                     boolean expand = false;
                     boolean showFeedbackAsRead = false;
                     if (versionIdToExpand != null && versionIdToExpand.equals(version.getId())) {
-                        // expand this feedback
+                        // expand this version
                         expand = true;
-                        showFeedbackAsRead = true;
-                        // mark this feedback version as read
-                        List<Long> versionIdList = new ArrayList<Long>();
-                        versionIdList.add(version.getId());
-                        submissionLogic.markFeedbackAsViewed(assignmentSubmission.getId(), versionIdList);
+                        // if this version has released, unread feedback, mark it as viewed
+                        if (version.isFeedbackReleased() && !version.isFeedbackRead()) {
+                            showFeedbackAsRead = true;
+                            // mark this feedback version as read
+                            List<Long> versionIdList = new ArrayList<Long>();
+                            versionIdList.add(version.getId());
+                            submissionLogic.markFeedbackAsViewed(assignmentSubmission.getId(), versionIdList);
+                        }
                     }
                     
                     makeVersionToggle(versionDiv, version, assignment.getDueDate(), 
@@ -225,13 +228,18 @@ public class AsnnSubmissionHistoryRenderer implements BasicProducer {
      */
     private Long determineVersionToExpand(List<AssignmentSubmissionVersion> versionHistory) {
         Long versionIdToExpand = null;
-        if (versionHistory != null) {
+        if (versionHistory != null && !versionHistory.isEmpty()) {
             // the versions should be in submitted descending order, so pick the first one
             for (AssignmentSubmissionVersion version : versionHistory) {
                 if (version.isFeedbackReleased() && !version.isFeedbackRead()) {
                     versionIdToExpand = version.getId();
                     break;
                 }
+            }
+            
+            // if versionIdToExpand is still null, expand the most recent version
+            if (versionIdToExpand == null) {
+                versionIdToExpand = versionHistory.get(0).getId();
             }
         }
         

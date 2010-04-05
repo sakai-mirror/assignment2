@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
-import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 
 /**

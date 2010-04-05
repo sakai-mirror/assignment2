@@ -63,35 +63,6 @@ public class AssignmentLogicTest extends Assignment2TestBase {
         testData.a4 = dao.getAssignmentByIdWithGroupsAndAttachments(testData.a4Id);
     }
 
-
-    public void testGetAssignmentById() throws Exception {
-        // try a null id
-        try {
-            assignmentLogic.getAssignmentById(null);
-            fail("did not catch null id passed to getAssignmentById");
-        } catch (IllegalArgumentException iae) {
-        }
-        
-        // try retrieving the assignment w/o permission
-        externalLogic.setCurrentUserId("random");
-        try {
-            assignmentLogic.getAssignmentById(testData.a1Id);
-            fail("Did not catch invalid user attempting to access assignment via getAssignmentById");
-        } catch (SecurityException se) {}
-
-        externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
-        // try a bogus id
-        try {
-            assignmentLogic.getAssignmentById(12345L);
-            fail("did not catch bogus assignmenId passed to getAssignmentById");
-        } catch (AssignmentNotFoundException anfe) {}
-
-        // grab assignment 1
-        Assignment2 assignment = assignmentLogic.getAssignmentById(testData.a1Id);
-        assertNotNull(assignment);
-        assertTrue(assignment.getTitle().equals(AssignmentTestDataLoad.ASSIGN1_TITLE));
-    }
-
     public void testSaveAssignment() throws Exception {
         // try null param
         try {
@@ -427,14 +398,14 @@ public class AssignmentLogicTest extends Assignment2TestBase {
     public void testGetAssignmentByIdWithAssociatedData() throws Exception {
         // try passing a null id
         try {
-            assignmentLogic.getAssignmentByIdWithAssociatedData(null);
+            assignmentLogic.getAssignmentByIdWithAssociatedData(null, null);
             fail("Did not catch null assignment id passed to getAssignmentByIdWithAssociatedData");
         } catch (IllegalArgumentException iae) {}
         
      // try retrieving the assignment w/o permission
         externalLogic.setCurrentUserId("random");
         try {
-            assignmentLogic.getAssignmentById(testData.a1Id);
+            assignmentLogic.getAssignmentByIdWithAssociatedData(testData.a1Id, null);
             fail("Did not catch invalid user attempting to access assignment via getAssignmentById");
         } catch (SecurityException se) {}
 
@@ -445,13 +416,13 @@ public class AssignmentLogicTest extends Assignment2TestBase {
 
         // try passing an id that doesn't exist 
         try {
-            assignmentLogic.getAssignmentByIdWithAssociatedData(12345L);
+            assignmentLogic.getAssignmentByIdWithAssociatedData(12345L, null);
             fail("did not catch non-existent assignmentId passed to getAssignmentByIdWithAssociatedData");
         }
         catch (AssignmentNotFoundException anfe) {}
 
         // let's try to retrieve a graded item now
-        Assignment2 assign = assignmentLogic.getAssignmentByIdWithAssociatedData(testData.a4Id);
+        Assignment2 assign = assignmentLogic.getAssignmentByIdWithAssociatedData(testData.a4Id, null);
         assertNotNull(assign);
         assertTrue(assign.getId().equals(testData.a4Id));
 
@@ -460,7 +431,7 @@ public class AssignmentLogicTest extends Assignment2TestBase {
         assertTrue(assign.getAttachmentSet().isEmpty());
 
         // try an ungraded item
-        assign = assignmentLogic.getAssignmentByIdWithAssociatedData(testData.a1Id);
+        assign = assignmentLogic.getAssignmentByIdWithAssociatedData(testData.a1Id, null);
         assertTrue(assign.getId().equals(testData.a1Id));
         assertTrue(assign.getAssignmentGroupSet().size() == 2);
         assertTrue(assign.getAttachmentSet().size() == 2); 	
@@ -469,7 +440,7 @@ public class AssignmentLogicTest extends Assignment2TestBase {
     public void testGetAssignmentByIdWithGroupsAndAttachments() throws Exception {
         // try passing a null id
         try {
-            assignmentLogic.getAssignmentByIdWithGroupsAndAttachments(null);
+            assignmentLogic.getAssignmentById(null);
             fail("Did not catch null assignment id passed to getAssignmentByIdWithGroupsAndAttachments");
         } catch (IllegalArgumentException iae) {}
         
@@ -484,12 +455,12 @@ public class AssignmentLogicTest extends Assignment2TestBase {
 
         // try passing an id that doesn't exist 
         try {
-            assignmentLogic.getAssignmentByIdWithGroupsAndAttachments(12345L);
+            assignmentLogic.getAssignmentById(12345L);
             fail("did not catch non-existent assignmentId passed to getAssignmentByIdWithGroupsAndAttachments");
         } catch (AssignmentNotFoundException anfe) {}
 
         // try a valid item
-        Assignment2 assign = assignmentLogic.getAssignmentByIdWithGroupsAndAttachments(testData.a1Id);
+        Assignment2 assign = assignmentLogic.getAssignmentById(testData.a1Id);
         assertTrue(assign.getId().equals(testData.a1Id));
         assertTrue(assign.getAssignmentGroupSet().size() == 2);	
         assertTrue(assign.getAttachmentSet().size() == 2);

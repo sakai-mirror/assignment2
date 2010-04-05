@@ -19,6 +19,7 @@ public enum WorkFlowResult {
     STUDENT_SAVE_DRAFT_SUBMISSION,
     STUDENT_SUBMISSION_FAILURE,
     STUDENT_CANCEL_SUBMISSION,
+    STUDENT_RESUBMIT,
 
     /*
      * Instructor Assignment Authoring
@@ -46,4 +47,15 @@ public enum WorkFlowResult {
      */
     REORDER_STUDENT_VIEW_SAVE,
     REORDER_STUDENT_VIEW_CANCEL,
+    
+    /*
+     * Import Assignments View
+     */
+    IMPORT_ASSIGNMENTS_VIEW_IMPORT,
+    IMPORT_ASSIGNMENTS_VIEW_CANCEL,
+    
+    /*
+     * Grader Permissions View
+     */
+    GRADER_PERMISSIONS_CANCEL
 }

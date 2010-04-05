@@ -71,7 +71,7 @@ public class StudentSubmitProducer implements ViewComponentProducer,  ViewParams
         Long assignmentId = params.assignmentId;
         Assignment2 assignment = (Assignment2) assignment2BeanLocator.locateBean(assignmentId.toString());
 
-        AssignmentSubmission submission = submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(assignmentId, externalLogic.getCurrentUserId());
+        AssignmentSubmission submission = submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(assignmentId, externalLogic.getCurrentUserId(), null);
 
         String ASOTPKey = "";
         if (submission == null || submission.getId() == null || submission.getCurrentSubmissionVersion() == null) {

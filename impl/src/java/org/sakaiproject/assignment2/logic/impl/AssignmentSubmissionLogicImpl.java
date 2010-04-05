@@ -120,7 +120,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 
         Assignment2 assignment = submission.getAssignment();
 
-        if (!permissionLogic.isUserAbleToViewStudentSubmissionForAssignment(submission.getUserId(), assignment.getId())) {
+        if (!permissionLogic.isUserAllowedToViewSubmissionForAssignment(null, submission.getUserId(), assignment.getId(), null)) {
             throw new SecurityException("user" + currentUserId + " attempted to view submission with id " + submissionId + " but is not authorized");
         }
 
@@ -153,7 +153,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
             Assignment2 assignment = submission.getAssignment();
 
             // ensure that the current user is authorized to view this user for this assignment
-            if (!permissionLogic.isUserAbleToViewStudentSubmissionForAssignment(submission.getUserId(), assignment.getId())) {
+            if (!permissionLogic.isUserAllowedToViewSubmissionForAssignment(null, submission.getUserId(), assignment.getId(), null)) {
                 throw new SecurityException("User " + currentUserId + " attempted to access the version " + 
                         submissionVersionId + " for student " + submission.getUserId() + " without authorization");
             }
@@ -169,11 +169,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
         return version;
     }
 
-    public AssignmentSubmission getCurrentSubmissionByAssignmentIdAndStudentId(Long assignmentId, String studentId) {
-    	return getCurrentSubmissionByAssignmentIdAndStudentId(assignmentId, studentId, null);
-    }
-    
-    public AssignmentSubmission getCurrentSubmissionByAssignmentIdAndStudentId(Long assignmentId, String studentId, String taggableRef) {
+    public AssignmentSubmission getCurrentSubmissionByAssignmentIdAndStudentId(Long assignmentId, String studentId, Map<String, Object> optionalParameters) {
         if (assignmentId == null || studentId == null) {
             throw new IllegalArgumentException("Null assignmentId or userId passed to getCurrentSubmissionByAssignmentAndUser");
         }
@@ -186,7 +182,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
             throw new AssignmentNotFoundException("No assignment found with id: " + assignmentId);
         }
 
-        if (!permissionLogic.isUserAbleToViewStudentSubmissionForAssignment(studentId, assignment.getId(), taggableRef)) {
+        if (!permissionLogic.isUserAllowedToViewSubmissionForAssignment(currentUserId, studentId, assignment.getId(), optionalParameters)) {
             throw new SecurityException("Current user " + currentUserId + " is not allowed to view submission for " + studentId + " for assignment " + assignment.getId());
         }
 
@@ -221,7 +217,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
                     userId + ". You may only make a submission for yourself!");
         }
 
-        if (!permissionLogic.isUserAbleToMakeSubmissionForAssignment(assignment)) {
+        if (!permissionLogic.isUserAllowedToMakeSubmissionForAssignment(currentUserId, assignment)) {
             log.warn("User " + currentUserId + " attempted to make a submission " +
                     "without authorization for assignment " + assignment.getId());
             throw new SecurityException("User " + currentUserId + " attempted to make a submission " +
@@ -395,15 +391,15 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
             String currUserId = externalLogic.getCurrentUserId();
             Date currentTime = new Date();
 
-            // check to see if all of these students are gradable
-            List<String> gradableStudents = permissionLogic.getGradableStudentsForUserForItem(currUserId, assignment);
-            if (gradableStudents == null || gradableStudents.isEmpty()) {
+            // check to see if user may manage submissions
+            List<String> manageableStudents = permissionLogic.getViewableStudentsForAssignment(currUserId, assignment);
+            if (manageableStudents == null || manageableStudents.isEmpty()) {
                 throw new SecurityException("User " + currUserId + " attempted to update feedback for students w/o permission");
             }
 
 
             for (String studentUid : studentUidVersionsMap.keySet()) {
-                if (!gradableStudents.contains(studentUid)) {
+                if (!manageableStudents.contains(studentUid)) {
                     throw new SecurityException("User " + currUserId + " attempted to update " +
                             "feedback for student " + studentUid + " w/o permission");
                 }
@@ -588,7 +584,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
                     "to saveInstructorFeedback. studentId: " + studentId + " assignment:" + assignment);
         }
 
-        if (!permissionLogic.isUserAbleToProvideFeedbackForStudentForAssignment(studentId, assignment)) {
+        if (!permissionLogic.isUserAllowedToManageSubmission(null, studentId, assignment)) {
             throw new SecurityException("User " + externalLogic.getCurrentUserId() + 
                     " attempted to submit feedback for student " + studentId + " without authorization");
         }
@@ -624,23 +620,23 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 
         List<AssignmentSubmission> viewableSubmissions = new ArrayList<AssignmentSubmission>();
 
-        Assignment2 assignment = (Assignment2)dao.findById(Assignment2.class, assignmentId);
+        Assignment2 assignment = dao.getAssignmentByIdWithGroups(assignmentId);
         if (assignment == null) {
             throw new AssignmentNotFoundException("No assignment found with id: " + assignmentId);
         }
 
-        if (!permissionLogic.isUserAbleToAccessInstructorView(assignment.getContextId())) {
+        String currUserId = externalLogic.getCurrentUserId();
+        
+        if (!permissionLogic.isUserAllowedToAccessInstructorView(currUserId, assignment.getContextId())) {
             throw new SecurityException("A user without feedback privileges attempted to access submissions for assignment: " + assignment.getId());
         }
 
-        String currUserId = externalLogic.getCurrentUserId();
-
         // get a list of all the students that the current user may view for the given assignment
-        List<String> viewableStudents = permissionLogic.getViewableStudentsForUserForItem(currUserId, assignment);
+        List<String> viewableStudents = permissionLogic.getViewableStudentsForAssignment(currUserId, assignment);
 
         // filter by group, if a group id was supplied
         if (filterGroupId != null && filterGroupId.trim().length() > 0) {
-            viewableStudents = filterStudentsByGroupMembership(viewableStudents, filterGroupId);
+            viewableStudents = filterStudentsByGroupMembership(assignment.getContextId(), viewableStudents, filterGroupId);
         }
 
         if (viewableStudents != null && !viewableStudents.isEmpty()) {
@@ -994,16 +990,16 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
         String currUserId = externalLogic.getCurrentUserId();
         Date now = new Date();
 
-        Assignment2 assignment = (Assignment2) dao.findById(Assignment2.class, assignmentId);
+        Assignment2 assignment = dao.getAssignmentByIdWithGroups(assignmentId);
         if (assignment == null) {
             throw new AssignmentNotFoundException("Assignment with id " + assignmentId + " does not exist");
         }
 
-        if (!gradebookLogic.isCurrentUserAbleToGrade(assignment.getContextId())) {
+        if (!permissionLogic.isUserAllowedToManageSubmissionsForAssignment(currUserId, assignment, null)) {
             throw new SecurityException("User attempted to release feedback for assignment " + assignmentId + " without authorization");
         }
 
-        List<String> gradableStudents = permissionLogic.getGradableStudentsForUserForItem(currUserId, assignment);
+        List<String> gradableStudents = permissionLogic.getViewableStudentsForAssignment(currUserId, assignment);
         if (gradableStudents != null && !gradableStudents.isEmpty()) {
             Set<AssignmentSubmission> submissionList = dao.getSubmissionsWithVersionHistoryForStudentListAndAssignment(
                     gradableStudents, assignment);
@@ -1069,7 +1065,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
             throw new SubmissionNotFoundException("No submission exists with id " + submissionId);
         }
 
-        if (!permissionLogic.isUserAbleToProvideFeedbackForStudentForAssignment(subWithHistory.getUserId(), subWithHistory.getAssignment())) {
+        if (!permissionLogic.isUserAllowedToManageSubmission(currUserId, subWithHistory.getUserId(), subWithHistory.getAssignment())) {
             throw new SecurityException("User " + currUserId + " attempted to release feedback" +
                     " for student " + subWithHistory.getUserId() + " and assignment " + 
                     subWithHistory.getAssignment().getId() + "without authorization");
@@ -1121,7 +1117,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 
         AssignmentSubmission submission = version.getAssignmentSubmission();
 
-        if (!permissionLogic.isUserAbleToProvideFeedbackForStudentForAssignment(submission.getUserId(), submission.getAssignment())) {
+        if (!permissionLogic.isUserAllowedToManageSubmission(currUserId, submission.getUserId(), submission.getAssignment())) {
             throw new SecurityException("User " + externalLogic.getCurrentUserId() + " attempted to release feedback" +
                     " for student " + submission.getUserId() + " and assignment " + 
                     submission.getAssignment().getId() + "without authorization");
@@ -1252,7 +1248,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 
         List<AssignmentSubmissionVersion> filteredVersionHistory = new ArrayList<AssignmentSubmissionVersion>();
 
-        if (!permissionLogic.isUserAbleToViewStudentSubmissionForAssignment(submission.getUserId(), submission.getAssignment().getId())) {
+        if (!permissionLogic.isUserAllowedToViewSubmissionForAssignment(null, submission.getUserId(), submission.getAssignment().getId(), null)) {
             throw new SecurityException("User " + externalLogic.getCurrentUserId() +
                     " attempted to access version history for student " + submission.getUserId() +
             " without authorization!");
@@ -1341,6 +1337,15 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 
                 if (assignment.isGraded() && assignment.getGradebookItemId() != null &&
                         !studentsToCheckForGrade.isEmpty()) {
+                    
+                    // we need to filter this list to only include students the user is
+                    // allowed to view or grade in the gradebook or we will hit a security exception
+                    if (!gradebookLogic.isCurrentUserAbleToGradeAll(assignment.getContextId())) {
+                        studentsToCheckForGrade = (Set<String>) gradebookLogic.filterStudentsForGradebookItem(externalLogic.getCurrentUserId(), 
+                                assignment.getContextId(), assignment.getGradebookItemId(), 
+                                AssignmentConstants.VIEW, studentsToCheckForGrade);
+                    }
+                
                     Map<String, GradeInformation> studentGradeInfo = gradebookLogic.getGradeInformationForStudents(studentsToCheckForGrade, assignment.getContextId(), assignment.getGradebookItemId());
                     if (studentGradeInfo != null) {
                         for (Map.Entry<String, GradeInformation> entry : studentGradeInfo.entrySet()) {
@@ -1526,7 +1531,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 
         String currentUserId = externalLogic.getCurrentUserId();
 
-        if (!permissionLogic.isCurrentUserAbleToSubmit(contextId)) {
+        if (!permissionLogic.isUserAllowedToSubmit(currentUserId, contextId, null)) {
             throw new SecurityException("Attempt to retrieve submissions for a non-student user");
         }
 
@@ -1576,10 +1581,10 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
         return currVersion;
     }
 
-    private List<String> filterStudentsByGroupMembership(List<String> fullStudentIdList, String filterGroupId) {
+    private List<String> filterStudentsByGroupMembership(String contextId, List<String> fullStudentIdList, String filterGroupId) {
         List<String> filteredStudentIdList = new ArrayList<String>();
         if (fullStudentIdList != null && filterGroupId != null) {
-            List<String> studentsInGroup = externalLogic.getStudentsInGroup(filterGroupId);
+            List<String> studentsInGroup = externalLogic.getUsersInGroup(contextId, filterGroupId);
             if (studentsInGroup != null) {
                 for (String studentId : studentsInGroup) {
                     if (fullStudentIdList.contains(studentId)) {

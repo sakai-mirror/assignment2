@@ -23,8 +23,10 @@ package org.sakaiproject.assignment2.tool.producers;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -89,7 +91,10 @@ public class ViewStudentSubmissionProducer implements ViewComponentProducer, Vie
               //handle error
               return;
           }
-          if (!permissionLogic.isUserAbleToViewStudentSubmissionForAssignment(studentUserId, assignmentId, params.tagReference))
+          
+          Map<String, Object> optionalParams = new HashMap<String, Object>();
+          optionalParams.put(AssignmentConstants.TAGGABLE_REF_KEY, params.tagReference);
+          if (!permissionLogic.isUserAllowedToViewSubmissionForAssignment(null, studentUserId, assignmentId, optionalParams))
           {
               // user is not allowed to view the submission for this studentId
               throw new SecurityException("Attempt to view a submission without permission");
@@ -98,7 +103,7 @@ public class ViewStudentSubmissionProducer implements ViewComponentProducer, Vie
           Assignment2 assignment;
           try
           {
-              assignment = assignmentLogic.getAssignmentByIdWithAssociatedData(assignmentId, params.tagReference);
+              assignment = assignmentLogic.getAssignmentByIdWithAssociatedData(assignmentId, optionalParams);
           }
           catch (AssignmentNotFoundException anfe)
           {
@@ -107,7 +112,7 @@ public class ViewStudentSubmissionProducer implements ViewComponentProducer, Vie
               return;
           }
           
-          AssignmentSubmission assignmentSubmission = submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(assignmentId, studentUserId, params.tagReference);
+          AssignmentSubmission assignmentSubmission = submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(assignmentId, studentUserId, optionalParams);
           
           // make sure the assignment is set correctly in the assignmentSubmission object, or it make cause problems later
           if (assignmentSubmission != null) {
@@ -171,8 +176,6 @@ public class ViewStudentSubmissionProducer implements ViewComponentProducer, Vie
           }
           
           // assignment details
-          boolean instructorView = permissionLogic.isUserAbleToAccessInstructorView(assignment.getContextId());
-          
           UIOutput.make(tofill, "open-date", df.format(assignment.getOpenDate()));
 
           // Grading

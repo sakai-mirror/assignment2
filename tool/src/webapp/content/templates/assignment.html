@@ -55,6 +55,9 @@
 					<input rsf:id="access_choice" id="access_choice" type="radio" />
 					<label for="access_choice" rsf:id="access_label">Display to site!</label>
 				</li>
+        <li rsf:id="access_groups_only" class="asnn_subsection">
+          <span rsf:id="msg=assignment2.assignment_add.access.restricted_only"></span>
+        </li>
 				<li id="groups_table_li" class="indent">
 					<table id="groupTable" class="listHier lines" cellpadding="0" cellspacing="0" border="0">
 						<tr>
@@ -200,11 +203,12 @@
 	
 	<fieldset>
         <legend rsf:id="msg=assignment2.assignment_add.grading_legend">Grading</legend>
-        <ol>
+        <span rsf:id="cannot_edit_grading" class="instruction">You can't change these settings.</span>
+        <ol rsf:id="grade_settings">
             <li><span rsf:id="graded-radios" />
                 <fieldset>
                     <div id="grading_section">
-                      <span style="display:none;" class="messageContent" rsf:id="msg=assignment2.assignment_add.grading_warning" id="grading_warning">
+                      <span style="display:none;" class="messageContent" rsf:id="grading_warning" id="grading_warning">
                       If this assignment will be graded, select an existing Gradebook item or create a new one. Otherwise, select 'This assignment is not graded'.!!!!!!!!!!!!!!!
                       </span>
                       <ol id="grading_options">
@@ -224,7 +228,7 @@
                                     <option value="GB Item 4">GB Item 4</option>
                                 </select>
                                 
-                                <p class="indent">
+                                <p class="indent" rsf:id="create_new_gb_item">
                                     <span rsf:id="msg=assignment2.assignment_add.gradebook_or"> -or- </span>
                                     <a rsf:id="gradebook_item_new_helper" id="gradebook_item_new_helper" class="thickbox" onclick="asnn2.update_new_gb_item_helper_url();">Create a new Gradebook Item</a>
                                     <!-- hidden anchor contains the ref to the gb helper without the name attr -->

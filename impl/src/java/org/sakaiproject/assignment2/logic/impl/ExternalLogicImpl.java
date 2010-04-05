@@ -28,20 +28,19 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
-import org.sakaiproject.authz.api.SecurityService;
+import org.sakaiproject.authz.api.Member;
 import org.sakaiproject.component.api.ServerConfigurationService;
 import org.sakaiproject.entity.api.Entity;
 import org.sakaiproject.exception.IdUnusedException;
-import org.sakaiproject.section.api.SectionAwareness;
-import org.sakaiproject.section.api.coursemanagement.ParticipationRecord;
-import org.sakaiproject.section.api.facade.Role;
 import org.sakaiproject.site.api.Group;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.api.SiteService;
+import org.sakaiproject.site.api.ToolConfiguration;
 import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.tool.api.ToolManager;
 import org.sakaiproject.user.api.User;
@@ -66,11 +65,6 @@ public class ExternalLogicImpl implements ExternalLogic {
         this.toolManager = toolManager;
     }
 
-    private SecurityService securityService;
-    public void setSecurityService(SecurityService securityService) {
-        this.securityService = securityService;
-    }
-
     private SessionManager sessionManager;
     public void setSessionManager(SessionManager sessionManager) {
         this.sessionManager = sessionManager;
@@ -84,11 +78,6 @@ public class ExternalLogicImpl implements ExternalLogic {
     private UserDirectoryService userDirectoryService;
     public void setUserDirectoryService(UserDirectoryService userDirectoryService) {
         this.userDirectoryService = userDirectoryService;
-    }
-
-    private SectionAwareness sectionAwareness;
-    public void setSectionAwareness(SectionAwareness sectionAwareness) {
-        this.sectionAwareness = sectionAwareness;
     }
     
     private ServerConfigurationService serverConfigurationService;
@@ -111,6 +100,19 @@ public class ExternalLogicImpl implements ExternalLogic {
             return null;
         }
     }
+    
+    public String getCurrentLocationId() {
+        try {
+           if (toolManager.getCurrentPlacement() == null)
+           {
+              return NO_LOCATION;
+           }
+           Site s = siteService.getSite(toolManager.getCurrentPlacement().getContext());
+           return s.getReference(); // get the entity reference to the site
+        } catch (IdUnusedException e) {
+           return NO_LOCATION;
+        }
+     };
 
     public Site getSite(String contextId) {
         Site site = null;
@@ -150,10 +152,6 @@ public class ExternalLogicImpl implements ExternalLogic {
         }
 
         return "----------";
-    }
-
-    public boolean isUserAdmin(String userId) {
-        return securityService.isSuperUser(userId);
     }
 
     public String cleanupUserStrings(String userSubmittedString) {
@@ -238,63 +236,29 @@ public class ExternalLogicImpl implements ExternalLogic {
         return siteHasTool;
     }
 
-    public List<String> getInstructorsInSite(String contextId) {
-        if (contextId == null) {
-            throw new IllegalArgumentException("Null contextId passed to getInstructorsInSite");
+    public List<String> getUsersInGroup(String contextId, String groupId) {
+        if (groupId == null) {
+            throw new IllegalArgumentException("null groupId passed to getStudentsInSection");
         }
 
-        return getUsersInRoleInSite(Role.INSTRUCTOR, contextId);
-    }
-
-    public List<String> getTAsInSite(String contextId) {
-        if (contextId == null) {
-            throw new IllegalArgumentException("Null contextId passed to getTAsInSite");
-        }
-
-        return getUsersInRoleInSite(Role.TA, contextId);
-    }
-
-    public List<String> getStudentsInSite(String contextId) {
-        if (contextId == null) {
-            throw new IllegalArgumentException("Null contextId passed to getStudentsInSite");
-        }
-
-        return getUsersInRoleInSite(Role.STUDENT, contextId);
-    }
-
-    private List<String> getUsersInRoleInSite(Role role, String contextId) {   
-        List<String> usersInRole = new ArrayList<String>();
-
-        List<ParticipationRecord> participants = sectionAwareness.getSiteMembersInRole(contextId, role);
-        if (participants != null) {
-            for (ParticipationRecord part : participants) {
-                if (part != null) {
-                    String studentId = part.getUser().getUserUid();
-                    usersInRole.add(studentId);
+        List<String> usersInGroup = new ArrayList<String>();
+        
+        Site site = getSite(contextId);
+        if (site == null) {
+            log.error("Error retrieving site with contextId:" + contextId);
+        } else {
+            Group group = site.getGroup(groupId);
+            if (group != null) {
+                Set<Member> members = group.getMembers();
+                if (members != null) {
+                    for (Member member : members) {
+                        usersInGroup.add(member.getUserId());
+                    }
                 }
             }
         }
 
-        return usersInRole;
-    }
-
-    public List<String> getStudentsInGroup(String groupId) {
-        if (groupId == null) {
-            throw new IllegalArgumentException("null groupId passed to getStudentsInSection");
-
-        }
-
-        List<String> studentsInGroup = new ArrayList<String>();
-
-        List<ParticipationRecord> participants = sectionAwareness.getSectionMembersInRole(groupId, Role.STUDENT);
-        for (ParticipationRecord part : participants) {
-            if (part != null) {
-                String studentId = part.getUser().getUserUid();
-                studentsInGroup.add(studentId);
-            }
-        }
-
-        return studentsInGroup;
+        return usersInGroup;
     }
 
     public String getUrlForGradebookItemHelper(Long gradeableObjectId, String returnViewId, String contextId) {
@@ -304,6 +268,29 @@ public class ExternalLogicImpl implements ExternalLogic {
         String getParams = "?TB_iframe=true&width=700&height=415&KeepThis=true&finishURL=" + finishedURL;
 
         return url + "/" + (gradeableObjectId != null ? gradeableObjectId : "") + getParams;
+    }
+    
+    
+    public String getGraderPermissionsUrl(String contextId) {
+        StringBuilder url = new StringBuilder();
+        
+        Site site = getSite(contextId);
+        if (site != null) {
+            // we need to retrieve the placement of the gradebook tool
+            ToolConfiguration gbToolConfig = site.getToolForCommonId(TOOL_ID_GRADEBOOK);
+            if (gbToolConfig != null) {
+                String gbPlacement = gbToolConfig.getId();
+                
+                // now build the url
+                url.append(serverConfigurationService.getToolUrl());
+                url.append(Entity.SEPARATOR);
+                url.append(gbPlacement);
+                url.append(Entity.SEPARATOR);
+                url.append("sakai.gradebook.permissions.helper/graderRules");
+            }
+        }
+        
+        return url.toString();
     }
 
     public String getUrlForGradebookItemHelper(Long gradeableObjectId, String gradebookItemName, String returnViewId, String contextId, Date dueDate) {
@@ -397,18 +384,12 @@ public class ExternalLogicImpl implements ExternalLogic {
         return userIdUserMap;
     }
 
-    public Map<String, String> getUserDisplayIdUserIdMapForStudentsInSite(String contextId) {
-        if (contextId == null) {
-            throw new IllegalArgumentException("Null contextId passed to getUserDisplayIdUserIdMapForStudentsInSite");
-        }
-
+    public Map<String, String> getUserDisplayIdUserIdMapForUsers(Collection<String> userIds) {
         Map<String, String> userDisplayIdUserIdMap = new HashMap<String, String>();
 
-        List<String> allStudentsInSite = getStudentsInSite(contextId);
-
-        if (allStudentsInSite != null) {
+        if (userIds != null) {
             List<User> userList = new ArrayList<User>();
-            userList = userDirectoryService.getUsers(allStudentsInSite);
+            userList = userDirectoryService.getUsers(userIds);
 
             if (userList != null) {
                 for (User user : userList) {
@@ -447,5 +428,19 @@ public class ExternalLogicImpl implements ExternalLogic {
     
     public String getServerUrl() {
         return serverConfigurationService.getServerUrl();
+    }
+    
+    public List<Site> getUserSitesWithAssignments(){
+    	List<Site> returnList = new ArrayList<Site>();
+    	List<Site> userSites = siteService.getSites(SiteService.SelectionType.UPDATE, null, null, 
+				null, SiteService.SortType.TITLE_ASC, null);
+    	
+    	for(Site site : userSites){
+    		if(siteHasTool(site.getId(), ExternalLogic.TOOL_ID_OLD_ASSIGN)){
+    			returnList.add(site);
+    		}    		
+    	}
+    	
+    	return returnList;
     }
 }

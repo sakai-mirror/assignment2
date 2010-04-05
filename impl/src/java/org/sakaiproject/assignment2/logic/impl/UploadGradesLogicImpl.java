@@ -110,7 +110,7 @@ public class UploadGradesLogicImpl implements UploadGradesLogic
             throw new GradebookItemNotFoundException("No gradebook item exists with the given id: " + assign.getGradebookItemId());
         }
 
-        if (!permissionLogic.isUserAllowedToProvideFeedbackForAssignment(assign)) {
+        if (!gradebookLogic.isCurrentUserAbleToGrade(assign.getContextId())) {
             throw new SecurityException("User attempted to upload grades without permission");
         }
 
@@ -121,7 +121,8 @@ public class UploadGradesLogicImpl implements UploadGradesLogic
 
         // let's remove any students the user is not authorized to grade from the
         // list we send the gradebook. this will avoid a SecurityException.
-        List<String> gradableStudents = permissionLogic.getGradableStudentsForUserForItem(currUserId, assign);
+        List<String> gradableStudents = gradebookLogic.getGradableStudentsForGradebookItem(currUserId, 
+                assign.getContextId(), assign.getGradebookItemId());
 
         List<String> studentsIgnored = new ArrayList<String>();
         List<GradeInformation> filteredGradeInfoList = new ArrayList<GradeInformation>();
