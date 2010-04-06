@@ -319,7 +319,7 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware {
         httpServletResponse.setHeader("Cache-Control", "max-age=0,no-cache,no-store,must-revalidate,private,post-check=0,pre-check=0,s-max-age=0");
         httpServletResponse.setDateHeader("Expires", 0 );
 
-        boolean canDelete = permissionLogic.isUserAllowedToDeleteAssignments(null, context, null);
+        boolean canDelete = permissionLogic.isUserAllowedToDeleteAssignments(null, context);
         httpServletResponse.setHeader("x-asnn2-canDelete", canDelete+"");
 
         return togo;
