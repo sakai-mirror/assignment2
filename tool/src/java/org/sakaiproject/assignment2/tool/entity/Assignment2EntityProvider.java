@@ -195,7 +195,7 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware {
         }
         
         boolean contentReviewAvailable = contentReviewLogic.isContentReviewAvailable(context);
-        boolean canMatrixLink = taggableLogic.isSiteAssociated(context);
+        boolean siteAssociated = taggableLogic.isSiteAssociated(context);
         
         // retrieve the edit, grade, add, and delete permissions for each assignment. 
         // The add perm will determine if user can duplicate.
@@ -263,7 +263,7 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware {
             asnnmap.put("canAdd", canAdd);
 
             // Create/Edit Matrix Links
-            asnnmap.put("canMatrixLink", canMatrixLink);
+            asnnmap.put("canMatrixLink", siteAssociated && canEdit);
 
             List<String> viewableStudents = assignmentViewableStudentsMap.get(asnn);
             
