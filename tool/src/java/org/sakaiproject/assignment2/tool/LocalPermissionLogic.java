@@ -139,7 +139,7 @@ public class LocalPermissionLogic {
             if (viewParams instanceof GradeViewParams)
             {
                 GradeViewParams params = (GradeViewParams) viewParams;
-                return permissionLogic.isUserAllowedToViewSubmissionForAssignment(null, params.userId, params.assignmentId, null);
+                return permissionLogic.isUserAllowedToManageSubmissionForAssignmentId(null, params.userId, params.assignmentId);
             } 
 
             return Boolean.FALSE;
@@ -162,8 +162,7 @@ public class LocalPermissionLogic {
             if (viewParams instanceof ViewSubmissionsViewParams) {
                 ViewSubmissionsViewParams params = (ViewSubmissionsViewParams) viewParams;
 
-                return permissionLogic.isUserAllowedToAccessInstructorView(null, contextId) && 
-                permissionLogic.isUserAllowedToViewAssignment(params.assignmentId, null);
+                return permissionLogic.isUserAllowedToManageSubmissionsForAssignmentId(null, params.assignmentId, null);
             }
 
             return Boolean.FALSE;
@@ -187,8 +186,7 @@ public class LocalPermissionLogic {
             if (viewParams instanceof AssignmentViewParams) {
                 AssignmentViewParams params = (AssignmentViewParams) viewParams;
 
-                return permissionLogic.isUserAllowedToAccessInstructorView(null, contextId) && 
-                permissionLogic.isUserAllowedToViewAssignment(params.assignmentId, null);
+                return permissionLogic.isUserAllowedToManageSubmissionsForAssignmentId(null, params.assignmentId, null);
             }
 
             return Boolean.FALSE;
@@ -197,8 +195,7 @@ public class LocalPermissionLogic {
             if (viewParams instanceof ZipViewParams) {
                 ZipViewParams params = (ZipViewParams) viewParams;
 
-                return permissionLogic.isUserAllowedToAccessInstructorView(null, contextId) &&
-                permissionLogic.isUserAllowedToViewAssignment(params.assignmentId, null);
+                return permissionLogic.isUserAllowedToManageSubmissionsForAssignmentId(null, params.assignmentId, null);
             }
 
             return Boolean.FALSE;
@@ -210,6 +207,7 @@ public class LocalPermissionLogic {
             return permissionLogic.isUserAllowedToUpdateSite(contextId);
             
         } else if (GraderPermissionsProducer.VIEW_ID.equals(viewId)) {
+            // NOTE: this is checking to see if the user has edit privileges in the gradebook tool
             return gradebookLogic.isCurrentUserAbleToEdit(contextId);
  
         } else if (ViewAssignmentProducer.VIEW_ID.equals(viewId)) {

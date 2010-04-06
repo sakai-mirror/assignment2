@@ -191,6 +191,19 @@ public interface AssignmentPermissionLogic {
     public boolean isUserAllowedToManageSubmissionsForAssignment(String userId, Assignment2 assignment, List<String> groupMembershipIds);
     
     /**
+     * 
+     * @param userId
+     * @param assignmentId
+     * @param groupMembershipIds the group memberships for this user. leave null if you
+     * want the method to look it up for you
+     * @return true if the user is allowed to manage submissions (ie view, provide feedback, etc)
+     * for the assignment with the given assignmentId. If you want an answer to the general question,"Does
+     * this user have any sort of submission management permission in this site?" use
+     * {@link AssignmentPermissionLogic#isUserAllowedToManageSubmissions(String, String, List)}
+     */
+    public boolean isUserAllowedToManageSubmissionsForAssignmentId(String userId, Long assignmentId, List<String> groupMembershipIds);
+    
+    /**
      * @param userId userId to check. If null, will retrieve the current user.
      * @param contextId
      * @param groupMembershipIds the group memberships for this user. leave null if you
@@ -224,6 +237,16 @@ public interface AssignmentPermissionLogic {
      * for the given studentId and assignment
      */
     public boolean isUserAllowedToManageSubmission(String userId, String studentId, Assignment2 assignment);
+    
+    /**
+     * 
+     * @param userId userId to check. If null, will retrieve the current user.
+     * @param studentId
+     * @param assignmentId
+     * @return true if the current user is allowed to manage the submission (ie view, provide feedback, etc)
+     * for the given studentId and assignmentId
+     */
+    public boolean isUserAllowedToManageSubmissionForAssignmentId(String userId, String studentId, Long assignmentId);
 
     /**
      * 

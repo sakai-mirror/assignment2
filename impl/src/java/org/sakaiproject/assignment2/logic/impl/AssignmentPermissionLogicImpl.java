@@ -201,6 +201,16 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
                 AssignmentConstants.PERMISSION_MANAGE_SUBMISSIONS, groupMembershipIds, null);
     }
     
+    public boolean isUserAllowedToManageSubmissionsForAssignmentId(String userId, Long assignmentId, List<String> groupMembershipIds) {
+        if (assignmentId == null) {
+            throw new IllegalArgumentException("Null assignmentId passed to isUserAllowedToManageSubmissionsForAssignmentId");
+        }
+        
+        Assignment2 assignment = dao.getAssignmentByIdWithGroups(assignmentId);
+        
+        return isUserAllowedToManageSubmissionsForAssignment(userId, assignment, groupMembershipIds);
+    }
+    
     public boolean isUserAllowedToViewAssignment(String userId, Assignment2 assignment, List<String> groupMembershipIds, Map<String, Object> optionalParameters) {
         if (assignment == null) {
             throw new IllegalArgumentException("Null assignment passed to isUserAllowedToViewAssignment");
@@ -624,6 +634,19 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
         }
 
         return viewable;	
+    }
+    
+    /*
+     * We do a slightly different method name to avoid ambiguous methods
+     */
+    public boolean isUserAllowedToManageSubmissionForAssignmentId(String userId, String studentId, Long assignmentId) {
+        if (studentId == null || assignmentId == null) {
+            throw new IllegalArgumentException("Null studentId (" + studentId + ") or assignmentId (" + 
+                    assignmentId + ") passed to isUserAllowedToManageSubmission");
+        }
+        
+        Assignment2 assign = dao.getAssignmentByIdWithGroups(assignmentId);
+        return isUserAllowedToManageSubmission(userId, studentId, assign);
     }
 
     public boolean isUserAllowedToManageSubmission(String userId, Long submissionId) {
