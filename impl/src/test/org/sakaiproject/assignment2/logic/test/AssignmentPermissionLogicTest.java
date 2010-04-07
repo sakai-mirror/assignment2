@@ -85,6 +85,8 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
                 assertTrue(hasPerm);
             } else if (perm.equals(AssignmentConstants.PERMISSION_SUBMIT)) {
                 assertFalse(hasPerm);
+            } else if (perm.equals(AssignmentConstants.PERMISSION_VIEW_ASSIGNMENTS)) {
+                assertTrue(hasPerm);
             } else {
                 fail("Unknown permission returned from getPermissionsForSite:" + perm);
             }
@@ -107,6 +109,8 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
                 assertTrue(hasPerm);
             } else if (perm.equals(AssignmentConstants.PERMISSION_SUBMIT)) {
                 assertFalse(hasPerm);
+            } else if (perm.equals(AssignmentConstants.PERMISSION_VIEW_ASSIGNMENTS)) {
+                assertTrue(hasPerm);
             } else {
                 fail("Unknown permission returned from getPermissionsForSite");
             }
@@ -130,6 +134,8 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
                 assertFalse(hasPerm);
             } else if (perm.equals(AssignmentConstants.PERMISSION_SUBMIT)) {
                 assertFalse(hasPerm);
+            } else if (perm.equals(AssignmentConstants.PERMISSION_VIEW_ASSIGNMENTS)) {
+                assertTrue(hasPerm);
             } else {
                 fail("Unknown permission returned from getPermissionsForSite");
             }
@@ -151,6 +157,8 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
             } else if (perm.equals(AssignmentConstants.PERMISSION_REMOVE_ASSIGNMENTS)) {
                 assertFalse(hasPerm);
             } else if (perm.equals(AssignmentConstants.PERMISSION_SUBMIT)) {
+                assertTrue(hasPerm);
+            } else if (perm.equals(AssignmentConstants.PERMISSION_VIEW_ASSIGNMENTS)) {
                 assertTrue(hasPerm);
             } else {
                 fail("Unknown permission returned from getPermissionsForSite");
@@ -174,6 +182,8 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
                 assertFalse(hasPerm);
             } else if (perm.equals(AssignmentConstants.PERMISSION_SUBMIT)) {
                 assertTrue(hasPerm);
+            } else if (perm.equals(AssignmentConstants.PERMISSION_VIEW_ASSIGNMENTS)) {
+                assertTrue(hasPerm);
             } else {
                 fail("Unknown permission returned from getPermissionsForSite");
             }
@@ -195,6 +205,8 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
             } else if (perm.equals(AssignmentConstants.PERMISSION_REMOVE_ASSIGNMENTS)) {
                 assertFalse(hasPerm);
             } else if (perm.equals(AssignmentConstants.PERMISSION_SUBMIT)) {
+                assertTrue(hasPerm);
+            } else if (perm.equals(AssignmentConstants.PERMISSION_VIEW_ASSIGNMENTS)) {
                 assertTrue(hasPerm);
             } else {
                 fail("Unknown permission returned from getPermissionsForSite");
@@ -713,6 +725,42 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
         assertFalse(permissionLogic.isUserAllowedToDeleteAssignments(null, AssignmentTestDataLoad.CONTEXT_ID));
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT3_UID);
         assertFalse(permissionLogic.isUserAllowedToDeleteAssignments(null, AssignmentTestDataLoad.CONTEXT_ID));
+    }
+    
+    public void testIsUserAllowedToViewAssignments() {
+        try {
+            permissionLogic.isUserAllowedToViewAssignments(null, null);
+            fail("Did not catch null contextId passed to isUserAllowedToViewAssignments");
+        } catch (IllegalArgumentException iae) {}
+        
+        // all of the users should be able to view assignments generally
+        assertTrue(permissionLogic.isUserAllowedToViewAssignments(AssignmentTestDataLoad.INSTRUCTOR_UID, AssignmentTestDataLoad.CONTEXT_ID));
+        assertTrue(permissionLogic.isUserAllowedToViewAssignments(AssignmentTestDataLoad.TA_UID, AssignmentTestDataLoad.CONTEXT_ID));
+        assertTrue(permissionLogic.isUserAllowedToViewAssignments(AssignmentTestDataLoad.TA_WITH_NO_GROUPS, AssignmentTestDataLoad.CONTEXT_ID));
+        assertTrue(permissionLogic.isUserAllowedToViewAssignments(AssignmentTestDataLoad.STUDENT1_UID, AssignmentTestDataLoad.CONTEXT_ID));
+        assertTrue(permissionLogic.isUserAllowedToViewAssignments(AssignmentTestDataLoad.STUDENT2_UID, AssignmentTestDataLoad.CONTEXT_ID));
+        assertTrue(permissionLogic.isUserAllowedToViewAssignments(AssignmentTestDataLoad.STUDENT3_UID, AssignmentTestDataLoad.CONTEXT_ID));
+        
+        // try a bogus user
+        assertFalse(permissionLogic.isUserAllowedToViewAssignments("unknownUser", AssignmentTestDataLoad.CONTEXT_ID));
+        
+        // now make sure it works if we set the current user
+        externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
+        assertTrue(permissionLogic.isUserAllowedToViewAssignments(null, AssignmentTestDataLoad.CONTEXT_ID));
+        
+        externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
+        assertTrue(permissionLogic.isUserAllowedToViewAssignments(null, AssignmentTestDataLoad.CONTEXT_ID));
+        
+        externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT1_UID);
+        assertTrue(permissionLogic.isUserAllowedToViewAssignments(null, AssignmentTestDataLoad.CONTEXT_ID));
+        
+        externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT2_UID);
+        assertTrue(permissionLogic.isUserAllowedToViewAssignments(null, AssignmentTestDataLoad.CONTEXT_ID));
+        
+        // try a bogus user
+        externalLogic.setCurrentUserId("unknownUser");
+        assertFalse(permissionLogic.isUserAllowedToViewAssignments(null, AssignmentTestDataLoad.CONTEXT_ID));
+
     }
 
     public void testIsUserAllowedToViewAssignment() {

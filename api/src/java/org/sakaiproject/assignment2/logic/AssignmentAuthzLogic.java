@@ -66,7 +66,8 @@ public interface AssignmentAuthzLogic {
         AssignmentConstants.PERMISSION_EDIT_ASSIGNMENTS,
         AssignmentConstants.PERMISSION_MANAGE_SUBMISSIONS,
         AssignmentConstants.PERMISSION_REMOVE_ASSIGNMENTS,
-        AssignmentConstants.PERMISSION_SUBMIT
+        AssignmentConstants.PERMISSION_SUBMIT,
+        AssignmentConstants.PERMISSION_VIEW_ASSIGNMENTS
     };
     
     // The following 3 groups should represent all of the permissions except for

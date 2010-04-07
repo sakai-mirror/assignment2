@@ -142,6 +142,18 @@ public interface AssignmentPermissionLogic {
     /**
      * 
      * @param userId userId to check. If null, will retrieve the current user.
+     * @param contextId
+     * @return true if the user has permission to view assignments in the given context.
+     * Note that this does not mean that a user is allowed to view any assignment. This
+     * just answers the general question "Does this user have any sort of assignment viewing
+     * privileges in this site?" If you want to know if a user may view a specific assignment,
+     * see {@link AssignmentPermissionLogic#isUserAllowedToViewAssignment(String, Assignment2, Map)}
+     */
+    public boolean isUserAllowedToViewAssignments(String userId, String contextId);
+    
+    /**
+     * 
+     * @param userId userId to check. If null, will retrieve the current user.
      * @param assignment
      * @param optionalParameters in special situations, you may need to pass additional information
      * (such as the tag reference) to answer this question. leave null if you just need

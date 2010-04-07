@@ -211,6 +211,19 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
         return isUserAllowedToManageSubmissionsForAssignment(userId, assignment);
     }
     
+    public boolean isUserAllowedToViewAssignments(String userId, String contextId) {
+        if (contextId == null) {
+            throw new IllegalArgumentException("Null contextId passed to isUserAllowedToViewAssignments");
+        }
+
+        if (userId == null) {
+            userId = externalLogic.getCurrentUserId();
+        }
+
+        return isUserAllowedToTakeActionInSite(userId, contextId, 
+                AssignmentConstants.PERMISSION_VIEW_ASSIGNMENTS, null);
+    }
+    
     /**
      * 
      * @param userId userId to check. If null, will retrieve the current user.
@@ -766,12 +779,14 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
         if (userId == null) {
             userId = externalLogic.getCurrentUserId();
         }
-
-        if (authz.userHasEditPermission(userId, contextId) || 
-                authz.userHasAddPermission(userId, contextId) ||
-                authz.userHasDeletePermission(userId, contextId) || 
-                authz.userHasManageSubmissionsPermission(userId, contextId)) {
-            instructorView = true;
+        if (!authz.userHasSubmitPermission(userId, contextId)) {
+            if (authz.userHasViewAssignmentPermission(userId, contextId) ||
+                    authz.userHasEditPermission(userId, contextId) || 
+                    authz.userHasAddPermission(userId, contextId) ||
+                    authz.userHasDeletePermission(userId, contextId) || 
+                    authz.userHasManageSubmissionsPermission(userId, contextId)) {
+                instructorView = true;
+            }
         }
 
         return instructorView;
