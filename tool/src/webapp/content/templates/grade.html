@@ -42,24 +42,32 @@
     <form name="gradeForm" rsf:id="form" method="post">
     <input name="gradingInfoChanged" id="gradingInfoChanged" rsf:id="gradingInfoChanged" type="hidden" value="false" />
     <input name="numSubmittedVersions" id="numSubmittedVersions" rsf:id="numSubmittedVersions" type="hidden" value="" />
-	<h3 rsf:id="heading">Submission for Name</h3>
-	<div class="pager-sort-area">
-    	<div id="pager-top" class="fl-pager-top flc-pager-top">
-    		<a id = "returnToList_link" rsf:id="returnToList_link">Return to Submission List</a>
-    		<br/>
-    		<a id="previous_link" rsf:id="previous_link" >Previous</a>
-			<span rsf:id="previous_disabled" class="inactive">Previous</span>
-			<span class="separator">|</span>
-			<span rsf:id="current">Current User</span>
-			<span class="separator">|</span>
-    		<a id="next_link" rsf:id="next_link" >Next</a>
-			<span rsf:id="next_disabled" class="inactive">Next</span>
-		</div>
-	</div>
-	<p rsf:id="status" class="subheading"></p>
-	
-	<p rsf:id="non-electronic-submission" class="subheading"></p>
-	
+    
+    <div>
+    <div style="float:left;">
+        <h3 rsf:id="heading">Submission for Name</h3>
+    </div>
+    <div style="float:right; border: thin #838383 solid; width: 30%; text-align: center;">
+        <div style="padding: 2px; border-bottom: thin #838383 solid; background: #d9d9d9;">
+            <a id = "returnToList_link" rsf:id="returnToList_link">Return to Submission List</a>
+        </div>
+        <div style="padding: 2px;">
+            <a id="previous_link" rsf:id="previous_link" >Previous</a>
+            <span rsf:id="previous_disabled" class="inactive">Previous</span>
+            <span class="separator">|</span>
+            <span rsf:id="current">Current User</span>
+            <span class="separator">|</span>
+            <a id="next_link" rsf:id="next_link" >Next</a>
+            <span rsf:id="next_disabled" class="inactive">Next</span>
+        </div>
+    </div>
+    <div style="clear:both;"></div>
+    </div>
+
+    <p rsf:id="status" class="subheading"></p>
+
+    <p rsf:id="non-electronic-submission" class="subheading"></p>
+
   <!--  Instructions section -->
   <div rsf:id="assignment-instructions:">
       <!-- Assignment Instructions go here. -->
