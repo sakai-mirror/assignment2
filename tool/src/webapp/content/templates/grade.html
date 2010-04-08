@@ -242,7 +242,7 @@ jQuery(document).ready(function(){
     asnn2gradeview.set_accept_until_on_submission_level();
 	
     jQuery('#page-replace\\:\\:previous_link').click(function() {
-		var gradingChanged = isGradingChanged();
+		var gradingChanged = asnn2gradeview.isGradingChanged();
     	var numSubmittedVersions = $('#page-replace\\:\\:numSubmittedVersions').val();	
 		if (gradingChanged)
 		{
@@ -252,7 +252,7 @@ jQuery(document).ready(function(){
 	});
 
     jQuery('#page-replace\\:\\:next_link').click(function() {
-		var gradingChanged = isGradingChanged();
+		var gradingChanged = asnn2gradeview.isGradingChanged();
     	var numSubmittedVersions = $('#page-replace\\:\\:numSubmittedVersions').val();	
 		if (gradingChanged)
 		{
@@ -262,7 +262,7 @@ jQuery(document).ready(function(){
 	});
 
     jQuery('#page-replace\\:\\:returnToList_link').click(function() {
-		var gradingChanged = isGradingChanged();
+		var gradingChanged = asnn2gradeview.isGradingChanged();
     	var numSubmittedVersions = $('#page-replace\\:\\:numSubmittedVersions').val();	
 		if (gradingChanged)
 		{
@@ -270,102 +270,6 @@ jQuery(document).ready(function(){
 			return false;
 		}
 	});
-
-    function isGradingChanged()
-    {
-    	var gradingChanged = false;
-    	
-    	var currentFeedbackText = $('#feedback_text').find('iframe').contents().find('iframe').contents().find('body').html();
-		currentFeedbackText = trimHtmlInput(currentFeedbackText, false);
-    	var previousFeedbackText = $("input[name='page-replace\:\:feedback_section\:\:feedback_text\:1\:input-fossil']").val();
-    	previousFeedbackText = trimHtmlInput(previousFeedbackText, true);
-    	if (currentFeedbackText == null && previousFeedbackText != null
-    			|| currentFeedbackText != null && previousFeedbackText == null
-    			|| currentFeedbackText != previousFeedbackText)
-    	{
-    		gradingChanged = true;
-    	}
-
-    	if (!gradingChanged)
-    	{
-    		// whether the feedback notes changed
-    		var currentFeedbackNotes = $('#feedback_notes').find('iframe').contents().find('iframe').contents().find('body').html();
-			currentFeedbackNotes = trimHtmlInput(currentFeedbackNotes,false);
-    		var previousFeedbackNotes = $("input[name='page-replace\:\:feedback_section\:\:feedback_notes\:1\:input-fossil']").val();
-    		previousFeedbackNotes = trimHtmlInput(previousFeedbackNotes,true);
-    		if (currentFeedbackNotes == null && previousFeedbackNotes != null
-    				|| currentFeedbackNotes != null && previousFeedbackNotes == null
-    				|| currentFeedbackNotes != previousFeedbackNotes)
-    		{
-    			gradingChanged = true;
-    		}
-
-    		// attachments changes?
-    		
-    		if (!gradingChanged)
-    		{
-    			// whether the grading points changed
-    			var currentGradePoints = $("input[name='page-replace\:\:grade_input']").val();
-				currentGradePoints=trimHtmlInput(currentGradePoints,false);
-    			var previousGradePoints = $("input[name='page-replace\:\:grade_input-fossil']").val();
-    			previousGradePoints = trimHtmlInput(previousGradePoints,true);
-    			if (currentGradePoints == null && previousGradePoints != null
-    				|| currentGradePoints != null && previousGradePoints == null
-    				|| currentGradePoints != previousGradePoints)
-    			{
-    				gradingChanged = true;
-    			}
-    			if (!gradingChanged)
-    			{
-    				// whether the grading comments changed
-    				var currentGradeComment = $('#page-replace\\:\\:grade_comment_input').val();
-    				currentGradeComment=trimHtmlInput(currentGradeComment,false);
-    				var previousGradeComment = $("input[name='page-replace\:\:grade_comment_input-fossil']").val();
-    				previousGradeComment = trimHtmlInput(previousGradeComment,true);
-    				if (currentGradeComment == null && previousGradeComment != null
-    					|| currentGradeComment != null && previousGradeComment == null
-    					|| currentGradeComment != previousGradeComment)
-    				{
-    					gradingChanged = true;
-    				}
-    			}
-    		}
-    	}
-
-    	return gradingChanged;
-    };
-
-    function trimHtmlInput(inputString, isPreviousValue)
-    {
-        var rv = inputString;
-        if (rv != null)
-        {
-            // replace all breaks
-        	rv = rv.replace("<br>", "<br/>");
-			if (isPreviousValue && (rv.indexOf("jstring#{") != -1 || rv.indexOf("istring#{") != -1))
-			{   
-				// the hidden fossile text value are of format jstring#{.....}value
-	        	rv = rv.substring(inputString.indexOf("}")+1);
-			}
-			// if end with 
-	        if (rv.endsWith("<br>"))
-	        {
-	            var index = rv.lastIndexOf("<br>");
-	            rv = rv.substring(0, index);
-	        }
-	        if (rv.endsWith("<br/>"))
-	        {
-	            var index = rv.lastIndexOf("<br/>");
-	            rv = rv.substring(0, index);
-	        }
-    	}
-        return rv;
-    };
-
-    String.prototype.endsWith = function(str)
-    {
-        return (this.match(str+"$")==str)
-    }
     
 });
 

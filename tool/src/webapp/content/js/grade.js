@@ -87,3 +87,100 @@ asnn2gradeview.saveGradingDialog = function(direction) {
     return false;
 };
 
+asnn2gradeview.isGradingChanged = function()
+{
+  var gradingChanged = false;
+
+  var currentFeedbackText = $('#feedback_text').find('iframe').contents().find('iframe').contents().find('body').html();
+  currentFeedbackText = asnn2gradeview.trimHtmlInput(currentFeedbackText, false);
+  var previousFeedbackText = $("input[name='page-replace\:\:feedback_section\:\:feedback_text\:1\:input-fossil']").val();
+  previousFeedbackText = asnn2gradeview.trimHtmlInput(previousFeedbackText, true);
+  if (currentFeedbackText == null && previousFeedbackText != null
+      || currentFeedbackText != null && previousFeedbackText == null
+      || currentFeedbackText != previousFeedbackText)
+  {
+    gradingChanged = true;
+  }
+
+  if (!gradingChanged)
+  {
+    // whether the feedback notes changed
+    var currentFeedbackNotes = $('#feedback_notes').find('iframe').contents().find('iframe').contents().find('body').html();
+    currentFeedbackNotes = asnn2gradeview.trimHtmlInput(currentFeedbackNotes,false);
+    var previousFeedbackNotes = $("input[name='page-replace\:\:feedback_section\:\:feedback_notes\:1\:input-fossil']").val();
+    previousFeedbackNotes = asnn2gradeview.trimHtmlInput(previousFeedbackNotes,true);
+    if (currentFeedbackNotes == null && previousFeedbackNotes != null
+        || currentFeedbackNotes != null && previousFeedbackNotes == null
+        || currentFeedbackNotes != previousFeedbackNotes)
+    {
+      gradingChanged = true;
+    }
+
+    // attachments changes?
+
+    if (!gradingChanged)
+    {
+      // whether the grading points changed
+      var currentGradePoints = $("input[name='page-replace\:\:grade_input']").val();
+      currentGradePoints=asnn2gradeview.trimHtmlInput(currentGradePoints,false);
+      var previousGradePoints = $("input[name='page-replace\:\:grade_input-fossil']").val();
+      previousGradePoints = asnn2gradeview.trimHtmlInput(previousGradePoints,true);
+      if (currentGradePoints == null && previousGradePoints != null
+          || currentGradePoints != null && previousGradePoints == null
+          || currentGradePoints != previousGradePoints)
+      {
+        gradingChanged = true;
+      }
+      if (!gradingChanged)
+      {
+        // whether the grading comments changed
+        var currentGradeComment = $('#page-replace\\:\\:grade_comment_input').val();
+        currentGradeComment=asnn2gradeview.trimHtmlInput(currentGradeComment,false);
+        var previousGradeComment = $("input[name='page-replace\:\:grade_comment_input-fossil']").val();
+        previousGradeComment = asnn2gradeview.trimHtmlInput(previousGradeComment,true);
+        if (currentGradeComment == null && previousGradeComment != null
+            || currentGradeComment != null && previousGradeComment == null
+            || currentGradeComment != previousGradeComment)
+        {
+          gradingChanged = true;
+        }
+      }
+    }
+  }
+
+  return gradingChanged;
+};
+
+asnn2gradeview.endsWith = function(orig, end)
+{
+    return (orig.match(end+"$")==end)
+}
+
+asnn2gradeview.trimHtmlInput = function(inputString, isPreviousValue)
+{
+    var rv = inputString;
+    if (rv != null)
+    {
+        // replace all breaks
+      rv = rv.replace("<br>", "<br/>");
+  if (isPreviousValue && (rv.indexOf("jstring#{") != -1 || rv.indexOf("istring#{") != -1))
+  {   
+    // the hidden fossile text value are of format jstring#{.....}value
+        rv = rv.substring(inputString.indexOf("}")+1);
+  }
+  // if end with 
+      if (asnn2gradeview.endsWith(rv,"<br>"))
+      {
+          var index = rv.lastIndexOf("<br>");
+          rv = rv.substring(0, index);
+      }
+      if (asnn2gradeview.endsWith(rv,"<br/>"))
+      {
+          var index = rv.lastIndexOf("<br/>");
+          rv = rv.substring(0, index);
+      }
+  }
+    return rv;
+};
+
+
