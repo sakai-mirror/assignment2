@@ -1016,37 +1016,6 @@ var asnn2 = asnn2 || {};
         return false;
     };
     
-	/**
-	 * Save/Release/Clear grading information for submission and navigate
-	 *
-	 * This function uses the asnn2 dialog utility.
-	 */
-	asnn2.saveGradingDialog = function(direction) {
-	    var saveGradingDialog = jQuery('#save-grading-dialog');
-	    var saveButton = jQuery('#page-replace\\:\\:save-grading-save').click(function(event) {
-	        asnn2util.closeDialog(saveGradingDialog);
-	        var formSubmit = document.getElementById("page-replace::submit");
-        	var option = document.getElementById("page-replace::submitOption");
-        	option.value="submit_" + direction;
-	        formSubmit.click();
-	    });
-	    
-	    var saveButton = jQuery('#page-replace\\:\\:save-grading-saveAndRelease').click(function(event) {
-	        asnn2util.closeDialog(saveGradingDialog);
-	        var formSubmit = document.getElementById("page-replace::submit");
-        	var option = document.getElementById("page-replace::submitOption");
-        	option.value="release_" + direction;
-	        formSubmit.click();
-	    });
-	
-	    var clearButton = jQuery('#page-replace\\:\\:save-grading-clear').click(function(event) {
-	        asnn2util.closeDialog(saveGradingDialog);
-	    });
-	
-	    asnn2util.openDialog(saveGradingDialog);
-	    return false;
-	};
-	
 })(jQuery, asnn2);
 
 // This namespace is for the Assignment Authoring and Editing Screen
