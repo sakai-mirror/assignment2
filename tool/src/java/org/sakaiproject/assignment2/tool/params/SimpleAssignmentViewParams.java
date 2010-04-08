@@ -21,12 +21,11 @@
 
 package org.sakaiproject.assignment2.tool.params;
 
-import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment2.tool.beans.AssignmentAuthoringBean;
-import org.sakaiproject.assignment2.tool.producers.StudentSubmitProducer;
+
+import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
 
 /**
  * This view params is for navigating to the apparently student view of an 
@@ -43,6 +42,10 @@ public class SimpleAssignmentViewParams extends SimpleViewParameters implements 
     private static final Log LOG = LogFactory.getLog(AssignmentAuthoringBean.class);
 
     public Long assignmentId;
+    // when an assignment is tagged, there may be expanded permissions for viewing it. we
+    // use this optional reference to go back and see if the user should have expanded
+    // permissions to view this assignment
+    public String tagReference;
 
     public SimpleAssignmentViewParams() {}
 
@@ -52,7 +55,7 @@ public class SimpleAssignmentViewParams extends SimpleViewParameters implements 
     }
 
     public String getParseSpec() {
-        return super.getParseSpec() + ",@1:assignmentId";
+        return super.getParseSpec() + ",@1:assignmentId,tagReference";
     }
 
     public Boolean verify()

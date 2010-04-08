@@ -46,15 +46,6 @@ public interface AssignmentLogic {
 
     public static final String REDIRECT_ASSIGNMENT_VIEW_ID = "redirectAssignmentViewId";
 
-    /**
-     * 
-     * @param assignmentId
-     * @return Returns the Assignment based on its assignmentId. Does not populate
-     * the AssignmentAttachments and AssignmentGroups
-     * @throws AssignmentNotFoundException if no assignment exists with the given id
-     * @throws SecurityException if current user is not allowed to access assignment info
-     */
-    public Assignment2 getAssignmentById(Long assignmentId);
 
     /**
      * Create or update an assignment. The contextId must be populated on the assignment
@@ -72,18 +63,13 @@ public interface AssignmentLogic {
     public void saveAssignment(Assignment2 assignment);
 
     /**
-     * Delete an Assignment 
+     * Delete an Assignment. This method will also remove the following associations:
+     * announcements, schedule items, and tags. If an error is encountered while
+     * removing an association, the deletion of the assignment will continue. 
      * note: no assignments are actually deleted; the "removed" property
      * will be set to true
-     * @param assignment
-     * 			the Assignment to delete
-     * @throws SecurityException - user must have "edit" permission
-     * @throws AnnouncmentPermissionException if the user does not have
-     * permission to delete announcements - assignment will be 'deleted' regardless
-     * @throws CalendarPermissionException if the user does not have
-     * permission to delete events in the Schedule tool - assignment will be
-     * 'deleted' regardless
-     * @throws SecurityException if current user is not allowed to access assignment info
+     * @param assignment the Assignment to delete
+     * @throws SecurityException if user is not allowed to delete this assignment
      */	
     public void deleteAssignment(Assignment2 assignment);
 
@@ -110,6 +96,19 @@ public interface AssignmentLogic {
 
     /**
      * @param assignmentId
+     * @param optionalParameters in special situations, you may need to pass additional information
+     * (such as the tag reference) to successfully retrieve the assignment. leave null if this is
+     * a normal scenario
+     * @return the Assignment2 object with the given id and populate associated
+     * data (ie attachments, groups). Also populates ContentReview information, if applicable.
+     * Does not include student submission information.
+     * @throws AssignmentNotFoundException if no assignment exists with the given id
+     * @throws SecurityException if current user is not allowed to access assignment info
+     */
+    public Assignment2 getAssignmentByIdWithAssociatedData(Long assignmentId, Map<String, Object> optionalParameters);
+
+    /**
+     * @param assignmentId
      * @return the Assignment2 object with the given id and populate associated
      * data (ie attachments, groups). Also populates ContentReview information, if applicable.
      * Does not include student submission information.
@@ -117,14 +116,16 @@ public interface AssignmentLogic {
      * @throws SecurityException if current user is not allowed to access assignment info
      */
     public Assignment2 getAssignmentByIdWithAssociatedData(Long assignmentId);
-
+    
     /**
      * @param assignmentId
      * @return the Assignment2 object with the given id and populate the
      * associated AssignmentGroups and AssignmentAttachments
      * @throws AssignmentNotFoundException if no assignment exists with the given id
+     * @throws SecurityException if the current user is not allowed to view the
+     * given assignment
      */
-    public Assignment2 getAssignmentByIdWithGroupsAndAttachments(Long assignmentId);
+    public Assignment2 getAssignmentById(Long assignmentId);
 
     /**
      * Uses the open, due, and accept until dates to determine the current status

@@ -31,6 +31,7 @@ import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.model.AttachmentBase;
+import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.content.api.ContentResource;
 import org.sakaiproject.entity.api.Entity;
 import org.sakaiproject.entity.api.ResourceProperties;
@@ -92,7 +93,7 @@ public class ZipExportLogicImpl implements ZipExportLogic
         if (log.isDebugEnabled())
             log.debug(this + ": getSubmissionsZip reference=" + assignmentId);
 
-        if (!gradebookLogic.isCurrentUserAbleToGrade(assignment.getContextId())) {
+        if (!permissionLogic.isUserAllowedToManageSubmissionsForAssignment(null, assignment)) {
             throw new SecurityException("User attempted to download submissions without permission!");
         }
 
@@ -130,7 +131,7 @@ public class ZipExportLogicImpl implements ZipExportLogic
         String currUserId = externalLogic.getCurrentUserId();
         String siteTitle = externalLogic.getSiteTitle(assignment.getContextId());
 
-        List<String> viewableStudents = permissionLogic.getViewableStudentsForUserForItem(currUserId, assignment);
+        List<String> viewableStudents = permissionLogic.getViewableStudentsForAssignment(currUserId, assignment);
         Map<String, User> userIdUserMap = externalLogic.getUserIdUserMap(viewableStudents);
 
         String formatWithTime = bundle.getString("assignment2.assignment_grade_assignment.downloadall.filename_date_format_with_time");
@@ -414,13 +415,16 @@ public class ZipExportLogicImpl implements ZipExportLogic
                             new Object[] {assignHeader}))
                             .append("\n");
 
-            // now iterate through all GRADABLE students in this class to create the grades file
-            List<String> gradableStudents = permissionLogic.getGradableStudentsForUserForItem(currUserId, assignment);
-
+            // first, retrieve all of the students that this user can manage for this assignment
+            List<String> manageableStudents = permissionLogic.getViewableStudentsForAssignment(currUserId, assignment);
+            // filter the manageable students to only include gradable ones
+            manageableStudents = (List<String>) gradebookLogic.filterStudentsForGradebookItem(currUserId, 
+                    assignment.getContextId(), assignment.getGradebookItemId(), AssignmentConstants.GRADE, manageableStudents);
+            
             // get the grade information
-            Map<String, GradeInformation> userIdGradeMap = gradebookLogic.getGradeInformationForStudents(gradableStudents, assignment.getContextId(), assignment.getGradebookItemId());
+            Map<String, GradeInformation> userIdGradeMap = gradebookLogic.getGradeInformationForStudents(manageableStudents, assignment.getContextId(), assignment.getGradebookItemId());
 
-            for (String studentId : gradableStudents) {
+            for (String studentId : manageableStudents) {
                 // get their User info
                 User student = userIdUserMap.get(studentId);
                 if (student != null) {

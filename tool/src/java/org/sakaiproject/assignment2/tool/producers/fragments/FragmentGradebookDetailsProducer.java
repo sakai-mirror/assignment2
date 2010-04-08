@@ -55,7 +55,7 @@ public class FragmentGradebookDetailsProducer implements ViewComponentProducer, 
         FragmentGradebookDetailsViewParams params = (FragmentGradebookDetailsViewParams) viewparams;
 
 
-        AssignmentSubmission as = assignmentSubmissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(params.assignmentId, params.userId);
+        AssignmentSubmission as = assignmentSubmissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(params.assignmentId, params.userId, null);
         gradebookDetailsRenderer.makeGradebookDetails(tofill, "gradebook_details", as, params.assignmentId, params.userId);
 
     }

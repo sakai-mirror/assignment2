@@ -2,16 +2,21 @@ package org.sakaiproject.assignment2.tool.producers.renderers;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
 import org.sakaiproject.assignment2.logic.ExternalContentReviewLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
+import org.sakaiproject.assignment2.tool.HtmlDiffUtil;
 
+import uk.org.ponder.messageutil.MessageLocator;
 import uk.org.ponder.rsf.components.UIContainer;
 import uk.org.ponder.rsf.components.UIJointContainer;
 import uk.org.ponder.rsf.components.UIMessage;
+import uk.org.ponder.rsf.components.UIOutput;
 import uk.org.ponder.rsf.components.UIVerbatim;
+import uk.org.ponder.rsf.components.decorators.UIFreeAttributeDecorator;
 import uk.org.ponder.rsf.producers.BasicProducer;
 import uk.org.ponder.rsf.viewstate.ViewParameters;
 
@@ -21,8 +26,10 @@ import uk.org.ponder.rsf.viewstate.ViewParameters;
  * there are multiple submissions.  It includes the title, student name, 
  * submission date, and then the text/attachments of the submission.
  * 
- * If there is feedback from the Instructor for this version that will be 
- * rendered as well.
+ * If there is feedback from the Instructor for this version, that will be 
+ * rendered if the feedback is released or the current user has grading privileges
+ * for this student and assignment
+ * 
  * 
  * 
  * @author sgithens
@@ -47,6 +54,21 @@ public class AsnnSubmissionVersionRenderer implements BasicProducer {
     public void setExternalContentReviewLogic(ExternalContentReviewLogic contentReviewLogic) {
         this.contentReviewLogic = contentReviewLogic;
     }
+    
+    private AssignmentPermissionLogic permissionLogic;
+    public void setAssignmentPermissionLogic(AssignmentPermissionLogic permissionLogic) {
+        this.permissionLogic = permissionLogic;
+    }
+    
+    private MessageLocator messageLocator;
+    public void setMessageLocator(MessageLocator messageLocator) {
+        this.messageLocator = messageLocator;
+    }
+    
+    private AsnnToggleRenderer toggleRenderer;
+    public void setAsnnToggleRenderer(AsnnToggleRenderer toggleRenderer) {
+        this.toggleRenderer = toggleRenderer;
+    }
 
     /**
      * Renders the Submission Version in the parent container in element with 
@@ -66,12 +88,23 @@ public class AsnnSubmissionVersionRenderer implements BasicProducer {
         AssignmentSubmission assignmentSubmssion = asnnSubVersion.getAssignmentSubmission();
         Assignment2 assignment = assignmentSubmssion.getAssignment();
         int submissionType = assignment.getSubmissionType();
-
-        /*
-         * Render the headers
-         */
+        boolean userCanGrade = permissionLogic.isUserAllowedToManageSubmission(null, assignmentSubmssion.getUserId(), assignment);
+        
+        UIOutput feedbackSection = UIOutput.make(joint, "feedbackSection");
+        
+        // If this is a single version display and feedback is released, we add
+        // an Assignment Feedback header
         if (!multipleVersionDisplay) {
-            UIMessage.make(joint, "submission-header", "assignment2.student-submission.submission.header");
+            if (asnnSubVersion.isFeedbackReleased()) {
+                String hoverText = messageLocator.getMessage("assignment2.student-submission.feedback.toggle.hover");
+                String heading = messageLocator.getMessage("assignment2.student-submission.feedback.toggle.header");
+
+                toggleRenderer.makeToggle(joint, "feedback_toggle:", null, true, 
+                        heading, hoverText, true, false, false, false, null);
+                
+                // everything below the toggle is a subsection
+                feedbackSection.decorate(new UIFreeAttributeDecorator("class", "toggleSubsection subsection1"));
+            }
         }
 
         //TODO FIXME time and date of submission here
@@ -100,30 +133,41 @@ public class AsnnSubmissionVersionRenderer implements BasicProducer {
 
             if (submissionType == AssignmentConstants.SUBMIT_INLINE_AND_ATTACH || 
                     submissionType == AssignmentConstants.SUBMIT_INLINE_ONLY) {
-                // if feedback is released, we display the submitted text with
+                // if feedback is released or user has grading privileges for this student, we display the submitted text with
                 // instructor annotations
-                if (asnnSubVersion.isFeedbackReleased()) {
-                    UIMessage.make(joint, "submission-text-header", "assignment2.student-submit.submission_text.annotated");
+            	String heading;
+            	UIOutput submittedTextSection = UIOutput.make(joint, "submittet_text_toggle");                
+                // everything below the toggle is a subsection
+                submittedTextSection.decorate(new UIFreeAttributeDecorator("class", "toggleSubsection"));
+                
+                if (userCanGrade || asnnSubVersion.isFeedbackReleased()) {
+                	heading = messageLocator.getMessage("assignment2.student-submit.submission_text.annotated");
+                    
                     if (asnnSubVersion.getAnnotatedText() != null && asnnSubVersion.getAnnotatedText().trim().length() > 0) {
-                        UIVerbatim.make(joint, "submission-text", asnnSubVersion.getAnnotatedText());
+                        HtmlDiffUtil differ = new HtmlDiffUtil();
+                        UIVerbatim.make(joint, "submission-text", differ.diffHtml(asnnSubVersion.getSubmittedText(), asnnSubVersion.getAnnotatedText()));
                     } else {
                         UIMessage.make(joint, "submission-text", "assignment2.student-submit.submission_text.none");
                     }
                 } else {
-                    UIMessage.make(joint, "submission-text-header", "assignment2.student-submit.submission_text");
+                	heading = messageLocator.getMessage("assignment2.student-submit.submission_text");
                     if (asnnSubVersion.getSubmittedText() != null && asnnSubVersion.getSubmittedText().trim().length() > 0) {
                         UIVerbatim.make(joint, "submission-text", asnnSubVersion.getSubmittedText());
                     } else {
                         UIMessage.make(joint, "submission-text", "assignment2.student-submit.submission_text.none");
                     }
                 }
+                
+                toggleRenderer.makeToggle(joint, "submitted_text_toggle_header:", null, false, 
+                		heading, "", true, false, false, false, null);
             }
         }
 
         /* 
-         * Render the Instructor's Feedback Materials
+         * Render the Instructor's Feedback Materials if feedback is released
+         * or current user has grading privileges
          */
-        if (asnnSubVersion.isFeedbackReleased()) {
+        if (userCanGrade || asnnSubVersion.isFeedbackReleased()) {
             UIMessage.make(joint, "feedback-header", "assignment2.student-submission.feedback.header");
             String feedbackText = asnnSubVersion.getFeedbackNotes();
 

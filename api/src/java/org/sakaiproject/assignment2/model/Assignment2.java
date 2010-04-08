@@ -660,6 +660,7 @@ public class Assignment2 {
     public String getReference()
     {
         StringBuilder sb = new StringBuilder();
+        sb.append(Entity.SEPARATOR);
         sb.append(AssignmentConstants.REFERENCE_ROOT);
         sb.append(Entity.SEPARATOR);
         sb.append(AssignmentConstants.ASSIGNMENT_TYPE);

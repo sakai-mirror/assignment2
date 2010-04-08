@@ -233,6 +233,15 @@ public interface AssignmentDao extends GeneralGenericDao {
     public AssignmentSubmissionVersion getCurrentVersionFromHistory(Collection<AssignmentSubmissionVersion> versionHistory);
     
     /**
+     * 
+     * @param userId
+     * @param assignment
+     * @return the reference for the AssignmentSubmission object represented by the
+     * given userId and assignment
+     */
+    public String getSubmissionReference(String userId, Assignment2 assignment);
+    
+    /**
      * In the logic, some objects will be returned with
      * modified fields (that are not meant to be saved). For example, the feedback
      * for a student's submission version may not be released yet, so we do not want

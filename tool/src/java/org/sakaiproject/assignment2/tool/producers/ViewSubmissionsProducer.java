@@ -46,6 +46,7 @@ import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentGroup;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
+import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.assignment2.tool.params.AssignmentViewParams;
 import org.sakaiproject.assignment2.tool.params.ViewSubmissionsViewParams;
 import org.sakaiproject.assignment2.tool.params.ZipViewParams;
@@ -135,6 +136,8 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
         assignmentId = params.assignmentId;
         Assignment2 assignment = assignmentLogic.getAssignmentByIdWithAssociatedData(assignmentId);
         
+        String currUserId = externalLogic.getCurrentUserId();
+        
         boolean contentReviewEnabled = assignment.isContentReviewEnabled() && contentReviewLogic.isContentReviewAvailable(assignment.getContextId());
 
         // let's double check that none of the associated groups were deleted from the site
@@ -160,12 +163,9 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
             UIOutput.make(tofill, "deleted_group", messageLocator.getMessage("assignment2.assignment_grade-assignment.group_deleted"));
         }
 
-        //use a date which is related to the current users locale
-        DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, locale);
-
         //Edit Permission
-        boolean edit_perm = permissionLogic.isCurrentUserAbleToEditAssignments(assignment.getContextId());
-        boolean grade_perm = permissionLogic.isUserAllowedToProvideFeedbackForAssignment(assignment);
+        boolean userMayEditAssign = permissionLogic.isUserAllowedToEditAssignment(currUserId, assignment);
+        boolean userMayManageSubmissions = permissionLogic.isUserAllowedToManageSubmissionsForAssignment(currUserId, assignment);
 
         //get parameters
         if (params.sort_by == null) params.sort_by = DEFAULT_SORT_BY;
@@ -175,7 +175,12 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
 
         // we need to retrieve the history for the release/retract feedback logic
         List<AssignmentSubmission> submissions = submissionLogic.getViewableSubmissionsWithHistoryForAssignmentId(assignmentId, params.groupId);
-
+        List<String> studentIdList = new ArrayList<String>();
+        if (submissions != null) {
+            for (AssignmentSubmission submission : submissions) {
+                studentIdList.add(submission.getUserId());
+            }
+        }
        
         // The following is some code to populate the sort order/page size, if
         // it's already been put in session state by the entity provider.
@@ -196,24 +201,39 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
             }
         }
 
-        // if assign is graded, retrieve the gb item
+        // if assign is graded, retrieve the gb details, if appropriate
         GradebookItem gbItem = null;
         boolean gbItemExists = false;
         boolean gradesReleased = false;
+        // user may view the associated gradebook item
+        boolean userMayViewGbItem = false;
+        // user has grading privileges for this gb item
+        boolean userMayGrade = false;
+        boolean userMayReleaseGrades = false;
+        
         if (assignment.isGraded() && assignment.getGradebookItemId() != null) {
-            try {
-                gbItem = gradebookLogic.getGradebookItemById(assignment.getContextId(), assignment.getGradebookItemId());
-                gbItemExists = true;
-                gradesReleased = gbItem.isReleased();
-            } catch (GradebookItemNotFoundException ginfe) {
-                if (log.isDebugEnabled()) log.debug("Gb item with id: " + assignment.getGradebookItemId() + " no longer exists!");
-                gbItem = null;
+            userMayViewGbItem = gradebookLogic.isCurrentUserAbleToViewGradebookItem(assignment.getContextId(), assignment.getGradebookItemId());
+
+            if (userMayViewGbItem) {
+                // user may grade if there is at least one gradable student among the submissions
+                List<String> gradableStudents = (List<String>) gradebookLogic.filterStudentsForGradebookItem(currUserId, assignment.getContextId(), assignment.getGradebookItemId(), AssignmentConstants.GRADE, studentIdList);
+                userMayGrade = gradableStudents != null && !gradableStudents.isEmpty();
+                userMayReleaseGrades = gradebookLogic.isCurrentUserAbleToEdit(assignment.getContextId());
+
+                try {
+                    gbItem = gradebookLogic.getGradebookItemById(assignment.getContextId(), assignment.getGradebookItemId());
+                    gbItemExists = true;
+                    gradesReleased = gbItem.isReleased();
+                } catch (GradebookItemNotFoundException ginfe) {
+                    if (log.isDebugEnabled()) log.debug("Gb item with id: " + assignment.getGradebookItemId() + " no longer exists!");
+                    gbItem = null;
+                }
             }
         }
 
-        // if gbItem is still null at this point, it must no longer exist. display warning
+        // if user has grading privileges but item no longer exists, display warning
         // to user
-        if (assignment.isGraded() && !gbItemExists) {
+        if (assignment.isGraded() && userMayViewGbItem && !gbItemExists) {
             UIOutput.make(tofill, "no_gb_item", messageLocator.getMessage("assignment2.assignment_grade-assignment.gb_item_deleted"));
         }
         
@@ -221,20 +241,6 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
         UIInitBlock.make(tofill, "asnn2subview-init", "asnn2subview.init", 
                 new Object[]{assignmentId, externalLogic.getCurrentContextId(), 
                 placement.getId(), submissions.size(), assignment.isGraded(), contentReviewEnabled, pagesize, orderBy, ascending, gradesReleased, params.pageIndex});
-
-        // get grade info, if appropriate
-        Map<String, GradeInformation> studentIdGradeInfoMap = new HashMap<String, GradeInformation>();
-        if (submissions != null && assignment.isGraded() && gbItemExists) {
-            // put studentIds in a list
-            List<String> studentIdList = new ArrayList<String>();
-            for (AssignmentSubmission submission : submissions) {
-                studentIdList.add(submission.getUserId());
-            }
-
-            // now retrieve all of the GradeInformation
-            studentIdGradeInfoMap = gradebookLogic.getGradeInformationForStudents(
-                    studentIdList, assignment.getContextId(), assignment.getGradebookItemId());
-        }
 
         //Breadcrumbs
         UIInternalLink.make(tofill, "breadcrumb", 
@@ -248,13 +254,13 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
         boolean displayDownloadAll = false;
         boolean displayUploadAll = false;
 
-        if (edit_perm || grade_perm) {
+        if (userMayEditAssign || userMayManageSubmissions) {
             UIOutput.make(tofill, "navIntraTool");
         }
 
         // RELEASE GRADES
         // don't display this option if the gb item doesn't exist anymore
-        if (edit_perm && assignment.isGraded() && gbItemExists){
+        if (userMayReleaseGrades && assignment.isGraded() && gbItemExists){
             displayReleaseGrades = true;
 
             // determine if grades have been released yet
@@ -277,13 +283,13 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
         }
 
         // RELEASE FEEDBACK
-        if (grade_perm) {
+        if (userMayManageSubmissions) {
             displayReleaseFB = true;
             makeReleaseFeedbackLink(tofill, params, submissions);
         }
 
         // DOWNLOAD ALL
-        if (grade_perm) {
+        if (userMayManageSubmissions) {
             displayDownloadAll = true;
 
             ZipViewParams zvp = new ZipViewParams("zipSubmissions", assignmentId);
@@ -292,11 +298,11 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
         }
 
         // UPLOAD GRADES & FEEDBACK
-        if (grade_perm) {
+        if (userMayManageSubmissions) {
             displayUploadAll = true;
 
             AssignmentViewParams avp = new AssignmentViewParams("uploadall", assignmentId);
-            if (assignment.isGraded() && gbItemExists) {
+            if (assignment.isGraded() && gbItemExists && userMayGrade) {
                 UIInternalLink.make(tofill, "uploadall",
                         UIMessage.make("assignment2.uploadall.breadcrumb.upload.graded"), avp);
             } else {
@@ -323,18 +329,12 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
         // now make the "View By Sections/Groups" filter
         makeViewByGroupFilter(tofill, params, assignment);
 
-        // let's retrieve all of the student name info in one call 
-        List<String> studentIdList = new ArrayList<String>();
-        for (AssignmentSubmission as : submissions) {
-            studentIdList.add(as.getUserId());
-        }
-
         /*
          * Form for assigning a grade to all submissions without a grade.
          * Do not allow grading if gbItem is null - it must have been deleted
          */
         if (submissions != null && !submissions.isEmpty() && 
-                grade_perm && assignment.isGraded() && gbItemExists) {
+                userMayGrade && assignment.isGraded() && gbItemExists) {
             createApplyToUngradedWidget(assignment, tofill, params, "unassigned-apply-form0:");
             createApplyToUngradedWidget(assignment, tofill, params, "unassigned-apply-form1:");
         }
@@ -399,7 +399,7 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
     }
 
     private void makeViewByGroupFilter(UIContainer tofill, ViewSubmissionsViewParams params, Assignment2 assignment) {
-        List<Group> viewableGroups = permissionLogic.getViewableGroupsForCurrUserForAssignment(assignmentId);
+        List<Group> viewableGroups = permissionLogic.getViewableGroupsForAssignment(null, assignment);
         if (viewableGroups != null && !viewableGroups.isEmpty()) {
             UIForm groupFilterForm = UIForm.make(tofill, "group_filter_form", params);
 
@@ -430,7 +430,7 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
                 // if there is more than one viewable group or the user has grade all perm, add the 
                 // "All Sections/Groups option"
                 if (viewableGroups.size() > 1 || 
-                        permissionLogic.isUserAbleToProvideFeedbackForAllStudents(assignment.getContextId())) {
+                        permissionLogic.isUserAllowedToManageAllSubmissions(null, assignment.getContextId())) {
                     showAllOption = true;
                     numItemsInDropDown++;
                 }

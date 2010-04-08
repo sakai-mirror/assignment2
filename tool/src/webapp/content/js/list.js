@@ -1,117 +1,171 @@
 var asnn2 = asnn2 || {};
 
-asnn2.livedata = true;
-
 /**
  * Returns a list of Assignment Objects that can be viewed.
  */
-asnn2.getAsnnCompData = function () {
 
-  var renderFromData = function (obj, index) {
-    var ditto = ['id','title', 'sortIndex', 'openDate', 'dueDate',
-                 'requiresSubmission', 'numSubmissions'];
-    var togo = {};
-    for (var i = 0; i < ditto.length; i++) {
-      togo[ditto[i]] = obj[ditto[i]];
-    }
-    if (obj.draft === true) {
-      togo.draft = true;
-    }
-    if (obj.requiresSubmission === true) {
-      togo.inAndNewLink = {
-        target: '/portal/tool/'+sakai.curPlacement+'/viewSubmissions/'+obj.id,
-        linktext: obj.inAndNew
-      };
-    }
-    else {
-      togo.inAndNew = obj.inAndNew;
-    }
-    if (obj.openDateFormatted) {
-      togo.opendatelabel = true;
-      togo.opentext = obj.openDateFormatted;
-    }
-    if (obj.dueDateFormatted) {
-      togo.duedatelabel = true;
-      togo.duetext = obj.dueDateFormatted;
-    }
-   if (obj.canEdit && obj.canEdit === true) {
-      togo.editlink = {
-        target: '/portal/tool/'+sakai.curPlacement+'/assignment/'+obj.id,
-        linktext: "Edit"
-      };
-      togo.duplink = {
-        target: '/portal/tool/'+sakai.curPlacement+'/assignment?duplicatedAssignmentId='+obj.id,
-        linktext: "Duplicate"
-      };
-      togo.sep1 = true;
-      togo.asnncheck = {
-        value: false
-      };
-    }
-    if (obj.graded === true) {
-        togo.gradelink = {
-            target: '/portal/tool/'+sakai.curPlacement+'/viewSubmissions/'+obj.id,
-            linktext: "Grade"
-        };
-        if (obj.canEdit && obj.canEdit === true) {
-          togo.sep2 = true;
-        }
-    }
-    else if (obj.requiresSubmission === true) {
-        togo.gradelink = {
-            target: '/portal/tool/'+sakai.curPlacement+'/viewSubmissions/'+obj.id,
-            linktext: "Provide Feedback"
-        };
-        if (obj.canEdit && obj.canEdit === true) {
-          togo.sep2 = true;
-        }
-    }
-    if (obj.attachments.length > 0) {
-        togo.hasAttachments = true;
-    }
-    if (obj.groups && obj.groups.length > 0) {
-        var groupnames = fluid.transform(obj.groups, function(grp,idx) {
-          return " "+grp.title;
-        });
-        togo.groupslabel = true;
-        togo.grouptext = groupnames.toString();
-    }
-    if (obj.gbItemMissing || obj.groupMissing) {
-      togo.needsAttention = true;
-    }
-    if (obj.reviewEnabled) {
-      togo.reviewEnabled = true;
-    }
-    
-    return togo;
-  };
+/**
+ * This copies the properties from the JSON Entity feed into our render tree
+ * Assignment that we want to keep available and unchanged.
+ */
+asnn2.copyDefaultAsnnObjProperties = function(togo, obj) {
+  var ditto = ['id','title', 'sortIndex', 'openDate', 'dueDate',
+               'requiresSubmission', 'numSubmissions'];
+  
+  for (var i = 0; i < ditto.length; i++) {
+    togo[ditto[i]] = obj[ditto[i]];
+  }
+};
 
-  var togo = [];
-  if (asnn2.livedata === true) {
-    var xmlhttp = jQuery.ajax({
-      type: "GET",
-      url: "/direct/assignment2/sitelist.json",
-      data: {
-        'siteid': sakai.curContext,
-        'no-cache': true
-      },
-      async: false,
-      success: function (payload) {
-        var data = JSON.parse(payload);
-        togo = fluid.transform(data.assignment2_collection, asnn2util.dataFromEntity, renderFromData);
-      }
+/**
+ * This adds common items to the togo render leaf from the data obj, so that
+ * they can be shared between the Assignment List view, and the Reorder Student
+ * View. This includes the things like Open, Due, Restricted, etc.
+ */
+asnn2.addCommonAsnnListReadOnlyRenderObjects = function (togo, obj) {
+  if (obj.draft === true) {
+    togo.draft = true;
+  }
+  if (obj.openDateFormatted) {
+    togo.opendatelabel = true;
+    togo.opentext = obj.openDateFormatted;
+  }
+  if (obj.dueDateFormatted) {
+    togo.duedatelabel = true;
+    togo.duetext = obj.dueDateFormatted;
+  }
+  if (obj.attachments.length > 0) {
+    togo.hasAttachments = true;
+  }
+  if (obj.groups && obj.groups.length > 0) {
+    var groupnames = fluid.transform(obj.groups, function(grp,idx) {
+      return " "+grp.title;
     });
+    togo.groupslabel = true;
+    togo.grouptext = groupnames.toString();
+  }
+  if (obj.gbItemMissing || obj.groupMissing) {
+    togo.needsAttention = true;
+  }
+  if (obj.reviewEnabled) {
+    togo.reviewEnabled = true;
+  }
+};
+
+/**
+ * This function fits a transform, and expects to take the raw filtered data
+ * from the Assignment Entity feed and builds a component tree for the 
+ * Assignment List view to be fed into the Fluid Renderer.
+ */
+asnn2.buildListRenderTreeFromData = function (obj, index) {
+  var togo = {};
+  
+  asnn2.copyDefaultAsnnObjProperties(togo, obj);
+  
+  asnn2.addCommonAsnnListReadOnlyRenderObjects(togo, obj);
+  
+  var canEdit = obj.canEdit && obj.canEdit === true;
+  var canAdd = obj.canAdd && obj.canAdd === true;
+  var canDelete = obj.canDelete && obj.canDelete === true;
+  var canEditMatrix = obj.canMatrixLink && obj.canMatrixLink === true;
+  var canGrade = obj.canGrade && obj.canGrade === true;
+  
+  if (obj.requiresSubmission === true && canGrade) {
+    togo.inAndNewLink = {
+      target: '/portal/tool/'+sakai.curPlacement+'/viewSubmissions/'+obj.id,
+      linktext: obj.inAndNew
+    };
   }
   else {
-    togo = designSampleData;
+    togo.inAndNew = obj.inAndNew;
   }
-
-  if (xmlhttp.getResponseHeader('x-asnn2-canEdit') === 'true') {
-      // Set up global edit permissions for rendering move and remove widgets
-      asnn2.pageState.canEdit = true;
+  
+  if (canEdit) {
+    togo.editlink = {
+      target: '/portal/tool/'+sakai.curPlacement+'/assignment/'+obj.id,
+      linktext: "Edit"
+    };
   }
-
+  
+  if (canAdd) {
+    togo.duplink = {
+      target: '/portal/tool/'+sakai.curPlacement+'/assignment?duplicatedAssignmentId='+obj.id,
+      linktext: "Duplicate"
+    };
+    if (canEdit) {
+        togo.sep0 = true;
+    }
+  }
+  
+  if (canEditMatrix) {
+    togo.matrixlink = {
+      //target: '/portal/tool/'+sakai.curPlacement+'/TaggableHelperProducer?values=%2Fassignment%2Fa%2Fusedtools%2F2a4f82db-0b4b-4be6-b7cf-fe9c3debcf6a&helperId=osp.matrix.link&keys=activityRef',
+      target: '/portal/tool/'+sakai.curPlacement+'/TaggableHelperProducer?helperId=osp.matrix.link&keys=activityRef&values='+obj.ref,
+      linktext: "Create/Edit Matrix Links"
+    };
+    
+    if (canEdit || canAdd) {
+        togo.sep1 = true;
+    }
+  }
+  if (obj.graded === true && canGrade) {
+      togo.gradelink = {
+          target: '/portal/tool/'+sakai.curPlacement+'/viewSubmissions/'+obj.id,
+          linktext: "Grade"
+      };
+      if (canEdit || canAdd || canEditMatrix) {
+        togo.sep2 = true;
+      }
+  }
+  else if (obj.requiresSubmission === true && canGrade) {
+      togo.gradelink = {
+          target: '/portal/tool/'+sakai.curPlacement+'/viewSubmissions/'+obj.id,
+          linktext: "Provide Feedback"
+      };
+      if (canEdit || canAdd || canEditMatrix) {
+          togo.sep2 = true;
+      }
+  }
+  
+  if (canDelete) {
+      togo.asnncheck = {
+         value: false
+      };
+  }
+  
   return togo;
+};
+  
+asnn2.getRawJSONSiteList = function () {
+  var togo = {}
+  var xmlhttp = jQuery.ajax({
+    type: "GET",
+    url: "/direct/assignment2/sitelist.json",
+    data: {
+      'siteid': sakai.curContext,
+      'no-cache': true
+    },
+    async: false,
+    success: function (payload) {
+      togo = JSON.parse(payload);
+    }
+  });
+  
+  /*
+   * This doesn't really belong here, maybe we should return this as well as the
+   * data feed.
+   */
+  if (asnn2.pageState && xmlhttp.getResponseHeader('x-asnn2-canDelete') === 'true') {
+    // Set up global permissions for rendering remove widget
+    asnn2.pageState.canDelete = true;
+  }
+  
+  return togo;
+};
+
+asnn2.getAsnnCompData = function () {
+  return fluid.transform(asnn2.getRawJSONSiteList().assignment2_collection, 
+      asnn2util.dataFromEntity, asnn2.buildListRenderTreeFromData);
 };
 
 asnn2.selectorMap = [
@@ -120,6 +174,7 @@ asnn2.selectorMap = [
   { selector: ".asnntitle", id: "title" },
   { selector: ".gradelink", id: "gradelink"},
   { selector: ".editlink", id: "editlink" },
+  { selector: ".matrixlink", id: "matrixlink" },
   { selector: ".duplink", id: "duplink" },
   { selector: ".opendate", id: "opentext" },
   { selector: ".duedate", id: "duetext" },
@@ -129,6 +184,7 @@ asnn2.selectorMap = [
   { selector: ".attachments", id: "hasAttachments" },
   { selector: ".needsAttention", id: "needsAttention"},
   { selector: ".draft", id: "draft"},
+  { selector: ".sep0", id: "sep0"},
   { selector: ".sep1", id: "sep1"},
   { selector: ".sep2", id: "sep2"},
   { selector: ".opendatelabel", id: "opendatelabel" },
@@ -137,8 +193,7 @@ asnn2.selectorMap = [
   { selector: ".addlink", id: "addlink" },
   { selector: ".addimage", id: "addimage" },
   { selector: ".asnncheck", id: "asnncheck" },
-  { selector: ".reviewEnabled", id: "reviewEnabled" },
-  { selector: "#checkall", id: "checkall"}
+  { selector: ".reviewEnabled", id: "reviewEnabled" }
 ];
 
 asnn2.sortMap = [
@@ -158,7 +213,7 @@ asnn2.pageState = {
   sortDir: -1,
   dataArray: [],
   pageModel: {},
-  canEdit: false,
+  canDelete: false,
   minPageSize: 5  // This needs to be in sync with the html template currently.�
 };
 
@@ -223,122 +278,6 @@ asnn2.setupRemoveCheckboxes = function () {
   });
 };
 
-/**
- * Reorders the pageState data for the moved pageModel and returns the new array
- * of Assignment ID's in Sort order.
- *
- * @param {Array} Array of numbers with the sortIndex's for the current page.
- * @returns {Array} Array of the entire datasets sortIndex's
- */
-asnn2.reorderData = function (moved) {
-  var slice = asnn2.findPageSlice(asnn2.pageState.pageModel);
-  var allIdIdx = fluid.transform(asnn2.pageState.dataArray, function(obj,index) { return obj.id; });
-  var indexesById = {};
-
-  // Copy the reordered page on top of the entire dataset (all pages)
-  for (var i = 0, j = slice[0]; i < moved.length; i++, j++) {
-    allIdIdx[j] = new Number(moved[i]);
-  }
-
-  // Make a new hash using AsnnId's as keys and storing the sortIndex
-  for (var k = 0; k < allIdIdx.length; k++) {
-    indexesById[allIdIdx[k]] = new Number(k);
-  }
-
-  // Update the Sort Indexs on the Assignments stored in Page State
-  for (var m = 0; m < asnn2.pageState.dataArray.length; m++) {
-    var curdata = asnn2.pageState.dataArray[m];
-    curdata.sortIndex = indexesById[curdata.id];
-  }
-
-  // Resort the data packing the page, so it will be correct if we page back and
-  // forth before reloading the data from the server.
-  asnn2.pageState.dataArray.sort(function (a, b) {
-    return a.sortIndex - b.sortIndex;
-  });
-
-  // Return the new order of items. Admittedly this whole method sucks, I'm still
-  // exploring the built-in functionality/methods of JS data structures to find
-  // a better way to do this part.
-  return allIdIdx;
-};
-
-/**
- * This sets up the drag'n'drop hopefully accessible reordering each time the list
- * is paged or refreshed.
- *
- * Because the page can be sorted many different ways, we only want the reordering to
- * be available when it is sorted by Instructor Specified Order in Ascending Order.
- */
-asnn2.setupReordering = function () {
-  var asnnsels = {};
-  var afterMoveFunc = function(){};
-  var allowReorder = true;
-  if (asnn2.pageState.sortDir !== -1 || asnn2.pageState.sortby !== 'sortIndex' || asnn2.pageState.canEdit !== true) {
-    allowReorder = false;
-    asnnsels = {
-      movables: ".row",
-      grabHandle: ".dummy"
-    };
-  }
-  else {
-    asnnsels = {
-      movables: ".row",
-      grabHandle: ".movehandle"
-    };
-    afterMoveFunc = function(item,requestedPosition,movables) {
-      var neworder = [];
-      movables.each(function(i, obj) {
-        neworder.push(jQuery('.asnnid',obj).text());
-      });
-      var integralIdx = asnn2.reorderData(neworder);
-      // Stub for reorder Ajax call
-      //alert(neworder);
-      jQuery.ajax({
-        type: "GET", // Grrr
-        url: "/direct/assignment2/reorder.json",
-        data: {
-          "siteid":sakai.curContext,
-          "order": integralIdx.toString()
-        }
-      });
-    };
-  }
-
-  fluid.reorderList("#asnn-list", {
-    selectors : asnnsels,
-    listeners: {
-      afterMove: afterMoveFunc,
-      onHover: function(item,state) {
-        jQuery('td', item).each(function(i, obj) {
-          if (i === 0) {
-            if (state && allowReorder === true) {
-              jQuery('img',this).show();
-            }
-            else {
-              jQuery('img',this).hide();
-            }
-          }
-          else {
-            if (state) {
-              jQuery(this).addClass('asnn-hover');
-            }
-            else {
-              jQuery(this).removeClass('asnn-hover');
-            }
-          }
-        });
-      }
-    },
-    avatarCreator: function(item, cssClass, dropWarning) {
-      var asnntitle = jQuery(".asnntitle", item).text();
-      var avatar = jQuery(".asnn-drag-avatar").clone();
-      avatar.html("<p>"+asnntitle.escapeHTML()+"</p><p>&nbsp;</p>");
-      return avatar;
-    }
-  });
-};
-
 asnn2.getAsnnObj = function(val, prop) {
   var p = prop || "id";
   for (var i = 0; i < asnn2.pageState.dataArray.length; i++) {
@@ -385,7 +324,6 @@ asnn2.setupInlineEdits = function () {
  */
 asnn2.setupAsnnList = function () {
   asnn2.setupRemoveCheckboxes();
-  asnn2.setupReordering();
   asnn2.setupInlineEdits();
 };
 
@@ -443,14 +381,6 @@ asnn2.renderAsnnList = function(asnndata) {
     "row:": dopple
   };
 
-  if (asnn2.pageState.canEdit === true) {
-    treedata.addimage = true;
-    treedata.addlink = true;
-    treedata.checkall = {
-      value: false
-    };
-  }
-
   if (asnn2.asnnListTemplate) {
     fluid.reRender(asnn2.asnnListTemplate, jQuery("#asnn-list"), treedata, {cutpoints: asnn2.selectorMap});
   }
@@ -479,7 +409,6 @@ asnn2.toggleTableControls = function(showPager,showSorting,showTopRemove,showPag
   
   if (showSorting === true) {
     jQuery("#top-sort-area").show();
-    jQuery("#bottom-sort-area").show();
   }
   else {
     jQuery("#top-sort-area").hide();
@@ -497,14 +426,6 @@ asnn2.toggleTableControls = function(showPager,showSorting,showTopRemove,showPag
       jQuery("#top-remove-button").show();
   } else {
       jQuery("#top-remove-button").hide();
-  }
-  
-  if (showPagerArrows === true) {
-      jQuery('#page-arrows').show();
-      jQuery('#page-arrows-bottom').show();
-  } else {
-      jQuery('#page-arrows').hide();
-      jQuery('#page-arrows-bottom').hide();
   }
   
   if (showPageNum === true) {
@@ -525,11 +446,11 @@ asnn2.toggleTableControls = function(showPager,showSorting,showTopRemove,showPag
 asnn2.toggleNoAssignments = function(assignmentsExist) {
     if (assignmentsExist) {
         jQuery(".removeAsnn").show();
-        jQuery("#asnn-list").show();
+        jQuery("#asnn-list-table").show();
         jQuery("#noAsnn").hide();
     } else {
         jQuery(".removeAsnn").hide();
-        jQuery("#asnn-list").hide();
+        jQuery("#asnn-list-table").hide();
         jQuery("#noAsnn").show();
     }
 }
@@ -626,7 +547,6 @@ asnn2.setupRemoveDialog = function() {
       // TODO Handle Failures with a message
     });
 
-
   });
 
   jQuery('#cancel-remove-asnn-button').click( function (event) {
@@ -661,11 +581,10 @@ asnn2.initAsnnList = function () {
 
   asnn2.setupSortLinks();
 
-  // Remove Dialog
-  if (asnn2.pageState.canEdit === true) {
+  if (asnn2.pageState.canDelete === true) {
     asnn2.setupRemoveDialog();
+    jQuery("#checkall").show();
   }
-
 
   /*
    * Set up the pagers
@@ -691,13 +610,31 @@ asnn2.initAsnnList = function () {
       totalRange: undefined
     },
     dataModel: fakedata,
-    pagerBar: {type: "fluid.pager.pagerBar", options: {
-      pageList: {type: "fluid.pager.renderedPageList",
-        options: {
-          linkBody: "a"
-        }
-      }
-    }}
+    pagerBar: {type: "fluid.pager.pagerBar"}
   });
 
+  // All these pager buttons are temporary while I'm ripping the page apart 
+  // to implement this next set of UI changes.
+  
+  // First and Last buttons
+  jQuery(".fl-pager-firstpage").click(function() {
+    pager.events.initiatePageChange.fire({pageIndex: 0});
+  });
+  
+  jQuery(".fl-pager-lastpage").click(function() {
+    var model = pager.model;
+    // SWG The below is cut n pasted. Should put in a jira request to have it be
+    // reusable in the fluid pager and not private since it's a useful utility.
+    var last = Math.min(model.totalRange, (model.pageIndex + 1) * model.pageSize);
+    pager.events.initiatePageChange.fire({pageIndex: last});
+  });
+  
+  jQuery("#previous-bottom").click(function() {
+    pager.events.initiatePageChange.fire({relativePage: -1});
+  });
+  
+  jQuery("#next-bottom").click(function() {
+    pager.events.initiatePageChange.fire({relativePage: +1});
+  });
+    
 };

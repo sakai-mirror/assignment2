@@ -54,6 +54,7 @@ import uk.org.ponder.rsf.components.UIForm;
 import uk.org.ponder.rsf.components.UIInternalLink;
 import uk.org.ponder.rsf.components.UIMessage;
 import uk.org.ponder.rsf.components.UIOutput;
+import uk.org.ponder.rsf.components.UIVerbatim;
 import uk.org.ponder.rsf.components.decorators.DecoratorList;
 import uk.org.ponder.rsf.components.decorators.UIAlternativeTextDecorator;
 import uk.org.ponder.rsf.components.decorators.UIColourDecorator;
@@ -316,6 +317,9 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
             }
 
         }
+        
+        //javascript to add sort tables parsers:
+        UIVerbatim.make(tofill, "sortTableParsers", "asnn2.setupStdntListTableParsers();");
     }
 
     public ViewParameters getViewParameters() {

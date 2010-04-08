@@ -25,12 +25,14 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment2.exception.AssignmentNotFoundException;
 import org.sakaiproject.assignment2.exception.UploadException;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
+import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.logic.UploadAllLogic;
@@ -89,6 +91,11 @@ public class UploadBean
     private ExternalGradebookLogic gradebookLogic;
     public void setExternalGradebookLogic(ExternalGradebookLogic gradebookLogic) {
         this.gradebookLogic = gradebookLogic;
+    }
+    
+    private AssignmentPermissionLogic permissionLogic;
+    public void setAssignmentPermissionLogic(AssignmentPermissionLogic permissionLogic) {
+        this.permissionLogic = permissionLogic;
     }
 
     public void setMultipartMap(Map<String, MultipartFile> uploads)
@@ -308,7 +315,8 @@ public class UploadBean
         }
 
         // retrieve the displayIdUserId info once and re-use it
-        displayIdUserIdMap = externalLogic.getUserDisplayIdUserIdMapForStudentsInSite(assignment.getContextId());		
+        Set<String> submitters = permissionLogic.getSubmittersInSite(assignment.getContextId());
+        displayIdUserIdMap = externalLogic.getUserDisplayIdUserIdMapForUsers(submitters);
         parsedContent = uploadGradesLogic.getCSVContent(newFile);
         
         // delete the file

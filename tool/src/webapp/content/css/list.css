@@ -1,9 +1,13 @@
-
-#asnn-list {
-  width: 95%;
+body {
+  padding: 5px;	
 }
 
-#asnn-list th {
+#asnn-list-table {
+  width: 100%;
+}
+
+
+#asnn-list-table th {
   text-align: left;
 }
 
@@ -28,23 +32,6 @@
     margin-top: 20px; 
     margin-left: 2.3em; 
 }
-
-/* Reordering */
-/*
-.fl-reorderer-movable-dragging {
-  width: 50px;
-  height: 50px;
-  background-color: black;
-  display: block;
-}
-
-.fl-reorderer-movable-avatar {
-  display: block;
-  width: 50px;
-  height: 50px;
-  background-color: black;
-}
-*/
 
 /* This is to accomodate FLUID-2739 for the meanwhile.  We are making our own
  * simplified dragging avatar.
@@ -71,9 +58,11 @@
     width: 75%;
 }
 
+
 .asnn-decorated-heading {
-  font-size: 1.2em;
+  vertical-align: top;
 }
+
 
 .asnn-hover {
   background-color: #feffcc;
@@ -114,58 +103,6 @@
     /*margin      : -1px;*/
 }
 
-/* Pager and Sorting Area */
-.pager-sort-area {
-  /* width: 90%; */
-  /* text-align: center; */
-  border: solid 2px #cccccc;
-  margin: 0 5% 10px 40px;
-}
-
-/* Start Pager Classes */
-/*
-.hidden {
-    display: none;
-}
-
-.fl-pager-top, .fl-pager-bottom {
-    text-align: center;
-}
-
-.fl-pager-top li, .fl-pager-bottom li {
-  display:inline;
-}
-
-.pager-links {
-  display:inline;
-}
-
-.fl-pager-pageLink a,.fl-pager-previous a,.fl-pager-next a {
-    color: #0099CC;
-    font-size: .9em;
-    text-decoration: none;
-    border-bottom: solid .1em;
-    margin: 0 .2em;
-}
-
-.fl-pager-previous,.fl-pager-next {
-    padding: 0 1.3em 0 1em !important;
-}
-
-a.fl-pager-currentPage {
-    color: #000000;
-    border: 0;
-    text-decoration: none;
-}
-
-.fl-pager-disabled a {
-    color: #777777;
-    border: 0;
-    text-decoration: none;
-}
-*/
-/* End Fluid Pager Classes */
-
 /* No assignments section */
 .noAsnnInfo {
     color: #5E5E5E;
@@ -180,4 +117,12 @@ a.fl-pager-currentPage {
 .generalErrors {
     margin-left: 40px;
     margin-bottom: 15px;
+}
+
+.actionLink {
+    font-size: 1.1em;
+}
+
+.actionImage {
+    vertical-align: bottom;
 }
