@@ -995,7 +995,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
             throw new AssignmentNotFoundException("Assignment with id " + assignmentId + " does not exist");
         }
 
-        if (!permissionLogic.isUserAllowedToManageSubmissionsForAssignment(currUserId, assignment, null)) {
+        if (!permissionLogic.isUserAllowedToManageSubmissionsForAssignment(currUserId, assignment)) {
             throw new SecurityException("User attempted to release feedback for assignment " + assignmentId + " without authorization");
         }
 
@@ -1531,7 +1531,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 
         String currentUserId = externalLogic.getCurrentUserId();
 
-        if (!permissionLogic.isUserAllowedToSubmit(currentUserId, contextId, null)) {
+        if (!permissionLogic.isUserAllowedToSubmit(currentUserId, contextId)) {
             throw new SecurityException("Attempt to retrieve submissions for a non-student user");
         }
 

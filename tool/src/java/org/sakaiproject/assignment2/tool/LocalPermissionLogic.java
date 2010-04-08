@@ -139,14 +139,14 @@ public class LocalPermissionLogic {
             if (viewParams instanceof GradeViewParams)
             {
                 GradeViewParams params = (GradeViewParams) viewParams;
-                return permissionLogic.isUserAllowedToViewSubmissionForAssignment(null, params.userId, params.assignmentId, null);
+                return permissionLogic.isUserAllowedToManageSubmissionForAssignmentId(null, params.userId, params.assignmentId);
             } 
 
             return Boolean.FALSE;
 
         } 
         else if (StudentAssignmentListProducer.VIEW_ID.equals(viewId)) {
-            return permissionLogic.isUserAllowedToSubmit(null, contextId, null) && 
+            return permissionLogic.isUserAllowedToSubmit(null, contextId) && 
             !permissionLogic.isUserAllowedToAccessInstructorView(null, contextId);
 
         } else if (StudentSubmitProducer.VIEW_ID.equals(viewId)) {
@@ -162,8 +162,7 @@ public class LocalPermissionLogic {
             if (viewParams instanceof ViewSubmissionsViewParams) {
                 ViewSubmissionsViewParams params = (ViewSubmissionsViewParams) viewParams;
 
-                return permissionLogic.isUserAllowedToAccessInstructorView(null, contextId) && 
-                permissionLogic.isUserAllowedToViewAssignment(params.assignmentId, null);
+                return permissionLogic.isUserAllowedToManageSubmissionsForAssignmentId(null, params.assignmentId);
             }
 
             return Boolean.FALSE;
@@ -171,7 +170,7 @@ public class LocalPermissionLogic {
         } else if (FragmentAssignment2SelectProducer.VIEW_ID.equals(viewId)) {
             // TODO: it isn't clear what permission you should have for this one,
             // so defaulting to add perm
-            return permissionLogic.isUserAllowedToAddAssignments(null, contextId, null);
+            return permissionLogic.isUserAllowedToAddAssignments(null, contextId);
         }
         else if (FragmentGradebookDetailsProducer.VIEW_ID.equals(viewId)) {
             if (viewParams instanceof FragmentGradebookDetailsViewParams) {
@@ -187,8 +186,7 @@ public class LocalPermissionLogic {
             if (viewParams instanceof AssignmentViewParams) {
                 AssignmentViewParams params = (AssignmentViewParams) viewParams;
 
-                return permissionLogic.isUserAllowedToAccessInstructorView(null, contextId) && 
-                permissionLogic.isUserAllowedToViewAssignment(params.assignmentId, null);
+                return permissionLogic.isUserAllowedToManageSubmissionsForAssignmentId(null, params.assignmentId);
             }
 
             return Boolean.FALSE;
@@ -197,8 +195,7 @@ public class LocalPermissionLogic {
             if (viewParams instanceof ZipViewParams) {
                 ZipViewParams params = (ZipViewParams) viewParams;
 
-                return permissionLogic.isUserAllowedToAccessInstructorView(null, contextId) &&
-                permissionLogic.isUserAllowedToViewAssignment(params.assignmentId, null);
+                return permissionLogic.isUserAllowedToManageSubmissionsForAssignmentId(null, params.assignmentId);
             }
 
             return Boolean.FALSE;
@@ -210,6 +207,7 @@ public class LocalPermissionLogic {
             return permissionLogic.isUserAllowedToUpdateSite(contextId);
             
         } else if (GraderPermissionsProducer.VIEW_ID.equals(viewId)) {
+            // NOTE: this is checking to see if the user has edit privileges in the gradebook tool
             return gradebookLogic.isCurrentUserAbleToEdit(contextId);
  
         } else if (ViewAssignmentProducer.VIEW_ID.equals(viewId)) {
@@ -218,7 +216,7 @@ public class LocalPermissionLogic {
 
                 Map<String, Object> optionalParams = new HashMap<String, Object>();
                 optionalParams.put(AssignmentConstants.TAGGABLE_REF_KEY, params.tagReference);
-                return permissionLogic.isUserAllowedToViewAssignment(params.assignmentId, optionalParams);
+                return permissionLogic.isUserAllowedToViewAssignmentId(null, params.assignmentId, optionalParams);
             }
 
             return Boolean.FALSE;
@@ -236,7 +234,7 @@ public class LocalPermissionLogic {
         return Boolean.FALSE;
 
         } else if(ImportAssignmentsProducer.VIEW_ID.equals(viewId)){
-        	return permissionLogic.isUserAllowedToAddAssignments(null, contextId, null)
+        	return permissionLogic.isUserAllowedToAddAssignments(null, contextId)
         	&& permissionLogic.isUserAllowedForAllGroups(null, contextId);
         }
 
@@ -261,14 +259,14 @@ public class LocalPermissionLogic {
     private boolean isUserAllowedToAddOrEditAssignment(Long assignId, String contextId) {
         if (assignId == null) {
             // add assignment scenario
-            return permissionLogic.isUserAllowedToAddAssignments(null, contextId, null);
+            return permissionLogic.isUserAllowedToAddAssignments(null, contextId);
         } else {
             // we are editing
             if (permissionLogic.isUserAllowedToEditAllAssignments(null, contextId)) {
                 return true;
             } else {
                 Assignment2 assign = assignmentLogic.getAssignmentById(assignId);
-                return permissionLogic.isUserAllowedToEditAssignment(null, assign, null);
+                return permissionLogic.isUserAllowedToEditAssignment(null, assign);
             }
         }
     }

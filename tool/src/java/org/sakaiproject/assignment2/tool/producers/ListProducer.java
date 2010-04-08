@@ -73,7 +73,7 @@ public class ListProducer implements ViewComponentProducer, DefaultView {
         String currContextId = externalLogic.getCurrentContextId();
         String currUserId = externalLogic.getCurrentUserId();
         
-        boolean add = permissionLogic.isUserAllowedToAddAssignments(currUserId, currContextId, null);
+        boolean add = permissionLogic.isUserAllowedToAddAssignments(currUserId, currContextId);
         boolean reorder = permissionLogic.isUserAllowedToEditAllAssignments(currUserId, currContextId);
         boolean siteUpd = permissionLogic.isUserAllowedToUpdateSite(currContextId);
         boolean allGoups = permissionLogic.isUserAllowedForAllGroups(currUserId, currContextId);

@@ -164,8 +164,8 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
         }
 
         //Edit Permission
-        boolean userMayEditAssign = permissionLogic.isUserAllowedToEditAssignment(currUserId, assignment, null);
-        boolean userMayManageSubmissions = permissionLogic.isUserAllowedToManageSubmissionsForAssignment(currUserId, assignment, null);
+        boolean userMayEditAssign = permissionLogic.isUserAllowedToEditAssignment(currUserId, assignment);
+        boolean userMayManageSubmissions = permissionLogic.isUserAllowedToManageSubmissionsForAssignment(currUserId, assignment);
 
         //get parameters
         if (params.sort_by == null) params.sort_by = DEFAULT_SORT_BY;

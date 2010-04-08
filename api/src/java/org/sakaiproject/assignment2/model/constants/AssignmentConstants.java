@@ -30,31 +30,31 @@ public class AssignmentConstants {
         /**
          * The prefix for assignment2 permissions
          */
-        PERMISSION_PREFIX = "asnn2",
+        PERMISSION_PREFIX = "asnn2.",
         /**
          * User may view assignments
          */
-        PERMISSION_VIEW_ASSIGNMENTS = PERMISSION_PREFIX + ".assignment.read",
+        PERMISSION_VIEW_ASSIGNMENTS = PERMISSION_PREFIX + "assignment.read",
         /**
          * User may make submissions to assignments
          */
-        PERMISSION_SUBMIT = PERMISSION_PREFIX + ".submit",
+        PERMISSION_SUBMIT = PERMISSION_PREFIX + "submit",
         /**
          * User may add new assignments
          */
-        PERMISSION_ADD_ASSIGNMENTS = PERMISSION_PREFIX + ".assignment.new",
+        PERMISSION_ADD_ASSIGNMENTS = PERMISSION_PREFIX + "assignment.new",
         /**
          * User may edit existing assignments
          */
-        PERMISSION_EDIT_ASSIGNMENTS = PERMISSION_PREFIX + ".assignment.edit",
+        PERMISSION_EDIT_ASSIGNMENTS = PERMISSION_PREFIX + "assignment.edit",
         /**
          * User may delete existing assignments
          */
-        PERMISSION_REMOVE_ASSIGNMENTS = PERMISSION_PREFIX + ".assignment.delete",
+        PERMISSION_REMOVE_ASSIGNMENTS = PERMISSION_PREFIX + "assignment.delete",
         /**
          * User may view and provide feedback on assignment submissions
          */
-        PERMISSION_MANAGE_SUBMISSIONS = PERMISSION_PREFIX + ".submissions.manage",
+        PERMISSION_MANAGE_SUBMISSIONS = PERMISSION_PREFIX + "submissions.manage",
         /**
          * User may view and act on all students and all groups in the site in 
          * accordance with the other permissions that have been assigned to this role.
@@ -62,7 +62,7 @@ public class AssignmentConstants {
          * to his/her group and/or act on submissions if they were submitted by a user
          * in his/her group, if applicable
          */
-        PERMISSION_ALL_GROUPS = PERMISSION_PREFIX + ".all.groups";
+        PERMISSION_ALL_GROUPS = PERMISSION_PREFIX + "all.groups";
 
     /*
      * Sakai.properties options

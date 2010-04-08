@@ -81,7 +81,7 @@ public class ViewAssignmentProducer implements ViewComponentProducer, ViewParams
         
         Map<String, Object> optionalParamMap = new HashMap<String, Object>();
         optionalParamMap.put(AssignmentConstants.TAGGABLE_REF_KEY, params.tagReference);
-        if (!permissionLogic.isUserAllowedToViewAssignment(assignmentId, optionalParamMap)) {
+        if (!permissionLogic.isUserAllowedToViewAssignmentId(null, assignmentId, optionalParamMap)) {
             throw new SecurityException("Attempt to view assignment without permission");
         }
 
@@ -91,7 +91,7 @@ public class ViewAssignmentProducer implements ViewComponentProducer, ViewParams
         DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, locale);
         
         // we only display some fields if user may edit this assignment
-        boolean instructorView = permissionLogic.isUserAllowedToEditAssignment(null, assignment, null);
+        boolean instructorView = permissionLogic.isUserAllowedToEditAssignment(null, assignment);
         
         UIOutput.make(tofill, "title", assignment.getTitle());
         

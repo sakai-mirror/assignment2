@@ -195,7 +195,7 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware {
         }
         
         boolean contentReviewAvailable = contentReviewLogic.isContentReviewAvailable(context);
-        boolean canMatrixLink = taggableLogic.isSiteAssociated(context);
+        boolean siteAssociated = taggableLogic.isSiteAssociated(context);
         
         // retrieve the edit, grade, add, and delete permissions for each assignment. 
         // The add perm will determine if user can duplicate.
@@ -263,7 +263,7 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware {
             asnnmap.put("canAdd", canAdd);
 
             // Create/Edit Matrix Links
-            asnnmap.put("canMatrixLink", canMatrixLink);
+            asnnmap.put("canMatrixLink", siteAssociated && canEdit);
 
             List<String> viewableStudents = assignmentViewableStudentsMap.get(asnn);
             
@@ -319,7 +319,7 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware {
         httpServletResponse.setHeader("Cache-Control", "max-age=0,no-cache,no-store,must-revalidate,private,post-check=0,pre-check=0,s-max-age=0");
         httpServletResponse.setDateHeader("Expires", 0 );
 
-        boolean canDelete = permissionLogic.isUserAllowedToDeleteAssignments(null, context, null);
+        boolean canDelete = permissionLogic.isUserAllowedToDeleteAssignments(null, context);
         httpServletResponse.setHeader("x-asnn2-canDelete", canDelete+"");
 
         return togo;
