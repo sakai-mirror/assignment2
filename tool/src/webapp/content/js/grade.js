@@ -119,37 +119,65 @@ asnn2gradeview.isGradingChanged = function()
             gradingChanged = true;
         }
     });
+    
+    var attachments = {};
+    jQuery("input[name$='attachments-input']").each(function() {
+        var that = jQuery(this);
+        var key = that.attr('name');
+        if (attachments[key]) {
+            attachments[key].push(that.val());
+        }
+        else {
+            attachments[key] = [that.val()];
+        }
+    });
+    
+    for (var attachname in attachments) {
+        var attachFossilName = attachname+"-fossil";
+        var attachFossil = jQuery("input[name='"+attachFossilName+"']");
+        var fossil = RSF.parseFossil(attachFossil.val());
+        var fossilObj = JSON.parse(fossil.oldvalue);
+
+        var inputvals = attachments[attachname];
+        if (fossilObj.length !== inputvals.length) {
+            gradingChanged = true;
+        }
+        else {
+            fossilObj.sort();
+            inputvals.sort();
+            for (var i = 0; i < fossilObj.length; i++) {
+                if (fossilObj[i] !== inputvals[i]) {
+                    gradingChanged = true;
+                }
+            }
+        }
+    }
 
     if (!gradingChanged)
     {
-        // TODO FIXME attachments changes?
-
+        // whether the grading points changed
+        var currentGradePoints = $("input[name='page-replace\:\:grade_input']").val();
+        currentGradePoints=asnn2gradeview.trimHtmlInput(currentGradePoints,false);
+        var previousGradePoints = $("input[name='page-replace\:\:grade_input-fossil']").val();
+        previousGradePoints = asnn2gradeview.trimHtmlInput(previousGradePoints,true);
+        if (currentGradePoints == null && previousGradePoints != null
+                || currentGradePoints != null && previousGradePoints == null
+                || currentGradePoints != previousGradePoints)
+        {
+            gradingChanged = true;
+        }
         if (!gradingChanged)
         {
-            // whether the grading points changed
-            var currentGradePoints = $("input[name='page-replace\:\:grade_input']").val();
-            currentGradePoints=asnn2gradeview.trimHtmlInput(currentGradePoints,false);
-            var previousGradePoints = $("input[name='page-replace\:\:grade_input-fossil']").val();
-            previousGradePoints = asnn2gradeview.trimHtmlInput(previousGradePoints,true);
-            if (currentGradePoints == null && previousGradePoints != null
-                    || currentGradePoints != null && previousGradePoints == null
-                    || currentGradePoints != previousGradePoints)
+            // whether the grading comments changed
+            var currentGradeComment = $('#page-replace\\:\\:grade_comment_input').val();
+            currentGradeComment=asnn2gradeview.trimHtmlInput(currentGradeComment,false);
+            var previousGradeComment = $("input[name='page-replace\:\:grade_comment_input-fossil']").val();
+            previousGradeComment = asnn2gradeview.trimHtmlInput(previousGradeComment,true);
+            if (currentGradeComment == null && previousGradeComment != null
+                    || currentGradeComment != null && previousGradeComment == null
+                    || currentGradeComment != previousGradeComment)
             {
                 gradingChanged = true;
-            }
-            if (!gradingChanged)
-            {
-                // whether the grading comments changed
-                var currentGradeComment = $('#page-replace\\:\\:grade_comment_input').val();
-                currentGradeComment=asnn2gradeview.trimHtmlInput(currentGradeComment,false);
-                var previousGradeComment = $("input[name='page-replace\:\:grade_comment_input-fossil']").val();
-                previousGradeComment = asnn2gradeview.trimHtmlInput(previousGradeComment,true);
-                if (currentGradeComment == null && previousGradeComment != null
-                        || currentGradeComment != null && previousGradeComment == null
-                        || currentGradeComment != previousGradeComment)
-                {
-                    gradingChanged = true;
-                }
             }
         }
     }
