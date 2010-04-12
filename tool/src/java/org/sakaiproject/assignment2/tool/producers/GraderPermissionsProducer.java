@@ -117,7 +117,7 @@ public class GraderPermissionsProducer implements ViewComponentProducer, ViewPar
 
         // make the button to return to the list
         UIForm form = UIForm.make(tofill, "return-to-list-form");
-        UICommand.make(form, "return-to-list", UIMessage.make("assignment2.grader-perms.cancel"), "GraderPermissionsBean.processActionCancel");
+        UICommand.make(form, "return-to-list", UIMessage.make("assignment2.grader-perms.cancel"), "CommonNavigationBean.processActionCancelToList");
     }
 
     /**

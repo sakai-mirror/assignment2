@@ -769,27 +769,24 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
         return false;
     }
 
-    public boolean isUserAllowedToAccessInstructorView(String userId, String contextId) {
+    public boolean isUserAllowedToTakeInstructorAction(String userId, String contextId) {
         if (contextId == null) {
             throw new IllegalArgumentException("null contextId passed to isUserAbleToAccessInstructorView");
         }
 
-        boolean instructorView = false;
-        
+        boolean instructorAccess = false;
+
         if (userId == null) {
             userId = externalLogic.getCurrentUserId();
         }
-        if (!authz.userHasSubmitPermission(userId, contextId)) {
-            if (authz.userHasViewAssignmentPermission(userId, contextId) ||
-                    authz.userHasEditPermission(userId, contextId) || 
-                    authz.userHasAddPermission(userId, contextId) ||
-                    authz.userHasDeletePermission(userId, contextId) || 
-                    authz.userHasManageSubmissionsPermission(userId, contextId)) {
-                instructorView = true;
-            }
+        if (authz.userHasEditPermission(userId, contextId) || 
+                authz.userHasAddPermission(userId, contextId) ||
+                authz.userHasDeletePermission(userId, contextId) || 
+                authz.userHasManageSubmissionsPermission(userId, contextId)) {
+            instructorAccess = true;
         }
 
-        return instructorView;
+        return instructorAccess;
     }
 
     public boolean isUserAllowedToMakeSubmissionForAssignment(String userId, Assignment2 assignment) {

@@ -1427,30 +1427,30 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
 
     }
 
-    public void testIsUserAllowedToAccessInstructorView() {
+    public void testIsUserAllowedToTakeInstructorAction() {
         // pass in a null contextId
         try {
-            permissionLogic.isUserAllowedToAccessInstructorView(null, null);
+            permissionLogic.isUserAllowedToTakeInstructorAction(null, null);
             fail("Did not catch null contextId passed to isUserAbleToAccessInstructorView");
         } catch (IllegalArgumentException iae) {
 
         }
         // only instructors and tas should have access to the non-student view
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
-        assertTrue(permissionLogic.isUserAllowedToAccessInstructorView(null, AssignmentTestDataLoad.CONTEXT_ID));
+        assertTrue(permissionLogic.isUserAllowedToTakeInstructorAction(null, AssignmentTestDataLoad.CONTEXT_ID));
 
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
-        assertTrue(permissionLogic.isUserAllowedToAccessInstructorView(null, AssignmentTestDataLoad.CONTEXT_ID));
+        assertTrue(permissionLogic.isUserAllowedToTakeInstructorAction(null, AssignmentTestDataLoad.CONTEXT_ID));
 
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT1_UID);
-        assertFalse(permissionLogic.isUserAllowedToAccessInstructorView(null, AssignmentTestDataLoad.CONTEXT_ID));
+        assertFalse(permissionLogic.isUserAllowedToTakeInstructorAction(null, AssignmentTestDataLoad.CONTEXT_ID));
         
         // make sure it works if we specify the user
-        assertTrue(permissionLogic.isUserAllowedToAccessInstructorView(AssignmentTestDataLoad.INSTRUCTOR_UID, AssignmentTestDataLoad.CONTEXT_ID));
-        assertTrue(permissionLogic.isUserAllowedToAccessInstructorView(AssignmentTestDataLoad.TA_UID, AssignmentTestDataLoad.CONTEXT_ID));
-        assertFalse(permissionLogic.isUserAllowedToAccessInstructorView(AssignmentTestDataLoad.STUDENT1_UID, AssignmentTestDataLoad.CONTEXT_ID));
-        assertFalse(permissionLogic.isUserAllowedToAccessInstructorView(AssignmentTestDataLoad.STUDENT2_UID, AssignmentTestDataLoad.CONTEXT_ID));
-        assertFalse(permissionLogic.isUserAllowedToAccessInstructorView(AssignmentTestDataLoad.STUDENT3_UID, AssignmentTestDataLoad.CONTEXT_ID));
+        assertTrue(permissionLogic.isUserAllowedToTakeInstructorAction(AssignmentTestDataLoad.INSTRUCTOR_UID, AssignmentTestDataLoad.CONTEXT_ID));
+        assertTrue(permissionLogic.isUserAllowedToTakeInstructorAction(AssignmentTestDataLoad.TA_UID, AssignmentTestDataLoad.CONTEXT_ID));
+        assertFalse(permissionLogic.isUserAllowedToTakeInstructorAction(AssignmentTestDataLoad.STUDENT1_UID, AssignmentTestDataLoad.CONTEXT_ID));
+        assertFalse(permissionLogic.isUserAllowedToTakeInstructorAction(AssignmentTestDataLoad.STUDENT2_UID, AssignmentTestDataLoad.CONTEXT_ID));
+        assertFalse(permissionLogic.isUserAllowedToTakeInstructorAction(AssignmentTestDataLoad.STUDENT3_UID, AssignmentTestDataLoad.CONTEXT_ID));
     }
 
     public void testGetViewableStudentsForAssignment() {

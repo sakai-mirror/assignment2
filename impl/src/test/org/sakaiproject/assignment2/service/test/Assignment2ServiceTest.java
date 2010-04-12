@@ -93,6 +93,15 @@ public class Assignment2ServiceTest extends Assignment2TestBase {
             fail("Did not catch null contextId passed to getAssignments");
         } catch (IllegalArgumentException iae) {}
         
+        // set accept until dates on a1 and a2
+        Assignment2 a1 = dao.getAssignmentByIdWithGroupsAndAttachments(testData.a1Id);
+        a1.setAcceptUntilDate(new Date());
+        dao.save(a1);
+
+        Assignment2 a2 = dao.getAssignmentByIdWithGroupsAndAttachments(testData.a2Id);
+        a2.setAcceptUntilDate(new Date());
+        dao.save(a2);
+        
         // let's make assignment3 and assignment4 graded and set accept until dates
         Assignment2 a3 = dao.getAssignmentByIdWithGroupsAndAttachments(testData.a3Id);
         a3.setGraded(true);
@@ -118,21 +127,20 @@ public class Assignment2ServiceTest extends Assignment2TestBase {
         assertEquals(4, assignList.size());
         // check for the accept until date populated
         for (AssignmentDefinition def : assignList) {
-            if (def.getId().equals(testData.a3Id)) {
+            if (def.getId().equals(testData.a1Id)) {
+                assertNotNull(def.getAcceptUntilDate());
+            } else if (def.getId().equals(testData.a2Id)) {
+                assertNotNull(def.getAcceptUntilDate());
+            } else if (def.getId().equals(testData.a3Id)) {
                 assertNotNull(def.getAcceptUntilDate());
             } else if (def.getId().equals(testData.a4Id)) {
                 assertNotNull(def.getAcceptUntilDate());
             }
         }
 
-        // let's try the ta. he/she should only be able to view assignments if
-        // 1) it is ungraded and it is open to the site
-        // 2) it is ungraded and he/she is a member of a restricted group
-        // 3) it is graded and he/she is authorized to view/grade the associated
-        //      gb item in the gb
-
-        // our ta is a member of group 1. assign1 is restricted to group 1 and 2
-        // for a4 (graded), so ta may only see assigns for group 1 (or unrestricted assigns)
+        // let's try the ta. if assign is restricted to groups, he/she may only view
+        // if a member of a restricted group. otherwise, may view but not access restricted
+        // info. so ta may view everything for a1 but restricted viewing of a2 and a3
 
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
         // should return assignment 1, 2, 3
@@ -141,12 +149,12 @@ public class Assignment2ServiceTest extends Assignment2TestBase {
         assertEquals(3, assignList.size());
         // let's make sure that these are the right assign
         for (AssignmentDefinition assign : assignList) {
-            if (assign.getId().equals(testData.a1Id) || assign.getId().equals(testData.a2Id) || 
-                    assign.getId().equals(testData.a3Id)) {
-                // double check that accept until date is populated 
-                if (assign.getId().equals(testData.a3Id)) {
-                    assertNotNull(assign.getAcceptUntilDate());
-                } 
+            if (assign.getId().equals(testData.a1Id)) {
+                assertNotNull(assign.getAcceptUntilDate());
+            }else if (assign.getId().equals(testData.a2Id)) {
+                assertNull(assign.getAcceptUntilDate());
+            } else if (assign.getId().equals(testData.a3Id)) {
+                assertNull(assign.getAcceptUntilDate());
             } else {
                 fail("Invalid assignment returned for TA via getViewableAssignments");
             }

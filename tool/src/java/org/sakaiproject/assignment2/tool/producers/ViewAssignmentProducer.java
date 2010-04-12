@@ -36,14 +36,19 @@ import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.GradebookItem;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
-import org.sakaiproject.assignment2.tool.params.SimpleAssignmentViewParams;
+import org.sakaiproject.assignment2.tool.params.AssignmentDetailsViewParams;
 import org.sakaiproject.assignment2.tool.producers.renderers.AsnnInstructionsRenderer;
 
 import uk.org.ponder.messageutil.MessageLocator;
+import uk.org.ponder.rsf.components.UICommand;
 import uk.org.ponder.rsf.components.UIContainer;
+import uk.org.ponder.rsf.components.UIForm;
+import uk.org.ponder.rsf.components.UIInternalLink;
+import uk.org.ponder.rsf.components.UIMessage;
 import uk.org.ponder.rsf.components.UIOutput;
 import uk.org.ponder.rsf.view.ComponentChecker;
 import uk.org.ponder.rsf.view.ViewComponentProducer;
+import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
 import uk.org.ponder.rsf.viewstate.ViewParameters;
 import uk.org.ponder.rsf.viewstate.ViewParamsReporter;
 
@@ -72,7 +77,7 @@ public class ViewAssignmentProducer implements ViewComponentProducer, ViewParams
     public void fillComponents(UIContainer tofill, ViewParameters viewparams, ComponentChecker checker) {
         
         //Get Params
-        SimpleAssignmentViewParams params = (SimpleAssignmentViewParams) viewparams;
+        AssignmentDetailsViewParams params = (AssignmentDetailsViewParams) viewparams;
         Long assignmentId = params.assignmentId;
         if (assignmentId == null){
             //handle error
@@ -87,6 +92,21 @@ public class ViewAssignmentProducer implements ViewComponentProducer, ViewParams
 
         Assignment2 assignment = assignmentLogic.getAssignmentByIdWithAssociatedData(assignmentId, optionalParamMap);
 
+        // optionally render breadcrumbs depending upon the view
+        if (params.fromView != null) {
+            if (ListProducer.VIEW_ID.equals(params.fromView)) {
+                UIOutput.make(tofill, "list_breadcrumbs");
+                UIInternalLink.make(tofill, "breadcrumb_asnn_list", 
+                        messageLocator.getMessage("assignment2.list.heading"),
+                        new SimpleViewParameters(ListProducer.VIEW_ID));
+                UIOutput.make(tofill, "breadcrumb_asnn_title", assignment.getTitle());
+                
+                // make the "Return to List" button
+                UIForm form = UIForm.make(tofill, "navigation-form");
+                UICommand.make(form, "return-to-list", UIMessage.make("assignment2.details.cancel"), "CommonNavigationBean.processActionCancelToList");
+            }
+        }
+        
         // use a date which is related to the current users locale
         DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, locale);
         
@@ -172,7 +192,7 @@ public class ViewAssignmentProducer implements ViewComponentProducer, ViewParams
     }
 
     public ViewParameters getViewParameters() {
-        return new SimpleAssignmentViewParams();
+        return new AssignmentDetailsViewParams();
     }
 
     public void setMessageLocator(MessageLocator messageLocator) {

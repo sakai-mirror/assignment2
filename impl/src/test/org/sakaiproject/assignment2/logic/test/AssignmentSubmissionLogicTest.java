@@ -761,13 +761,20 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
         subList = submissionLogic.getViewableSubmissionsWithHistoryForAssignmentId(testData.a1Id, null);
         assertTrue(subList.size() == 1);
         // there are no group restrictions, so TA may not view any students in a2 or a3
-        subList = submissionLogic.getViewableSubmissionsWithHistoryForAssignmentId(testData.a2Id, null);
-        assertEquals(0, subList.size());
-        subList = submissionLogic.getViewableSubmissionsWithHistoryForAssignmentId(testData.a3Id, null);
-        assertEquals(0, subList.size());
+        try {
+            subList = submissionLogic.getViewableSubmissionsWithHistoryForAssignmentId(testData.a2Id, null);
+            fail("Did not catch user attempting to access submissions via getViewableSubmissionsForAssignmentId without permission");
+        } catch (SecurityException se) {}
+        try {
+            subList = submissionLogic.getViewableSubmissionsWithHistoryForAssignmentId(testData.a3Id, null);
+            fail("Did not catch user attempting to access submissions via getViewableSubmissionsForAssignmentId without permission");
+        } catch (SecurityException se) {}
+
         // a4 is restricted to a different group than the ta's so no students
-        subList = submissionLogic.getViewableSubmissionsWithHistoryForAssignmentId(testData.a4Id, null);
-        assertTrue(subList.isEmpty());
+        try {
+            subList = submissionLogic.getViewableSubmissionsWithHistoryForAssignmentId(testData.a4Id, null);
+            fail("Did not catch user attempting to access submissions via getViewableSubmissionsForAssignmentId without permission");
+        } catch (SecurityException se) {}
 
         // students should get SecurityException
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT1_UID);
@@ -824,12 +831,20 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
         subList = submissionLogic.getViewableSubmissionsForAssignmentId(testData.a1Id, null);
         assertTrue(subList.size() == 1);
         // ta cannot access a2, a3, or a4 b/c no group restrictions or not a member of a restricted group
-        subList = submissionLogic.getViewableSubmissionsForAssignmentId(testData.a2Id, null);
-        assertEquals(0, subList.size());
-        subList = submissionLogic.getViewableSubmissionsForAssignmentId(testData.a3Id, null);
-        assertEquals(0, subList.size());
-        subList = submissionLogic.getViewableSubmissionsForAssignmentId(testData.a4Id, null);
-        assertEquals(0, subList.size());
+        try {
+            subList = submissionLogic.getViewableSubmissionsForAssignmentId(testData.a2Id, null);
+            fail("Did not catch user attempting to access submissions via getViewableSubmissionsForAssignmentId without permission");
+        } catch (SecurityException se) {}
+        
+        try {
+            subList = submissionLogic.getViewableSubmissionsForAssignmentId(testData.a3Id, null);
+            fail("Did not catch user attempting to access submissions via getViewableSubmissionsForAssignmentId without permission");
+        } catch (SecurityException se) {}
+        
+        try {
+            subList = submissionLogic.getViewableSubmissionsForAssignmentId(testData.a4Id, null);
+            fail("Did not catch user attempting to access submissions via getViewableSubmissionsForAssignmentId without permission");
+        } catch (SecurityException se) {}
 
         // students should get SecurityException
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT1_UID);
