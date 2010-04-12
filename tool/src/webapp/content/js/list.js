@@ -425,10 +425,14 @@ asnn2.toggleTableControls = function(showPager,showSorting,showTopRemove,showPag
   if (showPager === true) {
     jQuery("#top-pager-area").show();
     jQuery("#bottom-pager-area").show();
+    // remove the class from the action bar that allows the actions to take up the entire toolbar
+    jQuery("#actionBar").removeClass("actionBarNoPager");
   }
   else {
     jQuery("#top-pager-area").hide();
     jQuery("#bottom-pager-area").hide();
+    // allow the action bar to take up the entire tool bar
+    jQuery("#actionBar").addClass("actionBarNoPager");
   }
   
   if (showSorting === true) {
