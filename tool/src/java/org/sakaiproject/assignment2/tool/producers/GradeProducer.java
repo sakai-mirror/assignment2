@@ -43,6 +43,7 @@ import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.assignment2.tool.DisplayUtil;
 import org.sakaiproject.assignment2.tool.beans.AssignmentSubmissionBean;
+import org.sakaiproject.assignment2.tool.beans.SessionCache;
 import org.sakaiproject.assignment2.tool.params.FilePickerHelperViewParams;
 import org.sakaiproject.assignment2.tool.params.GradeViewParams;
 import org.sakaiproject.assignment2.tool.params.ViewSubmissionsViewParams;
@@ -54,7 +55,6 @@ import org.sakaiproject.assignment2.tool.producers.renderers.AsnnTagsRenderer;
 import org.sakaiproject.assignment2.tool.producers.renderers.AsnnToggleRenderer;
 import org.sakaiproject.assignment2.tool.producers.renderers.AttachmentListRenderer;
 import org.sakaiproject.tool.api.SessionManager;
-import org.sakaiproject.tool.api.ToolSession;
 
 import uk.org.ponder.beanutil.entity.EntityBeanLocator;
 import uk.org.ponder.messageutil.MessageLocator;
@@ -117,6 +117,7 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
     private DisplayUtil displayUtil;
     private AsnnInstructionsRenderer asnnInstructionsRenderer;
     private SessionManager sessionManager;
+    private SessionCache a2sessionCache;
     
     public void setSessionManager(SessionManager sessionManager)
     {
@@ -168,7 +169,7 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
                 new ViewSubmissionsViewParams(ViewSubmissionsProducer.VIEW_ID, assignment.getId()));
 
         /*****************begin constructing the navigation links *************************/
-        String prevUserId = getNavigationSubmissionUserId("prev", userId);
+        String prevUserId = getNavigationSubmissionUserId("prev", userId, assignmentId);
         if ( prevUserId != null) {
             // has previous user
             GradeViewParams prevParams = new GradeViewParams(GradeProducer.VIEW_ID, (GradeViewParams) viewparams);
@@ -183,7 +184,7 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
         // current student
         UIOutput.make(tofill, "current", externalLogic.getUserDisplayName(userId));
 
-        String nextUserId = getNavigationSubmissionUserId("next", userId);
+        String nextUserId = getNavigationSubmissionUserId("next", userId, assignmentId);
         if (nextUserId != null)
         {
             // has next user
@@ -812,11 +813,11 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
                 outgoing.assignmentId = in.assignmentId;
                 if (AssignmentSubmissionBean.SUBMIT_PREV.equals(actionReturn) || AssignmentSubmissionBean.RELEASE_PREV.equals(actionReturn))
                 {
-                    outgoing.userId = getNavigationSubmissionUserId("prev", in.userId);
+                    outgoing.userId = getNavigationSubmissionUserId("prev", in.userId, outgoing.assignmentId);
                 }
                 else if (AssignmentSubmissionBean.SUBMIT_NEXT.equals(actionReturn) || AssignmentSubmissionBean.RELEASE_NEXT.equals(actionReturn))
                 {
-                    outgoing.userId = getNavigationSubmissionUserId("next", in.userId);
+                    outgoing.userId = getNavigationSubmissionUserId("next", in.userId, outgoing.assignmentId);
                 }
                 else
                 {
@@ -922,6 +923,10 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
     public void setAsnnTagsRenderer(AsnnTagsRenderer tagsRenderer) {
         this.tagsRenderer = tagsRenderer;
     }
+    
+    public void setA2sessionCache(SessionCache a2sessionCache) {
+        this.a2sessionCache = a2sessionCache;
+    }
 
     /**
      * get previous or next submission user id depending on the current user id position in the sorted submission list
@@ -929,22 +934,17 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
      * @param userId
      * @return
      */
-    private String getNavigationSubmissionUserId(String prevOrNext, String userId)
+    private String getNavigationSubmissionUserId(String prevOrNext, String userId, long asnnId)
     {
-        ToolSession ts = sessionManager.getCurrentToolSession();
-        if (ts != null)
+        List<String> submissionStudentIds = a2sessionCache.getSortedStudentIds(externalLogic.getCurrentUserId(), asnnId);
+        if (submissionStudentIds.size() > 0)
         {
-            Map t = (Map) ts.getAttribute(Assignment2SubmissionEntityProvider.SUBMISSIONVIEW_SESSION_ATTR);
-            if (t != null && t.containsKey(Assignment2SubmissionEntityProvider.SORTED_SUBMISSION_STUDENT_IDS))
-            {
-                List<String> submissionStudentIds = (List<String>) t.get(Assignment2SubmissionEntityProvider.SORTED_SUBMISSION_STUDENT_IDS);
-                int position = submissionStudentIds.indexOf(userId);
-                if ("prev".equals(prevOrNext)) {
-                    return position > 0 ? submissionStudentIds.get(position-1):null;
-                }
-                else if ("next".equals(prevOrNext)) {
-                    return position < (submissionStudentIds.size()-1) && position > -1? submissionStudentIds.get(position+1) : null;
-                }
+            int position = submissionStudentIds.indexOf(userId);
+            if ("prev".equals(prevOrNext)) {
+                return position > 0 ? submissionStudentIds.get(position-1):null;
+            }
+            else if ("next".equals(prevOrNext)) {
+                return position < (submissionStudentIds.size()-1) && position > -1? submissionStudentIds.get(position+1) : null;
             }
         }
         return null;

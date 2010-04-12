@@ -239,6 +239,7 @@
       <property name="asnnInstructionsRenderer" ref="AsnnInstructionsRenderer"></property>
       <property name="asnnToggleRenderer" ref="AsnnToggleRenderer"></property>
       <property name="sessionManager" ref="org.sakaiproject.tool.api.SessionManager" />
+      <property name="a2sessionCache" ref="org.sakaiproject.assignment2.tool.beans.SessionCache" />
       <property name="asnnTagsRenderer" ref="AsnnTagsRenderer"></property>
    </bean>
 

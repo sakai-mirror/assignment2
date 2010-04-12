@@ -26,6 +26,7 @@ import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.model.SubmissionAttachment;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.assignment2.tool.DisplayUtil;
+import org.sakaiproject.assignment2.tool.beans.SessionCache;
 import org.sakaiproject.assignment2.tool.beans.SubmissionTableViewState;
 import org.sakaiproject.assignment2.tool.beans.SubmissionTableViewStateHolder;
 import org.sakaiproject.assignment2.tool.params.GradeViewParams;
@@ -63,7 +64,6 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware{
     public static final String SUBMISSION_STATUS = "submissionStatus";
     public static final String SUBMISSION_GRADE = "grade";
     public static final String SUBMISSION_FEEDBACK_RELEASED = "feedbackReleased";
-    public static final String SORTED_SUBMISSION_STUDENT_IDS = "sorted_submission_student_ids";
 
     /**
      * Dependency
@@ -141,6 +141,11 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware{
     private ExternalContentReviewLogic contentReviewLogic;
     public void setExternalContentReviewLogic(ExternalContentReviewLogic contentReviewLogic) {
         this.contentReviewLogic = contentReviewLogic;
+    }
+    
+    private SessionCache a2sessionCache;
+    public void setA2sessionCache(SessionCache a2sessionCache) {
+        this.a2sessionCache = a2sessionCache;
     }
 
     public boolean entityExists(String id) {
@@ -474,10 +479,13 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware{
             List<String> studentIds = new Vector<String> ();
             for (int index = 0; index < togo.size(); index++)
             {
-            	Map m = (Map) togo.get(index);
-            	studentIds.add((String) m.get("studentId"));
+                Map m = (Map) togo.get(index);
+                studentIds.add((String) m.get("studentId"));
             }
-            attr.put(SORTED_SUBMISSION_STUDENT_IDS, studentIds);
+            
+            a2sessionCache.setSortedStudentIds(externalLogic.getCurrentUserId(), assignmentId, studentIds);
+            
+            //attr.put(SORTED_SUBMISSION_STUDENT_IDS, studentIds);
             toolSession.setAttribute(SUBMISSIONVIEW_SESSION_ATTR, attr);
         }
         
