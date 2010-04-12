@@ -108,11 +108,17 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
             fail("did not catch TA was trying to access a submission w/o authorization!");
         } catch (SecurityException se) {}
         
-        // should get a SecurityException trying to get st1 in a3
+        // should be able to view st1 in a3
+        submission = submissionLogic.getAssignmentSubmissionById(testData.st1a3Submission.getId());
+        assertNotNull(submission);
+        assertTrue(submission.getUserId().equals(AssignmentTestDataLoad.STUDENT1_UID));
+        
+        // should get security error for st3 in a3
         try {
-            submission = submissionLogic.getAssignmentSubmissionById(testData.st1a3Submission.getId());
+            submission = submissionLogic.getAssignmentSubmissionById(testData.st3a3Submission.getId());
             fail("did not catch TA was trying to access a submission w/o authorization!");
         } catch (SecurityException se) {}
+
 
         // student should be able to get their own
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT1_UID);
@@ -173,16 +179,11 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
             fail("Did not catch TA accessing st2 version w/o authorization");
         } catch (SecurityException se) { }
 
-        // let's try an assignment w/o groups. ta shouldn't have any access
-        try {
-            version = submissionLogic.getSubmissionVersionById(testData.st1a3FirstVersion.getId());
-            fail("Did not catch TA accessing st2 version w/o authorization");
-        } catch (SecurityException se) { }
-
-        try {
-            version = submissionLogic.getSubmissionVersionById(testData.st1a3CurrVersion.getId());
-            fail("Did not catch TA accessing st2 version w/o authorization");
-        } catch (SecurityException se) { }
+        // let's try an assignment w/o groups. ta should only have access to students in group 1
+        version = submissionLogic.getSubmissionVersionById(testData.st1a3FirstVersion.getId());
+        assertTrue(version.getAssignmentSubmission().getUserId().equals(AssignmentTestDataLoad.STUDENT1_UID));
+        version = submissionLogic.getSubmissionVersionById(testData.st1a3CurrVersion.getId());
+        assertTrue(version.getAssignmentSubmission().getUserId().equals(AssignmentTestDataLoad.STUDENT1_UID));
 
         // now make sure ta can't see st 3
         try {
@@ -263,7 +264,7 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
 
         // shouldn't have access to this one either
         try {
-            submission = submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(testData.a3Id, AssignmentTestDataLoad.STUDENT1_UID, null);
+            submission = submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(testData.a3Id, AssignmentTestDataLoad.STUDENT2_UID, null);
             fail("Ta should not have authorization to retrieve submission for st2 through getCurrentSubmissionByAssignmentIdAndStudentId");
         } catch (SecurityException se) {}
 
@@ -760,14 +761,19 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
         // we should get 1 student back for a1 b/c only allowed to view group 1
         subList = submissionLogic.getViewableSubmissionsWithHistoryForAssignmentId(testData.a1Id, null);
         assertTrue(subList.size() == 1);
-        // there are no group restrictions, so TA may not view any students in a2 or a3
+        // ta may only view students in his/her group, even though assignments aren't restricted to groups
+
         subList = submissionLogic.getViewableSubmissionsWithHistoryForAssignmentId(testData.a2Id, null);
-        assertEquals(0, subList.size());
+        assertEquals(1, subList.size());
+
         subList = submissionLogic.getViewableSubmissionsWithHistoryForAssignmentId(testData.a3Id, null);
-        assertEquals(0, subList.size());
+        assertEquals(1, subList.size());
+
         // a4 is restricted to a different group than the ta's so no students
-        subList = submissionLogic.getViewableSubmissionsWithHistoryForAssignmentId(testData.a4Id, null);
-        assertTrue(subList.isEmpty());
+        try {
+            subList = submissionLogic.getViewableSubmissionsWithHistoryForAssignmentId(testData.a4Id, null);
+            fail("Did not catch user attempting to access submissions via getViewableSubmissionsForAssignmentId without permission");
+        } catch (SecurityException se) {}
 
         // students should get SecurityException
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT1_UID);
@@ -820,16 +826,20 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
 
         // now become ta
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
-        // we should get 1 student back for a1 b/c only allowed to view group 1
+        // we should get 1 student back for a1, a2, and a3 b/c only allowed to view group 1
         subList = submissionLogic.getViewableSubmissionsForAssignmentId(testData.a1Id, null);
         assertTrue(subList.size() == 1);
-        // ta cannot access a2, a3, or a4 b/c no group restrictions or not a member of a restricted group
+        
         subList = submissionLogic.getViewableSubmissionsForAssignmentId(testData.a2Id, null);
-        assertEquals(0, subList.size());
+        assertTrue(subList.size() == 1);
+
         subList = submissionLogic.getViewableSubmissionsForAssignmentId(testData.a3Id, null);
-        assertEquals(0, subList.size());
-        subList = submissionLogic.getViewableSubmissionsForAssignmentId(testData.a4Id, null);
-        assertEquals(0, subList.size());
+        assertTrue(subList.size() == 1);
+        
+        try {
+            subList = submissionLogic.getViewableSubmissionsForAssignmentId(testData.a4Id, null);
+            fail("Did not catch user attempting to access submissions via getViewableSubmissionsForAssignmentId without permission");
+        } catch (SecurityException se) {}
 
         // students should get SecurityException
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT1_UID);

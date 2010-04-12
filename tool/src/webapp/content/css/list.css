@@ -126,3 +126,19 @@ body {
 .actionImage {
     vertical-align: bottom;
 }
+
+/* action bar/pager styling */
+#actionBar {
+    text-align: left; 
+    float: left; 
+    width: 70%;
+}
+
+#top-pager-area {
+    text-align: right; 
+    float: right; 
+    width: 30%;
+}
+.actionBarNoPager {
+    width: 98% !important;
+}

@@ -627,7 +627,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 
         String currUserId = externalLogic.getCurrentUserId();
         
-        if (!permissionLogic.isUserAllowedToAccessInstructorView(currUserId, assignment.getContextId())) {
+        if (!permissionLogic.isUserAllowedToManageSubmissionsForAssignment(currUserId, assignment)) {
             throw new SecurityException("A user without feedback privileges attempted to access submissions for assignment: " + assignment.getId());
         }
 

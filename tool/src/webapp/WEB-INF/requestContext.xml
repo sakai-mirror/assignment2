@@ -439,7 +439,7 @@
    <bean id="FilePickerBean" class="org.sakaiproject.assignment2.tool.beans.FilePickerBean">
    </bean>
    
-   <bean id="GraderPermissionsBean" class="org.sakaiproject.assignment2.tool.beans.GraderPermissionsBean">
+   <bean id="CommonNavigationBean" class="org.sakaiproject.assignment2.tool.beans.CommonNavigationBean">
    </bean>
 
 	<bean id="notificationBean" class="org.sakaiproject.assignment2.tool.beans.NotificationBean">

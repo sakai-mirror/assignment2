@@ -93,7 +93,8 @@ public interface AssignmentAuthzLogic {
      * user will not have permission without the "all groups" permission.
      */
     public static final String[] permissionsThatRequireOneGroup = {
-            AssignmentConstants.PERMISSION_MANAGE_SUBMISSIONS};
+        
+    };
     
     /**
      * Assignment permissions that, if assignment is restricted to groups, require the user to either
@@ -104,7 +105,8 @@ public interface AssignmentAuthzLogic {
      */
     public static final String[] permissionsForAtLeastOneOrNoGroups = {
             AssignmentConstants.PERMISSION_SUBMIT,
-            AssignmentConstants.PERMISSION_VIEW_ASSIGNMENTS};
+            AssignmentConstants.PERMISSION_VIEW_ASSIGNMENTS,
+            AssignmentConstants.PERMISSION_MANAGE_SUBMISSIONS};
     
     //////  END GROUPINGS
     

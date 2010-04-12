@@ -70,14 +70,25 @@ asnn2.buildListRenderTreeFromData = function (obj, index) {
   var canEditMatrix = obj.canMatrixLink && obj.canMatrixLink === true;
   var canGrade = obj.canGrade && obj.canGrade === true;
   
-  if (obj.requiresSubmission === true && canGrade) {
-    togo.inAndNewLink = {
-      target: '/portal/tool/'+sakai.curPlacement+'/viewSubmissions/'+obj.id,
-      linktext: obj.inAndNew
+  if (asnn2.pageState.canManageSubmissions) {
+      if (obj.requiresSubmission === true && canGrade) {
+        togo.inAndNewLink = {
+          target: '/portal/tool/'+sakai.curPlacement+'/viewSubmissions/'+obj.id,
+          linktext: obj.inAndNew
+        };
+      }
+      else {
+        togo.inAndNew = obj.inAndNew;
+      }
+  } 
+  
+  // render the details link
+  var canDetails = true; // for now this is always true
+  if (canDetails) {
+    togo.detailslink = {
+      target: '/portal/tool/'+sakai.curPlacement+'/view-assignment/'+obj.id+'?fromView=list',
+      linktext: "View Details"    
     };
-  }
-  else {
-    togo.inAndNew = obj.inAndNew;
   }
   
   if (canEdit) {
@@ -85,6 +96,10 @@ asnn2.buildListRenderTreeFromData = function (obj, index) {
       target: '/portal/tool/'+sakai.curPlacement+'/assignment/'+obj.id,
       linktext: "Edit"
     };
+    
+    if (canDetails) {
+        togo.sep0 = true;
+    }
   }
   
   if (canAdd) {
@@ -92,8 +107,8 @@ asnn2.buildListRenderTreeFromData = function (obj, index) {
       target: '/portal/tool/'+sakai.curPlacement+'/assignment?duplicatedAssignmentId='+obj.id,
       linktext: "Duplicate"
     };
-    if (canEdit) {
-        togo.sep0 = true;
+    if (canEdit || canDetails) {
+        togo.sep1 = true;
     }
   }
   
@@ -104,8 +119,8 @@ asnn2.buildListRenderTreeFromData = function (obj, index) {
       linktext: "Create/Edit Matrix Links"
     };
     
-    if (canEdit || canAdd) {
-        togo.sep1 = true;
+    if (canDetails || canEdit || canAdd) {
+        togo.sep2 = true;
     }
   }
   if (obj.graded === true && canGrade) {
@@ -113,8 +128,8 @@ asnn2.buildListRenderTreeFromData = function (obj, index) {
           target: '/portal/tool/'+sakai.curPlacement+'/viewSubmissions/'+obj.id,
           linktext: "Grade"
       };
-      if (canEdit || canAdd || canEditMatrix) {
-        togo.sep2 = true;
+      if (canDetails || canEdit || canAdd || canEditMatrix) {
+        togo.sep3 = true;
       }
   }
   else if (obj.requiresSubmission === true && canGrade) {
@@ -122,8 +137,8 @@ asnn2.buildListRenderTreeFromData = function (obj, index) {
           target: '/portal/tool/'+sakai.curPlacement+'/viewSubmissions/'+obj.id,
           linktext: "Provide Feedback"
       };
-      if (canEdit || canAdd || canEditMatrix) {
-          togo.sep2 = true;
+      if (canDetails || canEdit || canAdd || canEditMatrix) {
+          togo.sep3 = true;
       }
   }
   
@@ -160,6 +175,12 @@ asnn2.getRawJSONSiteList = function () {
     asnn2.pageState.canDelete = true;
   }
   
+  if (asnn2.pageState && xmlhttp.getResponseHeader('x-asnn2-canManageSubmissions') === 'true') {
+      // Set up global permissions for rendering In/New column
+      asnn2.pageState.canManageSubmissions = true;
+  }
+    
+  
   return togo;
 };
 
@@ -174,6 +195,7 @@ asnn2.selectorMap = [
   { selector: ".asnntitle", id: "title" },
   { selector: ".gradelink", id: "gradelink"},
   { selector: ".editlink", id: "editlink" },
+  { selector: ".detailslink", id: "detailslink" },
   { selector: ".matrixlink", id: "matrixlink" },
   { selector: ".duplink", id: "duplink" },
   { selector: ".opendate", id: "opentext" },
@@ -187,6 +209,7 @@ asnn2.selectorMap = [
   { selector: ".sep0", id: "sep0"},
   { selector: ".sep1", id: "sep1"},
   { selector: ".sep2", id: "sep2"},
+  { selector: ".sep3", id: "sep3"},
   { selector: ".opendatelabel", id: "opendatelabel" },
   { selector: ".duedatelabel", id: "duedatelabel" },
   { selector: ".groupslabel", id: "groupslabel" },
@@ -214,6 +237,7 @@ asnn2.pageState = {
   dataArray: [],
   pageModel: {},
   canDelete: false,
+  canManageSubmissions: false,
   minPageSize: 5  // This needs to be in sync with the html template currently.�
 };
 
@@ -401,10 +425,14 @@ asnn2.toggleTableControls = function(showPager,showSorting,showTopRemove,showPag
   if (showPager === true) {
     jQuery("#top-pager-area").show();
     jQuery("#bottom-pager-area").show();
+    // remove the class from the action bar that allows the actions to take up the entire toolbar
+    jQuery("#actionBar").removeClass("actionBarNoPager");
   }
   else {
     jQuery("#top-pager-area").hide();
     jQuery("#bottom-pager-area").hide();
+    // allow the action bar to take up the entire tool bar
+    jQuery("#actionBar").addClass("actionBarNoPager");
   }
   
   if (showSorting === true) {
@@ -584,6 +612,10 @@ asnn2.initAsnnList = function () {
   if (asnn2.pageState.canDelete === true) {
     asnn2.setupRemoveDialog();
     jQuery("#checkall").show();
+  }
+  
+  if (asnn2.pageState.canManageSubmissions === false) {
+      jQuery(".inNewColumn").hide();
   }
 
   /*

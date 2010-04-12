@@ -228,13 +228,6 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware {
             asnnmap.put("requiresSubmission", asnn.isRequiresSubmission());
             asnnmap.put("draft", asnn.isDraft());
 
-            // In case assignment has a gradebook item, but that gradebook item
-            // no longer exists.
-            if (userMayViewGbItems && asnn.isGraded() && (asnn.getGradebookItemId() == null || 
-                    !existingGbItemIds.contains(asnn.getGradebookItemId()))) {
-                asnnmap.put("gbItemMissing", true);
-            }
-
             // Permissions for this particular assignment
             boolean canEdit= false;
             boolean canGrade= false;
@@ -261,6 +254,13 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware {
             asnnmap.put("canDelete", canDelete);
             asnnmap.put("canGrade", canGrade);
             asnnmap.put("canAdd", canAdd);
+            
+            // In case assignment has a gradebook item, but that gradebook item
+            // no longer exists. don't include this flag unless the user may edit the assignment
+            if (canEdit && userMayViewGbItems && asnn.isGraded() && (asnn.getGradebookItemId() == null || 
+                    !existingGbItemIds.contains(asnn.getGradebookItemId()))) {
+                asnnmap.put("gbItemMissing", true);
+            }
 
             // Create/Edit Matrix Links
             asnnmap.put("canMatrixLink", siteAssociated && canEdit);
@@ -279,7 +279,7 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware {
             }
 
             asnnmap.put("inAndNew", inAndNewText);
-            asnnmap.put("reviewEnabled", contentReviewAvailable && asnn.isContentReviewEnabled());
+            asnnmap.put("reviewEnabled", canEdit && contentReviewAvailable && asnn.isContentReviewEnabled());
 
             List groupstogo = new ArrayList();
             // we need to double check that all of the associated groups still exist.
@@ -295,8 +295,11 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware {
                     groupprops.put("description", g.getDescription());
                     groupstogo.add(groupprops);
                 } else {
-                    // group was probably deleted, so signal a problem to user
-                    asnnmap.put("groupMissing", true);
+                    // group was probably deleted, so signal a problem to user if they 
+                    // can edit this assignment
+                    if (canEdit) {
+                        asnnmap.put("groupMissing", true);
+                    }
                 }
             }
             asnnmap.put("groups", groupstogo);
@@ -321,6 +324,9 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware {
 
         boolean canDelete = permissionLogic.isUserAllowedToDeleteAssignments(null, context);
         httpServletResponse.setHeader("x-asnn2-canDelete", canDelete+"");
+        
+        boolean canManageSubmissions = permissionLogic.isUserAllowedToManageSubmissions(null, context);
+        httpServletResponse.setHeader("x-asnn2-canManageSubmissions", canDelete+"");
 
         return togo;
     }
@@ -413,10 +419,25 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware {
      */
     private void filterRestrictedAssignmentInfo(List<Assignment2> assignList, String context) {
         if (assignList != null) {
-            boolean filterRestrictedInfo = !permissionLogic.isUserAllowedToAccessInstructorView(null, context);
-            if (filterRestrictedInfo) {
-                // non-instructors cannot view the accept until date or properties
-                for (Assignment2 assign : assignList) {
+            List<String> permsToCheck = new ArrayList<String>();
+            permsToCheck.add(AssignmentConstants.PERMISSION_EDIT_ASSIGNMENTS);
+            permsToCheck.add(AssignmentConstants.PERMISSION_REMOVE_ASSIGNMENTS);
+            permsToCheck.add(AssignmentConstants.PERMISSION_MANAGE_SUBMISSIONS);
+            Map<Long, Map<String, Boolean>> assignPerms = permissionLogic.getPermissionsForAssignments(assignList, permsToCheck);
+            // non-instructors cannot view the accept until date or properties
+            for (Assignment2 assign : assignList) {
+                Map<String, Boolean> userPerms = assignPerms.get(assign.getId());
+                if (userPerms != null) {
+                    boolean canEdit = userPerms.get(AssignmentConstants.PERMISSION_EDIT_ASSIGNMENTS);
+                    boolean canDelete = userPerms.get(AssignmentConstants.PERMISSION_REMOVE_ASSIGNMENTS);
+                    boolean canManage = userPerms.get(AssignmentConstants.PERMISSION_MANAGE_SUBMISSIONS);
+
+                    if (!canEdit && !canDelete && !canManage) {
+                        assign.setProperties(null);
+                        assign.setAcceptUntilDate(null);
+                    }
+                } else {
+
                     assign.setProperties(null);
                     assign.setAcceptUntilDate(null);
                 }

@@ -212,7 +212,7 @@ public class Assignment2WorkFlowLogic implements ViewParamsInterceptor, ActionRe
             result.resultingView = new SimpleViewParameters(ListProducer.VIEW_ID);
             break;
             
-        case GRADER_PERMISSIONS_CANCEL:
+        case CANCEL_TO_LIST_VIEW:
             result.resultingView = new SimpleViewParameters(ListProducer.VIEW_ID);
             result.propagateBeans = ARIResult.FLOW_END;
             break;
