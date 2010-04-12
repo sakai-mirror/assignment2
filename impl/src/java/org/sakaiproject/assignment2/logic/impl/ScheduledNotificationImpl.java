@@ -427,7 +427,7 @@ public class ScheduledNotificationImpl implements ScheduledNotification
         //TODO - make this customizable. for now, send all as digest
         boolean sendAsDigest = true;
 
-        List<String> userIdsToNotify = permissionLogic.getUsersAllowedToViewStudentForAssignment(submission.getUserId(), submission.getAssignment());
+        List<String> userIdsToNotify = permissionLogic.getUsersAllowedToViewStudentForAssignment(submission.getUserId(), submission.getAssignment().getId());
         if (userIdsToNotify != null) {
             // let's convert these userIds to User objects
             Collection<User> users = externalLogic.getUserIdUserMap(userIdsToNotify).values();

@@ -1019,12 +1019,14 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
         return assignmentSubmitters;
     }
 
-    public List<String> getUsersAllowedToViewStudentForAssignment(String studentId, Assignment2 assignment) {
-        if (studentId == null || assignment == null) {
+    public List<String> getUsersAllowedToViewStudentForAssignment(String studentId, Long assignmentId) {
+        if (studentId == null || assignmentId == null) {
             throw new IllegalArgumentException("Null studentId or assignmentId passed to getUsersAllowedToViewSubmission");
         }
 
         List<String> usersAllowedToViewStudent = new ArrayList<String>();
+        
+        Assignment2 assignment = dao.getAssignmentByIdWithGroups(assignmentId);
 
         // identify all of the users who are able to manage submissions
         Set<String> submissionManagers = authz.getUsersWithPermission(assignment.getContextId(), AssignmentConstants.PERMISSION_MANAGE_SUBMISSIONS);

@@ -337,12 +337,12 @@ public interface AssignmentPermissionLogic {
 
     /**
      * @param studentId
-     * @param assignment
+     * @param assignmentId
      * @return a list of the userIds of users who are able to view the given
      * student's submission(s) for the given assignment. does not include the student
      * as a user who may view the student. 
      */
-    public List<String> getUsersAllowedToViewStudentForAssignment(String studentId, Assignment2 assignment);
+    public List<String> getUsersAllowedToViewStudentForAssignment(String studentId, Long assignmentId);
 
     /**
      * @param userId if null, will use the current user

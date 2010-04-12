@@ -1761,7 +1761,7 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
     public void testGetUsersAllowedToViewStudentForAssignment() {
         // try some null params
         try {
-            permissionLogic.getUsersAllowedToViewStudentForAssignment(null, testData.a1);
+            permissionLogic.getUsersAllowedToViewStudentForAssignment(null, testData.a1Id);
             fail("Did not catch null studentId passed to getUsersAllowedToViewStudentForAssignment");
         } catch (IllegalArgumentException iae) {}
 
@@ -1771,41 +1771,41 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
         } catch (IllegalArgumentException iae) {}
 
         // instructor and ta passed as a student should return nothing
-        List<String> usersAllowedToView = permissionLogic.getUsersAllowedToViewStudentForAssignment(AssignmentTestDataLoad.INSTRUCTOR_UID, testData.a1);
+        List<String> usersAllowedToView = permissionLogic.getUsersAllowedToViewStudentForAssignment(AssignmentTestDataLoad.INSTRUCTOR_UID, testData.a1Id);
         assertEquals(0, usersAllowedToView.size());
 
-        usersAllowedToView = permissionLogic.getUsersAllowedToViewStudentForAssignment(AssignmentTestDataLoad.TA_UID, testData.a1);
+        usersAllowedToView = permissionLogic.getUsersAllowedToViewStudentForAssignment(AssignmentTestDataLoad.TA_UID, testData.a1Id);
         assertEquals(0, usersAllowedToView.size());
 
         // ta only has access to group 1 - student1
         // STUDENT 1 should have inst and ta
-        usersAllowedToView = permissionLogic.getUsersAllowedToViewStudentForAssignment(AssignmentTestDataLoad.STUDENT1_UID, testData.a1);
+        usersAllowedToView = permissionLogic.getUsersAllowedToViewStudentForAssignment(AssignmentTestDataLoad.STUDENT1_UID, testData.a1Id);
         assertEquals(2, usersAllowedToView.size());
         assertTrue(usersAllowedToView.contains(AssignmentTestDataLoad.TA_UID));
         assertTrue(usersAllowedToView.contains(AssignmentTestDataLoad.INSTRUCTOR_UID));
 
         // student 2 should only have instructor
-        usersAllowedToView = permissionLogic.getUsersAllowedToViewStudentForAssignment(AssignmentTestDataLoad.STUDENT2_UID, testData.a1);
+        usersAllowedToView = permissionLogic.getUsersAllowedToViewStudentForAssignment(AssignmentTestDataLoad.STUDENT2_UID, testData.a1Id);
         assertEquals(1, usersAllowedToView.size());
         assertTrue(usersAllowedToView.contains(AssignmentTestDataLoad.INSTRUCTOR_UID));
 
         // student 3 does not have access to assign 1
-        usersAllowedToView = permissionLogic.getUsersAllowedToViewStudentForAssignment(AssignmentTestDataLoad.STUDENT3_UID, testData.a1);
+        usersAllowedToView = permissionLogic.getUsersAllowedToViewStudentForAssignment(AssignmentTestDataLoad.STUDENT3_UID, testData.a1Id);
         assertEquals(0, usersAllowedToView.size());
 
         // ta and instructor may view st1 b/c member of group 1
-        usersAllowedToView = permissionLogic.getUsersAllowedToViewStudentForAssignment(AssignmentTestDataLoad.STUDENT1_UID, testData.a3);
+        usersAllowedToView = permissionLogic.getUsersAllowedToViewStudentForAssignment(AssignmentTestDataLoad.STUDENT1_UID, testData.a3Id);
         assertEquals(2, usersAllowedToView.size());
         assertTrue(usersAllowedToView.contains(AssignmentTestDataLoad.TA_UID));
         assertTrue(usersAllowedToView.contains(AssignmentTestDataLoad.INSTRUCTOR_UID));
 
         // student 2 should only have instructor
-        usersAllowedToView = permissionLogic.getUsersAllowedToViewStudentForAssignment(AssignmentTestDataLoad.STUDENT2_UID, testData.a3);
+        usersAllowedToView = permissionLogic.getUsersAllowedToViewStudentForAssignment(AssignmentTestDataLoad.STUDENT2_UID, testData.a3Id);
         assertEquals(1, usersAllowedToView.size());
         assertTrue(usersAllowedToView.contains(AssignmentTestDataLoad.INSTRUCTOR_UID));
 
         // student 3 should only have instructor
-        usersAllowedToView = permissionLogic.getUsersAllowedToViewStudentForAssignment(AssignmentTestDataLoad.STUDENT3_UID, testData.a3);
+        usersAllowedToView = permissionLogic.getUsersAllowedToViewStudentForAssignment(AssignmentTestDataLoad.STUDENT3_UID, testData.a3Id);
         assertEquals(1, usersAllowedToView.size());
         assertTrue(usersAllowedToView.contains(AssignmentTestDataLoad.INSTRUCTOR_UID));
     }
