@@ -149,7 +149,7 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
     public void fillComponents(UIContainer tofill, ViewParameters viewparams, ComponentChecker checker) {
 
         //Get Params
-    	GradeViewParams params = (GradeViewParams) viewparams;
+        GradeViewParams params = (GradeViewParams) viewparams;
         String userId = params.userId;
         Long assignmentId = params.assignmentId;
         if (assignmentId == null || userId == null){
@@ -164,38 +164,38 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
         
         // the "Return to List" link
         UIInternalLink.make(tofill, "returnToList_link", messageLocator.getMessage("assignment2.assignment_grade.returnToList", new Object[] { assignment.getTitle()}), 
-        		new ViewSubmissionsViewParams(ViewSubmissionsProducer.VIEW_ID, assignment.getId()));
-        
+                new ViewSubmissionsViewParams(ViewSubmissionsProducer.VIEW_ID, assignment.getId()));
+
         /*****************begin constructing the navigation links *************************/
         String prevUserId = getNavigationSubmissionUserId("prev", userId);
         if ( prevUserId != null) {
-        	// has previous user
-        	GradeViewParams prevParams = new GradeViewParams(GradeProducer.VIEW_ID, (GradeViewParams) viewparams);
+            // has previous user
+            GradeViewParams prevParams = new GradeViewParams(GradeProducer.VIEW_ID, (GradeViewParams) viewparams);
             prevParams.userId = prevUserId;
-			UIInternalLink previousLink = UIInternalLink.make(tofill, 
+            UIInternalLink previousLink = UIInternalLink.make(tofill, 
                     "previous_link", messageLocator.getMessage("assignment2.assignment_grade.previous"), prevParams);
-		}
-		else {
+        }
+        else {
             // show a disabled Previous link
             UIOutput.make(tofill, "previous_disabled", messageLocator.getMessage("assignment2.assignment_grade.previous"));
-		}
-		// current student
-		UIOutput.make(tofill, "current", externalLogic.getUserDisplayName(userId));
-		
-		String nextUserId = getNavigationSubmissionUserId("next", userId);
-		if (nextUserId != null)
-		{
-			// has next user
-			GradeViewParams nextParams = new GradeViewParams(GradeProducer.VIEW_ID, (GradeViewParams) viewparams);
-	        nextParams.userId = nextUserId;
-			UIInternalLink nextLink = UIInternalLink.make(tofill, 
+        }
+        // current student
+        UIOutput.make(tofill, "current", externalLogic.getUserDisplayName(userId));
+
+        String nextUserId = getNavigationSubmissionUserId("next", userId);
+        if (nextUserId != null)
+        {
+            // has next user
+            GradeViewParams nextParams = new GradeViewParams(GradeProducer.VIEW_ID, (GradeViewParams) viewparams);
+            nextParams.userId = nextUserId;
+            UIInternalLink nextLink = UIInternalLink.make(tofill, 
                     "next_link", messageLocator.getMessage("assignment2.assignment_grade.next"), nextParams);
-		}
-		else {
-			// show a disabled Next link
+        }
+        else {
+            // show a disabled Next link
             UIOutput.make(tofill, "next_disabled", messageLocator.getMessage("assignment2.assignment_grade.next"));
-		}
-		 /*****************end of construct the navigation links *************************/
+        }
+        /*****************end of construct the navigation links *************************/
 
         boolean gbItemExists = assignment.isGraded() && assignment.getGradebookItemId() != null && 
                 gradebookLogic.gradebookItemExists(assignment.getGradebookItemId());
@@ -796,33 +796,33 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
             outgoing.assignmentId = in.assignmentId;
             outgoing.pageIndex = in.viewSubPageIndex;
         } else if (result.resultingView instanceof GradeViewParams) {
-        	if (AssignmentSubmissionBean.SUBMIT_RETURNTOLIST.equals(actionReturn) || AssignmentSubmissionBean.RELEASE_RETURNTOLIST.equals(actionReturn))
+            if (AssignmentSubmissionBean.SUBMIT_RETURNTOLIST.equals(actionReturn) || AssignmentSubmissionBean.RELEASE_RETURNTOLIST.equals(actionReturn))
             {
-        		// return to the list view
-        		ViewSubmissionsViewParams outgoing = new ViewSubmissionsViewParams();
+                // return to the list view
+                ViewSubmissionsViewParams outgoing = new ViewSubmissionsViewParams();
                 GradeViewParams in = (GradeViewParams) incoming;
                 outgoing.assignmentId = in.assignmentId;
                 outgoing.pageIndex = in.viewSubPageIndex;
             }
-        	else
-        	{
-	            GradeViewParams outgoing = (GradeViewParams) result.resultingView;
-	            GradeViewParams in = (GradeViewParams) incoming;
-	            outgoing.assignmentId = in.assignmentId;
-	            if (AssignmentSubmissionBean.SUBMIT_PREV.equals(actionReturn) || AssignmentSubmissionBean.RELEASE_PREV.equals(actionReturn))
-	            {
-	            	outgoing.userId = getNavigationSubmissionUserId("prev", in.userId);
-	            }
-	            else if (AssignmentSubmissionBean.SUBMIT_NEXT.equals(actionReturn) || AssignmentSubmissionBean.RELEASE_NEXT.equals(actionReturn))
-	            {
-	            	outgoing.userId = getNavigationSubmissionUserId("next", in.userId);
-	            }
-	            else
-	            {
-	            	outgoing.userId = in.userId;
-	                outgoing.versionId = in.versionId;
-	            }
-        	}
+            else
+            {
+                GradeViewParams outgoing = (GradeViewParams) result.resultingView;
+                GradeViewParams in = (GradeViewParams) incoming;
+                outgoing.assignmentId = in.assignmentId;
+                if (AssignmentSubmissionBean.SUBMIT_PREV.equals(actionReturn) || AssignmentSubmissionBean.RELEASE_PREV.equals(actionReturn))
+                {
+                    outgoing.userId = getNavigationSubmissionUserId("prev", in.userId);
+                }
+                else if (AssignmentSubmissionBean.SUBMIT_NEXT.equals(actionReturn) || AssignmentSubmissionBean.RELEASE_NEXT.equals(actionReturn))
+                {
+                    outgoing.userId = getNavigationSubmissionUserId("next", in.userId);
+                }
+                else
+                {
+                    outgoing.userId = in.userId;
+                    outgoing.versionId = in.versionId;
+                }
+            }
         }
 
     }
@@ -930,22 +930,22 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
      */
     private String getNavigationSubmissionUserId(String prevOrNext, String userId)
     {
-    	ToolSession ts = sessionManager.getCurrentToolSession();
-		if (ts != null)
-		{
-        	Map t = (Map) ts.getAttribute(Assignment2SubmissionEntityProvider.SUBMISSIONVIEW_SESSION_ATTR);
-			if (t != null && t.containsKey(Assignment2SubmissionEntityProvider.SORTED_SUBMISSION_STUDENT_IDS))
-			{
-				List<String> submissionStudentIds = (List<String>) t.get(Assignment2SubmissionEntityProvider.SORTED_SUBMISSION_STUDENT_IDS);
-				int position = submissionStudentIds.indexOf(userId);
-				if ("prev".equals(prevOrNext)) {
-					return position > 0 ? submissionStudentIds.get(position-1):null;
-				}
-				else if ("next".equals(prevOrNext)) {
-					return position < (submissionStudentIds.size()-1) && position > -1? submissionStudentIds.get(position+1) : null;
-				}
-			}
-		}
-		return null;
+        ToolSession ts = sessionManager.getCurrentToolSession();
+        if (ts != null)
+        {
+            Map t = (Map) ts.getAttribute(Assignment2SubmissionEntityProvider.SUBMISSIONVIEW_SESSION_ATTR);
+            if (t != null && t.containsKey(Assignment2SubmissionEntityProvider.SORTED_SUBMISSION_STUDENT_IDS))
+            {
+                List<String> submissionStudentIds = (List<String>) t.get(Assignment2SubmissionEntityProvider.SORTED_SUBMISSION_STUDENT_IDS);
+                int position = submissionStudentIds.indexOf(userId);
+                if ("prev".equals(prevOrNext)) {
+                    return position > 0 ? submissionStudentIds.get(position-1):null;
+                }
+                else if ("next".equals(prevOrNext)) {
+                    return position < (submissionStudentIds.size()-1) && position > -1? submissionStudentIds.get(position+1) : null;
+                }
+            }
+        }
+        return null;
     }
 }
