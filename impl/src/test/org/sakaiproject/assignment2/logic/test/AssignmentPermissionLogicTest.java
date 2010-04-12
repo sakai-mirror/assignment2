@@ -116,7 +116,7 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
             }
         }
         
-        // the TA with no groups doesn't have add, edit, etc
+        // the TA with no groups doesn't have add, edit, etc but does have manage submissions
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_WITH_NO_GROUPS);
         sitePerms = permissionLogic.getPermissionsForSite(AssignmentTestDataLoad.CONTEXT_ID, null);
         assertEquals(allSitePerms.size(), sitePerms.size());
@@ -129,7 +129,9 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
             } else if (perm.equals(AssignmentConstants.PERMISSION_EDIT_ASSIGNMENTS)) {
                 assertFalse(hasPerm);
             } else if (perm.equals(AssignmentConstants.PERMISSION_MANAGE_SUBMISSIONS)) {
-                assertFalse(hasPerm);
+                // the manage submissions perm gives you general privileges regardless
+                // of group membership, similar to submit
+                assertTrue(hasPerm);
             } else if (perm.equals(AssignmentConstants.PERMISSION_REMOVE_ASSIGNMENTS)) {
                 assertFalse(hasPerm);
             } else if (perm.equals(AssignmentConstants.PERMISSION_SUBMIT)) {
@@ -316,9 +318,9 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
                     if (assignId.equals(testData.a1Id)) {
                         assertTrue(hasPerm);
                     } else if (assignId.equals(testData.a2Id)) {
-                        assertFalse(hasPerm);
+                        assertTrue(hasPerm);
                     } else if (assignId.equals(testData.a3Id)) {
-                        assertFalse(hasPerm);
+                        assertTrue(hasPerm);
                     } else if (assignId.equals(testData.a4Id)) {
                         assertFalse(hasPerm);
                     } else {
@@ -996,7 +998,7 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
                 null, AssignmentTestDataLoad.STUDENT3_UID, testData.a3Id, null));
 
         // switch to TA
-        // ta may only view assignments restricted to his/her group 
+        // ta may only view students in group 1
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
         assertTrue(permissionLogic.isUserAllowedToViewSubmissionForAssignment(
                 null, AssignmentTestDataLoad.STUDENT1_UID, testData.a1Id, null));
@@ -1005,14 +1007,14 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
         assertFalse(permissionLogic.isUserAllowedToViewSubmissionForAssignment(
                 null, AssignmentTestDataLoad.STUDENT3_UID, testData.a1Id, null));
 
-        assertFalse(permissionLogic.isUserAllowedToViewSubmissionForAssignment(
+        assertTrue(permissionLogic.isUserAllowedToViewSubmissionForAssignment(
                 null, AssignmentTestDataLoad.STUDENT1_UID, testData.a2Id, null));
         assertFalse(permissionLogic.isUserAllowedToViewSubmissionForAssignment(
                 null, AssignmentTestDataLoad.STUDENT2_UID, testData.a2Id, null));
         assertFalse(permissionLogic.isUserAllowedToViewSubmissionForAssignment(
                 null, AssignmentTestDataLoad.STUDENT3_UID, testData.a2Id, null));
 
-        assertFalse(permissionLogic.isUserAllowedToViewSubmissionForAssignment(
+        assertTrue(permissionLogic.isUserAllowedToViewSubmissionForAssignment(
                 null, AssignmentTestDataLoad.STUDENT1_UID, testData.a3Id, null));
         assertFalse(permissionLogic.isUserAllowedToViewSubmissionForAssignment(
                 null, AssignmentTestDataLoad.STUDENT2_UID, testData.a3Id, null));
@@ -1076,14 +1078,14 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
                 null, AssignmentTestDataLoad.STUDENT2_UID, testData.a1Id));
         assertFalse(permissionLogic.isUserAllowedToManageSubmissionForAssignmentId(
                 null, AssignmentTestDataLoad.STUDENT3_UID, testData.a1Id));
-        // a2 and a3 are not restricted to groups, so ta does not have any privileges
-        assertFalse(permissionLogic.isUserAllowedToManageSubmissionForAssignmentId(
+        // a2 and a3 are not restricted to groups, so ta may only view students in gp 1
+        assertTrue(permissionLogic.isUserAllowedToManageSubmissionForAssignmentId(
                 null, AssignmentTestDataLoad.STUDENT1_UID, testData.a2Id));
         assertFalse(permissionLogic.isUserAllowedToManageSubmissionForAssignmentId(
                 null, AssignmentTestDataLoad.STUDENT2_UID, testData.a2Id));
         assertFalse(permissionLogic.isUserAllowedToManageSubmissionForAssignmentId(
                 null, AssignmentTestDataLoad.STUDENT3_UID, testData.a2Id));
-        assertFalse(permissionLogic.isUserAllowedToManageSubmissionForAssignmentId(
+        assertTrue(permissionLogic.isUserAllowedToManageSubmissionForAssignmentId(
                 null, AssignmentTestDataLoad.STUDENT1_UID, testData.a3Id));
         assertFalse(permissionLogic.isUserAllowedToManageSubmissionForAssignmentId(
                 null, AssignmentTestDataLoad.STUDENT2_UID, testData.a3Id));
@@ -1155,14 +1157,14 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
                 null, AssignmentTestDataLoad.STUDENT2_UID, testData.a1));
         assertFalse(permissionLogic.isUserAllowedToManageSubmission(
                 null, AssignmentTestDataLoad.STUDENT3_UID, testData.a1));
-        // a2 and a3 are not restricted to groups, so ta does not have any privileges
-        assertFalse(permissionLogic.isUserAllowedToManageSubmission(
+        // a2 and a3 are not restricted to groups, so ta only has privileges for group 1
+        assertTrue(permissionLogic.isUserAllowedToManageSubmission(
                 null, AssignmentTestDataLoad.STUDENT1_UID, testData.a2));
         assertFalse(permissionLogic.isUserAllowedToManageSubmission(
                 null, AssignmentTestDataLoad.STUDENT2_UID, testData.a2));
         assertFalse(permissionLogic.isUserAllowedToManageSubmission(
                 null, AssignmentTestDataLoad.STUDENT3_UID, testData.a2));
-        assertFalse(permissionLogic.isUserAllowedToManageSubmission(
+        assertTrue(permissionLogic.isUserAllowedToManageSubmission(
                 null, AssignmentTestDataLoad.STUDENT1_UID, testData.a3));
         assertFalse(permissionLogic.isUserAllowedToManageSubmission(
                 null, AssignmentTestDataLoad.STUDENT2_UID, testData.a3));
@@ -1217,8 +1219,7 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
                 null, testData.st2a3Submission.getId()));
 
         // switch to TA
-        // ta may only submit feedback for members in his/her group for assignments
-        // restricted to his/her group(s)
+        // ta may only submit feedback for members in his/her group
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
         assertTrue(permissionLogic.isUserAllowedToManageSubmission(
                 null, testData.st1a1Submission.getId()));
@@ -1226,7 +1227,7 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
                 null, testData.st2a1Submission.getId()));
         assertTrue(permissionLogic.isUserAllowedToManageSubmission(
                 null, testData.st1a1Submission.getId()));
-        assertFalse(permissionLogic.isUserAllowedToManageSubmission(
+        assertTrue(permissionLogic.isUserAllowedToManageSubmission(
                 null, testData.st1a3Submission.getId()));
         assertFalse(permissionLogic.isUserAllowedToManageSubmission(
                 null, testData.st2a3Submission.getId()));
@@ -1483,11 +1484,11 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
         // should only get student 1 b/c may only see students in his/her group
         viewableStudents = permissionLogic.getViewableStudentsForAssignment(AssignmentTestDataLoad.TA_UID, testData.a1);
         assertEquals(1, viewableStudents.size());
-        // a2 and a3 aren't restricted to groups, so TA can't view any students
+        // a2 and a3 aren't restricted to groups, so TA can only view students in grp 1
         viewableStudents = permissionLogic.getViewableStudentsForAssignment(AssignmentTestDataLoad.TA_UID, testData.a2);
-        assertEquals(0, viewableStudents.size());
+        assertEquals(1, viewableStudents.size());
         viewableStudents = permissionLogic.getViewableStudentsForAssignment(AssignmentTestDataLoad.TA_UID, testData.a3);
-        assertEquals(0, viewableStudents.size());
+        assertEquals(1, viewableStudents.size());
         // a4 is restricted to a group that the TA is not a member of, so should get 0 students
         viewableStudents = permissionLogic.getViewableStudentsForAssignment(AssignmentTestDataLoad.TA_UID, testData.a4);
         assertEquals(0, viewableStudents.size());
@@ -1583,7 +1584,7 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
 
         // the ta should have restrictions on a1
         // should only get student 1 b/c may only see students in his/her group
-        // should get no students for the other assignments
+        // should get no students for a4 b/c restricted to group not a member of
         assignmentToStudentListMap = permissionLogic.getViewableStudentsForAssignments(AssignmentTestDataLoad.TA_UID, AssignmentTestDataLoad.CONTEXT_ID, assignList);
         assertEquals(4, assignmentToStudentListMap.size());
         for (Map.Entry<Assignment2, List<String>> entry : assignmentToStudentListMap.entrySet()) {
@@ -1592,9 +1593,9 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
             if (assign.equals(testData.a1)) {
                 assertEquals(1, viewableStudents.size());
             } else if (assign.equals(testData.a2)) {
-                assertEquals(0, viewableStudents.size());
+                assertEquals(1, viewableStudents.size());
             } else if (assign.equals(testData.a3)) {
-                assertEquals(0, viewableStudents.size());
+                assertEquals(1, viewableStudents.size());
             } else if (assign.equals(testData.a4)) {  
                 assertEquals(0, viewableStudents.size());
             } else {
@@ -1792,10 +1793,10 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
         usersAllowedToView = permissionLogic.getUsersAllowedToViewStudentForAssignment(AssignmentTestDataLoad.STUDENT3_UID, testData.a1);
         assertEquals(0, usersAllowedToView.size());
 
-        // all of the students can access assign 3 but the ta can't
+        // ta and instructor may view st1 b/c member of group 1
         usersAllowedToView = permissionLogic.getUsersAllowedToViewStudentForAssignment(AssignmentTestDataLoad.STUDENT1_UID, testData.a3);
-        assertEquals(1, usersAllowedToView.size());
-        assertFalse(usersAllowedToView.contains(AssignmentTestDataLoad.TA_UID));
+        assertEquals(2, usersAllowedToView.size());
+        assertTrue(usersAllowedToView.contains(AssignmentTestDataLoad.TA_UID));
         assertTrue(usersAllowedToView.contains(AssignmentTestDataLoad.INSTRUCTOR_UID));
 
         // student 2 should only have instructor
@@ -1905,12 +1906,11 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
         assertTrue(permissionLogic.isUserAllowedToManageSubmissionsForAssignment(null, testData.a3));
         assertTrue(permissionLogic.isUserAllowedToManageSubmissionsForAssignment(null, testData.a4));
 
-        // tas can only manage submissions for assignments that are restricted to group(s) they
-        // are a member of
+        // tas can only manage submissions for students in his/her group
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
         assertTrue(permissionLogic.isUserAllowedToManageSubmissionsForAssignment(null, testData.a1));
-        assertFalse(permissionLogic.isUserAllowedToManageSubmissionsForAssignment(null, testData.a2));
-        assertFalse(permissionLogic.isUserAllowedToManageSubmissionsForAssignment(null, testData.a3));
+        assertTrue(permissionLogic.isUserAllowedToManageSubmissionsForAssignment(null, testData.a2));
+        assertTrue(permissionLogic.isUserAllowedToManageSubmissionsForAssignment(null, testData.a3));
         assertFalse(permissionLogic.isUserAllowedToManageSubmissionsForAssignment(null, testData.a4));
 
         // double check that the students can't do anything
@@ -1941,12 +1941,11 @@ public class AssignmentPermissionLogicTest extends Assignment2TestBase {
         assertTrue(permissionLogic.isUserAllowedToManageSubmissionsForAssignmentId(null, testData.a3Id));
         assertTrue(permissionLogic.isUserAllowedToManageSubmissionsForAssignmentId(null, testData.a4Id));
 
-        // tas can only manage submissions for assignments that are restricted to group(s) they
-        // are a member of
+        // tas can only manage submissions forgroup(s) they are a member of
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
         assertTrue(permissionLogic.isUserAllowedToManageSubmissionsForAssignmentId(null, testData.a1Id));
-        assertFalse(permissionLogic.isUserAllowedToManageSubmissionsForAssignmentId(null, testData.a2Id));
-        assertFalse(permissionLogic.isUserAllowedToManageSubmissionsForAssignmentId(null, testData.a3Id));
+        assertTrue(permissionLogic.isUserAllowedToManageSubmissionsForAssignmentId(null, testData.a2Id));
+        assertTrue(permissionLogic.isUserAllowedToManageSubmissionsForAssignmentId(null, testData.a3Id));
         assertFalse(permissionLogic.isUserAllowedToManageSubmissionsForAssignmentId(null, testData.a4Id));
 
         // double check that the students can't do anything

@@ -138,9 +138,8 @@ public class Assignment2ServiceTest extends Assignment2TestBase {
             }
         }
 
-        // let's try the ta. if assign is restricted to groups, he/she may only view
-        // if a member of a restricted group. otherwise, may view but not access restricted
-        // info. so ta may view everything for a1 but restricted viewing of a2 and a3
+        // let's try the ta. allowed to view all of the info b/c has general
+        // manage submissions permission
 
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
         // should return assignment 1, 2, 3
@@ -152,9 +151,9 @@ public class Assignment2ServiceTest extends Assignment2TestBase {
             if (assign.getId().equals(testData.a1Id)) {
                 assertNotNull(assign.getAcceptUntilDate());
             }else if (assign.getId().equals(testData.a2Id)) {
-                assertNull(assign.getAcceptUntilDate());
+                assertNotNull(assign.getAcceptUntilDate());
             } else if (assign.getId().equals(testData.a3Id)) {
-                assertNull(assign.getAcceptUntilDate());
+                assertNotNull(assign.getAcceptUntilDate());
             } else {
                 fail("Invalid assignment returned for TA via getViewableAssignments");
             }

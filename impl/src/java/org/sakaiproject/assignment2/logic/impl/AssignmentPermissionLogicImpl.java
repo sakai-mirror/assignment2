@@ -882,27 +882,35 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
                                 }
 
                             } else {
-                                // user doesn't have manage all perm, so check for individual assignment
-                                if (isUserAllowedToTakeActionOnAssignment(userId, assign, AssignmentConstants.PERMISSION_MANAGE_SUBMISSIONS, 
-                                        userGroupMemberships, authzPermMap)) {
-                                    // we need to filter the available submitters based
-                                    // on group restrictions, if applicable
-                                    List<String> filteredSubmitters = filterSubmittersGivenGroupRestrictions(
-                                            contextId, usersWithSubmitPerm, assign.getAssignmentGroupSet(), groupToMembershipMap);
-                                    if (filteredSubmitters != null) {
-                                        // start with the assignment groups that the user is a member of
-                                        Set<String> groupsToCheck = getSharedListMembers(
-                                                assign.getListOfAssociatedGroupReferences(), userGroupMemberships);
+                                // user doesn't have manage all perm, so check for individual assignment. the user must be a member of at
+                                // least one group at this point
+                                if (userGroupMemberships != null && !userGroupMemberships.isEmpty()) {
+                                    if (isUserAllowedToTakeActionOnAssignment(userId, assign, AssignmentConstants.PERMISSION_MANAGE_SUBMISSIONS, 
+                                            userGroupMemberships, authzPermMap)) {
+                                        // we need to filter the available submitters based
+                                        // on group restrictions, if applicable
+                                        List<String> filteredSubmitters = filterSubmittersGivenGroupRestrictions(
+                                                contextId, usersWithSubmitPerm, assign.getAssignmentGroupSet(), groupToMembershipMap);
+                                        if (filteredSubmitters != null) {
+                                            // start with the assignment groups that the user is a member of. if this assignment isn't restricted
+                                            // to groups, we will just include the user's groups
+                                            Set<String> groupsToCheck = new HashSet<String>();
+                                            if (assign.getAssignmentGroupSet() != null && !assign.getAssignmentGroupSet().isEmpty()) {
+                                                groupsToCheck = getSharedListMembers(
+                                                        assign.getListOfAssociatedGroupReferences(), userGroupMemberships);
+                                            } else {
+                                                groupsToCheck = new HashSet<String>(userGroupMemberships);
+                                            }
 
-                                        // now retrieve all of the users in those groups
-                                        Set<String> usersInGroups = getUsersInGroups(contextId, groupsToCheck, groupToMembershipMap);
+                                            // now retrieve all of the users in those groups
+                                            Set<String> usersInGroups = getUsersInGroups(contextId, groupsToCheck, groupToMembershipMap);
 
-                                        // now let's filter that based upon our filteredSubmitters
-                                        Set<String> viewableStudents = getSharedListMembers(usersInGroups, filteredSubmitters);
-                                        availStudents.addAll(viewableStudents);
+                                            // now let's filter that based upon our filteredSubmitters
+                                            Set<String> viewableStudents = getSharedListMembers(usersInGroups, filteredSubmitters);
+                                            availStudents.addAll(viewableStudents);
+                                        }
                                     }
                                 }
-
                             }
                         }
 

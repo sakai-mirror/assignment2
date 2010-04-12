@@ -137,7 +137,7 @@ asnn2.buildListRenderTreeFromData = function (obj, index) {
           target: '/portal/tool/'+sakai.curPlacement+'/viewSubmissions/'+obj.id,
           linktext: "Provide Feedback"
       };
-      if (canEdit || canAdd || canEditMatrix) {
+      if (canDetails || canEdit || canAdd || canEditMatrix) {
           togo.sep3 = true;
       }
   }
