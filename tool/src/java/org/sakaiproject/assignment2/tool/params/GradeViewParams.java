@@ -59,6 +59,14 @@ public class GradeViewParams extends SimpleViewParameters implements VerifiableV
         this.versionId = versionId;
         this.viewSubPageIndex = viewSubPageIndex;
     }
+    
+    public GradeViewParams(String viewId, GradeViewParams other) {
+    	super(viewId);
+        this.assignmentId = other.assignmentId;
+        this.userId = other.userId;
+        this.versionId = other.versionId;
+        this.viewSubPageIndex = other.viewSubPageIndex;
+    }
 
     public String getParseSpec(){
         return super.getParseSpec() + ",@1:assignmentId,@2:userId,versionId,viewSubPageIndex";

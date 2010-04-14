@@ -28,15 +28,47 @@
 			<li>Message for user here</li>
 		</ul>
 	</div>
+	<div style="display:none" id="save-grading-dialog">
+        <h3 rsf:id="save-grading-title">Save Grading for Previous Assignment</h3>
+        <ul class="ui-dialog-msg-list">
+            <li rsf:id="save-grading-message" class="alertMessage">You have unsaved changes. Would you like to save your changes?</li>
+        </ul>
+        <fieldset class="submit">
+            <input id="" rsf:id="save-grading-save" accesskey="s" type="button" class="active" value="Save"/>
+            <input id="" rsf:id="save-grading-saveAndRelease" accesskey="r" type="button" class="active" value="Save and Release Feedback"/>
+            <input id="" rsf:id="save-grading-clear" accesskey="x" type="button" value="Clear"/>
+            <input id="" rsf:id="save-grading-cancel" type="button" value="Cancel!" />
+        </fieldset>
+    </div>
+    <form name="gradeForm" rsf:id="form" method="post">
+    <input name="gradingInfoChanged" id="gradingInfoChanged" rsf:id="gradingInfoChanged" type="hidden" value="false" />
+    <input name="numSubmittedVersions" id="numSubmittedVersions" rsf:id="numSubmittedVersions" type="hidden" value="" />
+    
+    <div>
+    <div style="float:left;">
+        <h3 rsf:id="heading">Submission for Name</h3>
+    </div>
+    <div style="float:right; border: thin #838383 solid; width: 30%; text-align: center;">
+        <div style="padding: 2px; border-bottom: thin #838383 solid; background: #d9d9d9;">
+            <a id = "returnToList_link" rsf:id="returnToList_link">Return to Submission List</a>
+        </div>
+        <div style="padding: 2px;">
+            <a id="previous_link" rsf:id="previous_link" >Previous</a>
+            <span rsf:id="previous_disabled" class="inactive">Previous</span>
+            <span class="separator">|</span>
+            <span rsf:id="current">Current User</span>
+            <span class="separator">|</span>
+            <a id="next_link" rsf:id="next_link" >Next</a>
+            <span rsf:id="next_disabled" class="inactive">Next</span>
+        </div>
+    </div>
+    <div style="clear:both;"></div>
+    </div>
 
-	<form rsf:id="form" method="post">
+    <p rsf:id="status" class="subheading"></p>
 
-	<h3 rsf:id="heading">Submission for Name</h3>
+    <p rsf:id="non-electronic-submission" class="subheading"></p>
 
-	<p rsf:id="status" class="subheading"></p>
-	
-	<p rsf:id="non-electronic-submission" class="subheading"></p>
-	
   <!--  Instructions section -->
   <div rsf:id="assignment-instructions:">
       <!-- Assignment Instructions go here. -->
@@ -106,8 +138,8 @@
       <div rsf:id="submitted_text_fieldset">
         <h4 rsf:id="msg=assignment2.assignment_grade.annotated_submitted_text" class="subgroupHeading">Inline Text</h4>
         <p rsf:id="inline_feedback_instructions" class="block instruction">Below is the submission from a student. You can insert comments into this text by clicking in the box, then type your comments.</p>
-        <div rsf:id="feedback_text:">
-        	<textarea name="something" cols="80" rows="20" wrap="virtual"></textarea>
+        <div id="feedback_text" >
+        	<textarea rsf:id="feedback_text:" name="feedback_text" id="feedback_text" cols="80" rows="20" wrap="virtual"></textarea>
         	<!-- this should be the FCKEditor -->
         </div>
     	</div>
@@ -123,9 +155,9 @@
     	</div>
       
       <!--  Additional Feedback Notes -->
-      <div>
+      <div id="feedback_notes">
         <h4 rsf:id="msg=assignment2.assignment_grade.feedback_notes" class="subgroupHeading">Additional Feedback</h4>
-        <textarea  rsf:id="feedback_notes:" name="something" cols="80" rows="20" wrap="virtual"></textarea>
+        <textarea  rsf:id="feedback_notes:" name="feedback_notes" id="feedback_notes" cols="80" rows="20" wrap="virtual"></textarea>
         <!-- this should be the FCKEditor -->
         <p rsf:id="feedback_notes_no_edit" class="nothingProvided"></p>
       </div>	
@@ -168,7 +200,7 @@
       <div>
         <!--  for some reason, you can't use a label tag for a textarea -->
         <p rsf:id="msg=assignment2.gradebook.grading.comments" class="gradingLabel">Comment</p>
-        <textarea rsf:id="grade_comment_input" id="grade_comment_input" cols="80" rows="5" wrap="virtual"></textarea>
+        <textarea rsf:id="grade_comment_input" id="grade_comment_input" name="grade_comment_input" cols="80" rows="5" wrap="virtual"></textarea>
       </div>
     </div>
 	</div>
@@ -176,8 +208,9 @@
 	
 	
 	<fieldset class="submit">
-		<input rsf:id="submit" accesskey="s" type="submit" class="active" name="save" value="Save"/>
-	    <input rsf:id="release_feedback" type="submit" />
+	    <input name="submitOption" id="submitOption" rsf:id="submitOption" type="hidden" value="submit" />
+		<input name="save" id="save" rsf:id="submit" accesskey="s" type="submit" class="active" value="Save"/>
+	    <input name="release_feedback" id="release_feedback" rsf:id="release_feedback" type="submit" />
 		<input rsf:id="preview" accesskey="v" type="button" name="preview" value="Preview" class="preview_button thickbox" title="Preview" />
 		<input rsf:id="cancel" accesskey="x" type="submit" name="cancel" value="Cancel"/>
 	</fieldset>
@@ -191,6 +224,7 @@
 //<![CDATA[
 
 jQuery(document).ready(function(){
+	var change = false;
     // initialize the toggles on the page
     jQuery("div.toggleHeader").click(function () { 
        asnn2.toggleSubsection(".toggleSubsection", this);
@@ -208,6 +242,36 @@ jQuery(document).ready(function(){
     });
     asnn2gradeview.set_accept_until_on_submission_level();
 
+    jQuery('#page-replace\\:\\:previous_link').click(function() {
+        var that = jQuery(this);
+        var gradingChanged = asnn2gradeview.isGradingChanged();
+        var numSubmittedVersions = $('#page-replace\\:\\:numSubmittedVersions').val();	
+        if (gradingChanged)
+        {
+            asnn2gradeview.saveGradingDialog("previous", that.attr('href')); 
+            return false;
+        }
+    });
+
+    jQuery('#page-replace\\:\\:next_link').click(function() {
+        var that = jQuery(this);
+        var gradingChanged = asnn2gradeview.isGradingChanged();
+        var numSubmittedVersions = $('#page-replace\\:\\:numSubmittedVersions').val();	
+        if (gradingChanged) {
+            asnn2gradeview.saveGradingDialog("next", that.attr('href')); 
+            return false;
+        }
+    });
+
+    jQuery('#page-replace\\:\\:returnToList_link').click(function() {
+        var that = jQuery(this);
+        var gradingChanged = asnn2gradeview.isGradingChanged();
+        var numSubmittedVersions = $('#page-replace\\:\\:numSubmittedVersions').val();	
+        if (gradingChanged) {
+            asnn2gradeview.saveGradingDialog("returnToList", that.attr('href')); 
+            return false;
+        }
+    });
     
 });
 

@@ -24,8 +24,10 @@ package org.sakaiproject.assignment2.tool.producers;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
@@ -41,6 +43,7 @@ import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.assignment2.tool.DisplayUtil;
 import org.sakaiproject.assignment2.tool.beans.AssignmentSubmissionBean;
+import org.sakaiproject.assignment2.tool.beans.SessionCache;
 import org.sakaiproject.assignment2.tool.params.FilePickerHelperViewParams;
 import org.sakaiproject.assignment2.tool.params.GradeViewParams;
 import org.sakaiproject.assignment2.tool.params.ViewSubmissionsViewParams;
@@ -51,6 +54,7 @@ import org.sakaiproject.assignment2.tool.producers.renderers.AsnnInstructionsRen
 import org.sakaiproject.assignment2.tool.producers.renderers.AsnnTagsRenderer;
 import org.sakaiproject.assignment2.tool.producers.renderers.AsnnToggleRenderer;
 import org.sakaiproject.assignment2.tool.producers.renderers.AttachmentListRenderer;
+import org.sakaiproject.tool.api.SessionManager;
 
 import uk.org.ponder.beanutil.entity.EntityBeanLocator;
 import uk.org.ponder.messageutil.MessageLocator;
@@ -79,6 +83,7 @@ import uk.org.ponder.rsf.view.ViewComponentProducer;
 import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
 import uk.org.ponder.rsf.viewstate.ViewParameters;
 import uk.org.ponder.rsf.viewstate.ViewParamsReporter;
+import org.sakaiproject.assignment2.tool.entity.Assignment2SubmissionEntityProvider;
 
 /**
  * This view is for grading a submission from a student. Typically you get to it
@@ -87,6 +92,7 @@ import uk.org.ponder.rsf.viewstate.ViewParamsReporter;
  * @author rjlowe
  * @author wagnermr
  * @author sgithens
+ * @author zqian
  *
  */
 public class GradeProducer implements ViewComponentProducer, NavigationCaseReporter, ViewParamsReporter, ActionResultInterceptor {
@@ -111,6 +117,13 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
     private DisplayUtil displayUtil;
     private AsnnInstructionsRenderer asnnInstructionsRenderer;
     private AsnnTagsRenderer tagsRenderer;
+    private SessionManager sessionManager;
+    private SessionCache a2sessionCache;
+    
+    public void setSessionManager(SessionManager sessionManager)
+    {
+        this.sessionManager = sessionManager;
+    }
 
     private AsnnToggleRenderer toggleRenderer;
     public void setAsnnToggleRenderer(AsnnToggleRenderer toggleRenderer) {
@@ -129,6 +142,12 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
         this.dateEvolver = dateEvolver;
     }
 
+    private AssignmentSubmissionBean assignmentSubmissionBean;
+    public void setAssignmentSubmissionBean(AssignmentSubmissionBean assignmentSubmissionBean)
+    {
+    	this.assignmentSubmissionBean = assignmentSubmissionBean;
+    }
+    
     public void fillComponents(UIContainer tofill, ViewParameters viewparams, ComponentChecker checker) {
 
         //Get Params
@@ -142,6 +161,43 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
 
         AssignmentSubmission as = submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(assignmentId, userId, null);
         Assignment2 assignment = assignmentLogic.getAssignmentByIdWithAssociatedData(assignmentId);
+        
+        makeSaveGradingDialog(tofill);
+        
+        // the "Return to List" link
+        UIInternalLink.make(tofill, "returnToList_link", messageLocator.getMessage("assignment2.assignment_grade.returnToList", new Object[] { assignment.getTitle()}), 
+                new ViewSubmissionsViewParams(ViewSubmissionsProducer.VIEW_ID, assignment.getId()));
+
+        /*****************begin constructing the navigation links *************************/
+        String prevUserId = getNavigationSubmissionUserId("prev", userId, assignmentId);
+        if ( prevUserId != null) {
+            // has previous user
+            GradeViewParams prevParams = new GradeViewParams(GradeProducer.VIEW_ID, (GradeViewParams) viewparams);
+            prevParams.userId = prevUserId;
+            UIInternalLink previousLink = UIInternalLink.make(tofill, 
+                    "previous_link", messageLocator.getMessage("assignment2.assignment_grade.previous"), prevParams);
+        }
+        else {
+            // show a disabled Previous link
+            UIOutput.make(tofill, "previous_disabled", messageLocator.getMessage("assignment2.assignment_grade.previous"));
+        }
+        // current student
+        UIOutput.make(tofill, "current", externalLogic.getUserDisplayName(userId));
+
+        String nextUserId = getNavigationSubmissionUserId("next", userId, assignmentId);
+        if (nextUserId != null)
+        {
+            // has next user
+            GradeViewParams nextParams = new GradeViewParams(GradeProducer.VIEW_ID, (GradeViewParams) viewparams);
+            nextParams.userId = nextUserId;
+            UIInternalLink nextLink = UIInternalLink.make(tofill, 
+                    "next_link", messageLocator.getMessage("assignment2.assignment_grade.next"), nextParams);
+        }
+        else {
+            // show a disabled Next link
+            UIOutput.make(tofill, "next_disabled", messageLocator.getMessage("assignment2.assignment_grade.next"));
+        }
+        /*****************end of construct the navigation links *************************/
 
         boolean gbItemExists = assignment.isGraded() && assignment.getGradebookItemId() != null && 
                 gradebookLogic.gradebookItemExists(assignment.getGradebookItemId());
@@ -241,6 +297,8 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
         // * there is at least one submission
         
         int numSubmittedVersions = getNumSubmittedVersions(versionHistory);
+    	// a hidden field for version numbers
+        UIInput.make(form, "numSubmittedVersions", null, String.valueOf(numSubmittedVersions));
         
         if (numSubmittedVersions == 0 || assignment.getSubmissionType() == AssignmentConstants.SUBMIT_NON_ELECTRONIC) {
 
@@ -444,6 +502,9 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
                             new Object[] {df.format(resubmitUntil)});
                 }
             }
+            
+            // a hidden field to detect any grading information changes
+            UIInput.make(form, "gradingInfoChanged", null, "false");
         }
 
         /**
@@ -460,13 +521,31 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
 
         form.parameters.add(new UIELBinding("#{AssignmentSubmissionBean.assignmentId}", assignmentId));
         form.parameters.add(new UIELBinding("#{AssignmentSubmissionBean.userId}", userId));
-
+        // hidden field for group id
+        UIInput.make(form, "submitOption", "#{AssignmentSubmissionBean.submitOption}", "submit");
+        
         UICommand.make(form, "release_feedback", UIMessage.make("assignment2.assignment_grade.release_feedback"),
         "#{AssignmentSubmissionBean.processActionSaveAndReleaseFeedbackForSubmission}");
-        UICommand.make(form, "submit", UIMessage.make("assignment2.assignment_grade.submit"), "#{AssignmentSubmissionBean.processActionGradeSubmit}");
+        UICommand.make(form, "submit", UIMessage.make("assignment2.assignment_grade.submit"), "#{AssignmentSubmissionBean.processActionGradeSubmitOption}");
         //UICommand.make(form, "preview", UIMessage.make("assignment2.assignment_grade.preview"), "#{AssignmentSubmissionBean.processActionGradePreview}");
         UICommand.make(form, "cancel", UIMessage.make("assignment2.assignment_grade.cancel"), "#{AssignmentSubmissionBean.processActionCancel}");
-
+        
+        
+     /*   List<AssignmentSubmission> submissions = submissionLogic.getViewableSubmissionsWithHistoryForAssignmentId(assignmentId, params.groupId);
+        UIInitBlock.make(form, "asnn2gradeview-init", "asnn2gradeview.init", 
+                new Object[]{assignmentId, externalLogic.getCurrentContextId(), 
+                placement.getId(), submissions.size(), assignment.isGraded(), contentReviewEnabled, 1, orderBy, ascending, gradesReleased, params.pageIndex});
+*/
+    }
+    
+    private void makeSaveGradingDialog(UIContainer tofill) {
+        // save grading confirmation dialog
+        UIOutput.make(tofill, "save-grading-title", messageLocator.getMessage("assignment2.dialogs.save_grading.title"));
+        UIOutput.make(tofill, "save-grading-message", messageLocator.getMessage("assignment2.dialogs.save_grading.message"));
+        UIOutput.make(tofill, "save-grading-save", messageLocator.getMessage("assignment2.dialogs.save_grading.save"));
+        UIOutput.make(tofill, "save-grading-saveAndRelease", messageLocator.getMessage("assignment2.dialogs.save_grading.saveAndRelease"));
+        UIOutput.make(tofill, "save-grading-clear", messageLocator.getMessage("assignment2.dialogs.save_grading.clear"));
+        UIOutput.make(tofill, "save-grading-cancel", messageLocator.getMessage("assignment2.dialogs.save_grading.cancel"));
     }
     
     /**
@@ -544,6 +623,7 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
                     version.getFeedbackAttachSet());
         } else {
             // Feedback Notes
+        	UIOutput feedback_notes_div = UIOutput.make(versionContainer, "feedback_notes_div:", otpKey + ".feedbackNotes");
             UIInput feedback_notes = UIInput.make(versionContainer, "feedback_notes:", otpKey + ".feedbackNotes");
             feedback_notes.mustapply = Boolean.TRUE;
             richTextEvolver.evolveTextInput(feedback_notes);
@@ -555,7 +635,7 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
                     new FilePickerHelperViewParams(AddAttachmentHelperProducer.VIEWID, Boolean.TRUE, 
                             Boolean.TRUE, 500, 700, otpKey));
 
-            addAttachLink.decorate(new UIFreeAttributeDecorator("onclick", attachmentInputEvolver.getOnclickMarkupForAddAttachmentEvent(elementId)));
+            addAttachLink.decorate(new UIFreeAttributeDecorator("onclick", attachmentInputEvolver.getOnclickMarkupForAddAttachmentEvent(elementId)+"document.getElementById('page-replace::gradingInfoChanged').value='true';"));
 
             UIInputMany attachmentInput = UIInputMany.make(versionContainer, "attachment_list:", otpKey + ".feedbackAttachmentRefs", 
                     version.getFeedbackAttachmentRefs());
@@ -691,11 +771,15 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
         List<NavigationCase> nav= new ArrayList<NavigationCase>();
         nav.add(new NavigationCase("release_all", new GradeViewParams(
                 GradeProducer.VIEW_ID, null, null)));
-        nav.add(new NavigationCase("submit", new ViewSubmissionsViewParams(
-                ViewSubmissionsProducer.VIEW_ID)));
+        nav.add(new NavigationCase("submit", new GradeViewParams(
+                GradeProducer.VIEW_ID, null, null)));
         nav.add(new NavigationCase("preview", new SimpleViewParameters(
                 FragmentSubmissionGradePreviewProducer.VIEW_ID)));
         nav.add(new NavigationCase("cancel", new ViewSubmissionsViewParams(
+                ViewSubmissionsProducer.VIEW_ID)));
+        nav.add(new NavigationCase(AssignmentSubmissionBean.SUBMIT_RETURNTOLIST, new ViewSubmissionsViewParams(
+                ViewSubmissionsProducer.VIEW_ID)));
+        nav.add(new NavigationCase(AssignmentSubmissionBean.RELEASE_RETURNTOLIST, new ViewSubmissionsViewParams(
                 ViewSubmissionsProducer.VIEW_ID)));
         return nav;
     }
@@ -715,11 +799,33 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
             outgoing.assignmentId = in.assignmentId;
             outgoing.pageIndex = in.viewSubPageIndex;
         } else if (result.resultingView instanceof GradeViewParams) {
-            GradeViewParams outgoing = (GradeViewParams) result.resultingView;
-            GradeViewParams in = (GradeViewParams) incoming;
-            outgoing.assignmentId = in.assignmentId;
-            outgoing.userId = in.userId;
-            outgoing.versionId = in.versionId;
+            if (AssignmentSubmissionBean.SUBMIT_RETURNTOLIST.equals(actionReturn) || AssignmentSubmissionBean.RELEASE_RETURNTOLIST.equals(actionReturn))
+            {
+                // return to the list view
+                ViewSubmissionsViewParams outgoing = new ViewSubmissionsViewParams();
+                GradeViewParams in = (GradeViewParams) incoming;
+                outgoing.assignmentId = in.assignmentId;
+                outgoing.pageIndex = in.viewSubPageIndex;
+            }
+            else
+            {
+                GradeViewParams outgoing = (GradeViewParams) result.resultingView;
+                GradeViewParams in = (GradeViewParams) incoming;
+                outgoing.assignmentId = in.assignmentId;
+                if (AssignmentSubmissionBean.SUBMIT_PREV.equals(actionReturn) || AssignmentSubmissionBean.RELEASE_PREV.equals(actionReturn))
+                {
+                    outgoing.userId = getNavigationSubmissionUserId("prev", in.userId, outgoing.assignmentId);
+                }
+                else if (AssignmentSubmissionBean.SUBMIT_NEXT.equals(actionReturn) || AssignmentSubmissionBean.RELEASE_NEXT.equals(actionReturn))
+                {
+                    outgoing.userId = getNavigationSubmissionUserId("next", in.userId, outgoing.assignmentId);
+                }
+                else
+                {
+                    outgoing.userId = in.userId;
+                    outgoing.versionId = in.versionId;
+                }
+            }
         }
 
     }
@@ -818,5 +924,30 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
     public void setAsnnTagsRenderer(AsnnTagsRenderer tagsRenderer) {
         this.tagsRenderer = tagsRenderer;
     }
+    
+    public void setA2sessionCache(SessionCache a2sessionCache) {
+        this.a2sessionCache = a2sessionCache;
+    }
 
+    /**
+     * get previous or next submission user id depending on the current user id position in the sorted submission list
+     * @param prevOrNext
+     * @param userId
+     * @return
+     */
+    private String getNavigationSubmissionUserId(String prevOrNext, String userId, long asnnId)
+    {
+        List<String> submissionStudentIds = a2sessionCache.getSortedStudentIds(externalLogic.getCurrentUserId(), asnnId);
+        if (submissionStudentIds.size() > 0)
+        {
+            int position = submissionStudentIds.indexOf(userId);
+            if ("prev".equals(prevOrNext)) {
+                return position > 0 ? submissionStudentIds.get(position-1):null;
+            }
+            else if ("next".equals(prevOrNext)) {
+                return position < (submissionStudentIds.size()-1) && position > -1? submissionStudentIds.get(position+1) : null;
+            }
+        }
+        return null;
+    }
 }

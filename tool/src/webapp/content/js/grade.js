@@ -47,7 +47,7 @@ asnn2gradeview.override_submission_settings = function() {
 
 asnn2gradeview.set_accept_until_on_submission_level = function() {
     el = jQuery("input:checkbox[name='page-replace\:\:require_accept_until']").get(0);
-    if (el) {
+    if (el) { 
         if (el.checked) {
             jQuery("#accept_until_container").show();
         } else {
@@ -55,3 +55,173 @@ asnn2gradeview.set_accept_until_on_submission_level = function() {
         }
     }
 }
+
+/**
+ * Save/Release/Clear grading information for submission and navigate
+ *
+ * This function uses the asnn2 dialog utility.
+ */
+asnn2gradeview.saveGradingDialog = function(direction, contUrl) {
+    var saveGradingDialog = jQuery('#save-grading-dialog');
+    var saveButton = jQuery('#page-replace\\:\\:save-grading-save').click(function(event) {
+        asnn2util.closeDialog(saveGradingDialog);
+        var formSubmit = document.getElementById("page-replace::submit");
+        var option = document.getElementById("page-replace::submitOption");
+        option.value="submit_" + direction;
+        formSubmit.click();
+    });
+    
+    var saveButton = jQuery('#page-replace\\:\\:save-grading-saveAndRelease').click(function(event) {
+        asnn2util.closeDialog(saveGradingDialog);
+        var formSubmit = document.getElementById("page-replace::submit");
+        var option = document.getElementById("page-replace::submitOption");
+        option.value="release_" + direction;
+        formSubmit.click();
+    });
+
+    var clearButton = jQuery('#page-replace\\:\\:save-grading-clear').click(function(event) {
+        asnn2util.closeDialog(saveGradingDialog);
+        window.location = contUrl;
+    });
+    
+    var cancelButton = jQuery('#page-replace\\:\\:save-grading-cancel').click(function(event) {
+        asnn2util.closeDialog(saveGradingDialog);
+    });
+
+    asnn2util.openDialog(saveGradingDialog);
+    return false;
+};
+
+asnn2gradeview.isGradingChanged = function()
+{
+    var gradingChanged = false;
+    
+    /*
+     * This for loop forces all our textareas to sync with the fck editors on 
+     * the page. This was taken from fckeditorapi.js - _FormSubmit with minor
+     * modifications.
+     */
+    for ( var name in FCKeditorAPI.Instances )
+    {
+        var oEditor = FCKeditorAPI.Instances[ name ];
+        oEditor.UpdateLinkedField();
+    }
+    
+    // Check all feedback and feedback notes for all versions.
+    jQuery("textarea").each(function() {
+        var that = jQuery(this);
+        origname = that.attr('name');
+        fossilname = origname + "-fossil";
+        var currentFeedbackText = asnn2gradeview.trimHtmlInput(that.val(), false);
+        var previousFeedbackText = asnn2gradeview.trimHtmlInput(jQuery("input[name='"+fossilname+"']").val(), true);
+        if (currentFeedbackText == null && previousFeedbackText != null
+                || currentFeedbackText != null && previousFeedbackText == null
+                || currentFeedbackText != previousFeedbackText)
+        {
+            gradingChanged = true;
+        }
+    });
+    
+    var attachments = {};
+    jQuery("input[name$='attachments-input']").each(function() {
+        var that = jQuery(this);
+        var key = that.attr('name');
+        if (attachments[key]) {
+            attachments[key].push(that.val());
+        }
+        else {
+            attachments[key] = [that.val()];
+        }
+    });
+    
+    for (var attachname in attachments) {
+        var attachFossilName = attachname+"-fossil";
+        var attachFossil = jQuery("input[name='"+attachFossilName+"']");
+        var fossil = RSF.parseFossil(attachFossil.val());
+        var fossilObj = JSON.parse(fossil.oldvalue);
+
+        var inputvals = attachments[attachname];
+        if (fossilObj.length !== inputvals.length) {
+            gradingChanged = true;
+        }
+        else {
+            fossilObj.sort();
+            inputvals.sort();
+            for (var i = 0; i < fossilObj.length; i++) {
+                if (fossilObj[i] !== inputvals[i]) {
+                    gradingChanged = true;
+                }
+            }
+        }
+    }
+
+    if (!gradingChanged)
+    {
+        // whether the grading points changed
+        var currentGradePoints = $("input[name='page-replace\:\:grade_input']").val();
+        currentGradePoints=asnn2gradeview.trimHtmlInput(currentGradePoints,false);
+        var previousGradePoints = $("input[name='page-replace\:\:grade_input-fossil']").val();
+        previousGradePoints = asnn2gradeview.trimHtmlInput(previousGradePoints,true);
+        if (currentGradePoints == null && previousGradePoints != null
+                || currentGradePoints != null && previousGradePoints == null
+                || currentGradePoints != previousGradePoints)
+        {
+            gradingChanged = true;
+        }
+        if (!gradingChanged)
+        {
+            // whether the grading comments changed
+            var currentGradeComment = $('#page-replace\\:\\:grade_comment_input').val();
+            currentGradeComment=asnn2gradeview.trimHtmlInput(currentGradeComment,false);
+            var previousGradeComment = $("input[name='page-replace\:\:grade_comment_input-fossil']").val();
+            previousGradeComment = asnn2gradeview.trimHtmlInput(previousGradeComment,true);
+            if (currentGradeComment == null && previousGradeComment != null
+                    || currentGradeComment != null && previousGradeComment == null
+                    || currentGradeComment != previousGradeComment)
+            {
+                gradingChanged = true;
+            }
+        }
+    }
+
+    return gradingChanged;
+};
+
+asnn2gradeview.endsWith = function(orig, end)
+{
+    return (orig.match(end+"$")==end)
+}
+
+asnn2gradeview.trimHtmlInput = function(inputString, isPreviousValue)
+{
+    var rv = inputString;
+    if (rv != null)
+    {
+        // replace all breaks
+        rv = rv.replace("<br>", "<br/>");
+        if (isPreviousValue && (rv.indexOf("jstring#{") != -1 || rv.indexOf("istring#{") != -1))
+        {   
+            // the hidden fossile text value are of format jstring#{.....}value
+            rv = rv.substring(inputString.indexOf("}")+1);
+        }
+        // if end with 
+        if (asnn2gradeview.endsWith(rv,"<br>"))
+        {
+            var index = rv.lastIndexOf("<br>");
+            rv = rv.substring(0, index);
+        }
+        if (asnn2gradeview.endsWith(rv,"<br/>"))
+        {
+            var index = rv.lastIndexOf("<br/>");
+            rv = rv.substring(0, index);
+        }
+        if (asnn2gradeview.endsWith(rv,"<br />"))
+        {
+            var index = rv.lastIndexOf("<br />");
+            rv = rv.substring(0, index);
+        }
+    }
+    return rv;
+};
+
+
