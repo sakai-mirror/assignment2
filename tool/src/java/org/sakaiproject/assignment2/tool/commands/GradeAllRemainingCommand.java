@@ -114,7 +114,7 @@ public class GradeAllRemainingCommand {
         // for this assignment
         List<String> availableStudents = permissionLogic.getViewableStudentsForAssignment(currUserId, assign);
         // now we filter this to only include students are also gradable in the gradebook
-        availableStudents = (List<String>) gradebookLogic.filterStudentsForGradebookItem(currUserId, assign.getContextId(), assign.getGradebookItemId(), AssignmentConstants.GRADE, availableStudents);
+        availableStudents = gradebookLogic.getFilteredStudentsForGradebookItem(currUserId, assign.getContextId(), assign.getGradebookItemId(), AssignmentConstants.GRADE, availableStudents);
 
         if (availableStudents != null && !availableStudents.isEmpty()) {
             List<String> filteredStudents = new ArrayList<String>();

@@ -460,7 +460,7 @@ public interface ExternalGradebookLogic {
      * @return a filtered list of students that the given user has permission to view or grade in the gradebook
      * for the given gradebook item depending on your passed viewOrGrade param
      */
-    public Collection<String> filterStudentsForGradebookItem(String userId, String contextId, Long gradebookItemId, String viewOrGrade, Collection<String> students);
+    public List<String> getFilteredStudentsForGradebookItem(String userId, String contextId, Long gradebookItemId, String viewOrGrade, Collection<String> students);
 
     /**
      * 
