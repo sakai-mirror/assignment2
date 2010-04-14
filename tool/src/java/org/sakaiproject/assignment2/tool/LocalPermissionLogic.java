@@ -110,17 +110,18 @@ public class LocalPermissionLogic {
             return Boolean.FALSE;
         }
         else if (ListProducer.VIEW_ID.equals(viewId)) {
-            return permissionLogic.isUserAllowedToAccessInstructorView(null, contextId);
+            // a user may see this view if they are NOT allowed to submit but
+            // they are allowed to view assignments generally. if they have any
+            // instructor privileges, they will also be able to view the list page
+            return permissionLogic.isUserAllowedToTakeInstructorAction(null, contextId) ||
+            (!permissionLogic.isUserAllowedToSubmit(null, contextId) &&
+                permissionLogic.isUserAllowedToViewAssignments(null, contextId));
         }
         else if (ReorderStudentViewProducer.VIEW_ID.equals(viewId)) {
             return permissionLogic.isUserAllowedToEditAllAssignments(null, contextId);
         }
         else if (AssignmentInfoDataProducer.VIEW_ID.equals(viewId)) {
-            // Currently we are only allowing instructors to view the assignment
-            // info since it contains the number of submissions. Will plan on 
-            // doing better checking of what information users can see in the 
-            // future from the JSON feed, so folks can make mashups.
-            return permissionLogic.isUserAllowedToAccessInstructorView(null, contextId);
+            return permissionLogic.isUserAllowedToTakeInstructorAction(null, contextId);
         }
         else if (AssignmentProducer.VIEW_ID.equals(viewId)) {
             // permission to view this screen depends upon whether this is an add
@@ -147,7 +148,7 @@ public class LocalPermissionLogic {
         } 
         else if (StudentAssignmentListProducer.VIEW_ID.equals(viewId)) {
             return permissionLogic.isUserAllowedToSubmit(null, contextId) && 
-            !permissionLogic.isUserAllowedToAccessInstructorView(null, contextId);
+                !permissionLogic.isUserAllowedToTakeInstructorAction(null, contextId);
 
         } else if (StudentSubmitProducer.VIEW_ID.equals(viewId)) {
             if (viewParams instanceof SimpleAssignmentViewParams) {
@@ -201,7 +202,7 @@ public class LocalPermissionLogic {
             return Boolean.FALSE;
 
         } else if (TaggableHelperProducer.VIEWID.equals(viewId)) {
-            return permissionLogic.isUserAllowedToAccessInstructorView(null, contextId);
+            return permissionLogic.isUserAllowedToTakeInstructorAction(null, contextId);
         
         } else if (PermissionsProducer.VIEW_ID.equals(viewId)) {
             return permissionLogic.isUserAllowedToUpdateSite(contextId);

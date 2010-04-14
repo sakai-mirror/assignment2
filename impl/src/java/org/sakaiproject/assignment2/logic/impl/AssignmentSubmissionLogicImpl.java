@@ -627,7 +627,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 
         String currUserId = externalLogic.getCurrentUserId();
         
-        if (!permissionLogic.isUserAllowedToAccessInstructorView(currUserId, assignment.getContextId())) {
+        if (!permissionLogic.isUserAllowedToManageSubmissionsForAssignment(currUserId, assignment)) {
             throw new SecurityException("A user without feedback privileges attempted to access submissions for assignment: " + assignment.getId());
         }
 
@@ -1343,9 +1343,9 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
                     // we need to filter this list to only include students the user is
                     // allowed to view or grade in the gradebook or we will hit a security exception
                     if (!gradebookLogic.isCurrentUserAbleToGradeAll(assignment.getContextId())) {
-                        studentsToCheckForGrade = (Set<String>) gradebookLogic.filterStudentsForGradebookItem(externalLogic.getCurrentUserId(), 
+                        studentsToCheckForGrade = new HashSet<String>(gradebookLogic.getFilteredStudentsForGradebookItem(externalLogic.getCurrentUserId(), 
                                 assignment.getContextId(), assignment.getGradebookItemId(), 
-                                AssignmentConstants.VIEW, studentsToCheckForGrade);
+                                AssignmentConstants.VIEW, studentsToCheckForGrade));
                     }
                 
                     Map<String, GradeInformation> studentGradeInfo = gradebookLogic.getGradeInformationForStudents(studentsToCheckForGrade, assignment.getContextId(), assignment.getGradebookItemId());

@@ -93,9 +93,10 @@ public class AsnnTagsRenderer implements BasicProducer {
 
                     // now, render the tag data
                     for (Tag tag : tags) {
-                        UIOutput.make(providerContainer, "tag-data-row:");
+                        UIBranchContainer tagRow = UIBranchContainer.make(providerContainer, "tag-data-row:");
+                        
                         for (TagColumn column : tags.getColumns()) {
-                            UIVerbatim.make(providerContainer, "tag-data:", stripLibraries(tag.getField(column)));
+                            UIVerbatim.make(tagRow, "tag-data:", stripLibraries(tag.getField(column)));
                         }
                     }
                 }

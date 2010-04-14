@@ -99,7 +99,7 @@ public class Assignment2ServiceImpl implements Assignment2Service {
         
         AssignmentDefinition assignDef = assignmentLogic.getAssignmentDefinition(assign, gbIdItemMap, groupIdToTitleMap);
         
-        filterAssignmentDefinition(assign.getContextId(), assignDef);
+        filterAssignmentDefinition(assign, assignDef);
         
         return assignDef;
     }
@@ -118,7 +118,7 @@ public class Assignment2ServiceImpl implements Assignment2Service {
             // we want to return the AssignmentDefinition filtered for restricted info
             for (Assignment2 assign : viewableAssignments) {
                 AssignmentDefinition assignDef = assignmentLogic.getAssignmentDefinition(assign, gbIdItemMap, groupIdToTitleMap);
-                filterAssignmentDefinition(contextId, assignDef);
+                filterAssignmentDefinition(assign, assignDef);
                 assignList.add(assignDef);
             }
         }
@@ -153,15 +153,19 @@ public class Assignment2ServiceImpl implements Assignment2Service {
      * @param contextId
      * @param assignDef
      */
-    private void filterAssignmentDefinition(String contextId, AssignmentDefinition assignDef) {
-        if (contextId == null) {
-            throw new IllegalArgumentException("Null contextId passed to filterAssignmentDefinition");
+    private void filterAssignmentDefinition(Assignment2 assign, AssignmentDefinition assignDef) {
+        if (assign == null) {
+            throw new IllegalArgumentException("Null assign passed to filterAssignmentDefinition");
         }
         
         if (assignDef != null) {
-            // if the current user does not have full privileges for this assignment,
+            // if the current user does not have instructor-level privileges for this assignment,
             // we may need to set some of the properties to null
-            if (!permissionLogic.isUserAllowedToAccessInstructorView(null, contextId)) {
+            if (permissionLogic.isUserAllowedToManageSubmissionsForAssignment(null, assign) ||
+                    permissionLogic.isUserAllowedToEditAssignment(null, assign) ||
+                    permissionLogic.isUserAllowedToDeleteAssignment(null, assign)) {
+                // we can display the restricted info
+            } else {
                 assignDef.setAcceptUntilDate(null);
                 // for now, restrict all of the properties
                 assignDef.setProperties(new HashMap());

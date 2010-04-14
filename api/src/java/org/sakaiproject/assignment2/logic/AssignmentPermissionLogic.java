@@ -261,15 +261,15 @@ public interface AssignmentPermissionLogic {
     /**
      * 
      * @param userId userId to check. If null, will retrieve the current user.
-     * @return true if the user has at least one of the following permissions:
+     * @return true if the user has at least one of the following instructor-type permissions
+     * in the given contextId:
      * {@link AssignmentConstants#PERMISSION_ADD_ASSIGNMENTS},
      * {@link AssignmentConstants#PERMISSION_EDIT_ASSIGNMENTS},
      * {@link AssignmentConstants#PERMISSION_REMOVE_ASSIGNMENTS}, or
      * {@link AssignmentConstants#PERMISSION_MANAGE_SUBMISSIONS} 
      *
-     * This will allow the user to access the "instructor view" for the assignments tool. 
      */
-    public boolean isUserAllowedToAccessInstructorView(String userId, String contextId);
+    public boolean isUserAllowedToTakeInstructorAction(String userId, String contextId);
 
     /**
      * @param userId userId that you are retrieving the students for. 
@@ -337,12 +337,12 @@ public interface AssignmentPermissionLogic {
 
     /**
      * @param studentId
-     * @param assignment
+     * @param assignmentId
      * @return a list of the userIds of users who are able to view the given
      * student's submission(s) for the given assignment. does not include the student
      * as a user who may view the student. 
      */
-    public List<String> getUsersAllowedToViewStudentForAssignment(String studentId, Assignment2 assignment);
+    public List<String> getUsersAllowedToViewStudentForAssignment(String studentId, Long assignmentId);
 
     /**
      * @param userId if null, will use the current user

@@ -23,10 +23,20 @@ package org.sakaiproject.assignment2.tool.beans;
 
 import org.sakaiproject.assignment2.tool.WorkFlowResult;
 
-public class GraderPermissionsBean {
+/**
+ * This bean contains commonly-used navigation actions, such as
+ * "Return to List"
+ * 
+ *
+ */
+public class CommonNavigationBean {
 
-    public WorkFlowResult processActionCancel() {
-        return WorkFlowResult.GRADER_PERMISSIONS_CANCEL;
+    /**
+     * 
+     * Navigate to the Assignment List screen
+     */
+    public WorkFlowResult processActionCancelToList() {
+        return WorkFlowResult.CANCEL_TO_LIST_VIEW;
     }
 
 }
