@@ -418,7 +418,7 @@ public class ZipExportLogicImpl implements ZipExportLogic
             // first, retrieve all of the students that this user can manage for this assignment
             List<String> manageableStudents = permissionLogic.getViewableStudentsForAssignment(currUserId, assignment);
             // filter the manageable students to only include gradable ones
-            manageableStudents = (List<String>) gradebookLogic.filterStudentsForGradebookItem(currUserId, 
+            manageableStudents = gradebookLogic.getFilteredStudentsForGradebookItem(currUserId, 
                     assignment.getContextId(), assignment.getGradebookItemId(), AssignmentConstants.GRADE, manageableStudents);
             
             // get the grade information

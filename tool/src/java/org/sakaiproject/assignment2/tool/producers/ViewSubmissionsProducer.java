@@ -216,7 +216,7 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
 
             if (userMayViewGbItem) {
                 // user may grade if there is at least one gradable student among the submissions
-                List<String> gradableStudents = (List<String>) gradebookLogic.filterStudentsForGradebookItem(currUserId, assignment.getContextId(), assignment.getGradebookItemId(), AssignmentConstants.GRADE, studentIdList);
+                List<String> gradableStudents = gradebookLogic.getFilteredStudentsForGradebookItem(currUserId, assignment.getContextId(), assignment.getGradebookItemId(), AssignmentConstants.GRADE, studentIdList);
                 userMayGrade = gradableStudents != null && !gradableStudents.isEmpty();
                 userMayReleaseGrades = gradebookLogic.isCurrentUserAbleToEdit(assignment.getContextId());
 

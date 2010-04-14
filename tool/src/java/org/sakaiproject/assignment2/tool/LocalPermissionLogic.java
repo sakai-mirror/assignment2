@@ -111,9 +111,11 @@ public class LocalPermissionLogic {
         }
         else if (ListProducer.VIEW_ID.equals(viewId)) {
             // a user may see this view if they are NOT allowed to submit but
-            // they are allowed to view assignments generally
-            return !permissionLogic.isUserAllowedToSubmit(null, contextId) &&
-                permissionLogic.isUserAllowedToViewAssignments(null, contextId);
+            // they are allowed to view assignments generally. if they have any
+            // instructor privileges, they will also be able to view the list page
+            return permissionLogic.isUserAllowedToTakeInstructorAction(null, contextId) ||
+            (!permissionLogic.isUserAllowedToSubmit(null, contextId) &&
+                permissionLogic.isUserAllowedToViewAssignments(null, contextId));
         }
         else if (ReorderStudentViewProducer.VIEW_ID.equals(viewId)) {
             return permissionLogic.isUserAllowedToEditAllAssignments(null, contextId);
