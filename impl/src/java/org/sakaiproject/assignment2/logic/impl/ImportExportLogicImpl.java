@@ -156,7 +156,7 @@ public class ImportExportLogicImpl implements ImportExportLogic {
             if(toolDefinition.getAssignments() != null) {
 
                 // retrieve a list of all of the gb items in this site
-                List<GradebookItem> currGbItems = gradebookLogic.getAllGradebookItems(toContext, false);
+                List<GradebookItem> currGbItems = gradebookLogic.getAllGradebookItems(toContext, true);
                 // make a map of item title to item
                 Map<String, GradebookItem> gbTitleToItemMap = new HashMap<String, GradebookItem>();
                 if (currGbItems != null) {
@@ -224,7 +224,7 @@ public class ImportExportLogicImpl implements ImportExportLogic {
                         if (assignDef.isGraded() && assignDef.getAssociatedGbItemName() != null) {
                             Long associatedGbItemId = null;
                             GradebookItem existingItem = gbTitleToItemMap.get(assignDef.getAssociatedGbItemName().trim());
-                            if (existingItem != null) {
+                            if (existingItem != null && existingItem.getExternalId() == null) {
                                 // an item exists with this title already - check the points possible
                                 if (existingItem.getPointsPossible() == null && assignDef.getAssociatedGbItemPtsPossible() == null) {
                                     associatedGbItemId = existingItem.getGradebookItemId();
@@ -251,20 +251,31 @@ public class ImportExportLogicImpl implements ImportExportLogic {
                                     }
                                 }
                             } else {
+                            	String gbItemTitle = assignDef.getAssociatedGbItemName();
+                            	if(existingItem != null && existingItem.getExternalId() != null){
+                            		gbItemTitle = getNewTitle(assignDef.getAssociatedGbItemName(), 
+                                            new ArrayList<String>(gbTitleToItemMap.keySet()));
+                            	}
                                 // this is a new item
                                 associatedGbItemId = gradebookLogic.createGbItemInGradebook(toContext, 
-                                        assignDef.getAssociatedGbItemName(), assignDef.getAssociatedGbItemPtsPossible(), 
+                                		gbItemTitle, assignDef.getAssociatedGbItemPtsPossible(), 
                                         assignDef.getDueDate(), false, false);
                                 if (log.isDebugEnabled()) log.debug("New gb item created via import!");
                                 // now let's retrieve it and add it to our map of existing gb items
                                 // so we don't try to create it again
-                                GradebookItem newItem = gradebookLogic.getGradebookItemById(toContext, associatedGbItemId);
-                                if (newItem != null) {
-                                    gbTitleToItemMap.put(newItem.getTitle(), newItem);
+                                if(associatedGbItemId != null){
+                                	GradebookItem newItem = gradebookLogic.getGradebookItemById(toContext, associatedGbItemId);
+                                	if (newItem != null) {
+                                		gbTitleToItemMap.put(newItem.getTitle(), newItem);
+                                	}
                                 }
                             }
-
-                            newAssignment.setGradebookItemId(associatedGbItemId);
+                            if(associatedGbItemId != null){
+                            	newAssignment.setGradebookItemId(associatedGbItemId);
+                            }else{
+                            	log.warn("mergeAssignmentToolDefinitionXml: could not create a grabebook item for this assignment.");
+                            	newAssignment.setGraded(false);
+                            }
                         }
 
                         // we need to copy any associated attachments 
@@ -344,6 +355,12 @@ public class ImportExportLogicImpl implements ImportExportLogic {
             AssignmentContent oContent = oAssignment.getContent();
             ResourceProperties oProperties = oAssignment.getProperties();
 
+            if(oContent == null || oProperties == null){
+            	//invalid state, do not include this assignment and go to the next one
+            	log.warn("getAssignmentToolDefinitionXmlFromOriginalAssignmentsTool: assignment content or properties is null: " + oAssignment.getTitle() + ", context: " + fromContext);
+            	continue;
+            }
+            
             AssignmentDefinition newAssnDef = new AssignmentDefinition();
 
             Date openDate = new Date(oAssignment.getOpenTime().getTime());
