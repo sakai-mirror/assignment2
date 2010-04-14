@@ -32,7 +32,6 @@ import org.sakaiproject.importer.api.HandlesImportable;
 import org.sakaiproject.importer.api.Importable;
 
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
-import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.logic.ImportExportLogic;
 
 /**
@@ -79,18 +78,8 @@ public class AssignmentEntityProducer extends BaseEntityProducer implements Cont
     }
 
     public void transferCopyEntities(String fromContext, String toContext, List ids) {
-        // if the site we are importing from has the "new" assignment2 tool,
-        // import from that tool. Otherwise, check to see if that site has the
-        // "old" assignments tool.  If it does, we are importing from the old tool
-        // to the new tool
-        if (externalLogic.siteHasTool(fromContext, ExternalLogic.TOOL_ID_ASSIGNMENT2)) {
-            String fromAssignment2ToolXml = importExportLogic.getAssignmentToolDefinitionXML(fromContext);
-            importExportLogic.mergeAssignmentToolDefinitionXml(toContext, fromAssignment2ToolXml);
-        } else if (externalLogic.siteHasTool(fromContext, ExternalLogic.TOOL_ID_OLD_ASSIGN)) {
-            String fromOldAssignmentToolXml =
-                importExportLogic.getAssignmentToolDefinitionXmlFromOriginalAssignmentsTool(fromContext, toContext);
-            importExportLogic.mergeAssignmentToolDefinitionXml(toContext, fromOldAssignmentToolXml);
-        }
+        String fromAssignment2ToolXml = importExportLogic.getAssignmentToolDefinitionXML(fromContext);
+        importExportLogic.mergeAssignmentToolDefinitionXml(toContext, fromAssignment2ToolXml);
     }
 
     public void transferCopyEntities(String fromContext, String toContext, List ids, boolean cleanup) {
@@ -110,11 +99,6 @@ public class AssignmentEntityProducer extends BaseEntityProducer implements Cont
     private ImportExportLogic importExportLogic;
     public void setImportExportLogic(ImportExportLogic importExportLogic) {
         this.importExportLogic = importExportLogic;
-    }
-
-    private ExternalLogic externalLogic;
-    public void setExternalLogic(ExternalLogic externalLogic) {
-        this.externalLogic = externalLogic;
     }
 
     ////////////////////////////////////////////////////////////////
