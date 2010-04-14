@@ -545,6 +545,7 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
         UIOutput.make(tofill, "save-grading-save", messageLocator.getMessage("assignment2.dialogs.save_grading.save"));
         UIOutput.make(tofill, "save-grading-saveAndRelease", messageLocator.getMessage("assignment2.dialogs.save_grading.saveAndRelease"));
         UIOutput.make(tofill, "save-grading-clear", messageLocator.getMessage("assignment2.dialogs.save_grading.clear"));
+        UIOutput.make(tofill, "save-grading-cancel", messageLocator.getMessage("assignment2.dialogs.save_grading.cancel"));
     }
     
     /**

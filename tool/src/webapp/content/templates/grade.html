@@ -37,6 +37,7 @@
             <input id="" rsf:id="save-grading-save" accesskey="s" type="button" class="active" value="Save"/>
             <input id="" rsf:id="save-grading-saveAndRelease" accesskey="r" type="button" class="active" value="Save and Release Feedback"/>
             <input id="" rsf:id="save-grading-clear" accesskey="x" type="button" value="Clear"/>
+            <input id="" rsf:id="save-grading-cancel" type="button" value="Cancel!" />
         </fieldset>
     </div>
     <form name="gradeForm" rsf:id="form" method="post">
@@ -240,36 +241,37 @@ jQuery(document).ready(function(){
         asnn2gradeview.set_accept_until_on_submission_level();
     });
     asnn2gradeview.set_accept_until_on_submission_level();
-	
+
     jQuery('#page-replace\\:\\:previous_link').click(function() {
-		var gradingChanged = asnn2gradeview.isGradingChanged();
-    	var numSubmittedVersions = $('#page-replace\\:\\:numSubmittedVersions').val();	
-		if (gradingChanged)
-		{
-		  asnn2gradeview.saveGradingDialog("previous"); 
-			return false;
-		}
-	});
+        var that = jQuery(this);
+        var gradingChanged = asnn2gradeview.isGradingChanged();
+        var numSubmittedVersions = $('#page-replace\\:\\:numSubmittedVersions').val();	
+        if (gradingChanged)
+        {
+            asnn2gradeview.saveGradingDialog("previous", that.attr('href')); 
+            return false;
+        }
+    });
 
     jQuery('#page-replace\\:\\:next_link').click(function() {
-		var gradingChanged = asnn2gradeview.isGradingChanged();
-    	var numSubmittedVersions = $('#page-replace\\:\\:numSubmittedVersions').val();	
-		if (gradingChanged)
-		{
-		  asnn2gradeview.saveGradingDialog("next"); 
-			return false;
-		}
-	});
+        var that = jQuery(this);
+        var gradingChanged = asnn2gradeview.isGradingChanged();
+        var numSubmittedVersions = $('#page-replace\\:\\:numSubmittedVersions').val();	
+        if (gradingChanged) {
+            asnn2gradeview.saveGradingDialog("next", that.attr('href')); 
+            return false;
+        }
+    });
 
     jQuery('#page-replace\\:\\:returnToList_link').click(function() {
-		var gradingChanged = asnn2gradeview.isGradingChanged();
-    	var numSubmittedVersions = $('#page-replace\\:\\:numSubmittedVersions').val();	
-		if (gradingChanged)
-		{
-		  asnn2gradeview.saveGradingDialog("returnToList"); 
-			return false;
-		}
-	});
+        var that = jQuery(this);
+        var gradingChanged = asnn2gradeview.isGradingChanged();
+        var numSubmittedVersions = $('#page-replace\\:\\:numSubmittedVersions').val();	
+        if (gradingChanged) {
+            asnn2gradeview.saveGradingDialog("returnToList", that.attr('href')); 
+            return false;
+        }
+    });
     
 });
 

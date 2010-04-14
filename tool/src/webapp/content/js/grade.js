@@ -47,7 +47,7 @@ asnn2gradeview.override_submission_settings = function() {
 
 asnn2gradeview.set_accept_until_on_submission_level = function() {
     el = jQuery("input:checkbox[name='page-replace\:\:require_accept_until']").get(0);
-    if (el) {
+    if (el) { 
         if (el.checked) {
             jQuery("#accept_until_container").show();
         } else {
@@ -61,7 +61,7 @@ asnn2gradeview.set_accept_until_on_submission_level = function() {
  *
  * This function uses the asnn2 dialog utility.
  */
-asnn2gradeview.saveGradingDialog = function(direction) {
+asnn2gradeview.saveGradingDialog = function(direction, contUrl) {
     var saveGradingDialog = jQuery('#save-grading-dialog');
     var saveButton = jQuery('#page-replace\\:\\:save-grading-save').click(function(event) {
         asnn2util.closeDialog(saveGradingDialog);
@@ -80,6 +80,11 @@ asnn2gradeview.saveGradingDialog = function(direction) {
     });
 
     var clearButton = jQuery('#page-replace\\:\\:save-grading-clear').click(function(event) {
+        asnn2util.closeDialog(saveGradingDialog);
+        window.location = contUrl;
+    });
+    
+    var cancelButton = jQuery('#page-replace\\:\\:save-grading-cancel').click(function(event) {
         asnn2util.closeDialog(saveGradingDialog);
     });
 
@@ -101,9 +106,6 @@ asnn2gradeview.isGradingChanged = function()
         var oEditor = FCKeditorAPI.Instances[ name ];
         oEditor.UpdateLinkedField();
     }
-    
-    //var swgtest = $('#page-replace\\:\\:feedback_section\\:\\:feedback_text\\:1\\:input')
-    //alert(swgtest.val());
     
     // Check all feedback and feedback notes for all versions.
     jQuery("textarea").each(function() {
@@ -211,6 +213,11 @@ asnn2gradeview.trimHtmlInput = function(inputString, isPreviousValue)
         if (asnn2gradeview.endsWith(rv,"<br/>"))
         {
             var index = rv.lastIndexOf("<br/>");
+            rv = rv.substring(0, index);
+        }
+        if (asnn2gradeview.endsWith(rv,"<br />"))
+        {
+            var index = rv.lastIndexOf("<br />");
             rv = rv.substring(0, index);
         }
     }
