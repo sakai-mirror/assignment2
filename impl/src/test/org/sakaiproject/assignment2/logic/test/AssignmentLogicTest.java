@@ -162,6 +162,53 @@ public class AssignmentLogicTest extends Assignment2TestBase {
         assertNull(updatedAssign.getAttachmentSet());
 
         // TODO - try adding an announcement
+        
+        // Test saving a draft
+        Assignment2 draftAssign = new Assignment2();
+        String DRAFT_TITLE = "Draft assignment";
+        // let's start by creating a new assignment
+        draftAssign.setContextId(AssignmentTestDataLoad.CONTEXT_ID);
+        draftAssign.setDraft(true);
+        draftAssign.setHasAnnouncement(false);
+        draftAssign.setAddedToSchedule(false);
+        draftAssign.setHonorPledge(false);
+        draftAssign.setInstructions("Complete this by friday");
+        draftAssign.setSendSubmissionNotifications(false);
+        draftAssign.setOpenDate(new Date());
+        draftAssign.setTitle(DRAFT_TITLE);
+        draftAssign.setGraded(false);
+
+        // start with just the TA's group
+        Set<AssignmentGroup> draftAssignGroupSet = new HashSet<AssignmentGroup>();
+        AssignmentGroup group2 = new AssignmentGroup(draftAssign, AssignmentTestDataLoad.GROUP1_NAME);
+        draftAssignGroupSet.add(group2);
+
+        draftAssign.setAssignmentGroupSet(draftAssignGroupSet);
+
+        // TA should be able to save this
+        externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
+        assignmentLogic.saveAssignment(draftAssign);
+        // double check it was saved
+        List<Assignment2> draftAssignList = dao.findByProperties(Assignment2.class, new String[] {"title"}, new Object[] {DRAFT_TITLE});
+        assertNotNull(draftAssignList);
+        assertTrue(draftAssignList.size() == 1);
+        draftAssign = (Assignment2)draftAssignList.get(0);
+        assertTrue(draftAssign.isDraft());
+        assertEquals(DRAFT_TITLE, draftAssign.getTitle());
+        
+        // make sure the instructor can edit the draft one. let's delete the
+        // group restriction
+        draftAssign.setAssignmentGroupSet(new HashSet<AssignmentGroup>());
+        externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
+        assignmentLogic.saveAssignment(draftAssign);
+        
+        // the ta shouldn't be able to edit anymore b/c not restricted to his/her group
+        externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
+        try {
+            assignmentLogic.saveAssignment(draftAssign);
+            fail("Did not catch TA attempting to save a draft assign without permission");
+        } catch (SecurityException se) {}
+
     }
 
     public void testDeleteAssignment() throws Exception {
@@ -409,8 +456,6 @@ public class AssignmentLogicTest extends Assignment2TestBase {
             fail("Did not catch invalid user attempting to access assignment via getAssignmentById");
         } catch (SecurityException se) {}
 
-        externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
-
         // start with instructor
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
 
@@ -435,6 +480,27 @@ public class AssignmentLogicTest extends Assignment2TestBase {
         assertTrue(assign.getId().equals(testData.a1Id));
         assertTrue(assign.getAssignmentGroupSet().size() == 2);
         assertTrue(assign.getAttachmentSet().size() == 2); 	
+        
+        // now try to retrieve as a TA. you should be able to view all but assign 4
+        externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
+        assignmentLogic.getAssignmentByIdWithAssociatedData(testData.a1Id, null);
+        assignmentLogic.getAssignmentByIdWithAssociatedData(testData.a2Id, null);
+        assignmentLogic.getAssignmentByIdWithAssociatedData(testData.a3Id, null);
+        
+        try {
+            assignmentLogic.getAssignmentByIdWithAssociatedData(testData.a4Id, null);
+        } catch (SecurityException se) {}
+        
+        // if we set an assignment to draft status, the TA should not have access b/c
+        // doesn't have add or edit perm for any of our assignments
+        Assignment2 assign1 = assignmentLogic.getAssignmentByIdWithAssociatedData(testData.a1Id, null);
+        assign1.setDraft(true);
+        dao.save(assign1);
+        try {
+            assignmentLogic.getAssignmentByIdWithAssociatedData(testData.a1Id, null);
+            fail("Did not catch TA attempting to view draft assignment");
+        } catch (SecurityException se) {}
+
     }
 
     public void testGetAssignmentByIdWithGroupsAndAttachments() throws Exception {
