@@ -1015,7 +1015,7 @@ var asnn2 = asnn2 || {};
         asnn2util.openDialog(confirmDialog);
         return false;
     };
-
+    
 })(jQuery, asnn2);
 
 // This namespace is for the Assignment Authoring and Editing Screen

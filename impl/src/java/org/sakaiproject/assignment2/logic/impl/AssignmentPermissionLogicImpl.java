@@ -477,9 +477,11 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
                     "isUserAllowedToTakeActionOnAssignment. assignment:" + " permission:" + permission);
         }
         
-        // only users with edit permission may view drafts
+        // only users with add, edit, or delete permission may access drafts
         if (assignment.isDraft()) {
-            if (!permission.equals(AssignmentConstants.PERMISSION_EDIT_ASSIGNMENTS)) {
+            if (!permission.equals(AssignmentConstants.PERMISSION_EDIT_ASSIGNMENTS) &&
+                    !permission.equals(AssignmentConstants.PERMISSION_ADD_ASSIGNMENTS) &&
+                    !permission.equals(AssignmentConstants.PERMISSION_REMOVE_ASSIGNMENTS)) {
                 return false;
             }
         }

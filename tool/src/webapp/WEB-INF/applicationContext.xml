@@ -64,6 +64,7 @@
 	    <property name="assignmentBundleLogic" ref="org.sakaiproject.assignment2.logic.AssignmentBundleLogic" />
         <property name="externalContentReviewLogic" ref="org.sakaiproject.assignment2.logic.ExternalContentReviewLogic" />
         <property name="sessionManager" ref="org.sakaiproject.tool.api.SessionManager" />
+        <property name="a2sessionCache" ref="org.sakaiproject.assignment2.tool.beans.SessionCache" />
        <!--  <property name="submissionTableViewStateHolder">
             <bean parent="RSACBridgeProxy">
                 <property name="targetBeanName" value="SubmissionTableViewStateHolder" />
@@ -231,5 +232,10 @@
 		</bean>
 	-->
 	
+	<bean id="org.sakaiproject.assignment2.tool.beans.SessionCache" 
+	      class="org.sakaiproject.assignment2.tool.beans.SessionCache"
+	      init-method="init">
+	      <property name="memoryService" ref="org.sakaiproject.memory.api.MemoryService" />
+	</bean>
 	
 </beans>
