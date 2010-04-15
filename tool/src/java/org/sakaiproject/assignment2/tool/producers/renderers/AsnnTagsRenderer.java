@@ -146,7 +146,11 @@ public class AsnnTagsRenderer implements BasicProducer {
         
         // the thickbox seems to be working properly now, so commenting out
         
-        /*StringBuilder thickboxInclude = new StringBuilder();
+        // SWG 2010-04-15 While the thickbox was maybe working for OSP, it was
+        // overriding the A2 one and causing problems with our attachments helper.
+        // un-un-commenting the code below.
+        
+        StringBuilder thickboxInclude = new StringBuilder();
         thickboxInclude.append("<script type=\"text/javascript\" language=\"JavaScript\"src=\"");
         thickboxInclude.append(serverUrl);
         thickboxInclude.append("/osp-common-tool/js/thickbox.js\"></script>");
@@ -157,7 +161,7 @@ public class AsnnTagsRenderer implements BasicProducer {
         if (html != null && html.indexOf(thickboxInclude.toString()) != -1) {
             // strip this line from the html to avoid colliding versions
             html = html.replaceAll(thickboxInclude.toString(), "");
-        }*/
+        }
         
         return html;
     }
