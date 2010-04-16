@@ -145,8 +145,10 @@ public class UploadGradesLogicImpl implements UploadGradesLogic
             throw new InvalidGradeForAssignmentException(igfae.getMessage(), igfae);
         }
         
-        // set the released status for this gradebook item
-        gradebookLogic.releaseOrRetractGrades(assign.getContextId(), assign.getGradebookItemId(), options.releaseGrades, null);
+        // set the released status for this gradebook item if the user has permission
+        if (gradebookLogic.isCurrentUserAbleToEdit(assign.getContextId())) {
+            gradebookLogic.releaseOrRetractGrades(assign.getContextId(), assign.getGradebookItemId(), options.releaseGrades, null);
+        }
 
         return studentsIgnored;
     }
