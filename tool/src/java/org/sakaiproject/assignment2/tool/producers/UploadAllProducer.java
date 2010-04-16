@@ -146,7 +146,11 @@ NavigationCaseReporter, ActionResultInterceptor
         }
 
         // Release grades radio buttons
-        if (assignment.isGraded() && assignment.getGradebookItemId() != null && 
+        // do not display this section unless this user has permission to release
+        // grades in the gradebook
+        if (assignment.isGraded() && 
+                assignment.getGradebookItemId() != null && 
+                gradebookLogic.isCurrentUserAbleToEdit(assignment.getContextId()) &&
                 gradebookLogic.gradebookItemExists(assignment.getGradebookItemId())) {
             UIOutput.make(tofill, "release_grades_section");
             String [] release_grades_values = new String[] {

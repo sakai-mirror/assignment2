@@ -326,7 +326,7 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware {
         httpServletResponse.setHeader("x-asnn2-canDelete", canDelete+"");
         
         boolean canManageSubmissions = permissionLogic.isUserAllowedToManageSubmissions(null, context);
-        httpServletResponse.setHeader("x-asnn2-canManageSubmissions", canDelete+"");
+        httpServletResponse.setHeader("x-asnn2-canManageSubmissions", canManageSubmissions+"");
 
         return togo;
     }
