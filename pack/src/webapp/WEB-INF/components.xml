@@ -45,18 +45,15 @@
 		<property name="taggingManager">
 			<ref bean="org.sakaiproject.taggable.api.TaggingManager" />
 		</property>
-		<property name="siteService">
-			<ref bean="org.sakaiproject.site.api.SiteService" />
-		</property>
-		<property name="securityService">
-			<ref bean="org.sakaiproject.authz.api.SecurityService" />
-		</property>
-		<property name="userDirectoryService">
-			<ref bean="org.sakaiproject.user.api.UserDirectoryService" />
-		</property>
+		<property name="externalLogic">
+      <ref bean="org.sakaiproject.assignment2.logic.ExternalLogic" />
+    </property>
 		<property name="assignmentBundleLogic">
 			<ref bean="org.sakaiproject.assignment2.logic.AssignmentBundleLogic" />
 		</property>
+    <property name="assignmentLogic">
+      <ref bean="org.sakaiproject.assignment2.logic.AssignmentLogic" />
+    </property>
 	</bean>
   
   <bean id="org.sakaiproject.assignment2.service.api.Assignment2Service" class="org.sakaiproject.assignment2.service.impl.Assignment2ServiceImpl" init-method="init">

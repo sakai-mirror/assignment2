@@ -24,6 +24,7 @@ package org.sakaiproject.assignment2.taggable.impl;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment2.model.Assignment2;
+import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.component.cover.ServerConfigurationService;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.site.api.Site;
@@ -85,7 +86,7 @@ public class AssignmentActivityImpl implements TaggableActivity {
     	String siteId = assignment.getContextId();
     	String placement = getSite(siteId).getToolForCommonId("sakai.assignment2").getId();
     	String url = ServerConfigurationService.getToolUrl() + "/" + placement + 
-    		"/view-assignment/" + Long.toString(assignment.getId());
+    		"/" + AssignmentConstants.TOOL_VIEW_ASSIGN + "/" + Long.toString(assignment.getId());
     	
         return url;
     }

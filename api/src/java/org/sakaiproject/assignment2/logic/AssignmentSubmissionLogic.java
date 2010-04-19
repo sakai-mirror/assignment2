@@ -54,6 +54,9 @@ public interface AssignmentSubmissionLogic {
     /**
      * 
      * @param submissionId
+     * @param optionalParameters in special situations, you may need to pass additional information
+     * (such as the tag reference) to successfully retrieve the submission. leave null if this is
+     * a normal scenario
      * @return Returns the AssignmentSubmission based on its assignmentSubmissionId.
      * Populates current version information. If version is draft and current
      * user is not submitter, submittedText and submissionAttachments will not
@@ -65,7 +68,7 @@ public interface AssignmentSubmissionLogic {
      * corresponding submission
      * @throws SubmissionNotFoundException if no submission exists with the given id
      */
-    public AssignmentSubmission getAssignmentSubmissionById(Long submissionId);
+    public AssignmentSubmission getAssignmentSubmissionById(Long submissionId, Map<String, Object> optionalParameters);
 
     /**
      * 
