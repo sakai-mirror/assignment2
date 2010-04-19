@@ -543,8 +543,17 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
 
         /**
          * Groups
+         * The groups displayed depends upon the user's permissions and group memberships.
+         * If a user has all group privileges, we display all site groups. Otherwise,
+         * we only display groups the user is a member of
          */
-        Collection<Group> groups = permissionLogic.getViewableGroupsForAssignment(currUserId, assignment);
+        Collection<Group> groups;
+        if (permissionLogic.isUserAllowedForAllGroups(currUserId, currentContextId)) {
+            groups = externalLogic.getSiteGroups(currentContextId);
+        } else {
+            groups = externalLogic.getUserMemberships(currUserId, currentContextId);
+        }
+
         List<String> groupIdList = new ArrayList<String>();
         if (groups.size() > 0) {
             UIOutput.make(form, "access-selection-area");
