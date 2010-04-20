@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -309,25 +310,25 @@ AssignmentActivityProducer {
     }
     
     public boolean hasSubmissions(TaggableActivity activity, TaggingProvider provider,
-            boolean getMyItemsOnly, String taggedItem)
+    		boolean getMyItemsOnly, String taggedItem)
     {
-       List<TaggableItem> items = new ArrayList<TaggableItem>();
-       if (taggedItem == null)
-          items = getItems(activity, provider, getMyItemsOnly, taggedItem, false);
-       else
-          items = getItems(activity, provider, getMyItemsOnly, taggedItem);
-       
-		return items.size() > 0;
+    	return hasSubmissions(activity);
     }
 
     public boolean hasSubmissions(TaggableActivity activity, String userId,
-            TaggingProvider provider, boolean getMyItemsOnly, String taggedItem)
+    		TaggingProvider provider, boolean getMyItemsOnly, String taggedItem)
     {
-       List<TaggableItem> items = new ArrayList<TaggableItem>();
-       if (taggedItem == null)
-          items = getItems(activity, userId, provider, getMyItemsOnly, taggedItem, false);
-       else
-          items = getItems(activity, userId, provider, getMyItemsOnly, taggedItem);
-		return items.size() > 0;
+    	return hasSubmissions(activity);
+    }
+
+    /**
+     * Figure out if there any student submissions for a specific activity
+     * @param activity
+     * @return
+     */
+    private boolean hasSubmissions(TaggableActivity activity) {
+    	Set<String> studentIdList = assignmentPermissionLogic.getSubmittersInSite(activity.getContext());
+    	int numSubmitters = assignmentDao.getNumStudentsWithASubmission((Assignment2)activity.getObject(), studentIdList);
+    	return numSubmitters > 0;
     }
 }
