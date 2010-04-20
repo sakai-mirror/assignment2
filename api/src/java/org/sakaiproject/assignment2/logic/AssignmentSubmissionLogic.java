@@ -69,6 +69,22 @@ public interface AssignmentSubmissionLogic {
      * @throws SubmissionNotFoundException if no submission exists with the given id
      */
     public AssignmentSubmission getAssignmentSubmissionById(Long submissionId, Map<String, Object> optionalParameters);
+    
+    /**
+     * 
+     * @param submissionId
+     * @return Returns the AssignmentSubmission based on its assignmentSubmissionId.
+     * Populates current version information. If version is draft and current
+     * user is not submitter, submittedText and submissionAttachments will not
+     * be populated. If the curr user is the submitter but feedback has not 
+     * been released, will not populate feedback. Because of these 
+     * changes that we don't want to save, the associated version was evicted 
+     * from the session and is not persistent.
+     * @throws SecurityException if current user is not allowed to view the
+     * corresponding submission
+     * @throws SubmissionNotFoundException if no submission exists with the given id
+     */
+    public AssignmentSubmission getAssignmentSubmissionById(Long submissionId);
 
     /**
      * 

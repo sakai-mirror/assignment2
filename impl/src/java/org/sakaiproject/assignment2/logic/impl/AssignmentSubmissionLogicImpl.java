@@ -103,6 +103,10 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
     public void init(){
         if (log.isDebugEnabled()) log.debug("init");
     }
+    
+    public AssignmentSubmission getAssignmentSubmissionById(Long submissionId) {
+        return getAssignmentSubmissionById(submissionId, null);
+    }
 
     public AssignmentSubmission getAssignmentSubmissionById(Long submissionId, Map<String, Object> optionalParameters){
         if (submissionId == null) {
