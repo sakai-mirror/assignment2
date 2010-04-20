@@ -76,7 +76,6 @@ public class HelperHandlerHookBean {
   private ActiveToolManager activeToolManager;
   private BaseURLProvider bup;
   private String[] pathInfo;
-  private static int loadedcount = 0;
 
   public boolean handle() {
     String viewID = viewParameters.viewID;
@@ -104,7 +103,7 @@ public class HelperHandlerHookBean {
       return handleHelperHelper(pathBeyondViewID);
     }
     */
-loadedcount = 0;
+
     return handleHelperStart();
   }
 
@@ -185,17 +184,18 @@ loadedcount = 0;
     try {
       //helperTool.help(request, response, contextPath, helperPathInfo);
       // Test based off debug tracing
-      if (loadedcount == 0) {
-        
+       
+      if (pathInfo.length == 1) {
           helperTool.help(request, response, contextPath, null);
-          //request.removeAttribute(Tool.NATIVE_URL);
-          loadedcount++;
       }
       else {
-        //TODO What happens if we try not removing the native Tool URL here?
-          helperTool.help(request, response, contextPath, "/jsfLinkScaffolding");
-          //request.removeAttribute(Tool.NATIVE_URL);
-      }
+          StringBuilder sb = new StringBuilder();
+          for (int i = 1; i < pathInfo.length; i++) {
+              sb.append("/");
+              sb.append(pathInfo[i]);
+          }
+          helperTool.help(request, response, contextPath, sb.toString());
+      } 
     }
     catch (ToolException e) {
       throw UniversalRuntimeException.accumulate(e,
