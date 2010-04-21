@@ -510,4 +510,12 @@ public class AssignmentSubmissionVersion implements FeedbackVersion {
 
         return feedbackReleased;
     }
+    
+    /**
+     * Convenience method
+     * @return true if this version was submitted
+     */
+    public boolean isSubmitted() {
+        return this.submittedDate != null;
+    }
 }

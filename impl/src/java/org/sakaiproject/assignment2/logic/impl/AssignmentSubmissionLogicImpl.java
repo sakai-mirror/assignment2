@@ -103,8 +103,12 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
     public void init(){
         if (log.isDebugEnabled()) log.debug("init");
     }
+    
+    public AssignmentSubmission getAssignmentSubmissionById(Long submissionId) {
+        return getAssignmentSubmissionById(submissionId, null);
+    }
 
-    public AssignmentSubmission getAssignmentSubmissionById(Long submissionId){
+    public AssignmentSubmission getAssignmentSubmissionById(Long submissionId, Map<String, Object> optionalParameters){
         if (submissionId == null) {
             throw new IllegalArgumentException("Null submissionId passed to getAssignmentSubmissionById");
         }
@@ -120,7 +124,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 
         Assignment2 assignment = submission.getAssignment();
 
-        if (!permissionLogic.isUserAllowedToViewSubmissionForAssignment(null, submission.getUserId(), assignment.getId(), null)) {
+        if (!permissionLogic.isUserAllowedToViewSubmissionForAssignment(null, submission.getUserId(), assignment.getId(), optionalParameters)) {
             throw new SecurityException("user" + currentUserId + " attempted to view submission with id " + submissionId + " but is not authorized");
         }
 

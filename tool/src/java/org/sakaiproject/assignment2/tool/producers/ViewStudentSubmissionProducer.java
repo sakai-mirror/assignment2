@@ -63,8 +63,8 @@ import uk.org.ponder.rsf.viewstate.ViewParamsReporter;
  *
  */
 public class ViewStudentSubmissionProducer implements ViewComponentProducer, ViewParamsReporter {
-
-    public static final String VIEW_ID = "view-submission";
+    // this view id is referenced outside the tool layer, so we use a constant
+    public static final String VIEW_ID = AssignmentConstants.TOOL_VIEW_SUBMISSION;
     public String getViewID() {
         return VIEW_ID;
     }

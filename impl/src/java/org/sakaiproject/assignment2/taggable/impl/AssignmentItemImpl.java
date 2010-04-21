@@ -27,6 +27,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
+import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.component.cover.ServerConfigurationService;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.site.api.Site;
@@ -105,7 +106,7 @@ public class AssignmentItemImpl implements TaggableItem {
         String siteId = assignment.getContextId();
         String placement = getSite(siteId).getToolForCommonId("sakai.assignment2").getId();
         String url = ServerConfigurationService.getToolUrl() + "/" + placement + 
-            "/view-submission/" + Long.toString(assignment.getId()) + "/" + userId;
+            "/" + AssignmentConstants.TOOL_VIEW_SUBMISSION + "/" + Long.toString(assignment.getId()) + "/" + userId;
         return url;
     }
     

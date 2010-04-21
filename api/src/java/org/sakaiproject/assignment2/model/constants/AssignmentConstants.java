@@ -187,6 +187,16 @@ public class AssignmentConstants {
      */
     public static final String TAGGABLE_REF_KEY = "taggableRef";
     
+    // VIEW IDS for Assignment2 tool (may be used for generating urls outside the application layer)
+    /**
+     * the view id for the view of assignment details in the assignment2 tool
+     */
+    public static final String TOOL_VIEW_ASSIGN = "view-assignment";
+    /**
+     * the view id for the view of a student's submission details in the assignment2 tool
+     */
+    public static final String TOOL_VIEW_SUBMISSION = "view-submission";
+    
     // Properties for ContentReviewService integration
     /**
      * The score received upon review for display. String

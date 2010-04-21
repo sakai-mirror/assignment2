@@ -22,8 +22,11 @@
 package org.sakaiproject.assignment2.taggable.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -33,18 +36,17 @@ import org.sakaiproject.taggable.api.TaggingManager;
 import org.sakaiproject.taggable.api.TaggingProvider;
 import org.sakaiproject.assignment2.dao.AssignmentDao;
 import org.sakaiproject.assignment2.logic.AssignmentBundleLogic;
+import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
+import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.assignment2.taggable.api.AssignmentActivityProducer;
-import org.sakaiproject.authz.api.SecurityService;
 import org.sakaiproject.entity.api.Entity;
 import org.sakaiproject.entity.api.EntityManager;
 import org.sakaiproject.entity.api.Reference;
-import org.sakaiproject.site.api.SiteService;
-import org.sakaiproject.user.api.UserDirectoryService;
 
 public class AssignmentActivityProducerImpl implements
 AssignmentActivityProducer {
@@ -60,15 +62,13 @@ AssignmentActivityProducer {
 
     protected TaggingManager taggingManager;
 
-    protected SiteService siteService;
-
-    protected SecurityService securityService;
-
-    protected UserDirectoryService userDirectoryService;
-
     protected AssignmentPermissionLogic assignmentPermissionLogic;
 
     protected AssignmentSubmissionLogic assignmentSubmissionLogic;
+    
+    protected ExternalLogic externalLogic;
+    
+    protected AssignmentLogic assignmentLogic;
 
 
     public boolean allowGetItems(TaggableActivity activity,
@@ -92,8 +92,7 @@ AssignmentActivityProducer {
     }
 
     public boolean allowTransferCopyTags(TaggableActivity activity) {
-        return securityService.unlock(SiteService.SECURE_UPDATE_SITE,
-                siteService.siteReference(activity.getContext()));
+        return assignmentPermissionLogic.isUserAllowedToUpdateSite(activity.getContext());
     }
 
     public boolean checkReference(String ref) {
@@ -104,7 +103,7 @@ AssignmentActivityProducer {
             TaggingProvider provider) {
         // We aren't picky about the provider, so ignore that argument.
         List<TaggableActivity> activities = new ArrayList<TaggableActivity>();
-        List<Assignment2> assignments = assignmentDao.getAssignmentsWithGroupsAndAttachments(context);
+        List<Assignment2> assignments = assignmentLogic.getViewableAssignments(context);
         for (Assignment2 assignment : assignments) {
             activities.add(getActivity(assignment));
         }
@@ -121,7 +120,9 @@ AssignmentActivityProducer {
         TaggableActivity activity = null;
         if (checkReference(activityRef)) {
             Reference ref = entityManager.newReference(activityRef);
-            Assignment2 assignment = assignmentDao.getAssignmentByIdWithGroupsAndAttachments(Long.valueOf(ref.getId()));
+            Map<String, Object> optionalParams = new HashMap<String, Object>();
+            optionalParams.put(AssignmentConstants.TAGGABLE_REF_KEY,null);
+            Assignment2 assignment = assignmentLogic.getAssignmentByIdWithAssociatedData(Long.valueOf(ref.getId()), optionalParams);
             if (assignment != null) 
                 activity = new AssignmentActivityImpl(assignment, this);
         }
@@ -170,21 +171,8 @@ AssignmentActivityProducer {
         this.entityManager = entityManager;
     }
 
-    public void setSecurityService(SecurityService securityService) {
-        this.securityService = securityService;
-    }
-
-    public void setSiteService(SiteService siteService) {
-        this.siteService = siteService;
-    }
-
     public void setTaggingManager(TaggingManager taggingManager) {
         this.taggingManager = taggingManager;
-    }
-
-    public void setUserDirectoryService(
-            UserDirectoryService userDirectoryService) {
-        this.userDirectoryService = userDirectoryService;
     }
 
     public void setAssignmentPermissionLogic(
@@ -201,6 +189,14 @@ AssignmentActivityProducer {
 	public void setAssignmentBundleLogic(AssignmentBundleLogic assignmentBundleLogic) {
         this.assignmentBundleLogic = assignmentBundleLogic;
     }
+	
+	public void setExternalLogic(ExternalLogic externalLogic) {
+	    this.externalLogic = externalLogic;
+	}
+	
+	public void setAssignmentLogic(AssignmentLogic assignmentLogic) {
+        this.assignmentLogic = assignmentLogic;
+    }
 
     public boolean allowGetItems(TaggableActivity activity, TaggingProvider provider, boolean getMyItemsOnly, String taggedItem)
     {
@@ -209,6 +205,8 @@ AssignmentActivityProducer {
         //return assignmentDao.allowGradeSubmission(activity.getReference());
         //return assignmentPermissionLogic.isUserAbleToProvideFeedbackForSubmission(submissionId);
         Assignment2 assignment = (Assignment2) activity.getObject();
+        Map<String, Object> optionalParams = new HashMap<String, Object>();
+        optionalParams.put(AssignmentConstants.TAGGABLE_REF_KEY, taggedItem);
         return assignmentPermissionLogic.isUserAllowedToManageSubmissionsForAssignment(null, assignment);
     }
 
@@ -216,9 +214,11 @@ AssignmentActivityProducer {
     {
         TaggableItem item = null;
         if (checkReference(itemRef)) {
-        	AssignmentSubmission submission = assignmentDao.getSubmissionWithVersionHistoryById(parseSubmissionRef(itemRef));
+            Map<String, Object> optionalParams = new HashMap<String, Object>();
+            optionalParams.put(AssignmentConstants.TAGGABLE_REF_KEY, taggedItem);
+        	AssignmentSubmission submission = assignmentSubmissionLogic.getAssignmentSubmissionById(parseSubmissionRef(itemRef), optionalParams);
         	boolean allowed = provider.allowGetItem(submission.getAssignment().getReference(), 
-        			itemRef, userDirectoryService.getCurrentUser().getId(), taggedItem);
+        			itemRef, externalLogic.getCurrentUserId(), taggedItem);
         	if (allowed) {
         		item = new AssignmentItemImpl(submission, parseAuthor(itemRef),
         				new AssignmentActivityImpl(submission.getAssignment(),
@@ -253,7 +253,7 @@ AssignmentActivityProducer {
          */
         boolean allowed = false;
         if (checkPerms) {
-           allowed = provider.allowGetItems(activity.getReference(), new String[]{}, userDirectoryService.getCurrentUser().getId(), taggedItem);
+           allowed = provider.allowGetItems(activity.getReference(), new String[]{}, externalLogic.getCurrentUserId(), taggedItem);
         }
         else {
            allowed = true;
@@ -262,7 +262,11 @@ AssignmentActivityProducer {
         if (allowed) {
             for (Iterator<AssignmentSubmission> i = assignmentSubmissionLogic.getViewableSubmissionsForAssignmentId(assignment.getId(), null).iterator(); i.hasNext();) {
                 AssignmentSubmission submission = i.next();
-                items.add(new AssignmentItemImpl(submission, submission.getUserId(), activity));
+                // we only want the submissions with a status of "submitted"
+                if (submission.getCurrentSubmissionVersion() != null && 
+                        submission.getCurrentSubmissionVersion().isSubmitted()) {
+                    items.add(new AssignmentItemImpl(submission, submission.getUserId(), activity));
+                }
             }
         }
         return items;
@@ -283,16 +287,20 @@ AssignmentActivityProducer {
         
         boolean allowed = false;
         if (checkPerms) {
-           allowed =provider.allowGetItems(activity.getReference(), new String[]{}, userDirectoryService.getCurrentUser().getId(), taggedItem);
+           allowed =provider.allowGetItems(activity.getReference(), new String[]{}, externalLogic.getCurrentUserId(), taggedItem);
         }
         else {
            allowed = true;
         }
         
         if (allowed) {
-        	AssignmentSubmission submission = assignmentDao.getSubmissionWithVersionHistoryForStudentAndAssignment(
-        			userId, assignment);
-        	if (submission != null) {
+            Map<String, Object> optionalParams = new HashMap<String, Object>();
+            optionalParams.put(AssignmentConstants.TAGGABLE_REF_KEY, taggedItem);
+        	AssignmentSubmission submission = assignmentSubmissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(assignment.getId(), userId, optionalParams);
+        	// the method above will return an empty submission object if there is no submission
+        	// yet, but we want to skip if that's the case
+        	if (submission != null && submission.getCurrentSubmissionVersion() != null && 
+        	        submission.getCurrentSubmissionVersion().isSubmitted()) {
         		TaggableItem item = new AssignmentItemImpl(submission, userId,
         				activity);
         		returned.add(item);
@@ -302,25 +310,25 @@ AssignmentActivityProducer {
     }
     
     public boolean hasSubmissions(TaggableActivity activity, TaggingProvider provider,
-            boolean getMyItemsOnly, String taggedItem)
+    		boolean getMyItemsOnly, String taggedItem)
     {
-       List<TaggableItem> items = new ArrayList<TaggableItem>();
-       if (taggedItem == null)
-          items = getItems(activity, provider, getMyItemsOnly, taggedItem, false);
-       else
-          items = getItems(activity, provider, getMyItemsOnly, taggedItem);
-       
-		return items.size() > 0;
+    	return hasSubmissions(activity);
     }
 
     public boolean hasSubmissions(TaggableActivity activity, String userId,
-            TaggingProvider provider, boolean getMyItemsOnly, String taggedItem)
+    		TaggingProvider provider, boolean getMyItemsOnly, String taggedItem)
     {
-       List<TaggableItem> items = new ArrayList<TaggableItem>();
-       if (taggedItem == null)
-          items = getItems(activity, userId, provider, getMyItemsOnly, taggedItem, false);
-       else
-          items = getItems(activity, userId, provider, getMyItemsOnly, taggedItem);
-		return items.size() > 0;
+    	return hasSubmissions(activity);
+    }
+
+    /**
+     * Figure out if there any student submissions for a specific activity
+     * @param activity
+     * @return
+     */
+    private boolean hasSubmissions(TaggableActivity activity) {
+    	Set<String> studentIdList = assignmentPermissionLogic.getSubmittersInSite(activity.getContext());
+    	int numSubmitters = assignmentDao.getNumStudentsWithASubmission((Assignment2)activity.getObject(), studentIdList);
+    	return numSubmitters > 0;
     }
 }
