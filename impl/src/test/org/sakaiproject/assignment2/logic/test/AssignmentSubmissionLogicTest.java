@@ -138,6 +138,79 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
             fail("did not catch a student trying to access another student's submission");
         } catch (SecurityException se) {}
     }
+    
+    public void testGetAssignmentSubmissionById2() {
+        // try passing a null id
+        try {
+            submissionLogic.getAssignmentSubmissionById(null);
+            fail("did not catch null submissionId passed to getAssignmentSubmissionById");
+        } catch(IllegalArgumentException iae) {}
+
+        // try passing an id that doesn't exist
+        try {
+            submissionLogic.getAssignmentSubmissionById(12345L);
+            fail("did not catch non-existent id passed to getAssignmentSubmissionById");
+        } catch (SubmissionNotFoundException snfe) {}
+
+        // the instructor should be able to retrieve any submission
+        externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
+        AssignmentSubmission submission = submissionLogic.getAssignmentSubmissionById(testData.st1a1Submission.getId());
+        assertTrue(submission.getUserId().equals(AssignmentTestDataLoad.STUDENT1_UID));
+        submission = submissionLogic.getAssignmentSubmissionById(testData.st2a2SubmissionNoVersions.getId());
+        assertTrue(submission.getUserId().equals(AssignmentTestDataLoad.STUDENT2_UID));
+        submission = submissionLogic.getAssignmentSubmissionById(testData.st2a4Submission.getId());
+        assertTrue(submission.getUserId().equals(AssignmentTestDataLoad.STUDENT2_UID));
+        submission = submissionLogic.getAssignmentSubmissionById(testData.st1a3Submission.getId());
+        assertNotNull(submission);
+        assertTrue(submission.getUserId().equals(AssignmentTestDataLoad.STUDENT1_UID));
+        // but shouldn't see submission details b/c still draft
+        assertTrue(submission.getCurrentSubmissionVersion().getSubmittedText().equals(""));
+        assertTrue(submission.getCurrentSubmissionVersion().getSubmissionAttachSet().isEmpty());
+
+        // will throw SecurityException if currentUser isn't auth to view submission
+        // let's try a TA
+        // should be able to view student 1's submission for assignment 1
+        externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
+        submission = submissionLogic.getAssignmentSubmissionById(testData.st1a1Submission.getId());
+        assertNotNull(submission);
+        assertTrue(submission.getUserId().equals(AssignmentTestDataLoad.STUDENT1_UID));
+
+        // should get a SecurityException trying to get st2
+        try {
+            submission = submissionLogic.getAssignmentSubmissionById(testData.st2a1Submission.getId());
+            fail("did not catch TA was trying to access a submission w/o authorization!");
+        } catch (SecurityException se) {}
+        
+        // should be able to view st1 in a3
+        submission = submissionLogic.getAssignmentSubmissionById(testData.st1a3Submission.getId());
+        assertNotNull(submission);
+        assertTrue(submission.getUserId().equals(AssignmentTestDataLoad.STUDENT1_UID));
+        
+        // should get security error for st3 in a3
+        try {
+            submission = submissionLogic.getAssignmentSubmissionById(testData.st3a3Submission.getId());
+            fail("did not catch TA was trying to access a submission w/o authorization!");
+        } catch (SecurityException se) {}
+
+
+        // student should be able to get their own
+        externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT1_UID);
+        submission = submissionLogic.getAssignmentSubmissionById(testData.st1a3Submission.getId());
+        assertTrue(submission.getUserId().equals(AssignmentTestDataLoad.STUDENT1_UID));
+        // double check submission info is populated
+        assertTrue(submission.getCurrentSubmissionVersion().getSubmissionAttachSet().size() == 1);
+        assertFalse(submission.getCurrentSubmissionVersion().getSubmittedText().equals(""));
+
+        // double check feedback is empty since not released yet
+        assertTrue(submission.getCurrentSubmissionVersion().getAnnotatedText().equals(""));
+        assertTrue(submission.getCurrentSubmissionVersion().getFeedbackAttachSet().isEmpty());
+        assertTrue(submission.getCurrentSubmissionVersion().getFeedbackNotes().equals(""));
+        // student should not be able to get other student
+        try {
+            submission = submissionLogic.getAssignmentSubmissionById(testData.st2a1Submission.getId());
+            fail("did not catch a student trying to access another student's submission");
+        } catch (SecurityException se) {}
+    }
 
     public void testGetSubmissionVersionById() {
         // try a null versionId
