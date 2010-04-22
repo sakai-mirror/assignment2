@@ -259,17 +259,21 @@ function tb_show(caption, url, imageGroup, tagName) {//function called when the 
 					}
 				}else{
 					//set FCKeditor
-					jQuery("textarea").each(function(){
-						if (FCKeditorAPI != null){
-							editor = FCKeditorAPI.GetInstance(this.id);
-							if (editor != null) this.value=editor.GetXHTML(editor.FormatOutput);
-						}
-					});
-				
-					if(jQuery("#text\\:\\:input")){
-						editor = FCKeditorAPI.GetInstance('text::input');
-						if (editor != null ) jQuery("#text\\:\\:input").get(0).value = editor.GetXHTML(editor.FormatOutput);
-					}
+				    // don't do this piece if you don't have FCK on the screen
+				    // or you will get an exception
+				    if ( typeof(FCKeditorAPI) !== 'undefined' ) {
+    					jQuery("textarea").each(function(){
+    						if (FCKeditorAPI != null){
+    							editor = FCKeditorAPI.GetInstance(this.id);
+    							if (editor != null) this.value=editor.GetXHTML(editor.FormatOutput);
+    						}
+    					});
+    				
+    					if(jQuery("#text\\:\\:input")){
+    						editor = FCKeditorAPI.GetInstance('text::input');
+    						if (editor != null ) jQuery("#text\\:\\:input").get(0).value = editor.GetXHTML(editor.FormatOutput);
+    					}
+				    }
 				
 					serial = jQuery("form").serialize();
 					if (tagName == "A"){

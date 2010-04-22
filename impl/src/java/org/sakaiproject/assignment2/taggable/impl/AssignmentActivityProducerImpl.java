@@ -23,6 +23,7 @@ package org.sakaiproject.assignment2.taggable.impl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +36,8 @@ import org.sakaiproject.taggable.api.TaggableItem;
 import org.sakaiproject.taggable.api.TaggingManager;
 import org.sakaiproject.taggable.api.TaggingProvider;
 import org.sakaiproject.assignment2.dao.AssignmentDao;
+import org.sakaiproject.assignment2.exception.AssignmentNotFoundException;
+import org.sakaiproject.assignment2.exception.SubmissionNotFoundException;
 import org.sakaiproject.assignment2.logic.AssignmentBundleLogic;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
@@ -42,6 +45,7 @@ import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
+import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.assignment2.taggable.api.AssignmentActivityProducer;
 import org.sakaiproject.entity.api.Entity;
@@ -120,11 +124,14 @@ AssignmentActivityProducer {
         TaggableActivity activity = null;
         if (checkReference(activityRef)) {
             Reference ref = entityManager.newReference(activityRef);
-            Map<String, Object> optionalParams = new HashMap<String, Object>();
-            optionalParams.put(AssignmentConstants.TAGGABLE_REF_KEY,null);
-            Assignment2 assignment = assignmentLogic.getAssignmentByIdWithAssociatedData(Long.valueOf(ref.getId()), optionalParams);
-            if (assignment != null) 
+            try {
+                Assignment2 assignment = assignmentLogic.getAssignmentByIdWithAssociatedData(Long.valueOf(ref.getId()), null);
                 activity = new AssignmentActivityImpl(assignment, this);
+            } catch (AssignmentNotFoundException anfe) {
+                logger.warn("No assignment found for activityRef: " + activityRef);
+            } catch (SecurityException se) {
+                logger.warn("User attempted to access assignment2 activity without permission: " + activityRef);
+            }
         }
         return activity;
     }
@@ -205,8 +212,6 @@ AssignmentActivityProducer {
         //return assignmentDao.allowGradeSubmission(activity.getReference());
         //return assignmentPermissionLogic.isUserAbleToProvideFeedbackForSubmission(submissionId);
         Assignment2 assignment = (Assignment2) activity.getObject();
-        Map<String, Object> optionalParams = new HashMap<String, Object>();
-        optionalParams.put(AssignmentConstants.TAGGABLE_REF_KEY, taggedItem);
         return assignmentPermissionLogic.isUserAllowedToManageSubmissionsForAssignment(null, assignment);
     }
 
@@ -214,16 +219,31 @@ AssignmentActivityProducer {
     {
         TaggableItem item = null;
         if (checkReference(itemRef)) {
-            Map<String, Object> optionalParams = new HashMap<String, Object>();
-            optionalParams.put(AssignmentConstants.TAGGABLE_REF_KEY, taggedItem);
-        	AssignmentSubmission submission = assignmentSubmissionLogic.getAssignmentSubmissionById(parseSubmissionRef(itemRef), optionalParams);
-        	boolean allowed = provider.allowGetItem(submission.getAssignment().getReference(), 
+            
+            try {
+                // passing along the taggedItem allows assignment2 to check for extended privileges
+                Map<String, Object> optionalParams = new HashMap<String, Object>();
+                optionalParams.put(AssignmentConstants.TAGGABLE_REF_KEY, taggedItem);
+                AssignmentSubmission submission = assignmentSubmissionLogic.getAssignmentSubmissionById(parseSubmissionRef(itemRef), optionalParams);
+                item = new AssignmentItemImpl(submission, parseAuthor(itemRef),
+                        new AssignmentActivityImpl(submission.getAssignment(),
+                                this));
+            } catch (SecurityException se) {
+                logger.warn("Attempt to retrieve assignment submission " + itemRef + 
+                " via AssignmentActivityProducer.getItem without permission");
+                item = null;
+            } catch (SubmissionNotFoundException snfe) {
+                logger.warn("Attempt to retrieve assignment submission " + itemRef + 
+                " via AssignmentActivityProducer.getItem but submission does not exist");
+                item = null;
+            }
+        	/*boolean allowed = provider.allowGetItem(submission.getAssignment().getReference(), 
         			itemRef, externalLogic.getCurrentUserId(), taggedItem);
         	if (allowed) {
         		item = new AssignmentItemImpl(submission, parseAuthor(itemRef),
         				new AssignmentActivityImpl(submission.getAssignment(),
         						this));
-        	}
+        	}*/
         }
         return item;
     }
@@ -294,16 +314,27 @@ AssignmentActivityProducer {
         }
         
         if (allowed) {
-            Map<String, Object> optionalParams = new HashMap<String, Object>();
-            optionalParams.put(AssignmentConstants.TAGGABLE_REF_KEY, taggedItem);
-        	AssignmentSubmission submission = assignmentSubmissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(assignment.getId(), userId, optionalParams);
-        	// the method above will return an empty submission object if there is no submission
-        	// yet, but we want to skip if that's the case
-        	if (submission != null && submission.getCurrentSubmissionVersion() != null && 
-        	        submission.getCurrentSubmissionVersion().isSubmitted()) {
-        		TaggableItem item = new AssignmentItemImpl(submission, userId,
-        				activity);
-        		returned.add(item);
+        	AssignmentSubmission submission = assignmentDao.getSubmissionWithVersionHistoryForStudentAndAssignment(userId, assignment);
+        	// we only consider submissions with a status of "submitted"
+        	if (submission != null) {
+        	    if (submission.getSubmissionHistorySet() != null) {
+        	        // filter out the versions that don't have a status of "submitted"
+        	        Set<AssignmentSubmissionVersion> submittedVersions = new HashSet<AssignmentSubmissionVersion>();
+        	        for (AssignmentSubmissionVersion ver : submission.getSubmissionHistorySet()) {
+        	            if (ver.isSubmitted()) {
+        	                submittedVersions.add(ver);
+        	            }
+        	        }
+
+        	        // now set the current version to the most recent submitted version
+        	        AssignmentSubmissionVersion currVersion = assignmentDao.getCurrentVersionFromHistory(submittedVersions);
+        	        submission.setSubmissionHistorySet(submittedVersions);
+        	        submission.setCurrentSubmissionVersion(currVersion);
+        	    }
+
+        	    TaggableItem item = new AssignmentItemImpl(submission, userId,
+        	            activity);
+        	    returned.add(item);
         	}
         }
         return returned;

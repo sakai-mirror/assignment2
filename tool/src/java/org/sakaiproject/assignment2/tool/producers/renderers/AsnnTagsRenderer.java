@@ -32,6 +32,7 @@ import org.sakaiproject.taggable.api.TagList;
 import org.sakaiproject.taggable.api.TaggableActivity;
 import org.sakaiproject.taggable.api.TaggingProvider;
 
+import uk.org.ponder.messageutil.MessageLocator;
 import uk.org.ponder.rsf.components.UIBranchContainer;
 import uk.org.ponder.rsf.components.UIContainer;
 import uk.org.ponder.rsf.components.UIJointContainer;
@@ -51,14 +52,19 @@ public class AsnnTagsRenderer implements BasicProducer {
     private ExternalTaggableLogic taggableLogic;
     private AssignmentActivityProducer activityProducer;
     private ExternalLogic externalLogic;
+    private AsnnToggleRenderer toggleRenderer;
+    private MessageLocator messageLocator;
     
     /**
      * 
      * @param tofill
      * @param divID
      * @param assignment
+     * @param includeToggle true if you want a toggle-able heading for each provider
+     * @param includeToggleBar true if you want the toggle to display as a bar. includeToggle must be true
+     * @param expandToggle true if you want the toggle to initially display expanded
      */
-    public void makeTagInformation(UIContainer tofill, String divID, Assignment2 assignment){
+    public void makeTagInformation(UIContainer tofill, String divID, Assignment2 assignment, boolean includeToggle, boolean includeToggleBar, boolean expandToggle){
 
         if (!taggableLogic.isSiteAssociated(assignment.getContextId())) {
             return;
@@ -80,10 +86,27 @@ public class AsnnTagsRenderer implements BasicProducer {
                 if (tags != null && !tags.isEmpty()) {
                     // make a section for each provider
                     UIBranchContainer providerContainer = UIBranchContainer.make(mainContainer, "provider-section:");
-                    UIOutput.make(providerContainer, "provider-heading", provider.getName());
-                    UIOutput.make(providerContainer, "provider-instruction", provider.getSimpleTextLabel());
-                    UIOutput description = UIOutput.make(providerContainer, "provider-description", provider.getHelpLabel());
-                    description.decorate(new UIFreeAttributeDecorator("title", provider.getHelpDescription()));
+                    
+                    // render the provider details
+                    UIOutput detailsSection = UIOutput.make(providerContainer, "provider_details");
+                    if (includeToggle && !expandToggle) {
+                        detailsSection.decorate(new UIFreeAttributeDecorator("style", "display: none;"));
+                    }
+                    
+                    // only display this header info if it isn't a toggle
+                    if (includeToggle) {
+                        String hoverText = messageLocator.getMessage("assignment2.tags.toggle.hover");
+                        
+                        toggleRenderer.makeToggle(providerContainer, "provider_toggle_section:", null, includeToggleBar, 
+                                provider.getName(), hoverText, false, false, false, false, null);
+                    } else {
+                        UIOutput.make(providerContainer, "tag_header");
+                        UIOutput.make(providerContainer, "provider-heading", provider.getName());
+                        UIOutput.make(providerContainer, "provider-instruction", provider.getSimpleTextLabel());
+                        UIOutput description = UIOutput.make(providerContainer, "provider-description", provider.getHelpLabel());
+                        description.decorate(new UIFreeAttributeDecorator("title", provider.getHelpDescription()));
+                    }
+                    
                     
                     // make the tag table for this provider
                     // first, render the headers
@@ -118,6 +141,14 @@ public class AsnnTagsRenderer implements BasicProducer {
     
     public void setExternalLogic(ExternalLogic externalLogic) {
         this.externalLogic = externalLogic;
+    }
+    
+    public void setAsnnToggleRenderer(AsnnToggleRenderer toggleRenderer) {
+        this.toggleRenderer = toggleRenderer;
+    }
+    
+    public void setMessageLocator(MessageLocator messageLocator) {
+        this.messageLocator = messageLocator;
     }
     
     /**
