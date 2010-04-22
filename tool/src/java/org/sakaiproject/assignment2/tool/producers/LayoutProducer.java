@@ -102,6 +102,8 @@ public class LayoutProducer implements NullaryProducer {
             	UILink.make(tofill, "asnn-js-include:","/sakai-assignment2-tool/content/js/import-assignments.js");
             } else if (GraderPermissionsProducer.VIEW_ID.equals(viewParameters.viewID)) {
                 UILink.make(tofill, "asnn-js-include:","/sakai-assignment2-tool/content/js/thickbox.js");
+            } else if (PreviewAsStudentProducer.VIEW_ID.equals(viewParameters.viewID)) {
+                UILink.make(tofill, "asnn-js-include:","/sakai-assignment2-tool/content/js/thickbox.js");
             }
 
             //include the components from the page body into tag "page-replace:"
