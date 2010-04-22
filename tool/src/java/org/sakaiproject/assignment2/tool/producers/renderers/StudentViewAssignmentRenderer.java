@@ -124,6 +124,11 @@ public class StudentViewAssignmentRenderer {
     public void setGradeDetailsRenderer(GradeDetailsRenderer gradeDetailsRenderer) {
         this.gradeDetailsRenderer = gradeDetailsRenderer;
     }
+    
+    private AsnnTagsRenderer tagsRenderer;
+    public void setAsnnTagsRenderer(AsnnTagsRenderer tagsRenderer) {
+        this.tagsRenderer = tagsRenderer;
+    }
 
     // Dependency
     private User currentUser;
@@ -244,6 +249,7 @@ public class StudentViewAssignmentRenderer {
                         // of the screen
                         asnnInstructionsRenderer.makeInstructions(joint, "asnn-instructions-bottom:", assignment, true, true, false);
                         asnnDetailsRenderer.fillComponents(joint, "asnn-details-bottom:", assignmentSubmission, false, true, false);
+                        tagsRenderer.makeTagInformation(joint, "asnn-tags-bottom:", assignment, true, true, false);
                     }
                 }
                 

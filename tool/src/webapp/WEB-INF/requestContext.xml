@@ -89,6 +89,8 @@
         <property name="externalTaggableLogic" ref="org.sakaiproject.assignment2.logic.ExternalTaggableLogic" />
         <property name="assignmentActivityProducer" ref="org.sakaiproject.assignment2.taggable.api.AssignmentActivityProducer" />
         <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
+        <property name="asnnToggleRenderer" ref="AsnnToggleRenderer"></property>
+        <property name="messageLocator" ref="messageLocator" />
     </bean>
     
     <bean id="AsnnSubmitEditorRenderer"
@@ -158,6 +160,7 @@
       <property name="assignmentSubmissionBean" ref="AssignmentSubmissionBean" />
       <property name="asnnDetailsRenderer" ref="AsnnDetailsRenderer"></property>
       <property name="gradeDetailsRenderer" ref="GradeDetailsRenderer"></property>
+      <property name="asnnTagsRenderer" ref="AsnnTagsRenderer"></property>
    </bean>   
    
    <bean id="AttachmentInputEvolver" class="org.sakaiproject.assignment2.tool.producers.evolvers.AttachmentInputEvolver">

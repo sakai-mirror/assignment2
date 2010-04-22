@@ -268,7 +268,7 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
         asnnInstructionsRenderer.makeInstructions(tofill, "assignment-instructions:", assignment, true, true, false);
 
         // Tagging info, if appropriate
-        tagsRenderer.makeTagInformation(tofill, "tagging-info-grading:", assignment);
+        tagsRenderer.makeTagInformation(tofill, "tagging-info-grading:", assignment, false, false, false);
 
         
         /**
