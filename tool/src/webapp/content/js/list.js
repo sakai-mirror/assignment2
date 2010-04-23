@@ -122,6 +122,9 @@ asnn2.buildListRenderTreeFromData = function (obj, index) {
     if (canDetails || canEdit || canAdd) {
         togo.sep2 = true;
     }
+    
+    // this is the editable title
+    togo.titleedit = obj.title;
   }
   if (obj.graded === true && canGrade) {
       togo.gradelink = {
@@ -193,6 +196,7 @@ asnn2.selectorMap = [
   { selector: ".row", id: "row:" },
   { selector: ".asnnid", id: "id" },
   { selector: ".asnntitle", id: "title" },
+  { selector: ".titleedit", id: "title" },
   { selector: ".gradelink", id: "gradelink"},
   { selector: ".editlink", id: "editlink" },
   { selector: ".detailslink", id: "detailslink" },
@@ -317,9 +321,26 @@ asnn2.getAsnnObj = function(val, prop) {
  *  Set up inline edits
  */
 asnn2.setupInlineEdits = function () {
+
+  // if you only have the inline edit on some of the titles
+  // but not all, fluid will blow up. to get around this, we are
+  // including the read-only title and editable title elements. go
+  // through and figure out which one the user can edit and display
+  // the editable one instead of the read-only
+  jQuery(".asnntitle").each(function (i) {
+    var asnnid = $(".asnnid", this.parentNode.parentNode).text();
+    var obj = asnn2.getAsnnObj(asnnid);
+    if (obj.editlink) {
+        // we want to hide the text-only title display and display the editable one
+      jQuery(this).hide();
+      var editableTitle = jQuery(this).next(".titleedit");
+      editableTitle.show();
+    }
+  });
+      
   var titleEdits = fluid.inlineEdits("#asnn-list", {
     selectors : {
-      text: ".asnntitle",
+      text: ".titleedit",
       editables: "p"
     },
     useTooltip : true,
