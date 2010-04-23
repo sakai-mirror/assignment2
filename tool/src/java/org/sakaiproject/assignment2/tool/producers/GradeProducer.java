@@ -158,6 +158,8 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
             //handle error
             return;
         }
+        
+        String placementId = sessionManager.getCurrentToolSession().getPlacementId();
 
         AssignmentSubmission as = submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(assignmentId, userId, null);
         Assignment2 assignment = assignmentLogic.getAssignmentByIdWithAssociatedData(assignmentId);
@@ -169,7 +171,7 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
                 new ViewSubmissionsViewParams(ViewSubmissionsProducer.VIEW_ID, assignment.getId()));
 
         /*****************begin constructing the navigation links *************************/
-        String prevUserId = getNavigationSubmissionUserId("prev", userId, assignmentId);
+        String prevUserId = getNavigationSubmissionUserId("prev", userId, assignmentId, placementId);
         if ( prevUserId != null) {
             // has previous user
             GradeViewParams prevParams = new GradeViewParams(GradeProducer.VIEW_ID, (GradeViewParams) viewparams);
@@ -184,7 +186,7 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
         // current student
         UIOutput.make(tofill, "current", externalLogic.getUserDisplayName(userId));
 
-        String nextUserId = getNavigationSubmissionUserId("next", userId, assignmentId);
+        String nextUserId = getNavigationSubmissionUserId("next", userId, assignmentId, placementId);
         if (nextUserId != null)
         {
             // has next user
@@ -785,6 +787,9 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
     }
 
     public void interceptActionResult(ARIResult result, ViewParameters incoming, Object actionReturn) {
+        // I believe this ARI call should still be scope and thread of the placement to get the Id.
+        String placementId = sessionManager.getCurrentToolSession().getPlacementId();
+        
         if (actionReturn instanceof String 
                 && actionReturn != null
                 && ((String)actionReturn).startsWith(AssignmentSubmissionBean.SAVE_AND_EDIT_PREFIX)) {
@@ -814,11 +819,11 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
                 outgoing.assignmentId = in.assignmentId;
                 if (AssignmentSubmissionBean.SUBMIT_PREV.equals(actionReturn) || AssignmentSubmissionBean.RELEASE_PREV.equals(actionReturn))
                 {
-                    outgoing.userId = getNavigationSubmissionUserId("prev", in.userId, outgoing.assignmentId);
+                    outgoing.userId = getNavigationSubmissionUserId("prev", in.userId, outgoing.assignmentId, placementId);
                 }
                 else if (AssignmentSubmissionBean.SUBMIT_NEXT.equals(actionReturn) || AssignmentSubmissionBean.RELEASE_NEXT.equals(actionReturn))
                 {
-                    outgoing.userId = getNavigationSubmissionUserId("next", in.userId, outgoing.assignmentId);
+                    outgoing.userId = getNavigationSubmissionUserId("next", in.userId, outgoing.assignmentId, placementId);
                 }
                 else
                 {
@@ -935,9 +940,9 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
      * @param userId
      * @return
      */
-    private String getNavigationSubmissionUserId(String prevOrNext, String userId, long asnnId)
+    private String getNavigationSubmissionUserId(String prevOrNext, String userId, long asnnId, String placementId)
     {
-        List<String> submissionStudentIds = a2sessionCache.getSortedStudentIds(externalLogic.getCurrentUserId(), asnnId);
+        List<String> submissionStudentIds = a2sessionCache.getSortedStudentIds(externalLogic.getCurrentUserId(), asnnId, placementId);
         if (submissionStudentIds.size() > 0)
         {
             int position = submissionStudentIds.indexOf(userId);

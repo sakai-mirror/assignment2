@@ -54,7 +54,8 @@
     </bean>
 
 	
-	<bean parent="org.sakaiproject.entitybroker.entityprovider.AbstractEntityProvider"
+	<bean  id="org.sakaiproject.assignment2.tool.entity.Assignment2SubmissionEntityProvider"
+	       parent="org.sakaiproject.entitybroker.entityprovider.AbstractEntityProvider"
 	     class="org.sakaiproject.assignment2.tool.entity.Assignment2SubmissionEntityProvider">
 		<property name="submissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
 		<property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
@@ -236,6 +237,7 @@
 	      class="org.sakaiproject.assignment2.tool.beans.SessionCache"
 	      init-method="init">
 	      <property name="memoryService" ref="org.sakaiproject.memory.api.MemoryService" />
+	      <property name="assignment2SubmissionEntityProvider" ref="org.sakaiproject.assignment2.tool.entity.Assignment2SubmissionEntityProvider" />
 	</bean>
 	
 </beans>
