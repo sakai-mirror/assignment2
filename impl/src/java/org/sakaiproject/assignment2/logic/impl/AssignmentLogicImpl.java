@@ -343,7 +343,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
             try {
                 saveAssignmentAnnouncement(existingAssignment, assignment);
             } catch (AnnouncementPermissionException ape) {
-                throw new AnnouncementPermissionException("The current user is not " +
+                log.warn("The current user is not " +
                         "authorized to update announcements in the announcements " +
                         "tool. Any related announcements were NOT updated", ape);
             }
@@ -354,7 +354,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
             try {
                 handleDueDateEvent(existingAssignment, assignment);
             } catch (CalendarPermissionException cpe) {
-                throw new CalendarPermissionException("The current user is not " +
+                log.warn("The current user is not " +
                         "authorized to update events in the Schedule " +
                         "tool. Any related events were NOT updated", cpe);
             }
@@ -362,6 +362,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 
         // TODO ASNN-516 Content Review / Turnitin Integration
         if (assignment.isContentReviewEnabled()) {
+            boolean newIntegration = assignment.getContentReviewRef() == null;
             String tiiAsnnTitle = externalContentReviewLogic.getTaskId(assignment);
             assignment.setContentReviewRef(tiiAsnnTitle);
             log.debug("Going to Create/Update TII Asnn with title: " + tiiAsnnTitle);
@@ -369,7 +370,15 @@ public class AssignmentLogicImpl implements AssignmentLogic{
                 externalContentReviewLogic.createAssignment(assignment);
                 dao.update(assignment);
             } catch (ContentReviewException cre) {
-                throw new ContentReviewException("The assignments was saved, " +
+                // if we were attempting to integrate for the first time,
+                // we don't want TII enabled to be left as true
+                if (newIntegration) {
+                    assignment.setContentReviewEnabled(false);
+                    assignment.setContentReviewRef(null);
+                    dao.update(assignment);
+                }
+                
+                throw new ContentReviewException("The assignment was saved, " +
                  "but Turnitin information was unable to be updated", cre);
             }
         }

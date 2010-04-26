@@ -243,10 +243,6 @@ public class AssignmentAuthoringBean {
 
                 logic.saveAssignment(assignment);
 
-            } catch (AnnouncementPermissionException ape) {
-                if (LOG.isDebugEnabled()) LOG.debug("Announcement could not " +
-                "be updated b/c user does not have perm in annc tool");
-                //TODO display to user?
             } catch (ContentReviewException cre) {
                 messages.addMessage(new TargettedMessage("assignment2.turnitin.error.unable_to_save_tii",
                         new Object[] { assignment.getTitle() }, TargettedMessage.SEVERITY_ERROR));
