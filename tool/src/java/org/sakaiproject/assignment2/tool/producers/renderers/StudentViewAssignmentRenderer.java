@@ -241,10 +241,10 @@ public class StudentViewAssignmentRenderer {
                         asnnInstructionsRenderer.makeInstructions(joint, "assignment-instructions-top:", assignment, false, false, false);
                     }
                 } else {
-                    if (resubmit || submissionIsOpen) {
+                    if (resubmit && submissionIsOpen) {
                         // just display the details b/c the editor will display the instructions
                         asnnDetailsRenderer.fillComponents(joint, "assignment-details-top:", assignmentSubmission, false, false, false);
-                    } else if (!submissionIsOpen && !resubmit){
+                    } else if (!submissionIsOpen || !resubmit){
                         // make the instructions and details with the toggle bar at the bottom
                         // of the screen
                         asnnInstructionsRenderer.makeInstructions(joint, "asnn-instructions-bottom:", assignment, true, true, false);
