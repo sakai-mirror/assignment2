@@ -2,6 +2,7 @@ package org.sakaiproject.assignment2.tool.beans;
 
 import java.util.List;
 
+import org.sakaiproject.assignment2.tool.entity.Assignment2SubmissionEntityProvider;
 import org.sakaiproject.memory.api.Cache;
 import org.sakaiproject.memory.api.MemoryService;
 
@@ -19,19 +20,29 @@ public class SessionCache {
         this.memoryService = memoryService;
     }
     
-    private Cache sortedStudentIdsCache = null;
-    
-    public List<String> getSortedStudentIds(String curUserID, long asnnId) {
-        String key = curUserID+asnnId;
-        List<String> togo = null;
-        if (sortedStudentIdsCache.containsKey(key)) {
-            return (List<String>) sortedStudentIdsCache.get(key);
-        }
-        return togo;
+    private Assignment2SubmissionEntityProvider assignment2SubmissionEntityProvider;
+    public void setAssignment2SubmissionEntityProvider(
+            Assignment2SubmissionEntityProvider assignment2SubmissionEntityProvider) {
+        this.assignment2SubmissionEntityProvider = assignment2SubmissionEntityProvider;
     }
     
-    public void setSortedStudentIds(String curUserID, long asnnId, List<String> studentIds) {
-        sortedStudentIdsCache.put(curUserID+asnnId, studentIds);
+    private Cache sortedStudentIdsCache = null;
+    
+    public List<String> getSortedStudentIds(String curUserID, long asnnId, String placementId) {
+        String key = curUserID+asnnId+placementId;
+        List<String> studentIds = null;
+        if (sortedStudentIdsCache.containsKey(key)) {
+            studentIds = (List<String>) sortedStudentIdsCache.get(key);
+        }
+        if (studentIds == null) {
+            assignment2SubmissionEntityProvider.getEntitiesWithStoredSessionState(asnnId, placementId);
+            studentIds = (List<String>) sortedStudentIdsCache.get(key);
+        }
+        return studentIds;
+    }
+    
+    public void setSortedStudentIds(String curUserID, long asnnId, List<String> studentIds, String placementId) {
+        sortedStudentIdsCache.put(curUserID+asnnId+placementId, studentIds);
     }
 
     public void init() {

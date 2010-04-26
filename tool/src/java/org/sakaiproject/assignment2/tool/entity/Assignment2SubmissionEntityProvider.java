@@ -55,6 +55,7 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware{
     public static final String SUBMISSIONVIEW_SESSION_ATTR_ASCENDING = "ascending";
     public static final String SUBMISSIONVIEW_SESSION_ATTR_ORDER_BY = "orderBy";
     public static final String SUBMISSIONVIEW_SESSION_ATTR_PAGE_SIZE = "pageSize";
+    public static final String SUBMISSIONVIEW_SESSION_ATTR_GROUP_ID = "groupId";
     public static final String SUBMISSIONVIEW_SESSION_ATTR = "x-asnn2-submissionview";
     
     public static final String STUDENT_NAME_PROP = "studentName";
@@ -197,27 +198,45 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware{
         String filterGroupId = requestStorage.getStoredValueAsType(String.class, "groupId");
         String placementId = requestStorage.getStoredValueAsType(String.class, "placementId");
         
+        return getEntities(search, assignmentId, filterGroupId, placementId);
+    }
+    
+    /**
+     * Can be used by other components (mostly right now the SessionCache) to
+     * repopulate the cached studentIds and get the submissions using the
+     * table sort items stuffed in real session state.
+     * 
+     * @param assignmentId
+     * @param placementId
+     * @return
+     */
+    public List<?> getEntitiesWithStoredSessionState(Long assignmentId, String placementId) {
+        ToolSession toolSession = sessionManager.getCurrentSession().getToolSession(placementId);
+        Map attr = (Map) toolSession.getAttribute(SUBMISSIONVIEW_SESSION_ATTR);
+        Search search = new Search();
+        search.setLimit((Long) attr.get(SUBMISSIONVIEW_SESSION_ATTR_PAGE_SIZE));
+        search.addOrder(new Order(((String) attr.get(SUBMISSIONVIEW_SESSION_ATTR_ORDER_BY)),
+                (((Boolean) attr.get(SUBMISSIONVIEW_SESSION_ATTR_ASCENDING)))));
+        String filterGroupId = (String) attr.get(SUBMISSIONVIEW_SESSION_ATTR_GROUP_ID);
+        return getEntities(search, assignmentId, filterGroupId, placementId);
+    }
+
+    /**
+     * Overloaded version of getEntities that allows components to provide the
+     * extra parameter rather than fetching them request scope.
+     * 
+     * @param search
+     * @param assignmentId
+     * @param filterGroupId
+     * @param placementId
+     * @return
+     */
+    private List<?> getEntities(Search search, Long assignmentId,
+            String filterGroupId, String placementId) {
         String orderByTest = null;
         if (search.getOrders() != null && search.getOrders().length > 0) {
             orderByTest = search.getOrders()[0].getProperty();
         }
-        /*
-        SubmissionTableViewState curViewState = new SubmissionTableViewState(assignmentId, filterGroupId, orderByTest, search.getStart(), search.getLimit() );
-        
-        if (firstcall != null && assignmentId != null) {
-            if (firstcall.booleanValue()) {
-                submissionTableViewStateHolder.setSubmissionTableViewState(curViewState);
-            }
-            else {
-                curViewState = submissionTableViewStateHolder.getSubmissionTableViewState(assignmentId);
-                filterGroupId = curViewState.getGroupId();
-                search.setOrders(new Order[] {new Order(curViewState.getOrderBy())});
-                search.setLimit(curViewState.getSize());
-                search.setStart(curViewState.getStart());
-            }
-        } 
-        */
-        
 
         DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, assignmentBundleLogic.getLocale());
 
@@ -464,8 +483,10 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware{
             }
         }
 
-        requestGetter.getResponse().setHeader("x-asnn2-pageSize", search.getLimit()+"");
-        requestGetter.getResponse().setHeader("x-asnn2-pageIndex", (start / search.getLimit())+"");
+        if (requestGetter.getResponse() != null) {
+            requestGetter.getResponse().setHeader("x-asnn2-pageSize", search.getLimit()+"");
+            requestGetter.getResponse().setHeader("x-asnn2-pageIndex", (start / search.getLimit())+"");
+        }
         
         if (placementId != null) {
             Session session = sessionManager.getCurrentSession();
@@ -474,6 +495,7 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware{
             attr.put(SUBMISSIONVIEW_SESSION_ATTR_PAGE_SIZE, search.getLimit());
             attr.put(SUBMISSIONVIEW_SESSION_ATTR_ORDER_BY, orderBy);
             attr.put(SUBMISSIONVIEW_SESSION_ATTR_ASCENDING, ascending);
+            attr.put(SUBMISSIONVIEW_SESSION_ATTR_GROUP_ID, filterGroupId);
             
             /* construct the whole user id list*/
             List<String> studentIds = new Vector<String> ();
@@ -483,8 +505,8 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware{
                 studentIds.add((String) m.get("studentId"));
             }
             
-            a2sessionCache.setSortedStudentIds(externalLogic.getCurrentUserId(), assignmentId, studentIds);
-            
+            a2sessionCache.setSortedStudentIds(externalLogic.getCurrentUserId(), assignmentId, studentIds, placementId);
+                
             //attr.put(SORTED_SUBMISSION_STUDENT_IDS, studentIds);
             toolSession.setAttribute(SUBMISSIONVIEW_SESSION_ATTR, attr);
         }
