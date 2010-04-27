@@ -903,3 +903,14 @@ a.tagDescription {
 }
 #tooltip h3, #tooltip div { margin: 0; }
 
+/* There is some abuse of html and css in a2. for instance, lists are used
+ * all over the place and there is a style put on all lists within a form
+ * that removes the styling. This also overrides user-input text in the fck
+ * editor, so use this class to restore defaults */
+.restoreDefaultStyles ul li {
+    list-style-type: disc;
+}
+
+.restoreDefaultStyles ol li {
+    list-style-type: decimal;
+}
