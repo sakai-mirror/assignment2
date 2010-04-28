@@ -94,8 +94,9 @@ public class ExternalLogicStub implements ExternalLogic {
      * @param userSubmittedString any string from the user which could be dangerous
      * @return a cleaned up string which is now safe
      */
-    public String cleanupUserStrings(String userSubmittedString) {
-        return null; // used for ui
+    public String cleanupUserStrings(String userSubmittedString, boolean cleanupHtml) {
+        // this just returns it back, so tests for malicious strings won't be caught
+        return userSubmittedString;
     }
 
     /**

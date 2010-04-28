@@ -33,6 +33,7 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
+import org.sakaiproject.assignment2.logic.utils.Assignment2Utils;
 import org.sakaiproject.authz.api.Member;
 import org.sakaiproject.component.api.ServerConfigurationService;
 import org.sakaiproject.entity.api.Entity;
@@ -154,9 +155,17 @@ public class ExternalLogicImpl implements ExternalLogic {
         return "----------";
     }
 
-    public String cleanupUserStrings(String userSubmittedString) {
+    public String cleanupUserStrings(String userSubmittedString, boolean cleanupHtml) {
         // clean up the string
-        return FormattedText.processFormattedText(userSubmittedString, new StringBuilder(), true, false);            
+        if (userSubmittedString != null && !"".equals(userSubmittedString)) {
+            if (cleanupHtml) {
+                userSubmittedString = Assignment2Utils.cleanupHtmlText(userSubmittedString);
+            }
+            
+            userSubmittedString = FormattedText.processFormattedText(userSubmittedString, new StringBuilder(), true, false);
+        } 
+
+        return userSubmittedString;
     }
 
     public String getAssignmentViewUrl(String viewId) {

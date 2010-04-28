@@ -48,7 +48,6 @@ import org.sakaiproject.assignment2.logic.ExternalContentReviewLogic;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.logic.GradeInformation;
-import org.sakaiproject.assignment2.logic.utils.Assignment2Utils;
 import org.sakaiproject.assignment2.logic.utils.ComparatorsUtils;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
@@ -249,7 +248,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
         AssignmentSubmissionVersion version = null;
 
         // clean up submittedText
-        submittedText = Assignment2Utils.cleanupHtmlText(submittedText);
+        submittedText = externalLogic.cleanupUserStrings(submittedText, true);
 
         boolean isAnUpdate = false;
 
@@ -476,8 +475,8 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
                         }
 
                         // clean up the provided text
-                        updatedVersion.setFeedbackNotes(Assignment2Utils.cleanupHtmlText(updatedVersion.getFeedbackNotes()));
-                        updatedVersion.setAnnotatedText(Assignment2Utils.cleanupHtmlText(updatedVersion.getAnnotatedText()));
+                        updatedVersion.setFeedbackNotes(externalLogic.cleanupUserStrings(updatedVersion.getFeedbackNotes(), true));
+                        updatedVersion.setAnnotatedText(externalLogic.cleanupUserStrings(updatedVersion.getAnnotatedText(), true));
 
                         // identify any attachments that were deleted
                         Set<SubmissionAttachmentBase> attachToDelete = identifyAttachmentsToDelete(version.getFeedbackAttachSet(), updatedVersion.getFeedbackAttachSet());

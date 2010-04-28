@@ -26,6 +26,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.sakaiproject.assignment2.logic.utils.Assignment2Utils;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.user.api.User;
 
@@ -130,9 +131,10 @@ public interface ExternalLogic {
      * Cleans up the users submitted strings to protect us from XSS
      * 
      * @param userSubmittedString any string from the user which could be dangerous
+     * @param cleanupHtml if true, will also call {@link Assignment2Utils#cleanupHtmlText(String)}
      * @return a cleaned up string which is now safe
      */
-    public String cleanupUserStrings(String userSubmittedString);
+    public String cleanupUserStrings(String userSubmittedString, boolean cleanupHtml);
 
     /**
      * Returns URL to viewId pass in

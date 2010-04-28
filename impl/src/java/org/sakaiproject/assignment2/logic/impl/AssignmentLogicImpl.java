@@ -253,7 +253,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
         assignment.setTitle(assignment.getTitle().trim());
 
         // clean up the html string for the instructions
-        assignment.setInstructions(Assignment2Utils.cleanupHtmlText(assignment.getInstructions()));
+        assignment.setInstructions(externalLogic.cleanupUserStrings(assignment.getInstructions(), true));
         
         // double check that content review is available for this assignment
         if (assignment.isContentReviewEnabled()) {
