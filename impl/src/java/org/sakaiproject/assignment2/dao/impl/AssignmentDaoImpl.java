@@ -639,7 +639,7 @@ public class AssignmentDaoImpl extends HibernateGeneralGenericDao implements Ass
     public int getNumSubmittedVersions(final String studentId, final Long assignmentId) {
         if (studentId == null || assignmentId == null) {
             throw new IllegalArgumentException("Null studentId or assignmentId passed " +
-            "to getTotalNumSubmissionsForStudentForAssignment");
+            "to getNumSubmittedVersions");
         }
 
         HibernateCallback hc = new HibernateCallback()
@@ -647,6 +647,26 @@ public class AssignmentDaoImpl extends HibernateGeneralGenericDao implements Ass
             public Object doInHibernate(Session session) throws HibernateException, SQLException
             {
                 Query query = session.getNamedQuery("countNumSubmittedVersions");
+                query.setParameter("studentId", studentId, Hibernate.STRING);
+                query.setParameter("assignmentId", assignmentId, Hibernate.LONG);
+
+                return query.uniqueResult();
+            }
+        };
+        return ((Number) getHibernateTemplate().execute(hc)).intValue();
+    }
+    
+    public int getNumStudentVersions(final String studentId, final Long assignmentId) {
+        if (studentId == null || assignmentId == null) {
+            throw new IllegalArgumentException("Null studentId or assignmentId passed " +
+            "to getNumStudentVersions");
+        }
+
+        HibernateCallback hc = new HibernateCallback()
+        {
+            public Object doInHibernate(Session session) throws HibernateException, SQLException
+            {
+                Query query = session.getNamedQuery("countNumStudentVersions");
                 query.setParameter("studentId", studentId, Hibernate.STRING);
                 query.setParameter("assignmentId", assignmentId, Hibernate.LONG);
 

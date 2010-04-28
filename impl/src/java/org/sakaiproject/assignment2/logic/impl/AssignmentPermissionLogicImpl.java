@@ -516,9 +516,9 @@ public class AssignmentPermissionLogicImpl implements AssignmentPermissionLogic 
             // we need to see if this permission applies given the group restrictions and all groups permission
             if (userHasGroupPermission(userId, permission, assignment, groupMembershipIds, authzPermissions)) {
                 // now we just need to check that if the assignment was removed,
-                // the user can only see if if he/she has a submission
+                // the user can only see if he/she has a submission
                 if (assignment.isRemoved()) {
-                    int numSubmissions = dao.getNumSubmittedVersions(userId, assignment.getId());
+                    int numSubmissions = dao.getNumStudentVersions(userId, assignment.getId());
                     if (numSubmissions > 0) {
                         allowed = true;
                     } else {
