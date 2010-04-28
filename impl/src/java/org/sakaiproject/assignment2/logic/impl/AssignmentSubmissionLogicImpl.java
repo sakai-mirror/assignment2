@@ -1333,32 +1333,56 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
                 Set<String> studentsToCheckForGrade = new HashSet<String>();
                 for (AssignmentSubmissionVersion version : currSubVersions) {
                     if (!version.isFeedbackReleased()) {
-                        newSubmissions.add(version.getAssignmentSubmission().getUserId());
-                    } else {
-                        // this version has feedback released, so we need to check
-                        // if it has a grade, if applicable
-                        studentsToCheckForGrade.add(version.getAssignmentSubmission().getUserId());
-                    }
+                        // if feedback isn't released, we need to see if there is
+                        // a grade. otherwise, it is "new"
+                        if (assignment.isGraded()) {
+                            studentsToCheckForGrade.add(version.getAssignmentSubmission().getUserId());
+                        } else {
+                            newSubmissions.add(version.getAssignmentSubmission().getUserId());
+                        }
+                    } 
                 }
 
-                if (assignment.isGraded() && assignment.getGradebookItemId() != null &&
-                        !studentsToCheckForGrade.isEmpty()) {
-                    
-                    // we need to filter this list to only include students the user is
-                    // allowed to view or grade in the gradebook or we will hit a security exception
-                    if (!gradebookLogic.isCurrentUserAbleToGradeAll(assignment.getContextId())) {
-                        studentsToCheckForGrade = new HashSet<String>(gradebookLogic.getFilteredStudentsForGradebookItem(externalLogic.getCurrentUserId(), 
-                                assignment.getContextId(), assignment.getGradebookItemId(), 
-                                AssignmentConstants.VIEW, studentsToCheckForGrade));
-                    }
-                
-                    Map<String, GradeInformation> studentGradeInfo = gradebookLogic.getGradeInformationForStudents(studentsToCheckForGrade, assignment.getContextId(), assignment.getGradebookItemId());
-                    if (studentGradeInfo != null) {
-                        for (Map.Entry<String, GradeInformation> entry : studentGradeInfo.entrySet()) {
-                            String studentUid = entry.getKey();
-                            GradeInformation gradeInfo = entry.getValue();
-                            if (gradeInfo.getGradebookGrade() == null || gradeInfo.getGradebookGrade().equals("")) {
-                                newSubmissions.add(studentUid);
+                if (!studentsToCheckForGrade.isEmpty()) {
+                    // double check that gb item still exists
+                    if (assignment.getGradebookItemId() == null || 
+                            !gradebookLogic.gradebookItemExists(assignment.getGradebookItemId())) {
+                        // feedback wasn't released for us to get to this point, so all these
+                        // students are "new"
+                        newSubmissions.addAll(studentsToCheckForGrade);
+                    } else {
+
+                        // we need to filter this list to only include students the user is
+                        // allowed to view or grade in the gradebook or we will hit a security exception
+                        if (!gradebookLogic.isCurrentUserAbleToGradeAll(assignment.getContextId())) {
+                            List<String> gradableStudents = gradebookLogic.getFilteredStudentsForGradebookItem(externalLogic.getCurrentUserId(), 
+                                    assignment.getContextId(), assignment.getGradebookItemId(), 
+                                    AssignmentConstants.VIEW, studentsToCheckForGrade);
+                            if (gradableStudents == null) {
+                                // this user can't grade any of these students, so mark
+                                // all as new
+                                newSubmissions.addAll(studentsToCheckForGrade);
+                            } else {
+                                // we need to see which ones the user may not grade out of our
+                                // original list and mark them as new
+                                for (String student : studentsToCheckForGrade) {
+                                    if (!gradableStudents.contains(student)) {
+                                        newSubmissions.add(student);
+                                    }
+                                }
+                                
+                                studentsToCheckForGrade = new HashSet<String>(gradableStudents);
+                            }
+                        }
+
+                        Map<String, GradeInformation> studentGradeInfo = gradebookLogic.getGradeInformationForStudents(studentsToCheckForGrade, assignment.getContextId(), assignment.getGradebookItemId());
+                        if (studentGradeInfo != null) {
+                            for (Map.Entry<String, GradeInformation> entry : studentGradeInfo.entrySet()) {
+                                String studentUid = entry.getKey();
+                                GradeInformation gradeInfo = entry.getValue();
+                                if (gradeInfo.getGradebookGrade() == null || gradeInfo.getGradebookGrade().equals("")) {
+                                    newSubmissions.add(studentUid);
+                                }
                             }
                         }
                     }

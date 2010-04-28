@@ -1773,18 +1773,17 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
         // we should only get 1 now
         assertEquals(1, submissionLogic.getNumNewSubmissions(testData.a1, students));
 
-        // now let's check a graded assignment
-        assertEquals(3, submissionLogic.getNumNewSubmissions(testData.a3, students));
+        // now let's check a graded assignment. none have feedback but st 1 has a grade
+        assertEquals(2, submissionLogic.getNumNewSubmissions(testData.a3, students));
 
         // student 1 has a draft version, so let's release fb on the non-draft one
-        // and see if he still shows up as having a "new" submission. he already
-        // has a grade for this one
+        // this student already has a grade so shouldn't show up as "new"
         submissionLogic.releaseOrRetractFeedbackForVersion(testData.st1a3FirstVersion.getId(), true);
         assertEquals(2, submissionLogic.getNumNewSubmissions(testData.a3, students));
 
-        // student 2 does not have a grade yet, so releasing fb should not change
+        // student 2 does not have a grade yet, so releasing fb should change
         // "new" status
         submissionLogic.releaseOrRetractFeedbackForVersion(testData.st2a3CurrVersion.getId(), true);
-        assertEquals(2, submissionLogic.getNumNewSubmissions(testData.a3, students));
+        assertEquals(1, submissionLogic.getNumNewSubmissions(testData.a3, students));
     }
 }
