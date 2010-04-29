@@ -116,18 +116,13 @@ public class AsnnSubmissionVersionRenderer implements BasicProducer {
          */
         if (asnnSubVersion.getSubmittedVersionNumber() != 0) {
             if (submissionType == AssignmentConstants.SUBMIT_ATTACH_ONLY || submissionType == AssignmentConstants.SUBMIT_INLINE_AND_ATTACH) {
-                // TODO FIXME if the student didn't actually submit any attachments
-                // what should we say
-                UIMessage.make(joint, "submission-attachments-header", "assignment2.student-submit.submitted_attachments");
-
                 if (asnnSubVersion.getSubmissionAttachSet() != null && !asnnSubVersion.getSubmissionAttachSet().isEmpty()){
                     if (assignment.isContentReviewEnabled() && contentReviewLogic.isContentReviewAvailable(assignment.getContextId())) {
                         contentReviewLogic.populateReviewProperties(assignment, asnnSubVersion.getSubmissionAttachSet(), false);
                     }
+                    UIMessage.make(joint, "submission-attachments-header", "assignment2.student-submit.submitted_attachments");
                     attachmentListRenderer.makeAttachmentFromSubmissionAttachmentSet(joint, "submission-attachment-list:", viewParameters.viewID, 
                             asnnSubVersion.getSubmissionAttachSet());
-                } else {
-                    UIMessage.make(joint, "no_submitted_attachments", "assignment2.student-submit.no_attachments_submitted");
                 }
             }
 
@@ -137,20 +132,15 @@ public class AsnnSubmissionVersionRenderer implements BasicProducer {
                 // instructor annotations
                 
                 if (userCanGrade || asnnSubVersion.isFeedbackReleased()) {
-                    UIMessage.make(joint, "submission-text-header", "assignment2.student-submit.submission_text.annotated");
-                    
                     if (asnnSubVersion.getAnnotatedText() != null && asnnSubVersion.getAnnotatedText().trim().length() > 0) {
+                        UIMessage.make(joint, "submission-text-header", "assignment2.student-submit.submission_text.annotated");
                         HtmlDiffUtil differ = new HtmlDiffUtil();
                         UIVerbatim.make(joint, "submission-text", differ.diffHtml(asnnSubVersion.getSubmittedText(), asnnSubVersion.getAnnotatedText()));
-                    } else {
-                        UIMessage.make(joint, "submission-text", "assignment2.student-submit.submission_text.none");
                     }
                 } else {
-                    UIMessage.make(joint, "submission-text-header", "assignment2.student-submit.submission_text");
                     if (asnnSubVersion.getSubmittedText() != null && asnnSubVersion.getSubmittedText().trim().length() > 0) {
+                        UIMessage.make(joint, "submission-text-header", "assignment2.student-submit.submission_text");
                         UIVerbatim.make(joint, "submission-text", asnnSubVersion.getSubmittedText());
-                    } else {
-                        UIMessage.make(joint, "submission-text", "assignment2.student-submit.submission_text.none");
                     }
                 }
             }
