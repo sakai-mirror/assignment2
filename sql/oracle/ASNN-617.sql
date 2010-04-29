@@ -39,6 +39,7 @@ INSERT INTO SAKAI_REALM_RL_FN VALUES((select REALM_KEY from SAKAI_REALM where RE
 INSERT INTO SAKAI_REALM_RL_FN VALUES((select REALM_KEY from SAKAI_REALM where REALM_ID = '!site.template.course'), (select ROLE_KEY from SAKAI_REALM_ROLE where ROLE_NAME = 'Instructor'), (select FUNCTION_KEY from SAKAI_REALM_FUNCTION where FUNCTION_NAME = 'asnn2.all.groups'));
 
 INSERT INTO SAKAI_REALM_RL_FN VALUES((select REALM_KEY from SAKAI_REALM where REALM_ID = '!site.template.course'), (select ROLE_KEY from SAKAI_REALM_ROLE where ROLE_NAME = 'Teaching Assistant'), (select FUNCTION_KEY from SAKAI_REALM_FUNCTION where FUNCTION_NAME = 'asnn2.assignment.read'));
+INSERT INTO SAKAI_REALM_RL_FN VALUES((select REALM_KEY from SAKAI_REALM where REALM_ID = '!site.template.course'), (select ROLE_KEY from SAKAI_REALM_ROLE where ROLE_NAME = 'Teaching Assistant'), (select FUNCTION_KEY from SAKAI_REALM_FUNCTION where FUNCTION_NAME = 'asnn2.submissions.manage'));
 
 INSERT INTO SAKAI_REALM_RL_FN VALUES((select REALM_KEY from SAKAI_REALM where REALM_ID = '!site.template.course'), (select ROLE_KEY from SAKAI_REALM_ROLE where ROLE_NAME = 'Student'), (select FUNCTION_KEY from SAKAI_REALM_FUNCTION where FUNCTION_NAME = 'asnn2.assignment.read'));
 INSERT INTO SAKAI_REALM_RL_FN VALUES((select REALM_KEY from SAKAI_REALM where REALM_ID = '!site.template.course'), (select ROLE_KEY from SAKAI_REALM_ROLE where ROLE_NAME = 'Student'), (select FUNCTION_KEY from SAKAI_REALM_FUNCTION where FUNCTION_NAME = 'asnn2.submit'));
@@ -50,9 +51,6 @@ INSERT INTO SAKAI_REALM_RL_FN VALUES((select REALM_KEY from SAKAI_REALM where RE
 INSERT INTO SAKAI_REALM_RL_FN VALUES((select REALM_KEY from SAKAI_REALM where REALM_ID = '!group.template.course'), (select ROLE_KEY from SAKAI_REALM_ROLE where ROLE_NAME = 'Instructor'), (select FUNCTION_KEY from SAKAI_REALM_FUNCTION where FUNCTION_NAME = 'asnn2.submissions.manage'));
 
 INSERT INTO SAKAI_REALM_RL_FN VALUES((select REALM_KEY from SAKAI_REALM where REALM_ID = '!group.template.course'), (select ROLE_KEY from SAKAI_REALM_ROLE where ROLE_NAME = 'Teaching Assistant'), (select FUNCTION_KEY from SAKAI_REALM_FUNCTION where FUNCTION_NAME = 'asnn2.assignment.read'));
-INSERT INTO SAKAI_REALM_RL_FN VALUES((select REALM_KEY from SAKAI_REALM where REALM_ID = '!group.template.course'), (select ROLE_KEY from SAKAI_REALM_ROLE where ROLE_NAME = 'Teaching Assistant'), (select FUNCTION_KEY from SAKAI_REALM_FUNCTION where FUNCTION_NAME = 'asnn2.assignment.new'));
-INSERT INTO SAKAI_REALM_RL_FN VALUES((select REALM_KEY from SAKAI_REALM where REALM_ID = '!group.template.course'), (select ROLE_KEY from SAKAI_REALM_ROLE where ROLE_NAME = 'Teaching Assistant'), (select FUNCTION_KEY from SAKAI_REALM_FUNCTION where FUNCTION_NAME = 'asnn2.assignment.edit'));
-INSERT INTO SAKAI_REALM_RL_FN VALUES((select REALM_KEY from SAKAI_REALM where REALM_ID = '!group.template.course'), (select ROLE_KEY from SAKAI_REALM_ROLE where ROLE_NAME = 'Teaching Assistant'), (select FUNCTION_KEY from SAKAI_REALM_FUNCTION where FUNCTION_NAME = 'asnn2.assignment.delete'));
 INSERT INTO SAKAI_REALM_RL_FN VALUES((select REALM_KEY from SAKAI_REALM where REALM_ID = '!group.template.course'), (select ROLE_KEY from SAKAI_REALM_ROLE where ROLE_NAME = 'Teaching Assistant'), (select FUNCTION_KEY from SAKAI_REALM_FUNCTION where FUNCTION_NAME = 'asnn2.submissions.manage'));
 
 INSERT INTO SAKAI_REALM_RL_FN VALUES((select REALM_KEY from SAKAI_REALM where REALM_ID = '!group.template.course'), (select ROLE_KEY from SAKAI_REALM_ROLE where ROLE_NAME = 'Student'), (select FUNCTION_KEY from SAKAI_REALM_FUNCTION where FUNCTION_NAME = 'asnn2.assignment.read'));
@@ -76,6 +74,7 @@ INSERT INTO PERMISSIONS_SRC_TEMP values ('Instructor','asnn2.submissions.manage'
 INSERT INTO PERMISSIONS_SRC_TEMP values ('Instructor','asnn2.all.groups');
 
 INSERT INTO PERMISSIONS_SRC_TEMP values ('Teaching Assistant','asnn2.assignment.read');
+INSERT INTO PERMISSIONS_SRC_TEMP values ('Teaching Assistant','asnn2.submissions.manage');
 
 INSERT INTO PERMISSIONS_SRC_TEMP values ('Student','asnn2.assignment.read');
 INSERT INTO PERMISSIONS_SRC_TEMP values ('Student','asnn2.submit');
@@ -129,10 +128,7 @@ INSERT INTO PERMISSIONS_SRC_TEMP values ('Instructor','asnn2.submissions.manage'
 INSERT INTO PERMISSIONS_SRC_TEMP values ('Instructor','asnn2.all.groups');
 
 INSERT INTO PERMISSIONS_SRC_TEMP values ('Teaching Assistant','asnn2.assignment.read');
-INSERT INTO PERMISSIONS_SRC_TEMP values ('Instructor','asnn2.assignment.new');
-INSERT INTO PERMISSIONS_SRC_TEMP values ('Instructor','asnn2.assignment.edit');
-INSERT INTO PERMISSIONS_SRC_TEMP values ('Instructor','asnn2.assignment.delete');
-INSERT INTO PERMISSIONS_SRC_TEMP values ('Instructor','asnn2.submissions.manage');
+INSERT INTO PERMISSIONS_SRC_TEMP values ('Teaching Assistant','asnn2.submissions.manage');
 
 INSERT INTO PERMISSIONS_SRC_TEMP values ('Student','asnn2.assignment.read');
 INSERT INTO PERMISSIONS_SRC_TEMP values ('Student','asnn2.submit');

@@ -232,27 +232,6 @@ public class StudentViewAssignmentRenderer {
                     asnnSubmissionHistoryRenderer.fillComponents(joint, "assignment-previous-submissions:", assignmentSubmission, !resubmit);
                 }
 
-                
-                // logic for displaying the assignment details and instructions
-                if (versionHistory == null || versionHistory.isEmpty()) {
-                    asnnDetailsRenderer.fillComponents(joint, "assignment-details-top:", assignmentSubmission, false, false, false);
-                    // only display these instructions if submission is closed. the editor will display them if open
-                    if (!submissionIsOpen) {
-                        asnnInstructionsRenderer.makeInstructions(joint, "assignment-instructions-top:", assignment, false, false, false);
-                    }
-                } else {
-                    if (resubmit || submissionIsOpen) {
-                        // just display the details b/c the editor will display the instructions
-                        asnnDetailsRenderer.fillComponents(joint, "assignment-details-top:", assignmentSubmission, false, false, false);
-                    } else if (!submissionIsOpen && !resubmit){
-                        // make the instructions and details with the toggle bar at the bottom
-                        // of the screen
-                        asnnInstructionsRenderer.makeInstructions(joint, "asnn-instructions-bottom:", assignment, true, true, false);
-                        asnnDetailsRenderer.fillComponents(joint, "asnn-details-bottom:", assignmentSubmission, false, true, false);
-                        tagsRenderer.makeTagInformation(joint, "asnn-tags-bottom:", assignment, true, true, false);
-                    }
-                }
-                
                 // determine if this is a resubmission scenario. we will use
                 // this in combination with the resubmit param to determine if
                 // we display the resubmission editor or just the button to resubmit
@@ -262,6 +241,33 @@ public class StudentViewAssignmentRenderer {
                             resubmissionIsOpen = true;
                             break;
                         }
+                    }
+                }
+                
+                // logic for displaying the assignment details and instructions
+                if (versionHistory == null || versionHistory.isEmpty()) {
+                    asnnDetailsRenderer.fillComponents(joint, "assignment-details-top:", assignmentSubmission, false, false, false);
+                    // only display these instructions if submission is closed. the editor will display them if open
+                    if (!submissionIsOpen) {
+                        asnnInstructionsRenderer.makeInstructions(joint, "assignment-instructions-top:", assignment, false, false, false);
+                    }
+                } else {
+                    if (resubmissionIsOpen && !resubmit) {
+                        // make the instructions and details with the toggle bar at the bottom
+                        // of the screen
+                        asnnInstructionsRenderer.makeInstructions(joint, "asnn-instructions-bottom:", assignment, true, true, false);
+                        asnnDetailsRenderer.fillComponents(joint, "asnn-details-bottom:", assignmentSubmission, false, true, false);
+                        tagsRenderer.makeTagInformation(joint, "asnn-tags-bottom:", assignment, true, true, false);
+                    }
+                    else if (submissionIsOpen) {
+                        // just display the details b/c the editor will display the instructions
+                        asnnDetailsRenderer.fillComponents(joint, "assignment-details-top:", assignmentSubmission, false, false, false);
+                    } else {
+                        // make the instructions and details with the toggle bar at the bottom
+                        // of the screen
+                        asnnInstructionsRenderer.makeInstructions(joint, "asnn-instructions-bottom:", assignment, true, true, false);
+                        asnnDetailsRenderer.fillComponents(joint, "asnn-details-bottom:", assignmentSubmission, false, true, false);
+                        tagsRenderer.makeTagInformation(joint, "asnn-tags-bottom:", assignment, true, true, false);
                     }
                 }
             }
