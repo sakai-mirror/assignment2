@@ -61,55 +61,7 @@ public class ExternalGradebookLogicTest extends Assignment2TestBase {
 
     }
 
-    public void testGetViewableAssignmentsWithGbData() {
-        // try a null contextId
-        try {
-            gradebookLogic.getViewableGradedAssignments(new ArrayList<Assignment2>(), null);
-            fail("Did not catch null contextId passed to getViewableAssignmentsWithGbData");
-        } catch (IllegalArgumentException iae) {}
-
-        externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
-
-        // make sure an empty list is returned if we pass a null list
-        List<Assignment2> viewableAssigns = gradebookLogic.getViewableGradedAssignments(null, AssignmentTestDataLoad.CONTEXT_ID);
-        assertTrue(viewableAssigns.isEmpty());
-
-        // now try an empty list
-        viewableAssigns = gradebookLogic.getViewableGradedAssignments(new ArrayList<Assignment2>(), AssignmentTestDataLoad.CONTEXT_ID);
-        assertTrue(viewableAssigns.isEmpty());
-
-        // A1 & A2 - ungraded
-        // A3 & A4 - graded
-
-        List<Assignment2> assignList = new ArrayList<Assignment2>();
-        assignList.add(testData.a1);
-        assignList.add(testData.a2);
-
-        // what happens if we pass ungraded items?
-        viewableAssigns = gradebookLogic.getViewableGradedAssignments(assignList, AssignmentTestDataLoad.CONTEXT_ID);
-        assertTrue(viewableAssigns.isEmpty());
-
-        // let's pass graded items
-        assignList = new ArrayList<Assignment2>();
-        assignList.add(testData.a3);
-        assignList.add(testData.a4);
-
-        // instructor should get them both back
-        externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
-        viewableAssigns = gradebookLogic.getViewableGradedAssignments(assignList, AssignmentTestDataLoad.CONTEXT_ID);
-        assertEquals(2, viewableAssigns.size());
-
-        // switch to TA
-        // TODO grader permissions
-        externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
-        viewableAssigns = gradebookLogic.getViewableGradedAssignments(assignList, AssignmentTestDataLoad.CONTEXT_ID);
-        assertEquals(2, viewableAssigns.size());
-
-        // switch to student - should return all items since none are draft
-        externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT1_UID);
-        viewableAssigns = gradebookLogic.getViewableGradedAssignments(assignList, AssignmentTestDataLoad.CONTEXT_ID);
-        assertEquals(2, viewableAssigns.size());
-    }
+    
 
     public void testCreateGradebookDataIfNecessary() {
         // we will skip this test since it relies on ComponentManager

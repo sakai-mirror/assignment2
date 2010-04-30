@@ -81,20 +81,6 @@ public interface ExternalGradebookLogic {
      */
     public static final String GB_TA = "section.role.ta";
 
-    /** 
-     * @param gradedAssignments
-     * @param contextId
-     * @return Given a list of graded Assignment2 objects, filter out the objects
-     * that the user is not authorized to view according to the gradebook
-     * permissions and return a list of graded assignments that the user is
-     * authorized to view. Also populates the gb-specific fields for each
-     * Assignment2 object. If associated gradebook item has been deleted, sets the
-     * gradebookItemId to null on the returned Assignment2 object.
-     * Does NOT handle filtering according to AssignmentGroup 
-     * restrictions
-     */
-    public List<Assignment2> getViewableGradedAssignments(List<Assignment2> gradedAssignments, String contextId);
-
     /**
      * The Assignment2 tool stores all grading information in the gradebook. Thus,
      * the gradebook backend must exist for the Assignment2 tool to work. This
