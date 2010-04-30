@@ -850,6 +850,7 @@ a.fl-pager-currentPage {
     font-size:1.05em;
     margin-top:10px;
     cursor:pointer;
+    font-weight: bold;
 }
 
 .toggleHeaderNoBar {
@@ -866,7 +867,7 @@ a.fl-pager-currentPage {
 
 /* Display of a page heading and subheading */
 h3.mainHeading {
-    font-weight: normal;
+    font-weight: bold;
     margin: 0;
     font-size: 1.2em;
 }

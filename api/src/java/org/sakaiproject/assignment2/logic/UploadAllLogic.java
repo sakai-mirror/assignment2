@@ -34,10 +34,19 @@ public interface UploadAllLogic
          */
         FEEDBACK_FILE_UPLOAD_ERROR,
         /**
+         * The feedback file contained malicious content and was not processed
+         */
+        FEEDBACK_FILE_EVIL_CONTENT,
+        /**
          * An error occurred trying to extract the content of the annotated
          * text file
          */
         ANNOTATED_TEXT_UPLOAD_ERROR,
+        
+        /**
+         * The annotated text contained malicious content and was not processed
+         */
+        ANNOTATED_TEXT_EVIL_CONTENT,
         /**
          * The current user does not have permission to grade and/or provide
          * feedback for the given student so that student was not processed
