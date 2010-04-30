@@ -679,9 +679,13 @@ var asnn2 = asnn2 || {};
         if (show == true) {
             jQuery(element).nextAll().show();
             jQuery("#notifications").show();
+            jQuery("#acceptuntil").show();
+            jQuery("#grading").show();
         } else {
             jQuery(element).nextAll().hide();
             jQuery("#notifications").hide();
+            jQuery("#acceptuntil").hide();
+            jQuery("#grading").hide();
         }
     };
 
