@@ -81,69 +81,6 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
         this.authzLogic = authzLogic;
     }
 
-    public List<Assignment2> getViewableGradedAssignments(List<Assignment2> gradedAssignments, String contextId) {
-        if (contextId == null) {
-            throw new IllegalArgumentException("contextId is null in getViewableAssignmentsWithGbData");
-        }
-
-        List<Assignment2> viewableGradedAssignments = new ArrayList<Assignment2>();
-        if (gradedAssignments == null || gradedAssignments.isEmpty()) {
-            return viewableGradedAssignments;
-        }
-
-        List<Assignment> gbAssignments = gradebookService.getViewableAssignmentsForCurrentUser(contextId);
-
-        Map<Long, Assignment> goIdGbAssignmentMap = new HashMap<Long, Assignment>();
-        if (gbAssignments != null) {
-            for (Assignment gbObject : gbAssignments) {
-                if (gbObject != null) {
-                    goIdGbAssignmentMap.put(gbObject.getId(), gbObject);
-                }
-            }
-        }
-
-        boolean userIsStudent = isCurrentUserAStudentInGb(contextId);
-
-        // there are 2 situations in which the gradebook item associated with the assignment
-        // is not included in the list returned from the gradebook:
-        // 1) the user does not have permission to view that GO - if the user is a student,
-        //		we still want to display the assignment but don't want to display the
-        //		associated grade info b/c not released to students yet
-        // 2) the GO was deleted from the gb
-
-        for (Assignment2 gradedAssignment : gradedAssignments) {
-            if (gradedAssignment != null && gradedAssignment.isGraded()) {
-                Long goId = gradedAssignment.getGradebookItemId();
-                if (goId != null) {
-                    Assignment gbItem =	(Assignment)goIdGbAssignmentMap.get(goId);
-                    if (gbItem != null) {
-                        viewableGradedAssignments.add(gradedAssignment);
-                    } else {
-                        // check to see if this gradebook item exists anymore
-                        if (!gradebookService.isGradableObjectDefined(goId)) {
-                            // set the associated gb item id to flag that it has been deleted
-                            gradedAssignment.setGradebookItemId(null);
-                            viewableGradedAssignments.add(gradedAssignment);
-                        } else {
-                            // if it exists, then this user does not have perm to view it in the gb
-                            if (userIsStudent) {
-                                // if a student, we still need to return an assignment with gb item info
-                                // this just means the grade info has not been released yet - we still
-                                // let students view the assignment
-                                viewableGradedAssignments.add(gradedAssignment);
-                            }
-                        }
-                    }
-                } else {
-                    // there is no gradebookItemId set for this assignment!
-                    viewableGradedAssignments.add(gradedAssignment);
-                }
-            }
-        }
-
-        return viewableGradedAssignments;
-    }
-
     public void createGradebookDataIfNecessary(String contextId) {
         // we need to check if there is gradebook data defined for this site. if not,
         // create it (but will not actually add the tool, just the backend)
@@ -877,4 +814,5 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
         
         return authzLogic.getRolePermissionsForSite(contextId, gradebookPerms);
     }
+
 }

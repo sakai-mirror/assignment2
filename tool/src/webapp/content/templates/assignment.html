@@ -171,6 +171,7 @@
 			  </span>
 			</p>
 		</div>
+		<fieldset>
 		<div style="clear:both">
 			<p class="asnnOptionsLabel">
 				<input id="require_due_date" rsf:id="require_due_date" type="checkbox" />
@@ -187,21 +188,26 @@
 				</span>
 			</p>
 		</div>
-		<div style="clear:both">
-            <p class="asnnOptionsLabel">
-                <input id="require_accept_until" rsf:id="require_accept_until" type="checkbox" />
-                <label for="require_accept_until" rsf:id="msg=assignment2.assignment_add.require_accept_until">Set Accept Until Date?</label>
-            </p>
-            <p class="asnnOptionsEdit">
-                <span rsf:id="accept_until_container" id="accept_until_container">
-                    <input rsf:id="accept_until:" value="12/31/2007"/>
-                </span>
-                <p rsf:id="message-for:accept_until"></p>   
-            </p>                    
-        </div>
+		</fieldset>
+		<fieldset id="acceptuntil">
+		    <div style="clear:both">
+                        <p class="asnnOptionsLabel">
+                            <input id="require_accept_until" rsf:id="require_accept_until" type="checkbox" />
+                            <label for="require_accept_until" rsf:id="msg=assignment2.assignment_add.require_accept_until">Set Accept Until Date?</label>
+                        </p>
+                        
+                        <p class="asnnOptionsEdit">
+                            <span rsf:id="accept_until_container" id="accept_until_container">
+                                <input rsf:id="accept_until:" value="12/31/2007"/>
+                            </span>
+                            <p rsf:id="message-for:accept_until"></p>   
+                        </p>
+                        
+                    </div>
+                    </fieldset>
 	</fieldset>
 	
-	<fieldset>
+	<fieldset id="grading">
         <legend rsf:id="msg=assignment2.assignment_add.grading_legend">Grading</legend>
         <span rsf:id="cannot_edit_grading" class="instruction">You can't change these settings.</span>
         <ol rsf:id="grade_settings">
@@ -424,6 +430,15 @@ jQuery(document).ready(function(){
           asnn2.showHideByCheckbox(this, tii_content);
         }
 	});
+    var acceptuntil = jQuery('#page-replace\\:\\:tii_content_review_area').get(0);
+        jQuery("input[name='page-replace\:\:require_submissions']").click(function(){
+                asnn2.showHideSiblings(this.parentNode.parentNode, this.checked);
+
+        // if this assignment does not require submission, hide the TII display
+        if (tii_content) {
+          asnn2.showHideByCheckbox(this, tii_content);
+        }
+        });
 	var requireSubInput = jQuery("input[name='page-replace\:\:require_submissions']").get(0);
     asnn2.showHideSiblings(requireSubInput.parentNode.parentNode, requireSubInput.checked);
 

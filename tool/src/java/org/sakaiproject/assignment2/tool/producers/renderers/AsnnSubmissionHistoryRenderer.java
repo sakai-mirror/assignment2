@@ -140,7 +140,7 @@ public class AsnnSubmissionHistoryRenderer implements BasicProducer {
                     makeVersionToggle(versionDiv, version, assignment.getDueDate(), 
                             assignmentSubmission.getResubmitCloseDate(), expand, assignmentSubmission.getId(), version.getId(), showFeedbackAsRead);
 
-                    asnnSubmissionVersionRenderer.fillComponents(versionDiv, "submission-entry:", version, true);
+                    asnnSubmissionVersionRenderer.fillComponents(versionDiv, "submission-entry:", version, true, false);
                     
                     asnnInstructionsRenderer.makeInstructions(versionDiv, "assignment-instructions-toggle:", assignment, true, false, false);
                 }
