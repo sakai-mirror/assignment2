@@ -22,8 +22,10 @@ import org.apache.commons.vfs.FileSystemException;
 import org.apache.commons.vfs.FileSystemManager;
 import org.apache.commons.vfs.FileType;
 import org.apache.commons.vfs.VFS;
+import org.sakaiproject.assignment2.dao.AssignmentDao;
 import org.sakaiproject.assignment2.exception.AssignmentNotFoundException;
 import org.sakaiproject.assignment2.exception.UploadException;
+import org.sakaiproject.assignment2.logic.AssignmentBundleLogic;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
@@ -105,6 +107,16 @@ public class UploadAllLogicImpl implements UploadAllLogic
     public AssignmentPermissionLogic permissionLogic;
     public void setAssignmentPermissionLogic(AssignmentPermissionLogic permissionLogic) {
         this.permissionLogic = permissionLogic;
+    }
+    
+    public AssignmentBundleLogic bundleLogic;
+    public void setAssignmentBundleLogic(AssignmentBundleLogic bundleLogic) {
+        this.bundleLogic = bundleLogic;
+    }
+    
+    public AssignmentDao assignmentDao;
+    public void setAssignmentDao(AssignmentDao assignmentDao) {
+        this.assignmentDao = assignmentDao;
     }
 
     public List<Map<String, String>> uploadAll(UploadAllOptions options, File file) throws UploadException
@@ -403,8 +415,33 @@ public class UploadAllLogicImpl implements UploadAllLogic
                     String baseFileName = fileObj.getName().getBaseName();
                     if (baseFileName.equals(zipExportLogic.getFeedbackFileName())) {
                         try {
-                            String feedbackNotes = readIntoString(fileObj.getContent());
+                            String uploadedText = readIntoString(fileObj.getContent());
+                            String feedbackNotes = null;
+                            
+                            // now we need to check this for malicious content
+                            StringBuilder errors = new StringBuilder();
+                            FormattedText.processFormattedText(uploadedText, errors, true, false);
+                            
+                            if (errors == null || errors.length() == 0) {
+                                feedbackNotes = uploadedText;
+                            } else {
+                                // we are going to skip processing this file, but we
+                                // need to retrieve the existing feedback if it exists or
+                                // we will overwrite it with null
+                                if (versionId != null) {
+                                    AssignmentSubmissionVersion existingVersion = assignmentDao.findById(AssignmentSubmissionVersion.class, versionId);
+                                    if (existingVersion != null) {
+                                        feedbackNotes = existingVersion.getFeedbackNotes();
+                                    }
+                                }
+                                // notify the user. we construct the message here
+                                String warning = bundleLogic.getFormattedMessage("assignment2.uploadall.error.evil_feedback_text", 
+                                        new Object[] {getAffectedTargetWithParents(fileObj, parentDepth + 1), errors.toString()});
+                                addToUploadInfoMap(uploadErrors, warning, UploadInfo.FEEDBACK_FILE_EVIL_CONTENT);
+                            }
+                            
                             feedback.feedbackNotes = feedbackNotes;
+                            
                         } catch (IOException ioe) {
                             addToUploadInfoMap(uploadErrors, getAffectedTargetWithParents(fileObj, parentDepth), UploadInfo.FEEDBACK_FILE_UPLOAD_ERROR);
                             log.warn("An IOException occurred while extracting content " +
@@ -412,8 +449,34 @@ public class UploadAllLogicImpl implements UploadAllLogic
                         }
                     } else if (baseFileName.equals(annotatedTextFileName)) {
                         try {
-                            String annotatedSubmittedText = readIntoString(fileObj.getContent());
+                            String uploadedText = readIntoString(fileObj.getContent());
+                            String annotatedSubmittedText = null;
+                            
+                            // now we need to check this for malicious content
+                            StringBuilder errors = new StringBuilder();
+                            FormattedText.processFormattedText(uploadedText, errors, true, false);
+                            if (errors == null || errors.length() == 0) {
+                                annotatedSubmittedText = uploadedText;
+                            } else {
+                                // we are going to skip processing this file, but we
+                                // need to retrieve the existing annotated text if it exists or
+                                // we will overwrite it with null
+                                if (versionId != null) {
+                                    AssignmentSubmissionVersion existingVersion = assignmentDao.findById(AssignmentSubmissionVersion.class, versionId);
+                                    if (existingVersion != null) {
+                                        annotatedSubmittedText = existingVersion.getAnnotatedText();
+                                    }
+                                }
+
+                                // we stripped the malicious content from this string.
+                                // notify the user. we construct the message here
+                                String warning = bundleLogic.getFormattedMessage("assignment2.uploadall.error.evil_annotated_text", 
+                                        new Object[] {getAffectedTargetWithParents(fileObj, parentDepth + 1), errors.toString()});
+                                addToUploadInfoMap(uploadErrors, warning, UploadInfo.ANNOTATED_TEXT_EVIL_CONTENT);
+                            }
+                            
                             feedback.annotatedText = annotatedSubmittedText;
+                            
                         } catch (IOException ioe) {
                             addToUploadInfoMap(uploadErrors, getAffectedTargetWithParents(fileObj, parentDepth), UploadInfo.ANNOTATED_TEXT_UPLOAD_ERROR);
                             log.warn("An IOException occurred while extracting content " +

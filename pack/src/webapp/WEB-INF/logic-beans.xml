@@ -109,6 +109,8 @@
 		<property name="zipExportLogic" ref="org.sakaiproject.assignment2.logic.ZipExportLogic" />
 		<property name="uploadGradesLogic" ref="org.sakaiproject.assignment2.logic.UploadGradesLogic" />
 		<property name="assignmentPermissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentPermissionLogic" />
+    <property name="assignmentBundleLogic" ref="org.sakaiproject.assignment2.logic.AssignmentBundleLogic" />
+    <property name="assignmentDao" ref="org.sakaiproject.assignment2.dao.AssignmentDao" />
 	</bean> 
 	
 	<bean id="org.sakaiproject.assignment2.logic.UploadGradesLogic"

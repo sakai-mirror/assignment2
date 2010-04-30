@@ -416,6 +416,14 @@ public class UploadBean
                     totalNumUpdated = param;
                 } else if (info.equals(UploadAllLogic.UploadInfo.NUM_STUDENTS_IDENTIFIED_FOR_UPDATE.toString())) {
                     totalNumProcessed = param;
+                } else if (info.equals(UploadAllLogic.UploadInfo.FEEDBACK_FILE_EVIL_CONTENT.toString())) {
+                    // this message is constructed elsewhere and we just display what is returned
+                    messages.addMessage(new TargettedMessage("assignment2.displayText", 
+                            new Object[] {param}, TargettedMessage.SEVERITY_ERROR));
+                } else if (info.equals(UploadAllLogic.UploadInfo.ANNOTATED_TEXT_EVIL_CONTENT.toString())) {
+                    // this message is constructed elsewhere and we just display what is returned
+                    messages.addMessage(new TargettedMessage("assignment2.displayText", 
+                            new Object[] {param}, TargettedMessage.SEVERITY_ERROR));
                 }
             }
 
