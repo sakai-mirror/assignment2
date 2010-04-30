@@ -80,9 +80,10 @@ public class AsnnSubmissionVersionRenderer implements BasicProducer {
      * @param asnnSubVersion
      * @param multipleVersionDisplay true if this version is being displayed in a multi-version scenario.
      * this will prevent unnecessary repeated headers
+     * @param hideFeedback true if you want to hide feedback for all users unless the user is allowed to manage the submission.  (hides annotated text, feedback notes, and feedback attachments)
      * @return
      */
-    public UIContainer fillComponents(UIContainer parent, String clientID, AssignmentSubmissionVersion asnnSubVersion, boolean multipleVersionDisplay) {
+    public UIContainer fillComponents(UIContainer parent, String clientID, AssignmentSubmissionVersion asnnSubVersion, boolean multipleVersionDisplay, boolean hideFeedback) {
         UIJointContainer joint = new UIJointContainer(parent, clientID, "asnn2-submission-version-widget:");
 
         AssignmentSubmission assignmentSubmssion = asnnSubVersion.getAssignmentSubmission();
@@ -131,7 +132,7 @@ public class AsnnSubmissionVersionRenderer implements BasicProducer {
                 // if feedback is released or user has grading privileges for this student, we display the submitted text with
                 // instructor annotations
                 
-                if (userCanGrade || asnnSubVersion.isFeedbackReleased()) {
+                if (userCanGrade || (asnnSubVersion.isFeedbackReleased() && !hideFeedback)) {
                     if (asnnSubVersion.getAnnotatedText() != null && asnnSubVersion.getAnnotatedText().trim().length() > 0) {
                         UIMessage.make(joint, "submission-text-header", "assignment2.student-submit.submission_text.annotated");
                         HtmlDiffUtil differ = new HtmlDiffUtil();
@@ -150,7 +151,7 @@ public class AsnnSubmissionVersionRenderer implements BasicProducer {
          * Render the Instructor's Feedback Materials if feedback is released
          * or current user has grading privileges
          */
-        if (userCanGrade || asnnSubVersion.isFeedbackReleased()) {
+        if (userCanGrade || (asnnSubVersion.isFeedbackReleased() && !hideFeedback)) {
             UIMessage.make(joint, "feedback-header", "assignment2.student-submission.feedback.header");
             String feedbackText = asnnSubVersion.getFeedbackNotes();
 

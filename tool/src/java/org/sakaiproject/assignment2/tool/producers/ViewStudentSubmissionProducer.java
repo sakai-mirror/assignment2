@@ -269,7 +269,7 @@ public class ViewStudentSubmissionProducer implements ViewComponentProducer, Vie
                   String toggleHoverText = messageLocator.getMessage("assignment2.version.toggle.hover");
                   UIBranchContainer versionDiv = UIBranchContainer.make(tofill, "toggle-wrapper:");
                   toggleRenderer.makeToggle(versionDiv, "version_toggle:", null, true, headerText, toggleHoverText, false, false, false, false, null);
-                  asnnSubmissionVersionRenderer.fillComponents(versionDiv, "submission:", single, true);
+                  asnnSubmissionVersionRenderer.fillComponents(versionDiv, "submission:", single, true, optionalParams.containsKey(AssignmentConstants.TAGGABLE_REF_KEY));
               }
           }
     }
