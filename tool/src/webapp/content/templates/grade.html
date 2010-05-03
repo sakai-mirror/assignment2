@@ -50,15 +50,15 @@
     </div>
     <div style="float:right; border: thin #838383 solid; width: 30%; text-align: center;">
         <div style="padding: 2px; border-bottom: thin #838383 solid; background: #d9d9d9;">
-            <a id = "returnToList_link" rsf:id="returnToList_link">Return to Submission List</a>
+            <a class="returnToList_link" id="returnToList_link" rsf:id="returnToList_link">Return to Submission List</a>
         </div>
         <div style="padding: 2px;">
-            <a id="previous_link" rsf:id="previous_link" >Previous</a>
+            <a class="previous_link" id="previous_link" rsf:id="previous_link" >Previous</a>
             <span rsf:id="previous_disabled" class="inactive">Previous</span>
             <span class="separator">|</span>
             <span rsf:id="current">Current User</span>
             <span class="separator">|</span>
-            <a id="next_link" rsf:id="next_link" >Next</a>
+            <a class="next_link" id="next_link" rsf:id="next_link" >Next</a>
             <span rsf:id="next_disabled" class="inactive">Next</span>
         </div>
     </div>
@@ -206,14 +206,31 @@
 	</div>
 	<!-- /End Grading Stuff -->
 	
-	
-	<fieldset class="submit">
+	<div>
+	<fieldset style="float:left;" class="submit">
 	    <input name="submitOption" id="submitOption" rsf:id="submitOption" type="hidden" value="submit" />
 		<input name="save" id="save" rsf:id="submit" accesskey="s" type="submit" class="active" value="Save"/>
 	    <input name="release_feedback" id="release_feedback" rsf:id="release_feedback" type="submit" />
 		<input rsf:id="preview" accesskey="v" type="button" name="preview" value="Preview" class="preview_button thickbox" title="Preview" />
 		<input rsf:id="cancel" accesskey="x" type="submit" name="cancel" value="Cancel"/>
 	</fieldset>
+	
+	<div style="float:right; border: thin #838383 solid; width: 30%; text-align: center;">
+        <div style="padding: 2px; border-bottom: thin #838383 solid; background: #d9d9d9;">
+            <a class="returnToList_link" id = "returnToList_link" rsf:id="returnToList_link">Return to Submission List!</a>
+        </div>
+        <div style="padding: 2px;">
+            <a class="previous_link" id="previous_link" rsf:id="previous_link" >Previous!</a>
+            <span rsf:id="previous_disabled" class="inactive">Previous!</span>
+            <span class="separator">|</span>
+            <span rsf:id="current">Current User</span>
+            <span class="separator">|</span>
+            <a class="next_link" id="next_link" rsf:id="next_link" >Next!</a>
+            <span rsf:id="next_disabled" class="inactive">Next!</span>
+        </div>
+    </div>
+    <div style="clear:both;"></div>
+    </div>
 	</form>
 
 <script type="text/javascript" rsf:id="attachment-ajax-init">
@@ -242,7 +259,7 @@ jQuery(document).ready(function(){
     });
     asnn2gradeview.set_accept_until_on_submission_level();
 
-    jQuery('#page-replace\\:\\:previous_link').click(function() {
+    jQuery('.previous_link').click(function() {
         var that = jQuery(this);
         var gradingChanged = asnn2gradeview.isGradingChanged();
         var numSubmittedVersions = $('#page-replace\\:\\:numSubmittedVersions').val();	
@@ -253,7 +270,7 @@ jQuery(document).ready(function(){
         }
     });
 
-    jQuery('#page-replace\\:\\:next_link').click(function() {
+    jQuery('.next_link').click(function() {
         var that = jQuery(this);
         var gradingChanged = asnn2gradeview.isGradingChanged();
         var numSubmittedVersions = $('#page-replace\\:\\:numSubmittedVersions').val();	
@@ -263,7 +280,7 @@ jQuery(document).ready(function(){
         }
     });
 
-    jQuery('#page-replace\\:\\:returnToList_link').click(function() {
+    jQuery('.returnToList_link').click(function() {
         var that = jQuery(this);
         var gradingChanged = asnn2gradeview.isGradingChanged();
         var numSubmittedVersions = $('#page-replace\\:\\:numSubmittedVersions').val();	
