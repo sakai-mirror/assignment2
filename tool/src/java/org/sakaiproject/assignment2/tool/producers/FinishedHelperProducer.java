@@ -23,6 +23,7 @@ package org.sakaiproject.assignment2.tool.producers;
 
 import java.util.List;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment2.logic.AttachmentInformation;
@@ -102,7 +103,7 @@ public class FinishedHelperProducer implements ViewComponentProducer, ViewParams
 
                     markup += HTMLUtil.emitJavascriptCall("parent.asnn2.updateAttachments", 
                             new String[]{attach.getContentTypeImagePath(), 
-                            attach.getDisplayName(), attach.getUrl(), ref.getId(), file_size});  
+                            StringEscapeUtils.escapeJavaScript(attach.getDisplayName()), attach.getUrl(), ref.getId(), file_size});  
                 }
             }
 
@@ -117,7 +118,9 @@ public class FinishedHelperProducer implements ViewComponentProducer, ViewParams
 
         if (params.gbItemName != null && !params.gbItemName.equals("")) {
             UIVerbatim.make(tofill, "finishedGBItemHelper", 
-                    HTMLUtil.emitJavascriptCall("parent.asnn2.finishedGBItemHelper", new String[] {params.gbItemName, params.gbItemDueTime}));
+                    HTMLUtil.emitJavascriptCall("parent.asnn2.finishedGBItemHelper", new String[] {
+                       StringEscapeUtils.escapeJavaScript(params.gbItemName), 
+                       StringEscapeUtils.escapeJavaScript(params.gbItemDueTime)}));
         }
     }
 
